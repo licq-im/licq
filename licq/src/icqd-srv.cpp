@@ -24,7 +24,8 @@
 #include "licq_message.h"
 
 //-----icqAddUser----------------------------------------------------------
-void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bServerOnly)
+void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bServerOnly,
+                            bool _bAuthRequired)
 {
   // Server side list add, and update of group
   if (UseServerContactList())
@@ -47,7 +48,8 @@ void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bServerOnly)
     m_lszModifyServerUsers.push_back(strdup(szUin));
     pthread_mutex_unlock(&mutex_modifyserverusers);
 
-    CPU_AddToServerList *pAdd = new CPU_AddToServerList(szUin, ICQ_ROSTxNORMAL, _bServerOnly);
+    CPU_AddToServerList *pAdd = new CPU_AddToServerList(szUin, ICQ_ROSTxNORMAL, _bServerOnly,
+                                                        0, _bAuthRequired);
     gLog.Info("%sAdding %ld to server list...\n", L_SRVxSTR, _nUin);
     SendExpectEvent_Server(0, pAdd, NULL);
   }
@@ -59,8 +61,9 @@ void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bServerOnly)
               p->Sequence());
     SendExpectEvent_Server(_nUin, p, NULL);
 
-    // update the users info from the server
-    icqUserBasicInfo(_nUin);
+    // update the users info from the server now or after they are added
+    if (!UseServerContactList())
+      icqUserBasicInfo(_nUin);
   }
 }
 
@@ -1437,23 +1440,23 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       junk2 = msg.UnpackUnsignedShortBE();
 
 
-      char szExtraInfo[128] = { 0 };
+      char szExtraInfo[28] = { 0 };
       if ((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
-        snprintf(szExtraInfo, 127, " [Licq %s/SSL]",
+        snprintf(szExtraInfo, 27, " [Licq %s/SSL]",
                  CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
       else if ((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-        snprintf(szExtraInfo, 127, " [Licq %s]",
+        snprintf(szExtraInfo, 27, " [Licq %s]",
                  CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
       else if (timestamp == 0xffffffff)
         strcpy(szExtraInfo, " [MIRANDA]");
       else
         strcpy(szExtraInfo, "");
-      szExtraInfo[127] = '\0';
+      szExtraInfo[27] = '\0';
 
       if (u->StatusFull() != nNewStatus)
       {
         ChangeUserStatus(u, nNewStatus);
-        gLog.Info("%s%s (%ld) changed status: %s (v%01x%s).\n", L_SRVxSTR, u->GetAlias(),
+        gLog.Info("%s%s (%ld) changed status: %s (v%01x)%s.\n", L_SRVxSTR, u->GetAlias(),
                   nUin, u->StatusStr(), tcpVersion & 0x0F, szExtraInfo);
         if ( (nNewStatus & ICQ_STATUS_FxUNKNOWNxFLAGS) )
           gLog.Unknown("%sUnknown status flag for %s (%ld): 0x%08lX\n",
@@ -2423,8 +2426,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           case 0: break; // No error
 
           case 0x0E:
-            gLog.Error("%sAuthorization required to add %s to server list.\n",
-                       L_SRVxSTR, szPending);
+            // no way
+            //gLog.Warn("%s%s added to awaiting authorization group on server list\n",
+            //           L_SRVxSTR, szPending);
             break;
 
           case 0x02:
@@ -2437,7 +2441,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                        L_SRVxSTR, nError & 0xFF);
         }
 
-        if (nError)
+        if (nError && nError != 0x0E)
           break;
 
         switch (e->SubType())
@@ -2445,6 +2449,18 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           case ICQ_SNACxLIST_ROSTxADD:
           case ICQ_SNACxLIST_ROSTxREM:
           {
+            if (nError == 0x0E)
+            {
+              // If we don't send this, we can still add them
+              // without any known side effects
+              //pReply = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+              //  ICQ_SNACxLIST_ROSTxEDITxEND);
+              //SendEvent_Server(pReply);
+
+              icqAddUser(nUin, true, true);
+              break;
+            }
+
             if (bHandled == false)
             {
               bHandled = true;
@@ -2477,6 +2493,10 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 gUserManager.DropUser(u);
               }
               o->SetSSCount(++nSSCount);
+              
+              // wait for them to be added before we get their info
+              // which in turn will update their alias on the server
+              icqUserBasicInfo(nUin); // since it isn't done in icqAddUser
             }
             else
             {

@@ -1719,7 +1719,7 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
 //-----AddToServerList----------------------------------------------------------
 CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
                                          unsigned short _nType, bool _bExport,
-                                         unsigned short _nGroup)
+                                         unsigned short _nGroup, bool _bAuthReq)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD), m_nSID(0),
     m_nGSID(0)
 {
@@ -1732,6 +1732,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   switch (_nType)
   {
     case ICQ_ROSTxNORMAL:
+    case ICQ_ROSTxIGNORE:
     {
       unsigned long nUin;
       sscanf(_szName, "%lu", &nUin);
@@ -1773,14 +1774,14 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       if (_bExport)
         nExportSize = 4 + strlen(u->GetAlias());
-
+      
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
       gUserManager.UnlockGroupIDList();
 
       break;
     }
-    
+
     case ICQ_ROSTxGROUP:
     {
       // the way it works
@@ -1796,7 +1797,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     }
   }
 
-  m_nSize += 10+nStrLen+nExportSize;
+  // Don't add to awaiting auth list, we have a workaround
+  m_nSize += 10+nStrLen+nExportSize/*+(_bAuthReq ? 4 : 0)*/;
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nStrLen);
@@ -1804,13 +1806,15 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   buffer->PackUnsignedShortBE(m_nGSID);
   buffer->PackUnsignedShortBE(m_nSID);
   buffer->PackUnsignedShortBE(_nType);
-  buffer->PackUnsignedShortBE(nExportSize);
+  buffer->PackUnsignedShortBE(nExportSize/*(_bAuthReq ? 4 : 0)*/);
   if (nExportSize)
   {
     buffer->PackUnsignedShortBE(0x0131);
     buffer->PackUnsignedShortBE(nExportSize-4);
     buffer->Pack(u->GetAlias(), nExportSize-4);
   }
+ // if (_bAuthReq)
+ //   buffer->PackUnsignedLongBE(0x00660000);
 
   if (u)
     gUserManager.DropUser(u);

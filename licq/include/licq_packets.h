@@ -339,7 +339,8 @@ class CPU_AddToServerList : public CPU_CommonFamily
 {
 public:
   CPU_AddToServerList(const char *_szName, unsigned short _nType,
-                      bool _bExport = false, unsigned short _nGroup = 0);
+                      bool _bExport = false, unsigned short _nGroup = 0,
+                      bool _bAuthReq = false);
 
   unsigned short GetSID()   { return m_nSID; }
   unsigned short GetGSID()  { return m_nGSID; }

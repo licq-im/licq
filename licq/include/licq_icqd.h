@@ -182,7 +182,7 @@ public:
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
-  void icqAddUser(unsigned long, bool _bServerOnly = false);
+  void icqAddUser(unsigned long, bool _bServerOnly = false, bool _bAuthReq = false);
   void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
   void icqRemoveGroup(const char *);
