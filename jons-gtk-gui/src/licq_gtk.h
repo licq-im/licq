@@ -187,7 +187,6 @@ struct network_window
 {
 	GtkWidget *window;
 	GtkWidget *text;
-	GtkWidget *scroll;
 };
 
 /******************* Global Variables ******************/
@@ -308,7 +307,7 @@ extern void reverse_history(GtkWidget *, struct history *);
 /* Functions in log_window.cpp */
 extern void menu_log_window(GtkWidget *, gpointer);
 extern void log_pipe_callback(gpointer, gint, GdkInputCondition);
-extern void log_window_close(GtkWidget *, GtkWidget *);
+extern gint log_window_close(GtkWidget *, GtkWidget *);
 extern void log_window_clear(GtkWidget *, gpointer);
 
 

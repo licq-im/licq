@@ -59,7 +59,7 @@ void menu_log_window(GtkWidget *widget, gpointer data)
 	gtk_window_set_position(GTK_WINDOW(nw->window), GTK_WIN_POS_CENTER);
 
 	/* Destroy event for window */
-	gtk_signal_connect(GTK_OBJECT(nw->window), "destroy",
+	gtk_signal_connect(GTK_OBJECT(nw->window), "delete_event",
 			   GTK_SIGNAL_FUNC(log_window_close), nw->window);
 
 	/* Create the table */
@@ -127,11 +127,12 @@ void log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
 	log->ClearLog();
 }
 
-void log_window_close(GtkWidget *widget, GtkWidget *window)
+gint log_window_close(GtkWidget *widget, GtkWidget *window)
 {
-	gtk_widget_hide_all(window);
+	gtk_widget_hide_all(nw->window);
 	nw_shown = FALSE;
 	hidden = TRUE;
+	return TRUE;
 }
 
 void log_window_clear(GtkWidget *widget, gpointer data)
