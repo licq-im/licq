@@ -100,9 +100,11 @@ bool CUserHistory::Load(HistoryList &lHistory)
   time_t tTime;
   char cDir;
   CUserEvent *e;
+  szResult = fgets(sz, MAX_LINE_LEN, f);
   while(true)
   {
-    while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] != '[');
+    while (szResult != NULL && sz[0] != '[')
+      szResult = fgets(sz, MAX_LINE_LEN, f);
     if (szResult == NULL) break;
     //"[ C | 0000 | 0000 | 0000 | 000... ]"
     cDir = sz[2];
