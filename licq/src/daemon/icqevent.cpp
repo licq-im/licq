@@ -2,10 +2,10 @@
 #include "config.h"
 #endif
 
-#include "icqevent.h"
-#include "icqpacket.h"
-#include "log.h"
-#include "user.h"
+#include "licq_events.h"
+#include "licq_packets.h"
+#include "licq_log.h"
+#include "licq_user.h"
 
 
 //-----ICQEvent::constructor----------------------------------------------------

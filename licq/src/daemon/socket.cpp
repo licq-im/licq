@@ -28,11 +28,11 @@ extern int errno;
 extern int h_errno;
 #endif
 
-#include "socket.h"
-#include "icq-defines.h"
-#include "log.h"
+#include "licq_socket.h"
+#include "licq_icq.h"
+#include "licq_log.h"
+#include "licq_user.h"
 #include "support.h"
-#include "user.h"
 
 #ifdef USE_SOCKS5
 #define SOCKS

@@ -16,11 +16,10 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <stdarg.h>
 #include <stdio.h>
 
-#include "pthread_rdwr.h"
-#include "socket.h"
-#include "icqevent.h"
-#include "remoteserver.h"
-#include "onevent.h"
+#include "licq_socket.h"
+#include "licq_events.h"
+#include "licq_remoteserver.h"
+#include "licq_onevent.h"
 
 class CPlugin;
 class CPacket;

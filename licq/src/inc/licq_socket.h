@@ -12,9 +12,10 @@
 #include <vector.h>
 #include <list.h>
 
-#include "buffer.h"
 #include "pthread_rdwr.h"
-#include "constants.h"
+
+#include "licq_buffer.h"
+#include "licq_constants.h"
 
 char *inet_ntoa_r(struct in_addr in, char *buf);
 char *ip_ntoa(unsigned long in, char *buf);

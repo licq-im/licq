@@ -6,8 +6,8 @@
 #endif
 
 
-#include "socket.h"
-#include "message.h"
+#include "licq_socket.h"
+#include "licq_message.h"
 
 class CPacket;
 class CICQDaemon;

@@ -4,7 +4,7 @@
 
 #include <string.h>
 
-#include "countrycodes.h"
+#include "licq_countrycodes.h"
 
 const struct SCountry gCountries[NUM_COUNTRIES + 1] =
 {

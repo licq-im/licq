@@ -17,8 +17,8 @@
 extern int errno;
 #endif
 
-#include "file.h"
-#include "log.h"
+#include "licq_file.h"
+#include "licq_log.h"
 
 
 //=====Pre class helper functions==============================================

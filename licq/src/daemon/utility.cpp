@@ -13,9 +13,9 @@
 extern int errno;
 #endif
 
-#include "utility.h"
-#include "log.h"
-#include "user.h"
+#include "licq_utility.h"
+#include "licq_log.h"
+#include "licq_user.h"
 #include "support.h"
 
 CUtilityManager gUtilityManager;

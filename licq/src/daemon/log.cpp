@@ -11,7 +11,7 @@ extern int errno;
 #include <time.h>
 
 #include <unistd.h>
-#include "log.h"
+#include "licq_log.h"
 
 CLogServer gLog;
 

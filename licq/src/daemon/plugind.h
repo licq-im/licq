@@ -3,7 +3,7 @@
 
 #include <pthread.h>
 #include <list.h>
-#include "icqevent.h"
+#include "licq_events.h"
 
 
 //=====CPlugin==================================================================

@@ -2,8 +2,8 @@
 #include "config.h"
 #endif
 
-#include "remoteserver.h"
-#include "constants.h"
+#include "licq_remoteserver.h"
+#include "licq_constants.h"
 
 ICQRemoteServers::ICQRemoteServers()
 {

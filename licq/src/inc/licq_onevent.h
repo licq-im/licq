@@ -1,7 +1,8 @@
 #ifndef ONEVENT_H
 #define ONEVENT_H
 
-#include "pthread_rdwr.h"
+#include <pthread.h>
+//#include "pthread_rdwr.h"
 
 class ICQUser;
 
@@ -29,7 +30,7 @@ public:
   const char *Command()  { return m_szCommand; }
   void Lock()     { pthread_mutex_lock(&mutex); }
   void Unlock()   { pthread_mutex_unlock(&mutex); }
-  void Pause(bool _pause); 
+  void Pause(bool _pause);
 protected:
   unsigned short m_nCommandType;
   bool m_bPause;

@@ -9,9 +9,9 @@
 #include <vector.h>
 #include <stdio.h>
 #include <list.h>
+#include <pthread.h>
 
-#include "pthread_rdwr.h"
-#include "constants.h"
+#include "licq_constants.h"
 
 // Info: basic information about what's going on
 const unsigned short L_INFO     = 0x0001;

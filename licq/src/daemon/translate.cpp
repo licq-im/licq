@@ -15,8 +15,8 @@
 extern int errno;
 #endif
 
-#include "translate.h"
-#include "log.h"
+#include "licq_translate.h"
+#include "licq_log.h"
 
 CTranslator gTranslator;
 

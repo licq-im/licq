@@ -16,10 +16,10 @@ extern int errno;
 
 #include "time-fix.h"
 
-#include "icqpacket.h"
-#include "icq-defines.h"
-#include "translate.h"
-#include "log.h"
+#include "licq_packets.h"
+#include "licq_icq.h"
+#include "licq_translate.h"
+#include "licq_log.h"
 #include "support.h"
 
 

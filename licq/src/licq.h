@@ -7,7 +7,7 @@
 
 #include <pthread.h>
 #include <list.h>
-#include "icqd.h"
+#include "licq_icqd.h"
 
 
 class CLicq

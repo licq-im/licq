@@ -13,12 +13,12 @@
 #include <arpa/inet.h>
 #endif
 
-#include "constants.h"
-#include "user.h"
-#include "countrycodes.h"
-#include "languagecodes.h"
-#include "log.h"
-#include "icqpacket.h"
+#include "licq_constants.h"
+#include "licq_user.h"
+#include "licq_countrycodes.h"
+#include "licq_languagecodes.h"
+#include "licq_log.h"
+#include "licq_packets.h"
 #include "support.h"
 
 class CUserManager gUserManager;

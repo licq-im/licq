@@ -2,10 +2,10 @@
 #include "config.h"
 #endif
 
-#include "sar.h"
-#include "log.h"
+#include "licq_sar.h"
+#include "licq_log.h"
 #include "sar.conf.h"
-#include "constants.h"
+#include "licq_constants.h"
 
 class CSARManager gSARManager;
 
@@ -65,8 +65,8 @@ bool CSARManager::Load()
   // Try and load the file
   if (!m_fConf.LoadFile(filename))
   {
-    gLog.Warn("%sUnable to open SAR config file \"%s\", creating default.\n",
-              L_WARNxSTR, filename);
+    //gLog.Warn("%sUnable to open SAR config file \"%s\", creating default.\n",
+    //          L_WARNxSTR, filename);
     // Create sar.conf
     FILE *f = fopen(filename, "w");
     fprintf(f, "%s", SAR_CONF);

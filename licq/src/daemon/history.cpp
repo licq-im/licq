@@ -14,12 +14,12 @@
 extern int errno;
 #endif
 
-#include "history.h"
-#include "log.h"
-#include "constants.h"
-#include "file.h"
-#include "message.h"
-#include "icq-defines.h"
+#include "licq_history.h"
+#include "licq_log.h"
+#include "licq_constants.h"
+#include "licq_file.h"
+#include "licq_message.h"
+#include "licq_icq.h"
 
 #define MAX_HISTORY_MSG_SIZE 8192
 

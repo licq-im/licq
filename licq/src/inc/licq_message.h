@@ -5,11 +5,9 @@
 #include "config.h"
 #endif
 
-#include "time-fix.h"
-
 #include <vector.h>
-#include "buffer.h"
-#include "constants.h"
+#include "licq_buffer.h"
+#include "licq_constants.h"
 
 #define EVENT_HEADER_SIZE  80
 

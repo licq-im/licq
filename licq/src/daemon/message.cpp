@@ -6,8 +6,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#include "message.h"
-#include "user.h"
+#include "licq_message.h"
+#include "licq_user.h"
 
 unsigned long CUserEvent::s_nId = 1;
 

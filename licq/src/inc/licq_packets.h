@@ -5,10 +5,10 @@
 #include "config.h"
 #endif
 
-#include "user.h"
-#include "buffer.h"
-#include "socket.h"
-#include "icq-defines.h"
+#include "licq_user.h"
+#include "licq_buffer.h"
+#include "licq_socket.h"
+#include "licq_icq.h"
 
 //=====Packet===================================================================
 

@@ -4,7 +4,7 @@
 
 #include <stdio.h>
 
-#include "languagecodes.h"
+#include "licq_languagecodes.h"
 
 const struct SLanguage gLanguages[NUM_LANGUAGES] =
 {

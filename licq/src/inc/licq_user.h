@@ -9,10 +9,11 @@
 #include <list.h>
 
 #include "pthread_rdwr.h"
-#include "message.h"
-#include "history.h"
-#include "file.h"
-#include "icq-defines.h"
+
+#include "licq_message.h"
+#include "licq_history.h"
+#include "licq_file.h"
+#include "licq_icq.h"
 
 #define FOR_EACH_USER_START(x)                           \
   {                                                      \

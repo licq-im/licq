@@ -1,8 +1,12 @@
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include <stdio.h>
 
-#include "onevent.h"
+#include "licq_onevent.h"
+#include "licq_user.h"
 #include "support.h"
-#include "user.h"
 
 //=====COnEventManager==========================================================
 

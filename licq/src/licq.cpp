@@ -25,15 +25,15 @@ extern int errno;
 #include <pwd.h>
 #endif
 
-#include "icq-defines.h"
+#include "licq_icq.h"
 #include "licq.h"
-#include "log.h"
-#include "countrycodes.h"
-#include "utility.h"
+#include "licq_log.h"
+#include "licq_countrycodes.h"
+#include "licq_utility.h"
 #include "daemon/support.h"
-#include "sar.h"
-#include "user.h"
-#include "icqd.h"
+#include "licq_sar.h"
+#include "licq_user.h"
+#include "licq_icqd.h"
 
 #include "licq.conf.h"
 

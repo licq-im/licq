@@ -5,8 +5,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-#include "buffer.h"
-#include "log.h"
+#include "licq_buffer.h"
+#include "licq_log.h"
 
 
 //=====Utilities=================================================================

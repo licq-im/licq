@@ -18,21 +18,18 @@
 extern int errno;
 #endif
 
-#include "icq-defines.h"
-#include "user.h"
-#include "constants.h"
-#include "file.h"
-#include "log.h"
-#include "translate.h"
-#include "plugind.h"
-#include "icqpacket.h"
+#include "licq_icq.h"
+#include "licq_user.h"
+#include "licq_constants.h"
+#include "licq_file.h"
+#include "licq_log.h"
+#include "licq_translate.h"
+#include "licq_packets.h"
 #include "licq.h"
+#include "plugind.h"
 #include "support.h"
 
-#include "icqd.h"
-#include "icq-udp.h"
-#include "icq-tcp.h"
-#include "icq-threads.h"
+#include "licq_icqd.h"
 
 //-----CICQDaemon::constructor--------------------------------------------------
 CICQDaemon::CICQDaemon(CLicq *_licq)
@@ -759,7 +756,7 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConn
   m_lxRunningEvents.push_back(e);
   pthread_mutex_unlock(&mutex_runningevents);
 
-  DEBUG_THREADS("[SendExpectEvent] Throwing running event.\n");
+  //DEBUG_THREADS("[SendExpectEvent] Throwing running event.\n");
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_tep, e);
   if (nResult != 0)
   {

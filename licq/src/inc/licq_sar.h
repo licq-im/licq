@@ -7,8 +7,10 @@
 
 #include <stdio.h>
 #include <vector.h>
-#include "file.h"
-#include "pthread_rdwr.h"
+#include <pthread.h>
+
+#include "licq_file.h"
+//#include "pthread_rdwr.h"
 
 #define SAR_AWAY      0
 #define SAR_NA        1
