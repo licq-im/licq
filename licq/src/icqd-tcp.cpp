@@ -970,10 +970,14 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     return false;
   }
 
-  if (nUin == gUserManager.OwnerUin())
+  if (nUin == gUserManager.OwnerUin() || nUin != pSock->Owner())
   {
     char *buf;
-    gLog.Warn("%sTCP message from self (probable spoof):\n%s\n", L_WARNxSTR, packet.print(buf));
+    if(nUin == gUserManager.OwnerUin())
+      gLog.Warn("%sTCP message from self (probable spoof):\n%s\n", L_WARNxSTR, packet.print(buf));
+    else
+      gLog.Warn("%sTCP message from invalid UIN (%ld, expect %ld):\n%s\n",
+                L_WARNxSTR, nUin, pSock->Owner(), packet.print(buf));
     delete buf;
     return false;
   }
