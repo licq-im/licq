@@ -590,15 +590,6 @@ CICQEventTag *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 }
 
 
-//-----icqAuthorize-------------------------------------------------------------
-void CICQDaemon::icqAuthorize(unsigned long)
-{
-  fprintf(stderr, "icqAuthorize(uin): This function is depreciated.\n"
-                  "Use \"icqAuthorizeGrant(uin, message)\" "
-                  "or icqAuthorizeRefuse(uin, message)\" instead.\n");
-}
-
-
 ///-----icqAuthorize-------------------------------------------------------------
 void CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const char *szMessage)
 // authorize a user to add you to their contact list
