@@ -529,7 +529,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
          mleIRCLocal->clear();
       } else {
          // keep IRC updated anyway (encoding should be already properly represented)
-         mleIRCRemote->append(chatname + "> " + mlePaneLocal->textLine(mlePaneLocal->numLines()-1));
+         mleIRCRemote->append(chatname + "> " + mlePaneLocal->textLine(mlePaneLocal->numLines()-2));
       }
 
       chatman->SendNewline();
@@ -760,7 +760,7 @@ void ChatDlg::SwitchToIRCMode()
   mnuMode->setItemChecked(mnuMode->idAt(0), false);
   mnuMode->setItemChecked(mnuMode->idAt(1), true);
   boxPane->hide();
-  mleIRCLocal->setText(mlePaneLocal->textLine(mlePaneLocal->numLines()-1));
+  mleIRCLocal->setText(mlePaneLocal->textLine(mlePaneLocal->numLines()-2));
   mleIRCLocal->GotoEnd();
   mleIRCLocal->setFocus();
   boxIRC->show();
