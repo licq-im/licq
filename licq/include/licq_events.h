@@ -45,7 +45,7 @@ public:
   const char *FirstName()  { return m_szFirstName; }
   const char *LastName()   { return m_szLastName; }
   const char *Email()      { return m_szEmail; }
-  unsigned long More()     { return m_nMore; }
+  int More()     { return m_nMore; }
   char Status()            { return m_nStatus; }
 
   ~CSearchAck();
@@ -58,7 +58,7 @@ protected:
   char *m_szFirstName;
   char *m_szLastName;
   char *m_szEmail;
-  unsigned long m_nMore;
+  int m_nMore;
   char m_nStatus;
 
 friend class CICQDaemon;
