@@ -668,6 +668,12 @@ void ChatDlg::slot_chat()
         break;
       }
 
+      case CHAT_FOCUSxIN:
+      case CHAT_FOCUSxOUT:
+      case CHAT_SLEEPxOFF:
+      case CHAT_SLEEPxON:
+        break; // ignore for now
+
       default:
       {
         gLog.Error("%sInternal Error: invalid command from chat manager (%d).\n",
