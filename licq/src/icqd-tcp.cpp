@@ -205,7 +205,7 @@ unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long 
     // Generic read, gets changed in constructor
     CSrvPacketTcp *s = new CPU_AdvancedMessage(u,
                         ICQ_CMDxTCP_READxAWAYxMSG, 0, false, 0, 0, 0);
-    gLog.Info(tr("%sRequesting auto reponse from %s.\n"), L_SRVxSTR,
+    gLog.Info(tr("%sRequesting auto response from %s.\n"), L_SRVxSTR,
               u->GetAlias());
     result = SendExpectEvent_Server(_szId, _nPPID, s, NULL);
   }
