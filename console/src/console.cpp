@@ -1700,7 +1700,8 @@ void CLicqConsole::InputUrl(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::Input_Line
  *-------------------------------------------------------------------------*/
-char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn)
+char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn,
+	bool bEcho = true)
 {
   // Now check for keys
   switch (cIn)
@@ -1732,7 +1733,8 @@ char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn)
 
   default:
     sz[n++] = (unsigned char)cIn;
-    *winMain << (unsigned char)cIn;
+    if (bEcho)
+      *winMain << (unsigned char)cIn;
 
   } // switch
 
@@ -1875,7 +1877,8 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
           // Register a new UIN
 	  if(data->nState == 1)
 	  {
-	    if((sz = Input_Line(data->szPassword1, data->nPos, cIn)) == NULL)
+	    if((sz = Input_Line(data->szPassword1, data->nPos, cIn, false))
+	        == NULL)
               return;
 	   
 	    // Time to go on to the next state
@@ -1888,7 +1891,8 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 
 	  if(data->nState == 2)
 	  {
-	    if((sz = Input_Line(data->szPassword2, data->nPos, cIn)) == NULL)
+	    if((sz = Input_Line(data->szPassword2, data->nPos, cIn, false))
+               == NULL)
 	      return;
 
 	    if(strcasecmp(data->szPassword1, data->szPassword2) != 0)
@@ -1924,7 +1928,8 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 
           if(data->nState == 11)
 	  {
-	    if((sz = Input_Line(data->szPassword1, data->nPos, cIn)) == NULL)
+	    if((sz = Input_Line(data->szPassword1, data->nPos, cIn, false))
+               == NULL)
 	      return;
 
 	    data->nState = 12;
@@ -1936,7 +1941,8 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 
 	  if(data->nState == 12)
 	  {
-	    if((sz = Input_Line(data->szPassword2, data->nPos, cIn)) == NULL)
+	    if((sz = Input_Line(data->szPassword2, data->nPos, cIn, false))
+               == NULL)
 	      return;
 
 	    // Compare the 2 passwords

@@ -85,7 +85,7 @@ public:
   void InputInfo(int cIn);
   void InputAutoResponse(int cIn);
   char *Input_MultiLine(char *sz, unsigned short &n, int cIn);
-  char *Input_Line(char *sz, unsigned short &n, int cIn);
+  char *Input_Line(char *sz, unsigned short &n, int cIn, bool bEcho = true);
 
   void PrintPrompt();
   void PrintStatus();
