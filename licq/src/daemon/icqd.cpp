@@ -257,6 +257,14 @@ bool CICQDaemon::Start()
   return true;
 }
 
+bool CICQDaemon::SocksEnabled()
+{
+#ifdef USE_SOCKS5
+  return true;
+#else
+  return false;
+#endif
+}
 
 /*------------------------------------------------------------------------------
  * RegisterPlugin
@@ -997,7 +1005,10 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   else if (nCommand != ICQ_CMDxTCP_START &&
            (eResult == EVENT_TIMEDOUT || eResult == EVENT_ERROR) )
   {
-    icqRelogon();
+    if (nCommand == ICQ_CMDxSND_LOGON)
+      m_eStatus = STATUS_OFFLINE_FORCED;
+    else
+      icqRelogon();
   }
 #endif
 }

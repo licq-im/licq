@@ -177,11 +177,7 @@ public:
   unsigned short TCPBasePort() { return m_nTCPBasePort; }
   unsigned short TCPBaseRange() { return m_vbTcpPorts.size(); }
   void SetTCPBasePort(unsigned short p, unsigned short r);
-#ifdef USE_SOCKS5
-  bool SocksEnabled()  { return true; }
-#else
-  bool SocksEnabled()  { return false; }
-#endif
+  bool SocksEnabled();
   const char *SocksServer()  {  return getenv("SOCKS5_SERVER"); }
 
   const char *Terminal();
