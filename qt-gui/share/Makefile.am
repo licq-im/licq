@@ -17,8 +17,8 @@ install-data-local:
 	     $(INSTALL_DATA) licq.desktop $(HOME)/.kde/share/applnk/Internet; \
 	   fi  \
 	fi
-	$(mkinstalldirs) $(sharedir)
-	$(mkinstalldirs) $(sharedir)/qt-gui/locale
+	$(mkinstalldirs) $(DESTDIR)$(sharedir)
+	$(mkinstalldirs) $(DESTDIR)$(sharedir)/qt-gui/locale
 	@for j in qt-gui/skin.*; do \
 	  echo "Installing skin $$j"; \
 	  $(mkinstalldirs) $(DESTDIR)$(sharedir)/$$j; \
