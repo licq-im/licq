@@ -1,15 +1,16 @@
 #ifndef REGISTERUSER_H
 #define REGISTERUSER_H
 
-#include <qwidget.h>
+#include <qwizard.h>
 
 class QGroupBox;
 class QCheckBox;
+class QWidget;
 
 class CICQDaemon;
 class CInfoField;
 
-class RegisterUserDlg : public QWidget
+class RegisterUserDlg : public QWizard
 {
   Q_OBJECT
 public:
@@ -17,14 +18,13 @@ public:
 protected:
   CICQDaemon *server;
   QGroupBox *grpInfo;
-  QPushButton *btnOk, *btnCancel;
   CInfoField *nfoUin, *nfoPassword1, *nfoPassword2;
   QCheckBox *chkExistingUser;
-  virtual void resizeEvent(QResizeEvent *);
-public slots:
-  virtual void hide();
+  QWidget* page1, *page2, *page3;
+
 protected slots:
-  void slot_ok();
+  void accept();
+  void dataChanged();
 signals:
   void signal_done();
 };

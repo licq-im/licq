@@ -394,11 +394,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
    // verify we exist
    if (gUserManager.OwnerUin() == 0)
-   {
-     InformUser(this, tr("You have not yet registered a uin.  Select the\n"
-                         " \"Register\" option from the system menu to\n"
-                        "register an existing uin or create a new one."));
-   }
+     slot_register();
 }
 
 
@@ -460,7 +456,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   {
      if (skin->btnSys.pixmapUpNoFocus == NULL)
      {
-        btnSystem = new CEButton(skin->btnSys.caption == NULL ? 
+        btnSystem = new CEButton(skin->btnSys.caption == NULL ?
                                  tr("System") : QString::fromLocal8Bit(skin->btnSys.caption), this);
      }
      else
@@ -546,7 +542,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 
 
 //-----CMainWindow::CreateUserView---------------------------------------------
-void CMainWindow::CreateUserView(void)
+void CMainWindow::CreateUserView()
 {
   userView = new CUserView(mnuUser, mnuGroup, colInfo, showHeader, gridLines,
                            m_bFontStyles, skin->frame.transparent, m_bShowDividers,
@@ -561,7 +557,7 @@ void CMainWindow::CreateUserView(void)
 }
 
 //-----CMainWindow::destructor--------------------------------------------------
-CMainWindow::~CMainWindow(void)
+CMainWindow::~CMainWindow()
 {
 #ifdef USE_DOCK
   if (licqIcon != NULL) delete licqIcon;
@@ -768,7 +764,7 @@ void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUi
 }
 
 //-----CMainWindow::updateUserWin-----------------------------------------------
-void CMainWindow::updateUserWin(void)
+void CMainWindow::updateUserWin()
 {
   // set the pixmap and color for each user and add them to the view
   userView->setUpdatesEnabled(false);
@@ -794,7 +790,7 @@ void CMainWindow::updateUserWin(void)
 
 /*
 //-----CMainWindow::updateUserWin-----------------------------------------------
-void CMainWindow::updateUserWin(void)
+void CMainWindow::updateUserWin()
 {
   unsigned short i = 0;
 
@@ -829,7 +825,7 @@ void CMainWindow::updateUserWin(void)
 }
 */
 
-void CMainWindow::updateEvents(void)
+void CMainWindow::updateEvents()
 {
   QString szCaption;
 
@@ -1312,7 +1308,7 @@ void CMainWindow::removeUserFromGroup()
 
 
 //-----CMainWindow::saveAllUsers------------------------------------------------
-void CMainWindow::saveAllUsers(void)
+void CMainWindow::saveAllUsers()
 {
    gUserManager.SaveAllUsers();
 }
@@ -1755,7 +1751,7 @@ int MENU_OWNER_PASSWORD = -1;
 
 
 //-----CMainWindow::initMenu----------------------------------------------------
-void CMainWindow::initMenu(void)
+void CMainWindow::initMenu()
 {
    int mnuId;
    mnuStatus = new QPopupMenu(NULL);
@@ -1889,35 +1885,35 @@ void CMainWindow::initMenu(void)
 }
 
 
-void CMainWindow::showSearchUserDlg(void)
+void CMainWindow::showSearchUserDlg()
 {
   SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan);
   searchUserDlg->show();
 }
 
 
-void CMainWindow::showAddUserDlg(void)
+void CMainWindow::showAddUserDlg()
 {
   AddUserDlg *addUserDlg = new AddUserDlg(licqDaemon);
   addUserDlg->show();
 }
 
 
-void CMainWindow::showAuthUserDlg(void)
+void CMainWindow::showAuthUserDlg()
 {
   AuthUserDlg *authUserDlg = new AuthUserDlg(licqDaemon);
   authUserDlg->show();
 }
 
 
-void CMainWindow::showEditGrpDlg(void)
+void CMainWindow::showEditGrpDlg()
 {
   EditGrpDlg *d = new EditGrpDlg;
   connect (d, SIGNAL(signal_updateGroups()), this, SLOT(updateGroups()));
   d->show();
 }
 
-void CMainWindow::showOptionsDlg(void)
+void CMainWindow::showOptionsDlg()
 {
   if (optionsDlg != NULL)
   {
@@ -1929,14 +1925,14 @@ void CMainWindow::showOptionsDlg(void)
   }
 }
 
-void CMainWindow::showSkinBrowser(void)
+void CMainWindow::showSkinBrowser()
 {
   SkinBrowserDlg *d = new SkinBrowserDlg(this);
   d->show();
 }
 
 
-void CMainWindow::showPluginDlg(void)
+void CMainWindow::showPluginDlg()
 {
   (void) new PluginDlg(licqDaemon);
 }
@@ -1947,7 +1943,7 @@ void CMainWindow::slot_doneregister()
 }
 
 
-void CMainWindow::slot_register(void)
+void CMainWindow::slot_register()
 {
   if (gUserManager.OwnerUin() != 0)
   {

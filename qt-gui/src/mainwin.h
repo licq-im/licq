@@ -52,7 +52,7 @@ public:
               CQtLogWindow *theLogWindow,
               const char *skinName, const char *iconsName,
               QWidget *parent = 0, const char *name = 0);
-  virtual ~CMainWindow(void);
+  virtual ~CMainWindow();
 
 protected:
   // Command Tools
@@ -127,9 +127,9 @@ protected:
   // Functions
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
-  void CreateUserView(void);
+  void CreateUserView();
   void resizeEvent (QResizeEvent *);
-  void initMenu(void);
+  void initMenu();
   ICQFunctions *callFunction(int fcn, unsigned long _nUin);
 
   virtual void mouseMoveEvent (QMouseEvent *);
@@ -169,7 +169,7 @@ protected slots:
   void showAddUserDlg();
   void showEditGrpDlg();
   void showSkinBrowser();
-  void showPluginDlg(void);
+  void showPluginDlg();
   void showOptionsDlg();
   void showAuthUserDlg();
   void showSearchUserDlg();

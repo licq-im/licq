@@ -21,6 +21,7 @@
 
 #include <qcheckbox.h>
 #include <qgroupbox.h>
+#include <qvbox.h>
 #include <qlayout.h>
 
 #include "registeruser.h"
@@ -29,55 +30,70 @@
 #include "user.h"
 
 RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *name)
-  : QWidget(parent, name)
+  : QWizard(parent, name, true)
 {
+  page1 = new QLabel(tr("Welcome to the Registration Wizard.\n\n"
+                                    "You can register a new user here, or configure "
+                                    "Licq to use an existing UIN.\n\n"
+                                    "If you are registering a new uin, choose a password and click"
+                                    "\"Finish\".\n"
+                                    "If you already have a uin, then toggle \"Register Existing User\",\n"
+                                    "enter your uin and your password, and click \"OK\"\n\n"
+                                    "Press \"Next\" to proceed."), this);
+
+  addPage(page1, tr("UIN Registration"));
+  setHelpEnabled(page1, false);
+
   server = s;
-  grpInfo = new QGroupBox(this);
-  QGridLayout *lay = new QGridLayout(grpInfo, 4, 2, 5, 5);
+  page2 = new QVBox(this);
 
-  lay->addWidget(new QLabel(tr("Uin:"), grpInfo), 0, 0);
-  nfoUin = new CInfoField(grpInfo, false);
-  lay->addWidget(nfoUin, 0, 1);
-
-  lay->addWidget(new QLabel(tr("Password:"), grpInfo), 1, 0);
-  nfoPassword1 = new CInfoField(grpInfo, false);
-  nfoPassword1->setEchoMode(QLineEdit::Password);
-  lay->addWidget(nfoPassword1, 1, 1);
-
-  lay->addWidget(new QLabel(tr("Verify:"), grpInfo), 2, 0);
-  nfoPassword2 = new CInfoField(grpInfo, false);
-  nfoPassword2->setEchoMode(QLineEdit::Password);
-  lay->addWidget(nfoPassword2, 2, 1);
+  grpInfo = new QGroupBox(2, Horizontal, page2);
 
   chkExistingUser = new QCheckBox(tr("&Register Existing User"), grpInfo);
-  lay->addMultiCellWidget(chkExistingUser, 3, 3, 0, 1);
+  // dummy widget
+  (void) new QWidget(grpInfo);
 
-  btnOk = new QPushButton(tr("&Ok"), this);
-  btnCancel = new QPushButton(tr("&Cancel"), this);
-  connect (btnOk, SIGNAL(clicked()), SLOT(slot_ok()) );
-  connect (btnCancel, SIGNAL(clicked()), SLOT(hide()) );
+  (void) new QLabel(tr("Uin:"), grpInfo);
+
+  nfoUin = new CInfoField(grpInfo, false);
+
+  (void) new QLabel(tr("Password:"), grpInfo);
+
+  nfoPassword1 = new CInfoField(grpInfo, false);
+  nfoPassword1->setEchoMode(QLineEdit::Password);
+
+  (void) new QLabel(tr("Verify:"), grpInfo);
+  nfoPassword2 = new CInfoField(grpInfo, false);
+  nfoPassword2->setEchoMode(QLineEdit::Password);
+
+  addPage(page2, tr("UIN Registration - Step 2"));
+
+  connect (cancelButton(), SIGNAL(clicked()), SLOT(hide()) );
   connect (chkExistingUser, SIGNAL(toggled(bool)), nfoUin, SLOT(setEnabled(bool)));
-
+  connect (nfoPassword2, SIGNAL(textChanged(const QString&)), this, SLOT(dataChanged()));
   chkExistingUser->setChecked(false);
   nfoUin->setEnabled(false);
-  resize(300, 200);
+
+  page3 = new QVBox(this);
+
+  (void) new QLabel(tr("Now click Finish to start the registration process."), page3);
+
+  addPage(page3, tr("UIN Registration - Step 3"));
+
+  setMinimumSize(300, 200);
   setCaption(tr("Licq User Registration"));
+
   show();
-  QString buf = tr("If you are registering a new uin, choose a password and click \"OK\".\n"
-                  "If you already have a uin, then toggle \"Register Existing User\",\n"
-                  "enter your uin and your password, and click \"OK\"");
-  InformUser(this, buf);
 }
 
-void RegisterUserDlg::hide()
+void RegisterUserDlg::dataChanged()
 {
-  QWidget::hide();
-  emit signal_done();
-  delete this;
+  // This is a HACK. It should validate the user Input first and only
+  // set finish button enabled when the data is ok.
+  setFinishEnabled(page3, true);
 }
 
-
-void RegisterUserDlg::slot_ok()
+void RegisterUserDlg::accept()
 {
   const char *szPassword = nfoPassword1->text();
   const char *szPassword2 = nfoPassword2->text();
@@ -113,22 +129,13 @@ void RegisterUserDlg::slot_ok()
   {
     setCaption(tr("User Registration in Progress..."));
     server->icqRegister(szPassword);
-    btnOk->setEnabled(false);
-    btnCancel->setEnabled(false);
+    finishButton()->setEnabled(false);
+    cancelButton()->setEnabled(false);
     nfoUin->setEnabled(false);
     nfoPassword1->setEnabled(false);
     nfoPassword2->setEnabled(false);
     chkExistingUser->setEnabled(false);
   }
-}
-
-
-
-void RegisterUserDlg::resizeEvent(QResizeEvent *)
-{
-  grpInfo->setGeometry(10, 15, width() - 20, height() - 70);
-  btnOk->setGeometry(width() / 2 - 95, height() - 40, 80, 30);
-  btnCancel->setGeometry(width() / 2 + 15, height() - 40, 80, 30);
 }
 
 
