@@ -1,7 +1,7 @@
 #HACK, FIXME this in a clean manner
 libdir = $(prefix)/lib/licq/
 plugindir = $(libdir)
-licq_incdir = @LICQ_INCLUDES@
+licq_incdir = $(top_srcdir)/../../src/inc
 
 
 INCLUDES = -Wall -I$(srcdir) -I$(licq_incdir)
@@ -14,4 +14,4 @@ licq_console_la_SOURCES = console.cpp console_menu.cpp console_print.cpp \
 	console_tab.cpp main.cpp window.cpp
 
 
-licq_console_la_LDFLAGS = -s -module -avoid-version 
+licq_console_la_LDFLAGS = -s -module -avoid-version
