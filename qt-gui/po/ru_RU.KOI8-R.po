@@ -87,10 +87,6 @@ msgstr ""
 msgid "AwayMsgDlg::Set %1 Response for %2"
 msgstr "Установить ответ %1 для %2"
 
-#: filedlg.cpp:225
-msgid "CFileDlg::%1 / %2"
-msgstr ""
-
 #: filedlg.cpp:170
 msgid "CFileDlg::%1/%2"
 msgstr ""
@@ -239,7 +235,7 @@ msgstr "Время:"
 msgid "CFileDlg::Waiting for connection...\n"
 msgstr "Ожидается соединение...\n"
 
-#: ewidgets.cpp:493
+#: ewidgets.cpp:501
 msgid "CFontDialog::Select Font"
 msgstr "Выбор шрифта"
 
@@ -304,9 +300,13 @@ msgstr "Выберите разговор:"
 msgid "CMMSendDlg::&Cancel"
 msgstr "Отменить"
 
-#: mmsenddlg.cpp:95
+#: mmsenddlg.cpp:111
 msgid "CMMSendDlg::&Close"
 msgstr "Закрыть"
+
+#: mmsenddlg.cpp:87
+msgid "CMMSendDlg::Multiple Recipient Contact List"
+msgstr "Список контактов многим адресатам"
 
 #: mmsenddlg.cpp:58
 msgid "CMMSendDlg::Multiple Recipient Message"
@@ -316,15 +316,19 @@ msgstr "Сообщение многим адресатам"
 msgid "CMMSendDlg::Multiple Recipient URL"
 msgstr "URL многим адресатам"
 
-#: mmsenddlg.cpp:133
+#: mmsenddlg.cpp:149
 msgid "CMMSendDlg::Sending mass URL to %1..."
-msgstr "Отправляется массовый URL к %1..."
+msgstr "Отправляется URL к %1..."
 
-#: mmsenddlg.cpp:124
+#: mmsenddlg.cpp:158
+msgid "CMMSendDlg::Sending mass list to %1..."
+msgstr "Отправляется список контактов к %1..."
+
+#: mmsenddlg.cpp:140
 msgid "CMMSendDlg::Sending mass message to %1..."
 msgstr "Отправляется массовое сообщение к %1..."
 
-#: mmsenddlg.cpp:94
+#: mmsenddlg.cpp:110
 msgid "CMMSendDlg::failed"
 msgstr "ошибка"
 
@@ -1075,7 +1079,7 @@ msgstr "Установить"
 
 #: randomchatdlg.cpp:167
 msgid "CSetRandomChatGroupDlg::(none)"
-msgstr ""
+msgstr "(нет)"
 
 #: randomchatdlg.cpp:172
 msgid "CSetRandomChatGroupDlg::20 Something"
@@ -1421,10 +1425,6 @@ msgstr "Licq: Редактор файлов - %1"
 msgid "EditFileDlg::[ Read-Only ]"
 msgstr "[ Только для чтения ]"
 
-#: eventdesc.cpp:38
-msgid "EditGrpDlg::"
-msgstr ""
-
 #: editgrp.cpp:64
 msgid "EditGrpDlg::&Done"
 msgstr "Завершить"
@@ -1432,10 +1432,6 @@ msgstr "Завершить"
 #: editgrp.cpp:32
 msgid "EditGrpDlg::Add"
 msgstr "Добавить"
-
-#: eventdesc.cpp:25
-msgid "EditGrpDlg::Added to Contact List"
-msgstr "Добавлен в список контактов"
 
 #: editgrp.cpp:88
 msgid "EditGrpDlg::All Users"
@@ -1449,29 +1445,9 @@ msgstr ""
 "Вы уверены, что хотите удалить\n"
 "группу '%1'?"
 
-#: eventdesc.cpp:21
-msgid "EditGrpDlg::Authorization Granted"
-msgstr "Авторизация подтверждена"
-
-#: eventdesc.cpp:20
-msgid "EditGrpDlg::Authorization Refused"
-msgstr "Отказ в авторизации"
-
-#: eventdesc.cpp:19
-msgid "EditGrpDlg::Authorization Request"
-msgstr "Запрос авторизации"
-
 #: editgrp.cpp:169
 msgid "EditGrpDlg::Cancel"
 msgstr "Отменить"
-
-#: eventdesc.cpp:15
-msgid "EditGrpDlg::Chat Request"
-msgstr "Запрос разговора"
-
-#: eventdesc.cpp:32
-msgid "EditGrpDlg::Contact List"
-msgstr "Список пользователей"
 
 #: editgrp.cpp:50
 msgid "EditGrpDlg::Default:"
@@ -1489,14 +1465,6 @@ msgstr "Изменение имени группы (Нажмите Enter для сохранения)."
 msgid "EditGrpDlg::Edit"
 msgstr "Изменить имя"
 
-#: eventdesc.cpp:27
-msgid "EditGrpDlg::Email Pager"
-msgstr "E-Mail пейджер"
-
-#: eventdesc.cpp:16
-msgid "EditGrpDlg::File Transfer"
-msgstr "Передача файлов"
-
 #: editgrp.cpp:24
 msgid "EditGrpDlg::Groups"
 msgstr "Группы"
@@ -1505,17 +1473,9 @@ msgstr "Группы"
 msgid "EditGrpDlg::Licq - Edit Groups"
 msgstr "Licq - Редактирование групп"
 
-#: eventdesc.cpp:14
-msgid "EditGrpDlg::Message"
-msgstr "Сообщение"
-
 #: editgrp.cpp:124
 msgid "EditGrpDlg::Ok"
 msgstr "Да"
-
-#: eventdesc.cpp:13
-msgid "EditGrpDlg::Plugin Event"
-msgstr "Событие модуля"
 
 #: editgrp.cpp:33
 msgid "EditGrpDlg::Remove"
@@ -1537,18 +1497,6 @@ msgstr "Сдвинуть вверх"
 msgid "EditGrpDlg::The default group to start up in."
 msgstr "Группа по умолчанию при старте"
 
-#: eventdesc.cpp:17
-msgid "EditGrpDlg::URL"
-msgstr ""
-
-#: eventdesc.cpp:39
-msgid "EditGrpDlg::User Info"
-msgstr "Информация о пользователе"
-
-#: eventdesc.cpp:26
-msgid "EditGrpDlg::Web Panel"
-msgstr "Web-панель"
-
 #: editgrp.cpp:105
 msgid "EditGrpDlg::noname"
 msgstr "новая"
@@ -1557,11 +1505,67 @@ msgstr "новая"
 msgid "Event:: (cancelled)"
 msgstr "(отменено)"
 
+#: eventdesc.cpp:38
+msgid "Event::"
+msgstr ""
+
+#: eventdesc.cpp:25
+msgid "Event::Added to Contact List"
+msgstr "Добавлен в список контактов"
+
+#: eventdesc.cpp:21
+msgid "Event::Authorization Granted"
+msgstr "Авторизация подтверждена"
+
+#: eventdesc.cpp:20
+msgid "Event::Authorization Refused"
+msgstr "Отказ в авторизации"
+
+#: eventdesc.cpp:19
+msgid "Event::Authorization Request"
+msgstr "Запрос авторизации"
+
+#: eventdesc.cpp:15
+msgid "Event::Chat Request"
+msgstr "Запрос разговора"
+
+#: eventdesc.cpp:32
+msgid "Event::Contact List"
+msgstr "Список контактов"
+
+#: eventdesc.cpp:27
+msgid "Event::Email Pager"
+msgstr ""
+
+#: eventdesc.cpp:16
+msgid "Event::File Transfer"
+msgstr "Передача файла(ов)"
+
+#: eventdesc.cpp:14
+msgid "Event::Message"
+msgstr "Сообщение"
+
+#: eventdesc.cpp:13
+msgid "Event::Plugin Event"
+msgstr "Событие модуля"
+
+#: eventdesc.cpp:17
+msgid "Event::URL"
+msgstr ""
+
 #: eventdesc.cpp:48
 msgid "Event::Unknown Event"
 msgstr "Неизвестное событие"
 
-#: mainwin.cpp:3035
+#: eventdesc.cpp:39
+msgid "Event::User Info"
+msgstr "Информация о пользователе"
+
+#: eventdesc.cpp:26
+msgid "Event::Web Panel"
+msgstr ""
+
+#: mainwin.cpp:3034
 msgid "HintsDlg::&Close"
 msgstr "Закрыть"
 
@@ -1595,8 +1599,7 @@ msgid "HintsDlg::"
 "   For example in the send tab of the user function window.</li>"
 "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
 "   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
-msgstr ""
-"<h2>Советы по использованию<br> QT-модуля для Licq</h2><br><hr><br>"
+msgstr "<h2>Советы по использованию<br> QT-модуля для Licq</h2><br><hr><br>"
 "<ul>"
 "<li>Статус можно изменить нажатием правой кнопки мыши на поле статуса./li>"
 "<li>Авто-ответ можно изменить двойным щелчком на поле отображения статуса.</li>"
@@ -1626,7 +1629,7 @@ msgstr ""
 "    в качестве параметров в <b>команде на событие</b>, <b>авто-ответах</b>"
 "    и строчке запуска  <b>утилит</b>:\n"
 
-#: mainwin.cpp:3029
+#: mainwin.cpp:3027
 msgid "HintsDlg::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
 msgstr "<hr><p> Для получения более подробной информации используйте "
 "web-сайт (<tt>http://www.licq.org</tt>) или его русское зеркало "
@@ -1706,6 +1709,10 @@ msgid "KeyRequestDlg::"
 "with Diffie-Hellman key exchange and\n"
 "the TLS version 1 protocol.\n\n"
 msgstr ""
+"Защищенное соединение будет установлено\n"
+"при помощи SSL с использованием алгоритма\n"
+"Диффи-Хеллмана для обмена ключами\n"
+"и протокола TLS версии 1.\n\n"
 
 #: keyrequestdlg.cpp:46
 msgid "KeyRequestDlg::"
@@ -1715,7 +1722,7 @@ msgid "KeyRequestDlg::"
 msgstr ""
 "Удаленная сторона использует Licq v0.%1, но без\n"
 "встроенной поддержки защищенных соединений.\n"
-"Вероятно установить защищенное соединения не удастся.\n"
+"Вероятно установить защищенное соединение не удастся.\n"
 
 #: keyrequestdlg.cpp:41
 msgid "KeyRequestDlg::The remote uses Licq v0.%1/SSL."
@@ -1730,7 +1737,7 @@ msgstr ""
 "Это работает только с другими Licq клиентами \n"
 "версии старше, чем 0.85. Удаленная сторона не \n"
 "использует подобного клиента.\n"
-"Это работать не будет."
+"Соединение установлено не будет."
 
 #: messagebox.cpp:146
 msgid "MsgView::D"
@@ -2570,63 +2577,71 @@ msgstr "неудачно"
 msgid "PasswordDlg::timed out"
 msgstr "время вышло"
 
-#: plugindlg.cpp:48
+#: plugindlg.cpp:50
 msgid "PluginDlg::Available"
 msgstr "Доступные"
 
-#: plugindlg.cpp:31
+#: plugindlg.cpp:41
+msgid "PluginDlg::Configure"
+msgstr "Настройка"
+
+#: plugindlg.cpp:30
 msgid "PluginDlg::Description"
 msgstr "Описание"
 
-#: plugindlg.cpp:40
+#: plugindlg.cpp:39
 msgid "PluginDlg::Details"
 msgstr "Подробности"
 
-#: plugindlg.cpp:36
+#: plugindlg.cpp:35
 msgid "PluginDlg::Disable"
 msgstr "Запретить"
 
-#: plugindlg.cpp:59
+#: plugindlg.cpp:61
 msgid "PluginDlg::Done"
 msgstr "Завершить"
 
-#: plugindlg.cpp:34
+#: plugindlg.cpp:33
 msgid "PluginDlg::Enable"
 msgstr "Разрешить"
 
-#: plugindlg.cpp:27
+#: plugindlg.cpp:26
 msgid "PluginDlg::Id"
 msgstr ""
 
-#: plugindlg.cpp:129
+#: plugindlg.cpp:137
 msgid "PluginDlg::Licq Plugin %1 %2\n"
 msgstr "Licq модуль %1 %2\n"
 
-#: plugindlg.cpp:52
+#: plugindlg.cpp:54
 msgid "PluginDlg::Load"
 msgstr "Загрузить"
 
-#: plugindlg.cpp:24
+#: plugindlg.cpp:23
 msgid "PluginDlg::Loaded"
 msgstr "Загруженные"
 
-#: plugindlg.cpp:28
+#: plugindlg.cpp:27
 msgid "PluginDlg::Name"
 msgstr "Имя"
 
-#: plugindlg.cpp:56
+#: plugindlg.cpp:178
+msgid "PluginDlg::Plugin %1 has no configuration file"
+msgstr "Модуль %1 не использует файл настройки"
+
+#: plugindlg.cpp:58
 msgid "PluginDlg::Refresh"
 msgstr "Обновить"
 
-#: plugindlg.cpp:30
+#: plugindlg.cpp:29
 msgid "PluginDlg::Status"
 msgstr "Статус"
 
-#: plugindlg.cpp:38
+#: plugindlg.cpp:37
 msgid "PluginDlg::Unload"
 msgstr "Выгрузить"
 
-#: plugindlg.cpp:29
+#: plugindlg.cpp:28
 msgid "PluginDlg::Version"
 msgstr "Версия"
 
@@ -2654,15 +2669,15 @@ msgstr "Ошибка открытия файла:\n%1"
 msgid "RegisterUserDlg::&Register Existing User"
 msgstr "Зарегистрировать существующего пользователя"
 
-#: registeruser.cpp:141
+#: registeruser.cpp:139
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
 msgstr "Неверный UIN. Попробуйте еще раз."
 
-#: registeruser.cpp:80
+#: registeruser.cpp:78
 msgid "RegisterUserDlg::Licq User Registration"
 msgstr "Licq: Регистрация пользователя"
 
-#: registeruser.cpp:124
+#: registeruser.cpp:122
 msgid "RegisterUserDlg::"
 "Now please click 'Finish' to start "
 "the registration process."
@@ -2670,7 +2685,7 @@ msgstr ""
 "Теперь нажмите  'Закончить' для "
 "начала регистрации."
 
-#: registeruser.cpp:118
+#: registeruser.cpp:116
 msgid "RegisterUserDlg::"
 "Now please press the 'Back' button "
 "and try again."
@@ -2682,24 +2697,24 @@ msgstr ""
 msgid "RegisterUserDlg::Password:"
 msgstr "Пароль:"
 
-#: registeruser.cpp:107
+#: registeruser.cpp:105
 msgid "RegisterUserDlg::Please enter your password in both input fields."
 msgstr "пожалуйста введите пароль в оба поля ввода."
 
-#: registeruser.cpp:148
+#: registeruser.cpp:146
 msgid "RegisterUserDlg::Registered succesfully.  Now log on and update your personal info."
 msgstr "Регистрация прошла успешно. "
 "Теперь войдите в сеть и обновите информацию о себе."
 
-#: registeruser.cpp:112
+#: registeruser.cpp:110
 msgid "RegisterUserDlg::The passwords don't seem to match."
 msgstr "Пароли не совпадают."
 
-#: registeruser.cpp:58
+#: registeruser.cpp:56
 msgid "RegisterUserDlg::UIN Registration - Step 2"
 msgstr "Регистрация UIN - Шаг 2"
 
-#: registeruser.cpp:73
+#: registeruser.cpp:71
 msgid "RegisterUserDlg::UIN Registration - Step 3"
 msgstr "Регистрация UIN - Шаг 3"
 
@@ -2711,11 +2726,11 @@ msgstr "Регистрация UIN"
 msgid "RegisterUserDlg::Uin:"
 msgstr ""
 
-#: registeruser.cpp:153
+#: registeruser.cpp:151
 msgid "RegisterUserDlg::User Registration in Progress..."
 msgstr "Производится регистрация пользователя..."
 
-#: registeruser.cpp:53
+#: registeruser.cpp:52
 msgid "RegisterUserDlg::Verify:"
 msgstr "Проверить:"
 
@@ -2740,7 +2755,7 @@ msgstr ""
 "введите ваш UIN и пароль и нажмите \"Да\"\n\n"
 "Нажмите \"Дальше\" для продолжения."
 
-#: registeruser.cpp:101
+#: registeruser.cpp:99
 msgid "RegisterUserDlg::"
 "You need to enter a valid UIN when you "
 "try to register an existing user. "
@@ -3050,11 +3065,11 @@ msgstr "Подробнее"
 msgid "UserInfoDlg::&OK"
 msgstr "Да"
 
-#: userinfodlg.cpp:984
+#: userinfodlg.cpp:986
 msgid "UserInfoDlg::&Save"
 msgstr "Сохранить"
 
-#: userinfodlg.cpp:983
+#: userinfodlg.cpp:985
 msgid "UserInfoDlg::&Update"
 msgstr "Обновить"
 
@@ -3158,7 +3173,7 @@ msgstr "Третий язык:"
 msgid "UserInfoDlg::Licq - Info "
 msgstr "Licq - Информация "
 
-#: userinfodlg.cpp:1103
+#: userinfodlg.cpp:1105
 msgid "UserInfoDlg::Local"
 msgstr "локальную"
 
@@ -3170,7 +3185,7 @@ msgstr "Мужской"
 msgid "UserInfoDlg::Name:"
 msgstr "Имя:"
 
-#: userinfodlg.cpp:991
+#: userinfodlg.cpp:993
 msgid "UserInfoDlg::Nex&t"
 msgstr "Дальше"
 
@@ -3186,7 +3201,7 @@ msgstr "Старый Email:"
 msgid "UserInfoDlg::Online:"
 msgstr "В сети:"
 
-#: userinfodlg.cpp:992
+#: userinfodlg.cpp:994
 msgid "UserInfoDlg::P&rev"
 msgstr "Назад"
 
@@ -3202,7 +3217,7 @@ msgstr "Должность:"
 msgid "UserInfoDlg::Rever&se"
 msgstr "В обратном порядке"
 
-#: userinfodlg.cpp:1103
+#: userinfodlg.cpp:1105
 msgid "UserInfoDlg::Server"
 msgstr "На сервере"
 
@@ -3238,15 +3253,15 @@ msgstr "Неизвестно"
 msgid "UserInfoDlg::Unspecified"
 msgstr "Не указано"
 
-#: userinfodlg.cpp:1103
+#: userinfodlg.cpp:1105
 msgid "UserInfoDlg::Update local or server information?"
 msgstr "Обновить локальную информацию или на сервере?"
 
-#: userinfodlg.cpp:1105
+#: userinfodlg.cpp:1107
 msgid "UserInfoDlg::Updating server..."
 msgstr "Обновляется на сервере..."
 
-#: userinfodlg.cpp:1110
+#: userinfodlg.cpp:1112
 msgid "UserInfoDlg::Updating..."
 msgstr "Обновляется..."
 
@@ -3254,7 +3269,7 @@ msgstr "Обновляется..."
 msgid "UserInfoDlg::Zip:"
 msgstr "Индекс:"
 
-#: userinfodlg.cpp:930
+#: userinfodlg.cpp:932
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -3264,7 +3279,7 @@ msgstr ""
 "[<font color=\"%2\">Отправленные</font>] "
 "%3 из %4 подходящих"
 
-#: userinfodlg.cpp:922
+#: userinfodlg.cpp:924
 msgid "UserInfoDlg::"
 "[<font color=\"%1\">Received</font>] "
 "[<font color=\"%2\">Sent</font>] "
@@ -3274,15 +3289,15 @@ msgstr ""
 "[<font color=\"%2\">Отправленные</font>] "
 "с %3 по %4 из %5"
 
-#: userinfodlg.cpp:1141
+#: userinfodlg.cpp:1143
 msgid "UserInfoDlg::done"
 msgstr "готово"
 
-#: userinfodlg.cpp:1150
+#: userinfodlg.cpp:1152
 msgid "UserInfoDlg::error"
 msgstr "ошибка"
 
-#: userinfodlg.cpp:1144
+#: userinfodlg.cpp:1146
 msgid "UserInfoDlg::failed"
 msgstr "неудачно"
 
@@ -3294,11 +3309,11 @@ msgstr "от"
 msgid "UserInfoDlg::server"
 msgstr "через сервер"
 
-#: userinfodlg.cpp:1147
+#: userinfodlg.cpp:1149
 msgid "UserInfoDlg::timed out"
 msgstr "вышло время"
 
-#: userinfodlg.cpp:894
+#: userinfodlg.cpp:895
 msgid "UserInfoDlg::to"
 msgstr "к"
 
