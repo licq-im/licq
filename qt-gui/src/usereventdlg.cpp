@@ -1515,6 +1515,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 {
   grpMR = NULL;
   tmpWidgetWidth = 0;
+  m_bGrpMRIsVisible = false;
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
@@ -1616,6 +1617,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 {
   grpMR = NULL;
   tmpWidgetWidth = 0;
+  m_bGrpMRIsVisible = false;
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
@@ -1959,19 +1961,17 @@ void UserSendCommon::massMessageToggled(bool b)
       lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
     }
     grpMR->show();
+    m_bGrpMRIsVisible = true;
   }
   else
   {
     chkMass->setChecked(false);
-    if (grpMR != NULL 
-#if QT_VERSION >= 300
-        && grpMR->isShown() /* only resize when really necessary! */ 
-#endif
-    )
+    if (grpMR != NULL && m_bGrpMRIsVisible ) /* only resize if really necessary! */
     {
       int grpMRWidth = grpMR->width();
       
       grpMR->hide();
+      m_bGrpMRIsVisible = false;
 
       // resize the widget to it's origin width.
       // This is a workaround and not perfect, but resize() does not

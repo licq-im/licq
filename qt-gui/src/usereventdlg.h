@@ -262,6 +262,9 @@ public slots:
 
 private:
   int tmpWidgetWidth;
+  // In QT >= 3.1 we can use QWidget::isShown(),
+  // but for now we implement it ourselves:
+  bool m_bGrpMRIsVisible; // Remembers visibility of grpMR Widget
 };
 
 
