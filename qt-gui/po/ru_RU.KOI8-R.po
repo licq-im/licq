@@ -1839,7 +1839,7 @@ msgstr "Авто-отошел:"
 
 #: optionsdlg.cpp:497
 msgid "OptionsDlg::Auto Close Function Window"
-msgstr "Авто-закрытие функциональных окон"
+msgstr "Авто-закрытие\nфункциональных окон"
 
 #: optionsdlg.cpp:858
 msgid "OptionsDlg::Auto Logon:"
@@ -1855,11 +1855,11 @@ msgstr "Автоматически"
 
 #: optionsdlg.cpp:500
 msgid "OptionsDlg::Auto-Popup Incoming Msg"
-msgstr "Авто-показ приходящих сообщений"
+msgstr "Авто-показ\nприходящих сообщений"
 
 #: optionsdlg.cpp:504
 msgid "OptionsDlg::Auto-Raise on Incoming Msg"
-msgstr "Авто-всплытие при приходе сообщения"
+msgstr "Авто-всплытие\nпри приходе сообщения"
 
 #: optionsdlg.cpp:859
 msgid "OptionsDlg::Automatically log on when first starting up."
@@ -2023,7 +2023,7 @@ msgstr "Мерцание для пришедших событий"
 
 #: optionsdlg.cpp:488
 msgid "OptionsDlg::Flash Urgent Events"
-msgstr "Мерцание для событий с флагом \"Срочно\""
+msgstr "Мерцание для событий\nс флагом \"Срочно\""
 
 #: optionsdlg.cpp:570
 msgid "OptionsDlg::Font used in message editor etc."
@@ -2329,7 +2329,7 @@ msgstr "Показывать разделители пользователей"
 
 #: optionsdlg.cpp:494
 msgid "OptionsDlg::Show group name if no messages"
-msgstr "Показывать название группы при отсутствии сообщений"
+msgstr "Показывать название группы\nпри отсутствии сообщений"
 
 #: optionsdlg.cpp:466
 msgid "OptionsDlg::"
@@ -2349,7 +2349,7 @@ msgstr ""
 
 #: optionsdlg.cpp:468
 msgid "OptionsDlg::Sort Online Users by Status"
-msgstr "Сортировать пользователей, которые в сети по статусу"
+msgstr "Сортировать пользователей,\nкоторые в сети, по статусу"
 
 #: optionsdlg.cpp:469
 msgid "OptionsDlg::Sort all online users by their actual status"
