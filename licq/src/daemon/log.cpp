@@ -15,7 +15,7 @@ extern int errno;
 
 CLogServer gLog;
 
-const char *COLOR_NORMAL = "[37m";
+const char *COLOR_NORMAL = "[30m";
 const char *COLOR_PREFIX = "[32m";
 const char *COLOR_INFO = COLOR_NORMAL;
 const char *COLOR_UNKNOWN = "[35m";
