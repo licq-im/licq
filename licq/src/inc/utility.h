@@ -1,5 +1,5 @@
-#ifndef PLUGIN_H
-#define PLUGIN_H
+#ifndef UTILITY_H
+#define UTILITY_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"

@@ -1,6 +1,6 @@
 // ICQ definitions:
-#ifndef FEATURES_H
-#define FEATURES_H
+#ifndef CONSTANTS_H
+#define CONSTANTS_H
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
