@@ -110,7 +110,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
   connect(btnApplySkin, SIGNAL(clicked()), this, SLOT(slot_applyskin()));
   connect(btnEditSkin, SIGNAL(clicked()), this, SLOT(slot_editskin()));
   connect(btnApplyIcons, SIGNAL(clicked()), this, SLOT(slot_applyicons()));
-  connect(btnDone, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(btnDone, SIGNAL(clicked()), this, SLOT(close()));
 }
 
 
