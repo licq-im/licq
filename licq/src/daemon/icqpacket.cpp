@@ -407,14 +407,14 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   char temp[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0x98, 0 };
 #elif ICQ_VERSION == 5
 /* micq
-  unsigned long nUnknown = 0xD5;
+  unsigned long nUnknown = 0xD5; // client does not support chat/file transfer
   char temp[20] = { 0x00, 0x00, 0x00, 0x00,
                     0xEC, 0x01, 0x2C, 0x82,
                     0x50, 0x00, 0x00, 0x00,
                     0x03, 0x00, 0x00, 0x00,
                     0x00, 0x16, 0xD6, 0x36 };*/
 /* kxicq
-  unsigned long nUnknown = 0x78;
+  unsigned long nUnknown = 0x78; // client is offline
   char temp[28] = { 0x00, 0x00, 0x00, 0x00,
                     0x20, 0x00, 0x3F, 0x00,
                     0x50, 0x00, 0x00, 0x00,
@@ -423,7 +423,7 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
                     0x05, 0x0E, 0xC1, 0x37,
                     0x00, 0x00, 0x00, 0x00 };*/
 
-  unsigned long nUnknown = 0x78;
+  unsigned long nUnknown = 0x98;
 
   if (!s_bRegistered)
   {
@@ -469,10 +469,11 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   // Unknown bits
   buffer->PackUnsignedLong(0x00000000); // always zero
   buffer->PackUnsignedLong(0x003F0020); // totally unknown
+  //buffer->PackUnsignedLong(0x822C01EC);
   buffer->PackUnsignedLong(0x00000050); // always the same
   buffer->PackUnsignedLong(0x00000003); // always the same
   buffer->PackUnsignedLong(0x385BFAAC); // timestamp of something (build date?)
-  buffer->PackUnsignedLong(0x00000000); // always zero
+  buffer->PackUnsignedLong(0x00000000); // totally unknown
   buffer->PackUnsignedLong(0x00000000); // always zero
 #endif
 }
