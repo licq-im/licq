@@ -39,6 +39,12 @@ CRandomChatDlg::CRandomChatDlg(CMainWindow *_mainwin, CICQDaemon *s,
   lay->addWidget(btnCancel, 1, 3);
   lay->setColStretch(4, 2);
 
+  int bw = 75;
+  bw = QMAX(bw, btnOk->sizeHint().width());
+  bw = QMAX(bw, btnCancel->sizeHint().width());
+  btnOk->setFixedWidth(bw);
+  btnCancel->setFixedWidth(bw);
+
   connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
   connect(btnCancel, SIGNAL(clicked()), SLOT(hide()));
 
