@@ -122,7 +122,8 @@ sub process_newheader
       $subject = $_;
       $subject =~ s/.*: //;
     }
-    elsif (/.* from .* received ... ... .. ..:.. 199.:/)
+    elsif (/.* from .* received ... ... .. ..:.. 199.:/ ||
+           /.* from .* received ... ... .. ..:.. 200.:/)
     {
       print_msg();    
       $dir = "R";
@@ -134,7 +135,8 @@ sub process_newheader
       $date =~ s/.* from .* received //;
       chop($date);
     }
-    elsif (/.* from .* sent ... ... .. ..:.. 199.:/)
+    elsif (/.* from .* sent ... ... .. ..:.. 199.:/ ||
+           /.* from .* sent ... ... .. ..:.. 200.:/)
     {
       print_msg();    
 
