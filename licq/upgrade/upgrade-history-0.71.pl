@@ -25,6 +25,10 @@ my $USER_INFO;
 my $USER_LIST;
 my $USER_OUTPUT;
 
+my %month =
+("Jan",1,"Feb",2,"Mar",3,"Apr",4,"May",5,"Jun",6,
+ "Jul",7,"Aug",8,"Sep",9,"Oct",10,"Nov",11,"Dec",12 );
+
 # Check user's version to avoid problems - implamented by security@solarweb.com
 #my $version = `licq -h|head -1|awk '{print \$3}'`;
 #chop($version) if $version =~ /\n$/;
@@ -174,7 +178,11 @@ sub print_msg
 
 sub date_to_timestamp
 {
-  $timestamp = `date --date '$date' +\%s`;
+  #$timestamp = `date --date '$date' +\%s`;
+   my ($dw,$m,$d,$h,$min,$y) =
+      ($date =~ /(\w{3}) (\w{3})\s+(\d+) (\d+):(\d+) (\d+)/ );
+  $timestamp = timelocal( 0, $min, $h, $d, $month{$m}-1, $y-1900 );
+
 }
 
 sub subject_to_cmd
