@@ -96,7 +96,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
            this, SLOT(slot_userupdated(CICQSignal *)));
 
-  mainWidget = new QVGroupBox(this);
+  mainWidget = new QGroupBox(this);
   top_lay->addWidget(mainWidget);
 }
 
@@ -668,7 +668,6 @@ UserSendCommon::~UserSendCommon()
 {
 }
 
-
 //-----UserSendCommon::massMessageToggled------------------------------------
 void UserSendCommon::massMessageToggled(bool b)
 {
@@ -862,8 +861,8 @@ void UserSendCommon::cancelSend()
   server->CancelEvent(icqEventTag);
   delete icqEventTag;
   icqEventTag = NULL;
+  btnSend->setEnabled(true);
   btnCancel->setText(tr("&Close"));
-
   setCursor(arrowCursor);
 }
 
@@ -890,8 +889,6 @@ void UserSendCommon::UserUpdated(CICQSignal *sig, ICQUser *u)
     }
   }
 }
-
-
 
 
 //=====UserSendMsgEvent======================================================
