@@ -1062,12 +1062,27 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
         if (u != NULL && u->NewMessages() > 0)
         {
-          gUserManager.DropUser(u);
           ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
           unsigned short s = o->Status();
           gUserManager.DropOwner();
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
-            callFunction(mnuUserView, nUin);
+          {
+            int fcn = mnuUserView;
+            if (m_bMsgChatView)
+            {
+              for (unsigned short i = 0; i < u->NewMessages(); i++)
+                if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
+                {
+                  fcn = mnuUserSendMsg;
+                  break;
+                }
+            }
+           
+            gUserManager.DropUser(u); 
+            callFunction(fcn, nUin);
+          }
+          else
+            gUserManager.DropUser(u);
         }
         else
         {
