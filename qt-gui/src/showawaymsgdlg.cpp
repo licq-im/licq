@@ -58,7 +58,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   lay->addSpacing(30);
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  chkShowAgain->setChecked(u->ShowAwayMsg());
+//  chkShowAgain->setChecked(u->ShowAwayMsg());
 
   setCaption(QString(tr("%1 Response for %2")).arg(u->StatusStr()).arg(u->GetAlias()));
 
