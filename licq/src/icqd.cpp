@@ -511,14 +511,12 @@ void CICQDaemon::ResetStats()
 
 pthread_t *CICQDaemon::Shutdown()
 {
-  static pthread_t *thread_shutdown = NULL;
-  if (m_bShuttingDown) return(thread_shutdown);
-  thread_shutdown = (pthread_t *)malloc(sizeof(pthread_t));
+  if (m_bShuttingDown) return(&thread_shutdown);
   m_bShuttingDown = true;
   // Small race condition here if multiple plugins call shutdown at the same time
   SaveUserList();
-  pthread_create (thread_shutdown, NULL, &Shutdown_tep, this);
-  return (thread_shutdown);
+  pthread_create (&thread_shutdown, NULL, &Shutdown_tep, this);
+  return (&thread_shutdown);
 }
 
 

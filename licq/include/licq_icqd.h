@@ -360,7 +360,8 @@ protected:
 	std::list <ICQEvent *> m_lxSendQueue_Server;
 	pthread_mutex_t mutex_sendqueue_server;
   pthread_t thread_monitorsockets,
-            thread_ping;
+            thread_ping,
+            thread_shutdown;
 
   pthread_cond_t cond_serverack;
   pthread_mutex_t mutex_serverack;
