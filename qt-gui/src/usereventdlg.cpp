@@ -371,8 +371,9 @@ void UserEventTabDlg::gotTyping(ICQUser *u, int nConvoId)
   for (int index = 0; index < tabw->count(); index++)
   {
     UserEventCommon *tab = static_cast<UserEventCommon*>(tabw->page(index));
-    if (tab->FindUserInConvo(u->IdString()) &&
-        tab->ConvoId() == nConvoId && tab->PPID() == u->PPID())
+    if ( ((u->PPID() == MSN_PPID && tab->PPID() == u->PPID()) &&
+          tab->FindUserInConvo(u->IdString()) && tab->ConvoId() == nConvoId) ||
+         (tab->FindUserInConvo(u->IdString()) && tab->PPID() == u->PPID()))
     {
       tab->gotTyping(u->GetTyping());
     }
