@@ -197,17 +197,42 @@ void CICQDaemon::icqRemoveGroup(const char *_szName)
 }
 
 //-----icqRenameGroup----------------------------------------------------------
-void CICQDaemon::icqRenameGroup(unsigned short _nGSID)
+void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
 {
   if (!UseServerContactList() || !_nGSID) return;
 
   pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(
-    strdup( "" ));
+  m_lszModifyServerUsers.push_back(strdup(_szNewName));
   pthread_mutex_unlock(&mutex_modifyserverusers);
 
-  CSrvPacketTcp *pUpdate = new CPU_UpdateGroupToServerList(_nGSID);
-  gLog.Info("%sRenaming group with id %d...\n", L_SRVxSTR, _nGSID);
+  CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(_szNewName,
+    ICQ_ROSTxGROUP, _nGSID);
+  gLog.Info("%sRenaming group with id %d to %s...\n", L_SRVxSTR, _nGSID,
+    _szNewName);
+  SendExpectEvent_Server(0, pUpdate, NULL);
+}
+
+//-----icqRenameUser------------------------------------------------------------
+void CICQDaemon::icqRenameUser(unsigned long _nUin, const char *_szOldAlias)
+{
+  if (!UseServerContactList()) return;
+
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+  if (u == NULL) return;
+  char *szNewAlias = u->GetAlias();
+  gUserManager.DropUser(u);
+
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", _nUin);
+  szUin[12] = '\0';
+
+  pthread_mutex_lock(&mutex_modifyserverusers);
+  m_lszModifyServerUsers.push_back(strdup(szUin));
+  pthread_mutex_unlock(&mutex_modifyserverusers);
+
+  CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(szUin, ICQ_ROSTxNORMAL);
+  gLog.Info("%sRenaming %s (%lu) to %s...\n", L_SRVxSTR, _szOldAlias, _nUin,
+            szNewAlias);
   SendExpectEvent_Server(0, pUpdate, NULL);
 }
 
@@ -1418,7 +1443,8 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       junk1 = msg.UnpackUnsignedLongBE();
       junk1 = msg.UnpackUnsignedLongBE();
       junk2 = msg.UnpackUnsignedShortBE();
-     // if (u->ClientTimestamp() != timestamp || u->Version() != tcpVersion) {
+
+      if (u->ClientTimestamp() != timestamp || u->Version() != tcpVersion) {
         if ((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
           gLog.Info("%s%s (%ld) changed connection info: v%01x [Licq %s/SSL].\n",
                     L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F,
@@ -1433,7 +1459,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         else
           gLog.Info("%s%s (%ld) changed connection info: v%01x.\n",
                     L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F);
-      //}
+      }
 
       if (intIP)
       {
@@ -2248,8 +2274,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               u->SetSID(nID);
               u->SetGSID(nTag);
 
-              //if (szNewName)
-              //  u->SetAlias(szNewName);
+              if (szNewName)
+                u->SetAlias(szNewName, false);
 
               if (nType == ICQ_ROSTxINVISIBLE)  u->SetInvisibleList(true);
               else if (nType == ICQ_ROSTxVISIBLE) u->SetVisibleList(true);
@@ -2275,9 +2301,17 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           {
             if (szName[0] != '\0')
             {
-              // Add the group, if it already exists change the tag on this grp
-              if (!gUserManager.AddGroup(szName, nTag))
-                gUserManager.ModifyGroupID(szName, nTag);
+              // Rename the group if we have it already or else add it
+              unsigned short nGroup = gUserManager.GetGroupFromID(nTag);
+              if (nGroup == gUserManager.NumGroups())
+              {
+                if (!gUserManager.AddGroup(szName, nTag))
+                  gUserManager.ModifyGroupID(szName, nTag);
+              }
+              else
+              {
+                gUserManager.RenameGroup(nGroup, szName, false);
+              }
             }
             break;
           }
@@ -2423,11 +2457,14 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               pthread_mutex_unlock(&mutex_modifyserverusers);
               gUserManager.UnlockGroupList();
 
-              pReply = new CPU_UpdateGroupToServerList(e->ExtraInfo());
+              pReply = new CPU_UpdateToServerList(szGroupName, ICQ_ROSTxGROUP,
+                                                  e->ExtraInfo());
               gLog.Info("%sUpdating group %s.\n", L_SRVxSTR, szGroupName);
               SendExpectEvent_Server(0, pReply, NULL);
             }
 
+            ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+            unsigned short nSSCount = o->GetSSCount();
             // Skip the call to gUserManager.AddUserToGroup because
             // that will send a message out to the server AGAIN
             if (e->SubType() == ICQ_SNACxLIST_ROSTxADD)
@@ -2439,8 +2476,15 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                               e->ExtraInfo()));
                 gUserManager.DropUser(u);
               }
+              o->SetSSCount(++nSSCount);
             }
-
+            else
+            {
+              if (nSSCount > 0)
+                o->SetSSCount(--nSSCount);
+            }
+            gUserManager.DropOwner();
+	    
             break;
           }
 
@@ -2449,12 +2493,25 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             if (bHandled == false)
             {
               bHandled = true;
-              pReply = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-                                             ICQ_SNACxLIST_ROSTxEDITxEND);
-              gLog.Info("%sGroup %s updated successfully.\n", L_SRVxSTR,
-                        szPending);
-              SendEvent_Server(pReply);
+              if (nUin == 0)
+              {
+                pReply = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+                                               ICQ_SNACxLIST_ROSTxEDITxEND);
+                gLog.Info("%sGroup %s updated successfully.\n", L_SRVxSTR,
+                          szPending);
+                SendEvent_Server(pReply);
+              }
+              else
+              {
+                gLog.Info("%sUser %s updated successfully.\n", L_SRVxSTR,
+                          szPending);
+              }
             }
+
+            ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+            o->SetSSTime(time(NULL));
+            gUserManager.DropOwner();
+
             break;
           }
         }

@@ -357,11 +357,12 @@ public:
                            unsigned short _nSID, unsigned short _nType);
 };
 
-//-----UpdateGroupToServerList--------------------------------------------------
-class CPU_UpdateGroupToServerList : public CPU_CommonFamily
+//-----UpdateToServerList-------------------------------------------------------
+class CPU_UpdateToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_UpdateGroupToServerList(unsigned short _nGSID);
+  CPU_UpdateToServerList(const char *_szName, unsigned short _nType,
+                         unsigned short _nSID = 0);
 };
 
 //-----SetStatus----------------------------------------------------------------

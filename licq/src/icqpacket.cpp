@@ -1649,7 +1649,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins)
     if (m_nGSID == 0)
     {
       unsigned short nDefault = gUserManager.DefaultGroup();
-      if (nDefault <= pID->size());
+      if (nDefault && nDefault <= pID->size())
         m_nGSID = (*pID)[nDefault-1];
 
       if (m_nGSID == 0)
@@ -1764,7 +1764,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       if (m_nGSID == 0)
       {
         unsigned short nDefault = gUserManager.DefaultGroup();
-        if (nDefault <= pID->size());
+        if (nDefault && nDefault <= pID->size())
           m_nGSID = (*pID)[nDefault-1];
 
         if (m_nGSID == 0)
@@ -1787,7 +1787,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       m_nGSID = m_nSID;
       m_nSID = 0;
       SetExtraInfo(0);
-      
+
       // modifygroupid needs write access, so unlock to make sure it gets what it wants.
       gUserManager.UnlockGroupIDList();
 
@@ -1839,88 +1839,89 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
     SetExtraInfo(_nGSID);
 }
 
-//-----UpdateGroupToServerList--------------------------------------------------
-CPU_UpdateGroupToServerList::CPU_UpdateGroupToServerList(unsigned short _nGSID)
+//-----UpdateToServerList---------------------------------------------------
+CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
+                                               unsigned short _nType,
+                                               unsigned short _nGSID /* only for groups */)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
 {
-  int nGroup = gUserManager.GetGroupFromID(_nGSID);
-  if (nGroup == 0 && _nGSID != 0) return; 
+  unsigned long nUin = 0;
+  unsigned short nGSID = 0;
+  unsigned short nSID = 0;
+  unsigned short nExtraLen = 0;
+  unsigned short nNameLen = strlen(_szName);
+  char *szName = 0;
 
-  int nCount = 0;
-  int nStrLen = 0;
-  GroupIDList *gid = 0;
-  GroupList *g = 0;
-
-  if (_nGSID == 0)
+  switch (_nType)
   {
-    gid = gUserManager.LockGroupIDList(LOCK_R);
-    nCount = gid->size();
-    // this will be unlocked during the tlv packing below
-  }
-  else
-  {
-    FOR_EACH_USER_START(LOCK_R)
+    case ICQ_ROSTxNORMAL:
     {
-      if (pUser->GetGSID() == _nGSID)
-        nCount++;
+      sscanf(_szName, "%lu", &nUin);
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      if (u)
+      {
+        nGSID = u->GetGSID();
+        nSID = u->GetSID();
+        szName = strdup(u->GetAlias());
+        nExtraLen = 4 + strlen(szName);
+        gUserManager.DropUser(u);
+      }
+
+      break;
     }
-    FOR_EACH_USER_END
 
-    g = gUserManager.LockGroupList(LOCK_R);
-    nStrLen = strlen((*g)[nGroup-1]);
-  }
-
-  if (nCount) //Hack to include the 4 bytes of TLV header if there will be a TLV
-    nCount += 2;
-  nCount *= 2; // everything item is 2 bytes, not 1
-
-  m_nSize += nStrLen+nCount+10;
-  InitBuffer();
-  
-  buffer->PackUnsignedShortBE(nStrLen);
-  if (_nGSID) buffer->Pack((*g)[nGroup-1], nStrLen);
-  buffer->PackUnsignedShortBE(_nGSID);
-  buffer->PackUnsignedShortBE(0);
-  buffer->PackUnsignedShortBE(1);
-  buffer->PackUnsignedShortBE(nCount); // bytes remaining
-
-  if (nCount)
-  {
-    CBuffer tlvData;
-
-    nCount -= 4; // shave off bytes remaining
-    tlvData.Create(nCount);
-
-    if (_nGSID == 0)
+    case ICQ_ROSTxGROUP:
     {
-      for (GroupIDList::iterator i = gid->begin(); i != gid->end(); ++i)
-        tlvData.PackUnsignedShortBE(*i);
+      nGSID = _nGSID;
+      nSID = 0;
 
-      gUserManager.UnlockGroupIDList();
-    }
-    else
-    {
       FOR_EACH_USER_START(LOCK_R)
       {
-        if (pUser->GetGSID() == _nGSID)
-          tlvData.PackUnsignedShortBE(pUser->GetSID());
+        if (pUser->GetGSID() == nGSID)
+          nExtraLen += 2;
       }
       FOR_EACH_USER_END
 
-      gUserManager.UnlockGroupList();
+      if (nExtraLen)
+        nExtraLen += 4;
+      break;
     }
-
-    buffer->PackTLV(0x00C8, nCount, &tlvData);
   }
-  else
+
+  m_nSize += 10 + nNameLen + nExtraLen;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(nNameLen);
+  buffer->Pack(_szName, nNameLen);
+  buffer->PackUnsignedShortBE(nGSID);
+  buffer->PackUnsignedShortBE(nSID);
+  buffer->PackUnsignedShortBE(_nType);
+  buffer->PackUnsignedShortBE(nExtraLen);
+  if (nExtraLen)
   {
-    if (_nGSID == 0)
-      gUserManager.UnlockGroupIDList();
-    else
-      gUserManager.UnlockGroupList();
-  }
-}
+    if (_nType == ICQ_ROSTxNORMAL)
+    {
+      buffer->PackUnsignedShortBE(0x0131);
+      buffer->PackUnsignedShortBE(nExtraLen-4);
+      buffer->Pack(szName, nExtraLen-4);
+    }
+    else if (_nType == ICQ_ROSTxGROUP)
+    {
+      buffer->PackUnsignedShortBE(0x00C8);
+      buffer->PackUnsignedShortBE(nExtraLen-4);
 
+      FOR_EACH_USER_START(LOCK_R)
+      {
+        if (pUser->GetGSID() == nGSID)
+          buffer->PackUnsignedShortBE(pUser->GetSID());
+      }
+      FOR_EACH_USER_END
+    }
+  }
+
+  if (szName)
+    free(szName);
+}
 
 //-----SearchWhitePages---------------------------------------------------------
 CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,

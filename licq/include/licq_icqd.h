@@ -188,7 +188,8 @@ public:
   void icqRemoveGroup(const char *);
   void icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
                       unsigned short _nOldGSID);
-  void icqRenameGroup(unsigned short _nGSID);
+  void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
+  void icqRenameUser(unsigned long _nUin, const char *_szOldAlias);
   void icqExportUsers(UinList &);
   void icqExportGroups(GroupList &);
   void icqUpdateContactList();

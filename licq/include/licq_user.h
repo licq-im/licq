@@ -247,7 +247,7 @@ public:
   void usprintf(char *sz, const char *szFormat, unsigned long nFlags = 0);
 
   // General Info
-  void SetAlias (const char *n);//              {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
+  void SetAlias (const char *n, bool _bUpdate = true);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
   void SetFirstName (const char *n)          {  SetString(&m_szFirstName, n);  SaveGeneralInfo();  }
   void SetLastName (const char *n)           {  SetString(&m_szLastName, n);  SaveGeneralInfo();  }
   void SetEmailPrimary (const char *n)       {  SetString(&m_szEmailPrimary, n);  SaveGeneralInfo();  }
@@ -628,7 +628,7 @@ public:
 
   bool AddGroup(char *, unsigned short = 0);
   void RemoveGroup(unsigned short);
-  void RenameGroup(unsigned short, const char *);
+  void RenameGroup(unsigned short, const char *, bool = true);
   unsigned short NumGroups();
   void SaveGroups();
   void SwapGroups(unsigned short g1, unsigned short g2);

@@ -398,7 +398,7 @@ void CUserManager::SwapGroups(unsigned short g1, unsigned short g2)
 /*---------------------------------------------------------------------------
  * CUserManager::RenameGroup
  *-------------------------------------------------------------------------*/
-void CUserManager::RenameGroup(unsigned short n, const char *_sz)
+void CUserManager::RenameGroup(unsigned short n, const char *_sz, bool _bUpdate)
 {
   if (n < 1 || n > NumGroups()) return;
   GroupList *g = LockGroupList(LOCK_W);
@@ -411,8 +411,9 @@ void CUserManager::RenameGroup(unsigned short n, const char *_sz)
   unsigned short nGSID = m_vnGroupsID[n-1];
   UnlockGroupIDList();
 
-  if (gLicqDaemon)
-    gLicqDaemon->icqRenameGroup(nGSID);
+  // If we rename a group on logon, don't send the rename packet
+  if (gLicqDaemon && _bUpdate)
+    gLicqDaemon->icqRenameGroup(_sz, nGSID);
 }
 
 
@@ -1564,8 +1565,13 @@ unsigned long ICQUser::Sequence(bool increment)
       return (m_nSequence);
 }
 
-void ICQUser::SetAlias(const char *s)
+void ICQUser::SetAlias(const char *s, bool _bUpdate)
 {
+  char *szOldAlias = NULL;
+  
+  if (m_szAlias)
+    szOldAlias = strdup(m_szAlias);
+
   if (s[0] == '\0')
   {
     if (m_szFirstName != NULL && m_szFirstName[0] != '\0')
@@ -1581,6 +1587,17 @@ void ICQUser::SetAlias(const char *s)
     SetString(&m_szAlias, s);
 
   SaveGeneralInfo();
+
+  // A write lock should be here, we need to unlock for this
+  if (gLicqDaemon && _bUpdate)
+  {
+    Unlock();
+    gLicqDaemon->icqRenameUser(m_nUin, szOldAlias);
+    Lock(LOCK_W);
+  }
+
+  if (szOldAlias)
+    free(szOldAlias);
 }
 
 
