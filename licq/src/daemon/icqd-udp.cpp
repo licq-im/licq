@@ -1321,10 +1321,11 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     break;
   }
 
-  case ICQ_CMDxRCV_SERVERxDOWN: // server down?
+  case ICQ_CMDxRCV_SERVERxDOWN: // server having problems
   {
-    gLog.Info("%sunexpected reply: 0x001E (Server down??)\n", L_UDPxSTR);
-//    icqRelogon(true);
+    gLog.Info("%sServer down (ignoring, cross your fingers).\n", L_UDPxSTR);
+    // We should re-logon but people are fucking stupid so we don't
+    //icqRelogon(true);
     break;
   }
 
