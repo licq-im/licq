@@ -33,7 +33,7 @@ licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp keyrequestdlg.cpp \
 	jfcstyle.cpp usercodec.cpp reqauthdlg.cpp licqdialog.cpp userselectdlg.cpp \
 	editfilelistdlg.cpp emoticon.cpp catdlg.cpp phonedlg.cpp \
-        ownermanagerdlg.cpp
+	ownermanagerdlg.cpp
 
 licq_qt_gui_la_SOURCES = $(licq_gui)
 licq_kde_gui_la_SOURCES = $(licq_gui) wrap_kde_malloc.cpp

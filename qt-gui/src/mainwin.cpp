@@ -1978,6 +1978,7 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
       continue;
        
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
+    if (o == NULL) continue;
     if (id == ICQ_STATUS_OFFLINE)
     {
       gUserManager.DropOwner(nPPID);
@@ -2601,6 +2602,8 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
   // Do nothing if there are no events pending
   if (ICQUser::getNumUserEvents() == 0 || szId == 0) return;
 
+  unsigned long nPPID = 0;
+
   if (strcmp(szId, "0") == 0)
   {
     // Do system messages first
@@ -2625,6 +2628,7 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
       if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
       {
         szId = pUser->IdString();
+        nPPID = pUser->PPID();
         t = pUser->Touched();
       }
     }
@@ -2635,23 +2639,49 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
   {
     if (m_bMsgChatView)
     {
-      //TODO iterate protocols
-      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+      ICQUser *u = 0;
+      if (nPPID == 0)
+      {
+        ProtoPluginsList pl;
+        ProtoPluginsListIter it;
+        licqDaemon->ProtoPluginList(pl);
+        for (it = pl.begin(); it != pl.end(); it++)
+        {
+          u = gUserManager.FetchUser(szId, (*it)->PPID(), LOCK_R);
+          if (u)
+          {
+            if (u->NewMessages())
+            {
+              nPPID = (*it)->PPID();
+              break;
+            }
+            else
+            {
+              gUserManager.DropUser(u);
+              u = 0;
+            }
+          }
+        }  
+      }
+      else
+        u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+        
+      if (u == 0) return;
+      
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
         if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
         {
           gUserManager.DropUser(u);
-          callFunction(mnuUserSendMsg, szId, LICQ_PPID);
+          callFunction(mnuUserSendMsg, szId, nPPID);
           return;
         }
       }
-
       gUserManager.DropUser(u);
-      callFunction(mnuUserView, szId, LICQ_PPID);
+      callFunction(mnuUserView, szId, nPPID);
     }
     else
-      callFunction(mnuUserView, szId, LICQ_PPID);
+      callFunction(mnuUserView, szId, nPPID);
   }
 }
 
