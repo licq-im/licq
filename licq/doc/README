@@ -20,14 +20,14 @@ INSTALLATION:
  do a manual install.  Don't worry it's very easy, any monkey
  could do it.)
 
-As root:
 1. Type './configure' and it will determine all the right settings and
    directories for your system.
 2. Type 'make' and in theory it will build. If you are using a non-GNU system,
    such as FreeBSD or Solaris, you will need the GNU version of make, often
    installed as `gmake'.  If you get errors about "void *" see the FAQ.
-3. Type 'make install' and licq will be installed (defaults to
-   /usr/local).
+3. Type
+   su -c 'make install'
+   and licq will be installed (defaults to /usr/local).
 4. Go to plugins/qt-gui and follow the directions there (doc/README) to install
    the Qt interface plugin (necessary).
 
