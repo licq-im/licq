@@ -7,39 +7,41 @@ class CICQColor
 {
 public:
 
-  unsigned long fore_red, fore_green, fore_blue;
-  unsigned long back_red, back_green, back_blue;
+  unsigned long ForeRed()  {  return foreground & 0xFF; }
+  unsigned long ForeGreen() { return (foreground & 0xFF00) >> 8; }
+  unsigned long ForeBlue()  { return ( foreground & 0xFF0000) >> 16; }
+  unsigned long BackRed()  {  return background & 0xFF; }
+  unsigned long BackGreen() { return (background & 0xFF00) >> 8; }
+  unsigned long BackBlue()  { return ( background & 0xFF0000) >> 16; }
+  unsigned long Foreground()  { return foreground; }
+  unsigned long Background()  { return background; }
 
-  // Plugins should not need these functions
+
   CICQColor()
    {
-     fore_red = fore_green = fore_blue = 0xFF;
-     back_red = back_green = back_blue = 0x00;
+     foreground = 0x00FFFFFF;
+     background = 0x00000000;
    }
-
-  CICQColor(unsigned long fore, unsigned long back) {}
 
   void Set(unsigned long fore, unsigned long back)
    {
-     fore_red = fore & 0xFF;
-     fore_green = (fore & 0xFF00) >> 8;
-     fore_blue = (fore & 0xFF0000) >> 16;
-     back_red = back & 0xFF;
-     back_green = (back & 0xFF00) >> 8;
-     back_blue = (back & 0xFF0000) >> 16;
+     foreground = fore;
+     background = back;
    }
 
-  unsigned long foreground()
+  void SetBackground(unsigned long r, unsigned long g, unsigned long b)
    {
-     return ((fore_red << 0) & 0xFF) + ((fore_green << 8) & 0xFF00) +
-      ((fore_blue << 16) & 0xFF0000);
+     background = (r & 0xFF) | ((g & 0xFF) << 8) | ((b & 0xFF) << 16);
    }
 
-  unsigned long background()
+  void SetForeground(unsigned long r, unsigned long g, unsigned long b)
    {
-     return ((back_red << 0) & 0xFF) + ((back_green << 8) & 0xFF00) +
-      ((back_blue << 16) & 0xFF0000);
+     foreground = (r & 0xFF) | ((g & 0xFF) << 8) | ((b & 0xFF) << 16);
    }
+
+protected:
+  unsigned long foreground;
+  unsigned long background;
 
 };
 
