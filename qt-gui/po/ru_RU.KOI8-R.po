@@ -614,7 +614,7 @@ msgstr ""
 "o  Статус можно изменить нажатием правой кнопки мыши на поле статуса.\n"
 "o  Авто-ответ можно изменить двойным щелчком на поле отображения статуса.\n"
 "o  Для просмотра системных сообщений можно использовать двойной щелчок на поле сообщений.\n"
-"o  Выбор отображаемых групп можно осуществить нажатим правой кнопки мыши на поле сообщений.\n"
+"o  Выбор отображаемых групп можно осуществить нажатием правой кнопки мыши на поле сообщений.\n"
 "o  Так же в списке контактов можно воспользоваться следующими \"горячими клавишами\":\n"
 "   Ctrl-M : Включение/выключение мини-режима\n"
 "   Ctrl-O : Показывать/не показывать пользователей не в сети\n"
@@ -631,10 +631,10 @@ msgstr ""
 "   Ctrl-L : Обновить окно пользователей\n"
 "   Delete : Удалить пользователя из текущей группы\n"
 "   Ctrl-Delete : Удалить пользователя из списка контактов\n"
-"o  Hold control while clicking on close in the function window to remove\n"
-"   the user from your contact list.\n"
-"o  Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\".\n"
-"   For example in the send tab of the user function window.\n"
+"o  Если нажать кнопку закрыть удерживая клавишу Ctrl,\n"
+"   то можно сразу же удалить пользователя из списка контактов.\n"
+"o  Можно использовать Ctrl-Enter во многих полях ввода чтобы вызвать\n"
+"   нажатие \"Да\" или \"Accept\". Например в диалоге отправки сообщения.\n"
 
 #: mainwin.cpp:2277
 msgid "CMainWindow::Ignore List"
@@ -1677,7 +1677,6 @@ msgstr "Отдел:"
 msgid "ICQFunctions::Direct send failed,\nsend through server?"
 msgstr "Отправить напрямую не удалось,\nотправить через сервер?"
 
-
 #: icqfunctions.cpp:283
 msgid "ICQFunctions::Drag Users Here\nRight Click for Options"
 msgstr "Перетащите адресатов сюда\n"
@@ -1845,7 +1844,7 @@ msgstr "На сервере"
 
 #: icqfunctions.cpp:1608
 msgid "ICQFunctions::Sorry, history is disabled for this person."
-msgstr "Извините, исторя запрещена для этого пользователя."
+msgstr "Извините, история запрещена для этого пользователя."
 
 #: icqfunctions.cpp:1795
 msgid "ICQFunctions::"
