@@ -96,7 +96,7 @@ void CICQDaemon::SwitchServer(void)
 void CICQDaemon::icqRegister(const char *_szPasswd)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->setPassword(_szPasswd);
+  o->SetPassword(_szPasswd);
   gUserManager.DropOwner();
   CPacketRegister *p = new CPacketRegister(_szPasswd);
   gLog.Info("%sRegistering a new user (#%d)...\n", L_UDPxSTR, p->getSequence());
@@ -114,7 +114,7 @@ ICQEvent *CICQDaemon::icqLogon(unsigned long logonStatus)
     gLog.Error("%sNo registered user, unable to process logon attempt.\n", L_ERRORxSTR);
     return NULL;
   }
-  char *passwd = strdup(o->getPassword());
+  char *passwd = strdup(o->Password());
   gUserManager.DropOwner();
   INetSocket *s = gSocketManager.FetchSocket(m_nTCPSocketDesc);
   if (s == NULL) return NULL;
@@ -430,10 +430,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
        gLog.Warn("%sUnknown user (%ld) is online.\n", L_WARNxSTR, nUin);
        break;
     }
-    time_t now = time(NULL);
-    struct tm *t = localtime(&now);
-    gLog.Info("%s%s (%ld) went online at %d:%02d.\n", L_UDPxSTR, u->getAlias(),
-              nUin, t->tm_hour, t->tm_min);;
+    gLog.Info("%s%s (%ld) went online.\n", L_UDPxSTR, u->getAlias(), nUin);
 
     // read in the relevant user information
     unsigned short userPort, newStatus;
@@ -449,7 +446,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     userIP = PacketIpToNetworkIp(userIP);
     u->SetIpPort(userIP, userPort);
     ChangeUserStatus(u, newStatus);
-    u->setAwayMessage(NULL);
+    u->SetAutoResponse(NULL);
     if (u->OnlineNotify()) m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
     gUserManager.DropUser(u);
     u = gUserManager.FetchUser(nUin, LOCK_R);
@@ -473,10 +470,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
        gLog.Warn("%sUnknown user (%ld) has gone offline.\n", L_WARNxSTR, nUin);
        break;
     }
-    time_t now = time(NULL);
-    struct tm *t = localtime(&now);
-    gLog.Info("%s%s (%ld) went offline at %d:%02d.\n", L_UDPxSTR, u->getAlias(),
-              nUin, t->tm_hour, t->tm_min);
+    gLog.Info("%s%s (%ld) went offline.\n", L_UDPxSTR, u->getAlias(),
+              nUin);
     ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
     gUserManager.DropUser(u);
     u = gUserManager.FetchUser(nUin, LOCK_R);
