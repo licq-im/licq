@@ -1548,8 +1548,8 @@ bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
      else // we are at an FE boundary
      {
        *pcEnd++ = '\0';
-       if (*pcEnd == '\0') // possibly end with FE 00 instead of just 00
-         bDone = true;
+       //if (*pcEnd == '\0') // possibly end with FE 00 instead of just 00
+       //  bDone = true;
      }
      (*szSubStr)[i++] = pcStart;
   }
