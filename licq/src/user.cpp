@@ -1037,7 +1037,7 @@ void ICQUser::Init(unsigned long _nUin)
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
   m_szAutoResponse = NULL;
-  m_szEncoding = NULL;
+  m_szEncoding = strdup("");
   m_bSecure = false;
 
   // General Info
