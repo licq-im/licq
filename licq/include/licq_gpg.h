@@ -26,7 +26,9 @@ protected:
 
   void gpgmeLock();
   void gpgmeUnlock();
+#ifdef HAVE_LIBGPGME
   static gpgme_error_t PassphraseCallback(void *, const char *, const char*, int, int);
+#endif
 };
 
 class CGPGMEMutex

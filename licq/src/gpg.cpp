@@ -156,7 +156,7 @@ void CGPGHelper::Start()
 #endif
 }
 
-
+#ifdef HAVE_LIBGPGME
 gpgme_error_t CGPGHelper::PassphraseCallback(void *, const char *, const char *, int, int fd)
 {
   const char nl = '\n';
@@ -170,6 +170,7 @@ gpgme_error_t CGPGHelper::PassphraseCallback(void *, const char *, const char *,
   write(fd, &nl, 1);
   return GPG_ERR_NO_ERROR;
 }
+#endif
 
 
 
