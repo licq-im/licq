@@ -2248,8 +2248,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               u->SetSID(nID);
               u->SetGSID(nTag);
 
-              if (szNewName)
-                u->SetAlias(szNewName);
+              //if (szNewName)
+              //  u->SetAlias(szNewName);
 
               if (nType == ICQ_ROSTxINVISIBLE)  u->SetInvisibleList(true);
               else if (nType == ICQ_ROSTxVISIBLE) u->SetVisibleList(true);
