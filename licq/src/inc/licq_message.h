@@ -31,12 +31,8 @@ public:
               unsigned long _nFlags);
    CUserEvent(const CUserEvent *);
    virtual ~CUserEvent();
+
    virtual CUserEvent *Copy() = 0;
-   virtual void AddToHistory(ICQUser *, direction) = 0;
-
-   int AddToHistory_Header(direction, char *);
-   void AddToHistory_Flush(ICQUser *, char *);
-
    const char *Text();
    const char *Description();
    time_t Time()  {  return m_tTime; }
@@ -52,10 +48,15 @@ public:
    bool IsLicq()  { return LicqVersion() != 0; };
    unsigned short LicqVersion()  { return m_nFlags & E_LICQxVER; }
    direction Direction()  {  return m_eDir; }
+
+protected:
+   virtual void AddToHistory(ICQUser *, direction) = 0;
+   int AddToHistory_Header(direction, char *);
+   void AddToHistory_Flush(ICQUser *, char *);
+
    void SetDirection(direction d)  { m_eDir = d; }
    void Cancel() { m_nFlags |= E_CANCELLED; }
 
-protected:
    virtual void CreateDescription() = 0;
    static unsigned long s_nId;
 
@@ -67,6 +68,9 @@ protected:
                   m_nId;
    time_t         m_tTime;
    unsigned long  m_nFlags;
+
+friend class CICQDaemon;
+friend class CUserHistory;
 };
 
 
