@@ -163,7 +163,7 @@ void CWindow::wprintf(char *formatIn, ...)
          i++;
 //#if NCURSES_VERSION_PATCH < 990213
          win->_attrs &= ~A_COLOR;
-         win->_attrs |= COLOR_PAIR(va_arg(argp, short));
+         win->_attrs |= COLOR_PAIR(va_arg(argp, int));
 //#else
 //         wcolor_set(win, va_arg(argp, short), NULL);
 //#endif
