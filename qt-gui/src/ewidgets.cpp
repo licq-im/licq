@@ -506,17 +506,23 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, QWidget* parent, con
 :CHistoryWidget(parent,name)
 {
   m_nUin= _nUin;
+  parentWidget = parent;
+
   // add all unread messages.
-//   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
-//   if (u != NULL && u->NewMessages() > 0)
-//   {
-//     addMsg(u->EventPeek(0));
-//     for (unsigned short i = 1; i < u->NewMessages(); i++)
-//     {
-//       addMsg(u->EventPeek(i));
-//     }
-//   }
-//   gUserManager.DropUser(u);
+  vector<CUserEvent*> newEventList;
+  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
+  if (u != NULL && u->NewMessages() > 0)
+  {
+    for (unsigned short i = 0; i < u->NewMessages(); i++)
+    {
+      CUserEvent *e = u->EventPeek(i);
+      if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
+	newEventList.push_back(e);
+    }
+  }
+  gUserManager.DropUser(u);
+  for (unsigned short i = 0; i < newEventList.size(); i++)
+    addMsg(newEventList[i]);
 }
 
 void CMessageViewWidget::addMsg(ICQEvent * _e)
@@ -608,7 +614,11 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 #endif 
   GotoEnd();
 
-  if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG) {
+  if (
+#if QT_VERSION >= 300
+      parentWidget && parentWidget->isActiveWindow() &&
+#endif
+      e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG) {
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R );
     if (u != NULL) {
        u->EventClearId(e->Id());

@@ -129,6 +129,7 @@ class CMessageViewWidget : public CHistoryWidget
   Q_OBJECT
 private:
   unsigned long m_nUin;
+  QWidget *parentWidget;
 public:
   CMessageViewWidget(unsigned long _nUin, QWidget* parent=0, const char * name =0);
   virtual ~CMessageViewWidget(){};

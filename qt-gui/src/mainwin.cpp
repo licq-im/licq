@@ -1634,6 +1634,17 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   // set default function to read or send depending on whether or not
   // there are new messages
   int fcn = (u->NewMessages() == 0 ? mnuUserSendMsg : mnuUserView);
+  if (fcn == mnuUserView && m_bMsgChatView)
+  {
+    // if one of the new events is a msg in chatview mode,
+    // change def function to send
+    for (unsigned short i = 0; i < u->NewMessages(); i++)
+      if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
+      {
+        fcn = mnuUserSendMsg;
+	break;
+      }
+  }
   gUserManager.DropUser(u);
 
   // See if the clipboard contains a url
@@ -1739,7 +1750,27 @@ void CMainWindow::callMsgFunction()
     }
   }
   FOR_EACH_USER_END
-  if (nUin != 0) callFunction(mnuUserView, nUin);
+
+  if (nUin != 0)
+  {
+    if (m_bMsgChatView)
+    {
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      for (unsigned short i = 0; i < u->NewMessages(); i++)
+      {
+        if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
+        {
+          gUserManager.DropUser(u);
+          callFunction(mnuUserSendMsg, nUin);
+          return;
+        }
+      }
+
+      gUserManager.DropUser(u);
+    }
+    else
+      callFunction(mnuUserView, nUin);
+  }
 }
 
 //-----CMainWindow::callUserFunction-------------------------------------------
@@ -1944,8 +1975,6 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
         QPtrListIterator<UserSendCommon> it(licqUserSend);
 #endif
 
-        if ( !m_bMsgChatView ) break;
-
         for (; it.current(); ++it)
           if ((*it)->Uin() == nUin)
           {
@@ -1958,6 +1987,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
               KWin::setActiveWindow(e->winId());
 #endif
             }
+printf("bye\n");
             return e;
           }
     }
@@ -1969,42 +1999,12 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
   {
     case mnuUserView:
     {
-#if QT_VERSION < 300
-      QListIterator<UserViewEvent> it(licqUserView);
-#else
-      QPtrListIterator<UserViewEvent> it(licqUserView);
-#endif
-
-      for (; it.current(); ++it)
-      {
-        if ((*it)->Uin() == nUin)
-        {
-          e = *it;
-          break;
-        }
-      }
-
-      if (e == NULL)
-      {
-        e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
-        connect (e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
-        licqUserView.append(static_cast<UserViewEvent*>(e));
-      }
-      else
-      {
-        if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
-        {
-          e->raise();
-#ifdef USE_KDE
-          KWin::setActiveWindow(e->winId());
-#endif
-        }
-        return e;
-      }
+      e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
       break;
     }
     case mnuUserSendMsg:
     {
+ printf("hehe\n");
       e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
       break;
     }
@@ -2040,9 +2040,18 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
     e->show();
     // there might be more than one send window open
     // make sure we only remember one, or it will get compliated
-    slot_sendfinished( nUin );
-    connect( e, SIGNAL( finished( unsigned long ) ), this, SLOT( slot_sendfinished( unsigned long ) ) );
-    licqUserSend.append(static_cast<UserSendCommon*>(e));
+    if (fcn == mnuUserView)
+    {
+      slot_userfinished(nUin);
+      connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
+      licqUserView.append(static_cast<UserViewEvent*>(e));
+    }
+    else
+    {
+      slot_sendfinished(nUin);
+      connect(e, SIGNAL(finished(unsigned long)), SLOT(slot_sendfinished(unsigned long)));
+      licqUserSend.append(static_cast<UserSendCommon*>(e));
+    }
   }
 
   return e;
@@ -2089,8 +2098,8 @@ void CMainWindow::slot_userfinished(unsigned long nUin)
       return;
     }
   }
-  gLog.Warn("%sUser finished signal for user with no window (%ld)!\n",
-            L_WARNxSTR, nUin);
+  //gLog.Warn("%sUser finished signal for user with no window (%ld)!\n",
+  //          L_WARNxSTR, nUin);
 }
 
 void CMainWindow::slot_sendfinished(unsigned long nUin)
