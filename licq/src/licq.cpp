@@ -159,6 +159,11 @@ CLicq::CLicq()
   licqDaemon = NULL;
   pthread_mutex_init(&mutex_plugins, NULL);
   pthread_mutex_init(&mutex_protoplugins, NULL);
+
+  //FIXME ICQ should be put into its own plugin.
+  CProtoPlugin *p = new CProtoPlugin;
+  p->m_nPPID = LICQ_PPID;
+  list_protoplugins.push_back(p);
 }
 
 bool CLicq::Init(int argc, char **argv)

@@ -15,7 +15,7 @@ typedef std::list<CSignal *>  ProtoSignalList;
 class CProtoPlugin
 {
 public:
-  const char *Name()    { return (*fName)(); }
+  const char *Name()    { if (fName) return (*fName)(); else return "Licq"; }
   const char *Version() { return (*fVersion)(); }
   unsigned long Id()    { return m_nPPID;}
 
@@ -23,6 +23,7 @@ public:
 
 protected:
   CProtoPlugin(const char *);
+  CProtoPlugin(); //FIXME ICQ should be its own plugin
   ~CProtoPlugin();
 
   void PushSignal(CSignal *);

@@ -20,6 +20,11 @@ CProtoPlugin::CProtoPlugin(const char *_szLibName)
   pipe(pipe_plugin);
 }
 
+CProtoPlugin::CProtoPlugin()
+{
+  m_szLibName = 0;
+}
+
 CProtoPlugin::~CProtoPlugin()
 {
   if (m_szLibName)
