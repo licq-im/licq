@@ -37,7 +37,7 @@
 #include <qmotifplusstyle.h>
 #endif
 #include "licqgui.h"
-
+#include <qtextcodec.h>
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
 #endif
@@ -286,20 +286,13 @@ CLicqGui::CLicqGui(int argc, char **argv)
   m_bStartHidden = bStartHidden;
 
   // Try and load a translation
-  char *p;
-#ifndef HAVE_LOCALE_H
-  if ( (p = getenv("LANGUAGE")) || (p = getenv("LANG")) )
-#else
-  if ( (p = setlocale(LC_MESSAGES, NULL) ))
-#endif
-  {
-    gLog.Info("%sAttempting to load %s Qt-GUI translation.\n", L_INITxSTR, p);
-    QString str;
-    str.sprintf("%sqt-gui/locale/%s", SHARE_DIR, p);
-    QTranslator *trans = new QTranslator(this);
-    trans->load(str);
-    installTranslator(trans);
-  }
+  gLog.Info("%sAttempting to load %s Qt-GUI translation.\n", L_INITxSTR,
+            QTextCodec::locale());
+  QString str;
+  str.sprintf("%sqt-gui/locale/%s", SHARE_DIR, QTextCodec::locale());
+  QTranslator *trans = new QTranslator(this);
+  trans->load(str);
+  installTranslator(trans);
 }
 
 
