@@ -292,6 +292,8 @@ public:
   time_t LocalTime();
   int LocalTimeGMTOffset();
   int LocalTimeOffset();
+  static int SystemTimeGMTOffset();
+  static char SystemTimezone();
 
   // Socket functions
   int SocketDesc()          { return m_nSocketDesc; }

@@ -14,6 +14,11 @@
 /* Undefine this if the compile complains about scandir_r and alphasort */
 #define ALPHASORT_VOID
 
+/* Change these if the compiler complains about no tm_gmtoff field */
+/* If the compiler then complains about timezone, comment out both */
+#define USE_GMTOFF
+/*#define USE_TIMEZONE*/
+
 /* The name of the package we're compiling */
 #undef PACKAGE
 

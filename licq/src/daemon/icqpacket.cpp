@@ -731,7 +731,8 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
 {
 
   m_nCountry = nCountry;
-  time_t t = time(NULL);
+  m_cTimezone = ICQUser::SystemTimezone();
+/*  time_t t = time(NULL);
 #ifndef __FreeBSD__
   localtime(&t);
   m_cTimezone = timezone / 1800; // seconds _west_ of UTC
@@ -739,7 +740,7 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
   struct tm *tzone = localtime(&t);
   m_cTimezone = -(tzone->tm_gmtoff) / 1800; // seconds _east_ of UTC
 #endif
-  if (m_cTimezone > 23) m_cTimezone = 23 - m_cTimezone;
+  if (m_cTimezone > 23) m_cTimezone = 23 - m_cTimezone;*/
   m_nAge = nAge;
   m_cSex = cSex;
   m_nZipcode = nZipcode;
@@ -892,7 +893,8 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
 
   m_nZipCode = nZipCode;
   m_nCountryCode = nCountryCode;
-  time_t t = time(NULL);
+  m_nTimezone = ICQUser::SystemTimezone();
+/*  time_t t = time(NULL);
 #ifndef __FreeBSD__
   localtime(&t);
   m_nTimezone = timezone / 1800; // seconds _west_ of UTC
@@ -900,7 +902,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   struct tm *tzone = localtime(&t);
   m_nTimezone = -(tzone->tm_gmtoff) / 1800; // seconds _east_ of UTC
 #endif
-  if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
+  if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;*/
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   m_nAuthorization = o->GetAuthorization() ? 0 : 1;
   m_nWebAware = o->WebAware() ? 1 : 0;

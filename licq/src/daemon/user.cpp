@@ -1095,16 +1095,32 @@ inline int ICQUser::LocalTimeGMTOffset()
 }
 
 
-int ICQUser::LocalTimeOffset()
+int ICQUser::SystemTimeGMTOffset()
 {
   time_t t = time(NULL);
-#ifndef __FreeBSD__
-  localtime(&t);
-  return timezone - LocalTimeGMTOffset();
-#else
   struct tm *tzone = localtime(&t);
-  return -(tzone->tm_gmtoff) - LocalTimeGMTOffset();
+#ifdef USE_GMTOFF
+  return -(tzone->tm_gmtoff); // seconds _east_ of UTC
+#elif USE_TIMEZONE
+  return timezone - (tzone->tm_isdst == 1 ? 3600 : 0); // seconds _west_ of UTC
+#else
+#warning Unable to determine local timezone
+  return 0;
 #endif
+}
+
+char ICQUser::SystemTimezone()
+{
+  char nTimezone = SystemTimeGMTOffset() / 1800;
+  if (nTimezone > 23)
+    return 23 - nTimezone;
+  return nTimezone;
+}
+
+
+int ICQUser::LocalTimeOffset()
+{
+  return SystemTimeGMTOffset() - LocalTimeGMTOffset();
 }
 
 
@@ -1819,6 +1835,15 @@ ICQOwner::ICQOwner()
 
   sprintf(filename, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
   SetHistoryFile(filename);
+
+  printf("%d %d\n", m_nTimezone, SystemTimezone());
+
+  if (m_nTimezone != SystemTimezone())
+  {
+    gLog.Warn("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
+              "%sUpdate general info on server to fix.\n",
+       L_WARNxSTR, m_nTimezone, SystemTimezone(), L_BLANKxSTR);
+  }
 
   SetEnableSave(true);
 }
