@@ -77,13 +77,13 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
   if (!mCtx) return 0;
   if (!szPlain) return 0;
 
-  gLog.Info("gpgme: Encrypting message to %s\n", szId);
-
   char szUser[MAX_LINE_LEN], buf[MAX_LINE_LEN];
   sprintf(szUser, "%s.%lu", szId, nPPID);
   mKeysIni.SetSection("keys");
   if (!mKeysIni.ReadStr(szUser, buf)) return 0;
 	
+  gLog.Info("[GPG] Encrypting message to %s.\n", szId);
+
   CGPGMEMutex mutex;
   if (!mutex.Lock()) return 0;
   GpgmeRecipients rcps;
