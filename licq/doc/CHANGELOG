@@ -1,5 +1,19 @@
 Change log for Licq.
 
+New in 0.80
+o  Multiparty chat
+o  Chat integrated into the daemon
+o  Renamed all header files to start with "licq_"
+o  Send to contact list option
+o  Always use correct ip and don't fail if hostname not set properly
+o  Correctly retrieve occupied/dnd/ffc messages
+o  Use status to user when communicating to a user directly
+o  Hopefully fix problems with receiving chats/files about bad version
+   when sending from icq99b
+o  Accept modes for when to use OnEvents
+o  Segfault trapping with backtrace output (on glibc systems)
+
+
 New in 0.76
 o  Random Chat (set group and search)
 o  Major history speedups 
