@@ -30,6 +30,7 @@ class QLabel;
 class QLineEdit;
 class QComboBox;
 class QSpinBox;
+class QCheckBox;
 
 class CICQDaemon;
 class CSignalManager;
@@ -81,6 +82,7 @@ protected:
    QSpinBox *spnMinAge, *spnMaxAge;
    QComboBox *cmbCountry, *cmbGender, *cmbLanguage;
    QWidget *alias_tab, *email_tab, *uin_tab;
+   QCheckBox *chkOnlineOnly;
 
    CICQEventTag *searchTag;
    QPushButton *btnDone, *btnAdd;

@@ -165,6 +165,10 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   edtCoPos = new QLineEdit(alias_tab);
   grid_lay->addWidget(edtCoPos, CR, 3);
 
+  CR++;
+  chkOnlineOnly = new QCheckBox(tr("Return Online Users Only"), alias_tab);
+  grid_lay->addMultiCellWidget(chkOnlineOnly, CR, CR, 1, 3);
+
   search_tab->addTab(alias_tab, tr("&Whitepages"));
 
   //-- second tab: search by email
@@ -290,7 +294,7 @@ void SearchUserDlg::startSearch()
      GetCountryByIndex(cmbCountry->currentItem())->nCode,
      edtCoName->text().local8Bit().data(),
      edtCoDept->text().local8Bit().data(),
-     edtCoPos->text().local8Bit().data(), false);
+     edtCoPos->text().local8Bit().data(), chkOnlineOnly->isChecked());
   }
   lblSearch->setText(tr("Searching (this can take awhile)..."));
 }
