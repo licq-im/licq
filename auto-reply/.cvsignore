@@ -2,6 +2,8 @@ aclocal.m4
 Makefile.in
 configure
 config.h
+ltmain.sh
+ltconfig
 libtool
 stamp-h
 Makefile
