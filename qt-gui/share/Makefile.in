@@ -32,6 +32,7 @@ distclean: clean
 
 install:
 	$(MKINSTALLDIRS) $(sharedir)
+	$(MKINSTALLDIRS) $(sharedir)/qt-gui/locale
 	for j in qt-gui/skin.*; do \
 	  $(MKINSTALLDIRS) $(sharedir)/$$j; \
 	  for i in $$j/*; do \
