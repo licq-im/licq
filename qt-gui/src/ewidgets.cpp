@@ -337,7 +337,7 @@ void CInfoField::setEnabled(bool _b)
 // -----------------------------------------------------------------------------
 
 CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
-  : MLEditWrap(false, parent, true, name)
+  : MLEditWrap(true, parent, true, name)
 {
   setReadOnly(true);
 };
@@ -380,7 +380,7 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
 // -----------------------------------------------------------------------------
 
 CLogWidget::CLogWidget(QWidget* parent, const char* name)
-  : MLEditWrap(true, parent, true, name)
+  : MLEditWrap(false, parent, true, name)
 {
   setReadOnly(true);
 }
