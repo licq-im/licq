@@ -55,7 +55,7 @@ fi
 # check if mozilla is running
 if [ -z "`${MOZILLA} -remote ping\(\) >& /dev/stdout`" ]; then
   # mozilla is running, open the URL there
-  ${MOZILLA} -remote "openurl\(${OPENSTRING}\)" &
+  ${MOZILLA} -remote "openurl(${OPENSTRING})" &
 else
   # not running, open a new browser
   ${MOZILLA} "${URL}" &
