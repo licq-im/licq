@@ -537,7 +537,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
          // keep IRC updated anyway (encoding should be already properly represented)
          mleIRCRemote->append(chatname + "> " + mlePaneLocal->textLine(mlePaneLocal->numLines()-1));
       }
-      
+
       chatman->SendNewline();
       break;
     }
@@ -546,7 +546,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
       if (m_nMode == CHAT_IRC) {
          mlePaneLocal->backspace(); // keep the pane updated
       }
-      
+
       if (m_nMode == CHAT_PANE) {
          chatman->SendBackspace();
       }
@@ -560,7 +560,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
     default:
     {
       QCString encoded = codec->fromUnicode(e->text());
-      
+
       // if in pane mode, send right away
       if (m_nMode == CHAT_PANE) {
          // for multibyte encodings
@@ -572,7 +572,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
          // to be updated
          mlePaneLocal->appendNoNewLine(codec->toUnicode(encoded));
       }
-      
+
       break;
     }
   }
@@ -600,7 +600,7 @@ void ChatDlg::slot_chat()
       case CHAT_DISCONNECTION:
       {
         QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
-        
+
         if (n.isEmpty()) n.setNum(u->Uin());
         chatClose(u);
         InformUser(this, tr("%1 closed connection.").arg(n));
@@ -610,7 +610,7 @@ void ChatDlg::slot_chat()
       case CHAT_CONNECTION:
       {
         QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
-        
+
         // Add the user to the listbox
         lstUsers->insertItem(n);
         // If this is the first user, set up the remote mle
@@ -648,7 +648,7 @@ void ChatDlg::slot_chat()
       case CHAT_NEWLINE:
       {
         QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
-        
+
         // add to IRC box
         mleIRCRemote->append(n + QString::fromLatin1("> ") + codec->toUnicode(e->Data()));
         mleIRCRemote->GotoEnd();
@@ -855,7 +855,8 @@ QString ChatDlg::ChatClients()
 bool ChatDlg::slot_save()
 {
   QString t = QDateTime::currentDateTime().toString();
-  t.replace(QString(" "), QString("-"));
+  for ( unsigned l = 0; l < t.length(); ++l )
+    if ( t[l] == ' ' ) t[l] = '-';
   QString n = tr("/%1.%2.chat")
     .arg(
       chatUser == NULL ?
@@ -863,7 +864,7 @@ bool ChatDlg::slot_save()
         UserCodec::codecForCChatUser(chatUser)->toUnicode(chatUser->Name())
     )
     .arg(t);
-    
+
 #ifdef USE_KDE
   QString fn = KFileDialog::getSaveFileName(QDir::homeDirPath() + n,
      QString::null, this);
