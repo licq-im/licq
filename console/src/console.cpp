@@ -251,7 +251,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   // Create the windows
   for (unsigned short i = 0; i <= MAX_CON; i++)
   {
-    winCon[i] = new CWindow(LINES - 5, COLS - USER_WIN_WIDTH - 1, 2, USER_WIN_WIDTH,
+    winCon[i] = new CWindow(LINES - 5, COLS - USER_WIN_WIDTH - 1, 2, USER_WIN_WIDTH + 1,
                             SCROLLBACK_BUFFER, true);
     scrollok(winCon[i]->Win(), true);
     winCon[i]->fProcessInput = &CLicqConsole::InputCommand;
