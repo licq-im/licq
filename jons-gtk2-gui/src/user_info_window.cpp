@@ -126,7 +126,7 @@ list_info_user(GtkWidget *window, ICQUser *user)
 	GtkWidget *close;
 	GtkWidget *statusbar;
 	
-  gchar *title = g_strdup_printf("Info for %s", user->GetAlias());
+  gchar *title = g_strdup_printf("Info for %s", (s_convert_to_utf8(user->GetAlias(), user->UserEncoding())).c_str());
 	gchar *c_uin = g_strdup_printf("%ld", user->Uin());
 	gchar real_ip[32];
 	const gulong _realip = user->RealIp();
@@ -159,7 +159,7 @@ list_info_user(GtkWidget *window, ICQUser *user)
 	// Alias (always editable)
 	do_label_and_entry(
       iu->alias, 
-      user->GetAlias(), 
+      (s_convert_to_utf8(user->GetAlias(), user->UserEncoding())).c_str(),
       "Alias:",
 		  general_table, 
       0, 0, 
@@ -176,8 +176,8 @@ list_info_user(GtkWidget *window, ICQUser *user)
 
 	// Full Name
 	do_label_and_entry(
-      iu->fname, 
-      user->GetFirstName(),
+      iu->fname,
+      (s_convert_to_utf8(user->GetFirstName(), user->UserEncoding())).c_str(),
       "First Name:",
 		  general_table, 
       0, 1, 
@@ -185,8 +185,8 @@ list_info_user(GtkWidget *window, ICQUser *user)
 	
 	// Last Name
 	do_label_and_entry(
-      iu->lname, 
-      user->GetLastName(),
+      iu->lname,
+      (s_convert_to_utf8(user->GetLastName(), user->UserEncoding())).c_str(),
       "Last Name:",
 		  general_table, 
       2, 1, 
@@ -597,7 +597,7 @@ list_info_user(GtkWidget *window, ICQUser *user)
 	gtk_text_view_set_wrap_mode(GTK_TEXT_VIEW(iu->about), GTK_WRAP_WORD);
 	gtk_text_view_set_editable(GTK_TEXT_VIEW(iu->about), is_o);
 	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(iu->about));
-	gtk_text_buffer_set_text(tb, user->GetAbout(), -1);
+	gtk_text_buffer_set_text(tb, (s_convert_to_utf8(user->GetAbout(), user->UserEncoding())).c_str(), -1);
 	gtk_container_add(GTK_CONTAINER(v_scroll), iu->about);
 
 	/* Pack the about box */
