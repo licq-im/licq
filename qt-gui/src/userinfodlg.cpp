@@ -1135,24 +1135,25 @@ void UserInfoDlg::ShowHistory()
 
       const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
 
-      // QTextEdit::append inserts paragraph breaks, so we don't have to.
-      s.sprintf("<font color=\"%s\"><b>%s<br>%s [%c%c%c%c]</b><br><br>%s</font><br><br>",
-      		color,
+      s.sprintf("<font color=\"%s\"><b>%s<br>%s [%c%c%c%c]</b></font><br>",
+                color,
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
                   .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(contactName)).utf8().data(),
                 date.toString().utf8().data(),
                 (*tempIter)->IsDirect() ? 'D' : '-',
                 (*tempIter)->IsMultiRec() ? 'M' : '-',
                 (*tempIter)->IsUrgent() ? 'U' : '-',
-                (*tempIter)->IsEncrypted() ? 'E' : '-',
+                (*tempIter)->IsEncrypted() ? 'E' : '-'
+      );
+      mleHistory->append(s);
+      // We break the paragraph here, since the history text
+      // could be in a different BiDi directionality than the
+      // header and timestamp text.
+      s.sprintf("<font color=\"%s\">%s</font><br>",
+                color,
                 messageText.utf8().data()
       );
-#if QT_VERSION < 0x030005
-      // This Qt version has a bug, causing QTextEdit::append()
-      // not to add a paragraph break, so we simulate one.
-      // Yes, we don't use <p> on purpose, since <p> is buggy in those versions.
-      s += "<br><br>";
-#endif
+      mleHistory->append(s);
 #else
       // See CHistoryWidget::paintCell for reference on those Qt 2-only
       // formatting escape codes.
@@ -1168,8 +1169,8 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
                 messageText.utf8().data()
       );
+      mleHistory->append(s); // adds a paragraph break
 #endif
-      mleHistory->append(s);
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);
     }
