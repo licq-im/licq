@@ -345,7 +345,7 @@ void OptionsDlg::SetupOptions()
   chkHideIp->setChecked(o->getStatusHideIp());
   chkWebPresence->setChecked(o->getStatusWebPresence());
   gUserManager.DropOwner();
-  chkAllowNewUsers->setChecked(mainwin->licqDaemon->AllowNewUsers());
+  chkAllowNewUsers->setChecked(!mainwin->licqDaemon->Ignore(IGNORE_NEWUSERS));
  
   // plugins tab
   //optionsDlg->edtErrorLog->setText(server->getErrorLogName());
@@ -472,7 +472,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->setDefaultRemotePort(spnDefServerPort->value());
   mainwin->licqDaemon->setTcpServerPort(spnTcpServerPort->value());
   mainwin->licqDaemon->setMaxUsersPerPacket(spnMaxUsersPerPacket->value());
-  mainwin->licqDaemon->SetAllowNewUsers(chkAllowNewUsers->isChecked());
+  mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, !chkAllowNewUsers->isChecked());
 
   // Plugin tab
   //server->setErrorLogName((const char *)optionsDlg->edtErrorLog->text());
