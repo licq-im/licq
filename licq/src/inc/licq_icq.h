@@ -176,10 +176,14 @@ const unsigned short ICQ_TCPxMSG_FxNA              = 0x0800;
 const unsigned short ICQ_TCPxMSG_FxDND             = 0x1000;
 
 const unsigned long ICQ_STATUS_FxFLAGS             = 0xFFFF0000;
+const unsigned long ICQ_STATUS_FxUNKNOWNxFLAGS     = 0xFFD0FCC8;
 const unsigned long ICQ_STATUS_FxPRIVATE           = 0x00000100;
+const unsigned long ICQ_STATUS_FxPFMxAVAILABLE     = 0x00000200;  // not implemented
 const unsigned long ICQ_STATUS_FxWEBxPRESENCE      = 0x00010000;
 const unsigned long ICQ_STATUS_FxHIDExIP           = 0x00020000;
-const unsigned long ICQ_STATUS_FxBIRTHDAY          = 0x00080000;  // not done
+const unsigned long ICQ_STATUS_FxPFM               = 0x00040000;  // not implemented
+const unsigned long ICQ_STATUS_FxBIRTHDAY          = 0x00080000;
+const unsigned long ICQ_STATUS_FxICQxHOMEPAGE      = 0x00200000;  // not implemented
 
 const unsigned long ICQ_RANDOMxCHATxGROUP_NONE     = 0;
 const unsigned long ICQ_RANDOMxCHATxGROUP_GENERAL  = 1;
