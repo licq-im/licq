@@ -5,11 +5,7 @@
 
 #include <qlistview.h>
 #include <qtooltip.h>
-#if QT_VERSION < 300
-  #include <qvector.h>
-#else
-  #include <qptrvector.h>
-#endif
+#include <qptrvector.h>
 
 class ICQUser;
 class CUserView;
@@ -100,15 +96,14 @@ protected:
                  *s_cBack,
                  *s_cGridLines;
 
+private:
+  enum alignment { LEFT = 1, RIGHT = 2, CENTER = 4 };
+
   friend class CUserView;
 };
 
 class CUserView;
-#if QT_VERSION < 300
-  typedef QVector<CUserView> UserFloatyList;
-#else
   typedef QPtrVector<CUserView> UserFloatyList;
-#endif
 
 
 //=====UserView===============================================================
@@ -167,9 +162,7 @@ protected:
 
   virtual void viewportDragEnterEvent(QDragEnterEvent*);
   virtual void viewportDropEvent(QDropEvent*);
-#if QT_VERSION >= 300
   virtual void contentsContextMenuEvent ( QContextMenuEvent * );
-#endif
 
   virtual void resizeEvent(QResizeEvent *);
   virtual void maybeTip(const QPoint&);

@@ -412,22 +412,9 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
 
   const QPixmap *pix = NULL;
 
-#if QT_VERSION >= 220
   if (listView()->parent() && gMainWindow->skin->frame.transparent )
-    pix = listView()->QListView::parentWidget()->backgroundPixmap();
-
-  listView()->setStaticBackground(pix && listView()->contentsHeight() >= listView()->viewport()->height());
-#else
-  if ((listView()->contentsHeight() < listView()->viewport()->height() ||
-       listView()->vScrollBarMode() == QListView::AlwaysOff) &&
-      listView()->parent() && gMainWindow->skin->frame.transparent )
-#if QT_VERSION >= 300
     pix = listView()->QListView::parentWidget()->paletteBackgroundPixmap();
-#else
-    pix = listView()->QListView::parentWidget()->backgroundPixmap();
-#endif
-
-#endif
+  listView()->setStaticBackground(pix && listView()->contentsHeight() >= listView()->viewport()->height());
 
   if (pix != NULL)
   {
@@ -458,79 +445,96 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         f.setPointSize(f.pointSize() - 2);
       p->setFont(f);
     }
-    
+
     QListViewItem::paintCell(p, cg, column, width, align);
+
+    // first we determine where to start painting
+    int w = 0; // width
+    switch (align)
+    {
+      case LEFT:
+                w = p->fontMetrics().width(text(1)) + 6;
+                break;
+      case RIGHT:
+                w = listView()->columnWidth(1) - p->fontMetrics().width(text(1)) - 6;
+                break;
+      case CENTER:
+                w = (listView()->columnWidth(1) / 2) + (p->fontMetrics().width(text(1)) / 2) + 6;
+                break;
+      default:
+                w = 0;
+                break;
+    }
 
     if (isGroupItem())
     {
-      if (column == 1)
+      if (column == 1) // hm, how can we reliable determine the column that holds the alias?!?
       {
-        int w = p->fontMetrics().width(text(1)) + 4;
+        w = (align == RIGHT) ? w+2 : w-2;  //  +/- 2
 
         if (m_nEvents > 0 && !isOpen())
         {
+          if (align == RIGHT)
+            w -= gMainWindow->pmMessage.width();
           p->drawPixmap(w, 0, gMainWindow->pmMessage);
-          w += gMainWindow->pmMessage.width() + 4;
+          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmMessage.width() + 2;
         }
-
-#if QT_VERSION >= 300
         qDrawShadeLine( p, 0, height() >> 1, width - 5, (height() >> 1) + 2, cg, true, 1, 0);
-#else
-        listView()->style().drawSeparator(p,
-                                          w, height() >> 1, width - (listView()->header()->count() == 1 ? 5 : 1),
-                                          height() >> 1, cg);
-#endif
       }
       else if (column == listView()->header()->count() - 1)
       {
-#if QT_VERSION >= 300
         qDrawShadeLine( p, 0, height() >> 1, width - 5, (height() >> 1) + 2, cg, true, 1, 0);
-#else
-        listView()->style().drawSeparator(p, 0, height() >> 1, width - 5,
-           height() >> 1, cg);
-#endif
       }
       else if (column > 1)
       {
-#if QT_VERSION >= 300
         qDrawShadeLine( p, 0, height() >> 1, width - 5, (height() >> 1) + 2, cg, true, 1, 0);
-#else
-        listView()->style().drawSeparator(p, 0, height() >> 1, width - 1,
-           height() >> 1, cg);
-#endif
       }
-    }
-    // If this is the first column then add some extra icons after the text
+    } // isGroupItem
     else if (column == 1 && gMainWindow->m_bShowExtendedIcons)
     {
-      int w = p->fontMetrics().width(text(1)) + 6;
-
+      // pmPhone
       if (width - w > 8 && (m_bPhone))
       {
+        if (align == RIGHT)
+          w -= gMainWindow->pmPhone.width();
         p->drawPixmap(w, 0, gMainWindow->pmPhone);
-        w += gMainWindow->pmPhone.width() + 2;
+        w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmPhone.width() + 2;
       }
+
+      // pmCellular
       if (width - w > 8 && (m_bCellular))
       {
+        if (align == RIGHT)
+          w -= gMainWindow->pmCellular.width();
         p->drawPixmap(w, 0, gMainWindow->pmCellular);
-        w += gMainWindow->pmCellular.width() + 2;
+        w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmCellular.width() + 2;
       }
+
+      // pmBirthday
       if (width - w > 8 && (m_bBirthday))
       {
+        if (align == RIGHT)
+          w -= gMainWindow->pmBirthday.width();
         p->drawPixmap(w, 0, gMainWindow->pmBirthday);
-        w += gMainWindow->pmBirthday.width() + 2;
+        w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmBirthday.width() + 2;
       }
+
+      // pmPrivate / pmInvisible
       if (width - w > 8 && m_bStatusInvisible)
       {
         if (gMainWindow->pmInvisible.isNull())
         {
+          if (align == RIGHT)
+            w -= gMainWindow->pmPrivate.width();
           p->drawPixmap(w, 0, gMainWindow->pmPrivate);
-          w += gMainWindow->pmPrivate.width() + 2;
+          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmPrivate.width() + 2;
         }
         else
         {
+          if (align == RIGHT)
+            w -= gMainWindow->pmInvisible.width();
           p->drawPixmap(w, 0, gMainWindow->pmInvisible);
-          w += gMainWindow->pmInvisible.width() + 2;
+          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmInvisible.width() + 2;
         }
       }
       if (m_nStatus != ICQ_STATUS_OFFLINE)
@@ -539,48 +543,64 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         {
           if (m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxACTIVE)
           {
+            if (align == RIGHT)
+              w -= gMainWindow->pmPhoneFollowMeActive.width();
             p->drawPixmap(w, 0, gMainWindow->pmPhoneFollowMeActive);
-            w += gMainWindow->pmPhoneFollowMeActive.width() + 2;
+            w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmPhoneFollowMeActive.width() + 2;
           }
           else if (m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxBUSY)
           {
+            if (align == RIGHT)
+              w -= gMainWindow->pmPhoneFollowMeBusy.width();
             p->drawPixmap(w, 0, gMainWindow->pmPhoneFollowMeBusy);
-            w += gMainWindow->pmPhoneFollowMeBusy.width() + 2;
+            w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmPhoneFollowMeBusy.width() + 2;
           }
         }
         if (width - w > 8)
         {
           if (m_nICQphoneStatus == ICQ_PLUGIN_STATUSxACTIVE)
           {
+            if (align == RIGHT)
+              w -= gMainWindow->pmICQphoneActive.width();
             p->drawPixmap(w, 0, gMainWindow->pmICQphoneActive);
-            w += gMainWindow->pmICQphoneActive.width() + 2;
+            w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmICQphoneActive.width() + 2;
           }
           else if (m_nICQphoneStatus == ICQ_PLUGIN_STATUSxBUSY)
           {
+            if (align == RIGHT)
+              w -= gMainWindow->pmICQphoneBusy.width();
             p->drawPixmap(w, 0, gMainWindow->pmICQphoneBusy);
-            w += gMainWindow->pmICQphoneBusy.width() + 2;
+            w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmICQphoneBusy.width() + 2;
           }
         }
         if (width - w > 8 && m_nSharedFilesStatus == ICQ_PLUGIN_STATUSxACTIVE)
         {
+          if (align == RIGHT)
+            w -= gMainWindow->pmSharedFiles.width();
           p->drawPixmap(w, 0, gMainWindow->pmSharedFiles);
-          w += gMainWindow->pmSharedFiles.width() + 2;
+          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmSharedFiles.width() + 2;
         }
         if (width - w > 8 && m_bStatusTyping && m_nPPID == LICQ_PPID)
         {
+          if (align == RIGHT)
+            w -= gMainWindow->pmTyping.width();
           p->drawPixmap(w, 0, gMainWindow->pmTyping);
-          w += gMainWindow->pmTyping.width() + 2;
+          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmTyping.width() + 2;
         }
       }
       if (width - w > 8 && m_bSecure)
       {
+        if (align == RIGHT)
+          w -= gMainWindow->pmSecureOn.width();
         p->drawPixmap(w, 0, gMainWindow->pmSecureOn);
-        w += gMainWindow->pmSecureOn.width() + 2;
+        w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmSecureOn.width() + 2;
       }
       if (width - w > 8 && m_bCustomAR)
       {
+        if (align == RIGHT)
+          w -= gMainWindow->pmCustomAR.width();
         p->drawPixmap(w, 0, gMainWindow->pmCustomAR);
-        w += gMainWindow->pmCustomAR.width() + 2;
+        w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmCustomAR.width() + 2;
       }
     }
   }
@@ -647,14 +667,8 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
 void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
 {
   const QPixmap *pix = NULL;
-#if QT_VERSION >= 220
   if( parent() && gMainWindow->skin->frame.transparent)
     pix = QListView::parentWidget()->backgroundPixmap();
-#else
-  if ((contentsHeight() < viewport()->height() || vScrollBarMode() == AlwaysOff)
-      && parent() && gMainWindow->skin->frame.transparent)
-    pix = QListView::parentWidget()->backgroundPixmap();
-#endif
 
   if (pix != NULL)
   {
@@ -811,12 +825,8 @@ UserFloatyList* CUserView::floaties = 0;
 
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
-#if QT_VERSION >= 220
   : QListView(parent, name, parent == NULL ? WStyle_Customize | WStyle_NoBorder | WResizeNoErase | WRepaintNoErase /*| WStyle_StaysOnTop*/
               : WRepaintNoErase),
-#else
-  : QListView(parent, name),
-#endif
     QToolTip(viewport())
 {
   m_nFlashCounter = carCounter = onlCounter = 0;
@@ -838,13 +848,8 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 
   setAcceptDrops(true);
   viewport()->setAcceptDrops(true);
-  #if QT_VERSION < 300
-  viewport()->setBackgroundMode(NoBackground);
-  #endif
 
-#if QT_VERSION >= 210
   setShowSortIndicator(true);
-#endif
   setAllColumnsShowFocus(true);
   setTreeStepSize(0);
   setSorting(gMainWindow->m_nSortColumn, gMainWindow->m_bSortColumnAscending);
@@ -1015,27 +1020,8 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
     m_typeAhead = "";
     m_typePos = 0;
   }
-#if QT_VERSION < 300
-  else if (e->button() == RightButton)
-  {
-    CUserViewItem *clickedItem = (CUserViewItem *)itemAt(e->pos());
-    if (clickedItem != NULL)
-    {
-      setSelected(clickedItem, true);
-      setCurrentItem(clickedItem);
-      if (clickedItem->ItemId())
-      {
-        gMainWindow->SetUserMenuUser(clickedItem->ItemId(), clickedItem->ItemPPID());
-        mnuUser->popup(viewport()->mapToGlobal(e->pos()), 1);
-      }
-    }
-    m_typeAhead = "";
-    m_typePos = 0;
-  }
-#endif
 }
 
-#if QT_VERSION >= 300
 void CUserView::contentsContextMenuEvent ( QContextMenuEvent* e )
 {
   CUserViewItem *clickedItem = (CUserViewItem *)itemAt(contentsToViewport( e->pos()) );
@@ -1052,7 +1038,6 @@ void CUserView::contentsContextMenuEvent ( QContextMenuEvent* e )
     }
   }
 }
-#endif
 
 void CUserView::viewportDragEnterEvent(QDragEnterEvent* e)
 {
@@ -1473,11 +1458,7 @@ void CUserView::maybeTip(const QPoint& c)
       if (u->AutoResponse() && *u->AutoResponse() &&
           item->m_nStatus != ICQ_STATUS_OFFLINE &&
           item->m_nStatus != ICQ_STATUS_ONLINE)
-#if QT_VERSION >= 300
         s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(codec->toUnicode(u->AutoResponse()), QStyleSheetItem::WhiteSpaceNormal);
-#else
-        s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(codec->toUnicode(u->AutoResponse()));
-#endif
       gUserManager.DropUser(u);
     }
 
