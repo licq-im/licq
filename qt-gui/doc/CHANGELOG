@@ -1,5 +1,14 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 0.70
+o  Full whitepages support
+o  Moved to full layout management in all widgets
+o  New options added to dialog
+o  Local time added to user function window
+o  Tooltips added
+o  Font for edit widgets can be set different from the main font
+
+
 New in 0.67
 o  Option of automatically sending through server if direct fails
 o  Edit group dialog improved
