@@ -68,9 +68,10 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
     nLen = strlen(_szPartialMatch);
     FOR_EACH_USER_START(LOCK_R)
     {
-      // Ignored users are unwanted
-      if (pUser->IgnoreList())
-	      FOR_EACH_USER_CONTINUE
+      // Ignored users and users not in the current group are unwanted
+      if (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
+          (pUser->IgnoreList() &&  m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
+	FOR_EACH_USER_CONTINUE
 
       if (strncasecmp(_szPartialMatch, pUser->GetAlias(), nLen) == 0)
       {
