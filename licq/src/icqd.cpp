@@ -519,10 +519,10 @@ bool CICQDaemon::ProtoPluginLoad(const char *szPlugin)
 
 int CICQDaemon::RegisterProtoPlugin()
 {
-  ProtoPluginsListIter it;
   int p = -1;
 
   pthread_mutex_lock(&licq->mutex_protoplugins);
+  ProtoPluginsListIter it = licq->list_protoplugins.begin();
   for (it = licq->list_protoplugins.begin();
        it != licq->list_protoplugins.end();
        it++)
@@ -2055,6 +2055,33 @@ void CICQDaemon::UpdateAllUsersInGroup(GroupType g, unsigned short nGroup)
   FOR_EACH_USER_END
 }
 
+//-----AddProtocolPlugins-------------------------------------------------------
+bool CICQDaemon::AddProtocolPlugins()
+{
+  char szConf[MAX_FILENAME_LEN];
+  CIniFile licqConf(INI_FxWARN);
+  snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
+  szConf[MAX_FILENAME_LEN - 1] = '\0';
+  if (licqConf.LoadFile(szConf) == false)
+    return false;
+    
+  unsigned short nNumProtoPlugins = 0;
+  char szData[MAX_FILENAME_LEN];
+  char szKey[20];
+  licqConf.SetSection("plugins");
+  licqConf.ReadNum("NumProtoPlugins", nNumProtoPlugins, 0);
+  if (nNumProtoPlugins > 0)
+  {
+    for (int i = 0; i < nNumProtoPlugins; i++)
+    {
+      sprintf(szKey, "ProtoPlugin%d", i + 1);
+      if (!licqConf.ReadStr(szKey, szData)) continue;
+      if (ProtoPluginLoad(szData) == NULL) return false;
+    }
+  }
+  
+  return true;
+}
 
 //-----ProcessMessage-----------------------------------------------------------
 void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
@@ -2413,4 +2440,3 @@ bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 
   return (!*pcEnd);
 }
-

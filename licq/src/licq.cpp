@@ -163,6 +163,7 @@ CLicq::CLicq()
   //FIXME ICQ should be put into its own plugin.
   CProtoPlugin *p = new CProtoPlugin;
   p->m_nPPID = LICQ_PPID;
+  p->m_szLibName = strdup("");
   list_protoplugins.push_back(p);
 }
 
@@ -326,7 +327,7 @@ bool CLicq::Init(int argc, char **argv)
   licqConf.SetSection("licq");
   unsigned short nVersion;
   licqConf.ReadNum("Version", nVersion, 0);
-  if (nVersion < 710)
+  if (nVersion < 1028)
   {
     fprintf(stderr, tr("Previous Licq config files detected.\n"
                        "Manual upgrade is necessary.  Follow the instructions\n"
@@ -757,7 +758,7 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
     return NULL;
   }
 
-p->fMain_tep = (void *(*)(void *))FindFunction(handle, "LProto_Main_tep");
+  p->fMain_tep = (void *(*)(void *))FindFunction(handle, "LProto_Main_tep");
   if (p->fMain_tep == NULL)
   {
     error = dlerror();
@@ -955,6 +956,19 @@ void CLicq::SaveLoadedPlugins()
     sprintf(szKey, "Plugin%d", i++);
     licqConf.WriteStr(szKey, (*iter)->LibName());
   }
+  
+  licqConf.WriteNum("NumProtoPlugins", (unsigned short)(list_protoplugins.size() - 1));
+  ProtoPluginsListIter it;
+  i = 1;
+  for (it = list_protoplugins.begin(); it != list_protoplugins.end(); it++)
+  {
+    if (strcmp((*it)->LibName(), "") != 0)
+    {
+      sprintf(szKey, "ProtoPlugin%d", i++);
+      licqConf.WriteStr(szKey, (*it)->LibName());
+    }
+  }
+
   licqConf.FlushFile();
 }
 
