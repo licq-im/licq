@@ -44,6 +44,8 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const cha
   lstSkins->setMinimumWidth(195);
 #if QT_VERSION >= 210
   lstSkins->setShowSortIndicator(true);
+#else
+  lstSkins->setMinimumSize(lstSkins->sizeHint());
 #endif
 
   QVBox* btn1 = new QVBox(grpSkins);
@@ -57,6 +59,8 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const cha
   lstIcons->setMinimumWidth(195);
 #if QT_VERSION >= 210
   lstIcons->setShowSortIndicator(true);
+#else
+  lstIcons->setMinimumSize(lstIcons->sizeHint());
 #endif
 
   QVBox* btn2 = new QVBox(grpIcons);
