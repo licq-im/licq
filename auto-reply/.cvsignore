@@ -7,3 +7,4 @@ ltconfig
 libtool
 stamp-h
 Makefile
+acinclude.m4
