@@ -349,7 +349,8 @@ bool CLicq::Init(int argc, char **argv)
     else  // If no plugins, try qt-gui
     {
       if (LoadPlugin("qt-gui", argc, argv) == NULL)
-        return false;
+        if (LoadPlugin("kde-gui", argc, argv) == NULL)
+          return false;
     }
   }
 
