@@ -387,8 +387,9 @@ class CContact
 {
 public:
   CContact(const char *s, unsigned long n, const char *a)
-    {  m_szId = strdup(s); m_nPPID = n; m_szAlias = strdup(a); }
-  CContact(unsigned long n, const char *a) { m_nUin = n; m_szAlias = strdup(a); }
+    {  m_szId = strdup(s); m_nPPID = n; m_szAlias = strdup(a); m_nUin = 0; }
+  CContact(unsigned long n, const char *a)
+    { m_szId = 0; m_nPPID = 0; m_nUin = n; m_szAlias = strdup(a); }
   ~CContact() { free(m_szAlias); free(m_szId); }
 
   unsigned long Uin() { return m_nUin; }
