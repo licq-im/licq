@@ -63,22 +63,22 @@ public:
 
   int Error(void)  { return (m_nError); }
   const char *FileName(void)  { return m_szFilename; }
-  
+
 protected:
   // Data members
   char *m_szFilename,
        *m_szBuffer;
-  int m_nBufPos, 
-      m_nBufSize, 
+  int m_nBufPos,
+      m_nBufSize,
       m_nError;
   char *m_szSectionName;
-  int m_nSectionStart, 
-      m_nSectionEnd;  
+  int m_nSectionStart,
+      m_nSectionEnd;
   unsigned short m_nFlags;
   bool //m_bEof,
        //m_bEos,
        m_bChanged;
-  
+
   // Functions
   char *ReadLine(char *_szBuffer);
   char *GetSectionFromLine(char *_szLine, char *_szBuffer);
@@ -87,7 +87,7 @@ protected:
   void Warn(int nError, const char *_sz = NULL);
   void InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd);
 
-  /*bool Eof(void) 
+  /*bool Eof(void)
     { return (m_bEof); };
   bool Eos(void)
     { return (m_bEos); };*/
