@@ -279,7 +279,6 @@ protected slots:
   void ToggleMiniMode();
   void ToggleShowOffline();
   void ToggleThreadView();
-  void nextServer();
   void autoAway();
   void aboutBox();
   void slot_updateContactList();

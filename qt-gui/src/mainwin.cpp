@@ -2732,15 +2732,6 @@ void CMainWindow::slot_miscmodes(int _nId)
 }
 
 
-
-//-----CMainWindow::nextServer------------------------------------------------
-void CMainWindow::nextServer()
-{
-  // Error reporting is done at the server level
-  licqDaemon->SwitchServer();
-}
-
-
 //-----ToggleShowOffline------------------------------------------------------
 void CMainWindow::ToggleShowOffline()
 {
@@ -3248,8 +3239,6 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()));
    mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()));
    mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
-   mnuSystem->insertSeparator();
-   mnuSystem->insertItem(tr("Next &Server"), this, SLOT(nextServer()));
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Sa&ve Settings"), this, SLOT(saveOptions()));
    mnuSystem->insertItem(tr("&Help"), mnuHelp);
