@@ -599,6 +599,7 @@ QWidget* OptionsDlg::new_network_options()
   edtFirewallHost = new QLineEdit(gbFirewall);
   chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"), gbFirewall);
   QWidget *dummy = new QWidget(gbFirewall);
+  if (dummy);
   lbl = new QLabel(tr("Port Range:"), gbFirewall);
   connect(chkFirewall, SIGNAL(toggled(bool)), lbl, SLOT(setEnabled(bool)));
   QWhatsThis::add(lbl, tr("Starting port for incoming connections."));
@@ -624,7 +625,7 @@ void OptionsDlg::slot_socks()
 {
   if (mainwin->licqDaemon->SocksEnabled())
   {
-    char *env = mainwin->licqDaemon->SocksServer();
+    const char *env = mainwin->licqDaemon->SocksServer();
     if (env == NULL)
       InformUser(this, tr("SOCKS5 support is built in but disabled.\n"
                           "To enable it, set the SOCKS5_SERVER\n"
