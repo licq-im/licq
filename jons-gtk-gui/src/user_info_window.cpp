@@ -110,7 +110,10 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 		general_table, 2, 1, is_o);
 	
 	// IP (never editable)
-	do_label_and_entry(entry, user->IpPortStr(buf), "IP:", 
+        char szIPPort[64];
+        char portBuf[32];
+	snprintf(szIPPort, 64, "%s:%s", user->IpStr(buf), user->PortStr(portBuf));
+	do_label_and_entry(entry, szIPPort, "IP:", 
 		general_table, 0, 2, false);
 
 	// Real IP (never editable)
