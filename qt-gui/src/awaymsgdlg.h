@@ -6,7 +6,6 @@
 class QPushButton;
 class QComboBox;
 class MLEditWrap;
-class QCheckBox;
 
 class AwayMsgDlg : public QDialog
 {
@@ -21,7 +20,6 @@ protected:
   QPopupMenu* mnuSelect;
   QPushButton* btnSelect;
   QPushButton *btnOk, *btnCancel;
-  QCheckBox *chkFilter;
   unsigned short m_nStatus;
   static QPoint snPos;
   short m_nSAR;

@@ -24,8 +24,6 @@
 #include <qpopupmenu.h>
 #include <qlayout.h>
 #include <qtimer.h>
-#include <qcheckbox.h>
-#include <qtooltip.h>
 
 #include "awaymsgdlg.h"
 #include "licq_log.h"
@@ -51,12 +49,6 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   mleAwayMsg = new MLEditWrap(true, this);
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
   top_lay->addWidget(mleAwayMsg);
-
-  chkFilter = new QCheckBox(tr("Apply user information filter (% arguments)"), this);
-  QToolTip::add(chkFilter, tr("Certain parameters in the Auto Response will be\n"
-                              "replaced by individual information of the user that\n"
-                              "fetches your auto response:\n") + gMainWindow->usprintfHelp);
-  top_lay->addWidget(chkFilter);
 
   mnuSelect = new QPopupMenu(this);
   connect(mnuSelect, SIGNAL(activated(int)), this, SLOT(slot_selectMessage(int)));
@@ -98,13 +90,13 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   mnuSelect->clear();
   switch (m_nStatus)
   {
-  case ICQ_STATUS_NA: m_nSAR = SAR_NA; break;
-  case ICQ_STATUS_OCCUPIED: m_nSAR = SAR_OCCUPIED; break;
-  case ICQ_STATUS_DND: m_nSAR = SAR_DND; break;
-  case ICQ_STATUS_FREEFORCHAT: m_nSAR = SAR_FFC; break;
-  case ICQ_STATUS_AWAY:
-  default:
-    m_nSAR = SAR_AWAY;
+    case ICQ_STATUS_NA: m_nSAR = SAR_NA; break;
+    case ICQ_STATUS_OCCUPIED: m_nSAR = SAR_OCCUPIED; break;
+    case ICQ_STATUS_DND: m_nSAR = SAR_DND; break;
+    case ICQ_STATUS_FREEFORCHAT: m_nSAR = SAR_FFC; break;
+    case ICQ_STATUS_AWAY:
+    default:
+      m_nSAR = SAR_AWAY;
   }
 
   if (m_nSAR >= 0) {
@@ -125,7 +117,6 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   else
     mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
                         .arg(ICQUser::StatusToStatusStr(m_nStatus, false)));
-  chkFilter->setChecked(o->FilterAutoResponse());
   gUserManager.DropOwner();
 
   mleAwayMsg->setFocus();
@@ -148,12 +139,11 @@ AwayMsgDlg::~AwayMsgDlg()
 void AwayMsgDlg::ok()
 {
   QString s = mleAwayMsg->text();
-  while(s[s.length()-1].isSpace())
+  while (s[s.length()-1].isSpace())
     s.truncate(s.length()-1);
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetAutoResponse(s.local8Bit());
-  o->SetFilterAutoResponse(chkFilter->isChecked());
   gUserManager.DropOwner();
   accept();
   close();
@@ -164,9 +154,10 @@ void AwayMsgDlg::ok()
 
 void AwayMsgDlg::slot_selectMessage(int result)
 {
-  if(result == 999)
+  if (result == 999)
     emit popupOptions(OptionsDlg::ODlgStatus);
-  else {
+  else
+  {
     SARList &sar = gSARManager.Fetch(m_nSAR);
     if ((unsigned) result < sar.size())
       mleAwayMsg->setText(sar[result]->AutoResponse());
