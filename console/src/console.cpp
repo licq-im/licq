@@ -5,6 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 #include <vector.h>
+#include <fstream.h>
 #ifdef HAVE_ERRNO_H
 #include <errno.h>
 #else
@@ -1452,9 +1453,32 @@ void CLicqConsole::InputSendFile(int cIn)
     return;
 
   case STATE_LE:
+  {
     // If we get NULL back, then we're not done yet
     if((sz = Input_Line(data->szFileName, data->nPos, cIn)) == NULL)
     	return;
+
+    // Check to make sure the file exists, if it doesn't then tell the
+    // user it doesn't and quit sending the file.i
+    ifstream check_file(data->szFileName);
+    
+    if(!check_file)
+    {
+       winMain->fProcessInput = &CLicqConsole::InputCommand;
+       
+       if(winMain->data != NULL)
+       {
+          delete winMain->data;
+          winMain->data = NULL;
+       }
+
+       winMain->state = STATE_COMMAND;
+       winMain->wprintf("%C%AFile Transfer aborted: No such file\n",
+                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
+       return;
+    }
+
+    check_file.close();
 
     // The input is done
     winMain->wprintf("%A%CEnter description:\n%s\n", A_BOLD, COLOR_WHITE,
@@ -1462,7 +1486,7 @@ void CLicqConsole::InputSendFile(int cIn)
     winMain->state = STATE_MLE;
     data->nPos = 0;
     break;
- 
+ }
  case STATE_MLE:
    // If we get NULL back, then we're not odne yet
    if((sz = Input_MultiLine(data->szDescription, data->nPos, cIn)) == NULL)
@@ -1493,8 +1517,12 @@ void CLicqConsole::InputSendFile(int cIn)
    winMain->event = licqDaemon->icqFileTransfer(data->nUin, data->szFileName,
    						data->szDescription,
 						ICQ_TCPxMSG_NORMAL);
-   break;
-   }
+     break;
+   case STATE_QUERY:
+     break;
+   case STATE_COMMAND:
+     break;
+  }
 }
 
 /*---------------------------------------------------------------------------
