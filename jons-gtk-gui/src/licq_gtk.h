@@ -349,6 +349,12 @@ extern void search_failed();
 extern void search_close(GtkWidget *, gpointer);
 
 
+/* Functions in security_window.cpp */
+extern void menu_security_window(GtkWidget *, gpointer);
+extern void ok_security_window(GtkWidget *, gpointer);
+extern void close_security_window(GtkWidget *, gpointer);
+
+
 /* Functions in status.cpp */
 extern GtkWidget *status_bar_new(gint, gint, gint);
 extern void status_bar_refresh();
