@@ -351,7 +351,15 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
   char szAlias[64];
   strcpy(szAlias, u->GetAlias());
   unsigned short nPort = u->Port();
+  int sd = u->SocketDesc();
   gUserManager.DropUser(u);
+
+  if (sd != -1)
+  {
+    gLog.Warn("%sConnection attempted to already connected user (%ld).\n",
+       L_WARNxSTR, nUin);
+    return sd;
+  }
 
   TCPSocket *s = new TCPSocket(nUin);
   if (!OpenConnectionToUser(nUin, s, nPort))
