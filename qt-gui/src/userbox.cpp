@@ -484,14 +484,15 @@ CUserView::~CUserView()
     {
       if (floaties.at(i) == this) {
         floaties.take(i);
-        i++;
         break;
       }
     }
-    while(i < floaties.size()-1)
+    while(i+1 < floaties.size()) {
         floaties.insert(i, floaties.at(i+1));
-
-    floaties.resize(floaties.size()-1);
+        i++;
+    }
+    if(floaties.size())
+        floaties.resize(floaties.size()-1);
   }
 }
 
