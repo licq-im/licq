@@ -197,7 +197,9 @@ char *CTranslator::NToRN(const char *_szOldStr)
   unsigned long j = 0;
   for (unsigned long i = 0; i <= nLen; i++)
   {
-    if (_szOldStr[i] == (char)0x0A) szNewStr[j++] = 0x0D;
+    if (_szOldStr[i] == (char)0x0A && 
+       (!i || _szOldStr[i-1] != (char)0x0D)) 
+      szNewStr[j++] = 0x0D;
     szNewStr[j++] = _szOldStr[i];
   }
   return (szNewStr);
