@@ -875,9 +875,12 @@ bool TCPSocket::SecureListen()
 
 void TCPSocket::SecureStop()
 {
-  pthread_mutex_destroy(&mutex_ssl);
-  if(m_pSSL) SSL_free(m_pSSL);
-  m_p_SSL = NULL;
+  if(m_pSSL)
+  {
+    pthread_mutex_destroy(&mutex_ssl);
+    SSL_free(m_pSSL);
+    m_p_SSL = NULL;
+  }
 }
 
 #else
