@@ -48,7 +48,7 @@ class ICQFunctions : public QWidget, public CUserFunctionDlg
    Q_OBJECT
 public:
   ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
-               unsigned long _nUin, bool _bIsOwner, bool isAutoClose,
+               unsigned long _nUin, bool isAutoClose,
                QWidget *parent = 0, const char *name = 0);
   virtual ~ICQFunctions();
   void setupTabs(int);

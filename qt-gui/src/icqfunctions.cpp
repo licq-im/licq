@@ -55,6 +55,7 @@
 #include "log.h"
 #include "sigman.h"
 #include "eventdesc.h"
+#include "gui-defines.h"
 
 #include "user.h"
 #include "mledit.h"
@@ -72,7 +73,7 @@ unsigned short ICQFunctions::s_nY = 100;
 
 //-----ICQFunctions::constructor---------------------------------------------
 ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
-                           unsigned long _nUin, bool _bIsOwner,
+                           unsigned long _nUin,
                            bool isAutoClose, QWidget *parent, const char *name)
   : QWidget(parent, name)
 {
@@ -80,7 +81,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   sigman = theSigMan;
   icqEventTag = NULL;
   m_nUin = _nUin;
-  m_bOwner = _bIsOwner;
+  m_bOwner = (m_nUin == gUserManager.OwnerUin());
 
   CreateReadEventTab();
   CreateSendEventTab();
@@ -550,17 +551,48 @@ void ICQFunctions::setupTabs(int index)
   move(s_nX, s_nY);
   printf("just shown 2: %d %d\n", x(), y());
 #endif
-  switch (index)
+  if (index == MENU_USER_VIEW || index == MENU_OWNER_VIEW)
+    tabs->showPage(fcnTab[TAB_READ]);
+  else if (index == MENU_USER_SENDxMSG)
   {
-  case 0: tabs->showPage(fcnTab[0]); break;
-  case 1: tabs->showPage(fcnTab[1]); rdbMsg->setChecked(true); specialFcn(0); break;
-  case 2: tabs->showPage(fcnTab[1]); rdbUrl->setChecked(true); specialFcn(1); break;
-  case 3: tabs->showPage(fcnTab[1]); rdbChat->setChecked(true); specialFcn(2); break;
-  case 4: tabs->showPage(fcnTab[1]); rdbFile->setChecked(true); specialFcn(3); break;
-  case 8: tabs->showPage(fcnTab[2]); break;
-  case 9: tabs->showPage(fcnTab[3]); break;
-  case 10: tabs->showPage(fcnTab[6]); break;
+    tabs->showPage(fcnTab[TAB_SEND]);
+    rdbMsg->setChecked(true);
+    specialFcn(0);
   }
+  else if (index == MENU_USER_SENDxURL)
+  {
+    tabs->showPage(fcnTab[TAB_SEND]);
+    rdbUrl->setChecked(true);
+    specialFcn(1);
+  }
+  else if (index == MENU_USER_SENDxCHAT)
+  {
+    tabs->showPage(fcnTab[TAB_SEND]);
+    rdbChat->setChecked(true);
+    specialFcn(2);
+  }
+  else if (index == MENU_USER_SENDxFILE)
+  {
+    tabs->showPage(fcnTab[TAB_SEND]);
+    rdbFile->setChecked(true);
+    specialFcn(3);
+  }
+  else if (index == MENU_USER_GENERAL || index == MENU_OWNER_GENERAL)
+    tabs->showPage(fcnTab[TAB_GENERALINFO]);
+  else if (index == MENU_USER_MORE || index == MENU_OWNER_MORE)
+    tabs->showPage(fcnTab[TAB_MOREINFO]);
+  else if (index == MENU_USER_WORK || index == MENU_OWNER_WORK)
+    tabs->showPage(fcnTab[TAB_WORKINFO]);
+  else if (index == MENU_USER_ABOUT || index == MENU_OWNER_ABOUT)
+    tabs->showPage(fcnTab[TAB_ABOUT]);
+  else if (index == MENU_USER_HISTORY || index == MENU_OWNER_HISTORY)
+    tabs->showPage(fcnTab[TAB_HISTORY]);
+  else
+  {
+    gLog.Warn("%sInternal Error: ICQFunctions::setupTabs(): Invalid index (%d).\n",
+              L_WARNxSTR, index);
+  }
+
 
 }
 
