@@ -70,7 +70,6 @@ protected:
 
 class CEComboBox : public QComboBox
 {
-//   Q_OBJECT
 public:
    CEComboBox (bool _bAppearEnabledAlways, QWidget *parent = 0, char *name = 0);
    void setNamedFgColor(char *);
@@ -84,21 +83,14 @@ protected:
 
 class CInfoField : public QLineEdit
 {
-  Q_OBJECT
 public:
   CInfoField(QWidget *parent, bool readonly);
   void setData(const char *data);
   void setData(QString data);
   void setData(const unsigned long data);
   void SetReadOnly(bool);
-  bool ReadOnly() { return m_bReadOnly; }
-public slots:
-  void setEnabled(bool);
 protected:
   QColor baseRO, baseRW;
-  bool m_bReadOnly;
-  void keyPressEvent( QKeyEvent *e );
-  void mouseReleaseEvent(QMouseEvent *e);
 };
 
 

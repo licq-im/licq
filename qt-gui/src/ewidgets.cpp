@@ -334,47 +334,18 @@ CInfoField::CInfoField(QWidget *parent, bool readonly)
 
 void CInfoField::SetReadOnly(bool b)
 {
-  m_bReadOnly = b;
   QColorGroup cg(palette().normal().foreground(),
                  palette().normal().background(),
                  palette().normal().light(),
                  palette().normal().dark(),
                  palette().normal().mid(),
                  palette().normal().text(),
-                 m_bReadOnly ? baseRO : baseRW);
+                 b ? baseRO : baseRW);
 
   setPalette(QPalette(cg, palette().disabled(), cg));
   setReadOnly(b);
 }
 
-void CInfoField::keyPressEvent( QKeyEvent *e )
-{
-  if (m_bReadOnly)
-  {
-    if ( e->ascii() >= 32 ||
-         e->key() == Key_Delete || e->key() == Key_Backspace ||
-        ( (e->state() & ControlButton) && (e->key() == Key_D ||
-                                           e->key() == Key_H ||
-                                           e->key() == Key_K ||
-                                           e->key() == Key_V ||
-                                           e->key() == Key_X)
-        )
-       )
-    {
-      e->ignore();
-      return;
-    }
-  }
-  QLineEdit::keyPressEvent(e);
-}
-
-
-void CInfoField::mouseReleaseEvent(QMouseEvent *e)
-{
-  if (m_bReadOnly && e->button() == MidButton)
-    return;
-  QLineEdit::mouseReleaseEvent(e);
-}
 
 
 void CInfoField::setData(const char *data)
@@ -396,11 +367,6 @@ void CInfoField::setData(const unsigned long data)
   setData(t);
 }
 
-
-void CInfoField::setEnabled(bool _b)
-{
-  QLineEdit::setEnabled(_b);
-}
 
 
 // -----------------------------------------------------------------------------
