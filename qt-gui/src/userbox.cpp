@@ -719,10 +719,7 @@ QString CUserViewItem::key (int column, bool ascending) const
   if (column == 0)
     return (m_sPrefix + m_sSortKey + text(1).lower());
   else
-    if(gMainWindow->m_nSortByStatus > 0)
-      return(m_sPrefix + m_sSortKey + QListViewItem::key(column, ascending).lower());
-    else
-      return(QListViewItem::key(column, ascending).lower());
+    return(QListViewItem::key(column, ascending).lower());
 }
 
 UserFloatyList* CUserView::floaties = 0;
