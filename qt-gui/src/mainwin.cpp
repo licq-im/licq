@@ -2496,7 +2496,10 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
       tab = UserInfoDlg::HistoryInfo;
       break;
     case mnuUserGeneral:
-      tab = UserInfoDlg::GeneralInfo;
+      if (isalpha(szId[0]))
+        tab = UserInfoDlg::AboutInfo;
+      else
+        tab = UserInfoDlg::GeneralInfo;
       break;
     }
     if(toggle && f->isTabShown(tab))
@@ -2523,7 +2526,10 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
       f->showTab(UserInfoDlg::HistoryInfo);
       break;
     case mnuUserGeneral:
-      f->showTab(UserInfoDlg::GeneralInfo);
+      if (isalpha(szId[0]))
+        f->showTab(UserInfoDlg::AboutInfo);
+      else
+        f->showTab(UserInfoDlg::GeneralInfo);
       break;
   }
   f->show();

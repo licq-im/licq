@@ -1163,13 +1163,13 @@ void UserInfoDlg::CreateAbout()
   p->setSpacing(8);
 
   lblAbout = new QLabel(tr("About:"), p);
-  mleAbout = new MLEditWrap(true, p);
-  mleAbout->setReadOnly(!m_bOwner);
-#if QT_VERSION < 300
-  // Windows ICQ seems to limit the about info to 450 chars
-  // so we do the same
-  mleAbout->setMaxLength(450);
+  mlvAbout = new CHistoryWidget(p, "About");//EditWrap(true, p);
+  mlvAbout->setReadOnly(!m_bOwner);
+  mlvAbout->setTextFormat(RichText);
+#if QT_VERSION >= 300
+  connect(mlvAbout, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
+
 }
 
 void UserInfoDlg::SetAbout(ICQUser *u)
@@ -1185,10 +1185,12 @@ void UserInfoDlg::SetAbout(ICQUser *u)
   }
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
+  bool bUseHTML = isalpha(u->IdString()[0]);
 
   QString aboutstr = codec->toUnicode(u->GetAbout());
   aboutstr.replace(QRegExp("\r"), "");
-  mleAbout->setText(aboutstr);
+  mlvAbout->clear();
+  mlvAbout->append(MLView::toRichText(u->GetAbout(), true, bUseHTML));
 
   if (bDropUser) gUserManager.DropUser(u);
 }
@@ -1199,7 +1201,7 @@ void UserInfoDlg::SaveAbout()
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
-  QString str = mleAbout->text();
+  QString str = mlvAbout->text();
 
   u->SetAbout(codec->fromUnicode(str.left(450)));
   gUserManager.DropUser(u);
@@ -2249,20 +2251,20 @@ void UserInfoDlg::slotRetrieve()
       u->SaveGeneralInfo();
       gUserManager.DropUser(u);
       
-      icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
+      icqEventTag = server->icqRequestMetaInfo(m_szId);
       break;
     }
     case MoreInfo:
-      icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
+      icqEventTag = server->icqRequestMetaInfo(m_szId);
       break;
     case More2Info:
-      icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
+      icqEventTag = server->icqRequestMetaInfo(m_szId);
       break;
     case WorkInfo:
-      icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
+      icqEventTag = server->icqRequestMetaInfo(m_szId);
       break;
     case AboutInfo:
-      icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
+      icqEventTag = server->icqRequestMetaInfo(m_szId);
       break;
     case PhoneInfo:
     {
@@ -2373,7 +2375,7 @@ void UserInfoDlg::slotUpdate()
                                          occupation,
                                          nfoCompanyHomepage->text().local8Bit());
   break;
-  case AboutInfo:    icqEventTag = server->icqSetAbout(codec->fromUnicode(mleAbout->text()));  break;
+  case AboutInfo:    icqEventTag = server->icqSetAbout(codec->fromUnicode(mlvAbout->text()));  break;
   case PhoneInfo:
   {
     EditPhoneDlg *epd = new EditPhoneDlg(this);

@@ -128,7 +128,7 @@ protected:
   // About
   void CreateAbout();
   QLabel *lblAbout;
-  MLEditWrap *mleAbout;
+  MLView  *mlvAbout;
 
   // PhoneBook
   void CreatePhoneBook();
