@@ -29,17 +29,48 @@
 
 using namespace std;
 
-bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
+/*! \brief Dialog with configurable yes/no buttons
+ *
+ * In it's easiest form, this dialog displays szQuery and the buttons szBtn1 and szBtn2. 
+ * szBtn1 means true/yes, 
+ * szBtn2 means false/no. 
+ * 
+ * When bConfirmYes is true, then a second dialog asks the user to confirm his positive 
+ * decision, the displayed confirmation message is passed using the QString szConfirmYes.
+ *
+ * When bConfirmNo is true, then a second dialog asks the user to confirm his negative 
+ * decision, the displayed confirmation message is passed using the QString szConfirmNo.
+ */
+bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, bool bConfirmYes, QString szConfirmYes, bool bConfirmNo, QString szConfirmNo)
 {
+  bool result;
+
 #ifdef USE_KDE
 #if KDE_VERSION >= 290
-  return ( KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"), szBtn1, szBtn2, QString::null, false) == KMessageBox::Yes);
+  result = ( KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"), szBtn1, szBtn2, QString::null, false) == KMessageBox::Yes);
+  // The user must confirm his decision!
+  if(result == true && bConfirmYes && szConfirmYes)
+    result = ( KMessageBox::questionYesNo(q, szConfirmYes, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), QString::null, false) == KMessageBox::Yes);
+  else if(result == false && bConfirmNo && szConfirmNo)
+    result = ( KMessageBox::questionYesNo(q, szConfirmNo, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), QString::null, false) == KMessageBox::Yes);
 #else
-  return ( KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"), szBtn1, szBtn2, false) == KMessageBox::Yes);
+  result = ( KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"), szBtn1, szBtn2, false) == KMessageBox::Yes);
+  // The user must confirm his decision!
+  if(result == true && bConfirmYes && szConfirmYes)
+    result = ( KMessageBox::questionYesNo(q, szConfirmYes, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), false) == KMessageBox::Yes);
+  else if(result == false && bConfirmNo && szConfirmNo)
+    result = ( KMessageBox::questionYesNo(q, szConfirmNo, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), false) == KMessageBox::Yes);
 #endif
 #else
-  return ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2) == 0);
+  result = ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2) == 0);
+  // The user must confirm his decision!
+  if(result == true && bConfirmYes && szConfirmYes)
+    result = ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szConfirmYes, QMessageBox::tr("Yes"), QMessageBox::tr("No")) == 0);
+  else if(result == false && bConfirmNo && szConfirmNo)
+    result = ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szConfirmNo, QMessageBox::tr("Yes"), QMessageBox::tr("No")) == 0);
 #endif
+  
+  return result;
 }
 
 

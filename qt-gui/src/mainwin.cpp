@@ -3858,10 +3858,9 @@ void CMainWindow::slot_stats()
   {
     s += tr("%1: %2 / %3\n").arg(iter->Name()).arg(iter->Today()).arg(iter->Total());
   }
-  if (!QueryUser(this, s, tr("&Ok"), tr("&Reset")))
-  {
+  
+  if (QueryUser(this, s, tr("&Ok"), tr("&Reset"), false, NULL, true, tr("Do you really want to reset your stats?")))
     licqDaemon->ResetStats();
-  }
 #else
   QString s = tr("Daemon Statistics\n\n");
   QDateTime t_today;

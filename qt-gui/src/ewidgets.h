@@ -15,7 +15,7 @@ class CUserEvent;
 class ICQEvent;
 class CMainWindow;
 
-bool QueryUser(QWidget *, QString, QString, QString);
+bool QueryUser(QWidget *, QString, QString, QString, bool bConfirmYes=false, QString szConfirm=NULL, bool bConfirmNo=false, QString szConfirmNo=NULL);
 int QueryUser(QWidget *, QString, QString, QString, QString);
 void InformUser(QWidget *q, QString);
 void WarnUser(QWidget *q, QString szInfo);
