@@ -594,6 +594,8 @@ unsigned short CUserManager::GenerateSID()
   srand(time(NULL));
   nSID = 1+(int)(65535.0*rand()/(RAND_MAX+1.0));
 
+  nSID &= 0x7FFF; // server limit it looks like
+
   // Make sure we have a unique number - a map would be better
   do
   {
