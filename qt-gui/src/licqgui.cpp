@@ -28,9 +28,11 @@
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
 #include <qsessionmanager.h>
+#include <qaccel.h>
 #if QT_VERSION >= 220
 #include <qmotifplusstyle.h>
 #endif
+#include "licqgui.h"
 
 #ifdef HAVE_LOCALE_H
 #include <locale.h>
@@ -39,7 +41,6 @@
 
 #include "jfcstyle.h"
 #include "mainwin.h"
-#include "licqgui.h"
 #include "sigman.h"
 #include "outputwin.h"
 #include "licq_log.h"
@@ -170,15 +171,18 @@ void CLicqGui::saveState(QSessionManager& sm)
 
 CLicqGui::CLicqGui(int argc, char **argv)
 #ifdef USE_KDE
-: KApplication(argc, argv, "Licq")
+  : KApplication(argc, argv, "Licq")
 #else
-: QApplication(argc, argv)
+  : QApplication(argc, argv)
 #endif
 {
   char skinName[32] = "";
   char iconsName[32] = "";
   char styleName[32] = "";
   bool bStartHidden = false;
+
+  // initialize Members
+  grabKeysym = 0;
 
   // store command line arguments for session management
   cmdLineParams += QString(argv[0]);
@@ -301,15 +305,113 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
 
   return r;
 }
-/*
+
+
+// -----------------------------------------------------------------------------
+// global accelerator stuff
+
+#include <X11/X.h>
 #include <X11/Xlib.h>
+#include <X11/keysym.h>
+
+static unsigned int keyToXMod( int keyCode )
+{
+	uint mod = 0;
+
+	if ( keyCode == 0 ) return mod;
+
+	if ( keyCode & Qt::SHIFT )
+		 mod |= ShiftMask;
+	if ( keyCode & Qt::CTRL )
+		 mod |= ControlMask;
+	if ( keyCode & Qt::ALT )
+		 mod |= Mod1Mask;
+
+	return mod;
+}
+
+static uint keyToXSym( int keyCode )
+{
+  char *toks[4], *next_tok;
+  char sKey[100];
+  int nb_toks = 0;
+
+  uint keysym = 0;
+  QString s = QAccel::keyToString( keyCode );
+
+  if ( s.isEmpty() ) return keysym;
+
+  qstrncpy(sKey, s.ascii(), sizeof(sKey));
+  next_tok = strtok( sKey, "+" );
+
+  if ( next_tok == 0L ) return 0;
+
+  do {
+    toks[nb_toks] = next_tok;
+    nb_toks++;
+    if ( nb_toks == 5 ) return 0;
+    next_tok = strtok( 0L, "+" );
+  } while ( next_tok != 0L );
+
+  // Test for exactly one key (other tokens are accelerators)
+  // Fill the keycode with infos
+  bool  keyFound = false;
+  for ( int i=0; i<nb_toks; i++ ) {
+    if (qstricmp(toks[i], "SHIFT") != 0 &&
+        qstricmp(toks[i], "CTRL")  != 0 &&
+        qstricmp(toks[i], "ALT")   != 0) {
+      if ( keyFound ) return 0;
+      keyFound = true;
+      QCString l = toks[i];
+      l = l.lower();
+      keysym = XStringToKeysym(l.data());
+      if (keysym == NoSymbol){
+        keysym = XStringToKeysym( toks[i] );
+      }
+      if ( keysym == NoSymbol ) {
+        return 0;
+      }
+    }
+  }
+
+  return keysym;
+}
+
+bool CLicqGui::grabKey(QString key)
+{
+  int keyCode = QAccel::stringToKey(key);
+
+  if(!keyCode) return false;
+
+  grabKeysym = keyCode;
+
+  XGrabKey(qt_xdisplay(),
+           XKeysymToKeycode(qt_xdisplay(), keyToXSym(keyCode)), keyToXMod(keyCode),
+           qt_xrootwin(), True,
+           GrabModeAsync, GrabModeSync);
+
+  return true;
+}
+
 
 bool CLicqGui::x11EventFilter(XEvent *e)
 {
-  QETWidget *widget = (QETWidget*)QWidget::find( (WId)e->xany.window );
-  printf("event %d %d %d\n", e->type, widget, e->xany.window);
+//   QETWidget *widget = (QETWidget*)QWidget::find( (WId)e->xany.window );
+//   printf("event %d %d %d\n", e->type, widget, e->xany.window);
+
+  if ( e->type != KeyPress || !grabKeysym ) return QApplication::x11EventFilter(e);
+
+  unsigned int mod = e->xkey.state & (ControlMask | ShiftMask | Mod1Mask);
+  unsigned int keysym = XKeycodeToKeysym(qt_xdisplay(), e->xkey.keycode, 0);
+
+  if(keysym == keyToXSym(grabKeysym) && mod == keyToXMod(grabKeysym))
+    licqMainWindow->callMsgFunction();
+
+  if ( !QWidget::keyboardGrabber() ) {
+    XAllowEvents(qt_xdisplay(), AsyncKeyboard, CurrentTime);
+    XUngrabKeyboard(qt_xdisplay(), CurrentTime);
+    XSync(qt_xdisplay(), false);
+  }
+
   return QApplication::x11EventFilter(e);
 }
-*/
-
-

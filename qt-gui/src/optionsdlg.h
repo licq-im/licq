@@ -52,8 +52,8 @@ protected:
    // appearance tab
    QWidget* new_appearance_options();
    QGroupBox *boxFont, *boxUserWin, *boxDocking, *boxLocale;
-   QLabel *lblFont, *lblEditFont, *lblFrameStyle;
-   QLineEdit *edtFont, *edtEditFont, *edtFrameStyle;
+   QLabel *lblFont, *lblEditFont, *lblFrameStyle, *lblHotKey;
+   QLineEdit *edtFont, *edtEditFont, *edtFrameStyle, *edtHotKey;
    QPushButton *btnFont, *btnEditFont;
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
              *chkFontStyles, *chkUseDock, *chkDockFortyEight,

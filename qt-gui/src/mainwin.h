@@ -54,6 +54,8 @@ typedef QList<UserInfoDlg> UserInfoList;
 class CMainWindow : public QWidget
 {
   Q_OBJECT
+  friend class CLicqGui;
+
 public:
   CMainWindow(CICQDaemon *theServer, CSignalManager *theSigMan,
               CQtLogWindow *theLogWindow, bool bStartHidden,
@@ -96,6 +98,8 @@ public:
        m_bAutoPosReplyWin,
        m_bAutoSendThroughServer,
        m_bEnableMainwinMouseMovement;
+
+  QString m_MsgAutopopupKey;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;

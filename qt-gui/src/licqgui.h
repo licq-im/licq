@@ -28,10 +28,12 @@ public:
   ~CLicqGui(void);
   int Run(CICQDaemon *);
   void Shutdown(void);
-  //virtual bool x11EventFilter(XEvent *);
+  virtual bool x11EventFilter(XEvent *);
 
   virtual void commitData(QSessionManager& sm);
   virtual void saveState(QSessionManager& sm);
+
+  bool grabKey(QString key);
 
 protected:
   char *m_szSkin, *m_szIcons;
@@ -40,6 +42,7 @@ protected:
   CSignalManager *licqSignalManager;
   CQtLogWindow *licqLogWindow;
   QStringList cmdLineParams;
+  int grabKeysym;
 
   QStyle *SetStyle(const char *_szStyle);
 };

@@ -47,6 +47,7 @@ extern "C" {
 #include <qapplication.h>
 #endif
 
+#include <qaccel.h>
 #include <qimage.h>
 #include <qwindowsstyle.h>
 #include <qdatetime.h>
@@ -54,6 +55,7 @@ extern "C" {
 #include <qlayout.h>
 #include <qtextview.h>
 
+#include "licqgui.h"
 #include "mainwin.h"
 #include "licq_icq.h"
 #include "licq_sar.h"
@@ -351,6 +353,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.SetSection("functions");
   licqConf.ReadBool("AutoClose", m_bAutoClose, true);
   licqConf.ReadBool("AutoPopup", m_bAutoPopup, false);
+  licqConf.ReadStr("MsgPopupKey", szTemp, "none");
+
+  m_MsgAutopopupKey = QString::fromLatin1(szTemp);
+  if(!(!szTemp || !stricmp(szTemp, "none"))) {
+    if(!static_cast<CLicqGui*>(qApp)->grabKey(m_MsgAutopopupKey))
+       gLog.Error("%sUnknown popup key: %s\n", L_INITxSTR, szTemp);
+  }
 
   m_nCurrentGroup = gUserManager.DefaultGroup();
   m_nGroupType = GROUPS_USER;
@@ -2145,6 +2154,7 @@ void CMainWindow::saveOptions()
   licqConf.SetSection("functions");
   licqConf.WriteBool("AutoClose", m_bAutoClose);
   licqConf.WriteBool("AutoPopup", m_bAutoPopup);
+  licqConf.WriteStr("MsgPopupKey", m_MsgAutopopupKey.isEmpty() ? "none" : m_MsgAutopopupKey.latin1());
 
   licqConf.SetSection("appearance");
   licqConf.WriteStr("Skin", skin->szSkinName);

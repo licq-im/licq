@@ -196,6 +196,7 @@ void OptionsDlg::SetupOptions()
   chkBoldOnMsg->setChecked(mainwin->m_bBoldOnMsg);
   chkManualNewUser->setChecked(mainwin->m_bManualNewUser);
   edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
+  edtHotKey->setText(mainwin->m_MsgAutopopupKey);
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
@@ -391,6 +392,7 @@ void OptionsDlg::ApplyOptions()
                       chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE;
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
+  mainwin->m_MsgAutopopupKey = edtHotKey->text();
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
   mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
@@ -1107,8 +1109,16 @@ QWidget* OptionsDlg::new_column_options()
                                     " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
                                     " + 240 (Shadow)"));
   edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
+
   chkSysBack = new QCheckBox(tr("Use System Background Color"), boxUserWin);
 
+  hlay = new QHBox(boxUserWin);
+  lblHotKey = new QLabel(tr("Hot key: "), hlay);
+  edtHotKey = new QLineEdit(hlay);
+  QWhatsThis::add(lblHotKey, tr("Hotkey pops up the next pending message\n"
+                                "Enter the hotkey literally, like \"shift+f10\", "
+                                "\"none\" for disabling\n"
+                                "changes here require a Restart to take effect!\n"));
 
   QVBoxLayout *g_main = new QVBoxLayout(w, 10, 5);
   g_main->addWidget(grp);
