@@ -242,8 +242,8 @@ void menu_options_create()
 		0, 1, 0, 1, GTK_FILL, GTK_FILL, 3, 3);
 
 	ow->btnSOCKS = gtk_button_new_with_label("SOCKS5 Proxy");
-	gtk_signal_connect(GTK_OBJECT(ow->btnSOCKS), "clicked",
-		GTK_SIGNAL_FUNC(SOCKSClicked), 0);
+	//gtk_signal_connect(GTK_OBJECT(ow->btnSOCKS), "clicked",
+	//	GTK_SIGNAL_FUNC(SOCKSClicked), 0);
 	gtk_table_attach(GTK_TABLE(tblFirewall), ow->btnSOCKS, 0, 1, 1, 2,
 		GtkAttachOptions(0),
 		GtkAttachOptions(0), 3, 3);
