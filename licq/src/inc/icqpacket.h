@@ -32,9 +32,6 @@ protected:
 };
 
 //=====UDP======================================================================
-#define MODE_DIRECT 0x04
-#define MODE_INDIRECT 0x06
-
 
 //-----PacketUdp----------------------------------------------------------------
 class CPacketUdp : public CPacket
@@ -378,6 +375,7 @@ protected:
   unsigned short m_nCountryCode;
   char m_nTimezone;
   char m_nAuthorization;
+  char m_nWebAware;
   char m_nHideEmail;
 
 friend class CICQDaemon;

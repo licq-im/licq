@@ -19,6 +19,9 @@ extern int errno;
 #include "translate.h"
 #include "log.h"
 
+#define DEBUG_ENCRYPTION(x)
+//#define DEBUG_ENCRYPTION(x) printf x
+
 #if ICQ_VERSION == 4
 static unsigned char icq_check_data[256] = {
 	0x0a, 0x5b, 0x31, 0x5d, 0x20, 0x59, 0x6f, 0x75,
@@ -179,19 +182,17 @@ void CPacketUdp::Encrypt(void)
                        ( buf[4] << 16 ) |
                        ( buf[2] << 8 ) |
                        ( buf[6] );
+  DEBUG_ENCRYPTION(("chk1: %08lX\n", chk1));
   unsigned short r1 = 24 + rand() % (l - 24);
-  //static unsigned short r2 = 0;
-  //r2 &= 0xFF;
   unsigned short r2 = rand() & 0xFF;
-  //printf("r2: %d [%d]\n", r2, icq_check_data[r2]);
   unsigned long chk2 = ( r1 << 24 ) |
                        ( buf[r1] << 16 ) |
                        ( r2 << 8 ) |
                        ( icq_check_data[r2] );
+  DEBUG_ENCRYPTION(("chk2: %08lX\n", chk2));
   chk2 ^= 0x00FF00FF;
   m_nCheckSum = chk1 ^ chk2;
   unsigned long key = l * 0x68656C6C + m_nCheckSum;
-  //if (getCommand() != ICQ_CMDxSND_ACK) r2++;
 
   unsigned long k = 0;
   for (unsigned short i = 10; i < l; i += 4)
@@ -205,6 +206,7 @@ void CPacketUdp::Encrypt(void)
   }
 
   // Add in the checkcode
+  DEBUG_ENCRYPTION(("checksum: %08lX\n", m_nCheckSum));
   unsigned long a1 = m_nCheckSum & 0x0000001F;
   unsigned long a2 = m_nCheckSum & 0x03E003E0;
   unsigned long a3 = m_nCheckSum & 0xF8000400;
@@ -772,6 +774,8 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   m_nAuthorization = o->GetAuthorization() ? 0 : 1;
+  //m_nWebAware = o->GetWebAware() ? 1 : 0;
+  m_nWebAware = 1;
   gUserManager.DropOwner();
   m_nHideEmail = bHideEmail ? 1 : 0;
 
@@ -786,8 +790,9 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_szAlias = buffer->PackString(szAlias);
   m_szFirstName = buffer->PackString(szFirstName);
   szLastName = buffer->PackString(szLastName);
-  szEmail1 = buffer->PackString(szEmail1);
-  szEmail2 = buffer->PackString(szEmail2);
+  m_szEmail1 = buffer->PackString(szEmail1);
+  m_szEmail2 = buffer->PackString(szEmail2);
+  buffer->PackString(szEmail1);
   szCity = buffer->PackString(szCity);
   szState = buffer->PackString(szState);
   szPhoneNumber = buffer->PackString(szPhoneNumber);
@@ -798,7 +803,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   buffer->PackUnsignedShort(m_nCountryCode);
   buffer->PackChar(m_nTimezone);
   buffer->PackChar(m_nAuthorization);
-  buffer->PackChar(1);
+  buffer->PackChar(m_nWebAware);
   buffer->PackChar(m_nHideEmail);
 
   Encrypt();
@@ -832,8 +837,8 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
 
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedShort(m_nAge);
-  m_szHomepage = buffer->PackString(szHomepage);
   buffer->PackChar(nGender);
+  m_szHomepage = buffer->PackString(szHomepage);
   buffer->PackChar(m_nBirthYear);
   buffer->PackChar(m_nBirthMonth);
   buffer->PackChar(m_nBirthDay);
