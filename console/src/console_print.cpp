@@ -432,6 +432,18 @@ void CLicqConsole::PrintHelp()
   winMain->wprintf("   $ (last user) or # (owner)");
   PrintBoxRight(48);
 
+  waddch(winMain->Win(), ACS_VLINE);
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" To end text use \".\" (accept),");
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("   \".d/s\" (force direct/server),");
+  PrintBoxRight(48);
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf("   \".u\" (urgent), or \",\" (abort)");
+  PrintBoxRight(48);
+
   PrintBoxBottom(48);
 }
 

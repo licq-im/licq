@@ -865,13 +865,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
 
   if (e->Result() == EVENT_ACKED) return;
 
-  // The search is finished if it was a success and it is the last WP user
-  // found OR it was a success and it's a search by info or UIN
-  if ((e->Result() == EVENT_SUCCESS && 
-       e->SubCommand() == ICQ_CMDxMETA_SEARCHxWPxLAST_USER) || 
-      (e->Result() == EVENT_SUCCESS &&
-       (e->Command() == ICQ_CMDxSND_SEARCHxUIN ||
-        e->Command() == ICQ_CMDxSND_SEARCHxINFO)))
+  if (e->Result() == EVENT_SUCCESS)
   {
     if (e->SearchAck() == NULL || e->SearchAck()->More() == 0)
     {
@@ -1445,12 +1439,12 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
     time_t t = e->Time();
     char *szTime = ctime(&t);
     szTime[16] = '\0';
-    winMain->wprintf("%A%C%s from %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
-                     COLOR_WHITE, e->Description(),
+    winMain->wprintf("%B%s from %b%s%B (%b%s%B) [%b%c%c%c%B]:\n%b%s\n",
+                     e->Description(),
                      u->User() ? u->GetAlias() : "Server",
                      szTime, e->IsDirect() ? 'D' : '-',
                      e->IsMultiRec() ? 'M' : '-', e->IsUrgent() ? 'U' : '-',
-                     A_BOLD, e->Text());
+                     e->Text());
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
       waddch(winMain->Win(), ACS_HLINE);
@@ -1459,9 +1453,9 @@ void CLicqConsole::UserCommand_View(unsigned long nUin, char *)
     wattroff(winMain->Win(), A_BOLD);
 
     // Do we want to accept the file transfer?
-    if(e->SubCommand() == ICQ_CMDxSUB_FILE)
+    if (e->SubCommand() == ICQ_CMDxSUB_FILE)
       FileChatOffer(e->Sequence(), u->Uin());
-  
+
     delete e;
     gUserManager.DropUser(u);
     //PrintUsers();
@@ -1699,8 +1693,8 @@ void CLicqConsole::UserCommand_Msg(unsigned long nUin, char *)
   winMain->state = STATE_MLE;
   winMain->data = new DataMsg(nUin);
 
-  winMain->wprintf("%AEnter message to %s (%ld):\n%s\n", A_BOLD, u->GetAlias(),
-                   nUin, MLE_HELP);
+  winMain->wprintf("%BEnter message to %b%s%B (%b%ld%B):\n", u->GetAlias(),
+                   nUin);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1817,8 +1811,8 @@ void CLicqConsole::UserCommand_SendFile(unsigned long nUin, char *)
   winMain->data = new DataSendFile(nUin);
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  winMain->wprintf("%AEnter file to send to %s (%ld):%Z\n", A_BOLD,
-       u->GetAlias(), nUin, A_BOLD);
+  winMain->wprintf("%BEnter file to send to %b%s%B (%b%ld%B):\n",
+       u->GetAlias(), nUin);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1847,11 +1841,11 @@ void CLicqConsole::InputSendFile(int cIn)
     // Check to make sure the file exists, if it doesn't then tell the
     // user it doesn't and quit sending the file.
     ifstream check_file(data->szFileName);
-    
+
     if(!check_file)
     {
        winMain->fProcessInput = &CLicqConsole::InputCommand;
-       
+
        if(winMain->data != NULL)
        {
           delete winMain->data;
@@ -1867,8 +1861,7 @@ void CLicqConsole::InputSendFile(int cIn)
     check_file.close();
 
     // The input is done
-    winMain->wprintf("%A%CEnter description:\n%s\n", A_BOLD, COLOR_WHITE,
-             MLE_HELP);
+    winMain->wprintf("%BEnter description:\n");
     winMain->state = STATE_MLE;
     data->nPos = 0;
     break;
@@ -1877,7 +1870,7 @@ void CLicqConsole::InputSendFile(int cIn)
    // If we get NULL back, then we're not odne yet
    if((sz = Input_MultiLine(data->szDescription, data->nPos, cIn)) == NULL)
       return;
-   
+
    // The input is done, so process it, sz points to '.'
    if(*sz == ',')
    {
@@ -1890,7 +1883,7 @@ void CLicqConsole::InputSendFile(int cIn)
       }
 
   winMain->state = STATE_COMMAND;
-  winMain->wprintf("%C%AFile Transfer aborted.\n", 
+  winMain->wprintf("%C%AFile Transfer aborted.\n",
        m_cColorInfo->nColor, m_cColorInfo->nAttr);
   return;
    }
@@ -1920,7 +1913,7 @@ void CLicqConsole::UserCommand_SetAutoResponse(unsigned long nUin, char *)
   winMain->state = STATE_MLE;
   winMain->data = new DataAutoResponse();
 
-  winMain->wprintf("%A%CEnter auto response:\n", A_BOLD, COLOR_WHITE);
+  winMain->wprintf("%BEnter auto response:\n");
   winMain->RefreshWin();
 }
 
@@ -1979,7 +1972,7 @@ void CLicqConsole::UserCommand_Url(unsigned long nUin, char *)
   winMain->data = new DataUrl(nUin);
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  winMain->wprintf("%A%CEnter URL to %s (%ld): ", A_BOLD, COLOR_WHITE,
+  winMain->wprintf("%BEnter URL to %b%s%B (%b%ld%B): ",
                    u->GetAlias(), nUin);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
@@ -2007,8 +2000,7 @@ void CLicqConsole::InputUrl(int cIn)
     if ((sz = Input_Line(data->szUrl, data->nPos, cIn)) == NULL)
       return;
     // The input is done
-    winMain->wprintf("%A%CEnter description:\n%s\n", A_BOLD, COLOR_WHITE,
-                     MLE_HELP);
+    winMain->wprintf("%BEnter description:\n");
     winMain->state = STATE_MLE;
     data->nPos = 0;
     break;
@@ -2816,8 +2808,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
         default:
         {
            winMain->state = STATE_MLE;
-           winMain->wprintf("\n%AEnter a refusal reason:\n%s%Z\n",
-             A_BOLD, MLE_HELP, A_BOLD);
+           winMain->wprintf("\n%BEnter a refusal reason:\n");
            return;
         }
       }

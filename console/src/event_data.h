@@ -104,7 +104,7 @@ public:
     { szReason[0] = '\0'; nSequence = _nSeq; }
   char szReason[256];
   unsigned long nSequence;
-}; 
+};
 
-  
+
 #endif
