@@ -690,6 +690,7 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
   case USER_GENERAL:
   case USER_EXT:
   {
+    if (_nUin == gUserManager.OwnerUin()) break;
     ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
     if (u == NULL)
     {
@@ -711,10 +712,12 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
         if (m_bShowOffline || !u->StatusOffline())
           (void) new CUserViewItem(u, userView);
         userView->setUpdatesEnabled(true);
+        userView->repaint();
       }
       else
       {
-        if (m_bShowOffline || !u->StatusOffline())
+        if ( (m_bShowOffline || !u->StatusOffline()) &&
+             (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
           (void) new CUserViewItem(u, userView);
       }
     }
