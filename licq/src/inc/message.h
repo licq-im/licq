@@ -171,6 +171,7 @@ public:
    virtual CEventAdded *Copy()
       { return (new CEventAdded(m_nUin, m_szAlias, m_szFirstName, m_szLastName,
                                 m_szEmail, m_nCommand, m_tTime, m_nFlags)); };
+   unsigned long Uin()  { return m_nUin; };
 
 protected:
    unsigned long m_nUin;
