@@ -75,9 +75,10 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   mleCommand = new MLEditWrap(true, boxFields);
   mleCommand->setReadOnly(true);
   mleCommand->hide();
-  for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++) {
+  for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
+  {
     QLabel *lbl = new QLabel(QString("%1 (%%%2):").arg(
-      m_xUtility->UserField(i)->Title(), i+1), boxFields);
+      m_xUtility->UserField(i)->Title()).arg(i+1), boxFields);
     lblFields.push_back(lbl);
     QLineEdit *edt = new QLineEdit(boxFields);
     edt->setText(m_xUtility->UserField(i)->FullDefault());
