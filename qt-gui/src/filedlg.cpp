@@ -22,6 +22,7 @@
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
+#include <krun.h>
 #else
 #include <qfiledialog.h>
 #endif
@@ -48,7 +49,7 @@
 //-----Constructor------------------------------------------------------------
 CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent)
   : QWidget(parent, "FileDialog", WDestructiveClose)
-{
+{ 
   // If we are the server, then we are receiving a file
   m_nUin = _nUin;
   licqDaemon = daemon;
@@ -111,15 +112,27 @@ CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent)
 
   lay->setRowStretch(++CR, 3);
 
-  btnCancel = new QPushButton(tr("&Cancel Transfer"), this);
+  hbox = new QHBox(this);
+  hbox->setSpacing(8);
+  lay->addMultiCellWidget(hbox, CR, CR, 0, 2);
+  
+  btnCancel = new QPushButton(tr("&Cancel Transfer"), hbox);
   btnCancel->setMinimumWidth(75);
-  lay->addMultiCellWidget(btnCancel, CR, CR, 1, 2);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(close()));
 
   ftman = new CFileTransferManager(licqDaemon, m_nUin);
   ftman->SetUpdatesEnabled(2);
   sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));
+
+  #ifdef USE_KDE
+    btnOpen = new QPushButton(tr("&Open"), hbox);
+    btnOpenDir = new QPushButton(tr("O&pen Dir"), hbox);
+    btnOpen->hide();
+    btnOpenDir->hide();
+    connect(btnOpen, SIGNAL(clicked()), SLOT(slot_open()));
+    connect(btnOpenDir, SIGNAL(clicked()), SLOT(slot_opendir()));
+  #endif
 }
 
 
@@ -147,6 +160,24 @@ void CFileDlg::slot_cancel()
   ftman->CloseFileTransfer();
 }
 
+//-----open button--------------------------------------------------------------
+void CFileDlg::slot_open()
+{
+  #ifdef USE_KDE
+    (void) new KRun ( "file:" + nfoLocalFileName->text(), 0, true, true);
+  #endif
+}
+
+//-----open directory-----------------------------------------------------------
+void CFileDlg::slot_opendir()
+{
+  #ifdef USE_KDE
+
+  (void) new KRun ( "file:" +
+                    nfoLocalFileName->text().replace(QRegExp("/[^/]*$"),""),
+                    0, true, true);
+  #endif
+}
 
 //-----fileUpdate---------------------------------------------------------------
 void CFileDlg::slot_update()
@@ -283,6 +314,12 @@ void CFileDlg::slot_ft()
       {
         mleStatus->append(tr("File transfer complete."));
         btnCancel->setText(tr("OK"));
+        if( btnOpen && btnOpenDir && ftman->Direction() == D_RECEIVER)
+        {
+          btnOpen->show();
+          btnOpenDir->show();
+        }
+
         ftman->CloseFileTransfer();
         break;
       }

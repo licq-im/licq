@@ -39,7 +39,7 @@ protected:
               *nfoBPS,
               *nfoETA,
               *nfoTime;
-   QPushButton *btnCancel;
+   QPushButton *btnCancel, *btnOpen, *btnOpenDir;
    MLEditWrap *mleStatus;
    QProgressBar *barTransfer, *barBatchTransfer;
 
@@ -57,6 +57,8 @@ protected slots:
   void slot_ft();
   void slot_update();
   void slot_cancel();
+  void slot_open();
+  void slot_opendir();
 };
 
 #endif
