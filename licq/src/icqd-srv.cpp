@@ -1903,9 +1903,6 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       char *szMsg = gTranslator.RNToN(message);
       delete [] message;
 
-      // translate now
-      gTranslator.ServerToClient(szMsg);
-
       bool bNewUser = false;
       ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
       if (u == NULL)

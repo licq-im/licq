@@ -1778,6 +1778,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     char szChatClients[1024];
     unsigned short nPortReversed;
 
+    gTranslator.ServerToClient(message);
+
     packet.UnpackString(szChatClients, sizeof(szChatClients));
     nPortReversed = packet.UnpackUnsignedShortBE();
     packet >> nPort;
@@ -1801,6 +1803,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   {
     unsigned short nPortReversed, nFilenameLen;
     unsigned long nFileSize;
+
+    gTranslator.ServerToClient(message);
 
     nPortReversed = packet.UnpackUnsignedShortBE();
     packet >> nPort;
@@ -1928,6 +1932,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   }
 
   default:
+    gTranslator.ServerToClient(message);
     szType = strdup("unknown event");
   } // switch nMsgType
 
