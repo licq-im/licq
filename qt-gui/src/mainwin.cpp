@@ -255,13 +255,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   m_nGroupType = GROUPS_USER;
 
   // load up position and size from file
-  gLog.Info("%sGeometry configuration.\n", L_INITxSTR);
   licqConf.SetSection("geometry");
   unsigned short xPos, yPos, hVal, wVal;
   licqConf.ReadNum("x", xPos, 100);
   licqConf.ReadNum("y", yPos, 100);
   licqConf.ReadNum("h", hVal, 400);
   licqConf.ReadNum("w", wVal, 150);
+  gLog.Info("%sGeometry configuration (%d, %d) (%d x %d)\n", L_INITxSTR,
+            xPos, yPos, wVal, hVal);
   setGeometry(xPos, yPos, wVal, hVal);
 
   // Load the icons
@@ -706,8 +707,10 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
         i = (CUserViewItem *)i->nextSibling();
       if (i != NULL)
       {
-        i->setGraphics(u);
-        i->repaint();
+        //i->setGraphics(u);
+        //i->repaint();
+        delete i;
+        (void) new CUserViewItem(u, userView);
         //userView->triggerUpdate();
         //userView->takeItem(i);
         //userView->insertItem(i);
