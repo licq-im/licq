@@ -1,6 +1,0 @@
-Socks5 support will almost for sure not work with OpenSSL support In Licq.
-Configure licq with "--enable-socks5 --without-openssl" to get things
-working properly.
-Next release should be fully inter-compatible.
-
---Graham
