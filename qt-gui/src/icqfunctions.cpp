@@ -2325,7 +2325,7 @@ void ICQFunctions::slot_resettitle()
 
 void ICQFunctions::slot_close()
 {
-  m_bDeleteUser = btnCancel->MouseEvent()->state() & ControlButton;
+  m_bDeleteUser = btnCancel->stateWhenPressed() & ControlButton;
   close();
 }
 

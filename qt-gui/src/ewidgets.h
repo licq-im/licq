@@ -46,14 +46,15 @@ public:
   CEButton(QString, QWidget *parent = 0, char *name = 0);
   void setNamedFgColor(char *);
   void setNamedBgColor(char *);
-  QMouseEvent *MouseEvent()  { return mouseEvent; }
+  ButtonState stateWhenPressed() { return whenPressed; }
   ~CEButton();
 public slots:
   void polish();
 protected:
   QPixmap *pmUpFocus, *pmUpNoFocus, *pmDown,
           *pmCurrent;
-  QMouseEvent *mouseEvent;
+  
+  ButtonState whenPressed;
   // overloaded drawButton to remove typical button 3D effect
   virtual void drawButton(QPainter *);
   virtual void mouseReleaseEvent(QMouseEvent *e);
