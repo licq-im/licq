@@ -3,6 +3,7 @@
 
 <emoticon file="airplane">
 <string>(ap)</string>
+<string>(AP)</string>
 </emoticon>
 
 <emoticon file="angel_smile">
@@ -21,6 +22,7 @@
 
 <emoticon file="auto">
 <string>(au)</string>
+<string>(AU)</string>
 </emoticon>
 
 <emoticon file="baring_teeth_smile">
@@ -34,10 +36,12 @@
 
 <emoticon file="beer_mug">
 <string>(b)</string>
+<string>(B)</string>
 </emoticon>
 
 <emoticon file="black_sheep">
 <string>(bah)</string>
+<string>(BAH)</string>
 </emoticon>
 
 <emoticon file="bowl">
@@ -46,6 +50,7 @@
 
 <emoticon file="brb">
 <string>(brb)</string>
+<string>(BRB)</string>
 </emoticon>
 
 <emoticon file="broken_heart">
@@ -59,6 +64,7 @@
 
 <emoticon file="camera">
 <string>(p)</string>
+<string>(P)</string>
 </emoticon>
 
 <emoticon file="cat">
@@ -67,18 +73,22 @@
 
 <emoticon file="cigarette">
 <string>(ci)</string>
+<string>(CI)</string>
 </emoticon>
 
 <emoticon file="clock">
 <string>(o)</string>
+<string>(O)</string>
 </emoticon>
 
 <emoticon file="coffee">
+<string>(c)</string>
 <string>(C)</string>
 </emoticon>
 
 <emoticon file="computer">
 <string>(co)</string>
+<string>(CO)</string>
 </emoticon>
 
 <emoticon file="confused_smile">
@@ -106,6 +116,7 @@
 
 <emoticon file="envelope">
 <string>(e)</string>
+<string>(E)</string>
 </emoticon>
 
 <emoticon file="film">
@@ -114,6 +125,7 @@
 
 <emoticon file="fingerscrossed">
 <string>(yn)</string>
+<string>(YN)</string>
 </emoticon>
 
 <emoticon file="girl_hug">
@@ -145,10 +157,12 @@
 
 <emoticon file="hifive">
 <string>(h5)</string>
+<string>(H5)</string>
 </emoticon>
 
 <emoticon file="island_palm">
 <string>(ip)</string>
+<string>(IP)</string>
 </emoticon>
 
 <emoticon file="kiss">
@@ -158,6 +172,7 @@
 
 <emoticon file="lightbulb">
 <string>(i)</string>
+<string>(I)</string>
 </emoticon>
 
 <emoticon file="lightning">
@@ -166,22 +181,27 @@
 
 <emoticon file="martini">
 <string>(d)</string>
+<string>(D)</string>
 </emoticon>
 
 <emoticon file="messenger">
 <string>(m)</string>
+<string>(M)</string>
 </emoticon>
 
 <emoticon file="mobile_phone">
+<string>(mp)</string>
 <string>(mp)</string>
 </emoticon>
 
 <emoticon file="money">
 <string>(mo)</string>
+<string>(mo)</string>
 </emoticon>
 
 <emoticon file="moon">
 <string>(s)</string>
+<string>(S)</string>
 </emoticon>
 
 <emoticon file="nerd_smile">
@@ -210,18 +230,22 @@
 
 <emoticon file="pizza">
 <string>(pi)</string>
+<string>(PI)</string>
 </emoticon>
 
 <emoticon file="plate">
 <string>(pl)</string>
+<string>(PL)</string>
 </emoticon>
 
 <emoticon file="present">
 <string>(g)</string>
+<string>(G)</string>
 </emoticon>
 
 <emoticon file="rainbow">
 <string>(r)</string>
+<string>(R)</string>
 </emoticon>
 
 <emoticon file="red_smile">
@@ -276,10 +300,12 @@
 
 <emoticon file="snail">
 <string>(sn)</string>
+<string>(SN)</string>
 </emoticon>
 
 <emoticon file="soccer_ball">
 <string>(so)</string>
+<string>(SO)</string>
 </emoticon>
 
 <emoticon file="star">
@@ -288,6 +314,7 @@
 
 <emoticon file="stormy">
 <string>(st)</string>
+<string>(ST)</string>
 </emoticon>
 
 <emoticon file="sun">
@@ -297,6 +324,7 @@
 <emoticon file="teeth_smile">
 <string>:D</string>
 <string>:-D</string>
+<string>:d</string>
 <string>:></string>
 <string>:-></string>
 </emoticon>
@@ -307,23 +335,28 @@
 
 <emoticon file="thumbs_down">
 <string>(n)</string>
+<string>(N)</string>
 </emoticon>
 
 <emoticon file="thumbs_up">
 <string>(y)</string>
+<string>(Y)</string>
 </emoticon>
 
 <emoticon file="tongue_smile">
 <string>:P</string>
 <string>:-P</string>
+<string>:p</string>
 </emoticon>
 
 <emoticon file="turtle">
 <string>(tu)</string>
+<string>(TU)</string>
 </emoticon>
 
 <emoticon file="umbrella">
 <string>(um)</string>
+<string>(UM)</string>
 </emoticon>
 
 <emoticon file="what_smile">
@@ -343,6 +376,7 @@
 
 <emoticon file="xbox">
 <string>(xx)</string>
+<string>(XX)</string>
 </emoticon>
 
 </messaging-emoticon-map>
