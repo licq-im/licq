@@ -380,11 +380,11 @@ bool INetSocket::OpenConnection()
     CloseConnection();
     return(false);
   }
-/*
+
 #ifdef USE_SOCKS5
   if (m_nSockType != SOCK_STREAM) return true;
 #endif
-*/
+
   return SetLocalAddress();
 }
 
