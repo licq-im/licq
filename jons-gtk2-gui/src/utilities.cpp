@@ -42,9 +42,9 @@ convert_to_utf8(const char *input_text, const char *input_enc)
       		NULL);
 		else {
 			const char *cs;
-			if (g_get_charset(&cs)) 
-      	// locale is already utf8 so conversion won't help - we use 
-        // fallback character set - iso8859-1
+			if (g_get_charset(&cs) || strcmp(cs, "ANSI_X3.4-1968") == 0) 
+      	// locale is either already utf8 or ASCII so conversion won't help 
+				// - we use fallback character set - iso8859-1
 				return g_convert(input_text, len, "UTF-8", "ISO8859-1", &b_in, &b_out,
         		NULL);
 			else
