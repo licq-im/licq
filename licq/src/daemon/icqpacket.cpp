@@ -886,7 +886,7 @@ CPT_FileTransfer::CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFil
 
    // Check file exists and get size
    struct stat buf;
-   if (stat(_szFilename, &buf) < 0)
+   if (_szFilename == NULL || stat(_szFilename, &buf) < 0)
    {
       m_bValid = false;
       return;

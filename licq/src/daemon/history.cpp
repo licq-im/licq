@@ -94,7 +94,7 @@ void CUserHistory::Load(char *&hbuf)
 
 void CUserHistory::Save(const char *buf)
 {
-  if (m_szFileName == NULL) return;
+  if (m_szFileName == NULL || buf == NULL) return;
   int fd = open(m_szFileName, O_WRONLY | O_CREAT | O_TRUNC, 00664);
   if (fd == -1)
   {
@@ -109,7 +109,7 @@ void CUserHistory::Save(const char *buf)
 
 void CUserHistory::Append(const char *_sz)
 {
-  if (m_szFileName == NULL) return;
+  if (m_szFileName == NULL || _sz == NULL) return;
   int fd = open(m_szFileName, O_WRONLY | O_CREAT | O_APPEND, 00664);
   if (fd == -1)
   {

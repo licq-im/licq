@@ -12,7 +12,6 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <unistd.h>
-//#include <socketbits.h>
 
 #ifndef MSG_DONTWAIT
 #define MSG_DONTWAIT 0
@@ -37,6 +36,7 @@ extern int h_errno;
 
 #ifdef USE_SOCKS5
 #define SOCKS
+#define INCLUDE_PROTOTYPES
 #include <socks.h>
 #endif
 
@@ -242,14 +242,10 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
     if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
 #endif
     {
-      char szHostName[256], temp[1024];
+      char szHostName[256];
       gethostname(szHostName, 256);
-      hostent sLocalHost, *h;
-#ifdef USE_SOLARIS
-      h = gethostbyname_r(szHostName, &sLocalHost, temp, 1024, &h_errno);
-#else
-      gethostbyname_r(szHostName, &sLocalHost, temp, 1024, &h, &h_errno);
-#endif
+      struct hostent sLocalHost;
+      h_errno = gethostbyname_r_portable(szHostName, &sLocalHost);
       if (h_errno == 0)
         m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
     }
@@ -274,20 +270,22 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
 //-----INetSocket::GetIpByName-------------------------------------------------
 unsigned long INetSocket::GetIpByName(char *_szHostName)
 {
-  struct hostent host, *h;
-  struct in_addr ina;
-  char temp[1024];
+  //struct hostent host, *h;
+  //char temp[1024];
 
   // check if the hostname is in dot and number notation
+  struct in_addr ina;
   if (inet_aton(_szHostName, &ina))
      return(ina.s_addr);
 
   // try and resolve hostname
-#ifdef USE_SOLARIS
+  struct hostent host;
+  h_errno = gethostbyname_r_portable(_szHostName, &host);
+/*#ifdef USE_SOLARIS
   h = gethostbyname_r(_szHostName, &host, temp, 1024, &h_errno);
 #else
   gethostbyname_r(_szHostName, &host, temp, 1024, &h, &h_errno);
-#endif
+#endif*/
   if (h_errno == -1) // Couldn't resolve hostname/ip
   {
      // errno has been set
@@ -734,33 +732,36 @@ void CSocketManager::AddSocket(INetSocket *s)
 {
   LockSocket(s);
   m_hSockets.Store(s, s->Descriptor());
-  m_sSockets.Set(s->Descriptor());  
+  m_sSockets.Set(s->Descriptor());
 }
 
 
-void CSocketManager::CloseSocket (int _nSd)
+void CSocketManager::CloseSocket (int _nSd, bool _bClearUser)
 {
   INetSocket *s = FetchSocket(_nSd);
   if (s == NULL) return;
   unsigned long nOwner = s->Owner();
   DropSocket(s);
-  
+
   // First remove the socket from the hash table so it won't be fetched anymore
   m_hSockets.Remove(_nSd);
   m_sSockets.Clear(_nSd);
-  
-  // Now close the connection (we don't have to lock it first, because the 
+
+  // Now close the connection (we don't have to lock it first, because the
   // Remove function above guarantees that no one has a lock on the socket
   // before removing it from the hash table, and once removed from the has
   // table, no one can get a lock again.
   s->CloseConnection();
   delete s;
 
-  ICQUser *u = gUserManager.FetchUser(nOwner, LOCK_W);
-  if (u != NULL) 
+  if (_bClearUser)
   {
-    u->ClearSocketDesc();  
-    gUserManager.DropUser(u);
+    ICQUser *u = gUserManager.FetchUser(nOwner, LOCK_W);
+    if (u != NULL)
+    {
+      u->ClearSocketDesc();
+      gUserManager.DropUser(u);
+    }
   }
 }
- 
+

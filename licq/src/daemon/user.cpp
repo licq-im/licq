@@ -1048,7 +1048,7 @@ unsigned long ICQUser::getSequence(bool increment = false)
 }
 
 void ICQUser::setAlias(const char *s)
-{ 
+{
   if (s[0] == '\0')
   {
     char sz[12];
@@ -1056,7 +1056,7 @@ void ICQUser::setAlias(const char *s)
     SetString(&m_sAlias, sz);
   }
   else
-    SetString(&m_sAlias, s); 
+    SetString(&m_sAlias, s);
   saveBasicInfo();
 }
 
@@ -1080,6 +1080,13 @@ void ICQUser::setHistoryFile(const char *s)
 
 void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
 {
+  if (SocketDesc() != -1 && (Ip() != _nIp || Port() != _nPort))
+  {
+    // Close our socket, but don't let socket manager try and clear
+    // our socket descriptor
+    gSocketManager.CloseSocket(SocketDesc(), false);
+    ClearSocketDesc();
+  }
   m_nIp = _nIp;
   m_nPort = _nPort;
   saveInfo();

@@ -124,11 +124,12 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   for (int i = 0; i < MAX_ON_EVENT; i++)
     szOnParams[i] = new char[MAX_FILENAME_LEN];
   licqConf.ReadStr("Command", szOnEventCommand, "play");
-  licqConf.ReadStr("Message", szOnParams[ON_EVENT_MSG]);
-  licqConf.ReadStr("Url", szOnParams[ON_EVENT_URL]);
-  licqConf.ReadStr("Chat", szOnParams[ON_EVENT_CHAT]);
-  licqConf.ReadStr("File", szOnParams[ON_EVENT_FILE]);
-  licqConf.ReadStr("OnlineNotify", szOnParams[ON_EVENT_NOTIFY]);
+  licqConf.ReadStr("Message", szOnParams[ON_EVENT_MSG], "");
+  licqConf.ReadStr("Url", szOnParams[ON_EVENT_URL], "");
+  licqConf.ReadStr("Chat", szOnParams[ON_EVENT_CHAT], "");
+  licqConf.ReadStr("File", szOnParams[ON_EVENT_FILE], "");
+  licqConf.ReadStr("OnlineNotify", szOnParams[ON_EVENT_NOTIFY], "");
+  licqConf.ReadStr("SysMsg", szOnParams[ON_EVENT_SYSMSG], "");
   m_xOnEventManager.SetParameters(szOnEventCommand, (const char **)szOnParams);
   for (int i = 0; i < MAX_ON_EVENT; i++)
     delete [] szOnParams[i];
@@ -329,6 +330,7 @@ void CICQDaemon::SaveConf(void)
   licqConf.WriteStr("Chat",oem->Parameter(ON_EVENT_CHAT));
   licqConf.WriteStr("File",oem->Parameter(ON_EVENT_FILE));
   licqConf.WriteStr("OnlineNotify", oem->Parameter(ON_EVENT_NOTIFY));
+  licqConf.WriteStr("SysMsg", oem->Parameter(ON_EVENT_SYSMSG));
   oem->Unlock();
 
   licqConf.FlushFile();

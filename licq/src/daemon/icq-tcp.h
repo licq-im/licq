@@ -68,12 +68,12 @@ ICQEvent *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const cha
   CEventUrl *e = NULL;
   szDescDos = gTranslator.NToRN(description);
   gTranslator.ClientToServer(szDescDos);
-  char m[strlen(url) + strlen(szDescDos) + 2];
-  strcpy(m, szDescDos);
+  char m[ (url == NULL ? 0 : strlen(url)) + (szDescDos == NULL ? 0 : strlen(szDescDos)) + 2];
+  strcpy(m, szDescDos == NULL ? "" : szDescDos);
   int nLen = strlen(m);
   m[nLen] = (char)0xFE;
   m[nLen + 1] = '\0';
-  strcat(m, url);
+  strcat(m, url == NULL ? "" : url);
 
   ICQEvent *result = NULL;
 

@@ -25,18 +25,16 @@ CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
 //-----CUserEvent::Time---------------------------------------------------------
 const char *CUserEvent::Time(void)
 {
-   static char s_szTime[32];
+  static char s_szTime[32];
 
-   // set the time received: "Mon Apr 27 20:49:08 1998\n"
-   if (m_tTime == 0) m_tTime = time(NULL);
-   sprintf(s_szTime, "%s", ctime(&m_tTime));
+  // set the time received: "Mon Apr 27 20:49:08 1998\n"
+  if (m_tTime == 0) m_tTime = time(NULL);
+  strcpy(s_szTime, ctime(&m_tTime));
+  // Remove the trailing newline
+  //s_szTime[24] = '\0';
+  s_szTime[16] = '\0';
 
-   // move the year over to where the seconds used to be (don't need seconds)
-   /*for (int i = 16; i < 21; i++) s_szTime[i] = s_szTime[i + 3];
-   s_szTime[21] = '\0';*/
-   s_szTime[16] = '\0';
-
-   return s_szTime;
+  return s_szTime;
 }
 
 
@@ -65,6 +63,16 @@ void CUserEvent::AddToHistory(ICQUser *u, direction _nDir)
   switch (_nDir)
   {
   case D_RECEIVER:
+    /*sprintf(szOut, "From %s  %s\n"
+                   "From: %s <%s>\n"
+                   "To: %s <%s>\n"
+                   "Date: %s\n"
+                   "Subject: %s\n"
+                   "Content-Length: %d\n\n%s\n\n",
+            u == NULL ? "Server" : u->getEmail(), Time(),
+            u->getAlias(), u->getEmail(),
+            o->getAlias(), o->getEmail(),
+            Time(), Description(), strlen(Text()), Text());*/
     sprintf(szOut, "%s -> %s (%s): %s\n%s\n--------------------\n",
             u == NULL ? "Server" : u->getAlias(), o->getAlias(),
             Time(), Description(), Text());
@@ -79,10 +87,19 @@ void CUserEvent::AddToHistory(ICQUser *u, direction _nDir)
     break;
 
   case D_SENDER:
+    /*sprintf(szOut, "From %s  %s\n"
+                   "From: %s <%s>\n"
+                   "To: %s <%s>\n"
+                   "Date: %s\n"
+                   "Subject: %s\n"
+                   "Content-Length: %d\n\n%s\n\n",
+              u == NULL ? "Server" : o->getEmail(), Time(),
+              o->getAlias(), o->getEmail(),
+              u->getAlias(), u->getEmail(),
+              Time(), Description(), strlen(Text()), Text());*/
     sprintf(szOut, "%s -> %s (%s): %s\n%s\n--------------------\n",
             o->getAlias(), u == NULL ? "Server" : u->getAlias(),
             Time(), Description(), Text());
-
     if (u != NULL)
       u->WriteToHistory(szOut);
     else

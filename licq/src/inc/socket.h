@@ -173,7 +173,7 @@ public:
   INetSocket *FetchSocket (int _nSd);
   void DropSocket (INetSocket *s);
   void AddSocket(INetSocket *s);
-  void CloseSocket (int _nSd);
+  void CloseSocket (int _nSd, bool _bClearUser = true);
 
   fd_set SocketSet(void)   {  return m_sSockets.SocketSet(); }
   int LargestSocket(void)  {  return m_sSockets.Largest(); }

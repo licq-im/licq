@@ -57,16 +57,11 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
   case ON_EVENT_IGNORE:
     break;
 
-/*  case ON_EVENT_BEEP:
-    putchar('\a');
-    fflush(stdout);
-    break;*/
-
   case ON_EVENT_RUN:
   {
     char *szParam = m_aszParameters[_nEvent];
-    char szFullParam[MAX_CMD_LEN];
-    u->usprintf(szFullParam, szParam);
+    char szFullParam[MAX_CMD_LEN] = {'\0'};
+    if (u != NULL) u->usprintf(szFullParam, szParam);
     char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
     sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
     system(szCmd);

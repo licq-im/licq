@@ -381,7 +381,8 @@ int CLicq::Main(void)
     pthread_join((*iter).thread_plugin, (void **)&nPluginResult);
     gLog.Info("%sPlugin %s exited with code %d.\n", L_ENDxSTR, (*(*iter).Name)(), *nPluginResult);
     free (nPluginResult);
-    dlclose((*iter).dl_handle);
+    // We should close the dynamic link but under linux this makes Qt crash
+    //dlclose((*iter).dl_handle);
     m_vPluginFunctions.erase(iter);
   }
 

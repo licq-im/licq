@@ -411,7 +411,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
        gLog.Warn("%sUnknown user (%ld) is online.\n", L_WARNxSTR, nUin);
        break;
     }
-    gLog.Info("%s%s (%ld) is online.\n", L_UDPxSTR, u->getAlias(), nUin);
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    gLog.Info("%s%s (%ld) went online at %d:%02d.\n", L_UDPxSTR, u->getAlias(),
+              nUin, t->tm_hour, t->tm_min);;
 
     // read in the relevant user information
     unsigned short userPort, newStatus;
@@ -451,7 +454,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
        gLog.Warn("%sUnknown user (%ld) has gone offline.\n", L_WARNxSTR, nUin);
        break;
     }
-    gLog.Info("%s%s (%ld) went offline.\n", L_UDPxSTR, u->getAlias(), nUin);
+    time_t now = time(NULL);
+    struct tm *t = localtime(&now);
+    gLog.Info("%s%s (%ld) went offline at %d:%02d.\n", L_UDPxSTR, u->getAlias(),
+              nUin, t->tm_hour, t->tm_min);
     ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
     gUserManager.DropUser(u);
     u = gUserManager.FetchUser(nUin, LOCK_R);
@@ -762,7 +768,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
       break;
     }
     ICQEvent *e2 = new ICQEvent(e);
-    e2->m_sSearchAck = new struct SSearchAck;
+    e2->m_sSearchAck = new SSearchAck;
     e2->m_sSearchAck->sBasicInfo = us;
     e2->m_sSearchAck->cMore = 0;
     PushPluginEvent(e2);
@@ -785,7 +791,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
       gLog.Warn("%sReceived end of search when no search in progress.\n", L_WARNxSTR);
       break;
     }
-    e->m_sSearchAck = new struct SSearchAck;
+    e->m_sSearchAck = new SSearchAck;
     e->m_sSearchAck->sBasicInfo = NULL;
     e->m_sSearchAck->cMore = more;
     PushDoneEvent(e);
@@ -959,6 +965,12 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     delete buf;
   }
 
+  // Swap high and low bytes for strange new icq99
+  if (newCommand > 0x00FF)
+  {
+    newCommand = ((newCommand << 8) & 0xFF00) + ((newCommand >> 8) & 0x00FF);
+  }
+
   unsigned long nMask = ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0);
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
 
@@ -1068,6 +1080,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      AddUserEvent(o, e);
      gUserManager.DropOwner();
      e->AddToHistory(NULL, D_RECEIVER);
+     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
      delete[] szFields;
      break;
@@ -1108,6 +1121,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      AddUserEvent(o, e);
      gUserManager.DropOwner();
      e->AddToHistory(NULL, D_RECEIVER);
+     m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
      delete[] szFields;
      break;
@@ -1139,6 +1153,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     AddUserEvent(o, e);
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
+    m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
     delete[] szFields;
     break;
@@ -1171,6 +1186,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     AddUserEvent(o, e);
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
+    m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
     delete[] szFields;
     break;
@@ -1210,6 +1226,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     AddUserEvent(o, e);
     gUserManager.DropOwner();
     e->AddToHistory(NULL, D_RECEIVER);
+    m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, 0, 0));
     delete[] szFields;
     break;

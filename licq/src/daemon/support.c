@@ -128,7 +128,7 @@ char *strerror(int errnum)
 }
 
 #endif	/* HAVE_STRERROR */
-
+/*
 #ifndef HAVE_GETHOSTBYNAME_R
 
 int gethostbyname_r (const char *name,
@@ -138,20 +138,55 @@ int gethostbyname_r (const char *name,
                      struct hostent **result,
                      int *h_errnop)
 {
-  struct hostent *h = gethostbyname(const char *name);
+  struct hostent *h = gethostbyname(name);
   if (h == NULL)
   {
     *result = NULL;
     *h_errnop = h_errno;
     return 0;
   }
-  *result = (struct hostent *) malloc(sizeof(struct hostent));
-  memcpy(*result, h, sizeof(struct hostent));
+  //result_buf = (struct hostent *) malloc(sizeof(struct hostent));
+  memcpy(result_buf, h, sizeof(struct hostent));
+  memcpy(result_buf, h, sizeof(struct hostent));
   *h_errnop = 0;
   return 1;
 }
 
 #endif
+*/
+
+inline int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
+{
+// Linux
+#if defined(__GLIBC__)
+  struct hostent *h_buf;
+  char temp[1024];
+  int herror;
+  gethostbyname_r(szHostName, h, temp, 1024, &h_buf, &herror);
+  return herror;
+// Solaris
+#elif defined(sun)
+  struct hostent *h_buf;
+  char temp[1024];
+  int herror;
+  h_buf = gethostbyname_r(szHostName, h, temp, 1024, &herror);
+  return herror
+// not sure about this one (actually pretty sure it's wrong)
+// who uses OSF anyway?
+#elif defined(__osf__)
+  h = gethostbyname(szHostName);
+  return h_error;
+// Default to thread unsafe version
+#else
+#warning "I don't know how to do reentrant gethostbyname on this machine."
+#warning "Using thread-unsafe version."
+  struct hostent *h_buf;
+  h_buf = gethostbyname(szHostName);
+  if (h_buf != NULL) memcpy(h, h_buf, sizeof(struct hostent));
+  return (h == NULL ? h_errno : 0);
+#endif
+}
+
 
 /*=====ALPHASORT==============================================================*/
 

@@ -36,7 +36,7 @@ int inet_aton(const char *cp, struct in_addr *addr);
 #ifndef HAVE_STRERROR
 char *strerror(int errnum);
 #endif
-
+/*
 #ifndef HAVE_GETHOSTBYNAME_R
 int gethostbyname_r (const char *name,
                      struct hostent *result_buf,
@@ -45,6 +45,9 @@ int gethostbyname_r (const char *name,
                      struct hostent **result,
                      int *h_errnop);
 #endif
+*/
+
+int gethostbyname_r_portable(const char *, struct hostent *);
 
 #ifndef HAVE_ALPHASORT
 int alphasort(const void *a, const void *b);
