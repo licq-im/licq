@@ -362,6 +362,9 @@ void IconManager_Themed::SetTheme(const char *theme)
   {
     WarnUser(NULL, tr("Unable to load dock theme file\n(%1)\n:%2")
                       .arg(filename).arg(strerror(dockFile.Error())));
+    pixBothMessages = pixRegularMessages = pixSystemMessages = NULL;
+    pixOnline = pixOffline = pixAway = pixNA = pixOccupied = pixDND = pixInvisible = pixFFC = NULL;
+    pixNoMessages = new QPixmap(48, 48);
     return;
   }
   dockFile.SetSection("background");
