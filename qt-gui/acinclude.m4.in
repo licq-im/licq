@@ -44,6 +44,7 @@ AC_DEFUN(AC_PATH_QT_LIB,
       dnl If you need to add extra directories to check, add them here.
 
       qt_library_dirs="\
+        /usr/lib/qt2/lib \
         /usr/lib \
         /usr/local/lib \
         /usr/lib/qt \
@@ -125,6 +126,7 @@ AC_DEFUN(AC_PATH_QT_INC,
       dnl If you need to add extra directories to check, add them here.
 
       qt_include_dirs="\
+        /usr/lib/qt2/include \
         /usr/lib/qt/include \
         /usr/include/qt \
         /usr/local/qt/include \
@@ -189,7 +191,7 @@ AC_DEFUN(AC_PATH_QT_MOC,
       MOC,
       moc,
       $QTDIR/bin/moc,
-      $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH
+      $QTDIR/bin:/usr/lib/qt2/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH
     )
   else
     AC_MSG_CHECKING(for moc)
@@ -207,6 +209,25 @@ AC_DEFUN(AC_PATH_QT_MOC,
 
   if test -z "$MOC"; then
     AC_MSG_ERROR(couldn't find Qt moc. Please use --with-qt-moc)
+  fi
+
+  dnl Check if we have the right moc
+  output=`eval "strings $MOC | grep -l QCString"`
+  if test -z "$output"; then
+    AC_MSG_ERROR([
+
+        The Qt meta object compiler (moc)
+        $MOC
+        found by configure is not the one part of Qt 2.xx.
+
+        It's likely that the found one is the one shipped with
+        Qt 1.xx. That one will not work.
+
+        Please check your installation.
+        Use the --with-qt-moc option to specify the path and name
+        of the moc compiler shipped with your Qt 2.xx lib.
+        see ./configure --help for details.
+    ])
   fi
 
   AC_SUBST(MOC)
