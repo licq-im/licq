@@ -1462,6 +1462,11 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
   unsigned short i = 0, j, nField = 0, nPos = 0;
   char szTemp[128];
   const char *sz;
+
+  // Our secure string for escaping stuff
+  bool bSecure = (_szFormat[0] == '|' && (nFlags & USPRINTF_PIPEISCMD)) ||
+   (nFlags & USPRINTF_LINEISCMD);
+
   _sz[0] = '\0';
   while(_szFormat[i] != '\0')
   {
@@ -1499,114 +1504,132 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           continue;
         }
       }
+
       switch(_szFormat[i])
       {
-      case 'i':
-        char buf[32];
-        strcpy(szTemp, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
-        sz = szTemp;
-        break;
-      case 'p':
-        sprintf(szTemp, "%d", Port());
-        sz = szTemp;
-        break;
-      case 'e':
-        sz = GetEmailPrimary();
-        if (sz[0] == '\0')
-        {
-          sz = GetEmailSecondary();
+        case 'i':
+          char buf[32];
+          strcpy(szTemp, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+          sz = szTemp;
+          break;
+        case 'p':
+          sprintf(szTemp, "%d", Port());
+          sz = szTemp;
+          break;
+        case 'e':
+          sz = GetEmailPrimary();
           if (sz[0] == '\0')
-            sz = GetEmailOld();
-        }
-        break;
-      case 'n':
-        snprintf(szTemp, sizeof(szTemp), "%s %s", GetFirstName(), GetLastName());
-        sz = szTemp;
-        break;
-      case 'f':
-        sz = GetFirstName();
-        break;
-      case 'l':
-        sz = GetLastName();
-        break;
-      case 'a':
-        sz = GetAlias();
-        break;
-      case 'u':
-        sprintf(szTemp, "%ld", Uin());
-        sz = szTemp;
-        break;
-      case 'w':
-        sz = GetHomepage();
-        break;
-      case 'h':
-        sz = GetPhoneNumber();
-        break;
-      case 'c':
-        sz = GetCellularNumber();
-        break;
-      case 'S':
-        sz = StatusStrShort();
-        break;
-      case 's':
-        sz = StatusStr();
-        break;
+          {
+            sz = GetEmailSecondary();
+            if (sz[0] == '\0')
+              sz = GetEmailOld();
+          }
+          break;
+        case 'n':
+          snprintf(szTemp, sizeof(szTemp), "%s %s", GetFirstName(), GetLastName());
+          sz = szTemp;
+          break;
+        case 'f':
+          sz = GetFirstName();
+          break;
+        case 'l':
+          sz = GetLastName();
+          break;
+        case 'a':
+          sz = GetAlias();
+          break;
+        case 'u':
+          sprintf(szTemp, "%ld", Uin());
+          sz = szTemp;
+          break;
+        case 'w':
+          sz = GetHomepage();
+          break;
+        case 'h':
+          sz = GetPhoneNumber();
+          break;
+        case 'c':
+          sz = GetCellularNumber();
+          break;
+        case 'S':
+          sz = StatusStrShort();
+          break;
+        case 's':
+          sz = StatusStr();
+          break;
 
-      case 't':
-      {
-        time_t t = time(NULL);
-        strftime(szTemp, 128, "%b %d %r", localtime(&t));
-        sz = szTemp;
-        break;
-      }
-
-      case 'T':
-      {
-        time_t t = time(NULL);
-        strftime(szTemp, 128, "%b %d %R %Z", localtime(&t));
-        sz = szTemp;
-        break;
-      }
-
-      case 'o':
-        if(m_nLastCounters[LAST_ONLINE] == 0)
+        case 't':
         {
-          strcpy(szTemp, "Never");
+          time_t t = time(NULL);
+          strftime(szTemp, 128, "%b %d %r", localtime(&t));
           sz = szTemp;
           break;
         }
-        strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastCounters[LAST_ONLINE]));
-        sz = szTemp;
-        break;
-      case 'm':
-        sprintf(szTemp, "%d", NewMessages());
-        sz = szTemp;
-        break;
-      case '%':
-        strcpy(szTemp, "\%");
-        sz = szTemp;
-        break;
-      default:
-        gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
-                  L_WARNxSTR, _szFormat[i]);
-        sprintf(szTemp, "%s%d%%%c", (bLeft ? "-" : ""), nField, _szFormat[i]);
-        sz = szTemp;
-        bLeft = false;
-        nField = 0;
-        break;
+
+        case 'T':
+        {
+          time_t t = time(NULL);
+          strftime(szTemp, 128, "%b %d %R %Z", localtime(&t));
+          sz = szTemp;
+          break;
+        }
+
+        case 'o':
+          if(m_nLastCounters[LAST_ONLINE] == 0)
+          {
+            strcpy(szTemp, "Never");
+            sz = szTemp;
+            break;
+          }
+          strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastCounters[LAST_ONLINE]));
+          sz = szTemp;
+          break;
+        case 'm':
+          sprintf(szTemp, "%d", NewMessages());
+          sz = szTemp;
+          break;
+        case '%':
+          strcpy(szTemp, "\%");
+          sz = szTemp;
+          break;
+        default:
+          gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
+                    L_WARNxSTR, _szFormat[i]);
+          sprintf(szTemp, "%s%d%%%c", (bLeft ? "-" : ""), nField, _szFormat[i]);
+          sz = szTemp;
+          bLeft = false;
+          nField = 0;
+          break;
       }
+
+      // If we need to be secure, then quote the % string
+      if (bSecure) _sz[nPos++] = '\'';
+
+// The only way to escape a ' inside a ' is to do '\'' believe it or not
+#define PACK_STRING(x)                   \
+  while(x)                               \
+  {                                      \
+    if (bSecure && sz[j] == '\'')        \
+    {                                    \
+      nPos += sprintf(_sz, "'\\''");     \
+      j++;                               \
+    }                                    \
+    else                                 \
+      _sz[nPos++] = sz[j++];             \
+  }
+
       // Now append sz to the string using the given field width and alignment
       if (nField == 0)
       {
         j = 0;
-        while(sz[j] != '\0') _sz[nPos++] = sz[j++];
+        PACK_STRING(sz[j] != '\0');
       }
       else
       {
         if (bLeft)
         {
           j = 0;
-          while(sz[j] != '\0') _sz[nPos++] = sz[j++];
+          PACK_STRING(sz[j] != '\0');
           while(j++ < nField) _sz[nPos++] = ' ';
         }
         else
@@ -1615,22 +1638,32 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           if (nLen < 0)
           {
             j = 0;
-            while(j < nField) _sz[nPos++] = sz[j++];
+            //while(j < nField) _sz[nPos++] = sz[j++];
+            PACK_STRING(j < nField);
           }
           else
           {
             for (j = 0; j < nLen; j++) _sz[nPos++] = ' ';
             j = 0;
-            while(sz[j] != '\0') _sz[nPos++] = sz[j++];
+            PACK_STRING(sz[j] != '\0');
           }
         }
       }
+
+      // If we need to be secure, then quote the % string
+      if (bSecure) _sz[nPos++] = '\'';
+
       i++;
     }
     else
     {
-      if (_szFormat[i] == '\n' && (nFlags & USPRINTF_NTORN))
-        _sz[nPos++] = '\r';
+      if (_szFormat[i] == '\n')
+      {
+        if (nFlags & USPRINTF_NTORN)
+          _sz[nPos++] = '\r';
+        if (nFlags & USPRINTF_PIPEISCMD)
+          bSecure = (_szFormat[i + 1] == '|');
+      }
       _sz[nPos++] = _szFormat[i++];
     }
   }

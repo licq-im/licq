@@ -83,7 +83,7 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
     char *szParam = m_aszParameters[_nEvent];
     char szFullParam[MAX_CMD_LEN] = {'\0'};
     if (u != NULL)
-      u->usprintf(szFullParam, szParam);
+      u->usprintf(szFullParam, szParam, USPRINTF_LINEISCMD);
     else
       strcpy(szFullParam, szParam);
     char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
@@ -93,16 +93,18 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
   }
   case ON_EVENT_BY_PLUGIN:
   {
-      if (gLicqDaemon != NULL) {
-          if (u != NULL) {
-              char *szParam = m_aszParameters[_nEvent];
-              char szFullParam[MAX_CMD_LEN] = {'\0'};   
+    if (gLicqDaemon != NULL)
+    {
+      if (u != NULL)
+      {
+        char *szParam = m_aszParameters[_nEvent];
+        char szFullParam[MAX_CMD_LEN] = {'\0'};
 
-              u->usprintf(szFullParam, szParam);
-              gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_ONEVENT,
-                          _nEvent, u->Uin(),0, szFullParam));
-          }
+        u->usprintf(szFullParam, szParam);
+        gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_ONEVENT,
+         _nEvent, u->Uin(),0, szFullParam));
       }
+    }
   }
   }
   pthread_mutex_unlock(&mutex);

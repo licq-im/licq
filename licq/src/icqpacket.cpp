@@ -1708,8 +1708,8 @@ CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->background());
-      buffer->PackUnsignedLong(pColor->foreground());
+      buffer->PackUnsignedLong(pColor->Background());
+      buffer->PackUnsignedLong(pColor->Foreground());
     }
   }
   PostBuffer();
@@ -1732,8 +1732,8 @@ CPT_Url::CPT_Url(char *szMessage, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->background());
-      buffer->PackUnsignedLong(pColor->foreground());
+      buffer->PackUnsignedLong(pColor->Background());
+      buffer->PackUnsignedLong(pColor->Foreground());
     }
   }
   PostBuffer();
@@ -1757,8 +1757,8 @@ CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel, bool bMR,
     }
     else
     {
-      buffer->PackUnsignedLong(pColor->background());
-      buffer->PackUnsignedLong(pColor->foreground());
+      buffer->PackUnsignedLong(pColor->Background());
+      buffer->PackUnsignedLong(pColor->Foreground());
     }
   }
   PostBuffer();
@@ -1973,8 +1973,8 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
       //pUser->usprintf(m_szMessage, pUser->CustomAutoResponse(), USPRINTF_NTORN);
       char *cus = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
       char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN);
-      pUser->usprintf(cus, pUser->CustomAutoResponse(), USPRINTF_NTORN);
+      pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
+      pUser->usprintf(cus, pUser->CustomAutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
       m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
       sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
       free(cus);
@@ -1983,7 +1983,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
     else
     {
       m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
+      pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN | USPRINTF_PIPEISCMD);
     }
 
   }

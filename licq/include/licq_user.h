@@ -135,6 +135,8 @@ const unsigned short AUTO_SECURE        = 0x0400;
 
 const unsigned short USPRINTF_NTORN     = 1;
 const unsigned short USPRINTF_NOFW      = 2;
+const unsigned short USPRINTF_LINEISCMD = 4;
+const unsigned short USPRINTF_PIPEISCMD = 8;
 
 const unsigned short LAST_ONLINE        = 0;
 const unsigned short LAST_RECV_EVENT    = 1;
