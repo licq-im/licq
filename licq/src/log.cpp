@@ -410,7 +410,7 @@ void CLogServer::Log(const unsigned short _nServiceTypes, const unsigned short _
   vector<CLogService *>::iterator iter;
   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
   {
-    if ((*iter)->LogType(_nLogType) && (*iter)->ServiceType() & _nServiceTypes)
+    if ((*iter)->LogType(_nLogType) && ((*iter)->ServiceType() & _nServiceTypes))
         (*iter)->LogMessage(szTime, szMsgMax, _nLogType);
   }  
   pthread_mutex_unlock(&mutex);
