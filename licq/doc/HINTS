@@ -8,7 +8,7 @@ o  You can pass plugins command line arguments simply by
 o  Use the licq_fifo file in your base directory (~/.licq) to change your
    status, your auto response, or exit licq remotely or from a script.  See
    The FAQ for details.
-o  Create new utilities to perform virutally any operation on a selected user.
+o  Create new utilities to perform virtually any operation on a selected user.
    See UTILITIES.HOWTO for more information.
 o  OnEvent parameters accept all the % options from the UTILITIES.HOWTO file.
    Use this to for example have licq announce who a message is from using the
