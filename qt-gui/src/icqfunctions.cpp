@@ -1900,9 +1900,6 @@ void ICQFunctions::callFcn()
         delete m;
         if (r != QDialog::Accepted) break;
       }
-      ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-      u->SetSendServer(chkSendServer->isChecked());
-      gUserManager.DropUser(u);
       m_sProgressMsg = tr("Sending msg ");
       m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
       m_sProgressMsg += "...";
@@ -1919,9 +1916,6 @@ void ICQFunctions::callFcn()
         delete m;
         if (r != QDialog::Accepted) break;
       }
-      ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-      u->SetSendServer(chkSendServer->isChecked());
-      gUserManager.DropUser(u);
       m_sProgressMsg = tr("Sending URL ");
       m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
       m_sProgressMsg += "...";
@@ -2067,13 +2061,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 {
   btnOk->setEnabled(false);
   btnCancel->setText(tr("&Cancel"));
-  if (!bOnline)
-  {
-    chkSendServer->setChecked(true);
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
-    u->SetSendServer(true);
-    gUserManager.DropUser(u);
-  }
+  if (!bOnline) chkSendServer->setChecked(true);
 
   chkUrgent->setChecked(nLevel == ICQ_TCPxMSG_URGENT);
 
