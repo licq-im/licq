@@ -249,7 +249,7 @@ void convo_recv(gulong uin)
 		return; 
 	}
 
-	CUserEvent *u_event = c->user->GetEvent(0);
+	CUserEvent *u_event = c->user->EventPop();
 
 	const gchar *name = g_strdup_printf("%s", c->user->GetAlias());
 
@@ -305,7 +305,7 @@ void convo_recv(gulong uin)
 		}
 	}
 
-	c->user->ClearEvent(0);	
+  delete u_event;
 }
 
 gboolean convo_close(GtkWidget *widget, struct conversation *c)

@@ -32,7 +32,7 @@ void system_message_window()
 	struct system_message *sm = g_new0(struct system_message, 1);
 	const gchar *title = "Incoming System Message";
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
-	CUserEvent *event = owner->GetEvent(0);
+	CUserEvent *event = owner->EventPop();
 
 	/* Make the window */
 	sm->window = gtk_window_new(GTK_WINDOW_DIALOG);
@@ -58,15 +58,20 @@ void system_message_window()
 	/* Dispaly what type of system message it is */
 	switch(event->SubCommand())
 	{
-	case ICQ_CMDxSUB_REQxAUTH:
+	case ICQ_CMDxSUB_AUTHxREQUEST:
 		gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0,
 			        "Authorization Request\n-------------------\n\n", -1);
-		menu_system_auth_user(NULL, ((CEventAuthReq *)event)->Uin());
+		menu_system_auth_user(NULL, ((CEventAuthRequest *)event)->Uin());
 		break;
 	
-	case ICQ_CMDxSUB_AUTHORIZED:
+	case ICQ_CMDxSUB_AUTHxGRANTED:
 		gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0,
 				"Authorization Granted\n--------------------\n\n", -1);
+		break;
+
+	case ICQ_CMDxSUB_AUTHxREFUSED:
+		gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0,
+				"Authorization Refused\n--------------------\n\n", -1);
 		break;
 
 	case ICQ_CMDxSUB_ADDEDxTOxLIST:
@@ -96,7 +101,7 @@ void system_message_window()
 	/* Display the system message */
 	const gchar *message = event->Text();
 	gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0, message, -1);
-	owner->ClearEvent(0);
+  delete event;
 	gUserManager.DropOwner();
 
 	/* Pack it */
