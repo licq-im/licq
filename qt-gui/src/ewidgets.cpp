@@ -10,7 +10,7 @@
 #include <qimage.h>
 #include <qtextcodec.h>
 #ifdef USE_KDE
-#include <kapplication.h>
+#include <kapp.h>
 #include <kmessagebox.h>
 #include <qmessagebox.h>
 #else
