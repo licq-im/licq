@@ -689,7 +689,18 @@ void ChatDlg::slot_chat()
 
       case CHAT_BACKSPACE:   // backspace
       {
-        if (u == chatUser) mlePaneRemote->backspace();
+        if (u == chatUser)
+        {
+#if QT_VERSION >= 300
+          mlePaneRemote->setReadOnly(false);
+          mlePaneRemote->setCursorPosition(-1, -1, false);
+#endif
+          mlePaneRemote->backspace();
+#if QT_VERSION >= 300
+          mlePaneRemote->setReadOnly(true);
+          mlePaneRemote->update();
+#endif
+        }
         break;
       }
 
