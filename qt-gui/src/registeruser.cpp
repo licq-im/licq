@@ -56,6 +56,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent, const char *nam
   (void) new QLabel(tr("Uin:"), grpInfo);
 
   nfoUin = new CInfoField(grpInfo, false);
+  nfoUin->setValidator(new QIntValidator(1000000, 2000000000, this));
 
   (void) new QLabel(tr("Password:"), grpInfo);
 
