@@ -470,6 +470,9 @@ CICQDaemon::~CICQDaemon()
   if(m_szUrlViewer)   delete []m_szUrlViewer;
   if(m_szRejectFile)  delete []m_szRejectFile;
   if(m_szICQServer)   delete []m_szICQServer;
+  if(m_szProxyHost)   delete []m_szProxyHost;
+  if(m_szProxyLogin)  delete []m_szProxyLogin;
+  if(m_szProxyPasswd) delete []m_szProxyPasswd;
   if(fifo_fs)         fclose(fifo_fs);
   gLicqDaemon = NULL;
 }
