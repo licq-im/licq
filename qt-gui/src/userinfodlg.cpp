@@ -224,14 +224,6 @@ void UserInfoDlg::CreateGeneralInfo()
   nfoEmail2 = new CInfoField(p, false);
   lay->addMultiCellWidget(nfoEmail2, CR, CR, 1, 4);
 
-  lay->addWidget(new QLabel(tr("State:"), p), ++CR, 0);
-  nfoState = new CInfoField(p, !m_bOwner);
-  nfoState->setMaxLength(5);
-  lay->addWidget(nfoState, CR, 1);
-  lay->addWidget(new QLabel(tr("City:"), p), CR, 3);
-  nfoCity = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoCity, CR, 4);
-
   lay->addWidget(new QLabel(tr("Address:"), p), ++CR, 0);
   nfoAddress = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoAddress, CR, 1);
@@ -239,7 +231,30 @@ void UserInfoDlg::CreateGeneralInfo()
   nfoPhone = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoPhone, CR, 4);
 
-  lay->addWidget(new QLabel(tr("Country:"), p), ++CR, 0);
+  lay->addWidget(new QLabel(tr("State:"), p), ++CR, 0);
+  nfoState = new CInfoField(p, !m_bOwner);
+  nfoState->setMaxLength(3);
+  setTabOrder(nfoAddress, nfoState);
+  lay->addWidget(nfoState, CR, 1);
+  lay->addWidget(new QLabel(tr("Fax:"), p), CR, 3);
+  nfoFax = new CInfoField(p, !m_bOwner);
+  setTabOrder(nfoPhone, nfoFax);
+  lay->addWidget(nfoFax, CR, 4);
+
+  lay->addWidget(new QLabel(tr("City:"), p), ++CR, 0);
+  nfoCity = new CInfoField(p, !m_bOwner);
+  setTabOrder(nfoState, nfoCity);
+  lay->addWidget(nfoCity, CR, 1);
+  lay->addWidget(new QLabel(tr("Cellular:"), p), CR, 3);
+  nfoCellular = new CInfoField(p, !m_bOwner);
+  setTabOrder(nfoFax, nfoCellular);
+  lay->addWidget(nfoCellular, CR, 4);
+
+  lay->addWidget(new QLabel(tr("Zip:"), p), ++CR, 0);
+  nfoZipCode = new CInfoField(p, !m_bOwner);
+  setTabOrder(nfoCity, nfoZipCode);
+  lay->addWidget(nfoZipCode, CR, 1);
+  lay->addWidget(new QLabel(tr("Country:"), p), CR, 3);
   if (m_bOwner)
   {
     cmbCountry = new CEComboBox(true, tabList[GeneralInfo].tab);
@@ -247,23 +262,13 @@ void UserInfoDlg::CreateGeneralInfo()
     cmbCountry->setMaximumWidth(cmbCountry->sizeHint().width()+20);
     for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
       cmbCountry->insertItem(GetCountryByIndex(i)->szName);
-    lay->addWidget(cmbCountry, CR, 1);
+    lay->addWidget(cmbCountry, CR, 4);
   }
   else
   {
     nfoCountry = new CInfoField(p, !m_bOwner);
-    lay->addWidget(nfoCountry, CR, 1);
+    lay->addWidget(nfoCountry, CR, 4);
   }
-  lay->addWidget(new QLabel(tr("Zip:"), p), CR, 3);
-  nfoZipCode = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoZipCode, CR, 4);
-
-  lay->addWidget(new QLabel(tr("Cellular:"), p), ++CR, 0);
-  nfoCellular = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoCellular, CR, 1);
-  lay->addWidget(new QLabel(tr("Fax:"), p), CR, 3);
-  nfoFax = new CInfoField(p, !m_bOwner);
-  lay->addWidget(nfoFax, CR, 4);
 
   lay->setRowStretch(++CR, 5);
 }
@@ -445,9 +450,9 @@ void UserInfoDlg::CreateMoreInfo()
     lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
     cmbLanguage[0] = new CEComboBox(true, p);
     lay->addWidget(cmbLanguage[0], CR, 1);
-    lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
+    lay->addWidget(new QLabel(tr("Language 2:"), p), ++CR, 0);
     cmbLanguage[1] = new CEComboBox(true, p);
-    lay->addWidget(cmbLanguage[1], CR, 4);
+    lay->addWidget(cmbLanguage[1], CR, 1);
 
     lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
     cmbLanguage[2] = new CEComboBox(true, p);
@@ -464,9 +469,9 @@ void UserInfoDlg::CreateMoreInfo()
     lay->addWidget(new QLabel(tr("Language 1:"), p), ++CR, 0);
     nfoLanguage[0] = new CInfoField(p, !m_bOwner);
     lay->addWidget(nfoLanguage[0], CR, 1);
-    lay->addWidget(new QLabel(tr("Language 2:"), p), CR, 3);
+    lay->addWidget(new QLabel(tr("Language 2:"), p), ++CR, 0);
     nfoLanguage[1] = new CInfoField(p, !m_bOwner);
-    lay->addWidget(nfoLanguage[1], CR, 4);
+    lay->addWidget(nfoLanguage[1], CR, 1);
 
     lay->addWidget(new QLabel(tr("Language 3:"), p), ++CR, 0);
     nfoLanguage[2] = new CInfoField(p, !m_bOwner);
