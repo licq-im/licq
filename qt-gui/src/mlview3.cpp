@@ -23,126 +23,21 @@
 #include "config.h"
 #endif
 
+#include <qglobal.h>
+#if QT_VERSION < 300
+
 #include <qfont.h>
 #include <qpainter.h>
 #include <qaccel.h>
-
-#include "ewidgets.h"
-
-#include "mlview.h"
-
-MLViewQt2::MLViewQt2 (QWidget* parent, const char *name)
-  : QMultiLineEdit(parent, name)
-{
-  setWordWrap(WidgetWidth);
-  setWrapPolicy(AtWhiteSpace);
-  setReadOnly(true);
-}
-
-
-void MLViewQt2::appendNoNewLine(const QString& s)
-{
-  if (!atEnd()) GotoEnd();
-  QMultiLineEdit::insert(s);
-}
-
-void MLViewQt2::append(const QString& s)
-{
-#if QT_VERSION < 300
-  appendNoNewLine(s + "\n");
-#endif
-}
-
-void MLViewQt2::GotoEnd()
-{
-#if QT_VERSION < 300
-  setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
-#endif
-}
-
-
-void MLViewQt2::setBackground(const QColor& c)
-{
-  QPalette pal = palette();
-
-  pal.setColor(QPalette::Active, QColorGroup::Base, c);
-  pal.setColor(QPalette::Inactive, QColorGroup::Base, c);
-
-  setPalette(pal);
-}
-
-
-// -----------------------------------------------------------------------------
-
-
-void MLViewQt2::setForeground(const QColor& c)
-{
-  QPalette pal = palette();
-
-  pal.setColor(QPalette::Active, QColorGroup::Text, c);
-  pal.setColor(QPalette::Inactive, QColorGroup::Text, c);
-
-  setPalette(pal);
-}
-
-// -----------------------------------------------------------------------------
-
-void MLViewQt2::setFormatQuoted(bool enable)
-{
-  m_bFormatQuoted = enable;
-}
-
-// -----------------------------------------------------------------------------
-
-void MLViewQt2::paintCell(QPainter* p, int row, int col)
-{
-
-#if QT_VERSION >= 210 && QT_VERSION < 300
-  if (m_bFormatQuoted)
-  {
-    QString s = stringShown(row);
-    int i = (s[0] == ' ');
-    bool italic = (s[i] == '>' && (s[i+1] == ' ' || s[i+1] == '>'));
-
-    if (italic ^ p->font().italic())
-    {
-      QFont f(p->font());
-      f.setItalic(italic);
-      p->setFont(f);
-    }
-  }
-#endif
-
-#if QT_VERSION < 300
-  QMultiLineEdit::paintCell(p, row, col);
-#endif
-}
-
-void MLViewQt2::setCellWidth ( int cellW )
-{
-#if QT_VERSION == 210
-    if ( cellWidth() == cellW )
-        return;
-
-    QTableView::setCellWidth(cellW);
-
-    if ( autoUpdate() && isVisible() )
-        repaint();
-#else
-#if QT_VERSION < 300
-    QMultiLineEdit::setCellWidth( cellW );
-#endif
-#endif
-}
-
-#if QT_VERSION >= 300
-
 #include <qregexp.h>
 #if USE_KDE
 #include <kurl.h>
 #endif
 
+#include "ewidgets.h"
 #include "licq_icqd.h"
+
+#include "mlview3.h"
 
 MLViewQt3::MLViewQt3 (QWidget* parent, const char *name)
   : QTextBrowser(parent, name), m_handleLinks(true), m_licqDaemon(NULL)
@@ -284,6 +179,6 @@ void MLViewQt3::setSource(const QString& name)
   }
 }
 
-#endif
+#include "mlview3.moc"
 
-#include "mlview.moc"
+#endif
