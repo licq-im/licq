@@ -228,7 +228,7 @@ bool CICQDaemon::Start()
     fstat(fifo_fd, &buf);
     if (!S_ISFIFO(buf.st_mode))
     {
-      gLog.Warn("%s%s is not a FIFO, disabling fifo support.\n", L_WARNxSTR, buf);
+      gLog.Warn("%s%s is not a FIFO, disabling fifo support.\n", L_WARNxSTR, sz);
       close(fifo_fd);
       fifo_fd = -1;
     }
