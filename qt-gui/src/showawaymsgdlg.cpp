@@ -38,7 +38,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
   char szStatus[32];
   u->getStatusStr(szStatus);
   setCaption(QString(_("%1 Response for %2")).arg(szStatus).arg(u->getAlias()));
-  mleAwayMsg->setText(u->getAwayMessage());
+  mleAwayMsg->setText(u->AutoResponse());
 
   gUserManager.DropUser(u);
 

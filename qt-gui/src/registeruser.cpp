@@ -71,7 +71,7 @@ void RegisterUserDlg::slot_ok()
     }
     gUserManager.SetOwnerUin(nUin);
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    o->setPassword(szPassword);
+    o->SetPassword(szPassword);
     gUserManager.DropOwner();
     InformUser (this, _("Registered succesfully.  Now log on and update your personal info."));
     hide();
