@@ -3149,6 +3149,21 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 //-----CMainWindow::initMenu--------------------------------------------------
 void CMainWindow::initMenu()
 {
+   // Skins without a menubar (frame.hasMenuBar = 0) cannot use 
+   // QMenuData accelerators, so we need a accel that is available
+   // even without a menubar:
+   QAccel *a = new QAccel(this, "CMainWindow change Status Accel");
+   a->insertItem(ALT + Key_O, ICQ_STATUS_ONLINE);
+   a->insertItem(ALT + Key_A, ICQ_STATUS_AWAY);
+   a->insertItem(ALT + Key_N, ICQ_STATUS_NA);
+   a->insertItem(ALT + Key_C, ICQ_STATUS_OCCUPIED);
+   a->insertItem(ALT + Key_D, ICQ_STATUS_DND);
+   a->insertItem(ALT + Key_H, ICQ_STATUS_FREEFORCHAT);
+   a->insertItem(ALT + Key_F, ICQ_STATUS_OFFLINE);
+   a->insertItem(ALT + Key_I, ICQ_STATUS_FxPRIVATE);
+   connect(a, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
+   connect(a, SIGNAL(activatedAmbiguously(int)), this, SLOT(changeStatusManual(int)));
+   
    mnuStatus = new QPopupMenu(NULL);
    mnuStatus->insertItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
    mnuStatus->insertItem(pmAway, tr("&Away"), ICQ_STATUS_AWAY);
@@ -3159,14 +3174,15 @@ void CMainWindow::initMenu()
    mnuStatus->insertItem(pmOffline, tr("O&ffline"), ICQ_STATUS_OFFLINE);
    mnuStatus->insertSeparator();
    mnuStatus->insertItem(pmPrivate, tr("&Invisible"), ICQ_STATUS_FxPRIVATE);
-   mnuStatus->setAccel(ALT + Key_O, ICQ_STATUS_ONLINE);
-   mnuStatus->setAccel(ALT + Key_A, ICQ_STATUS_AWAY);
-   mnuStatus->setAccel(ALT + Key_N, ICQ_STATUS_NA);
-   mnuStatus->setAccel(ALT + Key_C, ICQ_STATUS_OCCUPIED);
-   mnuStatus->setAccel(ALT + Key_D, ICQ_STATUS_DND);
-   mnuStatus->setAccel(ALT + Key_H, ICQ_STATUS_FREEFORCHAT);
-   mnuStatus->setAccel(ALT + Key_F, ICQ_STATUS_OFFLINE);
-   mnuStatus->setAccel(ALT + Key_I, ICQ_STATUS_FxPRIVATE);
+   mnuStatus->setAccel(a->key(ICQ_STATUS_ONLINE), ICQ_STATUS_ONLINE);
+   mnuStatus->setAccel(a->key(ICQ_STATUS_AWAY), ICQ_STATUS_AWAY);
+   mnuStatus->setAccel(a->key(ICQ_STATUS_NA), ICQ_STATUS_NA);
+   mnuStatus->setAccel(a->key(ICQ_STATUS_OCCUPIED), ICQ_STATUS_OCCUPIED);
+   mnuStatus->setAccel(a->key(ICQ_STATUS_DND), ICQ_STATUS_DND);
+   mnuStatus->setAccel(a->key(ICQ_STATUS_FREEFORCHAT), ICQ_STATUS_FREEFORCHAT);
+   mnuStatus->setAccel(a->key(ICQ_STATUS_OFFLINE), ICQ_STATUS_OFFLINE);
+   mnuStatus->setAccel(a->key(ICQ_STATUS_FxPRIVATE), ICQ_STATUS_FxPRIVATE);
+
    connect(mnuStatus, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
 
    mnuUserGroups = new QPopupMenu(NULL);
