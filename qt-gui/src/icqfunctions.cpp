@@ -23,8 +23,6 @@
 #include <time.h>
 
 #ifdef USE_KDE
-#warning !!!! FIXME !!!!
-#include <qfiledialog.h>
 #include <kfiledialog.h>
 #else
 #include <qfiledialog.h>
@@ -1511,9 +1509,7 @@ void ICQFunctions::slot_sendbtn()
   else if (rdbFile->isChecked())
   {
 #ifdef USE_KDE
-    // !!! FIXME !!!!
-    //QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
-    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
+    QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
 #else
     QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
 #endif
@@ -1636,7 +1632,11 @@ void ICQFunctions::SetupHistory()
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (!u->GetHistory(m_lHistoryList))
   {
-    mleHistory->setText(tr("Error loading history"));
+    if(u->HistoryFile())
+      mleHistory->setText(tr("Error loading history file: %1\nDescription: %2")
+        .arg(u->HistoryFile()).arg(u->HistoryName()));
+    else
+      mleHistory->setText(tr("Sorry, history is disabled for this person."));
   }
   else
   {
