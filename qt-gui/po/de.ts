@@ -97,6 +97,29 @@ Sie können mir eine Nachricht hinterlassen.
     </message>
 </context>
 <context>
+    <name>CEditFileListDlg</name>
+    <message>
+        <source>Licq - Files to send</source>
+        <translation>Licq - Dateien zum senden</translation>
+    </message>
+    <message>
+        <source>&amp;Done</source>
+        <translation>&amp;Fertig</translation>
+    </message>
+    <message>
+        <source>&amp;Up</source>
+        <translation>&amp;Hoch</translation>
+    </message>
+    <message>
+        <source>&amp;Down</source>
+        <translation>&amp;Runter</translation>
+    </message>
+    <message>
+        <source>&amp;Delete</source>
+        <translation>&amp;Entfernen</translation>
+    </message>
+</context>
+<context>
     <name>CFileDlg</name>
     <message>
         <source>KB</source>
@@ -581,7 +604,7 @@ http://www.licq.org
 
 %3 (%4)
 %5 contacts.</source>
-        <translation>Licq Version %1%8
+        <translation type="obsolete">Licq Version %1%8
 Qt GUI Plugin Version %2
 Kompiliert am: %7
 %6
@@ -1038,6 +1061,35 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>Konnte erweiterte Symbol-Datei nicht öffnen
 %1.</translation>
     </message>
+    <message>
+        <source>Licq version %1%8.
+Qt GUI plugin version %2.
+Compiled on: %7
+%6
+Maintainer: Jon Keating
+Contributions by Dirk A. Mueller
+Original Author: Graham Roff
+
+http://www.licq.org
+#licq on irc.freenode.net
+
+%3 (%4)
+%5 contacts.</source>
+        <translation>Licq Version %1%8.
+Qt GUI Plugin Version %2.
+Kompiliert am: %7
+%6
+Betreuer: Jon Keating
+Beiträge von Dirk A. Mueller
+Ursprünglicher Autor: Graham Roff
+Übersetzung: Thomas Reitelbach
+
+http://www.licq.org
+#licq auf irc.freenode.net
+
+%3 (%4)
+%5 Kontake.</translation>
+    </message>
 </context>
 <context>
     <name>CQtLogWindow</name>
@@ -1315,6 +1367,42 @@ Doppelklick - Nächste Nachricht</translation>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
         <translation>&lt;br&gt;&lt;nobr&gt;Untätig:</translation>
     </message>
+    <message>
+        <source> weeks</source>
+        <translation>wochen</translation>
+    </message>
+    <message>
+        <source> week</source>
+        <translation>woche</translation>
+    </message>
+    <message>
+        <source> days</source>
+        <translation>tage</translation>
+    </message>
+    <message>
+        <source> day</source>
+        <translation>tag</translation>
+    </message>
+    <message>
+        <source> hours</source>
+        <translation>stunden</translation>
+    </message>
+    <message>
+        <source> hour</source>
+        <translation>stunde</translation>
+    </message>
+    <message>
+        <source> minutes</source>
+        <translation>minuten</translation>
+    </message>
+    <message>
+        <source> minute</source>
+        <translation>minute</translation>
+    </message>
+    <message>
+        <source>0 minutes</source>
+        <translation>0 minuten</translation>
+    </message>
 </context>
 <context>
     <name>CUtilityDlg</name>
@@ -1390,9 +1478,6 @@ Doppelklick - Nächste Nachricht</translation>
         <source>Window:</source>
         <translation>Fenster:</translation>
     </message>
-</context>
-<context>
-    <name>ChangePassDlg</name>
 </context>
 <context>
     <name>ChatDlg</name>
@@ -2816,9 +2901,6 @@ Veränderungen werden erst nach dem Neustart von Licq wirksam!
     </message>
 </context>
 <context>
-    <name>PasswordDlg</name>
-</context>
-<context>
     <name>PluginDlg</name>
     <message>
         <source>Id</source>
@@ -2892,12 +2974,6 @@ Veränderungen werden erst nach dem Neustart von Licq wirksam!
     </message>
 </context>
 <context>
-    <name>QFileDialog</name>
-</context>
-<context>
-    <name>QFontDialog</name>
-</context>
-<context>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
@@ -2915,12 +2991,6 @@ Veränderungen werden erst nach dem Neustart von Licq wirksam!
         <source>Licq Information</source>
         <translation>Licq Information</translation>
     </message>
-</context>
-<context>
-    <name>QString</name>
-</context>
-<context>
-    <name>QWizard</name>
 </context>
 <context>
     <name>RegisterUserDlg</name>
@@ -3531,6 +3601,18 @@ Erweitertes Symbol Paket &apos;%2&apos; wurde daher deaktiviert.</translation>
         <translation>Kann erweiterte Symboldatei nicht öffnen:
 %1</translation>
     </message>
+    <message>
+        <source>Use this combo box to select one of the available skins</source>
+        <translation>Benutzen Sie diese Auswahlbox um aus den verfügbaren Skins zu wählen</translation>
+    </message>
+    <message>
+        <source>Use this combo box to select one of the available icon sets</source>
+        <translation>Benutzen Sie diese Auswahlbox um aus den verfügbaren Symbolen zu wählen</translation>
+    </message>
+    <message>
+        <source>Use this combo box to select one of the available extended icon sets</source>
+        <translation>Benutzen Sie diese Auswahlbox um aus den verfügbaren erweiterten Symbolen zu wählen</translation>
+    </message>
 </context>
 <context>
     <name>UserCodec</name>
@@ -3958,6 +4040,37 @@ Beschreibung: %2</translation>
     </message>
 </context>
 <context>
+    <name>UserSelectDlg</name>
+    <message>
+        <source>&amp;User:</source>
+        <translation>&amp;Benutzer:</translation>
+    </message>
+    <message>
+        <source>&amp;Password:</source>
+        <translation>&amp;Passwort:</translation>
+    </message>
+    <message>
+        <source>&amp;Save Password</source>
+        <translation>Passwort &amp;speichern</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation>Ab&amp;brechen</translation>
+    </message>
+    <message>
+        <source>Licq User Select</source>
+        <translation>Licq Benutzer Auswahl</translation>
+    </message>
+    <message>
+        <source>%1 (%2)</source>
+        <translation>%1 (%2)</translation>
+    </message>
+</context>
+<context>
     <name>UserSendChatEvent</name>
     <message>
         <source>Clear</source>
@@ -4118,6 +4231,10 @@ through the server!</source>
         <source>%1 refused %2, send through server</source>
         <translation>%1 lehnte ab %2, sende über Server</translation>
     </message>
+    <message>
+        <source>cancelled</source>
+        <translation>abgebrochen</translation>
+    </message>
 </context>
 <context>
     <name>UserSendContactEvent</name>
@@ -4157,6 +4274,10 @@ through the server!</source>
     <message>
         <source>Select files to send</source>
         <translation>Dateien zum versenden auswählen</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Bearbeiten</translation>
     </message>
 </context>
 <context>
@@ -4218,6 +4339,10 @@ Möchten Sie sie wirklich senden?</translation>
     <message>
         <source>URL : </source>
         <translation>URL : </translation>
+    </message>
+    <message>
+        <source>No URL specified</source>
+        <translation>Keine URL angegeben</translation>
     </message>
 </context>
 <context>
