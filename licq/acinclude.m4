@@ -78,9 +78,9 @@ AC_DEFUN(AC_C_SOCKLEN_T,
 socklen_t foo;
 ],[
   ac_cv_c_socklen_t=yes
+  AC_DEFINE(HAVE_SOCKLEN_T)
 ],[
   ac_cv_c_socklen_t=no
-  AC_DEFINE(socklen_t,int)
 ])])])
 
 dnl Check for sys_errlist[] and sys_nerr, check for declaration
