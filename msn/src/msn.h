@@ -78,7 +78,10 @@ public:
   
   void MSNPing();
   bool Connected() { return m_nServerSocket != -1; }
+  void MSNLogoff(bool = false);
   
+  bool WaitingPingReply()          { return m_bWaitingPingReply; }
+  void SetWaitingPingReply(bool b) { m_bWaitingPingReply = b; }
 private:
   void ProcessSignal(CSignal *);
   void ProcessPipe();
@@ -100,7 +103,6 @@ private:
   void MSNSendMessage(char *, char *, pthread_t, unsigned long);
   void MSNSendTypingNotification(char *, unsigned long);
   void MSNChangeStatus(unsigned long);
-  void MSNLogoff(bool = false);
   void MSNAddUser(char *);
   void MSNRemoveUser(char *);
   void MSNRenameUser(char *);
@@ -133,6 +135,7 @@ private:
   vector<BufferList> m_vlPacketBucket;
   list<ICQEvent *> m_pEvents;
   StartList m_lStart;
+  bool m_bWaitingPingReply;
   
   // Server variables
   unsigned long m_nStatus,

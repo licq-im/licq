@@ -39,19 +39,19 @@ using namespace std;
 
 char *strndup(const char *s, size_t n)
 {
-  char *str;
+  char *str;
 
-  if (n < 1)
-    return NULL;
+  if (n < 1)
+    return NULL;
 
-  str = (char *)malloc(n + 1);
-  if (!str)
-    return NULL;
+  str = (char *)malloc(n + 1);
+  if (!str)
+    return NULL;
 
-  memset(str, '\0', n + 1);
-  strncpy(str, s, n);
+  memset(str, '\0', n + 1);
+  strncpy(str, s, n);
 
-  return str;
+  return str;
 }
 #endif // HAVE_STRNDUP
 
@@ -64,6 +64,7 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
 {
   m_pDaemon = _pDaemon;
   m_bExit = false;
+  m_bWaitingPingReply = false;
   m_nPipe = _nPipe;
   m_nSSLSocket = m_nServerSocket = m_nNexusSocket = -1;
   m_pPacketBuf = 0;

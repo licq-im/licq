@@ -105,11 +105,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       {
         m_pPacketBuf->SkipParameter(); // email account
         string strNick = m_pPacketBuf->GetParameter();
-        gLog.Info("%s%s logged in.\n", L_MSNxSTR, strNick.c_str());
+        string strDecodedNick = Decode(strNick);
+        gLog.Info("%s%s logged in.\n", L_MSNxSTR, strDecodedNick.c_str());
        
         // Set our alias here
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
-        string strDecodedNick = Decode(strNick);
         o->SetAlias(strDecodedNick.c_str());
         gUserManager.DropOwner(MSN_PPID);
          
@@ -420,6 +420,10 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
           gUserManager.DropOwner(MSN_PPID);
       }
     }
+    else if (strCmd == "QNG")
+    {
+      m_bWaitingPingReply = false;
+    }
     
     // Get the next packet
     m_pPacketBuf->SkipPacket();
@@ -583,8 +587,17 @@ void *MSNPing_tep(void *p)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
     
-    if (pMSN->Connected())
+    if (pMSN->WaitingPingReply())
+    {
+      gLog.Info("%sPing timeout. Reconnecting...\n", L_MSNxSTR);
+      pMSN->SetWaitingPingReply(false);
+      pMSN->MSNLogoff();
+    }
+    else if (pMSN->Connected())
+    {
       pMSN->MSNPing();
+      pMSN->SetWaitingPingReply(true);
+    }
 
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
