@@ -51,6 +51,7 @@ EditGrpDlg::EditGrpDlg(QWidget *parent, const char *name)
 void EditGrpDlg::RefreshList()
 {
   lstGroups->clear();
+  lstGroups->insertItem(tr("All Users"));
   if (gUserManager.DefaultGroup() == 0)
     nfoDefault->setData(tr("All Users"));
   if (gUserManager.NewUserGroup() == 0)
@@ -77,7 +78,8 @@ void EditGrpDlg::slot_add()
 
 void EditGrpDlg::slot_remove()
 {
-  int n = lstGroups->currentItem();
+  int n = lstGroups->currentItem() - 1;
+  if (n < 0) return;
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   QString warning(tr("Are you sure you want to remove\nthe group '") +
                   QString::fromLocal8Bit((*g)[n]) + "'?");
@@ -92,8 +94,8 @@ void EditGrpDlg::slot_remove()
 
 void EditGrpDlg::slot_up()
 {
-  int n = lstGroups->currentItem();
-  if (n == -1 || n == 0) return;
+  int n = lstGroups->currentItem() - 1;
+  if (n <= 0) return;
   gUserManager.SwapGroups(n + 1, n);
   RefreshList();
   emit (signal_updateGroups());
@@ -102,8 +104,8 @@ void EditGrpDlg::slot_up()
 
 void EditGrpDlg::slot_down()
 {
-  int n = lstGroups->currentItem();
-  if (n == -1 /* || n == max */) return;
+  int n = lstGroups->currentItem() - 1;
+  if (n < 0 /* || n == max */) return;
   gUserManager.SwapGroups(n + 1, n + 2);
   RefreshList();
   emit (signal_updateGroups());
@@ -119,8 +121,8 @@ void EditGrpDlg::slot_default()
   else
   {
     int n = lstGroups->currentItem();
-    if (n == -1 ) return;
-    gUserManager.SetDefaultGroup(n + 1);
+    if (n == -1) return;
+    gUserManager.SetDefaultGroup(n);
   }
   RefreshList();
   //emit (signal_updateGroups());
@@ -137,7 +139,7 @@ void EditGrpDlg::slot_newuser()
   {
     int n = lstGroups->currentItem();
     if (n == -1 ) return;
-    gUserManager.SetNewUserGroup(n + 1);
+    gUserManager.SetNewUserGroup(n);
   }
   RefreshList();
   //emit (signal_updateGroups());
@@ -146,8 +148,8 @@ void EditGrpDlg::slot_newuser()
 
 void EditGrpDlg::slot_edit()
 {
-  int n = lstGroups->currentItem();
-  if (n == -1 ) return;
+  int n = lstGroups->currentItem() - 1;
+  if (n < 0) return;
   edtName->setEnabled(true);
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   edtName->setText((*g)[n]);
