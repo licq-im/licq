@@ -865,10 +865,12 @@ QString UserSendCommon::generatePart(const QString& text)
 
   QString msgTextCurrent;
 
-  if(m_msgTextTotal.isEmpty() )
+  if (m_msgTextTotal.isEmpty())
     m_msgTextTotal = text;
 
-  if(chkSendServer->isChecked()) {
+#if QT_VERSION < 220
+  if (chkSendServer->isChecked())
+  {
     int msgNextOffset = QMIN(m_msgTextTotal.length(), PARTLEN);
     int found_index = m_msgTextTotal.findRev(QRegExp("[\\s\\.]"), msgNextOffset);
     if(found_index > 0)
@@ -879,11 +881,13 @@ QString UserSendCommon::generatePart(const QString& text)
     msgTextCurrent = m_msgTextCurrent;
     if(m_msgTextCurrent.length() < m_msgTextTotal.length())
     {
-//    msgTextCurrent.prepend("-L--- multipart ---\n");
+      //msgTextCurrent.prepend("-L--- multipart ---\n");
       msgTextCurrent.append("...");
     }
   }
-  else {
+  else
+#endif
+  {
     msgTextCurrent = m_msgTextTotal;
     m_msgTextCurrent = msgTextCurrent = m_msgTextTotal;
   }
