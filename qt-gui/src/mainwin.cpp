@@ -62,7 +62,6 @@ extern "C" {
 #include "authuserdlg.h"
 #include "editgrp.h"
 #include "searchuserdlg.h"
-#include "icqfunctions.h"
 #include "utilitydlg.h"
 #include "registeruser.h"
 #include "skinbrowser.h"
@@ -782,8 +781,6 @@ void CMainWindow::closeEvent( QCloseEvent *e )
     licqConf.FlushFile();
     licqConf.CloseFile();
   }
-  else
-    qDebug("MainWindow was hidden, didn't update geometry");
 
   if (licqIcon != NULL) {
     e->ignore();
@@ -1480,12 +1477,13 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
       QApplication::clipboard()->clear();
       return;
     }
-    else if (c.left(5) == "file:")
+    else if (c.left(5) == "file:" || c.left(1) == "/")
     {
       UserSendFileEvent *e = (UserSendFileEvent *)callFunction(mnuUserSendFile, nUin);
       if (e == NULL) return;
       // Set the file
-      c.remove(0, 5);
+      if(c.left(5) == "file:")
+        c.remove(0, 5);
       while (c[0] == '/') c.remove(0, 1);
       c.prepend('/');
       e->setFile(c, "");
