@@ -369,7 +369,9 @@ void CUserViewItem::paintCell( QPainter *op, const QColorGroup & cgdefault, int 
 
   if (pix != NULL)
   {
-    QPoint pd(op->xForm(QPoint(0,0)).x(), op->xForm(QPoint(0,0)).y());
+    QRect r(listView()->itemRect(this));
+    QPoint pd(r.topLeft()+QPoint(listView()->header()->sectionPos(column), 0));
+    listView()->viewport()->mapToParent(pd);
     QPoint pp(listView()->mapToParent(pd));
     p.drawPixmap(0, 0, *pix, pp.x(), pp.y(), width, height());
   }
