@@ -19,6 +19,7 @@
 #include "countrycodes.h"
 #include "log.h"
 #include "sigman.h"
+#include "eventdesc.h"
 
 #include "user.h"
 #include "mledit.h"
@@ -154,6 +155,8 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    btnCancel = new QPushButton(tr("Close"), this);
    btnSave = new QPushButton(tr("Save"), this);
 
+   setTabOrder(mleSend, btnOk);
+
    connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnOk, SIGNAL(clicked()));
    connect (chkSpoof, SIGNAL(clicked()), this, SLOT(setSpoofed()));
    connect (this, SIGNAL(selected(const QString &)), this, SLOT(tabSelected(const QString &)));
@@ -254,11 +257,11 @@ void ICQFunctions::keyPressEvent(QKeyEvent *e)
     close();
     return;
   }
-  else if (e->key() == Key_Enter || e->key() == Key_Return)
+  /*else if (e->key() == Key_Enter || e->key() == Key_Return)
   {
     callFcn();
     return;
-  }
+  }*/
   QTabWidget::keyPressEvent(e);
 }
 
@@ -457,7 +460,7 @@ void ICQFunctions::tabSelected(const QString &tab)
   else if (tab == tabLabel[TAB_READ])
   {
      btnOk->setText(tr("Ok"));
-     btnSave->setText(tr("Reply"));
+     btnSave->setText(tr("Quote"));
      m_bIsOwner ? btnSave->hide() : btnSave->show();
      msgView->triggerUpdate();
      currentTab = TAB_READ;
@@ -662,16 +665,9 @@ void ICQFunctions::showHistory()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-/*  char *buf;
-  u->GetHistory(buf);
-  if (buf != NULL)
-  {
-    gUserManager.DropUser(u);
-    mleHistory->setText(QString::fromLocal8Bit(buf));
-    mleHistory->goToEnd();
-    delete []buf;
-  }*/
   HistoryList h;
+  char sz[48];
+  strcpy(sz, m_bIsOwner ? "Server" : u->getAlias());
   if (!u->GetHistory(h))
   {
     mleHistory->setText(tr("Error loading history"));
@@ -683,11 +679,10 @@ void ICQFunctions::showHistory()
     for (HistoryListIter i = h.begin(); i != h.end(); i++)
     {
       s.sprintf("%s -> %s: %s (%s) [%c%c%c]\n",
-                (*i)->Dir() == 'R' ? u->getAlias() : o->getAlias(),
-                (*i)->Dir() == 'R' ? o->getAlias() : u->getAlias(),
-                (*i)->Description(), (*i)->Time(), (*i)->IsDirect() ? 'D' : '-',
+                (*i)->Dir() == 'R' ? sz : o->getAlias(),
+                (*i)->Dir() == 'R' ? o->getAlias() : sz,
+                (const char *)EventDescription(*i), (*i)->Time(), (*i)->IsDirect() ? 'D' : '-',
                 (*i)->IsMultiRec() ? 'M' : '-', (*i)->IsUrgent() ? 'U' : '-');
-                ;
       mleHistory->append(s + QString::fromLocal8Bit( (*i)->Text() ));
     }
   }
@@ -962,14 +957,14 @@ void ICQFunctions::doneFcn(ICQEvent *e)
     {
       ICQUser *u = NULL;
       CUserEvent *ue = e->m_xUserEvent;
-      char msg[128];
+      QString msg;
       if (e->m_nSubResult == ICQ_TCPxACK_RETURN)
       {
         char status[32];
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         u->getStatusStr(status);
-        sprintf(msg, tr("%s is in %s mode:\n%s\n[Send \"urgent\" to ignore]"),
-                     u->getAlias(), status, u->AutoResponse());
+        msg = tr("%1 is in %2 mode:\n%3\n[Send \"urgent\" to ignore]")
+                 .arg(u->getAlias()).arg(status).arg(u->AutoResponse());
         InformUser(this, msg);
         gUserManager.DropUser(u);
         bForceOpen = true;
@@ -977,9 +972,8 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       else if (e->m_nSubResult == ICQ_TCPxACK_REFUSE)
       {
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
-        sprintf(msg, tr("%s refused %s, send through server."),
-                     u->getAlias(),
-                     ue->Description());
+        msg = tr("%1 refused %2, send through server.")
+              .arg(u->getAlias()).arg(EventDescription(ue));
         InformUser(this, msg);
         gUserManager.DropUser(u);
         bForceOpen = true;
@@ -994,13 +988,12 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         }
         if (!ea->bAccepted)
         {
-           char result[128];
            u = gUserManager.FetchUser(m_nUin, LOCK_R);
-           sprintf(result, tr("%s%s with %s refused:\n%s%s"), L_TCPxSTR,
-                   ue->Description(), u->getAlias(), L_BLANKxSTR,
-                   ea->szResponse);
+           QString result;
+           result.sprintf(tr("%s%1 with %2 refused:\n%s%3"), L_TCPxSTR, L_BLANKxSTR);
+           result.arg(EventDescription(ue)).arg(u->getAlias()).arg(ea->szResponse);
            gUserManager.DropUser(u);
-           InformUser(this, QString::fromLocal8Bit(result));
+           InformUser(this, result);
         }
         else
         {

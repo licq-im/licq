@@ -5,6 +5,7 @@
 #include <qpainter.h>
 #include "message.h"
 #include "messagebox.h"
+#include "eventdesc.h"
 
 MsgViewItem::MsgViewItem(CUserEvent *theMsg, unsigned short theIndex, QListView *parent) : QListViewItem(parent)
 {
@@ -12,7 +13,7 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, unsigned short theIndex, QListView 
    msg = theMsg->Copy();
 
    setText(0, "*");
-   setText(1, msg->Description());
+   setText(1, EventDescription(msg));
    setText(2, msg->Time());
    char szFlags[4];
    szFlags[0] = msg->IsDirect() ? 'D' : ' ';
