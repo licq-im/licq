@@ -18,9 +18,10 @@ the environment variable LANGUAGE (or LANG) to the two digit language code
 (as per GNU gettext standard) and it will be loaded next time the Qt-GUI
 is started.  For example, to use a russian translation do:
 > cd po
-> make ru.qm
-> cp ru.qm /usr/local/share/licq/qt-gui/locale
-> export LANGUAGE="ru"
+> cp /the/dir/ru_RU.KOI8-R.po .
+> make qm
+> cp ru_RU.KOI8R.qm /usr/local/share/licq/qt-gui/locale
+> export LANG="ru_RU.KOI8-R"
 
 
 Updating a Translation File
@@ -32,3 +33,104 @@ program, which comes with Qt.  The new .po file can now be edited and any
 necessary translations added.
 
 
+-----------------------------------------------------------------------------
+NOTES
+-----------------------------------------------------------------------------
+
+From max@bob.techcen.zgrad.su Mon Nov  8 19:21:03 1999
+Date: Fri, 5 Nov 1999 09:05:21 -0500
+From: Max Kosmach <max@bob.techcen.zgrad.su>
+Reply-To: licq@ctr.videotron.com
+To: licq@ctr.videotron.com
+Cc: Yu.A.Uvarov <uv@astro.ioffe.rssi.ru>
+Subject: Re: [licq] Bugs in 0.71 ?
+
+On Fri, Nov 05, 1999 at 01:34:43PM +0300, Yu.A.Uvarov wrote:
+> I have the following problems with cvs release (991026, v0.71, 
+> Qt-gui v.0.67):
+> 
+> 1. I have no 8 bit visible. I see ? instead any Cyrillic letter
+> in ANY window. I can copy messages to another editor,  where
+> ? become Cyrillic letters. By this way (copy and paste) I can read and
+> send messages, but I don't like this procedure.  
+export LANG=ru_RU.KOI8-R
+set translation in licq to RUSSIAN_WIN
+
+this is the end (c)
+
+> 
+> 2. lisq suggests only -8859-1 fonts to me.
+> I had to edit config by hands to get my -koi8-r font.
+LANG=ru_RU.KOI8-R
+> 
+> 3. In order to cyrillize Netscape I have aliases 
+> -netscapenyx-fixed-medium-r-normal--*--iso8859-1 for 
+> -cronyx-fixed-medium-r-normal--*-koi8-r fonts. I see
+> these aliases in the SelectFont dialog. When I chose one of
+> them I even see 8bit in Sample window. Then I press OK,
+> Apply, Ok. And when I return to Options again I see that
+> the font I really  chose is
+> -misc-fixed-medium-r-normal--*-iso8859-1 instead. Not one I wanted.
+weird cyrillisation
+it's not needed
+
+With MBR
+Max
+-------------------------------------------------
+The LICQ list.
+To unsubscribe send a mail with "unsubscribe licq"
+in the body to majordomo@ctr.videotron.com
+-------------------------------------------------
+
+
+
+From ayn2@cornell.edu Mon Nov  8 19:21:07 1999
+Date: Fri, 5 Nov 1999 11:42:12 -0500
+From: Alexey Nogin <ayn2@cornell.edu>
+Reply-To: licq-dev@ctr.videotron.com
+To: licq-dev@ctr.videotron.com
+Cc: Yu.A.Uvarov <uv@astro.ioffe.rssi.ru>
+Subject: Re: licq-dev Bugs in 0.71 ?
+
+On Fri, 5 Nov 1999, Yu.A.Uvarov wrote:
+
+> 3. In order to cyrillize Netscape I have aliases 
+> -netscapenyx-fixed-medium-r-normal--*--iso8859-1 for 
+> -cronyx-fixed-medium-r-normal--*-koi8-r fonts. 
+> 
+OK, this is your problem. You are using a rude hack that was acceptable
+2 or 3 years ago, but you shouldn't use it now. Most programs nowdays are
+more or less properly localized and you are going to have more and more
+troubles with this approach.
+
+Do the following:
+1) run locale -a|grep '^ru' to see which russian locales you have on your
+machine. Try to figure out which one is KOI8-R (on my machine it is
+ru_RU.KOI8-R). If it does not have "KOI8-R" in its name explicitly, take a
+look at /usr/X11R6/lib/X11/locale/locale.* and make sure that your locale
+of choice is not mapped to ISO-8859-5 locale in X.
+2)Make sure you have environment variables
+LANG=ru_RU.KOI8-R
+LC_NUMERIC=C
+set _before_ your window manager is started. To test if it worked
+correctly, start xterm with some cyrillic fond and run "date". You should
+get the date in russian.
+3) Remove your aliases.
+4) Make sure you are using Netscape at least 4.x
+5) Edit your /usr/X11R6/lib/X11/app-defaults/Netscape and replace
+references to *-iso8859-1 fonts with references to *-koi8-r fonts where it
+makes sense.
+6) Run licq, tell it that you want to use koi8-r fonts and it would work
+fine (works for me).
+
+Alexey
+--------------------------------------------------------------
+Home Page: http://www.cs.cornell.edu/nogin/
+E-Mail: nogin@cs.cornell.edu (office), ayn2@cornell.edu (home)
+Office: Upson 4139, tel: 1-607-255-4934
+
+---------------------------------------------------------
+The LICQ developement list.
+To unsubscribe send a mail with "unsubscribe licq-dev"
+in the body to majordomo@ctr.videotron.com
+---------------------------------------------------------
