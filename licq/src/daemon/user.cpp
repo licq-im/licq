@@ -1217,6 +1217,13 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
       case 's':
         sz = StatusStr();
         break;
+      case 'o':
+      {
+        time_t t = time(NULL);
+        strftime(szTemp, 128, "%c", localtime(&t));
+        sz = szTemp;
+        break;
+      }
       default:
         gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
                   L_WARNxSTR, _szFormat[i]);
@@ -1637,7 +1644,7 @@ ICQOwner::ICQOwner()
   m_fConf.ReadNum("Uin", m_nUin);
   m_fConf.ReadStr("Password", szTemp);
   SetPassword(szTemp);
-  m_fConf.ReadBool("WebPresence", m_bWebAware, true);
+  m_fConf.ReadBool("WebPresence", m_bWebAware, false);
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
 
   m_fConf.CloseFile();
