@@ -1109,26 +1109,15 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
   }
   case USER_EVENTS:
   {
-    /*MsgViewItem *e = (MsgViewItem *)msgView->firstChild();
-    short index = -1;
-    if (e != NULL)
-    {
-      do
-      {
-        if (e->index > index) index = e->index;
-        e = (MsgViewItem *)e->nextSibling();
-      } while (e != NULL);
-    }
-    index++;
-    if(u->GetEvent(index))
-    {
-      e = new MsgViewItem(u->GetEvent(index), index, msgView);
-      msgView->ensureItemVisible(e);
-    }*/
-    if (u->NewMessages() > 0)
+    if (u->NewMessages() > 1)
     {
       btnRead4->setEnabled(true);
       btnRead4->setText(tr("Next (%1)").arg(u->NewMessages()));
+    }
+    else if (u->NewMessages() == 1)
+    {
+      btnRead4->setEnabled(true);
+      btnRead4->setText(tr("Next"));
     }
     else
     {
@@ -1166,10 +1155,15 @@ void ICQFunctions::slot_nextMessage()
   }
   MsgViewItem *e = new MsgViewItem(u->EventPop(), msgView);
   btnRead4->setEnabled(u->NewMessages() > 0);
-  if (u->NewMessages() > 0)
+  if (u->NewMessages() > 1)
   {
     btnRead4->setEnabled(true);
     btnRead4->setText(tr("Next (%1)").arg(u->NewMessages()));
+  }
+  else if (u->NewMessages() == 1)
+  {
+    btnRead4->setEnabled(true);
+    btnRead4->setText(tr("Next"));
   }
   else
   {
