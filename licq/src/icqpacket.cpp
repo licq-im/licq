@@ -1247,7 +1247,12 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
 {
   m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
 
-  m_nSize += strlen_safe(szCity) + strlen_safe(szState) + strlen_safe(szPhoneNumber) +
+  char szStatebuf[6];
+
+  szStatebuf[5] = '\0';
+  snprintf(szStatebuf, 6, szState);
+
+  m_nSize += strlen_safe(szCity) + strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
              strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szName) +
              strlen_safe(szDepartment) + strlen_safe(szPosition) +
              strlen_safe(szHomepage) + 8 + 26;
@@ -1265,7 +1270,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
 
   buffer->PackUnsignedShort(m_nMetaCommand);
   m_szCity = buffer->PackString(szCity);
-  m_szState = buffer->PackString(szState);
+  m_szState = buffer->PackString(szStatebuf);
   m_szPhoneNumber = buffer->PackString(szPhoneNumber);
   m_szFaxNumber = buffer->PackString(szFaxNumber);
   m_szAddress = buffer->PackString(szAddress);
