@@ -372,8 +372,8 @@ void set_options(struct options_window *ow)
 	// Clist of servers
 
 	// Default server port
-	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ow->spnDefPort),
-		icq_daemon->getDefaultRemotePort());
+//	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ow->spnDefPort),
+	//	icq_daemon->getDefaultRemotePort());
 
 	// Firewall stuff
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->chkTCPEnabled),
@@ -446,8 +446,8 @@ void done_options(GtkWidget *widget, gpointer data)
 		ow->chkRememberWindowPos));
 	
 	// Save the daemon options
-	icq_daemon->setDefaultRemotePort(
-	    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ow->spnDefPort)));
+//	icq_daemon->setDefaultRemotePort(
+	//    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ow->spnDefPort)));
 
 	icq_daemon->SetTCPPorts(
 	    gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ow->spnPortLow)),
