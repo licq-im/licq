@@ -1,7 +1,7 @@
 # Licq Italian Qt GUI plugin translation.
 # Copyright (C) 1999 Free Software Foundation, Inc.
 # Caligiore Salvatore <Caligiore@bigfoot.com>, 1999.
-# http://www.bigfoot.com/~caligiore
+# http://www.geocities.com/caligiore
 # ICQ:#27434326
 # This is a Qt message file in .po format.  Each msgid starts with
 # a scope.  This scope should *NOT* be translated - eg. "Foo::Bar"
@@ -839,7 +839,7 @@ msgstr ""
 "%5 contacts."
 "Traduzione Italiana\n"
 "by Salvo Caligiore\n"
-"http://www.bigfoot.com/~caligiore\n"
+"http://www.geocities.com/caligiore\n"
 "UIN: 27434326."
 
 #: mainwin.cpp:2097
