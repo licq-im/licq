@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -38,6 +39,7 @@
 #include "licq_log.h"
 #include "licq_translate.h"
 #include "ewidgets.h"
+#include "mledit.h"
 #include "licq_icqd.h"
 
 
@@ -101,10 +103,10 @@ CFileDlg::CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent)
   lay->addWidget(nfoETA, CR++, 2);
   lay->addRowSpacing(++CR, 10);
 
-  lblStatus = new QLabel(this);
+  mleStatus = new MLEditWrap(true, this);
   ++CR;
-  lay->addMultiCellWidget(lblStatus, CR, CR, 0, 2);
-  lblStatus->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
+  lay->addMultiCellWidget(mleStatus, CR, CR, 0, 2);
+  mleStatus->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
 
   lay->setRowStretch(++CR, 3);
 
@@ -139,7 +141,7 @@ void CFileDlg::slot_cancel()
 {
   // close the local file and other stuff
   if (sn != NULL) sn->setEnabled(false);
-  lblStatus->setText(tr("File transfer cancelled"));
+  mleStatus->appendNoNewLine(tr("File transfer cancelled\n"));
   btnCancel->setText(tr("Close"));
   ftman->CloseFileTransfer();
 }
@@ -205,7 +207,7 @@ bool CFileDlg::ReceiveFiles()
 
   if (!ftman->ReceiveFiles(d.latin1())) return false;
 
-  lblStatus->setText(tr("Waiting for connection..."));
+  mleStatus->appendNoNewLine(tr("Waiting for connection...\n"));
   show();
   return true;
 }
@@ -241,9 +243,9 @@ void CFileDlg::slot_ft()
         nfoFileSize->setText(encodeFSize(ftman->FileSize()));
         barTransfer->setTotalSteps(ftman->FileSize());
         if (ftman->Direction() == D_RECEIVER)
-          lblStatus->setText(tr("Receiving file..."));
+          mleStatus->appendNoNewLine(tr("Receiving file...\n"));
         else
-          lblStatus->setText(tr("Sending file..."));
+          mleStatus->appendNoNewLine(tr("Sending file...\n"));
         break;
       }
 
@@ -255,14 +257,18 @@ void CFileDlg::slot_ft()
 
       case FT_DONExFILE:
       {
-        lblStatus->setText(tr("Done %1").arg(e->Data()));
+        mleStatus->appendNoNewLine(tr("Done %1\n").arg(e->Data()));
         slot_update();
+        if (ftman->Direction() == D_RECEIVER)
+          mleStatus->appendNoNewLine(tr("Received\n%1\nfrom %2 successfully\n").arg(e->Data()).arg(ftman->RemoteName()));
+        else
+          mleStatus->appendNoNewLine(tr("Sent\n%1\nto %2 successfully\n").arg(e->Data()).arg(ftman->RemoteName()));
         break;
       }
 
       case FT_DONExBATCH:
       {
-        lblStatus->setText(tr("File transfer complete"));
+        mleStatus->appendNoNewLine(tr("File transfer complete\n"));
         btnCancel->setText(tr("Ok"));
         ftman->CloseFileTransfer();
         break;
@@ -271,7 +277,7 @@ void CFileDlg::slot_ft()
       case FT_ERRORxCLOSED:
       {
         btnCancel->setText(tr("Close"));
-        lblStatus->setText(tr("Remote side disconnected"));
+        mleStatus->appendNoNewLine(tr("Remote side disconnected\n"));
         ftman->CloseFileTransfer();
         WarnUser(this, tr("Remote side disconnected"));
         break;
@@ -280,7 +286,7 @@ void CFileDlg::slot_ft()
       case FT_ERRORxFILE:
       {
         btnCancel->setText(tr("Close"));
-        lblStatus->setText(tr("File I/O error: %1").arg(ftman->PathName()));
+        mleStatus->appendNoNewLine(tr("File I/O error: %1\n").arg(ftman->PathName()));
         ftman->CloseFileTransfer();
         WarnUser(this, tr("File I/O Error:\n%1\nSee Network Window for Details")
            .arg(ftman->PathName()));
@@ -290,7 +296,7 @@ void CFileDlg::slot_ft()
       case FT_ERRORxHANDSHAKE:
       {
         btnCancel->setText(tr("Close"));
-        lblStatus->setText(tr("Handshaking error"));
+        mleStatus->appendNoNewLine(tr("Handshaking error\n"));
         ftman->CloseFileTransfer();
         WarnUser(this, tr("Handshake Error\nSee Network Window for Details"));
         break;
@@ -310,7 +316,7 @@ bool CFileDlg::SendFiles(const char *szFile, unsigned short nPort)
   fl.push_back(szFile);
   if (!ftman->SendFiles(fl, nPort)) return false;
 
-  lblStatus->setText(tr("Connecting to remote..."));
+  mleStatus->appendNoNewLine(tr("Connecting to remote...\n"));
   show();
   return true;
 }

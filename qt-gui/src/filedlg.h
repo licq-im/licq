@@ -12,7 +12,7 @@ class QLabel;
 class QSocketNotifier;
 class CICQDaemon;
 class CFileTransferManager;
-
+class MLEditWrap;
 
 class CFileDlg : public QDialog
 {
@@ -39,7 +39,7 @@ protected:
               *nfoETA,
               *nfoTime;
    QPushButton *btnCancel;
-   QLabel *lblStatus;
+   MLEditWrap *mleStatus;
    QProgressBar *barTransfer, *barBatchTransfer;
 
    CFileTransferManager *ftman;
