@@ -82,7 +82,7 @@ unsigned long SearchItem::uin()
 
 SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
                              QWidget *parent, const char *name)
-  : QDialog(parent, name)
+  : QDialog(parent, name, false, WDestructiveClose)
 {
   server = s;
   sigman = theSigMan;
@@ -181,7 +181,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   btnAdd->setEnabled(false);
   lay->addWidget(btnAdd);
 
-  connect(btnDone, SIGNAL(clicked()), this, SLOT(accept()));
+  connect(btnDone, SIGNAL(clicked()), this, SLOT(close()));
   connect(foundView, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
   connect (btnAdd, SIGNAL(clicked()), this, SLOT(addUser()));
 
@@ -200,8 +200,8 @@ void SearchUserDlg::startSearch()
   edtLast->setEnabled(false);
   edtEmail->setEnabled(false);
   edtUin->setEnabled(false);
-  btnReset->setEnabled(false);
   btnSearch->setEnabled(false);
+  btnReset->setEnabled(true);
   btnDone->setEnabled(false);
   btnAdd->setEnabled(false);
 
@@ -217,12 +217,6 @@ void SearchUserDlg::startSearch()
   lblSearch->setText(tr("Searching (this can take awhile)..."));
 }
 
-void SearchUserDlg::hideEvent(QHideEvent*)
-{
-  close(true);
-}
-
-
 void SearchUserDlg::resetSearch()
 {
   edtEmail->setText("");
@@ -234,6 +228,7 @@ void SearchUserDlg::resetSearch()
   btnAdd->setEnabled(false);
   btnReset->setEnabled(false);
   foundView->clear();
+  searchSequence = 0;
   lblSearch->setText(tr("Enter search parameters and select 'Search'"));
 }
 
@@ -242,7 +237,6 @@ void SearchUserDlg::searchResult(ICQEvent *e)
 {
   if (e->SubSequence() != searchSequence) return;
 
-  btnReset->setEnabled(true);
   btnSearch->setEnabled(true);
   btnDone->setEnabled(true);
   edtNick->setEnabled(true);

@@ -84,8 +84,6 @@ protected:
    void searchDone(bool);
    void searchFailed();
 
-   void hideEvent(QHideEvent*);
-
 public slots:
    void startSearch();
    void addUser();
