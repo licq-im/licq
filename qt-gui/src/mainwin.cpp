@@ -535,6 +535,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
             this, SLOT(slot_logon()));
+   connect (licqSigMan, SIGNAL(signal_ui_viewevent(unsigned long)),
+            this, SLOT(slot_ui_viewevent(unsigned long)));
+   connect (licqSigMan, SIGNAL(signal_ui_message(unsigned long)),
+            this, SLOT(slot_ui_message(unsigned long)));
 
    m_bInMiniMode = false;
    updateStatus();
@@ -994,7 +998,7 @@ void CMainWindow::mousePressEvent(QMouseEvent *m)
 
 void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 {
-  if (m_bEnableMainwinMouseMovement)
+  if (m_bEnableMainwinMouseMovement && m->button() == QButton::Left)
   {
     int deltaX = m->x() - mouseX;
     int deltaY = m->y() - mouseY;
@@ -2028,6 +2032,49 @@ void CMainWindow::slot_logon()
 {
   updateStatus();
   //lblStatus->setEnabled(true);
+}
+
+
+//-----CMainWindow::slot_ui_viewevent-------------------------------------------
+void CMainWindow::slot_ui_viewevent(unsigned long nUin)
+{
+  if (nUin == 0)
+  {
+    // Do nothing if there are no events pending
+    if (ICQUser::getNumUserEvents() == 0) return;
+
+    // Do system messages first
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    unsigned short nNumMsg = o->NewMessages();
+    gUserManager.DropOwner();
+    if (nNumMsg > 0)
+    {
+      callFunction (mnuUserView, gUserManager.OwnerUin());
+      return;
+    }
+
+    time_t t = time(NULL);
+    FOR_EACH_USER_START(LOCK_R)
+    {
+      if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
+      {
+        nUin = pUser->Uin();
+        t = pUser->Touched();
+      }
+    }  
+    FOR_EACH_USER_END
+    if (nUin != 0) callFunction (mnuUserView, nUin);
+  }
+  else
+  {
+    callFunction (mnuUserView, nUin);
+  }
+}
+
+//-----CMainWindow::slot_ui_message---------------------------------------------
+void CMainWindow::slot_ui_message(unsigned long nUin)
+{
+  callFunction(mnuUserSendMsg, nUin);
 }
 
 //-----slot_doneOwnerFcn--------------------------------------------------------

@@ -237,6 +237,8 @@ protected slots:
   void slot_sendfinished(unsigned long);
   void slot_usermenu();
   void slot_logon();
+  void slot_ui_viewevent(unsigned long);
+  void slot_ui_message(unsigned long);
   void slot_register();
   void slot_doneregister();
   void slot_doneOptions();
