@@ -2166,3 +2166,62 @@ void CLicqConsole::InputFileChatOffer(int cIn)
   } 
 } 
 
+/*-------------------------------------------------------------------------
+ * CLicqConsole::UserCommand_Secure
+ *-----------------------------------------------------------------------*/
+void CLicqConsole::UserCommand_Secure(unsigned long nUin, char *szStatus)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+
+  if(!licqDaemon->CryptoEnabled())
+  {
+    winMain->wprintf("%CYou need to recompile Licq with OpenSSL for this "
+      "feature to work!\n", COLOR_RED);
+    return;
+  }
+
+  if(u->SecureChannelSupport() != SECURE_CHANNEL_SUPPORTED)
+  {
+    winMain->wprintf("%CThe remote end is not using a supported client.  "
+      "This may not work!\n", COLOR_RED);
+  }
+
+  bool bOpen = u->Secure();
+
+  if(szStatus == NULL)
+  {
+    winMain->wprintf("%ASecure channel is %s to %s\n", A_BOLD,
+      bOpen ? "open" : "closed", u->GetAlias());
+  }
+  else if(strcasecmp(szStatus, "open") == 00 && bOpen)
+  {
+    winMain->wprintf("%ASecure channel already open to %s\n", A_BOLD,
+      u->GetAlias());
+  }
+  else if(strcasecmp(szStatus, "close") == 0 && !bOpen)
+  {
+    winMain->wprintf("%ASecure channel already closed to %s\n", A_BOLD,
+      u->GetAlias());
+  }   
+  else if(strcasecmp(szStatus, "open") == 0)
+  {
+    winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
+      u->GetAlias());
+    gUserManager.DropUser(u);
+    winMain->event = licqDaemon->icqOpenSecureChannel(nUin);
+  }
+  else if(strcasecmp(szStatus, "close") == 0)
+  {
+    winMain->wprintf("%AClose secure channel with %s ... ", A_BOLD,
+      u->GetAlias());
+    gUserManager.DropUser(u);
+    winMain->event = licqDaemon->icqCloseSecureChannel(nUin);
+  }
+  else
+  {
+    winMain->wprintf("%C<user> secure <open | close | (blank)>\n", COLOR_RED);
+  }
+
+  if(u)
+    gUserManager.DropUser(u);
+}  

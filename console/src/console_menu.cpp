@@ -54,7 +54,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Quit Licq." }
 };
 
-const unsigned short NUM_USER_COMMANDS = 8;
+const unsigned short NUM_USER_COMMANDS = 9;
 const struct SUserCommand aUserCommands[NUM_USER_COMMANDS] =
 {
   { "info", &CLicqConsole::UserCommand_Info },
@@ -64,7 +64,8 @@ const struct SUserCommand aUserCommands[NUM_USER_COMMANDS] =
   { "url", &CLicqConsole::UserCommand_Url },
   { "history", &CLicqConsole::UserCommand_History },
   { "auto-response", &CLicqConsole::UserCommand_FetchAutoResponse },
-  { "remove", &CLicqConsole::UserCommand_Remove }
+  { "remove", &CLicqConsole::UserCommand_Remove },
+  { "secure", &CLicqConsole::UserCommand_Secure }
 };
 
 const unsigned short NUM_OWNER_COMMANDS = 4;

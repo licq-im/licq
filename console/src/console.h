@@ -136,6 +136,7 @@ public:
   void UserCommand_Remove(unsigned long nUin, char *);
   void UserCommand_FetchAutoResponse(unsigned long nUin, char *);
   void UserCommand_SetAutoResponse(unsigned long nUin, char *);
+  void UserCommand_Secure(unsigned long nUin, char *);
 
   void Beep() { printf("\a"); fflush(stdout); }
   void FileChatOffer(unsigned long, unsigned long);
