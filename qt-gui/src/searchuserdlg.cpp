@@ -207,6 +207,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
 
 SearchUserDlg::~SearchUserDlg()
 {
+/*
   delete btnSearch; btnSearch = 0;
   delete btnCancel; btnCancel = 0;
   delete qcbAlertUser; qcbAlertUser = 0;
@@ -218,6 +219,7 @@ SearchUserDlg::~SearchUserDlg()
   delete btnDone; btnDone = 0;
   delete btnAdd; btnAdd = 0;
   delete btnSearchAgain; btnSearchAgain =0;
+*/
   delete foundView; foundView = 0;
 }
 
@@ -236,19 +238,16 @@ void SearchUserDlg::startSearch()
   btnSearch->setEnabled(false);
   btnAdd->setEnabled(false);
 
-  if(uin_search && (uin >= 1000 && uin <= 999999999))
+  if (uin_search && (uin >= 1000 && uin <= 999999999))
   {
-    // we should do a uin search here
-
-    CSearchAck s(uin);
-    searchFound(&s);
-    searchDone(0);
+    searchSequence = server->icqSearchByUin(uin);
   }
-  else {
-    searchSequence = server->icqStartSearch(edtNick->text(), edtFirst->text(),
+  else
+  {
+    searchSequence = server->icqSearchByInfo(edtNick->text(), edtFirst->text(),
                                             edtLast->text(), edtEmail->text());
-    lblSearch->setText(tr("Searching (this can take awhile)..."));
   }
+  lblSearch->setText(tr("Searching (this can take awhile)..."));
 }
 
 void SearchUserDlg::show()

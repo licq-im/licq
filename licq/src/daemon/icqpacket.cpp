@@ -569,10 +569,10 @@ CPU_InvisibleList::CPU_InvisibleList(UinList &uins)
 
 
 
-//-----StartSearch--------------------------------------------------------------
-CPU_StartSearch::CPU_StartSearch(const char *szAlias, const char *szFirstName,
-                                const char *szLastName, const char *szEmail)
-  : CPacketUdp(ICQ_CMDxSND_SEARCHxSTART)
+//-----SearchByInfo--------------------------------------------------------------
+CPU_SearchByInfo::CPU_SearchByInfo(const char *szAlias, const char *szFirstName,
+                                 const char *szLastName, const char *szEmail)
+  : CPacketUdp(ICQ_CMDxSND_SEARCHxINFO)
 {
 
   m_nSize += 14 + strlen(szAlias) + strlen(szFirstName) +
@@ -587,6 +587,21 @@ CPU_StartSearch::CPU_StartSearch(const char *szAlias, const char *szFirstName,
   buffer->PackString(szLastName);
   buffer->PackString(szEmail);
 
+}
+
+
+//-----SearchByUin--------------------------------------------------------------
+CPU_SearchByUin::CPU_SearchByUin(unsigned long nUin)
+  : CPacketUdp(ICQ_CMDxSND_SEARCHxUIN)
+{
+
+  m_nSize += 6;
+  InitBuffer();
+
+#if ICQ_VERSION == 2
+  buffer->PackUnsignedShort(m_nSubSequence);
+#endif
+  buffer->PackUnsignedLong(nUin);
 }
 
 

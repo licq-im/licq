@@ -187,14 +187,22 @@ public:
 };
 
 
-//-----StartSearch--------------------------------------------------------------
-class CPU_StartSearch : public CPacketUdp
+//-----SearchByInfo--------------------------------------------------------------
+class CPU_SearchByInfo : public CPacketUdp
 {
 public:
-   CPU_StartSearch(const char *_sAlias, const char *_sFirstName,
-                   const char *_sLastName, const char *_sEmail);
+   CPU_SearchByInfo(const char *_sAlias, const char *_sFirstName,
+                    const char *_sLastName, const char *_sEmail);
    /* 02 00 24 04 04 00 50 A5 82 00 05 00 0B 00 41 70 6F 74 68 65 6F 73 69 73
       00 07 00 47 72 61 68 61 6D 00 05 00 52 6F 66 66 00 01 00 00 */
+};
+
+
+//-----SearchByUin--------------------------------------------------------------
+class CPU_SearchByUin : public CPacketUdp
+{
+public:
+   CPU_SearchByUin(unsigned long nUin);
 };
 
 
