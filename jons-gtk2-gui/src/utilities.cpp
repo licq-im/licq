@@ -19,6 +19,8 @@
  */
 
 #include <gtk/gtk.h>
+#include "utilities.h"
+
 #include <cstring>
 #include <string>
 
@@ -113,3 +115,35 @@ hbutton_box_new(int spacing, GtkButtonBoxStyle layout_style)
   
   return h_box;
 }
+
+encoding encodings[] = {
+  {"Unicode", "UTF-8"},
+  {"Arabic", "ISO8859-6"},
+  {"Arabic", "CP1256"},
+  {"Baltic", "ISO8859-13"},
+  {"Baltic", "CP1257"},
+  {"Central European", "ISO8859-2"},
+  {"Central European", "CP1250"},
+  {"Chinese", "GBK"},
+  {"Chinese Traditional", "Big5"},
+  {"Cyrillic", "ISO8859-5"},
+  {"Cyrillic", "KOI8-R"},
+  {"Cyrillic", "CP1251"},
+  {"Esperanto", "ISO8859-3"},
+  {"Greek", "ISO8859-7"},
+  {"Greek", "CP1253"},
+  {"Hebrew", "ISO8859-8-I"},
+  {"Hebrew", "CP1255"},
+  {"Japanese", "Shift-JIS"},
+  {"Japanese", "JIS7"},
+  {"Japanese", "eucJP"},
+  {"Korean", "eucKR"},
+  {"Western European", "ISO8859-1"},
+  {"Western European", "ISO8859-15"},
+  {"Western European", "CP1252"},
+  {"Tamil", "TSCII"},
+  {"Thai", "TIS-620"},
+  {"Turkish", "ISO8859-9"},
+  {"Turkish", "CP1254"},
+  {"Ukrainian", "KOI8-U"},
+  {0, 0}}; // end marker
