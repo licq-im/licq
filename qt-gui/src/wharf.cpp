@@ -620,7 +620,7 @@ void IconManager_KDEStyle::SetDockIconMsg(unsigned short nNewMsg, unsigned short
   if(m_nNewMsg + m_nSysMsg)
   {
     m_eventIcon = mainwin->pmMessage;
-    startTimer(2000 / QMIN(4, m_nNewMsg + m_nSysMsg));
+    startTimer(500);
   }
   else
     m_eventIcon = QPixmap();

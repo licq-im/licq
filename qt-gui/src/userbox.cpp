@@ -47,7 +47,7 @@
 
 #undef Status
 
-#define FLASH_TIME 800
+#define FLASH_TIME 500
 
 QColor  *CUserViewItem::s_cOnline = NULL,
         *CUserViewItem::s_cAway = NULL,
