@@ -12,4 +12,7 @@ s_convert_to_utf8(const char *input_text, const char *input_enc = NULL);
 std::string
 entry_get_chars(GtkWidget *w);
 
+void
+status_change(GtkWidget *statusbar, const char *st_name, const char *newstatus);
+
 #endif

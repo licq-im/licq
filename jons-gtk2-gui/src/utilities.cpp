@@ -79,3 +79,11 @@ entry_get_chars(GtkWidget *w)
 	return std::string();
 }
 
+void
+status_change(GtkWidget *statusbar, const char *st_name, const char *newstatus)
+{
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), st_name);
+	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(statusbar), id, newstatus);
+}
+
