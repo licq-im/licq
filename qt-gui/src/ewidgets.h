@@ -7,6 +7,8 @@
 #include <qcombobox.h>
 #include <qlineedit.h>
 #include <qvalidator.h>
+#include <qtabbar.h>
+#include <qtabwidget.h>
 
 #include "mledit.h"
 #include "mlview.h"
@@ -80,6 +82,31 @@ protected:
   virtual void leaveEvent (QEvent *);
 };
 
+class CETabBar : public QTabBar
+{
+  Q_OBJECT
+public:
+  CETabBar(QWidget *p, const char *n)
+    : QTabBar(p, n) { }
+    
+  const QColor &tabColor(int) const;
+  void setTabColor(int, const QColor &);
+  virtual void removeTab(QTab *);
+  
+protected:
+  virtual void paintLabel(QPainter *, const QRect &, QTab *, bool) const;
+  
+private:
+  QMap<int, QColor> mTabColors;
+};
+
+class CETabWidget : public QTabWidget
+{
+  Q_OBJECT
+public:
+  CETabWidget(QWidget * = 0, const char * = 0, WFlags = 0);
+  void setTabColor(QWidget *, const QColor &);
+};
 
 /* ----------------------------------------------------------------------------- */
 

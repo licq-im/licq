@@ -191,7 +191,7 @@ UserEventTabDlg::UserEventTabDlg(QWidget *parent, const char *name)
 {
 #if QT_VERSION >= 300
   QBoxLayout *lay = new QVBoxLayout(this);
-  tabw = new QTabWidget(this);
+  tabw = new CETabWidget(this);
   lay->addWidget(tabw);
   connect(tabw, SIGNAL(currentChanged(QWidget *)),
           this, SLOT(slot_currentChanged(QWidget *)));
@@ -315,9 +315,17 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
         }
         if(SubCommand)
           tabw->setTabIconSet(tab, CMainWindow::iconForEvent(SubCommand));
+        tabw->setTabColor(tab, QColor("blue"));
       }
       // use status icon
-      else tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull()));
+      else
+      {
+        tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull()));
+        if (u->GetTyping())
+          tabw->setTabColor(tab, QColor("green"));
+        else
+          tabw->setTabColor(tab, QColor("black"));
+      }
       return;
     }
   }

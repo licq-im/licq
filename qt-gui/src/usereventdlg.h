@@ -51,6 +51,7 @@ class CMainWindow;
 class CUserEvent;
 class CMMUserView;
 class CEButton;
+class CETabWidget;
 class CMessageViewWidget;
 class MLView;
 
@@ -71,7 +72,7 @@ public:
   void updateTabLabel(ICQUser *u);
 
 private:
-  QTabWidget *tabw;
+  CETabWidget *tabw;
   void updateTitle(QWidget *tab);
   void clearEvents(QWidget *tab);
 

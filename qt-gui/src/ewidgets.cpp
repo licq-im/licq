@@ -9,6 +9,9 @@
 #include <qbitmap.h>
 #include <qimage.h>
 #include <qtextcodec.h>
+#include <qtabwidget.h>
+#include <qtabbar.h>
+#include <qcursor.h>
 #ifdef USE_KDE
 #include <kapp.h>
 #include <kmessagebox.h>
@@ -443,6 +446,96 @@ void CEComboBox::setNamedBgColor(char *theColor)
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
 }
 
+//CETabBar
+void CETabBar::setTabColor(int id, const QColor &color)
+{
+  QTab *t = tab(id);
+  if (t)
+  {
+    mTabColors.insert(id, color);
+    repaint(t->rect(), false);
+  }
+}
+
+const QColor &CETabBar::tabColor(int id) const
+{
+  if (mTabColors.contains(id))
+    return mTabColors[id];
+    
+  return colorGroup().foreground();
+}
+void CETabBar::removeTab(QTab *t)
+{
+  mTabColors.remove(t->identifier());
+  QTabBar::removeTab(t);
+}
+
+void CETabBar::paintLabel(QPainter* p, const QRect &br,
+                          QTab* t, bool has_focus) const
+{
+  QRect r = br;
+  bool selected = currentTab() == t->identifier();
+  if (t->iconSet())
+  {
+    // the tab has an iconset, draw it in the right mode
+    QIconSet::Mode mode = (t->isEnabled() && isEnabled())
+         ? QIconSet::Normal : QIconSet::Disabled;
+    if (mode == QIconSet::Normal && has_focus)
+      mode = QIconSet::Active;
+    
+    QPixmap pixmap = t->iconSet()->pixmap(QIconSet::Small, mode);
+    int pixw = pixmap.width();
+    int pixh = pixmap.height();
+    r.setLeft(r.left() + pixw + 4);
+    r.setRight(r.right() + 2);
+
+    int xoff = 0, yoff = 0;
+    if (!selected)
+    {
+      xoff = style().pixelMetric(QStyle::PM_TabBarTabShiftHorizontal, this);
+      yoff = style().pixelMetric(QStyle::PM_TabBarTabShiftVertical, this);
+    }
+    
+    p->drawPixmap(br.left() + 2 + xoff, br.center().y()-pixh/2 + yoff, pixmap);
+  }
+    
+  QStyle::SFlags flags = QStyle::Style_Default;
+
+  if (isEnabled() && t->isEnabled())
+    flags |= QStyle::Style_Enabled;
+  if (has_focus)
+    flags |= QStyle::Style_HasFocus;
+  if (selected)
+    flags |= QStyle::Style_Selected;
+  //else if (t == d->pressed)
+  //  flags |= QStyle::Style_Sunken;
+  
+  if (t->rect().contains(mapFromGlobal(QCursor::pos())))
+    flags |= QStyle::Style_MouseOver;
+      
+  QColorGroup cg(colorGroup());
+  if (mTabColors.contains(t->identifier()))
+     cg.setColor(QColorGroup::Foreground, mTabColors[t->identifier()]);
+  
+  style().drawControl(QStyle::CE_TabBarLabel, p, this, r,
+                      t->isEnabled() ? cg: palette().disabled(),
+                      flags, QStyleOption(t));
+}
+         
+
+//CETabWidget
+CETabWidget::CETabWidget(QWidget *parent, const char *name, WFlags f)
+  : QTabWidget(parent, name, f)
+{
+  setTabBar(new CETabBar(this, "tabbar"));
+}
+
+void CETabWidget::setTabColor(QWidget *w, const QColor &color)
+{
+  QTab *t = tabBar()->tabAt(indexOf(w));
+  if (t)
+    static_cast<CETabBar *>(tabBar())->setTabColor(t->identifier(), color);
+}
 
 //-----CInfoField::constructor--------------------------------------------------
 CInfoField::CInfoField(QWidget *parent, bool readonly)
