@@ -497,7 +497,19 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
     }
     else if (strCmd == "BYE")
     {
-      // closed the window
+      // closed the window and connection
+      string strUser = packet->GetParameter();
+      ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_W);
+      if (u)
+      {
+        gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, strUser.c_str());
+        int nSock = u->SocketDesc(ICQ_CHNxNONE);
+        u->ClearSocketDesc(ICQ_CHNxNONE);
+        gUserManager.DropUser(u);
+        INetSocket *s = gSocketMan.FetchSocket(nSock);
+        gSocketMan.DropSocket(s);  
+        gSocketMan.CloseSocket(nSock);
+      }
     }
   
     // Get the next packet
