@@ -330,7 +330,11 @@ static int xPosToCursorPos( const QString &s, const QFontMetrics &fm,
 */
 
 QMultiLineEditNew::QMultiLineEditNew( QWidget *parent , const char *name )
+#if QT_VERSION < 210
+  : QTableView( parent, name, WNorthWestGravity)
+#else
     :QTableView( parent, name, WNorthWestGravity | WRepaintNoErase )
+#endif
 {
     d = new QMultiLineData;
     QFontMetrics fm( font() );
