@@ -1,3 +1,21 @@
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+*/
+
+// written by Jon Keating <jon@licq.org>
+
 #include "msn.h"
 #include "msnpacket.h"
 #include "licq_log.h"
@@ -19,6 +37,7 @@ void *MSNPing_tep(void *);
 CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
 {
   m_pDaemon = _pDaemon;
+  m_bExit = false;
   m_nPipe = _nPipe;
   m_nSSLSocket = m_nServerSocket = -1;
   m_pPacketBuf = 0;
@@ -103,7 +122,7 @@ void CMSN::Run()
   
   nResult = 0;
   
-  while (1)
+  while (!m_bExit)
   {
     f = gSocketMan.SocketSet();
     nNumDesc = gSocketMan.LargestSocket() + 1;
@@ -238,6 +257,10 @@ void CMSN::ProcessPipe()
       ProcessSignal(s);
       break;
     }
+
+  case 'X': // Bye
+    m_bExit = true;
+    break;
   }
 }
 
