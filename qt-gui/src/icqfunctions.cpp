@@ -8,6 +8,8 @@
 #include <qfiledialog.h>
 #endif
 
+#include <sys/timeb.h>
+
 #include <qhbox.h>
 #include <qvbox.h>
 #include <qbuttongroup.h>
@@ -20,6 +22,7 @@
 #include <qwidgetstack.h>
 #include <qstylesheet.h>
 #include <qlayout.h>
+#include <qdatetime.h>
 
 #include "icqfunctions.h"
 #include "chatacceptdlg.h"
@@ -44,6 +47,8 @@
 #define COLOR_SENT "blue"
 #define COLOR_RECEIVED "red"
 
+//#define TEST_POS
+
 unsigned short ICQFunctions::s_nX = 100;
 unsigned short ICQFunctions::s_nY = 100;
 
@@ -51,7 +56,7 @@ unsigned short ICQFunctions::s_nY = 100;
 ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
                            unsigned long _nUin, bool _bIsOwner,
                            bool isAutoClose, QWidget *parent, const char *name)
-  : QDialog(parent, name)
+  : QWidget(parent, name)
 {
   server = s;
   sigman = theSigMan;
@@ -113,6 +118,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   connect (btnCancel, SIGNAL(clicked()), this, SLOT(close()));
   connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
   connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
+
 
 #ifdef TEST_POS
   printf("constructor: %d %d\n", x(), y());
@@ -258,7 +264,12 @@ void ICQFunctions::CreateGeneralInfoTab()
   nfoFax = new CInfoField(p, !m_bOwner);
   lay->addWidget(nfoFax, CR, 4);
 
-  //char m_nTimezone;
+  lay->addWidget(new QLabel(tr("Time:"), p), ++CR, 0);
+  nfoTimezone = new CInfoField(p, true);
+  lay->addWidget(nfoTimezone, CR, 1);
+  lay->addWidget(new QLabel(tr("Online:"), p), CR, 3);
+  nfoLastOnline = new CInfoField(p, true);
+  lay->addWidget(nfoLastOnline, CR, 4);
 }
 
 
@@ -419,7 +430,7 @@ void ICQFunctions::keyPressEvent(QKeyEvent *e)
     tabs->showPage(fcnTab[TAB_SEND]);
     return;
   }
-  QDialog::keyPressEvent(e);
+  QWidget::keyPressEvent(e);
 }
 
 //-----ICQFunctions::setupTabs--------------------------------------------------
@@ -475,10 +486,11 @@ void ICQFunctions::setupTabs(int index)
     gUserManager.DropUser(u);
     emit signal_updatedUser(USER_BASIC, m_nUin);
   }
+  move (s_nX, s_nY);
   show();
 #ifdef TEST_POS
   printf("just shown: %d %d\n", x(), y());
-  move(100,100);
+  move(s_nX, s_nY);
   printf("just shown 2: %d %d\n", x(), y());
 #endif
   switch (index)
@@ -548,6 +560,21 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   nfoFax->setData(u->GetFaxNumber());
   nfoCellular->setData(u->GetCellularNumber());
   nfoZipCode->setData(u->GetZipCode());
+  struct timeb tb;
+  ftime(&tb);
+  time_t nRemoteTimeOffset = tb.timezone * 60 - u->GetTimezone() * 30 * 60;
+  QDateTime t;
+  t.setTime_t(tb.time + nRemoteTimeOffset);
+  nfoTimezone->setData(tr("%1 (GMT%1%1%1)")
+                       .arg(t.time().toString())
+                       .arg(u->GetTimezone() < 0 ? "-" : "+")
+                       .arg(u->GetTimezone() / 2)
+                       .arg(u->GetTimezone() % 2 ? "30" : "00") );
+
+  if (u->StatusOffline())
+    nfoLastOnline->setData(tr("Unknown"));
+  else
+    nfoLastOnline->setData(tr("Now"));
 
   m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
                  QString::fromLocal8Bit(u->GetFirstName()) + " " +
@@ -722,6 +749,8 @@ void ICQFunctions::tabSelected(const QString &tab)
   }
 #ifdef TEST_POS
   printf("just shown new page: %d %d\n", x(), y());
+  move(s_nX, s_nY);
+  printf("just shown new page 2: %d %d\n", x(), y());
 #endif
 }
 
@@ -1520,6 +1549,7 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
     icqEventTag = NULL;
     btnOk->setEnabled(true);
     btnCancel->setText(tr("&Close"));
+    setCursor(arrowCursor);
   }
   else
   {

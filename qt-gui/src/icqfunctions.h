@@ -41,7 +41,7 @@ const int TAB_ABOUT = 5;
 const int TAB_HISTORY = 6;
 const int TAB_SECURITY = 7;
 
-class ICQFunctions : public QDialog, public CUserFunctionDlg
+class ICQFunctions : public QWidget, public CUserFunctionDlg
 {
    Q_OBJECT
 public:
@@ -86,7 +86,7 @@ protected:
   CInfoField *nfoFirstName, *nfoLastName, *nfoEmail1, *nfoEmail2,
              *nfoAlias,*nfoStatus, *nfoIp, *nfoUin, *nfoCity, *nfoState,
              *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
-             *nfoPhone;
+             *nfoPhone, *nfoTimezone, *nfoLastOnline;
   CEComboBox *cmbCountry;
   QCheckBox *chkAuthorization;
 
