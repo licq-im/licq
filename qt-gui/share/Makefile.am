@@ -8,6 +8,10 @@ sharedir = @datadir@/licq/
 pkgdatadir = $(datadir)/@PACKAGE@
 
 install-data-local:
+	@if test "$(KDEDIR)" != ""; then \
+	  $(mkinstalldirs) $(KDEDIR)/share/applnk/Internet; \
+	  $(INSTALL_DATA) licq.desktop $(KDEDIR)/share/applnk/Internet; \
+        fi
 	$(mkinstalldirs) $(sharedir)
 	@chmod 0777 $(sharedir)
 	$(mkinstalldirs) $(sharedir)/qt-gui/locale
