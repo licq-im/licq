@@ -21,6 +21,7 @@
 #include "socket.h"
 #include "icq-defines.h"
 #include "buffer.h"
+#include "icqpacket.h"
 
 class CICQDaemon;
 
@@ -65,8 +66,7 @@ public:
   QColor colorFore, colorBack;
   QFont font;
 
-  unsigned short port;
-  unsigned long ip, realip;
+  CChatClient client;
 };
 
 typedef list<CChatUser *> ChatUserList;
@@ -96,7 +96,7 @@ public slots:
 
 protected:
   bool StartChatServer();
-  bool ConnectToChat(unsigned long, unsigned long, unsigned short);
+  bool ConnectToChat(CChatClient &);
   CChatUser *FindChatUser(int sd);
 
   void resizeEvent (QResizeEvent *);
@@ -115,6 +115,7 @@ protected:
   ChatUserList chatUsers;
   CChatUser *chatUser;
   unsigned long m_nUin;
+  unsigned short m_nSession;
   TCPSocket m_cSocketChatServer;
   QSocketNotifier *snChatServer;
   bool m_bAudio;

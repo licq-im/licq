@@ -6,6 +6,7 @@
 #include <qapplication.h>
 #include <ctype.h>
 #include <qlayout.h>
+#include <stdlib.h>
 
 #include "chatdlg.h"
 #include "icqpacket.h"
@@ -32,6 +33,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   licqDaemon = daemon;
   snChatServer = NULL;
   chatUser = NULL;
+  m_nSession = rand();
 
   m_nMode = CHAT_PANE;
 
@@ -40,19 +42,22 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   gUserManager.DropOwner();
 
   // Panel mode setup
-  boxPane = new QGroupBox(2, Vertical, this);
+  boxPane = new QGroupBox(this);
+  QGridLayout *play = new QGridLayout(boxPane, 2, 1, 10, 5);
 
   boxRemote = new QGroupBox(1, Horizontal, tr("Remote - Not connected"), boxPane);
   mlePaneRemote = new CChatWindow(boxRemote);
   mlePaneRemote->setMinimumHeight(100);
   mlePaneRemote->setMinimumWidth(150);
   mlePaneRemote->setReadOnly(true);
+  play->addWidget(boxRemote, 0, 0);
 
   boxLocal = new QGroupBox(1, Horizontal, tr("Local - %1").arg(chatname), boxPane);
   mlePaneLocal = new CChatWindow(boxLocal);
   mlePaneLocal->setMinimumHeight(100);
   mlePaneLocal->setMinimumWidth(150);
   mlePaneLocal->setEnabled(false);
+  play->addWidget(boxLocal, 1, 0);
 
   // IRC mode setup
   boxIRC = new QGroupBox(this);
@@ -81,7 +86,13 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   mnuChat->insertItem(tr("Style"));
 
   btnClose = new QPushButton(tr("&Close Chat"), this);
+  btnClose->setFixedSize(btnClose->sizeHint());
   connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
+
+  QGridLayout *g = new QGridLayout(this, 2, 1, 10, 5);
+  g->addWidget(boxPane, 0, 0);
+  g->addWidget(boxIRC, 0, 0);
+  g->addWidget(btnClose, 1, 0);
 
   SwitchToPaneMode();
 
@@ -161,6 +172,7 @@ void ChatDlg::StateServer(int sd)
   {
     char buf[128];
     QString n = u->chatname;
+    if (n.isEmpty()) n.setNum(u->uin);
     if (u->sock.Error() == 0)
       gLog.Info("%sChat: Remote end disconnected.\n", L_TCPxSTR);
     else
@@ -177,55 +189,38 @@ void ChatDlg::StateServer(int sd)
     case STATE_RECVxHANDSHAKE:
     {
       // get the handshake packet
-      unsigned char cHandshake;
-      u->sock.RecvBuffer() >> cHandshake;
-      if (cHandshake != ICQ_CMDxTCP_HANDSHAKE)
+      CChatClient c;
+      if (!c.LoadFromHandshake(u->sock.RecvBuffer()))
       {
         u->sock.CloseConnection();
-        gLog.Error("%sChat: Receive error - bad handshake (%04X).\n", L_ERRORxSTR,
-                   cHandshake);
+        gLog.Warn("%sChat: Bad handshake.\n", L_ERRORxSTR);
         chatClose(u);
         return;
       }
-      gLog.Info("%sChat: Received handshake (%d).\n", L_TCPxSTR, u->sock.Descriptor());
+      gLog.Info("%sChat: Received handshake from %ld.\n", L_TCPxSTR, c.m_nUin);
+      u->client = c;
+      u->uin = c.m_nUin;
       u->state = STATE_RECVxCOLOR;
       break;
     }
 
     case STATE_RECVxCOLOR:  // we just received the color packet
     {
-      unsigned long testLong_1, testLong_2;
-      u->sock.RecvBuffer() >> testLong_1 >> testLong_2;
-      if (testLong_1 != 0x64 && testLong_1 != 0x65)
-      {
-        char *buf;
-        gLog.Error("%sChat: Invalid color packet:\n%s\n",
-                   L_ERRORxSTR, u->sock.RecvBuffer().print(buf));
-        delete [] buf;
-        chatClose(u);
-        return;
-      }
-
       gLog.Info("%sChat: Received color packet.\n", L_TCPxSTR);
 
-      // the only interesting thing to take out is the user chat name and colors
-      char buf[128];
-      u->uin = u->sock.RecvBuffer().UnpackUnsignedLong();
-      u->chatname = QString::fromLocal8Bit(u->sock.RecvBuffer().UnpackString(buf));
+      CPChat_Color pin(u->sock.RecvBuffer());
+
+      u->chatname = QString::fromLocal8Bit(pin.Name());
+      // Fill in the remaining fields in the client structure
+      u->client.m_nPort = pin.Port();
+      u->client.m_nSession = m_nSession;
       lstUsers->insertItem(u->chatname);
       if (u == chatUser)
         boxRemote->setTitle(tr("Remote - %1").arg(u->chatname));
 
       // set up the remote colors
-      unsigned short junkShort;
-      char colorForeRed, colorForeGreen, colorForeBlue,
-           colorBackRed, colorBackGreen, colorBackBlue, junkChar;
-      u->sock.RecvBuffer() >> junkShort // chat port reversed
-                           >> colorForeRed >> colorForeGreen >> colorForeBlue
-                           >> junkChar
-                           >> colorBackRed >> colorBackGreen >> colorBackBlue;
-      u->colorFore = QColor ((unsigned char)colorForeRed, (unsigned char)colorForeGreen, (unsigned char)colorForeBlue);
-      u->colorBack = QColor ((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue);
+      u->colorFore = QColor (pin.ColorForeRed(), pin.ColorForeGreen(), pin.ColorForeBlue());
+      u->colorBack = QColor (pin.ColorBackRed(), pin.ColorBackGreen(), pin.ColorBackBlue());
       if (u == chatUser)
       {
         QPalette pal = mlePaneRemote->palette();
@@ -243,11 +238,15 @@ void ChatDlg::StateServer(int sd)
         mlePaneRemote->setPalette(pal);
       }
 
-      CPChat_ColorFont p_colorfont(chatname, LocalPort(), 0x000000,
-                                   0xFFFFFF, mlePaneLocal->font().pointSize(),
-                                   0x00, mlePaneLocal->font().family());
+      // Send the response
+      ChatClientList l; // no multiparty for now
+      CPChat_ColorFont p_colorfont(chatname, LocalPort(), m_nSession,
+         0x00, 0x00, 0x00, 0xFF, 0xFF, 0xFF,
+         mlePaneLocal->font().pointSize(), false, false, false,
+         mlePaneLocal->font().family(), l);
       if (!u->sock.SendPacket(p_colorfont.getBuffer()))
       {
+        char buf[128];
         gLog.Error("%sChat: Send error (color/font packet):\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, u->sock.ErrorStr(buf, 128));
         chatClose(u);
@@ -259,17 +258,16 @@ void ChatDlg::StateServer(int sd)
 
     case STATE_RECVxFONT:
     {
-      unsigned long l;
-      unsigned short s;
-      char c, buf[128];
-      u->sock.RecvBuffer() >> l >> l >> l >> l >> c >> s;
-
       gLog.Info("%sChat: Received font packet.\n", L_TCPxSTR);
+      CPChat_Font pin(u->sock.RecvBuffer());
 
       // just received the font reply
-      u->font.setPointSize(u->sock.RecvBuffer().UnpackUnsignedLong());
-      u->sock.RecvBuffer().UnpackUnsignedLong();
-      u->font.setFamily(u->sock.RecvBuffer().UnpackString(buf));
+      m_nSession = pin.Session();
+      u->font.setPointSize(pin.FontSize());
+      u->font.setBold(pin.FontBold());
+      u->font.setItalic(pin.FontItalic());
+      u->font.setUnderline(pin.FontUnderline());
+      u->font.setFamily(pin.FontFamily());
 
       if (u == chatUser) mlePaneRemote->setFont(u->font);
 
@@ -303,23 +301,24 @@ bool ChatDlg::StartAsClient(unsigned short nPort)
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u == NULL) return false;
-  unsigned long ip = u->Ip();
-  unsigned long realip = u->RealIp();
+  CChatClient c(u);
+  c.m_nPort = nPort;
   gUserManager.DropUser(u);
 
-  return ConnectToChat(ip, realip, nPort);
+  return ConnectToChat(c);
 }
 
 
-bool ChatDlg::ConnectToChat(unsigned long nIp, unsigned long nRealIp, unsigned short nPort)
+bool ChatDlg::ConnectToChat(CChatClient &c)
 {
   CChatUser *u = new CChatUser;
   u->font = mlePaneRemote->font();
-  u->ip = nIp;
-  u->realip = nRealIp;
-  u->port = nPort;
+  u->client = c;
+  u->client.m_nSession = m_nSession;
+  u->uin = c.m_nUin;
 
-  if (!licqDaemon->OpenConnectionToUser("chat", nIp, nRealIp, &u->sock, nPort))
+  gLog.Info("%sChat: Connecting to server.\n", L_TCPxSTR);
+  if (!licqDaemon->OpenConnectionToUser("chat", c.m_nIp, c.m_nRealIp, &u->sock, c.m_nPort))
   {
     WarnUser(this, tr("Unable to connect to remote chat.\n"
                       "See the network log for details."));
@@ -330,17 +329,18 @@ bool ChatDlg::ConnectToChat(unsigned long nIp, unsigned long nRealIp, unsigned s
   if (chatUsers.size() == 0) chatUser = u;
   chatUsers.push_back(u);
 
-  gLog.Info("%sChat: Connected, shaking hands.\n", L_TCPxSTR);
+  gLog.Info("%sChat: Shaking hands.\n", L_TCPxSTR);
 
   // Send handshake packet:
   CPacketTcp_Handshake p_handshake(u->sock.LocalPort());
   u->sock.SendPacket(p_handshake.getBuffer());
 
   // Send color packet
-  CPChat_Color p_color(chatname, LocalPort(), 0x000000, 0xFFFFFF);
+  CPChat_Color p_color(chatname, LocalPort(), 0x00, 0x00, 0x00,
+     0xFF, 0xFF, 0xFF);
   u->sock.SendPacket(p_color.getBuffer());
 
-  gLog.Info("%sChat: Connected, waiting for response.\n", L_TCPxSTR);
+  gLog.Info("%sChat: Waiting for color/font response.\n", L_TCPxSTR);
 
   u->state = STATE_RECVxCOLORxFONT;
   u->sn = new QSocketNotifier(u->sock.Descriptor(), QSocketNotifier::Read);
@@ -361,6 +361,7 @@ void ChatDlg::StateClient(int sd)
   {
     char buf[128];
     QString n = u->chatname;
+    if (n.isEmpty()) n.setNum(u->uin);
     if (u->sock.Error() == 0)
       gLog.Info("%sChat: Remote end disconnected.\n", L_TCPxSTR);
     else
@@ -376,37 +377,21 @@ void ChatDlg::StateClient(int sd)
   {
     case STATE_RECVxCOLORxFONT:
     {
-      unsigned long testLong_1, testLong_2;
-      u->sock.RecvBuffer() >> testLong_1 >> testLong_2;
-      if (testLong_1 != 0x64 && testLong_1 != 0x65)
-      {
-        char *buf;
-        gLog.Error("%sChat: Invalid color/font packet:\n%s\n",
-                   L_ERRORxSTR, u->sock.RecvBuffer().print(buf));
-        delete [] buf;
-        chatClose(u);
-        return;
-      }
-      u->uin = testLong_2;
-
       gLog.Info("%sChat: Received color/font packet.\n", L_TCPxSTR);
 
+      CPChat_ColorFont pin(u->sock.RecvBuffer());
+      u->uin = pin.Uin();
+      m_nSession = pin.Session();
+
       // just received the color/font packet
-      char buf[128];
-      u->chatname = QString::fromLocal8Bit(u->sock.RecvBuffer().UnpackString(buf));
+      u->chatname = QString::fromLocal8Bit(pin.Name());
       lstUsers->insertItem(u->chatname);
       if (u == chatUser)
         boxRemote->setTitle(tr("Remote - %1").arg(u->chatname));
 
       // set up the remote colors
-      char colorForeRed, colorForeGreen, colorForeBlue,
-           colorBackRed, colorBackGreen, colorBackBlue, junkChar;
-      u->sock.RecvBuffer() >> colorForeRed >> colorForeGreen >> colorForeBlue
-                           >> junkChar
-                           >> colorBackRed >> colorBackGreen >> colorBackBlue
-                           >> junkChar;
-      u->colorFore = QColor ((unsigned char)colorForeRed, (unsigned char)colorForeGreen, (unsigned char)colorForeBlue);
-      u->colorBack = QColor ((unsigned char)colorBackRed, (unsigned char)colorBackGreen, (unsigned char)colorBackBlue);
+      u->colorFore = QColor (pin.ColorForeRed(), pin.ColorForeGreen(), pin.ColorForeBlue());
+      u->colorBack = QColor (pin.ColorBackRed(), pin.ColorBackGreen(), pin.ColorBackBlue());
       if (u == chatUser)
       {
         QPalette pal = mlePaneRemote->palette();
@@ -424,18 +409,36 @@ void ChatDlg::StateClient(int sd)
         mlePaneRemote->setPalette(pal);
       }
 
-      unsigned long l;
-      unsigned short s;
-      u->sock.RecvBuffer() >> l >> l >> l >> l >> buf[0] >> s;
-      u->font.setPointSize(u->sock.RecvBuffer().UnpackUnsignedLong());
-      u->sock.RecvBuffer().UnpackUnsignedLong();
-      u->font.setFamily(u->sock.RecvBuffer().UnpackString(buf));
-
+      u->font.setPointSize(pin.FontSize());
+      u->font.setBold(pin.FontBold());
+      u->font.setItalic(pin.FontItalic());
+      u->font.setUnderline(pin.FontUnderline());
+      u->font.setFamily(pin.FontFamily());
       if (u == chatUser) mlePaneRemote->setFont(u->font);
 
+      // Parse the multiusers list
+      if (pin.ChatClients().size() > 0)
+      {
+        gLog.Info("%sChat: Joined multiparty (%d people).\n", L_TCPxSTR,
+           pin.ChatClients().size() + 1);
+        ChatClientList::iterator iter;
+        for (iter = pin.ChatClients().begin(); iter != pin.ChatClients().end(); iter++)
+        {
+          ChatUserIter iter2;
+          for (iter2 = chatUsers.begin(); iter2 != chatUsers.end(); iter2++)
+          {
+            if ((*iter2)->uin == iter->m_nUin) break;
+          }
+          if (iter2 == chatUsers.end()) continue;
+          // Connect to this user
+          ConnectToChat(*iter);
+        }
+      }
+
       // send the reply (font packet)
-      CPChat_Font p_font(LocalPort(), mlePaneRemote->font().pointSize(),
-                         0x00, mlePaneRemote->font().family());
+      CPChat_Font p_font(LocalPort(), m_nSession,
+         mlePaneRemote->font().pointSize(),
+         false, false, false, mlePaneRemote->font().family());
       if (!u->sock.SendPacket(p_font.getBuffer()))
       {
         char buf[128];
@@ -559,6 +562,7 @@ void ChatDlg::chatRecv(int sd)
       gLog.Info("%sChat: Lost remote end:\n%s%s\n", L_TCPxSTR,
                 L_BLANKxSTR, u->sock.ErrorStr(buf, 128));
     QString n = u->chatname;
+    if (n.isEmpty()) n.setNum(u->uin);
     chatClose(u);
     InformUser(this, tr("%1 closed connection.").arg(n));
     return;
@@ -821,12 +825,13 @@ void ChatDlg::hide()
 //-----ChatDlg::resizeEvent------------------------------------------------------------------------
 void ChatDlg::resizeEvent (QResizeEvent *)
 {
+/*
   boxPane->setGeometry(10, mnuChat->height() + 10, width() - 20, height() - 90);
   boxIRC->setGeometry(10, mnuChat->height() + 10, width() - 20, height() - 90);
 
   btnClose->setGeometry((width() / 2) - (btnClose->sizeHint().width()/2), height() - 40,
                         btnClose->sizeHint().width(), btnClose->sizeHint().height());
-  mlePaneRemote->repaint();
+  mlePaneRemote->repaint();*/
 }
 
 
