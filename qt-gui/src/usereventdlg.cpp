@@ -869,15 +869,15 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(btnCancel);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
   splView = new QSplitter(Vertical, mainWidget);
-  splView->setOpaqueResize();
+  //splView->setOpaqueResize();
   mleHistory=0;
   if (mainwin->m_bMsgChatView) {
     mleHistory = new CMessageViewWidget(_nUin,splView);
     connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
-    splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
+    //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
   mleSend = new MLEditWrap(true, splView, true);
-  splView->setResizeMode(mleSend, QSplitter::Stretch);
+  //splView->setResizeMode(mleSend, QSplitter::Stretch);
   setTabOrder(mleSend, btnSend);
   setTabOrder(btnSend, btnCancel);
   icqColor.SetToDefault();
@@ -1327,7 +1327,7 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   lay->addWidget(splView);
-  mleSend->setMinimumHeight(150);
+  if (!m->m_bMsgChatView) mleSend->setMinimumHeight(150);
   mleSend->setFocus ();
 
   m_sBaseTitle += tr(" - Message");
@@ -1611,7 +1611,7 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *lay = new QVBoxLayout(mainWidget, 9);
   lay->addWidget(splView);
 
-  mleSend->setMinimumHeight(150);
+  if (!m->m_bMsgChatView) mleSend->setMinimumHeight(150);
 
   QBoxLayout* h_lay = new QHBoxLayout(lay);
   lblItem = new QLabel(tr("Multiparty: "), mainWidget);
