@@ -119,7 +119,7 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     tag = NULL;
   }
 
-  switch (e->m_eResult)
+  switch (e->Result())
   {
   case EVENT_FAILED:
     WarnUser(this, tr("No random chat user found in that group."));
@@ -131,7 +131,7 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     WarnUser(this, tr("Random chat search had an error."));
     break;
   default:
-    mainwin->callFunction(mnuUserSendChat, e->m_sSearchAck->nUin);
+    mainwin->callFunction(mnuUserSendChat, e->SearchAck()->Uin());
     hide();
     return;
   }
@@ -265,7 +265,7 @@ void CSetRandomChatGroupDlg::slot_doneUserFcn(ICQEvent *e)
     tag = NULL;
   }
 
-  switch (e->m_eResult)
+  switch (e->Result())
   {
   case EVENT_FAILED:
     setCaption(caption() + tr("failed"));

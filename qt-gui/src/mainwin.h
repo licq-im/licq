@@ -125,8 +125,8 @@ protected:
        m_bShowOffline,
        m_bSortByStatus,
        m_bShowDividers,
-       m_bAutoRaise,
-       m_bFlashUrgent;
+       m_bAutoRaise;
+  FlashType m_nFlash;
   unsigned long m_nCurrentGroup;
   DockMode m_nDockMode;
   GroupType m_nGroupType;

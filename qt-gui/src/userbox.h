@@ -15,6 +15,13 @@ enum BarType
   BAR_OFFLINE
 };
 
+enum FlashType
+{
+  FLASH_NONE,
+  FLASH_ALL,
+  FLASH_URGENT
+};
+
 class CColumnInfo
 {
 public:
@@ -64,15 +71,17 @@ protected:
   virtual void paintFocus ( QPainter *, const QColorGroup & cg, const QRect & r ) { };
 
   QColor *m_cFore, *m_cBack;
-  QPixmap *m_pIcon;
-  QTimer *m_tFlash;
+  QPixmap *m_pIcon, *m_pIconStatus;
+
+  static QTimer *s_tFlash;
+  static int s_nFlashCounter;
+  static FlashType s_nFlash;
 
   unsigned long m_nUin;
   unsigned short m_nStatus;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike, m_bUrgent;
   QString m_sPrefix, m_sSortKey;
-  int m_nFlash;
 
   static bool    s_bGridLines, s_bFontStyles, s_bSortByStatus, s_bFlashUrgent;
   static QPixmap *s_pOnline,
@@ -111,7 +120,7 @@ public:
   CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos _colInfo,
              bool isHeader, bool _bGridLines, bool _bFontStyles,
              bool bTransparent, bool bShowBars, bool bSortByStatus,
-             bool bFlash,
+             FlashType nFlash,
              QWidget *parent = 0, const char *name = 0);
   virtual ~CUserView();
 
@@ -150,7 +159,10 @@ protected:
   virtual void keyPressEvent(QKeyEvent *e);
   virtual void paintEmptyArea( QPainter *, const QRect & );
 
-friend class CUserViewItem;
+  friend class CUserViewItem;
+
+protected slots:
+  void slot_flash();
 };
 
 #endif

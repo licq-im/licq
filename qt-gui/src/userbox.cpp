@@ -41,8 +41,7 @@
 
 bool    CUserViewItem::s_bGridLines = false,
         CUserViewItem::s_bFontStyles = true,
-        CUserViewItem::s_bSortByStatus = true,
-        CUserViewItem::s_bFlashUrgent = true;
+        CUserViewItem::s_bSortByStatus = true;
 QPixmap *CUserViewItem::s_pOnline = NULL,
         *CUserViewItem::s_pOffline = NULL,
         *CUserViewItem::s_pAway = NULL,
@@ -62,6 +61,9 @@ QColor  *CUserViewItem::s_cOnline = NULL,
         *CUserViewItem::s_cNew = NULL,
         *CUserViewItem::s_cBack = NULL,
         *CUserViewItem::s_cGridLines = NULL;
+QTimer *CUserViewItem::s_tFlash = NULL;
+FlashType CUserViewItem::s_nFlash = FLASH_NONE;
+int CUserViewItem::s_nFlashCounter = 0;
 
 
 //-----CUserViewItem::constructor-----------------------------------------------
@@ -69,7 +71,6 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
    : QListViewItem(parent)
 {
   m_nUin = _cUser->Uin();
-  m_nFlash = 0;
   m_bUrgent = false;
   setSelectable(m_nUin != 0);
   setGraphics(_cUser);
@@ -184,6 +185,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
       m_pIcon = s_pPrivate;
       m_cFore = s_cAway;
    }
+   m_pIconStatus = m_pIcon;
 
    if (u->NewMessages() > 0)
    {
@@ -215,11 +217,10 @@ void CUserViewItem::setGraphics(ICQUser *u)
      }
    }
 
-   if (m_bUrgent && s_bFlashUrgent)
+   if (u->NewMessages() > 0 && s_nFlash == FLASH_ALL || m_bUrgent && s_nFlash == FLASH_URGENT)
    {
-     m_tFlash = new QTimer(this);
-     connect(m_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
-     m_tFlash->start(FLASH_TIME);
+     connect(s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
+     //m_tFlash->start(FLASH_TIME);
    }
 
    if (u->NewUser())
@@ -257,16 +258,19 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
 void CUserViewItem::slot_flash()
 {
-  m_nFlash++;
-
-  if (m_nFlash & 0x0001) // hide
+  if (s_nFlashCounter & 0x0001) // hide
   {
-    setPixmap(0, *s_pNone);
+    setPixmap(0, *m_pIconStatus);
   }
   else  // show
   {
     if (m_pIcon != NULL) setPixmap(0, *m_pIcon);
   }
+}
+
+void CUserView::slot_flash()
+{
+  CUserViewItem::s_nFlashCounter++;
 }
 
 
@@ -429,7 +433,7 @@ QString CUserViewItem::key (int column, bool ascending) const
 CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos _colInfo,
                     bool isHeader, bool _bGridLines, bool _bFontStyles,
                     bool bTransparent, bool bShowBars, bool bSortByStatus,
-                    bool bFlashUrgent,
+                    FlashType nFlash,
                     QWidget *parent, const char *name)
    : QListView(parent, name)
 {
@@ -458,9 +462,14 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos
    setFontStyles(_bFontStyles);
    setSortByStatus(bSortByStatus);
    //setFlashUrgent(bFlashUrgent);
-   CUserViewItem::s_bFlashUrgent = bFlashUrgent;
 
-   CUserViewItem::s_pNone = new QPixmap;
+   // Flash stuff
+   CUserViewItem::s_tFlash = new QTimer(this);
+   CUserViewItem::s_nFlash = nFlash;
+   connect(CUserViewItem::s_tFlash, SIGNAL(timeout()), SLOT(slot_flash()));
+   CUserViewItem::s_tFlash->start(FLASH_TIME);
+
+   //CUserViewItem::s_pNone = new QPixmap;
 
    //setAutoMask(true);
 }

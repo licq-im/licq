@@ -64,11 +64,11 @@ unsigned long SearchUserView::currentUin(void)
 
 SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
 {
-  uinVal = s->nUin;
-  setText(0, QString::fromLocal8Bit(s->szAlias));
-  setText(1, QString::number(s->nUin));
-  setText(2, QString::fromLocal8Bit(s->szFirstName) + QString(" ") + QString::fromLocal8Bit(s->szLastName));
-  setText(3, s->szEmail);
+  uinVal = s->Uin();
+  setText(0, QString::fromLocal8Bit(s->Alias()));
+  setText(1, QString::number(s->Uin()));
+  setText(2, QString::fromLocal8Bit(s->FirstName()) + QString(" ") + QString::fromLocal8Bit(s->LastName()));
+  setText(3, s->Email());
 }
 
 
@@ -287,12 +287,12 @@ void SearchUserDlg::resetSearch()
 
 void SearchUserDlg::slot_searchResult(ICQEvent *e)
 {
-  if (e->m_nSubSequence != searchSequence) return;
+  if (e->SubSequence() != searchSequence) return;
 
-  if (e->m_eResult == EVENT_SUCCESS)
-    searchDone(e->m_sSearchAck->cMore);
-  else if (e->m_eResult == EVENT_ACKED)
-    searchFound(e->m_sSearchAck);
+  if (e->Result() == EVENT_SUCCESS)
+    searchDone(e->SearchAck()->More());
+  else if (e->Result() == EVENT_ACKED)
+    searchFound(e->SearchAck());
   else
     searchFailed();
 }
@@ -304,9 +304,9 @@ void SearchUserDlg::searchFound(CSearchAck *s)
 }
 
 
-void SearchUserDlg::searchDone(char more)
+void SearchUserDlg::searchDone(bool more)
 {
-  if (more == (char)1)
+  if (more)
     lblSearch->setText(tr("More users found. Narrow search."));
   else
     lblSearch->setText("Search complete.");

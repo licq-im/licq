@@ -1962,11 +1962,11 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 
   chkUrgent->setChecked(nLevel == ICQ_TCPxMSG_URGENT);
 
-  switch(e->m_nSubCommand)
+  switch(e->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:
     {
-      CEventMsg *ue = (CEventMsg *)e->m_xUserEvent;
+      CEventMsg *ue = (CEventMsg *)e->UserEvent();
       m_sProgressMsg = tr("Sending msg ");
       m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
       m_sProgressMsg += "...";
@@ -1976,7 +1976,7 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     }
     case ICQ_CMDxSUB_URL:
     {
-      CEventUrl *ue = (CEventUrl *)e->m_xUserEvent;
+      CEventUrl *ue = (CEventUrl *)e->UserEvent();
       m_sProgressMsg = tr("Sending URL ");
       m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
       m_sProgressMsg += "...";
@@ -1986,14 +1986,14 @@ void ICQFunctions::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     }
     case ICQ_CMDxSUB_CHAT:
     {
-      CEventChat *ue = (CEventChat *)e->m_xUserEvent;
+      CEventChat *ue = (CEventChat *)e->UserEvent();
       m_sProgressMsg = tr("Sending chat request...");
       icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel);
       break;
     }
     case ICQ_CMDxSUB_FILE:
     {
-      CEventFile *ue = (CEventFile *)e->m_xUserEvent;
+      CEventFile *ue = (CEventFile *)e->UserEvent();
       m_sProgressMsg = tr("Sending file transfer...");
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
          ue->FileDescription(), nLevel);
@@ -2013,7 +2013,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
        (icqEventTag != NULL && !icqEventTag->Equals(e)) )
     return;
 
-  bool isOk = (e != NULL && (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS));
+  bool isOk = (e != NULL && (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS));
   bool bForceOpen = false;
 
   QString title, result;
@@ -2023,7 +2023,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
   }
   else
   {
-    switch (e->m_eResult)
+    switch (e->Result())
     {
     case EVENT_ACKED:
     case EVENT_SUCCESS:
@@ -2054,9 +2054,9 @@ void ICQFunctions::doneFcn(ICQEvent *e)
 
   if (!isOk)
   {
-    if (e->m_nCommand == ICQ_CMDxTCP_START &&
-        (e->m_nSubCommand == ICQ_CMDxSUB_MSG ||
-         e->m_nSubCommand == ICQ_CMDxSUB_URL) &&
+    if (e->Command() == ICQ_CMDxTCP_START &&
+        (e->SubCommand() == ICQ_CMDxSUB_MSG ||
+         e->SubCommand() == ICQ_CMDxSUB_URL) &&
         QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No")) )
     {
       RetrySend(e, false, ICQ_TCPxMSG_NORMAL);
@@ -2064,14 +2064,14 @@ void ICQFunctions::doneFcn(ICQEvent *e)
   }
   else
   {
-    switch(e->m_nCommand)
+    switch(e->Command())
     {
     case ICQ_CMDxTCP_START:
     {
       ICQUser *u = NULL;
-      CUserEvent *ue = e->m_xUserEvent;
+      CUserEvent *ue = e->UserEvent();
       QString msg;
-      if (e->m_nSubResult == ICQ_TCPxACK_RETURN)
+      if (e->SubResult() == ICQ_TCPxACK_RETURN)
       {
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         msg = tr("%1 is in %2 mode:\n%3\n")
@@ -2090,7 +2090,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         }
         bForceOpen = true;
       }
-      else if (e->m_nSubResult == ICQ_TCPxACK_REFUSE)
+      else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
       {
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         msg = tr("%1 refused %2, send through server.")
@@ -2099,37 +2099,41 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         gUserManager.DropUser(u);
         bForceOpen = true;
       }
-      else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
+      else if (e->SubCommand() == ICQ_CMDxSUB_CHAT || e->SubCommand() == ICQ_CMDxSUB_FILE)
       {
-        struct SExtendedAck *ea = e->m_sExtendedAck;
+        CExtendedAck *ea = e->ExtendedAck();
         if (ea == NULL || ue == NULL)
         {
           gLog.Error("%sInternal error: ICQFunctions::doneFcn(): chat or file request acknowledgement without extended result.\n", L_ERRORxSTR);
           return;
         }
-        if (!ea->bAccepted)
+        if (!ea->Accepted())
         {
            u = gUserManager.FetchUser(m_nUin, LOCK_R);
            QString result = tr("%1 with %2 refused:\n%3")
-              .arg(EventDescription(ue)).arg(u->GetAlias()).arg(ea->szResponse);
+              .arg(EventDescription(ue)).arg(u->GetAlias()).arg(ea->Response());
            gUserManager.DropUser(u);
            InformUser(this, result);
         }
         else
         {
-          switch (e->m_nSubCommand)
+          switch (e->SubCommand())
           {
           case ICQ_CMDxSUB_CHAT:
           {
-            ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
-            chatDlg->StartAsClient(ea->nPort);
+            CEventChat *c = (CEventChat *)ue;
+            if (c->Port() == 0)  // If we requested a join, no need to do anything
+            {
+              ChatDlg *chatDlg = new ChatDlg(m_nUin, server);
+              chatDlg->StartAsClient(ea->Port());
+            }
             break;
           }
           case ICQ_CMDxSUB_FILE:
           {
             CEventFile *f = (CEventFile *)ue;
             CFileDlg *fileDlg = new CFileDlg(m_nUin, f->Filename(), f->FileSize(), server);
-            fileDlg->StartAsClient(ea->nPort);
+            fileDlg->StartAsClient(ea->Port());
             break;
           }
           default:

@@ -84,7 +84,7 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
 
 void CSignalManager::ProcessEvent(ICQEvent *e)
 {
-  switch (e->m_nCommand)
+  switch (e->Command())
   {
   // Event commands for a user
   case ICQ_CMDxTCP_START:
@@ -121,7 +121,7 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
 
   default:
     gLog.Warn("%sInternal error: CSignalManager::ProcessEvent(): Unknown event command received from daemon: %d.\n", 
-              L_WARNxSTR, e->m_nCommand);
+              L_WARNxSTR, e->Command());
     break;
   }
 

@@ -260,7 +260,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
   licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
-  licqConf.ReadBool("FlashUrgent", m_bFlashUrgent, true);
+  unsigned short nFlash;
+  licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
+  m_nFlash = (FlashType)nFlash;
   bool bFrameTransparent;
   licqConf.ReadBool("Transparent", bFrameTransparent, false);
   unsigned short nFrameStyle;
@@ -582,7 +584,7 @@ void CMainWindow::CreateUserView()
 {
   userView = new CUserView(mnuUser, mnuGroup, mnuAwayModes, colInfo, showHeader,
                            gridLines, m_bFontStyles, skin->frame.transparent,
-                           m_bShowDividers, m_bSortByStatus, m_bFlashUrgent,
+                           m_bShowDividers, m_bSortByStatus, m_nFlash,
                            this);
   userView->setFrameStyle(skin->frame.frameStyle);
   userView->setPixmaps(&pmOnline, &pmOffline, &pmAway, &pmNa, &pmOccupied, &pmDnd,
@@ -1326,16 +1328,16 @@ void CMainWindow::slot_logon()
 void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
 {
   updateStatus();
-  switch (e->m_nCommand)
+  switch (e->Command())
   {
     case ICQ_CMDxSND_LOGON:
-      if (e->m_eResult != EVENT_SUCCESS)
+      if (e->Result() != EVENT_SUCCESS)
         WarnUser(this, tr("Logon failed.\nSee network window for details."));
       break;
     case ICQ_CMDxSND_REGISTERxUSER:
       delete registerUserDlg;
       registerUserDlg = NULL;
-      if (e->m_eResult == EVENT_SUCCESS)
+      if (e->Result() == EVENT_SUCCESS)
       {
         char buf[256];
         sprintf(buf, tr("Successfully registered, your user identification\n"
@@ -1351,7 +1353,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
       }
       break;
     case ICQ_CMDxSND_AUTHORIZE:
-       if (e->m_eResult != EVENT_ACKED)
+       if (e->Result() != EVENT_ACKED)
          WarnUser(this, tr("Error sending autorization."));
        else
          InformUser(this, tr("Authorization granted."));
@@ -1470,7 +1472,7 @@ void CMainWindow::saveOptions()
                      QString("default") : MLEditWrap::editFont->rawName());
   licqConf.WriteBool("GridLines", gridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
-  licqConf.WriteBool("FlashUrgent", m_bFlashUrgent);
+  licqConf.WriteBool("Flash", m_nFlash);
   licqConf.WriteBool("ShowHeader", showHeader);
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);

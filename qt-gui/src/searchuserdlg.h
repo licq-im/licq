@@ -85,7 +85,7 @@ protected:
    QLabel *lblSearch;
 
    void searchFound(CSearchAck *);
-   void searchDone(char);
+   void searchDone(bool);
    void searchFailed(void);
 
 public slots:

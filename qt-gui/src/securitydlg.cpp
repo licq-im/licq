@@ -127,7 +127,7 @@ void SecurityDlg::slot_doneUserFcn(ICQEvent *e)
   }
 
   QString result;
-  switch (e->m_eResult)
+  switch (e->Result())
   {
   case EVENT_FAILED:
     result = tr("failed");

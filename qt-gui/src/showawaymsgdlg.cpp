@@ -122,10 +122,10 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
        (icqEventTag != NULL && !icqEventTag->Equals(e)) )
     return;
 
-  bool isOk = (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS);
+  bool isOk = (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS);
 
   QString title, result;
-  switch (e->m_eResult)
+  switch (e->Result())
   {
   case EVENT_FAILED:
     result = tr("failed");
@@ -152,7 +152,7 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
     icqEventTag = NULL;
   }
 
-  if (isOk && e->m_nCommand == ICQ_CMDxTCP_START)
+  if (isOk && e->Command() == ICQ_CMDxTCP_START)
   {
     ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
     mleAwayMsg->setText(u->AutoResponse());

@@ -53,7 +53,7 @@ protected:
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
              *chkFontStyles, *chkUseDock, *chkDockFortyEight,
              *chkTransparent, *chkSortByStatus, *chkShowGroupIfNoMsg,
-             *chkAutoPopup, *chkAutoRaise, *chkFlashUrgent;
+             *chkAutoPopup, *chkAutoRaise, *chkFlashUrgent, *chkFlashAll;
    QRadioButton *rdbDockDefault, *rdbDockThemed;
    QComboBox *cmbDockTheme;
 
