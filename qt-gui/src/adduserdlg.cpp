@@ -24,6 +24,8 @@
 #include <qlineedit.h>
 #include <qcheckbox.h>
 #include <qpushbutton.h>
+#include <qlayout.h>
+#include <qframe.h>
 
 #include "adduserdlg.h"
 
@@ -32,23 +34,37 @@
 AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
    : QDialog(parent, "AddUserDialog")
 {
-   setCaption(tr("Licq - Add User"));
-   server = s;
-   resize(240, 120);
-   lblUin = new QLabel(tr("New User UIN:"), this);
-   lblUin->setGeometry(10, 15, 80, 20);
-   edtUin = new QLineEdit(this);
-   edtUin->setGeometry(100, 15, 120, 20);
-   edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
-   chkAlert = new QCheckBox(tr("&Alert User"), this);
-   chkAlert->setGeometry(10, 50, 220, 20);
-   btnOk = new QPushButton("&Ok", this);
-   btnOk->setGeometry(30, 80, 80, 30);
-   btnCancel = new QPushButton(tr("&Cancel"), this);
-   btnCancel->setGeometry(130, 80, 80, 30);
-   connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
-   connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
-   connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
+	server = s;
+	
+	QBoxLayout *lay = new QBoxLayout(this, QBoxLayout::Down, 8);
+	QFrame *frmUin = new QFrame(this);
+	chkAlert = new QCheckBox(tr("&Alert User"), this);
+	QFrame *frmBtn = new QFrame(this);
+	lay->addWidget(frmUin);
+	lay->addWidget(chkAlert);
+	lay->addSpacing(5);
+	lay->addStretch();
+	lay->addWidget(frmBtn);
+	
+	QBoxLayout *layUin = new QBoxLayout(frmUin, QBoxLayout::LeftToRight);
+	lblUin = new QLabel(tr("New User UIN:"), frmUin);
+	edtUin = new QLineEdit(frmUin);
+	edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
+	layUin->addWidget(lblUin);
+	layUin->addWidget(edtUin);
+	
+	QBoxLayout *layBtn = new QBoxLayout(frmBtn, QBoxLayout::LeftToRight);
+	btnOk = new QPushButton(tr("&Ok"), frmBtn);
+	btnCancel = new QPushButton(tr("&Cancel"), frmBtn);
+	layBtn->addStretch();
+	layBtn->addWidget(btnOk);
+	layBtn->addSpacing(20);
+	layBtn->addWidget(btnCancel);
+	
+	setCaption(tr("Licq - Add User"));
+	connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
+	connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
+	connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
 }
 
 
