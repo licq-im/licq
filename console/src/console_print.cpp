@@ -300,7 +300,7 @@ void CLicqConsole::CreateUserList()
       pUser->usprintf(&s->szLine[1], m_szOfflineFormat);
       s->color = m_cColorOffline;
     }
-    else if( (unsigned short) iStatus != ICQ_STATUS_OFFLINE && 
+    else if( (unsigned short) iStatus != ICQ_STATUS_OFFLINE &&
         ((iStatus & ICQ_STATUS_DND) || (iStatus & ICQ_STATUS_OCCUPIED) ||
         (iStatus & ICQ_STATUS_NA) || (iStatus & ICQ_STATUS_AWAY)))
     {
@@ -318,7 +318,7 @@ void CLicqConsole::CreateUserList()
       s->color = m_cColorOnline;
     }
 
-    if (pUser->NewUser())
+    if (pUser->NewUser() && !(m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_NEW_USERS))
       s->color = m_cColorNew;
     s->szLine[0] = pUser->NewMessages() > 0 ? '*' : ' ';
 
