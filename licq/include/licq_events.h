@@ -440,7 +440,10 @@ enum SIGNAL_TYPE
   //! The user requested this protocol to remove a user.
   PROTOxREM_USER,
   //! The user requested this protocol to send a message.
-  PROTOxSENDxMSG
+  PROTOxSENDxMSG,
+  //! The user has started typing and wants to let the remote user know about
+  //! about it.
+  PROTOxSENDxTYPING_NOTIFICATION
 };
 
 //! The class that gets passed to protocol plugins when a signal
@@ -528,6 +531,16 @@ public:
 
 private:
   char *m_szMsg;
+};
+
+class CTypingNotificationSignal : public CSignal
+{
+public:
+  CTypingNotificationSignal(const char *szId, bool bActive);
+  bool Active() { return m_bActive; }
+
+private:
+  bool m_bActive;
 };
 
 #endif

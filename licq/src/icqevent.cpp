@@ -353,3 +353,10 @@ CSendMessageSignal::CSendMessageSignal(const char *szId, const char *szMsg)
 {
   m_szMsg = szMsg ? strdup(szMsg) : 0;
 }
+
+CTypingNotificationSignal::CTypingNotificationSignal(const char *szId,
+  bool bActive)
+    : CSignal(PROTOxSENDxTYPING_NOTIFICATION, szId), m_bActive(bActive)
+{
+}
+

@@ -134,6 +134,15 @@ public:
   */
   void ProtoLogoff(unsigned long nPPID);
 
+  //! Send typing notification.
+
+  /*!
+        \param szId The user ID.
+        \param nPPID The protocol ID.
+        \param bActive The state of the typing notification. TRUE if active.
+  */
+  void ProtoTypingNotification(const char *szId, unsigned long nPPID, bool Active);
+
   //! Send a message to a user on this protocol.
   /*!
         \param szId The user ID.
@@ -334,6 +343,7 @@ public:
   void icqUpdatePictureTimestamp();
   void icqSetPhoneFollowMeStatus(unsigned long nNewStatus);
   void icqUpdateContactList();
+  void icqTypingNotification(const char *_szId, bool _bActive);
 
   // Visible/Invisible/Ignore list functions
   void icqAddToVisibleList(const char *_szId, unsigned long _nPPID);

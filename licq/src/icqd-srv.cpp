@@ -1013,6 +1013,12 @@ void CICQDaemon::icqUpdateContactList()
     SendEvent_Server(p);
   }
 }
+//-----icqTypingNotification---------------------------------------------------
+void CICQDaemon::icqTypingNotification(const char *_szId, bool _bActive)
+{
+  CSrvPacketTcp *p = new CPU_TypingNotification(_szId, _bActive);
+  SendEvent_Server(p);
+}
 
 //-----icqSendVisibleList-------------------------------------------------------
 void CICQDaemon::icqSendVisibleList()
@@ -1640,7 +1646,15 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));
 }
 
-
+//-----ProtoTypingNotification-------------------------------------------------
+void CICQDaemon::ProtoTypingNotification(const char *_szId,
+  unsigned long _nPPID, bool _bActive)
+{
+  if (_nPPID == LICQ_PPID)
+    icqTypingNotification(_szId, _bActive);
+  else
+    PushProtoSignal(new CTypingNotificationSignal(_szId, _bActive), _nPPID);
+}
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 // -----ConnectToServer---------------------------------------------------------
@@ -3289,18 +3303,20 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     packet.UnpackUnsignedLongBE(); // timestamp
     packet.UnpackUnsignedLongBE(); // message id
     packet.UnpackUnsignedShortBE(); // format (only seen 1)
-    unsigned long nUin = packet.UnpackUinString();
+    const char *szId = packet.UnpackUserString();
     unsigned short nTyping = packet.UnpackUnsignedShortBE();
 
-    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+    ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
     if (u == NULL)
     {
-      gLog.Warn("%sTyping status received for unknown user\n", L_WARNxSTR);
+      gLog.Warn(tr("%sTyping status received for unknown user (%s).\n"),
+        L_WARNxSTR, szId);
       break;
     }
     u->SetTyping(nTyping);
     gUserManager.DropUser(u);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, nUin));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
+                                    LICQ_PPID));
     break;
   }
 	default:

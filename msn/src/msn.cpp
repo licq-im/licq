@@ -291,6 +291,7 @@ void CMSN::ProcessSignal(CSignal *s)
     case PROTOxLOGOFF:
     case PROTOxADD_USER:
     case PROTOxREM_USER:
+    case PROTOxSENDxTYPING_NOTIFICATION:
       break;
 
     case PROTOxSENDxMSG:

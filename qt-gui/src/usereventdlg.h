@@ -232,6 +232,8 @@ protected:
   CMMUserView *lstMultipleRecipients;
   MLEditWrap *mleSend;
   CICQColor icqColor;
+  QString strTempMsg;
+  QTimer *tmrTyping;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   virtual void UserUpdated(CICQSignal *, ICQUser *);
@@ -252,6 +254,8 @@ protected slots:
   void slot_SetBackgroundICQColor();
   void trySecure();
   void slot_ClearNewEvents();
+  void slot_textChanged();
+  void slot_textChanged_timeout();
 
 public slots:
   void changeEventType(int);

@@ -402,6 +402,7 @@ const unsigned long ICQ_RANDOMxCHATxGROUP_FxSEEKxM = 11;
 
 const unsigned short ICQ_TYPING_INACTIVEx0        = 0; //icq2go sends this
 const unsigned short ICQ_TYPING_INACTIVEx1        = 1; //icqlite sends this
+const unsigned short ICQ_TYPING_INACTIVE          = 1; //for plugins
 const unsigned short ICQ_TYPING_ACTIVE            = 2;
 
 const unsigned char ICQ_PLUGIN_REQUEST            = 0;

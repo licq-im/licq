@@ -474,6 +474,13 @@ protected:
   unsigned short m_nMetaCommand;
 };
 
+//-----TypingNotification------------------------------------------------------
+class CPU_TypingNotification : public CPU_CommonFamily
+{
+public:
+  CPU_TypingNotification(const char *szId, bool bActive);
+};
+
 
 //-----Ack---------------------------------------------------------------------
 class CPU_Ack : public CPacketUdp

@@ -1307,6 +1307,9 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     }
     gUserManager.DropUser(u);
 
+    tmrTyping = new QTimer(this);
+    connect(tmrTyping, SIGNAL(timeout()), SLOT(slot_textChanged_timeout()));
+
 #if QT_VERSION >= 300
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
@@ -1326,6 +1329,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setBackground(QColor(icqColor.BackRed(), icqColor.BackGreen(), icqColor.BackBlue()));
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
 }
 
@@ -1385,6 +1389,35 @@ void UserSendCommon::trySecure()
   }
   else
     sendButton();
+}
+
+void UserSendCommon::slot_textChanged()
+{
+  if (mleSend->text().isEmpty()) return;
+
+  strTempMsg = mleSend->text();
+  server->ProtoTypingNotification(m_szId, m_nPPID, true);
+  disconnect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+  tmrTyping->start(5000);
+}
+
+void UserSendCommon::slot_textChanged_timeout()
+{
+  QString str = mleSend->text();
+
+  if (str != strTempMsg)
+  {
+    strTempMsg = str;
+    // Hack to not keep sending the typing notification to ICQ
+    if (m_nPPID != LICQ_PPID)
+      server->ProtoTypingNotification(m_szId, m_nPPID, true);
+  }
+  else
+  {
+    tmrTyping->stop();
+    connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+    server->ProtoTypingNotification(m_szId, m_nPPID, false);
+  }
 }
 
 //-----UserSendCommon::slot_SetBackgroundColor-------------------------------
@@ -1589,6 +1622,12 @@ void UserSendCommon::massMessageToggled(bool b)
 //-----UserSendCommon::sendButton--------------------------------------------
 void UserSendCommon::sendButton()
 {
+  // Take care of typing notification now
+  tmrTyping->stop();
+  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
+  server->ProtoTypingNotification(m_szId, m_nPPID, false);
+
+  // back to our intentions...
   if(!mainwin->m_bManualNewUser)
   {
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
