@@ -12,8 +12,8 @@
 #define MODE_INDIRECT 0x02
 const unsigned short ICQ_VERSION_TCP               = 0x0006;
 
-#define LICQ_WITHSSL     0x38D10000
-#define LICQ_WITHOUTSSL  0x38D00000
+#define LICQ_WITHSSL     0x7D800000
+#define LICQ_WITHOUTSSL  0x7D000000
 
 // UDP commands
 const unsigned short ICQ_CMDxRCV_ACK               = 0x000A; //  10
