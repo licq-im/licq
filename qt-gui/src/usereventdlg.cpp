@@ -103,7 +103,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
   popupEncoding = new QPopupMenu(this);
   btnSecure = new QPushButton(this);
-  QToolTip::add(btnSecure, tr("Secure channel information"));
+  QToolTip::add(btnSecure, tr("Open / Close secure channel"));
   layt->addWidget(btnSecure);
   connect(btnSecure, SIGNAL(clicked()), this, SLOT(slot_security()));
   btnHistory = new QPushButton(this);
@@ -1028,6 +1028,32 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 UserSendCommon::~UserSendCommon()
 {
 }
+
+#if QT_VERSION >= 300
+//-----UserSendCommon::windowActivationChange--------------------------------
+void UserSendCommon::windowActivationChange(bool oldActive)
+{
+  if (isActiveWindow() && mainwin->m_bMsgChatView)
+  {
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    if (u != NULL && u->NewMessages() > 0)
+    {
+      vector<int> idList;
+      for (unsigned short i = 0; i < u->NewMessages(); i++)
+      {
+        CUserEvent *e = u->EventPeek(i);
+        if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
+          idList.push_back(e->Id());
+      }
+
+      for (unsigned short i = 0; i < idList.size(); i++)
+        u->EventClearId(idList[i]);
+    }
+    gUserManager.DropUser(u);
+  }
+  QWidget::windowActivationChange(oldActive);
+}
+#endif
 
 //-----UserSendCommon::slot_SetForegroundColor-------------------------------
 void UserSendCommon::slot_SetForegroundICQColor()

@@ -272,9 +272,9 @@ void CFileDlg::slot_ft()
       {
         slot_update();
         if (ftman->Direction() == D_RECEIVER)
-          mleStatus->append(tr("Received %1 from %2 successfully.").arg(QFile::decodeName(e->Data())).arg(codec->fromUnicode(ftman->RemoteName())));
+          mleStatus->append(tr("Received %1 from %2 successfully.").arg(QFile::decodeName(e->Data())).arg(codec->toUnicode(ftman->RemoteName())));
         else
-          mleStatus->append(tr("Sent %1 to %2 successfully.").arg(QFile::decodeName(e->Data())).arg((ftman->RemoteName())));
+          mleStatus->append(tr("Sent %1 to %2 successfully.").arg(QFile::decodeName(e->Data())).arg(codec->toUnicode(ftman->RemoteName())));
         break;
       }
 
