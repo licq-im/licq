@@ -1987,7 +1987,6 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
               KWin::setActiveWindow(e->winId());
 #endif
             }
-printf("bye\n");
             return e;
           }
     }
@@ -2004,7 +2003,6 @@ printf("bye\n");
     }
     case mnuUserSendMsg:
     {
- printf("hehe\n");
       e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
       break;
     }
