@@ -321,10 +321,32 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
    // Set the user tag
    if (gMainWindow->m_bSortByStatus)
-     // sort STATUS_FFF like STATUS_ONLINE.
-     m_sSortKey.sprintf("%04x%016lx",
-       (m_nStatus == ICQ_STATUS_FREEFORCHAT) ? ICQ_STATUS_ONLINE : m_nStatus,
-                        ULONG_MAX - u->Touched());
+   {
+     int sort = 9;
+     switch (m_nStatus)
+     {
+     case ICQ_STATUS_FREEFORCHAT:
+     case ICQ_STATUS_ONLINE:
+       sort = 0;
+       break;
+     case ICQ_STATUS_OCCUPIED:
+       sort = 1;
+       break;
+     case ICQ_STATUS_DND:
+       sort = 2;
+       break;
+     case ICQ_STATUS_AWAY:
+       sort = 3;
+       break;
+     case ICQ_STATUS_NA:
+       sort = 4;
+       break;
+     case ICQ_STATUS_OFFLINE:
+       sort = 5;
+       break;
+     }
+     m_sSortKey.sprintf("%1x%016lx",sort,ULONG_MAX - u->Touched());
+   }
    else
      m_sSortKey.sprintf("%016lx", ULONG_MAX - u->Touched());
 }
