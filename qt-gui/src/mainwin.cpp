@@ -700,44 +700,63 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
 {
   switch(_nSubSignal)
   {
-  case USER_EVENTS:
-    updateEvents();
-    // Fall through
-  case USER_STATUS:
-  case USER_BASIC:
-  case USER_GENERAL:
-  case USER_EXT:
-  {
-    if (_nUin == gUserManager.OwnerUin()) break;
-    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-    if (u == NULL)
+    case USER_EVENTS:
     {
-      gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid uin received: %ld\n",
-                 L_ERRORxSTR, _nUin);
+      updateEvents();
+      if (m_bAutoPopup)
+      {
+        ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+        if (u != NULL && u->NewMessages() > 0)
+        {
+          gUserManager.DropUser(u);
+          ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+          unsigned short s = o->Status();
+          gUserManager.DropOwner();
+          if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
+            callFunction(mnuUserView, _nUin);
+        }
+        else
+        {
+          if (u != NULL) gUserManager.DropUser(u);
+        }
+      }
+      // Fall through
+    }
+    case USER_STATUS:
+    case USER_BASIC:
+    case USER_GENERAL:
+    case USER_EXT:
+    {
+      if (_nUin == gUserManager.OwnerUin()) break;
+      ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+      if (u == NULL)
+      {
+        gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid uin received: %ld\n",
+                   L_ERRORxSTR, _nUin);
+        break;
+      }
+      if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
+      {
+        CUserViewItem *i = (CUserViewItem *)userView->firstChild();
+        while (i && i->ItemUin() != _nUin)
+          i = (CUserViewItem *)i->nextSibling();
+        if (i != NULL)
+        {
+          delete i;
+          if (m_bShowOffline || !u->StatusOffline())
+            (void) new CUserViewItem(u, userView);
+          userView->triggerUpdate();
+        }
+        else
+        {
+          if ( (m_bShowOffline || !u->StatusOffline()) &&
+               (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
+            (void) new CUserViewItem(u, userView);
+        }
+      }
+      gUserManager.DropUser(u);
       break;
     }
-    if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
-    {
-      CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-      while (i && i->ItemUin() != _nUin)
-        i = (CUserViewItem *)i->nextSibling();
-      if (i != NULL)
-      {
-        delete i;
-        if (m_bShowOffline || !u->StatusOffline())
-          (void) new CUserViewItem(u, userView);
-        userView->triggerUpdate();
-      }
-      else
-      {
-        if ( (m_bShowOffline || !u->StatusOffline()) &&
-             (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
-          (void) new CUserViewItem(u, userView);
-      }
-    }
-    gUserManager.DropUser(u);
-    break;
-  }
   }
 }
 
@@ -813,7 +832,6 @@ void CMainWindow::updateEvents()
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned short nNumOwnerEvents = o->NewMessages();
-  unsigned short nStatus = o->Status();
   gUserManager.DropOwner();
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
   if (nNumOwnerEvents > 0)
@@ -843,11 +861,6 @@ void CMainWindow::updateEvents()
 #ifdef USE_DOCK
   if (licqIcon != NULL) licqIcon->SetDockIconMsg(nNumUserEvents, nNumOwnerEvents);
 #endif
-
-  //auto popup if wanted
-  if (m_bAutoPopup && nNumUserEvents > 0 &&
-      (nStatus == ICQ_STATUS_ONLINE || nStatus == ICQ_STATUS_FREEFORCHAT) )
-    callMsgFunction();
 }
 
 
@@ -1214,7 +1227,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 
   if (f == NULL)
   {
-     f = new ICQFunctions(licqDaemon, licqSigMan, nUin, autoClose);
+     f = new ICQFunctions(licqDaemon, licqSigMan, this, nUin, autoClose);
      connect (f, SIGNAL(signal_updatedUser(unsigned long, unsigned long)), SLOT(slot_updatedUser(unsigned long, unsigned long)));
      connect (f, SIGNAL(signal_finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
      f->setupTabs(fcn);
