@@ -14,10 +14,13 @@
 
 #define QTGUI_DIR "qt-gui/"
 
-struct Border
+class Border
 {
-   unsigned short top, bottom;
-   unsigned short left, right;
+public:
+  unsigned short top, bottom;
+  unsigned short left, right;
+
+  void AdjustForMenuBar(unsigned short h1, unsigned short h2);
 };
 
 class CFrameSkin
@@ -32,10 +35,13 @@ public:
    char *mask;
 };
 
-struct Rect
+class Rect
 {
+public:
    signed short x1, y1;
    signed short x2, y2;
+
+   void AdjustForMenuBar(unsigned short h1, unsigned short h2);
 };
 
 struct Color
@@ -89,12 +95,14 @@ public:
    char *szSkinName;
 
    // Functions
+   void AdjustForMenuBar(unsigned short n);
    QRect borderToRect(CShapeSkin *, QWidget *);
    QRect borderToRect(CShapeSkin *, QPixmap *);
    int frameWidth(void);
    int frameHeight(void);
 
 protected:
+   unsigned short m_nMenuBarHeight;
    void SetDefaultValues();
 };
 

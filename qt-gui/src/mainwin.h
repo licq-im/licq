@@ -150,6 +150,7 @@ friend class SkinBrowserDlg;
 friend class OptionsDlg;
 
 protected slots:
+  void ti();
   void removeUserFromGroup();
   void removeUserFromList();
   void addUserToGroup(int);

@@ -15,6 +15,7 @@ CSkin::CSkin(const char *skinname)
    char temp[MAX_FILENAME_LEN];
    char baseSkinDir[MAX_FILENAME_LEN];
    szSkinName = strdup(skinname);
+   m_nMenuBarHeight = 0;
 
    if (skinname[0] == '/')
    {
@@ -266,11 +267,13 @@ void CSkin::SetDefaultValues()
 {
   frame.pixmap = NULL;
   frame.mask = NULL;
-  frame.border.top = 28;
+  frame.border.top = 0;
   frame.border.bottom = 80;
   frame.border.left = 0;
   frame.border.right = 0;
   frame.hasMenuBar = 1;
+  frame.frameStyle = 51;
+  frame.transparent = false;
 
   lblStatus.rect.x1 = 5;
   lblStatus.rect.y1 = -25;
@@ -315,6 +318,34 @@ void CSkin::SetDefaultValues()
   colors.background = strdup("grey76");
   colors.gridlines = strdup("black");
 
+}
+
+
+void CSkin::AdjustForMenuBar(unsigned short h)
+{
+  frame.border.AdjustForMenuBar(m_nMenuBarHeight, h);
+  lblStatus.rect.AdjustForMenuBar(m_nMenuBarHeight, h);
+  btnSys.rect.AdjustForMenuBar(m_nMenuBarHeight, h);
+  lblMsg.rect.AdjustForMenuBar(m_nMenuBarHeight, h);
+  cmbGroups.rect.AdjustForMenuBar(m_nMenuBarHeight, h);
+
+  m_nMenuBarHeight = h;
+}
+
+void Rect::AdjustForMenuBar(unsigned short h_old, unsigned short h_new)
+{
+  if (y1 >= 0)
+    y1 += (h_new - h_old);
+  if (y2 >= 0)
+    y2 += (h_new - h_old);
+}
+
+void Border::AdjustForMenuBar(unsigned short h_old, unsigned short h_new)
+{
+  if (top >= 0)
+    top += (h_new - h_old);
+  if (bottom >= 0)
+    bottom += (h_new - h_old);
 }
 
 

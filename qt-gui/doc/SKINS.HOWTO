@@ -1,10 +1,14 @@
 =======================================
 Licq Skins Howto
 
-November 30 1999, v1.3
+February 6 2000, v1.4
 
 Graham Roff
 =======================================
+
+Revision 1.4:
+  - when using a menu bar, all position height positions can be set
+    assuming 0 is the bottom of the menu bar
 
 Revision 1.3:
   - added frame.frameStyle option
@@ -79,8 +83,9 @@ frame.border.right = 15
 
 # If this is set to a non-zero value then the skin will have a menu bar with
 # the system button as the only member.  This precludes any settings in 
-# btnSys below.  You should make sure to have an adequate top border also,
-# typically 25 is fine.
+# btnSys below.  Any height positions specified for other widgets will be
+# automatically adjusted to be below the menu bar (ie 0 corresponds to the
+# pixel right below the menu bar)
 frame.hasMenuBar = 0
 
 # ---Status Label---

@@ -410,8 +410,16 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    // verify we exist
    if (gUserManager.OwnerUin() == 0)
      slot_register();
+
+  /*QTimer *t = new QTimer(this);
+  connect(t, SIGNAL(timeout()), SLOT(ti()));
+  t->start(1000);*/
 }
 
+void CMainWindow::ti()
+{
+  //printf("%d %d\n", qApp->focusWidget(), qApp->activeWindow());
+}
 
 //-----ApplySkin----------------------------------------------------------------
 void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
@@ -492,11 +500,11 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 #else
     menu = new QMenuBar(this);
 #endif
-    menu->setFrameStyle(QFrame::Panel | QFrame::Raised);
     menu->insertItem(skin->btnSys.caption == NULL ?
                      tr("&System") : QString::fromLocal8Bit(skin->btnSys.caption),
                      mnuSystem);
     btnSystem = NULL;
+    skin->AdjustForMenuBar(menu->height());
   }
 
   // Message Label
@@ -544,6 +552,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   if (!_bInitial)
   {
     resizeEvent(NULL);
+    userView->setFrameStyle(skin->frame.frameStyle);
     userView->setColors(skin->colors.online, skin->colors.away,
                         skin->colors.offline, skin->colors.newuser,
                         skin->colors.background, skin->colors.gridlines);
