@@ -641,6 +641,7 @@ protected:
   TCPSocket chatServer;
 
   CSocketManager sockman;
+  bool m_bThreadCreated;
 
   bool StartChatServer();
   bool ConnectToChat(CChatClient *);

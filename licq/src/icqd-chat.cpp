@@ -685,6 +685,7 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   m_bFocus = true;
   m_bSleep = false;
   m_pChatClient = NULL;
+  m_bThreadCreated = false;
 
   pthread_mutex_init(&thread_list_mutex, NULL);
 
@@ -726,6 +727,8 @@ bool CChatManager::StartAsServer()
     PushChatEvent(new CChatEvent(CHAT_ERRORxRESOURCES, NULL));
     return false;
   }
+
+  m_bThreadCreated = true;
 
   return true;
 }
@@ -2188,7 +2191,9 @@ void CChatManager::CloseChat()
   if (pipe_thread[PIPE_WRITE] != -1)
   {
     write(pipe_thread[PIPE_WRITE], "X", 1);
-    pthread_join(thread_chat, NULL);
+    if (m_bThreadCreated)
+      pthread_join(thread_chat, NULL);
+    m_bThreadCreated = false;
 
     close(pipe_thread[PIPE_READ]);
     close(pipe_thread[PIPE_WRITE]);

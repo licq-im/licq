@@ -182,6 +182,7 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
   m_nStartTime = m_nBatchStartTime = 0;
   m_nFileDesc = -1;
   m_nState = FT_STATE_DISCONNECTED;
+  m_bThreadCreated = false;
 
   m_szFileName[0] = m_szPathName[0] = '\0';
   sprintf(m_szRemoteName, "%lu", m_nUin);
@@ -295,6 +296,8 @@ void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
     PushFileTransferEvent(FT_ERRORxRESOURCES);
     return;
   }
+
+  m_bThreadCreated = true;
 }
 
 
@@ -1038,8 +1041,10 @@ void CFileTransferManager::CloseFileTransfer()
   if (pipe_thread[PIPE_WRITE] != -1)
   {
     write(pipe_thread[PIPE_WRITE], "X", 1);
-    pthread_join(thread_ft, NULL);
-
+    if (m_bThreadCreated)
+      pthread_join(thread_ft, NULL);
+    m_bThreadCreated = false;
+   
     close(pipe_thread[PIPE_READ]);
     close(pipe_thread[PIPE_WRITE]);
 

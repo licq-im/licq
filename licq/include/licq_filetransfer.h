@@ -270,6 +270,7 @@ protected:
   char m_szDirectory[MAX_FILENAME_LEN];
   int m_nFileDesc;
   FileList::iterator m_iPathName;
+  bool m_bThreadCreated;
 
   TCPSocket ftSock, ftServer;
 
