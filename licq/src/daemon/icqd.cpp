@@ -580,8 +580,10 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
     u->setStatusOffline();
   else
     u->setStatus(s);
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                  USER_STATUS, u->getUin()));
+
+  if (m_nAllowUpdateUsers <= 0)
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                    USER_STATUS, u->getUin()));
 }
 
 
