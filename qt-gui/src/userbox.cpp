@@ -208,7 +208,9 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
                  cgdefault.light(), cgdefault.dark(), cgdefault.mid(),
                  *m_cFore, *m_cBack);
   const QPixmap *pix = NULL;
-  if (!listView()->verticalScrollBar()->isVisible() &&
+  /*if (!listView()->verticalScrollBar()->isVisible() &&
+      ((CUserView *)listView())->m_bTransparent)*/
+  if (listView()->contentsHeight() < listView()->viewport()->height() &&
       ((CUserView *)listView())->m_bTransparent)
     pix = ((QWidget *)listView()->parent())->backgroundPixmap();
 
@@ -313,7 +315,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
 void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
 {
   const QPixmap *pix = NULL;
-  if (!verticalScrollBar()->isVisible() && m_bTransparent)
+  if (contentsHeight() < viewport()->height() && m_bTransparent)
     pix = ((QWidget *)parent())->backgroundPixmap();
 
   if (pix != NULL)
