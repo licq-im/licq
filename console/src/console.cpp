@@ -684,7 +684,8 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
   {
     if (e->Command() == ICQ_CMDxTCP_START &&
         (e->SubCommand() == ICQ_CMDxSUB_MSG ||
-         e->SubCommand() == ICQ_CMDxSUB_URL) )
+         e->SubCommand() == ICQ_CMDxSUB_URL ||
+				 e->SubCommand() == ICQ_CMDxSUB_FILE) )
     {
       win->wprintf("%C%ADirect send failed, send through server (y/N)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr, COLOR_WHITE,
@@ -1891,6 +1892,7 @@ void CLicqConsole::InputSendFile(int cIn)
     break;
  }
  case STATE_MLE:
+ {
    // If we get NULL back, then we're not odne yet
    if((sz = Input_MultiLine(data->szDescription, data->nPos, cIn)) == NULL)
       return;
@@ -1902,24 +1904,27 @@ void CLicqConsole::InputSendFile(int cIn)
 
       if(winMain->data != NULL)
       {
-         delete winMain->data;
-   winMain->data = NULL;
+        delete winMain->data;
+        winMain->data = NULL;
       }
 
-  winMain->state = STATE_COMMAND;
-  winMain->wprintf("%C%AFile Transfer aborted.\n",
-       m_cColorInfo->nColor, m_cColorInfo->nAttr);
-  return;
+      winMain->state = STATE_COMMAND;
+      winMain->wprintf("%C%AFile Transfer aborted.\n",
+      m_cColorInfo->nColor, m_cColorInfo->nAttr);
+      return;
    }
 
    *sz = '\0';
    sz++;
-   winMain->wprintf("%C%ASending File direct...",
-                    m_cColorInfo->nColor, m_cColorInfo->nAttr);
+   bool bDirect = SendDirect(data->nUin, *sz);
+   winMain->wprintf("%C%ASending File %s...",
+                    m_cColorInfo->nColor, m_cColorInfo->nAttr,
+                    !bDirect ? "trhough the server" : "direct");
 
    winMain->event = licqDaemon->icqFileTransfer(data->nUin, data->szFileName,
-            data->szDescription, ICQ_TCPxMSG_NORMAL);
+            data->szDescription, ICQ_TCPxMSG_NORMAL, !bDirect);
      break;
+ }
    case STATE_QUERY:
      break;
    case STATE_COMMAND:
@@ -2838,7 +2843,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           const char *home = getenv("HOME");
           ftman->ReceiveFiles(home);
           licqDaemon->icqFileTransferAccept(data->nUin, ftman->LocalPort(),
-            data->nSequence);
+            data->nSequence, false);
           winMain->fProcessInput = &CLicqConsole::InputCommand;
 
           if(winMain->data)
