@@ -1293,7 +1293,16 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
   _sz[0] = '\0';
   while(_szFormat[i] != '\0')
   {
-    if (_szFormat[i] == '%')
+    if (_szFormat[i] == '`')
+    {
+        _sz[nPos++] = '`';
+        i++;
+        while(_szFormat[i] != '`' && _szFormat[i] != '\0')
+            _sz[nPos++] = _szFormat[i++];
+        _sz[nPos++] = '`';
+        i++;
+    }
+    else if (_szFormat[i] == '%')
     {
       i++;
       if (bAllowFieldWidth)
@@ -1371,7 +1380,10 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
       default:
         gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
                   L_WARNxSTR, _szFormat[i]);
-        sz = NULL;
+        sprintf(szTemp, "%s%d%%%c", (bLeft ? "-" : ""), nField, _szFormat[i]);
+        sz = szTemp;
+        bLeft = false;
+        nField = 0;
         break;
       }
       // Now append sz to the string using the given field width and alignment
@@ -1412,7 +1424,6 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
     }
   }
   _sz[nPos] = '\0';
-
 }
 
 
