@@ -370,13 +370,21 @@ void OptionsDlg::ApplyOptions()
 {
   QFont f(mainwin->defaultFont);
   if(edtEditFont->text().find(tr("default"), 0, false) != 0)
+#if QT_VERSION >= 300
     f.fromString(edtEditFont->text());
+#else
+    f.setRawName(edtEditFont->text());
+#endif
   delete MLEditWrap::editFont;
   MLEditWrap::editFont = new QFont(f);
 
   f = mainwin->defaultFont;
   if(edtFont->text().find(tr("default"), 0, false) != 0)
+#if QT_VERSION >= 300
     f.fromString(edtFont->text());
+#else
+    f.setRawName(edtFont->text());
+#endif
   qApp->setFont(f, true);
 
   mainwin->m_bGridLines = chkGridLines->isChecked();
@@ -556,10 +564,17 @@ void OptionsDlg::ApplyOptions()
 void OptionsDlg::setupFontName(QLineEdit* le, const QFont& font)
 {
   QString s;
+#if QT_VERSION >= 300
   if (font == mainwin->defaultFont)
     s = tr("default (%1)").arg(font.toString());
   else
     s = font.toString();
+#else
+  if (font == mainwin->defaultFont)
+    s = tr("default (%1)").arg(font.rawName());
+  else
+    s = font.rawName();
+#endif
   le->setFont(font);
   le->setText(s);
   le->setCursorPosition(0);

@@ -297,14 +297,22 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #endif
   if (strcmp(szTemp, "default") != 0)
   {
+#if QT_VERSION >= 300
     f.fromString(szTemp);
+#else
+    f.setRawName(szTemp);
+#endif
     qApp->setFont(f, true);
   }
   licqConf.ReadStr("EditFont", szTemp, "default");
   if(!strcmp(szTemp, "default"))
     f = qApp->font();
   else
+#if QT_VERSION >= 300
     f.fromString(szTemp);
+#else
+    f.setRawName(szTemp);
+#endif
   delete MLEditWrap::editFont;
   MLEditWrap::editFont = new QFont(f);
 
@@ -2309,12 +2317,21 @@ void CMainWindow::saveOptions()
   licqConf.SetSection("appearance");
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
+#if QT_VERSION >= 300
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
                     "default" : qApp->font().toString().latin1());
   licqConf.WriteStr("EditFont",
                     (MLEditWrap::editFont == NULL ||
                      *MLEditWrap::editFont == defaultFont) ?
                      "default" : MLEditWrap::editFont->toString().latin1());
+#else
+  licqConf.WriteStr("Font", qApp->font() == defaultFont ?
+                    "default" : qApp->font().rawName().latin1());
+  licqConf.WriteStr("EditFont",
+                    (MLEditWrap::editFont == NULL ||
+                     *MLEditWrap::editFont == defaultFont) ?
+                     "default" : MLEditWrap::editFont->rawName().latin1());
+#endif
   licqConf.WriteBool("GridLines", m_bGridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteNum("Flash", (unsigned short)m_nFlash);
