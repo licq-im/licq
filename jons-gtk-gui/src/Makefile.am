@@ -15,8 +15,9 @@ licq_jons_gtk_gui_la_SOURCES = 	add_user_window.cpp \
 				away_window.cpp \
 				contact_list.cpp \
 				convo.cpp \
-				main.cpp \
 				extras.cpp \
+				history_window.cpp \
+				main.cpp \
 				main_window.cpp \
 				menu.cpp \
 				more_window.cpp \
