@@ -19,6 +19,8 @@
 #include "user.h"
 #include "sigman.h"
 
+class QTabWidget;
+class QStatusBar;
 
 class SearchUserView : public QListView
 {
@@ -47,12 +49,19 @@ public:
    SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan,
                   QWidget *parent = NULL, const char *name = NULL);
 
+   ~SearchUserDlg();
+
 protected:
    CICQDaemon *server;
    CSignalManager *sigman;
    QPushButton *btnSearch, *btnCancel;
+   QCheckBox* qcbAlertUser;
+   QStatusBar* sbar;
+   QTabWidget* search_tab;
+   
    QLabel *lblEmail, *lblFirst, *lblLast, *lblNick, *lblUin;
    QLineEdit *edtEmail, *edtFirst, *edtLast, *edtNick, *edtUin;
+   QWidget *alias_tab, *email_tab, *uin_tab;
 
    unsigned short searchSequence;
    QPushButton *btnDone, *btnAdd, *btnSearchAgain;

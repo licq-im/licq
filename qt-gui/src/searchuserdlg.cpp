@@ -1,5 +1,6 @@
 // Search user code base written by Alan Penner (apenner@andrew.cmu.edu)
 // modified by Graham Roff
+// heavily enhanced by Dirk A. Mueller <dmuell@gmx.net>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -9,6 +10,7 @@
 #include <qhbox.h>
 #include <qlayout.h>
 #include <qpainter.h>
+#include <qstatusbar.h>
 #include <qtabwidget.h>
 #include <iostream.h>
 
@@ -18,18 +20,20 @@
 
 SearchUserView::SearchUserView(QWidget *parent = NULL, char *name = NULL) : QListView(parent, name)
 {
-   addColumn(_("Alias"), 110);
+   addColumn(_("Alias"), 105);
    addColumn(_("UIN"), 70);
    setColumnAlignment(1, AlignRight);
-   addColumn(_("Name"), 150);
-   addColumn(_("Email"), 200);
-   setAllColumnsShowFocus (true); 
+   addColumn(_("Name"), 120);
+   addColumn(_("Email"), 120);
+   setAllColumnsShowFocus (true);
+   setMinimumHeight(150);
+   setMinimumWidth(440);
 }
 
 
 unsigned long SearchUserView::currentUin(void)
 {
-   if (currentItem() == NULL) return (0);
+   if (!selectedItem()) return (0);
    return (((SearchItem *)currentItem())->uin());
 }
 
@@ -62,12 +66,42 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
     
     // pre-search widgets
-    QTabWidget* search_tab = new QTabWidget(this);
+    search_tab = new QTabWidget(this);
     
-    //-- first tab: search by email
+    //-- first tab: search by Alias/name
     
-    QWidget* email_tab  = new QWidget(this);
-    QBoxLayout* lay2 = new QHBoxLayout(email_tab, 20);
+    alias_tab = new QWidget(this);
+    
+    QGridLayout* grid_lay = new QGridLayout(alias_tab, 7, 7);
+    grid_lay->addColSpacing(0, 10);grid_lay->addRowSpacing(0, 10);
+    grid_lay->addColSpacing(2, 10);grid_lay->addRowSpacing(2, 10);
+    grid_lay->addColSpacing(4, 10);grid_lay->addRowSpacing(4, 10);
+    grid_lay->addRowSpacing(6, 10);
+
+    lblNick = new QLabel(_("Alias:"), alias_tab);
+    grid_lay->addWidget(lblNick, 1, 1);
+    
+    edtNick = new QLineEdit(alias_tab);
+    grid_lay->addWidget(edtNick, 1, 3);
+    
+    lblFirst = new QLabel(_("First Name:"), alias_tab);
+    grid_lay->addWidget(lblFirst, 3, 1);
+    
+    edtFirst = new QLineEdit(alias_tab);
+    grid_lay->addWidget(edtFirst, 3, 3);
+    
+    lblLast = new QLabel(_("Last Name:"), alias_tab);
+    grid_lay->addWidget(lblLast, 5, 1);
+    
+    edtLast = new QLineEdit(alias_tab);
+    grid_lay->addWidget(edtLast, 5, 3);
+   
+    search_tab->addTab(alias_tab, _("&Name"));
+
+    //-- second tab: search by email
+    
+    email_tab  = new QWidget(this);
+    QBoxLayout* lay2 = new QHBoxLayout(email_tab, 10);
     
     lblEmail = new QLabel(_("Email Address:"), email_tab);
     lay2->addWidget(lblEmail);
@@ -77,48 +111,21 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     
     search_tab->addTab(email_tab, _("&Email"));
     
-    //-- second tab: search by Alias/name
-    
-    QWidget* alias_tab = new QWidget(this);
-    
-    QGridLayout* grid_lay = new QGridLayout(alias_tab, 10, 10);
-    grid_lay->addColSpacing(0, 10);grid_lay->addRowSpacing(0, 10);
-    grid_lay->addColSpacing(2, 10);grid_lay->addRowSpacing(2, 10);
-    grid_lay->addColSpacing(4, 10);grid_lay->addRowSpacing(4, 10);
-    grid_lay->addColSpacing(6, 10);grid_lay->addRowSpacing(6, 10);
-    
-    lblFirst = new QLabel(_("First Name:"), alias_tab);
-    grid_lay->addWidget(lblFirst, 1, 1);
-    
-    edtFirst = new QLineEdit(alias_tab);
-    grid_lay->addWidget(edtFirst, 1, 3);
-    
-    lblLast = new QLabel(_("Last Name:"), alias_tab);
-    grid_lay->addWidget(lblLast, 3, 1);
-    
-    edtLast = new QLineEdit(alias_tab);
-    grid_lay->addWidget(edtLast, 3, 3);
-    
-    lblNick = new QLabel(_("Alias:"), alias_tab);
-    grid_lay->addWidget(lblNick, 5, 1);
-    
-    edtNick = new QLineEdit(alias_tab);
-    grid_lay->addWidget(edtNick, 5, 3);
-    
-    search_tab->addTab(alias_tab, _("&Name"));
-
     //-- third tab: search by UIN
 
-    QWidget* uin_tab = new QWidget(this);
-    lay2 = new QHBoxLayout(uin_tab, 20);
+    uin_tab = new QWidget(this);
+    lay2 = new QHBoxLayout(uin_tab, 10);
     
     lblUin = new QLabel(_("UIN#:"), uin_tab);
+    lay2->addWidget(lblUin);
+    
     edtUin = new QLineEdit(uin_tab);
+    lay2->addWidget(edtUin);
     
     search_tab->addTab(uin_tab, _("&Uin#"));
-    
-    lay->addWidget(search_tab, 1);
 
+    lay->addWidget(search_tab, 1);
+    
     lay2 = new QVBoxLayout(lay, 10);
     
     btnSearch = new QPushButton(_("&Search"), this);
@@ -126,9 +133,8 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
       
     btnSearchAgain = new QPushButton(_("Search Again"), this);
     btnSearchAgain->setEnabled(false);
-    
     lay2->addWidget(btnSearchAgain);
-  
+    
     btnCancel = new QPushButton(_("&Cancel"), this);
     lay2->addWidget(btnCancel);
     
@@ -140,17 +146,28 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
      this, SLOT(slot_searchDone(unsigned short, char)));*/
     connect (sigman, SIGNAL(signal_searchResult(ICQEvent *)),
              this, SLOT(slot_searchResult(ICQEvent *)));
-    
 
-    lblSearch = new QLabel(_("Searching (this can take awhile)..."), this);
-    top_lay->addWidget(lblSearch);
+    // Status Bar
+    
+    sbar = new QStatusBar(this);
+    
+    lblSearch = new QLabel(_("Enter search parameters and select 'Search'"), sbar);
+    sbar->addWidget(lblSearch, 1);
     
     // post-search widgets
+
+    top_lay->addSpacing(20);
     
     foundView = new SearchUserView(this);
     top_lay->addWidget(foundView);
 
     lay = new QHBoxLayout(top_lay, 20);
+
+    qcbAlertUser = new QCheckBox(_("A&lert User"), this);
+    qcbAlertUser->setChecked(true);
+    
+    lay->addWidget(qcbAlertUser);
+    
     lay->addStretch(1);
 
     btnAdd = new QPushButton(_("&Add User"), this);
@@ -160,13 +177,30 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     btnDone = new QPushButton(_("&Done"), this);
     lay->addWidget(btnDone);
     
-    //foundView->setStyle(WindowsStyle);
-    foundView->setFrameStyle(QFrame::Box | QFrame::Raised);
-    
     connect (btnDone, SIGNAL(clicked()), this, SLOT(accept()));
     connect (foundView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(addUser()));
     connect (btnAdd, SIGNAL(clicked()), this, SLOT(addUser()));
     connect (btnSearchAgain, SIGNAL(clicked()), this, SLOT(resetSearch()));
+
+    top_lay->addWidget(sbar);
+    
+}
+
+SearchUserDlg::~SearchUserDlg()
+{
+    delete btnSearch; btnSearch = 0;
+    delete btnCancel; btnCancel = 0;
+    delete qcbAlertUser; qcbAlertUser = 0;
+    delete sbar; sbar = 0;
+    delete edtEmail; edtEmail = 0;
+    delete edtFirst; edtFirst = 0;
+    delete edtLast; edtLast = 0;
+    delete edtNick; edtNick = 0;
+    delete edtUin; edtUin = 0;
+    delete btnDone; btnDone = 0;
+    delete btnAdd; btnAdd = 0;
+    delete btnSearchAgain; btnSearchAgain =0;
+    delete foundView; foundView = 0;
 }
 
 
@@ -181,11 +215,11 @@ void SearchUserDlg::startSearch()
    edtFirst->setEnabled(false);
    edtLast->setEnabled(false);
    edtEmail->setEnabled(false);
+   edtUin->setEnabled(false);
    btnCancel->setEnabled(false);
    btnSearch->setEnabled(false);
    btnAdd->setEnabled(false);
    lblSearch->setText(_("Searching (this can take awhile)..."));
-   resize(360, 460);
 }
 
 void SearchUserDlg::show()
@@ -208,16 +242,17 @@ void SearchUserDlg::resetSearch()
    edtFirst->setEnabled(true);
    edtLast->setEnabled(true);
    edtEmail->setEnabled(true);
+   edtUin->setEnabled(true);
    edtEmail->setText("");
    edtLast->setText("");
    edtFirst->setText("");
    edtNick->setText("");
+   edtUin->setText("");
    btnCancel->setEnabled(true);
    btnSearch->setEnabled(true);
    btnAdd->setEnabled(false);
    btnSearchAgain->setEnabled(false);
    foundView->clear();
-   resize(360, 160);
 }
 
 
@@ -261,7 +296,9 @@ void SearchUserDlg::addUser()
    unsigned long uin = foundView->currentUin();
    if (uin == 0) return;
    server->AddUserToList(uin);
-   foundView->clear();
+   if (qcbAlertUser->isChecked()) // alert the user they were added
+       server->icqAlertUser(uin);
+   resetSearch();
 }
 
 #include "moc/moc_searchuserdlg.h"
