@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -209,6 +210,7 @@ void SearchUserDlg::startSearch()
   edtUin->setEnabled(false);
   btnSearch->setEnabled(false);
   btnReset->setEnabled(true);
+  btnReset->setText(tr("Cancel"));
   btnDone->setEnabled(false);
   btnAdd->setEnabled(false);
 
@@ -226,17 +228,31 @@ void SearchUserDlg::startSearch()
 
 void SearchUserDlg::resetSearch()
 {
-  edtEmail->setText("");
-  edtLast->setText("");
-  edtFirst->setText("");
-  edtNick->setText("");
-  edtUin->setText("");
+  if(searchTag)
+  {
+    delete searchTag;
+    searchTag = NULL;
+    btnReset->setText(tr("Reset Search"));
+  }
+  else
+  {
+    edtEmail->clear();
+    edtLast->clear();
+    edtFirst->clear();
+    edtNick->clear();
+    edtUin->clear();
+    foundView->clear();
+    btnReset->setEnabled(false);
+  }
+  btnSearch->setEnabled(true);
+  btnDone->setEnabled(true);
+  edtNick->setEnabled(true);
+  edtFirst->setEnabled(true);
+  edtLast->setEnabled(true);
+  edtEmail->setEnabled(true);
+  edtUin->setEnabled(true);
   btnSearch->setEnabled(true);
   btnAdd->setEnabled(false);
-  btnReset->setEnabled(false);
-  foundView->clear();
-  delete searchTag;
-  searchTag = NULL;
   lblSearch->setText(tr("Enter search parameters and select 'Search'"));
 }
 
@@ -254,20 +270,11 @@ void SearchUserDlg::searchResult(ICQEvent *e)
   edtUin->setEnabled(true);
 
   if (e->Result() == EVENT_SUCCESS)
-  {
     searchDone(e->SearchAck()->More());
-    delete searchTag;
-    searchTag = NULL;
-  }
   else if (e->Result() == EVENT_ACKED)
     searchFound(e->SearchAck());
   else
-  {
     searchFailed();
-    delete searchTag;
-    searchTag = NULL;
-  }
-
 }
 
 void SearchUserDlg::searchFound(CSearchAck *s)
@@ -282,12 +289,19 @@ void SearchUserDlg::searchDone(bool more)
     lblSearch->setText(tr("More users found. Narrow search."));
   else
     lblSearch->setText("Search complete.");
+
+  delete searchTag;
+  searchTag = NULL;
+  btnReset->setText(tr("Reset Search"));
 }
 
 
 void SearchUserDlg::searchFailed()
 {
   lblSearch->setText(tr("Search failed."));
+  delete searchTag;
+  searchTag = NULL;
+  btnReset->setText(tr("Reset Search"));
 }
 
 void SearchUserDlg::selectionChanged()
