@@ -839,11 +839,19 @@ string RTF2HTML::Parse(const char *rtf)
 
 char *CICQDaemon::parseRTF(const char *rtf)
 {
-    RTF2HTML p(this);
-    string res = p.Parse(rtf);
-    char *szReturn = new char[res.length() + 1];
-    strcpy(szReturn, res.c_str());
-    szReturn[res.length()] = '\0';
+    string str;
+    char _RTF[] = "{\\rtf";
+    if ((strlen(rtf) > strlen(_RTF)) && !memcmp(rtf, _RTF, strlen(_RTF)))
+    {
+      RTF2HTML p(this);
+      str = p.Parse(rtf);
+    }
+    else
+      str = rtf;
+
+    char *szReturn = new char[str.length() + 1];
+    strcpy(szReturn, str.c_str());
+    szReturn[str.length()] = '\0';
     return szReturn;
 }
 
