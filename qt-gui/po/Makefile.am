@@ -10,8 +10,10 @@ all-local:
 	for i in $(srcdir)/*.po; do \
 	  f=$(srcdir)/`basename $$i .po`; \
           if test ! -r $$f.qm || $${nt_test} $$f.po -nt $$f.qm; then \
-	    echo "$(QT_MSG2QM) $$f.po $$f.qm"; \
-	    $(QT_MSG2QM) $$f.po $$f.qm; \
+ 	    if test "$$f" != "$(srcdir)/template"; then \
+	      echo "$(QT_MSG2QM) $$f.po $$f.qm"; \
+	      $(QT_MSG2QM) $$f.po $$f.qm; \
+            fi \
           fi \
         done
 
@@ -20,7 +22,9 @@ clean-local:
 
 merge: template
 	@for i in $(srcdir)/*.po; do \
-	  $(QT_MERGETR) $$i template.po; \
+	  if test "$$i" != "$(srcdir)/template.po"; then \
+  	    $(QT_MERGETR) $$i template.po; \
+	  fi \
 	done
 
 install-data-local:
