@@ -2614,7 +2614,7 @@ void CLicqConsole::InputSearch(int cIn)
            data->szLastName, data->szAlias, data->szEmail,
            data->nMinAge, data->nMaxAge, data->nGender, data->nLanguage,
            data->szCity, data->szState, data->nCountryCode,
-           data->szCoName, data->szCoDept, data->szCoPos, data->bOnlineOnly);
+           data->szCoName, data->szCoDept, data->szCoPos,  0, data->bOnlineOnly);
           winMain->state = STATE_PENDING;
 
           return;
