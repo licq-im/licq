@@ -44,6 +44,9 @@ LICQ_CHECK_LICQ
 
 dnl Checks for library functions.
 AC_CHECK_FUNCS(inet_addr inet_aton strerror strndup)
+AC_CHECK_LIB(ssl, MD5, [], AC_MSG_ERROR([
+*** OpenSSL is required by MSN. Please visit http://www.openssl.org and
+*** install the latest version]))
 
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
