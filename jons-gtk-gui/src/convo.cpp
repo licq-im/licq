@@ -416,6 +416,7 @@ void convo_recv(gulong uin)
 			time_t message_time = u_event->Time();
 			struct tm *_tm = localtime(&message_time);
 			strftime(szTime, 26, timestamp_format, _tm);
+			szTime[25] = '\0';
 		}
 
 		gtk_text_freeze(GTK_TEXT(c->text));
