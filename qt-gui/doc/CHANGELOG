@@ -1,5 +1,12 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 0.67
+o  Option of automatically sending through server if direct fails
+o  Edit group dialog improved
+o  Option dialog improved
+o  Saved-Auto-Response added to auto response dialog
+
+
 New in 0.66.1
 o  Small fixes
 o  Keyboard shortcuts (ctrl-m minimode, ctrl-x exit, ctrl-h hide,
