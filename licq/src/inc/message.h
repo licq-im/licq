@@ -87,6 +87,7 @@ public:
    virtual ~CEventMsg(void);
    virtual CEventMsg *Copy(void)
       { return (new CEventMsg(m_szMessage, m_nCommand, m_tTime, m_nFlags)); };
+   const char *Message(void)  { return m_szMessage; }
 protected:
    char *m_szMessage;
 };
@@ -96,12 +97,12 @@ protected:
 class CEventFile : public CUserEvent
 {
 public:
-   CEventFile(const char *_szFilename, const char *_szFileDescription, 
-              unsigned long _nFileSize, unsigned long _nSequence, time_t _tTime, 
+   CEventFile(const char *_szFilename, const char *_szFileDescription,
+              unsigned long _nFileSize, unsigned long _nSequence, time_t _tTime,
               unsigned long _nFlags);
    virtual ~CEventFile(void);
    virtual CEventFile *Copy(void)
-      { return (new CEventFile(m_szFilename, m_szFileDescription, m_nFileSize, 
+      { return (new CEventFile(m_szFilename, m_szFileDescription, m_nFileSize,
                                m_nSequence, m_tTime, m_nFlags)); };
 
    const char *Filename(void)  { return m_szFilename; };
@@ -137,6 +138,7 @@ public:
       { return (new CEventUrl(m_szUrl, m_szUrlDescription, m_nCommand, m_tTime, 
                               m_nFlags)); }
    const char *Url(void)  { return m_szUrl; }
+   const char *Description(void)  { return m_szUrlDescription; }
 protected:
    char *m_szUrl;
    char *m_szUrlDescription;
