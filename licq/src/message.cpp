@@ -203,7 +203,7 @@ void CEventFile::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
   m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
-  sprintf(m_szText, "File: %s (%ld bytes)\nDescription:\n%s\n", m_szFilename,
+  sprintf(m_szText, "File: %s (%lu bytes)\nDescription:\n%s\n", m_szFilename,
           m_nFileSize, m_szFileDescription);
 }
 
@@ -219,7 +219,7 @@ void CEventFile::AddToHistory(ICQUser *u, direction _nDir)
   char *szOut = new char[(strlen(m_szFilename) + strlen(m_szFileDescription)) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n", m_szFilename);
-  nPos += sprintf(&szOut[nPos], ":%ld\n", m_nFileSize);
+  nPos += sprintf(&szOut[nPos], ":%lu\n", m_nFileSize);
   AddStrWithColons(&szOut[nPos], m_szFileDescription);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
