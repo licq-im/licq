@@ -249,6 +249,15 @@ bool CBuffer::Full()
 }
 
 
+//-----Copy---------------------------------------------------------------------
+void CBuffer::Copy(CBuffer *b)
+{
+  Clear();
+  Create(b->getDataSize());
+  Pack(b);
+}
+
+
 CBuffer::~CBuffer()
 {
   if (m_pDataStart != NULL) delete[] m_pDataStart;
@@ -274,6 +283,13 @@ char *CBuffer::Pack(const char *data, int size)
   memcpy(getDataPosWrite(), data, size);
   incDataPosWrite(size);
   return getDataPosWrite() - size;
+}
+
+char *CBuffer::Pack(CBuffer *buf)
+{
+  memcpy(getDataPosWrite(), buf->getDataStart(), buf->getDataSize());
+  incDataPosWrite(buf->getDataSize());
+  return getDataPosWrite() - buf->getDataSize();
 }
 
 char *CBuffer::PackString(const char *data, unsigned short max)

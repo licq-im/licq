@@ -33,11 +33,13 @@ public:
    CBuffer(CBuffer &);
    ~CBuffer();
 
+   char *Pack(CBuffer *);
    char *Pack(const char *data, int size);
    char *PackString(const char *data, unsigned short max = 0);
    char *PackUnsignedShort(unsigned short data);
    char *PackUnsignedLong(unsigned long data);
    char *PackChar(char data);
+   void Copy(CBuffer *);
    char *print(char *&);
    void Clear();
    void Reset();
