@@ -385,7 +385,7 @@ convo_send(GtkWidget *widget, conversation *c)
 	bool send_server = 
 			gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server));
 			
-	c->user->SetSendServer(send_server);
+	//c->user->SetSendServer(send_server);
 
 	/* I don't like those popups to send urgent... so just send it **
  	** urgently unless the user says to send it to the contact list*/	
@@ -408,16 +408,9 @@ convo_send(GtkWidget *widget, conversation *c)
 
 	/* Send the message */
 	char *message = convert_from_utf8(c->for_user, c->user->UserEncoding());
-	unsigned short msg_type;
-	if (urgent)
-		msg_type = ICQ_TCPxMSG_URGENT;
-	/* Send to contact list */
-	else if (gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_list)))
-		msg_type = ICQ_TCPxMSG_LIST;
-	else /* Just send it normally */
-		msg_type = ICQ_TCPxMSG_NORMAL;
   c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
-     	!send_server, msg_type);
+			(send_server ? false : true), 
+			(urgent ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL));
 	g_free(message);
 	
 	/* Take care of the etd buffer and add it to the slist */
