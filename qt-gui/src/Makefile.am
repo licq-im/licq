@@ -1,4 +1,3 @@
-
 EXTRA_DIST = xpm
 
 #hack, FIXME this in a clean manner
@@ -8,7 +7,9 @@ licq_incdir = @LICQ_INCLUDES@
 INCLUDES = -D_REENTRANT \
 	-I$(licq_incdir) $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
 
-lib_LTLIBRARIES = licq_qt-gui.la
+EXTRA_LTLIBRARIES = licq_qt-gui.la licq_kde-gui.la
+
+lib_LTLIBRARIES = @LIB_NAME@
 
 noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	chatdlg.h editgrp.h editfile.h eventdesc.h ewidgets.h \
@@ -20,7 +21,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	mmlistview.h mmsenddlg.h userinfodlg.h usereventdlg.h keyrequestdlg.h \
   jfcstyle.h
 
-licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
+licq_gui_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
 	ewidgets.cpp filedlg.cpp \
 	licqgui.cpp mainwin.cpp messagebox.cpp mledit.cpp optionsdlg.cpp \
@@ -31,10 +32,19 @@ licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
   mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp keyrequestdlg.cpp \
   jfcstyle.cpp
 
-licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) $(KDE_LDFLAGS) \
-	-module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR)
-licq_qt_gui_la_LIBADD = $(KDE_LIBS) -lqt $(X_PRE_LIBS) -lX11 -lXext \
+licq_qt_gui_la_SOURCES = $(licq_gui_SOURCES)
+licq_kde_gui_la_SOURCES = $(licq_gui_SOURCES)
+
+licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) \
+	-module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR) 
+#        -export-symbols-regex "LP_.*"
+licq_qt_gui_la_LIBADD = -lqt $(X_PRE_LIBS) -lX11 -lXext \
 	$(XSS_LIBS) $(X_EXTRA_LIBS)
 
-METASOURCES = AUTO
+licq_kde_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) $(KDE_LDFLAGS) \
+        -module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR)
+#        -export-symbols-regex "LP_.*"
+licq_kde_gui_la_LIBADD = $(KDE_LIBS) -lqt $(X_PRE_LIBS) -lX11 -lXext \
+        $(XSS_LIBS) $(X_EXTRA_LIBS)
 
+METASOURCES = AUTO
