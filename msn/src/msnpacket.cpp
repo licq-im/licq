@@ -7,7 +7,7 @@
 unsigned short CMSNPacket::s_nSequence = 0;
 pthread_mutex_t CMSNPacket::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
 
-CMSNPacket::CMSNPacket(bool _bPing)
+CMSNPacket::CMSNPacket(bool _bPing) : CPacket()
 {
   m_pBuffer = 0;
   m_szCommand = 0;
@@ -15,6 +15,8 @@ CMSNPacket::CMSNPacket(bool _bPing)
   m_bPing = _bPing;
   
   pthread_mutex_lock(&s_xMutex);
+  if (s_nSequence > 99999)
+   s_nSequence = 0;
   m_nSequence = s_nSequence++;
   pthread_mutex_unlock(&s_xMutex);
 }
@@ -45,7 +47,7 @@ void CMSNPayloadPacket::InitBuffer()
     return;
   char buf[32];
   
-  m_nSize = snprintf(buf, 32, "%s %u U %u\r\n", m_szCommand, m_nSequence, m_nPayloadSize);
+  m_nSize = snprintf(buf, 32, "%s %u A %u\r\n", m_szCommand, m_nSequence, m_nPayloadSize);
   m_nSize += m_nPayloadSize;
   
   m_pBuffer = new CMSNBuffer(m_nSize);

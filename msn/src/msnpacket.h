@@ -1,20 +1,25 @@
 #ifndef __MSNPACKET_H
 #define __MSNPACKET_H
 
+#include "licq_packets.h"
+
 #include "msnbuffer.h"
 
 #include <pthread.h>
 #include <stdlib.h>
 
-class CMSNPacket
+class CMSNPacket : public CPacket
 {
 public:
   CMSNPacket(bool = false);
   virtual ~CMSNPacket() { if (m_pBuffer) delete m_pBuffer; if (m_szCommand) free(m_szCommand); }
   CMSNBuffer *getBuffer() { return m_pBuffer; }
   
-  const char* Command() { return m_szCommand; }
-  unsigned short Sequence() { return m_nSequence; }
+  const unsigned short Command() { return 0; }
+  const unsigned short SubSequence() { return 0; }
+  const unsigned short SubCommand() { return 0; }
+  const unsigned long Sequence() { return m_nSequence; }
+  const char* MSNCommand() { return m_szCommand; }
   
   virtual void InitBuffer();
   
@@ -22,7 +27,7 @@ protected:
   
   CMSNBuffer *m_pBuffer;
   char *m_szCommand;
-  unsigned short m_nSequence;
+  unsigned long m_nSequence;
   unsigned long m_nSize;
   bool m_bPing;
   

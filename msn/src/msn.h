@@ -49,12 +49,12 @@ private:
   
   // Network functions
   void SendPacket(CMSNPacket *);
-  void Send_SB_Packet(string &, CMSNPacket *);
+  void Send_SB_Packet(string &, CMSNPacket *, bool = true);
   void MSNLogon(const char *, int);
   void MSNAuthenticate(char *);
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
   
-  void MSNSendMessage(char *, char *);
+  void MSNSendMessage(char *, char *, pthread_t);
  
 
   
@@ -63,7 +63,8 @@ private:
   void StorePacket(SBuffer *, int);
   void RemovePacket(string, int);
   SBuffer *RetrievePacket(string, int);
-   
+  ICQEvent *RetrieveEvent(unsigned long);
+  
   // Variables
   CICQDaemon *m_pDaemon;
   int m_nPipe;
@@ -71,7 +72,7 @@ private:
   int m_nSSLSocket;
   CMSNBuffer *m_pPacketBuf;
   vector<BufferList> m_vlPacketBucket;
-  
+  list<ICQEvent *> m_pEvents;
   pthread_t m_tMSNPing;
   
   char *m_szUserName,
