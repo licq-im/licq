@@ -6,7 +6,7 @@
 #include <string.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <iostream.h>
+//#include <iostream.h>
 #include <errno.h>
 
 #include "time-fix.h"
@@ -21,6 +21,13 @@
 #include "licq_chat.h"
 #include "licq_filetransfer.h"
 #include "support.h"
+
+#include "licq_openssl.h"
+#ifdef USE_OPENSSL
+#include <openssl/bn.h>
+#include <openssl/des.h>
+#include <openssl/crypto.h>
+#endif
 
 
 //-----ICQ::sendMessage----------------------------------------------------------------------------
@@ -53,17 +60,20 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
      }
      CPU_ThroughServer *p = new CPU_ThroughServer(_nUin,
         ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), mDos);
-     gLog.Info("%sSending message through server (#%ld).\n", L_UDPxSTR, p->getSequence());
+     gLog.Info("%sSending message through server (#%ld).\n", L_UDPxSTR, p->Sequence());
      result = SendExpectEvent_Server(_nUin, p, e);
   }
   else        // send direct
   {
     if (u == NULL) return NULL;
+#ifdef USE_OPENSSL
+    if (u->Secure()) f |= E_ENCRYPTED;
+#endif
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, u);
     gLog.Info("%sSending %smessage to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-       u->GetAlias(), -p->getSequence());
+       u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
   }
 
@@ -88,7 +98,7 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(u);
   gLog.Info("%sRequesting auto response from %s (#%ld).\n", L_TCPxSTR,
-            u->GetAlias(), -p->getSequence());
+            u->GetAlias(), -p->Sequence());
   ICQEvent *result = SendExpectEvent_Client(u, p, NULL);
   gUserManager.DropUser(u);
 
@@ -128,7 +138,7 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
     CPU_ThroughServer *p = new CPU_ThroughServer(_nUin,
        ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m);
-    gLog.Info("%sSending url through server (#%ld).\n", L_UDPxSTR, p->getSequence());
+    gLog.Info("%sSending url through server (#%ld).\n", L_UDPxSTR, p->Sequence());
     result = SendExpectEvent_Server(_nUin, p, e);
   }
   else
@@ -138,7 +148,7 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
     CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, u);
     gLog.Info("%sSending %sURL to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-       u->GetAlias(), -p->getSequence());
+       u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
   }
   if (u != NULL)
@@ -183,10 +193,10 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
     unsigned long f = E_DIRECT | INT_VERSION;
     if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
     e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
-                       p->getSequence(), TIME_NOW, f);
+                       p->Sequence(), TIME_NOW, f);
     gLog.Info("%sSending %sfile transfer to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-       u->GetAlias(), -p->getSequence());
+       u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
   }
   u->SetSendServer(false);
@@ -241,7 +251,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
     e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
     CPU_ThroughServer *p = new CPU_ThroughServer(nUin,
        ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m);
-    gLog.Info("%sSending contact list through server (#%ld).\n", L_UDPxSTR, p->getSequence());
+    gLog.Info("%sSending contact list through server (#%ld).\n", L_UDPxSTR, p->Sequence());
     result = SendExpectEvent_Server(nUin, p, e);
   }
   else
@@ -251,7 +261,7 @@ CICQEventTag *CICQDaemon::icqSendContactList(unsigned long nUin,
     CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, u);
     gLog.Info("%sSending %scontact list to %s (#%ld).\n", L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-       u->GetAlias(), -p->getSequence());
+       u->GetAlias(), -p->Sequence());
     result = SendExpectEvent_Client(u, p, e);
   }
   if (u != NULL)
@@ -339,11 +349,11 @@ CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 
   unsigned long f = E_DIRECT | INT_VERSION;
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-  CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->getSequence(),
+  CEventChat *e = new CEventChat(reason, szChatUsers, nPort, p->Sequence(),
      TIME_NOW, f);
   gLog.Info("%sSending %schat request to %s (#%ld).\n", L_TCPxSTR,
      nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-     u->GetAlias(), -p->getSequence());
+     u->GetAlias(), -p->Sequence());
   ICQEvent *result = SendExpectEvent_Client(u, p, e);
   u->SetSendServer(false);
   u->SetSendLevel(nLevel);
@@ -403,6 +413,129 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
   AckTCP(p, u->SocketDesc());
   gUserManager.DropUser(u);
 }
+
+/*---------------------------------------------------------------------------
+ * OpenSSL stuff
+ *-------------------------------------------------------------------------*/
+
+CICQEventTag *CICQDaemon::icqSendKeyRequest(unsigned long nUin)
+{
+#ifdef USE_OPENSSL
+  ICQEvent *result = NULL;
+
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u == NULL)
+  {
+    gLog.Warn("%sCannot send key request to user not on list (%ld).\n",
+       L_WARNxSTR, nUin);
+    return NULL;
+  }
+
+  // Check that the user doesn't already have a secure channel
+  if (u->Secure())
+  {
+    /*if (u->DHKey()->CryptoStatus() == CRYPTO_HALF)
+    {
+      gLog.Warn("%sKey request already in progress for %s (%ld).\n",
+         L_WARNxSTR, u->GetAlias(), nUin);
+      gUserManager.DropUser(u);
+      return NULL;
+    }
+    // Wipe out any old key
+    u->ClearDHKey(true);*/
+    gLog.Warn("%s%s (%ld) already has a secure channel.\n", L_WARNxSTR,
+       u->GetAlias(), nUin);
+    gUserManager.DropUser(u);
+    return NULL;
+  }
+
+  // Create a key
+  CDHKey *k = new CDHKey;
+
+  gLog.Info("%sInitiating d/h key exchange with %s (%ld).\n", L_UDPxSTR,
+    u->GetAlias(), nUin);
+
+  BIGNUM *g, *ga, *p, *a;
+  char szKey[256] = {0};
+  BN_CTX *temp_ctx = BN_CTX_new();
+
+  gLog.Info("%sGenerating encryption key for %s (%ld).\n", L_UDPxSTR,
+     u->GetAlias(), nUin);
+
+  // find a prime p and generator g
+  p = BN_new();
+  p = BN_generate_prime(NULL, 192, 1, NULL, NULL, NULL, NULL);
+
+  // load in our generator, 2
+  g = BN_new();
+  BN_dec2bn (&g, "2");
+
+  // now we get a random a, and make g^a
+  a = BN_new();
+  BN_rand (a, 192, 0, 127);
+  ga = BN_new();
+  BN_mod_exp (ga, g, a, p, temp_ctx);
+
+  BN_copy(k->P(), p);
+  BN_copy(k->A(), a);
+  BN_copy(k->G(), ga);
+  gLog.Info("%sKey for %s (%ld) done.\n", L_UDPxSTR, u->GetAlias(), nUin);
+
+  // prepare send key
+  sprintf (szKey, "%s\n%s\n%s", BN_bn2hex(g), BN_bn2hex(ga), BN_bn2hex(p));
+  k->SetCryptoStatus(CRYPTO_HALF);
+
+  // clean up
+  BN_CTX_free (temp_ctx);
+  BN_clear_free (g);
+  BN_clear_free (ga);
+  BN_clear_free (p);
+  BN_clear_free (a);
+
+  CPT_KeyRequest *pkt = new CPT_KeyRequest(szKey, u, k);
+  gLog.Info("%sSending key request to %s (#%ld).\n", L_TCPxSTR,
+     u->GetAlias(), -pkt->Sequence());
+  result = SendExpectEvent_Client(u, pkt, NULL);
+
+  u->SetSendServer(false);
+
+  CICQEventTag *t = NULL;
+  if (result != NULL)
+    t = new CICQEventTag(result);
+  //else
+  //  u->ClearDHKey(true);
+
+  gUserManager.DropUser(u);
+
+  return (t);
+
+#else // No OpenSSL
+  gLog.Warn("%sicqSendKeyRequest() to %ld called when we do not support OpenSSL.\n",
+     L_WARNxSTR, nUin);
+  return NULL;
+
+#endif
+}
+
+
+//-----CICQDaemon::keyCancel-------------------------------------------------------------------------
+void CICQDaemon::icqKeyRequestCancel(unsigned long nUin, unsigned long nSequence)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u == NULL) return;
+  gLog.Info("%sCancelling key request to %s (#%ld).\n", L_TCPxSTR,
+     u->GetAlias(), -nSequence);
+  //CPT_CancelKeyRequest p(nSequence, u);
+  //AckTCP(p, u->SocketDesc());
+  //u->ClearDHKey(true);
+  //u->SetSecure(false);
+  // we shouldn't need to do anything here right???
+  gUserManager.DropUser(u);
+}
+
+
+
+
 
 
 /*---------------------------------------------------------------------------
@@ -551,19 +684,19 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
     delete s;
     return -1;
   }
-
-  // Add the new socket to the socket manager
-  gSocketManager.AddSocket(s);
-  int nSD = s->Descriptor();
   s->SetVersion(nVersion);
-  gSocketManager.DropSocket(s);
+  int nSD = s->Descriptor();
 
   // Set the socket descriptor in the user
   u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return -1;
-  u->SetSocketDesc(nSD, nPort, nVersion);
+  u->SetSocketDesc(s);
   u->SetConnectionInProgress(false);
   gUserManager.DropUser(u);
+
+  // Add the new socket to the socket manager
+  gSocketManager.AddSocket(s);
+  gSocketManager.DropSocket(s);
 
   // Alert the select thread that there is a new socket
   write(pipe_newsocket[PIPE_WRITE], "S", 1);
@@ -605,7 +738,7 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
   if (!bSendRealIp)
   {
     gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
-	     ip_ntoa(nIp, buf), nPort);
+      ip_ntoa(nIp, buf), nPort);
     // If we fail to set the remote address, the ip must be 0
     if (!sock->SetRemoteAddr(nIp, nPort)) return false;
 
@@ -708,7 +841,7 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
     ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u != NULL)
     {
-      u->SetSocketDesc(nSD, s->LocalPort(), nVersion);
+      u->SetSocketDesc(s);
       gUserManager.DropUser(u);
     }
 
@@ -746,7 +879,7 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
 //-----CICQDaemon::ProcessTcpPacket----------------------------------------------------
 bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 {
-  unsigned long checkUin, theSequence, senderIp, localIp,
+  unsigned long nUin, theSequence, senderIp, localIp,
                 senderPort, junkLong, nPort, nPortReversed;
   unsigned short version, command, junkShort, newCommand, messageLen,
                  ackFlags, msgFlags, licqVersion;
@@ -769,11 +902,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     case 2:
     case 3:
     {
-      packet >> checkUin
+      packet >> nUin
              >> version
              >> command      // main tcp command (start, cancel, ack)
              >> junkShort    // 00 00 to fill in the MSB of the command long int which is read in as a short
-             >> checkUin
+             >> nUin
              >> newCommand   // sub command (message/chat/read away message/...)
              >> messageLen   // length of incoming message
       ;
@@ -789,12 +922,12 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         delete buf;
         return false;
       }
-      packet >> checkUin
+      packet >> nUin
              >> version
              >> junkLong     // checksum
              >> command      // main tcp command (start, cancel, ack)
              >> junkShort    // 00 00 to fill in the MSB of the command long int which is read in as a short
-             >> checkUin
+             >> nUin
              >> newCommand   // sub command (message/chat/read away message/...)
              >> messageLen   // length of incoming message
       ;
@@ -803,7 +936,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     case 6:
     case 7:
     {
-      checkUin = pSock->Owner();
+      nUin = pSock->Owner();
       if (!Decrypt_Client(&packet, 6))
       {
         char *buf;
@@ -831,16 +964,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   }
 
   // Some simple validation of the packet
-  if (checkUin == 0 || command == 0 || newCommand == 0)
+  if (nUin == 0 || command == 0 || newCommand == 0)
   {
     char *buf;
     gLog.Unknown("%sInvalid TCP packet (uin: %08lx, cmd: %04x, subcmd: %04x):\n%s\n",
-                 L_UNKNOWNxSTR, checkUin, command, newCommand, packet.print(buf));
+                 L_UNKNOWNxSTR, nUin, command, newCommand, packet.print(buf));
     delete buf;
     return false;
   }
 
-  if (checkUin == gUserManager.OwnerUin())
+  if (nUin == gUserManager.OwnerUin())
   {
     char *buf;
     gLog.Warn("%sTCP message from self (probable spoof):\n%s\n", L_WARNxSTR, packet.print(buf));
@@ -879,11 +1012,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
   // find which user was sent
   bool bNewUser = false;
-  ICQUser *u = gUserManager.FetchUser(checkUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL)
   {
-    u = new ICQUser(checkUin);
-    u->SetSocketDesc(sockfd, pSock->LocalPort(), pSock->Version());
+    u = new ICQUser(nUin);
+    u->SetSocketDesc(pSock);
     bNewUser = true;
   }
 
@@ -896,7 +1029,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
   unsigned long nMask = E_DIRECT
                         | ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
-                        | ((msgFlags & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
+                        | ((msgFlags & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0)
+                        | ((pSock->DHKey() != NULL) ? E_ENCRYPTED : 0);
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
   bool bAccept = msgFlags & ICQ_TCPxMSG_URGENT || msgFlags & ICQ_TCPxMSG_LIST;
   // Flag as sent urgent as well if we are in occ or dnd and auto-accept is on
@@ -962,9 +1096,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         nMask |= licqVersion;
         if (licqChar == 'L')
           gLog.Info("%sMessage from %s (%ld) [Licq v0.%d].\n", L_TCPxSTR, u->GetAlias(),
-             checkUin, licqVersion);
+             nUin, licqVersion);
         else
-          gLog.Info("%sMessage from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), checkUin);
+          gLog.Info("%sMessage from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), nUin);
 
         CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
 
@@ -988,7 +1122,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             // FIXME should log a message here or in reject event
             // FIXME should either refuse the event or have a special auto response
             // for rejected events instead of pretending to accept the user
-            RejectEvent(checkUin, e);
+            RejectEvent(nUin, e);
             break;
           }
           AddUserToList(u);
@@ -1010,16 +1144,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         packet >> licqChar >> licqVersion;
         if (licqChar == 'L')
           gLog.Info("%s%s (%ld) requested auto response [Licq v0.%d].\n", L_TCPxSTR,
-             u->GetAlias(), checkUin, licqVersion);
+             u->GetAlias(), nUin, licqVersion);
         else
-          gLog.Info("%s%s (%ld) requested auto response.\n", L_TCPxSTR, u->GetAlias(), checkUin);
+          gLog.Info("%s%s (%ld) requested auto response.\n", L_TCPxSTR, u->GetAlias(), nUin);
         m_sStats[STATS_AutoResponseChecked].Inc();
 
         //CPT_AckReadAwayMsg p(newCommand, theSequence, true, u);
         CPT_AckGeneral p(newCommand, theSequence, true, false, u);
         AckTCP(p, pSock);
 
-        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, checkUin));
+        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, nUin));
         break;
       }
 
@@ -1031,9 +1165,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         nMask |= licqVersion;
         if (licqChar == 'L')
           gLog.Info("%sURL from %s (%ld) [Licq v0.%d].\n", L_TCPxSTR, u->GetAlias(),
-            checkUin, licqVersion);
+            nUin, licqVersion);
         else
-          gLog.Info("%sURL from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), checkUin);
+          gLog.Info("%sURL from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), nUin);
 
         CEventUrl *e = CEventUrl::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
         if (e == NULL)
@@ -1062,7 +1196,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
           {
-            RejectEvent(checkUin, e);
+            RejectEvent(nUin, e);
             break;
           }
           AddUserToList(u);
@@ -1083,10 +1217,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         nMask |= licqVersion;
         if (licqChar == 'L')
           gLog.Info("%sContact list from %s (%ld) [Licq v0.%d].\n", L_BLANKxSTR,
-             u->GetAlias(), checkUin, licqVersion);
+             u->GetAlias(), nUin, licqVersion);
         else
           gLog.Info("%sContact list from %s (%ld).\n", L_BLANKxSTR, u->GetAlias(),
-             checkUin);
+             nUin);
 
         CEventContactList *e = CEventContactList::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
         if (e == NULL)
@@ -1115,7 +1249,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
           {
-            RejectEvent(checkUin, e);
+            RejectEvent(nUin, e);
             break;
           }
           AddUserToList(u);
@@ -1140,10 +1274,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
         if (licqChar == 'L')
           gLog.Info("%sChat request from %s (%ld) [Licq v0.%d].\n", L_TCPxSTR,
-             u->GetAlias(), checkUin, licqVersion);
+             u->GetAlias(), nUin, licqVersion);
         else
           gLog.Info("%sChat request from %s (%ld).\n", L_TCPxSTR, u->GetAlias(),
-             checkUin);
+             nUin);
 
         // translating string with translation table
         gTranslator.ServerToClient (message);
@@ -1155,7 +1289,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
           {
-            RejectEvent(checkUin, e);
+            RejectEvent(nUin, e);
             break;
           }
           AddUserToList(u);
@@ -1166,6 +1300,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         m_xOnEventManager.Do(ON_EVENT_CHAT, u);
         break;
       }
+
+      // File transfer
       case ICQ_CMDxSUB_FILE:
       {
         unsigned short nLenFilename;
@@ -1182,10 +1318,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
         if (licqChar == 'L')
           gLog.Info("%sFile transfer request from %s (%ld) [Licq v0.%d].\n",
-             L_TCPxSTR, u->GetAlias(), checkUin, licqVersion);
+             L_TCPxSTR, u->GetAlias(), nUin, licqVersion);
         else
           gLog.Info("%sFile transfer request from %s (%ld).\n", L_TCPxSTR,
-             u->GetAlias(), checkUin);
+             u->GetAlias(), nUin);
 
         // translating string with translation table
         gTranslator.ServerToClient (message);
@@ -1197,7 +1333,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
           {
-            RejectEvent(checkUin, e);
+            RejectEvent(nUin, e);
             break;
           }
           AddUserToList(u);
@@ -1208,6 +1344,112 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         m_xOnEventManager.Do(ON_EVENT_FILE, u);
         break;
       }
+
+      // Encryption key request
+      case ICQ_CMDxSUB_KEYxREQUEST:
+      {
+#ifdef USE_OPENSSL
+        if (nInVersion <= 4) packet >> theSequence;
+        else packet >> junkLong >> junkLong;
+        packet >> licqChar >> licqVersion;
+
+        if (licqChar == 'L')
+          gLog.Info("%sSecure key request from %s (%ld) [Licq v0.%d].\n",
+           L_TCPxSTR, u->GetAlias(), nUin, licqVersion);
+        else
+          gLog.Info("%sSecure key request from %s (%ld).\n", L_TCPxSTR,
+           u->GetAlias(), nUin);
+
+        CDHKey *k = pSock->DHKey();
+        if (k == NULL)
+        {
+          k = pSock->CreateDHKey();
+        }
+        else if (k->CryptoStatus() == CRYPTO_FULL)
+        {
+          u->SetSecure(false);
+          pSock->ClearDHKey();
+          k = pSock->CreateDHKey();
+        }
+
+        // we have a g, g^a, p
+        BIGNUM *b, *g, *ga, *p, *gb, *gab;
+        b = BN_new();
+        g = BN_new();
+        ga = BN_new();
+        p = BN_new();
+        gb = BN_new();
+        gab = BN_new();
+        char cg[9] = {0}, cga[128] = {0}, cp[128] = {0}, cgb[128] = {0};
+        BN_CTX *temp_ctx = BN_CTX_new ();
+        sscanf(message, "%s\n%s\n%s", cg, cga, cp);
+        gLog.Info("[CRPT] got [%s]\n[%s]\n[%s]\n", cg, cga, cp);
+        /* FIXME OPENSSL can we get rid of this ?
+          strncpy (cg, (const char *) szMessage + 5, 8);
+          strncpy (cga, (const char *) szMessage + 13, 8);
+          strncpy (cp, (const char *) szMessage + 21, 8);
+        */
+        BN_hex2bn (&g, cg);
+        BN_hex2bn (&ga, cga);
+        BN_hex2bn (&p, cp);
+
+        // now we get a random b, and make g^ab
+        BN_rand (b, 192, 0, 127);
+        BN_mod_exp (gab, ga, b, p, temp_ctx);
+        BN_mod_exp (gb, g, b, p, temp_ctx);
+
+        // Now, lets see how this happened
+        // If we hadn't sent anything yet, eat their key, and reply accordingly,
+        // or if we have sent already, compare his prime to mine.  If his is
+        // larger, then we'll use his.  I'll eat his key, and reply accordingly.
+        if ((k->CryptoStatus() == CRYPTO_NONE) ||
+            ((k->CryptoStatus() == CRYPTO_HALF) && (BN_cmp(k->P(), p) == 1)) )
+        {
+          BN_copy(k->P(), p);
+          BN_copy(k->A(), b);
+          BN_copy(k->G(), ga);
+          BN_copy(k->GAB(), gab);
+
+          if (k->CryptoStatus() == CRYPTO_HALF)
+          {
+            gLog.Info("[CRPT] I already sent, but I'm using %s's key.\n",
+               u->GetAlias());
+          }
+
+          // send gab
+          strcpy(cgb, BN_bn2hex (gb));
+          CPT_AckKey p(theSequence, cgb, u);
+          AckTCP(p, pSock);
+
+          k->SetCryptoStatus(CRYPTO_FULL);
+          //pSock->SetDHKey(k);
+          u->SetSecure(true);
+          gLog.Info("\t[Sent g^b]:\n[%s]\n", BN_bn2hex(gb));
+        }
+
+        // Clean up
+        BN_CTX_free (temp_ctx);
+        BN_clear_free (p);
+        BN_clear_free (b);
+        BN_clear_free (ga);
+        BN_clear_free (gb);
+        BN_clear_free (gab);
+
+        gLog.Info("[CRPT] Shared Key with %s(g^(gab)):\n[%s]\n", u->GetAlias(),
+           BN_bn2hex(k->GAB()));
+
+        break;
+
+#else // We do not support OpenSSL
+        gLog.Info("%sReceived key request from %s (%ld) but we do not support OpenSSL.\n",
+           L_TCPxSTR, u->GetAlias(), nUin);
+        // Send the nack back
+        CPT_AckKey p(theSequence, "", u);
+        AckTCP(p, pSock);
+        break;
+#endif
+      }
+
 
       default:
       {
@@ -1232,77 +1474,162 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 
     switch (newCommand)
     {
-    case ICQ_CMDxSUB_MSG:
-    case ICQ_CMDxTCP_READxNAxMSG:
-    case ICQ_CMDxTCP_READxDNDxMSG:
-    case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
-    case ICQ_CMDxTCP_READxAWAYxMSG:
-    case ICQ_CMDxTCP_READxFFCxMSG:
-    case ICQ_CMDxSUB_URL:
-    case ICQ_CMDxSUB_CONTACTxLIST:
-      if (nInVersion <= 4) packet >> theSequence;
-      else packet >> junkLong >> junkLong;
-      packet >> licqChar >> licqVersion;
-      break;
+      case ICQ_CMDxSUB_MSG:
+      case ICQ_CMDxTCP_READxNAxMSG:
+      case ICQ_CMDxTCP_READxDNDxMSG:
+      case ICQ_CMDxTCP_READxOCCUPIEDxMSG:
+      case ICQ_CMDxTCP_READxAWAYxMSG:
+      case ICQ_CMDxTCP_READxFFCxMSG:
+      case ICQ_CMDxSUB_URL:
+      case ICQ_CMDxSUB_CONTACTxLIST:
+        if (nInVersion <= 4) packet >> theSequence;
+        else packet >> junkLong >> junkLong;
+        packet >> licqChar >> licqVersion;
+        break;
 
-    case ICQ_CMDxSUB_CHAT:
-    {
-      char ul[1024];
-      packet.UnpackString(ul);
-      packet >> nPortReversed   // port backwards
-             >> nPort;    // port to connect to for chat
-      if (nInVersion <= 4) packet >> theSequence;
-      packet >> licqChar >> licqVersion;
-
-      if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
-      // only if this is the first chat ack packet do we do anything
-      if (s_nChatSequence == theSequence && s_nChatUin == checkUin)
+      case ICQ_CMDxSUB_CHAT:
       {
+        char ul[1024];
+        packet.UnpackString(ul);
+        packet >> nPortReversed   // port backwards
+               >> nPort;    // port to connect to for chat
+        if (nInVersion <= 4) packet >> theSequence;
+        packet >> licqChar >> licqVersion;
+
+        if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
+        // only if this is the first chat ack packet do we do anything
+        if (s_nChatSequence == theSequence && s_nChatUin == nUin)
+        {
+          gUserManager.DropUser(u);
+          return true;
+        }
+        s_nChatSequence = theSequence;
+        s_nChatUin = nUin;
+
+        //pExtendedAck = new CExtendedAck (ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
+        pExtendedAck = new CExtendedAck (nPort != 0, nPort, message);
+        break;
+      }
+
+      case ICQ_CMDxSUB_FILE:
+      {
+         /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 0A 00 6E 6F 20 74 68 61
+            6E 6B 73 00 D1 EF 04 9F 7F 00 00 01 4A 1F 00 00 04 01 00 00 00 00 00 00
+            00 01 00 00 00 00 00 00 00 00 00 00 03 00 00 00 */
+         packet >> nPortReversed
+                >> junkShort;
+         for (int i = 0; i < junkShort; i++) packet >> junkChar;
+         packet >> junkLong
+                >> nPort;
+         if (nInVersion <= 4) packet >> theSequence;
+         packet >> licqChar >> licqVersion;
+
+         // Some clients only send the first port (reversed)
+         if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
+         // only if this is the first file ack packet do we do anything
+         if (s_nFileSequence == theSequence && s_nFileUin == nUin)
+         {
+           gUserManager.DropUser(u);
+           return true;
+         }
+         s_nFileSequence = theSequence;
+         s_nFileUin = nUin;
+
+         //pExtendedAck = new CExtendedAck(ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
+         pExtendedAck = new CExtendedAck(nPort != 0, nPort, message);
+         break;
+      }
+
+#ifdef USE_OPENSSL
+      case ICQ_CMDxSUB_KEYxREQUEST:
+      {
+        if (nInVersion <= 4) packet >> theSequence;
+        else packet >> junkLong >> junkLong;
+        packet >> licqChar >> licqVersion;
+
+        char l[32] = "";
+        if (licqChar == 'L') sprintf(l, " [Licq v0.%d]", licqVersion);
+        gLog.Info("%sSecure key response from %s (%ld)%s.\n", L_TCPxSTR,
+         u->GetAlias(), nUin, l);
+
+        ICQEvent *e = NULL;
+
+        // Check if the response is ok
+        if (message[0] == '\0')
+        {
+          gLog.Info("%s%s (%ld) does not support OpenSSL.\n", L_TCPxSTR,
+             u->GetAlias(), nUin);
+          pSock->ClearDHKey();
+          u->SetSecure(false);
+          // find the event, fail it
+          e = DoneEvent(sockfd, theSequence, EVENT_FAILED);
+        }
+        else
+        {
+          CDHKey *k = pSock->DHKey();
+
+          // Find the event, succeed it
+          e = DoneEvent(sockfd, theSequence, EVENT_SUCCESS);
+
+          // Check that a request was in progress...should always be ok
+          if (e == NULL || k == NULL || k->CryptoStatus() != CRYPTO_HALF)
+          {
+            gLog.Warn("%sKey response from %s (%ld) when no request in progress.\n",
+               L_WARNxSTR, u->GetAlias(), nUin);
+            // Close the connection as we are in trouble
+            pSock->ClearDHKey();
+            u->SetSecure(false);
+            gUserManager.DropUser(u);
+            delete e;
+            return false;
+          }
+
+          gLog.Info("\t[generating g^(ab) for %s]\n", u->GetAlias());
+          // we have a gb
+          BIGNUM *gb, *gab;
+          gb = BN_new();
+          gab = BN_new();
+          char cgb[128] = {0};
+          BN_CTX *temp_ctx = BN_CTX_new ();
+          sscanf(message, "%s", cgb);
+          gLog.Info("[CRPT] got key: \n[%s]\n", cgb);
+          //	strncpy (cgb, (const char *) message + 5, 8);
+          BN_hex2bn (&gb, cgb);
+
+          // now we get a random b, and make g^ab
+          BN_mod_exp (gab, gb, k->A(), k->P(), temp_ctx);
+
+          BN_copy(k->GAB(), gab);
+          gLog.Info("[CRPT] symmetric key generated for %s\n[%s]\n", u->GetAlias(),
+             BN_bn2hex(gab));
+          k->SetCryptoStatus(CRYPTO_FULL);
+          u->SetSecure(true);
+
+          // clean up
+          BN_CTX_free(temp_ctx);
+          BN_clear_free(gb);
+          BN_clear_free(gab);
+        }
+
+        // finish up
+        e->m_nSubResult = ICQ_TCPxACK_ACCEPT;
         gUserManager.DropUser(u);
+        ProcessDoneEvent(e);
+
+        // get out of here now as we don't want standard ack processing
         return true;
       }
-      s_nChatSequence = theSequence;
-      s_nChatUin = checkUin;
+#endif
 
-      //pExtendedAck = new CExtendedAck (ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
-      pExtendedAck = new CExtendedAck (nPort != 0, nPort, message);
-      break;
-    }
-
-    case ICQ_CMDxSUB_FILE:
-       /* 50 A5 82 00 03 00 DA 07 00 00 50 A5 82 00 03 00 0A 00 6E 6F 20 74 68 61
-          6E 6B 73 00 D1 EF 04 9F 7F 00 00 01 4A 1F 00 00 04 01 00 00 00 00 00 00
-          00 01 00 00 00 00 00 00 00 00 00 00 03 00 00 00 */
-       packet >> nPortReversed
-              >> junkShort;
-       for (int i = 0; i < junkShort; i++) packet >> junkChar;
-       packet >> junkLong
-              >> nPort;
-       if (nInVersion <= 4) packet >> theSequence;
-       packet >> licqChar >> licqVersion;
-
-       // Some clients only send the first port (reversed)
-       if (nPort == 0) nPort = (nPortReversed >> 8) | ((nPortReversed & 0xFF) << 8);
-       // only if this is the first file ack packet do we do anything
-       if (s_nFileSequence == theSequence && s_nFileUin == checkUin)
-       {
-         gUserManager.DropUser(u);
-         return true;
-       }
-       s_nFileSequence = theSequence;
-       s_nFileUin = checkUin;
-
-       //pExtendedAck = new CExtendedAck(ackFlags != ICQ_TCPxACK_REFUSE, nPort, message);
-       pExtendedAck = new CExtendedAck(nPort != 0, nPort, message);
-       break;
-
-    default:
-      char *buf;
-      gLog.Unknown("%sUnknown TCP Ack subcommand (%04x):\n%s\n", L_UNKNOWNxSTR,
-                   newCommand, packet.print(buf));
-      errorOccured = true;
-      delete []buf;
-      break;
+      default:
+      {
+        char *buf;
+        gLog.Unknown("%sUnknown TCP Ack subcommand (%04x):\n%s\n", L_UNKNOWNxSTR,
+                     newCommand, packet.print(buf));
+        errorOccured = true;
+        delete []buf;
+        break;
+      }
     }
 
     char l[32] = "";
@@ -1378,7 +1705,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_CHAT:
       {
         gLog.Info("%sChat request from %s (%ld) cancelled.\n", L_TCPxSTR,
-                 u->GetAlias(), checkUin);
+                 u->GetAlias(), nUin);
         if (nInVersion <= 4)
           packet >> junkLong >> junkLong >> junkShort >> junkChar >> theSequence;
         for (unsigned short i = 0; i < u->NewMessages(); i++)
@@ -1394,7 +1721,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       case ICQ_CMDxSUB_FILE:
       {
         gLog.Info("%sFile transfer request from %s (%ld) cancelled.\n",
-                 L_TCPxSTR, u->GetAlias(), checkUin);
+                 L_TCPxSTR, u->GetAlias(), nUin);
         if (nInVersion <= 4)
           packet >> junkLong >> junkShort >> junkChar >> junkLong >> junkLong >> theSequence;
         for (unsigned short i = 0; i < u->NewMessages(); i++)
@@ -1581,7 +1908,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
         gSocketManager.CloseSocket(u->SocketDesc(), false);
         u->ClearSocketDesc();
       }
-      u->SetSocketDesc(s->Descriptor(), s->LocalPort(), s->Version());
+      u->SetSocketDesc(s);
     }
     gUserManager.DropUser(u);
   }
@@ -1592,6 +1919,16 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   }
 
   return true;
+}
+
+
+bool CICQDaemon::CryptoEnabled()
+{
+#ifdef USE_OPENSSL
+  return true;
+#else
+  return false;
+#endif
 }
 
 

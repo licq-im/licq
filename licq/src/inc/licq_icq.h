@@ -139,6 +139,8 @@ const unsigned short ICQ_CMDxSUB_EMAILxPAGER       = 0x000E;
 const unsigned short ICQ_CMDxSUB_CONTACTxLIST      = 0x0013;
 const unsigned short ICQ_CMDxSUB_USERxINFO         = 0x001A;  // not done
 const unsigned short ICQ_CMDxSUB_FxMULTIREC        = 0x8000;
+// Encryption Licq extension command
+const unsigned short ICQ_CMDxSUB_KEYxREQUEST       = 0x00ED;  // Licq extension
 
 
 // Status constants

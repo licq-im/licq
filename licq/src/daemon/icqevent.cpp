@@ -49,9 +49,9 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   // set up internal variables
   m_pPacket = p;
   m_bCancelled = false;
-  m_nCommand = p->getCommand();
-  m_nSubCommand = p->getSubCommand();
-  m_nSequence = p->getSequence();
+  m_nCommand = p->Command();
+  m_nSubCommand = p->SubCommand();
+  m_nSequence = p->Sequence();
   m_nSubSequence = p->SubSequence();
   m_nDestinationUin = _nUin;
   m_eConnect = _eConnect;

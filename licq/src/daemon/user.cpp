@@ -22,6 +22,7 @@
 #include "licq_log.h"
 #include "licq_packets.h"
 #include "licq_icqd.h"
+#include "licq_socket.h"
 #include "support.h"
 #include "pthread_rdwr.h"
 
@@ -983,6 +984,8 @@ void ICQUser::Init(unsigned long _nUin)
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
   m_szAutoResponse = NULL;
+  //m_pDHKey = NULL;
+  m_bSecure = false;
 
   // General Info
   m_szAlias = NULL;
@@ -1170,6 +1173,28 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
   m_nIp = _nIp;
   m_nPort = _nPort;
   SaveLicqInfo();
+}
+
+
+
+void ICQUser::SetSocketDesc(TCPSocket *s)
+{
+  m_nSocketDesc = s->Descriptor();
+  m_nLocalPort = s->LocalPort();
+  m_nConnectionVersion = s->Version();
+
+  if (m_nIp == 0) m_nIp = s->RemoteIp();
+  if (m_nPort == 0) m_nPort = s->RemotePort();
+}
+
+
+void ICQUser::ClearSocketDesc()
+{
+  m_nSocketDesc = -1;
+  m_nLocalPort = 0;
+  m_nConnectionVersion = 0;
+  //ClearDHKey();
+  m_bSecure = false;
 }
 
 

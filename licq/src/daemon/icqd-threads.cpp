@@ -42,8 +42,8 @@ void *ProcessRunningEvent_Server_tep(void *p)
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
     // Connect to the server if we are logging on
-    if (e->m_pPacket->getCommand() == ICQ_CMDxSND_LOGON ||
-        e->m_pPacket->getCommand() == ICQ_CMDxSND_REGISTERxUSER)
+    if (e->m_pPacket->Command() == ICQ_CMDxSND_LOGON ||
+        e->m_pPacket->Command() == ICQ_CMDxSND_REGISTERxUSER)
       e->m_nSocketDesc = d->ConnectToServer();
 
     // Check again, if still -1, fail the event
@@ -170,15 +170,22 @@ void *ProcessRunningEvent_Client_tep(void *p)
     char szErrorBuf[128];
     gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
               e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
-    // We don't close the socket as it should be closed by the server thread
-    //gSocketManager.DropSocket(s);
     if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
-    //pthread_exit(NULL);
   }
-  //delete buf;
+//#ifdef USE_OPENSSL
+  // Check if this was a key request
+  if (e->m_pPacket->SubCommand() == ICQ_CMDxSUB_KEYxREQUEST)
+  {
+    if (s->DHKey() != NULL)
+    {
+      gLog.Warn("%sSent key request to %ld when channel already secure.\n",
+       L_WARNxSTR, e->m_nDestinationUin);
+      s->ClearDHKey();
+    }
+    s->SetDHKey( ((CPT_KeyRequest *)e->m_pPacket)->GrabDHKey() );
+  }
+//#endif
   gSocketManager.DropSocket(s);
-  //pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-  //pthread_testcancel();
 
   pthread_exit(NULL);
   // Avoid compiler warnings

@@ -1481,10 +1481,19 @@ void CICQDaemon::CancelEvent(CICQEventTag *t)
     return;
   }
 
+  CancelEvent(e);
+}
+
+void CICQDaemon::CancelEvent(ICQEvent *e)
+{
+  e->m_eResult = EVENT_CANCELLED;
+
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
     icqChatRequestCancel(e->m_nDestinationUin, e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
     icqFileTransferCancel(e->m_nDestinationUin, e->m_nSequence);
+  else if (e->m_nSubCommand == ICQ_CMDxSUB_KEYxREQUEST)
+    icqKeyRequestCancel(e->m_nDestinationUin, e->m_nSequence);
 
   ProcessDoneEvent(e);
 }

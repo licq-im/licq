@@ -34,6 +34,7 @@ extern int h_errno;
 #include "licq_user.h"
 #include "support.h"
 #include "licq_icqd.h"
+#include "licq_openssl.h"
 
 
 #ifdef USE_SOCKS5
@@ -148,10 +149,6 @@ char *INetSocket::RemoteIpStr(char *buf)
   return (inet_ntoa_r(*(struct in_addr *)&m_sRemoteAddr.sin_addr.s_addr, buf));
 }
 
-//-----INetSocket::OpenSocket---------------------------------------------------
-void INetSocket::OpenSocket()
-{
-}
 
 
 //-----INetSocket::Error------------------------------------------------------
@@ -184,6 +181,7 @@ INetSocket::INetSocket(unsigned long _nOwner)
   m_nDescriptor = -1;
   m_nOwner = _nOwner;
   m_nVersion = 0;
+  m_pDHKey = NULL;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
 
@@ -249,7 +247,7 @@ bool INetSocket::SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemote
 //-----INetSocket::ResetSocket-------------------------------------------------
 void INetSocket::ResetSocket()
 {
-  CloseSocket();
+  CloseConnection();
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
 }
@@ -359,16 +357,15 @@ bool INetSocket::OpenConnection()
   }
 #endif
 
-  OpenSocket();
   m_sRemoteAddr.sin_family = AF_INET;
 
-  // if connect fails then call CloseSocket to clean up before returning
+  // if connect fails then call CloseConnection to clean up before returning
   socklen_t sizeofSockaddr = sizeof(struct sockaddr);
   if (connect(m_nDescriptor, (struct sockaddr *)&m_sRemoteAddr, sizeofSockaddr) < 0)
   {
     // errno has been set
     h_errno = -1;
-    CloseSocket();
+    CloseConnection();
     return(false);
   }
 
@@ -402,7 +399,6 @@ bool INetSocket::StartServer(unsigned int _nPort)
   }
 #endif
 
-  OpenSocket();
   memset(&m_sLocalAddr.sin_zero, 0, 8);
   m_sLocalAddr.sin_family = AF_INET;
   m_sLocalAddr.sin_port = htons(_nPort);
@@ -428,15 +424,32 @@ bool INetSocket::SetRemoteAddr(char *_szRemoteName, unsigned short _nRemotePort)
 }
 
 
-//-----INetSocket::CloseSocket--------------------------------------------------
-void INetSocket::CloseSocket()
+//-----INetSocket::CloseConnection-------------------------------------------
+void INetSocket::CloseConnection()
 {
   m_xRecvBuffer.Clear();
+  ClearDHKey();
   if (m_nDescriptor != -1)
   {
     close (m_nDescriptor);
     m_nDescriptor = -1;
   }
+}
+
+void INetSocket::ClearDHKey()
+{
+#ifdef USE_OPENSSL
+  delete m_pDHKey;
+#endif
+  m_pDHKey = NULL;
+}
+
+CDHKey *INetSocket::CreateDHKey()
+{
+#ifdef USE_OPENSSL
+  m_pDHKey = new CDHKey;
+#endif
+  return m_pDHKey;
 }
 
 
@@ -454,7 +467,6 @@ bool INetSocket::SendRaw(CBuffer *b)
     {
       // errno has been set
       h_errno = -1;
-      //CloseSocket();
       return(false);
     }
     nTotalBytesSent += nBytesSent;
@@ -478,7 +490,6 @@ bool INetSocket::RecvRaw()
   {
     // errno has been set
     h_errno = -1;
-    //CloseSocket();
     return (false);
   }
   m_xRecvBuffer.Create(nBytesReceived);
@@ -503,7 +514,6 @@ void TCPSocket::RecvConnection(TCPSocket &newSocket)
 {
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
   newSocket.m_nDescriptor = accept(m_nDescriptor, (struct sockaddr *)&newSocket.m_sRemoteAddr, &sizeofSockaddr);
-  newSocket.OpenSocket();
   newSocket.SetAddrsFromSocket(ADDR_LOCAL | ADDR_REMOTE);
 }
 
@@ -519,10 +529,10 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   m_sRemoteAddr = from.m_sRemoteAddr;
   m_nOwner = from.m_nOwner;
   m_nVersion = from.m_nVersion;
+  m_pDHKey = from.m_pDHKey;
   ClearRecvBuffer();
   from.m_nDescriptor = -1;
-  from.CloseSocket();
-  OpenSocket();
+  from.CloseConnection();
 }
 
 
@@ -533,9 +543,18 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
  * buffer is full.  This should not be a problem unless we are sending a huge
  * packet.
  *---------------------------------------------------------------------------*/
-bool TCPSocket::SendPacket(CBuffer *b)
+bool TCPSocket::SendPacket(CBuffer *b_in)
 {
   char *pcSize = new char[2];
+  CBuffer *b = b_in;
+
+#ifdef USE_OPENSSL
+  if (m_pDHKey != NULL && m_pDHKey->CryptoStatus() == CRYPTO_FULL)
+  {
+    b = m_pDHKey->DesXEncrypt(b_in);
+  }
+#endif
+
   pcSize[0] = (b->getDataSize()) & 0xFF;
   pcSize[1] = (b->getDataSize() >> 8) & 0xFF;
 
@@ -550,8 +569,8 @@ bool TCPSocket::SendPacket(CBuffer *b)
     {
       delete[] pcSize;
       // errno has been set
+      if (b != b_in) delete b;
       h_errno = -1;
-      //CloseSocket();
       return (false);
     }
     nTotalBytesSent += nBytesSent;
@@ -568,15 +587,16 @@ bool TCPSocket::SendPacket(CBuffer *b)
     {
       // errno has been set
       h_errno = -1;
-      //CloseSocket();
+      if (b != b_in) delete b;
       return(false);
     }
     nTotalBytesSent += nBytesSent;
   }
 
   // Print the packet
-  DumpPacket(b, D_SENDER);
+  DumpPacket(b_in, D_SENDER);
 
+  if (b != b_in) delete b;
   return (true);
 }
 
@@ -617,7 +637,6 @@ bool TCPSocket::RecvPacket()
         // errno has been set
         h_errno = -1;
         delete[] buffer;
-        //CloseSocket();
         return (false);
       }
       nTwoBytes += nBytesReceived;
@@ -637,14 +656,23 @@ bool TCPSocket::RecvPacket()
     // errno has been set
     h_errno = -1;
     if (errno == EAGAIN || errno == EWOULDBLOCK) return (true);
-    //CloseSocket();
     return (false);
   }
   m_xRecvBuffer.incDataPosWrite(nBytesReceived);
 
   // Print the packet if it's full
-  if (m_xRecvBuffer.Full()) DumpPacket(&m_xRecvBuffer, D_RECEIVER);
-
+  if (m_xRecvBuffer.Full())
+  {
+#ifdef USE_OPENSSL
+    if (m_pDHKey != NULL && m_pDHKey->CryptoStatus() == CRYPTO_FULL)
+    {
+      CBuffer *buf = m_pDHKey->DesXDecrypt(&m_xRecvBuffer);
+      m_xRecvBuffer.Copy(buf);
+      delete buf;
+    }
+#endif
+    DumpPacket(&m_xRecvBuffer, D_RECEIVER);
+  }
   return (true);
 }
 

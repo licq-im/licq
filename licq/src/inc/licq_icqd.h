@@ -163,6 +163,8 @@ public:
   void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
      unsigned long nSequence);
+  CICQEventTag *icqSendKeyRequest(unsigned long nUin);
+  void icqKeyRequestCancel(unsigned long nUin, unsigned long nSequence);
 
   // UDP (server) functions
   void icqRegister(const char *_szPasswd);
@@ -228,6 +230,7 @@ public:
   void UpdateAllUsersInGroup(GroupType, unsigned short);
   void SwitchServer();
   void CancelEvent(CICQEventTag *);
+  void CancelEvent(ICQEvent *);
   bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
      unsigned short nPort);
   bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
@@ -258,8 +261,9 @@ public:
   unsigned short TCPPortsLow() { return m_nTCPPortsLow; }
   unsigned short TCPPortsHigh() { return m_nTCPPortsHigh; }
   void SetTCPPorts(unsigned short p, unsigned short r);
-  bool SocksEnabled();
+  static bool SocksEnabled();
   const char *SocksServer()  {  return getenv("SOCKS5_SERVER"); }
+  static bool CryptoEnabled();
 
   const char *Terminal();
   void SetTerminal(const char *s);

@@ -1561,6 +1561,7 @@ void CPacketTcp::PostBuffer_v6()
   buffer->PackUnsignedShort(INT_VERSION);
 }
 
+
 //-----Message------------------------------------------------------------------
 CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
    ICQUser *_cUser)
@@ -1687,6 +1688,23 @@ CPT_FileTransfer::CPT_FileTransfer(const char *_szFilename,
 }
 
 
+//-----Key------------------------------------------------------------------
+CPT_KeyRequest::CPT_KeyRequest(char *szKey, ICQUser *_cUser, CDHKey *key)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_KEYxREQUEST,
+       szKey, true, ICQ_TCPxMSG_NORMAL, _cUser)
+{
+  m_pDHKey = key;
+
+  InitBuffer();
+  if (m_nVersion == 6)
+  {
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00FFFFFF);
+  }
+  PostBuffer();
+}
+
+
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
@@ -1698,32 +1716,34 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
   free(m_szMessage);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 
-  if (pUser->CustomAutoResponse()[0] != '\0')
+  if(((pUser->StatusToUser() != ICQ_STATUS_OFFLINE &&
+       pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
+      pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
   {
-    char *cus = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
-    char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
-    pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN);
-    pUser->usprintf(cus, pUser->CustomAutoResponse(), USPRINTF_NTORN);
-    m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
-    sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
-    free(cus);
-    free(def);
+    if (pUser->CustomAutoResponse()[0] != '\0')
+    {
+      char *cus = (char *)malloc(strlen(pUser->CustomAutoResponse()) + 512);
+      char *def = (char *)malloc(strlen(o->AutoResponse()) + 512);
+      pUser->usprintf(def, o->AutoResponse(), USPRINTF_NTORN);
+      pUser->usprintf(cus, pUser->CustomAutoResponse(), USPRINTF_NTORN);
+      m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
+      sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
+      free(cus);
+      free(def);
+    }
+    else
+    {
+        m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
+        pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
+    }
   }
   else
   {
-    if(((pUser->StatusToUser() != ICQ_STATUS_OFFLINE &&
-         pUser->StatusToUser() != ICQ_STATUS_ONLINE)  ?
-        pUser->StatusToUser() : o->Status()) != ICQ_STATUS_ONLINE)
-    {
-      m_szMessage = (char *)malloc(strlen(o->AutoResponse()) + 512);
-      pUser->usprintf(m_szMessage, o->AutoResponse(), USPRINTF_NTORN);
-    }
-    else
-      // don't sent out AutoResponse if we're online
-      // it could contain stuff the other site shouldn't read
-      // also some clients always pop up the auto response
-      // window when they receive one, annoying for them..
-      m_szMessage = strdup("");
+    // don't sent out AutoResponse if we're online
+    // it could contain stuff the other site shouldn't read
+    // also some clients always pop up the auto response
+    // window when they receive one, annoying for them..
+    m_szMessage = strdup("");
   }
 
   gUserManager.DropOwner();
@@ -1746,6 +1766,27 @@ CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned long nSequence,
   }
   PostBuffer();
 }
+
+
+//-----AckKey---------------------------------------------------------------
+CPT_AckKey::CPT_AckKey(unsigned long nSequence,
+   const char *szKey, ICQUser *pUser)
+  : CPT_Ack(ICQ_CMDxSUB_KEYxREQUEST, nSequence, true, true, pUser)
+{
+  m_nSize -= strlen(m_szMessage);
+  free(m_szMessage);
+  m_szMessage = strdup(szKey);
+  m_nSize += strlen(m_szMessage);
+
+  InitBuffer();
+  if (m_nVersion == 6)
+  {
+    buffer->PackUnsignedLong(0x00000000);
+    buffer->PackUnsignedLong(0x00000000);
+  }
+  PostBuffer();
+}
+
 
 
 #if 0

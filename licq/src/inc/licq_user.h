@@ -16,6 +16,10 @@
 #include "licq_file.h"
 #include "licq_icq.h"
 
+
+class TCPSocket;
+
+
 /*---------------------------------------------------------------------------
  * FOR_EACH_USER
  *
@@ -350,8 +354,8 @@ public:
   void SetIp(unsigned long nIp) { SetIpPort(nIp, Port()); }
   // Don't call these:
   int SocketDesc()          { return m_nSocketDesc; }
-  void ClearSocketDesc()    { SetSocketDesc(-1, 0, 0); }
-  void SetSocketDesc(int s, unsigned short p, unsigned short v)  { m_nSocketDesc = s; m_nLocalPort = p; m_nConnectionVersion = v; }
+  void ClearSocketDesc();
+  void SetSocketDesc(TCPSocket *);
 
   // Events functions
   static unsigned short getNumUserEvents();
@@ -361,6 +365,9 @@ public:
   // Last event functions
   time_t Touched()       {  return m_nTouched; }
   void Touch()           {  m_nTouched = time(NULL); }
+
+  // Crypto
+  bool Secure() { return m_bSecure; }
 
   virtual bool User()  { return true; }
   void Lock(unsigned short);
@@ -383,6 +390,7 @@ protected:
   bool OfflineOnDisconnect() { return m_bOfflineOnDisconnect; }
   bool ConnectionInProgress() { return m_bConnectionInProgress; }
   void SetConnectionInProgress(bool c)  { m_bConnectionInProgress = c; }
+  void SetSecure(bool s) { m_bSecure = s; }
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
@@ -404,7 +412,8 @@ protected:
        m_bEnableSave,
        m_bShowAwayMsg,
        m_bOfflineOnDisconnect,
-       m_bConnectionInProgress;
+       m_bConnectionInProgress,
+       m_bSecure;
   unsigned short m_nStatusToUser, m_nSendLevel;
   unsigned short m_nAutoAccept;
 

@@ -14,6 +14,7 @@ const unsigned long E_DIRECT        = 0x00010000;
 const unsigned long E_MULTIxREC     = 0x00020000;
 const unsigned long E_URGENT        = 0x00040000;
 const unsigned long E_CANCELLED     = 0x00080000;
+const unsigned long E_ENCRYPTED     = 0x00100000;
 const unsigned long E_UNKNOWN       = 0x80000000;
 
 class ICQUser;
@@ -43,6 +44,7 @@ public:
    bool IsUrgent()    { return m_nFlags & E_URGENT; }
    bool IsCancelled() { return m_nFlags & E_CANCELLED; }
    bool IsLicq()  { return LicqVersion() != 0; };
+   bool IsEncrypted()  { return m_nFlags & E_ENCRYPTED; };
    unsigned short LicqVersion()  { return m_nFlags & E_LICQxVER; }
    direction Direction()  {  return m_eDir; }
 

@@ -16,6 +16,7 @@
 
 #include "licq_buffer.h"
 #include "licq_constants.h"
+#include "licq_openssl.h"
 
 char *inet_ntoa_r(struct in_addr in, char *buf);
 char *ip_ntoa(unsigned long in, char *buf);
@@ -34,6 +35,11 @@ public:
   void SetOwner(unsigned long _nOwner)  { m_nOwner = _nOwner; }
   unsigned long Version()     { return (m_nVersion); }
   void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
+
+  CDHKey *DHKey() { return m_pDHKey; }
+  CDHKey *CreateDHKey();
+  void ClearDHKey();
+  void SetDHKey(CDHKey *p) { m_pDHKey = p; }
 
   int Error();
   char *ErrorStr(char *, int);
@@ -54,7 +60,7 @@ public:
   CBuffer &RecvBuffer()   { return m_xRecvBuffer; };
 
   bool OpenConnection();
-  void CloseConnection()  {  CloseSocket(); }
+  void CloseConnection();
   bool StartServer(unsigned int _nPort);
   bool SendRaw(CBuffer *b);
   bool RecvRaw();
@@ -69,8 +75,6 @@ public:
   static unsigned long GetIpByName(const char *_szHostName);
 
 protected:
-  void OpenSocket();
-  void CloseSocket();
   const char *GetIDStr()  { return (m_szID); }
   bool SetAddrsFromSocket(unsigned short _nFlags);
   void DumpPacket(CBuffer *b, direction d);
@@ -78,6 +82,7 @@ protected:
   int m_nDescriptor;
   struct sockaddr_in m_sRemoteAddr, m_sLocalAddr;
   CBuffer m_xRecvBuffer;
+  CDHKey *m_pDHKey;
   char m_szID[4];
   int m_nSockType;
   unsigned long m_nOwner;
