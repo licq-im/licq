@@ -197,7 +197,7 @@ void CUserManager::RemoveUser(unsigned long _nUin)
   if (iter == m_vpcUsers.end())
     gLog.Warn("%sInteral Error: CUserManager::RemoveUser():\n"
               "%sUser \"%s\" (%ld) not found in vector.\n",
-              L_WARNxSTR, L_BLANKxSTR, u->getAlias(), u->getUin());
+              L_WARNxSTR, L_BLANKxSTR, u->GetAlias(), u->getUin());
   else
     m_vpcUsers.erase(iter);
   DropUser(u);
@@ -405,7 +405,7 @@ void CUserManager::Reorder(ICQUser *_pcUser, bool _bOnList)
     {
       gLog.Warn("%sInternal Error: CUserManager::Reorder():\n"
                 "%sGiven user \"%s\" (%ld) not found.\n", L_WARNxSTR,
-                L_BLANKxSTR, _pcUser->getAlias(), _pcUser->getUin());
+                L_BLANKxSTR, _pcUser->GetAlias(), _pcUser->getUin());
       UnlockUserList();
       return;
     }
@@ -808,7 +808,7 @@ bool ICQUser::LoadData(void)
   setCountry(nTemp);
   m_fConf.ReadNum("Timezone", nTemp, 0x00);
   setTimezone(nTemp);
-  m_fConf.ReadNum("Zipcode", m_nZipcode, 0);
+  m_fConf.ReadNum("Zipcode", m_nZipCode, 0);
   m_fConf.ReadStr("PhoneNumber", sTemp, "");
   setPhoneNumber(sTemp);
   m_fConf.ReadNum("Age", nTemp, 0);
@@ -857,16 +857,48 @@ void ICQUser::RemoveFiles(void)
 
 void ICQUser::Init(unsigned long _nUin)
 {
-  m_sAlias = NULL;
-  m_sFirstName = NULL;
-  m_sLastName = NULL;
-  m_sEmail = NULL;
   m_szAutoResponse = NULL;
-  m_sCity = NULL;
-  m_sState = NULL;
-  m_sPhoneNumber = NULL;
-  m_sHomepage = NULL;
-  m_sAbout = NULL;
+  m_szAbout = NULL;
+
+  // General Info
+  m_szAlias = NULL;
+  m_szFirstName = NULL;
+  m_szLastName = NULL;
+  m_szEmail1 = NULL;
+  m_szEmail2 = NULL;
+  m_szCity = NULL;
+  m_szState = NULL;
+  m_szPhoneNumber = NULL;
+  m_szFaxNumber = NULL;
+  m_szAddress = NULL;
+  m_szCellularNumber = NULL;
+  m_nZipCode = 0;
+  m_nCountryCode = COUNTRY_UNSPECIFIED;
+  m_nTimezone = 0;
+  m_bAuthorization = false;
+  m_bHideEmail = false;
+
+  // More Info
+  m_nAge = 0xffff;
+  m_nGender = 0;
+  m_szHomepage = NULL;
+  m_nBirthYear = 0;
+  m_nBirthMonth = 0;
+  m_nBirthDay = 0;
+  m_nLanguage1 = 0;
+  m_nLanguage2 = 0;
+  m_nLanguage3 = 0;
+
+  // Work Info
+  m_szCompanyCity = NULL;
+  m_szCompanyState = NULL;
+  m_szCompanyPhoneNumber = NULL;
+  m_szCompanyFaxNumber = NULL;
+  m_szComparyAddress = NULL;
+  m_szCompanyName = NULL;
+  m_szCompanyDepartment = NULL;
+  m_szCompanyPosition = NULL;
+  m_szCompanyHomepage = NULL;
 
   setUin(_nUin);
   setStatus(ICQ_STATUS_OFFLINE);
@@ -921,18 +953,6 @@ char *ICQUser::getCountry(char *buf)
   else
     strcpy(buf, country->szName);
   return (buf);
-}
-
-
-char *ICQUser::getSex(char *buf)
-{
-  if (m_nSex == 1)
-     strcpy(buf, "Female");
-  else if (m_nSex == 2)
-     strcpy(buf, "Male");
-  else
-     strcpy(buf, "Unknown");
-  return(buf);
 }
 
 
@@ -1011,10 +1031,10 @@ void ICQUser::setAlias(const char *s)
   {
     char sz[12];
     sprintf(sz, "%ld", getUin());
-    SetString(&m_sAlias, sz);
+    SetString(&m_szAlias, sz);
   }
   else
-    SetString(&m_sAlias, s);
+    SetString(&m_szAlias, s);
   saveBasicInfo();
 }
 
@@ -1109,12 +1129,12 @@ void ICQUser::StatusStrShort(unsigned short n, bool b, char *sz)
 //-----ICQUser::getBasicInfo----------------------------------------------------
 void ICQUser::getBasicInfo(struct UserBasicInfo &us)
 {
-   strcpy(us.alias, getAlias());
+   strcpy(us.alias, GetAlias());
    sprintf(us.uin, "%ld", getUin());
-   strcpy(us.firstname, getFirstName());
-   strcpy(us.lastname, getLastName());
+   strcpy(us.firstname, GetFirstName());
+   strcpy(us.lastname, GetLastName());
    sprintf(us.name, "%s %s", us.firstname, us.lastname);
-   strcpy(us.email, getEmail());
+   strcpy(us.email, GetEmail1());
    getStatusStr(us.status);
 
    // Track down the current ip and port
@@ -1169,19 +1189,30 @@ void ICQUser::getBasicInfo(struct UserBasicInfo &us)
 //-----ICQUser::getExtInfo---------------------------------------------------
 void ICQUser::getExtInfo(struct UserExtInfo &ud)
 {
-   strcpy(ud.city, getCity());
-   strcpy(ud.state, getState());
+   strcpy(ud.city, GetCity());
+   strcpy(ud.state, GetState());
    getCountry(ud.country);
-   sprintf(ud.timezone, "%d", getTimezone());
-   strcpy(ud.phone, getPhoneNumber());
-   if (getAge() == 0 || getAge() == 0xFFFF)
+   sprintf(ud.timezone, "%d", GetTimezone());
+   strcpy(ud.phone, GetPhoneNumber());
+   if (GetAge() == 0 || GetAge() == AGE_UNDEFINED)
       strcpy(ud.age, "N/A");
    else
-      sprintf(ud.age, "%d", getAge());
-   getSex(ud.sex);
-   strcpy(ud.homepage, getHomepage());
+      sprintf(ud.age, "%d", GetAge());
+   switch(GetGender())
+   {
+     case UNKNOWN:
+       strcpy(ud.sex, "Unknown");
+       break;
+     case FEMALE:
+       strcpy(ud.sex, "Female");
+       break;
+     case MALE:
+       strcpy(ud.sex, "Male");
+       break;
+   }
+   strcpy(ud.homepage, GetHomepage());
    strcpy(ud.about, getAbout());
-   sprintf(ud.zipcode, "%05ld", getZipcode());
+   sprintf(ud.zipcode, "%05ld", GetZipCode());
 }
 
 
@@ -1230,30 +1261,30 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
         sz = szTemp;
         break;
       case 'e':
-        sz = getEmail();
+        sz = GetEmail1();
         break;
       case 'n':
-        sprintf(szTemp, "%s %s", getFirstName(), getLastName());
+        sprintf(szTemp, "%s %s", GetFirstName(), GetLastName());
         sz = szTemp;
         break;
       case 'f':
-        sz = getFirstName();
+        sz = GetFirstName();
         break;
       case 'l':
-        sz = getLastName();
+        sz = GetLastName();
         break;
       case 'a':
-        sz = getAlias();
+        sz = GetAlias();
         break;
       case 'u':
         sprintf(szTemp, "%ld", getUin());
         sz = szTemp;
         break;
       case 'w':
-        sz = getHomepage();
+        sz = GetHomepage();
         break;
       case 'h':
-        sz = getPhoneNumber();
+        sz = GetPhoneNumber();
         break;
       case 'S':
         getStatusStrShort(szTemp);
@@ -1323,11 +1354,11 @@ void ICQUser::saveBasicInfo(void)
      return;
   }
   m_fConf.SetSection("user");
-  m_fConf.WriteStr("Alias", getAlias());
-  m_fConf.WriteStr("FirstName", getFirstName());
-  m_fConf.WriteStr("LastName", getLastName());
-  m_fConf.WriteStr("EMail", getEmail());
-  m_fConf.WriteBool("Authorization", getAuthorization());
+  m_fConf.WriteStr("Alias", GetAlias());
+  m_fConf.WriteStr("FirstName", GetFirstName());
+  m_fConf.WriteStr("LastName", GetLastName());
+  m_fConf.WriteStr("EMail", GetEmail1());
+  m_fConf.WriteBool("Authorization", GetAuthorization());
   m_fConf.WriteStr("History", m_fHistory.Description());
   if (!m_fConf.FlushFile())
   {
@@ -1382,15 +1413,15 @@ void ICQUser::saveExtInfo(void)
       return;
    }
    m_fConf.SetSection("user");
-   m_fConf.WriteStr("Homepage", getHomepage());
-   m_fConf.WriteStr("City", getCity());
-   m_fConf.WriteStr("State", getState());
-   m_fConf.WriteNum("Country", getCountryCode());
-   m_fConf.WriteNum("Timezone", getTimezone());
-   m_fConf.WriteNum("Zipcode", getZipcode());
-   m_fConf.WriteStr("PhoneNumber", getPhoneNumber());
-   m_fConf.WriteNum("Age", getAge());
-   m_fConf.WriteNum("Sex", getSexNum());
+   m_fConf.WriteStr("Homepage", GetHomepage());
+   m_fConf.WriteStr("City", GetCity());
+   m_fConf.WriteStr("State", GetState());
+   m_fConf.WriteNum("Country", GetCountryCode());
+   m_fConf.WriteNum("Timezone", (signed short)GetTimezone());
+   m_fConf.WriteNum("Zipcode", GetZipCode());
+   m_fConf.WriteStr("PhoneNumber", GetPhoneNumber());
+   m_fConf.WriteNum("Age", GetAge());
+   m_fConf.WriteNum("Sex", (unsigned short)GetGender());
    m_fConf.WriteStr("About", getAbout());
    if (!m_fConf.FlushFile())
    {
@@ -1531,9 +1562,6 @@ ICQOwner::ICQOwner(void)
 
 
   m_fConf.CloseFile();
-  struct timezone tz;
-  gettimeofday(NULL, &tz);
-  setTimezone(tz.tz_minuteswest / 60);
 
   if (strlen(Password()) > 8)
   {

@@ -55,6 +55,13 @@ typedef vector<unsigned long> UinList;
 
 
 //+++++STRUCTURES+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+typedef enum EGender
+{
+  UNKNOWN = 0,
+  FEMALE = 1,
+  MALE = 2
+} Gender;
+const unsigned short AGE_UNDEFINED = 0xffff;
 
 //-----UserBasicInfo------------------------------------------------------------
 struct UserBasicInfo
@@ -119,39 +126,64 @@ public:
   void saveExtInfo(void);
   bool isAway(void);
 
+  // General Info
+  char *GetAlias(void)                      {  return m_szAlias;  }
+  char *GetFirstName(void)                  {  return m_szFirstName;  }
+  char *GetLastName(void)                   {  return m_szLastName;  }
+  char *GetEmail1(void)                     {  return m_szEmail1;  }
+  char *GetEmail2(void)                     {  return m_szEmail2;  }
+  char *GetCity(void)                       {  return m_szCity;  }
+  char *GetState(void)                      {  return m_szState;  }
+  char *GetPhoneNumber(void)                {  return m_szPhoneNumber;  }
+  char *GetFaxNumber(void)                  {  return m_szFaxNumber;  }
+  char *GetAddress(void)                    {  return m_szAddress;  }
+  char *GetCellularNumber(void)             {  return m_szCellularNumber;  }
+  unsigned long GetZipCode(void)            {  return m_nZipCode;  }
+  unsigned short GetCountryCode(void)       {  return m_nCountryCode;  }
+  char GetTimezone(void)                    {  return m_nTimezone;  }
+  bool GetAuthorization(void)               {  return m_bAuthorization;  }
+  bool GetHideEmail(void)                   {  return m_bHideEmail;  }
+
+  // More Info
+  unsigned short GetAge(void)               {  return m_nAge;  }
+  char GetGender(void)                      {  return m_nGender;  }
+  char *GetHomepage(void)                   {  return m_szHomepage;  }
+  char GetBirthYear(void)                   {  return m_nBirthYear;  }
+  char GetBirthMonth(void)                  {  return m_nBirthMonth;  }
+  char GetBirthDay(void)                    {  return m_nBirthDay;  }
+  char GetLanguage1(void)                   {  return m_nLanguage1;  }
+  char GetLanguage2(void)                   {  return m_nLanguage2;  }
+  char GetLanguage3(void)                   {  return m_nLanguage3;  }
+
+  // Work Info
+  char *GetCompanyCity(void)                {  return m_szCompanyCity;  }
+  char *GetCompanyState(void)               {  return m_szCompanyState;  }
+  char *GetCompanyPhoneNumber(void)         {  return m_szCompanyPhoneNumber; }
+  char *GetCompanyFaxNumber(void)           {  return m_szCompanyFaxNumber;  }
+  char *GetComparyAddress(void)             {  return m_szComparyAddress;  }
+  char *GetCompanyName(void)                {  return m_szCompanyName;  }
+  char *GetCompanyDepartment(void)          {  return m_szCompanyDepartment;  }
+  char *GetCompanyPosition(void)            {  return m_szCompanyPosition;  }
+  char *GetCompanyHomepage(void)            {  return m_szCompanyHomepage;  }
+
   // Accessors
-  char *getAlias(void)         { return(m_sAlias); }
-  char *getLastName(void)      { return(m_sLastName); }
-  char *getFirstName(void)     { return(m_sFirstName); }
-  char *getEmail(void)         { return(m_sEmail); }
   char *AutoResponse(void)     { return(m_szAutoResponse); }
-  char *getCity(void)          { return(m_sCity); }
-  char *getState(void)         { return(m_sState); }
-  char *getPhoneNumber(void)   { return(m_sPhoneNumber); }
-  char *getAbout(void)         { return(m_sAbout); }
-  char *getHomepage(void)      { return(m_sHomepage); }
+  char *getCountry(char *);
+  char *getAbout(void)         { return(m_szAbout); }
   bool getIsNew(void)         { return(m_bIsNew); }
   bool getSendServer(void)    { return(m_bSendServer); }
   bool getEnableSave(void)    { return(m_bEnableSave); }
-  bool getAuthorization(void)  { return m_bAuthorization; }
   bool ShowAwayMsg(void)      { return m_bShowAwayMsg; }
   unsigned long getUin(void)           { return(m_nUin); }
   unsigned long getStatusFull(void)  { return m_nStatus; }
   unsigned long getStatusFlags(void)  { return m_nStatus & ICQ_STATUS_FxFLAGS; }
-  unsigned long getZipcode(void)           { return(m_nZipcode); }
-  unsigned short getCountryCode(void)  { return m_nCountryCode; }
-  unsigned short getAge(void)           { return(m_nAge); }
-  unsigned short getSexNum(void)        { return(m_nSex); }
   unsigned short getStatus(void);
-  signed short getTimezone(void)    { return m_nTimezone; }
   bool getStatusInvisible(void);
   bool getStatusWebPresence(void);
   bool getStatusHideIp(void);
   bool getStatusBirthday(void);
   bool getStatusOffline(void);
   unsigned long getSequence(bool = false);
-  char *getSex(char *);
-  char *getCountry(char *);
   void getStatusStr(char *);
   void getStatusStrShort(char *);
   static void StatusStr(unsigned short, bool, char *);
@@ -177,20 +209,20 @@ public:
   void setStatusFlag(unsigned long s) { setStatus(m_nStatus | s); }
   void clearStatusFlag(unsigned long s) { setStatus(m_nStatus & ~s); }
   void setAlias(const char *s);
-  void setEmail(const char *s)        { SetString(&m_sEmail, s); saveBasicInfo(); }
-  void setFirstName(const char *s)    { SetString(&m_sFirstName, s); saveBasicInfo(); }
-  void setLastName(const char *s)     { SetString(&m_sLastName, s); saveBasicInfo(); }
+  void setEmail(const char *s)        { SetString(&m_szEmail1, s); saveBasicInfo(); }
+  void setFirstName(const char *s)    { SetString(&m_szFirstName, s); saveBasicInfo(); }
+  void setLastName(const char *s)     { SetString(&m_szLastName, s); saveBasicInfo(); }
   void setAge(unsigned short s)       { m_nAge = s; saveExtInfo(); }
-  void setCity(const char *s)         { SetString(&m_sCity, s); saveExtInfo(); }
-  void setState(const char *s)        { SetString(&m_sState, s); saveExtInfo(); }
-  void setPhoneNumber(const char *s)  { SetString(&m_sPhoneNumber, s); saveExtInfo(); }
-  void setHomepage(const char *s)     { SetString(&m_sHomepage, s); saveExtInfo(); }
-  void setAbout(const char *s)        { SetString(&m_sAbout, s); saveExtInfo(); }
-  void setSex(unsigned short s)       { m_nSex = s; saveExtInfo(); }
+  void setCity(const char *s)         { SetString(&m_szCity, s); saveExtInfo(); }
+  void setState(const char *s)        { SetString(&m_szState, s); saveExtInfo(); }
+  void setPhoneNumber(const char *s)  { SetString(&m_szPhoneNumber, s); saveExtInfo(); }
+  void setHomepage(const char *s)     { SetString(&m_szHomepage, s); saveExtInfo(); }
+  void setAbout(const char *s)        { SetString(&m_szAbout, s); saveExtInfo(); }
+  void setSex(unsigned short s)       { m_nGender = s; saveExtInfo(); }
   void setCountry(unsigned short s)   { m_nCountryCode = s; saveExtInfo(); }
   void setTimezone(signed short s)    { m_nTimezone = s; saveExtInfo(); }
   void setShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
-  void setZipcode(unsigned long s)    { m_nZipcode = s; saveExtInfo(); }
+  void setZipcode(unsigned long s)    { m_nZipCode = s; saveExtInfo(); }
 
   void setStatus(unsigned long);
   void setHistoryFile(const char *);
@@ -250,22 +282,9 @@ protected:
   unsigned long m_nUin,
                 m_nStatus,
                 m_nSequence,
-                m_nZipcode,
                 m_nGroups[2];
-  unsigned short m_nSex,
-                 m_nCountryCode,
-                 m_nAge;
-  char *m_sAlias,
-       *m_sFirstName,
-       *m_sLastName,
-       *m_sEmail,
-       *m_szAutoResponse,
-       *m_sCity,
-       *m_sState,
-       *m_sPhoneNumber,
-       *m_sHomepage,
-       *m_sAbout;
-  signed short m_nTimezone;
+  char *m_szAutoResponse,
+       *m_szAbout;
   bool m_bOnline,
        m_bIsNew,
        m_bOnlineNotify,
@@ -273,8 +292,48 @@ protected:
        m_bVisibleList,
        m_bInvisibleList,
        m_bEnableSave,
-       m_bAuthorization,
        m_bShowAwayMsg;
+
+  // General Info
+  char *m_szAlias;
+  char *m_szFirstName;
+  char *m_szLastName;
+  char *m_szEmail1;
+  char *m_szEmail2;
+  char *m_szCity;
+  char *m_szState;
+  char *m_szPhoneNumber;
+  char *m_szFaxNumber;
+  char *m_szAddress;
+  char *m_szCellularNumber;
+  unsigned long m_nZipCode;
+  unsigned short m_nCountryCode;
+  char m_nTimezone;
+  bool m_bAuthorization;
+  bool m_bHideEmail;
+
+  // More Info
+  unsigned short m_nAge;
+  char m_nGender;
+  char *m_szHomepage;
+  char m_nBirthYear;
+  char m_nBirthMonth;
+  char m_nBirthDay;
+  char m_nLanguage1;
+  char m_nLanguage2;
+  char m_nLanguage3;
+
+  // Work Info
+  char *m_szCompanyCity;
+  char *m_szCompanyState;
+  char *m_szCompanyPhoneNumber;
+  char *m_szCompanyFaxNumber;
+  char *m_szComparyAddress;
+  char *m_szCompanyName;
+  char *m_szCompanyDepartment;
+  char *m_szCompanyPosition;
+  char *m_szCompanyHomepage;
+
   vector <class CUserEvent *> m_vcMessages;
 
   static unsigned short s_nNumUserEvents;

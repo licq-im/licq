@@ -433,6 +433,16 @@ ICQEvent *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWe
 }
 
 
+//-----icqRequestMetaInfo----------------------------------------------------
+ICQEvent *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
+{
+  CPU_Meta_RequestInfo *p = new CPU_Meta_RequestInfo(nUin);
+  gLog.Info("%sRequesting meta info for %ld (#%d)...\n", L_UDPxSTR, nUin,
+            p->getSequence());
+  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+}
+
+
 //-----icqAuthorize-------------------------------------------------------------
 void CICQDaemon::icqAuthorize(unsigned long uinToAuthorize)
 // authorize a user to add you to their contact list
@@ -521,7 +531,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
        gLog.Warn("%sUnknown user (%ld) is online.\n", L_WARNxSTR, nUin);
        break;
     }
-    gLog.Info("%s%s (%ld) went online.\n", L_UDPxSTR, u->getAlias(), nUin);
+    gLog.Info("%s%s (%ld) went online.\n", L_UDPxSTR, u->GetAlias(), nUin);
 
     // read in the relevant user information
     unsigned short userPort, newStatus;
@@ -561,7 +571,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
        gLog.Warn("%sUnknown user (%ld) has gone offline.\n", L_WARNxSTR, nUin);
        break;
     }
-    gLog.Info("%s%s (%ld) went offline.\n", L_UDPxSTR, u->getAlias(),
+    gLog.Info("%s%s (%ld) went offline.\n", L_UDPxSTR, u->GetAlias(),
               nUin);
     ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
     gUserManager.DropUser(u);
@@ -590,8 +600,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
        gLog.Warn("%sInformation on unknown user (%d).\n", L_WARNxSTR, nUin);
        break;
     }
-    gLog.Info("%sReceived information for %s (%ld):\n", L_UDPxSTR,
-              u->getAlias(), nUin);
+    gLog.Info("%sReceived information for %s (%ld).\n", L_UDPxSTR,
+              u->GetAlias(), nUin);
 
     // read in the four data fields; alias, first name, last name, and email address
     u->setEnableSave(false);
@@ -613,13 +623,13 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     u->setAuthorization(cAuthorization == 0 ? true : false);
 
     // translating string with Translation Table
-    gTranslator.ServerToClient(u->getAlias());
-    gTranslator.ServerToClient(u->getFirstName());
-    gTranslator.ServerToClient(u->getLastName());
+    gTranslator.ServerToClient(u->GetAlias());
+    gTranslator.ServerToClient(u->GetFirstName());
+    gTranslator.ServerToClient(u->GetLastName());
 
     // print out the user information
-    gLog.Info("%s%s (%s %s), %s.\n", L_SBLANKxSTR , u->getAlias(),
-             u->getFirstName(), u->getLastName(), u->getEmail());
+    /*gLog.Info("%s%s (%s %s), %s.\n", L_SBLANKxSTR , u->GetAlias(),
+             u->getFirstName(), u->getLastName(), u->getEmail());*/
 
     // save the user infomation
     u->setEnableSave(true);
@@ -630,7 +640,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
       ProcessDoneEvent(e);
     else
       gLog.Warn("%sResponse to unknown user info request for %s (%ld).\n",
-                L_WARNxSTR, u->getAlias(), nUin);
+                L_WARNxSTR, u->GetAlias(), nUin);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->getUin()));
     gUserManager.DropUser(u);
     break;
@@ -658,11 +668,11 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
        gLog.Warn("%sExtended information on unknown user (%d).\n", L_WARNxSTR, nUin);
        break;
     }
-    gLog.Info("%sReceived extended information for %s (%ld):\n", L_UDPxSTR,
-              u->getAlias(), nUin);
+    gLog.Info("%sReceived extended information for %s (%ld).\n", L_UDPxSTR,
+              u->GetAlias(), nUin);
 
     u->setEnableSave(false);
-    char sTemp[MAX_MESSAGE_SIZE], buf[32];
+    char sTemp[MAX_MESSAGE_SIZE];
 
     // City
     packet >> messageLen;
@@ -699,15 +709,15 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     u->setZipcode(zipcode);
 
     // translating string with Translation Table
-    gTranslator.ServerToClient(u->getCity());
-    gTranslator.ServerToClient(u->getState());
-    gTranslator.ServerToClient(u->getHomepage());
+    gTranslator.ServerToClient(u->GetCity());
+    gTranslator.ServerToClient(u->GetState());
+    gTranslator.ServerToClient(u->GetHomepage());
     gTranslator.ServerToClient(u->getAbout());
 
     // print out the user information
-    gLog.Info("%s%s, %s, %s. %d years old, %s. %s, %s, %s.\n", L_SBLANKxSTR,
+    /*gLog.Info("%s%s, %s, %s. %d years old, %s. %s, %s, %s.\n", L_SBLANKxSTR,
               u->getCity(), u->getState(), u->getCountry(sTemp), u->getAge(),
-              u->getSex(buf), u->getPhoneNumber(), u->getHomepage(), u->getAbout());
+              u->getSex(buf), u->getPhoneNumber(), u->getHomepage(), u->getAbout());*/
 
     // save the user infomation
     u->setEnableSave(true);
@@ -814,7 +824,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
        gLog.Warn("%sUnknown user (%d) changed status.\n", L_WARNxSTR, nUin);
        break;
     }
-    gLog.Info("%s%s (%ld) changed status.\n", L_UDPxSTR, u->getAlias(), nUin);
+    gLog.Info("%s%s (%ld) changed status.\n", L_UDPxSTR, u->GetAlias(), nUin);
 
     unsigned long nNewStatus;
     packet >> nNewStatus;
@@ -1140,7 +1150,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     }
     else
       gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
-                u->getAlias(), nUin);
+                u->GetAlias(), nUin);
 
     if (AddUserEvent(u, e))
     {
@@ -1186,7 +1196,7 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     }
     else
       gLog.Info("%sURL through server from %s (%ld).\n", L_SBLANKxSTR,
-                u->getAlias(), nUin);
+                u->GetAlias(), nUin);
 
     if (AddUserEvent(u, e))
     {

@@ -776,7 +776,9 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   EEventResult eResult = e->m_eResult;
 
   // Write the event to the history file if appropriate
-  if (e->m_xUserEvent != NULL && e->m_eResult == EVENT_ACKED)
+  if (e->m_xUserEvent != NULL &&
+      e->m_eResult == EVENT_ACKED &&
+      e->m_nSubResult != ICQ_TCPxACK_RETURN)
   {
     ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
     if (u != NULL)
@@ -832,6 +834,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     case EVENT_TIMEDOUT:
     case EVENT_FAILED:
     case EVENT_SUCCESS:
+    case EVENT_CANCELLED:
       PushPluginEvent(e);
       break;
     case EVENT_ACKED:  // push to extended event list
@@ -1015,6 +1018,7 @@ ICQEvent *CICQDaemon::PopPluginEvent(void)
 void CICQDaemon::CancelEvent(ICQEvent *e)
 {
   if (!DoneEvent(e, EVENT_CANCELLED) && !DoneExtendedEvent(e, EVENT_CANCELLED)) return;
+  ProcessDoneEvent(e);
 
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
     icqChatRequestCancel(e->m_nDestinationUin, e->m_nSequence);
