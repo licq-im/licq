@@ -451,7 +451,7 @@ bool INetSocket::RecvRaw(void)
     return (false);
   }
   m_xRecvBuffer.Create(nBytesReceived);
-  m_xRecvBuffer.add(buffer, nBytesReceived);
+  m_xRecvBuffer.Pack(buffer, nBytesReceived);
   delete[] buffer;
 
   // Print the packet
