@@ -66,7 +66,7 @@ CJoinChatDlg::CJoinChatDlg(QWidget *p, const char *n)
 
     originalChats.push_back(*iter);
   }
-
+  lstChats->setCurrentItem(0);
 }
 
 
