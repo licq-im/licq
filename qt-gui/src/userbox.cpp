@@ -689,10 +689,12 @@ void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
   CUserViewItem *i;
   QListView::viewportMouseMoveEvent(me);
 
+#if 0
   if (me->state() == LeftButton && (i = (CUserViewItem *)currentItem())) {
     QTextDrag *d = new QTextDrag(QString::number(i->ItemUin()), this);
     d->dragCopy();
   }
+#endif
 }
 
 
