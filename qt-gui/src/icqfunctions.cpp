@@ -1315,7 +1315,7 @@ void ICQFunctions::slot_readbtn2()
       CRefuseDlg *r = new CRefuseDlg(m_nUin, tr("File Transfer"), this);
       if (r->exec())
       {
-        server->icqChatRequestRefuse(m_nUin, (const char *)r->RefuseMessage(),
+        server->icqFileTransferRefuse(m_nUin, (const char *)r->RefuseMessage(),
            m_xCurrentReadEvent->Sequence());
       }
       delete r;
