@@ -1,4 +1,8 @@
 #HACK, FIXME in a more clean manner
+#
+#sorry.. another hack for russian people with non-koi8 charset...
+#will be removed after qt2.1 releases
+
 localedir = $(prefix)/share/licq/qt-gui/locale
 
 all-local:
@@ -34,7 +38,8 @@ install-data-local:
 	    echo " $(INSTALL_DATA) $$i $(localedir)/$$i"; \
 	    $(INSTALL_DATA) $$i $(localedir)/$$i; \
           fi \
-	done
+	done; \
+        cd $(localedir) && ln -sf ru_RU.KOI8-R.qm ru.qm
 
 template: 
 	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(top_srcdir)/po/template.po
