@@ -2,7 +2,12 @@
 #include "config.h"
 #endif
 
+#include <signal.h>
+#include <execinfo.h>
+#include <stdlib.h>
+
 #include "licq.h"
+#include "licq_sighandler.h"
 
 #ifdef USE_SOCKS5
 #define SOCKS
@@ -18,12 +23,20 @@ char SHARE_DIR[MAX_FILENAME_LEN];
 char LIB_DIR[MAX_FILENAME_LEN];
 unsigned short DEBUG_LEVEL;
 
+const char *LP_Name() { return "Licq"; }
+
 int main(int argc, char **argv)
 {
 
 #ifdef USE_SOCKS5
    SOCKSinit(argv[0]);
 #endif
+
+  //signal(SIGSEGV, &signal_handler_managerThread);
+  licq_segv_handler(&signal_handler_managerThread);
+
+  /*char *p = NULL;
+  *p = 4;*/
 
   CLicq licq;
   if (!licq.Init(argc, argv)) return 1;

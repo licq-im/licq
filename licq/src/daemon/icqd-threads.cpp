@@ -1,9 +1,11 @@
 #ifndef LICQTHREADS_H
 #define LICQTHREADS_H
 
+#include <signal.h>
 
 #include "pthread_rdwr.h"
 #include "time-fix.h"
+#include "licq_sighandler.h"
 
 #include "licq_icqd.h"
 #include "licq_log.h"
@@ -12,6 +14,7 @@
 
 #define DEBUG_THREADS(x)
 //#define DEBUG_THREADS(x) printf(x)
+
 
 
 /*------------------------------------------------------------------------------
@@ -25,6 +28,9 @@
 void *ProcessRunningEvent_tep(void *p)
 {
   pthread_detach(pthread_self());
+
+  //signal(SIGSEGV, &signal_handler_eventThread);
+  licq_segv_handler(&signal_handler_eventThread);
 
   DEBUG_THREADS("[ProcessRunningEvent_tep] Caught event.\n");
 
@@ -230,6 +236,9 @@ void *Ping_tep(void *p)
 {
   pthread_detach(pthread_self());
 
+  //signal(SIGSEGV, &signal_handler_pingThread);
+  licq_segv_handler(&signal_handler_pingThread);
+
   CICQDaemon *d = (CICQDaemon *)p;
   struct timeval tv;
 
@@ -270,6 +279,10 @@ void *MonitorSockets_tep(void *p)
   //pthread_detach(pthread_self());
 
   CICQDaemon *d = (CICQDaemon *)p;
+
+  // Set up signal handler
+  //signal(SIGSEGV, &signal_handler_monitorThread);
+  licq_segv_handler(&signal_handler_monitorThread);
 
   fd_set f;
   int nSocketsAvailable, nCurrentSocket, l;
