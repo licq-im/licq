@@ -57,6 +57,30 @@ protected:
 };
 
 
+class CEventHistory: public CUserEvent
+{
+public:
+  CEventHistory(const char *_sz, char _cDir, unsigned short _nSubCommand,
+                unsigned short _nCommand, time_t _tTime,
+                unsigned long _nFlags)
+    : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags)
+  {
+    m_szText = strdup(_sz);
+    m_szDescription = strdup("BLANK");
+    m_cDir = _cDir;
+  }
+
+  virtual CEventHistory *Copy(void)
+  {
+    return new CEventHistory(m_szText, m_cDir, m_nCommand, m_nSubCommand, m_tTime, m_nFlags);
+  }
+
+  char Dir(void)  { return m_cDir; }
+protected:
+  char m_cDir;
+};
+
+
 //-----CEventMsg----------------------------------------------------------------
 class CEventMsg : public CUserEvent
 {

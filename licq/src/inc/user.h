@@ -154,7 +154,7 @@ public:
   void getStatusStr(char *);
   static void StatusStr(unsigned short, bool, char *);
 
-  void GetHistory(char *&buf)  { m_fHistory.Load(buf); }
+  int GetHistory(HistoryList &h)  { return m_fHistory.Load(h); }
   void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
   unsigned long SortKey(void);
   static void SetSortKey(ESortKey);

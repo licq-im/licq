@@ -17,6 +17,8 @@ extern int errno;
 #include "history.h"
 #include "log.h"
 #include "constants.h"
+#include "file.h"
+#include "message.h"
 
 CUserHistory::CUserHistory(void)
 {
@@ -57,6 +59,64 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
 }
 
 
+bool CUserHistory::Load(HistoryList &lHistory)
+{
+  if (m_szFileName == NULL)
+  {
+    return false;
+  }
+
+  FILE *f = fopen(m_szFileName, "r");
+  if (f == NULL)
+  {
+    if (errno == ENOENT)
+    {
+      return true;
+    }
+    else
+    {
+      gLog.Warn("%sUnable to open history file (%s):\n%s%s.\n", L_WARNxSTR,
+              m_szFileName, L_BLANKxSTR, strerror(errno));
+      return false;
+    }
+  }
+
+  // Now read in a line at a time
+  char sz[MAX_LINE_LEN], *szResult, szMsg[4096];
+  unsigned long nFlags;
+  unsigned short nCommand, nSubCommand;
+  time_t tTime;
+  char cDir;
+  while(true)
+  {
+    while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] != '[');
+    if (szResult == NULL) break;
+    //"[ C | 0000 | 0000 | 0000 | 000... ]"
+    cDir = sz[2];
+    // Stick some \0's in to terminate strings
+    sz[10] = sz[17] = sz[24] = '\0';
+    // Read out the relevant values
+    nSubCommand = atoi(&sz[6]);
+    nCommand = atoi(&sz[13]);
+    nFlags = atoi(&sz[20]);
+    tTime = (time_t)atoi(&sz[27]);
+    // Now read in the message
+    szMsg[0] = '\0';
+    while ( (szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':')
+    {
+      strcat(szMsg, &sz[1]);
+    }
+    lHistory.push_back(new CEventHistory(szMsg, cDir, nSubCommand, nCommand,
+                                          tTime, nFlags));
+    if (szResult == NULL) break;
+  }
+
+  // Close the file
+  fclose(f);
+  return true;
+}
+
+/*
 void CUserHistory::Load(char *&hbuf)
 {
   if (m_szFileName == NULL)
@@ -90,7 +150,7 @@ void CUserHistory::Load(char *&hbuf)
   hbuf[buf.st_size] = '\0';
   close(fd);
 }
-
+*/
 
 void CUserHistory::Save(const char *buf)
 {
