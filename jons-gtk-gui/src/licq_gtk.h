@@ -31,7 +31,8 @@
 
 #include <sys/time.h>
 #include <gtk/gtk.h>
-#include <fstream.h>
+#include <fstream>
+#include <list>
 
 /* Program used constants */
 const int MAX_LENGTH_UIN = 10;
@@ -364,7 +365,7 @@ struct chat_window
 	CChatManager *chatman;
 	CChatUser *chat_user;
 	CChatUser *hold_cuser;
-	list<CChatUser *> ChatUsers;
+	std::list<CChatUser *> ChatUsers;
 
 	// Kick and tally window
 	struct kick_window *kw;
@@ -467,7 +468,7 @@ extern struct status_icon *online, *away, *na, *dnd, *occ, *offline, *ffc,
 	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
 	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon;
 extern int nToFlash;
-extern list<SFlash *> FlashList;
+extern std::list<SFlash *> FlashList;
 
 /* Globals in chat_window.cpp */
 extern GSList *rc_list;
@@ -485,7 +486,7 @@ extern GSList *kr_list;
 extern GtkWidget *main_window;
 extern CICQDaemon *icq_daemon;
 extern gint _pipe;
-extern CPluginLog *log;
+extern CPluginLog *logg;
 extern gint log_pipe;
 extern struct timeval timer;
 extern GSList *catcher;
@@ -708,7 +709,7 @@ extern void set_options(struct options_window *);
 extern void done_options(GtkWidget *, gpointer);
 extern void save_options();
 extern void load_options();
-extern void parse_line(char *, ifstream &);
+extern void parse_line(char *, std::ifstream &);
 extern void set_default_options();
 extern void show_on_color_dlg(GtkWidget *, gpointer);
 extern void color_dlg_ok(GtkWidget *, gpointer);

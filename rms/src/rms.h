@@ -7,6 +7,7 @@
 
 #include "licq_socket.h"
 
+#include <list>
 
 class CICQDaemon;
 class TCPSocket;
@@ -15,6 +16,8 @@ class CUserEvent;
 class CICQSignal;
 class ICQEvent;
 class CLogService_Plugin;
+
+using namespace std;
 
 const unsigned short MAX_LINE_LENGTH = 1024 * 1;
 const unsigned short MAX_TEXT_LENGTH = 1024 * 8;

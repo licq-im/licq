@@ -313,7 +313,7 @@ void close_request_chat(struct request_chat *rc)
 }
 
 void chat_accept_window(CEventChat *c_event, gulong uin,
-	bool auto_accept = false)
+	bool auto_accept)
 {
 	struct remote_chat_request *r_cr = g_new0(struct remote_chat_request, 1);
 

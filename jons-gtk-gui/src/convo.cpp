@@ -29,6 +29,8 @@
 #include <gtk/gtk.h>
 #include <gdk/gdkkeysyms.h>
 
+using namespace std;
+
 GSList *cnv;
 
 struct conversation *convo_new(ICQUser *u, gboolean events)
@@ -376,7 +378,7 @@ void convo_send(GtkWidget *widget, gpointer _c)
 	gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, c->prog_buf);
 
 	/* Take care of the etd buffer and add it to the slist */
-	c->etag->buf = c->prog_buf;
+	memcpy(c->etag->buf, c->prog_buf, 60);
 	catcher = g_slist_append(catcher, c->etag);
 }
 

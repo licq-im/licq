@@ -28,7 +28,7 @@
 
 GSList *fs_list;
 
-void file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept = false)
+void file_accept_window(ICQUser *user, CUserEvent *e, bool auto_accept)
 {
 	struct file_accept *fa = (struct file_accept *)g_new0(struct file_accept, 1);
 	fa->user = user;

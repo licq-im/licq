@@ -26,6 +26,8 @@
 
 #include <gtk/gtk.h>
 
+using namespace std;
+
 struct network_window *nw;
 gboolean nw_shown = FALSE;
 gboolean hidden = FALSE;
@@ -139,7 +141,7 @@ void log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
 	read(pipe, buf, 1);
 
 	/* Get the message */
-	for_user = log->NextLogMsg();
+	for_user = logg->NextLogMsg();
 
 	/* Insert the message */
 	gtk_text_freeze(GTK_TEXT(nw->text));
@@ -152,7 +154,7 @@ void log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
 			GTK_ADJUSTMENT(GTK_TEXT(nw->text)->vadj)->upper);
 
 	/* Get rid of this message */
-	log->ClearLog();
+	logg->ClearLog();
 }
 
 void log_window_save(GtkWidget *widget, gpointer data)

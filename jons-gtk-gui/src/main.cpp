@@ -31,7 +31,7 @@
 GtkWidget *main_window;
 CICQDaemon *icq_daemon;
 gint _pipe;
-CPluginLog *log;
+CPluginLog *logg;
 gint log_pipe;
 struct timeval timer;
 GSList *catcher;
@@ -116,10 +116,10 @@ int LP_Main(CICQDaemon *icqdaemon)
 	gdk_input_add( _Pipe, GDK_INPUT_READ, pipe_callback, (gpointer)0);
 
 	/* The log window */
-	log = new CPluginLog();
-	log_pipe = gdk_input_add(log->Pipe(), GDK_INPUT_READ,
+	logg = new CPluginLog();
+	log_pipe = gdk_input_add(logg->Pipe(), GDK_INPUT_READ,
 			         log_pipe_callback, (gpointer)0);
-	gLog.AddService(new CLogService_Plugin(log,
+	gLog.AddService(new CLogService_Plugin(logg,
 					L_INFO | L_WARN | L_ERROR | L_UNKNOWN));
 
 	/* Start the event loop */

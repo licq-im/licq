@@ -21,7 +21,9 @@
 #include "licq_gtk.h"
 
 #include <gtk/gtk.h>
-#include <fstream.h>
+#include <fstream>
+
+using namespace std;
 
 GtkWidget *vertical_box;
 GtkWidget *contact_list;
