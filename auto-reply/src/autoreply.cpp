@@ -17,7 +17,6 @@ extern int errno;
 #include "icqd.h"
 #include "file.h"
 #include "user.h"
-#include "eventdesc.h"
 #include "constants.h"
 
 extern "C" { const char *LP_Version(); }
