@@ -1,12 +1,5 @@
-#ifndef CHATMSG_H
-#define CHATMSG_H
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-//#include <qdialog.h>
-#include <qmlined.h>
+#ifndef CHATACCEPTDLG_H
+#define CHATACCEPTDLG_H
 
 class CICQDaemon;
 class MLEditWrap;

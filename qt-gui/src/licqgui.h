@@ -8,10 +8,15 @@
 #ifdef USE_KDE
 #include <kapp.h>
 #else
-#include <qapp.h>
+#include <qapplication.h>
 #endif
 
-#include "mainwin.h"
+//#include "mainwin.h"
+
+class CICQDaemon;
+class CMainWindow;
+class CSignalManager;
+class CQtLogWindow;
 
 #ifdef USE_KDE
 class CLicqGui : public KApplication

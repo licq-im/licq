@@ -1,11 +1,5 @@
-#ifndef FILEMSG_H
-#define FILEMSG_H
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <qmlined.h>
+#ifndef FILEACCEPTDLG_H
+#define FILEACCEPTDLG_H
 
 class CICQDaemon;
 class MLEditWrap;

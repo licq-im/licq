@@ -1,20 +1,24 @@
-#ifndef UTIL_H
-#define UTIL_H
+#ifndef UTILITYDLG_H
+#define UTILITYDLG_H
 
-#include <qscrollview.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
-#include <qpushbutton.h>
-#include <qmultilinedit.h>
-#include <qsocketnotifier.h>
-#include <qcheckbox.h>
+#include <stdio.h>
+
+#include <qwidget.h>
 
 #include <vector.h>
 
-#include "ewidgets.h"
-#include "utility.h"
+class QCheckBox;
+class QLineEdit;
+class QLabel;
+class QSocketNotifier;
+class QScrollView;
+class QGroupBox;
 
 class CICQDaemon;
+class CUtility;
+class CInfoField;
+
+class MLEditWrap;
 
 class CUtilityDlg : public QWidget
 {
@@ -37,7 +41,7 @@ protected:
   vector <QLineEdit *> edtFields;
   vector <QLabel *> lblFields;
   QPushButton *btnRun, *btnCancel;
-  QMultiLineEdit *mleCommand;
+  MLEditWrap *mleCommand;
   QSocketNotifier *snCommand;
   void resizeEvent (QResizeEvent *);
 protected slots:

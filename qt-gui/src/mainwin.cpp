@@ -1,10 +1,26 @@
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
-
 
 #ifdef USE_SCRNSAVER
 #include <X11/extensions/scrnsaver.h>
@@ -23,8 +39,11 @@
 #include <kwm.h>
 #include <kthemestyle.h>
 #else
-#include <qapp.h>
+#include <qapplication.h>
 #endif
+
+#include <qimage.h>
+#include <qwindowsstyle.h>
 
 #include "mainwin.h"
 #include "icq-defines.h"
@@ -256,7 +275,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   else
     strcpy(szSkin, skinName);
 
-  winstyle = new QWindowsStyle;
+  style = new QWindowsStyle;
   awayMsgDlg = new AwayMsgDlg;
   optionsDlg = NULL;
   registerUserDlg = NULL;
@@ -440,7 +459,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
                                  new QPixmap(skin->btnSys.pixmapUpNoFocus),
                                  new QPixmap(skin->btnSys.pixmapDown),
                                  this);
-        btnSystem->setStyle(winstyle);
+        btnSystem->setStyle(style);
      }
      connect(btnSystem, SIGNAL(clicked()), this, SLOT(popupSystemMenu()));
      btnSystem->setNamedFgColor(skin->btnSys.color.fg);
@@ -465,7 +484,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   if (lblMsg != NULL) delete lblMsg;
   lblMsg = new CELabel(skin->lblMsg.transparent, mnuUserGroups, this);
   if (skin->lblMsg.pixmap != NULL || skin->lblMsg.transparent)
-    lblMsg->setStyle(winstyle);
+    lblMsg->setStyle(style);
   lblMsg->setFrameStyle(skin->lblMsg.frameStyle);
   lblMsg->setIndent(skin->lblMsg.margin);
   lblMsg->setNamedFgColor(skin->lblMsg.color.fg);
@@ -484,7 +503,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   if (lblStatus != NULL) delete lblStatus;
   lblStatus = new CELabel(skin->lblStatus.transparent, mnuStatus, this);
   if (skin->lblStatus.pixmap != NULL || skin->lblStatus.transparent)
-    lblStatus->setStyle(winstyle);
+    lblStatus->setStyle(style);
   lblStatus->setFrameStyle(skin->lblStatus.frameStyle);
   lblStatus->setIndent(skin->lblStatus.margin);
   lblStatus->setNamedFgColor(skin->lblStatus.color.fg);

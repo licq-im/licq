@@ -1,12 +1,7 @@
-#ifndef MSGBOXLIST_H
-#define MSGBOXLIST_H
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#ifndef MESSAGEBOX_H
+#define MESSAGEBOX_H
 
 #include <qlistview.h>
-#include <qpopmenu.h>
 
 class CUserEvent;
 

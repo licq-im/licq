@@ -1,16 +1,17 @@
 #ifndef SKINBROWSER_H
 #define SKINBROWSER_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include <qwidget.h>
 
-#include <qpushbt.h>
-#include <qgroupbox.h>
-#include <qlistbox.h>
+//#include "ewidgets.h"
+//#include "mainwin.h"
 
-#include "ewidgets.h"
-#include "mainwin.h"
+class QListBox;
+class QGroupBox;
+class QPushButton;
+
+class CMainWindow;
+class CInfoField;
 
 class SkinBrowserDlg : public QWidget
 {

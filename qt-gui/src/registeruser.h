@@ -1,13 +1,10 @@
-#ifndef REGUSER_H
-#define REGUSER_H
+#ifndef REGISTERUSER_H
+#define REGISTERUSER_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include <qwidget.h>
 
-#include <qpushbt.h>
-#include <qchkbox.h>
-#include <qgroupbox.h>
+class QGroupBox;
+class QCheckBox;
 
 class CICQDaemon;
 class CInfoField;

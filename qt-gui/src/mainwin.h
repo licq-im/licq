@@ -5,6 +5,8 @@
 #include "config.h"
 #endif
 
+#include <vector.h>
+
 #ifdef USE_KDE
 #include <kmenubar.h>
 #else
@@ -12,20 +14,16 @@
 #endif
 
 #include <qwidget.h>
-#include <qcombo.h>
-#include <qpopmenu.h>
-#include <qlistbox.h>
-#include <qgrpbox.h>
 #include <qtimer.h>
-#include <qimage.h>
 #include <qbitmap.h>
-#include <qwindowsstyle.h>
-
-#include <vector.h>
 
 #define QTGUI_DIR "qt-gui/"
 
 #include "userbox.h"
+
+#include "user.h"
+
+class QStyle;
 
 class ICQFunctions;
 class CSignalManager;
@@ -97,7 +95,7 @@ protected:
   // GUI Data
   QString m_szCaption;
   QFont defaultFont;
-  QWindowsStyle *winstyle;
+  QStyle *style;
   unsigned short m_nAutoLogon;
   char *m_szIconSet;
   QPixmap *pmOnline, *pmOffline, *pmAway, *pmDnd, *pmOccupied, *pmNa,

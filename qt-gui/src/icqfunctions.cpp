@@ -7,13 +7,21 @@
 #else
 #include <qfiledialog.h>
 #endif
+
+#include <qbuttongroup.h>
+#include <qcheckbox.h>
+#include <qradiobutton.h>
+#include <qsplitter.h>
 #include <qtabbar.h>
+#include <qtextview.h>
 #include <qwidgetstack.h>
 #include <qstylesheet.h>
 
 #include "icqfunctions.h"
 #include "chatacceptdlg.h"
 #include "chatdlg.h"
+#include "ewidgets.h"
+#include "messagebox.h"
 #include "fileacceptdlg.h"
 #include "filedlg.h"
 #include "showawaymsgdlg.h"

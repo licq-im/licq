@@ -1,17 +1,14 @@
 #ifndef EDITGRP_H
 #define EDITGRP_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include <qwidget.h>
 
-#include <qpushbt.h>
-#include <qlabel.h>
-#include <qlined.h>
-#include <qgroupbox.h>
-#include <qlistbox.h>
+class QListBox;
+class QLineEdit;
+class QGroupBox;
+class QPushButton;
 
-#include "ewidgets.h"
+class CInfoField;
 
 class EditGrpDlg : public QWidget
 {

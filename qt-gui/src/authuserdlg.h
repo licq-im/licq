@@ -1,14 +1,11 @@
-#ifndef AUTHUSER_H
-#define AUTHUSER_H
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#ifndef AUTHUSERDLG_H
+#define AUTHUSERDLG_H
 
 #include <qdialog.h>
-#include <qpushbt.h>
-#include <qlabel.h>
-#include <qlined.h>
+
+class QPushButton;
+class QLabel;
+class QLineEdit;
 
 class CICQDaemon;
 

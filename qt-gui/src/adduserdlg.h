@@ -1,15 +1,12 @@
-#ifndef ADDUSER_H
-#define ADDUSER_H
-
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#ifndef ADDUSERDLG_H
+#define ADDUSERDLG_H
 
 #include <qdialog.h>
-#include <qpushbt.h>
-#include <qlabel.h>
-#include <qlined.h>
-#include <qchkbox.h>
+
+class QPushButton;
+class QLabel;
+class QLineEdit;
+class QCheckBox;
 
 class CICQDaemon;
 

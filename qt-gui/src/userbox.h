@@ -1,17 +1,11 @@
-#ifndef LISTBOXITEM_H
-#define LISTBOXITEM_H
+#ifndef USERBOX_H
+#define USERBOX_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+#include <vector.h>
 
 #include <qlistview.h>
-#include <qpopmenu.h>
-#include <vector.h>
-#include <qpixmap.h>
-#include <qfont.h>
 
-#include "user.h"
+class ICQUser;
 
 class CColumnInfo
 {
@@ -19,14 +13,13 @@ public:
   CColumnInfo(QString _sTitle, const char *_szFormat,
               unsigned short _nWidth, unsigned short _nAlign)
     { m_sTitle = _sTitle;
-      m_szFormat = strdup(_szFormat);
+      m_szFormat = _szFormat;
       m_nWidth = _nWidth;
       m_nAlign = _nAlign; }
-  ~CColumnInfo(void)
-    { free(m_szFormat); }
+  ~CColumnInfo() {};
 
   QString m_sTitle;
-  char *m_szFormat;
+  QCString m_szFormat;
   unsigned short m_nWidth, m_nAlign;
 };
 

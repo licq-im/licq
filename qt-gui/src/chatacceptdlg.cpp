@@ -3,7 +3,7 @@
 #endif
 
 #include <stdio.h>
-#include <qpushbt.h>
+#include <qpushbutton.h>
 #include <qlabel.h>
 #include "chatacceptdlg.h"
 #include "chatdlg.h"

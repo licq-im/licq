@@ -75,13 +75,14 @@ protected:
    QComboBox* cmbSARgroup, *cmbSARmsg;
    MLEditWrap* edtSARtext;
 
-   virtual void hide(void);
+   virtual void hide();
 
 protected:
-  void new_network_options();
-  void new_status_options();
-  void SetupOptions(void);
-  void ApplyOptions(void);
+  QWidget* new_network_options();
+  QWidget* new_status_options();
+  QWidget* new_column_options();
+  void SetupOptions();
+  void ApplyOptions();
 
 protected slots:
   void colEnable(bool);

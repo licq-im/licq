@@ -16,8 +16,13 @@
 */
 
 #include <qdir.h>
+#include <qgroupbox.h>
+#include <qlistbox.h>
+#include <qpushbutton.h>
 
 #include "skinbrowser.h"
+#include "skin.h"
+#include "mainwin.h"
 #include "constants.h"
 #include "log.h"
 

@@ -1,36 +1,30 @@
 #ifndef ICQFUNCTIONS_H
 #define ICQFUNCTIONS_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
-#include <qobject.h>
-#include <qlabel.h>
 #include <qtabwidget.h>
-#include <qlined.h>
-#include <qmlined.h>
-#include <qchkbox.h>
-#include <qpushbt.h>
-#include <qgrpbox.h>
-#include <qradiobutton.h>
-#include <qbuttongroup.h>
-#include <qvalidator.h>
-#include <qcombobox.h>
-#include <qsplitter.h>
-#include <qtextview.h>
 
 #include "userfcndlg.h"
-#include "messagebox.h"
-#include "ewidgets.h"
+//#include "ewidgets.h"
 #include "history.h"
+
+class QSplitter;
+class QCheckBox;
+class QGroupBox;
+class QLabel;
+class QLineEdit;
+class QPushButton;
+class QButtonGroup;
+class QRadioButton;
+class QTextView;
 
 class ICQUser;
 class CICQDaemon;
+class CEComboBox;
 class ICQEvent;
+class CInfoField;
 class CSignalManager;
 class MLEditWrap;
-
+class MsgView;
 
 //=====ICQFunctions=============================================================
 

@@ -3,7 +3,7 @@
 #endif
 
 #include <stdio.h>
-#include <qpushbt.h>
+#include <qpushbutton.h>
 
 #include "fileacceptdlg.h"
 #include "filedlg.h"

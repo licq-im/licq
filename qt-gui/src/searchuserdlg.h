@@ -1,5 +1,5 @@
-#ifndef SEARCHUSER_H
-#define SEARCHUSER_H
+#ifndef SEARCHUSERDLG_H
+#define SEARCHUSERDLG_H
 
 /*
     This program is free software; you can redistribute it and/or modify
@@ -21,23 +21,17 @@
 // Search user code base written by Alan Penner (apenner@andrew.cmu.edu)
 // modified by Graham Roff && Dirk A. Mueller <dmuell@gmx.net>
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <qdialog.h>
-#include <qpushbt.h>
-#include <qlabel.h>
-#include <qlined.h>
-#include <qchkbox.h>
 #include <qlistview.h>
 
-#include "sigman.h"
+class QTabWidget;
+class QCheckBox;
+class QLineEdit;
 
 class CICQDaemon;
+class CSignalManager;
+class ICQEvent;
 class ICQUser;
-
-class QTabWidget;
 
 class SearchUserView : public QListView
 {
@@ -67,18 +61,18 @@ public:
                   QWidget *parent = NULL, const char *name = NULL);
 
    ~SearchUserDlg();
-   
+
 private:
    bool uin_search;
-   
+
 protected:
-   
+
    CICQDaemon *server;
    CSignalManager *sigman;
    QPushButton *btnSearch, *btnCancel;
    QCheckBox* qcbAlertUser;
    QTabWidget* search_tab;
-   
+
    QLabel *lblEmail, *lblFirst, *lblLast, *lblNick, *lblUin;
    QLineEdit *edtEmail, *edtFirst, *edtLast, *edtNick, *edtUin;
    QWidget *alias_tab, *email_tab, *uin_tab;
