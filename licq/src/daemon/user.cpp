@@ -1396,12 +1396,13 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
         sz = StatusStr();
         break;
       case 'o':
-      {
-        //strftime(szTemp, 128, "%c", localtime(&t));
         strftime(szTemp, 128, "%b %d %R", localtime(&m_nLastOnline));
         sz = szTemp;
         break;
-      }
+      case 'm':
+        sprintf(szTemp, "%d", NewMessages());
+        sz = szTemp;
+        break;
       default:
         gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
                   L_WARNxSTR, _szFormat[i]);
