@@ -8,8 +8,7 @@
 #include <qlistview.h>
 #include <qpopmenu.h>
 
-#include "user.h"
-
+class CUserEvent;
 
 //=====UserViewItem================================================================================
 class MsgViewItem : public QListViewItem
@@ -22,7 +21,7 @@ public:
 
 protected:
    virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
-   
+
 friend class MsgView;
 };
 
@@ -35,7 +34,7 @@ public:
    CUserEvent *currentMsg(void);
    void markRead(short);
 protected:
-   void mouseReleaseEvent(QMouseEvent *e); 
+   void mouseReleaseEvent(QMouseEvent *e);
 };
 
 
