@@ -271,6 +271,7 @@ struct options_window
 {
 	GtkWidget *window;
 	GtkWidget *show_ignored;
+	GtkWidget *show_offline;
 	GtkWidget *enter_sends;
 };
 
@@ -374,6 +375,7 @@ extern GtkWidget *user_list_menu;
 /* Globals in option_window.cpp */
 extern gushort general_options;
 extern const gushort SHOW_IGN;
+extern const gushort SHOW_OFFLINE;
 extern const gushort ENTER_SENDS;
 
 /* Globals in register_user.cpp */
@@ -512,7 +514,11 @@ extern void more_ok_callback(GtkWidget *, struct more_window *);
 
 /* Functions in option_window.cpp */
 extern void menu_options_create();
-extern void general_option_toggle(GtkWidget *, gpointer);
+extern void set_options(struct options_window *);
+extern void done_options(GtkWidget *, gpointer);
+extern void save_options();
+extern void load_options();
+extern void set_default_options();
 
 
 /* Functions in pipe.cpp */

@@ -21,6 +21,7 @@
 #include "licq_gtk.h"
 
 #include <gtk/gtk.h>
+#include <fstream.h>
 
 GtkWidget *vertical_box;
 GtkWidget *contact_list;
@@ -35,7 +36,16 @@ GtkWidget* main_window_new(const gchar* window_title,
 			   gint width)
 {
 	/* Here's a good place to start the option defaults */
-	general_options &= ~SHOW_IGN;
+	const char *filename = g_strdup_printf("%s/licq_jons-gtk-gui.conf",
+					       BASE_DIR);
+	ifstream file(filename);
+
+	if(file)
+		load_options();
+	else
+		set_default_options();
+
+	file.close();
 
 	GtkWidget *scroll_bar;
 	GtkWidget *status_bar;
@@ -68,7 +78,7 @@ GtkWidget* main_window_new(const gchar* window_title,
 	/* Add a scroll bar for the contact list */
 	scroll_bar = gtk_scrolled_window_new(NULL, NULL);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll_bar),
-				       GTK_POLICY_AUTOMATIC,
+				       GTK_POLICY_NEVER,
 				       GTK_POLICY_AUTOMATIC);
 	gtk_widget_set_usize(scroll_bar, width - 77, height - 61);
 
