@@ -58,6 +58,7 @@ MsgView::MsgView (QWidget *parent, const char *name)
   addColumn(tr("Time Received"), 130);
   //setAllColumnsShowFocus (true);
   setVScrollBarMode(AlwaysOn);
+  setHScrollBarMode(AlwaysOff);
   setSorting(-1);
 
   header()->hide();
@@ -91,9 +92,9 @@ QSize MsgView::sizeHint() const
 
 void MsgView::resizeEvent(QResizeEvent *e)
 {
-  QListView::resizeEvent(e);
   QScrollBar *s = verticalScrollBar();
   setColumnWidth(1, width() - 155 - s->width());
+  QListView::resizeEvent(e);
 }
 
 #if 0
