@@ -557,33 +557,21 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
 
   ICQUser *u = NULL;
   UserList &l = m_vlTable[HashValue(_nUin)];
-  // If no users, this is bad
-  if (l.size() == 0)
-    u = NULL;
-/*
-  // if only one, assume it's the right one (saves having to lock the user
-  // to check)
-  else if (l.size() == 1)
-    u = *(l.begin());*/
 
-  // Otherwise, start iterating and comparing uins
-  else
+  unsigned long nUin;
+  UserListIter iter;
+  for (iter = l.begin(); iter != l.end(); iter++)
   {
-    unsigned long nUin;
-    UserListIter iter;
-    for (iter = l.begin(); iter != l.end(); iter++)
+    (*iter)->Lock(LOCK_R);
+    nUin = (*iter)->Uin();
+    (*iter)->Unlock();
+    if (nUin == _nUin)
     {
-      (*iter)->Lock(LOCK_R);
-      nUin = (*iter)->Uin();
-      (*iter)->Unlock();
-      if (nUin == _nUin)
-      {
-        u = (*iter);
-        break;
-      }
+      u = (*iter);
+      break;
     }
-    if (iter == l.end()) u =  NULL;
   }
+  if (iter == l.end()) u =  NULL;
 
   Unlock();
   return u;
