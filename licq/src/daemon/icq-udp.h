@@ -941,7 +941,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
       break;
     }
     ChangeUserStatus(u, nNewStatus);
-    gLog.Info("%s%s (%ld) changed status: %s.\n", L_WARNxSTR,
+    gLog.Info("%s%s (%ld) changed status: %s.\n", L_UDPxSTR,
               u->GetAlias(), nUin, u->StatusStr());
     gUserManager.DropUser(u);
     break;
@@ -961,7 +961,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
     gLog.Info("%sSearch found user:\n", L_UDPxSTR);
 
-    unsigned short i, aliasLen, firstNameLen, lastNameLen, emailLen;
     char auth;
     char szTemp[64];
 #if ICQ_VERSION == 2
@@ -969,22 +968,11 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
 #endif
     packet >> nUin;
     CSearchAck *s = new CSearchAck(nUin);
-    // Alias
-    packet >> aliasLen;
-    for (i = 0; i < aliasLen; i++) packet >> szTemp[i];
-    s->szAlias = strdup(szTemp);
-    // First name
-    packet >> firstNameLen;
-    for (i = 0; i < firstNameLen; i++) packet >> szTemp[i];
-    s->szFirstName = strdup(szTemp);
-    // Last name
-    packet >> lastNameLen;
-    for (i = 0; i < lastNameLen; i++) packet >> szTemp[i];
-    s->szLastName = strdup(szTemp);
-    // Email
-    packet >> emailLen;
-    for (i = 0; i < emailLen; i++) packet >> szTemp[i];
-    s->szEmail = strdup(szTemp);
+
+    s->szAlias = strdup(packet.UnpackString(szTemp));
+    s->szFirstName = strdup(packet.UnpackString(szTemp));
+    s->szLastName = strdup(packet.UnpackString(szTemp));
+    s->szEmail = strdup(packet.UnpackString(szTemp));
 
     // translating string with Translation Table
     gTranslator.ServerToClient(s->szAlias);
