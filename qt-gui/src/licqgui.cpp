@@ -135,7 +135,7 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
 
 CLicqGui::CLicqGui(int argc, char **argv, const char *_szSkin, const char *_szIcons, const char *_szStyle)
 #ifdef USE_KDE
-: KApplication(argc, argv, "KDE GUI")
+: KApplication(argc, argv, "KLicq")
 #else
 : QApplication(argc, argv)
 #endif
