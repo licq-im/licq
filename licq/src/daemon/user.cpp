@@ -837,6 +837,7 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("NewMessages", nNewMessages, 0);
   m_fConf.ReadNum("LastOnline", nLastOnline, 0);
   m_nLastOnline = nLastOnline;
+  m_fConf.ReadBool("AutoFileAccept", m_bAutoFileAccept, false);
   // extra stuff by Andypoo (andypoo@ihug.com.au)
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
@@ -961,6 +962,7 @@ void ICQUser::Init(unsigned long _nUin)
   Touch();
   m_nLastOnline = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
+  m_bAutoFileAccept = false;
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
 
@@ -974,6 +976,7 @@ void ICQUser::SetDefaults()
   sprintf(szTemp, "%ld", Uin());
   SetAlias(szTemp);
   SetHistoryFile("default");
+  m_bAutoFileAccept = false;
   SetGroups(GROUPS_SYSTEM, 0);
   SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
   SetAuthorization(false);
@@ -1452,6 +1455,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteBool("NewUser", NewUser());
    m_fConf.WriteNum("NewMessages", NewMessages());
    m_fConf.WriteNum("LastOnline", (unsigned long)LastOnline());
+   m_fConf.WriteBool("AutoFileAccept", m_bAutoFileAccept);
    m_fConf.WriteNum("AutoAccept", m_nAutoAccept);
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
