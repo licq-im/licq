@@ -69,14 +69,15 @@ AC_CHECK_LIB(xnet,inet_addr)
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, gethostbyname)
 
-AC_CHECK_LIB(c_r,pthread_create, [], [
-  AC_CHECK_LIB(pthread, pthread_create, [], [
-    AC_CHECK_LIB(thread, pthread_create, [], [
+AC_CHECK_LIB(c_r,pthread_cancel, [], [
+  AC_CHECK_LIB(pthread, pthread_cancel, [], [
+    AC_CHECK_LIB(thread, pthread_cancel, [], [
       cat <<EOF;
 
 Please install/update your POSIX threads (pthreads) library. Updates should be
 available from either your system vendor, or, for GNU/Linux systems, go to
-http://pauillac.inria.fr/~xleroy/linuxthreads/
+http://pauillac.inria.fr/~xleroy/linuxthreads/.  GNU Pth can also be used if
+configured with --enable-pthread.
 
 EOF
 exit 1
@@ -126,7 +127,7 @@ dlopen(NULL, RTLD_LAZY)
   ])
 ])
 
-AC_CHECK_FUNCS(alphasort inet_addr inet_aton mktime select scandir strdup strerror hstrerror)
+AC_CHECK_FUNCS(alphasort inet_addr inet_aton mktime select scandir strdup strerror hstrerror readdir_r)
 
 AC_CHECK_SOCKS5
 
