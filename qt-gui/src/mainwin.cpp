@@ -2914,6 +2914,8 @@ void CMainWindow::slot_ui_message(const char *szId, unsigned long nPPID)
 //-----slot_protocolPlugin------------------------------------------------------
 void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
 {
+  bool bMSN = (nPPID == MSN_PPID);
+   
   // We can now add the users of this protocol
   FOR_EACH_PROTO_USER_START(nPPID, LOCK_R)
   {
@@ -2954,25 +2956,47 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
   else
       mnuStatus->removeItemAt(m_nProtoNum+1); // Move separator
 
+  QPixmap *pOnline, *pAway, *pNA, *pOcc,*pDND, *pFFC, *pOffline, *pPrivate;
+  pOnline = pAway = pNA = pOcc = pDND = pFFC = pOffline = pPrivate = 0;
+  
+  if (bMSN)
+  {
+    pOnline = &pmMSNOnline;
+    pAway = &pmMSNAway;
+    pOcc = &pmMSNOccupied;
+    pOffline = &pmMSNOffline;
+    pPrivate = &pmMSNOffline;
+  }
+  
   char *pName = licqDaemon->ProtoPluginName(nPPID);
   mnuProtocolStatus[m_nProtoNum] = new QPopupMenu(NULL);
-    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOnline, tr("&Online"),
+  if (pOnline)
+    mnuProtocolStatus[m_nProtoNum]->insertItem(*pOnline, tr("&Online"),
       CHANGE_STATUS_ONLINE | (m_nProtoNum << 8));
-    mnuProtocolStatus[m_nProtoNum]->insertItem(pmAway, tr("&Away"),
+  if (pAway)
+    mnuProtocolStatus[m_nProtoNum]->insertItem(*pAway, tr("&Away"),
       CHANGE_STATUS_AWAY | (m_nProtoNum << 8));
-    mnuProtocolStatus[m_nProtoNum]->insertItem(pmNa, tr("&Not Available"),
+  if (pNA)
+    mnuProtocolStatus[m_nProtoNum]->insertItem(*pNA, tr("&Not Available"),
       CHANGE_STATUS_NA | (m_nProtoNum << 8));
-    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOccupied, tr("O&ccupied"),
+  if (pOcc)
+    mnuProtocolStatus[m_nProtoNum]->insertItem(*pOcc, tr("O&ccupied"),
       CHANGE_STATUS_OCC | (m_nProtoNum << 8));
-    mnuProtocolStatus[m_nProtoNum]->insertItem(pmDnd, tr("&Do Not Disturb"),
+  if (pDND)
+    mnuProtocolStatus[m_nProtoNum]->insertItem(*pDND, tr("&Do Not Disturb"),
       CHANGE_STATUS_DND | (m_nProtoNum << 8));
-    mnuProtocolStatus[m_nProtoNum]->insertItem(pmFFC, tr("Free for C&hat"),
+  if (pFFC)
+    mnuProtocolStatus[m_nProtoNum]->insertItem(*pFFC, tr("Free for C&hat"),
       CHANGE_STATUS_FFC | (m_nProtoNum << 8));
-    mnuProtocolStatus[m_nProtoNum]->insertItem(pmOffline, tr("O&ffline"),
+  if (pOffline)
+    mnuProtocolStatus[m_nProtoNum]->insertItem(*pOffline, tr("O&ffline"),
       CHANGE_STATUS_OFFLINE | (m_nProtoNum << 8));
+  if (pPrivate)
+  {
     mnuProtocolStatus[m_nProtoNum]->insertSeparator();
-    mnuProtocolStatus[m_nProtoNum]->insertItem(pmPrivate, tr("&Invisible"),
+    mnuProtocolStatus[m_nProtoNum]->insertItem(*pPrivate, tr("&Invisible"),
       CHANGE_STATUS_PRV | (m_nProtoNum << 8));
+  }
   mnuStatus->insertItem(pName ? pName : "(No Name)",
     mnuProtocolStatus[m_nProtoNum], -1, m_nProtoNum);
   mnuStatus->insertSeparator(m_nProtoNum + 1);
