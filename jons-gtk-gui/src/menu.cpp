@@ -78,7 +78,21 @@ void menu_create()
 	/* This is the main menu...  do not show it */
 	menu = gtk_menu_new();
 
-	/* User Functions sub menu here */
+	/* System functions sub menu here */
+	sub_menu = gtk_menu_new();
+	gtk_widget_show(sub_menu);
+
+	item = menu_new_item(menu, "System Functions", NULL);
+	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), sub_menu);
+	gtk_widget_show(item);
+
+	item = menu_new_item(sub_menu, "Edit Info",
+		GTK_SIGNAL_FUNC(list_info_user));
+
+	item = menu_new_item(sub_menu, "Set Random Group",
+		GTK_SIGNAL_FUNC(set_random_chat_window));
+
+	// User functions sub menu here
 	sub_menu = gtk_menu_new();
 	gtk_widget_show(sub_menu);
 
@@ -86,11 +100,6 @@ void menu_create()
 	gtk_menu_item_set_submenu(GTK_MENU_ITEM(item), sub_menu);
 	gtk_widget_show(item);
 
-	item = menu_new_item(sub_menu, "Edit Info",
-			     GTK_SIGNAL_FUNC(list_info_user));
-
-	menu_separator(sub_menu);
-	
 	item = menu_new_item(sub_menu, "Add User",
 			     GTK_SIGNAL_FUNC(menu_system_add_user));
  
@@ -100,7 +109,7 @@ void menu_create()
 	item = menu_new_item(sub_menu, "Search For User",
 			     GTK_SIGNAL_FUNC(search_user_window));
 
-	item = menu_new_item(sub_menu, "Search For Random User",
+	item = menu_new_item(sub_menu, "Random Chat",
 			     GTK_SIGNAL_FUNC(random_chat_search_window));
 
 	/* The rest of the menu options */

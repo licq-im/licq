@@ -313,9 +313,6 @@ void close_request_chat(struct request_chat *rc)
 
 void chat_accept_window(CEventChat *c_event, gulong uin)
 {
-	GtkWidget *label;
-	GtkWidget *accept;
-	GtkWidget *refuse;
 	struct remote_chat_request *r_cr = g_new0(struct remote_chat_request, 1);
 
 	/* Fill in the structure */
@@ -324,6 +321,10 @@ void chat_accept_window(CEventChat *c_event, gulong uin)
 
 	/* Make the dialog window */
 	r_cr->dialog = gtk_dialog_new();
+
+	GtkWidget *label;
+	GtkWidget *accept;
+	GtkWidget *refuse;
 	
 	/* Make the buttons */
 	accept = gtk_button_new_with_label("Accept");

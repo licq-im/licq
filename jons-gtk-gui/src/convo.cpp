@@ -386,17 +386,36 @@ void convo_recv(gulong uin)
 	}
 
 	else if(u_event->SubCommand() == ICQ_CMDxSUB_CHAT)
-	{
-		CEventChat *c_event = (CEventChat *)u_event;
+	{	
+		const gchar *chat_d = u_event->Text();
 
-		chat_accept_window(c_event, uin);
+		if(u_event->IsCancelled())
+		{
+			gtk_text_freeze(GTK_TEXT(c->text));
+			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, chat_d, -1);
+			gtk_text_thaw(GTK_TEXT(c->text));
+		}
+
+		else
+		{
+			const gchar *for_user_c =
+				g_strdup_printf("\n%s requests to chat with you!\n%s\n",
+				c->user->GetAlias(), chat_d);
+			gtk_text_freeze(GTK_TEXT(c->text));
+			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_c,
+				-1);
+			gtk_text_thaw(GTK_TEXT(c->text));
+	
+			CEventChat *c_event = (CEventChat *)u_event;
+			chat_accept_window(c_event, uin);
+		}
 	}
 
 	else if(u_event->SubCommand() == ICQ_CMDxSUB_FILE)
 	{
 		const gchar *file_d = u_event->Text();
 		
-		if(u_event->Command() == ICQ_CMDxTCP_CANCEL)
+		if(u_event->IsCancelled())
 		{
 			gtk_text_freeze(GTK_TEXT(c->text));
 			gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, file_d, -1);

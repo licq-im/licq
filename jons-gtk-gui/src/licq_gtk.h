@@ -154,6 +154,8 @@ struct more_window
 {
 	GtkWidget *window;
 	GtkWidget *notify;
+	GtkWidget *autochat;
+	GtkWidget *autofile;
 	GtkWidget *realip;
 	GtkWidget *visible;
 	GtkWidget *invisible;
@@ -347,6 +349,7 @@ struct random_chat
 	GtkWidget *window;
 	GtkWidget *group_list;
 	GtkWidget *search;
+	GtkWidget *close;
 	struct e_tag_data *etag;
 };
 
@@ -407,6 +410,7 @@ extern bool enter_sends;
 
 /* Globals in random_chat.cpp */
 extern struct random_chat *rcw;
+extern struct random_chat *src;
 
 /* Globals in register_user.cpp */
 extern GtkWidget *register_window;
@@ -580,6 +584,10 @@ extern void random_chat_search_window();
 extern void random_search_callback(GtkWidget *, gpointer);
 extern void random_cancel_callback(GtkWidget *, gpointer);
 extern void random_close_callback(GtkWidget *, gpointer);
+extern void set_random_chat_window();
+extern void set_random_set_callback(GtkWidget *, gpointer);
+extern void set_random_cancel_callback(GtkWidget *, gpointer);
+extern void set_random_close_callback(GtkWidget *, gpointer);
 
 
 /* Functions in register_user.cpp */
