@@ -609,7 +609,7 @@ unsigned short CUserManager::GenerateSID()
       if (pUser->GetSID() == nSID)
       {
         if (nSID == 0x7FFF)
-          nSid = 1;
+          nSID = 1;
         else
           nSID++;
         bDone = false;	// Restart
@@ -628,7 +628,7 @@ unsigned short CUserManager::GenerateSID()
         if ((*gID)[j] == nSID)
         {
           if (nSID == 0x7FFF)
-            nSid = 1;
+            nSID = 1;
           else
             nSID++;
           bDone = false;
