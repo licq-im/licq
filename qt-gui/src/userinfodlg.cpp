@@ -1107,7 +1107,6 @@ void UserInfoDlg::ShowHistory()
   // Last check (should never be true)
   if (m_lHistoryList.size() == 0) return;
   HistoryListIter tempIter;
-  mlvHistory->clear();
 
   if(m_bHistoryReverse)
   {
@@ -1119,6 +1118,7 @@ void UserInfoDlg::ShowHistory()
     tempIter = m_iHistorySIter;
   }
   QString s;
+  QString tmp;
   QDateTime date;
   m_nHistoryShowing = 0;
   QString contactName = tr("server");
@@ -1147,7 +1147,7 @@ void UserInfoDlg::ShowHistory()
 
 #if QT_VERSION >= 300
       const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
-      s.sprintf("<font color=\"%s\"><b>%s<br>%s [%c%c%c%c]</b></font><br>",
+      s.sprintf("<font color=\"%s\"><b>%s<br>%s [%c%c%c%c]</b></font><br><br>",
                 color,
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
                   .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(contactName)).utf8().data(),
@@ -1157,15 +1157,15 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-'
                );
-      mlvHistory->append(s);
+      tmp.append(s);
       // We break the paragraph here, since the history text
       // could be in a different BiDi directionality than the
       // header and timestamp text.
-      s.sprintf("<font color=\"%s\">%s</font><br>",
+      s.sprintf("<font color=\"%s\">%s</font><br><br>",
                 color,
                 MLView::toRichText(messageText, true).utf8().data()
                );
-      mlvHistory->append(s);
+      tmp.append(s);
 #else
       // See CHistoryWidget::paintCell for reference on those Qt 2-only
       // formatting escape codes.
@@ -1181,7 +1181,7 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
                 messageText.utf8().data()
       );
-      mlvHistory->append(s); // adds a paragraph break
+      tmp.append(s);
 #endif
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);
@@ -1217,6 +1217,8 @@ void UserInfoDlg::ShowHistory()
                         .arg(COLOR_RECEIVED).arg(COLOR_SENT)
                         .arg(m_nHistoryShowing)
                         .arg(m_lHistoryList.size()));
+  mlvHistory->clear();
+  mlvHistory->append(tmp.left(tmp.length()-4));
   if(!m_bHistoryReverse)
     mlvHistory->GotoEnd();
   else
