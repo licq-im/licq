@@ -50,6 +50,8 @@ private:
   void MSNAuthenticate(char *);
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
   
+  void MSNSendMessage(char *, char *);
+  
   // Internal functions
   int HashValue(int n) { return n % 211; }
   void StorePacket(SBuffer *, int);

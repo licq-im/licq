@@ -16,7 +16,7 @@ public:
   const char* Command() { return m_szCommand; }
   unsigned short Sequence() { return m_nSequence; }
   
-  void InitBuffer();
+  virtual void InitBuffer();
   
 protected:
   
@@ -28,6 +28,19 @@ protected:
   // Statics
   static unsigned short s_nSequence;
   static pthread_mutex_t s_xMutex;
+};
+
+class CMSNPayloadPacket : public CMSNPacket
+{
+public:
+  CMSNPayloadPacket();
+  virtual ~CMSNPayloadPacket() { }
+  
+  void InitBuffer();
+  
+protected:
+
+  unsigned long m_nPayloadSize;
 };
 
 class CPS_MSNVersion : public CMSNPacket
@@ -94,6 +107,12 @@ class CPS_MSN_SBAnswer : public CMSNPacket
 {
 public:
   CPS_MSN_SBAnswer(const char *, const char *, const char *sz);
+};
+
+class CPS_MSNMessage : public CMSNPayloadPacket
+{
+public:
+  CPS_MSNMessage(const char *);
 };
 
 #endif // __MSNPACKET_H

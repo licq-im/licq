@@ -223,6 +223,13 @@ void CMSN::ProcessSignal(CSignal *s)
       MSNLogon("messenger.hotmail.com", 1863);
       break;
     }
+    
+    case PROTOxSENDxMSG:
+    {
+      CSendMessageSignal *sig = static_cast<CSendMessageSignal *>(s);
+      MSNSendMessage(sig->Id(), sig->Message());
+      break;
+    }
   }
 }
 
@@ -264,13 +271,21 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
     char *endTag = strchr(fromPP, '\'');
     char *tag = strndup(fromPP, endTag - fromPP); // Thanks, this is all we need
     
-    gSocketMan.CloseSocket(m_nSSLSocket, false, true);
-    m_nSSLSocket = -1;
-    
     CMSNPacket *pReply = new CPS_MSNSendTicket(tag);
     SendPacket(pReply);
     free(tag);
   }
+  else if (strFirstLine == "HTTP/1.1 401 Unauthorized")
+  {
+    gLog.Error("%sInvalid password.\n", L_MSNxSTR);
+  }
+  else
+  {
+    gLog.Error("%sUnknown sign in error.\n", L_MSNxSTR);
+  }
+  
+  gSocketMan.CloseSocket(m_nSSLSocket, false, true);
+  m_nSSLSocket = -1;
 }
 
 void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet)
@@ -643,4 +658,11 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   Send_SB_Packet(strUser, pReply);
   
   return true;
+}
+
+void CMSN::MSNSendMessage(char *_szUser, char *_szMsg)
+{
+  CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
+  string strUser(_szUser);
+  Send_SB_Packet(strUser, pSend);  
 }

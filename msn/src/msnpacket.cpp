@@ -30,6 +30,24 @@ void CMSNPacket::InitBuffer()
   m_pBuffer->Pack(buf, strlen(buf));
 }
 
+CMSNPayloadPacket::CMSNPayloadPacket() : CMSNPacket()
+{
+  m_nPayloadSize = 0;
+}
+
+void CMSNPayloadPacket::InitBuffer()
+{
+  if (strlen(m_szCommand) == 0)
+    return;
+  char buf[32];
+  
+  m_nSize = snprintf(buf, 32, "%s %u U %u\r\n", m_szCommand, m_nSequence, m_nPayloadSize);
+  m_nSize += m_nPayloadSize;
+  
+  m_pBuffer = new CMSNBuffer(m_nSize);
+  m_pBuffer->Pack(buf, strlen(buf));
+}
+
 CPS_MSNVersion::CPS_MSNVersion() : CMSNPacket()
 {
   m_szCommand = strdup("VER");
@@ -196,4 +214,18 @@ CPS_MSN_SBAnswer::CPS_MSN_SBAnswer(const char *szSession, const char *szCookie,
   m_pBuffer->Pack(" ", 1);
   m_pBuffer->Pack(szSession, strlen(szSession));
   m_pBuffer->Pack("\r\n", 2);
+}
+
+CPS_MSNMessage::CPS_MSNMessage(const char *szMsg) : CMSNPayloadPacket()
+{
+  m_szCommand = strdup("MSG");
+  char szParams[] = "MIME-Version: 1.0\r\n"
+    "Content-Type: text/plain; charset=UTF-8\r\n"
+    "X-MMS-IM-Format: FN=MS%20Sans%20Serif; EF=; CO=0; CS=0; PF=0\r\n"
+    "\r\n";
+  m_nPayloadSize = strlen(szMsg) + strlen(szParams);
+  CMSNPayloadPacket::InitBuffer();
+  
+  m_pBuffer->Pack(szParams, strlen(szParams));
+  m_pBuffer->Pack(szMsg, strlen(szMsg));
 }
