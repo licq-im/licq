@@ -71,13 +71,14 @@ public:
   CMainWindow(CICQDaemon *theServer, CSignalManager *theSigMan,
               CQtLogWindow *theLogWindow, bool bStartHidden,
               const char *skinName, const char *iconsName,
-              QWidget *parent = 0);
+              const char *extendedIconsName, QWidget *parent = 0);
   virtual ~CMainWindow();
   UserEventCommon *callFunction(int fcn, unsigned long nUin);
   bool RemoveUserFromList(unsigned long, QWidget *);
   bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
+  void ApplyExtendedIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
   QPopupMenu *UserMenu() { return mnuUser; }
   void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; }
@@ -182,7 +183,8 @@ public:
   QFont defaultFont;
   QStyle *style;
   unsigned short m_nAutoLogon;
-  char *m_szIconSet;
+  char *m_szIconSet,
+       *m_szExtendedIconSet;
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, pmSms,
           pmAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, pmInfo, pmEncoding,

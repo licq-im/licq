@@ -83,6 +83,13 @@
 #include "xpm/secure_on.xpm"
 #include "xpm/secure_off.xpm"
 #include "xpm/charset.xpm"
+#include "xpm/itemCollapsed.xpm"
+#include "xpm/itemExpanded.xpm"
+#include "xpm/pixCustomAR.xpm"
+#include "xpm/pixPhone.xpm"
+#include "xpm/pixCellular.xpm"
+#include "xpm/pixBirthday.xpm"
+#include "xpm/pixInvisible.xpm"
 
 #include "licq_qt-gui.conf.h"
 
@@ -245,7 +252,7 @@ CMainWindow* gMainWindow = NULL;
 CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                          CQtLogWindow *theLogWindow, bool bStartHidden,
                          const char *skinName, const char *iconsName,
-                         QWidget *parent)
+                         const char *extendedIconsName, QWidget *parent)
   : QWidget(parent, "MainWindow")
 {
   gMainWindow = this;
@@ -414,7 +421,15 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   else
     strcpy(szIcons, iconsName);
   m_szIconSet = NULL;
-
+  
+  // Load the extended icons
+  char szExtendedIcons[MAX_FILENAME_LEN];
+  if (strlen(extendedIconsName) == 0)
+    licqConf.ReadStr("ExtendedIcons", szExtendedIcons, "basic");
+  else
+    strcpy(szExtendedIcons, extendedIconsName);
+  m_szExtendedIconSet = NULL;
+  
   // Load the skin
   char szSkin[MAX_FILENAME_LEN] = "basic";
   if (strlen(skinName) == 0)
@@ -451,6 +466,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   menu = NULL;
 
   ApplyIcons(szIcons, true);
+  ApplyExtendedIcons(szExtendedIcons, true);
   pmSecureOn = QPixmap(secure_on_xpm);
   pmSecureOff = QPixmap(secure_off_xpm);
   pmHistory = QPixmap(history_xpm);
@@ -2916,6 +2932,108 @@ void CMainWindow::popupSystemMenu()
 }
 
 
+//-----CMainWindow::loadExtendedIcons-----------------------------------------
+void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
+{
+   char sFilename[MAX_FILENAME_LEN],
+        sFilepath[MAX_FILENAME_LEN],
+        sIconPath[MAX_FILENAME_LEN];
+
+   if (m_szExtendedIconSet != NULL) free (m_szExtendedIconSet);
+   m_szExtendedIconSet = strdup(_sIconSet);
+   if (_sIconSet[0] == '/')
+   {
+     strcpy(sIconPath, _sIconSet);
+     if (sIconPath[strlen(sIconPath) - 1] != '/')
+       strcat(sIconPath, "/");
+   }
+   else
+   {
+     snprintf(sIconPath, MAX_FILENAME_LEN, "%s%sextended.icons.%s/", SHARE_DIR, QTGUI_DIR, _sIconSet);
+     sIconPath[MAX_FILENAME_LEN - 1] = '\0';
+   }
+   snprintf(sFilename, MAX_FILENAME_LEN, "%s%s.icons", sIconPath, _sIconSet);
+   sFilename[MAX_FILENAME_LEN - 1] = '\0';
+   CIniFile fIconsConf;
+   if (!fIconsConf.LoadFile(sFilename))
+   {
+     if (_bInitial)
+       gLog.Warn("%sUnable to open extended icons file %s.\n", L_WARNxSTR, sFilename);
+     else
+       WarnUser(this, tr("Unable to open extended icons file\n%1.").arg(sFilename));
+     return;
+   }
+
+   fIconsConf.SetSection("icons");
+   fIconsConf.ReadStr("Collapsed", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmCollapsed.load(sFilepath);
+   if (pmCollapsed.isNull())
+   {
+     QPixmap pix(itemCollapsed_xpm);
+     pmCollapsed = pix;
+   }
+   
+   fIconsConf.ReadStr("Expanded", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmExpanded.load(sFilepath);
+   if (pmExpanded.isNull())
+   {
+     QPixmap pix(itemExpanded_xpm);                 
+     pmExpanded = pix;
+   }
+
+   
+   fIconsConf.ReadStr("Phone", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmPhone.load(sFilepath);
+   if (pmPhone.isNull())
+   {
+     QPixmap pix(pixPhone_xpm);
+     pmPhone = pix;
+   }
+   
+   fIconsConf.ReadStr("Cellular", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmCellular.load(sFilepath);
+   if (pmCellular.isNull())
+   {
+     QPixmap pix(pixCellular_xpm);
+     pmCellular = pix;
+   }
+
+   
+   fIconsConf.ReadStr("Birthday", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmBirthday.load(sFilepath);
+   if (pmBirthday.isNull())
+   {
+     QPixmap pix(pixBirthday_xpm);
+     pmBirthday = pix;
+   }
+ 
+   fIconsConf.ReadStr("CustomAR", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmCustomAR.load(sFilepath);
+   if (pmCustomAR.isNull())
+   {
+     QPixmap pix(pixCustomAR_xpm);
+     pmCustomAR = pix;
+   }
+   
+   fIconsConf.ReadStr("Invisible", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
+   pmInvisible.load(sFilepath);
+   if (pmInvisible.isNull())
+   {
+     QPixmap pix(pixInvisible_xpm);
+     pmInvisible = pix;
+   }
+
+   if (!_bInitial)
+     updateUserWin();
+}
+
 //-----CMainWindow::loadIcons-------------------------------------------------
 void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
 // load the pixmaps
@@ -3009,34 +3127,6 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmAuthorize.load(sFilepath);
    if(pmAuthorize.isNull()) pmAuthorize = pmMessage;
-
-   fIconsConf.ReadStr("Collapsed", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
-   pmCollapsed.load(sFilepath);
-   
-   fIconsConf.ReadStr("Expanded", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
-   pmExpanded.load(sFilepath);
-   
-   fIconsConf.ReadStr("Phone", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
-   pmPhone.load(sFilepath);
-   
-   fIconsConf.ReadStr("Cellular", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
-   pmCellular.load(sFilepath);
-   
-   fIconsConf.ReadStr("Birthday", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
-   pmBirthday.load(sFilepath);
-   
-   fIconsConf.ReadStr("CustomAR", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
-   pmCustomAR.load(sFilepath);
-   
-   fIconsConf.ReadStr("Invisible", sFilename, "");
-   snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
-   pmInvisible.load(sFilepath);
    
    fIconsConf.ReadStr("SMS", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);

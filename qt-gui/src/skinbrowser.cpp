@@ -67,6 +67,20 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
   QVBox* btn2 = new QVBox(grpIcons);
   btnApplyIcons = new QPushButton(tr("A&pply"), btn2);
 
+  grpExtendedIcons = new QGroupBox(1, Vertical, tr("Extended Icons"), this);
+  t_lay->addWidget(grpExtendedIcons);
+  lstExtendedIcons = new QListView(grpExtendedIcons);
+  lstExtendedIcons->addColumn(tr("Name"), 180);
+  lstExtendedIcons->setMinimumWidth(195);
+#if QT_VERSION >= 210
+  lstExtendedIcons->setShowSortIndicator(true);
+#else
+  lstExtendedIcons->setMinimumSize(lstExtendedIcons->sizeHint());
+#endif
+
+  QVBox* btn3 = new QVBox(grpExtendedIcons);
+  btnApplyExtendedIcons = new QPushButton(tr("App&ly"), btn3);
+  
   QBoxLayout* lay = new QHBoxLayout(t_lay);
   lay->addStretch(1);
   btnDone = new QPushButton(tr("&Done"), this);
@@ -107,10 +121,25 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
     for (it = lst.begin(); it != lst.end(); ++it)
       (void) new QListViewItem(lstIcons, (*it).mid(6));
   }
+  QDir dExtendedIcons(szDir, "extended.icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
+  if (!dExtendedIcons.count())
+  {
+    gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
+    (void) new QListViewItem(lstExtendedIcons, tr("Error"));
+    lstExtendedIcons->setEnabled(false);
+  }
+  else
+  {
+    QStringList::Iterator it;
+    QStringList lst = dExtendedIcons.entryList();
+    for (it = lst.begin(); it != lst.end(); ++it)
+      (void) new QListViewItem(lstExtendedIcons, (*it).mid(15));
+  }
 
   connect(btnApplySkin, SIGNAL(clicked()), this, SLOT(slot_applyskin()));
   connect(btnEditSkin, SIGNAL(clicked()), this, SLOT(slot_editskin()));
   connect(btnApplyIcons, SIGNAL(clicked()), this, SLOT(slot_applyicons()));
+  connect(btnApplyExtendedIcons, SIGNAL(clicked()), this, SLOT(slot_applyextendedicons()));
   connect(btnDone, SIGNAL(clicked()), this, SLOT(close()));
 }
 
@@ -126,6 +155,13 @@ void SkinBrowserDlg::slot_applyicons()
 {
   if (!lstIcons->currentItem()) return;
   mainwin->ApplyIcons(lstIcons->currentItem()->text(0).local8Bit());
+}
+
+
+void SkinBrowserDlg::slot_applyextendedicons()
+{
+  if (!lstExtendedIcons->currentItem()) return;
+  mainwin->ApplyExtendedIcons(lstExtendedIcons->currentItem()->text(0).local8Bit());  
 }
 
 

@@ -36,7 +36,7 @@ public:
   bool grabKey(QString key);
 
 protected:
-  char *m_szSkin, *m_szIcons;
+  char *m_szSkin, *m_szIcons, *m_szExtendedIcons;
   bool m_bStartHidden;
   CMainWindow *licqMainWindow;
   CSignalManager *licqSignalManager;

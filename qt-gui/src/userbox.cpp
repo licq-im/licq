@@ -45,15 +45,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-#include "xpm/itemCollapsed.xpm"
-#include "xpm/itemExpanded.xpm"
-#include "xpm/pixCustomAR.xpm"
-#include "xpm/pixPhone.xpm"
-#include "xpm/pixCellular.xpm"
-#include "xpm/pixBirthday.xpm"
-#include "xpm/pixInvisible.xpm"
-
-
 #undef Status
 
 #define FLASH_TIME 500
@@ -123,7 +114,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   // Other users group is sorted at the end
   m_sSortKey = m_nGroupId ? QString::number((int)m_nGroupId) : QString("9999999999");
   m_sPrefix = "1";
-  setPixmap(0, *listView()->pixCollapsed);
+  setPixmap(0, gMainWindow->pmCollapsed);
   setText(1, QString::fromLocal8Bit(name));
 
 }
@@ -486,25 +477,25 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
 
       if (width - w > 8 && (m_bPhone))
       {
-        p->drawPixmap(w, 0, *listView()->pixPhone);
-        w += listView()->pixPhone->width() + 2;
+        p->drawPixmap(w, 0, gMainWindow->pmPhone);
+        w += gMainWindow->pmPhone.width() + 2;
       }
       if (width - w > 8 && (m_bCellular))
       {
-        p->drawPixmap(w, 0, *listView()->pixCellular);
-        w += listView()->pixCellular->width() + 2;
+        p->drawPixmap(w, 0, gMainWindow->pmCellular);
+        w += gMainWindow->pmCellular.width() + 2;
       }
       if (width - w > 8 && (m_bBirthday))
       {
-        p->drawPixmap(w, 0, *listView()->pixBirthday);
-        w += listView()->pixBirthday->width() + 2;
+        p->drawPixmap(w, 0, gMainWindow->pmBirthday);
+        w += gMainWindow->pmBirthday.width() + 2;
       }
       if (width - w > 8 && m_bStatusInvisible)
       {
         if (gMainWindow->pmPrivate.isNull())
         {
-          p->drawPixmap(w, 0, *listView()->pixInvisible);
-          w += listView()->pixInvisible->width() + 2;
+          p->drawPixmap(w, 0, gMainWindow->pmInvisible);
+          w += gMainWindow->pmInvisible.width() + 2;
         }
         else
         {
@@ -519,8 +510,8 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
       }
       if (width - w > 8 && m_bCustomAR)
       {
-        p->drawPixmap(w, 0, *listView()->pixCustomAR);
-        w += listView()->pixCustomAR->width() + 2;
+        p->drawPixmap(w, 0, gMainWindow->pmCustomAR);
+        w += gMainWindow->pmCustomAR.width() + 2;
       }
     }
   }
@@ -762,41 +753,6 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   setSorting(0);
   setVScrollBarMode(gMainWindow->m_bScrollBar ? Auto : AlwaysOff);
 
-  if (gMainWindow->pmCollapsed.isNull())
-    pixCollapsed = new QPixmap(itemCollapsed_xpm);
-  else
-    pixCollapsed = new QPixmap(gMainWindow->pmCollapsed);
-    
-  if (gMainWindow->pmExpanded.isNull())
-    pixExpanded = new QPixmap(itemExpanded_xpm);
-  else
-    pixExpanded = new QPixmap(gMainWindow->pmExpanded);
-    
-  if (gMainWindow->pmBirthday.isNull())
-    pixBirthday = new QPixmap(pixBirthday_xpm);
-  else
-    pixBirthday = new QPixmap(gMainWindow->pmBirthday);
-    
-  if (gMainWindow->pmCustomAR.isNull())
-    pixCustomAR = new QPixmap(pixCustomAR_xpm);
-  else
-    pixCustomAR = new QPixmap(gMainWindow->pmCustomAR);
-    
-  if (gMainWindow->pmPhone.isNull())
-    pixPhone = new QPixmap(pixPhone_xpm);
-  else
-    pixPhone = new QPixmap(gMainWindow->pmPhone);
-    
-  if (gMainWindow->pmCellular.isNull())
-    pixCellular = new QPixmap(pixCellular_xpm);
-  else
-    pixCellular = new QPixmap(gMainWindow->pmCellular);
-    
-  if (gMainWindow->pmInvisible.isNull())
-    pixInvisible = new QPixmap(pixInvisible_xpm);
-  else
-    pixInvisible = new QPixmap(gMainWindow->pmInvisible);
-
   if (parent != NULL)
   {
     setShowHeader(gMainWindow->m_bShowHeader);
@@ -848,14 +804,6 @@ CUserView::~CUserView()
     if(floaties->size())
         floaties->resize(floaties->size()-1);
   }
-
-  delete pixCollapsed;
-  delete pixExpanded;
-  delete pixBirthday;
-  delete pixCustomAR;
-  delete pixPhone;
-  delete pixCellular;
-  delete pixInvisible;
 }
 
 
@@ -1273,7 +1221,7 @@ void CUserView::itemExpanded(QListViewItem* i)
 
   gMainWindow->m_nGroupStates |= 1<<it->GroupId();
 
-  if(pixExpanded != NULL)  i->setPixmap(0, *pixExpanded);
+  if(!gMainWindow->pmExpanded.isNull())  i->setPixmap(0, gMainWindow->pmExpanded);
 }
 
 void CUserView::itemCollapsed(QListViewItem* i)
@@ -1283,7 +1231,7 @@ void CUserView::itemCollapsed(QListViewItem* i)
 
   gMainWindow->m_nGroupStates &= ~(1<<it->GroupId());
 
-  if(pixCollapsed != NULL)  i->setPixmap(0, *pixCollapsed);
+  if(!gMainWindow->pmCollapsed.isNull())  i->setPixmap(0, gMainWindow->pmCollapsed);
 }
 
 // -----------------------------------------------------------------------------

@@ -67,10 +67,11 @@ const char *LP_Usage(void)
 {
 #ifdef USE_KDE
   static const char usage[] =
-    "Usage:  Licq [options] -p kde-gui -- [-h] [-s skinname] [-i iconpack] [-g gui style]\n"
+    "Usage:  Licq [options] -p kde-gui -- [-h] [-s skinname] [-i iconpack] [-e extendediconpack] [-g gui style]\n"
     " -h : this help screen\n"
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
+    " -e : set the extended icons to use (must be in [base dir]/qt-gui/extended.icons.iconpack)\n"
     " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE /"
 #if QT_VERSION < 300
     " JFC /"
@@ -79,10 +80,11 @@ const char *LP_Usage(void)
     " -d : start hidden (dock icon only)\n";
 #else
   static const char usage[] =
-    "Usage:  Licq [options] -p qt-gui -- [-h] [-s skinname] [-i iconpack] [-g gui style]\n"
+    "Usage:  Licq [options] -p qt-gui -- [-h] [-s skinname] [-i iconpack] [-e extendediconpack] [-g gui style]\n"
     " -h : this help screen\n"
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
+    " -e : set the extended icons to use (must be in [base dir]/qt-gui/extended.icons.iconpack)\n"
     " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE /"
 #if QT_VERSION < 300
     " JFC /"
@@ -246,6 +248,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
 {
   char skinName[32] = "";
   char iconsName[32] = "";
+  char extendedIconsName[32] = "";
   char styleName[32] = "";
   bool bStartHidden = false;
 
@@ -266,7 +269,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
 
   // parse command line for arguments
   int i = 0;
-  while( (i = getopt(argc, argv, "hs:i:g:d")) > 0)
+  while( (i = getopt(argc, argv, "hs:i:e:g:d")) > 0)
   {
     switch (i)
     {
@@ -280,6 +283,10 @@ CLicqGui::CLicqGui(int argc, char **argv)
     case 'i':  // icons name
       snprintf(iconsName, sizeof(iconsName), "%s", optarg);
       iconsName[sizeof(iconsName) - 1] = '\0';
+      break;
+    case 'e': // extended icons name
+      snprintf(extendedIconsName, sizeof(extendedIconsName), "%s", optarg);
+      extendedIconsName[sizeof(extendedIconsName) - 1] = '\0';
       break;
     case 'g': // gui style
       strncpy(styleName, optarg, sizeof(styleName));
@@ -324,6 +331,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
 #endif
   m_szSkin = strdup(skinName);
   m_szIcons = strdup(iconsName);
+  m_szExtendedIcons = strdup(extendedIconsName);
   m_bStartHidden = bStartHidden;
 
   // Try and load a translation
@@ -365,7 +373,7 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
   licqLogWindow = new CQtLogWindow;
   gLog.AddService(new CLogService_Plugin(licqLogWindow, L_MOST));
   licqMainWindow = new CMainWindow(_licqDaemon, licqSignalManager, licqLogWindow,
-     m_bStartHidden, m_szSkin, m_szIcons);
+     m_bStartHidden, m_szSkin, m_szIcons, m_szExtendedIcons);
 
   setMainWidget(licqMainWindow);
   int r = exec();

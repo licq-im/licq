@@ -2,6 +2,7 @@ static const char QTGUI_CONF[] =
 "[appearance]\n"
 "Skin = basic\n"
 "Icons = computer\n"
+"ExtendedIcons = licq\n"
 "Font = default\n"
 "GridLines = 0\n"
 "ShowHeader = 1\n"

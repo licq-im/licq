@@ -141,8 +141,6 @@ protected:
   QPopupMenu *mnuUser;
   CUserViewItem *barOnline, *barOffline;
   QPoint mousePressPos;
-  QPixmap *pixExpanded, *pixCollapsed, *pixCustomAR, *pixBirthday,
-          *pixInvisible, *pixPhone, *pixCellular;
   int numOnline, numOffline;
   virtual void timerEvent(QTimerEvent*);
 

@@ -16,17 +16,18 @@ class SkinBrowserDlg : public QWidget
 public:
   SkinBrowserDlg (CMainWindow *_mainwin, QWidget *parent = 0);
 protected:
-  QListView *lstSkins, *lstIcons;
-  QGroupBox *grpSkins, *grpIcons;
-  QPushButton *btnApplySkin, *btnApplyIcons, *btnDone, *btnEditSkin;
+  QListView *lstSkins, *lstIcons, *lstExtendedIcons;
+  QGroupBox *grpSkins, *grpIcons, *grpExtendedIcons;
+  QPushButton *btnApplySkin, *btnApplyIcons, *btnApplyExtendedIcons,
+              *btnDone, *btnEditSkin;
 
-  CInfoField *nfoSkin, *nfoIcons;
   CMainWindow *mainwin;
 
 public slots:
   void slot_applyskin();
   void slot_editskin();
   void slot_applyicons();
+  void slot_applyextendedicons();
 };
 
 
