@@ -169,6 +169,7 @@ protected slots:
   void showAddUserDlg();
   void showEditGrpDlg();
   void showSkinBrowser();
+  void showPluginDlg(void);
   void showOptionsDlg();
   void showAuthUserDlg();
   void showSearchUserDlg();

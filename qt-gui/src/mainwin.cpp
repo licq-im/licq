@@ -69,6 +69,7 @@
 #include "skin.h"
 #include "securitydlg.h"
 #include "passworddlg.h"
+#include "plugindlg.h"
 #ifdef USE_DOCK
 #include "wharf.h"
 #endif
@@ -710,7 +711,8 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
         //i->setGraphics(u);
         //i->repaint();
         delete i;
-        (void) new CUserViewItem(u, userView);
+        if (m_bShowOffline || !u->StatusOffline())
+          (void) new CUserViewItem(u, userView);
         //userView->triggerUpdate();
         //userView->takeItem(i);
         //userView->insertItem(i);
@@ -726,7 +728,6 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
 //-----CMainWindow::slot_updatedList-----------------------------------------------
 void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUin)
 {
-  bool bUpdateWin = true;
   switch(_nSubSignal)
   {
   case LIST_ALL:
@@ -734,7 +735,6 @@ void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUi
     updateUserWin();
     break;
   }
-  case LIST_REORDER:
   case LIST_ADD:
   {
     ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
@@ -744,10 +744,10 @@ void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUi
                  L_ERRORxSTR, _nUin);
       break;
     }
-    if (!u->GetInGroup(m_nGroupType, m_nCurrentGroup))
-      bUpdateWin = false;
+    if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
+        (m_bShowOffline || !u->StatusOffline()) )
+      (void) new CUserViewItem(u, userView);
     gUserManager.DropUser(u);
-    if (bUpdateWin) updateUserWin();
     break;
   }
 
@@ -755,7 +755,7 @@ void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUi
   {
     CUserViewItem *i = (CUserViewItem *)userView->firstChild();
     while (i != NULL && i->ItemUin() != _nUin) i = (CUserViewItem *)i->nextSibling();
-    if (i != NULL) userView->removeItem(i);
+    if (i != NULL) delete i;
     updateEvents();
     break;
   }
@@ -775,6 +775,11 @@ void CMainWindow::updateUserWin(void)
     if (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
         (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
       FOR_EACH_USER_CONTINUE
+
+    // Ignore offline users if necessary
+    if (!m_bShowOffline && pUser->StatusOffline())
+      FOR_EACH_USER_CONTINUE;
+
     // Add the user to the list
     (void) new CUserViewItem(pUser, userView);
   }
@@ -1827,6 +1832,7 @@ void CMainWindow::initMenu(void)
    mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()));
    mnuSystem->insertItem(tr("&Options"), this, SLOT(showOptionsDlg()));
    mnuSystem->insertItem(tr("S&kin Browser"), this, SLOT(showSkinBrowser()));
+   mnuSystem->insertItem(tr("&Plugin Manager"), this, SLOT(showPluginDlg()));
    mnuSystem->insertItem(tr("Debug Level"), mnuDebug);
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Next &Server"), this, SLOT(nextServer()));
@@ -1923,6 +1929,12 @@ void CMainWindow::showSkinBrowser(void)
 {
   SkinBrowserDlg *d = new SkinBrowserDlg(this);
   d->show();
+}
+
+
+void CMainWindow::showPluginDlg(void)
+{
+  (void) new PluginDlg(licqDaemon);
 }
 
 void CMainWindow::slot_doneregister()

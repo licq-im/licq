@@ -71,6 +71,12 @@ const char *LP_Status(void)
   return status;
 }
 
+const char *LP_Description(void)
+{
+  static const char desc[] = "Qt based GUI";
+  return desc;
+}
+
 bool LP_Init(int argc, char **argv)
 {
   char skinName[32] = "";
