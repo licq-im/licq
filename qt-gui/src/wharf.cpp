@@ -42,6 +42,7 @@
 #ifdef USE_KDE
 #include <kwin.h>
 #include <kpopupmenu.h>
+#include <kdeversion.h>
 #endif
 
 #include "wharf.h"
@@ -669,8 +670,12 @@ void IconManager_KDEStyle::mousePressEvent( QMouseEvent *e )
       mainwin->show();
 #ifdef USE_KDE
       KWin::setOnDesktop(mainwin->winId(), KWin::currentDesktop());
-#endif
+  #if !KDE_IS_VERSION(3,1,94) 
       mainwin->raise();
+  #endif
+#else
+      mainwin->raise();
+#endif
     }
     break;
    default:
