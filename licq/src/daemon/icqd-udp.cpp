@@ -1352,8 +1352,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
         CICQEventTag *t = icqRequestMetaInfo(nUin);
         delete t;
       }
-      else
-        gUserManager.DropUser(u);
+      gUserManager.DropUser(u);
 
       // Return the event to the plugin
       ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_RANDOMxSEARCH, nSubSequence, EVENT_SUCCESS);

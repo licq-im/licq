@@ -436,13 +436,74 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
 
   gLog.Info("%sShaking hands with %s (%ld).\n", L_TCPxSTR, szAlias, nUin);
   nPort = s->LocalPort();
-  CPacketTcp_Handshake_v2 p(nPort);
-  if (!s->SendPacket(p.getBuffer()))
+
+  if (true) // use tcp v2 always for now
   {
-    char buf[128];
-    gLog.Warn("%sHandshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
-    delete s;
-    return -1;
+    CPacketTcp_Handshake_v2 p(nPort);
+    if (!s->SendPacket(p.getBuffer()))
+    {
+      char buf[128];
+      gLog.Warn("%sHandshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+      delete s;
+      return -1;
+    }
+  }
+  else // TCP v4
+  {
+    // Send the hanshake
+    CPacketTcp_Handshake_v4 p(nUin, 0);
+    if (!s->SendPacket(p.getBuffer()))
+    {
+      char buf[128];
+      gLog.Warn("%sHandshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+      delete s;
+      return -1;
+    }
+
+    // Wait for the handshake ack
+    do
+    {
+      if (!s->RecvPacket())
+      {
+        char buf[128];
+        gLog.Warn("%sHandshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+        delete s;
+        return -1;
+      }
+    } while (!s->RecvBufferFull());
+    unsigned long nOk = s->RecvBuffer().UnpackUnsignedLong();
+    s->ClearRecvBuffer();
+    if (nOk != 1)
+    {
+      gLog.Warn("%sBad handshake ack: %d.\n", L_WARNxSTR, nOk);
+      delete s;
+      return -1;
+    }
+
+    // Wait for the reverse handshake
+    do
+    {
+      if (!s->RecvPacket())
+      {
+        char buf[128];
+        gLog.Warn("%sHandshake failed:\n%s%s.\n", L_WARNxSTR, L_BLANKxSTR, s->ErrorStr(buf, 128));
+        delete s;
+        return -1;
+      }
+    } while (!s->RecvBufferFull());
+    CPacketTcp_Handshake_v4 p_in(&s->RecvBuffer());
+    s->ClearRecvBuffer();
+    if (p.SessionId() != p_in.SessionId())
+    {
+      gLog.Warn("%sBad handshake session id: received %ld, expecting %ld.\n",
+         L_WARNxSTR, p_in.SessionId(), p.SessionId());
+      delete s;
+      return -1;
+    }
+
+    // Send the hanshake ack
+    CPacketTcp_Handshake_Ack p_ack;
+    s->SendPacket(p_ack.getBuffer());
   }
 
   // Add the new socket to the socket manager
@@ -689,7 +750,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   if (u == NULL)
   {
     u = new ICQUser(checkUin);
-    u->Lock(LOCK_W);
     u->SetSocketDesc(sockfd, pSock->LocalPort());
     bNewUser = true;
   }
@@ -793,9 +853,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             RejectEvent(checkUin, e);
             break;
           }
-          u->Unlock();
           AddUserToList(u);
-          u->Lock(LOCK_W);
           bNewUser = false;
         }
 
@@ -864,9 +922,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             RejectEvent(checkUin, e);
             break;
           }
-          u->Unlock();
           AddUserToList(u);
-          u->Lock(LOCK_W);
           bNewUser = false;
         }
 
@@ -916,9 +972,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             RejectEvent(checkUin, e);
             break;
           }
-          u->Unlock();
           AddUserToList(u);
-          u->Lock(LOCK_W);
           bNewUser = false;
         }
 
@@ -957,9 +1011,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             RejectEvent(checkUin, e);
             break;
           }
-          u->Unlock();
           AddUserToList(u);
-          u->Lock(LOCK_W);
           bNewUser = false;
         }
 
@@ -1000,9 +1052,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
             RejectEvent(checkUin, e);
             break;
           }
-          u->Unlock();
           AddUserToList(u);
-          u->Lock(LOCK_W);
           bNewUser = false;
         }
 
@@ -1164,8 +1214,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       {
         gLog.Info("%sChat request from %s (%ld) cancelled.\n", L_TCPxSTR,
                  u->GetAlias(), checkUin);
-        //CEventChatCancel *e = new CEventChatCancel(0, TIME_NOW, E_DIRECT);
-        //AddUserEvent(u, e);
         packet >> junkLong >> junkLong >> junkShort >> junkChar >> theSequence;
         for (unsigned short i = 0; i < u->NewMessages(); i++)
         {
@@ -1181,8 +1229,6 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       {
         gLog.Info("%sFile transfer request from %s (%ld) cancelled.\n",
                  L_TCPxSTR, u->GetAlias(), checkUin);
-        //CEventFileCancel *e = new CEventFileCancel(0, TIME_NOW, E_DIRECT);
-        //AddUserEvent(u, e);
         packet >> junkLong >> junkShort >> junkChar >> junkLong >> junkLong >> theSequence;
         for (unsigned short i = 0; i < u->NewMessages(); i++)
         {
@@ -1255,7 +1301,7 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   char cHandshake;
   unsigned short nVersionMajor, nVersionMinor;
   CBuffer &b = s->RecvBuffer();
-  b >> cHandshake >> nVersionMajor, nVersionMinor;
+  b >> cHandshake >> nVersionMajor >> nVersionMinor;
 
   if ((unsigned char)cHandshake != ICQ_CMDxTCP_HANDSHAKE)
   {
@@ -1272,7 +1318,8 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u != NULL)
   {
-    gLog.Info("%sConnection from %s (%ld).\n", L_TCPxSTR, u->GetAlias(), nUin);
+    gLog.Info("%sConnection from %s (%ld) [TCP v%d.%d].\n", L_TCPxSTR,
+       u->GetAlias(), nUin, nVersionMajor, nVersionMinor);
     if (u->SocketDesc() != s->Descriptor())
     {
       if (u->SocketDesc() != -1)
@@ -1288,7 +1335,8 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   }
   else
   {
-    gLog.Info("%sConnection from new user (%ld).\n", L_TCPxSTR, nUin);
+    gLog.Info("%sConnection from new user (%ld) [TCP v%d.%d].\n", L_TCPxSTR,
+       nUin, nVersionMajor, nVersionMinor);
   }
   s->SetOwner(nUin);
 

@@ -713,12 +713,12 @@ void CICQDaemon::SaveUserList()
   fprintf(usersConf, "[users]\nNumOfUsers = %d\n", gUserManager.NumUsers());
 
   unsigned short i = 1;
-  FOR_EACH_USER_START(LOCK_R)
+  FOR_EACH_UIN_START
   {
-    fprintf(usersConf, "User%d = %ld\n", i, pUser->Uin());
+    fprintf(usersConf, "User%d = %ld\n", i, nUin);
     i++;
   }
-  FOR_EACH_USER_END
+  FOR_EACH_UIN_END
 
   fclose(usersConf);
 }
@@ -732,22 +732,27 @@ void CICQDaemon::SetIgnore(unsigned short n, bool b)
 }
 
 
-//-----AddUserToList------------------------------------------------------------
+/*---------------------------------------------------------------------------
+ * AddUserToList
+ *
+ * Adds the given uin to the contact list.  Note that when this call returns
+ * the user is not locked.
+ *-------------------------------------------------------------------------*/
 void CICQDaemon::AddUserToList(unsigned long nUin)
 {
   // Don't add invalid uins
   if (nUin == 0) return;
 
   // Don't add a user we already have
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  if (u != NULL)
+  if (gUserManager.IsOnList(nUin))
   {
-    gUserManager.DropUser(u);
     gLog.Warn("%sUser %ld already on contact list.\n", L_WARNxSTR, nUin);
     return;
   }
 
-  gUserManager.AddUser(new ICQUser(nUin));
+  ICQUser *u = new ICQUser(nUin);
+  gUserManager.AddUser(u);
+  gUserManager.DropUser(u);
   SaveUserList();
 
   if (m_nUDPSocketDesc != -1) icqAddUser(nUin);
@@ -756,19 +761,24 @@ void CICQDaemon::AddUserToList(unsigned long nUin)
 }
 
 
-//-----AddUserToList------------------------------------------------------------
+/*---------------------------------------------------------------------------
+ * AddUserToList
+ *
+ * Adds the given user to the contact list.  Note that when this call returns
+ * the user is write locked and will need to be dropped.  When calling this
+ * function it is important that the user not be locked in any way.
+ *-------------------------------------------------------------------------*/
 void CICQDaemon::AddUserToList(ICQUser *nu)
 {
   // Don't add a user we already have
-  ICQUser *u = gUserManager.FetchUser(nu->Uin(), LOCK_R);
-  if (u != NULL)
+  if (gUserManager.IsOnList(nu->Uin()))
   {
-    gUserManager.DropUser(u);
     gLog.Warn("%sUser %ld already on contact list.\n", L_WARNxSTR, nu->Uin());
     return;
   }
 
   gUserManager.AddUser(nu);
+  // At this point the user is write locked
   SaveUserList();
 
   if (m_nUDPSocketDesc != -1) icqAddUser(nu->Uin());

@@ -195,10 +195,12 @@ bool CUserManager::Load()
 
 /*---------------------------------------------------------------------------
  * CUserManager::AddUser
+ *
+ * The user is write locked upon return of this function
  *-------------------------------------------------------------------------*/
 unsigned long CUserManager::AddUser(ICQUser *pUser)
 {
-  pUser->Lock(LOCK_R);
+  pUser->Lock(LOCK_W);
   unsigned long nUin = pUser->Uin();
 
   // Set this user to be on the contact list
@@ -214,7 +216,7 @@ unsigned long CUserManager::AddUser(ICQUser *pUser)
   // Reorder the user to the correct place
   m_vpcUsers.push_back(pUser);
 
-  pUser->Unlock();
+  //pUser->Unlock();
 
   return nUin;
 }
@@ -392,6 +394,17 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
                  L_ERRORxSTR, _nUin, u->Uin());
   }
   return u;
+}
+
+
+
+/*---------------------------------------------------------------------------
+ * CUserManager::IsOnList
+ *-------------------------------------------------------------------------*/
+bool CUserManager::IsOnList(unsigned long nUin)
+{
+  if (nUin == m_nOwnerUin) return true;
+  return m_hUsers.Retrieve(nUin) != NULL;
 }
 
 
@@ -598,9 +611,11 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
   UserList::iterator iter;
   for (iter = l.begin(); iter != l.end(); iter++)
   {
-    (*iter)->Lock(LOCK_R);
+    // No need to lock the user when checking uin as if the user is in the
+    // hash table their uin cannot change
+    //(*iter)->Lock(LOCK_R);
     nUin = (*iter)->Uin();
-    (*iter)->Unlock();
+    //(*iter)->Unlock();
     if (nUin == _nUin)
     {
       u = (*iter);

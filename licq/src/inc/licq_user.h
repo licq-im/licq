@@ -16,6 +16,12 @@
 #include "licq_file.h"
 #include "licq_icq.h"
 
+/*---------------------------------------------------------------------------
+ * FOR_EACH_USER
+ *
+ * Macros to iterate through the entire list of users.  "pUser" will be a
+ * pointer to the current user.
+ *-------------------------------------------------------------------------*/
 #define FOR_EACH_USER_START(x)                           \
   {                                                      \
     ICQUser *pUser;                                      \
@@ -43,6 +49,41 @@
 #define FOR_EACH_USER_CONTINUE           \
         {                                \
           gUserManager.DropUser(pUser);  \
+          continue;                      \
+        }
+
+
+/*---------------------------------------------------------------------------
+ * FOR_EACH_UIN
+ *
+ * Macros to iterate through the entire list of uins.  "nUin" will be the
+ * current uin.  Useful for situations when just the uin is necessary and
+ * each user does not need to be locked.  Note the corresponding user can be
+ * fetched and locked inside the loop.
+ *-------------------------------------------------------------------------*/
+#define FOR_EACH_UIN_START                               \
+  {                                                      \
+    unsigned long nUin;                                  \
+    UserList *_ul_ = gUserManager.LockUserList(LOCK_R);  \
+    for (UserList::iterator _i_ = _ul_->begin();         \
+         _i_ != _ul_->end(); _i_++)                      \
+    {                                                    \
+      nUin = (*_i_)->Uin();                              \
+      {
+
+#define FOR_EACH_UIN_END                 \
+      }                                  \
+    }                                    \
+    gUserManager.UnlockUserList();       \
+  }
+
+#define FOR_EACH_UIN_BREAK               \
+        {                                \
+          break;                         \
+        }
+
+#define FOR_EACH_UIN_CONTINUE            \
+        {                                \
           continue;                      \
         }
 
@@ -484,6 +525,7 @@ public:
   ICQOwner *FetchOwner(unsigned short);
   void DropOwner();
   unsigned long OwnerUin()  { return m_nOwnerUin; }
+  bool IsOnList(unsigned long nUin);
 
   UserList *LockUserList(unsigned short);
   void UnlockUserList();
