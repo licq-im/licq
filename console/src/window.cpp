@@ -4,6 +4,12 @@
 
 #include <stdio.h>
 #include <unistd.h>
+// this is a big hack to avoid undefined function link
+// to __va_arg_type_violation(void)
+// va_list sucks!
+#if defined(__PPC__)
+#undef __OPTIMIZE__
+#endif
 #include <stdarg.h>
 
 #include "window.h"
