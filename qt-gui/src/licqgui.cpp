@@ -38,14 +38,15 @@
 
 CLicqGui *licqQtGui;
 
-void LP_Usage(void)
+const char *LP_Usage(void)
 {
-  fprintf(stderr, "Licq Plugin: %s %s\n", LP_Name(), LP_Version());
-  fprintf(stderr, "Usage:  Licq [options] -p qt-gui -- [-h] [-s skinname] [-i iconpack] [-g gui style]\n");
-  fprintf(stderr, " -h : this help screen\n");
-  fprintf(stderr, " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n");
-  fprintf(stderr, " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n");
-  fprintf(stderr, " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE)\n\n");
+  static const char usage[] =
+    "Usage:  Licq [options] -p qt-gui -- [-h] [-s skinname] [-i iconpack] [-g gui style]\n"
+    " -h : this help screen\n"
+    " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
+    " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE)\n";
+  return usage;
 }
 
 const char *LP_Name(void)
