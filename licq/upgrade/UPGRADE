@@ -1,8 +1,0 @@
---------------------
-Upgrade Instructions
---------------------
-
-Upgrading from 1.2.7 or earlier
-1. Backup your .licq directory (just in case)
-2. Run "upgrade-1.3.0.sh"
-
