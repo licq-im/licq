@@ -1534,13 +1534,13 @@ CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackString(_sLocalName);
   buffer->PackUnsignedShort(ReversePort(_nLocalPort));
-  buffer->PackChar(nColorForeBlue);
-  buffer->PackChar(nColorForeGreen);
   buffer->PackChar(nColorForeRed);
+  buffer->PackChar(nColorForeGreen);
+  buffer->PackChar(nColorForeBlue);
   buffer->PackChar(0);
-  buffer->PackChar(nColorBackBlue);
-  buffer->PackChar(nColorBackGreen);
   buffer->PackChar(nColorBackRed);
+  buffer->PackChar(nColorBackGreen);
+  buffer->PackChar(nColorBackBlue);
   buffer->PackChar(0);
   buffer->PackChar(0);
 }
@@ -1556,13 +1556,13 @@ CPChat_Color::CPChat_Color(CBuffer &b)
   m_szName = strdup(b.UnpackString(buf));
   m_nPort = b.UnpackUnsignedShort();
   m_nPort = (m_nPort >> 8) + (m_nPort << 8);
-  m_nColorForeBlue = (unsigned char)b.UnpackChar();
-  m_nColorForeGreen = (unsigned char)b.UnpackChar();
   m_nColorForeRed = (unsigned char)b.UnpackChar();
+  m_nColorForeGreen = (unsigned char)b.UnpackChar();
+  m_nColorForeBlue = (unsigned char)b.UnpackChar();
   b.UnpackChar();
-  m_nColorBackBlue = (unsigned char)b.UnpackChar();
-  m_nColorBackGreen = (unsigned char)b.UnpackChar();
   m_nColorBackRed = (unsigned char)b.UnpackChar();
+  m_nColorBackGreen = (unsigned char)b.UnpackChar();
+  m_nColorBackBlue = (unsigned char)b.UnpackChar();
   b.UnpackChar();
 }
 
@@ -1668,13 +1668,13 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   buffer->PackUnsignedLong(0x64);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackString(szLocalName);
-  buffer->PackChar(nColorForeBlue);
-  buffer->PackChar(nColorForeGreen);
   buffer->PackChar(nColorForeRed);
+  buffer->PackChar(nColorForeGreen);
+  buffer->PackChar(nColorForeBlue);
   buffer->PackChar(0);
-  buffer->PackChar(nColorBackBlue);
-  buffer->PackChar(nColorBackGreen);
   buffer->PackChar(nColorBackRed);
+  buffer->PackChar(nColorBackGreen);
+  buffer->PackChar(nColorBackBlue);
   buffer->PackChar(0);
   buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nPort);
@@ -1711,13 +1711,13 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
   b.UnpackUnsignedLong();
   m_nUin = b.UnpackUnsignedLong();
   m_szName = strdup(b.UnpackString(buf));
-  m_nColorForeBlue = (unsigned char)b.UnpackChar();
-  m_nColorForeGreen = (unsigned char)b.UnpackChar();
   m_nColorForeRed = (unsigned char)b.UnpackChar();
+  m_nColorForeGreen = (unsigned char)b.UnpackChar();
+  m_nColorForeBlue = (unsigned char)b.UnpackChar();
   b.UnpackChar();
-  m_nColorBackBlue = (unsigned char)b.UnpackChar();
-  m_nColorBackGreen = (unsigned char)b.UnpackChar();
   m_nColorBackRed = (unsigned char)b.UnpackChar();
+  m_nColorBackGreen = (unsigned char)b.UnpackChar();
+  m_nColorBackBlue = (unsigned char)b.UnpackChar();
   b.UnpackChar();
 
   b.UnpackUnsignedLong();
