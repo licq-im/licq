@@ -25,7 +25,7 @@ extern int errno;
 
 unsigned short ReversePort(unsigned short p)
 {
-  return ((p >> 16) & 0xFF) + ((p & 0xFF) << 16);
+  return ((p >> 8) & 0xFF) + ((p & 0xFF) << 8);
 }
 
 #define DEBUG_ENCRYPTION(x)
@@ -1457,7 +1457,7 @@ CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
   m_nSize += 15;
   InitBuffer();
 
-  buffer->PackUnsignedLong( ((_nPort & 0xFF) << 8) + ((_nPort >> 8) & 0xFF) );
+  buffer->PackUnsignedLong(ReversePort(m_nPort));
   buffer->PackString("");
   buffer->PackUnsignedLong(m_nFileSize);
   buffer->PackUnsignedLong(m_nPort);
@@ -1533,7 +1533,7 @@ CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
   buffer->PackUnsignedLong(-ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackString(_sLocalName);
-  buffer->PackUnsignedShort( ((_nLocalPort & 0xFF) << 8) + ((_nLocalPort >> 8) & 0xFF) );
+  buffer->PackUnsignedShort(ReversePort(_nLocalPort));
   buffer->PackChar(nColorForeBlue);
   buffer->PackChar(nColorForeGreen);
   buffer->PackChar(nColorForeRed);
