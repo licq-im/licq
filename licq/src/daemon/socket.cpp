@@ -229,8 +229,7 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
 {
   if (_nFlags & ADDR_LOCAL)
   {
-    // Setup the local structure (getsockname() fails under SOCKS apparently)
-#ifndef USE_SOCKS5
+    // Setup the local structure
     socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
     if (getsockname(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, &sizeofSockaddr) < 0)
     {
@@ -239,14 +238,17 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
       return (false);
     }
     if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
-#endif
     {
       char szHostName[256];
       gethostname(szHostName, 256);
       struct hostent sLocalHost;
       h_errno = gethostbyname_r_portable(szHostName, &sLocalHost);
-      if (h_errno == 0)
-        m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
+      if (h_errno != 0)
+      {
+        errno = -1;
+        return false;
+      }
+      m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
     }
   }
 /*
@@ -269,9 +271,6 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
 //-----INetSocket::GetIpByName-------------------------------------------------
 unsigned long INetSocket::GetIpByName(char *_szHostName)
 {
-  //struct hostent host, *h;
-  //char temp[1024];
-
   // check if the hostname is in dot and number notation
   struct in_addr ina;
   if (inet_aton(_szHostName, &ina))
@@ -280,11 +279,6 @@ unsigned long INetSocket::GetIpByName(char *_szHostName)
   // try and resolve hostname
   struct hostent host;
   h_errno = gethostbyname_r_portable(_szHostName, &host);
-/*#ifdef USE_SOLARIS
-  h = gethostbyname_r(_szHostName, &host, temp, 1024, &h_errno);
-#else
-  gethostbyname_r(_szHostName, &host, temp, 1024, &h, &h_errno);
-#endif*/
   if (h_errno == -1) // Couldn't resolve hostname/ip
   {
      // errno has been set
