@@ -118,10 +118,7 @@ AC_PATH_QT_MERGETR
 AC_PATH_KDE
 if test "$have_kde" = yes; then
    AC_DEFINE(USE_KDE)
-   KDE_LIBS="-lkdeui -lkdecore -lkfile"
-   dnl -lkfm -lkab
-   dnl QTKDE_MOC="./kdemoc.sh $MOC"
-   dnl GUINAME="kde-gui"
+   KDE_LIBS="-lkfile -lkio -lkdeui -lkdecore"
    AC_SUBST(KDE_LIBS)
 fi
 
