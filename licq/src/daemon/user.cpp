@@ -136,7 +136,7 @@ bool CUserManager::Load()
   licqConf.ReadNum("NumOfGroups", nGroups);
 
   m_bAllowSave = false;
-  char sGroupKey[16], sGroupName[32];
+  char sGroupKey[MAX_KEYxNAME_LEN], sGroupName[MAX_LINE_LEN];
   for (unsigned short i = 1; i <= nGroups; i++)
   {
      sprintf(sGroupKey, "Group%d.name", i);
@@ -161,7 +161,7 @@ bool CUserManager::Load()
   usersConf.ReadNum("NumOfUsers", nUsers);
   gLog.Info("%sLoading %d users.\n", L_INITxSTR, nUsers);
 
-  char sUserKey[16];
+  char sUserKey[MAX_KEYxNAME_LEN];
   unsigned long nUserUin;
   ICQUser *u;
   usersConf.SetFlags(INI_FxWARN);
@@ -357,7 +357,7 @@ void CUserManager::SaveGroups()
   licqConf.SetSection("groups");
   licqConf.WriteNum("NumOfGroups", NumGroups());
 
-  char sGroupKey[16];
+  char sGroupKey[MAX_KEYxNAME_LEN];
   //LockGroupList(LOCK_R);
   for (unsigned short i = 0; i < m_vszGroups.size(); i++)
   {
