@@ -157,7 +157,7 @@ public:
   void setGridLines(bool _b)  { CUserViewItem::s_bGridLines = _b; };
   void setFontStyles(bool _b)  { CUserViewItem::s_bFontStyles = _b; };
 
-  static UserFloatyList floaties;
+  static UserFloatyList* floaties;
   static CUserView *FindFloaty(unsigned long);
   static void UpdateFloaties();
 

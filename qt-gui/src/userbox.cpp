@@ -404,7 +404,7 @@ QString CUserViewItem::key (int column, bool ascending) const
 }
 
 
-UserFloatyList CUserView::floaties;
+UserFloatyList* CUserView::floaties = 0;
 unsigned long CUserView::s_nUin = 0;
 bool CUserView::s_bFloaty = false;
 CUserViewItem *CUserView::s_pItem = NULL;
@@ -463,8 +463,8 @@ CUserView::CUserView (QPopupMenu *m, ColumnInfos &_colInfo,
      hints->flags = WindowGroupHint;
      XSetWMHints(dsp, win, hints);
      XFree( hints );
-     floaties.resize(floaties.size()+1);
-     floaties.insert(floaties.size()-1, this);
+     floaties->resize(floaties->size()+1);
+     floaties->insert(floaties->size()-1, this);
    }
 
    //setAutoMask(true);
@@ -480,19 +480,19 @@ CUserView::~CUserView()
   if (parent() == NULL)
   {
     unsigned int i = 0;
-    for (; i<floaties.size(); i++)
+    for (; i<floaties->size(); i++)
     {
-      if (floaties.at(i) == this) {
-        floaties.take(i);
+      if (floaties->at(i) == this) {
+        floaties->take(i);
         break;
       }
     }
-    while(i+1 < floaties.size()) {
-        floaties.insert(i, floaties.at(i+1));
+    while(i+1 < floaties->size()) {
+        floaties->insert(i, floaties->at(i+1));
         i++;
     }
-    if(floaties.size())
-        floaties.resize(floaties.size()-1);
+    if(floaties->size())
+        floaties->resize(floaties->size()-1);
   }
 }
 
@@ -500,12 +500,12 @@ CUserView::~CUserView()
 CUserView *CUserView::FindFloaty(unsigned long nUin)
 {
   unsigned int i = 0;
-  for (; i<floaties.size(); i++)
+  for (; i<floaties->size(); i++)
   {
-    if (floaties.at(i)->firstChild()->ItemUin()== nUin)
+    if (floaties->at(i)->firstChild()->ItemUin()== nUin)
         break;
   }
-  if(i<floaties.size()) return floaties.at(i);
+  if(i<floaties->size()) return floaties->at(i);
 
   return NULL;
 }
@@ -787,14 +787,14 @@ void  CUserView::viewportMouseReleaseEvent(QMouseEvent* me)
 
 void CUserView::UpdateFloaties()
 {
-  for (unsigned int i = 0; i<floaties.size(); i++)
+  for (unsigned int i = 0; i<floaties->size(); i++)
   {
-    CUserViewItem* item = floaties.at(i)->firstChild();
+    CUserViewItem* item = floaties->at(i)->firstChild();
     ICQUser *u = gUserManager.FetchUser(item->ItemUin(), LOCK_R);
     if (u == NULL) return;
     item->setGraphics(u);
     gUserManager.DropUser(u);
-    floaties.at(i)->triggerUpdate();
+    floaties->at(i)->triggerUpdate();
   }
 }
 

@@ -199,6 +199,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   // Overwrite Qt's event handler
   old_handler = XSetErrorHandler(licq_xerrhandler);
 
+  // allocating floating window vector
+  if(CUserView::floaties == NULL)
+      CUserView::floaties = new UserFloatyList;
+
   // set up appicon and docking, code supplied by Mark Deneed
   WId win = winId();     // get the window
   Display *dsp = x11Display();  // get the display
@@ -668,12 +672,12 @@ CMainWindow::~CMainWindow()
   licqConf.WriteNum("w", n);
 
   licqConf.SetSection("floaties");
-  licqConf.WriteNum("Num", (unsigned short)CUserView::floaties.size());
+  licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
   unsigned short i = 0;
   char key[32];
-  for (; i < CUserView::floaties.size(); )
+  for (; i < CUserView::floaties->size(); )
   {
-    CUserView* iter = CUserView::floaties.at(i);
+    CUserView* iter = CUserView::floaties->at(i);
     sprintf(key, "Floaty%d.Uin", i);
     licqConf.WriteNum(key, iter->firstChild()->ItemUin());
     sprintf(key, "Floaty%d.X", i);
