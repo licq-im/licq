@@ -271,6 +271,10 @@ friend class CICQEventTag;
  *  icq network.  UIN and argument are both 0, as is the sub-type.
  *
  *  SIGNAL_LOGOFF - Indicates that we logged off.  All parameters are 0.
+ *	LOGOFF_REQUESTED - The user requeted to logoff and the action succeed.
+ *	LOGOFF_RATE  - loging off: login failed: rate limit exceeded
+ *	LOGOFF_PASSWORD - loging off: login failed: Invalid UIN and password
+ *      combination.
  *
  *  SIGNAL_ONEVENT - FIXME: MISSING DESCRIPTION
  *
@@ -290,6 +294,11 @@ const unsigned long SIGNAL_ONEVENT               = 0x00000010;
 const unsigned long SIGNAL_UI_VIEWEVENT          = 0x00000020;
 const unsigned long SIGNAL_UI_MESSAGE            = 0x00000040;
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
+
+// logoff constants
+const unsigned long LOGOFF_REQUESTED		 = 0x00000000;
+const unsigned long LOGOFF_RATE			 = 0x00000001;
+const unsigned long LOGOFF_PASSWORD		 = 0x00000002;
 
 // User information update constants
 const unsigned long USER_STATUS                 = 1;

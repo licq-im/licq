@@ -41,6 +41,7 @@ enum OwnerMenu_Identifiers {
   OwnerMenuHistory = mnuUserHistory,
   OwnerMenuSecurity,
   OwnerMenuPassword,
+  OwnerMenuSavedPassword,
   OwnerMenuRandomChat
 };
 

@@ -1372,6 +1372,7 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_FILE, 0, true, nSequence, nMsgID[0],
 												nMsgID[1])
 {
+#if 0
 	// XXX This is not the ICBM way yet!
 	// XXX It doesnt' even work! Perhaps try ICBM and it'll work?
 	m_nSize += 19;
@@ -1383,6 +1384,33 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 	buffer->PackUnsignedLong(0); // filesize
 	buffer->PackUnsignedLong(nPort); // port
 	buffer->PackUnsignedLong(0x00030000); // ack request
+#else
+	m_nSize += 80;
+	InitBuffer();
+
+	buffer->PackUnsignedShort(0x32);  // len of following plugin info
+	buffer->PackUnsignedLongBE(0xF02D12D9);
+	buffer->PackUnsignedLongBE(0x3091D311);
+	buffer->PackUnsignedLongBE(0x8DD70010);
+	buffer->PackUnsignedLongBE(0x4B06462E);
+	buffer->PackUnsignedShortBE(0x0000);
+	buffer->PackUnsignedLong(13); // strlen - is 13 bytes though
+	buffer->Pack("File Transfer", 13);
+	buffer->PackUnsignedLongBE(0x00000101);
+	buffer->PackUnsignedLongBE(0x00000000);
+	buffer->PackUnsignedLongBE(0);
+	buffer->PackUnsignedShortBE(0);
+	buffer->PackChar(0);
+	buffer->PackUnsignedLong(20); //remaining  - is 4 bytes
+                                //dont count last 4 bytes
+	buffer->PackUnsignedLong(0); // file desc - is 4 bytes
+	buffer->PackChar(0); // file desc
+	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
+	buffer->PackString(""); // filename
+	buffer->PackUnsignedLong(0); // filesize
+	buffer->PackUnsignedLong(nPort); // port
+	buffer->PackUnsignedLongBE(0x00030000); // ack request
+#endif
 }
 				
 

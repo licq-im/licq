@@ -73,6 +73,7 @@
 #include "userinfodlg.h"
 #include "usereventdlg.h"
 #include "reqauthdlg.h"
+#include "chgpassdlg.h"
 #ifdef USE_DOCK
 #include "wharf.h"
 #endif
@@ -105,7 +106,6 @@ extern "C" {
 #undef FocusIn
 #undef FocusOut
 #undef Status
-
 
 static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border border)
 {
@@ -1687,6 +1687,9 @@ void CMainWindow::callOwnerFunction(int index)
   else if (index == OwnerMenuPassword)
     (void) new PasswordDlg(licqDaemon, licqSigMan);
 
+  else if (index == OwnerMenuSavedPassword)
+    (void) new ChangePassDlg();
+
   else if (index == OwnerMenuRandomChat)
     (void) new CSetRandomChatGroupDlg(licqDaemon, licqSigMan);
 
@@ -3018,6 +3021,7 @@ void CMainWindow::initMenu()
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(tr("&Security Options"), OwnerMenuSecurity);
    mnuOwnerAdm->insertItem(tr("Change &Password"), OwnerMenuPassword);
+   mnuOwnerAdm->insertItem(tr("&Change Saved UIN/Password"), OwnerMenuSavedPassword);
    mnuOwnerAdm->insertItem(tr("&Random Chat Group"), OwnerMenuRandomChat);
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(tr("Debug Level"), mnuDebug);

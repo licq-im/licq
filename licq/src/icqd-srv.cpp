@@ -3580,13 +3580,14 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
     gLog.Error("%sRate limit exceeded.\n", L_ERRORxSTR);
     m_eStatus = STATUS_OFFLINE_FORCED;
     m_bLoggingOn = false;
-
+    PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_RATE, 0));
     break;
 
   case 0x05:
     gLog.Error("%sInvalid UIN and password combination.\n", L_ERRORxSTR);
     m_eStatus = STATUS_OFFLINE_FORCED;
     m_bLoggingOn = false;
+    PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, 0));
     break;
 
   case 0:
