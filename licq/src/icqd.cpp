@@ -1095,8 +1095,7 @@ ICQEvent *CICQDaemon::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResu
   pthread_mutex_lock(&mutex_runningevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
-  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++
-)
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
   {
     if ((*iter)->CompareSubSequence(_nSubSeq) )
     {
