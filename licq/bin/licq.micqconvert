@@ -1,55 +1,183 @@
-#!/bin/sh
+#!/usr/bin/perl
 
-if test $# -eq 0
-  then
-    echo "micqToLicq v1.21"
-    echo "Usage: micqToLicq <micq user file (~/.micqrc)>"
-    echo "Warning: the program not work if there exists a line in the micqrc file beginning with a number that is
-not a uin...you will have to comment out that line for the script to work properly."
-    exit 1
-fi
-echo Converting micq to Licq using $1...
+# ------------------------------------------------------------------------
+#
+# Objectives:
+# To make the life easier for people switching from MICQ to LICQ.
+# Convert MICQ contacts list to LICQ one.
+#
+# Usage: micq2licq.pl micq_rc_file licq_home_directory
+# Example: micq2licq.pl ~/.micqrc ~/.licq
+#
+# It is quick hack initially done for personal needs. The code
+# is released to the public under GPL.
+#
+# Any comments, hints, suggestions direct them to me:
+# 
+# atanas argirov
+# e-mail: aa@boza.org
+# http://www.boza.org/~aa
+#
+# You can find the original script at the following URL: 
+# http://www.boza.org/~aa/src/micq2licq.pl
+#
+# ------------------------------------------------------------------------
 
-# create the users.conf file
-awk -F" " '
-             BEGIN { print "[users]"
-                     print "NumOfUsers = "
-                     count = 1 }
-             $1 <= "9" && $1 >= "0" { print "User"count" = "$1 }
-             $1 <= "9" && $1 >= "0" { count++ } 
-             ' $1 > users.conf
+use strict;
 
-# create a script to build the user files
-awk -F" " '
-          BEGIN { print "#!/bin/sh" }
-          $1 <= "9" && $1 >= "0" { 
-             print "echo [user] > "$1".uin" 
-             print "echo Alias = "$2" "$3" "$4" >> "$1".uin" 
-             print "echo FirstName = none >> "$1".uin" 
-             print "echo LastName = none >> "$1".uin" 
-             print "echo EMail = none >> "$1".uin"  
-             print "echo History = default >> "$1".uin" 
-             print "echo NewMessages = 0 >> "$1".uin"
-	     print "echo Authorization = 0 >> "$1".uin"
-	     print "echo City = 0 >> "$1".uin"
-	     print "echo State = 0 >> "$1".uin"
-	     print "echo Country = 0 >> "$1".uin"
-	     print "echo PhoneNumber = 0 >> "$1".uin"
-	     print "echo Age = 0 >> "$1".uin"
-	     print "echo Sex = 0 >> "$1".uin"
-	     print "echo Homepage = 0 >> "$1".uin"
-	     print "echo About = 0 >> "$1".uin"
-	     print "echo OnlineNotify = 0 >> "$1".uin"
-	     print "echo NewUser = 0 >> "$1".uin"
-	     print "echo Group = 0 >> "$1".uin"
-	     print "echo VisibleList = 0 >> "$1".uin"
-	     print "echo InvisibleList = 0 >> "$1".uin"}
-          ' $1 > createUsers
 
-# run it
-chmod a+x createUsers
-./createUsers
-rm -f ./createUsers          
-echo "Done!"
-echo "Now edit the users.conf file and put the number of users you have into the NumOfUsers field.  Then put the users.conf and *.uin files into the conf/ directory in Licq."
+print STDERR <<EOF if $#ARGV < 1;
+
+Convert MICQ U*IX client contacts list to LICQ contacts list.
+
+Usage: micq2licq.pl micq_rc_file licq_home_directory
+    
+Example: micq2licq.pl ~/.micqrc ~/.licq
+    
+EOF
+    
+exit 1 if $#ARGV < 1;
+
+# Global variables
+
+my $rc;
+my $contacts_counted = 0;
+my $directory;
+my $absolute_path;
+my $initial_users = 0;
+my @contact;
+my @contacts_list;
+
+$directory = $ARGV[1];
+
+
+sub fill_out_content {
+    
+    print OUT "[user]" . "\n";
+    print OUT "History = default" . "\n";
+    print OUT "Groups.System = 0" . "\n";
+    print OUT "Groups.User = 0" . "\n";
+    print OUT "Ip = " . "\n";
+    print OUT "Port = 0" . "\n";
+    print OUT "NewMessages = 0" . "\n";
+    print OUT "LastOnline = 977755483" . "\n";
+    print OUT "LastSent = 977755431" . "\n";
+    print OUT "LastRecv = 0" . "\n";
+    print OUT "LastCheckedAR = 0" . "\n";
+    print OUT "AutoAccept = 0" . "\n";
+    print OUT "StatusToUser = 65535" . "\n";
+    print OUT "CustomAutoRsp = " . "\n";
+    print OUT "SendRealIp = 0" . "\n";
+    print OUT "Alias = " . $contact[1] . "\n";;
+    print OUT "FirstName = " . "\n";
+    print OUT "LastName = " . "\n";
+    print OUT "Email1 = " . "\n";
+    print OUT "Email2 = " . "\n";
+    print OUT "EmailO = " . "\n";
+    print OUT "City = " . "\n";
+    print OUT "State = " . "\n";
+    print OUT "PhoneNumber = " . "\n";
+    print OUT "FaxNumber = " . "\n";
+    print OUT "Address = " . "\n";
+    print OUT "CellularNumber = " . "\n";
+    print OUT "Zipcode = " . "\n";
+    print OUT "Country = 0" . "\n";
+    print OUT "Timezone = -100" . "\n";
+    print OUT "Authorization = 0" . "\n";
+    print OUT "HideEmail = 0" . "\n";
+    print OUT "Age = 65535" . "\n";
+    print OUT "Gender = 0" . "\n";
+    print OUT "Homepage = " . "\n";
+    print OUT "BirthYear = 0" . "\n";
+    print OUT "BirthMonth = 0" . "\n";
+    print OUT "BirthDay = 0" . "\n";
+    print OUT "Language1 = 0" . "\n";
+    print OUT "Language2 = 0" . "\n";
+    print OUT "Language3 = 0" . "\n";
+    print OUT "CompanyCity = " . "\n";
+    print OUT "CompanyState = " . "\n";
+    print OUT "CompanyPhoneNumber = " . "\n";
+    print OUT "CompanyFaxNumber = " . "\n";
+    print OUT "CompanyAddress = " . "\n";
+    print OUT "CompanyName = " . "\n";
+    print OUT "CompanyDepartment = " . "\n";
+    print OUT "CompanyPosition = " . "\n";
+    print OUT "CompanyHomepage = " . "\n";
+}    
+
+sub update_users_conf {
+    my $j;
+    my @users;
+    my $system_commands;
+    my $filename  =  $ARGV[1] . "/" . "users.conf";
+    my $filename_tmp  =  $ARGV[1] . "/" . "users.conf.tmp";
+    open (IN, "$filename") or die "Can't open requested file $!";
+    open (TMP, "+>$filename_tmp") or die "Can't open requested file $!";
+    
+    print "\nUpdating $filename... ";
+    
+    while (<IN>) {
+	$rc = index($_, "NumOfUsers");
+	if ($rc >= 0) {
+	    @users = split("=");
+	    $initial_users = $users[1];
+	    print TMP "NumOfUsers = " . ($initial_users + $contacts_counted - 1) . "\n";
+	} else {
+	    print TMP $_;
+	}    
+    }
+    
+    for ($j=0; $j < ($contacts_counted-1); $j++) {
+	print TMP "User" . ($j + $initial_users + 1) . " = " . $contacts_list[$j] . "\n";
+    }    
+    
+    $system_commands = "cp $filename_tmp $filename; rm $filename_tmp";
+    system($system_commands) == 0 or die "system() call failed: $?";
+    
+    print "Done.\n\n";
+    
+    close (IN);
+    close (TMP);
+}
+
+
+# Ignition point
+# try to open .micqrc
+
+open (STREAM, $ARGV[0]) or die "Can't open requested file $!";
+
+while (<STREAM>) {
+    
+    if ($contacts_counted >= 1) {
+	chop;
+	@contact = split (" ");
+	$contact[0] =~ s/\*//g;
+	$contact[0] =~ s/\~//g;
+	$contacts_list[$contacts_counted-1] = $contact[0];
+	$absolute_path = $directory . "/users/" . $contact[0] . ".uin";
+	open (OUT, ">$absolute_path") or die "Can't open requested file $!";
+	&fill_out_content();
+	close (OUT);
+	print "Contact #" . $contacts_counted . ": " . "uin: " . $contact[0] . " -> " . "alias: " . $contact[1] . " processed\n";
+	$contacts_counted++;
+       
+    } 
+    
+    else {
+    
+	$rc = index ($_, "Contacts");
+	if ($rc >= 0) {
+	    $contacts_counted = 1;
+	}
+    }
+}
+
+
+# let update users.conf also
+
+&update_users_conf();
+
+# let's clean
+
+close (STREAM);
 
