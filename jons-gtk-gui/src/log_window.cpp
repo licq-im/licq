@@ -75,11 +75,12 @@ void new_log_window()
 
 	/* Make the scrolled window part */
 	scroll = gtk_vscrollbar_new(GTK_TEXT(nw->text)->vadj);
-	gtk_box_pack_start(GTK_BOX(box_text), scroll, FALSE, FALSE, 0);
+	gtk_box_pack_start(GTK_BOX(box_text), scroll, TRUE, TRUE, 0);
 
 	gtk_table_attach(GTK_TABLE(table), box_text, 0, 2, 0, 2,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
-			 GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+                         3, 3);
 
 	/* The "OK" button */
 	ok = gtk_button_new_with_label("OK");
