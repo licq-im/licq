@@ -1408,7 +1408,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     mFormat    = packet.UnpackUnsignedShortBE();
     nUin       = packet.UnpackUinString();
 
-    if (nUin < 10000 && nUin != ICQ_UINxPAGER) {
+    if (nUin < 10000 && nUin != ICQ_UINxPAGER && nUin != ICQ_UINxSMS) {
       gLog.Warn("%sMessage through server with strange Uin: %04lx\n", L_WARNxSTR, nUin);
       break;
     }
@@ -1486,14 +1486,75 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       unsigned long nMask = ((nTypeMsg & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0);
       nTypeMsg &= ~ICQ_CMDxSUB_FxMULTIREC;
 
-      // new unpack the message
-      nMsgLen = msgTxt.UnpackUnsignedShort();
-      char* szMsg = new char[nMsgLen];
-      for (int i = 0; i < nMsgLen; ++i)
-        szMsg[i] = msgTxt.UnpackChar();
+      char *szMessage = NULL;
 
-      char* szMessage = gTranslator.RNToN(szMsg);
-      delete [] szMsg;
+      if (nTypeMsg == ICQ_CMDxSUB_SMS)
+      {
+        msgTxt.incDataPosRead(21);
+
+        unsigned short nTypeSMS = msgTxt.UnpackUnsignedShort();
+        switch (nTypeSMS) {
+           case 0x0000:
+              // SMS
+              break;
+           case 0x0002:
+              // SMS Receipt : Success (meanwhile, we handle it in a rather lame way)
+              gLog.Unknown("%sReceived SMS receipt indicating success.\n", L_UNKNOWNxSTR);
+              return;
+              break;
+           case 0x0003:
+              // SMS Receipt : Failure
+              gLog.Unknown("%sReceived SMS receipt indicating failure.\n", L_UNKNOWNxSTR);
+              return;
+              break;
+           default:
+              char *buf;
+              gLog.Unknown("%sUnknown SMS subtype (0x%04x):\n%s\n", L_UNKNOWNxSTR, nTypeSMS, packet.print(buf));
+              delete [] buf;
+              return;
+        }
+
+        unsigned long nTagLength = msgTxt.UnpackUnsignedLong();
+        // Refuse irreasonable tag sizes
+        if (nTagLength > 255) {
+          gLog.Unknown("%sInvalid tag in SMS message.", L_UNKNOWNxSTR);
+          return;
+        }
+        char* szTag = new char[nTagLength+1];
+        for (unsigned long i = 0; i < nTagLength; ++i)
+          szTag[i] = msgTxt.UnpackChar();
+        szTag[nTagLength] = '\0';
+        if (strcmp(szTag, "ICQSMS") != 0) {
+          gLog.Unknown("%sUnknown tag in SMS message:\n%s\n", L_UNKNOWNxSTR, szTag);
+          delete [] szTag;
+          return;
+        }
+        delete [] szTag;
+
+        msgTxt.incDataPosRead(3);
+
+        msgTxt.UnpackUnsignedLong(); // length till end of the message (useless)
+        unsigned long nSMSLength = msgTxt.UnpackUnsignedLong();
+        // Refuse irreasonable SMS sizes (something must've went wrong)
+        if (nSMSLength > 0x7fff) {
+          gLog.Unknown("%sSMS message packet was too large (claimed size: %lu bytes)\n", L_UNKNOWNxSTR, nSMSLength);
+          return;
+        }
+        szMessage = new char[nSMSLength+1];
+        for (unsigned long i = 0; i < nSMSLength; ++i)
+          szMessage[i] = msgTxt.UnpackChar();
+        szMessage[nSMSLength] = '\0';
+
+      } else {
+        // new unpack the message
+        nMsgLen = msgTxt.UnpackUnsignedShort();
+        char* szMsg = new char[nMsgLen];
+        for (int i = 0; i < nMsgLen; ++i)
+          szMsg[i] = msgTxt.UnpackChar();
+
+        szMessage = gTranslator.RNToN(szMsg);
+        delete [] szMsg;
+      }
 
       char *szType = NULL;
       unsigned short nTypeEvent = 0;
@@ -1506,6 +1567,14 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           CEventMsg *e = CEventMsg::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
 	  szType = strdup("Message");
 	  nTypeEvent = ON_EVENT_MSG;
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_SMS:
+	{
+	  CEventSms *e = CEventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, nMask);
+	  szType = strdup("SMS");
+	  nTypeEvent = ON_EVENT_SMS;
 	  eEvent = e;
 	  break;
 	}
@@ -1745,6 +1814,19 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
               gUserManager.DropOwner();
               eEvent->AddToHistory(NULL, D_RECEIVER);
               m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+	    }
+	    else
+	      gUserManager.DropOwner();
+            break;
+	  }
+	  case ICQ_CMDxSUB_SMS:
+	  {
+	    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+            if (AddUserEvent(o, eEvent))
+	    {
+              gUserManager.DropOwner();
+              eEvent->AddToHistory(NULL, D_RECEIVER);
+              m_xOnEventManager.Do(nTypeEvent, NULL);
 	    }
 	    else
 	      gUserManager.DropOwner();
@@ -2169,6 +2251,14 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           CEventEmailPager *e = new CEventEmailPager(szFields[0], szFields[3], szFields[5],
                                                      ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  delete [] szFields;	
+	  eEvent = e;
+	  break;
+	}
+	case ICQ_CMDxSUB_SMS:
+	{
+    CEventSms *e = CEventSms::Parse(szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, nMask);
+	  szType = strdup("SMS");
+	  nTypeEvent = ON_EVENT_SMS;
 	  eEvent = e;
 	  break;
 	}
