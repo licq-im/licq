@@ -339,7 +339,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       licqConf.ReadNum(colKey, colWidth, 100);
       sprintf(colKey, "Column%d.Align", i);
       licqConf.ReadNum(colKey, colAlign, 0);
-      colInfo.push_back(new CColumnInfo(colTitle, colFormat, colWidth, colAlign));
+      colInfo.push_back(new CColumnInfo(QString::fromLocal8Bit(colTitle), colFormat, colWidth, colAlign));
    }
    CreateUserView();
 
@@ -1365,7 +1365,7 @@ void CMainWindow::saveOptions()
   for (unsigned short i = 1; i <= colInfo.size(); i++)
   {
      sprintf(colKey, "Column%d.Title", i);
-     licqConf.WriteStr(colKey, colInfo[i - 1]->m_sTitle);
+     licqConf.WriteStr(colKey, colInfo[i - 1]->m_sTitle.local8Bit());
      sprintf(colKey, "Column%d.Format", i);
      licqConf.WriteStr(colKey, colInfo[i - 1]->m_szFormat);
      sprintf(colKey, "Column%d.Width", i);
