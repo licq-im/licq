@@ -85,6 +85,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
   icqEventTag = NULL;
   m_nUin = _nUin;
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
+  m_xCurrentReadEvent = NULL;
 
   CreateReadEventTab();
   CreateSendEventTab();
@@ -162,7 +163,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 void ICQFunctions::CreateReadEventTab()
 {
   tabLabel[TAB_READ] = tr("&View");
-  QVBox* p = new QVBox(this, tabLabel[TAB_READ]);
+  QVBox *p = new QVBox(this, tabLabel[TAB_READ]);
   p->setMargin(8);
   fcnTab[TAB_READ] = p;
 
@@ -173,6 +174,28 @@ void ICQFunctions::CreateReadEventTab()
   splRead->setOpaqueResize(true);
   splRead->setResizeMode(msgView, QSplitter::KeepSize);
   connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
+
+  //p->addSpacing(5);
+  QWidget *dummy = new QWidget(fcnTab[TAB_READ]);
+  dummy->setMinimumHeight(5);
+  //dummy->hide();
+
+  QHBox *h = new QHBox(fcnTab[TAB_READ]);
+  h->setSpacing(10);
+  btnRead1 = new QPushButton(h);
+  btnRead2 = new QPushButton(h);
+  btnRead3 = new QPushButton(h);
+  btnRead4 = new QPushButton(h);
+
+  btnRead1->setEnabled(false);
+  btnRead2->setEnabled(false);
+  btnRead3->setEnabled(false);
+  btnRead4->setEnabled(false);
+
+  connect(btnRead1, SIGNAL(clicked()), this, SLOT(slot_readbtn1()));
+  connect(btnRead2, SIGNAL(clicked()), this, SLOT(slot_readbtn2()));
+  connect(btnRead3, SIGNAL(clicked()), this, SLOT(slot_readbtn3()));
+  connect(btnRead4, SIGNAL(clicked()), this, SLOT(slot_readbtn4()));
 }
 
 
@@ -872,8 +895,9 @@ void ICQFunctions::tabSelected(const QString &tab)
   else if (tab == tabLabel[TAB_READ])
   {
      btnOk->setText(tr("Ok"));
-     btnSave->setText(tr("&Quote"));
-     m_bOwner ? btnSave->hide() : btnSave->show();
+     //btnSave->setText(tr("&Quote"));
+     //m_bOwner ? btnSave->hide() : btnSave->show();
+     btnSave->hide();
      msgView->triggerUpdate();
      currentTab = TAB_READ;
   }
@@ -901,8 +925,8 @@ void ICQFunctions::tabSelected(const QString &tab)
   else if (tab == tabLabel[TAB_HISTORY])
   {
      if (m_lHistoryList.size() == 0) SetupHistory();  // if no history, then get it
-     btnOk->setText(tr("Next ->"));
-     btnSave->setText(tr("<- Prev"));
+     btnOk->setText(tr("Next"));
+     btnSave->setText(tr("Prev"));
      btnSave->show();
      currentTab = TAB_HISTORY;
   }
@@ -980,10 +1004,20 @@ void ICQFunctions::slot_updatedUser(unsigned long _nUpdateType, unsigned long _n
 //-----ICQFunctions::printMessage----------------------------------------------
 void ICQFunctions::printMessage(QListViewItem *e)
 {
-  if(!e)
+  if (e == NULL)
     return;
 
+  btnRead1->setText("");
+  btnRead2->setText("");
+  btnRead3->setText("");
+  btnRead4->setText("");
+  btnRead1->setEnabled(false);
+  btnRead2->setEnabled(false);
+  btnRead3->setEnabled(false);
+  btnRead4->setEnabled(false);
+
   CUserEvent *m = ((MsgViewItem *)e)->msg;
+  m_xCurrentReadEvent = m;
   mleRead->setText(QString::fromLocal8Bit(m->Text()));
   if (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE)
   {
@@ -991,49 +1025,54 @@ void ICQFunctions::printMessage(QListViewItem *e)
     {
     case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
       (void) new CChatAcceptDlg(server, m_nUin, m->Sequence());
+      //btnRead1->setText(tr("Accept"));
+      //btnRead2->setText(tr("Refuse"));
       break;
+
     case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
       (void) new CFileAcceptDlg(server, m_nUin, (CEventFile *)m);
+      //btnRead1->setText(tr("Accept"));
+      //btnRead2->setText(tr("Refuse"));
       break;
+
+    case ICQ_CMDxSUB_MSG:
+      btnRead1->setText(tr("Quote"));
+      btnRead2->setText(tr("Forward"));
+      break;
+
     case ICQ_CMDxSUB_URL:   // view a url
-      if (server->getUrlViewer() != NULL && QueryUser(this, tr("View URL?"), tr("Yes"), tr("No")) )
-      {
-        char* szCmd = new char[strlen(server->getUrlViewer()) + strlen(((CEventUrl *)m)->Url()) + 8];
-        sprintf(szCmd, "%s '%s' &", server->getUrlViewer(), ((CEventUrl *)m)->Url());
-        if (system(szCmd) != 0) gLog.Error("%sView URL failed.\n", L_ERRORxSTR);
-        delete szCmd;
-      }
+      btnRead1->setText(tr("Quote"));
+      btnRead2->setText(tr("Forward"));
+      if (server->getUrlViewer() != NULL)
+        btnRead3->setText(tr("View"));
       break;
+
     case ICQ_CMDxSUB_REQxAUTH:
     {
-      if (QueryUser(this, tr("Authorize?"), tr("Yes"), tr("No")))
-        server->icqAuthorize( ((CEventAuthReq *)m)->Uin() );
-      //...only ask if they aren't already there...
-      ICQUser *u = gUserManager.FetchUser(((CEventAuthReq *)m)->Uin(), LOCK_R);
-      if (u != NULL)
-        gUserManager.DropUser(u);
+      btnRead1->setText(tr("Authorize"));
+      ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
+      if (u == NULL)
+        btnRead2->setText(tr("Add User"));
       else
-      {
-        if (QueryUser(this, tr("Add?"), tr("Yes"), tr("No")))
-          server->AddUserToList( ((CEventAuthReq *)m)->Uin());
-      }
+        gUserManager.DropUser(u);
       break;
     }
     case ICQ_CMDxSUB_AUTHORIZED:
     {
-      //...only ask if they aren't already there...
-      ICQUser *u = gUserManager.FetchUser(((CEventAuth *)m)->Uin(), LOCK_R);
-      if (u != NULL)
-        gUserManager.DropUser(u);
+      ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
+      if (u == NULL)
+        btnRead1->setText(tr("Add User"));
       else
-      {
-        if (QueryUser(this, tr("Add?"), tr("Yes"), tr("No")))
-          server->AddUserToList( ((CEventAuth *)m)->Uin());
-      }
+        gUserManager.DropUser(u);
       break;
     }
     } // switch
   }  // if
+
+  if (!btnRead1->text().isEmpty()) btnRead1->setEnabled(true);
+  if (!btnRead2->text().isEmpty()) btnRead2->setEnabled(true);
+  if (!btnRead3->text().isEmpty()) btnRead3->setEnabled(true);
+  if (!btnRead4->text().isEmpty()) btnRead4->setEnabled(true);
 
   short index = ((MsgViewItem *)e)->index;
   if (index >= 0)   // the message had not been seen yet
@@ -1047,13 +1086,103 @@ void ICQFunctions::printMessage(QListViewItem *e)
 }
 
 
+void ICQFunctions::slot_readbtn1()
+{
+  if (m_xCurrentReadEvent == NULL) return;
+
+  switch (m_xCurrentReadEvent->SubCommand())
+  {
+    case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
+      // Accept
+      break;
+
+    case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
+      // Accept
+      break;
+
+    case ICQ_CMDxSUB_MSG:
+      generateReply();
+      break;
+
+    case ICQ_CMDxSUB_URL:
+      generateReply();
+      break;
+
+    case ICQ_CMDxSUB_REQxAUTH:
+      server->icqAuthorize( ((CEventAuthReq *)m_xCurrentReadEvent)->Uin() );
+      break;
+
+    case ICQ_CMDxSUB_AUTHORIZED:
+      server->AddUserToList( ((CEventAuth *)m_xCurrentReadEvent)->Uin());
+      break;
+  } // switch
+
+}
+
+
+void ICQFunctions::slot_readbtn2()
+{
+  if (m_xCurrentReadEvent == NULL) return;
+
+  switch (m_xCurrentReadEvent->SubCommand())
+  {
+    case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
+      // Refuse
+      break;
+
+    case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
+      // Refuse
+      break;
+
+    case ICQ_CMDxSUB_MSG:
+      //btnRead2->setText(tr("Forward"));
+      break;
+
+    case ICQ_CMDxSUB_URL:   // view a url
+      //btnRead2->setText(tr("Forward"));
+      break;
+
+    case ICQ_CMDxSUB_REQxAUTH:
+      server->AddUserToList( ((CEventAuthReq *)m_xCurrentReadEvent)->Uin());
+      break;
+
+  } // switch
+
+}
+
+
+void ICQFunctions::slot_readbtn3()
+{
+  if (m_xCurrentReadEvent == NULL) return;
+
+  switch (m_xCurrentReadEvent->SubCommand())
+  {
+    case ICQ_CMDxSUB_URL:   // view a url
+      if (server->getUrlViewer() != NULL)
+      {
+        char* szCmd = new char[strlen(server->getUrlViewer()) + strlen(((CEventUrl *)m_xCurrentReadEvent)->Url()) + 8];
+        sprintf(szCmd, "%s '%s' &", server->getUrlViewer(),
+                ((CEventUrl *)m_xCurrentReadEvent)->Url());
+        if (system(szCmd) != 0) WarnUser(this, tr("View URL failed."));
+        delete szCmd;
+      }
+      break;
+  }
+}
+
+
+void ICQFunctions::slot_readbtn4()
+{
+}
+
+
 //-----ICQFunctions::save------------------------------------------------------
 void ICQFunctions::save()
 {
   switch (currentTab)
   {
   case TAB_READ:
-    generateReply();
+    //generateReply();
     break;
   case TAB_GENERALINFO:
     SaveGeneralInfo();
@@ -1266,7 +1395,6 @@ void ICQFunctions::ShowHistory()
     QString t = QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*tempIter)->Text() ));
     ItalisizeLine(t, "<p>&gt;", 3);
     ItalisizeLine(t, "<br>&gt;", 4);
-    //s.append(QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*tempIter)->Text() )));
     s.append(t);
     s.append("</font><br><hr><br>");
     st.append(s);

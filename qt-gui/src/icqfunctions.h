@@ -31,6 +31,7 @@ class CSignalManager;
 class MLEditWrap;
 class MsgView;
 class MLEditWrap;
+class CUserEvent;
 
 //=====ICQFunctions=============================================================
 
@@ -71,6 +72,8 @@ protected:
   QSplitter *splRead;
   MLEditWrap *mleRead;
   MsgView *msgView;
+  QPushButton *btnRead1, *btnRead2, *btnRead3, *btnRead4;
+  CUserEvent *m_xCurrentReadEvent;
 
   // Send Event tab
   void CreateSendEventTab();
@@ -158,6 +161,10 @@ protected slots:
    void specialFcn(int);
    void ReverseHistory(bool);
    void slot_updatetime();
+   void slot_readbtn1();
+   void slot_readbtn2();
+   void slot_readbtn3();
+   void slot_readbtn4();
 
 signals:
    void signal_updatedUser(unsigned long, unsigned long);

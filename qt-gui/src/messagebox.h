@@ -2,8 +2,24 @@
 #define MESSAGEBOX_H
 
 #include <qlistview.h>
+#include <qtooltip.h>
 
 class CUserEvent;
+class MsgView;
+
+//=====CMsgViewTips===============================================================================
+
+class CMsgViewTips : public QToolTip
+{
+public:
+  CMsgViewTips(MsgView * parent);
+  virtual ~CMsgViewTips() {};
+
+protected:
+  virtual void maybeTip(const QPoint&);
+};
+
+
 
 //=====UserViewItem================================================================================
 class MsgViewItem : public QListViewItem
@@ -17,6 +33,7 @@ public:
 protected:
    virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
 
+friend class CMsgViewTips;
 friend class MsgView;
 };
 
@@ -25,12 +42,14 @@ friend class MsgView;
 class MsgView : public QListView
 {
 public:
-   MsgView (QWidget *parent = 0, const char *name = 0);
-   CUserEvent *currentMsg(void);
-   void markRead(short);
-   QSize sizeHint() const;
+  MsgView (QWidget *parent = 0, const char *name = 0);
+  CUserEvent *currentMsg(void);
+  void markRead(short);
+  QSize sizeHint() const;
 protected:
-   virtual void resizeEvent(QResizeEvent *e);
+  CMsgViewTips *tips;
+
+  virtual void resizeEvent(QResizeEvent *e);
 };
 
 

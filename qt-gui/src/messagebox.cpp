@@ -5,6 +5,7 @@
 #include <qpainter.h>
 #include <qdatetime.h>
 #include <qstring.h>
+#include <qheader.h>
 
 #include "message.h"
 #include "messagebox.h"
@@ -22,13 +23,13 @@ MsgViewItem::MsgViewItem(CUserEvent *theMsg, unsigned short theIndex, QListView 
   setText(0, "*");
   setText(1, EventDescription(msg));
   setText(2, sd);
-  char szFlags[4];
+  /*char szFlags[4];
   szFlags[0] = msg->IsDirect() ? 'D' : ' ';
   szFlags[1] = msg->IsUrgent() ? 'U' : ' ';
   szFlags[2] = msg->IsMultiRec() ? 'M' : ' ';
   szFlags[3] = '\0';
   setText(3, szFlags);
-  setText(4, msg->IsLicq() ? msg->LicqVersionStr() : "");
+  setText(4, msg->IsLicq() ? msg->LicqVersionStr() : "");*/
 }
 
 MsgViewItem::~MsgViewItem(void)
@@ -39,10 +40,19 @@ MsgViewItem::~MsgViewItem(void)
 
 void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
+  QFont f(p->font());
   if (index != -1)
+  {
+    f.setItalic(true);
+    p->setFont(f);
     QListViewItem::paintCell(p, QColorGroup(cg.foreground(), cg.background(), cg.light(), cg.dark(), cg.mid(), QColor("blue"), cg.base()), column, width, align);
+  }
   else
+  {
+    f.setItalic(false);
+    p->setFont(f);
     QListViewItem::paintCell(p, cg, column, width, align);
+  }
 
   // add line to bottom and right side
   p->setPen(cg.mid());
@@ -56,15 +66,18 @@ MsgView::MsgView (QWidget *parent, const char *name)
   : QListView(parent, name)
 {
   addColumn(tr("N"), 20);
-  addColumn(tr("Event Type"), 115);
+  //addColumn(tr("Event Type"), 115);
+  addColumn(tr("Event Type"), 215);
   addColumn(tr("Time Received"), 115);
-  addColumn(tr("Flags"), 50);
-  addColumn(tr("Licq"), 50);
+  //addColumn(tr("Flags"), 50);
+  //addColumn(tr("Licq"), 50);
   setColumnAlignment(0, AlignCenter);
-  setColumnAlignment(3, AlignCenter);
-  setColumnAlignment(4, AlignRight);
+  //setColumnAlignment(3, AlignCenter);
+  //setColumnAlignment(4, AlignRight);
   setAllColumnsShowFocus (true);
   setVScrollBarMode(AlwaysOn);
+
+  header()->hide();
 
   QPalette pal(palette());
   QColorGroup normal(pal.normal());
@@ -72,7 +85,9 @@ MsgView::MsgView (QWidget *parent, const char *name)
                         normal.mid(), normal.text(), QColor(192, 192, 192));
   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
   setFrameStyle(QFrame::Panel | QFrame::Sunken);
-  setMinimumHeight(60);
+  setMinimumHeight(40);
+
+  tips = new CMsgViewTips(this);
 }
 
 CUserEvent *MsgView::currentMsg(void)
@@ -124,3 +139,40 @@ void MsgView::markRead(short index)
          e->index--;
    }
 }
+
+
+//=====CMsgItemTips===============================================================================
+
+CMsgViewTips::CMsgViewTips(MsgView* parent)
+  : QToolTip(parent)
+{
+  // nothing to do
+}
+
+void CMsgViewTips::maybeTip(const QPoint& c)
+{
+  QPoint p(c);
+  QListView *w = (QListView *)parentWidget();
+  if (w->header()->isVisible())
+    p.setY(p.y()-w->header()->height());
+
+  MsgViewItem *item = (MsgViewItem*) w->itemAt(p);
+
+  if (item == NULL) return;
+
+  QRect r(w->itemRect(item));
+  if (w->header()->isVisible())
+    r.moveBy(0, w->header()->height());
+
+  QString s(item->msg->IsDirect() ? w->tr("Direct") : w->tr("Server"));
+  if (item->msg->IsUrgent())
+    s += QString(" / ") + w->tr("Urgent");
+  if (item->msg->IsMultiRec())
+    s += QString(" / ") + w->tr("Multiple Recipients");
+  if (item->msg->IsLicq())
+    s += QString(" / Licq ") + QString::fromLocal8Bit(item->msg->LicqVersionStr());
+
+  tip(r, s);
+}
+
+
