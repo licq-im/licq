@@ -148,6 +148,7 @@ public:
   char *AutoResponse()                  { return m_szAutoResponse; }
   bool NewUser()                        { return m_bNewUser; }
   bool SendServer()                     { return m_bSendServer; }
+  unsigned short SendLevel()            { return m_nSendLevel; }
   bool EnableSave()                     { return m_bEnableSave; }
   bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
   unsigned long Uin()                   { return m_nUin; }
@@ -215,6 +216,7 @@ public:
   // Licq Info
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
+  void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned long s)   { m_nSequence = s; }
   void SetNewUser(bool s)             { m_bNewUser = s; SaveLicqInfo(); }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
@@ -337,7 +339,7 @@ protected:
        m_bSendServer,
        m_bEnableSave,
        m_bShowAwayMsg;
-  unsigned short m_nStatusToUser;
+  unsigned short m_nStatusToUser, m_nSendLevel;
   unsigned short m_nAutoAccept;
 
   // General Info

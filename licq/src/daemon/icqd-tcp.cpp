@@ -68,7 +68,11 @@ CICQEventTag *CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m, boo
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
   }
 
-  if (u != NULL) u->SetSendServer(!online);
+  if (u != NULL)
+  {
+    u->SetSendServer(!online);
+    u->SetSendLevel(nLevel);
+  }
   gUserManager.DropUser(u);
 
   delete mDos;
@@ -138,7 +142,11 @@ CICQEventTag *CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url, const
        u->GetAlias(), -p->getSequence());
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, _nUin, e);
   }
-  if (u != NULL) u->SetSendServer(!online);
+  if (u != NULL)
+  {
+    u->SetSendServer(!online);
+    u->SetSendLevel(nLevel);
+  }
   gUserManager.DropUser(u);
 
   delete szDescDos;
@@ -183,6 +191,7 @@ CICQEventTag *CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
     result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, nUin, e);
   }
   u->SetSendServer(false);
+  u->SetSendLevel(nLevel);
   gUserManager.DropUser(u);
 
   delete szDosDesc;
@@ -269,6 +278,7 @@ CICQEventTag *CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
      u->GetAlias(), -p->getSequence());
   ICQEvent *result = SendExpectEvent(u->SocketDesc(), p, CONNECT_USER, nUin, e);
   u->SetSendServer(false);
+  u->SetSendLevel(nLevel);
   gUserManager.DropUser(u);
 
   delete szReasonDos;
