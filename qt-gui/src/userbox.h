@@ -122,7 +122,7 @@ class CUserView : public QListView
 {
   Q_OBJECT
 public:
-  CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos _colInfo,
+  CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos &_colInfo,
              bool isHeader, bool _bGridLines, bool _bFontStyles,
              bool bTransparent, bool bShowBars, bool bSortByStatus,
              FlashType nFlash,
@@ -146,6 +146,7 @@ public:
   void setShowBars(bool);
 
   unsigned long MainWindowSelectedItemUin();
+  ColumnInfos &ColInfo()  { return colInfo; }
 
   static unsigned long SelectedItemUin();
   static bool SelectedItemFloaty();

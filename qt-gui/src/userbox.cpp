@@ -411,7 +411,7 @@ CUserViewItem *CUserView::s_pItem = NULL;
 
 
 //-----UserList::constructor-----------------------------------------------------------------------
-CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos _colInfo,
+CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, QPopupMenu *ma, ColumnInfos &_colInfo,
                     bool isHeader, bool _bGridLines, bool _bFontStyles,
                     bool bTransparent, bool bShowBars, bool bSortByStatus,
                     FlashType nFlash,
