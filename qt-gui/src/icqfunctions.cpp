@@ -2167,8 +2167,8 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
   {
     s_nX = x();
     s_nY = y();
-    e->accept();
     emit signal_finished(m_nUin);
+    e->accept();
     delete this;
   }
 }
@@ -2176,6 +2176,7 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
 
 ICQFunctions::~ICQFunctions()
 {
+  if (icqEventTag != NULL) server->CancelEvent(icqEventTag);
   delete icqEventTag;
   ICQUser::ClearHistory(m_lHistoryList);
 }

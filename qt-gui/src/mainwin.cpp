@@ -811,35 +811,46 @@ void CMainWindow::slot_updatedList(unsigned long _nSubSignal, unsigned long _nUi
 {
   switch(_nSubSignal)
   {
-  case LIST_ALL:
-  {
-    updateUserWin();
-    break;
-  }
-  case LIST_ADD:
-  {
-    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-    if (u == NULL)
+    case LIST_ALL:
     {
-      gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid uin received: %ld\n",
-                 L_ERRORxSTR, _nUin);
+      updateUserWin();
       break;
     }
-    if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
-        (m_bShowOffline || !u->StatusOffline()) )
-      (void) new CUserViewItem(u, userView);
-    gUserManager.DropUser(u);
-    break;
-  }
+    case LIST_ADD:
+    {
+      ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
+      if (u == NULL)
+      {
+        gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid uin received: %ld\n",
+                   L_ERRORxSTR, _nUin);
+        break;
+      }
+      if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
+          (m_bShowOffline || !u->StatusOffline()) )
+        (void) new CUserViewItem(u, userView);
+      gUserManager.DropUser(u);
+      break;
+    }
 
-  case LIST_REMOVE:
-  {
-    CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-    while (i != NULL && i->ItemUin() != _nUin) i = (CUserViewItem *)i->nextSibling();
-    if (i != NULL) delete i;
-    updateEvents();
-    break;
-  }
+    case LIST_REMOVE:
+    {
+      CUserViewItem *i = (CUserViewItem *)userView->firstChild();
+      while (i != NULL && i->ItemUin() != _nUin) i = (CUserViewItem *)i->nextSibling();
+      if (i != NULL) delete i;
+      updateEvents();
+      // If their box is open, kill it
+      UserDataListIter it;
+      for (it = licqUserData.begin(); it != licqUserData.end(); it++)
+      {
+        if ((*it)->Uin() == _nUin)
+        {
+          delete *it;
+          licqUserData.erase(it);
+          break;
+        }
+      }
+      break;
+    }
 
   }  // Switch
 }
@@ -1372,7 +1383,7 @@ void CMainWindow::removeUserFromList()
                      .arg(nUin) );
   gUserManager.DropUser(u);
   if (QueryUser(this, warning, tr("Ok"), tr("Cancel")))
-     licqDaemon->RemoveUserFromList(nUin);
+    licqDaemon->RemoveUserFromList(nUin);
 }
 
 void CMainWindow::removeUserFromGroup()
