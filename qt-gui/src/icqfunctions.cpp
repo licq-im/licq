@@ -1539,6 +1539,8 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
 
 ICQFunctions::~ICQFunctions()
 {
+  if (icqEventTag != NULL)
+    delete icqEventTag;
 }
 
 #include "moc/moc_icqfunctions.h"
