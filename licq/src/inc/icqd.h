@@ -100,6 +100,7 @@ public:
   ICQEvent *icqUserBasicInfo(unsigned long);
   ICQEvent *icqUserExtendedInfo(unsigned long);
   ICQEvent *icqRequestMetaInfo(unsigned long);
+
   ICQEvent *icqUpdateBasicInfo(const char *, const char *, const char *,
                                        const char *, bool);
   ICQEvent *icqUpdateExtendedInfo(const char *, unsigned short, const char *,
@@ -109,7 +110,21 @@ public:
                            const char *_szFax, const char *_szAddress,
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, const char *_szHomepage);
+  ICQEvent *icqSetGeneralInfo(char *szAlias, char *szFirstName,
+                              char *szLastName, char *szEmail1,
+                              char *szEmail2, char *szCity,
+                              char *szState, char *szPhoneNumber,
+                              char *szFaxNumber, char *szAddress,
+                              char *szCellularNumber, unsigned long nZipCode,
+                              unsigned short nCountryCode, bool bHideEmail);
+  ICQEvent *icqSetMoreInfo(unsigned short nAge,
+                           char nGender, char *szHomepage,
+                           char nBirthYear, char nBirthMonth,
+                           char nBirthDay, char nLanguage1,
+                           char nLanguage2, char nLanguage3);
   ICQEvent *icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
+  ICQEvent *icqSetAbout(const char *szAbout);
+
   unsigned short icqStartSearch(const char *, const char *, const char *, const char *);
   void icqLogoff(void);
   ICQEvent *icqSetStatus(unsigned long newStatus);

@@ -374,12 +374,66 @@ ICQEvent *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
 }
 
 
+//-----icqSetGeneralInfo----------------------------------------------------
+ICQEvent *CICQDaemon::icqSetGeneralInfo(
+                          char *szAlias, char *szFirstName,
+                          char *szLastName, char *szEmail1,
+                          char *szEmail2, char *szCity,
+                          char *szState, char *szPhoneNumber,
+                          char *szFaxNumber, char *szAddress,
+                          char *szCellularNumber, unsigned long nZipCode,
+                          unsigned short nCountryCode, bool bHideEmail)
+{
+  CPU_Meta_SetGeneralInfo *p =
+    new CPU_Meta_SetGeneralInfo(szAlias, szFirstName,
+                                szLastName, szEmail1,
+                                szEmail2, szCity,
+                                szState, szPhoneNumber,
+                                szFaxNumber, szAddress,
+                                szCellularNumber, nZipCode,
+                                nCountryCode, bHideEmail);
+
+  gLog.Info("%sUpdating general info (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
+  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+}
+
+
+//-----icqSetMoreInfo----------------------------------------------------
+ICQEvent *CICQDaemon::icqSetMoreInfo(unsigned short nAge,
+                              char nGender, char *szHomepage,
+                              char nBirthYear, char nBirthMonth,
+                              char nBirthDay, char nLanguage1,
+                              char nLanguage2, char nLanguage3)
+{
+  CPU_Meta_SetMoreInfo *p =
+    new CPU_Meta_SetMoreInfo(nAge, nGender, szHomepage,
+                             nBirthYear, nBirthMonth,
+                             nBirthDay, nLanguage1,
+                             nLanguage2, nLanguage3);
+
+  gLog.Info("%sUpdating more info (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
+  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+}
+
+
 //-----icqSetSecurityInfo----------------------------------------------------
 ICQEvent *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
 {
   CPU_Meta_SetSecurityInfo *p =
     new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
   gLog.Info("%sUpdating security info (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
+  return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
+}
+
+
+//-----icqSetAbout-----------------------------------------------------------
+ICQEvent *CICQDaemon::icqSetAbout(const char *szAbout)
+{
+  CPU_Meta_SetAbout *p = new CPU_Meta_SetAbout(szAbout);
+  gLog.Info("%sUpdating about (#%d/#%d)...\n", L_UDPxSTR,
             p->getSequence(), p->SubSequence());
   return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
 }
@@ -1132,9 +1186,6 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     {
       m_xOnEventManager.Do(ON_EVENT_MSG, u);
       u->Unlock();
-      // We only want a read lock because Reorder takes a write lock
-      // on the group, so there would be a potential race condition
-      // if we have a group and user write locked at the same time
       u->Lock(LOCK_R);
       gUserManager.Reorder(u);
       gUserManager.DropUser(u);
