@@ -1,0 +1,28 @@
+#--------------------------------------
+# Licq Icons Pack Howto
+# Version 1.0, February 12, 2000
+# Graham Roff
+#--------------------------------------
+#
+# Icon packs are easy to make, simple create the following icons,
+# and store them and the relevant <name>.icons config file in the
+# icons.<name> directory.
+# XPM, PNG and GIF formats are supported.  Any non-specified icons
+# will be blank except event icons which will default to the basic
+# message icon.
+
+[icons]
+Online = online.xpm
+Offline = offline.xpm
+FFC = ffchat.xpm
+Away = sign.xpm
+NA = cross.xpm
+Occupied = chess.xpm
+DND = lock.xpm
+Private = private.xpm
+Message = message.xpm
+Url = url.xpm
+Chat = chat.xpm
+File = file.xpm
+Authorize = authorize.xpm
+
