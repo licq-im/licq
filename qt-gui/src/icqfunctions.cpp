@@ -1389,6 +1389,7 @@ void ICQFunctions::callFcn()
         m_sProgressMsg = tr("Updating server...");
         icqEventTag = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
                                           nfoCompanyState->text().local8Bit(),
+                                          nfoCompanyPhone->text().local8Bit(),
                                           nfoCompanyFax->text().local8Bit(),
                                           nfoCompanyAddress->text().local8Bit(),
                                           nfoCompanyName->text().local8Bit(),
