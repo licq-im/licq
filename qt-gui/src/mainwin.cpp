@@ -169,7 +169,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #else
   gLog.Info("%sQt GUI configuration.\n", L_INITxSTR);
 #endif
-  sprintf(filename, "%s%s", BASE_DIR, "licq_qt-gui.conf");
+  sprintf(filename, "%s/licq_qt-gui.conf", BASE_DIR);
   CIniFile licqConf;
   if (! licqConf.LoadFile(filename) )
   {
@@ -538,7 +538,7 @@ CMainWindow::~CMainWindow(void)
 
   // save window position and size
   char buf[MAX_FILENAME_LEN];
-  sprintf(buf, "%s%s", BASE_DIR, "licq_qt-gui.conf");
+  sprintf(buf, "%s/licq_qt-gui.conf", BASE_DIR);
   CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
   // need some more error checking here...
   licqConf.LoadFile(buf);
@@ -1270,7 +1270,7 @@ void CMainWindow::saveOptions()
 
   // Save all our options
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s%s", BASE_DIR, "licq_qt-gui.conf");
+  sprintf(filename, "%s/licq_qt-gui.conf", BASE_DIR);
   CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
   if (!licqConf.LoadFile(filename)) return;
 

@@ -544,7 +544,7 @@ void OptionsDlg::ApplyOptions()
     else
     {
       char szTransFileName[MAX_FILENAME_LEN];
-      sprintf(szTransFileName, "%s%s%s", BASE_DIR, TRANSLATION_DIR, (const char *)cmbTrans->currentText());
+      sprintf(szTransFileName, "%s/%s/%s", BASE_DIR, TRANSLATION_DIR, (const char *)cmbTrans->currentText());
       gTranslator.setTranslationMap(szTransFileName);
     }
   }
