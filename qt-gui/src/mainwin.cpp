@@ -1293,7 +1293,7 @@ void CMainWindow::callUserFunction(int index)
   switch(index)
   {
     case mnuUserAuthorize:
-      licqDaemon->icqAuthorize(nUin);
+      licqDaemon->icqAuthorizeGrant(nUin, "Authorisation granted");
       break;
     case mnuUserCheckResponse:
       {
