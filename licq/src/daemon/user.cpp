@@ -3,8 +3,8 @@
 #endif
 
 #include <sys/types.h>
+#include <sys/stat.h>
 #include <netinet/in.h>
-#include <math.h>
 #include <ctype.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -21,179 +21,11 @@
 
 class CUserManager gUserManager;
 
+
+/*---------------------------------------------------------------------------
+ * ICQUser::Lock
+ *-------------------------------------------------------------------------*/
 void ICQUser::Lock(unsigned short _nLockType)
-{
-  switch (_nLockType)
-  {
-  case LOCK_R:
-    pthread_rdwr_rlock_np (&mutex_rw);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wlock_np(&mutex_rw);
-    break;
-  default:
-    break;
-  }
-  SetLockType(_nLockType);
-}
-
-void ICQUser::Unlock(void)
-{
-  unsigned short nLockType = LockType();
-  SetLockType(LOCK_R);
-  switch (nLockType)
-  {
-  case LOCK_R:
-    pthread_rdwr_runlock_np(&mutex_rw);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wunlock_np(&mutex_rw);
-    break;
-  default:
-    break;
-  }
-}
-
-
-
-//=====CUserGroup===============================================================
-CUserGroup::CUserGroup(char *_sName, bool _bOwner)
-{
-  m_szName = new char[strlen(_sName) + 1];
-  strcpy(m_szName, _sName);
-  m_bIsOwner = _bOwner;
-  pthread_rdwr_init_np (&mutex_rw, NULL);
-}
-
-CUserGroup::~CUserGroup(void)
-{
-  delete[] m_szName;
-  // if we are the owner of the pointers delete all the users
-  ICQUser *u = NULL;
-  if (m_bIsOwner)
-    for (unsigned short i = 0; i < NumUsers(); i++)
-    {
-      u = FetchUser(i, LOCK_W);
-      delete u;
-    }
-
-  // Destroy the mutex
-/*  int nResult = 0;
-  do
-  {
-    pthread_rdwr_wlock_np(&mutex_rw);
-    pthread_rdwr_wunlock(&mutex_rw);
-    nResult = pthread_mutex_destroy(&mutex);
-  } while (nResult != 0);*/
-}
-
-
-//-----CUserGroup::AddUser------------------------------------------------------
-void CUserGroup::AddUser(ICQUser *_pcUser)
-{
-  m_vpcUsers.push_back(_pcUser);
-  Reorder(_pcUser);
-}
-
-//-----CUserGroup::RemoveUser---------------------------------------------------
-void CUserGroup::RemoveUser(ICQUser *_pcUser)
-{
-  vector<ICQUser *>::iterator iter = m_vpcUsers.begin();
-  while (iter != m_vpcUsers.end() && _pcUser != (*iter)) iter++;
-  if (iter == m_vpcUsers.end())
-  {
-    gLog.Warn("%sAttempt to remove user (%s) from group (%s) they do not belong to.\n",
-              L_WARNxSTR, _pcUser->getAlias(), Name());
-  }
-  else
-    m_vpcUsers.erase(iter);
-}
-
-
-//-----CUserGroup::ShiftUser----------------------------------------------------
-void CUserGroup::ShiftUserUp(unsigned short i)
-{
-   if (i < NumUsers() - 1) m_vpcUsers[i] = m_vpcUsers[i + 1];
-}
-
-void CUserGroup::ShiftUserDown(unsigned short i)
-{
-   if (i < NumUsers() && i > 0) m_vpcUsers[i] = m_vpcUsers[i - 1];
-}
-
-
-//-----CUserGroup::FetchUser----------------------------------------------------
-ICQUser *CUserGroup::FetchUser(unsigned short i, unsigned short _nLockType)
-{
-  if (i >= NumUsers())
-    return NULL;
-  else
-  {
-    m_vpcUsers[i]->Lock(_nLockType);
-    return m_vpcUsers[i];
-  }
-}
-
-void CUserGroup::DropUser(ICQUser *u)
-{
-  if (u == NULL) return;
-  u->Unlock();
-}
-
-//-----CUserGroup---------------------------------------------------------------
-void CUserGroup::Reorder(ICQUser *_pcUser)
-{
-  unsigned short nPos = 0;
-  while (nPos < NumUsers() && _pcUser != m_vpcUsers[nPos])
-     nPos++;
-  if (nPos == NumUsers() || NumUsers() == 1) return;
-
-  // Now nPos is the position of the user to be reordered
-  // => _pcUser = m_vpcUsers[nPos]
-
-  bool bGoingDown = false;
-  ICQUser *u = NULL;
-  pthread_mutex_lock(&ICQUser::mutex_eSortKey);
-  if (nPos != 0)
-  {
-    u = FetchUser(nPos - 1, LOCK_R);
-    bGoingDown = _pcUser->SortKey() <= u->SortKey();
-    DropUser(u);
-  }
-  unsigned long nSortKey;
-  if (nPos != 0 && bGoingDown)
-  {
-     // Move user down the list (up the gui list)
-     unsigned short i;
-     for (i = nPos; i > 0; i--)
-     {
-        u = FetchUser(i - 1, LOCK_R);
-        nSortKey = u->SortKey();
-        DropUser(u);
-        if (_pcUser->SortKey() > nSortKey) break;
-        ShiftUserDown(i);
-     }
-     m_vpcUsers[i] = _pcUser;
-  }
-  else
-  {
-     // Move user up the list
-     unsigned short i;
-     for (i = nPos; i < NumUsers() - 1; i++)
-     {
-        u = FetchUser(i + 1, LOCK_R);
-        nSortKey = u->SortKey();
-        DropUser(u);
-        if (_pcUser->SortKey() <= nSortKey) break;
-        ShiftUserUp(i);
-     }
-     m_vpcUsers[i] = _pcUser;
-  }
-  pthread_mutex_unlock(&ICQUser::mutex_eSortKey);
-}
-
-//-----CUserGroup::Lock---------------------------------------------------------
-void CUserGroup::Lock(unsigned short _nLockType)
 {
   switch (_nLockType)
   {
@@ -210,8 +42,10 @@ void CUserGroup::Lock(unsigned short _nLockType)
 }
 
 
-//-----CUserGroup::Unlock-------------------------------------------------------
-void CUserGroup::Unlock(void)
+/*---------------------------------------------------------------------------
+ * ICQUser::Unlock
+ *-------------------------------------------------------------------------*/
+void ICQUser::Unlock(void)
 {
   unsigned short nLockType = m_nLockType;
   m_nLockType = LOCK_R;
@@ -229,15 +63,14 @@ void CUserGroup::Unlock(void)
 }
 
 
+
 //=====CUserManager=============================================================
 CUserManager::CUserManager(void) : m_hUsers(USER_HASH_SIZE)
 {
   // Set up the basic all users and new users group
-  pthread_mutex_init(&mutex_groups, NULL);
-  m_bAllowSave = false;
-  AddGroup(new CUserGroup("All Users", true));
-  AddGroup(new CUserGroup("New Users", false));
-  m_bAllowSave = true;
+  pthread_rdwr_init_np(&mutex_grouplist, NULL);
+  pthread_rdwr_init_np(&mutex_userlist, NULL);
+  m_nUserListLockType = m_nGroupListLockType = LOCK_N;
 
   m_xOwner = NULL;
   m_nOwnerUin = 0;
@@ -255,7 +88,10 @@ void CUserManager::SetOwnerUin(unsigned long _nUin)
   m_nOwnerUin = _nUin;
 }
 
-//-----CUserManager::Load-------------------------------------------------------
+
+/*---------------------------------------------------------------------------
+ * CUserManager::Load
+ *-------------------------------------------------------------------------*/
 bool CUserManager::Load(void)
 {
   // Create the owner
@@ -282,11 +118,12 @@ bool CUserManager::Load(void)
   {
      sprintf(sGroupKey, "Group%d.name", i);
      licqConf.ReadStr(sGroupKey, sGroupName);
-     AddGroup(new CUserGroup(sGroupName, false));
+     AddGroup(strdup(sGroupName));
   }
   m_bAllowSave = true;
 
   licqConf.ReadNum("DefaultGroup", m_nDefaultGroup, 0);
+  licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
   licqConf.CloseFile();
 
   // Load users from users.conf
@@ -318,150 +155,149 @@ bool CUserManager::Load(void)
 }
 
 
-//-----CUserManager::AddUser----------------------------------------------------
+/*---------------------------------------------------------------------------
+ * CUserManager::AddUser
+ *-------------------------------------------------------------------------*/
 unsigned long CUserManager::AddUser(ICQUser *_pcUser)
 {
-  // go through all the groups, add the user to those they belong to
-  // will always add them to group 0
-  CUserGroup *g;
   _pcUser->Lock(LOCK_R);
   unsigned long nUin = _pcUser->getUin();
+  // Store the user in the hash table
   m_hUsers.Store(_pcUser, nUin);
-  for (unsigned short i = 0; i < NumGroups(); i++)
-  {
-    if (_pcUser->getIsInGroup(i))
-    {
-      g = FetchGroup(i, LOCK_W);
-      g->AddUser(_pcUser);
-      DropGroup(g);
-    }
-  }
+
+  // Reorder the user to the correct place
+  Reorder(_pcUser, false);
   _pcUser->Unlock();
+
   return nUin;
 }
 
 
-//-----CUserManager::RemoveUser-------------------------------------------------
+/*---------------------------------------------------------------------------
+ * CUserManager::RemoveUser
+ *-------------------------------------------------------------------------*/
 void CUserManager::RemoveUser(unsigned long _nUin)
 {
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
-  // Remove the user from all the groups they belong to
-  for (unsigned short i = 0; i < NumGroups(); i++)
-  {
-    if (u->getIsInGroup(i))
-    {
-      CUserGroup *g = FetchGroup(i, LOCK_W);
-      g->RemoveUser(u);
-      DropGroup(g);
-    }
-  }
-
   u->RemoveFiles();
+  LockUserList(LOCK_W);
+  UserListIter iter = m_vpcUsers.begin();
+  while (iter != m_vpcUsers.end() && u != (*iter)) iter++;
+  if (iter == m_vpcUsers.end())
+    gLog.Warn("%sInteral Error: CUserManager::RemoveUser():\n"
+              "%sUser \"%s\" (%ld) not found in vector.\n",
+              L_WARNxSTR, L_BLANKxSTR, u->getAlias(), u->getUin());
+  else
+    m_vpcUsers.erase(iter);
   DropUser(u);
   m_hUsers.Remove(_nUin);
+  UnlockUserList();
   delete u;
 }
 
 
-//-----CUserManager::AddGroup---------------------------------------------------
-void CUserManager::AddGroup(CUserGroup *_pcGroup)
+/*---------------------------------------------------------------------------
+ * CUserManager::AddGroup
+ *-------------------------------------------------------------------------*/
+void CUserManager::AddGroup(char *_szName)
 {
-  pthread_mutex_lock(&mutex_groups);
-  m_vpcGroups.push_back(_pcGroup);
+  LockGroupList(LOCK_W);
+  m_vszGroups.push_back(_szName);
   SaveGroups();
-  pthread_mutex_unlock(&mutex_groups);
+  UnlockGroupList();
 }
 
 
+
+/*---------------------------------------------------------------------------
+ * CUserManager::RemoveGroup
+ *
+ * Removes a group (note groups are numbered 1 to NumGroups() )
+ *-------------------------------------------------------------------------*/
 void CUserManager::RemoveGroup(unsigned short n)
 {
   // Don't delete the all users or new users groups
-  if (n >= NumGroups() || n < 2)
-  {
-    pthread_mutex_unlock(&mutex_groups);
-    return;
-  }
+  if (n >= NumGroups()) return;
 
-  pthread_mutex_lock(&mutex_groups);
+  GroupList *g = LockGroupList(LOCK_W);
   // Erase the group from the vector
-  CUserGroup *g = FetchGroup(n, LOCK_W);
-  vector<CUserGroup *>::iterator iter = m_vpcGroups.begin();
-  for (int i = 0; i < n; i++) iter++;
-  m_vpcGroups.erase(iter);
-  delete g;
+  GroupListIter iter = m_vszGroups.begin();
+  for (int i = 1; i < n; i++) iter++;
+  free (*iter);
+  m_vszGroups.erase(iter);
 
-  // Adjust all the users
-  ICQUser *u;
-  g = FetchGroup(0, LOCK_R);
-  for (int i = 0; i < g->NumUsers(); i++)
+  unsigned short j;
+  FOR_EACH_USER_START(LOCK_W)
   {
-    u = g->FetchUser(i, LOCK_W);
-    if (u == NULL) continue;
-    // shift groups up
-    for (int j = n + 1; j < NumGroups(); j++)
-    {
-      u->setIsInGroup(j - 1, u->getIsInGroup(j));
-    }
-    g->DropUser(u);
+    for (j = n; j < g->size() + 1; j++)
+      pUser->SetInGroup(GROUPS_USER, j, pUser->GetInGroup(GROUPS_USER, j + 1));
   }
-  DropGroup(g);
+  pUser->SetInGroup(GROUPS_USER, j, false);
+  FOR_EACH_USER_END;
   if (m_nDefaultGroup >= n) m_nDefaultGroup--;
+  if (m_nNewUserGroup >= n) m_nNewUserGroup--;
   SaveGroups();
-  pthread_mutex_unlock(&mutex_groups);
+  UnlockGroupList();
 }
 
+
+/*---------------------------------------------------------------------------
+ * CUserManager::SwapGroups
+ *-------------------------------------------------------------------------*/
 void CUserManager::SwapGroups(unsigned short g1, unsigned short g2)
 {
-  pthread_mutex_lock(&mutex_groups);
+  LockGroupList(LOCK_W);
 
   // validate the group numbers
-  if (g1 >= NumGroups() || g1 < 2 || g2 >= NumGroups() || g2 < 2)
+  if (g1 > m_vszGroups.size() || g1 < 1 || g2 > m_vszGroups.size() || g2 < 1)
   {
-    pthread_mutex_unlock(&mutex_groups);
+    UnlockGroupList();
     return;
   }
 
   // move the actual group
-  CUserGroup *g = m_vpcGroups[g1];
-  m_vpcGroups[g1] = m_vpcGroups[g2];
-  m_vpcGroups[g2] = g;
-
-  // adjust all the users
-  ICQUser *u;
-  bool bInG1;
-  g = FetchGroup(0, LOCK_R);
-  for (int i = 0; i < g->NumUsers(); i++)
-  {
-    u = g->FetchUser(i, LOCK_W);
-    if (u == NULL) continue;
-    // swap the groups
-    bInG1 = u->getIsInGroup(g1);
-    u->setIsInGroup(g1, u->getIsInGroup(g2));
-    u->setIsInGroup(g2, bInG1);
-    g->DropUser(u);
-  }
-  DropGroup(g);
+  char *g = m_vszGroups[g1 - 1];
+  m_vszGroups[g1 - 1] = m_vszGroups[g2 - 1];
+  m_vszGroups[g2 - 1] = g;
   if (m_nDefaultGroup == g1) m_nDefaultGroup = g2;
   else if (m_nDefaultGroup == g2) m_nDefaultGroup = g1;
+  if (m_nNewUserGroup == g1) m_nNewUserGroup = g2;
+  else if (m_nNewUserGroup == g2) m_nNewUserGroup = g1;
   SaveGroups();
-  pthread_mutex_unlock(&mutex_groups);
+  UnlockGroupList();
 
+  // adjust all the users
+  bool bInG1;
+  FOR_EACH_USER_START(LOCK_W)
+  {
+    bInG1 = pUser->GetInGroup(GROUPS_USER, g1);
+    pUser->SetInGroup(GROUPS_USER, g1, pUser->GetInGroup(GROUPS_USER, g2));
+    pUser->SetInGroup(GROUPS_USER, g2, bInG1);
+  }
+  FOR_EACH_USER_END
 }
 
-//-----CUserManager::RenameGroup-----------------------------------------------
+
+/*---------------------------------------------------------------------------
+ * CUserManager::RenameGroup
+ *-------------------------------------------------------------------------*/
 void CUserManager::RenameGroup(unsigned short n, const char *_sz)
 {
-  pthread_mutex_lock(&mutex_groups);
-  CUserGroup *g = FetchGroup(n, LOCK_W);
-  g->SetName(_sz);
-  DropGroup(g);
+  if (n < 1 || n > NumGroups()) return;
+  GroupList *g = LockGroupList(LOCK_W);
+  free((*g)[n - 1]);
+  (*g)[n - 1] = strdup(_sz);
   SaveGroups();
-  pthread_mutex_unlock(&mutex_groups);
+  UnlockGroupList();
 }
 
 
-//-----CUserManager::SaveGroups------------------------------------------------
+/*---------------------------------------------------------------------------
+ * CUserManager::SaveGroups
+ *
+ * Assumes a lock on the group list.
+ *-------------------------------------------------------------------------*/
 void CUserManager::SaveGroups(void)
 {
   if (!m_bAllowSave) return;
@@ -473,47 +309,28 @@ void CUserManager::SaveGroups(void)
   licqConf.LoadFile(filename);
 
   licqConf.SetSection("groups");
-  licqConf.WriteNum("NumOfGroups", (unsigned short)(NumGroups() - 2));
+  licqConf.WriteNum("NumOfGroups", NumGroups());
 
   char sGroupKey[16];
-  CUserGroup *g;
-  for (unsigned short i = 1; i <= NumGroups() - 2; i++)
+  //LockGroupList(LOCK_R);
+  for (unsigned short i = 0; i < m_vszGroups.size(); i++)
   {
-     sprintf(sGroupKey, "Group%d.name", i);
-     g = FetchGroup(i + 1, LOCK_R);
-     licqConf.WriteStr(sGroupKey, g->Name());
-     DropGroup(g);
+     sprintf(sGroupKey, "Group%d.name", i + 1);
+     licqConf.WriteStr(sGroupKey, m_vszGroups[i]);
   }
+  //UnlockGroupList();
 
   licqConf.WriteNum("DefaultGroup", m_nDefaultGroup);
+  licqConf.WriteNum("NewUserGroup", m_nNewUserGroup);
   licqConf.FlushFile();
   licqConf.CloseFile();
 }
 
 
-//-----CUserManager::FetchGroup-------------------------------------------------
-CUserGroup *CUserManager::FetchGroup(unsigned short i, unsigned short _nLockType)
-{
-  if (i < NumGroups())
-  {
-    m_vpcGroups[i]->Lock(_nLockType);
-    return m_vpcGroups[i];
-  }
-  else
-  {
-    return NULL;
-  }
-}
 
-
-//-----CUserManager:::DropGroup-------------------------------------------------
-void CUserManager::DropGroup(CUserGroup *g)
-{
-  g->Unlock();
-}
-
-
-//-----CUserManager::FetchUser--------------------------------------------------
+/*---------------------------------------------------------------------------
+ * CUserManager::FetchUser
+ *-------------------------------------------------------------------------*/
 ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
 {
   ICQUser *u = NULL;
@@ -531,102 +348,257 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
   return u;
 }
 
+
+
+/*---------------------------------------------------------------------------
+ * CUserManager::DropUser
+ *-------------------------------------------------------------------------*/
 void CUserManager::DropUser(ICQUser *u)
 {
-  //if (u != NULL)
-    u->Unlock();
+  u->Unlock();
 }
 
+/*---------------------------------------------------------------------------
+ * CUserManager::FetchOwner
+ *-------------------------------------------------------------------------*/
 ICQOwner *CUserManager::FetchOwner(unsigned short _nLockType)
 {
   m_xOwner->Lock(_nLockType);
   return m_xOwner;
 }
 
+
+/*---------------------------------------------------------------------------
+ * CUserManager::DropOwner
+ *-------------------------------------------------------------------------*/
 void CUserManager::DropOwner(void)
 {
   m_xOwner->Unlock();
 }
 
 
-//-----CUserManager::Reorder----------------------------------------------------
-void CUserManager::Reorder(ICQUser *_pcUser)
-// Call reorder for every group the user is in, assumes a read lock on the user
+/*---------------------------------------------------------------------------
+ * CUserManager::Reorder
+ *
+ * Assumes a read lock on the user.
+ *-------------------------------------------------------------------------*/
+void CUserManager::Reorder(ICQUser *_pcUser, bool _bOnList)
 {
-  if (_pcUser == NULL) return;
-  for (unsigned short i = 0; i < NumGroups(); i++)
-    if (_pcUser->getIsInGroup(i))
+  UserList *ul = LockUserList(LOCK_W);
+  UserListIter iter;
+  /*
+  bool bInserted = false, bRemoved = !_bOnList;
+  for (iter = ul->begin();
+       iter != ul->end() && (!bInserted || !bRemoved);
+       iter++)
+  {
+    if (*iter == _pcUser && !bRemoved)
     {
-      CUserGroup *g = FetchGroup(i, LOCK_W);
-      g->Reorder(_pcUser);
-      DropGroup(g);
+      ul->erase(iter);
+      bRemoved = true;
     }
+    if (_pcUser->SortKey() <= (*iter)->SortKey() && !bInserted)
+    {
+      ul->insert(iter, _pcUser);
+      bInserted = true;
+    }
+  }
+  if (!bInserted) ul->push_back(_pcUser);
+  */
+
+  if (_bOnList)
+  {
+    iter = ul->begin();
+    while (iter != ul->end() && *iter != _pcUser) iter++;
+    if (iter == ul->end())
+    {
+      gLog.Warn("%sInternal Error: CUserManager::Reorder():\n"
+                "%sGiven user \"%s\" (%ld) not found.\n", L_WARNxSTR,
+                L_BLANKxSTR, _pcUser->getAlias(), _pcUser->getUin());
+      UnlockUserList();
+      return;
+    }
+    // Now iter is the user to move
+    ul->erase(iter);
+  }
+
+  // Now we reinsert the user in the correct place
+  pthread_mutex_lock(&ICQUser::mutex_sortkey);
+  for (iter = ul->begin(); iter != ul->end(); iter++)
+  {
+    if (_pcUser->SortKey() <= (*iter)->SortKey())
+    {
+      ul->insert(iter, _pcUser);
+      break;
+    }
+  }
+  // Check if we have to add to the end
+  if (iter == ul->end()) ul->push_back(_pcUser);
+  pthread_mutex_unlock(&ICQUser::mutex_sortkey);
+
+  UnlockUserList();
 }
 
 
-//-----CUserManager::SaveAllUsers-----------------------------------------------
+/*---------------------------------------------------------------------------
+ * CUserManager::SaveAllUsers
+ *-------------------------------------------------------------------------*/
 void CUserManager::SaveAllUsers(void)
 {
-  ICQUser *u = NULL;
-  CUserGroup *g = FetchGroup(0, LOCK_R);
-  unsigned short nNumUsers = g->NumUsers();
-  for (unsigned short i = 0; i < nNumUsers; i++)
+  FOR_EACH_USER_START(LOCK_R)
   {
-    u = g->FetchUser(i, LOCK_R);
-    u->saveInfo();
-    u->saveBasicInfo();
-    u->saveExtInfo();
-    g->DropUser(u);
+    pUser->saveInfo();
+    pUser->saveBasicInfo();
+    pUser->saveExtInfo();
   }
-  DropGroup(g);
+  FOR_EACH_USER_END
 }
 
 
-//-----CUserManager::AddUserToGroup---------------------------------------------
+/*---------------------------------------------------------------------------
+ * CUserManager::NumUsers
+ *-------------------------------------------------------------------------*/
+unsigned short CUserManager::NumUsers(void)
+{
+  //LockUserList(LOCK_R);
+  unsigned short n = m_vpcUsers.size();
+  //UnlockUserList();
+  return n;
+}
+
+
+/*---------------------------------------------------------------------------
+ * CUserManager::NumGroups
+ *-------------------------------------------------------------------------*/
+unsigned short CUserManager::NumGroups(void)
+{
+  //LockGroupList(LOCK_R);
+  unsigned short n = m_vszGroups.size();
+  //UnlockGroupList();
+  return n;
+}
+
+
+/*---------------------------------------------------------------------------
+ * LockUserList
+ *
+ * Locks the entire user list for iterating through...
+ *-------------------------------------------------------------------------*/
+UserList *CUserManager::LockUserList(unsigned short _nLockType)
+{
+  switch (_nLockType)
+  {
+  case LOCK_R:
+    pthread_rdwr_rlock_np (&mutex_userlist);
+    break;
+  case LOCK_W:
+    pthread_rdwr_wlock_np(&mutex_userlist);
+    break;
+  default:
+    break;
+  }
+  m_nUserListLockType = _nLockType;
+  return &m_vpcUsers;
+}
+
+
+
+
+
+/*---------------------------------------------------------------------------
+ * CUserManager::UnlockUserList
+ *-------------------------------------------------------------------------*/
+void CUserManager::UnlockUserList(void)
+{
+  unsigned short nLockType = m_nUserListLockType;
+  m_nUserListLockType = LOCK_R;
+  switch (nLockType)
+  {
+  case LOCK_R:
+    pthread_rdwr_runlock_np(&mutex_userlist);
+    break;
+  case LOCK_W:
+    pthread_rdwr_wunlock_np(&mutex_userlist);
+    break;
+  default:
+    break;
+  }
+}
+
+/*---------------------------------------------------------------------------
+ * LockGroupList
+ *
+ * Locks the entire group list for iterating through...
+ *-------------------------------------------------------------------------*/
+GroupList *CUserManager::LockGroupList(unsigned short _nLockType)
+{
+  switch (_nLockType)
+  {
+  case LOCK_R:
+    pthread_rdwr_rlock_np (&mutex_grouplist);
+    break;
+  case LOCK_W:
+    pthread_rdwr_wlock_np(&mutex_grouplist);
+    break;
+  default:
+    break;
+  }
+  m_nGroupListLockType = _nLockType;
+  return &m_vszGroups;
+}
+
+
+
+/*---------------------------------------------------------------------------
+ * CUserManager::UnlockGroupList
+ *-------------------------------------------------------------------------*/
+void CUserManager::UnlockGroupList(void)
+{
+  unsigned short nLockType = m_nGroupListLockType;
+  m_nGroupListLockType = LOCK_R;
+  switch (nLockType)
+  {
+  case LOCK_R:
+    pthread_rdwr_runlock_np(&mutex_grouplist);
+    break;
+  case LOCK_W:
+    pthread_rdwr_wunlock_np(&mutex_grouplist);
+    break;
+  default:
+    break;
+  }
+}
+
+
+/*---------------------------------------------------------------------------
+ * CUserManager::AddUserToGroup
+ *-------------------------------------------------------------------------*/
 void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)
 {
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
-  CUserGroup *g = FetchGroup(_nGroup, LOCK_W);
-  if (g == NULL)
-  {
-    DropUser(u);
-    gLog.Warn("%sInvalid group identifier: %d.\n", L_WARNxSTR, _nGroup);
-    return;
-  }
-
-  u->AddToGroup(_nGroup);
-  g->AddUser(u);
-
+  u->AddToGroup(GROUPS_USER, _nGroup);
   DropUser(u);
-  DropGroup(g);
 }
 
 
-//-----CUserManager::RemoveUserFromGroup----------------------------------------
+/*---------------------------------------------------------------------------
+ * CUserManager::RemoveUserFromGroup
+ *-------------------------------------------------------------------------*/
 void CUserManager::RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup)
 {
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
-  CUserGroup *g = FetchGroup(_nGroup, LOCK_W);
-  if (g == NULL)
-  {
-    DropUser(u);
-    gLog.Warn("%sInvalid group identifier: %d.\n", L_WARNxSTR, _nGroup);
-    return;
-  }
-
-  u->RemoveFromGroup(_nGroup);
-  g->RemoveUser(u);
-
+  u->RemoveFromGroup(GROUPS_USER, _nGroup);
   DropUser(u);
-  DropGroup(g);
 }
 
 
 //=====CUserHashTable===========================================================
 CUserHashTable::CUserHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 {
+  pthread_rdwr_init_np(&mutex_rw, NULL);
+  m_nLockType = LOCK_R;
 }
 
 
@@ -635,7 +607,7 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
   Lock(LOCK_R);
 
   ICQUser *u = NULL;
-  list <ICQUser *> &l = m_vlTable[HashValue(_nUin)];
+  UserList &l = m_vlTable[HashValue(_nUin)];
   // If no users, this is bad
   if (l.size() == 0)
     u = NULL;
@@ -649,7 +621,7 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
   else
   {
     unsigned long nUin;
-    list<ICQUser *>::iterator iter;
+    UserListIter iter;
     for (iter = l.begin(); iter != l.end(); iter++)
     {
       (*iter)->Lock(LOCK_R);
@@ -671,7 +643,7 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
 void CUserHashTable::Store(ICQUser *u, unsigned long _nUin)
 {
   Lock(LOCK_W);
-  list<ICQUser *> &l = m_vlTable[HashValue(_nUin)];
+  UserList &l = m_vlTable[HashValue(_nUin)];
   l.push_front(u);
   Unlock();
 }
@@ -680,9 +652,9 @@ void CUserHashTable::Remove(unsigned long _nUin)
 {
   Lock(LOCK_W);
 
-  list<ICQUser *> &l = m_vlTable[HashValue(_nUin)];
+  UserList &l = m_vlTable[HashValue(_nUin)];
   unsigned long nUin;
-  list<ICQUser *>::iterator iter;
+  UserListIter iter;
   for (iter = l.begin(); iter != l.end(); iter++)
   {
     (*iter)->Lock(LOCK_R);
@@ -699,7 +671,8 @@ void CUserHashTable::Remove(unsigned long _nUin)
 
 unsigned short CUserHashTable::HashValue(unsigned long _nUin)
 {
-  return _nUin % m_vlTable.size();
+  //return _nUin % m_vlTable.size();
+  return _nUin & (unsigned long)(USER_HASH_SIZE - 1);
 }
 
 void CUserHashTable::Lock(unsigned short _nLockType)
@@ -721,7 +694,7 @@ void CUserHashTable::Lock(unsigned short _nLockType)
 void CUserHashTable::Unlock(void)
 {
   unsigned short nLockType = m_nLockType;
-  m_nLockType = LOCK_N;
+  m_nLockType = LOCK_R;
   switch (nLockType)
   {
   case LOCK_R:
@@ -759,7 +732,7 @@ void CUserHashTable::Unlock(void)
 unsigned short ICQUser::s_nNumUserEvents = 0;
 pthread_mutex_t ICQUser::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 ESortKey ICQUser::s_eSortKey;
-pthread_mutex_t ICQUser::mutex_eSortKey;
+pthread_mutex_t ICQUser::mutex_sortkey;
 
 
 //-----ICQUser::constructor-----------------------------------------------------
@@ -823,14 +796,14 @@ bool ICQUser::LoadData(void)
   m_fConf.ReadStr("History", sTemp, "default");
   if (sTemp[0] == '\0') strcpy(sTemp, "default");
   setHistoryFile(sTemp);
-  m_fConf.ReadBool("OnlineNotify", bTemp, false);
-  setOnlineNotify(bTemp);
+  //m_fConf.ReadBool("OnlineNotify", bTemp, false);
+  //SetOnlineNotify(bTemp);
   m_fConf.ReadNum("NewMessages", nTemp, 0);
   nNewMessages = nTemp;
   m_fConf.ReadBool("NewUser", bTemp, false);
   setIsNew(bTemp);
-  if (!m_fConf.ReadNum("Group", nTemp)) setGroup(getIsNew() ? 1 : 0);
-  else setGroup(nTemp);
+  m_fConf.ReadNum("Groups.System", m_nGroups[GROUPS_SYSTEM], 0);
+  m_fConf.ReadNum("Groups.User", m_nGroups[GROUPS_USER], 0);
   m_fConf.ReadStr("Ip", sTemp, "0.0.0.0");
   struct in_addr in;
   nTemp = inet_aton(sTemp, &in);
@@ -838,10 +811,10 @@ bool ICQUser::LoadData(void)
   unsigned short nPort;
   m_fConf.ReadNum("Port", nPort, 0);
   SetIpPort(nTemp, nPort);
-  m_fConf.ReadBool("VisibleList", bTemp, false);
-  setVisibleList(bTemp);
-  m_fConf.ReadBool("InvisibleList", bTemp, false);
-  setInvisibleList(bTemp);
+  //m_fConf.ReadBool("VisibleList", bTemp, false);
+  //setVisibleList(bTemp);
+  //m_fConf.ReadBool("InvisibleList", bTemp, false);
+  //setInvisibleList(bTemp);
   m_fConf.ReadStr("City", sTemp, "Unknown");
   setCity(sTemp);
   m_fConf.ReadStr("State", sTemp, "Unknown");
@@ -940,12 +913,12 @@ void ICQUser::SetDefaults(void)
   setHomepage("");
   setPhoneNumber("");
   setAbout("");
-  setGroup(1);
-  setOnlineNotify(false);
+  SetGroups(GROUPS_SYSTEM, 0);
+  SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
   setAuthorization(false);
-  setInvisibleList(false);
-  setVisibleList(false);
-  setOnlineNotify(false);
+  //setInvisibleList(false);
+  //setVisibleList(false);
+  //setOnlineNotify(false);
   setIsNew(true);
 }
 
@@ -1035,9 +1008,9 @@ unsigned long ICQUser::SortKey(void)
 
 void ICQUser::SetSortKey(ESortKey _eSortKey)
 {
-  pthread_mutex_lock(&mutex_eSortKey);
+  pthread_mutex_lock(&mutex_sortkey);
   s_eSortKey = _eSortKey;
-  pthread_mutex_unlock(&mutex_eSortKey);
+  pthread_mutex_unlock(&mutex_sortkey);
 }
 
 unsigned long ICQUser::getSequence(bool increment = false)
@@ -1193,71 +1166,111 @@ void ICQUser::getExtInfo(struct UserExtInfo &ud)
 }
 
 
-void ICQUser::usprintf(char *_sz, const char *_szFormat)
+void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
 {
+  bool bLeft = false;
+  unsigned short i = 0, j, nField = 0, nPos = 0;
+  char szTemp[128], *sz;
   _sz[0] = '\0';
-  unsigned short nLen = strlen(_szFormat), i = 0;
-  char szTemp[128];
-  while(i < nLen)
+  while(_szFormat[i] != '\0')
   {
     if (_szFormat[i] == '%')
     {
       i++;
-      if (isdigit(_szFormat[i]))
+      if (bAllowFieldWidth)
       {
-        strncat(_sz, &_szFormat[i - 1], 2);
-        i++;
-        continue;
+        if (_szFormat[i] == '-')
+        {
+          i++;
+          bLeft = true;
+        }
+        j = nField = 0;
+        while (isdigit(_szFormat[i]))
+          szTemp[j++] = _szFormat[i++];
+        if (j > 0) nField = atoi(szTemp);
+      }
+      else
+      {
+        if (isdigit(_szFormat[i]))
+        {
+          strncat(_sz, &_szFormat[i - 1], 2);
+          i++;
+          continue;
+        }
       }
       switch(_szFormat[i])
       {
       case 'i':
         char buf[32];
-        strcat(_sz, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+        strcpy(szTemp, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+        sz = szTemp;
         break;
       case 'p':
         sprintf(szTemp, "%d", Port());
-        strcat(_sz, szTemp);
+        sz = szTemp;
         break;
       case 'e':
-        strcat(_sz, getEmail());
+        sz = getEmail();
         break;
       case 'n':
         sprintf(szTemp, "%s %s", getFirstName(), getLastName());
-        strcat(_sz, szTemp);
+        sz = szTemp;
         break;
       case 'f':
-        strcat(_sz, getFirstName());
+        sz = getFirstName();
         break;
       case 'l':
-        strcat(_sz, getLastName());
+        sz = getLastName();
         break;
       case 'a':
-        strcat(_sz, getAlias());
+        sz = getAlias();
         break;
       case 'u':
         sprintf(szTemp, "%ld", getUin());
-        strcat(_sz, szTemp);
+        sz = szTemp;
         break;
       case 'w':
-        strcat(_sz, getHomepage());
+        sz = getHomepage();
         break;
       case 'h':
-        strcat(_sz, getPhoneNumber());
+        sz = getPhoneNumber();
         break;
       default:
         gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
                   L_WARNxSTR, _szFormat[i]);
+        sz = NULL;
         break;
+      }
+      // Now append sz to the string using the given field width and alignment
+      if (nField == 0)
+      {
+        j = 0;
+        while(sz[j] != '\0') _sz[nPos++] = sz[j++];
+      }
+      else
+      {
+        if (bLeft)
+        {
+          j = 0;
+          while(sz[j] != '\0') _sz[nPos++] = sz[j++];
+          while(j++ < nField) _sz[nPos++] = ' ';
+        }
+        else
+        {
+          int nLen = nField - strlen(sz);
+          for (j = 0; j < nLen; j++) _sz[nPos++] = ' ';
+          j = 0;
+          while(sz[j] != '\0') _sz[nPos++] = sz[j++];
+        }
       }
       i++;
     }
     else
     {
-      strncat(_sz, &_szFormat[i], 1);
-      i++;
+      _sz[nPos++] = _szFormat[i++];
     }
   }
+  _sz[nPos] = '\0';
 
 }
 
@@ -1303,10 +1316,11 @@ void ICQUser::saveInfo(void)
       return;
    }
    m_fConf.SetSection("user");
-   m_fConf.WriteBool("OnlineNotify", getOnlineNotify());
-   m_fConf.WriteBool("InvisibleList", getInvisibleList());
-   m_fConf.WriteBool("VisibleList", getVisibleList());
-   m_fConf.WriteNum("Group", getGroup());
+   //m_fConf.WriteBool("OnlineNotify", getOnlineNotify());
+   //m_fConf.WriteBool("InvisibleList", getInvisibleList());
+   //m_fConf.WriteBool("VisibleList", getVisibleList());
+   m_fConf.WriteNum("Groups.System", GetGroups(GROUPS_SYSTEM));
+   m_fConf.WriteNum("Groups.User", GetGroups(GROUPS_USER));
    char buf[64];
    m_fConf.WriteStr("Ip", inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
    m_fConf.WriteNum("Port", Port());
@@ -1392,29 +1406,31 @@ void ICQUser::ClearEvent(unsigned short index)
 }
 
 
-bool ICQUser::getIsInGroup(unsigned short _nGroup)
+bool ICQUser::GetInGroup(GroupType g, unsigned short _nGroup)
 {
-   if (_nGroup == 0) return true;
-   return (getGroup() & (unsigned long)pow(2, _nGroup - 1));
+  if (_nGroup == 0) return true;
+  return (GetGroups(g) & (unsigned long)(1 << (_nGroup - 1)));
 }
 
-void ICQUser::setIsInGroup(unsigned short _nGroup, bool _bIn)
+void ICQUser::SetInGroup(GroupType g, unsigned short _nGroup, bool _bIn)
 {
-  if (_bIn) AddToGroup(_nGroup);
-  else RemoveFromGroup(_nGroup);
+  if (_bIn)
+    AddToGroup(g, _nGroup);
+  else
+    RemoveFromGroup(g, _nGroup);
 }
 
-void ICQUser::AddToGroup(unsigned short _nGroup)
+void ICQUser::AddToGroup(GroupType g, unsigned short _nGroup)
 {
-   if (_nGroup == 0) return;
-   setGroup(getGroup() | (unsigned short)pow(2, _nGroup - 1));
+  if (_nGroup == 0) return;
+  SetGroups(g, GetGroups(g) | (unsigned long)(1 << (_nGroup - 1)));
 }
 
 
-void ICQUser::RemoveFromGroup(unsigned short _nGroup)
+void ICQUser::RemoveFromGroup(GroupType g, unsigned short _nGroup)
 {
-   if (_nGroup == 0) return;
-   setGroup(getGroup() & (0xFFFF - (unsigned short)pow(2, _nGroup - 1)));
+  if (_nGroup == 0) return;
+  SetGroups(g, GetGroups(g) & (0xFFFFFFFF - (unsigned long)(1 << (_nGroup - 1))));
 }
 
 
@@ -1459,6 +1475,14 @@ ICQOwner::ICQOwner(void)
 
   // Get data from the config file
   sprintf(filename, "%s%s", BASE_DIR, "owner.uin");
+
+  // Make sure owner.uin is mode 0600
+  if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
+  {
+    gLog.Warn("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n",
+                 L_WARNxSTR, filename);
+  }
+
   m_fConf.SetFileName(filename);
   LoadData();
   m_fConf.SetFlags(INI_FxWARN);

@@ -198,3 +198,6 @@ char *CTranslator::NToRN(const char *_szOldStr)
   }
   return (szNewStr);
 }
+
+
+

@@ -233,18 +233,9 @@ unsigned long CPU_ContactList::getSize(void)
    return(CPacketUdp::getSize() + 1 + (m_vnUins.size() * sizeof(unsigned long)));
 }
 
-CPU_ContactList::CPU_ContactList(CUserGroup *_cUsers, unsigned short first, 
-                                 unsigned short num) 
-   : CPacketUdp(ICQ_CMDxSND_USERxLIST)
+CPU_ContactList::CPU_ContactList(UinList &uins)
+   : CPacketUdp(ICQ_CMDxSND_USERxLIST), m_vnUins(uins)
 {
-  // Go through the entire list of users
-  ICQUser *u;
-  for (unsigned short i = first; i < _cUsers->NumUsers() && i < first + num; i++) 
-  {
-    u = _cUsers->FetchUser(i, LOCK_R); 
-    m_vnUins.push_back(u->getUin());
-    _cUsers->DropUser(u);
-  }
   m_nNumUsers = m_vnUins.size();
 
   initBuffer();
@@ -274,19 +265,9 @@ unsigned long CPU_VisibleList::getSize(void)
    return(CPacketUdp::getSize() + 1 + (m_vnUins.size() * sizeof(unsigned long)));
 }
 
-CPU_VisibleList::CPU_VisibleList(CUserGroup *_cUsers) : CPacketUdp(ICQ_CMDxSND_VISIBLExLIST)
+CPU_VisibleList::CPU_VisibleList(UinList &uins)
+  : CPacketUdp(ICQ_CMDxSND_VISIBLExLIST), m_vnUins(uins)
 {
-  // Go through the entire list of users, checking if each one is on
-  // the visible list
-  ICQUser *u;
-  for (unsigned short i = 0; i < _cUsers->NumUsers(); i++)
-  {
-    u = _cUsers->FetchUser(i, LOCK_R);
-    if (u->getVisibleList() )
-        m_vnUins.push_back(u->getUin());
-    _cUsers->DropUser(u);
-  }
-
   m_nNumUsers = m_vnUins.size();
 
   initBuffer();
@@ -303,25 +284,16 @@ unsigned long CPU_InvisibleList::getSize(void)
    return(CPacketUdp::getSize() + 1 + (m_vnUins.size() * sizeof(unsigned long)));
 }
 
-CPU_InvisibleList::CPU_InvisibleList(CUserGroup *_cUsers) : CPacketUdp(ICQ_CMDxSND_INVISIBLExLIST)
+CPU_InvisibleList::CPU_InvisibleList(UinList &uins)
+  : CPacketUdp(ICQ_CMDxSND_INVISIBLExLIST), m_vnUins(uins)
 {
-   // Go through the entire list of users, checking if each one is on 
-   // the contact list and the invisible list
-  ICQUser *u;
-  for (unsigned short i = 0; i < _cUsers->NumUsers(); i++) 
-  {
-    u = _cUsers->FetchUser(i, LOCK_R);
-    if (u->getInvisibleList() )
-      m_vnUins.push_back(u->getUin());
-    _cUsers->DropUser(u);
-  }
-   m_nNumUsers = m_vnUins.size();
+  m_nNumUsers = m_vnUins.size();
 
-   initBuffer();
+  initBuffer();
 
-   buffer->add(m_nNumUsers);
-   for (unsigned short i  = 0; i < m_vnUins.size(); i++)
-      buffer->add(m_vnUins[i]);
+  buffer->add(m_nNumUsers);
+  for (unsigned short i  = 0; i < m_vnUins.size(); i++)
+     buffer->add(m_vnUins[i]);
 }
 
 

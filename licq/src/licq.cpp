@@ -226,7 +226,7 @@ const char *CLicq::Version(void)
 bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
 {
   void *handle;
-  char *error;
+  const char *error;
   struct SPluginFunctions p;
   char szPlugin[MAX_FILENAME_LEN];
 

@@ -45,8 +45,12 @@ all: licq-daemon.a licq
 dep:
 	g++ $(CPPFLAGS) -MM *.cpp > Makefile.dep
 
+Makefile.dep:
+	touch Makefile.dep
+	make dep
+
 clean:
-	$(RM) licq core *.o *.core
+	$(RM) licq core *.o *.core Makefile.dep
 	( cd daemon && $(MAKE) clean )
 
 distclean: clean

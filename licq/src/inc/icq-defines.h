@@ -110,7 +110,7 @@ const unsigned short ICQ_TCPxACK_RETURN            = 0x0002;
 // TCP message type (composed of (status | ..._Fx...)
 const unsigned short ICQ_TCPxMSG_AUTOxREPLY        = 0x0000;
 const unsigned short ICQ_TCPxMSG_NORMAL            = 0x0010;
-const unsigned short ICQ_TCPxMSG_LIST              = 0x0020;  // not done
+const unsigned short ICQ_TCPxMSG_LIST              = 0x0020;
 const unsigned short ICQ_TCPxMSG_URGENT            = 0x0040;
 const unsigned short ICQ_TCPxMSG_FxONLINE          = 0x0000;
 const unsigned short ICQ_TCPxMSG_FxINVISIBLE       = 0x0080;

@@ -103,6 +103,8 @@ public:
   void setUrlViewer(const char *s);
   const char *Terminal(void);
   void SetTerminal(const char *s);
+  bool AllowNewUsers(void)      { return m_bAllowNewUsers; }
+  void SetAllowNewUsers(bool b) { m_bAllowNewUsers = b; }
 
 
   COnEventManager *OnEventManager(void)  { return &m_xOnEventManager; }
@@ -148,6 +150,7 @@ protected:
                  m_nMaxUsersPerPacket;
   int m_nUDPSocketDesc,
       m_nTCPSocketDesc;
+  bool m_bAllowNewUsers;
 
   char *m_szUrlViewer, *m_szTerminal;
 
@@ -172,8 +175,8 @@ protected:
 
   unsigned short ProcessUdpPacket(CBuffer &packet);
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
-  void ProcessTcpPacket(CBuffer &packet, int sockfd);
-  void ProcessTcpHandshake(TCPSocket *);
+  bool ProcessTcpPacket(CBuffer &packet, int sockfd);
+  bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);
 
   int ConnectToServer(void);

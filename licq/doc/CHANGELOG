@@ -1,5 +1,13 @@
 Change log for Licq.
 
+New in 0.71
+o  New history format allowing easier parsing and much more informative
+   display
+o  Some bugs fixed
+o  Ignore user list added
+o  User list format totally changed (affects developers only)
+o  Ignore messages from users not on contact list option added
+
 
 New in 0.70.1
 o  Changed CICQSignal class to be much more informative and logical

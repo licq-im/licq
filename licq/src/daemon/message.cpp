@@ -31,8 +31,8 @@ const char *CUserEvent::Time(void)
   if (m_tTime == 0) m_tTime = time(NULL);
   strcpy(s_szTime, ctime(&m_tTime));
   // Remove the trailing newline
-  //s_szTime[24] = '\0';
-  s_szTime[16] = '\0';
+  s_szTime[24] = '\0';
+  //s_szTime[16] = '\0';
 
   return s_szTime;
 }
@@ -55,62 +55,44 @@ CUserEvent::~CUserEvent(void)
 }
 
 
+//-----NToNS--------------------------------------------------------------------
+char *NToNS(const char *_szOldStr)
+{
+  //if (_szOldStr == NULL) return NULL;
+  char *szNewStr = new char[(strlen(_szOldStr) << 1) + 2];
+  unsigned long j = 0, i = 0;
+  szNewStr[j++] = ':';
+  while (_szOldStr[i] != '\0')
+  {
+    szNewStr[j++] = _szOldStr[i];
+    if (_szOldStr[i] == '\n') szNewStr[j++] = ':';
+    i++;
+  }
+  if (szNewStr[j - 1] == ':') j--;
+  szNewStr[j] = '\0';
+  return (szNewStr);
+}
+
+
 //-----CUserEvent::AddToHistory-------------------------------------------------
 void CUserEvent::AddToHistory(ICQUser *u, direction _nDir)
 {
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  char szOut[strlen(Text()) + 512];
-  switch (_nDir)
+  char *szText = NToNS(Text());
+  char szOut[strlen(szText) + 128];
+  sprintf(szOut, "[ %c | %04d | %04d | %04d | %ld ]\n"
+                 "%s\n"
+                 "\n",
+          _nDir == D_RECEIVER ? 'R' : 'S',
+          m_nSubCommand, m_nCommand, (unsigned short)(m_nFlags >> 16), m_tTime, szText);
+  if (u != NULL)
+    u->WriteToHistory(szOut);
+  else
   {
-  case D_RECEIVER:
-    /*sprintf(szOut, "From %s  %s\n"
-                   "From: %s <%s>\n"
-                   "To: %s <%s>\n"
-                   "Date: %s\n"
-                   "Subject: %s\n"
-                   "Content-Length: %d\n\n%s\n\n",
-            u == NULL ? "Server" : u->getEmail(), Time(),
-            u->getAlias(), u->getEmail(),
-            o->getAlias(), o->getEmail(),
-            Time(), Description(), strlen(Text()), Text());*/
-    sprintf(szOut, "%s -> %s (%s): %s\n%s\n--------------------\n",
-            u == NULL ? "Server" : u->getAlias(), o->getAlias(),
-            Time(), Description(), Text());
-    if (u != NULL)
-      u->WriteToHistory(szOut);
-    else
-    {
-      gUserManager.DropOwner();
-      o = gUserManager.FetchOwner(LOCK_W);
-      o->WriteToHistory(szOut);
-    }
-    break;
-
-  case D_SENDER:
-    /*sprintf(szOut, "From %s  %s\n"
-                   "From: %s <%s>\n"
-                   "To: %s <%s>\n"
-                   "Date: %s\n"
-                   "Subject: %s\n"
-                   "Content-Length: %d\n\n%s\n\n",
-              u == NULL ? "Server" : o->getEmail(), Time(),
-              o->getAlias(), o->getEmail(),
-              u->getAlias(), u->getEmail(),
-              Time(), Description(), strlen(Text()), Text());*/
-    sprintf(szOut, "%s -> %s (%s): %s\n%s\n--------------------\n",
-            o->getAlias(), u == NULL ? "Server" : u->getAlias(),
-            Time(), Description(), Text());
-    if (u != NULL)
-      u->WriteToHistory(szOut);
-    else
-    {
-      gUserManager.DropOwner();
-      o = gUserManager.FetchOwner(LOCK_W);
-      o->WriteToHistory(szOut);
-    }
-    break;
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    o->WriteToHistory(szOut);
+    gUserManager.DropOwner();
   }
-  gUserManager.DropOwner();
+  delete [] szText;
 }
 
 
@@ -185,8 +167,8 @@ CEventFileCancel::~CEventFileCancel(void)
 
 //=====CEventUrl================================================================
 
-CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription, 
-                     unsigned short _nCommand, time_t _tTime, 
+CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription,
+                     unsigned short _nCommand, time_t _tTime,
                      unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_URL, _nCommand, 0, _tTime, _nFlags)
 {
@@ -278,10 +260,10 @@ CEventAdded::~CEventAdded(void)
 
 
 //=====CEventAuth===============================================================
-CEventAuth::CEventAuth(unsigned long _nUin, const char *_szAlias, 
-                       const char *_szFirstName,const char *_szLastName, 
-                       const char *_szEmail, const char *_szReason, 
-                       unsigned short _nCommand, time_t _tTime, 
+CEventAuth::CEventAuth(unsigned long _nUin, const char *_szAlias,
+                       const char *_szFirstName,const char *_szLastName,
+                       const char *_szEmail, const char *_szReason,
+                       unsigned short _nCommand, time_t _tTime,
                        unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_REQxAUTH, _nCommand, 0, _tTime, _nFlags)
 {
@@ -293,9 +275,9 @@ CEventAuth::CEventAuth(unsigned long _nUin, const char *_szAlias,
    m_nUin = _nUin;
 
    m_szText = new char[strlen(_szAlias) + strlen(_szFirstName)
-                       + strlen(_szLastName) + strlen(_szEmail) 
+                       + strlen(_szLastName) + strlen(_szEmail)
                        + strlen(_szReason) + 128];
-   sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s", 
+   sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s",
            _szAlias, _szFirstName, _szLastName, _szEmail, _nUin, _szReason);
    m_szDescription = strdup("Authorization Request");
 }
@@ -312,17 +294,17 @@ CEventAuth::~CEventAuth(void)
 
 
 //====CEventHtmlPanel===========================================================
-CEventWebPanel::CEventWebPanel(const char *_szName, char *_szEmail, 
-                               const char *_szMessage, unsigned short _nCommand, 
+CEventWebPanel::CEventWebPanel(const char *_szName, char *_szEmail,
+                               const char *_szMessage, unsigned short _nCommand,
                                time_t _tTime, unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_WEBxPANEL, _nCommand, 0, _tTime, _nFlags)
 {
   m_szName = strdup(_szName);
   m_szEmail = strdup(_szEmail);
   m_szMessage = strdup(_szMessage);
-  
+
   m_szText = new char[strlen(_szName) + strlen(_szEmail) + strlen(_szMessage) + 64];
-  sprintf(m_szText, "Message from %s (%s) through web panel:\n%s", 
+  sprintf(m_szText, "Message from %s (%s) through web panel:\n%s",
           _szName, _szEmail, _szMessage);
   m_szDescription = strdup("Web Panel");
 }

@@ -151,15 +151,14 @@ protected:
 class CPU_ContactList : public CPacketUdp
 {
 public:
-   CPU_ContactList(CUserGroup *_cUsers, unsigned short first,
-                   unsigned short num);
+   CPU_ContactList(UinList &uins);
    CPU_ContactList(unsigned long _nUin);
 protected:
    virtual unsigned long getSize(void);
 
    // ... PacketUdp header
-   char                   m_nNumUsers;
-   vector <unsigned long> m_vnUins;
+   char    m_nNumUsers;
+   UinList m_vnUins;
 };
 
 
@@ -167,14 +166,14 @@ protected:
 class CPU_VisibleList : public CPacketUdp
 {
 public:
-   CPU_VisibleList(CUserGroup *_cUsers);
+   CPU_VisibleList(UinList &uins);
    bool empty(void)  { return (m_nNumUsers == 0); };
 protected:
    virtual unsigned long getSize(void);
 
    // ... PacketUdp header
-   char                   m_nNumUsers;
-   vector <unsigned long> m_vnUins;
+   char    m_nNumUsers;
+   UinList m_vnUins;
 };
 
 
@@ -182,14 +181,14 @@ protected:
 class CPU_InvisibleList : public CPacketUdp
 {
 public:
-   CPU_InvisibleList(CUserGroup *_cUsers);
+   CPU_InvisibleList(UinList &uins);
    bool empty(void)  { return (m_nNumUsers == 0); };
 protected:
    virtual unsigned long getSize(void);
 
    // ... PacketUdp header
-   char                   m_nNumUsers;
-   vector <unsigned long> m_vnUins;
+   char    m_nNumUsers;
+   UinList m_vnUins;
 };
 
 

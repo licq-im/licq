@@ -20,6 +20,7 @@ const unsigned short INI_ExFORMAT         = 0x0004;
 const unsigned short INI_ExIOREAD         = 0x0008;
 const unsigned short INI_ExIOWRITE        = 0x0010;
 
+void AddNewLines(char *_szDest, const char *_szSource);
 
 //=====CIniFile================================================================
 class CIniFile

@@ -2,6 +2,12 @@
 Upgrade Instructions
 --------------------
 
+Upgrading from 0.70 to 0.71
+1.  Backup your .licq directory (just in case)
+2.  Run "upgrade-0.70-0.71-users.sh"
+3.  Run "upgrade-0.70-0.71-history.pl"
+
+
 Upgrading from 0.61 to 0.70
 1.  Backup your .licq directory, erase or move it, and then
     reinstall from scratch.  Once that's done you can copy the following files:

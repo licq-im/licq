@@ -151,7 +151,7 @@ void CICQDaemon::icqLogoff(bool reconnect)
   iter = m_lxPendingEvents.begin();
   while (iter != m_lxPendingEvents.end())
   {
-    if ((*iter)->m_nSocketDesc == nSD)
+    if (*iter != NULL && (*iter)->m_nSocketDesc == nSD)
     {
       delete *iter;
       iter = m_lxPendingEvents.erase(iter);
@@ -215,27 +215,33 @@ void CICQDaemon::icqLogoff(bool reconnect)
 void CICQDaemon::icqUpdateContactList(void)
 {
   m_nAllowUpdateUsers = 0;
-  CUserGroup *g = gUserManager.FetchGroup(0, LOCK_R);
-  unsigned short numPackets = 1 + (g->NumUsers() / m_nMaxUsersPerPacket);
-  for (unsigned short i = 0; i < numPackets; i++)
+  unsigned short n = 0;
+  UinList uins;
+  FOR_EACH_USER_START(LOCK_W)
   {
-    CPU_ContactList *p = new CPU_ContactList(g, i * m_nMaxUsersPerPacket, m_nMaxUsersPerPacket);
+    n++;
+    uins.push_back(pUser->getUin());
+    if (n == m_nMaxUsersPerPacket)
+    {
+      CPU_ContactList *p = new CPU_ContactList(uins);
+      gLog.Info("%sUpdating contact list (#%d)...\n", L_UDPxSTR, p->getSequence());
+      SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+      m_nAllowUpdateUsers++;
+      uins.clear();
+      n = 0;
+    }
+    // Reset all users to offline
+    if (!pUser->getStatusOffline()) ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+  }
+  FOR_EACH_USER_END
+  if (n != 0)
+  {
+    CPU_ContactList *p = new CPU_ContactList(uins);
     gLog.Info("%sUpdating contact list (#%d)...\n", L_UDPxSTR, p->getSequence());
     SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
     m_nAllowUpdateUsers++;
   }
 
-  // reset all the users statuses
-  ICQUser *u;
-  int nNumUsers = g->NumUsers();
-  for (unsigned short i = 0; i < nNumUsers; i++)
-  {
-    u = g->FetchUser(i, LOCK_W);
-    if (!u->getStatusOffline()) ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
-    g->DropUser(u);
-  }
-
-  gUserManager.DropGroup(g);
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ALL, 0));
 }
 
@@ -244,9 +250,17 @@ void CICQDaemon::icqUpdateContactList(void)
 void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty = false)
 {
   // send user info packet
-  CUserGroup *g = gUserManager.FetchGroup(0, LOCK_R);
-  CPU_VisibleList *p = new CPU_VisibleList(g);
-  gUserManager.DropGroup(g);
+  // Go through the entire list of users, checking if each one is on
+  // the visible list
+  UinList uins;
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST) )
+      uins.push_back(pUser->getUin());
+  }
+  FOR_EACH_USER_END
+  CPU_VisibleList *p = new CPU_VisibleList(uins);
+
   if (!p->empty() || _bSendIfEmpty)
   {
     gLog.Info("%sSending visible list (#%d)...\n", L_UDPxSTR, p->getSequence());
@@ -260,9 +274,14 @@ void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty = false)
 //-----icqSendInvisibleList-----------------------------------------------------
 void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty = false)
 {
-  CUserGroup *g = gUserManager.FetchGroup(0, LOCK_R);
-  CPU_InvisibleList *p = new CPU_InvisibleList(g);
-  gUserManager.DropGroup(g);
+  UinList uins;
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST) )
+      uins.push_back(pUser->getUin());
+  }
+  FOR_EACH_USER_END
+  CPU_InvisibleList *p = new CPU_InvisibleList(uins);
   if (!p->empty() || _bSendIfEmpty)
   {
     gLog.Info("%sSending invisible list (#%d)...\n", L_UDPxSTR, p->getSequence());
@@ -431,7 +450,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
     u->SetIpPort(userIP, userPort);
     ChangeUserStatus(u, newStatus);
     u->setAwayMessage(NULL);
-    if (u->getOnlineNotify()) m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
+    if (u->OnlineNotify()) m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
     gUserManager.DropUser(u);
     u = gUserManager.FetchUser(nUin, LOCK_R);
     gUserManager.Reorder(u);  // put the user at the top of the list
@@ -967,13 +986,13 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   // Check if uin is backwards, what the fuck is with icq99b?
   if (nUin > 0x07FFFFFF)
   {
-    nUin = (nUin & 0x000000FF) << 24 + (nUin & 0x0000FF00) << 8 +
-           (nUin & 0x00FF0000) >> 8  + (nUin & 0xFF000000) >> 24;
+    nUin = ((nUin & 0x000000FF) << 24) + ((nUin & 0x0000FF00) << 8) +
+           ((nUin & 0x00FF0000) >> 8)  + ((nUin & 0xFF000000) >> 24);
   }
   // Swap high and low bytes for strange new icq99
   if ((newCommand > 0x00FF) && !(newCommand & ICQ_CMDxSUB_FxMULTIREC))
   {
-    newCommand = (newCommand & 0xFF00) >> 8 + (newCommand & 0x00FF) << 8;
+    newCommand = ((newCommand & 0xFF00) >> 8) + ((newCommand & 0x00FF) << 8);
   }
 
   unsigned long nMask = ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0);
@@ -994,15 +1013,18 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
                                  timeSent, nMask);
 
     // Lock the user to add the message to their queue
-    bool bNewUser = false;
     u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL)
     {
-      gLog.Info("%sMessage from unknown user (%ld) adding them to your list.\n",
+      if (!AllowNewUsers())
+      {
+        gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_BLANKxSTR, nUin);
+        break;
+      }
+      gLog.Info("%sMessage from new user (%ld).\n",
                 L_BLANKxSTR, nUin);
       AddUserToList(nUin);
       u = gUserManager.FetchUser(nUin, LOCK_W);
-      bNewUser = true;
     }
     else
       gLog.Info("%sMessage through server from %s (%ld).\n", L_BLANKxSTR,
@@ -1010,12 +1032,11 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
 
     m_xOnEventManager.Do(ON_EVENT_MSG, u);
     AddUserEvent(u, e);
-    gUserManager.DropUser(u);
+    u->Unlock();
     // We only want a read lock because Reorder takes a write lock
     // on the group, so there would be a potential race condition
     // if we have a group and user write locked at the same time
-    gUserManager.DropUser(u);
-    u = gUserManager.FetchUser(nUin, LOCK_R);
+    u->Lock(LOCK_R);
     gUserManager.Reorder(u);
     gUserManager.DropUser(u);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));
@@ -1039,7 +1060,12 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL)
     {
-      gLog.Info("%sURL from unknown user (%ld) adding them to your list.\n",
+      if (!AllowNewUsers())
+      {
+        gLog.Info("%sURL from new user (%ld), ignoring.\n", L_BLANKxSTR, nUin);
+        break;
+      }
+      gLog.Info("%sURL from new user (%ld).\n",
                 L_BLANKxSTR, nUin);
       AddUserToList(nUin);
       u = gUserManager.FetchUser(nUin, LOCK_W);
@@ -1050,8 +1076,8 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
 
     m_xOnEventManager.Do(ON_EVENT_URL, u);
     AddUserEvent(u, e);
-    gUserManager.DropUser(u);
-    u = gUserManager.FetchUser(nUin, LOCK_R);
+    u->Unlock();
+    u->Lock(LOCK_R);
     gUserManager.Reorder(u);
     gUserManager.DropUser(u);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REORDER, nUin));

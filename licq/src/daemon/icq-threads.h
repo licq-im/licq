@@ -481,16 +481,19 @@ void *MonitorSockets_tep(void *p)
             {
               if (tcp->Owner() == 0)
               {
-                d->ProcessTcpHandshake(tcp);
+                CBuffer b(tcp->RecvBuffer());
                 tcp->ClearRecvBuffer();
                 gSocketManager.DropSocket(tcp);
+                if (!d->ProcessTcpHandshake(tcp))
+                  gSocketManager.CloseSocket(nCurrentSocket, false);
               }
               else
               {
                 CBuffer b(tcp->RecvBuffer());
                 tcp->ClearRecvBuffer();
                 gSocketManager.DropSocket(tcp);
-                d->ProcessTcpPacket(b, nCurrentSocket);
+                if (!d->ProcessTcpPacket(b, nCurrentSocket))
+                  gSocketManager.CloseSocket(nCurrentSocket, false);
               }
             }
             else

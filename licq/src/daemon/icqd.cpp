@@ -73,7 +73,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   }
 
   licqConf.ReadNum("TCPServerPort", m_nTcpServerPort, 0);
-  licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 125);
+  licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
+  licqConf.ReadBool("AllowNewUsers", m_bAllowNewUsers, true);
 
   // Error log file
   licqConf.ReadStr("Errors", szFilename, "none");
@@ -285,6 +286,7 @@ pthread_t *CICQDaemon::Shutdown(void)
   static bool bShuttingDown = false;
   if (bShuttingDown) return(thread_shutdown);
   bShuttingDown = true;
+  SaveUserList();
   pthread_create (thread_shutdown, NULL, &Shutdown_tep, this);
   return (thread_shutdown);
 }
@@ -302,6 +304,7 @@ void CICQDaemon::SaveConf(void)
   licqConf.WriteNum("DefaultServerPort", getDefaultRemotePort());
   licqConf.WriteNum("TCPServerPort", getTcpServerPort());
   licqConf.WriteNum("MaxUsersPerPacket", getMaxUsersPerPacket());
+  licqConf.WriteBool("AllowNewUsers", AllowNewUsers());
 
   // Utility tab
   //licqConf.WriteStr("Errors", server->getErrorLogName());
@@ -371,19 +374,16 @@ void CICQDaemon::SaveUserList(void)
   sprintf(filename, "%s%s", BASE_DIR, "users.conf");
   FILE *usersConf = fopen(filename, "w");
 
-  CUserGroup *g = gUserManager.FetchGroup(0, LOCK_R);
-  unsigned short nNumUsers = g->NumUsers();
+  fprintf(usersConf, "[users]\nNumOfUsers = %d\n", gUserManager.NumUsers());
 
-  fprintf(usersConf, "[users]\nNumOfUsers = %d\n", nNumUsers);
-
-  ICQUser *u;
-  for (unsigned short i = 0; i < nNumUsers; i++)
+  unsigned short i = 1;
+  FOR_EACH_USER_START(LOCK_R)
   {
-    u = g->FetchUser(i, LOCK_R);
-    fprintf(usersConf, "User%d = %ld\n", i + 1, u->getUin());
-    g->DropUser(u);
+    fprintf(usersConf, "User%d = %ld\n", i, pUser->getUin());
+    i++;
   }
-  gUserManager.DropGroup(g);
+  FOR_EACH_USER_END
+
   fclose(usersConf);
 }
 
@@ -456,6 +456,8 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 void CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 {
   if (u->User()) e->AddToHistory(u, D_RECEIVER);
+  // Don't log a user event if this user is on the ignore list
+  if (u->IgnoreList()) return;
   u->AddEvent(e);
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
                                   u->getUin()));
@@ -802,21 +804,25 @@ void CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr)
 void CICQDaemon::ProcessFifo(char *_szBuf)
 {
 #ifdef USE_FIFO
-  char *szCommand, *szArgs;
+  char *szCommand, *szRawArgs;
 
   // Make the command and data variables point to the relevant data in the buf
-  szCommand = szArgs = _szBuf;
-  while (*szArgs != '\0' && !isspace(*szArgs)) szArgs++;
-  if (szArgs != '\0')
+  szCommand = szRawArgs = _szBuf;
+  while (*szRawArgs != '\0' && !isspace(*szRawArgs)) szRawArgs++;
+  if (szRawArgs != '\0')
   {
-    *szArgs = '\0';
-    szArgs++;
-    while (isspace(*szArgs)) szArgs++;
+    *szRawArgs = '\0';
+    szRawArgs++;
+    while (isspace(*szRawArgs)) szRawArgs++;
   }
-  if (szArgs[strlen(szArgs) - 1] == '\n') szArgs[strlen(szArgs) - 1] = '\0';
+  if (szRawArgs[strlen(szRawArgs) - 1] == '\n') szRawArgs[strlen(szRawArgs) - 1] = '\0';
 
   gLog.Info("%sReceived command \"%s\" with arguments \"%s\".\n", L_FIFOxSTR,
-            szCommand, szArgs);
+            szCommand, szRawArgs);
+
+  char *szProcessedArgs = new char[strlen(szRawArgs) + 1];
+  AddNewLines(szProcessedArgs, szRawArgs);
+  char *szArgs = szProcessedArgs;
 
   // Process the command
   if (strcasecmp(szCommand, "status") == 0)
@@ -825,7 +831,7 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     if (*szStatus == '\0')
     {
       gLog.Warn("%sFifo \"status\" command with no argument.\n", L_WARNxSTR);
-      return;
+      goto fifo_done;
     }
     while (!isspace(*szArgs) && *szArgs != '\0') szArgs++;
     if (*szArgs != '\0')
@@ -888,7 +894,6 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
   }
   else if (strcasecmp(szCommand, "auto_response") == 0)
   {
-    while (isspace(*szArgs) && *szArgs != '\0') szArgs++;
     if (*szArgs != '\0')
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
@@ -900,9 +905,55 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
       gLog.Warn("%sFifo \"auto_response\" command with no argument.\n", L_WARNxSTR);
     }
   }
+  else if (strcasecmp(szCommand, "message") == 0)
+  {
+    if (*szArgs == '\0')
+    {
+      gLog.Warn("%sFifo \"message\" with no UIN.\n", L_WARNxSTR);
+      goto fifo_done;
+    }
+    char *szUin = szArgs;
+    while(!isspace(*szArgs) && *szArgs != '\0') szArgs++;
+    if (*szArgs == '\0')
+    {
+      gLog.Warn("%sFifo \"message\" with no message.\n", L_WARNxSTR);
+      goto fifo_done;
+    }
+    *szArgs = '\0';
+    szArgs++;
+    unsigned long nUin = atoi(szUin);
+    icqSendMessage(nUin, szArgs, false, false);
+  }
+  else if (strcasecmp(szCommand, "url") == 0)
+  {
+    if (*szArgs == '\0')
+    {
+      gLog.Warn("%sFifo \"url\" with no UIN.\n", L_WARNxSTR);
+      goto fifo_done;
+    }
+    char *szUin = szArgs;
+    while(!isspace(*szArgs) && *szArgs != '\0') szArgs++;
+    if (*szArgs == '\0')
+    {
+      gLog.Warn("%sFifo \"url\" with no URL.\n", L_WARNxSTR);
+      goto fifo_done;
+    }
+    *szArgs = '\0';
+    szArgs++;
+    unsigned long nUin = atoi(szUin);
+    char *szUrl = szArgs;
+    while(!isspace(*szArgs) && *szArgs != '\0') szArgs++;
+    if (*szArgs == '\0')
+    {
+      gLog.Warn("%sFifo \"url\" with no description.\n", L_WARNxSTR);
+      goto fifo_done;
+    }
+    *szArgs = '\0';
+    szArgs++;
+    icqSendUrl(nUin, szUrl, szArgs, false, false);
+  }
   else if (strcasecmp(szCommand, "redirect") == 0)
   {
-    while (isspace(*szArgs) && *szArgs != '\0') szArgs++;
     if (*szArgs != '\0')
     {
       if (!Redirect(szArgs))
@@ -922,10 +973,24 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
   {
     Shutdown();
   }
+  else if (strcasecmp(szCommand, "help") == 0)
+  {
+    gLog.Info("%sFifo Help:\n"
+              "%sstatus [*]<status> [auto response]\n"
+              "%sauto_response <auto response>\n"
+              "%smessage <uin> <message>\n"
+              "%surl <uin> <url> <description>\n"
+              "%sredirect <device>\n"
+              "%sexit\n", L_FIFOxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR,
+              L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR);
+  }
   else
   {
     gLog.Warn("%sUnknown fifo command \"%s\".\n", L_WARNxSTR, szCommand);
   }
+
+fifo_done:
+  delete [] szProcessedArgs;
 #endif //USE_FIFO
 
 }

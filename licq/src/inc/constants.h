@@ -37,7 +37,7 @@ const unsigned short DEFAULT_SERVER_PORT           = 4000;
 const unsigned short MAX_SERVER_RETRIES            = 3;
 const unsigned short MAX_WAIT_ACK                  = 20;
 const unsigned short MAX_WAIT_PLUGIN               = 10;
-const unsigned short USER_HASH_SIZE                = 127;
+const unsigned short USER_HASH_SIZE                = 128;
 const unsigned short SOCKET_HASH_SIZE              = 127;
 const unsigned long  LOCALHOST                     = 0x0100007F;
 

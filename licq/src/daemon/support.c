@@ -128,34 +128,8 @@ char *strerror(int errnum)
 }
 
 #endif	/* HAVE_STRERROR */
-/*
-#ifndef HAVE_GETHOSTBYNAME_R
 
-int gethostbyname_r (const char *name,
-                     struct hostent *result_buf,
-                     char *buf,
-                     size_t buflen,
-                     struct hostent **result,
-                     int *h_errnop)
-{
-  struct hostent *h = gethostbyname(name);
-  if (h == NULL)
-  {
-    *result = NULL;
-    *h_errnop = h_errno;
-    return 0;
-  }
-  //result_buf = (struct hostent *) malloc(sizeof(struct hostent));
-  memcpy(result_buf, h, sizeof(struct hostent));
-  memcpy(result_buf, h, sizeof(struct hostent));
-  *h_errnop = 0;
-  return 1;
-}
-
-#endif
-*/
-
-inline int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
+int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
 {
 // Linux
 #if defined(__GLIBC__)

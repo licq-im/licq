@@ -44,9 +44,13 @@ all: licq-daemon.a
 dep:
 	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -MM *.cpp |\
 		sed '/^[^ ]/{s@^@obj/@;}' > Makefile.dep
-	
+
+Makefile.dep:
+	touch Makefile.dep
+	make dep
+
 clean:
-	$(RM) core obj/*.o *.core licq-daemon.a
+	$(RM) core obj/*.o *.core licq-daemon.a Makefile.dep
 
 distclean: clean
 	$(RM) *~ moc_*.cpp Makefile tags

@@ -216,7 +216,7 @@ bool INetSocket::SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemote
 //-----INetSocket::ResetSocket-------------------------------------------------
 void INetSocket::ResetSocket(void)
 {
-  CloseSocket();  
+  CloseSocket();
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
   memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
 }
@@ -345,7 +345,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
     h_errno = -1;
     return (false);
   }
-   
+
   OpenSocket();
   memset(&m_sLocalAddr.sin_zero, 0, 8);
   m_sLocalAddr.sin_family = AF_INET;
@@ -704,7 +704,8 @@ void CSocketHashTable::Remove(int _nSd)
 
 unsigned short CSocketHashTable::HashValue(int _nSd)
 {
-  return _nSd % m_vlTable.size();
+  //return _nSd % m_vlTable.size();
+  return _nSd & (unsigned long)(SOCKET_HASH_SIZE - 1);
 }
 
 

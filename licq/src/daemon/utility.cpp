@@ -157,7 +157,7 @@ bool CUtility::SetFields(unsigned long _nUin)
   if (u == NULL) return false;
   if (m_szFullCommand != NULL) delete [] m_szFullCommand;
   m_szFullCommand = new char[MAX_CMD_LEN];
-  u->usprintf(m_szFullCommand, m_szCommand);
+  u->usprintf(m_szFullCommand, m_szCommand, false);
   vector<CUtilityUserField *>::iterator iter;
   for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); iter++)
     (*iter)->SetFields(u);
@@ -205,6 +205,6 @@ void CUtility::SetUserFields(vector <const char *> &_vszUserFields)
 bool CUtilityUserField::SetFields(ICQUser *u)
 {
   m_szFullDefault = new char[MAX_CMD_LEN];
-  u->usprintf(m_szFullDefault, m_szDefault);
+  u->usprintf(m_szFullDefault, m_szDefault, false);
   return true;
 }

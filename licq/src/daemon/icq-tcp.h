@@ -312,7 +312,7 @@ int CICQDaemon::ConnectToUser(unsigned long _nUin)
 
 
 //-----CICQDaemon::ProcessTcpPacket----------------------------------------------------
-void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
+bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
 {
   unsigned long checkUin, theSequence, senderIp, localIp,
                 senderPort, junkLong, nPort, nPortReversed;
@@ -339,7 +339,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     char *buf;
     gLog.Unknown("%sInvalid TCP packet:\n%s\n", L_UNKNOWNxSTR, packet.print(buf));
     delete buf;
-    return;
+    return false;
   }
 
   // read in the message
@@ -363,9 +363,6 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   ICQUser *u = gUserManager.FetchUser(checkUin, LOCK_W);
   if (u == NULL)
   {
-    //gLog.Info("%sUnknown user (UIN %d) adding them to your list.\n", L_TCPxSTR, checkUin);
-    //AddUserToList(checkUin);
-    //u = gUserManager.FetchUser(checkUin, LOCK_W);
     u = new ICQUser(checkUin);
     u->Lock(LOCK_W);
     u->SetSocketDesc(sockfd);
@@ -391,6 +388,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
+        if (!AllowNewUsers()) break;
         u->Unlock();
         AddUserToList(u);
         u->Lock(LOCK_W);
@@ -439,6 +437,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
+        if (!AllowNewUsers()) break;
         u->Unlock();
         AddUserToList(u);
         u->Lock(LOCK_W);
@@ -485,6 +484,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
+        if (!AllowNewUsers()) break;
         u->Unlock();
         AddUserToList(u);
         u->Lock(LOCK_W);
@@ -509,6 +509,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
+        if (!AllowNewUsers()) break;
         u->Unlock();
         AddUserToList(u);
         u->Lock(LOCK_W);
@@ -548,6 +549,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       // Add the user to our list if they are new
       if (bNewUser)
       {
+        if (!AllowNewUsers()) break;
         u->Unlock();
         AddUserToList(u);
         u->Lock(LOCK_W);
@@ -629,7 +631,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       if (s_nChatSequence == theSequence && s_nChatUin == checkUin)
       {
         gUserManager.DropUser(u);
-        return;
+        return true;
       }
       s_nChatSequence = theSequence;
       s_nChatUin = checkUin;
@@ -656,7 +658,7 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
        if (s_nFileSequence == theSequence && s_nFileUin == checkUin)
        {
          gUserManager.DropUser(u);
-         return;
+         return true;
        }
        s_nFileSequence = theSequence;
        s_nFileUin = checkUin;
@@ -760,9 +762,12 @@ void CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
   }
 
   if (bNewUser)
+  {
     delete u;
-  else
-    gUserManager.DropUser(u);
+    return false;
+  }
+  gUserManager.DropUser(u);
+  return true;
 }
 
 
@@ -780,7 +785,7 @@ void CICQDaemon::AckTCP(CPacketTcp &p, int _nSD)
  * Takes the first buffer from a socket and parses it as a icq handshake.
  * Does not check that the given user already has a socket or not.
  *----------------------------------------------------------------------------*/
-void CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
+bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
 {
   char cHandshake;
   unsigned long nVersion;
@@ -793,7 +798,7 @@ void CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
     gLog.Unknown("%sUnknown TCP handshake packet (command = 0x%02X):\n%s\n",
                  L_UNKNOWNxSTR, cHandshake, b.print(buf));
     delete buf;
-    return;
+    return false;
   }
 
   unsigned long ulJunk, nUin;//, localHost;
@@ -817,6 +822,7 @@ void CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   }
   s->SetOwner(nUin);
 
+  return true;
 }
 
 

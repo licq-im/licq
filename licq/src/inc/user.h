@@ -18,6 +18,43 @@
 #include "support.h"
 
 
+#define FOR_EACH_USER_START(x)                           \
+  {                                                      \
+    ICQUser *pUser;                                      \
+    UserList *_ul_ = gUserManager.LockUserList(LOCK_R);  \
+    for (UserListIter _i_ = _ul_->begin();               \
+         _i_ != _ul_->end(); _i_++)                      \
+    {                                                    \
+      pUser = *_i_;                                      \
+      pUser->Lock(x);                                    \
+      {
+
+#define FOR_EACH_USER_END                \
+      }                                  \
+      pUser->Unlock();                   \
+    }                                    \
+    gUserManager.UnlockUserList();       \
+  }
+
+#define FOR_EACH_USER_BREAK              \
+        {                                \
+          gUserManager.DropUser(pUser);  \
+          break;                         \
+        }
+
+#define FOR_EACH_USER_CONTINUE           \
+        {                                \
+          gUserManager.DropUser(pUser);  \
+          continue;                      \
+        }
+
+typedef list<ICQUser *> UserList;
+typedef list<ICQUser *>::iterator UserListIter;
+typedef vector<char *> GroupList;
+typedef vector<char *>::iterator GroupListIter;
+typedef vector<unsigned long> UinList;
+
+
 //+++++STRUCTURES+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 //-----UserBasicInfo------------------------------------------------------------
@@ -52,6 +89,12 @@ struct UserExtInfo
 };
 
 enum ESortKey { SORT_STATUS, SORT_ONLINE };
+enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
+
+const unsigned long GROUP_ONLINE_NOTIFY   = 1;
+const unsigned long GROUP_VISIBLE_LIST    = 2;
+const unsigned long GROUP_INVISIBLE_LIST  = 3;
+const unsigned long GROUP_IGNORE_LIST     = 4;
 
 
 //+++++OBJECTS++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
@@ -88,15 +131,11 @@ public:
   char *getAbout(void)         { return(m_sAbout); }
   char *getHomepage(void)      { return(m_sHomepage); }
   bool getIsNew(void)         { return(m_bIsNew); }
-  bool getInvisibleList(void) { return(m_bInvisibleList); }
-  bool getVisibleList(void)   { return(m_bVisibleList); }
-  bool getOnlineNotify(void)  { return(m_bOnlineNotify); }
   bool getSendServer(void)    { return(m_bSendServer); }
   bool getEnableSave(void)    { return(m_bEnableSave); }
   bool getAuthorization(void)  { return m_bAuthorization; }
   bool ShowAwayMsg(void)      { return m_bShowAwayMsg; }
   unsigned long getUin(void)           { return(m_nUin); }
-  unsigned long getGroup(void)         { return(m_nGroup); }
   unsigned long getStatusFull(void)  { return m_nStatus; }
   unsigned long getStatusFlags(void)  { return m_nStatus & ICQ_STATUS_FxFLAGS; }
   unsigned short getCountryCode(void)  { return m_nCountryCode; }
@@ -118,18 +157,16 @@ public:
   void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
   unsigned long SortKey(void);
   static void SetSortKey(ESortKey);
-  void usprintf(char *_sz, const char *_szFormat);
+  void usprintf(char *_sz, const char *_szFormat, bool _bAllowFieldWidth = true);
 
    // Settors
   void setEnableSave(bool s)          { m_bEnableSave = s; }
   void setSendServer(bool s)          { m_bSendServer = s; }
   void setSequence(unsigned long s)   { m_nSequence = s; }
+
   void setIsNew(bool s)               { m_bIsNew = s; saveInfo(); }
-  void setInvisibleList(bool s)       { m_bInvisibleList = s; saveInfo(); }
-  void setVisibleList(bool s)         { m_bVisibleList = s; saveInfo(); }
-  void setOnlineNotify(bool s)        { m_bOnlineNotify = s; saveInfo(); }
+
   void setAuthorization(bool s)       { m_bAuthorization = s; saveBasicInfo(); }
-  void setGroup(unsigned long s)      { m_nGroup = s; saveInfo(); }
   void setAwayMessage(const char *s)  { SetString(&m_sAwayMessage, s); }
   void setUin(unsigned long s)        { m_nUin = s; }
   void setStatusOffline(void)         { setStatus(m_nStatus | ICQ_STATUS_OFFLINE); };
@@ -161,10 +198,21 @@ public:
   void WriteToHistory(const char *);
 
   // Group functions
-  bool getIsInGroup(unsigned short);
-  void setIsInGroup(unsigned short, bool);
-  void AddToGroup(unsigned short);
-  void RemoveFromGroup(unsigned short);
+  unsigned long GetGroups(GroupType g)         { return(m_nGroups[g]); }
+  void SetGroups(GroupType g, unsigned long s) { m_nGroups[g] = s; saveInfo(); }
+  bool GetInGroup(GroupType, unsigned short);
+  void SetInGroup(GroupType, unsigned short, bool);
+  void AddToGroup(GroupType, unsigned short);
+  void RemoveFromGroup(GroupType, unsigned short);
+  // Short cuts to above functions
+  bool InvisibleList(void) { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }
+  bool VisibleList(void)   { return GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST); }
+  bool OnlineNotify(void)  { return GetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY); }
+  bool IgnoreList(void)    { return GetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST); }
+  void SetInvisibleList(bool s)  { SetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST, s); }
+  void SetVisibleList(bool s)    { SetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST, s); }
+  void SetOnlineNotify(bool s)   { SetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY, s); }
+  void SetIgnoreList(bool s)     { SetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST, s); }
 
   // Socket functions
   int SocketDesc(void)          { return m_nSocketDesc; }
@@ -173,11 +221,6 @@ public:
   unsigned long Ip(void)        { return m_nIp; }
   unsigned short Port(void)     { return m_nPort; }
   void SetIpPort(unsigned long _nIp, unsigned short _nPort);
-
-  // Lock functions
-  unsigned short LockType(void)        { return m_nLockType; }
-  void SetLockType(unsigned short _n)  { m_nLockType = _n; }
-  void ClearLockType(void)             { SetLockType(LOCK_N); }
 
   // Events functions
   static unsigned short getNumUserEvents(void);
@@ -201,9 +244,9 @@ protected:
   unsigned short m_nPort;
   unsigned long m_nUin,
                 m_nStatus,
-                m_nSequence;
-  unsigned short m_nGroup,
-                 m_nSex,
+                m_nSequence,
+                m_nGroups[2];
+  unsigned short m_nSex,
                  m_nCountryCode,
                  m_nAge;
   char *m_sAlias,
@@ -234,7 +277,7 @@ protected:
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
   static pthread_mutex_t mutex_nNumUserEvents;
-  static pthread_mutex_t mutex_eSortKey;
+  static pthread_mutex_t mutex_sortkey;
 
   friend class CUserGroup;
   friend class CUserManager;
@@ -262,39 +305,6 @@ protected:
 };
 
 
-//=====CUserGroup===============================================================
-
-class CUserGroup
-{
-public:
-  CUserGroup(char *_sName, bool _bOwner);
-  ~CUserGroup(void);
-
-  void AddUser(ICQUser *);
-  void RemoveUser(ICQUser *);
-  ICQUser *FetchUser(unsigned short, unsigned short);
-  void DropUser(ICQUser *u);
-
-  void Lock(unsigned short _nLockType);
-  void Unlock(void);
-
-  unsigned short NumUsers(void)  { return m_vpcUsers.size(); }
-  const char *Name(void)  { return m_szName; }
-  void SetName(const char *_sz)  { SetString(&m_szName, _sz); }
-  void Reorder(ICQUser *_pcUser);
-protected:
-  void ShiftUserUp(unsigned short i);
-  void ShiftUserDown(unsigned short i);
-
-  char *m_szName;
-  vector <ICQUser *> m_vpcUsers;
-  bool m_bIsOwner;
-
-  pthread_rdwr_t mutex_rw;
-  unsigned short m_nLockType;
-};
-
-
 //=====CUsers===================================================================
 
 class CUserHashTable
@@ -309,7 +319,7 @@ protected:
   void Lock(unsigned short _nLockType);
   void Unlock(void);
 
-  vector < list<ICQUser *> > m_vlTable;
+  vector < UserList > m_vlTable;
 
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
@@ -332,41 +342,41 @@ public:
   unsigned long OwnerUin(void)  { return m_nOwnerUin; }
   void SetOwnerUin(unsigned long _nUin);
 
-  // The following 2 functions are *not* thread safe...
-  void AddGroup(CUserGroup *);
+  UserList *LockUserList(unsigned short);
+  void UnlockUserList(void);
+  GroupList *LockGroupList(unsigned short);
+  void UnlockGroupList(void);
+
+  void AddGroup(char *);
   void RemoveGroup(unsigned short);
   void RenameGroup(unsigned short, const char *);
-  unsigned short NumGroups(void)  { return m_vpcGroups.size(); };
+  unsigned short NumGroups();
   void SaveGroups(void);
   void SwapGroups(unsigned short g1, unsigned short g2);
 
-  CUserGroup *FetchGroup(unsigned short, unsigned short);
-  void DropGroup(CUserGroup *);
-
   void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
   void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
-  void Reorder(ICQUser *_pcUser);
+  void Reorder(ICQUser *_pcUser, bool _bOnList = true);
   void SaveAllUsers(void);
 
-  unsigned short NumUsers(void)
-  {
-    CUserGroup *g = FetchGroup(0, LOCK_R);
-    unsigned short n = g->NumUsers();
-    DropGroup(g);
-    return n;
-  }
+  unsigned short NumUsers(void);
   unsigned short DefaultGroup(void)  { return m_nDefaultGroup; }
   void SetDefaultGroup(unsigned short n)  { m_nDefaultGroup = n; SaveGroups(); }
+  unsigned short NewUserGroup(void)  { return m_nNewUserGroup; }
+  void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
-  pthread_mutex_t mutex_groups;
-  vector <CUserGroup *> m_vpcGroups;
+  pthread_rdwr_t mutex_grouplist, mutex_userlist;
+  GroupList m_vszGroups;
+  UserList m_vpcUsers;
   CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
-  unsigned short m_nDefaultGroup;
+  unsigned short m_nDefaultGroup, m_nNewUserGroup,
+                 m_nUserListLockType, m_nGroupListLockType;
   bool m_bAllowSave;
 };
+
 
 extern class CUserManager gUserManager;
 

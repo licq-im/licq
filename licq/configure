@@ -530,8 +530,8 @@ fi
 
 
 PACKAGE=Licq
-VERSION=0.70.1
-INT_VERSION=701
+VERSION=0.71
+INT_VERSION=71
 
 cat >> confdefs.h <<EOF
 #define PACKAGE "$PACKAGE"
