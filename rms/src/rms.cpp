@@ -505,7 +505,7 @@ int CRMSClient::StateMachine()
   {
     case STATE_UIN:
     {
-      m_nCheckUin = atol(data_line);
+      m_nCheckUin = strtoul(data_line, (char**)NULL, 10);
       fprintf(fs, "%d Enter your password:\n", CODE_ENTERxPASSWORD);
       fflush(fs);
       m_nState = STATE_PASSWORD;
@@ -609,7 +609,7 @@ int CRMSClient::ProcessCommand()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_INFO()
 {
-  unsigned long nUin = atol(data_arg);
+  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
 
   if (nUin == 0) nUin = gUserManager.OwnerUin();
 
@@ -698,7 +698,7 @@ int CRMSClient::Process_QUIT()
 {
   fprintf(fs, "%d Aurevoir.\n", CODE_QUIT);
   fflush(fs);
-  if (atol(data_arg) > 0) licqRMS->m_bExit = true;
+  if (strtoul(data_arg, (char**)NULL, 10) > 0) licqRMS->m_bExit = true;
   return -1;
 }
 
@@ -781,7 +781,7 @@ int CRMSClient::Process_LIST()
   unsigned short nGroup = 0;
   if (isdigit(*data_arg))
   {
-    nGroup = atol(data_arg);
+    nGroup = strtoul(data_arg, (char**)NULL, 10);
     while (*data_arg != '\0' && *data_arg != ' ') data_arg++;
     NEXT_WORD(data_arg);
   }
@@ -849,7 +849,7 @@ int CRMSClient::Process_LIST()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_MESSAGE()
 {
-  unsigned long nUin = atol(data_arg);
+  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
 
   if (nUin < 10000)
   {
@@ -903,7 +903,7 @@ int CRMSClient::Process_MESSAGE_text()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_URL()
 {
-  unsigned long nUin = atol(data_arg);
+  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
 
   if (nUin < 10000)
   {
@@ -972,7 +972,7 @@ int CRMSClient::Process_AR()
     return fflush(fs);
   }
 */
-  unsigned long nUin = atol(data_arg);
+  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
 
   if (nUin != 0 && !gUserManager.IsOnList(nUin))
   {
@@ -1026,7 +1026,7 @@ int CRMSClient::Process_AR_text()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_LOG()
 {
-  unsigned short lt = atol(data_arg);
+  unsigned short lt = strtoul(data_arg, (char**)NULL, 10);
 
   if (licqRMS->log == NULL)
   {
@@ -1058,7 +1058,7 @@ int CRMSClient::Process_VIEW()
 
   if (*data_arg != '\0')
   {
-    nUin = atol(data_arg);
+    nUin = strtoul(data_arg, (char**)NULL, 10);
   }
   else
   {
@@ -1157,7 +1157,7 @@ int CRMSClient::Process_VIEW()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_ADDUSER()
 {
-  unsigned long nUin = atol(data_arg);
+  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
 
   if (nUin >= 10000)
   {
@@ -1189,7 +1189,7 @@ int CRMSClient::Process_ADDUSER()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_REMUSER()
 {
-  unsigned long nUin = atol(data_arg);
+  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
 
   if (nUin >= 10000)
   {
@@ -1226,7 +1226,7 @@ int CRMSClient::Process_SECURE()
 
   if (isdigit(*data_arg))
   {
-    nUin = atol(data_arg);
+    nUin = strtoul(data_arg, (char**)NULL, 10);
     while (*data_arg != '\0' && *data_arg != ' ') data_arg++;
     NEXT_WORD(data_arg);
   }
