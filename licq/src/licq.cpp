@@ -142,7 +142,7 @@ CLicq::CLicq()
 {
   DEBUG_LEVEL = 0;
   licqDaemon = NULL;
-  pthread_mutex_init(&mutex_pluginfunctions, NULL);
+  pthread_mutex_init(&mutex_plugins, NULL);
 }
 
 bool CLicq::Init(int argc, char **argv)
@@ -302,21 +302,6 @@ bool CLicq::Init(int argc, char **argv)
     licqConf.FlushFile();
   }
 
-  // Save the plugins if necessary
-  if (bCmdLinePlugins)
-  {
-    licqConf.SetSection("plugins");
-    licqConf.WriteNum("NumPlugins", (unsigned short)vszPlugins.size());
-    vector <char *>::iterator iter;
-    unsigned short i = 1;
-    for (iter = vszPlugins.begin(); iter != vszPlugins.end(); iter++)
-    {
-      sprintf(szKey, "Plugin%d", i++);
-      licqConf.WriteStr(szKey, *iter);
-    }
-    licqConf.FlushFile();
-  }
-
   // Load up the plugins
   m_nNextId = 1;
   vector <char *>::iterator iter;
@@ -326,10 +311,10 @@ bool CLicq::Init(int argc, char **argv)
     if (bHelp)
     {
       fprintf(stderr, "Licq Plugin: %s %s\n%s\n----------\n",
-          m_vPluginFunctions.back()->Name(),
-          m_vPluginFunctions.back()->Version(),
-          (*(m_vPluginFunctions.back())->fUsage)() );
-      m_vPluginFunctions.pop_back();
+          list_plugins.back()->Name(),
+          list_plugins.back()->Version(),
+          (*(list_plugins.back())->fUsage)() );
+      list_plugins.pop_back();
     }
   }
   if (bHelp) return false;
@@ -406,11 +391,11 @@ const char *CLicq::Version()
  *
  * Loads the given plugin using the given command line arguments.
  *---------------------------------------------------------------------------*/
-CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
+CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
 {
   void *handle;
   const char *error;
-  CPluginFunctions *p = new CPluginFunctions;
+  CPlugin *p = new CPlugin(_szName);
   char szPlugin[MAX_FILENAME_LEN];
 
   // First check if the plugin is in the shared location
@@ -606,14 +591,14 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
 
   *p->nId = m_nNextId++;
   p->dl_handle = handle;
-  pthread_mutex_lock(&mutex_pluginfunctions);
-  m_vPluginFunctions.push_back(p);
-  pthread_mutex_unlock(&mutex_pluginfunctions);
+  pthread_mutex_lock(&mutex_plugins);
+  list_plugins.push_back(p);
+  pthread_mutex_unlock(&mutex_plugins);
   return p;
 }
 
 
-void CLicq::StartPlugin(CPluginFunctions *p)
+void CLicq::StartPlugin(CPlugin *p)
 {
   gLog.Info("%sStarting plugin %s (version %s).\n", L_INITxSTR, p->Name(),
             p->Version());
@@ -625,7 +610,7 @@ int CLicq::Main()
 {
   int nResult = 0;
 
-  if (m_vPluginFunctions.size() == 0)
+  if (list_plugins.size() == 0)
   {
     gLog.Warn("%sNo plugins specified on the command-line (-p option).\n%sSee the README for more information.\n",
               L_WARNxSTR, L_BLANKxSTR);
@@ -637,8 +622,8 @@ int CLicq::Main()
   // Run the plugins
   pthread_cond_init(&LP_IdSignal, NULL);
   PluginsListIter iter;
-  pthread_mutex_lock(&mutex_pluginfunctions);
-  for (iter = m_vPluginFunctions.begin(); iter != m_vPluginFunctions.end(); iter++)
+  pthread_mutex_lock(&mutex_plugins);
+  for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
   {
     StartPlugin(*iter);
   }
@@ -649,10 +634,10 @@ int CLicq::Main()
   int *nPluginResult;
   bool bDaemonShutdown = false;
 
-  while (m_vPluginFunctions.size() > 0)
+  while (list_plugins.size() > 0)
   {
     pthread_mutex_lock(&LP_IdMutex);
-    pthread_mutex_unlock(&mutex_pluginfunctions);
+    pthread_mutex_unlock(&mutex_plugins);
     while (LP_Ids.size() == 0)
     {
       if (bDaemonShutdown)
@@ -669,7 +654,7 @@ int CLicq::Main()
     nExitId = LP_Ids.front();
     LP_Ids.pop_front();
 
-    pthread_mutex_lock(&mutex_pluginfunctions);
+    pthread_mutex_lock(&mutex_plugins);
     pthread_mutex_unlock(&LP_IdMutex);
 
     if (nExitId == 0)
@@ -678,10 +663,10 @@ int CLicq::Main()
       continue;
     }
 
-    for (iter = m_vPluginFunctions.begin(); iter != m_vPluginFunctions.end(); iter++)
+    for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
       if (*(*iter)->nId == nExitId) break;
 
-    if (iter == m_vPluginFunctions.end())
+    if (iter == list_plugins.end())
     {
       gLog.Error("%sInvalid plugin id (%d) in exit signal.\n", L_ERRORxSTR, nExitId);
       continue;
@@ -691,16 +676,17 @@ int CLicq::Main()
     gLog.Info("%sPlugin %s exited with code %d.\n", L_ENDxSTR, (*iter)->Name(), *nPluginResult);
     free (nPluginResult);
     // We should close the dynamic link but under linux this makes Qt crash
-    //dlclose((*iter).dl_handle);
-    m_vPluginFunctions.erase(iter);
+    //dlclose((*iter)->dl_handle);
+    delete *iter;
+    list_plugins.erase(iter);
   }
 
-  for (iter = m_vPluginFunctions.begin(); iter != m_vPluginFunctions.end(); iter++)
+  for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
   {
     gLog.Info("%sPlugin %s failed to exit.\n", L_WARNxSTR, (*iter)->Name());
     pthread_cancel( (*iter)->thread_plugin);
   }
-  //pthread_mutex_unlock(&mutex_pluginfunctions);
+  //pthread_mutex_unlock(&mutex_plugins);
 
   pthread_t *t = licqDaemon->Shutdown();
   pthread_join(*t, NULL);
@@ -710,7 +696,7 @@ int CLicq::Main()
   sprintf(sz, "%s/licq.pid", BASE_DIR);
   remove(sz);
 
-  return m_vPluginFunctions.size();
+  return list_plugins.size();
 }
 
 
@@ -732,6 +718,44 @@ void CLicq::PrintUsage()
          " -p : load the given plugin library\n"
          " -o : redirect stdout and stderr to <file>, which can be a device (ie /dev/ttyp4)\n",
          PACKAGE, VERSION);
+}
+
+
+void CLicq::SaveLoadedPlugins()
+{
+  char szConf[MAX_FILENAME_LEN];
+  char szKey[20];
+
+  CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
+  sprintf(szConf, "%s/licq.conf", BASE_DIR);
+  licqConf.LoadFile(szConf);
+
+  licqConf.SetSection("plugins");
+  licqConf.WriteNum("NumPlugins", (unsigned short)list_plugins.size());
+  PluginsListIter iter;
+  unsigned short i = 1;
+  for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
+  {
+    sprintf(szKey, "Plugin%d", i++);
+    licqConf.WriteStr(szKey, (*iter)->LibName());
+  }
+  licqConf.FlushFile();
+}
+
+
+void CLicq::ShutdownPlugins()
+{
+  // Save plugins
+  SaveLoadedPlugins();
+
+  // Send shutdown signal to all the plugins
+  PluginsListIter iter;
+  pthread_mutex_lock(&mutex_plugins);
+  for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
+  {
+    (*iter)->Shutdown();
+  }
+  pthread_mutex_unlock(&mutex_plugins);
 }
 
 

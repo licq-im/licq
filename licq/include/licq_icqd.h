@@ -20,6 +20,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_remoteserver.h"
 #include "licq_onevent.h"
 #include "licq_user.h"
+#include "licq_plugind.h"
 
 class CPlugin;
 class CPacket;
@@ -31,45 +32,6 @@ class TCPSocket;
 class INetSocket;
 class UDPSocket;
 
-class CPluginFunctions
-{
-public:
-  const char *Name()    { return (*fName)(); }
-  const char *Version() { return (*fVersion)(); }
-  const char *Description() { return (*fDescription)(); }
-  const char *Status() { return (*fStatus)(); }
-  const char *Usage() { return (*fUsage)(); }
-  const char *BuildDate() { return (*fBuildDate)(); }
-  const char *BuildTime() { return (*fBuildTime)(); }
-  unsigned short Id()   { return *nId; }
-
-protected:
-  const char *(*fName)();
-  const char *(*fVersion)();
-  const char *(*fStatus)();
-  const char *(*fDescription)();
-  const char *(*fBuildDate)();
-  const char *(*fBuildTime)();
-  const char *(*fUsage)();
-  bool (*fInit)(int, char **);
-  int (*fMain)(CICQDaemon *);
-  void *(*fMain_tep)(void *);
-  unsigned short *nId;
-
-  void *dl_handle;
-  pthread_t thread_plugin;
-  int localargc;
-  char **localargv;
-
-  CPluginFunctions()  { localargv = NULL; }
-  ~CPluginFunctions() { if (localargv != NULL) free(localargv); }
-
-friend class CLicq;
-friend class CICQDaemon;
-};
-
-typedef list<CPluginFunctions *> PluginsList;
-typedef list<CPluginFunctions *>::iterator PluginsListIter;
 
 const unsigned short IGNORE_MASSMSG    = 1;
 const unsigned short IGNORE_NEWUSERS   = 2;
@@ -290,8 +252,8 @@ public:
 protected:
   CLicq *licq;
   COnEventManager m_xOnEventManager;
-  vector<CPlugin *> m_vPlugins;
-  pthread_mutex_t mutex_plugins;
+  //vector<CPlugin *> m_vPlugins;
+  //pthread_mutex_t mutex_plugins;
   int pipe_newsocket[2], fifo_fd;
   FILE *fifo_fs;
   EDaemonStatus m_eStatus;

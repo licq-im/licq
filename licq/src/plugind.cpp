@@ -1,20 +1,39 @@
-#include "plugind.h"
+#include "licq_plugind.h"
 #include "licq_socket.h"
 
-CPlugin::CPlugin(unsigned long _nSignalMask)
+
+CPlugin::CPlugin(const char *szLibName)
 {
-  m_nSignalMask = _nSignalMask;
-  thread_plugin = pthread_self();
+  m_nSignalMask = 0;
+  localargv = NULL;
+  localargc = 0;
+
   pthread_mutex_init(&mutex_signals, NULL);
   pthread_mutex_init(&mutex_events, NULL);
   pipe(pipe_plugin);
+
+  m_szLibName = strdup(szLibName);
+}
+
+
+void CPlugin::SetSignalMask(unsigned long nMask)
+{
+  m_nSignalMask = nMask;
+}
+
+
+CPlugin::~CPlugin()
+{
+  if (localargv != NULL)
+    free(localargv);
+  free(m_szLibName);
 }
 
 
 void CPlugin::PushSignal(CICQSignal *s)
 {
   pthread_mutex_lock(&mutex_signals);
-  m_lSignals.push_back(s);
+  list_signals.push_back(s);
   pthread_mutex_unlock(&mutex_signals);
   write(pipe_plugin[PIPE_WRITE], "S", 1);
 }
@@ -23,7 +42,7 @@ void CPlugin::PushSignal(CICQSignal *s)
 void CPlugin::PushEvent(ICQEvent *e)
 {
   pthread_mutex_lock(&mutex_events);
-  m_lEvents.push_back(e);
+  list_events.push_back(e);
   pthread_mutex_unlock(&mutex_events);
   write(pipe_plugin[PIPE_WRITE], "E", 1);
 }
@@ -59,10 +78,10 @@ CICQSignal *CPlugin::PopSignal()
 {
   CICQSignal *s = NULL;
   pthread_mutex_lock(&mutex_signals);
-  if (m_lSignals.size() != 0)
+  if (list_signals.size() != 0)
   {
-    s = m_lSignals.front();
-    m_lSignals.pop_front();
+    s = list_signals.front();
+    list_signals.pop_front();
   }
   pthread_mutex_unlock(&mutex_signals);
   return s;
@@ -74,10 +93,10 @@ ICQEvent *CPlugin::PopEvent()
 {
   ICQEvent *e = NULL;
   pthread_mutex_lock(&mutex_events);
-  if (m_lEvents.size() != 0)
+  if (list_events.size() != 0)
   {
-    e = m_lEvents.front();
-    m_lEvents.pop_front();
+    e = list_events.front();
+    list_events.pop_front();
   }
   pthread_mutex_unlock(&mutex_events);
   return e;

@@ -7,7 +7,7 @@
 
 #include <pthread.h>
 #include <list.h>
-#include "licq_icqd.h"
+#include "licq_plugind.h"
 
 extern char **global_argv;
 extern int global_argc;
@@ -20,15 +20,20 @@ public:
   bool Init(int argc, char **argv);
   int Main();
   const char *Version();
-  CPluginFunctions *LoadPlugin(const char *, int, char **);
-  void StartPlugin(CPluginFunctions *);
-protected:
+  CPlugin *LoadPlugin(const char *, int, char **);
+  void StartPlugin(CPlugin *);
+
+  void ShutdownPlugins();
+
   void PrintUsage();
   bool Install();
+  void SaveLoadedPlugins();
+
+protected:
   CICQDaemon *licqDaemon;
   unsigned short m_nNextId;
-  PluginsList m_vPluginFunctions;
-  pthread_mutex_t mutex_pluginfunctions;
+  PluginsList list_plugins;
+  pthread_mutex_t mutex_plugins;
 
 friend class CICQDaemon;
 };

@@ -9,7 +9,8 @@
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_packets.h"
-#include "plugind.h"
+#include "licq_plugind.h"
+#include "licq.h"
 
 #define DEBUG_THREADS(x)
 //#define DEBUG_THREADS(x) printf(x)
@@ -543,16 +544,9 @@ void *Shutdown_tep(void *p)
   gLog.Info("%sShutting down daemon.\n", L_ENDxSTR);
 
   // Send shutdown signal to all the plugins
-  vector<CPlugin *>::iterator iter;
-  pthread_mutex_lock(&d->mutex_plugins);
-  for (iter = d->m_vPlugins.begin(); iter != d->m_vPlugins.end(); iter++)
-  {
-    (*iter)->Shutdown();
-  }
-  pthread_mutex_unlock(&d->mutex_plugins);
+  d->licq->ShutdownPlugins();
 
   // Cancel the monitor sockets thread (deferred until ready)
-  //pthread_cancel(d->thread_monitorsockets);
   write(d->pipe_newsocket[PIPE_WRITE], "X", 1);
 
   // Cancel the ping thread
