@@ -6,7 +6,6 @@
 
 #ifdef USE_SOCKS5
 #define SOCKS
-#define INCLUDE_PROTOTYPES
 extern "C" {
 #include <socks.h>
 }
