@@ -1,5 +1,6 @@
 #include "msn.h"
 #include "msnpacket.h"
+#include "licq_log.h"
 
 #include <string>
 #include <openssl/md5.h>
@@ -223,7 +224,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       {
         m_pPacketBuf->SkipParameter(); // email account
         std::string strNick = m_pPacketBuf->GetParameter();
-        printf("[MSN] %s logged in.\n", strNick.c_str());
+        gLog.Info("%s%s logged in.\n", L_MSNxSTR, strNick.c_str());
         
         pReply = new CPS_MSNSync();
       }
@@ -279,7 +280,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       std::string strUser = m_pPacketBuf->GetParameter();
       
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-      if (u) m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_ONLINE);
+      if (u)
+      {
+        gLog.Info("%s%s changed status ().\n", L_SRVxSTR, u->GetAlias());
+        m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_ONLINE);
+      }
       gUserManager.DropUser(u);
     }
     else if (strcmp(szCommand, "NLN") == 0)
@@ -288,7 +293,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       std::string strUser = m_pPacketBuf->GetParameter();
       
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-      if (u) m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_ONLINE);
+      if (u)
+      {
+        gLog.Info("%s%s changed status ().\n", L_SRVxSTR, u->GetAlias());
+        m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_ONLINE);
+      }
       gUserManager.DropUser(u);
     }
     else if (strcmp(szCommand, "FLN") == 0)
@@ -296,7 +305,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       std::string strUser = m_pPacketBuf->GetParameter();
       
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-      m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
+      if (u)
+      {
+        gLog.Info("%s%s logged off.\n", L_MSNxSTR, u->GetAlias());
+        m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
+      }
       gUserManager.DropUser(u);
     }
     
@@ -327,7 +340,7 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort)
   ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_R);
   if (!o)
   {
-    printf("No MSN owner set!\n");
+    gLog.Error("%sNo owner set.\n", L_MSNxSTR);
     return;
   }
   m_szUserName = strdup(o->IdString());
@@ -337,11 +350,11 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort)
   SrvSocket *sock = new SrvSocket(m_szUserName, MSN_PPID);
   sock->SetRemoteAddr(_szServer, _nPort);
   char ipbuf[32];
-  printf("Server found at %s:%d.\n", sock->RemoteIpStr(ipbuf), sock->RemotePort());
+  gLog.Info("%sServer found at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf), sock->RemotePort());
   
   if (!sock->OpenConnection())
   {
-    printf("Connect failed!\n");
+    gLog.Info("%sConnect failed.\n", L_MSNxSTR);
     delete sock;
     return;
   }
@@ -359,21 +372,19 @@ void CMSN::MSNAuthenticate(char *szCookie)
    TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
   sock->SetRemoteAddr("loginnet.passport.com", 443);
   char ipbuf[32];
-  printf("Authenticating to %s:%d\n", sock->RemoteIpStr(ipbuf), sock->RemotePort());
+  gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf), sock->RemotePort());
   
   if (!sock->OpenConnection())
   {
-    printf("Connect failed!\n");
+    gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
     delete sock;
     free(szCookie);
     return;
   }
   
-  printf("Connected\n");
-  
   if (!sock->SecureConnect())
   {
-    printf("fuck\n");
+    gLog.Error("%sSSL connection failed.\n", L_MSNxSTR);   
     delete sock;
     return;
   }

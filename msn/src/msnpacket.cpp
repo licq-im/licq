@@ -144,7 +144,6 @@ CPS_MSNChallenge::CPS_MSNChallenge(const char *szHash) : CMSNPacket()
   unsigned char szDigest[16];
   char szHexOut[32];
   snprintf(szSource, 64, "%sQ1P7W2E4J9R8U3S5", szHash);
-  printf("Source = %s\n", szSource);
   szSource[63] = '\0';
   MD5((const unsigned char *)szSource, strlen(szSource), szDigest);
   
