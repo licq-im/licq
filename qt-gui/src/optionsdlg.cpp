@@ -426,8 +426,8 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bBoldOnMsg = chkBoldOnMsg->isChecked();
   mainwin->m_bManualNewUser = chkManualNewUser->isChecked();
   mainwin->m_bScrollBar = chkScrollBar->isChecked();
-  mainwin->m_nFlash = chkFlashUrgent->isChecked() ? FLASH_URGENT :
-                      ( chkFlashAll->isChecked() ? FLASH_ALL : FLASH_NONE );
+  mainwin->m_nFlash = chkFlashAll->isChecked() ? FLASH_ALL :
+                      ( chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE );
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   mainwin->m_MsgAutopopupKey = edtHotKey->text();
