@@ -1,25 +1,10 @@
+
+# don't warn about missing AUTHORS, NEWS, ChangeLog .. files
+AUTOMAKE_OPTIONS = foreign 1.4
+
 SUBDIRS = share src
 
-.PHONY: all_recursive install_recursive clean_recursive distclean_recursive \
-	all clean distclean install
-
-all_recursive install_recursive clean_recursive distclean_recursive:
-	@for subdir in $(SUBDIRS); do \
-	  target=`echo $@ | sed s/_recursive//`; \
-	  echo "Making $$target in $$subdir"; \
-	  (cd $$subdir && $(MAKE) $$target); \
-	done
-
-all: all_recursive
-
-clean: clean_recursive
-
-distclean: distclean_recursive
-	$(RM) config.cache config.log config.status Makefile config.h \
-		confdefs.h *~
-
-install: install_recursive
-	@cat post-install
+EXTRA_DIST = doc upgrade
 
 cvs-clean:
 	@if test ! -d CVS; then \
@@ -48,4 +33,4 @@ cvs-clean:
             fi ; \
           done; \
         done
- 
+

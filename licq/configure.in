@@ -1,11 +1,14 @@
 dnl Process this file with autoconf to produce a configure script.
 AC_INIT(src/licq.h)
-AC_CONFIG_HEADER(config.h)
+
+AC_CANONICAL_SYSTEM
+AC_ARG_PROGRAM
 
 dnl All versioning is done via these defines
-PACKAGE=Licq
-VERSION=0.75
 INT_VERSION=750
+AM_INIT_AUTOMAKE(licq, 0.75)
+
+AM_CONFIG_HEADER(config.h)
 
 dnl Chuck #defines for PACKAGE and VERSION into config.h
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
@@ -29,7 +32,6 @@ AC_PATH_PROG(PROG_STRIP,strip,:)
 AC_PATH_PROG(PROG_SIZE,size,:)
 
 dnl Set up some operating system specific options
-AC_CANONICAL_SYSTEM
 case "$host" in
 	*-*-openbsd*)
 		CFLAGS="$CFLAGS -pthread"
@@ -153,10 +155,10 @@ AC_STRUCT_TM
 AC_SYS_ERRLIST
 
 AC_OUTPUT(
-  share/Makefile
-  src/Makefile
-  src/daemon/Makefile
-  Makefile)
+  share/Makefile \
+  src/Makefile \
+  src/daemon/Makefile \
+  Makefile )
 
 echo ""
 echo "Please remember to use GNU make, often installed as gmake."
