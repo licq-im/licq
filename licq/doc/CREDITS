@@ -9,7 +9,7 @@ Juan Codagnone
    o  Several patches
 Tim van Erven
    o  Patches, including reliability patches to prevent buffer overflows.
-Dima K
+Dmitry Karasik
    o  Patches for chats, file transfers and some threading issues.
 libicq2000 Project
    o  Served as reference for ICQ's SMS protocol.
