@@ -697,7 +697,7 @@ void chat_pipe_callback(gpointer g_cw, gint pipe,
 			case CHAT_CONNECTION:
 			{
 				gchar *filler[1]; 
-				filler[0] = user->Name();
+				filler[0] = const_cast<char *>(user->Name());
 				
 				gtk_clist_insert(GTK_CLIST(cw->list_users),
 						 cw->chatman->ConnectedUsers(),
