@@ -1,3 +1,26 @@
+// -*- c-basic-offset: 2 -*-
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
+// written by Graham Roff <graham@licq.org>
+// Contributions by Dirk A. Mueller <dirk@licq.org>
+
+// -----------------------------------------------------------------------------
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -83,7 +106,7 @@ enum ChatMenu_Identifiers {
 
 ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
                  QWidget *parent, char *name)
-   : QMainWindow(parent, name)
+  : QMainWindow(parent, name, WDestructiveClose)
 {
   m_nUin = _nUin;
   m_bAudio = true;
@@ -140,12 +163,12 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   lay->setColStretch(0, 1);
 
   // Generic setup
-  mnuMain = new QPopupMenu(menuBar());
+  mnuMain = new QPopupMenu(this);
   mnuMain->insertItem(tr("&Audio"), this, SLOT(slot_audio()), ALT + Key_A, mnuChatAudio);
   mnuMain->insertItem(tr("&Save Chat"), this, SLOT(slot_save()), ALT + Key_S, mnuChatSave);
   mnuMain->insertSeparator();
-  mnuMain->insertItem(tr("&Close Chat"), this, SLOT(hide()), ALT + Key_Q);
-  mnuMode = new QPopupMenu(menuBar());
+  mnuMain->insertItem(tr("&Close Chat"), this, SLOT(close()), ALT + Key_Q);
+  mnuMode = new QPopupMenu(this);
   mnuMode->insertItem(tr("&Pane Mode"), this, SLOT(SwitchToPaneMode()));
   mnuMode->insertItem(tr("&IRC Mode"), this, SLOT(SwitchToIRCMode()));
   menuBar()->insertItem(tr("Chat"), mnuMain);
@@ -163,7 +186,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   barChat->addSeparator();
 
    // ### FIXME: implement laughing
-//  tbtLaugh = new QToolButton(LeftArrow, barChat);
+   // tbtLaugh = new QToolButton(LeftArrow, barChat);
 
   QPixmap* pixBeep = new QPixmap(chatBeep_xpm);
   tbtBeep = new QToolButton(*pixBeep, tr("Beep"),
@@ -199,17 +222,16 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
     pf.drawText(5, 12, QString("Abc"));
     mnuFg->insertItem(*pixf, i);
   }
-
   barChat->addSeparator();
 
   QPixmap* pixBold = new QPixmap(chatBold_xpm);
   tbtBold = new QToolButton(*pixBold, tr("Bold"),
-     tr("Toggles Bold font"), this, SLOT(fontStyleChanged()), barChat);
+    tr("Toggles Bold font") , this, SLOT(fontStyleChanged()), barChat);
   tbtBold->setToggleButton(true);
 
   QPixmap* pixItalic = new QPixmap(chatItalic_xpm);
   tbtItalic = new QToolButton(*pixItalic, tr("Italic"),
-     tr("Toggles Italic font"), this, SLOT(fontStyleChanged()), barChat);
+    tr("Toggles Italic font"), this, SLOT(fontStyleChanged()), barChat);
   tbtItalic->setToggleButton(true);
 
   QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
@@ -235,7 +257,6 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   QFontDatabase fb;
   cmbFontName = new QComboBox(barChat);
-  cmbFontName->setStyle(new QWindowsStyle);
 #if 0
   cmbFontName->setSizeLimit(15);
   QStringList sl = fb.families();
@@ -686,11 +707,14 @@ void ChatDlg::chatClose(CChatUser *u)
 }
 
 
-void ChatDlg::hide()
+void ChatDlg::closeEvent(QCloseEvent* e)
 {
+  if(QueryUser(this, tr("Do you want to save the chat session?"),
+               tr("Yes"), tr("No")))
+    slot_save();
+
+  e->accept();
   chatClose(NULL);
-  //close(true);
-  delete this;
 }
 
 

@@ -27,6 +27,7 @@ class QGroupBox;
 class QPushButton;
 class QToolButton;
 class QComboBox;
+class QCloseEvent;
 
 class CICQDaemon;
 
@@ -106,7 +107,7 @@ protected:
   QSocketNotifier *sn;
   bool m_bAudio;
 
-  virtual void hide();
+  virtual void closeEvent(QCloseEvent*);
 
   friend class CJoinChatDlg;
 
