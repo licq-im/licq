@@ -107,7 +107,7 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetPassword(_szPasswd);
   gUserManager.DropOwner();
-  CPacketRegister *p = new CPacketRegister(_szPasswd);
+  CPU_Register *p = new CPU_Register(_szPasswd);
   gLog.Info("%sRegistering a new user (#%d)...\n", L_UDPxSTR, p->getSequence());
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_SERVER);
 }
