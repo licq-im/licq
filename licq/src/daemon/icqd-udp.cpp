@@ -901,7 +901,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
              >> tcpVersion
       ;
 
-      gLog.Info("%s%s (%ld) went online (TCP v%01lx).\n", L_UDPxSTR, u->GetAlias(), nUin, tcpVersion&0x0F);
+      gLog.Info("%s%s (%ld) went online (v%01lx).\n", L_UDPxSTR, u->GetAlias(),
+         nUin, tcpVersion & 0x0F);
 
       // The packet class will spit out an ip in network order on a little
       // endian machine and in little-endian on a big endian machine
@@ -2066,7 +2067,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetCompanyName());
           gTranslator.ServerToClient(u->GetCompanyDepartment());
           gTranslator.ServerToClient(u->GetCompanyPosition());
-	  gTranslator.ServerToClient(u->GetCompanyHomepage());
+          gTranslator.ServerToClient(u->GetCompanyHomepage());
 
           u->SetEnableSave(true);
           u->SaveWorkInfo();
