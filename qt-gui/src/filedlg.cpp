@@ -142,7 +142,7 @@ void CFileDlg::slot_cancel()
 {
   // close the local file and other stuff
   if (sn != NULL) sn->setEnabled(false);
-  mleStatus->appendNoNewLine(tr("File transfer cancelled\n"));
+  mleStatus->append(tr("File transfer cancelled."));
   btnCancel->setText(tr("Close"));
   ftman->CloseFileTransfer();
 }
@@ -211,7 +211,7 @@ bool CFileDlg::ReceiveFiles()
 
   if (!ftman->ReceiveFiles(QFile::encodeName(d))) return false;
 
-  mleStatus->appendNoNewLine(tr("Waiting for connection...\n"));
+  mleStatus->append(tr("Waiting for connection..."));
   show();
   return true;
 }
@@ -256,9 +256,9 @@ void CFileDlg::slot_ft()
         nfoFileSize->setText(encodeFSize(ftman->FileSize()));
         barTransfer->setTotalSteps(ftman->FileSize() / 1024);
         if (ftman->Direction() == D_RECEIVER)
-          mleStatus->appendNoNewLine(tr("Receiving file...\n"));
+          mleStatus->append(tr("Receiving file..."));
         else
-          mleStatus->appendNoNewLine(tr("Sending file...\n"));
+          mleStatus->append(tr("Sending file..."));
         break;
       }
 
@@ -270,19 +270,18 @@ void CFileDlg::slot_ft()
 
       case FT_DONExFILE:
       {
-        mleStatus->appendNoNewLine(tr("Done %1\n").arg(QFile::decodeName(e->Data())));
         slot_update();
         if (ftman->Direction() == D_RECEIVER)
-          mleStatus->appendNoNewLine(tr("Received\n%1\nfrom %2 successfully\n").arg(QFile::decodeName(e->Data())).arg(codec->fromUnicode(ftman->RemoteName())));
+          mleStatus->append(tr("Received %1 from %2 successfully.").arg(QFile::decodeName(e->Data())).arg(codec->fromUnicode(ftman->RemoteName())));
         else
-          mleStatus->appendNoNewLine(tr("Sent\n%1\nto %2 successfully\n").arg(QFile::decodeName(e->Data())).arg((ftman->RemoteName())));
+          mleStatus->append(tr("Sent %1 to %2 successfully.").arg(QFile::decodeName(e->Data())).arg((ftman->RemoteName())));
         break;
       }
 
       case FT_DONExBATCH:
       {
-        mleStatus->appendNoNewLine(tr("File transfer complete\n"));
-        btnCancel->setText(tr("Ok"));
+        mleStatus->append(tr("File transfer complete."));
+        btnCancel->setText(tr("OK"));
         ftman->CloseFileTransfer();
         break;
       }
@@ -290,18 +289,18 @@ void CFileDlg::slot_ft()
       case FT_ERRORxCLOSED:
       {
         btnCancel->setText(tr("Close"));
-        mleStatus->appendNoNewLine(tr("Remote side disconnected\n"));
+        mleStatus->append(tr("Remote side disconnected."));
         ftman->CloseFileTransfer();
-        WarnUser(this, tr("Remote side disconnected"));
+        WarnUser(this, tr("Remote side disconnected."));
         break;
       }
 
       case FT_ERRORxFILE:
       {
         btnCancel->setText(tr("Close"));
-        mleStatus->appendNoNewLine(tr("File I/O error: %1\n").arg(QFile::decodeName(ftman->PathName())));
+        mleStatus->append(tr("File I/O error: %1.").arg(QFile::decodeName(ftman->PathName())));
         ftman->CloseFileTransfer();
-        WarnUser(this, tr("File I/O Error:\n%1\nSee Network Window for Details")
+        WarnUser(this, tr("File I/O Error:\n%1\n\nSee Network Window for details.")
            .arg(QFile::decodeName(ftman->PathName())));
         break;
       }
@@ -311,7 +310,7 @@ void CFileDlg::slot_ft()
         btnCancel->setText(tr("Close"));
         mleStatus->appendNoNewLine(tr("Handshaking error\n"));
         ftman->CloseFileTransfer();
-        WarnUser(this, tr("Handshake Error\nSee Network Window for Details"));
+        WarnUser(this, tr("Handshake Error.\nSee Network Window for details."));
         break;
       }
     }
@@ -329,7 +328,7 @@ bool CFileDlg::SendFiles(const char *szFile, unsigned short nPort)
   fl.push_back(szFile);
   if (!ftman->SendFiles(fl, nPort)) return false;
 
-  mleStatus->appendNoNewLine(tr("Connecting to remote...\n"));
+  mleStatus->append(tr("Connecting to remote..."));
   show();
   return true;
 }
