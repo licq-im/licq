@@ -191,7 +191,7 @@ void OptionsDlg::SetupOptions()
   chkAutoClose->setChecked(mainwin->m_bAutoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
   chkScrollBar->setChecked(mainwin->m_bScrollBar);
-  chkFlashUrgent->setChecked(mainwin->m_nFlash >= FLASH_URGENT);
+  chkFlashUrgent->setChecked(mainwin->m_nFlash == FLASH_URGENT || mainwin->m_nFlash == FLASH_ALL);
   chkFlashAll->setChecked(mainwin->m_nFlash == FLASH_ALL);
   chkAutoPopup->setChecked(mainwin->m_bAutoPopup);
   chkAutoRaise->setChecked(mainwin->m_bAutoRaise);
@@ -398,8 +398,8 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bBoldOnMsg = chkBoldOnMsg->isChecked();
   mainwin->m_bManualNewUser = chkManualNewUser->isChecked();
   mainwin->m_bScrollBar = chkScrollBar->isChecked();
-  mainwin->m_nFlash = chkFlashAll->isChecked() ? FLASH_ALL :
-                      chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE;
+  mainwin->m_nFlash = chkFlashUrgent->isChecked() ? FLASH_URGENT :
+                      ( chkFlashAll->isChecked() ? FLASH_ALL : FLASH_NONE );
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   mainwin->m_MsgAutopopupKey = edtHotKey->text();
@@ -544,7 +544,7 @@ void OptionsDlg::ApplyOptions()
    txtSndChat.latin1(), txtSndFile.latin1(),
    txtSndNotify.latin1(), txtSndSysMsg.latin1(),
    txtSndMsgSent.latin1() };
-  
+
   oem->SetParameters(txtSndPlayer.latin1(), oemparams);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   o->SetEnableSave(false);
@@ -1124,10 +1124,10 @@ QWidget* OptionsDlg::new_column_options()
   chkFontStyles = new QCheckBox(tr("Use Font Styles"), boxUserWin);
   QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
      "indicate special characteristics such as online notify and visible list"));
-  chkFlashAll = new QCheckBox(tr("Flash Events"), boxUserWin);
-  QWhatsThis::add(chkFlashAll, tr("All incoming events will flash"));
-  chkFlashUrgent = new QCheckBox(tr("Flash Urgent Events"), boxUserWin);
-  QWhatsThis::add(chkFlashUrgent, tr("Only urgent events will flash"));
+  chkFlashAll = new QCheckBox(tr("Blink All Events"), boxUserWin);
+  QWhatsThis::add(chkFlashAll, tr("All incoming events will blink"));
+  chkFlashUrgent = new QCheckBox(tr("Blink Urgent Events"), boxUserWin);
+  QWhatsThis::add(chkFlashUrgent, tr("Only urgent events will blink"));
   chkScrollBar = new QCheckBox(tr("Allow scroll bar"), boxUserWin);
   QWhatsThis::add(chkScrollBar, tr("Allow the vertical scroll bar in the user list"));
   chkShowExtIcons = new QCheckBox(tr("Show Extended Icons"), boxUserWin);
@@ -1163,7 +1163,7 @@ QWidget* OptionsDlg::new_column_options()
   popIP     = new QCheckBox(tr("IP"), boxPopWin);
   popLastOnline = new QCheckBox(tr("Last online"), boxPopWin);
 
-  
+
   QVBoxLayout *g_main = new QVBoxLayout(w, 10, 5);
   g_main->addWidget(grp);
 
@@ -1172,7 +1172,7 @@ QWidget* OptionsDlg::new_column_options()
   g_options->addWidget(boxPopWin);
 
   g_main->addStretch(1);
-  
+
   return w;
 }
 
