@@ -353,7 +353,16 @@ CInfoField::CInfoField(QWidget *parent, bool readonly)
 
 void CInfoField::SetReadOnly(bool b)
 {
-  setBackgroundMode( b ? PaletteBackground : PaletteBase);
+  QColorGroup cg(palette().normal().foreground(),
+                 palette().normal().background(),
+                 palette().normal().light(),
+                 palette().normal().dark(),
+                 palette().normal().mid(),
+                 palette().normal().text(),
+                 b ? baseRO : baseRW);
+
+  setPalette(QPalette(cg, palette().disabled(), cg));
+  setReadOnly(b);
 }
 
 
