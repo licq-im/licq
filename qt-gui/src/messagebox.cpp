@@ -11,40 +11,40 @@
 
 MsgViewItem::MsgViewItem(CUserEvent *theMsg, unsigned short theIndex, QListView *parent) : QListViewItem(parent)
 {
-   index = (unsigned short)theIndex;
-   msg = theMsg->Copy();
-   QDateTime d;
-   d.setTime_t(msg->Time());
+  index = (unsigned short)theIndex;
+  msg = theMsg->Copy();
+  QDateTime d;
+  d.setTime_t(msg->Time());
 
-   setText(0, "*");
-   setText(1, EventDescription(msg));
-   setText(2, d.toString());
-   char szFlags[4];
-   szFlags[0] = msg->IsDirect() ? 'D' : ' ';
-   szFlags[1] = msg->IsUrgent() ? 'U' : ' ';
-   szFlags[2] = msg->IsMultiRec() ? 'M' : ' ';
-   szFlags[3] = '\0';
-   setText(3, szFlags);
-   setText(4, msg->IsLicq() ? msg->LicqVersionStr() : "");
+  setText(0, "*");
+  setText(1, EventDescription(msg));
+  setText(2, d.toString());
+  char szFlags[4];
+  szFlags[0] = msg->IsDirect() ? 'D' : ' ';
+  szFlags[1] = msg->IsUrgent() ? 'U' : ' ';
+  szFlags[2] = msg->IsMultiRec() ? 'M' : ' ';
+  szFlags[3] = '\0';
+  setText(3, szFlags);
+  setText(4, msg->IsLicq() ? msg->LicqVersionStr() : "");
 }
 
 MsgViewItem::~MsgViewItem(void)
 {
-   delete msg;
+  delete msg;
 }
 
 
 void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, int width, int align )
 {
-   if (index != -1)
-      QListViewItem::paintCell(p, QColorGroup(cg.foreground(), cg.background(), cg.light(), cg.dark(), cg.mid(), QColor("blue"), cg.base()), column, width, align);
-   else
-      QListViewItem::paintCell(p, cg, column, width, align);
+  if (index != -1)
+    QListViewItem::paintCell(p, QColorGroup(cg.foreground(), cg.background(), cg.light(), cg.dark(), cg.mid(), QColor("blue"), cg.base()), column, width, align);
+  else
+    QListViewItem::paintCell(p, cg, column, width, align);
 
-   // add line to bottom and right side
-   p->setPen(cg.mid());
-   p->drawLine(0, height() - 1, width - 1, height() - 1);
-   p->drawLine(width - 1, 0, width - 1, height() - 1);
+  // add line to bottom and right side
+  p->setPen(cg.mid());
+  p->drawLine(0, height() - 1, width - 1, height() - 1);
+  p->drawLine(width - 1, 0, width - 1, height() - 1);
 }
 
 
