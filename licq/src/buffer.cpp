@@ -15,17 +15,17 @@
 
 //=====Utilities=================================================================
 
-// Takes an ip from the buffer class and converts it to network byte order:
+/*! \brief Takes an ip from the buffer class and converts it to network byte order */
 unsigned long PacketIpToNetworkIp(unsigned long l)
 {
   return htonl((l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24));
 }
 
-//  Takes an ip in network order and converts it to the packet class format
+/*! \brief Takes an ip in network order and converts it to the packet class format */
 unsigned long NetworkIpToPacketIp(unsigned long l)
 {
-	l = ntohl(l);
-	return (l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24);
+  l = ntohl(l);
+  return (l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24);
 }
 
 // Endianness utility routines: Unlike Real Internet Protocols, this
@@ -48,9 +48,9 @@ unsigned long get_be_long(char *p)
 {
   unsigned char *q = (unsigned char *)p;
   return (((unsigned long)(q[0]) << 24) +
-	  ((unsigned long)(q[1]) << 16) +
-	   ((unsigned long)(q[2]) << 8) +
-	    ((unsigned long)q[3]));
+    ((unsigned long)(q[1]) << 16) +
+    ((unsigned long)(q[2]) << 8) +
+    ((unsigned long)q[3]));
 }
 
 void put_be_short(char *p, unsigned short x)
@@ -78,21 +78,21 @@ void put_be_long(char *p, unsigned long x)
   q[3] = ((x & 0x000000ff));
 }
 
-// return short (16-bit) stored in little-endian format, possibly unaligned
+/*! \brief return short (16-bit) stored in little-endian format, possibly unaligned */
 unsigned short get_le_short(char *p)
 {
    unsigned char *q = (unsigned char *)p;
    return q[0] + (q[1] << 8);
 }
 
-// return int (32-bit) stored in little-endian format, possibly unaligned
+/*! \brief return int (32-bit) stored in little-endian format, possibly unaligned */
 unsigned int get_le_int(char *p)
 {
    unsigned char *q = (unsigned char *)p;
    return q[0] + (q[1] << 8) + (q[2] << 16) + (q[3] << 24);
 }
 
-// return long (32-bit) stored in little-endian format, possibly unaligned
+/*! \brief return long (32-bit) stored in little-endian format, possibly unaligned */
 unsigned long get_le_long(char *p)
 {
    unsigned char *q = (unsigned char *)p;
@@ -104,7 +104,7 @@ unsigned long get_le_long(char *p)
 
 }
 
-// store 16-bit short in little-endian format, possibly unaligned
+/*! \brief store 16-bit short in little-endian format, possibly unaligned */
 void put_le_short(char *p, unsigned short x)
 {
    unsigned char *q = (unsigned char*)p;
@@ -112,7 +112,7 @@ void put_le_short(char *p, unsigned short x)
    q[1] = (x >> 8) & 0xff;
 }
 
-// store 32-bit int in little-endian format, possibly unaligned
+/*! \brief store 32-bit int in little-endian format, possibly unaligned */
 void put_le_int( char *p, unsigned int x)
 {
    unsigned char *q = (unsigned char*)p;
@@ -122,7 +122,7 @@ void put_le_int( char *p, unsigned int x)
    q[3] = (x >> 24) & 0xff;
 }
 
-// store 32-bit int in little-endian format, possibly unaligned
+/*! \brief store 32-bit int in little-endian format, possibly unaligned */
 void put_le_long(char *p, unsigned long x)
 {
    unsigned char *q = (unsigned char*)p;
