@@ -1015,7 +1015,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       // Jon XXX Use the server side list if wanted
       // This request does contain parameters
       gLog.Info("%sRequesting Server Contact List rights.\n", L_SRVxSTR);
-      p = new CPU_RequestList();
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS);
       SendEvent_Server(p);
       
       gLog.Info("%sRequesting Instant Messaging rights.\n", L_SRVxSTR);
@@ -1702,8 +1702,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Info("%sServer granted Server Contact List.\n", L_SRVxSTR);
       gLog.Info("%sRequesting Server Contact List.\n", L_SRVxSTR);
 
-      CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-        ICQ_SNACxLIST_REQUESTxROST);
+      CSrvPacketTcp *p = new CPU_RequestList();
       SendEvent_Server(p);
       break;
     }
