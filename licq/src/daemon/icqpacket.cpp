@@ -1406,8 +1406,9 @@ CPChat_Color::CPChat_Color(char *_sLocalName, unsigned short _nLocalPort,
   InitBuffer();
 
   buffer->PackUnsignedLong(0x64);
-  buffer->PackUnsignedLong(0xFFFFFFFD);
+  buffer->PackUnsignedLong(-ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackString(_sLocalName);
   buffer->PackUnsignedShort( ((_nLocalPort & 0xFF) << 8) + ((_nLocalPort >> 8) & 0xFF) );
   buffer->PackUnsignedLong(_nColorForeground);
   buffer->PackUnsignedLong(_nColorBackground);
@@ -1431,7 +1432,7 @@ CPChat_ColorFont::CPChat_ColorFont(char *_sLocalName, unsigned short _nLocalPort
   buffer->PackString(_sLocalName);
   buffer->PackUnsignedLong(_nColorForeground);
   buffer->PackUnsignedLong(_nColorBackground);
-  buffer->PackUnsignedLong(0x03);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(_nLocalPort);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
@@ -1455,7 +1456,7 @@ CPChat_Font::CPChat_Font(unsigned short _nLocalPort, unsigned long _nFontSize,
   m_nSize = 29 + strlen(_sFontName) + 4;
   InitBuffer();
 
-  buffer->PackUnsignedLong(0x03);
+  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(_nLocalPort);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
