@@ -4,6 +4,7 @@ NumPlugins = 1
 Plugin1 = qt-gui
 
 [network]
+AllowNewUsers = 1
 NumOfServers = 3
 DefaultServerPort = 4000
 Server1 = icq.mirabilis.com
@@ -27,10 +28,12 @@ OnlineNotify = ~/wavs/notify.wav
 SysMsg = ~/wavs/sysmsg.wav
 
 [groups]
-NumOfGroups = 2
+NumOfGroups = 3
 DefaultGroup = 0
-Group1.name = Friends
-Group2.name = Family
+NewUserGroup = 1
+Group1.name = New Users
+Group2.name = Friends
+Group3.name = Family
 ";
 
 
