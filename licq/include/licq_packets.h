@@ -48,7 +48,7 @@ protected:
 class CPacket
 {
 public:
-   virtual ~CPacket() { }
+   virtual ~CPacket() { if (buffer != NULL) delete buffer; }
 
    CBuffer *getBuffer()  { return buffer; };
    virtual CBuffer *Finalize(INetSocket *) { return NULL; }
@@ -78,6 +78,8 @@ public:
    static unsigned long LocalIp() { return s_nLocalIp; }
 
 protected:
+   CPacket() { buffer = NULL; };
+
    CBuffer *buffer;
    unsigned short m_nSize;
 
@@ -94,8 +96,6 @@ protected:
 class CSrvPacketTcp : public CPacket
 {
 public:
-  virtual ~CSrvPacketTcp();
-
   // Packet details
   virtual const unsigned char  Channel()     { return m_nChannel; }
   virtual const unsigned long  Sequence()    { return m_nSequence; }
@@ -137,8 +137,6 @@ protected:
 class CPacketUdp : public CPacket
 {
 public:
-   virtual ~CPacketUdp();
-
    virtual CBuffer *Finalize(INetSocket *);
    virtual const unsigned long  Sequence() { return m_nSequence; }
    virtual const unsigned short SubSequence() { return m_nSubSequence; }

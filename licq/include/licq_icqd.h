@@ -177,6 +177,7 @@ public:
   unsigned long icqSearchByUin(unsigned long);
 
   void icqLogoff();
+  void postLogoff(int nSD, ICQEvent *cancelledEvent);
   void icqRelogon(bool bChangeServer = false);
   unsigned long icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);

@@ -660,8 +660,8 @@ void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
 CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags)
 {
   unsigned short i = 0;
-  while ((unsigned char)sz[i++] != 0xFE);
-  sz[--i] = '\0';
+  while (sz[i] != '\0' && (unsigned char)sz[i] != 0xFE) i++;
+  sz[i] = '\0';
   int nNumContacts = atoi(sz);
   char **szFields = new char*[nNumContacts * 2 + 1];
   if (!ParseFE(&sz[++i], &szFields, nNumContacts * 2 + 1))

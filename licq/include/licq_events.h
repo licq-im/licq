@@ -245,6 +245,7 @@ protected:
   int            m_nSocketDesc;
   CPacket        *m_pPacket;
   pthread_t      thread_send;
+  bool           thread_running;
   pthread_t      thread_plugin;
 
   CUserEvent    *m_pUserEvent;

@@ -71,6 +71,7 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   m_nSubResult = ICQ_TCPxACK_ACCEPT;
   m_pDaemon = _pDaemon;
   thread_plugin = pthread_self();
+  thread_running = false;
 
   // pthread_mutex_lock
   m_nEventId = s_nNextEventId++;
@@ -113,6 +114,7 @@ ICQEvent::ICQEvent(ICQEvent *e)
 
   thread_plugin = e->thread_plugin;
   thread_send = e->thread_send;
+  thread_running = e->thread_running;
 }
 
 

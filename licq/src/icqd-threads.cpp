@@ -18,6 +18,16 @@
 
 using namespace std;
 
+void cleanup_mutex(void *m)
+{
+  pthread_mutex_unlock((pthread_mutex_t *)m);
+}
+
+void cleanup_socket(void *s)
+{
+  gSocketManager.DropSocket((INetSocket *)s);
+}
+
 /*------------------------------------------------------------------------------
  * ProcessRunningEvent_tep
  *
@@ -34,12 +44,20 @@ void *ProcessRunningEvent_Server_tep(void *p)
 {
   pthread_detach(pthread_self());
 
+  static unsigned short nNext = 0;
+  static pthread_mutex_t send_mutex = PTHREAD_MUTEX_INITIALIZER;
+
+
+
+  /* want to be cancelled immediately so we don't try to derefrence the event
+     after it has been deleted */
+  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
   DEBUG_THREADS("[ProcessRunningEvent_Server_tep] Caught event.\n");
 
   CICQDaemon *d = gLicqDaemon;
-  static unsigned short nNext = 0;
 
-  if (!d) return NULL;
+  if (!d) pthread_exit(NULL);
 
   // Must send packets in sequential order
   pthread_mutex_lock(&d->mutex_sendqueue_server);
@@ -47,106 +65,228 @@ void *ProcessRunningEvent_Server_tep(void *p)
   list<ICQEvent *>::iterator iter;
   ICQEvent *e = NULL;
 
-  for (iter = d->m_lxSendQueue_Server.begin();
-       iter != d->m_lxSendQueue_Server.end(); iter++)
+  while (e == NULL)
   {
-    if ((*iter)->Channel() == ICQ_CHNxNEW)
+
+    for (iter = d->m_lxSendQueue_Server.begin();
+         iter != d->m_lxSendQueue_Server.end(); iter++)
     {
-      e = *iter;
-      nNext = e->Sequence() + 1;
-      break;
+      if ((*iter)->Channel() == ICQ_CHNxNEW)
+      {
+        e = *iter;
+        nNext = e->Sequence() + 1;
+        break;
+      }
+
+      if ((*iter)->Sequence() == nNext)
+      {
+        e = *iter;
+        nNext++;
+        break;
+      }
     }
 
-    if ((*iter)->Sequence() == nNext)
+    if (e == NULL)
     {
-      e = *iter;
-      nNext++;
-      break;
-    }
-  }
-
-  if (e == NULL)
-    return NULL;
-
-  d->m_lxSendQueue_Server.erase(iter);
-
-  pthread_mutex_unlock(&d->mutex_sendqueue_server);
-  //struct timeval tv;
-
-  // Check if the socket is connected
-  if (e->m_nSocketDesc == -1)
-  {
-    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-
-    // Connect to the server if we are logging on
-    if (e->m_pPacket->Channel() == ICQ_CHNxNEW)
-    {
-      gLog.Info("%sConnecting to login server.\n", L_SRVxSTR);
-      e->m_nSocketDesc = d->ConnectToLoginServer();
-    }
-
-    // Check again, if still -1, fail the event
-    if (e->m_nSocketDesc == -1)
-    {
-      gLog.Info("%sConnecting to login server failed, failing event\n", L_SRVxSTR);
-      d->m_eStatus = STATUS_OFFLINE_FORCED;
-      d->m_bLoggingOn = false;
-      if (d->DoneEvent(e, EVENT_ERROR) != NULL)
-        d->ProcessDoneEvent(e);
-      else
-        delete e;
+      pthread_mutex_unlock(&d->mutex_sendqueue_server);
       pthread_exit(NULL);
     }
+
+    d->m_lxSendQueue_Server.erase(iter);
+
+    if (e->m_bCancelled)
+    {
+      delete e;
+      e = NULL;
+    }
+  }
+
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+  e->thread_send = pthread_self();
+  e->thread_running = true;
+
+  pthread_mutex_lock(&send_mutex);
+
+  // declared here because pthread_cleanup_push starts a new block
+  CBuffer *buf;
+  bool sent;
+  char szErrorBuf[128];
+
+  pthread_cleanup_push(cleanup_mutex, &send_mutex);
+
+    pthread_mutex_unlock(&d->mutex_sendqueue_server);
     pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
     pthread_testcancel();
-  }
 
-  
-// Start sending the event
-  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
-  if (s == NULL)
-  {
-    gLog.Warn("%sSocket not connected or invalid (#%ld).\n", L_WARNxSTR, e->m_nSequence);
-    if (d->DoneEvent(e, EVENT_ERROR) != NULL)
-      d->ProcessDoneEvent(e);
-    else
-      delete e;
-    pthread_exit(NULL);
-  }
+    // Check if the socket is connected
+    if (e->m_nSocketDesc == -1)
+    {
+      // Connect to the server if we are logging on
+      if (e->m_pPacket->Channel() == ICQ_CHNxNEW)
+      {
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+        gLog.Info("%sConnecting to login server.\n", L_SRVxSTR);
 
-//    tv.tv_sec = 1;
-//    tv.tv_usec = 100000;
-//    select(0, NULL, NULL, NULL, &tv);
+        int socket = d->ConnectToLoginServer();
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
 
-  CBuffer *buf = e->m_pPacket->Finalize(NULL);
-  if (!s->Send(buf))
-  {
-    delete buf;
-    char szErrorBuf[128];
-    gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
-              e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
-    // We don't close the socket as it should be closed by the server thread
-    gSocketManager.DropSocket(s);
-    if (d->DoneEvent(e, EVENT_ERROR) != NULL)
-      d->ProcessDoneEvent(e);
-    else
-      delete e;
-    pthread_exit(NULL);
-  }
-  else if (e->m_NoAck) {
-    // send successfully and we don't get an answer from the server
-    if (d->DoneEvent(e, EVENT_ACKED) != NULL)
-      d->ProcessDoneEvent(e);
-    else
-      delete e;
-  }
-  delete buf;
-  gSocketManager.DropSocket(s);
+        e->m_nSocketDesc = socket;
 
+        // Check again, if still -1, fail the event
+        if (e->m_nSocketDesc == -1)
+        {
+          pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+          gLog.Info("%sConnecting to login server failed, failing event\n",
+                    L_SRVxSTR);
+          // we need to initialize the logon time for the next retry
+          d->m_tLogonTime = time(NULL);
+          d->m_eStatus = STATUS_OFFLINE_FORCED;
+          d->m_bLoggingOn = false;
+          if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+          {
+            d->DoneExtendedEvent(e, EVENT_ERROR);
+            d->ProcessDoneEvent(e);
+          }
+          else
+          {
+            pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+            pthread_testcancel();
+            delete e;
+          }
+          pthread_exit(NULL);
+        }
+      }
+      else
+      {
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+        gLog.Info("%sNot connected to server, failing event\n", L_SRVxSTR);
+        if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+        {
+          d->DoneExtendedEvent(e, EVENT_ERROR);
+          d->ProcessDoneEvent(e);
+        }
+        else
+        {
+          pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+          pthread_testcancel();
+          delete e;
+        }
+        pthread_exit(NULL);
+      }
+    }
+
+    int socket = e->m_nSocketDesc;
+    unsigned long nSequence = e->m_nSequence;
+
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    // Start sending the event
+    INetSocket *s = gSocketManager.FetchSocket(socket);
+    if (s == NULL)
+    {
+      gLog.Warn("%sSocket not connected or invalid (#%ld).\n", L_WARNxSTR,
+                nSequence);
+      if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+      {
+        d->DoneExtendedEvent(e, EVENT_ERROR);
+        d->ProcessDoneEvent(e);
+      }
+      else
+      {
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+        delete e;
+      }
+      pthread_exit(NULL);
+    }
+
+    pthread_cleanup_push(cleanup_socket, s);
+
+      /* FIXME ugly hack, but prevents event from being deleted while we still
+         need it and cannot be canceled */
+      pthread_mutex_lock(&d->mutex_runningevents);
+
+      // check to make sure we were not cancelled already
+      pthread_cleanup_push(cleanup_mutex, &d->mutex_runningevents);
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+        pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+        //if we get here  then we haven't been cancelled and we won't be
+        //as long as we hold mutex_runningevents
+
+        buf = e->m_pPacket->Finalize(NULL);
+
+        pthread_mutex_unlock(&d->mutex_runningevents);
+      pthread_cleanup_pop(0); //mutex_runningevents
+
+      sent = s->Send(buf);
+      delete buf;
+
+      if (!sent)
+      {
+        s->ErrorStr(szErrorBuf, 128);
+      }
+
+      // We don't close the socket as it should be closed by the server thread
+      gSocketManager.DropSocket(s);
+    pthread_cleanup_pop(0); //socket
+
+    pthread_mutex_unlock(&send_mutex);
+  pthread_cleanup_pop(0); //send_mutex
 
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
   pthread_testcancel();
+
+  if (!sent)
+  {
+    unsigned long nSequence = e->m_nSequence;
+
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+    gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
+              nSequence, L_BLANKxSTR, szErrorBuf);
+
+    if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+    {
+      d->DoneExtendedEvent(e, EVENT_ERROR);
+      d->ProcessDoneEvent(e);
+    }
+    else
+    {
+      pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+      pthread_testcancel();
+      delete e;
+    }
+  }
+  else
+  {
+    if (e->m_NoAck)
+    {
+      pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+      // send successfully and we don't get an answer from the server
+      if (d->DoneEvent(e, EVENT_ACKED) != NULL)
+      {
+        d->DoneExtendedEvent(e, EVENT_ACKED);
+        d->ProcessDoneEvent(e);
+      }
+      else
+      {
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+        delete e;
+      }
+    }
+    else
+    {
+      e->thread_running = false;
+      // pthread_exit is not async cancel safe???
+      pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    }
+  }
+
+  pthread_exit(NULL);
 
   return NULL;
 }
@@ -156,51 +296,128 @@ void *ProcessRunningEvent_Client_tep(void *p)
 {
   pthread_detach(pthread_self());
 
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+  /* want to be cancelled immediately so we don't try to derefence the event
+     after it has been deleted */
+  pthread_setcanceltype(PTHREAD_CANCEL_ASYNCHRONOUS, NULL);
+
   DEBUG_THREADS("[ProcessRunningEvent_Client_tep] Caught event.\n");
 
   ICQEvent *e = (ICQEvent *)p;
+
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+  pthread_testcancel();
+
   CICQDaemon *d = e->m_pDaemon;
 
   // Check if the socket is connected
   if (e->m_nSocketDesc == -1)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-    e->m_nSocketDesc = d->ConnectToUser(e->m_nDestinationUin);
+    int socket = d->ConnectToUser(e->m_nDestinationUin);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
+    e->m_nSocketDesc = socket;
     // Check again, if still -1, fail the event
     if (e->m_nSocketDesc == -1)
     {
-      if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+      pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+      if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+        d->ProcessDoneEvent(e);
+      else
+      {
+        pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+        pthread_testcancel();
+        delete e;
+      }
       pthread_exit(NULL);
     }
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
-    pthread_testcancel();
   }
+
+  int socket = e->m_nSocketDesc;
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
+  INetSocket *s = gSocketManager.FetchSocket(socket);
   if (s == NULL)
   {
-    gLog.Warn("%sSocket %d does not exist (#%ld).\n", L_WARNxSTR, e->m_nSocketDesc,
-       e->m_nSequence);
-    if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
+    unsigned long nSequence = e->m_nSequence;
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+    gLog.Warn("%sSocket %d does not exist (#%ld).\n", L_WARNxSTR, socket,
+       nSequence);
+    if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+      d->ProcessDoneEvent(e);
+    else
+    {
+      pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+      pthread_testcancel();
+      delete e;
+    }
     pthread_exit(NULL);
   }
-  CBuffer *buf = e->m_pPacket->Finalize(s);
-  if (!s->Send(buf))
-  {
-    char szErrorBuf[128];
-    gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
-     -e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
-    // Close the socket, alert the socket thread
+
+  CBuffer *buf;
+  bool sent;
+  char szErrorBuf[128];
+  pthread_cleanup_push(cleanup_socket, s);
+    /* FIXME ugly hack, but prevents event from being deleted while we still
+       need it and cannot be canceled */
+    pthread_mutex_lock(&d->mutex_runningevents);
+
+    // check to make sure we were not cancelled already
+    pthread_cleanup_push(cleanup_mutex, &d->mutex_runningevents);
+      pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+      pthread_testcancel();
+      pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+      //if we get here  then we haven't been cancelled and we won't be
+      //as long as we hold mutex_runningevents
+
+      buf = e->m_pPacket->Finalize(s);
+
+      pthread_mutex_unlock(&d->mutex_runningevents);
+    pthread_cleanup_pop(0);
+
+    sent = s->Send(buf);
+
+    if (!sent)
+      s->ErrorStr(szErrorBuf, 128);
+
     gSocketManager.DropSocket(s);
-    gSocketManager.CloseSocket(e->m_nSocketDesc);
+  pthread_cleanup_pop(0);
+
+  if (!sent)
+  {
+    // Close the socket, alert the socket thread
+    gSocketManager.CloseSocket(socket);
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
+    unsigned long nSequence = e->m_nSequence;
+    pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+
+    gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
+     -nSequence, L_BLANKxSTR, szErrorBuf);
     write(d->pipe_newsocket[PIPE_WRITE], "S", 1);
     // Kill the event, do after the above as ProcessDoneEvent erase the event
-    if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
+    if (d->DoneEvent(e, EVENT_ERROR) != NULL)
+      d->ProcessDoneEvent(e);
+    else
+    {
+      pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+      pthread_testcancel();
+      delete e;
+    }
     pthread_exit(NULL);
   }
-  gSocketManager.DropSocket(s);
+  pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+  pthread_testcancel();
 
+  e->thread_running = false;
+
+  // pthread_exit is not async cancel safe???
+  pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   pthread_exit(NULL);
   // Avoid compiler warnings
   return NULL;
@@ -367,8 +584,11 @@ void *MonitorSockets_tep(void *p)
             gLog.Info("%sDropping server connection.\n", L_SRVxSTR);
             gSocketManager.DropSocket(srvTCP);
             gSocketManager.CloseSocket(nSD);
+            // we need to initialize the logon time for the next retry
+            d->m_tLogonTime = time(NULL);
             d->m_eStatus = STATUS_OFFLINE_FORCED;
             d->m_bLoggingOn = false;
+            d->postLogoff(nSD, NULL);
           }
         }
 

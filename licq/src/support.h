@@ -52,7 +52,7 @@ int inet_aton(const char *cp, struct in_addr *addr);
 char *strerror(int errnum);
 #endif
 
-int gethostbyname_r_portable(const char *, struct hostent *);
+int gethostbyname_r_portable(const char *, struct hostent *, char *, size_t);
 
 
 #ifdef __cplusplus

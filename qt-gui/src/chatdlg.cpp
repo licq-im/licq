@@ -580,11 +580,33 @@ void ChatDlg::updateRemoteStyle()
       QColor bg(iter->u->ColorBg()[0], iter->u->ColorBg()[1],
                          iter->u->ColorBg()[2]);
       QFont f(iter->w->font());
+#if QT_VERSION >= 230
+      f.setFixedPitch(iter->u->FontStyle() & 0x0F == STYLE_FIXEDxPITCH);
+#endif
+      switch (iter->u->FontStyle() & 0xF0)
+      {
+      case STYLE_ROMAN:
+        f.setStyleHint(QFont::Serif);
+        break;
+      case STYLE_SWISS:
+        f.setStyleHint(QFont::SansSerif);
+        break;
+      case STYLE_DECORATIVE:
+        f.setStyleHint(QFont::Decorative);
+        break;
+      case STYLE_DONTCARE:
+      case STYLE_MODERN:
+      case STYLE_SCRIPT:
+      default:
+        f.setStyleHint(QFont::AnyStyle);
+        break;
+      }
       f.setFamily(iter->u->FontFamily());
       f.setPointSize(iter->u->FontSize());
       f.setBold(iter->u->FontBold());
       f.setItalic(iter->u->FontItalic());
       f.setUnderline(iter->u->FontUnderline());
+      f.setStrikeOut(iter->u->FontStrikeOut());
       iter->w->setForeground(fg);
       iter->w->setBackground(bg);
       iter->w->setFont(f);

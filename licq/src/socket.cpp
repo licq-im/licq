@@ -335,13 +335,14 @@ bool INetSocket::SetLocalAddress(bool bIp)
       strcpy(szHostName, "localhost");
     }
     struct hostent sLocalHost;
-    h_errno = gethostbyname_r_portable(szHostName, &sLocalHost);
+    char temp[1024];
+    h_errno = gethostbyname_r_portable(szHostName, &sLocalHost, temp, sizeof(temp));
     if (h_errno != 0)
     {
       m_nErrorType = SOCK_ERROR_h_errno;
       return false;
     }
-    m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
+    m_sLocalAddr.sin_addr.s_addr = ((struct in_addr *)sLocalHost.h_addr)->s_addr;
   }
   return (true);
 }
@@ -357,7 +358,8 @@ unsigned long INetSocket::GetIpByName(const char *_szHostName)
 
   // try and resolve hostname
   struct hostent host;
-  h_errno = gethostbyname_r_portable(_szHostName, &host);
+  char temp[1024];
+  h_errno = gethostbyname_r_portable(_szHostName, &host, temp, sizeof(temp));
   if (h_errno == -1) // Couldn't resolve hostname/ip
   {
     return (0);
@@ -367,7 +369,7 @@ unsigned long INetSocket::GetIpByName(const char *_szHostName)
     return (0);
   }
   // return the ip
-  return *((unsigned long *)(host.h_addr));
+  return ((struct in_addr *)(host.h_addr))->s_addr;
 }
 
 
@@ -545,6 +547,7 @@ bool INetSocket::RecvRaw()
   int nBytesReceived = recv(m_nDescriptor, buffer, MAX_RECV_SIZE, 0);
   if (nBytesReceived <= 0)
   {
+    delete[] buffer;
     m_nErrorType = SOCK_ERROR_errno;
     return (false);
   }

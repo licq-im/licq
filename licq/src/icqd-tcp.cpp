@@ -80,7 +80,9 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
   if (mDos)
     delete [] mDos;
 
-  return result->EventId();
+  if (result != NULL)
+    return result->EventId();
+  return 0;
 }
 
 
@@ -109,7 +111,9 @@ unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin, bool bServer)
   }
 
   gUserManager.DropUser(u);
-  return result->EventId();
+  if (result != NULL)
+    return result->EventId();
+  return 0;
 }
 
 
@@ -167,7 +171,9 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   if (szDescDos)
     delete [] szDescDos;
 
-  return result->EventId();
+  if (result != NULL)
+    return result->EventId();
+  return 0;
 }
 
 
@@ -312,7 +318,9 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
   delete []m;
-  return result->EventId();
+  if (result != NULL)
+    return result->EventId();
+  return 0;
 }
 
 
@@ -441,7 +449,9 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 
   if (szReasonDos)
     delete [] szReasonDos;
-  return result->EventId();
+  if (result != NULL)
+    return result->EventId();
+  return 0;
 }
 
 
@@ -553,7 +563,9 @@ unsigned long CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
 
   gUserManager.DropUser(u);
 
-  return result->EventId();
+  if (result != NULL)
+    return result->EventId();
+  return 0;
 
 #else // No OpenSSL
   gLog.Warn("%sicqOpenSecureChannel() to %ld called when we do not support OpenSSL.\n",
@@ -595,7 +607,9 @@ unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
 
   gUserManager.DropUser(u);
 
-  return result->EventId();
+  if (result != NULL)
+    return result->EventId();
+  return 0;
 
 #else // No OpenSSL
   gLog.Warn("%sicqCloseSecureChannel() to %ld called when we do not support OpenSSL.\n",
@@ -1027,7 +1041,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                 senderPort, junkLong, nPort, nPortReversed;
   unsigned short version, command, junkShort, newCommand, messageLen,
                 headerLen, ackFlags, msgFlags, licqVersion;
-  char licqChar, junkChar;
+  char licqChar = '\0', junkChar;
   bool errorOccured = false;
 
   // only used for v7,v8

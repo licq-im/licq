@@ -1442,6 +1442,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nOnlineSince = 0;
   m_nIdleSince = 0;
   m_nStatusToUser = ICQ_STATUS_OFFLINE;
+  m_nStatus = ICQ_STATUS_OFFLINE;
   m_nAutoAccept = 0;
   m_szCustomAutoResponse = NULL;
   m_bConnectionInProgress = false;
@@ -2534,6 +2535,8 @@ ICQOwner::ICQOwner()
   m_fConf.SetFileName(filename);
   LoadInfo();
   m_fConf.ReadNum("Uin", m_nUin, 0);
+  snprintf(m_szUinString, 12, "%lu", m_nUin);
+  m_szUinString[12] = '\0';
   m_fConf.ReadStr("Password", szTemp, "", false);
   SetPassword(&szTemp[1]); // skip leading space since we didn't trim
   if ((szTemp[0] == '\0' || szTemp[1] =='\0') && m_nUin != 0)

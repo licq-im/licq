@@ -264,11 +264,6 @@ CSrvPacketTcp::CSrvPacketTcp(unsigned char nChannel)
   m_szSequenceOffset = NULL;
 }
 
-CSrvPacketTcp::~CSrvPacketTcp()
-{
-  if (buffer) delete buffer;
-}
-
 CBuffer *CSrvPacketTcp::Finalize(INetSocket *)
 {
   //  m_szSequenceOffset
@@ -557,12 +552,6 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
 }
 
 
-CPacketUdp::~CPacketUdp()
-{
-  if (buffer != NULL) delete buffer;
-}
-
-
 void CPacketUdp::InitBuffer()
 {
   buffer = new CBuffer(m_nSize + 8);
@@ -617,7 +606,6 @@ CPU_Register::CPU_Register(const char *_szPasswd)
 CPU_Register::~CPU_Register()
 {
   free (m_szPasswd);
-  if (buffer != NULL) delete buffer;
 }
 
 #elif ICQ_VERSION == 4 || ICQ_VERSION == 5
@@ -651,9 +639,11 @@ CPU_RegisterFirst::CPU_RegisterFirst()
 {
   m_nSize = 4;
 
+  pthread_mutex_lock(&s_xMutex);
   s_nSequence = rand() & 0x7fff;
   s_bRegistered = true;
   m_nSequence = s_nSequence++;
+  pthread_mutex_unlock(&s_xMutex);
 
   InitBuffer();
 
@@ -692,11 +682,14 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   char szEncPass[16];
   unsigned int j;
 
+  pthread_mutex_lock(&s_xMutex);
   if (!s_bRegistered) {
     s_nSequence = rand() & 0x7fff;
     s_bRegistered = true;
     m_nSequence = s_nSequence++;
   }
+  pthread_mutex_unlock(&s_xMutex);
+
   m_nLogonStatus = _nLogonStatus;
   m_nTcpVersion = ICQ_VERSION_TCP;
 
@@ -745,8 +738,10 @@ CPU_SendCookie::CPU_SendCookie(const char *szCookie, int nLen)
   : CSrvPacketTcp(ICQ_CHNxNEW)
 {
   m_nSize = nLen + 8;
+  pthread_mutex_lock(&s_xMutex);
   s_nSequence = (rand() & 0x7fff);
   m_nSequence = s_nSequence++;
+  pthread_mutex_unlock(&s_xMutex);
   InitBuffer();
 
   buffer->PackUnsignedLongBE(0x00000001);
@@ -2249,7 +2244,7 @@ CPU_SearchWhitePages::CPU_SearchWhitePages(const char *szFirstName,
       case 30: nMaxAge = 39;  break;
       case 40: nMaxAge = 49;  break;
       case 50: nMaxAge = 59;  break;
-      case 60: nMaxAge = 120; break;
+      case 60: nMaxAge = 10000; break;
     }
   }
 
@@ -3199,7 +3194,6 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
 CPacketTcp::~CPacketTcp()
 {
   free (m_szMessage);
-  delete buffer;
 }
 
 

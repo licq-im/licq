@@ -1014,6 +1014,8 @@ void UserInfoDlg::SetupHistory()
         .arg(u->HistoryFile()).arg(u->HistoryName()));
     else
       mlvHistory->setText(tr("Sorry, history is disabled for this person."));
+
+    btnMain2->setEnabled(false);
   }
   else
   {
@@ -1028,10 +1030,11 @@ void UserInfoDlg::SetupHistory()
     }
     m_nHistoryIndex = m_lHistoryList.size();
     ShowHistory();
+
+    btnMain2->setEnabled((m_nHistoryIndex - m_nHistoryShowing) != 0);
   }
   gUserManager.DropUser(u);
 
-  btnMain2->setEnabled((m_nHistoryIndex - m_nHistoryShowing) != 0);
   btnMain3->setEnabled(false);
 }
 
@@ -1104,7 +1107,9 @@ bool UserInfoDlg::chkContains(const char* d, const char* filter, int len)
 
 void UserInfoDlg::ShowHistory()
 {
-  // Last check (should never be true)
+  m_nHistoryShowing = 0;
+
+  // Last check (will be true if history is empty)
   if (m_lHistoryList.size() == 0) return;
   HistoryListIter tempIter;
 
@@ -1120,7 +1125,6 @@ void UserInfoDlg::ShowHistory()
   QString s;
   QString tmp;
   QDateTime date;
-  m_nHistoryShowing = 0;
   QString contactName = tr("server");
   QTextCodec * codec = QTextCodec::codecForLocale();
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
@@ -1295,7 +1299,7 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("Nex&t"));
     btnMain2->setText(tr("P&rev"));
-    btnMain1->setText(m_bOwner ? tr("") : tr("&Menu"));
+    btnMain1->setText(m_bOwner ? (QString)"" : tr("&Menu"));
     if (tabList[HistoryInfo].loaded)
     {
       btnMain3->setEnabled(m_iHistoryEIter != m_lHistoryList.end());

@@ -76,6 +76,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_nTCPSocketDesc = -1;
   m_nTCPSrvSocketDesc = -1;
   m_eStatus = STATUS_OFFLINE_MANUAL;
+  //just in case we need to sign on automatically
+  m_nDesiredStatus = ICQ_STATUS_ONLINE;
   m_bShuttingDown = false;
   m_bRegistering = false;
   m_nServerAck = 0;
@@ -95,7 +97,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   char szICQServer[MAX_LINE_LEN];
 
   licqConf.ReadStr("ICQServer", szICQServer, DEFAULT_SERVER_HOST);
-  m_szICQServer = new char[strlen(szICQServer) + 1];
+  m_szICQServer = (char *)malloc(strlen(szICQServer) + 1);
   strcpy(m_szICQServer, szICQServer);
   licqConf.ReadNum("ICQServerPort", m_nICQServerPort, DEFAULT_SERVER_PORT);
 
@@ -158,13 +160,13 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   // Url viewer
   m_szUrlViewer = NULL;
   licqConf.ReadStr("UrlViewer", temp, "none");
-  m_szUrlViewer = new char[strlen(temp) + 1];
+  m_szUrlViewer = (char *)malloc(strlen(temp) + 1);
   strcpy(m_szUrlViewer, temp);
 
   // Terminal
   m_szTerminal = NULL;
   licqConf.ReadStr("Terminal", temp, "xterm -T Licq -e ");
-  m_szTerminal = new char[strlen(temp) + 1];
+  m_szTerminal = (char *)malloc(strlen(temp) + 1);
   strcpy(m_szTerminal, temp);
 
   // Proxy
@@ -174,15 +176,15 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadBool("ProxyEnabled", m_bProxyEnabled, false);
   licqConf.ReadNum("ProxyServerType", m_nProxyType, PROXY_TYPE_HTTP);
   licqConf.ReadStr("ProxyServer", t_str, "");
-  m_szProxyHost = new char[strlen(t_str) + 1];
+  m_szProxyHost = (char *)malloc(strlen(t_str) + 1);
   strcpy(m_szProxyHost, t_str);
   licqConf.ReadNum("ProxyServerPort", m_nProxyPort, 0);
   licqConf.ReadBool("ProxyAuthEnabled", m_bProxyAuthEnabled, false);
   licqConf.ReadStr("ProxyLogin", t_str, "");
-  m_szProxyLogin = new char[strlen(t_str) + 1];
+  m_szProxyLogin = (char *)malloc(strlen(t_str) + 1);
   strcpy(m_szProxyLogin, t_str);
   licqConf.ReadStr("ProxyPassword", t_str, "");
-  m_szProxyPasswd = new char[strlen(t_str) + 1];
+  m_szProxyPasswd = (char *)malloc(strlen(t_str) + 1);
   strcpy(m_szProxyPasswd, t_str);
 
   licqConf.ReadBool("UseSS", m_bUseSS, true);
@@ -473,13 +475,13 @@ const char *CICQDaemon::Version()
 //-----ICQ::destructor----------------------------------------------------------
 CICQDaemon::~CICQDaemon()
 {
-  if(m_szUrlViewer)   delete []m_szUrlViewer;
+  if(m_szUrlViewer)   free(m_szUrlViewer);
   if(m_szRejectFile)  delete []m_szRejectFile;
-  if(m_szICQServer)   delete []m_szICQServer;
-  if(m_szProxyHost)   delete []m_szProxyHost;
-  if(m_szProxyLogin)  delete []m_szProxyLogin;
-  if(m_szProxyPasswd) delete []m_szProxyPasswd;
-  if(m_szTerminal)    delete []m_szTerminal;
+  if(m_szICQServer)   free(m_szICQServer);
+  if(m_szProxyHost)   free(m_szProxyHost);
+  if(m_szProxyLogin)  free(m_szProxyLogin);
+  if(m_szProxyPasswd) free(m_szProxyPasswd);
+  if(m_szTerminal)    free(m_szTerminal);
   if(fifo_fs)         fclose(fifo_fs);
   gLicqDaemon = NULL;
 }
@@ -1023,7 +1025,12 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet
    CUserEvent *ue)
 {
   // If we are already shutting down, don't start any events
-  if (m_bShuttingDown) return NULL;
+  if (m_bShuttingDown)
+  {
+    if (packet != NULL) delete packet;
+    if (ue != NULL) delete ue;
+    return NULL;
+  }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, nUin, ue);
@@ -1038,7 +1045,12 @@ ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
    CUserEvent *ue)
 {
   // If we are already shutting down, don't start any events
-  if (m_bShuttingDown) return NULL;
+  if (m_bShuttingDown)
+  {
+    if (packet != NULL) delete packet;
+    if (ue != NULL) delete ue;
+    return NULL;
+  }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(this, pUser->SocketDesc(), packet,
@@ -1052,13 +1064,14 @@ ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
 
 ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
 {
+  // don't release the mutex until thread is running so that cancelling the
+  // event cancels the thread as well
   pthread_mutex_lock(&mutex_runningevents);
   m_lxRunningEvents.push_back(e);
-  pthread_mutex_unlock(&mutex_runningevents);
 
   assert(e);
 
-  if (e->m_nSocketDesc == m_nTCPSrvSocketDesc)
+  if (fcn == ProcessRunningEvent_Server_tep)
   {
     pthread_mutex_lock(&mutex_sendqueue_server);
     m_lxSendQueue_Server.push_back(e);
@@ -1066,11 +1079,34 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
   }
 
   int nResult = pthread_create(&e->thread_send, NULL, fcn, e);
+  if (fcn != ProcessRunningEvent_Server_tep)
+    e->thread_running = true;
+  pthread_mutex_unlock(&mutex_runningevents);
+
   if (nResult != 0)
   {
     gLog.Error("%sUnable to start event thread (#%ld):\n%s%s.\n", L_ERRORxSTR,
        e->m_nSequence, L_BLANKxSTR, strerror(nResult));
-    e->m_eResult = EVENT_ERROR;
+    DoneEvent(e, EVENT_ERROR);
+    if (e->m_nSocketDesc == m_nTCPSrvSocketDesc)
+    {
+      pthread_mutex_lock(&mutex_sendqueue_server);
+      list<ICQEvent *>::iterator iter;
+      for (iter = m_lxSendQueue_Server.begin();
+           iter != m_lxSendQueue_Server.end(); iter++)
+      {
+        if (e == *iter)
+        {
+          m_lxSendQueue_Server.erase(iter);
+
+          ICQEvent *cancelled = new ICQEvent(e);
+          cancelled->m_bCancelled = true;
+          m_lxSendQueue_Server.push_back(cancelled);
+          break;
+        }
+      }
+      pthread_mutex_unlock(&mutex_sendqueue_server);
+    }
     ProcessDoneEvent(e);
     return NULL;
   }
@@ -1168,6 +1204,12 @@ ICQEvent *CICQDaemon::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResu
     {
       e = *iter;
       m_lxRunningEvents.erase(iter);
+      // Check if we should cancel a processing thread
+      if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
+      {
+        pthread_cancel(e->thread_send);
+        e->thread_running = false;
+      }
       break;
     }
   }
@@ -1178,10 +1220,6 @@ ICQEvent *CICQDaemon::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResu
   if (e == NULL) return (NULL);
 
   e->m_eResult = _eResult;
-
-  // Check if we should cancel a processing thread
-  if (!pthread_equal(e->thread_send, pthread_self()))
-    pthread_cancel(e->thread_send);
 
   return(e);
 }
@@ -1202,6 +1240,12 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
     {
       bFound = true;
       m_lxRunningEvents.erase(iter);
+      // Check if we should cancel a processing thread
+      if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
+      {
+        pthread_cancel(e->thread_send);
+        e->thread_running = false;
+      }
       break;
     }
   }
@@ -1240,11 +1284,6 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
   else
 #endif
 #endif
-  {
-    // Check if we should cancel a processing thread
-    if (!pthread_equal(e->thread_send, pthread_self()))
-      pthread_cancel(e->thread_send);
-  }
 
   return (e);
 }
@@ -1271,6 +1310,12 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EventResult 
     {
       e = *iter;
       m_lxRunningEvents.erase(iter);
+      // Check if we should cancel a processing thread
+      if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
+      {
+        pthread_cancel(e->thread_send);
+        e->thread_running = false;
+      }
       break;
     }
   }
@@ -1280,10 +1325,6 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EventResult 
   if (e == NULL) return (NULL);
 
   e->m_eResult = _eResult;
-
-  // Check if we should cancel a processing thread
-  if (!pthread_equal(e->thread_send, pthread_self()))
-    pthread_cancel(e->thread_send);
 
   return(e);
 }
@@ -1300,6 +1341,12 @@ ICQEvent *CICQDaemon::DoneEvent(unsigned long tag, EventResult _eResult)
     {
       e = *iter;
       m_lxRunningEvents.erase(iter);
+      // Check if we should cancel a processing thread
+      if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
+      {
+        pthread_cancel(e->thread_send);
+        e->thread_running = false;
+      }
       break;
     }
   }
@@ -1309,10 +1356,6 @@ ICQEvent *CICQDaemon::DoneEvent(unsigned long tag, EventResult _eResult)
   if (e == NULL) return (NULL);
 
   e->m_eResult = _eResult;
-
-  // Check if we should cancel a processing thread
-  if (!pthread_equal(e->thread_send, pthread_self()))
-    pthread_cancel(e->thread_send);
 
   return(e);
 }
@@ -1648,15 +1691,35 @@ ICQEvent *CICQDaemon::PopPluginEvent()
 //-----CICQDaemon::CancelEvent---------------------------------------------------------
 void CICQDaemon::CancelEvent(unsigned long t)
 {
-  ICQEvent *e = NULL;
-  if ( (e = DoneEvent(t, EVENT_CANCELLED)) == NULL &&
-       (e = DoneExtendedEvent(t, EVENT_CANCELLED)) == NULL)
+  ICQEvent *eSrv = NULL;
+  pthread_mutex_lock(&mutex_sendqueue_server);
+  list<ICQEvent *>::iterator iter;
+  for (iter = m_lxSendQueue_Server.begin();
+       iter != m_lxSendQueue_Server.end(); iter++)
+  {
+    if ((*iter)->Equals(t))
+    {
+      eSrv = *iter;
+      m_lxSendQueue_Server.erase(iter);
+
+      ICQEvent *cancelled = new ICQEvent(eSrv);
+      cancelled->m_bCancelled = true;
+      m_lxSendQueue_Server.push_back(cancelled);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_sendqueue_server);
+
+  ICQEvent *eRun = DoneEvent(t, EVENT_CANCELLED);
+  ICQEvent *eExt = DoneExtendedEvent(t, EVENT_CANCELLED);
+
+  if (eRun == NULL && eExt == NULL && eSrv == NULL)
   {
     gLog.Warn("%sCancelled event not found.\n", L_WARNxSTR);
     return;
   }
 
-  CancelEvent(e);
+  CancelEvent((eRun != NULL)? eRun : (eExt != NULL)? eExt : eSrv);
 }
 
 void CICQDaemon::CancelEvent(ICQEvent *e)

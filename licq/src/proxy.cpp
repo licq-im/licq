@@ -133,7 +133,8 @@ unsigned long ProxyServer::GetIpByName(const char *_szHostName)
 
   // try and resolve hostname
   struct hostent host;
-  h_errno = gethostbyname_r_portable(_szHostName, &host);
+  char temp[1024];
+  h_errno = gethostbyname_r_portable(_szHostName, &host, temp, sizeof(temp));
   if (h_errno == -1) // Couldn't resolve hostname/ip
   {
     return (0);
@@ -143,7 +144,7 @@ unsigned long ProxyServer::GetIpByName(const char *_szHostName)
     return (0);
   }
   // return the ip
-  return *((unsigned long *)(host.h_addr));
+  return ((struct in_addr *)(host.h_addr))->s_addr;
 }
 
 

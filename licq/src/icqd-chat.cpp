@@ -1078,9 +1078,10 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
          unsigned short sizeFontName, i;
          sizeFontName = u->chatQueue[1] | (u->chatQueue[2] << 8);
          if (u->chatQueue.size() < (unsigned long)(sizeFontName + 2 + 3)) return true;
-         char nameFont[sizeFontName];
+         char nameFont[sizeFontName + 1];
          for (i = 0; i < sizeFontName; i++)
             nameFont[i] = u->chatQueue[i + 3];
+         nameFont[sizeFontName] = '\0';
          strncpy(u->fontFamily, nameFont, 64);
          u->fontFamily[63] = '\0';
          u->fontEncoding = u->chatQueue[sizeFontName + 3];
@@ -1390,9 +1391,10 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
         {
            unsigned short sizeFontName, i;
            sizeFontName = u->chatQueue[0] | (u->chatQueue[1] << 8);
-           char nameFont[sizeFontName];
+           char nameFont[sizeFontName + 1];
            for (i = 0; i < sizeFontName; i++)
               nameFont[i] = u->chatQueue[i + 2];
+           nameFont[sizeFontName] = '\0';
            strncpy(u->fontFamily, nameFont, 64);
            u->fontFamily[63] = '\0';
            u->fontEncoding = u->chatQueue[sizeFontName + 2];

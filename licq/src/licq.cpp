@@ -693,7 +693,11 @@ int CLicq::Main()
         abstime.tv_sec = time(TIME_NOW) + MAX_WAIT_PLUGIN;
         abstime.tv_nsec = 0;
         if (pthread_cond_timedwait(&LP_IdSignal, &LP_IdMutex, &abstime) == ETIMEDOUT)
-          break;
+        {
+          pthread_mutex_lock(&mutex_plugins);
+          pthread_mutex_unlock(&LP_IdMutex);
+          goto timed_out;
+        }
       }
       else
         pthread_cond_wait(&LP_IdSignal, &LP_IdMutex);
@@ -727,6 +731,8 @@ int CLicq::Main()
     delete *iter;
     list_plugins.erase(iter);
   }
+
+  timed_out:
 
   for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
   {

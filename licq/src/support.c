@@ -141,7 +141,7 @@ int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
   DIR *dirp;
   struct dirent *result, *entry;
   int tdirsize = sizeof(struct dirent);
-  register int i = 0;
+  register int i = 0, j;
 
   if ((dirp = opendir(dirname)) == NULL)
     return -1;
@@ -175,6 +175,12 @@ int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
 
       if (((*namelist)[i] = (struct dirent *)malloc(tdirsize + _POSIX_PATH_MAX)) == NULL)
       {
+#ifdef HAVE_READDIR_R
+        free(entry);
+#endif
+        for (j = 0; j < i; j++) free((*namelist)[j]);
+        free(*namelist);
+
         closedir(dirp);
         return -1;
       }
@@ -182,6 +188,10 @@ int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
       i++;
     }
   }
+
+#ifdef HAVE_READDIR_R
+  free(entry);
+#endif
 
   qsort((char *) &((*namelist)[0]), i, sizeof(struct dirent *), my_alphasort);
 
@@ -213,27 +223,20 @@ char *strerror(int errnum)
 
 #endif	/* HAVE_STRERROR */
 
-int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
+int gethostbyname_r_portable(const char *szHostName, struct hostent *h, char *buf, size_t buflen)
 {
 // Linux
 #if defined(__GLIBC__)
   struct hostent *h_buf;
-  char temp[1024];
   int herror = 0;
-  gethostbyname_r(szHostName, h, temp, 1024, &h_buf, &herror);
+  gethostbyname_r(szHostName, h, buf, buflen, &h_buf, &herror);
   return herror;
-// Solaris
+// Solaris, Irix
 #elif defined(sun) || defined(__sgi)
   struct hostent *h_buf;
-  char temp[1024];
   int herror = 0;
-  h_buf = gethostbyname_r(szHostName, h, temp, 1024, &herror);
+  h_buf = gethostbyname_r(szHostName, h, buf, buflen, &herror);
   return herror;
-// not sure about this one (actually pretty sure it's wrong)
-// who uses OSF anyway?
-#elif defined(__osf__)
-  h = gethostbyname(szHostName);
-  return h_error;
 // Default to thread unsafe version
 #else
 #warning "I don't know how to do reentrant gethostbyname on this machine."

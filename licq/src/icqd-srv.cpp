@@ -387,8 +387,9 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
   gUserManager.DropUser(u);
 
   ICQEvent *result = SendExpectEvent_Server(_nUin, p, NULL);
-
-  return result->EventId();
+  if (result != NULL)
+    return result->EventId();
+  return 0;
 }
 
 //-----icqSetRandomChatGroup----------------------------------------------------
@@ -399,7 +400,9 @@ unsigned long CICQDaemon::icqSetRandomChatGroup(unsigned long _nGroup)
             p->Sequence());
  
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqRandomChatSearch------------------------------------------------------
@@ -410,7 +413,9 @@ unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
             p->Sequence());
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----NextServer---------------------------------------------------------------
@@ -481,15 +486,19 @@ unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
   gLog.Info("%sRequesting meta info for %ld (#%ld/#%d)...\n", L_SRVxSTR, nUin,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(nUin, p, NULL);
-  PushExtendedEvent(e);
-  return e->EventId();
+  if (e != NULL)
+  {
+    PushExtendedEvent(e);
+    return e->EventId();
+  }
+  return 0;
 }
 
 //-----icqSetStatus-------------------------------------------------------------
 unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
 {
   if (newStatus & ICQ_STATUS_DND)
-    newStatus |= 0x10; // quick compat hack
+    newStatus |= ICQ_STATUS_OCCUPIED; // quick compat hack
 
   // icq go wants the mask set when we truly are away
   if (newStatus & ICQ_STATUS_DND || newStatus & ICQ_STATUS_OCCUPIED ||
@@ -532,7 +541,9 @@ unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
   gLog.Info("%sUpdating password (#%ld/#%d)...\n", L_SRVxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqSetGeneralInfo----------------------------------------------------
@@ -557,7 +568,9 @@ unsigned long CICQDaemon::icqSetGeneralInfo(
   gLog.Info("%sUpdating general info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqSetEmailInfo---------------------------------------------------------
@@ -570,7 +583,9 @@ unsigned long CICQDaemon::icqSetEmailInfo(
   gLog.Info("%sUpdating additional E-Mail info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqSetMoreInfo----------------------------------------------------
@@ -589,7 +604,9 @@ unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
   gLog.Info("%sUpdating more info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqSetWorkInfo--------------------------------------------------------
@@ -607,7 +624,9 @@ unsigned long CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szSta
   gLog.Info("%sUpdating work info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqSetAbout-----------------------------------------------------------
@@ -622,7 +641,9 @@ unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
   delete [] szAbout;
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqAuthorizeGrant--------------------------------------------------------
@@ -640,7 +661,9 @@ unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMe
   delete [] sz;
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqAuthorizeRefuse-------------------------------------------------------
@@ -659,7 +682,9 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szM
   delete sz;
 
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 //-----icqRequestAuth--------------------------------------------------------
@@ -675,7 +700,9 @@ unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool
     CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
     gLog.Info("%sUpdating security info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
     ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-    return e->EventId();
+    if (e != NULL)
+      return e->EventId();
+    return 0;
 }
 
 //-----icqSearchWhitePages--------------------------------------------------
@@ -695,8 +722,12 @@ unsigned long CICQDaemon::icqSearchWhitePages(const char *szFirstName,
   gLog.Info("%sStarting white pages search (#%ld/#%d)...\n", L_SRVxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  PushExtendedEvent(e);
-  return e->EventId();
+  if (e != NULL)
+  {
+    PushExtendedEvent(e);
+    return e->EventId();
+  }
+  return 0;
 }
 
 //-----icqSearchByUin----------------------------------------------------------
@@ -706,8 +737,12 @@ unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
    gLog.Info("%sStarting search by UIN for user (#%ld/#%d)...\n", L_SRVxSTR,
    	p->Sequence(), p->SubSequence());
    ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-   PushExtendedEvent(e);
-   return e->EventId();
+   if (e != NULL)
+   {
+     PushExtendedEvent(e);
+     return e->EventId();
+   }
+   return 0;
 }
 
 //-----icqGetUserBasicInfo------------------------------------------------------
@@ -718,8 +753,12 @@ unsigned long CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
   gLog.Info("%sRequesting user info (#%ld/#%d)...\n", L_SRVxSTR,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(_nUin, p, NULL);
-  PushExtendedEvent(e);
-  return e->EventId();
+  if (e != NULL)
+  {
+    PushExtendedEvent(e);
+    return e->EventId();
+  }
+  return 0;
 }
 
 //-----icqPing------------------------------------------------------------------
@@ -1022,7 +1061,9 @@ unsigned long CICQDaemon::icqSendSms(const char *szNumber, const char *szMessage
   gLog.Info("%sSending SMS through server (#%ld/#%d)...\n", L_SRVxSTR,
 	    p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(nUin, p, ue);
-  return e->EventId();
+  if (e != NULL)
+    return e->EventId();
+  return 0;
 }
 
 /*------------------------------------------------------------------------------
@@ -1159,30 +1200,78 @@ void CICQDaemon::icqLogoff()
   // Kill the udp socket asap to avoid race conditions
   int nSD = m_nTCPSrvSocketDesc;
   m_nTCPSrvSocketDesc = -1;
-  gLog.Info("%sLogging off.\n", L_SRVxSTR);
-  CPU_Logoff p;
-  SendEvent(nSD, p, true);
-  gSocketManager.CloseSocket(nSD);
 
   m_eStatus = STATUS_OFFLINE_MANUAL;
   m_bLoggingOn = false;
 
+
+  if (nSD == -1)
+  {
+    gLog.Warn("%sAttempt to logoff while not logged on.\n", L_WARNxSTR);
+    return;
+  }
+
+  gLog.Info("%sLogging off.\n", L_SRVxSTR);
+  CPU_Logoff p;
+  ICQEvent *cancelledEvent = new ICQEvent(this, nSD, &p, CONNECT_SERVER, 0, NULL);
+  cancelledEvent->m_pPacket = NULL;
+  cancelledEvent->m_bCancelled = true;
+  SendEvent(nSD, p, true);
+  gSocketManager.CloseSocket(nSD);
+
+  postLogoff(nSD, cancelledEvent);
+}
+
+void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
+{
   pthread_mutex_lock(&mutex_runningevents);
+  pthread_mutex_lock(&mutex_sendqueue_server);
+  pthread_mutex_lock(&mutex_extendedevents);
   std::list<ICQEvent *>::iterator iter = m_lxRunningEvents.begin();
   while (iter != m_lxRunningEvents.end())
   {
     if ((*iter)->m_nSocketDesc == nSD)
     {
-      if (!pthread_equal((*iter)->thread_send, pthread_self()))
-        pthread_cancel((*iter)->thread_send);
-      //(*iter)->m_eResult = EVENT_CANCELLED;
-      //ProcessDoneEvent(*iter);
-      CancelEvent(*iter);
+      ICQEvent *e = *iter;
       iter = m_lxRunningEvents.erase(iter);
+      if (e->thread_running && !pthread_equal(e->thread_send, pthread_self()))
+      {
+        pthread_cancel(e->thread_send);
+        e->thread_running = false;
+      }
+      std::list<ICQEvent *>::iterator i;
+      for (i = m_lxSendQueue_Server.begin(); i != m_lxSendQueue_Server.end();
+           i++)
+      {
+        if (*i == e)
+        {
+          m_lxSendQueue_Server.erase(i);
+          ICQEvent *cancelled = new ICQEvent(e);
+          cancelled->m_bCancelled = true;
+          m_lxSendQueue_Server.push_back(cancelled);
+          break;
+        }
+      }
+      for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); i++)
+      {
+        if (*i == e)
+        {
+          m_lxExtendedEvents.erase(i);
+          break;
+        }
+      }
+      CancelEvent(e);
     }
     else
       iter++;
   }
+  assert(m_lxExtendedEvents.empty());
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+    gLog.Info("Event #%lu is still on queue!\n", (*iter)->Sequence());
+  if (cancelledEvent != NULL)
+    m_lxSendQueue_Server.push_back(cancelledEvent);
+  pthread_mutex_unlock(&mutex_extendedevents);
+  pthread_mutex_unlock(&mutex_sendqueue_server);
   pthread_mutex_unlock(&mutex_runningevents);
 
   // All extended event are a pointer that are also in the running events.
@@ -4193,6 +4282,7 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
 
   unsigned short nError = packet.UnpackUnsignedShortTLV(0x0008);
   switch (nError) {
+  case 0x1D:
   case 0x18:
     gLog.Error("%sRate limit exceeded.\n", L_ERRORxSTR);
     m_eStatus = STATUS_OFFLINE_FORCED;
@@ -4200,6 +4290,7 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
     PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_RATE, 0));
     break;
 
+  case 0x04:
   case 0x05:
     gLog.Error("%sInvalid UIN and password combination.\n", L_ERRORxSTR);
     m_eStatus = STATUS_OFFLINE_FORCED;
