@@ -1,3 +1,6 @@
+## -*- mode: m4 -*-
+dnl Copyright (c) 2000 Dirk Mueller <dirk@licq.org>
+
 dnl Check for sys_errlist[] and sys_nerr, check for declaration
 dnl Check nicked from aclocal.m4 used by GNU bash 2.01
 AC_DEFUN(LICQ_SYS_ERRLIST,
@@ -16,7 +19,7 @@ fi
 
 AC_DEFUN(LICQ_FIND_FILE,
 [
-$3=no
+$3=""
 for i in $2;
 do
   for j in $1;
@@ -34,24 +37,41 @@ AC_DEFUN(LICQ_CHECK_LICQ,
 [
   AC_MSG_CHECKING([for licq header files])
 
-  LICQ_FIND_FILE(licq_icqd.h, /usr/local/include/licq \
-	                    /usr/include/licq , licq_inc)
-  if test "$licq_inc" = no; then
+  AC_ARG_WITH(licq-includes,
+    [  --with-licq-includes    where the Licq daemon includes are located.],
+    [  licq_licq_includes="$withval" ], licq_licq_includes="")
+
+  if test -n "$licq_licq_includes"; then
+    $licq_inc = $licq_licq_includes
+  else
+    LICQ_FIND_FILE(licq_icqd.h, $prefix/include/licq \
+                                /usr/local/include/licq \
+	                        /usr/include/licq           , licq_inc)
+  fi
+
+  if test -z "$licq_inc"; then
     have_licq_inc=no
   else
     have_licq_inc=yes
   fi
   if test "$have_licq_inc" = yes; then
-    AC_MSG_RESULT(["found"])
+    AC_MSG_RESULT(["$licq_inc"])
     LICQ_INCLUDES="$licq_inc"
     AC_SUBST(LICQ_INCLUDES)
   else
     AC_MSG_RESULT(["not found"])
   fi
 
-  if test "$have_licq_inc" = no; then
+  if test "$have_licq_inc" = "no"; then
     AC_MSG_ERROR([
-      I can't find the Licq header files. Sorry, I need them.
+      I can't find the Licq header files. Make sure that you ran
+      "make install" for the Licq daemon or installed the licq header
+      files RPM.
+
+      Most likely you just need to set --prefix to the correct value.
+
+      You could also try the --with-licq-includes=<path> configure switch to
+      overwrite this check if you have installed them in an unusual place.
     ])
   fi
 ])
