@@ -31,19 +31,22 @@ CSkin::CSkin(const char *skinname)
    char filename[MAX_FILENAME_LEN];
    snprintf(filename, MAX_FILENAME_LEN, "%s%s.skin", baseSkinDir, skinname);
    filename[MAX_FILENAME_LEN - 1] = '\0';
-   CIniFile skinFile(/*INI_FxFATAL | INI_FxERROR*/ INI_FxWARN);
+   CIniFile skinFile/*(INI_FxFATAL | INI_FxERROR | INI_FxWARN)*/;
    if (!skinFile.LoadFile(filename))
    {
      snprintf(baseSkinDir, MAX_FILENAME_LEN, "%s%sskin.%s/", SHARE_DIR, QTGUI_DIR, skinname);
      baseSkinDir[MAX_FILENAME_LEN - 1] = '\0';
      snprintf(filename, MAX_FILENAME_LEN, "%s%s.skin", baseSkinDir, skinname);
      filename[MAX_FILENAME_LEN - 1] = '\0';
+     skinFile.SetFlag(INI_FxWARN);
      if (!skinFile.LoadFile(filename))
      {
        SetDefaultValues();
        return;
      }
    }
+
+   skinFile.SetFlag(INI_FxWARN);
 
    // Frame
    skinFile.SetSection("skin");
