@@ -582,7 +582,15 @@ void CICQDaemon::SetFirewallHost(const char *s)
 
 void CICQDaemon::SetTCPBasePort(unsigned short p, unsigned short r)
 {
-  //if (p != m_nTCPBasePort)
+  // We always need at least one port
+  if (p != 0 && r == 0) r = 1;
+
+  if (p == m_nTCPBasePort)
+  {
+    while (m_vbTcpPorts.size() > r) m_vbTcpPorts.erase(m_vbTcpPorts.last());
+    while (m_vbTcpPorts.size() < r) m_vbTcpPorts.push_back(false);
+  }
+  else
   {
     m_nTCPBasePort = p;
     m_vbTcpPorts.clear();
