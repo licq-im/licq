@@ -730,12 +730,43 @@ void CMainWindow::closeEvent( QCloseEvent *e )
   licqConf.SetSection("appearance");
   licqConf.WriteBool("Hidden", !isVisible());
 
+#if 0
+  qDebug("closeEvent() visible %d", isVisible());
+  qDebug("geometry: x: %d y: %d, w: %d, h: %d", geometry().x(), geometry().y(), geometry().width(), geometry().height());
+  qDebug("x: %d, y: %d, w: %d, h: %d", x(), y(), size().width(), size().height());
+  qDebug(" toGlobal: x %d, y %d", mapToGlobal(QPoint(0,0)).x(), mapToGlobal(QPoint(0,0)).y());
+#endif
+
   if(isVisible())
   {
+    int x, y;
+
+    if(pos().x() == 0 && pos().y() == 0) {
+      // WMaker bug ?
+      // if window wasn't moved at all, x()/y() return invalid
+      // values. This is with Qt 2.1 release, already reported
+      QPoint p = mapToGlobal(QPoint(0, 0));
+
+      qDebug("wmaker workaround enabled");
+
+      x = p.x() - geometry().x() - 1;
+      y = p.y() - geometry().y() - 1;
+      qDebug("x/y is now %d/%d", x,y);
+
+    }
+    else
+    {
+      x = pos().x();
+      y = pos().y();
+    }
+
+    x = x < 0 ? 0 : x;
+    y = y < 0 ? 0 : y;
+
     licqConf.SetSection("geometry");
     // I'm not sure if we should really test for negative values...
-    licqConf.WriteNum("x", (unsigned short)(x() < 0 ? 0 : x()));
-    licqConf.WriteNum("y", (unsigned short)(y() < 0 ? 0 : y()));
+    licqConf.WriteNum("x", (unsigned short)x);
+    licqConf.WriteNum("y", (unsigned short)y);
     licqConf.WriteNum("h", (unsigned short)(size().height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : size().height())));
     licqConf.WriteNum("w", (unsigned short)(size().width() < 0 ? 0 : size().width()));
   }
