@@ -1483,7 +1483,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           alias.replace(QChar('>'), "&gt;");
 
           QString msg(tr("<b>%1</b> is online").arg(alias));
-          QPixmap px = iconForStatus(u->StatusFull());
+          QPixmap px = iconForStatus(u->StatusFull(), u->IdString(), u->PPID());
           KPassivePopup::message("Licq", msg, px, licqIcon, NULL, 4000);
         }
 #endif
