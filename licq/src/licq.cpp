@@ -426,7 +426,15 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   handle = dlopen (szPlugin, DLOPEN_POLICY);
   if (handle == NULL)
   {
-    gLog.Error("%sUnable to load plugin (%s): %s.\n ", L_ERRORxSTR, _szName, dlerror());
+    const char *error = dlerror();
+    gLog.Error("%sUnable to load plugin (%s): %s.\n", L_ERRORxSTR, _szName,
+     error);
+    // Suggest a remedy if this is a Qt problem
+    if (strstr("undefined symbol", error) != NULL &&
+        strstr("qt-gui", error) != NULL)
+    {
+      gLog.Error("%sUpgrade Qt or recompile the qt-gui plugin.\n", L_ERRORxSTR);
+    }
     delete p;
     return NULL;
   }
