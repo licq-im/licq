@@ -684,7 +684,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
         mnuUser->setItemChecked(mnuUserInvisibleList, u->InvisibleList());
         mnuUser->setItemChecked(mnuUserVisibleList, u->VisibleList());
         mnuUser->setItemChecked(mnuUserIgnoreList, u->IgnoreList());
-        mnuUser->changeItem(mnuUserFloaty, tr("%1 Floating Window").arg(parent() == NULL ? "Disable" : "Enable"));
+        mnuUser->changeItem(mnuUserFloaty, tr("%1 Floating Window").arg(parent() == NULL ? tr("Disable") : tr("Enable")));
         // AcceptIn[Away] mode checked/unchecked stuff -- Andypoo (andypoo@ihug.com.au)
         mnuAwayModes->setItemChecked(mnuAwayModes->idAt(0), u->AcceptInAway());
         mnuAwayModes->setItemChecked(mnuAwayModes->idAt(1), u->AcceptInNA());
