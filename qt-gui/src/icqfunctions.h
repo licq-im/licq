@@ -19,7 +19,6 @@
 #include <qcombobox.h>
 #include <qsplitter.h>
 
-//#include "qmytabwidget.h"
 #include "user.h"
 #include "userfcndlg.h"
 #include "mledit.h"
@@ -30,7 +29,7 @@
 #include "sigman.h"
 
 
-//=====ICQFunctions===============================================================================   
+//=====ICQFunctions=============================================================
 
 const int TAB_READ = 0;
 const int TAB_SEND = 1;
@@ -49,11 +48,11 @@ public:
   void setupTabs(int);
 
 protected:
-  char tabLabel[5][16];
+  QString tabLabel[5];
   int currentTab;
   CICQDaemon *server;
   CSignalManager *sigman;
-  char m_sBaseTitle[128], m_sProgressMsg[64];
+  QString m_sBaseTitle, m_sProgressMsg;
   unsigned short m_nUnknownCountryCode;
   ICQEvent *icqEvent;
   bool m_bIsOwner;
