@@ -1,47 +1,45 @@
-How to Compile Licq CVS Snapshots under FreeBSD
-From: "Muhannad Asfour" <muhannad07@cogeco.ca>
+How to Compile Licq under FreeBSD
 
-For FreeBSD 4.x
+by Andy Fawcett <tap@kde.org> - February 2003
+Inspired by Muhannad Asfour's original, but rewritten entirely. 
 
-I made these instructions for getting Licq CVS snapshots to compile under FreeBSD if anyone is interested. A user on IRC (irc.openprojects.net), helped me compile it, and I therefore thought it would be handy to have these instructions for all the Licq + FreeBSD users out there. His nick was "Keihin" if anyone interested. 
+First, Licq is in the ports collection as net/licq, and builds out of the box.
+There are also slave ports for the various GUIs.
 
-Download the latest CVS snapshot from here: 
 
-http://www-user.rhrk.uni-kl.de/~dmuell/licq/ 
+However, if you want to build from CVS, there's just a few easy steps to follow.
+They assume you have Qt and/or KDE installed from packages/ports in their
+default locations.
 
-Anyway, here they are, 
+1. Ensure Gnu make (gmake) is installed. Licq will not build with the standard
+   FreeBSD make utility.
 
-Licq CVS Instructions: 
+2. configure, make, and install the main part of licq with
 
-Make sure you have QT2 (/usr/ports/x11-toolkits/qt23) installed for the qt-gui plugin to work. 
+   ./configure --prefix=/usr/local
+   gmake
+   gmake install
 
-Compile the main licq binary and install it. (Remember, use gmake, not make) 
-"./configure && gmake && gmake install". Make sure you are root when you run "gmake install". 
+3. If you want to build the Qt plugin, do the following:
 
-And also make sure you have the following symlinks before running the configure script for the qt-gui plugin: 
+   cd plugins/qt-gui
+   ./configure --prefix=/usr/local
+   gmake
+   gmake install
 
-ln -s /usr/X11R6/lib/libqt2-mt.so4 /usr/X11R6/lib/libqt-mt.so 
+4. Or, if you want the KDE plugin, do the following:
 
-ln -s /usr/X11R6/lib/libqt2.so.4 /usr/X11R6/lib/libqt.so 
+   cd plugins/qt-gui
+   ./configure --prefix=/usr/local --with-kde
+   gmake
+   gmake install
 
-ln -s /usr/X11R6/bin/moc2 /usr/X11R6/bin/moc 
 
-Therefore, when you run "ls -al /usr/X11R6/lib/libqt.so /usr/X11R6/lib/libqt-mt.so /usr/X11R6/bin/moc" 
+For other plugins, just ensure you tell "configure" to install them to
+/usr/local and all should build fine.
 
-You get: 
 
-lrwxr-xr-x 1 root wheel 29 Jul 1 16:56 /usr/X11R6/lib/libqt-mt.so -> /usr/X11R6/lib/libqt2-mt.so.4 
+These instructions have been tested on FreeBSD 5.0-RELEASE, but should apply
+to other versions too.
 
-lrwxr-xr-x 1 root wheel 26 Jul 1 16:57 /usr/X11R6/lib/libqt.so -> /usr/X11R6/lib/libqt2.so.4 
 
-lrwxr-xr-x 1 root wheel 19 Jul 2 13:02 /usr/X11R6/bin/moc@ -> /usr/X11R6/bin/moc2 
-
-Make sure to run "ldconfig -m" as root to update the libraries, then... 
-
-Enter the plugins/qt-gui directory and type: 
-
-"./configure --with-qt-includes=/usr/X11R6/include/qt2 --with-qt-moc=/usr/X11R6/bin/moc", then "gmake", then "gmake install". Make sure you are root when you run "gmake install". 
-
-And you should be all set. 
-
-Enjoy
