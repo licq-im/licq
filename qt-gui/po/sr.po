@@ -4,10 +4,10 @@
 # not "Foo::Pub".
 msgid ""
 msgstr ""
-"Project-Id-Version: PROJECT VERSION\n"
+"Project-Id-Version: Licq v1.1\n"
 "POT-Creation-Date: 2002-05-27 23:21:53 CEST\n"
-"PO-Revision-Date: 2002-06-15 14:08GMT+1\n"
-"Last-Translator: Prethorian <preth@kvsky.net>\n"
+"PO-Revision-Date: 2002-06-16 02:17GMT+1\n"
+"Last-Translator: Prethorian <prethorian@microsky.net>\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Language-Team: Serbian <sr@li.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -1264,7 +1264,7 @@ msgstr "vreme isteklo"
 
 #: userbox.cpp:58
 msgid "CUserView::%1 Floaty (%2)"
-msgstr ""
+msgstr "%1 Pokretno (%2)"
 
 #: userbox.cpp:1342
 msgid "CUserView::</nobr>"
@@ -1628,7 +1628,7 @@ msgstr "Ja trenutno %1.\nMo¾ete da mi ostavite poruku."
 
 #: awaymsgdlg.cpp:243
 msgid "CustomAwayMsgDlg::Set Custom Auto Response for %1"
-msgstr ""
+msgstr "Postavi proizvoljan Auto Odgovor za %1"
 
 #: editfile.cpp:37
 msgid "EditFileDlg::&Close"
@@ -1890,6 +1890,9 @@ msgid ""
 "with Diffie-Hellman key exchange and\n"
 "the TLS version 1 protocol.\n\n"
 msgstr ""
+"Sigurni kanal je uspostavljen upotrebom SSL\n"
+"sa Diffie-Hellman razmenom kljuèeva i\n"
+"TLS protokolom verzija 1.\n\n"
 
 #: keyrequestdlg.cpp:47
 msgid ""
@@ -2100,7 +2103,7 @@ msgstr "Centar"
 
 #: optionsdlg.cpp:807
 msgid "OptionsDlg::Chat Request:"
-msgstr ""
+msgstr "Zahtev za æaskanje:"
 
 #: optionsdlg.cpp:664
 msgid "OptionsDlg::Chatmode Messageview"
@@ -2404,11 +2407,11 @@ msgstr ""
 
 #: optionsdlg.cpp:95
 msgid "OptionsDlg::OnEvent"
-msgstr ""
+msgstr "NaDogaðaj"
 
 #: optionsdlg.cpp:783
 msgid "OptionsDlg::OnEvents Enabled"
-msgstr ""
+msgstr "NaDogaðaje Ukljuèeno"
 
 #: optionsdlg.cpp:834
 msgid "OptionsDlg::Online Notify when Logging On"
@@ -2610,7 +2613,7 @@ msgstr ""
 
 #: optionsdlg.cpp:682
 msgid "OptionsDlg::Show all encodings"
-msgstr ""
+msgstr "Poka¾i sva kodiranja"
 
 #: optionsdlg.cpp:1159
 msgid ""
@@ -2654,7 +2657,7 @@ msgstr "Sortiraj Na-vezi Korisnike po Statusu"
 
 #: optionsdlg.cpp:1142
 msgid "OptionsDlg::Sort all online users by their actual status"
-msgstr ""
+msgstr "Sortiraj sve 'na vezi' korisnike po njihovom trenutnom statusu"
 
 #: optionsdlg.cpp:643
 msgid "OptionsDlg::Start Hidden"
@@ -2702,7 +2705,7 @@ msgstr "Poravnanje kolone"
 
 #: optionsdlg.cpp:1222
 msgid "OptionsDlg::The command to run to start your terminal program."
-msgstr ""
+msgstr "Komanda koja pokreæe va¹ terminal program."
 
 #: optionsdlg.cpp:1217
 msgid ""
@@ -2765,6 +2768,8 @@ msgid ""
 "Turns on or off the display of headers above "
 "each column in the user list"
 msgstr ""
+"Ukljuèuje-iskljuèuje prikaz zaglavlja iznad "
+"svake kolone u listi korisnika"
 
 #: optionsdlg.cpp:804
 msgid "OptionsDlg::URL:"
@@ -2878,7 +2883,7 @@ msgstr "Lozinka se ne poklapa, probajte ponovo."
 
 #: passworddlg.cpp:122
 msgid "PasswordDlg::Set Password [Setting..."
-msgstr ""
+msgstr "Postavi Lozinku [Postavljanje..."
 
 #: passworddlg.cpp:125
 msgid "PasswordDlg::Set Password"
@@ -2990,7 +2995,7 @@ msgstr "Nisam uspeo da otvorim fajl:\n%1"
 
 #: registeruser.cpp:42
 msgid "RegisterUserDlg::&Register Existing User"
-msgstr ""
+msgstr "&Registruj Postojeæeg Korisnika"
 
 #: registeruser.cpp:143
 msgid "RegisterUserDlg::Invalid UIN.  Try again."
@@ -3230,7 +3235,7 @@ msgstr ""
 
 #: searchuserdlg.cpp:401
 msgid "SearchUserDlg::Reset Search"
-msgstr ""
+msgstr "Resetuj Pretragu"
 
 #: searchuserdlg.cpp:175
 msgid "SearchUserDlg::Return Online Users Only"
@@ -3402,7 +3407,7 @@ msgstr "Ikone"
 
 #: skinbrowser.cpp:62
 msgid "SkinBrowserDlg::Licq Skin Browser"
-msgstr ""
+msgstr "Licq Prikazivaè Skinova"
 
 #: skinbrowser.cpp:44
 msgid "SkinBrowserDlg::Name"
@@ -3410,7 +3415,7 @@ msgstr "Naziv"
 
 #: skinbrowser.cpp:25
 msgid "SkinBrowserDlg::Skins"
-msgstr ""
+msgstr "Skinovi"
 
 #: usereventdlg.cpp:106
 msgid "UserEventCommon::Change user text encoding"
@@ -3566,7 +3571,7 @@ msgstr "EMail 2:"
 
 #: userinfodlg.cpp:957
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
-msgstr ""
+msgstr "Gre¹ka pri uèitavanju istorijata: %1\nOpis: %2"
 
 #: userinfodlg.cpp:661
 msgid "UserInfoDlg::Fax:"
