@@ -828,6 +828,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   case ICQ_CMDxSND_UPDATExBASIC:
   case ICQ_CMDxSND_SEARCHxSTART:
   case ICQ_CMDxSND_REGISTERxUSER:
+  case ICQ_CMDxSND_META:
     switch (e->m_eResult)
     {
     case EVENT_ERROR:
@@ -1024,8 +1025,6 @@ void CICQDaemon::CancelEvent(ICQEvent *e)
     icqChatRequestCancel(e->m_nDestinationUin, e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
     icqFileTransferCancel(e->m_nDestinationUin, e->m_nSequence);
-
-  delete e;
 }
 
 

@@ -34,12 +34,16 @@ public:
   const char *Name(void)    { return (*fName)(); }
   const char *Version(void) { return (*fVersion)(); }
   const char *Status(void) { return (*fStatus)(); }
+  const char *BuildDate(void) { return (*fBuildDate)(); }
+  const char *BuildTime(void) { return (*fBuildTime)(); }
   unsigned short Id(void)   { return *nId; }
 
 protected:
   const char *(*fName)(void);
   const char *(*fVersion)(void);
   const char *(*fStatus)(void);
+  const char *(*fBuildDate)(void);
+  const char *(*fBuildTime)(void);
   void (*fUsage)(void);
   bool (*fInit)(int, char **);
   int (*fMain)(CICQDaemon *);
@@ -211,7 +215,7 @@ protected:
 
   unsigned short ProcessUdpPacket(CBuffer &packet, bool = false);
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
-  void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand);
+  void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);
   bool ProcessTcpPacket(CBuffer &packet, int sockfd);
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);

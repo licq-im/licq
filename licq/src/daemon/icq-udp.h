@@ -294,15 +294,12 @@ void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty = false)
       uins.push_back(pUser->Uin());
   }
   FOR_EACH_USER_END
+  if (uins.size() == 0 && !_bSendIfEmpty) return;
+
   CPU_VisibleList *p = new CPU_VisibleList(uins);
 
-  if (!p->empty() || _bSendIfEmpty)
-  {
-    gLog.Info("%sSending visible list (#%d)...\n", L_UDPxSTR, p->getSequence());
-    SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
-  }
-  else
-    delete p;
+  gLog.Info("%sSending visible list (#%d)...\n", L_UDPxSTR, p->getSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
 }
 
 
@@ -316,14 +313,11 @@ void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty = false)
       uins.push_back(pUser->Uin());
   }
   FOR_EACH_USER_END
+  if (uins.size() == 0 && !_bSendIfEmpty) return;
+
   CPU_InvisibleList *p = new CPU_InvisibleList(uins);
-  if (!p->empty() || _bSendIfEmpty)
-  {
-    gLog.Info("%sSending invisible list (#%d)...\n", L_UDPxSTR, p->getSequence());
-    SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
-  }
-  else
-    delete p;
+  gLog.Info("%sSending invisible list (#%d)...\n", L_UDPxSTR, p->getSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
 }
 
 
@@ -469,11 +463,10 @@ void CICQDaemon::icqRequestSystemMsg(void)
 //-----ProcessUdpPacket---------------------------------------------------------
 unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket = false)
 {
-  unsigned short version, nCommand, nSequence, nSubSequence, messageLen,
+  unsigned short version, nCommand, nSequence, nSubSequence,
                  junkShort;
-  unsigned long nUin, junkLong, nCheckSum, nOwnerUin;
+  unsigned long nUin, junkLong, nOwnerUin;
   char junkChar;
-  //CBuffer newPacket;
 
   // read in the standard UDP header info
   packet >> version;
@@ -482,16 +475,31 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
   if (version != 0x02)
 #elif ICQ_VERSION == 4
   if (version != 0x03)
+#elif ICQ_VERSION == 5
+  if (version != 0x05)
 #endif
   {
     gLog.Warn("%sServer send bad version number: %d.\n", L_WARNxSTR, version);
     return(0xFFFF);
   }
 
+#if ICQ_VERSION == 2
   packet >> nCommand
          >> nSequence;
-#if ICQ_VERSION == 4
-  packet >> nSubSequence
+#elif ICQ_VERSION == 4
+  unsigned long nCheckSum;
+  packet >> nCommand
+         >> nSequence
+         >> nSubSequence
+         >> nOwnerUin
+         >> nCheckSum;
+#elif ICQ_VERSION == 5
+  unsigned long nSessionId, nCheckSum;
+  packet >> junkChar
+         >> nSessionId
+         >> nCommand
+         >> nSequence
+         >> nSubSequence
          >> nOwnerUin
          >> nCheckSum;
 #endif
@@ -606,19 +614,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     // read in the four data fields; alias, first name, last name, and email address
     u->SetEnableSave(false);
     char temp[MAX_DATA_LEN], cAuthorization;
-    int i;
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> temp[i];
-    u->SetAlias(temp);
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> temp[i];
-    u->SetFirstName(temp);
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> temp[i];
-    u->SetLastName(temp);
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> temp[i];
-    u->SetEmail1(temp);
+    u->SetAlias(packet.UnpackString(temp));
+    u->SetFirstName(packet.UnpackString(temp));
+    u->SetLastName(packet.UnpackString(temp));
+    u->SetEmail1(packet.UnpackString(temp));
     packet >> cAuthorization;
     u->SetAuthorization(cAuthorization == 0 ? true : false);
 
@@ -652,9 +651,6 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
        FF FF 01 01 00 00 1C 00 68 74 74 70 3A 2F 2F 68 65 6D 2E 70 61 73 73 61
        67 65 6E 2E 73 65 2F 67 72 72 2F 00 1E 00 49 27 6D 20 6A 75 73 74 20 61
        20 67 69 72 6C 20 69 6E 20 61 20 77 6F 72 6C 64 2E 2E 2E 00 FF FF FF FF */
-    unsigned short country_code, nAge, i;
-    unsigned long zipcode;
-    char timezone, cSex;
 
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
 #if ICQ_VERSION == 2
@@ -674,39 +670,16 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     u->SetEnableSave(false);
     char sTemp[MAX_MESSAGE_SIZE];
 
-    // City
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->SetCity(sTemp);
-    // Country
-    packet >> country_code;
-    packet >> timezone;
-    u->SetCountryCode(country_code);
-    u->SetTimezone(timezone);
-    // State
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->SetState(sTemp);
-    // Age
-    packet >> nAge;
-    u->SetAge(nAge);
-    // Sex
-    packet >> cSex;
-    u->SetGender(cSex);
-    // Phone Number
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->SetPhoneNumber(sTemp);
-    // Homepage
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->SetHomepage(sTemp);
-    // About
-    packet >> messageLen;
-    for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->SetAbout(sTemp);
-    packet >> zipcode;
-    u->SetZipCode(zipcode);
+    u->SetCity(packet.UnpackString(sTemp));
+    u->SetCountryCode(packet.UnpackUnsignedShort());
+    u->SetTimezone(packet.UnpackChar());
+    u->SetState(packet.UnpackString(sTemp));
+    u->SetAge(packet.UnpackUnsignedShort());
+    u->SetGender(packet.UnpackChar());
+    u->SetPhoneNumber(packet.UnpackString(sTemp));
+    u->SetHomepage(packet.UnpackString(sTemp));
+    u->SetAbout(packet.UnpackString(sTemp));
+    u->SetZipCode(packet.UnpackUnsignedLong());
 
     // translating string with Translation Table
     gTranslator.ServerToClient(u->GetCity());
@@ -933,13 +906,14 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
      if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
      gLog.Info("%sEnd of system messages.\n", L_UDPxSTR);
 
-     // send special ack for this one as well as the usual ack
-     gLog.Info("%sSending ok to erase system messages (#%d)...\n", L_UDPxSTR, nSequence);
 #if ICQ_VERSION == 2
      CPU_SysMsgDoneAck *p = new CPU_SysMsgDoneAck(nSequence);
 #elif ICQ_VERSION == 4
      CPU_SysMsgDoneAck *p = new CPU_SysMsgDoneAck(nSequence, nSubSequence);
+#elif ICQ_VERSION == 5
+     CPU_SysMsgDoneAck *p = new CPU_SysMsgDoneAck;
 #endif
+     gLog.Info("%sAcknowledging system messages (#%d)...\n", L_UDPxSTR, p->getSequence());
      SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
      break;
   }
@@ -993,8 +967,24 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
   {
     if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
     unsigned short nMetaCommand;
-    packet >> nMetaCommand;
-    ProcessMetaCommand(packet, nMetaCommand);
+    char nMetaResult;
+    packet >> nMetaCommand
+           >> nMetaResult;
+    gLog.Info("%sMeta command (%d) response (#%d) - %s.\n", L_UDPxSTR,
+              nMetaCommand, nSubSequence,
+              nMetaResult == META_SUCCESS ? "success" : "failed");
+    ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_META, nSubSequence,
+                                    nMetaResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
+    if (e == NULL)
+    {
+      gLog.Warn("%sReceived meta result for unknown meta command.\n", L_WARNxSTR);
+      break;
+    }
+    if (nMetaResult != META_SUCCESS)
+      ProcessDoneEvent(e);
+    else
+      ProcessMetaCommand(packet, nMetaCommand, e);
+    break;
   }
 
   case ICQ_CMDxRCV_SETxOFFLINE:  // we got put offline by mirabilis for some reason
@@ -1039,7 +1029,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     icqUpdateContactList();
     icqSendInvisibleList();
     icqSendVisibleList();
+#if ICQ_VERSION != 5
     icqRequestSystemMsg();
+#endif
 
     // Send an update status packet to force hideip/webpresence
     if (m_nDesiredStatus & ICQ_STATUS_FxFLAGS) icqSetStatus(m_nDesiredStatus);
@@ -1400,25 +1392,111 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     AddUserEvent(o, e);
     gUserManager.DropOwner();
-    //e->AddToHistory(NULL, D_RECEIVER);
   }
   } // switch
 }
 
 
+
 //-----CICQDaemon::ProcessMetaCommand-----------------------------------------
-void CICQDaemon::ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand)
+void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
+                                    unsigned short nMetaCommand,
+                                    ICQEvent *e)
 {
-  ICQUser *u;
+  //ICQUser *u = NULL;
+  //char szTemp[1024];
 
   switch(nMetaCommand)
   {
-    case ICQ_CMDxMETA_GENERALxINFOxRSP:
-    case ICQ_CMDxMETA_WORKxINFOxRSP:
-    case ICQ_CMDxMETA_MORExINFOxRSP:
-    case ICQ_CMDxMETA_SECURITYxRSP:
-    case ICQ_CMDxMETA_PASSWORDxRSP:
+    case ICQ_CMDxMETA_GENERALxINFO:
+    {
+      /*u->SetEnableSave(false);
+      u->SetAlias(packet.UnpackString(szTemp));
+      u->SetFirstName(packet.UnpackString(szTemp));
+      u->SetLastName(packet.UnpackString(szTemp));
+      u->SetEmail1(packet.UnpackString(szTemp));
+      u->SetEmail2(packet.UnpackString(szTemp));
+      // Old email address
+      packet.UnpackString(szTemp);
+      u->SetCity(packet.UnpackString(szTemp));
+      u->SetState(packet.UnpackString(szTemp));
+      u->SetPhoneNumber(packet.UnpackString(szTemp));
+      u->SetFaxNumber(packet.UnpackString(szTemp));
+      u->SetAddress(packet.UnpackString(szTemp));
+      u->SetCellularNumber(packet.UnpackString(szTemp));
+      u->SetZipCode(packet.UnpackUnsignedLong());
+      u->SetCountryCode(packet.UnpackUnsignedShort());
+      u->SetTimezone(packet.UnpackChar());
+      u->SetAuthorization(!packet.UnpackChar());
+      packet.UnpackChar();
+      u->SetHideEmail(packet.UnpackChar());
+      u->SetEnableSave(true);
+      u->SaveGeneralInfo();*/
       break;
+    }
+    case ICQ_CMDxMETA_WORKxINFO:
+    {
+      /*u->SetEnableSave(false);
+      u->SetCompanyCity(packet.UnpackString(szTemp));
+      u->SetCompanyState(packet.UnpackString(szTemp));
+      u->SetCompanyPhoneNumber(packet.UnpackString(szTemp));
+      u->SetCompanyFaxNumber(packet.UnpackString(szTemp));
+      u->SetComparyAddress(packet.UnpackString(szTemp));
+      u->SetCompanyName(packet.UnpackString(szTemp));
+      u->SetCompanyDepartment(packet.UnpackString(szTemp));
+      u->SetCompanyPosition(packet.UnpackString(szTemp));
+      u->SetCompanyHomepage(packet.UnpackString(szTemp));
+      u->SetEnableSave(true);
+      u->SaveWorkInfo();*/
+      break;
+    }
+    case ICQ_CMDxMETA_MORExINFO:
+    {
+      /*u->SetEnableSave(false);
+      u->SetAge(packet.UnpackUnsignedShort());
+      u->SetGender(packet.UnpackChar());
+      u->SetHomepage(packet.UnpackString(szTemp));
+      u->SetBirthYear(packet.UnpackChar());
+      u->SetBirthMonth(packet.UnpackChar());
+      u->SetBirthDay(packet.UnpackChar());
+      u->SetLanguage1(packet.UnpackChar());
+      u->SetLanguage2(packet.UnpackChar());
+      u->SetLanguage3(packet.UnpackChar());
+      u->SetEnableSave(true);
+      u->SaveWorkInfo();*/
+      break;
+    }
+    case ICQ_CMDxMETA_ABOUT:
+    {
+      //u->SetAbout(packet.UnpackString());
+      break;
+    }
+    case ICQ_CMDxMETA_GENERALxINFOxRSP:
+    //case ICQ_CMDxMETA_MORExINFOxRSP:
+    //case ICQ_CMDxMETA_WORKxINFOxRSP:
+    case ICQ_CMDxMETA_ABOUTxRSP:
+      break;
+    case ICQ_CMDxMETA_SECURITYxRSP:
+    {
+      /*CPU_Meta_SetSecurityInfo *p = (CPU_Meta_SetSecurityInfo *)e->m_xPacket;
+      u->SetEnableSave(false);
+      u->SetAuthorization(p->Authorization());
+      p->SetWebAware(p->WebAware());
+      p->SetHideIp(p->HideIp());
+      u->SetEnableSave(true);
+      u->SaveLicqInfo();
+      ProcessDoneEvent(e);*/
+      break;
+    }
+    case ICQ_CMDxMETA_PASSWORDxRSP:
+    {
+      /*u->SetEnableSave(false);
+      u->SetPassword( ((CPU_Meta_SetPassword)e->m_xPacket)->Password());
+      u->SetEnableSave(true);
+      u->SaveLicqInfo();
+      ProcessDoneEvent(e);*/
+      break;
+    }
     default:
     {
       char *buf;
@@ -1438,7 +1516,7 @@ void CICQDaemon::AckUDP(unsigned short _nSequence, unsigned short _nSubSequence)
 {
 #if ICQ_VERSION == 2
    CPU_Ack p(_nSequence);
-#elif ICQ_VERSION == 4
+#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
    CPU_Ack p(_nSequence, _nSubSequence);
 #endif
    SendEvent(m_nUDPSocketDesc, p);

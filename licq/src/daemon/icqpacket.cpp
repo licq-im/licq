@@ -20,7 +20,7 @@ extern int errno;
 #include "log.h"
 
 #if ICQ_VERSION == 4
-unsigned char icq_check_data[256] = {
+static unsigned char icq_check_data[256] = {
 	0x0a, 0x5b, 0x31, 0x5d, 0x20, 0x59, 0x6f, 0x75,
 	0x20, 0x63, 0x61, 0x6e, 0x20, 0x6d, 0x6f, 0x64,
 	0x69, 0x66, 0x79, 0x20, 0x74, 0x68, 0x65, 0x20,
@@ -54,10 +54,50 @@ unsigned char icq_check_data[256] = {
 	0x67, 0x65, 0x73, 0x20, 0x73, 0x65, 0x6e, 0x74,
 	0x20, 0x69, 0x6e, 0x63, 0x6f, 0x6d, 0x69, 0x6e,
 };
+#elif ICQ_VERSION == 5
+static unsigned char icq_check_data[256] = {
+ 0x59, 0x60, 0x37, 0x6B, 0x65, 0x62, 0x46, 0x48,
+ 0x53, 0x61, 0x4C, 0x59, 0x60, 0x57, 0x5B, 0x3D,
+ 0x5E, 0x34, 0x6D, 0x36, 0x50, 0x3F, 0x6F, 0x67,
+ 0x53, 0x61, 0x4C, 0x59, 0x40, 0x47, 0x63, 0x39,
+ 0x50, 0x5F, 0x5F, 0x3F, 0x6F, 0x47, 0x43, 0x69,
+ 0x48, 0x33, 0x31, 0x64, 0x35, 0x5A, 0x4A, 0x42,
+ 0x56, 0x40, 0x67, 0x53, 0x41, 0x07, 0x6C, 0x49,
+ 0x58, 0x3B, 0x4D, 0x46, 0x68, 0x43, 0x69, 0x48,
+ 0x33, 0x31, 0x44, 0x65, 0x62, 0x46, 0x48, 0x53,
+ 0x41, 0x07, 0x6C, 0x69, 0x48, 0x33, 0x51, 0x54,
+ 0x5D, 0x4E, 0x6C, 0x49, 0x38, 0x4B, 0x55, 0x4A,
+ 0x62, 0x46, 0x48, 0x33, 0x51, 0x34, 0x6D, 0x36,
+ 0x50, 0x5F, 0x5F, 0x5F, 0x3F, 0x6F, 0x47, 0x63,
+ 0x59, 0x40, 0x67, 0x33, 0x31, 0x64, 0x35, 0x5A,
+ 0x6A, 0x52, 0x6E, 0x3C, 0x51, 0x34, 0x6D, 0x36,
+ 0x50, 0x5F, 0x5F, 0x3F, 0x4F, 0x37, 0x4B, 0x35,
+ 0x5A, 0x4A, 0x62, 0x66, 0x58, 0x3B, 0x4D, 0x66,
+ 0x58, 0x5B, 0x5D, 0x4E, 0x6C, 0x49, 0x58, 0x3B,
+ 0x4D, 0x66, 0x58, 0x3B, 0x4D, 0x46, 0x48, 0x53,
+ 0x61, 0x4C, 0x59, 0x40, 0x67, 0x33, 0x31, 0x64,
+ 0x55, 0x6A, 0x32, 0x3E, 0x44, 0x45, 0x52, 0x6E,
+ 0x3C, 0x31, 0x64, 0x55, 0x6A, 0x52, 0x4E, 0x6C,
+ 0x69, 0x48, 0x53, 0x61, 0x4C, 0x39, 0x30, 0x6F,
+ 0x47, 0x63, 0x59, 0x60, 0x57, 0x5B, 0x3D, 0x3E,
+ 0x64, 0x35, 0x3A, 0x3A, 0x5A, 0x6A, 0x52, 0x4E,
+ 0x6C, 0x69, 0x48, 0x53, 0x61, 0x6C, 0x49, 0x58,
+ 0x3B, 0x4D, 0x46, 0x68, 0x63, 0x39, 0x50, 0x5F,
+ 0x5F, 0x3F, 0x6F, 0x67, 0x53, 0x41, 0x25, 0x41,
+ 0x3C, 0x51, 0x54, 0x3D, 0x5E, 0x54, 0x5D, 0x4E,
+ 0x4C, 0x39, 0x50, 0x5F, 0x5F, 0x5F, 0x3F, 0x6F,
+ 0x47, 0x43, 0x69, 0x48, 0x33, 0x51, 0x54, 0x5D,
+ 0x6E, 0x3C, 0x31, 0x64, 0x35, 0x5A, 0x00, 0x00,
+};
 #endif
 
 
 //=====UDP======================================================================
+unsigned short CPacketUdp::s_nSequence = 0;
+unsigned short CPacketUdp::s_nSubSequence = 0;
+unsigned long  CPacketUdp::s_nSessionId = 0;
+
+
 void CPacketUdp::Encrypt(void)
 {
 #if ICQ_VERSION == 2
@@ -111,6 +151,70 @@ void CPacketUdp::Encrypt(void)
   buf[18] = (m_nCheckSum >> 16) & 0xFF;
   buf[19] = (m_nCheckSum >> 24) & 0xFF;
 
+#elif ICQ_VERSION == 5
+  unsigned long l = buffer->getDataSize();
+  unsigned char *buf = (unsigned char *)buffer->getDataStart();
+
+  // Make sure packet is long enough
+  if (l == 24)
+  {
+    buffer->add((unsigned long)rand());
+    l = buffer->getDataSize();
+  }
+
+  if (gLog.LoggingPackets())
+  {
+    char *b;
+    gLog.Packet("%sUnencrypted Packet (%d bytes):\n%s\n", L_PACKETxSTR, l,
+                buffer->print(b));
+    delete [] b;
+  }
+
+  // Calculate checkcode
+  unsigned long chk1 = ( buf[8] << 24) |
+                       ( buf[4] << 16 ) |
+                       ( buf[2] << 8 ) |
+                       ( buf[6] );
+  unsigned short r1 = 24 + rand() % (l - 24);
+  unsigned short r2 = rand() & 0xFF;
+  unsigned long chk2 = ( r1 << 24 ) |
+                       ( buf[r1] << 16 ) |
+                       ( r2 << 8 ) |
+                       ( icq_check_data[r2] );
+  chk2 ^= 0x00FF00FF;
+  m_nCheckSum = chk1 ^ chk2;
+  unsigned long key = l * 0x68656C6C + m_nCheckSum;
+
+  unsigned long k = 0;
+  for (unsigned short i = 10; i < l; i += 4)
+  {
+    k = (key + icq_check_data[i & 0xff]);
+    // Make it work on any endianness
+    buf[i]   ^= (k      ) & 0xFF;
+    buf[i+1] ^= (k >>  8) & 0xFF;
+    buf[i+2] ^= (k >> 16) & 0xFF;
+    buf[i+3] ^= (k >> 24) & 0xFF;
+  }
+
+  // Add in the checkcode
+  unsigned long a1 = m_nCheckSum & 0x0000001F;
+  unsigned long a2 = m_nCheckSum & 0x03E003E0;
+  unsigned long a3 = m_nCheckSum & 0xF8000400;
+  unsigned long a4 = m_nCheckSum & 0x0000F800;
+  unsigned long a5 = m_nCheckSum & 0x041F0000;
+  a1 <<= 0x0C;
+  a2 <<= 0x01;
+  a3 >>= 0x0A;
+  a4 <<= 0x10;
+  a5 >>= 0x0F;
+  unsigned long nNewCheckSum = a1 + a2 + a3 + a4 + a5;
+
+  // Stick in the checksum
+  buf[20] = nNewCheckSum & 0xFF;
+  buf[21] = (nNewCheckSum >> 8) & 0xFF;
+  buf[22] = (nNewCheckSum >> 16) & 0xFF;
+  buf[23] = (nNewCheckSum >> 24) & 0xFF;
+
 #endif
 }
 
@@ -124,16 +228,38 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
   m_nRandom = rand();
   m_nZero = 0;
   m_nCheckSum = 0;
+#elif ICQ_VERSION == 5
+  m_nVersion = 0x05;
+  m_nZero = 0;
+  m_nSessionId = s_nSessionId;
+  m_nCheckSum = 0;
 #endif
 
   m_nCommand = _nCommand;
-  if (_nCommand != ICQ_CMDxSND_ACK && _nCommand != ICQ_CMDxSND_SYSxMSGxDONExACK)
+  // Fill in the sequences
+  switch(m_nCommand)
   {
-   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-   m_nSequence = o->Sequence(true);
-   m_nSubSequence = m_nSequence;
-   gUserManager.DropOwner();
+    case ICQ_CMDxSND_ACK:
+    case ICQ_CMDxSND_LOGON:
+    {
+      m_nSequence = 0;
+      m_nSubSequence = 0;
+      break;
+    }
+    case ICQ_CMDxSND_PING:
+    {
+      m_nSequence = s_nSequence++;
+      m_nSubSequence = 0;
+      break;
+    }
+    default:
+    {
+      m_nSequence = s_nSequence++;
+      m_nSubSequence = s_nSubSequence++;
+      break;
+    }
   }
+
   m_nSourceUin = gUserManager.OwnerUin();
 
   buffer = NULL;
@@ -148,7 +274,7 @@ CPacketUdp::~CPacketUdp(void)
 
 void CPacketUdp::InitBuffer(void)
 {
-  buffer = new CBuffer(getSize());
+  buffer = new CBuffer(getSize() + 8);
 #if ICQ_VERSION == 2
   buffer->add(m_nVersion);
   buffer->add(m_nCommand);
@@ -162,6 +288,15 @@ void CPacketUdp::InitBuffer(void)
   buffer->add(m_nSequence);
   buffer->add(m_nSubSequence);
   buffer->add(m_nSourceUin);
+  buffer->add(m_nCheckSum);
+#elif ICQ_VERSION == 5
+  buffer->add(m_nVersion);
+  buffer->add(m_nZero);
+  buffer->add(m_nSourceUin);
+  buffer->add(m_nSessionId);
+  buffer->add(m_nCommand);
+  buffer->add(m_nSequence);
+  buffer->add(m_nSubSequence);
   buffer->add(m_nCheckSum);
 #endif;
 }
@@ -212,49 +347,65 @@ unsigned long CPU_Logon::getSize(void)
   return (CPacketUdp::getSize() + 6 + m_nPasswordLength + 27);
 #elif ICQ_VERSION == 4
   return (CPacketUdp::getSize() + 6 + m_nPasswordLength + 31);
+#elif ICQ_VERSION == 5
+  return (CPacketUdp::getSize() + 6 + m_nPasswordLength + 41);
 #endif
 }
 
 CPU_Logon::CPU_Logon(INetSocket *_s, const char *_szPassword, unsigned short _nLogonStatus)
   : CPacketUdp(ICQ_CMDxSND_LOGON)
 {
-#if ICQ_VERSION == 4
+#if ICQ_VERSION == 2
+  m_nUnknown_1 = 0x00040072;
+  char temp[10] = { 2, 0, 0, 0, 0, 0, 4, 0, 0x72, 0 };
+  memcpy(m_aUnknown_2, temp_3, 10);
+#elif ICQ_VERSION == 4
+  m_nUnknown_1 = 0x98;
+  char temp[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0x98, 0 };
+  memcpy(m_aUnknown_2, temp_3, 10);
   m_nTime = time(NULL);
+#elif ICQ_VERSION == 5
+  m_nUnknown_1 = 0xD5;
+  char temp[20] = { 0x00, 0x00, 0x00, 0x00,
+                    0xEC, 0x01, 0x2C, 0x82,
+                    0x50, 0x00, 0x00, 0x00,
+                    0x03, 0x00, 0x00, 0x00,
+                    0x00, 0x16, 0xD6, 0x36 };
+  memcpy(m_aUnknown_2, temp, 20);
+  m_nTime = time(NULL);
+  s_nSessionId = rand() & 0x3FFFFFFF;
+  s_nSequence = rand() & 0x7FFF;
+  s_nSubSequence = 1;
+  m_nSessionId = s_nSessionId;
+  m_nSequence = s_nSequence++;
+  m_nSubSequence = s_nSubSequence++;
 #endif
   m_nLocalPort = _s->LocalPort();
   m_sPassword = strdup(_szPassword);
   m_nPasswordLength = strlen(m_sPassword) + 1;
-#if ICQ_VERSION == 2
-  char temp_1[4] = { 0x72, 0x00, 0x04, 0x00 };
-#elif ICQ_VERSION == 4
-  char temp_1[4] = { 0x98, 0x00, 0x00, 0x00 };
-#endif
-  memcpy(m_aUnknown_1, temp_1, sizeof(m_aUnknown_1));
   m_nLocalIP = NetworkIpToPacketIp(_s->LocalIp());
-  m_aUnknown_2 = 0x04;
+  m_nMode = MODE_DIRECT;
   m_nLogonStatus = _nLogonStatus;
-  m_nTcpVersion = ICQ_VERSION_TCP;
-#if ICQ_VERSION == 2
-  char temp_3[10] = { 2, 0, 0, 0, 0, 0, 4, 0, 0x72, 0 };
-#elif ICQ_VERSION == 4
-  char temp_3[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0x98, 0 };
-#endif
-  memcpy(m_aUnknown_3, temp_3, 10);
+  m_nTcpVersion = 0x06;//ICQ_VERSION_TCP;
 
   InitBuffer();
 
-#if ICQ_VERSION == 4
+#if ICQ_VERSION == 4 || ICQ_VERSION == 5
   buffer->add(m_nTime);
 #endif
   buffer->add(m_nLocalPort);
   buffer->add(m_nPasswordLength);
   buffer->add(m_sPassword, m_nPasswordLength);
-  buffer->add(m_aUnknown_1, 4);
+  buffer->add(m_nUnknown_1);
   buffer->add(m_nLocalIP);
-  buffer->add(m_aUnknown_2);
+  buffer->add(m_nMode);
   buffer->add(m_nLogonStatus);
   buffer->add(m_nTcpVersion);
-  buffer->add(m_aUnknown_3, 10);
+#if ICQ_VERSION == 2 || ICQ_VERSION == 4
+  buffer->add(m_aUnknown_2, 10);
+#else
+  buffer->add(m_aUnknown_2, 20);
+#endif
 
   Encrypt();
 }
@@ -278,7 +429,7 @@ CPU_Ack::CPU_Ack(unsigned short _nSequence) : CPacketUdp(ICQ_CMDxSND_ACK)
   InitBuffer();
   Encrypt();
 }
-#elif ICQ_VERSION == 4
+#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
 CPU_Ack::CPU_Ack(unsigned short _nSequence, unsigned short _nSubSequence)
   : CPacketUdp(ICQ_CMDxSND_ACK)
 {
@@ -555,7 +706,7 @@ unsigned long CPU_UpdatePersonalExtInfo::getSize(void)
           m_nPhoneLength + m_nHomepageLength + m_nAboutLength +
 #if ICQ_VERSION == 2
           22
-#elif ICQ_VERSION == 4
+#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
           20
 #endif
           );
@@ -758,6 +909,13 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short _nSequence, unsigned short _
   InitBuffer();
   Encrypt();
 }
+#elif ICQ_VERSION == 5
+CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(void)
+  : CPacketUdp(ICQ_CMDxSND_SYSxMSGxDONExACK)
+{
+  InitBuffer();
+  Encrypt();
+}
 #endif
 
 //-----Meta_SetWorkInfo------------------------------------------------------
@@ -771,7 +929,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *_szPosition,
     const char *_szHomepage) : CPacketUdp(ICQ_CMDxSND_META)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
+  m_nMetaCommand = 0;//ICQ_CMDxMETA_WORKxINFOxSET;
   m_nCityLength = strlen(_szCity) + 1;
   m_szCity = strdup(_szCity);
   m_nStateLength = strlen(_szState) + 1;
@@ -879,6 +1037,8 @@ CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long _nUin)
 
   buffer->add(m_nMetaCommand);
   buffer->add(m_nUin);
+
+  Encrypt();
 }
 
 unsigned long CPU_Meta_RequestInfo::getSize(void)

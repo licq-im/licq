@@ -28,6 +28,8 @@ protected:
 };
 
 //=====UDP======================================================================
+#define MODE_DIRECT 0x04
+#define MODE_INDIRECT 0x06
 
 
 //-----PacketUdp----------------------------------------------------------------
@@ -47,6 +49,8 @@ protected:
    virtual unsigned long getSize(void)     { return 10; };
 #elif ICQ_VERSION == 4
    virtual unsigned long getSize(void)     { return 20; };
+#elif ICQ_VERSION == 5
+   virtual unsigned long getSize(void)     { return 24; };
 #endif
    void InitBuffer(void);
    void Encrypt(void);
@@ -56,7 +60,6 @@ protected:
    unsigned short m_nCommand;
    unsigned short m_nSequence;
    unsigned long  m_nSourceUin;
-   // Only used in some packets
    unsigned short m_nSubSequence;
 #elif ICQ_VERSION == 4
    unsigned short m_nVersion;
@@ -67,7 +70,20 @@ protected:
    unsigned short m_nSubSequence;
    unsigned long  m_nSourceUin;
    unsigned long  m_nCheckSum;
+#elif ICQ_VERSION == 5
+   unsigned short m_nVersion;
+   unsigned long  m_nZero;
+   unsigned long  m_nSourceUin;
+   unsigned long  m_nSessionId;
+   unsigned short m_nCommand;
+   unsigned short m_nSequence;
+   unsigned short m_nSubSequence;
+   unsigned long  m_nCheckSum;
 #endif
+
+   static unsigned short s_nSequence;
+   static unsigned short s_nSubSequence;
+   static unsigned long  s_nSessionId;
 };
 
 //-----Register----------------------------------------------------------------
@@ -104,18 +120,22 @@ protected:
      72 00 04 00 7F 00 00 01 04 00 00 00 00 03 00 00 00 02 00 00 00 00 00 04
      00 72 00 */
   // ... PacketUdp header
-#if ICQ_VERSION == 4
+#if ICQ_VERSION == 4 || ICQ_VERSION == 5
   unsigned long  m_nTime;
 #endif
   unsigned long  m_nLocalPort;
   unsigned short m_nPasswordLength;
   char           *m_sPassword;
-  char           m_aUnknown_1[4];
+  unsigned long  m_nUnknown_1;
   unsigned long  m_nLocalIP;
-  char           m_aUnknown_2;
+  char           m_nMode;
   unsigned long  m_nLogonStatus;
   unsigned long  m_nTcpVersion;
-  char           m_aUnknown_3[10];
+#if ICQ_VERSION == 2 || ICQ_VERSION == 4
+  char           m_aUnknown_2[10];
+#else
+  char           m_aUnknown_2[20];
+#endif
 };
 
 
@@ -125,7 +145,7 @@ class CPU_Ack : public CPacketUdp
 public:
 #if ICQ_VERSION == 2
    CPU_Ack(unsigned short _nSequence);
-#elif ICQ_VERSION == 4
+#elif ICQ_VERSION == 4 || ICQ_VERSION == 5
    CPU_Ack(unsigned short _nSequence, unsigned short _nSubSequence);
 #endif
 protected:
@@ -323,6 +343,7 @@ class CPU_ThroughServer : public CPacketUdp
 public:
    CPU_ThroughServer(unsigned long _nSourceUin, unsigned long _nDestinationUin, 
                      unsigned short _nSubCommand, char *_sMessage);
+   virtual const unsigned short getSubCommand(void)  { return m_nSubCommand; }
    virtual ~CPU_ThroughServer(void);
 protected:
    virtual unsigned long getSize(void);
@@ -410,6 +431,8 @@ public:
   CPU_SysMsgDoneAck(unsigned short _nSequence);
 #elif ICQ_VERSION == 4
   CPU_SysMsgDoneAck(unsigned short _nSequence, unsigned short _nSubSequence);
+#elif ICQ_VERSION == 5
+  CPU_SysMsgDoneAck(void);
 #endif
 protected:
   unsigned long getSize(void);
@@ -433,6 +456,7 @@ public:
                        const char *_szPosition,
                        const char *_szHomepage);
   ~CPU_Meta_SetWorkInfo(void);
+  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
 protected:
   unsigned long getSize(void);
 
@@ -467,6 +491,11 @@ public:
   CPU_Meta_SetSecurityInfo(bool _bAuthorization,
                            bool _bHideIp,
                            bool _bWebAware);
+  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+
+  bool Authorization(void)  { return !m_bAuthorization; }
+  bool HideIp(void)         { return m_bHideIp; }
+  bool WebAware(void)       { return m_bWebAware; }
 protected:
   unsigned long getSize(void);
 
@@ -483,6 +512,7 @@ class CPU_Meta_RequestInfo : public CPacketUdp
 public:
   CPU_Meta_RequestInfo(unsigned long _nUin);
 
+  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
 protected:
   unsigned long getSize(void);
 
