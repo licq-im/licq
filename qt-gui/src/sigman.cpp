@@ -111,6 +111,7 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_SYSxMSGxREQ:
   case ICQ_CMDxSND_SYSxMSGxDONExACK:
   case ICQ_CMDxSND_REGISTERxUSER:
+  case ICQ_CMDxSND_MODIFYxVIEWxLIST:
     emit signal_doneOwnerFcn(e);
     break;
 
