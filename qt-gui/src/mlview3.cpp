@@ -40,7 +40,11 @@ MLView::MLView (QWidget* parent, const char *name)
   : QTextBrowser(parent, name), m_handleLinks(true)
 {
   setWordWrap(WidgetWidth);
+#if QT_VERSION > 0x030100
   setWrapPolicy(AtWordOrDocumentBoundary);
+#else
+  setWrapPolicy(AtWhiteSpace);
+#endif
   setReadOnly(true);
   setTextFormat(RichText);
 }
