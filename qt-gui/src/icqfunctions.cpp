@@ -609,9 +609,8 @@ void ICQFunctions::InitHistoryTab()
   QBoxLayout* l = new QHBoxLayout(lay);
 
   lblHistory = new QLabel(p);
-  lblHistory->setAutoResize(true);
-  lblHistory->setAlignment(AlignLeft | AlignVCenter);
-  l->addWidget(lblHistory);
+  lblHistory->setAlignment(AlignLeft | AlignVCenter | SingleLine);
+  l->addWidget(lblHistory, 1);
 
   chkHistoryReverse = new QCheckBox(tr("Rever&se"), p);
   connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
