@@ -84,6 +84,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_bLoggingOn = false;
   m_bOnlineNotifies = true;
 
+  fifo_fs = NULL;
+
   // Begin parsing the config file
   snprintf(m_szConfigFile, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, "licq.conf");
   m_szConfigFile[MAX_FILENAME_LEN - 1] = '\0';
