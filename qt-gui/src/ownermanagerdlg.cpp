@@ -126,9 +126,6 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
 
 void OwnerEditDlg::slot_ok()
 {
-  if (edtId->text().isEmpty() || edtPassword->text().isEmpty())
-    return;
-    
   const char *szUser = edtId->text().latin1();
   const char *szPassword = edtPassword->text().latin1();
   const char *szProtocol = cmbProtocol->currentText().latin1();
