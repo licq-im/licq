@@ -227,7 +227,8 @@ void CLicqGui::Shutdown(void)
   gLog.Info("%sShutting down gui.\n", L_ENDxSTR);
   gLog.ModifyService(S_PLUGIN, 0);
   if(licqMainWindow) {
-    licqMainWindow->close(true);
+    licqMainWindow->close();
+    delete licqMainWindow;
     licqMainWindow = 0;
   }
 }

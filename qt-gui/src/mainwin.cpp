@@ -714,45 +714,34 @@ void CMainWindow::resizeEvent (QResizeEvent *)
 
 void CMainWindow::closeEvent( QCloseEvent *e )
 {
-  if (licqIcon != NULL) {
-    e->ignore();
-    hide();
-    return;
-  }
-
-  // save window position and size
-  char buf[MAX_FILENAME_LEN];
-  sprintf(buf, "%s/licq_qt-gui.conf", BASE_DIR);
-  CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
-  // need some more error checking here...
-  licqConf.LoadFile(buf);
-
-  licqConf.SetSection("appearance");
-  licqConf.WriteBool("Hidden", !isVisible());
-
 #if 0
-  qDebug("closeEvent() visible %d", isVisible());
-  qDebug("geometry: x: %d y: %d, w: %d, h: %d", geometry().x(), geometry().y(), geometry().width(), geometry().height());
-  qDebug("x: %d, y: %d, w: %d, h: %d", x(), y(), size().width(), size().height());
-  qDebug(" toGlobal: x %d, y %d", mapToGlobal(QPoint(0,0)).x(), mapToGlobal(QPoint(0,0)).y());
+    qDebug("closeEvent() visible %d", isVisible());
+    qDebug("geometry: x: %d y: %d, w: %d, h: %d", geometry().x(), geometry().y(), geometry().width(), geometry().height());
+    qDebug("x: %d, y: %d, w: %d, h: %d", x(), y(), size().width(), size().height());
+    qDebug(" toGlobal: x %d, y %d", mapToGlobal(QPoint(0,0)).x(), mapToGlobal(QPoint(0,0)).y());
 #endif
 
   if(isVisible())
   {
+    // save window position and size
+    char buf[MAX_FILENAME_LEN];
+    sprintf(buf, "%s/licq_qt-gui.conf", BASE_DIR);
+    CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
+    // need some more error checking here...
+    licqConf.LoadFile(buf);
+
+    licqConf.SetSection("appearance");
+    licqConf.WriteBool("Hidden", !isVisible());
+
     int x, y;
+    if(pos().x() < 2 || pos().y() < 2) {
+      // WMaker bug.  will investigate...
+      QPoint p  = mapToGlobal(QPoint(0, 0));
 
-    if(pos().x() == 0 && pos().y() == 0) {
-      // WMaker bug ?
-      // if window wasn't moved at all, x()/y() return invalid
-      // values. This is with Qt 2.1 release, already reported
-      QPoint p = mapToGlobal(QPoint(0, 0));
+//      qDebug("wmaker workaround enabled");
 
-      qDebug("wmaker workaround enabled");
-
-      x = p.x() - geometry().x() - 1;
-      y = p.y() - geometry().y() - 1;
-      qDebug("x/y is now %d/%d", x,y);
-
+      x = p.x() - 1 - ( geometry().x() < p.x() ? geometry().x() : 0);
+      y = p.y() - 1 - ( geometry().y() < p.y() ? geometry().y() : 0);
     }
     else
     {
@@ -769,34 +758,39 @@ void CMainWindow::closeEvent( QCloseEvent *e )
     licqConf.WriteNum("y", (unsigned short)y);
     licqConf.WriteNum("h", (unsigned short)(size().height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : size().height())));
     licqConf.WriteNum("w", (unsigned short)(size().width() < 0 ? 0 : size().width()));
+
+#if 0
+    licqConf.SetSection("floaties");
+    licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
+    unsigned short i = 0;
+    char key[32];
+    for (; i < CUserView::floaties->size(); )
+    {
+      CUserView* iter = CUserView::floaties->at(i);
+      sprintf(key, "Floaty%d.Uin", i);
+      licqConf.WriteNum(key, iter->firstChild()->ItemUin());
+      sprintf(key, "Floaty%d.X", i);
+      licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
+      sprintf(key, "Floaty%d.Y", i);
+      licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
+      sprintf(key, "Floaty%d.W", i);
+      licqConf.WriteNum(key, (unsigned short)iter->width());
+      i++;
+    }
+#endif
+
+    licqConf.FlushFile();
+    licqConf.CloseFile();
   }
   else
     qDebug("MainWindow was hidden, didn't update geometry");
 
-#if 0
-  licqConf.SetSection("floaties");
-  licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
-  unsigned short i = 0;
-  char key[32];
-  for (; i < CUserView::floaties->size(); )
-  {
-    CUserView* iter = CUserView::floaties->at(i);
-    sprintf(key, "Floaty%d.Uin", i);
-    licqConf.WriteNum(key, iter->firstChild()->ItemUin());
-    sprintf(key, "Floaty%d.X", i);
-    licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
-    sprintf(key, "Floaty%d.Y", i);
-    licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
-    sprintf(key, "Floaty%d.W", i);
-    licqConf.WriteNum(key, (unsigned short)iter->width());
-    i++;
+  if (licqIcon != NULL) {
+    e->ignore();
+    hide();
   }
-#endif
-
-  licqConf.FlushFile();
-  licqConf.CloseFile();
-
-  QWidget::closeEvent(e);
+  else
+    e->accept();
 }
 
 
@@ -942,15 +936,16 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           unsigned short s = o->Status();
           gUserManager.DropOwner();
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
+          {
+            raise();
             callFunction(mnuUserView, nUin);
+          }
         }
         else
         {
           gUserManager.DropUser(u);
         }
       }
-      // Come to the top
-      if (m_bAutoRaise && sig->Argument() > 0) raise();
       // Fall through
     }
     case USER_BASIC:
