@@ -25,7 +25,6 @@
 #include "support.h"
 
 class CUserManager gUserManager;
-CICQDaemon *ICQUser::s_pLicqDaemon = NULL;
 
 
 /*---------------------------------------------------------------------------
@@ -110,11 +109,6 @@ void CUserManager::SetOwnerUin(unsigned long _nUin)
   m_nOwnerUin = _nUin;
 }
 
-
-void CUserManager::SetLicqDaemon(CICQDaemon *d)
-{
-  ICQUser::s_pLicqDaemon = d;
-}
 
 
 /*---------------------------------------------------------------------------
@@ -1024,6 +1018,7 @@ void ICQUser::Init(unsigned long _nUin)
   SetSendRealIp(false);
   SetShowAwayMsg(false);
   SetSequence(0xFFFFFFFF);
+  SetOfflineOnDisconnect(false);
   ClearSocketDesc();
   m_nIp = m_nPort = m_nRealIp = 0;
   m_nMode = MODE_DIRECT;
@@ -1765,7 +1760,7 @@ CUserEvent *ICQUser::EventPop()
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  s_pLicqDaemon->RemoveUserEvent(this, e->Id());
+  gLicqDaemon->RemoveUserEvent(this, e->Id());
 
   return e;
 }
@@ -1784,7 +1779,7 @@ void ICQUser::EventClear(unsigned short index)
   decNumUserEvents();
   SaveNewMessagesInfo();
 
-  s_pLicqDaemon->RemoveUserEvent(this, id);
+  gLicqDaemon->RemoveUserEvent(this, id);
 }
 
 
@@ -1799,7 +1794,7 @@ void ICQUser::EventClearId(int id)
       m_vcMessages.erase(iter);
       decNumUserEvents();
       SaveNewMessagesInfo();
-      s_pLicqDaemon->RemoveUserEvent(this, id);
+      gLicqDaemon->RemoveUserEvent(this, id);
       break;
     }
   }

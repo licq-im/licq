@@ -747,9 +747,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
         ns != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
     {
+      bool r = u->OfflineOnDisconnect() || u->StatusOffline();
       ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
       gLog.Info("%s%s (%ld) is %s to us.\n", L_TCPxSTR, u->GetAlias(),
          u->Uin(), u->StatusStr());
+      if (r) u->SetOfflineOnDisconnect(true);
     }
 
     // Process the command

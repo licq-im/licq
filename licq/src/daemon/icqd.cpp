@@ -57,6 +57,8 @@ void CDaemonStats::Init()
 }
 
 
+CICQDaemon *gLicqDaemon = NULL;
+
 
 
 //-----CICQDaemon::constructor--------------------------------------------------
@@ -65,6 +67,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   char temp[MAX_FILENAME_LEN];
 
   licq = _licq;
+  gLicqDaemon = this;
 
   // Initialise the data values
   m_nIgnoreTypes = 0;
@@ -76,8 +79,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_szFirewallHost = NULL;
   m_bLoggingOn = false;
   m_bOnlineNotifies = true;
-
-  gUserManager.SetLicqDaemon(this);
 
   // Begin parsing the config file
   sprintf(m_szConfigFile, "%s/%s", BASE_DIR, "licq.conf");
@@ -794,6 +795,9 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
     u->SetStatusOffline();
   else
     u->SetStatus(s);
+
+  // Say that we know their status for sure
+  u->SetOfflineOnDisconnect(false);
 
   if(oldstatus != (u->Status() | (u->StatusInvisible() << 8))) {
     u->Touch();

@@ -33,6 +33,8 @@ extern int h_errno;
 #include "licq_log.h"
 #include "licq_user.h"
 #include "support.h"
+#include "licq_icqd.h"
+
 
 #ifdef USE_SOCKS5
 #define SOCKS
@@ -809,6 +811,8 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
     if (u != NULL)
     {
       u->ClearSocketDesc();
+      if (u->OfflineOnDisconnect())
+        gLicqDaemon->ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
       gUserManager.DropUser(u);
     }
   }

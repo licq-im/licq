@@ -332,6 +332,9 @@ protected:
   void SetDefaults();
   void AddToContactList();
 
+  void SetOfflineOnDisconnect(bool b) { m_bOfflineOnDisconnect = b; }
+  bool OfflineOnDisconnect() { return m_bOfflineOnDisconnect; }
+
   CIniFile m_fConf;
   CUserHistory m_fHistory;
   int m_nSocketDesc;
@@ -351,7 +354,8 @@ protected:
        m_bSendRealIp,
        m_bSendServer,
        m_bEnableSave,
-       m_bShowAwayMsg;
+       m_bShowAwayMsg,
+       m_bOfflineOnDisconnect;
   unsigned short m_nStatusToUser, m_nSendLevel;
   unsigned short m_nAutoAccept;
 
@@ -403,11 +407,11 @@ protected:
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
   static pthread_mutex_t mutex_nNumUserEvents;
-  static CICQDaemon *s_pLicqDaemon;
 
   friend class CUserGroup;
   friend class CUserManager;
   friend class CICQDaemon;
+  friend class CSocketManager;
 };
 
 
@@ -504,8 +508,6 @@ public:
   void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
-  void SetLicqDaemon(CICQDaemon *);
-
   pthread_rdwr_t mutex_grouplist, mutex_userlist;
   GroupList m_vszGroups;
   UserList m_vpcUsers;

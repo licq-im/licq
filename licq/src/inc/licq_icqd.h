@@ -375,7 +375,11 @@ protected:
   friend void *ProcessRunningEvent_tep(void *p);
   friend void *Shutdown_tep(void *p);
   friend class ICQUser;
+  friend class CSocketManager;
 };
+
+// Global pointer
+extern CICQDaemon *gLicqDaemon;
 
 // Helper functions for the daemon
 bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
