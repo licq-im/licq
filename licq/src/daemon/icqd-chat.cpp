@@ -640,7 +640,7 @@ bool CChatManager::ConnectToChat(CChatClient &c)
 
   chatUsers.push_back(u);
 
-  gLog.Info("%sChat: Shaking hands.\n", L_TCPxSTR);
+  gLog.Info("%sChat: Shaking hands [v%d].\n", L_TCPxSTR, VersionToUse(c.m_nVersion));
 
   // Send handshake packet:
   if (!CICQDaemon::Handshake_Send(&u->sock, c.m_nIp, VersionToUse(c.m_nVersion)))
@@ -748,7 +748,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           u->client.LoadFromHandshake_v6(hbuf);
           break;
       }
-      gLog.Info("%sChat: Received handshake from %ld.\n", L_TCPxSTR, u->client.m_nUin);
+      gLog.Info("%sChat: Received handshake from %ld [v%d].\n", L_TCPxSTR,
+         u->client.m_nUin, u->sock.Version());
       u->uin = u->client.m_nUin;
       u->state = CHAT_STATE_WAITxFORxCOLOR;
       break;
@@ -1114,11 +1115,11 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
     {
       // We need at least 6 chars
       if (u->chatQueue.size() < 6) return true;
-      chatChar = *u->chatQueue.begin();
-      chatSize = u->chatQueue[1] |
-                 (u->chatQueue[2] << 8) |
-                 (u->chatQueue[3] << 16) |
-                 (u->chatQueue[4] << 24);
+      chatChar = u->chatQueue[1];
+      chatSize = (u->chatQueue[2]) |
+                 (u->chatQueue[3] << 8) |
+                 (u->chatQueue[4] << 16) |
+                 (u->chatQueue[5] << 24);
       if (u->chatQueue.size() < 6 + chatSize) return true;
       for (unsigned short i = 0; i < 6; i++)
         u->chatQueue.pop_front();

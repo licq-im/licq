@@ -410,6 +410,9 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
 bool CICQDaemon::Handshake_Send(TCPSocket *s, unsigned long nUin,
    unsigned short nVersion)
 {
+  s->SetVersion(nVersion);
+  s->SetOwner(nUin);
+
   switch (nVersion)
   {
     case 2:
@@ -530,8 +533,8 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
     return -1;
   }
 
-  gLog.Info("%sShaking hands (v%d) with %s (%ld).\n", L_TCPxSTR, nVersion,
-     szAlias, nUin);
+  gLog.Info("%sShaking hands with %s (%ld) [v%d].\n", L_TCPxSTR,
+     szAlias, nUin, nVersion);
   nPort = s->LocalPort();
 
   if (!Handshake_Send(s, nUin, nVersion))
