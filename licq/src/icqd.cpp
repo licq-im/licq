@@ -1668,16 +1668,9 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
   }
   else if (strcasecmp(szCommand, "auto_response") == 0)
   {
-    if (*szArgs != '\0')
-    {
-      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      o->SetAutoResponse(szArgs);
-      gUserManager.DropOwner();
-    }
-    else
-    {
-      gLog.Warn("%sFifo \"auto_response\" command with no argument.\n", L_WARNxSTR);
-    }
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    o->SetAutoResponse(szArgs);
+    gUserManager.DropOwner();
   }
   else if (strcasecmp(szCommand, "message") == 0)
   {
