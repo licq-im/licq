@@ -1138,8 +1138,6 @@ char *CChatManager::ClientsStr()
   ChatUserList::iterator iter;
   for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
   {
-    //if ( (*iter)->Uin() == m_nUin) continue;
-
     if (sz[0] != '\0') nPos += sprintf(&sz[nPos], ", ");
     if ((*iter)->Name()[0] == '\0')
       nPos += sprintf(&sz[nPos], "%ld", (*iter)->Uin());

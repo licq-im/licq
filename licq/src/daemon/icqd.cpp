@@ -47,6 +47,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_nServerAck = 0;
   m_szFirewallHost = NULL;
   m_bLoggingOn = false;
+  m_bOnlineNotifies = true;
 
   gUserManager.SetLicqDaemon(this);
 
@@ -145,6 +146,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   gLog.Info("%sOnEvent configuration.\n", L_INITxSTR);
   licqConf.SetSection("onevent");
   licqConf.ReadNum("Enable", nOnEventCmdType, 0);
+  licqConf.ReadBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify, true);
   m_xOnEventManager.SetCommandType(nOnEventCmdType);
   for (int i = 0; i < MAX_ON_EVENT; i++)
     szOnParams[i] = new char[MAX_FILENAME_LEN];
@@ -493,6 +495,7 @@ void CICQDaemon::SaveConf()
   licqConf.SetSection("onevent");
   COnEventManager *oem = OnEventManager();
   licqConf.WriteNum("Enable", oem->CommandType());
+  licqConf.WriteBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify);
   oem->Lock();
   licqConf.WriteStr("Command", oem->Command());
   licqConf.WriteStr("Message", oem->Parameter(ON_EVENT_MSG));
@@ -514,6 +517,8 @@ void CICQDaemon::SaveConf()
 
 const char *CICQDaemon::Terminal()       { return m_szTerminal; }
 void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
+bool CICQDaemon::AlwaysOnlineNotify()  { return m_bAlwaysOnlineNotify; }
+void CICQDaemon::SetAlwaysOnlineNotify(bool b)  { m_bAlwaysOnlineNotify = b; }
 
 const char *CICQDaemon::getUrlViewer()
 {

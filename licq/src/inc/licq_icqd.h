@@ -207,6 +207,8 @@ public:
   unsigned long StringToStatus(char *_szStatus);
 
   COnEventManager *OnEventManager()  { return &m_xOnEventManager; }
+  bool AlwaysOnlineNotify();
+  void SetAlwaysOnlineNotify(bool);
   CICQSignal *PopPluginSignal();
   ICQEvent *PopPluginEvent();
 
@@ -236,7 +238,8 @@ protected:
   char m_szErrorFile[64];
   int m_nUDPSocketDesc,
       m_nTCPSocketDesc;
-  bool m_bShuttingDown, m_bLoggingOn;
+  bool m_bShuttingDown, m_bLoggingOn,
+       m_bOnlineNotifies, m_bAlwaysOnlineNotify;
   time_t m_tLogonTime;
 
   list <ICQEvent *> m_lxRunningEvents;

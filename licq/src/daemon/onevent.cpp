@@ -55,6 +55,8 @@ void COnEventManager::SetParameters(const char *_szCommand, const char **_aszPar
 //-----COnEventManager::Do------------------------------------------------------
 void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 {
+  if (m_bPause) return;
+
   // Check if globally command should be run
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->Status();
@@ -87,13 +89,6 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 
   case ON_EVENT_RUN:
   {
-    if(m_bPause) 
-    { 
-      if(_nEvent == ON_EVENT_NOTIFY)  
-        break;
-      else
-        m_bPause = false;    // reset as soon we get a offline message etc.
-    }
     char *szParam = m_aszParameters[_nEvent];
     char szFullParam[MAX_CMD_LEN] = {'\0'};
     if (u != NULL)
