@@ -477,6 +477,20 @@ protected:
 };
 
 
+//-----Meta_RequestInfo------------------------------------------------------
+class CPU_Meta_RequestInfo : public CPacketUdp
+{
+public:
+  CPU_Meta_RequestInfo(unsigned long _nUin);
+
+protected:
+  unsigned long getSize(void);
+
+  unsigned short m_nMetaCommand;
+  unsigned long  m_nUin;
+};
+
+
 //=====TCP======================================================================
 
 //-----PacketTcp_Handshake------------------------------------------------------

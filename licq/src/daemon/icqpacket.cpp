@@ -864,6 +864,26 @@ unsigned long CPU_Meta_SetSecurityInfo::getSize(void)
 }
 
 
+//-----Meta_RequestInfo------------------------------------------------------
+CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long _nUin)
+  : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_REQUESTxINFO;
+  m_nUin = _nUin;
+
+  InitBuffer();
+
+  buffer->add(m_nMetaCommand);
+  buffer->add(m_nUin);
+}
+
+unsigned long CPU_Meta_RequestInfo::getSize(void)
+{
+  return CPacketUdp::getSize() + 6;
+}
+
+
+
 //=====PacketTcp_Handshake======================================================
 CPacketTcp_Handshake::~CPacketTcp_Handshake(void)
 {
@@ -996,7 +1016,7 @@ void CPacketTcp::Create(void)
   if (s == NULL)
   {
     gLog.Error("%sNo socket found for %s (%ld) while creating packet.\n", L_ERRORxSTR,
-              m_cUser->getAlias(), m_cUser->getUin());
+              m_cUser->GetAlias(), m_cUser->getUin());
     m_nLocalIP = LOCALHOST;
     m_nLocalPort = 0;
   }
