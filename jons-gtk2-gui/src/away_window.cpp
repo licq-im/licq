@@ -22,6 +22,7 @@
 
 #include "licq_icqd.h"
 #include "licq_gtk.h"
+#include "utilities.h"
 
 GSList *uaw_list;
 
@@ -42,22 +43,18 @@ struct user_away_window
 	struct e_tag_data *etag;
 };
 
-void set_away_msg(GtkWidget *widget, struct away_dialog *away_d)
+void
+set_away_msg(GtkWidget *widget, struct away_dialog *away_d)
 {
-	GtkTextIter s, e;
-	GtkTextBuffer *tb = gtk_text_view_get_buffer(GTK_TEXT_VIEW(away_d->text));
-	gtk_text_buffer_get_start_iter(tb, &s);
-	gtk_text_buffer_get_end_iter(tb, &e);
-  gchar *txt = gtk_text_buffer_get_text(tb, &s, &e, FALSE);
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
-	owner->SetAutoResponse(txt);
+	owner->SetAutoResponse(textview_get_chars(away_d->text).c_str());
 	gUserManager.DropOwner();
-  g_free(txt);
 
 	window_close(NULL, away_d->window);
 }
 
-void away_msg_window(gushort status)
+void
+away_msg_window(gushort status)
 {
 	
   static struct away_dialog *away_d = NULL;
@@ -65,7 +62,7 @@ void away_msg_window(gushort status)
   if (away_d == NULL)
     away_d = g_new0(struct away_dialog, 1);
   else {
-    gtk_widget_show(away_d->window);
+    gtk_window_present(GTK_WINDOW(away_d->window));
     return;
   }
 
@@ -90,19 +87,21 @@ void away_msg_window(gushort status)
 	gUserManager.DropOwner();
 
 	/* The boxes */
-	GtkWidget *h_box = gtk_hbox_new(TRUE, 5);
 	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
 
 	/* Pack the text box into the v_box */
-	gtk_box_pack_start(GTK_BOX(v_box), away_d->text, TRUE, TRUE, 0);
+  GtkWidget *frame = gtk_frame_new(NULL);
+  gtk_container_add(GTK_CONTAINER(frame), away_d->text);
+	gtk_box_pack_start(GTK_BOX(v_box), frame, TRUE, TRUE, 0);
 
 	/* Make the buttons now */
 	GtkWidget *ok = gtk_button_new_from_stock(GTK_STOCK_OK);
 	GtkWidget *cancel = gtk_button_new_from_stock(GTK_STOCK_CANCEL);
 
 	/* Pack the buttons */
-	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 5);
-	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 5);
+	GtkWidget *h_box = hbutton_box_new();
+	gtk_container_add(GTK_CONTAINER(h_box), ok);
+	gtk_container_add(GTK_CONTAINER(h_box), cancel);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 0);
 
 	/* Connect the signals now */
@@ -115,9 +114,9 @@ void away_msg_window(gushort status)
 	
 	/* Get the window ready to be shown, show it, and set is_shown */
 	gtk_container_add(GTK_CONTAINER(away_d->window), v_box);
-	gtk_widget_show_all(away_d->window);
+	gtk_container_set_border_width(GTK_CONTAINER(away_d->window), 10);
 	gtk_window_set_focus(GTK_WINDOW(away_d->window), away_d->text);
-	gtk_window_set_modal(GTK_WINDOW(away_d->window), TRUE);
+	gtk_widget_show_all(away_d->window);
 }
 
 /* The following will ensure only one window is open and that when the *
@@ -135,7 +134,8 @@ destroy_away_window(GtkWidget *widget, struct user_away_window *uaw)
   g_free(uaw);
 }
 
-struct user_away_window *uaw_find(unsigned long uin)
+struct user_away_window *
+uaw_find(unsigned long uin)
 {
 	struct user_away_window *uaw;
 	GSList *temp_uaw_list = uaw_list;
@@ -151,7 +151,8 @@ struct user_away_window *uaw_find(unsigned long uin)
 	return 0;
 }
 
-struct user_away_window *uaw_new(ICQUser *u)
+struct user_away_window *
+uaw_new(ICQUser *u)
 {
 	/* Does it exist already? */
 	struct user_away_window *uaw = uaw_find(u->Uin());
@@ -171,13 +172,16 @@ struct user_away_window *uaw_new(ICQUser *u)
 	return uaw;
 }
 
-void list_read_message(GtkWidget *widget, ICQUser *user)
+void
+list_read_message(GtkWidget *widget, ICQUser *user)
 {
 	struct user_away_window *uaw = uaw_find(user->Uin());
 	
 	// we're in the process of retrieving the message (or it's displayed already)
-  if (uaw != NULL)
+  if (uaw != NULL) {
+    gtk_window_present(GTK_WINDOW(uaw->window));
 		return;
+  }
 
 	uaw = uaw_new(user);
 	uaw->etag = g_new0(struct e_tag_data, 1);
@@ -195,14 +199,13 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 			   G_CALLBACK(destroy_away_window), uaw);
 
 	/* Make the boxes */
-	GtkWidget *h_box = gtk_hbox_new(FALSE, 5);
 	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
 
 	/* The scrolling window */
 	GtkWidget *scroll = gtk_scrolled_window_new(0, 0);
 	gtk_scrolled_window_set_policy(GTK_SCROLLED_WINDOW(scroll),
-				       GTK_POLICY_NEVER,
-				       GTK_POLICY_AUTOMATIC);
+      GTK_POLICY_NEVER,
+			GTK_POLICY_AUTOMATIC);
 
 	/* The text box */
 	uaw->text_box = gtk_text_view_new();
@@ -211,7 +214,9 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	gtk_widget_set_size_request(uaw->text_box, 235, 60);
   
 	/* Add the text box to the scrolling window */
+  GtkWidget *frame = gtk_frame_new(NULL);
 	gtk_container_add(GTK_CONTAINER(scroll), uaw->text_box);
+	gtk_container_add(GTK_CONTAINER(frame), scroll);
 
 	/* Pack the scrolled window into the v_box */
 	gtk_box_pack_start(GTK_BOX(v_box), scroll, TRUE, TRUE, 5);
@@ -219,7 +224,7 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	/* The Show Again check button */
 	uaw->show_again = gtk_check_button_new_with_label("Show Again");
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(uaw->show_again),
-				     user->ShowAwayMsg());
+      user->ShowAwayMsg());
 
 	/* The close button */
 	GtkWidget *close = gtk_button_new_from_stock(GTK_STOCK_CLOSE);
@@ -227,21 +232,20 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 			   G_CALLBACK(window_close), uaw->window);
 
 	/* Pack everything */
-	gtk_box_pack_start(GTK_BOX(h_box), uaw->show_again, TRUE, TRUE, 10);
-	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 10);
+	GtkWidget *h_box = hbutton_box_new();
+	gtk_container_add(GTK_CONTAINER(h_box), uaw->show_again);
+	gtk_container_add(GTK_CONTAINER(h_box), close);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, FALSE, FALSE, 5);
 
 	/* The progress bar */
 	uaw->progress = gtk_statusbar_new();
 	strcpy(uaw->buffer, "Checking Response ... ");
-	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(uaw->progress),
-						"prog");
-	gtk_statusbar_pop(GTK_STATUSBAR(uaw->progress), id);
-	gtk_statusbar_push(GTK_STATUSBAR(uaw->progress), id, uaw->buffer);
+	status_change(uaw->progress, "sta", uaw->buffer);
 
 	/* Pack the progress bar */
 	gtk_box_pack_start(GTK_BOX(v_box), uaw->progress, FALSE, FALSE, 5);
 
+	gtk_container_set_border_width(GTK_CONTAINER(uaw->window), 10);
 	gtk_container_add(GTK_CONTAINER(uaw->window), v_box);
 	gtk_widget_show_all(uaw->window);
 
@@ -256,7 +260,8 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 	catcher = g_slist_append(catcher, uaw->etag); 
 }
 
-void finish_away(ICQEvent *event)
+void
+finish_away(ICQEvent *event)
 {
 	struct user_away_window *uaw = uaw_find(event->Uin());
 
