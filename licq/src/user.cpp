@@ -1301,6 +1301,15 @@ unsigned short CUserManager::NumUsers()
 
 
 /*---------------------------------------------------------------------------
+ * CUserManager::NumOwners
+ *-------------------------------------------------------------------------*/
+unsigned short CUserManager::NumOwners()
+{
+  unsigned short n = m_vpcOwners.size();
+  return n;
+}
+
+/*---------------------------------------------------------------------------
  * CUserManager::NumGroups
  *-------------------------------------------------------------------------*/
 unsigned short CUserManager::NumGroups()

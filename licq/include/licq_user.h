@@ -1063,6 +1063,7 @@ public:
   void SaveAllUsers();
 
   unsigned short NumUsers();
+  unsigned short NumOwners();
   unsigned short DefaultGroup()  { return m_nDefaultGroup; }
   void SetDefaultGroup(unsigned short n)  { m_nDefaultGroup = n; SaveGroups(); }
   unsigned short NewUserGroup()  { return m_nNewUserGroup; }
