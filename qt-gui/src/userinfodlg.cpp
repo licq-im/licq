@@ -332,9 +332,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   nfoPhone->setData(u->GetPhoneNumber());
   nfoFax->setData(u->GetFaxNumber());
   nfoCellular->setData(u->GetCellularNumber());
-  QString z = QString::number(u->GetZipCode());
-  while (z.length() < 5) z.prepend("0");
-  nfoZipCode->setText(z);
+  nfoZipCode->setData(u->GetZipCode());
 
   if (!u->StatusOffline())
     nfoLastOnline->setData(tr("Now"));
@@ -368,7 +366,7 @@ void UserInfoDlg::SaveGeneralInfo()
   u->SetPhoneNumber(nfoPhone->text().local8Bit());
   u->SetFaxNumber(nfoFax->text().local8Bit());
   u->SetCellularNumber(nfoCellular->text().local8Bit());
-  u->SetZipCode(nfoZipCode->text().toULong());
+  u->SetZipCode(nfoZipCode->text().local8Bit());
   if (m_bOwner)
   {
     unsigned short i = cmbCountry->currentItem();
@@ -1047,7 +1045,7 @@ void UserInfoDlg::slotOk()
                                               nfoFax->text().local8Bit(),
                                               nfoAddress->text().local8Bit(),
                                               nfoCellular->text().local8Bit(),
-                                              nfoZipCode->text().toULong(),
+                                              nfoZipCode->text().local8Bit(),
                                               cc, false);
     }
     else
