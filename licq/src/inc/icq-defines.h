@@ -20,10 +20,12 @@ const unsigned short ICQ_CMDxRCV_USERxONLINE       = 0x006E;
 const unsigned short ICQ_CMDxRCV_USERxOFFLINE      = 0x0078;
 const unsigned short ICQ_CMDxRCV_SEARCHxFOUND      = 0x008C;
 const unsigned short ICQ_CMDxRCV_SEARCHxDONE       = 0x00A0;
-const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x00B4;
-const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x00BE;
-const unsigned short ICQ_CMDxRCV_UPDATEDxDETAIL    = 0x00C8;
-const unsigned short ICQ_CMDxRCV_UPDATExDETAILxFAIL= 0x00D2;
+#if ICQ_VERSION == 2
+const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x00B4; // 180
+const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x00BE; // 190
+const unsigned short ICQ_CMDxRCV_UPDATEDxDETAIL    = 0x00C8; // 200
+const unsigned short ICQ_CMDxRCV_UPDATExDETAILxFAIL= 0x00D2; // 210
+#endif
 const unsigned short ICQ_CMDxRCV_SYSxMSGxOFFLINE   = 0x00DC;
 const unsigned short ICQ_CMDxRCV_SYSxMSGxDONE      = 0x00E6;
 const unsigned short ICQ_CMDxRCV_ERROR             = 0x00F0;
@@ -33,12 +35,16 @@ const unsigned short ICQ_CMDxRCV_USERxINFO         = 0x0118;
 const unsigned short ICQ_CMDxRCV_USERxDETAILS      = 0x0122;
 const unsigned short ICQ_CMDxRCV_USERxINVALIDxUIN  = 0x012C;
 const unsigned short ICQ_CMDxRCV_USERxSTATUS       = 0x01A4;
-//const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x01E0;
-//const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x01EA;
-const unsigned short ICQ_CMDxRCV_MULTIxPACKET      = 0x0212;
-const unsigned short ICQ_CMDxRCV_USERxLISTxDONE    = 0x021C;
+#if ICQ_VERSION == 4
+const unsigned short ICQ_CMDxRCV_UPDATEDxBASIC     = 0x01E0; // 480
+const unsigned short ICQ_CMDxRCV_UPDATExBASICxFAIL = 0x01EA; // 490
+const unsigned short ICQ_CMDxRCV_UPDATEDxDETAIL    = 0x00C8;//0x01F4; // 500
+const unsigned short ICQ_CMDxRCV_UPDATExDETAILxFAIL= 0x00D2;//0x01FE; // 510
+#endif
+const unsigned short ICQ_CMDxRCV_MULTIxPACKET      = 0x0212; // 530
+const unsigned short ICQ_CMDxRCV_USERxLISTxDONE    = 0x021C; // 540
 
-const unsigned short ICQ_CMDxSND_ACK               = 0x000A;
+const unsigned short ICQ_CMDxSND_ACK               = 0x000A; // 10
 const unsigned short ICQ_CMDxSND_THRUxSERVER       = 0x010E;
 const unsigned short ICQ_CMDxSND_PING              = 0x042E;
 const unsigned short ICQ_CMDxSND_LOGON             = 0x03E8;
@@ -49,12 +55,17 @@ const unsigned short ICQ_CMDxSND_LOGOFF            = 0x0438;
 const unsigned short ICQ_CMDxSND_SYSxMSGxDONExACK  = 0x0442;
 const unsigned short ICQ_CMDxSND_SYSxMSGxREQ       = 0x044C;
 const unsigned short ICQ_CMDxSND_AUTHORIZE         = 0x0456;
-const unsigned short ICQ_CMDxSND_USERxGETINFO      = 0x0460;
-const unsigned short ICQ_CMDxSND_USERxGETDETAILS   = 0x046A;
-const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x04A6;
-const unsigned short ICQ_CMDxSND_UPDATExDETAIL     = 0x04B0;
-const unsigned short ICQ_CMDxSND_SETxSTATUS        = 0x04D8;
-//const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x050A;
+const unsigned short ICQ_CMDxSND_USERxGETINFO      = 0x0460; // 1120
+const unsigned short ICQ_CMDxSND_USERxGETDETAILS   = 0x046A; // 1130
+#if ICQ_VERSION == 2
+const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x04A6; // 1190
+const unsigned short ICQ_CMDxSND_UPDATExDETAIL     = 0x04B0; // 1200
+#endif
+const unsigned short ICQ_CMDxSND_SETxSTATUS        = 0x04D8; // 1240
+#if ICQ_VERSION == 4
+const unsigned short ICQ_CMDxSND_UPDATExBASIC      = 0x050A; // 1290
+const unsigned short ICQ_CMDxSND_UPDATExDETAIL     = 0x04B0;//0x0514; // 1300
+#endif
 const unsigned short ICQ_CMDxSND_PING2             = 0x051E;
 const unsigned short ICQ_CMDxSND_USERxADD          = 0x053C;
 const unsigned short ICQ_CMDxSND_VISIBLExLIST      = 0x06AE;
