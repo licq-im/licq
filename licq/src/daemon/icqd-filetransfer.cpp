@@ -180,8 +180,6 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
 {
   m_nDirection = D_RECEIVER;
 
-  if (!StartFileTransferServer()) return false;
-
   if (szDirectory == NULL)
   {
     sprintf(m_szDirectory, "%s/%ld", BASE_DIR, m_nUin);
@@ -195,6 +193,16 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
   }
   else
     strcpy(m_szDirectory, szDirectory);
+
+  struct stat buf;
+  stat(m_szDirectory, &buf);
+  if (!S_ISDIR(buf.st_mode))
+  {
+    gLog.Warn("%sPath %s is not a directory.\n", m_szDirectory);
+    return false;
+  }
+
+  if (!StartFileTransferServer()) return false;
 
   // Create the socket manager thread
   if (pthread_create(&thread_ft, NULL, &FileTransferManager_tep, this) == -1)
