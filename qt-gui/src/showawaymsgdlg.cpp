@@ -28,6 +28,7 @@
 #include "showawaymsgdlg.h"
 #include "sigman.h"
 #include "licq_user.h"
+#include "usercodec.h"
 
 
 // -----------------------------------------------------------------------------
@@ -58,9 +59,10 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   lay->addSpacing(30);
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
 //  chkShowAgain->setChecked(u->ShowAwayMsg());
 
-  setCaption(QString(tr("%1 Response for %2")).arg(u->StatusStr()).arg(u->GetAlias()));
+  setCaption(QString(tr("%1 Response for %2")).arg(u->StatusStr()).arg(codec->toUnicode(u->GetAlias())));
 
   btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setMinimumWidth(75);
@@ -71,7 +73,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   // Check if this is an active request or not
   if (sigman == NULL || server == NULL)
   {
-    mleAwayMsg->setText(QString::fromLocal8Bit(u->AutoResponse()));
+    mleAwayMsg->setText(codec->toUnicode(u->AutoResponse()));
     gUserManager.DropUser(u);
     icqEventTag = 0;
   }
@@ -149,7 +151,8 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
   if (isOk && e->Command() == ICQ_CMDxTCP_START)
   {
     ICQUser* u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    mleAwayMsg->setText(QString::fromLocal8Bit(u->AutoResponse()));
+    QTextCodec * codec = UserCodec::codecForICQUser(u);
+    mleAwayMsg->setText(codec->toUnicode(u->AutoResponse()));
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(true);
     mleAwayMsg->setBackgroundMode(PaletteBase);

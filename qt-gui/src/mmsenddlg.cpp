@@ -17,7 +17,7 @@
 #include "licq_user.h"
 #include "licq_icqd.h"
 #include "licq_events.h"
-
+#include "usercodec.h"
 
 CMMSendDlg::CMMSendDlg(CICQDaemon *_server, CSignalManager *sigman,
   CMMUserView *_mmv, QWidget *p)
@@ -136,25 +136,28 @@ void CMMSendDlg::SendNext()
     case ICQ_CMDxSUB_MSG:
     {
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-      grpSending->setTitle(tr("Sending mass message to %1...").arg(u->GetAlias()));
+      QTextCodec * codec = UserCodec::codecForICQUser(u);
+      grpSending->setTitle(tr("Sending mass message to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
 
-      icqEventTag = server->icqSendMessage(m_nUin, s1.local8Bit(), false, ICQ_TCPxMSG_NORMAL, true);
+      icqEventTag = server->icqSendMessage(m_nUin, codec->fromUnicode(s1), false, ICQ_TCPxMSG_NORMAL, true);
       break;
     }
     case ICQ_CMDxSUB_URL:
     {
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-      grpSending->setTitle(tr("Sending mass URL to %1...").arg(u->GetAlias()));
+      QTextCodec * codec = UserCodec::codecForICQUser(u);
+      grpSending->setTitle(tr("Sending mass URL to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
 
-      icqEventTag = server->icqSendUrl(m_nUin, s2.latin1(), s1.local8Bit(), false, ICQ_TCPxMSG_NORMAL, true);
+      icqEventTag = server->icqSendUrl(m_nUin, s2.latin1(), codec->fromUnicode(s1), false, ICQ_TCPxMSG_NORMAL, true);
       break;
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-      grpSending->setTitle(tr("Sending mass list to %1...").arg(u->GetAlias()));
+      QTextCodec * codec = UserCodec::codecForICQUser(u);
+      grpSending->setTitle(tr("Sending mass list to %1...").arg(codec->toUnicode(u->GetAlias())));
       gUserManager.DropUser(u);
 
       icqEventTag = server->icqSendContactList(m_nUin, *uins, false, ICQ_TCPxMSG_NORMAL);

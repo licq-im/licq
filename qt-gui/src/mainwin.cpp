@@ -74,6 +74,7 @@
 #include "xpm/info.xpm"
 #include "xpm/secure_on.xpm"
 #include "xpm/secure_off.xpm"
+#include "xpm/charset.xpm"
 
 #include "licq_qt-gui.conf.h"
 
@@ -424,6 +425,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   pmSecureOff = QPixmap(secure_off_xpm);
   pmHistory = QPixmap(history_xpm);
   pmInfo = QPixmap(info_xpm);
+  pmCharset = QPixmap(charset_xpm);
   initMenu();
   ApplySkin(szSkin, true);
   skin->frame.frameStyle = nFrameStyle;

@@ -32,8 +32,8 @@
 #include "gui-defines.h"
 #include "ewidgets.h"
 #include "mainwin.h"
-
 #include "licq_user.h"
+#include "usercodec.h"
 
 
 //-----CUserViewItem::constructor-----------------------------------------------
@@ -43,13 +43,14 @@ CMMUserViewItem::CMMUserViewItem(ICQUser *u, QListView *parent)
   static char sTemp[128];
 
   m_nUin = u->Uin();
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
 
   CMMUserView *v = (CMMUserView *)listView();
 
   for (unsigned short i = 0; i < v->colInfo.size(); i++)
   {
     u->usprintf(sTemp, v->colInfo[i]->m_szFormat);
-    setText(i, QString::fromLocal8Bit(sTemp));
+    setText(i, codec->toUnicode(sTemp));
   }
 }
 

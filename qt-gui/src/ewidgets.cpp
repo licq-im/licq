@@ -21,6 +21,7 @@
 #include "mainwin.h"
 #include "eventdesc.h"
 #include "ewidgets.h"
+#include "usercodec.h"
 
 bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
 {
@@ -485,9 +486,10 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
 
   QString n;
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
   if (u != NULL)
   {
-    n = QString::fromLocal8Bit(u->GetAlias());
+    n = codec->toUnicode(u->GetAlias());
     gUserManager.DropUser(u);
   }
 
@@ -500,7 +502,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
               e->IsMultiRec() ? 'M' : '-',
               e->IsUrgent() ? 'U' : '-',
               e->IsEncrypted() ? 'E' : '-',
-              QString::fromLocal8Bit(e->Text()).utf8().data());
+              codec->toUnicode(e->Text()).utf8().data());
   } else {
     s.sprintf("%c%s %s [%c%c%c%c]        \n%s",
               '\002', EventDescription(e).utf8().data(),
@@ -509,7 +511,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
               e->IsMultiRec() ? 'M' : '-',
               e->IsUrgent() ? 'U' : '-',
               e->IsEncrypted() ? 'E' : '-',
-              QString::fromLocal8Bit(e->Text()).utf8().data());
+              codec->toUnicode(e->Text()).utf8().data());
   }
   append(s);
   setCursorPosition(numLines(),0);

@@ -34,6 +34,8 @@
 #include <qpushbutton.h>
 #include <qsplitter.h>
 #include <qapplication.h>
+#include <qpopupmenu.h>
+#include <qtextcodec.h>
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
@@ -46,6 +48,7 @@
 #include "licq_message.h"
 #include "licq_icqd.h"
 #include "licq_log.h"
+#include "usercodec.h"
 
 #include "authuserdlg.h"
 #include "ewidgets.h"
@@ -66,7 +69,6 @@
 #include "xpm/chatChangeFg.xpm"
 #include "xpm/chatChangeBg.xpm"
 
-
 // -----------------------------------------------------------------------------
 
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
@@ -85,6 +87,9 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   top_hlay = new QHBoxLayout(this, 6);
   top_lay = new QVBoxLayout(top_hlay);
 
+  // initalize codec
+  codec = QTextCodec::codecForLocale();
+
   QBoxLayout *layt = new QHBoxLayout(top_lay, 8);
   layt->addWidget(new QLabel(tr("Status:"), this));
   nfoStatus = new CInfoField(this, true);
@@ -95,6 +100,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   nfoTimezone->setMinimumWidth(nfoTimezone->sizeHint().width()/2+10);
   layt->addWidget(nfoTimezone);
 
+  popupCharset = new QPopupMenu(this);
   btnSecure = new QPushButton(this);
   QToolTip::add(btnSecure, tr("Secure channel information"));
   layt->addWidget(btnSecure);
@@ -109,8 +115,15 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QToolTip::add(btnInfo, tr("Show User Info"));
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
+  btnCharset = new QPushButton(this);
+  btnCharset->setPixmap(mainwin->pmCharset);
+  QToolTip::add(btnCharset, tr("Change User Character Set"));
+  btnCharset->setPopup(popupCharset);
+
+  layt->addWidget(btnCharset);
 
   tmrTime = NULL;
+
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   if (u != NULL)
   {
@@ -120,7 +133,19 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
     else
       setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
     SetGeneralInfo(u);
+
+    // restore prefered charset
+    codec = UserCodec::codecForICQUser(u);
+
     gUserManager.DropUser(u);
+  }
+
+  popupCharset->setCheckable(true);
+  UserCodec::initializeEncodingNames();
+  for (uint i=0; i < UserCodec::encodings.count(); i++) {
+    popupCharset->insertItem(UserCodec::encodings[i], this, SLOT(slot_setCharset(int)), 0, i);
+    if (UserCodec::encodings[i].compare(codec->name()) == 0)
+      popupCharset->setItemChecked(i, true);
   }
 
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
@@ -130,10 +155,35 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   top_lay->addWidget(mainWidget);
 }
 
+void UserEventCommon::slot_setCharset(int charset_index) {
+  /* uncheck all encodings */
+  for (unsigned int i=0; i<popupCharset->count(); i++) {
+    popupCharset->setItemChecked(popupCharset->idAt(i), false);
+  }
+
+  /* initialize a codec according to the charset menu's value */
+  if ((charset_index >= 0) && ((uint)charset_index < UserCodec::encodings.count())) {
+    codec = QTextCodec::codecForName(UserCodec::encodingForIndex((uint) charset_index).latin1());
+
+    /* make the chosen charset checked */
+    popupCharset->setItemChecked(charset_index, true);
+
+    /* save prefered character set */
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    if (u != NULL) {
+      u->SetUserCharset( codec->name() );
+      gUserManager.DropUser(u);
+    }
+
+    emit charsetChanged();
+  }
+}
 
 //-----UserEventCommon::SetGeneralInfo---------------------------------------
 void UserEventCommon::SetGeneralInfo(ICQUser *u)
 {
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
   if (u->GetTimezone() == TIMEZONE_UNKNOWN)
     nfoTimezone->setText(tr("Unknown"));
   else
@@ -160,11 +210,11 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
   else
     btnSecure->setPixmap(mainwin->pmSecureOff);
 
-  m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
-             QString::fromLocal8Bit(u->GetFirstName()) + " " +
-             QString::fromLocal8Bit(u->GetLastName())+ ")";
+  m_sBaseTitle = codec->toUnicode(u->GetAlias()) + " (" +
+             codec->toUnicode(u->GetFirstName()) + " " +
+             codec->toUnicode(u->GetLastName())+ ")";
   setCaption(m_sBaseTitle);
-  setIconText(u->GetAlias());
+  setIconText(codec->toUnicode(u->GetAlias()));
 }
 
 
@@ -236,7 +286,6 @@ void UserEventCommon::showUserInfo()
 {
   mainwin->callInfoTab(mnuUserGeneral, m_nUin, true);
 }
-
 
 void UserEventCommon::slot_security()
 {
@@ -327,8 +376,17 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   }
   else
     gUserManager.DropUser(u);
+
+  connect(this, SIGNAL(charsetChanged()), this, SLOT(slot_setCharset()));
 }
 
+
+void UserViewEvent::slot_setCharset() {
+  /* if we have an open view, refresh it */
+  if (this->msgView) {
+    slot_printMessage(this->msgView->selectedItem());
+  }
+}
 
 UserViewEvent::~UserViewEvent()
 {
@@ -407,7 +465,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   mleRead->setBackground(QColor(m->Color()->BackRed(), m->Color()->BackGreen(), m->Color()->BackBlue()));
   mleRead->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
   // Set the text
-  mleRead->setText(QString::fromLocal8Bit(m->Text()));
+  mleRead->setText(codec->toUnicode(m->Text()));
   mleRead->setCursorPosition(0, 0);
 
   if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE))
@@ -680,7 +738,7 @@ void UserViewEvent::slot_btnRead3()
         m_xCurrentReadEvent->SetPending(false);
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
-        server->icqChatRequestRefuse(m_nUin, r->RefuseMessage().local8Bit().data(),
+        server->icqChatRequestRefuse(m_nUin, codec->fromUnicode(r->RefuseMessage()),
            m_xCurrentReadEvent->Sequence());
       }
       delete r;
@@ -695,7 +753,7 @@ void UserViewEvent::slot_btnRead3()
         m_xCurrentReadEvent->SetPending(false);
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
-        server->icqFileTransferRefuse(m_nUin, r->RefuseMessage().local8Bit().data(),
+        server->icqFileTransferRefuse(m_nUin, codec->fromUnicode(r->RefuseMessage()),
            m_xCurrentReadEvent->Sequence());
       }
       delete r;
@@ -950,7 +1008,8 @@ void UserSendCommon::changeEventType(int id)
     e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
     break;
   case 1:
-    e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);    break;
+    e = new UserSendUrlEvent(server, sigman, mainwin, m_nUin);
+    break;
   case 2:
     e = new UserSendChatEvent(server, sigman, mainwin, m_nUin);
     break;
@@ -1139,8 +1198,8 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_W);
     msg = tr("%1 is in %2 mode:\n%3\nSend...")
-             .arg(u->GetAlias()).arg(u->StatusStr())
-             .arg(QString::fromLocal8Bit(u->AutoResponse()));
+             .arg(codec->toUnicode(u->GetAlias())).arg(u->StatusStr())
+             .arg(codec->toUnicode(u->AutoResponse()));
 
     u->SetShowAwayMsg( false );
     gUserManager.DropUser(u);
@@ -1161,7 +1220,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
     msg = tr("%1 refused %2, send through server.")
-          .arg(u->GetAlias()).arg(EventDescription(ue));
+          .arg(codec->toUnicode(u->GetAlias())).arg(EventDescription(ue));
     InformUser(this, msg);
     gUserManager.DropUser(u);
     return;
@@ -1196,7 +1255,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 
       QString msgTextCurrent = generatePart(QString(ue->Message()));
 
-      icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit().data(), bOnline,
+      icqEventTag = server->icqSendMessage(m_nUin, codec->fromUnicode(msgTextCurrent), bOnline,
          nLevel, false, &icqColor);
       break;
     }
@@ -1367,7 +1426,7 @@ void UserSendMsgEvent::sendButton()
     if (r != QDialog::Accepted) return;
   }
 
-  icqEventTag = server->icqSendMessage(m_nUin, msgTextCurrent.local8Bit(),
+  icqEventTag = server->icqSendMessage(m_nUin, codec->fromUnicode(msgTextCurrent),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkMass->isChecked(), &icqColor);
@@ -1460,7 +1519,7 @@ void UserSendUrlEvent::sendButton()
     if (r != QDialog::Accepted) return;
   }
 
-  icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), mleSend->text().local8Bit(),
+  icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), codec->fromUnicode(mleSend->text()),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkMass->isChecked(), &icqColor);
@@ -1553,8 +1612,8 @@ void UserSendFileEvent::sendButton()
     return;
   }
 
-  icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text().local8Bit(),
-     mleSend->text().local8Bit(),
+  icqEventTag = server->icqFileTransfer(m_nUin, codec->fromUnicode(edtItem->text()),
+     codec->fromUnicode(mleSend->text()),
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
 
   UserSendCommon::sendButton();
@@ -1674,11 +1733,11 @@ void UserSendChatEvent::sendButton()
 {
   if (m_nMPChatPort == 0)
     icqEventTag = server->icqChatRequest(m_nUin,
-                                         mleSend->text().local8Bit(),
+                                         codec->fromUnicode(mleSend->text()),
                                          chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
   else
     icqEventTag = server->icqMultiPartyChatRequest(m_nUin,
-                                                   mleSend->text().local8Bit(), m_szMPChatClients.local8Bit(),
+                                                   codec->fromUnicode(mleSend->text()), codec->fromUnicode(m_szMPChatClients),
                                                    m_nMPChatPort,
                                                    chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
   UserSendCommon::sendButton();

@@ -35,7 +35,6 @@ protected slots:
   void slot_hints();
 };
 
-
 class CustomAwayMsgDlg : public QDialog
 {
   Q_OBJECT

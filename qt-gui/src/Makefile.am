@@ -4,7 +4,7 @@ EXTRA_DIST = xpm
 libdir=$(prefix)/lib/licq
 licq_incdir = @LICQ_INCLUDES@
 
-INCLUDES = -D_REENTRANT \
+INCLUDES = -D_REENTRANT -DQT_GENUINE_STR -DQT_NO_COMPAT -DQT_NO_ASCII_CAST \
 	-I$(licq_incdir) $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
 
 EXTRA_LTLIBRARIES = licq_qt-gui.la licq_kde-gui.la
@@ -19,7 +19,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	securitydlg.h showawaymsgdlg.h sigman.h skin.h skinbrowser.h userbox.h\
 	utilitydlg.h wharf.h randomchatdlg.h forwarddlg.h chatjoin.h \
 	mmlistview.h mmsenddlg.h userinfodlg.h usereventdlg.h keyrequestdlg.h \
-  jfcstyle.h
+  jfcstyle.h usercodec.h
 
 licq_gui_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
@@ -30,7 +30,7 @@ licq_gui_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	sigman.cpp skin.cpp skinbrowser.cpp userbox.cpp utilitydlg.cpp \
 	wharf.cpp randomchatdlg.cpp forwarddlg.cpp chatjoin.cpp mmlistview.cpp \
   mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp keyrequestdlg.cpp \
-  jfcstyle.cpp
+  jfcstyle.cpp usercodec.cpp
 
 licq_qt_gui_la_SOURCES = $(licq_gui_SOURCES)
 licq_kde_gui_la_SOURCES = $(licq_gui_SOURCES)
@@ -48,3 +48,4 @@ licq_kde_gui_la_LIBADD = $(KDE_LIBS) -lqt $(X_PRE_LIBS) -lX11 -lXext \
         $(XSS_LIBS) $(X_EXTRA_LIBS)
 
 METASOURCES = AUTO
+KDE_OPTIONS = qtonly

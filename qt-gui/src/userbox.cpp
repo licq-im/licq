@@ -33,6 +33,7 @@
 #include "gui-defines.h"
 #include "mainwin.h"
 #include "usereventdlg.h"
+#include "usercodec.h"
 
 #include "licq_user.h"
 
@@ -315,8 +316,9 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
    for (unsigned short i = 0; i < gMainWindow->colInfo.size(); i++)
    {
+     QTextCodec * codec = UserCodec::codecForICQUser(u);
      u->usprintf(sTemp, gMainWindow->colInfo[i]->m_szFormat);
-     setText(i + 1, QString::fromLocal8Bit(sTemp));
+     setText(i + 1, codec->toUnicode(sTemp));
    }
 
    // Set the user tag
@@ -1201,6 +1203,7 @@ void CUserView::maybeTip(const QPoint& c)
       s += tr("<br>Custom&nbsp;Auto&nbsp;Response");
 
     ICQUser* u = gUserManager.FetchUser(item->m_nUin, LOCK_R);
+    QTextCodec * codec = UserCodec::codecForICQUser(u);
     if (u != NULL)
     {
       if (u->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED)
@@ -1211,7 +1214,7 @@ void CUserView::maybeTip(const QPoint& c)
       if (u->AutoResponse() && *u->AutoResponse() &&
           item->m_nStatus != ICQ_STATUS_OFFLINE &&
           item->m_nStatus != ICQ_STATUS_ONLINE)
-        s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(QString::fromLocal8Bit(u->AutoResponse()));
+        s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(codec->toUnicode(u->AutoResponse()));
 
       gUserManager.DropUser(u);
     }

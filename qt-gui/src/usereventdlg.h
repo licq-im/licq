@@ -36,6 +36,7 @@ class QGroupBox;
 class QButtonGroup;
 class QListViewItem;
 class QLabel;
+class QTextCodec;
 
 class MLEditWrap;
 class MsgView;
@@ -62,6 +63,8 @@ public:
 
   unsigned long Uin() { return m_nUin; }
 
+  QTextCodec *codec;
+
 protected:
   bool m_bOwner;
   unsigned long m_nUin;
@@ -71,7 +74,8 @@ protected:
   CSignalManager *sigman;
   unsigned long icqEventTag;
   QWidget *mainWidget;
-  QPushButton *btnHistory, *btnInfo, *btnSecure, *btnForeColor, *btnBackColor;
+  QPushButton *btnHistory, *btnInfo, *btnCharset, *btnSecure, *btnForeColor, *btnBackColor;
+  QPopupMenu * popupCharset;
 
   CInfoField *nfoStatus, *nfoTimezone;
   time_t m_nRemoteTimeOffset;
@@ -89,9 +93,11 @@ protected slots:
   void showUserInfo();
   void slot_usermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
   void slot_security();
+  void slot_setCharset(int charset_index);
 
 signals:
   void finished(unsigned long);
+  void charsetChanged();
 };
 
 
@@ -131,6 +137,7 @@ protected slots:
   void slot_btnReadNext();
   void slot_printMessage(QListViewItem*);
   void slot_sentevent(ICQEvent *);
+  void slot_setCharset();
 };
 
 

@@ -10,7 +10,6 @@
 // LICENSE.QPL included in the packaging of this file.
 
 
-#include <iostream>
 #include <limits.h>
 #include <qapplication.h>
 #include <qbutton.h>

@@ -42,6 +42,7 @@
 #include "licq_user.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
+#include "usercodec.h"
 
 #include "editfile.h"
 #include "ewidgets.h"
@@ -137,11 +138,10 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   }
   else
   {
-    m_sBasic = tr("Licq - Info ") + QString::fromLocal8Bit(u->GetAlias()) + " (" +
-     QString::fromLocal8Bit(u->GetFirstName()) + " " +
-     QString::fromLocal8Bit(u->GetLastName())+ ")";
+    QTextCodec * codec = UserCodec::codecForICQUser(u);
+    m_sBasic = tr("Licq - Info ") + codec->toUnicode(u->GetAlias()) + " (" + codec->toUnicode(u->GetFirstName()) + " " + codec->toUnicode(u->GetLastName()) + ")";
     resetCaption();
-    setIconText(u->GetAlias());
+    setIconText(codec->toUnicode(u->GetAlias()));
     gUserManager.DropUser(u);
   }
 }
@@ -313,12 +313,14 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
     bDropUser = true;
   }
 
-  nfoAlias->setData(u->GetAlias());
-  nfoFirstName->setData(u->GetFirstName());
-  nfoLastName->setData(u->GetLastName());
-  nfoEmailPrimary->setData(u->GetEmailPrimary());
-  nfoEmailSecondary->setData(u->GetEmailSecondary());
-  nfoEmailOld->setData(u->GetEmailOld());
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
+  nfoAlias->setData(codec->toUnicode(u->GetAlias()));
+  nfoFirstName->setData(codec->toUnicode(u->GetFirstName()));
+  nfoLastName->setData(codec->toUnicode(u->GetLastName()));
+  nfoEmailPrimary->setData(codec->toUnicode(u->GetEmailPrimary()));
+  nfoEmailSecondary->setData(codec->toUnicode(u->GetEmailSecondary()));
+  nfoEmailOld->setData(codec->toUnicode(u->GetEmailOld()));
   nfoUin->setData(u->Uin());
   QString ip = QString(u->IpPortStr(buf));
   if (u->Ip() != u->RealIp() && u->RealIp() != 0)
@@ -351,13 +353,13 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
     else  // known
       nfoCountry->setData(c->szName);
   }
-  nfoAddress->setData(u->GetAddress());
-  nfoCity->setData(u->GetCity());
-  nfoState->setData(u->GetState());
-  nfoPhone->setData(u->GetPhoneNumber());
-  nfoFax->setData(u->GetFaxNumber());
-  nfoCellular->setData(u->GetCellularNumber());
-  nfoZipCode->setData(u->GetZipCode());
+  nfoAddress->setData(codec->toUnicode(u->GetAddress()));
+  nfoCity->setData(codec->toUnicode(u->GetCity()));
+  nfoState->setData(codec->toUnicode(u->GetState()));
+  nfoPhone->setData(codec->toUnicode(u->GetPhoneNumber()));
+  nfoFax->setData(codec->toUnicode(u->GetFaxNumber()));
+  nfoCellular->setData(codec->toUnicode(u->GetCellularNumber()));
+  nfoZipCode->setData(codec->toUnicode(u->GetZipCode()));
 
   if (!u->StatusOffline())
     nfoLastOnline->setData(tr("Now"));
@@ -379,21 +381,24 @@ void UserInfoDlg::SaveGeneralInfo()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   if (u == NULL) return;
+
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
   u->SetEnableSave(false);
 
-  u->SetAlias(nfoAlias->text().local8Bit());
-  u->SetFirstName(nfoFirstName->text().local8Bit());
-  u->SetLastName(nfoLastName->text().local8Bit());
-  u->SetEmailPrimary(nfoEmailPrimary->text().local8Bit());
-  u->SetEmailSecondary(nfoEmailSecondary->text().local8Bit());
-  u->SetEmailOld(nfoEmailOld->text().local8Bit());
-  u->SetCity(nfoCity->text().local8Bit());
-  u->SetState(nfoState->text().local8Bit());
-  u->SetAddress(nfoAddress->text().local8Bit());
-  u->SetPhoneNumber(nfoPhone->text().local8Bit());
-  u->SetFaxNumber(nfoFax->text().local8Bit());
-  u->SetCellularNumber(nfoCellular->text().local8Bit());
-  u->SetZipCode(nfoZipCode->text().local8Bit());
+  u->SetAlias(codec->fromUnicode(nfoAlias->text()));
+  u->SetFirstName(codec->fromUnicode(nfoFirstName->text()));
+  u->SetLastName(codec->fromUnicode(nfoLastName->text()));
+  u->SetEmailPrimary(codec->fromUnicode(nfoEmailPrimary->text()));
+  u->SetEmailSecondary(codec->fromUnicode(nfoEmailSecondary->text()));
+  u->SetEmailOld(codec->fromUnicode(nfoEmailOld->text()));
+  u->SetCity(codec->fromUnicode(nfoCity->text()));
+  u->SetState(codec->fromUnicode(nfoState->text()));
+  u->SetAddress(codec->fromUnicode(nfoAddress->text()));
+  u->SetPhoneNumber(codec->fromUnicode(nfoPhone->text()));
+  u->SetFaxNumber(codec->fromUnicode(nfoFax->text()));
+  u->SetCellularNumber(codec->fromUnicode(nfoCellular->text()));
+  u->SetZipCode(codec->fromUnicode(nfoZipCode->text()));
   if (m_bOwner)
   {
     unsigned short i = cmbCountry->currentItem();
@@ -481,7 +486,8 @@ void UserInfoDlg::CreateMoreInfo()
     for (unsigned short i = 0; i < 3; i++)
     {
       for (unsigned short j = 0; j < NUM_LANGUAGES; j++)
-        cmbLanguage[i]->insertItem(GetLanguageByIndex(j)->szName);
+        if (GetLanguageByIndex(j))
+          cmbLanguage[i]->insertItem(GetLanguageByIndex(j)->szName);
     }
   }
   else
@@ -671,15 +677,17 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
     bDropUser = true;
   }
 
-  nfoCompanyName->setData(u->GetCompanyName());
-  nfoCompanyDepartment->setData(u->GetCompanyDepartment());
-  nfoCompanyPosition->setData(u->GetCompanyPosition());
-  nfoCompanyCity->setData(u->GetCompanyCity());
-  nfoCompanyState->setData(u->GetCompanyState());
-  nfoCompanyAddress->setData(u->GetCompanyAddress());
-  nfoCompanyPhone->setData(u->GetCompanyPhoneNumber());
-  nfoCompanyFax->setData(u->GetCompanyFaxNumber());
-  nfoCompanyHomepage->setData(u->GetCompanyHomepage());
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
+  nfoCompanyName->setData(codec->toUnicode(u->GetCompanyName()));
+  nfoCompanyDepartment->setData(codec->toUnicode(u->GetCompanyDepartment()));
+  nfoCompanyPosition->setData(codec->toUnicode(u->GetCompanyPosition()));
+  nfoCompanyCity->setData(codec->toUnicode(u->GetCompanyCity()));
+  nfoCompanyState->setData(codec->toUnicode(u->GetCompanyState()));
+  nfoCompanyAddress->setData(codec->toUnicode(u->GetCompanyAddress()));
+  nfoCompanyPhone->setData(codec->toUnicode(u->GetCompanyPhoneNumber()));
+  nfoCompanyFax->setData(codec->toUnicode(u->GetCompanyFaxNumber()));
+  nfoCompanyHomepage->setData(codec->toUnicode(u->GetCompanyHomepage()));
 
   if (bDropUser) gUserManager.DropUser(u);
 }
@@ -719,7 +727,9 @@ void UserInfoDlg::SetAbout(ICQUser *u)
     bDropUser = true;
   }
 
-  QString aboutstr = QString::fromLocal8Bit(u->GetAbout());
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
+  QString aboutstr = codec->toUnicode(u->GetAbout());
   aboutstr.replace(QRegExp("\r"), "");
   mleAbout->setText(aboutstr);
 
@@ -731,7 +741,9 @@ void UserInfoDlg::SaveAbout()
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   if (u == NULL) return;
 
-  u->SetAbout(mleAbout->text().local8Bit());
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
+  u->SetAbout(codec->fromUnicode(mleAbout->text()));
   gUserManager.DropUser(u);
 }
 
@@ -990,6 +1002,7 @@ void UserInfoDlg::ShowHistory()
   QString s, st, n;
   QDateTime d;
   m_nHistoryShowing = 0;
+  QTextCodec * codec = QTextCodec::codecForLocale();
   if (m_bOwner)
     n = tr("server");
   else
@@ -997,7 +1010,8 @@ void UserInfoDlg::ShowHistory()
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
     if (u != NULL)
     {
-      n = QString::fromLocal8Bit(u->GetAlias());
+      codec = UserCodec::codecForICQUser(u);
+      n = codec->toUnicode(u->GetAlias());
       gUserManager.DropUser(u);
     }
   }
@@ -1018,7 +1032,7 @@ void UserInfoDlg::ShowHistory()
                   (*tempIter)->IsMultiRec() ? 'M' : '-',
                   (*tempIter)->IsUrgent() ? 'U' : '-',
                   (*tempIter)->IsEncrypted() ? 'E' : '-',
-                  (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
+                  (codec->toUnicode((*tempIter)->Text())).utf8().data());
 //                  (*tempIter)->Text());
       else
         s.sprintf("%c%s %s %s\n%c%s [%c%c%c%c]\n\n%s\n\n",
@@ -1029,7 +1043,7 @@ void UserInfoDlg::ShowHistory()
                   (*tempIter)->IsMultiRec() ? 'M' : '-',
                   (*tempIter)->IsUrgent() ? 'U' : '-',
                   (*tempIter)->IsEncrypted() ? 'E' : '-',
-                (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
+                (codec->toUnicode((*tempIter)->Text())).utf8().data());
 //                  (*tempIter)->Text());
       st.append(s);
       m_nHistoryShowing++;
@@ -1079,7 +1093,10 @@ void UserInfoDlg::SaveHistory()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u == NULL) return;
-  u->SaveHistory(mleHistory->text().local8Bit());
+
+  QTextCodec * codec = UserCodec::codecForICQUser(u);
+
+  u->SaveHistory(codec->fromUnicode(mleHistory->text()));
   gUserManager.DropUser(u);
 }
 
@@ -1224,11 +1241,14 @@ void UserInfoDlg::slotUpdate()
 {
   if (currentTab == LastCountersInfo) return;
 
+  QTextCodec * codec = QTextCodec::codecForLocale();
+
   if (currentTab != HistoryInfo)
   {
     ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
     if(o == NULL)  return;
     unsigned short status = o->Status();
+    codec = UserCodec::codecForICQUser(o);
     gUserManager.DropOwner();
 
     if(status == ICQ_STATUS_OFFLINE) {
@@ -1238,24 +1258,25 @@ void UserInfoDlg::slotUpdate()
     }
   }
 
+
   switch(currentTab) {
   case GeneralInfo:
   {
     unsigned short i = cmbCountry->currentItem();
     unsigned short cc = GetCountryByIndex(i)->nCode;
-    icqEventTag = server->icqSetGeneralInfo(nfoAlias->text().local8Bit(),
-                                            nfoFirstName->text().local8Bit(),
-                                            nfoLastName->text().local8Bit(),
-                                            nfoEmailPrimary->text().local8Bit(),
-                                            nfoEmailSecondary->text().local8Bit(),
-                                            nfoEmailOld->text().local8Bit(),
-                                            nfoCity->text().local8Bit(),
-                                            nfoState->text().local8Bit(),
-                                            nfoPhone->text().local8Bit(),
-                                            nfoFax->text().local8Bit(),
-                                            nfoAddress->text().local8Bit(),
-                                            nfoCellular->text().local8Bit(),
-                                            nfoZipCode->text().local8Bit(),
+    icqEventTag = server->icqSetGeneralInfo(codec->fromUnicode(nfoAlias->text()),
+                                            codec->fromUnicode(nfoFirstName->text()),
+                                            codec->fromUnicode(nfoLastName->text()),
+                                            codec->fromUnicode(nfoEmailPrimary->text()),
+                                            codec->fromUnicode(nfoEmailSecondary->text()),
+                                            codec->fromUnicode(nfoEmailOld->text()),
+                                            codec->fromUnicode(nfoCity->text()),
+                                            codec->fromUnicode(nfoState->text()),
+                                            codec->fromUnicode(nfoPhone->text()),
+                                            codec->fromUnicode(nfoFax->text()),
+                                            codec->fromUnicode(nfoAddress->text()),
+                                            codec->fromUnicode(nfoCellular->text()),
+                                            codec->fromUnicode(nfoZipCode->text()),
                                             cc, false);
   }
   break;
@@ -1271,17 +1292,17 @@ void UserInfoDlg::slotUpdate()
                                          GetLanguageByIndex(cmbLanguage[2]->currentItem())->nCode);
   break;
   case WorkInfo:
-    icqEventTag = server->icqSetWorkInfo(nfoCompanyCity->text().local8Bit(),
-                                         nfoCompanyState->text().local8Bit(),
-                                         nfoCompanyPhone->text().local8Bit(),
-                                         nfoCompanyFax->text().local8Bit(),
-                                         nfoCompanyAddress->text().local8Bit(),
-                                         nfoCompanyName->text().local8Bit(),
-                                         nfoCompanyDepartment->text().local8Bit(),
-                                         nfoCompanyPosition->text().local8Bit(),
+    icqEventTag = server->icqSetWorkInfo(codec->fromUnicode(nfoCompanyCity->text()),
+                                         codec->fromUnicode(nfoCompanyState->text()),
+                                         codec->fromUnicode(nfoCompanyPhone->text()),
+                                         codec->fromUnicode(nfoCompanyFax->text()),
+                                         codec->fromUnicode(nfoCompanyAddress->text()),
+                                         codec->fromUnicode(nfoCompanyName->text()),
+                                         codec->fromUnicode(nfoCompanyDepartment->text()),
+                                         codec->fromUnicode(nfoCompanyPosition->text()),
                                          nfoCompanyHomepage->text().local8Bit());
   break;
-  case AboutInfo:    icqEventTag = server->icqSetAbout(mleAbout->text().local8Bit());  break;
+  case AboutInfo:    icqEventTag = server->icqSetAbout(codec->fromUnicode(mleAbout->text()));  break;
   case HistoryInfo:  ShowHistoryNext();  break;
   }
 

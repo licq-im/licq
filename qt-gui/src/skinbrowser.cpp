@@ -21,6 +21,7 @@
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qvbox.h>
+#include <qstringlist.h>
 
 #include "skinbrowser.h"
 #include "skin.h"

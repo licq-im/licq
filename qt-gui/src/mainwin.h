@@ -164,7 +164,7 @@ public:
   char *m_szIconSet;
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact,
-          pmAuthorize, pmSecureOn, pmSecureOff, pmHistory, pmInfo;
+          pmAuthorize, pmSecureOn, pmSecureOff, pmHistory, pmInfo, pmCharset;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
 
