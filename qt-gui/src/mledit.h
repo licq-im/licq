@@ -13,11 +13,9 @@ public:
   void appendNoNewLine(QString s);
   void GotoEnd();
 
-  // Why the fuck does Qt make these protected?
-  bool hasMarkedText() const { return QMultiLineEdit::hasMarkedText(); }
-  QString markedText() const { return QMultiLineEdit::markedText(); }
+  using QMultiLineEdit::hasMarkedText;
+  using QMultiLineEdit::markedText;
 
-  // Why does Qt not provide this?
   void setBackground(const QColor&);
   void setForeground(const QColor&);
 
