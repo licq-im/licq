@@ -14,20 +14,33 @@
 
 MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(parent)
 {
-  msg = theMsg;
+  if (theMsg->Direction() == D_SENDER)
+    msg = theMsg;
+  else
+    msg = theMsg->Copy();
+
+  m_nEventId = theMsg->Id();
   QDateTime d;
   d.setTime_t(msg->Time());
   QString sd = d.toString();
   sd.truncate(sd.length() - 5);
 
-  setText(0, msg->Direction() == D_SENDER ? "S" : "R");
-  setText(1, EventDescription(msg));
-  setText(2, sd);
+  setText(0, msg->Direction() == D_SENDER ? "" : "*");
+  setText(1, msg->Direction() == D_SENDER ? "S" : "R");
+  setText(2, EventDescription(msg));
+  setText(3, sd);
 }
 
 MsgViewItem::~MsgViewItem(void)
 {
   delete msg;
+}
+
+
+void MsgViewItem::MarkRead()
+{
+  m_nEventId = -1;
+  setText(0, "");
 }
 
 
@@ -53,6 +66,7 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup &cgdefault,
 MsgView::MsgView (QWidget *parent, const char *name)
   : QListView(parent, name)
 {
+  addColumn(tr("N"), 20);
   addColumn(tr("D"), 20);
   addColumn(tr("Event Type"), 180);
   addColumn(tr("Time Received"), 130);
@@ -93,37 +107,10 @@ QSize MsgView::sizeHint() const
 void MsgView::resizeEvent(QResizeEvent *e)
 {
   QScrollBar *s = verticalScrollBar();
-  setColumnWidth(1, width() - 152 - s->width());
+  setColumnWidth(2, width() - 172 - s->width());
   QListView::resizeEvent(e);
 }
 
-#if 0
-//-----MsgView::markRead---------------------------------------------------------------------------
-void MsgView::markRead(short index)
-{
-   MsgViewItem *e = (MsgViewItem *)firstChild();
-   if (e == NULL) return;
-
-   if (e->index == index)
-   {
-      e->index = -1;
-      e->setText(0, "");
-   }
-   else if (e->index > index)
-      e->index--;
-
-   while ((e = (MsgViewItem *)e->nextSibling()) != NULL)
-   {
-      if (e->index == index)
-      {
-         e->index = -1;
-         e->setText(0, "");
-      }
-      else if (e->index > index)
-         e->index--;
-   }
-}
-#endif
 
 //=====CMsgItemTips===============================================================================
 

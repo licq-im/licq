@@ -29,7 +29,10 @@ class MsgViewItem : public QListViewItem
 public:
   MsgViewItem (CUserEvent *, QListView *);
   ~MsgViewItem(void);
+  void MarkRead();
+
   CUserEvent *msg;
+  int m_nEventId;
 
 protected:
   virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);

@@ -20,6 +20,7 @@ class QListViewItem;
 class QTimer;
 class QSpinBox;
 class QVGroupBox;
+class QGridLayout;
 
 class ICQUser;
 class CICQSignal;
@@ -91,6 +92,9 @@ protected:
 
   // Send Event tab
   void CreateSendEventTab();
+  void SendTab_grpOpt();
+  void SendTab_grpMR();
+  QGridLayout *laySend;
   MLEditWrap *mleSend;
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
   QLineEdit *edtSpoof;
@@ -184,7 +188,7 @@ protected slots:
    void tabSelected(const QString &);
    void ShowHistoryPrev();
    void ShowHistoryNext();
-   void slot_nextMessage();
+   //void slot_nextMessage();
    void slot_printMessage(QListViewItem *);
    void save();
    void setSpoofed();

@@ -184,11 +184,11 @@ void ICQFunctions::CreateReadEventTab()
 
   QHGroupBox *h_top = new QHGroupBox(/*tr("Conversation"),*/ p);
   msgView = new MsgView(h_top);
-  btnReadNext = new QPushButton(tr("Nex&t"), h_top);
+  /*btnReadNext = new QPushButton(tr("Nex&t"), h_top);
   btnReadNext->setEnabled(false);
-  btnReadNext->setFixedHeight(msgView->height());
+  btnReadNext->setFixedHeight(msgView->height());*/
   //btnReadNext->setFixedWidth(btnReadNext->width());
-  connect(btnReadNext, SIGNAL(clicked()), this, SLOT(slot_nextMessage()));
+  //connect(btnReadNext, SIGNAL(clicked()), this, SLOT(slot_nextMessage()));
 
   QHGroupBox *h_msg = new QHGroupBox(p);
   mleRead = new MLEditWrap(true, h_msg, true);
@@ -223,10 +223,10 @@ void ICQFunctions::CreateSendEventTab()
 {
   tabList[TAB_SEND].label = tr("S&end");
   tabList[TAB_SEND].tab = new QWidget(this, tabList[TAB_SEND].label.latin1());
-  QGridLayout *selay = new QGridLayout(tabList[TAB_SEND].tab, 5, 2, 8);
+  laySend = new QGridLayout(tabList[TAB_SEND].tab, 5, 2, 8);
   tabList[TAB_SEND].loaded = true;
 
-  grpCmd = new QButtonGroup(1, Vertical,/*tr("Select Function"),*/ tabList[TAB_SEND].tab);
+  grpCmd = new QButtonGroup(1, Vertical, tabList[TAB_SEND].tab);
   rdbMsg = new QRadioButton(tr("&Message"), grpCmd);
   rdbUrl = new QRadioButton(tr("&URL"), grpCmd);
   rdbChat = new QRadioButton(tr("Chat Re&quest"), grpCmd);
@@ -236,42 +236,22 @@ void ICQFunctions::CreateSendEventTab()
   QWidget* dummy_w = new QWidget(grpCmd);
   dummy_w->setMinimumHeight(2);
 #endif
-  selay->addMultiCellWidget(grpCmd, 0, 0, 0, 1);
+  laySend->addMultiCellWidget(grpCmd, 0, 0, 0, 1);
 
-  grpMR = new QVGroupBox(tabList[TAB_SEND].tab);
-  (void) new QLabel(tr("Drag Users Here"), grpMR);
-  lstMultipleRecipients = new CMMUserView(mainwin->UserView()->ColInfo(),
-     mainwin->showHeader, m_nUin, mainwin, grpMR);
-  lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
-  grpMR->hide();
+  grpMR = NULL;
 
   QHGroupBox *h_mid_left = new QHGroupBox(tabList[TAB_SEND].tab);
   mleSend = new MLEditWrap(true, h_mid_left, true);
   mleSend->setMinimumHeight(150);
 
-  selay->addWidget(h_mid_left, 1, 0);
-  selay->addWidget(grpMR, 1, 1);
-  selay->setColStretch(0, 1);
+  laySend->addWidget(h_mid_left, 1, 0);
+  laySend->setColStretch(0, 1);
 
-  grpOpt = new QGroupBox(3, Horizontal, tabList[TAB_SEND].tab);
-  selay->addMultiCellWidget(grpOpt, 2, 2, 0, 1);
-  lblItem = new QLabel(grpOpt);
-  edtItem = new CInfoField(grpOpt, false);
-  btnItem = new QPushButton(grpOpt);
-  connect(btnItem, SIGNAL(clicked()), SLOT(slot_sendbtn()));
-#if QT_VERSION < 210
-  QWidget* dummy_w2 = new QWidget(grpOpt);
-  dummy_w2->setMinimumHeight(2);
-#endif
-  grpOpt->hide();
+  grpOpt = NULL;
 
   QGroupBox *box = new QGroupBox(tabList[TAB_SEND].tab);
-  selay->addMultiCellWidget(box, 3, 3, 0, 1);
-
   QBoxLayout *vlay = new QVBoxLayout(box, 10, 5);
-
   QBoxLayout *hlay = new QHBoxLayout(vlay);
-
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
   hlay->addWidget(chkSendServer);
   chkUrgent = new QCheckBox(tr("U&rgent"), box);
@@ -279,6 +259,7 @@ void ICQFunctions::CreateSendEventTab()
   chkMass = new QCheckBox(tr("&Multiple recipients"), box);
   hlay->addWidget(chkMass);
   connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(slot_masstoggled(bool)));
+  laySend->addMultiCellWidget(box, 3, 3, 0, 1);
 
 #ifdef USE_SPOOFING
   hlay = new QHBoxLayout(vlay);
@@ -290,16 +271,44 @@ void ICQFunctions::CreateSendEventTab()
   edtSpoof->setValidator(new QIntValidator(10000, 2000000000, edtSpoof));
   connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
 #else
-  edtSpoof = 0;
-  chkSpoof = 0;
+  edtSpoof = NULL;
+  chkSpoof = NULL;
 #endif
-  selay->activate();
+  laySend->activate();
+}
+
+
+void ICQFunctions::SendTab_grpOpt()
+{
+  grpOpt = new QGroupBox(3, Horizontal, tabList[TAB_SEND].tab);
+  lblItem = new QLabel(grpOpt);
+  edtItem = new CInfoField(grpOpt, false);
+  btnItem = new QPushButton(grpOpt);
+  connect(btnItem, SIGNAL(clicked()), SLOT(slot_sendbtn()));
+#if QT_VERSION < 210
+  QWidget* dummy_w2 = new QWidget(grpOpt);
+  dummy_w2->setMinimumHeight(2);
+#endif
+  laySend->addMultiCellWidget(grpOpt, 2, 2, 0, 1);
+  //laySend->addWidget(grpOpt, 2, 0);
+}
+
+
+void ICQFunctions::SendTab_grpMR()
+{
+  grpMR = new QVGroupBox(tabList[TAB_SEND].tab);
+  (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
+  lstMultipleRecipients = new CMMUserView(mainwin->UserView()->ColInfo(),
+     mainwin->showHeader, m_nUin, mainwin, grpMR);
+  lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
+  laySend->addWidget(grpMR, 1, 1);
+  //laySend->addMultiCellWidget(grpMR, 1, 2, 1, 1);
 }
 
 
 void ICQFunctions::slot_masstoggled(bool b)
 {
-  //b ? lstMultipleRecipients->show() : lstMultipleRecipients->hide();
+  if (grpMR == NULL) SendTab_grpMR();
   b ? grpMR->show() : grpMR->hide();
 }
 
@@ -656,14 +665,24 @@ void ICQFunctions::setupTabs(int index)
   // read tab
   if (index == mnuUserView)
   {
-    if (u->NewMessages() > 0)
+    /*if (u->NewMessages() > 0)
     {
       gUserManager.DropUser(u);
       slot_nextMessage();
       u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    }*/
+    MsgViewItem *e = new MsgViewItem(u->EventPeek(0), msgView);
+    for (unsigned short i = 1; i < u->NewMessages(); i++)
+    {
+      (void) new MsgViewItem(u->EventPeek(i), msgView);
     }
+    gUserManager.DropUser(u);
+    slot_printMessage(e);
+    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    msgView->setSelected(e, true);
+    msgView->ensureItemVisible(e);
   }
-  if (u->NewMessages() > 0) btnReadNext->setEnabled(true);
+  //if (u->NewMessages() > 0) btnReadNext->setEnabled(true);
 
   // Send tab
   rdbFile->setEnabled(!u->StatusOffline());
@@ -757,24 +776,24 @@ void ICQFunctions::SetInfo(ICQUser *u)
   }
 
   nfoStatus->setData(u->StatusStr());
-  time_t te = time(NULL);
-#ifndef __FreeBSD__
-  localtime(&te);
-  m_nRemoteTimeOffset = timezone - u->GetTimezone() * 1800;
-#else
-  struct tm *tzone = localtime(&te);
-  m_nRemoteTimeOffset = -(tzone->tm_gmtoff) - u->GetTimezone() * 1800;
-#endif
-  QDateTime t;
-  t.setTime_t(te + m_nRemoteTimeOffset);
-  nfoTimezone->setData(tr("%1 (GMT%1%1%1)")
-                       .arg(t.time().toString())
-                       .arg(u->GetTimezone() > 0 ? "-" : "+")
-                       .arg(abs(u->GetTimezone() / 2))
-                       .arg(u->GetTimezone() % 2 ? "30" : "00") );
-  tmrTime = new QTimer(this);
-  connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
-  tmrTime->start(3000);
+  if (u->GetTimezone() == TIMEZONE_UNKNOWN)
+  {
+    nfoTimezone->setText(tr("Unknown"));
+  }
+  else
+  {
+    m_nRemoteTimeOffset = u->LocalTimeOffset();
+    QDateTime t;
+    t.setTime_t(u->LocalTime());
+    nfoTimezone->setText(tr("%1 (GMT%1%1%1)")
+                         .arg(t.time().toString())
+                         .arg(u->GetTimezone() > 0 ? "-" : "+")
+                         .arg(abs(u->GetTimezone() / 2))
+                         .arg(u->GetTimezone() % 2 ? "30" : "00") );
+    tmrTime = new QTimer(this);
+    connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
+    tmrTime->start(3000);
+  }
 
   m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
                  QString::fromLocal8Bit(u->GetFirstName()) + " " +
@@ -1157,7 +1176,7 @@ void ICQFunctions::slot_updatedUser(CICQSignal *sig)
   }
   case USER_EVENTS:
   {
-    if (u->NewMessages() > 1)
+    /*if (u->NewMessages() > 1)
     {
       btnReadNext->setEnabled(true);
       btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
@@ -1171,10 +1190,23 @@ void ICQFunctions::slot_updatedUser(CICQSignal *sig)
     {
       btnReadNext->setEnabled(false);
       btnReadNext->setText(tr("Nex&t"));
+    }*/
+    if (sig->Argument() > 0)
+    {
+      CUserEvent *e = u->EventPeekId(sig->Argument());
+      if (e != NULL)
+      {
+        MsgViewItem *m = new MsgViewItem(e, msgView);
+        msgView->ensureItemVisible(m);
+      }
+      // If this is a new message, go to the view tab
+      if (mleSend->text().length() == 0)
+        tabs->showPage(tabList[TAB_READ].tab);
     }
-    // If this is a new message, go to the view tab
-    if (sig->Argument() > 0 && mleSend->text().length() == 0)
-      tabs->showPage(tabList[TAB_READ].tab);
+    else
+    {
+      // FIXME we should probably remove the event now...
+    }
     break;
   }
   case USER_GENERAL:
@@ -1196,6 +1228,7 @@ void ICQFunctions::slot_updatedUser(CICQSignal *sig)
 }
 
 
+/*
 void ICQFunctions::slot_nextMessage()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
@@ -1227,13 +1260,15 @@ void ICQFunctions::slot_nextMessage()
   msgView->setSelected(e, true);
   slot_printMessage(e);
 }
-
+*/
 
 //-----ICQFunctions::printMessage----------------------------------------------
-void ICQFunctions::slot_printMessage(QListViewItem *e)
+void ICQFunctions::slot_printMessage(QListViewItem *eq)
 {
-  if (e == NULL)
+  if (eq == NULL)
     return;
+
+  MsgViewItem *e = (MsgViewItem *)eq;
 
   btnRead1->setText("");
   btnRead2->setText("");
@@ -1244,7 +1279,7 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
   btnRead3->setEnabled(false);
   btnRead4->setEnabled(false);
 
-  CUserEvent *m = ((MsgViewItem *)e)->msg;
+  CUserEvent *m = e->msg;
   m_xCurrentReadEvent = m;
   mleRead->setText(QString::fromLocal8Bit(m->Text()));
   if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE))
@@ -1318,6 +1353,14 @@ void ICQFunctions::slot_printMessage(QListViewItem *e)
   if (!btnRead2->text().isEmpty()) btnRead2->setEnabled(true);
   if (!btnRead3->text().isEmpty()) btnRead3->setEnabled(true);
   if (!btnRead4->text().isEmpty()) btnRead4->setEnabled(true);
+
+  if (e->m_nEventId != -1 && e->msg->Direction() == D_RECEIVER)
+  {
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    u->EventClearId(e->m_nEventId);
+    gUserManager.DropUser(u);
+    e->MarkRead();
+  }
 }
 
 
@@ -1848,27 +1891,27 @@ void ICQFunctions::specialFcn(int theFcn)
   switch (theFcn)
   {
   case 0:
-    grpOpt->hide();
+    if (grpOpt != NULL) grpOpt->hide();
     tabs->updateGeometry();
     chkSendServer->setEnabled(true);
     chkMass->setEnabled(true);
     break;
   case 1:  // Url
+    if (grpOpt == NULL) SendTab_grpOpt();
     lblItem->setText(tr("URL:"));
     btnItem->setText(tr("View"));
     edtItem->clear();
     edtItem->SetReadOnly(false);
-    //btnItem->setEnabled(true);
     grpOpt->show();
     tabs->updateGeometry();
     chkSendServer->setEnabled(true);
     chkMass->setEnabled(true);
     break;
   case 2: // Chat
+    if (grpOpt == NULL) SendTab_grpOpt();
     lblItem->setText(tr("Multiparty:"));
     btnItem->setText(tr("Invite"));
     edtItem->SetReadOnly(true);
-    //btnItem->setEnabled(ChatDlg::chatDlgs.size() > 0);
     edtItem->clear();
     grpOpt->show();
     tabs->updateGeometry();
@@ -1878,11 +1921,11 @@ void ICQFunctions::specialFcn(int theFcn)
     chkMass->setEnabled(false);
     break;
   case 3:  // File transfer
+    if (grpOpt == NULL) SendTab_grpOpt();
     lblItem->setText(tr("Filename:"));
     btnItem->setText(tr("Choose"));
     edtItem->clear();
     edtItem->SetReadOnly(false);
-    //btnItem->setEnabled(true);
     grpOpt->show();
     tabs->updateGeometry();
     chkSendServer->setChecked(false);
@@ -2287,8 +2330,10 @@ void ICQFunctions::doneFcn(ICQEvent *e)
           if (bForceOpen)
           {
             (void) new MsgViewItem(e->GrabUserEvent(), msgView);
+            // FIXME we should actually stick this message in so it appears
+            // before any unread messages...
             mleSend->clear();
-            edtItem->clear();
+            if (grpOpt != NULL) edtItem->clear();
           }
         } // if file or chat
         else
@@ -2305,7 +2350,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
           {
             (void) new MsgViewItem(e->GrabUserEvent(), msgView);
             mleSend->clear();
-            edtItem->clear();
+            if (grpOpt != NULL) edtItem->clear();
           }
         }
 
@@ -2316,8 +2361,8 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         if (bForceOpen)
         {
           (void) new MsgViewItem(e->GrabUserEvent(), msgView);
-          edtItem->clear();
           mleSend->clear();
+          if (grpOpt != NULL) edtItem->clear();
         }
         break;
       }
