@@ -322,6 +322,7 @@ void CLicqConsole::MenuUser(char *_szArg)
   char *szAlias, *szCmd, *szUserArg;
   unsigned long nUin = 0;
   unsigned short nCmd = 0;
+  bool bCheckUin = true;
 
   if(_szArg == NULL) {
     winMain->wprintf("%CNo command given. See </help user> for details.\n",
@@ -332,6 +333,7 @@ void CLicqConsole::MenuUser(char *_szArg)
   // Check if the alias is quoted
   if (_szArg[0] == '"')
   {
+    bCheckUin = false;
     szAlias = &_szArg[1];
     szCmd = strchr(&_szArg[1], '"');
     if (szCmd == NULL)
@@ -382,19 +384,38 @@ void CLicqConsole::MenuUser(char *_szArg)
   }
 
   // Find the user
-  FOR_EACH_USER_START(LOCK_R)
+  // See if all the chars are digits
+  if (bCheckUin)
   {
-    if (strcasecmp(szAlias, pUser->GetAlias()) == 0)
-    {
-      nUin = pUser->Uin();
-      FOR_EACH_USER_BREAK;
-    }
+    char *sz = szAlias;
+    while (isdigit(*sz)) sz++;
+    if (*sz == '\0') nUin = atol(szAlias);
   }
-  FOR_EACH_USER_END
+
   if (nUin == 0)
   {
-    winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
-    return;
+    FOR_EACH_USER_START(LOCK_R)
+    {
+      if (strcasecmp(szAlias, pUser->GetAlias()) == 0)
+      {
+        nUin = pUser->Uin();
+        FOR_EACH_USER_BREAK;
+      }
+    }
+    FOR_EACH_USER_END
+    if (nUin == 0)
+    {
+      winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
+      return;
+    }
+  }
+  else
+  {
+    if (!gUserManager.IsOnList(nUin))
+    {
+      winMain->wprintf("%CInvalid uin: %A%lu\n", COLOR_RED, A_BOLD, nUin);
+      return;
+    }
   }
 
   // Save this as the last user
