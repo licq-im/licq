@@ -44,6 +44,15 @@ const char *LP_Status(void);
 
 
 /*------------------------------------------------------------------------------
+ * Description
+ *
+ * Returns a brief (one line) description of the plugin
+ * Should use a static character array.
+ *----------------------------------------------------------------------------*/
+const char *LP_Description(void);
+
+
+/*------------------------------------------------------------------------------
  * Usage
  *
  * Prints out the usage for the plugin.

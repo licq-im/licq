@@ -34,6 +34,7 @@ class CPluginFunctions
 public:
   const char *Name(void)    { return (*fName)(); }
   const char *Version(void) { return (*fVersion)(); }
+  const char *Description(void) { return (*fDescription)(); }
   const char *Status(void) { return (*fStatus)(); }
   const char *BuildDate(void) { return (*fBuildDate)(); }
   const char *BuildTime(void) { return (*fBuildTime)(); }
@@ -43,6 +44,7 @@ protected:
   const char *(*fName)(void);
   const char *(*fVersion)(void);
   const char *(*fStatus)(void);
+  const char *(*fDescription)(void);
   const char *(*fBuildDate)(void);
   const char *(*fBuildTime)(void);
   void (*fUsage)(void);

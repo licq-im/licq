@@ -320,6 +320,19 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
       return false;
     }
   }
+  // LP_Description
+  p->fDescription = (const char * (*)(void))dlsym(handle, "LP_Description");
+  if ((error = dlerror()) != NULL)
+  {
+    p->fDescription = (const char * (*)(void))dlsym(handle, "_LP_Description");
+    if ((error = dlerror()) != NULL)
+    {
+      gLog.Error("%sFailed to find LP_Description() function in plugin (%s).\n",
+                 L_ERRORxSTR, p->Name(), error);
+      delete p;
+      return false;
+    }
+  }
   // LP_BuildDate
   p->fBuildDate = (const char * (*)(void))dlsym(handle, "LP_BuildDate");
   if ((error = dlerror()) != NULL)
