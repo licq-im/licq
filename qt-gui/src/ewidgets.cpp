@@ -19,6 +19,8 @@
 #include <qapplication.h>
 #include <qstyle.h>
 #include <qdatetime.h>
+#include <cytpe.h>
+
 #include "licq_history.h"
 #include "licq_events.h"
 #include "mainwin.h"
