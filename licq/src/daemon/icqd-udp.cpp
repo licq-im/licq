@@ -2070,10 +2070,11 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           gTranslator.ServerToClient(u->GetCompanyState());
           gTranslator.ServerToClient(u->GetCompanyAddress());
           gTranslator.ServerToClient(u->GetCompanyPhoneNumber());
-          gTranslator.ServerToClient(u->GetFaxNumber());
+          gTranslator.ServerToClient(u->GetCompanyFaxNumber());
           gTranslator.ServerToClient(u->GetCompanyName());
           gTranslator.ServerToClient(u->GetCompanyDepartment());
           gTranslator.ServerToClient(u->GetCompanyPosition());
+	  gTranslator.ServerToClient(u->GetCompanyHomepage());
 
           u->SetEnableSave(true);
           u->SaveWorkInfo();
@@ -2094,6 +2095,10 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetLanguage1(packet.UnpackChar());
           u->SetLanguage2(packet.UnpackChar());
           u->SetLanguage3(packet.UnpackChar());
+
+          // translating string with Translation Table
+          gTranslator.ServerToClient(u->GetHomepage());
+
           u->SetEnableSave(true);
           u->SaveMoreInfo();
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
