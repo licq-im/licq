@@ -1144,7 +1144,9 @@ void CUserView::maybeTip(const QPoint& c)
       else if (u->SecureChannelSupport() == SECURE_CHANNEL_NOTSUPPORTED)
         s += tr("<br>Licq&nbsp;v0.%1.").arg(u->LicqVersion());
 
-      if(u->AutoResponse() && *u->AutoResponse())
+      if(u->AutoResponse() && *u->AutoResponse() &&
+         item->m_nStatus != ICQ_STATUS_OFFLINE &&
+         item->m_nStatus != ICQ_STATUS_ONLINE)
         s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(QString(u->AutoResponse()));
 
       gUserManager.DropUser(u);
