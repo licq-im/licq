@@ -498,6 +498,8 @@ public:
   bool ReconnectAfterUinClash()              { return m_bReconnectAfterUinClash; }
   void setReconnectAfterUinClash(bool b)     { m_bReconnectAfterUinClash = b; }
   bool AddProtocolPlugins();
+  char *parseRTF(const char *);
+
     
   // Statistics
   CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }

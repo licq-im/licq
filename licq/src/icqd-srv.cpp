@@ -2760,8 +2760,11 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       }
       message[j] = '\0'; // ensure null terminated
 
-      char *szMsg = gTranslator.RNToN(message);
+      char *szTmpMsg = gTranslator.RNToN(message);
       delete [] message;
+
+      char *szMsg = parseRTF(szTmpMsg);
+      delete [] szTmpMsg;
 
       gTranslator.ServerToClient(szMsg);
 

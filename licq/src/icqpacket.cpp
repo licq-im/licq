@@ -852,7 +852,7 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   buffer->PackTLV(0x05, 0x40, data);
 #else
 
-  char data[5][CAP_LENGTH];
+  char data[6][CAP_LENGTH];
   m_nSize += 4 + sizeof(data);
   InitBuffer();
 
@@ -861,6 +861,7 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   memcpy(data[2], ICQ_CAPABILITY_TYPING, CAP_LENGTH);
   memcpy(data[3], ICQ_CAPABILITY_LICQxVER, CAP_LENGTH);
   memcpy(data[4], ICQ_CAPABILITY_AIMxINTER, CAP_LENGTH);
+  memcpy(data[5], ICQ_CAPABILITY_RTFxMSGS, CAP_LENGTH);
   data[3][12] = INT_VERSION / 1000;
   data[3][13] = (INT_VERSION / 10) % 1000;
   data[3][14] = INT_VERSION % 10;
