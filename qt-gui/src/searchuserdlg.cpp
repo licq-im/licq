@@ -1,6 +1,23 @@
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+*/ 
+
 // Search user code base written by Alan Penner (apenner@andrew.cmu.edu)
 // modified by Graham Roff
-// heavily enhanced by Dirk A. Mueller <dmuell@gmx.net>
+// enhanced by Dirk A. Mueller <dmuell@gmx.net>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -9,9 +26,10 @@
 #include <string>
 #include <qhbox.h>
 #include <qlayout.h>
+#include <qmessagebox.h>
 #include <qpainter.h>
-#include <qstatusbar.h>
 #include <qtabwidget.h>
+#include <qvbuttongroup.h>
 #include <iostream.h>
 
 #include "searchuserdlg.h"
@@ -61,7 +79,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     server = s;
     sigman = theSigMan;
     setCaption("Licq User Search");
-    
+
     QBoxLayout* top_lay = new QVBoxLayout(this, 10);
     QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
     
@@ -118,8 +136,9 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     
     lblUin = new QLabel(_("UIN#:"), uin_tab);
     lay2->addWidget(lblUin);
-    
+
     edtUin = new QLineEdit(uin_tab);
+    
     lay2->addWidget(edtUin);
     
     search_tab->addTab(uin_tab, _("&Uin#"));
@@ -127,6 +146,8 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     lay->addWidget(search_tab, 1);
     
     lay2 = new QVBoxLayout(lay, 10);
+
+    lay2->addStretch(1);
     
     btnSearch = new QPushButton(_("&Search"), this);
     lay2->addWidget(btnSearch);
@@ -147,16 +168,13 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     connect (sigman, SIGNAL(signal_searchResult(ICQEvent *)),
              this, SLOT(slot_searchResult(ICQEvent *)));
 
-    // Status Bar
-    
-    sbar = new QStatusBar(this);
-    
-    lblSearch = new QLabel(_("Enter search parameters and select 'Search'"), sbar);
-    sbar->addWidget(lblSearch, 1);
-    
+    // pseudo Status Bar
+    lblSearch = new QLabel(_("Enter search parameters and select 'Search'"), this);
+    lblSearch->setFrameStyle(QFrame::WinPanel|QFrame::Sunken);
+
     // post-search widgets
 
-    top_lay->addSpacing(20);
+    top_lay->addSpacing(10);
     
     foundView = new SearchUserView(this);
     top_lay->addWidget(foundView);
@@ -182,7 +200,7 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
     connect (btnAdd, SIGNAL(clicked()), this, SLOT(addUser()));
     connect (btnSearchAgain, SIGNAL(clicked()), this, SLOT(resetSearch()));
 
-    top_lay->addWidget(sbar);
+    top_lay->addWidget(lblSearch);
     
 }
 
@@ -191,7 +209,6 @@ SearchUserDlg::~SearchUserDlg()
     delete btnSearch; btnSearch = 0;
     delete btnCancel; btnCancel = 0;
     delete qcbAlertUser; qcbAlertUser = 0;
-    delete sbar; sbar = 0;
     delete edtEmail; edtEmail = 0;
     delete edtFirst; edtFirst = 0;
     delete edtLast; edtLast = 0;
@@ -206,20 +223,34 @@ SearchUserDlg::~SearchUserDlg()
 
 void SearchUserDlg::startSearch()
 {
-   searchSequence = server->icqStartSearch(edtNick->text(),
-                          edtFirst->text(),
-                          edtLast->text(),
-                          edtEmail->text());
-   foundView->clear();
-   edtNick->setEnabled(false);
-   edtFirst->setEnabled(false);
-   edtLast->setEnabled(false);
-   edtEmail->setEnabled(false);
-   edtUin->setEnabled(false);
-   btnCancel->setEnabled(false);
-   btnSearch->setEnabled(false);
-   btnAdd->setEnabled(false);
-   lblSearch->setText(_("Searching (this can take awhile)..."));
+    unsigned long uin = edtUin->text().toULong(&uin_search);
+
+    foundView->clear();
+    edtNick->setEnabled(false);
+    edtFirst->setEnabled(false);
+    edtLast->setEnabled(false);
+    edtEmail->setEnabled(false);
+    edtUin->setEnabled(false);
+    btnCancel->setEnabled(false);
+    btnSearch->setEnabled(false);
+    btnAdd->setEnabled(false);
+    
+    if(uin_search && (uin >= 1000 && uin <= 999999999)) {
+        // we should do a uin search here
+
+        UserBasicInfo us;
+        memset(&us, 0, sizeof(UserBasicInfo));
+        
+        sprintf(us.uin, "%ld", uin);
+        
+        searchFound(&us);
+        searchDone(0);
+    }
+    else {
+        searchSequence = server->icqStartSearch(edtNick->text(), edtFirst->text(),
+                                                edtLast->text(), edtEmail->text());
+        lblSearch->setText(_("Searching (this can take awhile)..."));
+    }
 }
 
 void SearchUserDlg::show()
@@ -253,13 +284,14 @@ void SearchUserDlg::resetSearch()
    btnAdd->setEnabled(false);
    btnSearchAgain->setEnabled(false);
    foundView->clear();
+   lblSearch->setText(_("Enter search parameters and select 'Search'"));
 }
 
 
 void SearchUserDlg::slot_searchResult(ICQEvent *e)
 {
   if (e->m_nSubSequence != searchSequence) return;
-
+  
   if (e->m_eResult == EVENT_SUCCESS)
     searchDone(e->m_sSearchAck->cMore);
   else if (e->m_eResult == EVENT_ACKED)
@@ -294,7 +326,21 @@ void SearchUserDlg::searchFailed(void)
 void SearchUserDlg::addUser()
 {
    unsigned long uin = foundView->currentUin();
+   ICQUser* user = 0;
+   
+   // no user selected --> return
    if (uin == 0) return;
+
+   // user already there
+   if((user = gUserManager.FetchUser(uin, LOCK_N))) {
+       QString msg = QString(_("Sorry, but this user is already\non your "
+                       "contact list as\n'%1'\n\nYou can't add a user twice.")).arg(user->getAlias());
+       
+       QMessageBox::warning(this, "Licq - Warning", msg, _("&OK"));
+       return;
+   }
+   
+   // Ok, let's add him
    server->AddUserToList(uin);
    if (qcbAlertUser->isChecked()) // alert the user they were added
        server->icqAlertUser(uin);

@@ -145,7 +145,9 @@ bool CFileDlg::GetLocalFileName(void)
 #ifdef USE_KDE
     f = QFileDialog::getSaveFileName(m_sFileInfo.szName, QString::null, this);
 #else
-    f = QFileDialog::getSaveFileName(m_sFileInfo.szName, QString::null, this);
+    // TODO: take path from configuration
+    f = QFileDialog::getSaveFileName(
+        QString(QDir::homeDirPath() + "/" + m_sFileInfo.szName), QString::null, this);
 #endif
     if (f.isNull()) return (false);
     struct stat buf;
@@ -520,9 +522,9 @@ void CFileDlg::fileRecvFile()
     ::close(m_nFileDesc);
     m_nFileDesc = 0;
     char msg[1024];
-    sprintf(msg, "%sFile transfer of\n'%s'\nfrom %s completed successfully.\n",
+    sprintf(msg, _("%sFile '%s' from %s received successfully."),
             L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
-    InformUser(this, msg);
+    lblStatus->setText(msg);
   }
   else // nBytesLeft < 0
   {
@@ -773,9 +775,9 @@ void CFileDlg::fileSendFile()
   {
     // File transfer done perfectly
     char msg[1024];
-    sprintf(msg, "%sFile transfer of\n'%s'\nto %s completed successfully.\n",
+    sprintf(msg, _("%s Sending of File '%s' to %s completed successfully."),
             L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
-    InformUser(this, msg);
+    lblStatus->setText(msg);
   }
   else // nBytesLeft < 0
   {

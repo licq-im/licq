@@ -1,8 +1,25 @@
 #ifndef SEARCHUSER_H
 #define SEARCHUSER_H
 
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+*/ 
+
 // Search user code base written by Alan Penner (apenner@andrew.cmu.edu)
-// modified by Graham Roff
+// modified by Graham Roff && Dirk A. Mueller <dmuell@gmx.net>
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -20,7 +37,6 @@
 #include "sigman.h"
 
 class QTabWidget;
-class QStatusBar;
 
 class SearchUserView : public QListView
 {
@@ -50,13 +66,16 @@ public:
                   QWidget *parent = NULL, const char *name = NULL);
 
    ~SearchUserDlg();
-
+   
+private:
+   bool uin_search;
+   
 protected:
+   
    CICQDaemon *server;
    CSignalManager *sigman;
    QPushButton *btnSearch, *btnCancel;
    QCheckBox* qcbAlertUser;
-   QStatusBar* sbar;
    QTabWidget* search_tab;
    
    QLabel *lblEmail, *lblFirst, *lblLast, *lblNick, *lblUin;
