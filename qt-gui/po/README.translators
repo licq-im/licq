@@ -1,0 +1,24 @@
+THIS README TRIES TO KEEP TRACK ON TRANSLATION MAINTAINERS
+==========================================================
+
+(use 2 spaces for tab-stops to read/modify this document)
+
+Last updated: 2003-02-05,
+Thomas Reitelbach <thomas@licq.org>
+
+Who is doing which translation?
+
+Language:					Maintainer:																				Used Filetype: (ts/po)
+---------					-----------																				--------------
+bg_BG, Bulgarian	Ivan Dimitrov <dobber@bastun.net>									po
+cs_CZ, czech			Martin Hnatek <m.hnatek@sh.cvut.cz>								?
+de, german				Thomas Reitelbach <thomas@licq.org>								ts
+es, espania				-unknown/none-
+fr								Yves Dessertine <yves.d@hrnet.fr>									?
+it, italian				Salvatore Caligiore <caligiore@bigfoot.com>				?
+ja_JP							Nobuaki Takahashi <nobu@icnet.ne.jp>							?
+pl, poland				Grzegorz Nosek <blackfire@virtual.net.pl>					?
+ru								Leonid Kabanov <lkabanov@krasu.ru>								?
+sv, swedish				Samuel Blomqvist <salblt97@student.umu.se>				ts
+tr, turkish				-unknown/none-
+uk								-unknown/none-
