@@ -127,12 +127,12 @@ dlopen(NULL, RTLD_NOW)
 ],[
   AC_TRY_COMPILE([
   #include <stdio.h>
-  #include <dlcfn.h>
+  #include <dlfcn.h>
   ],[
-  dlopen(NULL, DL_LAZY)
+  dlopen(NULL, RTLD_LAZY)
   ],[
-    AC_MSG_RESULT([DL_LAZY])
-    AC_DEFINE_UNQUOTED(DLOPEN_POLICY, DL_LAZY, [2nd dlopen parameter])
+    AC_MSG_RESULT([RTLD_LAZY])
+    AC_DEFINE_UNQUOTED(DLOPEN_POLICY, RTLD_LAZY, [2nd dlopen parameter])
   ],[
     AC_MSG_RESULT([cannot determine, bailing])
     exit 1;
