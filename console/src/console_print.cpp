@@ -418,7 +418,7 @@ void CLicqConsole::PrintHelp()
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A%ca%Zdd %A<uin>%Z [ alert ]", A_BOLD, m_szCommandChar[0],
+  winMain->wprintf(" %A%cad%Zd %A<uin>%Z [ alert ]", A_BOLD, m_szCommandChar[0],
     A_BOLD, A_BOLD, A_BOLD);
   PrintBoxRight(48);
 
@@ -447,6 +447,11 @@ void CLicqConsole::PrintHelp()
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf(" %A%cl%Zast [ %A<user-command>%Z ]",
                    A_BOLD, m_szCommandChar[0], A_BOLD, A_BOLD, A_BOLD);
+  PrintBoxRight(48);
+
+  waddch(winMain->Win(), ACS_VLINE);
+  winMain->wprintf(" %A%cau%Zthorize <grant | refuse> %A<uin>", A_BOLD, m_szCommandChar[0],
+    A_BOLD, A_BOLD);
   PrintBoxRight(48);
 
   waddch(winMain->Win(), ACS_VLINE);

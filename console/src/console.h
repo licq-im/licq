@@ -104,6 +104,7 @@ public:
   void InputAutoResponse(int cIn);
   void InputFileChatOffer(int cIn);
   void InputSearch(int cIn);
+  void InputAuthorize(int cIn);
   char *Input_MultiLine(char *sz, unsigned short &n, int cIn);
   char *Input_Line(char *sz, unsigned short &n, int cIn, bool bEcho = true);
 
@@ -141,6 +142,7 @@ public:
   void MenuAdd(char *);
   void MenuDefine(char *);
   void MenuSearch(char *);
+  void MenuAuthorize(char *);
 
   void TabUser(char *, struct STabCompletion &);
   void TabOwner(char *, struct STabCompletion &);

@@ -499,6 +499,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_UPDATExDETAIL:
   case ICQ_CMDxSND_UPDATExBASIC:
   case ICQ_CMDxSND_META:
+  case ICQ_CMDxSND_AUTHORIZE:
   {
     unsigned short i;
     for (i = 1; i <= MAX_CON; i++)
@@ -511,7 +512,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     }
     if (i > MAX_CON)
       gLog.Warn("%sInternal error: CLicqConsole::ProcessEvent(): Unknown event from daemon: %d.\n",
-                L_WARNxSTR, e->Command());
+                L_WARNxSTR, e->SubCommand());
     break;
   }
 
@@ -530,7 +531,6 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     break;
 
   case ICQ_CMDxSND_SETxSTATUS:
-  case ICQ_CMDxSND_AUTHORIZE:
   case ICQ_CMDxSND_USERxLIST:
   case ICQ_CMDxSND_VISIBLExLIST:
   case ICQ_CMDxSND_INVISIBLExLIST:
@@ -2021,6 +2021,66 @@ void CLicqConsole::InputUrl(int cIn)
       winMain->state = STATE_COMMAND;
     }
     break;
+
+  default:
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
+  }
+
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::InputAuthorize
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::InputAuthorize(int cIn)
+{
+  DataMsg *data = (DataMsg *)winMain->data;
+  char *sz;
+
+  switch(winMain->state)
+  {
+  case STATE_PENDING:
+    if (cIn == CANCEL_KEY)
+      licqDaemon->CancelEvent(winMain->event);
+    return;
+
+  case STATE_MLE:
+  {
+    // Process the character as a multi-line edit window
+    // If we get NULL back then we aren't done yet
+    if ((sz = Input_MultiLine(data->szMsg, data->nPos, cIn)) == NULL)
+      return;
+
+    // The input is done, so process it, sz points to the '.'
+    if (*sz == ',')
+    {
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
+      if (winMain->data != NULL)
+      {
+        delete winMain->data;
+        winMain->data = NULL;
+      }
+      winMain->state = STATE_COMMAND;
+      winMain->wprintf("%C%AAuthorization aborted.\n", m_cColorInfo->nColor,
+                       m_cColorInfo->nAttr);
+      return;
+    }
+    *sz = '\0';
+    if (data->bUrgent)
+    {
+      winMain->wprintf("%C%AGranting authorizing to %lu...", m_cColorInfo->nColor,
+                       m_cColorInfo->nAttr, data->nUin);
+      winMain->event = licqDaemon->icqAuthorizeGrant(data->nUin, data->szMsg);
+    }
+    else
+    {
+      winMain->wprintf("%C%ARefusing authorizing to %lu...", m_cColorInfo->nColor,
+                       m_cColorInfo->nAttr, data->nUin);
+      winMain->event = licqDaemon->icqAuthorizeRefuse(data->nUin, data->szMsg);
+    }
+    winMain->state = STATE_PENDING;
+    break;
+  }
 
   default:
     winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);

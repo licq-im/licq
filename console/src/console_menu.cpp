@@ -1,8 +1,9 @@
 #include "console.h"
+#include "event_data.h"
 
 #include <ctype.h>
 
-const unsigned short NUM_COMMANDS = 15;
+const unsigned short NUM_COMMANDS = 16;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
   { "contacts", &CLicqConsole::MenuContactList, NULL,
@@ -15,6 +16,8 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "Print out statistics on all current file transfers." },
   { "add", &CLicqConsole::MenuAdd, NULL,
     "Add a user to your list by uin." },
+  { "authorize", &CLicqConsole::MenuAuthorize, NULL,
+    "Authorize grant or refuse  the given user." },
   { "user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
     "User commands deal with indiviual users:\n"
     "info - print user information\n\n"
@@ -321,6 +324,55 @@ void CLicqConsole::MenuAdd(char *szArg)
                      m_cColorInfo->nColor, m_cColorInfo->nAttr,
                      nUin);
   }
+
+}
+
+
+/*---------------------------------------------------------------------------
+ * CLicqConsole::MenuAuthorize
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::MenuAuthorize(char *szArg)
+{
+  if (szArg == NULL)
+  {
+    winMain->wprintf("%CSpecify \"grant/refuse\" and a UIN to authorize.\n", COLOR_RED);
+    return;
+  }
+
+  bool bGrant = true;
+
+  if (strncasecmp(szArg, "grant", 5) == 0)
+  {
+    bGrant = true;
+    szArg += 5;
+  }
+  else if (strncasecmp(szArg, "refuse", 6) == 0)
+  {
+    bGrant = false;
+    szArg += 6;
+  }
+
+  // Try to change groups
+  int nUin = atol(szArg);
+
+  if (nUin == 0)
+  {
+    winMain->wprintf("%CUIN must be non-zero.\n", COLOR_RED);
+    return;
+  }
+
+  // Get the input now
+  winMain->fProcessInput = &CLicqConsole::InputAuthorize;
+  winMain->state = STATE_MLE;
+  DataMsg *data = new DataMsg(nUin);
+  data->bUrgent = bGrant;
+  winMain->data = data;
+
+  winMain->wprintf("%A%CEnter authorization message:\n",
+                   m_cColorQuery->nAttr, m_cColorQuery->nColor);
+
+  return;
+
 
 }
 
