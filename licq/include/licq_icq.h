@@ -99,7 +99,7 @@ const unsigned short ICQ_CMDxMETA_MORExINFO        = 0x00DC; // 220
 const unsigned short ICQ_CMDxMETA_ABOUT            = 0x00E6; // 230
 const unsigned short ICQ_CMDxMETA_UNKNOWNx240      = 0x00F0; // 240
 const unsigned short ICQ_CMDxMETA_UNKNOWNx250      = 0x00FA; // 250
-const unsigned short ICQ_CMDxMETA_BASICxINFO       = 0x0104; // 260  not implemented
+const unsigned short ICQ_CMDxMETA_BASICxINFO       = 0x0104; // 260
 const unsigned short ICQ_CMDxMETA_UNKNOWNx270      = 0x010E; // 270
 // Meta commands (sent)
 const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E9; // 1001
@@ -109,7 +109,8 @@ const unsigned short ICQ_CMDxMETA_ABOUTxSET        = 0x0406; // 1030
 const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
 const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
 const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B1; // 1201
-const unsigned short ICQ_CMDxMETA_REQUESTxBASICxINFO = 0x04BA; // 1210  not implemented
+const unsigned short ICQ_CMDxMETA_REQUESTxBASICxINFO  = 0x04BA; // 1210
+const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFOx31 = 0x04CF; // 1231
 
 const unsigned short META_SUCCESS = 0x0A;
 const unsigned short META_FAILURE = 0x32;
