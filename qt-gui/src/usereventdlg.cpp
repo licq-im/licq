@@ -1335,7 +1335,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     {
       emit mainwin->signal_sentevent(e);
 
-      if (mainwin->m_bMsgChatView) {
+      if (mainwin->m_bMsgChatView && mleHistory != NULL) {
         mleHistory->GotoEnd();
         resetSettings();
       } else
