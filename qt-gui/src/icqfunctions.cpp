@@ -780,24 +780,6 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
   nfoFax->setData(u->GetFaxNumber());
   nfoCellular->setData(u->GetCellularNumber());
   nfoZipCode->setData(u->GetZipCode());
-/*  time_t te = time(NULL);
-#ifndef __FreeBSD__
-  localtime(&te);
-  m_nRemoteTimeOffset = timezone - u->GetTimezone() * 1800;
-#else
-  struct tm *tzone = localtime(&te);
-  m_nRemoteTimeOffset = -(tzone->tm_gmtoff) - u->GetTimezone() * 1800;
-#endif
-  QDateTime t;
-  t.setTime_t(te + m_nRemoteTimeOffset);
-  nfoTimezone->setData(tr("%1 (GMT%1%1%1)")
-                       .arg(t.time().toString())
-                       .arg(u->GetTimezone() > 0 ? "-" : "+")
-                       .arg(abs(u->GetTimezone() / 2))
-                       .arg(u->GetTimezone() % 2 ? "30" : "00") );
-  tmrTime = new QTimer(this);
-  connect(tmrTime, SIGNAL(timeout()), this, SLOT(slot_updatetime()));
-  tmrTime->start(3000);*/
 
   if (!u->StatusOffline())
     nfoLastOnline->setData(tr("Now"));
@@ -811,12 +793,6 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
     ds.truncate(ds.length() - 8);
     nfoLastOnline->setData(ds);
   }
-
-  /*m_sBaseTitle = QString::fromLocal8Bit(u->GetAlias()) + " (" +
-                 QString::fromLocal8Bit(u->GetFirstName()) + " " +
-                 QString::fromLocal8Bit(u->GetLastName())+ ")";
-  setCaption(m_sBaseTitle);
-  setIconText(u->GetAlias());*/
 
   SetInfo(u);
 
@@ -1197,7 +1173,7 @@ void ICQFunctions::printMessage(QListViewItem *e)
       }
       case ICQ_CMDxSUB_AUTHORIZED:
       {
-        ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
+        ICQUser *u = gUserManager.FetchUser( ((CEventAuth *)m)->Uin(), LOCK_R);
         if (u == NULL)
           btnRead1->setText(tr("Add User"));
         else
@@ -1206,7 +1182,7 @@ void ICQFunctions::printMessage(QListViewItem *e)
       }
       case ICQ_CMDxSUB_ADDEDxTOxLIST:
       {
-        ICQUser *u = gUserManager.FetchUser( ((CEventAuthReq *)m)->Uin(), LOCK_R);
+        ICQUser *u = gUserManager.FetchUser( ((CEventAdded *)m)->Uin(), LOCK_R);
         if (u == NULL)
           btnRead1->setText(tr("Add User"));
         else
