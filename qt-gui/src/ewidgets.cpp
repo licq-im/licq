@@ -26,6 +26,8 @@
 #include "ewidgets.h"
 #include "usercodec.h"
 
+using namespace std;
+
 bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
 {
 #ifdef USE_KDE
