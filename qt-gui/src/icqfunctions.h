@@ -25,14 +25,18 @@ class CInfoField;
 class CSignalManager;
 class MLEditWrap;
 class MsgView;
+class MLEditWrap;
 
 //=====ICQFunctions=============================================================
 
 const int TAB_READ = 0;
 const int TAB_SEND = 1;
-const int TAB_BASICINFO = 2;
-const int TAB_DETAILINFO = 3;
-const int TAB_HISTORY = 4;
+const int TAB_GENERALINFO = 2;
+const int TAB_MOREINFO = 3;
+const int TAB_WORKINFO = 4;
+const int TAB_ABOUT = 5;
+const int TAB_HISTORY = 6;
+const int TAB_SECURITY = 7;
 
 class ICQFunctions : public QTabWidget, public CUserFunctionDlg
 {
@@ -45,17 +49,17 @@ public:
   void setupTabs(int);
 
 protected:
-  QString tabLabel[5];
+  QString tabLabel[8];
   int currentTab;
   CICQDaemon *server;
   CSignalManager *sigman;
   QString m_sBaseTitle, m_sProgressMsg;
   unsigned short m_nUnknownCountryCode;
   ICQEvent *icqEvent;
-  bool m_bIsOwner;
+  bool m_bOwner;
   QCheckBox *chkAutoClose;
 
-  QWidget *fcnTab[5];
+  QWidget *fcnTab[8];
   QPushButton *btnSave, *btnOk, *btnCancel;
 
   // Read Event tab
@@ -72,19 +76,34 @@ protected:
   QRadioButton *rdbUrl, *rdbChat, *rdbFile, *rdbMsg;
 
   // User Info tab
-  CInfoField *nfoFirstName, *nfoLastName, *nfoEMail, *nfoAlias,
-             *nfoStatus, *nfoIp, *nfoUin, *nfoHistory;
+  void CreateGeneralInfoTab(void);
+  CInfoField *nfoFirstName, *nfoLastName, *nfoEmail1, *nfoEmail2,
+             *nfoAlias,*nfoStatus, *nfoIp, *nfoUin, *nfoCity, *nfoState,
+             *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
+             *nfoPhone;
+  CEComboBox *cmbCountry;
   QCheckBox *chkAuthorization;
 
-  // Extended Info tab
-  CInfoField *nfoCity, *nfoState, *nfoAge,
-            *nfoPhone, *nfoHomepage, *nfoZipcode, *nfoCountry;
-  QLabel *lblSex, *lblCountry;
-  CEComboBox *cmbSex, *cmbCountry;
-  QGroupBox *boxAboutMsg;
-  MLEditWrap *mleAboutMsg;
+  // More info
+  void CreateMoreInfoTab(void);
+  CInfoField *nfoAge, *nfoBirthday, *nfoLanguage1, *nfoLanguage2,
+             *nfoLanguage3, *nfoHomepage;
+  CEComboBox *cmbGender;
+
+  // Work info
+  void CreateWorkInfoTab(void);
+  CInfoField *nfoCompanyName, *nfoCompanyCity, *nfoCompanyState,
+             *nfoCompanyAddress, *nfoCompanyPhone, *nfoCompanyFax,
+             *nfoCompanyHomepage, *nfoCompanyPosition, *nfoCompanyDepartment;
+
+  // About
+  void CreateAboutTab(void);
+  QGroupBox *boxAbout;
+  MLEditWrap *mleAbout;
 
   // History tab
+  void CreateHistoryTab(void);
+  CInfoField *nfoHistory;
   QTextView *mleHistory;
   QLabel *lblHistory;
   HistoryList m_lHistoryList;
@@ -97,10 +116,14 @@ protected:
   virtual void resizeEvent (QResizeEvent *);
   virtual void keyPressEvent(QKeyEvent *);
   virtual void closeEvent(QCloseEvent *);
-  void setBasicInfo(ICQUser *);
-  void setExtInfo(ICQUser *);
-  void saveBasicInfo();
-  void saveExtInfo();
+  void SetGeneralInfo(ICQUser *);
+  void SetMoreInfo(ICQUser *);
+  void SetWorkInfo(ICQUser *);
+  void SetAbout(ICQUser *);
+  void SaveGeneralInfo();
+  void SaveMoreInfo();
+  void SaveWorkInfo();
+  void SaveAbout();
   void saveHistory();
   void generateReply();
   void SetupHistory(void);
