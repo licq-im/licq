@@ -64,6 +64,7 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    v.append(60);
    v.append(180);
    splRead->setSizes(v);
+   splRead->setOpaqueResize(true);
    splRead->setResizeMode(msgView, QSplitter::KeepSize);
    splRead->setResizeMode(mleRead, QSplitter::Stretch);
    connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
