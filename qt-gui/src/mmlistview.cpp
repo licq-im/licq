@@ -19,6 +19,8 @@
 #include "config.h"
 #endif
 
+#include <ctype.h>
+
 #include <qpainter.h>
 #include <qpopupmenu.h>
 #include <qheader.h>
