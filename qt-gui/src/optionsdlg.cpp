@@ -132,7 +132,7 @@ void OptionsDlg::colEnable(bool isOn)
 }
 
 
-//-----CMainWindow::showOptions------------------------------------------------------------------------
+//-----CMainWindow::showOptions----------------------------------------------
 void OptionsDlg::SetupOptions()
 {
 #ifdef USE_KDE
@@ -254,7 +254,7 @@ void OptionsDlg::SetupOptions()
 }
 
 
-//-----OptionsDlg::ApplyOptions--------------------------------------------------
+//-----OptionsDlg::ApplyOptions----------------------------------------------
 void OptionsDlg::ApplyOptions()
 {
   if (strcmp(edtFont->text(), "default") == 0)
@@ -455,6 +455,9 @@ QWidget* OptionsDlg::new_appearance_options()
 
   cmbTrans = new QComboBox(false, boxLocale);
   cmbLocale = new QComboBox(false, boxLocale);
+#if QT_VERSION < 210
+  QWidget* dummy_w = new QWidget(boxLocale);
+#endif
 
   QString szTransFilesDir;
   szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
@@ -498,11 +501,12 @@ QWidget* OptionsDlg::new_appearance_options()
 
 QWidget* OptionsDlg::new_sounds_options()
 {
-  QVBox* w = new QVBox(this);
-  w->setSpacing(8);
-  w->setMargin(8);
+  QWidget* w = new QWidget(this);
+  QBoxLayout* lay = new QVBoxLayout(w, 8, 4);
 
   QWidget* hor = new QHBox(w);
+  lay->addWidget(hor);
+
   chkOnEvents = new QCheckBox(tr("OnEvents Enabled"), hor);
   QWidget* dummy = new QWidget(hor);
   dummy->setFixedSize(50, 1);
@@ -528,6 +532,7 @@ QWidget* OptionsDlg::new_sounds_options()
   edtSndPlayer = new QLineEdit(hor);
 
   boxSndEvents = new QGroupBox(2, Horizontal, tr("Parameters"), w);
+  lay->addWidget(boxSndEvents);
 
   lblSndMsg = new QLabel(tr("Message:"), boxSndEvents);
   QWhatsThis::add(lblSndMsg, tr("Parameter for received messages"));
@@ -548,6 +553,8 @@ QWidget* OptionsDlg::new_sounds_options()
   QWhatsThis::add(lblSndSysMsg, tr("Parameter for received system messages"));
   edtSndSysMsg = new QLineEdit(boxSndEvents);
 
+  lay->addStretch(1);
+
   return w;
 }
 
@@ -556,12 +563,12 @@ QWidget* OptionsDlg::new_sounds_options()
 QWidget* OptionsDlg::new_network_options()
 {
   QWidget* w = new QWidget(this);
+  QBoxLayout* lay = new QVBoxLayout(w, 8, 4);
 
-  QGridLayout* lay = new QGridLayout(w, 5, 4, 10);
-  lay->setRowStretch(4, 1);
   QGroupBox* gbServer = new QGroupBox(2, QGroupBox::Horizontal, w);
+  lay->addWidget(gbServer);
+
   gbServer->setTitle(tr("Server settings"));
-  lay->addWidget(gbServer, 1, 1);
 
   lblServers = new QLabel (tr("Servers:"), gbServer);
   lblServers->setEnabled(false);
@@ -589,7 +596,6 @@ QWidget* OptionsDlg::new_network_options()
 
   QGroupBox* gbAuto = new QGroupBox(2, QGroupBox::Horizontal, w);
   gbAuto->setTitle(tr("Network startup"));
-  lay->addWidget(gbAuto, 1, 3);
 
   lblAutoLogon = new QLabel(tr("Auto Logon:"), gbAuto);
   QWhatsThis::add(lblAutoLogon, tr("Automatically log on when first starting up."));
@@ -620,11 +626,20 @@ QWidget* OptionsDlg::new_network_options()
                                "to disable."));
   spnAutoNa = new QSpinBox(gbAuto);
   spnAutoNa->setSpecialValueText(tr("Disable"));
+  lay->addWidget(gbAuto);
+  lay->addStretch(1);
+
+#if QT_VERSION < 210
+  QWidget* dummy_w= new QWidget(gbAuto);
+  dummy_w->setMinimumHeight(10);
+  lay->addWidget(dummy_w);
+  lay->activate();
+#endif
 
   return w;
 }
 
-// -----------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 
 void OptionsDlg::slot_SARmsg_act(int n)
 {
@@ -637,7 +652,7 @@ void OptionsDlg::slot_SARmsg_act(int n)
 }
 
 
-// -----------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 
 void OptionsDlg::slot_SARgroup_act(int n)
 {
@@ -653,7 +668,7 @@ void OptionsDlg::slot_SARgroup_act(int n)
   slot_SARmsg_act(0);
 }
 
-// -----------------------------------------------------------------------------
+// ---------------------------------------------------------------------------
 
 void OptionsDlg::slot_SARsave_act()
 {
@@ -663,26 +678,29 @@ void OptionsDlg::slot_SARsave_act()
     new CSavedAutoResponse(cmbSARmsg->currentText().local8Bit().data(),
                            edtSARtext->text().local8Bit().data());
 
-  gSARManager.Save();
   gSARManager.Drop();
+  gSARManager.Save();
 }
 
 
+// -----------------------------------------------------------------------------
+
 QWidget* OptionsDlg::new_status_options()
 {
-  QWidget* w = new QWidget(this);
-  QBoxLayout* lay = new QVBoxLayout(w, 10);
-  QGroupBox* gbStatus = new QGroupBox(1, QGroupBox::Horizontal, w);
-  lay->addWidget(gbStatus);
-  gbStatus->setTitle(tr("Default Auto Response Messages"));
+  QVBox* w = new QVBox(this);
+  w->setMargin(8);
+  w->setSpacing(8);
+  QGroupBox* gbStatus = new QGroupBox(tr("Default Auto Response Messages"), w);
+  QBoxLayout* lay = new QVBoxLayout(gbStatus, 8);
+  lay->addSpacing(16);
 
-  QHBox* combos = new QHBox(gbStatus);
-  combos->setSpacing(5);
+  QBoxLayout* l = new QHBoxLayout(lay);
 
-  QLabel* lblcombo1 = new QLabel(tr("Status:"), combos);
-  lblcombo1->setAlignment(AlignRight | AlignVCenter | ExpandTabs);
+  QLabel* lblcombo1 = new QLabel(tr("Status:"), gbStatus);
+  l->addWidget(lblcombo1);
 
-  cmbSARgroup = new QComboBox(false, combos);
+  cmbSARgroup = new QComboBox(false, gbStatus);
+  l->addWidget(cmbSARgroup);
   cmbSARgroup->insertItem(tr("Away"), SAR_AWAY);
   cmbSARgroup->insertItem(tr("Not Available"), SAR_NA);
   cmbSARgroup->insertItem(tr("Occupied"), SAR_OCCUPIED);
@@ -690,24 +708,33 @@ QWidget* OptionsDlg::new_status_options()
   cmbSARgroup->insertItem(tr("Free For Chat"), SAR_FFC);
   connect(cmbSARgroup, SIGNAL(activated(int)), this, SLOT(slot_SARgroup_act(int)));
 
-  QLabel* lblcombo2 = new QLabel(tr("Preset:"), combos);
-  lblcombo2->setAlignment(AlignRight | AlignVCenter | ExpandTabs);
-  cmbSARmsg = new QComboBox(true, combos);
+  l->addSpacing(35);
+
+  QLabel* lblcombo2 = new QLabel(tr("Preset slot:"), gbStatus);
+  l->addWidget(lblcombo2);
+  cmbSARmsg = new QComboBox(true, gbStatus);
+  l->addWidget(cmbSARmsg);
+  l->addStretch(1);
   cmbSARmsg->setInsertionPolicy(QComboBox::AtCurrent);
 
-  QPushButton* qpbSaveIt = new QPushButton(tr("Save"), combos);
-  connect(qpbSaveIt, SIGNAL(clicked()), this, SLOT(slot_SARsave_act()));
-
-  QGroupBox* gbText = new QGroupBox(1, QGroupBox::Horizontal, gbStatus);
-  //QLabel* lblcombo3 = new QLabel(tr("Text:"), gbText);
+  QLabel* lblcombo3 = new QLabel(tr("Text:"), gbStatus);
+  lay->addWidget(lblcombo3);
   connect(cmbSARmsg, SIGNAL(activated(int)), this, SLOT(slot_SARmsg_act(int)));
 
-  edtSARtext = new MLEditWrap(true, gbText);
+  l = new QHBoxLayout(lay);
+  edtSARtext = new MLEditWrap(true, gbStatus);
+  l->addWidget(edtSARtext);
   // ICQ99b allows 37 chars per line, so we do the same
   edtSARtext->setWordWrap(QMultiLineEditNew::FixedColumnWrap);
   edtSARtext->setWrapColumnOrWidth(37);
 
-  // set defaults
+  QPushButton* btnSaveIt = new QPushButton(tr("Save"), gbStatus);
+  btnSaveIt->setMinimumWidth(75);
+  l->addWidget(btnSaveIt);
+  connect(btnSaveIt, SIGNAL(clicked()), this, SLOT(slot_SARsave_act()));
+
+  lay->addStretch(1);
+
   slot_SARgroup_act(SAR_AWAY);
 
   return w;
@@ -771,11 +798,12 @@ QWidget* OptionsDlg::new_column_options()
 
 QWidget* OptionsDlg::new_misc_options()
 {
-  QHBox* w = new QHBox(this);
-  w->setSpacing(8);
-  w->setMargin(8);
+  QWidget* w = new QWidget(this);
+  QBoxLayout* lay = new QVBoxLayout(w, 8, 4);
 
   boxExtensions = new QGroupBox(2, Horizontal, tr("Extensions"), w);
+  lay->addWidget(boxExtensions);
+
   lblUrlViewer = new QLabel(tr("Url Viewer:"), boxExtensions);
   QWhatsThis::add(lblUrlViewer, tr("The command to run to view a URL.  Will be passed the URL "
                                   "as a parameter."));
@@ -784,7 +812,10 @@ QWidget* OptionsDlg::new_misc_options()
   edtTerminal = new QLineEdit(tr("Terminal:"), boxExtensions);
   QWhatsThis::add(edtTerminal, tr("The command to run to start your terminal program."));
 
-  boxParanoia = new QGroupBox(1, Horizontal, tr("Paranoia"), w);
+//  boxParanoia = new QGroupBox(3, Vertical, tr("Paranoia"), w);
+  boxParanoia = new QGroupBox(3, Vertical, w);
+  lay->addWidget(boxParanoia);
+
   chkHideIp = new QCheckBox(tr("Hide IP"), boxParanoia);
   QWhatsThis::add(chkHideIp, tr("Hiding ip stops users from seeing your ip."));
   chkIgnoreNewUsers = new QCheckBox(tr("Ignore New Users"), boxParanoia);
@@ -802,6 +833,15 @@ QWidget* OptionsDlg::new_misc_options()
   chkWebPresence = new QCheckBox(tr("Web Presence Enabled"), boxParanoia);
   QWhatsThis::add(chkWebPresence, tr("Web presence allows users to see if you are online "
                                     "through your web indicator."));
+
+#if QT_VERSION < 210
+  QWidget* dummy_w= new QWidget(boxParanoia);
+  dummy_w->setMinimumHeight(10);
+#endif
+
+  lay->addStretch(1);
+  lay->activate();
+
 
   return w;
 }
