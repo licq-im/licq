@@ -150,6 +150,16 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   initEdtFirst      = edtFirst->text();
   initEdtSecond     = edtSecond->text();
 
+	// Set Tab Order
+	setTabOrder(chkAuthorization, chkWebAware);
+	setTabOrder(chkWebAware, chkHideIp);
+	setTabOrder(chkHideIp, edtUin);
+	setTabOrder(edtUin, edtFirst);
+	setTabOrder(edtFirst, edtSecond);
+	setTabOrder(edtSecond, chkOnlyLocal);
+	setTabOrder(chkOnlyLocal, btnUpdate);
+	setTabOrder(btnUpdate, btnCancel);
+
   show();
 }
 

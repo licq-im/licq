@@ -153,6 +153,12 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
     setIconText(codec->toUnicode(u->GetAlias()));
     gUserManager.DropUser(u);
   }
+
+	// Set Tab Order
+	setTabOrder (tabs, btnMain1);
+	setTabOrder (btnMain1, btnMain2);
+	setTabOrder (btnMain2, btnMain3);
+	setTabOrder (btnMain3, btnMain4);
 }
 
 

@@ -65,6 +65,11 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
 	connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
 	connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
 	connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
+
+	// Set Tab Order
+	setTabOrder(edtUin, chkAlert);
+	setTabOrder(chkAlert, btnOk);
+	setTabOrder(btnOk, btnCancel);
 }
 
 
