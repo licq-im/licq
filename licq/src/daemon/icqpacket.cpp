@@ -23,6 +23,7 @@ extern int errno;
 #include "licq_translate.h"
 #include "licq_log.h"
 #include "support.h"
+#include "licq_openssl.h"
 
 
 unsigned short ReversePort(unsigned short p)
@@ -1702,6 +1703,13 @@ CPT_KeyRequest::CPT_KeyRequest(char *szKey, ICQUser *_cUser, CDHKey *key)
     buffer->PackUnsignedLong(0x00FFFFFF);
   }
   PostBuffer();
+}
+
+CPT_KeyRequest::~CPT_KeyRequest()
+{
+#ifdef USE_OPENSSL
+  delete m_pDHKey;
+#endif
 }
 
 

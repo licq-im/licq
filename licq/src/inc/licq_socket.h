@@ -16,7 +16,8 @@
 
 #include "licq_buffer.h"
 #include "licq_constants.h"
-#include "licq_openssl.h"
+
+class CDHKey;
 
 char *inet_ntoa_r(struct in_addr in, char *buf);
 char *ip_ntoa(unsigned long in, char *buf);

@@ -9,7 +9,6 @@
 #include "licq_buffer.h"
 #include "licq_socket.h"
 #include "licq_icq.h"
-#include "licq_openssl.h"
 
 
 unsigned short ReversePort(unsigned short p);
@@ -766,7 +765,7 @@ class CPT_KeyRequest : public CPacketTcp
 {
 public:
   CPT_KeyRequest(char *szKey, ICQUser *pUser, CDHKey *);
-  ~CPT_KeyRequest() { delete m_pDHKey; }
+  ~CPT_KeyRequest();
 
   CDHKey *GrabDHKey() { CDHKey *k = m_pDHKey; m_pDHKey = NULL; return k; }
 protected:

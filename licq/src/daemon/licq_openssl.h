@@ -5,7 +5,7 @@
 #include "config.h"
 #endif
 
-//#define USE_OPENSSL
+#define USE_OPENSSL
 
 #ifdef USE_OPENSSL
 
@@ -47,7 +47,7 @@ protected:
 
 #else
 
-#define CDHKey void
+class CDHKey {};
 
 #endif
 
