@@ -5,6 +5,9 @@ o  Option of automatically sending through server if direct fails
 o  Edit group dialog improved
 o  Option dialog improved
 o  Saved-Auto-Response added to auto response dialog
+o  Zip code support
+o  Auto-away feature fixed/improved
+o  Implemented ignore types in option dialog
 
 
 New in 0.66.1
