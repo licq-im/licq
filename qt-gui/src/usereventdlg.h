@@ -117,11 +117,11 @@ public:
                   const char *name = 0);
   virtual ~UserEventCommon();
 
-  char *Id()  { return m_szId; }
+  const char *Id()  { return m_lUsers.front().c_str(); }
   unsigned long PPID()  { return m_nPPID; }
-  int ConvoId() { return m_nConvoId; }
+  unsigned long ConvoId() { return m_nConvoId; }
   list<string>& ConvoUsers() { return m_lUsers; }
-  void SetConvoId(int n)  { m_nConvoId = n; }
+  void SetConvoId(unsigned long n)  { m_nConvoId = n; }
   
   bool FindUserInConvo(char *);
   void AddEventTag(unsigned long n)  { if (n) m_lnEventTag.push_back(n); }
@@ -155,7 +155,7 @@ protected:
   QTimer *tmrTime, *tmrTyping;
   bool m_bDeleteUser;
   QString m_sBaseTitle, m_sProgressMsg;
-  int m_nConvoId;
+  unsigned long m_nConvoId;
     
   // ID of the higest event we've processed. Helps determine
   // which events we already processed in the ctor.
@@ -223,7 +223,7 @@ protected slots:
   void slot_btnReadNext();
   void slot_printMessage(QListViewItem*);
   void slot_clearEvent();
-  void slot_sentevent(ICQEvent *);
+  void slot_sentevent(CUserEvent *, const char *, unsigned long);
   void slot_setEncoding();
 };
 
@@ -241,8 +241,8 @@ public:
   virtual ~UserSendCommon();
 
   void setText(const QString& txt);
-  void convoJoin(const char *);
-  void convoLeave(const char *);
+  void convoJoin(const char *, unsigned long _nConvoId);
+  void convoLeave(const char *, unsigned long _nConvoId);
   
 #if QT_VERSION >= 300
   virtual void windowActivationChange(bool oldActive);

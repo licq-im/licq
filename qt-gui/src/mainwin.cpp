@@ -696,12 +696,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             this, SLOT(slot_protocolPlugin(unsigned long)));
    connect (licqSigMan, SIGNAL(signal_eventTag(const char *, unsigned long, unsigned long)),
             this, SLOT(slot_eventTag(const char *, unsigned long, unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_socket(const char *, unsigned long, int)),
-            this, SLOT(slot_socket(const char *, unsigned long, int)));
-   connect (licqSigMan, SIGNAL(signal_convoJoin(const char *, unsigned long, int)),
-            this, SLOT(slot_convoJoin(const char *, unsigned long, int)));
-   connect (licqSigMan, SIGNAL(signal_convoLeave(const char *, unsigned long, int)),
-            this, SLOT(slot_convoLeave(const char *, unsigned long, int)));
+   connect (licqSigMan, SIGNAL(signal_socket(const char *, unsigned long, unsigned long)),
+            this, SLOT(slot_socket(const char *, unsigned long, unsigned long)));
+   connect (licqSigMan, SIGNAL(signal_convoJoin(const char *, unsigned long, unsigned long)),
+            this, SLOT(slot_convoJoin(const char *, unsigned long, unsigned long)));
+   connect (licqSigMan, SIGNAL(signal_convoLeave(const char *, unsigned long, unsigned long)),
+            this, SLOT(slot_convoLeave(const char *, unsigned long, unsigned long)));
                         
    m_bInMiniMode = false;
    updateStatus();
@@ -1405,9 +1405,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             gUserManager.DropUser(u);
 
             if (bCallUserView)
-              callFunction(mnuUserView, szId, nPPID, sig->Argument2());
+              callFunction(mnuUserView, szId, nPPID, sig->CID());
             if (bCallSendMsg)
-              callFunction(mnuUserSendMsg, szId, nPPID, sig->Argument2());
+              callFunction(mnuUserSendMsg, szId, nPPID, sig->CID());
           }
           else
             gUserManager.DropUser(u);
@@ -1727,7 +1727,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
   }  // Switch
 }
 
-void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, int nConvoId)
+void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, unsigned long nConvoId)
 {
   // Add the user to an ongoing conversation
 #if QT_VERSION < 300
@@ -1739,16 +1739,13 @@ void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, int nConvoI
   {
     if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
     {
-      if ((*it)->ConvoId() == -1)
-      {
-        (*it)->SetConvoId(nConvoId);
-        break;
-      }
+      (*it)->SetConvoId(nConvoId);
+      break;
     }
   }
 }
 
-void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, int nConvoId)
+void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, unsigned long nConvoId)
 {
   // Add the user to an ongoing conversation
 #if QT_VERSION < 300
@@ -1760,7 +1757,7 @@ void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, int nCon
   {
     if ((*it)->ConvoId() == nConvoId)
     {
-      (*it)->convoJoin(szId);
+      (*it)->convoJoin(szId, nConvoId);
       return;
     }
   }
@@ -1769,7 +1766,7 @@ void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, int nCon
   
 }
 
-void CMainWindow::slot_convoLeave(const char *szId, unsigned long nPPID, int nConvoId)
+void CMainWindow::slot_convoLeave(const char *szId, unsigned long nPPID, unsigned long nConvoId)
 {
   // Add the user to an ongoing conversation
 #if QT_VERSION < 300
@@ -1781,7 +1778,7 @@ void CMainWindow::slot_convoLeave(const char *szId, unsigned long nPPID, int nCo
   {
     if ((*it)->ConvoId() == nConvoId)
     {
-      (*it)->convoLeave(szId);
+      (*it)->convoLeave(szId, nConvoId);
       return;
     }
   }
@@ -2243,7 +2240,7 @@ void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
     for (unsigned short i = 0; i < u->NewMessages(); i++)
       if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
       {
-        nConvoId = u->EventPeek(i)->Socket();
+        nConvoId = u->EventPeek(i)->ConvoId();
         fcn = mnuUserSendMsg;
         break;
       }
@@ -2887,7 +2884,7 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
         if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
         {
           gUserManager.DropUser(u);
-          callFunction(mnuUserSendMsg, szId, nPPID, u->EventPeek(i)->Socket());
+          callFunction(mnuUserSendMsg, szId, nPPID, u->EventPeek(i)->ConvoId());
           return;
         }
       }
@@ -2984,7 +2981,7 @@ void CMainWindow::slot_eventTag(const char *_szId, unsigned long _nPPID,
 {
   if (!_szId || !_nPPID || !_nEventTag)
     return;
-    
+
 #if QT_VERSION < 300
   QListIterator<UserSendCommon> it(licqUserSend);
 #else

@@ -38,9 +38,9 @@ signals:
   void signal_ui_message(const char *, unsigned long);
   void signal_protocolPlugin(unsigned long);
   void signal_eventTag(const char *, unsigned long, unsigned long);
-  void signal_socket(const char *, unsigned long, int);
-  void signal_convoJoin(const char *, unsigned long, int);
-  void signal_convoLeave(const char *, unsigned long, int);
+  void signal_socket(const char *, unsigned long, unsigned long);
+  void signal_convoJoin(const char *, unsigned long, unsigned long);
+  void signal_convoLeave(const char *, unsigned long, unsigned long);
   
   // Event signals
   void signal_doneOwnerFcn(ICQEvent *);

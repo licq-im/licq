@@ -101,7 +101,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   m_nPPID = _nPPID;
   m_bOwner = (gUserManager.FindOwner(m_lUsers.front().c_str(), m_nPPID) != NULL);
   m_bDeleteUser = false;
-  m_nConvoId = -1;
+  m_nConvoId = 0;
     
   top_hlay = new QHBoxLayout(this, 6);
   top_lay = new QVBoxLayout(top_hlay);
@@ -593,7 +593,7 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
   if (m_nPPID != sig->PPID() ||
        std::find(m_lUsers.begin(), m_lUsers.end(), sig->Id()) == m_lUsers.end())
   {
-    if (sig->Argument2() == m_nConvoId && m_nConvoId != -1)
+    if (sig->CID() == m_nConvoId && m_nConvoId != 0)
     { 
       m_lUsers.push_back(sig->Id());
       // Now update the tab label
@@ -681,7 +681,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   splRead->setResizeMode(mlvRead, QSplitter::Stretch);
 
   connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
-  connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), this, SLOT(slot_sentevent(ICQEvent *)));
+  connect (mainwin, SIGNAL(signal_sentevent(CUserEvent *, const char *, unsigned logn)), this, SLOT(slot_sentevent(CUserEvent *, const char *, unsigned long)));
 
   QHGroupBox *h_action = new QHGroupBox(mainWidget);
   lay->addSpacing(10);
@@ -1370,12 +1370,12 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, char *szId, unsigned long nPPID
 }
 
 
-void UserViewEvent::slot_sentevent(ICQEvent *e)
+void UserViewEvent::slot_sentevent(CUserEvent *ue, const char *szId, unsigned long nPPID)
 {
-  if (e->PPID() != m_nPPID || m_lUsers.front() != e->Id()) return;
+  if (nPPID != m_nPPID || strcmp(m_lUsers.front().c_str(), szId) != 0) return;
 
   if (!mainwin->m_bMsgChatView)
-    (void) new MsgViewItem(e->GrabUserEvent(), codec, msgView);
+    (void) new MsgViewItem(ue/*GrabUserEvent()*/, codec, msgView);
 }
 
 
@@ -1409,7 +1409,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *hlay = new QHBoxLayout(vlay);
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
   ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
-  chkSendServer->setChecked(u->SendServer() || (u->StatusOffline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
+  chkSendServer->setChecked(u->SendServer() ||
+    (u->StatusOffline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
 
   if( (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST)) ||
       (u->Port() == 0 && u->SocketDesc(ICQ_CHNxNONE) == -1))
@@ -1537,7 +1538,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
           mleHistory->append(tmp);
       }
     }
-  
+    
     // Collect all messages to put them in the correct time order
     vector< pair<CUserEvent *, char *> > m_vMsgs;
     
@@ -1548,14 +1549,14 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
       {
         CUserEvent *e = u->EventPeek(i);
         // Get the convo id now
-        int nSocket = e->Socket();
-        if (m_nConvoId == -1)
-          m_nConvoId = nSocket;
+        unsigned long nConvoId = e->ConvoId();
+        if (m_nConvoId == 0)
+          m_nConvoId = nConvoId;
         
-        if (e->Id() > m_highestEventId && nSocket == m_nConvoId)
+        if (e->Id() > m_highestEventId && nConvoId == m_nConvoId)
           m_highestEventId = e->Id();
         
-        if (nSocket == m_nConvoId)
+        if (nConvoId == m_nConvoId)
           m_vMsgs.push_back(make_pair(e, strdup(u->IdString())));
       }
       gUserManager.DropUser(u);
@@ -1570,10 +1571,10 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
             for (unsigned short i = 0; i < pUser->NewMessages(); i++)
             {            
               CUserEvent *e = pUser->EventPeek(i);
-              if (e->Id() > m_highestEventId && e->Socket() == m_nConvoId)
+              if (e->Id() > m_highestEventId && e->ConvoId() == m_nConvoId)
                 m_highestEventId = e->Id();
                 
-              if (e->Socket() == m_nConvoId)
+              if (e->ConvoId() == m_nConvoId)
               {
                 // add to the convo list (but what if they left by the time we open this?)
                 m_lUsers.push_back(pUser->IdString());
@@ -1596,12 +1597,40 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         free((*MsgIter).second);
       }
       m_vMsgs.clear();
+      
+      // If the user closed the chat window, we have to make sure we aren't
+      // using the old nConvoId
+      if (s->FindConversation(m_nConvoId) == 0)
+        m_nConvoId = 0;
     }
+    
+    // Do we already have an open socket?
+    if (m_nConvoId == 0 && u)
+    {
+//       bool bHasOpen = false;
+//       QPtrListIterator<UserSendCommon> it(licqUserSend);
+//       for (; it.current(); ++it)
+//       {
+//         if (strcmp((*it)->Id(), m_szId) == 0 && (*it)->PPID() == m_nPPID)
+//         {
+//           bHasOpen = true;
+//           break;
+//         }
+//       }
+      
+      if (u->SocketDesc(ICQ_CHNxNONE) != 1)
+      {
+        CConversation *pConv = s->FindConversation(u->SocketDesc(ICQ_CHNxNONE));
+        if (pConv)
+          m_nConvoId = pConv->CID();
+      }
+    }
+    
     gUserManager.DropUser(u);
 #if QT_VERSION >= 300
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
-    connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
+    connect (mainwin, SIGNAL(signal_sentevent(CUserEvent *, const char *, unsigned long)), mleHistory, SLOT(addMsg(CUserEvent *, const char *, unsigned long)));
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
 
@@ -1631,52 +1660,64 @@ UserSendCommon::~UserSendCommon()
 {
 }
 
-void UserSendCommon::convoJoin(const char *szId)
+void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
 {
-  if (szId == 0 || mainwin->m_bMsgChatView == 0) return;
+  if (szId == 0) return;
   
-  QString str = QString(tr("<html><body><font color=\"green\"><b>"
-                        "[%1] %2 has joined the conversation.</b></font><br></body></html>"))
-    .arg(QTime::currentTime().toString())
-    .arg(szId);
-  mleHistory->append(str);
+  if (mainwin->m_bMsgChatView)
+  {
+    QString str = QString(tr("<html><body><font color=\"green\"><b>"
+                          "[%1] %2 has joined the conversation.</b></font><br></body></html>"))
+      .arg(QTime::currentTime().toString())
+      .arg(szId);
+    mleHistory->append(str);
+  }
+
   if (!FindUserInConvo(const_cast<char *>(szId)))
     m_lUsers.push_back(szId);
   
+  m_nConvoId = _nConvoId;
+
   // Now update the tab label
   if (mainwin->userEventTabDlg)
     mainwin->userEventTabDlg->updateConvoLabel(this);
 }
 
-void UserSendCommon::convoLeave(const char *szId)
+void UserSendCommon::convoLeave(const char *szId, unsigned long _nConvoId)
 {
-  if (szId == 0 || !mainwin->m_bMsgChatView) return;
+  if (szId == 0) return;
   
-  QString str = QString(tr("<html><body><font color=\"green\"><b>"
-                        "[%1] %2 has left the conversation.</b></font><br></body></html>"))
-    .arg(QTime::currentTime().toString())
-    .arg(szId);
-  mleHistory->append(str);
-  
-  // Remove the typing notification if active
-  ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_W);
-  if (u->GetTyping() == ICQ_TYPING_ACTIVE)
+  if (mainwin->m_bMsgChatView)
   {
-    u->SetTyping(ICQ_TYPING_INACTIVEx0);
-    nfoStatus->unsetPalette();
-    if (mainwin->m_bTabbedChatting && mainwin->userEventTabDlg)
-      mainwin->userEventTabDlg->updateTabLabel(u);  
+    QString str = QString(tr("<html><body><font color=\"green\"><b>"
+                          "[%1] %2 has left the conversation.</b></font><br></body></html>"))
+      .arg(QTime::currentTime().toString())
+      .arg(szId);
+    mleHistory->append(str);
+    
+    // Remove the typing notification if active
+    ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_W);
+    if (u->GetTyping() == ICQ_TYPING_ACTIVE)
+    {
+      u->SetTyping(ICQ_TYPING_INACTIVEx0);
+      nfoStatus->unsetPalette();
+      if (mainwin->m_bTabbedChatting && mainwin->userEventTabDlg)
+        mainwin->userEventTabDlg->updateTabLabel(u);  
+    }
+    gUserManager.DropUser(u);
   }
-  gUserManager.DropUser(u);
   
   if (m_lUsers.size() > 1)
     m_lUsers.remove(szId);
   else
-    m_nConvoId = -1;
+    m_nConvoId = 0;
 
-  // Now update the tab label
-  if (mainwin->userEventTabDlg)
-    mainwin->userEventTabDlg->updateConvoLabel(this);
+  if (mainwin->m_bMsgChatView)
+  {
+    // Now update the tab label
+    if (mainwin->userEventTabDlg)
+      mainwin->userEventTabDlg->updateConvoLabel(this);
+  }
 }
 
 #if QT_VERSION >= 300
@@ -2146,7 +2187,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     emit autoCloseNotify();
     if (sendDone(e))
     {
-      emit mainwin->signal_sentevent(e);
+      emit mainwin->signal_sentevent(e->UserEvent(), m_lUsers.front().c_str(), m_nPPID);
       if (mainwin->m_bMsgChatView && mleHistory != NULL)
       {
         mleHistory->GotoEnd();
@@ -2384,7 +2425,7 @@ void UserSendCommon::UserUpdated(CICQSignal *sig, char *szId, unsigned long nPPI
         e = u->EventPeekId(sig->Argument());
         if (e)
         {
-          if (sig->PPID() != MSN_PPID || (sig->PPID() == MSN_PPID && sig->Argument2() == m_nConvoId))
+          if (sig->PPID() != MSN_PPID || (sig->PPID() == MSN_PPID && sig->CID() == m_nConvoId))
           {
             gUserManager.DropUser(u);
             mleHistory->addMsg(e, szId, nPPID);

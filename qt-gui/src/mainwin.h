@@ -318,9 +318,9 @@ protected slots:
   void callFileFunction (const char *);
   void callUrlFunction (const char *);
   void callUserFunction(int);
-  void slot_socket(const char *, unsigned long, int);
-  void slot_convoJoin(const char *, unsigned long, int);
-  void slot_convoLeave(const char *, unsigned long, int);
+  void slot_socket(const char *, unsigned long, unsigned long);
+  void slot_convoJoin(const char *, unsigned long, unsigned long);
+  void slot_convoLeave(const char *, unsigned long, unsigned long);
   //TODO
   //void callUserFunction(const char *, unsigned long);
   void slot_userfinished(const char *, unsigned long);
@@ -372,7 +372,7 @@ protected slots:
 
 signals:
   void changeDockStatus(unsigned short);
-  void signal_sentevent(ICQEvent *e);
+  void signal_sentevent(CUserEvent *e, const char *, unsigned long);
   void signal_doneRegisterUser(ICQEvent *e);
 
 };
