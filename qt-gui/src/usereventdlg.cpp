@@ -2125,7 +2125,7 @@ void UserSendMsgEvent::sendButton()
         m->go_message(message);
      }
 
-     icqEventTag = server->icqSendMessage(m_szId, messageRaw.data(),
+     icqEventTag = server->ProtoSendMessage(m_szId, m_nPPID, messageRaw.data(),
       chkSendServer->isChecked() ? false : true,
       chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
       chkMass->isChecked(), &icqColor);
