@@ -257,6 +257,7 @@ protected:
   bool AddUserEvent(ICQUser *, CUserEvent *);
   void RemoveUserEvent(ICQUser *, int);
   void RejectEvent(unsigned long, CUserEvent *);
+  ICQUser *FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e, const char *);
 
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
   ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult);

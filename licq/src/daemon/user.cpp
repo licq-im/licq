@@ -179,8 +179,9 @@ bool CUserManager::Load()
      }
      sprintf(filename, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
 
-     //AddUser(new ICQUser(nUserUin, filename));
      u = new ICQUser(nUserUin, filename);
+     u->SetOnContactList(true);
+     u->SetEnableSave(true);
      // Store the user in the hash table
      m_hUsers.Store(u, nUserUin);
      // Add the user to the list
@@ -194,18 +195,25 @@ bool CUserManager::Load()
 /*---------------------------------------------------------------------------
  * CUserManager::AddUser
  *-------------------------------------------------------------------------*/
-unsigned long CUserManager::AddUser(ICQUser *_pcUser)
+unsigned long CUserManager::AddUser(ICQUser *pUser)
 {
-  _pcUser->Lock(LOCK_R);
-  unsigned long nUin = _pcUser->Uin();
+  pUser->Lock(LOCK_R);
+  unsigned long nUin = pUser->Uin();
+
+  // Set this user to be on the contact list
+  pUser->SetOnContactList(true);
+  pUser->SetEnableSave(true);
+  pUser->SaveLicqInfo();
+  pUser->SaveGeneralInfo();
+  pUser->SaveMoreInfo();
+  pUser->SaveWorkInfo();
+
   // Store the user in the hash table
-  m_hUsers.Store(_pcUser, nUin);
-
+  m_hUsers.Store(pUser, nUin);
   // Reorder the user to the correct place
-  //Reorder(_pcUser, false);
-  m_vpcUsers.push_back(_pcUser);
+  m_vpcUsers.push_back(pUser);
 
-  _pcUser->Unlock();
+  pUser->Unlock();
 
   return nUin;
 }
@@ -700,7 +708,6 @@ pthread_mutex_t ICQUser::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
 // Called when first constructing our known users
 {
-  SetEnableSave(false);
   Init(_nUin);
   m_fConf.SetFlags(INI_FxWARN);
   m_fConf.SetFileName(_szFilename);
@@ -712,25 +719,17 @@ ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
   }
   m_fConf.CloseFile();
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
-  SetEnableSave(true);
 }
 
 
 ICQUser::ICQUser(unsigned long _nUin)
 {
-  SetEnableSave(false);
   Init(_nUin);
   SetDefaults();
   char szFilename[MAX_FILENAME_LEN];
   sprintf(szFilename, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, _nUin);
   m_fConf.SetFileName(szFilename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
-
-  SetEnableSave(true);
-  SaveLicqInfo();
-  SaveGeneralInfo();
-  SaveMoreInfo();
-  SaveWorkInfo();
 }
 
 
@@ -902,6 +901,7 @@ void ICQUser::RemoveFiles()
 
 void ICQUser::Init(unsigned long _nUin)
 {
+  SetOnContactList(false);
   m_szAutoResponse = NULL;
 
   // General Info
@@ -1754,8 +1754,8 @@ ICQOwner::ICQOwner()
   m_bException = false;
   m_szPassword = NULL;
 
-  SetEnableSave(false);
   Init(0);
+  SetOnContactList(true);
 
   // Get data from the config file
   sprintf(filename, "%s/owner.uin", BASE_DIR);

@@ -64,8 +64,73 @@ friend class CICQDaemon;
 
 
 //=====ICQEvent====================================================================================
-// wraps a timer event so that the timeout will return the socket and sequence of the packet
-// that timed out
+/*---------------------------------------------------------------------------
+ * ICQEvent
+ *
+ * This class is the main event class for talking to the ICQ server and to
+ * plugins.  Internally all messages/urls...become ICQEvents with the
+ * relevant data fields set.  A plugin will receive an event in response
+ * to any asynchronous function call (such as icqSendMessage) eventually.
+ * The useful fields are as follows:
+ *
+ * EventResult Result()
+ *   This is the result of the event, can be EVENT_ACKED (this is what most
+ *   events will return on success), EVENT_SUCCESS (this is returned when
+ *   the command is extended such as searches or info updates and has been
+ *   completed successfully), EVENT_FAILED (same, but returned when the
+ *   event failed for some reason, should rarely happen), EVENT_TIMEDOUT
+ *   (returned if the event timedout trying to talk to the server),
+ *   EVENT_ERROR (if an error occured at some point), or EVENT_CANCELLED
+ *   (the event was cancelled by a call to icqCancelEvent).
+ *
+ * int SubResult()
+ *   This will be either ICQ_TCPxACK_ACCEPT if the event was accepted by
+ *   the other side, ICQ_TCPxACK_REJECT if the event was rejected by the
+ *   other side (should never happen really), or ICQ_TCPxACK_RETURN if the
+ *   other side returned the event (meaning they are in occupied or dnd so
+ *   the message would need to be sent urgent or to contact list).  This
+ *   field is only relevant if the command was ICQ_CMDxTCP_START (ie the
+ *   message was sent direct).
+ *
+ * unsigned short Command()
+ *   The command, for example ICQ_CMDxTCP_START, or ICQ_CMDxSND_THRUxSERVER,
+ *   or ICQ_CMDxSND_META.
+ *
+ * unsigned short SubCommand()
+ *   The subcommand, relevant only if this was a message/url/chat/file,
+ *   in which case Command() will be ICQ_CMDxTCP_START or
+ *   ICQ_CMDxSND_THRU_SERVER and this field will be ICQ_CMDxSUB_MSG...
+ *
+ * unsigned long Sequence()
+ * unsigned short SubSequence()
+ *   These are used to identify events internally, but are necessary for
+ *   accepting/rejecting chat or file requests.
+ *
+ * unsigned long Uin()
+ *   The uin of the user the event was destined for.  Only relevant if
+ *   this was a message/url...
+ *
+ * CSearchAck *SearchAck()
+ *   Special structure containing information relevant if this is a
+ *   search event.
+ *
+ * CExtendedAck *ExtendedAck()
+ *   Special structure containing information relevant if this is a
+ *   chat or file transfer accept or reject.
+ *
+ * CUserEvent *UserEvent()
+ *   Contains the actual CUserEvent containing the message/url...that was
+ *   sent to Uin().  Can be used to resend the event.
+ *
+ * ICQUser *UnknownUser()
+ *   If the event was a user information update (basic/extended/meta) and
+ *   the user does not exist on the contact list, this will return the user
+ *   with the relevant fields set.  This is helpful in searches for example
+ *   to avoid having to add the user to the list before checking their
+ *   other information.
+ *
+ *-------------------------------------------------------------------------*/
+
 enum ConnectType
 {
   CONNECT_SERVER,
@@ -102,6 +167,7 @@ public:
   // Returns the event and transfers ownership to the calling function
   CUserEvent *GrabUserEvent()  { CUserEvent *e = m_pUserEvent; m_pUserEvent = NULL; return e; }
   CSearchAck *GrabSearchAck()  { CSearchAck *a = m_pSearchAck; m_pSearchAck = NULL; return a; }
+  ICQUser *GrabUnknownUser()   { ICQUser *u = m_pUnknownUser; m_pUnknownUser = NULL; return u; }
 
   ~ICQEvent();
 

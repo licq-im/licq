@@ -213,7 +213,7 @@ public:
   void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveAboutInfo();  }
 
   // Licq Info
-  void SetEnableSave(bool s)          { m_bEnableSave = s; }
+  void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
   void SetSendServer(bool s)          { m_bSendServer = s; }
   void SetSequence(unsigned long s)   { m_nSequence = s; }
   void SetNewUser(bool s)             { m_bNewUser = s; SaveLicqInfo(); }
@@ -316,11 +316,13 @@ protected:
   void Init(unsigned long _nUin);
   bool LoadInfo();
   void SetDefaults();
+  void SetOnContactList(bool b)  { m_bOnContactList = b; if (!b) m_bEnableSave = false; }
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
   int m_nSocketDesc;
   time_t m_nTouched, m_nLastOnline;
+  bool m_bOnContactList;
   unsigned long m_nIp, m_nRealIp, m_nVersion;
   unsigned short m_nPort;
   unsigned long m_nUin,
@@ -390,6 +392,7 @@ protected:
 
   friend class CUserGroup;
   friend class CUserManager;
+  friend class CICQDaemon;
 };
 
 
