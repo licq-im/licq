@@ -3596,7 +3596,7 @@ void CICQDaemon::AckTCP(CPacketTcp &p, TCPSocket *tcp)
 
 
 bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
-																bool bConfirm)
+																bool bConfirm, bool bChat)
 {
   char cHandshake;
   unsigned short nVersionMajor, nVersionMinor;
@@ -3616,12 +3616,12 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       nUin = p_in.SourceUin();
 
       ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-      if (u == NULL)
+      if (u == NULL && !bChat)
       {
         gLog.Warn("%sConnection from unknown user.\n", L_WARNxSTR);
         return false;
       }
-      unsigned long nCookie = u->Cookie();
+      unsigned long nCookie = u ? u->Cookie() : 0;
       gUserManager.DropUser(u);
 
       if (nCookie != p_in.SessionId())
@@ -3980,8 +3980,8 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
                   L_WARNxSTR, u->GetAlias(), nUin);
         gUserManager.DropUser(u);
         return true;
-/*      gSocketManager.CloseSocket(u->SocketDesc(), false);
-        u->ClearSocketDesc();*/
+/*        gSocketManager.CloseSocket(u->SocketDesc(s->Channel()), false);
+        u->ClearSocketDesc(s->Channel());*/
       }
       u->SetSocketDesc(s);
     }

@@ -136,6 +136,32 @@ CChatClient::CChatClient(CBuffer &b)
   LoadFromBuffer(b);
 }
 
+CChatClient::CChatClient(const CChatClient &p)
+{
+  m_szId = NULL;
+  *this = p;
+}
+
+CChatClient& CChatClient::operator=(const CChatClient &p)
+{
+  if (this != &p)
+  {
+    m_nVersion = p.m_nVersion;
+    m_nPort = p.m_nPort;
+    m_nUin = p.m_nUin;
+    m_nPPID = p.m_nPPID;
+    m_nIp = p.m_nIp;
+    m_nIntIp = p.m_nIntIp;
+    m_nMode = p.m_nMode;
+    m_nSession = p.m_nSession;
+    m_nHandshake = p.m_nHandshake;
+    if (m_szId)
+      free(m_szId);
+    m_szId = p.m_szId ? strdup(p.m_szId) : NULL;
+  }
+  return *this;
+}
+
 bool CChatClient::LoadFromBuffer(CBuffer &b)
 {
   m_nVersion = b.UnpackUnsignedLong();
@@ -892,7 +918,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
     {
       CBuffer handshake = u->sock.RecvBuffer();
       // get the handshake packet
-      if (!CICQDaemon::Handshake_Recv(&u->sock, LocalPort(), false))
+      if (!CICQDaemon::Handshake_Recv(&u->sock, LocalPort(), false, true))
       {
         gLog.Warn("%sChat: Bad handshake.\n", L_ERRORxSTR);
         return false;
