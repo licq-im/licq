@@ -193,6 +193,10 @@ protected:
   pthread_t thread_monitorsockets,
             thread_ping;
 
+  pthread_cond_t cond_serverack;
+  pthread_mutex_t mutex_serverack;
+  unsigned short m_nServerAck;
+
   void ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
   void ChangeUserStatus(ICQUser *u, unsigned long s);
   bool AddUserEvent(ICQUser *u, CUserEvent *e);

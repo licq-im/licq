@@ -131,6 +131,7 @@ ICQEvent *CICQDaemon::icqLogon(unsigned long logonStatus)
   gSocketManager.DropSocket(s);
   free (passwd);
   gLog.Info("%sRequesting logon (#%d)...\n", L_UDPxSTR, p->getSequence());
+  m_nServerAck = p->getSequence() - 1;
   m_nDesiredStatus = logonStatus;
   m_tLogonTime = time(NULL);
   return SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_SERVER);
@@ -177,21 +178,6 @@ void CICQDaemon::icqLogoff(void)
   }
   m_eStatus = STATUS_OFFLINE_MANUAL;
 
-  // Cancel all open events
-  /*list<ICQEvent *>::iterator iter;
-  pthread_mutex_lock(&mutex_pendingevents);
-  iter = m_lxPendingEvents.begin();
-  while (iter != m_lxPendingEvents.end())
-  {
-    if (*iter != NULL && (*iter)->m_nSocketDesc == nSD)
-    {
-      delete *iter;
-      iter = m_lxPendingEvents.erase(iter);
-    }
-    else
-      iter++;
-  }
-  pthread_mutex_unlock(&mutex_pendingevents);*/
   pthread_mutex_lock(&mutex_runningevents);
   list<ICQEvent *>::iterator iter = m_lxRunningEvents.begin();
   while (iter != m_lxRunningEvents.end())
@@ -212,37 +198,9 @@ void CICQDaemon::icqLogoff(void)
   m_lxExtendedEvents.erase(m_lxExtendedEvents.begin(), m_lxExtendedEvents.end());
   pthread_mutex_unlock(&mutex_extendedevents);
 
-  /*if (bForced);
-  {
-    if (m_eStatus == STATUS_OFFLINE_FORCED) return;
-    m_eStatus = STATUS_OFFLINE_FORCED;
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    unsigned long status = o->getStatusFull();
-    gUserManager.DropOwner();
-    icqLogon(status);
-  }
-  else*/
-/*  else
-  {
-    // reset all the users statuses
-    ICQUser *u;
-    CUserGroup *g = gUserManager.FetchGroup(0, LOCK_R);
-    for (unsigned short i = 0; i < g->NumUsers(); i++)
-    {
-      u = g->FetchUser(i, LOCK_W);
-      ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
-      g->DropUser(u);
-    }
-    gUserManager.DropGroup(g);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSERS, NULL, NULL));
-  }*/
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
   gUserManager.DropOwner();
-
-  /*PushPluginSignal(new CICQSignal(SIGNAL_UPDATExOWNER,
-                                  new unsigned short(UPDATE_STATUS),
-                                  NULL));*/
 }
 
 
@@ -326,8 +284,8 @@ unsigned short CICQDaemon::icqStartSearch(const char *nick, const char *first,
                                           const char *last, const char *email)
 {
   CPU_StartSearch *p = new CPU_StartSearch(nick, first, last, email);
-  gLog.Info("%sStarting search for user (#%d)...\n", L_UDPxSTR,
-            p->getSequence());
+  gLog.Info("%sStarting search for user (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
   return p->SubSequence();
 }
@@ -356,7 +314,8 @@ ICQEvent *CICQDaemon::icqSetStatus(unsigned long newStatus)
 ICQEvent *CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
 {
   CPU_GetUserBasicInfo *p = new CPU_GetUserBasicInfo(_nUin);
-  gLog.Info("%sRequesting user info (#%d)...\n", L_UDPxSTR, p->getSequence());
+  gLog.Info("%sRequesting user info (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
   return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
 }
 
@@ -365,8 +324,8 @@ ICQEvent *CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
 ICQEvent *CICQDaemon::icqUserExtendedInfo(unsigned long _nUin)
 {
   CPU_GetUserExtInfo *p = new CPU_GetUserExtInfo(_nUin);
-  gLog.Info("%sRequesting extended user info (#%d)...\n", L_UDPxSTR,
-            p->getSequence());
+  gLog.Info("%sRequesting extended user info (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
   return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
 }
 
@@ -379,8 +338,8 @@ ICQEvent *CICQDaemon::icqUpdateBasicInfo(const char *_sAlias, const char *_sFirs
   CPU_UpdatePersonalBasicInfo *p =
     new CPU_UpdatePersonalBasicInfo(_sAlias, _sFirstName, _sLastName, _sEmail,
                                     (char)_bAuthorization);
-  gLog.Info("%sUpdating personal information (#%d)...\n", L_UDPxSTR,
-            p->getSequence());
+  gLog.Info("%sUpdating personal information (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
   return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
 }
 
@@ -395,8 +354,8 @@ ICQEvent *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned short _
   CPU_UpdatePersonalExtInfo *p =
     new CPU_UpdatePersonalExtInfo(_sCity, _nCountry, _sState, _nAge, _cSex,
                                   _sPhone, _sHomepage, _sAbout, _nZipcode);
-   gLog.Info("%sUpdating personal extended info (#%d)...\n", L_UDPxSTR,
-             p->getSequence());
+   gLog.Info("%sUpdating personal extended info (#%d/#%d)...\n", L_UDPxSTR,
+             p->getSequence(), p->SubSequence());
    return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
 }
 
@@ -410,8 +369,8 @@ ICQEvent *CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
   CPU_Meta_SetWorkInfo *p =
     new CPU_Meta_SetWorkInfo(_szCity, _szState, _szFax, _szAddress,
                              _szName, _szDepartment, _szPosition, _szHomepage);
-  gLog.Info("%sUpdating personal work info (#%d)...\n", L_UDPxSTR,
-            p->getSequence());
+  gLog.Info("%sUpdating personal work info (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
   return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
 }
 
@@ -421,8 +380,8 @@ ICQEvent *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWe
 {
   CPU_Meta_SetSecurityInfo *p =
     new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
-  gLog.Info("%sUpdating security info (#%d)...\n", L_UDPxSTR,
-            p->getSequence());
+  gLog.Info("%sUpdating security info (#%d/#%d)...\n", L_UDPxSTR,
+            p->getSequence(), p->SubSequence());
   return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
 }
 
@@ -431,8 +390,8 @@ ICQEvent *CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWe
 ICQEvent *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 {
   CPU_Meta_RequestInfo *p = new CPU_Meta_RequestInfo(nUin);
-  gLog.Info("%sRequesting meta info for %ld (#%d)...\n", L_UDPxSTR, nUin,
-            p->getSequence());
+  gLog.Info("%sRequesting meta info for %ld (#%d/#%d)...\n", L_UDPxSTR, nUin,
+            p->getSequence(), p->SubSequence());
   return (SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE));
 }
 
@@ -983,7 +942,13 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     if (nMetaResult != META_SUCCESS)
       ProcessDoneEvent(e);
     else
+    {
       ProcessMetaCommand(packet, nMetaCommand, e);
+      if (e->m_nSubResult == META_DONE)
+        ProcessDoneEvent(e);
+      else
+        PushExtendedEvent(e);
+    }
     break;
   }
 
@@ -996,6 +961,12 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
   {
     /* 02 00 0A 00 12 00 */
     gLog.Info("%sAck (#%d).\n", L_UDPxSTR, nSequence);
+#if ICQ_VERSION == 5
+    pthread_mutex_lock(&mutex_serverack);
+    m_nServerAck = nSequence;
+    pthread_cond_broadcast(&cond_serverack);
+    pthread_mutex_unlock(&mutex_serverack);
+#endif
     ICQEvent *e = DoneEvent(m_nUDPSocketDesc, nSequence, EVENT_ACKED);
     if (e != NULL) ProcessDoneEvent(e);
     break;
@@ -1403,78 +1374,120 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
                                     unsigned short nMetaCommand,
                                     ICQEvent *e)
 {
-  //ICQUser *u = NULL;
-  //char szTemp[1024];
+  ICQUser *u = NULL;
+  char szTemp[MAX_DATA_LEN];
+  unsigned long nUin;
 
   switch(nMetaCommand)
   {
-    case ICQ_CMDxMETA_GENERALxINFO:
-    {
-      /*u->SetEnableSave(false);
-      u->SetAlias(packet.UnpackString(szTemp));
-      u->SetFirstName(packet.UnpackString(szTemp));
-      u->SetLastName(packet.UnpackString(szTemp));
-      u->SetEmail1(packet.UnpackString(szTemp));
-      u->SetEmail2(packet.UnpackString(szTemp));
-      // Old email address
-      packet.UnpackString(szTemp);
-      u->SetCity(packet.UnpackString(szTemp));
-      u->SetState(packet.UnpackString(szTemp));
-      u->SetPhoneNumber(packet.UnpackString(szTemp));
-      u->SetFaxNumber(packet.UnpackString(szTemp));
-      u->SetAddress(packet.UnpackString(szTemp));
-      u->SetCellularNumber(packet.UnpackString(szTemp));
-      u->SetZipCode(packet.UnpackUnsignedLong());
-      u->SetCountryCode(packet.UnpackUnsignedShort());
-      u->SetTimezone(packet.UnpackChar());
-      u->SetAuthorization(!packet.UnpackChar());
-      packet.UnpackChar();
-      u->SetHideEmail(packet.UnpackChar());
-      u->SetEnableSave(true);
-      u->SaveGeneralInfo();*/
-      break;
-    }
-    case ICQ_CMDxMETA_WORKxINFO:
-    {
-      /*u->SetEnableSave(false);
-      u->SetCompanyCity(packet.UnpackString(szTemp));
-      u->SetCompanyState(packet.UnpackString(szTemp));
-      u->SetCompanyPhoneNumber(packet.UnpackString(szTemp));
-      u->SetCompanyFaxNumber(packet.UnpackString(szTemp));
-      u->SetComparyAddress(packet.UnpackString(szTemp));
-      u->SetCompanyName(packet.UnpackString(szTemp));
-      u->SetCompanyDepartment(packet.UnpackString(szTemp));
-      u->SetCompanyPosition(packet.UnpackString(szTemp));
-      u->SetCompanyHomepage(packet.UnpackString(szTemp));
-      u->SetEnableSave(true);
-      u->SaveWorkInfo();*/
-      break;
-    }
     case ICQ_CMDxMETA_MORExINFO:
-    {
-      /*u->SetEnableSave(false);
-      u->SetAge(packet.UnpackUnsignedShort());
-      u->SetGender(packet.UnpackChar());
-      u->SetHomepage(packet.UnpackString(szTemp));
-      u->SetBirthYear(packet.UnpackChar());
-      u->SetBirthMonth(packet.UnpackChar());
-      u->SetBirthDay(packet.UnpackChar());
-      u->SetLanguage1(packet.UnpackChar());
-      u->SetLanguage2(packet.UnpackChar());
-      u->SetLanguage3(packet.UnpackChar());
-      u->SetEnableSave(true);
-      u->SaveWorkInfo();*/
-      break;
-    }
+    case ICQ_CMDxMETA_WORKxINFO:
+    case ICQ_CMDxMETA_GENERALxINFO:
     case ICQ_CMDxMETA_ABOUT:
+    case ICQ_CMDxMETA_UNKNOWNx240:
+    case ICQ_CMDxMETA_UNKNOWNx250:
+    case ICQ_CMDxMETA_UNKNOWNx270:
     {
-      //u->SetAbout(packet.UnpackString());
+      e->m_nSubResult += nMetaCommand;
+      nUin = ((CPU_Meta_RequestInfo *)e->m_xPacket)->Uin();
+      u = gUserManager.FetchUser(nUin, LOCK_W);
+      if (u == NULL)
+      {
+        gLog.Warn("%sReceived meta information on deleted user (%ld).\n",
+                  L_WARNxSTR, nUin);
+        break;
+      }
+      switch (nMetaCommand)
+      {
+        case ICQ_CMDxMETA_GENERALxINFO:
+        {
+          gLog.Info("%sGeneral info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
+          u->SetEnableSave(false);
+          u->SetAlias(packet.UnpackString(szTemp));
+          u->SetFirstName(packet.UnpackString(szTemp));
+          u->SetLastName(packet.UnpackString(szTemp));
+          u->SetEmail1(packet.UnpackString(szTemp));
+          u->SetEmail2(packet.UnpackString(szTemp));
+          // Old email address
+          packet.UnpackString(szTemp);
+          u->SetCity(packet.UnpackString(szTemp));
+          u->SetState(packet.UnpackString(szTemp));
+          u->SetPhoneNumber(packet.UnpackString(szTemp));
+          u->SetFaxNumber(packet.UnpackString(szTemp));
+          u->SetAddress(packet.UnpackString(szTemp));
+          u->SetCellularNumber(packet.UnpackString(szTemp));
+          u->SetZipCode(packet.UnpackUnsignedLong());
+          u->SetCountryCode(packet.UnpackUnsignedShort());
+          u->SetTimezone(packet.UnpackChar());
+          u->SetAuthorization(!packet.UnpackChar());
+          // Unknown (web panel ?)
+          packet.UnpackChar();
+          u->SetHideEmail(packet.UnpackChar());
+          u->SetEnableSave(true);
+          u->SaveGeneralInfo();
+          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                          USER_GENERAL, nUin));
+          break;
+        }
+        case ICQ_CMDxMETA_WORKxINFO:
+        {
+          gLog.Info("%sWork info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
+          u->SetEnableSave(false);
+          u->SetCompanyCity(packet.UnpackString(szTemp));
+          u->SetCompanyState(packet.UnpackString(szTemp));
+          u->SetCompanyPhoneNumber(packet.UnpackString(szTemp));
+          u->SetCompanyFaxNumber(packet.UnpackString(szTemp));
+          u->SetCompanyAddress(packet.UnpackString(szTemp));
+          packet.UnpackUnsignedLong();
+          packet.UnpackUnsignedShort();
+          u->SetCompanyName(packet.UnpackString(szTemp));
+          u->SetCompanyDepartment(packet.UnpackString(szTemp));
+          u->SetCompanyPosition(packet.UnpackString(szTemp));
+          packet.UnpackUnsignedShort();
+          u->SetCompanyHomepage(packet.UnpackString(szTemp));
+          u->SetEnableSave(true);
+          u->SaveWorkInfo();
+          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                          USER_WORK, nUin));
+          break;
+        }
+        case ICQ_CMDxMETA_MORExINFO:
+        {
+          gLog.Info("%sMore info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
+          u->SetEnableSave(false);
+          u->SetAge(packet.UnpackUnsignedShort());
+          u->SetGender(packet.UnpackChar());
+          u->SetHomepage(packet.UnpackString(szTemp));
+          u->SetBirthYear(packet.UnpackChar());
+          u->SetBirthMonth(packet.UnpackChar());
+          u->SetBirthDay(packet.UnpackChar());
+          u->SetLanguage1(packet.UnpackChar());
+          u->SetLanguage2(packet.UnpackChar());
+          u->SetLanguage3(packet.UnpackChar());
+          u->SetEnableSave(true);
+          u->SaveWorkInfo();
+          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                          USER_MORE, nUin));
+          break;
+        }
+        case ICQ_CMDxMETA_ABOUT:
+        {
+          gLog.Info("%sAbout info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
+          u->SetAbout(packet.UnpackString(szTemp));
+          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                          USER_ABOUT, nUin));
+          break;
+        }
+      }
+      gUserManager.DropUser(u);
       break;
     }
+
     case ICQ_CMDxMETA_GENERALxINFOxRSP:
-    //case ICQ_CMDxMETA_MORExINFOxRSP:
-    //case ICQ_CMDxMETA_WORKxINFOxRSP:
+    case ICQ_CMDxMETA_MORExINFOxRSP:
+    case ICQ_CMDxMETA_WORKxINFOxRSP:
     case ICQ_CMDxMETA_ABOUTxRSP:
+      e->m_nSubResult = META_DONE;
       break;
     case ICQ_CMDxMETA_SECURITYxRSP:
     {
@@ -1485,7 +1498,8 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       p->SetHideIp(p->HideIp());
       u->SetEnableSave(true);
       u->SaveLicqInfo();
-      ProcessDoneEvent(e);*/
+      */
+      e->m_nSubResult = META_DONE;
       break;
     }
     case ICQ_CMDxMETA_PASSWORDxRSP:
@@ -1494,7 +1508,8 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       u->SetPassword( ((CPU_Meta_SetPassword)e->m_xPacket)->Password());
       u->SetEnableSave(true);
       u->SaveLicqInfo();
-      ProcessDoneEvent(e);*/
+      e->m_nSubResult = META_DONE;
+      */
       break;
     }
     default:

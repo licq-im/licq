@@ -53,6 +53,20 @@ void *ProcessRunningEvent_tep(void *p)
     pthread_testcancel();
   }
 
+#if ICQ_VERSION == 5
+  // Make sure we are the next ack in line
+  if (e->m_nSocketDesc == d->m_nUDPSocketDesc)
+  {
+    pthread_cleanup_push( (void (*)(void *))&pthread_mutex_unlock, &d->mutex_serverack);
+    pthread_mutex_lock(&d->mutex_serverack);
+    while (e->m_nSequence > (unsigned short)(d->m_nServerAck + 1))
+    {
+      pthread_cond_wait(&d->cond_serverack, &d->mutex_serverack);
+    }
+    pthread_cleanup_pop(1);
+  }
+#endif
+
   // Finalize the creation of the packet
   e->m_xPacket->Create();
 
