@@ -56,6 +56,8 @@ SearchUserView::SearchUserView(QWidget *parent)
   setColumnAlignment(1, AlignRight);
   addColumn(tr("Name"), 120);
   addColumn(tr("Email"), 120);
+  addColumn(tr("Status"), 70);
+
   setAllColumnsShowFocus (true);
   setMinimumHeight(150);
   setMinimumWidth(440);
@@ -68,11 +70,26 @@ SearchUserView::SearchUserView(QWidget *parent)
 
 SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
 {
+  char szStatus[8];
   uinVal = s->Uin();
   setText(0, QString::fromLocal8Bit(s->Alias()));
   setText(1, QString::number(s->Uin()));
   setText(2, QString::fromLocal8Bit(s->FirstName()) + QString(" ") + QString::fromLocal8Bit(s->LastName()));
   setText(3, s->Email());
+
+  switch (s->Status())
+  {
+    case 0:
+      strcpy(szStatus, "Offline");
+      break;
+   case 1:
+      strcpy(szStatus, "Online");
+      break;
+   case 2:
+   default:
+      strcpy(szStatus, "Unknown");
+  }
+  setText(4, QString::fromLocal8Bit(szStatus));
 }
 
 
