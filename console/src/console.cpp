@@ -47,6 +47,8 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   m_bShowDividers = true;
   m_nCurrentGroup = 2;
   m_nGroupType = GROUPS_USER;
+
+  m_bExit = false;
 }
 
 
@@ -68,8 +70,9 @@ CLicqConsole::~CLicqConsole(void)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::Shutdown(void)
 {
-  gLog.Info("%sShutting down console.\n", L_ENDxSTR);
+  gLog.Info("%sShutting down console.\n", L_CONSOLExSTR);
   gLog.ModifyService(S_PLUGIN, 0);
+  licqDaemon->UnregisterPlugin();
 }
 
 
@@ -109,7 +112,6 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   winLog = winCon[0];
   SwitchToCon(1);
 
-  //winMain->RefreshWin();
   PrintStatus();
   PrintPrompt();
 
@@ -258,10 +260,14 @@ void CLicqConsole::ProcessPipe(void)
 
   case 'X':  // Shutdown
   {
-    gLog.Info("%sExiting console.\n", L_ENDxSTR);
+    gLog.Info("%sExiting console.\n", L_CONSOLExSTR);
     m_bExit = true;
     break;
   }
+
+  case '0':
+  case '1':
+    break;
 
   default:
     gLog.Warn("%sUnknown notification type from daemon: %c.\n", L_WARNxSTR, buf[0]);

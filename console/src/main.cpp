@@ -27,6 +27,12 @@ const char *LP_Version(void)
   return version;
 }
 
+const char *LP_Status(void)
+{
+  static const char status[] = "running";
+  return status;
+}
+
 bool LP_Init(int argc, char **argv)
 {
   //char *LocaleVal = new char;

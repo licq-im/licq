@@ -11,6 +11,7 @@
 #include "user.h"
 
 #define MAX_CON 8
+const char L_CONSOLExSTR[] = "[CON] ";
 
 
 class CLicqConsole
