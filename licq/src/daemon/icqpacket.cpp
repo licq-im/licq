@@ -766,8 +766,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   if (m_nTimezone > 23) m_nTimezone = 23 - m_nTimezone;
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   m_nAuthorization = o->GetAuthorization() ? 0 : 1;
-  //m_nWebAware = o->GetWebAware() ? 1 : 0;
-  m_nWebAware = 1;
+  m_nWebAware = o->WebAware() ? 1 : 0;
   gUserManager.DropOwner();
   m_nHideEmail = bHideEmail ? 1 : 0;
 
@@ -888,6 +887,21 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
 
   buffer->PackUnsignedShort(m_nMetaCommand);
   m_szAbout = buffer->PackString(szAbout);
+
+}
+
+
+//-----Meta_SetPassword---------------------------------------------------------
+CPU_Meta_SetPassword::CPU_Meta_SetPassword(const char *szPassword)
+  : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_PASSWORDxSET;
+
+  m_nSize += strlen(szPassword) + 5;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(m_nMetaCommand);
+  m_szPassword = buffer->PackString(szPassword);
 
 }
 
