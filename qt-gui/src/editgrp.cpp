@@ -133,7 +133,7 @@ void EditGrpDlg::slot_remove()
 
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   QString warning(tr("Are you sure you want to remove\n"
-                     "the group '%1'?").arg((*g)[n-1]));
+                     "the group '%1'?").arg(QString::fromLocal8Bit((*g)[n-1])));
   gUserManager.UnlockGroupList();
 
   if(QueryUser(this, warning, tr("Ok"), tr("Cancel"))) {
