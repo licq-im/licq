@@ -1082,7 +1082,11 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     u->SetStatus(nStatus);
     u->SetAutoResponse(NULL);
     if (bNewUser)
+    {
       AddUserToList(u);
+      CICQEventTag *t = icqRequestMetaInfo(nUin);
+      delete t;
+    }
     else
       gUserManager.DropUser(u);
 
@@ -1698,7 +1702,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       u = gUserManager.FetchUser(nUin, LOCK_W);
       if (u == NULL)
       {
-        gLog.Warn("%sReceived meta information on deleted user (%ld).\n",
+        gLog.Warn("%sReceived meta information on unknown user (%ld).\n",
                   L_WARNxSTR, nUin);
         break;
       }
