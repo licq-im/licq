@@ -1,7 +1,7 @@
 #ifndef ONEVENT_H
 #define ONEVENT_H
 
-#include <pthread.h>
+#include "pthread_rdwr.h"
 
 class ICQUser;
 

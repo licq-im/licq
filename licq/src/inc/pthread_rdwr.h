@@ -3,6 +3,13 @@
 
 #include <pthread.h>
 
+#ifdef connect
+#undef connect
+#endif
+#ifdef accept
+#undef accept
+#endif
+
 /********************************************************
  * An example source module to accompany...
  *

@@ -8,9 +8,9 @@
 #include <stdarg.h>
 #include <vector.h>
 #include <stdio.h>
-#include <pthread.h>
 #include <list.h>
 
+#include "pthread_rdwr.h"
 #include "constants.h"
 
 // Info: basic information about what's going on
