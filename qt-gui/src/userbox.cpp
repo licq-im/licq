@@ -76,6 +76,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, short _nIndex, QListView *parent)
   else
   {
     m_nUin = _cUser->Uin();
+    m_status = _cUser->Status();
     setGraphics(_cUser);
   }
 
@@ -279,11 +280,21 @@ CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
      setColumnAlignment(i + 1, pow(2, colInfo[i]->m_nAlign));
    }
 
+   m_tips = new CUserViewTips(this);
+
    setAllColumnsShowFocus (true);
    setFrameStyle(QFrame::Panel | QFrame::Sunken);
    setShowHeader(isHeader);
    setGridLines(_bGridLines);
    setFontStyles(_bFontStyles);
+}
+
+// -----------------------------------------------------------------------------
+// CUserView destructor
+
+CUserView::~CUserView()
+{
+  delete m_tips;
 }
 
 
@@ -343,7 +354,7 @@ void CUserView::setShowHeader(bool isHeader)
 }
 
 
-unsigned long CUserView::SelectedItemUin(void)
+unsigned long CUserView::SelectedItemUin()
 {
    CUserViewItem *i = (CUserViewItem *)currentItem();
    if (i == NULL) return (0);
@@ -491,15 +502,7 @@ void CUserView::keyPressEvent(QKeyEvent *e)
 
 }
 
-/*
-void CUserView::keyPressEvent(QKeyEvent *e)
-{
-   if (externKeyPressEvent(e)) return;
-   QListView::keyPressEvent(e);
-}
-*/
-
-void CUserView::maxLastColumn(void)
+void CUserView::maxLastColumn()
 {
   unsigned short totalWidth = 0;
   unsigned short nNumCols = header()->count();
@@ -519,6 +522,23 @@ void CUserView::maxLastColumn(void)
     setColumnWidth(nNumCols - 1, newWidth);
   }
 }
+
+#if 0
+void CUserView::dragEnterEvent(QDragEnterEvent*)
+{
+  debug("received dragEnterEvent");
+}
+
+void CUserView::dragMoveEvent(QDragMoveEvent*)
+{
+  debug("received dragMoveEvent");
+}
+
+void CUserView::dropEvent(QDropEvent*)
+{
+  debug("received dropEvent");
+}
+#endif
 
 /*
 #ifdef USE_KDE
@@ -568,5 +588,27 @@ void CUserView::slot_dropLeave(KDNDDropZone *) {}
 
 #endif
 */
+
+//=====CUserViewTips===============================================================================
+
+CUserViewTips::CUserViewTips(CUserView* parent)
+  : QToolTip(parent)
+{
+  // nothing to do
+}
+
+void CUserViewTips::maybeTip(const QPoint& c)
+{
+  QListView* w = (QListView*) parentWidget();
+  CUserViewItem* item = (CUserViewItem*) w->itemAt(c);
+
+  if(item && item->m_nUin) {
+    char s[32];
+
+    ICQUser::StatusToStatusStr(item->m_status, false, s);
+    tip(w->itemRect(item), QString(s));
+  }
+}
+
 
 #include "moc/moc_userbox.h"
