@@ -2752,6 +2752,15 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               {
                 gLog.Info("%sUser %s updated successfully.\n", L_SRVxSTR,
                           szPending);
+                if (nError == 0x0E)
+                {
+                  pReply = new CPU_UpdateToServerList(szPending,
+		                 ICQ_ROSTxNORMAL, 0, true);
+		  pthread_mutex_lock(&mutex_modifyserverusers);
+		  m_lszModifyServerUsers.push_back(strdup(szPending));
+		  pthread_mutex_unlock(&mutex_modifyserverusers);
+		  SendExpectEvent_Server(0, pReply, NULL);
+                }
               }
             }
 

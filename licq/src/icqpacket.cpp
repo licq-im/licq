@@ -1904,7 +1904,8 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
 //-----UpdateToServerList---------------------------------------------------
 CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
                                                unsigned short _nType,
-                                               unsigned short _nGSID /* only for groups */)
+                                               unsigned short _nGSID, // only for groups
+                                               bool _bAuthReq)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
 {
   unsigned long nUin = 0;
@@ -1961,7 +1962,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
     }
   }
 
-  m_nSize += 10 + nNameLen + nExtraLen;
+  m_nSize += 10 + nNameLen + nExtraLen + (_bAuthReq ? 4 : 0);
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nNameLen);
@@ -1969,7 +1970,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   buffer->PackUnsignedShortBE(nGSID);
   buffer->PackUnsignedShortBE(nSID);
   buffer->PackUnsignedShortBE(_nType);
-  buffer->PackUnsignedShortBE(nExtraLen);
+  buffer->PackUnsignedShortBE(nExtraLen + (_bAuthReq ? 4 : 0));
   if (nExtraLen)
   {
     if (_nType == ICQ_ROSTxNORMAL)
@@ -2002,6 +2003,9 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
       }
     }
   }
+
+  if (_bAuthReq)
+    buffer->PackUnsignedLongBE(0x00660000);
 
   if (szUnicodeName)
     delete [] szUnicodeName;

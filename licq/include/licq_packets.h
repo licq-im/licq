@@ -363,7 +363,7 @@ class CPU_UpdateToServerList : public CPU_CommonFamily
 {
 public:
   CPU_UpdateToServerList(const char *_szName, unsigned short _nType,
-                         unsigned short _nSID = 0);
+                         unsigned short _nSID = 0, bool _bAuthReq = false);
 };
 
 //-----SetStatus----------------------------------------------------------------
