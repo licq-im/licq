@@ -67,7 +67,7 @@ SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
   uinVal = s->nUin;
   setText(0, s->szAlias);
   setText(1, QString::number(s->nUin));
-  setText(2, QString::fromLocal8Bit(s->szFirstName) + QString::fromLocal8Bit(s->szLastName));
+  setText(2, QString::fromLocal8Bit(s->szFirstName) + QString(" ") + QString::fromLocal8Bit(s->szLastName));
   setText(3, s->szEmail);
 }
 
