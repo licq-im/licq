@@ -14,10 +14,8 @@ public:
   void append(const QString& s);
   void GotoEnd();
 
-#if QT_VERSION >= 300
   using QMultiLineEdit::hasMarkedText;
   using QMultiLineEdit::markedText;
-#endif
 
   void setBackground(const QColor&);
   void setForeground(const QColor&);
@@ -30,11 +28,6 @@ protected:
   virtual void keyPressEvent( QKeyEvent * );
   virtual void setCellWidth ( int );
   bool focusNextPrevChild( bool n);
-
-#if QT_VERSION < 300
-  using QMultiLineEdit::hasMarkedText;
-  using QMultiLineEdit::markedText;
-#endif
 
 signals:
   void signal_CtrlEnterPressed();

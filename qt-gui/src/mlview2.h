@@ -17,6 +17,9 @@ public:
   void setBackground(const QColor&);
   void setForeground(const QColor&);
 
+  using QMultiLineEdit::hasMarkedText;
+  using QMultiLineEdit::markedText;
+
   // Determines whether "quoted" (begining with ">") lines should be
   // specially formatted.
   void setFormatQuoted(bool enable);
@@ -24,9 +27,6 @@ public:
 protected:
   virtual void setCellWidth ( int );
   virtual void paintCell(QPainter *p, int row, int col);
-
-  using QMultiLineEdit::hasMarkedText;
-  using QMultiLineEdit::markedText;
 
 private:
   bool m_bFormatQuoted;
