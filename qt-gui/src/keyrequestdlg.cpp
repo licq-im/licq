@@ -54,6 +54,7 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
   {
     case SECURE_CHANNEL_SUPPORTED:
       t2 = tr("The remote uses Licq v0.%1/SSL.").arg(u->LicqVersion());
+      QTimer::singleShot(0, this, SLOT(startSend()));
       break;
 
     case SECURE_CHANNEL_NOTSUPPORTED:
@@ -138,17 +139,24 @@ void KeyRequestDlg::startSend()
   if (m_bOpen)
   {
     lblStatus->setText(tr("Requesting secure channel..."));
-    QApplication::syncX();
-    icqEventTag = gLicqDaemon->icqOpenSecureChannel(m_nUin);
+    QTimer::singleShot(100, this, SLOT(openConnection()));
   }
   else
   {
     lblStatus->setText(tr("Closing secure channel..."));
-    QApplication::syncX();
-    icqEventTag = gLicqDaemon->icqCloseSecureChannel(m_nUin);
+    QTimer::singleShot(100, this, SLOT(closeConnection()));
   }
 }
 
+void KeyRequestDlg::openConnection()
+{
+  icqEventTag = gLicqDaemon->icqOpenSecureChannel(m_nUin);
+}
+
+void KeyRequestDlg::closeConnection()
+{
+  icqEventTag = gLicqDaemon->icqCloseSecureChannel(m_nUin);
+}
 
 void KeyRequestDlg::done(int r)
 {
@@ -196,6 +204,7 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
     if(e->Result() == EVENT_SUCCESS) {
       btnSend->setEnabled(false);
       btnCancel->setFocus();
+      QTimer::singleShot(500, this, SLOT(close()));
     }
     else
       btnSend->setEnabled(true);
