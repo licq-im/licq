@@ -238,6 +238,7 @@ void *Ping_tep(void *p)
   while (true)
   {
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
+    d->FlushStats();
     switch(d->m_eStatus)
     {
     case STATUS_ONLINE:
@@ -250,10 +251,13 @@ void *Ping_tep(void *p)
         d->icqRelogon();
       break;
     }
+    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+    pthread_testcancel();
+
     tv.tv_sec = PING_FREQUENCY;
     tv.tv_usec = 0;
     select(0, NULL, NULL, NULL, &tv);
-    pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
+
     pthread_testcancel();
   }
   return NULL;
@@ -395,13 +399,14 @@ void *MonitorSockets_tep(void *p)
                 gLog.Info("%sConnection to %d lost:\n%s%s.\n", L_TCPxSTR, tcp->Owner(),
                           L_BLANKxSTR, tcp->ErrorStr(buf, 128));
               }
-              ICQUser *u = gUserManager.FetchUser(tcp->Owner(), LOCK_W);
+              /*ICQUser *u = gUserManager.FetchUser(tcp->Owner(), LOCK_W);
               if (u != NULL)
               {
                 u->SetSocketDesc(-1);
                 gUserManager.DropUser(u);
-              }
+              }*/
               gSocketManager.DropSocket(tcp);
+              gSocketManager.CloseSocket(nCurrentSocket);
               // Go through all running events and fail all from this socket
               ICQEvent *e = NULL;
               do
@@ -433,7 +438,7 @@ void *MonitorSockets_tep(void *p)
                 }
               } while (e != NULL);
 
-              gSocketManager.CloseSocket(nCurrentSocket);
+              //gSocketManager.CloseSocket(nCurrentSocket);
               break;
             }
             if (tcp->RecvBufferFull())
@@ -512,6 +517,9 @@ void *Shutdown_tep(void *p)
 
   gSocketManager.CloseSocket(d->m_nTCPSocketDesc);
   if (d->m_nUDPSocketDesc != -1) d->icqLogoff();
+
+  // Flush the stats
+  d->FlushStats();
 
   // Signal that we are shutdown
   pthread_mutex_lock(&LP_IdMutex);
