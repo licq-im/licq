@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Licq qt-gui\n"
 "POT-Creation-Date: 2003-02-03 12:00+200\n"
-"PO-Revision-Date: 2003-12-13 18:24+200\n"
+"PO-Revision-Date: 2004-08-24 12:00+200\n"
 "Last-Translator: Thomas Reitelbach <tr@erdfunkstelle.de>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: german <licq-devel@licq.org>\n"
@@ -103,6 +103,9 @@ msgstr "Neue Benutzer Id:"
 
 msgid "AddUserDlg::New User ID:"
 msgstr "Neue Benutzer ID:"
+
+msgid "AddUserDlg::Protocol:"
+msgstr "Protokoll:"
 
 msgid "AuthUserDlg::&Ok"
 msgstr "&Ok"
@@ -806,6 +809,39 @@ msgstr ""
 msgid "CMainWindow::Do you really want to reset your stats?"
 msgstr "Möchten Sie wirklich Ihre Statistiken auf 0 zurücksetzen?"
 
+msgid "CMainWindow::<b>%1</b> is online"
+msgstr "<b>%1</b> ist online"
+
+msgid "CMainWindow::Don't Show"
+msgstr "Nicht zeigen"
+
+msgid "CMainWindow::Available"
+msgstr "Erreichbar"
+
+msgid "CMainWindow::Busy"
+msgstr "Besetzt"
+
+msgid "CMainWindow::Phone \"Follow Me\""
+msgstr "Telefon folgen"
+
+msgid "CMainWindow::&Owner Manager"
+msgstr "&Eigentümer-Manager"
+
+msgid "CMainWindow::Update Info Plugin List"
+msgstr "Info-Plugin-Liste aktualisieren"
+
+msgid "CMainWindow::Update Status Plugin List"
+msgstr "Status-Plugin-Liste aktualisieren"
+
+msgid "CMainWindow::Update Phone \"Follow Me\" Status"
+msgstr "\"Telefon folgen\"-Status aktualisieren"
+
+msgid "CMainWindow::Update ICQphone Status"
+msgstr "ICQphone-Status aktualisieren"
+
+msgid "CMainWindow::Update File Server Status"
+msgstr "Dateiserver-Status aktualisieren"
+
 msgid "CQtLogWindow::&Save"
 msgstr "&Speichern"
 
@@ -1028,6 +1064,24 @@ msgstr "minute"
 msgid "CUserView::0 minutes"
 msgstr "0 minuten"
 
+msgid "CUserView::<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Available"
+msgstr "<br>&quot;Telefon&nbsp;folgen&quot;:&nbsp;verf&uuml;gbar"
+
+msgid "CUserView::<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Busy"
+msgstr "<br>;&quot;Telefon&nbsp;folgen&quot;:&nbsp;Besetzt"
+
+msgid "CUserView::<br>ICQphone:&nbsp;Available"
+msgstr "<br>ICQphone:&nbsp;Verf&uuml;gbar"
+
+msgid "CUserView::<br>ICQphone:&nbsp;Busy"
+msgstr "<br>ICQphone:&nbsp;Besetzt"
+
+msgid "CUserView::<br>File&nbsp;Server:&nbsp;Enabled"
+msgstr "<br>Datei-Server:&nbsp;Aktiviert"
+
+msgid "CUserView::<br><nobr>"
+msgstr "<br><nobr>"
+
 msgid "CUtilityDlg::GUI"
 msgstr "GUI"
 
@@ -1223,6 +1277,15 @@ msgstr "Ich bin momentan %1.\nSie können mir eine Nachricht hinterlassen."
 msgid "CustomAwayMsgDlg::&Cancel"
 msgstr "Ab&brechen"
 
+msgid "EditCategoryDlg::Unspecified"
+msgstr "Undefiniert"
+
+msgid "EditCategoryDlg::&OK"
+msgstr "&Ok"
+
+msgid "EditCategoryDlg::&Cancel"
+msgstr "Ab&brechen"
+
 msgid "EditFileDlg::&Save"
 msgstr "&Speichern"
 
@@ -1303,6 +1366,84 @@ msgstr "&Speichern"
 
 msgid "EditGrpDlg::Save the name of a group being modified."
 msgstr "Speichert den Namen der gerade bearbeiteten Gruppe."
+
+msgid "EditPhoneDlg::Description:"
+msgstr "Beschreibung:"
+
+msgid "EditPhoneDlg::Home Phone"
+msgstr "Telefon privat"
+
+msgid "EditPhoneDlg::Work Phone"
+msgstr "Telefon geschäftlich"
+
+msgid "EditPhoneDlg::Private Cellular"
+msgstr "Mobiltelefon privat"
+
+msgid "EditPhoneDlg::Work Cellular"
+msgstr "Mobiltelefon geschäftlich"
+
+msgid "EditPhoneDlg::Home Fax"
+msgstr "Fax privat"
+
+msgid "EditPhoneDlg::Work Fax"
+msgstr "Fax geschäftlich"
+
+msgid "EditPhoneDlg::Wireless Pager"
+msgstr "Funkruf"
+
+msgid "EditPhoneDlg::Type:"
+msgstr "Typ:"
+
+msgid "EditPhoneDlg::Phone"
+msgstr "Telefon"
+
+msgid "EditPhoneDlg::Cellular"
+msgstr "Mobil"
+
+msgid "EditPhoneDlg::Cellular SMS"
+msgstr "SMS Mobil"
+
+msgid "EditPhoneDlg::Fax"
+msgstr "Fax"
+
+msgid "EditPhoneDlg::Pager"
+msgstr ""
+
+msgid "EditPhoneDlg::Country:"
+msgstr "Land:"
+
+msgid "EditPhoneDlg::Network #/Area code:"
+msgstr "Ortsvorwahl:"
+
+msgid "EditPhoneDlg::Number:"
+msgstr "Rufnummer:"
+
+msgid "EditPhoneDlg::Extension:"
+msgstr "Erweiterung:"
+
+msgid "EditPhoneDlg::Provider:"
+msgstr "Anbieter:"
+
+msgid "EditPhoneDlg::Custom"
+msgstr "Benutzerdefiniert"
+
+msgid "EditPhoneDlg::E-mail Gateway:"
+msgstr "E-mail Gateway:"
+
+msgid "EditPhoneDlg::Remove leading 0s from Area Code/Network #"
+msgstr "Führende Null (0) von der Ortsvorwahl entfernen"
+
+msgid "EditPhoneDlg::&OK"
+msgstr "&Ok"
+
+msgid "EditPhoneDlg::&Cancel"
+msgstr "Ab&brechen"
+
+msgid "EditPhoneDlg::@"
+msgstr "@"
+
+msgid "EditPhoneDlg::Please enter a phone number"
+msgstr "Bitte geben Sie eine Telefonnummer ein"
 
 msgid "Event::SMS"
 msgstr "SMS"
@@ -2095,6 +2236,90 @@ msgstr "Tabs aktivieren"
 
 msgid "OptionsDlg::Use tabs in Send Window"
 msgstr "Verwendet Tabs um mehrere Sendefenster in einem zu kombinieren"
+
+msgid "OptionsDlg::Small Icon"
+msgstr "Kleines Symbol"
+
+msgid "OptionsDlg::Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers."
+msgstr "Verwendet den freedesktop.org Standard zum andocken eines kleinen Symbols in den Fenstermanager.  Dies funktioniert mit vielen verschiedenen Fenstermanagern."
+
+msgid "OptionsDlg::Connection"
+msgstr "Verbindung"
+
+msgid "OptionsDlg::Reconnect after Uin clash"
+msgstr "Nach Uin-Konflikt erneut verbinden"
+
+msgid "OptionsDlg::Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically."
+msgstr "Wenn die Verbindung beendet wurde, weil Ihre Uin von einem anderen Ort aus verwendet wurde, kann Licq die Verbindung wiederherstellen. Wenn Sie automatisch wiederverbunden werden möchten, aktivieren Sie diese Option."
+
+msgid "OptionsDlg::Auto Update"
+msgstr "Automatisches aktualisieren"
+
+msgid "OptionsDlg::Auto Update Info"
+msgstr "Info automatisch aktualisieren"
+
+msgid "OptionsDlg::Automatically update users' server stored information."
+msgstr "Aktualisiert automatisch die vom Benutzer auf dem Server gespeicherten Informationen."
+
+msgid "OptionsDlg::Auto Update Info Plugins"
+msgstr "Info-Plugins automatisch aktualisieren"
+
+msgid "OptionsDlg::Automatically update users' Phone Book and Picture."
+msgstr "Aktualisiert automatisch das auf dem Server gespeicherte Telefonbuch und Bild."
+
+msgid "OptionsDlg::Auto Update Status Plugins"
+msgstr "Status-Plugins automatisch aktualisieren"
+
+msgid "OptionsDlg::Automatically update users' Phone \"Follow Me\", File Server and ICQphone status."
+msgstr "Aktualisiert automatisch die auf dem Server gespeicherten Informationen zu \"Telefon folgen\", Dateiserver und ICQphone."
+
+msgid "OwnerEditDlg::Edit Owner"
+msgstr "Eigentümer bearbeiten"
+
+msgid "OwnerEditDlg::User ID:"
+msgstr "Benutzer-ID:"
+
+msgid "OwnerEditDlg::Password:"
+msgstr "Passwort:"
+
+msgid "OwnerEditDlg::Protocol:"
+msgstr "Protokoll:"
+
+msgid "OwnerEditDlg::Currently only one owner per protocol is supported."
+msgstr "Zur Zeit wird nur ein Eigentümer pro Protokoll unterstützt."
+
+msgid "OwnerEditDlg::&Ok"
+msgstr "&Ok"
+
+msgid "OwnerEditDlg::&Cancel"
+msgstr "Ab&brechen"
+
+msgid "OwnerManagerDlg::Licq - Owner Manager"
+msgstr "Licq - Eigentümer-Manager"
+
+msgid "OwnerManagerDlg::&Add"
+msgstr "&Hinzufügen"
+
+msgid "OwnerManagerDlg::&Modify"
+msgstr "&Bearbeiten"
+
+msgid "OwnerManagerDlg::D&elete"
+msgstr "&Löschen"
+
+msgid "OwnerManagerDlg::&Done"
+msgstr "&Fertig"
+
+msgid "OwnerView::User ID"
+msgstr "Benutzer-ID"
+
+msgid "OwnerView::Protocol"
+msgstr "Protokoll"
+
+msgid "OwnerView::(Invalid ID)"
+msgstr "(Ungültige ID)"
+
+msgid "OwnerView::Invalid Protocol"
+msgstr "Ungültiges Protokoll"
 
 msgid "PluginDlg::Id"
 msgstr "Id"
@@ -2920,6 +3145,81 @@ msgstr "S&enden"
 
 msgid "UserInfoDlg::ID:"
 msgstr "ID:"
+
+msgid "UserInfoDlg::Category:"
+msgstr "Kategorie:"
+
+msgid "UserInfoDlg::Description:"
+msgstr "Beschreibung:"
+
+msgid "UserInfoDlg::User has an ICQ Homepage "
+msgstr "Benutzer hate eine ICQ Homepage"
+
+msgid "UserInfoDlg::User has no ICQ Homepage"
+msgstr "Benutzer hat keine ICQ Homepage"
+
+msgid "UserInfoDlg::M&ore II"
+msgstr "&Noch mehr"
+
+msgid "UserInfoDlg::(none)"
+msgstr "(keine)"
+
+msgid "UserInfoDlg::Occupation:"
+msgstr "Beruf:"
+
+msgid "UserInfoDlg::&Phone"
+msgstr "&Telefon"
+
+msgid "UserInfoDlg::Type"
+msgstr "Typ"
+
+msgid "UserInfoDlg::Number/Gateway"
+msgstr "Rufnummer/Gateway"
+
+msgid "UserInfoDlg::Country/Provider"
+msgstr "Land/Anbieter"
+
+msgid "UserInfoDlg::Currently at:"
+msgstr "Zur Zeit erreichbar unter:"
+
+msgid "UserInfoDlg::("
+msgstr "("
+
+msgid "UserInfoDlg::) "
+msgstr ")"
+
+msgid "UserInfoDlg::-"
+msgstr "-"
+
+msgid "UserInfoDlg::P&icture"
+msgstr "B&ild"
+
+msgid "UserInfoDlg::Not Available"
+msgstr "Nicht verfügbar"
+
+msgid "UserInfoDlg::Failed to Load"
+msgstr "Fehler beim Laden"
+
+msgid "UserInfoDlg::&Add"
+msgstr "&Hinzufügen"
+
+msgid "UserInfoDlg::&Clear"
+msgstr "&Löschen"
+
+msgid "UserInfoDlg::&Browse"
+msgstr "&Durchsuchen"
+
+msgid "UserInfoDlg::Select your picture"
+msgstr "Bitte Ihr Bild auswählen"
+
+msgid "UserInfoDlg:: is over %1 bytes.\nSelect another picture?"
+msgstr "is größer als %1 Bytes.\nEin anderes Bild auswählen?"
+
+msgid "UserInfoDlg::Yes"
+msgstr "Ja"
+
+msgid "UserInfoDlg::No"
+msgstr "Nein"
 
 msgid "UserSelectDlg::&User:"
 msgstr "&Benutzer:"
