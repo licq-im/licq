@@ -1965,11 +1965,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   {
     case ICQ_ROSTxNORMAL:
     {
-      unsigned long nUin;
-      sscanf(_szName, "%lu", &nUin);
-
       // Save the SID
-      u = gUserManager.FetchUser(nUin, LOCK_W);
+      u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_W);
       u->SetSID(m_nSID);
       u->SetAwaitingAuth(_bAuthReq);
 
@@ -2044,10 +2041,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     {
       m_nGSID = 0;
 
-      unsigned long nUin;
-      sscanf(_szName, "%lu", &nUin);
-
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+      ICQUser *u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_W);
       if (_nType == ICQ_ROSTxIGNORE)
       {
         u->SetSID(m_nSID);
@@ -2198,7 +2192,6 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
                                                bool _bAuthReq)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxUPD_GROUP)
 {
-  unsigned long nUin = 0;
   unsigned short nGSID = 0;
   unsigned short nSID = 0;
   unsigned short nExtraLen = 0;
@@ -2210,8 +2203,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   {
     case ICQ_ROSTxNORMAL:
     {
-      sscanf(_szName, "%lu", &nUin);
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      ICQUser *u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_R);
       if (u)
       {
         if (u->GetAwaitingAuth())
