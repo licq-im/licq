@@ -60,14 +60,15 @@ const struct SLanguage gLanguages[NUM_LANGUAGES] =
   { "Swahili", 44, 48 },
   { "Swedish", 45, 49 },
   { "Tagalog", 46, 50 },
-  { "Tatar", 47, 51 },
-  { "Thai", 48, 52 },
-  { "Turkish", 49, 53 },
-  { "Ukrainian", 50, 54 },
-  { "Urdu", 51, 55 },
-  { "Vietnamese", 52, 56 },
-  { "Yiddish", 53, 57 },
-  { "Yoruba", 54, 58 },
+  { "Taiwanese", 64, 51 },
+  { "Tatar", 47, 52 },
+  { "Thai", 48, 53 },
+  { "Turkish", 49, 54 },
+  { "Ukrainian", 50, 55 },
+  { "Urdu", 51, 56 },
+  { "Vietnamese", 52, 57 },
+  { "Yiddish", 53, 58 },
+  { "Yoruba", 54, 59 },
 };
 
 

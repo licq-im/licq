@@ -6,7 +6,7 @@ extern "C" {
 #endif
 
 #define LANGUAGE_UNSPECIFIED  0
-#define NUM_LANGUAGES 59
+#define NUM_LANGUAGES 60
 
 struct SLanguage
 {
