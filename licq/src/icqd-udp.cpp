@@ -154,7 +154,7 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
   if (o->Password()[0] == '\0')
   {
     gUserManager.DropOwner();
-    gLog.Error("%sNo password set.  Edit ~/.licq/owner.uin and fill in the password field.\n", L_ERRORxSTR);
+    gLog.Error(tr("%sNo password set.  Edit ~/.licq/owner.Licq and fill in the password field.\n"), L_ERRORxSTR);
     return 0;
   }
   char *passwd = strdup(o->Password());

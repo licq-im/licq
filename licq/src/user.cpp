@@ -3601,7 +3601,7 @@ ICQOwner::ICQOwner()
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.Licq", BASE_DIR);
   filename[MAX_FILENAME_LEN - 1] = '\0';
 
-  // Make sure owner.uin is mode 0600
+  // Make sure owner.Licq is mode 0600
   if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
   {
     gLog.Warn(tr("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"),
@@ -3663,7 +3663,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.%s", BASE_DIR, p);
   filename[MAX_FILENAME_LEN - 1] = '\0';
 
-  // Make sure owner.uin is mode 0600
+  // Make sure owner.Licq is mode 0600
   if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
   {
     gLog.Warn(tr("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"),
