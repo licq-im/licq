@@ -77,4 +77,19 @@ void MLEditWrap::paintCell(QPainter* p, int row, int col)
   QMultiLineEdit::paintCell(p, row, col);
 }
 
+void MLEditWrap::setCellWidth ( int cellW )
+{
+#if QT_VERSION == 210
+    if ( cellWidth() == cellW )
+        return;
+
+    QTableView::setCellWidth(cellW);
+
+    if ( autoUpdate() && isVisible() )
+        repaint();
+#else
+    QTableView::setCellWidth(cellWidth);
+#endif
+}
+
 #include "mledit.moc"

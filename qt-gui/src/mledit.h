@@ -18,6 +18,7 @@ public:
 protected:
   bool m_bDoQuotes;
   virtual void paintCell(QPainter *p, int row, int col);
+  virtual void setCellWidth ( int );
 
 signals:
   void signal_CtrlEnterPressed();
