@@ -704,8 +704,7 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
       while (i && i->ItemUin() != _nUin)
         i = (CUserViewItem *)i->nextSibling();
       if (i) {
-        if ((u->Status() != i->Status()) &&
-            (m_bShowOffline || !u->StatusOffline())) {
+        if (m_bShowOffline || !u->StatusOffline()) {
           delete i; i = 0;
           (void) new CUserViewItem(u, userView);
           userView->triggerUpdate();
