@@ -20,6 +20,9 @@ extern char *hebrev (char* pszStr);
 }
 #endif
 
+#ifdef PROTOCOL_PLUGIN
+extern char *PPIDSTRING(unsigned long);
+#endif
 
 int CUserEvent::s_nId = 1;
 
@@ -346,6 +349,23 @@ void CEventChat::AddToHistory(ICQUser *u, direction _nDir)
 
 
 //=====CEventAdded==============================================================
+#ifdef PROTOCOL_PLUGIN
+CEventAdded::CEventAdded(const char *_szId, unsigned long _nPPID, const char *_szAlias,
+                         const char *_szFirstName,const char *_szLastName,
+                         const char *_szEmail, unsigned short _nCommand,
+                         time_t _tTime, unsigned long _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_ADDEDxTOxLIST, _nCommand, 0, _tTime, _nFlags)
+{
+  m_szId = strdup(_szId);
+  m_szAlias = strdup(_szAlias);
+  m_szFirstName = strdup(_szFirstName);
+  m_szLastName = strdup(_szLastName);
+  m_szEmail = strdup(_szEmail);
+  m_nUin = 0;
+  m_nPPID =_nPPID;
+}
+#endif
+
 CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
                          const char *_szFirstName,const char *_szLastName,
                          const char *_szEmail, unsigned short _nCommand,
@@ -357,17 +377,33 @@ CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
   m_szLastName = strdup(_szLastName);
   m_szEmail = strdup(_szEmail);
   m_nUin = _nUin;
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%lu", _nUin);
+  m_szId = strdup(szUin);
+  m_nPPID = LICQ_PPID;
+#endif
 }
 
 void CEventAdded::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(m_nPPID);
+  m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
+                      strlen(m_szLastName) + strlen(m_szEmail) +
+                      strlen(m_szId) + strlen(p) + 1];
+  sprintf(m_szText, "Alias %s\nUser: %s\nProtocol: %s\nName: %s %s\nEmail: %s\n",
+    m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
+  delete [] p;
+#else
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
                       strlen(m_szLastName) + strlen(m_szEmail) + 512];
   //sprintf(m_szText, "%s (%s %s, %s), uin %ld, added you to their contact list.\n",
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin);
   sprintf(m_szText, "Alias: %s\nUin: %ld\nName: %s %s\nEmail: %s\n",
      m_szAlias, m_nUin, m_szFirstName, m_szLastName, m_szEmail);
+#endif
 }
 
 
@@ -377,16 +413,30 @@ CEventAdded::~CEventAdded()
   free (m_szFirstName);
   free (m_szLastName);
   free (m_szEmail);
+#ifdef PROTOCOL_PLUGIN
+  free (m_szId);
+#endif
 }
 
 void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
 {
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(m_nPPID);
+  char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
+                    strlen(m_szLastName) + strlen(m_szEmail) + strlen(m_szId) +
+                    strlen(p)) * 2 + 20 + EVENT_HEADER_SIZE];
+  int nPos = AddToHistory_Header(_nDir, szOut);
+  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n:%s\n", m_szId,
+                  p, m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+  delete [] p;
+#else
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
                     strlen(m_szLastName) + strlen(m_szEmail)) * 2 + 16 +
                    EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%ld\n:%s\n:%s\n:%s\n:%s\n", m_nUin,
                   m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+#endif
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
@@ -394,6 +444,25 @@ void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
 
 
 //=====CEventAuthReq===============================================================
+#ifdef PROTOCOL_PLUGIN
+CEventAuthRequest::CEventAuthRequest(const char *_szId, unsigned long _nPPID,
+                       const char *_szAlias, const char *_szFirstName,
+                       const char *_szLastName, const char *_szEmail,
+                       const char *_szReason, unsigned short _nCommand,
+                       time_t _tTime, unsigned long _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_AUTHxREQUEST, _nCommand, 0, _tTime, _nFlags)
+{
+   m_szId = strdup(_szId);
+   m_szAlias = strdup(_szAlias);
+   m_szFirstName = strdup(_szFirstName);
+   m_szLastName = strdup(_szLastName);
+   m_szEmail = strdup(_szEmail);
+   m_szReason = strdup(_szReason);
+   m_nPPID = _nPPID;
+   m_nUin = 0;
+}
+#endif
+
 CEventAuthRequest::CEventAuthRequest(unsigned long _nUin, const char *_szAlias,
                        const char *_szFirstName,const char *_szLastName,
                        const char *_szEmail, const char *_szReason,
@@ -406,12 +475,29 @@ CEventAuthRequest::CEventAuthRequest(unsigned long _nUin, const char *_szAlias,
    m_szLastName = strdup(_szLastName);
    m_szEmail = strdup(_szEmail);
    m_szReason = strdup(_szReason);
+#ifdef PROTOCOL_PLUGIN
+   char szUin[24];
+   sprintf(szUin, "%lu", _nUin);
+   m_szId = strdup(szUin);
+   m_nPPID = LICQ_PPID;
+#endif
    m_nUin = _nUin;
 }
 
 void CEventAuthRequest::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(m_nPPID);
+  m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
+                      + strlen(m_szLastName) + strlen(m_szEmail)
+                      + strlen(m_szReason) + strlen(m_szId) + strlen(p) + 256];
+  //sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s\n",
+  //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
+  int pos = sprintf(m_szText, "Alias: %s\nId: %s\nProtocol: %s\nName: %s %s\nEmail: %s\n",
+     m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
+  delete [] p;
+#else
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
                       + strlen(m_szLastName) + strlen(m_szEmail)
                       + strlen(m_szReason) + 256];
@@ -419,6 +505,7 @@ void CEventAuthRequest::CreateDescription()
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
   int pos = sprintf(m_szText, "Alias: %s\nUin: %ld\nName: %s %s\nEmail: %s\n",
      m_szAlias, m_nUin, m_szFirstName, m_szLastName, m_szEmail);
+#endif
   if (m_szReason[0] != '\0')
     sprintf(&m_szText[pos], "Authorization Request:\n%s\n", m_szReason);
 }
@@ -431,11 +518,25 @@ CEventAuthRequest::~CEventAuthRequest()
   free (m_szLastName);
   free (m_szEmail);
   free (m_szReason);
+#ifdef PROTOCOL_PLUGIN
+  free (m_szId);
+#endif
 }
 
 
 void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
 {
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(m_nPPID);
+  char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
+                    strlen(m_szLastName) + strlen(m_szEmail) +
+                    strlen(m_szReason) + strlen(m_szId) +
+                    strlen(p)) * 2 + 16 + EVENT_HEADER_SIZE];
+  int nPos = AddToHistory_Header(_nDir, szOut);
+  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n:%s\n", m_szId,
+                  p, m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+  delete [] p;
+#else
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
                     strlen(m_szLastName) + strlen(m_szEmail) +
                     strlen(m_szReason)) * 2 + 16 +
@@ -443,6 +544,7 @@ void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%ld\n:%s\n:%s\n:%s\n:%s\n", m_nUin,
                   m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+#endif
   AddStrWithColons(&szOut[nPos], m_szReason);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
@@ -451,20 +553,46 @@ void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
 
 
 //=====CEventAuthGranted========================================================
+#ifdef PROTOCOL_PLUGIN
+CEventAuthGranted::CEventAuthGranted(const char *_szId, unsigned long _nPPID,
+                       const char *_szMessage, unsigned short _nCommand,
+                       time_t _tTime, unsigned long _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags)
+{
+  m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
+  m_szId = strdup(_szId);
+  m_nPPID = _nPPID;
+  m_nUin = 0;
+}
+#endif
+
 CEventAuthGranted::CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
                        unsigned short _nCommand, time_t _tTime,
                        unsigned long _nFlags)
    : CUserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags)
 {
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%lu", _nUin);
+  m_szId = strdup(szUin);
+  m_nPPID = LICQ_PPID;
+#endif
   m_nUin = _nUin;
 }
 
 void CEventAuthGranted::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(m_nPPID);
+  m_szText = new char[strlen(m_szId) + strlen(p) + strlen(m_szMessage) + 128];
+  int pos = sprintf(m_szText, "User %s (%s) authorized you", m_szId, p);
+  delete [] p;
+#else
   m_szText = new char[strlen(m_szMessage) + 128];
   int pos = sprintf(m_szText, "User %ld authorized you", m_nUin);
+#endif
   if (m_szMessage[0] != '\0')
     sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
   else
@@ -475,14 +603,26 @@ void CEventAuthGranted::CreateDescription()
 CEventAuthGranted::~CEventAuthGranted()
 {
   free (m_szMessage);
+#ifdef PROTOCOL_PLUGIN
+  free (m_szId);
+#endif
 }
 
 void CEventAuthGranted::AddToHistory(ICQUser *u, direction _nDir)
 {
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(m_nPPID);
+  char *szOut = new char[(strlen(m_szId) + strlen(p) + strlen(m_szMessage))
+                         * 2 + 16 + EVENT_HEADER_SIZE];
+  int nPos = AddToHistory_Header(_nDir, szOut);
+  nPos += sprintf(&szOut[nPos], ":%s (%s)\n", m_szId, p);
+  delete [] p;
+#else
   char *szOut = new char[strlen(m_szMessage) * 2 + 16 +
                    EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%ld\n", m_nUin);
+#endif
   AddStrWithColons(&szOut[nPos], m_szMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
@@ -491,6 +631,19 @@ void CEventAuthGranted::AddToHistory(ICQUser *u, direction _nDir)
 
 
 //=====CEventAuthRefused==========================================================
+#ifdef PROTOCOL_PLUGIN
+CEventAuthRefused::CEventAuthRefused(const char *_szId, unsigned long _nPPID,
+                       const char *_szMessage, unsigned short _nCommand,
+                       time_t _tTime, unsigned long _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags)
+{
+  m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
+  m_szId = strdup(_szId);
+  m_nPPID = _nPPID;
+  m_nUin = 0;
+}
+#endif
+
 CEventAuthRefused::CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
                        unsigned short _nCommand, time_t _tTime,
                        unsigned long _nFlags)
@@ -498,13 +651,26 @@ CEventAuthRefused::CEventAuthRefused(unsigned long _nUin, const char *_szMessage
 {
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
   m_nUin = _nUin;
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%lu", _nUin);
+  m_szId = strdup(szUin);
+  m_nPPID = LICQ_PPID;
+#endif
 }
 
 void CEventAuthRefused::CreateDescription()
 {
   if (m_szText) delete [] m_szText;
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(m_nPPID);
+  m_szText = new char[strlen(m_szId) + strlen(p) + strlen(m_szMessage) + 128];
+  int pos = sprintf(m_szText, "User %s (%s) refused to authorize you", m_szId, p);
+  delete [] p;
+#else
   m_szText = new char[strlen(m_szMessage) + 128];
   int pos = sprintf(m_szText, "User %ld refused to authorize you", m_nUin);
+#endif
   if (m_szMessage[0] != '\0')
     sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
   else
@@ -515,14 +681,26 @@ void CEventAuthRefused::CreateDescription()
 CEventAuthRefused::~CEventAuthRefused()
 {
   free (m_szMessage);
+#ifdef PROTOCOL_PLUGIN
+  free (m_szId);
+#endif
 }
 
 void CEventAuthRefused::AddToHistory(ICQUser *u, direction _nDir)
 {
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(m_nPPID);
+  char *szOut = new char[(strlen(m_szId) + strlen(p) + strlen(m_szMessage)) * 2 +
+                         16 + EVENT_HEADER_SIZE];
+  int nPos = AddToHistory_Header(_nDir, szOut);
+  nPos += sprintf(&szOut[nPos], ":%s (%s)\n", m_szId, p);
+  delete [] p;
+#else
   char *szOut = new char[strlen(m_szMessage) * 2 + 16 +
                    EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%ld\n", m_nUin);
+#endif
   AddStrWithColons(&szOut[nPos], m_szMessage);
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
@@ -633,7 +811,11 @@ void CEventContactList::CreateDescription()
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
   {
+#ifdef PROTOCOL_PLUGIN
+    szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->Alias(), (*iter)->IdString());
+#else
     szEnd += sprintf(szEnd, "%s (%ld)\n", (*iter)->Alias(), (*iter)->Uin());
+#endif
   }
 }
 
@@ -652,7 +834,16 @@ void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
   int nPos = AddToHistory_Header(_nDir, szOut);
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
+  {
+#ifdef PROTOCOL_PLUGIN
+    char *p = PPIDSTRING((*iter)->PPID());
+    nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n", (*iter)->IdString(),
+      p, (*iter)->Alias());
+    delete [] p;
+#else
     nPos += sprintf(&szOut[nPos], ":%ld\n:%s\n", (*iter)->Uin(), (*iter)->Alias());
+#endif
+  }
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }

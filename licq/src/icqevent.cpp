@@ -9,6 +9,7 @@
 #include "licq_log.h"
 #include "licq_user.h"
 
+//TODO Change CSearchAck class for protocol plugin
 //-----CSearchAck------------------------------------------------------------
 CSearchAck::CSearchAck(unsigned long _nUin)
 {
@@ -44,6 +45,82 @@ CExtendedAck::~CExtendedAck()
 unsigned long ICQEvent::s_nNextEventId = 1;
 
 //-----ICQEvent::constructor----------------------------------------------------
+#ifdef PROTOCOL_PLUGIN
+ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
+                   ConnectType _eConnect, unsigned long _nUin, CUserEvent *e)
+//   : m_xBuffer(p.getBuffer())
+{
+  // set up internal variables
+  m_pPacket = p;
+  m_bCancelled = false;
+  m_Deleted = false;
+  m_NoAck = false;
+  m_nChannel = p->Channel();
+  m_nCommand = p->Command();
+  m_nSNAC = p->SNAC();
+  m_nSubCommand = p->SubCommand();
+  m_nSequence = p->Sequence();
+  m_nSubSequence = p->SubSequence();
+  m_nSubType = (p->SNAC() & 0xFFFF);
+  m_nExtraInfo = p->ExtraInfo();
+  m_nDestinationUin = _nUin;
+  m_eConnect = _eConnect;
+  m_pUserEvent = e;
+  m_nSocketDesc = _nSocketDesc;
+  m_pExtendedAck = NULL;
+  m_pSearchAck = NULL;
+  m_pUnknownUser = NULL;
+  m_nSubResult = ICQ_TCPxACK_ACCEPT;
+  m_pDaemon = _pDaemon;
+  thread_plugin = pthread_self();
+  thread_running = false;
+
+  char szUin[24];
+  sprintf(szUin, "%lu", _nUin);
+  m_szId = strdup(szUin);
+  m_nPPID = LICQ_PPID;
+  // pthread_mutex_lock
+  m_nEventId = s_nNextEventId++;
+  // pthread_mutex_unlock
+}
+
+ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
+                   ConnectType _eConnect, const char *_szId, unsigned long _nPPID,
+                   CUserEvent *e)
+//   : m_xBuffer(p.getBuffer())
+{
+  // set up internal variables
+  m_pPacket = p;
+  m_bCancelled = false;
+  m_Deleted = false;
+  m_NoAck = false;
+  m_nChannel = p->Channel();
+  m_nCommand = p->Command();
+  m_nSNAC = p->SNAC();
+  m_nSubCommand = p->SubCommand();
+  m_nSequence = p->Sequence();
+  m_nSubSequence = p->SubSequence();
+  m_nSubType = (p->SNAC() & 0xFFFF);
+  m_nExtraInfo = p->ExtraInfo();
+  m_nDestinationUin = 0;
+  m_szId = _szId ? strdup(_szId) : 0;
+  m_nPPID = _nPPID;
+  m_eConnect = _eConnect;
+  m_pUserEvent = e;
+  m_nSocketDesc = _nSocketDesc;
+  m_pExtendedAck = NULL;
+  m_pSearchAck = NULL;
+  m_pUnknownUser = NULL;
+  m_nSubResult = ICQ_TCPxACK_ACCEPT;
+  m_pDaemon = _pDaemon;
+  thread_plugin = pthread_self();
+  thread_running = false;
+
+  // pthread_mutex_lock
+  m_nEventId = s_nNextEventId++;
+  // pthread_mutex_unlock
+}
+#else
 ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
                    ConnectType _eConnect, unsigned long _nUin, CUserEvent *e)
 //   : m_xBuffer(p.getBuffer())
@@ -77,7 +154,7 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
   m_nEventId = s_nNextEventId++;
   // pthread_mutex_unlock
 }
-
+#endif
 
 //-----ICQEvent::constructor----------------------------------------------------
 ICQEvent::ICQEvent(ICQEvent *e)
@@ -99,6 +176,11 @@ ICQEvent::ICQEvent(ICQEvent *e)
   m_nSubType = e->m_nSubType;
   m_nExtraInfo = e->m_nExtraInfo;
   m_nDestinationUin = e->m_nDestinationUin;
+#ifdef PROTOCOL_PLUGIN
+  if (e->m_szId)
+    m_szId = strdup(e->m_szId);
+  m_nPPID = e->m_nPPID;
+#endif
   m_eConnect = e->m_eConnect;
   m_eResult = e->m_eResult;
   m_nSubResult = e->m_nSubResult;
@@ -125,6 +207,10 @@ ICQEvent::~ICQEvent()
   assert(!m_Deleted);
   m_Deleted = true;
 
+#ifdef PROTOCOL_PLUGIN
+  if (m_szId)
+    free(m_szId);
+#endif
   delete m_pPacket;
   delete m_pUserEvent;
   delete m_pExtendedAck;
@@ -180,6 +266,35 @@ ICQUser *ICQEvent::GrabUnknownUser()
 
 
 //=====CICQSignal===============================================================
+#ifdef PROTOCOL_PLUGIN
+CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
+                       unsigned long nUin, int nArgument,char *nParameters)
+{
+  m_nSignal = nSignal;
+  m_nSubSignal = nSubSignal;
+  m_nUin = nUin;
+  m_nArgument = nArgument;
+  m_szParameters = (nParameters!=NULL)?strdup(nParameters):NULL;
+
+  char szUin[24];
+  sprintf(szUin, "%lu", nUin);
+  m_szId = strdup(szUin);
+  m_nPPID = LICQ_PPID;
+}
+
+CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
+                       const char *szId, unsigned long nPPID, int nArgument,char *nParameters)
+{
+  m_nSignal = nSignal;
+  m_nSubSignal = nSubSignal;
+  m_nUin = 0;
+  m_szId = szId ? strdup(szId) : 0;
+  m_nPPID = nPPID;
+  m_nArgument = nArgument;
+  m_szParameters = (nParameters!=NULL)?strdup(nParameters):NULL;
+}
+
+#else
 CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
                        unsigned long nUin, int nArgument,char *nParameters)
 {
@@ -189,13 +304,17 @@ CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
   m_nArgument = nArgument;
   m_szParameters = (nParameters!=NULL)?strdup(nParameters):NULL;
 }
-
+#endif
 
 CICQSignal::CICQSignal(CICQSignal *s)
 {
   m_nSignal = s->Signal();
   m_nSubSignal = s->SubSignal();
   m_nUin = s->Uin();
+#ifdef PROTOCOL_PLUGIN
+  m_szId = s->Id() ? strdup(s->Id()) : 0;
+  m_nPPID = s->PPID();
+#endif
   m_nArgument = s->Argument();
   m_szParameters = (s->Parameters()!= NULL)?strdup(s->Parameters()):NULL;
 }
@@ -206,5 +325,9 @@ CICQSignal::~CICQSignal()
     if (m_szParameters != NULL) {
         free(m_szParameters);
     }
+#ifdef PROTOCOL_PLUGIN
+  if (m_szId)
+    free(m_szId);
+#endif
 }
 

@@ -468,7 +468,41 @@ bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
   return true;
 }
 
+#ifdef PROTOCOL_PLUGIN
+bool CICQDaemon::ProtoPluginLoad(const char *szPlugin)
+{
+  CProtoPlugin *p = licq->LoadProtoPlugin(szPlugin);
+  if (p == NULL) return false;
 
+  licq->StartProtoPlugin(p);
+
+  return true;
+}
+
+int CICQDaemon::RegisterProtoPlugin()
+{
+  ProtoPluginsListIter it;
+  int p = -1;
+
+  pthread_mutex_lock(&licq->mutex_protoplugins);
+  for (it = licq->list_protoplugins.begin();
+       it != licq->list_protoplugins.end();
+       it++)
+  {
+    if ((*it)->CompareThread(pthread_self()))
+    {
+      p = (*it)->Pipe();
+      break;
+    }
+  }
+  pthread_mutex_unlock(&licq->mutex_protoplugins);
+
+  if (p == -1)
+    gLog.Error("%sInvalid thread in registration attempt.\n", L_ERRORxSTR);
+
+  return p;
+}
+#endif
 
 const char *CICQDaemon::Version()
 {

@@ -21,6 +21,11 @@ extern int errno;
 #include "licq_message.h"
 #include "licq_icq.h"
 
+#ifdef PROTOCOL_PLUGIN
+#include "licq_user.h"
+extern char *PPIDSTRING(unsigned long);
+#endif
+
 #define MAX_HISTORY_MSG_SIZE 8192
 
 CUserHistory::CUserHistory()
@@ -34,6 +39,46 @@ CUserHistory::~CUserHistory()
   if (m_szDescription != NULL) free(m_szDescription);
 }
 
+#ifdef PROTOCOL_PLUGIN
+void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
+{
+  char szUin[24];
+  sprintf(szUin, "%lu", _nUin);
+  SetFile(_sz, szUin, LICQ_PPID);
+}
+
+void CUserHistory::SetFile(const char *_sz, const char *_szId,
+                           unsigned long _nPPID)
+{
+  if (m_szFileName != NULL) free(m_szFileName);
+  if (m_szDescription != NULL) free(m_szDescription);
+
+  // default history filename, compare only first 7 chars in case of spaces
+  if (strncmp(_sz, "default", 7) == 0)
+  {
+    char temp[MAX_FILENAME_LEN];
+    char *p = PPIDSTRING(_nPPID);
+    snprintf(temp, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR,
+             HISTORY_DIR, _szId, p, HISTORY_EXT);
+    delete [] p;
+    temp[sizeof(temp) - 1] = '\0';
+    m_szFileName = strdup(temp);
+    m_szDescription = strdup("default");
+  }
+  // no history file
+  else if (strncmp(_sz, "none", 4) == 0)  // no history file
+  {
+    m_szFileName = NULL;
+    m_szDescription = strdup("none");
+  }
+  // use given name
+  else
+  {
+    m_szFileName = strdup(_sz);
+    m_szDescription = strdup(_sz);
+  }
+}
+#else
 void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
 {
   if (m_szFileName != NULL) free(m_szFileName);
@@ -62,6 +107,7 @@ void CUserHistory::SetFile(const char *_sz, unsigned long _nUin)
     m_szDescription = strdup(_sz);
   }
 }
+#endif
 
 /* szResult[0] != ':' doubles to check if strlen(szResult) < 1 */
 #define GET_VALID_LINE_OR_BREAK \

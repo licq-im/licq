@@ -8,6 +8,9 @@
 #include <pthread.h>
 #include <list>
 #include "licq_plugind.h"
+#ifdef PROTOCOL_PLUGIN
+#include "licq_protoplugind.h"
+#endif
 
 extern char **global_argv;
 extern int global_argc;
@@ -23,6 +26,12 @@ public:
   CPlugin *LoadPlugin(const char *, int, char **);
   void StartPlugin(CPlugin *);
 
+#ifdef PROTOCOL_PLUGIN
+  CProtoPlugin *LoadProtoPlugin(const char *);
+  void StartProtoPlugin(CProtoPlugin *);
+  void *FindFunction(void *, const char *);
+#endif
+
   void ShutdownPlugins();
 
   void PrintUsage();
@@ -34,6 +43,10 @@ protected:
   unsigned short m_nNextId;
   PluginsList list_plugins;
   pthread_mutex_t mutex_plugins;
+#ifdef PROTOCOL_PLUGIN
+  ProtoPluginsList list_protoplugins;
+  pthread_mutex_t mutex_protoplugins;
+#endif
 
 friend class CICQDaemon;
 };

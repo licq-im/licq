@@ -37,6 +37,9 @@ extern int errno;
 #include "licq_user.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
+#ifdef PROTOCOL_PLUGIN
+#include "licq_protoplugind.h"
+#endif
 
 #include "licq.conf.h"
 
@@ -147,6 +150,9 @@ CLicq::CLicq()
   DEBUG_LEVEL = 0;
   licqDaemon = NULL;
   pthread_mutex_init(&mutex_plugins, NULL);
+#ifdef PROTOCOL_PLUGIN
+  pthread_mutex_init(&mutex_protoplugins, NULL);
+#endif
 }
 
 bool CLicq::Init(int argc, char **argv)
@@ -436,12 +442,12 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     strncpy(szPlugin, _szName, MAX_FILENAME_LEN);
   }
   szPlugin[MAX_FILENAME_LEN - 1] = '\0';
-  
+
   handle = dlopen (szPlugin, DLOPEN_POLICY);
   if (handle == NULL)
   {
     const char *error = dlerror();
-    gLog.Error("%sUnable to load plugin (%s): %s.\n", L_ERRORxSTR, _szName, 
+    gLog.Error("%sUnable to load plugin (%s): %s.\n", L_ERRORxSTR, _szName,
      error);
 
     if (!strstr(error, "No such file"))
@@ -660,6 +666,130 @@ void CLicq::StartPlugin(CPlugin *p)
   pthread_create( &p->thread_plugin, NULL, p->fMain_tep, licqDaemon);
 }
 
+#ifdef PROTOCOL_PLUGIN
+CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
+{
+  void *handle;
+  const char *error = NULL;
+  CProtoPlugin *p = new CProtoPlugin(_szName);
+  char szFileName[MAX_FILENAME_LEN];
+
+  if (_szName[0] != '/' && _szName[0] != '.')
+    snprintf(szFileName, MAX_FILENAME_LEN, "%sprotocol_%s.so", LIB_DIR, _szName);
+  else
+    snprintf(szFileName, MAX_FILENAME_LEN, "%s", _szName);
+  szFileName[MAX_FILENAME_LEN - 1] = '\0';
+
+  handle = dlopen(szFileName, DLOPEN_POLICY);
+
+  if (handle == NULL)
+  {
+    gLog.Error("%sUnable to load plugin (%s): %s\n", L_ERRORxSTR, _szName,
+               error);
+    delete p;
+    return NULL;
+  }
+
+  // Get pointers to the functions
+  p->fMain = (int (*)(CICQDaemon *))FindFunction(handle, "LProto_Main");
+  if (p->fMain == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Main in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  p->fMain_tep = (void *(*)(void *))FindFunction(handle, "LProto_Main_tep");
+  if (p->fMain_tep == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Main_tep in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  p->fName = (const char *(*)())FindFunction(handle, "LProto_Name");
+  if (p->fName == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Name in plugin (%s): %s\n",
+               L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  p->fVersion = (const char *(*)())FindFunction(handle, "LProto_Version");
+  if (p->fVersion == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Version in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  p->fCapabilities = (unsigned long (*)())FindFunction(handle, "LProto_Capabilities");
+  if (p->fCapabilities == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Capabilities in plugin (%s): %s\n",
+               L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  // Make our protocol plugin Id
+  const char *(*f)() = (const char *(*)())FindFunction(handle, "LProto_Id");
+  if (f == NULL)
+  {
+    error = dlerror();
+   	gLog.Error("%sFalied to find LProto_Id in plugin (%s): %s\n", L_ERRORxSTR,
+      _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  const char *szId = f();
+  p->m_nId = (szId[0] << 24) | (szId[1] << 16) | (szId[2] << 8) | (szId[3]);
+
+  p->m_pHandle = handle;
+  pthread_mutex_lock(&mutex_protoplugins);
+  list_protoplugins.push_back(p);
+  pthread_mutex_unlock(&mutex_protoplugins);
+
+  // Let the gui plugins know about the new protocol plugin
+  licqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_NEWxPROTO_PLUGIN, p->Id(),
+                                              0));
+  return p;
+}
+
+void CLicq::StartProtoPlugin(CProtoPlugin *p)
+{
+  gLog.Info("%sStarting protocol plugin %s (version %s).\n", L_INITxSTR, p->Name(),
+           p->Version());
+  pthread_create(&p->thread_plugin, NULL, p->fMain_tep, licqDaemon);
+}
+
+
+void *CLicq::FindFunction(void *_pHandle, const char *_szSymbolName)
+{
+  void *pFunc = dlsym(_pHandle, _szSymbolName);
+  if (pFunc == NULL)
+  {
+    char *szSymbol = new char[strlen(_szSymbolName) + 2];
+    sprintf(szSymbol, "_%s", _szSymbolName);
+    szSymbol[strlen(_szSymbolName)+1] = '\0';
+
+    pFunc = dlsym(_pHandle, szSymbol);
+    delete [] szSymbol;
+  }
+
+  return pFunc;
+}
+#endif
 
 int CLicq::Main()
 {

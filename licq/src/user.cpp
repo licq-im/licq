@@ -37,7 +37,18 @@ const char *GroupsSystemNames[NUM_GROUPS_SYSTEM+1] = {
   "New Users"
 };
 
-
+#ifdef PROTOCOL_PLUGIN
+char *PPIDSTRING(unsigned long id)
+{
+  char *p = new char[5];
+  p[0] = ((id & 0xFF000000) >> 24);
+  p[1] = ((id & 0x00FF0000) >> 16);
+  p[2] = ((id & 0x0000FF00) >> 8);
+  p[3] = ((id & 0x000000FF));
+  p[4] = '\0';
+  return p;
+}
+#endif
 
 /*---------------------------------------------------------------------------
  * ICQUser::Lock
@@ -88,10 +99,16 @@ CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
   pthread_rdwr_init_np(&mutex_grouplist, NULL);
   pthread_rdwr_init_np(&mutex_userlist, NULL);
   pthread_rdwr_init_np(&mutex_groupidlist, NULL);
+#ifdef PROTOCOL_PLUGIN
+  pthread_rdwr_init_np(&mutex_ownerlist, NULL);
+  m_nOwnerListLockType = LOCK_N;
+#endif
   m_nUserListLockType = m_nGroupListLockType = m_nGroupIDListLockType = LOCK_N;
 
+#ifndef PROTOCOL_PLUGIN
   m_xOwner = NULL;
   m_nOwnerUin = 0;
+#endif
 }
 
 
@@ -107,13 +124,19 @@ CUserManager::~CUserManager()
   for (g_iter = m_vszGroups.begin(); g_iter != m_vszGroups.end(); g_iter++)
     free(*g_iter);
 
+#ifdef PROTOCOL_PLUGIN
+  OwnerList::iterator o_iter;
+  for (o_iter = m_vpcOwners.begin(); o_iter != m_vpcOwners.end(); o_iter++)
+    delete *o_iter;
+#else
   // Owner destructor saves the current auto response though
   delete m_xOwner;
+#endif
 }
-
 
 void CUserManager::SetOwnerUin(unsigned long _nUin)
 {
+#ifndef PROTOCOL_PLUGIN
   char buf[24];
   sprintf(buf, "%ld", _nUin);
   ICQOwner *o = FetchOwner(LOCK_W);
@@ -121,21 +144,38 @@ void CUserManager::SetOwnerUin(unsigned long _nUin)
   o->SetAlias(buf);
   DropOwner();
   m_nOwnerUin = _nUin;
+#else
+  char szUin[24];
+  sprintf(szUin, "%ld", _nUin);
+  AddOwner(szUin, LICQ_PPID);
+#endif
 }
 
+#ifdef PROTOCOL_PLUGIN
+void CUserManager::AddOwner(const char *_szId, unsigned long _nPPID)
+{
+  ICQOwner *o = new ICQOwner;
+  o->SetId(_szId);
+  o->SetPPID(_nPPID);
 
+  LockOwnerList(LOCK_W);
+  m_vpcOwners.push_back(o);
+  UnlockOwnerList();
+}
+#endif
 
 /*---------------------------------------------------------------------------
  * CUserManager::Load
  *-------------------------------------------------------------------------*/
 bool CUserManager::Load()
 {
+#ifndef PROTOCOL_PLUGIN
   // Create the owner
   m_xOwner = new ICQOwner;
   if (m_xOwner->Exception())
     return false;
   m_nOwnerUin = m_xOwner->Uin();
-
+#endif
   gLog.Info("%sUser configuration.\n", L_INITxSTR);
 
   // Load the group info from licq.conf
@@ -185,6 +225,7 @@ bool CUserManager::Load()
   usersConf.ReadNum("NumOfUsers", nUsers);
   gLog.Info("%sLoading %d users.\n", L_INITxSTR, nUsers);
 
+#ifndef PROTOCOL_PLUGIN
   char sUserKey[MAX_KEYxNAME_LEN];
   unsigned long nUserUin;
   ICQUser *u;
@@ -212,10 +253,131 @@ bool CUserManager::Load()
      // Add the user to the list
      m_vpcUsers.push_back(u);
   }
+#else
+  // TODO: We need to only load users of protocol plugins that are loaded!
+  char sUserIdKey[MAX_KEYxNAME_LEN];
+  char sUserPPIDKey[MAX_KEYxNAME_LEN];
+  char szId[MAX_LINE_LEN];
+  unsigned long nPPID;
+  ICQUser *u;
+  usersConf.SetFlags(INI_FxWARN);
+  for (unsigned short i = 1; i<= nUsers; i++)
+  {
+    sprintf(sUserIdKey, "User%d.Id", i);
+    sprintf(sUserPPIDKey, "User%d.PPID", i);
+    if (!usersConf.ReadStr(sUserIdKey, szId, ""))
+    {
+      gLog.Warn("%sSkipping user %i, Id not found.\n", L_WARNxSTR, i);
+      continue;
+    }
+    if (!usersConf.ReadNum(sUserPPIDKey, nPPID))
+    {
+      gLog.Warn("%sSkipping user %i, PPID not found.\n", L_WARNxSTR, i);
+      continue;
+    }
+    char *p = PPIDSTRING(nPPID);
+    snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
+             szId, p);
+    delete [] p;
+    u = new ICQUser(szId, nPPID, filename);
+    u->AddToContactList();
+    m_hUsers.Store(u, szId, nPPID);
+    m_vpcUsers.push_back(u);
+  }
+#endif
 
   return true;
 }
 
+#ifdef PROTOCOL_PLUGIN
+void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPPID)
+{
+  pUser->Lock(LOCK_W);
+
+  // Set this user to be on the contact list
+  pUser->AddToContactList();
+  //pUser->SetEnableSave(true);
+  pUser->SaveLicqInfo();
+  pUser->SaveGeneralInfo();
+  pUser->SaveMoreInfo();
+  pUser->SaveWorkInfo();
+
+  // Store the user in the hash table
+  m_hUsers.Store(pUser, _szId, _nPPID);
+  // Reorder the user to the correct place
+  m_vpcUsers.push_back(pUser);
+}
+
+void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
+{
+  ICQUser *u = FetchUser(_szId, _nPPID, LOCK_W);
+  if (u == NULL) return;
+  u->RemoveFiles();
+  LockUserList(LOCK_W);
+  UserList::iterator iter = m_vpcUsers.begin();
+  while (iter != m_vpcUsers.end() && u != (*iter)) iter++;
+  if (iter == m_vpcUsers.end())
+    gLog.Warn("%sInteral Error: CUserManager::RemoveUser():\n"
+              "%sUser \"%s\" (%s) not found in vector.\n",
+              L_WARNxSTR, L_BLANKxSTR, u->GetAlias(), u->IdString());
+  else
+    m_vpcUsers.erase(iter);
+  DropUser(u);
+  m_hUsers.Remove(_szId, _nPPID);
+  UnlockUserList();
+  delete u;
+}
+
+ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
+                                 unsigned short _nLockType)
+{
+  ICQUser *u = NULL;
+
+  // Check for an owner first
+  u = FindOwner(_szId, _nPPID);
+
+  if (u == NULL)
+    u = m_hUsers.Retrieve(_szId, _nPPID);
+
+  if (u != NULL)
+  {
+    u->Lock(_nLockType);
+    if (strcmp(_szId, u->IdString()))
+      gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %s, found %s.\n",
+                 L_ERRORxSTR, _szId, u->IdString());
+  }
+  return u;
+}
+
+bool CUserManager::IsOnList(const char *_szId, unsigned long _nPPID)
+{
+  if (FindOwner(_szId, _nPPID)) return true;
+  return m_hUsers.Retrieve(_szId, _nPPID) != NULL;
+}
+
+// This differs by FetchOwner by requiring an Id.  This isn't used to
+// fetch an owner, but for interal use only to see if the given id and ppid
+// is an owner.  (It can be used to fetch an owner by calling FetchUser with
+// an owner's id and ppid.
+ICQOwner *CUserManager::FindOwner(const char *_szId, unsigned long _nPPID)
+{
+  ICQOwner *o = NULL;
+
+  LockOwnerList(LOCK_R);
+  OwnerList::iterator iter;
+  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); iter++)
+  {
+    if (_nPPID == (*iter)->PPID() && strcmp(_szId, (*iter)->IdString()) == 0)
+    {
+      o = *iter;
+      break;
+    }
+  }
+  UnlockOwnerList();
+
+  return o;
+}
+#endif
 
 /*---------------------------------------------------------------------------
  * CUserManager::AddUser
@@ -224,6 +386,10 @@ bool CUserManager::Load()
  *-------------------------------------------------------------------------*/
 unsigned long CUserManager::AddUser(ICQUser *pUser)
 {
+#ifdef PROTOCOL_PLUGIN
+  AddUser(pUser, pUser->UinString(), LICQ_PPID);
+  return pUser->Uin();
+#else
   pUser->Lock(LOCK_W);
   unsigned long nUin = pUser->Uin();
 
@@ -243,6 +409,7 @@ unsigned long CUserManager::AddUser(ICQUser *pUser)
   //pUser->Unlock();
 
   return nUin;
+#endif
 }
 
 
@@ -251,6 +418,13 @@ unsigned long CUserManager::AddUser(ICQUser *pUser)
  *-------------------------------------------------------------------------*/
 void CUserManager::RemoveUser(unsigned long _nUin)
 {
+#ifdef PROTOCOL_PLUGIN
+  ICQUser *u = FetchUser(_nUin, LOCK_R);
+  char *szId = u->IdString();
+  unsigned long nPPID = u->PPID();
+  DropUser(u);
+  RemoveUser(szId, nPPID);
+#else
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
   u->RemoveFiles();
@@ -267,6 +441,7 @@ void CUserManager::RemoveUser(unsigned long _nUin)
   m_hUsers.Remove(_nUin);
   UnlockUserList();
   delete u;
+#endif
 }
 
 
@@ -401,7 +576,7 @@ void CUserManager::SwapGroups(unsigned short g1, unsigned short g2)
   LockGroupIDList(LOCK_W);
   unsigned short nTmp = m_vnGroupsID[g1 - 1];
   m_vnGroupsID[g1 - 1] = m_vnGroupsID[g2 - 1];
-  m_vnGroupsID[g2 - 1] = nTmp;  
+  m_vnGroupsID[g2 - 1] = nTmp;
   SaveGroupIDs();
   UnlockGroupIDList();
 }
@@ -618,8 +793,11 @@ unsigned short CUserManager::GenerateSID()
     bCheckGroup = true;
 
     if (nSID == 0) nSID++;
-
+#ifdef PROTOCOL_PLUGIN
+    FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
+#else
     FOR_EACH_USER_START(LOCK_R)
+#endif
     {
       if (pUser->GetSID() == nSID  || pUser->GetInvisibleSID() == nSID ||
           pUser->GetVisibleSID() == nSID)
@@ -630,10 +808,18 @@ unsigned short CUserManager::GenerateSID()
           nSID++;
         bDone = false;	// Restart
         bCheckGroup = false;	// Don't waste time now
-        FOR_EACH_USER_BREAK;
+#ifdef PROTOCOL_PLUGIN
+        FOR_EACH_PROTO_USER_BREAK;
+#else
+        FOR_EACH_USER_BREAK
+#endif
       }
     }
+#ifdef PROTOCOL_PLUGIN
+    FOR_EACH_PROTO_USER_END
+#else
     FOR_EACH_USER_END
+#endif
 
     if (bCheckGroup)
     {
@@ -663,6 +849,11 @@ unsigned short CUserManager::GenerateSID()
  *-------------------------------------------------------------------------*/
 ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", _nUin);
+  ICQUser *u = FetchUser(szUin, LICQ_PPID, _nLockType);
+#else
   ICQUser *u = NULL;
   if (_nUin == m_nOwnerUin)
     u = m_xOwner;
@@ -675,6 +866,7 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
       gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %ld, found %ld.\n",
                  L_ERRORxSTR, _nUin, u->Uin());
   }
+#endif
   return u;
 }
 
@@ -683,8 +875,14 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
  *-------------------------------------------------------------------------*/
 bool CUserManager::IsOnList(unsigned long nUin)
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", nUin);
+  return IsOnList(szUin, LICQ_PPID);
+#else
   if (nUin == m_nOwnerUin) return true;
   return m_hUsers.Retrieve(nUin) != NULL;
+#endif
 }
 
 
@@ -703,19 +901,65 @@ void CUserManager::DropUser(ICQUser *u)
  *-------------------------------------------------------------------------*/
 ICQOwner *CUserManager::FetchOwner(unsigned short _nLockType)
 {
+#ifdef PROTOCOL_PLUGIN
+  return FetchOwner(LICQ_PPID, _nLockType);
+#else
   m_xOwner->Lock(_nLockType);
   return m_xOwner;
+#endif
 }
 
+#ifdef PROTOCOL_PLUGIN
+ICQOwner *CUserManager::FetchOwner(unsigned long _nPPID,
+                                   unsigned short _nLockType)
+{
+  ICQOwner *o = NULL;
+
+  LockOwnerList(LOCK_R);
+  OwnerList::iterator iter;
+  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); iter++)
+  {
+    if ((*iter)->PPID() == _nPPID)
+    {
+      o = (*iter);
+      o->Lock(_nLockType);
+      break;
+    }
+  }
+  UnlockOwnerList();
+
+  return o;
+}
+#endif
 
 /*---------------------------------------------------------------------------
  * CUserManager::DropOwner
  *-------------------------------------------------------------------------*/
 void CUserManager::DropOwner()
 {
+#ifdef PROTOCOL_PLUGIN
+  DropOwner(LICQ_PPID);
+#else
   m_xOwner->Unlock();
+#endif
 }
 
+#ifdef PROTOCOL_PLUGIN
+void CUserManager::DropOwner(unsigned long _nPPID)
+{
+  LockOwnerList(LOCK_R);
+  OwnerList::iterator iter;
+  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); iter++)
+  {
+    if ((*iter)->PPID() == _nPPID)
+    {
+      (*iter)->Unlock();
+      break;
+    }
+  }
+  UnlockOwnerList();
+}
+#endif
 
 /*---------------------------------------------------------------------------
  * CUserManager::SaveAllUsers
@@ -778,10 +1022,6 @@ UserList *CUserManager::LockUserList(unsigned short _nLockType)
   m_nUserListLockType = _nLockType;
   return &m_vpcUsers;
 }
-
-
-
-
 
 /*---------------------------------------------------------------------------
  * CUserManager::UnlockUserList
@@ -892,11 +1132,48 @@ void CUserManager::UnlockGroupIDList()
   }
 }
 
+#ifdef PROTOCOL_PLUGIN
+OwnerList *CUserManager::LockOwnerList(unsigned short _nLockType)
+{
+  switch (_nLockType)
+  {
+  case LOCK_R:
+    pthread_rdwr_rlock_np(&mutex_ownerlist);
+    break;
+  case LOCK_W:
+    pthread_rdwr_wlock_np(&mutex_ownerlist);
+    break;
+  default:
+    break;
+  }
+  m_nOwnerListLockType = _nLockType;
+  return &m_vpcOwners;
+}
+
+void CUserManager::UnlockOwnerList()
+{
+  unsigned short nLockType = m_nOwnerListLockType;
+  m_nOwnerListLockType = LOCK_R;
+  switch (nLockType)
+  {
+  case LOCK_R:
+    pthread_rdwr_runlock_np(&mutex_ownerlist);
+    break;
+  case LOCK_W:
+    pthread_rdwr_wunlock_np(&mutex_ownerlist);
+    break;
+  default:
+    break;
+  }
+}
+#endif
+
 /*---------------------------------------------------------------------------
  * CUserManager::AddUserToGroup
  *-------------------------------------------------------------------------*/
 void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)
 {
+  // TODO: make a pp version of this
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
   u->AddToGroup(GROUPS_USER, _nGroup);
@@ -913,6 +1190,7 @@ void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)
  *-------------------------------------------------------------------------*/
 void CUserManager::RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup)
 {
+  // TODO: make a pp version of this
   ICQUser *u = FetchUser(_nUin, LOCK_W);
   if (u == NULL) return;
   u->RemoveFromGroup(GROUPS_USER, _nGroup);
@@ -927,9 +1205,83 @@ CUserHashTable::CUserHashTable(unsigned short _nSize) : m_vlTable(_nSize)
   m_nLockType = LOCK_R;
 }
 
+#ifdef PROTOCOL_PLUGIN
+ICQUser *CUserHashTable::Retrieve(const char *_szId, unsigned long _nPPID)
+{
+  Lock(LOCK_R);
+
+  ICQUser *u = NULL;
+  UserList &l = m_vlTable[HashValue(_szId)];
+
+	char *szId;
+  unsigned long nPPID;
+  UserList::iterator iter;
+  for (iter = l.begin(); iter != l.end(); iter++)
+  {
+    szId = (*iter)->IdString();
+    nPPID = (*iter)->PPID();
+    if (_nPPID == nPPID && strcmp(szId, _szId) == 0)
+    {
+      u = (*iter);
+      break;
+    }
+  }
+  if (iter == l.end()) u = NULL;
+
+  Unlock();
+  return u;
+}
+
+void CUserHashTable::Store(ICQUser *u, const char *_szId, unsigned long _nPPID)
+{
+  Lock(LOCK_W);
+  UserList &l = m_vlTable[HashValue(_szId)];
+  l.push_front(u);
+  Unlock();
+}
+
+void CUserHashTable::Remove(const char *_szId, unsigned long _nPPID)
+{
+  Lock(LOCK_W);
+
+  UserList &l = m_vlTable[HashValue(_szId)];
+  char *szId;
+  unsigned long nPPID;
+  UserList::iterator iter;
+  for (iter = l.begin(); iter != l.end(); iter++)
+  {
+    (*iter)->Lock(LOCK_R);
+    szId = (*iter)->IdString();
+    nPPID = (*iter)->PPID();
+    (*iter)->Unlock();
+    if (_nPPID == nPPID && strcmp(szId, _szId) == 0)
+    {
+      l.erase(iter);
+      break;
+    }
+  }
+
+  Unlock();
+}
+
+unsigned short CUserHashTable::HashValue(const char *_szId)
+{
+  int j = strlen(_szId);
+  unsigned short nRet = 0;
+  for (int i = 0; i < j && i < 5; i++)
+    nRet += (unsigned short)_szId[i];
+
+  return (nRet % (USER_HASH_SIZE - 1));
+}
+#endif
 
 ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", _nUin);
+  return Retrieve(szUin, LICQ_PPID);
+#else
   Lock(LOCK_R);
 
   ICQUser *u = NULL;
@@ -954,18 +1306,30 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
 
   Unlock();
   return u;
+#endif
 }
 
 void CUserHashTable::Store(ICQUser *u, unsigned long _nUin)
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", _nUin);
+  Store(u, szUin, LICQ_PPID);
+#else
   Lock(LOCK_W);
   UserList &l = m_vlTable[HashValue(_nUin)];
   l.push_front(u);
   Unlock();
+#endif
 }
 
 void CUserHashTable::Remove(unsigned long _nUin)
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", _nUin);
+  Remove(szUin, LICQ_PPID);
+#else
   Lock(LOCK_W);
 
   UserList &l = m_vlTable[HashValue(_nUin)];
@@ -983,12 +1347,19 @@ void CUserHashTable::Remove(unsigned long _nUin)
     }
   }
   Unlock();
+#endif
 }
 
 unsigned short CUserHashTable::HashValue(unsigned long _nUin)
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", _nUin);
+  return HashValue(szUin);
+#else
   //return _nUin % m_vlTable.size();
   return _nUin & (unsigned long)(USER_HASH_SIZE - 1);
+#endif
 }
 
 void CUserHashTable::Lock(unsigned short _nLockType)
@@ -1053,7 +1424,13 @@ pthread_mutex_t ICQUser::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
 // Called when first constructing our known users
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", _nUin);
+  Init(szUin, LICQ_PPID);
+#else
   Init(_nUin);
+#endif
   m_fConf.SetFlags(INI_FxWARN);
   m_fConf.SetFileName(_szFilename);
   if (!LoadInfo())
@@ -1069,15 +1446,60 @@ ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
 
 ICQUser::ICQUser(unsigned long nUin)
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", nUin);
+  Init(szUin, LICQ_PPID);
+#else
   Init(nUin);
+#endif
+
   SetDefaults();
   char szFilename[MAX_FILENAME_LEN];
+#ifdef PROTOCOL_PLUGIN
+  char *p = PPIDSTRING(LICQ_PPID);
+  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
+           szUin, p);
+  delete [] p;
+#else
   snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, nUin);
+#endif
+
   szFilename[MAX_FILENAME_LEN - 1] = '\0';
   m_fConf.SetFileName(szFilename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
+#ifdef PROTOCOL_PLUGIN
+ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, char *_szFilename)
+{
+  Init(_szId, _nPPID);
+  m_fConf.SetFlags(INI_FxWARN);
+  m_fConf.SetFileName(_szFilename);
+  if (!LoadInfo())
+  {
+    gLog.Error("%sUnable to load user info from '%s'.\n%sUsing default values.\n",
+               L_ERRORxSTR, _szFilename, L_BLANKxSTR);
+    SetDefaults();
+  }
+  m_fConf.CloseFile();
+  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
+}
+
+ICQUser::ICQUser(const char *_szId, unsigned long _nPPID)
+{
+  Init(_szId, _nPPID);
+  SetDefaults();
+  char szFilename[MAX_FILENAME_LEN];
+  char *p = PPIDSTRING(_nPPID);
+  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
+           _szId, p);
+  delete [] p;
+  szFilename[MAX_FILENAME_LEN - 1] = '\0';
+  m_fConf.SetFileName(szFilename);
+  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
+}
+#endif
 
 void ICQUser::AddToContactList()
 {
@@ -1087,7 +1509,15 @@ void ICQUser::AddToContactList()
   if (access(m_fHistory.FileName(), F_OK) == -1)
   {
     char szFilename[MAX_FILENAME_LEN];
+#ifdef PROTOCOL_PLUGIN
+    char *p = PPIDSTRING(m_nPPID);
+    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR, m_szId,
+             p, HISTORYxOLD_EXT);
+    delete [] p;
+#else
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+#endif
+
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
     if (access(szFilename, F_OK) == 0)
     {
@@ -1231,7 +1661,10 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("InvisibleSID", m_nSID[INV_SID], 0);
   m_fConf.ReadNum("VisibleSID", m_nSID[VIS_SID], 0);
   m_fConf.ReadNum("GSID", m_nGSID, 0);
-  
+#ifdef PROTOCOL_PLUGIN
+  m_fConf.ReadNum("PPID", m_nPPID, 0);
+#endif
+
   if (nNewMessages > 0)
   {
     HistoryList hist;
@@ -1271,6 +1704,7 @@ ICQUser::~ICQUser()
     delete m_vcMessages[m_vcMessages.size() - 1];
     m_vcMessages.pop_back();
     decNumUserEvents();
+    //TODO change this to use string id and ppid
     if (gLicqDaemon != NULL)
       gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
        USER_EVENTS, m_nUin, nId));
@@ -1332,7 +1766,10 @@ ICQUser::~ICQUser()
       free( m_szAbout );
   if ( m_szCustomAutoResponse )
       free( m_szCustomAutoResponse );
-
+#ifdef PROTOCOL_PLUGIN
+  if ( m_szId )
+      free( m_szId );
+#endif
 /*
   // Destroy the mutex
   int nResult = 0;
@@ -1356,7 +1793,15 @@ void ICQUser::RemoveFiles()
   if (stat(m_fHistory.FileName(), &buf) == 0 && buf.st_size > 0)
   {
     char szFilename[MAX_FILENAME_LEN];
+#ifdef PROTOCOL_PLUGIN
+    char *p = PPIDSTRING(m_nPPID);
+    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s.%s", BASE_DIR, HISTORY_DIR,
+             m_szId, p, HISTORYxOLD_EXT);
+    delete [] p;
+#else
     snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+#endif
+
     szFilename[MAX_FILENAME_LEN - 1] = '\0';
     if (rename(m_fHistory.FileName(), szFilename) == -1)
     {
@@ -1370,6 +1815,11 @@ void ICQUser::RemoveFiles()
 
 void ICQUser::Init(unsigned long _nUin)
 {
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%ld", _nUin);
+  Init(szUin, LICQ_PPID);
+#else
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
   m_szAutoResponse = NULL;
@@ -1454,12 +1904,110 @@ void ICQUser::Init(unsigned long _nUin)
   m_szUinString[12] = '\0';
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
+#endif
 }
+
+#ifdef PROTOCOL_PLUGIN
+void ICQUser::Init(const char *_szId, unsigned long _nPPID)
+{
+  //SetOnContactList(false);
+  m_bOnContactList = m_bEnableSave = false;
+  m_szAutoResponse = NULL;
+  m_szEncoding = strdup("");
+  m_bSecure = false;
+
+  // General Info
+  m_szAlias = NULL;
+  m_szFirstName = NULL;
+  m_szLastName = NULL;
+  m_szEmailPrimary = NULL;
+  m_szEmailSecondary = NULL;
+  m_szEmailOld = NULL;
+  m_szCity = NULL;
+  m_szState = NULL;
+  m_szPhoneNumber = NULL;
+  m_szFaxNumber = NULL;
+  m_szAddress = NULL;
+  m_szCellularNumber = NULL;
+  m_szZipCode = NULL;
+  m_nCountryCode = COUNTRY_UNSPECIFIED;
+  m_nTimezone = TIMEZONE_UNKNOWN;
+  m_bAuthorization = false;
+  m_bHideEmail = false;
+
+  // More Info
+  m_nAge = 0xffff;
+  m_nGender = 0;
+  m_szHomepage = NULL;
+  m_nBirthYear = 0;
+  m_nBirthMonth = 0;
+  m_nBirthDay = 0;
+  m_nLanguage[0] = 0;
+  m_nLanguage[1] = 0;
+  m_nLanguage[2] = 0;
+
+  // Work Info
+  m_szCompanyCity = NULL;
+  m_szCompanyState = NULL;
+  m_szCompanyPhoneNumber = NULL;
+  m_szCompanyFaxNumber = NULL;
+  m_szCompanyAddress = NULL;
+  m_szCompanyZip = NULL;
+  m_nCompanyCountry = COUNTRY_UNSPECIFIED;
+  m_szCompanyName = NULL;
+  m_szCompanyDepartment = NULL;
+  m_szCompanyPosition = NULL;
+  m_szCompanyHomepage = NULL;
+
+  // About
+  m_szAbout = NULL;
+
+  if (_szId)
+    m_szId = strdup(_szId);
+  else
+    m_szId = 0;
+  m_nPPID = _nPPID;
+  
+  m_nUin = 0;
+  SetStatus(ICQ_STATUS_OFFLINE);
+  SetAutoResponse("");
+  SetSendServer(false);
+  SetSendIntIp(false);
+  SetShowAwayMsg(false);
+  SetSequence(0xFFFFFFFF);
+  SetOfflineOnDisconnect(false);
+  ClearSocketDesc();
+  m_nIp = m_nPort = m_nIntIp = 0;
+  m_nMode = MODE_DIRECT;
+  m_nVersion = 0;
+  m_nCookie = 0;
+  m_nClientTimestamp = 0;
+  Touch();
+  for (unsigned short i = 0; i < 4; i++)
+    m_nLastCounters[i] = 0;
+  m_nOnlineSince = 0;
+  m_nIdleSince = 0;
+  m_nStatusToUser = ICQ_STATUS_OFFLINE;
+  m_nStatus = ICQ_STATUS_OFFLINE;
+  m_nAutoAccept = 0;
+  m_szCustomAutoResponse = NULL;
+  m_bConnectionInProgress = false;
+  m_bAwaitingAuth = false;
+  m_nSID[0] = m_nSID[1] = m_nSID[2] = 0;
+  m_nGSID = 0;
+
+  snprintf(m_szUinString, 12, "%lu", m_nUin);
+  m_szUinString[12] = '\0';
+
+  pthread_rdwr_init_np (&mutex_rw, NULL);
+}
+#endif
 
 //-----ICQUser::SetDefaults-----------------------------------------------------
 void ICQUser::SetDefaults()
 {
   char szTemp[12];
+  //TODO Change this
   sprintf(szTemp, "%ld", Uin());
   SetAlias(szTemp);
   SetHistoryFile("default");
@@ -1602,9 +2150,13 @@ void ICQUser::SetAlias(const char *s)
       SetString(&m_szAlias, m_szFirstName);
     else
     {
+#ifdef PROTOCOL_PLUGIN
+      SetString(&m_szAlias, m_szId);
+#else
       char sz[12];
       sprintf(sz, "%ld", Uin());
       SetString(&m_szAlias, sz);
+#endif
     }
   }
   else
@@ -1623,6 +2175,7 @@ bool ICQUser::Away()
 
 void ICQUser::SetHistoryFile(const char *s)
 {
+  // TODO Change this
   m_fHistory.SetFile(s, m_nUin);
   SaveLicqInfo();
 }
@@ -1652,6 +2205,7 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
   m_nConnectionVersion = s->Version();
   if (m_bSecure != s->Secure())
   {
+    // TODO Change this
     m_bSecure = s->Secure();
     if (gLicqDaemon != NULL && m_bOnContactList)
       gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, m_bSecure ? 1 : 0));
@@ -1669,6 +2223,7 @@ void ICQUser::ClearSocketDesc()
   m_nLocalPort = 0;
   m_nConnectionVersion = 0;
   m_bSecure = false;
+  // TODO Change this
   if (gLicqDaemon != NULL && m_bOnContactList)
     gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, 0));
 }
@@ -1786,7 +2341,7 @@ const char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
 char *ICQUser::IpStr(char *rbuf)
 {
   char ip[32], buf[32];
-  
+
   if (Ip() > 0)     		// Default to the given ip
     strcpy(ip, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
   else				// Otherwise we don't know
@@ -1834,11 +2389,11 @@ char *ICQUser::IntIpStr(char *rbuf)
     else			// Otherwise we don't know
       rbuf[0] = '\0';
   }
-  
+
   return rbuf;
 }
 
- 			
+
 void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
 {
   bool bLeft = false;
@@ -1923,8 +2478,12 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           sz = GetAlias();
           break;
         case 'u':
+#ifdef PROTOCOL_PLUGIN
+          sz = IdString();
+#else
           sprintf(szTemp, "%ld", Uin());
           sz = szTemp;
+#endif
           break;
         case 'w':
           sz = GetHomepage();
@@ -1978,7 +2537,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           strftime(szTemp, 128, "%b %d %R", localtime(&m_nOnlineSince));
           sz = szTemp;
           break;
-          
+
         case 'I':
         {
           if (m_nIdleSince)
@@ -2012,7 +2571,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
           }
           else
             strcpy(szTemp, "Active");
-            
+
           sz = szTemp;
 
           break;
@@ -2272,7 +2831,10 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("InvisibleSID", m_nSID[INV_SID]);
    m_fConf.WriteNum("VisibleSID", m_nSID[VIS_SID]);
    m_fConf.WriteNum("GSID", m_nGSID);
-   
+#ifdef PROTOCOL_PLUGIN
+   m_fConf.WriteNum("PPID", m_nPPID);
+#endif
+
    if (!m_fConf.FlushFile())
    {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
@@ -2351,6 +2913,7 @@ void ICQUser::EventPush(CUserEvent *e)
   Touch();
   SetLastReceivedEvent();
 
+  //TODO Change this
   gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
      USER_EVENTS, m_nUin, e->Id()));
 }
@@ -2411,6 +2974,7 @@ CUserEvent *ICQUser::EventPop()
   decNumUserEvents();
   SaveNewMessagesInfo();
 
+  //TODO Change this
   gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
      USER_EVENTS, m_nUin, e->Id()));
 
@@ -2431,6 +2995,7 @@ void ICQUser::EventClear(unsigned short index)
   decNumUserEvents();
   SaveNewMessagesInfo();
 
+  //TODO Change this
   gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
      USER_EVENTS, m_nUin, -id));
 }
@@ -2447,6 +3012,7 @@ void ICQUser::EventClearId(int id)
       m_vcMessages.erase(iter);
       decNumUserEvents();
       SaveNewMessagesInfo();
+      //TODO Change this
       gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
          USER_EVENTS, m_nUin, -id));
       break;
@@ -2563,6 +3129,62 @@ ICQOwner::ICQOwner()
   SetEnableSave(true);
 }
 
+#ifdef PROTOCOL_PLUGIN
+ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
+{
+  gLog.Info("%sOwner configuration for %s.\n", L_INITxSTR, _szId);
+  char szTemp[MAX_LINE_LEN];
+  char filename[MAX_FILENAME_LEN];
+  m_bException = false;
+  m_bSavePassword = true;
+  m_szPassword = NULL;
+
+  Init(0, 0);
+  //SetOnContactList(true);
+  m_bOnContactList = true;
+
+  // Get data from the config file
+  char *p = PPIDSTRING(_nPPID);
+  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.%s.%s", BASE_DIR, _szId, p);
+  filename[MAX_FILENAME_LEN - 1] = '\0';
+
+  // Make sure owner.uin is mode 0600
+  if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
+  {
+    gLog.Warn("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n",
+                 L_WARNxSTR, filename);
+  }
+
+  m_fConf.SetFileName(filename);
+  LoadInfo();
+  m_fConf.ReadStr("Password", szTemp, "", false);
+  SetPassword(&szTemp[1]); // skip leading space since we didn't trim
+  m_fConf.ReadBool("WebPresence", m_bWebAware, false);
+  m_fConf.ReadBool("HideIP", m_bHideIp, false);
+  m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
+  m_fConf.ReadStr("AutoResponse", szTemp, "");
+  m_fConf.ReadNum("SSTime", (unsigned long)m_nSSTime, 0L);
+  m_fConf.ReadNum("SSCount", m_nSSCount, 0);
+  SetAutoResponse(szTemp);
+
+  m_fConf.CloseFile();
+
+  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/owner.%s.%s.history", BASE_DIR, HISTORY_DIR,
+           _szId, p);
+  SetHistoryFile(filename);
+
+  if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)
+  {
+    gLog.Warn("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
+              "%sUpdate general info on server to fix.\n",
+       L_WARNxSTR, m_nTimezone, SystemTimezone(), L_BLANKxSTR);
+  }
+
+  SetEnableSave(true);
+  
+  delete [] p;
+}
+#endif
 
 ICQOwner::~ICQOwner()
 {
