@@ -28,7 +28,9 @@
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
 #include <qsgistyle.h>
+#if QT_VERSION >= 230
 #include <qinterlacestyle.h>
+#endif
 #include <qsessionmanager.h>
 #include <qaccel.h>
 #if QT_VERSION >= 220
@@ -140,8 +142,10 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
     s = new QCDEStyle;
   else if (strncmp( _szStyle, "SGI", 3 ) == 0 )
     s = new QSGIStyle;
+#if QT_VERSION >= 230
   else if (strncmp( _szStyle, "LCD", 3 ) == 0 )
     s = new QInterlaceStyle;
+#endif
   else if (strncmp(_szStyle, "JFC", 3) == 0)
     s = new JFCStyle;
 #if QT_VERSION >= 220
