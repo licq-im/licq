@@ -48,7 +48,7 @@ void MsgViewItem::paintCell( QPainter * p, const QColorGroup & cg, int column, i
 MsgView::MsgView (QWidget *parent = 0, const char *name = 0) : QListView(parent, name)
 {
   addColumn(_("N"), 20);
-  addColumn(_("Event Type"), 130);
+  addColumn(_("Event Type"), 115);
   addColumn(_("Time Received"), 115);
   addColumn(_("Flags"), 50);
   addColumn(_("Licq"), 50);
