@@ -540,6 +540,13 @@ protected:
    unsigned long  m_nDestinationUin;
 };
 
+//-----RequestAuth--------------------------------------------------------------
+class CPU_RequestAuth : public CPU_CommonFamily
+{
+public:
+  CPU_RequestAuth(unsigned long, const char *);
+};
+
 //-----Authorize----------------------------------------------------------------
 class CPU_Authorize : public CPacketUdp
 {

@@ -180,6 +180,7 @@ public:
   void icqRelogon(bool bChangeServer = false);
   unsigned long icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
+  void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long, bool _bServerOnly = false);
   void icqAddGroup(const char *);
