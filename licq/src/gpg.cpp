@@ -18,7 +18,9 @@ const char CGPGHelper::pgpSig[] = "-----BEGIN PGP MESSAGE-----";
 CGPGHelper::CGPGHelper()
   : mKeysIni(INI_FxALLOWxCREATE)
 {
+#ifdef HAVE_LIBGPGME
   mCtx = 0;
+#endif
   mGPGPassphrase = 0;
 }
 
