@@ -318,20 +318,21 @@ bool CUserManager::AddGroup(char *_szName, unsigned short nID)
 void CUserManager::RemoveGroup(unsigned short n)
 {
   // Don't delete the all users group
-  if(n < 1 || n > NumGroups()) {
+  if(n < 1 || n > NumGroups())
+  {
     return;
   }
 
   GroupList *g = LockGroupList(LOCK_R);	
 
-	// Must be called when there are no locks on GroupID and Group lists
-	char szName[128];
-	strncpy(szName, m_vszGroups[n-1], 128);
-	UnlockGroupList();
-	gLicqDaemon->icqRemoveGroup(szName);
+  // Must be called when there are no locks on GroupID and Group lists
+  char szName[128];
+  strncpy(szName, m_vszGroups[n-1], 128);
+  UnlockGroupList();
+  gLicqDaemon->icqRemoveGroup(szName);
 
-	// Lock it back up
-	g = LockGroupList(LOCK_W);
+  // Lock it back up
+  g = LockGroupList(LOCK_W);
 
   // Erase the group from the vector
   m_vszGroups.erase(m_vszGroups.begin()+n-1);
@@ -1185,7 +1186,6 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
-  m_fConf.ReadBool("SendServerLastSelected", m_bSendServerLastSelected, false);
   m_fConf.ReadBool("SendIntIp", m_bSendIntIp, false);
   SetCustomAutoResponse(szTemp);
   m_fConf.ReadStr( "UserEncoding", szTemp, "" );
@@ -1383,9 +1383,7 @@ void ICQUser::Init(unsigned long _nUin)
   SetStatus(ICQ_STATUS_OFFLINE);
   SetAutoResponse("");
   SetSendServer(false);
-  SetSendServerLastSelected(false);
   SetSendIntIp(false);
-  SetSendServerLastSelected(false);
   SetShowAwayMsg(false);
   SetSequence(0xFFFFFFFF);
   SetOfflineOnDisconnect(false);
@@ -2175,7 +2173,6 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("AutoAccept", m_nAutoAccept);
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
-   m_fConf.WriteBool("SendServerLastSelected", m_bSendServerLastSelected);
    m_fConf.WriteBool("SendIntIp", m_bSendIntIp);
    m_fConf.WriteStr("UserEncoding", m_szEncoding);
    m_fConf.WriteNum("SID", m_nSID);
