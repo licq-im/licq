@@ -151,6 +151,9 @@ AC_CHECK_HEADER(vector,,
 
 AC_LANG_RESTORE
 
+dnl Check for qinterlacestyle.h
+LICQ_CHECK_QT_HEADER
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 dnl AC_C_SOCKLEN_T
 

@@ -537,3 +537,17 @@ else
    CXXFLAGS="$CXXFLAGS -Wall"
 fi
 ])
+
+AC_DEFUN(LICQ_CHECK_QT_HEADER,
+[
+  AC_MSG_CHECKING([for specific Qt header files])
+
+  LICQ_FIND_FILE(qinterlacestyle.h, $ac_cv_header_qtinc, qt_incdir)
+
+  if test "$qt_incdir" != ""; then
+    AC_DEFINE_UNQUOTED(HAVE_QINTERLACESTYLE_H, 1, [Undefine if qinterlacestyle.h is not present on your Qt installation])
+  fi
+
+  echo ""
+]) 
+

@@ -31,7 +31,9 @@
 #include <qplatinumstyle.h>
 #include <qcdestyle.h>
 #if QT_VERSION >= 230
+#if HAVE_QINTERLACESTYLE_H
 #include <qinterlacestyle.h>
+#endif
 #endif
 #include <qsessionmanager.h>
 #include <qaccel.h>
