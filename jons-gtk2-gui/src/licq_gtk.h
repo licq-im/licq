@@ -98,9 +98,6 @@ void chat_accept(GtkWidget *, gpointer);
 void contact_list_refresh();
 gint flash_icons(gpointer);
 
-/* Functions in convo.cpp */
-void convo_open(ICQUser *user, bool refresh);
-
 /* Functions in extras.cpp */
 void do_colors();
 void do_pixmaps();
