@@ -133,7 +133,16 @@ protected:
 class CPFile_Start : public CPacketFile
 {
 public:
-   CPFile_Start(unsigned long _nFilePos);
+   CPFile_Start(unsigned long nFilePos, unsigned long nFile);
+};
+
+
+//-----File_SetSpeed---------------------------------------------------------------
+/* 03 00 00 00 00 00 00 00 00 64 00 00 00 */
+class CPFile_SetSpeed : public CPacketFile
+{
+public:
+   CPFile_SetSpeed(unsigned long nSpeed);
 };
 
 

@@ -88,7 +88,6 @@ CPFile_Info::CPFile_Info(const char *_szFileName)
   InitBuffer();
 
   buffer->PackUnsignedShort(0x02);
-
   // Add all the file names
   buffer->PackString(m_szFileName);
   // Add the empty file name
@@ -107,15 +106,27 @@ CPFile_Info::~CPFile_Info()
 
 
 //-----FileStart----------------------------------------------------------------
-CPFile_Start::CPFile_Start(unsigned long _nFilePos)
+CPFile_Start::CPFile_Start(unsigned long nFilePos, unsigned long nFile)
 {
   m_nSize = 13;
   InitBuffer();
 
   buffer->PackChar(0x03);
-  buffer->PackUnsignedLong(_nFilePos);
+  buffer->PackUnsignedLong(nFilePos);
   buffer->PackUnsignedLong(0x00);
   buffer->PackUnsignedLong(0x64);
+  buffer->PackUnsignedLong(nFile);
+}
+
+
+//-----FileSpeed----------------------------------------------------------------
+CPFile_SetSpeed::CPFile_SetSpeed(unsigned long nSpeed)
+{
+  m_nSize = 5;
+  InitBuffer();
+
+  buffer->PackChar(0x05);
+  buffer->PackUnsignedLong(nSpeed);
 }
 
 
@@ -339,6 +350,14 @@ bool CFileTransferManager::ProcessPacket()
 
       PushFileTransferEvent(FT_STARTxBATCH);
 
+      // Send speed response
+      CPFile_SetSpeed p1(100);
+      if (!SendPacket(&p1))
+      {
+        m_nResult = FT_ERRORxCLOSED;
+        return false;
+      }
+
       // Send response
       CPFile_InitServer p(m_szLocalName);
       if (!SendPacket(&p))
@@ -411,7 +430,7 @@ bool CFileTransferManager::ProcessPacket()
       }
 
       // Send response
-      CPFile_Start p(m_nFilePos);
+      CPFile_Start p(m_nFilePos, m_nCurrentFile);
       if (!SendPacket(&p))
       {
         m_nResult = FT_ERRORxCLOSED;
