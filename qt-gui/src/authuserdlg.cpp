@@ -41,7 +41,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
   m_nUin = nUin;
   m_bGrant = bGrant;
 
-  if(bGrant) 
+  if(bGrant)
     setCaption(tr("Licq - Grant Authorisation"));
   else
     setCaption(tr("Licq - Refuse Authorisation"));
@@ -66,7 +66,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
     edtUin = NULL;
     toplay->addWidget(lblUin);
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    if (bGrant) 
+    if (bGrant)
       lblUin->setText(tr("Grant authorization to %1").arg(u->GetAlias()));
     else
       lblUin->setText(tr("Refuse authorization to %1").arg(u->GetAlias()));
@@ -92,7 +92,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
   connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
   connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
 
-  if (m_nUin) 
+  if (m_nUin)
     mleResponse->setFocus();
   else
     edtUin->setFocus();
