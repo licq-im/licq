@@ -609,9 +609,8 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
     u->SetStatus(s);
 
   u->Touch();
-  //if (m_nAllowUpdateUsers <= 0)
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    USER_STATUS, u->Uin()));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+                                  USER_STATUS, u->Uin()));
 }
 
 
@@ -653,9 +652,9 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
   {
     fprintf(f, "Event from new user (%ld) rejected: \n%s\n--------------------\n\n",
             nUin, e->Text());
+    fclose(f);
   }
   delete e;
-  fclose(f);
 }
 
 
