@@ -22,7 +22,7 @@ to something nice, or disable entirely using the windowmaker menu.
 
 AfterStep
 
-5. Add the following to your ~/.steprc file:
+5. Add the following to your ~/GNUstep/Library/AfterStep/wharf file:
    "*Wharf licq      - Swallow "LicqWharf" echo &"
 6. Next time start Licq, the icon should appear in the wharf.
 
@@ -31,3 +31,10 @@ KDE
 
 5. Configure licq with --with-kde and then licq will dock in the kde panel. 
 6. Start Licq and there it goes!
+
+Gnome
+
+5. Set the Licq icon to 64.48 using the options menu, and restart licq.
+6. Select "Swallow App" from the gnome panel menu.
+7. Set "Title =  LicqWharf", "Width =  48", "Height = 48".
+

@@ -1,5 +1,12 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 0.66.1
+o  Small fixes
+o  Keyboard shortcuts (ctrl-m minimode, ctrl-x exit, ctrl-h hide,
+   ctrl-i next message)
+o  Option for 64x48 dock icon for better docking in gnome/kde panel
+
+
 New in 0.66
 o  Nicer looking dock icon
 o  Better cross-platform support
