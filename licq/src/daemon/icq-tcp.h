@@ -418,7 +418,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       if (!bUrgent)
       {
         ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-        unsigned long s = o->getStatus();
+        unsigned long s = o->Status();
         gUserManager.DropOwner();
         if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
         {
@@ -479,7 +479,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       if (!bUrgent)
       {
         ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-        unsigned long s = o->getStatus();
+        unsigned long s = o->Status();
         gUserManager.DropOwner();
         if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
         {
@@ -620,7 +620,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       if (!bUrgent)
       {
         ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-        unsigned long s = o->getStatus();
+        unsigned long s = o->Status();
         gUserManager.DropOwner();
         if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND)
         {
@@ -741,7 +741,7 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
       if (strcmp(u->AutoResponse(), message) != 0)
       {
         u->SetAutoResponse(message);
-        u->setShowAwayMsg(true);
+        u->SetShowAwayMsg(true);
       }
       gLog.Info("%sAuto response from %s (#%d).\n", L_TCPxSTR, u->GetAlias(), theSequence);
       nSubResult = ICQ_TCPxACK_ACCEPT;

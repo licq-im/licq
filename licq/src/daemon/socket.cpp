@@ -183,6 +183,10 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
 {
   char *szPacket;
   char szIpR[32], szIpL[32];
+
+  // This speeds things up if no one is logging packets
+  if (!gLog.LoggingPackets()) return;
+
   switch(d)
   {
   case D_SENDER:

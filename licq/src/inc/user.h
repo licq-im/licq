@@ -57,43 +57,11 @@ typedef vector<unsigned long> UinList;
 //+++++STRUCTURES+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 typedef enum EGender
 {
-  UNKNOWN = 0,
-  FEMALE = 1,
-  MALE = 2
+  GENDER_UNSPECIFIED = 0,
+  GENDER_FEMALE = 1,
+  GENDER_MALE = 2
 } Gender;
-const unsigned short AGE_UNDEFINED = 0xffff;
-
-//-----UserBasicInfo------------------------------------------------------------
-struct UserBasicInfo
-{
-     char alias[32];
-     char uin[16];
-     char name[64];
-     char firstname[32];
-     char lastname[32];
-     char email[64];
-     char status[16];
-     char ip[16];
-     char port[6];
-     char ip_port[24];
-     char history[MAX_FILENAME_LEN + 32];
-     char awayMessage[MAX_MESSAGE_SIZE];
-};
-
-//-----UserExtInfo--------------------------------------------------------------
-struct UserExtInfo
-{
-   char city[64];
-   char state[32];
-   char country[64];
-   char timezone[4];
-   char zipcode[8];
-   char phone[32];
-   char age[16];
-   char sex[10];
-   char homepage[256];
-   char about[MAX_MESSAGE_SIZE];
-};
+const unsigned short AGE_UNSPECIFIED = 0xFFFF;
 
 enum ESortKey { SORT_STATUS, SORT_ONLINE };
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
@@ -118,13 +86,12 @@ public:
 
   CUserFunctionDlg *fcnDlg;
 
-  // user info functions
-  virtual void getBasicInfo(struct UserBasicInfo &us);
-  virtual void getExtInfo(struct UserExtInfo &ud);
-  virtual void saveInfo(void);
-  void saveBasicInfo(void);
-  void saveExtInfo(void);
-  bool isAway(void);
+  virtual void SaveLicqInfo(void);
+  void SaveGeneralInfo(void);
+  void SaveMoreInfo(void);
+  void SaveWorkInfo(void);
+  void SaveBasicInfo(void);
+  void SaveExtInfo(void);
 
   // General Info
   char *GetAlias(void)                      {  return m_szAlias;  }
@@ -166,77 +133,103 @@ public:
   char *GetCompanyPosition(void)            {  return m_szCompanyPosition;  }
   char *GetCompanyHomepage(void)            {  return m_szCompanyHomepage;  }
 
-  // Accessors
-  char *AutoResponse(void)     { return(m_szAutoResponse); }
-  char *getCountry(char *);
-  char *getAbout(void)         { return(m_szAbout); }
-  bool getIsNew(void)         { return(m_bIsNew); }
-  bool getSendServer(void)    { return(m_bSendServer); }
-  bool getEnableSave(void)    { return(m_bEnableSave); }
-  bool ShowAwayMsg(void)      { return m_bShowAwayMsg; }
-  unsigned long getUin(void)           { return(m_nUin); }
-  unsigned long getStatusFull(void)  { return m_nStatus; }
-  unsigned long getStatusFlags(void)  { return m_nStatus & ICQ_STATUS_FxFLAGS; }
-  unsigned short getStatus(void);
-  bool getStatusInvisible(void);
-  bool getStatusWebPresence(void);
-  bool getStatusHideIp(void);
-  bool getStatusBirthday(void);
-  bool getStatusOffline(void);
-  unsigned long getSequence(bool = false);
-  void getStatusStr(char *);
-  void getStatusStrShort(char *);
-  static void StatusStr(unsigned short, bool, char *);
-  static void StatusStrShort(unsigned short, bool, char *);
+  // Licq Info
+  char *AutoResponse(void)                  { return m_szAutoResponse; }
+  char *GetAbout(void)                      { return m_szAbout; }
+  bool NewUser(void)                        { return m_bNewUser; }
+  bool SendServer(void)                     { return m_bSendServer; }
+  bool EnableSave(void)                     { return m_bEnableSave; }
+  bool ShowAwayMsg(void)                    { return m_bShowAwayMsg; }
+  unsigned long Uin(void)                   { return m_nUin; }
+  unsigned long Sequence(bool = false);
 
-  int GetHistory(HistoryList &h)  { return m_fHistory.Load(h); }
-  void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
   unsigned long SortKey(void);
   static void SetSortKey(ESortKey);
   void usprintf(char *_sz, const char *_szFormat, bool _bAllowFieldWidth = true);
+  char *IpPortStr(char *rbuf);
 
-   // Settors
-  void setEnableSave(bool s)          { m_bEnableSave = s; }
-  void setSendServer(bool s)          { m_bSendServer = s; }
-  void setSequence(unsigned long s)   { m_nSequence = s; }
+  // General Info
+  void SetAlias (const char *n);//              {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
+  void SetFirstName (const char *n)          {  SetString(&m_szFirstName, n);  SaveGeneralInfo();  }
+  void SetLastName (const char *n)           {  SetString(&m_szLastName, n);  SaveGeneralInfo();  }
+  void SetEmail1 (const char *n)             {  SetString(&m_szEmail1, n);  SaveGeneralInfo();  }
+  void SetEmail2 (const char *n)             {  SetString(&m_szEmail2, n);  SaveGeneralInfo();  }
+  void SetCity (const char *n)               {  SetString(&m_szCity, n);  SaveGeneralInfo();  }
+  void SetState (const char *n)              {  SetString(&m_szState, n);  SaveGeneralInfo();  }
+  void SetPhoneNumber (const char *n)        {  SetString(&m_szPhoneNumber, n);  SaveGeneralInfo();  }
+  void SetFaxNumber (const char *n)          {  SetString(&m_szFaxNumber, n);  SaveGeneralInfo();  }
+  void SetAddress (const char *n)            {  SetString(&m_szAddress, n);  SaveGeneralInfo();  }
+  void SetCellularNumber (const char *n)     {  SetString(&m_szCellularNumber, n);  SaveGeneralInfo();  }
+  void SetZipCode (unsigned long n)          {  m_nZipCode = n;  SaveGeneralInfo();  }
+  void SetCountryCode (unsigned short n)     {  m_nCountryCode = n;  SaveGeneralInfo();  }
+  void SetTimezone (const char n)            {  m_nTimezone = n;  SaveGeneralInfo();  }
+  void SetAuthorization (bool n)             {  m_bAuthorization = n;  SaveGeneralInfo();  }
+  void SetHideEmail (bool n)                 {  m_bHideEmail = n;  SaveGeneralInfo();  }
 
-  void setIsNew(bool s)               { m_bIsNew = s; saveInfo(); }
+  // More Info
+  void SetAge (unsigned short n)             {  m_nAge = n;  SaveMoreInfo();  }
+  void SetGender (const char n)              {  m_nGender = n;  SaveMoreInfo();  }
+  void SetHomepage (const char *n)           {  SetString(&m_szHomepage, n);  SaveMoreInfo();  }
+  void SetBirthYear (const char n)           {  m_nBirthYear = n;  SaveMoreInfo();  }
+  void SetBirthMonth (const char n)          {  m_nBirthMonth = n;  SaveMoreInfo();  }
+  void SetBirthDay (const char n)            {  m_nBirthDay = n;  SaveMoreInfo();  }
+  void SetLanguage1 (const char n)           {  m_nLanguage1 = n;  SaveMoreInfo();  }
+  void SetLanguage2 (const char n)           {  m_nLanguage2 = n;  SaveMoreInfo();  }
+  void SetLanguage3 (const char n)           {  m_nLanguage3 = n;  SaveMoreInfo();  }
 
-  void setAuthorization(bool s)       { m_bAuthorization = s; saveBasicInfo(); }
+  // Work Info
+  void SetCompanyCity (const char *n)        {  SetString(&m_szCompanyCity, n);  SaveWorkInfo();  }
+  void SetCompanyState (const char *n)       {  SetString(&m_szCompanyState, n);  SaveWorkInfo();  }
+  void SetCompanyPhoneNumber (const char *n) {  SetString(&m_szCompanyPhoneNumber, n);  SaveWorkInfo();  }
+  void SetCompanyFaxNumber (const char *n)   {  SetString(&m_szCompanyFaxNumber, n);  SaveWorkInfo();  }
+  void SetComparyAddress (const char *n)     {  SetString(&m_szComparyAddress, n);  SaveWorkInfo();  }
+  void SetCompanyName (const char *n)        {  SetString(&m_szCompanyName, n);  SaveWorkInfo();  }
+  void SetCompanyDepartment (const char *n)  {  SetString(&m_szCompanyDepartment, n);  SaveWorkInfo();  }
+  void SetCompanyPosition (const char *n)    {  SetString(&m_szCompanyPosition, n);  SaveWorkInfo();  }
+  void SetCompanyHomepage (const char *n)    {  SetString(&m_szCompanyHomepage, n);  SaveWorkInfo();  }
+
+  // Licq Info
+  void SetEnableSave(bool s)          { m_bEnableSave = s; }
+  void SetSendServer(bool s)          { m_bSendServer = s; }
+  void SetSequence(unsigned long s)   { m_nSequence = s; }
+  void SetNewUser(bool s)             { m_bNewUser = s; SaveLicqInfo(); }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
-  void setUin(unsigned long s)        { m_nUin = s; }
-  void setStatusOffline(void)         { setStatus(m_nStatus | ICQ_STATUS_OFFLINE); };
-  void setStatusFlag(unsigned long s) { setStatus(m_nStatus | s); }
-  void clearStatusFlag(unsigned long s) { setStatus(m_nStatus & ~s); }
-  void setAlias(const char *s);
-  void setEmail(const char *s)        { SetString(&m_szEmail1, s); saveBasicInfo(); }
-  void setFirstName(const char *s)    { SetString(&m_szFirstName, s); saveBasicInfo(); }
-  void setLastName(const char *s)     { SetString(&m_szLastName, s); saveBasicInfo(); }
-  void setAge(unsigned short s)       { m_nAge = s; saveExtInfo(); }
-  void setCity(const char *s)         { SetString(&m_szCity, s); saveExtInfo(); }
-  void setState(const char *s)        { SetString(&m_szState, s); saveExtInfo(); }
-  void setPhoneNumber(const char *s)  { SetString(&m_szPhoneNumber, s); saveExtInfo(); }
-  void setHomepage(const char *s)     { SetString(&m_szHomepage, s); saveExtInfo(); }
-  void setAbout(const char *s)        { SetString(&m_szAbout, s); saveExtInfo(); }
-  void setSex(unsigned short s)       { m_nGender = s; saveExtInfo(); }
-  void setCountry(unsigned short s)   { m_nCountryCode = s; saveExtInfo(); }
-  void setTimezone(signed short s)    { m_nTimezone = s; saveExtInfo(); }
-  void setShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
-  void setZipcode(unsigned long s)    { m_nZipCode = s; saveExtInfo(); }
+  void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
+  void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveLicqInfo();  }
 
-  void setStatus(unsigned long);
-  void setHistoryFile(const char *);
+  // Status
+  unsigned short Status(void);
+  unsigned long StatusFull(void)   {  return m_nStatus; }
+  unsigned long StatusFlags(void)  {  return m_nStatus & ICQ_STATUS_FxFLAGS; }
+  bool StatusInvisible(void)       {  return StatusOffline() ? false : m_nStatus & ICQ_STATUS_FxPRIVATE; }
+  bool StatusWebPresence(void)     {  return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE;  }
+  bool StatusHideIp(void)          {  return m_nStatus & ICQ_STATUS_FxHIDExIP; }
+  bool StatusBirthday(void)        {  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;  }
+  bool StatusOffline(void)         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
+  void SetStatus(unsigned long n)  {  m_nStatus = n;  }
+  void SetStatusOffline(void)           { SetStatus(m_nStatus | ICQ_STATUS_OFFLINE); };
+  void SetStatusFlag(unsigned long s)   { SetStatus(m_nStatus | s); }
+  void ClearStatusFlag(unsigned long s) { SetStatus(m_nStatus & ~s); }
+  char *StatusStr(char *);
+  char *StatusStrShort(char *);
+  bool Away(void);
+  static char *StatusToStatusStr(unsigned short, bool, char *);
+  static char *StatusToStatusStrShort(unsigned short, bool, char *);
 
-  // Message functions
-  unsigned short getNumMessages(void)   { return(m_vcMessages.size()); }
+  // Message/History functions
+  unsigned short NewMessages(void)   { return(m_vcMessages.size()); }
   CUserEvent *GetEvent(unsigned short);
   void ClearEvent(unsigned short);
   void AddEvent(CUserEvent *);
   void WriteToHistory(const char *);
+  void SetHistoryFile(const char *);
+  int GetHistory(HistoryList &h)  { return m_fHistory.Load(h); }
+  void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
+  const char *HistoryName(void)      { return m_fHistory.Description(); }
 
   // Group functions
   unsigned long GetGroups(GroupType g)         { return(m_nGroups[g]); }
-  void SetGroups(GroupType g, unsigned long s) { m_nGroups[g] = s; saveInfo(); }
+  void SetGroups(GroupType g, unsigned long s) { m_nGroups[g] = s; SaveLicqInfo(); }
   bool GetInGroup(GroupType, unsigned short);
   void SetInGroup(GroupType, unsigned short, bool);
   void AddToGroup(GroupType, unsigned short);
@@ -270,8 +263,12 @@ public:
 
 protected:
   ICQUser(void) { /* ICQOwner inherited constructor - does nothing */ };
-  bool LoadData(void);
+  void LoadGeneralInfo(void);
+  void LoadMoreInfo(void);
+  void LoadWorkInfo(void);
+  void LoadLicqInfo(void);
   void Init(unsigned long _nUin);
+  bool LoadInfo(void);
   void SetDefaults(void);
 
   CIniFile m_fConf;
@@ -286,7 +283,7 @@ protected:
   char *m_szAutoResponse,
        *m_szAbout;
   bool m_bOnline,
-       m_bIsNew,
+       m_bNewUser,
        m_bOnlineNotify,
        m_bSendServer,
        m_bVisibleList,
@@ -358,12 +355,11 @@ public:
 
   // Owner specific functions
   char *Password(void) { return(m_szPassword); }
-  void SetPassword(const char *s) { SetString(&m_szPassword, s); saveInfo();}
+  void SetPassword(const char *s) { SetString(&m_szPassword, s); SaveLicqInfo(); }
+  void SetUin(unsigned long n)    { m_nUin = n; SaveLicqInfo(); }
 
   // Virtual overloaded functions
-  virtual void getBasicInfo(struct UserBasicInfo &us);
-  virtual void getExtInfo(struct UserExtInfo &us);
-  virtual void saveInfo(void);
+  virtual void SaveLicqInfo(void);
 
   virtual bool User(void)  { return false; }
 protected:

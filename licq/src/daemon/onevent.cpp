@@ -46,7 +46,7 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 {
   // Check if globally command should be run
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned long s = o->getStatus();
+  unsigned long s = o->Status();
   gUserManager.DropOwner();
   if (s == ICQ_STATUS_OCCUPIED || s == ICQ_STATUS_DND) return;
 

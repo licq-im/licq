@@ -62,10 +62,14 @@ public:
   void RemoveLogType(unsigned short _nLogType);
   void SetData(void *);
 
+  static int LoggingPackets(void)  {  return s_nLoggingPackets; }
+
 protected:
   unsigned short m_nLogTypes;
   unsigned short m_nServiceType;
   void *m_pData;
+
+  static int s_nLoggingPackets;
 };
 
 
@@ -134,6 +138,8 @@ public:
   void ModifyService(unsigned short _nServiceType, unsigned short _nLogTypes);
   unsigned short ServiceLogTypes(unsigned short _nServiceType);
   void SetServiceData(unsigned short _nServiceType, void *_pData);
+
+  bool LoggingPackets(void)  {  return CLogService::LoggingPackets() > 0;  }
 
   void Info(const char *_szFormat, ...);
   void Info(unsigned short _nServiceTypes, const char *_szFormat, ...);

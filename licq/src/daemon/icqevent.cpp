@@ -70,7 +70,6 @@ ICQEvent::~ICQEvent(void)
   }
   if (m_sSearchAck != NULL)
   {
-    if (m_sSearchAck->sBasicInfo != NULL) delete m_sSearchAck->sBasicInfo;
     delete m_sSearchAck;
   }
 }

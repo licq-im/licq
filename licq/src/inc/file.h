@@ -53,12 +53,14 @@ public:
   bool ReadNum(const char *_szKey, unsigned long &data, const unsigned long _nDefault = 0);
   bool ReadNum(const char *_szKey, unsigned short &data, const unsigned short _nDefault = 0);
   bool ReadNum(const char *_szKey, signed short &data, const signed short _nDefault = 0);
+  bool ReadNum(const char *_szKey, char &data, const char _nDefault = 0);
   bool ReadBool(const char *_szKey, bool &data, const bool _bDefault = false);
 
   bool WriteStr(const char *_szKey, const char *_szData);
   bool WriteNum(const char *_szKey, const unsigned long _szData);
   bool WriteNum(const char *_szKey, const unsigned short _szData);
   bool WriteNum(const char *_szKey, const signed short _szData);
+  bool WriteNum(const char *_szKey, const char _szData);
   bool WriteBool(const char *_szKey, const bool _szData);
 
   int Error(void)  { return (m_nError); }

@@ -32,17 +32,25 @@ COLOR_WARN, "", "", "", "", "", "", "",
 COLOR_PACKET
 };
 
+int CLogService::s_nLoggingPackets = 0;
+
 //-----CLogService---------------------------------------------------------------
 CLogService::CLogService(unsigned short _nLogTypes)
 {
-   SetLogTypes(_nLogTypes);
-   SetData(NULL);
+  m_nLogTypes = 0;
+  SetLogTypes(_nLogTypes);
+  SetData(NULL);
 }
 
 inline
 void CLogService::SetLogTypes(unsigned short _nLogTypes)
 {
-   m_nLogTypes = _nLogTypes;
+  if ( (m_nLogTypes & L_PACKET) && !(_nLogTypes & L_PACKET) )
+    s_nLoggingPackets--;
+  else if ( !(m_nLogTypes & L_PACKET) && (_nLogTypes & L_PACKET) )
+    s_nLoggingPackets++;
+
+  m_nLogTypes = _nLogTypes;
 }
 
 inline
@@ -54,25 +62,25 @@ void CLogService::SetData(void *_pData)
 inline
 unsigned short CLogService::ServiceType(void)
 {
-   return m_nServiceType;
+  return m_nServiceType;
 }
 
 inline
 unsigned short CLogService::LogType(unsigned short _nLogType)
 {
-   return m_nLogTypes & _nLogType;
+  return m_nLogTypes & _nLogType;
 }
 
 inline
 void CLogService::AddLogType(unsigned short _nLogType)
 {
-   m_nLogTypes |= _nLogType;
+  SetLogTypes(m_nLogTypes | _nLogType);
 }
 
 inline
 void CLogService::RemoveLogType(unsigned short _nLogType)
 {
-   m_nLogTypes &= ~_nLogType;
+  SetLogTypes(m_nLogTypes & ~_nLogType);
 }
 
 

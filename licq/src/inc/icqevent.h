@@ -19,9 +19,27 @@ struct SExtendedAck
   char *szResponse;
 };
 
-struct SSearchAck
+class CSearchAck
 {
-  struct UserBasicInfo *sBasicInfo;
+public:
+  CSearchAck(unsigned long _nUin)
+  {
+    nUin = _nUin;
+    szAlias = szFirstName = szLastName = szEmail = NULL;
+  }
+  ~CSearchAck(void)
+  {
+    if (szAlias != NULL) free(szAlias);
+    if (szFirstName != NULL) free(szFirstName);
+    if (szLastName != NULL) free(szLastName);
+    if (szEmail != NULL) free(szEmail);
+  }
+
+  unsigned long nUin;
+  char *szAlias;
+  char *szFirstName;
+  char *szLastName;
+  char *szEmail;
   char cMore;
 };
 
@@ -57,7 +75,7 @@ public:
 
   CUserEvent    *m_xUserEvent;
   SExtendedAck  *m_sExtendedAck;
-  SSearchAck    *m_sSearchAck;
+  CSearchAck    *m_sSearchAck;
 
   CICQDaemon    *m_xDaemon;
 };

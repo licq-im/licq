@@ -211,6 +211,7 @@ protected:
 
   unsigned short ProcessUdpPacket(CBuffer &packet, bool = false);
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
+  void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand);
   bool ProcessTcpPacket(CBuffer &packet, int sockfd);
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);

@@ -524,14 +524,14 @@ bool CIniFile::SetSection(const char *_szSection)
 bool CIniFile::ReadStr(const char *_szKey, char *_szData, const char *_szDefault = NULL)
 {
   char *sz, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
-  
+
   ResetSection();
 
   do
   {
     szLine = ReadLine(szLineBuffer);
     sz = GetKeyFromLine(szLine, szKeyBuffer);
-    if (sz == NULL) 
+    if (sz == NULL)
     {
        if (szLine == NULL) Warn(INI_ExNOKEY, _szKey);
        if (_szDefault != NULL) strcpy(_szData, _szDefault);
@@ -540,7 +540,7 @@ bool CIniFile::ReadStr(const char *_szKey, char *_szData, const char *_szDefault
   }
   while (strcmp(sz, _szKey) != 0);
 
-  if ((sz = GetDataFromLine(szLine, _szData)) == NULL) 
+  if ((sz = GetDataFromLine(szLine, _szData)) == NULL)
   {
     if (_szDefault != NULL) strcpy(_szData, _szDefault);
     return (false);
@@ -550,61 +550,74 @@ bool CIniFile::ReadStr(const char *_szKey, char *_szData, const char *_szDefault
 
 
 /*-----ReadNum-----------------------------------------------------------------
- * Finds a key and sets the numeric data.  Returns false if the key does not 
+ * Finds a key and sets the numeric data.  Returns false if the key does not
  * exist.
  *---------------------------------------------------------------------------*/
 bool CIniFile::ReadNum(const char *_szKey, unsigned long &data, const unsigned long _nDefault = 0)
 {
   char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL)) 
+  if (!ReadStr(_szKey, szData, NULL))
   {
     data = _nDefault;
     return (false);
   }
-  
+
   data = (unsigned long)atoi(szData);
-  return(true);   
+  return(true);
 }
 
 bool CIniFile::ReadNum(const char *_szKey, unsigned short &data, const unsigned short _nDefault = 0)
 {
   char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL)) 
+  if (!ReadStr(_szKey, szData, NULL))
   {
     data = _nDefault;
     return (false);
   }
-  
+
   data = (unsigned short)atoi(szData);
-  return(true);   
+  return(true);
 }
 
+
+bool CIniFile::ReadNum(const char *_szKey, char &data, const char _nDefault = 0)
+{
+  char szData[MAX_LINE_LEN];
+  if (!ReadStr(_szKey, szData, NULL))
+  {
+    data = _nDefault;
+    return (false);
+  }
+
+  data = (char)atoi(szData);
+  return(true);
+}
 
 bool CIniFile::ReadNum(const char *_szKey, signed short &data, const signed short _nDefault = 0)
 {
   char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL)) 
+  if (!ReadStr(_szKey, szData, NULL))
   {
     data = _nDefault;
     return (false);
   }
-  
+
   data = (signed short)atoi(szData);
-  return(true);   
+  return(true);
 }
 
 
 bool CIniFile::ReadBool(const char *_szKey, bool &data, const bool _bDefault = false)
 {
   char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL)) 
+  if (!ReadStr(_szKey, szData, NULL))
   {
-    data = _bDefault;  
+    data = _bDefault;
     return (false);
   }
-  
+
   data = (atoi(szData) == 0 ? false : true);
-  return(true);   
+  return(true);
 }
 
 
@@ -618,7 +631,7 @@ void CIniFile::InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd)
 {
   int nNewStrLen = strlen(_szNewStr);
   int nNewBufSize = _nCutStart + nNewStrLen + m_nBufSize - _nCutEnd;
-    
+
   char *szNewBuffer = (char *)malloc(nNewBufSize + 1);
   memcpy(szNewBuffer, m_szBuffer, _nCutStart);
   memcpy(szNewBuffer + _nCutStart, _szNewStr, nNewStrLen);
@@ -627,7 +640,7 @@ void CIniFile::InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd)
   free (m_szBuffer);
   m_szBuffer = szNewBuffer;
   m_nBufSize = nNewBufSize;
-  m_bChanged = true;   
+  m_bChanged = true;
 }
 
 
@@ -646,8 +659,8 @@ bool CIniFile::CreateSection(const char *_szSectionName)
      SetFlags(nFlags);
      return(false);
   }
-  SetFlags(nFlags);  
-  
+  SetFlags(nFlags);
+
   // Otherwise our bufpos is at the end of the file and we need to create
   // the section
   char szNewSect[MAX_SECTIONxNAME_LEN + 4];
@@ -656,7 +669,7 @@ bool CIniFile::CreateSection(const char *_szSectionName)
   InsertStr(szNewSect, m_nBufPos, m_nBufPos);
   m_nSectionEnd = m_nBufSize;
   m_szSectionName = strdup(_szSectionName);
-  
+
   return(true);
 }
 
@@ -719,6 +732,13 @@ bool CIniFile::WriteNum(const char *_szKey, const signed short _nData)
 {
   char szN[32];
   sprintf(szN, "%d", _nData);
+  return(WriteStr(_szKey, szN));
+}
+
+bool CIniFile::WriteNum(const char *_szKey, const char _nData)
+{
+  char szN[32];
+  sprintf(szN, "%c", _nData);
   return(WriteStr(_szKey, szN));
 }
 

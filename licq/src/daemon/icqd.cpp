@@ -464,7 +464,7 @@ void CICQDaemon::SaveConf(void)
   licqConf.FlushFile();
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  o->saveInfo();
+  o->SaveLicqInfo();
   gUserManager.DropOwner();
 }
 
@@ -504,7 +504,7 @@ void CICQDaemon::SaveUserList(void)
   unsigned short i = 1;
   FOR_EACH_USER_START(LOCK_R)
   {
-    fprintf(usersConf, "User%d = %ld\n", i, pUser->getUin());
+    fprintf(usersConf, "User%d = %ld\n", i, pUser->Uin());
     i++;
   }
   FOR_EACH_USER_END
@@ -546,20 +546,20 @@ void CICQDaemon::AddUserToList(unsigned long _nUin)
 void CICQDaemon::AddUserToList(ICQUser *nu)
 {
   // Don't add a user we already have
-  ICQUser *u = gUserManager.FetchUser(nu->getUin(), LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(nu->Uin(), LOCK_R);
   if (u != NULL)
   {
     gUserManager.DropUser(u);
-    gLog.Warn("%sUser %ld already on contact list.\n", L_WARNxSTR, nu->getUin());
+    gLog.Warn("%sUser %ld already on contact list.\n", L_WARNxSTR, nu->Uin());
     return;
   }
 
   gUserManager.AddUser(nu);
   SaveUserList();
 
-  if (m_nUDPSocketDesc != -1) icqAddUser(nu->getUin());
+  if (m_nUDPSocketDesc != -1) icqAddUser(nu->Uin());
 
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->getUin()));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->Uin()));
 }
 
 //-----RemoveUserFromList-------------------------------------------------------
@@ -577,13 +577,13 @@ void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
 void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 {
   if (s == ICQ_STATUS_OFFLINE)
-    u->setStatusOffline();
+    u->SetStatusOffline();
   else
-    u->setStatus(s);
+    u->SetStatus(s);
 
   if (m_nAllowUpdateUsers <= 0)
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    USER_STATUS, u->getUin()));
+                                    USER_STATUS, u->Uin()));
 }
 
 
@@ -602,7 +602,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
   }
   u->AddEvent(e);
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
-                                  u->getUin()));
+                                  u->Uin()));
   return true;
 }
 
@@ -1068,7 +1068,7 @@ void CICQDaemon::ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr)
 unsigned long CICQDaemon::StringToStatus(char *_szStatus)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned long nStatus = o->getStatusFlags();
+  unsigned long nStatus = o->StatusFlags();
   gUserManager.DropOwner();
 
   if (_szStatus[0] == '*')
@@ -1139,7 +1139,7 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     }
     // Determine the status to go to
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    bool b = o->getStatusOffline();
+    bool b = o->StatusOffline();
     gUserManager.DropOwner();
 
     unsigned long nStatus = StringToStatus(szStatus);

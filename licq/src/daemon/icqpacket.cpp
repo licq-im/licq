@@ -63,9 +63,13 @@ void CPacketUdp::Encrypt(void)
 #if ICQ_VERSION == 2
 // No encryption in V2
 #elif ICQ_VERSION == 4
-  char *b;
-  gLog.Packet("%sUnencrypted Packet:\n%s\n", L_PACKETxSTR, buffer->print(b));
-  delete [] b;
+  // This speeds things up if no one is logging packets
+  if (gLog.LoggingPackets())
+  {
+    char *b;
+    gLog.Packet("%sUnencrypted Packet:\n%s\n", L_PACKETxSTR, buffer->print(b));
+    delete [] b;
+  }
 
   unsigned long l = buffer->getDataSize();
   unsigned char *buf = (unsigned char *)buffer->getDataStart();
@@ -126,7 +130,7 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
   if (_nCommand != ICQ_CMDxSND_ACK && _nCommand != ICQ_CMDxSND_SYSxMSGxDONExACK)
   {
    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-   m_nSequence = o->getSequence(true);
+   m_nSequence = o->Sequence(true);
    m_nSubSequence = m_nSequence;
    gUserManager.DropOwner();
   }
@@ -932,7 +936,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
   case ICQ_CMDxTCP_START:
    m_nStatus = 0;
    m_nMsgType = (_bUrgent ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
-   switch (o->getStatus())
+   switch (o->Status())
    {
    case ICQ_STATUS_AWAY: m_nMsgType |= ICQ_TCPxMSG_FxAWAY; break;
    case ICQ_STATUS_NA: m_nMsgType |= ICQ_TCPxMSG_FxNA; break;
@@ -942,7 +946,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
    case ICQ_STATUS_FREEFORCHAT:
    default: m_nMsgType |= ICQ_TCPxMSG_FxONLINE; break;
    }
-   if (o->getStatusInvisible())
+   if (o->StatusInvisible())
      m_nMsgType |= ICQ_TCPxMSG_FxINVISIBLE;
    break;
 
@@ -957,7 +961,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
      m_nStatus = ICQ_TCPxACK_ONLINE;
    else
    {
-     switch (o->getStatus())
+     switch (o->Status())
      {
      case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
      case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
@@ -995,7 +999,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
   m_nLicqVersion = INT_VERSION;
 
   // don't increment the sequence if this is an ack and cancel packet
-  if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = _cUser->getSequence(true);
+  if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = _cUser->Sequence(true);
 
   m_cUser = _cUser;
   buffer = NULL;
@@ -1016,7 +1020,7 @@ void CPacketTcp::Create(void)
   if (s == NULL)
   {
     gLog.Error("%sNo socket found for %s (%ld) while creating packet.\n", L_ERRORxSTR,
-              m_cUser->GetAlias(), m_cUser->getUin());
+              m_cUser->GetAlias(), m_cUser->Uin());
     m_nLocalIP = LOCALHOST;
     m_nLocalPort = 0;
   }
@@ -1116,7 +1120,7 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
                true, false, _cUser)
 {
   // Properly set the subcommand to get the correct away message
-  switch(_cUser->getStatus())
+  switch(_cUser->Status())
   {
   case ICQ_STATUS_AWAY: m_nSubCommand = ICQ_CMDxTCP_READxAWAYxMSG; break;
   case ICQ_STATUS_NA: m_nSubCommand = ICQ_CMDxTCP_READxNAxMSG; break;

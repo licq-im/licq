@@ -82,8 +82,8 @@ void CUserManager::SetOwnerUin(unsigned long _nUin)
   char buf[24];
   sprintf(buf, "%ld", _nUin);
   ICQOwner *o = FetchOwner(LOCK_W);
-  o->setUin(_nUin);
-  o->setAlias(buf);
+  o->SetUin(_nUin);
+  o->SetAlias(buf);
   DropOwner();
   m_nOwnerUin = _nUin;
 }
@@ -98,7 +98,7 @@ bool CUserManager::Load(void)
   m_xOwner = new ICQOwner;
   if (m_xOwner->Exception())
     return false;
-  m_nOwnerUin = m_xOwner->getUin();
+  m_nOwnerUin = m_xOwner->Uin();
 
   gLog.Info("%sUser configuration.\n", L_INITxSTR);
 
@@ -170,7 +170,7 @@ bool CUserManager::Load(void)
 unsigned long CUserManager::AddUser(ICQUser *_pcUser)
 {
   _pcUser->Lock(LOCK_R);
-  unsigned long nUin = _pcUser->getUin();
+  unsigned long nUin = _pcUser->Uin();
   // Store the user in the hash table
   m_hUsers.Store(_pcUser, nUin);
 
@@ -197,7 +197,7 @@ void CUserManager::RemoveUser(unsigned long _nUin)
   if (iter == m_vpcUsers.end())
     gLog.Warn("%sInteral Error: CUserManager::RemoveUser():\n"
               "%sUser \"%s\" (%ld) not found in vector.\n",
-              L_WARNxSTR, L_BLANKxSTR, u->GetAlias(), u->getUin());
+              L_WARNxSTR, L_BLANKxSTR, u->GetAlias(), u->Uin());
   else
     m_vpcUsers.erase(iter);
   DropUser(u);
@@ -351,9 +351,9 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
   if (u != NULL)
   {
     u->Lock(_nLockType);
-    if (_nUin != u->getUin())
+    if (_nUin != u->Uin())
       gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %d, found %d.\n",
-                 _nUin, u->getUin());
+                 _nUin, u->Uin());
   }
   return u;
 }
@@ -405,7 +405,7 @@ void CUserManager::Reorder(ICQUser *_pcUser, bool _bOnList)
     {
       gLog.Warn("%sInternal Error: CUserManager::Reorder():\n"
                 "%sGiven user \"%s\" (%ld) not found.\n", L_WARNxSTR,
-                L_BLANKxSTR, _pcUser->GetAlias(), _pcUser->getUin());
+                L_BLANKxSTR, _pcUser->GetAlias(), _pcUser->Uin());
       UnlockUserList();
       return;
     }
@@ -438,9 +438,10 @@ void CUserManager::SaveAllUsers(void)
 {
   FOR_EACH_USER_START(LOCK_R)
   {
-    pUser->saveInfo();
-    pUser->saveBasicInfo();
-    pUser->saveExtInfo();
+    pUser->SaveLicqInfo();
+    pUser->SaveGeneralInfo();
+    pUser->SaveMoreInfo();
+    pUser->SaveWorkInfo();
   }
   FOR_EACH_USER_END
 }
@@ -616,7 +617,7 @@ ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
     for (iter = l.begin(); iter != l.end(); iter++)
     {
       (*iter)->Lock(LOCK_R);
-      nUin = (*iter)->getUin();
+      nUin = (*iter)->Uin();
       (*iter)->Unlock();
       if (nUin == _nUin)
       {
@@ -649,7 +650,7 @@ void CUserHashTable::Remove(unsigned long _nUin)
   for (iter = l.begin(); iter != l.end(); iter++)
   {
     (*iter)->Lock(LOCK_R);
-    nUin = (*iter)->getUin();
+    nUin = (*iter)->Uin();
     (*iter)->Unlock();
     if (nUin == _nUin)
     {
@@ -730,11 +731,11 @@ pthread_mutex_t ICQUser::mutex_sortkey;
 ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
 // Called when first constructing our known users
 {
-  setEnableSave(false);
+  SetEnableSave(false);
   Init(_nUin);
   m_fConf.SetFlags(INI_FxWARN);
   m_fConf.SetFileName(_szFilename);
-  if (!LoadData())
+  if (!LoadInfo())
   {
     gLog.Error("%sUnable to load user info from '%s'.  Using default values.\n",
                L_ERRORxSTR, _szFilename, L_BLANKxSTR);
@@ -742,27 +743,133 @@ ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
   }
   m_fConf.CloseFile();
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
-  setEnableSave(true);
+  SetEnableSave(true);
 }
 
 
 ICQUser::ICQUser(unsigned long _nUin)
 {
-  setEnableSave(false);
+  SetEnableSave(false);
   Init(_nUin);
   SetDefaults();
   char szFilename[MAX_FILENAME_LEN];
   sprintf(szFilename, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, _nUin);
   m_fConf.SetFileName(szFilename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
-  setEnableSave(true);
-  saveInfo();
-  saveBasicInfo();
-  saveExtInfo();
+
+  SetEnableSave(true);
+  SaveLicqInfo();
+  SaveGeneralInfo();
+  SaveMoreInfo();
+  SaveWorkInfo();
 }
 
 
+//-----ICQUser::LoadInfo-----------------------------------------------------
+bool ICQUser::LoadInfo(void)
+{
+  if (!m_fConf.ReloadFile()) return (false);
+  m_fConf.SetFlags(0);
+  m_fConf.SetSection("user");
 
+  LoadGeneralInfo();
+  LoadMoreInfo();
+  LoadWorkInfo();
+  LoadLicqInfo();
+
+  return true;
+}
+
+
+//-----ICQUser::LoadGeneralInfo----------------------------------------------
+void ICQUser::LoadGeneralInfo(void)
+{
+  // read in the fields, checking for errors each time
+  char szTemp[MAX_DATA_LEN];
+  m_fConf.ReadStr("Alias", szTemp, "Unknown");  SetAlias(szTemp);
+  m_fConf.ReadStr("FirstName", szTemp, "");  SetFirstName(szTemp);
+  m_fConf.ReadStr("LastName", szTemp, "");  SetLastName(szTemp);
+  m_fConf.ReadStr("Email1", szTemp, "");  SetEmail1(szTemp);
+  m_fConf.ReadStr("Email2", szTemp, "");  SetEmail2(szTemp);
+  m_fConf.ReadStr("City", szTemp, "");  SetCity(szTemp);
+  m_fConf.ReadStr("State", szTemp, "");  SetState(szTemp);
+  m_fConf.ReadStr("PhoneNumber", szTemp, "");  SetPhoneNumber(szTemp);
+  m_fConf.ReadStr("FaxNumber", szTemp, "");  SetFaxNumber(szTemp);
+  m_fConf.ReadStr("Address", szTemp, "");  SetAddress(szTemp);
+  m_fConf.ReadStr("CellularNumber", szTemp, "");  SetCellularNumber(szTemp);
+  m_fConf.ReadNum("Zipcode", m_nZipCode, 0);
+  m_fConf.ReadNum("Country", m_nCountryCode, 0);
+  m_fConf.ReadNum("Timezone", m_nTimezone, 0);
+  m_fConf.ReadBool("Authorization", m_bAuthorization, false);
+  m_fConf.ReadBool("HideEmail", m_bHideEmail, false);
+}
+
+
+//-----ICQUser::LoadMoreInfo-------------------------------------------------
+void ICQUser::LoadMoreInfo(void)
+{
+  // read in the fields, checking for errors each time
+  char szTemp[MAX_DATA_LEN];
+  m_fConf.ReadNum("Age", m_nAge, 0);
+  m_fConf.ReadNum("Gender", m_nGender, GENDER_UNSPECIFIED);
+  m_fConf.ReadStr("Homepage", szTemp, "<none>");  SetHomepage(szTemp);
+  m_fConf.ReadNum("BirthYear", m_nBirthYear, 0);
+  m_fConf.ReadNum("BirthMonth", m_nBirthMonth, 0);
+  m_fConf.ReadNum("BirthDay", m_nBirthDay, 0);
+  m_fConf.ReadNum("Language1", m_nLanguage1, 0);
+  m_fConf.ReadNum("Language2", m_nLanguage2, 0);
+  m_fConf.ReadNum("Language3", m_nLanguage3, 0);
+}
+
+
+//-----ICQUser::LoadWorkInfo-------------------------------------------------
+void ICQUser::LoadWorkInfo(void)
+{
+  // read in the fields, checking for errors each time
+  char szTemp[MAX_DATA_LEN];
+  m_fConf.ReadStr("CompanyCity", szTemp, "");  SetCompanyCity(szTemp);
+  m_fConf.ReadStr("CompanyState", szTemp, "");  SetCompanyState(szTemp);
+  m_fConf.ReadStr("CompanyPhoneNumber", szTemp, "");  SetCompanyPhoneNumber(szTemp);
+  m_fConf.ReadStr("CompanyFaxNumber", szTemp, "");  SetCompanyFaxNumber(szTemp);
+  m_fConf.ReadStr("CompanyAddress", szTemp, "");  SetComparyAddress(szTemp);
+  m_fConf.ReadStr("CompanyName", szTemp, "");  SetCompanyName(szTemp);
+  m_fConf.ReadStr("CompanyDepartment", szTemp, "");  SetCompanyDepartment(szTemp);
+  m_fConf.ReadStr("CompanyPosition", szTemp, "");  SetCompanyPosition(szTemp);
+  m_fConf.ReadStr("CompanyHompage", szTemp, "");  SetCompanyHomepage(szTemp);
+}
+
+
+//-----ICQUser::LoadLicqInfo-------------------------------------------------
+void ICQUser::LoadLicqInfo(void)
+{
+  // read in the fields, checking for errors each time
+  char szTemp[MAX_DATA_LEN];
+  unsigned short nNewMessages;
+  m_fConf.SetSection("user");
+  m_fConf.ReadNum("Groups.System", m_nGroups[GROUPS_SYSTEM], 0);
+  m_fConf.ReadNum("Groups.User", m_nGroups[GROUPS_USER], 0);
+  m_fConf.ReadStr("Ip", szTemp, "0.0.0.0");
+  struct in_addr in;
+  m_nIp = inet_aton(szTemp, &in);
+  if (m_nIp != 0) m_nIp = in.s_addr;
+  m_fConf.ReadNum("Port", m_nPort, 0);
+  m_fConf.ReadBool("NewUser", m_bNewUser, false);
+  m_fConf.ReadNum("NewMessages", nNewMessages, 0);
+  m_fConf.ReadStr("History", szTemp, "default");
+  if (szTemp[0] == '\0') strcpy(szTemp, "default");
+  SetHistoryFile(szTemp);
+  m_fConf.ReadStr("About", szTemp, "");
+  SetAbout(szTemp);
+
+  if (nNewMessages > 0)
+  {
+     m_vcMessages.push_back(new CEventSaved(nNewMessages));
+     incNumUserEvents();
+  }
+}
+
+
+/*
 //-----ICQUser::LoadData--------------------------------------------------------
 bool ICQUser::LoadData(void)
 {
@@ -804,7 +911,7 @@ bool ICQUser::LoadData(void)
   setCity(sTemp);
   m_fConf.ReadStr("State", sTemp, "Unknown");
   setState(sTemp);
-  m_fConf.ReadNum("Country", nTemp, 0xFFFF);
+  m_fConf.ReadNum("Country", nTemp, COUNTRY_UNSPECIFIED);
   setCountry(nTemp);
   m_fConf.ReadNum("Timezone", nTemp, 0x00);
   setTimezone(nTemp);
@@ -827,13 +934,13 @@ bool ICQUser::LoadData(void)
   }
   return (true);
 }
-
+*/
 
 
 //-----ICQUser::destructor------------------------------------------------------
 ICQUser::~ICQUser(void)
 {
-  while (getNumMessages() > 0) ClearEvent(0);
+  while (NewMessages() > 0) ClearEvent(0);
 /*
   // Destroy the mutex
   int nResult = 0;
@@ -900,12 +1007,12 @@ void ICQUser::Init(unsigned long _nUin)
   m_szCompanyPosition = NULL;
   m_szCompanyHomepage = NULL;
 
-  setUin(_nUin);
-  setStatus(ICQ_STATUS_OFFLINE);
+  m_nUin = _nUin;
+  SetStatus(ICQ_STATUS_OFFLINE);
   SetAutoResponse("");
-  setSendServer(false);
-  setShowAwayMsg(true);
-  setSequence(1);
+  SetSendServer(false);
+  SetShowAwayMsg(true);
+  SetSequence(1);
   ClearSocketDesc();
   fcnDlg = NULL;
   m_nIp = m_nPort = 0;
@@ -917,28 +1024,28 @@ void ICQUser::Init(unsigned long _nUin)
 void ICQUser::SetDefaults(void)
 {
   char szAlias[12];
-  sprintf(szAlias, "%ld", getUin());
-  setAlias(szAlias);
-  setFirstName("");
-  setLastName("");
-  setEmail("");
-  setHistoryFile("default");
-  setCity("");
-  setState("");
-  setSex(0);
-  setAge(0xFFFF);
-  setCountry(0xFFFF);
-  setZipcode(0);
-  setHomepage("");
-  setPhoneNumber("");
-  setAbout("");
+  sprintf(szAlias, "%ld", Uin());
+  SetAlias(szAlias);
+  SetFirstName("");
+  SetLastName("");
+  SetEmail1("");
+  SetHistoryFile("default");
+  SetCity("");
+  SetState("");
+  SetGender(GENDER_UNSPECIFIED);
+  SetAge(AGE_UNSPECIFIED);
+  SetCountryCode(COUNTRY_UNSPECIFIED);
+  SetZipCode(0);
+  SetHomepage("");
+  SetPhoneNumber("");
+  SetAbout("");
   SetGroups(GROUPS_SYSTEM, 0);
   SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
-  setAuthorization(false);
-  setIsNew(true);
+  SetAuthorization(false);
+  SetNewUser(true);
 }
 
-
+/*
 char *ICQUser::getCountry(char *buf)
 {
   if (m_nCountryCode == COUNTRY_UNSPECIFIED)
@@ -954,18 +1061,13 @@ char *ICQUser::getCountry(char *buf)
     strcpy(buf, country->szName);
   return (buf);
 }
+*/
 
 
-inline bool ICQUser::getStatusOffline(void)
-{
-  unsigned short nStatusShort = (unsigned short)m_nStatus;
-  return (nStatusShort == ICQ_STATUS_OFFLINE);
-}
-
-unsigned short ICQUser::getStatus(void)
+unsigned short ICQUser::Status(void)
 // guarantees to return a unique status that switch can be run on
 {
-   if (getStatusOffline()) return ICQ_STATUS_OFFLINE;
+   if (StatusOffline()) return ICQ_STATUS_OFFLINE;
    else if (m_nStatus & ICQ_STATUS_DND) return ICQ_STATUS_DND;
    else if (m_nStatus & ICQ_STATUS_OCCUPIED) return ICQ_STATUS_OCCUPIED;
    else if (m_nStatus & ICQ_STATUS_NA) return ICQ_STATUS_NA;
@@ -975,25 +1077,6 @@ unsigned short ICQUser::getStatus(void)
    else return (ICQ_STATUS_OFFLINE - 1);
 }
 
-inline bool ICQUser::getStatusInvisible(void)
-{
-   return (getStatusOffline() ? false : m_nStatus & ICQ_STATUS_FxPRIVATE);
-}
-
-inline bool ICQUser::getStatusWebPresence(void)
-{
-   return (m_nStatus & ICQ_STATUS_FxWEBxPRESENCE);
-}
-
-inline bool ICQUser::getStatusHideIp(void)
-{
-   return (m_nStatus & ICQ_STATUS_FxHIDExIP);
-}
-
-inline bool ICQUser::getStatusBirthday(void)
-{
-   return (m_nStatus & ICQ_STATUS_FxBIRTHDAY);
-}
 
 unsigned long ICQUser::SortKey(void)
 {
@@ -1001,11 +1084,11 @@ unsigned long ICQUser::SortKey(void)
   {
   case SORT_STATUS:
   {
-    unsigned long s = getStatus();
+    unsigned long s = Status();
     return (s == ICQ_STATUS_FREEFORCHAT ? ICQ_STATUS_ONLINE : s);
   }
   case SORT_ONLINE:
-    return (getStatusOffline() ? 1 : 0);
+    return (StatusOffline() ? 1 : 0);
   }
   return 0;
 }
@@ -1017,7 +1100,7 @@ void ICQUser::SetSortKey(ESortKey _eSortKey)
   pthread_mutex_unlock(&mutex_sortkey);
 }
 
-unsigned long ICQUser::getSequence(bool increment = false)
+unsigned long ICQUser::Sequence(bool increment = false)
 {
    if (increment)
       return (m_nSequence++);
@@ -1025,34 +1108,31 @@ unsigned long ICQUser::getSequence(bool increment = false)
       return (m_nSequence);
 }
 
-void ICQUser::setAlias(const char *s)
+void ICQUser::SetAlias(const char *s)
 {
   if (s[0] == '\0')
   {
     char sz[12];
-    sprintf(sz, "%ld", getUin());
+    sprintf(sz, "%ld", Uin());
     SetString(&m_szAlias, sz);
   }
   else
     SetString(&m_szAlias, s);
-  saveBasicInfo();
+
+  SaveGeneralInfo();
 }
 
-void ICQUser::setStatus(unsigned long s)
+
+bool ICQUser::Away(void)
 {
-  m_nStatus = s;
+   return (Status() == ICQ_STATUS_AWAY || Status() == ICQ_STATUS_NA ||
+           Status() == ICQ_STATUS_DND || Status() == ICQ_STATUS_OCCUPIED);
 }
 
-bool ICQUser::isAway(void)
-{
-   return (getStatus() == ICQ_STATUS_AWAY || getStatus() == ICQ_STATUS_NA ||
-           getStatus() == ICQ_STATUS_DND || getStatus() == ICQ_STATUS_OCCUPIED);
-}
-
-void ICQUser::setHistoryFile(const char *s)
+void ICQUser::SetHistoryFile(const char *s)
 {
   m_fHistory.SetFile(s, m_nUin);
-  saveBasicInfo();
+  SaveLicqInfo();
 }
 
 
@@ -1068,22 +1148,22 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
   }
   m_nIp = _nIp;
   m_nPort = _nPort;
-  saveInfo();
+  SaveLicqInfo();
 }
 
 
-void ICQUser::getStatusStr(char *sz)
+char *ICQUser::StatusStr(char *sz)
 {
-  StatusStr(getStatus(), getStatusInvisible(), sz);
+  return StatusToStatusStr(Status(), StatusInvisible(), sz);
 }
 
-void ICQUser::getStatusStrShort(char *sz)
+char *ICQUser::StatusStrShort(char *sz)
 {
-  StatusStrShort(getStatus(), getStatusInvisible(), sz);
+  return StatusToStatusStrShort(Status(), StatusInvisible(), sz);
 }
 
 
-void ICQUser::StatusStr(unsigned short n, bool b, char *sz)
+char *ICQUser::StatusToStatusStr(unsigned short n, bool b, char *sz)
 {
   switch(n)
   {
@@ -1102,9 +1182,10 @@ void ICQUser::StatusStr(unsigned short n, bool b, char *sz)
     sz[0] = '(';
     strcat(sz, ")");
   }
+  return sz;
 }
 
-void ICQUser::StatusStrShort(unsigned short n, bool b, char *sz)
+char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b, char *sz)
 {
   switch(n)
   {
@@ -1123,14 +1204,15 @@ void ICQUser::StatusStrShort(unsigned short n, bool b, char *sz)
     sz[0] = '(';
     strcat(sz, ")");
   }
+  return sz;
 }
 
-
+/*
 //-----ICQUser::getBasicInfo----------------------------------------------------
 void ICQUser::getBasicInfo(struct UserBasicInfo &us)
 {
    strcpy(us.alias, GetAlias());
-   sprintf(us.uin, "%ld", getUin());
+   sprintf(us.uin, "%ld", Uin());
    strcpy(us.firstname, GetFirstName());
    strcpy(us.lastname, GetLastName());
    sprintf(us.name, "%s %s", us.firstname, us.lastname);
@@ -1214,6 +1296,56 @@ void ICQUser::getExtInfo(struct UserExtInfo &ud)
    strcpy(ud.about, getAbout());
    sprintf(ud.zipcode, "%05ld", GetZipCode());
 }
+*/
+
+char *ICQUser::IpPortStr(char *rbuf)
+{
+  // Track down the current ip and port
+  char buf[32], ip[32], port[32];
+  if (SocketDesc() > 0)    // First check if we are connected
+  {
+    INetSocket *s = gSocketManager.FetchSocket(SocketDesc());
+    if (s != NULL)
+    {
+      if (User())
+      {
+        strcpy(ip, s->RemoteIpStr(buf));
+        sprintf(port, "%d", s->RemotePort());
+      }
+      else
+      {
+        strcpy(ip, s->LocalIpStr(buf));
+        sprintf(port, "%d", s->LocalPort());
+      }
+      gSocketManager.DropSocket(s);
+    }
+    else
+    {
+      strcpy(ip, "invalid");
+      strcpy(port, "invalid");
+    }
+  }
+  else
+  {
+    if (Ip() > 0)     // Default to the given ip
+      strcpy(ip, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+    else                   // Otherwise we don't know
+      strcpy(ip, "???");
+
+    if (Port() > 0)
+      sprintf(port, "%d", Port());
+    else
+      strcpy(port, "??");
+  }
+
+  if (StatusHideIp())
+  {
+    strcpy(buf, ip);
+    sprintf(ip, "(%s)", buf);
+  }
+  sprintf(rbuf, "%s:%s", ip, port);
+  return rbuf;
+}
 
 
 void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
@@ -1277,7 +1409,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
         sz = GetAlias();
         break;
       case 'u':
-        sprintf(szTemp, "%ld", getUin());
+        sprintf(szTemp, "%ld", Uin());
         sz = szTemp;
         break;
       case 'w':
@@ -1287,12 +1419,10 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
         sz = GetPhoneNumber();
         break;
       case 'S':
-        getStatusStrShort(szTemp);
-        sz = szTemp;
+        sz = StatusStrShort(szTemp);
         break;
       case 's':
-        getStatusStr(szTemp);
-        sz = szTemp;
+        sz = StatusStr(szTemp);
         break;
       default:
         gLog.Warn("%sWarning: Invalid qualifier in command: %%%c.\n",
@@ -1342,10 +1472,10 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
 }
 
 
-//-----ICQUser::saveBasicInfo---------------------------------------------------
-void ICQUser::saveBasicInfo(void)
+//-----ICQUser::SaveGeneralInfo----------------------------------------------
+void ICQUser::SaveGeneralInfo(void)
 {
-  if (!getEnableSave()) return;
+  if (!EnableSave()) return;
 
   if (!m_fConf.ReloadFile())
   {
@@ -1354,12 +1484,23 @@ void ICQUser::saveBasicInfo(void)
      return;
   }
   m_fConf.SetSection("user");
-  m_fConf.WriteStr("Alias", GetAlias());
-  m_fConf.WriteStr("FirstName", GetFirstName());
-  m_fConf.WriteStr("LastName", GetLastName());
-  m_fConf.WriteStr("EMail", GetEmail1());
-  m_fConf.WriteBool("Authorization", GetAuthorization());
-  m_fConf.WriteStr("History", m_fHistory.Description());
+  m_fConf.WriteStr("Alias", m_szAlias);
+  m_fConf.WriteStr("FirstName", m_szFirstName);
+  m_fConf.WriteStr("LastName", m_szLastName);
+  m_fConf.WriteStr("Email1", m_szEmail1);
+  m_fConf.WriteStr("Email2", m_szEmail2);
+  m_fConf.WriteStr("City", m_szCity);
+  m_fConf.WriteStr("State", m_szState);
+  m_fConf.WriteStr("PhoneNumber", m_szPhoneNumber);
+  m_fConf.WriteStr("FaxNumber", m_szFaxNumber);
+  m_fConf.WriteStr("Address", m_szAddress);
+  m_fConf.WriteStr("CellularNumber", m_szCellularNumber);
+  m_fConf.WriteNum("Zipcode", m_nZipCode);
+  m_fConf.WriteNum("Country", m_nCountryCode);
+  m_fConf.WriteNum("Timezone", (signed short)m_nTimezone);
+  m_fConf.WriteBool("Authorization", m_bAuthorization);
+  m_fConf.WriteBool("HideEmail", m_bHideEmail);
+
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
@@ -1371,6 +1512,132 @@ void ICQUser::saveBasicInfo(void)
 }
 
 
+//-----ICQUser::SaveMoreInfo----------------------------------------------
+void ICQUser::SaveMoreInfo(void)
+{
+  if (!EnableSave()) return;
+
+  if (!m_fConf.ReloadFile())
+  {
+     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
+     return;
+  }
+  m_fConf.SetSection("user");
+  m_fConf.WriteNum("Age", m_nAge);
+  m_fConf.WriteNum("Gender", m_nGender);
+  m_fConf.WriteStr("Homepage", m_szHomepage);
+  m_fConf.WriteNum("BirthYear", m_nBirthYear);
+  m_fConf.WriteNum("BirthMonth", m_nBirthMonth);
+  m_fConf.WriteNum("BirthDay", m_nBirthDay);
+  m_fConf.WriteNum("Language1", m_nLanguage1);
+  m_fConf.WriteNum("Language2", m_nLanguage2);
+  m_fConf.WriteNum("Language3", m_nLanguage3);
+
+  if (!m_fConf.FlushFile())
+  {
+    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+    return;
+  }
+
+  m_fConf.CloseFile();
+}
+
+
+//-----ICQUser::SaveWorkInfo----------------------------------------------
+void ICQUser::SaveWorkInfo(void)
+{
+  if (!EnableSave()) return;
+
+  if (!m_fConf.ReloadFile())
+  {
+     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
+     return;
+  }
+  m_fConf.SetSection("user");
+  m_fConf.WriteStr("CompanyCity", m_szCompanyCity);
+  m_fConf.WriteStr("CompanyState", m_szCompanyState);
+  m_fConf.WriteStr("CompanyPhoneNumber", m_szCompanyPhoneNumber);
+  m_fConf.WriteStr("CompanyFaxNumber", m_szCompanyFaxNumber);
+  m_fConf.WriteStr("CompanyAddress", m_szComparyAddress);
+  m_fConf.WriteStr("CompanyName", m_szCompanyName);
+  m_fConf.WriteStr("CompanyDepartment", m_szCompanyDepartment);
+  m_fConf.WriteStr("CompanyPosition", m_szCompanyPosition);
+  m_fConf.WriteStr("CompanyHompage", m_szCompanyHomepage);
+
+  if (!m_fConf.FlushFile())
+  {
+    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+    return;
+  }
+
+  m_fConf.CloseFile();
+}
+
+//-----ICQUser::SaveLicqInfo-------------------------------------------------
+void ICQUser::SaveLicqInfo(void)
+{
+   if (!EnableSave()) return;
+
+   if (!m_fConf.ReloadFile())
+   {
+      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                 L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+      return;
+   }
+   char buf[64];
+   m_fConf.SetSection("user");
+   m_fConf.WriteStr("History", HistoryName());
+   m_fConf.WriteNum("Groups.System", GetGroups(GROUPS_SYSTEM));
+   m_fConf.WriteNum("Groups.User", GetGroups(GROUPS_USER));
+   m_fConf.WriteStr("Ip", inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+   m_fConf.WriteNum("Port", Port());
+   m_fConf.WriteBool("NewUser", NewUser());
+   m_fConf.WriteNum("NewMessages", NewMessages());
+   m_fConf.WriteStr("About", m_szAbout);
+   if (!m_fConf.FlushFile())
+   {
+     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+     return;
+   }
+
+   m_fConf.CloseFile();
+}
+
+
+
+//-----ICQUser::SaveBasicInfo---------------------------------------------------
+void ICQUser::SaveBasicInfo(void)
+{
+  if (!EnableSave()) return;
+
+  if (!m_fConf.ReloadFile())
+  {
+     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
+                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
+     return;
+  }
+  m_fConf.SetSection("user");
+  m_fConf.WriteStr("Alias", GetAlias());
+  m_fConf.WriteStr("FirstName", GetFirstName());
+  m_fConf.WriteStr("LastName", GetLastName());
+  m_fConf.WriteStr("Email1", GetEmail1());
+  m_fConf.WriteBool("Authorization", GetAuthorization());
+  if (!m_fConf.FlushFile())
+  {
+    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
+               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
+    return;
+  }
+
+  m_fConf.CloseFile();
+}
+
+/*
 //-----ICQUser::saveInfo--------------------------------------------------------
 void ICQUser::saveInfo(void)
 {
@@ -1399,12 +1666,12 @@ void ICQUser::saveInfo(void)
 
    m_fConf.CloseFile();
 }
+*/
 
-
-//-----ICQUser::saveExtInfo--------------------------------------------------
-void ICQUser::saveExtInfo(void)
+//-----ICQUser::SaveExtInfo--------------------------------------------------
+void ICQUser::SaveExtInfo(void)
 {
-   if (!getEnableSave()) return;
+   if (!EnableSave()) return;
 
    if (!m_fConf.ReloadFile())
    {
@@ -1422,7 +1689,7 @@ void ICQUser::saveExtInfo(void)
    m_fConf.WriteStr("PhoneNumber", GetPhoneNumber());
    m_fConf.WriteNum("Age", GetAge());
    m_fConf.WriteNum("Sex", (unsigned short)GetGender());
-   m_fConf.WriteStr("About", getAbout());
+   m_fConf.WriteStr("About", GetAbout());
    if (!m_fConf.FlushFile())
    {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
@@ -1440,7 +1707,7 @@ void ICQUser::AddEvent(CUserEvent *e)
 {
    m_vcMessages.push_back(e);
    incNumUserEvents();
-   saveInfo();
+   SaveLicqInfo();
 }
 
 
@@ -1454,7 +1721,7 @@ void ICQUser::WriteToHistory(const char *_szText)
 //-----ICQUser::GetEvent--------------------------------------------------------
 CUserEvent *ICQUser::GetEvent(unsigned short index)
 {
-   if (index >= getNumMessages() || getNumMessages() == 0) return (NULL);
+   if (index >= NewMessages() || NewMessages() == 0) return (NULL);
    return (m_vcMessages[index]);
 }
 
@@ -1467,7 +1734,7 @@ void ICQUser::ClearEvent(unsigned short index)
       m_vcMessages[i] = m_vcMessages[i + 1];
    m_vcMessages.pop_back();
    decNumUserEvents();
-   saveInfo();
+   SaveLicqInfo();
 }
 
 
@@ -1528,14 +1795,13 @@ void ICQUser::decNumUserEvents(void)
 ICQOwner::ICQOwner(void)
 {
   gLog.Info("%sOwner configuration.\n", L_INITxSTR);
-  unsigned long nTemp;
   bool bTemp;
   char szTemp[32];
   char filename[MAX_FILENAME_LEN];
   m_bException = false;
   m_szPassword = NULL;
 
-  setEnableSave(false);
+  SetEnableSave(false);
   Init(0);
 
   // Get data from the config file
@@ -1549,17 +1815,15 @@ ICQOwner::ICQOwner(void)
   }
 
   m_fConf.SetFileName(filename);
-  LoadData();
+  LoadInfo();
   m_fConf.SetFlags(INI_FxWARN);
-  m_fConf.ReadNum("Uin", nTemp);
-  setUin(nTemp);
+  m_fConf.ReadNum("Uin", m_nUin);
   m_fConf.ReadStr("Password", szTemp);
   SetPassword(szTemp);
   m_fConf.ReadBool("WebPresence", bTemp, true);
-  if (bTemp) setStatus(m_nStatus | ICQ_STATUS_FxWEBxPRESENCE);
+  if (bTemp) SetStatus(m_nStatus | ICQ_STATUS_FxWEBxPRESENCE);
   m_fConf.ReadBool("HideIP", bTemp, false);
-  if (bTemp) setStatus(m_nStatus | ICQ_STATUS_FxHIDExIP);
-
+  if (bTemp) SetStatus(m_nStatus | ICQ_STATUS_FxHIDExIP);
 
   m_fConf.CloseFile();
 
@@ -1571,32 +1835,19 @@ ICQOwner::ICQOwner(void)
   }
 
   sprintf(filename, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
-  setHistoryFile(filename);
+  SetHistoryFile(filename);
 
-  setEnableSave(true);
+  SetEnableSave(true);
 }
 
-
-//-----ICQOwner::getBasicInfo---------------------------------------------------
-void ICQOwner::getBasicInfo(struct UserBasicInfo &us)
-{
-  ICQUser::getBasicInfo(us);
-}
-
-
-//-----ICQOwner::getExtInfo----------------------------------------------------------------------
-void ICQOwner::getExtInfo(struct UserExtInfo &ud)
-{
-  ICQUser::getExtInfo(ud);
-}
 
 
 //-----ICQOwner::saveInfo--------------------------------------------------------
-void ICQOwner::saveInfo(void)
+void ICQOwner::SaveLicqInfo(void)
 {
-  if (!getEnableSave()) return;
+  if (!EnableSave()) return;
 
-  ICQUser::saveInfo();
+  ICQUser::SaveLicqInfo();
 
   if (!m_fConf.ReloadFile())
   {
@@ -1605,10 +1856,10 @@ void ICQOwner::saveInfo(void)
      return;
   }
   m_fConf.SetSection("user");
-  m_fConf.WriteNum("Uin", getUin());
+  m_fConf.WriteNum("Uin", Uin());
   m_fConf.WriteStr("Password", Password());
-  m_fConf.WriteBool("WebPresence", getStatusWebPresence());
-  m_fConf.WriteBool("HideIP", getStatusHideIp());
+  m_fConf.WriteBool("WebPresence", StatusWebPresence());
+  m_fConf.WriteBool("HideIP", StatusHideIp());
 
   if (!m_fConf.FlushFile())
   {

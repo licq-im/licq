@@ -117,7 +117,7 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 ICQEvent *CICQDaemon::icqLogon(unsigned long logonStatus)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  if (o->getUin() == 0)
+  if (o->Uin() == 0)
   {
     gUserManager.DropOwner();
     gLog.Error("%sNo registered user, unable to process logon attempt.\n", L_ERRORxSTR);
@@ -145,7 +145,7 @@ void CICQDaemon::icqRelogon(void)
   if (m_eStatus == STATUS_ONLINE)
   {
     ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    status = o->getStatusFull();
+    status = o->StatusFull();
     gUserManager.DropOwner();
   }
   else
@@ -255,7 +255,7 @@ void CICQDaemon::icqUpdateContactList(void)
   FOR_EACH_USER_START(LOCK_W)
   {
     n++;
-    uins.push_back(pUser->getUin());
+    uins.push_back(pUser->Uin());
     if (n == m_nMaxUsersPerPacket)
     {
       CPU_ContactList *p = new CPU_ContactList(uins);
@@ -266,7 +266,7 @@ void CICQDaemon::icqUpdateContactList(void)
       n = 0;
     }
     // Reset all users to offline
-    if (!pUser->getStatusOffline()) ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+    if (!pUser->StatusOffline()) ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
   }
   FOR_EACH_USER_END
   if (n != 0)
@@ -291,7 +291,7 @@ void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty = false)
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST) )
-      uins.push_back(pUser->getUin());
+      uins.push_back(pUser->Uin());
   }
   FOR_EACH_USER_END
   CPU_VisibleList *p = new CPU_VisibleList(uins);
@@ -313,7 +313,7 @@ void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty = false)
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST) )
-      uins.push_back(pUser->getUin());
+      uins.push_back(pUser->Uin());
   }
   FOR_EACH_USER_END
   CPU_InvisibleList *p = new CPU_InvisibleList(uins);
@@ -604,23 +604,23 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
               u->GetAlias(), nUin);
 
     // read in the four data fields; alias, first name, last name, and email address
-    u->setEnableSave(false);
+    u->SetEnableSave(false);
     char temp[MAX_DATA_LEN], cAuthorization;
     int i;
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> temp[i];
-    u->setAlias(temp);
+    u->SetAlias(temp);
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> temp[i];
-    u->setFirstName(temp);
+    u->SetFirstName(temp);
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> temp[i];
-    u->setLastName(temp);
+    u->SetLastName(temp);
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> temp[i];
-    u->setEmail(temp);
+    u->SetEmail1(temp);
     packet >> cAuthorization;
-    u->setAuthorization(cAuthorization == 0 ? true : false);
+    u->SetAuthorization(cAuthorization == 0 ? true : false);
 
     // translating string with Translation Table
     gTranslator.ServerToClient(u->GetAlias());
@@ -632,8 +632,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
              u->getFirstName(), u->getLastName(), u->getEmail());*/
 
     // save the user infomation
-    u->setEnableSave(true);
-    u->saveBasicInfo();
+    u->SetEnableSave(true);
+    u->SaveBasicInfo();
 
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_USERxGETINFO, nSubSequence, EVENT_SUCCESS);
     if (e != NULL)
@@ -641,7 +641,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     else
       gLog.Warn("%sResponse to unknown user info request for %s (%ld).\n",
                 L_WARNxSTR, u->GetAlias(), nUin);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->getUin()));
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_BASIC, u->Uin()));
     gUserManager.DropUser(u);
     break;
   }
@@ -671,48 +671,48 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     gLog.Info("%sReceived extended information for %s (%ld).\n", L_UDPxSTR,
               u->GetAlias(), nUin);
 
-    u->setEnableSave(false);
+    u->SetEnableSave(false);
     char sTemp[MAX_MESSAGE_SIZE];
 
     // City
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->setCity(sTemp);
+    u->SetCity(sTemp);
     // Country
     packet >> country_code;
     packet >> timezone;
-    u->setCountry(country_code);
-    u->setTimezone(timezone);
+    u->SetCountryCode(country_code);
+    u->SetTimezone(timezone);
     // State
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->setState(sTemp);
+    u->SetState(sTemp);
     // Age
     packet >> nAge;
-    u->setAge(nAge);
+    u->SetAge(nAge);
     // Sex
     packet >> cSex;
-    u->setSex(cSex);
+    u->SetGender(cSex);
     // Phone Number
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->setPhoneNumber(sTemp);
+    u->SetPhoneNumber(sTemp);
     // Homepage
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->setHomepage(sTemp);
+    u->SetHomepage(sTemp);
     // About
     packet >> messageLen;
     for (i = 0; i < messageLen; i++) packet >> sTemp[i];
-    u->setAbout(sTemp);
+    u->SetAbout(sTemp);
     packet >> zipcode;
-    u->setZipcode(zipcode);
+    u->SetZipCode(zipcode);
 
     // translating string with Translation Table
     gTranslator.ServerToClient(u->GetCity());
     gTranslator.ServerToClient(u->GetState());
     gTranslator.ServerToClient(u->GetHomepage());
-    gTranslator.ServerToClient(u->getAbout());
+    gTranslator.ServerToClient(u->GetAbout());
 
     // print out the user information
     /*gLog.Info("%s%s, %s, %s. %d years old, %s. %s, %s, %s.\n", L_SBLANKxSTR,
@@ -720,13 +720,13 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
               u->getSex(buf), u->getPhoneNumber(), u->getHomepage(), u->getAbout());*/
 
     // save the user infomation
-    u->setEnableSave(true);
-    u->saveExtInfo();
+    u->SetEnableSave(true);
+    u->SaveExtInfo();
 
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_USERxGETDETAILS, nSubSequence, EVENT_SUCCESS);
     if (e != NULL) ProcessDoneEvent(e);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    USER_EXT, u->getUin()));
+                                    USER_EXT, u->Uin()));
     gUserManager.DropUser(u);
     break;
   }
@@ -742,13 +742,13 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_UPDATExBASIC, nSubSequence, EVENT_SUCCESS);
     CPU_UpdatePersonalBasicInfo *p = (CPU_UpdatePersonalBasicInfo *)e->m_xPacket;
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    o->setAlias(p->Alias());
-    o->setFirstName(p->FirstName());
-    o->setLastName(p->LastName());
-    o->setEmail(p->Email());
-    o->setAuthorization(p->Authorization());
+    o->SetAlias(p->Alias());
+    o->SetFirstName(p->FirstName());
+    o->SetLastName(p->LastName());
+    o->SetEmail1(p->Email());
+    o->SetAuthorization(p->Authorization());
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    USER_BASIC, o->getUin()));
+                                    USER_BASIC, o->Uin()));
     gUserManager.DropOwner();
     if (e != NULL) ProcessDoneEvent(e);
     break;
@@ -776,17 +776,17 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_UPDATExDETAIL, nSubSequence, EVENT_SUCCESS);
     CPU_UpdatePersonalExtInfo *p = (CPU_UpdatePersonalExtInfo *)e->m_xPacket;
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-    o->setCity(p->City());
-    o->setCountry(p->Country());
-    o->setState(p->State());
-    o->setAge(p->Age());
-    o->setSex(p->Sex());
-    o->setPhoneNumber(p->PhoneNumber());
-    o->setHomepage(p->Homepage());
-    o->setAbout(p->About());
-    o->setZipcode(p->Zipcode());
+    o->SetCity(p->City());
+    o->SetCountryCode(p->Country());
+    o->SetState(p->State());
+    o->SetAge(p->Age());
+    o->SetGender(p->Sex());
+    o->SetPhoneNumber(p->PhoneNumber());
+    o->SetHomepage(p->Homepage());
+    o->SetAbout(p->About());
+    o->SetZipCode(p->Zipcode());
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    USER_EXT, o->getUin()));
+                                    USER_EXT, o->Uin()));
     gUserManager.DropOwner();
     if (e != NULL) ProcessDoneEvent(e);
     break;
@@ -856,45 +856,48 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
 
     unsigned short i, aliasLen, firstNameLen, lastNameLen, emailLen;
     char auth;
-    struct UserBasicInfo *us = new UserBasicInfo;
+    char szTemp[64];
 #if ICQ_VERSION == 2
     packet >> nSubSequence;
 #endif
     packet >> nUin;
-    sprintf(us->uin, "%ld", nUin);
+    CSearchAck *s = new CSearchAck(nUin);
     // Alias
     packet >> aliasLen;
-    for (i = 0; i < aliasLen; i++) packet >> us->alias[i];
+    for (i = 0; i < aliasLen; i++) packet >> szTemp[i];
+    s->szAlias = strdup(szTemp);
     // First name
     packet >> firstNameLen;
-    for (i = 0; i < firstNameLen; i++) packet >> us->firstname[i];
+    for (i = 0; i < firstNameLen; i++) packet >> szTemp[i];
+    s->szFirstName = strdup(szTemp);
     // Last name
     packet >> lastNameLen;
-    for (i = 0; i < lastNameLen; i++) packet >> us->lastname[i];
+    for (i = 0; i < lastNameLen; i++) packet >> szTemp[i];
+    s->szLastName = strdup(szTemp);
     // Email
     packet >> emailLen;
-    for (i = 0; i < emailLen; i++) packet >> us->email[i];
+    for (i = 0; i < emailLen; i++) packet >> szTemp[i];
+    s->szEmail = strdup(szTemp);
 
     // translating string with Translation Table
-    gTranslator.ServerToClient(us->alias);
-    gTranslator.ServerToClient(us->firstname);
-    gTranslator.ServerToClient(us->lastname);
+    gTranslator.ServerToClient(s->szAlias);
+    gTranslator.ServerToClient(s->szFirstName);
+    gTranslator.ServerToClient(s->szLastName);
 
     packet >> auth;
-    sprintf(us->name, "%s %s", us->firstname, us->lastname);
-    gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_BLANKxSTR, us->alias, nUin,
-             us->firstname, us->lastname, us->email);
+    gLog.Info("%s%s (%ld) <%s %s, %s>\n", L_BLANKxSTR, s->szAlias, nUin,
+              s->szFirstName, s->szLastName, s->szEmail);
 
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_SEARCHxSTART, nSubSequence, EVENT_ACKED);
     // We make as copy as each plugin will delete the events it gets
     if (e == NULL)
     {
       gLog.Warn("%sReceived search result when no search in progress.\n", L_WARNxSTR);
+      delete s;
       break;
     }
     ICQEvent *e2 = new ICQEvent(e);
-    e2->m_sSearchAck = new SSearchAck;
-    e2->m_sSearchAck->sBasicInfo = us;
+    e2->m_sSearchAck = s;
     e2->m_sSearchAck->cMore = 0;
     PushPluginEvent(e2);
     PushExtendedEvent(e);
@@ -918,8 +921,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
       gLog.Warn("%sReceived end of search when no search in progress.\n", L_WARNxSTR);
       break;
     }
-    e->m_sSearchAck = new SSearchAck;
-    e->m_sSearchAck->sBasicInfo = NULL;
+    e->m_sSearchAck = new CSearchAck(0);
     e->m_sSearchAck->cMore = more;
     ProcessDoneEvent(e);
     break;
@@ -985,6 +987,14 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket =
     // process the system message, sending the current time as a time_t structure
     ProcessSystemMessage(packet, nUin, newCommand, time(NULL));
     break;
+  }
+
+  case ICQ_CMDxRCV_META: // meta command
+  {
+    if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
+    unsigned short nMetaCommand;
+    packet >> nMetaCommand;
+    ProcessMetaCommand(packet, nMetaCommand);
   }
 
   case ICQ_CMDxRCV_SETxOFFLINE:  // we got put offline by mirabilis for some reason
@@ -1393,6 +1403,32 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
     //e->AddToHistory(NULL, D_RECEIVER);
   }
   } // switch
+}
+
+
+//-----CICQDaemon::ProcessMetaCommand-----------------------------------------
+void CICQDaemon::ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand)
+{
+  ICQUser *u;
+
+  switch(nMetaCommand)
+  {
+    case ICQ_CMDxMETA_GENERALxINFOxRSP:
+    case ICQ_CMDxMETA_WORKxINFOxRSP:
+    case ICQ_CMDxMETA_MORExINFOxRSP:
+    case ICQ_CMDxMETA_SECURITYxRSP:
+    case ICQ_CMDxMETA_PASSWORDxRSP:
+      break;
+    default:
+    {
+      char *buf;
+      gLog.Unknown("%sUnknown meta command (0x%04x):\n%s\n", L_UNKNOWNxSTR,
+                   nMetaCommand, packet.print(buf));
+      delete [] buf;
+      break;
+    }
+  }
+
 }
 
 
