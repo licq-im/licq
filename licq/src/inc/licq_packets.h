@@ -569,7 +569,7 @@ protected:
 
 
 //=====TCP======================================================================
-void Decrypt_Client(CBuffer *pkt);
+bool Decrypt_Client(CBuffer *pkt);
 
 //-----PacketTcp_Handshake------------------------------------------------------
 class CPacketTcp_Handshake : public CPacket
