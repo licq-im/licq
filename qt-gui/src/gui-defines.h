@@ -40,6 +40,7 @@ enum OwnerMenu_Identifiers {
 
 const unsigned short MNUxITEM_MINIxMODE            = 7;
 const unsigned short MNUxITEM_SHOWxOFFLINE         = 8;
+const unsigned short MNUxITEM_THREADxVIEW          = 9;
 
 const unsigned short MNUxITEM_STATUSxINVISIBLE     = 8;
 

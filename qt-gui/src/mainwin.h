@@ -224,8 +224,9 @@ protected slots:
   void slot_utility(int);
   void slot_awaymodes(int);
   void slot_randomchatsearch();
-  void miniMode();
+  void ToggleMiniMode();
   void ToggleShowOffline();
+  void ToggleThreadView();
   void nextServer();
   void autoAway();
   void aboutBox();

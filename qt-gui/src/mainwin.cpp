@@ -835,7 +835,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
   switch(e->key())
   {
     case Qt::Key_M:
-      miniMode();
+      ToggleMiniMode();
       break;
 
     case Qt::Key_H:
@@ -1142,11 +1142,13 @@ void CMainWindow::updateUserWin()
   bool doGroupView = m_bThreadView &&
     m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0;
 
-  if(doGroupView) {
+  if (doGroupView)
+  {
     CUserViewItem* gi = new CUserViewItem(0, tr("Other Users"), userView);
     gi->setOpen(true);
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
-    for (unsigned short i = 0; i < g->size(); i++) {
+    for (unsigned short i = 0; i < g->size(); i++)
+    {
       gi = new CUserViewItem(i+1, (*g)[i], userView);
       // FIXME This should respect users settings
       gi->setOpen(true);
@@ -1164,7 +1166,8 @@ void CMainWindow::updateUserWin()
     if (!m_bShowOffline && pUser->StatusOffline() && pUser->NewMessages() == 0)
       FOR_EACH_USER_CONTINUE;
 
-    if(doGroupView) {
+    if (doGroupView)
+    {
       for(CUserViewItem* gi = userView->firstChild(); gi; gi = gi->nextSibling())
       {
         if((gi->GroupId() != 0 && pUser->GetInGroup(GROUPS_USER, gi->GroupId())) ||
@@ -2232,8 +2235,17 @@ void CMainWindow::ToggleShowOffline()
 }
 
 
-//-----CMainWindow::miniMode--------------------------------------------------
-void CMainWindow::miniMode()
+//-----ToggleThreadedView------------------------------------------------------
+void CMainWindow::ToggleThreadView()
+{
+  m_bThreadView = !m_bThreadView;
+  mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_THREADxVIEW), m_bThreadView);
+  updateUserWin();
+}
+
+
+//-----CMainWindow::ToggleMiniMode--------------------------------------------------
+void CMainWindow::ToggleMiniMode()
 {
 
    if (m_bInMiniMode)
@@ -2584,8 +2596,9 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("Set &Auto Response..."), this, SLOT(slot_AwayMsgDlg()));
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("&Network Window"), licqLogWindow, SLOT(show()));
-   mnuSystem->insertItem(tr("&Mini Mode"), this, SLOT(miniMode()));
+   mnuSystem->insertItem(tr("&Mini Mode"), this, SLOT(ToggleMiniMode()));
    mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()));
+   mnuSystem->insertItem(tr("&Thread Group View"), this, SLOT(ToggleThreadView()));
    mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()));
    mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()));
    mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
@@ -2596,6 +2609,7 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("&Help"), mnuHelp);
    mnuSystem->insertItem(tr("E&xit"), this, SLOT(slot_shutdown()));
    mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_SHOWxOFFLINE), m_bShowOffline);
+   mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_THREADxVIEW), m_bThreadView);
 
    mnuGroup = new QPopupMenu(NULL);
    mnuGroup->setCheckable(true);
