@@ -1488,7 +1488,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     case ICQ_CMDxSUB_FILE:
     {
       CEventFile *ue = (CEventFile *)e->UserEvent();
-      ConstFileList filelist(ue->FileList().begin(), ue->FileList().end());
+      ConstFileList filelist(ue->FileList());
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
          ue->FileDescription(), filelist, nLevel, !bOnline); // try through server
       break;
