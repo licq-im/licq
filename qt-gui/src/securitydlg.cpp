@@ -1,3 +1,4 @@
+// -*- c-basic-offset: 2 -*-
 /*
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -26,6 +27,7 @@
 #include <qwhatsthis.h>
 #include <qtoolbutton.h>
 
+#include "ewidgets.h"
 #include "securitydlg.h"
 #include "sigman.h"
 
@@ -90,13 +92,23 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
 
 SecurityDlg::~SecurityDlg()
 {
-  if (tag != NULL)
-    delete tag;
+  delete tag;
 }
 
 
 void SecurityDlg::ok()
 {
+  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  if(o == NULL)  return;
+  unsigned short status = o->Status();
+  gUserManager.DropOwner();
+
+  if(status == ICQ_STATUS_OFFLINE) {
+    InformUser(this, tr("You need to be connected to the\n"
+                        "ICQ Network to change the settings."));
+    return;
+  }
+
   btnUpdate->setEnabled(false);
   QObject::connect(sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)),
                    this, SLOT(slot_doneUserFcn(ICQEvent *)));
