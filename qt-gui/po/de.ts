@@ -1090,6 +1090,10 @@ http://www.licq.org
 %3 (%4)
 %5 Kontake.</translation>
     </message>
+    <message>
+        <source>Server Group</source>
+        <translation>Servergruppe</translation>
+    </message>
 </context>
 <context>
     <name>CQtLogWindow</name>
