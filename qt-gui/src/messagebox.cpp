@@ -96,7 +96,7 @@ void MsgViewItem::SetEventLine()
       s += "]";
   }
 
-  setText(1, s);
+  setText(1, QString::fromLocal8Bit(s));
 }
 
 
