@@ -84,7 +84,7 @@ const struct SColorMap aColorMaps[NUM_COLORMAPS] =
 };
 
 const char MLE_HELP[] =
-  "[ '.' send | '.s' send server | '.u' send urgent | ',' abort ]";
+  "[ '.' send | '.d/s' force direct/server | '.u' send urgent | ',' abort ]";
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::Constructor
@@ -1658,6 +1658,31 @@ void CLicqConsole::UserCommand_Msg(unsigned long nUin, char *)
   gUserManager.DropUser(u);
 }
 
+
+/*---------------------------------------------------------------------------
+ * SendDirect
+ *-------------------------------------------------------------------------*/
+static bool SendDirect(unsigned long nUin, char c)
+{
+  bool bDirect = (c != 's');
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u != NULL)
+  {
+    if (u->SocketDesc() == -1 &&
+        (u->Ip() == 0 || u->Port() == 0 || u->StatusOffline()))
+      bDirect = false;
+    else if (u->SendServer() && c != 'd' && c != 'u')
+      bDirect = false;
+  }
+  else
+  {
+    bDirect = false;
+  }
+  gUserManager.DropUser(u);
+  return bDirect;
+}
+
+
 /*---------------------------------------------------------------------------
  * CLicqConsole::InputMessage
  *-------------------------------------------------------------------------*/
@@ -1674,6 +1699,7 @@ void CLicqConsole::InputMessage(int cIn)
     return;
 
   case STATE_MLE:
+  {
     // Process the character as a multi-line edit window
     // If we get NULL back then we aren't done yet
     if ((sz = Input_MultiLine(data->szMsg, data->nPos, cIn)) == NULL)
@@ -1695,13 +1721,15 @@ void CLicqConsole::InputMessage(int cIn)
     }
     *sz = '\0';
     sz++;
+    bool bDirect = SendDirect(data->nUin, *sz);
     winMain->wprintf("%C%ASending message %s...", m_cColorInfo->nColor,
                      m_cColorInfo->nAttr,
-                     *sz == 's' ? "through the server" : "direct");
+                     !bDirect ? "through the server" : "direct");
     winMain->event = licqDaemon->icqSendMessage(data->nUin, data->szMsg,
-                                                *sz != 's', *sz == 'u');
+                                                bDirect, *sz == 'u');
     winMain->state = STATE_PENDING;
     break;
+  }
 
   // If we are here then direct failed and we asked if send through server
   case STATE_QUERY:
@@ -1939,6 +1967,7 @@ void CLicqConsole::InputUrl(int cIn)
     break;
 
   case STATE_MLE:
+  {
     // Process the character as a multi-line edit window
     // If we get NULL back then we aren't done yet
     if ((sz = Input_MultiLine(data->szDesc, data->nPos, cIn)) == NULL)
@@ -1960,14 +1989,16 @@ void CLicqConsole::InputUrl(int cIn)
     }
     *sz = '\0';
     sz++;
+    bool bDirect = SendDirect(data->nUin, *sz);
     winMain->wprintf("%C%ASending URL %s...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
-                     *sz == 's' ? "through the server" : "direct");
+                     !bDirect ? "through the server" : "direct");
     winMain->event = licqDaemon->icqSendUrl(data->nUin, data->szUrl,
                                             data->szDesc,
-                                            *sz != 's', *sz == 'u');
+                                            bDirect, *sz == 'u');
     winMain->state = STATE_PENDING;
     break;
+  }
 
   // If we are here then direct failed and we asked if send through server
   case STATE_QUERY:
