@@ -235,7 +235,7 @@ struct search_user
 	GtkWidget *email;
 	GtkWidget *uin;
 	GtkWidget *list;
-	unsigned short sequence;
+	struct e_tag_data *etag;
 };
 
 struct network_window

@@ -42,13 +42,15 @@ void search_user_window()
 	GtkWidget *table;
 	GtkWidget *table_in_nb;
 	GtkWidget *label;
+	GtkWidget *statusbar;
 	GtkWidget *clear;
 	GtkWidget *search;
 	GtkWidget *v_box;
 	GtkWidget *done;
 	GtkWidget *scroll;
 
-	su = (struct search_user *)g_new0(struct search_user, 1);
+	su = g_new0(struct search_user, 1);
+	su->etag = g_new0(struct e_tag_data, 1);
 
 	num_found_users = 0;
 
@@ -209,11 +211,18 @@ void search_user_window()
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
 
-	/* The label to keep track of the status */
-	su->label = gtk_label_new("Enter Search Paramters");
-	gtk_table_attach(GTK_TABLE(table), su->label, 0, 3, 3, 4,
+	/* The statusbar */
+	statusbar = gtk_statusbar_new();
+	gtk_table_attach(GTK_TABLE(table), statusbar, 0, 3, 3, 4,
 			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
 			 GTK_FILL, 3, 3);
+	
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(statusbar), "sta");
+	gtk_statusbar_pop(GTK_STATUSBAR(statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(statusbar), id, "Enter Search Parameters");
+
+	/* The etag has to know about the statusbar */
+	su->etag->statusbar = statusbar;
 
 	gtk_widget_set_usize(GTK_WIDGET(su->window), 435, 465); 
 	gtk_widget_show_all(su->window);
@@ -227,8 +236,11 @@ void clear_callback(GtkWidget *widget, gpointer data)
 
 void search_callback(GtkWidget *widget, gpointer data)
 {
-	gtk_label_set_text(GTK_LABEL(su->label),
-			   "Searching, this may take awhile.");
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(su->etag->statusbar),
+						"sta");
+	gtk_statusbar_pop(GTK_STATUSBAR(su->etag->statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(su->etag->statusbar),
+			   id, "Searching, this may take awhile.");
 
 	gulong uin = 0;
 	gchar *nick_name;
@@ -247,10 +259,10 @@ void search_callback(GtkWidget *widget, gpointer data)
 	email = gtk_editable_get_chars(GTK_EDITABLE(su->email),
 				       0, -1);
 
-	if(uin >= 1000)
-		su->sequence = icq_daemon->icqSearchByUin(uin);
+	if(uin >= 10000)
+		su->etag->e_tag = icq_daemon->icqSearchByUin(uin);
 	else
-		su->sequence = icq_daemon->icqSearchByInfo(nick_name,
+		su->etag->e_tag = icq_daemon->icqSearchByInfo(nick_name,
 						first_name, last_name,
 						email);
 }
@@ -275,23 +287,27 @@ void search_list_double_click(GtkWidget *widget,
 
 	uin = (gulong)gtk_clist_get_row_data(GTK_CLIST(su->list), row);
 
-	if((user = gUserManager.FetchUser(uin, LOCK_N)))
+	if((uin == 0) || (user = gUserManager.FetchUser(uin, LOCK_N)))
 		return;
 
 	icq_daemon->AddUserToList(uin);
 
-	gchar *for_label = g_strdup_printf("User (%ld) added", uin);
-	gtk_label_set_text(GTK_LABEL(su->label), for_label);
+	char *for_statusbar = g_strdup_printf("User (%ld) added", uin);
+
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(su->etag->statusbar),
+						"sta");
+	gtk_statusbar_pop(GTK_STATUSBAR(su->etag->statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(su->etag->statusbar), id, for_statusbar);
 }
 
 void search_result(ICQEvent *event)
-{
+{	
+	/* Make sure it's the right event */
+	if(!su->etag->e_tag->Equals(event))
+		return;
+
 	CSearchAck *search_ack = event->SearchAck();
 
-	/* Make sure it's the right event */
-	if(event->SubSequence() != su->sequence)
-		return;
-	
 	if(event->Result() == EVENT_SUCCESS)
 		search_done(search_ack->More());
 	else if(event->Result() == EVENT_ACKED)
@@ -302,12 +318,22 @@ void search_result(ICQEvent *event)
 
 void search_done(bool more)
 {
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(su->etag->statusbar),
+						 "sta");
+	
 	if(more)
-		gtk_label_set_text(GTK_LABEL(su->label),
+	{
+		gtk_statusbar_pop(GTK_STATUSBAR(su->etag->statusbar), id);
+		gtk_statusbar_push(GTK_STATUSBAR(su->etag->statusbar), id,
 			"More users found, narrow your search and try again.");
+	}
+	
 	else
-		gtk_label_set_text(GTK_LABEL(su->label),
+	{
+		gtk_statusbar_pop(GTK_STATUSBAR(su->etag->statusbar), id);
+		gtk_statusbar_push(GTK_STATUSBAR(su->etag->statusbar), id,
 			"Search complete, double click user to add him/her.");
+	}
 }
 
 void search_found(CSearchAck *ack)
@@ -333,7 +359,10 @@ void search_found(CSearchAck *ack)
 
 void search_failed()
 {
-	gtk_label_set_text(GTK_LABEL(su->label), "Search failed.");
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(su->etag->statusbar),
+						"sta");
+	gtk_statusbar_pop(GTK_STATUSBAR(su->etag->statusbar), id);
+	gtk_statusbar_push(GTK_STATUSBAR(su->etag->statusbar), id, "Search failed.");
 }
 
 void search_close(GtkWidget *widget, gpointer data)
