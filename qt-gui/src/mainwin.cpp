@@ -1054,7 +1054,7 @@ void CMainWindow::callUserFunction(int index)
     gUserManager.DropUser(u);
     if (m_bFontStyles) updateUserWin();
     licqDaemon->icqSendInvisibleList(true);
-    
+
     break;
   }
   case MNUxITEM_VISIBLExLIST:
@@ -1081,7 +1081,7 @@ void CMainWindow::callUserFunction(int index)
 
     break;
   }
-  default:  
+  default:
     if (mnuUser->indexOf(index) <= MNUxITEM_VIEWxHISTORY)
       callFunction(mnuUser->indexOf(index), true);
   }
@@ -1531,7 +1531,6 @@ void CMainWindow::autoAway()
       bAutoAway = false;
     }
   }
-
 
 #endif // USE_SCRNSAVER
 }
