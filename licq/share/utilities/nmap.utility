@@ -1,4 +1,4 @@
 [utility]
 Window = LICQ
-Command = nmap %i
+Command = nmap -sT -v -PT %i
 Description = Scan for open ports.
