@@ -229,8 +229,8 @@ void ProxyServer::CloseConnection()
 //-----HTTPProxyServer----------------------------------------------------------
 #define	HTTP_INPUT_LINE_MAX	8192
 #define	HTTP_CMD_LINE_MAX	384
-#define HTTP_GOODSTRING		"HTTP/1.0 200 Connection established"
-#define HTTP_GOODSTRING2	"HTTP/1.1 200 Connection established"
+#define HTTP_GOODSTRING		"HTTP/1.0 200"
+#define HTTP_GOODSTRING2	"HTTP/1.1 200"
 
 //----- base64 -----------------------------------------------------------------
 static int base64_length(int len)
