@@ -229,15 +229,14 @@ void CUserManager::AddGroup(char *_szName)
  *-------------------------------------------------------------------------*/
 void CUserManager::RemoveGroup(unsigned short n)
 {
-  // Don't delete the all users or new users groups
-  if (n >= NumGroups()) return;
+  // Don't delete the all users group
+  if(n < 1 || n > NumGroups()) {
+    return;
+  }
 
   GroupList *g = LockGroupList(LOCK_W);
   // Erase the group from the vector
-  GroupListIter iter = m_vszGroups.begin();
-  for (int i = 1; i < n; i++) iter++;
-  free (*iter);
-  m_vszGroups.erase(iter);
+  m_vszGroups.erase(m_vszGroups.begin()+n-1);
 
   unsigned short j;
   FOR_EACH_USER_START(LOCK_W)
