@@ -457,14 +457,14 @@ void CUserManager::RemoveGroupID(unsigned short n)
  *-------------------------------------------------------------------------*/
 unsigned short CUserManager::GetGroupFromID(unsigned short nID)
 {
-  unsigned short nGroup = 1;
+  unsigned short nGroup = 0;
 
   LockGroupIDList(LOCK_R);
   for (GroupIDList::iterator i = m_vnGroupsID.begin(); i != m_vnGroupsID.end();
       ++i)
   {
-    if (*i == nID)  break;
     nGroup++;
+    if (*i == nID)  break;
   }
   UnlockGroupIDList();
 
