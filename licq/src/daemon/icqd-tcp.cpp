@@ -88,7 +88,7 @@ CICQEventTag *CICQDaemon::icqFetchAutoResponse(unsigned long nUin)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   CPT_ReadAwayMessage *p = new CPT_ReadAwayMessage(0, u);
-  gLog.Info("%sRequesting away message from %s (#%ld).\n", L_TCPxSTR,
+  gLog.Info("%sRequesting auto response from %s (#%ld).\n", L_TCPxSTR,
             u->GetAlias(), -p->getSequence());
   ICQEvent *result = SendExpectEvent_Client(u, p, NULL);
   gUserManager.DropUser(u);
@@ -796,7 +796,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     }
     default:
     {
-      gLog.Warn("%sUnknown TCP version %d from socket.\n", nInVersion);
+      gLog.Warn("%sUnknown TCP version %d from socket.\n", L_WARNxSTR, nInVersion);
       break;
     }
   }
@@ -910,6 +910,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     /*if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
         !((ns & ICQ_STATUS_FxPRIVATE) && u->StatusOffline()))*/
     if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
+        !(ns == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
         ns != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
     {
       bool r = u->OfflineOnDisconnect() || u->StatusOffline();
@@ -1289,29 +1290,32 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     }
     else
     {
-      if(*message || ackFlags != ICQ_TCPxACK_ACCEPT) {
-        // Update the away message if it's changed
-        if (strcmp(u->AutoResponse(), message) != 0)
-        {
-          u->SetAutoResponse(message);
-          u->SetShowAwayMsg(true);
-        }
-        if (ackFlags == ICQ_TCPxACK_DND || ackFlags == ICQ_TCPxACK_OCCUPIED)
-        {
-          gLog.Info("%sReturned from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
-                    -theSequence, l);
-          nSubResult = ICQ_TCPxACK_RETURN;
-        }
-        else
-        {
-          gLog.Info("%sAuto response from %s (#%ld)%s.\n", L_TCPxSTR,
-                    u->GetAlias(), -theSequence, l);
-          nSubResult = ICQ_TCPxACK_ACCEPT;
-        }
-      }
-      else if (ackFlags == ICQ_TCPxACK_ACCEPT)
+      // Update the away message if it's changed
+      if (strcmp(u->AutoResponse(), message))
       {
-        gLog.Info("%sAck from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(), -theSequence, l);
+        u->SetAutoResponse(message);
+        u->SetShowAwayMsg(*message);
+        gLog.Info("%sAuto response from %s (#%ld)%s.\n", L_TCPxSTR,
+          u->GetAlias(), -theSequence, l);
+      }
+
+      switch(ackFlags) {
+      case ICQ_TCPxACK_ONLINE:
+      case ICQ_TCPxACK_AWAY:
+      case ICQ_TCPxACK_NA:
+        gLog.Info("%sAck from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
+          -theSequence, l);
+        nSubResult = ICQ_TCPxACK_ACCEPT;
+        break;
+      case ICQ_TCPxACK_OCCUPIED:
+      case ICQ_TCPxACK_DND:
+        gLog.Info("%sReturned from %s (#%ld)%s.\n", L_TCPxSTR, u->GetAlias(),
+          -theSequence, l);
+        nSubResult = ICQ_TCPxACK_RETURN;
+        break;
+      default:
+        gLog.Unknown("%sUnk Ack flags from %s (#%ld): %04x %s.\n", L_UNKNOWNxSTR,
+                     u->GetAlias(), -theSequence, ackFlags, l);
         nSubResult = ICQ_TCPxACK_ACCEPT;
       }
     }
