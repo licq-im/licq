@@ -30,7 +30,7 @@ extern int errno;
 #include "log.h"
 #include "countrycodes.h"
 #include "utility.h"
-#include "support.h"
+#include "daemon/support.h"
 #include "sar.h"
 #include "user.h"
 #include "icqd.h"

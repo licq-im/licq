@@ -19,6 +19,7 @@
 #include "languagecodes.h"
 #include "log.h"
 #include "icqpacket.h"
+#include "support.h"
 
 class CUserManager gUserManager;
 

@@ -14,7 +14,6 @@
 #include "userfcndlg.h"
 #include "file.h"
 #include "icq-defines.h"
-#include "support.h"
 
 #define FOR_EACH_USER_START(x)                           \
   {                                                      \
@@ -51,6 +50,9 @@ typedef list<ICQUser *>::iterator UserListIter;
 typedef vector<char *> GroupList;
 typedef vector<char *>::iterator GroupListIter;
 typedef vector<unsigned long> UinList;
+
+// Cheap hack as I'm too lazy to move the relevant functions to user.cpp
+extern "C" void SetString(char **, const char *);
 
 
 //+++++STRUCTURES+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++

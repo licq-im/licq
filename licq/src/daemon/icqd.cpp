@@ -27,6 +27,7 @@ extern int errno;
 #include "plugind.h"
 #include "icqpacket.h"
 #include "licq.h"
+#include "support.h"
 
 #include "icqd.h"
 #include "icq-udp.h"

@@ -133,6 +133,8 @@ void CLogService_File::lprintf(unsigned short _nLogType, const char *_szPrefix,
   fprintf(m_fLog, "%s", _szPrefix);
   vfprintf(m_fLog, _szFormat, argp);
   fflush(m_fLog);
+  // Avoid warnings
+  if (_nLogType);
 }
 
 

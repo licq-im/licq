@@ -7,7 +7,7 @@
  *
  ********************************************************
  * rdwr.c --
- * 
+ *
  * Library of functions implementing reader/writer locks
  */
 #include <pthread.h>
