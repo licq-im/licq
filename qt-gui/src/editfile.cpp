@@ -24,7 +24,7 @@ EditFileDlg::EditFileDlg(QString fname, QWidget *parent, const char *name)
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
 
-  mleFile = new MLEditWrap(this);
+  mleFile = new MLEditWrap(false, this, false);
   mleFile->setMinimumHeight(mleFile->frameWidth() * 2
                             + 20 * mleFile->fontMetrics().lineSpacing());
   mleFile->setMinimumWidth(mleFile->fontMetrics().width("_") * 80);
