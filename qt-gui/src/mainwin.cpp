@@ -117,6 +117,10 @@ extern "C" {
 
 }
 
+#include <cctype>
+
+using std::isdigit;
+
 #undef Bool
 #undef None
 #undef KeyPress
@@ -4414,7 +4418,6 @@ void CMainWindow::slot_register()
     connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
   }
 }
-
 
 // -----------------------------------------------------------------------------
 
