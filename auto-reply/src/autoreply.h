@@ -26,7 +26,8 @@ protected:
   bool m_bExit, m_bEnabled, m_bDelete;
   char *m_szStatus;
   char m_szProgram[512], m_szArguments[512];
-  bool m_bPassMessage, m_bFailOnExitCode, m_bAbortDeleteOnExitCode;
+  bool m_bPassMessage, m_bFailOnExitCode, m_bAbortDeleteOnExitCode,
+       m_bSendThroughServer;
 
   CICQDaemon *licqDaemon;
   TCPSocket *tcp;

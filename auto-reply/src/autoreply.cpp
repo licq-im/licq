@@ -84,6 +84,7 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
   conf.ReadBool("PassMessage", m_bPassMessage, false);
   conf.ReadBool("FailOnExitCode", m_bFailOnExitCode, false);
   conf.ReadBool("AbortDeleteOnExitCode", m_bAbortDeleteOnExitCode, false);
+  conf.ReadBool("SendThroughServer", m_bSendThroughServer, true);
   conf.CloseFile();
 
   // Log on if necessary
@@ -213,7 +214,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
 	    user_event = e->UserEvent();
-      licqDaemon->icqSendMessage(e->Uin(), user_event->Text(), false,
+      licqDaemon->icqSendMessage(e->Uin(), user_event->Text(), !m_bSendThroughServer,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }
   }
@@ -297,7 +298,7 @@ bool CLicqAutoReply::AutoReplyEvent(unsigned long nUin, CUserEvent *event)
 
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
-  unsigned long tag = licqDaemon->icqSendMessage(nUin, szText, true,
+  unsigned long tag = licqDaemon->icqSendMessage(nUin, szText, !m_bSendThroughServer,
      ICQ_TCPxMSG_URGENT);
   delete []szText;
   delete [] szCommand;
