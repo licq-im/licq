@@ -4652,7 +4652,17 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   switch (nError)
   {
   case 0x0001:
-    gLog.Error("%sYour ICQ number is used from another location.\n", L_ERRORxSTR);
+    if (ReconnectAfterUinClash())
+    {
+      gLog.Error("%sYour ICQ number is used from another location.\n", L_ERRORxSTR);
+      m_eStatus = STATUS_OFFLINE_FORCED; // will try to reconnect
+    }
+    else 
+    {
+      gLog.Error("%sYour ICQ number is used from another location. "
+                 "Automatic reconnect is disabled.\n", L_ERRORxSTR);
+      m_eStatus = STATUS_OFFLINE_MANUAL; // don't reconnect
+    }
     break;
 
   case 0:
@@ -4660,12 +4670,12 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
 
   default:
     gLog.Error("%sUnknown runtime error form server: 0x%02X.\n", L_ERRORxSTR, nError);
+    m_eStatus = STATUS_OFFLINE_FORCED;
   }
 
   if (nError)
   {
     packet.cleanupTLV();
-    m_eStatus = STATUS_OFFLINE_FORCED;
     m_bLoggingOn = false;
     return false;
   }

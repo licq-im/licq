@@ -371,6 +371,10 @@ public:
   bool UseServerContactList()         { return m_bUseSS; }
   void SetUseServerContactList(bool b)  { m_bUseSS = b; }
 
+  // Misc functions
+  bool ReconnectAfterUinClash()              { return m_bReconnectAfterUinClash; }
+  void setReconnectAfterUinClash(bool b)     { m_bReconnectAfterUinClash = b; }
+  
   // Statistics
   CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }
   DaemonStatsList &AllStats() { return m_sStats; }
@@ -430,9 +434,10 @@ protected:
   char *m_szProxyPasswd;
   ProxyServer *m_xProxy;
 
-  // SS List
-  bool m_bUseSS;
-
+  // Misc
+  bool m_bUseSS; // server side list
+  bool m_bReconnectAfterUinClash; // reconnect after uin has been used from another location?
+  
   // Statistics
   void FlushStats();
   DaemonStatsList m_sStats;
