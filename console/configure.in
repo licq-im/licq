@@ -59,7 +59,8 @@ AC_CHECK_LIB(ncurses, initscr,,
   AC_MSG_ERROR([
 
 I can't find the ncurses library. This is needed if you want
-to compile this plugin. Sorry.
+to compile this plugin. Sorry. Try to get it from here:
+http://freshmeat.net/projects/libcdk/
 ]))
 
 dnl check for cdk
