@@ -94,6 +94,19 @@ gint status_popup_menu(GtkWidget *status, GdkEventButton *event)
 	_menu_item =
 		menu_new_item(_menu, "Offline", GTK_SIGNAL_FUNC(status_off));
 
+	/* The invisible selection */
+	_menu_item = gtk_check_menu_item_new_with_label("Invisible");
+	gtk_menu_append(GTK_MENU(_menu), _menu_item);
+	gtk_signal_connect(GTK_OBJECT(_menu_item), "toggled",
+			   GTK_SIGNAL_FUNC(status_invisible), _menu_item);
+	gtk_widget_show(_menu_item);
+
+	/* Set the state for the invisible checkmark */
+	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+	gtk_check_menu_item_set_active(GTK_CHECK_MENU_ITEM(_menu_item),
+			owner->StatusInvisible());
+	gUserManager.DropOwner();
+
 	_root_menu =
 		menu_new_item(NULL, "", NULL);
 
@@ -152,6 +165,23 @@ void status_off(GtkWidget *popup, gpointer data)
 	status_bar_refresh();
 }
 
+void status_invisible(GtkWidget *popup, GtkWidget *invisible_check)
+{
+	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+	
+	if(GTK_CHECK_MENU_ITEM(invisible_check)->active)
+	{
+		icq_daemon->icqSetStatus(owner->StatusFull() | ICQ_STATUS_FxPRIVATE);
+	}
+	
+	else
+	{
+		icq_daemon->icqSetStatus(owner->StatusFull() & (~ICQ_STATUS_FxPRIVATE));
+	}
+
+	gUserManager.DropOwner();
+}
+			
 void status_change(gushort status)
 {
 	if(status == ICQ_STATUS_OFFLINE)
@@ -166,7 +196,12 @@ void status_change(gushort status)
 		icq_daemon->icqLogon(status);
 
 	else
-		icq_daemon->icqSetStatus(status);
+	{
+		if(owner->StatusInvisible())
+			icq_daemon->icqSetStatus(status | ICQ_STATUS_FxPRIVATE);
+		else
+			icq_daemon->icqSetStatus(status & (~ICQ_STATUS_FxPRIVATE));
+	}
 
 	gUserManager.DropOwner();
 }
