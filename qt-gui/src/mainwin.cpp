@@ -1310,7 +1310,7 @@ void CMainWindow::updateEvents()
     szCaption = m_szCaption;
 //    lblMsg->setPrependPixmap(QPixmap());
   }
-  if (lblMsg->fontMetrics().width(l) > lblMsg->width())
+  if (lblMsg->fontMetrics().width(l)+lblMsg->margin() > lblMsg->width())
     lblMsg->setText(s);
   else
     lblMsg->setText(l);
