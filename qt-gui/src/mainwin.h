@@ -58,6 +58,10 @@ public:
               QWidget *parent = 0, const char *name = 0);
   virtual ~CMainWindow();
   ICQFunctions *callFunction(int fcn, unsigned long _nUin);
+  bool RemoveUserFromList(unsigned long, QWidget *);
+  bool RemoveUserFromGroup(unsigned long, QWidget *);
+  void ApplySkin(const char *, bool = false);
+  void ApplyIcons(const char *, bool = false);
 
 protected:
   // Command Tools
@@ -128,7 +132,8 @@ protected:
        m_bShowOffline,
        m_bSortByStatus,
        m_bShowDividers,
-       m_bAutoRaise;
+       m_bAutoRaise,
+       m_bBoldOnMsg;
   FlashType m_nFlash;
   unsigned long m_nCurrentGroup;
   DockMode m_nDockMode;
@@ -137,14 +142,12 @@ protected:
   int mouseX, mouseY;
 
   // Functions
-  void ApplySkin(const char *, bool = false);
-  void ApplyIcons(const char *, bool = false);
   void CreateUserView();
   void CreateUserFloaty(unsigned long nUin, unsigned short x = 0,
      unsigned short y = 0, unsigned short w = 0);
-  void resizeEvent (QResizeEvent *);
   void initMenu();
 
+  void resizeEvent (QResizeEvent *);
   virtual void mouseMoveEvent (QMouseEvent *);
   virtual void mousePressEvent (QMouseEvent *);
   virtual void closeEvent (QCloseEvent *);
@@ -152,13 +155,12 @@ protected:
 
 friend class WharfIcon;
 friend class IconManager_Default;
-friend class SkinBrowserDlg;
 friend class OptionsDlg;
 
 protected slots:
-  void ti();
-  void removeUserFromGroup();
-  void removeUserFromList();
+  void slot_removeUserFromGroup();
+  void slot_removeUserFromList();
+  void slot_hints();
   void addUserToGroup(int);
   void saveAllUsers();
   void updateUserWin();
@@ -208,6 +210,7 @@ protected slots:
   void slot_updatedUser(CICQSignal *);
   void slot_updateContactList();
   void slot_updateAllUsers();
+  void slot_popupall();
   void slot_shutdown();
 
 signals:

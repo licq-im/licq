@@ -260,6 +260,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowDividers", m_bShowDividers, true);
   licqConf.ReadBool("SortByStatus", m_bSortByStatus, true);
   licqConf.ReadBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg, true);
+  licqConf.ReadBool("BoldOnMsg", m_bBoldOnMsg, true);
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
   m_nFlash = (FlashType)nFlash;
@@ -449,16 +450,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    // verify we exist
    if (gUserManager.OwnerUin() == 0)
      slot_register();
-
-  /*QTimer *t = new QTimer(this);
-  connect(t, SIGNAL(timeout()), SLOT(ti()));
-  t->start(1000);*/
 }
 
-void CMainWindow::ti()
-{
-  //printf("%d %d\n", qApp->focusWidget(), qApp->activeWindow());
-}
+
 
 //-----ApplySkin----------------------------------------------------------------
 void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
@@ -752,10 +746,21 @@ void CMainWindow::closeEvent( QCloseEvent *e )
 // Ctrl-C : Send chat request
 // Ctrl-F : Send File
 // Ctrl-A : Check Auto response
+// Ctrl-P : Popup all messages
+// Ctrl-O : Toggle offline users
+// Delete : Remove the user from the group
+// Ctrl-Delete : Remove the user from the list
 
 void CMainWindow::keyPressEvent(QKeyEvent *e)
 {
-  if (! (e->state() & ControlButton))
+  if (e->key() == Qt::Key_Delete)
+  {
+    if (e->state() & ControlButton)
+      RemoveUserFromList(userView->MainWindowSelectedItemUin(), this);
+    else
+      RemoveUserFromGroup(userView->MainWindowSelectedItemUin(), this);
+  }
+  else if (! (e->state() & ControlButton))
   {
     e->ignore();
     QWidget::keyPressEvent(e);
@@ -802,6 +807,14 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
 
     case Qt::Key_A:
       callFunction(mnuUserCheckResponse, userView->MainWindowSelectedItemUin());
+      break;
+
+    case Qt::Key_P:
+      slot_popupall();
+      break;
+
+    case Qt::Key_O:
+      ToggleShowOffline();
       break;
 
     default:
@@ -1024,10 +1037,14 @@ void CMainWindow::updateEvents()
   unsigned short nNumOwnerEvents = o->NewMessages();
   gUserManager.DropOwner();
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
+
+  lblMsg->setBold(false);
+
   if (nNumOwnerEvents > 0)
   {
     lblMsg->setText(tr("SysMsg"));
-    lblMsg->setBold(true);
+    if (m_bBoldOnMsg)
+      lblMsg->setBold(true);
     szCaption = "* " + m_szCaption;
   }
   else if (nNumUserEvents > 0)
@@ -1035,7 +1052,8 @@ void CMainWindow::updateEvents()
     lblMsg->setText(tr("%1 msg%2")
                     .arg(nNumUserEvents)
                     .arg(nNumUserEvents == 1 ? tr(" ") : tr("s")));
-    lblMsg->setBold(true);
+    if (m_bBoldOnMsg)
+      lblMsg->setBold(true);
     szCaption = "* " + m_szCaption;
   }
   else
@@ -1046,7 +1064,6 @@ void CMainWindow::updateEvents()
     else
       lblMsg->setText(tr("No msgs"));
     szCaption = m_szCaption;
-    lblMsg->setBold(false);
   }
   lblMsg->update();
   setCaption(szCaption);
@@ -1527,29 +1544,45 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
 
 
 //-----CMainWindow::removeUser-------------------------------------------------
-void CMainWindow::removeUserFromList()
+void CMainWindow::slot_removeUserFromList()
 {
-  ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
-  if (u == NULL) return;
-  unsigned long nUin = u->Uin();
+  RemoveUserFromList(userView->SelectedItemUin(), this);
+}
+
+
+bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return true;
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
                      .arg(QString::fromLocal8Bit(u->GetAlias()))
                      .arg(nUin) );
   gUserManager.DropUser(u);
-  if (QueryUser(this, warning, tr("Ok"), tr("Cancel")))
+  if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
+  {
     licqDaemon->RemoveUserFromList(nUin);
+    return true;
+  }
+  return false;
 }
 
-void CMainWindow::removeUserFromGroup()
+
+void CMainWindow::slot_removeUserFromGroup()
+{
+  RemoveUserFromGroup(userView->SelectedItemUin(), this);
+}
+
+
+bool CMainWindow::RemoveUserFromGroup(unsigned long nUin, QWidget *p)
 {
   if (m_nGroupType == GROUPS_USER)
   {
     if (m_nCurrentGroup == 0)
-      removeUserFromList();
+      return RemoveUserFromList(nUin, p);
     else
     {
-      ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
-      if (u == NULL) return;
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      if (u == NULL) return true;
       unsigned long nUin = u->Uin();
       GroupList *g = gUserManager.LockGroupList(LOCK_R);
       QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
@@ -1557,22 +1590,26 @@ void CMainWindow::removeUserFromGroup()
                          .arg(nUin).arg(QString::fromLocal8Bit( (*g)[m_nCurrentGroup - 1] )) );
       gUserManager.UnlockGroupList();
       gUserManager.DropUser(u);
-      if (QueryUser(this, warning, tr("Ok"), tr("Cancel")))
+      if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
       {
          gUserManager.RemoveUserFromGroup(nUin, m_nCurrentGroup);
          updateUserWin();
+         return true;
       }
     }
   }
   else if (m_nGroupType == GROUPS_SYSTEM)
   {
-    if (m_nCurrentGroup == 0) return;
-    ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
-    if (u == NULL) return;
+    if (m_nCurrentGroup == 0) return true;
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+    if (u == NULL) return true;
     u->RemoveFromGroup(GROUPS_SYSTEM, m_nCurrentGroup);
     gUserManager.DropUser(u);
     updateUserWin();
+    return true;
   }
+
+  return false;
 }
 
 
@@ -1638,6 +1675,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("ShowDividers", m_bShowDividers);
   licqConf.WriteBool("SortByStatus", m_bSortByStatus);
   licqConf.WriteBool("ShowGroupIfNoMsg", m_bShowGroupIfNoMsg);
+  licqConf.WriteBool("BoldOnMsg", m_bBoldOnMsg);
   licqConf.WriteBool("Transparent", skin->frame.transparent);
   licqConf.WriteNum("FrameStyle", skin->frame.frameStyle);
   licqConf.WriteBool("ShowOfflineUsers", m_bShowOffline);
@@ -2115,13 +2153,14 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertItem(tr("A&uthorize User"), this, SLOT(showAuthUserDlg()));
    mnuUserAdm->insertItem(tr("R&andom Chat"), this, SLOT(slot_randomchatsearch()));
    mnuUserAdm->insertSeparator();
-   mnuUserAdm->insertItem(tr("Edit Groups"), this, SLOT(showEditGrpDlg()));
+   mnuUserAdm->insertItem(tr("&Popup All Messages"), this, SLOT(slot_popupall()));
+   mnuUserAdm->insertItem(tr("Edit &Groups"), this, SLOT(showEditGrpDlg()));
    //mnuUserAdm->insertItem(tr("&Update Contact List"), this, SLOT(slot_updateContactList()));
    //mnuUserAdm->insertItem(tr("Update All Users"), this, SLOT(slot_updateAllUsers()));
    mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()));
    mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()));
    mnuUserAdm->insertSeparator();
-   mnuUserAdm->insertItem(tr("Register User"), this, SLOT(slot_register()));
+   mnuUserAdm->insertItem(tr("Reg&ister User"), this, SLOT(slot_register()));
 
    mnuSystem = new QPopupMenu(NULL);
    mnuSystem->setCheckable(true);
@@ -2131,8 +2170,8 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("&Group"), mnuUserGroups);
    mnuSystem->insertItem(tr("Set &Auto Response..."), this, SLOT(slot_AwayMsgDlg()));
    mnuSystem->insertSeparator();
-   mnuSystem->insertItem(tr("Show &Network Window"), licqLogWindow, SLOT(show()));
-   mnuSystem->insertItem(tr("Use &Mini Mode"), this, SLOT(miniMode()));
+   mnuSystem->insertItem(tr("&Network Window"), licqLogWindow, SLOT(show()));
+   mnuSystem->insertItem(tr("&Mini Mode"), this, SLOT(miniMode()));
    mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()));
    mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()));
    mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()));
@@ -2141,13 +2180,14 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("Next &Server"), this, SLOT(nextServer()));
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Sa&ve Options"), this, SLOT(saveOptions()));
+   mnuSystem->insertItem(tr("&Hints"), this, SLOT(slot_hints()));
    mnuSystem->insertItem(tr("&About"), this, SLOT(aboutBox()));
    mnuSystem->insertItem(tr("E&xit"), this, SLOT(slot_shutdown()));
    mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_SHOWxOFFLINE), m_bShowOffline);
 
    mnuRemove = new QPopupMenu(NULL);
-   mnuRemove->insertItem(tr("From Current Group"), this, SLOT(removeUserFromGroup()));
-   mnuRemove->insertItem(tr("From Contact List"), this, SLOT(removeUserFromList()));
+   mnuRemove->insertItem(tr("From Current Group"), this, SLOT(slot_removeUserFromGroup()));
+   mnuRemove->insertItem(tr("From Contact List"), this, SLOT(slot_removeUserFromList()));
 
    mnuGroup = new QPopupMenu(NULL);
    connect(mnuGroup, SIGNAL(activated(int)), this, SLOT(addUserToGroup(int)));
@@ -2293,6 +2333,37 @@ void CMainWindow::slot_randomchatsearch()
 }
 
 
+void CMainWindow::slot_popupall()
+{
+  // Do nothing if there are no events pending
+  if (ICQUser::getNumUserEvents() == 0) return;
+
+  // Do system messages first
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  unsigned short nNumMsg = o->NewMessages();
+  gUserManager.DropOwner();
+  if (nNumMsg > 0)
+  {
+    callOwnerFunction(OwnerMenuView);
+  }
+
+  UinList uins;
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (pUser->NewMessages() > 0)
+    {
+      uins.push_back(pUser->Uin());
+    }
+  }
+  FOR_EACH_USER_END
+
+  for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++)
+  {
+    callFunction(mnuUserView, *iter);
+  }
+}
+
+
 void CMainWindow::slot_doneOptions()
 {
   optionsDlg = NULL;
@@ -2324,6 +2395,38 @@ void CMainWindow::slot_register()
     registerUserDlg = new RegisterUserDlg(licqDaemon);
     connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
   }
+}
+
+
+void CMainWindow::slot_hints()
+{
+  QString hints = tr(
+"Hints for Using the Licq Qt-GUI Plugin\n\n"
+"o  Change your status by right clicking on the status label.\n"
+"o  Change your auto response by double-clicking on the status label.\n"
+"o  View system messages by double clicking on the message label.\n"
+"o  Change groups by right clicking on the message label.\n"
+"o  Use the following shortcuts from the contact list:\n"
+"   Ctrl-M : Toggle mini-mode\n"
+"   Ctrl-O : Toggle show offline users\n"
+"   Ctrl-X : Exit\n"
+"   Ctrl-H : Hide\n"
+"   Ctrl-I : View the next message\n"
+"   Ctrl-V : View message\n"
+"   Ctrl-S : Send message\n"
+"   Ctrl-U : Send Url\n"
+"   Ctrl-C : Send chat request\n"
+"   Ctrl-F : Send File\n"
+"   Ctrl-A : Check Auto response\n"
+"   Ctrl-P : Popup all messages\n"
+"   Delete : Delete user from current group\n"
+"   Ctrl-Delete : Delete user from contact list\n"
+"o  Hold control while clicking on close in the function window to remove\n"
+"   the user from your contact list.\n"
+"o  Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\".\n"
+"   For example in the send tab of the user function window.\n");
+
+  InformUser(NULL, hints);
 }
 
 #include "mainwin.moc"
