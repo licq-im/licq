@@ -21,10 +21,10 @@
 #ifndef __LICQ_GTK_H
 #define __LICQ_GTK_H
 
-#include "icqd.h"
-#include "icqevent.h"
-#include "log.h"
-#include "user.h"
+#include "licq_icqd.h"
+#include "licq_events.h"
+#include "licq_log.h"
+#include "licq_user.h"
 
 #include <sys/time.h>
 #include <gtk/gtk.h>
