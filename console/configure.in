@@ -74,9 +74,6 @@ I can't find the ncurses library. This is needed if you want
 to compile this plugin. Sorry.
 ]))
 
-dnl Checks for typedefs, structures, and compiler characteristics.
-AC_C_CONST
-
 AC_OUTPUT(
   src/Makefile \
   Makefile
