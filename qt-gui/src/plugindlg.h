@@ -3,8 +3,8 @@
 
 #include <qwidget.h>
 
-class QListView;
-class QListBox;
+
+class QTable;
 class CICQDaemon;
 
 class PluginDlg : public QWidget
@@ -15,20 +15,19 @@ public:
   virtual ~PluginDlg();
 
 protected:
-  QListBox *lstAvailable;
-  QListView *lstLoaded;
+  QTable *tblStandard;
+  QTable *tblProtocol;
 
 signals:
   void signal_done();
   void pluginUnloaded(unsigned long);
 
 protected slots:
+  void slot_standard(int, int);
+  void slot_stdConfig(int, int, int, const QPoint &);
+  void slot_protocol(int, int);
+  void slot_prtConfig(int, int, int, const QPoint &);
   void slot_details();
-  void slot_load();
-  void slot_enable();
-  void slot_disable();
-  void slot_config();
-  void slot_unload();
   void slot_refresh();
 };
 
