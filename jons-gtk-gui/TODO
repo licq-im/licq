@@ -1,12 +1,5 @@
 Stuff on the top has a higher priority
 
-* There may be a memory leak involving viewing histories.  Or if you open
-  a large file it may just take up too much memory.  Needs to be looked into.
-  I've had the licq process get as high as 20M.. yuck.
-
-* Fix updating the owner's info..  I don't think you can even update your
-  nick..  Haven't messed around with that in awhile.
-
 * Sending multi-recipient messages.
 
 * Sending contacts.
