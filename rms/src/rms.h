@@ -78,6 +78,9 @@ public:
   int Process_LOG();
   int Process_VIEW();
   int Process_AR();
+  int Process_ADDUSER();
+  int Process_REMUSER();
+  int Process_SECURE();
 
 protected:
   TCPSocket sock;

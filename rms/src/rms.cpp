@@ -47,6 +47,11 @@ const unsigned short CODE_VIEWxTIME = 220;
 const unsigned short CODE_VIEWxFLAGS = 221;
 const unsigned short CODE_VIEWxTEXTxSTART = 222;
 const unsigned short CODE_VIEWxTEXTxEND = 223;
+const unsigned short CODE_ADDUSERxDONE = 224;
+const unsigned short CODE_REMUSERxDONE = 225;
+const unsigned short CODE_SECURExOPEN = 226;
+const unsigned short CODE_SECURExCLOSE = 227;
+const unsigned short CODE_SECURExSTAT = 228;
 const unsigned short CODE_VIEWxUNKNOWN = 299;
 // 300 - further action required
 const unsigned short CODE_ENTERxUIN = 300;
@@ -64,6 +69,8 @@ const unsigned short CODE_VIEWxNONE = 405;
 const unsigned short CODE_EVENTxTIMEDOUT = 500;
 const unsigned short CODE_EVENTxFAILED = 501;
 const unsigned short CODE_EVENTxERROR = 502;
+const unsigned short CODE_ADDUSERxERROR = 503;
+const unsigned short CODE_SECURExNOTCOMPILED = 504;
 
 const unsigned short STATE_UIN = 1;
 const unsigned short STATE_PASSWORD = 2;
@@ -82,33 +89,39 @@ struct Command
   char *help;
 };
 
-static const unsigned short NUM_COMMANDS = 12;
+static const unsigned short NUM_COMMANDS = 15;
 static struct Command commands[NUM_COMMANDS] =
 {
-  { "HELP", &CRMSClient::Process_HELP,
-    "Print out help on commands." },
-  { "QUIT", &CRMSClient::Process_QUIT,
-    "Close the connection.  With an argument of 1 causes the plugin to unload." },
-  { "TERM", &CRMSClient::Process_TERM,
-    "Terminate the licq daemon." },
-  { "INFO", &CRMSClient::Process_INFO,
-    "Print out user information.  Argument is the uin, or none for personal." },
-  { "STATUS", &CRMSClient::Process_STATUS,
-    "Set or show status.  Argument is new status, or blank to display current." },
+  { "ADDUSER", &CRMSClient::Process_ADDUSER,
+    "Add user to contact list { <uin> }." },
+  { "AR", &CRMSClient::Process_AR,
+    "Set your (or a user custom) auto response { [ <uin> ] }." },
   { "GROUPS", &CRMSClient::Process_GROUPS,
     "Show list of groups." },
+  { "HELP", &CRMSClient::Process_HELP,
+    "Print out help on commands." },
+  { "INFO", &CRMSClient::Process_INFO,
+    "Print out user information.  Argument is the uin, or none for personal." },
   { "LIST", &CRMSClient::Process_LIST,
     "List users { [ <group #> ] [ <online|offline|all> ] [ <format> ] }." },
-  { "MESSAGE", &CRMSClient::Process_MESSAGE,
-    "Send a message { <uin> }." },
-  { "URL", &CRMSClient::Process_URL,
-    "Send a url { <uin> }." },
   { "LOG", &CRMSClient::Process_LOG,
     "Dump log messages { <log types> }." },
+  { "MESSAGE", &CRMSClient::Process_MESSAGE,
+    "Send a message { <uin> }." },
+  { "QUIT", &CRMSClient::Process_QUIT,
+    "Close the connection.  With an argument of 1 causes the plugin to unload." },
+  { "REMUSER", &CRMSClient::Process_REMUSER,
+    "Remove user from contact list { <uin> }." },
+  { "SECURE", &CRMSClient::Process_SECURE,
+    "Open/close/check secure channel { <uin> [ <open|close> ] } ." },
+  { "STATUS", &CRMSClient::Process_STATUS,
+    "Set or show status.  Argument is new status, or blank to display current." },
+  { "TERM", &CRMSClient::Process_TERM,
+    "Terminate the licq daemon." },
   { "VIEW", &CRMSClient::Process_VIEW,
     "View event (next or specific user) { [ <uin> ] }." },
-  { "AR", &CRMSClient::Process_AR,
-    "Set your (or a user custom) auto response { [ <uin> ] }." }
+  { "URL", &CRMSClient::Process_URL,
+    "Send a url { <uin> }." }
 };
 
 
@@ -1133,4 +1146,126 @@ int CRMSClient::Process_VIEW()
   return fflush(fs);
 }
 
+/*---------------------------------------------------------------------------
+ * CRMSClient::Process_ADDUSER
+ *
+ * Command:
+ *   ADDUSER <uin>
+ *
+ * Response:
+ *
+ *-------------------------------------------------------------------------*/
+int CRMSClient::Process_ADDUSER()
+{
+  unsigned long nUin = atol(data_arg);
 
+  if (nUin >= 10000)
+  {
+    if (licqDaemon->AddUserToList(nUin))
+    {
+      fprintf(fs, "%d User added\n", CODE_ADDUSERxDONE);
+    }
+    else
+    {
+      fprintf(fs, "%d User not added\n", CODE_ADDUSERxERROR);
+    }
+  }
+  else
+  {
+    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+  }
+
+  return fflush(fs);
+}
+
+/*---------------------------------------------------------------------------
+ * CRMSClient::Process_REMUSER
+ *
+ * Command:
+ *   REMUSER <uin>
+ *
+ * Response:
+ *
+ *-------------------------------------------------------------------------*/
+int CRMSClient::Process_REMUSER()
+{
+  unsigned long nUin = atol(data_arg);
+
+  if (nUin >= 10000)
+  {
+    licqDaemon->RemoveUserFromList(nUin);
+    fprintf(fs, "%d User removed\n", CODE_REMUSERxDONE);
+  }
+  else
+  {
+    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+  }
+
+  return fflush(fs);
+}
+
+/*---------------------------------------------------------------------------
+ * CRMSClient::Process_SECURE
+ *
+ * Command:
+ *   SECURE <uin> <what>
+ *
+ * Response:
+ *
+ *-------------------------------------------------------------------------*/
+int CRMSClient::Process_SECURE()
+{
+  unsigned long nUin = 0;
+
+  if(!licqDaemon->CryptoEnabled())
+  {
+    fprintf(fs, "%d Licq secure channel not compiled. Please recompile with OpenSSL.\n", CODE_SECURExNOTCOMPILED);
+    return fflush(fs);
+  }
+  
+
+  if (isdigit(*data_arg))
+  {
+    nUin = atol(data_arg);
+    while (*data_arg != '\0' && *data_arg != ' ') data_arg++;
+    NEXT_WORD(data_arg);
+  }
+   else
+  {
+    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+    return fflush(fs);
+  }
+
+  if (nUin < 10000)
+  {
+    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+    return fflush(fs);
+  }
+
+  if (strncasecmp(data_arg, "open", 4) == 0)
+  {
+    fprintf(fs, "%d Opening secure connection.\n", CODE_SECURExOPEN);
+    licqDaemon->icqOpenSecureChannel(nUin);
+  }
+  else
+  if (strncasecmp(data_arg, "close", 5) == 0)
+  {
+    fprintf(fs, "%d Closing secure connection.\n", CODE_SECURExCLOSE);
+    licqDaemon->icqCloseSecureChannel(nUin);
+  }
+  else
+  {
+   ICQUser *u = gUserManager.FetchUser(nUin,LOCK_R);
+   if (u->Secure() == 0)
+   {
+    fprintf(fs, "%d Status: secure connection is closed.\n", CODE_SECURExSTAT);
+   }
+   if (u->Secure() == 1)
+   {
+    fprintf(fs, "%d Status: secure connection is open.\n", CODE_SECURExSTAT);
+   }
+   gUserManager.DropUser(u);
+  }
+  
+  return fflush(fs);
+}
