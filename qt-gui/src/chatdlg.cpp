@@ -689,7 +689,8 @@ void ChatDlg::chatClose(CChatUser *u)
 void ChatDlg::hide()
 {
   chatClose(NULL);
-  close(true);
+  //close(true);
+  delete this;
 }
 
 
