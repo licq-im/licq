@@ -1188,7 +1188,7 @@ bool CLicqConsole::ParseMacro(char *szMacro)
   {
     if (strcmp((*iter)->szMacro, szMacro) == 0)
     {
-      sprintf(szMacro, "%c%s", m_szCommandChar[0], (*iter)->szMacro);
+      sprintf(szMacro, "%c%s", m_szCommandChar[0], (*iter)->szCommand);
       break;
     }
   }
