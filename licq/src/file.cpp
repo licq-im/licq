@@ -219,8 +219,13 @@ bool CIniFile::ReloadFile()
 //-----FlushFile---------------------------------------------------------------
 bool CIniFile::FlushFile()
 {
-   //if (!m_bChanged) return;
-  int nFD = open(m_szFilename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
+  // Write files atomically to avoid config trashing
+  char tempname[MAX_FILENAME_LEN];
+
+  strcpy(tempname, m_szFilename);
+  strcat(tempname, ".new");
+
+  int nFD = open(tempname, O_WRONLY | O_CREAT | O_TRUNC, 00664);
   if (nFD < 0)
   {
      m_nError = errno;
@@ -230,15 +235,23 @@ bool CIniFile::FlushFile()
 
   if (write(nFD, m_szBuffer, m_nBufSize) < 0)
   {
+    // something went wrong, clean up temp file
     m_nError = errno;
     Warn(INI_ExIOWRITE);
     close (nFD);
-    return (false);
+    unlink(tempname);
+    return false;
   }
   else
   {
     close (nFD);
-    return (true);
+    if(rename(tempname, m_szFilename))
+    {
+        // rename failed..
+        unlink(tempname);
+        return false;
+    }
+    return true;
   }
 }
 
