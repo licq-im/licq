@@ -748,6 +748,7 @@ void CMainWindow::closeEvent( QCloseEvent *e )
 // Ctrl-A : Check Auto response
 // Ctrl-P : Popup all messages
 // Ctrl-O : Toggle offline users
+// Ctrl-R : Redraw user window
 // Delete : Remove the user from the group
 // Ctrl-Delete : Remove the user from the list
 
@@ -811,7 +812,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       break;
 
     case Qt::Key_A:
-      callFunction(mnuUserCheckResponse, nUin);
+      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, nUin);
       break;
 
     case Qt::Key_P:
@@ -820,6 +821,10 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
 
     case Qt::Key_O:
       ToggleShowOffline();
+      break;
+
+    case Qt::Key_R:
+      updateUserWin();
       break;
 
     default:
@@ -2429,6 +2434,7 @@ void CMainWindow::slot_hints()
 "   Ctrl-F : Send File\n"
 "   Ctrl-A : Check Auto response\n"
 "   Ctrl-P : Popup all messages\n"
+"   Ctrl-R : Redraw user window\n"
 "   Delete : Delete user from current group\n"
 "   Ctrl-Delete : Delete user from contact list\n"
 "o  Hold control while clicking on close in the function window to remove\n"
