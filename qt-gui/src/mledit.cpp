@@ -57,31 +57,40 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
 }
 
 
-void MLEditWrap::appendNoNewLine(QString s)
+void MLEditWrap::appendNoNewLine(const QString& s)
 {
-#if QT_VERSION < 300
   if (!atEnd()) GotoEnd();
   QMultiLineEdit::insert(s);
-#else
-  QMultiLineEdit::append(s);
-#endif
 }
 
+void MLEditWrap::append(const QString& s)
+{
+#if QT_VERSION < 300
+  appendNoNewLine(s + "\n");
+#else
+  if (strcmp(qVersion(), "3.0.0") == 0 ||
+      strcmp(qVersion(), "3.0.1") == 0 ||
+      strcmp(qVersion(), "3.0.2") == 0 ||
+      strcmp(qVersion(), "3.0.3") == 0 || 
+      strcmp(qVersion(), "3.0.4") == 0)
+  {
+     // Workaround --
+     // In those versions, QTextEdit::append didn't add a new paragraph.
+     append("<p>");
+     append(s);
+     append("</p>");
+  }
+  else
+  {
+     append(s);
+  }
+#endif
+}
 
 void MLEditWrap::GotoEnd()
 {
 #if QT_VERSION >= 300
-  int h, v;
-
-  scrollToBottom();
-  
-  v = numLines() - 1;
-  h = lineLength(numLines() - 1) - 1;
-  if (v < 0)
-    v = 0;
-  if (h < 0)
-    h = 0;
-  setCursorPosition(v, h);
+  moveCursor(QTextEdit::MoveEnd, false);
 #else
   setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
 #endif
