@@ -154,6 +154,7 @@ void CSignalManager::ProcessEvent(ICQEvent *e)
   // Commands related to the basic operation
   case MAKESNAC(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_SETxSTATUS):
   case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
+  case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST):
   case ICQ_CMDxSND_REGISTERxUSER:
     emit signal_doneOwnerFcn(e);
     break;
