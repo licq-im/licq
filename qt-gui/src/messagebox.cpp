@@ -24,6 +24,7 @@
 #include <qdatetime.h>
 #include <qstring.h>
 #include <qheader.h>
+#include <qtextcodec.h>
 
 #include "licq_message.h"
 #include "licq_icq.h"
@@ -31,12 +32,14 @@
 #include "eventdesc.h"
 #include "gui-defines.h"
 
-MsgViewItem::MsgViewItem(CUserEvent *theMsg, QListView *parent) : QListViewItem(parent)
+MsgViewItem::MsgViewItem(CUserEvent *theMsg, QTextCodec *codec, QListView *parent) : QListViewItem(parent)
 {
   if (theMsg->Direction() == D_SENDER)
     msg = theMsg;
   else
     msg = theMsg->Copy();
+
+  m_codec = codec;
 
   m_nEventId = msg->Direction() == D_SENDER ? -1 : theMsg->Id();
   QDateTime d;
@@ -69,50 +72,55 @@ MsgViewItem::~MsgViewItem(void)
 void MsgViewItem::SetEventLine()
 {
   QString s = EventDescription(msg);
-  const char *sz = NULL;
+  QString text;
 
   switch(msg->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:
-      sz = msg->Text();
+      text = m_codec->toUnicode(msg->Text());
       break;
 
     case ICQ_CMDxSUB_URL:
-      sz = ((CEventUrl *)msg)->Url();
+      text = m_codec->toUnicode(((CEventUrl *)msg)->Url());
       break;
 
     case ICQ_CMDxSUB_CHAT:
-      sz = ((CEventChat *)msg)->Reason();
+      text = m_codec->toUnicode(((CEventChat *)msg)->Reason());
       break;
 
     case ICQ_CMDxSUB_FILE:
-      sz = ((CEventFile *)msg)->Filename();
+      text = m_codec->toUnicode(((CEventFile *)msg)->Filename());
       break;
 
     default:
       break;
   }
 
-  if (sz != NULL && sz[0] != '\0')
+  if (!text.isNull())
   {
     int width = listView()->columnWidth(1);
     QFont f = listView()->font();
     if (m_nEventId != -1) f.setBold(true);
     QFontMetrics fm(f);
     width -= fm.width(s) + fm.width(" [...]") + listView()->itemMargin() * 2;
-    unsigned short n = 0;
 
     s += " [";
-    while (sz[n] != '\n' && sz[n] != '\0')
-    {
-      width -= fm.width(sz[n]);
-      if (width <= 0) break;
-      s += QString::fromLocal8Bit( &sz[n++], 1 );
+    
+    // We're going to take the event's message and display as much of it
+    // as fits in the widget. If not everything fits, we'll append "..."
+    uint length = text.length();
+    const QChar *c = text.unicode();
+    while (length--) {
+      if (*c == '\n') break; // we only print the first line
+      width -= fm.width(*c);
+      if (width <= 0) {
+         s += "...";
+         break;
+      }
+      s += *c;
+      c++;
     }
-    if (sz[n] != '\0')
-      s += "...]";
-    else
-      s += "]";
+    s += "]";
   }
 
   setText(1, s);

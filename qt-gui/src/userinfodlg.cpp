@@ -1025,7 +1025,7 @@ void UserInfoDlg::ShowHistory()
     {
       d.setTime_t((*tempIter)->Time());
 #if QT_VERSION >= 300
-      s.sprintf("<font color=\"%s\">%s<br>%s [%c%c%c%c]<br>%s</font><br>",
+      s.sprintf("<font color=\"%s\">%s<br>%s [%c%c%c%c]<br><br>%s</font><br>",
                 ((*tempIter)->Direction() == D_RECEIVER ? "red" : "blue"),
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %1"))
                   .arg(EventDescription(*tempIter)).arg(QStyleSheet::escape(n)).utf8().data(),

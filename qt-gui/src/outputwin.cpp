@@ -5,13 +5,13 @@
 #include <unistd.h>
 
 #include <qlayout.h>
-#if USE_KDE
+#include <qfile.h>
+#include <qtextstream.h>
+#ifdef USE_KDE
 #include <kfiledialog.h>
 #else
 #include <qfiledialog.h>
 #endif
-#include <qfile.h>
-#include <qtextstream.h>
 
 #include "outputwin.h"
 #include "ewidgets.h"

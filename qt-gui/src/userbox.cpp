@@ -1307,7 +1307,10 @@ void CUserView::maybeTip(const QPoint& c)
       char buf[32];
       ip_ntoa(u->Ip(),buf1);
       ip_ntoa(u->RealIp(),buf);
-      s += tr("<br><nobr>Ip: ") + buf1 +"/"+buf+ tr("</nobr>");
+      if (u->Ip() != u->RealIp())
+        s += tr("<br><nobr>Ip: ") + buf1 +"/"+buf+ tr("</nobr>");
+      else
+        s += tr("<br><nobr>Ip: ") + buf1 + tr("</nobr>");
     }
 
     if ((u->LastOnline()>0) && gMainWindow->m_bPopLastOnline) {

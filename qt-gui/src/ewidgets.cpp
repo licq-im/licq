@@ -10,6 +10,7 @@
 #include <qimage.h>
 #include <qtextcodec.h>
 #ifdef USE_KDE
+#include <kapplication.h>
 #include <kmessagebox.h>
 #include <qmessagebox.h>
 #else
@@ -28,7 +29,11 @@
 bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
 {
 #ifdef USE_KDE
+#if KDE_VERSION >= 290
+  return ( KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"), szBtn1, szBtn2, QString::null, false) == KMessageBox::Yes);
+#else
   return ( KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"), szBtn1, szBtn2, false) == KMessageBox::Yes);
+#endif
 #else
   return ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2) == 0);
 #endif

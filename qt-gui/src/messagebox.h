@@ -13,11 +13,12 @@ class MsgView;
 class MsgViewItem : public QListViewItem
 {
 public:
-  MsgViewItem (CUserEvent *, QListView *);
+  MsgViewItem (CUserEvent *, QTextCodec *codec, QListView *);
   ~MsgViewItem(void);
   void MarkRead();
 
   CUserEvent *msg;
+  QTextCodec *m_codec;
   int m_nEventId;
 
 protected:

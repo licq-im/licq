@@ -1042,9 +1042,8 @@ QWidget* OptionsDlg::new_column_options()
 {
   QWidget* w = new QWidget(this, "main");
 
-  QGroupBox *grp = new QGroupBox (tr("Column Configuration"), w);
-
-  QGridLayout *lay1 = new QGridLayout(grp, 7, 5, 10);
+  QGroupBox *grp = new QGroupBox (0, Horizontal, tr("Column Configuration"), w);
+  QGridLayout *lay1 = new QGridLayout(grp->layout(), 7, 5, 10);
 
   lblColTitle = new QLabel (tr("Title"), grp);
   QWhatsThis::add(lblColTitle, tr("The string which will appear in the list box column header"));
@@ -1084,7 +1083,6 @@ QWidget* OptionsDlg::new_column_options()
     lay1->addWidget(cmbColAlign[i], 2+i, 4);
     connect(chkColEnabled[i], SIGNAL(toggled(bool)), this, SLOT(colEnable(bool)));
   }
-  lay1->activate();
 
   boxUserWin = new QGroupBox(2, Horizontal, tr("Options"), w);
 

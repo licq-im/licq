@@ -370,10 +370,10 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   if (u != NULL && u->NewMessages() > 0)
   {
-    MsgViewItem *e = new MsgViewItem(u->EventPeek(0), msgView);
+    MsgViewItem *e = new MsgViewItem(u->EventPeek(0), codec, msgView);
     for (unsigned short i = 1; i < u->NewMessages(); i++)
     {
-      (void) new MsgViewItem(u->EventPeek(i), msgView);
+      (void) new MsgViewItem(u->EventPeek(i), codec, msgView);
     }
     gUserManager.DropUser(u);
     slot_printMessage(e);
@@ -846,7 +846,7 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
       e = u->EventPeekId(sig->Argument());
       if (e != NULL)
       {
-        MsgViewItem *m = new MsgViewItem(e, msgView);
+        MsgViewItem *m = new MsgViewItem(e, codec, msgView);
         msgView->ensureItemVisible(m);
       }
     }
@@ -859,7 +859,7 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 void UserViewEvent::slot_sentevent(ICQEvent *e)
 {
   if (e->Uin() != m_nUin) return;
-  (void) new MsgViewItem(e->GrabUserEvent(), msgView);
+  (void) new MsgViewItem(e->GrabUserEvent(), codec, msgView);
 }
 
 
