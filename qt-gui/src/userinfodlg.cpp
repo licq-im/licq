@@ -653,7 +653,7 @@ void UserInfoDlg::SetAbout(ICQUser *u)
 
   QString aboutstr = QString::fromLocal8Bit(u->GetAbout());
   aboutstr.replace(QRegExp("\r"), "");
-<  mleAbout->setText(aboutstr);
+  mleAbout->setText(aboutstr);
 
   if (bDropUser) gUserManager.DropUser(u);
 }
