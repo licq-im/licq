@@ -172,18 +172,6 @@ void CICQDaemon::icqLogoff(void)
   // Kill the udp socket asap to avoid race conditions
   int nSD = m_nUDPSocketDesc;
   m_nUDPSocketDesc = -1;
-  /*
-  UDPSocket *s = (UDPSocket *)gSocketManager.FetchSocket(nSD);
-  // if not connected then don't both logging off
-  if (s != NULL)
-  {
-    gLog.Info("%sLogging off.\n", L_UDPxSTR);
-    CPU_Logoff packet;
-    s->SendRaw(packet.getBuffer());
-    gSocketManager.DropSocket(s);
-    gSocketManager.CloseSocket(nSD);
-  }
-  */
   gLog.Info("%sLogging off.\n", L_UDPxSTR);
   CPU_Logoff p;
   if (SendEvent(nSD, p))
@@ -210,6 +198,15 @@ void CICQDaemon::icqLogoff(void)
   pthread_mutex_lock(&mutex_extendedevents);
   m_lxExtendedEvents.erase(m_lxExtendedEvents.begin(), m_lxExtendedEvents.end());
   pthread_mutex_unlock(&mutex_extendedevents);
+
+  // Mark all users as offline, this also updates the last seen
+  // online field
+  FOR_EACH_USER_START(LOCK_W)
+  {
+    if (!pUser->StatusOffline())
+      ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+  }
+  FOR_EACH_USER_END
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
