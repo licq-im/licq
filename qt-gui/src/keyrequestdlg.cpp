@@ -50,16 +50,24 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, unsigned long nUin, QWidge
                   "Diffie-Hellman key exchange, and \n"
                   "encrypted using DES XCBC encryption.\n\n");
   QString t2;
-  if((u->ClientTimestamp() & 0xFFFF0000) == LICQ_WITHSSL)
-    t2 = tr("The remote uses Licq v0.%1/OpenSSL.").arg(u->ClientTimestamp() & 0xFFFF);
-  else if ((u->ClientTimestamp() & 0xFFFF0000) == LICQ_WITHOUTSSL)
-    t2 = tr("The remote uses Licq v0.%1, however it\n"
-            "has no secure channel support compiled in.\n"
-            "This won't work.").arg(u->ClientTimestamp() & 0xFFFF);
-  else
-    t2 = tr("This only works with other Licq clients >= v0.85\n"
-            "The remote doesn't seem to use such a client.\n"
-            "This might not work.");
+  switch (u->SecureChannelSupport())
+  {
+    case SECURE_CHANNEL_SUPPORTED:
+      t2 = tr("The remote uses Licq v0.%1/SSL.").arg(u->LicqVersion());
+      break;
+
+    case SECURE_CHANNEL_NOTSUPPORTED:
+      t2 = tr("The remote uses Licq v0.%1, however it\n"
+              "has no secure channel support compiled in.\n"
+              "This probably won't work.").arg(u->LicqVersion());
+      break;
+
+    default:
+      t2 = tr("This only works with other Licq clients >= v0.85\n"
+              "The remote doesn't seem to use such a client.\n"
+              "This might not work.");
+      break;
+  }
 
   QLabel *lbl = new QLabel(t1 + t2, this);
   top_lay->addWidget(lbl);
