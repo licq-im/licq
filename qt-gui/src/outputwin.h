@@ -5,23 +5,23 @@
 #include "config.h"
 #endif
 
-#include <qmlined.h>
-#include <qpushbt.h>
+#include <qdialog.h>
+#include <qmultilineedit.h>
+#include <qpushbutton.h>
 #include <qsocketnotifier.h>
 #include <qmessagebox.h>
 
 #include "licq-locale.h"
 #include "log.h"
-#include "mledit.h"
 
 //=====OutputWin===================================================================================
-class CQtLogWindow : public QWidget, public CPluginLog
+class CQtLogWindow : public QDialog, public CPluginLog
 {
   Q_OBJECT
 public:
   CQtLogWindow (QWidget *parent = 0, const char *name = 0);
 protected:
-  MLEditWrap *outputBox;
+  QMultiLineEdit *outputBox;
   QPushButton *btnHide, *btnClear;
   QSocketNotifier *sn;
 protected slots:

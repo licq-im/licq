@@ -2,28 +2,28 @@
 #include "config.h"
 #endif
 
-#include <qlayout.h>
-
 #include <unistd.h>
 
+#include <qdatetime.h>
+#include <qlayout.h>
 
 #include "outputwin.h"
 #include "icq-defines.h"
 #include "licq-locale.h"
 
+//---------------------------------------------------------------------------
 
-
-//-----OutputWin::constructor----------------------------------------------------------------------
 CQtLogWindow::CQtLogWindow(QWidget *parent = 0, const char *name = 0)
-  : QWidget(parent, name)
+  : QDialog(parent, name)
 {
   setCaption(_("Licq Network Log"));
   
   QBoxLayout* top_lay = new QVBoxLayout(this, 10);
-  
-  outputBox = new MLEditWrap (true, this);
-  outputBox->setFixedVisibleLines(10);
-  outputBox->setMinimumWidth(360);
+
+  outputBox = new QMultiLineEdit(this);
+  outputBox->setMinimumHeight(outputBox->frameWidth()*2
+                              + 10*outputBox->fontMetrics().lineSpacing());
+  outputBox->setMinimumWidth(380);
   outputBox->setReadOnly(true);
   top_lay->addWidget(outputBox);
 
@@ -31,10 +31,11 @@ CQtLogWindow::CQtLogWindow(QWidget *parent = 0, const char *name = 0)
   
   btnClear = new QPushButton(_("C&lear"), this);
   connect(btnClear, SIGNAL(clicked()), outputBox, SLOT(clear()));
-  lay->addWidget(btnClear);
   lay->addStretch(1);
+  lay->addWidget(btnClear);
   
   btnHide = new QPushButton(_("&Close"), this);
+  btnHide->setDefault(true);
   connect(btnHide, SIGNAL(clicked()), this, SLOT(hide()));
   lay->addWidget(btnHide);
   
@@ -42,21 +43,23 @@ CQtLogWindow::CQtLogWindow(QWidget *parent = 0, const char *name = 0)
   connect (sn, SIGNAL(activated(int)), this, SLOT(slot_log(int)));
 }
 
+// --------------------------------------------------------------------------
+
 void CQtLogWindow::slot_log(int s)
 {
   char buf[4];
   read(s, buf, 1);
-#if QT_VERSION >= 210
-  outputBox->append(QString(NextLogMsg()).stripWhiteSpace());
-#else
-  outputBox->append(NextLogMsg());
-#endif
-  outputBox->goToEnd();
+
+  QString log = QTime::currentTime().toString() + " " + NextLogMsg();
+  
+  outputBox->insert(log);
+  
   if (NextLogType() == L_ERROR)
-  {
     (void) new CLicqMessageBox(NextLogMsg(), QMessageBox::Critical);
-  }
+  
   ClearLog();
 }
+
+// --------------------------------------------------------------------------
 
 #include "moc/moc_outputwin.h"
