@@ -93,6 +93,7 @@ public:
   unsigned short SubCommand()  { return m_nSubCommand; }
   unsigned long Sequence()     { return m_nSequence; }
   unsigned short SubSequence() { return m_nSubSequence; }
+  unsigned long Uin()          { return m_nDestinationUin; }
   CSearchAck *SearchAck()      { return m_pSearchAck; }
   CExtendedAck *ExtendedAck()  { return m_pExtendedAck; }
   CUserEvent *UserEvent()      { return m_pUserEvent; }
