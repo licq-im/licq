@@ -131,11 +131,29 @@ static void create_regexp(QStringList &list, QRegExp &reg)
   {
     if (n != 0)
       s += "|";
+#if QT_VERSION < 0x030100
+    // we have to implement the functionality of QRegExp::escape() 
+    // ourself since qt 3.0.x is missing it.
+    // Our goal is to escape all special characters with a backslash:
+    // The special characters are $, (, ), *, +, ., ?, [, \, ], ^, {, | and }.
+    // The implementation is heavily inspired by QT QRegExp sources ;-)
+    
+    static const char *c = "\\$()*+.?[]^{}|";
+    int i = 0;
+    QString tmp = (*it).latin1();
+    while (i < (int)tmp.length())
+    {
+      if (strstr(c, tmp.mid(i,1).latin1()) != 0)
+        tmp.insert( i++, "\\");
+      i++;
+    }
+    s += tmp;
+#else
     s += QRegExp::escape(*it);
+#endif
     n++;
   }
   s += ")";
-
   reg = QRegExp(s);
 }
 
@@ -164,7 +182,7 @@ static unsigned loadTheme(const struct Emoticons *data,
       if (n.isElement())
       {
         elem = n.toElement();
-        if (!elem.isNull() && elem.tagName() == QString::fromAscii("emoticon"))
+        if (!elem.isNull() && elem.tagName() == QString::fromLatin1("emoticon"))
         {
           QString file = elem.attribute("file");
           QString f=realFile(data,themedir,file);

@@ -450,7 +450,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   // Load the Emoticons
   char szEmoticons[MAX_FILENAME_LEN];
   licqConf.ReadStr("Emoticons", szEmoticons, "Default" );
-  QString s =  QString::fromAscii(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
+  QString s =  QString::fromLatin1(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
   emoticons = new CEmoticons(s.latin1());
   if (*szEmoticons)
      if (emoticons->SetTheme(szEmoticons) < 0)

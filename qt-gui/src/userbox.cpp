@@ -28,6 +28,7 @@
 #include <qdatetime.h>
 #include <qtextcodec.h>
 #include <qdrawutil.h>
+#include <qregexp.h>
 #include <qstyle.h>
 
 #include "userbox.moc"
@@ -1047,7 +1048,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
       }
       //TODO change this
       else if(QTextDrag::decode(e, text)) {
-        const char *p = (text.left(4).latin1());
+//        const char *p = (text.left(4).latin1());
         char *szId = strdup((text.mid(4, text.length() - 4).latin1()));
         unsigned long nPPID = LICQ_PPID; //TODO fix this
 
@@ -1077,7 +1078,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
     {
       QString text;
       if(QTextDrag::decode(e, text)) {
-        const char *p = (text.left(4).latin1());
+//        const char *p = (text.left(4).latin1());
         char *szId = strdup(text.mid(4, text.length() - 4).latin1());
         unsigned long nPPID = LICQ_PPID; //TODO Fix this
 
@@ -1404,7 +1405,7 @@ void CUserView::maybeTip(const QPoint& c)
     {
       const char *p = u->ClientInfo();
       if (p && *p)
-        s += "<br>" + QString(p).replace(' ', "&nbsp;");
+        s += "<br>" + QString(p).replace(QRegExp(" "), "&nbsp;");
 
       if (u->AutoResponse() && *u->AutoResponse() &&
           item->m_nStatus != ICQ_STATUS_OFFLINE &&
