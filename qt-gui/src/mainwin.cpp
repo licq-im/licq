@@ -1285,6 +1285,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 #ifdef USE_KDE
     KWin::setActiveWindow(f->winId());
 #endif
+    f->show();
     f->raise();
   }
   return f;
