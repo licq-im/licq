@@ -2,7 +2,7 @@
 dnl Copyright (c) 1998 N. D. Bellamy
 dnl Copyright (c) 1999,2000 Dirk Mueller <dirk@licq.org>
 
-AC_DEFUN(AC_CHECK_SOCKS5,
+AC_DEFUN([AC_CHECK_SOCKS5],
 [
   AC_MSG_CHECKING(whether to enable SOCKS5 support)
 
@@ -112,7 +112,7 @@ AC_DEFUN(AC_CHECK_SOCKS5,
 ])
 
 dnl Check if struct tm contains long int tm_gmtoff
-AC_DEFUN(LICQ_CHECK_GMTOFF,
+AC_DEFUN([LICQ_CHECK_GMTOFF],
 [AC_CACHE_CHECK(for tm_gmtoff, licq_tm_gmtoff,
   [ AC_TRY_COMPILE([
 #include <time.h>
@@ -132,7 +132,7 @@ fi
 ])
 
 dnl Check if long timezone is somewhere defined (i.e. AIX)
-AC_DEFUN(LICQ_CHECK_TIMEZONE,
+AC_DEFUN([LICQ_CHECK_TIMEZONE],
   [AC_CACHE_CHECK(for extern long timezone, licq_extern_timezone,
     [ AC_TRY_LINK([
 #include <time.h>
@@ -151,7 +151,7 @@ fi
 ])
 
 
-AC_DEFUN(LICQ_CHECK_GPGME,
+AC_DEFUN([LICQ_CHECK_GPGME],
 [
   AC_MSG_CHECKING(if GPGME support is desired)
 
@@ -177,7 +177,7 @@ AC_DEFUN(LICQ_CHECK_GPGME,
     fi
 ])
 
-AC_DEFUN(LICQ_CHECK_OPENSSL,
+AC_DEFUN([LICQ_CHECK_OPENSSL],
 [
   AC_MSG_CHECKING(if OpenSSL support is desired)
 
