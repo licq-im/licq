@@ -59,31 +59,6 @@ AC_DEFUN(AC_CHECK_SOCKS5,
   AC_SUBST(SOCKS_INCDIR)
 ])
 
-dnl Check if it is possible to turn off exceptions support
-AC_DEFUN(LICQ_CXX_FLAGS,
-[AC_CACHE_CHECK(whether ${CXX-g++} accepts -fno-exceptions -fno-check-new, licq_prog_cxx_fno_exceptions,
-[echo 'void f(){}' > conftest.cc
-if test -z "`${CXX-g++} -fno-exceptions -fno-check-new -c conftest.cc 2>&1`"; then
-  licq_prog_cxx_fno_exceptions=yes
-else
-  licq_prog_cxx_fno_exceptions=no
-fi
-rm -f conftest*
-])
-
-if test "$licq_prog_cxx_fno_exceptions" = "yes"; then
-  CXXFLAGS="${CXXFLAGS} -fno-exceptions -fno-check-new"
-fi
-
-  AC_ARG_ENABLE(debug,
-    [  --enable-debug          creates debugging code],
-    [ licq_use_debug="$enableval"], [licq_use_debug="no"])
-
-if test "$licq_use_debug" = "no"; then
-  CXXFLAGS="`echo $CXXFLAGS | sed s/-g//`"
-fi
-])
-
 dnl Check if the type socklen_t is defined anywhere
 AC_DEFUN(AC_C_SOCKLEN_T,
 [AC_CACHE_CHECK(for socklen_t, ac_cv_c_socklen_t,
@@ -104,22 +79,6 @@ if test $ac_cv_c_socklen_t = no; then
   AC_DEFINE(socklen_t, int)
 fi
 
-])
-
-dnl Check for sys_errlist[] and sys_nerr, check for declaration
-dnl Check nicked from aclocal.m4 used by GNU bash 2.01
-AC_DEFUN(AC_SYS_ERRLIST,
-[AC_MSG_CHECKING([for sys_errlist and sys_nerr])
-AC_CACHE_VAL(ac_cv_sys_errlist,
-[AC_TRY_LINK([#include <errno.h>],
-[extern char *sys_errlist[];
- extern int sys_nerr;
- char *msg = sys_errlist[sys_nerr - 1];],
-    ac_cv_sys_errlist=yes, ac_cv_sys_errlist=no)])dnl
-AC_MSG_RESULT($ac_cv_sys_errlist)
-if test $ac_cv_sys_errlist = yes; then
-AC_DEFINE(HAVE_SYS_ERRLIST)
-fi
 ])
 
 dnl Check if struct tm contains long int tm_gmtoff
@@ -162,17 +121,14 @@ fi
 ])
 
 
-AC_DEFUN(AC_CHECK_OPENSSL,
+AC_DEFUN(LICQ_CHECK_OPENSSL,
 [
   AC_MSG_CHECKING(if OpenSSL support is desired)
 
-  WITH_OPENSSL="yes"
-	
   AC_ARG_ENABLE(
     openssl,
     [  --disable-openssl       disable OpenSSL support],
-    WITH_OPENSSL="$enableval",
-    WITH_OPENSSL="yes")
+    WITH_OPENSSL="$enableval", WITH_OPENSSL="yes")
 
   AC_ARG_WITH(
     openssl-inc,
@@ -189,7 +145,7 @@ AC_DEFUN(AC_CHECK_OPENSSL,
   else
     AC_MSG_RESULT(yes)
 
-   	dnl AC_MSG_CHECKING(for the OpenSSL headers)
+    dnl AC_MSG_CHECKING(for the OpenSSL headers)
     temp=$CPPFLAGS
     if test "$openssl_incdir" != "no"; then
       CPPFLAGS="$CPPFLAGS -I$openssl_incdir"

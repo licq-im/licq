@@ -130,7 +130,7 @@ dlopen(NULL, RTLD_LAZY)
 AC_CHECK_FUNCS(alphasort inet_addr inet_aton mktime select scandir strdup strerror hstrerror readdir_r)
 
 AC_CHECK_SOCKS5
-AC_CHECK_OPENSSL
+LICQ_CHECK_OPENSSL
 
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
@@ -147,7 +147,7 @@ AC_TYPE_SIZE_T
 AC_C_SOCKLEN_T
 AC_HEADER_TIME
 AC_STRUCT_TM
-AC_SYS_ERRLIST
+LICQ_SYS_ERRLIST
 LICQ_CHECK_GMTOFF
 LICQ_CHECK_TIMEZONE
 
