@@ -21,6 +21,8 @@ void SetString(char **szDest, const char *szSource);
 
 int Redirect(const char *);
 
+int strlen_safe(const char *);
+
 int scandir_r(const char *dir, struct dirent ***namelist,
               int (*select)(const struct dirent *),
 #ifdef ALPHASORT_VOID
