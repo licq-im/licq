@@ -68,6 +68,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   CreateWorkInfo();
   CreateAbout();
   CreateHistory();
+  CreateLastCountersInfo();
 
   QBoxLayout *lay = new QVBoxLayout(this, 8);
 
@@ -79,6 +80,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   tabs->addTab(tabList[WorkInfo].tab, tabList[WorkInfo].label);
   tabs->addTab(tabList[AboutInfo].tab, tabList[AboutInfo].label);
   tabs->addTab(tabList[HistoryInfo].tab, tabList[HistoryInfo].label);
+  tabs->addTab(tabList[LastCountersInfo].tab, tabList[LastCountersInfo].label);
 
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
@@ -88,7 +90,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   btnMain4 = new QPushButton(tr("&Close"), this);
   connect(btnMain4, SIGNAL(clicked()), this, SLOT(close()));
 
-  if(m_bOwner)
+  if (m_bOwner)
   {
     btnMain1 = new QPushButton(tr("&Save"), this);
     btnMain2 = new QPushButton(tr("Retrieve"), this);
@@ -203,10 +205,11 @@ void UserInfoDlg::CreateGeneralInfo()
 
   lay->addWidget(new QLabel(tr("Alias:"), p), CR, 0);
   nfoAlias = new CInfoField(p, false);
-  lay->addWidget(nfoAlias, CR, 1);
-  lay->addWidget(new QLabel(tr("Online:"), p), CR, 3);
+  //lay->addWidget(nfoAlias, CR, 1);
+  lay->addMultiCellWidget(nfoAlias, CR, CR, 1, 4);
+  /*lay->addWidget(new QLabel(tr("Online:"), p), CR, 3);
   nfoLastOnline = new CInfoField(p, true);
-  lay->addWidget(nfoLastOnline, CR, 4);
+  lay->addWidget(nfoLastOnline, CR, 4);*/
 
   lay->addWidget(new QLabel(tr("UIN:"), p), ++CR, 0);
   nfoUin = new CInfoField(p, true);
@@ -726,6 +729,97 @@ void UserInfoDlg::SaveAbout()
   gUserManager.DropUser(u);
 }
 
+//-----LastCounters--------------------------------------------------------
+void UserInfoDlg::CreateLastCountersInfo()
+{
+  tabList[LastCountersInfo].label = tr("&Last");
+  tabList[LastCountersInfo].tab = new QWidget(this, tabList[LastCountersInfo].label.latin1());
+  tabList[LastCountersInfo].loaded = false;
+
+  unsigned short CR = 0;
+  QWidget *p = tabList[LastCountersInfo].tab;
+
+  QGridLayout *lay = new QGridLayout(p, 5, 2, 10, 5);
+  //lay->setRowStretch(9, 1);
+
+  lay->addWidget(new QLabel(tr("Last Online:"), p), CR, 0);
+  nfoLastOnline = new CInfoField(p, true);
+  lay->addWidget(nfoLastOnline, CR, 1);
+
+  lay->addWidget(new QLabel(tr("Last Sent Event:"), p), ++CR, 0);
+  nfoLastSent = new CInfoField(p, true);
+  lay->addWidget(nfoLastSent, CR, 1);
+
+  lay->addWidget(new QLabel(tr("Last Received Event:"), p), ++CR, 0);
+  nfoLastRecv = new CInfoField(p, true);
+  lay->addWidget(nfoLastRecv, CR, 1);
+
+  lay->addWidget(new QLabel(tr("Last Checked Auto Response:"), p), ++CR, 0);
+  nfoLastCheckedAR = new CInfoField(p, true);
+  lay->addWidget(nfoLastCheckedAR, CR, 1);
+
+  lay->setRowStretch(++CR, 5);
+}
+
+void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
+{
+  tabList[LastCountersInfo].loaded = true;
+  bool bDropUser = false;
+
+  if (u == NULL)
+  {
+    u = gUserManager.FetchUser(m_nUin, LOCK_R);
+    bDropUser = true;
+  }
+
+  QDateTime t;
+  QString ds;
+
+  if (!u->StatusOffline())
+    nfoLastOnline->setData(tr("Now"));
+  else if (u->LastOnline() == 0)
+    nfoLastOnline->setData(tr("Unknown"));
+  else
+  {
+    t.setTime_t(u->LastOnline());
+    ds = t.toString();
+    ds.truncate(ds.length() - 8);
+    nfoLastOnline->setData(ds);
+  }
+
+  if (u->LastSentEvent() == 0)
+    nfoLastSent->setData(tr("Unknown"));
+  else
+  {
+    t.setTime_t(u->LastSentEvent());
+    ds = t.toString();
+    ds.truncate(ds.length() - 8);
+    nfoLastSent->setData(ds);
+  }
+
+  if (u->LastReceivedEvent() == 0)
+    nfoLastRecv->setData(tr("Unknown"));
+  else
+  {
+    t.setTime_t(u->LastReceivedEvent());
+    ds = t.toString();
+    ds.truncate(ds.length() - 8);
+    nfoLastRecv->setData(ds);
+  }
+
+  if (u->LastCheckedAutoResponse() == 0)
+    nfoLastCheckedAR->setData(tr("Unknown"));
+  else
+  {
+    t.setTime_t(u->LastCheckedAutoResponse());
+    ds = t.toString();
+    ds.truncate(ds.length() - 8);
+    nfoLastCheckedAR->setData(ds);
+  }
+
+  if (bDropUser) gUserManager.DropUser(u);
+}
+
 // -----------------------------------------------------------------------------
 
 void UserInfoDlg::CreateHistory()
@@ -988,6 +1082,8 @@ void UserInfoDlg::updateTab(const QString& txt)
     currentTab = GeneralInfo;
     btnMain3->setText(tr("&Update"));
     btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
+    btnMain3->setEnabled(true);
+    btnMain2->setEnabled(true);
     if (!tabList[GeneralInfo].loaded)
       SetGeneralInfo(NULL);
   }
@@ -995,6 +1091,8 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("&Update"));
     btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
+    btnMain3->setEnabled(true);
+    btnMain2->setEnabled(true);
     currentTab = MoreInfo;
     if (!tabList[MoreInfo].loaded)
       SetMoreInfo(NULL);
@@ -1003,6 +1101,8 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("&Update"));
     btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
+    btnMain3->setEnabled(true);
+    btnMain2->setEnabled(true);
     currentTab = WorkInfo;
     if (!tabList[WorkInfo].loaded)
       SetWorkInfo(NULL);
@@ -1011,6 +1111,8 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("&Update"));
     btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
+    btnMain3->setEnabled(true);
+    btnMain2->setEnabled(true);
     currentTab = AboutInfo;
     if (!tabList[AboutInfo].loaded)
       SetAbout(NULL);
@@ -1019,10 +1121,22 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("Nex&t"));
     btnMain2->setText(tr("P&rev"));
+    btnMain3->setEnabled(true);
+    btnMain2->setEnabled(true);
     currentTab = HistoryInfo;
     if (!tabList[HistoryInfo].loaded)
       SetupHistory();
     mleHistory->setFocus();
+  }
+  else if (txt == tabList[LastCountersInfo].label)
+  {
+    currentTab = LastCountersInfo;
+    btnMain3->setText("");
+    btnMain2->setText("");
+    btnMain3->setEnabled(false);
+    btnMain2->setEnabled(false);
+    if (!tabList[LastCountersInfo].loaded)
+      SetLastCountersInfo(NULL);
   }
 }
 
@@ -1048,13 +1162,17 @@ void UserInfoDlg::SaveSettings()
   case HistoryInfo:
     ShowHistoryPrev();
     break;
+  case LastCountersInfo:
+    break;
   }
 }
 
 
 void UserInfoDlg::slotRetrieve()
 {
-  if(currentTab != HistoryInfo)
+  if (currentTab == LastCountersInfo) return;
+
+  if (currentTab != HistoryInfo)
   {
     ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
     if(o == NULL)  return;
@@ -1073,11 +1191,12 @@ void UserInfoDlg::slotRetrieve()
     return;
   }
 
-  switch(currentTab) {
-  case GeneralInfo:  icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
-  case MoreInfo:     icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
-  case WorkInfo:     icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
-  case AboutInfo:    icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
+  switch(currentTab)
+  {
+    case GeneralInfo: icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
+    case MoreInfo:    icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
+    case WorkInfo:    icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
+    case AboutInfo:   icqEventTag = server->icqRequestMetaInfo(m_nUin);  break;
   }
 
   if (icqEventTag != NULL)
@@ -1092,7 +1211,9 @@ void UserInfoDlg::slotRetrieve()
 
 void UserInfoDlg::slotUpdate()
 {
-  if(currentTab != HistoryInfo)
+  if (currentTab == LastCountersInfo) return;
+
+  if (currentTab != HistoryInfo)
   {
     ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
     if(o == NULL)  return;

@@ -52,6 +52,7 @@ public:
     WorkInfo,
     AboutInfo,
     HistoryInfo,
+    LastCountersInfo,
     InfoTabCount
   };
 
@@ -89,7 +90,7 @@ protected:
   CInfoField *nfoFirstName, *nfoLastName, *nfoEmailPrimary, *nfoEmailSecondary, *nfoEmailOld,
              *nfoAlias, *nfoIp, *nfoUin, *nfoCity, *nfoState,
              *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
-             *nfoPhone, *nfoLastOnline, *nfoTime, *nfoStatus;
+             *nfoPhone, *nfoTime, *nfoStatus;
   CEComboBox *cmbCountry;
   QLabel *lblAuth;
 
@@ -110,6 +111,10 @@ protected:
   void CreateAbout();
   QLabel *lblAbout;
   MLEditWrap *mleAbout;
+
+  // Last Counters
+  void CreateLastCountersInfo();
+  CInfoField *nfoLastOnline, *nfoLastSent, *nfoLastRecv, *nfoLastCheckedAR;
 
   // History tab
   void CreateHistory();
@@ -132,6 +137,7 @@ protected:
   void SetMoreInfo(ICQUser *);
   void SetWorkInfo(ICQUser *);
   void SetAbout(ICQUser *);
+  void SetLastCountersInfo(ICQUser *);
   void SaveGeneralInfo();
   void SaveMoreInfo();
   void SaveWorkInfo();
