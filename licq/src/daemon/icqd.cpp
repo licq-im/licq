@@ -1414,7 +1414,38 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     {
       gLog.Warn("%sFifo \"redirect\" command with no argument.\n", L_WARNxSTR);
     }
-   }
+  }
+  else if (strcasecmp(szCommand, "adduser") == 0)
+  {
+    if (*szArgs == '\0')
+    {
+      gLog.Warn("%sFifo \"adduser\" with no UIN.\n", L_WARNxSTR);
+      goto fifo_done;
+    }
+    char *szUin = szArgs;
+    unsigned long nUin = atoi(szUin);
+    AddUserToList(nUin);
+  }
+  else if (strcasecmp(szCommand, "userinfo") == 0)
+  {
+    if (*szArgs == '\0')
+    {
+      gLog.Warn("%sFifo \"userinfo\" with no UIN.\n", L_WARNxSTR);
+      goto fifo_done;
+    }
+    char *szUin = szArgs;
+    unsigned long nUin = atoi(szUin);
+    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+    if (u == NULL)
+    {
+      gLog.Warn("%sUser %ld not on contact list, not retrieving info.\n", L_WARNxSTR, nUin);
+    }
+    else
+    {
+      gUserManager.DropUser(u);
+      icqRequestMetaInfo(nUin);
+    }
+  }
   else if (strcasecmp(szCommand, "exit") == 0)
   {
     Shutdown();
@@ -1426,9 +1457,11 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
               "%sauto_response <auto response>\n"
               "%smessage <uin> <message>\n"
               "%surl <uin> <url> <description>\n"
+              "%sadduser <uin>\n"
+              "%suserinfo <uin>\n"
               "%sredirect <device>\n"
               "%sexit\n", L_FIFOxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR,
-              L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR);
+              L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR, L_BLANKxSTR);
   }
   else
   {
