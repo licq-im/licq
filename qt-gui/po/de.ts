@@ -1,5 +1,16 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name></name>
+    <message>
+        <source>KDE default</source>
+        <translation>KDE Standard</translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation>keine</translation>
+    </message>
+</context>
+<context>
     <name>AddUserDlg</name>
     <message>
         <source>Licq - Add User</source>
@@ -1102,6 +1113,16 @@ http://www.licq.org
         <source>Server Group</source>
         <translation>Servergruppe</translation>
     </message>
+    <message>
+        <source>Licq is unable to find a browser application due to an internal error.</source>
+        <translation>Licq kann aufgrund eines internen Fehlers keine Browseranwendung finden.</translation>
+    </message>
+    <message>
+        <source>Licq is unable to start your browser and open the URL.
+You will need to start the browser and open the URL manually.</source>
+        <translation>Licq kann den Browser nicht starten um die URL zu öffnen
+Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopieren.</translation>
+    </message>
 </context>
 <context>
     <name>CQtLogWindow</name>
@@ -2040,12 +2061,12 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
-        <translation>Licq kann den Browser nicht starten um die URL zu öffnen
+        <translation type="obsolete">Licq kann den Browser nicht starten um die URL zu öffnen
 Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopieren.</translation>
     </message>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation>Licq kann aufgrund eines internen Fehlers keine Browseranwendung finden.</translation>
+        <translation type="obsolete">Licq kann aufgrund eines internen Fehlers keine Browseranwendung finden.</translation>
     </message>
 </context>
 <context>
@@ -2798,7 +2819,7 @@ Folgende Parameter können verwendet werden:
     </message>
     <message>
         <source>Sort Online Users by Status</source>
-        <translation>Benutzer nach Status sortieren</translation>
+        <translation type="obsolete">Benutzer nach Status sortieren</translation>
     </message>
     <message>
         <source>Proxy Server:</source>
@@ -2822,7 +2843,7 @@ Folgende Parameter können verwendet werden:
     </message>
     <message>
         <source>Sort all online users by their actual status</source>
-        <translation>Sortiert alle Benutzer nach ihrem aktuellen Status</translation>
+        <translation type="obsolete">Sortiert alle Benutzer nach ihrem aktuellen Status</translation>
     </message>
     <message>
         <source>Select a font from the system list</source>
@@ -2915,6 +2936,36 @@ Veränderungen werden erst nach dem Neustart von Licq wirksam!
     <message>
         <source>I am behind a firewall</source>
         <translation>Ich befinde mich hinter einer Firewall</translation>
+    </message>
+    <message>
+        <source>Sort users &amp;by:</source>
+        <translation type="obsolete">Sortiere &amp;nach:</translation>
+    </message>
+    <message>
+        <source>status</source>
+        <translation>Status</translation>
+    </message>
+    <message>
+        <source>status + last event</source>
+        <translation>Status + letztes Ereignis</translation>
+    </message>
+    <message>
+        <source>status + new messages</source>
+        <translation>Status + Anzahl neue Nachrichten</translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;none:&lt;/b&gt; - Don&apos;t sort online users by Status&lt;br&gt;
+&lt;b&gt;status&lt;/b&gt; - Sort online users by status&lt;br&gt;
+&lt;b&gt;status + last event&lt;/b&gt; - Sort online users by status and by last event&lt;br&gt;
+&lt;b&gt;status + new messages&lt;/b&gt; - Sort online users by status and number of new messages</source>
+        <translation>&lt;b&gt;keine&lt;/b&gt; - Nicht nach Status sortieren&lt;br&gt;
+&lt;b&gt;Status&lt;/b&gt; - Sortiere nach Status&lt;br&gt;
+&lt;b&gt;Status + letztes Ereignis&lt;/b&gt; - Sortiere nach Status und dem letzten empfangenen Ereignis&lt;br&gt;
+&lt;b&gt;Status + Anzahl neue Nachrichten&lt;/b&gt; - Sortiere nach Status und der Anzahl neuer Nachrichten</translation>
+    </message>
+    <message>
+        <source>Additional &amp;sorting:</source>
+        <translation>Erweiterte &amp;Sortierung:</translation>
     </message>
 </context>
 <context>
@@ -4436,7 +4487,7 @@ Anfrage wurde abgebrochen.</translation>
     </message>
     <message>
         <source>View URL failed</source>
-        <translation>URL-Anzeige fehlgeschlagen</translation>
+        <translation type="obsolete">URL-Anzeige fehlgeschlagen</translation>
     </message>
     <message>
         <source>A&amp;dd User</source>
