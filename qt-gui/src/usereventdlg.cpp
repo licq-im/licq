@@ -483,6 +483,19 @@ void UserViewEvent::sendMsg(QString txt)
   e->show();
 
   connect(e, SIGNAL(autoCloseNotify()), this, SLOT(slot_autoClose()));
+  connect(e, SIGNAL(signal_msgtypechanged(UserSendCommon *, UserSendCommon *)),
+          this, SLOT(slot_msgtypechanged(UserSendCommon *, UserSendCommon *)));
+}
+
+void UserViewEvent::slot_msgtypechanged(UserSendCommon *old_t, UserSendCommon *new_t)
+{
+  disconnect(old_t, SIGNAL(autoCloseNotify()), this, SLOT(slot_autoClose()));
+  disconnect(old_t, SIGNAL(signal_msgtypechanged(UserSendCommon *, UserSendCommon *)),
+          this, SLOT(slot_msgtypechanged(UserSendCommon *, UserSendCommon *)));
+
+  connect(new_t, SIGNAL(autoCloseNotify()), this, SLOT(slot_autoClose()));
+  connect(new_t, SIGNAL(signal_msgtypechanged(UserSendCommon *, UserSendCommon *)),
+          this, SLOT(slot_msgtypechanged(UserSendCommon *, UserSendCommon *)));
 }
 
 
@@ -808,6 +821,9 @@ void UserSendCommon::changeEventType(int id)
     if (e->mleSend && mleSend)
       e->mleSend->setText(mleSend->text());
     e->move(p);
+
+    emit signal_msgtypechanged(this, e);
+
     e->show();
 
     close();
@@ -987,7 +1003,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
       m_sProgressMsg += "...";
       icqEventTag = server->icqSendMessage(m_nUin, ue->Message(), bOnline,
-         nLevel, 0);
+         nLevel);
       break;
     }
     case ICQ_CMDxSUB_URL:
@@ -997,7 +1013,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       m_sProgressMsg += bOnline ? tr("direct") : tr("through server");
       m_sProgressMsg += "...";
       icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(),
-         bOnline, nLevel, 0);
+         bOnline, nLevel);
       break;
     }
     case ICQ_CMDxSUB_CHAT:
@@ -1110,8 +1126,6 @@ void UserSendMsgEvent::sendButton()
                     tr("C&ontinue"), tr("&Cancel")))
     return;
 
-  unsigned long uin = (chkSpoof && chkSpoof->isChecked() ?
-                       edtSpoof->text().toULong() : 0);
   // don't let the user send empty messages
   if (mleSend->text().stripWhiteSpace().isEmpty()) return;
 
@@ -1128,7 +1142,7 @@ void UserSendMsgEvent::sendButton()
   m_sProgressMsg += "...";
   icqEventTag = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
      chkSendServer->isChecked() ? false : true,
-     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
+     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
 
   UserSendCommon::sendButton();
 }
@@ -1187,9 +1201,6 @@ void UserSendUrlEvent::setUrl(const QString& url, const QString& description)
 //-----UserSendUrlEvent::sendButton------------------------------------------
 void UserSendUrlEvent::sendButton()
 {
-  unsigned long uin = (chkSpoof && chkSpoof->isChecked() ?
-                       edtSpoof->text().toULong() : 0);
-
   if (edtItem->text().stripWhiteSpace().isEmpty())
     return;
 
@@ -1205,8 +1216,8 @@ void UserSendUrlEvent::sendButton()
   m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
   m_sProgressMsg += "...";
   icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), mleSend->text().local8Bit(),
-                                   chkSendServer->isChecked() ? false : true,
-                                   chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
+     chkSendServer->isChecked() ? false : true,
+     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
 
   UserSendCommon::sendButton();
 }
@@ -1294,8 +1305,8 @@ void UserSendFileEvent::sendButton()
   }
   m_sProgressMsg = tr("Sending...");
   icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text().local8Bit(),
-                                        mleSend->text().local8Bit(),
-                                        chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+     mleSend->text().local8Bit(),
+     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
 
   UserSendCommon::sendButton();
 }

@@ -119,6 +119,7 @@ protected:
 protected slots:
   void slot_close();
   void slot_autoClose();
+  void slot_msgtypechanged(UserSendCommon *, UserSendCommon *);
   void slot_btnRead1();
   void slot_btnRead2();
   void slot_btnRead3();
@@ -144,6 +145,7 @@ public:
 signals:
   void autoCloseNotify();
   void updateUser(CICQSignal*);
+  void signal_msgtypechanged(UserSendCommon *, UserSendCommon *);
 
 protected:
   QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
