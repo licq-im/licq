@@ -874,6 +874,10 @@ CMainWindow::~CMainWindow()
 {
   delete licqIcon;
   gMainWindow = NULL;
+#ifdef QT_PROTOCOL_PLUGIN
+  if (m_szUserMenuId)
+    free(m_szUserMenuId);
+#endif
 }
 
 
@@ -886,6 +890,9 @@ void CMainWindow::resizeEvent (QResizeEvent *)
   if (!skin->frame.hasMenuBar)
     btnSystem->setGeometry(skin->borderToRect(&skin->btnSys, this));
 
+  // Do this to save the new geometry
+  positionChanges++;
+  
   // Resize the background pixmap and mask
   QPixmap *p;
   if (skin->frame.pixmap != NULL)
