@@ -31,6 +31,7 @@
 #include <qaccel.h>
 #include <qregexp.h>
 #if USE_KDE
+#include <kapp.h>
 #include <kurl.h>
 #endif
 
@@ -63,10 +64,12 @@ void MLViewQt3::append(const QString& s)
   {
      // Workaround --
      // In those versions, QTextEdit::append didn't add a new paragraph.
-     QTextEdit::append("<p>");
-     QTextEdit::append(s);
+     QTextBrowser::append("<p>" + s);
   }
-  QTextEdit::append(s);
+  else
+  {
+     QTextBrowser::append(s);
+  }
 }
 
 QString MLViewQt3::toRichText(const QString& s, bool highlightURLs)
@@ -120,7 +123,7 @@ QString MLViewQt3::toRichText(const QString& s, bool highlightURLs)
 
 void MLViewQt3::GotoEnd()
 {
-  moveCursor(QTextEdit::MoveEnd, false);
+  moveCursor(QTextBrowser::MoveEnd, false);
 }
 
 void MLViewQt3::setBackground(const QColor& c)
