@@ -1401,23 +1401,23 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       sentTime.tm_year = yearSent - 1900;
 
       time_t sentLocalTime = mktime(&sentTime);
-      
+
       // Timezone fix
       ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-      char nTimezone = o->GetTimezone();
+      int nTimezone = o->GetTimezone();
       gUserManager.DropOwner();
 
       if (nTimezone != TIMEZONE_UNKNOWN)
       {
         int nHourDiff = nTimezone / -2;
-	bool bPlusHalfHour = (nTimezone % 2);
+        bool bPlusHalfHour = (nTimezone % 2);
 
-	sentLocalTime += nHourDiff * 3600; 
-	  
-	if (bPlusHalfHour && (nTimezone / 2) > 0)
-	  sentLocalTime -= 1800;
-	else if (bPlusHalfHour && (nTimezone / 2) < 0)
-	  sentLocalTime += 1800;
+        sentLocalTime += nHourDiff * 3600;
+
+        if (bPlusHalfHour && (nTimezone / 2) > 0)
+          sentLocalTime -= 1800;
+        else if (bPlusHalfHour && (nTimezone / 2) < 0)
+          sentLocalTime += 1800;
       }
       
       // process the system message, sending the time it occured converted to a time_t structure
