@@ -968,4 +968,55 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
   }
 }
 
+void CMessageViewWidget::addNotice(QString dateTime, QString messageText)
+{
+  QString color = "green";
+  QString s = "";
+  
+  /* Remove trailing line breaks. */
+  for (unsigned int i = messageText.length() - 1; i >= 0; i--)
+  {
+    if (messageText.at(i) == '\n' || messageText.at(i) == '\r')
+      messageText.truncate(i);
+    else
+      break;
+  }
+     
+  
+  switch (m_nMsgStyle)
+  {
+    case 1:
+      s = QString("<font color=\"%1\"><b>[%2] %3</b></font>")
+                  .arg(color)
+                  .arg(dateTime)
+                  .arg(messageText);
+      break;
+    case 2:
+      s = QString("<font color=\"%1\"><b>[%2] %3</b></font>")
+                  .arg(color)
+                  .arg(dateTime)
+                  .arg(messageText);
+      break;  
+    case 3:
+      s = QString("<table border=\"1\"><tr><td><b><font color=\"%1\">%2</font><b><td><b><font color=\"%3\">%4</font></b></font></td></tr></table>")
+                  .arg(color)
+                  .arg(dateTime)
+                  .arg(color)
+                  .arg(messageText);
+      break; 
+
+    case 0:
+    default:
+      s = QString("<html><body><font color=\"%1\"><b>[%2] %3</b></font><br></body></html>")
+                  .arg(color)
+                  .arg(dateTime)
+                  .arg(messageText);
+      break;    
+  }
+  
+  append(s);
+  if (m_bAppendLineBreak)
+    append("<hr>");
+}
+
 #include "ewidgets.moc"

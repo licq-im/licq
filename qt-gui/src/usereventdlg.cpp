@@ -1701,11 +1701,9 @@ void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
   
   if (mainwin->m_bMsgChatView)
   {
-    QString str = QString(tr("<html><body><font color=\"green\"><b>"
-                          "[%1] %2 has joined the conversation.</b></font><br></body></html>"))
-      .arg(QTime::currentTime().toString())
+    QString strMsg = QString("%1 has joined the conversation.")
       .arg(szId);
-    mleHistory->append(str);
+    mleHistory->addNotice(QTime::currentTime().toString(), strMsg);
   }
 
   if (!FindUserInConvo(const_cast<char *>(szId)))
@@ -1724,11 +1722,9 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long _nConvoId)
   
   if (mainwin->m_bMsgChatView)
   {
-    QString str = QString(tr("<html><body><font color=\"green\"><b>"
-                          "[%1] %2 has left the conversation.</b></font><br></body></html>"))
-      .arg(QTime::currentTime().toString())
+    QString strMsg = QString("%1 has left the conversation.")
       .arg(szId);
-    mleHistory->append(str);
+    mleHistory->addNotice(QTime::currentTime().toString(), strMsg);
     
     // Remove the typing notification if active
     ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_W);
