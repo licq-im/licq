@@ -345,8 +345,10 @@ public:
 
 
   void ProtoPluginList(ProtoPluginsList &);
+  void ProtoPluginShutdown(unsigned short);
   bool ProtoPluginLoad(const char *);
   int RegisterProtoPlugin();
+  void UnregisterProtoPlugin();
   char *ProtoPluginName(unsigned long);
 
   void PluginUIViewEvent(const char *szId, unsigned long nPPID ) {

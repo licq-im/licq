@@ -16,13 +16,16 @@ class CProtoPlugin
 {
 public:
   const char *Name()    { if (fName) return (*fName)(); else return "Licq"; }
-  const char *Version() { return (*fVersion)(); }
-  unsigned long Id()    { return m_nPPID;}
-
+  const char *Version() { if (fVersion) return (*fVersion)(); else return ""; }
+  unsigned short Id()   { if (nId) return *nId; else return 0xFFFF; }
+  unsigned long PPID()  { return m_nPPID; }
+  
   int Pipe() { return pipe_plugin[PIPE_READ]; }
-
+  void SetSignals(bool b) { m_bSignals = b; }
+  
   char *LibName() { return m_szLibName; }
-
+  bool SendSignals() { return m_bSignals; }
+  
 protected:
   CProtoPlugin(const char *);
   CProtoPlugin(); //FIXME ICQ should be its own plugin
@@ -31,13 +34,16 @@ protected:
   void PushSignal(CSignal *);
   CSignal *PopSignal();
 
+  void Shutdown();
+
   bool CompareThread(pthread_t);
   unsigned long m_nPPID;
 
   ProtoSignalList list_signals;
   pthread_mutex_t mutex_signals;
   int pipe_plugin[2];
-
+  bool m_bSignals;
+  
   // DLL items
   void *m_pHandle;
   pthread_t thread_plugin;
@@ -49,8 +55,9 @@ protected:
   void (*fMain)(CICQDaemon *);
   char *(*fName)();
   char *(*fVersion)();
-  char *(*fId)();
-
+  char *(*fPPID)();
+  unsigned short *nId;
+  
   friend class CICQDaemon;
   friend class CLicq;
 };

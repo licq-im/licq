@@ -307,6 +307,13 @@ CSignal::CSignal(SIGNAL_TYPE e, const char *szId)
   thread_plugin = pthread_self();
 }
 
+CSignal::CSignal(CSignal *s)
+{
+  m_eType = s->m_eType;
+  m_szId = s->m_szId ? strdup(s->m_szId) : 0;
+  thread_plugin = s->thread_plugin;
+}
+
 CSignal::~CSignal()
 {
   if (m_szId)

@@ -442,7 +442,9 @@ class CSignal
 {
 public:
   CSignal(SIGNAL_TYPE, const char *);
+  CSignal(CSignal *);
   virtual ~CSignal();
+
   //! The signal is being sent to the plugin.
   SIGNAL_TYPE Type()  { return m_eType; }
   //! The user id that this signal is being used for.

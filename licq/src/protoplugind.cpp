@@ -18,11 +18,20 @@ CProtoPlugin::CProtoPlugin(const char *_szLibName)
   m_szLibName = _szLibName ? strdup(_szLibName) : 0;
   pthread_mutex_init(&mutex_signals, NULL);
   pipe(pipe_plugin);
+  fName = 0;
+  fVersion = 0;
+  m_bSignals = false;
 }
 
 CProtoPlugin::CProtoPlugin()
 {
   m_szLibName = 0;
+  pipe_plugin[0] = -1;
+  pipe_plugin[1] = -1;
+  fName = 0;
+  fVersion = 0;
+  m_bSignals = false;
+  nId = 0;
 }
 
 CProtoPlugin::~CProtoPlugin()
@@ -56,3 +65,9 @@ CSignal *CProtoPlugin::PopSignal()
   pthread_mutex_unlock(&mutex_signals);
   return s;
 }
+
+void CProtoPlugin::Shutdown()
+{
+  write(pipe_plugin[PIPE_WRITE], "X", 1);
+}
+

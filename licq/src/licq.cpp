@@ -728,8 +728,8 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
     return NULL;
   }
 
-  p->fId = (char *(*)())FindFunction(handle, "LProto_Id");
-  if (p->fId == NULL)
+  p->nId = (unsigned short *)FindFunction(handle, "LP_Id");
+  if (p->nId == NULL)
   {
     error = dlerror();
     gLog.Error("%sFailed to find LProto_Id in plugin (%s): %s\n",
@@ -738,6 +738,16 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
     return NULL;
   }
 
+  p->fPPID = (char *(*)())FindFunction(handle, "LProto_PPID");
+  if (p->fPPID == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_PPID in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;  
+  }
+  
   p->fInit = (bool (*)())FindFunction(handle, "LProto_Init");
   if (p->fInit == NULL)
   {
@@ -776,9 +786,10 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
   }
 
   // PPID
-  p->m_nPPID = p->fId()[0] << 24 | p->fId()[1] << 16 | p->fId()[2] << 8 | p->fId()[3];
+  p->m_nPPID = p->fPPID()[0] << 24 | p->fPPID()[1] << 16 | p->fPPID()[2] << 8 | p->fPPID()[3];
 
   // Finish it up
+  *p->nId = m_nNextId++;
   p->m_pHandle = handle;
   pthread_mutex_lock(&mutex_protoplugins);
   list_protoplugins.push_back(p);
@@ -786,7 +797,7 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
 
   // Let the gui plugins know about the new protocol plugin
   if (licqDaemon)
-    licqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_NEWxPROTO_PLUGIN,p->Id(),
+    licqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_NEWxPROTO_PLUGIN,p->PPID(),
                                                 0));
   return p;
 }
@@ -832,7 +843,9 @@ int CLicq::Main()
   // Run the plugins
   pthread_cond_init(&LP_IdSignal, NULL);
   PluginsListIter iter;
+  ProtoPluginsListIter p_iter;
   pthread_mutex_lock(&mutex_plugins);
+  pthread_mutex_lock(&mutex_protoplugins);
   for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
   {
     StartPlugin(*iter);
@@ -843,10 +856,13 @@ int CLicq::Main()
   unsigned short nExitId;
   int *nPluginResult;
   bool bDaemonShutdown = false;
-
-  while (list_plugins.size() > 0)
+  
+  //FIXME ICQ Plugin can't be taken out really
+  while (list_plugins.size() > 0 || list_protoplugins.size() > 1)
   {
+    bool bUIPlugin = true;
     pthread_mutex_lock(&LP_IdMutex);
+    pthread_mutex_unlock(&mutex_protoplugins);
     pthread_mutex_unlock(&mutex_plugins);
     while (LP_Ids.size() == 0)
     {
@@ -858,6 +874,7 @@ int CLicq::Main()
         if (pthread_cond_timedwait(&LP_IdSignal, &LP_IdMutex, &abstime) == ETIMEDOUT)
         {
           pthread_mutex_lock(&mutex_plugins);
+          pthread_mutex_lock(&mutex_protoplugins);
           pthread_mutex_unlock(&LP_IdMutex);
           goto timed_out;
         }
@@ -869,6 +886,7 @@ int CLicq::Main()
     LP_Ids.pop_front();
 
     pthread_mutex_lock(&mutex_plugins);
+    pthread_mutex_lock(&mutex_protoplugins);
     pthread_mutex_unlock(&LP_IdMutex);
 
     if (nExitId == 0)
@@ -877,22 +895,55 @@ int CLicq::Main()
       continue;
     }
 
+    // Check UI plugins first
     for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
-      if (*(*iter)->nId == nExitId) break;
-
-    if (iter == list_plugins.end())
+    {
+      if (*(*iter)->nId == nExitId)
+      {
+        bUIPlugin = true;
+        break;
+      }
+    }
+    
+    for (p_iter = list_protoplugins.begin(); p_iter != list_protoplugins.end();
+         p_iter++)
+    {
+      if ((*p_iter)->PPID() != LICQ_PPID && *(*p_iter)->nId == nExitId)
+      {
+        bUIPlugin = false;
+        break;
+      }
+    }
+        
+    if (iter == list_plugins.end() && p_iter == list_protoplugins.end())
     {
       gLog.Error("%sInvalid plugin id (%d) in exit signal.\n", L_ERRORxSTR, nExitId);
       continue;
     }
 
-    pthread_join((*iter)->thread_plugin, (void **)&nPluginResult);
-    gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*iter)->Name(), *nPluginResult);
-    free (nPluginResult);
-    // We should close the dynamic link but under linux this makes Qt crash
-    //dlclose((*iter)->dl_handle);
-    delete *iter;
-    list_plugins.erase(iter);
+    if (bUIPlugin)
+    {
+      pthread_join((*iter)->thread_plugin, (void **)&nPluginResult);
+      gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*iter)->Name(), *nPluginResult);
+      free (nPluginResult);
+      // We should close the dynamic link but under linux this makes Qt crash
+      //dlclose((*iter)->dl_handle);
+      delete *iter;
+      list_plugins.erase(iter);
+    }
+    else
+    {
+      //FIXME
+      if ((*p_iter)->PPID() != LICQ_PPID)
+      {
+        pthread_join((*p_iter)->thread_plugin, (void **)&nPluginResult);
+        gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*p_iter)->Name(), *nPluginResult);
+        free (nPluginResult);
+        dlclose((*p_iter)->m_pHandle);
+        delete *p_iter;
+        list_protoplugins.erase(p_iter);
+      }
+    }
   }
 
   timed_out:
@@ -903,6 +954,21 @@ int CLicq::Main()
     pthread_cancel( (*iter)->thread_plugin);
   }
   pthread_mutex_unlock(&mutex_plugins);
+
+  for (p_iter = list_protoplugins.begin(); p_iter != list_protoplugins.end();
+       p_iter++)
+  {
+    if ((*p_iter)->PPID() == LICQ_PPID) //FIXME
+    {
+      delete *p_iter;
+    }
+    else
+    {
+      gLog.Info(tr("%sPlugin %s failed to exit.\n"), L_WARNxSTR, (*p_iter)->Name());
+      pthread_cancel((*p_iter)->thread_plugin);
+    }
+  }
+  pthread_mutex_unlock(&mutex_protoplugins);
 
   pthread_t *t = licqDaemon->Shutdown();
   pthread_join(*t, NULL);
@@ -987,6 +1053,14 @@ void CLicq::ShutdownPlugins()
     (*iter)->Shutdown();
   }
   pthread_mutex_unlock(&mutex_plugins);
+  
+  ProtoPluginsListIter p_iter;
+  pthread_mutex_lock(&mutex_protoplugins);
+  for (p_iter = list_protoplugins.begin(); p_iter != list_protoplugins.end(); p_iter++)
+  {
+    (*p_iter)->Shutdown();
+  }
+  pthread_mutex_unlock(&mutex_protoplugins);
 }
 
 

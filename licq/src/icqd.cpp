@@ -530,6 +530,7 @@ int CICQDaemon::RegisterProtoPlugin()
     if ((*it)->CompareThread(pthread_self()))
     {
       p = (*it)->Pipe();
+      (*it)->SetSignals(true);
       break;
     }
   }
@@ -539,6 +540,24 @@ int CICQDaemon::RegisterProtoPlugin()
     gLog.Error("%sInvalid thread in registration attempt.\n", L_ERRORxSTR);
 
   return p;
+}
+
+void CICQDaemon::UnregisterProtoPlugin()
+{
+  ProtoPluginsListIter iter;
+  pthread_mutex_lock(&licq->mutex_protoplugins);
+  for (iter = licq->list_protoplugins.begin();
+       iter != licq->list_protoplugins.end();
+       iter++)
+  {
+    if ((*iter)->CompareThread(pthread_self()))
+    {
+      //gLog.Info("%sUnregistering plugin %d.\n", L_ENDxSTR, (*iter)->Id());
+      (*iter)->SetSignals(false);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&licq->mutex_protoplugins);
 }
 
 char *CICQDaemon::ProtoPluginName(unsigned long _nPPID)
@@ -551,7 +570,7 @@ char *CICQDaemon::ProtoPluginName(unsigned long _nPPID)
        it != licq->list_protoplugins.end();
        it++)
   {
-    if ((*it)->Id() == _nPPID)
+    if ((*it)->PPID() == _nPPID)
     {
       p = (char *)(*it)->Name();
       break;
@@ -559,6 +578,19 @@ char *CICQDaemon::ProtoPluginName(unsigned long _nPPID)
   }
   pthread_mutex_unlock(&licq->mutex_protoplugins);
   return p;
+}
+
+//---ProtoPluginShutdown-------------------------------------------------------
+/*! \brief Unloads the given proto plugin */
+void CICQDaemon::ProtoPluginShutdown(unsigned short _nId)
+{
+  ProtoPluginsListIter iter;
+  pthread_mutex_lock(&licq->mutex_protoplugins);
+  for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end(); iter++)
+  {
+    if ((*(*iter)->nId) == _nId) (*iter)->Shutdown();
+  }
+  pthread_mutex_unlock(&licq->mutex_protoplugins);
 }
 
 //---Version-------------------------------------------------------------------
@@ -1949,10 +1981,11 @@ void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
   for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
        iter++)
   {
-    if ((*iter)->Id() == _nPPID)
+    if ((*iter)->PPID() == _nPPID)
     {
       bExists = true;
-      (*iter)->PushSignal(s);
+      if ((*iter)->SendSignals())
+        (*iter)->PushSignal(new CSignal(s));
       break;
     }
   }
@@ -1961,8 +1994,9 @@ void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
   if (!bExists)
   {
     gLog.Info("%sInvalid protocol plugin requested (%ld).\n", L_ERRORxSTR, _nPPID);
-    delete s;
   }
+  
+  delete s;
 }
 
 CSignal *CICQDaemon::PopProtoSignal()
