@@ -29,9 +29,12 @@ struct conversation
 struct send_url
 {
 	GtkWidget *window;
-	GtkWidget *entry;
+//	GtkWidget *entry;
 	GtkWidget *entry_u;
 	GtkWidget *entry_d;
+	GtkWidget *send_server;
+	GtkWidget *spoof_button;
+	GtkWidget *spoof_uin;
 	ICQUser *user;
 };
 
@@ -193,6 +196,7 @@ extern void list_start_convo(GtkWidget *, ICQUser *);
 extern void list_send_url(GtkWidget *, ICQUser *);
 extern void url_send(GtkWidget *, struct send_url *);
 extern void url_close(GtkWidget *, struct send_url *);
+extern void url_spoof_button_callback(GtkWidget *, struct send_url *);
 extern void list_delete_user(GtkWidget *, ICQUser *);
 extern void delete_user_callback(GtkWidget *, struct delete_user *);
 extern void destroy_dialog(GtkWidget *, gpointer);

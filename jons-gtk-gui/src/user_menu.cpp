@@ -71,32 +71,10 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	v_box = gtk_vbox_new(FALSE, 5);
 
 	/* Make the entries */
-	//url->entry = gtk_entry_new();
 	url->entry_u = gtk_entry_new();
 	url->entry_d = gtk_entry_new();
 
-	/* Set the UIN into the text */
-	//gulong uin = user->Uin();
-	//const gchar *_uin = g_strdup_printf("%ld", uin);
-	//gtk_entry_set_text(GTK_ENTRY(url->entry), _uin);
-
-	/* Make the buttons */
-	close = gtk_button_new_with_label("Close");
-	gtk_signal_connect(GTK_OBJECT(close), "clicked",
-			   GTK_SIGNAL_FUNC(url_close), url);
-	send = gtk_button_new_with_label("Send");
-	gtk_signal_connect(GTK_OBJECT(send), "clicked",
-			   GTK_SIGNAL_FUNC(url_send), url);
-
-	/* Pack the main widgets */
-	//label = gtk_label_new("     To UIN: ");
-	//gtk_box_pack_start(GTK_BOX(h_box), label, TRUE, TRUE, 0);
-	//gtk_box_pack_start(GTK_BOX(h_box), url->entry, TRUE, TRUE, 0);
-	//gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
-
-	//h_box = gtk_hbox_new(FALSE, 0);
-
-	label = gtk_label_new("        URL: ");
+	label = gtk_label_new("         URL: ");
 	gtk_box_pack_start(GTK_BOX(h_box), label, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(h_box), url->entry_u, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
@@ -110,6 +88,36 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 
 	h_box = gtk_hbox_new(FALSE, 0);
 
+	/* The send through server and spoof area */
+	url->send_server = gtk_check_button_new_with_label("Server");
+	url->spoof_button = gtk_check_button_new_with_label("Spoof UIN");
+	url->spoof_uin = gtk_entry_new_with_max_length(8);
+
+	gtk_widget_set_usize(url->spoof_uin, 80, 20);
+
+	/* No UIN can be entered unless url->spoof_button is checked */
+	gtk_entry_set_editable(GTK_ENTRY(url->spoof_uin), FALSE);
+
+	/* Connect signal */
+	gtk_signal_connect(GTK_OBJECT(url->spoof_button), "toggled",
+			   GTK_SIGNAL_FUNC(url_spoof_button_callback), url);
+
+	/* Pack them */
+	gtk_box_pack_start(GTK_BOX(h_box), url->send_server, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_button, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_uin, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
+
+	h_box = gtk_hbox_new(FALSE, 0);
+
+	/* Make the buttons */
+	close = gtk_button_new_with_label("Close");
+	gtk_signal_connect(GTK_OBJECT(close), "clicked",
+			   GTK_SIGNAL_FUNC(url_close), url);
+	send = gtk_button_new_with_label("Send");
+	gtk_signal_connect(GTK_OBJECT(send), "clicked",
+			   GTK_SIGNAL_FUNC(url_send), url);
+
 	gtk_box_pack_start(GTK_BOX(h_box), close, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(h_box), send, TRUE, TRUE, 5);
 	gtk_box_pack_start(GTK_BOX(v_box), h_box, TRUE, TRUE, 0);
@@ -119,15 +127,31 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 
 	/* Show all the widgets at once */
 	gtk_widget_show_all(url->window);
+
+	gtk_widget_grab_focus(url->entry_u);
 }
 
 void url_send(GtkWidget *widget, struct send_url *url)
 {
 	const char *url_to_send = gtk_entry_get_text(GTK_ENTRY(url->entry_u));
 	const char *desc = gtk_entry_get_text(GTK_ENTRY(url->entry_d));
+	gulong uin = 0;
+
+	if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->spoof_button)))
+	{
+		uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(url->spoof_uin), 0, -1));
+	}
+
 	CICQEventTag *tag =
-		icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
-					FALSE, FALSE, 0);
+	icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
+       	  (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
+	  FALSE, uin);
+}
+
+void url_spoof_button_callback(GtkWidget *widget, struct send_url *url)
+{
+	gtk_editable_set_editable(GTK_EDITABLE(url->spoof_uin),
+		gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->spoof_button)));
 }
 
 void url_close(GtkWidget *widget, struct send_url *url)
