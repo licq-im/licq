@@ -26,14 +26,17 @@ public:
   void setItalic(bool);
   void setNamedFgColor(char *);
   void setNamedBgColor(char *);
+  void setPrependPixmap(const QPixmap&);
 public slots:
   void polish();
 protected:
   void resizeEvent (QResizeEvent *);
   virtual void mouseDoubleClickEvent(QMouseEvent *);
   virtual void mouseReleaseEvent(QMouseEvent *e);
+  virtual void drawContents(QPainter*);
   bool m_bTransparent;
   QPopupMenu *mnuPopUp;
+  QPixmap addPix;
 signals:
   void doubleClicked();
 };

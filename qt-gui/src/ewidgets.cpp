@@ -1,3 +1,5 @@
+// -*- c-basic-offset: 2 -*-
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -86,6 +88,12 @@ void CELabel::polish()
   }
 }
 
+void CELabel::setPrependPixmap(const QPixmap& p)
+{
+  addPix = p;
+  setIndent(p.width()+4);
+  update();
+}
 
 void CELabel::setBold(bool isBold)
 {
@@ -147,6 +155,14 @@ void CELabel::setNamedBgColor(char *theColor)
    setPalette(pal);
 }
 
+void CELabel::drawContents(QPainter* p)
+{
+  if(!addPix.isNull())
+    p->drawPixmap(2, height()/2-addPix.height()/2, addPix);
+
+  QLabel::drawContents(p);
+}
+
 void CELabel::resizeEvent (QResizeEvent *)
 {
   // Resize the background pixmap properly
@@ -191,7 +207,7 @@ CEButton::CEButton(QPixmap *p1, QPixmap *p2, QPixmap *p3, QWidget *parent, char 
    whenPressed = NoButton;
 }
 
-CEButton::CEButton(QString label, QWidget *parent, char *name) 
+CEButton::CEButton(QString label, QWidget *parent, char *name)
   : QPushButton(label, parent, name)
 {
    pmCurrent = pmUpFocus = pmUpNoFocus = pmDown = NULL;
@@ -337,16 +353,7 @@ CInfoField::CInfoField(QWidget *parent, bool readonly)
 
 void CInfoField::SetReadOnly(bool b)
 {
-  QColorGroup cg(palette().normal().foreground(),
-                 palette().normal().background(),
-                 palette().normal().light(),
-                 palette().normal().dark(),
-                 palette().normal().mid(),
-                 palette().normal().text(),
-                 b ? baseRO : baseRW);
-
-  setPalette(QPalette(cg, palette().disabled(), cg));
-  setReadOnly(b);
+  setBackgroundMode( b ? PaletteBackground : PaletteBase);
 }
 
 
