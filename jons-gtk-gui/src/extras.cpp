@@ -391,9 +391,9 @@ void finish_info(CICQSignal *signal)
 		gtk_entry_set_text(GTK_ENTRY(iu->alias), iu->user->GetAlias());
 		gtk_entry_set_text(GTK_ENTRY(iu->name), name);
 		gtk_entry_set_text(GTK_ENTRY(iu->email1),
-				   iu->user->GetEmail1());
+				   iu->user->GetEmailPrimary());
 		gtk_entry_set_text(GTK_ENTRY(iu->email2),
-				   iu->user->GetEmail2());
+				   iu->user->GetEmailSecondary());
 		gtk_entry_set_text(GTK_ENTRY(iu->address),
 				   iu->user->GetAddress());
 		gtk_entry_set_text(GTK_ENTRY(iu->city), iu->user->GetCity());
