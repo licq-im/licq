@@ -177,6 +177,12 @@ AC_DEFUN(LICQ_CHECK_OPENSSL,
 
     dnl AC_MSG_CHECKING(for the OpenSSL headers)
     temp=$CPPFLAGS
+    dnl Extra search path for kerberos includes, Redhat 9 needs this for OpenSSL
+    if test -d "/usr/kerberos/include"; then
+      kerberos_incdir="-I/usr/kerberos/include"
+      CPPFLAGS="$CPPFLAGS $kerberos_incdir"
+    fi
+
     if test "$openssl_incdir" != "no"; then
       CPPFLAGS="$CPPFLAGS -I$openssl_incdir"
     fi
