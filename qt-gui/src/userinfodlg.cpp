@@ -1085,7 +1085,7 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
     }
   }
 
-  setCaption(m_sBasic + " [" + result + "]");
+  setCaption(m_sBasic + " [" + m_sProgressMsg + result + "]");
   QTimer::singleShot(5000, this, SLOT(resetCaption()));
   setCursor(arrowCursor);
   delete icqEventTag;
