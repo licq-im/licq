@@ -415,8 +415,8 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
      if (pmBorder->isNull())
      {
        gLog.Error("%sError loading background pixmap (%s).\n", L_ERRORxSTR, skin->frame.pixmap);
-        delete skin->frame.pixmap;
-        skin->frame.pixmap = NULL;
+       delete skin->frame.pixmap;
+       skin->frame.pixmap = NULL;
      }
   }
   else
@@ -441,10 +441,8 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   }
 
   // Group Combo Box
-
   cmbUserGroups->setNamedBgColor(skin->cmbGroups.color.bg);
   cmbUserGroups->setNamedFgColor(skin->cmbGroups.color.fg);
-
 
   // System Button
   if (btnSystem != NULL) delete btnSystem;
@@ -462,11 +460,11 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
      }
      else
      {
-        btnSystem = new CEButton(new QPixmap(skin->btnSys.pixmapUpFocus),
-                                 new QPixmap(skin->btnSys.pixmapUpNoFocus),
-                                 new QPixmap(skin->btnSys.pixmapDown),
-                                 this);
-        btnSystem->setStyle(style);
+       btnSystem = new CEButton(new QPixmap(skin->btnSys.pixmapUpFocus),
+                                new QPixmap(skin->btnSys.pixmapUpNoFocus),
+                                new QPixmap(skin->btnSys.pixmapDown),
+                                this);
+       btnSystem->setStyle(style);
      }
      connect(btnSystem, SIGNAL(clicked()), this, SLOT(popupSystemMenu()));
      btnSystem->setNamedFgColor(skin->btnSys.color.fg);
