@@ -600,9 +600,9 @@ void ICQFunctions::InitHistoryTab()
   lay->addWidget(lblHistory);
 
   mleHistory = new HistoryWidget(p);
-  lay->addWidget(mleHistory);
+  lay->addWidget(mleHistory, 2);
 
-  QGroupBox *box = new QGroupBox(3, Horizontal, p);
+  QGroupBox *box = new QGroupBox(1, Vertical, p);
   lay->addWidget(box);
 
   btnHistoryReload = new QPushButton(tr("Reload"), box);
@@ -1628,14 +1628,15 @@ void ICQFunctions::ShowHistory()
   {
 
     d.setTime_t((*tempIter)->Time());
-    s.sprintf("%c%s (%s) [%c%c%c]\n\n%s\n%c--------------------\n",
+    s.sprintf("%c%s (%s) [%c%c%c]\n\n%s\n\003"
+              "---------------------------------------\n",
               (*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002',
               (const char *)EventDescription(*tempIter),
               (const char *)d.toString(),
               (*tempIter)->IsDirect() ? 'D' : '-',
               (*tempIter)->IsMultiRec() ? 'M' : '-',
               (*tempIter)->IsUrgent() ? 'U' : '-',
-              (*tempIter)->Text(), '\003');
+              (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
     st.append(s);
     m_nHistoryShowing++;
     if(m_bHistoryReverse)
