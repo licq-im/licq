@@ -894,23 +894,25 @@ void UserInfoDlg::ShowHistory()
     {
       d.setTime_t((*tempIter)->Time());
       if ((*tempIter)->Direction() == D_RECEIVER)
-        s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
+        s.sprintf("%c%s %s %s\n%c%s [%c%c%c%c]\n\n%s\n\n",
                   '\001', EventDescription(*tempIter).data(),
                   tr("from").utf8().data(), n.utf8().data(), '\001',
                   d.toString().utf8().data(),
                   (*tempIter)->IsDirect() ? 'D' : '-',
                   (*tempIter)->IsMultiRec() ? 'M' : '-',
                   (*tempIter)->IsUrgent() ? 'U' : '-',
+                  (*tempIter)->IsEncrypted() ? 'E' : '-',
                   (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
 //                  (*tempIter)->Text());
       else
-        s.sprintf("%c%s %s %s\n%c%s [%c%c%c]\n\n%s\n\n",
+        s.sprintf("%c%s %s %s\n%c%s [%c%c%c%c]\n\n%s\n\n",
                   '\002', EventDescription(*tempIter).data(),
                   tr("to").utf8().data(), n.utf8().data(), '\002',
                   d.toString().utf8().data(),
                   (*tempIter)->IsDirect() ? 'D' : '-',
                   (*tempIter)->IsMultiRec() ? 'M' : '-',
                   (*tempIter)->IsUrgent() ? 'U' : '-',
+                  (*tempIter)->IsEncrypted() ? 'E' : '-',
                 (QString::fromLocal8Bit((*tempIter)->Text())).utf8().data());
 //                  (*tempIter)->Text());
       st.append(s);
