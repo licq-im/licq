@@ -597,7 +597,17 @@ void *MonitorSockets_tep(void *p)
                 r = d->ProcessTcpPacket(tcp);
               tcp->ClearRecvBuffer();
               gSocketManager.DropSocket(tcp);
-              if (!r) gSocketManager.CloseSocket(nCurrentSocket);
+              if (!r) {
+                gSocketManager.CloseSocket(nCurrentSocket);
+                if(tcp->Owner()) {
+                  ICQUser *u = gUserManager.FetchUser(tcp->Owner(), LOCK_W);
+                  if (u != NULL)
+                  {
+                    u->ClearSocketDesc();
+                    gUserManager.DropUser(u);
+                  }
+                }
+              }
             }
             else
               gSocketManager.DropSocket(tcp);
