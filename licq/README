@@ -1,0 +1,27 @@
+      LICQ v1.3.0 README
+      http://www.licq.org
+      #Licq on irc.freenode.net
+
+Please check doc/ for the older README which has detailed instructions!
+
+It has been over a year since the last version of Licq has been released. So 
+what took so long?  Well, now there is support for multiple protocols if you 
+wish to use them.  Currently only MSN and ICQ/AIM are supported. This involved 
+a rewrite of many parts so a lot of work has been put into this version.
+
+In addition, many many bugs have been fixed, please take a look at the CHANGELOG
+for a more detailed list.
+
+The MSN plugin is still fairly new and doesn't have many features. What should
+work is:
+
+o Single conversations
+o Status changes
+o List modification (no group management)
+o Typing notifications
+
+Enjoy this long awaited release and feel free to come by #Licq! We could use
+some more people there, we get lonely :)
+
+Jon Keating <jon@licq.org>
+And the Licq Team
