@@ -102,7 +102,8 @@ bool CICQEventTag::Equals(const ICQEvent *e)
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
     m_nSocketDesc = u->SocketDesc();
     gUserManager.DropUser(u);
-    if (m_nSocketDesc == -1) return false;
+    if (m_nSocketDesc == -1)
+      return (m_nUin == e->m_nDestinationUin);
   }
   return (e->CompareEvent(m_nSocketDesc, m_nSequence));
 }
