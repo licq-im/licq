@@ -40,8 +40,8 @@ done
 
 echo "Updating users.conf file..."
 echo "[users]" > $CONF
-echo "NumOfUsers = `ls *.uin | wc -l`" >> $CONF
-ls *.uin | awk 'BEGIN { i = 1 } { printf "User%d = %d.Licq\n", i++, $1}' >> $CONF
+echo "NumOfUsers = `ls *.Licq | wc -l`" >> $CONF
+ls *.Licq | awk 'BEGIN { i = 1 } { printf "User%d = %d.Licq\n", i++, $1}' >> $CONF
 
 echo "Updating history files..."
 cd ../history
