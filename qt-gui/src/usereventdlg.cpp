@@ -1408,6 +1408,9 @@ void UserSendContactEvent::sendButton()
     i = static_cast<CMMUserViewItem *>(i->nextSibling());
   }
 
+  if(uins.size() == 0)
+    return;
+
   icqEventTag = server->icqSendContactList(m_nUin, uins,
     chkSendServer->isChecked() ? false : true,
     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);

@@ -183,10 +183,10 @@ void CUserViewItem::setGraphics(ICQUser *u)
        m_pIcon = &CMainWindow::iconForEvent(SubCommand);
    }
 
-   if (v->timerId == 0 &&
+   if (v->msgTimerId == 0 &&
        ((u->NewMessages() > 0 && gMainWindow->m_nFlash == FLASH_ALL) ||
        (m_bUrgent && gMainWindow->m_nFlash == FLASH_URGENT)))
-     v->timerId = v->startTimer(FLASH_TIME);
+     v->msgTimerId = v->startTimer(FLASH_TIME);
 
    if (u->NewUser())
       m_cFore = s_cNew;
@@ -311,6 +311,9 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
     p->drawLine(0, height() - 1, width - 1, height() - 1);
     p->drawLine(width - 1, 0, width - 1, height() - 1);
   }
+
+  if(listView()->carTimerId > 0 && listView()->carUin == m_nUin)
+    drawCAROverlay(p);
 }
 
 
@@ -332,32 +335,94 @@ void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
   }
 }
 
+void CUserViewItem::drawCAROverlay(QPainter* p)
+{
+  QRect r(listView()->itemRect(this));
+  if(!r.isValid())
+    // is not on screen
+    return;
+
+  p->setPen(QPen((((CUserView*)listView())->carCounter & 1) ? white : black, 1, DashLine));
+  p->drawRect(r);
+}
 
 void CUserView::timerEvent(QTimerEvent* e)
 {
   CUserViewItem* it = firstChild();
 
-  if(m_nFlashCounter++ & 1) {
-    // hide
-    while(it) {
-      if(it->ItemUin())  it->setPixmap(0, *it->m_pIconStatus);
-      it = static_cast<CUserViewItem*>(it->nextSibling());
+  if(e->timerId() == carTimerId)
+  {
+    // find the item
+    CUserViewItem* it = firstChild();
+
+    if(carCounter > 0) {
+      while(it) {
+        if(it->ItemUin() == carUin) {
+
+          QPainter p(viewport());
+          it->drawCAROverlay(&p);
+          break;
+        }
+        it = static_cast<CUserViewItem*>(it->nextSibling());
+      }
+    }
+
+    if(!it || (--carCounter == 0)) {
+      if(it) it->repaint();
+      carUin = 0;
+      killTimer(carTimerId);
+      carTimerId = 0;
     }
   }
-  else {
-    // show
-    bool foundIcon = false;
-    while(it) {
-      if(it->ItemUin() && it->m_pIcon != NULL && it->m_pIcon != it->m_pIconStatus) {
-        foundIcon = true;
-        it->setPixmap(0, *it->m_pIcon);
+  else if(e->timerId() == onlTimerId)
+  {
+    // find the item
+    CUserViewItem* it = firstChild();
+
+    if(onlCounter > 0) {
+      while(it) {
+        if(it->ItemUin() == onlUin) {
+          it->repaint();
+          break;
+        }
+        it = static_cast<CUserViewItem*>(it->nextSibling());
       }
-      it = static_cast<CUserViewItem*>(it->nextSibling());
     }
-    // no pending messages any more, kill timer
-    if(!foundIcon) {
-      killTimer(timerId);
-      timerId = 0;
+
+    if(!it || (--onlCounter == 0)) {
+      if(it) it->repaint();
+      onlUin = 0;
+      killTimer(onlTimerId);
+      onlTimerId = 0;
+    }
+
+    return;
+  }
+  else
+  {
+    if(m_nFlashCounter++ & 1)
+    {
+      // hide
+      while(it) {
+        if(it->ItemUin())  it->setPixmap(0, *it->m_pIconStatus);
+        it = static_cast<CUserViewItem*>(it->nextSibling());
+      }
+    }
+    else {
+      // show
+      bool foundIcon = false;
+      while(it) {
+        if(it->ItemUin() && it->m_pIcon != NULL && it->m_pIcon != it->m_pIconStatus) {
+          foundIcon = true;
+          it->setPixmap(0, *it->m_pIcon);
+        }
+        it = static_cast<CUserViewItem*>(it->nextSibling());
+      }
+      // no pending messages any more, kill timer
+      if(!foundIcon) {
+        killTimer(msgTimerId);
+        msgTimerId = 0;
+      }
     }
   }
 }
@@ -379,8 +444,8 @@ UserFloatyList* CUserView::floaties = 0;
 CUserView::CUserView (QPopupMenu *m, QWidget *parent, const char *name)
   : QListView(parent, name)
 {
-  m_nFlashCounter = 0;
-  timerId = 0;
+  m_nFlashCounter = carCounter = onlCounter = 0;
+  msgTimerId = carTimerId = onlTimerId = 0;
   mnuUser = m;
   barOnline = barOffline = NULL;
   numOnline = numOffline = 0;
@@ -589,6 +654,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
         unsigned long Uin = text.toULong();
 
         if(Uin >= 10000) {
+          if(Uin == it->ItemUin()) return;
           UserSendContactEvent* e = static_cast<UserSendContactEvent*>
             (gMainWindow->callFunction(mnuUserSendContact, it->ItemUin()));
           ICQUser* u = gUserManager.FetchUser(Uin, LOCK_R);
@@ -725,6 +791,27 @@ void CUserView::resizeEvent(QResizeEvent *e)
   {
     setHScrollBarMode(AlwaysOff);
     setColumnWidth(nNumCols - 1, newWidth);
+  }
+}
+
+void CUserView::AnimationAutoResponseCheck(unsigned long uin)
+{
+  if(carTimerId == 0) {
+    // no animation yet running, so start the timer
+    carTimerId = startTimer(FLASH_TIME);
+    carCounter = 5*1000/FLASH_TIME; // run about 5 seconds
+    carUin = uin;
+  }
+  // well, maybe we should move the animation to the other user
+}
+
+
+void CUserView::AnimationOnline(unsigned long uin)
+{
+  if(onlTimerId == 0) {
+    onlTimerId = startTimer(FLASH_TIME);
+    onlCounter = 4*1000/FLASH_TIME; // run about 4 seconds
+    onlUin = uin;
   }
 }
 

@@ -66,9 +66,13 @@ public:
   unsigned long ItemUin()  { return m_nUin; }
   void setGraphics(ICQUser *);
   unsigned short Status() const { return m_nStatus; };
+  CUserView* listView() const { return (CUserView*) QListViewItem::listView(); }
+
 protected:
   virtual void paintCell ( QPainter *, const QColorGroup &, int column, int width, int align);
   virtual void paintFocus ( QPainter *, const QColorGroup & cg, const QRect & r ) { };
+
+  void drawCAROverlay(QPainter*);
 
   QColor *m_cFore, *m_cBack;
   QPixmap *m_pIcon, *m_pIconStatus;
@@ -104,11 +108,13 @@ public:
 
   virtual void clear();
 
-  virtual CUserViewItem *firstChild() { return (CUserViewItem *)QListView::firstChild(); }
+  CUserViewItem *firstChild() const { return (CUserViewItem *)QListView::firstChild(); }
 
   void setColors(char *_sOnline, char *_sAway, char *_sOffline,
                  char *_sNew, char *_sBack, char *_sGridLines);
   void setShowHeader(bool);
+  void AnimationAutoResponseCheck(unsigned long uin);
+  void AnimationOnline(unsigned long uin);
 
   unsigned long MainWindowSelectedItemUin();
 
@@ -118,7 +124,12 @@ public:
 
 protected:
   int m_nFlashCounter;
-  int timerId;
+  int msgTimerId;
+  int onlTimerId, onlCounter;
+  int carTimerId, carCounter;
+  unsigned long carUin;
+  unsigned long onlUin;
+
   QPopupMenu *mnuUser;
   CUserViewTips *m_tips;
   CUserViewItem *barOnline, *barOffline;
