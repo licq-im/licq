@@ -51,6 +51,8 @@
 #include "gui-defines.h"
 #include "userinfodlg.h"
 #include "sigman.h"
+#include "mledit.h"
+#include "mlview.h"
 
 // -----------------------------------------------------------------------------
 
@@ -950,8 +952,8 @@ void UserInfoDlg::CreateHistory()
   chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
   l->addWidget(chkHistoryReverse);
 
-  mleHistory = new CHistoryWidget(p);
-  lay->addWidget(mleHistory, 1);
+  mlvHistory = new CHistoryWidget(p, "history");
+  lay->addWidget(mlvHistory, 1);
 
   l = new QHBoxLayout(lay);
 
@@ -975,10 +977,10 @@ void UserInfoDlg::SetupHistory()
   if (!u->GetHistory(m_lHistoryList))
   {
     if(u->HistoryFile())
-      mleHistory->setText(tr("Error loading history file: %1\nDescription: %2")
+      mlvHistory->setText(tr("Error loading history file: %1\nDescription: %2")
         .arg(u->HistoryFile()).arg(u->HistoryName()));
     else
-      mleHistory->setText(tr("Sorry, history is disabled for this person."));
+      mlvHistory->setText(tr("Sorry, history is disabled for this person."));
   }
   else
   {
@@ -1076,7 +1078,7 @@ void UserInfoDlg::ShowHistory()
   // Last check (should never be true)
   if (m_lHistoryList.size() == 0) return;
   HistoryListIter tempIter;
-  mleHistory->clear();
+  mlvHistory->clear();
 
   if(m_bHistoryReverse)
   {
@@ -1115,26 +1117,7 @@ void UserInfoDlg::ShowHistory()
         messageText = codec->toUnicode((*tempIter)->Text());
 
 #if QT_VERSION >= 300
-      // We cannot use QStyleSheet::convertFromPlainText
-      // since it has a bug in Qt 3 which causes line breaks to mix up.
-      messageText = QStyleSheet::escape(messageText);
-      messageText.replace(QRegExp("\n"), "<br>");
-      // We keep the first space character as-is (to allow line wrapping)
-      // and convert the next characters to &nbsp;s (to preserve multiple
-      // spaces).
-      QRegExp longSpaces(" ([ ]+)");
-      int pos;
-      QString cap;
-      while ((pos = longSpaces.search(messageText)) > -1)
-      {
-         cap = longSpaces.cap(1);
-         cap.replace(QRegExp(" "), "&nbsp;");
-         messageText.replace(pos+1, longSpaces.matchedLength()-1, cap); 
-      }
-      messageText.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
-
       const char *color = (*tempIter)->Direction() == D_RECEIVER ? "red" : "blue";
-
       s.sprintf("<font color=\"%s\"><b>%s<br>%s [%c%c%c%c]</b></font><br>",
                 color,
                 ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
@@ -1145,15 +1128,12 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsUrgent() ? 'U' : '-',
                 (*tempIter)->IsEncrypted() ? 'E' : '-'
       );
-      mleHistory->append(s);
+      mlvHistory->append(s);
       // We break the paragraph here, since the history text
       // could be in a different BiDi directionality than the
       // header and timestamp text.
-      s.sprintf("<font color=\"%s\">%s</font><br>",
-                color,
-                messageText.utf8().data()
-      );
-      mleHistory->append(s);
+      s.sprintf("<font color=\"%s\">%s</font><br>", color, MLView::toRichText(messageText, true).utf8().data());
+      mlvHistory->append(s);
 #else
       // See CHistoryWidget::paintCell for reference on those Qt 2-only
       // formatting escape codes.
@@ -1169,7 +1149,7 @@ void UserInfoDlg::ShowHistory()
                 (*tempIter)->IsEncrypted() ? 'E' : '-',
                 messageText.utf8().data()
       );
-      mleHistory->append(s); // adds a paragraph break
+      mlvHistory->append(s); // adds a paragraph break
 #endif
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);
@@ -1206,9 +1186,9 @@ void UserInfoDlg::ShowHistory()
                         .arg(m_nHistoryShowing)
                         .arg(m_lHistoryList.size()));
   if(!m_bHistoryReverse)
-    mleHistory->GotoEnd();
+    mlvHistory->GotoEnd();
   else
-    mleHistory->setCursorPosition(0, 0);
+    mlvHistory->setCursorPosition(0, 0);
   barFiltering->reset();
 }
 
@@ -1220,7 +1200,7 @@ void UserInfoDlg::SaveHistory()
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
 
-  u->SaveHistory(codec->fromUnicode(mleHistory->text()));
+  u->SaveHistory(codec->fromUnicode(mlvHistory->text()));
   gUserManager.DropUser(u);
 }
 
@@ -1278,7 +1258,7 @@ void UserInfoDlg::updateTab(const QString& txt)
     currentTab = HistoryInfo;
     if (!tabList[HistoryInfo].loaded)
       SetupHistory();
-    mleHistory->setFocus();
+    mlvHistory->setFocus();
   }
   else if (txt == tabList[LastCountersInfo].label)
   {
@@ -1513,7 +1493,6 @@ void UserInfoDlg::resetCaption()
 {
   setCaption(m_sBasic);
 }
-
 
 // -----------------------------------------------------------------------------
 

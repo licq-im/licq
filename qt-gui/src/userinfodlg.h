@@ -39,7 +39,7 @@ class CMainWindow;
 class CEInfoField;
 class CEComboBox;
 class ICQUser;
-class MLEditWrap;
+class CHistoryWidget;
 
 class UserInfoDlg : public QWidget
 {
@@ -121,7 +121,7 @@ protected:
   void SetupHistory();
   void SaveHistory();
   CInfoField *nfoHistory;
-  MLEditWrap *mleHistory;
+  CHistoryWidget *mlvHistory;
   QLabel *lblHistory, *lblFilter;
   QLineEdit* lneFilter;
   QProgressBar* barFiltering;
