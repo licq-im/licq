@@ -140,6 +140,8 @@ public:
                  unsigned long _nUin, QWidget* parent = 0, const char* name=0);
   virtual ~UserSendCommon();
 
+  void setText(const QString& txt);
+
 signals:
   void autoCloseNotify();
 
@@ -151,6 +153,7 @@ protected:
   QButtonGroup *grpCmd;
   QComboBox* cmbSendType;
   CMMUserView *lstMultipleRecipients;
+  MLEditWrap *mleSend;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
   virtual void UserUpdated(CICQSignal *, ICQUser *);
@@ -178,10 +181,8 @@ public:
                   unsigned long _nUin, QWidget* parent = 0);
   virtual ~UserSendMsgEvent();
 
-  void setText(const QString& txt);
 protected:
   virtual bool sendDone(ICQEvent *);
-  MLEditWrap *mleSend;
 
 protected slots:
   virtual void sendButton();
@@ -201,7 +202,6 @@ public:
 
   void setUrl(const QString& url, const QString& description);
 protected:
-  MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
   virtual bool sendDone(ICQEvent *);
@@ -225,7 +225,6 @@ public:
   void setFile(const QString& file, const QString& description);
 
 protected:
-  MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
   QPushButton *btnBrowse;
@@ -249,7 +248,6 @@ public:
   virtual ~UserSendChatEvent();
 
 protected:
-  MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
   QString m_szMPChatClients;
@@ -275,7 +273,6 @@ public:
   void setContact(unsigned long uin, const QString& alias);
 
 protected:
-  MLEditWrap *mleSend;
   QLabel *lblItem;
   CInfoField *edtItem;
 

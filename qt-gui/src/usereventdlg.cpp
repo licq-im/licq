@@ -724,12 +724,14 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(cmbSendType);
   h_lay->addStretch(1);
   btnSend = new QPushButton(tr("&Send"), this);
-  btnSend->setAccel(CTRL+Key_Enter);
   h_lay->addWidget(btnSend);
   connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
   btnCancel = new QPushButton(tr("&Close"), this);
   h_lay->addWidget(btnCancel);
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
+  mleSend = new MLEditWrap(true, mainWidget, true);
+  setTabOrder(mleSend, btnSend);
+  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 }
 
 
@@ -740,28 +742,35 @@ UserSendCommon::~UserSendCommon()
 //-----UserSendCommon::changeEventType---------------------------------------
 void UserSendCommon::changeEventType(int id)
 {
+  UserSendCommon* e = NULL;
   switch(id)
   {
   case 0:
-    gMainWindow->callFunction(mnuUserSendMsg, m_nUin);
+    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendMsg, m_nUin));
     break;
   case 1:
-    gMainWindow->callFunction(mnuUserSendUrl, m_nUin);
+    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendUrl, m_nUin));
     break;
   case 2:
-    gMainWindow->callFunction(mnuUserSendChat, m_nUin);
+    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendChat, m_nUin));
     break;
   case 3:
-    gMainWindow->callFunction(mnuUserSendFile, m_nUin);
+    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendFile, m_nUin));
     break;
   case 4:
-    gMainWindow->callFunction(mnuUserSendContact, m_nUin);
+    e = static_cast<UserSendCommon*>(gMainWindow->callFunction(mnuUserSendContact, m_nUin));
     break;
   }
 
-  close();
+  if(e != NULL) {
+    QPoint p = topLevelWidget()->pos();
+    if(e->mleSend && mleSend)
+      e->mleSend->setText(mleSend->text());
+    e->move(p);
+    e->show();
 
-  // TODO: save and restore typed text
+    close();
+  }
 }
 
 //-----UserSendCommon::massMessageToggled------------------------------------
@@ -796,6 +805,16 @@ void UserSendCommon::sendButton()
     btnCancel->setText(tr("&Cancel"));
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
   }
+}
+
+
+//-----UserSendCommon::setText-----------------------------------------------
+void UserSendCommon::setText(const QString& txt)
+{
+  if(!mleSend) return;
+  mleSend->setText(txt);
+  mleSend->GotoEnd();
+  mleSend->setEdited(false);
 }
 
 
@@ -997,26 +1016,14 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   : UserSendCommon(s, theSigMan, m, nUin, parent, "UserSendMsgEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
-  mleSend = new MLEditWrap(true, mainWidget, true);
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
   mleSend->setFocus();
-  setTabOrder(mleSend, btnSend);
-  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 }
 
 
 UserSendMsgEvent::~UserSendMsgEvent()
 {
-}
-
-
-//-----UserSendMsgEvent::setText---------------------------------------------
-void UserSendMsgEvent::setText(const QString& txt)
-{
-  mleSend->setText(txt);
-  mleSend->GotoEnd();
-  mleSend->setEdited(false);
 }
 
 
@@ -1088,10 +1095,7 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
 
-  mleSend = new MLEditWrap(true, mainWidget, true);
   lay->addWidget(mleSend);
-  setTabOrder(mleSend, btnSend);
-  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 
   QBoxLayout* h_lay = new QHBoxLayout(lay);
   lblItem = new QLabel(tr("URL : "), mainWidget);
@@ -1108,9 +1112,7 @@ UserSendUrlEvent::~UserSendUrlEvent()
 void UserSendUrlEvent::setUrl(const QString& url, const QString& description)
 {
   edtItem->setText(url);
-  mleSend->setText(description);
-  mleSend->GotoEnd();
-  mleSend->setEdited(false);
+  setText(description);
 }
 
 //-----UserSendUrlEvent::sendButton------------------------------------------
@@ -1170,11 +1172,7 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   chkMass->setEnabled(false);
 
   QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
-  mleSend = new MLEditWrap(true, mainWidget, true);
   lay->addWidget(mleSend);
-  mleSend->setMinimumHeight(150);
-  setTabOrder(mleSend, btnSend);
-  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 
   QBoxLayout* h_lay = new QHBoxLayout(lay);
   lblItem = new QLabel(tr("File(s): "), mainWidget);
@@ -1232,9 +1230,7 @@ void UserSendFileEvent::sendButton()
 void UserSendFileEvent::setFile(const QString& file, const QString& description)
 {
   edtItem->setText(file);
-  mleSend->setText(description);
-  mleSend->GotoEnd();
-  mleSend->setEdited(false);
+  setText(description);
 }
 
 //-----UserSendFileEvent::sendDone-------------------------------------------
@@ -1269,11 +1265,8 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   chkMass->setEnabled(false);
 
   QBoxLayout *lay = new QVBoxLayout(mainWidget);
-  mleSend = new MLEditWrap(true, mainWidget, true);
   lay->addWidget(mleSend);
   mleSend->setMinimumHeight(150);
-  setTabOrder(mleSend, btnSend);
-  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
 }
 
 
@@ -1330,6 +1323,8 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
                                            CMainWindow *m, unsigned long _nUin, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendContactEvent")
 {
+  delete mleSend; mleSend = NULL;
+
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   // this sucks but is okay just for now FIXME
   QGroupBox* grpOpt = new QGroupBox(1, Vertical, mainWidget);
