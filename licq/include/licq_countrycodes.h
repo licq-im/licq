@@ -9,8 +9,8 @@
 extern "C" {
 #endif
 
-#define COUNTRY_UNSPECIFIED  0xFFFF
-#define COUNTRY_UNKNOWN      0xFFFE
+#define COUNTRY_UNSPECIFIED  0
+#define COUNTRY_UNKNOWN      0xFFFF
 #define NUM_COUNTRIES 242
 
 struct SCountry
