@@ -2067,12 +2067,12 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetCompanyPhoneNumber(packet.UnpackString(szTemp));
           u->SetCompanyFaxNumber(packet.UnpackString(szTemp));
           u->SetCompanyAddress(packet.UnpackString(szTemp));
-          packet.UnpackUnsignedLong();
-          packet.UnpackUnsignedShort();
+          packet.UnpackString(szTemp); // who knows..."256" typically
+          packet.UnpackUnsignedShort(); // ??? 0x0000
           u->SetCompanyName(packet.UnpackString(szTemp));
           u->SetCompanyDepartment(packet.UnpackString(szTemp));
           u->SetCompanyPosition(packet.UnpackString(szTemp));
-          packet.UnpackUnsignedShort();
+          packet.UnpackUnsignedShort(); // ?? 0x0004
           u->SetCompanyHomepage(packet.UnpackString(szTemp));
 
           // translating string with Translation Table
