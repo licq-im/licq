@@ -133,7 +133,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   if (m_nSAR >= 0) {
     SARList &sar = gSARManager.Fetch(m_nSAR);
     for (unsigned i = 0; i < sar.size(); i++)
-      mnuSelect->insertItem(sar[i]->Name(), i);
+      mnuSelect->insertItem(QString::fromLocal8Bit(sar[i]->Name()), i);
     gSARManager.Drop();
   }
 
@@ -203,7 +203,7 @@ void AwayMsgDlg::slot_selectMessage(int result)
   {
     SARList &sar = gSARManager.Fetch(m_nSAR);
     if ((unsigned) result < sar.size())
-      mleAwayMsg->setText(sar[result]->AutoResponse());
+      mleAwayMsg->setText(QString::fromLocal8Bit(sar[result]->AutoResponse()));
 
     gSARManager.Drop();
   }
