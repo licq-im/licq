@@ -237,7 +237,7 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
       h_errno = -1;
       return (false);
     }
-    if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
+/*    if (m_sLocalAddr.sin_addr.s_addr == INADDR_ANY)
     {
       char szHostName[256];
       gethostname(szHostName, 256);
@@ -249,7 +249,7 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
         return false;
       }
       m_sLocalAddr.sin_addr.s_addr = *((unsigned long *)sLocalHost.h_addr);
-    }
+    }*/
   }
 /*
   if (_nFlags & ADDR_REMOTE)
@@ -322,7 +322,9 @@ bool INetSocket::OpenConnection(void)
     return(false);
   }
 
+#ifdef USE_SOCKS5
   if (m_nSockType != SOCK_STREAM) return true;
+#endif
 
   if (!SetAddrsFromSocket(ADDR_LOCAL | ADDR_REMOTE))
     return (false);
