@@ -98,7 +98,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
   {
     gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
     (void) new QListViewItem(lstIcons, tr("Error"));
-    lstSkins->setEnabled(false);
+    lstIcons->setEnabled(false);
   }
   else
   {
