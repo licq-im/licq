@@ -392,10 +392,9 @@ extern GtkWidget *menu;
 extern GtkWidget *user_list_menu;
 
 /* Globals in option_window.cpp */
-extern gushort general_options;
-extern const gushort SHOW_IGN;
-extern const gushort SHOW_OFFLINE;
-extern const gushort ENTER_SENDS;
+extern bool show_offline_users;
+extern bool show_ignored_users;
+extern bool enter_sends;
 
 /* Globals in register_user.cpp */
 extern GtkWidget *register_window;

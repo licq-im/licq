@@ -224,12 +224,11 @@ gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
 
 	if(eventkey->keyval == GDK_Return)
 	{
-		if((general_options & ENTER_SENDS) &&
-		   !(eventkey->state & GDK_SHIFT_MASK))
+		if(enter_sends && !(eventkey->state & GDK_SHIFT_MASK))
 		{
 			convo_send(NULL, c);
 		}
-		else if(general_options & ENTER_SENDS)
+		else if(enter_sends)
 		{
 			gtk_signal_emit_stop_by_name(GTK_OBJECT(entry),
 						     "key_press_event");

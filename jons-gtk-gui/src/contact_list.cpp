@@ -84,7 +84,7 @@ void contact_list_refresh()
 	{
 		/* If they are on the ignore list and the user has the option
 		 * "Show ignored users" diabled, then don't show them */
-		if(pUser->IgnoreList() && !(general_options & SHOW_IGN))
+		if(pUser->IgnoreList() && !show_ignored_users)
 		{
 		 	FOR_EACH_USER_CONTINUE
 		}
@@ -92,7 +92,7 @@ void contact_list_refresh()
 		/* If they are offline and we do not want to see offline users,
 		 * just keep oin going! */
 		 if(pUser->Status() == ICQ_STATUS_OFFLINE &&
-		    !(general_options & SHOW_OFFLINE))
+		    !show_offline_users)
 		{
 			FOR_EACH_USER_CONTINUE
 		}

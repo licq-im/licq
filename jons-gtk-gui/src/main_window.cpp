@@ -38,14 +38,19 @@ GtkWidget* main_window_new(const gchar* window_title,
 	/* Here's a good place to start the option defaults */
 	const char *filename = g_strdup_printf("%s/licq_jons-gtk-gui.conf",
 					       BASE_DIR);
-	ifstream file(filename);
+	fstream file(filename, ios::in | ios::out);
 
 	if(file)
+	{
+		file.close();
 		load_options();
+	}
 	else
-		set_default_options();
-
-	file.close();
+	{
+		file << "[appearance]\n";
+		file.close();
+		load_options();
+	}
 
 	GtkWidget *scroll_bar;
 	GtkWidget *status_bar;

@@ -1,13 +1,17 @@
 #include "licq_gtk.h"
+#include "licq_file.h"
 
 #include <gtk/gtk.h>
 #include <fstream.h>
 
 /* Global variables for use in other files */
-gushort general_options;
-const gushort SHOW_IGN 		= 0x0001;
-const gushort SHOW_OFFLINE	= 0x0002;
-const gushort ENTER_SENDS	= 0x0004;
+//gushort general_options;
+//const gushort SHOW_IGN 		= 0x0001;
+//const gushort SHOW_OFFLINE	= 0x0002;
+//const gushort ENTER_SENDS	= 0x0004;
+bool show_offline_users;
+bool show_ignored_users;
+bool enter_sends;
 
 /* The "Options" selection under the menu in the main window */
 void menu_options_create()
@@ -128,82 +132,102 @@ void menu_options_create()
 void set_options(struct options_window *ow)
 {
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->show_ignored),
-				     general_options & SHOW_IGN);
+				     show_ignored_users);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->show_offline),
-				     general_options & SHOW_OFFLINE);
+				     show_offline_users);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->enter_sends),
-				     general_options & ENTER_SENDS);
+				     enter_sends);
 }
 
 void done_options(GtkWidget *widget, gpointer data)
 {
-	/* Refresh the contact list */
+	// Refresh the contact list
 	contact_list_refresh();
 
 	struct options_window *ow = (struct options_window *)data;
-
-	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->show_ignored)) ?
-		general_options |= SHOW_IGN : general_options &= ~SHOW_IGN;
-
-	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->show_offline)) ?
-		general_options |= SHOW_OFFLINE : general_options &= ~SHOW_OFFLINE;
-
-	gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->enter_sends)) ?
-		general_options |= ENTER_SENDS : general_options &= ~ENTER_SENDS;
-
+	show_offline_users = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(ow->show_offline));
+	show_ignored_users = gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(ow->show_ignored));
+	enter_sends = gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(ow->enter_sends));
+	
 	gtk_widget_destroy(ow->window);
 
-	save_options();
+	// Save the daemon options
+	icq_daemon->SaveConf();
+
+	// Save our options
+	char filename[MAX_FILENAME_LEN];
+	sprintf(filename, "%s/licq_jons-gtk-gui.conf", BASE_DIR);
+	CIniFile licqConf(INI_FxERROR | INI_FxALLOWxCREATE);
+	if(!licqConf.LoadFile(filename))
+		return;
+
+	licqConf.SetSection("appearance");
+	licqConf.WriteNum("ColorOnline_Red", online_color->red);
+	licqConf.WriteNum("ColorOnline_Green", online_color->green);
+	licqConf.WriteNum("ColorOnline_Blue", online_color->blue);
+	licqConf.WriteNum("ColorOnline_Pixel", online_color->pixel);
+	licqConf.WriteNum("ColorOffline_Red", offline_color->red);
+	licqConf.WriteNum("ColorOffline_Green", offline_color->green);
+	licqConf.WriteNum("ColorOffline_Blue", offline_color->blue);
+	licqConf.WriteNum("ColorOffline_Pixel", offline_color->pixel);
+	licqConf.WriteBool("ShowOfflineUsers", show_offline_users);
+	licqConf.WriteBool("ShowIgnoredUsres", show_ignored_users);
+	licqConf.WriteBool("EnterSends", enter_sends);
+
+	licqConf.FlushFile();
+	licqConf.CloseFile();
 }
 
-void save_options()
-{
-	const char *filename = g_strdup_printf("%s/licq_jons-gtk-gui.conf",
-					       BASE_DIR);
-	ofstream file(filename);
-
-	/* Write to the config file */
-	file << "G" << general_options << endl;
-	file << "O" << online_color->red << endl
-	     	    << online_color->green << endl
-	     	    << online_color->blue << endl
-	     	    << online_color->pixel << endl;
-	file << "o" << offline_color->red << endl
-		    << offline_color->green << endl
-		    << offline_color->blue << endl
-		    << offline_color->pixel << endl;
-
-	/* Close the file now that we're done with it */
-	file.close();
-}
-
+// load_options() is only called if the file exists
 void load_options()
 {
 	online_color = new GdkColor;
 	offline_color = new GdkColor;
 
-	const char *filename = g_strdup_printf("%s/licq_jons-gtk-gui.conf",
-					       BASE_DIR);
-	ifstream file(filename);
-	char buffer[20];
+	CIniFile licqConf;
+	licqConf.LoadFile(g_strdup_printf("%s/licq_jons-gtk-gui.conf",
+				          BASE_DIR));
+	licqConf.SetSection("appearance");
 
-	/* Read in the variables */
-	while(!file.eof())
-	{
-		file.getline(buffer, 20);
+	// Online color
+	licqConf.ReadNum("ColorOnline_Red", online_color->red, 8979);
+	licqConf.ReadNum("ColorOnline_Green", online_color->green, 27457);
+	licqConf.ReadNum("ColorOnline_Blue", online_color->blue, 63052);
+	licqConf.ReadNum("ColorOnline_Pixel", online_color->pixel, 0);
+	
+	// Offline color
+	licqConf.ReadNum("ColorOffline_Red", offline_color->red, 59080);
+	licqConf.ReadNum("ColorOffline_Green", offline_color->green, 0);
+	licqConf.ReadNum("ColorOffline_Blue", offline_color->blue, 1660);
+	licqConf.ReadNum("ColorOffline_Pixel", offline_color->pixel, 0);
 
-		parse_line(buffer, file);
-	}
-
-	/* Close the file, we're done with it */
-	file.close();
+	// General options
+	licqConf.ReadBool("ShowOfflineUsers", show_offline_users, true);
+	licqConf.ReadBool("ShowIgnoredUsers", show_ignored_users, false);
+	licqConf.ReadBool("EnterSends", enter_sends, true);
+//
+//	const char *filename = g_strdup_printf("%s/licq_jons-gtk-gui.conf",
+//					       BASE_DIR);
+//	ifstream file(filename);
+//	char buffer[20];
+//
+//	/* Read in the variables */
+//	while(!file.eof())
+//	{
+//		file.getline(buffer, 20);
+//
+//		parse_line(buffer, file);
+//	}
+//
+//	/* Close the file, we're done with it */
+//	file.close();
 }
 
 void parse_line(char *buffer, ifstream &file)
 {
-	char color_buffer[15];
-	
-	switch(buffer[0])
+/*	switch(buffer[0])
 	{
 	case 'G':
 		*buffer++;
@@ -229,12 +253,12 @@ void parse_line(char *buffer, ifstream &file)
 		file.getline(color_buffer, 15);
 		offline_color->pixel = (gulong)atoi(color_buffer);
 		break;
-	}
+	}*/
 }
 
 void set_default_options()
 {
-	general_options = SHOW_OFFLINE;
+	//general_options = SHOW_OFFLINE;
 
 	/* Contact list colors */
 	online_color = new GdkColor;
