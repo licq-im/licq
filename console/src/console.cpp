@@ -83,7 +83,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   {
     winCon[i] = new CWindow(LINES - 3, COLS, 1, 0, true);
     scrollok(winCon[i]->Win(), true);
-    winCon[i]->fProcessInput = &InputCommand;
+    winCon[i]->fProcessInput = &CLicqConsole::InputCommand;
   }
   winCon[0]->fProcessInput = NULL;
   winStatus = new CWindow(1, COLS, LINES - 2, 0, false);
@@ -333,7 +333,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
           winCon[i]->wprintf("%A%Ccancelled\n", A_BOLD, COLOR_GREEN);
           break;
         }
-        winCon[i]->fProcessInput = &InputCommand;
+        winCon[i]->fProcessInput = &CLicqConsole::InputCommand;
         if (winCon[i]->data != NULL) delete winCon[i]->data;
         winCon[i]->state = STATE_COMMAND;
         break;
@@ -802,7 +802,7 @@ void CLicqConsole::UserCommand_View(unsigned long nUin)
 void CLicqConsole::UserCommand_Msg(unsigned long nUin)
 {
   // First put this console into edit mode
-  winMain->fProcessInput = &InputMessage;
+  winMain->fProcessInput = &CLicqConsole::InputMessage;
   winMain->state = STATE_MLE;
   winMain->data = new DataMsg(nUin);
 
@@ -856,7 +856,7 @@ void CLicqConsole::InputMessage(int cIn)
 void CLicqConsole::UserCommand_Url(unsigned long nUin)
 {
   // First put this console into edit mode
-  winMain->fProcessInput = &InputUrl;
+  winMain->fProcessInput = &CLicqConsole::InputUrl;
   winMain->state = STATE_LE;
   winMain->data = new DataUrl(nUin);
 
