@@ -62,7 +62,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
 
   char szStatus[32];
   u->getStatusStr(szStatus);
-  setCaption(QString(tr("%1 Response for %2")).arg(szStatus).arg(u->getAlias()));
+  setCaption(QString(tr("%1 Response for %2")).arg(szStatus).arg(u->GetAlias()));
 
   btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setDefault(true);

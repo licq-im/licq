@@ -36,7 +36,7 @@ ChatDlg::ChatDlg(unsigned long _nUin,
    m_sRemoteName = NULL;
 
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   m_sLocalName = strdup(o->getAlias());
+   m_sLocalName = strdup(o->GetAlias());
    gUserManager.DropOwner();
    boxLocal = new QGroupBox(tr("Local - ") + QString::fromLocal8Bit(getLocalName()), this);
    mleLocal = new MLEditWrap(true, boxLocal);

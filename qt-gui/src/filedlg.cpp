@@ -51,7 +51,7 @@ CFileDlg::CFileDlg(unsigned long _nUin,
    m_nBatchSize = m_nFileSize;
    m_nTotalFiles = 1;
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   m_szLocalName = strdup(o->getAlias());
+   m_szLocalName = strdup(o->GetAlias());
    gUserManager.DropOwner();
    m_szRemoteName = NULL;
    m_snSend = snFile = snFileServer = NULL;

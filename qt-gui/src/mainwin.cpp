@@ -283,9 +283,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 #ifdef USE_KDE
-  m_szCaption = tr("KLicq (%1)").arg(QString::fromLocal8Bit(o->getAlias()));
+  m_szCaption = tr("KLicq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
 #else
-  m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->getAlias()));
+  m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
 #endif
   gUserManager.DropOwner();
   setCaption(m_szCaption);
@@ -1261,7 +1261,7 @@ void CMainWindow::removeUserFromList()
   if (u == NULL) return;
   unsigned long nUin = u->getUin();
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-                     .arg(QString::fromLocal8Bit(u->getAlias()))
+                     .arg(QString::fromLocal8Bit(u->GetAlias()))
                      .arg(nUin) );
   gUserManager.DropUser(u);
   if (QueryUser(this, warning, tr("Ok"), tr("Cancel")))
@@ -1279,7 +1279,7 @@ void CMainWindow::removeUserFromGroup()
     unsigned long nUin = u->getUin();
     GroupList *g = gUserManager.LockGroupList(LOCK_R);
     QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
-                       .arg(QString::fromLocal8Bit(u->getAlias()))
+                       .arg(QString::fromLocal8Bit(u->GetAlias()))
                        .arg(nUin).arg(QString::fromLocal8Bit( (*g)[m_nCurrentGroup - 1] )) );
     gUserManager.UnlockGroupList();
     gUserManager.DropUser(u);
@@ -1388,7 +1388,7 @@ void CMainWindow::aboutBox()
                   "http://www.licq.org\n\n"
                   "%3 (%4)\n"
                   "%5 contacts.").arg(licqDaemon->Version())
-                   .arg(VERSION).arg(QString::fromLocal8Bit(o->getAlias()))
+                   .arg(VERSION).arg(QString::fromLocal8Bit(o->GetAlias()))
                    .arg(o->getUin()).arg(gUserManager.NumUsers())  );
   gUserManager.DropOwner();
   InformUser(this, about);
@@ -1765,7 +1765,7 @@ void CMainWindow::initMenu(void)
    mnuSystem = new QPopupMenu(NULL);
    mnuSystem->setCheckable(true);
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   mnuSystem->insertItem(tr("Owner") + " (" + QString::fromLocal8Bit(o->getAlias()) + ")",
+   mnuSystem->insertItem(tr("Owner") + " (" + QString::fromLocal8Bit(o->GetAlias()) + ")",
                          this, SLOT(callOwnerFunction()));
    gUserManager.DropOwner();
    mnuSystem->insertItem(tr("User Functions"), mnuUserAdm);

@@ -77,7 +77,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   setCaption(QString(tr("Set %1 Response for %2"))
-             .arg(s).arg(QString::fromLocal8Bit(o->getAlias())));
+             .arg(s).arg(QString::fromLocal8Bit(o->GetAlias())));
   if (*o->AutoResponse())
     mleAwayMsg->setText(QString::fromLocal8Bit(o->AutoResponse()));
   else

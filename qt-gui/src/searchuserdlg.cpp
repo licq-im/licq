@@ -335,7 +335,7 @@ void SearchUserDlg::addUser()
   // user already there
   if((user = gUserManager.FetchUser(uin, LOCK_N))) {
     QString msg = QString(tr("Sorry, but this user is already\non your "
-                            "contact list as\n'%1'\n\nYou can't add a user twice.")).arg(user->getAlias());
+                            "contact list as\n'%1'\n\nYou can't add a user twice.")).arg(user->GetAlias());
 
     QMessageBox::warning(this, "Licq - Warning", msg, tr("&OK"));
     return;

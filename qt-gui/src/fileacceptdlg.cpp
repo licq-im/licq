@@ -40,7 +40,7 @@ CFileAcceptDlg::CFileAcceptDlg(CICQDaemon *_xServer, unsigned long _nUin,
    connect( btnIgnore, SIGNAL(clicked()), SLOT(ignore()) );
 
    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-   setCaption(tr("Accept file transfer from ") + QString::fromLocal8Bit(u->getAlias())+ " ?");
+   setCaption(tr("Accept file transfer from ") + QString::fromLocal8Bit(u->GetAlias())+ " ?");
    gUserManager.DropUser(u);
 
    show();

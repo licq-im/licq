@@ -386,7 +386,7 @@ void ICQFunctions::setBasicInfo(ICQUser *u)
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
     bDropUser = true;
   }
-  chkAuthorization->setChecked(u->getAuthorization());
+  chkAuthorization->setChecked(u->GetAuthorization());
   u->getBasicInfo(us);
   if (bDropUser) gUserManager.DropUser(u);
 
@@ -417,18 +417,18 @@ void ICQFunctions::setExtInfo(ICQUser *u)
     bDropUser = true;
   }
   u->getExtInfo(ud);
-  cmbSex->setCurrentItem(u->getSexNum());
+  cmbSex->setCurrentItem(u->GetGender());
 
   if (m_bIsOwner)
   {
-    if (u->getCountryCode() == COUNTRY_UNSPECIFIED)
+    if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
       cmbCountry->setCurrentItem(0);
     else
     {
-      const SCountry *c = GetCountryByCode(u->getCountryCode());
+      const SCountry *c = GetCountryByCode(u->GetCountryCode());
       if (c == NULL)
       {
-        m_nUnknownCountryCode = u->getCountryCode();
+        m_nUnknownCountryCode = u->GetCountryCode();
         cmbCountry->changeItem(tr("Unknown (%1)").arg(m_nUnknownCountryCode), 1);
         cmbCountry->setCurrentItem(1);
       }
@@ -1022,7 +1022,8 @@ void ICQFunctions::callFcn()
      else
      {
         m_sProgressMsg = tr("Updating...");
-        icqEvent = server->icqUserExtendedInfo(m_nUin);
+        //icqEvent = server->icqUserExtendedInfo(m_nUin);
+        icqEvent = server->icqRequestMetaInfo(m_nUin);
      }
      break;
   case TAB_HISTORY:
@@ -1124,7 +1125,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         u->getStatusStr(status);
         msg = tr("%1 is in %2 mode:\n%3\n[Send \"urgent\" to ignore]")
-                 .arg(u->getAlias()).arg(status).arg(u->AutoResponse());
+                 .arg(u->GetAlias()).arg(status).arg(u->AutoResponse());
         InformUser(this, msg);
         gUserManager.DropUser(u);
         bForceOpen = true;
@@ -1133,7 +1134,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
       {
         u = gUserManager.FetchUser(m_nUin, LOCK_R);
         msg = tr("%1 refused %2, send through server.")
-              .arg(u->getAlias()).arg(EventDescription(ue));
+              .arg(u->GetAlias()).arg(EventDescription(ue));
         InformUser(this, msg);
         gUserManager.DropUser(u);
         bForceOpen = true;
@@ -1151,7 +1152,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
            u = gUserManager.FetchUser(m_nUin, LOCK_R);
            QString result;
            result.sprintf(tr("%s%1 with %2 refused:\n%s%3"), L_TCPxSTR, L_BLANKxSTR);
-           result.arg(EventDescription(ue)).arg(u->getAlias()).arg(ea->szResponse);
+           result.arg(EventDescription(ue)).arg(u->GetAlias()).arg(ea->szResponse);
            gUserManager.DropUser(u);
            InformUser(this, result);
         }
