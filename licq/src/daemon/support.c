@@ -67,9 +67,13 @@ char *inet_ntoa_r(struct in_addr in, char *buf)
  * arg3 = specifier for which objects to pick (pointer to function)
  * arg4 = sorting function pointer to pass to qsort
  *----------------------------------------------------------------------------*/
-int scandir_r(char *dirname, struct dirent *(*namelist[]), 
+int scandir_r(char *dirname, struct dirent *(*namelist[]),
               int (*select)(const struct dirent *),
+#ifdef ALPHASORT_VOID
               int (*compar)(const void *, const void *) )
+#else
+              int (*compar)(const struct dirent *const *, const struct dirent *const *) )
+#endif
 {
   DIR *dirp;
   struct dirent *result, *entry;
@@ -79,18 +83,25 @@ int scandir_r(char *dirname, struct dirent *(*namelist[]),
   if ((dirp = opendir(dirname)) == NULL)
     return -1;
 
-  /* 256 should be big enough for a spool directory of any size 
+  /* 256 should be big enough for a spool directory of any size
      big enough for 128 jobs anyway. */
   if ((*namelist = (struct dirent **) calloc(256, sizeof(struct dirent *))) == NULL)
     return -1;
 
+
+#ifndef HAVE_READDIR_R
+#warning Using thread-unsafe readdir function.
+  while ( (entry = readdir(dirp)) != NULL)
+  {
+#else
   if ((entry = (struct dirent *) malloc(tdirsize + _POSIX_PATH_MAX)) == NULL)
     return -1;
 
-  while (readdir_r(dirp, entry, &result) == 0) 
+  while (readdir_r(dirp, entry, &result) == 0)
   {
     if (result == NULL) break;
-    if (select == NULL || select(entry)) 
+#endif
+    if (select == NULL || select(entry))
     {
       if (((*namelist)[i] = (struct dirent *)malloc(tdirsize + _POSIX_PATH_MAX)) == NULL)
         return -1;

@@ -23,7 +23,11 @@ int Redirect(const char *);
 
 int scandir_r(const char *dir, struct dirent ***namelist,
               int (*select)(const struct dirent *),
+#ifdef ALPHASORT_VOID
               int (*compar)(const void *, const void *));
+#else
+              int (*compar)(const struct dirent *const *, const struct dirent *const *) );
+#endif
 
 char *inet_ntoa_r(struct in_addr in, char *buf);
 
