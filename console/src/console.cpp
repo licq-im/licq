@@ -2185,11 +2185,6 @@ void CLicqConsole::InputAuthorize(int cIn)
 
   switch(winMain->state)
   {
-  case STATE_PENDING:
-    if (cIn == CANCEL_KEY)
-      licqDaemon->CancelEvent(winMain->event);
-    return;
-
   case STATE_MLE:
     {
       // Process the character as a multi-line edit window
@@ -2224,7 +2219,14 @@ void CLicqConsole::InputAuthorize(int cIn)
                          m_cColorInfo->nAttr, data->nUin);
         winMain->event = licqDaemon->icqAuthorizeRefuse(data->nUin, data->szMsg);
       }
-      winMain->state = STATE_PENDING;
+
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
+      if (winMain->data != NULL)                           
+      {
+        delete winMain->data;
+        winMain->data = NULL;
+      }
+      winMain->state = STATE_COMMAND;
       break;
     }
 
@@ -3103,6 +3105,13 @@ void CLicqConsole::InputUserSelect(int cIn)
       o->SetSavePassword(tolower(cIn) == 'y');
       o->SetPassword(data->szPassword);
       gUserManager.DropOwner();
+
+      if (winMain->data)
+      {
+        delete winMain->data;
+        winMain->data = 0;
+      }
+
       winMain->wprintf("%A\nDone. Awaiting commands.%A\n", A_BOLD, A_BOLD);
       winMain->fProcessInput = &CLicqConsole::InputCommand;
       winMain->state = STATE_COMMAND;
