@@ -835,7 +835,7 @@ void ICQUser::LoadWorkInfo(void)
   m_fConf.ReadStr("CompanyName", szTemp, "");  SetCompanyName(szTemp);
   m_fConf.ReadStr("CompanyDepartment", szTemp, "");  SetCompanyDepartment(szTemp);
   m_fConf.ReadStr("CompanyPosition", szTemp, "");  SetCompanyPosition(szTemp);
-  m_fConf.ReadStr("CompanyHompage", szTemp, "");  SetCompanyHomepage(szTemp);
+  m_fConf.ReadStr("CompanyHomepage", szTemp, "");  SetCompanyHomepage(szTemp);
 }
 
 
@@ -1023,26 +1023,36 @@ void ICQUser::Init(unsigned long _nUin)
 //-----ICQUser::SetDefaults-----------------------------------------------------
 void ICQUser::SetDefaults(void)
 {
-  char szAlias[12];
-  sprintf(szAlias, "%ld", Uin());
-  SetAlias(szAlias);
-  SetFirstName("");
-  SetLastName("");
-  SetEmail1("");
+  char szTemp[12];
+  sprintf(szTemp, "%ld", Uin());
+  SetAlias(szTemp);
   SetHistoryFile("default");
-  SetCity("");
-  SetState("");
-  SetGender(GENDER_UNSPECIFIED);
-  SetAge(AGE_UNSPECIFIED);
-  SetCountryCode(COUNTRY_UNSPECIFIED);
-  SetZipCode(0);
-  SetHomepage("");
-  SetPhoneNumber("");
-  SetAbout("");
   SetGroups(GROUPS_SYSTEM, 0);
   SetGroups(GROUPS_USER, gUserManager.NewUserGroup());
   SetAuthorization(false);
   SetNewUser(true);
+
+  szTemp[0] = '\0';
+  SetFirstName(szTemp);
+  SetLastName(szTemp);
+  SetEmail1(szTemp);
+  SetEmail2(szTemp);
+  SetCity(szTemp);
+  SetState(szTemp);
+  SetPhoneNumber(szTemp);
+  SetFaxNumber(szTemp);
+  SetAddress(szTemp);
+  SetCellularNumber(szTemp);
+  SetHomepage(szTemp);
+  SetCompanyCity(szTemp);
+  SetCompanyState(szTemp);
+  SetCompanyPhoneNumber(szTemp);
+  SetCompanyFaxNumber(szTemp);
+  SetComparyAddress(szTemp);
+  SetCompanyName(szTemp);
+  SetCompanyDepartment(szTemp);
+  SetCompanyPosition(szTemp);
+  SetCompanyHomepage(szTemp);
 }
 
 /*
@@ -1565,7 +1575,7 @@ void ICQUser::SaveWorkInfo(void)
   m_fConf.WriteStr("CompanyName", m_szCompanyName);
   m_fConf.WriteStr("CompanyDepartment", m_szCompanyDepartment);
   m_fConf.WriteStr("CompanyPosition", m_szCompanyPosition);
-  m_fConf.WriteStr("CompanyHompage", m_szCompanyHomepage);
+  m_fConf.WriteStr("CompanyHomepage", m_szCompanyHomepage);
 
   if (!m_fConf.FlushFile())
   {
@@ -1872,5 +1882,5 @@ void ICQOwner::SaveLicqInfo(void)
 }
 
 
-
-
+void ICQUser::StupidLinkageFix(void)
+  {  printf("%s", gCountries[0].szName); }

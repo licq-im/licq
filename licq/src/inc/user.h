@@ -16,7 +16,6 @@
 #include "icq-defines.h"
 #include "support.h"
 
-
 #define FOR_EACH_USER_START(x)                           \
   {                                                      \
     ICQUser *pUser;                                      \
@@ -263,6 +262,7 @@ public:
 
 protected:
   ICQUser(void) { /* ICQOwner inherited constructor - does nothing */ };
+  void StupidLinkageFix(void);
   void LoadGeneralInfo(void);
   void LoadMoreInfo(void);
   void LoadWorkInfo(void);
