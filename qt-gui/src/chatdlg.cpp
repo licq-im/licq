@@ -11,7 +11,6 @@
 #include "log.h"
 #include "translate.h"
 #include "user.h"
-#include "support.h"
 
 #define STATE_RECVxHANDSHAKE 1
 #define STATE_RECVxCOLOR 2

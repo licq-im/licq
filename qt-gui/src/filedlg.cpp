@@ -19,7 +19,7 @@
 #include "log.h"
 #include "translate.h"
 #include "ewidgets.h"
-#include "support.h"
+//#include "support.h"
 
 extern int errno;
 
