@@ -1,3 +1,7 @@
+/* Module for Licq OpenSSL support
+ * Thanks to Ben Kram and Ryan Brown
+ */
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
