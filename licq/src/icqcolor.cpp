@@ -99,3 +99,15 @@ void CICQColor::SetDefaultColors(CICQColor *c)
 }
 
 
+void CICQColor::SetDefaultForeground(unsigned long c)
+{
+  default_foreground = c;
+}
+
+
+void CICQColor::SetDefaultBackground(unsigned long c)
+{
+  default_background = c;
+}
+
+

@@ -117,8 +117,12 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   SetTCPEnabled(bTcpEnabled);
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
   licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
-  //licqConf.ReadStr("FirewallHost", temp, "");
-  //SetFirewallHost(temp);
+  unsigned long nColor;
+  licqConf.ReadNum("ForegroundColor", nColor, 0x00000000);
+  CICQColor::SetDefaultForeground(nColor);
+  licqConf.ReadNum("BackgroundColor", nColor, 0x00FFFFFF);
+  CICQColor::SetDefaultBackground(nColor);
+
 
   // Rejects log file
   licqConf.ReadStr("Rejects", temp, "log.rejects");
@@ -527,6 +531,9 @@ void CICQDaemon::SaveConf()
   licqConf.WriteNum("MaxUsersPerPacket", m_nMaxUsersPerPacket);
   licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
   //licqConf.WriteStr("FirewallHost", m_szFirewallHost);
+  licqConf.WriteNum("ForegroundColor", CICQColor::DefaultForeground());
+  licqConf.WriteNum("BackgroundColor", CICQColor::DefaultBackground());
+
 
   // Utility tab
   licqConf.WriteStr("UrlViewer", m_szUrlViewer);
