@@ -5,9 +5,9 @@
 # 
 msgid ""
 msgstr ""
-"Project-Id-Version: qt-gui\n"
+"Project-Id-Version: Licq qt-gui\n"
 "POT-Creation-Date: 2003-02-03 12:00+200\n"
-"PO-Revision-Date: 2003-11-02 11:50+100\n"
+"PO-Revision-Date: 2003-12-13 18:24+200\n"
 "Last-Translator: Thomas Reitelbach <tr@erdfunkstelle.de>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: german <licq-devel@licq.org>\n"
@@ -100,6 +100,9 @@ msgstr "&Ok"
 
 msgid "AddUserDlg::New User Id:"
 msgstr "Neue Benutzer Id:"
+
+msgid "AddUserDlg::New User ID:"
+msgstr "Neue Benutzer ID:"
 
 msgid "AuthUserDlg::&Ok"
 msgstr "&Ok"
@@ -797,6 +800,12 @@ msgstr "Licq kann aufgrund eines internen Fehlers keine Browseranwendung finden.
 msgid "CMainWindow::Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."
 msgstr "Licq kann den Browser nicht starten um die URL zu öffnen\nSie müssen den Browser von Hand starten und die URL in die Adressleiste kopieren."
 
+msgid "CMainWindow::"
+msgstr ""
+
+msgid "CMainWindow::Do you really want to reset your stats?"
+msgstr "Möchten Sie wirklich Ihre Statistiken auf 0 zurücksetzen?"
+
 msgid "CQtLogWindow::&Save"
 msgstr "&Speichern"
 
@@ -1342,6 +1351,9 @@ msgstr "Kontaktliste"
 
 msgid "Event::System Server Message"
 msgstr "Server Nachricht\n"
+
+msgid "Event::"
+msgstr ""
 
 msgid "HintsDlg::&Close"
 msgstr "S&chließen"
@@ -2147,6 +2159,12 @@ msgstr "Licq Frage"
 msgid "QMessageBox::Licq Information"
 msgstr "Licq Information"
 
+msgid "QMessageBox::Yes"
+msgstr "Ja"
+
+msgid "QMessageBox::No"
+msgstr "Nein"
+
 msgid "RegisterUserDlg::Uin:"
 msgstr "UIN:"
 
@@ -2570,6 +2588,15 @@ msgstr "Benutzen Sie diese Auswahlbox um aus den verfügbaren Symbolen zu wähle
 msgid "SkinBrowserDlg::Use this combo box to select one of the available extended icon sets"
 msgstr "Benutzen Sie diese Auswahlbox um aus den verfügbaren erweiterten Symbolen zu wählen"
 
+msgid "SkinBrowserDlg::E&moticons"
+msgstr "E&moticons"
+
+msgid "SkinBrowserDlg::Use this combo box to select one of the available emoticon icon sets"
+msgstr "Benutzen Sie dieses Auswahlbox um aus den verfügbaren Emoticons auszuwählen"
+
+msgid "SkinBrowserDlg::Emoticons:"
+msgstr "Emoticons:"
+
 msgid "UserCodec::Unicode"
 msgstr "Unicode"
 
@@ -2891,6 +2918,9 @@ msgstr "Em&pfangen"
 msgid "UserInfoDlg::S&end"
 msgstr "S&enden"
 
+msgid "UserInfoDlg::ID:"
+msgstr "ID:"
+
 msgid "UserSelectDlg::&User:"
 msgstr "&Benutzer:"
 
@@ -2926,6 +2956,9 @@ msgstr "Chat mit %2 abgelehnt:\n%3"
 
 msgid "UserSendChatEvent:: - Chat Request"
 msgstr " - Chat Anfrage"
+
+msgid "UserSendChatEvent::No reason provided"
+msgstr "Kein Grund angegeben"
 
 msgid "UserSendCommon::No"
 msgstr "Nein"
@@ -3049,6 +3082,9 @@ msgstr "Dateien zum versenden auswählen"
 
 msgid "UserSendFileEvent::Edit"
 msgstr "Bearbeiten"
+
+msgid "UserSendFileEvent::No reason provided"
+msgstr "Kein Grund angegeben"
 
 msgid "UserSendMsgEvent::&No"
 msgstr "&Nein"

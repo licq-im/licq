@@ -14,89 +14,89 @@
     <name>@default</name>
     <message>
         <source>File(s): </source>
-        <translation>Datei(en): </translation>
+        <translation type="obsolete">Datei(en): </translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation>Durchsuchen</translation>
+        <translation type="obsolete">Durchsuchen</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation>Bearbeiten</translation>
+        <translation type="obsolete">Bearbeiten</translation>
     </message>
     <message>
         <source> - File Transfer</source>
-        <translation> - Dateiübertragung</translation>
+        <translation type="obsolete"> - Dateiübertragung</translation>
     </message>
     <message>
         <source>Select files to send</source>
-        <translation>Dateien zum versenden auswählen</translation>
+        <translation type="obsolete">Dateien zum versenden auswählen</translation>
     </message>
     <message>
         <source>You must specify a file to transfer!</source>
-        <translation>Sie müssen eine zu sendende Datei angeben!</translation>
+        <translation type="obsolete">Sie müssen eine zu sendende Datei angeben!</translation>
     </message>
     <message>
         <source>File transfer with %2 refused:
 %3</source>
-        <translation>Dateiübertragung mit %2 abgelehnt:
+        <translation type="obsolete">Dateiübertragung mit %2 abgelehnt:
 %3</translation>
     </message>
     <message>
         <source>Multiparty: </source>
-        <translation>Mehrbenutzer: </translation>
+        <translation type="obsolete">Mehrbenutzer: </translation>
     </message>
     <message>
         <source>Invite</source>
-        <translation>Einladen</translation>
+        <translation type="obsolete">Einladen</translation>
     </message>
     <message>
         <source> - Chat Request</source>
-        <translation> - Chat Anfrage</translation>
+        <translation type="obsolete"> - Chat Anfrage</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation>Leeren</translation>
+        <translation type="obsolete">Leeren</translation>
     </message>
     <message>
         <source>Chat with %2 refused:
 %3</source>
-        <translation>Chat mit %2 abgelehnt:
+        <translation type="obsolete">Chat mit %2 abgelehnt:
 %3</translation>
     </message>
     <message>
         <source>Drag Users Here - Right Click for Options</source>
-        <translation>Benutzer hier her ziehen - Klick mit rechter Maustaste für Optionen</translation>
+        <translation type="obsolete">Benutzer hier her ziehen - Klick mit rechter Maustaste für Optionen</translation>
     </message>
     <message>
         <source> - Contact List</source>
-        <translation> - Kontaktliste</translation>
+        <translation type="obsolete"> - Kontaktliste</translation>
     </message>
     <message>
         <source>Phone : </source>
-        <translation>Telefon : </translation>
+        <translation type="obsolete">Telefon : </translation>
     </message>
     <message>
         <source>Chars left : </source>
-        <translation>Verbleibende Zeichen : </translation>
+        <translation type="obsolete">Verbleibende Zeichen : </translation>
     </message>
     <message>
         <source> - SMS</source>
-        <translation> - SMS</translation>
+        <translation type="obsolete"> - SMS</translation>
     </message>
     <message>
         <source>You didn&apos;t edit the SMS.
 Do you really want to send it?</source>
-        <translation>Sie haben die SMS nicht bearbeitet.
+        <translation type="obsolete">Sie haben die SMS nicht bearbeitet.
 Möchten Sie sie wirklich senden?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation>&amp;Ja</translation>
+        <translation type="obsolete">&amp;Ja</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation>&amp;Nein</translation>
+        <translation type="obsolete">&amp;Nein</translation>
     </message>
 </context>
 <context>
@@ -107,7 +107,7 @@ Möchten Sie sie wirklich senden?</translation>
     </message>
     <message>
         <source>New User UIN:</source>
-        <translation>Benutzer UIN:</translation>
+        <translation type="obsolete">Benutzer UIN:</translation>
     </message>
     <message>
         <source>&amp;Alert User</source>
@@ -123,7 +123,11 @@ Möchten Sie sie wirklich senden?</translation>
     </message>
     <message>
         <source>New User Id:</source>
-        <translation>Neue Benutzer Id:</translation>
+        <translation type="obsolete">Neue Benutzer Id:</translation>
+    </message>
+    <message>
+        <source>New User ID:</source>
+        <translation>Neue Benutzer ID:</translation>
     </message>
 </context>
 <context>
@@ -1220,6 +1224,14 @@ You will need to start the browser and open the URL manually.</source>
         <translation>Licq kann den Browser nicht starten um die URL zu öffnen
 Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopieren.</translation>
     </message>
+    <message>
+        <source></source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Do you really want to reset your stats?</source>
+        <translation>Möchten Sie wirklich Ihre Statistiken auf 0 zurücksetzen?</translation>
+    </message>
 </context>
 <context>
     <name>CQtLogWindow</name>
@@ -1463,11 +1475,11 @@ Sie müssen den Browser von Hand starten und die URL in die Adressleiste kopiere
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation>&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
+        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation>&lt;br&gt;Licq&amp;nbsp;%1</translation>
+        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
@@ -2003,6 +2015,10 @@ entfernen wollen?</translation>
         <source>System Server Message</source>
         <translation>Server Nachricht
 </translation>
+    </message>
+    <message>
+        <source></source>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -3164,6 +3180,14 @@ Veränderungen werden erst nach dem Neustart von Licq wirksam!
         <source>Licq Information</source>
         <translation>Licq Information</translation>
     </message>
+    <message>
+        <source>Yes</source>
+        <translation>Ja</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation>Nein</translation>
+    </message>
 </context>
 <context>
     <name>RegisterUserDlg</name>
@@ -3790,6 +3814,18 @@ Erweitertes Symbol Paket &apos;%2&apos; wurde daher deaktiviert.</translation>
         <source>Use this combo box to select one of the available extended icon sets</source>
         <translation>Benutzen Sie diese Auswahlbox um aus den verfügbaren erweiterten Symbolen zu wählen</translation>
     </message>
+    <message>
+        <source>E&amp;moticons</source>
+        <translation>E&amp;moticons</translation>
+    </message>
+    <message>
+        <source>Use this combo box to select one of the available emoticon icon sets</source>
+        <translation>Benutzen Sie dieses Auswahlbox um aus den verfügbaren Emoticons auszuwählen</translation>
+    </message>
+    <message>
+        <source>Emoticons:</source>
+        <translation>Emoticons:</translation>
+    </message>
 </context>
 <context>
     <name>UserCodec</name>
@@ -3925,7 +3961,7 @@ Erweitertes Symbol Paket &apos;%2&apos; wurde daher deaktiviert.</translation>
     </message>
     <message>
         <source>UIN:</source>
-        <translation>UIN:</translation>
+        <translation type="obsolete">UIN:</translation>
     </message>
     <message>
         <source>Zip:</source>
@@ -4187,7 +4223,7 @@ ICQ Network to change your settings.</source>
     </message>
     <message>
         <source>Retrieve</source>
-        <translation type="obsolete">Empfangen</translation>
+        <translation>Empfangen</translation>
     </message>
     <message>
         <source>Rever&amp;se</source>
@@ -4233,6 +4269,10 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
         <source>S&amp;end</source>
         <translation>S&amp;enden</translation>
     </message>
+    <message>
+        <source>ID:</source>
+        <translation>ID:</translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -4269,25 +4309,29 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
     <name>UserSendChatEvent</name>
     <message>
         <source>Clear</source>
-        <translation type="obsolete">Löschen</translation>
+        <translation>Löschen</translation>
     </message>
     <message>
         <source>Multiparty: </source>
-        <translation type="obsolete">Mehrbenutzer: </translation>
+        <translation>Mehrbenutzer: </translation>
     </message>
     <message>
         <source>Invite</source>
-        <translation type="obsolete">Einladen</translation>
+        <translation>Einladen</translation>
     </message>
     <message>
         <source>Chat with %2 refused:
 %3</source>
-        <translation type="obsolete">Chat mit %2 abgelehnt:
+        <translation>Chat mit %2 abgelehnt:
 %3</translation>
     </message>
     <message>
         <source> - Chat Request</source>
-        <translation type="obsolete"> - Chat Anfrage</translation>
+        <translation> - Chat Anfrage</translation>
+    </message>
+    <message>
+        <source>No reason provided</source>
+        <translation>Kein Grund angegeben</translation>
     </message>
 </context>
 <context>
@@ -4424,7 +4468,7 @@ through the server!</source>
     </message>
     <message>
         <source>%1 refused %2, send through server</source>
-        <translation>%1 lehnte ab %2, sende über Server</translation>
+        <translation type="obsolete">%1 lehnte ab %2, sende über Server</translation>
     </message>
     <message>
         <source>cancelled</source>
@@ -4435,44 +4479,48 @@ through the server!</source>
     <name>UserSendContactEvent</name>
     <message>
         <source>Drag Users Here - Right Click for Options</source>
-        <translation type="obsolete">Benutzer hier her ziehen - Klick mit rechter Maustaste für Optionen</translation>
+        <translation>Benutzer hier her ziehen - Klick mit rechter Maustaste für Optionen</translation>
     </message>
     <message>
         <source> - Contact List</source>
-        <translation type="obsolete"> - Kontaktliste</translation>
+        <translation> - Kontaktliste</translation>
     </message>
 </context>
 <context>
     <name>UserSendFileEvent</name>
     <message>
         <source>You must specify a file to transfer!</source>
-        <translation type="obsolete">Sie müssen eine zu sendende Datei angeben!</translation>
+        <translation>Sie müssen eine zu sendende Datei angeben!</translation>
     </message>
     <message>
         <source>File(s): </source>
-        <translation type="obsolete">Datei(en): </translation>
+        <translation>Datei(en): </translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="obsolete">Durchsuchen</translation>
+        <translation>Durchsuchen</translation>
     </message>
     <message>
         <source> - File Transfer</source>
-        <translation type="obsolete"> - Dateiübertragung</translation>
+        <translation> - Dateiübertragung</translation>
     </message>
     <message>
         <source>File transfer with %2 refused:
 %3</source>
-        <translation type="obsolete">Dateiübertragung mit %2 abgelehnt:
+        <translation>Dateiübertragung mit %2 abgelehnt:
 %3</translation>
     </message>
     <message>
         <source>Select files to send</source>
-        <translation type="obsolete">Dateien zum versenden auswählen</translation>
+        <translation>Dateien zum versenden auswählen</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="obsolete">Bearbeiten</translation>
+        <translation>Bearbeiten</translation>
+    </message>
+    <message>
+        <source>No reason provided</source>
+        <translation>Kein Grund angegeben</translation>
     </message>
 </context>
 <context>
@@ -4500,29 +4548,29 @@ Wollen Sie sie wirklich senden?</translation>
     <name>UserSendSmsEvent</name>
     <message>
         <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nein</translation>
+        <translation>&amp;Nein</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ja</translation>
+        <translation>&amp;Ja</translation>
     </message>
     <message>
         <source> - SMS</source>
-        <translation type="obsolete"> - SMS</translation>
+        <translation> - SMS</translation>
     </message>
     <message>
         <source>You didn&apos;t edit the SMS.
 Do you really want to send it?</source>
-        <translation type="obsolete">Sie haben die SMS nicht bearbeitet.
+        <translation>Sie haben die SMS nicht bearbeitet.
 Möchten Sie sie wirklich senden?</translation>
     </message>
     <message>
         <source>Chars left : </source>
-        <translation type="obsolete">Verbleibende Zeichen : </translation>
+        <translation>Verbleibende Zeichen : </translation>
     </message>
     <message>
         <source>Phone : </source>
-        <translation type="obsolete">Telefon : </translation>
+        <translation>Telefon : </translation>
     </message>
 </context>
 <context>
