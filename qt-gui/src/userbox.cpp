@@ -349,7 +349,7 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
   if ((listView()->contentsHeight() < listView()->viewport()->height() ||
        listView()->vScrollBarMode() == QListView::AlwaysOff) &&
       listView()->parent() && gMainWindow->skin->frame.transparent )
-    pix = listView()->parentWidget()->backgroundPixmap();
+    pix = listView()->QListView::parentWidget()->backgroundPixmap();
 
   if (pix != NULL)
   {
@@ -499,7 +499,7 @@ void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
   const QPixmap *pix = NULL;
   if ((contentsHeight() < viewport()->height() || vScrollBarMode() == AlwaysOff)
       && parent() && gMainWindow->skin->frame.transparent)
-    pix = parentWidget()->backgroundPixmap();
+    pix = QListView::parentWidget()->backgroundPixmap();
 
   if (pix != NULL)
   {
@@ -634,7 +634,7 @@ UserFloatyList* CUserView::floaties = 0;
 
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
-  : QListView(parent, name)
+  : QListView(parent, name), QToolTip(viewport())
 {
   m_nFlashCounter = carCounter = onlCounter = 0;
   msgTimerId = carTimerId = onlTimerId = 0;
@@ -649,8 +649,6 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
     addColumn(gMainWindow->colInfo[i]->m_sTitle, gMainWindow->colInfo[i]->m_nWidth);
     setColumnAlignment(i + 1, 1 << gMainWindow->colInfo[i]->m_nAlign);
   }
-
-  m_tips = new CUserViewTips(this);
 
   viewport()->setAcceptDrops(true);
 
@@ -701,7 +699,6 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 CUserView::~CUserView()
 {
   barOnline = barOffline = NULL;
-  delete m_tips;
   if (parent() == NULL)
   {
     unsigned int i = 0;
@@ -762,9 +759,9 @@ void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
    CUserViewItem::s_cBack->setNamedColor(_sBack);
    CUserViewItem::s_cGridLines->setNamedColor(_sGridLines);
 
-   QPalette pal(palette());
+   QPalette pal(QListView::palette());
    pal.setColor(QColorGroup::Base, *CUserViewItem::s_cBack);
-   setPalette(pal);
+   QListView::setPalette(pal);
 }
 
 
@@ -814,7 +811,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
       if (clickedItem->ItemUin())
       {
         gMainWindow->SetUserMenuUin(clickedItem->ItemUin());
-        mnuUser->popup(mapToGlobal(e->pos()) + QPoint(4,-5), 1);
+        mnuUser->popup(viewport()->mapToGlobal(e->pos()), 1);
       }
     }
   }
@@ -914,7 +911,7 @@ void CUserView::keyPressEvent(QKeyEvent *e)
       // user divider
       if(item->ItemUin() == 0)  return;
       gMainWindow->SetUserMenuUin(item->ItemUin());
-      mnuUser->popup(mapToGlobal(QPoint(40, itemPos(item))));
+      mnuUser->popup(viewport()->mapToGlobal(QPoint(40, itemPos(item))));
       return;
     }
 
@@ -1115,32 +1112,40 @@ void CUserView::itemCollapsed(QListViewItem* i)
   if(pixCollapsed != NULL)  i->setPixmap(0, *pixCollapsed);
 }
 
-//=====CUserViewTips===============================================================================
+// -----------------------------------------------------------------------------
 
-CUserViewTips::CUserViewTips(CUserView* parent)
-  : QToolTip(parent)
+void CUserView::maybeTip(const QPoint& c)
 {
-  // nothing to do
-}
-
-void CUserViewTips::maybeTip(const QPoint& c)
-{
-  QPoint p(c);
-  QListView* w = (QListView*) parentWidget();
-  if(w->header()->isVisible())
-    p.setY(p.y()-w->header()->height());
-
-  CUserViewItem* item = static_cast<CUserViewItem*>(w->itemAt(p));
+  CUserViewItem* item = static_cast<CUserViewItem*>(itemAt(c));
   if(item && item->m_nUin)
   {
-    QRect r(w->itemRect(item));
-    if(w->header()->isVisible())
-      r.moveBy(0, w->header()->height());
-    QString s = ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible);
-    if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY) {
-      s = QStyleSheet::convertFromPlainText(s);
-      s += CUserView::tr("\n<b>Birthday Today!</b>");
+    QRect r(itemRect(item));
+    QString s = QString("<nobr>") + QString(ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible))
+      + QString("</nobr>");
+
+    if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)
+      s += tr("<br><b>Birthday&nbsp;Today!</b>");
+
+    if (item->m_bSecure)
+      s += tr("<br>Secure&nbsp;connection");
+
+    if (item->m_bCustomAR)
+      s += tr("<br>Custom&nbsp;Auto&nbsp;Response");
+
+    ICQUser* u = gUserManager.FetchUser(item->m_nUin, LOCK_R);
+    if (u != NULL)
+    {
+      if (u->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED)
+        s += tr("<br>Licq&nbsp;v0.%1/SSL.").arg(u->LicqVersion());
+      else if (u->SecureChannelSupport() == SECURE_CHANNEL_NOTSUPPORTED)
+        s += tr("<br>Licq&nbsp;v0.%1.").arg(u->LicqVersion());
+
+      if(u->AutoResponse() && *u->AutoResponse())
+        s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(QString(u->AutoResponse()));
+
+      gUserManager.DropUser(u);
     }
+
     tip(r, s);
   }
 }

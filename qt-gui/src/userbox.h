@@ -42,19 +42,6 @@ public:
 typedef vector<CColumnInfo *> ColumnInfos;
 
 
-//=====CUserViewTips===============================================================================
-
-class CUserViewTips : public QToolTip
-{
-public:
-  CUserViewTips(CUserView* parent);
-  virtual ~CUserViewTips() {};
-
-protected:
-  virtual void maybeTip(const QPoint&);
-};
-
-
 //=====UserViewItem================================================================================
 class CUserViewItem : public QListViewItem
 {
@@ -105,7 +92,6 @@ protected:
                  *s_cGridLines;
 
   friend class CUserView;
-  friend class CUserViewTips;
 };
 
 class CUserView;
@@ -113,7 +99,7 @@ typedef QVector<CUserView> UserFloatyList;
 
 
 //=====UserView===============================================================
-class CUserView : public QListView
+class CUserView : public QListView, public QToolTip
 {
   Q_OBJECT
 public:
@@ -145,7 +131,6 @@ protected:
   unsigned long onlUin;
 
   QPopupMenu *mnuUser;
-  CUserViewTips *m_tips;
   CUserViewItem *barOnline, *barOffline;
   QPoint mousePressPos;
   QPixmap *pixExpanded, *pixCollapsed, *pixCustomAR, *pixBirthday, *pixInvisible;
@@ -161,6 +146,7 @@ protected:
   virtual void viewportDropEvent(QDropEvent*);
 
   virtual void resizeEvent(QResizeEvent *);
+  virtual void maybeTip(const QPoint&);
 
   friend class CUserViewItem;
 protected slots:
