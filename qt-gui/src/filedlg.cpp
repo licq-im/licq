@@ -162,9 +162,10 @@ void CFileDlg::slot_update()
 
   // Time
   time_t nTime = time(NULL) - ftman->StartTime();
+  unsigned long nBytesTransfered = ftman->BytesTransfered();
   sprintf(sz, "%02ld:%02ld:%02ld", nTime / 3600, (nTime % 3600) / 60, (nTime % 60));
   nfoTime->setText(sz);
-  if (nTime == 0 || ftman->BytesTransfered() == 0)
+  if (nTime == 0 || nBytesTransfered == 0)
   {
     nfoBPS->setText("---");
     nfoETA->setText("---");
@@ -172,11 +173,11 @@ void CFileDlg::slot_update()
   }
 
   // BPS
-  nfoBPS->setText(QString("%1/s").arg(encodeFSize(ftman->BytesTransfered() / nTime)));
+  nfoBPS->setText(QString("%1/s").arg(encodeFSize(nBytesTransfered / nTime)));
 
   // ETA
   int nBytesLeft = ftman->FileSize() - ftman->FilePos();
-  time_t nETA = (time_t)(nBytesLeft / (ftman->BytesTransfered() / nTime));
+  time_t nETA = (time_t)(nBytesLeft / (nBytesTransfered / nTime));
   sprintf(sz, "%02ld:%02ld:%02ld", nETA / 3600, (nETA % 3600) / 60, (nETA % 60));
   nfoETA->setText(sz);
 

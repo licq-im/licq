@@ -2614,7 +2614,7 @@ void CMainWindow::aboutBox()
                    "Contributions by Dirk A. Mueller\n"
                    "Original Author: Graham Roff\n\n"
                    "http://www.licq.org\n"
-                   "#licq on irc.openprojects.net\n\n"
+                   "#licq on irc.freenode.net\n\n"
                    "%3 (%4)\n"
                    "%5 contacts.").arg(licqDaemon->Version())
                    .arg(VERSION).arg(QString::fromLocal8Bit(o->GetAlias()))

@@ -1281,7 +1281,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
 
   if (e == NULL || e->Result() != EVENT_ACKED)
   {
-    if (e->Command() == ICQ_CMDxTCP_START &&
+    if (e->Command() == ICQ_CMDxTCP_START && e->Result() != EVENT_CANCELLED &&
 	(mainwin->m_bAutoSendThroughServer ||
          QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No"))) )
     {
