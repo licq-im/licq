@@ -1,0 +1,10 @@
+ChangeLog for licq-data Package
+
+
+New in 1.2
+
+o  Fixed viewurl-xxx.sh scripts to handle urls with extended characters
+   in them (such as & or $ or #).
+o  Added viewurl-w3m.sh script for using w3m text mode browser.
+
+
