@@ -1684,7 +1684,7 @@ int ICQUser::SystemTimeGMTOffset()
 #ifdef USE_GMTOFF
   return -(tzone->tm_gmtoff) + (tzone->tm_isdst == 1 ? 3600 : 0); // seconds _east_ of UTC
 #elif defined(USE_TIMEZONE)
-  return timezone + (tzone->tm_isdst == 1 ? 3600 : 0); // seconds _west_ of UTC
+  return timezone;  // seconds _west_ of UTC
 #else
 #warning Unable to determine local timezone
   return 0;
