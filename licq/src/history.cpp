@@ -180,7 +180,9 @@ bool CUserHistory::Load(HistoryList &lHistory)
         GET_VALID_LINE_OR_BREAK;
         unsigned long nSize = atoi(&szResult[1]);
         GET_VALID_LINES;
-        e = new CEventFile(szFile, szMsg, nSize, 0, tTime, nFlags);
+        ConstFileList filelist;
+        filelist.push_back(szFile);
+        e = new CEventFile(szFile, szMsg, nSize, filelist, 0, tTime, nFlags);
         free(szFile);
       }
       else

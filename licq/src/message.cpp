@@ -184,16 +184,18 @@ CEventMsg *CEventMsg::Parse(char *sz, unsigned short nCmd, time_t nTime, unsigne
 //=====CEventFile===============================================================
 
 CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
-                       unsigned long _nFileSize, unsigned long _nSequence,
-                       time_t _tTime, unsigned long _nFlags,
-                       unsigned long _nMsgID1, unsigned long _nMsgID2)
-   : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags)
+                       unsigned long _nFileSize, ConstFileList &_lFileList,
+                       unsigned long _nSequence, time_t _tTime,
+                       unsigned long _nFlags, unsigned long _nMsgID1,
+                       unsigned long _nMsgID2)
+   : CUserEvent(ICQ_CMDxSUB_FILE, ICQ_CMDxTCP_START, _nSequence, _tTime, _nFlags),
+     m_lFileList(_lFileList.begin(), _lFileList.end())
 {
   m_szFilename = strdup(_szFilename == NULL ? "" : _szFilename);
   m_szFileDescription = strdup(_szFileDescription == NULL ? "" : _szFileDescription);
   m_nFileSize = _nFileSize;
-	m_nMsgID[0] = _nMsgID1;
-	m_nMsgID[1] = _nMsgID2;
+  m_nMsgID[0] = _nMsgID1;
+  m_nMsgID[1] = _nMsgID2;
 }
 
 
@@ -203,7 +205,6 @@ void CEventFile::CreateDescription()
   m_szText = new char[strlen(m_szFilename) + strlen(m_szFileDescription) + 64];
   sprintf(m_szText, "File: %s (%ld bytes)\nDescription:\n%s\n", m_szFilename,
           m_nFileSize, m_szFileDescription);
-
 }
 
 

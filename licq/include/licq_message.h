@@ -3,9 +3,12 @@
 
 #include <list>
 #include <time.h>
+
 #include "licq_buffer.h"
 #include "licq_constants.h"
 #include "licq_color.h"
+
+typedef std::list<const char *> ConstFileList;
 
 #define EVENT_HEADER_SIZE  80
 
@@ -115,7 +118,8 @@ class CEventFile : public CUserEvent
 {
 public:
    CEventFile(const char *_szFilename, const char *_szFileDescription,
-              unsigned long _nFileSize, unsigned long _nSequence, time_t _tTime,
+              unsigned long _nFileSize, ConstFileList &lFileList, 
+              unsigned long _nSequence, time_t _tTime,
               unsigned long _nFlags, unsigned long _nMsgID1 = 0,
               unsigned long _nMsgID2 = 0);
    virtual ~CEventFile();
@@ -123,7 +127,8 @@ public:
    virtual CEventFile *Copy()
       {
         CEventFile *e = new CEventFile(m_szFilename, m_szFileDescription,
-         m_nFileSize, m_nSequence, m_tTime, m_nFlags, m_nMsgID[0], m_nMsgID[1]);
+         m_nFileSize, m_lFileList, m_nSequence, m_tTime, m_nFlags, m_nMsgID[0],
+         m_nMsgID[1]);
         e->CopyBase(this);
         return e;
       }
@@ -131,12 +136,14 @@ public:
    const char *Filename()  { return m_szFilename; }
    unsigned long FileSize()  {  return m_nFileSize; }
    const char *FileDescription() { return m_szFileDescription; }
-	 unsigned long *MessageID() { return m_nMsgID; }
+   ConstFileList FileList() { return m_lFileList; }
+   unsigned long *MessageID() { return m_nMsgID; }
 protected:
    void CreateDescription();
    char *m_szFilename;
    char *m_szFileDescription;
    unsigned long m_nFileSize;
+   ConstFileList m_lFileList;
    unsigned long m_nMsgID[2];
 };
 

@@ -13,6 +13,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <stdio.h>
 
 #include "licq_events.h"
+#include "licq_filetransfer.h"
 #include "licq_onevent.h"
 #include "licq_user.h"
 #include "licq_plugind.h"
@@ -117,7 +118,8 @@ public:
   void icqChatRequestCancel(unsigned long nUin, unsigned long nSequence);
   // File Transfer
   unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
-     const char *szDescription, unsigned short nLevel, bool bServer);
+     const char *szDescription, ConstFileList &lFileList, 
+     unsigned short nLevel, bool bServer);
   void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
      unsigned long nSequence, unsigned long nMsgID[], bool bDirect);
   void icqFileTransferCancel(unsigned long nUin, unsigned long nSequence);

@@ -1879,10 +1879,12 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         packet >> szFilename[i];
       szFilename[nFilenameLen] = '\0'; // be safe
       packet >> nFileSize;
+      ConstFileList filelist;
+      filelist.push_back(strdup(szFilename));
 
       CEventFile *e = new CEventFile(szFilename, message, nFileSize,
-                                     nSequence, TIME_NOW, nFlags, nMsgID[0],
-                                     nMsgID[1]);
+                                     filelist, nSequence, TIME_NOW, nFlags,
+                                     nMsgID[0], nMsgID[1]);
       nEventType = ON_EVENT_FILE;
       pEvent = e;
     }

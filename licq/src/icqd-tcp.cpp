@@ -179,7 +179,8 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
 
 //-----CICQDaemon::sendFile---------------------------------------------------
 unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFilename,
-                        const char *szDescription, unsigned short nLevel, bool bServer)
+                        const char *szDescription, ConstFileList &lFileList,
+                        unsigned short nLevel, bool bServer)
 {
   if (nUin == gUserManager.OwnerUin()) return 0;
 
@@ -195,50 +196,50 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return 0;
 
-	if (bServer)
-	{
-		CPU_FileTransfer *p = new CPU_FileTransfer(u, szFilename, szDosDesc,
-                                (u->Version() > 7));
+  if (bServer)
+  {
+    CPU_FileTransfer *p = new CPU_FileTransfer(u, lFileList, szFilename,
+				szDosDesc, (u->Version() > 7));
 
-		if (!p->IsValid())
-		{
-			delete p;
-			result = NULL;
-		}
-		else
-		{
-			e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
-								p->Sequence(), TIME_NOW, INT_VERSION);
-			gLog.Info("%sSending file transfer to %s (#%ld).\n", L_SRVxSTR,
-				u->GetAlias(), -p->Sequence());
+    if (!p->IsValid())
+    {
+      delete p;
+      result = NULL;
+    }
+    else
+    {
+      e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
+                lFileList, p->Sequence(), TIME_NOW, INT_VERSION);
+      gLog.Info("%sSending file transfer to %s (#%ld).\n", L_SRVxSTR,
+                u->GetAlias(), -p->Sequence());
 
-			result = SendExpectEvent_Server(u->Uin(), p, e);
-		}
-	}
-	else
-	{
-		CPT_FileTransfer *p = new CPT_FileTransfer(szFilename, szDosDesc, nLevel, u);
+      result = SendExpectEvent_Server(u->Uin(), p, e);
+    }
+  }
+  else
+  {
+    CPT_FileTransfer *p = new CPT_FileTransfer(lFileList, szFilename, szDosDesc,                                               nLevel, u);
 
-		if (!p->IsValid())
-		{
-			delete p;
-			result = NULL;
-		}
-		else
-		{
-			unsigned long f = E_DIRECT | INT_VERSION;
-			if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-			if (u->Secure()) f |= E_ENCRYPTED;
+    if (!p->IsValid())
+    {
+      delete p;
+      result = NULL;
+    }
+    else
+    {
+      unsigned long f = E_DIRECT | INT_VERSION;
+      if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
+      if (u->Secure()) f |= E_ENCRYPTED;
 
-			e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
-												 p->Sequence(), TIME_NOW, f);
-			gLog.Info("%sSending %sfile transfer to %s (#%ld).\n", L_TCPxSTR,
-				nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-				u->GetAlias(), -p->Sequence());
-			
-			result = SendExpectEvent_Client(u, p, e);
-		}
-	}
+      e = new CEventFile(szFilename, p->GetDescription(), p->GetFileSize(),
+                         lFileList, p->Sequence(), TIME_NOW, f);
+      gLog.Info("%sSending %sfile transfer to %s (#%ld).\n", L_TCPxSTR,
+                nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
+                u->GetAlias(), -p->Sequence());
+
+      result = SendExpectEvent_Client(u, p, e);
+    }
+  }
 
   u->SetSendServer(bServer);
   u->SetSendLevel(nLevel);
@@ -247,10 +248,10 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
   if (szDosDesc)
     delete [] szDosDesc;
 
-	if (result)
-		return result->EventId();
-	else
-		return 0;
+  if (result)
+    return result->EventId();
+  else
+    return 0;
 }
 
 
@@ -1568,10 +1569,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           gLog.Info("%sFile transfer request from %s (%ld).\n", L_TCPxSTR,
              u->GetAlias(), nUin);
 
+        ConstFileList filelist;
+        filelist.push_back(szFilename);
+
         // translating string with translation table
         gTranslator.ServerToClient (message);
         CEventFile *e = new CEventFile(szFilename, message, nFileLength,
-                                       theSequence, TIME_NOW,
+                                       filelist, theSequence, TIME_NOW,
                                        nMask | licqVersion);
         // Add the user to our list if they are new
         if (bNewUser)
@@ -1648,10 +1652,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					gLog.Info("%sFile transfer request from %s (%ld).\n", L_TCPxSTR,
 										u->GetAlias(), nUin);
 
+					ConstFileList filelist;
+					filelist.push_back(szFilename);
+
 					// translating string with translation table
 					gTranslator.ServerToClient(szMessage);
 					CEventFile *e = new CEventFile(szFilename, szMessage, nFileSize,
-																				 theSequence, TIME_NOW, nMask);
+																				 filelist, theSequence, TIME_NOW, nMask);
 					if (bNewUser)
 					{
 						if (Ignore(IGNORE_NEWUSERS))

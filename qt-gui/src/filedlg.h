@@ -5,6 +5,7 @@
 #include <qtimer.h>
 
 #include "ewidgets.h"
+#include "licq_filetransfer.h"
 
 class QPushButton;
 class QProgressBar;
@@ -21,7 +22,7 @@ public:
   CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent = 0);
   virtual ~CFileDlg();
 
-  bool SendFiles(const char *szFile, unsigned short nPort);
+  bool SendFiles(ConstFileList filelist, unsigned short nPort);
   bool ReceiveFiles();
 
   unsigned short LocalPort();

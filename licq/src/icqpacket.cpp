@@ -1266,11 +1266,11 @@ CPU_ChatRequest::CPU_ChatRequest(char *_szMessage, const char *_szChatUsers,
 }
 
 //-----FileTransfer------------------------------------------------------------
-CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, const char *_szFile,
-	const char *_szDesc, bool bICBM)
+CPU_FileTransfer::CPU_FileTransfer(ICQUser *u, ConstFileList &lFileList, 
+	const char *_szFile, const char *_szDesc, bool bICBM)
 	: CPU_AdvancedMessage(u, bICBM ? ICQ_CMDxSUB_ICBM : ICQ_CMDxSUB_FILE, 0,
 												false, 0),
-		CPX_FileTransfer(_szFile)
+		CPX_FileTransfer(lFileList, _szFile)
 {
 	if (!m_bValid)  return;
 
@@ -3510,11 +3510,11 @@ CPT_ChatRequest::CPT_ChatRequest(char *_sMessage, const char *szChatUsers,
 
 
 //-----FileTransfer--------------------------------------------------------------
-CPT_FileTransfer::CPT_FileTransfer(const char *_szFilename,
+CPT_FileTransfer::CPT_FileTransfer(ConstFileList &lFileList, const char *_szFilename,
    const char *_szDescription, unsigned short nLevel, ICQUser *_cUser)
   : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, _szDescription,
                true, nLevel, _cUser),
-		CPX_FileTransfer(_szFilename)
+		CPX_FileTransfer(lFileList, _szFilename)
 {
 	if (!m_bValid)  return;
 
@@ -3957,19 +3957,24 @@ CPT_CancelFile::CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser)
 // Connection independent base classes
 
 //-----FileTransfer------------------------------------------------------------
-CPX_FileTransfer::CPX_FileTransfer(const char *_szFilename)
+CPX_FileTransfer::CPX_FileTransfer(ConstFileList &lFileList, const char *_szFilename)
+  : m_lFileList(lFileList.begin(), lFileList.end())
 {
-  m_bValid = true;
-	m_szDesc = NULL;
+  m_bValid = false;
+  m_szDesc = NULL;
+  m_nFileSize = 0;
 
-  // Check file exists and get size
-  struct stat buf;
-  if (_szFilename == NULL || stat(_szFilename, &buf) < 0)
+  ConstFileList::iterator it;
+  for (it = m_lFileList.begin(); it != m_lFileList.end(); it++)
   {
-     m_bValid = false;
-     return;
+    // Check file exists and get size
+    struct stat buf;
+    if (!(*it == NULL || stat(*it, &buf) < 0))
+    {
+       m_nFileSize += buf.st_size;
+       m_bValid = true;
+    }
   }
-  m_nFileSize = buf.st_size;
 
   // Remove path from filename (if it exists)
   char *pcEndOfPath = strrchr(_szFilename, '/');

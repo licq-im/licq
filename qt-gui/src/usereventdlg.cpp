@@ -1389,8 +1389,9 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     case ICQ_CMDxSUB_FILE:
     {
       CEventFile *ue = (CEventFile *)e->UserEvent();
+      ConstFileList filelist(ue->FileList().begin(), ue->FileList().end());
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
-         ue->FileDescription(), nLevel, !bOnline); // try through server
+         ue->FileDescription(), filelist, nLevel, !bOnline); // try through server
       break;
     }
     case ICQ_CMDxSUB_SMS:
@@ -1750,14 +1751,17 @@ void UserSendFileEvent::browseFile()
                                                    "SendFileBrowser", tr("Select files to send"));
 #endif
     if (fl.isEmpty()) return;
-    QStringList::ConstIterator it;
+    QStringList::ConstIterator it = fl.begin();
     QString f;
-    for( it = fl.begin(); it != fl.end(); it++ )
-    {
-      if (it != fl.begin())
-        f += ", ";
-      f += (*it);
-    }
+    
+    if (fl.size() > 1)
+      f = QString("%1 Files").arg(fl.size());
+    else
+      f = (*it);
+      
+    for(; it != fl.end(); it++)
+      m_lFileList.push_back(strdup((*it).latin1()));
+
     edtItem->setText(f);
 }
 
@@ -1777,7 +1781,7 @@ void UserSendFileEvent::sendButton()
 
   unsigned long icqEventTag;
   icqEventTag = server->icqFileTransfer(m_nUin, codec->fromUnicode(edtItem->text()),
-     codec->fromUnicode(mleSend->text()),
+     codec->fromUnicode(mleSend->text()), m_lFileList,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkSendServer->isChecked());
   m_lnEventTag.push_back(icqEventTag);
@@ -1813,7 +1817,7 @@ bool UserSendFileEvent::sendDone(ICQEvent *e)
   {
     CEventFile *f = (CEventFile *)e->UserEvent();
     CFileDlg *fileDlg = new CFileDlg(m_nUin, server);
-    fileDlg->SendFiles(f->Filename(), e->ExtendedAck()->Port());
+    fileDlg->SendFiles(f->FileList(), e->ExtendedAck()->Port());
   }
 
   return true;

@@ -350,10 +350,8 @@ void CFileDlg::slot_ft()
 
 
 //-----CFileDlg::SendFiles---------------------------------------------------
-bool CFileDlg::SendFiles(const char *szFile, unsigned short nPort)
+bool CFileDlg::SendFiles(ConstFileList fl, unsigned short nPort)
 {
-  ConstFileList fl;
-  fl.push_back(szFile);
   ftman->SendFiles(fl, nPort);
 
   mleStatus->append(tr("Connecting to remote..."));

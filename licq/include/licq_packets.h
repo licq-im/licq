@@ -23,11 +23,12 @@ char *PipeInput(char *m_szMessage);
 class CPX_FileTransfer
 {
 public:
-	CPX_FileTransfer(const char *_szFilename);
+	CPX_FileTransfer(ConstFileList &lFileList, const char *szFileName);
 
 	virtual ~CPX_FileTransfer()	{ }
 
 	bool IsValid()	{ return m_bValid; }
+	ConstFileList GetFileList()	{ return m_lFileList; }
 	const char *GetFilename()	{ return m_szFilename; }
 	const char *GetDescription() { return m_szDesc; }
 	unsigned long GetFileSize()	{ return m_nFileSize; }
@@ -38,7 +39,8 @@ protected:
 	bool					m_bValid;
 	char					*m_szDesc;
 	char					*m_szFilename;
-	unsigned long m_nFileSize;
+	ConstFileList				m_lFileList;
+	unsigned long				m_nFileSize;
 };
 
 
@@ -587,8 +589,8 @@ public:
 class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
 {
 public:
-  CPU_FileTransfer(ICQUser *, const char *_szFile, const char *_szDesc,
-                   bool bICBM);
+  CPU_FileTransfer(ICQUser *, ConstFileList &lFileList, const char *_szFile,
+		   const char *_szDesc, bool bICBM);
 };
 
 
@@ -1131,9 +1133,9 @@ public:
 class CPT_FileTransfer : public CPacketTcp, public CPX_FileTransfer
 {
 public:
-   CPT_FileTransfer(const char *_szFilename, const char *_szDescription,
-      unsigned short nLevel, ICQUser *pUser);
-	 const char *GetDescription() { return m_szMessage; }
+   CPT_FileTransfer(ConstFileList &lFileList, const char *_szFilename,
+      const char *_szDescription, unsigned short nLevel, ICQUser *pUser);
+   const char *GetDescription() { return m_szMessage; }
 protected:
    /* 50 A5 82 00 03 00 EE 07 00 00 50 A5 82 00 03 00 0F 00 74 68 69 73 20 69
       73 20 61 20 66 69 6C 65 00 CF 60 AD D3 CF 60 AD D3 60 12 00 00 04 00 00

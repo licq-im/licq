@@ -23,6 +23,7 @@
 #include <list>
 
 #include "licq_color.h"
+#include "licq_filetransfer.h"
 
 class QBoxLayout;
 class QGroupBox;
@@ -266,6 +267,7 @@ protected:
   QLabel *lblItem;
   CInfoField *edtItem;
   QPushButton *btnBrowse;
+  ConstFileList m_lFileList;
   virtual bool sendDone(ICQEvent*);
 
   virtual void resetSettings();

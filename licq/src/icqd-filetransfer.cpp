@@ -259,9 +259,9 @@ void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
     {
       gLog.Warn("%sFile Transfer: File access error %s:\n%s%s.\n", L_WARNxSTR,
          *iter, L_BLANKxSTR, strerror(errno));
-      return;
+      continue;
     }
-    m_lPathNames.push_back(strdup(*iter));
+    m_lPathNames.push_back(const_cast<char*>(*iter));
     m_nBatchFiles++;
     m_nBatchSize += buf.st_size;
   }
