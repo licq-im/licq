@@ -248,12 +248,15 @@ void Encrypt_Server(CBuffer *buffer)
 bool CSrvPacketTcp::s_bRegistered = false;
 unsigned short CSrvPacketTcp::s_nSequence = 0;
 unsigned short CSrvPacketTcp::s_nSubSequence = 0;
+pthread_mutex_t CSrvPacketTcp::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
 
 CSrvPacketTcp::CSrvPacketTcp(unsigned char nChannel)
 {
   m_nChannel = nChannel;
+  pthread_mutex_lock(&s_xMuxtex);
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
+  pthread_mutex_unlock(&s_xMutex);
   m_nSubType = m_nExtraInfo = 0;
 
   buffer = NULL;

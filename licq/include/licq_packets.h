@@ -117,6 +117,7 @@ protected:
   static bool s_bRegistered;
   static unsigned short s_nSequence;
   static unsigned short s_nSubSequence;
+  static pthread_mutex_t s_xMutex;
 
   unsigned char m_nChannel;
   unsigned short m_nSequence;
