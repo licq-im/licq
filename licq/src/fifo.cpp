@@ -311,7 +311,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
     if (u != NULL)
     {
       const char *szNumber = u->GetCellularNumber();
-      if (szNumber)
+      if (strlen(szNumber))
         d->icqSendSms(szNumber, argv[2], nUin);
       else
         gLog.Error("%sUnable to send SMS to %lu, no SMS number found.\n", L_ERRORxSTR, nUin);
