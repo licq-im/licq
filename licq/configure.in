@@ -37,14 +37,12 @@ case "$host" in
 		CFLAGS="$CFLAGS -pthread"
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
 		CXXFLAGS="$CXXFLAGS -pthread"
-		LDFLAGS="$LDFLAGS -export-dynamic"
 		echo "Setting OpenBSD compilation options"
 		;;
 	*-*-freebsd*)
 		CFLAGS="$CFLAGS -pthread"
 		CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE"
 		CXXFLAGS="$CXXFLAGS -pthread"
-    LDFLAGS="$LDFLAGS -export-dynamic"
 		echo "Setting FreeBSD compilation options"
 		;;
 	*-*-solaris*)
@@ -55,7 +53,6 @@ case "$host" in
 	*-*-linux*)
  		CPPFLAGS="$CPPFLAGS -fPIC -DPIC -D_REENTRANT"
 		CXXFLAGS="$CXXFLAGS -fno-rtti -fno-exceptions"
-		LDFLAGS="$LDFLAGS -rdynamic"
 		echo "Setting Linux compilation options"
 		;;
 	*)
@@ -89,14 +86,6 @@ exit 1
   ])
 ])
 
-dnl AC_CHECK_LIB(c, dlopen)
-dnl if test "$ac_cv_lib_c_dlopen" = "no"; then
-dnl   AC_CHECK_LIB(dl, dlopen)
-dnl   if test "$ac_cv_lib_dl_dlopen" = "no"; then
-dnl     echo "I can't find the library containing dlopen()"
-dnl     exit 1
-dnl   fi
-dnl fi
 
 AC_CHECK_LIB(c_r, dlopen, [], [
   AC_CHECK_LIB(c, dlopen, [], [
@@ -131,6 +120,7 @@ dlopen(NULL, RTLD_LAZY)
   ])
 ])
 
+
 AC_CHECK_FUNCS(alphasort inet_addr inet_aton mktime select scandir strdup strerror hstrerror readdir_r)
 
 AC_CHECK_SOCKS5
@@ -139,26 +129,10 @@ dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 
-AC_CHECK_LIB(stdc++, getc,,
-  AC_MSG_ERROR(You need to have libstdc++ installed))
 AC_CHECK_HEADER(vector.h,,
   AC_MSG_ERROR(You need to have the libstdc++ headers installed))
 
 AC_LANG_RESTORE
-
-dnl for malloc debugging
-AC_MSG_CHECKING(if dmalloc is wanted)
-AC_ARG_WITH(dmalloc,
-[  --with-dmalloc          use dmalloc, http://www.dmalloc.com/],
-[if test "$withval" = "yes"; then
-  AC_MSG_RESULT(yes)
-  AC_DEFINE(WITH_DMALLOC,1,
-    [Defined if using the dmalloc package])
-  LIB_DMALLOC="-ldmalloc"
-else
-  AC_MSG_RESULT(no)
-fi], [AC_MSG_RESULT(no)])
-AC_SUBST(LIB_DMALLOC)
 
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
@@ -167,6 +141,12 @@ AC_C_SOCKLEN_T
 AC_HEADER_TIME
 AC_STRUCT_TM
 AC_SYS_ERRLIST
+
+dnl libtool stuff
+AC_EXEEXT
+AC_LIBTOOL_DLOPEN
+AM_PROG_LIBTOOL
+AC_PROG_LIBTOOL
 
 AC_OUTPUT(
   share/Makefile \
