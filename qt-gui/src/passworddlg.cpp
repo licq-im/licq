@@ -62,7 +62,7 @@ PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman,
 
   lay->addStretch(1);
 
-  btnUpdate = new QPushButton("&Update", this);
+  btnUpdate = new QPushButton(tr("&Update"), this);
   btnUpdate->setDefault(true);
   btnUpdate->setMinimumWidth(75);
   btnCancel = new QPushButton(tr("&Cancel"), this);
