@@ -561,24 +561,12 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   QString s;
 
 #if QT_VERSION >= 300
-  // We cannot use QStyleSheet::convertFromPlainText
-  // since it has a bug in Qt 3 and mixed up line breaks.
-  QString messageText = QStyleSheet::escape(codec->toUnicode(e->Text()));
-  messageText.replace(QRegExp("\n"), "<br>");
-  // We keep the first space character as-is (to allow line wrapping)
-  // and convert the next characters to &nbsp;s (to preserve multiple
-  // spaces).
-  QRegExp longSpaces(" ([ ]+)");
-  int pos;
-  QString cap;
-  while ((pos = longSpaces.search(messageText)) > -1)
-  {
-     cap = longSpaces.cap(1);
-     cap.replace(QRegExp(" "), "&nbsp;");
-     messageText.replace(pos+1, longSpaces.matchedLength()-1, cap); 
-  }
-  messageText.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
-  
+  QString messageText;
+  if (e->SubCommand() == ICQ_CMDxSUB_SMS)
+     messageText = QString::fromUtf8(e->Text());
+  else 
+     messageText = codec->toUnicode(e->Text());
+
   const char *color = (e->Direction() == D_RECEIVER) ? "red" : "blue";
 
   // QTextEdit::append adds a paragraph break so we don't have to.
@@ -596,7 +584,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
   append(s);
   s.sprintf("<font color=\"%s\">%s</font>",
             color,
-            messageText.utf8().data()
+            MLView::toRichText(messageText, true).utf8().data()
            );
   append(s);
 #else
