@@ -252,11 +252,11 @@ bool CICQDaemon::Start()
  *----------------------------------------------------------------------------*/
 int CICQDaemon::RegisterPlugin(unsigned long _nSignalMask)
 {
-  CPlugin *p = new CPlugin(_nSignalMask);
   PluginsListIter it;
   bool found = false;
 
   pthread_mutex_lock(&licq->mutex_pluginfunctions);
+  CPlugin *p = new CPlugin(_nSignalMask);
   for (it = licq->m_vPluginFunctions.begin();
        it != licq->m_vPluginFunctions.end();
        it++)
@@ -406,7 +406,9 @@ bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
 
   if (p == NULL) return false;
 
+  pthread_mutex_lock(&licq->mutex_pluginfunctions);
   licq->StartPlugin(p);
+  pthread_mutex_unlock(&licq->mutex_pluginfunctions);
   return true;
 }
 
