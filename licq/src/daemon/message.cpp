@@ -606,6 +606,31 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
 
 
 
+//-----EventPlugin-----------------------------------------------------------
+CEventPlugin::CEventPlugin(const char *sz, unsigned short nSubCommand,
+   time_t tTime, unsigned long nFlags)
+   : CUserEvent(nSubCommand, 0, 0, tTime, nFlags)
+{
+  m_sz = sz == NULL ? strdup("") : strdup(sz);
+}
+
+void CEventPlugin::CreateDescription()
+{
+  m_szText = strdup(m_sz);
+}
+
+
+CEventPlugin::~CEventPlugin()
+{
+  free(m_sz);
+}
+
+void CEventPlugin::AddToHistory(ICQUser *, direction)
+{
+  // Don't write these to the history file
+}
+
+
 
 
 
@@ -650,7 +675,7 @@ void CEventUnknownSysMsg::AddToHistory(ICQUser * /*u*/, direction /*_nDir*/)
 static const int MAX_EVENT = 26;
 
 static const char *szEventTypes[27] =
-{ "Saved Event",
+{ "Plugin Event",
   "Message",
   "Chat Request",
   "File Transfer",

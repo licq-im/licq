@@ -326,6 +326,19 @@ protected:
 };
 
 
+class CEventPlugin : public CUserEvent
+{
+public:
+  CEventPlugin(const char *sz, unsigned short nSubCommand,
+     time_t tTime, unsigned long nFlags);
+  ~CEventPlugin();
+  virtual void AddToHistory(ICQUser *, direction);
+  virtual CEventPlugin *Copy()
+    { return new CEventPlugin(m_sz, m_nSubCommand, m_tTime, m_nFlags); }
+protected:
+  void CreateDescription();
+  char *m_sz;
+};
 
 class CEventUnknownSysMsg : public CUserEvent
 {
