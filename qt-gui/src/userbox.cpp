@@ -68,7 +68,7 @@ CUserViewItem::~CUserViewItem()
 {
   CUserView *v = (CUserView *)listView();
 
-  if (v == NULL) return;
+  if (v == NULL || m_nUin == 0) return;
 
   if (m_nStatus == ICQ_STATUS_OFFLINE)
     v->numOffline--;
@@ -429,6 +429,7 @@ void CUserView::clear()
 {
   barOnline = barOffline = NULL;
   QListView::clear();
+  numOffline = numOnline = 0;
 }
 
 
