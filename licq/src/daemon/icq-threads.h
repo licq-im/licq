@@ -538,7 +538,7 @@ void *Shutdown_tep(void *p)
   CICQDaemon *d = (CICQDaemon *)p;
 
   // Shutdown
-  gLog.Warn("%sShutting down daemon.\n", L_ENDxSTR);
+  gLog.Info("%sShutting down daemon.\n", L_ENDxSTR);
 
   // Send shutdown signal to all the plugins
   vector<CPlugin *>::iterator iter;

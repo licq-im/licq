@@ -115,7 +115,8 @@ ICQEvent *CICQDaemon::icqFileTransfer(unsigned long _nUin, const char *_szFilena
   online = true;
 
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
-  CPT_FileTransfer *p = new CPT_FileTransfer(_nSourceUin, _szFilename, szDosDesc, _bUrgent, u);
+  CPT_FileTransfer *p = new CPT_FileTransfer(_nSourceUin, _szFilename, szDosDesc,
+                                             _bUrgent, u);
   if (!p->IsValid())
   {
     delete p;
