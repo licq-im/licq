@@ -1,0 +1,4399 @@
+# This is a Qt message file in .po format.  Each msgid starts with
+# a scope.  This scope should *NOT* be translated - eg. translating
+# from French to English, "Foo::Bar" would be translated to "Pub",
+# not "Foo::Pub".
+msgid ""
+msgstr ""
+"Project-Id-Version: PROJECT VERSION\n"
+"POT-Creation-Date: 2002-05-27 23:21:53 CEST\n"
+"PO-Revision-Date: 2002-06-08 23:36GMT+1\n"
+"Last-Translator: Prethorian <preth@kvsky.net>\n"
+"Content-Type: text/plain; charset=ISO-8859-2\n"
+"Language-Team: Serbian <sr@li.org>\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 0.9.5\n"
+
+#: adduserdlg.cpp:28
+msgid "AddUserDlg::&Alert User"
+msgstr "&Obavesti Korisnika"
+
+#: adduserdlg.cpp:32
+msgid "AddUserDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: adduserdlg.cpp:20
+msgid "AddUserDlg::Licq - Add User"
+msgstr "Licq - Dodaj Korisnika"
+
+#: adduserdlg.cpp:23
+msgid "AddUserDlg::New User UIN:"
+msgstr "Nov Korisnikov UIN"
+
+#: authuserdlg.cpp:84
+msgid "AuthUserDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: authuserdlg.cpp:81
+msgid "AuthUserDlg::&Ok"
+msgstr "&Ok"
+
+#: authuserdlg.cpp:42
+msgid "AuthUserDlg::Authorize which user (UIN):"
+msgstr "Autorizuj korisnika (UIN):"
+
+#: authuserdlg.cpp:66
+msgid "AuthUserDlg::Grant authorization to %1"
+msgstr "Odobri autorizaciju %1"
+
+#: authuserdlg.cpp:32
+msgid "AuthUserDlg::Licq - Grant Authorisation"
+msgstr "Licq - Odobri Autorizaciju"
+
+#: authuserdlg.cpp:34
+msgid "AuthUserDlg::Licq - Refuse Authorisation"
+msgstr "Licq - Odbaci autorizaciju"
+
+#: authuserdlg.cpp:68
+msgid "AuthUserDlg::Refuse authorization to %1"
+msgstr "Odbaci autorizaciju %1"
+
+#: authuserdlg.cpp:73
+msgid "AuthUserDlg::Response"
+msgstr "Odgovor"
+
+#: awaymsgdlg.cpp:75
+msgid "AwayMsgDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: awaymsgdlg.cpp:126
+msgid "AwayMsgDlg::&Edit Items"
+msgstr "&Izmeni stavke"
+
+#: awaymsgdlg.cpp:70
+msgid "AwayMsgDlg::&Hints"
+msgstr "&Saveti"
+
+#: awaymsgdlg.cpp:72
+msgid "AwayMsgDlg::&Ok"
+msgstr "&Ok"
+
+#: awaymsgdlg.cpp:68
+msgid "AwayMsgDlg::&Select"
+msgstr "&Izaberi"
+
+#: awaymsgdlg.cpp:23
+msgid ""
+"AwayMsgDlg::"
+"<h2>Hints for Setting<br>your Auto-Response</h2><br><hr><br>"
+"<ul>"
+"<li>You can include any of the % expansions (described in the main hints page).</li>"
+"<li>Any line beginning with a pipe (|) will be treated as a command "
+"to be run.  The line will be replaced by the output of the command. "
+"The command is parsed by /bin/sh so any shell commands or meta-characters "
+"are allowed.  For security reasons, any % expansions are automatically "
+"passed to the command surrounded by single quotes to prevent shell parsing "
+"of any meta-characters included in an alias.<br>"
+"Examples of popular uses include:"
+"<ul>"
+"<li><tt>|date</tt>: Will replace that line by the current date</li>"
+"<li><tt>|fortune</tt>: Show a fortune, as a tagline for example</li>"
+"<li><tt>|myscript.sh %u %a</tt>: Run a script, passing the uin and alias</li>"
+"<li><tt>|myscript.sh %u %a > /dev/null</tt>: Run the same script but ignore the output (for tracking auto response checks or something)</li>"
+"<li><tt>|if [ %u -lt 100000 ]; then echo \"You are special\"; fi</tt>: Useless, but shows how you can use shell script.</li>"
+"</ul>"
+"Of course, multiple \"|\" can appear in the auto response, and commands and regular "
+"text can be mixed line by line.</li>"
+"<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
+msgstr ""
+"<h2>Saveti za Pode¹avanja<br>va¹ Auto-Odgovor</h2><br><hr><br>"
+"<ul>"
+"<li>Mo¾ete ukljuèiti bilo koju od % ekspanzija (opisanih u glavnoj stranici za savete).</li>"
+"<li>Svaka linija koja poèinje sa pipe-om (|) æe biti tretirana kao komanda "
+"koja æe biti pokrenuta. Linija æe biti zamenjena izlaznim rezultatom date komande. "
+"Komandu rasèlanjava /bin/sh pa zato svaka shell komanda ili meta-karakteri "
+"su dozvoljeni. Iz sigurnosnih razloga, svaka % ekspanzija se automatski "
+"prosleðuje komandi okru¾ena obiènim navodnicima da bi se za¹titila od shell "
+"rasèlanjavanja nekog meta-karaktera ukljuèenog u nekom alijasu.<br>"
+"Primeri popularne upotrebe:"
+"<ul>"
+"<li><tt>|date</tt>: Æe zameniti tu liniju sa trenutnim datumom</li>"
+"<li><tt>|fortune</tt>: Prikazuje fortune, na primer kao potpis liniju</li>"
+"<li><tt>|mojaskripta.sh %u %a</tt>: Pokreæe skriptu, prosleðujuæi UIN i alijas</li>"
+"<li><tt>|mojaskripta.sh %u %a > /dev/null</tt>: Pokreæe isto skriptu ali ignori¹e izlaz (za praæenje auto odgovora radi provere ili neèega)</li>"
+"<li><tt>|if [ %u -lt 100000 ]; then echo \"Ti si poseban\"; fi</tt>: Nekorisno, ali prikazuje kako mo¾ete koristiti shell skriptu.</li>"
+"</ul>"
+"Naravno, vi¹e \"|\" mo¾e da postoji u auto odgovorima, i komande i regularni "
+"tekst mo¾e biti miksovan linija po linija.</li>"
+"<hr><p> Za vi¹e informacija, pogledajte Licq web stranicu (<tt>http://www.licq.org</tt>).</p>"
+
+#: awaymsgdlg.cpp:134
+msgid ""
+"AwayMsgDlg::"
+"I'm currently %1, %a.\n"
+"You can leave me a message.\n"
+"(%m messages pending from you)."
+msgstr ""
+"Ja sam trenutno %1, %a.\n"
+"Mo¾ete ostaviti poruku.\n"
+"(%m primljenih poruka od vas)."
+
+#: awaymsgdlg.cpp:129
+msgid "AwayMsgDlg::Set %1 Response for %2"
+msgstr "Postavi %1 Odgovor za %2"
+
+#: filedlg.cpp:171
+msgid "CFileDlg::%1/%2"
+msgstr "%1/%2"
+
+#: filedlg.cpp:99
+msgid "CFileDlg::&Cancel Transfer"
+msgstr "&Poni¹ti prenos"
+
+#: filedlg.cpp:72
+msgid "CFileDlg::Batch:"
+msgstr "Skup:"
+
+#: filedlg.cpp:342
+msgid "CFileDlg::Byte"
+msgstr "Bajt"
+
+#: filedlg.cpp:338
+msgid "CFileDlg::Bytes"
+msgstr "Bajtova"
+
+#: filedlg.cpp:407
+msgid "CFileDlg::Cancel"
+msgstr "Poni¹ti"
+
+#: filedlg.cpp:296
+msgid "CFileDlg::Close"
+msgstr "Zatvori"
+
+#: filedlg.cpp:317
+msgid "CFileDlg::Connecting to remote...\n"
+msgstr "Konektovanje na udaljeni...\n"
+
+#: filedlg.cpp:47
+msgid "CFileDlg::Current:"
+msgstr "Trenutni:"
+
+#: filedlg.cpp:258
+msgid "CFileDlg::Done %1\n"
+msgstr "Zavr¹eno %1\n"
+
+#: filedlg.cpp:87
+msgid "CFileDlg::ETA:"
+msgstr "ETA:"
+
+#: filedlg.cpp:289
+msgid "CFileDlg::File I/O Error:\n%1\nSee Network Window for Details"
+msgstr "Fajl I/O Gre¹ka:\n%1\nPogledajte Mre¾ni Prozor za detalje"
+
+#: filedlg.cpp:287
+msgid "CFileDlg::File I/O error: %1\n"
+msgstr "Fajl I/O gre¹ka: %1\n"
+
+#: filedlg.cpp:390
+msgid "CFileDlg::File already exists and appears incomplete."
+msgstr "Fajl veæ postoji i izgleda da je nekompletan."
+
+#: filedlg.cpp:383
+msgid "CFileDlg::File already exists and is at least as big as the incoming file."
+msgstr "Fajl veæ postoji i velièina mu je ista kao i dolazeæem"
+
+#: filedlg.cpp:56
+msgid "CFileDlg::File name:"
+msgstr "Ime fajla:"
+
+#: filedlg.cpp:130
+msgid "CFileDlg::File transfer cancelled\n"
+msgstr "Prenos fajla poni¹ten\n"
+
+#: filedlg.cpp:269
+msgid "CFileDlg::File transfer complete\n"
+msgstr "Prenos fajla kompletiran\n"
+
+#: filedlg.cpp:64
+msgid "CFileDlg::File:"
+msgstr "Fajl:"
+
+#: filedlg.cpp:299
+msgid "CFileDlg::Handshake Error\nSee Network Window for Details"
+msgstr "Gre¹ka Rukovanja\nPogledajte Mre¾ni Prozor za detalje"
+
+#: filedlg.cpp:297
+msgid "CFileDlg::Handshaking error\n"
+msgstr "Gre¹ka rukovanja\n"
+
+#: filedlg.cpp:334
+msgid "CFileDlg::KB"
+msgstr "KB"
+
+#: filedlg.cpp:221
+msgid "CFileDlg::Licq - File Transfer (%1)"
+msgstr "Licq - Prenos fajla (%1)"
+
+#: filedlg.cpp:330
+msgid "CFileDlg::MB"
+msgstr "MB"
+
+#: filedlg.cpp:270
+msgid "CFileDlg::Ok"
+msgstr "Ok"
+
+#: filedlg.cpp:407
+msgid "CFileDlg::Open error - unable to open file for writing."
+msgstr "Gre¹ka u otvaranju - ne mogu da otvorim fajl za pisanje."
+
+#: filedlg.cpp:390
+msgid "CFileDlg::Overwrite"
+msgstr "Prepi¹i"
+
+#: filedlg.cpp:261
+msgid "CFileDlg::Received\n%1\nfrom %2 successfully\n"
+msgstr "Primljen\n%1\nod %2 uspe¹no\n"
+
+#: filedlg.cpp:244
+msgid "CFileDlg::Receiving file...\n"
+msgstr "Primanje fajla...\n"
+
+#: filedlg.cpp:280
+msgid "CFileDlg::Remote side disconnected"
+msgstr "Udaljena strana nije konektovana"
+
+#: filedlg.cpp:278
+msgid "CFileDlg::Remote side disconnected\n"
+msgstr "Udaljena strana nije konektovana\n"
+
+#: filedlg.cpp:390
+msgid "CFileDlg::Resume"
+msgstr "Nastavi"
+
+#: filedlg.cpp:407
+msgid "CFileDlg::Retry"
+msgstr "Ponovi"
+
+#: filedlg.cpp:246
+msgid "CFileDlg::Sending file...\n"
+msgstr "Slanje fajla...\n"
+
+#: filedlg.cpp:263
+msgid "CFileDlg::Sent\n%1\nto %2 successfully\n"
+msgstr "Poslat\n%1\nza %2 uspe¹no\n"
+
+#: filedlg.cpp:79
+msgid "CFileDlg::Time:"
+msgstr "Vreme:"
+
+#: filedlg.cpp:199
+msgid "CFileDlg::Waiting for connection...\n"
+msgstr "Èekam konekciju...\n"
+
+#: forwarddlg.cpp:65
+msgid "CForwardDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: forwarddlg.cpp:61
+msgid "CForwardDlg::&Forward"
+msgstr "Prosled&i"
+
+#: forwarddlg.cpp:54
+msgid "CForwardDlg::Drag the user to forward to here:"
+msgstr "Prevucite ovde korisnika za prosleðivanje:"
+
+#: forwarddlg.cpp:50
+msgid "CForwardDlg::Forward %1 To User"
+msgstr "Prosledi %1 korisniku"
+
+#: forwarddlg.cpp:101
+msgid "CForwardDlg::Forwarded URL:\n"
+msgstr "Prosleðen URL:\n"
+
+#: forwarddlg.cpp:93
+msgid "CForwardDlg::Forwarded message:\n"
+msgstr "Prosleðena poruka:\n"
+
+#: forwarddlg.cpp:37
+msgid "CForwardDlg::Message"
+msgstr "Poruka"
+
+#: forwarddlg.cpp:41
+msgid "CForwardDlg::URL"
+msgstr "URL"
+
+#: forwarddlg.cpp:46
+msgid "CForwardDlg::Unable to forward this message type (%d)."
+msgstr "Ne mogu da prosledim ovaj tip poruke (%d)."
+
+#: chatjoin.cpp:46
+msgid "CJoinChatDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: chatjoin.cpp:37
+msgid "CJoinChatDlg::Invite to Join Chat"
+msgstr "Pozovi da se pridruzi Æaskanju"
+
+#: chatjoin.cpp:44
+msgid "CJoinChatDlg::Join Multiparty Chat"
+msgstr "Pridru¾i se razgovoru sa vi¹e uèesnika"
+
+#: chatjoin.cpp:36
+msgid "CJoinChatDlg::Select chat to invite:"
+msgstr "Izaberite razgovor za pozivanje:"
+
+#: chatjoin.cpp:43
+msgid "CJoinChatDlg::Select chat to join:"
+msgstr "Izaberite razgovor za ulazak:"
+
+#: mmsenddlg.cpp:37
+msgid "CMMSendDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: mmsenddlg.cpp:111
+msgid "CMMSendDlg::&Close"
+msgstr "&Zatvori"
+
+#: mmsenddlg.cpp:88
+msgid "CMMSendDlg::Multiple Recipient Contact List"
+msgstr "Kontakt lista vi¹estrukih primalaca"
+
+#: mmsenddlg.cpp:59
+msgid "CMMSendDlg::Multiple Recipient Message"
+msgstr "Poruka vi¹estrukuh primalaca"
+
+#: mmsenddlg.cpp:74
+msgid "CMMSendDlg::Multiple Recipient URL"
+msgstr "URL vi¹estrukih primalaca"
+
+#: mmsenddlg.cpp:153
+msgid "CMMSendDlg::Sending mass URL to %1..."
+msgstr "Slanje masivnog URL-a za %1..."
+
+#: mmsenddlg.cpp:164
+msgid "CMMSendDlg::Sending mass list to %1..."
+msgstr "Slanje masivne liste za %1..."
+
+#: mmsenddlg.cpp:142
+msgid "CMMSendDlg::Sending mass message to %1..."
+msgstr "Slanje masovne poruke za %1..."
+
+#: mmsenddlg.cpp:110
+msgid "CMMSendDlg::failed"
+msgstr "neuspe¹no"
+
+#: mmlistview.cpp:77
+msgid "CMMUserView::Add All"
+msgstr "Dodaj Sve"
+
+#: mmlistview.cpp:76
+msgid "CMMUserView::Add Group"
+msgstr "Dodaj Grupu"
+
+#: mmlistview.cpp:74
+msgid "CMMUserView::Clear"
+msgstr "Obri¹i"
+
+#: mmlistview.cpp:73
+msgid "CMMUserView::Crop"
+msgstr "Seci"
+
+#: mmlistview.cpp:72
+msgid "CMMUserView::Remove"
+msgstr "Ukloni"
+
+#: mainwin.cpp:1341
+msgid "CMainWindow:: "
+msgstr " "
+
+#: mainwin.cpp:1341
+msgid "CMainWindow::%1 message%2"
+msgstr "%1 poruka%2"
+
+#: mainwin.cpp:1340
+msgid "CMainWindow::%1 msg%2"
+msgstr "%1 por%2"
+
+#: mainwin.cpp:3128
+msgid "CMainWindow::%1: %2 / %3\n"
+msgstr "%1: %2 / %3\n"
+
+#: mainwin.cpp:3142
+msgid "CMainWindow::%1: %2\n"
+msgstr "%1: %2\n"
+
+#: mainwin.cpp:3040
+msgid "CMainWindow::&About"
+msgstr "&O ..."
+
+#: mainwin.cpp:2944
+msgid "CMainWindow::&Add User"
+msgstr "&Dodaj Korisnika"
+
+#: mainwin.cpp:2892
+msgid "CMainWindow::&Away"
+msgstr "&Odsutnost"
+
+#: mainwin.cpp:2895
+msgid "CMainWindow::&Do Not Disturb"
+msgstr "&Ne Uznemiravaj"
+
+#: mainwin.cpp:3037
+msgid "CMainWindow::&General Info"
+msgstr "&Op¹te informacije"
+
+#: mainwin.cpp:2969
+msgid "CMainWindow::&Group"
+msgstr "&Grupa"
+
+#: mainwin.cpp:2983
+msgid "CMainWindow::&Help"
+msgstr "&Pomoæ"
+
+#: mainwin.cpp:2960
+msgid "CMainWindow::&Hints"
+msgstr "&Saveti"
+
+#: mainwin.cpp:2934
+msgid "CMainWindow::&History"
+msgstr "&Istorija"
+
+#: mainwin.cpp:3042
+msgid "CMainWindow::&Info"
+msgstr "&Informacije"
+
+#: mainwin.cpp:2899
+msgid "CMainWindow::&Invisible"
+msgstr "&Nevidljivost"
+
+#: mainwin.cpp:2973
+msgid "CMainWindow::&Mini Mode"
+msgstr "&Mini Mod"
+
+#: mainwin.cpp:3038
+msgid "CMainWindow::&More Info"
+msgstr "&Jo¹ Informacija"
+
+#: mainwin.cpp:2972
+msgid "CMainWindow::&Network Window"
+msgstr "&Prozor za mre¾u"
+
+#: mainwin.cpp:2226
+msgid "CMainWindow::&No"
+msgstr "&Ne"
+
+#: mainwin.cpp:2893
+msgid "CMainWindow::&Not Available"
+msgstr "&Nije na raspolaganju"
+
+#: mainwin.cpp:3130
+msgid "CMainWindow::&Ok"
+msgstr "&Ok"
+
+#: mainwin.cpp:2891
+msgid "CMainWindow::&Online"
+msgstr "&Na vezi"
+
+#: mainwin.cpp:2976
+msgid "CMainWindow::&Options..."
+msgstr "&Opcije..."
+
+#: mainwin.cpp:2978
+msgid "CMainWindow::&Plugin Manager..."
+msgstr "&Menad¾er dodataka..."
+
+#: mainwin.cpp:2949
+msgid "CMainWindow::&Popup All Messages"
+msgstr "&Iskakanje svih poruka"
+
+#: mainwin.cpp:2938
+msgid "CMainWindow::&Random Chat Group"
+msgstr "&Sluèajna Grupa za Æaskanje"
+
+#: mainwin.cpp:2954
+msgid "CMainWindow::&Redraw User Window"
+msgstr "&Ponovo nacrtaj Korisnikov Prozor"
+
+#: mainwin.cpp:3130
+msgid "CMainWindow::&Reset"
+msgstr "&Resetuj"
+
+#: mainwin.cpp:2955
+msgid "CMainWindow::&Save All Users"
+msgstr "&Saèuvaj Sve Korisnike"
+
+#: mainwin.cpp:2936
+msgid "CMainWindow::&Security Options"
+msgstr "&Bezbednosne Opcije"
+
+#: mainwin.cpp:2962
+msgid "CMainWindow::&Statistics"
+msgstr "&Statistike"
+
+#: mainwin.cpp:2968
+msgid "CMainWindow::&Status"
+msgstr "&Status"
+
+#: mainwin.cpp:667
+msgid "CMainWindow::&System"
+msgstr "&Sistem"
+
+#: mainwin.cpp:2975
+msgid "CMainWindow::&Thread Group View"
+msgstr "&Pove¾i grupni prikaz"
+
+#: mainwin.cpp:3018
+msgid "CMainWindow::&View Event"
+msgstr "&Prikaz dogaðaja"
+
+#: mainwin.cpp:2928
+msgid "CMainWindow::&View System Messages"
+msgstr "&Prikaz Sistemskih Poruka"
+
+#: mainwin.cpp:3039
+msgid "CMainWindow::&Work Info"
+msgstr "&Radne informacije"
+
+#: mainwin.cpp:2226
+msgid "CMainWindow::&Yes"
+msgstr "&Da"
+
+#: mainwin.cpp:2452
+msgid "CMainWindow::(with KDE support)\n"
+msgstr "(sa KDE podr¹kom)\n"
+
+#: mainwin.cpp:3276
+msgid ""
+"CMainWindow::"
+"<h2>Hints for Using<br>the Licq Qt-GUI Plugin</h2><br><hr><br>"
+"<ul>"
+"<li>Change your status by right clicking on the status label.</li>"
+"<li>Change your auto response by double-clicking on the status label.</li>"
+"<li>View system messages by double clicking on the message label.</li>"
+"<li>Change groups by right clicking on the message label.</li>"
+"<li>Use the following shortcuts from the contact list:<ul>"
+"<li><tt>Ctrl-M : </tt>Toggle mini-mode</li>"
+"<li><tt>Ctrl-O : </tt>Toggle show offline users</li>"
+"<li><tt>Ctrl-X : </tt>Exit</li>"
+"<li><tt>Ctrl-H : </tt>Hide</li>"
+"<li><tt>Ctrl-I : </tt>View the next message</li>"
+"<li><tt>Ctrl-V : </tt>View message</li>"
+"<li><tt>Ctrl-S : </tt>Send message</li>"
+"<li><tt>Ctrl-U : </tt>Send Url</li>"
+"<li><tt>Ctrl-C : </tt>Send chat request</li>"
+"<li><tt>Ctrl-F : </tt>Send File</li>"
+"<li><tt>Ctrl-A : </tt>Check Auto response</li>"
+"<li><tt>Ctrl-P : </tt>Popup all messages</li>"
+"<li><tt>Ctrl-L : </tt>Redraw user window</li>"
+"<li><tt>Delete : </tt>Delete user from current group</li>"
+"<li><tt>Ctrl-Delete : </tt>Delete user from contact list</li></ul>"
+"<li>Hold control while clicking on close in the function window to remove"
+"   the user from your contact list.</li>"
+"<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
+"   For example in the send tab of the user function window.</li>"
+"<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
+"   parameters, <b>auto responses</b>, and <b>utilities</b>:\n"
+msgstr ""
+"<h2>Saveti za kori¹æenje<br>Licq Qt-GUI Dodatka</h2><br><hr><br>"
+"<ul>"
+"<li>Menjate va¹ status desnim klikom na statusnu labelu.</li>"
+"<li>Menjate va¹ auto odgovor duplim klikom na statusnu labelu.</li>"
+"<li>Pregled sistemskih poruka duplim klikom na labelu poruka.</li>"
+"<li>Promena grupe desnim klikom na labelu poruka.</li>"
+"<li>Koristite sledeæe preèice za kontaktnu listu:<ul>"
+"<li><tt>Ctrl-M : </tt>Uklj-isklj mini-mod</li>"
+"<li><tt>Ctrl-O : </tt>Uklj-isklj prikaz korisnika koji nisu na vezi</li>"
+"<li><tt>Ctrl-X : </tt>Izlaz</li>"
+"<li><tt>Ctrl-H : </tt>Sakrij</li>"
+"<li><tt>Ctrl-I : </tt>Prika¾i sledeæu poruku</li>"
+"<li><tt>Ctrl-V : </tt>Prika¾i poruku</li>"
+"<li><tt>Ctrl-S : </tt>Po¹alji poruku</li>"
+"<li><tt>Ctrl-U : </tt>Po¹alji URL</li>"
+"<li><tt>Ctrl-C : </tt>Po¹alji zahtev za æaskanje</li>"
+"<li><tt>Ctrl-F : </tt>Po¹alji fajl</li>"
+"<li><tt>Ctrl-A : </tt>Proveri Auto odgovor</li>"
+"<li><tt>Ctrl-P : </tt>Podigni sve poruke</li>"
+"<li><tt>Ctrl-L : </tt>Ponovi korisnikov prozor</li>"
+"<li><tt>Delete : </tt>Obri¹i korisnika iz trenutne grupe</li>"
+"<li><tt>Ctrl-Delete : </tt>Obri¹i korisnika iz liste kontakata</li>"
+"<li>Zadr¾ite <CTRL> dok klikæete na 'zatvori' u funkciji prozora da"
+"   uklonite korisnika iz va¹e kontakt liste.</li>"
+"<li>Pritisnite Ctrl-Enter za najèe¹æa tekst polja da izaberete\"Ok\" ili \"Prihvati\".\n"
+"   Kao primer u tabeli za slanje u prozoru funkcija korisnika.</li>"
+"<li>Evo je kompletna lista korisnièkih % opcija, koja mo¾e biti kori¹æena u <b>ZaDogaðaj</b>"
+"   parametre, <b>auto odgovore</b>, i <b>pomoæne alate</b>:\n"
+
+#: mainwin.cpp:3305
+msgid "CMainWindow::<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>"
+msgstr "<hr><p> Za vi¹e informacija, pogledajte Licq web-stranu (<tt>http://www.licq.org</tt>).</p>"
+
+#: mainwin.cpp:494
+msgid ""
+"CMainWindow::"
+"<ul>"
+"<li><tt>%a - </tt>user alias</li>"
+"<li><tt>%e - </tt>email</li>"
+"<li><tt>%f - </tt>first name</li>"
+"<li><tt>%h - </tt>phone number</li>"
+"<li><tt>%i - </tt>user ip</li>"
+"<li><tt>%l - </tt>last name</li>"
+"<li><tt>%m - </tt># pending messages</li>"
+"<li><tt>%n - </tt>full name</li>"
+"<li><tt>%o - </tt>last seen online</li>"
+"<li><tt>%O - </tt>online since</li>"
+"<li><tt>%p - </tt>user port</li>"
+"<li><tt>%s - </tt>full status</li>"
+"<li><tt>%S - </tt>abbreviated status</li>"
+"<li><tt>%u - </tt>uin</li>"
+"<li><tt>%w - </tt>webpage</li></ul>"
+msgstr ""
+"<ul>"
+"<li><tt>%a - </tt>alijas korisnika</li>"
+"<li><tt>%e - </tt>email</li>"
+"<li><tt>%f - </tt>Ime</li>"
+"<li><tt>%h - </tt>broj telefona</li>"
+"<li><tt>%i - </tt>IP korisnika</li>"
+"<li><tt>%l - </tt>Prezime</li>"
+"<li><tt>%m - </tt># nere¹enih poruka</li>"
+"<li><tt>%n - </tt>puno ime</li>"
+"<li><tt>%o - </tt>zadnji put viðen na vezi</li>"
+"<li><tt>%O - </tt>na vezi od</li>"
+"<li><tt>%p - </tt>port korisnika</li>"
+"<li><tt>%s - </tt>pun status</li>"
+"<li><tt>%S - </tt>skraæeni status</li>"
+"<li><tt>%u - </tt>uin</li>"
+"<li><tt>%w - </tt>web-stranica</li></ul>"
+
+#: mainwin.cpp:2946
+msgid "CMainWindow::A&uthorize User"
+msgstr "A&utorizuj Korisnika"
+
+#: mainwin.cpp:3002
+msgid "CMainWindow::Accept in Away"
+msgstr "Prihvati u Odsutan"
+
+#: mainwin.cpp:3005
+msgid "CMainWindow::Accept in Do Not Disturb"
+msgstr "Prihvati u Ne Uznemiravaj"
+
+#: mainwin.cpp:3003
+msgid "CMainWindow::Accept in Not Available"
+msgstr "Prihvati u Nije Dostupan"
+
+#: mainwin.cpp:3004
+msgid "CMainWindow::Accept in Occupied"
+msgstr "Prihvazi u Zauzet"
+
+#: mainwin.cpp:1426
+msgid "CMainWindow::All Users"
+msgstr "Svi Korisnici"
+
+#: mainwin.cpp:2253
+msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?"
+msgstr "Da li ste sigurni da ¾elite da uklonite\n%1 (%2)\niz '%3' grupe?"
+
+#: mainwin.cpp:2142
+msgid "CMainWindow::Are you sure you want to remove\n%1 (%2)\nfrom your contact list?"
+msgstr "Da li ste sigurni da ¾elite da uklonite\n%1 (%2)\niz va¹e kontakt liste?"
+
+#: mainwin.cpp:2129
+msgid "CMainWindow::Authorization granted."
+msgstr "Autorizacija odobrena."
+
+#: mainwin.cpp:3007
+msgid "CMainWindow::Auto Accept Chats"
+msgstr "Auto-prihvati Æaskanja"
+
+#: mainwin.cpp:3006
+msgid "CMainWindow::Auto Accept Files"
+msgstr "Auto-prihvati Fajlove"
+
+#: mainwin.cpp:3008
+msgid "CMainWindow::Auto Request Secure"
+msgstr "Auto-zahtevaj Sigurnost"
+
+#: mainwin.cpp:3011
+msgid "CMainWindow::Away to User"
+msgstr "Odsutan za korisnika"
+
+#: mainwin.cpp:2258
+msgid "CMainWindow::Cancel"
+msgstr "Poni¹ti"
+
+#: mainwin.cpp:2937
+msgid "CMainWindow::Change &Password"
+msgstr "&Promeni Lozinku"
+
+#: mainwin.cpp:3080
+msgid "CMainWindow::Check %1 Response"
+msgstr "Proveri %1 Odgovor"
+
+#: mainwin.cpp:3075
+msgid "CMainWindow::Check Auto Response"
+msgstr "Proveri Auto Odgovor"
+
+#: mainwin.cpp:2921
+msgid "CMainWindow::Clear All"
+msgstr "Oèisti Sve"
+
+#: mainwin.cpp:3108
+msgid "CMainWindow::Close &Secure Channel"
+msgstr "Zatvori &Sigurni Kanal"
+
+#: mainwin.cpp:3034
+msgid "CMainWindow::Custom Auto Response..."
+msgstr "Korisnièki Auto odgovor..."
+
+#: mainwin.cpp:3119
+msgid "CMainWindow::Daemon Statistics\n(Today/Total)\n"
+msgstr "Statistike demona\n(Danas/Ukupno)\n"
+
+#: mainwin.cpp:3135
+msgid "CMainWindow::Daemon Statistics\n\n"
+msgstr "Statistike demona\n\n"
+
+#: mainwin.cpp:2940
+msgid "CMainWindow::Debug Level"
+msgstr "Nivo debugovanja"
+
+#: mainwin.cpp:3014
+msgid "CMainWindow::Do Not Disturb to User"
+msgstr "Ne uznemiravaj za Korisnika"
+
+#: mainwin.cpp:2225
+msgid "CMainWindow::Do you really want to add\n%1 (%2)\nto your ignore list?"
+msgstr "Da ku stvarni ¾elite da dodate\n%1 (%2)\nu va¹u listu ignorisanja?"
+
+#: mainwin.cpp:2984
+msgid "CMainWindow::E&xit"
+msgstr "&Izaði"
+
+#: mainwin.cpp:2950
+msgid "CMainWindow::Edit &Groups"
+msgstr "Izmeni &Grupe"
+
+#: mainwin.cpp:3045
+msgid "CMainWindow::Edit User Group"
+msgstr "Izmeni Korisnikovu Grupu"
+
+#: mainwin.cpp:2127
+msgid "CMainWindow::Error sending authorization."
+msgstr "Gre¹ka kod slanja autorizacije."
+
+#: mainwin.cpp:2916
+msgid "CMainWindow::Errors"
+msgstr "Gre¹ke"
+
+#: mainwin.cpp:2896
+msgid "CMainWindow::Free for C&hat"
+msgstr "Slobodni za Æas&kanje"
+
+#: mainwin.cpp:1451
+msgid "CMainWindow::Ignore List"
+msgstr "Lista Ignorisanja"
+
+#: mainwin.cpp:1448
+msgid "CMainWindow::Invisible List"
+msgstr "Lista Nevidljivosti"
+
+#: mainwin.cpp:3124
+msgid "CMainWindow::Last reset %1\n\n"
+msgstr "Zadnji reset %1\n\n"
+
+#: mainwin.cpp:1071
+msgid "CMainWindow::Licq (%1)"
+msgstr "Licq (%1)"
+
+#: mainwin.cpp:2440
+msgid ""
+"CMainWindow::"
+"Licq version %1%8.\n"
+"Qt GUI plugin version %2.\n"
+"Compiled on: %7\n"
+"%6\n"
+"Author: Graham Roff\n"
+"Contributions by Dirk A. Mueller\n"
+"http://www.licq.org\n\n"
+"%3 (%4)\n"
+"%5 contacts."
+msgstr ""
+"Licq verzija %1%8.\n"
+"Qt GUI dodatak verzija %2.\n"
+"Kompajliran u: %7\n"
+"%6\n"
+"Autor: Graham Roff\n"
+"Priloge dao Dirk A. Mueller\n"
+"http://www.licq.org\n\n"
+"%3 (%4)\n"
+"%5 kontakta."
+
+#: mainwin.cpp:2108
+msgid "CMainWindow::Logon failed.\nSee network window for details."
+msgstr "Prijavljivanje neuspe¹no.\nPogledajte mre¾ni prozor za detalje."
+
+#: mainwin.cpp:3031
+msgid "CMainWindow::Misc Modes"
+msgstr "Razni Modovi"
+
+#: mainwin.cpp:1454
+msgid "CMainWindow::New Users"
+msgstr "Novi Korisnici"
+
+#: mainwin.cpp:2980
+msgid "CMainWindow::Next &Server"
+msgstr "Sledeæi &Server"
+
+#: mainwin.cpp:1359
+msgid "CMainWindow::No messages"
+msgstr "Nema poruka"
+
+#: mainwin.cpp:1358
+msgid "CMainWindow::No msgs"
+msgstr "Nema poruka"
+
+#: mainwin.cpp:3012
+msgid "CMainWindow::Not Available to User"
+msgstr "Nedostupan za Korisnika"
+
+#: mainwin.cpp:2894
+msgid "CMainWindow::O&ccupied"
+msgstr "&Zauzet"
+
+#: mainwin.cpp:2897
+msgid "CMainWindow::O&ffline"
+msgstr "Nije na &vezi"
+
+#: mainwin.cpp:3013
+msgid "CMainWindow::Occupied to User"
+msgstr "Okupiran za Korisnika"
+
+#: mainwin.cpp:2258
+msgid "CMainWindow::Ok"
+msgstr "Ok"
+
+#: mainwin.cpp:1442
+msgid "CMainWindow::Online Notify"
+msgstr "Na-vezi obave¹tenje"
+
+#: mainwin.cpp:3010
+msgid "CMainWindow::Online to User"
+msgstr "Na-vezi za korisnika"
+
+#: mainwin.cpp:1278
+msgid "CMainWindow::Other Users"
+msgstr "Ostali Korisnici"
+
+#: mainwin.cpp:2918
+msgid "CMainWindow::Packets"
+msgstr "Paketi"
+
+#: mainwin.cpp:2947
+msgid "CMainWindow::R&andom Chat"
+msgstr "Sl&uèajno æaskanje"
+
+#: mainwin.cpp:2957
+msgid "CMainWindow::Reg&ister User"
+msgstr "Reg&istruj Korisnika"
+
+#: mainwin.cpp:2122
+msgid "CMainWindow::Registration failed.  See network window for details."
+msgstr ""
+
+#: mainwin.cpp:3047
+msgid "CMainWindow::Remove From List"
+msgstr "Ukloni iz Liste"
+
+#: mainwin.cpp:3110
+msgid "CMainWindow::Request &Secure Channel"
+msgstr "Zahtevaj &SIgurni Kanal"
+
+#: mainwin.cpp:704
+msgid ""
+"CMainWindow::"
+"Right click - Status menu\n"
+"Double click - Set auto response"
+msgstr ""
+"Desni klik - Statusni meni\n"
+"Dupli klik - Postavi auto-odgovor"
+
+#: mainwin.cpp:687
+msgid ""
+"CMainWindow::"
+"Right click - User groups\n"
+"Double click - Show next message"
+msgstr ""
+"Desni klik - Grupe korisnika\n"
+"Dupli klik - Prikaz sledeæe poruke"
+
+#: mainwin.cpp:2945
+msgid "CMainWindow::S&earch for User"
+msgstr "Pr&etra¾i za Korisnika"
+
+#: mainwin.cpp:2977
+msgid "CMainWindow::S&kin Browser..."
+msgstr ""
+
+#: mainwin.cpp:2982
+msgid "CMainWindow::Sa&ve Settings"
+msgstr "Saèuvaj Pode¹a&vanja"
+
+#: mainwin.cpp:3025
+msgid "CMainWindow::Send &Authorization"
+msgstr "Po¹alji &Autorizaciju"
+
+#: mainwin.cpp:3022
+msgid "CMainWindow::Send &Chat Request"
+msgstr "Po¹alji zahte&v za Æaskanje"
+
+#: mainwin.cpp:3023
+msgid "CMainWindow::Send &File Transfer"
+msgstr "Po¹alji Prenos &Fajla"
+
+#: mainwin.cpp:3020
+msgid "CMainWindow::Send &Message"
+msgstr "Po¹alji &Poruku"
+
+#: mainwin.cpp:3026
+msgid "CMainWindow::Send &SMS"
+msgstr "Po¹alji &SMS"
+
+#: mainwin.cpp:3021
+msgid "CMainWindow::Send &URL"
+msgstr "Po¹alji &URL"
+
+#: mainwin.cpp:3024
+msgid "CMainWindow::Send Contact &List"
+msgstr "Po¹alji Kontakt &Listu"
+
+#: mainwin.cpp:3030
+msgid "CMainWindow::Send"
+msgstr "Po¹alji"
+
+#: mainwin.cpp:2970
+msgid "CMainWindow::Set &Auto Response..."
+msgstr "Postavi &Auto Odgovor..."
+
+#: mainwin.cpp:2920
+msgid "CMainWindow::Set All"
+msgstr "Postavi Sve"
+
+#: mainwin.cpp:2974
+msgid "CMainWindow::Show Offline &Users"
+msgstr "Prika¾i &Korisnike koji nisu na vezi"
+
+#: mainwin.cpp:2914
+msgid "CMainWindow::Status Info"
+msgstr "Statusni Info"
+
+#: mainwin.cpp:2115
+msgid ""
+"CMainWindow::"
+"Successfully registered, your user identification\n"
+"number (UIN) is %1.\n"
+"Now set your personal information."
+msgstr ""
+"Uspe¹no registrovanje, Va¹ korisnièki identifikacioni\n"
+"broj (UIN) je %1.\n"
+"Sad podesite va¹e liène informacije."
+
+#: mainwin.cpp:1332
+msgid "CMainWindow::SysMsg"
+msgstr "SistPoruka"
+
+#: mainwin.cpp:2966
+msgid "CMainWindow::System Functions"
+msgstr "Sistemske Funkcije"
+
+#: mainwin.cpp:1333
+msgid "CMainWindow::System Message"
+msgstr "Sistemska Poruka"
+
+#: mainwin.cpp:644
+msgid "CMainWindow::System"
+msgstr "Sistem"
+
+#: mainwin.cpp:3044
+msgid "CMainWindow::Toggle &Floaty"
+msgstr ""
+
+#: mainwin.cpp:3032
+msgid "CMainWindow::U&tilities"
+msgstr "Pomoæni ala&ti"
+
+#: mainwin.cpp:2798
+msgid "CMainWindow::Unable to open icons file\n%1."
+msgstr "Ne mogu da otvorim fajl ikone\n%1."
+
+#: mainwin.cpp:2915
+msgid "CMainWindow::Unknown Packets"
+msgstr "Nepoznati Paketi"
+
+#: mainwin.cpp:3123
+msgid "CMainWindow::Up since %1\n"
+msgstr ""
+
+#: mainwin.cpp:3138
+msgid "CMainWindow::Up since %1\n\n"
+msgstr ""
+
+#: mainwin.cpp:2952
+msgid "CMainWindow::Update All Users"
+msgstr "A¾uriraj Sve Korisnike"
+
+#: mainwin.cpp:2953
+msgid "CMainWindow::Update Current Group"
+msgstr "A¾uriraj Trenutnu Grupu"
+
+#: mainwin.cpp:2967
+msgid "CMainWindow::User Functions"
+msgstr "Funkcije Korisnika"
+
+#: mainwin.cpp:3043
+msgid "CMainWindow::View &History"
+msgstr "Prika¾i &Istoriju"
+
+#: mainwin.cpp:1445
+msgid "CMainWindow::Visible List"
+msgstr "Vidljiva Lista"
+
+#: mainwin.cpp:2917
+msgid "CMainWindow::Warnings"
+msgstr "Upozorenja"
+
+#: mainwin.cpp:3252
+msgid ""
+"CMainWindow::"
+"You are currently registered as\n"
+"UIN: %1\n"
+"Base Directory: %2\n"
+"Rerun licq with the -b option to select a new\n"
+"base directory and then register a new user."
+msgstr ""
+"Vi ste trenutno registrovani kao\n"
+"UIN: %1\n"
+"Osnovni Direktorijum: %2\n"
+"Pokrenite ponovo licq sa -b opcijomda izaberete nov\n"
+"osnovni direktorijum i onda registrujete novog korisnika."
+
+#: mainwin.cpp:1341
+msgid "CMainWindow::s"
+msgstr ""
+
+#: outputwin.cpp:43
+msgid "CQtLogWindow::&Close"
+msgstr "Za&tvori"
+
+#: outputwin.cpp:39
+msgid "CQtLogWindow::&Save"
+msgstr "&Saèuvaj"
+
+#: outputwin.cpp:41
+msgid "CQtLogWindow::C&lear"
+msgstr "Oè&isti"
+
+#: outputwin.cpp:118
+msgid "CQtLogWindow::Failed to open file:\n%1"
+msgstr "Nisam uspeo da otvorim fajl:\n%1"
+
+#: outputwin.cpp:27
+msgid "CQtLogWindow::Licq Network Log"
+msgstr "Licq Zapis Mre¾e"
+
+#: randomchatdlg.cpp:39
+msgid "CRandomChatDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: randomchatdlg.cpp:35
+msgid "CRandomChatDlg::&Search"
+msgstr "&Tra¾i"
+
+#: randomchatdlg.cpp:57
+msgid "CRandomChatDlg::20 Something"
+msgstr "20 Ne¹to"
+
+#: randomchatdlg.cpp:58
+msgid "CRandomChatDlg::30 Something"
+msgstr "30 Ne¹to"
+
+#: randomchatdlg.cpp:59
+msgid "CRandomChatDlg::40 Something"
+msgstr "40 Ne¹to"
+
+#: randomchatdlg.cpp:60
+msgid "CRandomChatDlg::50 Plus"
+msgstr "50 Plus"
+
+#: randomchatdlg.cpp:55
+msgid "CRandomChatDlg::Games"
+msgstr "Igre"
+
+#: randomchatdlg.cpp:53
+msgid "CRandomChatDlg::General"
+msgstr "Op¹te"
+
+#: randomchatdlg.cpp:61
+msgid "CRandomChatDlg::Men Seeking Women"
+msgstr ""
+
+#: randomchatdlg.cpp:111
+msgid "CRandomChatDlg::No random chat user found in that group."
+msgstr ""
+
+#: randomchatdlg.cpp:28
+msgid "CRandomChatDlg::Random Chat Search"
+msgstr ""
+
+#: randomchatdlg.cpp:117
+msgid "CRandomChatDlg::Random chat search had an error."
+msgstr ""
+
+#: randomchatdlg.cpp:114
+msgid "CRandomChatDlg::Random chat search timed out."
+msgstr ""
+
+#: randomchatdlg.cpp:54
+msgid "CRandomChatDlg::Romance"
+msgstr "Romansa"
+
+#: randomchatdlg.cpp:97
+msgid "CRandomChatDlg::Searching for Random Chat Partner..."
+msgstr ""
+
+#: randomchatdlg.cpp:56
+msgid "CRandomChatDlg::Students"
+msgstr "Studenti"
+
+#: randomchatdlg.cpp:62
+msgid "CRandomChatDlg::Women Seeking Men"
+msgstr ""
+
+#: refusedlg.cpp:24
+msgid "CRefuseDlg::Cancel"
+msgstr "Poni¹ti"
+
+#: refusedlg.cpp:41
+msgid "CRefuseDlg::Licq %1 Refusal"
+msgstr ""
+
+#: refusedlg.cpp:17
+msgid "CRefuseDlg::Refusal message for %1 with "
+msgstr ""
+
+#: refusedlg.cpp:22
+msgid "CRefuseDlg::Refuse"
+msgstr "Odbaci"
+
+#: randomchatdlg.cpp:209
+msgid "CSetRandomChatGroupDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: randomchatdlg.cpp:237
+msgid "CSetRandomChatGroupDlg::&Close"
+msgstr "Za&tvori"
+
+#: randomchatdlg.cpp:144
+msgid "CSetRandomChatGroupDlg::&Set"
+msgstr "&Postavi"
+
+#: randomchatdlg.cpp:162
+msgid "CSetRandomChatGroupDlg::(none)"
+msgstr "(nijedan)"
+
+#: randomchatdlg.cpp:167
+msgid "CSetRandomChatGroupDlg::20 Something"
+msgstr "20 Ne¹to"
+
+#: randomchatdlg.cpp:168
+msgid "CSetRandomChatGroupDlg::30 Something"
+msgstr "30 Ne¹to"
+
+#: randomchatdlg.cpp:169
+msgid "CSetRandomChatGroupDlg::40 Something"
+msgstr "40 Ne¹to"
+
+#: randomchatdlg.cpp:170
+msgid "CSetRandomChatGroupDlg::50 Plus"
+msgstr "50 Plus"
+
+#: randomchatdlg.cpp:165
+msgid "CSetRandomChatGroupDlg::Games"
+msgstr "Igre"
+
+#: randomchatdlg.cpp:163
+msgid "CSetRandomChatGroupDlg::General"
+msgstr "Op¹te"
+
+#: randomchatdlg.cpp:171
+msgid "CSetRandomChatGroupDlg::Men Seeking Women"
+msgstr ""
+
+#: randomchatdlg.cpp:164
+msgid "CSetRandomChatGroupDlg::Romance"
+msgstr "Romansa"
+
+#: randomchatdlg.cpp:137
+msgid "CSetRandomChatGroupDlg::Set Random Chat Group"
+msgstr ""
+
+#: randomchatdlg.cpp:228
+msgid "CSetRandomChatGroupDlg::Setting Random Chat Group..."
+msgstr ""
+
+#: randomchatdlg.cpp:166
+msgid "CSetRandomChatGroupDlg::Students"
+msgstr "Studenti"
+
+#: randomchatdlg.cpp:172
+msgid "CSetRandomChatGroupDlg::Women Seeking Men"
+msgstr ""
+
+#: randomchatdlg.cpp:252
+msgid "CSetRandomChatGroupDlg::done"
+msgstr "gotovo"
+
+#: randomchatdlg.cpp:249
+msgid "CSetRandomChatGroupDlg::error"
+msgstr "gre¹ka"
+
+#: randomchatdlg.cpp:243
+msgid "CSetRandomChatGroupDlg::failed"
+msgstr "neuspe¹no"
+
+#: randomchatdlg.cpp:246
+msgid "CSetRandomChatGroupDlg::timed out"
+msgstr "vreme isteklo"
+
+#: userbox.cpp:58
+msgid "CUserView::%1 Floaty (%2)"
+msgstr ""
+
+#: userbox.cpp:1342
+msgid "CUserView::</nobr>"
+msgstr "</nobr>"
+
+#: userbox.cpp:1245
+msgid "CUserView::<br><b>Birthday&nbsp;Today!</b>"
+msgstr "CUserView::<br><b>Roðendan&nbsp;Danas!</b>"
+
+#: userbox.cpp:1280
+msgid "CUserView::<br><nobr>C: "
+msgstr "<br><nobr>C: "
+
+#: userbox.cpp:1274
+msgid "CUserView::<br><nobr>E: "
+msgstr "<br><nobr>E: "
+
+#: userbox.cpp:1283
+msgid "CUserView::<br><nobr>F: "
+msgstr "<br><nobr>F: "
+
+#: userbox.cpp:1293
+msgid "CUserView::<br><nobr>Ip: "
+msgstr "<br><nobr>Ip: "
+
+#: userbox.cpp:1342
+msgid "CUserView::<br><nobr>Logged In: "
+msgstr "<br><nobr>Prijavljen U:"
+
+#: userbox.cpp:1300
+msgid "CUserView::<br><nobr>O: "
+msgstr "<br><nobr>O: "
+
+#: userbox.cpp:1277
+msgid "CUserView::<br><nobr>P: "
+msgstr "<br><nobr>P: "
+
+#: userbox.cpp:1268
+msgid "CUserView::<br><u>Auto Response:</u>"
+msgstr ""
+
+#: userbox.cpp:1251
+msgid "CUserView::<br>Custom&nbsp;Auto&nbsp;Response"
+msgstr ""
+
+#: userbox.cpp:1260
+msgid "CUserView::<br>Licq&nbsp;%1"
+msgstr "<br>Licq&nbsp;%1"
+
+#: userbox.cpp:1258
+msgid "CUserView::<br>Licq&nbsp;%1/SSL"
+msgstr "<br>Licq&nbsp;%1/SSL"
+
+#: userbox.cpp:1248
+msgid "CUserView::<br>Secure&nbsp;connection"
+msgstr "<br>Sigurna&nbsp;konekcija"
+
+#: usercodec.cpp:20
+msgid "CUserView::Arabic"
+msgstr "Arapski"
+
+#: usercodec.cpp:23
+msgid "CUserView::Baltic"
+msgstr "Baltièki"
+
+#: usercodec.cpp:26
+msgid "CUserView::Central European"
+msgstr "Srednje Evropski"
+
+#: usercodec.cpp:29
+msgid "CUserView::Chinese Traditional"
+msgstr "Tradicionalni kineski"
+
+#: usercodec.cpp:28
+msgid "CUserView::Chinese"
+msgstr "Kineski"
+
+#: usercodec.cpp:33
+msgid "CUserView::Cyrillic"
+msgstr "Æirilièni"
+
+#: usercodec.cpp:35
+msgid "CUserView::Esperanto"
+msgstr "Esperanto"
+
+#: usercodec.cpp:38
+msgid "CUserView::Greek"
+msgstr "Grèki"
+
+#: usercodec.cpp:42
+msgid "CUserView::Hebrew"
+msgstr "Hebrejski"
+
+#: usercodec.cpp:46
+msgid "CUserView::Japanese"
+msgstr "Japanski"
+
+#: usercodec.cpp:48
+msgid "CUserView::Korean"
+msgstr "Korejski"
+
+#: userbox.cpp:524
+msgid "CUserView::Offline"
+msgstr "Nije na vezi"
+
+#: userbox.cpp:526
+msgid "CUserView::Online"
+msgstr "Na vezi"
+
+#: userbox.cpp:723
+msgid "CUserView::S"
+msgstr "S"
+
+#: usercodec.cpp:54
+msgid "CUserView::Tamil"
+msgstr "Tamilski"
+
+#: usercodec.cpp:56
+msgid "CUserView::Thai"
+msgstr "Tajlandski"
+
+#: usercodec.cpp:59
+msgid "CUserView::Turkish"
+msgstr "Turski"
+
+#: usercodec.cpp:61
+msgid "CUserView::Ukrainian"
+msgstr "Ukrajinski"
+
+#: usercodec.cpp:17
+msgid "CUserView::Unicode"
+msgstr "Unicode"
+
+#: usercodec.cpp:52
+msgid "CUserView::Western European"
+msgstr "Zapadno Evropski"
+
+#: utilitydlg.cpp:97
+msgid "CUtilityDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: utilitydlg.cpp:92
+msgid "CUtilityDlg::&Run"
+msgstr "&Pokreni"
+
+#: utilitydlg.cpp:233
+msgid "CUtilityDlg::C&lose"
+msgstr "Za&tvori"
+
+#: utilitydlg.cpp:195
+msgid "CUtilityDlg::Command Window"
+msgstr "Komandni Prozor"
+
+#: utilitydlg.cpp:38
+msgid "CUtilityDlg::Command:"
+msgstr "Komanda:"
+
+#: utilitydlg.cpp:55
+msgid "CUtilityDlg::Description:"
+msgstr "Opis:"
+
+#: utilitydlg.cpp:224
+msgid "CUtilityDlg::Done"
+msgstr "Gotovo"
+
+#: utilitydlg.cpp:232
+msgid "CUtilityDlg::Done:"
+msgstr "Gotovo:"
+
+#: utilitydlg.cpp:60
+msgid "CUtilityDlg::Edit final command"
+msgstr "Izmeni finalnu komandu"
+
+#: utilitydlg.cpp:159
+msgid "CUtilityDlg::Edit:"
+msgstr "Izmeni:"
+
+#: utilitydlg.cpp:218
+msgid "CUtilityDlg::Failed:"
+msgstr "Neuspe¹no:"
+
+#: utilitydlg.cpp:50
+msgid "CUtilityDlg::GUI"
+msgstr "GUI"
+
+#: utilitydlg.cpp:52
+msgid "CUtilityDlg::Internal"
+msgstr "Interno"
+
+#: utilitydlg.cpp:37
+msgid "CUtilityDlg::Licq Utility: %1"
+msgstr ""
+
+#: utilitydlg.cpp:167
+msgid "CUtilityDlg::Running:"
+msgstr "Pokreæem:"
+
+#: utilitydlg.cpp:51
+msgid "CUtilityDlg::Terminal"
+msgstr "Terminal"
+
+#: utilitydlg.cpp:63
+msgid "CUtilityDlg::User Fields"
+msgstr "Korisnièka Polja"
+
+#: utilitydlg.cpp:45
+msgid "CUtilityDlg::Window:"
+msgstr "Prozor:"
+
+#: chatdlg.cpp:601
+msgid "ChatDlg::%1 closed connection."
+msgstr "%1 zatvorio konekciju."
+
+#: chatdlg.cpp:162
+msgid "ChatDlg::&Audio"
+msgstr "&Audio"
+
+#: chatdlg.cpp:165
+msgid "ChatDlg::&Close Chat"
+msgstr "&Zatvori Æaskanje"
+
+#: chatdlg.cpp:168
+msgid "ChatDlg::&IRC Mode"
+msgstr "ChatDlg::&IRC Mod"
+
+#: chatdlg.cpp:167
+msgid "ChatDlg::&Pane Mode"
+msgstr ""
+
+#: chatdlg.cpp:163
+msgid "ChatDlg::&Save Chat"
+msgstr "&Saèuvaj Æaskanje"
+
+#: chatdlg.cpp:857
+msgid "ChatDlg::/%1.%2.chat"
+msgstr "/%1.%2.æaskanje"
+
+#: chatdlg.cpp:201
+msgid "ChatDlg::Background color"
+msgstr "Boja pozadine"
+
+#: chatdlg.cpp:190
+msgid "ChatDlg::Beep"
+msgstr "Zapi¹ti"
+
+#: chatdlg.cpp:226
+msgid "ChatDlg::Bold"
+msgstr "Podebljan"
+
+#: chatdlg.cpp:202
+msgid "ChatDlg::Changes the background color"
+msgstr "Menjanje boje pozadine"
+
+#: chatdlg.cpp:197
+msgid "ChatDlg::Changes the foreground color"
+msgstr "Menjanje boje ispisa"
+
+#: chatdlg.cpp:169
+msgid "ChatDlg::Chat"
+msgstr "Æaskanje"
+
+#: chatdlg.cpp:826
+msgid "ChatDlg::Do you want to save the chat session?"
+msgstr "Da li ¾elite da saèuvate ovo æaskanje?"
+
+#: chatdlg.cpp:196
+msgid "ChatDlg::Foreground color"
+msgstr "Boja ispisa"
+
+#: chatdlg.cpp:185
+msgid "ChatDlg::Ignore user settings"
+msgstr "Ignori¹i korisnikova pode¹avanja"
+
+#: chatdlg.cpp:186
+msgid "ChatDlg::Ignores user color settings"
+msgstr "Ignori¹i korisnikova pode¹avanja boje"
+
+#: chatdlg.cpp:231
+msgid "ChatDlg::Italic"
+msgstr "Kurziv"
+
+#: chatdlg.cpp:617
+msgid "ChatDlg::Licq - Chat %1"
+msgstr "Licq - Æaskanje %1"
+
+#: chatdlg.cpp:109
+msgid "ChatDlg::Licq - Chat"
+msgstr "Licq - Æaskanje"
+
+#: chatdlg.cpp:346
+msgid "ChatDlg::Local - %1"
+msgstr "Lokalni - %1"
+
+#: chatdlg.cpp:170
+msgid "ChatDlg::Mode"
+msgstr "Mod"
+
+#: chatdlg.cpp:827
+msgid "ChatDlg::No"
+msgstr "Ne"
+
+#: chatdlg.cpp:616
+msgid "ChatDlg::Remote - %1"
+msgstr "Udaljeni - %1"
+
+#: chatdlg.cpp:499
+msgid "ChatDlg::Remote - Connecting..."
+msgstr "Udaljeni - Povezivanje..."
+
+#: chatdlg.cpp:124
+msgid "ChatDlg::Remote - Not connected"
+msgstr "Udaljeni - Nije povezan"
+
+#: chatdlg.cpp:489
+msgid "ChatDlg::Remote - Waiting for joiners..."
+msgstr "Udaljeni - Èekam prido¹lice"
+
+#: chatdlg.cpp:191
+msgid "ChatDlg::Sends a Beep to all recipients"
+msgstr "Po¹alji zvuèni signal svim primaocima"
+
+#: chatdlg.cpp:237
+msgid "ChatDlg::Toggles Bold font"
+msgstr ""
+
+#: chatdlg.cpp:232
+msgid "ChatDlg::Toggles Italic font"
+msgstr ""
+
+#: chatdlg.cpp:917
+msgid "ChatDlg::Unable to load encoding <b>%1</b>. Message contents may appear garbled."
+msgstr ""
+
+#: chatdlg.cpp:236
+msgid "ChatDlg::Underline"
+msgstr "Podvuèeno"
+
+#: chatdlg.cpp:827
+msgid "ChatDlg::Yes"
+msgstr "Da"
+
+#: awaymsgdlg.cpp:223
+msgid "CustomAwayMsgDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: awaymsgdlg.cpp:221
+msgid "CustomAwayMsgDlg::&Clear"
+msgstr "&Oèisti"
+
+#: awaymsgdlg.cpp:216
+msgid "CustomAwayMsgDlg::&Hints"
+msgstr "&Saveti"
+
+#: awaymsgdlg.cpp:218
+msgid "CustomAwayMsgDlg::&Ok"
+msgstr "&Ok"
+
+#: awaymsgdlg.cpp:248
+msgid "CustomAwayMsgDlg::I am currently %1.\nYou can leave me a message."
+msgstr "Ja trenutno %1.\nMo¾ete da mi ostavite poruku."
+
+#: awaymsgdlg.cpp:243
+msgid "CustomAwayMsgDlg::Set Custom Auto Response for %1"
+msgstr ""
+
+#: editfile.cpp:37
+msgid "EditFileDlg::&Close"
+msgstr "Za&tvori"
+
+#: editfile.cpp:35
+msgid "EditFileDlg::&Save"
+msgstr "&Saèuvaj"
+
+#: editfile.cpp:77
+msgid "EditFileDlg::Failed to open file:\n%1"
+msgstr "Nisam uspeo da otvorim fajl:\n%1"
+
+#: editfile.cpp:23
+msgid "EditFileDlg::Licq File Editor - %1"
+msgstr "Licq Izmenjivaè Fajla - %1"
+
+#: editfile.cpp:66
+msgid "EditFileDlg::[ Read-Only ]"
+msgstr "[ Samo Za Èitanje ]"
+
+#: editgrp.cpp:64
+msgid "EditGrpDlg::&Done"
+msgstr "&Gotovo"
+
+#: editgrp.cpp:32
+msgid "EditGrpDlg::Add"
+msgstr "Dodaj"
+
+#: editgrp.cpp:88
+msgid "EditGrpDlg::All Users"
+msgstr "Svi Korisnici"
+
+#: editgrp.cpp:120
+msgid ""
+"EditGrpDlg::"
+"Are you sure you want to remove\n"
+"the group '%1'?"
+msgstr ""
+
+#: editgrp.cpp:169
+msgid "EditGrpDlg::Cancel"
+msgstr ""
+
+#: editgrp.cpp:50
+msgid "EditGrpDlg::Default:"
+msgstr ""
+
+#: editgrp.cpp:36
+msgid "EditGrpDlg::Edit Name"
+msgstr ""
+
+#: editgrp.cpp:37
+msgid "EditGrpDlg::Edit group name (hit enter to save)."
+msgstr ""
+
+#: editgrp.cpp:193
+msgid "EditGrpDlg::Edit"
+msgstr ""
+
+#: editgrp.cpp:24
+msgid "EditGrpDlg::Groups"
+msgstr ""
+
+#: editgrp.cpp:22
+msgid "EditGrpDlg::Licq - Edit Groups"
+msgstr ""
+
+#: editgrp.cpp:124
+msgid "EditGrpDlg::Ok"
+msgstr ""
+
+#: editgrp.cpp:33
+msgid "EditGrpDlg::Remove"
+msgstr ""
+
+#: editgrp.cpp:38
+msgid "EditGrpDlg::Set Default"
+msgstr ""
+
+#: editgrp.cpp:35
+msgid "EditGrpDlg::Shift Down"
+msgstr ""
+
+#: editgrp.cpp:34
+msgid "EditGrpDlg::Shift Up"
+msgstr ""
+
+#: editgrp.cpp:39
+msgid "EditGrpDlg::The default group to start up in."
+msgstr ""
+
+#: editgrp.cpp:105
+msgid "EditGrpDlg::noname"
+msgstr ""
+
+#: eventdesc.cpp:38
+msgid "Event::"
+msgstr ""
+
+#: eventdesc.cpp:52
+msgid "Event::(cancelled)"
+msgstr ""
+
+#: eventdesc.cpp:25
+msgid "Event::Added to Contact List"
+msgstr ""
+
+#: eventdesc.cpp:21
+msgid "Event::Authorization Granted"
+msgstr ""
+
+#: eventdesc.cpp:20
+msgid "Event::Authorization Refused"
+msgstr ""
+
+#: eventdesc.cpp:19
+msgid "Event::Authorization Request"
+msgstr ""
+
+#: eventdesc.cpp:15
+msgid "Event::Chat Request"
+msgstr ""
+
+#: eventdesc.cpp:32
+msgid "Event::Contact List"
+msgstr ""
+
+#: eventdesc.cpp:27
+msgid "Event::Email Pager"
+msgstr ""
+
+#: eventdesc.cpp:16
+msgid "Event::File Transfer"
+msgstr ""
+
+#: eventdesc.cpp:14
+msgid "Event::Message"
+msgstr ""
+
+#: eventdesc.cpp:13
+msgid "Event::Plugin Event"
+msgstr ""
+
+#: eventdesc.cpp:39
+msgid "Event::SMS"
+msgstr ""
+
+#: eventdesc.cpp:17
+msgid "Event::URL"
+msgstr ""
+
+#: eventdesc.cpp:47
+msgid "Event::Unknown Event"
+msgstr ""
+
+#: eventdesc.cpp:26
+msgid "Event::Web Panel"
+msgstr ""
+
+#: mainwin.cpp:3329
+msgid "HintsDlg::&Close"
+msgstr ""
+
+#: mainwin.cpp:3316
+msgid "HintsDlg::Licq - Hints"
+msgstr ""
+
+#: wharf.cpp:665
+msgid "IconManager_KDEStyle::<br>%1 msgs"
+msgstr ""
+
+#: wharf.cpp:667
+msgid "IconManager_KDEStyle::<br>1 msg"
+msgstr ""
+
+#: wharf.cpp:662
+msgid "IconManager_KDEStyle::<br><b>%1 system messages</b>"
+msgstr ""
+
+#: wharf.cpp:669
+msgid ""
+"IconManager_KDEStyle::"
+"<br>Left click - Show main window"
+"<br>Middle click - Show next message"
+"<br>Right click - System menu"
+msgstr ""
+
+#: wharf.cpp:358
+msgid "IconManager_Themed::Unable to load dock theme file\n(%1)\n:%2"
+msgstr ""
+
+#: wharf.cpp:394
+msgid "IconManager_Themed::Unable to load dock theme image\n%1"
+msgstr ""
+
+#: keyrequestdlg.cpp:76
+msgid "KeyRequestDlg::&Close"
+msgstr ""
+
+#: keyrequestdlg.cpp:70
+msgid "KeyRequestDlg::&Send"
+msgstr ""
+
+#: keyrequestdlg.cpp:175
+msgid "KeyRequestDlg::<font color=\"ForestGreen\">Secure channel established.</font>\n"
+msgstr ""
+
+#: keyrequestdlg.cpp:177
+msgid "KeyRequestDlg::<font color=\"blue\">Secure channel closed.</font>\n"
+msgstr ""
+
+#: keyrequestdlg.cpp:171
+msgid "KeyRequestDlg::<font color=\"red\">Could not connect to remote client.</font>"
+msgstr ""
+
+#: keyrequestdlg.cpp:168
+msgid "KeyRequestDlg::<font color=\"red\">Remote client does not support OpenSSL.</font>"
+msgstr ""
+
+#: keyrequestdlg.cpp:158
+msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel already established.</font>\n"
+msgstr ""
+
+#: keyrequestdlg.cpp:160
+msgid "KeyRequestDlg::<font color=\"yellow\">Secure channel not established.</font>\n"
+msgstr ""
+
+#: keyrequestdlg.cpp:92
+msgid ""
+"KeyRequestDlg::"
+"Client does not support OpenSSL.\n"
+"Rebuild Licq with OpenSSL support."
+msgstr ""
+
+#: keyrequestdlg.cpp:131
+msgid "KeyRequestDlg::Closing secure channel..."
+msgstr ""
+
+#: keyrequestdlg.cpp:30
+msgid "KeyRequestDlg::Licq - Secure Channel with %1"
+msgstr ""
+
+#: keyrequestdlg.cpp:126
+msgid "KeyRequestDlg::Requesting secure channel..."
+msgstr ""
+
+#: keyrequestdlg.cpp:34
+msgid ""
+"KeyRequestDlg::"
+"Secure channel is established using SSL\n"
+"with Diffie-Hellman key exchange and\n"
+"the TLS version 1 protocol.\n\n"
+msgstr ""
+
+#: keyrequestdlg.cpp:47
+msgid ""
+"KeyRequestDlg::"
+"The remote uses Licq %1, however it\n"
+"has no secure channel support compiled in.\n"
+"This probably won't work."
+msgstr ""
+
+#: keyrequestdlg.cpp:41
+msgid "KeyRequestDlg::The remote uses Licq %1/SSL."
+msgstr ""
+
+#: keyrequestdlg.cpp:53
+msgid ""
+"KeyRequestDlg::"
+"This only works with other Licq clients >= v0.85\n"
+"The remote doesn't seem to use such a client.\n"
+"This might not work."
+msgstr ""
+
+#: messagebox.cpp:235
+msgid "MsgView::Cancelled Event"
+msgstr ""
+
+#: messagebox.cpp:157
+msgid "MsgView::D"
+msgstr ""
+
+#: messagebox.cpp:229
+msgid "MsgView::Direct"
+msgstr ""
+
+#: messagebox.cpp:158
+msgid "MsgView::Event Type"
+msgstr ""
+
+#: messagebox.cpp:233
+msgid "MsgView::Multiple Recipients"
+msgstr ""
+
+#: messagebox.cpp:159
+msgid "MsgView::Options"
+msgstr ""
+
+#: messagebox.cpp:229
+msgid "MsgView::Server"
+msgstr ""
+
+#: messagebox.cpp:160
+msgid "MsgView::Time"
+msgstr ""
+
+#: messagebox.cpp:231
+msgid "MsgView::Urgent"
+msgstr ""
+
+#: optionsdlg.cpp:65
+msgid "OptionsDlg::&Apply"
+msgstr ""
+
+#: optionsdlg.cpp:69
+msgid "OptionsDlg::&Cancel"
+msgstr ""
+
+#: optionsdlg.cpp:61
+msgid "OptionsDlg::&OK"
+msgstr ""
+
+#: optionsdlg.cpp:698
+msgid "OptionsDlg::64 x 48 Dock Icon"
+msgstr ""
+
+#: optionsdlg.cpp:790
+msgid ""
+"OptionsDlg::"
+"<p>Command to execute when an event is received.<br>"
+"It will be passed the relevant parameters from "
+"below.<br>Parameters can contain the following "
+"expressions <br> which will be replaced with the relevant "
+"information:</p>"
+msgstr ""
+
+#: optionsdlg.cpp:823
+msgid "OptionsDlg::Accept Modes"
+msgstr ""
+
+#: optionsdlg.cpp:1098
+msgid "OptionsDlg::Alignment"
+msgstr ""
+
+#: optionsdlg.cpp:1153
+msgid "OptionsDlg::All incoming events will blink"
+msgstr ""
+
+#: optionsdlg.cpp:638
+msgid ""
+"OptionsDlg::"
+"All incoming messages automatically "
+"open when received, if we are "
+"online (or free for chat)"
+msgstr ""
+
+#: optionsdlg.cpp:660
+msgid "OptionsDlg::Allow dragging main window"
+msgstr ""
+
+#: optionsdlg.cpp:1156
+msgid "OptionsDlg::Allow scroll bar"
+msgstr ""
+
+#: optionsdlg.cpp:1157
+msgid "OptionsDlg::Allow the vertical scroll bar in the user list"
+msgstr ""
+
+#: optionsdlg.cpp:1143
+msgid "OptionsDlg::Always show online notify users"
+msgstr ""
+
+#: optionsdlg.cpp:1244
+msgid "OptionsDlg::Auto Away Messages"
+msgstr ""
+
+#: optionsdlg.cpp:1053
+msgid "OptionsDlg::Auto Away:"
+msgstr ""
+
+#: optionsdlg.cpp:634
+msgid "OptionsDlg::Auto Close Function Window"
+msgstr ""
+
+#: optionsdlg.cpp:1036
+msgid "OptionsDlg::Auto Logon:"
+msgstr ""
+
+#: optionsdlg.cpp:1059
+msgid "OptionsDlg::Auto N/A:"
+msgstr ""
+
+#: optionsdlg.cpp:1065
+msgid "OptionsDlg::Auto Offline:"
+msgstr ""
+
+#: optionsdlg.cpp:654
+msgid "OptionsDlg::Auto Position the Reply Window"
+msgstr ""
+
+#: optionsdlg.cpp:657
+msgid "OptionsDlg::Auto send through server"
+msgstr ""
+
+#: optionsdlg.cpp:875
+msgid "OptionsDlg::Auto"
+msgstr ""
+
+#: optionsdlg.cpp:637
+msgid "OptionsDlg::Auto-Popup Incoming Msg"
+msgstr ""
+
+#: optionsdlg.cpp:641
+msgid "OptionsDlg::Auto-Raise on Incoming Msg"
+msgstr ""
+
+#: optionsdlg.cpp:1037
+msgid "OptionsDlg::Automatically log on when first starting up."
+msgstr ""
+
+#: optionsdlg.cpp:658
+msgid ""
+"OptionsDlg::"
+"Automatically send messages through server "
+"if direct connection fails"
+msgstr ""
+
+#: optionsdlg.cpp:1042
+msgid "OptionsDlg::Away"
+msgstr ""
+
+#: optionsdlg.cpp:1246
+msgid "OptionsDlg::Away:"
+msgstr ""
+
+#: optionsdlg.cpp:1152
+msgid "OptionsDlg::Blink All Events"
+msgstr ""
+
+#: optionsdlg.cpp:1154
+msgid "OptionsDlg::Blink Urgent Events"
+msgstr ""
+
+#: optionsdlg.cpp:645
+msgid "OptionsDlg::Bold Message Label on Incoming Msg"
+msgstr ""
+
+#: optionsdlg.cpp:1187
+msgid "OptionsDlg::Cellular"
+msgstr ""
+
+#: optionsdlg.cpp:1120
+msgid "OptionsDlg::Center"
+msgstr ""
+
+#: optionsdlg.cpp:807
+msgid "OptionsDlg::Chat Request:"
+msgstr ""
+
+#: optionsdlg.cpp:664
+msgid "OptionsDlg::Chatmode Messageview"
+msgstr ""
+
+#: optionsdlg.cpp:651
+msgid "OptionsDlg::Check Clipboard For Urls/Files"
+msgstr ""
+
+#: optionsdlg.cpp:1108
+msgid "OptionsDlg::Column %1"
+msgstr ""
+
+#: optionsdlg.cpp:1087
+msgid "OptionsDlg::Column Configuration"
+msgstr ""
+
+#: optionsdlg.cpp:789
+msgid "OptionsDlg::Command:"
+msgstr ""
+
+#: optionsdlg.cpp:94
+msgid "OptionsDlg::Contact List"
+msgstr ""
+
+#: optionsdlg.cpp:696
+msgid "OptionsDlg::Controls whether or not the dockable icon should be displayed."
+msgstr ""
+
+#: optionsdlg.cpp:989
+msgid "OptionsDlg::Default Auto Response Messages"
+msgstr ""
+
+#: optionsdlg.cpp:669
+msgid "OptionsDlg::Default Encoding:"
+msgstr ""
+
+#: optionsdlg.cpp:697
+msgid "OptionsDlg::Default Icon"
+msgstr ""
+
+#: optionsdlg.cpp:1237
+msgid "OptionsDlg::Determines if email pager messages are ignored or not."
+msgstr ""
+
+#: optionsdlg.cpp:1231
+msgid "OptionsDlg::Determines if mass messages are ignored or not."
+msgstr ""
+
+#: optionsdlg.cpp:1228
+msgid ""
+"OptionsDlg::"
+"Determines if new users are automatically added "
+"to your list or must first request authorization."
+msgstr ""
+
+#: optionsdlg.cpp:1234
+msgid "OptionsDlg::Determines if web panel messages are ignored or not."
+msgstr ""
+
+#: optionsdlg.cpp:1045
+msgid "OptionsDlg::Do Not Disturb"
+msgstr "Ne Uznemiravaj"
+
+#: optionsdlg.cpp:691
+msgid "OptionsDlg::Docking"
+msgstr "Pristupanje"
+
+#: optionsdlg.cpp:1134
+msgid "OptionsDlg::Draw boxes around each square in the user list"
+msgstr ""
+
+#: optionsdlg.cpp:730
+msgid "OptionsDlg::Edit Font:"
+msgstr "Izmeni Font:"
+
+#: optionsdlg.cpp:1184
+msgid "OptionsDlg::Email"
+msgstr "Email"
+
+#: optionsdlg.cpp:787
+msgid ""
+"OptionsDlg::"
+"Enable running of \"Command\" when the relevant "
+"event occurs."
+msgstr ""
+
+#: optionsdlg.cpp:1213
+msgid "OptionsDlg::Extensions"
+msgstr "Ekstenzije"
+
+#: optionsdlg.cpp:1186
+msgid "OptionsDlg::Fax"
+msgstr "Faks"
+
+#: optionsdlg.cpp:810
+msgid "OptionsDlg::File Transfer:"
+msgstr "Prenos Fajla:"
+
+#: optionsdlg.cpp:863
+msgid "OptionsDlg::Firewall"
+msgstr "Vatreni zid"
+
+#: optionsdlg.cpp:733
+msgid "OptionsDlg::Font used in message editor etc."
+msgstr ""
+
+#: optionsdlg.cpp:722
+msgid "OptionsDlg::Font"
+msgstr "Font"
+
+#: optionsdlg.cpp:724
+msgid "OptionsDlg::Font:"
+msgstr "Font:"
+
+#: optionsdlg.cpp:1092
+msgid "OptionsDlg::Format"
+msgstr "Format"
+
+#: optionsdlg.cpp:1163
+msgid "OptionsDlg::Frame Style: "
+msgstr "Stil Okvira:"
+
+#: optionsdlg.cpp:1004
+msgid "OptionsDlg::Free For Chat"
+msgstr "Slobodni Za Æaskanje"
+
+#: optionsdlg.cpp:1046
+msgid "OptionsDlg::Free for Chat"
+msgstr "Slobodni za Æaskanje"
+
+#: optionsdlg.cpp:93
+msgid "OptionsDlg::General"
+msgstr "Op¹te"
+
+#: optionsdlg.cpp:887
+msgid "OptionsDlg::HTTPS"
+msgstr "HTTPS"
+
+#: optionsdlg.cpp:1175
+msgid "OptionsDlg::Hot key: "
+msgstr "Vruæi Taster:"
+
+#: optionsdlg.cpp:865
+msgid "OptionsDlg::I can receive direct connections"
+msgstr "Mogu da primam direktne konekcije"
+
+#: optionsdlg.cpp:856
+msgid "OptionsDlg::ICQ Server Port:"
+msgstr "Port ICQ Servera:"
+
+#: optionsdlg.cpp:855
+msgid "OptionsDlg::ICQ Server:"
+msgstr "ICQ Server:"
+
+#: optionsdlg.cpp:1188
+msgid "OptionsDlg::IP"
+msgstr "IP"
+
+#: optionsdlg.cpp:648
+msgid ""
+"OptionsDlg::"
+"If not checked, a user will be automatically "
+"removed from \"New User\" group when you first"
+"send an event to them"
+msgstr ""
+
+#: optionsdlg.cpp:1236
+msgid "OptionsDlg::Ignore Email Pager"
+msgstr "Ignori¹i Email Pejd¾er"
+
+#: optionsdlg.cpp:1230
+msgid "OptionsDlg::Ignore Mass Messages"
+msgstr "Ignori¹i Masovne Poruke"
+
+#: optionsdlg.cpp:1227
+msgid "OptionsDlg::Ignore New Users"
+msgstr "Ignori¹i Nove Korisnike"
+
+#: optionsdlg.cpp:1233
+msgid "OptionsDlg::Ignore Web Panel"
+msgstr "Ignori¹i Web Panel"
+
+#: optionsdlg.cpp:1050
+msgid "OptionsDlg::Invisible"
+msgstr "Nevidljivo"
+
+#: optionsdlg.cpp:1189
+msgid "OptionsDlg::Last online"
+msgstr ""
+
+#: optionsdlg.cpp:1118
+msgid "OptionsDlg::Left"
+msgstr "Levo"
+
+#: optionsdlg.cpp:661
+msgid ""
+"OptionsDlg::"
+"Lets you drag around the main window "
+"with your mouse"
+msgstr ""
+
+#: optionsdlg.cpp:49
+msgid "OptionsDlg::Licq Options"
+msgstr "Licq Opcije"
+
+#: optionsdlg.cpp:668
+msgid "OptionsDlg::Localization"
+msgstr "Lokalizacija"
+
+#: optionsdlg.cpp:628
+msgid "OptionsDlg::Main Window"
+msgstr "Glavni Prozor"
+
+#: optionsdlg.cpp:1147
+msgid ""
+"OptionsDlg::"
+"Make the user window transparent when there "
+"is no scroll bar"
+msgstr ""
+
+#: optionsdlg.cpp:647
+msgid "OptionsDlg::Manual \"New User\" group handling"
+msgstr ""
+
+#: optionsdlg.cpp:819
+msgid "OptionsDlg::Message Sent:"
+msgstr "Poruka Poslata:"
+
+#: optionsdlg.cpp:801
+msgid "OptionsDlg::Message:"
+msgstr "Poruka:"
+
+#: optionsdlg.cpp:98
+msgid "OptionsDlg::Miscellaneous"
+msgstr "Razno"
+
+#: optionsdlg.cpp:1248
+msgid "OptionsDlg::N/A:"
+msgstr "N/A:"
+
+#: optionsdlg.cpp:96
+msgid "OptionsDlg::Network"
+msgstr "Mre¾a"
+
+#: optionsdlg.cpp:1070
+msgid "OptionsDlg::Never"
+msgstr "Nikad"
+
+#: optionsdlg.cpp:1043
+msgid "OptionsDlg::Not Available"
+msgstr "Nije na raspolaganju"
+
+#: optionsdlg.cpp:1054
+msgid ""
+"OptionsDlg::"
+"Number of minutes of inactivity after which to "
+"automatically be marked \"away\".  Set to \"0\" "
+"to disable."
+msgstr ""
+
+#: optionsdlg.cpp:1060
+msgid ""
+"OptionsDlg::"
+"Number of minutes of inactivity after which to "
+"automatically be marked \"not available\".  Set to \"0\" "
+"to disable."
+msgstr ""
+
+#: optionsdlg.cpp:1066
+msgid ""
+"OptionsDlg::"
+"Number of minutes of inactivity after which to "
+"automatically go offline.  Set to \"0\" "
+"to disable."
+msgstr ""
+
+#: optionsdlg.cpp:1044
+msgid "OptionsDlg::Occupied"
+msgstr "Okupiran"
+
+#: optionsdlg.cpp:1040
+msgid "OptionsDlg::Offline"
+msgstr "Nije na vezi"
+
+#: optionsdlg.cpp:826
+msgid "OptionsDlg::OnEvent in Away"
+msgstr ""
+
+#: optionsdlg.cpp:832
+msgid "OptionsDlg::OnEvent in DND"
+msgstr ""
+
+#: optionsdlg.cpp:828
+msgid "OptionsDlg::OnEvent in N/A"
+msgstr ""
+
+#: optionsdlg.cpp:830
+msgid "OptionsDlg::OnEvent in Occupied"
+msgstr ""
+
+#: optionsdlg.cpp:95
+msgid "OptionsDlg::OnEvent"
+msgstr ""
+
+#: optionsdlg.cpp:783
+msgid "OptionsDlg::OnEvents Enabled"
+msgstr ""
+
+#: optionsdlg.cpp:834
+msgid "OptionsDlg::Online Notify when Logging On"
+msgstr ""
+
+#: optionsdlg.cpp:813
+msgid "OptionsDlg::Online Notify:"
+msgstr "Na-vezi Obave¹tenje:"
+
+#: optionsdlg.cpp:1190
+msgid "OptionsDlg::Online Time"
+msgstr "Vreme Na-vezi"
+
+#: optionsdlg.cpp:1041
+msgid "OptionsDlg::Online"
+msgstr "Na Vezi"
+
+#: optionsdlg.cpp:1155
+msgid "OptionsDlg::Only urgent events will blink"
+msgstr "Samo hitni dogaðaji æe treptati"
+
+#: optionsdlg.cpp:1129
+msgid "OptionsDlg::Options"
+msgstr "Opcije"
+
+#: optionsdlg.cpp:1165
+msgid ""
+"OptionsDlg::"
+"Override the skin setting for the frame "
+"style of the user window:\n"
+"   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
+" + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
+" + 240 (Shadow)"
+msgstr ""
+
+#: optionsdlg.cpp:814
+msgid "OptionsDlg::Parameter for online notification"
+msgstr "Parametar za 'Na-vezi' obave¹tavanje"
+
+#: optionsdlg.cpp:805
+msgid "OptionsDlg::Parameter for received URLs"
+msgstr "Parametar za primljene URL-ove"
+
+#: optionsdlg.cpp:808
+msgid "OptionsDlg::Parameter for received chat requests"
+msgstr "Parametar za primljene zahteve za æaskanje"
+
+#: optionsdlg.cpp:811
+msgid "OptionsDlg::Parameter for received file transfers"
+msgstr "Parametar za primljene prenose fajlova"
+
+#: optionsdlg.cpp:802
+msgid "OptionsDlg::Parameter for received messages"
+msgstr "Parametar za primljene poruke"
+
+#: optionsdlg.cpp:817
+msgid "OptionsDlg::Parameter for received system messages"
+msgstr "Parametar za primljene sistemske poruke"
+
+#: optionsdlg.cpp:820
+msgid "OptionsDlg::Parameter for sent messages"
+msgstr "Parametar za slanje poruka"
+
+#: optionsdlg.cpp:798
+msgid "OptionsDlg::Parameters"
+msgstr "Parametri"
+
+#: optionsdlg.cpp:1224
+msgid "OptionsDlg::Paranoia"
+msgstr "Paranoja"
+
+#: optionsdlg.cpp:901
+msgid "OptionsDlg::Password:"
+msgstr "Lozinka:"
+
+#: optionsdlg.cpp:827
+msgid "OptionsDlg::Perform OnEvent command in away mode"
+msgstr ""
+
+#: optionsdlg.cpp:833
+msgid "OptionsDlg::Perform OnEvent command in do not disturb mode"
+msgstr ""
+
+#: optionsdlg.cpp:829
+msgid "OptionsDlg::Perform OnEvent command in not available mode"
+msgstr ""
+
+#: optionsdlg.cpp:831
+msgid "OptionsDlg::Perform OnEvent command in occupied mode"
+msgstr ""
+
+#: optionsdlg.cpp:835
+msgid ""
+"OptionsDlg::"
+"Perform the online notify OnEvent "
+"when logging on (this is different from how the Mirabilis client works)"
+msgstr ""
+
+#: optionsdlg.cpp:1185
+msgid "OptionsDlg::Phone"
+msgstr "Telefon"
+
+#: optionsdlg.cpp:1182
+msgid "OptionsDlg::Popup info"
+msgstr ""
+
+#: optionsdlg.cpp:867
+msgid "OptionsDlg::Port Range:"
+msgstr "Opseg Porta:"
+
+#: optionsdlg.cpp:655
+msgid ""
+"OptionsDlg::"
+"Position a new reply window just underneath "
+"the message view window"
+msgstr ""
+
+#: optionsdlg.cpp:1009
+msgid "OptionsDlg::Preset slot:"
+msgstr "Predefinisan slot:"
+
+#: optionsdlg.cpp:1294
+msgid "OptionsDlg::Previous Message"
+msgstr "Prethodna Poruka"
+
+#: optionsdlg.cpp:891
+msgid "OptionsDlg::Proxy Server Port:"
+msgstr "Port Proksi Servera:"
+
+#: optionsdlg.cpp:890
+msgid "OptionsDlg::Proxy Server:"
+msgstr "Proksi Server:"
+
+#: optionsdlg.cpp:884
+msgid "OptionsDlg::Proxy Type:"
+msgstr "Vrsta Proksija:"
+
+#: optionsdlg.cpp:879
+msgid "OptionsDlg::Proxy"
+msgstr "Proksi"
+
+#: optionsdlg.cpp:1119
+msgid "OptionsDlg::Right"
+msgstr "Desno"
+
+#: optionsdlg.cpp:1024
+msgid "OptionsDlg::Save"
+msgstr "Saèuvaj"
+
+#: optionsdlg.cpp:732
+msgid "OptionsDlg::Select Font"
+msgstr "Izaberi font"
+
+#: optionsdlg.cpp:727
+msgid "OptionsDlg::Select a font from the system list"
+msgstr "Izaberite font iz sistemske liste"
+
+#: optionsdlg.cpp:699
+msgid ""
+"OptionsDlg::"
+"Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf "
+"and a shorter 64x48 icon for use in the Gnome/KDE panel."
+msgstr ""
+
+#: optionsdlg.cpp:852
+msgid "OptionsDlg::Server settings"
+msgstr "Pode¹avanja Servera"
+
+#: optionsdlg.cpp:635
+msgid ""
+"OptionsDlg::"
+"Sets the default behavior for auto closing "
+"the user function window after a succesful event"
+msgstr ""
+
+#: optionsdlg.cpp:670
+msgid "OptionsDlg::Sets which default encoding should be used for newly added contacts."
+msgstr ""
+
+#: optionsdlg.cpp:1135
+msgid "OptionsDlg::Show Column Headers"
+msgstr "Prika¾i Zaglavlja Kolone"
+
+#: optionsdlg.cpp:1158
+msgid "OptionsDlg::Show Extended Icons"
+msgstr "Prika¾i Pro¹irene Ikone"
+
+#: optionsdlg.cpp:1133
+msgid "OptionsDlg::Show Grid Lines"
+msgstr "Prika¾i Linije Mre¾e"
+
+#: optionsdlg.cpp:1138
+msgid "OptionsDlg::Show User Dividers"
+msgstr ""
+
+#: optionsdlg.cpp:683
+msgid "OptionsDlg::Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings."
+msgstr ""
+
+#: optionsdlg.cpp:682
+msgid "OptionsDlg::Show all encodings"
+msgstr ""
+
+#: optionsdlg.cpp:1159
+msgid ""
+"OptionsDlg::"
+"Show birthday, invisible, and custom auto response "
+"icons to the right of users in the list"
+msgstr ""
+
+#: optionsdlg.cpp:631
+msgid "OptionsDlg::Show group name if no messages"
+msgstr ""
+
+#: optionsdlg.cpp:1144
+msgid ""
+"OptionsDlg::"
+"Show online notify users who are offline even "
+"when offline users are hidden."
+msgstr ""
+
+#: optionsdlg.cpp:1139
+msgid ""
+"OptionsDlg::"
+"Show the \"--online--\" and \"--offline--\" bars "
+"in the contact list"
+msgstr ""
+
+#: optionsdlg.cpp:665
+msgid "OptionsDlg::Show the current chat history in Send Window"
+msgstr ""
+
+#: optionsdlg.cpp:632
+msgid ""
+"OptionsDlg::"
+"Show the name of the current group in the "
+"messages label when there are no new messages"
+msgstr ""
+
+#: optionsdlg.cpp:1141
+msgid "OptionsDlg::Sort Online Users by Status"
+msgstr "Sortiraj Na-vezi Korisnike po Statusu"
+
+#: optionsdlg.cpp:1142
+msgid "OptionsDlg::Sort all online users by their actual status"
+msgstr ""
+
+#: optionsdlg.cpp:643
+msgid "OptionsDlg::Start Hidden"
+msgstr "Pokreni Skriveno"
+
+#: optionsdlg.cpp:1034
+msgid "OptionsDlg::Startup"
+msgstr "Poèetak"
+
+#: optionsdlg.cpp:97
+msgid "OptionsDlg::Status"
+msgstr "Status"
+
+#: optionsdlg.cpp:995
+msgid "OptionsDlg::Status:"
+msgstr "Status:"
+
+#: optionsdlg.cpp:1132
+msgid "OptionsDlg::Store your contacts on the server so they are accessible from different locations and/or programs"
+msgstr ""
+
+#: optionsdlg.cpp:816
+msgid "OptionsDlg::System Msg:"
+msgstr "Sistemska Poruka:"
+
+#: optionsdlg.cpp:673
+msgid "OptionsDlg::System default (%1)"
+msgstr "Sistemski predefinisano (%1)"
+
+#: optionsdlg.cpp:868
+msgid "OptionsDlg::TCP port range for incoming connections."
+msgstr "Opseg TCP porta za dolazeæe konekcije."
+
+#: optionsdlg.cpp:1221
+msgid "OptionsDlg::Terminal:"
+msgstr "Terminal:"
+
+#: optionsdlg.cpp:1016
+msgid "OptionsDlg::Text:"
+msgstr "Tekst:"
+
+#: optionsdlg.cpp:1099
+msgid "OptionsDlg::The alignment of the column"
+msgstr "Poravnanje kolone"
+
+#: optionsdlg.cpp:1222
+msgid "OptionsDlg::The command to run to start your terminal program."
+msgstr ""
+
+#: optionsdlg.cpp:1217
+msgid ""
+"OptionsDlg::"
+"The command to run to view a URL.  Will be passed the URL "
+"as a parameter."
+msgstr ""
+
+#: optionsdlg.cpp:723
+msgid "OptionsDlg::The fonts used"
+msgstr "Kori¹æeni fontovi"
+
+#: optionsdlg.cpp:1093
+msgid ""
+"OptionsDlg::"
+"The format string used to define what will "
+"appear in each column.\n"
+"The following parameters can be used:\n"
+msgstr ""
+
+#: optionsdlg.cpp:642
+msgid "OptionsDlg::The main window will raise on incoming messages"
+msgstr ""
+
+#: optionsdlg.cpp:644
+msgid "OptionsDlg::The main window will start hidden. Only the dock icon will be visible."
+msgstr ""
+
+#: optionsdlg.cpp:646
+msgid "OptionsDlg::The message info label will be bold if there are incoming messages"
+msgstr ""
+
+#: optionsdlg.cpp:1091
+msgid "OptionsDlg::The string which will appear in the list box column header"
+msgstr ""
+
+#: optionsdlg.cpp:1097
+msgid "OptionsDlg::The width of the column"
+msgstr "©irina kolone"
+
+#: optionsdlg.cpp:704
+msgid "OptionsDlg::Theme:"
+msgstr "Tema:"
+
+#: optionsdlg.cpp:701
+msgid "OptionsDlg::Themed Icon"
+msgstr "Ikona teme"
+
+#: optionsdlg.cpp:1090
+msgid "OptionsDlg::Title"
+msgstr "Naslov"
+
+#: optionsdlg.cpp:1146
+msgid "OptionsDlg::Transparent when possible"
+msgstr "Providno kada je to moguæe"
+
+#: optionsdlg.cpp:1136
+msgid ""
+"OptionsDlg::"
+"Turns on or off the display of headers above "
+"each column in the user list"
+msgstr ""
+
+#: optionsdlg.cpp:804
+msgid "OptionsDlg::URL:"
+msgstr "URL:"
+
+#: optionsdlg.cpp:1216
+msgid "OptionsDlg::Url Viewer:"
+msgstr "Prikazivaè URL-a:"
+
+#: optionsdlg.cpp:695
+msgid "OptionsDlg::Use Dock Icon"
+msgstr "Koristi spu¹tenu ikonu"
+
+#: optionsdlg.cpp:1149
+msgid "OptionsDlg::Use Font Styles"
+msgstr "Koristi Stilove Fontova"
+
+#: optionsdlg.cpp:1172
+msgid "OptionsDlg::Use System Background Color"
+msgstr "Koristi Sistemsku Boju Pozadine"
+
+#: optionsdlg.cpp:895
+msgid "OptionsDlg::Use authorization"
+msgstr "Koristi autorizaciju"
+
+#: optionsdlg.cpp:1150
+msgid ""
+"OptionsDlg::"
+"Use italics and bold in the user list to "
+"indicate special characteristics such as online notify and visible list"
+msgstr ""
+"Koristi kosa ili masna slova u listi korisnika za "
+"obele¾avanje specijalnih karakteristika kao ¹to su vidljiva lista i obave¹tenje na-vezi"
+
+#: optionsdlg.cpp:881
+msgid "OptionsDlg::Use proxy server"
+msgstr "Koristi proksi server"
+
+#: optionsdlg.cpp:1131
+msgid "OptionsDlg::Use server side contact list"
+msgstr "Koristi kontakt listu od strane servera"
+
+#: optionsdlg.cpp:899
+msgid "OptionsDlg::Username:"
+msgstr "Korisnik:"
+
+#: optionsdlg.cpp:652
+msgid ""
+"OptionsDlg::"
+"When double-clicking on a user to send a message "
+"check for urls/files in the clipboard"
+msgstr ""
+"Kada duplo-kliknete na korisnika za slanje poruke "
+"proverite za URL/fajlove u klipbordu"
+
+#: optionsdlg.cpp:1096
+msgid "OptionsDlg::Width"
+msgstr "©irina"
+
+#: optionsdlg.cpp:872
+msgid "OptionsDlg::\tto"
+msgstr "\tu"
+
+#: optionsdlg.cpp:578
+msgid "OptionsDlg::default (%1)"
+msgstr "predefinisano (%1)"
+
+#: optionsdlg.cpp:391
+msgid "OptionsDlg::default"
+msgstr "predefinisano"
+
+#: optionsdlg.cpp:296
+msgid "OptionsDlg::none"
+msgstr "ni¹ta"
+
+#: passworddlg.cpp:53
+msgid "PasswordDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: passworddlg.cpp:37
+msgid "PasswordDlg::&Password:"
+msgstr "&Lozinka:"
+
+#: passworddlg.cpp:38
+msgid "PasswordDlg::&Verify:"
+msgstr "Pro&veri:"
+
+#: passworddlg.cpp:41
+msgid "PasswordDlg::Enter your ICQ password here."
+msgstr "Unesite ovde va¹u ICQ lozinku."
+
+#: passworddlg.cpp:94
+msgid "PasswordDlg::ICQ Password [Setting...]"
+msgstr "ICQ Lozinka [Pode¹avanje...]"
+
+#: passworddlg.cpp:81
+msgid "PasswordDlg::Invalid password, must be 8 characters or less."
+msgstr "Pogre¹na lozinka, mora biti 8 znakova ili manje."
+
+#: passworddlg.cpp:31
+msgid "PasswordDlg::Licq - Set Password"
+msgstr "Licq - Postavi Lozinku"
+
+#: passworddlg.cpp:34
+msgid "PasswordDlg::Password"
+msgstr "Lozinka"
+
+#: passworddlg.cpp:86
+msgid "PasswordDlg::Passwords do not match, try again."
+msgstr "Lozinka se ne poklapa, probajte ponovo."
+
+#: passworddlg.cpp:122
+msgid "PasswordDlg::Set Password [Setting..."
+msgstr ""
+
+#: passworddlg.cpp:125
+msgid "PasswordDlg::Set Password"
+msgstr "Podesi Lozinku"
+
+#: passworddlg.cpp:44
+msgid "PasswordDlg::Verify your ICQ password here."
+msgstr "Proverite ovde va¹u ICQ lozinku."
+
+#: passworddlg.cpp:115
+msgid "PasswordDlg::error"
+msgstr "gre¹ka"
+
+#: passworddlg.cpp:109
+msgid "PasswordDlg::failed"
+msgstr "neuspe¹no"
+
+#: passworddlg.cpp:112
+msgid "PasswordDlg::timed out"
+msgstr "vreme je isteklo"
+
+#: plugindlg.cpp:50
+msgid "PluginDlg::Available"
+msgstr "Omoguæeni"
+
+#: plugindlg.cpp:41
+msgid "PluginDlg::Configure"
+msgstr "Podesi"
+
+#: plugindlg.cpp:30
+msgid "PluginDlg::Description"
+msgstr "Opis"
+
+#: plugindlg.cpp:39
+msgid "PluginDlg::Details"
+msgstr "Detalji"
+
+#: plugindlg.cpp:35
+msgid "PluginDlg::Disable"
+msgstr "Onemoguæi"
+
+#: plugindlg.cpp:61
+msgid "PluginDlg::Done"
+msgstr "Gotovo"
+
+#: plugindlg.cpp:33
+msgid "PluginDlg::Enable"
+msgstr "Omoguæi"
+
+#: plugindlg.cpp:26
+msgid "PluginDlg::Id"
+msgstr "Id"
+
+#: plugindlg.cpp:137
+msgid "PluginDlg::Licq Plugin %1 %2\n"
+msgstr "Licq Dodatak %1 %2\n"
+
+#: plugindlg.cpp:54
+msgid "PluginDlg::Load"
+msgstr "Uèitaj"
+
+#: plugindlg.cpp:23
+msgid "PluginDlg::Loaded"
+msgstr "Uèitano"
+
+#: plugindlg.cpp:27
+msgid "PluginDlg::Name"
+msgstr "Ime"
+
+#: plugindlg.cpp:178
+msgid "PluginDlg::Plugin %1 has no configuration file"
+msgstr "Dodatak %1 nema fajl za pode¹avanje"
+
+#: plugindlg.cpp:58
+msgid "PluginDlg::Refresh"
+msgstr "Osve¾i"
+
+#: plugindlg.cpp:29
+msgid "PluginDlg::Status"
+msgstr "Status"
+
+#: plugindlg.cpp:37
+msgid "PluginDlg::Unload"
+msgstr "Izèitaj"
+
+#: plugindlg.cpp:28
+msgid "PluginDlg::Version"
+msgstr "Verzija"
+
+#: ewidgets.cpp:75
+msgid "QMessageBox::Licq Error"
+msgstr "Licq Gre¹ka"
+
+#: ewidgets.cpp:55
+msgid "QMessageBox::Licq Information"
+msgstr "Licq Informacije"
+
+#: ewidgets.cpp:45
+msgid "QMessageBox::Licq Question"
+msgstr "Licq Pitanje"
+
+#: ewidgets.cpp:65
+msgid "QMessageBox::Licq Warning"
+msgstr "Licq Upozorenje"
+
+#: chatdlg.cpp:878
+msgid "QString::Failed to open file:\n%1"
+msgstr "Nisam uspeo da otvorim fajl:\n%1"
+
+#: registeruser.cpp:42
+msgid "RegisterUserDlg::&Register Existing User"
+msgstr ""
+
+#: registeruser.cpp:143
+msgid "RegisterUserDlg::Invalid UIN.  Try again."
+msgstr "Neispravan UIN. Probajte ponovo."
+
+#: registeruser.cpp:82
+msgid "RegisterUserDlg::Licq User Registration"
+msgstr "Licq Registracija Korisnika"
+
+#: registeruser.cpp:126
+msgid ""
+"RegisterUserDlg::"
+"Now please click 'Finish' to start "
+"the registration process."
+msgstr ""
+"Pritisnite 'Zavr¹i' za pokretanje "
+"registracionog procesa."
+
+#: registeruser.cpp:120
+msgid ""
+"RegisterUserDlg::"
+"Now please press the 'Back' button "
+"and try again."
+msgstr ""
+"Pritisnite 'Nazad' dugme "
+"i poku¹ajte ponovo."
+
+#: registeruser.cpp:51
+msgid "RegisterUserDlg::Password:"
+msgstr "Lozinka:"
+
+#: registeruser.cpp:109
+msgid "RegisterUserDlg::Please enter your password in both input fields."
+msgstr "Molim unesite va¹u lozinku u oba polja."
+
+#: registeruser.cpp:150
+msgid "RegisterUserDlg::Registered succesfully.  Now log on and update your personal info."
+msgstr "Registrovanje uspe¹no. Sad se ulogujte i osve¾ite va¹ lièni info."
+
+#: registeruser.cpp:114
+msgid "RegisterUserDlg::The passwords don't seem to match."
+msgstr "Lozinka se ne poklapa."
+
+#: registeruser.cpp:60
+msgid "RegisterUserDlg::UIN Registration - Step 2"
+msgstr "UIN Registracija - Korak 2"
+
+#: registeruser.cpp:75
+msgid "RegisterUserDlg::UIN Registration - Step 3"
+msgstr "UIN Registracija - Korak 3"
+
+#: registeruser.cpp:34
+msgid "RegisterUserDlg::UIN Registration"
+msgstr "UIN Registracija"
+
+#: registeruser.cpp:46
+msgid "RegisterUserDlg::Uin:"
+msgstr "Uin:"
+
+#: registeruser.cpp:155
+msgid "RegisterUserDlg::User Registration in Progress..."
+msgstr "Registrovanje korisnika u toku..."
+
+#: registeruser.cpp:56
+msgid "RegisterUserDlg::Verify:"
+msgstr "Proveri:"
+
+#: registeruser.cpp:25
+msgid ""
+"RegisterUserDlg::"
+"Welcome to the Registration Wizard.\n\n"
+"You can register a new user here, or configure "
+"Licq to use an existing UIN.\n\n"
+"If you are registering a new uin, choose "
+"a password and click \"Finish\".\n"
+"If you already have a uin, then toggle \"Register Existing User\",\n"
+"enter your uin and your password, and click \"OK\"\n\n"
+"Press \"Next\" to proceed."
+msgstr ""
+"Dobrodo¹li kod Èarobnjaka za Registrovanje.\n\n"
+"Ovde mo¾ete registrovati novog korisnika, ili podesiti "
+"Licq da koristi postojeæi UIN.\n\n"
+"Ako registrujete nov UIN, izaberite "
+"lozinku i kliknite na \"Zavr¹i\".\n"
+"Ako veæ imate UIN, onda prebacite na \"Registruj postojeæeg korisnika\",\n"
+"unesite va¹ UIN i va¹u lozinku, i kliknite na \"OK\"\n\n"
+"Pritisnite \"Sledeæe\" za nastavak."
+
+#: registeruser.cpp:103
+msgid ""
+"RegisterUserDlg::"
+"You need to enter a valid UIN when you "
+"try to register an existing user. "
+msgstr ""
+"Neophodno je da unesete ispravan UIN kad "
+"poku¹ate da registrujete postojeæeg korisnika."
+
+#: searchuserdlg.cpp:390
+msgid "SearchUserDlg::%1 more users found. Narrow search."
+msgstr "%1 korisnika pronaðeno. Su¾ena pretraga."
+
+#: searchuserdlg.cpp:424
+msgid "SearchUserDlg::&Add %1 Users"
+msgstr "&Dodaj %1 Korisnika"
+
+#: searchuserdlg.cpp:421
+msgid "SearchUserDlg::&Add User"
+msgstr "&Dodaj Korisnika"
+
+#: searchuserdlg.cpp:223
+msgid "SearchUserDlg::&Done"
+msgstr "&Gotovo"
+
+#: searchuserdlg.cpp:188
+msgid "SearchUserDlg::&Email"
+msgstr "&Email"
+
+#: searchuserdlg.cpp:209
+msgid "SearchUserDlg::&Keyword"
+msgstr "&Kljuèna reè"
+
+#: searchuserdlg.cpp:214
+msgid "SearchUserDlg::&Search"
+msgstr "&Tra¾i"
+
+#: searchuserdlg.cpp:199
+msgid "SearchUserDlg::&Uin#"
+msgstr "&Uin#"
+
+#: searchuserdlg.cpp:178
+msgid "SearchUserDlg::&Whitepages"
+msgstr "&Bele stranice"
+
+#: searchuserdlg.cpp:125
+msgid "SearchUserDlg::18 - 22"
+msgstr "18 - 22"
+
+#: searchuserdlg.cpp:126
+msgid "SearchUserDlg::23 - 29"
+msgstr "23 - 29"
+
+#: searchuserdlg.cpp:127
+msgid "SearchUserDlg::30 - 39"
+msgstr "30 - 39"
+
+#: searchuserdlg.cpp:128
+msgid "SearchUserDlg::40 - 49"
+msgstr "40 - 49"
+
+#: searchuserdlg.cpp:129
+msgid "SearchUserDlg::50 - 59"
+msgstr "50 - 59"
+
+#: searchuserdlg.cpp:130
+msgid "SearchUserDlg::69+"
+msgstr "69+"
+
+#: searchuserdlg.cpp:243
+msgid "SearchUserDlg::A&lert User"
+msgstr "O&bavesti korisnika"
+
+#: searchuserdlg.cpp:122
+msgid "SearchUserDlg::Age Range:"
+msgstr "Godi¹te:"
+
+#: searchuserdlg.cpp:113
+msgid "SearchUserDlg::Alias:"
+msgstr "Alijas:"
+
+#: searchuserdlg.cpp:280
+msgid "SearchUserDlg::Cancel"
+msgstr "Poni¹ti"
+
+#: searchuserdlg.cpp:150
+msgid "SearchUserDlg::City:"
+msgstr "Grad: "
+
+#: searchuserdlg.cpp:167
+msgid "SearchUserDlg::Company Department:"
+msgstr "Odsek kompanije:"
+
+#: searchuserdlg.cpp:164
+msgid "SearchUserDlg::Company Name:"
+msgstr "Naziv kompanije:"
+
+#: searchuserdlg.cpp:170
+msgid "SearchUserDlg::Company Position:"
+msgstr "Pozicija u kompaniji:"
+
+#: searchuserdlg.cpp:157
+msgid "SearchUserDlg::Country:"
+msgstr "Zemlja:"
+
+#: searchuserdlg.cpp:184
+msgid "SearchUserDlg::Email Address:"
+msgstr "Email Adresa:"
+
+#: searchuserdlg.cpp:351
+msgid "SearchUserDlg::Enter search parameters and select 'Search'"
+msgstr ""
+
+#: searchuserdlg.cpp:136
+msgid "SearchUserDlg::Female"
+msgstr "®ensko"
+
+#: searchuserdlg.cpp:116
+msgid "SearchUserDlg::First Name:"
+msgstr "Ime:"
+
+#: searchuserdlg.cpp:133
+msgid "SearchUserDlg::Gender:"
+msgstr "Pol:"
+
+#: searchuserdlg.cpp:205
+msgid "SearchUserDlg::Keyword:"
+msgstr "Kljuèna reè:"
+
+#: searchuserdlg.cpp:141
+msgid "SearchUserDlg::Language:"
+msgstr "Jezik:"
+
+#: searchuserdlg.cpp:119
+msgid "SearchUserDlg::Last Name:"
+msgstr "Prezime:"
+
+#: searchuserdlg.cpp:95
+msgid "SearchUserDlg::Licq - User Search"
+msgstr "Licq - Pretraga korisnika"
+
+#: searchuserdlg.cpp:137
+msgid "SearchUserDlg::Male"
+msgstr "Mu¹ko"
+
+#: searchuserdlg.cpp:388
+msgid "SearchUserDlg::More users found. Narrow search."
+msgstr ""
+
+#: searchuserdlg.cpp:401
+msgid "SearchUserDlg::Reset Search"
+msgstr ""
+
+#: searchuserdlg.cpp:175
+msgid "SearchUserDlg::Return Online Users Only"
+msgstr "Vrati samo korisnike koji su na vezi"
+
+#: searchuserdlg.cpp:399
+msgid "SearchUserDlg::Search failed."
+msgstr "Pretraga neuspe¹na."
+
+#: searchuserdlg.cpp:320
+msgid "SearchUserDlg::Searching (this can take awhile)..."
+msgstr "Pretra¾ivanje (ovo æe da potraje)..."
+
+#: searchuserdlg.cpp:153
+msgid "SearchUserDlg::State:"
+msgstr "Dr¾ava:"
+
+#: searchuserdlg.cpp:194
+msgid "SearchUserDlg::UIN#:"
+msgstr "UIN#:"
+
+#: searchuserdlg.cpp:135
+msgid "SearchUserDlg::Unspecified"
+msgstr "Nedefinisano"
+
+#: searchuserdlg.cpp:39
+msgid "SearchUserView::Alias"
+msgstr "Alijas"
+
+#: searchuserdlg.cpp:43
+msgid "SearchUserView::Email"
+msgstr "Email"
+
+#: searchuserdlg.cpp:42
+msgid "SearchUserView::Name"
+msgstr "Ime"
+
+#: searchuserdlg.cpp:44
+msgid "SearchUserView::Status"
+msgstr "Status"
+
+#: searchuserdlg.cpp:40
+msgid "SearchUserView::UIN"
+msgstr "UIN"
+
+#: securitydlg.cpp:52
+msgid "SecurityDlg::&Cancel"
+msgstr "&Poni¹ti"
+
+#: securitydlg.cpp:49
+msgid "SecurityDlg::&Update"
+msgstr "A¾&uriraj"
+
+#: securitydlg.cpp:36
+msgid "SecurityDlg::Authorization Required"
+msgstr ""
+
+#: securitydlg.cpp:37
+msgid ""
+"SecurityDlg::"
+"Determines whether regular ICQ clients "
+"require your authorization to add you to "
+"their contact list."
+msgstr ""
+
+#: securitydlg.cpp:44
+msgid "SecurityDlg::Hide IP stops users from seeing your IP address. It doesn't guarantee it will be hidden though."
+msgstr "Skrivanjem IP onemoguæavate korisnike da vide va¹u IP adresu. Mada nije zagarantovano da æe biti sakrivena."
+
+#: securitydlg.cpp:43
+msgid "SecurityDlg::Hide IP"
+msgstr "Sakrij IP"
+
+#: securitydlg.cpp:130
+msgid "SecurityDlg::ICQ Security Options [Setting..."
+msgstr "ICQ Opcije Sigurnosti [Pode¹avanje..."
+
+#: securitydlg.cpp:102
+msgid "SecurityDlg::ICQ Security Options [Setting...]"
+msgstr "ICQ Opcije Sigurnosti [Pode¹avanje...]"
+
+#: securitydlg.cpp:133
+msgid "SecurityDlg::ICQ Security Options"
+msgstr "ICQ Opcije Sigurnosti"
+
+#: securitydlg.cpp:32
+msgid "SecurityDlg::Options"
+msgstr "Opcije"
+
+#: securitydlg.cpp:41
+msgid ""
+"SecurityDlg::"
+"Web Presence allows users to see if you are online "
+"through your web indicator."
+msgstr ""
+
+#: securitydlg.cpp:40
+msgid "SecurityDlg::Web Presence"
+msgstr ""
+
+#: securitydlg.cpp:91
+msgid ""
+"SecurityDlg::"
+"You need to be connected to the\n"
+"ICQ Network to change the settings."
+msgstr ""
+"Potrebno je da budete zakaèeni na\n"
+"ICQ Mre¾u da bi promenili pode¹avanja."
+
+#: securitydlg.cpp:123
+msgid "SecurityDlg::error"
+msgstr "gre¹ka"
+
+#: securitydlg.cpp:117
+msgid "SecurityDlg::failed"
+msgstr "neuspe¹no"
+
+#: securitydlg.cpp:120
+msgid "SecurityDlg::timed out"
+msgstr "vreme je isteklo"
+
+#: showawaymsgdlg.cpp:51
+msgid "ShowAwayMsgDlg::%1 Response for %2"
+msgstr "%1 Odgovor za %2"
+
+#: showawaymsgdlg.cpp:53
+msgid "ShowAwayMsgDlg::&Ok"
+msgstr "&Ok"
+
+#: showawaymsgdlg.cpp:41
+msgid "ShowAwayMsgDlg::&Show Again"
+msgstr "&Prika¾i Ponovo"
+
+#: showawaymsgdlg.cpp:123
+msgid "ShowAwayMsgDlg::error"
+msgstr "gre¹ka"
+
+#: showawaymsgdlg.cpp:117
+msgid "ShowAwayMsgDlg::failed"
+msgstr "neuspe¹no"
+
+#: showawaymsgdlg.cpp:120
+msgid "ShowAwayMsgDlg::timed out"
+msgstr "vreme je isteklo"
+
+#: skinbrowser.cpp:38
+msgid "SkinBrowserDlg::&Apply"
+msgstr "&Primeni"
+
+#: skinbrowser.cpp:57
+msgid "SkinBrowserDlg::&Done"
+msgstr "&Gotovo"
+
+#: skinbrowser.cpp:39
+msgid "SkinBrowserDlg::&Edit"
+msgstr "Izm&ena"
+
+#: skinbrowser.cpp:53
+msgid "SkinBrowserDlg::A&pply"
+msgstr "&Primeni"
+
+#: skinbrowser.cpp:85
+msgid "SkinBrowserDlg::Error"
+msgstr "Gre¹ka"
+
+#: skinbrowser.cpp:41
+msgid "SkinBrowserDlg::Icons"
+msgstr "Ikone"
+
+#: skinbrowser.cpp:62
+msgid "SkinBrowserDlg::Licq Skin Browser"
+msgstr ""
+
+#: skinbrowser.cpp:44
+msgid "SkinBrowserDlg::Name"
+msgstr "Naziv"
+
+#: skinbrowser.cpp:25
+msgid "SkinBrowserDlg::Skins"
+msgstr ""
+
+#: usereventdlg.cpp:106
+msgid "UserEventCommon::Change user text encoding"
+msgstr ""
+
+#: usereventdlg.cpp:91
+msgid "UserEventCommon::Secure channel information"
+msgstr "Informacije sigurnog kanala"
+
+#: usereventdlg.cpp:96
+msgid "UserEventCommon::Show User History"
+msgstr "Poka¾i istoriju korisnika"
+
+#: usereventdlg.cpp:101
+msgid "UserEventCommon::Show User Info"
+msgstr "Poka¾i info korisnika"
+
+#: usereventdlg.cpp:80
+msgid "UserEventCommon::Status:"
+msgstr "Status:"
+
+#: usereventdlg.cpp:107
+msgid "UserEventCommon::This button selects the text encoding used when communicating with this user. You might need to change the encoding to communicate in a different language."
+msgstr ""
+
+#: usereventdlg.cpp:84
+msgid "UserEventCommon::Time:"
+msgstr "Vreme:"
+
+#: usereventdlg.cpp:170
+msgid "UserEventCommon::Unable to load encoding <b>%1</b>. Message contents may appear garbled."
+msgstr "Ne mogu da uèitam enkoder <b>%1</b>. Sadr¾aj poruke mo¾e imati ðubre."
+
+#: usereventdlg.cpp:203
+msgid "UserEventCommon::Unknown"
+msgstr "Nepoznato"
+
+#: userinfodlg.cpp:440
+msgid "UserInfoDlg:: Day:"
+msgstr " Dan:"
+
+#: userinfodlg.cpp:443
+msgid "UserInfoDlg:: Month:"
+msgstr " Mesec:"
+
+#: userinfodlg.cpp:446
+msgid "UserInfoDlg:: Year:"
+msgstr " Godina:"
+
+#: userinfodlg.cpp:1115
+msgid "UserInfoDlg::%1 from %2"
+msgstr "%1 od %2"
+
+#: userinfodlg.cpp:1115
+msgid "UserInfoDlg::%1 to %2"
+msgstr "%1 za %2"
+
+#: userinfodlg.cpp:749
+msgid "UserInfoDlg::&About"
+msgstr "&O ..."
+
+#: userinfodlg.cpp:77
+msgid "UserInfoDlg::&Close"
+msgstr "Za&tvori"
+
+#: userinfodlg.cpp:938
+msgid "UserInfoDlg::&Filter: "
+msgstr "&Filter: "
+
+#: userinfodlg.cpp:189
+msgid "UserInfoDlg::&General"
+msgstr "&Op¹te"
+
+#: userinfodlg.cpp:912
+msgid "UserInfoDlg::&History"
+msgstr "&Istorija"
+
+#: userinfodlg.cpp:803
+msgid "UserInfoDlg::&Last"
+msgstr "Pos&lednji"
+
+#: userinfodlg.cpp:90
+msgid "UserInfoDlg::&Menu"
+msgstr "&Meni"
+
+#: userinfodlg.cpp:402
+msgid "UserInfoDlg::&More"
+msgstr "&Vi¹e"
+
+#: userinfodlg.cpp:1219
+msgid "UserInfoDlg::&Save"
+msgstr "&Saèuvaj"
+
+#: userinfodlg.cpp:1218
+msgid "UserInfoDlg::&Update"
+msgstr "A¾&uriraj"
+
+#: userinfodlg.cpp:605
+msgid "UserInfoDlg::&Work"
+msgstr "&Posao"
+
+#: userinfodlg.cpp:758
+msgid "UserInfoDlg::About:"
+msgstr "O korisniku:"
+
+#: userinfodlg.cpp:636
+msgid "UserInfoDlg::Address:"
+msgstr "Adresa:"
+
+#: userinfodlg.cpp:413
+msgid "UserInfoDlg::Age:"
+msgstr "Starost:"
+
+#: userinfodlg.cpp:200
+msgid "UserInfoDlg::Alias:"
+msgstr "Alijas:"
+
+#: userinfodlg.cpp:571
+msgid "UserInfoDlg::Authorization Not Required"
+msgstr "Nije potrebna Autorizacija"
+
+#: userinfodlg.cpp:569
+msgid "UserInfoDlg::Authorization Required"
+msgstr "Potrebna Autorizacija"
+
+#: userinfodlg.cpp:435
+msgid "UserInfoDlg::Birthday:"
+msgstr "Roðendan:"
+
+#: userinfodlg.cpp:259
+msgid "UserInfoDlg::Cellular:"
+msgstr "Mobilni:"
+
+#: userinfodlg.cpp:628
+msgid "UserInfoDlg::City:"
+msgstr "Grad: "
+
+#: userinfodlg.cpp:643
+msgid "UserInfoDlg::Country:"
+msgstr "Zemlja:"
+
+#: userinfodlg.cpp:620
+msgid "UserInfoDlg::Department:"
+msgstr "Odsek:"
+
+#: userinfodlg.cpp:226
+msgid "UserInfoDlg::EMail 1:"
+msgstr "EMail 1:"
+
+#: userinfodlg.cpp:230
+msgid "UserInfoDlg::EMail 2:"
+msgstr "EMail 2:"
+
+#: userinfodlg.cpp:957
+msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
+msgstr ""
+
+#: userinfodlg.cpp:661
+msgid "UserInfoDlg::Fax:"
+msgstr "Faks:"
+
+#: userinfodlg.cpp:516
+msgid "UserInfoDlg::Female"
+msgstr "®ensko"
+
+#: userinfodlg.cpp:319
+msgid "UserInfoDlg::GMT%1%1%1"
+msgstr "GMT%1%1%1"
+
+#: userinfodlg.cpp:416
+msgid "UserInfoDlg::Gender:"
+msgstr "Pol:"
+
+#: userinfodlg.cpp:665
+msgid "UserInfoDlg::Homepage:"
+msgstr "Poèetna stranica:"
+
+#: userinfodlg.cpp:123
+msgid "UserInfoDlg::INVALID USER"
+msgstr "POGRE©AN KORISNIK"
+
+#: userinfodlg.cpp:209
+msgid "UserInfoDlg::IP:"
+msgstr "IP:"
+
+#: userinfodlg.cpp:479
+msgid "UserInfoDlg::Language 1:"
+msgstr "Jezik 1:"
+
+#: userinfodlg.cpp:482
+msgid "UserInfoDlg::Language 2:"
+msgstr "Jezik 2:"
+
+#: userinfodlg.cpp:486
+msgid "UserInfoDlg::Language 3:"
+msgstr "Jezik 3:"
+
+#: userinfodlg.cpp:825
+msgid "UserInfoDlg::Last Checked Auto Response:"
+msgstr ""
+
+#: userinfodlg.cpp:813
+msgid "UserInfoDlg::Last Online:"
+msgstr "Zadnji put na vezi:"
+
+#: userinfodlg.cpp:821
+msgid "UserInfoDlg::Last Received Event:"
+msgstr "Zadnje primljen dogaðaj:"
+
+#: userinfodlg.cpp:817
+msgid "UserInfoDlg::Last Sent Event:"
+msgstr "Zadnje poslat dogaðaj:"
+
+#: userinfodlg.cpp:128
+msgid "UserInfoDlg::Licq - Info "
+msgstr "Licq - Info"
+
+#: userinfodlg.cpp:518
+msgid "UserInfoDlg::Male"
+msgstr "Mu¹ko"
+
+#: userinfodlg.cpp:616
+msgid "UserInfoDlg::Name:"
+msgstr "Ime:"
+
+#: userinfodlg.cpp:1228
+msgid "UserInfoDlg::Nex&t"
+msgstr "Sle&deæe"
+
+#: userinfodlg.cpp:852
+msgid "UserInfoDlg::Now"
+msgstr "Sad"
+
+#: userinfodlg.cpp:894
+msgid "UserInfoDlg::Offline"
+msgstr "Nije na vezi"
+
+#: userinfodlg.cpp:234
+msgid "UserInfoDlg::Old Email:"
+msgstr "Stari Email:"
+
+#: userinfodlg.cpp:829
+msgid "UserInfoDlg::Online Since:"
+msgstr "Na vezi od:"
+
+#: userinfodlg.cpp:1229
+msgid "UserInfoDlg::P&rev"
+msgstr "P&rethodno"
+
+#: userinfodlg.cpp:658
+msgid "UserInfoDlg::Phone:"
+msgstr "Telefon:"
+
+#: userinfodlg.cpp:624
+msgid "UserInfoDlg::Position:"
+msgstr "Pozicija:"
+
+#: userinfodlg.cpp:1219
+msgid "UserInfoDlg::Retrieve"
+msgstr "Preuzmi"
+
+#: userinfodlg.cpp:926
+msgid "UserInfoDlg::Rever&se"
+msgstr "Pre&okreni"
+
+#: userinfodlg.cpp:960
+msgid "UserInfoDlg::Sorry, history is disabled for this person."
+msgstr "®ao mi je, istorija je iskljuèena za ovu osobu."
+
+#: userinfodlg.cpp:631
+msgid "UserInfoDlg::State:"
+msgstr "Dr¾ava:"
+
+#: userinfodlg.cpp:213
+msgid "UserInfoDlg::Status:"
+msgstr "Status:"
+
+#: userinfodlg.cpp:216
+msgid "UserInfoDlg::Timezone:"
+msgstr "Vremenska zona:"
+
+#: userinfodlg.cpp:206
+msgid "UserInfoDlg::UIN:"
+msgstr "UIN:"
+
+#: userinfodlg.cpp:703
+msgid "UserInfoDlg::Unknown (%1)"
+msgstr "Nepoznat (%1)"
+
+#: userinfodlg.cpp:896
+msgid "UserInfoDlg::Unknown"
+msgstr "Nepoznat"
+
+#: userinfodlg.cpp:540
+msgid "UserInfoDlg::Unspecified"
+msgstr "Nenaveden"
+
+#: userinfodlg.cpp:1394
+msgid "UserInfoDlg::Updating server..."
+msgstr "A¾uriranje servera..."
+
+#: userinfodlg.cpp:1311
+msgid "UserInfoDlg::Updating..."
+msgstr "A¾uriranje..."
+
+#: userinfodlg.cpp:1333
+msgid ""
+"UserInfoDlg::"
+"You need to be connected to the\n"
+"ICQ Network to change your settings."
+msgstr ""
+"Potrebno je da budete zakaèeni na\n"
+"ICQ Mre¾u da bi ste promenili svoja pode¹avanja."
+
+#: userinfodlg.cpp:1289
+msgid ""
+"UserInfoDlg::"
+"You need to be connected to the\n"
+"ICQ Network to retrieve your settings."
+msgstr ""
+"Potrebno je da budete zakaèeni na\n"
+"ICQ Mre¾u da bi ste primili svoja pode¹avanja."
+
+#: userinfodlg.cpp:640
+msgid "UserInfoDlg::Zip:"
+msgstr "PTT broj:"
+
+#: userinfodlg.cpp:1155
+msgid ""
+"UserInfoDlg::"
+"[<font color=\"%1\">Received</font>] "
+"[<font color=\"%2\">Sent</font>] "
+"%3 out of %4 matches"
+msgstr ""
+"[<font color=\"%1\">Primljeno</font>] "
+"[<font color=\"%2\">Poslato</font>] "
+"%3 od %4 se poklapa"
+
+#: userinfodlg.cpp:1147
+msgid ""
+"UserInfoDlg::"
+"[<font color=\"%1\">Received</font>] "
+"[<font color=\"%2\">Sent</font>] "
+"%3 to %4 of %5"
+msgstr ""
+"[<font color=\"%1\">Primljeno</font>] "
+"[<font color=\"%2\">Poslato</font>] "
+"%3 do %4 od %5"
+
+#: userinfodlg.cpp:1415
+msgid "UserInfoDlg::done"
+msgstr "gotovo"
+
+#: userinfodlg.cpp:1424
+msgid "UserInfoDlg::error"
+msgstr "gre¹ka"
+
+#: userinfodlg.cpp:1418
+msgid "UserInfoDlg::failed"
+msgstr "neuspe¹no"
+
+#: userinfodlg.cpp:1071
+msgid "UserInfoDlg::server"
+msgstr "server"
+
+#: userinfodlg.cpp:1421
+msgid "UserInfoDlg::timed out"
+msgstr "vreme je isteklo"
+
+#: usereventdlg.cpp:1708
+msgid "UserSendChatEvent:: - Chat Request"
+msgstr "Zahtev za Æaskanje"
+
+#: usereventdlg.cpp:1775
+msgid "UserSendChatEvent::Chat with %2 refused:\n%3"
+msgstr "Æaskanje sa %2 odbaèeno:\n%3"
+
+#: usereventdlg.cpp:1733
+msgid "UserSendChatEvent::Clear"
+msgstr "Oèisti"
+
+#: usereventdlg.cpp:1741
+msgid "UserSendChatEvent::Invite"
+msgstr "Pozovi"
+
+#: usereventdlg.cpp:1698
+msgid "UserSendChatEvent::Multiparty: "
+msgstr "Multizabava"
+
+#: usereventdlg.cpp:1219
+msgid "UserSendCommon:: to Contact List"
+msgstr ""
+
+#: usereventdlg.cpp:1213
+msgid "UserSendCommon::%1 is in %2 mode:\n%3\nSend..."
+msgstr "%1 je u %2 modu:\n%3\nSlanje..."
+
+#: usereventdlg.cpp:1235
+msgid "UserSendCommon::%1 refused %2, send through server."
+msgstr "%1 odbijen %2, ¹aljem kroz server."
+
+#: usereventdlg.cpp:1136
+msgid "UserSendCommon::&Cancel"
+msgstr "&Poni¹ti"
+
+#: usereventdlg.cpp:1341
+msgid "UserSendCommon::&Close"
+msgstr "Za&tvori"
+
+#: usereventdlg.cpp:914
+msgid "UserSendCommon::&Menu"
+msgstr "&Meni"
+
+#: usereventdlg.cpp:929
+msgid "UserSendCommon::&Send"
+msgstr "&Po¹alji"
+
+#: usereventdlg.cpp:1391
+msgid "UserSendCommon::Cancel"
+msgstr "Poni¹ti"
+
+#: usereventdlg.cpp:922
+msgid "UserSendCommon::Chat Request"
+msgstr "Zahtev za Æaskanje"
+
+#: usereventdlg.cpp:924
+msgid "UserSendCommon::Contact List"
+msgstr "Kontakt Lista"
+
+#: usereventdlg.cpp:1200
+msgid "UserSendCommon::Direct send failed,\nsend through server?"
+msgstr ""
+
+#: usereventdlg.cpp:1089
+msgid "UserSendCommon::Drag Users Here\nRight Click for Options"
+msgstr "Prevucite korisnike ovde\nDesni Klik za Opcije"
+
+#: usereventdlg.cpp:923
+msgid "UserSendCommon::File Transfer"
+msgstr "Prenos Fajla"
+
+#: usereventdlg.cpp:899
+msgid "UserSendCommon::M&ultiple recipients"
+msgstr ""
+
+#: usereventdlg.cpp:920
+msgid "UserSendCommon::Message"
+msgstr "Poruka"
+
+#: usereventdlg.cpp:1200
+msgid "UserSendCommon::No"
+msgstr "Ne"
+
+#: usereventdlg.cpp:925
+msgid "UserSendCommon::SMS"
+msgstr "SMS"
+
+#: usereventdlg.cpp:886
+msgid "UserSendCommon::Se&nd through server"
+msgstr "P&o¹alji kroz server"
+
+#: usereventdlg.cpp:1391
+msgid "UserSendCommon::Send anyway"
+msgstr "Po¹alji bilo kako"
+
+#: usereventdlg.cpp:1128
+msgid "UserSendCommon::Sending "
+msgstr "Slanje"
+
+#: usereventdlg.cpp:897
+msgid "UserSendCommon::U&rgent"
+msgstr "&Hitno"
+
+#: usereventdlg.cpp:921
+msgid "UserSendCommon::URL"
+msgstr "URL"
+
+#: usereventdlg.cpp:1219
+msgid "UserSendCommon::Urgent"
+msgstr "Hitno"
+
+#: usereventdlg.cpp:1389
+msgid ""
+"UserSendCommon::"
+"Warning: Message can't be sent securely\n"
+"through the server!"
+msgstr ""
+"Upozorenje: Poruka ne mo¾e biti poslata\n"
+"kroz server sa sigurno¹æu!"
+
+#: usereventdlg.cpp:1200
+msgid "UserSendCommon::Yes"
+msgstr "Da"
+
+#: usereventdlg.cpp:1130
+msgid "UserSendCommon::direct"
+msgstr "direktno"
+
+#: usereventdlg.cpp:1169
+msgid "UserSendCommon::done"
+msgstr "gotovo"
+
+#: usereventdlg.cpp:1179
+msgid "UserSendCommon::error"
+msgstr "gre¹ka"
+
+#: usereventdlg.cpp:1173
+msgid "UserSendCommon::failed"
+msgstr "neuspe¹no"
+
+#: usereventdlg.cpp:1176
+msgid "UserSendCommon::timed out"
+msgstr "vreme je isteklo"
+
+#: usereventdlg.cpp:1130
+msgid "UserSendCommon::via server"
+msgstr "kroz server"
+
+#: usereventdlg.cpp:1811
+msgid "UserSendContactEvent:: - Contact List"
+msgstr " - Kontakt Lista"
+
+#: usereventdlg.cpp:1804
+msgid "UserSendContactEvent::Drag Users Here - Right Click for Options"
+msgstr "Prevucite korisnike ovde - Desni Klik za Opcije"
+
+#: usereventdlg.cpp:1597
+msgid "UserSendFileEvent:: - File Transfer"
+msgstr " - Prenos Fajla"
+
+#: usereventdlg.cpp:1593
+msgid "UserSendFileEvent::Browse"
+msgstr "Pregledaj"
+
+#: usereventdlg.cpp:1664
+msgid "UserSendFileEvent::File transfer with %2 refused:\n%3"
+msgstr "Prenos fajla sa %2 odbaèen:\n%3"
+
+#: usereventdlg.cpp:1587
+msgid "UserSendFileEvent::File(s): "
+msgstr "Fajl(ovi):"
+
+#: usereventdlg.cpp:1609
+msgid "UserSendFileEvent::Select files to send"
+msgstr "Izaberite fajlove za slanje"
+
+#: usereventdlg.cpp:1633
+msgid "UserSendFileEvent::You must specify a file to transfer!"
+msgstr "Morate navesti fajl za prenos!"
+
+#: usereventdlg.cpp:1411
+msgid "UserSendMsgEvent:: - Message"
+msgstr " - Poruka"
+
+#: usereventdlg.cpp:1430
+msgid "UserSendMsgEvent::&No"
+msgstr "&Ne"
+
+#: usereventdlg.cpp:1430
+msgid "UserSendMsgEvent::&Yes"
+msgstr "&Da"
+
+#: usereventdlg.cpp:1429
+msgid ""
+"UserSendMsgEvent::"
+"You didn't edit the message.\n"
+"Do you really want to send it?"
+msgstr ""
+"Niste editovali poruku.\n"
+"Da li stvarno ¾elite da je po¹aljete?"
+
+#: usereventdlg.cpp:1911
+msgid "UserSendSmsEvent:: - SMS"
+msgstr " - SMS"
+
+#: usereventdlg.cpp:1929
+msgid "UserSendSmsEvent::&No"
+msgstr "&Ne"
+
+#: usereventdlg.cpp:1929
+msgid "UserSendSmsEvent::&Yes"
+msgstr "&Da"
+
+#: usereventdlg.cpp:1928
+msgid ""
+"UserSendSmsEvent::"
+"You didn't edit the SMS.\n"
+"Do you really want to send it?"
+msgstr ""
+"Niste editovali SMS.\n"
+"Da li stvarno ¾elite da je po¹aljete?"
+
+#: usereventdlg.cpp:1503
+msgid "UserSendUrlEvent:: - URL"
+msgstr " - URL"
+
+#: usereventdlg.cpp:1498
+msgid "UserSendUrlEvent::URL : "
+msgstr "URL : "
+
+#: usereventdlg.cpp:362
+msgid "UserViewEvent::&Close"
+msgstr "Za&tvori"
+
+#: usereventdlg.cpp:519
+msgid "UserViewEvent::&Forward"
+msgstr "Prosled&i"
+
+#: usereventdlg.cpp:505
+msgid "UserViewEvent::&Join"
+msgstr "&Pridru¾i"
+
+#: usereventdlg.cpp:350
+msgid "UserViewEvent::&Menu"
+msgstr "&Meni"
+
+#: usereventdlg.cpp:518
+msgid "UserViewEvent::&Quote"
+msgstr "&Citiraj"
+
+#: usereventdlg.cpp:527
+msgid "UserViewEvent::&Refuse"
+msgstr "&Odbaci"
+
+#: usereventdlg.cpp:517
+msgid "UserViewEvent::&Reply"
+msgstr "Odgovo&ri"
+
+#: usereventdlg.cpp:521
+msgid "UserViewEvent::&View"
+msgstr "P&rikaz"
+
+#: usereventdlg.cpp:497
+msgid "UserViewEvent::A&ccept"
+msgstr "&Prihvati"
+
+#: usereventdlg.cpp:557
+msgid "UserViewEvent::A&dd %1 Users"
+msgstr "&Dodaj %1 Korisnika"
+
+#: usereventdlg.cpp:559
+msgid "UserViewEvent::A&dd User"
+msgstr "&Dodaj Korisnika"
+
+#: usereventdlg.cpp:526
+msgid "UserViewEvent::A&uthorize"
+msgstr "A&utorizuj"
+
+#: usereventdlg.cpp:354
+msgid "UserViewEvent::Aut&o Close"
+msgstr "Aut&o Zatvaranje"
+
+#: usereventdlg.cpp:746
+msgid "UserViewEvent::Chat"
+msgstr "Æaskanje"
+
+#: usereventdlg.cpp:761
+msgid "UserViewEvent::File Transfer"
+msgstr "Prenos Fajla-a"
+
+#: usereventdlg.cpp:448
+msgid "UserViewEvent::Nex&t (%1)"
+msgstr "&Sledeæe (%1)"
+
+#: usereventdlg.cpp:450
+msgid "UserViewEvent::Nex&t"
+msgstr "&Sledeæe"
+
+#: usereventdlg.cpp:363
+msgid "UserViewEvent::Normal Click - Close Window\n<CTRL>+Click - also delete User"
+msgstr "Normalan Klik - Zatvori Prozor\n<CTRL>+Klik - takoðe bri¹e korisnika"
+
+#: usereventdlg.cpp:513
+msgid "UserViewEvent::Start Chat"
+msgstr "Pokreni Æaskanje"
+
+#: usereventdlg.cpp:812
+msgid "UserViewEvent::View URL failed"
+msgstr "Prikaz URL-a neuspe¹an"
+
+#: usereventdlg.cpp:491
+msgid "UserViewEvent::\n--------------------\nRequest was cancelled."
+msgstr " \n--------------------\nZahtev je poni¹ten."
+
+#: wharf.cpp:683
+msgid ""
+"WharfIcon::"
+"Left click - Show main window\n"
+"Middle click - Show next message\n"
+"Right click - System menu"
+msgstr ""
+"Levi klik - Prika¾i glavni prozor\n"
+"Srednji klik - Prika¾i sledeæu poruku\n"
+"Desni klik - Sistemski meni"
+
+#: dialogs/qfiledialog.cpp:3560
+msgid "QFileDialog::%1\nFile not found.\nCheck path and filename."
+msgstr "%1\nFajl nije pronaðen.\nProverite putanju i ime fajla."
+
+#: dialogs/qfiledialog.cpp:3252
+msgid "QFileDialog::&Delete"
+msgstr "O&bri¹i"
+
+#: dialogs/qfiledialog.cpp:3344
+msgid "QFileDialog::&No"
+msgstr "&Ne"
+
+#: dialogs/qfiledialog.cpp:3247
+msgid "QFileDialog::&Open"
+msgstr "&Otvori"
+
+#: dialogs/qfiledialog.cpp:3251
+msgid "QFileDialog::&Rename"
+msgstr "&Promeni naziv"
+
+#: dialogs/qfiledialog.cpp:3246
+msgid "QFileDialog::&Save"
+msgstr "&Saèuvaj"
+
+#: dialogs/qfiledialog.cpp:3285
+msgid "QFileDialog::&Unsorted"
+msgstr "Nesor&tirano"
+
+#: dialogs/qfiledialog.cpp:3344
+msgid "QFileDialog::&Yes"
+msgstr "&Da"
+
+#: dialogs/qfiledialog.cpp:3342
+msgid "QFileDialog::<qt>Do you really want to delete %1 \"%2\"?</qt>"
+msgstr "<qt>Da li stvarno ¾elite da obri¹ete %1 \"%2\"?</qt>"
+
+#: dialogs/qfiledialog.cpp:1904
+msgid "QFileDialog::All files (*)"
+msgstr "Svi fajlovi (*)"
+
+#: dialogs/qfiledialog.cpp:1967
+msgid "QFileDialog::Attributes"
+msgstr "Atributi"
+
+#: dialogs/qfiledialog.cpp:2053
+msgid "QFileDialog::Back"
+msgstr "Nazad"
+
+#: dialogs/qfiledialog.cpp:2007
+msgid "QFileDialog::Cancel"
+msgstr "Poni¹ti"
+
+#: dialogs/qfiledialog.cpp:2079
+msgid "QFileDialog::Create New Folder"
+msgstr "Napravi Novu Fasciklu "
+
+#: dialogs/qfiledialog.cpp:1966
+msgid "QFileDialog::Date"
+msgstr "Datum"
+
+#: dialogs/qfiledialog.cpp:3341
+msgid "QFileDialog::Delete %1"
+msgstr "Obri¹i %1"
+
+#: dialogs/qfiledialog.cpp:2109
+msgid "QFileDialog::Detail View"
+msgstr "Detaljan Prikaz"
+
+#: dialogs/qfiledialog.cpp:2235
+msgid "QFileDialog::Dir"
+msgstr "Dir"
+
+#: dialogs/qfiledialog.cpp:3442
+msgid "QFileDialog::Directories"
+msgstr "Direktorijumi"
+
+#: dialogs/qfiledialog.cpp:4388
+msgid "QFileDialog::ERROR"
+msgstr "GRE©KA"
+
+#: dialogs/qfiledialog.cpp:3560
+msgid "QFileDialog::Error"
+msgstr "Gre¹ka"
+
+#: dialogs/qfiledialog.cpp:2042
+msgid "QFileDialog::File &name:"
+msgstr "&Naziv fajla:"
+
+#: dialogs/qfiledialog.cpp:2043
+msgid "QFileDialog::File &type:"
+msgstr "Vrs&ta fajla"
+
+#: dialogs/qfiledialog.cpp:2234
+msgid "QFileDialog::File"
+msgstr "Fajl"
+
+#: dialogs/qfiledialog.cpp:3437
+msgid "QFileDialog::Find Directory"
+msgstr "Naði Direktorijum"
+
+#: dialogs/qfiledialog.cpp:2229
+msgid "QFileDialog::Inaccessible"
+msgstr "Nepristupljiv"
+
+#: dialogs/qfiledialog.cpp:2099
+msgid "QFileDialog::List View"
+msgstr "Prikaz Liste"
+
+#: dialogs/qfiledialog.cpp:2041
+msgid "QFileDialog::Look &in:"
+msgstr "T&ra¾i u:"
+
+#: dialogs/qfiledialog.cpp:1962
+msgid "QFileDialog::Name"
+msgstr "Ime"
+
+#: dialogs/qfiledialog.cpp:3390
+msgid "QFileDialog::New Folder %1"
+msgstr "Nova Fascikla %1"
+
+#: dialogs/qfiledialog.cpp:3380
+msgid "QFileDialog::New Folder 1"
+msgstr "Nova Fascikla 1"
+
+#: dialogs/qfiledialog.cpp:3385
+msgid "QFileDialog::New Folder"
+msgstr "Nova Fascikla"
+
+#: dialogs/qfiledialog.cpp:2003
+msgid "QFileDialog::OK"
+msgstr "OK"
+
+#: dialogs/qfiledialog.cpp:2068
+msgid "QFileDialog::One directory up"
+msgstr "Jedan direktorijum gore"
+
+#: dialogs/qfiledialog.cpp:4249
+msgid "QFileDialog::Open"
+msgstr "Otvori"
+
+#: dialogs/qfiledialog.cpp:2131
+msgid "QFileDialog::Preview File Contents"
+msgstr "Pregled sadr¾aja fajla"
+
+#: dialogs/qfiledialog.cpp:2120
+msgid "QFileDialog::Preview File Info"
+msgstr "Pregled fajl info-a"
+
+#: dialogs/qfiledialog.cpp:3276
+msgid "QFileDialog::R&eload"
+msgstr "&Uèitaj ponovo"
+
+#: dialogs/qfiledialog.cpp:2227
+msgid "QFileDialog::Read-only"
+msgstr "Samo za èitanje"
+
+#: dialogs/qfiledialog.cpp:2226
+msgid "QFileDialog::Read-write"
+msgstr "Èitanje-pisanje"
+
+#: dialogs/qfiledialog.cpp:2699
+msgid "QFileDialog::Save as"
+msgstr "Saèuvaj kao"
+
+#: dialogs/qfiledialog.cpp:3536
+msgid "QFileDialog::Save"
+msgstr "Saèuvaj"
+
+#: dialogs/qfiledialog.cpp:3304
+msgid "QFileDialog::Show &hidden files"
+msgstr "Prika¾i &skrivene fajlove"
+
+#: dialogs/qfiledialog.cpp:1963
+msgid "QFileDialog::Size"
+msgstr "Velièina"
+
+#: dialogs/qfiledialog.cpp:3283
+msgid "QFileDialog::Sort by &Date"
+msgstr "Sortiraj po &Datumu"
+
+#: dialogs/qfiledialog.cpp:3280
+msgid "QFileDialog::Sort by &Name"
+msgstr "Sortiraj po &Imenu"
+
+#: dialogs/qfiledialog.cpp:3282
+msgid "QFileDialog::Sort by &Size"
+msgstr "Sortiraj po &Velièini"
+
+#: dialogs/qfiledialog.cpp:3300
+msgid "QFileDialog::Sort"
+msgstr "Sortiraj"
+
+#: dialogs/qfiledialog.cpp:2236
+msgid "QFileDialog::Special"
+msgstr "Specijalno"
+
+#: dialogs/qfiledialog.cpp:2232
+msgid "QFileDialog::Symlink to Directory"
+msgstr "Simbolièka veza do direktorijuma"
+
+#: dialogs/qfiledialog.cpp:2231
+msgid "QFileDialog::Symlink to File"
+msgstr "Simbolièka veza do fajla"
+
+#: dialogs/qfiledialog.cpp:2233
+msgid "QFileDialog::Symlink to Special"
+msgstr "Simbolièka veza do Specijanog"
+
+#: dialogs/qfiledialog.cpp:1965
+msgid "QFileDialog::Type"
+msgstr "Vrsta"
+
+#: dialogs/qfiledialog.cpp:2228
+msgid "QFileDialog::Write-only"
+msgstr "Samo za pisanje"
+
+#: dialogs/qfiledialog.cpp:3336
+msgid "QFileDialog::the directory"
+msgstr "direktorijum"
+
+#: dialogs/qfiledialog.cpp:3334
+msgid "QFileDialog::the file"
+msgstr "fajl"
+
+#: dialogs/qfiledialog.cpp:3338
+msgid "QFileDialog::the symlink"
+msgstr "simbolièka veza"
+
+#: dialogs/qfontdialog.cpp:121
+msgid "QFontDialog::&Color"
+msgstr "&Boja"
+
+#: dialogs/qfontdialog.cpp:91
+msgid "QFontDialog::&Font"
+msgstr "&Font"
+
+#: dialogs/qfontdialog.cpp:107
+msgid "QFontDialog::&Size"
+msgstr "&Velièina"
+
+#: dialogs/qfontdialog.cpp:115
+msgid "QFontDialog::&Underline"
+msgstr "Podv&uèeno"
+
+#: dialogs/qfontdialog.cpp:214
+msgid "QFontDialog::Apply"
+msgstr "Primeni"
+
+#: dialogs/qfontdialog.cpp:225
+msgid "QFontDialog::Cancel"
+msgstr "Poni¹ti"
+
+#: dialogs/qfontdialog.cpp:225
+msgid "QFontDialog::Close"
+msgstr "Zatvori"
+
+#: dialogs/qfontdialog.cpp:111
+msgid "QFontDialog::Effects"
+msgstr "Efekti"
+
+#: dialogs/qfontdialog.cpp:99
+msgid "QFontDialog::Font st&yle"
+msgstr "St&il fonta"
+
+#: dialogs/qfontdialog.cpp:214
+msgid "QFontDialog::OK"
+msgstr "OK"
+
+#: dialogs/qfontdialog.cpp:125
+msgid "QFontDialog::Sample"
+msgstr "Primer"
+
+#: dialogs/qfontdialog.cpp:139
+msgid "QFontDialog::Scr&ipt"
+msgstr "Skr&ipta"
+
+#: dialogs/qfontdialog.cpp:274
+msgid "QFontDialog::Select Font"
+msgstr "Izaberi Font"
+
+#: dialogs/qfontdialog.cpp:113
+msgid "QFontDialog::Stri&keout"
+msgstr "&Precrtano"
+
+#: dialogs/qwizard.cpp:94
+msgid "QWizard::< Back"
+msgstr "< Nazad"
+
+#: dialogs/qwizard.cpp:93
+msgid "QWizard::Cancel"
+msgstr "Poni¹ti"
+
+#: dialogs/qwizard.cpp:96
+msgid "QWizard::Finish"
+msgstr "Zavr¹i"
+
+#: dialogs/qwizard.cpp:97
+msgid "QWizard::Help"
+msgstr "Pomoæ"
+
+#: dialogs/qwizard.cpp:95
+msgid "QWizard::Next >"
+msgstr "Sledeæe >"
+
