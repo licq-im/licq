@@ -48,7 +48,7 @@ class CUserEvent;
 class CMMUserView;
 class CEButton;
 class CMessageViewWidget;
-
+class MLView;
 
 /* ----------------------------------------------------------------------------- */
 
@@ -113,12 +113,13 @@ public:
 
 protected:
   QSplitter *splRead;
-  MLEditWrap *mleRead;
+  MLView *mlvRead;
   MsgView *msgView;
   CUserEvent *m_xCurrentReadEvent;
   QCheckBox* chkAutoClose;
   QPushButton *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
   CEButton *btnRead1, *btnClose;
+  QString messageText;
 
   void generateReply();
   void sendMsg(QString txt);

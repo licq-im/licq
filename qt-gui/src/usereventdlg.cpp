@@ -337,10 +337,14 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(close()));
 
   msgView = new MsgView(splRead);
-  mleRead = new MLEditWrap(true, splRead, true);
-  mleRead->setReadOnly(true);
+  mlvRead = new MLView(splRead, "mlvRead");
+#if QT_VERSION < 300
+  mlvRead->setFormatQuoted(true);
+#else
+  mlvRead->setICQDaemon(server);
+#endif
   splRead->setResizeMode(msgView, QSplitter::FollowSizeHint);
-  splRead->setResizeMode(mleRead, QSplitter::Stretch);
+  splRead->setResizeMode(mlvRead, QSplitter::Stretch);
 
   connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
   connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), this, SLOT(slot_sentevent(ICQEvent *)));
@@ -493,14 +497,19 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   CUserEvent *m = e->msg;
   m_xCurrentReadEvent = m;
   // Set the color for the message
-  mleRead->setBackground(QColor(m->Color()->BackRed(), m->Color()->BackGreen(), m->Color()->BackBlue()));
-  mleRead->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
+  mlvRead->setBackground(QColor(m->Color()->BackRed(), m->Color()->BackGreen(), m->Color()->BackBlue()));
+  mlvRead->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
   // Set the text
   if (m->SubCommand() == ICQ_CMDxSUB_SMS)
-     mleRead->setText(QString::fromUtf8(m->Text()));
+     messageText = QString::fromUtf8(m->Text());
   else
-     mleRead->setText(codec->toUnicode(m->Text()));
-  mleRead->setCursorPosition(0, 0);
+     messageText = codec->toUnicode(m->Text());
+#if QT_VERSION < 300
+  mlvRead->setText(messageText);
+#else
+  mlvRead->setText(MLView::toRichText(messageText, true));
+#endif
+  mlvRead->setCursorPosition(0, 0);
 
   if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE || m->Command() == ICQ_CMDxRCV_SYSxMSGxOFFLINE))
   {
@@ -511,7 +520,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
         btnRead1->setText(tr("&Reply"));
         if (m->IsCancelled())
         {
-          mleRead->append(tr("\n--------------------\nRequest was cancelled."));
+          mlvRead->append(tr("\n--------------------\nRequest was cancelled."));
         }
         else
         {
@@ -605,25 +614,17 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
   }
 }
 
-
 void UserViewEvent::generateReply()
 {
-  QString s;
-  if (mleRead->hasMarkedText())
-  {
-    s = QString("> ") + mleRead->markedText();
-    s.replace( QRegExp("\n"), "\n> ");
-  }
-  else
-  {
-    for (int i = 0; i < mleRead->numLines(); i++)
-      if(!mleRead->textLine(i).stripWhiteSpace().isEmpty())
-        s += QString("> ") + mleRead->textLine(i) + " \n";
-      else
-        s += "\n";
-  }
+  QString s = QString::fromLatin1("> ");
 
-  s = s.stripWhiteSpace()+ " \n";
+  if (mlvRead->hasMarkedText())
+    s += mlvRead->markedText();
+  else
+    // we don't use mlvRead->text() since on Qt3 it returns rich text
+    s += messageText;
+
+  s.replace(QRegExp("\n"), QString::fromLatin1("\n> "));
 
   sendMsg(s);
 }
@@ -974,6 +975,9 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleHistory=0;
   if (mainwin->m_bMsgChatView) {
     mleHistory = new CMessageViewWidget(_nUin, splView);
+#if QT_VERSION >= 300
+    mleHistory->setICQDaemon(server);
+#endif
     connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
