@@ -6,7 +6,7 @@
 #include <qpainter.h>
 #include "mledit.h"
 
-QFont MLEditWrap::editFont = QFont();
+QFont* MLEditWrap::editFont = 0;
 
 MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const char *name)
   : QMultiLineEditNew(parent, name)
@@ -21,7 +21,8 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
   {
     setWordWrap(NoWrap);
   }
-  setFont(editFont);
+
+  if(editFont)  QWidget::setFont(*editFont, true);
 }
 
 
@@ -62,6 +63,8 @@ void MLEditWrap::keyPressEvent (QKeyEvent *e)
 
 void MLEditWrap::paintCell(QPainter* p, int row, int col)
 {
+
+#if QT_VERSION < 210
   if(m_doQuotes) {
     QString s = stringShown(row);
     int i = (s[0] == ' ');
@@ -73,6 +76,7 @@ void MLEditWrap::paintCell(QPainter* p, int row, int col)
       p->setFont(f);
     }
   }
+#endif
 
   QMultiLineEditNew::paintCell(p, row, col);
 }
