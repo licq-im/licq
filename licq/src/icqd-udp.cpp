@@ -720,13 +720,12 @@ CICQEventTag *CICQDaemon::icqAuthorizeGrant(unsigned long uinToAuthorize, const 
   gLog.Info("%sAuthorizing user %ld (#%ld)...\n", L_UDPxSTR, uinToAuthorize,
      p->Sequence());
   delete sz;
-
+  
   ICQEvent *e = SendExpectEvent_Server(p);
   CICQEventTag *t = NULL;
   if (e != NULL)
     t = new CICQEventTag(e);
   return (t);
-
 }
 
 
@@ -744,13 +743,12 @@ CICQEventTag *CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szM
   gLog.Info("%sRefusing authorization to user %ld (#%ld)...\n", L_UDPxSTR,
      nUin, p->Sequence());
   delete sz;
-
+  
   ICQEvent *e = SendExpectEvent_Server(p);
   CICQEventTag *t = NULL;
   if (e != NULL)
     t = new CICQEventTag(e);
   return (t);
-
 }
 
 
@@ -1483,7 +1481,10 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
         gLog.Warn("%sReceived meta result for unknown meta command.\n", L_WARNxSTR);
         break;
       }
-      if (nMetaResult != META_SUCCESS)
+
+      // META_FAIL on a ICQ_CMDxMETA_SEARCHxWPxLAST_USER means on users found
+      if (nMetaResult != META_SUCCESS &&
+          nMetaCommand != ICQ_CMDxMETA_SEARCHxWPxLAST_USER)
         ProcessDoneEvent(e);
       else
       {
@@ -2382,6 +2383,18 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     }
     case ICQ_CMDxMETA_SEARCHxWPxLAST_USER:
     {
+      if (packet.End())
+      {
+        gLog.Info("%sWP search found no users.\n", L_UDPxSTR);
+        ICQEvent *e2 = new ICQEvent(e);
+        e2->m_pSearchAck = NULL;
+        // It's a lie, but let's the plugin check for a
+	// null search ack to see if no users were found
+        e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
+        PushPluginEvent(e2);
+        break;
+      }
+
       gLog.Info("%sWP search found last user:\n", L_UDPxSTR);
 
       // We'll only get here if the result was 0x0A - Passed
@@ -2435,7 +2448,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
 
       ICQEvent *e2 = new ICQEvent(e);
       e2->m_pSearchAck = s;
-      e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxFOUND;  // Sub meta-command!
+      e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;  // Sub meta-command
       e2->m_pSearchAck->m_bMore = !(nNumMore == 0);
       PushPluginEvent(e2);
       
