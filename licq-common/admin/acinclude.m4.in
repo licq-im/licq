@@ -47,6 +47,10 @@ AC_DEFUN(LICQ_CHECK_LICQ,
     [  licq_licq_includes="$withval" ])
 
   if test -n "$licq_licq_includes"; then
+    relpath="`(cd $licq_licq_includes && pwd) 2>/dev/null`"
+    if test -n "$relpath"; then
+      licq_licq_includes="$relpath"
+    fi
     LICQ_FIND_FILE(licq_icqd.h, $licq_licq_includes, licq_inc)
   else
     licq_paths="$prefix/include/licq \
