@@ -1005,6 +1005,14 @@ void CLicqConsole::InputCommand(int cIn)
     winMain->ScrollDown();
     break;
 
+  case KEY_CLEAR:
+  case '\014':
+  {
+    wrefresh(curscr);
+    break;
+  }
+
+
   case KEY_DOWN:
     if (m_lCmdHistoryIter == m_lCmdHistory.end())
     {
@@ -1051,6 +1059,7 @@ void CLicqConsole::InputCommand(int cIn)
   case KEY_BACKSPACE:
   case KEY_DC:
   case KEY_LEFT:
+  case '\b':
   {
     if (nPos == 0) return;
     int yp, xp;
@@ -1262,7 +1271,7 @@ void CLicqConsole::InputCommand(int cIn)
   }
 
   default:
-    if (isprint(cIn))
+    if (isascii(cIn) && isprint(cIn))
     {
       szIn[nPos++] = (unsigned char)cIn;
       *winPrompt << (unsigned char)cIn;
@@ -2910,7 +2919,7 @@ void CLicqConsole::UserCommand_Secure(unsigned long nUin, char *szStatus)
   {
     winMain->wprintf("%ASecure channel already closed to %s\n", A_BOLD,
       u->GetAlias());
-  }   
+  }
   else if(strcasecmp(szStatus, "open") == 0)
   {
     winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
@@ -2932,4 +2941,4 @@ void CLicqConsole::UserCommand_Secure(unsigned long nUin, char *szStatus)
 
   if(u)
     gUserManager.DropUser(u);
-}  
+}
