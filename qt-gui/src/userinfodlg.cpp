@@ -2234,8 +2234,23 @@ void UserInfoDlg::slotRetrieve()
   {
     //TODO change in the daemon
     case GeneralInfo:
+    {
+      // Before retrieving the meta data we have to 
+      // save current status of "chkKeepAliasOnUpdate"
+      // and the alias
+      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      if (u == NULL) return;
+      QTextCodec * codec = UserCodec::codecForICQUser(u);
+      u->SetEnableSave(false);
+      u->SetAlias(codec->fromUnicode(nfoAlias->text()));
+      u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
+      u->SetEnableSave(true);
+      u->SaveGeneralInfo();
+      gUserManager.DropUser(u);
+      
       icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
       break;
+    }
     case MoreInfo:
       icqEventTag = server->icqRequestMetaInfo(strtoul(m_szId, (char **)NULL, 10));
       break;
