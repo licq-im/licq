@@ -2740,8 +2740,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       CBuffer msgTxt = msg.UnpackTLV(0x0101);
       nMsgLen = msgTxt.getDataSize();
 
-      unsigned short nEncoding = msgTxt.UnpackUnsignedShort();
-      nSubEncoding = msgTxt.UnpackUnsignedShort();
+      unsigned short nEncoding = msgTxt.UnpackUnsignedShortBE();
+      nSubEncoding = msgTxt.UnpackUnsignedShortBE();
       
       nMsgLen -= 4;
 
