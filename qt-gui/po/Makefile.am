@@ -25,13 +25,13 @@ merge: template
 
 install-data-local:
 	$(mkinstalldirs) $(localedir)
-	@for i in $(srcdir)/*.qm; do \
+	@cd $(srcdir) && for i in *.qm; do \
 	  if test "$$i" != "$(srcdir)/template.qm"; then \
 	    echo " $(INSTALL_DATA) $$i $(localedir)/$$i"; \
 	    $(INSTALL_DATA) $$i $(localedir)/$$i; \
           fi \
 	done
 
-template: $(top_srcdir)/src/*.cpp
+template: 
 	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(srcdir)/template.po
 
