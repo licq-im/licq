@@ -46,7 +46,7 @@ void create_plugin_window()
 	// Only open a window if it's necessary
 	if(pw != 0)
 	{
-		gdk_window_raise(pw->window->window);
+		gtk_window_present(GTK_WINDOW(pw->window));
 		return;
 	}
 

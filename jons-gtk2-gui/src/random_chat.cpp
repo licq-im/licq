@@ -45,7 +45,7 @@ void random_chat_search_window()
 	// Only one window
 	if(rcw != 0)
 	{
-		gdk_window_raise(rcw->window->window);
+		gtk_window_present(GTK_WINDOW(rcw->window));
 		return;
 	}
 
@@ -202,7 +202,7 @@ void set_random_chat_window()
 	// Only one window
 	if(src != 0)
 	{
-		gdk_window_raise(src->window->window);
+		gtk_window_present(GTK_WINDOW(src->window));
 		return;
 	}
 

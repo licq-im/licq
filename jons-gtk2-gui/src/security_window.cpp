@@ -60,7 +60,7 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 	/* Check to see if the window is currently open */
 	if(us != 0)
 	{
-		gdk_window_raise(us->window->window);
+		gtk_window_present(GTK_WINDOW(us->window));
 		return;
 	}
 
