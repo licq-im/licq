@@ -898,7 +898,7 @@ printf("User: %s\nNick: %s\nLists: %s\n", strUser.c_str(), strNick.c_str(), strL
       string strStatus = m_pPacketBuf->GetParameter();
       string strUser = m_pPacketBuf->GetParameter();
       unsigned short nStatus = ICQ_STATUS_AWAY;
-      
+
       if (strStatus == "NLN")
         nStatus = ICQ_STATUS_ONLINE;
         
@@ -909,6 +909,10 @@ printf("User: %s\nNick: %s\nLists: %s\n", strUser.c_str(), strNick.c_str(), strL
         u->SetSendServer(true); // no direct connections
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->GetAlias(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
+
+        if ((m_pDaemon->m_bAlwaysOnlineNotify || strCmd == "NLN") &&
+            nStatus == ICQ_STATUS_ONLINE && u->OnlineNotify())
+          m_pDaemon->m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
       }
       gUserManager.DropUser(u);
     }
