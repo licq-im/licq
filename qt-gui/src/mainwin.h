@@ -262,6 +262,7 @@ signals:
 
 class HintsDlg : public QDialog
 {
+  Q_OBJECT
 public:
   HintsDlg();
 
