@@ -146,6 +146,11 @@ AC_OUTPUT(
 
 echo ""
 echo "Please remember to use GNU make, often installed as gmake."
+if test "$enable_spoofing" = yes; then
+  echo "Spoofing is enabled"
+else
+  echo "Spoofing is disabled"
+fi
 if test "$have_kde" = yes; then
   echo "KDE 2 (CVS):  $ac_kde_includes"
 else
