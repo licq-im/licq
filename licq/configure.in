@@ -48,6 +48,7 @@ case "$host" in
 		;;
 	*-*-solaris*)
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS -DUSE_SOLARIS -DPIC -fPIC"
+		LDFLAGS="$LDFLAGS -mimpure-text"
 		echo "Setting Solaris compilation options"
 		;;
 	*-*-linux*)
@@ -58,6 +59,10 @@ case "$host" in
     CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE"
     LIBS="$LIBS -lc_r"
     echo "Setting AIX compilation options"
+    ;;
+  *-*-irix*)
+    LDFLAGS="$LDFLAGS -L/usr/lib32"
+    echo "Setting Irix compilation options"
     ;;
 	*)
 		echo "Licq may not compile on this system. Good luck :-)"
