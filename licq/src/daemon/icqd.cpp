@@ -49,6 +49,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_bShuttingDown = false;
   m_nServerAck = 0;
   m_szFirewallHost = NULL;
+  m_bLoggingOn = false;
 
   // Begin parsing the config file
   sprintf(szFilename, "%s/%s", BASE_DIR, "licq.conf");

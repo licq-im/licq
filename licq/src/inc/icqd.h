@@ -220,7 +220,7 @@ protected:
   char m_szErrorFile[64];
   int m_nUDPSocketDesc,
       m_nTCPSocketDesc;
-  bool m_bShuttingDown;
+  bool m_bShuttingDown, m_bLoggingOn;
   time_t m_tLogonTime;
 
   list <ICQEvent *> m_lxRunningEvents;

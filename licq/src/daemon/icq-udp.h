@@ -117,7 +117,7 @@ void CICQDaemon::icqRegister(const char *_szPasswd)
 //-----ICQ::Logon---------------------------------------------------------------
 CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
 {
-  if (m_eStatus != STATUS_OFFLINE_MANUAL)
+  if (m_bLoggingOn)
   {
     gLog.Warn("%sAttempt to logon while already logged or logging on.\n", L_WARNxSTR);
     return NULL;
@@ -142,6 +142,7 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
   m_nServerAck = p->getSequence() - 1;
   m_nServerSequence = 0;
   m_nDesiredStatus = status;
+  m_bLoggingOn = true;
   m_tLogonTime = time(NULL);
   ICQEvent *e = SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_SERVER);
   CICQEventTag *t = NULL;
@@ -191,6 +192,7 @@ void CICQDaemon::icqLogoff()
     gSocketManager.CloseSocket(nSD);
 
   m_eStatus = STATUS_OFFLINE_MANUAL;
+  m_bLoggingOn = false;
 
   pthread_mutex_lock(&mutex_runningevents);
   list<ICQEvent *>::iterator iter = m_lxRunningEvents.begin();
@@ -1259,6 +1261,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     gUserManager.DropOwner();
 
     m_eStatus = STATUS_ONLINE;
+    m_bLoggingOn = false;
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 1, EVENT_SUCCESS);
     if (e != NULL) ProcessDoneEvent(e);
     PushPluginSignal(new CICQSignal(SIGNAL_LOGON, 0, 0));
@@ -1284,6 +1287,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, bool bMultiPacket)
     /* 02 00 64 00 00 00 02 00 8F 76 20 00 */
     gLog.Error("%sIncorrect password.\n", L_ERRORxSTR);
     m_eStatus = STATUS_OFFLINE_FORCED;
+    m_bLoggingOn = false;
     ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_LOGON, 1, EVENT_FAILED);
     if (e != NULL) ProcessDoneEvent(e);
     break;
