@@ -465,7 +465,7 @@ QWidget* OptionsDlg::new_appearance_options()
   QBoxLayout* lay = new QVBoxLayout(w, 8);
   QBoxLayout* l = new QHBoxLayout(lay, 8);
 
-  boxUserWin = new QGroupBox(1, Horizontal, tr("User Window"), w);
+  boxUserWin = new QGroupBox(1, Horizontal, tr("Contact List"), w);
   l->addWidget(boxUserWin);
 
   chkGridLines = new QCheckBox(tr("Show Grid Lines"), boxUserWin);
@@ -478,12 +478,6 @@ QWidget* OptionsDlg::new_appearance_options()
                                      "in the contact list"));
   chkSortByStatus = new QCheckBox(tr("Sort Online Users by Status"), boxUserWin);
   QWhatsThis::add(chkSortByStatus, tr("Sort all online users by their actual status"));
-  chkShowGroupIfNoMsg = new QCheckBox(tr("Show group name if no messages"), boxUserWin);
-  QWhatsThis::add(chkShowGroupIfNoMsg, tr("Show the name of the current group in the "
-                                          "messages label when there are no new messages"));
-  chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), boxUserWin);
-  QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
-                                  "the user function window after a succesful event"));
   chkTransparent = new QCheckBox(tr("Transparent when possible"), boxUserWin);
   QWhatsThis::add(chkTransparent, tr("Make the user window transparent when there "
                                      "is no scroll bar"));
@@ -491,21 +485,31 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkFontStyles, tr("Use italics and bold in the user list to "
                                    "indicate special characteristics such as "
                                    "online notify and visible list"));
-  chkAutoPopup = new QCheckBox(tr("Auto-Popup Incoming Msg"), boxUserWin);
-  QWhatsThis::add(chkAutoPopup, tr("All incoming messages automatically "
-                                           "open when received, if we are "
-                                           "online (or free for chat)"));
-  chkAutoRaise = new QCheckBox(tr("Auto-Raise on Incoming Msg"), boxUserWin);
-  QWhatsThis::add(chkAutoRaise, tr("The main window will raise on incoming messages"));
   QHBox *hlay = new QHBox(boxUserWin);
-  lblFrameStyle = new QLabel(tr("Frame Style:"), hlay);//boxUserWin);
-  edtFrameStyle = new QLineEdit(hlay);//boxUserWin);
+  lblFrameStyle = new QLabel(tr("Frame Style:"), hlay);
+  edtFrameStyle = new QLineEdit(hlay);
   QWhatsThis::add(lblFrameStyle, tr("Override the skin setting for the frame "
                                     "style of the user window:\n"
                                     "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
                                     " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
                                     " + 240 (Shadow"));
   edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
+
+  QGroupBox *boxMainWin = new QGroupBox(1, Horizontal, tr("Main Window"), w);
+  l->addWidget(boxMainWin);
+
+  chkShowGroupIfNoMsg = new QCheckBox(tr("Show group name if no messages"), boxMainWin);
+  QWhatsThis::add(chkShowGroupIfNoMsg, tr("Show the name of the current group in the "
+                                          "messages label when there are no new messages"));
+  chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), boxMainWin);
+  QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
+                                  "the user function window after a succesful event"));
+  chkAutoPopup = new QCheckBox(tr("Auto-Popup Incoming Msg"), boxMainWin);
+  QWhatsThis::add(chkAutoPopup, tr("All incoming messages automatically "
+                                           "open when received, if we are "
+                                           "online (or free for chat)"));
+  chkAutoRaise = new QCheckBox(tr("Auto-Raise on Incoming Msg"), boxMainWin);
+  QWhatsThis::add(chkAutoRaise, tr("The main window will raise on incoming messages"));
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(2, Horizontal, tr("Locale"), w);
