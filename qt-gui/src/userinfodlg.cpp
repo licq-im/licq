@@ -102,7 +102,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   {
     btnMain1 = new QPushButton(tr("&Menu"), this);
     btnMain2 = new QPushButton(tr("&Save"), this);
-    connect(btnMain1, SIGNAL(clicked()), this, SLOT(ShowUsermenu()));
+    connect(btnMain1, SIGNAL(pressed()), this, SLOT(ShowUsermenu()));
     btnMain1->setPopup(gMainWindow->UserMenu());
     connect(btnMain2, SIGNAL(clicked()), this, SLOT(SaveSettings()));
     connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
