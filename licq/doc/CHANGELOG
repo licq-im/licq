@@ -1,5 +1,14 @@
 Change log for Licq.
 
+New in 0.85
+o  Support for ICQ TCP protocols v4,5,6,7
+o  Chat improvements
+o  Code cleanups and bug fixes
+o  Multiple recipient option
+o  Update all users
+o  Removed spoof option as it no longer works
+
+
 New in 0.81
 o  Chat thread segfault handler
 o  Use first name if no alias present
