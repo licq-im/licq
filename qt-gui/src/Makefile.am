@@ -3,9 +3,10 @@ EXTRA_DIST = xpm
 
 #hack, FIXME this in a clean manner
 libdir=$(prefix)/lib/licq
+licq_incdir = @LICQ_INCLUDES@
 
 INCLUDES = -D_REENTRANT \
-	-I$(prefix)/include/licq $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
+	-I$(licq_incdir) $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
 
 lib_LTLIBRARIES = licq_qt-gui.la
 
@@ -31,7 +32,7 @@ licq_qt_gui_la_SOURCES = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) $(KDE_LDFLAGS) \
 	-module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR)
 licq_qt_gui_la_LIBADD = $(KDE_LIBS) -lqt $(X_PRE_LIBS) -lX11 -lXext \
-	$(XSS_LIBS) $(X_EXTRA_LIBS) 
+	$(XSS_LIBS) $(X_EXTRA_LIBS)
 
 METASOURCES = AUTO
 
