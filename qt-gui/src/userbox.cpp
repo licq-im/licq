@@ -19,17 +19,6 @@
 #include "config.h"
 #endif
 
-extern "C" {
-#include <X11/Xlib.h>
-#include <X11/Xutil.h>
-}
-#undef Bool
-#undef None
-#undef KeyPress
-#undef KeyRelease
-#undef FocusIn
-#undef FocusOut
-#undef Status
 
 #include <qpainter.h>
 #include <qpopupmenu.h>
@@ -48,6 +37,10 @@ extern "C" {
 #include "gui-defines.h"
 
 #include "licq_user.h"
+
+#include <X11/Xlib.h>
+#include <X11/Xutil.h>
+#undef Status
 
 #define FLASH_TIME 800
 
@@ -320,56 +313,14 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
     p->drawPixmap(0, 0, *pix, pp.x(), pp.y(), width, height());
   }
   else
-  {
     p->fillRect( 0, 0, width, height(), cg.base());
-  }
 
-  //-----QListViewItem::paintCell------
-
-          if ( !p )
-              return;
-
-          QListView *lv = listView();
-          int r = lv ? lv->itemMargin() : 1;
-          const QPixmap * icon = pixmap( column );
-
-          //p->fillRect( 0, 0, width, height(), cg.base() );
-
-          int marg = lv ? lv->itemMargin() : 1;
-
-          if ( isSelected() && lv->parent() != NULL &&
-               (column==0 || listView()->allColumnsShowFocus()) ) {
-                  p->fillRect( r - marg, 0, width - r + marg, height(),
-                           cg.brush( QColorGroup::Highlight ) );
-                  p->setPen( cg.highlightedText() );
-          } else {
-              p->setPen( cg.text() );
-          }
-
-          if ( icon ) {
-              p->drawPixmap( r, (height()-icon->height())/2, *icon );
-              r += icon->width() + listView()->itemMargin();
-          }
-
-          QString t = text( column );
-          if ( !t.isEmpty() ) {
-              // should do the ellipsis thing in drawText()
-              p->drawText( r, 0, width-marg-r, height(),
-                           align | AlignVCenter, t );
-          }
-
-  //-----------------------------------
-
-  /*
   if (m_nUin != 0)
   {
     cg.setBrush(QColorGroup::Base, QBrush(NoBrush));
     QListViewItem::paintCell(p, cg, column, width, align);
   }
   else
-  */
-
-  if (m_nUin == 0) // Make the dividing lines
   {
     QFont newFont(p->font());
     newFont.setBold(false);
@@ -608,7 +559,6 @@ void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
    QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
                          normal.mid(), normal.text(), *CUserViewItem::s_cBack);
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
-
 }
 
 
@@ -809,7 +759,6 @@ void CUserView::keyPressEvent(QKeyEvent *e)
       QListView::keyPressEvent(e);
     }
   }
-
 }
 
 
@@ -817,6 +766,13 @@ void CUserView::resizeEvent(QResizeEvent *e)
 {
   QListView::resizeEvent(e);
 
+#if 0
+  // this code is evil. we let the user configure
+  // the colum widths and here we overwrite the
+  // settings.
+  // In addition, this code causes some sideeffects
+  // during resizing wich look funny and they can't
+  // be fixed as well as slowing resize down.
   unsigned short totalWidth = 0;
   unsigned short nNumCols = header()->count();
   for (unsigned short i = 0; i < nNumCols - 1; i++)
@@ -834,6 +790,7 @@ void CUserView::resizeEvent(QResizeEvent *e)
     setHScrollBarMode(AlwaysOff);
     setColumnWidth(nNumCols - 1, newWidth);
   }
+#endif
 }
 
 
@@ -867,7 +824,6 @@ void CUserView::viewportMouseMoveEvent(QMouseEvent * me)
 {
   CUserViewItem *i;
   QListView::viewportMouseMoveEvent(me);
-
   if (me->state() == LeftButton && (i = (CUserViewItem *)currentItem())
       && !mousePressPos.isNull() && i->ItemUin() &&
       (QPoint(me->pos() - mousePressPos).manhattanLength() > 8))
