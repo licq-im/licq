@@ -11,7 +11,6 @@ HEADERS += src/adduserdlg.h \
            src/awaymsgdlg.h \
            src/chatdlg.h \
            src/chatjoin.h \
-           src/chgpassdlg.h \
            src/editfile.h \
            src/editgrp.h \
            src/eventdesc.h \
@@ -33,7 +32,6 @@ HEADERS += src/adduserdlg.h \
            src/mmsenddlg.h \
            src/optionsdlg.h \
            src/outputwin.h \
-           src/passworddlg.h \
            src/plugindlg.h \
            src/randomchatdlg.h \
            src/refusedlg.h \
@@ -57,7 +55,6 @@ SOURCES += src/adduserdlg.cpp \
            src/awaymsgdlg.cpp \
            src/chatdlg.cpp \
            src/chatjoin.cpp \
-           src/chgpassdlg.cpp \
            src/editfile.cpp \
            src/editgrp.cpp \
            src/eventdesc.cpp \
@@ -76,7 +73,6 @@ SOURCES += src/adduserdlg.cpp \
            src/mmsenddlg.cpp \
            src/optionsdlg.cpp \
            src/outputwin.cpp \
-           src/passworddlg.cpp \
            src/plugindlg.cpp \
            src/randomchatdlg.cpp \
            src/refusedlg.cpp \
