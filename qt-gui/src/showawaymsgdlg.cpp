@@ -102,6 +102,13 @@ void ShowAwayMsgDlg::accept()
   u->SetShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
 
+  if (icqEventTag != NULL)
+  {
+    server->CancelEvent(icqEventTag);
+    delete icqEventTag;
+    icqEventTag = NULL;
+  }
+
   QDialog::accept();
 }
 
