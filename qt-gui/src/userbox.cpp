@@ -1390,7 +1390,7 @@ void CUserView::maybeTip(const QPoint& c)
     if (u != NULL)
     {
       const char *p = u->ClientInfo();
-      if( p )
+      if (p && *p)
         s += "<br>" + QString(p).replace(' ', "&nbsp;");
 
       if (u->AutoResponse() && *u->AutoResponse() &&
