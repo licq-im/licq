@@ -749,7 +749,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           u->client.LoadFromHandshake_v6(hbuf);
           break;
       }
-      gLog.Info("%sChat: Received handshake from %ld [v%d].\n", L_TCPxSTR,
+      gLog.Info("%sChat: Received handshake from %ld [v%ld].\n", L_TCPxSTR,
          u->client.m_nUin, u->sock.Version());
       u->uin = u->client.m_nUin;
       u->state = CHAT_STATE_WAITxFORxCOLOR;
