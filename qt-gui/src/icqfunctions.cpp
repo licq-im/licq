@@ -33,6 +33,7 @@
 #include <qhbox.h>
 #include <qvbox.h>
 #include <qhgroupbox.h>
+#include <qvgroupbox.h>
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qradiobutton.h>
@@ -224,7 +225,7 @@ void ICQFunctions::CreateSendEventTab()
 {
   tabList[TAB_SEND].label = tr("S&end");
   tabList[TAB_SEND].tab = new QWidget(this, tabList[TAB_SEND].label.latin1());
-  QBoxLayout* selay = new QVBoxLayout(tabList[TAB_SEND].tab, 8);
+  QGridLayout *selay = new QGridLayout(tabList[TAB_SEND].tab, 5, 2, 8);
   tabList[TAB_SEND].loaded = true;
 
   grpCmd = new QButtonGroup(1, Vertical,/*tr("Select Function"),*/ tabList[TAB_SEND].tab);
@@ -237,21 +238,25 @@ void ICQFunctions::CreateSendEventTab()
   QWidget* dummy_w = new QWidget(grpCmd);
   dummy_w->setMinimumHeight(2);
 #endif
-  selay->addWidget(grpCmd);
+  selay->addMultiCellWidget(grpCmd, 0, 0, 0, 1);
 
-  QHGroupBox *h_mid = new QHGroupBox(tabList[TAB_SEND].tab);
-  mleSend = new MLEditWrap(true, h_mid, true);
-  mleSend->setMinimumHeight(150);
+  grpMR = new QVGroupBox(tabList[TAB_SEND].tab);
+  (void) new QLabel(tr("Drag Users Here"), grpMR);
   lstMultipleRecipients = new CMMUserView(mainwin->UserView()->ColInfo(),
-     mainwin->showHeader, m_nUin, mainwin, h_mid);
+     mainwin->showHeader, m_nUin, mainwin, grpMR);
   lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
-  lstMultipleRecipients->hide();
-  //h_mid->setStretchFactor(mleSend, 1);
-  selay->addWidget(h_mid);
-  selay->setStretchFactor(h_mid, 1);
+  grpMR->hide();
+
+  QHGroupBox *h_mid_left = new QHGroupBox(tabList[TAB_SEND].tab);
+  mleSend = new MLEditWrap(true, h_mid_left, true);
+  mleSend->setMinimumHeight(150);
+
+  selay->addWidget(h_mid_left, 1, 0);
+  selay->addWidget(grpMR, 1, 1);
+  selay->setColStretch(0, 1);
 
   grpOpt = new QGroupBox(3, Horizontal, tabList[TAB_SEND].tab);
-  selay->addWidget(grpOpt);
+  selay->addMultiCellWidget(grpOpt, 2, 2, 0, 1);
   lblItem = new QLabel(grpOpt);
   edtItem = new CInfoField(grpOpt, false);
   btnItem = new QPushButton(grpOpt);
@@ -263,7 +268,7 @@ void ICQFunctions::CreateSendEventTab()
   grpOpt->hide();
 
   QGroupBox *box = new QGroupBox(tabList[TAB_SEND].tab);
-  selay->addWidget(box);
+  selay->addMultiCellWidget(box, 3, 3, 0, 1);
 
   QBoxLayout *vlay = new QVBoxLayout(box, 10, 5);
 
@@ -273,7 +278,7 @@ void ICQFunctions::CreateSendEventTab()
   hlay->addWidget(chkSendServer);
   chkUrgent = new QCheckBox(tr("U&rgent"), box);
   hlay->addWidget(chkUrgent);
-  chkMass = new QCheckBox(tr("&Multiple"), box);
+  chkMass = new QCheckBox(tr("&Multiple recipients"), box);
   hlay->addWidget(chkMass);
   connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(slot_masstoggled(bool)));
 
@@ -296,7 +301,8 @@ void ICQFunctions::CreateSendEventTab()
 
 void ICQFunctions::slot_masstoggled(bool b)
 {
-  b ? lstMultipleRecipients->show() : lstMultipleRecipients->hide();
+  //b ? lstMultipleRecipients->show() : lstMultipleRecipients->hide();
+  b ? grpMR->show() : grpMR->hide();
 }
 
 

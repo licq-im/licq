@@ -19,6 +19,7 @@ class QTabWidget;
 class QListViewItem;
 class QTimer;
 class QSpinBox;
+class QVGroupBox;
 
 class ICQUser;
 class CICQSignal;
@@ -96,6 +97,7 @@ protected:
   CInfoField *edtItem;
   QLabel *lblItem;
   QGroupBox *grpOpt;
+  QVGroupBox *grpMR;
   QButtonGroup *grpCmd;
   QPushButton *btnItem;
   QRadioButton *rdbUrl, *rdbChat, *rdbFile, *rdbMsg;
