@@ -2162,6 +2162,10 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("Reg&ister User"), this, SLOT(slot_register()));
 
+   QPopupMenu *mnuHelp = new QPopupMenu(NULL);
+   mnuHelp->insertItem(tr("&Hints"), this, SLOT(slot_hints()));
+   mnuHelp->insertItem(tr("&About"), this, SLOT(aboutBox()));
+
    mnuSystem = new QPopupMenu(NULL);
    mnuSystem->setCheckable(true);
    mnuSystem->insertItem(tr("System Functions"), mnuOwnerAdm);
@@ -2180,8 +2184,7 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("Next &Server"), this, SLOT(nextServer()));
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Sa&ve Options"), this, SLOT(saveOptions()));
-   mnuSystem->insertItem(tr("&Hints"), this, SLOT(slot_hints()));
-   mnuSystem->insertItem(tr("&About"), this, SLOT(aboutBox()));
+   mnuSystem->insertItem(tr("&Help"), mnuHelp);
    mnuSystem->insertItem(tr("E&xit"), this, SLOT(slot_shutdown()));
    mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_SHOWxOFFLINE), m_bShowOffline);
 
