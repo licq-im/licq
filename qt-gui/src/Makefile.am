@@ -33,7 +33,7 @@ licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
   jfcstyle.cpp usercodec.cpp
 
 licq_qt_gui_la_SOURCES = $(licq_gui)
-licq_kde_gui_la_SOURCES = $(licq_gui)
+licq_kde_gui_la_SOURCES = $(licq_gui) wrap_kde_malloc.cpp
 
 licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) \
 	-module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR) 
