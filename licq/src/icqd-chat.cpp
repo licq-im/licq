@@ -1423,6 +1423,14 @@ void CChatManager::SendCharacter(char c)
 }
 
 
+void CChatManager::SendKick(unsigned long _nUin)
+{
+  CBuffer buf(4);
+  buf.PackUnsignedLong(_nUin);
+  SendBuffer(&buf, CHAT_KICKxUSER);
+}
+
+
 void CChatManager::FocusIn()
 {
   CBuffer buf;

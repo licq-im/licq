@@ -75,8 +75,11 @@ class CICQDaemon;
 // Chat event types
 const unsigned char CHAT_COLORxFG      = 0x00;
 const unsigned char CHAT_COLORxBG      = 0x01;
+const unsigned char CHAT_KICKxUSER     = 0x02;
 const unsigned char CHAT_FOCUSxIN      = 0x03;
 const unsigned char CHAT_FOCUSxOUT     = 0x04;
+const unsigned char CHAT_KICKxYES      = 0x05;
+const unsigned char CHAT_KICKxNO       = 0x06;
 const unsigned char CHAT_BEEP          = 0x07;
 const unsigned char CHAT_BACKSPACE     = 0x08;
 const unsigned char CHAT_DISCONNECTION = 0x0B;
@@ -474,6 +477,7 @@ public:
   void SendNewline();
   void SendBackspace();
   void SendCharacter(char);
+  void SendKick(unsigned long);
 
   void FocusOut();
   void FocusIn();
