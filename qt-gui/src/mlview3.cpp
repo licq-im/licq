@@ -77,21 +77,9 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
   // We cannot use QStyleSheet::convertFromPlainText
   // since it has a bug in Qt 3 which causes line breaks to mix up.
   QString text = QStyleSheet::escape(s);
-  text.replace(QRegExp("\n"), "<br>");
-  // We keep the first space character as-is (to allow line wrapping)
-  // and convert the next characters to &nbsp;s (to preserve multiple
-  // spaces).
-  QRegExp longSpaces(" ([ ]+)");
-  int pos;
-  QString cap;
-  while ((pos = longSpaces.search(text)) > -1)
-  {
-     cap = longSpaces.cap(1);
-     cap.replace(QRegExp(" "), "&nbsp;");
-     text.replace(pos+1, longSpaces.matchedLength()-1, cap); 
-  }
-  text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
-  
+
+  // We must hightlight URLs at this step, before we convert
+  // linebreaks to richtext tags and such.
   if (highlightURLs)
   {
      QRegExp reURL("(\\w+://.+)(\\s+|$)");
@@ -117,6 +105,21 @@ QString MLView::toRichText(const QString& s, bool highlightURLs)
      }
      
   }
+
+  text.replace(QRegExp("\n"), "<br>\n");
+  // We keep the first space character as-is (to allow line wrapping)
+  // and convert the next characters to &nbsp;s (to preserve multiple
+  // spaces).
+  QRegExp longSpaces(" ([ ]+)");
+  int pos;
+  QString cap;
+  while ((pos = longSpaces.search(text)) > -1)
+  {
+     cap = longSpaces.cap(1);
+     cap.replace(QRegExp(" "), "&nbsp;");
+     text.replace(pos+1, longSpaces.matchedLength()-1, cap); 
+  }
+  text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
   
   return text;
 }
@@ -182,26 +185,14 @@ void MLView::setSource(const QString& name)
   }
 }
 
-int MLView::linesCount() const
+bool MLView::hasMarkedText() const
 {
-  return lines();
+  return hasSelectedText();
 }
 
-QString MLView::line(int lineNumber) const
+QString MLView::markedText() const
 {
-  QString entireText = text();
-  int lineCounter = 0;
-  int prevPos = 0;
-  int pos;
-  while (pos = entireText.find('\n', prevPos))
-  {
-     if (lineCounter == lineNumber)
-        return entireText.mid(prevPos, pos-prevPos-1);
-     ++lineCounter;
-  }
-  
-  if (pos == -1)
-     return entireText;
+  return selectedText();
 }
 
 #include "mlview3.moc"
