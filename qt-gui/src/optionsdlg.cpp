@@ -396,7 +396,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_MsgAutopopupKey = edtHotKey->text();
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
   mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
-  mainwin->m_bSendFromClipboard = chkMsgChatView->isChecked();
+  mainwin->m_bMsgChatView = chkMsgChatView->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
   mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
