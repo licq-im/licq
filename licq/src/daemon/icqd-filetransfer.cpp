@@ -14,7 +14,6 @@
 #include "licq_constants.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
-#include "licq_sighandler.h"
 #include "support.h"
 
 #define DEBUG_THREADS(x)
@@ -823,8 +822,6 @@ void CFileTransferManager::CloseConnection()
 void *FileTransferManager_tep(void *arg)
 {
   CFileTransferManager *ftman = (CFileTransferManager *)arg;
-
-  licq_segv_handler(&signal_handler_ftThread);
 
   fd_set f_recv, f_send;
   struct timeval *tv;

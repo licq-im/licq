@@ -16,6 +16,9 @@
 #include <execinfo.h>
 #endif
 
+
+void licq_handle_sigsegv(int);
+
 /*
 void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
 {
@@ -27,9 +30,9 @@ void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
 }
 */
 
-void licq_segv_handler(void (*f)(int))
+void licq_segv_handler()
 {
-  signal(SIGSEGV, f);
+  signal(SIGSEGV, &licq_handle_sigsegv);
   /*struct sigaction sa;
   memset(&sa, 0, sizeof(sa));
   sa.sa_handler = f;
@@ -38,55 +41,16 @@ void licq_segv_handler(void (*f)(int))
 }
 
 
-void signal_handler_managerThread(int s /*, siginfo_t *si, void *context */)
+
+void licq_handle_sigsegv(int s)
 {
-  if (s == SIGSEGV)
-    licq_handle_sigsegv("Manager Thread" /*, si, context */);
-}
+  if (s != SIGSEGV)
+  {
+    fprintf(stderr, "Unknown signal.\n");
+    return;
+  }
 
-
-
-void signal_handler_chatThread(int s /*, siginfo_t *si, void *context */)
-{
-  if (s == SIGSEGV)
-    licq_handle_sigsegv("Chat Thread" /*, si, context */);
-}
-
-
-void signal_handler_ftThread(int s /*, siginfo_t *si, void *context */)
-{
-  if (s == SIGSEGV)
-    licq_handle_sigsegv("File Transfer Thread" /*, si, context */);
-}
-
-
-
-void signal_handler_eventThread(int s /*, siginfo_t *si, void *context */)
-{
-  if (s == SIGSEGV)
-    licq_handle_sigsegv("Event Thread" /*, si, context */);
-}
-
-
-void signal_handler_pingThread(int s /*, siginfo_t *si, void *context */)
-{
-  if (s == SIGSEGV)
-    licq_handle_sigsegv("Ping Thread" /*, si, context */);
-}
-
-
-void signal_handler_monitorThread(int s /*, siginfo_t *si, void *context */)
-{
-  if (s == SIGSEGV)
-    licq_handle_sigsegv("Monitor Thread" /*, si, context */);
-}
-
-
-
-
-void licq_handle_sigsegv(const char *s /*, siginfo_t *si, void *context */)
-{
-  fprintf(stderr, "Licq Segmentation Violation Detected [%s].\n", s);
+  fprintf(stderr, "Licq Segmentation Violation Detected.\n");
   /*fprintf(stderr, "Fault Address: [0x%08lX]\n", (unsigned long)si->si_addr); */
 
 #ifdef HAVE_BACKTRACE
@@ -106,9 +70,6 @@ void licq_handle_sigsegv(const char *s /*, siginfo_t *si, void *context */)
   fprintf(stderr, "Attempting to generate core file.\n");
   pthread_kill_other_threads_np();
 #endif
-
-  /* stupid line to stop useless warning */
-  /*if ((unsigned long)context == 1) printf("c");*/
 
   abort();
 }

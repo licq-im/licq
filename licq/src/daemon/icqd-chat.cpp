@@ -1154,8 +1154,6 @@ void *ChatManager_tep(void *arg)
 {
   CChatManager *chatman = (CChatManager *)arg;
 
-  licq_segv_handler(&signal_handler_chatThread);
-
   fd_set f;
   int l, nSocketsAvailable, nCurrentSocket;
   char buf[2];

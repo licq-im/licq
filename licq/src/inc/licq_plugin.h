@@ -12,7 +12,6 @@ class CICQDaemon;
  *----------------------------------------------------------------------------*/
 #include <pthread.h>
 #include <list.h>
-#include "licq_sighandler.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -104,18 +103,9 @@ extern list<unsigned short> LP_Ids;
 unsigned short LP_Id;
 
 
-void signal_handler_pluginThread(int s /*, siginfo_t *si, void *context*/)
-{
-  if (s == SIGSEGV)
-    licq_handle_sigsegv(LP_Name() /*, si, context*/);
-}
-
-
 
 void *LP_Main_tep(void *p)
 {
-  licq_segv_handler(&signal_handler_pluginThread);
-
   LP_Exit(LP_Main((CICQDaemon *)p));
   return NULL;
 }

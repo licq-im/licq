@@ -1,11 +1,10 @@
 #ifndef LICQTHREADS_H
 #define LICQTHREADS_H
 
-#include <signal.h>
+#include <errno.h>
 
 #include "pthread_rdwr.h"
 #include "time-fix.h"
-#include "licq_sighandler.h"
 
 #include "licq_icqd.h"
 #include "licq_log.h"
@@ -28,9 +27,6 @@
 void *ProcessRunningEvent_tep(void *p)
 {
   pthread_detach(pthread_self());
-
-  //signal(SIGSEGV, &signal_handler_eventThread);
-  licq_segv_handler(&signal_handler_eventThread);
 
   DEBUG_THREADS("[ProcessRunningEvent_tep] Caught event.\n");
 
@@ -236,9 +232,6 @@ void *Ping_tep(void *p)
 {
   pthread_detach(pthread_self());
 
-  //signal(SIGSEGV, &signal_handler_pingThread);
-  licq_segv_handler(&signal_handler_pingThread);
-
   CICQDaemon *d = (CICQDaemon *)p;
   struct timeval tv;
 
@@ -279,10 +272,6 @@ void *MonitorSockets_tep(void *p)
   //pthread_detach(pthread_self());
 
   CICQDaemon *d = (CICQDaemon *)p;
-
-  // Set up signal handler
-  //signal(SIGSEGV, &signal_handler_monitorThread);
-  licq_segv_handler(&signal_handler_monitorThread);
 
   fd_set f;
   int nSocketsAvailable, nCurrentSocket, l;
@@ -397,7 +386,8 @@ void *MonitorSockets_tep(void *p)
           {
             if (!tcp->RecvPacket())
             {
-              if (tcp->Error() == 0)
+              int err = tcp->Error();
+              if (err == 0)
                 gLog.Info("%sConnection to %d closed.\n", L_TCPxSTR, tcp->Owner());
               else
               {
@@ -429,7 +419,18 @@ void *MonitorSockets_tep(void *p)
                 }
                 pthread_mutex_unlock(&d->mutex_runningevents);
                 if (e != NULL && d->DoneEvent(e, EVENT_ERROR) != NULL)
-                  d->ProcessDoneEvent(e);
+                {
+                  // If the connection was reset, we can try again
+                  if (err == ECONNRESET)
+                  {
+                    e->m_nSocketDesc = -1;
+                    d->SendExpectEvent(e);
+                  }
+                  else
+                  {
+                    d->ProcessDoneEvent(e);
+                  }
+                }
               } while (e != NULL);
 
               gSocketManager.CloseSocket(nCurrentSocket);

@@ -22,7 +22,6 @@ char SHARE_DIR[MAX_FILENAME_LEN];
 char LIB_DIR[MAX_FILENAME_LEN];
 unsigned short DEBUG_LEVEL;
 
-const char *LP_Name() { return "Licq"; }
 
 int main(int argc, char **argv)
 {
@@ -31,11 +30,7 @@ int main(int argc, char **argv)
    SOCKSinit(argv[0]);
 #endif
 
-  //signal(SIGSEGV, &signal_handler_managerThread);
-  licq_segv_handler(&signal_handler_managerThread);
-
-  /*char *p = NULL;
-  *p = 4;*/
+  licq_segv_handler();
 
   CLicq licq;
   if (!licq.Init(argc, argv)) return 1;
