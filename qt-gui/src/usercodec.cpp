@@ -53,6 +53,9 @@ const char * UserCodec::encodings_array[][2] = {
   { QT_TR_NOOP("Arabic"), "ISO 8859-6-I" },
   { QT_TR_NOOP("Greek"), "ISO 8859-7" },
   { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I" },
+  { QT_TR_NOOP("Chinese Traditional"), "Big5" },
+  { QT_TR_NOOP("Chinese Simplified"), "gbk" },
+  { QT_TR_NOOP("Chinese Simplified"), "gbk2312" },
   { QT_TR_NOOP("Turkish"), "ISO 8859-9" },
   { QT_TR_NOOP("Turkish"), "CP 1254" }
 };
