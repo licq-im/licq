@@ -218,7 +218,7 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
 //-----icqRenameUser------------------------------------------------------------
 void CICQDaemon::icqRenameUser(unsigned long _nUin, const char *_szOldAlias)
 {
-  if (!UseServerContactList()) return;
+  if (!UseServerContactList() || m_nTCPSocketDesc == -1) return;
 
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
   if (u == NULL) return;

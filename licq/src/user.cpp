@@ -1591,9 +1591,14 @@ void ICQUser::SetAlias(const char *s, bool _bUpdate)
   // A write lock should be here, we need to unlock for this
   if (gLicqDaemon && _bUpdate)
   {
-    Unlock();
+    unsigned short _nLockType = m_nLockType;
+    if (_nLockType == LOCK_W || _nLockType == LOCK_R)
+      Unlock();
+
     gLicqDaemon->icqRenameUser(m_nUin, szOldAlias);
-    Lock(LOCK_W);
+
+    if (_nLockType == LOCK_W || _nLockType == LOCK_R)
+      Lock(_nLockType);
   }
 
   if (szOldAlias)
