@@ -18,9 +18,11 @@ SecureOff = secureoff.xpm
 SecureOn = secureon.xpm
 History = history.xpm
 Info = info.xpm
+AIMOnline = aimonline.png
+AIMOffline = aimoffline.png
+AIMAway = aimaway.png
 MSNOnline = msnonline.xpm
 MSNOffline = msnoffline.xpm
 MSNAway = msnaway.xpm
 MSNPrivate = msnprivate.xpm
 MSNOccupied = msnoccupied.xpm
-

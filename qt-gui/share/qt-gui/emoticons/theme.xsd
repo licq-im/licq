@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema">
+	<element name="messaging-emoticon-map">
+		<complexType>
+			<sequence>
+				<element name="emoticon" minOccurs="0" maxOccurs="unbounded">
+					<attribute name="file" type="string" use="required"/>
+					<complexType>
+						<sequence>
+							<element name="string" minOccurs="0" maxOccurs="unbounded"/>
+						</sequence>
+					</complexType>
+				</element>
+			</sequence>
+		</complexType>
+	</element>
+</schema>

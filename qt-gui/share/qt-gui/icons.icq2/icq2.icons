@@ -17,4 +17,6 @@ MSNOffline = msnoffline.xpm
 MSNAway = msnaway.xpm
 MSNPrivate = msnprivate.xpm
 MSNOccupied = msnoccupied.xpm
-
+AIMOnline = aimonline.png
+AIMOffline = aimoffline.png
+AIMAway = aimaway.png
