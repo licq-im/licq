@@ -274,7 +274,7 @@ protected slots:
   void FillServerGroup();
   void saveAllUsers();
   void updateEvents();
-  void updateStatus();
+  void updateStatus(CICQSignal * = NULL);
   void updateGroups();
   void changeStatus(int index, unsigned long nPPID = 0xFFFFFFFF); //all
   void changeStatusManualProtocol(int index);

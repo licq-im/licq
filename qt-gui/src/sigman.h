@@ -30,7 +30,7 @@ signals:
   // Signal signals
   void signal_updatedList(CICQSignal *);
   void signal_updatedUser(CICQSignal *);
-  void signal_updatedStatus();
+  void signal_updatedStatus(CICQSignal *);
   void signal_logon();
   void signal_logoff();
   void signal_ui_viewevent(unsigned long);

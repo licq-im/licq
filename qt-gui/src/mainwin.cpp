@@ -612,7 +612,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             this, SLOT(slot_updatedList(CICQSignal *)));
    connect (licqSigMan, SIGNAL(signal_updatedUser(CICQSignal *)),
             this, SLOT(slot_updatedUser(CICQSignal *)));
-   connect (licqSigMan, SIGNAL(signal_updatedStatus()), this, SLOT(updateStatus()));
+   connect (licqSigMan, SIGNAL(signal_updatedStatus(CICQSignal *)), this, SLOT(updateStatus(CICQSignal *)));
    connect (licqSigMan, SIGNAL(signal_doneOwnerFcn(ICQEvent *)),
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
@@ -1801,11 +1801,13 @@ void CMainWindow::updateGroups()
 
 
 //-----CMainWindow::updateStatus------------------------------------------------
-void CMainWindow::updateStatus()
+void CMainWindow::updateStatus(CICQSignal *s)
 {
    char *theColor = skin->colors.offline;
-   //TODO show status of what protocol?
-   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+   unsigned long nPPID = LICQ_PPID;
+   if (s)
+     nPPID = s->PPID();
+   ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
    if (o != NULL)
    {
     unsigned long status = o->Status();
@@ -1829,6 +1831,36 @@ void CMainWindow::updateStatus()
     if (status != ICQ_STATUS_OFFLINE)
       mnuStatus->setItemChecked(MNUxITEM_STATUSxINVISIBLE, o->StatusInvisible());
   
+    // Update the protocol menu if there is one
+    int nAt = 0;
+    if (m_lnProtMenu.size() ==  0)
+      nAt = -1;
+    else
+    {
+      std::vector<unsigned long>::iterator iter;
+      for (iter = m_lnProtMenu.begin(); iter != m_lnProtMenu.end(); ++iter, nAt++)
+        if (*iter == nPPID)
+          break;
+    }   
+
+    if (nAt != -1)
+    {
+      mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_ONLINE | (nAt << 8),
+        o->Status() == ICQ_STATUS_ONLINE); 
+      mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_AWAY | (nAt << 8),
+        o->Status() == ICQ_STATUS_AWAY);
+      mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_NA | (nAt << 8),
+        o->Status() == ICQ_STATUS_NA);
+      mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_OCC | (nAt << 8),
+        o->Status() == ICQ_STATUS_OCCUPIED);
+      mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_DND | (nAt << 8),
+        o->Status() == ICQ_STATUS_DND);
+      mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_FFC | (nAt << 8),
+        o->Status() == ICQ_STATUS_FREEFORCHAT);
+      mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_OFFLINE | (nAt << 8),
+        o->Status() == ICQ_STATUS_OFFLINE);
+    }
+
     lblStatus->setText(o->StatusStr());
     lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
     lblStatus->update();
@@ -1847,7 +1879,7 @@ void CMainWindow::updateStatus()
     setIcon(CMainWindow::iconForStatus(o->StatusFull()));
 #endif   // USE_KDE
   
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(nPPID);
    }
 
    // set the color if it isn't set by the skin
