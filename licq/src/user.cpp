@@ -128,7 +128,7 @@ bool CUserManager::Load()
 
   // Load the group info from licq.conf
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s/licq.conf", BASE_DIR);
+  snprintf(filename, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(filename);
 
@@ -153,7 +153,7 @@ bool CUserManager::Load()
   licqConf.CloseFile();
 
   // Load users from users.conf
-  sprintf(filename, "%s/users.conf", BASE_DIR);
+  snprintf(filename, MAX_FILENAME_LEN, "%s/users.conf", BASE_DIR);
   CIniFile usersConf(INI_FxFATAL | INI_FxERROR);
   usersConf.LoadFile(filename);
 
@@ -179,7 +179,7 @@ bool CUserManager::Load()
        gLog.Warn("%sSkipping user %i, invalid uin %ld.\n", L_WARNxSTR, i, nUserUin);
        continue;
      }
-     sprintf(filename, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
+     snprintf(filename, MAX_FILENAME_LEN, "%s/%s/%li.uin", BASE_DIR, USER_DIR, nUserUin);
 
      u = new ICQUser(nUserUin, filename);
      u->AddToContactList();
@@ -353,7 +353,7 @@ void CUserManager::SaveGroups()
 
   // Load the group info from licq.conf
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s/licq.conf", BASE_DIR);
+  snprintf(filename, MAX_FILENAME_LEN, "%s/licq.conf", BASE_DIR);
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(filename);
 
@@ -745,7 +745,7 @@ ICQUser::ICQUser(unsigned long nUin)
   Init(nUin);
   SetDefaults();
   char szFilename[MAX_FILENAME_LEN];
-  sprintf(szFilename, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, nUin);
+  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.uin", BASE_DIR, USER_DIR, nUin);
   m_fConf.SetFileName(szFilename);
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
@@ -759,7 +759,7 @@ void ICQUser::AddToContactList()
   if (access(m_fHistory.FileName(), F_OK) == -1)
   {
     char szFilename[MAX_FILENAME_LEN];
-    sprintf(szFilename, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
     if (access(szFilename, F_OK) == 0)
     {
       if (rename(szFilename, m_fHistory.FileName()) == -1)
@@ -969,7 +969,7 @@ void ICQUser::RemoveFiles()
   if (stat(m_fHistory.FileName(), &buf) == 0 && buf.st_size > 0)
   {
     char szFilename[MAX_FILENAME_LEN];
-    sprintf(szFilename, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
+    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%ld.%s", BASE_DIR, HISTORY_DIR, m_nUin, HISTORYxOLD_EXT);
     if (rename(m_fHistory.FileName(), szFilename) == -1)
     {
       gLog.Warn("%sFailed to rename history file (%s):\n%s%s\n", L_WARNxSTR,
@@ -1491,7 +1491,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
         }
         break;
       case 'n':
-        sprintf(szTemp, "%s %s", GetFirstName(), GetLastName());
+        snprintf(szTemp, sizeof(szTemp), "%s %s", GetFirstName(), GetLastName());
         sz = szTemp;
         break;
       case 'f':
@@ -2048,7 +2048,7 @@ ICQOwner::ICQOwner()
   m_bOnContactList = true;
 
   // Get data from the config file
-  sprintf(filename, "%s/owner.uin", BASE_DIR);
+  snprintf(filename, MAX_FILENAME_LEN, "%s/owner.uin", BASE_DIR);
 
   // Make sure owner.uin is mode 0600
   if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
@@ -2070,7 +2070,7 @@ ICQOwner::ICQOwner()
 
   m_fConf.CloseFile();
 
-  sprintf(filename, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
+  snprintf(filename, MAX_FILENAME_LEN, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
   SetHistoryFile(filename);
 
   if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)

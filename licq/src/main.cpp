@@ -25,7 +25,9 @@ unsigned short DEBUG_LEVEL;
 
 int main(int argc, char **argv)
 {
-
+// Make sure argv[0] is defined otherwise licq will crash if it is NULL
+  if (argv[0] == NULL)
+     argv[0] = "licq";
 #ifdef USE_SOCKS5
    SOCKSinit(argv[0]);
 #endif

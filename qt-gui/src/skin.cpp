@@ -23,10 +23,10 @@ CSkin::CSkin(const char *skinname)
      if (baseSkinDir[strlen(baseSkinDir) - 1] != '/') strcat(baseSkinDir, "/");
    }
    else
-     sprintf(baseSkinDir, "%s%sskin.%s/", SHARE_DIR, QTGUI_DIR, skinname);
+     snprintf(baseSkinDir, MAX_FILENAME_LEN, "%s%sskin.%s/", SHARE_DIR, QTGUI_DIR, skinname);
 
    char filename[MAX_FILENAME_LEN];
-   sprintf(filename, "%s%s.skin", baseSkinDir, skinname);
+   snprintf(filename, MAX_FILENAME_LEN, "%s%s.skin", baseSkinDir, skinname);
    CIniFile skinFile(/*INI_FxFATAL | INI_FxERROR*/ INI_FxWARN);
    if (!skinFile.LoadFile(filename))
    {

@@ -436,7 +436,7 @@ void OptionsDlg::ApplyOptions()
     else
     {
       char szTransFileName[MAX_FILENAME_LEN];
-      sprintf(szTransFileName, "%s/%s/%s", BASE_DIR, TRANSLATION_DIR, QFile::encodeName(cmbTrans->currentText()).data());
+      snprintf(szTransFileName, MAX_FILENAME_LEN, "%s/%s/%s", BASE_DIR, TRANSLATION_DIR, QFile::encodeName(cmbTrans->currentText()).data());
       gTranslator.setTranslationMap(szTransFileName);
     }
   }

@@ -34,6 +34,7 @@
 #endif
 #include <unistd.h> // for getopt
 
+#include "jfcstyle.h"
 #include "mainwin.h"
 #include "licqgui.h"
 #include "sigman.h"
@@ -52,7 +53,7 @@ const char *LP_Usage(void)
     " -h : this help screen\n"
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE), ignored by KDE support\n"
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / JFC), ignored by KDE support\n"
     " -d : start hidden (dock icon only)\n";
   return usage;
 }
@@ -125,6 +126,8 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
     s = new QPlatinumStyle;
   else if (strncmp(_szStyle, "CDE", 3) == 0)
     s = new QCDEStyle;
+  else if (strncmp(_szStyle, "JFC", 3) == 0)
+    s = new JFCStyle;
   return s;
 }
 
@@ -182,13 +185,13 @@ CLicqGui::CLicqGui(int argc, char **argv)
       // ignore here
       break;
     case 's':  // skin name
-      sprintf(skinName, "%s", optarg);
+      snprintf(skinName, sizeof(skinName), "%s", optarg);
       break;
     case 'i':  // icons name
-      sprintf(iconsName, "%s", optarg);
+      snprintf(iconsName, sizeof(skinName), "%s", optarg);
       break;
     case 'g': // gui style
-      strcpy(styleName, optarg);
+      strncpy(styleName, optarg, sizeof(styleName));
       break;
     case 'd': // dock icon
       bStartHidden = true;
@@ -197,7 +200,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
 
 #ifndef USE_KDE
   char buf[64];
-  sprintf(buf, "%s/licq_qt-gui.style", BASE_DIR);
+  snprintf(buf, sizeof(buf), "%s/licq_qt-gui.style", BASE_DIR);
 
   QStyle *style = SetStyle(styleName);
 

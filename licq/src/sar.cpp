@@ -62,7 +62,7 @@ bool CSARManager::Load()
   gLog.Info("%sLoading saved auto-responses.\n", L_INITxSTR);
 
   // Get data from the config file
-  sprintf(filename, "%s/sar.conf", BASE_DIR);
+  snprintf(filename, sizeof(filename), "%s/sar.conf", BASE_DIR);
   // Try and load the file
   if (!m_fConf.LoadFile(filename))
   {

@@ -640,7 +640,7 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
   }
 
   char szAlias[64];
-  strcpy(szAlias, u->GetAlias());
+  strncpy(szAlias, u->GetAlias(), sizeof(szAlias));
   unsigned short nPort = u->Port();
   unsigned short nVersion = u->ConnectionVersion();
 
@@ -714,7 +714,7 @@ bool CICQDaemon::OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
   if (u == NULL) return false;
 
   char szAlias[64];
-  sprintf(szAlias, "%s (%ld)", u->GetAlias(), u->Uin());
+  snprintf(szAlias, sizeof(szAlias), "%s (%ld)", u->GetAlias(), u->Uin());
   unsigned long ip = u->Ip();
   unsigned long realip = u->RealIp();
   bool bSendRealIp = u->SendRealIp();
@@ -1375,6 +1375,16 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           break;
         }
         u->SetSecure(true);
+
+        // Add the user to our list if they are new
+        if (bNewUser)
+        {
+          if (Ignore(IGNORE_NEWUSERS))
+            break;
+          AddUserToList(u);
+          bNewUser = false;
+        }
+
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, nUin, 1));
 
         gLog.Info("%sSecure channel established with %s (%ld).\n",

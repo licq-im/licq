@@ -60,7 +60,7 @@ unsigned short CUtilityManager::LoadUtilities(const char *_szDir)
   for (unsigned short i = 0; i < n; i++)
   {
     char szFile[MAX_FILENAME_LEN];
-    sprintf(szFile, "%s/%s", _szDir, namelist[i]->d_name);
+    snprintf(szFile, MAX_FILENAME_LEN, "%s/%s", _szDir, namelist[i]->d_name);
     free (namelist[i]);
     p = new CUtility(szFile);
     if (p->Exception())
@@ -148,7 +148,7 @@ CUtility::CUtility(const char *_szFileName)
     pcField++;
   }
 
-  strcpy(szTemp, _szFileName);
+  strncpy(szTemp, _szFileName, MAX_LINE_LEN - 1);
   // Replace the terminating .plugin by '\0'plugin
   pcField = strrchr(szTemp, '.');
   if (pcField != NULL) *pcField = '\0';

@@ -367,7 +367,7 @@ void IconManager_Themed::SetTheme(const char *theme)
   else
     baseDockDir.sprintf("%s%sdock.%s/", SHARE_DIR, QTGUI_DIR, theme);
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s%s.dock", QFile::encodeName(baseDockDir).data(), theme);
+  snprintf(filename, MAX_FILENAME_LEN, "%s%s.dock", QFile::encodeName(baseDockDir).data(), theme);
   CIniFile dockFile(INI_FxWARN);
   if (!dockFile.LoadFile(filename))
   {

@@ -83,7 +83,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_bOnlineNotifies = true;
 
   // Begin parsing the config file
-  sprintf(m_szConfigFile, "%s/%s", BASE_DIR, "licq.conf");
+  snprintf(m_szConfigFile, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, "licq.conf");
   CIniFile licqConf(INI_FxERROR | INI_FxFATAL);
   licqConf.LoadFile(m_szConfigFile);
   licqConf.SetFlags(0);
@@ -125,7 +125,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   if (strcmp(temp, "none") != 0)
   {
     m_szRejectFile = new char[256];
-    sprintf(m_szRejectFile, "%s/%s", BASE_DIR, temp);
+    snprintf(m_szRejectFile, sizeof(m_szRejectFile), "%s/%s", BASE_DIR, temp);
   }
   else
     m_szRejectFile = NULL;
@@ -135,7 +135,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadNum("ErrorTypes", m_nErrorTypes, L_ERROR | L_UNKNOWN);
   if (strcmp(m_szErrorFile, "none") != 0)
   {
-    sprintf(temp, "%s/%s", BASE_DIR, m_szErrorFile);
+    snprintf(temp, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, m_szErrorFile);
     CLogService_File *l = new CLogService_File(m_nErrorTypes);
     if (!l->SetLogFile(temp, "a"))
     {
@@ -152,7 +152,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   if (strncmp(temp, "none", 4) != 0)
   {
      char TranslationTableFileNameFull[MAX_FILENAME_LEN];
-     sprintf(TranslationTableFileNameFull, "%s%s/%s", SHARE_DIR, TRANSLATION_DIR, temp);
+     snprintf(TranslationTableFileNameFull, MAX_FILENAME_LEN, "%s%s/%s", SHARE_DIR, TRANSLATION_DIR, temp);
      gTranslator.setTranslationMap (TranslationTableFileNameFull);
   }
 
@@ -251,7 +251,7 @@ bool CICQDaemon::Start()
 
 #ifdef USE_FIFO
   // Open the fifo
-  sprintf(sz, "%s/licq_fifo", BASE_DIR);
+  snprintf(sz, MAX_FILENAME_LEN, "%s/licq_fifo", BASE_DIR);
   gLog.Info("%sOpening fifo.\n", L_INITxSTR);
   fifo_fd = open(sz, O_RDWR);
   if (fifo_fd == -1)
@@ -690,7 +690,7 @@ unsigned short VersionToUse(unsigned short v_in)
 void CICQDaemon::SaveUserList()
 {
   char filename[MAX_FILENAME_LEN];
-  sprintf(filename, "%s/users.conf", BASE_DIR);
+  snprintf(filename, MAX_FILENAME_LEN, "%s/users.conf", BASE_DIR);
   FILE *usersConf = fopen(filename, "w");
 
   fprintf(usersConf, "[users]\nNumOfUsers = %d\n", gUserManager.NumUsers());

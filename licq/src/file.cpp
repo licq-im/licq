@@ -676,7 +676,7 @@ bool CIniFile::CreateSection(const char *_szSectionName)
   // Otherwise our bufpos is at the end of the file and we need to create
   // the section
   char szNewSect[MAX_SECTIONxNAME_LEN + 4];
-  sprintf(szNewSect, "[%s]\n", _szSectionName);
+  snprintf(szNewSect, MAX_SECTIONxNAME_LEN + 4, "[%s]\n", _szSectionName);
   m_nSectionStart = m_nBufSize + strlen(szNewSect);
   InsertStr(szNewSect, m_nBufPos, m_nBufPos);
   m_nSectionEnd = m_nBufSize;
@@ -715,7 +715,7 @@ bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
     gLog.Warn("%sInternal Error: CIniFile::WriteStr(%s, NULL).\n", L_WARNxSTR, _szKey);
     strcpy(szDataNoNL, "");
   }
-  sprintf(szNewLine, "%s = %s\n", _szKey, szDataNoNL);
+  snprintf(szNewLine, MAX_LINE_LEN, "%s = %s\n", _szKey, szDataNoNL);
 
   // Check if we are appending a new key to the section
   if (sz == NULL) m_nSectionEnd += strlen(szNewLine);
