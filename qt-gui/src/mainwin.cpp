@@ -72,9 +72,7 @@
 #include "userinfodlg.h"
 #include "usereventdlg.h"
 #include "reqauthdlg.h"
-#ifdef USE_DOCK
 #include "wharf.h"
-#endif
 #include "keyrequestdlg.h"
 #include "usercodec.h"
 
@@ -539,7 +537,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                     "<li><tt>%S - </tt>abbreviated status</li>"
                     "<li><tt>%u - </tt>uin</li>"
                     "<li><tt>%w - </tt>webpage</li></ul>");
-#ifdef USE_DOCK
   licqIcon = NULL;
 #ifdef USE_KDE
   if(m_nDockMode != DockNone)
@@ -557,7 +554,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       break;
   }
 #endif // USE_KDE
-#endif // USE_DOCK
 
    // all settings relating to localization
    licqConf.SetSection("locale");
@@ -827,10 +823,7 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
 //-----CMainWindow::destructor--------------------------------------------------
 CMainWindow::~CMainWindow()
 {
-#ifdef USE_DOCK
   delete licqIcon;
-#endif
-
   gMainWindow = NULL;
 }
 
@@ -1469,9 +1462,7 @@ void CMainWindow::updateEvents()
   lblMsg->update();
   setCaption(szCaption);
 
-#ifdef USE_DOCK
-  if (licqIcon != NULL) licqIcon->SetDockIconMsg(nNumUserEvents, nNumOwnerEvents);
-#endif
+  if (licqIcon) licqIcon->SetDockIconMsg(nNumUserEvents, nNumOwnerEvents);
 }
 
 
@@ -1599,9 +1590,7 @@ void CMainWindow::updateStatus()
    // set the color if it isn't set by the skin
    if (skin->lblStatus.color.fg == NULL) lblStatus->setNamedFgColor(theColor);
 
-#ifdef USE_DOCK
-  if (licqIcon != NULL) licqIcon->SetDockIconStatus();
-#endif
+  if (licqIcon) licqIcon->SetDockIconStatus();
 }
 
 
@@ -2536,7 +2525,6 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("showPopOnlineSince", m_bPopOnlineSince);
   licqConf.WriteBool("showPopIdleTime", m_bPopIdleTime);
 
-#ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
 #ifndef USE_KDE
   switch(m_nDockMode)
@@ -2550,7 +2538,6 @@ void CMainWindow::saveOptions()
     case DockNone:
       break;
   }
-#endif
 #endif
 
   // save the column info
@@ -3430,7 +3417,7 @@ void CMainWindow::slot_stats()
 
 void CMainWindow::showSearchUserDlg()
 {
-  SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan);
+  SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan, this);
   searchUserDlg->show();
 }
 

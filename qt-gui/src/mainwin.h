@@ -141,9 +141,7 @@ public:
   CICQDaemon *licqDaemon;
   CSignalManager *licqSigMan;
   CQtLogWindow *licqLogWindow;
-#ifdef USE_DOCK
   IconManager *licqIcon;
-#endif
   UserViewEventList licqUserView;
   UserInfoList licqUserInfo;
   UserSendEventList licqUserSend;
