@@ -17,8 +17,10 @@
 
 #include <qdir.h>
 #include <qgroupbox.h>
-#include <qlistbox.h>
+#include <qlistview.h>
 #include <qpushbutton.h>
+#include <qlayout.h>
+#include <qvbox.h>
 
 #include "skinbrowser.h"
 #include "skin.h"
@@ -28,18 +30,45 @@
 #include "editskin.h"
 
 SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const char *name)
-  : QWidget(parent, name)
+  : QDialog(parent, name)
 {
   mainwin = _mainwin;
 
-  grpSkins = new QGroupBox(tr("Skins"), this);
-  lstSkins = new QListBox(grpSkins);
-  btnApplySkin = new QPushButton(tr("Apply"), grpSkins);
-  btnEditSkin = new QPushButton(tr("Edit"), grpSkins);
-  grpIcons = new QGroupBox(tr("Icons"), this);
-  lstIcons = new QListBox(grpIcons);
-  btnApplyIcons = new QPushButton(tr("Apply"), grpIcons);
-  btnDone = new QPushButton(tr("Done"), this);
+  QBoxLayout* t_lay = new QVBoxLayout(this, 8, 4);
+
+  grpSkins = new QGroupBox(1, Vertical, tr("Skins"), this);
+  t_lay->addWidget(grpSkins);
+
+  lstSkins = new QListView(grpSkins);
+  lstSkins->addColumn(tr("Name"), 180);
+  lstSkins->setMinimumWidth(195);
+#if QT_VERSION >= 210
+  lstSkins->setShowSortIndicator(true);
+#endif
+
+  QVBox* btn1 = new QVBox(grpSkins);
+  btnApplySkin = new QPushButton(tr("&Apply"), btn1);
+  btnEditSkin = new QPushButton(tr("&Edit"), btn1);
+
+  grpIcons = new QGroupBox(1, Vertical, tr("Icons"), this);
+  t_lay->addWidget(grpIcons);
+  lstIcons = new QListView(grpIcons);
+  lstIcons->addColumn(tr("Name"), 180);
+  lstIcons->setMinimumWidth(195);
+#if QT_VERSION >= 210
+  lstIcons->setShowSortIndicator(true);
+#endif
+
+  QVBox* btn2 = new QVBox(grpIcons);
+  btnApplyIcons = new QPushButton(tr("A&pply"), btn2);
+
+  QBoxLayout* lay = new QHBoxLayout(t_lay);
+  lay->addStretch(1);
+  btnDone = new QPushButton(tr("&Done"), this);
+  btnDone->setMinimumWidth(75);
+  btnDone->setDefault(true);
+  lay->addWidget(btnDone);
+
   setCaption(tr("Licq Skin Browser"));
 
   // Load up the available packs
@@ -49,7 +78,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const cha
   if (!dPlugins.count())
   {
     gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
-    lstSkins->insertItem(tr("ERROR"));
+    (void) new QListViewItem(lstSkins, tr("Error"));
     lstSkins->setEnabled(false);
   }
   else
@@ -57,13 +86,13 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const cha
     QStringList::Iterator it;
     QStringList lst = dPlugins.entryList();
     for (it = lst.begin(); it != lst.end(); ++it)
-      lstSkins->insertItem((*it).mid(5));
+      (void) new QListViewItem(lstSkins, (*it).mid(5));
   }
   QDir dIcons(szDir, "icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
   if (!dIcons.count())
   {
     gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
-    lstSkins->insertItem(tr("ERROR"));
+    (void) new QListViewItem(lstIcons, tr("Error"));
     lstSkins->setEnabled(false);
   }
   else
@@ -71,56 +100,35 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent, const cha
     QStringList::Iterator it;
     QStringList lst = dIcons.entryList();
     for (it = lst.begin(); it != lst.end(); ++it)
-        lstIcons->insertItem((*it).mid(6));
+      (void) new QListViewItem(lstIcons, (*it).mid(6));
   }
-  setGeometry(mainwin->x() - 100, mainwin->y() + 100, 300,
-              150 + (lstSkins->count() > lstIcons->count() ? lstSkins->count() : lstIcons->count()) * 15);
 
   connect(btnApplySkin, SIGNAL(clicked()), this, SLOT(slot_applyskin()));
   connect(btnEditSkin, SIGNAL(clicked()), this, SLOT(slot_editskin()));
   connect(btnApplyIcons, SIGNAL(clicked()), this, SLOT(slot_applyicons()));
-  connect(btnDone, SIGNAL(clicked()), this, SLOT(hide()));
+  connect(btnDone, SIGNAL(clicked()), this, SLOT(accept()));
 }
 
 
 void SkinBrowserDlg::slot_applyskin()
 {
-  if (lstSkins->currentItem() == -1) return;
-  mainwin->ApplySkin(lstSkins->text(lstSkins->currentItem()));
+  if (!lstSkins->currentItem()) return;
+  mainwin->ApplySkin(lstSkins->currentItem()->text(0));
 }
 
 
 void SkinBrowserDlg::slot_applyicons()
 {
-  if (lstIcons->currentItem() == -1) return;
-  mainwin->ApplyIcons(lstIcons->text(lstIcons->currentItem()));
+  if (!lstIcons->currentItem()) return;
+  mainwin->ApplyIcons(lstIcons->currentItem()->text(0));
 }
 
 
 void SkinBrowserDlg::slot_editskin()
 {
-  if (lstSkins->currentItem() == -1) return;
-  (void) new EditSkinDlg(lstSkins->text(lstSkins->currentItem()));
+  if (!lstSkins->currentItem()) return;
+  (void) new EditSkinDlg(lstSkins->currentItem()->text(0));
 }
 
-
-void SkinBrowserDlg::hide()
-{
-   QWidget::hide();
-   delete this;
-}
-
-
-void SkinBrowserDlg::resizeEvent (QResizeEvent *)
-{
-  grpSkins->setGeometry(10, 10, width() / 2 - 20, height() - 60);
-  lstSkins->setGeometry(10, 20, grpSkins->width() - 20, grpSkins->height() - 105);
-  btnApplySkin->setGeometry(grpSkins->width() / 2 - 50, grpSkins->height() - 75, 100, 30);
-  btnEditSkin->setGeometry(grpSkins->width() / 2 - 50, grpSkins->height() - 40, 100, 30);
-  grpIcons->setGeometry(width() / 2 + 5, 10, width() / 2 - 20, height() - 60);
-  lstIcons->setGeometry(10, 20, grpIcons->width() - 20, grpIcons->height() - 105);
-  btnApplyIcons->setGeometry(grpIcons->width() / 2 - 50, grpIcons->height() - 75, 100, 30);
-  btnDone->setGeometry(width() / 2 - 50, height() - 40, 100, 30);
-}
 
 #include "moc/moc_skinbrowser.h"
