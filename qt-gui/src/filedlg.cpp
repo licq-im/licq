@@ -238,8 +238,8 @@ void CFileDlg::slot_ft()
       case FT_STARTxFILE:
       {
         nfoTotalFiles->setText(QString("%1 / %2").arg(ftman->CurrentFile()).arg(ftman->BatchFiles()));
-        nfoTransferFileName->setText(ftman->FileName());
-        nfoLocalFileName->setText(ftman->PathName());
+        nfoTransferFileName->setText(QString::fromLocal8Bit(ftman->FileName()));
+        nfoLocalFileName->setText(QString::fromLocal8Bit(ftman->PathName()));
         nfoFileSize->setText(encodeFSize(ftman->FileSize()));
         barTransfer->setTotalSteps(ftman->FileSize() / 1024);
         if (ftman->Direction() == D_RECEIVER)
@@ -257,12 +257,12 @@ void CFileDlg::slot_ft()
 
       case FT_DONExFILE:
       {
-        mleStatus->appendNoNewLine(tr("Done %1\n").arg(e->Data()));
+        mleStatus->appendNoNewLine(tr("Done %1\n").arg(QString::fromLocal8Bit(e->Data())));
         slot_update();
         if (ftman->Direction() == D_RECEIVER)
-          mleStatus->appendNoNewLine(tr("Received\n%1\nfrom %2 successfully\n").arg(e->Data()).arg(ftman->RemoteName()));
+          mleStatus->appendNoNewLine(tr("Received\n%1\nfrom %2 successfully\n").arg(QString::fromLocal8Bit(e->Data())).arg(QString::fromLocal8Bit(ftman->RemoteName())));
         else
-          mleStatus->appendNoNewLine(tr("Sent\n%1\nto %2 successfully\n").arg(e->Data()).arg(ftman->RemoteName()));
+          mleStatus->appendNoNewLine(tr("Sent\n%1\nto %2 successfully\n").arg(QString::fromLocal8Bit(e->Data())).arg(QString::fromLocal8Bit(ftman->RemoteName())));
         break;
       }
 
@@ -286,10 +286,10 @@ void CFileDlg::slot_ft()
       case FT_ERRORxFILE:
       {
         btnCancel->setText(tr("Close"));
-        mleStatus->appendNoNewLine(tr("File I/O error: %1\n").arg(ftman->PathName()));
+        mleStatus->appendNoNewLine(tr("File I/O error: %1\n").arg(QString::fromLocal8Bit(ftman->PathName())));
         ftman->CloseFileTransfer();
         WarnUser(this, tr("File I/O Error:\n%1\nSee Network Window for Details")
-           .arg(ftman->PathName()));
+           .arg(QString::fromLocal8Bit(ftman->PathName())));
         break;
       }
 
