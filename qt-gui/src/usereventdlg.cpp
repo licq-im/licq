@@ -82,11 +82,11 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *layt = new QHBoxLayout(top_lay, 8);
   layt->addWidget(new QLabel(tr("Status:"), this));
   nfoStatus = new CInfoField(this, true);
-  nfoStatus->setMinimumWidth(nfoStatus->sizeHint().width()+50);
+  nfoStatus->setMinimumWidth(nfoStatus->sizeHint().width()+30);
   layt->addWidget(nfoStatus);
   layt->addWidget(new QLabel(tr("Time:"), this));
   nfoTimezone = new CInfoField(this, true);
-  nfoTimezone->setMinimumWidth(nfoTimezone->sizeHint().width()/2);
+  nfoTimezone->setMinimumWidth(nfoTimezone->sizeHint().width()/2+10);
   layt->addWidget(nfoTimezone);
 
   btnSecure = new QPushButton(this);
@@ -1037,11 +1037,11 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   if (e->SubResult() == ICQ_TCPxACK_RETURN)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    msg = tr("%1 is in %2 mode:\n%3\n")
+    msg = tr("%1 is in %2 mode:\n%3\nSend...")
              .arg(u->GetAlias()).arg(u->StatusStr())
              .arg(QString::fromLocal8Bit(u->AutoResponse()));
     gUserManager.DropUser(u);
-    switch (QueryUser(this, msg, tr("Send\nUrgent"), tr("Send to\nContact List"), tr("Cancel")))
+    switch (QueryUser(this, msg, tr("Urgent"), tr(" to Contact List"), tr("Cancel")))
     {
       case 0:
         RetrySend(e, true, ICQ_TCPxMSG_URGENT);
@@ -1370,7 +1370,8 @@ void UserSendFileEvent::browseFile()
 #ifdef USE_KDE
     QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
 #else
-    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
+    QStringList fl = QFileDialog::getOpenFileNames(QString::null, QString::null, this,
+                                                   "SendFileBrowser", tr("Select files to send"));
 #endif
     if (fl.isEmpty()) return;
     QStringList::ConstIterator it;
