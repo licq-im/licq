@@ -42,8 +42,8 @@ GtkWidget *contact_list_new(gint height, gint width)
 {
 	GtkWidget *_contact_l;
 
-#if 0
-THIS IS HERE BECAUSE I AM CHANGING TO A CTREE...
+#if 1
+// THIS IS HERE BECAUSE I AM CHANGING TO A CTREE...
 
 	/* Create the contact list using a 3 column clist */
 	_contact_l = gtk_clist_new(3);
