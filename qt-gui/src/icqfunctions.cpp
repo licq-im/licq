@@ -212,7 +212,7 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   lblItem->setGeometry(MARGIN_LEFT, height() - 140, 80, 20);
   edtItem->setGeometry(70, height() - 140, width()-MARGIN_RIGHT-70+MARGIN_LEFT, 20);
   chkSendServer->setGeometry(5, height() - 115, 150, 20);
-  chkUrgent->setGeometry(5, height() - 100, 80, 20);
+  chkUrgent->setGeometry(5, height() - 97, 80, 20);
   chkSpoof->setGeometry(170, height() - 115, 180, 20);
   edtSpoof->setGeometry(270, height() - 115, width() - MARGIN_RIGHT - 265, 20);
   mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - (lblItem->isVisible() ? 235 : 210));
