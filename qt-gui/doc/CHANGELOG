@@ -1,5 +1,18 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 0.71
+o  Quote/Forward/Accept/Reject/View buttons
+o  Improved skin support with menu bars
+o  Random Chat dialogs
+o  Redesigned history panel with selection and word-wrap
+o  File transfer bugs fixed
+o  Speedups
+o  Use real ip for chats and file transfers if local ip fails
+o  Greatly improved libtool and autoconf support
+o  Colors in network window for warnings and errors
+o  New dock icon themes
+
+
 New in 0.70
 o  Full whitepages support
 o  Moved to full layout management in all widgets

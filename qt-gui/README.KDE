@@ -1,5 +1,5 @@
 Note that KDE support is now integrated into Licq.
 Just run configure with --with-kde to enable some KDE
 features, including styles and panel docking (sort of).
-Note that this requires CVS KDE and as such is not at all
+Note that this requires KDE 2.0 and as such is not at all
 guaranteed to be stable or functional.
