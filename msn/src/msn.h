@@ -32,6 +32,11 @@ const char CONTACT_LIST[] = "FL";
 const char ALLOW_LIST[] = "AL";
 const char BLOCK_LIST[] = "BL";
 
+const unsigned short FLAG_CONTACT_LIST = 1;
+const unsigned short FLAG_ALLOW_LIST   = 2;
+const unsigned short FLAG_BLOCK_LIST   = 4;
+const unsigned short FLAG_REVERSE_LIST = 8;
+
 #include <string>
 #include <list>
 #include <vector>
@@ -90,6 +95,7 @@ private:
   void MSNSendMessage(char *, char *, pthread_t);
   void MSNSendTypingNotification(char *);
   void MSNChangeStatus(unsigned long);
+  void MSNLogoff();
   void MSNAddUser(char *);
   void MSNGrantAuth(char *);
   

@@ -328,6 +328,7 @@ void CMSN::ProcessSignal(CSignal *s)
     
     case PROTOxLOGOFF:
     {
+      MSNLogoff();
       break;
     }
     
@@ -690,7 +691,15 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     {
       // Add user
       string strUser = m_pPacketBuf->GetParameter();
-      if (!gUserManager.IsOnList(strUser.c_str(), MSN_PPID))
+      string strNick = m_pPacketBuf->GetParameter();
+      string strLists = m_pPacketBuf->GetParameter();
+      string strUserLists;
+      int nLists = atoi(strLists.c_str());
+      if (nLists & FLAG_CONTACT_LIST)
+        strUserLists = m_pPacketBuf->GetParameter();
+        
+      if ((nLists & FLAG_CONTACT_LIST) &&
+          !gUserManager.IsOnList(strUser.c_str(), MSN_PPID))
         m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID);
     }
     else if (strCmd == "LSG")
@@ -756,7 +765,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       {
         u->SetOnlineSince(time(NULL)); // Not in this protocol
         u->SetSendServer(true); // no direct connections
-        gLog.Info("%s%s changed status (%s).\n", L_SRVxSTR, u->GetAlias(), strStatus.c_str());
+        gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->GetAlias(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
       }
       gUserManager.DropUser(u);
@@ -1044,6 +1053,32 @@ void CMSN::MSNChangeStatus(unsigned long _nStatus)
 {
   CMSNPacket *pSend = new CPS_MSNChangeStatus(_nStatus);
   SendPacket(pSend);
+}
+
+void CMSN::MSNLogoff()
+{
+  CMSNPacket *pSend = new CPS_MSNLogoff();
+  SendPacket(pSend);
+ 
+  // Close the socket
+  INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
+  int nSD = m_nServerSocket;
+  m_nServerSocket = -1;
+  gSocketMan.DropSocket(s);
+  gSocketMan.CloseSocket(nSD);
+  
+  // Update the daemon
+  FOR_EACH_PROTO_USER_START(MSN_PPID, LOCK_W)
+  {
+    if (!pUser->StatusOffline())
+      m_pDaemon->ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+  }
+  FOR_EACH_PROTO_USER_END
+    
+  ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);      
+  m_pDaemon->ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
+  gUserManager.DropOwner(MSN_PPID);  
+  //m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));   
 }
 
 void CMSN::MSNAddUser(char *szUser)

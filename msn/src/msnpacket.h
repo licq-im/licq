@@ -120,6 +120,12 @@ public:
   CPS_MSNChangeStatus(unsigned long);
 };
 
+class CPS_MSNLogoff : public CMSNPacket
+{
+public:
+  CPS_MSNLogoff();
+};
+
 class CPS_MSNSync : public CMSNPacket
 {
 public:

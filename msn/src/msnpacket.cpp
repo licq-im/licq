@@ -199,6 +199,15 @@ CPS_MSNChangeStatus::CPS_MSNChangeStatus(unsigned long _nStatus) : CMSNPacket()
   m_pBuffer->Pack("\r\n", 2);
 }
 
+CPS_MSNLogoff::CPS_MSNLogoff() : CMSNPacket(true)
+{
+  m_szCommand = strdup("OUT");
+  m_nSize += 0;
+  InitBuffer();
+  
+  m_pBuffer->Pack("\r\n", 2);
+}
+
 CPS_MSNSync::CPS_MSNSync(unsigned long nVersion) : CMSNPacket()
 {
   m_szCommand = strdup("SYN");
