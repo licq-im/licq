@@ -444,11 +444,15 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     gLog.Error("%sUnable to load plugin (%s): %s.\n", L_ERRORxSTR, _szName, 
      error);
 
-    // Suggest a remedy if this is a Qt problem
-    if (strstr("undefined symbol", error) != NULL &&
-        strstr("qt-gui", error) != NULL)
+    if (!strstr(error, "No such file"))
     {
-      gLog.Error("%sUpgrade Qt or recompile the qt-gui plugin.\n", L_ERRORxSTR);
+      gLog.Warn("%sThis usually happens when your plugin\n"
+                "%sis not kept in sync with the daemon.\n"
+                "%sPlease try recompiling the plugin.\n"
+                "%sIf you are still having problems, see\n"
+                "%sthe FAQ at www.licq.org\n",
+                L_WARNxSTR, L_SBLANKxSTR, L_SBLANKxSTR, L_SBLANKxSTR,
+                L_SBLANKxSTR);
     }
 
     delete p;
