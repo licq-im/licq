@@ -361,6 +361,7 @@ protected:
   friend class CSocketManager;
   friend class CChatManager;
   friend class CFileTransferManager;
+  friend class COnEventManager;
 };
 
 // Global pointer

@@ -17,6 +17,7 @@ const unsigned short MAX_ON_EVENT = 6;
 
 const unsigned short ON_EVENT_IGNORE =  0;
 const unsigned short ON_EVENT_RUN    =  1;
+const unsigned short ON_EVENT_BY_PLUGIN = 3;
 
 class COnEventManager
 {

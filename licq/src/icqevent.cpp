@@ -157,12 +157,13 @@ ICQUser *ICQEvent::GrabUnknownUser()
 
 //=====CICQSignal===============================================================
 CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
-                       unsigned long nUin, int nArgument)
+                       unsigned long nUin, int nArgument,char *nParameters)
 {
   m_nSignal = nSignal;
   m_nSubSignal = nSubSignal;
   m_nUin = nUin;
   m_nArgument = nArgument;
+  m_nParameters = (nParameters!=NULL)?strdup(nParameters):NULL;
 }
 
 
@@ -172,10 +173,14 @@ CICQSignal::CICQSignal(CICQSignal *s)
   m_nSubSignal = s->SubSignal();
   m_nUin = s->Uin();
   m_nArgument = s->Argument();
+  m_nParameters = (s->Parameters()!= NULL)?strdup(s->Parameters()):NULL;
 }
 
 
 CICQSignal::~CICQSignal()
 {
+    if (m_nParameters != NULL) {
+        free(m_nParameters);
+    }
 }
 

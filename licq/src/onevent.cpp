@@ -6,6 +6,7 @@
 
 #include "licq_onevent.h"
 #include "licq_user.h"
+#include "licq_icqd.h"
 #include "support.h"
 
 //=====COnEventManager==========================================================
@@ -89,6 +90,19 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
     sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
     system(szCmd);
     break;
+  }
+  case ON_EVENT_BY_PLUGIN:
+  {
+      if (gLicqDaemon != NULL) {
+          if (u != NULL) {
+              char *szParam = m_aszParameters[_nEvent];
+              char szFullParam[MAX_CMD_LEN] = {'\0'};   
+
+              u->usprintf(szFullParam, szParam);
+              gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_ONEVENT,
+                          _nEvent, u->Uin(),0, szFullParam));
+          }
+      }
   }
   }
   pthread_mutex_unlock(&mutex);
