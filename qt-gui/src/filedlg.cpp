@@ -519,10 +519,9 @@ void CFileDlg::fileRecvFile()
     // File transfer done perfectly
     ::close(m_nFileDesc);
     m_nFileDesc = 0;
-    char msg[1024];
-    sprintf(msg, _("%sFile transfer of\n'%s'\nfrom %s completed successfully.\n"),
-            L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
-    InformUser(this, msg);
+    QString msg = QString(_("File '%1' from %2 received successfully."))
+      .arg(m_sFileInfo.szName).arg(m_szRemoteName);
+    lblStatus->setText(msg);
   }
   else // nBytesLeft < 0
   {
@@ -772,10 +771,9 @@ void CFileDlg::fileSendFile()
   if (nBytesLeft == 0)
   {
     // File transfer done perfectly
-    char msg[1024];
-    sprintf(msg, _("%sFile transfer of\n'%s'\nto %s completed successfully.\n"),
-            L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName);
-    InformUser(this, msg);
+    QString msg = QString(_("Sending of file '%1' to %2 completed successfully."))
+      .arg(m_sFileInfo.szName).arg(m_szRemoteName);
+    lblStatus->setText(msg);
   }
   else // nBytesLeft < 0
   {
