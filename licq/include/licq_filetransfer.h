@@ -64,6 +64,7 @@ const unsigned char FT_STARTxFILE    = 2;
 const unsigned char FT_UPDATE        = 3;
 const unsigned char FT_DONExFILE     = 4;
 const unsigned char FT_DONExBATCH    = 5;
+const unsigned char FT_CONFIRMxFILE  = 6;
 const unsigned char FT_ERRORxFILE      = 0xFF;
 const unsigned char FT_ERRORxHANDSHAKE = 0xFE;
 const unsigned char FT_ERRORxCLOSED    = 0xFD;
@@ -189,6 +190,12 @@ public:
   unsigned short BatchFiles() { return m_nBatchFiles; }
   unsigned long BatchSize() { return m_nBatchSize; }
   time_t BatchStartTime() { return m_nBatchStartTime; }
+  
+  // Available between FT_CONFIRMxFILE and FT_STATE_
+
+	// You must use this function to start receiving the incoming file, possibly
+  // giving it a different name on the local machine.
+  bool StartReceivingFile(char *szFileName = NULL);
 
   // Available between FT_STARTxFILE and FT_DONExFILE
   unsigned long FilePos() { return m_nFilePos; }
