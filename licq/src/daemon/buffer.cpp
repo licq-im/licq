@@ -291,7 +291,7 @@ char *CBuffer::print(char *&p)
    if (getDataSize() > MAX_DATA_SIZE)
    {
      gLog.Error("%sInternal error: CBuffer::print(): Packet is suspiciously large (%lu bytes).\n%sAborting print.\n",
-                L_ERRORxSTR, L_BLANKxSTR, getDataSize());
+                L_ERRORxSTR, getDataSize(), L_BLANKxSTR);
      p = new char[32];
      strcpy(p, "- E R R O R -");
      return (p);

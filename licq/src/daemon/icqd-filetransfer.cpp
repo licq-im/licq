@@ -198,7 +198,7 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
   stat(m_szDirectory, &buf);
   if (!S_ISDIR(buf.st_mode))
   {
-    gLog.Warn("%sPath %s is not a directory.\n", m_szDirectory);
+    gLog.Warn("%sPath %s is not a directory.\n", L_WARNxSTR, m_szDirectory);
     return false;
   }
 

@@ -646,7 +646,7 @@ void CICQDaemon::SetFirewallHost(const char *s)
     SetString(&m_szFirewallHost, s);
     unsigned long n = INetSocket::GetIpByName(s);
     if (n == 0)
-      gLog.Error("%sInvalid firewall hostname: %s\n", L_ERRORxSTR);
+      gLog.Error("%sInvalid firewall hostname: %s\n", L_ERRORxSTR, s);
     else
       CPacket::SetLocalIp(n);
   }
@@ -846,7 +846,7 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
   FILE *f = fopen(m_szRejectFile, "a");
   if (f == NULL)
   {
-    gLog.Warn("%sUnable to open \"%s\" for writing.\n", m_szRejectFile);
+    gLog.Warn("%sUnable to open \"%s\" for writing.\n", L_WARNxSTR, m_szRejectFile);
   }
   else
   {
@@ -893,7 +893,7 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e)
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_tep, e);
   if (nResult != 0)
   {
-    gLog.Warn("%sUnable to start event thread (#%d):\n%s%s.\n", L_ERRORxSTR,
+    gLog.Error("%sUnable to start event thread (#%ld):\n%s%s.\n", L_ERRORxSTR,
               e->m_nSequence, L_BLANKxSTR, strerror(nResult));
     e->m_eResult = EVENT_ERROR;
     ProcessDoneEvent(e);

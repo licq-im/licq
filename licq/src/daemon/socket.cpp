@@ -215,12 +215,12 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
   switch(d)
   {
   case D_SENDER:
-    gLog.Packet("%sPacket (%s, %d bytes) sent (%s:%d -> %s:%d):\n%s\n",
+    gLog.Packet("%sPacket (%s, %ld bytes) sent (%s:%d -> %s:%d):\n%s\n",
                 L_PACKETxSTR, m_szID, b->getDataSize(), LocalIpStr(szIpL),
                 LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
   case D_RECEIVER:
-     gLog.Packet("%sPacket (%s, %d bytes) received (%s:%d <- %s:%d):\n%s\n",
+     gLog.Packet("%sPacket (%s, %ld bytes) received (%s:%d <- %s:%d):\n%s\n",
                 L_PACKETxSTR, m_szID, b->getDataSize(), LocalIpStr(szIpL),
                 LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
@@ -586,7 +586,7 @@ bool TCPSocket::RecvPacket()
 {
   if (m_xRecvBuffer.Full())
   {
-    gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%d bytes).\n", 
+    gLog.Warn("%sInternal error: TCPSocket::RecvPacket(): Called with full buffer (%ld bytes).\n",
               L_WARNxSTR, m_xRecvBuffer.getDataSize());
     return (true);
   }
@@ -652,7 +652,7 @@ void INetSocket::Unlock()
 
 
 //=====CSocketHashTable=========================================================
-CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize) 
+CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 {
   pthread_rdwr_init_np(&mutex_rw, NULL);
 }
@@ -660,7 +660,7 @@ CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 
 void CSocketHashTable::Lock(unsigned short _nLockType)
 {
-  switch (_nLockType) 
+  switch (_nLockType)
   {
   case LOCK_R:
     pthread_rdwr_rlock_np (&mutex_rw);

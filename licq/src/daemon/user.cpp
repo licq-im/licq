@@ -387,8 +387,8 @@ ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
   {
     u->Lock(_nLockType);
     if (_nUin != u->Uin())
-      gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %d, found %d.\n",
-                 _nUin, u->Uin());
+      gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %ld, found %ld.\n",
+                 L_ERRORxSTR, _nUin, u->Uin());
   }
   return u;
 }
@@ -714,7 +714,7 @@ ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
   m_fConf.SetFileName(_szFilename);
   if (!LoadInfo())
   {
-    gLog.Error("%sUnable to load user info from '%s'.  Using default values.\n",
+    gLog.Error("%sUnable to load user info from '%s'.\n%sUsing default values.\n",
                L_ERRORxSTR, _szFilename, L_BLANKxSTR);
     SetDefaults();
   }

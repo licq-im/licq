@@ -15,6 +15,9 @@
 
 int pthread_rdwr_init_np(pthread_rdwr_t *rdwrp, pthread_rdwrattr_t *attrp)
 {
+  // no warning
+  attrp = attrp;
+
   rdwrp->readers_reading = 0;
   rdwrp->writer_writing = 0;
   pthread_mutex_init(&(rdwrp->mutex), NULL);

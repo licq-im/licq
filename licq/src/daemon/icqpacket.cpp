@@ -173,7 +173,7 @@ void Encrypt_Server(CBuffer *buffer)
   if (gLog.LoggingPackets())
   {
     char *b;
-    gLog.Packet("%sUnencrypted Packet (%d bytes):\n%s\n", L_PACKETxSTR, l,
+    gLog.Packet("%sUnencrypted Packet (%ld bytes):\n%s\n", L_PACKETxSTR, l,
                 buffer->print(b));
     delete [] b;
   }

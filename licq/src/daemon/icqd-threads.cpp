@@ -92,14 +92,14 @@ void *ProcessRunningEvent_tep(void *p)
   for (int i = 0; i <= MAX_SERVER_RETRIES; i++)
   {
     if (i > 0)
-      gLog.Info("%sTimed out after %d seconds (#%d), retry %d of %d...\n",
+      gLog.Info("%sTimed out after %d seconds (#%ld), retry %d of %d...\n",
                 L_WARNxSTR, MAX_WAIT_ACK, e->m_nSequence, i, MAX_SERVER_RETRIES);
 
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
     INetSocket *s = gSocketManager.FetchSocket(e->m_nSocketDesc);
     if (s == NULL)
     {
-      gLog.Warn("%sSocket not connected or invalid (#%d).\n", L_WARNxSTR, e->m_nSequence);
+      gLog.Warn("%sSocket not connected or invalid (#%ld).\n", L_WARNxSTR, e->m_nSequence);
       if (d->DoneEvent(e, EVENT_ERROR) != NULL) d->ProcessDoneEvent(e);
       pthread_exit(NULL);
     }
@@ -108,7 +108,7 @@ void *ProcessRunningEvent_tep(void *p)
     {
       delete buf;
       char szErrorBuf[128];
-      gLog.Warn("%sError sending event (#%d):\n%s%s.\n", L_WARNxSTR,
+      gLog.Warn("%sError sending event (#%ld):\n%s%s.\n", L_WARNxSTR,
                 e->m_nSequence, L_BLANKxSTR, s->ErrorStr(szErrorBuf, 128));
       // We don't close the socket as it should be closed by the server thread
       gSocketManager.DropSocket(s);
@@ -134,7 +134,7 @@ void *ProcessRunningEvent_tep(void *p)
 
   // We timed out
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-  gLog.Warn("%sTimed out (#%d).\n", L_WARNxSTR, e->m_nSequence);
+  gLog.Warn("%sTimed out (#%ld).\n", L_WARNxSTR, e->m_nSequence);
   if (d->DoneEvent(e, EVENT_TIMEDOUT) != NULL) d->ProcessDoneEvent(e);
   pthread_exit(NULL);
   // Avoid compiler warnings
@@ -391,11 +391,11 @@ void *MonitorSockets_tep(void *p)
             {
               int err = tcp->Error();
               if (err == 0)
-                gLog.Info("%sConnection to %d closed.\n", L_TCPxSTR, tcp->Owner());
+                gLog.Info("%sConnection to %ld closed.\n", L_TCPxSTR, tcp->Owner());
               else
               {
                 char buf[128];
-                gLog.Info("%sConnection to %d lost:\n%s%s.\n", L_TCPxSTR, tcp->Owner(),
+                gLog.Info("%sConnection to %ld lost:\n%s%s.\n", L_TCPxSTR, tcp->Owner(),
                           L_BLANKxSTR, tcp->ErrorStr(buf, 128));
               }
               /*ICQUser *u = gUserManager.FetchUser(tcp->Owner(), LOCK_W);
