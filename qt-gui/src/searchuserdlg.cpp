@@ -35,7 +35,8 @@
 #include "searchuserdlg.h"
 
 
-SearchUserView::SearchUserView(QWidget *parent = NULL, char *name = NULL) : QListView(parent, name)
+SearchUserView::SearchUserView(QWidget *parent, char *name)
+  : QListView(parent, name)
 {
   addColumn(tr("Alias"), 105);
   addColumn(tr("UIN"), 70);
@@ -72,7 +73,7 @@ unsigned long SearchItem::uin(void)
 
 
 SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
-                             QWidget *parent = 0, const char *name = 0)
+                             QWidget *parent, const char *name)
   : QDialog(parent, name)
 {
   server = s;

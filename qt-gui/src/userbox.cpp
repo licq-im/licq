@@ -252,7 +252,7 @@ QString CUserViewItem::key (int column, bool ascending) const
 //-----UserList::constructor-----------------------------------------------------------------------
 CUserView::CUserView (QPopupMenu *m, QPopupMenu *mg, ColumnInfos _colInfo,
                     bool isHeader, bool _bGridLines, bool _bFontStyles,
-                    QWidget *parent = 0, const char *name = 0)
+                    QWidget *parent, const char *name)
    : QListView(parent, name)
 {
    mnuUser = m;

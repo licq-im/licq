@@ -8,7 +8,7 @@
 #include "showawaymsgdlg.h"
 #include "user.h"
 
-ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const char *name = 0)
+ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent, const char *name)
   : QDialog(parent, name)
 {
   m_nUin= _nUin;
@@ -19,7 +19,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(unsigned long _nUin, QWidget *parent = 0, const c
   mleAwayMsg->setWordWrap(QMultiLineEditNew::FixedColumnWrap);
   mleAwayMsg->setWrapColumnOrWidth(37);
   mleAwayMsg->setReadOnly(true);
-  mleAwayMsg->setMinimumSize(280, 90);
+  mleAwayMsg->setMinimumSize(195, 80);
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), SLOT(accept()));
   top_lay->addWidget(mleAwayMsg);
 
