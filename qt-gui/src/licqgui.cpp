@@ -327,7 +327,6 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
      m_bStartHidden, m_szSkin, m_szIcons);
 
   setMainWidget(licqMainWindow);
-  licqMainWindow->show();
   int r = exec();
   _licqDaemon->UnregisterPlugin();
 
