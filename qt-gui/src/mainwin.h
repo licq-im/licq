@@ -110,6 +110,7 @@ public:
        m_bMsgChatView,
        m_bAutoPosReplyWin,
        m_bAutoSendThroughServer,
+       m_bAutoDetectSendThroughServer,
        m_bEnableMainwinMouseMovement,
        m_bPopEmail,
        m_bPopPhone, 

@@ -207,6 +207,7 @@ void OptionsDlg::SetupOptions()
   chkMsgChatView->setChecked( mainwin->m_bMsgChatView );
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
+  chkAutoDetectSendThroughServer->setChecked(mainwin->m_bAutoDetectSendThroughServer);
   chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
   popEmail->setChecked(mainwin->m_bPopEmail);
   popPhone->setChecked(mainwin->m_bPopPhone);
@@ -435,6 +436,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bMsgChatView = chkMsgChatView->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
+  mainwin->m_bAutoDetectSendThroughServer = chkAutoDetectSendThroughServer->isChecked();
   mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
 
   mainwin->m_bPopEmail= popEmail->isChecked();
@@ -671,6 +673,9 @@ QWidget* OptionsDlg::new_appearance_options()
   chkAutoSendThroughServer = new QCheckBox(tr("Auto send through server"), boxMainWin);
   QWhatsThis::add(chkAutoSendThroughServer, tr("Automatically send messages through server "
    "if direct connection fails"));
+  chkAutoDetectSendThroughServer = new QCheckBox(tr("Autodetect send through server"), boxMainWin);
+  QWhatsThis::add(chkAutoDetectSendThroughServer, tr("Automatically detect whether sending "
+   "messages through the server is required and set default appropriately"));
   chkEnableMainwinMouseMovement = new QCheckBox(tr("Allow dragging main window"), boxMainWin);
   QWhatsThis::add(chkEnableMainwinMouseMovement, tr("Lets you drag around the main window "
    "with your mouse"));
