@@ -27,6 +27,8 @@ class QPushButton;
 class QToolButton;
 class QComboBox;
 class QCloseEvent;
+class QMouseEvent;
+
 
 class CICQDaemon;
 
@@ -52,6 +54,9 @@ public slots:
 
 protected:
   virtual void keyPressEvent (QKeyEvent *);
+  virtual void mousePressEvent( QMouseEvent * );
+  virtual void mouseMoveEvent( QMouseEvent*);
+  virtual void mouseReleaseEvent( QMouseEvent *e );
 
 signals:
   void keyPressed(QKeyEvent *);
