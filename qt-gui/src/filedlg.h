@@ -5,16 +5,19 @@
 #include "config.h"
 #endif
 
-#include <qpushbutton.h>
-#include <qlabel.h>
-#include <qprogressbar.h>
+#include <qdialog.h>
 #include <qtimer.h>
-#include <qsocketnotifier.h>
 
 #include "user.h"
 #include "socket.h"
 #include "buffer.h"
 #include "ewidgets.h"
+
+class QPushButton;
+class QProgressBar;
+class QLabel;
+class QSocketNotifier;
+
 
 struct SFileInfo
 {
@@ -23,7 +26,7 @@ struct SFileInfo
 };
 
 
-class CFileDlg : public QWidget
+class CFileDlg : public QDialog
 {
    Q_OBJECT
 public:
@@ -31,37 +34,31 @@ public:
             const char *_szRemoteFileName, unsigned long _nFileSize,
             bool _bServer, unsigned short _nPort,
             QWidget *parent = NULL, char *name = NULL);
-   virtual ~CFileDlg(void);
+   virtual ~CFileDlg();
 
-   bool startAsClient(void);
-   bool startAsServer(void);
+   bool startAsClient();
+   bool startAsServer();
 
-   unsigned short getPort(void)  { return m_nPort; };
-   unsigned short getLocalPort(void)  { return m_xSocketFile.LocalPort(); };
+   unsigned short getPort()  { return m_nPort; };
+   unsigned short getLocalPort()  { return m_xSocketFile.LocalPort(); };
    void setPort(unsigned short _nPort)  { m_nPort = _nPort; };
-   unsigned long Uin(void)  { return m_nUin; };
-   bool IsServer(void)  { return m_bServer; };
+   unsigned long Uin()  { return m_nUin; };
+   bool IsServer()  { return m_bServer; };
 
 public slots:
    virtual void hide();
 
 protected:
-   void resizeEvent (QResizeEvent *);
-
-   QLabel *lblTransferFileName, *lblLocalFileName, *lblFileSize;
+   QLabel *lblTransferFileName, *lblLocalFileName, *lblFileSize,
+	  *lblTrans, *lblBatch, *lblTime, *lblBPS, *lblETA;
    CInfoField *nfoFileSize,
               *nfoTransferFileName,
               *nfoTotalFiles,
               *nfoBatchSize,
               *nfoLocalFileName,
-              *nfoTrans,
               *nfoBPS,
               *nfoETA,
-              *nfoTime,
-              *nfoBatchTrans,
-              *nfoBatchBPS,
-              *nfoBatchETA,
-              *nfoBatchTime;
+              *nfoTime;
    QPushButton *btnCancel;
    QLabel *lblStatus;
    QProgressBar *barTransfer, *barBatchTransfer;
@@ -83,7 +80,8 @@ protected:
    QTimer m_tUpdate;
    QSocketNotifier *m_snSend;
 
-   bool GetLocalFileName(void);
+   bool GetLocalFileName();
+   QString encodeFSize(unsigned long size);
 
 protected slots:
    void fileSendFile();

@@ -1,3 +1,20 @@
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -13,7 +30,11 @@
 #include <qfiledialog.h>
 #endif
 #include <qdir.h>
+#include <qhbox.h>
+#include <qlayout.h>
 #include <qgroupbox.h>
+#include <qprogressbar.h>
+#include <qsocketnotifier.h>
 
 #include "filedlg.h"
 #include "icqpacket.h"
@@ -33,118 +54,132 @@ extern int errno;
 #define STATE_SENDxFILE 7
 
 
-//-----Constructor--------------------------------------------------------------
-CFileDlg::CFileDlg(unsigned long _nUin,
-                   const char *_szTransferFileName, unsigned long _nFileSize,
-                   bool _bServer, unsigned short _nPort,
+//-----Constructor------------------------------------------------------------
+CFileDlg::CFileDlg(unsigned long _nUin, const char *_szTransferFileName,
+                   unsigned long _nFileSize, bool _bServer, unsigned short _nPort,
                    QWidget *parent, char *name)
-   : QWidget(parent, name)
+  : QDialog(parent, name)
 {
-   // If we are the server, then we are receiving a file
-   char t[64];
-   m_nUin = _nUin;
-   m_nPort = _nPort;
-   m_bServer = _bServer;
-   m_nFileSize = _nFileSize;
-   m_nCurrentFile = 0;
-   m_nFileDesc = 0;
-   m_nBatchSize = m_nFileSize;
-   m_nTotalFiles = 1;
-   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   m_szLocalName = strdup(o->GetAlias());
-   gUserManager.DropOwner();
-   m_szRemoteName = NULL;
-   m_snSend = snFile = snFileServer = NULL;
+  // If we are the server, then we are receiving a file
+  char t[64];
+  m_nUin = _nUin;
+  m_nPort = _nPort;
+  m_bServer = _bServer;
+  m_nFileSize = _nFileSize;
+  m_nCurrentFile = 0;
+  m_nFileDesc = 0;
+  m_nBatchSize = m_nFileSize;
+  m_nTotalFiles = 1;
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  m_szLocalName = strdup(o->GetAlias());
+  gUserManager.DropOwner();
+  m_szRemoteName = NULL;
+  m_snSend = snFile = snFileServer = NULL;
 
-   setCaption(tr("ICQ file transfer"));
-   setGeometry(100, 100, 500, 325);
+  setCaption(tr("ICQ file transfer"));
 
-   lblTransferFileName = new QLabel(tr("Current file:"), this);
-   lblTransferFileName->setGeometry(10, 15, 100, 20);
-   nfoTransferFileName = new CInfoField(this, true);
-   nfoTransferFileName->setGeometry(120, 15, 290, 20);
-   nfoTransferFileName->setText(_szTransferFileName);
-   nfoTotalFiles = new CInfoField(this, true);
-   nfoTotalFiles->setGeometry(410, 15, 60, 20);
+  unsigned short CR = 0;
+  QGridLayout* lay = new QGridLayout(this, 8, 3, 8, 8);
+  lay->setColStretch(1, 2);
 
-   lblLocalFileName = new QLabel(tr("Local file name:"), this);
-   lblLocalFileName->setGeometry(10, 40, 100, 20);
-   nfoLocalFileName = new CInfoField(this, true);
-   nfoLocalFileName->setGeometry(120, 40, 355, 20);
-   nfoLocalFileName->setText(IsServer() ? tr("Unset") : tr("N/A"));
-   nfoLocalFileName->setEnabled(IsServer());
+  lblTransferFileName = new QLabel(tr("Current:"), this);
+  lay->addWidget(lblTransferFileName, CR, 0);
+  nfoTransferFileName = new CInfoField(this, true);
+  nfoTransferFileName->setMinimumWidth(nfoTransferFileName->sizeHint().width()*2);
+  lay->addWidget(nfoTransferFileName, CR, 1);
+  nfoTransferFileName->setText(_szTransferFileName);
+  nfoTotalFiles = new CInfoField(this, true);
+  nfoTotalFiles->setMinimumWidth((nfoTotalFiles->sizeHint().width()*3)/2);
+  lay->addWidget(nfoTotalFiles, CR, 2);
 
-   // Information stuff about the current file
-   QGroupBox *boxCurrent = new QGroupBox(tr("Current File"), this);
-   boxCurrent->setGeometry(10, 80, 220, 170);
-   lblFileSize = new QLabel(tr("Size:"), boxCurrent);
-   lblFileSize->setGeometry(10, 15, 35, 20);
-   nfoFileSize = new CInfoField(boxCurrent, true);
-   nfoFileSize->setGeometry(50, 15, 150, 20);
-   sprintf(t, "%ld bytes", m_nFileSize);
-   nfoFileSize->setText(t);
-#if 0
-   nfoTrans = new CInfoField(10, 40, 35, 150, tr("Trans:"), true, boxCurrent);
-   nfoTime = new CInfoField(10, 65, 35, 150, tr("Time:"), true, boxCurrent);
-   nfoBPS = new CInfoField(10, 90, 35, 150, tr("BPS:"), true, boxCurrent);
-   nfoETA = new CInfoField(10, 115, 35, 150, tr("ETA:"), true, boxCurrent);
-   barTransfer = new QProgressBar(boxCurrent);
-   barTransfer->setGeometry(10, 140, 200, 20);
+  lblLocalFileName = new QLabel(tr("File name:"), this);
+  lay->addWidget(lblLocalFileName, ++CR, 0);
+  nfoLocalFileName = new CInfoField(this, true);
+  lay->addMultiCellWidget(nfoLocalFileName, CR, CR, 1, 2);
+  nfoLocalFileName->setText(IsServer() ? tr("Unset") : tr("N/A"));
+  nfoLocalFileName->setEnabled(IsServer());
 
-   QGroupBox *boxBatch = new QGroupBox(tr("Batch"), this);
-   boxBatch->setGeometry(250, 80, 220, 170);
-   nfoBatchSize = new CInfoField(10, 15, 35, 150, tr("Size:"), true, boxBatch);
-   nfoBatchTrans = new CInfoField(10, 40, 35, 150, tr("Trans:"), true, boxBatch);
-   nfoBatchTime = new CInfoField(10, 65, 35, 150, tr("Time:"), true, boxBatch);
-   nfoBatchBPS = new CInfoField(10, 90, 35, 150, tr("BPS:"), true, boxBatch);
-   nfoBatchETA = new CInfoField(10, 115, 35, 150, tr("ETA:"), true, boxBatch);
-   barBatchTransfer = new QProgressBar(boxBatch);
-   barBatchTransfer->setGeometry(10, 140, 200, 20);
-#endif
-   lblStatus = new QLabel(this);
-   lblStatus->setFrameStyle(QFrame::Box | QFrame::Raised);
+  lay->addRowSpacing(++CR, 10);
 
-   btnCancel = new QPushButton(tr("&Cancel Transfer"), this);
-   connect(btnCancel, SIGNAL(clicked()), this, SLOT(hide()));
-   connect(&m_tUpdate, SIGNAL(timeout()), this, SLOT(fileUpdate()));
+  // Information stuff about the current file
+  lblTrans = new QLabel(tr("File:"), this);
+  lay->addWidget(lblTrans, ++CR, 0);
+  barTransfer = new QProgressBar(this);
+  lay->addWidget(barTransfer, CR, 1);
+  nfoFileSize = new CInfoField(this, true);
+  lay->addWidget(nfoFileSize, CR, 2);
+  nfoFileSize->setText(encodeFSize(m_nFileSize));
 
-   // now either connect to the remote host or start up a server
-   if (IsServer())
-   {
-      sprintf(t, "%d / ?", m_nCurrentFile + 1);
-      nfoTotalFiles->setText(t);
-      nfoBatchSize->setText(tr("Unknown"));
-      show();
-      if (!startAsServer()) setPort(0);
-   }
-   else
-   {
-      sprintf(t, "%d / %ld", m_nCurrentFile + 1, m_nTotalFiles);
-      nfoTotalFiles->setText(t);
-      sprintf(t, tr("%ld bytes"), m_nBatchSize);
-      nfoBatchSize->setText(t);
-      show();
-      if (!startAsClient()) setPort(0);
+  // Information about the batch file transfer
+  lblBatch = new QLabel(tr("Batch:"), this);
+  lay->addWidget(lblBatch, ++CR, 0);
+  barBatchTransfer = new QProgressBar(this);
+  lay->addWidget(barBatchTransfer, CR, 1);
+  nfoBatchSize = new CInfoField(this, true);
+  lay->addWidget(nfoBatchSize, CR, 2);
+  sprintf(t, "%ld bytes", m_nBatchSize);
+  nfoBatchSize->setText(t);
+
+  lblTime = new QLabel(tr("Time:"), this);
+  lay->addWidget(lblTime, ++CR, 0);
+
+  QHBox* hbox = new QHBox(this);
+  hbox->setSpacing(8);
+  lay->addMultiCellWidget(hbox, CR, CR, 0, 1);
+  nfoTime = new CInfoField(hbox, true);
+  nfoBPS = new CInfoField(hbox, true);
+  lblETA = new QLabel(tr("ETA:"), hbox);
+  nfoETA = new CInfoField(this, true);
+  lay->addWidget(nfoETA, CR++, 2);
+  lay->addRowSpacing(++CR, 10);
+
+  lblStatus = new QLabel(this);
+  ++CR;
+  lay->addMultiCellWidget(lblStatus, CR, CR, 0, 2);
+  lblStatus->setFrameStyle(QFrame::StyledPanel | QFrame::Sunken);
+
+  lay->setRowStretch(++CR, 3);
+
+  btnCancel = new QPushButton(tr("&Cancel Transfer"), this);
+  btnCancel->setMinimumWidth(75);
+  lay->addMultiCellWidget(btnCancel, CR, CR, 1, 2);
+  connect(btnCancel, SIGNAL(clicked()), this, SLOT(hide()));
+  connect(&m_tUpdate, SIGNAL(timeout()), this, SLOT(fileUpdate()));
+
+  // now either connect to the remote host or start up a server
+  if (IsServer()) {
+    sprintf(t, "%d / ?", m_nCurrentFile + 1);
+    nfoTotalFiles->setText(t);
+    nfoBatchSize->setText(tr("Unknown"));
+    show();
+    if (!startAsServer()) setPort(0);
+  }
+   else {
+     sprintf(t, "%d / %ld", m_nCurrentFile + 1, m_nTotalFiles);
+     nfoTotalFiles->setText(t);
+     nfoBatchSize->setText(QString("(%1)").arg(encodeFSize(m_nBatchSize)));
+     show();
+     if (!startAsClient()) setPort(0);
    }
 }
 
 
 //-----Destructor---------------------------------------------------------------
-CFileDlg::~CFileDlg(void)
+CFileDlg::~CFileDlg()
 {
   if (m_szLocalName != NULL) free(m_szLocalName);
   if (m_szRemoteName != NULL) delete[] m_szRemoteName;
   if (m_nFileDesc > 0) ::close(m_nFileDesc);
-  if (m_snSend != NULL) delete m_snSend;
-  if (snFile != NULL) delete snFile;
-  if (snFileServer != NULL) delete snFileServer;
+  delete m_snSend;
+  delete snFile;
+  delete snFileServer;
 }
 
 
 //-----GetLocalFileName---------------------------------------------------------
 // Sets the local filename and opens the file
 // returns false if the user hits cancel
-bool CFileDlg::GetLocalFileName(void)
+bool CFileDlg::GetLocalFileName()
 {
   QString f;
   bool bValid = false;
@@ -230,11 +265,9 @@ void CFileDlg::fileUpdate()
   // Current File
 
   // Transfered
-  if (m_nFilePos > 1024)
-    sprintf(sz, tr("%0.2f kb"), m_nFilePos / 1024.0);
-  else
-    sprintf(sz, tr("%ld b"), m_nFilePos);
-  nfoTrans->setText(sz);
+  nfoFileSize->setText(QString(tr("%1/%2"))
+                       .arg(encodeFSize(m_nFilePos))
+                       .arg(encodeFSize(m_sFileInfo.nSize)));
 
   // Time
   time_t nTime = time(NULL) - m_nStartTime;
@@ -248,56 +281,20 @@ void CFileDlg::fileUpdate()
   }
 
   // BPS
-  float fBPS = m_nBytesTransfered / nTime;
-  if (fBPS > 1024)
-    sprintf(sz, tr("%.2f k"), fBPS / 1024);
-  else
-    sprintf(sz, "%.2f", fBPS);
-  nfoBPS->setText(sz);
+  nfoBPS->setText(QString("%1/s").arg(encodeFSize(m_nBytesTransfered / nTime)));
 
   // ETA
   int nBytesLeft = m_sFileInfo.nSize - m_nFilePos;
-  time_t nETA = (time_t)(nBytesLeft / fBPS);
+  time_t nETA = (time_t)(nBytesLeft / (m_nBytesTransfered / nTime));
   sprintf(sz, "%02ld:%02ld:%02ld", nETA / 3600, (nETA % 3600) / 60, (nETA % 60));
   nfoETA->setText(sz);
-
 
   // Batch
 
   // Transfered
-  if (m_nBatchPos > 1024)
-    sprintf(sz, tr("%0.2f kb"), m_nBatchPos / 1024.0);
-  else
-    sprintf(sz, tr("%ld b"), m_nBatchPos);
-  nfoBatchTrans->setText(sz);
-
-  // Time
-  time_t nBatchTime = time(NULL) - m_nBatchStartTime;
-  sprintf(sz, "%02ld:%02ld:%02ld", nBatchTime / 3600, (nBatchTime % 3600) / 60,
-         (nBatchTime % 60));
-  nfoBatchTime->setText(sz);
-  if (nBatchTime == 0 || m_nBatchBytesTransfered == 0)
-  {
-    nfoBatchBPS->setText("---");
-    nfoBatchETA->setText("---");
-    return;
-  }
-
-  // BPS
-  float fBatchBPS = m_nBatchBytesTransfered / nBatchTime;
-  if (fBatchBPS > 1024)
-    sprintf(sz, tr("%.2f k"), fBatchBPS / 1024);
-  else
-    sprintf(sz, "%.2f", fBatchBPS);
-  nfoBatchBPS->setText(sz);
-
-  // ETA
-  int nBatchBytesLeft = m_nBatchSize - m_nBatchPos;
-  time_t nBatchETA = (time_t)(nBatchBytesLeft / fBatchBPS);
-  sprintf(sz, "%02ld:%02ld:%02ld", nBatchETA / 3600, (nBatchETA % 3600) / 60,
-          (nBatchETA % 60));
-  nfoBatchETA->setText(sz);
-
+  nfoBatchSize->setText(QString(tr("%1/%2"))
+                        .arg(encodeFSize(m_nBatchPos))
+                        .arg(encodeFSize(m_nBatchSize)));
 }
 
 
@@ -305,7 +302,7 @@ void CFileDlg::fileUpdate()
 //=====Server Side==============================================================
 
 //-----startAsServer------------------------------------------------------------
-bool CFileDlg::startAsServer(void)
+bool CFileDlg::startAsServer()
 {
    gLog.Info("%sStarting file server on port %d.\n", L_TCPxSTR, getPort());
    if (!(m_xSocketFileServer.StartServer(getPort())))
@@ -394,8 +391,7 @@ void CFileDlg::StateServer()
        m_xSocketFile.RecvBuffer() >> m_szRemoteName[i];
     sprintf(t, "%d / %ld", m_nCurrentFile + 1, m_nTotalFiles);
     nfoTotalFiles->setText(t);
-    sprintf(t, "%ld bytes", m_nBatchSize);
-    nfoBatchSize->setText(t);
+    nfoBatchSize->setText(encodeFSize(m_nBatchSize));
     m_nBatchStartTime = time(NULL);
     m_nBatchBytesTransfered = m_nBatchPos = 0;
     barBatchTransfer->setTotalSteps(m_nBatchSize);
@@ -415,7 +411,7 @@ void CFileDlg::StateServer()
   {
     // Process file packet
     unsigned short nLen, nTest;
-    char t[64], cJunk;
+    char cJunk;
     m_xSocketFile.RecvBuffer() >> nTest;
     if (nTest != 0x0002)
     {
@@ -435,8 +431,7 @@ void CFileDlg::StateServer()
 
     m_nCurrentFile++;
     nfoTransferFileName->setText(m_sFileInfo.szName);
-    sprintf(t, tr("%ld bytes"), m_sFileInfo.nSize);
-    nfoFileSize->setText(t);
+    nfoFileSize->setText(encodeFSize(m_sFileInfo.nSize));
     barTransfer->setTotalSteps(m_sFileInfo.nSize);
 
     // Get the local filename and set the file offset (for resume)
@@ -451,8 +446,8 @@ void CFileDlg::StateServer()
     m_xSocketFile.SendPacket(p.getBuffer());
     lblStatus->setText("Starting transfer...");
 
-    // Update the status every 2 seconds
-    m_tUpdate.start(2000);
+    // Update the status every 0.5 seconds
+    m_tUpdate.start(1000);
 
     disconnect(snFile, SIGNAL(activated(int)), this, SLOT(StateServer()));
     connect(snFile, SIGNAL(activated(int)), this, SLOT(fileRecvFile()));
@@ -565,7 +560,7 @@ void CFileDlg::fileRecvFile()
 //=====Client Side==============================================================
 
 //-----startAsClient------------------------------------------------------------
-bool CFileDlg::startAsClient(void)
+bool CFileDlg::startAsClient()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned long nIp = u->Ip();
@@ -711,8 +706,8 @@ void CFileDlg::StateClient()
     barTransfer->setTotalSteps(m_sFileInfo.nSize);
     barTransfer->setProgress(0);
 
-    // Update the status every 2 seconds
-    m_tUpdate.start(2000);
+    // Update the status every 1 seconds
+    m_tUpdate.start(1000);
 
     m_nState = STATE_SENDxFILE;
     break;
@@ -769,8 +764,7 @@ void CFileDlg::fileSendFile()
   barBatchTransfer->setProgress(m_nBatchPos);
 
   int nBytesLeft = m_sFileInfo.nSize - m_nFilePos;
-  if (nBytesLeft > 0)
-  {
+  if (nBytesLeft > 0) {
     // More bytes to send so go away until the socket is free again
     return;
   }
@@ -798,7 +792,7 @@ void CFileDlg::fileSendFile()
   else // nBytesLeft < 0
   {
     // Sent too many bytes for the given size of the current file, can't really happen
-    gLog.Error("%sFile transfer of\n'%s'\n to %s received %d too many bytes.\n%sClosing file, recommend check for errors.\n", 
+    gLog.Error("%sFile transfer of\n'%s'\n to %s received %d too many bytes.\n%sClosing file, recommend check for errors.\n",
                L_TCPxSTR, m_sFileInfo.szName, m_szRemoteName, -nBytesLeft,
                L_BLANKxSTR);
   }
@@ -814,7 +808,7 @@ void CFileDlg::fileSendFile()
 
 //=====Other Stuff==============================================================
 
-//-----hide---------------------------------------------------------------------
+//-----hide--------------------------------------------------------------------
 void CFileDlg::hide()
 {
    QWidget::hide();
@@ -822,15 +816,26 @@ void CFileDlg::hide()
    delete this;
 }
 
+// -----------------------------------------------------------------------------
 
-//-----resizeEvent----------------------------------------------------
-void CFileDlg::resizeEvent (QResizeEvent *)
+QString CFileDlg::encodeFSize(unsigned long size)
 {
-   // resize / reposition all the widgets
-   //barTransfer->setGeometry(10, height() - 90, (width() >> 1) - 15, 20);
-   //barBatchTransfer->setGeometry((width() >> 1) + 5, height() - 90, (width() >> 1) - 15, 20);
-   lblStatus->setGeometry(0, height() - 20, width(), 20);
-   btnCancel->setGeometry((width() >> 1) - 100, height() - 60, 200, 30);
+  QString unit;
+  if(size >= 1024*1024) {
+    size /= (1024*1024)/10;
+    unit = tr("MB");
+  }
+  else if(size >= 1024) {
+    size /= 1024/10;
+    unit = tr("KB");
+  }
+  else if(size != 1)
+    unit = tr("Bytes");
+  else
+    unit = tr("Byte");
+
+  return QString("%1.%2 %3").arg(size/10).arg(size%10).arg(unit);
 }
+
 
 #include "moc/moc_filedlg.h"
