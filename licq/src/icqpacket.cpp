@@ -1233,6 +1233,24 @@ CPU_SendSms::CPU_SendSms(unsigned long nDestinationUin, const char *szMessage)
   buffer->Pack(szXmlStr, nLenXmlStr);
 }
 
+//----RequestAuth------------------------------------------------------------
+CPU_RequestAuth::CPU_RequestAuth(unsigned long _nUin, const char *_szMsg)
+{
+  char szUin[13];
+  int nUinLen = snprintf(szUin, 12, "%lu", _nUin);
+  szUin[12] = '\0';
+  int nMsgLen = strlen(_szMsg);
+
+  m_nSize += nUinLen + nMsgLen + 5;
+  InitBuffer();
+
+  buffer->PackChar(nUinLen);
+  buffer->Pack(szUin, nUinLen):
+  buffer->PackUnsignedShortBE(nMsgLen);
+  buffer->Pack(_szMsg, nMsgLen);
+  buffer->PackUnsignedShortBE(0);
+}
+
 //-----Ack-------------------------------------------------------------------
 #if ICQ_VERSION == 2
 CPU_Ack::CPU_Ack(unsigned short _nSequence) : CPacketUdp(ICQ_CMDxSND_ACK)

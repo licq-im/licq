@@ -469,6 +469,13 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szM
   return e->EventId();
 }
 
+//-----icqRequestAuth--------------------------------------------------------
+void CICQDaemon::icqRequestAuth(unsigned long _nUin, const char *_szMessage)
+{
+  CSrvPacketTcp *p = new CPU_RequestAuth(_nUin, _szMessage);
+  SendEvent_Server(p);
+}
+
 //-----icqSetSecurityInfo----------------------------------------------------
 unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
 {
