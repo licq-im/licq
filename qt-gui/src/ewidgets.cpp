@@ -24,6 +24,11 @@ void InformUser(QWidget *q, QString szInfo)
   (void) new CLicqMessageBox(szInfo, QMessageBox::Information, q);
 }
 
+void WarnUser(QWidget *q, QString szInfo)
+{
+  (void) new CLicqMessageBox(szInfo, QMessageBox::Warning, q);
+}
+
 //-----CELabel------------------------------------------------------------------
 CELabel::CELabel(bool _bTransparent, QPopupMenu *m, QWidget *parent, char *name)
   : QLabel(parent, name)

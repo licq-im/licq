@@ -15,6 +15,7 @@
 
 bool QueryUser(QWidget *, QString, QString, QString);
 void InformUser(QWidget *q, QString);
+void WarnUser(QWidget *q, QString szInfo);
 
 
 class CELabel : public QLabel
