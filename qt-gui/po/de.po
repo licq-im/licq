@@ -1,14 +1,14 @@
-# translation of de.po to german
-# This is a Qt message file in .po format.  Each msgid starts with
-# a scope.  This scope should *NOT* be translated - eg. "Foo::Bar"
+# Translation file in .po format.
+# This is a Qt message file in .po format. Each msgid starts with
+# a scope. This scope should *NOT* be translated - eg. "Foo::Bar"
 # would be translated to "Pub", not "Foo::Pub".
-# Thomas Reitelbach <tr@erdfunkstelle.de>, 2003
+# 
 msgid ""
 msgstr ""
-"Project-Id-Version: de\n"
-"POT-Creation-Date: 2003-02-03 12:00+0200\n"
-"PO-Revision-Date: 2003-03-19 19:36+0200\n"
-"Last-Translator: Thomas Reitelbach <tr@erdfunkstelle.de>\n"
+"Project-Id-Version: qt-gui\n"
+"POT-Creation-Date: 2003-02-03 12:00+200\n"
+"PO-Revision-Date: 2003-05-03 12:00+200\n"
+"Last-Translator: Thomas Reitelbach <thomas@licq.org>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Language-Team: german <licq-devel@licq.org>\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,6 +22,66 @@ msgstr "KDE Standard"
 
 msgid "::none"
 msgstr "keine"
+
+msgid "@default::File(s): "
+msgstr "Datei(en): "
+
+msgid "@default::Browse"
+msgstr "Durchsuchen"
+
+msgid "@default::Edit"
+msgstr "Bearbeiten"
+
+msgid "@default:: - File Transfer"
+msgstr " - Dateiübertragung"
+
+msgid "@default::Select files to send"
+msgstr "Dateien zum versenden auswählen"
+
+msgid "@default::You must specify a file to transfer!"
+msgstr "Sie müssen eine zu sendende Datei angeben!"
+
+msgid "@default::File transfer with %2 refused:\n%3"
+msgstr "Dateiübertragung mit %2 abgelehnt:\n%3"
+
+msgid "@default::Multiparty: "
+msgstr "Mehrbenutzer: "
+
+msgid "@default::Invite"
+msgstr "Einladen"
+
+msgid "@default:: - Chat Request"
+msgstr " - Chat Anfrage"
+
+msgid "@default::Clear"
+msgstr "Leeren"
+
+msgid "@default::Chat with %2 refused:\n%3"
+msgstr "Chat mit %2 abgelehnt:\n%3"
+
+msgid "@default::Drag Users Here - Right Click for Options"
+msgstr "Benutzer hier her ziehen - Klick mit rechter Maustaste für Optionen"
+
+msgid "@default:: - Contact List"
+msgstr " - Kontaktliste"
+
+msgid "@default::Phone : "
+msgstr "Telefon : "
+
+msgid "@default::Chars left : "
+msgstr "Verbleibende Zeichen : "
+
+msgid "@default:: - SMS"
+msgstr " - SMS"
+
+msgid "@default::You didn't edit the SMS.\nDo you really want to send it?"
+msgstr "Sie haben die SMS nicht bearbeitet.\nMöchten Sie sie wirklich senden?"
+
+msgid "@default::&Yes"
+msgstr "&Ja"
+
+msgid "@default::&No"
+msgstr "&Nein"
 
 msgid "AddUserDlg::Licq - Add User"
 msgstr "Licq - Benutzer hinzufügen"
@@ -37,6 +97,9 @@ msgstr "Ab&brechen"
 
 msgid "AddUserDlg::&Ok"
 msgstr "&Ok"
+
+msgid "AddUserDlg::New User Id:"
+msgstr "Neue Benutzer Id:"
 
 msgid "AuthUserDlg::&Ok"
 msgstr "&Ok"
@@ -61,6 +124,9 @@ msgstr "Ab&brechen"
 
 msgid "AuthUserDlg::Response"
 msgstr "Mitteilung"
+
+msgid "AuthUserDlg::Authorize which user (Id):"
+msgstr "Benutzer authorisieren (Id):"
 
 msgid "AwayMsgDlg::&Ok"
 msgstr "&Ok"
@@ -2012,6 +2078,12 @@ msgstr "<b>keine</b> - Nicht nach Status sortieren<br>\n<b>Status</b> - Sortiere
 msgid "OptionsDlg::Additional &sorting:"
 msgstr "Erweiterte &Sortierung:"
 
+msgid "OptionsDlg::Tabbed Chatting"
+msgstr "Tabs aktivieren"
+
+msgid "OptionsDlg::Use tabs in Send Window"
+msgstr "Verwendet Tabs um mehrere Sendefenster in einem zu kombinieren"
+
 msgid "PluginDlg::Id"
 msgstr "Id"
 
@@ -2781,7 +2853,7 @@ msgid "UserInfoDlg::Unspecified"
 msgstr "Nicht angegeben"
 
 msgid "UserInfoDlg::&Update"
-msgstr "&Auffrischen"
+msgstr "&Aktualisieren"
 
 msgid "UserInfoDlg::Unknown"
 msgstr "Unbekannt"
@@ -2806,6 +2878,18 @@ msgstr "&Verlauf"
 
 msgid "UserInfoDlg::Error loading history file: %1\nDescription: %2"
 msgstr "Fehler beim laden der Verlaufs-Datei: %1\nBeschreibung: %2"
+
+msgid "UserInfoDlg::Keep Alias on Update"
+msgstr "Alias bei Update behalten"
+
+msgid "UserInfoDlg::Normally Licq overwrites the Alias when updating user details.\nCheck this if you want to keep your changes to the Alias."
+msgstr "Normalerweise überschreibt Licq den Alias wenn die Benutzerdaten aktualisiert werden.\nAktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verändert wird."
+
+msgid "UserInfoDlg::&Retrieve"
+msgstr "Em&pfangen"
+
+msgid "UserInfoDlg::S&end"
+msgstr "S&enden"
 
 msgid "UserSelectDlg::&User:"
 msgstr "&Benutzer:"
