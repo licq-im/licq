@@ -269,6 +269,14 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version)
       offset = 0;
   }
 
+  if (gLog.LoggingPackets())
+  {
+    char *b;
+    gLog.Packet("%sUnencrypted TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
+       pkt->print(b));
+    delete [] b;
+  }
+
   // calculate verification data
   M1 = (rand() % ((size < 255 ? size : 255)-10))+10;
   X1 = buf[M1] ^ 0xFF;
@@ -1060,7 +1068,6 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
              strlen_safe(szCellularNumber) + 36 + 12;
   InitBuffer();
 
-
   buffer->PackUnsignedShort(m_nMetaCommand);
   m_szAlias = buffer->PackString(szAlias);
   m_szFirstName = buffer->PackString(szFirstName);
@@ -1496,9 +1503,9 @@ void CPacketTcp::InitBuffer_v2()
 void CPacketTcp::PostBuffer_v2()
 {
   buffer->PackUnsignedLong(m_nSequence);
-  // several V2 clients don't like our
-  // extension, so we omit it for them
-  if(m_nVersion != 2) {
+  // several V2 clients don't like our extension, so we omit it for them
+  if (m_nVersion != 2)
+  {
     buffer->PackChar('L');
     buffer->PackUnsignedShort(INT_VERSION);
   }
