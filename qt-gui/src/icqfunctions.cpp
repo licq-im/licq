@@ -1583,11 +1583,14 @@ void ICQFunctions::save()
   switch (currentTab)
   {
   case TAB_READ:
-    //generateReply();
     break;
   case TAB_GENERALINFO:
+  {
     SaveGeneralInfo();
+    CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, m_nUin);
+    emit signal_updatedUser(&s);
     break;
+  }
   case TAB_MOREINFO:
     SaveMoreInfo();
     break;
