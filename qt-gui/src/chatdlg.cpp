@@ -201,25 +201,25 @@ void ChatDlg::StateServer()
   case STATE_RECVxFONT:
   {
     unsigned long testLong_1, testLong_2;
-    m_cSocketChat.RecvBuffer() >> testLong_1 >> testLong_2;    
+    m_cSocketChat.RecvBuffer() >> testLong_1 >> testLong_2;
     /* No test because this value seems to vary all over the place
     if (testLong_1 != 0x03 && testLong_1 != 0x04 && testLong_1 != 0x05)
     {
-      gLog.Error("%sChat receive error - invalid font packet:\n%s\n", 
+      gLog.Error("%sChat receive error - invalid font packet:\n%s\n",
                  L_ERRORxSTR, m_cSocketChat.RecvBuffer().print());
       chatClose();
       return;
     }*/
-  
+
     // just received the font reply
-    /* 03 00 00 00 83 72 00 00 CF 60 AD 95 CF 60 AD 95 04 54 72 0C 00 00 00 00 
+    /* 03 00 00 00 83 72 00 00 CF 60 AD 95 CF 60 AD 95 04 54 72 0C 00 00 00 00
        00 00 00 08 00 43 6F 75 72 69 65 72 00 00 00 */
-    // we don't bother with the font for now...  
+    // we don't bother with the font for now...
     disconnect(snChat, SIGNAL(activated(int)), this, SLOT(StateServer()));
     connect(snChat, SIGNAL(activated(int)), this, SLOT(chatRecv()));
     connect(mleLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
     mleLocal->setEnabled(true);
-    
+
     m_nState = STATE_RECVxCHAT;
   }
 
@@ -228,11 +228,11 @@ void ChatDlg::StateServer()
     break;
 
   } // switch
-  
+
   m_cSocketChat.ClearRecvBuffer();
 }
-  
-  
+
+
 
 //=====Client===================================================================
 
@@ -347,7 +347,7 @@ void ChatDlg::StateClient()
       chatClose();
       return;
     }
-  
+
     // now we are done with the handshaking
     disconnect(snChat, SIGNAL(activated(int)), this, SLOT(StateClient()));
     connect(snChat, SIGNAL(activated(int)), this, SLOT(chatRecv()));
@@ -360,9 +360,9 @@ void ChatDlg::StateClient()
   case STATE_RECVxCHAT:
     // should never get here
     break;
-  
+
   } // switch
-  
+
   m_cSocketChat.ClearRecvBuffer();
 }
 
@@ -373,13 +373,13 @@ void ChatDlg::StateClient()
 void ChatDlg::chatSend(QKeyEvent *e)
 {
    CBuffer buffer(1);
-   if (e->key() == Key_Enter) 
+   if (e->key() == Key_Enter)
       buffer.add((char)0x0D);
-   else if (e->key() == Key_Return) 
+   else if (e->key() == Key_Return)
       buffer.add((char)0x0D);
-   else if (e->key() == Key_Backspace) 
+   else if (e->key() == Key_Backspace)
       buffer.add((char)0x08);
-   else if (e->key() == Key_unknown)
+   else if (e->key() == Key_unknown || e->key() == Key_Tab)
    {
       e->ignore();
       return;
@@ -395,7 +395,7 @@ void ChatDlg::chatSend(QKeyEvent *e)
    if (!m_cSocketChat.SendRaw(&buffer))
    {
      char buf[128];
-     gLog.Error("%sChat send error:\n%s%s\n", L_ERRORxSTR, L_BLANKxSTR, 
+     gLog.Error("%sChat send error:\n%s%s\n", L_ERRORxSTR, L_BLANKxSTR,
                 m_cSocketChat.ErrorStr(buf, 128));
      chatClose();
    }
@@ -411,7 +411,7 @@ void ChatDlg::chatRecv()
     if (m_cSocketChat.Error() == 0)
       gLog.Error("%sRemote end disconnected.\n", L_WARNxSTR);
     else
-      gLog.Error("%sChat receive error, lost remote end:\n%s%s.\n", 
+      gLog.Error("%sChat receive error, lost remote end:\n%s%s.\n",
                  L_ERRORxSTR, L_BLANKxSTR, m_cSocketChat.ErrorStr(buf, 128));
     chatClose();
     return;
