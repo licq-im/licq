@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PROJECT VERSION\n"
 "POT-Creation-Date: 2002-05-27 23:21:53 CEST\n"
-"PO-Revision-Date: 2002-06-08 23:36GMT+1\n"
+"PO-Revision-Date: 2002-06-15 14:08GMT+1\n"
 "Last-Translator: Prethorian <preth@kvsky.net>\n"
 "Content-Type: text/plain; charset=ISO-8859-2\n"
 "Language-Team: Serbian <sr@li.org>\n"
@@ -896,7 +896,7 @@ msgstr "Reg&istruj Korisnika"
 
 #: mainwin.cpp:2122
 msgid "CMainWindow::Registration failed.  See network window for details."
-msgstr ""
+msgstr "Registracija neuspe¹na.  Pogledajte mre¾ni prozor za detalje."
 
 #: mainwin.cpp:3047
 msgid "CMainWindow::Remove From List"
@@ -930,7 +930,7 @@ msgstr "Pr&etra¾i za Korisnika"
 
 #: mainwin.cpp:2977
 msgid "CMainWindow::S&kin Browser..."
-msgstr ""
+msgstr "Prikazivaè S&kinova..."
 
 #: mainwin.cpp:2982
 msgid "CMainWindow::Sa&ve Settings"
@@ -1013,7 +1013,7 @@ msgstr "Sistem"
 
 #: mainwin.cpp:3044
 msgid "CMainWindow::Toggle &Floaty"
-msgstr ""
+msgstr "Uklj/Isklj &Pokretno"
 
 #: mainwin.cpp:3032
 msgid "CMainWindow::U&tilities"
@@ -1029,11 +1029,11 @@ msgstr "Nepoznati Paketi"
 
 #: mainwin.cpp:3123
 msgid "CMainWindow::Up since %1\n"
-msgstr ""
+msgstr "Na vezi od %1\n"
 
 #: mainwin.cpp:3138
 msgid "CMainWindow::Up since %1\n\n"
-msgstr ""
+msgstr "Na vezi od %1\n\n"
 
 #: mainwin.cpp:2952
 msgid "CMainWindow::Update All Users"
@@ -1076,7 +1076,7 @@ msgstr ""
 
 #: mainwin.cpp:1341
 msgid "CMainWindow::s"
-msgstr ""
+msgstr "s"
 
 #: outputwin.cpp:43
 msgid "CQtLogWindow::&Close"
@@ -1132,23 +1132,23 @@ msgstr "Op¹te"
 
 #: randomchatdlg.cpp:61
 msgid "CRandomChatDlg::Men Seeking Women"
-msgstr ""
+msgstr "Mu¹karac tra¾i ¾enu"
 
 #: randomchatdlg.cpp:111
 msgid "CRandomChatDlg::No random chat user found in that group."
-msgstr ""
+msgstr "U toj grupi nije pronadjen korisnik za random æaskanje."
 
 #: randomchatdlg.cpp:28
 msgid "CRandomChatDlg::Random Chat Search"
-msgstr ""
+msgstr "Pretraga Nasumiènog Æaskanja"
 
 #: randomchatdlg.cpp:117
 msgid "CRandomChatDlg::Random chat search had an error."
-msgstr ""
+msgstr "Pretraga nasumiènog æaskanja ima gre¹ku."
 
 #: randomchatdlg.cpp:114
 msgid "CRandomChatDlg::Random chat search timed out."
-msgstr ""
+msgstr "Isteklo vreme za pretragu za nasumièno æaskanje."
 
 #: randomchatdlg.cpp:54
 msgid "CRandomChatDlg::Romance"
@@ -1156,7 +1156,7 @@ msgstr "Romansa"
 
 #: randomchatdlg.cpp:97
 msgid "CRandomChatDlg::Searching for Random Chat Partner..."
-msgstr ""
+msgstr "Tra¾im partnera za nasumièno æaskanje..."
 
 #: randomchatdlg.cpp:56
 msgid "CRandomChatDlg::Students"
@@ -1164,7 +1164,7 @@ msgstr "Studenti"
 
 #: randomchatdlg.cpp:62
 msgid "CRandomChatDlg::Women Seeking Men"
-msgstr ""
+msgstr "®ena tra¾i mu¹karca"
 
 #: refusedlg.cpp:24
 msgid "CRefuseDlg::Cancel"
@@ -1172,11 +1172,11 @@ msgstr "Poni¹ti"
 
 #: refusedlg.cpp:41
 msgid "CRefuseDlg::Licq %1 Refusal"
-msgstr ""
+msgstr "Licq %1 Odbija"
 
 #: refusedlg.cpp:17
 msgid "CRefuseDlg::Refusal message for %1 with "
-msgstr ""
+msgstr "Odbijena poruka za %1 sa "
 
 #: refusedlg.cpp:22
 msgid "CRefuseDlg::Refuse"
@@ -1224,7 +1224,7 @@ msgstr "Op¹te"
 
 #: randomchatdlg.cpp:171
 msgid "CSetRandomChatGroupDlg::Men Seeking Women"
-msgstr ""
+msgstr "Mu¹karac tra¾i ¾enu"
 
 #: randomchatdlg.cpp:164
 msgid "CSetRandomChatGroupDlg::Romance"
@@ -1232,11 +1232,11 @@ msgstr "Romansa"
 
 #: randomchatdlg.cpp:137
 msgid "CSetRandomChatGroupDlg::Set Random Chat Group"
-msgstr ""
+msgstr "Postavi Grupu nasumiènog æaskanja"
 
 #: randomchatdlg.cpp:228
 msgid "CSetRandomChatGroupDlg::Setting Random Chat Group..."
-msgstr ""
+msgstr "Postavljam grupu nasumiènog æaskanja..."
 
 #: randomchatdlg.cpp:166
 msgid "CSetRandomChatGroupDlg::Students"
@@ -1244,7 +1244,7 @@ msgstr "Studenti"
 
 #: randomchatdlg.cpp:172
 msgid "CSetRandomChatGroupDlg::Women Seeking Men"
-msgstr ""
+msgstr "®ena tra¾i mu¹karca"
 
 #: randomchatdlg.cpp:252
 msgid "CSetRandomChatGroupDlg::done"
@@ -1304,11 +1304,11 @@ msgstr "<br><nobr>P: "
 
 #: userbox.cpp:1268
 msgid "CUserView::<br><u>Auto Response:</u>"
-msgstr ""
+msgstr "<br><u>Automatski Odgovor:</u>"
 
 #: userbox.cpp:1251
 msgid "CUserView::<br>Custom&nbsp;Auto&nbsp;Response"
-msgstr ""
+msgstr "<br>Prilagoðen&nbsp;Automatski&nbsp;Odgovor"
 
 #: userbox.cpp:1260
 msgid "CUserView::<br>Licq&nbsp;%1"
@@ -1456,7 +1456,7 @@ msgstr "Interno"
 
 #: utilitydlg.cpp:37
 msgid "CUtilityDlg::Licq Utility: %1"
-msgstr ""
+msgstr "Licq Korisni Alati: %1"
 
 #: utilitydlg.cpp:167
 msgid "CUtilityDlg::Running:"
@@ -1492,7 +1492,7 @@ msgstr "ChatDlg::&IRC Mod"
 
 #: chatdlg.cpp:167
 msgid "ChatDlg::&Pane Mode"
-msgstr ""
+msgstr "&Panel mod"
 
 #: chatdlg.cpp:163
 msgid "ChatDlg::&Save Chat"
@@ -1588,11 +1588,11 @@ msgstr "Po¹alji zvuèni signal svim primaocima"
 
 #: chatdlg.cpp:237
 msgid "ChatDlg::Toggles Bold font"
-msgstr ""
+msgstr "Uklj/isklj Podebljan font"
 
 #: chatdlg.cpp:232
 msgid "ChatDlg::Toggles Italic font"
-msgstr ""
+msgstr "Uklj/Isklj kurziv font"
 
 #: chatdlg.cpp:917
 msgid "ChatDlg::Unable to load encoding <b>%1</b>. Message contents may appear garbled."
@@ -1668,54 +1668,56 @@ msgid ""
 "Are you sure you want to remove\n"
 "the group '%1'?"
 msgstr ""
+"Da li ste sigurni da ¾elite da uklonite\n"
+"grupu '%1'?"
 
 #: editgrp.cpp:169
 msgid "EditGrpDlg::Cancel"
-msgstr ""
+msgstr "Poni¹ti"
 
 #: editgrp.cpp:50
 msgid "EditGrpDlg::Default:"
-msgstr ""
+msgstr "Predefinisano:"
 
 #: editgrp.cpp:36
 msgid "EditGrpDlg::Edit Name"
-msgstr ""
+msgstr "Izmeni Ime"
 
 #: editgrp.cpp:37
 msgid "EditGrpDlg::Edit group name (hit enter to save)."
-msgstr ""
+msgstr "Izmeni ime grupe (pritisni enter za èuvanje)."
 
 #: editgrp.cpp:193
 msgid "EditGrpDlg::Edit"
-msgstr ""
+msgstr "Izmeni"
 
 #: editgrp.cpp:24
 msgid "EditGrpDlg::Groups"
-msgstr ""
+msgstr "Grupe"
 
 #: editgrp.cpp:22
 msgid "EditGrpDlg::Licq - Edit Groups"
-msgstr ""
+msgstr "Licq - Izmeni Grupe"
 
 #: editgrp.cpp:124
 msgid "EditGrpDlg::Ok"
-msgstr ""
+msgstr "Ok"
 
 #: editgrp.cpp:33
 msgid "EditGrpDlg::Remove"
-msgstr ""
+msgstr "Ukloni"
 
 #: editgrp.cpp:38
 msgid "EditGrpDlg::Set Default"
-msgstr ""
+msgstr "Postavi predefinisano"
 
 #: editgrp.cpp:35
 msgid "EditGrpDlg::Shift Down"
-msgstr ""
+msgstr "Pomeri dole"
 
 #: editgrp.cpp:34
 msgid "EditGrpDlg::Shift Up"
-msgstr ""
+msgstr "Pomeri gore"
 
 #: editgrp.cpp:39
 msgid "EditGrpDlg::The default group to start up in."
@@ -1723,91 +1725,91 @@ msgstr ""
 
 #: editgrp.cpp:105
 msgid "EditGrpDlg::noname"
-msgstr ""
+msgstr "bezimeni"
 
 #: eventdesc.cpp:38
 msgid "Event::"
-msgstr ""
+msgstr " "
 
 #: eventdesc.cpp:52
 msgid "Event::(cancelled)"
-msgstr ""
+msgstr "(poni¹ten)"
 
 #: eventdesc.cpp:25
 msgid "Event::Added to Contact List"
-msgstr ""
+msgstr "Dodat u kontakt listu"
 
 #: eventdesc.cpp:21
 msgid "Event::Authorization Granted"
-msgstr ""
+msgstr "Autorizacija Odobrena"
 
 #: eventdesc.cpp:20
 msgid "Event::Authorization Refused"
-msgstr ""
+msgstr "Autorizacija Odbijena"
 
 #: eventdesc.cpp:19
 msgid "Event::Authorization Request"
-msgstr ""
+msgstr "Zahtev Autorizacije"
 
 #: eventdesc.cpp:15
 msgid "Event::Chat Request"
-msgstr ""
+msgstr "Zahtev za Æaskanje"
 
 #: eventdesc.cpp:32
 msgid "Event::Contact List"
-msgstr ""
+msgstr "Kontakt Lista"
 
 #: eventdesc.cpp:27
 msgid "Event::Email Pager"
-msgstr ""
+msgstr "Email pejd¾er"
 
 #: eventdesc.cpp:16
 msgid "Event::File Transfer"
-msgstr ""
+msgstr "Prenos Fajla"
 
 #: eventdesc.cpp:14
 msgid "Event::Message"
-msgstr ""
+msgstr "Poruka"
 
 #: eventdesc.cpp:13
 msgid "Event::Plugin Event"
-msgstr ""
+msgstr "Dogaðaj Dodatka"
 
 #: eventdesc.cpp:39
 msgid "Event::SMS"
-msgstr ""
+msgstr "SMS"
 
 #: eventdesc.cpp:17
 msgid "Event::URL"
-msgstr ""
+msgstr "URL"
 
 #: eventdesc.cpp:47
 msgid "Event::Unknown Event"
-msgstr ""
+msgstr "Nepoznat Dogaðaj"
 
 #: eventdesc.cpp:26
 msgid "Event::Web Panel"
-msgstr ""
+msgstr "Web Panel"
 
 #: mainwin.cpp:3329
 msgid "HintsDlg::&Close"
-msgstr ""
+msgstr "Za&tvori"
 
 #: mainwin.cpp:3316
 msgid "HintsDlg::Licq - Hints"
-msgstr ""
+msgstr "Licq - Saveti"
 
 #: wharf.cpp:665
 msgid "IconManager_KDEStyle::<br>%1 msgs"
-msgstr ""
+msgstr "<br>%1 poruka"
 
 #: wharf.cpp:667
 msgid "IconManager_KDEStyle::<br>1 msg"
-msgstr ""
+msgstr "<br>1 poruka"
 
 #: wharf.cpp:662
 msgid "IconManager_KDEStyle::<br><b>%1 system messages</b>"
-msgstr ""
+msgstr "<br><b>%1 sistemskih poruka</b>"
 
 #: wharf.cpp:669
 msgid ""
@@ -1816,6 +1818,9 @@ msgid ""
 "<br>Middle click - Show next message"
 "<br>Right click - System menu"
 msgstr ""
+"<br>Levi klik - Poka¾i glavni prozor"
+"<br>Srednji klik - Poka¾i sledeæu poruku"
+"<br>Desni klik - Sistemski meni"
 
 #: wharf.cpp:358
 msgid "IconManager_Themed::Unable to load dock theme file\n(%1)\n:%2"
@@ -1827,11 +1832,11 @@ msgstr ""
 
 #: keyrequestdlg.cpp:76
 msgid "KeyRequestDlg::&Close"
-msgstr ""
+msgstr "Za&tvori"
 
 #: keyrequestdlg.cpp:70
 msgid "KeyRequestDlg::&Send"
-msgstr ""
+msgstr "&Po¹alji"
 
 #: keyrequestdlg.cpp:175
 msgid "KeyRequestDlg::<font color=\"ForestGreen\">Secure channel established.</font>\n"
@@ -1863,18 +1868,20 @@ msgid ""
 "Client does not support OpenSSL.\n"
 "Rebuild Licq with OpenSSL support."
 msgstr ""
+"Klijent ne podr¾ava OpenSSL.\n"
+"Izkompajlirajte Licq sa OpenSSL podr¹kom."
 
 #: keyrequestdlg.cpp:131
 msgid "KeyRequestDlg::Closing secure channel..."
-msgstr ""
+msgstr "Zatvaram sigurni kanal..."
 
 #: keyrequestdlg.cpp:30
 msgid "KeyRequestDlg::Licq - Secure Channel with %1"
-msgstr ""
+msgstr "Licq - Sigurni kanal sa %1"
 
 #: keyrequestdlg.cpp:126
 msgid "KeyRequestDlg::Requesting secure channel..."
-msgstr ""
+msgstr "Zahtevanje sigurnog kanala..."
 
 #: keyrequestdlg.cpp:34
 msgid ""
@@ -1891,10 +1898,13 @@ msgid ""
 "has no secure channel support compiled in.\n"
 "This probably won't work."
 msgstr ""
+"Udaljeni koristi Licq %1, svejedno\n"
+"nema ugradjenu podr¹ku za sigurni kanal.\n"
+"Ovo verovatno neæe da radi."
 
 #: keyrequestdlg.cpp:41
 msgid "KeyRequestDlg::The remote uses Licq %1/SSL."
-msgstr ""
+msgstr "Udaljeni koristi Licq %1/SSL"
 
 #: keyrequestdlg.cpp:53
 msgid ""
@@ -1903,58 +1913,61 @@ msgid ""
 "The remote doesn't seem to use such a client.\n"
 "This might not work."
 msgstr ""
+"Ovo radi jedino sa Licq klijentima >= v0.85\n"
+"Udaljeni ne izgleda da ima takav klijent.\n"
+"Ova opcija neæe raditi."
 
 #: messagebox.cpp:235
 msgid "MsgView::Cancelled Event"
-msgstr ""
+msgstr "Poni¹ten dogaðaj"
 
 #: messagebox.cpp:157
 msgid "MsgView::D"
-msgstr ""
+msgstr "D"
 
 #: messagebox.cpp:229
 msgid "MsgView::Direct"
-msgstr ""
+msgstr "Direktno"
 
 #: messagebox.cpp:158
 msgid "MsgView::Event Type"
-msgstr ""
+msgstr "Vrsta Dogaðaja"
 
 #: messagebox.cpp:233
 msgid "MsgView::Multiple Recipients"
-msgstr ""
+msgstr "Vi¹e primalaca"
 
 #: messagebox.cpp:159
 msgid "MsgView::Options"
-msgstr ""
+msgstr "Opcije"
 
 #: messagebox.cpp:229
 msgid "MsgView::Server"
-msgstr ""
+msgstr "Server"
 
 #: messagebox.cpp:160
 msgid "MsgView::Time"
-msgstr ""
+msgstr "Vreme"
 
 #: messagebox.cpp:231
 msgid "MsgView::Urgent"
-msgstr ""
+msgstr "Hitno"
 
 #: optionsdlg.cpp:65
 msgid "OptionsDlg::&Apply"
-msgstr ""
+msgstr "&Primeni"
 
 #: optionsdlg.cpp:69
 msgid "OptionsDlg::&Cancel"
-msgstr ""
+msgstr "&Poni¹ti"
 
 #: optionsdlg.cpp:61
 msgid "OptionsDlg::&OK"
-msgstr ""
+msgstr "&OK"
 
 #: optionsdlg.cpp:698
 msgid "OptionsDlg::64 x 48 Dock Icon"
-msgstr ""
+msgstr "64 x 48 Mala ikona"
 
 #: optionsdlg.cpp:790
 msgid ""
@@ -1968,15 +1981,15 @@ msgstr ""
 
 #: optionsdlg.cpp:823
 msgid "OptionsDlg::Accept Modes"
-msgstr ""
+msgstr "Prihvaæeni modovi"
 
 #: optionsdlg.cpp:1098
 msgid "OptionsDlg::Alignment"
-msgstr ""
+msgstr "Poravnavanje"
 
 #: optionsdlg.cpp:1153
 msgid "OptionsDlg::All incoming events will blink"
-msgstr ""
+msgstr "Svi dolazeæi dogaðaji æe svitkati"
 
 #: optionsdlg.cpp:638
 msgid ""
@@ -1992,7 +2005,7 @@ msgstr ""
 
 #: optionsdlg.cpp:1156
 msgid "OptionsDlg::Allow scroll bar"
-msgstr ""
+msgstr "Dozvoli liniju za premotavanje"
 
 #: optionsdlg.cpp:1157
 msgid "OptionsDlg::Allow the vertical scroll bar in the user list"
@@ -2020,7 +2033,7 @@ msgstr ""
 
 #: optionsdlg.cpp:1059
 msgid "OptionsDlg::Auto N/A:"
-msgstr ""
+msgstr "Automatski N/A:"
 
 #: optionsdlg.cpp:1065
 msgid "OptionsDlg::Auto Offline:"
@@ -2036,7 +2049,7 @@ msgstr ""
 
 #: optionsdlg.cpp:875
 msgid "OptionsDlg::Auto"
-msgstr ""
+msgstr "Automatski"
 
 #: optionsdlg.cpp:637
 msgid "OptionsDlg::Auto-Popup Incoming Msg"
@@ -2059,11 +2072,11 @@ msgstr ""
 
 #: optionsdlg.cpp:1042
 msgid "OptionsDlg::Away"
-msgstr ""
+msgstr "Odsutnost"
 
 #: optionsdlg.cpp:1246
 msgid "OptionsDlg::Away:"
-msgstr ""
+msgstr "Odsutnost:"
 
 #: optionsdlg.cpp:1152
 msgid "OptionsDlg::Blink All Events"
@@ -2079,11 +2092,11 @@ msgstr ""
 
 #: optionsdlg.cpp:1187
 msgid "OptionsDlg::Cellular"
-msgstr ""
+msgstr "Mobilni"
 
 #: optionsdlg.cpp:1120
 msgid "OptionsDlg::Center"
-msgstr ""
+msgstr "Centar"
 
 #: optionsdlg.cpp:807
 msgid "OptionsDlg::Chat Request:"
@@ -2099,19 +2112,19 @@ msgstr ""
 
 #: optionsdlg.cpp:1108
 msgid "OptionsDlg::Column %1"
-msgstr ""
+msgstr "Kolona %1"
 
 #: optionsdlg.cpp:1087
 msgid "OptionsDlg::Column Configuration"
-msgstr ""
+msgstr "Konfiguracija Kolona"
 
 #: optionsdlg.cpp:789
 msgid "OptionsDlg::Command:"
-msgstr ""
+msgstr "Komanda:"
 
 #: optionsdlg.cpp:94
 msgid "OptionsDlg::Contact List"
-msgstr ""
+msgstr "Kontakt Lista"
 
 #: optionsdlg.cpp:696
 msgid "OptionsDlg::Controls whether or not the dockable icon should be displayed."
@@ -2119,15 +2132,15 @@ msgstr ""
 
 #: optionsdlg.cpp:989
 msgid "OptionsDlg::Default Auto Response Messages"
-msgstr ""
+msgstr "Predefinisana Poruka Automatskog Odgovora"
 
 #: optionsdlg.cpp:669
 msgid "OptionsDlg::Default Encoding:"
-msgstr ""
+msgstr "Predefinisano Kodiranje"
 
 #: optionsdlg.cpp:697
 msgid "OptionsDlg::Default Icon"
-msgstr ""
+msgstr "Predefinisana Ikona"
 
 #: optionsdlg.cpp:1237
 msgid "OptionsDlg::Determines if email pager messages are ignored or not."
@@ -3273,7 +3286,7 @@ msgstr "A¾&uriraj"
 
 #: securitydlg.cpp:36
 msgid "SecurityDlg::Authorization Required"
-msgstr ""
+msgstr "Potrebna Autorizacija"
 
 #: securitydlg.cpp:37
 msgid ""
@@ -3789,7 +3802,7 @@ msgstr "Multizabava"
 
 #: usereventdlg.cpp:1219
 msgid "UserSendCommon:: to Contact List"
-msgstr ""
+msgstr "u Kontakt Listu"
 
 #: usereventdlg.cpp:1213
 msgid "UserSendCommon::%1 is in %2 mode:\n%3\nSend..."
@@ -3829,7 +3842,7 @@ msgstr "Kontakt Lista"
 
 #: usereventdlg.cpp:1200
 msgid "UserSendCommon::Direct send failed,\nsend through server?"
-msgstr ""
+msgstr "Direktno slanje neuspe¹no,\npo¹alji kroz server?"
 
 #: usereventdlg.cpp:1089
 msgid "UserSendCommon::Drag Users Here\nRight Click for Options"
@@ -3841,7 +3854,7 @@ msgstr "Prenos Fajla"
 
 #: usereventdlg.cpp:899
 msgid "UserSendCommon::M&ultiple recipients"
-msgstr ""
+msgstr "V&i¹e primalaca"
 
 #: usereventdlg.cpp:920
 msgid "UserSendCommon::Message"
