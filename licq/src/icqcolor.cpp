@@ -27,6 +27,13 @@ unsigned long CICQColor::Foreground()  { return foreground; }
 unsigned long CICQColor::Background()  { return background; }
 
 
+void CICQColor::SetToDefault()
+{
+  foreground = default_foreground;
+  background = default_background;
+}
+
+
 void CICQColor::Set(unsigned long fore, unsigned long back)
 {
   foreground = fore;

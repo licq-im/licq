@@ -22,6 +22,7 @@ public:
   void Set(CICQColor *c);
   void SetBackground(unsigned long r, unsigned long g, unsigned long b);
   void SetForeground(unsigned long r, unsigned long g, unsigned long b);
+  void SetToDefault();
 
   // Default colors for sending messages
   static unsigned long DefaultForeRed();
