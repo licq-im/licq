@@ -18,7 +18,7 @@ public:
    AuthUserDlg (CICQDaemon *s, unsigned long nUin, bool bGrant,
       QWidget *parent = 0);
 #ifdef QT_PROTOCOL_PLUGIN
-   AuthuserDlg (CICQDaemon *s, const char *szId, unsigned long nPPID,
+   AuthUserDlg (CICQDaemon *s, const char *szId, unsigned long nPPID,
       bool bGrant, QWidget *parent = 0);
 #endif
 

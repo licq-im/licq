@@ -90,7 +90,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
     mleAwayMsg->setBackgroundMode(PaletteBackground);
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
     //TODO in daemon
-    icqEventTag = server->ProtoFetchAutoResponse(m_szId, m_nPPID, bSendServer);
+    icqEventTag = server->icqFetchAutoResponse(strtoul(m_szId, (char **)NULL, 10), bSendServer);
   }
 
   show();

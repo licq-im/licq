@@ -108,9 +108,9 @@ QTextCodec* UserCodec::codecForUIN(uint uin)
 #ifdef QT_PROTOCOL_PLUGIN
 QTextCodec *UserCodec::codecForProtoUser(const char *szId, unsigned long nPPID)
 {
-  QTextCodec *codec = QTextCodec::codecForLocal();
+  QTextCodec *codec = QTextCodec::codecForLocale();
   
-  ICQUser *u = gUserManager.Fetchusr(szId, nPPID, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u)
   {
     codec = UserCodec::codecForICQUser(u);

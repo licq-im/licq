@@ -157,11 +157,11 @@ void CMMSendDlg::SendNext()
 #ifdef QT_PROTOCOL_PLUGIN
   if (m_szId)
   {
-    free(m_szId)
+    free(m_szId);
     m_szId = 0;
   }
 
-  m_szId = mmvi->Id() ? strdup(mmvi) : 0;
+  m_szId = mmvi->Id() ? strdup(mmvi->Id()) : 0;
   m_nPPID = mmvi->PPID();
 
   if (m_szId == 0) return;

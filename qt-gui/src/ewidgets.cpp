@@ -519,12 +519,12 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
 
 #ifdef QT_PROTOCOL_PLUGIN
 CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
-  QWidget* parent, const char * name)
-:CHistoryWidget(parent,name)
+  CMainWindow *m, QWidget* parent, const char * name)
+  : CHistoryWidget(parent, name)
 {
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
-  parentWidget = parent;
+  mainwin = m;
 
   // add all unread messages.
   vector<CUserEvent*> newEventList;

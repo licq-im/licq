@@ -80,6 +80,7 @@ public:
   bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
 #ifdef QT_PROTOCOL_PLUGIN
   UserEventCommon *callFunction(int fcn, const char *, unsigned long);
+  bool RemoveUserFromList(const char *, unsigned long, QWidget *);
 #endif
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
@@ -93,6 +94,7 @@ public:
     if (m_szUserMenuId)  free(m_szUserMenuId);
     m_szUserMenuId = strdup(s);
     m_nUserMenuPPID = n;
+    m_nUserMenuUin = strtoul(s, (char **)NULL, 10);
   }
 #endif
   static QPixmap &iconForStatus(unsigned long FullStatus);
@@ -148,6 +150,7 @@ public:
 
 public slots:
   void callInfoTab(int, unsigned long, bool toggle=false);
+  void callInfoTab(int, const char *, unsigned long, bool toggle=false);
 
 public:
   // Command Tools

@@ -210,7 +210,7 @@ void CMMUserView::slot_menu(int id)
       while (i != NULL)
       {
 #ifdef QT_PROTOCOL_PLUGIN
-        Adduser(i->ItemId());
+        AddUser(i->ItemId(), i->ItemPPID());
 #else
         AddUser(i->ItemUin());
 #endif
@@ -225,7 +225,7 @@ void CMMUserView::slot_menu(int id)
       FOR_EACH_USER_START(LOCK_R)
       {
 #ifdef QT_PROTOCOL_PLUGIN
-        if (pUser->m_nPPID() != m_nPPID || strcmp(pUser->Id(), m_szId))
+        if (pUser->PPID() != m_nPPID || strcmp(pUser->IdString(), m_szId))
 #else
         if (pUser->Uin() != m_nUin)
 #endif
@@ -259,14 +259,15 @@ void CMMUserView::dropEvent(QDropEvent * de)
   }
 
 #ifdef QT_PROTOCOL_PLUGIN
-  AddUser(text.latin1());
+  //TODO
+  AddUser(text.latin1(), LICQ_PPID);
 #else
   AddUser(text.toULong());
 #endif
 }
 
 
-#ifdef QT_PROTOCOL_PLUGIn
+#ifdef QT_PROTOCOL_PLUGIN
 void CMMUserView::AddUser(const char *szId, unsigned long nPPID)
 {
   if (szId == 0 || (nPPID == m_nPPID && strcmp(szId, m_szId) == 0))

@@ -199,11 +199,12 @@ void AuthUserDlg::ok()
 
   if (m_szId != 0)
   {
-    QTextCodec *codec = UserCodec::codecForUIN(nUin);
+    //TODO
+    QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, LICQ_PPID);
     if (m_bGrant)
-      server->ProtoAuthorizeGrant(m_szId, m_nPPID, codec->fromUnicode(mleResponse->text()));
+      server->icqAuthorizeGrant(strtoul(m_szId, (char **)NULL, 10), codec->fromUnicode(mleResponse->text()));
     else
-      server->ProtoAuthorizeRefuse(m_szId, m_nPPID, codec->fromUnicode(mleResponse->text()));
+      server->icqAuthorizeRefuse(strtoul(m_szId, (char **)NULL, 10), codec->fromUnicode(mleResponse->text()));
     close(true);
   }
 #else

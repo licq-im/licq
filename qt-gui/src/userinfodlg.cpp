@@ -68,7 +68,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   icqEventTag = 0;
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
-  m_bOwner = (gUserManager.FindOwner(szId, nPPID) == true);
+  m_bOwner = (gUserManager.FindOwner(szId, nPPID) != NULL);
 
   CreateGeneralInfo();
   CreateMoreInfo();
@@ -278,7 +278,7 @@ UserInfoDlg::~UserInfoDlg()
   }
 #ifdef QT_PROTOCOL_PLUGIN
   //TODO
-  emit finished(strtoul(m_szId, (char **)NULL, 10);
+  emit finished(strtoul(m_szId, (char **)NULL, 10));
 #else
   emit finished(m_nUin);
 #endif
@@ -1525,7 +1525,7 @@ void UserInfoDlg::slotRetrieve()
   if (currentTab != HistoryInfo)
   {
 #ifdef QT_PROTOCOL_PLUGIN
-    ICQOwern *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+    ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
 #else
     ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
 #endif
@@ -1576,7 +1576,7 @@ void UserInfoDlg::slotUpdate()
   if (currentTab != HistoryInfo)
   {
 #ifdef QT_PROTOCOL_PLUGIN
-    ICQOwern *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+    ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
 #else
     ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
 #endif

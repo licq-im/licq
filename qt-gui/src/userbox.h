@@ -136,15 +136,15 @@ public:
   void AnimationAutoResponseCheck(unsigned long uin);
   void AnimationOnline(unsigned long uin);
   unsigned long MainWindowSelectedItemUin();
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
   void AnimationAutoResponseCheck(const char *, unsigned long);
-  void AnimationOnlin(const char *, unsigned long);
+  void AnimationOnline(const char *, unsigned long);
   bool MainWindowSelectedItemUser(char *&, unsigned long &);
 #endif
 
   static UserFloatyList* floaties;
   static CUserView *FindFloaty(unsigned long);
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
   static CUserView *FindFloaty(const char *, unsigned long);
 #endif
   static void UpdateFloaties();
@@ -156,7 +156,7 @@ protected:
   int carTimerId, carCounter;
   unsigned long carUin;
   unsigned long onlUin;
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
   char *carId;
   char *onlId;
   unsigned long carPPID;

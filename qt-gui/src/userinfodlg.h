@@ -59,7 +59,7 @@ public:
                unsigned long _nUin, QWidget* parent = 0);
 #ifdef QT_PROTOCOL_PLUGIN
   UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-    const char *szId, unsigned long nPPID, QWidget *parent = 0_;
+    const char *szId, unsigned long nPPID, QWidget *parent = 0);
 #endif
   virtual ~UserInfoDlg();
 

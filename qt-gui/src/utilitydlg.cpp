@@ -324,7 +324,7 @@ void CUtilityDlg::slot_run()
   {
     lblUtility->setText(tr("Failed:"));
 #ifdef QT_PROTOCOL_PLUGIN
-    m_xUtility->setFields(m_szId, m_nPPID);
+    m_xUtility->SetFields(m_szId, m_nPPID);
 #else
     m_xUtility->SetFields(m_nUin);
 #endif

@@ -77,8 +77,8 @@
 #ifdef QT_PROTOCOL_PLUGIN
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
                                  CMainWindow *m, const char *_szId,
-                                 unsigned long _nPPID, QWidget *parent = 0,
-                                 const char *name = 0)
+                                 unsigned long _nPPID, QWidget *parent,
+                                 const char *name)
   : QWidget(parent, name, WDestructiveClose)
 {
   server = s;
@@ -86,7 +86,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   sigman = theSigMan;
   m_szId = _szId ? strdup(_szId) : 0;
   m_nPPID = _nPPID;
-  m_bOwner = (gUserManager.FindOwner(m_szId, m_nPPID) == true);
+  m_bOwner = (gUserManager.FindOwner(m_szId, m_nPPID) != NULL);
   m_bDeleteUser = false;
   
   top_hlay = new QHBoxLayout(this, 6);
@@ -538,7 +538,8 @@ void UserEventCommon::slot_updatetime()
 UserEventCommon::~UserEventCommon()
 {
 #ifdef QT_PROTOCOL_PLUGIN
-  emit finished(strdup(m_szId), m_nPPID);
+  //TODO
+  emit finished(strtoul(m_szId, (char **)NULL, 10));
 
   //TODO for CMainWindow
   if (m_bDeleteUser && !m_bOwner)
@@ -625,7 +626,7 @@ void UserEventCommon::slot_security()
 {
 #ifdef QT_PROTOCOL_PLUGIN
   //TODO in KeyRequestDlg
-  (void) new KeyRequestDlg(signam, m_szId, m_nPPID);
+  (void) new KeyRequestDlg(sigman, m_szId, m_nPPID);
 #else
   (void) new KeyRequestDlg(sigman, m_nUin);
 #endif
@@ -1097,7 +1098,7 @@ void UserViewEvent::generateReply()
 void UserViewEvent::sendMsg(QString txt)
 {
 #ifdef QT_PROTOCOL_PLUGIN
-  UserSendMsgEvent *e = new UserSendMsgEvent(server, signam, mainwin, m_szId, m_nPPID);
+  UserSendMsgEvent *e = new UserSendMsgEvent(server, sigman, mainwin, m_szId, m_nPPID);
 #else
   UserSendMsgEvent *e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
 #endif
@@ -1225,8 +1226,8 @@ void UserViewEvent::slot_btnRead2()
 #ifdef QT_PROTOCOL_PLUGIN
         {
           //TODO in CICQDaemon
-          server->icqChatRefuseAccept(m_szId, m_nPPID, 0, c->Clients(), c->Sequence(),
-            c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(strtoul(m_szId, (char **)NULL, 10), 0,
+            c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         }
 #else
           server->icqChatRequestAccept(m_nUin, 0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
@@ -1238,8 +1239,8 @@ void UserViewEvent::slot_btnRead2()
 #ifdef QT_PROTOCOL_PLUGIN
         {
           //TODO in CICQDaemon
-          server->icqChatRequestAccept(m_szId, m_nPPID, chatDlg->LocalPort(), c->Clients(),
-            c->Sequence(), c->IsDirect());
+          server->icqChatRequestAccept(strtoul(m_szId, (char **)NULL, 10),
+            chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         }
 #else
           server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
@@ -1260,8 +1261,8 @@ void UserViewEvent::slot_btnRead2()
       if (fileDlg->ReceiveFiles())
       {
         //TODO in CICQDaemon
-        server->icqFileTransferAccept(m_szId, m_nPPID, fileDlg->LocalPort(), f->Sequence(),
-          f->MessageId(), f->IsDirect());
+        server->icqFileTransferAccept(strtoul(m_szId, (char **)NULL, 10),
+          fileDlg->LocalPort(), f->Sequence(), f->MessageID(), f->IsDirect());
       }
 #else
       CFileDlg *fileDlg = new CFileDlg(m_nUin, server);
@@ -1317,7 +1318,8 @@ void UserViewEvent::slot_btnRead3()
         btnRead3->setEnabled(false);
 #ifdef QT_PROTOCOL_PLUGIN
         //TODO in CICQDaemon
-        server->icqChatRequestRefuse(m_szId, m_nPPID, codec->fromUnicode(r->RefuseMessage()),
+        server->icqChatRequestRefuse(strtoul(m_szId, (char **)NULL, 10),
+          codec->fromUnicode(r->RefuseMessage()),
           m_xCurrentReadEvent->Sequence(), c->MessageID(), c->IsDirect());
 #else
         server->icqChatRequestRefuse(m_nUin, codec->fromUnicode(r->RefuseMessage()),
@@ -1342,7 +1344,9 @@ void UserViewEvent::slot_btnRead3()
         btnRead2->setEnabled(false);
         btnRead3->setEnabled(false);
 #ifdef QT_PROTOCOL_PLUGIN
-        server->icqFileTransferRefuse(m_szId, m_nPPID, codec->fromUnicode(r->RefuseMessage()),
+        //TODO
+        server->icqFileTransferRefuse(strtoul(m_szId, (char **)NULL, 10),
+          codec->fromUnicode(r->RefuseMessage()),
           m_xCurrentReadEvent->Sequence(), f->MessageID(), f->IsDirect());
 #else
         server->icqFileTransferRefuse(m_nUin, codec->fromUnicode(r->RefuseMessage()),
@@ -1388,8 +1392,9 @@ void UserViewEvent::slot_btnRead4()
       {
 #ifdef QT_PROTOCOL_PLUGIN
         ChatDlg *chatDlg = new ChatDlg(m_szId, m_nPPID, server, mainwin);
-        if (chatDlg->StartAsClient(c->Port())
-          server->icqChatRequestAccept(m_szID, m_nPPID, 0, c->Clients9), c->Sequence(), c->MessageID(), c->IsDirect());
+        //TODO
+        if (chatDlg->StartAsClient(c->Port()))
+          server->icqChatRequestAccept(strtoul(m_szId, (char **)NULL, 10), 0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
 #else
         ChatDlg *chatDlg = new ChatDlg(m_nUin, server, mainwin);
         if (chatDlg->StartAsClient(c->Port()))
@@ -1402,7 +1407,8 @@ void UserViewEvent::slot_btnRead4()
         CJoinChatDlg *j = new CJoinChatDlg(this);
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
 #ifdef QT_PROTOCOL_PLUGIN
-          server->icqChatRequestAccept(m_szId, m_nPPID, chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c-IsDirect());
+          //TODO
+          server->icqChatRequestAccept(strtoul(m_szId, (char **)NULL, 10), chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
 #else
           server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
 #endif
@@ -1564,7 +1570,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleHistory=0;
   if (mainwin->m_bMsgChatView) {
     //TODO in CMessageViewWidget
-    mleHistory = new CMessageViewWidget(m_szId, m_nPPID, splView);
+    mleHistory = new CMessageViewWidget(strtoul(m_szId, (char **)NULL, 10), mainwin, splView);
 #if QT_VERSION >= 300
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
@@ -1916,7 +1922,7 @@ void UserSendCommon::massMessageToggled(bool b)
 #ifdef QT_PROTOCOL_PLUGIN
       //TODO in CMMUserView
       lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-        m_szId, m_nPPID, mainwin, grpMP);
+        strtoul(m_szId, (char **)NULL, 10), mainwin, grpMR);
 #else
 			lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
 																	m_nUin, mainwin, grpMR);
@@ -3409,7 +3415,7 @@ void UserSendSmsEvent::sendButton()
 
 #ifdef QT_PROTOCOL_PLUGIN
   //TODO in daemon
-  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), mleSend->text().utf8.data(),
+  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), mleSend->text().utf8().data(),
     strtoul(m_szId, (char **)NULL, 10));
 #else
   icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), mleSend->text().utf8().data(), m_nUin);

@@ -594,7 +594,7 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
 
   // add line to bottom and right side
 #ifdef QT_PROTOCOL_PLUGIN
-  if (listView()->parent() && gMainWindow->m_bGrideLines && m_szId)
+  if (listView()->parent() && gMainWindow->m_bGridLines && m_szId)
 #else
   if (listView()->parent() && gMainWindow->m_bGridLines && m_nUin != 0)
 #endif
@@ -605,7 +605,7 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
   }
 
 #ifdef QT_PROTOCOL_PLUGIN
-  if (listView()->carTimerId > 0 && (strcmp(listView()->carszId, m_szId) == 0) &&
+  if (listView()->carTimerId > 0 && (strcmp(listView()->carId, m_szId) == 0) &&
       listView()->carPPID == m_nPPID)
 #else
   if(listView()->carTimerId > 0 && listView()->carUin == m_nUin)
@@ -732,7 +732,7 @@ void CUserView::timerEvent(QTimerEvent* e)
 #ifdef QT_PROTOCOL_PLUGIN
       if (onlId)
       {
-        free(onlId)
+        free(onlId);
         onlId = 0;
       }
       onlPPID = 0;
@@ -893,7 +893,7 @@ CUserView::~CUserView()
         floaties->resize(floaties->size()-1);
   }
 
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
   if (carId)  free(carId);
   if (onlId)  free(onlId);
 #endif
@@ -913,7 +913,7 @@ CUserView *CUserView::FindFloaty(unsigned long nUin)
   return NULL;
 }
 
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
 CUserView *CUserView::FindFloaty(const char *szId, unsigned long nPPID)
 {
   unsigned int i = 0;
@@ -985,13 +985,13 @@ unsigned long CUserView::MainWindowSelectedItemUin()
    return i->ItemUin();
 }
 
-#ifdef QT_QT_PROTOCOL_PLUGIN
-bool CUserView::MainWindowSelectedUser(char *&_szId, unsigned long &_nPPID)
+#ifdef QT_PROTOCOL_PLUGIN
+bool CUserView::MainWindowSelectedItemUser(char *&_szId, unsigned long &_nPPID)
 {
   CUserViewItem *i = (CUserViewItem *)currentItem();
   if (i == NULL) return false;
-  _nPPID = m_nPPID;
-  _szId = m_szId ? strdup(m_szId) : 0;
+  _nPPID = i->ItemPPID();
+  _szId = i->ItemId() ? strdup(i->ItemId()) : 0;
   return true;
 }
 #endif
@@ -1027,7 +1027,7 @@ void CUserView::viewportMousePressEvent(QMouseEvent *e)
     {
       setSelected(clickedItem, true);
       setCurrentItem(clickedItem);
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
       if (clickedItem->ItemId())
       {
         gMainWindow->SetUserMenuUser(clickedItem->ItemId(), clickedItem->ItemPPID());
@@ -1051,7 +1051,7 @@ void CUserView::contentsContextMenuEvent ( QContextMenuEvent* e )
   {
     setSelected(clickedItem, true);
     setCurrentItem(clickedItem);
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
     if (clickedItem->ItemId())
     {
       gMainWindow->SetUserMenuUser(clickedItem->ItemId(), clickedItem->ItemPPID());
@@ -1078,7 +1078,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
 
   if(it)
   {
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
     if (it->ItemId())
 #else
     if(it->ItemUin())
@@ -1089,7 +1089,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
       if(QUriDrag::decode(e, lst))
       {
         if(!(text = QUriDrag::uriToLocalFile(lst.first())).isEmpty()) {
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
           UserSendFileEvent *e = static_cast<UserSendFileEvent *>
             (gMainWindow->callFunction(mnuUserSendFile, it->ItemId(),
                 it->ItemPPID()));
@@ -1101,9 +1101,9 @@ void CUserView::viewportDropEvent(QDropEvent* e)
           e->show();
         }
         else {
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
           UserSendUrlEvent *e = static_cast<UserSendUrlEvent *>
-            (gMainWindow->callFunctin(mnuUserSendUrl, it->ItemId(),
+            (gMainWindow->callFunction(mnuUserSendUrl, it->ItemId(),
                 it->ItemPPID()));
 #else
           UserSendUrlEvent* e = static_cast<UserSendUrlEvent*>
@@ -1176,7 +1176,7 @@ void CUserView::keyPressEvent(QKeyEvent *e)
       }
 
       // user divider
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
       if (item->ItemId() == 0)  return;
       gMainWindow->SetUserMenuUser(item->ItemId(), item->ItemPPID());
 #else
@@ -1192,7 +1192,7 @@ void CUserView::keyPressEvent(QKeyEvent *e)
 
       QListViewItemIterator it(this);
 
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
       while (it.current() != NULL &&
             ((CUserViewItem *)(it.current()))->ItemId() == 0) ++it;
 #else
@@ -1214,7 +1214,7 @@ void CUserView::keyPressEvent(QKeyEvent *e)
         ++it;
       }
       it = lastitem;
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
       while (it.current() && ((CUserViewItem *)(it.current()))->ItemId() == 0) --it;
 #else
       while(it.current() && ((CUserViewItem*)(it.current()))->ItemUin() == 0)  --it;
@@ -1306,7 +1306,7 @@ void CUserView::AnimationAutoResponseCheck(unsigned long uin)
   // well, maybe we should move the animation to the other user
 }
 
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
 void CUserView::AnimationAutoResponseCheck(const char *szId, unsigned long nPPID)
 {
   if(carTimerId == 0) {
@@ -1341,7 +1341,7 @@ void CUserView::AnimationOnline(unsigned long uin)
   }
 }
 
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
 void CUserView::AnimationOnline(const char *szId, unsigned long nPPID)
 {
   if(onlTimerId == 0) {
@@ -1363,7 +1363,8 @@ void CUserView::AnimationOnline(const char *szId, unsigned long nPPID)
         // we just block here the blinking for the
         // rest of the time
         free(onlId);
-        onlId = onlPPID = 0;
+        onlId = 0;
+        onlPPID = 0;
         // no need for a redraw, as the user is already shown
         // correctly.
       }
@@ -1371,7 +1372,8 @@ void CUserView::AnimationOnline(const char *szId, unsigned long nPPID)
     else
     {
       if (onlId) free(onlId);
-      onlId = onlPPID = 0;
+      onlId = 0;
+      onlPPID = 0;
     }
   }
 }
@@ -1393,7 +1395,7 @@ void CUserView::UpdateFloaties()
   for (unsigned int i = 0; i<floaties->size(); i++)
   {
     CUserViewItem* item = static_cast<CUserViewItem*>(floaties->at(i)->firstChild());
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
     ICQUser *u = gUserManager.FetchUser(item->ItemId(), item->ItemPPID(), LOCK_R);
 #else
     ICQUser *u = gUserManager.FetchUser(item->ItemUin(), LOCK_R);
@@ -1453,7 +1455,7 @@ void CUserView::itemCollapsed(QListViewItem* i)
 void CUserView::maybeTip(const QPoint& c)
 {
   CUserViewItem* item = static_cast<CUserViewItem*>(itemAt(c));
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
   if (item && item->m_szId)
 #else
   if(item && item->m_nUin)
@@ -1472,7 +1474,7 @@ void CUserView::maybeTip(const QPoint& c)
     if (item->m_bCustomAR)
       s += tr("<br>Custom&nbsp;Auto&nbsp;Response");
 
-#ifdef QT_QT_PROTOCOL_PLUGIN
+#ifdef QT_PROTOCOL_PLUGIN
     ICQUser *u = gUserManager.FetchUser(item->m_szId, item->m_nPPID, LOCK_R);
 #else
     ICQUser* u = gUserManager.FetchUser(item->m_nUin, LOCK_R);
