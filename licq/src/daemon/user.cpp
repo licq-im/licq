@@ -1824,7 +1824,7 @@ void ICQUser::EventClear(unsigned short index)
   SaveNewMessagesInfo();
 
   gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-     USER_EVENTS, m_nUin, id));
+     USER_EVENTS, m_nUin, -id));
 }
 
 
@@ -1840,7 +1840,7 @@ void ICQUser::EventClearId(int id)
       decNumUserEvents();
       SaveNewMessagesInfo();
       gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-         USER_EVENTS, m_nUin, id));
+         USER_EVENTS, m_nUin, -id));
       break;
     }
   }
