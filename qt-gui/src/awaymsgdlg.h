@@ -5,7 +5,7 @@
 
 class QPushButton;
 class QComboBox;
-class QMultiLineEdit;
+class MLEditWrap;
 
 class AwayMsgDlg : public QDialog
 {
@@ -15,7 +15,7 @@ public:
   void SelectAutoResponse(unsigned short status);
 
 protected:
-  QMultiLineEdit *mleAwayMsg;
+  MLEditWrap *mleAwayMsg;
   QPushButton* btnSelect;
   QPushButton *btnOk, *btnCancel;
   unsigned short m_nStatus;
@@ -41,7 +41,7 @@ public:
   CustomAwayMsgDlg(unsigned long, QWidget *parent = 0, const char *name = 0);
 
 protected:
-  QMultiLineEdit *mleAwayMsg;
+  MLEditWrap *mleAwayMsg;
   //unsigned short m_nStatus;
   unsigned long m_nUin;
 
