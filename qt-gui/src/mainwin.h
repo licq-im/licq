@@ -94,7 +94,8 @@ public:
        m_bScrollBar,
        m_bShowExtendedIcons,
        m_bSystemBackground,
-       m_bSendFromClipboard;
+       m_bSendFromClipboard,
+       m_bAutoPosReplyWin;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;

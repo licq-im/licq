@@ -33,6 +33,7 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qsplitter.h>
+#include <qapplication.h>
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
@@ -522,6 +523,15 @@ void UserViewEvent::sendMsg(QString txt)
 {
   UserSendMsgEvent *e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
   e->setText(txt);
+
+  // Find a good position for the new window
+  if (gMainWindow->m_bAutoPosReplyWin)
+  {
+    int yp = btnRead1->parentWidget()->mapToGlobal(QPoint(0, 0)).y();
+    if (yp + e->height() + 8 > QApplication::desktop()->height())
+      yp = QApplication::desktop()->height() - e->height() - 8;
+    e->move(x(), yp);
+  }
   e->show();
 
   connect(e, SIGNAL(autoCloseNotify()), this, SLOT(slot_autoClose()));

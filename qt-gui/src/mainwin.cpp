@@ -316,6 +316,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowExtIcons", m_bShowExtendedIcons, true);
   licqConf.ReadBool("SystemBackground", m_bSystemBackground, false);
   licqConf.ReadBool("SendFromClipboard", m_bSendFromClipboard, true);
+  licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
 
   unsigned short nFlash;
   licqConf.ReadNum("Flash", nFlash, FLASH_URGENT);
@@ -2166,6 +2167,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("ShowExtIcons", m_bShowExtendedIcons);
   licqConf.WriteBool("SystemBackground", m_bSystemBackground);
   licqConf.WriteBool("SendFromClipboard", m_bSendFromClipboard);
+  licqConf.WriteBool("AutoPosReplyWin", m_bAutoPosReplyWin);
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
   switch(m_nDockMode)
