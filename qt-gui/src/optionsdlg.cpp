@@ -281,6 +281,7 @@ void OptionsDlg::SetupOptions()
    chkOEOccupied->setChecked(o->AcceptInOccupied());
    chkOEDND->setChecked(o->AcceptInDND());
    gUserManager.DropOwner();
+   chkAlwaysOnlineNotify->setChecked(mainwin->licqDaemon->AlwaysOnlineNotify());
 }
 
 
@@ -422,7 +423,7 @@ void OptionsDlg::ApplyOptions()
   o->SetEnableSave(true);
   o->SaveLicqInfo();
   gUserManager.DropOwner();
-
+  mainwin->licqDaemon->SetAlwaysOnlineNotify(chkAlwaysOnlineNotify->isChecked());
 }
 
 
@@ -496,7 +497,7 @@ QWidget* OptionsDlg::new_appearance_options()
                                     "style of the user window:\n"
                                     "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
                                     " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
-                                    " + 240 (Shadow"));
+                                    " + 240 (Shadow)"));
   edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
   chkFlashAll = new QCheckBox(tr("Flash Events"), boxUserWin);
   QWhatsThis::add(chkFlashAll, tr("All incoming events will flash"));
@@ -587,7 +588,7 @@ QWidget* OptionsDlg::new_appearance_options()
 
   l = new QVBoxLayout(lay, 8);
   boxFont = new QGroupBox(3, Horizontal, tr("Font"), w);
-  QWhatsThis::add(boxFont, tr("The font used for all widgets"));
+  QWhatsThis::add(boxFont, tr("The fonts used"));
   lblFont = new QLabel(tr("Font:"), boxFont);
   edtFont = new QLineEdit(boxFont);
   btnFont = new QPushButton(tr("Select Font"), boxFont);
@@ -701,6 +702,9 @@ QWidget* OptionsDlg::new_sounds_options()
   QWhatsThis::add(chkOEOccupied, tr("Perform OnEvent command in occupied mode"));
   chkOEDND = new QCheckBox(tr("OnEvent in DND"), boxAcceptEvents);
   QWhatsThis::add(chkOEDND, tr("Perform OnEvent command in do not disturb mode"));
+  chkAlwaysOnlineNotify = new QCheckBox(tr("Online Notify when Logging On"), boxAcceptEvents);
+  QWhatsThis::add(chkAlwaysOnlineNotify, tr("Perform the online notify OnEvent "
+     " when logging on (this is different from how the Mirabilis client works"));
 
   //lay->addStretch(1);
 
@@ -938,8 +942,8 @@ QWidget* OptionsDlg::new_column_options()
   lblColTitle = new QLabel (tr("Title"), w);
   QWhatsThis::add(lblColTitle, tr("The string which will appear in the list box column header"));
   lblColFormat = new QLabel (tr("Format"), w);
-  QWhatsThis::add(lblColFormat, tr("The format string used to define what will"
-                                   "appear in each column, see OnEvent Command for"
+  QWhatsThis::add(lblColFormat, tr("The format string used to define what will "
+                                   "appear in each column, see OnEvent Command for "
                                    "more information about valid % values"));
   lblColWidth = new QLabel (tr("Width"), w);
   QWhatsThis::add(lblColWidth, tr("The width of the column"));
