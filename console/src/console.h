@@ -11,6 +11,7 @@
 #include "user.h"
 
 #define MAX_CON 8
+const unsigned short USER_WIN_WIDTH = 40;
 const char L_CONSOLExSTR[] = "[CON] ";
 
 struct SColorMap
@@ -36,13 +37,14 @@ protected:
   bool m_bShowOffline, m_bShowDividers;
   const struct SColorMap *m_cColorOnline, *m_cColorOffline,
                    *m_cColorAway, *m_cColorGroupList;
+  char m_szUserFormat[128];
 
   unsigned short m_nCurrentGroup, m_nCon;
   GroupType m_nGroupType;
 
   CICQDaemon *licqDaemon;
   CWindow *winMain, *winStatus, *winPrompt, *winLog, *winCon[MAX_CON + 1],
-          *winConStatus;
+          *winConStatus, *winUsers, *winBar;
   CPluginLog *log;
 
 public:
@@ -69,6 +71,8 @@ public:
   void PrintBoxRight(short _nLength);
   void PrintBoxLeft(void);
   void PrintVariable(unsigned short);
+  void PrintUsers(void);
+  void PrintHelp(void);
 
   void MenuHelp(char *);
   void MenuContactList(char *);
@@ -101,9 +105,10 @@ struct STabCompletion
 
 struct SCommand
 {
-  char szName[16];
+  char *szName;
   void (CLicqConsole::*fProcessCommand)(char *);
   void (CLicqConsole::*fProcessTab)(char *, struct STabCompletion &);
+  char *szHelp;
 };
 extern const unsigned short NUM_COMMANDS;
 extern const struct SCommand aCommands[];

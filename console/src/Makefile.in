@@ -36,7 +36,7 @@ SIZE     = @PROG_SIZE@
  
 
 OBJECTS	= obj/main.o obj/window.o obj/console.o obj/console_tab.o \
-          obj/console_menu.o obj/eventdesc.o
+          obj/console_menu.o obj/eventdesc.o obj/console_print.o
 
 SUFFIXES = .o .c .cpp
 

@@ -22,7 +22,7 @@ extern int errno
 
 extern "C" const char *LP_Version(void);
 
-const unsigned short NUM_STATUS = 7;
+const unsigned short NUM_STATUS = 13;
 const struct SStatus aStatus[NUM_STATUS] =
 {
   { "online", ICQ_STATUS_ONLINE },
@@ -31,10 +31,16 @@ const struct SStatus aStatus[NUM_STATUS] =
   { "dnd", ICQ_STATUS_DND },
   { "occupied", ICQ_STATUS_OCCUPIED },
   { "ffc", ICQ_STATUS_FREEFORCHAT },
-  { "offline", ICQ_STATUS_OFFLINE }
+  { "offline", ICQ_STATUS_OFFLINE },
+  { "*online", ICQ_STATUS_ONLINE },
+  { "*away", ICQ_STATUS_AWAY },
+  { "*na", ICQ_STATUS_NA },
+  { "*dnd", ICQ_STATUS_DND },
+  { "*occupied", ICQ_STATUS_OCCUPIED },
+  { "*ffc", ICQ_STATUS_FREEFORCHAT }
 };
 
-const unsigned short NUM_VARIABLES = 6;
+const unsigned short NUM_VARIABLES = 7;
 struct SVariable aVariables[NUM_VARIABLES] =
 {
   { "show_offline_users", BOOL, NULL },
@@ -42,7 +48,8 @@ struct SVariable aVariables[NUM_VARIABLES] =
   { "color_online", COLOR, NULL },
   { "color_away", COLOR, NULL },
   { "color_offline", COLOR, NULL },
-  { "color_group_list", COLOR, NULL }
+  { "color_group_list", COLOR, NULL },
+  { "user_format", STRING, NULL }
 };
 
 const unsigned short NUM_COLORMAPS = 15;
@@ -82,6 +89,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   m_cColorAway = &aColorMaps[0];
   m_cColorOffline = &aColorMaps[1];
   m_cColorGroupList = &aColorMaps[13];
+  strcpy(m_szUserFormat, "%-20a%18s");
 
   // Set the variable data pointers
   aVariables[0].pData = &m_bShowOffline;
@@ -90,6 +98,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   aVariables[3].pData = &m_cColorAway;
   aVariables[4].pData = &m_cColorOffline;
   aVariables[5].pData = &m_cColorGroupList;
+  aVariables[6].pData = m_szUserFormat;
 
   m_bExit = false;
 }
@@ -132,20 +141,21 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   // Create the windows
   for (unsigned short i = 0; i <= MAX_CON; i++)
   {
-    winCon[i] = new CWindow(LINES - 3, COLS, 1, 0, true);
+    winCon[i] = new CWindow(LINES - 5, COLS - USER_WIN_WIDTH - 1, 2, 0, true);
     scrollok(winCon[i]->Win(), true);
     winCon[i]->fProcessInput = &CLicqConsole::InputCommand;
   }
   winCon[0]->fProcessInput = NULL;
-  winStatus = new CWindow(1, COLS, LINES - 2, 0, false);
+  winStatus = new CWindow(2, COLS, LINES - 3, 0, false);
   winPrompt = new CWindow(1, COLS, LINES - 1, 0, false);
-  winConStatus = new CWindow(1, COLS, 0, 0, false);
+  winConStatus = new CWindow(2, COLS, 0, 0, false);
   winStatus->SetActive(true);
   winPrompt->SetActive(true);
   winConStatus->SetActive(true);
-
-  wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_YELLOW_BLUE));
-  wbkgdset(winConStatus->Win(), COLOR_PAIR(COLOR_YELLOW_BLUE));
+  winBar = new CWindow(LINES - 5, 1, 2, COLS - USER_WIN_WIDTH - 1, false);
+  winUsers = new CWindow(LINES - 5, USER_WIN_WIDTH, 2, COLS - USER_WIN_WIDTH, false);
+  winBar->SetActive(true);
+  winUsers->SetActive(true);
 
   log = new CPluginLog;
   gLog.AddService(new CLogService_Plugin(log, gLog.ServiceLogTypes(S_STDOUT)));
@@ -157,6 +167,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 
   PrintStatus();
   PrintPrompt();
+  PrintUsers();
 
   fd_set fdSet;
   int nResult;
@@ -187,52 +198,6 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 
   winMain->wprintf("Exiting\n\n");
   return 0;
-}
-
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::PrintPrompt
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintPrompt(void)
-{
-  werase(winPrompt->Win());
-  winPrompt->wprintf("%C> ", COLOR_CYAN);
-  winPrompt->RefreshWin();
-}
-
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::PrintStatus
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintStatus(void)
-{
-  static char szStatusStr[32];
-  static char szMsgStr[16];
-
-  werase(winStatus->Win());
-
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nNumOwnerEvents = o->getNumMessages();
-  gUserManager.DropOwner();
-  unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
-  if (nNumOwnerEvents > 0)
-    sprintf (szMsgStr, "System Message");
-  else if (nNumUserEvents > 0)
-    sprintf (szMsgStr, "%d Message%c", nNumUserEvents, nNumUserEvents == 1 ? ' ' : 's');
-  else
-    strcpy(szMsgStr, "No Messages");
-
-  o = gUserManager.FetchOwner(LOCK_R);
-  o->getStatusStr(szStatusStr);
-  winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - %C%s %C- %C%s %C- %C%s %C]", COLOR_YELLOW_BLUE,
-                     A_BOLD, COLOR_WHITE_BLUE, o->getAlias(), COLOR_YELLOW_BLUE,
-                     COLOR_WHITE_BLUE, o->getUin(), COLOR_YELLOW_BLUE,
-                     COLOR_CYAN_BLUE, szStatusStr, COLOR_YELLOW_BLUE,
-                     COLOR_CYAN_BLUE, CurrentGroupName(), COLOR_YELLOW_BLUE,
-                     COLOR_CYAN_BLUE, szMsgStr, COLOR_YELLOW_BLUE);
-  gUserManager.DropOwner();
-  wclrtoeol(winStatus->Win());
-  winStatus->RefreshWin();
 }
 
 
@@ -326,17 +291,16 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
   switch (s->Signal())
   {
   case SIGNAL_UPDATExLIST:
-    //winMain->wprintf("signal: update list\n");
     PrintStatus();
+    PrintUsers();
     break;
   case SIGNAL_UPDATExUSER:
-    //winMain->wprintf("signal: update user\n");
     if (s->Uin() == gUserManager.OwnerUin() && s->SubSignal() == USER_STATUS
         || s->SubSignal() == USER_EVENTS)
       PrintStatus();
+    PrintUsers();
     break;
   case SIGNAL_LOGON:
-    //winMain->wprintf("signal: logon\n");
     PrintStatus();
     break;
   default:
@@ -443,6 +407,7 @@ void CLicqConsole::SwitchToCon(unsigned short nCon)
   m_nCon = nCon;
 
   // Print the header
+  wbkgdset(winConStatus->Win(), COLOR_PAIR(COLOR_YELLOW_BLUE));
   werase(winConStatus->Win());
   winConStatus->wprintf("%A[ %CLicq Console Plugin v%C%s%C (",
                         A_BOLD, COLOR_WHITE_BLUE,
@@ -454,6 +419,10 @@ void CLicqConsole::SwitchToCon(unsigned short nCon)
     winConStatus->wprintf("%A%Clog console", A_BOLD, COLOR_WHITE_BLUE);
   winConStatus->wprintf("%A%C) ]", A_BOLD, COLOR_YELLOW_BLUE);
   wclrtoeol(winConStatus->Win());
+  wbkgdset(winConStatus->Win(), COLOR_PAIR(COLOR_WHITE));
+  mvwhline(winConStatus->Win(), 1, 0, ACS_HLINE, COLS);
+  mvwaddch(winConStatus->Win(), 1, COLS - USER_WIN_WIDTH - 1, ACS_TTEE);
+  winConStatus->RefreshWin();
 }
 
 
@@ -724,76 +693,6 @@ void CLicqConsole::InputCommand(int cIn)
 
 
 /*---------------------------------------------------------------------------
- * CLicqConsole::PrintBadInput
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintBadInput(const char *_szIn)
-{
-  winMain->wprintf("%CInvalid command [%A%s%Z].  Type \"help\" for help.\n",
-                   COLOR_RED, A_BOLD, _szIn, A_BOLD);
-}
-
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::PrintBoxTop
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintBoxTop(const char *_szTitle, short _nColor, short _nLength)
-{
-  unsigned short i, j;
-  wattrset(winMain->Win(), COLOR_PAIR(COLOR_WHITE));
-  waddch(winMain->Win(), '\n');
-  waddch(winMain->Win(), ACS_ULCORNER);
-  for (i = 0; i < 10; i++)
-    waddch(winMain->Win(), ACS_HLINE);
-  waddch(winMain->Win(), ACS_RTEE);
-  winMain->wprintf("%C %s ", _nColor, _szTitle);
-  waddch(winMain->Win(), ACS_LTEE);
-  j = _nLength - 16 - strlen(_szTitle);
-  for (i = 0; i < j; i++)
-    waddch(winMain->Win(), ACS_HLINE);
-  waddch(winMain->Win(), ACS_URCORNER);
-  waddch(winMain->Win(), '\n');
-}
-
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::PrintBoxLeft
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintBoxLeft(void)
-{
-  waddch(winMain->Win(), ACS_VLINE);
-  waddch(winMain->Win(), ' ');
-}
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::PrintBoxRight
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintBoxRight(short _nLength)
-{
-  int y, x;
-  getyx(winMain->Win(), y, x);
-  mvwaddch(winMain->Win(), y, _nLength - 1, ACS_VLINE);
-  waddch(winMain->Win(), '\n');
-}
-
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::PrintBoxBottom
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintBoxBottom(short _nLength)
-{
-  unsigned short i;
-  waddch(winMain->Win(), ACS_LLCORNER);
-  for (i = 0; i < _nLength - 2; i++)
-    waddch(winMain->Win(), ACS_HLINE);
-  waddch(winMain->Win(), ACS_LRCORNER);
-  waddch(winMain->Win(), '\n');
-
-  winMain->RefreshWin();
-  wattrset(winMain->Win(), COLOR_PAIR(COLOR_WHITE));
-}
-
-
-/*---------------------------------------------------------------------------
  * CLicqConsole::CurrentGroupName
  *-------------------------------------------------------------------------*/
 char *CLicqConsole::CurrentGroupName(void)
@@ -863,6 +762,8 @@ void CLicqConsole::UserCommand_View(unsigned long nUin)
     winMain->RefreshWin();
     wattroff(winMain->Win(), A_BOLD);
     u->ClearEvent(0);
+    PrintUsers();
+    PrintStatus();
   }
   else
   {
@@ -1098,68 +999,5 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
 
 }
 
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::PrintGroups
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintGroups(void)
-{
-  unsigned short j = 1, k;
-
-  PrintBoxTop("Groups", COLOR_WHITE, 26);
-
-  PrintBoxLeft();
-  winMain->wprintf("%A%C%3d. %-19s",
-      m_cColorGroupList->bBright ? A_BOLD : A_NORMAL,
-      m_cColorGroupList->nColor, 0, "All Users");
-  PrintBoxRight(26);
-  waddch(winMain->Win(), ACS_LTEE);
-  for (k = 0; k < 24; k++) waddch(winMain->Win(), ACS_HLINE);
-  waddch(winMain->Win(), ACS_RTEE);
-  waddch(winMain->Win(), '\n');
-
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  for (GroupListIter i = g->begin(); i != g->end(); i++, j++)
-  {
-    PrintBoxLeft();
-    winMain->wprintf("%A%C%3d. %-19s",
-        m_cColorGroupList->bBright ? A_BOLD : A_NORMAL,
-        m_cColorGroupList->nColor, j, *i);
-    PrintBoxRight(26);
-  }
-  gUserManager.UnlockGroupList();
-  PrintBoxBottom(26);
-
-}
-
-
-/*---------------------------------------------------------------------------
- * CLicqConsole::PrintVariable
- *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintVariable(unsigned short nVar)
-{
-  winMain->wprintf("%s = ", aVariables[nVar].szName);
-
-  switch(aVariables[nVar].nType)
-  {
-  case INT:
-    winMain->wprintf("%d\n", *(int *)aVariables[nVar].pData);
-    break;
-
-  case BOOL:
-    winMain->wprintf("%s\n", *(bool *)aVariables[nVar].pData == true
-        ? "YES" : "NO");
-    break;
-
-  case STRING:
-    winMain->wprintf("\"%s\"\n", *(char **)aVariables[nVar].pData);
-    break;
-
-  case COLOR:
-    winMain->wprintf("%s\n",
-        (*(struct SColorMap **)aVariables[nVar].pData)->szName );
-    break;
-  }
-}
 
 

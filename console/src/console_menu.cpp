@@ -5,14 +5,28 @@
 const unsigned short NUM_COMMANDS = 8;
 const struct SCommand aCommands[NUM_COMMANDS] =
 {
-  { "/contacts", &CLicqConsole::MenuContactList, NULL },
-  { "/group", &CLicqConsole::MenuGroup, NULL },
-  { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser },
-  { "/status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus },
-  { "/set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet },
-  { "/plugins", &CLicqConsole::MenuPlugins, NULL },
-  { "/help", &CLicqConsole::MenuHelp, NULL },
-  { "/quit", &CLicqConsole::MenuQuit, NULL }
+  { "/contacts", &CLicqConsole::MenuContactList, NULL,
+    "" },
+  { "/group", &CLicqConsole::MenuGroup, NULL,
+    "Prints the group list or changes to the given group number." },
+  { "/user", &CLicqConsole::MenuUser, &CLicqConsole::TabUser,
+    "User commands deal with indiviual users." },
+  { "/status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus,
+    "Set your status, prefix with \"*\" for invisible mode." },
+  { "/set", &CLicqConsole::MenuSet, &CLicqConsole::TabSet,
+    "Allows the setting and viewing of options.  With no arguments\n"
+    "will print all current set'able values.  With one argument will\n"
+    "print the value of the given argument.\n"
+    "A boolean value can be yes/true/on or no/false/off.\n"
+    "Color values can be red/blue/green/magenta/white/yellow or\n"
+    "bright_<color> for bright colors." },
+  { "/plugins", &CLicqConsole::MenuPlugins, NULL,
+    "List the currently loaded plugins." },
+  { "/help", &CLicqConsole::MenuHelp, NULL,
+    "This help screen, can also be passed a command for detailed\n"
+    "information about it." },
+  { "/quit", &CLicqConsole::MenuQuit, NULL,
+    "Quit Licq." }
 };
 
 const unsigned short NUM_USER_COMMANDS = 4;
@@ -29,44 +43,31 @@ const struct SUserCommand aUserCommands[NUM_USER_COMMANDS] =
 /*---------------------------------------------------------------------------
  * CLicqConsole::MenuHelp
  *-------------------------------------------------------------------------*/
-void CLicqConsole::MenuHelp(char *)
+void CLicqConsole::MenuHelp(char *_szArg)
 {
-  PrintBoxTop("Menu", COLOR_WHITE, 40);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/c%Z%s", A_BOLD, A_BOLD, "ontacts");
-  PrintBoxRight(40);
+  if (_szArg == NULL)
+  {
+    PrintHelp();
+    return;
+  }
 
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/g%Zroup [%A#%Z%s", A_BOLD, A_BOLD, A_BOLD, A_BOLD, "]");
-  PrintBoxRight(40);
+  // Print help on a specific topic
+  unsigned short i;
+  for (i = 0; i < NUM_COMMANDS; i++)
+  {
+    if (strncasecmp(_szArg, &aCommands[i].szName[1], strlen(_szArg)) == 0)
+      break;
+  }
+  if (i == NUM_COMMANDS)
+  {
+    PrintBadInput(_szArg);
+    return;
+  }
+  winMain->wprintf("Help on %s:\n%s\n", aCommands[i].szName,
+                   aCommands[i].szHelp);
 
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" [%A/u%Zser] %A<alias>%Z %Ai%Znfo|%Av%Ziew|%Am%Zessage|%Au%Zrl",
-                   A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD,
-                   A_BOLD, A_BOLD, A_BOLD, A_BOLD, A_BOLD);
-  PrintBoxRight(40);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/s%Z%s", A_BOLD, A_BOLD, "tatus");
-  PrintBoxRight(40);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/h%Z%s", A_BOLD, A_BOLD, "elp");
-  PrintBoxRight(40);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %A/q%Z%s", A_BOLD, A_BOLD, "uit");
-  PrintBoxRight(40);
-
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %AF(1-%d)%Z to change between consoles", A_BOLD, MAX_CON,
-                   A_BOLD);
-  PrintBoxRight(40);
-  waddch(winMain->Win(), ACS_VLINE);
-  winMain->wprintf(" %AF%d%Z to see the log", A_BOLD, MAX_CON + 1, A_BOLD);
-  PrintBoxRight(40);
-  PrintBoxBottom(40);
 }
+
 
 
 /*---------------------------------------------------------------------------
@@ -146,7 +147,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
   if (_szArg[0] == '*')
   {
     bInvisible = true;
-    _szArg++;
+    //_szArg++;
   }
   // Find the status
   for (i = 0; i < NUM_STATUS; i++)
@@ -196,6 +197,8 @@ void CLicqConsole::MenuStatus(char *_szArg)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuContactList(char *)
 {
+  PrintUsers();
+/*
   static char szStatusStr[32];
   unsigned short i = 0, j;
 
@@ -264,7 +267,7 @@ void CLicqConsole::MenuContactList(char *)
   FOR_EACH_USER_END
 
   PrintBoxBottom(40);
-
+*/
 }
 
 
@@ -343,7 +346,7 @@ void CLicqConsole::MenuUser(char *_szArg)
 
 
 /*---------------------------------------------------------------------------
- * CLicqConsole::MenuUser
+ * CLicqConsole::MenuSet
  *-------------------------------------------------------------------------*/
 void CLicqConsole::MenuSet(char *_szArg)
 {
@@ -414,7 +417,13 @@ void CLicqConsole::MenuSet(char *_szArg)
     break;
 
   case STRING:
-    strcpy(*(char **)aVariables[nVariable].pData, szValue);
+    if (szValue[0] != '"' || szValue[strlen(szValue) - 1] != '"')
+    {
+      winMain->wprintf("%CString values must be enclosed by double quotes (\").\n", COLOR_RED);
+      return;
+    }
+    szValue[strlen(szValue) - 1] = '\0';
+    strcpy((char *)aVariables[nVariable].pData, &szValue[1]);
     break;
 
   case INT:
