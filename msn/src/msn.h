@@ -139,4 +139,6 @@ private:
        *m_szCookie;
 };
 
+extern CSocketManager gSocketMan;
+
 #endif // __MSN_H
