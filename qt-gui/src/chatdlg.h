@@ -5,15 +5,10 @@
 #include "config.h"
 #endif
 
-#include <qpushbutton.h>
-#include <qgroupbox.h>
-#include <qmenubar.h>
-#include <qpopupmenu.h>
-#include <qsocketnotifier.h>
 #include <qcolor.h>
 #include <qfont.h>
-#include <qlistbox.h>
 #include <qmultilineedit.h>
+#include <qsocketnotifier.h>
 
 #include <deque.h>
 
@@ -22,6 +17,13 @@
 #include "icq-defines.h"
 #include "buffer.h"
 #include "icqpacket.h"
+
+class QLabel;
+class QListBox;
+class QMenuBar;
+class QPopupMenu;
+class QGroupBox;
+class QPushButton;
 
 class CICQDaemon;
 
@@ -99,10 +101,9 @@ protected:
   bool ConnectToChat(CChatClient &);
   CChatUser *FindChatUser(int sd);
 
-  void resizeEvent (QResizeEvent *);
-
   CChatWindow *mlePaneLocal, *mlePaneRemote, *mleIRCRemote, *mleIRCLocal;
-  QGroupBox *boxLocal, *boxRemote, *boxPane, *boxIRC;
+  QGroupBox *boxPane, *boxIRC;
+  QLabel *lblLocal, *lblRemote;
   QPushButton *btnClose;
   QMenuBar *mnuChat;
   QPopupMenu *mnuMode, *mnuStyle;

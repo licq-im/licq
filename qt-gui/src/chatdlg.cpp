@@ -7,6 +7,14 @@
 #include <ctype.h>
 #include <qlayout.h>
 #include <stdlib.h>
+#include <qlistbox.h>
+#include <qlabel.h>
+#include <qsocketnotifier.h>
+#include <qpushbutton.h>
+#include <qgroupbox.h>
+#include <qmenubar.h>
+#include <qpopupmenu.h>
+
 
 #include "chatdlg.h"
 #include "icqpacket.h"
@@ -43,21 +51,26 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   // Panel mode setup
   boxPane = new QGroupBox(this);
-  QGridLayout *play = new QGridLayout(boxPane, 2, 1, 10, 5);
+  QGridLayout *play = new QGridLayout(boxPane, 5, 1, 10, 5);
 
-  boxRemote = new QGroupBox(1, Horizontal, tr("Remote - Not connected"), boxPane);
-  mlePaneRemote = new CChatWindow(boxRemote);
+  lblRemote = new QLabel(tr("Remote - Not connected"), boxPane);
+  mlePaneRemote = new CChatWindow(boxPane);
   mlePaneRemote->setMinimumHeight(100);
   mlePaneRemote->setMinimumWidth(150);
   mlePaneRemote->setReadOnly(true);
-  play->addWidget(boxRemote, 0, 0);
+  play->addWidget(lblRemote, 0, 0);
+  play->addWidget(mlePaneRemote, 1, 0);
+  play->setRowStretch(1, 1);
+  play->addRowSpacing(2, 15);
 
-  boxLocal = new QGroupBox(1, Horizontal, tr("Local - %1").arg(chatname), boxPane);
-  mlePaneLocal = new CChatWindow(boxLocal);
+  lblLocal = new QLabel(tr("Local - %1").arg(chatname), boxPane);
+  mlePaneLocal = new CChatWindow(boxPane);
   mlePaneLocal->setMinimumHeight(100);
   mlePaneLocal->setMinimumWidth(150);
   mlePaneLocal->setEnabled(false);
-  play->addWidget(boxLocal, 1, 0);
+  play->addWidget(lblLocal, 3, 0);
+  play->addWidget(mlePaneLocal, 4, 0);
+  play->setRowStretch(4, 1);
 
   // IRC mode setup
   boxIRC = new QGroupBox(this);
@@ -90,6 +103,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   connect(btnClose, SIGNAL(clicked()), this, SLOT(hide()));
 
   QGridLayout *g = new QGridLayout(this, 2, 1, 10, 5);
+  g->setMenuBar(mnuChat);
   g->addWidget(boxPane, 0, 0);
   g->addWidget(boxIRC, 0, 0);
   g->addWidget(btnClose, 1, 0);
@@ -117,7 +131,7 @@ bool ChatDlg::StartAsServer()
 {
   if (!StartChatServer()) return false;
 
-  boxRemote->setTitle(tr("Remote - Waiting for joiners..."));
+  lblRemote->setText(tr("Remote - Waiting for joiners..."));
   gLog.Info("%sChat: Waiting for joiners.\n", L_TCPxSTR);
 
   return true;
@@ -216,7 +230,7 @@ void ChatDlg::StateServer(int sd)
       u->client.m_nSession = m_nSession;
       lstUsers->insertItem(u->chatname);
       if (u == chatUser)
-        boxRemote->setTitle(tr("Remote - %1").arg(u->chatname));
+        lblRemote->setText(tr("Remote - %1").arg(u->chatname));
 
       // set up the remote colors
       u->colorFore = QColor (pin.ColorForeRed(), pin.ColorForeGreen(), pin.ColorForeBlue());
@@ -387,7 +401,7 @@ void ChatDlg::StateClient(int sd)
       u->chatname = QString::fromLocal8Bit(pin.Name());
       lstUsers->insertItem(u->chatname);
       if (u == chatUser)
-        boxRemote->setTitle(tr("Remote - %1").arg(u->chatname));
+        lblRemote->setText(tr("Remote - %1").arg(u->chatname));
 
       // set up the remote colors
       u->colorFore = QColor (pin.ColorForeRed(), pin.ColorForeGreen(), pin.ColorForeBlue());
@@ -821,18 +835,6 @@ void ChatDlg::hide()
   delete this;
 }
 
-
-//-----ChatDlg::resizeEvent------------------------------------------------------------------------
-void ChatDlg::resizeEvent (QResizeEvent *)
-{
-/*
-  boxPane->setGeometry(10, mnuChat->height() + 10, width() - 20, height() - 90);
-  boxIRC->setGeometry(10, mnuChat->height() + 10, width() - 20, height() - 90);
-
-  btnClose->setGeometry((width() / 2) - (btnClose->sizeHint().width()/2), height() - 40,
-                        btnClose->sizeHint().width(), btnClose->sizeHint().height());
-  mlePaneRemote->repaint();*/
-}
 
 
 //=====CChatWindow===========================================================
