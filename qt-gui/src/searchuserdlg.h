@@ -80,7 +80,7 @@ protected:
      *edtCity, *edtState, *edtCoName, *edtCoDept, *edtCoPos;
    QComboBox *cmbAge, *cmbCountry, *cmbGender, *cmbLanguage;
    
-   QWidget *alias_tab, *email_tab, *uin_tab, *keyword_tab;
+   QWidget *whitepages_tab, *uin_tab;
    QCheckBox *chkOnlineOnly;
 
    unsigned long searchTag;

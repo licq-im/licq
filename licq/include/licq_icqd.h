@@ -164,9 +164,6 @@ public:
   unsigned long icqSetStatus(unsigned short newStatus);
   unsigned long icqSetRandomChatGroup(unsigned long nGroup);
   unsigned long icqRandomChatSearch(unsigned long nGroup);
-  unsigned long icqSearchByInfo(const char *, const char *, const char *, const char *);
-  unsigned long icqSearchByKeyword(const char *);
-  unsigned long icqSearchByUin(unsigned long);
   unsigned long icqSearchWhitePages(const char *szFirstName,
                             const char *szLastName, const char *szAlias,
                             const char *szEmail, unsigned short nMinAge,
@@ -174,7 +171,9 @@ public:
                             char nLanguage, const char *szCity,
                             const char *szState, unsigned short nCountryCode,
                             const char *szCoName, const char *szCoDept,
-                            const char *szCoPos, bool bOnlineOnly);
+                            const char *szCoPos, const char *szKeyword,
+			    bool bOnlineOnly);
+  unsigned long icqSearchByUin(unsigned long);
 
   void icqLogoff();
   void icqRelogon(bool bChangeServer = false);

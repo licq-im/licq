@@ -10,7 +10,7 @@ class CICQColor;
 
 
 unsigned short ReversePort(unsigned short p);
-
+unsigned short LengthField(const char *szField);
 
 //=====Packet===================================================================
 
@@ -373,39 +373,6 @@ protected:
 };
 
 
-//-----SearchByInfo--------------------------------------------------------------
-class CPU_SearchByInfo : public CPU_CommonFamily
-{
-public:
-   CPU_SearchByInfo(const char *_sAlias, const char *_sFirstName,
-                    const char *_sLastName, const char *_sEmail);
-   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
-   unsigned long Uin()  { return 0; }
-protected:
-   unsigned long m_nMetaCommand;
-};
-
-//-----SearchByKeyword----------------------------------------------------------
-class CPU_SearchByKeyword : public CPU_CommonFamily
-{
-public:
-   CPU_SearchByKeyword(const char *_szKeyword);
-   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
-protected:
-   unsigned long m_nMetaCommand;
-};
-
-//-----SearchByUin--------------------------------------------------------------
-class CPU_SearchByUin : public CPU_CommonFamily
-{
-public:
-   CPU_SearchByUin(unsigned long nUin);
-   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
-protected:
-   unsigned long m_nMetaCommand;
-};
-
-
 //-----SearchWhitePages---------------------------------------------------------
 class CPU_SearchWhitePages : public CPU_CommonFamily
 {
@@ -416,9 +383,21 @@ public:
                    char nGender, char nLanguage, const char *szCity,
                    const char *szState, unsigned short nCountryCode,
                    const char *szCoName, const char *szCoDept,
-                   const char *szCoPos, bool bOnlineOnly);
+                   const char *szCoPos, const char *szKeyword, bool bOnlineOnly);
    virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
    unsigned long Uin()  { return 0; }
+   void PackSearch(unsigned short nCmd, const char *szField);
+protected:
+   unsigned long m_nMetaCommand;
+};
+
+
+//-----SearchByUin--------------------------------------------------------------
+class CPU_SearchByUin : public CPU_CommonFamily
+{
+public:
+   CPU_SearchByUin(unsigned long nUin);
+   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
 protected:
    unsigned long m_nMetaCommand;
 };

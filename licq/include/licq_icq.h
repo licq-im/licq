@@ -227,6 +227,32 @@ const unsigned short ICQ_CMDxMETA_SEARCHxWP           = 0x0533; // 1331
 const unsigned short ICQ_CMDxMETA_SEARCHxWPxFOUND     = 0x01A4; // 388
 const unsigned short ICQ_CMDxMETA_SEARCHxWPxLAST_USER = 0x01AE; // 430
 
+// Whitepages Search Commands (BE)
+// used for identifie the field of search after code 0x5F05
+// By SC UIN 27434326 caligore@bigfoot.com
+// step by 0x0a01 why?
+const unsigned short ICQ_CMDxWPxFNAME		= 0x4001;
+const unsigned short ICQ_CMDxWPxLNAME		= 0x4A01;
+const unsigned short ICQ_CMDxWPxALIAS		= 0x5401;
+const unsigned short ICQ_CMDxWPxEMAIL		= 0x5E01;
+const unsigned short ICQ_CMDxWPxAGE		= 0x6801;
+const unsigned short ICQ_CMDxWPxGENDER		= 0x7C01;
+const unsigned short ICQ_CMDxWPxLANGUAGE	= 0x8601;
+const unsigned short ICQ_CMDxWPxCITY		= 0x9001;
+const unsigned short ICQ_CMDxWPxSTATE		= 0x9A01;
+const unsigned short ICQ_CMDxWPxCOUNTRY		= 0xA401;
+const unsigned short ICQ_CMDxWPxCOMPANY		= 0xAE01;
+const unsigned short ICQ_CMDxWPxCODEPT		= 0xB801;
+const unsigned short ICQ_CMDxWPxCOPOS		= 0xC201;
+const unsigned short ICQ_CMDxWPxOCCUP		= 0xCC01;
+const unsigned short ICQ_CMDxWPxPASTAFF		= 0xD601;
+const unsigned short ICQ_CMDxWPxORGANIZ		= 0xFE01;
+const unsigned short ICQ_CMDxWPxINTEREST	= 0xEA01;
+
+const unsigned short ICQ_CMDxWPxKEYWORD		= 0x2602;
+const unsigned short ICQ_CMDxWPxONLINE		= 0x3002;
+
+
 const unsigned short META_SUCCESS = 0x0A;
 const unsigned short META_FAILURE = 0x32;
 // const unsigned short META_DONE    =

@@ -57,6 +57,7 @@ SearchUserView::SearchUserView(QWidget *parent)
   addColumn(tr("Name"), 120);
   addColumn(tr("Email"), 120);
   addColumn(tr("Status"), 70);
+  addColumn(tr("Sex & Age"),70);
 
   setAllColumnsShowFocus (true);
   setMinimumHeight(150);
@@ -71,6 +72,9 @@ SearchUserView::SearchUserView(QWidget *parent)
 SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
 {
   char szStatus[8];
+  char cGender;
+  QString qsAge;
+  
   uinVal = s->Uin();
   setText(0, QString::fromLocal8Bit(s->Alias()));
   setText(1, QString::number(s->Uin()));
@@ -90,6 +94,20 @@ SearchItem::SearchItem(CSearchAck *s, QListView *parent) : QListViewItem(parent)
       strcpy(szStatus, "Unknown");
   }
   setText(4, QString::fromLocal8Bit(szStatus));
+  
+  switch (s->Gender())
+  {
+    case 1:
+      cGender = 'F';
+      break;
+    case 2:
+      cGender = 'M';
+      break;
+    default:			// unknown
+      cGender = '-';
+  }
+  qsAge = (s->Age()) ? QString::number(s->Age()) : QString(QChar('-'));
+  setText(5, QString::fromLocal8Bit(QString(QChar(cGender)) + '/' + qsAge));
 }
 
 
@@ -117,25 +135,25 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   search_tab = new QTabWidget(this);
 
   //-- first tab: search by Alias/name
-  alias_tab = new QWidget(this);
-  QGridLayout* grid_lay = new QGridLayout(alias_tab, 15, 7, 10, 5);
+  whitepages_tab = new QWidget(this);
+  QGridLayout* grid_lay = new QGridLayout(whitepages_tab, 17, 7, 10, 5);
   grid_lay->addColSpacing(0, 10);
   grid_lay->addColSpacing(2, 10);
   grid_lay->addColSpacing(4, 10);
 
   unsigned short CR = 0;
 
-  grid_lay->addWidget(new QLabel(tr("Alias:"), alias_tab), ++CR, 1);
-  edtNick = new QLineEdit(alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Alias:"), whitepages_tab), ++CR, 1);
+  edtNick = new QLineEdit(whitepages_tab);
   grid_lay->addWidget(edtNick, CR, 3);
-  grid_lay->addWidget(new QLabel(tr("First Name:"), alias_tab), ++CR, 1);
-  edtFirst = new QLineEdit(alias_tab);
+  grid_lay->addWidget(new QLabel(tr("First Name:"), whitepages_tab), ++CR, 1);
+  edtFirst = new QLineEdit(whitepages_tab);
   grid_lay->addWidget(edtFirst, CR, 3);
-  grid_lay->addWidget(new QLabel(tr("Last Name:"), alias_tab), ++CR, 1);
-  edtLast = new QLineEdit(alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Last Name:"), whitepages_tab), ++CR, 1);
+  edtLast = new QLineEdit(whitepages_tab);
   grid_lay->addWidget(edtLast, CR, 3);
-  grid_lay->addWidget(new QLabel(tr("Age Range:"), alias_tab), ++CR, 1);
-  cmbAge = new QComboBox(false, alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Age Range:"), whitepages_tab), ++CR, 1);
+  cmbAge = new QComboBox(false, whitepages_tab);
   cmbAge->insertItem(tr("Unspecified"), 0);
   cmbAge->insertItem(tr("18 - 22"), 1);
   cmbAge->insertItem(tr("23 - 29"), 2);
@@ -145,16 +163,16 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
   cmbAge->insertItem(tr("69+"), 6);
   cmbAge->setFixedWidth(cmbAge->sizeHint().width());
   grid_lay->addWidget(cmbAge, CR, 3);
-  grid_lay->addWidget(new QLabel(tr("Gender:"), alias_tab), ++CR, 1);
-  cmbGender = new QComboBox(false, alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Gender:"), whitepages_tab), ++CR, 1);
+  cmbGender = new QComboBox(false, whitepages_tab);
   cmbGender->insertItem(tr("Unspecified"), GENDER_UNSPECIFIED);
   cmbGender->insertItem(tr("Female"), GENDER_FEMALE);
   cmbGender->insertItem(tr("Male"), GENDER_MALE);
   cmbGender->setFixedWidth(cmbGender->sizeHint().width());
   grid_lay->addWidget(cmbGender, CR, 3);
 
-  grid_lay->addWidget(new QLabel(tr("Language:"), alias_tab), ++CR, 1);
-  cmbLanguage = new QComboBox(false, alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Language:"), whitepages_tab), ++CR, 1);
+  cmbLanguage = new QComboBox(false, whitepages_tab);
   cmbLanguage->setFixedWidth(cmbGender->sizeHint().width());
   for (unsigned short i = 0; i < NUM_LANGUAGES; i++)
     cmbLanguage->insertItem(gLanguages[i].szName);
@@ -162,81 +180,67 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan,
 
   CR = 0;
 
-  grid_lay->addWidget(new QLabel(tr("City:"), alias_tab), ++CR, 5);
-  edtCity = new QLineEdit(alias_tab);
+  grid_lay->addWidget(new QLabel(tr("City:"), whitepages_tab), ++CR, 5);
+  edtCity = new QLineEdit(whitepages_tab);
   grid_lay->addWidget(edtCity, CR, 7);
-  grid_lay->addWidget(new QLabel(tr("State:"), alias_tab), ++CR, 5);
-  edtState = new QLineEdit(alias_tab);
+  grid_lay->addWidget(new QLabel(tr("State:"), whitepages_tab), ++CR, 5);
+  edtState = new QLineEdit(whitepages_tab);
   grid_lay->addWidget(edtState, CR, 7);
 
-  grid_lay->addWidget(new QLabel(tr("Country:"), alias_tab), ++CR, 5);
-  cmbCountry = new QComboBox(false, alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Country:"), whitepages_tab), ++CR, 5);
+  cmbCountry = new QComboBox(false, whitepages_tab);
   cmbCountry->setFixedWidth(cmbGender->sizeHint().width());
   for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
     cmbCountry->insertItem(gCountries[i].szName);
   grid_lay->addWidget(cmbCountry, CR, 7);
 
-  grid_lay->addWidget(new QLabel(tr("Company Name:"), alias_tab), ++CR, 5);
-  edtCoName = new QLineEdit(alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Company Name:"), whitepages_tab), ++CR, 5);
+  edtCoName = new QLineEdit(whitepages_tab);
   grid_lay->addWidget(edtCoName, CR, 7);
-  grid_lay->addWidget(new QLabel(tr("Company Department:"), alias_tab), ++CR, 5);
-  edtCoDept = new QLineEdit(alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Company Department:"), whitepages_tab), ++CR, 5);
+  edtCoDept = new QLineEdit(whitepages_tab);
   grid_lay->addWidget(edtCoDept, CR, 7);
-  grid_lay->addWidget(new QLabel(tr("Company Position:"), alias_tab), ++CR, 5);
-  edtCoPos = new QLineEdit(alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Company Position:"), whitepages_tab), ++CR, 5);
+  edtCoPos = new QLineEdit(whitepages_tab);
   grid_lay->addWidget(edtCoPos, CR, 7);
 
+  grid_lay->addWidget(new QLabel(tr("Email Address:"), whitepages_tab), ++CR, 1);
+  edtEmail = new QLineEdit(whitepages_tab);
+  grid_lay->addMultiCellWidget(edtEmail, CR, CR, 3, 7);
   CR++;
-  chkOnlineOnly = new QCheckBox(tr("Return Online Users Only"), alias_tab);
+  grid_lay->addWidget(new QLabel(tr("Keyword:"), whitepages_tab), ++CR, 1);
+  edtKeyword = new QLineEdit(whitepages_tab);
+  grid_lay->addMultiCellWidget(edtKeyword, CR, CR, 3, 7);
+  CR++;
+  
+  chkOnlineOnly = new QCheckBox(tr("Return Online Users Only"), whitepages_tab);
   grid_lay->addMultiCellWidget(chkOnlineOnly, CR, CR, 1, 7);
 
-  search_tab->addTab(alias_tab, tr("&Whitepages"));
+  search_tab->addTab(whitepages_tab, tr("&Whitepages"));
 
-  //-- second tab: search by email
-
-  email_tab  = new QWidget(this);
-  QBoxLayout* lay2 = new QHBoxLayout(email_tab, 10);
-  lay2->addWidget(new QLabel(tr("Email Address:"), email_tab));
-  edtEmail = new QLineEdit(email_tab);
-  lay2->addWidget(edtEmail);
-
-  search_tab->addTab(email_tab, tr("&Email"));
-
-  //-- third tab: search by UIN
-  
   uin_tab = new QWidget(this);
-  lay2 = new QHBoxLayout(uin_tab, 10);
-  lay2->addWidget(new QLabel(tr("UIN#:"), uin_tab));
+  QBoxLayout *misc_lay = new QHBoxLayout(uin_tab, 10);
+  misc_lay->addWidget(new QLabel(tr("UIN#:"), uin_tab));
   edtUin = new QLineEdit(uin_tab);
   edtUin->setValidator(new QIntValidator(10000,2000000000, this));
-  lay2->addWidget(edtUin);
+  misc_lay->addWidget(edtUin);
 
   search_tab->addTab(uin_tab, tr("&Uin#"));
 
-  //-- 4 tab: search by keyword
-
-  keyword_tab  = new QWidget(this);
-  lay2 = new QHBoxLayout(keyword_tab, 10);
-  lay2->addWidget(new QLabel(tr("Keyword:"), keyword_tab));
-  edtKeyword = new QLineEdit(keyword_tab);
-  lay2->addWidget(edtKeyword);
-
-  search_tab->addTab(keyword_tab, tr("&Keyword"));
-  
   lay->addWidget(search_tab, 1);
-  lay2 = new QVBoxLayout(lay, 10);
-  lay2->addStretch(1);
+  misc_lay = new QVBoxLayout(lay, 10);
+  misc_lay->addStretch(1);
   btnSearch = new QPushButton(tr("&Search"), this);
   btnSearch->setDefault(true);
-  lay2->addWidget(btnSearch);
+  misc_lay->addWidget(btnSearch);
 
   btnReset = new QPushButton(tr("Reset Search"), this);
   btnReset->setEnabled(false);
   btnReset->setFixedSize(btnReset->sizeHint());
-  lay2->addWidget(btnReset);
+  misc_lay->addWidget(btnReset);
 
   btnDone = new QPushButton(tr("&Done"), this);
-  lay2->addWidget(btnDone);
+  misc_lay->addWidget(btnDone);
 
   connect (btnReset, SIGNAL(clicked()), this, SLOT(resetSearch()));
   connect (btnSearch, SIGNAL(clicked()), this, SLOT(startSearch()));
@@ -286,14 +290,25 @@ void SearchUserDlg::startSearch()
   unsigned short maxs[7] = {0, 22, 29, 39, 49, 59, 120};
 
   foundView->clear();
-  /* FIXME
+  
   edtNick->setEnabled(false);
   edtFirst->setEnabled(false);
   edtLast->setEnabled(false);
-  */
+  cmbAge->setEnabled(false);
+  cmbGender->setEnabled(false);
+  cmbLanguage->setEnabled(false);
+  edtCity->setEnabled(false);
+  edtState->setEnabled(false);
+  cmbCountry->setEnabled(false);
+  edtCoName->setEnabled(false);
+  edtCoDept->setEnabled(false);
+  edtCoPos->setEnabled(false);
   edtEmail->setEnabled(false);
   edtKeyword->setEnabled(false);
+  chkOnlineOnly->setEnabled(false);
+  
   edtUin->setEnabled(false);
+  
   btnSearch->setEnabled(false);
   btnReset->setEnabled(true);
   btnReset->setText(tr("Cancel"));
@@ -304,27 +319,13 @@ void SearchUserDlg::startSearch()
   {
     searchTag = server->icqSearchByUin(edtUin->text().toULong());
   }
-  else if (search_tab->currentPage() == email_tab)
-  {
-    searchTag = server->icqSearchWhitePages(
-     edtFirst->text().local8Bit().data(),
-     edtLast->text().local8Bit().data(),
-     edtNick->text().local8Bit().data(),
-     edtEmail->text().local8Bit().data(),
-     0, 0, GENDER_UNSPECIFIED, LANGUAGE_UNSPECIFIED,
-     "", "", COUNTRY_UNSPECIFIED, "", "", "", false);
-  } else if (search_tab->currentPage() == keyword_tab)
-  {
-    searchTag = server->icqSearchByKeyword(
-     edtKeyword->text().local8Bit().data());
-  }
   else
   {
      searchTag = server->icqSearchWhitePages(
      edtFirst->text().local8Bit().data(),
      edtLast->text().local8Bit().data(),
      edtNick->text().local8Bit().data(),
-     "",
+     edtEmail->text().local8Bit().data(),
      mins[cmbAge->currentItem()],
      maxs[cmbAge->currentItem()],
      cmbGender->currentItem(),
@@ -334,7 +335,9 @@ void SearchUserDlg::startSearch()
      GetCountryByIndex(cmbCountry->currentItem())->nCode,
      edtCoName->text().local8Bit().data(),
      edtCoDept->text().local8Bit().data(),
-     edtCoPos->text().local8Bit().data(), chkOnlineOnly->isChecked());
+     edtCoPos->text().local8Bit().data(),
+     edtKeyword->text().local8Bit().data(),
+     chkOnlineOnly->isChecked());
   }
   lblSearch->setText(tr("Searching (this can take awhile)..."));
 }
@@ -348,23 +351,46 @@ void SearchUserDlg::resetSearch()
   }
   else
   {
+    edtNick->clear();
+    edtFirst->clear();
+    edtLast->clear();
+    cmbAge->setCurrentItem(0);
+    cmbGender->setCurrentItem(0);
+    cmbLanguage->setCurrentItem(0);
+    edtCity->clear();
+    edtState->clear();
+    cmbCountry->setCurrentItem(0);
+    edtCoName->clear();
+    edtCoDept->clear();
+    edtCoPos->clear();
     edtEmail->clear();
     edtKeyword->clear();
-    edtLast->clear();
-    edtFirst->clear();
-    edtNick->clear();
+    chkOnlineOnly->setChecked(false);
+
     edtUin->clear();
+
     foundView->clear();
     btnReset->setEnabled(false);
   }
-  btnSearch->setEnabled(true);
-  btnDone->setEnabled(true);
   edtNick->setEnabled(true);
   edtFirst->setEnabled(true);
   edtLast->setEnabled(true);
+  cmbAge->setEnabled(true);
+  cmbGender->setEnabled(true);
+  cmbLanguage->setEnabled(true);
+  edtCity->setEnabled(true);
+  edtState->setEnabled(true);
+  cmbCountry->setEnabled(true);
+  edtCoName->setEnabled(true);
+  edtCoDept->setEnabled(true);
+  edtCoPos->setEnabled(true);
   edtEmail->setEnabled(true);
   edtKeyword->setEnabled(true);
+  chkOnlineOnly->setEnabled(true);
+
   edtUin->setEnabled(true);
+
+  btnDone->setEnabled(true);
   btnSearch->setEnabled(true);
   btnAdd->setEnabled(false);
   lblSearch->setText(tr("Enter search parameters and select 'Search'"));
@@ -375,14 +401,26 @@ void SearchUserDlg::searchResult(ICQEvent *e)
 {
   if (!e->Equals(searchTag)) return;
 
-  btnSearch->setEnabled(true);
-  btnDone->setEnabled(true);
   edtNick->setEnabled(true);
   edtFirst->setEnabled(true);
   edtLast->setEnabled(true);
+  cmbAge->setEnabled(true);
+  cmbGender->setEnabled(true);
+  cmbLanguage->setEnabled(true);
+  edtCity->setEnabled(true);
+  edtState->setEnabled(true);
+  cmbCountry->setEnabled(true);
+  edtCoName->setEnabled(true);
+  edtCoDept->setEnabled(true);
+  edtCoPos->setEnabled(true);
   edtEmail->setEnabled(true);
   edtKeyword->setEnabled(true);
+  chkOnlineOnly->setEnabled(true);
+
   edtUin->setEnabled(true);
+
+  btnSearch->setEnabled(true);
+  btnDone->setEnabled(true);
 
   if (e->SearchAck() != NULL && e->SearchAck()->Uin() != 0)
     searchFound(e->SearchAck());

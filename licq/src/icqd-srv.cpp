@@ -418,6 +418,27 @@ unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool
     return e->EventId();
 }
 
+//-----icqSearchWhitePages--------------------------------------------------
+unsigned long CICQDaemon::icqSearchWhitePages(const char *szFirstName,
+    const char *szLastName, const char *szAlias, const char *szEmail,
+    unsigned short nMinAge, unsigned short nMaxAge, char nGender,
+    char nLanguage, const char *szCity, const char *szState,
+    unsigned short nCountryCode, const char *szCoName, const char *szCoDept,
+    const char *szCoPos, const char *szKeyword, bool bOnlineOnly)
+{
+  // Yes, there are a lot of extra options that you can search by.. but I
+  // don't see a point for the hundreds of items that I can add..  just
+  // use their web page for that shit - Jon
+  CPU_SearchWhitePages *p = new CPU_SearchWhitePages(szFirstName, szLastName,
+    szAlias, szEmail, nMinAge, nMaxAge, nGender, nLanguage, szCity, szState,
+    nCountryCode, szCoName, szCoDept, szCoPos, szKeyword, bOnlineOnly);
+  gLog.Info("%sStarting white pages search (#%ld/#%d)...\n", L_SRVxSTR,
+            p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
 //-----icqSearchByUin----------------------------------------------------------
 unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
 {
@@ -427,50 +448,6 @@ unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
    ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
    PushExtendedEvent(e);
    return e->EventId();
-}
-
-//-----icqSearchByInfo---------------------------------------------------------
-unsigned long CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
-                                          const char *last, const char *email)
-{
-  CPU_SearchByInfo *p = new CPU_SearchByInfo(nick, first, last, email);
-  gLog.Info("%sStarting search by info for user (#%ld/#%d)...\n", L_SRVxSTR,
-            p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  PushExtendedEvent(e);
-  return e->EventId();
-}
-
-//-----icqSearchByKeyword------------------------------------------------------
-unsigned long CICQDaemon::icqSearchByKeyword(const char *szKeyword)
-{
-  CPU_SearchByKeyword *p = new CPU_SearchByKeyword(szKeyword);
-  gLog.Info("%sStarting search by keyword for user (#%ld/#%d)...\n", L_SRVxSTR,
-            p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  PushExtendedEvent(e);
-  return e->EventId();
-}
-
-//-----icqSearchWhitePages--------------------------------------------------
-unsigned long CICQDaemon::icqSearchWhitePages(const char *szFirstName,
-    const char *szLastName, const char *szAlias, const char *szEmail,
-    unsigned short nMinAge, unsigned short nMaxAge, char nGender,
-    char nLanguage, const char *szCity, const char *szState,
-    unsigned short nCountryCode, const char *szCoName, const char *szCoDept,
-    const char *szCoPos, bool bOnlineOnly)
-{
-  // Yes, there are a lot of extra options that you can search by.. but I
-  // don't see a point for the hundreds of items that I can add..  just
-  // use their web page for that shit - Jon
-  CPU_SearchWhitePages *p = new CPU_SearchWhitePages(szFirstName, szLastName,
-    szAlias, szEmail, nMinAge, nMaxAge, nGender, nLanguage, szCity, szState,
-    nCountryCode, szCoName, szCoDept, szCoPos, bOnlineOnly);
-  gLog.Info("%sStarting white pages search (#%ld/#%d)...\n", L_SRVxSTR,
-            p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  PushExtendedEvent(e);
-  return e->EventId();
 }
 
 //-----icqGetUserBasicInfo------------------------------------------------------
@@ -2627,12 +2604,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	msg.UnpackChar(); // authorization required
 	s->m_nStatus = msg.UnpackChar();
 	msg.UnpackChar(); // unknown
-	
-	if (e->SubCommand() == 0x5F05) {
-	  msg.UnpackChar(); // gender
-	  msg.UnpackChar(); // age
-	  msg.UnpackChar(); // unknown
-	}
+	s->m_nGender = msg.UnpackChar(); // gender
+	s->m_nAge = msg.UnpackChar(); // age
+	msg.UnpackChar(); // unknown
 
       	// translating string with Translation Table
       	gTranslator.ServerToClient(s->m_szAlias);
