@@ -566,7 +566,7 @@ void CLicqConsole::PrintInfo_More(unsigned long nUin)
     winMain->wprintf("%C%AAge: %Z%d\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetAge());
   winMain->wprintf("%C%AGender: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetGender() == GENDER_MALE ? "Male" : u->GetGender() == GENDER_FEMALE ? "Female" : "Unspecified");
   winMain->wprintf("%C%AHomepage: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetHomepage());
-  winMain->wprintf("%C%ABirthday: %Z%d/%d/%d\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetBirthDay(), u->GetBirthMonth(), u->GetBirthYear() + 1900);
+  winMain->wprintf("%C%ABirthday: %Z%d/%d/%d\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetBirthDay(), u->GetBirthMonth(), u->GetBirthYear());
   for (unsigned short i = 0; i < 3; i++)
   {
     winMain->wprintf("%C%ALanguage %d: ", COLOR_WHITE, A_BOLD, i + 1);
@@ -607,7 +607,7 @@ void CLicqConsole::PrintInfo_Work(unsigned long nUin)
                    A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
 
   winMain->wprintf("%C%ACompany Name: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyName());
-  winMain->wprintf("%C%ACompany City: %A%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyCity());
+  winMain->wprintf("%C%ACompany City: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyCity());
   winMain->wprintf("%C%ACompany State: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyState());
   winMain->wprintf("%C%ACompany Phone Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyPhoneNumber());
   winMain->wprintf("%C%ACompany Fax Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyFaxNumber());
