@@ -1,4 +1,4 @@
-INCLUDES = -Wall -W -I$(top_srcdir)/src/inc -I$(top_srcdir)/src
+INCLUDES = -Wall -W -I$(top_srcdir)/src/inc -I$(top_srcdir)/src @SOCKS_INCDIR@
 
 noinst_LIBRARIES = liblicq-daemon.a
 liblicq_daemon_a_SOURCES = icqpacket.cpp socket.cpp icqd.cpp remoteserver.cpp \
