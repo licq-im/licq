@@ -369,7 +369,8 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
     QPoint pd(r.topLeft()+QPoint(listView()->header()->sectionPos(column), 0));
     listView()->viewport()->mapToParent(pd);
     QPoint pp(listView()->mapToParent(pd));
-    p->drawPixmap(0, 0, *pix, pp.x(), pp.y(), width, height());
+    //p->drawPixmap(0, 0, *pix, pp.x(), pp.y(), width, height());
+    p->drawTiledPixmap(0, 0, width, height(), *pix, pp.x(), pp.y());
   }
   else
     p->fillRect( 0, 0, width, height(), cg.base());
@@ -483,7 +484,8 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         QPoint pd(r.topLeft()+QPoint(listView()->header()->sectionPos(column)+5, 0));
         listView()->viewport()->mapToParent(pd);
         QPoint pp(listView()->mapToParent(pd));
-        p->drawPixmap(5, 0, *pix, pp.x(), pp.y(), p->fontMetrics().width(sz) + 6, height());
+        //p->drawPixmap(5, 0, *pix, pp.x(), pp.y(), p->fontMetrics().width(sz) + 6, height());
+        p->drawTiledPixmap(5, 0, p->fontMetrics().width(sz) + 6, height(), *pix, pp.x(), pp.y());
       }
       else
       {
@@ -526,7 +528,8 @@ void CUserView::paintEmptyArea( QPainter *p, const QRect &r )
   if (pix != NULL)
   {
     QPoint pp(mapToParent(r.topLeft()));
-    p->drawPixmap(r.x(), r.y(), *pix, pp.x(), pp.y(), r.width(), r.height());
+    //p->drawPixmap(r.x(), r.y(), *pix, pp.x(), pp.y(), r.width(), r.height());
+    p->drawTiledPixmap(r.x(), r.y(), r.width(), r.height(), *pix, pp.x(), pp.y());
   }
   else
   {
