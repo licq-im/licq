@@ -252,9 +252,9 @@ CEventChat::~CEventChat()
 
 void CEventChat::AddToHistory(ICQUser *u, direction _nDir)
 {
-  char *szOut = new char[(strlen(m_szText) << 1) + EVENT_HEADER_SIZE];
+  char *szOut = new char[(strlen(Text()) << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  AddStrWithColons(&szOut[nPos], m_szText);
+  AddStrWithColons(&szOut[nPos], Text());
   AddToHistory_Flush(u, szOut);
   delete [] szOut;
 }
