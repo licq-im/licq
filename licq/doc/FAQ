@@ -36,6 +36,7 @@ Section 3: Using
    3.10: What is, and how do I use, the licq fifo?
    3.11: What happened to the "beep" OnEvent option?
    3.12: How do I change the colors of the Qt-Gui?
+   3.13: Licq appears 5 times in my process list, what's going on?
 Section 4: Plugins
    4.1: Why do I get "undefined symbol" errors when loading a plugin?
    4.2: I get something about "undefined symbol: setmask..." when I try and
@@ -294,6 +295,14 @@ colors.gridlines = black
 
 Of course you get to select your own colors!
 
+
+
+3.13: Licq appears 5 times in my process list, what's going on?
+
+  There is really only 1 copy of Licq running, using the resources of one of
+the listed processes.  The reason you see multiple copies is that Linux
+shows threads as separate processes.  As Licq may be running 5 threads or more
+at a time, multiple process entries will appear.
 
 
 
