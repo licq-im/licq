@@ -83,7 +83,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   bool bTcpEnabled;
   unsigned short nTCPBasePort, nTCPBaseRange;
   licqConf.ReadNum("TCPServerPort", nTCPBasePort, 0);
-  licqConf.ReadNum("TCPServerPortRange", nTCPBaseRange, 0);
+  licqConf.ReadNum("TCPServerPortRange", nTCPBaseRange, 10);
   SetTCPBasePort(nTCPBasePort, nTCPBaseRange);
   licqConf.ReadBool("TCPEnabled", bTcpEnabled, true);
   SetTCPEnabled(bTcpEnabled);
