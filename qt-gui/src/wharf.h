@@ -10,46 +10,47 @@
 #include <qpopupmenu.h>
 
 #ifndef USE_KDE
-#define KPanelApplet QWidget
+#define KSystemTray QWidget
 #else
-#include <kpanelapplet.h>
+#include <ksystemtray.h>
 #endif
+
+class CMainWindow;
 
 
 class WharfIcon : public QWidget
 {
 public:
-  WharfIcon(class CMainWindow *, QPopupMenu *, QPixmap *, QWidget *parent= 0);
+  WharfIcon(QPixmap *, QWidget *parent= 0);
   virtual ~WharfIcon();
   void Set(QPixmap *);
 protected:
   virtual void mouseReleaseEvent (QMouseEvent *);
   virtual void paintEvent (QPaintEvent *);
   QPixmap *vis;
-  class CMainWindow *mainwin;
-  QPopupMenu *menu;
 friend class IconManager;
 friend class IconManager_Default;
 friend class IconManager_Themed;
 };
 
 
-class IconManager : public KPanelApplet
+class IconManager : public KSystemTray
 {
 public:
-  IconManager(QWidget *parent = 0);
+  IconManager(CMainWindow *, QPopupMenu *, QWidget *parent = 0);
   virtual ~IconManager();
   virtual void SetDockIconStatus() = 0;
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg) = 0;
 protected:
+  CMainWindow *mainwin;
+  QPopupMenu *menu;
   void X11Init();
   virtual void mouseReleaseEvent(QMouseEvent *);
   virtual void closeEvent (QCloseEvent *);
   virtual void paintEvent (QPaintEvent *);
 #ifdef USE_KDE
-  virtual int widthForHeight(int height);
-  virtual int heightForWidth(int width);
-  virtual void removedFromPanel();
+  //virtual int widthForHeight(int height);
+  //virtual int heightForWidth(int width);
 #endif
   WharfIcon *wharfIcon;
   int m_nNewMsg, m_nSysMsg;
@@ -61,7 +62,7 @@ friend class WharfIcon;
 class IconManager_Default : public IconManager
 {
 public:
-  IconManager_Default(class CMainWindow *, QPopupMenu *, bool, QWidget *parent = 0);
+  IconManager_Default(CMainWindow *, QPopupMenu *, bool, QWidget *parent = 0);
   virtual ~IconManager_Default();
   virtual void SetDockIconStatus();
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);
@@ -77,7 +78,7 @@ protected:
 class IconManager_Themed : public IconManager
 {
 public:
-  IconManager_Themed(class CMainWindow *, QPopupMenu *, const char *, QWidget *parent = 0);
+  IconManager_Themed(CMainWindow *, QPopupMenu *, const char *, QWidget *parent = 0);
   virtual ~IconManager_Themed();
   virtual void SetDockIconStatus();
   virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg);

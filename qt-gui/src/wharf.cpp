@@ -37,7 +37,7 @@
 #include <qpainter.h>
 #include <qfile.h>
 #ifdef USE_KDE
-#include <kwin.h>
+#include <kpopupmenu.h>
 #endif
 
 #include "wharf.h"
@@ -60,12 +60,14 @@
 /*
   Constructs a WharfIcon widget.
 */
-IconManager::IconManager(QWidget *parent )
-  : KPanelApplet(parent, "LicqWharf")
+IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent = 0)
+  : KSystemTray(parent, "LicqWharf")
 {
   setCaption("LicqWharf");
   m_nNewMsg = m_nSysMsg = 0;
   wharfIcon = NULL;
+  mainwin = _mainwin;
+  menu = _menu;
 }
 
 
@@ -81,20 +83,18 @@ void IconManager::X11Init()
   XSetClassHint(dsp, win, &classhint); // set the class hints
   hints = XGetWMHints(dsp, win);  // init hints
   hints->initial_state = WithdrawnState;
-  hints->icon_x = 0;
-  hints->icon_y = 0;
+  //hints->icon_x = 0;
+  //hints->icon_y = 0;
   hints->icon_window = wharfIcon->winId();
   hints->window_group = win;  // set the window hint
-  hints->flags = WindowGroupHint | IconWindowHint | IconPositionHint | StateHint; // set the window group hint
+  hints->flags = WindowGroupHint | IconWindowHint | /*IconPositionHint |*/ StateHint; // set the window group hint
   XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
   XFree( hints );
 
 #ifdef USE_KDE
-  //int argc = 0;
-  //init(argc, 0);
-  dock("LicqWharf");
-  setMinimumWidth(wharfIcon->width());
-  setMinimumHeight(wharfIcon->height());
+  //setMinimumWidth(wharfIcon->width());
+  //setMinimumHeight(wharfIcon->height());
+  contextMenu()->insertItem(QString("Licq"), menu);
 #endif
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
@@ -116,6 +116,7 @@ void IconManager::closeEvent( QCloseEvent* e)
 }
 
 #ifdef USE_KDE
+/*
 int IconManager::widthForHeight(int)
 {
   return wharfIcon->width();
@@ -130,6 +131,7 @@ void IconManager::removedFromPanel()
 {
   InformUser(this, tr("The applet can be removed by\ndisabling it in the options dialog"));
 }
+*/
 #endif
 
 void IconManager::mouseReleaseEvent( QMouseEvent *e )
@@ -137,7 +139,36 @@ void IconManager::mouseReleaseEvent( QMouseEvent *e )
 #ifdef DEBUG_WHARF
   printf("icon release\n");
 #endif
-  wharfIcon->mouseReleaseEvent(e);
+#ifdef USE_KDE
+  switch(e->button())
+  {
+    case MidButton:
+      mainwin->callMsgFunction();
+      break;
+    case LeftButton:
+    case RightButton:
+    default:
+      KSystemTray::mouseReleaseEvent(e);
+      break;
+  }
+#else
+  switch(e->button())
+  {
+    case LeftButton:
+      mainwin->show();
+      mainwin->raise();
+      break;
+    case MidButton:
+      mainwin->callMsgFunction();
+      break;
+    case RightButton:
+      menu->popup(e->globalPos());
+      break;
+    default:
+      break;
+  }
+  //wharfIcon->mouseReleaseEvent(e);
+#endif
 }
 
 void IconManager::paintEvent( QPaintEvent * )
@@ -155,7 +186,7 @@ void IconManager::paintEvent( QPaintEvent * )
 //=====IconManager_Default===================================================
 
 IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_menu, bool _bFortyEight, QWidget *parent )
-  : IconManager(parent)
+  : IconManager(_mainwin, _menu, parent)
 {
   m_bFortyEight = _bFortyEight;
   if (m_bFortyEight)
@@ -164,7 +195,7 @@ IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_men
     QBitmap b;
     b = QPixmap((const char **)iconMask_48_xpm);
     pix->setMask(b);
-    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this);
+    wharfIcon = new WharfIcon(pix, this);
   }
   else
   {
@@ -172,7 +203,7 @@ IconManager_Default::IconManager_Default(CMainWindow *_mainwin, QPopupMenu *_men
     QBitmap b;
     b = QPixmap((const char **)iconMask_64_xpm);
     pix->setMask(b);
-    wharfIcon = new WharfIcon(_mainwin, _menu, pix, this);
+    wharfIcon = new WharfIcon(pix, this);
   }
   X11Init();
 }
@@ -236,13 +267,13 @@ QPixmap *IconManager_Default::GetDockIconStatusIcon()
   gUserManager.DropOwner();
   switch (s)
   {
-    case ICQ_STATUS_ONLINE: return &wharfIcon->mainwin->pmOnline;
-    case ICQ_STATUS_AWAY: return &wharfIcon->mainwin->pmAway;
-    case ICQ_STATUS_NA: return &wharfIcon->mainwin->pmNa;
-    case ICQ_STATUS_OCCUPIED: return &wharfIcon->mainwin->pmOccupied;
-    case ICQ_STATUS_DND: return &wharfIcon->mainwin->pmDnd;
-    case ICQ_STATUS_FREEFORCHAT: return &wharfIcon->mainwin->pmChat;
-    case ICQ_STATUS_OFFLINE: return &wharfIcon->mainwin->pmOffline;
+    case ICQ_STATUS_ONLINE: return &mainwin->pmOnline;
+    case ICQ_STATUS_AWAY: return &mainwin->pmAway;
+    case ICQ_STATUS_NA: return &mainwin->pmNa;
+    case ICQ_STATUS_OCCUPIED: return &mainwin->pmOccupied;
+    case ICQ_STATUS_DND: return &mainwin->pmDnd;
+    case ICQ_STATUS_FREEFORCHAT: return &mainwin->pmChat;
+    case ICQ_STATUS_OFFLINE: return &mainwin->pmOffline;
   }
   return NULL;
 }
@@ -304,7 +335,7 @@ void IconManager_Default::SetDockIconMsg(unsigned short nNewMsg, unsigned short 
     // Draw the little icon now
     QPixmap *m = NULL;
     if (nSysMsg > 0 || nNewMsg > 0)
-      m = &wharfIcon->mainwin->pmMessage;
+      m = &mainwin->pmMessage;
     else
       m = GetDockIconStatusIcon();
     p.fillRect(31, 6, 27, 16, QColor(0,0,0));
@@ -326,14 +357,14 @@ void IconManager_Default::SetDockIconMsg(unsigned short nNewMsg, unsigned short 
 //=====IconManager_Themed===================================================
 
 IconManager_Themed::IconManager_Themed(CMainWindow *_mainwin, QPopupMenu *_menu, const char *theme, QWidget *parent)
-  : IconManager(parent)
+  : IconManager(_mainwin, _menu, parent)
 {
   pixNoMessages = pixBothMessages = pixRegularMessages = pixSystemMessages = NULL;
   pixOnline = pixOffline = pixAway = pixNA = pixOccupied = pixDND = pixInvisible = pixFFC = NULL;
 
   SetTheme(theme);
 
-  wharfIcon = new WharfIcon(_mainwin, _menu, pixNoMessages, this);
+  wharfIcon = new WharfIcon(pixNoMessages, this);
   X11Init();
 }
 
@@ -576,12 +607,9 @@ void IconManager_Themed::SetDockIconMsg(unsigned short nNewMsg, unsigned short n
 
 //=====WharfIcon=============================================================
 
-WharfIcon::WharfIcon(CMainWindow *_mainwin, QPopupMenu *_menu, QPixmap *p,
-                     QWidget *parent)
+WharfIcon::WharfIcon(QPixmap *p, QWidget *parent)
   : QWidget(parent, "WharfIcon")
 {
-  mainwin = _mainwin;
-  menu = _menu;
   vis = NULL;
   Set(p);
   QToolTip::add(this, tr("Left click - Show main window\n"
@@ -609,28 +637,7 @@ void WharfIcon::mouseReleaseEvent( QMouseEvent *e )
 #ifdef DEBUG_WHARF
   printf("wharf release\n");
 #endif
-  switch(e->button())
-  {
-    case LeftButton:
-      /* I don't like this, and it causes Licq to disappear forever with certain
-         (probably buggy) window managers such as enlightenment.
-      if(mainwin->isVisible())
-        mainwin->hide();
-      else*/
-      {
-        mainwin->show();
-        mainwin->raise();
-      }
-      break;
-    case MidButton:
-      mainwin->callMsgFunction();
-      break;
-    case RightButton:
-      menu->popup(e->globalPos());
-      break;
-    default:
-      break;
-  }
+  ((IconManager *)parent())->mouseReleaseEvent(e);
 }
 
 
