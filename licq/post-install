@@ -13,7 +13,4 @@ Protocol plugins are also found in the plugins/ directory.
 *** You must do this in order to have a graphical interface!         *
 **********************************************************************
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-*** If you are upgrading from a version prior to 1.3.0 please read
-*** upgrade/UPGRADE
 ----------------------------------------------------------------------
