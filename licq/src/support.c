@@ -147,7 +147,7 @@ int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
   gethostbyname_r(szHostName, h, temp, 1024, &h_buf, &herror);
   return herror;
 // Solaris
-#elif defined(sun)
+#elif defined(sun) || defined(__sgi)
   struct hostent *h_buf;
   char temp[1024];
   int herror = 0;
