@@ -134,11 +134,10 @@ public:
   // TCP (user) functions
   // Message
   CICQEventTag *icqSendMessage(unsigned long nUin, const char *szMessage,
-     bool bOnline, unsigned short nLevel, unsigned long nSpoofUin = 0);
+     bool bOnline, unsigned short nLevel);
   // Url
   CICQEventTag *icqSendUrl(unsigned long nUin, const char *szUrl,
-     const char *szDescription, bool bOnline, unsigned short nLevel,
-     unsigned long nSpoofUin = 0);
+     const char *szDescription, bool bOnline, unsigned short nLevel);
   // Contact List
   CICQEventTag *icqSendContactList(unsigned long nUin, UinList &uins,
      bool bOnline, unsigned short nLevel);

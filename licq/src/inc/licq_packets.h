@@ -658,9 +658,8 @@ public:
    unsigned short Level()  { return m_nLevel; }
    unsigned short Version()  { return m_nVersion; }
 protected:
-   CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
-              unsigned short _nSubCommand, const char *szMessage, bool _bAccept,
-              unsigned short nLevel, ICQUser *_cUser);
+   CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
+      const char *szMessage, bool _bAccept, unsigned short nLevel, ICQUser *_cUser);
    void InitBuffer();
    void PostBuffer();
    void InitBuffer_v2();
@@ -689,7 +688,7 @@ protected:
 class CPT_Message : public CPacketTcp
 {
 public:
-   CPT_Message(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
+   CPT_Message(char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
 };
 
 
@@ -700,7 +699,7 @@ public:
 class CPT_Url : public CPacketTcp
 {
 public:
-   CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
+   CPT_Url(char *_sMessage, unsigned short nLevel, ICQUser *_cUser);
 };
 
 
@@ -717,7 +716,7 @@ public:
 class CPT_ReadAwayMessage : public CPacketTcp
 {
 public:
-   CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cUser);
+   CPT_ReadAwayMessage(ICQUser *_cUser);
    /* 76 1E 3F 00 03 00 EE 07 00 00 76 1E 3F 00 E8 03 01 00 00 81 61 1D 9D 81 61
       1D 9D C9 05 00 00 04 00 00 10 00 FE FF FF FF */
 };
@@ -730,8 +729,7 @@ public:
 class CPT_ChatRequest : public CPacketTcp
 {
 public:
-  CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage,
-     const char *szChatUsers, unsigned short nPort,
+  CPT_ChatRequest(char *_sMessage, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, ICQUser *_cUser);
 };
 
@@ -740,9 +738,8 @@ public:
 class CPT_FileTransfer : public CPacketTcp
 {
 public:
-   CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFilename,
-                    const char *_szDescription, unsigned short nLevel,
-                    ICQUser *_cUser);
+   CPT_FileTransfer(const char *_szFilename, const char *_szDescription,
+      unsigned short nLevel, ICQUser *_cUser);
    bool IsValid()  { return m_bValid; };
    const char *GetFilename()  { return m_szFilename; };
    const char *GetDescription()  { return m_szMessage; };

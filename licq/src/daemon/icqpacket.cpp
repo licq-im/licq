@@ -1359,9 +1359,8 @@ CBuffer *CPacketTcp::Finalize(INetSocket *s)
   return buffer;
 }
 
-CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
-                      unsigned short _nSubCommand, const char *szMessage,
-                      bool _bAccept, unsigned short nLevel, ICQUser *user)
+CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
+   const char *szMessage, bool _bAccept, unsigned short nLevel, ICQUser *user)
 {
   // Setup the message type and status fields using our online status
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -1419,7 +1418,7 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
   }
   gUserManager.DropOwner();
 
-  m_nSourceUin = (_nSourceUin == 0 ? gUserManager.OwnerUin() : _nSourceUin);
+  m_nSourceUin = gUserManager.OwnerUin();
   m_nCommand = _nCommand;
   m_nSubCommand = _nSubCommand;
   m_szMessage = (szMessage == NULL ? strdup("") : strdup(szMessage));
@@ -1566,10 +1565,8 @@ void CPacketTcp::PostBuffer_v6()
 }
 
 //-----Message------------------------------------------------------------------
-CPT_Message::CPT_Message(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel,
-                        ICQUser *_cUser)
-  : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, _sMessage,
-               true, nLevel, _cUser)
+CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_MSG, _sMessage, true, nLevel, _cUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
@@ -1581,10 +1578,8 @@ CPT_Message::CPT_Message(unsigned long _nSourceUin, char *_sMessage, unsigned sh
 }
 
 //-----Url----------------------------------------------------------------------
-CPT_Url::CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLevel,
-                ICQUser *_cUser)
-  : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_URL, _sMessage,
-               true, nLevel, _cUser)
+CPT_Url::CPT_Url(char *_sMessage, unsigned short nLevel, ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_URL, _sMessage, true, nLevel, _cUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
@@ -1599,8 +1594,7 @@ CPT_Url::CPT_Url(unsigned long _nSourceUin, char *_sMessage, unsigned short nLev
 //-----ContactList-----------------------------------------------------------
 CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel,
                 ICQUser *pUser)
-  : CPacketTcp(0, ICQ_CMDxTCP_START, ICQ_CMDxSUB_CONTACTxLIST, sz,
-               true, nLevel, pUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_CONTACTxLIST, sz, true, nLevel, pUser)
 {
   InitBuffer();
   if (m_nVersion == 6)
@@ -1613,9 +1607,8 @@ CPT_ContactList::CPT_ContactList(char *sz, unsigned short nLevel,
 
 
 //-----ReadAwayMessage----------------------------------------------------------
-CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cUser)
-  : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxTCP_READxAWAYxMSG, "",
-               true, false, _cUser)
+CPT_ReadAwayMessage::CPT_ReadAwayMessage(ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxTCP_READxAWAYxMSG, "", true, false, _cUser)
 {
   // Properly set the subcommand to get the correct away message
   switch(_cUser->Status())
@@ -1638,11 +1631,9 @@ CPT_ReadAwayMessage::CPT_ReadAwayMessage(unsigned long _nSourceUin, ICQUser *_cU
 }
 
 //-----ChatRequest--------------------------------------------------------------
-CPT_ChatRequest::CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage,
-   const char *szChatUsers, unsigned short nPort,
-   unsigned short nLevel, ICQUser *_cUser)
-  : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_CHAT, _sMessage,
-               true, nLevel, _cUser)
+CPT_ChatRequest::CPT_ChatRequest(char *_sMessage, const char *szChatUsers,
+   unsigned short nPort, unsigned short nLevel, ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_CHAT, _sMessage, true, nLevel, _cUser)
 {
   m_nSize += 2 + strlen_safe(szChatUsers) + 1 + 8;
   InitBuffer();
@@ -1656,10 +1647,9 @@ CPT_ChatRequest::CPT_ChatRequest(unsigned long _nSourceUin, char *_sMessage,
 
 
 //-----FileTransfer--------------------------------------------------------------
-CPT_FileTransfer::CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFilename,
-                                  const char *_szDescription, unsigned short nLevel,
-                                  ICQUser *_cUser)
-  : CPacketTcp(_nSourceUin, ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, _szDescription,
+CPT_FileTransfer::CPT_FileTransfer(const char *_szFilename,
+   const char *_szDescription, unsigned short nLevel, ICQUser *_cUser)
+  : CPacketTcp(ICQ_CMDxTCP_START, ICQ_CMDxSUB_FILE, _szDescription,
                true, nLevel, _cUser)
 {
   m_bValid = true;
@@ -1695,7 +1685,7 @@ CPT_FileTransfer::CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFil
 //+++++Ack++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
                 bool _bAccept, bool l, ICQUser *pUser)
-  : CPacketTcp(0, ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept,
+  : CPacketTcp(ICQ_CMDxTCP_ACK, _nSubCommand, "", _bAccept,
                l ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, pUser)
 {
   m_nSequence = _nSequence;
@@ -1791,7 +1781,7 @@ CPT_AckContactList::CPT_AckContactList(unsigned long _nSequence, bool _bAccept,
 
 //-----AckChatRefuse------------------------------------------------------------
 CPT_AckChatRefuse::CPT_AckChatRefuse(const char *szReason,
-                                    unsigned long _nSequence, ICQUser *_cUser)
+   unsigned long _nSequence, ICQUser *_cUser)
   : CPT_Ack(ICQ_CMDxSUB_CHAT, _nSequence, false, false, _cUser)
 {
   free (m_szMessage);
@@ -1868,7 +1858,7 @@ CPT_AckFileAccept::CPT_AckFileAccept(unsigned short _nPort,
 //+++++Cancel+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 CPT_Cancel::CPT_Cancel(unsigned short _nSubCommand, unsigned long _nSequence,
                       ICQUser *_cUser)
-  : CPacketTcp(0, ICQ_CMDxTCP_CANCEL, _nSubCommand, "", true, false, _cUser)
+  : CPacketTcp(ICQ_CMDxTCP_CANCEL, _nSubCommand, "", true, false, _cUser)
 {
   m_nSequence = _nSequence;
 }
