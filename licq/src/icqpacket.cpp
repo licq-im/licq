@@ -625,7 +625,6 @@ CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
 #if ICQ_VERSION == 4 || ICQ_VERSION == 5
   buffer->PackUnsignedLong(time(NULL));
 #endif
-  m_szLocalPortOffset = buffer->getDataPosWrite();
   buffer->PackUnsignedLong(m_nLocalPort);
   buffer->PackString(szPassword);
   buffer->PackUnsignedLong(nUnknown);
@@ -683,8 +682,6 @@ CBuffer *CPU_Logon::Finalize(INetSocket *s)
 
   buffer->setDataPosWrite(m_szRealIpOffset);
   buffer->PackUnsignedLong(s_nRealIp);
-  buffer->setDataPosWrite(m_szLocalPortOffset);
-  buffer->PackUnsignedShort(s->LocalPort());
   buffer->setDataPosWrite(sz);
 
   return CPacketUdp::Finalize(s);
@@ -1048,21 +1045,20 @@ CPU_RandomChatSearch::CPU_RandomChatSearch(unsigned long nGroup)
 }
 
 
-//-----Meta_SetWorkInfo------------------------------------------------------
+//-----Meta_SetGeneralInfo---------------------------------------------------
 CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
                           const char *szFirstName, const char *szLastName,
                           const char *szEmail1, const char *szEmail2,
                           const char *szCity, const char *szState,
                           const char *szPhoneNumber, const char *szFaxNumber,
                           const char *szAddress, const char *szCellularNumber,
-                          unsigned long nZipCode,
+                          const char *szZipCode,
                           unsigned short nCountryCode,
                           bool bHideEmail)
   : CPacketUdp(ICQ_CMDxSND_META)
 {
   m_nMetaCommand = ICQ_CMDxMETA_GENERALxINFOxSET;
 
-  m_nZipCode = nZipCode;
   m_nCountryCode = nCountryCode;
   m_nTimezone = ICQUser::SystemTimezone();
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -1074,7 +1070,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_nSize += strlen_safe(szAlias) + strlen_safe(szFirstName) + strlen_safe(szLastName) +
              strlen_safe(szEmail1) * 2 + strlen_safe(szEmail2) + strlen_safe(szCity) +
              strlen_safe(szState) + strlen_safe(szPhoneNumber) +
-             strlen_safe(szFaxNumber) + strlen_safe(szAddress) +
+             strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZipCode) +
              strlen_safe(szCellularNumber) + 36 + 12;
   InitBuffer();
 
@@ -1091,12 +1087,13 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   m_szFaxNumber = buffer->PackString(szFaxNumber);
   m_szAddress = buffer->PackString(szAddress);
   m_szCellularNumber = buffer->PackString(szCellularNumber);
-  buffer->PackUnsignedLong(m_nZipCode);
+  m_szZipCode = buffer->PackString(szZipCode);
   buffer->PackUnsignedShort(m_nCountryCode);
   buffer->PackChar(m_nTimezone);
+  // FIXME what should this be?
   buffer->PackChar(m_nAuthorization);
-  buffer->PackChar(m_nWebAware);
-  buffer->PackChar(m_nHideEmail);
+  //buffer->PackChar(m_nWebAware);
+  //buffer->PackChar(m_nHideEmail);
 
   // Check for possible problems
   char *sz = m_szAlias;
@@ -1249,10 +1246,10 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
 
 
 //-----Meta_RequestInfo------------------------------------------------------
-CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long nUin)
+CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(unsigned long nUin)
   : CPacketUdp(ICQ_CMDxSND_META)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_REQUESTxINFO;
+  m_nMetaCommand = ICQ_CMDxMETA_REQUESTxALLxINFO;
   m_nUin = nUin;
 
   m_nSize += 6;
@@ -1261,6 +1258,21 @@ CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long nUin)
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedLong(m_nUin);
 
+}
+
+
+//-----Meta_RequestInfo------------------------------------------------------
+CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(unsigned long nUin)
+  : CPacketUdp(ICQ_CMDxSND_META)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_REQUESTxBASICxINFO;
+  m_nUin = nUin;
+
+  m_nSize += 6;
+  InitBuffer();
+
+  buffer->PackUnsignedShort(m_nMetaCommand);
+  buffer->PackUnsignedLong(m_nUin);
 }
 
 

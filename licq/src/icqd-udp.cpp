@@ -536,11 +536,11 @@ CICQEventTag *CICQDaemon::icqUpdateExtendedInfo(const char *_sCity, unsigned sho
                                    const char *_sState, unsigned short _nAge,
                                    char _cSex, const char *_sPhone,
                                    const char *_sHomepage, const char *_sAbout,
-                                   unsigned long _nZipcode)
+                                   const char *szZipcode)
 {
   CPU_UpdatePersonalExtInfo *p =
     new CPU_UpdatePersonalExtInfo(_sCity, _nCountry, _sState, _nAge, _cSex,
-                                  _sPhone, _sHomepage, _sAbout, _nZipcode);
+                                  _sPhone, _sHomepage, _sAbout, atol(szZipcode));
    gLog.Info("%sUpdating personal extended info (#%ld/#%d)...\n", L_UDPxSTR,
              p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
@@ -576,7 +576,7 @@ CICQEventTag *CICQDaemon::icqSetGeneralInfo(
                           const char *szEmail2, const char *szCity,
                           const char *szState, const char *szPhoneNumber,
                           const char *szFaxNumber, const char *szAddress,
-                          const char *szCellularNumber, unsigned long nZipCode,
+                          const char *szCellularNumber, const char *szZipCode,
                           unsigned short nCountryCode, bool bHideEmail)
 {
   CPU_Meta_SetGeneralInfo *p =
@@ -585,7 +585,7 @@ CICQEventTag *CICQDaemon::icqSetGeneralInfo(
                                 szEmail2, szCity,
                                 szState, szPhoneNumber,
                                 szFaxNumber, szAddress,
-                                szCellularNumber, nZipCode,
+                                szCellularNumber, szZipCode,
                                 nCountryCode, bHideEmail);
 
   gLog.Info("%sUpdating general info (#%ld/#%d)...\n", L_UDPxSTR,
@@ -666,7 +666,7 @@ CICQEventTag *CICQDaemon::icqSetPassword(const char *szPassword)
 //-----icqRequestMetaInfo----------------------------------------------------
 CICQEventTag *CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 {
-  CPU_Meta_RequestInfo *p = new CPU_Meta_RequestInfo(nUin);
+  CPU_Meta_RequestAllInfo *p = new CPU_Meta_RequestAllInfo(nUin);
   gLog.Info("%sRequesting meta info for %ld (#%ld/#%d)...\n", L_UDPxSTR, nUin,
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(p);
@@ -889,7 +889,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       timestamp = packet.UnpackUnsignedLong();
 
       if((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
-          gLog.Info("%s%s (%ld) went online (v%01lx) [Licq v0.%ld/OpenSSL].\n",
+          gLog.Info("%s%s (%ld) went online (v%01lx) [Licq v0.%ld/SSL].\n",
                     L_UDPxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F, timestamp & 0xFFFF);
       else if((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
           gLog.Info("%s%s (%ld) went online (v%01lx) [Licq v0.%ld].\n",
@@ -1071,7 +1071,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       u->SetPhoneNumber(packet.UnpackString(sTemp));
       u->SetHomepage(packet.UnpackString(sTemp));
       u->SetAbout(packet.UnpackString(sTemp));
-      u->SetZipCode(packet.UnpackUnsignedLong());
+      sprintf(sTemp, "%ld", packet.UnpackUnsignedLong());
+      u->SetZipCode(sTemp);
 
       // translating string with Translation Table
       gTranslator.ServerToClient(u->GetCity());
@@ -1156,7 +1157,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       o->SetPhoneNumber(p->PhoneNumber());
       o->SetHomepage(p->Homepage());
       o->SetAbout(p->About());
-      o->SetZipCode(p->Zipcode());
+      char sz[32];
+      sprintf(sz, "%ld", p->Zipcode());
+      o->SetZipCode(sz);
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
                                       USER_EXT, o->Uin()));
       gUserManager.DropOwner();
@@ -1978,21 +1981,40 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
     case ICQ_CMDxMETA_UNKNOWNx240:
     case ICQ_CMDxMETA_UNKNOWNx250:
     case ICQ_CMDxMETA_UNKNOWNx270:
+    case ICQ_CMDxMETA_BASICxINFO:
     {
       e->m_nSubResult += nMetaCommand;
-      nUin = ((CPU_Meta_RequestInfo *)e->m_pPacket)->Uin();
-      /*u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (u == NULL)
-      {
-        gLog.Warn("%sReceived meta information on unknown user (%ld).\n",
-                  L_WARNxSTR, nUin);
-        break;
-      }*/
+      nUin = ((CPU_Meta_RequestAllInfo *)e->m_pPacket)->Uin();
       u = FindUserForInfoUpdate(nUin, e, "meta");
       if (u == NULL) break;
 
       switch (nMetaCommand)
       {
+        case ICQ_CMDxMETA_BASICxINFO:
+        {
+          gLog.Info("%sBasic info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
+          u->SetEnableSave(false);
+          u->SetAlias(packet.UnpackString(szTemp));
+          u->SetFirstName(packet.UnpackString(szTemp));
+          u->SetLastName(packet.UnpackString(szTemp));
+          u->SetEmail1(packet.UnpackString(szTemp));
+          // FIXME how does this packet end?
+          u->SetAuthorization(!packet.UnpackChar());
+          //packet.UnpackChar(); // 02, what the?
+          u->SetHideEmail(packet.UnpackChar());
+
+          // translating string with Translation Table
+          gTranslator.ServerToClient(u->GetAlias());
+          gTranslator.ServerToClient(u->GetFirstName());
+          gTranslator.ServerToClient(u->GetLastName());
+
+          u->SetEnableSave(true);
+          u->SaveGeneralInfo();
+          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_BASIC, nUin));
+          e->m_nSubResult = META_DONE;
+          break;
+        }
+
         case ICQ_CMDxMETA_GENERALxINFO:
         {
           gLog.Info("%sGeneral info on %s (%ld).\n", L_SBLANKxSTR, u->GetAlias(), u->Uin());
@@ -2004,20 +2026,18 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
           u->SetEmail2(packet.UnpackString(szTemp));
           // Old email address
           packet.UnpackString(szTemp);
-          //if (u->GetEmail1()[0] == '\0')
-          //  u->SetEmail1(szTemp);
           u->SetCity(packet.UnpackString(szTemp));
           u->SetState(packet.UnpackString(szTemp));
           u->SetPhoneNumber(packet.UnpackString(szTemp));
           u->SetFaxNumber(packet.UnpackString(szTemp));
           u->SetAddress(packet.UnpackString(szTemp));
           u->SetCellularNumber(packet.UnpackString(szTemp));
-          u->SetZipCode(packet.UnpackUnsignedLong());
+          u->SetZipCode(packet.UnpackString(szTemp));
           u->SetCountryCode(packet.UnpackUnsignedShort());
           u->SetTimezone(packet.UnpackChar());
+          // FIXME how does this packet end?
           u->SetAuthorization(!packet.UnpackChar());
-          //u->SetWebAware(packet.UnpackChar());
-          packet.UnpackChar();
+          //packet.UnpackChar(); // 02, what the?
           u->SetHideEmail(packet.UnpackChar());
 
           // translating string with Translation Table
@@ -2124,7 +2144,7 @@ void CICQDaemon::ProcessMetaCommand(CBuffer &packet,
       o->SetFaxNumber(p->m_szFaxNumber);
       o->SetAddress(p->m_szAddress);
       o->SetCellularNumber(p->m_szCellularNumber);
-      o->SetZipCode(p->m_nZipCode);
+      o->SetZipCode(p->m_szZipCode);
       o->SetCountryCode(p->m_nCountryCode);
       o->SetTimezone(p->m_nTimezone);
       o->SetAuthorization(p->m_nAuthorization == 0);

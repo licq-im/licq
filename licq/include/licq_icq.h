@@ -99,15 +99,17 @@ const unsigned short ICQ_CMDxMETA_MORExINFO        = 0x00DC; // 220
 const unsigned short ICQ_CMDxMETA_ABOUT            = 0x00E6; // 230
 const unsigned short ICQ_CMDxMETA_UNKNOWNx240      = 0x00F0; // 240
 const unsigned short ICQ_CMDxMETA_UNKNOWNx250      = 0x00FA; // 250
+const unsigned short ICQ_CMDxMETA_BASICxINFO       = 0x0104; // 260  not implemented
 const unsigned short ICQ_CMDxMETA_UNKNOWNx270      = 0x010E; // 270
 // Meta commands (sent)
-const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E8; // 1000
-const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x03F2; // 1010 ??
-const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FC; // 1020 ??
+const unsigned short ICQ_CMDxMETA_GENERALxINFOxSET = 0x03E9; // 1001
+const unsigned short ICQ_CMDxMETA_WORKxINFOxSET    = 0x03F2; // 1010
+const unsigned short ICQ_CMDxMETA_MORExINFOxSET    = 0x03FC; // 1020
 const unsigned short ICQ_CMDxMETA_ABOUTxSET        = 0x0406; // 1030
 const unsigned short ICQ_CMDxMETA_SECURITYxSET     = 0x0424; // 1060
 const unsigned short ICQ_CMDxMETA_PASSWORDxSET     = 0x042E; // 1070
-const unsigned short ICQ_CMDxMETA_REQUESTxINFO     = 0x04B0; // 1200
+const unsigned short ICQ_CMDxMETA_REQUESTxALLxINFO = 0x04B1; // 1201
+const unsigned short ICQ_CMDxMETA_REQUESTxBASICxINFO = 0x04BA; // 1210  not implemented
 
 const unsigned short META_SUCCESS = 0x0A;
 const unsigned short META_FAILURE = 0x32;
@@ -182,7 +184,7 @@ const unsigned short ICQ_TCPxMSG_FxNA              = 0x0800;
 const unsigned short ICQ_TCPxMSG_FxDND             = 0x1000;
 
 const unsigned long ICQ_STATUS_FxFLAGS             = 0xFFFF0000;
-const unsigned long ICQ_STATUS_FxUNKNOWNxFLAGS     = 0xFFD0FCC8;
+const unsigned long ICQ_STATUS_FxUNKNOWNxFLAGS     = 0xDFD0FCC8;
 const unsigned long ICQ_STATUS_FxPRIVATE           = 0x00000100;
 const unsigned long ICQ_STATUS_FxPFMxAVAILABLE     = 0x00000200;  // not implemented
 const unsigned long ICQ_STATUS_FxWEBxPRESENCE      = 0x00010000;
@@ -190,6 +192,7 @@ const unsigned long ICQ_STATUS_FxHIDExIP           = 0x00020000;
 const unsigned long ICQ_STATUS_FxPFM               = 0x00040000;  // not implemented
 const unsigned long ICQ_STATUS_FxBIRTHDAY          = 0x00080000;
 const unsigned long ICQ_STATUS_FxICQxHOMEPAGE      = 0x00200000;  // not implemented
+const unsigned long ICQ_STATUS_FxSCREENxSAVER      = 0x20000000;  // not implemented
 
 const unsigned long ICQ_RANDOMxCHATxGROUP_NONE     = 0;
 const unsigned long ICQ_RANDOMxCHATxGROUP_GENERAL  = 1;

@@ -178,7 +178,7 @@ public:
                                        const char *, bool);
   CICQEventTag *icqUpdateExtendedInfo(const char *, unsigned short, const char *,
                                 unsigned short, char, const char *,
-                                const char *, const char *_sAbout, unsigned long);
+                                const char *, const char *_sAbout, const char *);
   CICQEventTag *icqSetWorkInfo(const char *_szCity, const char *_szState,
                            const char *_szPhone,
                            const char *_szFax, const char *_szAddress,
@@ -189,7 +189,7 @@ public:
                               const char *szEmail2, const char *szCity,
                               const char *szState, const char *szPhoneNumber,
                               const char *szFaxNumber, const char *szAddress,
-                              const char *szCellularNumber, unsigned long nZipCode,
+                              const char *szCellularNumber, const char *szZipCode,
                               unsigned short nCountryCode, bool bHideEmail);
   CICQEventTag *icqSetMoreInfo(unsigned short nAge,
                            char nGender, const char *szHomepage,

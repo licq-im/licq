@@ -146,7 +146,6 @@ protected:
   unsigned long  m_nTcpVersion;
 
   char *m_szRealIpOffset;
-  char *m_szLocalPortOffset;
 };
 
 
@@ -398,7 +397,7 @@ protected:
 
 
 
-//-----Meta_SetWorkInfo------------------------------------------------------
+//-----Meta_SetGeneralInfo------------------------------------------------------
 class CPU_Meta_SetGeneralInfo : public CPacketUdp
 {
 public:
@@ -413,7 +412,7 @@ public:
                           const char *szFaxNumber,
                           const char *szAddress,
                           const char *szCellularNumber,
-                          unsigned long nZipCode,
+                          const char *szZipCode,
                           unsigned short nCountryCode,
                           bool bHideEmail);
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
@@ -431,7 +430,7 @@ protected:
   char *m_szFaxNumber;
   char *m_szAddress;
   char *m_szCellularNumber;
-  unsigned long m_nZipCode;
+  char *m_szZipCode;
   unsigned short m_nCountryCode;
   char m_nTimezone;
   char m_nAuthorization;
@@ -555,11 +554,24 @@ protected:
 };
 
 
-//-----Meta_RequestInfo------------------------------------------------------
-class CPU_Meta_RequestInfo : public CPacketUdp
+//-----Meta_RequestAllInfo------------------------------------------------------
+class CPU_Meta_RequestAllInfo : public CPacketUdp
 {
 public:
-  CPU_Meta_RequestInfo(unsigned long _nUin);
+  CPU_Meta_RequestAllInfo(unsigned long _nUin);
+  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  unsigned long Uin()  {  return m_nUin; }
+protected:
+  unsigned short m_nMetaCommand;
+  unsigned long  m_nUin;
+};
+
+
+//-----Meta_RequestBasicInfo------------------------------------------------------
+class CPU_Meta_RequestBasicInfo : public CPacketUdp
+{
+public:
+  CPU_Meta_RequestBasicInfo(unsigned long _nUin);
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
   unsigned long Uin()  {  return m_nUin; }
 protected:
