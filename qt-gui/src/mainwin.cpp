@@ -753,12 +753,17 @@ void CMainWindow::closeEvent( QCloseEvent *e )
 
 void CMainWindow::keyPressEvent(QKeyEvent *e)
 {
+  unsigned long nUin = userView->MainWindowSelectedItemUin();
+
   if (e->key() == Qt::Key_Delete)
   {
+    if (nUin == 0) return;
     if (e->state() & ControlButton)
-      RemoveUserFromList(userView->MainWindowSelectedItemUin(), this);
+      RemoveUserFromList(nUin, this);
     else
-      RemoveUserFromGroup(userView->MainWindowSelectedItemUin(), this);
+      RemoveUserFromGroup(nUin, this);
+    //e->accept();
+    return;
   }
   else if (! (e->state() & ControlButton))
   {
@@ -786,27 +791,27 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       break;
 
     case Qt::Key_V:
-      callFunction(mnuUserView, userView->MainWindowSelectedItemUin());
+      callFunction(mnuUserView, nUin);
       break;
 
     case Qt::Key_S:
-      callFunction(mnuUserSendMsg, userView->MainWindowSelectedItemUin());
+      callFunction(mnuUserSendMsg, nUin);
       break;
 
     case Qt::Key_U:
-      callFunction(mnuUserSendUrl, userView->MainWindowSelectedItemUin());
+      callFunction(mnuUserSendUrl, nUin);
       break;
 
     case Qt::Key_C:
-      callFunction(mnuUserSendChat, userView->MainWindowSelectedItemUin());
+      callFunction(mnuUserSendChat, nUin);
       break;
 
     case Qt::Key_F:
-      callFunction(mnuUserSendFile, userView->MainWindowSelectedItemUin());
+      callFunction(mnuUserSendFile, nUin);
       break;
 
     case Qt::Key_A:
-      callFunction(mnuUserCheckResponse, userView->MainWindowSelectedItemUin());
+      callFunction(mnuUserCheckResponse, nUin);
       break;
 
     case Qt::Key_P:
@@ -1446,6 +1451,8 @@ void CMainWindow::callUserFunction(int index)
 ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
 {
   ICQFunctions *f = NULL;
+
+  if (nUin == 0) return NULL;
 
   UserDataListIter it;
   for (it = licqUserData.begin(); it != licqUserData.end(); it++)
