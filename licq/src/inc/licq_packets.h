@@ -195,6 +195,14 @@ public:
 };
 
 
+//-----ChangeViewList--------------------------------------------------------
+class CPU_ModifyViewList : public CPacketUdp
+{
+public:
+  CPU_ModifyViewList(unsigned long nUin, bool bVisibleList, bool bAdd);
+};
+
+
 //-----InvisibleList--------------------------------------------------------------
 class CPU_InvisibleList : public CPacketUdp
 {

@@ -153,17 +153,20 @@ public:
   CICQEventTag *icqSearchByUin(unsigned long);
 
   void icqLogoff();
+  void icqRelogon(bool bChangeServer = false);
   void icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
   void icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long);
   void icqUpdateContactList();
 
-  void icqPing();
-  void icqRelogon(bool bChangeServer = false);
-  void icqSendVisibleList(bool _bSendIfEmpty = false);
-  void icqSendInvisibleList(bool _bSendIfEmpty = false);
-  void icqRequestSystemMsg();
+  // Visible/Invisible list functions
+  void icqAddToVisibleList(unsigned long nUin);
+  void icqRemoveFromVisibleList(unsigned long nUin);
+  void icqToggleVisibleList(unsigned long nUin);
+  void icqAddToInvisibleList(unsigned long nUin);
+  void icqRemoveFromInvisibleList(unsigned long nUin);
+  void icqToggleInvisibleList(unsigned long nUin);
 
   void PluginList(PluginsList &l);
   void PluginShutdown(int);
@@ -184,7 +187,6 @@ public:
   void AddUserToList(unsigned long _nUin);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
-  void SaveUserList();
 
   // NOT MT SAFE
   const char *getUrlViewer();
@@ -264,6 +266,12 @@ protected:
   void RemoveUserEvent(ICQUser *, int);
   void RejectEvent(unsigned long, CUserEvent *);
   ICQUser *FindUserForInfoUpdate(unsigned long nUin, ICQEvent *e, const char *);
+
+  void icqPing();
+  void icqSendVisibleList();
+  void icqSendInvisibleList();
+  void icqRequestSystemMsg();
+  void SaveUserList();
 
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);
   ICQEvent *DoneEvent(int _nSD, unsigned long _nSequence, EventResult _eResult);

@@ -285,7 +285,7 @@ void CICQDaemon::icqUpdateContactList()
 
 
 //-----icqSendVisibleList-------------------------------------------------------
-void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty)
+void CICQDaemon::icqSendVisibleList()
 {
   // send user info packet
   // Go through the entire list of users, checking if each one is on
@@ -297,7 +297,7 @@ void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty)
       uins.push_back(pUser->Uin());
   }
   FOR_EACH_USER_END
-  if (uins.size() == 0 && !_bSendIfEmpty) return;
+  if (uins.size() == 0) return;
 
   CPU_VisibleList *p = new CPU_VisibleList(uins);
   gLog.Info("%sSending visible list (#%d)...\n", L_UDPxSTR, p->getSequence());
@@ -306,7 +306,7 @@ void CICQDaemon::icqSendVisibleList(bool _bSendIfEmpty)
 
 
 //-----icqSendInvisibleList-----------------------------------------------------
-void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty)
+void CICQDaemon::icqSendInvisibleList()
 {
   UinList uins;
   FOR_EACH_USER_START(LOCK_R)
@@ -315,10 +315,94 @@ void CICQDaemon::icqSendInvisibleList(bool _bSendIfEmpty)
       uins.push_back(pUser->Uin());
   }
   FOR_EACH_USER_END
-  if (uins.size() == 0 && !_bSendIfEmpty) return;
+  if (uins.size() == 0) return;
 
   CPU_InvisibleList *p = new CPU_InvisibleList(uins);
   gLog.Info("%sSending invisible list (#%d)...\n", L_UDPxSTR, p->getSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+}
+
+
+//-----icqAddToVisibleList---------------------------------------------------
+void CICQDaemon::icqToggleVisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return;
+  bool b = u->VisibleList();
+  gUserManager.DropUser(u);
+
+  if (b)
+    icqRemoveFromVisibleList(nUin);
+  else
+    icqAddToVisibleList(nUin);
+}
+
+void CICQDaemon::icqToggleInvisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  if (u == NULL) return;
+  bool b = u->InvisibleList();
+  gUserManager.DropUser(u);
+
+  if (b)
+    icqRemoveFromInvisibleList(nUin);
+  else
+    icqAddToInvisibleList(nUin);
+}
+
+void CICQDaemon::icqAddToVisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u != NULL)
+  {
+    u->SetVisibleList(true);
+    gUserManager.DropUser(u);
+  }
+  CPU_ModifyViewList *p = new CPU_ModifyViewList(nUin, true, true);
+  gLog.Info("%sAdding user %ld to visible list (#%d)...\n", L_UDPxSTR, nUin,
+     p->getSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+}
+
+void CICQDaemon::icqRemoveFromVisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u != NULL)
+  {
+    u->SetVisibleList(false);
+    gUserManager.DropUser(u);
+  }
+  CPU_ModifyViewList *p = new CPU_ModifyViewList(nUin, true, false);
+  gLog.Info("%sRemoving user %ld from visible list (#%d)...\n", L_UDPxSTR, nUin,
+     p->getSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+}
+
+void CICQDaemon::icqAddToInvisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u != NULL)
+  {
+    u->SetInvisibleList(true);
+    gUserManager.DropUser(u);
+  }
+  CPU_ModifyViewList *p = new CPU_ModifyViewList(nUin, false, true);
+  gLog.Info("%sAdding user %ld to invisible list (#%d)...\n", L_UDPxSTR, nUin,
+     p->getSequence());
+  SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
+}
+
+void CICQDaemon::icqRemoveFromInvisibleList(unsigned long nUin)
+{
+  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (u != NULL)
+  {
+    u->SetInvisibleList(false);
+    gUserManager.DropUser(u);
+  }
+  CPU_ModifyViewList *p = new CPU_ModifyViewList(nUin, false, false);
+  gLog.Info("%sRemoving user %ld from invisible list (#%d)...\n", L_UDPxSTR, nUin,
+     p->getSequence());
   SendExpectEvent(m_nUDPSocketDesc, p, CONNECT_NONE);
 }
 
@@ -816,6 +900,15 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       if ((m_bOnlineNotifies || m_bAlwaysOnlineNotify) && u->OnlineNotify())
         m_xOnEventManager.Do(ON_EVENT_NOTIFY, u);
       gUserManager.DropUser(u);
+
+      // Test of timestamp
+      /*
+      packet.UnpackUnsignedLong();
+      packet.UnpackUnsignedLong();
+      packet.UnpackUnsignedLong();
+      time_t t = (time_t)packet.UnpackUnsignedLong();
+      if (t != 0) gLog.Info("%sTimestamp (%ld): %s", L_SBLANKxSTR, t, ctime(&t));
+      */
       /*
       // Test of going online bytes
       unsigned char c1 = 0;
@@ -1090,6 +1183,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
       ChangeUserStatus(u, nNewStatus);
       gLog.Info("%s%s (%ld) changed status: %s.\n", L_UDPxSTR,
                 u->GetAlias(), nUin, u->StatusStr());
+      nNewStatus >>= 16;
+      if (nNewStatus > 0x0003)
+        gLog.Warn("%sUnknown status flag: 0x%04X\n", L_WARNxSTR, nNewStatus);
       gUserManager.DropUser(u);
       break;
     }
@@ -1338,10 +1434,11 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
     {
       if (!bMultiPacket) AckUDP(nSequence, nSubSequence);
       unsigned long nUin, nIp;
-      unsigned short nPort;
-      packet >> nUin >> nIp >> nPort;
+      unsigned short nPort, nJunk, nPort2;
+      char cJunk;
+      packet >> nUin >> nIp >> nPort >> nJunk >> cJunk >> nPort2;
       nIp = PacketIpToNetworkIp(nIp);
-      gLog.Info("%sReverse tcp request from %ld.\n", L_UDPxSTR, nUin);
+      gLog.Info("%sReverse tcp request from %ld (port %d).\n", L_UDPxSTR, nUin, nPort2);
       // May block in connect, which would suck, but for it's unlikely
       ReverseConnectToUser(nUin, nIp, nPort);
       break;
@@ -1372,9 +1469,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet, unsigned short bMul
 
     case ICQ_CMDxRCV_SERVERxDOWN: // server having problems
     {
-      gLog.Info("%sServer down (ignoring, cross your fingers).\n", L_UDPxSTR);
-      // We should re-logon but people are fucking stupid so we don't
-      //icqRelogon(true);
+      unsigned long d = packet.UnpackUnsignedLong();
+      gLog.Info("%sServer problem: %ld\n", L_UDPxSTR, d);
       break;
     }
 

@@ -421,24 +421,11 @@ CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
 #elif ICQ_VERSION == 4
   unsigned long nUnknown = 0x98;
 #elif ICQ_VERSION == 5
-/* micq
-  unsigned long nUnknown = 0xD5; // client does not support chat/file transfer
-  char temp[20] = { 0x00, 0x00, 0x00, 0x00,
-                    0xEC, 0x01, 0x2C, 0x82,
-                    0x50, 0x00, 0x00, 0x00,
-                    0x03, 0x00, 0x00, 0x00,
-                    0x00, 0x16, 0xD6, 0x36 };*/
-/* kxicq
-  unsigned long nUnknown = 0x78; // client is offline
-  char temp[28] = { 0x00, 0x00, 0x00, 0x00,
-                    0x20, 0x00, 0x3F, 0x00,
-                    0x50, 0x00, 0x00, 0x00,
-                    0x03, 0x00, 0x00, 0x00,
-                    0xAC, 0xFA, 0x5B, 0x38,
-                    0x05, 0x0E, 0xC1, 0x37,
-                    0x00, 0x00, 0x00, 0x00 };*/
-
-  unsigned long nUnknown = 0x98;
+  //unsigned long nUnknown = 0xD5; // micq
+  //unsigned long nUnknown = 0x78; // kxicq
+  //unsigned long nUnknown = 0x98; // gnomeicu
+  unsigned long nUnknown = 0x000B013F; // colin
+  //unsigned long nUnknown = 0x00040072; old version 2
 
   if (!s_bRegistered)
   {
@@ -451,10 +438,6 @@ CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
   m_nSequence = s_nSequence++;
   m_nSubSequence = s_nSubSequence++;
 #endif
-/*
-  if (s_nLocalIp == 0 || s_nLocalIp == s_nRealIp)
-    s_nLocalIp = NetworkIpToPacketIp(_s->LocalIp());
-  s_nRealIp = NetworkIpToPacketIp(_s->LocalIp());*/
   s_nRealIp = 0;
   m_nLocalPort = nLocalPort;
   m_nLogonStatus = _nLogonStatus;
@@ -493,16 +476,22 @@ CPU_Logon::CPU_Logon(unsigned short nLocalPort, const char *szPassword,
 #else
   // Unknown bits
   buffer->PackUnsignedLong(0x00000000); // always zero
-  /*buffer->PackUnsignedShort(0x0020);  // totally unknown
-    buffer->PackUnsignedShort(0x003F);*/
-  /*buffer->PackUnsignedShort(0x01EC);
+  /*buffer->PackUnsignedShort(0x01EC); // micq
     buffer->PackUnsignedShort(0x822C);*/
-  buffer->PackUnsignedShort(0x0008);
-  buffer->PackUnsignedShort(0x0098);
+  /*buffer->PackUnsignedShort(0x0020); // kxicq
+    buffer->PackUnsignedShort(0x003F);*/
+  /*buffer->PackUnsignedShort(0x0010); // gnomeicu
+    buffer->PackUnsignedShort(0x0098);*/
+  /*buffer->PackUnsignedShort(0x00FF);
+    buffer->PackUnsignedShort(0x0098);*/
+  /*buffer->PackUnsignedShort(0x0004); // old version 2
+    buffer->PackUnsignedShort(0x0072);*/
+  buffer->PackUnsignedShort(0x0002); // colin (icq99b)
+  buffer->PackUnsignedShort(0x013F);
   buffer->PackUnsignedLong(0x00000050); // always the same
   buffer->PackUnsignedLong(0x00000003); // always the same
-  buffer->PackUnsignedLong(0x385BFAAC); // timestamp of something (build date?)
-  buffer->PackUnsignedLong(0x00000000); // totally unknown
+  buffer->PackUnsignedLong(0x385BFAAC); // timestamp of something? (varies)
+  buffer->PackUnsignedLong(0x00000000); // totally unknown (non-zero in other clients)
   buffer->PackUnsignedLong(0x00000000); // always zero
 #endif
 }
@@ -615,6 +604,20 @@ CPU_ContactList::CPU_ContactList(unsigned long _nUin)
   buffer->PackChar(0x01);
   buffer->PackUnsignedLong(_nUin);
 
+}
+
+
+
+//-----ModifyViewList--------------------------------------------------------
+CPU_ModifyViewList::CPU_ModifyViewList(unsigned long nUin, bool bVisibleList, bool bAdd)
+  : CPacketUdp(ICQ_CMDxSND_MODIFYxVIEWxLIST)
+{
+  m_nSize += 6;
+  InitBuffer();
+
+  buffer->PackUnsignedLong(nUin);
+  buffer->PackChar(bVisibleList ? 1 : 0);
+  buffer->PackChar(bAdd ? 1 : 0);
 }
 
 
