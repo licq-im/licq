@@ -310,6 +310,15 @@ bool INetSocket::OpenConnection(void)
     return(false);
   }
 
+#ifdef IP_PORTRANGE
+  int i=IP_PORTRANGE_HIGH;
+  if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
+  {
+    m_nError = errno;
+    return(false);
+  }
+#endif
+
   OpenSocket();
   m_sRemoteAddr.sin_family = AF_INET;
 
@@ -343,6 +352,15 @@ bool INetSocket::StartServer(unsigned int _nPort)
     h_errno = -1;
     return (false);
   }
+
+#ifdef IP_PORTRANGE
+  int i=IP_PORTRANGE_HIGH;
+  if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
+  {
+    m_nError = errno;
+    return(false);
+  }
+#endif
 
   OpenSocket();
   memset(&m_sLocalAddr.sin_zero, 0, 8);
