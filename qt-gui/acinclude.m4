@@ -25,23 +25,23 @@ AC_DEFUN(AC_PATH_QT_LIB,
   AC_REQUIRE_CPP()
   AC_REQUIRE([AC_PATH_X])
   AC_MSG_CHECKING(for QT libraries)
-  
+
   ac_qt_libraries="no"
-  
+
   AC_ARG_WITH(qt-libraries,
     [  --with-qt-libraries     where the QT libraries are located. ],
     [  ac_qt_libraries="$withval" ])
 
   AC_CACHE_VAL(ac_cv_lib_qtlib, [
-    
+
     dnl Did the user give --with-qt-libraries?
-    
+
     if test "$ac_qt_libraries" = no; then
 
       dnl No they didn't, so lets look for them...
-    
+
       dnl If you need to add extra directories to check, add them here.
-      
+
       qt_library_dirs="\
         /usr/lib \
         /usr/local/lib \
@@ -53,11 +53,11 @@ AC_DEFUN(AC_PATH_QT_LIB,
         /usr/X11/lib/qt \
         /usr/X11R6/lib \
         /usr/X11R6/lib/qt"
-  
+
       if test "x$QTDIR" != x; then
         qt_library_dirs="$qt_library_dirs $QTDIR/lib"
       fi
-  
+
       if test "x$QTLIB" != x; then
         qt_library_dirs="$qt_library_dirs $QTLIB"
       fi
@@ -82,7 +82,7 @@ AC_DEFUN(AC_PATH_QT_LIB,
   else
     have_qt_lib="yes"
   fi
-  
+
   AC_MSG_RESULT([$ac_cv_lib_qtlib])
   QT_LDFLAGS="-L$ac_cv_lib_qtlib"
   QT_LIBDIR="$ac_cv_lib_qtlib"
@@ -95,23 +95,23 @@ AC_DEFUN(AC_PATH_QT_INC,
   AC_REQUIRE_CPP()
   AC_REQUIRE([AC_PATH_X])
   AC_MSG_CHECKING(for QT includes)
-  
+
   ac_qt_includes="no"
-  
+
   AC_ARG_WITH(qt-includes,
     [  --with-qt-includes      where the QT headers are located. ],
     [  ac_qt_includes="$withval" ])
-  
+
   AC_CACHE_VAL(ac_cv_header_qtinc, [
-    
+
     dnl Did the user give --with-qt-includes?
-    
+
     if test "$ac_qt_includes" = no; then
 
       dnl No they didn't, so lets look for them...
 
       dnl If you need to add extra directories to check, add them here.
-      
+
       qt_include_dirs="\
         /usr/lib/qt/include \
         /usr/include/qt \
@@ -119,18 +119,19 @@ AC_DEFUN(AC_PATH_QT_INC,
         /usr/local/include/qt \
         /usr/X11/include/qt \
         /usr/X11/include/X11/qt \
-        /usr/X11R6/include \        
+        /usr/X11R6/include \
         /usr/X11R6/include/qt \
-        /usr/X11R6/include/X11/qt"
+        /usr/X11R6/include/X11/qt \
+        /usr/X11/lib/qt/include"
 
       if test "x$QTDIR" != x; then
         qt_include_dirs="$qt_include_dirs $QTDIR/include"
       fi
-      
+
       if test "x$QTINC" != x; then
         qt_include_dirs="$qt_include_dirs $QTINC"
       fi
-      
+
       for qt_dir in $qt_include_dirs; do
         if test -r "$qt_dir/qtabwidget.h"; then
           ac_qt_includes=$qt_dir
@@ -140,7 +141,7 @@ AC_DEFUN(AC_PATH_QT_INC,
     fi
 
     ac_cv_header_qtinc=$ac_qt_includes
-  
+
   ])
 
   if test "$ac_cv_header_qtinc" = no; then
@@ -155,6 +156,7 @@ AC_DEFUN(AC_PATH_QT_INC,
   AC_SUBST(QT_INCLUDES)
   AC_SUBST(QT_INCDIR)
 ])
+
 
 AC_DEFUN(AC_PATH_QT_MOC,
 [
@@ -301,7 +303,7 @@ AC_DEFUN(AC_CHECK_X_HEADER, [
   AC_CHECK_HEADER([$1],[$2],[$3])
   CPPFLAGS="$ac_save_CPPFLAGS"
 ])
-  
+
 dnl Like AC_CHECK_LIB, but it used the -L dirs set up by the X checks.
 
 AC_DEFUN(AC_CHECK_X_LIB, [
@@ -311,16 +313,16 @@ AC_DEFUN(AC_CHECK_X_LIB, [
   if test \! -z "$includedir" ; then
     CPPFLAGS="$CPPFLAGS -I$includedir"
   fi
-  
+
   dnl note: $X_CFLAGS includes $x_includes
   CPPFLAGS="$CPPFLAGS $X_CFLAGS"
 
   if test \! -z "$libdir" ; then
     LDFLAGS="$LDFLAGS -L$libdir"
   fi
-  
+
   dnl note: $X_LIBS includes $x_libraries
-  
+
   LDFLAGS="$LDFLAGS $X_LIBS"
   AC_CHECK_LIB([$1], [$2], [$3], [$4], [$5])
   CPPFLAGS="$ac_save_CPPFLAGS"
