@@ -250,7 +250,7 @@ const struct SCountry gCountries[NUM_COUNTRIES + 1] =
   { "Tinian Island", 6702, 239 },
   { "Australian Antarctic Territory", 6721, 240 },
   { "Norfolk Island", 6722, 241 },
-  { "Unspecified", 0xFFFF, 242 }
+  { "Unspecified", COUNTRY_UNSPECIFIED,  242 }
 };
 
 
