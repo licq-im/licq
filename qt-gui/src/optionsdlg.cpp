@@ -255,18 +255,12 @@ void OptionsDlg::SetupOptions()
 #endif
   }
 
-  spnDefServerPort->setValue(mainwin->licqDaemon->getDefaultRemotePort());
   //chkFirewall->setChecked(mainwin->licqDaemon->FirewallHost()[0] == '\0');
   chkTCPEnabled->setChecked(mainwin->licqDaemon->TCPEnabled());
   //edtFirewallHost->setText(mainwin->licqDaemon->FirewallHost());
   spnPortLow->setValue(mainwin->licqDaemon->TCPPortsLow());
   spnPortHigh->setValue(mainwin->licqDaemon->TCPPortsHigh());
   //chkFirewall->toggle();
-
-  cmbServers->clear();
-  unsigned short i;
-  for (i = 0; i < mainwin->licqDaemon->icqServers.numServers(); i++)
-    cmbServers->insertItem(mainwin->licqDaemon->icqServers.servers[i]->name());
 
   spnAutoAway->setValue(mainwin->autoAwayTime);
   spnAutoNa->setValue(mainwin->autoNATime);
@@ -305,6 +299,7 @@ void OptionsDlg::SetupOptions()
    }
 
    // set up the columns stuff
+   int i;
    for (i = 0; i < mainwin->colInfo.size(); i++)
    {
       chkColEnabled[i]->setChecked(true);
@@ -464,7 +459,6 @@ void OptionsDlg::ApplyOptions()
     mainwin->m_nDockMode = DockNone;
   }
 
-  mainwin->licqDaemon->setDefaultRemotePort(spnDefServerPort->value());
   //if (chkFirewall->isChecked())
   {
     mainwin->licqDaemon->SetTCPPorts(spnPortLow->value(), spnPortHigh->value());
@@ -841,17 +835,6 @@ QWidget *OptionsDlg::new_network_options()
   lay->addWidget(gbServer);
 
   gbServer->setTitle(tr("Server settings"));
-
-  lblServers = new QLabel (tr("Servers:"), gbServer);
-  lblServers->setEnabled(false);
-  QWhatsThis::add(lblServers, tr("List of servers to connect to (read-only for now)"));
-  cmbServers = new QComboBox(false, gbServer);
-  cmbServers->setEnabled(false);
-  lblDefServerPort = new QLabel(tr("Default Server Port:"), gbServer);
-  QWhatsThis::add(lblDefServerPort, tr("Default port to connect to on the server (should be 4000)"));
-  spnDefServerPort = new QSpinBox(gbServer);
-  spnDefServerPort->setRange(0, 0xFFFF);
-  spnDefServerPort->setSpecialValueText(tr("Default"));
 
   QGroupBox *gbFirewall = new QGroupBox(2, QGroupBox::Horizontal, w);
   lay->addWidget(gbFirewall);

@@ -38,11 +38,10 @@ protected:
 
    // network tab
    QWidget* new_network_options();
-   QLabel *lblServers, *lblDefServerPort,
-      *lblAutoAway, *lblAutoNa, *lblAutoOffline, *lblAutoLogon;
-   QComboBox *cmbServers, *cmbAutoLogon;
+   QLabel *lblAutoAway, *lblAutoNa, *lblAutoOffline, *lblAutoLogon;
+   QComboBox *cmbAutoLogon;
    QComboBox *cmbAutoAwayMess, *cmbAutoNAMess;
-   QSpinBox *spnDefServerPort, *spnAutoAway, *spnAutoNa,
+   QSpinBox *spnAutoAway, *spnAutoNa,
       *spnAutoOffline, *spnPortLow, *spnPortHigh;
    QPushButton *btnAddServer;
    QCheckBox  *chkAutoLogonInvisible, *chkTCPEnabled;

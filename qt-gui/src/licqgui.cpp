@@ -317,8 +317,6 @@ void CLicqGui::Shutdown(void)
     licqMainWindow->close();
     delete licqMainWindow;
     licqMainWindow = 0;
-    delete licqLogWindow;
-    licqLogWindow = 0;
   }
 }
 
@@ -340,8 +338,6 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
   int r = exec();
   _licqDaemon->UnregisterPlugin();
 
-  delete licqLogWindow;
-  licqLogWindow = 0;
   return r;
 }
 
