@@ -1,5 +1,18 @@
 Change log for Licq Qt-GUI Plugin.
 
+New in 0.80
+o  Multiparty Chat
+o  Send message urgent or to contact list with one click
+o  il8n fixes
+o  Added color/font selection to chat dialog
+o  User floaties
+o  Flash all or just urgent events
+o  Auto-raise on incoming messages
+o  Auto-popup incoming messages
+o  Save chat session and disable beeps
+o  Personalized auto responses
+
+
 New in 0.71
 o  Quote/Forward/Accept/Reject/View buttons
 o  Improved skin support with menu bars
