@@ -4,7 +4,7 @@ EXTRA_DIST = xpm
 libdir=$(prefix)/lib/licq
 licq_incdir = @LICQ_INCLUDES@
 
-INCLUDES = -D_REENTRANT -DQT_GENUINE_STR -DQT_NO_COMPAT -DQT_NO_ASCII_CAST \
+INCLUDES = -D_REENTRANT \
 	-I$(licq_incdir) $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
 
 EXTRA_LTLIBRARIES = licq_qt-gui.la licq_kde-gui.la
