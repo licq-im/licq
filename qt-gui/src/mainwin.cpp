@@ -610,6 +610,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    // verify we exist
    if (gUserManager.OwnerUin() == 0)
      slot_register();
+
+#if QT_VERSION > 3
+  XClassHint ClassHint;
+  ClassHint.res_class = (char *)qAppName();
+  ClassHint.res_name = (char *)name();
+  XSetClassHint(x11Display(), winId(), &ClassHint);
+#endif
 }
 
 //-----ApplySkin----------------------------------------------------------------
