@@ -370,7 +370,6 @@ void CHistoryWidget::paintCell(QPainter* p, int row, int col)
     }
   }
 
-
   MLEditWrap::paintCell(p, row, col);
 }
 
@@ -413,7 +412,6 @@ void CLogWidget::paintCell(QPainter* p, int row, int col)
     else if (s == "???")
       pal.setColor(QColorGroup::Text, Qt::magenta);
   }
-
 
   MLEditWrap::paintCell(p, row, col);
 }
