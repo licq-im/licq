@@ -3,12 +3,11 @@
 echo "Licq 0.70 Upgrade Script."
 
 # Check version to avoid problems - implamented by security@solarweb.com
-verpass=`expr \`licq -h|head -1|awk '{print \$3}'\` \< 0.71`
-if [ "$verpass" = "0" ];then
-  echo "ERROR - version incorrect"
-  echo "This script was not meant for your Licq version"
-  exit;
-fi
+#if [ "$verpass" = "0" ];then
+#  echo "ERROR - version incorrect"
+#  echo "This script was not meant for your Licq version"
+#  exit;
+#fi
 
 echo "Updating user config files..."
 for i in $HOME/.licq/users/*.uin $HOME/.licq/owner.uin; do 
