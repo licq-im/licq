@@ -1,8 +1,12 @@
 
 all:
-	@echo "Concatenating configure tests into acinclude.m4"
+	@echo "*** Concatenating configure tests into acinclude.m4"
 	@-rm -f acinclude.m4
-	@$(MAKE) -f Makefile.am top_srcdir=. acinclude.m4
+	@$(MAKE) -f Makefile.am  top_srcdir=. acinclude.m4
+	@echo "*** Fetching libtool"
+	@-rm -f ltmain.sh && cp ../../ltmain.sh ltmain.sh
+	@-rm -f ltconfig && cp ../../ltconfig ltconfig
+	@-rm -f libtool
 	@echo "*** Retrieving configure tests needed by configure.in"
 	@aclocal
 	@echo "*** Scanning for include statements"
