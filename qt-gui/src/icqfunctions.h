@@ -129,7 +129,7 @@ protected:
   void CreateHistoryTab();
   void InitHistoryTab();
   CInfoField *nfoHistory;
-  QTextView *mleHistory;
+  MLEditWrap *mleHistory;
   QLabel *lblHistory;
   QCheckBox *chkHistoryReverse;
   HistoryList m_lHistoryList;
@@ -137,7 +137,6 @@ protected:
   HistoryListIter m_iHistoryEIter;
   bool m_bHistoryReverse;
   unsigned short m_nHistoryIndex, m_nHistoryShowing;
-  QPushButton *btnHistoryReload, *btnHistoryEdit;
 
   static unsigned short s_nX;
   static unsigned short s_nY;
@@ -174,8 +173,6 @@ protected slots:
    void setSpoofed();
    void specialFcn(int);
    void slot_historyReverse(bool);
-   void slot_historyReload();
-   void slot_historyEdit();
    void slot_updatetime();
    void slot_readbtn1();
    void slot_readbtn2();

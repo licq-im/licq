@@ -37,7 +37,6 @@
 #include <qsplitter.h>
 #include <qtabbar.h>
 #include <qtabwidget.h>
-#include <qtextview.h>
 #include <qwidgetstack.h>
 #include <qstylesheet.h>
 #include <qlayout.h>
@@ -545,32 +544,65 @@ void ICQFunctions::CreateHistoryTab()
   tabList[TAB_HISTORY].loaded = false;
 }
 
+class HistoryWidget : public MLEditWrap
+{
+public:
+  HistoryWidget(QWidget* parent = 0, const char* name = 0)
+    : MLEditWrap(true, parent, name)
+    {
+      setReadOnly(true);
+    };
+
+protected:
+
+  virtual void paintCell(QPainter* p, int row, int col)
+    {
+      QFont f(p->font());
+      QPalette& pal = const_cast<QPalette&>(palette());
+
+      QString s = stringShown(row);
+      f.setBold(s[0] == '\001' || s[0] == '\002');
+      int i= row;
+      pal.setColor(QColorGroup::Text, Qt::blue);
+      while(i >= 0) {
+        QString s2 = stringShown(i--);
+        if(s2[0] == '\002')  break;
+        if(s2[0] == '\001') {
+          pal.setColor(QColorGroup::Text, Qt::red);
+          break;
+        }
+      }
+
+      p->setFont(f);
+      MLEditWrap::paintCell(p, row, col);
+    }
+};
+
+
+
 void ICQFunctions::InitHistoryTab()
 {
   tabList[TAB_HISTORY].loaded = true;
   QWidget *p = tabList[TAB_HISTORY].tab;
 
-  QVBoxLayout *lay = new QVBoxLayout(p, 8, 8);
+  QBoxLayout* lay = new QVBoxLayout(p, 8, 8);
+
+  QBoxLayout* l = new QHBoxLayout(lay);
 
   lblHistory = new QLabel(p);
   lblHistory->setAutoResize(true);
   lblHistory->setAlignment(AlignLeft | AlignVCenter);
-  lay->addWidget(lblHistory);
+  l->addWidget(lblHistory);
 
-  mleHistory = new QTextView(p);
-  lay->addWidget(mleHistory);
-
-  QGroupBox *box = new QGroupBox(3, Horizontal, p);
-  lay->addWidget(box);
-
-  btnHistoryReload = new QPushButton(tr("Reload"), box);
-  connect(btnHistoryReload, SIGNAL(clicked()), SLOT(slot_historyReload()));
-  btnHistoryEdit = new QPushButton(tr("Edit"), box);
-  connect(btnHistoryEdit, SIGNAL(clicked()), SLOT(slot_historyEdit()));
-  chkHistoryReverse = new QCheckBox(tr("Reverse"), box);
+  chkHistoryReverse = new QCheckBox(tr("Reverse"), p);
   connect(chkHistoryReverse, SIGNAL(toggled(bool)), SLOT(slot_historyReverse(bool)));
   chkHistoryReverse->setChecked(true);
+  l->addWidget(chkHistoryReverse);
+
+  mleHistory = new HistoryWidget(p);
+  lay->addWidget(mleHistory, 1);
 }
+
 
 //-----ICQFunctions::keyPressEvent----------------------------------------------
 void ICQFunctions::keyPressEvent(QKeyEvent *e)
@@ -1500,22 +1532,6 @@ void ICQFunctions::slot_historyReverse(bool newVal)
   }
 }
 
-void ICQFunctions::slot_historyReload()
-{
-  ICQUser::ClearHistory(m_lHistoryList);
-  SetupHistory();
-}
-
-void ICQFunctions::slot_historyEdit()
-{
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (u == NULL) return;
-
-  (void) new EditFileDlg(u->HistoryFile());
-
-  gUserManager.DropUser(u);
-}
-
 void ICQFunctions::ShowHistoryPrev()
 {
   if (m_iHistorySIter != m_lHistoryList.begin())
@@ -1548,24 +1564,6 @@ void ICQFunctions::ShowHistoryNext()
   }
 }
 
-void ItalisizeLine(QString &t, QString pre, unsigned short inspos)
-{
-  int i = 0;
-  while ( (i = t.find(pre, i)) != -1)
-  {
-    t.insert(i + inspos, "<i>");
-    i = t.find("<br>", i + inspos);
-    if (i == -1)
-    {
-      t.append("</i>");
-      break;
-    }
-    else
-      t.insert(i, "</i>");
-  }
-}
-
-
 //-----ICQFunctions::ShowHistory--------------------------------------------
 void ICQFunctions::ShowHistory()
 {
@@ -1589,18 +1587,14 @@ void ICQFunctions::ShowHistory()
   {
 
     d.setTime_t((*tempIter)->Time());
-    s.sprintf("<font color=\"%s\"><b>%s (%s) [%c%c%c]</b><br><br>",
-              (*tempIter)->Direction() == D_RECEIVER ? COLOR_RECEIVED : COLOR_SENT,
+    s.sprintf("%c%s (%s) [%c%c%c]\n\n%s\n\n",
+              (*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002',
               (const char *)EventDescription(*tempIter),
               (const char *)d.toString(),
               (*tempIter)->IsDirect() ? 'D' : '-',
               (*tempIter)->IsMultiRec() ? 'M' : '-',
-              (*tempIter)->IsUrgent() ? 'U' : '-');
-    QString t = QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*tempIter)->Text() ));
-    ItalisizeLine(t, "<p>&gt;", 3);
-    ItalisizeLine(t, "<br>&gt;", 4);
-    s.append(t);
-    s.append("</font><br><hr><br>");
+              (*tempIter)->IsUrgent() ? 'U' : '-',
+              (*tempIter)->Text());
     st.append(s);
     m_nHistoryShowing++;
     if(m_bHistoryReverse)
@@ -1624,7 +1618,10 @@ void ICQFunctions::ShowHistory()
                       .arg(m_nHistoryIndex)
                       .arg(m_lHistoryList.size()));
   mleHistory->setText(st);
-  mleHistory->center(0,0,0,0);
+  if(!m_bHistoryReverse)
+    mleHistory->goToEnd();
+  else
+    mleHistory->setCursorPosition(0, 0);
 }
 
 
