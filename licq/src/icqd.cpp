@@ -182,7 +182,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_szProxyPasswd = new char[strlen(t_str) + 1];
   strcpy(m_szProxyPasswd, t_str);
 
-  licqConf.ReadBool("UseSS", m_bUseSS, true);
+  licqConf.ReadBool("UseSS", m_bUseSS, false);
 
   // -----OnEvent configuration-----
   char szOnEventCommand[MAX_FILENAME_LEN], *szOnParams[MAX_ON_EVENT];
