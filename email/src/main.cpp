@@ -25,6 +25,13 @@ const char *LP_Name(void)
 }
 
 
+const char *LP_Description(void)
+{
+  static const char desc[] = "ICQ to Email forwarder";
+  return desc;
+}
+
+
 const char *LP_Version(void)
 {
   static const char version[] = "0.01";

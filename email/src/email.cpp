@@ -199,7 +199,7 @@ void CLicqEmail::ProcessSignal(CICQSignal *s)
  *-------------------------------------------------------------------------*/
 void CLicqEmail::ProcessEvent(ICQEvent *e)
 {
-  switch (e->m_nCommand)
+/*  switch (e->m_nCommand)
   {
   case ICQ_CMDxTCP_START:
   case ICQ_CMDxSND_THRUxSERVER:
@@ -207,14 +207,8 @@ void CLicqEmail::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_USERxGETDETAILS:
   case ICQ_CMDxSND_UPDATExDETAIL:
   case ICQ_CMDxSND_UPDATExBASIC:
-    break;
-
   case ICQ_CMDxSND_LOGON:
-    break;
-
   case ICQ_CMDxSND_REGISTERxUSER:
-    break;
-
   case ICQ_CMDxSND_SETxSTATUS:
   case ICQ_CMDxSND_AUTHORIZE:
   case ICQ_CMDxSND_USERxLIST:
@@ -224,16 +218,15 @@ void CLicqEmail::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_USERxADD:
   case ICQ_CMDxSND_SYSxMSGxREQ:
   case ICQ_CMDxSND_SYSxMSGxDONExACK:
-    break;
-
-  case ICQ_CMDxSND_SEARCHxSTART:
+  case ICQ_CMDxSND_SEARCHxINFO:
+  case ICQ_CMDxSND_SEARCHxUIN:
     break;
 
   default:
     gLog.Warn("%sInternal error: CLicqEmail::ProcessEvent(): Unknown event command received from daemon: %d.\n",
               L_WARNxSTR, e->m_nCommand);
     break;
-  }
+  }*/
   delete e;
 }
 
