@@ -399,7 +399,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
             this, SLOT(slot_logon()));
-   connect (this, SIGNAL(destroyed()), this, SLOT(slot_shutdown()));
+   //connect (this, SIGNAL(destroyed()), this, SLOT(slot_shutdown()));
 
    inMiniMode = false;
    updateStatus();
