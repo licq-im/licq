@@ -24,67 +24,59 @@
 #include "licq_user.h"
 #include <qapplication.h>
 #include <qtextcodec.h>
-#ifdef USE_KDE
-#include <kglobal.h>
-#include <kcharsets.h>
-#endif
 
 #include "licq_user.h"
 #include "licq_chat.h"
 
-QStringList* UserCodec::m_encodings;
+UserCodec::encoding_t UserCodec::m_encodings[] = {
+  { QT_TR_NOOP("Unicode"), "UTF-8", 106, true },
 
+  { QT_TR_NOOP("Arabic"), "ISO 8859-6", 82, false },
+  { QT_TR_NOOP("Arabic"), "CP 1256", 2256, true },
 
+  { QT_TR_NOOP("Baltic"), "ISO 8859-13", 109, false },
+  { QT_TR_NOOP("Baltic"), "CP 1257", 2257, true },
 
-#ifndef USE_KDE
-const char * UserCodec::encodings_array[][2] = {
-  { QT_TR_NOOP("Unicode"), "UTF-8" },
+  { QT_TR_NOOP("Central European"), "ISO 8859-2", 5, false },
+  { QT_TR_NOOP("Central European"), "CP 1250", 2250, true },
 
-  { QT_TR_NOOP("Arabic"), "ISO 8859-6" },
-  { QT_TR_NOOP("Arabic"), "CP 1256" },
+  { QT_TR_NOOP("Chinese"), "GBK", -2025, false },
+  { QT_TR_NOOP("Chinese Traditional"), "Big5", 2026, true },
 
-  { QT_TR_NOOP("Baltic"), "ISO 8859-13" },
-  { QT_TR_NOOP("Baltic"), "CP 1257" },
+  { QT_TR_NOOP("Cyrillic"), "ISO 8859-5", 8, false },
+  { QT_TR_NOOP("Cyrillic"), "KOI8-R", 2084, false },
+  { QT_TR_NOOP("Cyrillic"), "CP 1251", 2251, true },
 
-  { QT_TR_NOOP("Central European"), "ISO 8859-2" },
-  { QT_TR_NOOP("Central European"), "CP 1250" },
-
-  { QT_TR_NOOP("Chinese"), "GBK" },
-  { QT_TR_NOOP("Chinese Traditional"), "Big5" },
-
-  { QT_TR_NOOP("Cyrillic"), "ISO 8859-5" },
-  { QT_TR_NOOP("Cyrillic"), "KOI8-R" },
-  { QT_TR_NOOP("Cyrillic"), "CP 1251" },
-
-  { QT_TR_NOOP("Esperanto"), "ISO 8859-3" },
+  { QT_TR_NOOP("Esperanto"), "ISO 8859-3", 6, false },
   
-  { QT_TR_NOOP("Greek"), "ISO 8859-7" },
-  { QT_TR_NOOP("Greek"), "CP 1253" },
+  { QT_TR_NOOP("Greek"), "ISO 8859-7", 10, false },
+  { QT_TR_NOOP("Greek"), "CP 1253", 2253, true },
   
   // Visual Hebrew is avoided on purpose -- its not usable for communications
-  { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I" },
-  { QT_TR_NOOP("Hebrew"), "CP 1255" },
+  { QT_TR_NOOP("Hebrew"), "ISO 8859-8-I", 85, false },
+  { QT_TR_NOOP("Hebrew"), "CP 1255", 2255, true },
 
-  { QT_TR_NOOP("Japanese"), "Shift-JIS" },
-  { QT_TR_NOOP("Japanese"), "JIS7" },
-  { QT_TR_NOOP("Japanese"), "eucJP" },
+  { QT_TR_NOOP("Japanese"), "Shift-JIS", 17, true },
+  { QT_TR_NOOP("Japanese"), "JIS7", 16, false },
+  { QT_TR_NOOP("Japanese"), "eucJP", 18, false },
 
-  { QT_TR_NOOP("Korean"), "eucKR" },
+  { QT_TR_NOOP("Korean"), "eucKR", 38, true },
 
-  { QT_TR_NOOP("Western European"), "ISO 8859-1" },
-  { QT_TR_NOOP("Western European"), "ISO 8859-15" },
-  { QT_TR_NOOP("Western European"), "CP 1252" },
+  { QT_TR_NOOP("Western European"), "ISO 8859-1", 4, false },
+  { QT_TR_NOOP("Western European"), "ISO 8859-15", 111, false },
+  { QT_TR_NOOP("Western European"), "CP 1252", 2252, true },
 
-  { QT_TR_NOOP("Tamil"), "TSCII" },
+  { QT_TR_NOOP("Tamil"), "TSCII", 2028, true },
 
-  { QT_TR_NOOP("Thai"), "TIS-620" },
+  { QT_TR_NOOP("Thai"), "TIS-620", 2259, true },
 
-  { QT_TR_NOOP("Turkish"), "ISO 8859-9" },
-  { QT_TR_NOOP("Turkish"), "CP 1254" },
+  { QT_TR_NOOP("Turkish"), "ISO 8859-9", 12, false },
+  { QT_TR_NOOP("Turkish"), "CP 1254", 2254, true },
 
-  { QT_TR_NOOP("Ukrainian"), "KOI8-U" }
+  { QT_TR_NOOP("Ukrainian"), "KOI8-U", 2088, false },
+  
+  { 0, 0, 0, false } // end marker
 };
-#endif
 
 QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
 {
@@ -125,42 +117,32 @@ QTextCodec *UserCodec::codecForCChatUser(CChatUser *u)
   return QTextCodec::codecForLocale();
 }
 
-QString UserCodec::encodingForIndex(uint index) {
-  if ( !m_encodings ) UserCodec::initializeEncodingNames();
-
-#ifdef USE_KDE
-  return KGlobal::charsets()->encodingForName(( *m_encodings )[index]);
-#else
-  return encodings_array[index][1];
-#endif
-}
-
-QStringList UserCodec::encodings()
+QString UserCodec::encodingForMib(int mib)
 {
-  if ( !m_encodings ) UserCodec::initializeEncodingNames();
-  return ( *m_encodings );
-}
-
-void UserCodec::initializeEncodingNames()
-{
-  if (!m_encodings) {
-    m_encodings = new QStringList;
-#ifdef USE_KDE
-    ( *m_encodings ) = KGlobal::charsets()->descriptiveEncodingNames();
-#else
-    for (uint i=0; i<(sizeof(encodings_array)/sizeof(encodings_array[0])); i++) {
-      ( *m_encodings ).append(qApp->translate("UserCodec", encodings_array[i][0]) + " ( " + encodings_array[i][1] + " )");
-    }
-#endif
+  encoding_t *it = &m_encodings[0];
+  while (it->encoding != NULL) {
+     if (it->mib == mib)
+       return QString::fromLatin1(it->encoding);
+     it++;
   }
+  
+  return QString::null;
 }
 
-QString UserCodec::encodingForName(QString descriptiveName)
+QString UserCodec::nameForEncoding(const QString &encoding)
 {
-#ifdef USE_KDE
-  return KGlobal::charsets()->encodingForName(descriptiveName);
-#else
+  encoding_t *it = &m_encodings[0];
+  while (it->encoding != NULL) {
+    if (QString::fromLatin1(it->encoding) == encoding)
+      return qApp->translate("UserCodec", it->script) + " ( " + it->encoding + " )";
+    it++;
+  }
+  
+  return QString::null;
+}
+
+QString UserCodec::encodingForName(const QString &descriptiveName)
+{
   int left = descriptiveName.find( " ( " );
   return descriptiveName.mid( left + 3, descriptiveName.find( " )", left ) - left - 3 );
-#endif
 }

@@ -27,21 +27,25 @@ class CChatUser;
 
 class UserCodec {
 public:
+  struct encoding_t {
+	const char *script;
+	const char *encoding;
+	int mib;
+	bool isMinimal;
+  };
+
   // Retrieves the codec for an ICQUser object
   static QTextCodec * codecForICQUser(ICQUser *u);
   // Retrieves the codec for an CChatUser object
   static QTextCodec * codecForCChatUser(CChatUser *u);
   // Helper function to retrieve the codec for an UIN
   static QTextCodec * codecForUIN(uint uin);
-  static QString encodingForIndex(uint index);
-  static QString encodingForName(QString descriptiveName);
-#ifndef USE_KDE
-  static const char * encodings_array[][2];
-#endif
-  static QStringList encodings();
-private:
-  static QStringList* m_encodings;
-  static void initializeEncodingNames();
+  static QString encodingForMib(int mib);
+  static QString nameForEncoding(const QString &encoding);
+  static QString encodingForName(const QString &descriptiveName);
+
+public:
+  static encoding_t m_encodings[];
 };      
 
 #endif

@@ -139,7 +139,7 @@ protected slots:
 
   void SwitchToPaneMode();
   void SwitchToIRCMode();
-  void slot_setEncoding(int encoding_index);
+  void slot_setEncoding(int encodingMib);
 };
 
 #endif

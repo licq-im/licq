@@ -92,7 +92,7 @@ protected slots:
   void showUserInfo();
   void slot_usermenu() { gMainWindow->SetUserMenuUin(m_nUin); }
   void slot_security();
-  void slot_setEncoding(int encoding_index);
+  void slot_setEncoding(int encodingMib);
 
 signals:
   void finished(unsigned long);

@@ -542,6 +542,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #endif // USE_KDE
 #endif // USE_DOCK
 
+   // all settings relating to localization
+   licqConf.SetSection("locale");
+   licqConf.ReadStr("DefaultEncoding", szTemp, "");
+   m_DefaultEncoding = QString::fromLatin1(szTemp);
+   licqConf.ReadBool("ShowAllEncodings", m_bShowAllEncodings, false);
+
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 
    connect (&autoAwayTimer, SIGNAL(timeout()), this, SLOT(autoAway()));
@@ -1173,7 +1179,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
     }
     case LIST_ADD:
     {
-      ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_R);
+      ICQUser *u = gUserManager.FetchUser(sig->Uin(), LOCK_W);
       if (u == NULL)
       {
         gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid uin received: %ld\n",
@@ -1198,6 +1204,11 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 
         if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) && show_user(u) )
           (void) new CUserViewItem(u, userView);
+      }
+      // as we intercept the user's addition, we set it our default codec
+      if (!m_DefaultEncoding.isEmpty())
+      {
+        u->SetUserEncoding(m_DefaultEncoding.latin1());
       }
       gUserManager.DropUser(u);
       break;
@@ -2427,6 +2438,11 @@ void CMainWindow::saveOptions()
     sprintf(key, "Floaty%d.W", i);
     licqConf.WriteNum(key, (unsigned short)iter->width());
   }
+
+  // save settings relating to localization
+  licqConf.SetSection("locale");
+  licqConf.WriteStr("DefaultEncoding", m_DefaultEncoding.latin1());
+  licqConf.WriteBool("ShowAllEncodings", m_bShowAllEncodings);
 
   licqConf.FlushFile();
 }

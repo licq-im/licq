@@ -295,11 +295,27 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   QString codec_name = QString::fromLatin1( codec->name() ).lower(); // TODO: determine best codec
   QPopupMenu *popupEncoding = new QPopupMenu;
   popupEncoding->setCheckable(true);
-  QStringList enc = UserCodec::encodings();
-  for (uint i=0; i < enc.count(); i++) {
-    popupEncoding->insertItem(enc[i], this, SLOT(slot_setEncoding(int)), 0, i);
-    if (UserCodec::encodingForName(enc[i]).lower() == codec_name)
-      popupEncoding->setItemChecked(i, true);
+
+  // populate the popup menu
+  UserCodec::encoding_t *it = &UserCodec::m_encodings[0];
+  while(it->encoding != NULL) {
+
+    if (QString::fromLatin1(it->encoding).lower() == codec_name) {
+      if (mainwin->m_bShowAllEncodings || it->isMinimal) {
+        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib);
+      } else {
+        // if the current encoding does not appear in the minimal list
+        popupEncoding->insertSeparator(0);
+        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib, 0);
+      }
+      popupEncoding->setItemChecked(it->mib, true);
+    } else {
+      if (mainwin->m_bShowAllEncodings || it->isMinimal) {
+        popupEncoding->insertItem(UserCodec::nameForEncoding(it->encoding), this, SLOT(slot_setEncoding(int)), 0, it->mib);
+      }
+    }
+    
+    ++it;
   }
 
   tbtEncoding = new QToolButton(barChat);
@@ -904,22 +920,39 @@ unsigned short ChatDlg::LocalPort()
   return chatman->LocalPort();
 }
 
-void ChatDlg::slot_setEncoding(int encoding_index)
+void ChatDlg::slot_setEncoding(int encodingMib)
 {
-  QPopupMenu *popupEncoding = tbtEncoding->popup();
-  if (!popupEncoding) return;
+  /* initialize a codec according to the encoding menu item id */
+  QString encoding( UserCodec::encodingForMib(encodingMib) );
 
-  /* uncheck all encodings */
-  for (unsigned int i=0; i<popupEncoding->count(); i++) {
-    popupEncoding->setItemChecked(popupEncoding->idAt(i), false);
-  }
+  if (!encoding.isNull()) {
+    QTextCodec * _codec = QTextCodec::codecForName(encoding.latin1());
+    if (_codec == NULL)
+    {
+      WarnUser(this, QString(tr("Unable to load encoding <b>%1</b>. Message contents may appear garbled.")).arg(encoding));
+      return;
+    }
+    codec = _codec;
 
-  /* initialize a codec according to the encoding menu's value */
-  if ((encoding_index >= 0) && ((uint)encoding_index < UserCodec::encodings().count())) {
-    codec = QTextCodec::codecForName(UserCodec::encodingForIndex((uint) encoding_index).latin1());
+    QPopupMenu * popupEncoding = tbtEncoding->popup(); 
+
+    /* uncheck all encodings */
+    for (unsigned int i=0; i<popupEncoding->count(); ++i) {
+      popupEncoding->setItemChecked(popupEncoding->idAt(i), false);
+    }
 
     /* make the chosen encoding checked */
-    popupEncoding->setItemChecked(encoding_index, true);
+    popupEncoding->setItemChecked(encodingMib, true);
+
+    /* save prefered character set */
+    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    if (u != NULL) {
+      u->SetEnableSave(false);
+      u->SetUserEncoding(encoding.latin1());
+      u->SetEnableSave(true);
+      u->SaveLicqInfo();
+      gUserManager.DropUser(u);
+    }
 
     emit encodingChanged();
   }

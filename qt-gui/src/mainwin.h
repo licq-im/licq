@@ -107,9 +107,11 @@ public:
        m_bPopCellular, 
        m_bPopIP, 
        m_bPopLastOnline,
-       m_bPopOnlineSince;
+       m_bPopOnlineSince,
+       m_bShowAllEncodings;
 
   QString m_MsgAutopopupKey;
+  QString m_DefaultEncoding;
 
   ColumnInfos colInfo;
   FlashType m_nFlash;

@@ -99,13 +99,13 @@ protected:
    // misc tab
    QWidget* new_misc_options();
    QGroupBox *boxParanoia, *boxExtensions;
-   QLabel *lblUrlViewer, *lblTrans;
+   QLabel *lblUrlViewer, *lblDefaultEncoding;
    QLineEdit *edtUrlViewer;
-   QComboBox *cmbTrans;
+   QComboBox *cmbDefaultEncoding;
    QLabel *lblTerminal;
    QLineEdit *edtTerminal;
    QCheckBox *chkWebPresence, *chkHideIp, *chkIgnoreNewUsers,
-             *chkIgnoreWebPanel, *chkIgnoreMassMsg, *chkIgnoreEmailPager;
+             *chkIgnoreWebPanel, *chkIgnoreMassMsg, *chkIgnoreEmailPager, *chkShowAllEncodings;
 
    // status tab
    QWidget* new_status_options();

@@ -34,6 +34,7 @@
 #include <qstylesheet.h>
 #include <qtabwidget.h>
 #include <qtoolbutton.h>
+#include <qtextcodec.h>
 #ifdef USE_KDE
 #include <kapp.h>
 #include <kfontdialog.h>
@@ -54,7 +55,7 @@
 #include "licq_sar.h"
 #include "wharf.h"
 #include "skin.h"
-
+#include "usercodec.h"
 
 
 OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
@@ -308,25 +309,19 @@ void OptionsDlg::SetupOptions()
                         tr("none") : QString(mainwin->licqDaemon->getUrlViewer()));
   edtTerminal->setText(mainwin->licqDaemon->Terminal() == NULL ?
                        tr("none") : QString(mainwin->licqDaemon->Terminal()));
-  const char *pc = gTranslator.getMapName();
-  if (strcmp(pc, "none") == 0)
+  
+  cmbDefaultEncoding->setCurrentItem(0);
+  // first combo box item is the locale encoding, so we skip it
+  for (int i = 1; i < cmbDefaultEncoding->count(); i++)
   {
-    cmbTrans->setCurrentItem(0);
+    if (UserCodec::encodingForName(cmbDefaultEncoding->text(i)) == mainwin->m_DefaultEncoding)
+    {
+       cmbDefaultEncoding->setCurrentItem(i);
+       break;
+    }
   }
-  else
-   {
-     unsigned short n = 1, c = cmbTrans->count();
-     while (n < c && pc != cmbTrans->text(n)) n++;
-     if (n == c)
-     {
-       gLog.Error("%sError: Unable to find current translation map '%s' in translation directory.\n",
-                  L_ERRORxSTR, pc);
-       cmbTrans->setEnabled(false);
-     }
-     else
-       cmbTrans->setCurrentItem(n);
-   }
-
+  chkShowAllEncodings->setChecked(mainwin->m_bShowAllEncodings);
+  
    // set up the columns stuff
    int i;
    for (i = 0; i < int(mainwin->colInfo.size()); i++)
@@ -519,19 +514,11 @@ void OptionsDlg::ApplyOptions()
   // Plugin tab
   mainwin->licqDaemon->setUrlViewer(edtUrlViewer->text().local8Bit());
   mainwin->licqDaemon->SetTerminal(edtTerminal->text().local8Bit());
-  if (cmbTrans->isEnabled())
-  {
-    if (cmbTrans->currentItem() == 0)
-    {
-      gTranslator.setDefaultTranslationMap();
-    }
-    else
-    {
-      char szTransFileName[MAX_FILENAME_LEN];
-      snprintf(szTransFileName, MAX_FILENAME_LEN, "%s/%s/%s", SHARE_DIR, TRANSLATION_DIR, QFile::encodeName(cmbTrans->currentText()).data());
-      gTranslator.setTranslationMap(szTransFileName);
-    }
-  }
+  if (cmbDefaultEncoding->currentItem() > 0)
+    mainwin->m_DefaultEncoding = UserCodec::encodingForName(cmbDefaultEncoding->currentText());
+  else
+    mainwin->m_DefaultEncoding = QString::null;
+  mainwin->m_bShowAllEncodings = chkShowAllEncodings->isChecked();
 
   mainwin->autoAwayTime = spnAutoAway->value();
   mainwin->autoNATime = spnAutoNa->value();
@@ -693,32 +680,23 @@ QWidget* OptionsDlg::new_appearance_options()
   QWhatsThis::add(chkMsgChatView, tr("Show the current chat history in Send Window"));
 
   l = new QVBoxLayout(l);
-  boxLocale = new QGroupBox(2, Vertical, tr("Locale"), w);
-  lblTrans = new QLabel(tr("Translation:"), boxLocale);
-  QWhatsThis::add(lblTrans, tr("Sets which translation table should be used for "
-                              "translating characters."));
+  boxLocale = new QGroupBox(1, Horizontal, tr("Localization"), w);
+  lblDefaultEncoding = new QLabel(tr("Default Encoding:"), boxLocale);
+  QWhatsThis::add(lblDefaultEncoding, tr("Sets which default encoding should be used for newly added contacts."));
 
-  cmbTrans = new QComboBox(false, boxLocale);
-  QString szTransFilesDir;
-  szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
-  QDir dTrans(szTransFilesDir, QString::null, QDir::Name, QDir::Files | QDir::Readable);
-  cmbTrans->insertItem(tr("none"));
-  cmbTrans->insertStringList(dTrans.entryList());
-
-  /*QString szLocaleFilesDir;
-  szLocaleFilesDir.sprintf("%sqt-gui/locale", SHARE_DIR);
-  QDir dLocale(szLocaleFilesDir, "*.qm", QDir::Name, QDir::Files | QDir::Readable);
-
-  if (!dLocale.count())
+  cmbDefaultEncoding = new QComboBox(false, boxLocale);
+  cmbDefaultEncoding->insertItem(tr("System default (%1)").arg(QString(QTextCodec::codecForLocale()->name())));
   {
-    cmbLocale->insertItem(tr("NONE"));
-    cmbLocale->setEnabled(false);
+    UserCodec::encoding_t * it = &UserCodec::m_encodings[0];
+    while (it->encoding != NULL) {
+      cmbDefaultEncoding->insertItem(UserCodec::nameForEncoding(it->encoding));
+      ++it;
+    }
   }
-  else
-  {
-    cmbLocale->insertItem(tr("Auto"));
-    cmbLocale->insertStringList(dLocale.entryList());
-  }*/
+
+  chkShowAllEncodings = new QCheckBox(tr("Show all encodings"), boxLocale);
+  QWhatsThis::add(chkShowAllEncodings, tr("Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings."));
+
 #if QT_VERSION < 210
   QWidget* dummy_w = new QWidget(boxLocale);
   if (dummy_w);
