@@ -202,6 +202,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_bCustomAR = u->CustomAutoResponse()[0] != '\0';
    m_nEvents = u->NewMessages();
    m_bSecure = u->Secure();
+   m_bUrgent = false;
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -283,9 +284,10 @@ void CUserViewItem::setGraphics(ICQUser *u)
        m_pIcon = &CMainWindow::iconForEvent(SubCommand);
    }
 
-   if (v->msgTimerId == 0 &&
-       ((u->NewMessages() > 0 && gMainWindow->m_nFlash == FLASH_ALL) ||
-       (m_bUrgent && gMainWindow->m_nFlash == FLASH_URGENT)))
+   m_bFlash = ((u->NewMessages() > 0 && gMainWindow->m_nFlash == FLASH_ALL) ||
+       (m_bUrgent && gMainWindow->m_nFlash == FLASH_URGENT));
+
+   if (v->msgTimerId == 0 && m_bFlash)
      v->msgTimerId = v->startTimer(FLASH_TIME);
 
    if (u->NewUser() &&
@@ -582,16 +584,20 @@ void CUserView::timerEvent(QTimerEvent* e)
   }
   else
   {
-    if(m_nFlashCounter++ & 1) // hide event icon
+    if (m_nFlashCounter++ & 1) // hide event icon
     {
       QListViewItemIterator it(this);
       for(; it.current(); ++it)
       {
-        CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
-        if(item->ItemUin())  item->setPixmap(0, *item->m_pIconStatus);
+        CUserViewItem *item = static_cast<CUserViewItem*>(it.current());
+        if (item->ItemUin() && item->m_bFlash && item->m_pIconStatus != NULL)
+        {
+          item->setPixmap(0, *item->m_pIconStatus);
+        }
       }
     }
-    else {
+    else
+    {
       // show
       bool foundIcon = false;
       QListViewItemIterator it(this);
@@ -599,15 +605,15 @@ void CUserView::timerEvent(QTimerEvent* e)
       for(; it.current(); ++it)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
-        if(item->ItemUin() && item->m_pIcon != NULL &&
-           item->m_pIcon != item->m_pIconStatus)
+        if(item->ItemUin() && item->m_bFlash && item->m_pIcon != NULL)
         {
           foundIcon = true;
           item->setPixmap(0, *item->m_pIcon);
         }
       }
       // no pending messages any more, kill timer
-      if(!foundIcon) {
+      if(!foundIcon)
+      {
         killTimer(msgTimerId);
         msgTimerId = 0;
       }
