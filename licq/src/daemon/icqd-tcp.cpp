@@ -18,6 +18,7 @@
 #include "licq_user.h"
 #include "licq_events.h"
 #include "licq_log.h"
+#include "licq_chat.h"
 #include "support.h"
 
 
@@ -1152,5 +1153,10 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
 }
 
 
+void CICQDaemon::StupidChatLinkageFix()
+{
+  CChatManager *chatman = new CChatManager(NULL, 0);
+  delete chatman;
+}
 
 

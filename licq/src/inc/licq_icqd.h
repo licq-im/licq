@@ -283,6 +283,8 @@ protected:
   int ReverseConnectToUser(unsigned long nUin, unsigned long nUin,
                            unsigned short nPort);
 
+  void StupidChatLinkageFix();
+
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);
   friend void *MonitorSockets_tep(void *p);

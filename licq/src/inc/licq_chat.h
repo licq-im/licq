@@ -5,12 +5,74 @@
 #include "config.h"
 #endif
 
-#include "licq_packets.h"
+#include <deque.h>
 
-const unsigned long FONT_PLAIN     = 0x00000000;
-const unsigned long FONT_BOLD      = 0x00000001;
-const unsigned long FONT_ITALIC    = 0x00000002;
-const unsigned long FONT_UNDERLINE = 0x00000004;
+#include "licq_packets.h"
+class CICQDaemon;
+
+
+/*----------------------
+ * Licq Chat Module
+ *
+ * ICQ Chat is fairly easy to implement using the Licq ChatManager.
+ * There are three parts, initiating a chat, accepting a chat, and
+ * managing a chat in session.
+ * 1. Initiating
+ *
+ *  <to be filled in later>
+ *
+ *
+ * 2. Accepting
+ *
+ *  < to be filled in later>
+ *
+ *
+ * 3. Managing
+ *
+ *  Once the plugin has created whatever chat dialog it needs, the following
+ *  steps should be performed to start the actual chat session:
+ *  a) Create a new instance of CChatManager.  This class encapsulates
+ *     all the necessary handshaking and packet processing to both connect
+ *     to and receive chat clients.
+ *     The class takes as arguments a pointer to the licq daemon, the Uin
+ *     we are first connecting to or first receiving a connection from,
+ *     and the initial GUI settings (colors, font).
+ *  b) Attach to the chat manager pipe.  The ChatManager contains a function
+ *     Pipe() which will return a socket to listen on for messages.  When
+ *     something interesting happens during the chat (a new user connects,
+ *     a user disconnects, a user changes colors, a user types a
+ *     character...) a single byte is written to this socket and the relevant
+ *     CChatEvent is pushed onto the Chat Event queue.  Hence if there is
+ *     data to be read on the Pipe(), then pop it off (it can be ignored) and
+ *     then call CChatManager::PopChatEvent() which will return the
+ *     CChatEvent.  This is just like the plugin pipe used to send messages
+ *     from the daemon to the plugin.
+ *  c) Call either CChatManager::StartAsServer() or
+ *     CChatManager::StartAsClient(<port>) to tell the chat manager to start
+ *     doing stuff.
+ *
+ *  Now it is just a matter of waiting on the Pipe() until an event occurs,
+ *  which will be an event of type CHAT_CONNECTION indicating that a new
+ *  user has joined the chat.  Writing to the chat session is done by
+ *  calling any of the CChatManager::Send<...> functions (such as
+ *  SendCharacter(char)).
+ *
+ *  When a user types a newline, the CHAT_NEWLINE
+ *  event is sent, and the CChatEvent::Data() element will contain the entire
+ *  past line of text typed.  This can be used to implement IRC mode
+ *  efficiently (note that since each character is also passed to the plugin
+ *  as it is typed, the line sent in a CHAT_NEWLINE event is composed
+ *  of duplicate characters).  For a CHAT_CHARACTER event, the
+ *  CChatEvent::Data() field contains the character typed.  For all other
+ *  events the Data() field will be NULL.
+ *
+ *  Call CChatManager::CloseChat() when finished with the chat.  Note that
+ *  this will generate a number of CHAT_DISCONNECTION events as each client
+ *  is disconnected from the chat.
+ *
+ *--------------------------------------------------------------------------*/
+
+// Chat event types
 const unsigned char CHAT_COLORxFG    = 0x00;
 const unsigned char CHAT_COLORxBG    = 0x01;
 const unsigned char CHAT_BEEP        = 0x07;
@@ -19,7 +81,15 @@ const unsigned char CHAT_NEWLINE     = 0x0D;
 const unsigned char CHAT_FONTxFAMILY = 0x10;
 const unsigned char CHAT_FONTxFACE   = 0x11;
 const unsigned char CHAT_FONTxSIZE   = 0x12;
+const unsigned char CHAT_CHARACTER     = 0x7D;
+const unsigned char CHAT_CONNECTION    = 0x7E;
+const unsigned char CHAT_DISCONNECTION = 0x7F;
 
+// Font contants (should not need to be used by the plugin)
+const unsigned long FONT_PLAIN     = 0x00000000;
+const unsigned long FONT_BOLD      = 0x00000001;
+const unsigned long FONT_ITALIC    = 0x00000002;
+const unsigned long FONT_UNDERLINE = 0x00000004;
 
 //=====Chat=====================================================================
 class CPacketChat : public CPacket
@@ -137,6 +207,7 @@ public:
   bool FontBold() { return m_nFontFace & FONT_BOLD; }
   bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
   bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  unsigned long FontFace() { return m_nFontFace; }
   const char *FontFamily() { return m_szFontFamily; }
   ChatClientList &ChatClients()  { return chatClients; }
 
@@ -177,6 +248,7 @@ public:
   bool FontBold() { return m_nFontFace & FONT_BOLD; }
   bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
   bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  unsigned long FontFace() { return m_nFontFace; }
   const char *FontFamily() { return m_szFontFamily; }
 
 protected:
@@ -230,6 +302,7 @@ public:
   bool FontBold() { return m_nFontFace & FONT_BOLD; }
   bool FontItalic() { return m_nFontFace & FONT_ITALIC; }
   bool FontUnderline() { return m_nFontFace & FONT_UNDERLINE; }
+  unsigned long FontFace()  { return m_nFontFace; }
 
 protected:
   unsigned long m_nFontFace;
@@ -275,6 +348,152 @@ class CPChat_Beep : public CPacketChat
 {
 public:
   CPChat_Beep();
+};
+
+
+
+//=====CChatUser=============================================================
+extern "C" { void *ChatManager_tep(void *); }
+
+
+class CChatUser
+{
+public:
+  unsigned long Uin()       { return uin; }
+  const char *Name()        { return chatname; }
+  int *ColorFg()            { return colorFore; }
+  int *ColorBg()            { return colorBack; }
+  char *FontFamily()        { return fontFamily; }
+  unsigned short FontSize() { return fontSize; }
+  bool FontBold()           { return fontFace & FONT_BOLD; }
+  bool FontItalic()         { return fontFace & FONT_ITALIC; }
+  bool FontUnderline()      { return fontFace & FONT_UNDERLINE; }
+
+  ~CChatUser() {}
+
+protected:
+  CChatUser();
+
+  unsigned long uin;
+  char chatname[32];
+  int colorFore[3], colorBack[3];
+  char fontFamily[64];
+  unsigned short fontSize;
+  unsigned long fontFace;
+
+  CChatClient client;
+  TCPSocket sock;
+  deque <unsigned char> chatQueue;
+  unsigned short state;
+  char linebuf[1024];
+
+  pthread_mutex_t mutex;
+
+friend class CChatManager;
+friend class CChatEvent;
+friend void *ChatManager_tep(void *);
+};
+
+typedef list<CChatUser *> ChatUserList;
+
+
+//=====ChatEvent=============================================================
+
+class CChatEvent
+{
+public:
+  CChatEvent(unsigned char, CChatUser *, char * = NULL);
+  ~CChatEvent();
+
+  unsigned char Command() { return m_nCommand; }
+  CChatUser *Client() { return m_pUser; }
+  char *Data() { return m_szData; }
+
+protected:
+  unsigned char m_nCommand;
+  CChatUser *m_pUser;
+  char *m_szData;
+  bool m_bLocked;
+
+friend class CChatManager;
+};
+
+typedef list <CChatEvent *> ChatEventList;
+
+
+//=====ChatManager===========================================================
+
+class CChatManager
+{
+public:
+  CChatManager(CICQDaemon *d, unsigned long nUin,
+     const char *fontFamily = "courier",
+     unsigned short fontSize = 12, bool fontBold = false,
+     bool fontItalic = false, bool fontUnderline = false,
+     int fr = 0xFF, int fg = 0xFF, int fb = 0xFF,
+     int br = 0x00, int bg = 0x00, int bb = 0x00);
+  ~CChatManager();
+
+  bool StartAsServer();
+  bool StartAsClient(unsigned short nPort);
+
+  void CloseChat();
+  char *ClientsStr();
+  unsigned short ConnectedUsers()  { return chatUsers.size(); }
+
+  unsigned short LocalPort() { return chatServer.LocalPort(); }
+  const char *Name()  { return m_szName; }
+  const char *FontFamily()  { return m_szFontFamily; }
+  unsigned long FontFace()  { return m_nFontFace; }
+  unsigned short FontSize()  { return m_nFontSize; }
+  int *ColorFg()  { return m_nColorFore; }
+  int *ColorBg()  { return m_nColorBack; }
+
+  void ChangeFontFamily(const char *);
+  void ChangeFontSize(unsigned short);
+  void ChangeFontFace(bool, bool, bool);
+  void ChangeColorFg(int, int, int);
+  void ChangeColorBg(int, int, int);
+  void SendBeep();
+  void SendNewline();
+  void SendBackspace();
+  void SendCharacter(char);
+
+  int Pipe() { return pipe_events[PIPE_READ]; }
+  CChatEvent *PopChatEvent();
+
+protected:
+  CICQDaemon *licqDaemon;
+  int pipe_events[2], pipe_thread[2];
+  unsigned long m_nUin;
+  unsigned short m_nSession;
+  ChatUserList chatUsers;
+  ChatUserList chatUsersClosed;
+  ChatEventList chatEvents;
+  pthread_t thread_chat;
+
+  int m_nColorFore[3], m_nColorBack[3];
+  char m_szFontFamily[64], m_szName[64];
+  unsigned short m_nFontSize;
+  unsigned long m_nFontFace;
+
+  TCPSocket chatServer;
+
+  CSocketManager sockman;
+
+  bool StartChatServer();
+  bool ConnectToChat(CChatClient &);
+  CChatUser *FindChatUser(int);
+  void CloseClient(CChatUser *);
+  bool ProcessPacket(CChatUser *);
+  bool ProcessRaw(CChatUser *);
+  void PushChatEvent(CChatEvent *);
+
+  void SendBuffer(CBuffer *);
+  void SendPacket(CPacket *);
+
+friend void *ChatManager_tep(void *);
+
 };
 
 
