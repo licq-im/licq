@@ -99,6 +99,14 @@ struct more_window
 	ICQUser *user;
 };
 
+struct history
+{
+	GtkWidget *text;
+	GtkWidget *check;
+	ICQUser *user;
+};
+
+
 /******************* Global Variables ******************/
 
 /* Globals in away_window.cpp */
@@ -113,6 +121,10 @@ extern GdkPixmap *online, *offline, *away, *na, *dnd, *occ, *message;
 
 /* Globals in convo.cpp */
 extern GList *cnv;
+
+
+/* Globals in history_window.cpp */
+extern const gchar *line;
 
 
 /* Globals in main.cpp */
@@ -164,9 +176,10 @@ extern void away_close(GtkWidget *, GtkWidget *);
 
 /* Functions in contact_list.cpp */
 extern GtkWidget *contact_list_new(gint, gint);
-extern GtkWidget *contact_list_refresh();
+extern void contact_list_refresh();
 extern void contact_list_order();
 extern void contact_list_click(GtkWidget *, GdkEventButton *, gpointer);
+extern void add_to_popup(const gchar *, GtkWidget *, GtkSignalFunc, ICQUser *);
 
 
 /* Functions in convo.cpp */
@@ -187,6 +200,11 @@ extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
 extern void user_function(ICQEvent *);
 extern void check_event(ICQEvent *, GtkWidget *, guint &, gchar *);
 extern void check_other_event(ICQEvent *, GtkWidget *, guint &);
+
+
+/* Functions in history_window.cpp */
+extern void list_history(GtkWidget *, ICQUser *);
+extern void reverse_history(GtkWidget *, struct history *);
 
 
 /* Functions in main_window.cpp */
