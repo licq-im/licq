@@ -360,8 +360,15 @@ void cancel_file(GtkWidget *widget, gpointer _fw)
 {
 	struct file_window *fw = (struct file_window *)_fw;
 
-	// Cancel the transfer
-	fw->ftman->CloseFileTransfer();
+	gchar *label_text;
+	gtk_label_get(GTK_LABEL(fw->cancel), &label_text);
+
+	if(strcasecmp(label_text, "Cancel") == 0)
+	{
+		// Cancel the transfer
+		fw->ftman->CloseFileTransfer();
+	}
+
 	gdk_input_remove(fw->input_tag);
 
 	// Close this window
@@ -428,6 +435,7 @@ void file_pipe_callback(gpointer data, gint pipe, GdkInputCondition cond)
 
 		  case FT_DONExBATCH:
 		  {
+		  	gtk_label_set_text(GTK_LABEL(fw->cancel), "Close");
 		  	message_box("File Transfer:\nBatch Done");
 			fw->ftman->CloseFileTransfer();
 			break;

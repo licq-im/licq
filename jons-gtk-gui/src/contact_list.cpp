@@ -42,6 +42,9 @@ GtkWidget *contact_list_new(gint height, gint width)
 {
 	GtkWidget *_contact_l;
 
+#if 0
+THIS IS HERE BECAUSE I AM CHANGING TO A CTREE...
+
 	/* Create the contact list using a 3 column clist */
 	_contact_l = gtk_clist_new(3);
 	gtk_clist_set_row_height(GTK_CLIST(_contact_l), 17);
@@ -56,6 +59,13 @@ GtkWidget *contact_list_new(gint height, gint width)
 	gtk_clist_set_column_visibility(GTK_CLIST(_contact_l), 0, FALSE);
 
 	/* Size the contact list */
+	gtk_widget_set_usize(_contact_l, width, height);
+#endif
+
+	_contact_l = gtk_tree_new();
+	gtk_tree_set_view_mode(GTK_TREE(_contact_l), GTK_TREE_VIEW_ITEM);
+	gtk_tree_set_view_lines(GTK_TREE(_contact_l), false);
+
 	gtk_widget_set_usize(_contact_l, width, height);
 
 	/* A double click on a user name */
@@ -72,7 +82,7 @@ gint flash_icons(gpointer data)
 	// If we aren't supposed to flash or there are no things to flash
 	if(!flash_events || (nToFlash < 0))
 		return -1;
-		
+/*		
 	list<SFlash *>::iterator it;
 	for(it = FlashList.begin(); it != FlashList.end(); it++)
 	{
@@ -91,7 +101,7 @@ gint flash_icons(gpointer data)
 				(*it)->icon->bm);
 		}
 	}
-
+*/
 	return -1;
 }
 
@@ -163,6 +173,9 @@ void contact_list_refresh()
 				break;
 			}
 
+			gtk_clist_set_foreground(GTK_CLIST(contact_list),
+				num_users,
+				get_status_color(pUser->Status()));
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
 				1, icon->pm, icon->bm);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
@@ -192,8 +205,6 @@ void contact_list_refresh()
 			   (user_status & ICQ_STATUS_FxPRIVATE))
 			{
 				cur_icon = invisible;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, online_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, ",");
 			}
@@ -201,8 +212,6 @@ void contact_list_refresh()
 			else if((gushort)user_status == ICQ_STATUS_OFFLINE)
 			{
 				cur_icon = offline;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, offline_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, "~");
 			}
@@ -210,8 +219,6 @@ void contact_list_refresh()
 		  	else if(user_status & ICQ_STATUS_DND)
 		  	{
 				cur_icon = dnd;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, "X");
 		  	}
@@ -219,8 +226,6 @@ void contact_list_refresh()
 		  	else if(user_status & ICQ_STATUS_OCCUPIED)
 		  	{
 				cur_icon = occ;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, "x");
 		  	}
@@ -228,8 +233,6 @@ void contact_list_refresh()
 	  	  	else if(user_status & ICQ_STATUS_NA)
 		  	{
 				cur_icon = na;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, "N");
 		  	}
@@ -237,8 +240,6 @@ void contact_list_refresh()
 		  	else if(user_status & ICQ_STATUS_AWAY)
 		  	{
 				cur_icon = away;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, "A");
 		  	}
@@ -246,30 +247,20 @@ void contact_list_refresh()
 		  	else if(user_status & ICQ_STATUS_FREEFORCHAT)
 		  	{
 				cur_icon = ffc;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, online_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, "*");
 		  	}
 		
-		  	else if(user_status & ICQ_STATUS_OCCUPIED)
-		  	{
-				cur_icon = occ;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, away_color);
-				gtk_clist_set_text(GTK_CLIST(contact_list),
-					num_users, 0, "x");
-		  	}
-
 			else
 			{
 				cur_icon = online;
-				gtk_clist_set_foreground(GTK_CLIST(contact_list)
-					, num_users, online_color);
 				gtk_clist_set_text(GTK_CLIST(contact_list),
 					num_users, 0, "+");
 			}
 		
+			gtk_clist_set_foreground(GTK_CLIST(contact_list),
+				num_users,
+				get_status_color(pUser->Status()));
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list),
 				num_users, 1, cur_icon->pm, cur_icon->bm);
 		} // else
@@ -331,13 +322,29 @@ void contact_list_refresh()
 	gtk_clist_thaw(GTK_CLIST(contact_list));
 }
 
+GdkColor *get_status_color(unsigned long status)
+{
+	switch(status)
+	{
+	case ICQ_STATUS_OFFLINE:
+		return offline_color;
+
+	case ICQ_STATUS_FxPRIVATE:
+	case ICQ_STATUS_ONLINE:
+	case ICQ_STATUS_FREEFORCHAT:
+		return online_color;
+
+	default:
+		return away_color;
+	}
+}
+
 void contact_list_click(GtkWidget *contact_list,
 			GdkEventButton *event,
 			gpointer data)
 {
 	gint row;
 	gint column;
-	gchar str_status[30];
 	ICQUser *user;
 	struct conversation *c = NULL;
 	struct timeval check_timer;
@@ -445,6 +452,7 @@ void contact_list_click(GtkWidget *contact_list,
 		if(user->Status() != ICQ_STATUS_ONLINE && 
 		   user->Status() != ICQ_STATUS_OFFLINE)
 		{
+			gchar str_status[30];
 			strcpy(str_status, "Read ");
 			strcat(str_status, user->StatusStrShort());
 			strcat(str_status, " Message");

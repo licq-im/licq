@@ -38,7 +38,12 @@ struct conversation *convo_new(ICQUser *u, gboolean events)
 		c = convo_find(u->Uin());
 
 		if(c != NULL)
+		{
+			if(u->Status() == ICQ_STATUS_OFFLINE)
+				gtk_toggle_button_set_active(
+				GTK_TOGGLE_BUTTON(c->send_server), true);
 			return c;
+		}
 	}
 
 	c = g_new0(struct conversation, 1);
@@ -57,6 +62,10 @@ struct conversation *convo_new(ICQUser *u, gboolean events)
 
 	else
 		convo_show(c);
+
+	if(u->Status() == ICQ_STATUS_OFFLINE)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->send_server),
+			true);
 
 	return c;
 }

@@ -183,6 +183,8 @@ void list_read_message(GtkWidget *widget, ICQUser *user)
 
 	/* Append it to gslist */
 	catcher = g_slist_append(catcher, uaw->etag); 
+
+	g_free(title);
 }
 
 void close_away_window(GtkWidget *widget, struct user_away_window *uaw)

@@ -81,13 +81,13 @@ void menu_options_create()
 		GtkAttachOptions(GTK_FILL | GTK_EXPAND), GTK_FILL, 3, 3);
 
 	/* Set the check buttons */
-	set_options(ow);
+	//set_options(ow);
 
 	/* Put the table in the notebook */
 	label = gtk_label_new("General");
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
 
-/**************** The second tab: Contact List *******************/
+/**************** Second tab: Contact List Colors ****************/
 	
 	/* Recreate the table */
 	table = gtk_table_new(5, 2, FALSE);
@@ -152,6 +152,147 @@ void menu_options_create()
 	label = gtk_label_new("Contact List");
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
 
+/********************* Third tab: Network *************************/
+
+	table = gtk_table_new(5, 2, false);
+
+	// ICQ Servers frame
+	GtkWidget *frmServers = gtk_frame_new("ICQ Servers");
+	gtk_table_attach(GTK_TABLE(table), frmServers, 0, 1, 0, 1,
+		GTK_FILL, GTK_FILL, 3, 3);
+
+	// Table inside the servers frame
+	GtkWidget *tblServers = gtk_table_new(3, 2, false);
+	gtk_container_add(GTK_CONTAINER(frmServers), tblServers);
+
+	// CList of servers
+	gchar *szTitles[] = { "Server", "Port" };
+	ow->lstServers = gtk_clist_new_with_titles(2, szTitles);
+	gtk_table_attach(GTK_TABLE(tblServers), ow->lstServers, 0, 2, 0, 1,
+		GTK_FILL, GTK_FILL, 3, 3);
+
+	// Default server port
+	label = gtk_label_new("Default server port:");
+	gtk_table_attach(GTK_TABLE(tblServers), label, 0, 1, 1, 2,
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL), 3, 3);
+
+	// Spin button and it's adjustment
+	GtkAdjustment *adjPort =
+		(GtkAdjustment *)gtk_adjustment_new(
+			0, 1.0, 65535.0, 1.0, 15.0, 15.0);
+	ow->spnDefPort = gtk_spin_button_new(adjPort, 25.0, 0);
+	gtk_spin_button_set_update_policy(GTK_SPIN_BUTTON(ow->spnDefPort),
+		GTK_UPDATE_IF_VALID);
+	gtk_spin_button_set_numeric(GTK_SPIN_BUTTON(ow->spnDefPort), true);
+	gtk_table_attach(GTK_TABLE(tblServers), ow->spnDefPort, 1, 2, 1, 2,
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL), 3, 3);
+
+	// Firewall frame
+	GtkWidget *frmFirewall = gtk_frame_new("Firewall Settings");
+	gtk_table_attach(GTK_TABLE(table), frmFirewall, 1, 2, 0, 1,
+		GTK_FILL, GTK_FILL, 3, 3);
+
+	// Table inside the firewall frame
+	GtkWidget *tblFirewall = gtk_table_new(3, 2, false);
+	gtk_container_add(GTK_CONTAINER(frmFirewall), tblFirewall);
+
+	ow->chkBehindFirewall = gtk_check_button_new_with_label(
+		"I am behind a firewall/proxy");
+	gtk_table_attach(GTK_TABLE(tblFirewall), ow->chkBehindFirewall,
+		0, 1, 0, 1, GTK_FILL, GTK_FILL, 3, 3);
+
+	ow->btnSOCKS = gtk_button_new_with_label("SOCKS5 Proxy");
+	gtk_signal_connect(GTK_OBJECT(ow->btnSOCKS), "clicked",
+		GTK_SIGNAL_FUNC(SOCKSClicked), NULL);
+	gtk_table_attach(GTK_TABLE(tblFirewall), ow->btnSOCKS, 0, 1, 1, 2,
+		GtkAttachOptions(0),
+		GtkAttachOptions(0), 3, 3);
+
+	// Box for the firewall host and entry
+	GtkWidget *boxHBox = gtk_hbox_new(false, 0);
+
+	label = gtk_label_new("Firewall/Proxy Host:");
+	gtk_box_pack_start(GTK_BOX(boxHBox), label, false, false, 1);
+
+	ow->txtFirewallHost = gtk_entry_new();
+	gtk_widget_set_usize(ow->txtFirewallHost, 100, 15);
+	gtk_box_pack_start(GTK_BOX(boxHBox), ow->txtFirewallHost, false,
+		false, 1);
+
+	gtk_table_attach(GTK_TABLE(tblFirewall), boxHBox, 0, 2, 2, 3,
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL), 1, 3);
+	
+	ow->chkTCPEnabled = gtk_check_button_new_with_label(
+		"I can receive direct connections");
+	gtk_table_attach(GTK_TABLE(tblFirewall), ow->chkTCPEnabled, 0, 1, 3, 4,
+		GTK_FILL, GTK_FILL, 3, 3);	
+
+	boxHBox = gtk_hbox_new(false, 2);
+	
+	// Port range
+	label = gtk_label_new("Port Range:");
+	gtk_box_pack_start(GTK_BOX(boxHBox), label, false, false, 0);
+	
+	// Adjustments
+	adjPort = (GtkAdjustment *)gtk_adjustment_new(
+			0, 0.0, 65535.0, 15.0, 100.0, 100.0);
+	ow->spnPortLow = gtk_spin_button_new(adjPort, 25.0, 0);
+
+	adjPort = (GtkAdjustment *)gtk_adjustment_new(
+			0, 0.0, 65535.0, 15.0, 100.0, 100.0);
+	ow->spnPortHigh = gtk_spin_button_new(adjPort, 25.0, 0);
+	label = gtk_label_new("to");
+
+	// Resize the spin buttons
+	gtk_widget_set_usize(ow->spnPortLow, 55, 15);
+	gtk_widget_set_usize(ow->spnPortHigh, 55, 15);
+
+	gtk_box_pack_start(GTK_BOX(boxHBox), ow->spnPortLow, false, false, 0);
+	gtk_box_pack_start(GTK_BOX(boxHBox), label, false, false, 0);
+	gtk_box_pack_start(GTK_BOX(boxHBox), ow->spnPortHigh, false, false, 0);
+
+	gtk_table_attach(GTK_TABLE(tblFirewall), boxHBox, 0, 2, 4, 5,
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL),
+		GtkAttachOptions(GTK_EXPAND | GTK_FILL), 3, 3);
+
+	label = gtk_label_new("Network");
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table, label);
+
+/********************* Fourth tab: Status *************************/
+
+	table = gtk_table_new(4, 2, false);
+
+	GtkWidget *frmAutoLogon = gtk_frame_new("Auto Logon");
+	
+	// Box for the combo box and check button
+	GtkWidget *boxALBox = gtk_vbox_new(false, 5);
+	
+	// Combox box with the options
+	GList *lItems = 0;
+	lItems = g_list_append(lItems, "(None)");
+	lItems = g_list_append(lItems, "Online");
+	lItems = g_list_append(lItems, "Away");
+	lItems = g_list_append(lItems, "Not Available");
+	lItems = g_list_append(lItems, "Occupied");
+	lItems = g_list_append(lItems, "Do Not Disturb");
+
+	ow->cmbAutoLogon = gtk_combo_new();
+	gtk_combo_set_popdown_strings(GTK_COMBO(ow->cmbAutoLogon), lItems);
+
+	gtk_box_pack_start(GTK_BOX(boxALBox), ow->cmbAutoLogon, false, false, 0);
+
+	// Check button for invisible
+	ow->chkInvisible = gtk_check_button_new_with_label("Invisible");
+	gtk_box_pack_start(GTK_BOX(boxALBox), ow->chkInvisible, false, false, 0);
+
+	gtk_container_add(GTK_CONTAINER(frmAutoLogon), boxALBox);
+
+	label = gtk_label_new("Status");
+	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), frmAutoLogon, label);
+
 /********************* END OF ALL THE TABS ************************/
 
 	/* Put the notebook in the window */
@@ -163,11 +304,15 @@ void menu_options_create()
 	gtk_signal_connect(GTK_OBJECT(close), "clicked",
 			   GTK_SIGNAL_FUNC(done_options), (gpointer)ow);
 	
+	// Set all the options now
+	set_options(ow);
+
 	gtk_widget_show_all(ow->window);
 }
 
 void set_options(struct options_window *ow)
 {
+	// Check boxes for contact list apperance
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->show_ignored),
 		show_ignored_users);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->show_offline),
@@ -176,6 +321,20 @@ void set_options(struct options_window *ow)
 		enter_sends);
 	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->flash_events),
 		flash_events);
+
+	// Clist of servers
+
+	// Default server port
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ow->spnDefPort),
+		icq_daemon->getDefaultRemotePort());
+
+	// Firewall stuff
+	gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(ow->chkTCPEnabled),
+		icq_daemon->TCPEnabled());
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ow->spnPortLow),
+		icq_daemon->TCPPortsLow());
+	gtk_spin_button_set_value(GTK_SPIN_BUTTON(ow->spnPortHigh),
+		icq_daemon->TCPPortsHigh());
 }
 
 void done_options(GtkWidget *widget, gpointer data)
@@ -195,6 +354,14 @@ void done_options(GtkWidget *widget, gpointer data)
 	gtk_widget_destroy(ow->window);
 
 	// Save the daemon options
+	icq_daemon->setDefaultRemotePort(gtk_spin_button_get_value_as_int(
+		GTK_SPIN_BUTTON(ow->spnDefPort)));
+	icq_daemon->SetTCPPorts(gtk_spin_button_get_value_as_int(
+		GTK_SPIN_BUTTON(ow->spnPortLow)),
+		gtk_spin_button_get_value_as_int(GTK_SPIN_BUTTON(ow->spnPortHigh)));
+	icq_daemon->SetTCPEnabled(!gtk_toggle_button_get_active(
+		GTK_TOGGLE_BUTTON(ow->chkTCPEnabled)));
+
 	icq_daemon->SaveConf();
 
 	// Save our options
@@ -317,7 +484,6 @@ void show_on_color_dlg(GtkWidget *widget, gpointer data)
 
 	/* Show the color dialog */
 	gtk_widget_show_all(color_dialog);
-
 }
 
 void color_dlg_ok(GtkWidget *widget, gpointer data)
@@ -367,4 +533,31 @@ void color_dlg_cancel(GtkWidget *widget, gpointer data)
 	gint *change = (gint *)gtk_object_get_user_data(GTK_OBJECT(color_dialog));
 	gtk_widget_destroy(color_dialog);
 	delete change;
+}
+
+void SOCKSClicked(GtkWidget *widget, gpointer data)
+{
+	if (icq_daemon->SocksEnabled())
+	{
+		const char *env = icq_daemon->SocksServer();
+		if (env)
+		{
+			message_box("SOCKS5 support is built in but disabled.\n"
+				    "To enable it, set the SOCKS5_SERVER\n"
+				    "environment variable to <server>:<port>.\n");
+		}
+		else
+		{
+			gchar *message = g_strdup_printf(
+				"SOCKS5 support is built in and enabled at\n"
+				"\"%s\".\n", env);
+			message_box(message);
+			g_free(message);
+		}
+	}
+	else
+	{
+		message_box("To enable SOCKS5 support, install NEC Socks or Dante\n"
+			    "then configure the Licq daemon with \"--enable-socks5\".\n");
+	}
 }

@@ -115,6 +115,7 @@ void pipe_signal(CICQSignal *sig)
 		}
 		else
 			finish_info(sig);
+		
 		contact_list_refresh();
 		break;
 	  }

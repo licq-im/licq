@@ -22,6 +22,7 @@
 
 #include "licq_icqd.h"
 #include "licq_log.h"
+#include "licq_countrycodes.h"
 
 #include <gtk/gtk.h>
 
@@ -88,6 +89,12 @@ void new_log_window()
 			   GTK_SIGNAL_FUNC(log_window_close), nw->window);
 	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 5);
 
+	// The "Save" button
+	GtkWidget *btnSave = gtk_button_new_with_label("Save");
+	gtk_signal_connect(GTK_OBJECT(btnSave), "clicked",
+			   GTK_SIGNAL_FUNC(log_window_save), NULL);
+	gtk_box_pack_start(GTK_BOX(h_box), btnSave, true, true, 5);
+
 	/* The "Clear" button */
 	clear = gtk_button_new_with_label("Clear");
 	gtk_signal_connect(GTK_OBJECT(clear), "clicked",
@@ -140,6 +147,45 @@ void log_pipe_callback(gpointer data, gint pipe, GdkInputCondition condition)
 
 	/* Get rid of this message */
 	log->ClearLog();
+}
+
+void log_window_save(GtkWidget *widget, gpointer data)
+{
+	GtkWidget *fileSelect = gtk_file_selection_new("Save Network Log");
+
+	// Make sure the window closes then a button is selected
+	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fileSelect)->ok_button),
+			   "clicked", GTK_SIGNAL_FUNC(log_window_save_ok),
+			   (gpointer)fileSelect);
+	gtk_signal_connect(GTK_OBJECT(GTK_FILE_SELECTION(fileSelect)->cancel_button),
+			   "clicked", GTK_SIGNAL_FUNC(log_window_save_cancel),
+			   (gpointer)fileSelect);
+
+	// Show the window
+	gtk_widget_show_all(fileSelect);
+}
+
+void log_window_save_ok(GtkWidget *widget, gpointer _fs)
+{
+	GtkWidget *fileSelect = (GtkWidget *)_fs;
+	
+	gchar *szFileName = gtk_file_selection_get_filename(GTK_FILE_SELECTION(
+		fileSelect));
+
+	ofstream strmFileOut(szFileName, ios::out);
+
+	if (!strmFileOut.fail())
+	{
+		strmFileOut << gtk_editable_get_chars(GTK_EDITABLE(nw->text), 0, -1);
+	}
+
+	strmFileOut.close();
+	gtk_widget_destroy(fileSelect);
+}
+
+void log_window_save_cancel(GtkWidget *widget, gpointer _fs)
+{
+	gtk_widget_destroy((GtkWidget *)_fs);
 }
 
 gint log_window_close(GtkWidget *widget, GtkWidget *window)

@@ -300,6 +300,20 @@ struct options_window
 	GtkWidget *show_offline;
 	GtkWidget *enter_sends;
 	GtkWidget *flash_events;
+
+	// Network section
+	GtkWidget *lstServers;
+	GtkWidget *spnDefPort;
+	GtkWidget *chkBehindFirewall;
+	GtkWidget *btnSOCKS;
+	GtkWidget *txtFirewallHost;
+	GtkWidget *chkTCPEnabled;
+	GtkWidget *spnPortLow;
+	GtkWidget *spnPortHigh;
+
+	// Status section
+	GtkWidget *cmbAutoLogon;
+	GtkWidget *chkInvisible;
 };
 
 struct remote_chat_request
@@ -321,11 +335,32 @@ struct request_chat
 	struct e_tag_data *etd;
 };
 
+struct kick_window
+{
+	GtkWidget *winKick;
+	GtkWidget *cmbUsers;
+	GtkWidget *btnKick;
+};
+
+struct tally_window
+{
+	GtkWidget *winTally;
+	GtkWidget *txtYes;
+	GtkWidget *txtNo;
+};
+
 struct chat_window
 {
+	// Chat manager stuff
 	CChatManager *chatman;
 	CChatUser *chat_user;
 	CChatUser *hold_cuser;
+	list<CChatUser *> ChatUsers;
+
+	// Kick and tally window
+	struct kick_window *kw;
+
+	// UI
 	GtkWidget *window;
 	GtkWidget *notebook;
 	GtkWidget *table;
@@ -337,13 +372,27 @@ struct chat_window
 	GtkWidget *list_users;
 	GtkWidget *frame_local;
 	GtkWidget *frame_remote;
-	GdkColor *back_color;
-	GdkColor *fore_color;
-	GdkFont *font_remote;
-	gchar font_name[50];
-	gint font_size;
-	gboolean remote_bold;
-	gboolean remote_italic;
+	GtkWidget *font_sel_dlg;
+
+	// Remote
+	GdkColor *r_back_color;
+	GdkColor *r_fore_color;
+	GdkFont *r_font;
+	gchar r_font_name[50];
+	gint r_font_size;
+	gboolean r_bold;
+	gboolean r_italic;
+
+	// Local
+	GdkColor *l_back_color;
+	GdkColor *l_fore_color;
+	GdkFont *l_font;
+	gchar l_font_name[50];
+	gint l_font_size;
+	gboolean l_bold;
+	gboolean l_italic;
+	
+	// Extra - but important!
 	gboolean pane_mode;
 	ICQUser *user;
 	gboolean audio;
@@ -365,6 +414,7 @@ struct key_request
 	GtkWidget *window;
 	GtkWidget *label_status;
 	gboolean open;
+
 	ICQUser *user;
 	struct e_tag_data *etag;
 };
@@ -506,17 +556,29 @@ extern void chat_start_as_client(ICQEvent *);
 extern struct chat_window *chat_window_create(gulong);
 extern GtkWidget* chat_create_menu(struct chat_window *);
 extern void chat_audio(gpointer, guint, GtkWidget *);
+extern void start_kick_window(struct chat_window *);
+extern void chat_kick(gpointer, guint, GtkWidget *);
+extern void chat_kick_no_vote(gpointer, guint, GtkWidget *);
+extern unsigned long start_kick_callback(struct chat_window *);
+extern void kick_callback(GtkWidget *, gpointer);
+extern void kick_no_vote_callback(GtkWidget *, gpointer);
+extern void chat_save(gpointer, guint, GtkWidget *);
+extern void save_chat_ok(GtkWidget *, gpointer);
+extern void save_chat_cancel(GtkWidget *, gpointer);
 extern void chat_close(gpointer, guint, GtkWidget *);
 extern void chat_pipe_callback(gpointer, gint, GdkInputCondition);
 extern void chat_send(GtkWidget *, GdkEventKey *, struct chat_window *);
 extern void chat_beep_users(gpointer, guint, GtkWidget *);
 extern void chat_change_font(gpointer, guint, GtkWidget *);
+extern void font_dlg_close(GtkWidget *, gpointer);
+extern void font_dlg_ok(GtkWidget *, gpointer);
 
 
 /* Functions in contact_list.cpp */
 extern GtkWidget *contact_list_new(gint, gint);
 extern void contact_list_refresh();
 extern void contact_list_order();
+extern GdkColor *get_status_color(unsigned long);
 extern void contact_list_click(GtkWidget *, GdkEventButton *, gpointer);
 extern void add_to_popup(const gchar *, GtkWidget *, GtkSignalFunc, ICQUser *);
 extern gint flash_icons(gpointer);
@@ -591,6 +653,9 @@ extern void close_key_request(GtkWidget *, gpointer);
 extern void new_log_window();
 extern void log_window_show(GtkWidget *, gpointer);
 extern void log_pipe_callback(gpointer, gint, GdkInputCondition);
+extern void log_window_save(GtkWidget *, gpointer);
+extern void log_window_save_ok(GtkWidget *, gpointer);
+extern void log_window_save_cancel(GtkWidget *, gpointer);
 extern gint log_window_close(GtkWidget *, GtkWidget *);
 extern void log_window_clear(GtkWidget *, gpointer);
 
@@ -626,6 +691,7 @@ extern void set_default_options();
 extern void show_on_color_dlg(GtkWidget *, gpointer);
 extern void color_dlg_ok(GtkWidget *, gpointer);
 extern void color_dlg_cancel(GtkWidget *, gpointer);
+extern void SOCKSClicked(GtkWidget *, gpointer);
 
 
 /* Functions in pipe.cpp */
