@@ -52,12 +52,13 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(ok()));
   top_lay->addWidget(mleAwayMsg);
 
-  QBoxLayout* l = new QHBoxLayout(top_lay, 10);
+  mnuSelect = new QPopupMenu(this);
+  connect(mnuSelect, SIGNAL(activated(int)), this, SLOT(slot_selectMessage(int)));
 
+  QBoxLayout* l = new QHBoxLayout(top_lay, 10);
   int bw = 75;
   btnSelect = new QPushButton(tr("&Select"), this);
-  btnSelect->setIsMenuButton(true);
-  connect(btnSelect, SIGNAL(clicked()), SLOT(slot_selectMessage()));
+  btnSelect->setPopup(mnuSelect);
   btnOk = new QPushButton(tr("&Ok"), this );
   btnOk->setDefault(true);
   connect( btnOk, SIGNAL(clicked()), SLOT(ok()) );
@@ -87,6 +88,29 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
 
   m_nStatus = _status;
 
+  // Fill in the select menu
+  mnuSelect->clear();
+  switch (m_nStatus)
+  {
+  case ICQ_STATUS_NA: m_nSAR = SAR_NA; break;
+  case ICQ_STATUS_OCCUPIED: m_nSAR = SAR_OCCUPIED; break;
+  case ICQ_STATUS_DND: m_nSAR = SAR_DND; break;
+  case ICQ_STATUS_FREEFORCHAT: m_nSAR = SAR_FFC; break;
+  case ICQ_STATUS_AWAY:
+  default:
+    m_nSAR = SAR_AWAY;
+  }
+
+  if (m_nSAR >= 0) {
+    SARList &sar = gSARManager.Fetch(m_nSAR);
+    for (unsigned i = 0; i < sar.size(); i++)
+      mnuSelect->insertItem(sar[i]->Name(), i);
+    gSARManager.Drop();
+  }
+
+  mnuSelect->insertSeparator();
+  mnuSelect->insertItem(tr("&Edit Items"), 999);
+
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   setCaption(QString(tr("Set %1 Response for %2"))
              .arg(ICQUser::StatusToStatusStr(m_nStatus, false)).arg(QString::fromLocal8Bit(o->GetAlias())));
@@ -98,9 +122,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   gUserManager.DropOwner();
 
   mleAwayMsg->setFocus();
-#if QT_VERSION >= 210
   mleAwayMsg->selectAll();
-#endif
 
   if (!isVisible())
   {
@@ -128,36 +150,8 @@ void AwayMsgDlg::ok()
 
 // -----------------------------------------------------------------------------
 
-void AwayMsgDlg::slot_selectMessage()
+void AwayMsgDlg::slot_selectMessage(int result)
 {
-  QPopupMenu* menu = new QPopupMenu(this);
-
-  int result = 0;
-
-  // Fill in the menu bar
-  switch (m_nStatus)
-  {
-  case ICQ_STATUS_NA: m_nSAR = SAR_NA; break;
-  case ICQ_STATUS_OCCUPIED: m_nSAR = SAR_OCCUPIED; break;
-  case ICQ_STATUS_DND: m_nSAR = SAR_DND; break;
-  case ICQ_STATUS_FREEFORCHAT: m_nSAR = SAR_FFC; break;
-  case ICQ_STATUS_AWAY:
-  default:
-    m_nSAR = SAR_AWAY;
-  }
-
-  if (m_nSAR >= 0) {
-    SARList &sar = gSARManager.Fetch(m_nSAR);
-    for (unsigned i = 0; i < sar.size(); i++)
-      menu->insertItem(sar[i]->Name(), i);
-    gSARManager.Drop();
-  }
-
-  menu->insertSeparator();
-  menu->insertItem(tr("&Edit Items"), 999);
-
-  result = menu->exec(btnSelect->mapToGlobal(QPoint(0,btnSelect->height())));
-
   if(result == 999)
     emit popupOptions(OptionsDlg::ODlgStatus);
   else {
@@ -167,8 +161,6 @@ void AwayMsgDlg::slot_selectMessage()
 
     gSARManager.Drop();
   }
-
-  delete menu;
 }
 
 
@@ -195,9 +187,6 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
 
   int bw = 75;
-  //btnSelect = new QPushButton(tr("&Select"), this);
-  //btnSelect->setIsMenuButton(true);
-  //connect(btnSelect, SIGNAL(clicked()), SLOT(slot_selectMessage()));
   QPushButton *btnOk = new QPushButton(tr("&Ok"), this );
   btnOk->setDefault(true);
   connect( btnOk, SIGNAL(clicked()), SLOT(slot_ok()) );
@@ -205,25 +194,18 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
   connect( btnClear, SIGNAL(clicked()), SLOT(slot_clear()) );
   QPushButton *btnCancel = new QPushButton(tr("&Cancel"), this );
   connect( btnCancel, SIGNAL(clicked()), SLOT(close()) );
-  //bw = QMAX(bw, btnSelect->sizeHint().width());
   bw = QMAX(bw, btnOk->sizeHint().width());
   bw = QMAX(bw, btnClear->sizeHint().width());
   bw = QMAX(bw, btnCancel->sizeHint().width());
-  //btnSelect->setFixedWidth(bw);
   btnOk->setFixedWidth(bw);
   btnClear->setFixedWidth(bw);
   btnCancel->setFixedWidth(bw);
 
-  //l->addWidget(btnSelect);
   l->addStretch(1);
   l->addSpacing(30);
   l->addWidget(btnOk);
   l->addWidget(btnClear);
   l->addWidget(btnCancel);
-
-  //ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  //m_nStatus = o->Status();
-  //gUserManager.DropOwner();
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   setCaption(QString(tr("Set Custom Auto Response for %1"))

@@ -17,6 +17,7 @@ public:
 
 protected:
   MLEditWrap *mleAwayMsg;
+  QPopupMenu* mnuSelect;
   QPushButton* btnSelect;
   QPushButton *btnOk, *btnCancel;
   unsigned short m_nStatus;
@@ -29,7 +30,7 @@ signals:
 
 protected slots:
   void ok();
-  void slot_selectMessage();
+  void slot_selectMessage(int);
 };
 
 
