@@ -74,14 +74,12 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
   m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_UPDATExUSER);
   licqDaemon = _licqDaemon;
 
-  // Create our snmp information
-  // m_nSMTPPort = 25; //getservicebyname("snmp");
   char filename[256];
   sprintf (filename, "%s/licq_autoreply.conf", BASE_DIR);
-  CIniFile conf(INI_FxFATAL | INI_FxERROR);
+  CIniFile conf;
   conf.LoadFile(filename);
   conf.SetSection("Reply");
-  conf.ReadStr("Program", m_szProgram);
+  conf.ReadStr("Program", m_szProgram, "cat");
   conf.ReadStr("Arguments", m_szArguments, "");
   conf.ReadBool("PassMessage", m_bPassMessage, false);
   conf.ReadBool("FailOnExitCode", m_bFailOnExitCode, false);
