@@ -33,6 +33,7 @@ const char L_TCPxSTR[]     = "[TCP] ";
 const char L_ERRORxSTR[]   = "[ERR] ";
 const char L_UNKNOWNxSTR[] = "[???] ";
 const char L_BLANKxSTR[]   = "                       ";
+const char L_SBLANKxSTR[]  = "      ";
 const char L_PACKETxSTR[]  = "[PKT] ";
 const char L_INITxSTR[]    = "[INI] ";
 const char L_ENDxSTR[]     = "[END] ";
