@@ -12,6 +12,10 @@
    new dockable ones. */
 #define USE_DOCK
 
+/* Undefine this if you want a 64x48 icon, better suited for docking in
+   the KDE or Gnome panel. */
+#define SIXTYFOUR
+
 /* Change this to MotifStyle if you want the old-school Motif
    widget look. */
 #define STYLE "WINDOWS"
