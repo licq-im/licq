@@ -1536,7 +1536,7 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   if (fcn == mnuUserSendMsg)
   {
     QString c = QApplication::clipboard()->text();
-    if (c.left(5) == "http:" || c.left(4) == "ftp:")
+    if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:")
     {
       UserSendUrlEvent *e = (UserSendUrlEvent *)callFunction(mnuUserSendUrl, nUin);
       if (e == NULL) return;
