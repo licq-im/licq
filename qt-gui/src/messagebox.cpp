@@ -93,7 +93,7 @@ QSize MsgView::sizeHint() const
 void MsgView::resizeEvent(QResizeEvent *e)
 {
   QScrollBar *s = verticalScrollBar();
-  setColumnWidth(1, width() - 155 - s->width());
+  setColumnWidth(1, width() - 152 - s->width());
   QListView::resizeEvent(e);
 }
 
