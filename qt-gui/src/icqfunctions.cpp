@@ -8,11 +8,14 @@
 #include <qfiledialog.h>
 #endif
 
+#include <qhbox.h>
+#include <qvbox.h>
 #include <qbuttongroup.h>
 #include <qcheckbox.h>
 #include <qradiobutton.h>
 #include <qsplitter.h>
 #include <qtabbar.h>
+#include <qtabwidget.h>
 #include <qtextview.h>
 #include <qwidgetstack.h>
 #include <qstylesheet.h>
@@ -36,12 +39,6 @@
 #include "icqevent.h"
 #include "icqd.h"
 
-#define MARGIN_LEFT 5
-#define MARGIN_RIGHT 30
-#define RM 6
-#define LM 6
-#define TM 6
-#define BM 42
 #define NUM_MSG_PER_HISTORY 20
 #define COLOR_SENT "blue"
 #define COLOR_RECEIVED "red"
@@ -53,105 +50,63 @@ unsigned short ICQFunctions::s_nY = 100;
 ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
                            unsigned long _nUin, bool _bIsOwner,
                            bool isAutoClose, QWidget *parent, const char *name)
-   : QTabWidget(parent, name)
+  : QDialog(parent, name)
 {
-   server = s;
-   sigman = theSigMan;
-   icqEvent = NULL;
-   m_nUin = _nUin;
-   m_bOwner = _bIsOwner;
+  server = s;
+  sigman = theSigMan;
+  icqEvent = NULL;
+  m_nUin = _nUin;
+  m_bOwner = _bIsOwner;
 
-   tabLabel[TAB_READ] = tr("View Event");
-   fcnTab[TAB_READ] = new QWidget(this, tabLabel[TAB_READ]);
-   splRead = new QSplitter(QSplitter::Vertical, fcnTab[TAB_READ]);
-   msgView = new MsgView(splRead);
-   msgView->setFrameStyle( QFrame::WinPanel | QFrame::Sunken);
-   mleRead = new MLEditWrap(true, splRead);
-   mleRead->setFrameStyle(QFrame::WinPanel | QFrame::Sunken);
-   mleRead->setReadOnly(true);
-   QValueList<int> v;
-   v.append(60);
-   v.append(180);
-   splRead->setSizes(v);
-   splRead->setOpaqueResize(true);
-   splRead->setResizeMode(msgView, QSplitter::KeepSize);
-   splRead->setResizeMode(mleRead, QSplitter::Stretch);
-   connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
+  CreateReadEventTab();
+  CreateSendEventTab();
+  CreateGeneralInfoTab();
+  CreateMoreInfoTab();
+  CreateWorkInfoTab();
+  CreateAboutTab();
+  CreateHistoryTab();
 
-   tabLabel[TAB_SEND] = tr("Send Event");
-   fcnTab[TAB_SEND] = new QWidget(this, tabLabel[TAB_SEND]);
-   grpCmd = new QButtonGroup(tr("Select Function"), fcnTab[TAB_SEND]);
-   grpCmd->setExclusive(true);
-   rdbMsg = new QRadioButton(tr("Message"), grpCmd);
-   rdbMsg->setChecked(true);
-   rdbUrl = new QRadioButton(tr("URL"), grpCmd);
-   rdbUrl->setChecked(true);
-   rdbChat = new QRadioButton(tr("Chat Request"), grpCmd);
-   rdbFile = new QRadioButton(tr("File Transfer"), grpCmd);
-   connect(grpCmd, SIGNAL(clicked(int)), this, SLOT(specialFcn(int)));
-   lblDescription = new QLabel(fcnTab[TAB_SEND]);
-   mleSend = new MLEditWrap(true, fcnTab[TAB_SEND]);
-   mleSend->setFrameStyle( QFrame::WinPanel | QFrame::Sunken);
-   lblItem = new QLabel(fcnTab[TAB_SEND]);
-   edtItem = new QLineEdit(fcnTab[TAB_SEND]);
-   chkSendServer = new QCheckBox(tr("Send through server"), fcnTab[TAB_SEND]);
-   chkUrgent = new QCheckBox(tr("Urgent"), fcnTab[TAB_SEND]);
-   chkSpoof = new QCheckBox(tr("Spoof UIN:"), fcnTab[TAB_SEND]);
-   edtSpoof = new QLineEdit(fcnTab[TAB_SEND]);
-   edtSpoof->setEnabled(false);
-   edtSpoof->setMaxLength(10);
-   edtSpoof->setValidator(new QIntValidator(0, 2147483647, edtSpoof));
-   connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
+  QBoxLayout* lay = new QVBoxLayout(this, 8);
+  tabs = new QTabWidget(this);
+  lay->addWidget(tabs);
 
-/*   chkAuthorization = new QCheckBox(tr("Authorization Needed"), fcnTab[TAB_BASICINFO]);
-   chkAuthorization->setEnabled(m_bOwner);*/
+  tabs->addTab(fcnTab[TAB_READ], tabLabel[TAB_READ]);
+  tabs->addTab(fcnTab[TAB_SEND], tabLabel[TAB_SEND]);
+  tabs->addTab(fcnTab[TAB_GENERALINFO], tabLabel[TAB_GENERALINFO]);
+  tabs->addTab(fcnTab[TAB_MOREINFO], tabLabel[TAB_MOREINFO]);
+  tabs->addTab(fcnTab[TAB_WORKINFO], tabLabel[TAB_WORKINFO]);
+  tabs->addTab(fcnTab[TAB_ABOUT], tabLabel[TAB_ABOUT]);
+  tabs->addTab(fcnTab[TAB_HISTORY], tabLabel[TAB_HISTORY]);
 
-   CreateGeneralInfoTab();
-   CreateMoreInfoTab();
-   CreateWorkInfoTab();
-   CreateAboutTab();
-   CreateHistoryTab();
+  QBoxLayout* l = new QHBoxLayout(lay, 8);
 
-   addTab(fcnTab[TAB_READ], tabLabel[TAB_READ]);
-   addTab(fcnTab[TAB_SEND], tabLabel[TAB_SEND]);
-   addTab(fcnTab[TAB_GENERALINFO], tabLabel[TAB_GENERALINFO]);
-   addTab(fcnTab[TAB_MOREINFO], tabLabel[TAB_MOREINFO]);
-   addTab(fcnTab[TAB_WORKINFO], tabLabel[TAB_WORKINFO]);
-   addTab(fcnTab[TAB_ABOUT], tabLabel[TAB_ABOUT]);
-   addTab(fcnTab[TAB_HISTORY], tabLabel[TAB_HISTORY]);
+  chkAutoClose = new QCheckBox(tr("A&uto Close"), this);
+  chkAutoClose->setChecked(isAutoClose);
+  l->addWidget(chkAutoClose);
+  l->addSpacing(15);
+  l->addStretch(1);
 
-   chkAutoClose = new QCheckBox(tr("Auto Close"), this);
-   chkAutoClose->setChecked(isAutoClose);
-   btnOk = new QPushButton(tr("Ok"), this);
-   btnCancel = new QPushButton(tr("Close"), this);
-   btnSave = new QPushButton(tr("Save"), this);
+  btnSave = new QPushButton(tr("&Save"), this);
+  l->addWidget(btnSave);
+  l->addSpacing(5);
 
-   setTabOrder(mleSend, btnOk);
+  btnOk = new QPushButton(tr("&Ok"), this);
+  l->addWidget(btnOk);
 
-   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnOk, SIGNAL(clicked()));
-   connect (chkSpoof, SIGNAL(clicked()), this, SLOT(setSpoofed()));
-   connect (this, SIGNAL(selected(const QString &)), this, SLOT(tabSelected(const QString &)));
-   connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
-   connect (sigman, SIGNAL(signal_updatedUser(unsigned long, unsigned long)),
-            this, SLOT(slot_updatedUser(unsigned long, unsigned long)));
-   connect (btnCancel, SIGNAL(clicked()), this, SLOT(close()));
-   connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
-   connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
+  btnCancel = new QPushButton(tr("&Close"), this);
+  l->addWidget(btnCancel);
 
-  QWidgetStack *stack = Q_CHILD(this, QWidgetStack, "tab pages");
-  QTabBar *tabs = Q_CHILD(this, QTabBar, "tab control");
-  if (stack == NULL || tabs == NULL)
-  {
-    gLog.Error("%sICQFunctions::resizeEvent(): Unable to find widget stack or tab bar.", L_ERRORxSTR);
-    setGeometry(s_nX, s_nY, 400, 360);
-    setMinimumSize(400, 360);
-  }
-  else
-  {
-    QSize t(tabs->sizeHint());
-    setGeometry(s_nX, s_nY, t.width() + RM + LM, 360);
-    setMinimumSize(t.width() + RM + LM, 360);
-  }
+  setTabOrder(mleSend, btnOk);
+
+  connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnOk, SIGNAL(clicked()));
+  connect (chkSpoof, SIGNAL(clicked()), this, SLOT(setSpoofed()));
+  connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(tabSelected(const QString &)));
+  connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFcn(ICQEvent *)));
+  connect (sigman, SIGNAL(signal_updatedUser(unsigned long, unsigned long)),
+           this, SLOT(slot_updatedUser(unsigned long, unsigned long)));
+  connect (btnCancel, SIGNAL(clicked()), this, SLOT(close()));
+  connect (btnOk, SIGNAL(clicked()), this, SLOT(callFcn()));
+  connect (btnSave, SIGNAL(clicked()), this, SLOT(save()));
 
 #ifdef TEST_POS
   printf("constructor: %d %d\n", x(), y());
@@ -159,7 +114,71 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
 }
 
 
-void ICQFunctions::CreateGeneralInfoTab(void)
+void ICQFunctions::CreateReadEventTab()
+{
+  tabLabel[TAB_READ] = tr("&View Event");
+  QVBox* p = new QVBox(this, tabLabel[TAB_READ]);
+  p->setMargin(10);
+  fcnTab[TAB_READ] = p;
+
+  splRead = new QSplitter(QSplitter::Vertical, fcnTab[TAB_READ]);
+  msgView = new MsgView(splRead);
+  mleRead = new MLEditWrap(true, splRead);
+  mleRead->setReadOnly(true);
+  QValueList<int> v;
+  v.append(70);
+  splRead->setSizes(v);
+  splRead->setOpaqueResize(true);
+  splRead->setResizeMode(msgView, QSplitter::KeepSize);
+  splRead->setResizeMode(mleRead, QSplitter::Stretch);
+  connect (msgView, SIGNAL(doubleClicked(QListViewItem *)), this, SLOT(printMessage(QListViewItem *)));
+}
+
+
+void ICQFunctions::CreateSendEventTab()
+{
+  tabLabel[TAB_SEND] = tr("S&end Event");
+  fcnTab[TAB_SEND] = new QWidget(this, tabLabel[TAB_SEND]);
+  QBoxLayout* lay = new QVBoxLayout(fcnTab[TAB_SEND], 8);
+
+  grpCmd = new QButtonGroup(1, Vertical, tr("Select Function"), fcnTab[TAB_SEND]);
+  rdbMsg = new QRadioButton(tr("Message"), grpCmd);
+  rdbUrl = new QRadioButton(tr("URL"), grpCmd);
+  rdbChat = new QRadioButton(tr("Chat Request"), grpCmd);
+  rdbFile = new QRadioButton(tr("File Transfer"), grpCmd);
+  connect(grpCmd, SIGNAL(clicked(int)), this, SLOT(specialFcn(int)));
+  lay->addWidget(grpCmd);
+
+  mleSend = new MLEditWrap(true, fcnTab[TAB_SEND]);
+  mleSend->setMinimumHeight(150);
+  lay->addWidget(mleSend);
+  lay->setStretchFactor(mleSend, 10);
+
+  grpOpt = new QGroupBox(1, Vertical, fcnTab[TAB_SEND]);
+  lblItem = new QLabel(grpOpt);
+  edtItem = new QLineEdit(grpOpt);
+  lay->addWidget(grpOpt);
+
+  QBoxLayout* l = new QHBoxLayout(lay, 10);
+
+  chkSendServer = new QCheckBox(tr("Send through server"), fcnTab[TAB_SEND]);
+  l->addWidget(chkSendServer);
+
+  chkUrgent = new QCheckBox(tr("Urgent"), fcnTab[TAB_SEND]);
+  l->addWidget(chkUrgent);
+
+  chkSpoof = new QCheckBox(tr("Spoof UIN:"), fcnTab[TAB_SEND]);
+  l->addWidget(chkSpoof);
+
+  edtSpoof = new QLineEdit(fcnTab[TAB_SEND]);
+  edtSpoof->setEnabled(false);
+  edtSpoof->setValidator(new QIntValidator(1000000, 100000000, edtSpoof));
+  connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
+  l->addWidget(edtSpoof);
+}
+
+
+void ICQFunctions::CreateGeneralInfoTab()
 {
   unsigned short CR = 0;
 
@@ -244,7 +263,7 @@ void ICQFunctions::CreateGeneralInfoTab(void)
 }
 
 
-void ICQFunctions::CreateMoreInfoTab(void)
+void ICQFunctions::CreateMoreInfoTab()
 {
   unsigned short CR = 0;
   tabLabel[TAB_MOREINFO] = tr("More");
@@ -287,7 +306,7 @@ void ICQFunctions::CreateMoreInfoTab(void)
 }
 
 
-void ICQFunctions::CreateWorkInfoTab(void)
+void ICQFunctions::CreateWorkInfoTab()
 {
   unsigned short CR = 0;
   tabLabel[TAB_WORKINFO] = tr("Work");
@@ -334,7 +353,7 @@ void ICQFunctions::CreateWorkInfoTab(void)
 }
 
 
-void ICQFunctions::CreateAboutTab(void)
+void ICQFunctions::CreateAboutTab()
 {
   tabLabel[TAB_ABOUT] = tr("About");
   fcnTab[TAB_ABOUT] = new QWidget(this, tabLabel[TAB_ABOUT]);
@@ -351,7 +370,7 @@ void ICQFunctions::CreateAboutTab(void)
 }
 
 
-void ICQFunctions::CreateHistoryTab(void)
+void ICQFunctions::CreateHistoryTab()
 {
   unsigned short CR = 0;
 
@@ -362,7 +381,6 @@ void ICQFunctions::CreateHistoryTab(void)
   QGridLayout *lay = new QGridLayout(p, 3, 2, 10, 5);
 
   mleHistory = new QTextView(p);
-  //mleHistory->styleSheet()->setAlignment(Qt::WordBreak);
   lay->addMultiCellWidget(mleHistory, CR, CR, 0, 1);
 
   lblHistory = new QLabel(p);
@@ -374,70 +392,17 @@ void ICQFunctions::CreateHistoryTab(void)
   lay->addWidget(nfoHistory, CR, 1);
 }
 
-
-void ICQFunctions::resizeEvent(QResizeEvent *e)
-{
-  QTabWidget::resizeEvent(e);
-
-  // Overload the stack and tab bar placement because Qt's sucks
-  QWidgetStack *stack = Q_CHILD(this, QWidgetStack, "tab pages");
-  QTabBar *tabs = Q_CHILD(this, QTabBar, "tab control");
-  QSize t(tabs->sizeHint());
-  int lw = stack->lineWidth();
-  tabs->setGeometry(QMAX(0, lw - 2) + LM, TM, t.width(), t.height());
-  stack->setGeometry(LM, t.height() - lw + TM, width() - (RM + LM), height() - t.height() + lw - (TM + BM));
-
-  splRead->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 90);
-
-  grpCmd->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, 60);
-  rdbMsg->setGeometry(10, 15, 90, 20);
-  rdbUrl->setGeometry(125, 15, 90, 20);
-  rdbChat->setGeometry(10, 35, 110, 20);
-  rdbFile->setGeometry(125, 35, 100, 20);
-  lblDescription->setGeometry(5, 70, 120, 20);
-  lblItem->setGeometry(MARGIN_LEFT, height() - 140, 80, 20);
-  edtItem->setGeometry(70, height() - 140, width()-MARGIN_RIGHT-70+MARGIN_LEFT, 20);
-  chkSendServer->setGeometry(5, height() - 115, 150, 20);
-  chkUrgent->setGeometry(5, height() - 97, 80, 20);
-  chkSpoof->setGeometry(170, height() - 115, 180, 20);
-  edtSpoof->setGeometry(270, height() - 115, width() - MARGIN_RIGHT - 265, 20);
-  mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - (lblItem->isVisible() ? 235 : 210));
-
-/*  nfoHistory->setGeometry(5, 125, 45, 5, width() - MARGIN_RIGHT - 50);
-  chkAuthorization->setGeometry(5, 150, 200, 20);
-
-  boxAboutMsg->setGeometry(5, 155, width() - MARGIN_RIGHT, height() - 235);
-  mleAboutMsg->setGeometry(10, 15, boxAboutMsg->width() - 20, boxAboutMsg->height() - 25);
-
-  mleHistory->setGeometry(MARGIN_LEFT, 5, width() - MARGIN_RIGHT, height() - 110);
-  lblHistory->setGeometry(5, height() - 100, width() - 10, 20);
-*/
-  chkAutoClose->setGeometry(10, height() - 30, 180, 20);
-  btnCancel->setGeometry(width() - 86, height() - 34, 80, 26);
-  btnOk->setGeometry(btnCancel->x() - 86, btnCancel->y(), btnCancel->width(), btnCancel->height());
-  btnSave->setGeometry(btnOk->x() - 86, btnOk->y(), btnOk->width(), btnOk->height());
-}
-
-
 //-----ICQFunctions::keyPressEvent----------------------------------------------
 void ICQFunctions::keyPressEvent(QKeyEvent *e)
 {
-  if (e->key() == Key_Escape)
-  {
+  if (e->key() == Key_Escape) {
     close();
     return;
-  }
-  else if (currentPage() == fcnTab[TAB_READ])
-  {
-    showPage(fcnTab[TAB_SEND]);
+  } else if (tabs->currentPage() == fcnTab[TAB_READ]) {
+    tabs->showPage(fcnTab[TAB_SEND]);
     return;
   }
-  /*else if (e->key() == Key_Enter || e->key() == Key_Return)
-  {
-    callFcn();
-    return;
-  }*/
-  QTabWidget::keyPressEvent(e);
+  QDialog::keyPressEvent(e);
 }
 
 //-----ICQFunctions::setupTabs--------------------------------------------------
@@ -474,7 +439,7 @@ void ICQFunctions::setupTabs(int index)
   chkSpoof->setChecked(false);
   rdbMsg->setChecked(true);
   specialFcn(0);
-  setTabEnabled(fcnTab[TAB_SEND], !m_bOwner);
+  tabs->setTabEnabled(fcnTab[TAB_SEND], !m_bOwner);
 
   // Info tabs
   SetGeneralInfo(u);
@@ -506,14 +471,14 @@ void ICQFunctions::setupTabs(int index)
 #endif
   switch (index)
   {
-  case 0: showPage(fcnTab[0]); break;
-  case 1: showPage(fcnTab[1]); rdbMsg->setChecked(true); specialFcn(0); break;
-  case 2: showPage(fcnTab[1]); rdbUrl->setChecked(true); specialFcn(1); break;
-  case 3: showPage(fcnTab[1]); rdbChat->setChecked(true); specialFcn(2); break;
-  case 4: showPage(fcnTab[1]); rdbFile->setChecked(true); specialFcn(3); break;
-  case 8: showPage(fcnTab[2]); break;
-  case 9: showPage(fcnTab[3]); break;
-  case 10: showPage(fcnTab[4]); break;
+  case 0: tabs->showPage(fcnTab[0]); break;
+  case 1: tabs->showPage(fcnTab[1]); rdbMsg->setChecked(true); specialFcn(0); break;
+  case 2: tabs->showPage(fcnTab[1]); rdbUrl->setChecked(true); specialFcn(1); break;
+  case 3: tabs->showPage(fcnTab[1]); rdbChat->setChecked(true); specialFcn(2); break;
+  case 4: tabs->showPage(fcnTab[1]); rdbFile->setChecked(true); specialFcn(3); break;
+  case 8: tabs->showPage(fcnTab[2]); break;
+  case 9: tabs->showPage(fcnTab[3]); break;
+  case 10: tabs->showPage(fcnTab[4]); break;
   }
 
 }
@@ -530,7 +495,6 @@ void ICQFunctions::SetGeneralInfo(ICQUser *u)
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
     bDropUser = true;
   }
-  //chkAuthorization->setChecked(u->GetAuthorization());
 
   nfoAlias->setData(u->GetAlias());
   nfoStatus->setData(u->StatusStr(buf));
@@ -651,7 +615,7 @@ void ICQFunctions::SetAbout(ICQUser *u)
 //-----ICQFunctions::SendUrl---------------------------------------------------
 void ICQFunctions::SendUrl(const char *url, const char *desc)
 {
-  showPage(fcnTab[1]);
+  tabs->showPage(fcnTab[1]);
   rdbUrl->setChecked(true);
   specialFcn(1);
   edtItem->setText(url);
@@ -661,7 +625,7 @@ void ICQFunctions::SendUrl(const char *url, const char *desc)
 //-----ICQFunctions::SendFile--------------------------------------------------
 void ICQFunctions::SendFile(const char *file, const char *desc)
 {
-  showPage(fcnTab[1]);
+  tabs->showPage(fcnTab[1]);
   rdbFile->setChecked(true);
   specialFcn(3);
   edtItem->setText(file);
@@ -688,7 +652,7 @@ void ICQFunctions::tabSelected(const QString &tab)
   else if (tab == tabLabel[TAB_READ])
   {
      btnOk->setText(tr("Ok"));
-     btnSave->setText(tr("Quote"));
+     btnSave->setText(tr("&Quote"));
      m_bOwner ? btnSave->hide() : btnSave->show();
      msgView->triggerUpdate();
      currentTab = TAB_READ;
@@ -726,7 +690,6 @@ void ICQFunctions::tabSelected(const QString &tab)
   {
      btnOk->setText(tr("Ok"));
   }
-  btnSave->setGeometry(width() - (btnOk->width() * 3 + 7 + 7 + 6), btnOk->y(), btnOk->width(), btnOk->height());
 #ifdef TEST_POS
   printf("just shown new page: %d %d\n", x(), y());
 #endif
@@ -919,8 +882,6 @@ void ICQFunctions::SaveGeneralInfo()
   u->SetEnableSave(true);
   u->SaveGeneralInfo();
   gUserManager.DropUser(u);
-  //u->SetHistoryFile(nfoHistory->text());
-  //u->SetAuthorization(chkAuthorization->isChecked());
 }
 
 
@@ -956,7 +917,7 @@ void ICQFunctions::SaveAbout()
 
 
 //-----ICQFunctions::SetupHistory--------------------------------------------
-void ICQFunctions::SetupHistory(void)
+void ICQFunctions::SetupHistory()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   nfoHistory->setData(u->HistoryName());
@@ -975,7 +936,7 @@ void ICQFunctions::SetupHistory(void)
 }
 
 
-void ICQFunctions::ShowHistoryPrev(void)
+void ICQFunctions::ShowHistoryPrev()
 {
   // Iterate back over what's currently showing
   while (m_nHistoryShowing > 0)
@@ -995,7 +956,7 @@ void ICQFunctions::ShowHistoryPrev(void)
   ShowHistory();
 }
 
-void ICQFunctions::ShowHistoryNext(void)
+void ICQFunctions::ShowHistoryNext()
 {
   if (m_iHistoryIter != m_lHistoryList.end())
   {
@@ -1022,7 +983,7 @@ void ItalisizeLine(QString &t, QString pre, unsigned short inspos)
 
 
 //-----ICQFunctions::ShowHistory--------------------------------------------
-void ICQFunctions::ShowHistory(void)
+void ICQFunctions::ShowHistory()
 {
   // Last check (should never be true)
   if (m_lHistoryList.size() == 0) return;
@@ -1041,7 +1002,6 @@ void ICQFunctions::ShowHistory(void)
               (*m_iHistoryIter)->IsMultiRec() ? 'M' : '-',
               (*m_iHistoryIter)->IsUrgent() ? 'U' : '-');
     QString t = QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*m_iHistoryIter)->Text() ));
-    //printf("%s\n", (const char *)t);
     ItalisizeLine(t, "<p>&gt;", 3);
     ItalisizeLine(t, "<br>&gt;", 4);
     //s.append(QStyleSheet::convertFromPlainText(QString::fromLocal8Bit( (*m_iHistoryIter)->Text() )));
@@ -1084,7 +1044,7 @@ void ICQFunctions::generateReply()
     mleSend->insertLine( QString("> ") + mleRead->textLine(i));
   mleSend->append("\n");
   mleSend->goToEnd();
-  showPage(fcnTab[1]);
+  tabs->showPage(fcnTab[1]);
 }
 
 
@@ -1106,43 +1066,31 @@ void ICQFunctions::setSpoofed()
 //-----ICQFunctions::specialFcn--------------------------------------------------------------------
 void ICQFunctions::specialFcn(int theFcn)
 {
-   switch (theFcn)
-   {
-   case 0:
-      lblItem->hide();
-      edtItem->hide();
-      lblDescription->setText(tr("Message:"));
-      mleSend->setEnabled(true);
-      chkSendServer->setEnabled(true);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 210);
-      break;
-   case 1:
-      lblItem->setText(tr("URL:"));
-      lblItem->show();
-      edtItem->show();
-      lblDescription->setText(tr("Description:"));
-      mleSend->setEnabled(true);
-      chkSendServer->setEnabled(true);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 235);
-      break;
-   case 2:
-      lblItem->hide();
-      edtItem->hide();
-      lblDescription->setText(tr("Reason:"));
-      mleSend->setEnabled(true);
-      chkSendServer->setChecked(false);
-      chkSendServer->setEnabled(false);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 210);
-      break;
-   case 3:
-      lblItem->setText(tr("Filename:"));
-      lblItem->show();
-      edtItem->show();
-      lblDescription->setText(tr("Description:"));
-      chkSendServer->setChecked(false);
-      chkSendServer->setEnabled(false);
-      mleSend->setEnabled(true);
-      mleSend->setGeometry(MARGIN_LEFT, 90, width() - MARGIN_RIGHT, height() - 235);
+  switch (theFcn)
+  {
+  case 0:
+    grpOpt->hide();
+    mleSend->setEnabled(true);
+    chkSendServer->setEnabled(true);
+    break;
+  case 1:
+    lblItem->setText(tr("URL:"));
+    grpOpt->show();
+    mleSend->setEnabled(true);
+    chkSendServer->setEnabled(true);
+    break;
+  case 2:
+    grpOpt->hide();
+    mleSend->setEnabled(true);
+    chkSendServer->setChecked(false);
+    chkSendServer->setEnabled(false);
+    break;
+  case 3:
+    lblItem->setText(tr("Filename:"));
+    grpOpt->show();
+    chkSendServer->setChecked(false);
+    chkSendServer->setEnabled(false);
+    mleSend->setEnabled(true);
 #ifdef USE_KDE
       QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
 #else
@@ -1298,7 +1246,7 @@ void ICQFunctions::callFcn()
   case TAB_HISTORY:
     ShowHistoryNext();
     btnOk->setEnabled(true);
-    btnCancel->setText(tr("Close"));
+    btnCancel->setText(tr("&Close"));
     break;
   }
 
@@ -1343,7 +1291,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
   title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
   setCaption(title);
   btnOk->setEnabled(true);
-  btnCancel->setText(tr("Close"));
+  btnCancel->setText(tr("&Close"));
   icqEvent = NULL;
 
   if (e == NULL) return;
@@ -1501,7 +1449,7 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
     server->CancelEvent(icqEvent);
     icqEvent = NULL;
     btnOk->setEnabled(true);
-    btnCancel->setText(tr("Close"));
+    btnCancel->setText(tr("&Close"));
   }
   else
   {
@@ -1519,7 +1467,7 @@ void ICQFunctions::closeEvent(QCloseEvent *e)
 }
 
 
-ICQFunctions::~ICQFunctions(void)
+ICQFunctions::~ICQFunctions()
 {
 }
 

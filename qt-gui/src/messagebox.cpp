@@ -70,6 +70,7 @@ MsgView::MsgView (QWidget *parent, const char *name)
                         normal.mid(), normal.text(), QColor(192, 192, 192));
   setPalette(QPalette(newNormal, pal.disabled(), newNormal));
   setFrameStyle(QFrame::Panel | QFrame::Sunken);
+  setMinimumHeight(60);
 }
 
 CUserEvent *MsgView::currentMsg(void)
