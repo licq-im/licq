@@ -236,6 +236,20 @@ void PluginDlg::slot_refresh()
                      QString((*it)->Description()));
   }
 
+  //Load up the protocol plugin info now
+  ProtoPluginsList p_l;
+  ProtoPluginsListIter p_it;
+  gLicqDaemon->ProtoPluginList(p_l);
+  for (p_it = p_l.begin(); p_it != p_l.end(); p_it++)
+  {
+    if (strcmp((*p_it)->Name(), "Licq") == 0) continue;
+    (void) new QListViewItem(lstLoaded, QString("-"),
+                     QString((*p_it)->Name()),
+                     QString((*p_it)->Version()),
+                     QString(""),
+                     QString(""));
+  }
+  
   lstAvailable->clear();
   QDir d(LIB_DIR, "protocol_*.so", QDir::Name, QDir::Files | QDir::Readable);
   QStringList s = d.entryList();

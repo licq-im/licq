@@ -384,6 +384,7 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
      m_bStartHidden, m_szSkin, m_szIcons, m_szExtendedIcons);
 
   setMainWidget(licqMainWindow);
+  _licqDaemon->AddProtocolPlugins();
   int r = exec();
   _licqDaemon->UnregisterPlugin();
 

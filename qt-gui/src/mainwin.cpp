@@ -1849,6 +1849,15 @@ void CMainWindow::showAwayMsgDlg(unsigned short nStatus)
 
 
 //----CMainWindow::changeStatusManual-------------------------------------------
+void CMainWindow::changeStatusManualProtocol(int id)
+{
+  if (id != ICQ_STATUS_OFFLINE && (id & 0xFF) != ICQ_STATUS_ONLINE)
+    showAwayMsgDlg(id);
+
+  changeStatus(id);
+}
+
+//----CMainWindow::changeStatusManual-------------------------------------------
 void CMainWindow::changeStatusManual(int id)
 {
   if (id != ICQ_STATUS_OFFLINE && (id & 0xFF) != ICQ_STATUS_ONLINE)
@@ -2515,8 +2524,9 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
   // We can now add the users of this protocol
   FOR_EACH_PROTO_USER_START(nPPID, LOCK_R)
   {
+    //FIXME
     // Add the user to the list
-    (void) new CUserViewItem(pUser, userView);
+    //(void) new CUserViewItem(pUser, userView);
   }
   FOR_EACH_PROTO_USER_END
 
@@ -2543,6 +2553,9 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
     mnuProtocolStatus[m_nProtoNum]->insertItem(pmPrivate, tr("&Invisible"),
       ICQ_STATUS_FxPRIVATE);
     mnuStatus->insertItem("ICQ", mnuProtocolStatus[m_nProtoNum], -1, m_nProtoNum);
+    connect(mnuProtocolStatus[m_nProtoNum], SIGNAL(activated(int)),
+      this, SLOT(changeStatusManualProtocol(int)));
+    m_lnProtMenu.push_back(LICQ_PPID);
     m_nProtoNum++;
   }
   else
@@ -2570,7 +2583,11 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
   mnuStatus->insertItem(pName ? pName : "(No Name)",
     mnuProtocolStatus[m_nProtoNum], -1, m_nProtoNum);
   mnuStatus->insertSeparator(m_nProtoNum + 1);
-
+  //Connect to emit a different signal.  One that will give the PPID and
+  //status to change to one slot.
+  connect(mnuProtocolStatus[m_nProtoNum], SIGNAL(activated(int)),
+    this, SLOT(changeStatusManualProtocol(int)));
+  m_lnProtMenu.push_back(nPPID);
   m_nProtoNum++;
 }
 

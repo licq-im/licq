@@ -20,6 +20,7 @@
 #include <qtimer.h>
 #include <qbitmap.h>
 #include <qdialog.h>
+#include <list>
 
 #include "userbox.h"
 #include "licq_user.h"
@@ -63,6 +64,8 @@ class UserEventTabDlg;
   typedef QPtrList<UserInfoDlg> UserInfoList;
   typedef QPtrList<UserSendCommon> UserSendEventList;
 #endif
+
+using std::list;
 
 //=====CMainWindow==============================================================
 class CMainWindow : public QWidget
@@ -215,7 +218,8 @@ public:
   unsigned long m_nProtoNum;
   char *m_szUserMenuId;
   unsigned long m_nUserMenuPPID;
-
+  list<unsigned long> m_lnProtMenu;
+  
   // AutoAway
   QTimer autoAwayTimer;
   unsigned short autoAwayTime,
@@ -271,6 +275,7 @@ protected slots:
   void updateStatus();
   void updateGroups();
   void changeStatus(int index);
+  void changeStatusManualProtocol(int index);
   void changeStatusManual(int index);
   void setCurrentGroupMenu(int id);
   void setCurrentGroup(int);
