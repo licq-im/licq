@@ -107,6 +107,9 @@ const char *LP_Description(void)
   return desc;
 }
 
+static int gui_argc = 0;
+static char** gui_argv = NULL;
+
 bool LP_Init(int argc, char **argv)
 {
   if (qApp != NULL)
@@ -123,15 +126,23 @@ bool LP_Init(int argc, char **argv)
     i--;
   }
 
-  licqQtGui = new CLicqGui(argc, argv);
-  return (licqQtGui != NULL);
+  // save for LP_Main (below)
+  gui_argc=argc;
+  gui_argv=argv;
+  return true;
 }
 
 
 int LP_Main(CICQDaemon *_licqDaemon)
 {
+  licqQtGui = new CLicqGui(gui_argc, gui_argv);
+
   int nResult = licqQtGui->Run(_licqDaemon);
   licqQtGui->Shutdown();
+
+  gui_argc = 0;
+  gui_argv = NULL;
+
   return nResult;
 }
 
