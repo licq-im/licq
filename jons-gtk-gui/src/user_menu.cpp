@@ -152,7 +152,7 @@ void url_send(GtkWidget *widget, struct send_url *url)
 	m_prog->e_tag =
 		icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
        	  (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
-	  FALSE, uin);
+	  ICQ_TCPxMSG_NORMAL, uin);
 
 	gchar *temp = g_strdup_printf("URL -> %s ", url->user->GetAlias());
 	

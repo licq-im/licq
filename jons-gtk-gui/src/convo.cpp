@@ -155,6 +155,36 @@ void convo_show(struct conversation *c)
 	/* Now pack the options_box */
 	gtk_box_pack_start(GTK_BOX(vertical_box), options_box, FALSE, FALSE, 5);
 
+	/* More options, sending normal, urgent or to contact list */
+	options_box = gtk_hbox_new(FALSE, 5);
+
+	/* Send the message normal */
+	c->send_normal = gtk_radio_button_new_with_label(NULL, "Send normal");
+
+	/* Send the message urgently */
+	c->send_urgent = gtk_radio_button_new_with_label_from_widget(
+				GTK_RADIO_BUTTON(c->send_normal),
+				"Send Urgent");
+
+	/* Send the message to contact list */
+	c->send_list = gtk_radio_button_new_with_label_from_widget(
+				GTK_RADIO_BUTTON(c->send_normal),
+				"Send to Contact List");
+
+	/* If the user is in occupied or dnd mode, set the urgent button */
+	if(c->user->Status() == ICQ_STATUS_DND ||
+           c->user->Status() == ICQ_STATUS_OCCUPIED)
+		gtk_toggle_button_set_active(GTK_TOGGLE_BUTTON(c->send_urgent),
+				TRUE);
+
+	/* Pack it now */
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_normal, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_urgent, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(options_box), c->send_list, FALSE, FALSE, 5);
+	
+	/* Pack the options box */
+	gtk_box_pack_start(GTK_BOX(vertical_box), options_box, FALSE, FALSE, 5);
+
 	/* Connect signals for the newly added widgets */
 	gtk_signal_connect(GTK_OBJECT(c->spoof_button), "toggled",
 			   GTK_SIGNAL_FUNC(spoof_button_callback), c);
@@ -195,17 +225,11 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	gchar *buf2;
 	gboolean urgent = FALSE;
 
-	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
-
-	const gchar *name = g_strdup_printf("%s", owner->GetAlias());
-
 	buf =
 	  g_strdup_printf("%s", gtk_editable_get_chars(GTK_EDITABLE(c->entry), 0, -1));
  	const gchar *message = buf;	
 	buf2 = g_strdup_printf(":  %s\n", buf);
 	c->for_user = buf2;
-
-	gUserManager.DropOwner();
 
 	c->user->SetSendServer(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server)));
 
@@ -215,9 +239,12 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	{
 		uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(c->spoof_uin), 0, -1));
 	}
-	
-	if(c->user->Status() == ICQ_STATUS_DND ||
-	   c->user->Status() == ICQ_STATUS_OCCUPIED)
+
+	/* I don't like those popups to send urgent... so just send it **
+ 	** urgently unless the user says to send it to the contact list*/	
+	if((c->user->Status() == ICQ_STATUS_DND ||
+	   c->user->Status() == ICQ_STATUS_OCCUPIED) &&
+	   !gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_list)))
 		urgent = TRUE;
 
 	strcpy(c->prog_buf, "Sending message ");
@@ -228,9 +255,28 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 		strcat(c->prog_buf, "through server ... ");
 
 	/* Send the message */
-	c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
-	   (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
-	   urgent, uin);
+	if(urgent)
+	{
+	   c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
+	     (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
+	     ICQ_TCPxMSG_URGENT, uin);
+	}
+
+	/* Send to contact list */
+	else if(gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_list)))
+	{
+	  c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
+             (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
+             ICQ_TCPxMSG_LIST, uin);
+	}
+
+	else /* Just send it normally */
+	{
+	  c->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
+             (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
+             ICQ_TCPxMSG_NORMAL, uin);
+	}
+
 	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress),
 						"prog");
 	gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
@@ -251,8 +297,6 @@ void convo_recv(gulong uin)
 
 	CUserEvent *u_event = c->user->EventPop();
 
-	const gchar *name = g_strdup_printf("%s", c->user->GetAlias());
-
 	if(u_event->SubCommand() == ICQ_CMDxSUB_MSG)
 	{
 		const gchar *message = u_event->Text();
@@ -261,7 +305,8 @@ void convo_recv(gulong uin)
 	            g_strdup_printf(":  %s\n", message);
 
 		gtk_text_freeze(GTK_TEXT(c->text));
-		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, name, -1);
+		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0,
+				c->user->GetAlias(), -1);
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_m, -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
  	}

@@ -41,6 +41,9 @@ struct conversation
 	GtkWidget *entry;
 	GtkWidget *text;
 	GtkWidget *send_server;
+	GtkWidget *send_normal;
+	GtkWidget *send_urgent;
+	GtkWidget *send_list;
 	GtkWidget *spoof_button;
 	GtkWidget *spoof_uin;
 	GtkWidget *progress;
