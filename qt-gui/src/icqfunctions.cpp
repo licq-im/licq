@@ -125,13 +125,21 @@ ICQFunctions::ICQFunctions(CICQDaemon *s, CSignalManager *theSigMan,
    nfoAge = new CInfoField(5, 5, 45, 5, 100, tr("Age:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
    nfoState = new CInfoField(5, 35, 45, 5, 100, tr("State:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
    nfoCity = new CInfoField(5, 65, 45, 5, 100, tr("City:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
-   lblCountry = new QLabel(tr("Country:"), fcnTab[TAB_DETAILINFO]);
-   cmbCountry = new CEComboBox(true, fcnTab[TAB_DETAILINFO]);
-   cmbCountry->insertItem(tr("Unspecified"));
-   cmbCountry->insertItem(tr("Unknown (unspecified)"));
-   m_nUnknownCountryCode = 0xFFFF; // set the unknown value to default to unspecified
-   cmbCountry->insertStrList(GetCountryList());
-   cmbCountry->setEnabled(m_bIsOwner);
+   if (m_bIsOwner)
+   {
+     lblCountry = new QLabel(tr("Country:"), fcnTab[TAB_DETAILINFO]);
+     cmbCountry = new CEComboBox(true, fcnTab[TAB_DETAILINFO]);
+     cmbCountry->insertItem(tr("Unspecified"));
+     cmbCountry->insertItem(tr("Unknown (unspecified)"));
+     m_nUnknownCountryCode = 0xFFFF; // set the unknown value to default to unspecified
+     for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
+       cmbCountry->insertItem(gCountries[i].szName);
+   }
+   else
+   {
+     nfoCountry = new CInfoField(5, 125, 65, 5, width() - MARGIN_RIGHT - 90,
+                                 tr("Country:"), true, fcnTab[TAB_DETAILINFO]);
+   }
    nfoHomepage = new CInfoField(5, 125, 65, 5, width() - MARGIN_RIGHT - 90,
                                 tr("Homepage:"), !m_bIsOwner, fcnTab[TAB_DETAILINFO]);
    lblSex = new QLabel(tr("Sex:"), fcnTab[TAB_DETAILINFO]);
@@ -242,8 +250,15 @@ void ICQFunctions::resizeEvent(QResizeEvent *e)
   nfoAge->setGeometry(5, 5, 45, 5, 100);
   nfoState->setGeometry(5, 35, 45, 5, 100);
   nfoCity->setGeometry(5, 65, 45, 5, 100);
-  lblCountry->setGeometry(5, 95, 48, 20);
-  cmbCountry->setGeometry(55, 95, width() - MARGIN_RIGHT - 50, 20);
+  if (m_bIsOwner)
+  {
+    lblCountry->setGeometry(5, 95, 48, 20);
+    cmbCountry->setGeometry(55, 95, width() - MARGIN_RIGHT - 50, 20);
+  }
+  else
+  {
+    nfoCountry->setGeometry(5, 95, 48, 5, width() - MARGIN_RIGHT - 50);
+  }
   nfoHomepage->setGeometry(5, 125, 65, 5, width() - MARGIN_RIGHT - 70);
   lblSex->setGeometry(180, 5, 45, 20);
   cmbSex->setGeometry(230, 5, width() - MARGIN_RIGHT - 225, 20);
@@ -404,17 +419,27 @@ void ICQFunctions::setExtInfo(ICQUser *u)
   u->getExtInfo(ud);
   cmbSex->setCurrentItem(u->getSexNum());
 
-  unsigned short i = GetIndexByCountryCode(u->getCountryCode());
-  if (i == COUNTRY_UNSPECIFIED)
-    cmbCountry->setCurrentItem(0);
-  else if (i == COUNTRY_UNKNOWN)
+  if (m_bIsOwner)
   {
-    m_nUnknownCountryCode = u->getCountryCode();
-    cmbCountry->changeItem(tr("Unknown (%1)").arg(m_nUnknownCountryCode), 1);
-    cmbCountry->setCurrentItem(1);
+    if (u->getCountryCode() == COUNTRY_UNSPECIFIED)
+      cmbCountry->setCurrentItem(0);
+    else
+    {
+      const SCountry *c = GetCountryByCode(u->getCountryCode());
+      if (c == NULL)
+      {
+        m_nUnknownCountryCode = u->getCountryCode();
+        cmbCountry->changeItem(tr("Unknown (%1)").arg(m_nUnknownCountryCode), 1);
+        cmbCountry->setCurrentItem(1);
+      }
+      else  // known
+        cmbCountry->setCurrentItem(c->nIndex + 2);
+    }
   }
-  else  // known
-    cmbCountry->setCurrentItem(i + 2);
+  else
+  {
+    nfoCountry->setData(ud.country);
+  }
 
   if (bDropUser) gUserManager.DropUser(u);
 
@@ -665,13 +690,16 @@ void ICQFunctions::saveExtInfo()
   u->setEnableSave(false);
   u->setCity(nfoCity->text().local8Bit());
   u->setState(nfoState->text().local8Bit());
-  unsigned short i = cmbCountry->currentItem();
-  if (i == 0)
-    u->setCountry(COUNTRY_UNSPECIFIED);
-  else if (i == 1)
-    u->setCountry(m_nUnknownCountryCode);
-  else
-    u->setCountry(GetCountryCodeByIndex(i - 2));
+  if (m_bIsOwner)
+  {
+    unsigned short i = cmbCountry->currentItem();
+    if (i == 0)
+      u->setCountry(COUNTRY_UNSPECIFIED);
+    else if (i == 1)
+      u->setCountry(m_nUnknownCountryCode);
+    else
+      u->setCountry(GetCountryByIndex(i - 2)->nCode);
+  }
   u->setAge(atol(nfoAge->text()));
   u->setSex(cmbSex->currentItem());
   u->setPhoneNumber(nfoPhone->text());
@@ -984,7 +1012,7 @@ void ICQFunctions::callFcn()
      {
         m_sProgressMsg = tr("Updating server...");
         unsigned short i = cmbCountry->currentItem();
-        unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : (i == 1 ? m_nUnknownCountryCode : GetCountryCodeByIndex(i - 2)) );
+        unsigned short cc = ( i == 0 ? COUNTRY_UNSPECIFIED : (i == 1 ? m_nUnknownCountryCode : gCountries[i - 2].nCode) );
         icqEvent = server->icqUpdateExtendedInfo(nfoCity->text().local8Bit(), cc,
                                          nfoState->text().local8Bit(), atol(nfoAge->text()),
                                          cmbSex->currentItem(), nfoPhone->text(),
