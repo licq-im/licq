@@ -300,7 +300,7 @@ void OptionsDlg::SetupOptions()
 
    // set up the columns stuff
    int i;
-   for (i = 0; i < mainwin->colInfo.size(); i++)
+   for (i = 0; i < int(mainwin->colInfo.size()); i++)
    {
       chkColEnabled[i]->setChecked(true);
       edtColTitle[i]->setText(mainwin->colInfo[i]->m_sTitle);
@@ -1231,7 +1231,7 @@ QWidget* OptionsDlg::new_misc_options()
 QWidget* OptionsDlg::new_phone_options()
 {
   QWidget* w = new QWidget(this);
-  QBoxLayout* lay = new QVBoxLayout(w, 8, 4);
+  /*QBoxLayout* lay =*/ (void) new QVBoxLayout(w, 8, 4);
 
   return w;
 }
