@@ -24,3 +24,13 @@
 # character to interpose another module into the current module.  This
 # can be useful for creating a module that consists of many directories
 # spread out over the entire source repository.
+admin licq-common/admin
+auto-reply auto-reply &admin
+console console &admin
+email email &admin
+jons-gtk-gui jons-gtk-gui &admin
+qt-gui qt-gui &admin
+rms rms &admin
+licq-plugins &qt-gui &console &auto-reply &email &jons-gtk-gui &rms
+plugins &qt-gui
+licq licq &admin &plugins
