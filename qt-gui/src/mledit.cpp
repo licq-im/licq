@@ -1,3 +1,24 @@
+// -*- c-basic-offset: 2 -*-
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+*/
+
+// written by Graham Roff <graham@licq.org>
+// contributions by Dirk A. Mueller <dirk@licq.org>
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -115,6 +136,30 @@ void MLEditWrap::paintCell(QPainter* p, int row, int col)
 #endif
 
   QMultiLineEdit::paintCell(p, row, col);
+}
+
+void MLEditWrap::keyPressEvent( QKeyEvent *e )
+{
+  if(e->state() & ControlButton) {
+    switch(e->key()) {
+    case Key_W:
+      cursorWordBackward(true);
+      del();
+      break;
+    case Key_U:
+      home();
+      killLine();
+      break;
+    case Key_L:
+      clear();
+      break;
+    default:
+      QMultiLineEdit::keyPressEvent(e);
+    }
+    return;
+  }
+
+  QMultiLineEdit::keyPressEvent(e);
 }
 
 void MLEditWrap::setCellWidth ( int cellW )

@@ -24,6 +24,7 @@ public:
 protected:
   bool m_bDoQuotes;
   virtual void paintCell(QPainter *p, int row, int col);
+  virtual void keyPressEvent( QKeyEvent * );
   virtual void setCellWidth ( int );
   bool focusNextPrevChild( bool n);
 
