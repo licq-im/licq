@@ -488,6 +488,62 @@ protected:
        *m_szMessage;
 };
 
+//-----CEventEmailAlert-----------------------------------------------------
+class CEventEmailAlert : public CUserEvent
+{
+public:
+  CEventEmailAlert(const char *_szName, const char *_szEmail,
+                   const char *_szTo, const char *_szSubject, time_t _tTime,
+                   const char *_szMSPAuth = 0, const char *_szSID = 0,
+                   const char *_szKV = 0, const char *_szId = 0,
+                   const char *_szPostURL = 0, const char *_szMsgURL = 0,
+                   const char *_szCreds = 0, unsigned long _nSessionLength = 0);
+  virtual ~CEventEmailAlert();
+
+  virtual void AddToHistory(ICQUser *, direction);
+
+  virtual CEventEmailAlert *Copy()
+  {
+    CEventEmailAlert *e = new CEventEmailAlert(m_szName, m_szTo, m_szEmail,
+      m_szSubject, m_tTime, m_szMSPAuth, m_szSID, m_szKV, m_szId,
+      m_szPostURL, m_szMsgURL, m_szCreds, m_nSessionLength);
+    e->CopyBase(this);
+    return e;
+  }
+
+  char *From()    { return m_szName; }
+  char *To()      { return m_szTo; }
+  char *Email()   { return m_szEmail; }
+  char *Subject() { return m_szSubject; }
+  
+  char *MSPAuth() { return m_szMSPAuth; }
+  char *SID()     { return m_szSID; }
+  char *KV()      { return m_szKV; }
+  char *Id()      { return m_szId; }
+  char *PostURL() { return m_szPostURL; }
+  char *MsgURL()  { return m_szMsgURL; }
+  char *Creds()   { return m_szCreds; }
+  unsigned long SessionLength() { return m_nSessionLength; }
+  
+protected:
+  void CreateDescription();
+
+  // Info
+  char *m_szName,
+       *m_szTo,
+       *m_szEmail,
+       *m_szSubject;
+       
+  // For Licq to view an MSN email
+  char *m_szMSPAuth,
+       *m_szSID,
+       *m_szKV,
+       *m_szId,
+       *m_szPostURL,
+       *m_szMsgURL,
+       *m_szCreds;
+  unsigned long m_nSessionLength;
+};
 //-----CEventPlugin------------------------------------------------------------
 class CEventPlugin : public CUserEvent
 {

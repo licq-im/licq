@@ -935,6 +935,62 @@ CEventServerMessage *CEventServerMessage::Parse(char *sz, unsigned short nCmd,
 }
 
 
+//=====CEventEmailAlert=====================================================
+CEventEmailAlert::CEventEmailAlert(const char *_szName, const char *_szTo,
+  const char *_szEmail, const char *_szSubject, time_t _tTime,
+  const char *_szMSPAuth, const char *_szSID, const char *_szKV,
+  const char *_szId, const char *_szPostURL, const char *_szMsgURL,
+  const char *_szCreds, unsigned long _nSessionLength)
+   : CUserEvent(ICQ_CMDxSUB_EMAILxALERT, ICQ_CMDxTCP_START, 0, _tTime, 0)
+{
+  m_szName = strdup(_szName == NULL ? "" : _szName);
+  m_szTo = strdup(_szTo == NULL ? "" : _szTo);
+  m_szEmail = strdup(_szEmail == NULL ? "" : _szEmail);
+  m_szSubject = strdup(_szSubject == NULL ? "" : _szSubject);
+  m_szMSPAuth = strdup(_szMSPAuth == NULL ? "" : _szMSPAuth);
+  m_szSID = strdup(_szSID == NULL ? "" : _szSID);
+  m_szKV = strdup(_szKV == NULL ? "" : _szKV);
+  m_szId = strdup(_szId == NULL ? "" : _szId);
+  m_szPostURL = strdup(_szPostURL == NULL ? "" : _szPostURL);
+  m_szMsgURL = strdup(_szMsgURL == NULL ? "" : _szMsgURL);
+  m_szCreds = strdup(_szCreds == NULL ? "" : _szCreds);
+  m_nSessionLength = _nSessionLength;
+}
+
+CEventEmailAlert::~CEventEmailAlert()
+{
+  free(m_szName);
+  free(m_szTo);
+  free(m_szEmail);
+  free(m_szSubject);
+  free(m_szMSPAuth);
+  free(m_szSID);
+  free(m_szKV);
+  free(m_szId);
+  free(m_szPostURL);
+  free(m_szMsgURL);
+  free(m_szCreds);
+}
+
+void CEventEmailAlert::CreateDescription()
+{
+  if (m_szText) delete [] m_szText;
+  m_szText = new char[strlen(m_szName) + strlen(m_szEmail) + strlen(m_szSubject) + 64];
+  sprintf(m_szText, tr("New Email from %s (%s):\nSubject: %s\n"), m_szName,
+          m_szEmail, m_szSubject);
+}
+
+void CEventEmailAlert::AddToHistory(ICQUser *u, direction _nDir)
+{
+  char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
+                         (strlen(m_szSubject) * 2) + EVENT_HEADER_SIZE)];
+  int nPos = AddToHistory_Header(_nDir, szOut);
+  nPos += sprintf(&szOut[nPos], ":%s\n%s\n", m_szName, m_szEmail);
+  AddStrWithColons(&szOut[nPos], m_szSubject);
+  AddToHistory_Flush(u, szOut);
+  delete [] szOut;
+}
+
 //=====EventPlugin=============================================================
 CEventPlugin::CEventPlugin(const char *sz, unsigned short nSubCommand,
    time_t tTime, unsigned long nFlags)

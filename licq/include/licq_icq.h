@@ -330,6 +330,8 @@ const unsigned short ICQ_CMDxSUB_VOICExMESSAGE     = 0x00DC;
 const unsigned short ICQ_CMDxSUB_IRCQxNET          = 0x00DD;
 const unsigned short ICQ_CMDxSUB_HOMEPAGExINVITE   = 0x00DE;
 const unsigned short ICQ_CMDxSUB_HOMEPAGExNEWS     = 0x00DF;
+// Created for protocol plugins
+const unsigned short ICQ_CMDxSUB_EMAILxALERT       = 0x00EC;
 // Encryption Licq extension command
 const unsigned short ICQ_CMDxSUB_SECURExOLD        = 0x00ED;  // Licq extension
 const unsigned short ICQ_CMDxSUB_SECURExCLOSE      = 0x00EE;  // Licq extension

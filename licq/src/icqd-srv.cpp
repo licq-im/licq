@@ -3316,12 +3316,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	    ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
 	    if (AddUserEvent(o, eEvent))
 	    {
-	      gUserManager.DropOwner();
+	      gUserManager.DropOwner(LICQ_PPID);
 	      eEvent->AddToHistory(NULL, D_RECEIVER);
 	      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
 	    }
 	    else
-	      gUserManager.DropOwner();
+	      gUserManager.DropOwner(LICQ_PPID);
 	    break;
 	  }
 	  case ICQ_CMDxSUB_SMS:
