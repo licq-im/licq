@@ -3,6 +3,7 @@
 #endif
 
 #include <stdio.h>
+#include <locale.h>
 #include "console.h"
 #include "plugin.h"
 
@@ -46,7 +47,7 @@ bool LP_Init(int argc, char **argv)
   //LocaleVal = setlocale (LC_ALL, "");
   //bindtextdomain (PACKAGE, LOCALEDIR);
   //textdomain (PACKAGE);
-
+  setlocale(LC_ALL, "");
 
   // parse command line for arguments
   int i = 0;

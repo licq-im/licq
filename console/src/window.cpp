@@ -105,6 +105,13 @@ CWindow& CWindow::operator<<(char d)
   return(*this);
 }
 
+CWindow& CWindow::operator<<(unsigned char d)
+{
+  waddch(win, d);
+  RefreshWin();
+  return(*this);
+}
+
 
 CWindow& CWindow::operator<<(const char *d)
 {

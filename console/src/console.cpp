@@ -920,8 +920,8 @@ void CLicqConsole::InputCommand(int cIn)
   default:
     if (isprint(cIn))
     {
-      szIn[nPos++] = (char)cIn;
-      *winPrompt << (char)cIn;
+      szIn[nPos++] = (unsigned char)cIn;
+      *winPrompt << (unsigned char)cIn;
     }
     else
       Beep();
@@ -1586,8 +1586,8 @@ char *CLicqConsole::Input_Line(char *sz, unsigned short &n, int cIn)
   }
 
   default:
-    sz[n++] = (char)cIn;
-    *winMain << (char)cIn;
+    sz[n++] = (unsigned char)cIn;
+    *winMain << (unsigned char)cIn;
 
   } // switch
 
@@ -1648,8 +1648,8 @@ char *CLicqConsole::Input_MultiLine(char *sz, unsigned short &n, int cIn)
   }
 
   default:
-    sz[n++] = (char)cIn;
-    *winMain << (char)cIn;
+    sz[n++] = (unsigned char)cIn;
+    *winMain << (unsigned char)cIn;
     break;
 
   } // switch
