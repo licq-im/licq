@@ -928,16 +928,23 @@ void CICQDaemon::SaveUserList()
 
   unsigned short i = 1;
   //TODO: Work with other protocols
-  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
+  FOR_EACH_USER_START(LOCK_R)
   {
-    n = sprintf(buff, "User%d = %s.Licq\n", i, pUser->IdString());
+    char szPPID[5];
+    unsigned long nPPID = pUser->PPID();
+    szPPID[0] = (nPPID & 0xFF000000) >> 24;
+    szPPID[1] = (nPPID & 0x00FF0000) >> 16;
+    szPPID[2] = (nPPID & 0x0000FF00) >> 8;
+    szPPID[3] = (nPPID & 0x000000FF);
+    szPPID[4] = '\0';
+    n = sprintf(buff, "User%d = %s.%s\n", i, pUser->IdString(), szPPID);
     nRet = write(fd, buff, n);
     if (nRet == -1)
-      FOR_EACH_PROTO_USER_BREAK
+      FOR_EACH_USER_BREAK
 
     i++;
   }
-  FOR_EACH_PROTO_USER_END
+  FOR_EACH_USER_END
 
   close(fd);
 
@@ -1936,17 +1943,25 @@ ICQEvent *CICQDaemon::PopPluginEvent()
 void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
 {
   ProtoPluginsListIter iter;
+  bool bExists = false;
   pthread_mutex_lock(&licq->mutex_protoplugins);
   for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
        iter++)
   {
     if ((*iter)->Id() == _nPPID)
     {
+      bExists = true;
       (*iter)->PushSignal(s);
       break;
     }
   }
   pthread_mutex_unlock(&licq->mutex_protoplugins);
+
+  if (!bExists)
+  {
+    gLog.Info("%sInvalid protocol plugin requested (%ld).\n", L_ERRORxSTR, _nPPID);
+    delete s;
+  }
 }
 
 CSignal *CICQDaemon::PopProtoSignal()

@@ -32,6 +32,7 @@ class TCPSocket;
 class SrvSocket;
 class INetSocket;
 class ProxyServer;
+class CMSN;
 
 const unsigned short IGNORE_MASSMSG    = 1;
 const unsigned short IGNORE_NEWUSERS   = 2;
@@ -558,8 +559,9 @@ protected:
   friend class CChatManager;
   friend class CFileTransferManager;
   friend class COnEventManager;
-	friend class CUserManager;
+  friend class CUserManager;
   friend class CLicq;
+  friend class CMSN;
 };
 
 // Global pointer

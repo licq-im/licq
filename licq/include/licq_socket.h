@@ -132,6 +132,9 @@ public:
   void RecvConnection(TCPSocket &newSocket);
   void TransferConnectionFrom(TCPSocket &from);
 
+  bool SSLSend(CBuffer *b);
+  bool SSLRecv();
+
   bool Secure() { return m_p_SSL != NULL; }
   bool SSL_Pending();
 

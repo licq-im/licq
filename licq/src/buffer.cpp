@@ -324,6 +324,13 @@ CBuffer& CBuffer::operator>>(unsigned long &in)
   return(*this);
 }
 
+char *CBuffer::UnpackRaw(char *sz, unsigned short _nSize)
+{
+  for (unsigned short i = 0; i < _nSize; i++) *this >> sz[i];
+  sz[_nSize] = '\0';
+  return sz;
+}
+
 char *CBuffer::UnpackStringBE(char* sz, unsigned short _usiSize)
 {
   unsigned short nLen;

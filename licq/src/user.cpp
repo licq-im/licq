@@ -246,7 +246,7 @@ bool CUserManager::Load()
     }
     snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s", BASE_DIR, USER_DIR,
              szFile);
-    sz = strstr(szFile, ".");
+    sz = strrchr(szFile, '.');
     strncpy(szId, szFile, sz - szFile);
     szId[sz - szFile] = '\0';
     nPPID = (*(sz+1)) << 24 | (*(sz+2)) << 16 | (*(sz+3)) << 8 | (*(sz+4));

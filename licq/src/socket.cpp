@@ -47,6 +47,7 @@ extern int h_errno;
 #include <openssl/err.h>
 
 SSL_CTX *gSSL_CTX;
+SSL_CTX *gSSL_CTX_NONICQ;
 #endif // OpenSSL
 
 #ifdef USE_SOCKS5
@@ -1055,6 +1056,93 @@ bool TCPSocket::RecvPacket()
 }
 
 
+bool TCPSocket::SSLSend(CBuffer *b_in)
+{
+#ifdef USE_OPENSSL
+  if (m_pSSL == 0) return false;
+
+  int i, j;
+  ERR_clear_error();
+  pthread_mutex_lock(&mutex_ssl);
+  i = SSL_write(m_pSSL, b_in->getDataStart(), b_in->getDataSize());
+  j = SSL_get_error(m_pSSL, i);
+  pthread_mutex_unlock(&mutex_ssl);
+  if (j != SSL_ERROR_NONE)
+  {
+    const char *file; int line;
+    unsigned long err;
+    switch (j)
+    {
+      case SSL_ERROR_SSL:
+        err = ERR_get_error_line(&file, &line);
+        printf("SSL_write error = %lx, %s:%i\n", err, file, line);
+        ERR_clear_error();
+        break;
+      default:
+        printf("SSL_write error %d, SSL_%d\n", i, j);
+        break;
+    }
+  }
+ 
+  DumpPacket(b_in, D_SENDER);
+
+  return true;
+#else
+  return false;
+#endif
+}
+
+
+bool TCPSocket::SSLRecv()
+{
+#ifdef USE_OPENSSL
+  if (m_pSSL == 0) return false;
+
+  char *buffer = new char[MAX_RECV_SIZE];
+  errno = 0;
+  pthread_mutex_lock(&mutex_ssl);
+  int nBytesReceived = SSL_read(m_pSSL, buffer, MAX_RECV_SIZE);
+  int tmp = SSL_get_error(m_pSSL, nBytesReceived);
+  pthread_mutex_unlock(&mutex_ssl);
+  switch (tmp)
+  {
+    case SSL_ERROR_NONE:
+      break;
+    case SSL_ERROR_WANT_READ:
+    case SSL_ERROR_WANT_WRITE:
+    case SSL_ERROR_WANT_X509_LOOKUP:
+      return (true);
+    case SSL_ERROR_ZERO_RETURN:
+      m_nErrorType = SOCK_ERROR_errno;
+      errno = 0;
+      return (false);
+    case SSL_ERROR_SYSCALL:
+      m_nErrorType = SOCK_ERROR_errno;
+      return (false);
+    case SSL_ERROR_SSL:
+      m_nErrorType = SOCK_ERROR_internal;
+      return (false);
+  }
+  if (nBytesReceived <= 0)
+  {
+    delete[] buffer;
+    m_nErrorType = SOCK_ERROR_errno;
+    return (false);
+  }
+  m_xRecvBuffer.Create(nBytesReceived);
+  m_xRecvBuffer.Pack(buffer, nBytesReceived);
+  delete[] buffer;
+
+  // Print the packet
+  DumpPacket(&m_xRecvBuffer, D_RECEIVER);
+
+  return (true);
+#else
+  return false;
+#endif
+}
+
+
 TCPSocket::~TCPSocket()
 {
   SecureStop();
@@ -1077,7 +1165,10 @@ bool TCPSocket::SSL_Pending()
 bool TCPSocket::SecureConnect()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
-  m_pSSL = SSL_new(gSSL_CTX);
+  if (m_nOwnerPPID == LICQ_PPID)
+    m_pSSL = SSL_new(gSSL_CTX);
+  else
+    m_pSSL = SSL_new(gSSL_CTX_NONICQ);
 #ifdef SSL_DEBUG
   m_pSSL->debug = 1;
 #endif
@@ -1110,7 +1201,10 @@ bool TCPSocket::SecureListen()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
 
-  m_pSSL = SSL_new(gSSL_CTX);
+  if (m_nOwnerPPID == LICQ_PPID)
+    m_pSSL = SSL_new(gSSL_CTX);
+  else
+    m_pSSL = SSL_new(gSSL_CTX_NONICQ);
   SSL_set_session(m_pSSL, NULL);
   SSL_set_fd(m_pSSL, m_nDescriptor);
   int i = SSL_accept(m_pSSL);
