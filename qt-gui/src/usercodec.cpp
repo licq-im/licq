@@ -30,6 +30,7 @@
 
 UserCodec::encoding_t UserCodec::m_encodings[] = {
   { QT_TR_NOOP("Unicode"), "UTF-8", 106, ENCODING_DEFAULT, true },
+  { QT_TR_NOOP("Unicode-16"), "ISO-10646-UCS-2", 1000 , ENCODING_DEFAULT, true },
 
   { QT_TR_NOOP("Arabic"), "ISO 8859-6", 82, ENCODING_DEFAULT, false },
   { QT_TR_NOOP("Arabic"), "CP 1256", 2256, ENCODING_ARABIC, true },
