@@ -110,6 +110,7 @@ public:
    void cleanupTLV();
 
    void PackTLV(unsigned short, unsigned short, const char *);
+   void PackTLV(unsigned short, unsigned short, CBuffer *);
 
    unsigned short getTLVLen(unsigned short);
 

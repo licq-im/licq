@@ -21,6 +21,7 @@
 #include "licq_chat.h"
 #include "licq_filetransfer.h"
 #include "support.h"
+#include "licq_message.h"
 
 //-----icqAddUser----------------------------------------------------------
 void CICQDaemon::icqAddUser(unsigned long _nUin)
@@ -149,6 +150,43 @@ unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
             p->Sequence(), p->SubSequence());
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
   PushExtendedEvent(e);
+  return e->EventId();
+}
+
+//-----icqAuthorizeGrant--------------------------------------------------------
+unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMessage)
+// authorize a user to add you to their contact list
+{
+  char *sz = NULL;
+  if (szMessage != NULL)
+  {
+    sz = gTranslator.NToRN(szMessage);
+    gTranslator.ClientToServer(sz);
+  }
+  CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_AUTHxGRANTED, sz);
+  gLog.Info("%sAuthorizing user %ld (#%ld)...\n", L_SRVxSTR, nUin, p->Sequence());
+  delete sz;
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  return e->EventId();
+}
+
+//-----icqAuthorizeRefuse-------------------------------------------------------
+unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
+// refuseto authorize a user to add you to their contact list
+{
+  char *sz = NULL;
+  if (szMessage != NULL)
+  {
+    sz = gTranslator.NToRN(szMessage);
+    gTranslator.ClientToServer(sz);
+  }
+  CPU_ThroughServer *p = new CPU_ThroughServer(nUin, ICQ_CMDxSUB_AUTHxREFUSED, sz);
+  gLog.Info("%sRefusing authorization to user %ld (#%ld)...\n", L_SRVxSTR,
+     nUin, p->Sequence());
+  delete sz;
+
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
   return e->EventId();
 }
 
@@ -395,6 +433,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     }
     m_sStats[STATS_EventsSent].Inc();
   }
+
 
   // Process the event
   switch (e->m_nCommand)
@@ -1038,12 +1077,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxMSG_SERVERxMESSAGE:
   {
-    unsigned long timestamp1, timestamp2, nUin;
+    unsigned long nMsgID[2], nUin;
     unsigned long timeSent;
     unsigned short mFormat, nMsgLen, nTLVs;
 
-    timestamp1 = packet.UnpackUnsignedLongBE();
-    timestamp2 = packet.UnpackUnsignedLongBE();
+    nMsgID[0] = packet.UnpackUnsignedLongBE();
+    nMsgID[1] = packet.UnpackUnsignedLongBE();
     timeSent   = time(0L);
     mFormat    = packet.UnpackUnsignedShortBE();
     nUin       = packet.UnpackUinString();

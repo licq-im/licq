@@ -585,6 +585,14 @@ void CBuffer::PackTLV(unsigned short nType, unsigned short nSize,
   Pack(data, nSize);
 }
 
+void CBuffer::PackTLV(unsigned short nType, unsigned short nSize,
+		      CBuffer *b)
+{
+  PackUnsignedShortBE(nType);
+  PackUnsignedShortBE(nSize);
+  Pack(b);
+}
+
 #if 0
 void CBuffer::PackFNACHeader(unsigned short nFamily, unsigned short nSubtype,
 			     char nFlag1, char nFlag2, unsigned long nSeq)
