@@ -103,7 +103,7 @@ dnl Check for QT
 AC_PATH_QT
 AC_PATH_QT_LIB
 
-if test "$have_qt_lib" = no; then
+if test "$have_qt_lib" = "no"; then
   AC_MSG_ERROR([
 
 I can't find the QT libraries. It is recommended to set the QTDIR environment
@@ -116,7 +116,7 @@ with the --with-qt-libraries argument, and I'll take your word for it.
 fi
 
 AC_PATH_QT_INC
-if test "$have_qt_inc" = no; then
+if test "$have_qt_inc" = "no"; then
   AC_MSG_ERROR([
 
 I can't find the QT header files.
