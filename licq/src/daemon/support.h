@@ -15,6 +15,12 @@ extern "C" {
 #include <netinet/in.h>
 #include <dirent.h>
 
+/* AIX has weird string places */
+#ifdef _AIX
+#include <strings.h>
+#endif
+
+
 /* Basic support functions */
 
 void SetString(char **szDest, const char *szSource);
