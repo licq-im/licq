@@ -82,6 +82,7 @@ CSocketSet::CSocketSet ()
 void CSocketSet::Set(int _nSD)
 {
   Lock();
+  assert(!FD_ISSET(_nSD, &sFd));
   FD_SET(_nSD, &sFd);
   list<int>::iterator i = lFd.begin();
   while (i != lFd.end() && _nSD < *i) i++;
@@ -92,6 +93,7 @@ void CSocketSet::Set(int _nSD)
 void CSocketSet::Clear (int _nSD)
 {
   Lock();
+  assert(FD_ISSET(_nSD, &sFd));
   FD_CLR(_nSD, &sFd);
   list<int>::iterator i = lFd.begin();
   while (i != lFd.end() && *i != _nSD) i++;
