@@ -1,4 +1,4 @@
-LICQ v1.0.3
+LICQ v1.0.4
 
 An ICQ clone written in C and C++ using a plugin system to allow for
 many possible interfaces.  
@@ -110,4 +110,5 @@ Good luck.
 
 CONTACTS:
 
-Send any questions, comments, or other complaints to graham@licq.org.
+Send any questions, comments, or other complaints to 
+licq-devel@lists.sourceforge.net.

@@ -1,5 +1,16 @@
 Change log for Licq.
 
+New in 1.0.4
+o  Bug fixes
+o  workarounds for reoccuring offline messages
+   and direct-sending problems with ICQ2001 clients added
+o  Primary maintainer changed to Dirk Mueller <dirk@licq.org>
+
+Note: This is the very last release that uses the old, not well
+   working ICQv5 protocol (which was used by ICQ99a and ICQ99b). 
+   There will be a new alpha release shortly that uses the new,
+   more reliable protocol, that is also used by ICQ2001 clients. 
+   
 New in 1.0.3
 o  Bug fixes
 
