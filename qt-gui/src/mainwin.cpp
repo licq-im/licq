@@ -2396,6 +2396,7 @@ void CMainWindow::saveOptions()
 
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);
+#ifndef USE_KDE
   switch(m_nDockMode)
   {
     case DockDefault:
@@ -2407,6 +2408,7 @@ void CMainWindow::saveOptions()
     case DockNone:
       break;
   }
+#endif
 #endif
 
   // save the column info
