@@ -1241,9 +1241,17 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   if (u)
   {
     u->SetSocketDesc(sock);
-    gUserManager.DropUser(u);
   }
-  
+  else
+  {
+    u = new ICQUser(strUser.c_str(), MSN_PPID);
+    u->SetSocketDesc(sock);
+    m_pDaemon->AddUserToList(u);
+  }
+  gUserManager.DropUser(u);
+
+  MSNAddUser(const_cast<char *>(strUser.c_str()));
+
   gSocketMan.DropSocket(sock);
   
   Send_SB_Packet(strUser, pReply);
