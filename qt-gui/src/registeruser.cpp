@@ -116,7 +116,7 @@ void RegisterUserDlg::accept()
   {
     unsigned long nUin = nfoUin->text().toULong();
     // Validate uin
-    if (nUin <= 1000000)
+    if (nUin == 0)
     {
       InformUser (this, tr("Invalid UIN.  Try again."));
       return;
