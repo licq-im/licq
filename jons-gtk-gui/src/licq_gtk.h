@@ -487,6 +487,7 @@ extern void user_function(ICQEvent *);
 extern void finish_event(struct e_tag_data *, ICQEvent *);
 extern void finish_message(ICQEvent *);
 extern void finish_chat(ICQEvent *);
+extern void finish_file(ICQEvent *);
 extern void finish_away(ICQEvent *);
 extern void finish_info(CICQSignal *);
 
@@ -508,7 +509,8 @@ extern void fs_ok_click(GtkWidget *, gpointer);
 extern void fs_cancel_click(GtkWidget *, gpointer);
 extern void file_select_ok(GtkWidget *, gpointer);
 extern void file_select_cancel(GtkWidget *, gpointer);
-extern void send_file(GtkWidget *, gpointer);
+extern struct file_send *fs_find(unsigned long);
+extern void file_start_send(ICQEvent *);
 
 
 /* Functions in history_window.cpp */

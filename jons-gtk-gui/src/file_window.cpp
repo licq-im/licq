@@ -27,6 +27,8 @@
 #include "licq_filetransfer.h"
 #include "licq_user.h"
 
+GSList *fs_list;
+
 void file_accept_window(ICQUser *user, CUserEvent *e)
 {
 	GtkWidget *accept;
@@ -527,9 +529,21 @@ gchar *encode_file_size(unsigned long size)
 // Function to send a file from the contact list
 void list_request_file(GtkWidget *widget, ICQUser *user)
 {
-	struct file_send *fs = g_new0(struct file_send, 1);
+	struct file_send *fs;
+	
+	// Does it already exist?
+	fs = fs_find(user->Uin());
+	
+	// Don't make it if it already exists
+	if(fs != NULL)
+		return;
+		
+	fs = g_new0(struct file_send, 1);
 	fs->uin = user->Uin();
 	fs->file_select = gtk_file_selection_new(g_strdup_printf("Select file to"				" send to %s", user->GetAlias()));
+
+	// Add this to the linked list
+	fs_list = g_slist_append(fs_list, fs);
 
 	// Make the window
 	fs->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
@@ -542,6 +556,7 @@ void list_request_file(GtkWidget *widget, ICQUser *user)
 
 	// Description text box
 	fs->description = gtk_text_new(NULL, NULL);
+	gtk_text_set_editable(GTK_TEXT(fs->description), TRUE);
 	gtk_box_pack_start(GTK_BOX(v_box), fs->description, FALSE, FALSE, 0);
 
 	// HBox with a file path entry box and a browse button
@@ -603,12 +618,13 @@ void fs_browse_click(GtkWidget *widget, gpointer _fs)
 	gtk_widget_show_all(fs->file_select);
 }
 
-void fs_ok_click(GtkWidget *widget, gpointer _fs)
-{
-}
-
 void fs_cancel_click(GtkWidget *widget, gpointer _fs)
 {
+	struct file_send *fs = (struct file_send *)_fs;
+
+	// Get rid of the file send list and destory the window
+	fs_list = g_slist_remove(fs_list, fs);
+	gtk_widget_destroy(fs->window);
 }
 
 void file_select_ok(GtkWidget *widget, gpointer _fs)
@@ -625,13 +641,13 @@ void file_select_cancel(GtkWidget *widget, gpointer _fs)
 	gtk_widget_hide_all(fs->file_select);
 }
 
-void send_file(GtkWidget *widget, gpointer _fs)
+void fs_ok_click(GtkWidget *widget, gpointer _fs)
 {
 	struct file_send *fs = (struct file_send *)_fs;
 	const char *file_name = gtk_file_selection_get_filename(
 					GTK_FILE_SELECTION(fs->file_select));
 
-	if(strcmp(file_name, ""))
+	if(strcmp(file_name, "") == 0)
 	{
 		g_print("You must specify a file to send\n");
 		return;
@@ -644,5 +660,67 @@ void send_file(GtkWidget *widget, gpointer _fs)
 	catcher = g_slist_append(catcher, fs->etd);
 
 	fs->etd->e_tag = icq_daemon->icqFileTransfer(fs->uin, file_name,
-				"", ICQ_TCPxMSG_NORMAL);
+				gtk_editable_get_chars(GTK_EDITABLE(
+					fs->description), 0, -1),
+				ICQ_TCPxMSG_NORMAL);
 }
+
+// Used for the finishing event in extras.cpp
+struct file_send *fs_find(gulong uin)
+{
+	struct file_send *fs;
+	GSList *temp_fs_list = fs_list;
+
+	while(temp_fs_list)
+	{
+		fs = (struct file_send *)temp_fs_list->data;
+		if(fs->uin == uin)
+			return fs;
+
+		temp_fs_list = temp_fs_list->next;
+	}
+
+	// It wasn't found, return NULL
+	return NULL;
+}
+
+// See if the file was accepted or not
+void file_start_send(ICQEvent *event)
+{
+	CExtendedAck *ea = event->ExtendedAck();
+	CUserEvent *ue = event->UserEvent();
+	
+	if(ea == NULL || ue == NULL)
+	{
+		gLog.Error("%sInternal error: file_start_send(): chat or file"
+			   " request acknowledgement without extended "
+			   "result.\n", L_ERRORxSTR);
+		return;
+	}
+
+	if(!ea->Accepted())
+	{
+		return;
+	}
+
+	// It is sending now
+	struct file_window *fw = g_new0(file_window, 1);
+	fw->uin = event->Uin();
+	fw->sequence = ue->Sequence();
+
+	create_file_window(fw);
+
+	// Create the file transfer manager and connect it's pipe
+	fw->ftman = new CFileTransferManager(icq_daemon, fw->uin);
+	fw->ftman->SetUpdatesEnabled(1);
+	fw->input_tag = gdk_input_add(fw->ftman->Pipe(), GDK_INPUT_READ,
+	                              file_pipe_callback, (gpointer)fw);
+
+        CEventFile *f = (CEventFile *)event->UserEvent();
+        ConstFileList fl;
+        fl.push_back(f->Filename());
+        if(!fw->ftman->SendFiles(fl, ea->Port()))
+		return;
+
+}
+
