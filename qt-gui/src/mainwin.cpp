@@ -342,6 +342,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("showPopCellular",m_bPopCellular, true);
   licqConf.ReadBool("showPopIP",m_bPopIP, false);
   licqConf.ReadBool("showPopLastOnelin",m_bPopLastOnline, false);
+  licqConf.ReadBool("showPopOnlineSince", m_bPopOnlineSince, false);
 
 
   unsigned short nFlash;
@@ -2364,6 +2365,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("showPopCellular",m_bPopCellular);
   licqConf.WriteBool("showPopIP",m_bPopIP);
   licqConf.WriteBool("showPopLastOnelin",m_bPopLastOnline);
+  licqConf.WriteBool("showPopOnlineSince", m_bPopOnlineSince);
 
 #ifdef USE_DOCK
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);

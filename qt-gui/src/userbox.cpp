@@ -1313,6 +1313,45 @@ void CUserView::maybeTip(const QPoint& c)
       s += tr("<br><nobr>O: ") +  ds + tr("</nobr>");
     }
 
+    if ((!u->StatusOffline()) && gMainWindow->m_bPopOnlineSince) {
+      time_t nLoggedIn = time(0) - u->OnlineSince();
+      unsigned long nWeek, nDay, nHour, nMinute;
+      nWeek = nLoggedIn / 604800;
+      nDay = (nLoggedIn % 604800) / 86400;
+      nHour = (nLoggedIn % 86400) / 3600;
+      nMinute = (nLoggedIn % 3600) / 60;
+
+      QString ds, temp;
+      if (nWeek)
+      {
+      	ds += temp.setNum(nWeek);
+	ds += " ";
+      	ds += (nWeek > 1 ? " weeks" : " week");
+      }
+      if (nDay)
+      {
+        if (nWeek) ds += ", ";
+        ds += temp.setNum(nDay);
+	ds += " ";
+        ds += (nDay > 1 ? " days" : " day");
+      }
+      if (nHour)
+      {
+        if (nWeek || nDay) ds += ", ";
+	ds += temp.setNum(nHour);
+        ds += (nHour > 1 ? " hours" : " hour");
+      }
+      if (nMinute)
+      {
+        if (nWeek || nDay || nHour) ds += ", ";
+	ds += temp.setNum(nMinute);
+        ds += (nMinute > 1 ? " minutes" : " minute");
+      }
+      ds += ".";
+
+      s += tr("<br><nobr>Logged In: ") + ds + tr("</nobr>");
+    }
+
     tip(r, s);
   }
 }

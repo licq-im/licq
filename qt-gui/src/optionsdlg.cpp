@@ -213,6 +213,7 @@ void OptionsDlg::SetupOptions()
   popCellular->setChecked(mainwin->m_bPopCellular);
   popIP->setChecked(mainwin->m_bPopIP);
   popLastOnline->setChecked(mainwin->m_bPopLastOnline);
+  popOnlineSince->setChecked(mainwin->m_bPopOnlineSince);
 
   switch(mainwin->m_nDockMode)
   {
@@ -427,6 +428,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bPopCellular= popCellular->isChecked();
   mainwin->m_bPopIP= popIP->isChecked();
   mainwin->m_bPopLastOnline= popLastOnline->isChecked();
+  mainwin->m_bPopOnlineSince = popOnlineSince->isChecked();
 
 
 #ifndef USE_KDE
@@ -1172,6 +1174,7 @@ QWidget* OptionsDlg::new_column_options()
   popCellular= new QCheckBox(tr("Cellular"), boxPopWin);
   popIP     = new QCheckBox(tr("IP"), boxPopWin);
   popLastOnline = new QCheckBox(tr("Last online"), boxPopWin);
+  popOnlineSince = new QCheckBox(tr("Online Time"), boxPopWin);
 
 
   QVBoxLayout *g_main = new QVBoxLayout(w, 10, 5);

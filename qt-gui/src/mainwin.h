@@ -106,7 +106,8 @@ public:
        m_bPopFax, 
        m_bPopCellular, 
        m_bPopIP, 
-       m_bPopLastOnline;
+       m_bPopLastOnline,
+       m_bPopOnlineSince;
 
   QString m_MsgAutopopupKey;
 
