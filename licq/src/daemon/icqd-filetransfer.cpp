@@ -217,7 +217,7 @@ bool CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
   ConstFileList::iterator iter;
   for (iter = lPathNames.begin(); iter != lPathNames.end(); iter++)
   {
-    if (stat(*iter, &buf) < 0)
+    if (stat(*iter, &buf) == -1)
     {
       gLog.Warn("%sFile Transfer: File access error %s:\n%s%s.\n", L_WARNxSTR,
          *iter, L_BLANKxSTR, strerror(errno));
@@ -318,7 +318,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid client init packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
-        m_nResult = FT_ERROR;
+        m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
       b.UnpackUnsignedLong();
@@ -336,7 +336,7 @@ bool CFileTransferManager::ProcessPacket()
       CPFile_InitServer p(m_szLocalName);
       if (!SendPacket(&p))
       {
-        m_nResult = FT_ERROR;
+        m_nResult = FT_CLOSED;
         return false;
       }
 
@@ -359,7 +359,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid file info packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
-        m_nResult = FT_ERROR;
+        m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
       b.UnpackChar();
@@ -398,7 +398,7 @@ bool CFileTransferManager::ProcessPacket()
         {
           gLog.Error("%sFile Transfer: Unable to open %s for writing:\n%s%s.\n",
              L_ERRORxSTR, m_szPathName, L_BLANKxSTR, strerror(errno));
-          m_nResult = FT_ERROR;
+          m_nResult = FT_ERRORxFILE;
           return false;
         }
       }
@@ -407,7 +407,7 @@ bool CFileTransferManager::ProcessPacket()
       CPFile_Start p(m_nFilePos);
       if (!SendPacket(&p))
       {
-        m_nResult = FT_ERROR;
+        m_nResult = FT_CLOSED;
         return false;
       }
 
@@ -449,7 +449,7 @@ bool CFileTransferManager::ProcessPacket()
       {
         gLog.Error("%sFile Transfer: Write error:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR,
            errno == 0 ? "Disk full (?)" : strerror(errno));
-        m_nResult = FT_ERROR;
+        m_nResult = FT_ERRORxFILE;
         return false;
       }
 
@@ -500,7 +500,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid server init packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
-        m_nResult = FT_ERROR;
+        m_nResult = FT_ERRORxHANDSHAKE;
         return false;
       }
       m_nSpeed = b.UnpackUnsignedLong();
@@ -512,12 +512,12 @@ bool CFileTransferManager::ProcessPacket()
       {
         gLog.Warn("%sFile Transfer: Read error for %s:\n%s\n", L_WARNxSTR,
            *m_iPathName, p.ErrorStr());
-        m_nResult = FT_ERROR;
+        m_nResult = FT_ERRORxFILE;
         return false;
       }
       if (!SendPacket(&p))
       {
-        m_nResult = FT_ERROR;
+        m_nResult = FT_CLOSED;
         return false;
       }
 
@@ -548,7 +548,7 @@ bool CFileTransferManager::ProcessPacket()
         gLog.Error("%sFile Transfer: Invalid start packet:\n%s%s\n",
                    L_ERRORxSTR, L_BLANKxSTR, b.print(pbuf));
         delete [] pbuf;
-        m_nResult = FT_ERROR;
+        m_nResult = FT_CLOSED;
         return false;
       }
 
@@ -562,7 +562,7 @@ bool CFileTransferManager::ProcessPacket()
       {
         gLog.Error("%sFile Transfer: Read error '%s':\n%s%s\n.", L_ERRORxSTR,
            *m_iPathName, L_BLANKxSTR, strerror(errno));
-        m_nResult = FT_ERROR;
+        m_nResult = FT_ERRORxFILE;
         return false;
       }
 
@@ -570,7 +570,7 @@ bool CFileTransferManager::ProcessPacket()
       {
         gLog.Error("%sFile Transfer: Seek error '%s':\n%s%s\n.", L_ERRORxSTR,
                    m_szFileName, L_BLANKxSTR, strerror(errno));
-        m_nResult = FT_ERROR;
+        m_nResult = FT_ERRORxFILE;
         return false;
       }
 
@@ -628,7 +628,7 @@ bool CFileTransferManager::SendFilePacket()
   {
     gLog.Error("%sFile Transfer: Error reading from %s:\n%s%s.\n", L_ERRORxSTR,
        m_szPathName, L_BLANKxSTR, strerror(errno));
-    m_nResult = FT_ERROR;
+    m_nResult = FT_ERRORxFILE;
     return false;
   }
   CBuffer xSendBuf(nBytesToSend + 1);
@@ -636,7 +636,7 @@ bool CFileTransferManager::SendFilePacket()
   xSendBuf.Pack(pSendBuf, nBytesToSend);
   if (!SendBuffer(&xSendBuf))
   {
-    m_nResult = FT_ERROR;
+    m_nResult = FT_CLOSED;
     return false;
   }
 
@@ -683,12 +683,12 @@ bool CFileTransferManager::SendFilePacket()
     {
       gLog.Warn("%sFile Transfer: Read error for %s:\n%s\n", L_WARNxSTR,
          *m_iPathName, p.ErrorStr());
-      m_nResult = FT_ERROR;
+      m_nResult = FT_ERRORxFILE;
       return false;
     }
     if (!SendPacket(&p))
     {
-      m_nResult = FT_ERROR;
+      m_nResult = FT_CLOSED;
       return false;
     }
 

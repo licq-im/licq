@@ -38,9 +38,12 @@
  *     FT_DONExTRANSFER: Signals that the transfer is done and the other side
  *       has disconnected.
  *     FT_CLOSED: This means that the other side disconnected unexpectedly.
- *     FT_ERROR: This means some kind of I/O error has occured either
+ *     FT_ERRORx<...>: This means some kind of I/O error has occured either
  *       reading/writing to files or talking to the network.  More details
- *       are available in the log.
+ *       are available in the log.  The type of error is also specified
+ *       as FT_ERRORxFILE (file read/write error, PathName() contains the
+ *       name of the offending file) or FT_ERRORxHANDSHAKE (handshaking error
+ *       by the other side).
  * 4.  Call CloseFileTransfer() when done or to cancel, or simply delete the
  *       CFileTransferManager object.
  *
@@ -54,12 +57,13 @@ class CICQDaemon;
 
 
 // FileTransferEvent codes
-const unsigned char FT_ERROR         = 0;
 const unsigned char FT_STARTxBATCH   = 1;
 const unsigned char FT_STARTxFILE    = 2;
 const unsigned char FT_DONExFILE     = 3;
 const unsigned char FT_DONExBATCH    = 4;
 const unsigned char FT_CLOSED        = 5;
+const unsigned char FT_ERRORxFILE      = 0xFF;
+const unsigned char FT_ERRORxHANDSHAKE = 0xFE;
 
 
 //=====File=====================================================================
