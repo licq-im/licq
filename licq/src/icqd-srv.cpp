@@ -1968,9 +1968,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       {
         GroupList *g = gUserManager.LockGroupList(LOCK_R);
         GroupIDList *gID = gUserManager.LockGroupIDList(LOCK_R);
-        int i;
 
-        for (i = 0; i < gID->size(); i++)
+        for (unsigned int i = 0; i < gID->size(); i++)
         {
           if ((*gID)[i] == 0)
           {
