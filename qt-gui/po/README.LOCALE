@@ -12,9 +12,15 @@ Using a translation File
 
 Once the .po file has been created, it must be converted into a Qt qm file.
 This is done using the msg2qm routine, which can be invoked using 
-"make <file>.qm" assuming <file>.po exists.  Once you have the .qm file,
-simply copy it to <licq prefix>/share/licq/qt-gui/locale.qm, and it will
-be automatically loaded next time the Qt-GUI is started.
+"make <lang>.qm" assuming <lang>.po exists.  Once you have the .qm file,
+simply copy it to <licq prefix>/share/licq/qt-gui/locale/<lang>.qm.  Then set
+the environment variable LANGUAGE (or LANG) to the two digit language code
+(as per GNU gettext standard) and it will be loaded next time the Qt-GUI
+is started.  For example, to use a russian translation do:
+> cd po
+> make ru.qm
+> cp ru.qm /usr/local/share/licq/qt-gui/locale
+> export LANGUAGE="ru"
 
 
 Updating a Translation File
