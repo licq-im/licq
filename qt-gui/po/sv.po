@@ -316,7 +316,7 @@ msgstr "&Avbryt"
 
 #: mmsenddlg.cpp:111
 msgid "CMMSendDlg::&Close"
-msgstr "&Stäng"
+msgstr "S&täng"
 
 #: mmsenddlg.cpp:87
 msgid "CMMSendDlg::Multiple Recipient Contact List"
@@ -999,7 +999,7 @@ msgstr "s"
 
 #: outputwin.cpp:45
 msgid "CQtLogWindow::&Close"
-msgstr "&Stäng"
+msgstr "S&täng"
 
 #: outputwin.cpp:38
 msgid "CQtLogWindow::&Save"
@@ -1447,7 +1447,7 @@ msgstr "Ange anpassat autosvar för %1"
 
 #: editfile.cpp:37
 msgid "EditFileDlg::&Close"
-msgstr "&Stäng"
+msgstr "S&täng"
 
 #: editfile.cpp:35
 msgid "EditFileDlg::&Save"
@@ -1665,7 +1665,7 @@ msgstr "Webbpanel"
 
 #: mainwin.cpp:3042
 msgid "HintsDlg::&Close"
-msgstr "&Stäng"
+msgstr "S&täng"
 
 #: mainwin.cpp:3006
 msgid "HintsDlg::"
@@ -1754,7 +1754,7 @@ msgstr ""
 
 #: keyrequestdlg.cpp:75
 msgid "KeyRequestDlg::&Close"
-msgstr "&Stäng"
+msgstr "S&täng"
 
 #: keyrequestdlg.cpp:69
 msgid "KeyRequestDlg::&Send"
@@ -3459,7 +3459,7 @@ msgstr "&Avbryt"
 
 #: usereventdlg.cpp:1141
 msgid "UserSendCommon::&Close"
-msgstr "&Stäng"
+msgstr "S&täng"
 
 #: usereventdlg.cpp:774
 msgid "UserSendCommon::&Menu"
@@ -3627,7 +3627,7 @@ msgstr "URL : "
 
 #: usereventdlg.cpp:263
 msgid "UserViewEvent::&Close"
-msgstr "&Stäng"
+msgstr "S&täng"
 
 #: usereventdlg.cpp:406
 msgid "UserViewEvent::&Forward"
