@@ -967,9 +967,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(CBuffer &packet)
 void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
                                       unsigned short newCommand, time_t timeSent)
 {
-  unsigned short messageLen;
   ICQUser *u;
-  int i;
+  int i, j;
+  char c;
 
   if (nUin == 0)
   {
@@ -993,18 +993,25 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   unsigned long nMask = ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0);
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
 
+  // Read out the data
+  unsigned short nLen;
+  packet >> nLen;
+
+  // read in the user data from the packet
+  char szMessage[nLen + 1];
+  for (i = 0, j = 0; i < nLen; i++)
+  {
+    packet >> c;
+    if (c != 0x0D) szMessage[j++] = c;
+  }
+
   switch(newCommand)
   {
   case ICQ_CMDxSUB_MSG:  // system message: message through the server
   {
-    // Read in the message
-    packet >> messageLen;
-    char message[messageLen];
-    for (i = 0; i < messageLen; i++) packet >> message[i];
-
     // translating string with Translation Table
-    gTranslator.ServerToClient (message);
-    CEventMsg *e = new CEventMsg(message, ICQ_CMDxRCV_SYSxMSGxONLINE,
+    gTranslator.ServerToClient (szMessage);
+    CEventMsg *e = new CEventMsg(szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE,
                                  timeSent, nMask);
 
     // Lock the user to add the message to their queue
@@ -1039,13 +1046,9 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   }
   case ICQ_CMDxSUB_URL:  // system message: url through the server
   {
-    packet >> messageLen;
-    char message[messageLen];
-    for (i = 0; i < messageLen; i++) packet >> message[i];
-
     // parse the message into url and url description
     char **szUrl = new char*[2];  // description, url
-    ParseFE(message, &szUrl, 2);
+    ParseFE(szMessage, &szUrl, 2);
 
     // translating string with Translation Table
     gTranslator.ServerToClient (szUrl[0]);
@@ -1087,13 +1090,9 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
         7A 65 20 6D 65 2E 00 */
 
      gLog.Info("%sAuthorization request from %ld.\n", L_SBLANKxSTR, nUin);
-     unsigned short infoLen;
-     packet >> infoLen;
-     char message[infoLen + 1];
-     for (i = 0; i < infoLen; i++) packet >> message[i];
 
      char **szFields = new char*[6];  // alias, first name, last name, email, auth, reason
-     ParseFE(message, &szFields, 6);
+     ParseFE(szMessage, &szFields, 6);
 
      // translating string with Translation Table
      gTranslator.ServerToClient (szFields[0]);
@@ -1118,22 +1117,8 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
      gLog.Info("%sUser %ld added you to their contact list.\n", L_SBLANKxSTR,
                nUin);
 
-     unsigned short infoLen;
-     packet >> infoLen;
-
-     // read in the user data from the packet
-     char userInfo[infoLen + 1];
-     for (i = 0; i < infoLen; i++) packet >> userInfo[i];
-     if (userInfo[i - 1] != '\0')
-     {
-       char *buf;
-       gLog.Warn("%sError in packet (no terminating NULL):\n%s\n", L_WARNxSTR,
-                 packet.print(buf));
-       delete [] buf;
-       userInfo[i - 1] = '\0';
-     }
      char **szFields = new char*[5]; // alias, first name, last name, email, auth
-     ParseFE(userInfo, &szFields, 5);
+     ParseFE(szMessage, &szFields, 5);
 
      // translating string with Translation Table
      gTranslator.ServerToClient(szFields[0]);  // alias
@@ -1162,12 +1147,6 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
        74 0D 0A 74 68 65 20 6D 65 73 73 61 67 65 00 */
     gLog.Info("%sMessage through web panel.\n", L_SBLANKxSTR);
 
-    unsigned short nLen;
-    packet >> nLen;
-
-    // read in the user data from the packet
-    char szMessage[nLen];
-    for (i = 0; i < nLen; i++) packet >> szMessage[i];
     char **szFields = new char*[6]; // name, ?, ?, email, ?, message
     ParseFE(szMessage, &szFields, 6);
 
@@ -1195,12 +1174,6 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
        65 20 41 72 63 68 69 76 65 00 */
     gLog.Info("%sEmail pager message.\n", L_SBLANKxSTR);
 
-    unsigned short nLen;
-    packet >> nLen;
-
-    // read in the user data from the packet
-    char szMessage[nLen];
-    for (i = 0; i < nLen; i++) packet >> szMessage[i];
     char **szFields = new char*[6]; // name, ?, ?, email, ?, message
     ParseFE(szMessage, &szFields, 6);
 
@@ -1226,12 +1199,6 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
        FE 00 */
     gLog.Info("%sContact list.\n", L_SBLANKxSTR);
 
-    unsigned short nLen;
-    packet >> nLen;
-
-    // read in the user data from the packet
-    char szMessage[nLen];
-    for (i = 0; i < nLen; i++) packet >> szMessage[i];
     i = 0;
     while ((unsigned char)szMessage[i++] != 0xFE);
     szMessage[--i] = '\0';
@@ -1261,10 +1228,6 @@ void CICQDaemon::ProcessSystemMessage(CBuffer &packet, unsigned long nUin,
   }
   default:
   {
-    unsigned short nLen;
-    packet >> nLen;
-    char szMessage[nLen];
-    for (i = 0; i < nLen; i++) packet >> szMessage[i];
     char *szFE;
     while((szFE = strchr(szMessage, 0xFE)) != NULL) *szFE = '\n';
 

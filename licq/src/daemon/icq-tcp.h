@@ -342,9 +342,14 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     return false;
   }
 
-  // read in the message
+  // read in the message minus any stupid DOS \r's
   char message[messageLen + 1];
-  for (unsigned short i = 0; i < messageLen; i++) packet >> message[i];
+  unsigned short j = 0;
+  for (unsigned short i = 0; i < messageLen; i++)
+  {
+    packet >> junkChar;
+    if (junkChar != 0x0D) message[j++] = junkChar;
+  }
 
   // read in some more stuff common to all tcp packets
   packet >> senderIp
