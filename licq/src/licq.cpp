@@ -40,11 +40,14 @@ pthread_cond_t LP_IdSignal;
 pthread_mutex_t LP_IdMutex;
 list<unsigned short> LP_Ids;
 
-CLicq::CLicq(int argc, char **argv)
+CLicq::CLicq(void)
 {
   DEBUG_LEVEL = 0;
-  licqException = EXIT_SUCCESS;
   licqDaemon = NULL;
+}
+
+bool CLicq::Init(int argc, char **argv)
+{
   char *szRedirect = NULL;
   char szFilename[MAX_FILENAME_LEN];
   vector <char *> vszPlugins;
@@ -70,7 +73,6 @@ CLicq::CLicq(int argc, char **argv)
       case 'h':  // help
         PrintUsage();
         bHelp = true;
-        licqException = true;
         break;
       case 'b':  // base directory
         sprintf(BASE_DIR, "%s", optarg);
@@ -124,18 +126,14 @@ CLicq::CLicq(int argc, char **argv)
      if ((home = getenv("HOME")) == NULL)
      {
        gLog.Error("%sLicq: $HOME not set, unable to determine config base directory.\n", L_ERRORxSTR);
-       licqException = true;
-       return;
+       return false;
      }
      sprintf(BASE_DIR, "%s/.licq", home);
   }
 
   // check if user has conf files installed, install them if not
   if ( (access(BASE_DIR, F_OK) < 0 || bForceInit) && !Install() )
-  {
-    licqException = EXIT_INSTALLxFAIL;
-    return;
-  }
+    return false;
 
   // Define the directory for all the shared data
   sprintf(SHARE_DIR, "%s/%s", INSTALL_DIR, BASE_SHARE_DIR);
@@ -165,13 +163,14 @@ CLicq::CLicq(int argc, char **argv)
   vector <char *>::iterator iter;
   for (iter = vszPlugins.begin(); iter != vszPlugins.end(); iter++)
   {
-    LoadPlugin(*iter, argc, argv);
+    if (!LoadPlugin(*iter, argc, argv)) return false;
     if (bHelp)
     {
       (*(m_vPluginFunctions.back()).Usage)();
       m_vPluginFunctions.pop_back();
     }
   }
+  if (bHelp) return false;
 
   // Find and load the plugins from the conf file
   if (!bHelp && !bCmdLinePlugins)
@@ -187,7 +186,7 @@ CLicq::CLicq(int argc, char **argv)
       {
         sprintf(szKey, "Plugin%d", i + 1);
         if (!licqConf.ReadStr(szKey, szData)) continue;
-        LoadPlugin(szData, argc, argv);
+        if (!LoadPlugin(szData, argc, argv)) return false;
       }
     }
   }
@@ -195,10 +194,7 @@ CLicq::CLicq(int argc, char **argv)
   // Start things going
   InitCountryCodes();
   if (!gUserManager.Load())
-  {
-    licqException = EXIT_LOADxUSERSxFAIL;
-    return;
-  }
+    return false;
   gSARManager.Load();
   sprintf(szFilename, "%s%s", SHARE_DIR, UTILITY_DIR);
   gUtilityManager.LoadUtilities(szFilename);
@@ -206,6 +202,7 @@ CLicq::CLicq(int argc, char **argv)
   // Create the daemon
   licqDaemon = new CICQDaemon(this);
 
+  return true;
 }
 
 CLicq::~CLicq(void)
@@ -361,8 +358,7 @@ int CLicq::Main(void)
     return nResult;
   }
 
-  nResult = licqDaemon->Start();
-  if (nResult != EXIT_SUCCESS) return nResult;
+  if (!licqDaemon->Start()) return 1;
 
   // Run the plugins
   pthread_cond_init(&LP_IdSignal, NULL);

@@ -27,9 +27,9 @@ struct SPluginFunctions
 class CLicq
 {
 public:
-  CLicq(int argc, char **argv);
+  CLicq(void);
   ~CLicq(void);
-  int Exception(void)  { return licqException; }
+  bool Init(int argc, char **argv);
   int Main(void);
   const char *Version(void);
   bool LoadPlugin(const char *, int, char **);
@@ -37,7 +37,6 @@ protected:
   void PrintUsage(void);
   bool Install(void);
   CICQDaemon *licqDaemon;
-  int licqException;
   unsigned short m_nNextId;
   vector<struct SPluginFunctions> m_vPluginFunctions;
 };
