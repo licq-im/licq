@@ -92,7 +92,7 @@ bool LP_Init(int argc, char **argv)
 
   // parse command line for arguments
   int i = 0;
-  while( (i = getopt(argc, argv, "hs:i:g:")) > 0)
+  while( (i = getopt(argc, argv, "hs:i:g:d")) > 0)
   {
     switch (i)
     {
