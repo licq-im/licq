@@ -226,19 +226,22 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	SLanguage *lang = GetLanguageByCode(user->GetLanguage(0));
 	do_entry(entry, label, "Language 1:", lang->szName);
 	gtk_widget_set_usize(entry, 75, 20);
-	pack_hbox(h_box, label, entry);
+	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 5);
+	gtk_box_pack_start(GTK_BOX(h_box), entry, FALSE, FALSE, 2);
 
 	/* Second language and pack it*/
 	lang = GetLanguageByCode(user->GetLanguage(1));
 	do_entry(entry, label, "Language 2:", lang->szName);
 	gtk_widget_set_usize(entry, 75, 20);
-	pack_hbox(h_box, label, entry);
+	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(h_box), entry, FALSE, FALSE, 2);
 
 	/* Third language and pack it */
 	lang = GetLanguageByCode(user->GetLanguage(2));
 	do_entry(entry, label, "Language 3:", lang->szName);
 	gtk_widget_set_usize(entry, 75, 20);
-	pack_hbox(h_box, label, entry);
+	gtk_box_pack_start(GTK_BOX(h_box), label, FALSE, FALSE, 0);
+        gtk_box_pack_start(GTK_BOX(h_box), entry, FALSE, FALSE, 2);
 
 	/* Pack the the languages */
 	gtk_box_pack_start(GTK_BOX(more_box), h_box, FALSE, FALSE, 5);
