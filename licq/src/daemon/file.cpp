@@ -118,7 +118,7 @@ CIniFile::CIniFile(unsigned short _nFlags = 0)
 
 
 //-----Destructor--------------------------------------------------------------
-CIniFile::~CIniFile(void)
+CIniFile::~CIniFile()
 {
   CloseFile();
   if (m_szFilename != NULL) free (m_szFilename);
@@ -126,7 +126,7 @@ CIniFile::~CIniFile(void)
 
 
 //-----CloseFile---------------------------------------------------------------
-void CIniFile::CloseFile(void)
+void CIniFile::CloseFile()
 {
   if (m_szBuffer != NULL)
   {
@@ -197,14 +197,14 @@ bool CIniFile::LoadFile(const char *_szFilename)
 
 
 //-----ReloadFile--------------------------------------------------------------
-bool CIniFile::ReloadFile(void)
+bool CIniFile::ReloadFile()
 {
   return(LoadFile(m_szFilename));
 }
 
 
 //-----FlushFile---------------------------------------------------------------
-bool CIniFile::FlushFile(void)
+bool CIniFile::FlushFile()
 {
    //if (!m_bChanged) return;
   int nFD = open(m_szFilename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
@@ -230,7 +230,7 @@ bool CIniFile::FlushFile(void)
 }
 
 
-void CIniFile::ResetFile(void)
+void CIniFile::ResetFile()
 { 
    m_nBufPos = m_nSectionStart = 0; 
    m_nSectionEnd = m_nBufSize; 
@@ -238,7 +238,7 @@ void CIniFile::ResetFile(void)
 }
   
 
-void CIniFile::ResetSection(void)
+void CIniFile::ResetSection()
 { 
    m_nBufPos = m_nSectionStart; 
    //m_bEos = m_bEof = false; 

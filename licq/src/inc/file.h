@@ -27,12 +27,12 @@ class CIniFile
 {
 public:
   CIniFile(unsigned short _nFlags = 0);
-  ~CIniFile(void);
+  ~CIniFile();
 
   bool LoadFile(const char *_szFilename);
-  bool ReloadFile(void);
-  bool FlushFile(void);
-  void CloseFile(void);
+  bool ReloadFile();
+  bool FlushFile();
+  void CloseFile();
   void SetFileName(const char *_szFilename);
 
   // Flag setting and clearing
@@ -42,7 +42,7 @@ public:
     { m_nFlags |= _nFlag; };
   void ClearFlag(unsigned short _nFlag)
     { m_nFlags &= ~_nFlag; };
-  unsigned short GetFlags(void)
+  unsigned short GetFlags()
     { return (m_nFlags); };
   bool GetFlag(unsigned short _nFlag)
     { return (m_nFlags & _nFlag); };
@@ -63,8 +63,8 @@ public:
   bool WriteNum(const char *_szKey, const char _szData);
   bool WriteBool(const char *_szKey, const bool _szData);
 
-  int Error(void)  { return (m_nError); }
-  const char *FileName(void)  { return m_szFilename; }
+  int Error()  { return (m_nError); }
+  const char *FileName()  { return m_szFilename; }
 
 protected:
   // Data members
@@ -89,12 +89,12 @@ protected:
   void Warn(int nError, const char *_sz = NULL);
   void InsertStr(const char *_szNewStr, int _nCutStart, int _nCutEnd);
 
-  /*bool Eof(void)
+  /*bool Eof()
     { return (m_bEof); };
-  bool Eos(void)
+  bool Eos()
     { return (m_bEos); };*/
-  void ResetFile(void);
-  void ResetSection(void);
+  void ResetFile();
+  void ResetSection();
 };
 
 

@@ -20,14 +20,14 @@ public:
     m_szTitle = strdup(_szTitle);
     m_szDefault = strdup(_szDefault);
   }
-  ~CUtilityUserField(void)
+  ~CUtilityUserField()
   {
     free (m_szTitle);
     free (m_szDefault);
   }
-  const char *Title(void)  { return m_szTitle; }
-  const char *Default(void)  { return m_szDefault; }
-  const char *FullDefault(void)  { return m_szFullDefault; }
+  const char *Title()  { return m_szTitle; }
+  const char *Default()  { return m_szDefault; }
+  const char *FullDefault()  { return m_szFullDefault; }
   bool SetFields(ICQUser *);
 protected:
   char *m_szTitle;
@@ -43,20 +43,20 @@ class CUtility
 {
 public:
   CUtility(const char *_szFileName);
-  const char *Name(void)  { return m_szName; }
+  const char *Name()  { return m_szName; }
   const char *Command(ICQUser *u) { return m_szCommand; }
-  const char *Description(void)  { return m_szDescription; }
-  EWinType WinType(void)  { return m_eWinType; }
+  const char *Description()  { return m_szDescription; }
+  EWinType WinType()  { return m_eWinType; }
 
   bool SetFields(unsigned long _nUin);
   void SetUserFields(vector<const char *> &_vszUserFields);
-  void SetBackgroundTask(void)  { strcat(m_szFullCommand, " &"); }
-  const char *FullCommand(void) { return m_szFullCommand; }
+  void SetBackgroundTask()  { strcat(m_szFullCommand, " &"); }
+  const char *FullCommand() { return m_szFullCommand; }
 
-  unsigned short NumUserFields(void)  { return m_vxUserField.size(); }
+  unsigned short NumUserFields()  { return m_vxUserField.size(); }
   CUtilityUserField *UserField(unsigned short i)  { return m_vxUserField[i]; }
 
-  bool Exception(void)  { return bException; }
+  bool Exception()  { return bException; }
 
 protected:
   char *m_szName;
@@ -73,10 +73,10 @@ protected:
 class CUtilityManager
 {
 public:
-  CUtilityManager(void);
+  CUtilityManager();
   unsigned short LoadUtilities(const char *_szDir);
   CUtility *Utility(unsigned short n)  { return m_vxUtilities[n]; }
-  unsigned short NumUtilities(void)  { return m_vxUtilities.size(); }
+  unsigned short NumUtilities()  { return m_vxUtilities.size(); }
 protected:
   vector <CUtility *> m_vxUtilities;
 };

@@ -5,13 +5,13 @@
 #include "remoteserver.h"
 #include "constants.h"
 
-ICQRemoteServers::ICQRemoteServers(void)
+ICQRemoteServers::ICQRemoteServers()
 {
    currentServerNum = -1;
 }
 
 
-unsigned short ICQRemoteServers::numServers(void)
+unsigned short ICQRemoteServers::numServers()
 {
    return(servers.size());
 }
@@ -23,13 +23,13 @@ void ICQRemoteServers::addServer(char *theName, unsigned short thePort)
 }
 
 
-RemoteServer *ICQRemoteServers::current(void)
+RemoteServer *ICQRemoteServers::current()
 {
    return (currentServerNum >= 0 ? servers[currentServerNum] : NULL);
 }
 
 
-void ICQRemoteServers::next(void)
+void ICQRemoteServers::next()
 {
    if (servers.size() == 0) return;
    currentServerNum++;
@@ -57,11 +57,11 @@ RemoteServer::RemoteServer(char *theName, unsigned short thePort)
 
 
 //----RemoteServer::data retrieval functions-------------------------------------------------------
-char *RemoteServer::name(void)             { return(nameVal); }
-unsigned short RemoteServer::port(void)    { return(portVal); }
+char *RemoteServer::name()             { return(nameVal); }
+unsigned short RemoteServer::port()    { return(portVal); }
 
 //-----RemoteServer::retry functions---------------------------------------------------------------
-bool RemoteServer::retry(void)     { return (retries < MAX_SERVER_RETRIES); }
-void RemoteServer::retrying(void)  { retries++; }
-void RemoteServer::ok(void)        { retries = 0; }
+bool RemoteServer::retry()     { return (retries < MAX_SERVER_RETRIES); }
+void RemoteServer::retrying()  { retries++; }
+void RemoteServer::ok()        { retries = 0; }
 

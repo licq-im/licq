@@ -15,7 +15,7 @@
 #include "log.h"
 
 //-----ConnectToServer----------------------------------------------------------
-int CICQDaemon::ConnectToServer(void)
+int CICQDaemon::ConnectToServer()
 {
   // no servers!
   if (icqServers.current() == NULL)
@@ -94,7 +94,7 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
 
 
 //-----NextServer---------------------------------------------------------------
-void CICQDaemon::SwitchServer(void)
+void CICQDaemon::SwitchServer()
 {
   icqLogoff();
   gSocketManager.CloseSocket(m_nUDPSocketDesc);
@@ -144,7 +144,7 @@ CICQEventTag *CICQDaemon::icqLogon(unsigned short logonStatus)
 
 
 //-----ICQ::icqRelogon-------------------------------------------------------
-void CICQDaemon::icqRelogon(void)
+void CICQDaemon::icqRelogon()
 {
   unsigned long status;
 
@@ -167,7 +167,7 @@ void CICQDaemon::icqRelogon(void)
 
 
 //-----ICQ::icqLogoff-----------------------------------------------------------
-void CICQDaemon::icqLogoff(void)
+void CICQDaemon::icqLogoff()
 {
   // Kill the udp socket asap to avoid race conditions
   int nSD = m_nUDPSocketDesc;
@@ -215,7 +215,7 @@ void CICQDaemon::icqLogoff(void)
 
 
 //-----icqUpdateContactList-----------------------------------------------------
-void CICQDaemon::icqUpdateContactList(void)
+void CICQDaemon::icqUpdateContactList()
 {
   unsigned short n = 0;
   UinList uins;
@@ -534,7 +534,7 @@ void CICQDaemon::icqAuthorize(unsigned long uinToAuthorize)
 
 //-----icqRequestSystemMsg------------------------------------------------------
 // request offline system messages
-void CICQDaemon::icqRequestSystemMsg(void)
+void CICQDaemon::icqRequestSystemMsg()
 {
   CPU_RequestSysMsg *p = new CPU_RequestSysMsg;
   gLog.Info("%sSending offline message request (#%d)...\n", L_UDPxSTR,

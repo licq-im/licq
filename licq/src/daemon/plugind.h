@@ -13,19 +13,19 @@ public:
   CPlugin(unsigned long);
   void PushSignal(CICQSignal *);
   void PushEvent(ICQEvent *);
-  CICQSignal *PopSignal(void);
-  ICQEvent *PopEvent(void);
+  CICQSignal *PopSignal();
+  ICQEvent *PopEvent();
 
-  void Enable(void);
-  void Disable(void);
-  void Shutdown(void);
+  void Enable();
+  void Disable();
+  void Shutdown();
 
   bool CompareThread(pthread_t);
   bool CompareMask(unsigned long);
-  int Pipe(void) { return pipe_plugin[PIPE_READ]; }
+  int Pipe() { return pipe_plugin[PIPE_READ]; }
 
   void SetId(unsigned short _nId) { m_nId = _nId; }
-  unsigned short Id(void)  { return m_nId; }
+  unsigned short Id()  { return m_nId; }
 
 protected:
   list <ICQEvent *> m_lEvents;

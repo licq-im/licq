@@ -62,7 +62,7 @@ ICQEvent::ICQEvent(ICQEvent *e)
 
 
 //-----ICQEvent::destructor-----------------------------------------------------
-ICQEvent::~ICQEvent(void)
+ICQEvent::~ICQEvent()
 {
   if (m_xPacket != NULL) delete m_xPacket;
   if (m_xUserEvent != NULL) delete m_xUserEvent;
@@ -127,7 +127,7 @@ CICQSignal::CICQSignal(CICQSignal *s)
 }
 
 
-CICQSignal::~CICQSignal(void)
+CICQSignal::~CICQSignal()
 {
 }
 

@@ -12,11 +12,11 @@ class RemoteServer
 {
 public:
    RemoteServer(char *theName, unsigned short thePort);
-   char *name(void);
-   unsigned short port(void);
-   bool retry(void);
-   void retrying(void);
-   void ok (void);
+   char *name();
+   unsigned short port();
+   bool retry();
+   void retrying();
+   void ok ();
 protected:
    char nameVal[64];
    unsigned short portVal, retries;
@@ -27,11 +27,11 @@ friend class ICQRemoteServers;
 class ICQRemoteServers
 {
 public:
-   ICQRemoteServers(void);
+   ICQRemoteServers();
    void addServer(char *theName, unsigned short thePort);
-   unsigned short numServers(void);
-   RemoteServer *current(void);
-   void next(void);
+   unsigned short numServers();
+   RemoteServer *current();
+   void next();
    void setServer(unsigned short newCurrent);
 //protected:
    vector <RemoteServer *> servers;

@@ -20,15 +20,15 @@ const unsigned short ON_EVENT_RUN = 1;
 class COnEventManager
 {
 public:
-  COnEventManager(void);
+  COnEventManager();
   void Do(unsigned short m_nEvent, ICQUser *u);
   void SetParameters(const char *, const char **);
   void SetCommandType(unsigned short _nCommandType);
-  unsigned short CommandType(void);
+  unsigned short CommandType();
   const char *Parameter(unsigned short n)  { return m_aszParameters[n]; }
-  const char *Command(void)  { return m_szCommand; }
-  void Lock(void)     { pthread_mutex_lock(&mutex); }
-  void Unlock(void)   { pthread_mutex_unlock(&mutex); }
+  const char *Command()  { return m_szCommand; }
+  void Lock()     { pthread_mutex_lock(&mutex); }
+  void Unlock()   { pthread_mutex_unlock(&mutex); }
 protected:
   unsigned short m_nCommandType;
   char *m_szCommand;

@@ -15,7 +15,7 @@
 //=====Server===================================================================
 
 //-----startAsServer------------------------------------------------------------
-bool CICQDaemon::StartChatServer(void)
+bool CICQDaemon::StartChatServer()
 {
   if (!(m_cSocketChatServer.StartServer(getPort()))) 
   {
@@ -184,7 +184,7 @@ void ChatDlg::StateServer()
 //=====Client===================================================================
 
 //-----startAsClient------------------------------------------------------------
-bool ChatDlg::startAsClient(void)
+bool ChatDlg::startAsClient()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned long nIp = u->Ip();

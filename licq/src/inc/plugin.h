@@ -22,7 +22,7 @@ extern "C" {
  *
  * Returns the name of the plugin.  Should use a static character array.
  *----------------------------------------------------------------------------*/
-const char *LP_Name(void);
+const char *LP_Name();
 
 
 /*------------------------------------------------------------------------------
@@ -30,7 +30,7 @@ const char *LP_Name(void);
  *
  * Returns the version of the plugin.  Should use a static character array.
  *----------------------------------------------------------------------------*/
-const char *LP_Version(void);
+const char *LP_Version();
 
 
 /*------------------------------------------------------------------------------
@@ -40,7 +40,7 @@ const char *LP_Version(void);
  * disabled.  Rarely relevant for a main interface plugin.
  * Should use a static character array.
  *----------------------------------------------------------------------------*/
-const char *LP_Status(void);
+const char *LP_Status();
 
 
 /*------------------------------------------------------------------------------
@@ -49,7 +49,7 @@ const char *LP_Status(void);
  * Returns a brief (one line) description of the plugin
  * Should use a static character array.
  *----------------------------------------------------------------------------*/
-const char *LP_Description(void);
+const char *LP_Description();
 
 
 /*------------------------------------------------------------------------------
@@ -57,13 +57,13 @@ const char *LP_Description(void);
  *
  * Returns a usage string.
  *----------------------------------------------------------------------------*/
-const char *LP_Usage(void);
+const char *LP_Usage();
 
 
 /*------------------------------------------------------------------------------
  * Init
  *
- * This function is called to initialize the plugin.  It is passed the 
+ * This function is called to initialize the plugin.  It is passed the
  * relevant command line parameters to be parsed using getopt().  It should
  * return whether or not it started successfully.
  *----------------------------------------------------------------------------*/
@@ -75,7 +75,7 @@ bool LP_Init(int, char **);
  *
  * This function is called to actually run the plugin.  It is run in it's own
  * thread so may block.  It is passed a pointer to the licq daemon with which
- * it *must* register before sending any requests.  It returns an integer 
+ * it *must* register before sending any requests.  It returns an integer
  * return code.
  *----------------------------------------------------------------------------*/
 int LP_Main(CICQDaemon *);
@@ -84,9 +84,9 @@ int LP_Main(CICQDaemon *);
 /*------------------------------------------------------------------------------
  * Exit
  *
- * This function is called to exit the plugin other then when LP_Main 
- * terminates.  It is implemented internally and should not be reimplemented.  
- * It takes as argument the exit value for the plugin (0 for successful 
+ * This function is called to exit the plugin other then when LP_Main
+ * terminates.  It is implemented internally and should not be reimplemented.
+ * It takes as argument the exit value for the plugin (0 for successful
  * termination).
  *----------------------------------------------------------------------------*/
 void LP_Exit(int);
@@ -109,13 +109,13 @@ void *LP_Main_tep(void *p)
 }
 
 
-char *LP_BuildDate(void)
+char *LP_BuildDate()
 {
   static char szDate[] = __DATE__;
   return szDate;
 }
 
-char *LP_BuildTime(void)
+char *LP_BuildTime()
 {
   static char szTime[] = __TIME__;
   return szTime;

@@ -27,17 +27,17 @@ void CPlugin::PushEvent(ICQEvent *e)
   write(pipe_plugin[PIPE_WRITE], "E", 1);
 }
 
-void CPlugin::Shutdown(void)
+void CPlugin::Shutdown()
 {
   write(pipe_plugin[PIPE_WRITE], "X", 1);
 }
 
-void CPlugin::Enable(void)
+void CPlugin::Enable()
 {
   write(pipe_plugin[PIPE_WRITE], "1", 1);
 }
 
-void CPlugin::Disable(void)
+void CPlugin::Disable()
 {
   write(pipe_plugin[PIPE_WRITE], "0", 1);
 }
@@ -54,7 +54,7 @@ bool CPlugin::CompareMask(unsigned long n)
 }
 
 
-CICQSignal *CPlugin::PopSignal(void)
+CICQSignal *CPlugin::PopSignal()
 {
   CICQSignal *s = NULL;
   pthread_mutex_lock(&mutex_signals);
@@ -69,7 +69,7 @@ CICQSignal *CPlugin::PopSignal(void)
 
 
 
-ICQEvent *CPlugin::PopEvent(void)
+ICQEvent *CPlugin::PopEvent()
 {
   ICQEvent *e = NULL;
   pthread_mutex_lock(&mutex_events);

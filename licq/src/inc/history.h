@@ -11,15 +11,15 @@ typedef list<CUserEvent *>::iterator HistoryListIter;
 class CUserHistory
 {
 public:
-  CUserHistory(void);
-  ~CUserHistory(void);
+  CUserHistory();
+  ~CUserHistory();
   void SetFile(const char *, unsigned long);
   void Append(const char *);
   bool Load(HistoryList &);
-  void Clear(void);
+  void Clear();
   void Save(const char *);
-  const char *Description(void)  { return m_szDescription; }
-  const char *FileName(void)     { return m_szFileName; }
+  const char *Description()  { return m_szDescription; }
+  const char *FileName()     { return m_szFileName; }
 protected:
   char *m_szFileName;
   char *m_szDescription;

@@ -79,75 +79,75 @@ class ICQUser
 public:
   ICQUser(unsigned long id, char *filename);
   ICQUser(unsigned long id);
-  virtual ~ICQUser(void);
-  void RemoveFiles(void);
+  virtual ~ICQUser();
+  void RemoveFiles();
 
   CUserFunctionDlg *fcnDlg;
 
-  virtual void SaveLicqInfo(void);
-  void SaveGeneralInfo(void);
-  void SaveMoreInfo(void);
-  void SaveWorkInfo(void);
-  void SaveAboutInfo(void);
-  void SaveBasicInfo(void);
-  void SaveExtInfo(void);
+  virtual void SaveLicqInfo();
+  void SaveGeneralInfo();
+  void SaveMoreInfo();
+  void SaveWorkInfo();
+  void SaveAboutInfo();
+  void SaveBasicInfo();
+  void SaveExtInfo();
 
   // General Info
-  char *GetAlias(void)                      {  return m_szAlias;  }
-  char *GetFirstName(void)                  {  return m_szFirstName;  }
-  char *GetLastName(void)                   {  return m_szLastName;  }
-  char *GetEmail1(void)                     {  return m_szEmail1;  }
-  char *GetEmail2(void)                     {  return m_szEmail2;  }
-  char *GetCity(void)                       {  return m_szCity;  }
-  char *GetState(void)                      {  return m_szState;  }
-  char *GetPhoneNumber(void)                {  return m_szPhoneNumber;  }
-  char *GetFaxNumber(void)                  {  return m_szFaxNumber;  }
-  char *GetAddress(void)                    {  return m_szAddress;  }
-  char *GetCellularNumber(void)             {  return m_szCellularNumber;  }
-  unsigned long GetZipCode(void)            {  return m_nZipCode;  }
-  unsigned short GetCountryCode(void)       {  return m_nCountryCode;  }
-  char GetTimezone(void)                    {  return m_nTimezone;  }
-  bool GetAuthorization(void)               {  return m_bAuthorization;  }
-  bool GetHideEmail(void)                   {  return m_bHideEmail;  }
+  char *GetAlias()                      {  return m_szAlias;  }
+  char *GetFirstName()                  {  return m_szFirstName;  }
+  char *GetLastName()                   {  return m_szLastName;  }
+  char *GetEmail1()                     {  return m_szEmail1;  }
+  char *GetEmail2()                     {  return m_szEmail2;  }
+  char *GetCity()                       {  return m_szCity;  }
+  char *GetState()                      {  return m_szState;  }
+  char *GetPhoneNumber()                {  return m_szPhoneNumber;  }
+  char *GetFaxNumber()                  {  return m_szFaxNumber;  }
+  char *GetAddress()                    {  return m_szAddress;  }
+  char *GetCellularNumber()             {  return m_szCellularNumber;  }
+  unsigned long GetZipCode()            {  return m_nZipCode;  }
+  unsigned short GetCountryCode()       {  return m_nCountryCode;  }
+  char GetTimezone()                    {  return m_nTimezone;  }
+  bool GetAuthorization()               {  return m_bAuthorization;  }
+  bool GetHideEmail()                   {  return m_bHideEmail;  }
 
   // More Info
-  unsigned short GetAge(void)               {  return m_nAge;  }
-  char GetGender(void)                      {  return m_nGender;  }
-  char *GetHomepage(void)                   {  return m_szHomepage;  }
-  char GetBirthYear(void)                   {  return m_nBirthYear;  }
-  char GetBirthMonth(void)                  {  return m_nBirthMonth;  }
-  char GetBirthDay(void)                    {  return m_nBirthDay;  }
-  char GetLanguage1(void)                   {  return m_nLanguage[0];  }
-  char GetLanguage2(void)                   {  return m_nLanguage[1];  }
-  char GetLanguage3(void)                   {  return m_nLanguage[2];  }
+  unsigned short GetAge()               {  return m_nAge;  }
+  char GetGender()                      {  return m_nGender;  }
+  char *GetHomepage()                   {  return m_szHomepage;  }
+  char GetBirthYear()                   {  return m_nBirthYear;  }
+  char GetBirthMonth()                  {  return m_nBirthMonth;  }
+  char GetBirthDay()                    {  return m_nBirthDay;  }
+  char GetLanguage1()                   {  return m_nLanguage[0];  }
+  char GetLanguage2()                   {  return m_nLanguage[1];  }
+  char GetLanguage3()                   {  return m_nLanguage[2];  }
   char GetLanguage(const char l)            {  return m_nLanguage[l];  }
 
   // Work Info
-  char *GetCompanyCity(void)                {  return m_szCompanyCity;  }
-  char *GetCompanyState(void)               {  return m_szCompanyState;  }
-  char *GetCompanyPhoneNumber(void)         {  return m_szCompanyPhoneNumber; }
-  char *GetCompanyFaxNumber(void)           {  return m_szCompanyFaxNumber;  }
-  char *GetCompanyAddress(void)             {  return m_szCompanyAddress;  }
-  char *GetCompanyName(void)                {  return m_szCompanyName;  }
-  char *GetCompanyDepartment(void)          {  return m_szCompanyDepartment;  }
-  char *GetCompanyPosition(void)            {  return m_szCompanyPosition;  }
-  char *GetCompanyHomepage(void)            {  return m_szCompanyHomepage;  }
+  char *GetCompanyCity()                {  return m_szCompanyCity;  }
+  char *GetCompanyState()               {  return m_szCompanyState;  }
+  char *GetCompanyPhoneNumber()         {  return m_szCompanyPhoneNumber; }
+  char *GetCompanyFaxNumber()           {  return m_szCompanyFaxNumber;  }
+  char *GetCompanyAddress()             {  return m_szCompanyAddress;  }
+  char *GetCompanyName()                {  return m_szCompanyName;  }
+  char *GetCompanyDepartment()          {  return m_szCompanyDepartment;  }
+  char *GetCompanyPosition()            {  return m_szCompanyPosition;  }
+  char *GetCompanyHomepage()            {  return m_szCompanyHomepage;  }
 
   // About Info
-  char *GetAbout(void)                      { return m_szAbout; }
+  char *GetAbout()                      { return m_szAbout; }
 
   // Licq Info
-  char *AutoResponse(void)                  { return m_szAutoResponse; }
-  bool NewUser(void)                        { return m_bNewUser; }
-  bool SendServer(void)                     { return m_bSendServer; }
-  bool EnableSave(void)                     { return m_bEnableSave; }
-  bool ShowAwayMsg(void)                    { return m_bShowAwayMsg; }
-  unsigned long Uin(void)                   { return m_nUin; }
+  char *AutoResponse()                  { return m_szAutoResponse; }
+  bool NewUser()                        { return m_bNewUser; }
+  bool SendServer()                     { return m_bSendServer; }
+  bool EnableSave()                     { return m_bEnableSave; }
+  bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
+  unsigned long Uin()                   { return m_nUin; }
   unsigned long Sequence(bool = false);
-  unsigned long RealIp(void)                { return m_nRealIp; }
-  char Mode(void)                           { return m_nMode; }
-  unsigned long Version(void)               { return m_nVersion; }
-  time_t LastOnline(void)                   { return m_nLastOnline; }
+  unsigned long RealIp()                { return m_nRealIp; }
+  char Mode()                           { return m_nMode; }
+  unsigned long Version()               { return m_nVersion; }
+  time_t LastOnline()                   { return m_nLastOnline; }
 
   void usprintf(char *_sz, const char *_szFormat, bool _bAllowFieldWidth = true);
   char *IpPortStr(char *rbuf);
@@ -208,23 +208,23 @@ public:
   void SetVersion(unsigned long s)    { m_nVersion = s; }
 
   // Status
-  unsigned short Status(void);
-  unsigned long StatusFull(void)   {  return m_nStatus; }
-  bool StatusInvisible(void)       {  return StatusOffline() ? false : m_nStatus & ICQ_STATUS_FxPRIVATE; }
-  bool StatusWebPresence(void)     {  return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE;  }
-  bool StatusHideIp(void)          {  return m_nStatus & ICQ_STATUS_FxHIDExIP; }
-  bool StatusBirthday(void)        {  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;  }
-  bool StatusOffline(void)         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
+  unsigned short Status();
+  unsigned long StatusFull()   {  return m_nStatus; }
+  bool StatusInvisible()       {  return StatusOffline() ? false : m_nStatus & ICQ_STATUS_FxPRIVATE; }
+  bool StatusWebPresence()     {  return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE;  }
+  bool StatusHideIp()          {  return m_nStatus & ICQ_STATUS_FxHIDExIP; }
+  bool StatusBirthday()        {  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;  }
+  bool StatusOffline()         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
   void SetStatus(unsigned long n)  {  m_nStatus = n;  }
-  void SetStatusOffline(void);
+  void SetStatusOffline();
   const char *StatusStr();
   const char *StatusStrShort();
-  bool Away(void);
+  bool Away();
   static const char *StatusToStatusStr(unsigned short, bool);
   static const char *StatusToStatusStrShort(unsigned short, bool);
 
   // Message/History functions
-  unsigned short NewMessages(void)   { return(m_vcMessages.size()); }
+  unsigned short NewMessages()   { return(m_vcMessages.size()); }
   CUserEvent *GetEvent(unsigned short);
   void ClearEvent(unsigned short);
   void AddEvent(CUserEvent *);
@@ -232,7 +232,7 @@ public:
   void SetHistoryFile(const char *);
   int GetHistory(HistoryList &h)  { return m_fHistory.Load(h); }
   void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
-  const char *HistoryName(void)      { return m_fHistory.Description(); }
+  const char *HistoryName()      { return m_fHistory.Description(); }
 
   // Group functions
   unsigned long GetGroups(GroupType g)         { return(m_nGroups[g]); }
@@ -242,47 +242,47 @@ public:
   void AddToGroup(GroupType, unsigned short);
   void RemoveFromGroup(GroupType, unsigned short);
   // Short cuts to above functions
-  bool InvisibleList(void) { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }
-  bool VisibleList(void)   { return GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST); }
-  bool OnlineNotify(void)  { return GetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY); }
-  bool IgnoreList(void)    { return GetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST); }
+  bool InvisibleList() { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }
+  bool VisibleList()   { return GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST); }
+  bool OnlineNotify()  { return GetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY); }
+  bool IgnoreList()    { return GetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST); }
   void SetInvisibleList(bool s)  { SetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST, s); }
   void SetVisibleList(bool s)    { SetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST, s); }
   void SetOnlineNotify(bool s)   { SetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY, s); }
   void SetIgnoreList(bool s)     { SetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST, s); }
 
   // Socket functions
-  int SocketDesc(void)          { return m_nSocketDesc; }
-  void ClearSocketDesc(void)    { SetSocketDesc(-1); }
+  int SocketDesc()          { return m_nSocketDesc; }
+  void ClearSocketDesc()    { SetSocketDesc(-1); }
   void SetSocketDesc(int _nSd)  { m_nSocketDesc = _nSd; }
-  unsigned long Ip(void)        { return m_nIp; }
-  unsigned short Port(void)     { return m_nPort; }
+  unsigned long Ip()        { return m_nIp; }
+  unsigned short Port()     { return m_nPort; }
   void SetIpPort(unsigned long _nIp, unsigned short _nPort);
 
   // Events functions
-  static unsigned short getNumUserEvents(void);
-  static void incNumUserEvents(void);
-  static void decNumUserEvents(void);
+  static unsigned short getNumUserEvents();
+  static void incNumUserEvents();
+  static void decNumUserEvents();
 
   // Last event functions
-  time_t Touched(void)       {  return m_nTouched; }
-  void Touch(void)           {  m_nTouched = time(NULL); }
+  time_t Touched()       {  return m_nTouched; }
+  void Touch()           {  m_nTouched = time(NULL); }
 
-  virtual bool User(void)  { return true; }
+  virtual bool User()  { return true; }
   void Lock(unsigned short);
-  void Unlock(void);
+  void Unlock();
 
 protected:
-  ICQUser(void) { /* ICQOwner inherited constructor - does nothing */ };
-  void StupidLinkageFix(void);
-  void LoadGeneralInfo(void);
-  void LoadMoreInfo(void);
-  void LoadWorkInfo(void);
-  void LoadAboutInfo(void);
-  void LoadLicqInfo(void);
+  ICQUser() { /* ICQOwner inherited constructor - does nothing */ };
+  void StupidLinkageFix();
+  void LoadGeneralInfo();
+  void LoadMoreInfo();
+  void LoadWorkInfo();
+  void LoadAboutInfo();
+  void LoadLicqInfo();
   void Init(unsigned long _nUin);
-  bool LoadInfo(void);
-  void SetDefaults(void);
+  bool LoadInfo();
+  void SetDefaults();
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
@@ -363,23 +363,23 @@ protected:
 class ICQOwner : public ICQUser
 {
 public:
-  ICQOwner(void);
-  bool Exception(void)  { return m_bException; }
+  ICQOwner();
+  bool Exception()  { return m_bException; }
 
   // Owner specific functions
-  char *Password(void) { return(m_szPassword); }
+  char *Password() { return(m_szPassword); }
   void SetPassword(const char *s) { SetString(&m_szPassword, s); SaveLicqInfo(); }
   void SetWebAware(bool b)  {  m_bWebAware = b; SaveLicqInfo(); }
   void SetHideIp(bool b)    {  m_bHideIp = b; SaveLicqInfo(); }
   void SetUin(unsigned long n)    { m_nUin = n; SaveLicqInfo(); }
-  bool WebAware(void)             { return m_bWebAware; }
-  bool HideIp(void)               { return m_bHideIp; }
+  bool WebAware()             { return m_bWebAware; }
+  bool HideIp()               { return m_bHideIp; }
   unsigned long AddStatusFlags(unsigned long nStatus);
 
   // Virtual overloaded functions
-  virtual void SaveLicqInfo(void);
+  virtual void SaveLicqInfo();
 
-  virtual bool User(void)  { return false; }
+  virtual bool User()  { return false; }
 protected:
   char *m_szPassword;
   bool m_bException;
@@ -400,7 +400,7 @@ public:
 protected:
   unsigned short HashValue(unsigned long _nUin);
   void Lock(unsigned short _nLockType);
-  void Unlock(void);
+  void Unlock();
 
   vector < UserList > m_vlTable;
 
@@ -412,40 +412,40 @@ protected:
 class CUserManager
 {
 public:
-  CUserManager(void);
-  ~CUserManager(void) {};
-  bool Load(void);
+  CUserManager();
+  ~CUserManager() {};
+  bool Load();
 
   unsigned long AddUser(ICQUser *);
   void RemoveUser(unsigned long);
   ICQUser *FetchUser(unsigned long, unsigned short);
   void DropUser(ICQUser *);
   ICQOwner *FetchOwner(unsigned short);
-  void DropOwner(void);
-  unsigned long OwnerUin(void)  { return m_nOwnerUin; }
+  void DropOwner();
+  unsigned long OwnerUin()  { return m_nOwnerUin; }
   void SetOwnerUin(unsigned long _nUin);
 
   UserList *LockUserList(unsigned short);
-  void UnlockUserList(void);
+  void UnlockUserList();
   GroupList *LockGroupList(unsigned short);
-  void UnlockGroupList(void);
+  void UnlockGroupList();
 
   void AddGroup(char *);
   void RemoveGroup(unsigned short);
   void RenameGroup(unsigned short, const char *);
   unsigned short NumGroups();
-  void SaveGroups(void);
+  void SaveGroups();
   void SwapGroups(unsigned short g1, unsigned short g2);
 
   void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
   void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
   //void Reorder(ICQUser *_pcUser, bool _bOnList = true);
-  void SaveAllUsers(void);
+  void SaveAllUsers();
 
-  unsigned short NumUsers(void);
-  unsigned short DefaultGroup(void)  { return m_nDefaultGroup; }
+  unsigned short NumUsers();
+  unsigned short DefaultGroup()  { return m_nDefaultGroup; }
   void SetDefaultGroup(unsigned short n)  { m_nDefaultGroup = n; SaveGroups(); }
-  unsigned short NewUserGroup(void)  { return m_nNewUserGroup; }
+  unsigned short NewUserGroup()  { return m_nNewUserGroup; }
   void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:

@@ -237,7 +237,7 @@ unsigned short CPacketUdp::s_nSubSequence = 0;
 unsigned long  CPacketUdp::s_nSessionId = 0;
 
 
-CBuffer *CPacketUdp::Finalize(void)
+CBuffer *CPacketUdp::Finalize()
 {
   CBuffer *newbuf = new CBuffer(getBuffer());
   Encrypt_Server(newbuf);
@@ -301,13 +301,13 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
 }
 
 
-CPacketUdp::~CPacketUdp(void)
+CPacketUdp::~CPacketUdp()
 {
   if (buffer != NULL) delete buffer;
 }
 
 
-void CPacketUdp::InitBuffer(void)
+void CPacketUdp::InitBuffer()
 {
   buffer = new CBuffer(m_nSize + 8);
 #if ICQ_VERSION == 2
@@ -359,7 +359,7 @@ CPU_Register::CPU_Register(const char *_szPasswd)
   buffer->add(0x00);
 }
 
-CPU_Register::~CPacketRegister(void)
+CPU_Register::~CPacketRegister()
 {
   free (m_szPasswd);
   if (buffer != NULL) delete buffer;
@@ -505,7 +505,7 @@ CPU_AddUser::CPU_AddUser(unsigned long _nAddedUin)
 
 
 //-----Logoff-------------------------------------------------------------------
-CPU_Logoff::CPU_Logoff(void) : CPacketUdp(ICQ_CMDxSND_LOGOFF)
+CPU_Logoff::CPU_Logoff() : CPacketUdp(ICQ_CMDxSND_LOGOFF)
 {
   m_nSize += 24;
   InitBuffer();
@@ -677,7 +677,7 @@ CPU_UpdatePersonalExtInfo::CPU_UpdatePersonalExtInfo(const char *szCity,
 
 
 //-----Ping---------------------------------------------------------------------
-CPU_Ping::CPU_Ping(void) : CPacketUdp(ICQ_CMDxSND_PING)
+CPU_Ping::CPU_Ping() : CPacketUdp(ICQ_CMDxSND_PING)
 {
   InitBuffer();
 }
@@ -729,7 +729,7 @@ CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxS
 
 
 //-----RequestSysMsg------------------------------------------------------------
-CPU_RequestSysMsg::CPU_RequestSysMsg(void) : CPacketUdp(ICQ_CMDxSND_SYSxMSGxREQ)
+CPU_RequestSysMsg::CPU_RequestSysMsg() : CPacketUdp(ICQ_CMDxSND_SYSxMSGxREQ)
 {
   InitBuffer();
 }
@@ -752,7 +752,7 @@ CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(unsigned short _nSequence, unsigned short _
   InitBuffer();
 }
 #elif ICQ_VERSION == 5
-CPU_SysMsgDoneAck::CPU_SysMsgDoneAck(void)
+CPU_SysMsgDoneAck::CPU_SysMsgDoneAck()
   : CPacketUdp(ICQ_CMDxSND_SYSxMSGxDONExACK)
 {
   InitBuffer();
@@ -961,7 +961,7 @@ CPU_Meta_RequestInfo::CPU_Meta_RequestInfo(unsigned long nUin)
 
 
 //=====PacketTcp_Handshake======================================================
-CPacketTcp_Handshake::~CPacketTcp_Handshake(void)
+CPacketTcp_Handshake::~CPacketTcp_Handshake()
 {
   if (buffer != NULL) delete buffer;
 }
@@ -977,7 +977,7 @@ CPacketTcp_Handshake::CPacketTcp_Handshake(unsigned long _nLocalPort)
 }
 
 
-void CPacketTcp_Handshake::InitBuffer(void)
+void CPacketTcp_Handshake::InitBuffer()
 {
   buffer = new CBuffer(m_nSize);
 
@@ -993,7 +993,7 @@ void CPacketTcp_Handshake::InitBuffer(void)
 
 
 //=====PacketTcp================================================================
-CBuffer *CPacketTcp::Finalize(void)
+CBuffer *CPacketTcp::Finalize()
 {
   CBuffer *newbuf = new CBuffer(getBuffer());
   Encrypt_Client(newbuf);
@@ -1074,14 +1074,14 @@ CPacketTcp::CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
   buffer = NULL;
 }
 
-CPacketTcp::~CPacketTcp(void)
+CPacketTcp::~CPacketTcp()
 {
   free (m_szMessage);
   if (buffer != NULL) delete buffer;
 }
 
 
-void CPacketTcp::InitBuffer(void)
+void CPacketTcp::InitBuffer()
 {
   buffer = new CBuffer(m_nSize + 4);
 
@@ -1100,7 +1100,7 @@ void CPacketTcp::InitBuffer(void)
   buffer->PackUnsignedShort(m_nMsgType);
 }
 
-void CPacketTcp::PostBuffer(void)
+void CPacketTcp::PostBuffer()
 {
   buffer->PackUnsignedLong(m_nSequence);
   buffer->PackChar('L');
@@ -1374,7 +1374,7 @@ CPT_CancelFile::CPT_CancelFile(unsigned long _nSequence, ICQUser *_cUser)
 
 
 //=====Chat=====================================================================
-void CPacketChat::InitBuffer(void)
+void CPacketChat::InitBuffer()
 {
   buffer = new CBuffer(m_nSize);
 }
@@ -1518,7 +1518,7 @@ CPFile_Info::CPFile_Info(const char *_szFileName)
 }
 
 
-CPFile_Info::~CPFile_Info(void)
+CPFile_Info::~CPFile_Info()
 {
   free (m_szFileName);
 }

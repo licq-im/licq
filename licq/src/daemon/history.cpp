@@ -21,12 +21,12 @@ extern int errno;
 #include "message.h"
 #include "icq-defines.h"
 
-CUserHistory::CUserHistory(void)
+CUserHistory::CUserHistory()
 {
   m_szFileName = m_szDescription = NULL;
 }
 
-CUserHistory::~CUserHistory(void)
+CUserHistory::~CUserHistory()
 {
   if (m_szFileName != NULL) free(m_szFileName);
   if (m_szDescription != NULL) free(m_szDescription);

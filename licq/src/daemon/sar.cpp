@@ -23,7 +23,7 @@ CSavedAutoResponse::CSavedAutoResponse(const char *_szName, const char *_szAutoR
 /*---------------------------------------------------------------------------
  * ~CSavedAutoResponse
  *-------------------------------------------------------------------------*/
-CSavedAutoResponse::~CSavedAutoResponse(void)
+CSavedAutoResponse::~CSavedAutoResponse()
 {
   free(m_szName);
   free(m_szAutoResponse);
@@ -33,7 +33,7 @@ CSavedAutoResponse::~CSavedAutoResponse(void)
 /*---------------------------------------------------------------------------
  * CSARManager
  *-------------------------------------------------------------------------*/
-CSARManager::CSARManager(void)
+CSARManager::CSARManager()
 {
 }
 
@@ -41,7 +41,7 @@ CSARManager::CSARManager(void)
 /*---------------------------------------------------------------------------
  * ~CSARManager
  *-------------------------------------------------------------------------*/
-CSARManager::~CSARManager(void)
+CSARManager::~CSARManager()
 {
   for (unsigned short i = 0; i < SAR_NUM_SECTIONS; i++)
     for (SARListIter iter = m_lSAR[i].begin(); iter != m_lSAR[i].end(); iter++)
@@ -52,7 +52,7 @@ CSARManager::~CSARManager(void)
 /*---------------------------------------------------------------------------
  * CSARManager::Load
  *-------------------------------------------------------------------------*/
-bool CSARManager::Load(void)
+bool CSARManager::Load()
 {
   char filename[128], szTemp1[32], szTemp2[128], szTemp3[512];
   unsigned short nTemp;
@@ -96,7 +96,7 @@ bool CSARManager::Load(void)
 /*---------------------------------------------------------------------------
  * CSARManager::Save
  *-------------------------------------------------------------------------*/
-void CSARManager::Save(void)
+void CSARManager::Save()
 {
   char *n[] = SAR_SECTIONS;
   char sz[32];
@@ -113,6 +113,7 @@ void CSARManager::Save(void)
       m_fConf.WriteStr(sz, (*iter)->AutoResponse());
     }
   }
+  m_fConf.FlushFile();
 }
 
 
@@ -127,7 +128,7 @@ SARList &CSARManager::Fetch(unsigned short n)
 }
 
 
-void CSARManager::Drop(void)
+void CSARManager::Drop()
 {
   pthread_mutex_unlock(&mutex);
 }

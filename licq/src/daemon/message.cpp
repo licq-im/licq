@@ -25,7 +25,7 @@ CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,
 
 
 //-----CUserEvent::LicqVersionStr-----------------------------------------------
-const char *CUserEvent::LicqVersionStr(void)
+const char *CUserEvent::LicqVersionStr()
 {
    static char s_szVersion[8];
    sprintf(s_szVersion, "v0.%d", LicqVersion());
@@ -34,7 +34,7 @@ const char *CUserEvent::LicqVersionStr(void)
 
 
 //-----CUserEvent::destructor---------------------------------------------------
-CUserEvent::~CUserEvent(void)
+CUserEvent::~CUserEvent()
 {
    delete[] m_szText;
 }
@@ -94,7 +94,7 @@ CEventMsg::CEventMsg(const char *_szMessage, unsigned short _nCommand,
 }
 
 
-CEventMsg::~CEventMsg(void)
+CEventMsg::~CEventMsg()
 {
    free (m_szMessage);
 }
@@ -127,7 +127,7 @@ CEventFile::CEventFile(const char *_szFilename, const char *_szFileDescription,
 }
 
 
-CEventFile::~CEventFile(void)
+CEventFile::~CEventFile()
 {
    free (m_szFilename);
    free (m_szFileDescription);
@@ -157,7 +157,7 @@ CEventFileCancel::CEventFileCancel(unsigned long _nSequence, time_t _tTime,
 }
 
 
-CEventFileCancel::~CEventFileCancel(void)
+CEventFileCancel::~CEventFileCancel()
 {
    // Do nothing
 }
@@ -187,7 +187,7 @@ CEventUrl::CEventUrl(const char *_szUrl, const char *_szUrlDescription,
 }
 
 
-CEventUrl::~CEventUrl(void)
+CEventUrl::~CEventUrl()
 {
    free (m_szUrl);
    free (m_szUrlDescription);
@@ -215,7 +215,7 @@ CEventChat::CEventChat(const char *_szReason, unsigned long _nSequence,
 }
 
 
-CEventChat::~CEventChat(void)
+CEventChat::~CEventChat()
 {
 }
 
@@ -242,7 +242,7 @@ CEventChatCancel::CEventChatCancel(unsigned long _nSequence, time_t _tTime,
 }
 
 
-CEventChatCancel::~CEventChatCancel(void)
+CEventChatCancel::~CEventChatCancel()
 {
    // Do nothing
 }
@@ -276,7 +276,7 @@ CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
 }
 
 
-CEventAdded::~CEventAdded(void)
+CEventAdded::~CEventAdded()
 {
    free (m_szAlias);
    free (m_szFirstName);
@@ -321,7 +321,7 @@ CEventAuthReq::CEventAuthReq(unsigned long _nUin, const char *_szAlias,
 }
 
 
-CEventAuthReq::~CEventAuthReq(void)
+CEventAuthReq::~CEventAuthReq()
 {
    free (m_szAlias);
    free (m_szFirstName);
@@ -365,7 +365,7 @@ CEventAuth::CEventAuth(unsigned long _nUin, const char *_szMessage,
 }
 
 
-CEventAuth::~CEventAuth(void)
+CEventAuth::~CEventAuth()
 {
   free (m_szMessage);
 }
@@ -399,7 +399,7 @@ CEventWebPanel::CEventWebPanel(const char *_szName, char *_szEmail,
 }
 
 
-CEventWebPanel::~CEventWebPanel(void)
+CEventWebPanel::~CEventWebPanel()
 {
   free (m_szName);
   free (m_szEmail);
@@ -436,7 +436,7 @@ CEventEmailPager::CEventEmailPager(const char *_szName, char *_szEmail,
 }
 
 
-CEventEmailPager::~CEventEmailPager(void)
+CEventEmailPager::~CEventEmailPager()
 {
   free (m_szName);
   free (m_szEmail);
@@ -477,7 +477,7 @@ CEventContactList::CEventContactList(vector <char *> &_vszFields,
 }
 
 
-CEventContactList::~CEventContactList(void)
+CEventContactList::~CEventContactList()
 {
   for (unsigned short i = 0; i < m_vszFields.size(); i++)
     free(m_vszFields[i]);
@@ -523,7 +523,7 @@ CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
 }
 
 
-CEventUnknownSysMsg::~CEventUnknownSysMsg(void)
+CEventUnknownSysMsg::~CEventUnknownSysMsg()
 {
   free(m_szMsg);
 }

@@ -56,13 +56,13 @@ public:
   virtual void lprintf(unsigned short _nLogType, const char *_szPrefix,
                        const char *_szFormat, va_list argp) = 0;
   void SetLogTypes(unsigned short _nLogTypes);
-  unsigned short ServiceType(void);
+  unsigned short ServiceType();
   unsigned short LogType(unsigned short _nLogType);
   void AddLogType(unsigned short _nLogType);
   void RemoveLogType(unsigned short _nLogType);
   void SetData(void *);
 
-  static int LoggingPackets(void)  {  return s_nLoggingPackets; }
+  static int LoggingPackets()  {  return s_nLoggingPackets; }
 
 protected:
   unsigned short m_nLogTypes;
@@ -102,12 +102,12 @@ protected:
 class CPluginLog
 {
 public:
-  CPluginLog(void);
-  char *NextLogMsg(void);
-  unsigned short NextLogType(void);
-  void ClearLog(void);
+  CPluginLog();
+  char *NextLogMsg();
+  unsigned short NextLogType();
+  void ClearLog();
   void AddLog(char *_szLog, unsigned short _nLogType);
-  int Pipe(void)  { return pipe_log[PIPE_READ]; }
+  int Pipe()  { return pipe_log[PIPE_READ]; }
 protected:
   pthread_mutex_t mutex;
   list <char *> m_vszLogs;
@@ -131,7 +131,7 @@ protected:
 class CLogServer
 {
 public:
-  CLogServer(void);
+  CLogServer();
   void AddService(CLogService *_xService);
   void AddLogTypeToService(unsigned short _nServiceType, unsigned short _nLogType);
   void RemoveLogTypeFromService(unsigned short _nServiceType, unsigned short _nLogType);
@@ -139,7 +139,7 @@ public:
   unsigned short ServiceLogTypes(unsigned short _nServiceType);
   void SetServiceData(unsigned short _nServiceType, void *_pData);
 
-  bool LoggingPackets(void)  {  return CLogService::LoggingPackets() > 0;  }
+  bool LoggingPackets()  {  return CLogService::LoggingPackets() > 0;  }
 
   void Info(const char *_szFormat, ...);
   void Info(unsigned short _nServiceTypes, const char *_szFormat, ...);

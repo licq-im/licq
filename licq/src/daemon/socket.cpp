@@ -53,7 +53,7 @@ CSocketManager gSocketManager;
 
 
 //=====CFdSet===================================================================
-CSocketSet::CSocketSet (void)
+CSocketSet::CSocketSet ()
 {
   FD_ZERO(&sFd);
   // Initialise the mutex
@@ -79,7 +79,7 @@ void CSocketSet::Clear (int _nSD)
   Unlock();
 }
 
-unsigned short CSocketSet::Num(void)
+unsigned short CSocketSet::Num()
 {
   Lock();
   unsigned short n = lFd.size();
@@ -87,7 +87,7 @@ unsigned short CSocketSet::Num(void)
   return n;
 }
 
-int CSocketSet::Largest(void)
+int CSocketSet::Largest()
 {
   if (Num() == 0)
     return 0;
@@ -100,7 +100,7 @@ int CSocketSet::Largest(void)
   }
 }
 
-fd_set CSocketSet::SocketSet(void)
+fd_set CSocketSet::SocketSet()
 {
   Lock();
   fd_set f = sFd;
@@ -108,12 +108,12 @@ fd_set CSocketSet::SocketSet(void)
   return f;
 }
 
-void CSocketSet::Lock(void)
+void CSocketSet::Lock()
 {
   pthread_mutex_lock(&mutex);
 }
 
-void CSocketSet::Unlock(void)
+void CSocketSet::Unlock()
 {
   pthread_mutex_unlock(&mutex);
 }
@@ -122,13 +122,13 @@ void CSocketSet::Unlock(void)
 //=====INetSocket===============================================================
 
 //-----INetSocket::OpenSocket---------------------------------------------------
-void INetSocket::OpenSocket(void)
+void INetSocket::OpenSocket()
 {
 }
 
 
 //-----INetSocket::Error------------------------------------------------------
-int INetSocket::Error(void)
+int INetSocket::Error()
 {
   return (errno == -1 ? (h_errno == -1 ? 0 : h_errno) : errno);
 }
@@ -164,7 +164,7 @@ INetSocket::INetSocket(unsigned long _nOwner)
 }
 
 
-INetSocket::~INetSocket(void)
+INetSocket::~INetSocket()
 {
   CloseConnection();
   // Destroy the mutex
@@ -219,7 +219,7 @@ bool INetSocket::SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemote
 
 
 //-----INetSocket::ResetSocket-------------------------------------------------
-void INetSocket::ResetSocket(void)
+void INetSocket::ResetSocket()
 {
   CloseSocket();
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
@@ -305,7 +305,7 @@ unsigned long INetSocket::GetIpByName(char *_szHostName)
 
 
 //-----INetSocket::OpenConnection-----------------------------------------------
-bool INetSocket::OpenConnection(void)
+bool INetSocket::OpenConnection()
 {
   // If no destination set then someone screwed up
   if(m_sRemoteAddr.sin_addr.s_addr == 0) return(false);
@@ -398,7 +398,7 @@ bool INetSocket::SetRemoteAddr(char *_szRemoteName, unsigned short _nRemotePort)
 
 
 //-----INetSocket::CloseSocket--------------------------------------------------
-void INetSocket::CloseSocket(void)
+void INetSocket::CloseSocket()
 {
   m_xRecvBuffer.Clear();
   if (m_nDescriptor != -1)
@@ -438,7 +438,7 @@ bool INetSocket::SendRaw(CBuffer *b)
 /*-----INetSocket::RecvRaw---------------------------------------------------
  * Receive data on the socket.
  *---------------------------------------------------------------------------*/
-bool INetSocket::RecvRaw(void)
+bool INetSocket::RecvRaw()
 {
   char *buffer = new char[MAX_RECV_SIZE];
   errno = 0;
@@ -554,7 +554,7 @@ bool TCPSocket::SendPacket(CBuffer *b)
  * note that it is the responsibility of the calling procedure to reset the
  * RecvBuffer if it is full as this is not done here.
  *---------------------------------------------------------------------------*/
-bool TCPSocket::RecvPacket(void)
+bool TCPSocket::RecvPacket()
 {
   if (m_xRecvBuffer.Full())
   {
@@ -648,7 +648,7 @@ void CSocketHashTable::Lock(unsigned short _nLockType)
   m_nLockType = _nLockType;
 }
 
-void CSocketHashTable::Unlock(void)
+void CSocketHashTable::Unlock()
 {
   unsigned short nLockType = m_nLockType;
   m_nLockType = LOCK_R;
@@ -739,7 +739,7 @@ unsigned short CSocketHashTable::HashValue(int _nSd)
 
 
 //=====CSocketManager===========================================================
-CSocketManager::CSocketManager(void) : m_hSockets(SOCKET_HASH_SIZE)
+CSocketManager::CSocketManager() : m_hSockets(SOCKET_HASH_SIZE)
 {
 }
 

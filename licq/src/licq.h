@@ -13,16 +13,16 @@
 class CLicq
 {
 public:
-  CLicq(void);
-  ~CLicq(void);
+  CLicq();
+  ~CLicq();
   bool Init(int argc, char **argv);
-  int Main(void);
-  const char *Version(void);
+  int Main();
+  const char *Version();
   CPluginFunctions *LoadPlugin(const char *, int, char **);
   void StartPlugin(CPluginFunctions *);
 protected:
-  void PrintUsage(void);
-  bool Install(void);
+  void PrintUsage();
+  bool Install();
   CICQDaemon *licqDaemon;
   unsigned short m_nNextId;
   PluginsList m_vPluginFunctions;

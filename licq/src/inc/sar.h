@@ -27,9 +27,9 @@ class CSavedAutoResponse
 {
 public:
   CSavedAutoResponse(const char *_szName, const char *_szAutoResponse);
-  ~CSavedAutoResponse(void);
-  const char *Name(void) { return m_szName; }
-  const char *AutoResponse(void)  { return m_szAutoResponse; }
+  ~CSavedAutoResponse();
+  const char *Name() { return m_szName; }
+  const char *AutoResponse()  { return m_szAutoResponse; }
 protected:
   char *m_szName;
   char *m_szAutoResponse;
@@ -45,12 +45,12 @@ typedef vector<CSavedAutoResponse *>::iterator SARListIter;
 class CSARManager
 {
 public:
-  CSARManager(void);
-  ~CSARManager(void);
-  bool Load(void);
-  void Save(void);
+  CSARManager();
+  ~CSARManager();
+  bool Load();
+  void Save();
   SARList &Fetch(unsigned short n);
-  void Drop(void);
+  void Drop();
 protected:
   CIniFile m_fConf;
   pthread_mutex_t mutex;

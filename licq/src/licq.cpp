@@ -42,7 +42,7 @@ pthread_cond_t LP_IdSignal;
 pthread_mutex_t LP_IdMutex;
 list<unsigned short> LP_Ids;
 
-CLicq::CLicq(void)
+CLicq::CLicq()
 {
   DEBUG_LEVEL = 0;
   licqDaemon = NULL;
@@ -240,7 +240,7 @@ bool CLicq::Init(int argc, char **argv)
   return true;
 }
 
-CLicq::~CLicq(void)
+CLicq::~CLicq()
 {
   // Close the plugins
   //...
@@ -249,7 +249,7 @@ CLicq::~CLicq(void)
 }
 
 
-const char *CLicq::Version(void)
+const char *CLicq::Version()
 {
   static const char version[] = VERSION;
   return version;
@@ -284,10 +284,10 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   }
 
   // LP_Name
-  p->fName = (const char * (*)(void))dlsym(handle, "LP_Name");
+  p->fName = (const char * (*)())dlsym(handle, "LP_Name");
   if ((error = dlerror()) != NULL)
   {
-    p->fName = (const char * (*)(void))dlsym(handle, "_LP_Name");
+    p->fName = (const char * (*)())dlsym(handle, "_LP_Name");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Name() function in plugin (%s).\n",
@@ -297,10 +297,10 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     }
   }
   // LP_Version
-  p->fVersion = (const char * (*)(void))dlsym(handle, "LP_Version");
+  p->fVersion = (const char * (*)())dlsym(handle, "LP_Version");
   if ((error = dlerror()) != NULL)
   {
-    p->fVersion = (const char * (*)(void))dlsym(handle, "_LP_Version");
+    p->fVersion = (const char * (*)())dlsym(handle, "_LP_Version");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Version() function in plugin (%s).\n",
@@ -310,10 +310,10 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     }
   }
   // LP_Status
-  p->fStatus = (const char * (*)(void))dlsym(handle, "LP_Status");
+  p->fStatus = (const char * (*)())dlsym(handle, "LP_Status");
   if ((error = dlerror()) != NULL)
   {
-    p->fStatus = (const char * (*)(void))dlsym(handle, "_LP_Status");
+    p->fStatus = (const char * (*)())dlsym(handle, "_LP_Status");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Status() function in plugin (%s).\n",
@@ -323,10 +323,10 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     }
   }
   // LP_Description
-  p->fDescription = (const char * (*)(void))dlsym(handle, "LP_Description");
+  p->fDescription = (const char * (*)())dlsym(handle, "LP_Description");
   if ((error = dlerror()) != NULL)
   {
-    p->fDescription = (const char * (*)(void))dlsym(handle, "_LP_Description");
+    p->fDescription = (const char * (*)())dlsym(handle, "_LP_Description");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Description() function in plugin (%s).\n",
@@ -336,10 +336,10 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     }
   }
   // LP_BuildDate
-  p->fBuildDate = (const char * (*)(void))dlsym(handle, "LP_BuildDate");
+  p->fBuildDate = (const char * (*)())dlsym(handle, "LP_BuildDate");
   if ((error = dlerror()) != NULL)
   {
-    p->fBuildDate = (const char * (*)(void))dlsym(handle, "_LP_BuildDate");
+    p->fBuildDate = (const char * (*)())dlsym(handle, "_LP_BuildDate");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_BuildDate() function in plugin (%s).\n",
@@ -349,10 +349,10 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     }
   }
   // LP_BuildTime
-  p->fBuildTime = (const char * (*)(void))dlsym(handle, "LP_BuildTime");
+  p->fBuildTime = (const char * (*)())dlsym(handle, "LP_BuildTime");
   if ((error = dlerror()) != NULL)
   {
-    p->fBuildTime = (const char * (*)(void))dlsym(handle, "_LP_BuildTime");
+    p->fBuildTime = (const char * (*)())dlsym(handle, "_LP_BuildTime");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_BuildTime() function in plugin (%s).\n",
@@ -375,10 +375,10 @@ CPluginFunctions *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
     }
   }
   // LP_Usage
-  p->fUsage = (const char * (*)(void))dlsym(handle, "LP_Usage");
+  p->fUsage = (const char * (*)())dlsym(handle, "LP_Usage");
   if ((error = dlerror()) != NULL)
   {
-    p->fUsage = (const char * (*)(void))dlsym(handle, "_LP_Usage");
+    p->fUsage = (const char * (*)())dlsym(handle, "_LP_Usage");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Usage() function in plugin (%s).\n",
@@ -451,7 +451,7 @@ void CLicq::StartPlugin(CPluginFunctions *p)
 }
 
 
-int CLicq::Main(void)
+int CLicq::Main()
 {
   int nResult = 0;
 
@@ -539,7 +539,7 @@ int CLicq::Main(void)
 }
 
 
-void CLicq::PrintUsage(void)
+void CLicq::PrintUsage()
 {
   printf("%s version %s.\n"
          "Usage:  Licq [-h] [-d #] [-b configdir] [-i] [-p plugin] [-o file] [ -- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n\n"
@@ -560,7 +560,7 @@ void CLicq::PrintUsage(void)
 }
 
 
-bool CLicq::Install(void)
+bool CLicq::Install()
 {
   char cmd[MAX_FILENAME_LEN + 128];
 

@@ -27,7 +27,7 @@ public:
     nUin = _nUin;
     szAlias = szFirstName = szLastName = szEmail = NULL;
   }
-  ~CSearchAck(void)
+  ~CSearchAck()
   {
     if (szAlias != NULL) free(szAlias);
     if (szFirstName != NULL) free(szFirstName);
@@ -57,7 +57,7 @@ public:
   ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, EConnect _eConnect,
            unsigned long _nUin, CUserEvent *e);
   ICQEvent(ICQEvent *);
-  ~ICQEvent(void);
+  ~ICQEvent();
 
   bool CompareEvent(int, unsigned long) const;
 
@@ -127,10 +127,10 @@ class CICQSignal
 public:
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin);
   CICQSignal(CICQSignal *s);
-  ~CICQSignal(void);
-  unsigned long Signal(void) { return m_nSignal; }
-  unsigned long SubSignal(void) { return m_nSubSignal; }
-  unsigned long Uin(void) { return m_nUin; }
+  ~CICQSignal();
+  unsigned long Signal() { return m_nSignal; }
+  unsigned long SubSignal() { return m_nSubSignal; }
+  unsigned long Uin() { return m_nUin; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;

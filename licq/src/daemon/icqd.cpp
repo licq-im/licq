@@ -171,7 +171,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 }
 
 
-bool CICQDaemon::Start(void)
+bool CICQDaemon::Start()
 {
   char sz[MAX_FILENAME_LEN];
   int nResult = 0;
@@ -290,7 +290,7 @@ int CICQDaemon::RegisterPlugin(unsigned long _nSignalMask)
  *
  * Unregisters the current plugin thread.
  *----------------------------------------------------------------------------*/
-void CICQDaemon::UnregisterPlugin(void)
+void CICQDaemon::UnregisterPlugin()
 {
   vector<CPlugin *>::iterator iter;
   pthread_mutex_lock(&mutex_plugins);
@@ -412,19 +412,19 @@ bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
 
 
 
-const char *CICQDaemon::Version(void)
+const char *CICQDaemon::Version()
 {
   return licq->Version();
 }
 
 //-----ICQ::destructor----------------------------------------------------------
-CICQDaemon::~CICQDaemon(void)
+CICQDaemon::~CICQDaemon()
 {
   if (m_szUrlViewer != NULL) delete [] m_szUrlViewer;
   if (m_szRejectFile != NULL) delete [] m_szRejectFile;
 }
 
-pthread_t *CICQDaemon::Shutdown(void)
+pthread_t *CICQDaemon::Shutdown()
 {
   static pthread_t *thread_shutdown = (pthread_t *)malloc(sizeof(pthread_t));
   if (m_bShuttingDown) return(thread_shutdown);
@@ -437,7 +437,7 @@ pthread_t *CICQDaemon::Shutdown(void)
 
 
 //-----SaveConf-----------------------------------------------------------------
-void CICQDaemon::SaveConf(void)
+void CICQDaemon::SaveConf()
 {
   char filename[MAX_FILENAME_LEN];
   sprintf(filename, "%s/licq.conf", BASE_DIR);
@@ -500,10 +500,10 @@ void CICQDaemon::SaveConf(void)
 // This needs to be changed
 bool CICQDaemon::getTcpPort(unsigned short i)  { return (m_vbTcpPorts[i]); }
 void CICQDaemon::setTcpPort(unsigned short i, bool b) { m_vbTcpPorts[i] = b; }
-const char *CICQDaemon::Terminal(void)       { return m_szTerminal; }
+const char *CICQDaemon::Terminal()       { return m_szTerminal; }
 void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
 
-const char *CICQDaemon::getUrlViewer(void)
+const char *CICQDaemon::getUrlViewer()
 {
   if (strcmp(m_szUrlViewer, "none") == 0)
     return (NULL);
@@ -520,7 +520,7 @@ void CICQDaemon::setUrlViewer(const char *s)
 
 
 //-----SaveUserList-------------------------------------------------------------
-void CICQDaemon::SaveUserList(void)
+void CICQDaemon::SaveUserList()
 {
   char filename[MAX_FILENAME_LEN];
   sprintf(filename, "%s/users.conf", BASE_DIR);
@@ -1046,7 +1046,7 @@ void CICQDaemon::PushPluginSignal(CICQSignal *s)
  *
  * Pops an event from the gui signal queue.
  *----------------------------------------------------------------------------*/
-CICQSignal *CICQDaemon::PopPluginSignal(void)
+CICQSignal *CICQDaemon::PopPluginSignal()
 {
   vector<CPlugin *>::iterator iter;
   CICQSignal *s = NULL;
@@ -1068,7 +1068,7 @@ CICQSignal *CICQDaemon::PopPluginSignal(void)
  *
  * Pops an event from the gui event queue.
  *----------------------------------------------------------------------------*/
-ICQEvent *CICQDaemon::PopPluginEvent(void)
+ICQEvent *CICQDaemon::PopPluginEvent()
 {
   vector<CPlugin *>::iterator iter;
   ICQEvent *e = NULL;

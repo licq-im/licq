@@ -310,7 +310,7 @@ void *FileServer_tep(void *p)
 //=====Client Side==============================================================
 
 //-----startAsClient------------------------------------------------------------
-bool CFileDlg::startAsClient(void)
+bool CFileDlg::startAsClient()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned long nIp = u->Ip();

@@ -32,23 +32,23 @@ class CICQEventTag;
 class CPluginFunctions
 {
 public:
-  const char *Name(void)    { return (*fName)(); }
-  const char *Version(void) { return (*fVersion)(); }
-  const char *Description(void) { return (*fDescription)(); }
-  const char *Status(void) { return (*fStatus)(); }
-  const char *Usage(void) { return (*fUsage)(); }
-  const char *BuildDate(void) { return (*fBuildDate)(); }
-  const char *BuildTime(void) { return (*fBuildTime)(); }
-  unsigned short Id(void)   { return *nId; }
+  const char *Name()    { return (*fName)(); }
+  const char *Version() { return (*fVersion)(); }
+  const char *Description() { return (*fDescription)(); }
+  const char *Status() { return (*fStatus)(); }
+  const char *Usage() { return (*fUsage)(); }
+  const char *BuildDate() { return (*fBuildDate)(); }
+  const char *BuildTime() { return (*fBuildTime)(); }
+  unsigned short Id()   { return *nId; }
 
 protected:
-  const char *(*fName)(void);
-  const char *(*fVersion)(void);
-  const char *(*fStatus)(void);
-  const char *(*fDescription)(void);
-  const char *(*fBuildDate)(void);
-  const char *(*fBuildTime)(void);
-  const char *(*fUsage)(void);
+  const char *(*fName)();
+  const char *(*fVersion)();
+  const char *(*fStatus)();
+  const char *(*fDescription)();
+  const char *(*fBuildDate)();
+  const char *(*fBuildTime)();
+  const char *(*fUsage)();
   bool (*fInit)(int, char **);
   int (*fMain)(CICQDaemon *);
   void *(*fMain_tep)(void *);
@@ -77,13 +77,13 @@ class CICQDaemon
 {
 public:
   CICQDaemon(CLicq *);
-  ~CICQDaemon(void);
+  ~CICQDaemon();
   int RegisterPlugin(unsigned long _nSignalMask);
-  void UnregisterPlugin(void);
-  bool Start(void);
-  const char *Version(void);
-  pthread_t *Shutdown(void);
-  void SaveConf(void);
+  void UnregisterPlugin();
+  bool Start();
+  const char *Version();
+  pthread_t *Shutdown();
+  void SaveConf();
 
   // TCP (user) functions
   CICQEventTag *icqSendMessage(unsigned long _nUin, const char *m, bool online, bool _bUrgent, unsigned long id = 0);
@@ -134,17 +134,17 @@ public:
 
   unsigned short icqSearchByInfo(const char *, const char *, const char *, const char *);
   unsigned short icqSearchByUin(unsigned long);
-  void icqLogoff(void);
+  void icqLogoff();
   void icqAuthorize(unsigned long uinToAuthorize);
   void icqAlertUser(unsigned long _nUin);
   void icqAddUser(unsigned long);
-  void icqUpdateContactList(void);
+  void icqUpdateContactList();
 
-  void icqPing(void);
-  void icqRelogon(void);
+  void icqPing();
+  void icqRelogon();
   void icqSendVisibleList(bool _bSendIfEmpty = false);
   void icqSendInvisibleList(bool _bSendIfEmpty = false);
-  void icqRequestSystemMsg(void);
+  void icqRequestSystemMsg();
 
   void PluginList(PluginsList &l);
   void PluginShutdown(int);
@@ -153,34 +153,34 @@ public:
   bool PluginLoad(const char *, int, char **);
 
   void UpdateAllUsers();
-  void SwitchServer(void);
+  void SwitchServer();
   void CancelEvent(CICQEventTag *);
 
   void AddUserToList(unsigned long _nUin);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
-  void SaveUserList(void);
+  void SaveUserList();
 
   // NOT MT SAFE
-  unsigned short getMaxUsersPerPacket(void)  { return m_nMaxUsersPerPacket; }
+  unsigned short getMaxUsersPerPacket()  { return m_nMaxUsersPerPacket; }
   bool getTcpPort(unsigned short);
   void setTcpPort(unsigned short, bool);
-  const char *getUrlViewer(void);
-  unsigned short getTcpServerPort(void) { return(m_nTcpServerPort); }
-  unsigned short getDefaultRemotePort(void)  { return(m_nDefaultRemotePort); }
+  const char *getUrlViewer();
+  unsigned short getTcpServerPort() { return(m_nTcpServerPort); }
+  unsigned short getDefaultRemotePort()  { return(m_nDefaultRemotePort); }
   void setTcpServerPort(unsigned short n)  { m_nTcpServerPort = n; }
   void setDefaultRemotePort(unsigned short n)  { m_nDefaultRemotePort = n; }
   void setMaxUsersPerPacket(unsigned short n)  { m_nMaxUsersPerPacket = n; }
   void setUrlViewer(const char *s);
-  const char *Terminal(void);
+  const char *Terminal();
   void SetTerminal(const char *s);
   bool Ignore(unsigned short n)      { return m_nIgnoreTypes & n; }
   void SetIgnore(unsigned short, bool);
   unsigned long StringToStatus(char *_szStatus);
 
-  COnEventManager *OnEventManager(void)  { return &m_xOnEventManager; }
-  CICQSignal *PopPluginSignal(void);
-  ICQEvent *PopPluginEvent(void);
+  COnEventManager *OnEventManager()  { return &m_xOnEventManager; }
+  CICQSignal *PopPluginSignal();
+  ICQEvent *PopPluginEvent();
 
   ICQRemoteServers icqServers;
 
@@ -246,7 +246,7 @@ protected:
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);
 
-  int ConnectToServer(void);
+  int ConnectToServer();
   int ConnectToUser(unsigned long);
 
   // Declare all our thread functions as friends

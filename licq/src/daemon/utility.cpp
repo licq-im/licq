@@ -28,7 +28,7 @@ int SelectUtility(const struct dirent *d)
   return (strcmp(pcDot, ".utility") == 0);
 }
 
-CUtilityManager::CUtilityManager(void)
+CUtilityManager::CUtilityManager()
 {
   // does nothing for now
 }

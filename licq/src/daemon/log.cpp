@@ -60,7 +60,7 @@ void CLogService::SetData(void *_pData)
 }
 
 inline
-unsigned short CLogService::ServiceType(void)
+unsigned short CLogService::ServiceType()
 {
   return m_nServiceType;
 }
@@ -137,13 +137,13 @@ void CLogService_File::lprintf(unsigned short _nLogType, const char *_szPrefix,
 
 
 //-----Window-------------------------------------------------------------------
-CPluginLog::CPluginLog(void)
+CPluginLog::CPluginLog()
 {
   pipe(pipe_log);
   pthread_mutex_init(&mutex, NULL);
 }
 
-char *CPluginLog::NextLogMsg(void)
+char *CPluginLog::NextLogMsg()
 {
   pthread_mutex_lock(&mutex);
   char *sz = (m_vszLogs.size() > 0 ? m_vszLogs.front() : NULL);
@@ -151,7 +151,7 @@ char *CPluginLog::NextLogMsg(void)
   return sz;
 }
 
-unsigned short CPluginLog::NextLogType(void)
+unsigned short CPluginLog::NextLogType()
 {
   pthread_mutex_lock(&mutex);
   unsigned short n = (m_vnLogTypes.size() > 0 ? m_vnLogTypes.front() : 0);
@@ -159,7 +159,7 @@ unsigned short CPluginLog::NextLogType(void)
   return n;
 }
 
-void CPluginLog::ClearLog(void)
+void CPluginLog::ClearLog()
 {
   pthread_mutex_lock(&mutex);
   char *sz = m_vszLogs.front();
@@ -206,7 +206,7 @@ void CLogService_Plugin::lprintf(unsigned short _nLogType, const char *_szPrefix
 
 
 //-----CLogServer---------------------------------------------------------------
-CLogServer::CLogServer(void)
+CLogServer::CLogServer()
 {
   pthread_mutex_init(&mutex, NULL);
 }

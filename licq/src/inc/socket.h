@@ -23,47 +23,47 @@ class INetSocket
 {
 public:
   INetSocket(unsigned long _nOwner);
-  virtual ~INetSocket(void);
+  virtual ~INetSocket();
 
-  bool Connected(void)          { return(m_nDescriptor > 0);  }
-  int Descriptor(void)          { return(m_nDescriptor);      }
-  bool DestinationSet(void)     { return (RemoteIp() != 0); }
-  unsigned long Owner(void)     { return (m_nOwner); }
+  bool Connected()          { return(m_nDescriptor > 0);  }
+  int Descriptor()          { return(m_nDescriptor);      }
+  bool DestinationSet()     { return (RemoteIp() != 0); }
+  unsigned long Owner()     { return (m_nOwner); }
   void SetOwner(unsigned long _nOwner)  { m_nOwner = _nOwner; }
 
-  int Error(void);
+  int Error();
   char *ErrorStr(char *, int);
 
-  unsigned long  LocalIp(void)     { return (m_sLocalAddr.sin_addr.s_addr);  }
+  unsigned long  LocalIp()     { return (m_sLocalAddr.sin_addr.s_addr);  }
   char *LocalIpStr(char *buf)      { return (inet_ntoa_r(*(struct in_addr *)&m_sLocalAddr.sin_addr.s_addr, buf)); }
-  unsigned long  RemoteIp(void)    { return (m_sRemoteAddr.sin_addr.s_addr); };
+  unsigned long  RemoteIp()    { return (m_sRemoteAddr.sin_addr.s_addr); };
   char *RemoteIpStr(char *buf)     { return (inet_ntoa_r(*(struct in_addr *)&m_sRemoteAddr.sin_addr.s_addr, buf)); }
-  unsigned short LocalPort(void)   { return (ntohs(m_sLocalAddr.sin_port));  };
-  unsigned short RemotePort(void)  { return (ntohs(m_sRemoteAddr.sin_port)); };
+  unsigned short LocalPort()   { return (ntohs(m_sLocalAddr.sin_port));  };
+  unsigned short RemotePort()  { return (ntohs(m_sRemoteAddr.sin_port)); };
 
   bool SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort);
   bool SetRemoteAddr(char *_szRemoteName, unsigned short _nRemotePort);
 
-  void ResetSocket(void);
-  void ClearRecvBuffer(void)  { m_xRecvBuffer.Clear(); };
-  bool RecvBufferFull(void)   { return m_xRecvBuffer.Full(); };
-  CBuffer &RecvBuffer(void)   { return m_xRecvBuffer; };
+  void ResetSocket();
+  void ClearRecvBuffer()  { m_xRecvBuffer.Clear(); };
+  bool RecvBufferFull()   { return m_xRecvBuffer.Full(); };
+  CBuffer &RecvBuffer()   { return m_xRecvBuffer; };
 
-  bool OpenConnection(void);
-  void CloseConnection(void)  {  CloseSocket(); }
+  bool OpenConnection();
+  void CloseConnection()  {  CloseSocket(); }
   bool StartServer(unsigned int _nPort);
   bool SendRaw(CBuffer *b);
-  bool RecvRaw(void);
+  bool RecvRaw();
 
   virtual bool Send(CBuffer *b) = 0;
-  virtual bool Recv(void) = 0;
+  virtual bool Recv() = 0;
 
   pthread_mutex_t mutex;
 
 protected:
-  void OpenSocket(void);
-  void CloseSocket(void);
-  const char *GetIDStr(void)  { return (m_szID); }
+  void OpenSocket();
+  void CloseSocket();
+  const char *GetIDStr()  { return (m_szID); }
   bool SetAddrsFromSocket(unsigned short _nFlags);
   void DumpPacket(CBuffer *b, direction d);
   unsigned long GetIpByName(char *_szHostName);
@@ -83,18 +83,18 @@ class TCPSocket : public INetSocket
 public:
   TCPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
     { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; }
-  TCPSocket(void) : INetSocket(0)
+  TCPSocket() : INetSocket(0)
     { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; }
 
   // Abstract base class overloads
   virtual bool Send(CBuffer *b)
     { return SendPacket(b); }
-  virtual bool Recv(void)
+  virtual bool Recv()
     { return RecvPacket(); }
 
   // Functions specific to TCP
   bool SendPacket(CBuffer *b);
-  bool RecvPacket(void);
+  bool RecvPacket();
   void RecvConnection(TCPSocket &newSocket);
   void TransferConnectionFrom(TCPSocket &from);
 };
@@ -110,7 +110,7 @@ public:
   // Abstract base class overloads
   virtual bool Send(CBuffer *b)
     { return SendRaw(b); }
-  virtual bool Recv(void)
+  virtual bool Recv()
     { return RecvRaw(); }
 };
 
@@ -129,7 +129,7 @@ protected:
   vector < list<INetSocket *> > m_vlTable;
 
   void Lock(unsigned short _nLockType);
-  void Unlock(void);
+  void Unlock();
 
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
@@ -146,19 +146,19 @@ class CSocketSet
 friend class CSocketManager;
 
 public:
-  CSocketSet (void);
+  CSocketSet ();
 
-  unsigned short Num(void);
-  int Largest(void);
-  fd_set SocketSet(void);
+  unsigned short Num();
+  int Largest();
+  fd_set SocketSet();
 
 protected:
   fd_set sFd;
   list <int> lFd;
   void Set (int _nSD);
   void Clear (int _nSD);
-  void Lock(void);
-  void Unlock(void);
+  void Lock();
+  void Unlock();
 
   pthread_mutex_t mutex;
 };
@@ -168,15 +168,15 @@ protected:
 class CSocketManager
 {
 public:
-  CSocketManager(void);
+  CSocketManager();
 
   INetSocket *FetchSocket (int _nSd);
   void DropSocket (INetSocket *s);
   void AddSocket(INetSocket *s);
   void CloseSocket (int _nSd, bool _bClearUser = true);
 
-  fd_set SocketSet(void)   {  return m_sSockets.SocketSet(); }
-  int LargestSocket(void)  {  return m_sSockets.Largest(); }
+  fd_set SocketSet()   {  return m_sSockets.SocketSet(); }
+  int LargestSocket()  {  return m_sSockets.Largest(); }
 
 protected:
   CSocketSet m_sSockets;

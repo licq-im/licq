@@ -46,7 +46,7 @@ void ICQUser::Lock(unsigned short _nLockType)
 /*---------------------------------------------------------------------------
  * ICQUser::Unlock
  *-------------------------------------------------------------------------*/
-void ICQUser::Unlock(void)
+void ICQUser::Unlock()
 {
   unsigned short nLockType = m_nLockType;
   m_nLockType = LOCK_R;
@@ -66,7 +66,7 @@ void ICQUser::Unlock(void)
 
 
 //=====CUserManager=============================================================
-CUserManager::CUserManager(void) : m_hUsers(USER_HASH_SIZE)
+CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
 {
   // Set up the basic all users and new users group
   pthread_rdwr_init_np(&mutex_grouplist, NULL);
@@ -92,7 +92,7 @@ void CUserManager::SetOwnerUin(unsigned long _nUin)
 /*---------------------------------------------------------------------------
  * CUserManager::Load
  *-------------------------------------------------------------------------*/
-bool CUserManager::Load(void)
+bool CUserManager::Load()
 {
   // Create the owner
   m_xOwner = new ICQOwner;
@@ -309,7 +309,7 @@ void CUserManager::RenameGroup(unsigned short n, const char *_sz)
  *
  * Assumes a lock on the group list.
  *-------------------------------------------------------------------------*/
-void CUserManager::SaveGroups(void)
+void CUserManager::SaveGroups()
 {
   if (!m_bAllowSave) return;
 
@@ -382,7 +382,7 @@ ICQOwner *CUserManager::FetchOwner(unsigned short _nLockType)
 /*---------------------------------------------------------------------------
  * CUserManager::DropOwner
  *-------------------------------------------------------------------------*/
-void CUserManager::DropOwner(void)
+void CUserManager::DropOwner()
 {
   m_xOwner->Unlock();
 }
@@ -435,7 +435,7 @@ void CUserManager::Reorder(ICQUser *_pcUser, bool _bOnList)
 /*---------------------------------------------------------------------------
  * CUserManager::SaveAllUsers
  *-------------------------------------------------------------------------*/
-void CUserManager::SaveAllUsers(void)
+void CUserManager::SaveAllUsers()
 {
   FOR_EACH_USER_START(LOCK_R)
   {
@@ -451,7 +451,7 @@ void CUserManager::SaveAllUsers(void)
 /*---------------------------------------------------------------------------
  * CUserManager::NumUsers
  *-------------------------------------------------------------------------*/
-unsigned short CUserManager::NumUsers(void)
+unsigned short CUserManager::NumUsers()
 {
   //LockUserList(LOCK_R);
   unsigned short n = m_vpcUsers.size();
@@ -463,7 +463,7 @@ unsigned short CUserManager::NumUsers(void)
 /*---------------------------------------------------------------------------
  * CUserManager::NumGroups
  *-------------------------------------------------------------------------*/
-unsigned short CUserManager::NumGroups(void)
+unsigned short CUserManager::NumGroups()
 {
   //LockGroupList(LOCK_R);
   unsigned short n = m_vszGroups.size();
@@ -501,7 +501,7 @@ UserList *CUserManager::LockUserList(unsigned short _nLockType)
 /*---------------------------------------------------------------------------
  * CUserManager::UnlockUserList
  *-------------------------------------------------------------------------*/
-void CUserManager::UnlockUserList(void)
+void CUserManager::UnlockUserList()
 {
   unsigned short nLockType = m_nUserListLockType;
   m_nUserListLockType = LOCK_R;
@@ -545,7 +545,7 @@ GroupList *CUserManager::LockGroupList(unsigned short _nLockType)
 /*---------------------------------------------------------------------------
  * CUserManager::UnlockGroupList
  *-------------------------------------------------------------------------*/
-void CUserManager::UnlockGroupList(void)
+void CUserManager::UnlockGroupList()
 {
   unsigned short nLockType = m_nGroupListLockType;
   m_nGroupListLockType = LOCK_R;
@@ -684,7 +684,7 @@ void CUserHashTable::Lock(unsigned short _nLockType)
   m_nLockType = _nLockType;
 }
 
-void CUserHashTable::Unlock(void)
+void CUserHashTable::Unlock()
 {
   unsigned short nLockType = m_nLockType;
   m_nLockType = LOCK_R;
@@ -765,7 +765,7 @@ ICQUser::ICQUser(unsigned long _nUin)
 
 
 //-----ICQUser::LoadInfo-----------------------------------------------------
-bool ICQUser::LoadInfo(void)
+bool ICQUser::LoadInfo()
 {
   if (!m_fConf.ReloadFile()) return (false);
   m_fConf.SetFlags(0);
@@ -782,7 +782,7 @@ bool ICQUser::LoadInfo(void)
 
 
 //-----ICQUser::LoadGeneralInfo----------------------------------------------
-void ICQUser::LoadGeneralInfo(void)
+void ICQUser::LoadGeneralInfo()
 {
   // read in the fields, checking for errors each time
   char szTemp[MAX_DATA_LEN];
@@ -806,7 +806,7 @@ void ICQUser::LoadGeneralInfo(void)
 
 
 //-----ICQUser::LoadMoreInfo-------------------------------------------------
-void ICQUser::LoadMoreInfo(void)
+void ICQUser::LoadMoreInfo()
 {
   // read in the fields, checking for errors each time
   char szTemp[MAX_DATA_LEN];
@@ -823,7 +823,7 @@ void ICQUser::LoadMoreInfo(void)
 
 
 //-----ICQUser::LoadWorkInfo-------------------------------------------------
-void ICQUser::LoadWorkInfo(void)
+void ICQUser::LoadWorkInfo()
 {
   // read in the fields, checking for errors each time
   char szTemp[MAX_DATA_LEN];
@@ -840,7 +840,7 @@ void ICQUser::LoadWorkInfo(void)
 
 
 //-----ICQUser::LoadAboutInfo-------------------------------------------------
-void ICQUser::LoadAboutInfo(void)
+void ICQUser::LoadAboutInfo()
 {
   // read in the fields, checking for errors each time
   char szTemp[MAX_DATA_LEN];
@@ -849,7 +849,7 @@ void ICQUser::LoadAboutInfo(void)
 }
 
 //-----ICQUser::LoadLicqInfo-------------------------------------------------
-void ICQUser::LoadLicqInfo(void)
+void ICQUser::LoadLicqInfo()
 {
   // read in the fields, checking for errors each time
   char szTemp[MAX_DATA_LEN];
@@ -880,7 +880,7 @@ void ICQUser::LoadLicqInfo(void)
 
 
 //-----ICQUser::destructor------------------------------------------------------
-ICQUser::~ICQUser(void)
+ICQUser::~ICQUser()
 {
   while (NewMessages() > 0) ClearEvent(0);
 /*
@@ -897,7 +897,7 @@ ICQUser::~ICQUser(void)
 
 
 //-----ICQUser::RemoveFiles-----------------------------------------------------
-void ICQUser::RemoveFiles(void)
+void ICQUser::RemoveFiles()
 {
   remove(m_fConf.FileName());
   remove(m_fHistory.FileName());
@@ -969,7 +969,7 @@ void ICQUser::Init(unsigned long _nUin)
 }
 
 //-----ICQUser::SetDefaults-----------------------------------------------------
-void ICQUser::SetDefaults(void)
+void ICQUser::SetDefaults()
 {
   char szTemp[12];
   sprintf(szTemp, "%ld", Uin());
@@ -1006,7 +1006,7 @@ void ICQUser::SetDefaults(void)
 
 
 
-unsigned short ICQUser::Status(void)
+unsigned short ICQUser::Status()
 // guarantees to return a unique status that switch can be run on
 {
    if (StatusOffline()) return ICQ_STATUS_OFFLINE;
@@ -1019,7 +1019,7 @@ unsigned short ICQUser::Status(void)
    else return (ICQ_STATUS_OFFLINE - 1);
 }
 
-void ICQUser::SetStatusOffline(void)
+void ICQUser::SetStatusOffline()
 {
   if (!StatusOffline())
   {
@@ -1053,7 +1053,7 @@ void ICQUser::SetAlias(const char *s)
 }
 
 
-bool ICQUser::Away(void)
+bool ICQUser::Away()
 {
    return (Status() == ICQ_STATUS_AWAY || Status() == ICQ_STATUS_NA ||
            Status() == ICQ_STATUS_DND || Status() == ICQ_STATUS_OCCUPIED);
@@ -1294,7 +1294,7 @@ void ICQUser::usprintf(char *_sz, const char *_szFormat, bool bAllowFieldWidth)
 
 
 //-----ICQUser::SaveGeneralInfo----------------------------------------------
-void ICQUser::SaveGeneralInfo(void)
+void ICQUser::SaveGeneralInfo()
 {
   if (!EnableSave()) return;
 
@@ -1334,7 +1334,7 @@ void ICQUser::SaveGeneralInfo(void)
 
 
 //-----ICQUser::SaveMoreInfo----------------------------------------------
-void ICQUser::SaveMoreInfo(void)
+void ICQUser::SaveMoreInfo()
 {
   if (!EnableSave()) return;
 
@@ -1367,7 +1367,7 @@ void ICQUser::SaveMoreInfo(void)
 
 
 //-----ICQUser::SaveWorkInfo----------------------------------------------
-void ICQUser::SaveWorkInfo(void)
+void ICQUser::SaveWorkInfo()
 {
   if (!EnableSave()) return;
 
@@ -1400,7 +1400,7 @@ void ICQUser::SaveWorkInfo(void)
 
 
 //-----ICQUser::SaveAboutInfo-------------------------------------------------
-void ICQUser::SaveAboutInfo(void)
+void ICQUser::SaveAboutInfo()
 {
    if (!EnableSave()) return;
 
@@ -1424,7 +1424,7 @@ void ICQUser::SaveAboutInfo(void)
 
 
 //-----ICQUser::SaveLicqInfo-------------------------------------------------
-void ICQUser::SaveLicqInfo(void)
+void ICQUser::SaveLicqInfo()
 {
    if (!EnableSave()) return;
 
@@ -1457,7 +1457,7 @@ void ICQUser::SaveLicqInfo(void)
 
 
 //-----ICQUser::SaveBasicInfo---------------------------------------------------
-void ICQUser::SaveBasicInfo(void)
+void ICQUser::SaveBasicInfo()
 {
   if (!EnableSave()) return;
 
@@ -1485,7 +1485,7 @@ void ICQUser::SaveBasicInfo(void)
 
 /*
 //-----ICQUser::saveInfo--------------------------------------------------------
-void ICQUser::saveInfo(void)
+void ICQUser::saveInfo()
 {
    if (!getEnableSave()) return;
 
@@ -1515,7 +1515,7 @@ void ICQUser::saveInfo(void)
 */
 
 //-----ICQUser::SaveExtInfo--------------------------------------------------
-void ICQUser::SaveExtInfo(void)
+void ICQUser::SaveExtInfo()
 {
    if (!EnableSave()) return;
 
@@ -1612,7 +1612,7 @@ void ICQUser::RemoveFromGroup(GroupType g, unsigned short _nGroup)
 }
 
 
-unsigned short ICQUser::getNumUserEvents(void)
+unsigned short ICQUser::getNumUserEvents()
 {
   pthread_mutex_lock(&mutex_nNumUserEvents);
   unsigned short n = s_nNumUserEvents;
@@ -1620,14 +1620,14 @@ unsigned short ICQUser::getNumUserEvents(void)
   return n;
 }
 
-void ICQUser::incNumUserEvents(void)
+void ICQUser::incNumUserEvents()
 {
   pthread_mutex_lock(&mutex_nNumUserEvents);
   s_nNumUserEvents++;
   pthread_mutex_unlock(&mutex_nNumUserEvents);
 }
 
-void ICQUser::decNumUserEvents(void)
+void ICQUser::decNumUserEvents()
 {
   pthread_mutex_lock(&mutex_nNumUserEvents);
   s_nNumUserEvents--;
@@ -1638,7 +1638,7 @@ void ICQUser::decNumUserEvents(void)
 //=====ICQOwner=================================================================
 
 //-----ICQOwner::constructor----------------------------------------------------
-ICQOwner::ICQOwner(void)
+ICQOwner::ICQOwner()
 {
   gLog.Info("%sOwner configuration.\n", L_INITxSTR);
   char szTemp[32];
@@ -1698,7 +1698,7 @@ unsigned long ICQOwner::AddStatusFlags(unsigned long s)
 
 
 //-----ICQOwner::saveInfo--------------------------------------------------------
-void ICQOwner::SaveLicqInfo(void)
+void ICQOwner::SaveLicqInfo()
 {
   if (!EnableSave()) return;
 
@@ -1727,7 +1727,7 @@ void ICQOwner::SaveLicqInfo(void)
 }
 
 
-void ICQUser::StupidLinkageFix(void)
+void ICQUser::StupidLinkageFix()
   {  printf("%s", gCountries[0].szName);
      printf("%s", gLanguages[0].szName); }
 

@@ -15,13 +15,13 @@
 class CPacket
 {
 public:
-   CBuffer *getBuffer(void)  { return buffer; };
-   virtual CBuffer *Finalize(void) { return NULL; }
+   CBuffer *getBuffer()  { return buffer; };
+   virtual CBuffer *Finalize() { return NULL; }
 
-   virtual const unsigned long  getSequence(void) = 0;
-   virtual const unsigned short SubSequence(void) = 0;
-   virtual const unsigned short getCommand(void) = 0;
-   virtual const unsigned short getSubCommand(void) = 0;
+   virtual const unsigned long  getSequence() = 0;
+   virtual const unsigned short SubSequence() = 0;
+   virtual const unsigned short getCommand() = 0;
+   virtual const unsigned short getSubCommand() = 0;
 
 protected:
    CBuffer *buffer;
@@ -38,16 +38,16 @@ protected:
 class CPacketUdp : public CPacket
 {
 public:
-   virtual ~CPacketUdp(void);
+   virtual ~CPacketUdp();
 
-   virtual CBuffer *Finalize(void);
-   virtual const unsigned long  getSequence(void) { return m_nSequence; }
-   virtual const unsigned short SubSequence(void) { return m_nSubSequence; }
-   virtual const unsigned short getCommand(void)  { return m_nCommand; }
-   virtual const unsigned short getSubCommand(void)  { return 0; }
+   virtual CBuffer *Finalize();
+   virtual const unsigned long  getSequence() { return m_nSequence; }
+   virtual const unsigned short SubSequence() { return m_nSubSequence; }
+   virtual const unsigned short getCommand()  { return m_nCommand; }
+   virtual const unsigned short getSubCommand()  { return 0; }
 protected:
    CPacketUdp(unsigned short _nCommand);
-   void InitBuffer(void);
+   void InitBuffer();
 
 #if ICQ_VERSION == 2
    unsigned short m_nVersion;
@@ -88,14 +88,14 @@ class CPU_Register : public CPacket
 {
 public:
   CPU_Register(const char *_szPasswd);
-  virtual ~CPU_Register(void);
+  virtual ~CPU_Register();
 
-  virtual const unsigned long  getSequence(void) { return m_nSequence; }
-  virtual const unsigned short SubSequence(void) { return 0; }
-  virtual const unsigned short getCommand(void)  { return m_nCommand; }
-  virtual const unsigned short getSubCommand(void) { return 0; }
+  virtual const unsigned long  getSequence() { return m_nSequence; }
+  virtual const unsigned short SubSequence() { return 0; }
+  virtual const unsigned short getCommand()  { return m_nCommand; }
+  virtual const unsigned short getSubCommand() { return 0; }
 protected:
-  virtual unsigned long getSize(void);
+  virtual unsigned long getSize();
 
   /* 02 00 FC 03 01 00 02 00 04 00 65 66 67 00 72 00 00 00 00 00 00 00 */
   unsigned short m_nVersion;
@@ -158,7 +158,7 @@ protected:
 class CPU_Logoff : public CPacketUdp
 {
 public:
-   CPU_Logoff(void);
+   CPU_Logoff();
 };
 
 
@@ -214,11 +214,11 @@ public:
                                const char *_sLastName, const char *_sEmail,
                                bool _bAuthorization);
 
-   const char *Alias(void)  { return m_szAlias; }
-   const char *FirstName(void)  { return m_szFirstName; }
-   const char *LastName(void)  { return m_szLastName; }
-   const char *Email(void)  { return m_szEmail; }
-   bool Authorization(void)  { return m_nAuthorization == 0; }
+   const char *Alias()  { return m_szAlias; }
+   const char *FirstName()  { return m_szFirstName; }
+   const char *LastName()  { return m_szLastName; }
+   const char *Email()  { return m_szEmail; }
+   bool Authorization()  { return m_nAuthorization == 0; }
 protected:
    char *m_szAlias;
    char *m_szFirstName;
@@ -238,15 +238,15 @@ public:
                              const char *_sHomepage, const char *_sAbout,
                              unsigned long _nZipcode);
 
-   const char *City(void)  { return m_szCity; }
-   unsigned short Country(void)  { return m_nCountry; }
-   const char *State(void)  { return m_szState; }
-   unsigned short Age(void)  { return m_nAge; }
-   char Sex(void)  { return m_cSex; }
-   const char *PhoneNumber(void)  { return m_szPhone; }
-   const char *Homepage(void)  { return m_szHomepage; }
-   const char *About(void)  { return m_szAbout; }
-   unsigned long Zipcode(void) { return m_nZipcode; }
+   const char *City()  { return m_szCity; }
+   unsigned short Country()  { return m_nCountry; }
+   const char *State()  { return m_szState; }
+   unsigned short Age()  { return m_nAge; }
+   char Sex()  { return m_cSex; }
+   const char *PhoneNumber()  { return m_szPhone; }
+   const char *Homepage()  { return m_szHomepage; }
+   const char *About()  { return m_szAbout; }
+   unsigned long Zipcode() { return m_nZipcode; }
 protected:
    char           *m_szCity;
    unsigned short m_nCountry;
@@ -265,7 +265,7 @@ protected:
 class CPU_Ping : public CPacketUdp
 {
 public:
-   CPU_Ping(void);
+   CPU_Ping();
 };
 
 
@@ -275,7 +275,7 @@ class CPU_ThroughServer : public CPacketUdp
 public:
    CPU_ThroughServer(unsigned long _nSourceUin, unsigned long _nDestinationUin,
                      unsigned short _nSubCommand, char *_sMessage);
-   virtual const unsigned short getSubCommand(void)  { return m_nSubCommand; }
+   virtual const unsigned short getSubCommand()  { return m_nSubCommand; }
 protected:
    unsigned long  m_nDestinationUin;
    unsigned short m_nSubCommand;
@@ -328,7 +328,7 @@ protected:
 class CPU_RequestSysMsg : public CPacketUdp
 {
 public:
-   CPU_RequestSysMsg(void);
+   CPU_RequestSysMsg();
 };
 
 
@@ -341,7 +341,7 @@ public:
 #elif ICQ_VERSION == 4
   CPU_SysMsgDoneAck(unsigned short _nSequence, unsigned short _nSubSequence);
 #elif ICQ_VERSION == 5
-  CPU_SysMsgDoneAck(void);
+  CPU_SysMsgDoneAck();
 #endif
 };
 
@@ -365,7 +365,7 @@ public:
                           unsigned long nZipCode,
                           unsigned short nCountryCode,
                           bool bHideEmail);
-  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+  virtual const unsigned short getSubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -404,7 +404,7 @@ public:
                        char nLanguage1,
                        char nLanguage2,
                        char nLanguage3);
-  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+  virtual const unsigned short getSubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -435,7 +435,7 @@ public:
                        const char *szDepartment,
                        const char *szPosition,
                        const char *szHomepage);
-  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+  virtual const unsigned short getSubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -458,7 +458,7 @@ class CPU_Meta_SetAbout : public CPacketUdp
 {
 public:
   CPU_Meta_SetAbout(const char *szAbout);
-  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+  virtual const unsigned short getSubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -473,7 +473,7 @@ class CPU_Meta_SetPassword : public CPacketUdp
 {
 public:
   CPU_Meta_SetPassword(const char *szPassword);
-  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+  virtual const unsigned short getSubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -490,11 +490,11 @@ public:
   CPU_Meta_SetSecurityInfo(bool bAuthorization,
                            bool bHideIp,
                            bool bWebAware);
-  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
+  virtual const unsigned short getSubCommand()  { return m_nMetaCommand; }
 
-  bool Authorization(void)  { return m_nAuthorization == 0; }
-  bool HideIp(void)         { return m_nHideIp == 1; }
-  bool WebAware(void)       { return m_nWebAware == 1; }
+  bool Authorization()  { return m_nAuthorization == 0; }
+  bool HideIp()         { return m_nHideIp == 1; }
+  bool WebAware()       { return m_nWebAware == 1; }
 protected:
   unsigned short m_nMetaCommand;
   char m_nAuthorization;
@@ -508,8 +508,8 @@ class CPU_Meta_RequestInfo : public CPacketUdp
 {
 public:
   CPU_Meta_RequestInfo(unsigned long _nUin);
-  virtual const unsigned short getSubCommand(void)  { return m_nMetaCommand; }
-  unsigned long Uin(void)  {  return m_nUin; }
+  virtual const unsigned short getSubCommand()  { return m_nMetaCommand; }
+  unsigned long Uin()  {  return m_nUin; }
 protected:
   unsigned short m_nMetaCommand;
   unsigned long  m_nUin;
@@ -523,14 +523,14 @@ class CPacketTcp_Handshake : public CPacket
 {
 public:
    CPacketTcp_Handshake(unsigned long _nLocalPort);
-   virtual ~CPacketTcp_Handshake(void);
+   virtual ~CPacketTcp_Handshake();
 
-   virtual const unsigned long  getSequence(void)   { return 0; }
-   virtual const unsigned short SubSequence(void)   { return 0; }
-   virtual const unsigned short getCommand(void)    { return ICQ_CMDxTCP_HANDSHAKE; }
-   virtual const unsigned short getSubCommand(void) { return 0; }
+   virtual const unsigned long  getSequence()   { return 0; }
+   virtual const unsigned short SubSequence()   { return 0; }
+   virtual const unsigned short getCommand()    { return ICQ_CMDxTCP_HANDSHAKE; }
+   virtual const unsigned short getSubCommand() { return 0; }
 protected:
-   void InitBuffer(void);
+   void InitBuffer();
 
    /* FF 03 00 00 00 3D 62 00 00 50 A5 82 00 CF 60 AD 95 CF 60 AD 95 04 3D 62
       00 00 */
@@ -544,21 +544,21 @@ protected:
 class CPacketTcp : public CPacket
 {
 public:
-   virtual ~CPacketTcp(void);
+   virtual ~CPacketTcp();
 
-   virtual CBuffer *Finalize(void);
-   virtual const unsigned long  getSequence(void)   { return m_nSequence; }
-   virtual const unsigned short SubSequence(void)   { return 0; }
-   virtual const unsigned short getCommand(void)    { return m_nCommand; }
-   virtual const unsigned short getSubCommand(void) { return m_nSubCommand; }
+   virtual CBuffer *Finalize();
+   virtual const unsigned long  getSequence()   { return m_nSequence; }
+   virtual const unsigned short SubSequence()   { return 0; }
+   virtual const unsigned short getCommand()    { return m_nCommand; }
+   virtual const unsigned short getSubCommand() { return m_nSubCommand; }
 
-   char *LocalPortOffset(void)  {  return m_szLocalPortOffset; }
+   char *LocalPortOffset()  {  return m_szLocalPortOffset; }
 protected:
    CPacketTcp(unsigned long _nSourceUin, unsigned long _nCommand,
               unsigned short _nSubCommand, const char *szMessage, bool _bAccept,
               bool _bUrgent, ICQUser *_cUser);
-   void InitBuffer(void);
-   void PostBuffer(void);
+   void InitBuffer();
+   void PostBuffer();
 
    unsigned long  m_nSourceUin;
    unsigned long  m_nCommand;
@@ -619,10 +619,10 @@ class CPT_FileTransfer : public CPacketTcp
 public:
    CPT_FileTransfer(unsigned long _nSourceUin, const char *_szFilename,
                     const char *_szDescription, bool _bUrgent, ICQUser *_cUser);
-   bool IsValid(void)  { return m_bValid; };
-   const char *GetFilename(void)  { return m_szFilename; };
-   const char *GetDescription(void)  { return m_szMessage; };
-   unsigned long GetFileSize(void)  { return m_nFileSize; };
+   bool IsValid()  { return m_bValid; };
+   const char *GetFilename()  { return m_szFilename; };
+   const char *GetDescription()  { return m_szMessage; };
+   unsigned long GetFileSize()  { return m_nFileSize; };
 protected:
    bool m_bValid;
 
@@ -771,12 +771,12 @@ public:
 class CPacketChat : public CPacket
 {
 public:
-  virtual const unsigned long  getSequence(void)   { return 0; };
-  virtual const unsigned short SubSequence(void)   { return 0; };
-  virtual const unsigned short getCommand(void)    { return 0; };
-  virtual const unsigned short getSubCommand(void) { return 0; };
+  virtual const unsigned long  getSequence()   { return 0; };
+  virtual const unsigned short SubSequence()   { return 0; };
+  virtual const unsigned short getCommand()    { return 0; };
+  virtual const unsigned short getSubCommand() { return 0; };
 protected:
-   void InitBuffer(void);
+   void InitBuffer();
 };
 
 
@@ -820,12 +820,12 @@ public:
 class CPacketFile : public CPacket
 {
 public:
-  virtual const unsigned long  getSequence(void)   { return 0; };
-  virtual const unsigned short SubSequence(void)   { return 0; };
-  virtual const unsigned short getCommand(void)    { return 0; };
-  virtual const unsigned short getSubCommand(void) { return 0; };
+  virtual const unsigned long  getSequence()   { return 0; };
+  virtual const unsigned short SubSequence()   { return 0; };
+  virtual const unsigned short getCommand()    { return 0; };
+  virtual const unsigned short getSubCommand() { return 0; };
 protected:
-   void InitBuffer(void)   { buffer = new CBuffer(m_nSize); };
+   void InitBuffer()   { buffer = new CBuffer(m_nSize); };
 };
 
 //-----File_InitClient----------------------------------------------------------
@@ -853,13 +853,13 @@ class CPFile_Info : public CPacketFile
 {
 public:
    CPFile_Info(const char *_szFileName);
-   virtual ~CPFile_Info(void);
-   bool IsValid(void)  { return m_bValid; };
-   unsigned long GetFileSize(void)
+   virtual ~CPFile_Info();
+   bool IsValid()  { return m_bValid; };
+   unsigned long GetFileSize()
      { return m_nFileSize; };
-   const char *GetFileName(void)
+   const char *GetFileName()
      { return m_szFileName; }
-   const char *ErrorStr(void)
+   const char *ErrorStr()
      { return strerror(m_nError); }
 protected:
    bool m_bValid;

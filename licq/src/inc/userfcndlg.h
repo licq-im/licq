@@ -8,7 +8,7 @@
 class CUserFunctionDlg
 {
 public:
-  unsigned long Uin(void)  { return m_nUin; };
+  unsigned long Uin()  { return m_nUin; };
 protected:
   unsigned long m_nUin;
 };

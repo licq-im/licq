@@ -66,7 +66,7 @@ void put_le_long(char *p, unsigned long x)
 
 //=====Buffer================================================================
 
-CBuffer::CBuffer(void)
+CBuffer::CBuffer()
 {
   m_pDataStart = m_pDataPosRead = m_pDataPosWrite = NULL;
   m_nDataSize = 0;
@@ -177,21 +177,21 @@ char *CBuffer::UnpackString(char *sz)
   return sz;
 }
 
-unsigned long CBuffer::UnpackUnsignedLong(void)
+unsigned long CBuffer::UnpackUnsignedLong()
 {
   unsigned long n;
   *this >> n;
   return n;
 }
 
-unsigned short CBuffer::UnpackUnsignedShort(void)
+unsigned short CBuffer::UnpackUnsignedShort()
 {
   unsigned short n;
   *this >> n;
   return n;
 }
 
-char CBuffer::UnpackChar(void)
+char CBuffer::UnpackChar()
 {
   char n;
   *this >> n;
@@ -201,7 +201,7 @@ char CBuffer::UnpackChar(void)
 
 
 //-----clear--------------------------------------------------------------------
-void CBuffer::Clear(void)
+void CBuffer::Clear()
 {
   if (m_pDataStart != NULL) delete[] m_pDataStart;
   m_pDataStart = m_pDataPosRead = m_pDataPosWrite = NULL;
@@ -210,26 +210,26 @@ void CBuffer::Clear(void)
 
 
 //-----reset--------------------------------------------------------------------
-void CBuffer::Reset(void)
+void CBuffer::Reset()
 {
   setDataPosRead(getDataStart());
   setDataPosWrite(getDataStart());
 }
 
 //-----Empty--------------------------------------------------------------------
-bool CBuffer::Empty(void)
+bool CBuffer::Empty()
 {
   return (m_pDataStart == NULL);
 }
 
 //-----Full---------------------------------------------------------------------
-bool CBuffer::Full(void)
+bool CBuffer::Full()
 {
   return (!Empty() && getDataPosWrite() >= (getDataStart() + getDataMaxSize()));
 }
 
 
-CBuffer::~CBuffer(void)
+CBuffer::~CBuffer()
 {
   if (m_pDataStart != NULL) delete[] m_pDataStart;
 }

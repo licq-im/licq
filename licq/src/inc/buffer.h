@@ -42,11 +42,11 @@ static unsigned long NetworkIpToPacketIp(unsigned long l)
 class CBuffer
 {
 public:
-   CBuffer(void);
+   CBuffer();
    CBuffer(unsigned long _nSize);
    CBuffer(CBuffer *);
    CBuffer(CBuffer &);
-   ~CBuffer(void);
+   ~CBuffer();
 
    char *Pack(const char *data, int size);
    char *PackString(const char *data, unsigned short max = 0);
@@ -54,11 +54,11 @@ public:
    char *PackUnsignedLong(unsigned long data);
    char *PackChar(char data);
    char *print(char *&);
-   void Clear(void);
-   void Reset(void);
-   bool Empty(void);
-   bool Full(void);
-   bool End(void)  { return ( getDataPosRead() >= (getDataStart() + getDataSize()) ); }
+   void Clear();
+   void Reset();
+   bool Empty();
+   bool Full();
+   bool End()  { return ( getDataPosRead() >= (getDataStart() + getDataSize()) ); }
    void Create(unsigned long _nDataSize = 0);
 
    CBuffer& operator >> (char &in);
@@ -66,15 +66,15 @@ public:
    CBuffer& operator >> (unsigned short &in);
    CBuffer& operator >> (unsigned long &in);
    char *UnpackString(char *);
-   unsigned long UnpackUnsignedLong(void);
-   unsigned short UnpackUnsignedShort(void);
-   char UnpackChar(void);
+   unsigned long UnpackUnsignedLong();
+   unsigned short UnpackUnsignedShort();
+   char UnpackChar();
 
-   char *getDataStart(void)           { return m_pDataStart; };
-   char *getDataPosRead(void)         { return m_pDataPosRead; };
-   char *getDataPosWrite(void)        { return m_pDataPosWrite; };
-   unsigned long getDataSize(void)    { return m_pDataPosWrite - m_pDataStart; };
-   unsigned long getDataMaxSize(void) { return m_nDataSize; };
+   char *getDataStart()           { return m_pDataStart; };
+   char *getDataPosRead()         { return m_pDataPosRead; };
+   char *getDataPosWrite()        { return m_pDataPosWrite; };
+   unsigned long getDataSize()    { return m_pDataPosWrite - m_pDataStart; };
+   unsigned long getDataMaxSize() { return m_nDataSize; };
 
    void setDataSize(unsigned long _nDataSize)  { m_nDataSize = _nDataSize; };
    void setDataPosWrite(char *_pDataPosWrite)  { m_pDataPosWrite = _pDataPosWrite; };
@@ -88,7 +88,7 @@ protected:
         *m_pDataPosRead;
    unsigned long m_nDataSize;
 
-   void antiwarning(void) { NetworkIpToPacketIp(PacketIpToNetworkIp(127)); }
+   void antiwarning() { NetworkIpToPacketIp(PacketIpToNetworkIp(127)); }
 };
 
 

@@ -6,7 +6,7 @@
 
 //=====COnEventManager==========================================================
 
-COnEventManager::COnEventManager(void)
+COnEventManager::COnEventManager()
 {
   m_szCommand = NULL;
   for (unsigned short i = 0; i < MAX_ON_EVENT; i++)
@@ -21,7 +21,7 @@ void COnEventManager::SetCommandType(unsigned short _nCommandType)
   pthread_mutex_unlock(&mutex);
 }
 
-unsigned short COnEventManager::CommandType(void)
+unsigned short COnEventManager::CommandType()
 {
   pthread_mutex_lock(&mutex);
   unsigned short n = m_nCommandType;
