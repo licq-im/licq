@@ -41,6 +41,8 @@ const char * UserCodec::encodings_array[][2] = {
   { QT_TR_NOOP("Unicode"), "UTF-8" },
   { QT_TR_NOOP("Western European"), "ISO 8859-1" },
   { QT_TR_NOOP("Western European"), "ISO 8859-15" },
+  { QT_TR_NOOP("Western European"), "CP 1252" },
+  { QT_TR_NOOP("Central European"), "CP 1250" },
   { QT_TR_NOOP("Central European"), "ISO 8859-2" },
   { QT_TR_NOOP("Central European"), "ISO 8859-3" },
   { QT_TR_NOOP("Central European"), "ISO 8859-4" },
@@ -76,7 +78,7 @@ QTextCodec *UserCodec::codecForCChatUser(CChatUser *u)
     gUserManager.DropUser(user);
     return codec;
   }
-  
+
   // return default encoding
   return QTextCodec::codecForLocale();
 }
