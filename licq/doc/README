@@ -1,4 +1,4 @@
-LICQ v0.71
+LICQ v0.75
 
 An ICQ clone written fully in c++ using a plugin system to allow for
 many possible interfaces.  
@@ -20,51 +20,30 @@ INSTALLATION:
  do a manual install.  Don't worry it's very easy, any monkey
  could do it.)
 
-Make sure to read the PLUGINS section below for important information on
-running Licq!
-***Note that at least one plugin must be loaded or licq will simply exit***
-
 As root:
 1. Type './configure' and it will determine all the right settings and 
    directories for your system. 
-2. Have a look at config.h and see if you want to change any of the
-   options in it.
-3. Type 'make' and in theory it will build. If you are using a non-GNU system,
+2. Type 'make' and in theory it will build. If you are using a non-GNU system,
    such as FreeBSD or Solaris, you will need the GNU version of make, often
    installed as `gmake'.  If you get errors about "void *" see the FAQ.
-4. Type 'make install' and licq will be installed (defaults to 
+3. Type 'make install' and licq will be installed (defaults to 
    /usr/local).
+4. Go to plugins/qt-gui and follow the directions there (doc/README) to install
+   the Qt interface plugin (necessary).
 
 As each user:
 5. When you run licq for the first time it will install all the necessary
    files in ~/.licq.
-6. You can import users from Micq or ICQJava into Licq using licq.micqconvert 
-   or licq.javaconvert.  Run these scripts from your personal conf/ 
-   directory.  You can also import your windows list using licq.winconvert,
-   which is a perl script and so requires you to have perl installed.
-
-
-PLUGINS:
-
-Plugins must be unpacked to the plugins/ directory in the licq source
-tree.  This is to ensure that the necessary include files can be found.
-After building a plugin, it should be installed in
-{prefix}/share/licq/plugins.  This will most likely be done
-automatically when you run "make install" for the given plugin.  A
-plugin may be started by either passing licq the full path and filename
-or (more typically) by simply passing it the name of the plugin, where
-the plugin is {prefix}/share/licq/plugins/licq_<name>.so.  Type licq -h
-for more help on starting licq with plugins. 
-
-***Note that at least one plugin must be loaded or licq will simply ***
-***exit. By default, the qt-gui plugin will be loaded.              ***
+6. You can import users from a number of other clients into Licq using
+   one of the conversion scripts found on the download section of the web
+   page or in the licq-data package.
 
 
 SOCKS5 Proxy Support:
 Licq supports SOCKS5 proxies.  To enable this support, run configure with
 --enable-socks5, and optionally --with-socks5-inc=PATH and 
 --with-socks5-lib=PATH.  Then just make sure all the right environment
-variables are set and it should work.  Also read the README.SOCKS file.
+variables are set and it should work.  Also read the SOCKS.HOWTO file.
 
 Licq requires the following:
 Some C++ compiler with proper standard c++ headers.
@@ -131,4 +110,5 @@ Good luck.
 
 CONTACTS:
 
-Send any questions, comments, or other complaints to licq@phreaker.net, uin 2127503
+Send any questions, comments, or other complaints to graham@licq.org,
+uin 2127503
