@@ -161,8 +161,17 @@ AC_DEFUN(LICQ_CHECK_GPGME,
     WITH_GPGME="$enableval", WITH_GPGME="yes")
 
     if test "$WITH_GPGME" = "yes"; then
-      AC_CHECK_LIB(gpgme,gpgme_check_version)
       AC_MSG_RESULT(yes)
+      AC_CHECK_LIB(gpgme,gpgme_check_version, 
+        [
+          dnl Action if found...
+          LIBS="$LIBS -lgpgme"
+          AC_DEFINE_UNQUOTED(HAVE_LIBGPGME, 1, [Define if GPGME is available])
+        ],
+        [
+          dnl Action if not found...
+          WITH_GPGME="no"
+        ])
     else
       AC_MSG_RESULT(no)
     fi
