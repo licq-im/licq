@@ -1201,9 +1201,9 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
   UserDataListIter it;
   for (it = licqUserData.begin(); it != licqUserData.end(); it++)
   {
-    if (it->uin == nUin)
+    if ((*it)->Uin() == nUin)
     {
-      f = it->win;
+      f = *it;
       break;
     }
   }
@@ -1214,7 +1214,7 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
      connect (f, SIGNAL(signal_updatedUser(unsigned long, unsigned long)), SLOT(slot_updatedUser(unsigned long, unsigned long)));
      connect (f, SIGNAL(signal_finished(unsigned long)), SLOT(slot_userfinished(unsigned long)));
      f->setupTabs(fcn);
-     licqUserData.push_back(CUserData(nUin, f));
+     licqUserData.push_back(f);
   }
   else
   {
@@ -1232,7 +1232,7 @@ void CMainWindow::slot_userfinished(unsigned long nUin)
   UserDataListIter it;
   for (it = licqUserData.begin(); it != licqUserData.end(); it++)
   {
-    if (it->uin == nUin)
+    if ((*it)->Uin() == nUin)
     {
       licqUserData.erase(it);
       return;

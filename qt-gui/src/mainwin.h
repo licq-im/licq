@@ -40,15 +40,8 @@ class CEComboBox;
 class IconManager;
 #endif
 
-class CUserData
-{
-public:
-  CUserData(unsigned long n, ICQFunctions *p) : uin(n), win(p) {}
-  unsigned long uin;
-  ICQFunctions *win;
-};
-typedef list <CUserData> UserDataList;
-typedef list <CUserData>::iterator UserDataListIter;
+typedef list <ICQFunctions *> UserDataList;
+typedef list <ICQFunctions *>::iterator UserDataListIter;
 
 
 //=====CMainWindow==============================================================
