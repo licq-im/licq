@@ -1,7 +1,16 @@
 #ifndef REGISTERUSER_H
 #define REGISTERUSER_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
+#ifdef USE_KDE
+#include "kwizard.h"
+#define QWizard KWizard
+#else
 #include <qwizard.h>
+#endif
 
 class QGroupBox;
 class QCheckBox;

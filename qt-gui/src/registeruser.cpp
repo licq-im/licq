@@ -31,7 +31,12 @@
 #include "licq_user.h"
 
 RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)
-  : QWizard(parent, "RegisterUserDialog", false, WDestructiveClose)
+#ifdef USE_KDE
+  : KWizard
+#else
+  : QWizard
+#endif
+           (parent, "RegisterUserDialog", false, WDestructiveClose)
 {
   page1 = new QLabel(tr("Welcome to the Registration Wizard.\n\n"
                         "You can register a new user here, or configure "
