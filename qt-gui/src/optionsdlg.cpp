@@ -42,6 +42,7 @@
 #include "userbox.h"
 #include "sar.h"
 #include "wharf.h"
+#include "skin.h"
 
 
 OptionsDlg::OptionsDlg(CMainWindow *_mainwin, QWidget *parent, char *name)
@@ -151,6 +152,8 @@ void OptionsDlg::SetupOptions()
   chkHeader->setChecked(mainwin->showHeader);
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
   chkAutoClose->setChecked(mainwin->autoClose);
+  chkTransparent->setChecked(mainwin->skin->frame.transparent);
+  edtFrameStyle->setText(QString::number((int)mainwin->skin->frame.frameStyle));
   chkUseDock->setChecked(mainwin->licqIcon != NULL);
   chkDockFortyEight->setChecked(mainwin->m_bDockIcon48);
   chkDockFortyEight->setEnabled(chkUseDock->isChecked());
@@ -276,6 +279,8 @@ void OptionsDlg::ApplyOptions()
   mainwin->showHeader = chkHeader->isChecked();
   mainwin->m_bShowDividers = chkShowDividers->isChecked();
   mainwin->autoClose = chkAutoClose->isChecked();
+  mainwin->skin->frame.transparent = chkTransparent->isChecked();
+  mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   if (chkUseDock->isChecked())
   {
     if (mainwin->licqIcon == NULL)
@@ -403,6 +408,17 @@ QWidget* OptionsDlg::new_appearance_options()
   chkAutoClose = new QCheckBox(tr("Auto Close Function Window"), boxUserWin);
   QWhatsThis::add(chkAutoClose, tr("Sets the default behavior for auto closing "
                                   "the user function window after a succesful event"));
+  chkTransparent = new QCheckBox(tr("Transparent when possible"), boxUserWin);
+  QWhatsThis::add(chkTransparent, tr("Make the user window transparent when there "
+                                     "is no scroll bar"));
+  lblFrameStyle = new QLabel(tr("Frame Style:"), boxUserWin);
+  edtFrameStyle = new QLineEdit(boxUserWin);
+  QWhatsThis::add(lblFrameStyle, tr("Override the skin setting for the frame "
+                                    "style of the user window:\n"
+                                    "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
+                                    " + 16 (Plain), 32 (Raised), 48 (Sunken)\n"
+                                    " + 240 (Shadow"));
+  edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
 
   boxDocking = new QGroupBox(1, Horizontal, tr("Docking"), w);
   chkUseDock = new QCheckBox(tr("Use Dock Icon"), boxDocking);
@@ -436,10 +452,10 @@ QWidget* OptionsDlg::new_appearance_options()
   lblLocale = new QLabel(tr("Locale:"), boxLocale);
   QWhatsThis::add(lblLocale, tr("Sets which locale should be used for "
                               "all messages."));
-  
+
   cmbTrans = new QComboBox(false, boxLocale);
   cmbLocale = new QComboBox(false, boxLocale);
-  
+
   QString szTransFilesDir;
   szTransFilesDir.sprintf("%s%s", SHARE_DIR, TRANSLATION_DIR);
   QDir dTrans(szTransFilesDir, QString::null, QDir::Name, QDir::Files | QDir::Readable);
@@ -463,9 +479,7 @@ QWidget* OptionsDlg::new_appearance_options()
 
   if (!dLocale.count())
   {
-    gLog.Error("%sError reading locale directory %s.\n",
-               L_ERRORxSTR, szLocaleFilesDir.latin1());
-    cmbLocale->insertItem(tr("ERROR"));
+    cmbLocale->insertItem(tr("NONE"));
     cmbLocale->setEnabled(false);
   }
   else
@@ -685,7 +699,7 @@ QWidget* OptionsDlg::new_status_options()
   connect(qpbSaveIt, SIGNAL(clicked()), this, SLOT(slot_SARsave_act()));
 
   QGroupBox* gbText = new QGroupBox(1, QGroupBox::Horizontal, gbStatus);
-  QLabel* lblcombo3 = new QLabel(tr("Text:"), gbText);
+  //QLabel* lblcombo3 = new QLabel(tr("Text:"), gbText);
   connect(cmbSARmsg, SIGNAL(activated(int)), this, SLOT(slot_SARmsg_act(int)));
 
   edtSARtext = new MLEditWrap(true, gbText);

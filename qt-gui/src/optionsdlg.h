@@ -42,11 +42,11 @@ protected:
    // appearance tab
    QWidget* new_appearance_options();
    QGroupBox *boxFont, *boxUserWin, *boxDocking, *boxLocale;
-   QLabel *lblFont;
-   QLineEdit *edtFont;
+   QLabel *lblFont, *lblFrameStyle;
+   QLineEdit *edtFont, *edtFrameStyle;
    QPushButton *btnFont;
    QCheckBox *chkGridLines, *chkHeader, *chkAutoClose, *chkShowDividers,
-             *chkFontStyles, *chkUseDock, *chkDockFortyEight;
+             *chkFontStyles, *chkUseDock, *chkDockFortyEight, *chkTransparent;
 
    // columns tab
    QWidget* new_column_options();
