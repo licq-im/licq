@@ -39,7 +39,7 @@ void InformUser(QWidget *q, QString sz)
 #ifdef USE_KDE
   KMessageBox::information(q, sz, "Licq Information", QString::null, false);
 #else
-  QMessageBox::information(q, "Licq Information", sz, Ok | Default);
+  QMessageBox::information(q, "Licq Information", sz, QMessageBox::Ok | QMessageBox::Default);
 #endif
 }
 
@@ -49,7 +49,7 @@ void WarnUser(QWidget *q, QString sz)
 #ifdef USE_KDE
   KMessageBox::sorry(q, sz, "Licq Warning", false);
 #else
-  QMessageBox::warning(q, "Licq Warning", sz, Ok | Default);
+  QMessageBox::warning(q, "Licq Warning", sz, QMessageBox::Ok | QMessageBox::Default);
 #endif
 }
 
@@ -59,7 +59,7 @@ void CriticalUser(QWidget *q, QString sz)
 #ifdef USE_KDE
   KMessageBox::error(q, sz, "Licq Error", false);
 #else
-  QMessageBox::warning(q, "Licq Error", sz, Ok | Default);
+  QMessageBox::warning(q, "Licq Error", sz, QMessageBox::Ok | QMessageBox::Default);
 #endif
 }
 
@@ -75,7 +75,7 @@ CELabel::CELabel(bool _bTransparent, QPopupMenu *m, QWidget *parent, char *name)
 
 void CELabel::polish()
 {
-/*
+
   if (!testWState(WState_Polished))
   {
     setWState(WState_Polished);
@@ -83,8 +83,7 @@ void CELabel::polish()
       extraData()->style->polish(this);
     else
       qApp->polish(this);
-  }*/
-  QLabel::polish();
+  }
 }
 
 
@@ -207,7 +206,6 @@ CEButton::~CEButton()
 
 void CEButton::polish()
 {
-/*
   if (!testWState(WState_Polished))
   {
     setWState(WState_Polished);
@@ -215,8 +213,7 @@ void CEButton::polish()
       extraData()->style->polish(this);
     else
       qApp->polish(this);
-  }*/
-  QPushButton::polish();
+  }
 }
 
 void CEButton::enterEvent (QEvent *)
