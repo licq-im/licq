@@ -183,7 +183,9 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   winUsers->SetActive(true);
 
   log = new CPluginLog;
-  gLog.AddService(new CLogService_Plugin(log, gLog.ServiceLogTypes(S_STDOUT)));
+  unsigned long lt = L_MOST;
+  if (gLog.ServiceLogTypes(S_STDOUT) & L_PACKET) lt |= L_PACKET;
+  gLog.AddService(new CLogService_Plugin(log, lt));
   gLog.ModifyService(S_STDOUT, L_NONE);
 
   winMain = winCon[1];

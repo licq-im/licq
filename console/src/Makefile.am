@@ -1,7 +1,7 @@
 #HACK, FIXME this in a clean manner
 libdir = $(prefix)/lib/licq/
 plugindir = $(libdir)
-licq_incdir = $(top_srcdir)/../../src/inc
+licq_incdir = @LICQ_INCLUDES@
 
 
 INCLUDES = -Wall -I$(srcdir) -I$(licq_incdir)
