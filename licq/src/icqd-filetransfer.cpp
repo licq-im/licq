@@ -423,6 +423,20 @@ bool CFileTransferManager::ProcessPacket()
       }
       b.UnpackChar();
       b.UnpackString(m_szFileName, sizeof(m_szFileName));
+
+      // Remove any preceeding path info from the filename for security
+      // reasons
+      char *pTmp, *pNoPath;
+      for (pTmp = m_szFileName + strlen(m_szFileName);
+           *pTmp != '/' && pTmp >= m_szFileName;
+           pTmp--);
+      if (pTmp >= m_szFileName && *pTmp == '/')
+      {
+        pNoPath = strdup(pTmp + 1);
+        strcpy(m_szFileName, pNoPath);
+        free(pNoPath);
+      }
+      
       b.UnpackUnsignedShort(); // 0 length string...?
       b.UnpackChar();
       m_nFileSize = b.UnpackUnsignedLong();
