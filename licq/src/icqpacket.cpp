@@ -2014,6 +2014,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
       gUserManager.UnlockGroupIDList();
+      gUserManager.DropUser(u);
 
       break;
     }
