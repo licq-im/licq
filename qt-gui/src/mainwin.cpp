@@ -1835,6 +1835,7 @@ void CMainWindow::callMsgFunction()
       }
 
       gUserManager.DropUser(u);
+      callFunction(mnuUserView, nUin);
     }
     else
       callFunction(mnuUserView, nUin);
@@ -3591,7 +3592,7 @@ void CMainWindow::slot_hints()
 
 // -----------------------------------------------------------------------------
 HintsDlg::HintsDlg(QString &hint)
-  : QDialog(0, "HintsDlg", false, WDestructiveClose)
+  : LicqDialog(0, "HintsDlg", false, WDestructiveClose)
 {
   setCaption(tr("Licq - Hints"));
 
