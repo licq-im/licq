@@ -1038,37 +1038,37 @@ msgid "CUserView::<br><nobr>Idle: "
 msgstr "<br><nobr>Untätig:"
 
 msgid "CUserView:: weeks"
-msgstr "wochen"
+msgstr " Wochen"
 
 msgid "CUserView:: week"
-msgstr "woche"
+msgstr " Woche"
 
 msgid "CUserView:: days"
-msgstr "tage"
+msgstr " Tage"
 
 msgid "CUserView:: day"
-msgstr "tag"
+msgstr " Tag"
 
 msgid "CUserView:: hours"
-msgstr "stunden"
+msgstr " Stunden"
 
 msgid "CUserView:: hour"
-msgstr "stunde"
+msgstr " Stunde"
 
 msgid "CUserView:: minutes"
-msgstr "minuten"
+msgstr " Minuten"
 
 msgid "CUserView:: minute"
-msgstr "minute"
+msgstr " Minute"
 
 msgid "CUserView::0 minutes"
-msgstr "0 minuten"
+msgstr "0 Minuten"
 
 msgid "CUserView::<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Available"
 msgstr "<br>&quot;Telefon&nbsp;folgen&quot;:&nbsp;verf&uuml;gbar"
 
 msgid "CUserView::<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Busy"
-msgstr "<br>;&quot;Telefon&nbsp;folgen&quot;:&nbsp;Besetzt"
+msgstr "<br>&quot;Telefon&nbsp;folgen&quot;:&nbsp;Besetzt"
 
 msgid "CUserView::<br>ICQphone:&nbsp;Available"
 msgstr "<br>ICQphone:&nbsp;Verf&uuml;gbar"
