@@ -245,7 +245,7 @@ bool ChatDlg::startAsClient()
   gUserManager.DropUser(u);
   char buf[128];
   gLog.Info("%sConnecting to %s:%d for chat.\n", L_TCPxSTR,
-            inet_ntoa_r(*(struct in_addr *)&nIp, buf), getPort());
+            ip_ntoa(nIp, buf), getPort());
   m_cSocketChat.SetRemoteAddr(nIp, getPort());
   if (!m_cSocketChat.OpenConnection())
   {

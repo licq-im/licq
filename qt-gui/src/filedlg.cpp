@@ -569,8 +569,8 @@ bool CFileDlg::startAsClient()
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   unsigned long nIp = u->Ip();
   gUserManager.DropUser(u);
-  gLog.Info("%sFile transfer - connecting to %ld:%d.\n", L_TCPxSTR,
-             inet_ntoa_r(*(struct in_addr *)&nIp, buf), getPort());
+  gLog.Info("%sFile transfer - connecting to %s:%d.\n", L_TCPxSTR,
+             ip_ntoa(nIp, buf), getPort());
    lblStatus->setText(tr("Connecting to remote..."));
    m_xSocketFile.SetRemoteAddr(nIp, getPort());
    if (!m_xSocketFile.OpenConnection())
