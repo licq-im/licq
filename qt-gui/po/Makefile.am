@@ -12,17 +12,18 @@ all-local:
           nt_test=`which test`; \
         fi ;\
 	for i in $(srcdir)/*.po; do \
-	  f=$(srcdir)/`basename $$i .po`; \
-          if test ! -r $$f.qm || $${nt_test} $$f.po -nt $$f.qm; then \
- 	    if test "$$f" != "$(srcdir)/template"; then \
-	      echo "$(QT_MSG2QM) $$f.po $$f.qm"; \
-	      $(QT_MSG2QM) $$f.po $$f.qm; \
+	  f=`basename $$i .po`; \
+          if test ! -r $(top_builddir)/po/$$f.qm || \
+	    $${nt_test} $(srcdir)/$$f.po -nt $(top_builddir)/po/$$f.qm; then \
+ 	    if test "$$f" != "template"; then \
+	      echo "$(QT_MSG2QM) $(srcdir)/$$f.po $(top_builddir)/po/$$f.qm"; \
+	      $(QT_MSG2QM) $(srcdir)/$$f.po $(top_builddir)/po/$$f.qm; \
             fi \
           fi \
         done
 
 clean-local:
-	-rm -f *.qm
+	-rm -f $(top_builddir)/po/*.qm
 
 merge: template
 	@for i in $(srcdir)/*.po; do \
@@ -33,7 +34,7 @@ merge: template
 
 install-data-local:
 	$(mkinstalldirs) $(localedir)
-	@cd $(srcdir) && for i in *.qm; do \
+	@for i in *.qm; do \
 	  if test "$$i" != "template.qm"; then \
 	    echo " $(INSTALL_DATA) $$i $(localedir)/$$i"; \
 	    $(INSTALL_DATA) $$i $(localedir)/$$i; \
@@ -43,5 +44,7 @@ install-data-local:
         cd $(localedir) && ln -sf cs_CZ.qm cs.qm
 
 template: 
-	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(top_srcdir)/po/template.po
+	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(top_builddir)/po/template.po
 
+uninstall-local:
+	-rm -f $(localedir)/*.qm
