@@ -483,7 +483,12 @@ bool CLicqGui::x11EventFilter(XEvent *e)
 //   QETWidget *widget = (QETWidget*)QWidget::find( (WId)e->xany.window );
 //   printf("event %d %d %d\n", e->type, widget, e->xany.window);
 
-  if ( e->type != KeyPress || !grabKeysym ) return QApplication::x11EventFilter(e);
+  if ( e->type != KeyPress || !grabKeysym ) 
+#ifdef USE_KDE
+      return KApplication::x11EventFilter(e);
+#else
+      return QApplication::x11EventFilter(e);
+#endif
 
   unsigned int mod = e->xkey.state & (ControlMask | ShiftMask | Mod1Mask);
   unsigned int keysym = XKeycodeToKeysym(qt_xdisplay(), e->xkey.keycode, 0);
