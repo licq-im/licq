@@ -312,45 +312,6 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
   m_pPacketBuf = 0;
 }
 
-char *CMSN::GetParamater(CMSNBuffer &packet)
-{
-  char cCheck;
-  std::string strParam;
-  packet >> cCheck;
-  
-  if (cCheck != ' ')
-  {
-    // Go back, there is no space to skip
-    packet.setDataPosRead(packet.getDataPosRead() - 1);
-  }
-  
-  while (cCheck != ' ' && !packet.End())
-  {
-    packet >> cCheck;
-    if (cCheck != ' ' && cCheck != '\r' && cCheck != '\n')
-      strParam += cCheck;
-  }
-  
-  return strdup(strParam.c_str());
-}
-
-void CMSN::SkipParamater(CMSNBuffer &packet)
-{
-  char cCheck;
-  packet >> cCheck;
-  
-  if (cCheck == ' ')
-  {
-    // Leading space to next paramater
-    while (cCheck == ' ' && !packet.End())
-      packet >> cCheck;
-  }
-  
-  // Now skip the paramater
-  while (cCheck != ' ' && !packet.End())
-    packet >> cCheck;
-}
-
 void CMSN::SendPacket(CMSNPacket *p)
 {
   INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);

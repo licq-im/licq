@@ -8,6 +8,7 @@
 #include "msnbuffer.h"
 
 #define MSN_PPID 0x4D534E5F
+#define L_MSNxSTR "[MSN] "
 
 class CMSNPacket;
 
@@ -24,8 +25,6 @@ private:
   void ProcessPipe();
   void ProcessServerPacket(CMSNBuffer &);
   void ProcessSSLServerPacket(CMSNBuffer &);
-  void SkipParamater(CMSNBuffer &);
-  char *GetParamater(CMSNBuffer &);
   
   // Network functions
   void SendPacket(CMSNPacket *);
