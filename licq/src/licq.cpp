@@ -71,7 +71,7 @@ bool CLicq::Init(int argc, char **argv)
   else
   {
     int i = 0;
-    while( (i = getopt(argc, argv, "hd:b:p:io:fc")) > 0)
+    while( (i = getopt(argc, argv, "hd:b:p:Io:fc")) > 0)
     {
       switch (i)
       {
@@ -89,7 +89,7 @@ bool CLicq::Init(int argc, char **argv)
       case 'c':  // use color
         bUseColor = false;
         break;
-      case 'i':  // force init
+      case 'I':  // force init
         bForceInit = true;
         break;
       case 'p':  // new plugin
@@ -553,7 +553,7 @@ void CLicq::PrintUsage()
          "      add values together for multiple options\n"
          " -c : disable color at standard output\n"
          " -b : set the base directory for the config and data files (~/.licq by default)\n"
-         " -i : force initialization of the given base directory\n"
+         " -I : force initialization of the given base directory\n"
          " -p : load the given plugin library\n"
          " -o : redirect stdout and stderr to <file>, which can be a device (ie /dev/ttyp4)\n",
          PACKAGE, VERSION);
