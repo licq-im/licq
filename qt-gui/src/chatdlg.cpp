@@ -855,8 +855,10 @@ QString ChatDlg::ChatClients()
 bool ChatDlg::slot_save()
 {
   QString t = QDateTime::currentDateTime().toString();
-  for ( unsigned l = 0; l < t.length(); ++l )
+  for ( unsigned l = 0; l < t.length(); ++l ) {
     if ( t[l] == ' ' ) t[l] = '-';
+    if ( t[l] == ':' ) t[l] = '-';
+  }
   QString n = tr("/%1.%2.chat")
     .arg(
       chatUser == NULL ?
