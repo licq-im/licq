@@ -1,17 +1,12 @@
 #ifndef AWAYMSG_H
 #define AWAYMSG_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <qdialog.h>
-
-#include "user.h"
-#include "mledit.h"
 
 class QPushButton;
 class QComboBox;
+
+class MLEditWrap;
 
 class AwayMsgDlg : public QDialog
 {
@@ -23,7 +18,6 @@ public:
 
 protected:
   MLEditWrap *mleAwayMsg;
-  QComboBox *cmbSAR;
   static int s_nX, s_nY;
   QPushButton* btnSelect;
   unsigned short m_nStatus;
@@ -32,7 +26,7 @@ protected:
 protected slots:
   void ok();
   void show();
-  void slot_SARSelected(int);
+  void slot_selectMessage();
 };
 
 

@@ -1,19 +1,38 @@
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
+/*
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+ 
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+ 
+    You should have received a copy of the GNU General Public License
+    along with this program; if not, write to the Free Software
+    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+ 
+*/
 
-#include <stdio.h>
-#include <qarray.h>
+// written by Graham Roff <graham@licq.org>
+// enhanced by Dirk A. Mueller <dmuell@gmx.net>
+// -----------------------------------------------------------------------------
+
 #include <qpushbutton.h>
-#include <qcombobox.h>
+#include <qpopupmenu.h>
 #include <qlayout.h>
 
 #include "awaymsgdlg.h"
-#include "sar.h"
 #include "log.h"
+#include "mledit.h"
+#include "sar.h"
+#include "user.h"
 
 int AwayMsgDlg::s_nX = 100;
 int AwayMsgDlg::s_nY = 100;
+
+// -----------------------------------------------------------------------------
 
 AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
     : QDialog(parent, name)
@@ -29,14 +48,10 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
 
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
 
-  /*btnSelect = new QPushButton(tr("&Select"), this);
-  // this doesn't work yet (Qt bug)
-  //btnSelect->setIsMenuButton(true);
-  connect(btnSelect, SIGNAL(clicked()), SLOT(selectMessage()));
-  l->addWidget(btnSelect);*/
-  cmbSAR = new QComboBox(this);
-  connect(cmbSAR, SIGNAL(activated(int)), this, SLOT(slot_SARSelected(int)));
-  l->addWidget(cmbSAR);
+  btnSelect = new QPushButton(tr("&Select"), this);
+//  btnSelect->setIsMenuButton(true);
+  connect(btnSelect, SIGNAL(clicked()), SLOT(slot_selectMessage()));
+  l->addWidget(btnSelect);
 
   l->addStretch(1);
   l->addSpacing(30);
@@ -51,6 +66,8 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent, const char *name)
   connect( cancel, SIGNAL(clicked()), SLOT(reject()) );
   l->addWidget(cancel);
 }
+
+// -----------------------------------------------------------------------------
 
 void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
 {
@@ -68,25 +85,6 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
                         .arg(s));
   gUserManager.DropOwner();
 
-  // Fill in the combo box
-  cmbSAR->clear();
-  switch (m_nStatus)
-  {
-  case ICQ_STATUS_AWAY: m_nSAR = SAR_AWAY; break;
-  case ICQ_STATUS_NA: m_nSAR = SAR_NA; break;
-  case ICQ_STATUS_OCCUPIED: m_nSAR = SAR_OCCUPIED; break;
-  case ICQ_STATUS_DND: m_nSAR = SAR_DND; break;
-  case ICQ_STATUS_FREEFORCHAT: m_nSAR = SAR_FFC; break;
-  default: m_nSAR = -1;
-  }
-  if (m_nSAR >= 0)
-  {
-    SARList &sar = gSARManager.Fetch(m_nSAR);
-    for (SARListIter i = sar.begin(); i != sar.end(); i++)
-      cmbSAR->insertItem((*i)->Name());
-    gSARManager.Drop();
-  }
-
   move(s_nX, s_nY);
   mleAwayMsg->setFocus();
   mleAwayMsg->selectAll();
@@ -94,15 +92,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   QDialog::show();
 }
 
-
-void AwayMsgDlg::slot_SARSelected(int n)
-{
-  if (m_nSAR < 0) return;
-  SARList &sar = gSARManager.Fetch(m_nSAR);
-  mleAwayMsg->setText(sar[n]->AutoResponse());
-  gSARManager.Drop();
-}
-
+// -----------------------------------------------------------------------------
 
 void AwayMsgDlg::show()
 {
@@ -113,6 +103,8 @@ void AwayMsgDlg::show()
   SelectAutoResponse(m_nStatus);
 }
 
+// -----------------------------------------------------------------------------
+
 void AwayMsgDlg::hide()
 {
   s_nX = x();
@@ -120,6 +112,7 @@ void AwayMsgDlg::hide()
   QDialog::hide();
 }
 
+// -----------------------------------------------------------------------------
 
 void AwayMsgDlg::ok()
 {
@@ -129,43 +122,54 @@ void AwayMsgDlg::ok()
   accept();
 }
 
-/*void AwayMsgDlg::selectMessage()
+// -----------------------------------------------------------------------------
+
+void AwayMsgDlg::slot_selectMessage()
 {
   QPopupMenu* menu = new QPopupMenu(this);
 
   int result = 0;
-  int offset = 0;
 
-  // Select auto response group
-  switch(status) {
-    case ICQ_STATUS_FREEFORCHAT: offset = 32; break;
-    case ICQ_STATUS_OCCUPIED:    offset = 16; break;
-    case ICQ_STATUS_DND:         offset = 24; break;
-    case ICQ_STATUS_NA:          offset =  8; break;
-    case ICQ_STATUS_AWAY:
-    default:                     offset =  0; break;
+  // Fill in the menu bar
+  switch (m_nStatus)
+  {
+
+  case ICQ_STATUS_NA: m_nSAR = SAR_NA; break;
+  case ICQ_STATUS_OCCUPIED: m_nSAR = SAR_OCCUPIED; break;
+  case ICQ_STATUS_DND: m_nSAR = SAR_DND; break;
+  case ICQ_STATUS_FREEFORCHAT: m_nSAR = SAR_FFC; break;
+  case ICQ_STATUS_AWAY:
+  default:
+    m_nSAR = SAR_AWAY;
   }
-
-  for(int i = 0; i<8; i++)
-      menu->insertItem(responseHeader[i+offset], i);
+  
+  if (m_nSAR >= 0) {
+    SARList &sar = gSARManager.Fetch(m_nSAR);
+    for (unsigned i = 0; i < sar.size(); i++)
+      menu->insertItem(sar[i]->Name(), i);
+    gSARManager.Drop();
+  }
 
   menu->insertSeparator();
   // as this is not yet implemented, give user feedback
   menu->setItemEnabled(menu->insertItem(tr("&Edit Items"), -2), false);
-
+  
   result = menu->exec(btnSelect->mapToGlobal(QPoint(0,btnSelect->height())));
 
   if(result == -2) {
     // todo: open options menu
   }
   else {
-    // (unsigned) -1 > 8 !
-    if ((unsigned) result < 8)
-      mleAwayMsg->setText(responseText[result+offset]);
+    SARList &sar = gSARManager.Fetch(m_nSAR);
+    if ((unsigned) result < sar.size()) 
+      mleAwayMsg->setText(sar[result]->AutoResponse());
+    
+    gSARManager.Drop();
   }
 
   delete menu;
 }
-*/
+
+// -----------------------------------------------------------------------------
 
 #include "moc/moc_awaymsgdlg.h"
