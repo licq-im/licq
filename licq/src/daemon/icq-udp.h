@@ -40,6 +40,15 @@ int CICQDaemon::ConnectToServer(void)
   gLog.Info("%sICQ server found at %s:%d.\n", L_UDPxSTR,
              s->RemoteIpStr(ipbuf), s->RemotePort());
 
+  gLog.Info("%sCreating local server.\n", L_UDPxSTR);
+  if (!s->StartServer(0))
+  {
+    char buf[128];
+    gLog.Warn("%sUnable to start udp server:\n%s%s.\n", L_ERRORxSTR,
+              L_BLANKxSTR, s->ErrorStr(buf, 128));
+    delete s;
+    return -1;
+  }
   gLog.Info("%sOpening socket to server.\n", L_UDPxSTR);
   if (!s->OpenConnection())
   {

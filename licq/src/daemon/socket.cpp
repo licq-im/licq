@@ -301,7 +301,8 @@ bool INetSocket::OpenConnection(void)
   // If no destination set then someone screwed up
   if(m_sRemoteAddr.sin_addr.s_addr == 0) return(false);
 
-  m_nDescriptor = socket(AF_INET, m_nSockType, 0);
+  if (m_nDescriptor < 0)
+    m_nDescriptor = socket(AF_INET, m_nSockType, 0);
   if (m_nDescriptor < 0)
   {
     // errno has been set
@@ -353,7 +354,8 @@ bool INetSocket::StartServer(unsigned int _nPort)
 
   if (!SetAddrsFromSocket(ADDR_LOCAL)) return (false);
 
-  listen(m_nDescriptor, 5); // Allow 5 unprocessed connections
+  if (m_nSockType == SOCK_STREAM)
+    listen(m_nDescriptor, 10); // Allow 10 unprocessed connections
   return(true);
 }
 
