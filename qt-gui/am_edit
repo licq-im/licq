@@ -295,10 +295,6 @@ sub processMakefile ($)
       }
     }
 
-    my $cvs_lines = "cvs-clean:\n";
-    $cvs_lines .= "\t\$(MAKE) -f \$(top_srcdir)/admin/Makefile.common cvs-clean\n";
-    appendLines($cvs_lines);
-
     $MakefileData =~ s/\$\(CXXFLAGS\)/\$\(CXXFLAGS\) \$\(KDE_CXXFLAGS\)/g;
 
     # Always update the Makefile.in

@@ -8,7 +8,7 @@ SUBDIRS = share src po
 
 EXTRA_DIST = doc
 
-cvs:
+cvs-clean:
 	@if test ! -d CVS; then \
           echo "you don't have a toplevel CVS directory."; \
           echo "You most certainly didn't use cvs to get these sources."; \
