@@ -830,13 +830,19 @@ void ICQUser::LoadLicqInfo()
   if (nNewMessages > 0)
   {
     HistoryList hist;
-    if (GetHistory(hist) && hist.size() >= nNewMessages)
+    if (GetHistory(hist))
     {
-      HistoryListIter it = hist.end();
-      while (nNewMessages > 0)
+      HistoryListIter it;
+      if (hist.size() < nNewMessages)
+        it = hist.begin();
+      else
       {
-        it--;
-        nNewMessages--;
+        it = hist.end();
+        while (nNewMessages > 0)
+        {
+          it--;
+          nNewMessages--;
+        }
       }
       while (it != hist.end())
       {
@@ -845,11 +851,13 @@ void ICQUser::LoadLicqInfo()
         it++;
       }
     }
+    /*
     else
     {
       m_vcMessages.push_back(new CEventSaved(nNewMessages));
       incNumUserEvents();
     }
+    */
     ClearHistory(hist);
   }
 }
