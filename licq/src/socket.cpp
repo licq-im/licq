@@ -172,6 +172,23 @@ char *INetSocket::RemoteIpStr(char *buf)
 }
 
 //-----INetSocket::SetOwner---------------------------------------------------
+void INetSocket::SetOwner(unsigned long _nOwner)
+{
+  m_nOwner = _nOwner;
+  if (_nOwner)
+  {
+    char szUin[24];
+    sprintf(szUin, "%lu", _nOwner);
+    m_szOwnerId = strdup(szUin);
+    m_nOwnerPPID = LICQ_PPID;
+  }
+  else
+  {
+    m_szOwnerId = 0;
+    m_nOwnerPPID = 0;
+  }
+}
+
 void INetSocket::SetOwner(const char *_szOwnerId, unsigned long _nOwnerPPID)
 {
   m_szOwnerId = strdup(_szOwnerId);
@@ -244,20 +261,9 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
 //-----INetSocket::constructor--------------------------------------------------
 INetSocket::INetSocket(unsigned long _nOwner)
 {
-  m_nOwner = _nOwner;
   m_nDescriptor = -1;
-  if (_nOwner)
-  {
-    char szUin[24];
-    sprintf(szUin, "%lu", _nOwner);
-    m_szOwnerId = strdup(szUin);
-    m_nOwnerPPID = LICQ_PPID;
-  }
-  else
-  {
-    m_szOwnerId = 0;
-    m_nOwnerPPID = 0;
-  }
+  SetOwner(_nOwner);
+
   m_nVersion = 0;
   m_nErrorType = SOCK_ERROR_none;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
@@ -787,6 +793,8 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
     free (m_szOwnerId);
   if (from.m_szOwnerId)
     m_szOwnerId = strdup(from.m_szOwnerId);
+  else
+    m_szOwnerId = 0;
   m_nOwnerPPID = from.m_nOwnerPPID;
 
   if (m_nOwnerPPID == LICQ_PPID)

@@ -49,7 +49,7 @@ public:
   unsigned long OwnerPPID() { return m_nOwnerPPID; }
   void SetOwner(const char *s, unsigned long n);
   unsigned long Owner()     { return (m_nOwner); }
-  void SetOwner(unsigned long _nOwner)  { m_nOwner = _nOwner; }
+  void SetOwner(unsigned long _nOwner);
   unsigned long Version()     { return (m_nVersion); }
   void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
 
