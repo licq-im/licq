@@ -1,4 +1,4 @@
-LICQ v1.2.6
+LICQ v1.3.0
 
 An ICQ clone written in C and C++ using a plugin system to allow for
 many possible interfaces.
@@ -62,17 +62,17 @@ Solaris/sparc
 
 CONFIGURATION:
 
-Configuration is done through the ~/.licq/licq.conf file, which contains .ini
-style options.  Help on each option is include in the file.  The contact
-list is stored in conf/users.conf.  Each users info is stored as a simple
-text file called {user uin}.uin.  Again, the options are pretty obvious.
-You can add/remove/edit a user inside the gui, or by editing the conf files.
+Configuration is done through the file ~/.licq/licq.conf, which contains .ini
+style options.  The contact list is stored in users.conf. 
+Each users info is stored as a simple text file called users/<uin>.Licq.
+Again, the options are pretty obvious. You can add/remove/edit a user inside 
+the gui, or by editing the conf files.
 
-The History file is the file where the user history is stored...you can
-specify a filename for each user, or you can put one of the following
-keywords:
-none : no history file
-default : makes the history file history/<uin>.history
+The History file is the file where the user history is stored...
+You can specify a filename for each user, or you can put one of the following
+keywords in users/<uin>.Licq:
+history = none      :keep no history file for this user
+history = default   :makes the history file history/<uin>.Licq.history
 
 
 USE:
@@ -102,7 +102,8 @@ TROUBLE-SHOOTING:
 
 1. RUNNING
 o  Segfault at startup.  If this occurs, run licq with the -d 15 switch and tell
-   me how far it gets before segfaulting and I'll try and help.
+   me how far it gets before segfaulting and I'll try and help. You can report
+   such problems to the mailinglist licq-devel@lists.sourceforge.net.
 
 Good luck.
 
