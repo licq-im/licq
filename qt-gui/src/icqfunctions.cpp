@@ -227,12 +227,6 @@ void ICQFunctions::CreateSendEventTab()
   edtSpoof = 0;
   chkSpoof = 0;
 #endif
-
-#if QT_VERSION < 210
-  QWidget* dummy_w3 = new QWidget(boxOptions);
-  dummy_w3->setMinimumHeight(2);
-#endif
-
   selay->activate();
 }
 
