@@ -31,7 +31,7 @@ const unsigned short CHAT_STATE_WAITxFORxFONT = 4;
 const unsigned short CHAT_STATE_CONNECTED = 5;
 
 
-//=====Chat=====================================================================
+//---Chat-----------------------------------------------------------------------
 void CPacketChat::InitBuffer()
 {
   buffer = new CBuffer(m_nSize);

@@ -24,15 +24,15 @@ CICQColor::CICQColor()
 }
 
 
-unsigned long CICQColor::ForeRed()   {  return foreground & 0xFF; }
-unsigned long CICQColor::ForeGreen() { return (foreground & 0xFF00) >> 8; }
+unsigned long CICQColor::ForeRed()   { return foreground & 0xFF; }
+unsigned long CICQColor::ForeGreen() { return ( foreground & 0xFF00) >> 8; }
 unsigned long CICQColor::ForeBlue()  { return ( foreground & 0xFF0000) >> 16; }
-unsigned long CICQColor::BackRed()   {  return background & 0xFF; }
-unsigned long CICQColor::BackGreen() { return (background & 0xFF00) >> 8; }
+unsigned long CICQColor::BackRed()   { return background & 0xFF; }
+unsigned long CICQColor::BackGreen() { return ( background & 0xFF00) >> 8; }
 unsigned long CICQColor::BackBlue()  { return ( background & 0xFF0000) >> 16; }
 
-unsigned long CICQColor::Foreground()  { return foreground; }
-unsigned long CICQColor::Background()  { return background; }
+unsigned long CICQColor::Foreground() { return foreground; }
+unsigned long CICQColor::Background() { return background; }
 
 
 void CICQColor::SetToDefault()

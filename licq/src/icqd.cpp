@@ -337,12 +337,13 @@ bool CICQDaemon::Start()
 }
 
 
-/*------------------------------------------------------------------------------
- * RegisterPlugin
+//---RegisterPlugin------------------------------------------------------------
+/*! \brief Registers current thread as new plugin
  *
- * Registers the current thread as a new plugin.  Returns the pipe to listen
- * on for notification.
- *----------------------------------------------------------------------------*/
+ * Registers the current thread as a new plugin. 
+ *
+ * \return Returns the pipe to listen on for notification.
+ */
 int CICQDaemon::RegisterPlugin(unsigned long nSignalMask)
 {
   PluginsListIter it;
@@ -369,11 +370,11 @@ int CICQDaemon::RegisterPlugin(unsigned long nSignalMask)
 }
 
 
-/*------------------------------------------------------------------------------
- * UnregisterPlugin
+//---UnregisterPlugin----------------------------------------------------------
+/*! \brief Unregisters current plugin thread
  *
  * Unregisters the current plugin thread.
- *----------------------------------------------------------------------------*/
+ */
 void CICQDaemon::UnregisterPlugin()
 {
   PluginsListIter iter;
@@ -393,11 +394,8 @@ void CICQDaemon::UnregisterPlugin()
 }
 
 
-/*------------------------------------------------------------------------------
- * PluginList
- *
- * Fetches the list of plugins.
- *----------------------------------------------------------------------------*/
+//---PluginList----------------------------------------------------------------
+/*! \brief Fetches the list of plugins */
 void CICQDaemon::PluginList(PluginsList &lPlugins)
 {
   lPlugins.erase(lPlugins.begin(), lPlugins.end());
@@ -407,11 +405,8 @@ void CICQDaemon::PluginList(PluginsList &lPlugins)
 }
 
 
-/*------------------------------------------------------------------------------
- * PluginShutdown
- *
- * Unloads the given plugin.
- *----------------------------------------------------------------------------*/
+//---PluginShutdown------------------------------------------------------------
+/*! \brief Unloads the given plugin */
 void CICQDaemon::PluginShutdown(int id)
 {
   PluginsListIter iter;
@@ -423,11 +418,8 @@ void CICQDaemon::PluginShutdown(int id)
   pthread_mutex_unlock(&licq->mutex_plugins);
 }
 
-/*------------------------------------------------------------------------------
- * PluginDisable
- *
- * Disables the given plugin.
- *----------------------------------------------------------------------------*/
+//---PluginDisablen------------------------------------------------------------
+/*! \brief Disables the given plugin. */
 void CICQDaemon::PluginDisable(int id)
 {
   PluginsListIter iter;
@@ -439,11 +431,8 @@ void CICQDaemon::PluginDisable(int id)
   pthread_mutex_unlock(&licq->mutex_plugins);
 }
 
-/*------------------------------------------------------------------------------
- * PluginEnable
- *
- * Enableds the given plugin.
- *----------------------------------------------------------------------------*/
+//---PluginEnable--------------------------------------------------------------
+/*! \brief Enables the given plugin. */
 void CICQDaemon::PluginEnable(int id)
 {
   PluginsListIter iter;
@@ -457,11 +446,11 @@ void CICQDaemon::PluginEnable(int id)
 
 
 
-/*------------------------------------------------------------------------------
- * PluginLoad
+//---PluginLoad----------------------------------------------------------------
+/*! \brief Loads the given plugin. 
  *
- * Loads the given plugin.
- *----------------------------------------------------------------------------*/
+ *  \return Returns true on success, else returns false.
+ */
 bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
 {
   optind = 0;
@@ -540,6 +529,8 @@ char *CICQDaemon::ProtoPluginName(unsigned long _nPPID)
 
 #endif
 
+//---Version-------------------------------------------------------------------
+/*! \brief Returns the version of Licq */
 const char *CICQDaemon::Version()
 {
   return licq->Version();
@@ -959,12 +950,14 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
 }
 #endif
 
-/*---------------------------------------------------------------------------
- * AddUserToList
+//---AddUserToList-------------------------------------------------------------
+/*! \brief Adds Uin to contact list
  *
- * Adds the given uin to the contact list.  Note that when this call returns
- * the user is not locked.
- *-------------------------------------------------------------------------*/
+ * Adds the given uin to the contact list.
+ *
+ * \return Returns true on success, else returns false. Please note that when 
+ * this call returns the user is not locked.
+ */
 bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
 {
   // Don't add invalid uins
@@ -991,13 +984,15 @@ bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
 }
 
 
-/*---------------------------------------------------------------------------
- * AddUserToList
+//---AddUserToList-------------------------------------------------------------
+/*! \brief Adds User to contact list
  *
- * Adds the given user to the contact list.  Note that when this call returns
- * the user is write locked and will need to be dropped.  When calling this
+ * Adds the given user to the contact list. NOTE: When this call returns the 
+ * user is write locked and will need to be dropped! When calling this 
  * function it is important that the user not be locked in any way.
- *-------------------------------------------------------------------------*/
+ *
+ * \return Returns true on success, else returns false.
+ */
 void CICQDaemon::AddUserToList(ICQUser *nu)
 {
   // Don't add a user we already have
@@ -1012,13 +1007,13 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
   SaveUserList();
 
   if (m_nTCPSrvSocketDesc != -1)
-	{
-		// XXX if adding to server list, it will get write lock FIX THAT SHIT!
-		unsigned long nUin = nu->Uin();
-		gUserManager.DropUser(nu);
-		icqAddUser(nUin);
-		nu = gUserManager.FetchUser(nUin, LOCK_W);
-	}
+  {
+    // XXX if adding to server list, it will get write lock FIX THAT SHIT!
+    unsigned long nUin = nu->Uin();
+    gUserManager.DropUser(nu);
+    icqAddUser(nUin);
+    nu = gUserManager.FetchUser(nUin, LOCK_W);
+  }
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->Uin()));
 }
@@ -1112,11 +1107,11 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
 }
 
 
-/*---------------------------------------------------------------------------
- * CheckBirthdays
+//---CheckBirthdays------------------------------------------------------------
+/*! \brief Sends a signal for each user whose birthday occurs in the next few days.
  *
- * Send a signal for each user whose birthday occurs in the next few days.
- *-------------------------------------------------------------------------*/
+ * This function is NOT IMPLEMENTED yet. Don't expect it to do anything usefull ;-P
+ */
 void CICQDaemon::CheckBirthdays(UinList &uins)
 {
   FOR_EACH_USER_START(LOCK_R)
@@ -1139,11 +1134,11 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
 #if 1
   ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, 0, NULL);
 
-	if (e == NULL)  return;
-
-	pthread_mutex_lock(&mutex_sendqueue_server);
-	m_lxSendQueue_Server.push_back(e);
-	pthread_mutex_unlock(&mutex_sendqueue_server);
+  if (e == NULL)  return;
+ 
+  pthread_mutex_lock(&mutex_sendqueue_server);
+  m_lxSendQueue_Server.push_back(e);
+  pthread_mutex_unlock(&mutex_sendqueue_server);
 
   e->m_NoAck = true;
   int nResult = pthread_create(&e->thread_send, NULL, &ProcessRunningEvent_Server_tep, e);
@@ -1172,7 +1167,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet
   if (ue != NULL) ue->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, nUin, ue);
 
-	if (e == NULL)  return NULL;
+  if (e == NULL)  return NULL;
 
   return SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
 }
@@ -1193,7 +1188,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
   ICQEvent *e = new ICQEvent(this, pUser->SocketDesc(), packet,
      CONNECT_USER, pUser->Uin(), ue);
 
-	if (e == NULL) return NULL;
+  if (e == NULL) return NULL;
 
   return SendExpectEvent(e, &ProcessRunningEvent_Client_tep);
 }
@@ -1252,16 +1247,18 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
 }
 
 
-/*------------------------------------------------------------------------------
- * CICQDaemon::SendEvent
+//---SendEvent-----------------------------------------------------------------
+/*! \brief Sends an event without expecting a reply
  *
  * Sends an event without expecting a reply, does not create an event
- * structure, and does not attempt a connection if the socket is invalid.
- * Can possibly block on send, but this is ok as it is never called from the
- * gui thread.
- * Note that the user who owns the given socket is probably read-locked at
+ * structure, and does not attempt a connection if the socket is invalid. 
+ * Can possibly block on send, but this is ok as it is never called from the 
+ * gui thread. 
+ * Note that the user who owns the given socket is probably read-locked at 
  * this point.
- *----------------------------------------------------------------------------*/
+ *
+ * \return Returns true on success, else returns false
+ */
 bool CICQDaemon::SendEvent(int nSD, CPacket &p, bool d)
 {
   INetSocket *s = gSocketManager.FetchSocket(nSD);
@@ -1280,11 +1277,8 @@ bool CICQDaemon::SendEvent(INetSocket *pSock, CPacket &p, bool d)
 }
 
 
-/*------------------------------------------------------------------------------
- * FailEvents
- *
- * Fails all events on the given socket.
- *----------------------------------------------------------------------------*/
+//---FailEvents----------------------------------------------------------------
+/*! \brief Fails all events on the given socket. */
 void CICQDaemon::FailEvents(int sd, int err)
 {
   // Go through all running events and fail all from this socket
@@ -1323,13 +1317,13 @@ void CICQDaemon::FailEvents(int sd, int err)
 }
 
 
-/*-----------------------------------------------------------------------------
- * DoneSrvEvent
+//---DoneSrvEvent--------------------------------------------------------------
+/*! \brief Marks the given event as done.
  *
- * Marks the given event as done and removes it from the running events list.
- * This is for new OSCAR server events.
+ * Marks the given event as done and removese it from the running events list. 
+ * This is for new OSCAR server events. 
  * Basically this is DoneEvent (2)
- *----------------------------------------------------------------------------*/
+ */
 ICQEvent *CICQDaemon::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
@@ -1361,11 +1355,11 @@ ICQEvent *CICQDaemon::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResu
   return(e);
 }
 
-/*------------------------------------------------------------------------------
- * DoneEvent
+//---DoneEvent-----------------------------------------------------------------
+/*! \brief Marks the given event as done.
  *
  * Marks the given event as done and removes it from the running events list.
- *----------------------------------------------------------------------------*/
+ */
 ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_runningevents);
