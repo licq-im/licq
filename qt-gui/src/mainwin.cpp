@@ -1173,9 +1173,15 @@ void CMainWindow::mousePressEvent(QMouseEvent *m)
    mouseY = m->y();
 }
 
+/*! \brief Drags the mainwindow around
+ *
+ * If the appropriate option is set (EnableMainwinMouseMovement = 1) 
+ * this drags the mainwindow around when moving the mouse and left 
+ * button is pressed.
+ */
 void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 {
-  if (m_bEnableMainwinMouseMovement && m->button() == LeftButton)
+  if (m_bEnableMainwinMouseMovement && (m->state() == Qt::LeftButton))
   {
     int deltaX = m->x() - mouseX;
     int deltaY = m->y() - mouseY;
