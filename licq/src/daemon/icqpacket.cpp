@@ -1360,7 +1360,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
     char *cus = gTranslator.NToRN(pUser->CustomAutoResponse());
     char *def = gTranslator.NToRN(o->AutoResponse());
     m_szMessage = (char *)malloc(strlen(cus) + strlen(def) + 60);
-    sprintf(m_szMessage, "%s\n--------------------\n%s", def, cus);
+    sprintf(m_szMessage, "%s\r\n--------------------\r\n%s", def, cus);
     free(cus);
     free(def);
   }
