@@ -1,4 +1,6 @@
 List of things to do and in progress for Licq:
+o  Server list storage/retrieval
+o  v7/v8 client communication
 
 Other Things:
 o  Have licq automatically detect the status of ppp0 and go online/offline

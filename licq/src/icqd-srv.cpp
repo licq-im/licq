@@ -1136,7 +1136,6 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       p = new CPU_GenericFamily(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REQUESTxRIGHTS);
       SendEvent_Server(p);
 
-      // Jon XXX This request does contain parameters
       gLog.Info("%sRequesting server contact list rights.\n", L_SRVxSTR);
       p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS);
       SendEvent_Server(p);
@@ -1431,7 +1430,6 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 //--------ProcessMessageFam------------------------------------------------
 void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 {
-  // DAW unknown..
   packet.UnpackUnsignedLongBE();
   packet.UnpackUnsignedShortBE();
 

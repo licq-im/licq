@@ -204,6 +204,13 @@ public:
   void PluginDisable(int);
   bool PluginLoad(const char *, int, char **);
 
+  void PluginUIViewEvent(unsigned long nUin) {
+  	PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, nUin, 0, 0));
+  }
+  void PluginUIMessage(unsigned long nUin ) {
+  	PushPluginSignal(new CICQSignal(SIGNAL_UI_MESSAGE,0,nUin, 0,0));
+  }
+
   void UpdateAllUsers();
   void UpdateAllUsersInGroup(GroupType, unsigned short);
   void SwitchServer();
