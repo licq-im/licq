@@ -30,14 +30,14 @@ extern int errno;
 #include "icq-threads.h"
 
 //-----CICQDaemon::constructor--------------------------------------------------
-CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
+CICQDaemon::CICQDaemon(CLicq *_licq)
 {
   char szFilename[MAX_FILENAME_LEN];
 
   licq = _licq;
 
   // Initialise the data values
-  m_nAllowUpdateUsers = 0;
+  m_nIgnoreTypes = 0;
   m_nUDPSocketDesc = -1;
   m_nTCPSocketDesc = -1;
   m_eStatus = STATUS_OFFLINE_MANUAL;
@@ -76,26 +76,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
 
   licqConf.ReadNum("TCPServerPort", m_nTcpServerPort, 0);
   licqConf.ReadNum("MaxUsersPerPacket", m_nMaxUsersPerPacket, 100);
-  licqConf.ReadBool("AllowNewUsers", m_bAllowNewUsers, true);
-
-  // Error log file
-  licqConf.ReadStr("Errors", szFilename, "log.errors");
-  if (strcmp(szFilename, "none") != 0)
-  {
-    m_szErrorFile = new char[256];
-    sprintf(m_szErrorFile, "%s/%s", BASE_DIR, szFilename);
-    CLogService_File *l = new CLogService_File(L_ERROR | L_UNKNOWN);
-    if (!l->SetLogFile(m_szErrorFile, "a"))
-    {
-      gLog.Error("%sUnable to open %s as error log:\n%s%s.\n",
-                  L_ERRORxSTR, m_szErrorFile, L_BLANKxSTR, strerror(errno));
-      delete l;
-    }
-    else
-      gLog.AddService(l);
-  }
-  else
-    m_szErrorFile = NULL;
+  licqConf.ReadNum("IgnoreTypes", m_nIgnoreTypes, 0);
 
   // Rejects log file
   licqConf.ReadStr("Rejects", szFilename, "log.rejects");
@@ -106,6 +87,22 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   }
   else
     m_szRejectFile = NULL;
+
+  // Error log file
+  licqConf.ReadStr("Errors", m_szErrorFile, "log.errors");
+  if (strcmp(m_szErrorFile, "none") != 0)
+  {
+    sprintf(szFilename, "%s/%s", BASE_DIR, m_szErrorFile);
+    CLogService_File *l = new CLogService_File(L_ERROR | L_UNKNOWN);
+    if (!l->SetLogFile(szFilename, "a"))
+    {
+      gLog.Error("%sUnable to open %s as error log:\n%s%s.\n",
+                  L_ERRORxSTR, szFilename, L_BLANKxSTR, strerror(errno));
+      delete l;
+    }
+    else
+      gLog.AddService(l);
+  }
 
   // Loading translation table from file
   licqConf.ReadStr("Translation", szFilename, "none");
@@ -150,7 +147,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
     delete [] szOnParams[i];
 
   icqServers.setServer(1);    // set the initial UDP remote server (opened in ConnectToServer)
-  for (unsigned short i = 0; i < 10; i++) m_vbTcpPorts[i] = false;
+  for (unsigned short i = 0; i < 10; i++) m_vbTcpPorts.push_back(false);
 
   // Pipes
   gLog.Info("%sCreating pipes.\n", L_INITxSTR);
@@ -161,10 +158,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
 
   // Start up our threads
   gLog.Info("%sInitializing thread data.\n", L_INITxSTR);
-  /*pthread_mutex_init(&mutex_pendingevents, NULL);
-  pthread_cond_init(&cond_pendingevents, NULL);
-  pthread_mutex_init(&mutex_doneevents, NULL);
-  pthread_cond_init(&cond_doneevents, NULL);*/
   pthread_mutex_init(&mutex_runningevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);
   pthread_mutex_init(&mutex_plugins, NULL);
@@ -240,20 +233,6 @@ bool CICQDaemon::Start(void)
     gLog.Error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
     return false;
   }
-  /*nResult = pthread_create(&thread_pendingevents , NULL, &ProcessPendingEvents_tep, this);
-  if (nResult != 0)
-  {
-    gLog.Error("%sUnable to start pending events thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
-    return EXIT_THREADxFAIL;
-  }
-  nResult = pthread_create(&thread_doneevents, NULL, &ProcessDoneEvents_tep, this);
-  if (nResult != 0)
-  {
-    gLog.Error("%sUnable to start done events thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
-    return EXIT_THREADxFAIL;
-  }*/
-
-  //gLog.Info("%sDaemon succesfully started.\n", L_INITxSTR);
   return true;
 }
 
@@ -267,10 +246,31 @@ bool CICQDaemon::Start(void)
 int CICQDaemon::RegisterPlugin(unsigned long _nSignalMask)
 {
   pthread_mutex_lock(&mutex_plugins);
-  m_vPlugins.push_back(new CPlugin(_nSignalMask));
-  int p = m_vPlugins[m_vPlugins.size() - 1]->Pipe();
+  CPlugin *p = new CPlugin(_nSignalMask);
+
+  PluginsListIter it;
+  for (it = licq->m_vPluginFunctions.begin();
+       it != licq->m_vPluginFunctions.end();
+       it++)
+  {
+    if (p->CompareThread((*it)->thread_plugin))
+    {
+      p->SetId((*it)->Id());
+      break;
+    }
+  }
+  if (it == licq->m_vPluginFunctions.end())
+  {
+    gLog.Error("%sInvalid thread in registration attempt.\n", L_ERRORxSTR);
+    pthread_mutex_unlock(&mutex_plugins);
+    delete p;
+    return -1;
+  }
+
+  m_vPlugins.push_back(p);
+  int n = p->Pipe();
   pthread_mutex_unlock(&mutex_plugins);
-  return p;
+  return n;
 }
 
 
@@ -296,6 +296,39 @@ void CICQDaemon::UnregisterPlugin(void)
 }
 
 
+/*------------------------------------------------------------------------------
+ * PluginList
+ *
+ * Fetches the list of plugins.
+ *----------------------------------------------------------------------------*/
+void CICQDaemon::PluginList(PluginsList &lPlugins)
+{
+  unsigned short nId;
+  vector<CPlugin *>::iterator iter;
+  PluginsListIter it;
+  lPlugins.clear();
+  pthread_mutex_lock(&mutex_plugins);
+  // Go through our list of registered plugins
+  for (iter = m_vPlugins.begin(); iter != m_vPlugins.end(); iter++)
+  {
+    nId = (*iter)->Id();
+    // Cross reference with the master list
+    for (it = licq->m_vPluginFunctions.begin();
+         it != licq->m_vPluginFunctions.end();
+         it++)
+    {
+      if (nId == (*it)->Id())
+      {
+        lPlugins.push_back(*it);
+        break;
+      }
+    }
+  }
+  pthread_mutex_unlock(&mutex_plugins);
+}
+
+
+
 const char *CICQDaemon::Version(void)
 {
   return licq->Version();
@@ -305,7 +338,6 @@ const char *CICQDaemon::Version(void)
 CICQDaemon::~CICQDaemon(void)
 {
   if (m_szUrlViewer != NULL) delete [] m_szUrlViewer;
-  if (m_szErrorFile != NULL) delete [] m_szErrorFile;
   if (m_szRejectFile != NULL) delete [] m_szRejectFile;
 }
 
@@ -333,7 +365,7 @@ void CICQDaemon::SaveConf(void)
   licqConf.WriteNum("DefaultServerPort", getDefaultRemotePort());
   licqConf.WriteNum("TCPServerPort", getTcpServerPort());
   licqConf.WriteNum("MaxUsersPerPacket", getMaxUsersPerPacket());
-  licqConf.WriteBool("AllowNewUsers", AllowNewUsers());
+  licqConf.WriteNum("IgnoreTypes", m_nIgnoreTypes);
 
   // Utility tab
   licqConf.WriteStr("UrlViewer", m_szUrlViewer);
@@ -344,14 +376,7 @@ void CICQDaemon::SaveConf(void)
     pc = gTranslator.getMapName();
   licqConf.WriteStr("Translation", pc);
   licqConf.WriteStr("Terminal", m_szTerminal);
-  if (m_szErrorFile == NULL)
-    licqConf.WriteStr("Errors", "none");
-  else
-  {
-    pc = strrchr(m_szErrorFile, '/');
-    pc++;
-    licqConf.WriteStr("Errors", pc);
-  }
+  licqConf.WriteStr("Errors", m_szErrorFile);
   if (m_szRejectFile == NULL)
     licqConf.WriteStr("Rejects", "none");
   else
@@ -431,6 +456,14 @@ void CICQDaemon::SaveUserList(void)
   fclose(usersConf);
 }
 
+void CICQDaemon::SetIgnore(unsigned short n, bool b)
+{
+  if (b)
+    m_nIgnoreTypes |= n;
+  else
+    m_nIgnoreTypes &= ~n;
+}
+
 
 //-----AddUserToList------------------------------------------------------------
 void CICQDaemon::AddUserToList(unsigned long _nUin)
@@ -501,7 +534,14 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 {
   if (u->User()) e->AddToHistory(u, D_RECEIVER);
   // Don't log a user event if this user is on the ignore list
-  if (u->IgnoreList()) return false;
+  if (u->IgnoreList() ||
+      (e->IsMultiRec() && Ignore(IGNORE_MASSMSG)) ||
+      (e->SubCommand() == ICQ_CMDxSUB_EMAILxPAGER && Ignore(IGNORE_EMAILPAGER)) ||
+      (e->SubCommand() == ICQ_CMDxSUB_WEBxPANEL && Ignore(IGNORE_WEBPANEL)) )
+  {
+    delete e;
+    return false;
+  }
   u->AddEvent(e);
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
                                   u->getUin()));
@@ -552,12 +592,6 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConn
 
   ICQEvent *e = new ICQEvent(this, _nSD, packet, _eConnect, _nDestinationUin, ue);
 
-  /*pthread_mutex_lock(&mutex_pendingevents);
-  m_lxPendingEvents.push_back(e);
-  pthread_mutex_unlock(&mutex_pendingevents);
-  DEBUG_THREADS("[SendExpectEvent] Throwing pending event.\n");
-  pthread_cond_signal(&cond_pendingevents);*/
-
   pthread_mutex_lock(&mutex_runningevents);
   m_lxRunningEvents.push_back(e);
   pthread_mutex_unlock(&mutex_runningevents);
@@ -588,7 +622,6 @@ ICQEvent *CICQDaemon::SendExpectEvent(int _nSD, CPacket *packet, EConnect _eConn
  *----------------------------------------------------------------------------*/
 void CICQDaemon::SendEvent(int _nSD, CPacket &p)
 {
-  //CBuffer buffer(p.getBuffer());
   INetSocket *s = gSocketManager.FetchSocket(_nSD);
   if (s == NULL) return;
   s->Send(p.getBuffer());
@@ -670,21 +703,7 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned long _nSequence, EEventResult
   return(e);
 }
 
-#if 0
-/*------------------------------------------------------------------------------
- * PushDoneEvent
- *
- * Takes the given event, moves it event into the done event queue,
- * signalling it's presence there.
- *----------------------------------------------------------------------------*/
-void CICQDaemon::PushDoneEvent(ICQEvent *e)
-{
-  pthread_mutex_lock(&mutex_doneevents);
-  m_qxDoneEvents.push_back(e);
-  pthread_mutex_unlock(&mutex_doneevents);
-  pthread_cond_signal(&cond_doneevents);
-}
-#endif
+
 /*------------------------------------------------------------------------------
  * ProcessDoneEvent
  *
@@ -699,7 +718,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   EEventResult eResult = e->m_eResult;
 
   // Write the event to the history file if appropriate
-  if (e->m_xUserEvent != NULL)
+  if (e->m_xUserEvent != NULL && e->m_eResult == EVENT_ACKED)
   {
     ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
     if (u != NULL)

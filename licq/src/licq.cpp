@@ -32,6 +32,7 @@ extern int errno;
 #include "utility.h"
 #include "support.h"
 #include "sar.h"
+#include "icqd.h"
 
 #include "licq.conf.h"
 
@@ -190,7 +191,7 @@ bool CLicq::Init(int argc, char **argv)
     if (!LoadPlugin(*iter, argc, argv)) return false;
     if (bHelp)
     {
-      (*(m_vPluginFunctions.back()).Usage)();
+      (*(m_vPluginFunctions.back())->fUsage)();
       m_vPluginFunctions.pop_back();
     }
   }
@@ -254,7 +255,7 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
 {
   void *handle;
   const char *error;
-  struct SPluginFunctions p;
+  CPluginFunctions *p = new CPluginFunctions;
   char szPlugin[MAX_FILENAME_LEN];
 
   // First check if the plugin is in the shared location
@@ -270,102 +271,111 @@ bool CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   if (handle == NULL)
   {
     gLog.Error("%sUnable to load plugin (%s): %s.\n ", L_ERRORxSTR, szPlugin, dlerror());
+    delete p;
     return false;
   }
 
   // LP_Name
-  p.Name = (const char * (*)(void))dlsym(handle, "LP_Name");
+  p->fName = (const char * (*)(void))dlsym(handle, "LP_Name");
   if ((error = dlerror()) != NULL)
   {
-    p.Name = (const char * (*)(void))dlsym(handle, "_LP_Name");
+    p->fName = (const char * (*)(void))dlsym(handle, "_LP_Name");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Name() function in plugin (%s).\n",
                  L_ERRORxSTR, _szName, error);
+      delete p;
       return false;
     }
   }
   // LP_Version
-  p.Version = (const char * (*)(void))dlsym(handle, "LP_Version");
+  p->fVersion = (const char * (*)(void))dlsym(handle, "LP_Version");
   if ((error = dlerror()) != NULL)
   {
-    p.Version = (const char * (*)(void))dlsym(handle, "_LP_Version");
+    p->fVersion = (const char * (*)(void))dlsym(handle, "_LP_Version");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Version() function in plugin (%s).\n",
-                 L_ERRORxSTR, (*p.Name)(), error);
+                 L_ERRORxSTR, p->Name(), error);
+      delete p;
       return false;
     }
   }
   // LP_Init
-  p.Init = (bool (*)(int, char **))dlsym(handle, "LP_Init");
+  p->fInit = (bool (*)(int, char **))dlsym(handle, "LP_Init");
   if ((error = dlerror()) != NULL)
   {
-    p.Init = (bool (*)(int, char **))dlsym(handle, "_LP_Init");
+    p->fInit = (bool (*)(int, char **))dlsym(handle, "_LP_Init");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Init() function in plugin (%s).\n",
-                 L_ERRORxSTR, (*p.Name)(), error);
+                 L_ERRORxSTR, p->Name(), error);
+      delete p;
       return false;
     }
   }
   // LP_Usage
-  p.Usage = (void (*)(void))dlsym(handle, "LP_Usage");
+  p->fUsage = (void (*)(void))dlsym(handle, "LP_Usage");
   if ((error = dlerror()) != NULL)
   {
-    p.Usage = (void (*)(void))dlsym(handle, "_LP_Usage");
+    p->fUsage = (void (*)(void))dlsym(handle, "_LP_Usage");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Usage() function in plugin (%s).\n",
-                 L_ERRORxSTR, (*p.Name)(), error);
+                 L_ERRORxSTR, p->Name(), error);
+      delete p;
       return false;
     }
   }
   // LP_Main
-  p.Main = (int (*)(CICQDaemon *))dlsym(handle, "LP_Main");
+  p->fMain = (int (*)(CICQDaemon *))dlsym(handle, "LP_Main");
   if ((error = dlerror()) != NULL)
   {
-    p.Main = (int (*)(CICQDaemon *))dlsym(handle, "_LP_Main");
+    p->fMain = (int (*)(CICQDaemon *))dlsym(handle, "_LP_Main");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Main() function in plugin (%s).\n",
-                 L_ERRORxSTR, (*p.Name)(), error);
+                 L_ERRORxSTR, p->Name(), error);
+      delete p;
       return false;
     }
   }
   // LP_Main_tep
-  p.Main_tep = (void * (*)(void *))dlsym(handle, "LP_Main_tep");
+  p->fMain_tep = (void * (*)(void *))dlsym(handle, "LP_Main_tep");
   if ((error = dlerror()) != NULL)
   {
-    p.Main_tep = (void * (*)(void *))dlsym(handle, "_LP_Main_tep");
+    p->fMain_tep = (void * (*)(void *))dlsym(handle, "_LP_Main_tep");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Main_tep() function in plugin (%s).\n",
-                 L_ERRORxSTR, (*p.Name)(), error);
+                 L_ERRORxSTR, p->Name(), error);
+      delete p;
       return false;
     }
   }
   // LP_Id
-  p.Id = (unsigned short *)dlsym(handle, "LP_Id");
+  p->nId = (unsigned short *)dlsym(handle, "LP_Id");
   if ((error = dlerror()) != NULL)
   {
-    p.Id = (unsigned short *)dlsym(handle, "_LP_Id");
+    p->nId = (unsigned short *)dlsym(handle, "_LP_Id");
     if ((error = dlerror()) != NULL)
     {
       gLog.Error("%sFailed to find LP_Id variable in plugin (%s).\n",
-                 L_ERRORxSTR, (*p.Name)(), error);
+                 L_ERRORxSTR, p->Name(), error);
+      delete p;
       return false;
     }
   }
 
-  if (!(*p.Init)(argc, argv))
+  if (!(*p->fInit)(argc, argv))
   {
-    gLog.Error("%sFailed to initialize plugin (%s).\n", L_ERRORxSTR, (*p.Name)());
+    gLog.Error("%sFailed to initialize plugin (%s).\n", L_ERRORxSTR, p->Name());
+    delete p;
     return false;
   }
 
-  *p.Id = m_nNextId++;
-  p.dl_handle = handle;
+  *p->nId = m_nNextId++;
+  p->dl_handle = handle;
   m_vPluginFunctions.push_back(p);
   return true;
 }
@@ -386,17 +396,17 @@ int CLicq::Main(void)
 
   // Run the plugins
   pthread_cond_init(&LP_IdSignal, NULL);
-  vector<struct SPluginFunctions>::iterator iter;
+  PluginsListIter iter;
   for (iter = m_vPluginFunctions.begin(); iter != m_vPluginFunctions.end(); iter++)
   {
-    gLog.Info("%sStarting plugin %s (version %s).\n", L_INITxSTR, (*(*iter).Name)(),
-              (*(*iter).Version)());
-    pthread_create( &(*iter).thread_plugin, NULL, (*iter).Main_tep, licqDaemon);
+    gLog.Info("%sStarting plugin %s (version %s).\n", L_INITxSTR, (*iter)->Name(),
+              (*iter)->Version());
+    pthread_create( &(*iter)->thread_plugin, NULL, (*iter)->fMain_tep, licqDaemon);
   }
 
   gLog.ModifyService(S_STDOUT, DEBUG_LEVEL);
 
-  unsigned short nId;
+  unsigned short nExitId;
   int *nPluginResult;
   bool bDaemonShutdown = false;
 
@@ -416,26 +426,26 @@ int CLicq::Main(void)
       else
         pthread_cond_wait(&LP_IdSignal, &LP_IdMutex);
     }
-    nId = LP_Ids.front();
+    nExitId = LP_Ids.front();
     LP_Ids.pop_front();
     pthread_mutex_unlock(&LP_IdMutex);
-    if (nId == 0)
+    if (nExitId == 0)
     {
       bDaemonShutdown = true;
       continue;
     }
 
     for (iter = m_vPluginFunctions.begin(); iter != m_vPluginFunctions.end(); iter++)
-      if (*(*iter).Id == nId) break;
+      if (*(*iter)->nId == nExitId) break;
 
     if (iter == m_vPluginFunctions.end())
     {
-      gLog.Error("%sInvalid plugin id (%d) in exit signal.\n", L_ERRORxSTR, nId);
+      gLog.Error("%sInvalid plugin id (%d) in exit signal.\n", L_ERRORxSTR, nExitId);
       continue;
     }
 
-    pthread_join((*iter).thread_plugin, (void **)&nPluginResult);
-    gLog.Info("%sPlugin %s exited with code %d.\n", L_ENDxSTR, (*(*iter).Name)(), *nPluginResult);
+    pthread_join((*iter)->thread_plugin, (void **)&nPluginResult);
+    gLog.Info("%sPlugin %s exited with code %d.\n", L_ENDxSTR, (*iter)->Name(), *nPluginResult);
     free (nPluginResult);
     // We should close the dynamic link but under linux this makes Qt crash
     //dlclose((*iter).dl_handle);
@@ -444,8 +454,8 @@ int CLicq::Main(void)
 
   for (iter = m_vPluginFunctions.begin(); iter != m_vPluginFunctions.end(); iter++)
   {
-    gLog.Info("%sPlugin %s failed to exit.\n", L_WARNxSTR, (*(*iter).Name)());
-    pthread_cancel( (*iter).thread_plugin);
+    gLog.Info("%sPlugin %s failed to exit.\n", L_WARNxSTR, (*iter)->Name());
+    pthread_cancel( (*iter)->thread_plugin);
   }
 
   pthread_t *t = licqDaemon->Shutdown();

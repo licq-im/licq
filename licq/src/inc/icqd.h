@@ -31,6 +31,38 @@ class CPacket;
 class CPacketTcp;
 class CLicq;
 
+class CPluginFunctions
+{
+public:
+  const char *Name(void)    { return (*fName)(); }
+  const char *Version(void) { return (*fVersion)(); }
+  unsigned short Id(void)   { return *nId; }
+
+protected:
+  const char *(*fName)(void);
+  const char *(*fVersion)(void);
+  void (*fUsage)(void);
+  bool (*fInit)(int, char **);
+  int (*fMain)(CICQDaemon *);
+  void *(*fMain_tep)(void *);
+  unsigned short *nId;
+
+  void *dl_handle;
+  pthread_t thread_plugin;
+
+friend class CLicq;
+friend class CICQDaemon;
+};
+
+typedef list<CPluginFunctions *> PluginsList;
+typedef list<CPluginFunctions *>::iterator PluginsListIter;
+
+const unsigned short IGNORE_MASSMSG    = 1;
+const unsigned short IGNORE_NEWUSERS   = 2;
+const unsigned short IGNORE_EMAILPAGER = 4;
+const unsigned short IGNORE_WEBPANEL   = 8;
+
+
 //=====CICQDaemon===============================================================
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
 
@@ -71,16 +103,19 @@ public:
                                 const char *, const char *_sAbout);
   unsigned short icqStartSearch(const char *, const char *, const char *, const char *);
   void icqLogoff(void);
-  void icqSetStatus(unsigned long newStatus);
-  void icqSendVisibleList(bool _bSendIfEmpty = false);
-  void icqSendInvisibleList(bool _bSendIfEmpty = false);
+  ICQEvent *icqSetStatus(unsigned long newStatus);
   void icqAuthorize(unsigned long uinToAuthorize);
   void icqAlertUser(unsigned long _nUin);
-  void icqRequestSystemMsg(void);
   void icqAddUser(unsigned long);
   void icqUpdateContactList(void);
+
   void icqPing(void);
   void icqRelogon(void);
+  void icqSendVisibleList(bool _bSendIfEmpty = false);
+  void icqSendInvisibleList(bool _bSendIfEmpty = false);
+  void icqRequestSystemMsg(void);
+
+  void PluginList(PluginsList &l);
 
   void UpdateAllUsers();
   void SwitchServer(void);
@@ -104,9 +139,8 @@ public:
   void setUrlViewer(const char *s);
   const char *Terminal(void);
   void SetTerminal(const char *s);
-  bool AllowNewUsers(void)      { return m_bAllowNewUsers; }
-  void SetAllowNewUsers(bool b) { m_bAllowNewUsers = b; }
-
+  bool Ignore(unsigned short n)      { return m_nIgnoreTypes & n; }
+  void SetIgnore(unsigned short, bool);
 
   COnEventManager *OnEventManager(void)  { return &m_xOnEventManager; }
   CICQSignal *PopPluginSignal(void);
@@ -115,6 +149,7 @@ public:
   ICQRemoteServers icqServers;
 
 protected:
+  CLicq *licq;
   vector<bool> m_vbTcpPorts;
   COnEventManager m_xOnEventManager;
   vector<CPlugin *> m_vPlugins;
@@ -122,40 +157,28 @@ protected:
   int pipe_newsocket[2], fifo_fd;
   FILE *fifo_fs;
   EDaemonStatus m_eStatus;
-  CLicq *licq;
 
-  // Events waiting to be started
-  /*list <ICQEvent *> m_lxPendingEvents;
-  pthread_mutex_t mutex_pendingevents;
-  pthread_cond_t cond_pendingevents;*/
-  // Events currently running
-  list <ICQEvent *> m_lxRunningEvents;
-  pthread_mutex_t mutex_runningevents;
-  // Events done, waiting to be processed
-  /*deque <ICQEvent *> m_qxDoneEvents;
-  pthread_mutex_t mutex_doneevents;
-  pthread_cond_t cond_doneevents;*/
-  // Extended events
-  list <ICQEvent *> m_lxExtendedEvents;
-  pthread_mutex_t mutex_extendedevents;
-  // Thread variables
-  pthread_t thread_monitorsockets,
-            thread_ping;
-            /*thread_pendingevents,
-            thread_doneevents;*/
-
-  unsigned long m_nDesiredStatus;
+  char *m_szUrlViewer,
+       *m_szTerminal,
+       *m_szRejectFile;
+  unsigned long m_nDesiredStatus,
+                m_nIgnoreTypes;
   unsigned short m_nAllowUpdateUsers,
                  m_nTcpServerPort,
                  m_nDefaultRemotePort,
                  m_nMaxUsersPerPacket;
+  char m_szErrorFile[64];
   int m_nUDPSocketDesc,
       m_nTCPSocketDesc;
-  bool m_bAllowNewUsers,
-       m_bShuttingDown;
+  bool m_bShuttingDown;
   time_t m_tLogonTime;
 
-  char *m_szUrlViewer, *m_szTerminal, *m_szRejectFile, *m_szErrorFile;
+  list <ICQEvent *> m_lxRunningEvents;
+  pthread_mutex_t mutex_runningevents;
+  list <ICQEvent *> m_lxExtendedEvents;
+  pthread_mutex_t mutex_extendedevents;
+  pthread_t thread_monitorsockets,
+            thread_ping;
 
   void ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
   void ChangeUserStatus(ICQUser *u, unsigned long s);
@@ -189,8 +212,6 @@ protected:
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);
   friend void *MonitorSockets_tep(void *p);
-  /*friend void *ProcessPendingEvents_tep(void *p);
-  friend void *ProcessDoneEvents_tep(void *p);*/
   friend void *ProcessRunningEvent_tep(void *p);
   friend void *Shutdown_tep(void *p);
 };

@@ -15,23 +15,23 @@ void CPlugin::PushSignal(CICQSignal *s)
   pthread_mutex_lock(&mutex_signals);
   m_lSignals.push_back(s);
   pthread_mutex_unlock(&mutex_signals);
-  write(pipe_plugin[PIPE_WRITE], "S", 1);  
+  write(pipe_plugin[PIPE_WRITE], "S", 1);
 }
 
-  
+
 void CPlugin::PushEvent(ICQEvent *e)
 {
   pthread_mutex_lock(&mutex_events);
   m_lEvents.push_back(e);
   pthread_mutex_unlock(&mutex_events);
-  write(pipe_plugin[PIPE_WRITE], "E", 1);  
+  write(pipe_plugin[PIPE_WRITE], "E", 1);
 }
 
 void CPlugin::Shutdown(void)
 {
   write(pipe_plugin[PIPE_WRITE], "X", 1);
 }
-  
+
 
 bool CPlugin::CompareThread(pthread_t t)
 {
@@ -53,7 +53,7 @@ CICQSignal *CPlugin::PopSignal(void)
     s = m_lSignals.front();
     m_lSignals.pop_front();
   }
-  pthread_mutex_unlock(&mutex_signals);  
+  pthread_mutex_unlock(&mutex_signals);
   return s;
 }
 
@@ -68,7 +68,7 @@ ICQEvent *CPlugin::PopEvent(void)
     e = m_lEvents.front();
     m_lEvents.pop_front();
   }
-  pthread_mutex_unlock(&mutex_events);  
+  pthread_mutex_unlock(&mutex_events);
   return e;
 }
 

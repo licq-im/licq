@@ -6,22 +6,8 @@
 #endif
 
 #include <pthread.h>
-
+#include <list.h>
 #include "icqd.h"
-
-struct SPluginFunctions
-{
-  const char *(*Name)(void);
-  const char *(*Version)(void);
-  void (*Usage)(void);
-  bool (*Init)(int, char **);
-  int (*Main)(CICQDaemon *);
-  void *(*Main_tep)(void *);
-  unsigned short *Id;
-
-  void *dl_handle;
-  pthread_t thread_plugin;
-};
 
 
 class CLicq
@@ -38,7 +24,9 @@ protected:
   bool Install(void);
   CICQDaemon *licqDaemon;
   unsigned short m_nNextId;
-  vector<struct SPluginFunctions> m_vPluginFunctions;
+  PluginsList m_vPluginFunctions;
+
+friend class CICQDaemon;
 };
 
 
