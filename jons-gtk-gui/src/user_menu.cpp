@@ -228,7 +228,7 @@ void url_send(GtkWidget *widget, struct send_url *url)
 		url->etag->e_tag =
 			icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
        	  	(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
-	  	ICQ_TCPxMSG_URGENT, uin);
+	  	ICQ_TCPxMSG_URGENT);
 	}
 
 	/* Send to contact list */
@@ -237,7 +237,7 @@ void url_send(GtkWidget *widget, struct send_url *url)
 		url->etag->e_tag = icq_daemon->icqSendUrl(url->user->Uin(),
 					url_to_send, desc,
 		(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
-					ICQ_TCPxMSG_LIST, uin);
+					ICQ_TCPxMSG_LIST);
 	}
 
 	else /* Just send it normally */
@@ -246,7 +246,7 @@ void url_send(GtkWidget *widget, struct send_url *url)
 					url_to_send, desc,
 					(!gtk_toggle_button_get_active(
 						GTK_TOGGLE_BUTTON(url->send_server))),
-					ICQ_TCPxMSG_NORMAL, uin);
+					ICQ_TCPxMSG_NORMAL);
 	}
 
 	strcpy(temp, "Sending URL ");

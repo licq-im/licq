@@ -315,7 +315,7 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	{ 
 	   c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
 	     (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
-	     ICQ_TCPxMSG_URGENT, uin);
+	     ICQ_TCPxMSG_URGENT);
 	}
 
 	/* Send to contact list */
@@ -323,14 +323,14 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 	{
 	  c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
              (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
-             ICQ_TCPxMSG_LIST, uin);
+             ICQ_TCPxMSG_LIST);
 	}
 
 	else /* Just send it normally */
 	{
 	  c->etag->e_tag = icq_daemon->icqSendMessage(c->user->Uin(), message,
              (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(c->send_server))),
-             ICQ_TCPxMSG_NORMAL, uin);
+             ICQ_TCPxMSG_NORMAL);
 	}
 
 	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress),
