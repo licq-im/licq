@@ -94,14 +94,14 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
            this, SLOT(updatedUser(CICQSignal *)));
 
-  btnMain3 = new QPushButton(tr("&Update"), this);
   btnMain4 = new QPushButton(tr("&Close"), this);
   connect(btnMain4, SIGNAL(clicked()), this, SLOT(close()));
 
   if (m_bOwner)
   {
     btnMain1 = new QPushButton(tr("&Save"), this);
-    btnMain2 = new QPushButton(tr("Retrieve"), this);
+    btnMain2 = new QPushButton(tr("&Retrieve"), this);
+    btnMain3 = new QPushButton(tr("S&end"), this);
     connect(btnMain1, SIGNAL(clicked()), this, SLOT(SaveSettings()));
     connect(btnMain2, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
     connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotUpdate()));
@@ -110,6 +110,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   {
     btnMain1 = new QPushButton(tr("&Menu"), this);
     btnMain2 = new QPushButton(tr("&Save"), this);
+    btnMain3 = new QPushButton(tr("&Update"), this);
     connect(btnMain1, SIGNAL(pressed()), this, SLOT(ShowUsermenu()));
     btnMain1->setPopup(gMainWindow->UserMenu());
     connect(btnMain2, SIGNAL(clicked()), this, SLOT(SaveSettings()));
@@ -198,14 +199,14 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
            this, SLOT(updatedUser(CICQSignal *)));
 
-  btnMain3 = new QPushButton(tr("&Update"), this);
   btnMain4 = new QPushButton(tr("&Close"), this);
   connect(btnMain4, SIGNAL(clicked()), this, SLOT(close()));
 
   if (m_bOwner)
   {
     btnMain1 = new QPushButton(tr("&Save"), this);
-    btnMain2 = new QPushButton(tr("Retrieve"), this);
+    btnMain2 = new QPushButton(tr("&Retrieve"), this);
+    btnMain3 = new QPushButton(tr("S&end"), this);
     connect(btnMain1, SIGNAL(clicked()), this, SLOT(SaveSettings()));
     connect(btnMain2, SIGNAL(clicked()), this, SLOT(slotRetrieve()));
     connect(btnMain3, SIGNAL(clicked()), this, SLOT(slotUpdate()));
@@ -214,6 +215,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   {
     btnMain1 = new QPushButton(tr("&Menu"), this);
     btnMain2 = new QPushButton(tr("&Save"), this);
+    btnMain3 = new QPushButton(tr("&Update"), this);
     connect(btnMain1, SIGNAL(pressed()), this, SLOT(ShowUsermenu()));
     btnMain1->setPopup(gMainWindow->UserMenu());
     connect(btnMain2, SIGNAL(clicked()), this, SLOT(SaveSettings()));
@@ -1416,9 +1418,9 @@ void UserInfoDlg::updateTab(const QString& txt)
   if (txt == tabList[GeneralInfo].label)
   {
     currentTab = GeneralInfo;
-    btnMain3->setText(tr("&Update"));
-    btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
     btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
+    btnMain2->setText(m_bOwner ? tr("&Retrieve") : tr("&Save"));
+    btnMain3->setText(m_bOwner ? tr("S&end") : tr("&Update"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
     btnMain1->setEnabled(true);
@@ -1427,9 +1429,9 @@ void UserInfoDlg::updateTab(const QString& txt)
   }
   else if (txt == tabList[MoreInfo].label)
   {
-    btnMain3->setText(tr("&Update"));
-    btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
     btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
+    btnMain2->setText(m_bOwner ? tr("&Retrieve") : tr("&Save"));
+    btnMain3->setText(m_bOwner ? tr("S&end") : tr("&Update"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
     btnMain1->setEnabled(true);
@@ -1439,9 +1441,9 @@ void UserInfoDlg::updateTab(const QString& txt)
   }
   else if (txt == tabList[WorkInfo].label)
   {
-    btnMain3->setText(tr("&Update"));
-    btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
     btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
+    btnMain2->setText(m_bOwner ? tr("&Retrieve") : tr("&Save"));
+    btnMain3->setText(m_bOwner ? tr("S&end") : tr("&Update"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
     btnMain1->setEnabled(true);
@@ -1451,9 +1453,9 @@ void UserInfoDlg::updateTab(const QString& txt)
   }
   else if (txt == tabList[AboutInfo].label)
   {
-    btnMain3->setText(tr("&Update"));
-    btnMain2->setText(m_bOwner ? tr("Retrieve") : tr("&Save"));
     btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
+    btnMain2->setText(m_bOwner ? tr("&Retrieve") : tr("&Save"));
+    btnMain3->setText(m_bOwner ? tr("S&end") : tr("&Update"));
     btnMain3->setEnabled(true);
     btnMain2->setEnabled(true);
     btnMain1->setEnabled(true);
