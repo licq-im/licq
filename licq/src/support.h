@@ -29,13 +29,8 @@ int Redirect(const char *);
 
 int strlen_safe(const char *);
 
-int scandir_r(const char *dir, struct dirent ***namelist,
-              int (*select)(const struct dirent *),
-#ifdef ALPHASORT_VOID
-              int (*compar)(const void *, const void *));
-#else
-              int (*compar)(const struct dirent *const *, const struct dirent *const *) );
-#endif
+int scandir_alpha_r(const char *dir, struct dirent ***namelist,
+              int (*select)(const struct dirent *));
 
 
 /* Cross-platform support functions */
@@ -49,11 +44,6 @@ char *strerror(int errnum);
 #endif
 
 int gethostbyname_r_portable(const char *, struct hostent *);
-
-#ifndef HAVE_ALPHASORT
-int alphasort(const void *a, const void *b);
-  /*const struct dirent **a, const struct dirent **b);*/
-#endif
 
 
 #ifdef __cplusplus

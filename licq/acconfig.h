@@ -11,9 +11,6 @@
 /* Undefine this if the fifo causes problems */
 #define USE_FIFO
 
-/* Undefine this if the compile complains about scandir_r and alphasort */
-#define ALPHASORT_VOID
-
 /* The name of the package we're compiling */
 #undef PACKAGE
 

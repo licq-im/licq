@@ -127,7 +127,7 @@ dlopen(NULL, RTLD_LAZY)
 ])
 
 
-AC_CHECK_FUNCS(alphasort inet_addr inet_aton mktime select scandir strdup strerror hstrerror readdir_r)
+AC_CHECK_FUNCS(inet_addr inet_aton mktime select strdup strerror hstrerror readdir_r)
 
 AC_CHECK_SOCKS5
 LICQ_CHECK_OPENSSL

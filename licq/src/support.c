@@ -53,6 +53,13 @@ int strlen_safe(const char *sz)
   return sz == NULL ? 0 : strlen(sz);
 }
 
+/*=====ALPHASORT==============================================================*/
+int my_alphasort(const void *a, const void *b)
+/*const struct dirent **a, const struct dirent **b)*/
+{
+  return strcmp( (*(struct dirent **)a)->d_name, (*(struct dirent **)b)->d_name );
+}
+
 
 
 /*------------------------------------------------------------------------------
@@ -63,13 +70,8 @@ int strlen_safe(const char *sz)
  * arg3 = specifier for which objects to pick (pointer to function)
  * arg4 = sorting function pointer to pass to qsort
  *----------------------------------------------------------------------------*/
-int scandir_r(char *dirname, struct dirent *(*namelist[]),
-              int (*select)(const struct dirent *),
-#ifdef ALPHASORT_VOID
-              int (*compar)(const void *, const void *) )
-#else
-              int (*compar)(const struct dirent *const *, const struct dirent *const *) )
-#endif
+int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
+              int (*select)(const struct dirent *))
 {
   DIR *dirp;
   struct dirent *result, *entry;
@@ -106,8 +108,7 @@ int scandir_r(char *dirname, struct dirent *(*namelist[]),
     }
   }
 
-  if (compar != NULL)
-    qsort((char *) &((*namelist)[0]), i, sizeof(struct dirent *), compar);
+  qsort((char *) &((*namelist)[0]), i, sizeof(struct dirent *), my_alphasort);
 
   return i;
 }
@@ -169,17 +170,6 @@ int gethostbyname_r_portable(const char *szHostName, struct hostent *h)
 }
 
 
-/*=====ALPHASORT==============================================================*/
-
-#ifndef HAVE_ALPHASORT
-
-int alphasort(const void *a, const void *b)
-/*const struct dirent **a, const struct dirent **b)*/
-{
-  return strcmp( (*(struct dirent **)a)->d_name, (*(struct dirent **)b)->d_name );
-}
-
-#endif /* HAVE_ALPHASORT */
 
 
 

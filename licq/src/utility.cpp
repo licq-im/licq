@@ -48,7 +48,7 @@ unsigned short CUtilityManager::LoadUtilities(const char *_szDir)
   struct dirent **namelist;
 
   gLog.Info("%sLoading utilities.\n", L_INITxSTR);
-  int n = scandir_r(_szDir, &namelist, SelectUtility, alphasort);
+  int n = scandir_alpha_r(_szDir, &namelist, SelectUtility);
   if (n < 0)
   {
     gLog.Error("%sError reading utility directory \"%s\":\n%s%s.\n", L_ERRORxSTR,
