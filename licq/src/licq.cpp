@@ -754,7 +754,8 @@ void CLicq::SaveLoadedPlugins()
 void CLicq::ShutdownPlugins()
 {
   // Save plugins
-  SaveLoadedPlugins();
+  if (list_plugins.size() > 0)
+    SaveLoadedPlugins();
 
   // Send shutdown signal to all the plugins
   PluginsListIter iter;
