@@ -2422,10 +2422,11 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[2]);  // last name
           gTranslator.ServerToClient (szFields[5]);  // comment
 
-          CEventAuthRequest *e = new CEventAuthRequest(nUin, szFields[0],
-						       szFields[1], szFields[2],
-						       szFields[3], szFields[5],
-                   ICQ_CMDxRCV_SYSxMSGxONLINE,
+          CEventAuthRequest *e = new CEventAuthRequest(szId, LICQ_PPID,
+                                                       szFields[0], szFields[1],
+						       szFields[2], szFields[3],
+						       szFields[5],
+                                                       ICQ_CMDxRCV_SYSxMSGxONLINE,
 						       nTimeSent, 0);
 
           delete [] szFields;
@@ -2439,7 +2440,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           // Translating string with Translation Table
           gTranslator.ServerToClient(szMessage);
 
-          CEventAuthRefused *e = new CEventAuthRefused(nUin, szMessage,
+          CEventAuthRefused *e = new CEventAuthRefused(szId, LICQ_PPID, szMessage,
 					  ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
           eEvent = e;
           break;
