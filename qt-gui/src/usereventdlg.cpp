@@ -60,6 +60,8 @@
 #include "sigman.h"
 #include "showawaymsgdlg.h"
 
+#include "xpm/history.xpm"
+#include "xpm/info.xpm"
 
 // -----------------------------------------------------------------------------
 
@@ -85,16 +87,19 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *layt = new QHBoxLayout(top_lay, 8);
   layt->addWidget(new QLabel(tr("Status:"), this));
   nfoStatus = new CInfoField(this, true);
+  nfoStatus->setMinimumWidth(nfoStatus->sizeHint().width()+70);
   layt->addWidget(nfoStatus);
   layt->addWidget(new QLabel(tr("Time:"), this));
   nfoTimezone = new CInfoField(this, true);
   layt->addWidget(nfoTimezone);
-  // these strings are not translated because they're replaced with an
-  // icon anyway
-  btnHistory = new QPushButton("Hist", this);
+  btnHistory = new QPushButton(this);
+  btnHistory->setPixmap(QPixmap(history_xpm));
+  QToolTip::add(btnHistory, tr("Show User History"));
   connect(btnHistory, SIGNAL(clicked()), this, SLOT(showHistory()));
   layt->addWidget(btnHistory);
-  btnInfo = new QPushButton("Info", this);
+  btnInfo = new QPushButton(this);
+  btnInfo->setPixmap(QPixmap(info_xpm));
+  QToolTip::add(btnInfo, tr("Show User Info"));
   connect(btnInfo, SIGNAL(clicked()), this, SLOT(showUserInfo()));
   layt->addWidget(btnInfo);
 
