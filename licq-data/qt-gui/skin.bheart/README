@@ -1,0 +1,15 @@
+BHeart skin, by [Sandman] & ^Mystic
+
+Instalacao:
+
+Copie o arquivo do skin para /usr/local/share/licq/qt-gui/ , descompacte:
+
+tar xfzvp skin.bheart.tar.gz
+
+Abra o licq, vah no Skin Browser e selecione o skin
+
+
+Se vc usar o licq 0.75 ou superior vah em options e ative a opcao
+"Transparent when possible", para usar background transparente
+
+
