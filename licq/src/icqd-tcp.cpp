@@ -1072,7 +1072,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   unsigned long nMask = E_DIRECT
                         | ((newCommand & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
                         | ((msgFlags & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0)
-                        | (u->Secure() ? E_ENCRYPTED : 0);
+                        | (pSock->Secure() ? E_ENCRYPTED : 0);
   newCommand &= ~ICQ_CMDxSUB_FxMULTIREC;
   bool bAccept = msgFlags & ICQ_TCPxMSG_URGENT || msgFlags & ICQ_TCPxMSG_LIST;
   // Flag as sent urgent as well if we are in occ or dnd and auto-accept is on
