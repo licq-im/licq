@@ -20,8 +20,8 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
 
   outputBox = new MLEditWrap(false, this);
   outputBox->setMinimumHeight(outputBox->frameWidth()*2
-                              + 10*outputBox->fontMetrics().lineSpacing());
-  outputBox->setMinimumWidth((outputBox->minimumHeight()*5)/2);
+                              + 16*outputBox->fontMetrics().lineSpacing());
+  outputBox->setMinimumWidth((outputBox->minimumHeight()*3)/2);
   outputBox->setReadOnly(true);
   top_lay->addWidget(outputBox);
 
