@@ -131,7 +131,19 @@ CUtilityDlg::~CUtilityDlg()
 void CUtilityDlg::slot_cancel()
 {
   if (m_bIntWin)
+  {
+    if (!m_bStdOutClosed)
+    {
+      mleOut->append("--- EOF ---");
+      disconnect(snOut, SIGNAL(activated(int)), this, SLOT(slot_stdout()));
+    }
+    if (!m_bStdErrClosed)
+    {
+      mleErr->append("--- EOF ---");
+      disconnect(snErr, SIGNAL(activated(int)), this, SLOT(slot_stderr()));
+    }
     CloseInternalWindow();
+  }
   else
     close();
 }
@@ -202,6 +214,7 @@ void CUtilityDlg::slot_run()
     intwin = new CUtilityInternalWindow;
     if (intwin->POpen(cmd.local8Bit().data()))
     {
+      m_bStdOutClosed = m_bStdErrClosed = false;
       snOut = new QSocketNotifier(fileno(intwin->StdOut()), QSocketNotifier::Read, this);
       connect(snOut, SIGNAL(activated(int)), SLOT(slot_stdout()));
       snErr = new QSocketNotifier(fileno(intwin->StdErr()), QSocketNotifier::Read, this);
@@ -230,13 +243,9 @@ void CUtilityDlg::slot_run()
 
 void CUtilityDlg::CloseInternalWindow()
 {
-  mleOut->append("--- EOF ---");
-  mleErr->append("--- EOF ---");
   m_bIntWin = false;
   lblUtility->setText(tr("Done:"));
   btnCancel->setText(tr("C&lose"));
-  disconnect(snOut, SIGNAL(activated(int)), this, SLOT(slot_stdout()));
-  disconnect(snErr, SIGNAL(activated(int)), this, SLOT(slot_stderr()));
   intwin->PClose();
 }
 
@@ -247,7 +256,10 @@ void CUtilityDlg::slot_stdout()
   char buf[1024];
   if (fgets(buf, 1024, intwin->StdOut()) == NULL)
   {
-    CloseInternalWindow();
+    m_bStdOutClosed = true;
+    disconnect(snOut, SIGNAL(activated(int)), this, SLOT(slot_stdout()));
+    mleOut->append("--- EOF ---");
+    if (m_bStdErrClosed) CloseInternalWindow();
     return;
   }
 
@@ -263,7 +275,10 @@ void CUtilityDlg::slot_stderr()
   char buf[1024];
   if (fgets(buf, 1024, intwin->StdErr()) == NULL)
   {
-    CloseInternalWindow();
+    m_bStdErrClosed = true;
+    disconnect(snErr, SIGNAL(activated(int)), this, SLOT(slot_stderr()));
+    mleErr->append("--- EOF ---");
+    if (m_bStdOutClosed) CloseInternalWindow();
     return;
   }
 

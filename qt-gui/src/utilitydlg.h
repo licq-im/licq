@@ -31,7 +31,7 @@ protected:
   CUtility *m_xUtility;
   CICQDaemon *server;
   unsigned long m_nUin;
-  bool m_bIntWin;
+  bool m_bIntWin, m_bStdOutClosed, m_bStdErrClosed;
   CUtilityInternalWindow *intwin;
 
   QLabel *lblUtility;
