@@ -106,45 +106,96 @@ void user_function(ICQEvent *event)
 
 	/* Have a status bar on the contact list for this to go to... */
 	if(c == NULL)
+	{
+		id = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_progress)
+						  , "prog");
+		check_other_event(event, status_progress, id);
 		return;
+	}
 	
-//	g_print("%d\n", c->e_tag->Equals(event));
+	/* Make sure we have the right event and event tag */
+	if( (c->e_tag == NULL && event != NULL) ||
+	    (c->e_tag != NULL && !c->e_tag->Equals(event)) )
+		return;
 
 	id = gtk_statusbar_get_context_id(GTK_STATUSBAR(c->progress), "prog");
 
 	if(event == NULL)
 	{
+		strcat(c->prog_buf, "error");
 		gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
-		gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, "Error");
+		gtk_statusbar_push(GTK_STATUSBAR(c->progress), id, c->prog_buf);
 	}
 
-	else
+	check_event(event, c->progress, id, c->prog_buf);
+}
+
+void check_event(ICQEvent *event, GtkWidget *widget,
+		 guint &id, gchar *p_buf)
+{
+	switch(event->m_eResult)
 	{
-		switch(event->m_eResult)
+	case EVENT_ACKED:
+	case EVENT_SUCCESS:
+		strcat(p_buf, "done");
+		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
+		gtk_statusbar_push(GTK_STATUSBAR(widget), id,
+				   p_buf);	
+		break;
+	case EVENT_FAILED:
+		strcat(p_buf, "failed");
+		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
+		gtk_statusbar_push(GTK_STATUSBAR(widget), id,
+				   p_buf);
+		break;
+	case EVENT_TIMEDOUT:
+		strcat(p_buf, "timed out");
+		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
+		gtk_statusbar_push(GTK_STATUSBAR(widget), id,
+				   p_buf);
+		break;
+	case EVENT_ERROR:
+		strcat(p_buf, "error");
+		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
+		gtk_statusbar_push(GTK_STATUSBAR(widget), id,
+				   p_buf);
+		break;
+	default:
+		break;
+	}
+}
+
+void check_other_event(ICQEvent *event, GtkWidget *widget, guint &id)
+{
+	struct main_progress *mp;
+	GList *mpl = m_prog_list;
+	guint flag = 0;
+
+	while(mpl)
+	{
+		mp = (struct main_progress *)mpl->data;
+		
+		if(! ((mp->e_tag == NULL && event != NULL) ||
+		      (mp->e_tag != NULL && !mp->e_tag->Equals(event))) )
 		{
-		case EVENT_ACKED:
-		case EVENT_SUCCESS:
-			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
-			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
-					   "Done");	
-			break;
-		case EVENT_FAILED:
-			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
-			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
-					   "Failed");
-			break;
-		case EVENT_TIMEDOUT:
-			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
-			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
-					   "Timed Out");
-			break;
-		case EVENT_ERROR:
-			gtk_statusbar_pop(GTK_STATUSBAR(c->progress), id);
-			gtk_statusbar_push(GTK_STATUSBAR(c->progress), id,
-					   "Error");
-			break;
-		default:
+			flag = 1;
 			break;
 		}
+
+		mpl = mpl->next;
+	}	
+	
+	if(flag == 0)
+		return;
+
+	if(event == NULL)
+	{
+		strcat(mp->buffer, "error");
+		gtk_statusbar_pop(GTK_STATUSBAR(widget), id);
+		gtk_statusbar_push(GTK_STATUSBAR(widget), id, mp->buffer);
 	}
-} 
+
+	check_event(event, widget, id, mp->buffer);
+
+	m_prog_list = g_list_remove(m_prog_list, mp);
+}

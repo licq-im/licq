@@ -137,6 +137,8 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 
 void url_send(GtkWidget *widget, struct send_url *url)
 {
+	struct main_progress *m_prog = g_new0(main_progress, 1);
+
 	const char *url_to_send = gtk_entry_get_text(GTK_ENTRY(url->entry_u));
 	const char *desc = gtk_entry_get_text(GTK_ENTRY(url->entry_d));
 	gulong uin = 0;
@@ -146,10 +148,27 @@ void url_send(GtkWidget *widget, struct send_url *url)
 		uin = atol((const char *)gtk_editable_get_chars(GTK_EDITABLE(url->spoof_uin), 0, -1));
 	}
 
-	CICQEventTag *tag =
-	icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
+	m_prog->e_tag =
+		icq_daemon->icqSendUrl(url->user->Uin(), url_to_send, desc,
        	  (!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server))),
 	  FALSE, uin);
+
+	gchar *temp = g_strdup_printf("URL -> %s ", url->user->GetAlias());
+	
+	strcpy(m_prog->buffer, temp);
+	
+	if(!gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(url->send_server)))
+		strcat(m_prog->buffer, "(direct) .. ");
+	else
+		strcat(m_prog->buffer, "(server) .. ");
+
+	/* Add it to the GList */
+	m_prog_list = g_list_append(m_prog_list, m_prog);
+
+	guint id = gtk_statusbar_get_context_id(GTK_STATUSBAR(status_progress),
+						"main_prog");
+	gtk_statusbar_pop(GTK_STATUSBAR(status_progress), id);
+	gtk_statusbar_push(GTK_STATUSBAR(status_progress), id, m_prog->buffer);
 }
 
 void url_spoof_button_callback(GtkWidget *widget, struct send_url *url)

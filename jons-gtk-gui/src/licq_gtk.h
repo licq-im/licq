@@ -8,10 +8,10 @@
 #include <gtk/gtk.h>
 
 #define NAME		"GTK Plugin"
-#define PLUGIN_VERSION	"0.1"
+#define PLUGIN_VERSION	"0.10"
 #define STATUS		"Running"
 #define USAGE		"None yet"
-#define DESCRIPTION	"GTK plugin for licq 0.75"
+#define DESCRIPTION	"GTK+ plugin for licq 0.75"
 
 /********** Structures ******************/
 
@@ -24,6 +24,7 @@ struct conversation
 	GtkWidget *spoof_button;
 	GtkWidget *spoof_uin;
 	GtkWidget *progress;
+	gchar prog_buf[60];
 	ICQUser *user;
 	CICQEventTag *e_tag;
 };
@@ -82,6 +83,12 @@ struct system_window
 	GtkWidget *text;
 };
 
+struct main_progress
+{
+	CICQEventTag *e_tag;
+	gchar buffer[55];
+};
+
 
 /******************* Global Variables ******************/
 
@@ -108,6 +115,9 @@ extern gint _pipe;
 /* Globals in main_window.cpp */
 extern GtkWidget *vertical_box;
 extern GtkWidget *contact_list;
+extern GtkWidget *status_progress;
+extern GList *m_prog_list;
+
 
 /* Globals in menu.cpp */
 extern GtkWidget *menu;
@@ -166,6 +176,8 @@ extern void do_colors();
 extern void do_pixmaps();
 extern void verify_numbers(GtkEditable *, gchar *, gint, gint *, gpointer);
 extern void user_function(ICQEvent *);
+extern void check_event(ICQEvent *, GtkWidget *, guint &, gchar *);
+extern void check_other_event(ICQEvent *, GtkWidget *, guint &);
 
 
 /* Functions in main_window.cpp */
