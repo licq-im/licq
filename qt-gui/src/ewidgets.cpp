@@ -3,7 +3,7 @@
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
-
+#include <assert.h>
 #include <stdio.h>
 #include <qpixmap.h>
 #include <qpainter.h>
@@ -461,31 +461,26 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, QWidget* parent=0, c
 {
   m_nUin= _nUin;
   // add all unread messages.
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-  if (u != NULL && u->NewMessages() > 0)
-  {
-    addMsg(u->EventPeek(0));
-    for (unsigned short i = 1; i < u->NewMessages(); i++)
-    {
-      addMsg(u->EventPeek(i));
-    }
-  }
-  gUserManager.DropUser(u);
+//   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
+//   if (u != NULL && u->NewMessages() > 0)
+//   {
+//     addMsg(u->EventPeek(0));
+//     for (unsigned short i = 1; i < u->NewMessages(); i++)
+//     {
+//       addMsg(u->EventPeek(i));
+//     }
+//   }
+//   gUserManager.DropUser(u);
 }
 
-void CMessageViewWidget::addMsg(ICQEvent * e)
+void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
-  cout << "addMsg(ICQEvent for " << e->Uin() << ") looking for: " << m_nUin << endl;
-  if (e->Uin() != m_nUin) return;
-  CUserEvent * ue = e->UserEvent();
-  if (ue->SubCommand()== ICQ_CMDxSUB_MSG){
-    ue = e->GrabUserEvent();
-  }
-  //grab only events we can fully handle
-  addMsg(ue);
+  assert( _e->Uin() == m_nUin );
+
+  addMsg( _e->UserEvent() );
 }
 
-void CMessageViewWidget::addMsg(CUserEvent * e)
+void CMessageViewWidget::addMsg(CUserEvent* e )
 {
   QDateTime date;
   date.setTime_t(e->Time());
@@ -502,15 +497,15 @@ void CMessageViewWidget::addMsg(CUserEvent * e)
 
   QString s;
   if (e->Direction() == D_RECEIVER){
-    s.sprintf("%c%s %s %s %c %s [%c%c%c%c]\n%s\n",
-              '\001', EventDescription(e).utf8().data(),
+    s.sprintf("\001%s %s %s %c %s [%c%c%c%c]\n%s\n",
+              EventDescription(e).utf8().data(),
               tr("from").utf8().data(), n.utf8().data(), '\001',
               date.toString().utf8().data(),
               e->IsDirect() ? 'D' : '-',
               e->IsMultiRec() ? 'M' : '-',
               e->IsUrgent() ? 'U' : '-',
               e->IsEncrypted() ? 'E' : '-',
-              (QString::fromLocal8Bit(e->Text())).utf8().data());
+              QString::fromLocal8Bit(e->Text()).utf8().data());
   } else {
     s.sprintf("%c%s %s %s\n%c%s [%c%c%c%c]\n%s\n",
               '\002', EventDescription(e).utf8().data(),
@@ -520,18 +515,14 @@ void CMessageViewWidget::addMsg(CUserEvent * e)
               e->IsMultiRec() ? 'M' : '-',
               e->IsUrgent() ? 'U' : '-',
               e->IsEncrypted() ? 'E' : '-',
-              (QString::fromLocal8Bit(e->Text())).utf8().data());
+              QString::fromLocal8Bit(e->Text()).utf8().data());
   }
   append(s);
   setCursorPosition(numLines(),0);
 
   if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG){
-    cout << "Direction: Receiver" << endl;
-    u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    if (u){
-      cout << "clear eventid" << endl;
-      u->EventClearId(e->Id());
-    }
+    u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    if (u)  u->EventClearId(e->Id());
     gUserManager.DropUser(u);
   }
 }

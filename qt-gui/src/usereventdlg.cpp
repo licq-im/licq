@@ -1150,7 +1150,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     emit autoCloseNotify();
     if (sendDone(e))
     {
-      emit(mainwin->signal_sentevent(e));
+      emit mainwin->signal_sentevent(e);
 
       if (mainwin->m_bMsgChatView) {
         mleSend->clear();

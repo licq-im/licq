@@ -49,6 +49,7 @@ class UserInfoDlg;
 
 typedef QList<UserViewEvent> UserViewEventList;
 typedef QList<UserInfoDlg> UserInfoList;
+typedef QList<UserSendCommon> UserSendEventList;
 
 //=====CMainWindow==============================================================
 class CMainWindow : public QWidget
@@ -123,6 +124,7 @@ public:
 #endif
   UserViewEventList licqUserView;
   UserInfoList licqUserInfo;
+  UserSendEventList licqUserSend;
 
   // Dialog boxes
   AwayMsgDlg *awayMsgDlg;
@@ -226,6 +228,7 @@ protected slots:
   void callUrlFunction (const char *);
   void callUserFunction(int);
   void slot_userfinished(unsigned long);
+  void slot_sendfinished(unsigned long);
   void slot_usermenu();
   void slot_logon();
   void slot_register();

@@ -1208,6 +1208,20 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
           }
         }
       }
+      {
+        // if their send box is open, kill it
+        QListIterator<UserSendCommon> it(licqUserSend);
+        for(; it.current() != NULL; ++it)
+        {
+          if((*it)->Uin() == sig->Uin())
+          {
+            delete it.current();
+            licqUserSend.remove(it.current());
+            break;
+          }
+        }
+      }
+
       break;
     }
 
@@ -1813,6 +1827,56 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
       QListIterator<UserViewEvent> it(licqUserView);
 
       for (; it.current(); ++it)
+        if ((*it)->Uin() == nUin) {
+          e = *it;
+          e->show();
+          if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+          {
+            e->raise();
+#ifdef USE_KDE
+            KWin::setActiveWindow(e->winId());
+#endif
+          }
+          return e;
+        }
+    }
+    break;
+    case mnuUserSendMsg:
+    case mnuUserSendUrl:
+    case mnuUserSendChat:
+    case mnuUserSendFile:
+    case mnuUserSendContact:
+    {
+        QListIterator<UserSendCommon> it(licqUserSend );
+
+        if ( !m_bMsgChatView ) break;
+
+        for (; it.current(); ++it)
+          if ((*it)->Uin() == nUin)
+          {
+            e = *it;
+            e->show();
+            if(!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
+            {
+              e->raise();
+#ifdef USE_KDE
+              KWin::setActiveWindow(e->winId());
+#endif
+            }
+            return e;
+          }
+    }
+  default:
+    break;
+  }
+
+  switch (fcn)
+  {
+    case mnuUserView:
+    {
+      QListIterator<UserViewEvent> it(licqUserView);
+
+      for (; it.current(); ++it)
       {
         if ((*it)->Uin() == nUin)
         {
@@ -1868,8 +1932,12 @@ UserEventCommon *CMainWindow::callFunction(int fcn, unsigned long nUin)
     default:
       gLog.Warn("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
   }
-  if(e != NULL)
+  if(e) {
     e->show();
+    connect( e, SIGNAL( finished( unsigned long ) ), this, SLOT( slot_sendfinished( unsigned long ) ) );
+    licqUserSend.append(static_cast<UserSendCommon*>(e));
+  }
+
   return e;
 }
 
@@ -1908,6 +1976,15 @@ void CMainWindow::slot_userfinished(unsigned long nUin)
   }
   gLog.Warn("%sUser finished signal for user with no window (%ld)!",
             L_WARNxSTR, nUin);
+}
+
+void CMainWindow::slot_sendfinished(unsigned long nUin)
+{
+  QListIterator<UserSendCommon> it(licqUserSend);
+
+  for ( ; it.current(); ++it)
+    if ((*it)->Uin() == nUin)
+      licqUserSend.remove(*it);
 }
 
 
