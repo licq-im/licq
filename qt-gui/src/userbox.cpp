@@ -585,9 +585,9 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   }
   else
   {
-    XSetWindowAttributes wsa;
+    /*XSetWindowAttributes wsa;
     wsa.override_redirect = TRUE;
-    XChangeWindowAttributes( x11Display(), winId(), CWOverrideRedirect, &wsa );
+    XChangeWindowAttributes( x11Display(), winId(), CWOverrideRedirect, &wsa );*/
     setWFlags(getWFlags() | WDestructiveClose);
     setShowHeader(false);
     setFrameStyle(33);
