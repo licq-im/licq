@@ -524,6 +524,7 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
   m_nPPID = nPPID;
   mainwin = m;
 
+/*
   // add all unread messages.
   vector<CUserEvent*> newEventList;
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
@@ -539,6 +540,7 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
   gUserManager.DropUser(u);
   for (unsigned short i = 0; i < newEventList.size(); i++)
     addMsg(newEventList[i]);
+*/
 }
 
 CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWidget* parent, const char * name)

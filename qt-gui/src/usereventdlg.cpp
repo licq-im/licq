@@ -1379,25 +1379,17 @@ void UserViewEvent::UserUpdated(CICQSignal *sig, ICQUser *u)
 {
   if (sig->SubSignal() == USER_EVENTS)
   {
-    CUserEvent* e = NULL;
-
     if (sig->Argument() > 0)
     {
       int eventId = sig->Argument();
+      CUserEvent *e = u->EventPeekId(eventId);
       // Making sure we didn't handle this message already.
-      if (m_highestEventId < eventId)
+      if (e != NULL && m_highestEventId < eventId &&
+          (!mainwin->m_bMsgChatView || e->SubCommand() != ICQ_CMDxSUB_MSG))
       {
          m_highestEventId = eventId;
-         e = u->EventPeekId(eventId);
-         if (e != NULL)
-         {
-           MsgViewItem *m = new MsgViewItem(e, codec, msgView);
-           msgView->ensureItemVisible(m);
-         }
-      }
-      else
-      {
-         qDebug("Ignoring double message");
+         MsgViewItem *m = new MsgViewItem(e, codec, msgView);
+         msgView->ensureItemVisible(m);
       }
     }
 
@@ -1423,6 +1415,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 {
   grpMR = NULL;
   tmpWidgetWidth = 0;
+  m_bGrpMRIsVisible = false;
+  clearDelay = 250;
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
@@ -1503,6 +1497,21 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleHistory=0;
   if (mainwin->m_bMsgChatView) {
     mleHistory = new CMessageViewWidget(m_szId, m_nPPID, mainwin, splView);
+    // add all unread messages.
+    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    if (u != NULL && u->NewMessages() > 0)
+    {
+      for (unsigned short i = 0; i < u->NewMessages(); i++)
+      {
+        CUserEvent *e = u->EventPeek(i);
+        if (e->Id() > m_highestEventId)
+          m_highestEventId = e->Id();
+
+        mleHistory->addMsg(e);
+      }
+    }
+    gUserManager.DropUser(u);
+
 #if QT_VERSION >= 300
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 #endif
@@ -2377,22 +2386,6 @@ bool UserSendCommon::checkSecure()
 }
 
 //=====UserSendMsgEvent======================================================
-#ifdef QT_PROTOCOL_PLUGIN
-UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
-  CMainWindow *m, const char *szId, unsigned long nPPID, QWidget *parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendMsgEvent")
-{
-  QBoxLayout* lay = new QVBoxLayout(mainWidget);
-  lay->addWidget(splView);
-  if (!m->m_bMsgChatView) mleSend->setMinimumHeight(150);
-  mleSend->setFocus ();
-
-  m_sBaseTitle += tr(" - Message");
-  setCaption(m_sBaseTitle);
-  cmbSendType->setCurrentItem(0);
-}
-#endif
-
 UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   CMainWindow *m, const char *szId, unsigned long nPPID, QWidget *parent)
   : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendMsgEvent")

@@ -1993,7 +1993,7 @@ void CMainWindow::callFileFunction (const char *_szFile)
 void CMainWindow::callMsgFunction()
 {
   // No need for code duplication
-  slot_ui_viewevent((const char *)0);
+  slot_ui_viewevent("0");
 }
 
 //-----CMainWindow::callUserFunction-------------------------------------------
