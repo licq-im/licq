@@ -177,7 +177,7 @@ void OptionsDlg::SetupOptions()
 
   chkGridLines->setChecked(mainwin->m_bGridLines);
   chkFontStyles->setChecked(mainwin->m_bFontStyles);
-  chkShowExtIcons->setChecked(mainwin->m_bShowExtIcons);
+  chkShowExtIcons->setChecked(mainwin->m_bShowExtendedIcons);
   chkHeader->setChecked(mainwin->m_bShowHeader);
   chkShowDividers->setChecked(mainwin->m_bShowDividers);
   chkSortByStatus->setChecked(mainwin->m_bSortByStatus);
@@ -355,7 +355,7 @@ void OptionsDlg::ApplyOptions()
 
   mainwin->m_bGridLines = chkGridLines->isChecked();
   mainwin->m_bFontStyles = chkFontStyles->isChecked();
-  mainwin->m_bShowExtIcons = chkShowExtIcons->isChecked();
+  mainwin->m_bShowExtendedIcons = chkShowExtIcons->isChecked();
   mainwin->m_bShowHeader = chkHeader->isChecked();
   mainwin->m_bShowDividers = chkShowDividers->isChecked();
   mainwin->m_bSortByStatus = chkSortByStatus->isChecked();

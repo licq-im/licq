@@ -171,17 +171,17 @@ static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border b
 QPixmap& CMainWindow::iconForStatus(unsigned long Status)
 {
   if((unsigned short) Status != ICQ_STATUS_OFFLINE && (Status & ICQ_STATUS_FxPRIVATE)
-     && !m_bShowExtIcons)
-    return pmPrivate;
+     && !gMainWindow->m_bShowExtendedIcons)
+    return gMainWindow->pmPrivate;
 
-  if ((unsigned short) Status == ICQ_STATUS_OFFLINE) return pmOffline;
-  if (Status & ICQ_STATUS_DND) return pmDnd;
-  if (Status & ICQ_STATUS_OCCUPIED) return pmOccupied;
-  if (Status & ICQ_STATUS_NA) return pmNa;
-  if (Status & ICQ_STATUS_AWAY) return pmAway;
-  if (Status & ICQ_STATUS_FREEFORCHAT) return pmFFC;
+  if ((unsigned short) Status == ICQ_STATUS_OFFLINE) return gMainWindow->pmOffline;
+  if (Status & ICQ_STATUS_DND) return gMainWindow->pmDnd;
+  if (Status & ICQ_STATUS_OCCUPIED) return gMainWindow->pmOccupied;
+  if (Status & ICQ_STATUS_NA) return gMainWindow->pmNa;
+  if (Status & ICQ_STATUS_AWAY) return gMainWindow->pmAway;
+  if (Status & ICQ_STATUS_FREEFORCHAT) return gMainWindow->pmFFC;
 
-  return pmOnline;
+  return gMainWindow->pmOnline;
 }
 
 QPixmap& CMainWindow::iconForEvent(unsigned short SubCommand)
