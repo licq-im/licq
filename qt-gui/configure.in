@@ -138,4 +138,8 @@ if test "$have_kde" = yes; then
 else
   echo "KDE 2.0 (CVS) support is disabled."
 fi
+echo "Qt includes:  $ac_cv_header_qtinc"
+echo "Qt libraries: $ac_cv_lib_qtlib"
+echo "Qt moc:       $QT_MOC"
 echo ""
+
