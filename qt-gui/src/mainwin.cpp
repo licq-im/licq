@@ -191,7 +191,7 @@ static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
 CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                          CQtLogWindow *theLogWindow, bool bStartHidden,
                          const char *skinName, const char *iconsName,
-                         QWidget *parent) 
+                         QWidget *parent)
   : QWidget(parent, "MainWindow")
 {
   licqDaemon = theDaemon;
@@ -216,7 +216,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   XFree( hints );
 
   // read in info from file
-  char filename[MAX_FILENAME_LEN];
+  char szTemp[MAX_FILENAME_LEN];
 
 #ifdef USE_KDE
   gLog.Info("%sKDE GUI configuration.\n", L_INITxSTR);
@@ -227,16 +227,15 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   CIniFile licqConf;
   if (! licqConf.LoadFile(filename) )
   {
-    FILE *f = fopen(filename, "w");
+    FILE *f = fopen(szTemp, "w");
     fprintf(f, "%s", QTGUI_CONF);
     fclose(f);
-    licqConf.LoadFile(filename);
+    licqConf.LoadFile(szTemp);
   }
 
   licqConf.SetSection("appearance");
-  char szFont[256];
   QFont f;
-  licqConf.ReadStr("Font", szFont, "default");
+  licqConf.ReadStr("Font", szTemp, "default");
 #ifdef USE_KDE
   defaultFont = KGlobal::generalFont();
 #else
@@ -270,13 +269,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("Transparent", bFrameTransparent, false);
   unsigned short nFrameStyle;
   licqConf.ReadNum("FrameStyle", nFrameStyle, 51);
-  char szDockTheme[MAX_FILENAME_LEN];
   bool bDockIcon48;
   unsigned short nDockMode;
   licqConf.ReadNum("UseDock", nDockMode, (unsigned short)DockNone);
   m_nDockMode = (DockMode)nDockMode;
   licqConf.ReadBool("Dock64x48", bDockIcon48, false);
-  licqConf.ReadStr("DockTheme", szDockTheme, "");
+  licqConf.ReadStr("DockTheme", filename, "");
   bool bHidden;
   licqConf.ReadBool("Hidden", bHidden, false);
   licqConf.ReadBool("AutoRaise", m_bAutoRaise, true);
@@ -1433,18 +1431,16 @@ void CMainWindow::callUserFunction(int index)
     }
     case mnuUserFloaty:
     {
-      if (CUserView::SelectedItemFloaty())
+      // Check that the floaty does not already exist
+      CUserView *v = CUserView::FindFloaty(nUin);
+      if (v == NULL)
       {
-        // Delete the floaty
-        CUserView *v = (CUserView *)CUserView::SelectedItem()->listView();
-        delete v->firstChild();
-        if (v->childCount() == 0) delete v;
+        CreateUserFloaty(nUin);
       }
       else
       {
-        // Check that the floaty does not already exist
-        CUserView *v = CUserView::FindFloaty(nUin);
-        if (v == NULL) CreateUserFloaty(nUin);
+        delete v->firstChild();
+        if (v->childCount() == 0) delete v;
       }
       break;
     }
@@ -2306,7 +2302,7 @@ void CMainWindow::initMenu()
    connect (m, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
    mnuUser->insertItem(tr("&Info"), m);
    mnuUser->insertItem(tr("View &History"), mnuUserHistory);
-   mnuUser->insertItem(tr("&Floaty"), mnuUserFloaty);
+   mnuUser->insertItem(tr("Toggle &Floaty"), mnuUserFloaty);
    mnuUser->insertSeparator();
    mnuUser->insertItem(tr("Online Notify"), mnuUserOnlineNotify);
    mnuUser->insertItem(tr("Invisible List"), mnuUserInvisibleList);
