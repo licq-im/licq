@@ -12,3 +12,4 @@ ltconfig
 aclocal.m4
 acinclude.m4
 stamp-h*
+autom4te.cache
