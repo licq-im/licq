@@ -342,9 +342,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       if (m_nAutoLogon >= 10)
         mnuStatus->setItemChecked(mnuStatus->idAt(MNUxITEM_STATUSxINVISIBLE), true);
       if (m_nAutoLogon > 10 && m_nAutoLogon < 17)
-        changeStatusManual(m_nAutoLogon - 11);
+        changeStatus(m_nAutoLogon - 11);
       else if (m_nAutoLogon > 0 && m_nAutoLogon < 7)
-        changeStatusManual(m_nAutoLogon - 1);
+        changeStatus(m_nAutoLogon - 1);
    }
 
    // verify we exist
@@ -931,7 +931,7 @@ void CMainWindow::changeStatus(int index)
   default:
      gLog.Error("%sInternal error: CMainWindow::changeStatus(): bad index value %d.\n",
                 L_ERRORxSTR, index);
-     return;
+     newStatus = ICQ_STATUS_OFFLINE;
   }
 
   // we may have been offline and gone online with invisible toggled
