@@ -8,7 +8,6 @@
 #include <qdialog.h>
 #include <qpushbutton.h>
 #include <qsocketnotifier.h>
-#include <qmessagebox.h>
 
 #include "mledit.h"
 #include "ewidgets.h"
@@ -30,21 +29,5 @@ protected slots:
 
   virtual void showEvent(QShowEvent*);
 };
-#if 0
-class CLicqMessageBox : public QMessageBox
-{
-public:
-  CLicqMessageBox(QString _szText, Icon icon, QWidget *q = NULL)
-   : QMessageBox ("Licq", _szText, icon, Ok | Default, 0, 0, q, NULL, q == NULL ? false : true)
-  { show(); }
-
-protected:
-  virtual void hide(void)
-  {
-    QMessageBox::hide();
-    delete this;
-  }
-};
-#endif
 
 #endif
