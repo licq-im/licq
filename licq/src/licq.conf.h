@@ -46,7 +46,7 @@ static const char LICQ_CONF[] =
 "\n"
 "[groups]\n"
 "NumOfGroups = 3\n"
-"DefaultGroup = 0\n"
+"DefaultGroup = 1\n"
 "NewUserGroup = 1\n"
 "Group1.name = New Users\n"
 "Group2.name = Friends\n"
