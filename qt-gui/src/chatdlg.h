@@ -65,6 +65,12 @@ signals:
 
 class ChatDlg;
 typedef std::list<ChatDlg *> ChatDlgList;
+typedef struct {
+  CChatUser *u;
+  CChatWindow *w;
+  QLabel *l;
+} UserWindowPair;
+typedef std::list<UserWindowPair> ChatUserWindowsList;
 
 enum ChatMode { CHAT_PANE, CHAT_IRC };
 
@@ -86,6 +92,7 @@ public:
   unsigned long Uin()  { return m_nUin; };
 
   QString ChatClients();
+  QString ChatName();
 
   static ChatDlgList chatDlgs;
 
@@ -95,7 +102,8 @@ signals:
 protected:
   CChatManager *chatman;
 
-  CChatWindow *mlePaneLocal, *mlePaneRemote, *mleIRCRemote, *mleIRCLocal;
+  CChatWindow *mlePaneLocal, *mleIRCRemote, *mleIRCLocal;
+  QGridLayout *paneLayout, *remoteLayout;
   QGroupBox *boxPane, *boxIRC;
   QLabel *lblLocal, *lblRemote;
   QPopupMenu *mnuMode, *mnuStyle, *mnuMain, *mnuFg, *mnuBg;
@@ -111,13 +119,15 @@ protected:
   QComboBox *cmbFontName, *cmbFontSize;
 
   ChatMode m_nMode;
-  CChatUser *chatUser;
+  ChatUserWindowsList chatUserWindows;
   unsigned long m_nUin;
   QSocketNotifier *sn;
   bool m_bAudio;
   QTextCodec *codec;
 
   virtual void closeEvent(QCloseEvent*);
+  CChatWindow *GetPane(CChatUser *u);
+  void UpdateRemotePane();
 
   friend class CJoinChatDlg;
 
@@ -135,7 +145,7 @@ protected slots:
   void fontStyleChanged();
   void changeFrontColor();
   void changeBackColor();
-  void toggleSettingsIgnore();
+  void updateRemoteStyle();
 
   void SwitchToPaneMode();
   void SwitchToIRCMode();

@@ -78,26 +78,27 @@ ChatDlgList ChatDlg::chatDlgs;
 
 // ---------------------------------------------------------------------------
 
-#define NUM_COLORS 14
-
 static const int col_array[] =
 {
-  0xFF, 0xFF, 0xFF,
   0x00, 0x00, 0x00,
-  0x7F, 0x00, 0x00,
+  0x80, 0x00, 0x00,
   0x00, 0x80, 0x00,
   0x80, 0x80, 0x00,
   0x00, 0x00, 0x80,
   0x80, 0x00, 0x80,
+  0x00, 0x80, 0x80,
   0x80, 0x80, 0x80,
   0xC0, 0xC0, 0xC0,
   0xFF, 0x00, 0x00,
-  0xFF, 0xFF, 0x00,
   0x00, 0xFF, 0x00,
+  0xFF, 0xFF, 0x00,
+  0x00, 0x00, 0xFF,
+  0xFF, 0x00, 0xFF,
   0x00, 0xFF, 0xFF,
-  0x00, 0x00, 0xFF
+  0xFF, 0xFF, 0xFF
 };
 
+#define NUM_COLORS sizeof(col_array)/sizeof(int)/3
 
 // ---------------------------------------------------------------------------
 enum ChatMenu_Identifiers {
@@ -116,7 +117,6 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   m_bAudio = true;
   licqDaemon = daemon;
   sn = NULL;
-  chatUser = NULL;
   mainwin = m;
 
   m_nMode = CHAT_PANE;
@@ -138,26 +138,25 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   // Pane mode setup
   boxPane = new QGroupBox(widCentral);
-  QGridLayout *play = new QGridLayout(boxPane, 5, 1, 4);
-
+  paneLayout = new QGridLayout(boxPane, 3, 1, 4);
+  remoteLayout = new QGridLayout(2, 1, 4);
+  paneLayout->addLayout(remoteLayout, 0, 0);
   lblRemote = new QLabel(tr("Remote - Not connected"), boxPane);
-  mlePaneRemote = new CChatWindow(boxPane);
-  mlePaneRemote->setMinimumHeight(100);
-  mlePaneRemote->setMinimumWidth(150);
-  mlePaneRemote->setReadOnly(true);
-  play->addWidget(lblRemote, 0, 0);
-  play->addWidget(mlePaneRemote, 1, 0);
-  play->setRowStretch(1, 1);
-  play->addRowSpacing(2, 15);
+  remoteLayout->addWidget(lblRemote, 0, 0);
+  remoteLayout->setRowStretch(1, 1);
 
+  paneLayout->addRowSpacing(1, 15);
+
+  QGridLayout *llay = new QGridLayout(2, 1, 4);
+  paneLayout->addLayout(llay, 2, 0);
   lblLocal = new QLabel(boxPane);
   mlePaneLocal = new CChatWindow(boxPane);
   mlePaneLocal->setMinimumHeight(100);
   mlePaneLocal->setMinimumWidth(150);
   mlePaneLocal->setEnabled(false);
-  play->addWidget(lblLocal, 3, 0);
-  play->addWidget(mlePaneLocal, 4, 0);
-  play->setRowStretch(4, 1);
+  llay->addWidget(lblLocal, 0, 0);
+  llay->addWidget(mlePaneLocal, 1, 0);
+  llay->setRowStretch(1, 1);
 
   // IRC mode setup
   boxIRC = new QGroupBox(widCentral);
@@ -202,7 +201,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   QPixmap* pixIgnore = new QPixmap(chatIgnore_xpm);
   tbtIgnore = new QToolButton(*pixIgnore, tr("Ignore user settings"),
-    tr("Ignores user color settings"), this, SLOT(toggleSettingsIgnore()), barChat);
+    tr("Ignores user color settings"), this, SLOT(updateRemoteStyle()), barChat);
   tbtIgnore->setToggleButton(true);
 
   QPixmap* pixBeep = new QPixmap(chatBeep_xpm);
@@ -222,7 +221,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   mnuBg = new QPopupMenu(this);
 
-  for(int i = 0; i < NUM_COLORS; i++)
+  for(unsigned int i = 0; i < NUM_COLORS; i++)
   {
     QPixmap *pix = new QPixmap(48, 14);
     QPainter p(pix);
@@ -342,8 +341,13 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   // Create the chat manager using our font
   QFont f(mlePaneLocal->font());
+  char *fontName = strdup(f.family().local8Bit());
+  char *endp = strstr(fontName, " [");
+  if (endp != NULL)
+    *endp = '\0';
   chatman = new CChatManager(daemon, _nUin,
-     f.family().local8Bit(), f.pointSize(), f.bold(), f.italic(), f.underline());
+     fontName, f.pointSize(), f.bold(), f.italic(), f.underline());
+  free(fontName);
   sn = new QSocketNotifier(chatman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), this, SLOT(slot_chat()));
 
@@ -397,7 +401,11 @@ void ChatDlg::fontSizeChanged(const QString& txt)
 {
   QFont f(mlePaneLocal->font());
 
-  f.setPointSize(txt.toInt());
+  int nNewSize = txt.toInt();
+  if (nNewSize > 24)
+    nNewSize = 24;
+
+  f.setPointSize(nNewSize);
 
   mlePaneLocal->setFont(f);
   mleIRCLocal->setFont(f);
@@ -405,6 +413,9 @@ void ChatDlg::fontSizeChanged(const QString& txt)
 
   // transmit to remote
   chatman->ChangeFontSize(txt.toULong());
+
+  // if ignoring style change the remote panes too
+  updateRemoteStyle();
 }
 
 
@@ -421,7 +432,17 @@ void ChatDlg::fontNameChanged(const QString &txt)
   mleIRCRemote->setFont(f);
 
   // transmit to remote
-  chatman->ChangeFontFamily(txt.ascii());
+  char *newFont = strdup(txt.ascii());
+  char *endp = strstr(newFont, " [");
+  if (endp != NULL)
+  {
+    *endp = '\0';
+  }
+  chatman->ChangeFontFamily(newFont);
+  free(newFont);
+
+  // if ignoring style change the remote panes too
+  updateRemoteStyle();
 }
 
 // -----------------------------------------------------------------------------
@@ -442,6 +463,9 @@ void ChatDlg::fontStyleChanged()
   chatman->ChangeFontFace(tbtBold->state() == QButton::On,
     tbtItalic->state() == QButton::On,
     tbtUnderline->state() == QButton::On);
+
+  // if ignoring style change the remote panes too
+  updateRemoteStyle();
 }
 
 
@@ -468,6 +492,9 @@ void ChatDlg::changeFrontColor()
 
   // sent to remote
   chatman->ChangeColorFg(color.red(), color.green(), color.blue());
+
+  // if ignoring style change the remote panes too
+  updateRemoteStyle();
 }
 
 
@@ -486,18 +513,47 @@ void ChatDlg::changeBackColor()
 
   // sent to remote
   chatman->ChangeColorBg(color.red(), color.green(), color.blue());
+
+  // if ignoring style change the remote panes too
+  updateRemoteStyle();
 }
 
 // -----------------------------------------------------------------------------
 
-void ChatDlg::toggleSettingsIgnore()
+void ChatDlg::updateRemoteStyle()
 {
   if(tbtIgnore->state() == QButton::On) {
-    mlePaneRemote->setBackground(white);
-    mlePaneRemote->setForeground(black);
+    QColor fg(chatman->ColorFg()[0], chatman->ColorFg()[1],
+                       chatman->ColorFg()[2]);
+    QColor bg(chatman->ColorBg()[0], chatman->ColorBg()[1],
+                       chatman->ColorBg()[2]);
+    QFont f(mlePaneLocal->font());
+    ChatUserWindowsList::iterator iter;
+    for (iter = chatUserWindows.begin(); iter != chatUserWindows.end(); iter++)
+    {
+      iter->w->setForeground(fg);
+      iter->w->setBackground(bg);
+      iter->w->setFont(f);
+    }
   }
   else {
-    // FIXME
+    ChatUserWindowsList::iterator iter;
+    for (iter = chatUserWindows.begin(); iter != chatUserWindows.end(); iter++)
+    {
+      QColor fg(iter->u->ColorFg()[0], iter->u->ColorFg()[1],
+                         iter->u->ColorFg()[2]);
+      QColor bg(iter->u->ColorBg()[0], iter->u->ColorBg()[1],
+                         iter->u->ColorBg()[2]);
+      QFont f(iter->w->font());
+      f.setFamily(iter->u->FontFamily());
+      f.setPointSize(iter->u->FontSize());
+      f.setBold(iter->u->FontBold());
+      f.setItalic(iter->u->FontItalic());
+      f.setUnderline(iter->u->FontUnderline());
+      iter->w->setForeground(fg);
+      iter->w->setBackground(bg);
+      iter->w->setFont(f);
+    }
   }
 }
 
@@ -652,34 +708,25 @@ void ChatDlg::slot_chat()
         // Add the user to the listbox
         lstUsers->insertItem(n);
         // If this is the first user, set up the remote mle
-        if (chatUser == NULL)
+        if (!mlePaneLocal->isEnabled())
         {
-          chatUser = u;
-
-          lblRemote->setText(tr("Remote - %1").arg(n));
-          setCaption(tr("Licq - Chat %1").arg(n));
-          mlePaneRemote->setForeground(QColor(u->ColorFg()[0], u->ColorFg()[1],
-             u->ColorFg()[2]));
-          mlePaneRemote->setBackground(QColor(u->ColorBg()[0], u->ColorBg()[1],
-             u->ColorBg()[2]));
-          QFont f(mlePaneRemote->font());
-          f.setFamily(u->FontFamily());
-          f.setPointSize(u->FontSize());
-          f.setBold(u->FontBold());
-          f.setItalic(u->FontItalic());
-          f.setUnderline(u->FontUnderline());
-          mlePaneRemote->setFont(f);
-
+          delete lblRemote;
           connect(mlePaneLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
           connect(mleIRCLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
           mlePaneLocal->setEnabled(true);
           mleIRCLocal->setEnabled(true);
         }
-        else if (m_nMode == CHAT_PANE)
-        {
-          SwitchToIRCMode();
-          mnuMode->setItemEnabled(mnuMode->idAt(0), false);
-        }
+
+        CChatWindow *lePaneRemote = new CChatWindow(boxPane);
+        lePaneRemote->setReadOnly(true);
+        QLabel *lbl = new QLabel(n, boxPane);
+        UserWindowPair uwp = { u, lePaneRemote, lbl};
+        chatUserWindows.push_back(uwp);
+
+        updateRemoteStyle();
+
+        UpdateRemotePane();
+
         break;
       }
 
@@ -691,11 +738,8 @@ void ChatDlg::slot_chat()
         mleIRCRemote->append(n + QString::fromLatin1("> ") + codec->toUnicode(e->Data()));
         mleIRCRemote->GotoEnd();
 
-        if (u == chatUser)
-        {
-          mlePaneRemote->insertLine("");
-          mlePaneRemote->GotoEnd();
-        }
+        GetPane(u)->insertLine("");
+        GetPane(u)->GotoEnd();
         break;
       }
 
@@ -705,7 +749,7 @@ void ChatDlg::slot_chat()
           QApplication::beep();
         else
         {
-          if (u == chatUser) mlePaneRemote->append(tr("\n<--BEEP-->\n"));
+          GetPane(u)->append(tr("\n<--BEEP-->\n"));
           mleIRCRemote->append(chatname + tr("> <--BEEP-->\n"));
         }
         break;
@@ -713,33 +757,30 @@ void ChatDlg::slot_chat()
 
       case CHAT_BACKSPACE:   // backspace
       {
-        if (u == chatUser)
-        {
 #if QT_VERSION >= 300
-          mlePaneRemote->setReadOnly(false);
-          mlePaneRemote->setCursorPosition(-1, -1, false);
+        GetPane(u)->setReadOnly(false);
+        GetPane(u)->setCursorPosition(-1, -1, false);
 #endif
-          mlePaneRemote->backspace();
+        GetPane(u)->backspace();
 #if QT_VERSION >= 300
-          mlePaneRemote->setReadOnly(true);
-          mlePaneRemote->update();
+        GetPane(u)->setReadOnly(true);
+        GetPane(u)->update();
 #endif
-        }
         break;
       }
 
       case CHAT_COLORxFG: // change foreground color
       {
-        if (u == chatUser && tbtIgnore->state() == QButton::Off)
-          mlePaneRemote->setForeground(QColor (u->ColorFg()[0],
+        if (tbtIgnore->state() == QButton::Off)
+          GetPane(u)->setForeground(QColor (u->ColorFg()[0],
              u->ColorFg()[1], u->ColorFg()[2]));
         break;
       }
 
       case CHAT_COLORxBG:  // change background color
       {
-        if (u == chatUser && tbtIgnore->state() == QButton::Off)
-          mlePaneRemote->setBackground(QColor (u->ColorBg()[0],
+        if (tbtIgnore->state() == QButton::Off)
+          GetPane(u)->setBackground(QColor (u->ColorBg()[0],
              u->ColorBg()[1], u->ColorBg()[2]));
 
         break;
@@ -747,35 +788,35 @@ void ChatDlg::slot_chat()
 
       case CHAT_FONTxFAMILY: // change font type
       {
-        if (u == chatUser && tbtIgnore->state() == QButton::Off)
+        if (tbtIgnore->state() == QButton::Off)
         {
-          QFont f(mlePaneRemote->font());
+          QFont f(GetPane(u)->font());
           f.setFamily(u->FontFamily());
-          mlePaneRemote->setFont(f);
+          GetPane(u)->setFont(f);
         }
         break;
       }
 
       case CHAT_FONTxFACE: // change font style
       {
-        if (u == chatUser && tbtIgnore->state() == QButton::Off)
+        if (tbtIgnore->state() == QButton::Off)
         {
-          QFont f(mlePaneRemote->font());
+          QFont f(GetPane(u)->font());
           f.setBold(u->FontBold());
           f.setItalic(u->FontItalic());
           f.setUnderline(u->FontUnderline());
-          mlePaneRemote->setFont(f);
+          GetPane(u)->setFont(f);
         }
         break;
       }
 
       case CHAT_FONTxSIZE: // change font size
       {
-        if (u == chatUser && tbtIgnore->state() == QButton::Off)
+        if (tbtIgnore->state() == QButton::Off)
         {
-          QFont f(mlePaneRemote->font());
-          f.setPointSize(u->FontSize());
-          mlePaneRemote->setFont(f);
+          QFont f(GetPane(u)->font());
+          f.setPointSize(u->FontSize() > 24 ? 24 : u->FontSize());
+          GetPane(u)->setFont(f);
         }
         break;
       }
@@ -791,8 +832,7 @@ void ChatDlg::slot_chat()
 
       case CHAT_CHARACTER:
       {
-        if (u == chatUser)
-          mlePaneRemote->appendNoNewLine(codec->toUnicode(e->Data()));
+        GetPane(u)->appendNoNewLine(codec->toUnicode(e->Data()));
         break;
       }
 
@@ -838,7 +878,7 @@ void ChatDlg::chatClose(CChatUser *u)
 {
   if (u == NULL)
   {
-    chatUser = NULL;
+    chatUserWindows.clear();
     lstUsers->clear();
     disconnect(sn, SIGNAL(activated(int)), this, SLOT(slot_chat()));
     chatman->CloseChat();
@@ -854,23 +894,31 @@ void ChatDlg::chatClose(CChatUser *u)
         break;
       }
     }
-    if (chatUser == u) chatUser = NULL;
+    ChatUserWindowsList::iterator iter;
+    for (iter = chatUserWindows.begin(); iter != chatUserWindows.end(); iter++)
+    {
+      if (iter->u == u)
+      {
+        delete iter->w;
+        delete iter->l;
+        chatUserWindows.erase(iter);
+        break;
+      }
+    }
+    UpdateRemotePane();
   }
 
   // Modify the dialogs
-  if (chatUser == NULL)
-  {
-    mlePaneLocal->setReadOnly(true);
-    disconnect(mlePaneLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
-  }
   if (chatman->ConnectedUsers() == 0)
   {
-    mleIRCLocal->setReadOnly(true);
+    mleIRCLocal->setEnabled(false);
+    mlePaneLocal->setEnabled(false);
     disconnect(mleIRCLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
-  }
-  else if (chatman->ConnectedUsers() == 1 && chatUser != NULL)
-  {
-    mnuMode->setItemEnabled(mnuMode->idAt(0), true);
+    disconnect(mlePaneLocal, SIGNAL(keyPressed(QKeyEvent *)), this, SLOT(chatSend(QKeyEvent *)));
+
+    lblRemote = new QLabel(tr("Remote - Not connected"), boxPane);
+    remoteLayout->addWidget(lblRemote, 0, 0);
+    lblRemote->show();
   }
 }
 
@@ -891,12 +939,48 @@ void ChatDlg::closeEvent(QCloseEvent* e)
   chatClose(NULL);
 }
 
+CChatWindow *ChatDlg::GetPane(CChatUser *u)
+{
+  ChatUserWindowsList::iterator iter;
+  for (iter = chatUserWindows.begin(); iter != chatUserWindows.end(); iter++)
+    if (iter->u == u)
+      return iter->w;
+  return NULL;
+}
+
+void ChatDlg::UpdateRemotePane()
+{
+  delete remoteLayout;
+  remoteLayout = new QGridLayout(2, chatUserWindows.size()+1, 4);
+  paneLayout->addLayout(remoteLayout, 0, 0);
+
+  setCaption(tr("Licq - Chat %1").arg(ChatClients()));
+
+  ChatUserWindowsList::iterator iter;
+  unsigned int i;
+  for (i = 0, iter = chatUserWindows.begin(); iter != chatUserWindows.end();
+       i++, iter++)
+  {
+    remoteLayout->addWidget(iter->l, 0, i);
+    remoteLayout->addWidget(iter->w, 1, i);
+    iter->l->show();
+    iter->w->show();
+  }
+  remoteLayout->setRowStretch(1, 1);
+}
+
 
 QString ChatDlg::ChatClients()
 {
   char *sz = chatman->ClientsStr();
   QString n = sz;
   delete sz;
+  return n;
+}
+
+QString ChatDlg::ChatName()
+{
+  QString n = chatman->Name();
   return n;
 }
 
@@ -908,13 +992,7 @@ bool ChatDlg::slot_save()
     if ( t[l] == ' ' ) t[l] = '-';
     if ( t[l] == ':' ) t[l] = '-';
   }
-  QString n = tr("/%1.%2.chat")
-    .arg(
-      chatUser == NULL ?
-        QString::number(m_nUin) :
-        UserCodec::codecForCChatUser(chatUser)->toUnicode(chatUser->Name())
-    )
-    .arg(t);
+  QString n = tr("/%1.chat").arg(t);
 
 #ifdef USE_KDE
   QString fn = KFileDialog::getSaveFileName(QDir::homeDirPath() + n,
@@ -1022,7 +1100,10 @@ void CChatWindow::appendNoNewLine(QString s)
 
 void CChatWindow::GotoEnd()
 {
-  setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
+  if (lineLength(numLines() - 1) == 0)
+    setCursorPosition(numLines() - 1, 0);
+  else
+    setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
 }
 
 

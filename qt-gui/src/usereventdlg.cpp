@@ -744,12 +744,12 @@ void UserViewEvent::slot_btnRead2()
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
         if (chatDlg->StartAsClient(c->Port()))
-          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence(), c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(m_nUin, 0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
         if (chatDlg->StartAsServer())
-          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence(), c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       break;
     }
@@ -846,14 +846,14 @@ void UserViewEvent::slot_btnRead4()
       {
         ChatDlg *chatDlg = new ChatDlg(m_nUin, server, mainwin);
         if (chatDlg->StartAsClient(c->Port()))
-          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence(), c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(m_nUin, 0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
         ChatDlg *chatDlg = NULL;
         CJoinChatDlg *j = new CJoinChatDlg(this);
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
-          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Sequence(), c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(m_nUin, chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         delete j;
       }
       break;
@@ -1318,7 +1318,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
   {
     u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    msg = tr("%1 refused %2, send through server.")
+    msg = tr("%1 refused %2, send through server")
           .arg(codec->toUnicode(u->GetAlias())).arg(EventDescription(ue));
     InformUser(this, msg);
     gUserManager.DropUser(u);
@@ -1871,7 +1871,7 @@ void UserSendChatEvent::InviteUser()
       {
         edtItem->setText(j->ChatClients());
         m_nMPChatPort = chatDlg->LocalPort();
-        m_szMPChatClients = chatDlg->ChatClients();
+        m_szMPChatClients = chatDlg->ChatName() + ", " + chatDlg->ChatClients();
       }
       delete j;
       btnBrowse->setText(tr("Clear"));
