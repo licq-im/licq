@@ -225,7 +225,6 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 	}
 
 	/* Update the buffer for the e_tag_data */
-	strcpy(etd->buf, "");
 	strcpy(etd->buf, temp);
 
 	/* Remove this item from the GSList */
@@ -260,10 +259,10 @@ void finish_event(struct e_tag_data *etd, ICQEvent *event)
 
 void user_function(ICQEvent *event)
 {
-	GSList *temp = catcher;
+  GSList *temp = catcher;
 	struct e_tag_data *etd;
 
-	while (temp) {
+  while (temp) {
 		etd = (struct e_tag_data *)temp->data;
 
 		if (event->Equals(etd->e_tag)) {
@@ -277,4 +276,3 @@ void user_function(ICQEvent *event)
 
 	return;
 }
-
