@@ -1,3 +1,4 @@
 Makefile
+Makefile.in
 template.po
 *.qm
