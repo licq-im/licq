@@ -31,6 +31,8 @@
 #include "qregexp.h"
 #include "qapplication.h"
 #include "qdragobject.h"
+#include "qpopupmenu.h"
+
 #include <ctype.h>
 
 
@@ -82,7 +84,7 @@ struct QMultiLineData
 	dnd_primed(FALSE),
 	dnd_forcecursor(FALSE),
 	dnd_timer(0)
-		{}
+    {}
     bool isHandlingEvent;
     bool edited;
     int  maxLineWidth;
@@ -102,6 +104,8 @@ struct QMultiLineData
     bool dnd_forcecursor; // If TRUE show cursor for DND feedback,
 			    // even if !hasFocus()
     int	 dnd_timer;  // If it expires before release, start drag
+    QPopupMenu *popup;
+    int id[ 5 ];
 };
 
 
@@ -246,6 +250,13 @@ QMultiLineEditNew::QMultiLineEditNew( QWidget *parent , const char *name )
     setNumRows( 1 );
     setWidth( w );
     setAcceptDrops(TRUE);
+    d->popup = new QPopupMenu( this );
+    d->id[ 0 ] = d->popup->insertItem( tr( "Cut" ) );
+    d->id[ 1 ] = d->popup->insertItem( tr( "Copy" ) );
+    d->id[ 2 ] = d->popup->insertItem( tr( "Paste" ) );
+    d->id[ 3 ] = d->popup->insertItem( tr( "Clear" ) );
+    d->popup->insertSeparator();
+    d->id[ 4 ] = d->popup->insertItem( tr( "Select All" ) );
 }
 
 /*! \fn int QMultiLineEditNew::numLines() const
@@ -969,6 +980,10 @@ void QMultiLineEditNew::keyPressEvent( QKeyEvent *e )
 	case Key_X:
 	    cut();
 	    break;
+#if defined (_WS_WIN_)
+	case Key_Insert:
+	    copy();
+#endif	
 	default:
 	    unknown++;
 	}
@@ -996,6 +1011,12 @@ void QMultiLineEditNew::keyPressEvent( QKeyEvent *e )
 	    end( e->state() & ShiftButton );
 	    break;
 	case Key_Delete:
+#if defined (_WS_WIN_)
+	    if ( e->state() & ShiftButton ) {
+		cut();
+		break;
+	    }
+#endif	
 	    del();
 	    break;
 	case Key_Next:
@@ -1010,9 +1031,16 @@ void QMultiLineEditNew::keyPressEvent( QKeyEvent *e )
 	    emit returnPressed();
 	    break;
 	case Key_Tab:
-	    qDebug("tab");
 	    insert( e->text() );
 	    break;
+#if defined (_WS_WIN_)
+	case Key_Insert:
+	    if ( e->state() & ShiftButton )
+		paste();
+	    else
+		unknown++;
+	    break;
+#endif	
 	default:
 	    unknown++;
 	}
@@ -1708,6 +1736,26 @@ void QMultiLineEditNew::end( bool mark )
 void QMultiLineEditNew::mousePressEvent( QMouseEvent *m )
 {
     stopAutoScroll();
+
+    if ( m->button() == RightButton ) {
+	d->popup->setItemEnabled( d->id[ 0 ], hasMarkedText() );
+	d->popup->setItemEnabled( d->id[ 1 ], hasMarkedText() );
+	d->popup->setItemEnabled( d->id[ 2 ], (bool)QApplication::clipboard()->text().length() );
+	d->popup->setItemEnabled( d->id[ 3 ], (bool)text().length() );
+	int id = d->popup->exec( m->globalPos() );
+	if ( id == d->id[ 0 ] )
+	    cut();
+	else if ( id == d->id[ 1 ] )
+	    copy();
+	else if ( id == d->id[ 2 ] )
+	    paste();
+	else if ( id == d->id[ 3 ] )
+	    clear();
+	else if ( id == d->id[ 4 ] )
+	    selectAll();
+
+	return;
+    }
 
     if ( m->button() != MidButton && m->button() != LeftButton)
 	return;
@@ -3112,7 +3160,7 @@ void QMultiLineEditNew::rebreakParagraph( int line, int removed )
 	    }
 	    r->s.append( other->s );
 	    r->newline = other->newline;
-	    contents->remove( other );
+	    contents->remove( line + 1 );
 	    ++removed;
 	}
     }
@@ -3125,6 +3173,9 @@ void QMultiLineEditNew::rebreakAll()
 	return;
     d->maxLineWidth = 0;
     for (int i = 0; i < int(contents->count()); ++i ) {
+	if ( contents->at( i )->newline && 
+	     contents->at( i )->w < contentsRect().width() -  2*d->lr_marg )
+	    continue;
 	rebreakParagraph( i );
 	while ( i < int(contents->count() )
 		&& !contents->at( i )->newline )
