@@ -99,6 +99,10 @@ public:
   CUserEvent *UserEvent()      { return m_pUserEvent; }
   ICQUser *UnknownUser()       { return m_pUnknownUser; }
 
+  // Returns the event and transfers ownership to the calling function
+  CUserEvent *GrabUserEvent()  { CUserEvent *e = m_pUserEvent; m_pUserEvent = NULL; return e; }
+  CSearchAck *GrabSearchAck()  { CSearchAck *a = m_pSearchAck; m_pSearchAck = NULL; return a; }
+
   ~ICQEvent();
 
 protected:
