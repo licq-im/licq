@@ -1317,7 +1317,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
         {
           if ((*it)->Uin() == sig->Uin())
           {
-            delete it.current();
+            it.current()->close();
             licqUserView.remove(it.current());
             break;
           }
@@ -1334,7 +1334,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
         {
           if((*it)->Uin() == sig->Uin())
           {
-            delete it.current();
+            it.current()->close();
             licqUserInfo.remove(it.current());
             break;
           }
@@ -1351,7 +1351,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
         {
           if((*it)->Uin() == sig->Uin())
           {
-            delete it.current();
+            it.current()->close();
             licqUserSend.remove(it.current());
             break;
           }
@@ -3186,7 +3186,7 @@ void CMainWindow::initMenu()
    a->insertItem(ALT + Key_F, ICQ_STATUS_OFFLINE);
    a->insertItem(ALT + Key_I, ICQ_STATUS_FxPRIVATE);
    connect(a, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
-#if QT_VERSION > 309
+#if QT_VERSION > 0x030006
    connect(a, SIGNAL(activatedAmbiguously(int)), this, SLOT(changeStatusManual(int)));
 #endif
          
@@ -3244,7 +3244,7 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertItem(tr("&Add User"), this, SLOT(showAddUserDlg()));
    mnuUserAdm->insertItem(tr("S&earch for User"), this, SLOT(showSearchUserDlg()));
    mnuUserAdm->insertItem(tr("A&uthorize User"), this, SLOT(showAuthUserDlg()));
-   mnuUserAdm->insertItem(tr("Re&quest Authorization"), this, SLOT(showReqAuthDlg()));
+   mnuUserAdm->insertItem(tr("Re&quest Authorization"), this, SLOT(showReqAuthDlg(int)));
    mnuUserAdm->insertItem(tr("R&andom Chat"), this, SLOT(slot_randomchatsearch()));
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("&Popup All Messages"), this, SLOT(slot_popupall()));
@@ -3461,6 +3461,12 @@ void CMainWindow::showAddUserDlg()
 void CMainWindow::showAuthUserDlg()
 {
   (void) new AuthUserDlg(licqDaemon, 0, true);
+}
+
+// Wrapper for the true function, necessary to kill a Qt2 warning
+void CMainWindow::showReqAuthDlg(int nId)
+{
+  showReqAuthDlg((unsigned long)0);
 }
 
 void CMainWindow::showReqAuthDlg(unsigned long nUin)
