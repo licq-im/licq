@@ -351,7 +351,7 @@ void CEventAuthReq::AddToHistory(ICQUser *u, direction _nDir)
 CEventAuth::CEventAuth(unsigned long _nUin, const char *_szMessage,
                        unsigned short _nCommand, time_t _tTime,
                        unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_REQxAUTH, _nCommand, 0, _tTime, _nFlags)
+   : CUserEvent(ICQ_CMDxSUB_AUTHORIZED, _nCommand, 0, _tTime, _nFlags)
 {
   if (_szMessage == NULL)
     m_szMessage = strdup("");
