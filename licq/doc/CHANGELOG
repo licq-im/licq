@@ -1,5 +1,15 @@
 Change log for Licq.
 
+New in 1.0.1
+o  Various small bug fixes
+o  Support for sending messages in color
+o  Auto-response scripting
+o  % expansion security fix
+o  licq2mutt script
+o  icq2000 converter
+o  Fixed problems with kernel 2.4.x in socket class
+
+
 New in 1.0
 o  Fix for problems reverse connecting to users
 o  Whitepages searching added
