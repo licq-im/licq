@@ -304,11 +304,15 @@ void contact_list_click(GtkWidget *contact_list,
 		add_to_popup("Send URL", _menu,
 			     GTK_SIGNAL_FUNC(list_send_url), user);
 
-		add_to_popup("Send Chat Request", _menu,
-			     GTK_SIGNAL_FUNC(list_request_chat), user);
+		/* Only show chat and file requests if the user is not offline */
+		if(user->Status() != ICQ_STATUS_OFFLINE)
+		{
+			add_to_popup("Send Chat Request", _menu,
+			     	     GTK_SIGNAL_FUNC(list_request_chat), user);
 
-		add_to_popup("Send File Request", _menu,
-			     GTK_SIGNAL_FUNC(list_request_file), user);
+			add_to_popup("Send File Request", _menu,
+			             GTK_SIGNAL_FUNC(list_request_file), user);
+		}
 
 		/* A separator */
                 separator = gtk_hseparator_new();

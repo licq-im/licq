@@ -22,7 +22,6 @@
 #include "licq_gtk.h"
 
 #include "licq_icqd.h"
-#include "licq_packets.h"
 #include "licq_message.h"
 #include "licq_filetransfer.h"
 #include "licq_user.h"
@@ -74,7 +73,7 @@ void file_accept_window(ICQUser *user, CUserEvent *e)
 	gtk_signal_connect(GTK_OBJECT(fa->window), "destroy",
 			   GTK_SIGNAL_FUNC(dialog_close), fa->window);
 	gtk_signal_connect(GTK_OBJECT(refuse), "clicked",
-			   GTK_SIGNAL_FUNC(refuse_file), fa);
+			   GTK_SIGNAL_FUNC(refuse_file), (gpointer)fa);
 	gtk_signal_connect(GTK_OBJECT(accept), "clicked",
 			   GTK_SIGNAL_FUNC(accept_file), (gpointer)fa);
 			 
@@ -550,6 +549,10 @@ void list_request_file(GtkWidget *widget, ICQUser *user)
 	fs->window = gtk_window_new(GTK_WINDOW_TOPLEVEL);
 	gtk_window_set_title(GTK_WINDOW(fs->window), g_strdup_printf(
 			     "Send file to %s", user->GetAlias()));
+
+	// The destroy signal for the window
+	gtk_signal_connect(GTK_OBJECT(fs->window), "destroy",
+			   GTK_SIGNAL_FUNC(fs_cancel_click), (gpointer)fs);
 
 	// The box that will hold all the widgets for this window
 	GtkWidget *v_box = gtk_vbox_new(FALSE, 5);
