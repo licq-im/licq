@@ -62,7 +62,6 @@ typedef enum EGender
 } Gender;
 const unsigned short AGE_UNSPECIFIED = 0xFFFF;
 
-enum ESortKey { SORT_STATUS, SORT_ONLINE };
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
 
 const unsigned long GROUP_ONLINE_NOTIFY   = 1;
@@ -148,9 +147,8 @@ public:
   unsigned long RealIp(void)                { return m_nRealIp; }
   char Mode(void)                           { return m_nMode; }
   unsigned long Version(void)               { return m_nVersion; }
+  time_t LastOnline(void)                   { return m_nLastOnline; }
 
-  unsigned long SortKey(void);
-  static void SetSortKey(ESortKey);
   void usprintf(char *_sz, const char *_szFormat, bool _bAllowFieldWidth = true);
   char *IpPortStr(char *rbuf);
 
@@ -218,10 +216,7 @@ public:
   bool StatusBirthday(void)        {  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;  }
   bool StatusOffline(void)         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
   void SetStatus(unsigned long n)  {  m_nStatus = n;  }
-  void SetStatusOffline(void)      {  SetStatus(m_nStatus | ICQ_STATUS_OFFLINE); };
-  //unsigned long StatusFlags(void)  {  return m_nStatus & ICQ_STATUS_FxFLAGS; }
-  //void SetStatusFlag(unsigned long s)   { SetStatus(m_nStatus | s); }
-  //void ClearStatusFlag(unsigned long s) { SetStatus(m_nStatus & ~s); }
+  void SetStatusOffline(void);
   char *StatusStr(char *);
   char *StatusStrShort(char *);
   bool Away(void);
@@ -292,7 +287,7 @@ protected:
   CIniFile m_fConf;
   CUserHistory m_fHistory;
   int m_nSocketDesc;
-  time_t m_nTouched;
+  time_t m_nTouched, m_nLastOnline;
   unsigned long m_nIp, m_nRealIp, m_nVersion;
   unsigned short m_nPort;
   unsigned long m_nUin,
@@ -354,12 +349,10 @@ protected:
   vector <class CUserEvent *> m_vcMessages;
 
   static unsigned short s_nNumUserEvents;
-  static ESortKey s_eSortKey;
 
   pthread_rdwr_t mutex_rw;
   unsigned short m_nLockType;
   static pthread_mutex_t mutex_nNumUserEvents;
-  static pthread_mutex_t mutex_sortkey;
 
   friend class CUserGroup;
   friend class CUserManager;
@@ -446,7 +439,7 @@ public:
 
   void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
   void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
-  void Reorder(ICQUser *_pcUser, bool _bOnList = true);
+  //void Reorder(ICQUser *_pcUser, bool _bOnList = true);
   void SaveAllUsers(void);
 
   unsigned short NumUsers(void);

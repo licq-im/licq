@@ -75,7 +75,6 @@ CUserManager::CUserManager(void) : m_hUsers(USER_HASH_SIZE)
 
   m_xOwner = NULL;
   m_nOwnerUin = 0;
-  ICQUser::SetSortKey(SORT_STATUS);
 }
 
 void CUserManager::SetOwnerUin(unsigned long _nUin)
@@ -388,7 +387,7 @@ void CUserManager::DropOwner(void)
   m_xOwner->Unlock();
 }
 
-
+#if 0
 /*---------------------------------------------------------------------------
  * CUserManager::Reorder
  *
@@ -431,7 +430,7 @@ void CUserManager::Reorder(ICQUser *_pcUser, bool _bOnList)
 
   UnlockUserList();
 }
-
+#endif
 
 /*---------------------------------------------------------------------------
  * CUserManager::SaveAllUsers
@@ -725,8 +724,6 @@ void CUserHashTable::Unlock(void)
 
 unsigned short ICQUser::s_nNumUserEvents = 0;
 pthread_mutex_t ICQUser::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
-ESortKey ICQUser::s_eSortKey;
-pthread_mutex_t ICQUser::mutex_sortkey;
 
 
 //-----ICQUser::constructor-----------------------------------------------------
@@ -857,6 +854,7 @@ void ICQUser::LoadLicqInfo(void)
   // read in the fields, checking for errors each time
   char szTemp[MAX_DATA_LEN];
   unsigned short nNewMessages;
+  unsigned long nLastOnline;
   m_fConf.SetSection("user");
   m_fConf.ReadNum("Groups.System", m_nGroups[GROUPS_SYSTEM], 0);
   m_fConf.ReadNum("Groups.User", m_nGroups[GROUPS_USER], 0);
@@ -867,6 +865,8 @@ void ICQUser::LoadLicqInfo(void)
   m_fConf.ReadNum("Port", m_nPort, 0);
   m_fConf.ReadBool("NewUser", m_bNewUser, false);
   m_fConf.ReadNum("NewMessages", nNewMessages, 0);
+  m_fConf.ReadNum("LastOnline", nLastOnline, 0);
+  m_nLastOnline = nLastOnline;
   m_fConf.ReadStr("History", szTemp, "default");
   if (szTemp[0] == '\0') strcpy(szTemp, "default");
   SetHistoryFile(szTemp);
@@ -963,6 +963,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_nMode = MODE_DIRECT;
   m_nVersion = 0x03;
   Touch();
+  m_nLastOnline = 0;
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
 }
@@ -1018,28 +1019,16 @@ unsigned short ICQUser::Status(void)
    else return (ICQ_STATUS_OFFLINE - 1);
 }
 
-
-unsigned long ICQUser::SortKey(void)
+void ICQUser::SetStatusOffline(void)
 {
-  switch (s_eSortKey)
+  if (!StatusOffline())
   {
-  case SORT_STATUS:
-  {
-    unsigned long s = Status();
-    return (s == ICQ_STATUS_FREEFORCHAT ? ICQ_STATUS_ONLINE : s);
+    m_nLastOnline = time(NULL);
+    SaveLicqInfo();
   }
-  case SORT_ONLINE:
-    return (StatusOffline() ? 1 : 0);
-  }
-  return 0;
+  SetStatus(m_nStatus | ICQ_STATUS_OFFLINE);
 }
 
-void ICQUser::SetSortKey(ESortKey _eSortKey)
-{
-  pthread_mutex_lock(&mutex_sortkey);
-  s_eSortKey = _eSortKey;
-  pthread_mutex_unlock(&mutex_sortkey);
-}
 
 unsigned long ICQUser::Sequence(bool increment = false)
 {
@@ -1471,6 +1460,7 @@ void ICQUser::SaveLicqInfo(void)
    m_fConf.WriteNum("Port", Port());
    m_fConf.WriteBool("NewUser", NewUser());
    m_fConf.WriteNum("NewMessages", NewMessages());
+   m_fConf.WriteNum("LastOnline", (unsigned long)LastOnline());
    if (!m_fConf.FlushFile())
    {
      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
