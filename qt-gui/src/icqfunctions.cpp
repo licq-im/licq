@@ -488,9 +488,9 @@ void ICQFunctions::CreateHistoryTab()
   connect(chkHistoryReverse,SIGNAL(toggled(bool)),SLOT(ReverseHistory(bool)));
   lay->addWidget(chkHistoryReverse, CR, 2);
   chkHistoryReverse->setChecked(true);
-  lay->addWidget(new QLabel(tr("History File:"), p), ++CR, 0);
-  nfoHistory = new CInfoField(p, true);
-  lay->addMultiCellWidget(nfoHistory, CR, CR, 1, 2);
+  //lay->addWidget(new QLabel(tr("History File:"), p), ++CR, 0);
+  //nfoHistory = new CInfoField(p, true);
+  //lay->addMultiCellWidget(nfoHistory, CR, CR, 1, 2);
 }
 
 //-----ICQFunctions::keyPressEvent----------------------------------------------
@@ -996,7 +996,7 @@ void ICQFunctions::printMessage(QListViewItem *e)
       if (server->getUrlViewer() != NULL && QueryUser(this, tr("View URL?"), tr("Yes"), tr("No")) )
       {
         char* szCmd = new char[strlen(server->getUrlViewer()) + strlen(((CEventUrl *)m)->Url()) + 8];
-        sprintf(szCmd, "%s %s &", server->getUrlViewer(), ((CEventUrl *)m)->Url());
+        sprintf(szCmd, "%s '%s' &", server->getUrlViewer(), ((CEventUrl *)m)->Url());
         if (system(szCmd) != 0) gLog.Error("%sView URL failed.\n", L_ERRORxSTR);
         delete szCmd;
       }
@@ -1147,7 +1147,7 @@ void ICQFunctions::SaveAbout()
 void ICQFunctions::SetupHistory()
 {
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  nfoHistory->setData(u->HistoryName());
+  //nfoHistory->setData(u->HistoryName());
   if (!u->GetHistory(m_lHistoryList))
   {
     mleHistory->setText(tr("Error loading history"));
@@ -1693,7 +1693,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
           {
           case ICQ_CMDxSUB_CHAT:
           {
-            ChatDlg *chatDlg = new ChatDlg(m_nUin, false, ea->nPort);
+            ChatDlg *chatDlg = new ChatDlg(m_nUin, false, server, ea->nPort);
             chatDlg->show();
             break;
           }
@@ -1702,7 +1702,7 @@ void ICQFunctions::doneFcn(ICQEvent *e)
             CFileDlg *fileDlg = new CFileDlg(m_nUin,
                                              ((CEventFile *)ue)->Filename(),
                                              ((CEventFile *)ue)->FileSize(),
-                                             false, ea->nPort);
+                                             server, false, ea->nPort);
             fileDlg->show();
             break;
           }
