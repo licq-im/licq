@@ -55,6 +55,11 @@ protected:
 
   void *dl_handle;
   pthread_t thread_plugin;
+  int localargc;
+  char **localargv;
+
+  CPluginFunctions()  { localargv = NULL; }
+  ~CPluginFunctions() { if (localargv != NULL) free(localargv); }
 
 friend class CLicq;
 friend class CICQDaemon;
