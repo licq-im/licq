@@ -816,8 +816,20 @@ void CUserView::AnimationOnline(unsigned long uin)
 {
   if(onlTimerId == 0) {
     onlTimerId = startTimer(FLASH_TIME);
-    onlCounter = 4*1000/FLASH_TIME; // run about 4 seconds
+    // run about 5 seconds, make sure that that the
+    // actual "flashing" starts with a delay, because of the
+    // logon case.
+    onlCounter = ((5*1000/FLASH_TIME)+1)&(-2);
     onlUin = uin;
+  }
+  else if((onlCounter & 1) == 0)
+  {
+    // whoops, another user went online
+    // we just block here the blinking for the
+    // rest of the time
+    onlUin = 0;
+    // no need for a redraw, as the user is already shown
+    // correctly.
   }
 }
 
