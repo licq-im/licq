@@ -1594,14 +1594,15 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
 
   // Make the command and data variables point to the relevant data in the buf
   szCommand = szRawArgs = _szBuf;
-  while (*szRawArgs != '\0' && !isspace(*szRawArgs)) szRawArgs++;
-  if (szRawArgs != '\0')
+  while (*szRawArgs && !isspace(*szRawArgs)) szRawArgs++;
+  if (*szRawArgs)
   {
     *szRawArgs = '\0';
     szRawArgs++;
     while (isspace(*szRawArgs)) szRawArgs++;
   }
-  if (szRawArgs[strlen(szRawArgs) - 1] == '\n') szRawArgs[strlen(szRawArgs) - 1] = '\0';
+  if (*szRawArgs && szRawArgs[strlen(szRawArgs) - 1] == '\n') 
+    szRawArgs[strlen(szRawArgs) - 1] = '\0';
 
   gLog.Info("%sReceived command \"%s\" with arguments \"%s\".\n", L_FIFOxSTR,
             szCommand, szRawArgs);
