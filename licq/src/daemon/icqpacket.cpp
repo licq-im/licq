@@ -602,8 +602,8 @@ CPU_ContactList::CPU_ContactList(UinList &uins)
   InitBuffer();
 
   buffer->PackChar(uins.size());
-  for (unsigned short i  = 0; i < uins.size(); i++)
-    buffer->PackUnsignedLong(uins[i]);
+  for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++)
+    buffer->PackUnsignedLong(*iter);
 }
 
 CPU_ContactList::CPU_ContactList(unsigned long _nUin)
@@ -626,8 +626,8 @@ CPU_VisibleList::CPU_VisibleList(UinList &uins)
   InitBuffer();
 
   buffer->PackChar(uins.size());
-  for (unsigned short i  = 0; i < uins.size(); i++)
-    buffer->PackUnsignedLong(uins[i]);
+  for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++)
+    buffer->PackUnsignedLong(*iter);
 
 }
 
@@ -640,8 +640,8 @@ CPU_InvisibleList::CPU_InvisibleList(UinList &uins)
   InitBuffer();
 
   buffer->PackChar(uins.size());
-  for (unsigned short i  = 0; i < uins.size(); i++)
-    buffer->PackUnsignedLong(uins[i]);
+  for (UinList::iterator iter = uins.begin(); iter != uins.end(); iter++)
+    buffer->PackUnsignedLong(*iter);
 
 }
 
@@ -1032,6 +1032,8 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   buffer->PackUnsignedShort(m_nMetaCommand);
   char *sz = gTranslator.NToRN(szAbout);
   gTranslator.ClientToServer(sz);
+  if (strlen(sz) > MAX_MESSAGE_SIZE)
+    sz[MAX_MESSAGE_SIZE] = '\0';
   buffer->PackString(sz);
   if (sz != NULL) free(sz);
 }
