@@ -19,6 +19,7 @@
 // written by Graham Roff <graham@licq.org>
 // contributions by Dirk A. Mueller <dirk@licq.org>
 
+#include <qcheckbox.h>
 #include <qdatetime.h>
 #include <qvbox.h>
 #include <qvgroupbox.h>
@@ -33,12 +34,16 @@
 #include "authuserdlg.h"
 #include "ewidgets.h"
 #include "messagebox.h"
+#include "mmsenddlg.h"
 #include "chatdlg.h"
 #include "chatjoin.h"
+#include "eventdesc.h"
 #include "filedlg.h"
 #include "forwarddlg.h"
 #include "usereventdlg.h"
 #include "refusedlg.h"
+#include "sigman.h"
+#include "showawaymsgdlg.h"
 
 
 // -----------------------------------------------------------------------------
@@ -107,6 +112,7 @@ void UserEventCommon::slot_updatetime()
 
 UserEventCommon::~UserEventCommon()
 {
+  qDebug("UserEventCommon::~UserEventCommon()");
   emit finished(m_nUin);
 }
 
@@ -278,16 +284,20 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
 
 void UserViewEvent::generateReply()
 {
-#if 0
   QString s;
   for (int i = 0; i < mleRead->numLines(); i++)
-     s += QString("> ") + mleRead->textLine(i) + "\n";
-  mleSend->setText(s);
-  mleSend->GotoEnd();
-  mleSend->setEdited(false);
-  tabs->showPage(tabList[TAB_SEND].tab);
-#endif
+     s += QString("> ") + mleRead->textLine(i) + " \n";
+
+  sendMsg(s);
 }
+
+void UserViewEvent::sendMsg(QString txt)
+{
+  UserSendMsgEvent* e = new UserSendMsgEvent(server, sigman, mainwin, m_nUin);
+  e->show();
+  e->setText(txt);
+}
+
 
 void UserViewEvent::slot_btnRead1()
 {
@@ -457,14 +467,266 @@ void UserViewEvent::slot_btnReadNext()
 
 // -----------------------------------------------------------------------------
 
+UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
+                               CMainWindow *m, unsigned long _nUin, QWidget* parent, const char* name)
+  : UserEventCommon(s, theSigMan, m, _nUin, parent, name)
+{
+  mleSend = new MLEditWrap(true, mainWidget, true);
+  mleSend->setMinimumHeight(150);
+
+  QGroupBox *box = new QGroupBox(mainWidget);
+  QBoxLayout *vlay = new QVBoxLayout(box, 10, 5);
+  QBoxLayout *hlay = new QHBoxLayout(vlay);
+  chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
+  hlay->addWidget(chkSendServer);
+  chkUrgent = new QCheckBox(tr("U&rgent"), box);
+  hlay->addWidget(chkUrgent);
+  chkMass = new QCheckBox(tr("&Multiple recipients"), box);
+  hlay->addWidget(chkMass);
+  connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(slot_masstoggled(bool)));
+
+#ifdef USE_SPOOFING
+  hlay = new QHBoxLayout(vlay);
+  chkSpoof = new QCheckBox(tr("S&poof UIN:"), box);
+  hlay->addWidget(chkSpoof);
+  edtSpoof = new QLineEdit(box);
+  hlay->addWidget(edtSpoof);
+  edtSpoof->setEnabled(false);
+  edtSpoof->setValidator(new QIntValidator(10000, 2000000000, edtSpoof));
+  connect(chkSpoof, SIGNAL(toggled(bool)), edtSpoof, SLOT(setEnabled(bool)));
+#else
+  edtSpoof = NULL;
+  chkSpoof = NULL;
+#endif
+
+  btnSend = new QPushButton(tr("&Send"), mainWidget);
+  connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
+}
+
+UserSendCommon::~UserSendCommon()
+{
+  qDebug("UserSendCommon::~UserSendCommon()");
+}
+
+void UserSendCommon::sendButton()
+{
+  if (icqEventTag != NULL)
+  {
+//    QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
+//    setCaption(title);
+    setCursor(waitCursor);
+//    btnOk->setEnabled(false);
+//    btnCancel->setText(tr("&Cancel"));
+    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone(ICQEvent *)));
+  }
+}
+
+void UserSendCommon::sendDone(ICQEvent* e)
+{
+  qDebug("UserSendCommon::sendDone()");
+
+}
+
+void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
+{
+  qDebug("retrySend");
+}
+
+
+// -----------------------------------------------------------------------------
+
 UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                    CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserSendMsgEvent")
+  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendMsgEvent")
 {
+  mleSend->setFocus();
 }
 
 UserSendMsgEvent::~UserSendMsgEvent()
 {
+}
+
+void UserSendMsgEvent::setText(QString txt)
+{
+  mleSend->setText(txt);
+  mleSend->GotoEnd();
+  mleSend->setEdited(false);
+}
+
+void UserSendMsgEvent::sendButton()
+{
+  qDebug("UserSendMsgEvent::sendButton() called!");
+
+  // do nothing if a command is already being processed
+  if (icqEventTag != NULL) return;
+
+  if(!mleSend->edited() &&
+     !QueryUser(this, tr("You didn't edit the message.\n"
+                         "Do you really want to send it?"), tr("&Yes"), tr("&No")))
+    return;
+
+  unsigned short nMsgLen = mleSend->text().length();
+  if (nMsgLen > MAX_MESSAGE_SIZE && chkSendServer->isChecked()
+      && !QueryUser(this, tr("Message is %1 characters, over the ICQ server limit of %2.\n"
+                             "The message will be truncated if sent through the server.")
+                    .arg(nMsgLen).arg(MAX_MESSAGE_SIZE),
+                    tr("C&ontinue"), tr("&Cancel")))
+    return;
+
+  unsigned long uin = (chkSpoof && chkSpoof->isChecked() ?
+                       edtSpoof->text().toULong() : 0);
+  // don't let the user send empty messages
+  if(mleSend->text().stripWhiteSpace().isEmpty())
+    return;
+
+  if (chkMass->isChecked())
+  {
+    CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
+    int r = m->go_message(mleSend->text());
+    delete m;
+    if (r != QDialog::Accepted) return;
+  }
+//  m_sProgressMsg = tr("Sending msg ");
+//  m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
+//  m_sProgressMsg += "...";
+  icqEventTag = server->icqSendMessage(m_nUin, mleSend->text().local8Bit(),
+                                       chkSendServer->isChecked() ? false : true,
+                                       chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
+
+  UserSendCommon::sendButton();
+}
+
+void UserSendMsgEvent::sendDone(ICQEvent* e)
+{
+  if ( !icqEventTag->Equals(e) )
+    return;
+
+  bool isOk = (e != NULL && (e->Result() == EVENT_ACKED || e->Result() == EVENT_SUCCESS));
+  bool bForceOpen = false;
+
+  QString title, result;
+  if (e == NULL)
+  {
+    result = tr("error");
+  }
+  else
+  {
+    switch (e->Result())
+    {
+    case EVENT_ACKED:
+    case EVENT_SUCCESS:
+      result = tr("done");
+//      QTimer::singleShot(5000, this, SLOT(slot_resettitle()));
+      break;
+    case EVENT_FAILED:
+      result = tr("failed");
+      break;
+    case EVENT_TIMEDOUT:
+      result = tr("timed out");
+      break;
+    case EVENT_ERROR:
+      result = tr("error");
+      break;
+    default:
+      break;
+    }
+  }
+//  title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
+//  setCaption(title);
+
+  setCursor(arrowCursor);
+//  btnOk->setEnabled(true);
+//  btnCancel->setText(tr("&Close"));
+  delete icqEventTag;
+  icqEventTag = NULL;
+  disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone(ICQEvent *)));
+
+  if (e == NULL) return;
+
+  if (!isOk)
+  {
+    if (e->Command() == ICQ_CMDxTCP_START &&
+        (e->SubCommand() == ICQ_CMDxSUB_MSG ||
+         e->SubCommand() == ICQ_CMDxSUB_URL) &&
+        QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No")) )
+    {
+      RetrySend(e, false, ICQ_TCPxMSG_NORMAL);
+    }
+  }
+  else
+  {
+    switch(e->Command())
+    {
+      case ICQ_CMDxTCP_START:
+      {
+        ICQUser *u = NULL;
+        CUserEvent *ue = e->UserEvent();
+        QString msg;
+        if (e->SubResult() == ICQ_TCPxACK_RETURN)
+        {
+          u = gUserManager.FetchUser(m_nUin, LOCK_R);
+          msg = tr("%1 is in %2 mode:\n%3\n")
+                   .arg(u->GetAlias()).arg(u->StatusStr())
+                   .arg(QString::fromLocal8Bit(u->AutoResponse()));
+          gUserManager.DropUser(u);
+          switch (QueryUser(this, msg, tr("Send\nUrgent"), tr("Send to\nContact List"), tr("Cancel")))
+          {
+            case 0:
+              RetrySend(e, true, ICQ_TCPxMSG_URGENT);
+              break;
+            case 1:
+              RetrySend(e, true, ICQ_TCPxMSG_LIST);
+              break;
+            case 2:
+              break;
+          }
+          bForceOpen = true;
+        }
+        else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
+        {
+          u = gUserManager.FetchUser(m_nUin, LOCK_R);
+          msg = tr("%1 refused %2, send through server.")
+                .arg(u->GetAlias()).arg(EventDescription(ue));
+          InformUser(this, msg);
+          gUserManager.DropUser(u);
+          bForceOpen = true;
+        }
+        else
+        {
+          u = gUserManager.FetchUser(m_nUin, LOCK_R);
+          if (u->Away() && u->ShowAwayMsg()) {
+            gUserManager.DropUser(u);
+            (void) new ShowAwayMsgDlg(NULL, NULL, m_nUin);
+          }
+          else
+            gUserManager.DropUser(u);
+
+          if (bForceOpen)
+          {
+#warning fixme
+//            (void) new MsgViewItem(e->GrabUserEvent(), msgView);
+            mleSend->clear();
+          }
+        }
+
+        break;
+      } // case
+      case ICQ_CMDxSND_THRUxSERVER:
+      {
+        if (bForceOpen)
+        {
+//          (void) new MsgViewItem(e->GrabUserEvent(), msgView);
+//          mleSend->clear();
+        }
+        break;
+      }
+      default:
+        break;
+
+    }
+
+    if (!bForceOpen) close();
+  }
 }
 
 
@@ -472,7 +734,7 @@ UserSendMsgEvent::~UserSendMsgEvent()
 
 UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                    CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserSendUrlEvent")
+  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendUrlEvent")
 {
 }
 
@@ -480,12 +742,32 @@ UserSendUrlEvent::~UserSendUrlEvent()
 {
 }
 
+void UserSendUrlEvent::sendButton()
+{
+  unsigned long uin = (chkSpoof && chkSpoof->isChecked() ?
+                       edtSpoof->text().toULong() : 0);
+
+  if (chkMass->isChecked()) {
+    CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
+    int r = m->go_url(edtItem->text(), mleSend->text());
+    delete m;
+    if (r != QDialog::Accepted) return;
+  }
+//  m_sProgressMsg = tr("Sending URL ");
+//  m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
+//  m_sProgressMsg += "...";
+  icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), mleSend->text().local8Bit(),
+                                   chkSendServer->isChecked() ? false : true,
+                                   chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL, uin);
+
+  UserSendCommon::sendButton();
+}
 
 // -----------------------------------------------------------------------------
 
 UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                      CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserSendFileEvent")
+  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendFileEvent")
 {
 }
 
@@ -493,12 +775,26 @@ UserSendFileEvent::~UserSendFileEvent()
 {
 }
 
+void UserSendFileEvent::sendButton()
+{
+  if (edtItem->text().isEmpty())
+  {
+    WarnUser(this, tr("You must specify a file to transfer!"));
+    return;
+  }
+//  m_sProgressMsg = tr("Sending file transfer...");
+  icqEventTag = server->icqFileTransfer(m_nUin, edtItem->text().local8Bit(),
+                                        mleSend->text().local8Bit(),
+                                        chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+
+  UserSendCommon::sendButton();
+}
 
 // -----------------------------------------------------------------------------
 
 UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                      CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserSendChatEvent")
+  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendChatEvent")
 {
 }
 
@@ -506,17 +802,38 @@ UserSendChatEvent::~UserSendChatEvent()
 {
 }
 
+void UserSendChatEvent::sendButton()
+{
+//  m_sProgressMsg = tr("Sending chat request...");
+  if (m_nMPChatPort == 0)
+    icqEventTag = server->icqChatRequest(m_nUin,
+                                         mleSend->text().local8Bit(),
+                                         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+  else
+    icqEventTag = server->icqMultiPartyChatRequest(m_nUin,
+                                                   mleSend->text().local8Bit(), m_szMPChatClients.local8Bit(),
+                                                   m_nMPChatPort,
+                                                   chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+  UserSendCommon::sendButton();
+}
 
 // -----------------------------------------------------------------------------
 
 UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                            CMainWindow *m, unsigned long _nUin, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _nUin, parent, "UserSendContactEvent")
+  : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendContactEvent")
 {
 }
 
 UserSendContactEvent::~UserSendContactEvent()
 {
+}
+
+void UserSendContactEvent::sendButton()
+{
+  qDebug("not yet implemented");
+
+  UserSendCommon::sendButton();
 }
 
 // -----------------------------------------------------------------------------

@@ -23,6 +23,7 @@
 
 class QVGroupBox;
 class QBoxLayout;
+class QCheckBox;
 class QPushButton;
 class QTimer;
 class QSplitter;
@@ -36,6 +37,7 @@ class CICQEventTag;
 class CSignalManager;
 class CMainWindow;
 class CUserEvent;
+class CMMUserView;
 
 /* ----------------------------------------------------------------------------- */
 
@@ -88,6 +90,7 @@ protected:
   QPushButton *btnRead1, *btnRead2, *btnRead3, *btnRead4, *btnReadNext;
 
   void generateReply();
+  void sendMsg(QString txt);
 
 protected slots:
   void slot_btnRead1();
@@ -101,22 +104,59 @@ protected slots:
 
 /* ----------------------------------------------------------------------------- */
 
-class UserSendMsgEvent : public UserEventCommon
+class UserSendCommon : public UserEventCommon
 {
+  Q_OBJECT
+public:
+
+  UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
+                 unsigned long _nUin, QWidget* parent = 0, const char* name=0);
+  virtual ~UserSendCommon();
+
+protected:
+  MLEditWrap *mleSend;
+  QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
+  QPushButton *btnSend;
+  QLineEdit *edtSpoof;
+  QVGroupBox *grpMR;
+  QButtonGroup *grpCmd;
+  QString m_szMPChatClients;
+  unsigned short m_nMPChatPort;
+  CMMUserView *lstMultipleRecipients;
+
+  void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
+
+protected slots:
+  virtual void sendButton();
+  virtual void sendDone(ICQEvent*);
+};
+
+
+/* ----------------------------------------------------------------------------- */
+
+class UserSendMsgEvent : public UserSendCommon
+{
+  Q_OBJECT
 public:
 
   UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   unsigned long _nUin, QWidget* parent = 0);
   virtual ~UserSendMsgEvent();
 
+  void setText(QString txt);
 protected:
+
+protected slots:
+  virtual void sendButton();
+  virtual void sendDone(ICQEvent*);
 };
 
 
 /* ----------------------------------------------------------------------------- */
 
-class UserSendUrlEvent : public UserEventCommon
+class UserSendUrlEvent : public UserSendCommon
 {
+  Q_OBJECT
 public:
 
   UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
@@ -124,13 +164,18 @@ public:
   virtual ~UserSendUrlEvent();
 
 protected:
+  CInfoField *edtItem;
+
+protected slots:
+  virtual void sendButton();
 };
 
 
 /* ----------------------------------------------------------------------------- */
 
-class UserSendFileEvent : public UserEventCommon
+class UserSendFileEvent : public UserSendCommon
 {
+  Q_OBJECT
 public:
 
   UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
@@ -138,13 +183,18 @@ public:
   virtual ~UserSendFileEvent();
 
 protected:
+  CInfoField *edtItem;
+
+protected slots:
+  virtual void sendButton();
 };
 
 
 /* ----------------------------------------------------------------------------- */
 
-class UserSendChatEvent : public UserEventCommon
+class UserSendChatEvent : public UserSendCommon
 {
+  Q_OBJECT
 public:
 
     UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
@@ -152,13 +202,17 @@ public:
     virtual ~UserSendChatEvent();
 
 protected:
+
+protected slots:
+  virtual void sendButton();
 };
 
 
 /* ----------------------------------------------------------------------------- */
 
-class UserSendContactEvent : public UserEventCommon
+class UserSendContactEvent : public UserSendCommon
 {
+  Q_OBJECT
 public:
 
     UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
@@ -166,6 +220,9 @@ public:
     virtual ~UserSendContactEvent();
 
 protected:
+
+protected slots:
+  virtual void sendButton();
 };
 
 

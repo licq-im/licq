@@ -1480,8 +1480,6 @@ void CMainWindow::callUserFunction(int index)
 
 void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
 {
-  qDebug("callInfoTab(%d, %ld)", fcn, nUin);
-
   if(nUin == 0) return;
 
   UserInfoDlg* f = 0;
@@ -1495,12 +1493,10 @@ void CMainWindow::callInfoTab(int fcn, unsigned long nUin)
   }
 
   if(f) {
-    qDebug("found window!");
     f->show();
     f->raise();
   }
   else {
-    qDebug("creating new window!");
     f = new UserInfoDlg(licqDaemon, licqSigMan, this, nUin);
     connect(f, SIGNAL(finished(unsigned long)), this, SLOT(UserInfoDlg_finished(unsigned long)));
     f->show();
@@ -1539,8 +1535,18 @@ ICQFunctions *CMainWindow::callFunction(int fcn, unsigned long nUin)
   if (nUin == 0) return NULL;
 
 #if 0
-  UserViewEvent* e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
-  e->show();
+  ICQUser* u = gUserManager.FetchUser(nUin, LOCK_R);
+  bool pendingMessages = (u->NewMessages() > 0);
+  gUserManager.DropUser(u);
+
+  if(pendingMessages) {
+    UserViewEvent* e = new UserViewEvent(licqDaemon, licqSigMan, this, nUin);
+    e->show();
+  }
+  else {
+    UserSendMsgEvent* e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, nUin);
+    e->show();
+  }
 
 #else
   QListIterator<ICQFunctions> it(licqUserData);
