@@ -73,15 +73,15 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   if (sigman == NULL || server == NULL)
   {
     mleAwayMsg->setText(u->AutoResponse());
+    gUserManager.DropUser(u);
   }
   else
   {
+    gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
     icqEvent = server->icqFetchAutoResponse(m_nUin);
   }
-
-  gUserManager.DropUser(u);
 
   show();
 }
