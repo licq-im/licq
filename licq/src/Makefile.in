@@ -29,14 +29,14 @@ LDLIBS   = @LIBS@ @SOCKS_LIBS@
 STRIP    = @PROG_STRIP@
 SIZE     = @PROG_SIZE@
 
-OBJECTS	= licq.o main.o 
+OBJECTS	= obj/licq.o obj/main.o 
 
 SUFFIXES = .o .c .cpp
 
-%.o: %.c
-	$(CC) $(CFLAGS) $(CPPFLAGS) -c $<
-%.o: %.cpp
-	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $<
+obj/%.o: %.c
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
+obj/%.o: %.cpp
+	$(CXX) $(CXXFLAGS) $(CPPFLAGS) -c $< -o $@
 
 
 .PHONY: all clean distclean install

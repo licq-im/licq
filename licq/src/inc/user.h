@@ -124,7 +124,7 @@ public:
   char *getLastName(void)      { return(m_sLastName); }
   char *getFirstName(void)     { return(m_sFirstName); }
   char *getEmail(void)         { return(m_sEmail); }
-  char *getAwayMessage(void)   { return(m_sAwayMessage); }
+  char *AutoResponse(void)     { return(m_szAutoResponse); }
   char *getCity(void)          { return(m_sCity); }
   char *getState(void)         { return(m_sState); }
   char *getPhoneNumber(void)   { return(m_sPhoneNumber); }
@@ -167,7 +167,7 @@ public:
   void setIsNew(bool s)               { m_bIsNew = s; saveInfo(); }
 
   void setAuthorization(bool s)       { m_bAuthorization = s; saveBasicInfo(); }
-  void setAwayMessage(const char *s)  { SetString(&m_sAwayMessage, s); }
+  void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
   void setUin(unsigned long s)        { m_nUin = s; }
   void setStatusOffline(void)         { setStatus(m_nStatus | ICQ_STATUS_OFFLINE); };
   void setStatusFlag(unsigned long s) { setStatus(m_nStatus | s); }
@@ -253,7 +253,7 @@ protected:
        *m_sFirstName,
        *m_sLastName,
        *m_sEmail,
-       *m_sAwayMessage,
+       *m_szAutoResponse,
        *m_sCity,
        *m_sState,
        *m_sPhoneNumber,
@@ -291,16 +291,18 @@ public:
   ICQOwner(void);
   bool Exception(void)  { return m_bException; }
 
-  //void Register(unsigned long n, const char *s);
-  char *getPassword(void) { return(m_sPassword); }
-  void setPassword(const char *s) { SetString(&m_sPassword, s); saveInfo();}
+  // Owner specific functions
+  char *Password(void) { return(m_szPassword); }
+  void SetPassword(const char *s) { SetString(&m_szPassword, s); saveInfo();}
+
+  // Virtual overloaded functions
   virtual void getBasicInfo(struct UserBasicInfo &us);
   virtual void getExtInfo(struct UserExtInfo &us);
   virtual void saveInfo(void);
 
   virtual bool User(void)  { return false; }
 protected:
-  char *m_sPassword;
+  char *m_szPassword;
   bool m_bException;
 };
 

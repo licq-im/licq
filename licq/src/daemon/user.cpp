@@ -875,7 +875,7 @@ void ICQUser::Init(unsigned long _nUin)
   m_sFirstName = NULL;
   m_sLastName = NULL;
   m_sEmail = NULL;
-  m_sAwayMessage = NULL;
+  m_szAutoResponse = NULL;
   m_sCity = NULL;
   m_sState = NULL;
   m_sPhoneNumber = NULL;
@@ -884,7 +884,7 @@ void ICQUser::Init(unsigned long _nUin)
 
   setUin(_nUin);
   setStatus(ICQ_STATUS_OFFLINE);
-  setAwayMessage("");
+  SetAutoResponse("");
   setSendServer(false);
   setShowAwayMsg(true);
   setSequence(1);
@@ -1144,7 +1144,7 @@ void ICQUser::getBasicInfo(struct UserBasicInfo &us)
    }
    sprintf(us.ip_port, "%s:%s", us.ip, us.port);
    strcpy(us.history, m_fHistory.Description());
-   strncpy(us.awayMessage, getAwayMessage(), MAX_MESSAGE_SIZE);
+   strncpy(us.awayMessage, AutoResponse(), MAX_MESSAGE_SIZE);
 }
 
 
@@ -1465,10 +1465,10 @@ ICQOwner::ICQOwner(void)
   gLog.Info("%sOwner configuration.\n", L_INITxSTR);
   unsigned long nTemp;
   bool bTemp;
-  char sTemp[16];
+  char szTemp[32];
   char filename[MAX_FILENAME_LEN];
   m_bException = false;
-  m_sPassword = NULL;
+  m_szPassword = NULL;
 
   setEnableSave(false);
   Init(0);
@@ -1488,18 +1488,20 @@ ICQOwner::ICQOwner(void)
   m_fConf.SetFlags(INI_FxWARN);
   m_fConf.ReadNum("Uin", nTemp);
   setUin(nTemp);
-  m_fConf.ReadStr("Password", sTemp);
-  setPassword(sTemp);
+  m_fConf.ReadStr("Password", szTemp);
+  SetPassword(szTemp);
   m_fConf.ReadBool("WebPresence", bTemp, true);
   if (bTemp) setStatus(m_nStatus | ICQ_STATUS_FxWEBxPRESENCE);
   m_fConf.ReadBool("HideIP", bTemp, false);
   if (bTemp) setStatus(m_nStatus | ICQ_STATUS_FxHIDExIP);
+
+
   m_fConf.CloseFile();
   struct timezone tz;
   gettimeofday(NULL, &tz);
   setTimezone(tz.tz_minuteswest / 60);
 
-  if (strlen(getPassword()) > 8)
+  if (strlen(Password()) > 8)
   {
     gLog.Error("%sPassword must be 8 characters or less.  Check %s.\n", L_ERRORxSTR, m_fConf.FileName());
     m_bException = true;
@@ -1512,19 +1514,6 @@ ICQOwner::ICQOwner(void)
   setEnableSave(true);
 }
 
-/*
-void ICQOwner::Register(unsigned long n, const char *s)
-{
-  setEnableSave(false);
-  setUin(n);
-  char buf[24];
-  sprintf(buf, "%ld");
-  setAlias(buf);
-  setPassword(s);
-  setEnableSave(true);
-  saveInfo();
-}
-*/
 
 //-----ICQOwner::getBasicInfo---------------------------------------------------
 void ICQOwner::getBasicInfo(struct UserBasicInfo &us)
@@ -1555,9 +1544,10 @@ void ICQOwner::saveInfo(void)
   }
   m_fConf.SetSection("user");
   m_fConf.WriteNum("Uin", getUin());
-  m_fConf.WriteStr("Password", getPassword());
+  m_fConf.WriteStr("Password", Password());
   m_fConf.WriteBool("WebPresence", getStatusWebPresence());
   m_fConf.WriteBool("HideIP", getStatusHideIp());
+
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
@@ -1567,4 +1557,7 @@ void ICQOwner::saveInfo(void)
 
   m_fConf.CloseFile();
 }
+
+
+
 

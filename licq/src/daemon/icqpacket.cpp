@@ -928,7 +928,7 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned long _nSequence,
    m_nSequence = _nSequence;
    free(m_sMessage);
    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-   m_sMessage = gTranslator.NToRN(o->getAwayMessage());
+   m_sMessage = gTranslator.NToRN(o->AutoResponse());
    gUserManager.DropOwner();
    m_nMsgLength = strlen(m_sMessage) + 1;
    gTranslator.ClientToServer(m_sMessage);

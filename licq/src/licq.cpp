@@ -31,6 +31,7 @@ extern int errno;
 #include "countrycodes.h"
 #include "utility.h"
 #include "support.h"
+#include "sar.h"
 
 #include "licq.conf.h"
 
@@ -194,6 +195,7 @@ CLicq::CLicq(int argc, char **argv)
     licqException = EXIT_LOADxUSERSxFAIL;
     return;
   }
+  gSARManager.Load();
   sprintf(szFilename, "%s%s", SHARE_DIR, UTILITY_DIR);
   gUtilityManager.LoadUtilities(szFilename);
 
@@ -443,6 +445,7 @@ bool CLicq::Install(void)
   FILE *f = fopen(cmd, "w");
   fprintf(f, "%s", LICQ_CONF);
   fclose(f);
+
 
   // Create users.conf
   sprintf(cmd, "%susers.conf", BASE_DIR);

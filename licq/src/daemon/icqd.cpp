@@ -139,12 +139,11 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   for (unsigned short i = 0; i < 10; i++) m_vbTcpPorts[i] = false;
 
   // Pipes
-  gLog.Info("%sCreating pipes...", L_INITxSTR);
+  gLog.Info("%sCreating pipes.\n", L_INITxSTR);
   pipe(pipe_newsocket);
-  gLog.Info("done.\n");
 
   // Start up our threads
-  gLog.Info("%sInitializing thread data...", L_INITxSTR);
+  gLog.Info("%sInitializing thread data.\n", L_INITxSTR);
   pthread_mutex_init(&mutex_pendingevents, NULL);
   pthread_cond_init(&cond_pendingevents, NULL);
   pthread_mutex_init(&mutex_runningevents, NULL);
@@ -152,7 +151,6 @@ CICQDaemon::CICQDaemon(CLicq *_licq) : m_vbTcpPorts(10)
   pthread_cond_init(&cond_doneevents, NULL);
   pthread_mutex_init(&mutex_extendedevents, NULL);
   pthread_mutex_init(&mutex_plugins, NULL);
-  gLog.Info("done.\n");
 }
 
 
@@ -888,7 +886,7 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     if (*szArgs != '\0')
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      o->setAwayMessage(szArgs);
+      o->SetAutoResponse(szArgs);
       gUserManager.DropOwner();
     }
   }
@@ -897,7 +895,7 @@ void CICQDaemon::ProcessFifo(char *_szBuf)
     if (*szArgs != '\0')
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-      o->setAwayMessage(szArgs);
+      o->SetAutoResponse(szArgs);
       gUserManager.DropOwner();
     }
     else

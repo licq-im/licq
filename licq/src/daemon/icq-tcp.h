@@ -695,9 +695,9 @@ bool CICQDaemon::ProcessTcpPacket(CBuffer &packet, int sockfd)
     else
     {
       // Update the away message if it's changed
-      if (strcmp(u->getAwayMessage(), message) != 0)
+      if (strcmp(u->AutoResponse(), message) != 0)
       {
-        u->setAwayMessage(message);
+        u->SetAutoResponse(message);
         u->setShowAwayMsg(true);
       }
       gLog.Info("%sAuto response from %s (#%d).\n", L_TCPxSTR, u->getAlias(), theSequence);
