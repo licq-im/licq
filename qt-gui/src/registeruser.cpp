@@ -127,7 +127,7 @@ void RegisterUserDlg::nextPage()
       lblInfo->setText(tr("Invalid password, must be between 1 and 8 characters."));
       errorOccured = true;
     }
-    else if(nfoPassword1->text().length() == 0)
+    else if(!chkExistingUser->isChecked() && nfoPassword1->text().length() == 0)
     {
       lblInfo->setText(tr("Please enter your password in both input fields."));
       errorOccured = true;
