@@ -1628,7 +1628,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins)
     int nAliasSize = 0;
 
     m_nSID = gUserManager.GenerateSID();
-    
+
     // Save the SID
     ICQUser *u = gUserManager.FetchUser(*i, LOCK_W);
     u->SetSID(m_nSID);
@@ -1644,10 +1644,20 @@ CPU_ExportToServerList::CPU_ExportToServerList(UinList &uins)
           break;
       }
     }
+
+    // No group yet?  Use default.  No default? Use ID of 1 (general)
+    if (m_nGSID == 0)
+    {
+      unsigned short nDefault = gUserManager.DefaultGroup();
+      if (nDefault <= pID->size());
+        m_nGSID = (*pID)[nDefault-1];
+
+      if (m_nGSID == 0)
+        m_nGSID = 1; // General (unless user renamed group)
+    }
     gUserManager.UnlockGroupIDList();
 
-    if (m_nGSID == 0)
-      m_nGSID = 1; // General (unless user renamed group)
+    SetExtraInfo(m_nGSID);
 
     nAliasSize = strlen(u->GetAlias());
     gUserManager.DropUser(u);
@@ -1687,6 +1697,9 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
   
   m_nSize += nSize;
   InitBuffer();
+
+  // Not necessary, but just to make it explicit that it occurs
+  SetExtraInfo(0); // top level group (contains all the groups)
 
   for (g = groups.begin(); g != groups.end(); g++)
   {
