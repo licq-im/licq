@@ -266,8 +266,6 @@ void contact_list_click(GtkWidget *contact_list,
 
 		_menu = gtk_menu_new();
 
-//		add_to_popup(user->GetAlias(), _menu, NULL, NULL);
-
 		/* The non-sensitive user name as a title */
 		item = gtk_menu_item_new_with_label(user->GetAlias());
 		gtk_menu_append(GTK_MENU(_menu), item);

@@ -36,6 +36,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	const gchar *name = g_strdup_printf("%s %s", user->GetFirstName(),
 					    user->GetLastName());
 	const gchar *uin = g_strdup_printf("%ld", user->Uin());
+	gchar *online;
 	gchar buf[32];
 	
 	/* Take care of the e_tag_data stuff */
@@ -124,6 +125,23 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 
 	/* Pack e-mail1 and e-mail2 in a horizontal line */
 	gtk_box_pack_start(GTK_BOX(general_box), h_box, FALSE, FALSE, 5); 
+
+	h_box = gtk_hbox_new(FALSE, 0);
+
+	if(!iu->user->StatusOffline())
+		online = "Now";
+	else if(iu->user->LastOnline() == 0)
+		online = "Unknown";
+	else
+	{
+		time_t last = iu->user->LastOnline();
+		online = ctime(&last);
+	}
+	
+	do_entry(entry, label, "Last Seen:", online);
+	pack_hbox(h_box, label, entry);
+
+	gtk_box_pack_start(GTK_BOX(general_box), h_box, FALSE, FALSE, 0);
 
 	/* END GENERAL TAB */
 
