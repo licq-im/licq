@@ -114,27 +114,16 @@ void system_status_click(GtkWidget *w, GdkEventButton *event, gpointer d)
 		gUserManager.DropOwner();
 		return;
 	}
-
 	else
 		gUserManager.DropOwner();
 
 	/* Now for the user messages */
-	gulong uin = 0;
-
 	FOR_EACH_USER_START(LOCK_R)
 	{
 		if(pUser->NewMessages() > 0)
-			uin = pUser->Uin();
+			convo_open(pUser, false);
 	}	
 	FOR_EACH_USER_END
-
-	ICQUser *user = gUserManager.FetchUser(uin, LOCK_R);
-
-	if(uin != 0)
-		//struct conversation *c = 
-		convo_new(user, TRUE);
-
-	gUserManager.DropUser(user);
 
 	contact_list_refresh();
 	system_status_refresh();
