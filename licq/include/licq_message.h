@@ -48,6 +48,9 @@ public:
    unsigned short LicqVersion()  { return m_nFlags & E_LICQxVER; }
    direction Direction()  {  return m_eDir; }
 
+   bool Pending() { return m_bPending; }
+   void SetPending(bool b)  { m_bPending = b; }
+
 protected:
    virtual void AddToHistory(ICQUser *, direction) = 0;
    int AddToHistory_Header(direction, char *);
@@ -67,6 +70,7 @@ protected:
    int m_nId;
    time_t         m_tTime;
    unsigned long  m_nFlags;
+   bool m_bPending;
 
 friend class CICQDaemon;
 friend class CUserHistory;

@@ -291,6 +291,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     if (e != NULL)
     {
       e->SetDirection(cDir == 'R' ? D_RECEIVER : D_SENDER);
+      e->SetPending(false);
       lHistory.push_back(e);
     }
     if (szResult == NULL) break;

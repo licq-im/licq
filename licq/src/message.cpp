@@ -27,6 +27,7 @@ CUserEvent::CUserEvent(unsigned short nSubCommand, unsigned short nCommand,
    m_nFlags = nFlags;
    m_eDir = D_RECEIVER;
    m_szText = NULL;
+   m_bPending = true;
    // race condition here, but so unlikely that I don't care
    m_nId = s_nId++;
 }
