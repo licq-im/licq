@@ -263,6 +263,9 @@ unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 //-----icqSetStatus-------------------------------------------------------------
 unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
 {
+  if (newStatus & ICQ_STATUS_DND)
+    newStatus |= 0x10; // quick compat hack
+
   // Set the status flags
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   unsigned long s = o->AddStatusFlags(newStatus);
