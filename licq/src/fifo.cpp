@@ -2,8 +2,7 @@
  * FIFO commands
  *
  * TODO things
- *	o file transfers, change debug level (we can redirect but not change
- *	| the debug level
+ *	o file transfers
  * THOUGTHS 
  *	o a flag so message, url, etc can been forced to fail if buddy is not
  *	| in the list ?
@@ -72,6 +71,10 @@ static const char* const HELP_REDIRECT =
 	"\tredirect <file>\n"
 	"\t\tRedirects the stdout and stderr for\n"
 	"\t\tlicq to the given file\n";
+static const char* const HELP_DEBUGLVL = 
+	"\tdebuglvl <level>\n"
+	"\t\tset what information is logged\n"
+	"\t\tsee <level> in licq -h\n";
 static const char* const HELP_ADDUSER = 
 	"\tadduser <buddy>\n"
 	"\t\t add a user to your contact list. note\n"
@@ -304,6 +307,20 @@ fifo_redirect ( int argc, const char *const *argv, void *data)
 	return 0;
 }
 
+// debuglvl <level>
+static int
+fifo_debuglvl ( int argc, const char *const *argv, void *data)
+{	
+	int nRet = 0; 
+
+	if( (nRet = (argc == 1)) )
+		ReportMissingParams(argv[0]);
+	else
+		gLog.ModifyService( S_STDOUT, atoi(argv[1]));
+
+	return -nRet;
+}
+
 // adduser <buddy>
 static int
 fifo_adduser ( int argc, const char *const *argv, void *data)
@@ -438,6 +455,7 @@ static struct command_t fifocmd_table[]=
 	{"message",	fifo_message,	HELP_MSG,	0},
 	{"url",		fifo_url,	HELP_URL,	0},
 	{"redirect",	fifo_redirect,	HELP_REDIRECT,	0},
+	{"debuglvl",	fifo_debuglvl,	HELP_DEBUGLVL,	0},
 	{"adduser",	fifo_adduser,	HELP_ADDUSER,	0},
 	{"userinfo",	fifo_userinfo,	HELP_USERINFO,	0},
 	{"exit",	fifo_exit,	HELP_EXIT,	0},
