@@ -514,7 +514,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e )
             e->IsMultiRec() ? 'M' : '-',
             e->IsUrgent() ? 'U' : '-',
             e->IsEncrypted() ? 'E' : '-',
-            QStyleSheet::convertFromPlainText(codec->toUnicode(e->Text())).utf8().data()
+            QStyleSheet::convertFromPlainText(codec->toUnicode(e->Text()),  QStyleSheetItem::WhiteSpaceNormal).utf8().data()
            );
 #else
   s.sprintf("%c%s %s [%c%c%c%c]        \n%s",
