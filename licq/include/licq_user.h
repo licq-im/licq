@@ -201,7 +201,6 @@ public:
   char *GetCompanyPhoneNumber()         {  return m_szCompanyPhoneNumber; }
   char *GetCompanyFaxNumber()           {  return m_szCompanyFaxNumber;  }
   char *GetCompanyAddress()             {  return m_szCompanyAddress;  }
-  char *GetCompanyStreet()		{  return m_szCompanyStreet;  }
   char *GetCompanyZip()			{  return m_szCompanyZip;  }
   unsigned short GetCompanyCountry()	{  return m_nCompanyCountry;  } 
   char *GetCompanyName()                {  return m_szCompanyName;  }
@@ -284,7 +283,6 @@ public:
   void SetCompanyPhoneNumber (const char *n) {  SetString(&m_szCompanyPhoneNumber, n);  SaveWorkInfo();  }
   void SetCompanyFaxNumber (const char *n)   {  SetString(&m_szCompanyFaxNumber, n);  SaveWorkInfo();  }
   void SetCompanyAddress (const char *n)     {  SetString(&m_szCompanyAddress, n);  SaveWorkInfo();  }
-  void SetCompanyStreet (const char *n)	     {  SetString(&m_szCompanyStreet, n);  SaveWorkInfo();  }
   void SetCompanyZip (const char *n)	     {  SetString(&m_szCompanyZip, n);  SaveWorkInfo();  }
   void SetCompanyCountry (unsigned short n)  {  m_nCompanyCountry = n;  SaveWorkInfo();  }
   void SetCompanyName (const char *n)        {  SetString(&m_szCompanyName, n);  SaveWorkInfo();  }
@@ -494,7 +492,6 @@ protected:
   char *m_szCompanyPhoneNumber;
   char *m_szCompanyFaxNumber;
   char *m_szCompanyAddress;
-  char *m_szCompanyStreet;
   char *m_szCompanyZip;
   unsigned short m_nCompanyCountry;
   char *m_szCompanyName;

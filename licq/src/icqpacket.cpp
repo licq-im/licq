@@ -1606,7 +1606,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *szState,
     const char *szPhoneNumber,
     const char *szFaxNumber,
-    const char *szStreet,
+    const char *szAddress,
     const char *szZip,
     unsigned short nCompanyCountry,
     const char *szName,
@@ -1625,7 +1625,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   snprintf(szStatebuf, 6, szState);
 
   int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szCity) + strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
-		    strlen_safe(szFaxNumber) + strlen_safe(szStreet) + strlen_safe(szZip) + 2 + strlen_safe(szName) +
+		    strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZip) + 2 + strlen_safe(szName) +
 		    strlen_safe(szDepartment) + strlen_safe(szPosition) + 2 +
 		    strlen_safe(szHomepage) + 30;
   m_nSize += packetSize;
@@ -1644,7 +1644,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   gTranslator.ClientToServer((char *) szState);
   gTranslator.ClientToServer((char *) szPhoneNumber);
   gTranslator.ClientToServer((char *) szFaxNumber);
-  gTranslator.ClientToServer((char *) szStreet);
+  gTranslator.ClientToServer((char *) szAddress);
   gTranslator.ClientToServer((char *) szZip);
   gTranslator.ClientToServer((char *) szName);
   gTranslator.ClientToServer((char *) szDepartment);
@@ -1655,7 +1655,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   m_szState = buffer->PackString(szStatebuf);
   m_szPhoneNumber = buffer->PackString(szPhoneNumber);
   m_szFaxNumber = buffer->PackString(szFaxNumber);
-  m_szStreet = buffer->PackString(szStreet);
+  m_szAddress = buffer->PackString(szAddress);
   m_szZip = buffer->PackString(szZip);
   buffer->PackUnsignedShort(m_nCompanyCountry);
   m_szName = buffer->PackString(szName);

@@ -210,13 +210,13 @@ unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
 //-----icqSetWorkInfo--------------------------------------------------------
 unsigned long CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szState,
                                      const char *_szPhone,
-                                     const char *_szFax, const char *_szStreet,
+                                     const char *_szFax, const char *_szAddress,
 				     const char *_szZip, unsigned short _nCompanyCountry,
                                      const char *_szName, const char *_szDepartment,
                                      const char *_szPosition, const char *_szHomepage)
 {
   CPU_Meta_SetWorkInfo *p =
-    new CPU_Meta_SetWorkInfo(_szCity, _szState, _szPhone, _szFax, _szStreet,
+    new CPU_Meta_SetWorkInfo(_szCity, _szState, _szPhone, _szFax, _szAddress,
                              _szZip, _nCompanyCountry, _szName, _szDepartment, _szPosition, _szHomepage);
 
   gLog.Info("%sUpdating work info (#%ld/#%d)...\n", L_SRVxSTR, p->Sequence(), p->SubSequence());
@@ -1808,7 +1808,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 			o->SetCompanyState( p->m_szState );
 			o->SetCompanyPhoneNumber( p->m_szPhoneNumber );
 			o->SetCompanyFaxNumber( p->m_szFaxNumber );
-			o->SetCompanyStreet( p->m_szStreet );
+			o->SetCompanyAddress( p->m_szAddress );
 			o->SetCompanyZip( p->m_szZip );
 			o->SetCompanyCountry( p->m_nCompanyCountry );
 			o->SetCompanyName( p->m_szName );
@@ -1821,7 +1821,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 			gTranslator.ServerToClient(o->GetCompanyState());
 			gTranslator.ServerToClient(o->GetCompanyPhoneNumber());
 			gTranslator.ServerToClient(o->GetCompanyFaxNumber());
-			gTranslator.ServerToClient(o->GetCompanyStreet());
+			gTranslator.ServerToClient(o->GetCompanyAddress());
 			gTranslator.ServerToClient(o->GetCompanyZip());
 			gTranslator.ServerToClient(o->GetCompanyName());
 			gTranslator.ServerToClient(o->GetCompanyDepartment());
@@ -2097,7 +2097,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    u->SetCompanyState( msg.UnpackString() );
 	    u->SetCompanyPhoneNumber( msg.UnpackString() );
 	    u->SetCompanyFaxNumber( msg.UnpackString() );
-	    u->SetCompanyStreet( msg.UnpackString() );
+	    u->SetCompanyAddress( msg.UnpackString() );
 	    u->SetCompanyZip( msg.UnpackString() );
 	    u->SetCompanyCountry( msg.UnpackUnsignedShort() );
 	    u->SetCompanyName( msg.UnpackString() );
@@ -2111,7 +2111,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	    gTranslator.ServerToClient(u->GetCompanyState());
 	    gTranslator.ServerToClient(u->GetCompanyPhoneNumber());
 	    gTranslator.ServerToClient(u->GetCompanyFaxNumber());
-	    gTranslator.ServerToClient(u->GetCompanyStreet());
+	    gTranslator.ServerToClient(u->GetCompanyAddress());
 	    gTranslator.ServerToClient(u->GetCompanyZip());
 	    gTranslator.ServerToClient(u->GetCompanyName());
 	    gTranslator.ServerToClient(u->GetCompanyDepartment());

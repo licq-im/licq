@@ -574,7 +574,7 @@ public:
                        const char *szState,
                        const char *szPhoneNumber,
                        const char *szFaxNumber,
-                       const char *szStreet,
+                       const char *szAddress,
 		       const char *szZip,
 		       unsigned short nCompanyCountry,
                        const char *szName,
@@ -589,7 +589,7 @@ protected:
   char *m_szState;
   char *m_szPhoneNumber;
   char *m_szFaxNumber;
-  char *m_szStreet;
+  char *m_szAddress;
   char *m_szZip;
   unsigned short m_nCompanyCountry;
   char *m_szName;

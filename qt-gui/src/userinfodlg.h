@@ -103,7 +103,7 @@ protected:
   // Work info
   void CreateWorkInfo();
   CInfoField *nfoCompanyName, *nfoCompanyCity, *nfoCompanyState,
-             *nfoCompanyStreet, *nfoCompanyZip, *nfoCompanyCountry, *nfoCompanyPhone, *nfoCompanyFax,
+             *nfoCompanyAddress, *nfoCompanyZip, *nfoCompanyCountry, *nfoCompanyPhone, *nfoCompanyFax,
              *nfoCompanyHomepage, *nfoCompanyPosition, *nfoCompanyDepartment;
   CEComboBox *cmbCompanyCountry;
   

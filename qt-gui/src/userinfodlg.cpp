@@ -650,9 +650,9 @@ void UserInfoDlg::CreateWorkInfo()
   nfoCompanyState->setMaxLength(5);
   lay->addWidget(nfoCompanyState, CR, 4);
 
-  lay->addWidget(new QLabel(tr("Street:"), p), ++CR, 0);
-  nfoCompanyStreet = new CInfoField(p, !m_bOwner);
-  lay->addMultiCellWidget(nfoCompanyStreet, CR, CR, 1, 4);
+  lay->addWidget(new QLabel(tr("Address:"), p), ++CR, 0);
+  nfoCompanyAddress = new CInfoField(p, !m_bOwner);
+  lay->addMultiCellWidget(nfoCompanyAddress, CR, CR, 1, 4);
 
   lay->addWidget(new QLabel(tr("Zip:"), p), ++CR, 0);
   nfoCompanyZip = new CInfoField(p, !m_bOwner);
@@ -703,7 +703,7 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
   nfoCompanyPosition->setData(codec->toUnicode(u->GetCompanyPosition()));
   nfoCompanyCity->setData(codec->toUnicode(u->GetCompanyCity()));
   nfoCompanyState->setData(codec->toUnicode(u->GetCompanyState()));
-  nfoCompanyStreet->setData(codec->toUnicode(u->GetCompanyStreet()));
+  nfoCompanyAddress->setData(codec->toUnicode(u->GetCompanyAddress()));
   nfoCompanyZip->setData(codec->toUnicode(u->GetCompanyZip()));
   if (m_bOwner)
   {
@@ -741,7 +741,7 @@ void UserInfoDlg::SaveWorkInfo()
   u->SetCompanyState(codec->fromUnicode(nfoCompanyState->text()));
   u->SetCompanyPhoneNumber(codec->fromUnicode(nfoCompanyPhone->text()));
   u->SetCompanyFaxNumber(codec->fromUnicode(nfoCompanyFax->text()));
-  u->SetCompanyStreet(codec->fromUnicode(nfoCompanyStreet->text()));
+  u->SetCompanyAddress(codec->fromUnicode(nfoCompanyAddress->text()));
   u->SetCompanyZip(codec->fromUnicode(nfoCompanyZip->text()));
   if (m_bOwner)
   {
@@ -1382,7 +1382,7 @@ void UserInfoDlg::slotUpdate()
                                          codec->fromUnicode(nfoCompanyState->text()),
                                          codec->fromUnicode(nfoCompanyPhone->text()),
                                          codec->fromUnicode(nfoCompanyFax->text()),
-                                         codec->fromUnicode(nfoCompanyStreet->text()),
+                                         codec->fromUnicode(nfoCompanyAddress->text()),
                                          codec->fromUnicode(nfoCompanyZip->text()),
 					 cc,
                                          codec->fromUnicode(nfoCompanyName->text()),

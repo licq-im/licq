@@ -139,7 +139,7 @@ public:
                                 const char *, const char *_sAbout, const char *);
   unsigned long icqSetWorkInfo(const char *_szCity, const char *_szState,
                            const char *_szPhone,
-                           const char *_szFax, const char *_szStreet,
+                           const char *_szFax, const char *_szAddress,
 			   const char *_szZip, unsigned short _nCompanyCountry,
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, const char *_szHomepage);
