@@ -273,6 +273,7 @@ void ICQFunctions::CreateGeneralInfoTab()
 
   lay->addWidget(new QLabel(tr("State:"), p), ++CR, 0);
   nfoState = new CInfoField(p, !m_bOwner);
+  nfoState->setMaxLength(5);
   lay->addWidget(nfoState, CR, 1);
   lay->addWidget(new QLabel(tr("City:"), p), CR, 3);
   nfoCity = new CInfoField(p, !m_bOwner);
@@ -1155,10 +1156,10 @@ void ICQFunctions::SetupHistory()
     m_iHistoryEIter = m_lHistoryList.end();
     m_iHistorySIter = m_iHistoryEIter;
     for (unsigned short i = 0;
-    (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
-    i++)
+         (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
+         i++)
     {
-	 m_iHistorySIter--;
+      m_iHistorySIter--;
     }
     m_nHistoryIndex = m_lHistoryList.size();
     ShowHistory();
@@ -1168,28 +1169,28 @@ void ICQFunctions::SetupHistory()
 
 void ICQFunctions::ReverseHistory(bool newVal)
 {
-   if(chkHistoryReverse->isChecked() != newVal)
-      chkHistoryReverse->setChecked(newVal);
-   else if(m_bHistoryReverse != newVal)
-   {
-      m_bHistoryReverse = newVal;
-      ShowHistory();
-   }
+  if (chkHistoryReverse->isChecked() != newVal)
+    chkHistoryReverse->setChecked(newVal);
+  else if(m_bHistoryReverse != newVal)
+  {
+    m_bHistoryReverse = newVal;
+    ShowHistory();
+  }
 }
 
 void ICQFunctions::ShowHistoryPrev()
 {
   if (m_iHistorySIter != m_lHistoryList.begin())
   {
-      m_iHistoryEIter = m_iHistorySIter;
-      m_nHistoryIndex -= NUM_MSG_PER_HISTORY;
-  for (unsigned short i = 0;
-      (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
-       i++)
-  {
-	 m_iHistorySIter--;
-  }
-  ShowHistory();
+    m_iHistoryEIter = m_iHistorySIter;
+    m_nHistoryIndex -= NUM_MSG_PER_HISTORY;
+    for (unsigned short i = 0;
+         (i < NUM_MSG_PER_HISTORY) && (m_iHistorySIter != m_lHistoryList.begin());
+         i++)
+    {
+	    m_iHistorySIter--;
+    }
+    ShowHistory();
   }
 }
 
@@ -1197,14 +1198,14 @@ void ICQFunctions::ShowHistoryNext()
 {
   if (m_iHistoryEIter != m_lHistoryList.end())
   {
-      m_iHistorySIter = m_iHistoryEIter;
-      for (unsigned short i = 0;
-      (i < NUM_MSG_PER_HISTORY) && (m_iHistoryEIter != m_lHistoryList.end());
-       i++)
-      {
-	 m_iHistoryEIter++;
-	 m_nHistoryIndex++;
-      }
+    m_iHistorySIter = m_iHistoryEIter;
+    for (unsigned short i = 0;
+         (i < NUM_MSG_PER_HISTORY) && (m_iHistoryEIter != m_lHistoryList.end());
+         i++)
+    {
+	    m_iHistoryEIter++;
+	    m_nHistoryIndex++;
+    }
     ShowHistory();
   }
 }
@@ -1232,15 +1233,16 @@ void ICQFunctions::ShowHistory()
 {
   // Last check (should never be true)
   if (m_lHistoryList.size() == 0) return;
-HistoryListIter tempIter;
+  HistoryListIter tempIter;
+
   if(m_bHistoryReverse)
   {
-     tempIter = m_iHistoryEIter;
-     tempIter--;
+    tempIter = m_iHistoryEIter;
+    tempIter--;
   }
   else
   {
-     tempIter = m_iHistorySIter;
+    tempIter = m_iHistorySIter;
   }
   QString s, st;
   QDateTime d;
@@ -1267,18 +1269,14 @@ HistoryListIter tempIter;
     if(m_bHistoryReverse)
     {
       if (tempIter == m_iHistorySIter)
-      {
-      break;
-    }
+        break;
       tempIter--;
-  }
+    }
     else
     {
        tempIter++;
        if (tempIter == m_iHistoryEIter)
-       {
-	  break;
-       }
+         break;
     }
   }
   lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
@@ -1362,22 +1360,23 @@ void ICQFunctions::specialFcn(int theFcn)
     chkSendServer->setChecked(false);
     chkSendServer->setEnabled(false);
     mleSend->setEnabled(true);
+    if (icqEventTag != NULL) break;
 #ifdef USE_KDE
-      QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
+    QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
 #else
-      QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
+    QStringList fl = QFileDialog::getOpenFileNames(NULL, NULL, this);
 #endif
-      QStringList::Iterator it;
-      QString f;
-      for( it = fl.begin(); it != fl.end(); it++ )
-      {
-        if (it != fl.begin())
-          f += ", ";
-        f += (*it);
-      }
-      edtItem->setText(f);
-      break;
-   }
+    QStringList::Iterator it;
+    QString f;
+    for( it = fl.begin(); it != fl.end(); it++ )
+    {
+      if (it != fl.begin())
+        f += ", ";
+      f += (*it);
+    }
+    edtItem->setText(f);
+    break;
+  }
 }
 
 
