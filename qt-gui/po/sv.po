@@ -8,6 +8,7 @@ msgstr ""
 "PO-Revision-Date: 2000-07-09 14.30.00 CEST\n"
 "Last-Translator: Joel Andersson <joel@atari.org>\n"
 "Language-Team: Swedish\n"
+"MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=iso-8859-1\n"
 "Content-Transfer-Encoding: 8bit\n"
 
@@ -177,7 +178,7 @@ msgstr ""
 
 #: filedlg.cpp:284
 msgid "CFileDlg::Handshaking error\n"
-msgstr "Fel vid handskakning"
+msgstr "Fel vid handskakning\n"
 
 #: filedlg.cpp:321
 msgid "CFileDlg::KB"
@@ -220,7 +221,7 @@ msgstr "Fjärrklient kopplade ur"
 
 #: filedlg.cpp:265
 msgid "CFileDlg::Remote side disconnected\n"
-msgstr "Fjärrklient kopplade ur"
+msgstr "Fjärrklient kopplade ur\n"
 
 #: filedlg.cpp:374
 msgid "CFileDlg::Resume"
@@ -467,10 +468,9 @@ msgstr "&Alternativ..."
 msgid "CMainWindow::&Plugin Manager..."
 msgstr "&Instickshanterare..."
 
-# erm...
 #: mainwin.cpp:2668
 msgid "CMainWindow::&Popup All Messages"
-msgstr "&Poppa upp alla meddelanden"
+msgstr "&Visa automatiskt alla meddelanden"
 
 #: mainwin.cpp:2657
 msgid "CMainWindow::&Random Chat Group"
@@ -1698,7 +1698,7 @@ msgstr "&Skicka"
 
 #: keyrequestdlg.cpp:182
 msgid "KeyRequestDlg::<font color=\"ForestGreen\">Secure channel established.</font>\n"
-msgstr "<font color=\"ForestGreen\">Säker kanal upprättad.</font>"
+msgstr "<font color=\"ForestGreen\">Säker kanal upprättad.</font>\n"
 
 #: keyrequestdlg.cpp:184
 msgid "KeyRequestDlg::<font color=\"blue\">Secure channel closed.</font>\n"
@@ -1875,7 +1875,7 @@ msgstr "Auto"
 
 #: optionsdlg.cpp:532
 msgid "OptionsDlg::Auto-Popup Incoming Msg"
-msgstr "Poppa upp inkommande med. automatiskt."
+msgstr "Visa inkommande med. automatiskt."
 
 #: optionsdlg.cpp:536
 msgid "OptionsDlg::Auto-Raise on Incoming Msg"
@@ -2344,7 +2344,7 @@ msgstr "Visa gruppnamn om meddelanden saknas"
 msgid "OptionsDlg::"
 "Show online notify users who are offline even "
 "when offline users are hidden."
-msgstr "Visa frånkopplade \"online notify\" användare även om frånkopplade användare är gömda\n"
+msgstr "Visa frånkopplade \"online notify\" användare även om frånkopplade användare är gömda"
 
 #: optionsdlg.cpp:983
 msgid "OptionsDlg::"
@@ -3578,7 +3578,7 @@ msgstr "Visning av URL misslyckades"
 #: usereventdlg.cpp:378
 msgid "UserViewEvent::\n--------------------\nRequest was cancelled."
 msgstr ""
-"\n"
+" \n"
 "-------------------\n"
 "Begäran avbröts."
 
