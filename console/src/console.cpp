@@ -373,7 +373,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
     unsigned short i;
     for (i = 1; i <= MAX_CON; i++)
     {
-      if (winCon[i]->event && winCon[i]->event->Equals(e))
+      if (winCon[i]->event != NULL && winCon[i]->event->Equals(e))
       {
         ProcessDoneEvent(winCon[i], e);
         break;
