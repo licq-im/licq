@@ -23,6 +23,18 @@ extern int errno;
 #include "support.h"
 
 
+unsigned long ReverseLong(unsigned long l)
+{
+  unsigned char z[4];
+
+  z[3] = (unsigned char)((l)>>24)& 0x000000FF;
+  z[2] = (unsigned char)((l)>>16)& 0x000000FF;
+  z[1] = (unsigned char)((l)>>8)& 0x000000FF;
+  z[0] = (unsigned char)(l) & 0x000000FF;
+
+  return *((unsigned long *)z);
+}
+
 unsigned short ReversePort(unsigned short p)
 {
   return ((p >> 8) & 0xFF) + ((p & 0xFF) << 8);
@@ -230,10 +242,52 @@ void Encrypt_Server(CBuffer *buffer)
 }
 
 
+//=====TCP===================================================================
+static unsigned char client_check_data[] = {
+  "As part of this software beta version Mirabilis is "
+  "granting a limited access to the ICQ network, "
+  "servers, directories, listings, information and databases (\""
+  "ICQ Services and Information\"). The "
+  "ICQ Service and Information may databases (\""
+  "ICQ Services and Information\"). The "
+  "ICQ Service and Information may\0"
+};
+
+
 // No client encryption yet
 void Encrypt_Client(CBuffer *)
 {
 }
+
+
+void Decrypt_Client(CBuffer *pkt)
+{
+  unsigned long *r;
+  char *buf = pkt->getDataStart();
+
+  unsigned long size = pkt->getDataSize();
+
+  unsigned long key = 0x67657268 * size + *((unsigned long *)buf);
+  int count = (((size + 3) / 4) + 3) / 4;
+
+  DEBUG_ENCRYPTION(("Size: %4d\nKey: %08lx\n", size, key));
+
+  for (int i = 1; i < count; i++)
+  {
+    r = (unsigned long *)(buf + (i * 4));
+    (*r) ^= ReverseLong((key + client_check_data[(i * 4) & 0xFF]));
+  }
+
+  if (gLog.LoggingPackets())
+  {
+    char *b;
+    gLog.Packet("%sDecrypted TCP Packet (%ld bytes):\n%s\n", L_PACKETxSTR, size,
+       pkt->print(b));
+    delete [] b;
+  }
+
+}
+
 
 
 unsigned long CPacket::s_nLocalIp = 0;
@@ -1092,28 +1146,56 @@ CPacketTcp_Handshake::~CPacketTcp_Handshake()
 }
 
 
-CPacketTcp_Handshake::CPacketTcp_Handshake(unsigned long _nLocalPort)
+CPacketTcp_Handshake_v2::CPacketTcp_Handshake_v2(unsigned long nLocalPort)
 {
-  m_nLocalPort = _nLocalPort;
-  m_nSourceUin = gUserManager.OwnerUin();
+  m_nLocalPort = nLocalPort;
 
   m_nSize = 26;
-  InitBuffer();
-}
-
-
-void CPacketTcp_Handshake::InitBuffer()
-{
   buffer = new CBuffer(m_nSize);
 
   buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
-  buffer->PackUnsignedLong(ICQ_VERSION_TCP);
+  buffer->PackUnsignedLong(0x00000002);
   buffer->PackUnsignedLong(m_nLocalPort);
-  buffer->PackUnsignedLong(m_nSourceUin);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedLong(m_nLocalPort);
+}
+
+
+//=====PacketTcp_Handshake======================================================
+CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nDestinationUin,
+   unsigned long nSessionId)
+{
+  m_nDestinationUin = nDestinationUin;
+  m_nSessionId = nSessionId;
+  if (m_nSessionId == 0) m_nSessionId = rand();
+
+  m_nSize = 44;
+  buffer = new CBuffer(m_nSize);
+
+  buffer->PackChar(ICQ_CMDxTCP_HANDSHAKE);
+  buffer->PackUnsignedLong(0x00270006);
+  buffer->PackUnsignedLong(m_nDestinationUin);
+  buffer->PackUnsignedLong(0);
+  buffer->PackUnsignedShort(0);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedLong(s_nLocalIp);
+  buffer->PackUnsignedLong(s_nRealIp);
+  buffer->PackChar(s_nMode);
+  buffer->PackUnsignedLong(0x00001B92); // tcp flags?
+  buffer->PackUnsignedLong(m_nSessionId);
+  buffer->PackUnsignedLong(0x00000050); // constant
+  buffer->PackUnsignedLong(0x00000003); // constant
+}
+
+
+CPacketTcp_Handshake_Ack::CPacketTcp_Handshake_Ack()
+{
+  m_nSize = 4;
+  buffer = new CBuffer(4);
+  buffer->PackUnsignedLong(1);
 }
 
 

@@ -569,27 +569,50 @@ protected:
 
 
 //=====TCP======================================================================
+void Decrypt_Client(CBuffer *pkt);
 
 //-----PacketTcp_Handshake------------------------------------------------------
 class CPacketTcp_Handshake : public CPacket
 {
 public:
-   CPacketTcp_Handshake(unsigned long _nLocalPort);
-   virtual ~CPacketTcp_Handshake();
+  virtual ~CPacketTcp_Handshake();
 
-   virtual const unsigned long  getSequence()   { return 0; }
-   virtual const unsigned short SubSequence()   { return 0; }
-   virtual const unsigned short getCommand()    { return ICQ_CMDxTCP_HANDSHAKE; }
-   virtual const unsigned short getSubCommand() { return 0; }
-protected:
-   void InitBuffer();
-
-   /* FF 03 00 00 00 3D 62 00 00 50 A5 82 00 CF 60 AD 95 CF 60 AD 95 04 3D 62
-      00 00 */
-   unsigned long  m_nLocalPort;
-   unsigned long  m_nSourceUin;
-   unsigned long  m_nLocalHost;
+  virtual const unsigned long  getSequence()   { return 0; }
+  virtual const unsigned short SubSequence()   { return 0; }
+  virtual const unsigned short getCommand()    { return ICQ_CMDxTCP_HANDSHAKE; }
+  virtual const unsigned short getSubCommand() { return 0; }
 };
+
+//-----PacketTcp_Handshake------------------------------------------------------
+/* FF 03 00 00 00 3D 62 00 00 50 A5 82 00 CF 60 AD 95 CF 60 AD 95 04 3D 62
+   00 00 */
+class CPacketTcp_Handshake_v2 : public CPacketTcp_Handshake
+{
+public:
+  CPacketTcp_Handshake_v2(unsigned long _nLocalPort);
+protected:
+  unsigned long  m_nLocalPort;
+  unsigned long  m_nLocalHost;
+};
+
+
+class CPacketTcp_Handshake_v4 : public CPacketTcp_Handshake
+{
+public:
+  CPacketTcp_Handshake_v4(unsigned long nDestinationUin, unsigned long nSessionId);
+
+protected:
+  unsigned long  m_nDestinationUin;
+  unsigned long  m_nSessionId;
+};
+
+
+class CPacketTcp_Handshake_Ack : public CPacketTcp_Handshake
+{
+public:
+  CPacketTcp_Handshake_Ack();
+};
+
 
 
 //-----CPacketTcp---------------------------------------------------------------

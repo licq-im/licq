@@ -436,7 +436,7 @@ int CICQDaemon::ConnectToUser(unsigned long nUin)
 
   gLog.Info("%sShaking hands with %s (%ld).\n", L_TCPxSTR, szAlias, nUin);
   nPort = s->LocalPort();
-  CPacketTcp_Handshake p(nPort);
+  CPacketTcp_Handshake_v2 p(nPort);
   if (!s->SendPacket(p.getBuffer()))
   {
     char buf[128];
@@ -577,7 +577,7 @@ int CICQDaemon::ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
 
   gLog.Info("%sReverse shaking hands with %ld.\n", L_TCPxSTR, nUin);
   nPort = s->LocalPort();
-  CPacketTcp_Handshake p(nPort);
+  CPacketTcp_Handshake_v2 p(nPort);
   if (!s->SendPacket(p.getBuffer()))
   {
     char buf[128];
@@ -1253,9 +1253,9 @@ void CICQDaemon::AckTCP(CPacketTcp &p, TCPSocket *tcp)
 bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
 {
   char cHandshake;
-  unsigned long nVersion;
+  unsigned short nVersionMajor, nVersionMinor;
   CBuffer &b = s->RecvBuffer();
-  b >> cHandshake >> nVersion;
+  b >> cHandshake >> nVersionMajor, nVersionMinor;
 
   if ((unsigned char)cHandshake != ICQ_CMDxTCP_HANDSHAKE)
   {
@@ -1266,10 +1266,8 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
     return false;
   }
 
-  unsigned long ulJunk, nUin;//, localHost;
+  unsigned long ulJunk, nUin;
   b >> ulJunk >> nUin;
-                              //>> localHost >> localHost;
-                              //>> ulJunk >> ucJunk;
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u != NULL)

@@ -10,7 +10,7 @@
 #define ICQ_VERSION 5
 #define MODE_DIRECT 0x04
 #define MODE_INDIRECT 0x06
-const unsigned short ICQ_VERSION_TCP               = 0x0003;
+const unsigned short ICQ_VERSION_TCP               = 0x0002;
 
 // UDP commands
 const unsigned short ICQ_CMDxRCV_ACK               = 0x000A; //  10

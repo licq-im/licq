@@ -259,7 +259,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   gLog.Info("%sFile Transfer: Shaking hands.\n", L_TCPxSTR);
 
   // Send handshake packet:
-  CPacketTcp_Handshake p_handshake(ftSock.LocalPort());
+  CPacketTcp_Handshake_v2 p_handshake(ftSock.LocalPort());
   if (!SendPacket(&p_handshake)) return false;
 
   // Send init packet:

@@ -593,7 +593,7 @@ bool CChatManager::ConnectToChat(CChatClient &c)
   gLog.Info("%sChat: Shaking hands.\n", L_TCPxSTR);
 
   // Send handshake packet:
-  CPacketTcp_Handshake p_handshake(u->sock.LocalPort());
+  CPacketTcp_Handshake_v2 p_handshake(u->sock.LocalPort());
   u->sock.SendPacket(p_handshake.getBuffer());
 
   // Send color packet
