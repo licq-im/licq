@@ -147,8 +147,8 @@ void wizard_ok(GtkWidget *widget, gpointer data)
 		gtk_widget_set_sensitive(check, FALSE);
 	}
 
-	g_free(password_1);
-	g_free(password_2);
+	g_free((gpointer)password_1);
+	g_free((gpointer)password_2);
 }	
 
 void wizard_cancel(GtkWidget *widget, gpointer data)

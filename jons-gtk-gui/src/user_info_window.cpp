@@ -216,7 +216,7 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 	h_box = gtk_hbox_new(FALSE, 5);
 
 	/*  The country and pack it*/
-	SCountry *sc = GetCountryByCode(user->GetCountryCode());
+	SCountry *sc = (SCountry *)GetCountryByCode(user->GetCountryCode());
 	gchar *country;
 
 	if(sc == NULL)

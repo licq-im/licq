@@ -29,6 +29,7 @@
 
 #include <sys/time.h>
 #include <gtk/gtk.h>
+#include <fstream.h>
 
 /* Definitions to be passed to the licq daemon */
 #define NAME		"Jon's GTK+ GUI"
@@ -330,11 +331,11 @@ struct e_tag_data
 	CICQEventTag *e_tag;
 };
 
-typedef struct
+struct status_icon
 {
 	GdkPixmap *pm;
 	GdkBitmap *bm;
-} status_icon;
+};
 
 /******************* Global Variables ******************/
 
@@ -342,8 +343,8 @@ typedef struct
 extern GSList *uaw_list;
 
 /* Globals in contact_list.cpp */
-extern GdkColor *red, *green, *blue;
-extern status_icon *online, *away, *na, *dnd, *occ, *offline, *message;
+extern GdkColor *red, *green, *blue, *online_color, *offline_color;
+extern struct status_icon *online, *away, *na, *dnd, *occ, *offline, *message;
 
 /* Globals in chat_window.cpp */
 extern GSList *rc_list;
@@ -519,7 +520,11 @@ extern void set_options(struct options_window *);
 extern void done_options(GtkWidget *, gpointer);
 extern void save_options();
 extern void load_options();
+extern void parse_line(char *, ifstream &);
 extern void set_default_options();
+extern void show_on_color_dlg(GtkWidget *, gpointer);
+extern void color_dlg_ok(GtkWidget *, gpointer);
+extern void color_dlg_cancel(GtkWidget *, gpointer);
 
 
 /* Functions in pipe.cpp */

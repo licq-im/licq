@@ -86,7 +86,8 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 
 	url->entry_u = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), url->entry_u, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* Make the description label and entry */
 	label = gtk_label_new("Description:");
@@ -96,7 +97,8 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 
 	url->entry_d = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table), url->entry_d, 1, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* Make send through server and spoof box */
 	url->send_server = gtk_check_button_new_with_label("Server");
@@ -111,7 +113,8 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	gtk_box_pack_start(GTK_BOX(h_box), url->spoof_uin, FALSE, FALSE, 0);
 
 	gtk_table_attach(GTK_TABLE(table), h_box, 1, 2, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* Verify that the url->spoof_uin is digits only */
 	gtk_signal_connect(GTK_OBJECT(url->spoof_uin), "insert-text", 
@@ -139,7 +142,8 @@ void list_send_url(GtkWidget *widget, ICQUser *user)
 	gtk_box_pack_start(GTK_BOX(h_box), url->send_list, FALSE, FALSE, 0);
 
 	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 3, 4,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3); 
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3); 
 
 	/* If the user is in occ or dnd mode, set the urgent button as def */
 	if(url->user->Status() == ICQ_STATUS_DND ||

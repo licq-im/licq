@@ -77,7 +77,8 @@ void search_user_window()
 
 	su->nick_name = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table_in_nb), su->nick_name, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND , GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	label = gtk_label_new("First Name:");
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
@@ -86,7 +87,8 @@ void search_user_window()
 
 	su->first_name = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table_in_nb), su->first_name, 1, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	label = gtk_label_new("Last Name:");
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
@@ -95,7 +97,8 @@ void search_user_window()
 
 	su->last_name = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table_in_nb), su->last_name, 1, 2, 2, 3,
-                         GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+                         GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	label = gtk_label_new("Name");
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_in_nb, label);
@@ -110,7 +113,8 @@ void search_user_window()
 
 	su->email = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(table_in_nb), su->email, 1, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 25);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 25);
 
 	label = gtk_label_new("E-mail");
 	gtk_notebook_append_page(GTK_NOTEBOOK(notebook), table_in_nb, label);
@@ -121,7 +125,8 @@ void search_user_window()
 	label = gtk_label_new("UIN:");
 	gtk_misc_set_alignment(GTK_MISC(label), 1.0, 0.5);
 	gtk_table_attach(GTK_TABLE(table_in_nb), label, 0, 1, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 25);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 5, 25);
 
 	su->uin = gtk_entry_new_with_max_length(MAX_LENGTH_UIN);
 	gtk_table_attach(GTK_TABLE(table_in_nb), su->uin, 1, 2, 0, 1,
@@ -166,7 +171,7 @@ void search_user_window()
 			   GTK_SIGNAL_FUNC(search_close), NULL);
 
 	gtk_table_attach(GTK_TABLE(table), v_box, 2, 3, 1, 2,
-                         0, 0, 3, 3);
+                         GTK_EXPAND, GTK_EXPAND, 3, 3);
 
 	/* Found users list with a scroll bar */
 	scroll = gtk_scrolled_window_new(NULL, NULL);
@@ -201,12 +206,14 @@ void search_user_window()
 	gtk_container_add(GTK_CONTAINER(scroll), su->list);
 
 	gtk_table_attach(GTK_TABLE(table), scroll, 0, 3, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* The label to keep track of the status */
 	su->label = gtk_label_new("Enter Search Paramters");
 	gtk_table_attach(GTK_TABLE(table), su->label, 0, 3, 3, 4,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	gtk_widget_set_usize(GTK_WIDGET(su->window), 435, 465); 
 	gtk_widget_show_all(su->window);
@@ -312,9 +319,9 @@ void search_found(CSearchAck *ack)
 	gtk_clist_freeze(GTK_CLIST(su->list));
 
 	found_user[0] = g_strdup_printf("%ld", ack->Uin());
-	found_user[1] = ack->Alias();
+	found_user[1] = (gchar *)ack->Alias();
 	found_user[2] = name;
-	found_user[3] = ack->Email(); 
+	found_user[3] = (gchar *)ack->Email(); 
 
 	gtk_clist_insert(GTK_CLIST(su->list), num_found_users, found_user);
 	gtk_clist_set_row_data(GTK_CLIST(su->list), num_found_users,

@@ -27,8 +27,8 @@
 #include <gtk/gtk.h>
 #include <sys/time.h>
 
-GdkColor *red, *blue, *green;
-status_icon *online, *offline, *away, *na, *dnd, *occ, *message;
+GdkColor *red, *blue, *green, *online_color, *offline_color;
+struct status_icon *online, *offline, *away, *na, *dnd, *occ, *message;
 
 GtkWidget *contact_list_new(gint height, gint width)
 {
@@ -64,15 +64,15 @@ void contact_list_refresh()
 	gchar *blah[3];
 	gint num_users = 0;
 
+	/* Don't update the clist window, so we can update all the users */
+	gtk_clist_freeze(GTK_CLIST(contact_list));
+
 	do_colors(); 	/* Make the colors */
 	do_pixmaps();   /* Make the pixmap */
 
 	blah[0] = "";
 	blah[1] = "";
 	blah[2] = "";
-
-	/* Don't update the clist window, so we can update all the users */
-	gtk_clist_freeze(GTK_CLIST(contact_list));
 
 	/* Clean out the list */
 	gtk_clist_clear(GTK_CLIST(contact_list));
@@ -89,6 +89,14 @@ void contact_list_refresh()
 		 	FOR_EACH_USER_CONTINUE
 		}
 
+		/* If they are offline and we do not want to see offline users,
+		 * just keep oin going! */
+		 if(pUser->Status() == ICQ_STATUS_OFFLINE &&
+		    !(general_options & SHOW_OFFLINE))
+		{
+			FOR_EACH_USER_CONTINUE
+		}
+		
 		/* Make an empty row first */
 		gtk_clist_insert(GTK_CLIST(contact_list), num_users, blah);
 
@@ -111,7 +119,7 @@ void contact_list_refresh()
 		  {
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users					     ,1 , online->pm, online->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
-						 num_users, blue);
+						 num_users, online_color);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
 					   0, "*");
 			break;
@@ -134,7 +142,7 @@ void contact_list_refresh()
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
 					     1, online->pm, online->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
-						 num_users, blue);
+						 num_users, online_color);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
 					   0, "+");
 			break;
@@ -178,7 +186,7 @@ void contact_list_refresh()
 			gtk_clist_set_pixmap(GTK_CLIST(contact_list), num_users,
 					     1, offline->pm, offline->bm);
 			gtk_clist_set_foreground(GTK_CLIST(contact_list),
-						 num_users, red);
+						 num_users, offline_color);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
 					   0, "~");
 			break;

@@ -186,12 +186,14 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 
 	/* Attach the notebook to the table */
 	gtk_table_attach(GTK_TABLE(table), notebook, 0, 1, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* The statusbar */
 	statusbar = gtk_statusbar_new();
 	gtk_table_attach(GTK_TABLE(table), statusbar, 0, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* Final items for the etag info */
 	us->etag->statusbar = statusbar;
@@ -214,7 +216,8 @@ void menu_security_users_window(GtkWidget *widget, gpointer data)
 
 	/* Attach the h_box to the table */
 	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* Show all the widgets now */
 	gtk_widget_show_all(us->window);

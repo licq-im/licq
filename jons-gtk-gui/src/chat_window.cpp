@@ -46,7 +46,7 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	GtkWidget *cancel;
 	GtkWidget *table;
 	GtkWidget *h_box;
-	const gchar *title = g_strdup_printf("Licq - Request Chat With %s",
+	gchar *title = g_strdup_printf("Licq - Request Chat With %s",
 					     user->GetAlias());
 
 	/* Make the request_chat structure */
@@ -75,7 +75,8 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	gtk_text_set_line_wrap(GTK_TEXT(rc->text_box), TRUE);
 	gtk_container_add(GTK_CONTAINER(scroll), rc->text_box);
 	gtk_table_attach(GTK_TABLE(table), scroll, 0, 2, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* The send as buttons */
 	rc->send_norm = gtk_radio_button_new_with_label(NULL, "Send Normal");
@@ -91,12 +92,14 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 
 	/* Attach the box to the table */
 	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* Progress bar */
 	statusbar = gtk_statusbar_new();
 	gtk_table_attach(GTK_TABLE(table), statusbar, 0, 2, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* e_tag stuff */
 	rc->etd->statusbar = statusbar;
@@ -109,7 +112,8 @@ void list_request_chat(GtkWidget *widget, ICQUser *user)
 	gtk_box_pack_start(GTK_BOX(h_box), ok, TRUE, TRUE, 0);
 	gtk_box_pack_start(GTK_BOX(h_box), cancel, TRUE, TRUE, 0);
 	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 3, 4,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 	
 	/* Connect the signals */
 	gtk_signal_connect(GTK_OBJECT(ok), "clicked",
@@ -398,9 +402,11 @@ struct chat_window *chat_window_create(gulong uin)
 	gtk_container_add(GTK_CONTAINER(scroll1), cw->text_remote);
 	gtk_container_add(GTK_CONTAINER(cw->frame_remote), scroll1);
 	gtk_table_attach(GTK_TABLE(cw->table), cw->frame_remote, 0, 1, 1, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND,10, 10);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 10, 10);
 
-	/* Dreate the local frame with local text box */
+	/* Create the local frame with local text box */
 	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 	cw->frame_local = gtk_frame_new(g_strdup_printf("Local - %s",
 					o->GetAlias()));
@@ -418,7 +424,9 @@ struct chat_window *chat_window_create(gulong uin)
 	gtk_container_add(GTK_CONTAINER(scroll2), cw->text_local);
 	gtk_container_add(GTK_CONTAINER(cw->frame_local), scroll2);
 	gtk_table_attach(GTK_TABLE(cw->table), cw->frame_local, 0, 1, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL | GTK_EXPAND,10, 10);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 10, 10);
 
 	/* The IRC Mode window with user list window */
 
@@ -438,17 +446,21 @@ struct chat_window *chat_window_create(gulong uin)
 	gtk_widget_set_usize(scroll1, 320, 175);
 	gtk_container_add(GTK_CONTAINER(scroll1), cw->text_irc);
 	gtk_table_attach(GTK_TABLE(cw->table_irc), scroll1, 0, 1, 0, 1,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 5, 5);
 
 	/* Create the entry box */
 	cw->entry_irc = gtk_entry_new();
 	gtk_table_attach(GTK_TABLE(cw->table_irc), cw->entry_irc,
-			 0, 1, 1, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+			 0, 1, 1, 2, GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 5, 5);
 
 	/* The list of users for the irc panel */
 	cw->list_users = gtk_clist_new(1);
 	gtk_table_attach(GTK_TABLE(cw->table_irc), cw->list_users,
-			 1, 2, 0, 2, GTK_FILL | GTK_EXPAND, GTK_FILL, 5, 5);
+			 1, 2, 0, 2, GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 5, 5);
+
 	gtk_widget_set_usize(cw->list_users, 55, 100);
 	
 	/* The notebook for panel or irc chat mode */
@@ -476,12 +488,16 @@ GtkWidget *chat_create_menu(struct chat_window *cw)
 	GtkItemFactoryEntry menu_items[] =
 	{
        		{ "/_Chat",        NULL,         NULL, 0, "<Branch>" },
-       		{ "/Chat/_Audio", "<control>A", chat_audio, 0, "<ToggleItem>" },
+       		{ "/Chat/_Audio", "<control>A",
+		  GtkItemFactoryCallback(chat_audio), 0, "<ToggleItem>" },
        		{ "/Chat/sep1",	   NULL,	 NULL, 0, "<Separator>" },
-       		{ "/Chat/_Close",  "<control>C", chat_close, 0, NULL},
+       		{ "/Chat/_Close",  "<control>C",
+		  GtkItemFactoryCallback(chat_close), 0, NULL},
 		{ "/_More",	   NULL,	 NULL, 0, "<Branch>" },
-		{ "/More/_Beep",   "<control>B", chat_beep_users, 0, NULL},
-		{ "/More/Change Font", NULL, 	 chat_change_font, 0, NULL},
+		{ "/More/_Beep",   "<control>B",
+		  GtkItemFactoryCallback(chat_beep_users), 0, NULL},
+		{ "/More/Change Font", NULL,
+		   GtkItemFactoryCallback(chat_change_font), 0, NULL},
 	};
 
 	GtkItemFactory *item_factory;

@@ -78,7 +78,8 @@ void new_log_window()
 	gtk_box_pack_start(GTK_BOX(box_text), scroll, FALSE, FALSE, 0);
 
 	gtk_table_attach(GTK_TABLE(table), box_text, 0, 2, 0, 2,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	/* The "OK" button */
 	ok = gtk_button_new_with_label("OK");
@@ -94,7 +95,8 @@ void new_log_window()
 
 	/* Attach the h_box to the table */
 	gtk_table_attach(GTK_TABLE(table), h_box, 0, 2, 2, 3,
-			 GTK_FILL | GTK_EXPAND, GTK_FILL, 3, 3);
+			 GtkAttachOptions(GTK_FILL | GTK_EXPAND),
+			 GTK_FILL, 3, 3);
 
 	gtk_container_add(GTK_CONTAINER(nw->window), table);
 }
