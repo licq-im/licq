@@ -468,10 +468,7 @@ void CICQDaemon::icqRelogon(bool bChangeServer)
     status = m_nDesiredStatus;
   }
 
-  if (bChangeServer)
-    SwitchServer();
-  else
-    icqLogoff();
+  icqLogoff();
   m_eStatus = STATUS_OFFLINE_MANUAL;
 
   icqLogon(status);
