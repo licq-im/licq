@@ -95,7 +95,6 @@ CForwardDlg::CForwardDlg(CICQDaemon *s, CSignalManager *sigMan,
 
 CForwardDlg::~CForwardDlg()
 {
-  qDebug("forwarddlg destr");
 }
 
 
