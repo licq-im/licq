@@ -478,6 +478,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   awayMsgDlg = NULL;
   optionsDlg = NULL;
   registerUserDlg = NULL;
+  pluginDlg = NULL;
 #if QT_VERSION >= 300
   userEventTabDlg = NULL;
 #endif
@@ -4153,7 +4154,48 @@ void CMainWindow::showSkinBrowser()
 
 void CMainWindow::showPluginDlg()
 {
-  (void) new PluginDlg();
+  if (pluginDlg != NULL)
+    pluginDlg->raise();
+  else
+  {
+    pluginDlg = new PluginDlg();
+    connect(pluginDlg, SIGNAL(signal_done()), this, SLOT(slot_doneplugindlg()));
+
+    connect(pluginDlg, SIGNAL(pluginUnloaded(unsigned long)), this, SLOT(slot_pluginUnloaded(unsigned long)));
+  }
+}
+
+void CMainWindow::slot_pluginUnloaded(unsigned long _nPPID)
+{
+  if (m_lnProtMenu.size() == 2)
+  {
+    mnuStatus->removeItemAt(2);
+    mnuStatus->removeItemAt(1);
+    mnuStatus->removeItemAt(0);
+    m_nProtoNum = 0;
+    m_lnProtMenu.clear();
+  }
+  else
+  {
+    std::vector<unsigned long>::iterator iter;
+    int n = 0;
+    for (iter = m_lnProtMenu.begin(); iter != m_lnProtMenu.end(); ++iter)
+    {
+      if (*iter == _nPPID)
+      {
+        m_lnProtMenu.erase(iter);
+        mnuStatus->removeItemAt(n);
+        m_nProtoNum--;
+        break;
+      }
+      n++;
+    }
+  }
+}
+
+void CMainWindow::slot_doneplugindlg()
+{
+  pluginDlg = NULL;
 }
 
 void CMainWindow::slot_randomchatsearch()

@@ -39,6 +39,7 @@ class ICQEvent;
 class OptionsDlg;
 class AwayMsgDlg;
 class RegisterUserDlg;
+class PluginDlg;
 class CUserView;
 class CELabel;
 class CEButton;
@@ -170,6 +171,7 @@ public:
   AwayMsgDlg *awayMsgDlg;
   OptionsDlg *optionsDlg;
   RegisterUserDlg *registerUserDlg;
+  PluginDlg *pluginDlg;
 #if QT_VERSION >= 300
   UserEventTabDlg *userEventTabDlg;
 #endif
@@ -302,6 +304,7 @@ protected slots:
   void slot_eventTag(const char *, unsigned long, unsigned long);
   void slot_register();
   void slot_doneregister();
+  void slot_doneplugindlg();
   void slot_doneOptions();
   void slot_doneOwnerFcn(ICQEvent *);
   void slot_doneAwayMsgDlg();
@@ -335,6 +338,7 @@ protected slots:
   void slot_aboutToQuit();
   void UserInfoDlg_finished(const char *, unsigned long);
   void slot_doneUserEventTabDlg();
+  void slot_pluginUnloaded(unsigned long);
 
 signals:
   void changeDockStatus(unsigned short);

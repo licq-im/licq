@@ -12,10 +12,15 @@ class PluginDlg : public QWidget
   Q_OBJECT
 public:
   PluginDlg();
+  virtual ~PluginDlg();
 
 protected:
   QListBox *lstAvailable;
   QListView *lstLoaded;
+
+signals:
+  void signal_done();
+  void pluginUnloaded(unsigned long);
 
 protected slots:
   void slot_details();

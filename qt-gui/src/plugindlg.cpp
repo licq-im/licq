@@ -129,6 +129,11 @@ PluginDlg::PluginDlg()
   show();
 }
 
+PluginDlg::~PluginDlg()
+{
+  emit signal_done();
+}
+
 
 void PluginDlg::slot_load()
 {
@@ -189,7 +194,23 @@ void PluginDlg::slot_unload()
 {
   if (lstLoaded->currentItem() == NULL) return;
   if (lstLoaded->currentItem()->text(3) == "")
-    gLicqDaemon->ProtoPluginShutdown(lstLoaded->currentItem()->text(0).toUShort()); 
+  {
+    unsigned long nPPID = 0;
+    ProtoPluginsList l;
+    ProtoPluginsListIter it;
+    gLicqDaemon->ProtoPluginList(l);
+    for (it = l.begin(); it != l.end(); it++)
+    {
+      if ((*it)->Id() == lstLoaded->currentItem()->text(0).toUShort())
+      {
+        nPPID = (*it)->PPID();
+        break;
+      }
+    }
+    
+    emit pluginUnloaded(nPPID);
+    gLicqDaemon->ProtoPluginShutdown(lstLoaded->currentItem()->text(0).toUShort());
+  }
   else
     gLicqDaemon->PluginShutdown(lstLoaded->currentItem()->text(0).toUShort());
 
