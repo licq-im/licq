@@ -66,7 +66,7 @@ const unsigned short ICQ_SNACxSUB_OFFLINExLIST     = 0x000c;
 // Subtypes for message family
 const unsigned short ICQ_SNACxMSG_SETxICQxMODE     = 0x0002; // client
 const unsigned short ICQ_SNACxMSG_REQUESTxRIGHTS   = 0x0004; // client
-const unsigned short ICQ_SNAXxMSG_RIGHTSxGRANTED   = 0x0005; // server
+const unsigned short ICQ_SNACxMSG_RIGHTSxGRANTED   = 0x0005; // server
 const unsigned short ICQ_SNACxMSG_SENDxSERVER      = 0x0006; // client
 const unsigned short ICQ_SNACxMSG_SERVERxMESSAGE   = 0x0007; // server
 const unsigned short ICQ_SNACxMSG_SERVERxAWAYxMSG  = 0x000b; // server
@@ -286,6 +286,7 @@ const unsigned short ICQ_CMDxSUB_WEBxPANEL         = 0x000D;
 const unsigned short ICQ_CMDxSUB_EMAILxPAGER       = 0x000E;
 const unsigned short ICQ_CMDxSUB_CONTACTxLIST      = 0x0013;
 const unsigned short ICQ_CMDxSUB_SMS               = 0x001A;
+const unsigned short ICQ_CMDxSUB_ICBM              = 0x001A;  // This one sucks
 const unsigned short ICQ_CMDxSUB_FxMULTIREC        = 0x8000;
 // Encryption Licq extension command
 const unsigned short ICQ_CMDxSUB_SECURExOLD        = 0x00ED;  // Licq extension
