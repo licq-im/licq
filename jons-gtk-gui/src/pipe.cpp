@@ -1,4 +1,4 @@
-/*
+/**
  * Licq GTK GUI Plugin
  *
  * Copyright (C) 2000, Jon Keating <jon@licq.org>
