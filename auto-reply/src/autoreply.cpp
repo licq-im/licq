@@ -176,7 +176,7 @@ void CLicqAutoReply::ProcessSignal(CICQSignal *s)
   switch (s->Signal())
   {
   case SIGNAL_UPDATExUSER:
-    if (s->SubSignal() == USER_EVENTS)
+    if (s->SubSignal() == USER_EVENTS && s->Uin() != gUserManager.OwnerUin())
       ProcessUserEvent(s->Uin());
     break;
   // We should never get any other signal
