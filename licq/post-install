@@ -12,7 +12,9 @@ See HINTS for some Licq advanced features.
 
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 **********************************************************************
-*** Now enter the plugins/qt-gui directory and build the GUI plugin. *
+*** Now enter the plugins directory and build the GUI plugin.        *
+*** If you want the default Qt GUI go to plugins/qt-gui.             *
+*** Unoffical GTK+ interfaces are available from www.licq.org.       *
 *** You must do this in order to have a graphical interface!         *
 **********************************************************************
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
