@@ -138,9 +138,9 @@ void *FileServer_tep(void *p)
     {
     case STATE_RECVxHANDSHAKE:
     {
-      char cHandshake;
+      unsigned char cHandshake;
       f->sClient.RecvBuffer() >> cHandshake;
-      if ((unsigned short)cHandshake != ICQ_CMDxTCP_HANDSHAKE)
+      if (cHandshake != ICQ_CMDxTCP_HANDSHAKE)
       {
         gLog.Error("%sReceive error - bad handshake (%04X).\n", L_ERRORxSTR, 
                    cHandshake);
