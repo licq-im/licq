@@ -32,6 +32,7 @@
 #include <qgroupbox.h>
 #include <qprogressbar.h>
 #include <qsocketnotifier.h>
+#include <qtextcodec.h>
 
 #include "filedlg.h"
 #include "licq_packets.h"
@@ -41,7 +42,7 @@
 #include "ewidgets.h"
 #include "mledit.h"
 #include "licq_icqd.h"
-
+#include "usercodec.h"
 
 
 //-----Constructor------------------------------------------------------------
@@ -205,7 +206,7 @@ bool CFileDlg::ReceiveFiles()
 #endif
   if (d.isNull()) return false;
 
-  if (!ftman->ReceiveFiles(d.latin1())) return false;
+  if (!ftman->ReceiveFiles(QFile::encodeName(d))) return false;
 
   mleStatus->appendNoNewLine(tr("Waiting for connection...\n"));
   show();
@@ -219,6 +220,8 @@ void CFileDlg::slot_ft()
   // Read out any pending events
   char buf[32];
   read(ftman->Pipe(), buf, 32);
+  
+  QTextCodec *codec = UserCodec::codecForUIN(m_nUin);
 
   CFileTransferEvent *e = NULL;
   while ( (e = ftman->PopFileTransferEvent()) != NULL)
@@ -227,7 +230,7 @@ void CFileDlg::slot_ft()
     {
       case FT_STARTxBATCH:
       {
-        setCaption(QString(tr("Licq - File Transfer (%1)")).arg(QString::fromLocal8Bit(ftman->RemoteName())));
+        setCaption(QString(tr("Licq - File Transfer (%1)")).arg(codec->toUnicode(ftman->RemoteName())));
         nfoTotalFiles->setText(QString("%1 / %2").arg(1).arg(ftman->BatchFiles()));
         nfoBatchSize->setText(encodeFSize(ftman->BatchSize()));
         barBatchTransfer->setTotalSteps(ftman->BatchSize() / 1024);
@@ -238,8 +241,8 @@ void CFileDlg::slot_ft()
       case FT_STARTxFILE:
       {
         nfoTotalFiles->setText(QString("%1 / %2").arg(ftman->CurrentFile()).arg(ftman->BatchFiles()));
-        nfoTransferFileName->setText(QString::fromLocal8Bit(ftman->FileName()));
-        nfoLocalFileName->setText(QString::fromLocal8Bit(ftman->PathName()));
+        nfoTransferFileName->setText(codec->toUnicode(ftman->FileName()));
+        nfoLocalFileName->setText(codec->toUnicode(ftman->PathName()));
         nfoFileSize->setText(encodeFSize(ftman->FileSize()));
         barTransfer->setTotalSteps(ftman->FileSize() / 1024);
         if (ftman->Direction() == D_RECEIVER)
@@ -257,12 +260,12 @@ void CFileDlg::slot_ft()
 
       case FT_DONExFILE:
       {
-        mleStatus->appendNoNewLine(tr("Done %1\n").arg(QString::fromLocal8Bit(e->Data())));
+        mleStatus->appendNoNewLine(tr("Done %1\n").arg(codec->toUnicode(e->Data())));
         slot_update();
         if (ftman->Direction() == D_RECEIVER)
-          mleStatus->appendNoNewLine(tr("Received\n%1\nfrom %2 successfully\n").arg(QString::fromLocal8Bit(e->Data())).arg(QString::fromLocal8Bit(ftman->RemoteName())));
+          mleStatus->appendNoNewLine(tr("Received\n%1\nfrom %2 successfully\n").arg(codec->toUnicode(e->Data())).arg(codec->fromUnicode(ftman->RemoteName())));
         else
-          mleStatus->appendNoNewLine(tr("Sent\n%1\nto %2 successfully\n").arg(QString::fromLocal8Bit(e->Data())).arg(QString::fromLocal8Bit(ftman->RemoteName())));
+          mleStatus->appendNoNewLine(tr("Sent\n%1\nto %2 successfully\n").arg(codec->toUnicode(e->Data())).arg((ftman->RemoteName())));
         break;
       }
 
@@ -286,10 +289,10 @@ void CFileDlg::slot_ft()
       case FT_ERRORxFILE:
       {
         btnCancel->setText(tr("Close"));
-        mleStatus->appendNoNewLine(tr("File I/O error: %1\n").arg(QString::fromLocal8Bit(ftman->PathName())));
+        mleStatus->appendNoNewLine(tr("File I/O error: %1\n").arg(codec->toUnicode(ftman->PathName())));
         ftman->CloseFileTransfer();
         WarnUser(this, tr("File I/O Error:\n%1\nSee Network Window for Details")
-           .arg(QString::fromLocal8Bit(ftman->PathName())));
+           .arg(codec->toUnicode(ftman->PathName())));
         break;
       }
 
@@ -358,17 +361,20 @@ bool CFileDlg::GetLocalFileName()
 {
   QString f;
   bool bValid = false;
+
+  QTextCodec *codec = UserCodec::codecForUIN(m_nUin);
+  
   // Get the local filename and open it, loop until valid or cancel
   while(!bValid)
   {
 #ifdef USE_KDE
     KURL u = KFileDialog::getSaveURL(
-          QString(QDir::homeDirPath() + "/" + m_sFileInfo.szName),
+          QString(QDir::homeDirPath() + "/" + codec->toUnicode(m_sFileInfo.szName)),
           QString::null, this);
     f = u.path();
 #else
     f = QFileDialog::getSaveFileName(
-          QString(QDir::homeDirPath() + "/" + m_sFileInfo.szName),
+          QString(QDir::homeDirPath() + "/" + codec->toUnicode(m_sFileInfo.szName)),
           QString::null, this);
 #endif
     if (f.isNull()) return (false);
