@@ -62,6 +62,7 @@ public:
   bool RemoveUserFromGroup(unsigned long, QWidget *);
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
+  CUserView *UserView()  { return userView; }
 
 protected:
   // Command Tools
@@ -156,6 +157,7 @@ protected:
 friend class WharfIcon;
 friend class IconManager_Default;
 friend class OptionsDlg;
+friend class ICQFunctions;
 
 protected slots:
   void slot_removeUserFromGroup();

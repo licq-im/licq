@@ -62,6 +62,7 @@
 #include "forwarddlg.h"
 #include "chatjoin.h"
 #include "mainwin.h"
+#include "mmlistview.h"
 
 #include "licq_user.h"
 #include "mledit.h"
@@ -194,6 +195,8 @@ void ICQFunctions::CreateReadEventTab()
   msgView = new MsgView(h_top);
   btnReadNext = new QPushButton(tr("Nex&t"), h_top);
   btnReadNext->setEnabled(false);
+  btnReadNext->setFixedHeight(msgView->height());
+  //btnReadNext->setFixedWidth(btnReadNext->width());
   connect(btnReadNext, SIGNAL(clicked()), this, SLOT(slot_nextMessage()));
 
   QHGroupBox *h_msg = new QHGroupBox(p);
@@ -251,10 +254,16 @@ void ICQFunctions::CreateSendEventTab()
 #endif
   selay->addWidget(grpCmd);
 
-  mleSend = new MLEditWrap(true, tabList[TAB_SEND].tab, true);
+  QHGroupBox *h_mid = new QHGroupBox(tabList[TAB_SEND].tab);
+  mleSend = new MLEditWrap(true, h_mid, true);
   mleSend->setMinimumHeight(150);
-  selay->addWidget(mleSend);
-  selay->setStretchFactor(mleSend, 1);
+  lstMultipleRecipients = new CMMUserView(mainwin->UserView()->ColInfo(),
+     mainwin->showHeader, m_nUin, mainwin, h_mid);
+  lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
+  lstMultipleRecipients->hide();
+  //h_mid->setStretchFactor(mleSend, 1);
+  selay->addWidget(h_mid);
+  selay->setStretchFactor(h_mid, 1);
 
   grpOpt = new QGroupBox(3, Horizontal, tabList[TAB_SEND].tab);
   selay->addWidget(grpOpt);
@@ -277,14 +286,17 @@ void ICQFunctions::CreateSendEventTab()
 
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
   hlay->addWidget(chkSendServer);
-  chkUrgent = new QCheckBox(tr("U&rgent"), box);//tabList[TAB_SEND].tab);
+  chkUrgent = new QCheckBox(tr("U&rgent"), box);
   hlay->addWidget(chkUrgent);
+  chkMass = new QCheckBox(tr("&Multiple"), box);
+  hlay->addWidget(chkMass);
+  connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(slot_masstoggled(bool)));
 
 #ifdef USE_SPOOFING
-  hlay = new QHBoxLayout(vlay);//selay);
-  chkSpoof = new QCheckBox(tr("S&poof UIN:"), box);//tabList[TAB_SEND].tab);
+  hlay = new QHBoxLayout(vlay);
+  chkSpoof = new QCheckBox(tr("S&poof UIN:"), box);
   hlay->addWidget(chkSpoof);
-  edtSpoof = new QLineEdit(box);//tabList[TAB_SEND].tab);
+  edtSpoof = new QLineEdit(box);
   hlay->addWidget(edtSpoof);
   edtSpoof->setEnabled(false);
   edtSpoof->setValidator(new QIntValidator(10000, 2000000000, edtSpoof));
@@ -295,6 +307,13 @@ void ICQFunctions::CreateSendEventTab()
 #endif
   selay->activate();
 }
+
+
+void ICQFunctions::slot_masstoggled(bool b)
+{
+  b ? lstMultipleRecipients->show() : lstMultipleRecipients->hide();
+}
+
 
 
 void ICQFunctions::CreateGeneralInfoTab()
@@ -1149,7 +1168,7 @@ void ICQFunctions::slot_updatedUser(CICQSignal *sig)
     if (u->NewMessages() > 1)
     {
       btnReadNext->setEnabled(true);
-      btnReadNext->setText(tr("Nex&t (%1)").arg(u->NewMessages()));
+      btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
     }
     else if (u->NewMessages() == 1)
     {
@@ -1195,7 +1214,7 @@ void ICQFunctions::slot_nextMessage()
   if (u->NewMessages() > 1)
   {
     btnReadNext->setEnabled(true);
-    btnReadNext->setText(tr("Nex&t (%1)").arg(u->NewMessages()));
+    btnReadNext->setText(tr("Nex&t\n(%1)").arg(u->NewMessages()));
   }
   else if (u->NewMessages() == 1)
   {
@@ -1827,6 +1846,7 @@ void ICQFunctions::specialFcn(int theFcn)
     grpOpt->hide();
     tabs->updateGeometry();
     chkSendServer->setEnabled(true);
+    chkMass->setEnabled(true);
     break;
   case 1:  // Url
     lblItem->setText(tr("URL:"));
@@ -1837,6 +1857,7 @@ void ICQFunctions::specialFcn(int theFcn)
     grpOpt->show();
     tabs->updateGeometry();
     chkSendServer->setEnabled(true);
+    chkMass->setEnabled(true);
     break;
   case 2: // Chat
     lblItem->setText(tr("Multiparty:"));
@@ -1848,6 +1869,8 @@ void ICQFunctions::specialFcn(int theFcn)
     tabs->updateGeometry();
     chkSendServer->setChecked(false);
     chkSendServer->setEnabled(false);
+    chkMass->setChecked(false);
+    chkMass->setEnabled(false);
     break;
   case 3:  // File transfer
     lblItem->setText(tr("Filename:"));
@@ -1859,6 +1882,8 @@ void ICQFunctions::specialFcn(int theFcn)
     tabs->updateGeometry();
     chkSendServer->setChecked(false);
     chkSendServer->setEnabled(false);
+    chkMass->setChecked(false);
+    chkMass->setEnabled(false);
     break;
   }
 }
@@ -1886,6 +1911,10 @@ void ICQFunctions::callFcn()
                          edtSpoof->text().toULong() : 0);
     if (rdbMsg->isChecked())  // send a message
     {
+      if (chkMass->isChecked())
+      {
+        InformUser(this, "Multiple recipients is not quite there yet.");
+      }
       ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
       u->SetSendServer(chkSendServer->isChecked());
       gUserManager.DropUser(u);
@@ -1898,6 +1927,13 @@ void ICQFunctions::callFcn()
     }
     else if (rdbUrl->isChecked()) // send URL
     {
+      if (chkMass->isChecked())
+      {
+        InformUser(this, "Multiple recipients is not quite there yet.");
+      }
+      ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+      u->SetSendServer(chkSendServer->isChecked());
+      gUserManager.DropUser(u);
       m_sProgressMsg = tr("Sending URL ");
       m_sProgressMsg += chkSendServer->isChecked() ? tr("through server") : tr("direct");
       m_sProgressMsg += "...";

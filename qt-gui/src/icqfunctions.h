@@ -34,6 +34,7 @@ class MLEditWrap;
 class CUserEvent;
 class CMainWindow;
 class CEButton;
+class CMMUserView;
 
 //=====ICQFunctions=============================================================
 
@@ -90,7 +91,7 @@ protected:
   // Send Event tab
   void CreateSendEventTab();
   MLEditWrap *mleSend;
-  QCheckBox *chkSendServer, *chkSpoof, *chkUrgent;
+  QCheckBox *chkSendServer, *chkSpoof, *chkUrgent, *chkMass;
   QLineEdit *edtSpoof;
   CInfoField *edtItem;
   QLabel *lblItem;
@@ -100,6 +101,7 @@ protected:
   QRadioButton *rdbUrl, *rdbChat, *rdbFile, *rdbMsg;
   QString m_szMPChatClients;
   unsigned short m_nMPChatPort;
+  CMMUserView *lstMultipleRecipients;
 
   // User Info tab
   void CreateGeneralInfoTab();
@@ -185,6 +187,7 @@ protected slots:
    void save();
    void setSpoofed();
    void specialFcn(int);
+   void slot_masstoggled(bool);
    void slot_historyReverse(bool);
    void slot_historyReload();
    void slot_historyEdit();
