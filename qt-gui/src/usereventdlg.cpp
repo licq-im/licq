@@ -1963,14 +1963,14 @@ void UserSendCommon::massMessageToggled(bool b)
   else
   {
     chkMass->setChecked(false);
-    if (grpMR != NULL)
+    if (grpMR != NULL && grpMR->isShown())  // only resize when really necessary!
     {
       int grpMRWidth = grpMR->width();
       
       grpMR->hide();
 
       // resize the widget to it's origin width.
-      // This is a workaroung and not perfect, but resize() does not
+      // This is a workaround and not perfect, but resize() does not
       // work as expected. Maybe we find a better solution for this in future.
 #if QT_VERSION >= 300
       if (mainwin->userEventTabDlg &&
