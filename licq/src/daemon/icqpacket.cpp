@@ -406,12 +406,22 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
   unsigned long nUnknown = 0x98;
   char temp[10] = { 0, 0, 0, 0, 0, 0, 0, 0, 0x98, 0 };
 #elif ICQ_VERSION == 5
+/*
   unsigned long nUnknown = 0xD5;
   char temp[20] = { 0x00, 0x00, 0x00, 0x00,
                     0xEC, 0x01, 0x2C, 0x82,
                     0x50, 0x00, 0x00, 0x00,
                     0x03, 0x00, 0x00, 0x00,
-                    0x00, 0x16, 0xD6, 0x36 };
+                    0x00, 0x16, 0xD6, 0x36 };*/
+  unsigned long nUnknown = 0x78;
+  char temp[28] = { 0x00, 0x00, 0x00, 0x00,
+                    0x20, 0x00, 0x3F, 0x00,
+                    0x50, 0x00, 0x00, 0x00,
+                    0x03, 0x00, 0x00, 0x00,
+                    0xAC, 0xFA, 0x5B, 0x38,
+                    0x05, 0x0E, 0xC1, 0x37,
+                    0x00, 0x00, 0x00, 0x00 };
+
   if (!s_bRegistered)
   {
     s_nSessionId = rand() & 0x3FFFFFFF;
@@ -436,7 +446,7 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
 #elif ICQ_VERSION == 4
   m_nSize += 6 + strlen(szPassword) + 32;
 #elif ICQ_VERSION == 5
-  m_nSize += 6 + strlen(szPassword) + 42;
+  m_nSize += 6 + strlen(szPassword) + 50;
 #endif
   InitBuffer();
 
@@ -453,7 +463,7 @@ CPU_Logon::CPU_Logon(INetSocket *_s, const char *szPassword, unsigned short _nLo
 #if ICQ_VERSION == 2 || ICQ_VERSION == 4
   buffer->Pack(temp, 10);
 #else
-  buffer->Pack(temp, 20);
+  buffer->Pack(temp, 28);
 #endif
 }
 
@@ -849,6 +859,7 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
              strlen_safe(szCellularNumber) + 36 + 12;
   InitBuffer();
 
+
   buffer->PackUnsignedShort(m_nMetaCommand);
   m_szAlias = buffer->PackString(szAlias);
   m_szFirstName = buffer->PackString(szFirstName);
@@ -869,6 +880,14 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   buffer->PackChar(m_nWebAware);
   buffer->PackChar(m_nHideEmail);
 
+  // Check for possible problems
+  char *sz = m_szAlias;
+  while (*sz != '\0' && strncasecmp(sz, "icq", 3) != 0) sz++;
+  if (*sz != '\0')
+  {
+    gLog.Warn("%sAlias may not contain \"icq\".\n", L_WARNxSTR);
+    *sz = '-';
+  }
 }
 
 
