@@ -147,12 +147,7 @@ gint status_popup_menu(GtkWidget *status, GdkEventButton *event)
 			GTK_SIGNAL_FUNC(status_off), offline);
 
 	// Separator
-	GtkWidget *separator = gtk_hseparator_new();
-	_menu_item = gtk_menu_item_new();
-	gtk_menu_shell_append(GTK_MENU_SHELL(_menu), _menu_item);
-	gtk_container_add(GTK_CONTAINER(_menu_item), separator);
-	gtk_widget_set_sensitive(_menu_item, false);
-	gtk_widget_show_all(_menu_item);
+	menu_separator(_menu);
 
 	_menu_item = 
 		menu_new_item_with_pixmap(_menu, "Invisible",
