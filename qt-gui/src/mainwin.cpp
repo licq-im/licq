@@ -2225,6 +2225,8 @@ void CMainWindow::autoAway()
     {
       changeStatus(ICQ_STATUS_OFFLINE);
       bAutoOffline = true;
+      bAutoAway = (status == ICQ_STATUS_ONLINE);
+      bAutoNA = (status == ICQ_STATUS_AWAY || bAutoAway);
     }
   }
   else if ( (autoNATime > 0) &&
@@ -2234,6 +2236,7 @@ void CMainWindow::autoAway()
     {
       changeStatus(ICQ_STATUS_NA);
       bAutoNA = true;
+      bAutoAway = (status == ICQ_STATUS_ONLINE);
     }
   }
   else if ( (autoAwayTime > 0) &&
