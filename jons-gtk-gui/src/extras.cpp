@@ -35,6 +35,7 @@
 #include "pixmaps/secure_on.xpm"
 #include "pixmaps/birthday.xpm"
 #include "pixmaps/securebday.xpm"
+#include "pixmaps/blank.xpm"
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
@@ -78,6 +79,7 @@ void do_pixmaps()
 	secure_icon = make_pixmap(secure_icon, (gchar **)secure_on_xpm);
 	birthday_icon = make_pixmap(birthday_icon, (gchar **)birthday_xpm);
 	securebday_icon = make_pixmap(securebday_icon, (gchar **)securebday_xpm);
+	blank_icon = make_pixmap(blank_icon, (gchar **)blank_xpm);
 }
 
 struct status_icon *make_pixmap(struct status_icon *icon, gchar **file)

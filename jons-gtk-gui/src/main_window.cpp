@@ -26,6 +26,8 @@
 GtkWidget *vertical_box;
 GtkWidget *contact_list;
 
+gint flash_icons(gpointer);
+
 void main_window_delete_event(GtkWidget *mainwindow, gpointer data)
 {
 	gtk_main_quit();
@@ -35,6 +37,8 @@ GtkWidget* main_window_new(const gchar* window_title,
 			   gint height,
 			   gint width)
 {
+	gtk_timeout_add(1000, flash_icons, NULL);
+
 	/* Here's a good place to start the option defaults */
 	const char *filename = g_strdup_printf("%s/licq_jons-gtk-gui.conf",
 					       BASE_DIR);

@@ -388,6 +388,14 @@ struct status_icon
 	GdkBitmap *bm;
 };
 
+struct SFlash
+{
+	struct status_icon *icon;
+	gulong nUin;
+	gint nRow;
+	gboolean bFlashOn;
+};
+
 /******************* Global Variables ******************/
 
 /* Globals in away_window.cpp */
@@ -397,7 +405,9 @@ extern GSList *uaw_list;
 extern GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 extern struct status_icon *online, *away, *na, *dnd, *occ, *offline, *ffc,
 	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
-	*secure_icon, *birthday_icon, *securebday_icon;
+	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon;
+extern int nToFlash;
+extern list<SFlash *> FlashList;
 
 /* Globals in chat_window.cpp */
 extern GSList *rc_list;
@@ -507,6 +517,7 @@ extern void contact_list_refresh();
 extern void contact_list_order();
 extern void contact_list_click(GtkWidget *, GdkEventButton *, gpointer);
 extern void add_to_popup(const gchar *, GtkWidget *, GtkSignalFunc, ICQUser *);
+extern gint flash_icons(gpointer);
 
 
 /* Functions in convo.cpp */

@@ -31,9 +31,12 @@
 GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 struct status_icon *online, *offline, *away, *na, *dnd, *occ, *ffc,
 	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
-	*secure_icon, *birthday_icon, *securebday_icon;
+	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon;
+gboolean bFlashOn = false;
+gint nToFlash = -1;
 
 list<unsigned long> AutoSecureList;
+list<SFlash *> FlashList;
 
 GtkWidget *contact_list_new(gint height, gint width)
 {
@@ -64,10 +67,38 @@ GtkWidget *contact_list_new(gint height, gint width)
 	return _contact_l;
 }
 
+gint flash_icons(gpointer data)
+{
+	if(nToFlash < 0)
+		return -1;
+
+	list<SFlash *>::iterator it;
+	for(it = FlashList.begin(); it != FlashList.end(); it++)
+	{
+		if(!(*it)->bFlashOn)
+		{
+			(*it)->bFlashOn = true;
+			gtk_clist_set_pixmap(GTK_CLIST(contact_list),
+				(*it)->nRow, 1, blank_icon->pm,
+				blank_icon->bm);
+		}
+		else
+		{
+			(*it)->bFlashOn = false;
+			gtk_clist_set_pixmap(GTK_CLIST(contact_list),
+				(*it)->nRow, 1, (*it)->icon->pm,
+				(*it)->icon->bm);
+		}
+	}
+
+	return -1;
+}
+
 void contact_list_refresh()
 {
 	gchar *blah[3];
 	gint num_users = 0;
+	nToFlash = -1;
 
 	/* Don't update the clist window, so we can update all the users */
 	gtk_clist_freeze(GTK_CLIST(contact_list));
@@ -135,6 +166,23 @@ void contact_list_refresh()
 				1, icon->pm, icon->bm);
 			gtk_clist_set_text(GTK_CLIST(contact_list), num_users,
 				0, "!");
+
+/*			nToFlash++;
+			list<SFlash *>::iterator it;
+			for(it = FlashList.begin(); it != FlashList.end(); it++)
+			{
+				if((*it)->nUin != pUser->Uin())
+					(*it)->nRow++;
+			}
+*/
+			struct SFlash *flash = g_new0(struct SFlash, 1);
+			flash->nRow = ++nToFlash; 
+			flash->icon = icon;
+			flash->bFlashOn = false;
+			flash->nUin = pUser->Uin();
+
+			FlashList.push_back(flash);
+
 		} 
 
          	else

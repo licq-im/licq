@@ -216,6 +216,32 @@ void convo_show(struct conversation *c)
 	strcpy(c->etag->buf, c->prog_buf);
 
 	gtk_widget_show_all(c->window);
+
+	// Stop the flashing if necessary
+        if(c->user->NewMessages() > 0)
+        {
+                // Stop the flashing for this user
+                nToFlash--;
+                list<SFlash *>::iterator it;
+		int x = 0;
+                for(it = FlashList.begin(); it != FlashList.end(); it++)
+                {
+			x++;
+                        if((*it)->nUin == c->user->Uin())
+                        {
+                                g_free(*it);
+                                FlashList.erase(it);
+				break;
+                        }                
+                }
+
+		for(it = FlashList.begin(); it != FlashList.end(); it++)
+		{
+			x--;
+			if(x <= 0)
+				(*it)->nRow--;
+		}
+        }
 }
 
 gboolean key_press_convo(GtkWidget *entry, GdkEventKey *eventkey, gpointer data)
@@ -349,7 +375,7 @@ void convo_recv(gulong uin)
 	if(c == NULL)
 	{
 		system_status_refresh();
-		return; 
+                return;
 	}
 
 	CUserEvent *u_event = c->user->EventPop();
