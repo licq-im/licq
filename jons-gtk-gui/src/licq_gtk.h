@@ -154,6 +154,7 @@ struct more_window
 {
 	GtkWidget *window;
 	GtkWidget *notify;
+	GtkWidget *realip;
 	GtkWidget *visible;
 	GtkWidget *invisible;
 	GtkWidget *ignore;
