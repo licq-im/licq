@@ -2,10 +2,10 @@
  * FIFO commands
  *
  * TODO things
- *	o file transfers
+ *  o file transfers
  * THOUGHTS 
- *	o a flag so message, url, etc can been forced to fail if buddy is not
- *	| in the list ?
+ *  o a flag so message, url, etc can been forced to fail if buddy is not
+ *  | in the list ?
  *
  * If anyone changes anything here try to update the README.FIFO
  *
@@ -130,14 +130,14 @@ StringToStatus(char *_szStatus)
     const unsigned long nStatus;
   } table[]=
   {
-    { "online",	ICQ_STATUS_ONLINE	},
-    { "away",	ICQ_STATUS_AWAY	},
-    { "na",		ICQ_STATUS_NA	},
-    { "occupied",	ICQ_STATUS_OCCUPIED	},
-    { "dnd",	ICQ_STATUS_DND	},
-    { "ffc",	ICQ_STATUS_FREEFORCHAT	},
-    { "offline",	ICQ_STATUS_OFFLINE	},
-    { NULL,		0	}
+    { "online",   ICQ_STATUS_ONLINE      },
+    { "away",     ICQ_STATUS_AWAY        },
+    { "na",       ICQ_STATUS_NA          },
+    { "occupied", ICQ_STATUS_OCCUPIED    },
+    { "dnd",      ICQ_STATUS_DND         },
+    { "ffc",      ICQ_STATUS_FREEFORCHAT },
+    { "offline",  ICQ_STATUS_OFFLINE     },
+    { NULL,       0                      }
   };
   gUserManager.DropOwner();
   if (_szStatus[0] == '*')
@@ -152,15 +152,19 @@ StringToStatus(char *_szStatus)
 }
 
 
-/* atouin
+/*! \brief Given an ascii string get the uin
+ *
  *  Given an ascii string get the uin
- *  1. If all chars are digits test
- *    a) if bList flag is on check if it is in the list
+ *  1. If all chars are digits then:
+ *    a) if bList flag is on, check if it is in the list
  *    b) else return 
  *  2. If that fail try with alias Params.
- *  buff	bufer to convert
- *  bOnList	fail if buff is an uin number and it is not in user list
- *  nUin	address where the uin is saved
+ * 
+ *  \param  buff     buffer to convert
+ *  \param  bOnList  fail if buff is an uin number and it is not in user list
+ *  \param  nUin     address where the uin is saved
+ *
+ * \returns true on success
  */
 bool atouin( const char *buff, bool bOnList, unsigned long *nUin)
 {
@@ -557,6 +561,10 @@ static char getQuotedChar( char c )
   return ret;
 }
 
+/*! 
+ * given a command line string p, fills argv and argc. 
+ * p is modified.
+ */
 static bool line2argv( char *p, char **argv, int *argc, int size )
 {
   char *q;
@@ -592,35 +600,38 @@ static bool line2argv( char *p, char **argv, int *argc, int size )
   return !bQuote;
 }
 
+/*!
+ * \returns the index of @tok in @table or CL_UNKNOWN if @tok doesn't exist 
+ */
 static int process_tok(const command_t *table,const char *tok)
 {
   int i;
-  bool bExit;
+  bool bFound;
 
   /* empty line */
   if(tok[0]==0)
     return CL_NONE;
  
-  for( i=0, bExit=false ; !bExit && table[i].szName != NULL ; i++ )
+  for( i=0, bFound=false ; !bFound && table[i].szName != NULL ; i++ )
     if( ! strcasecmp(table[i].szName,tok) )
-      bExit =  true;
+      bFound =  true;
  
-  return  bExit  ? i -1 : CL_UNKNOWN;
+  return  bFound ? i -1 : CL_UNKNOWN;
 }
 
 void CICQDaemon::ProcessFifo(char *_szBuf)
 {
 #ifdef USE_FIFO
-  int argc,index;
+  int argc, index;
   char * argv[MAX_ARGV];
   char *szBuf = strdup(_szBuf);
 
   if( szBuf == NULL )
     return ;
 
-  gLog.Info("%sReceived string: `%s'\n",L_FIFOxSTR,szBuf); 
-  line2argv(szBuf,argv,&argc,sizeof(argv)/sizeof(argv[0]) );
-  index=process_tok(fifocmd_table,argv[0]);
+  gLog.Info("%sReceived string: `%s'\n", L_FIFOxSTR, szBuf );
+  line2argv(szBuf, argv, &argc, sizeof(argv) / sizeof(argv[0]) );
+  index = process_tok(fifocmd_table,argv[0]);
 
   switch( index )
   {
