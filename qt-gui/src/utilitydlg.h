@@ -3,7 +3,7 @@
 
 #include <stdio.h>
 
-#include <qwidget.h>
+#include <qdialog.h>
 
 #include <vector.h>
 
@@ -19,7 +19,7 @@ class CInfoField;
 
 class MLEditWrap;
 
-class CUtilityDlg : public QWidget
+class CUtilityDlg : public QDialog
 {
   Q_OBJECT
 public:

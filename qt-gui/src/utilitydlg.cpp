@@ -15,7 +15,6 @@
 
 */
 
-//#include <stdio.h>
 #include <qcheckbox.h>
 #include <qgroupbox.h>
 #include <qlabel.h>
@@ -34,7 +33,7 @@
 
 
 CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
-  : QWidget(NULL, NULL)
+  : QDialog(0)
 {
   m_nUin = _nUin;
   m_xUtility = u;
@@ -46,23 +45,21 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
 
   QGridLayout *lay = new QGridLayout(this, 1, 2, 10, 5);
 
-  char sz[64];
-  sprintf(sz, "Licq Utility: %s", m_xUtility->Name());
-  setCaption(sz);
+  setCaption(QString(tr("Licq Utility: %1")).arg(m_xUtility->Name()));
   lblUtility = new QLabel(tr("Command:"), this);
   lay->addWidget(lblUtility, 0, 0);
   nfoUtility = new CInfoField(this, true);
+  nfoUtility->setMinimumWidth(nfoUtility->sizeHint().width()*2);
   lay->addWidget(nfoUtility, 0, 1);
   nfoUtility->setText(m_xUtility->FullCommand());
 
   lay->addWidget(new QLabel(tr("Window:"), this), 1, 0);
   nfoWinType = new CInfoField(this, true);
   lay->addWidget(nfoWinType, 1, 1);
-  switch (m_xUtility->WinType())
-  {
-  case UtilityWinGui: nfoWinType->setText("GUI"); break;
-  case UtilityWinTerm: nfoWinType->setText("Terminal"); break;
-  case UtilityWinLicq: nfoWinType->setText("Internal"); break;
+  switch (m_xUtility->WinType()) {
+  case UtilityWinGui: nfoWinType->setText(tr("GUI")); break;
+  case UtilityWinTerm: nfoWinType->setText(tr("Terminal")); break;
+  case UtilityWinLicq: nfoWinType->setText(tr("Internal")); break;
   }
 
   lay->addWidget(new QLabel(tr("Description:"), this), 2, 0);
@@ -73,39 +70,37 @@ CUtilityDlg::CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server)
   chkEditFinal = new QCheckBox(tr("Edit final command"), this);
   lay->addMultiCellWidget(chkEditFinal, 3, 3, 0, 1);
 
-  boxFields = new QGroupBox("User Fields", this);
+  boxFields = new QGroupBox(1, Horizontal, tr("User Fields"), this);
   lay->addMultiCellWidget(boxFields, 4, 4, 0, 1);
-  QGridLayout *blay = new QGridLayout(boxFields, 1, 2, 20, 5);
   mleCommand = new MLEditWrap(true, boxFields);
   mleCommand->setReadOnly(true);
   mleCommand->hide();
-  blay->addMultiCellWidget(mleCommand, 0, 0, 0, 1);
-  for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++)
-  {
-    sprintf(sz, "%s (%%%d):", m_xUtility->UserField(i)->Title(), i + 1);
-    QLabel *lbl = new QLabel(sz, boxFields);
+  for (unsigned short i = 0; i < m_xUtility->NumUserFields(); i++) {
+    QLabel *lbl = new QLabel(QString("%1 (%%%2):").arg(
+      m_xUtility->UserField(i)->Title(), i+1), boxFields);
     lblFields.push_back(lbl);
-    blay->addWidget(lbl, i + 1, 0);
     QLineEdit *edt = new QLineEdit(boxFields);
     edt->setText(m_xUtility->UserField(i)->FullDefault());
+    edt->setMinimumSize(edt->sizeHint());
     edtFields.push_back(edt);
-    blay->addWidget(edt, i + 1, 1);
   }
   if (m_xUtility->NumUserFields() == 0) boxFields->hide();
 
   QHBoxLayout *hlay = new QHBoxLayout(lay);
-  btnRun = new QPushButton("Run", this);
+  hlay->addStretch(1);
+  btnRun = new QPushButton(tr("&Run"), this);
+  btnRun->setDefault(true);
+  btnRun->setMinimumWidth(75);
   hlay->addWidget(btnRun, 0, AlignRight);
   hlay->addSpacing(20);
-  btnCancel = new QPushButton("Cancel", this);
+  btnCancel = new QPushButton(tr("&Cancel"), this);
+  btnCancel->setMinimumWidth(75);
   hlay->addWidget(btnCancel, 0, AlignLeft);
   lay->addMultiCell(hlay, 5, 5, 0, 1);
 
   connect(btnRun, SIGNAL(clicked()), SLOT(slot_run()));
   connect(btnCancel, SIGNAL(clicked()), SLOT(slot_cancel()));
 
-  setGeometry(100, 100, 400, 160 + m_xUtility->NumUserFields() * 25
-                             + (m_xUtility->NumUserFields() == 0 ? 0 : 30));
   show();
 }
 
@@ -199,7 +194,7 @@ void CUtilityDlg::slot_run()
       lblFields[i]->hide();
       edtFields[i]->hide();
     }
-    boxFields->setTitle("Command Window");
+    boxFields->setTitle(tr("Command Window"));
     boxFields->show();
     mleCommand->show();
     resize(width(), 300);
@@ -241,7 +236,7 @@ void CUtilityDlg::slot_command()
       fsCommand = NULL;
     }
     m_bIntWin = false;
-    btnCancel->setText("Close");
+    btnCancel->setText(tr("C&lose"));
     disconnect(snCommand, SIGNAL(activated(int)), this, SLOT(slot_command()));
   }
   else
