@@ -1075,7 +1075,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
 {
   // Write the event to the history file if appropriate
   if (e->m_pUserEvent != NULL &&
-      e->m_eResult == EVENT_ACKED &&
+      (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS) &&
       e->m_nSubResult != ICQ_TCPxACK_RETURN)
   {
     ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
