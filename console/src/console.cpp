@@ -286,7 +286,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     PrintStatus();
     break;
   default:
-    gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %d.\n", 
+    gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %d.\n",
               L_WARNxSTR, s->Signal());
     break;
   }
@@ -662,7 +662,7 @@ void CLicqConsole::PrintBadInput(const char *_szIn)
 void CLicqConsole::PrintBoxTop(const char *_szTitle, short _nColor, short _nLength)
 {
   unsigned short i, j;
-  wcolor_set(winMain->Win(), COLOR_WHITE, NULL);
+  wattrset(winMain->Win(), COLOR_PAIR(COLOR_WHITE));
   waddch(winMain->Win(), '\n');
   waddch(winMain->Win(), ACS_ULCORNER);
   for (i = 0; i < 10; i++)
@@ -712,7 +712,7 @@ void CLicqConsole::PrintBoxBottom(short _nLength)
   waddch(winMain->Win(), '\n');
 
   winMain->RefreshWin();
-  wcolor_set(winMain->Win(), COLOR_WHITE, NULL);
+  wattrset(winMain->Win(), COLOR_PAIR(COLOR_WHITE));
 }
 
 
