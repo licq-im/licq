@@ -188,7 +188,7 @@ UserEventTabDlg::UserEventTabDlg(QWidget *parent, const char *name)
   tabw = new QTabWidget(this);
   lay->addWidget(tabw);
   connect(tabw, SIGNAL(currentChanged(QWidget *)),
-	  this, SLOT(updateTitle(QWidget *)));
+          this, SLOT(updateTitle(QWidget *)));
   connect(tabw, SIGNAL(currentChanged(QWidget *)),
           this, SLOT(clearEvents(QWidget *)));
 #endif
@@ -282,34 +282,34 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
     {
       if (u->NewMessages() > 0)
       {
-	// use an event icon
-	unsigned short SubCommand = 0;
-	for (unsigned short i = 0; i < u->NewMessages(); i++)
-	{
-	  switch(u->EventPeek(i)->SubCommand())
-	  {
-	  case ICQ_CMDxSUB_FILE:
-	    SubCommand = ICQ_CMDxSUB_FILE;
-	    break;
-	  case ICQ_CMDxSUB_CHAT:
-	    if (SubCommand != ICQ_CMDxSUB_FILE) SubCommand = ICQ_CMDxSUB_CHAT;
-	    break;
-	  case ICQ_CMDxSUB_URL:
-	    if (SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT)
-	      SubCommand = ICQ_CMDxSUB_URL;
-	    break;
-	  case ICQ_CMDxSUB_CONTACTxLIST:
-	    if(SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT
-	       && SubCommand != ICQ_CMDxSUB_URL)
-	      SubCommand = ICQ_CMDxSUB_CONTACTxLIST;
-	  case ICQ_CMDxSUB_MSG:
-	  default:
-	    if (SubCommand == 0) SubCommand = ICQ_CMDxSUB_MSG;
-	    break;
-	  }
-	}
-	if(SubCommand)
-	  tabw->setTabIconSet(tab, CMainWindow::iconForEvent(SubCommand));
+        // use an event icon
+        unsigned short SubCommand = 0;
+        for (unsigned short i = 0; i < u->NewMessages(); i++)
+        {
+          switch(u->EventPeek(i)->SubCommand())
+          {
+          case ICQ_CMDxSUB_FILE:
+            SubCommand = ICQ_CMDxSUB_FILE;
+            break;
+          case ICQ_CMDxSUB_CHAT:
+            if (SubCommand != ICQ_CMDxSUB_FILE) SubCommand = ICQ_CMDxSUB_CHAT;
+            break;
+          case ICQ_CMDxSUB_URL:
+            if (SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT)
+              SubCommand = ICQ_CMDxSUB_URL;
+            break;
+          case ICQ_CMDxSUB_CONTACTxLIST:
+            if(SubCommand != ICQ_CMDxSUB_FILE && SubCommand != ICQ_CMDxSUB_CHAT
+              && SubCommand != ICQ_CMDxSUB_URL)
+              SubCommand = ICQ_CMDxSUB_CONTACTxLIST;
+          case ICQ_CMDxSUB_MSG:
+          default:
+            if (SubCommand == 0) SubCommand = ICQ_CMDxSUB_MSG;
+            break;
+          }
+        }
+        if(SubCommand)
+          tabw->setTabIconSet(tab, CMainWindow::iconForEvent(SubCommand));
       }
       // use status icon
       else tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull()));
@@ -340,7 +340,7 @@ void UserEventTabDlg::clearEvents(QWidget *tab)
     {
       CUserEvent *e = u->EventPeek(i);
       if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
-	idList.push_back(e->Id());
+        idList.push_back(e->Id());
     }
 
     for (unsigned short i = 0; i < idList.size(); i++)
@@ -1635,10 +1635,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   if (mainwin->userEventTabDlg &&
       parent == mainwin->userEventTabDlg)
   {
-    a->connectItem(a->insertItem(ALT + Key_Left),
-		   mainwin->userEventTabDlg, SLOT(moveLeft()));
-    a->connectItem(a->insertItem(ALT + Key_Right),
-		   mainwin->userEventTabDlg, SLOT(moveRight()));
+    a->connectItem(a->insertItem(ALT + Key_Left),  mainwin->userEventTabDlg, SLOT(moveLeft()));
+    a->connectItem(a->insertItem(ALT + Key_Right), mainwin->userEventTabDlg, SLOT(moveRight()));
   }
 #endif
 
@@ -1745,10 +1743,10 @@ void UserSendCommon::windowActivationChange(bool oldActive)
 #endif
 
   if (isActiveWindow() && mainwin->m_bMsgChatView &&
-      (!mainwin->userEventTabDlg ||
-       (mainwin->userEventTabDlg &&
-	(!mainwin->userEventTabDlg->tabExists(this) ||
-	 mainwin->userEventTabDlg->tabIsSelected(this)))))
+     (!mainwin->userEventTabDlg ||
+       (mainwin->userEventTabDlg && 
+         (!mainwin->userEventTabDlg->tabExists(this) ||
+         mainwin->userEventTabDlg->tabIsSelected(this)))))
     {
     if (u != NULL && u->NewMessages() > 0)
     {
@@ -1843,7 +1841,7 @@ void UserSendCommon::changeEventType(int id)
   QWidget *parent = NULL;
 #if QT_VERSION >= 300
   if (mainwin->userEventTabDlg && mainwin->userEventTabDlg->tabExists(this))
-      parent = mainwin->userEventTabDlg;
+    parent = mainwin->userEventTabDlg;
 #endif
   switch(id)
   {
@@ -1932,74 +1930,74 @@ void UserSendCommon::changeEventType(int id)
  */
 void UserSendCommon::massMessageToggled(bool b)
 {
-	if (b)
-	{
+  if (b)
+  {
 #if QT_VERSION >= 300
-	        if (mainwin->userEventTabDlg &&
-		    mainwin->userEventTabDlg->tabIsSelected(this))
-                  tmpWidgetWidth = mainwin->userEventTabDlg->width();
-		else
+    if (mainwin->userEventTabDlg &&
+        mainwin->userEventTabDlg->tabIsSelected(this))
+      tmpWidgetWidth = mainwin->userEventTabDlg->width();
+    else
 #endif
-		  tmpWidgetWidth = width();
-		if (grpMR == NULL)
-		{
-			grpMR = new QVGroupBox(this);
-			top_hlay->addWidget(grpMR);
+      tmpWidgetWidth = width();
+    if (grpMR == NULL)
+    {
+      grpMR = new QVGroupBox(this);
+      top_hlay->addWidget(grpMR);
 
-			(void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
+      (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
 #ifdef QT_PROTOCOL_PLUGIN
       //TODO in CMMUserView
-      lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-        strtoul(m_szId, (char **)NULL, 10), mainwin, grpMR);
+      lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader, 
+                                  strtoul(m_szId, (char **)NULL, 10), mainwin, grpMR);
 #else
-			lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-																	m_nUin, mainwin, grpMR);
+      lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
+                                  m_nUin, mainwin, grpMR);
 #endif
-			lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
-		}
-		grpMR->show();
-	}
-	else
-	{
-		if (grpMR != NULL)
-		{
-			int grpMRWidth = grpMR->width();
+      lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
+    }
+    grpMR->show();
+  }
+  else
+  {
+    if (grpMR != NULL)
+    {
+      int grpMRWidth = grpMR->width();
 
-			grpMR->hide();
-			grpMR->close(true);
-			grpMR = NULL;
+      grpMR->hide();
+      grpMR->close(true);
+      grpMR = NULL;
 
-			// resize the widget to it's origin width.
-			// This is a workaroung and not perfect, but resize() does not
-			// work as expected. Maybe we find a better solution for this in future.
+      // resize the widget to it's origin width.
+      // This is a workaroung and not perfect, but resize() does not
+      // work as expected. Maybe we find a better solution for this in future.
 #if QT_VERSION >= 300
-			if (mainwin->userEventTabDlg &&
-			    mainwin->userEventTabDlg->tabIsSelected(this))
-			{
-			  QSize tmpMaxSize = mainwin->userEventTabDlg->maximumSize();
-			  if (tmpWidgetWidth == 0)
-			    mainwin->userEventTabDlg->setFixedWidth(mainwin->userEventTabDlg->width() - grpMRWidth);
-			  else
-			  {
-			    mainwin->userEventTabDlg->setFixedWidth(tmpWidgetWidth);
-                            tmpWidgetWidth = 0;
-			  }
-                          mainwin->userEventTabDlg->setMaximumSize(tmpMaxSize);
-			}
-			else
+      if (mainwin->userEventTabDlg &&
+          mainwin->userEventTabDlg->tabIsSelected(this))
+      {
+        QSize tmpMaxSize = mainwin->userEventTabDlg->maximumSize();
+        if (tmpWidgetWidth == 0)
+          mainwin->userEventTabDlg->setFixedWidth(mainwin->userEventTabDlg->width() - grpMRWidth);
+        else
+        {
+          mainwin->userEventTabDlg->setFixedWidth(tmpWidgetWidth);
+          tmpWidgetWidth = 0;
+        }
+        mainwin->userEventTabDlg->setMaximumSize(tmpMaxSize);
+      }
+      else
 #endif
-			{
-			  QSize tmpMaxSize = maximumSize();
-			  if (tmpWidgetWidth == 0)
-                            setFixedWidth(width() - grpMRWidth);
-			  else
-			  {
-                            setFixedWidth(tmpWidgetWidth);
-			    tmpWidgetWidth = 0;
-			  }
-			  setMaximumSize(tmpMaxSize);
-			}
-		}
+      {
+        QSize tmpMaxSize = maximumSize();
+        if (tmpWidgetWidth == 0)
+          setFixedWidth(width() - grpMRWidth);
+        else
+        {
+          setFixedWidth(tmpWidgetWidth);
+          tmpWidgetWidth = 0;
+        }
+        setMaximumSize(tmpMaxSize);
+      }
+    }
   }
 }
 
@@ -2042,7 +2040,7 @@ void UserSendCommon::sendButton()
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
 #if QT_VERSION >= 300
     if (mainwin->userEventTabDlg &&
-	mainwin->userEventTabDlg->tabIsSelected(this))
+        mainwin->userEventTabDlg->tabIsSelected(this))
       mainwin->userEventTabDlg->setCaption(title);
 #endif
     setCaption(title);
@@ -2072,7 +2070,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + tr("error") + "]";
 #if QT_VERSION >= 300
     if (mainwin->userEventTabDlg &&
-	mainwin->userEventTabDlg->tabIsSelected(this))
+        mainwin->userEventTabDlg->tabIsSelected(this))
       mainwin->userEventTabDlg->setCaption(title);
 #endif
     setCaption(title);
@@ -2139,11 +2137,9 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   if (e->Result() != EVENT_ACKED)
   {
     if (e->Command() == ICQ_CMDxTCP_START && e->Result() != EVENT_CANCELLED &&
-	(mainwin->m_bAutoSendThroughServer ||
+       (mainwin->m_bAutoSendThroughServer ||
          QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No"))) )
-    {
       RetrySend(e, false, ICQ_TCPxMSG_NORMAL);
-    }
     return;
   }
 
@@ -2195,11 +2191,12 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     if (sendDone(e))
     {
       emit mainwin->signal_sentevent(e);
-
-      if (mainwin->m_bMsgChatView && mleHistory != NULL) {
+      if (mainwin->m_bMsgChatView && mleHistory != NULL)
+      {
         mleHistory->GotoEnd();
         resetSettings();
-      } else
+      }
+      else
         close();
     }
   }
@@ -2273,10 +2270,10 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 
 #ifdef QT_PROTOCOL_PLUGIN
         icqEventTag = server->ProtoSendMessage(m_szId, m_nPPID, messageRaw.data(),
-          bOnline, nLevel, false, &icqColor);
+                      bOnline, nLevel, false, &icqColor);
 #else
         icqEventTag = server->icqSendMessage(m_nUin, messageRaw.data(),
-           bOnline, nLevel, false, &icqColor);
+                      bOnline, nLevel, false, &icqColor);
 #endif
         m_lnEventTag.push_back(icqEventTag);
 
@@ -2294,10 +2291,10 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       CEventUrl *ue = (CEventUrl *)e->UserEvent();
 #ifdef QT_PROTOCOL_PLUGIN
       icqEventTag = server->ProtoSendUrl(m_szId, m_nPPID, ue->Url(),
-        ue->Description(), bOnline, nLevel, false, &icqColor);
+                    ue->Description(), bOnline, nLevel, false, &icqColor);
 #else
       icqEventTag = server->icqSendUrl(m_nUin, ue->Url(), ue->Description(),
-         bOnline, nLevel, false, &icqColor);
+                    bOnline, nLevel, false, &icqColor);
 #endif
       break;
     }
@@ -2316,10 +2313,10 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 #ifdef QT_PROTOCOL_PLUGIN
       //TODO in the daemon
       icqEventTag = server->icqSendContactList(strtoul(m_szId, (char **)NULL, 10),
-        uins, bOnline, nLevel, false, &icqColor);
+                    uins, bOnline, nLevel, false, &icqColor);
 #else
       icqEventTag = server->icqSendContactList(m_nUin, uins, bOnline,
-       nLevel, false, &icqColor);
+                    nLevel, false, &icqColor);
 #endif
       break;
     }
@@ -2329,7 +2326,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 #ifdef QT_PROTOCOL_PLUGIN
       //TODO in the daemon
       icqEventTag = server->icqChatRequest(strtoul(m_szId, (char **)NULL, 10),
-        ue->Reason(), nLevel, !bOnline);
+                    ue->Reason(), nLevel, !bOnline);
 #else
       icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel, !bOnline);
 #endif
@@ -2342,10 +2339,10 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 #ifdef QT_PROTOCOL_PLUGIN
       //TODO in the daemon
       icqEventTag = server->icqFileTransfer(strtoul(m_szId, (char **)NULL, 10),
-        ue->Filename(), ue->FileDescription(), filelist, nLevel, !bOnline);
+                    ue->Filename(), ue->FileDescription(), filelist, nLevel, !bOnline);
 #else
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
-         ue->FileDescription(), filelist, nLevel, !bOnline); // try through server
+                    ue->FileDescription(), filelist, nLevel, !bOnline); // try through server
 #endif
       break;
     }
@@ -2355,7 +2352,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 #ifdef QT_PROTOCOL_PLUGIN
       //TODO in the daemon
       icqEventTag = server->icqSendSms(ue->Number(), ue->Message(),
-        strtoul(m_szId, (char **)NULL, 0));
+                    strtoul(m_szId, (char **)NULL, 0));
 #else
       icqEventTag = server->icqSendSms(ue->Number(), ue->Message(), m_nUin);
 #endif
@@ -2364,7 +2361,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     default:
     {
       gLog.Warn("%sInternal error: UserSendCommon::RetrySend()\n"
-         "%sUnknown sub-command %d.\n", L_WARNxSTR, L_BLANKxSTR, e->SubCommand());
+                "%sUnknown sub-command %d.\n", L_WARNxSTR, L_BLANKxSTR, e->SubCommand());
       break;
     }
   }
@@ -2387,7 +2384,7 @@ void UserSendCommon::cancelSend()
   {
 #if QT_VERSION >= 300
     if (mainwin->userEventTabDlg &&
-	mainwin->userEventTabDlg->tabExists(this))
+        mainwin->userEventTabDlg->tabExists(this))
       mainwin->userEventTabDlg->removeTab(this);
     else
 #endif
@@ -2457,7 +2454,7 @@ bool UserSendCommon::checkSecure()
   if (chkSendServer->isChecked() && ( u->Secure() || u->AutoSecure()) )
   {
     if (!QueryUser(this, tr("Warning: Message can't be sent securely\n"
-                            "through the server!"),
+                             "through the server!"),
                    tr("Send anyway"), tr("Cancel")))
     {
       send_ok = false;
@@ -2540,73 +2537,71 @@ void UserSendMsgEvent::sendButton()
   bool needsSplitting = false;
   // If we send through server (= have message limit), and we've crossed the limit
   if (chkSendServer->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE))
-  {
-     needsSplitting = true;
-  }
+    needsSplitting = true;
 
   QString message;
   QCString messageRaw;
 
   while (wholeMessageRaw.length() > wholeMessagePos)
   {
-     if (needsSplitting)
-     {
-        // This is a bit ugly but adds safety. We don't simply search
-        // for a whitespace to cut at in the encoded text (since we don't
-        // really know how spaces are represented in its encoding), so
-        // we take the maximum length, then convert back to a Unicode string
-        // and then search for Unicode whitespaces.
-        messageRaw = wholeMessageRaw.mid(wholeMessagePos, MAX_MESSAGE_SIZE);
-        tmp = gTranslator.RNToN(messageRaw);
-        messageRaw = tmp;
-        delete [] tmp;
-        message = codec->toUnicode(messageRaw);
+    if (needsSplitting)
+    {
+      // This is a bit ugly but adds safety. We don't simply search
+      // for a whitespace to cut at in the encoded text (since we don't
+      // really know how spaces are represented in its encoding), so
+      // we take the maximum length, then convert back to a Unicode string
+      // and then search for Unicode whitespaces.
+      messageRaw = wholeMessageRaw.mid(wholeMessagePos, MAX_MESSAGE_SIZE);
+      tmp = gTranslator.RNToN(messageRaw);
+      messageRaw = tmp;
+      delete [] tmp;
+      message = codec->toUnicode(messageRaw);
+        
+      if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
+      {
+          // We try to find the optimal place to cut
+          // (according to our narrow-minded Latin1 idea of optimal :)
+          // prefer keeping sentences intact 1st
+          int foundIndex = message.findRev(QRegExp("[\\.\\n]"));
+          // slicing at 0 position would be useless
+          if (foundIndex <= 0)
+            foundIndex = message.findRev(QRegExp("\\s"));
 
-        if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
-        {
-           // We try to find the optimal place to cut
-           // (according to our narrow-minded Latin1 idea of optimal :)
-           // prefer keeping sentences intact 1st
-           int foundIndex = message.findRev(QRegExp("[\\.\\n]"));
-           // slicing at 0 position would be useless
-           if (foundIndex <= 0)
-             foundIndex = message.findRev(QRegExp("\\s"));
+          if (foundIndex > 0)
+          {
+            message.truncate(foundIndex);
+            messageRaw = codec->fromUnicode(message);
+          }
+      }
+    }
+    else
+    {
+      message = mleSend->text();
+      messageRaw = codec->fromUnicode(message);
+    }
 
-           if (foundIndex > 0)
-           {
-              message.truncate(foundIndex);
-              messageRaw = codec->fromUnicode(message);
-           }
-        }
-     }
-     else
-     {
-        message = mleSend->text();
-        messageRaw = codec->fromUnicode(message);
-     }
-
-     if (chkMass->isChecked())
-     {
-        CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
-        m->go_message(message);
-     }
+    if (chkMass->isChecked())
+    {
+      CMMSendDlg *m = new CMMSendDlg(server, sigman, lstMultipleRecipients, this);
+      m->go_message(message);
+    }
 
 #ifdef QT_PROTOCOL_PLUGIN
-     icqEventTag = server->ProtoSendMessage(m_szId, m_nPPID, messageRaw.data(),
-      chkSendServer->isChecked() ? false : true,
-      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-      chkMass->isChecked(), &icqColor);
+    icqEventTag = server->ProtoSendMessage(m_szId, m_nPPID, messageRaw.data(),
+                  chkSendServer->isChecked() ? false : true,
+                  chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+                  chkMass->isChecked(), &icqColor);
 #else
-     icqEventTag = server->icqSendMessage(m_nUin, messageRaw.data(),
-        chkSendServer->isChecked() ? false : true,
-        chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-        chkMass->isChecked(), &icqColor);
+    icqEventTag = server->icqSendMessage(m_nUin, messageRaw.data(),
+                  chkSendServer->isChecked() ? false : true,
+                  chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+                  chkMass->isChecked(), &icqColor);
 #endif
-     m_lnEventTag.push_back(icqEventTag);
+    m_lnEventTag.push_back(icqEventTag);
 
-     tmp = gTranslator.NToRN(messageRaw);
-     wholeMessagePos += strlen(tmp);
-     delete [] tmp;
+    tmp = gTranslator.NToRN(messageRaw);
+    wholeMessagePos += strlen(tmp);
+    delete [] tmp;
   }
 
   UserSendCommon::sendButton();
@@ -2722,7 +2717,8 @@ void UserSendUrlEvent::sendButton()
     return;
   }
 
-  if (!UserSendCommon::checkSecure()) return;
+  if (!UserSendCommon::checkSecure())
+    return;
 
   if (chkMass->isChecked())
   {
@@ -2734,13 +2730,15 @@ void UserSendUrlEvent::sendButton()
 
   unsigned long icqEventTag;
 #ifdef QT_PROTOCOL_PLUGIN
-  icqEventTag = server->ProtoSendUrl(m_szId, m_nPPID, edtItem->text().latin1(), codec->fromUnicode(mleSend->text()),
+  icqEventTag = server->ProtoSendUrl(m_szId, m_nPPID, edtItem->text().latin1(), 
+                codec->fromUnicode(mleSend->text()),
 #else
-  icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), codec->fromUnicode(mleSend->text()),
+  icqEventTag = server->icqSendUrl(m_nUin, edtItem->text().latin1(), 
+                codec->fromUnicode(mleSend->text()),
 #endif
-     chkSendServer->isChecked() ? false : true,
-     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-     chkMass->isChecked(), &icqColor);
+                chkSendServer->isChecked() ? false : true,
+                chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+                chkMass->isChecked(), &icqColor);
   m_lnEventTag.push_back(icqEventTag);
 
   UserSendCommon::sendButton();
@@ -2854,45 +2852,45 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
 void UserSendFileEvent::browseFile()
 {
 #ifdef USE_KDE
-    QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
+  QStringList fl = KFileDialog::getOpenFileNames(NULL, NULL, this);
 #else
-    QStringList fl = QFileDialog::getOpenFileNames(QString::null, QString::null, this,
-                                                   "SendFileBrowser", tr("Select files to send"));
+  QStringList fl = QFileDialog::getOpenFileNames(QString::null, QString::null, this,
+                                                 "SendFileBrowser", tr("Select files to send"));
 #endif
-    if (fl.isEmpty()) return;
-    QStringList::ConstIterator it = fl.begin();
-    QString f;
-    unsigned n = fl.count() + m_lFileList.size();
+  if (fl.isEmpty()) return;
+  QStringList::ConstIterator it = fl.begin();
+  QString f;
+  unsigned n = fl.count() + m_lFileList.size();
 
-    if ( n == 0 )
-    {
-      btnEdit->setEnabled(false);
-      f = QString("");
-    }
-    else if( n == 1 )
-    {
-      btnEdit->setEnabled(true);
-      f = (*it);
-    }
-    else
-    {
-      f = QString("%1 Files").arg(fl.count() + m_lFileList.size() );
-      btnEdit->setEnabled(true);
-    }
+  if ( n == 0 )
+  {
+    btnEdit->setEnabled(false);
+    f = QString("");
+  }
+  else if( n == 1 )
+  {
+    btnEdit->setEnabled(true);
+    f = (*it);
+  }
+  else
+  {
+    f = QString("%1 Files").arg(fl.count() + m_lFileList.size() );
+    btnEdit->setEnabled(true);
+  }
 
-    for(; it != fl.end(); it++)
-      m_lFileList.push_back(strdup((*it).latin1()));
+  for(; it != fl.end(); it++)
+    m_lFileList.push_back(strdup((*it).latin1()));
 
-    edtItem->setText(f);
+  edtItem->setText(f);
 }
 
 
 void UserSendFileEvent::editFileList()
 {
   CEditFileListDlg *dlg;
-
+  
   dlg = new CEditFileListDlg(&m_lFileList);
-
+  
   connect(dlg,SIGNAL(file_deleted(unsigned)), this, SLOT(slot_filedel(unsigned)));
 }
 
@@ -2900,23 +2898,23 @@ void UserSendFileEvent::slot_filedel(unsigned n)
 {
   QString f;
 
-   if (n == 0)
-   {
-     f = QString("");
-     btnEdit->setEnabled(false);
-   }
-   else if (n == 1)
-   {
-     f = *(m_lFileList.begin());
-     btnEdit->setEnabled(true);
-   }
-   else
-   {
-     f = QString("%1 Files").arg(m_lFileList.size());
-     btnEdit->setEnabled(true);
-   }
+  if (n == 0)
+  {
+    f = QString("");
+    btnEdit->setEnabled(false);
+  }
+  else if (n == 1)
+  {
+    f = *(m_lFileList.begin());
+    btnEdit->setEnabled(true);
+  }
+  else
+  {
+    f = QString("%1 Files").arg(m_lFileList.size());
+    btnEdit->setEnabled(true);
+  }
 
-    edtItem->setText(f);
+  edtItem->setText(f);
 }
 
 UserSendFileEvent::~UserSendFileEvent()
@@ -2936,15 +2934,15 @@ void UserSendFileEvent::sendButton()
 #ifdef QT_PROTOCOL_PLUGIN
   //TODO in daemon
   icqEventTag = server->icqFileTransfer(strtoul(m_szId, (char **)NULL, 10),
-     codec->fromUnicode(edtItem->text()),
-     codec->fromUnicode(mleSend->text()), m_lFileList,
-     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-     chkSendServer->isChecked());
+                codec->fromUnicode(edtItem->text()),
+                codec->fromUnicode(mleSend->text()), m_lFileList,
+                chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+                chkSendServer->isChecked());
 #else
   icqEventTag = server->icqFileTransfer(m_nUin, codec->fromUnicode(edtItem->text()),
-     codec->fromUnicode(mleSend->text()), m_lFileList,
-     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-     chkSendServer->isChecked());
+                codec->fromUnicode(mleSend->text()), m_lFileList,
+                chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+                chkSendServer->isChecked());
 #endif
   m_lnEventTag.push_back(icqEventTag);
 
@@ -3119,25 +3117,25 @@ void UserSendChatEvent::sendButton()
     icqEventTag = server->icqChatRequest(strtoul(m_szId, (char **)NULL, 10),
                                          codec->fromUnicode(mleSend->text()),
                                          chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-					 chkSendServer->isChecked());
+                                         chkSendServer->isChecked());
   }
   else
     icqEventTag = server->icqMultiPartyChatRequest(strtoul(m_szId, (char **)NULL, 10),
                                                    codec->fromUnicode(mleSend->text()), codec->fromUnicode(m_szMPChatClients),
                                                    m_nMPChatPort,
                                                    chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-						   chkSendServer->isChecked() );
+                                                   chkSendServer->isChecked() );
 #else
     icqEventTag = server->icqChatRequest(m_nUin,
                                          codec->fromUnicode(mleSend->text()),
                                          chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-					 chkSendServer->isChecked());
+                                         chkSendServer->isChecked());
   else
     icqEventTag = server->icqMultiPartyChatRequest(m_nUin,
                                                    codec->fromUnicode(mleSend->text()), codec->fromUnicode(m_szMPChatClients),
                                                    m_nMPChatPort,
                                                    chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-						   chkSendServer->isChecked() );
+                                                   chkSendServer->isChecked() );
 #endif
 
   m_lnEventTag.push_back(icqEventTag);
@@ -3160,7 +3158,6 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
                      .arg(e->ExtendedAck()->Response());
     gUserManager.DropUser(u);
     InformUser(this, result);
-
   }
   else
   {
@@ -3262,9 +3259,9 @@ void UserSendContactEvent::sendButton()
 
   unsigned long icqEventTag;
   icqEventTag = server->icqSendContactList(m_nUin, uins,
-    chkSendServer->isChecked() ? false : true,
-    chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-    chkMass->isChecked(), &icqColor);
+                chkSendServer->isChecked() ? false : true,
+                chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+                chkMass->isChecked(), &icqColor);
   m_lnEventTag.push_back(icqEventTag);
 
   UserSendCommon::sendButton();
@@ -3311,7 +3308,6 @@ void UserSendContactEvent::setContact(unsigned long Uin, const QString&)
   if(u != NULL)
   {
     (void) new CMMUserViewItem(u, lstContacts);
-
     gUserManager.DropUser(u);
   }
 }
@@ -3429,9 +3425,9 @@ void UserSendSmsEvent::sendButton()
   if (m_lnEventTag.size())
     icqEventTag = m_lnEventTag.front();
 
-
   // do nothing if a command is already being processed
-  if (icqEventTag != 0) return;
+  if (icqEventTag != 0) 
+    return;
 
   if(!mleSend->edited() &&
      !QueryUser(this, tr("You didn't edit the SMS.\n"
@@ -3439,14 +3435,17 @@ void UserSendSmsEvent::sendButton()
     return;
 
   // don't let the user send empty messages
-  if (mleSend->text().stripWhiteSpace().isEmpty()) return;
+  if (mleSend->text().stripWhiteSpace().isEmpty()) 
+    return;
 
 #ifdef QT_PROTOCOL_PLUGIN
   //TODO in daemon
-  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), mleSend->text().utf8().data(),
-    strtoul(m_szId, (char **)NULL, 10));
+  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), 
+                mleSend->text().utf8().data(),
+                strtoul(m_szId, (char **)NULL, 10));
 #else
-  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), mleSend->text().utf8().data(), m_nUin);
+  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), 
+                mleSend->text().utf8().data(), m_nUin);
 #endif
   m_lnEventTag.push_back(icqEventTag);
 
