@@ -35,6 +35,7 @@
 #include <qimage.h>
 #include <qwindowsstyle.h>
 #include <qdatetime.h>
+#include <qdir.h>
 #include <qclipboard.h>
 #include <qlayout.h>
 #include <qtextview.h>
@@ -410,6 +411,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
             xPos, yPos, wVal, hVal);
   if (yPos > QApplication::desktop()->height() - 16) yPos = 0;
   if (xPos > QApplication::desktop()->width() - 16) xPos = 0;
+
+  // Check for qt-gui directory in current base dir
+  if (!QDir(QString("%1/%2").arg(BASE_DIR).arg(QTGUI_DIR)).exists())
+  {
+    QDir d;
+    d.mkdir(QString("%1/%2").arg(BASE_DIR).arg(QTGUI_DIR));
+  }
 
   // Load the icons
   licqConf.SetSection("appearance");
@@ -2950,7 +2958,7 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
    }
    else
    {
-     snprintf(sIconPath, MAX_FILENAME_LEN, "%s%sextended.icons.%s/", SHARE_DIR, QTGUI_DIR, _sIconSet);
+     snprintf(sIconPath, MAX_FILENAME_LEN, "%s/%sextended.icons.%s/", BASE_DIR, QTGUI_DIR, _sIconSet);
      sIconPath[MAX_FILENAME_LEN - 1] = '\0';
    }
    snprintf(sFilename, MAX_FILENAME_LEN, "%s%s.icons", sIconPath, _sIconSet);
@@ -2958,11 +2966,18 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
    CIniFile fIconsConf;
    if (!fIconsConf.LoadFile(sFilename))
    {
-     if (_bInitial)
-       gLog.Warn("%sUnable to open extended icons file %s.\n", L_WARNxSTR, sFilename);
-     else
-       WarnUser(this, tr("Unable to open extended icons file\n%1.").arg(sFilename));
-     return;
+     snprintf(sIconPath, MAX_FILENAME_LEN, "%s%sextended.icons.%s/", SHARE_DIR, QTGUI_DIR, _sIconSet);
+     sIconPath[MAX_FILENAME_LEN - 1] = '\0';
+     snprintf(sFilename, MAX_FILENAME_LEN, "%s%s.icons", sIconPath, _sIconSet);
+     sFilename[MAX_FILENAME_LEN - 1] = '\0';
+     if (!fIconsConf.LoadFile(sFilename))
+     {
+       if (_bInitial)
+         gLog.Warn("%sUnable to open extended icons file %s.\n", L_WARNxSTR, sFilename);
+       else
+         WarnUser(this, tr("Unable to open extended icons file\n%1.").arg(sFilename));
+       return;
+     }
    }
 
    fIconsConf.SetSection("icons");
@@ -2974,17 +2989,17 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
      QPixmap pix(itemCollapsed_xpm);
      pmCollapsed = pix;
    }
-   
+
    fIconsConf.ReadStr("Expanded", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
    pmExpanded.load(sFilepath);
    if (pmExpanded.isNull())
    {
-     QPixmap pix(itemExpanded_xpm);                 
+     QPixmap pix(itemExpanded_xpm);
      pmExpanded = pix;
    }
 
-   
+
    fIconsConf.ReadStr("Phone", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
    pmPhone.load(sFilepath);
@@ -2993,7 +3008,7 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
      QPixmap pix(pixPhone_xpm);
      pmPhone = pix;
    }
-   
+
    fIconsConf.ReadStr("Cellular", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
    pmCellular.load(sFilepath);
@@ -3003,7 +3018,7 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
      pmCellular = pix;
    }
 
-   
+
    fIconsConf.ReadStr("Birthday", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
    pmBirthday.load(sFilepath);
@@ -3012,7 +3027,7 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
      QPixmap pix(pixBirthday_xpm);
      pmBirthday = pix;
    }
- 
+
    fIconsConf.ReadStr("CustomAR", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN, "%s%s", sIconPath, sFilename);
    pmCustomAR.load(sFilepath);
@@ -3053,7 +3068,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    }
    else
    {
-     snprintf(sIconPath, MAX_FILENAME_LEN, "%s%sicons.%s/", SHARE_DIR, QTGUI_DIR, _sIconSet);
+     snprintf(sIconPath, MAX_FILENAME_LEN, "%s/%sicons.%s/", BASE_DIR, QTGUI_DIR, _sIconSet);
      sIconPath[MAX_FILENAME_LEN - 1] = '\0';
    }
    snprintf(sFilename, MAX_FILENAME_LEN, "%s%s.icons", sIconPath, _sIconSet);
@@ -3061,11 +3076,18 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    CIniFile fIconsConf;
    if (!fIconsConf.LoadFile(sFilename))
    {
-     if (_bInitial)
-       gLog.Warn("%sUnable to open icons file %s.\n", L_WARNxSTR, sFilename);
-     else
-       WarnUser(this, tr("Unable to open icons file\n%1.").arg(sFilename));
-     return;
+     snprintf(sIconPath, MAX_FILENAME_LEN, "%s%sicons.%s/", SHARE_DIR, QTGUI_DIR, _sIconSet);
+     sIconPath[MAX_FILENAME_LEN - 1] = '\0';
+     snprintf(sFilename, MAX_FILENAME_LEN, "%s%s.icons", sIconPath, _sIconSet);
+     sFilename[MAX_FILENAME_LEN - 1] = '\0';
+     if (!fIconsConf.LoadFile(sFilename))
+     {
+       if (_bInitial)
+         gLog.Warn("%sUnable to open icons file %s.\n", L_WARNxSTR, sFilename);
+        else
+         WarnUser(this, tr("Unable to open icons file\n%1.").arg(sFilename));
+       return;
+     }
    }
 
    fIconsConf.SetSection("icons");

@@ -44,10 +44,10 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	lstExtIcons = new QValueList<QPixmap>;
 	lstAIcons = new QStringList();
 	lstAExtIcons = new QStringList();
-	
+
 	// Setup a list of previewable icons
 	// The strings reflect what we exptect to find in the *.icons files.
-	// The result of these two lists is used to load the icons, the order of 
+	// The result of these two lists is used to load the icons, the order of
 	// this list will be the order that the icons get rendered in the preview.
 	*lstAIcons << "Online" << "Offline" << "FFC" << "Away" << "NA" << "Occupied"
 						 << "DND" << "Private" << "Message" << "Url" << "Chat" << "File" 
@@ -131,10 +131,12 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	layButtons->addWidget(btnCancel);
 
 	// Load up the available packs
-	QString szDir;
+	QString szDir, szDirUser;
 	szDir.sprintf("%s%s", SHARE_DIR, QTGUI_DIR);
+	szDirUser.sprintf("%s/%s", BASE_DIR, QTGUI_DIR);
 	QDir dSkins(szDir, "skin.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
-	if (!dSkins.count())
+	QDir dSkinsUser(szDirUser, "skin.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
+	if (!dSkins.count() && !dSkinsUser.count())
 	{
 		gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
 		cmbSkin->insertItem(tr("Error"));
@@ -151,10 +153,27 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 			if (current == (*it).mid(5))
 				cmbSkin->setCurrentItem(cmbSkin->count() - 1);
 		}
+		// check for skins in current base dir, too
+		lst = dSkinsUser.entryList();
+		for (it = lst.begin(); it != lst.end(); ++it)
+		{
+			// Check for duplicates
+			int num = cmbSkin->count();
+			bool dup = false;
+			for (int i=0; i < num; i++)
+				if ((*it).mid(5) == cmbSkin->text(i)) dup = true;
+			if (!dup)
+			{
+				cmbSkin->insertItem((*it).mid(5));
+				if (current == (*it).mid(5))
+					cmbSkin->setCurrentItem(cmbSkin->count() - 1);
+			}
+		}
 	}
 
 	QDir dIcons(szDir, "icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
-	if (!dIcons.count())
+	QDir dIconsUser(szDirUser, "icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
+	if (!dIcons.count() && !dIconsUser.count())
 	{
 		gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
 		cmbIcon->insertItem(tr("Error"));
@@ -182,10 +201,44 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 			if (current == (*it).mid(6))
 				cmbIcon->setCurrentItem(cmbIcon->count() - 1);
 		}
+		// check for icons in current base dir, too
+		lst = dIconsUser.entryList();
+		for (it = lst.begin(); it != lst.end(); ++it)
+		{
+			QString iconsFile = QString("%1/%2icons.%3/%4.icons").arg(BASE_DIR).arg(QTGUI_DIR).arg((*it).mid(6)).arg((*it).mid(6));
+			char sFileName[MAX_FILENAME_LEN] = "";
+			CIniFile fIconsConf;
+			if (!fIconsConf.LoadFile(iconsFile))
+			{
+				WarnUser(this, tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.").arg(iconsFile).arg((*it).mid(6)));
+				continue;
+			}
+			fIconsConf.SetSection("icons");
+			fIconsConf.ReadStr("Online", sFileName, "");
+			QString pmFile = QString("%1/%2icons.%3/%4").arg(BASE_DIR).arg(QTGUI_DIR).arg((*it).mid(6)).arg(sFileName);
+			// Check for duplicates
+			int num = cmbIcon->count();
+			bool dup = false;
+			for (int i=0; i < num; i++)
+			{
+				if ((*it).mid(6) == cmbIcon->text(i))
+				{
+					dup = true;
+					cmbIcon->changeItem(QPixmap(pmFile), (*it).mid(6), i);
+				}
+			}
+			if (!dup)
+			{
+				cmbIcon->insertItem(QPixmap(pmFile), (*it).mid(6));
+				if (current == (*it).mid(6))
+					cmbIcon->setCurrentItem(cmbIcon->count() - 1);
+			}
+		}
 	}
-	
+
 	QDir dExtendedIcons(szDir, "extended.icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
-	if (!dExtendedIcons.count())
+	QDir dExtendedIconsUser(szDirUser, "extended.icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
+	if (!dExtendedIcons.count() && !dExtendedIconsUser.count())
 	{
 		gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
 		cmbExtIcon->insertItem(tr("Error"));
@@ -213,8 +266,41 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 			if (current == (*it).mid(15))
 				cmbExtIcon->setCurrentItem(cmbExtIcon->count() - 1);
 		}
+		// check for ext. icons in current base dir, too
+		lst = dExtendedIconsUser.entryList();
+		for (it = lst.begin(); it != lst.end(); ++it)
+		{
+			QString iconsFile = QString("%1/%2extended.icons.%3/%4.icons").arg(BASE_DIR).arg(QTGUI_DIR).arg((*it).mid(15)).arg((*it).mid(15));
+			char sFileName[MAX_FILENAME_LEN] = "";
+			CIniFile fIconsConf;
+			if (!fIconsConf.LoadFile(iconsFile))
+			{
+				WarnUser(this, tr("Unable to open extended icons file\n%1\nExtended Iconset '%2' has been disabled.").arg(iconsFile).arg((*it).mid(15)));
+				continue;
+			}
+			fIconsConf.SetSection("icons");
+			fIconsConf.ReadStr("Phone", sFileName, "");
+			QString pmFile = QString("%1/%2extended.icons.%3/%4").arg(BASE_DIR).arg(QTGUI_DIR).arg((*it).mid(15)).arg(sFileName);
+			// Check for duplicates
+			int num = cmbExtIcon->count();
+			bool dup = false;
+			for (int i=0; i < num; i++)
+			{
+				if ((*it).mid(15) == cmbExtIcon->text(i))
+				{
+					dup = true;
+					cmbExtIcon->changeItem(QPixmap(pmFile), (*it).mid(15), i);
+				}
+			}
+			if (!dup)
+			{
+				cmbExtIcon->insertItem(QPixmap(pmFile), (*it).mid(15));
+				if (current == (*it).mid(15))
+					cmbExtIcon->setCurrentItem(cmbExtIcon->count() - 1);
+			}
+		}
 	}
-	
+
 	// setup connections
 	connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edtSkin()));
 	connect(btnOk, SIGNAL(clicked()), this, SLOT(slot_ok()));
@@ -223,12 +309,12 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	connect(cmbSkin, SIGNAL(highlighted(const QString &)), this, SLOT(slot_loadSkin(const QString &)));
 	connect(cmbIcon, SIGNAL(highlighted(const QString &)), this, SLOT(slot_loadIcons(const QString &)));
 	connect(cmbExtIcon, SIGNAL(highlighted(const QString &)), this, SLOT(slot_loadExtIcons(const QString &)));
-	
+
 	// Create initial preview
 	slot_loadSkin(cmbSkin->currentText());
 	slot_loadIcons(cmbIcon->currentText());
 	slot_loadExtIcons(cmbExtIcon->currentText());
-	
+
 	setCaption(tr("Licq Skin Browser"));
 	show();
 }
@@ -257,7 +343,7 @@ void SkinBrowserDlg::slot_ok()
 
 /*! \brief Applies Skin/iconset
  *
- *	slot_apply() applies all selected options that differ from the currently 
+ *	slot_apply() applies all selected options that differ from the currently
  *	activated settings.
  */
 void SkinBrowserDlg::slot_apply()
@@ -274,23 +360,27 @@ void SkinBrowserDlg::slot_apply()
 
 /*!	\brief Creates a new skin editor dialog
  *
- *	Creates a new Dialog which enables the user to edit the currently selected 
+ *	Creates a new Dialog which enables the user to edit the currently selected
  *	skin.
  */
 void SkinBrowserDlg::slot_edtSkin()
 {
   if (!cmbSkin->currentText()) return;
   QString f;
-  f.sprintf("%sqt-gui/skin.%s/%s.skin", SHARE_DIR,
+  f.sprintf("%s/qt-gui/skin.%s/%s.skin", BASE_DIR,
             QFile::encodeName(cmbSkin->currentText()).data(),
             QFile::encodeName(cmbSkin->currentText()).data());
+  if (!QFile(f).exists())
+    f.sprintf("%sqt-gui/skin.%s/%s.skin", SHARE_DIR,
+              QFile::encodeName(cmbSkin->currentText()).data(),
+              QFile::encodeName(cmbSkin->currentText()).data());
   (void) new EditFileDlg(f);
 }
 
 /*!	\brief Refreshes the skin preview
  *
- *	This slot reloads the skin preview pixmap dynamically. It 
- *	loads the currently highlighted skin in the combobox. If 
+ *	This slot reloads the skin preview pixmap dynamically. It
+ *	loads the currently highlighted skin in the combobox. If
  *	it was successful it sets the new skin-pixmap as preview pixmap.
  */
 void SkinBrowserDlg::slot_loadSkin(const QString &skin)
@@ -300,27 +390,31 @@ void SkinBrowserDlg::slot_loadSkin(const QString &skin)
 
 /*!	\brief Reloads the current preview icons
  *
- *	This slot reloads all preview icons. It loads the complete 
- *	set of icons that is currently highlighted in the relevant combo box. 
+ *	This slot reloads all preview icons. It loads the complete
+ *	set of icons that is currently highlighted in the relevant combo box.
  *	If it was successful it makes these icons to be rendered in the preview.
  */
 void SkinBrowserDlg::slot_loadIcons(const QString &icon)
 {
 	// force a sane state and then load all icons into the valuelist
 	lstIcons->clear();
-	QString iconsFile = QString("%1%2icons.%3/%4.icons").arg(SHARE_DIR).arg(QTGUI_DIR).arg(icon).arg(icon);
+	QString iconsFile = QString("%1/%2icons.%3/%4.icons").arg(BASE_DIR).arg(QTGUI_DIR).arg(icon).arg(icon);
 	char sFileName[MAX_FILENAME_LEN] = "";
 	CIniFile fIconsConf;
 	if (!fIconsConf.LoadFile(iconsFile))
 	{
-		WarnUser(this, tr("Unable to open icons file\n%1").arg(iconsFile));
-		return;
+		iconsFile = QString("%1%2icons.%3/%4.icons").arg(SHARE_DIR).arg(QTGUI_DIR).arg(icon).arg(icon);
+		if (!fIconsConf.LoadFile(iconsFile))
+		{
+			WarnUser(this, tr("Unable to open icons file\n%1").arg(iconsFile));
+			return;
+		}
 	}
 	fIconsConf.SetSection("icons");
 	for (QStringList::Iterator it = lstAIcons->begin(); it != lstAIcons->end(); ++it)
 	{
 		fIconsConf.ReadStr((*it).ascii(), sFileName, "");
-		QString pmFile = QString("%1%2icons.%3/%4").arg(SHARE_DIR).arg(QTGUI_DIR).arg(icon).arg(sFileName);
+		QString pmFile = iconsFile.left(iconsFile.length()-icon.length()-6) + sFileName;
 		QPixmap pm(pmFile);
 		if (! pm.isNull())
 			lstIcons->append(pm);
@@ -330,27 +424,31 @@ void SkinBrowserDlg::slot_loadIcons(const QString &icon)
 
 /*!	\brief Reloads the current preview extended icons
  *
- *	This slot reloads all preview icons. It loads the complete 
- *	set of extended icons that is currently highlighted in the relevant combo box. 
+ *	This slot reloads all preview icons. It loads the complete
+ *	set of extended icons that is currently highlighted in the relevant combo box.
  *	If it was successful it makes these icons to be rendered in the preview.
  */
 void SkinBrowserDlg::slot_loadExtIcons(const QString &extIcon)
 {
 	// force a sane state and then load all icons into the valuelist
 	lstExtIcons->clear();
-	QString iconsFile = QString("%1%2extended.icons.%3/%4.icons").arg(SHARE_DIR).arg(QTGUI_DIR).arg(extIcon).arg(extIcon);
+	QString iconsFile = QString("%1/%2extended.icons.%3/%4.icons").arg(BASE_DIR).arg(QTGUI_DIR).arg(extIcon).arg(extIcon);
 	char sFileName[MAX_FILENAME_LEN] = "";
 	CIniFile fIconsConf;
 	if (!fIconsConf.LoadFile(iconsFile))
 	{
-		WarnUser(this, tr("Unable to open extended icons file\n%1").arg(iconsFile));
-		return;
+		iconsFile = QString("%1%2extended.icons.%3/%4.icons").arg(SHARE_DIR).arg(QTGUI_DIR).arg(extIcon).arg(extIcon);
+		if (!fIconsConf.LoadFile(iconsFile))
+		{
+			WarnUser(this, tr("Unable to open extended icons file\n%1").arg(iconsFile));
+			return;
+		}
 	}
 	fIconsConf.SetSection("icons");
 	for (QStringList::Iterator it = lstAExtIcons->begin(); it != lstAExtIcons->end(); ++it)
 	{
 		fIconsConf.ReadStr((*it).ascii(), sFileName, "");
-		QString pmFile = QString("%1%2extended.icons.%3/%4").arg(SHARE_DIR).arg(QTGUI_DIR).arg(extIcon).arg(sFileName);
+		QString pmFile = iconsFile.left(iconsFile.length()-extIcon.length()-6) + sFileName;
 		QPixmap pm(pmFile);
 		if (! pm.isNull())
 			lstExtIcons->append(pm);
@@ -360,8 +458,8 @@ void SkinBrowserDlg::slot_loadExtIcons(const QString &extIcon)
 
 /*! \brief provide correct repainting when resizing the main widget
  *
- *	This slot is called everytime the mainwidget gets resized. It forces the 
- *	preview areas to be updated so that it looks nice with structured 
+ *	This slot is called everytime the mainwidget gets resized. It forces the
+ *	preview areas to be updated so that it looks nice with structured
  *	backgrounds.
  */
 void SkinBrowserDlg::resizeEvent(QResizeEvent *e)
