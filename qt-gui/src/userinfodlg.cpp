@@ -36,6 +36,7 @@
 #include <qprogressbar.h>
 #include <qapplication.h>
 #include <qtextcodec.h>
+#include <qaccel.h>
 
 #include "licq_countrycodes.h"
 #include "licq_events.h"
@@ -972,6 +973,10 @@ void UserInfoDlg::CreateHistory()
   connect(lneFilter, SIGNAL(textChanged(const QString&)), this, SLOT(ShowHistory()));
   barFiltering = new QProgressBar(p);
   l->addWidget(barFiltering, 1);
+
+  QAccel *a = new QAccel(p);
+  a->connectItem(a->insertItem(Key_U + CTRL), this, SLOT(HistoryReload()));
+  a->connectItem(a->insertItem(Key_F5), this, SLOT(HistoryReload()));
 }
 
 void UserInfoDlg::SetupHistory()
@@ -1004,6 +1009,9 @@ void UserInfoDlg::SetupHistory()
     ShowHistory();
   }
   gUserManager.DropUser(u);
+
+  btnMain2->setEnabled((m_nHistoryIndex - m_nHistoryShowing) != 0);
+  btnMain3->setEnabled(false);
 }
 
 // -----------------------------------------------------------------------------
@@ -1014,17 +1022,6 @@ void UserInfoDlg::HistoryReload()
   ICQUser::ClearHistory(m_lHistoryList);
   SetupHistory();
 }
-
-void UserInfoDlg::HistoryEdit()
-{
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  if (u == NULL) return;
-
-  (void) new EditFileDlg(u->HistoryFile());
-
-  gUserManager.DropUser(u);
-}
-
 
 void UserInfoDlg::HistoryReverse(bool newVal)
 {
@@ -1050,6 +1047,8 @@ void UserInfoDlg::ShowHistoryPrev()
             m_iHistorySIter--;
     }
     ShowHistory();
+    btnMain2->setEnabled(m_iHistorySIter != m_lHistoryList.begin());
+    btnMain3->setEnabled(true);
   }
 }
 
@@ -1066,6 +1065,8 @@ void UserInfoDlg::ShowHistoryNext()
             m_nHistoryIndex++;
     }
     ShowHistory();
+    btnMain3->setEnabled(m_iHistoryEIter != m_lHistoryList.end());
+    btnMain2->setEnabled(true);
   }
 }
 
@@ -1263,8 +1264,8 @@ void UserInfoDlg::updateTab(const QString& txt)
   {
     btnMain3->setText(tr("Nex&t"));
     btnMain2->setText(tr("P&rev"));
-    btnMain3->setEnabled(true);
-    btnMain2->setEnabled(true);
+    btnMain3->setEnabled(false);
+    btnMain2->setEnabled(false);
     currentTab = HistoryInfo;
     if (!tabList[HistoryInfo].loaded)
       SetupHistory();

@@ -131,7 +131,6 @@ protected:
   HistoryListIter m_iHistoryEIter;
   bool m_bHistoryReverse;
   unsigned short m_nHistoryIndex, m_nHistoryShowing;
-  QPushButton *btnHistoryReload, *btnHistoryEdit;
 
   void SetGeneralInfo(ICQUser *);
   void SetMoreInfo(ICQUser *);
@@ -151,7 +150,6 @@ protected slots:
   void ShowHistoryNext();
   void HistoryReverse(bool);
   void HistoryReload();
-  void HistoryEdit();
   void updateTab(const QString&);
   void updatedUser(CICQSignal*);
   void SaveSettings();
