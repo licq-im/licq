@@ -132,7 +132,7 @@ public:
    virtual CEventFile *Copy()
       {
         CEventFile *e = new CEventFile(m_szFilename, m_szFileDescription,
-         m_nFileSize, m_lFileList, m_nSequence, m_tTime, m_nFlags, m_nMsgID[0],
+         m_nFileSize, m_lFileList, m_nSequence, m_tTime, m_nFlags, m_nSocket, m_nMsgID[0],
          m_nMsgID[1]);
         e->CopyBase(this);
         return e;
@@ -196,7 +196,7 @@ public:
   virtual CEventChat *Copy()
      {
        CEventChat *e = new CEventChat(m_szText, m_szClients, m_nPort,
-        m_nSequence, m_tTime, m_nFlags, m_nMsgID[0], m_nMsgID[1]);
+        m_nSequence, m_tTime, m_nFlags, m_nSocket, m_nMsgID[0], m_nMsgID[1]);
        e->CopyBase(this);
        return e;
      }

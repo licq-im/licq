@@ -953,14 +953,13 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       u->nPPID = u->m_pClient->m_nPPID;
       
       bool bFound = false;
-      if (u->m_pClient->m_nId != 0)
       {
         pthread_mutex_lock(&licqDaemon->mutex_reverseconnect);
         std::list<CReverseConnectToUserData *>::iterator iter;
         for (iter = licqDaemon->m_lReverseConnect.begin();
                          iter != licqDaemon->m_lReverseConnect.end();  iter++)
         {
-          if ((*iter)->nId == u->m_pClient->m_nId && (*iter)->nUin == u->uin)
+          if ((*iter)->nUin == u->uin)
           {
             bFound = true;
             (*iter)->bSuccess = true;
@@ -2344,7 +2343,7 @@ void *ChatManager_tep(void *arg)
         if (nCurrentSocket == chatman->pipe_thread[PIPE_READ])
         {
           read(chatman->pipe_thread[PIPE_READ], buf, 1);
-          if (buf[0] == 'S')
+          if (buf[0] == 'R')
           {
             DEBUG_THREADS("[ChatManager_tep] Reloading socket info.\n");
           }

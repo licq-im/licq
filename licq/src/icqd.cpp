@@ -2265,7 +2265,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     if (!bIsAck)
     {
       CEventChat *e = new CEventChat(message, szChatClients, nPort, nSequence,
-                                     TIME_NOW, nFlags, nMsgID[0], nMsgID[1]);
+                                     TIME_NOW, nFlags, -1, nMsgID[0], nMsgID[1]);
       nEventType = ON_EVENT_CHAT;
       pEvent = e;
     }
@@ -2298,7 +2298,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
 
       CEventFile *e = new CEventFile(szFilename, message, nFileSize,
                                      filelist, nSequence, TIME_NOW, nFlags,
-                                     nMsgID[0], nMsgID[1]);
+                                     -1, nMsgID[0], nMsgID[1]);
       nEventType = ON_EVENT_FILE;
       pEvent = e;
     }
