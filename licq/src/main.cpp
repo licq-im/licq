@@ -36,12 +36,14 @@ unsigned short DEBUG_LEVEL;
 
 int main(int argc, char **argv)
 {
+#if ENABLE_NLS
   // prepare daemon localization
   setlocale(LC_MESSAGES,"");
   setlocale(LC_CTYPE,"");
   bindtextdomain(PACKAGE, LOCALEDIR);
   textdomain(PACKAGE);
-
+#endif
+  
 // Make sure argv[0] is defined otherwise licq will crash if it is NULL
   if (argv[0] == NULL)
      argv[0] = "licq";
