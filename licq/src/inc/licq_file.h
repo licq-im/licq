@@ -7,7 +7,7 @@
 
 #define MAX_SECTIONxNAME_LEN 160
 #define MAX_KEYxNAME_LEN 160
-#define MAX_LINE_LEN 1024
+#define MAX_LINE_LEN 4096
 
 const unsigned short INI_FxWARN           = 0x0001;
 const unsigned short INI_FxERROR          = 0x0002;
