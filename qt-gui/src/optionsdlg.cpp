@@ -814,7 +814,7 @@ void OptionsDlg::slot_SARmsg_act(int n)
     return;
 
   SARList &sar = gSARManager.Fetch(cmbSARgroup->currentItem());
-  edtSARtext->setText(sar[n]->AutoResponse());
+  edtSARtext->setText(QString::fromLocal8Bit(sar[n]->AutoResponse()));
   gSARManager.Drop();
 }
 
@@ -829,7 +829,7 @@ void OptionsDlg::slot_SARgroup_act(int n)
   cmbSARmsg->clear();
   SARList &sar = gSARManager.Fetch(n);
   for (SARListIter i = sar.begin(); i != sar.end(); i++)
-    cmbSARmsg->insertItem((*i)->Name());
+    cmbSARmsg->insertItem(QString::fromLocal8Bit((*i)->Name()));
   gSARManager.Drop();
 
   slot_SARmsg_act(0);

@@ -2210,7 +2210,8 @@ void ICQFunctions::doneFcn(ICQEvent *e)
         {
           u = gUserManager.FetchUser(m_nUin, LOCK_R);
           msg = tr("%1 is in %2 mode:\n%3\n")
-                   .arg(u->GetAlias()).arg(u->StatusStr()).arg(u->AutoResponse());
+                   .arg(u->GetAlias()).arg(u->StatusStr())
+                   .arg(QString::fromLocal8Bit(u->AutoResponse()));
           gUserManager.DropUser(u);
           switch (QueryUser(this, msg, tr("Send\nUrgent"), tr("Send to\nContact List"), tr("Cancel")))
           {

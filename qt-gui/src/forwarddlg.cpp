@@ -28,12 +28,12 @@ CForwardDlg::CForwardDlg(CMainWindow *_mainwin, CUserEvent *e,
   {
     case ICQ_CMDxSUB_MSG:
       t = tr("Message");
-      s1 = ((CEventMsg *)e)->Message();
+      s1 = QString::fromLocal8Bit(((CEventMsg *)e)->Message());
       break;
     case ICQ_CMDxSUB_URL:
       t = tr("URL");
-      s1 = ((CEventUrl *)e)->Url();
-      s2 = ((CEventUrl *)e)->Description();
+      s1 = QString::fromLocal8Bit(((CEventUrl *)e)->Url());
+      s2 = QString::fromLocal8Bit(((CEventUrl *)e)->Description());
       break;
     default:
       WarnUser(this, tr("Unable to forward this message type (%d).").arg(e->SubCommand()));
