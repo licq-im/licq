@@ -19,6 +19,7 @@
  */
 
 #include "licq_gtk.h"
+
 #include "icqd.h"
 #include "user.h"
 
@@ -107,6 +108,8 @@ void convo_show(struct conversation *c)
 	/* The viewing messages box area */
 	c->text = gtk_text_new(NULL, NULL);
 	gtk_text_set_editable(GTK_TEXT(c->text), FALSE);
+	gtk_text_set_word_wrap(GTK_TEXT(c->text), TRUE);
+	gtk_text_set_line_wrap(GTK_TEXT(c->text), TRUE);
 
 	/* Scroll bar for the messages that are being viewed */
 	scroll = gtk_scrolled_window_new(NULL, GTK_TEXT(c->text)->vadj);
@@ -116,7 +119,7 @@ void convo_show(struct conversation *c)
 	gtk_widget_show(scroll);
 	gtk_container_add(GTK_CONTAINER(scroll), c->text);
 	gtk_widget_show(c->text);
-	gtk_widget_set_usize(scroll, 320, 150); /* FIX this to h and w */
+	gtk_widget_set_usize(scroll, 320, 150);
 
 	/* Get the signals connected for the buttons */
 	gtk_signal_connect(GTK_OBJECT(close), "clicked", GTK_SIGNAL_FUNC(convo_close), c);
@@ -180,12 +183,15 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 {
 	gchar *buf;
 	gchar *buf2;
+
 	ICQOwner *owner = gUserManager.FetchOwner(LOCK_R);
+
+	const gchar *name = g_strdup_printf("%s", owner->GetAlias());
 
 	buf =
 	  g_strdup_printf("%s", gtk_editable_get_chars(GTK_EDITABLE(c->entry), 0, -1));
  	const gchar *message = buf;	
-	buf2 = g_strdup_printf("%s:  %s\n", owner->GetAlias(), buf);
+	buf2 = g_strdup_printf(":  %s\n", buf);
 	const gchar *for_user = buf2;
 
 	gUserManager.DropOwner();
@@ -205,6 +211,7 @@ void convo_send(GtkWidget *widget, struct conversation *c)
 
 	/* Put the text into the convo window */
 	gtk_text_freeze(GTK_TEXT(c->text));
+	gtk_text_insert(GTK_TEXT(c->text), 0, blue, 0, name, -1);
 	gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user, -1);
 	gtk_text_thaw(GTK_TEXT(c->text));
 
@@ -239,7 +246,7 @@ void convo_recv(gulong uin)
 	            g_strdup_printf(":  %s\n", message);
 
 		gtk_text_freeze(GTK_TEXT(c->text));
-		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, name, -1);
+		gtk_text_insert(GTK_TEXT(c->text), 0, red, 0, name, -1);
 		gtk_text_insert(GTK_TEXT(c->text), 0, 0, 0, for_user_m, -1);
 		gtk_text_thaw(GTK_TEXT(c->text));
  	}
