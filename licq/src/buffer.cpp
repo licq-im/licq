@@ -480,7 +480,7 @@ char *CBuffer::PackLNTS(const char *data)
 	if (!size) return getDataPosWrite();
 	PackUnsignedShort(size);
 	Pack(data, size);
-	return getDataPosWrite() - size+2;
+	return getDataPosWrite() - size;
 }
 
 char *CBuffer::PackString(const char *data, unsigned short max)

@@ -615,17 +615,18 @@ friend class CICQDaemon;
 };
 
 
-//-----Meta_SetPassword---------------------------------------------------------
-class CPU_Meta_SetPassword : public CPacketUdp
+//-----SetPassword---------------------------------------------------------
+class CPU_SetPassword : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_SetPassword(const char *szPassword);
+  CPU_SetPassword(const char *szPassword);
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  unsigned long Uin()	{ return 0; }
 protected:
   unsigned short m_nMetaCommand;
-
-  char *m_szPassword;
-
+	
+	char *m_szPassword;
+	
 friend class CICQDaemon;
 };
 

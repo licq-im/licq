@@ -1339,6 +1339,29 @@ CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxR
 {
 }
 
+//------SetPassword---------------------------------------------------------
+CPU_SetPassword::CPU_SetPassword(const char *szPassword)
+  : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, 0x0002)
+{
+  m_nMetaCommand = ICQ_CMDxMETA_PASSWORDxSET;
+
+  unsigned short nDataLen = strlen(szPassword) + 19;
+  m_nSize += nDataLen;
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(nDataLen - 4);
+  buffer->PackUnsignedShort(nDataLen - 6);
+  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedShortBE(0xd007);
+  buffer->PackUnsignedShortBE(m_nSubSequence);
+  buffer->PackUnsignedShort(ICQ_CMDxMETA_PASSWORDxSET);
+
+  // LNTS, but we want the password in this class
+  //buffer->PackUnsignedShort(nDataLen - 19);
+  m_szPassword = buffer->PackLNTS(szPassword);//buffer->PackString(szPassword);
+  //buffer->PackChar(0x00);
+}
 
 //-----RequestSysMsg------------------------------------------------------------
 CPU_RequestSysMsg::CPU_RequestSysMsg()
@@ -1580,22 +1603,6 @@ CPU_Meta_SetAbout::~CPU_Meta_SetAbout()
 {
   free(m_szAbout);
 }
-
-
-//-----Meta_SetPassword---------------------------------------------------------
-CPU_Meta_SetPassword::CPU_Meta_SetPassword(const char *szPassword)
-  : CPacketUdp(ICQ_CMDxSND_META)
-{
-  m_nMetaCommand = ICQ_CMDxMETA_PASSWORDxSET;
-
-  m_nSize += strlen(szPassword) + 5;
-  InitBuffer();
-
-  buffer->PackUnsignedShort(m_nMetaCommand);
-  m_szPassword = buffer->PackString(szPassword);
-
-}
-
 
 //-----Meta_SetSecurityInfo--------------------------------------------------
 CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(

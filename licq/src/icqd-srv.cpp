@@ -141,6 +141,17 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
   return eid;
 }
 
+//-----icqSetPassword--------------------------------------------------------
+unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
+{
+  CPU_SetPassword *p = new CPU_SetPassword(szPassword);
+  gLog.Info("%sUpdating password (#%ld/#%d)...\n", L_SRVxSTR,
+            p->Sequence(), p->SubSequence());
+  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  PushExtendedEvent(e);
+  return e->EventId();
+}
+
 //-----icqSearchByInfo-----------------------------------------------------------
 unsigned long CICQDaemon::icqSearchByInfo(const char *nick, const char *first,
                                           const char *last, const char *email)
@@ -1482,8 +1493,27 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       nSubtype = msg.UnpackUnsignedShort();
       nResult = msg.UnpackChar();
 
+      if (nSubtype == ICQ_CMDxMETA_PASSWORDxRSP) {
+    		if (nResult == META_SUCCESS) {
+    			gLog.Info("%sPassword updated.\n", L_SRVxSTR);
+ 	   			ICQEvent *e = DoneExtendedServerEvent(nSubSequence, EVENT_SUCCESS);
+    			ICQEvent *e2 = new ICQEvent(e);
+    			e2->m_nCommand = ICQ_CMDxSND_META;
+    			e2->m_nSubCommand = ICQ_CMDxMETA_PASSWORDxSET;
+    			ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    			o->SetEnableSave(false);
+    			o->SetPassword(((CPU_SetPassword *)e->m_pPacket)->m_szPassword);
+    			o->SetEnableSave(true);
+    			o->SaveLicqInfo();
+    			gUserManager.DropOwner();
+    			PushPluginEvent(e2);
+    			DoneEvent(e, EVENT_SUCCESS);
+    		}
+    		else /* META_FAILURE */
+    			gLog.Info("%sPassword not updated.\n", L_SRVxSTR);    	
+    	}
       // Search results need to be processed differently
-      if (nSubtype == 0x0190 || nSubtype == 0x019a || nSubtype == 0x01a4 || nSubtype == 0x01ae) {
+      else if (nSubtype == 0x0190 || nSubtype == 0x019a || nSubtype == 0x01a4 || nSubtype == 0x01ae) {
       	ICQEvent *e = NULL;
       	
       	if (nResult == 0x32) { // No results found
