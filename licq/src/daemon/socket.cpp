@@ -247,8 +247,9 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
       char szHostName[256];
       if (gethostname(szHostName, 256) == -1)
       {
-        h_errno = -1;
-        return false;
+        strcpy(szHostName, "localhost");
+        //h_errno = -1;
+        //return false;
       }
       struct hostent sLocalHost;
       h_errno = gethostbyname_r_portable(szHostName, &sLocalHost);
@@ -278,7 +279,7 @@ bool INetSocket::SetAddrsFromSocket(unsigned short _nFlags)
 
 
 //-----INetSocket::GetIpByName-------------------------------------------------
-unsigned long INetSocket::GetIpByName(char *_szHostName)
+unsigned long INetSocket::GetIpByName(const char *_szHostName)
 {
   // check if the hostname is in dot and number notation
   struct in_addr ina;
