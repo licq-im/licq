@@ -2277,10 +2277,3 @@ void ICQOwner::SetStatusOffline()
 {
   SetStatus(m_nStatus | ICQ_STATUS_OFFLINE);
 }
-
-
-
-void ICQUser::StupidLinkageFix()
-  {  printf("%s", gCountries[0].szName);
-     printf("%s", gLanguages[0].szName); }
-
