@@ -183,7 +183,7 @@ public:
   // NOT MT SAFE
   const char *getUrlViewer();
   unsigned short getDefaultRemotePort()  { return(m_nDefaultRemotePort); }
-  void setDefaultRemotePort(unsigned short n)  { m_nDefaultRemotePort = n; }
+  void setDefaultRemotePort(unsigned short n)  { n == 0 ? m_nDefaultRemotePort = 4000 : m_nDefaultRemotePort = n; }
   void setUrlViewer(const char *s);
 
   // Firewall options
