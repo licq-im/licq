@@ -703,14 +703,17 @@ void CMainWindow::slot_updatedUser(unsigned long _nSubSignal, unsigned long _nUi
       CUserViewItem *i = (CUserViewItem *)userView->firstChild();
       while (i && i->ItemUin() != _nUin)
         i = (CUserViewItem *)i->nextSibling();
-      if (i) {
-        if (m_bShowOffline || !u->StatusOffline()) {
-          delete i; i = 0;
+      if (i != NULL)
+      {
+        if (m_bShowOffline || !u->StatusOffline())
+        {
+          delete i;
           (void) new CUserViewItem(u, userView);
           userView->triggerUpdate();
         }
       }
-      else {
+      else
+      {
         if ( (m_bShowOffline || !u->StatusOffline()) &&
              (!u->IgnoreList() || (m_nGroupType == GROUPS_SYSTEM && m_nCurrentGroup == GROUP_IGNORE_LIST)) )
           (void) new CUserViewItem(u, userView);
@@ -787,42 +790,6 @@ void CMainWindow::updateUserWin()
   userView->triggerUpdate();
 }
 
-/*
-//-----CMainWindow::updateUserWin-----------------------------------------------
-void CMainWindow::updateUserWin()
-{
-  unsigned short i = 0;
-
-  // set the pixmap and color for each user and add them to the view
-  userView->setUpdatesEnabled(false);
-  userView->clear();
-  bool bOfflineUsers = false;
-  FOR_EACH_USER_START(LOCK_R)
-  {
-    // Only show users on the current group and not on the ignore list
-    if (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
-        (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
-      FOR_EACH_USER_CONTINUE
-
-    if (i == 0 && m_bShowDividers && !pUser->StatusOffline())
-      (void) new CUserViewItem(NULL, -1, userView);
-    if (!bOfflineUsers && pUser->StatusOffline())
-    {
-      if (!m_bShowOffline)
-        FOR_EACH_USER_BREAK
-
-      if (m_bShowDividers)
-        (void) new CUserViewItem(NULL, -2, userView);
-      bOfflineUsers = true;
-    }
-    (void) new CUserViewItem(pUser, i, userView);
-    i++;
-  }
-  FOR_EACH_USER_END
-  userView->setUpdatesEnabled(true);
-  userView->repaint();
-}
-*/
 
 void CMainWindow::updateEvents()
 {
@@ -1095,10 +1062,10 @@ void CMainWindow::callMsgFunction()
   }
 
   unsigned long nUin = 0;
-  time_t t = 0xFFFFFFFF;
+  time_t t = time(NULL);
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (pUser->NewMessages() > 0 && pUser->Touched() < t)
+    if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
     {
       nUin = pUser->Uin();
       t = pUser->Touched();
