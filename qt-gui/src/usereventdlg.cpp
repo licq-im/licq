@@ -740,7 +740,7 @@ void UserViewEvent::slot_btnRead2()
       CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
       CFileDlg *fileDlg = new CFileDlg(m_nUin, server);
       if (fileDlg->ReceiveFiles())
-        server->icqFileTransferAccept(m_nUin, fileDlg->LocalPort(), f->Sequence());
+        server->icqFileTransferAccept(m_nUin, fileDlg->LocalPort(), f->Sequence(), false);
       break;
     }
 
@@ -1201,8 +1201,6 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   if (e == NULL || e->Result() != EVENT_ACKED)
   {
     if (e->Command() == ICQ_CMDxTCP_START &&
-        (e->SubCommand() != ICQ_CMDxSUB_CHAT &&
-         e->SubCommand() != ICQ_CMDxSUB_FILE) &&
 	(mainwin->m_bAutoSendThroughServer ||
          QueryUser(this, tr("Direct send failed,\nsend through server?"), tr("Yes"), tr("No"))) )
     {
@@ -1303,14 +1301,14 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     case ICQ_CMDxSUB_CHAT:
     {
       CEventChat *ue = (CEventChat *)e->UserEvent();
-      icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel);
+      icqEventTag = server->icqChatRequest(m_nUin, ue->Reason(), nLevel, !bOnline);
       break;
     }
     case ICQ_CMDxSUB_FILE:
     {
       CEventFile *ue = (CEventFile *)e->UserEvent();
       icqEventTag = server->icqFileTransfer(m_nUin, ue->Filename(),
-         ue->FileDescription(), nLevel);
+         ue->FileDescription(), nLevel, !bOnline); // try through server
       break;
     }
     case ICQ_CMDxSUB_SMS:
@@ -1623,8 +1621,6 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
                                      CMainWindow *m, unsigned long _nUin, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendFileEvent")
 {
-  chkSendServer->setChecked(false);
-  chkSendServer->setEnabled(false);
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
   btnForeColor->setEnabled(false);
@@ -1686,7 +1682,8 @@ void UserSendFileEvent::sendButton()
 
   icqEventTag = server->icqFileTransfer(m_nUin, codec->fromUnicode(edtItem->text()),
      codec->fromUnicode(mleSend->text()),
-     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+     chkSendServer->isChecked() ? true : false);
 
   UserSendCommon::sendButton();
 }
@@ -1732,8 +1729,6 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   : UserSendCommon(s, theSigMan, m, _nUin, parent, "UserSendChatEvent")
 {
   m_nMPChatPort = 0;
-  chkSendServer->setChecked(false);
-  chkSendServer->setEnabled(false);
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
   btnForeColor->setEnabled(false);
@@ -1806,12 +1801,14 @@ void UserSendChatEvent::sendButton()
   if (m_nMPChatPort == 0)
     icqEventTag = server->icqChatRequest(m_nUin,
                                          codec->fromUnicode(mleSend->text()),
-                                         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+                                         chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+					 chkSendServer->isChecked());
   else
     icqEventTag = server->icqMultiPartyChatRequest(m_nUin,
                                                    codec->fromUnicode(mleSend->text()), codec->fromUnicode(m_szMPChatClients),
                                                    m_nMPChatPort,
-                                                   chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL);
+                                                   chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+						   chkSendServer->isChecked() );
   UserSendCommon::sendButton();
 }
 
