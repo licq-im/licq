@@ -338,6 +338,7 @@ void CInfoField::SetReadOnly(bool b)
                  m_bReadOnly ? baseRO : baseRW);
 
   setPalette(QPalette(cg, palette().disabled(), cg));
+  setReadOnly(b);
 }
 
 void CInfoField::keyPressEvent( QKeyEvent *e )
