@@ -29,12 +29,16 @@ CQtLogWindow::CQtLogWindow(QWidget *parent, const char *name)
 
   btnClear = new QPushButton(tr("C&lear"), this);
   connect(btnClear, SIGNAL(clicked()), outputBox, SLOT(clear()));
-  lay->addStretch(1);
-  lay->addWidget(btnClear);
-
   btnHide = new QPushButton(tr("&Close"), this);
   btnHide->setDefault(true);
   connect(btnHide, SIGNAL(clicked()), this, SLOT(hide()));
+  int bw = 75;
+  bw = QMAX(bw, btnClear->sizeHint().width());
+  bw = QMAX(bw, btnHide->sizeHint().width());
+  btnClear->setFixedWidth(bw);
+  btnHide->setFixedWidth(bw);
+  lay->addStretch(1);
+  lay->addWidget(btnClear);
   lay->addWidget(btnHide);
 
   sn = new QSocketNotifier(Pipe(), QSocketNotifier::Read, this);

@@ -65,6 +65,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, uns
   setCaption(QString(tr("%1 Response for %2")).arg(szStatus).arg(u->GetAlias()));
 
   btnOk = new QPushButton(tr("&Ok"), this);
+  btnOk->setMinimumWidth(75);
   btnOk->setDefault(true);
   connect(btnOk, SIGNAL(clicked()), SLOT(accept()));
   lay->addWidget(btnOk);
