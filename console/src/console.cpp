@@ -20,6 +20,9 @@ extern int errno
 #include "licq_icqd.h"
 #include "event_data.h"
 
+#include "licq_languagecodes.h"
+#include "licq_countrycodes.h"
+
 // Undefine what stupid ncurses defines as wclear(WINDOW *)
 #undef clear()
 
@@ -2365,17 +2368,186 @@ void CLicqConsole::InputSearch(int cIn)
           return;
         }
 
-        // Last Name
+        // Email
         case 4:
         {
-          // If we get NULL back, then we're not done yet
           if ((sz = Input_Line(data->szEmail, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          winMain->wprintf("%A%CMinimum Age: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 5;
+          return;
+        }
+
+        // Min age
+        case 5:
+        {
+          if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          data->nMinAge = atol(data->szQuery);
+          winMain->wprintf("%A%CMaximum Age: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 6;
+          return;
+        }
+
+        // Max age
+        case 6:
+        {
+          if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          data->nMaxAge = atol(data->szQuery);
+          winMain->wprintf("%A%CGender [?]: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 7;
+          return;
+        }
+
+        case 7:
+        {
+          if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          if (data->szQuery[0] == '?')
+          {
+            winMain->wprintf("%C0 %A-%Z Unknown\n"
+                             "1 %A-%Z Male\n"
+                             "2 %A-%Z Female\n"
+                             "%A%CGender: ",
+             COLOR_WHITE, A_BOLD, A_BOLD, A_BOLD, A_BOLD,
+             A_BOLD, A_BOLD, m_cColorQuery->nAttr, m_cColorQuery->nColor);
+            return;
+          }
+          data->nGender = atol(data->szQuery);
+          winMain->wprintf("%A%CLanguage [?]: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 8;
+          return;
+        }
+
+        case 8:
+        {
+          if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          const SLanguage *l = NULL;
+          if (data->szQuery[0] != '?' && data->szQuery[0] != '\0')
+          {
+            if (isdigit(data->szQuery[0]))
+              l = GetLanguageByCode(atol(data->szQuery));
+            else
+              l = GetLanguageByName(data->szQuery);
+          }
+
+          // Print out list of languages
+          if (l == NULL && data->szQuery[0] != '\0')
+          {
+            for (unsigned short i = 0; i < NUM_LANGUAGES; i++)
+            {
+              winMain->wprintf("%C%s %A(%Z%d%A)%s%Z",
+               COLOR_WHITE, gLanguages[i].szName,
+               A_BOLD, A_BOLD, gLanguages[i].nCode,
+               A_BOLD,
+               i == NUM_LANGUAGES - 1 ? "\n" : ", ",
+               A_BOLD);
+            }
+            winMain->wprintf("%A%CLanguage [?]: ",
+             m_cColorQuery->nAttr, m_cColorQuery->nColor);
+            return;
+          }
+
+          data->nLanguage = (l == NULL ? LANGUAGE_UNSPECIFIED : l->nCode);
+          winMain->wprintf("%A%CCity: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 9;
+          return;
+        }
+
+        case 9:
+        {
+          if ((sz = Input_Line(data->szCity, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          winMain->wprintf("%A%CState: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 10;
+          return;
+        }
+
+        case 10:
+        {
+          if ((sz = Input_Line(data->szState, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          winMain->wprintf("%A%CCountry [?]: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 11;
+          return;
+        }
+
+        case 11:
+        {
+          if ((sz = Input_Line(data->szQuery, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          const SCountry *c = NULL;
+          if (data->szQuery[0] != '?' && data->szQuery[0] != '\0')
+          {
+            if (isdigit(data->szQuery[0]))
+              c = GetCountryByCode(atol(data->szQuery));
+            else
+              c = GetCountryByName(data->szQuery);
+          }
+
+          // Print out list of countries
+          if (c == NULL && data->szQuery[0] != '\0')
+          {
+            for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
+            {
+              winMain->wprintf("%C%s %A(%Z%d%A)%s%Z",
+               COLOR_WHITE, gCountries[i].szName,
+               A_BOLD, A_BOLD, gCountries[i].nCode,
+               A_BOLD,
+               i == NUM_COUNTRIES - 1 ? "\n" : ", ",
+               A_BOLD);
+            }
+            winMain->wprintf("%A%CCountry [?]: ",
+             m_cColorQuery->nAttr, m_cColorQuery->nColor);
+            return;
+          }
+
+          data->nCountryCode = (c == NULL ? COUNTRY_UNSPECIFIED : c->nCode);
+          winMain->wprintf("%A%CCompany Name: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 12;
+          return;
+        }
+
+        case 12:
+        {
+          if ((sz = Input_Line(data->szCoName, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          winMain->wprintf("%A%CCompany Department: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 13;
+          return;
+        }
+
+        case 13:
+        {
+          if ((sz = Input_Line(data->szCoDept, data->nPos, cIn)) == NULL)
+            return;
+          data->nPos = 0;
+          winMain->wprintf("%A%CCompany Position: ", m_cColorQuery->nAttr, m_cColorQuery->nColor);
+          data->nState = 14;
+          return;
+        }
+
+        case 14:
+        {
+          // If we get NULL back, then we're not done yet
+          if ((sz = Input_Line(data->szCoPos, data->nPos, cIn)) == NULL)
             return;
 
           // Back to 0 for you!
           data->nPos = 0;
 
-          if (data->szAlias[0] == '\0' && data->szFirstName[0] == '\0' &&
+          /*if (data->szAlias[0] == '\0' && data->szFirstName[0] == '\0' &&
               data->szLastName[0] =='\0' && data->szEmail[0] == '\0')
           {
             winMain->fProcessInput = &CLicqConsole::InputCommand;
@@ -2388,7 +2560,7 @@ void CLicqConsole::InputSearch(int cIn)
             winMain->wprintf("%C%ASearch aborted.\n",
                              m_cColorInfo->nColor, m_cColorInfo->nAttr);
             return;
-          }
+          }*/
 
           winMain->wprintf("%C%ASearching:\n",
                            m_cColorInfo->nColor, m_cColorInfo->nAttr);
@@ -2396,8 +2568,10 @@ void CLicqConsole::InputSearch(int cIn)
           /*winMain->event = licqDaemon->icqSearchByInfo(data->szAlias, data->szFirstName,
            data->szLastName, data->szEmail);*/
           winMain->event = licqDaemon->icqSearchWhitePages(data->szFirstName,
-           data->szLastName, data->szAlias, data->szEmail, 0, 0, GENDER_UNSPECIFIED, 0, "", "", 0,
-           "", "", "", false);
+           data->szLastName, data->szAlias, data->szEmail,
+           data->nMinAge, data->nMaxAge, data->nGender, data->nLanguage,
+           data->szCity, data->szState, data->nCountryCode,
+           data->szCoName, data->szCoDept, data->szCoPos, false);
           winMain->state = STATE_PENDING;
 
           return;
