@@ -9,6 +9,7 @@
 #include <qimage.h>
 #include <qmessagebox.h>
 #include <qapplication.h>
+#include <qlistbox.h>
 
 #include "ewidgets.h"
 #include "outputwin.h"
@@ -445,5 +446,75 @@ void CLogWidget::paintCell(QPainter* p, int row, int col)
 
 
 // -----------------------------------------------------------------------------
+#if 0
+QFont CFontDialog::GetFontFromFullSet(bool *ok, const QFont &def,
+   QWidget *p = 0, const char *n = 0)
+{
+// Code almost straight from Qt 2.1 beta 1 source tree
+    QFont result;
+    result = def;
 
+    CFontDialog *dlg = new CFontDialog( p, n, TRUE );
+    //dlg->setFont( def );
+    dlg->setCaption( tr("Select Font") );
+    if ( dlg->exec() == QDialog::Accepted )
+    {
+      result = dlg->font();
+      if (ok) *ok = TRUE;
+    }
+    else
+    {
+      if (ok) *ok = FALSE;
+    }
+    delete dlg;
+    return result;
+}
+
+
+void CFontDialog::updateFamilies()
+{
+// Code almost straight from Qt 2.1 beta 1 source tree
+printf("fuck off\n");
+    familyNames = fdb.families(false);
+    QStringList newList;
+    QString s;
+    QStringList::Iterator it = familyNames.begin();
+    for( ; it != familyNames.end() ; it++ ) {
+        s = *it;
+        if ( s.contains('-') ) {
+            int i = s.find('-');
+            s = s.right( s.length() - i - 1 ) + " [" + s.left( i ) + "]";
+        }
+        s[0] = s[0].upper();
+        newList.append( s );
+    }
+    familyListBox()->insertStringList( newList );
+}
+
+void CFontDialog::familyHighlighted( int i )
+{
+  QString s = familyNames[i];
+  QFontDialog::familyHighlighted( s );
+}
+
+
+void CFontDialog::updateScripts()
+{
+    scriptCombo()->clear();
+
+    charSetNames = fdb.charSets( d->family );
+
+    if ( charSetNames.isEmpty() ) {
+        qWarning( "QFontDialog::updateFamilies: Internal error, "
+                  "no character sets for family \"%s\"",
+                  (const char *) d->family );
+        return;
+    }
+
+    QStringList::Iterator it = charSetNames.begin();
+    for ( ; it != charSetNames.end() ; ++it )
+        d->scriptCombo->insertItem( fdb.verboseCharSetName(*it) );
+}
+
+#endif
 #include "ewidgets.moc"

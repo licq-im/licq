@@ -124,6 +124,30 @@ protected:
 
 
 /* ----------------------------------------------------------------------------- */
+// If Troll wasn't so fucking lame we could implement a proper font dialog
+// but all the necessary data structures are private
+#if 0
+// MOC_SKIP_BEGIN
+class CFontDialog : public QFontDialog
+{
+Q_OBJECT
+public:
+  CFontDialog(QWidget *p, const char *n, bool b) : QFontDialog(p, n, b)
+  { updateFamilies(); }
 
+  static QFont GetFontFromFullSet(bool *ok, const QFont &def, QWidget *p = 0, const char *n = 0);
+
+protected:
+  QFontDatabase fdb;
+  QStringList familyNames;
+  virtual void updateFamilies();
+  virtual void updateScripts();
+
+protected slots:
+  virtual void familyHighlighted(int);
+};
+// MOC_SKIP_END
+#endif
+/* ----------------------------------------------------------------------------- */
 
 #endif
