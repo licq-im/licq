@@ -834,6 +834,7 @@ void CLicqConsole::InputMessage(int cIn)
       return;
 
     // The input is done, so process it, sz points to the '.'
+    *sz = '\0';
     sz++;
     winMain->wprintf("%C%ASending message %s...", COLOR_BLUE, A_BOLD,
                      *sz == 's' ? "through the server" : "direct");
@@ -898,6 +899,7 @@ void CLicqConsole::InputUrl(int cIn)
       return;
 
     // The input is done, so process it, sz points to the '.'
+    *sz = '\0';
     sz++;
     winMain->wprintf("%C%ASending URL %s...", COLOR_BLUE, A_BOLD,
                      *sz == 's' ? "through the server" : "direct");

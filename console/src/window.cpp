@@ -103,8 +103,12 @@ void CWindow::wprintf(char *formatIn, ...)
    char formatOut[1024], out[1024];
    unsigned short i = 0, j = 0;
    attr_t a;
+#if NCURSES_VERSION_PATCH == 990213
+   short p;
+   wattr_get(win, &a, &p, NULL);
+#else
    a = wattr_get(win);
-
+#endif
    va_start(argp, formatIn);
 
    while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
@@ -119,8 +123,12 @@ void CWindow::wprintf(char *formatIn, ...)
       {
       case 'C':   // set color
          i++;
+#if NCURSES_VERSION_PATCH == 990213
+         wcolor_set(win, va_arg(argp, short), NULL);
+#else
          (void) va_arg(argp, short);
 //         wcolor_set(win, dummy, NULL);
+#endif
          while((formatIn[i]) && (formatIn[i] != '%'))  formatOut[j++] = formatIn[i++];
          formatOut[j] = '\0';
          *this << formatOut;
@@ -150,7 +158,11 @@ void CWindow::wprintf(char *formatIn, ...)
       }
    }
    va_end(argp);
+#if NCURSES_VERSION_PATCH == 990213
+   wattr_set(win, a, p, NULL);
+#else
    wattron(win, a);
+#endif
 }
 
 
