@@ -910,6 +910,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       realIP = PacketIpToNetworkIp(realIP);
       u->SetIpPort(userIP, userPort);
       u->SetRealIp(realIP);
+      // What is mode 1?  We can't connect direct...
+      if (mode == 1) mode = MODE_INDIRECT;
       if (mode != MODE_DIRECT && mode != MODE_INDIRECT)
       {
         gLog.Unknown("%sUnknown peer-to-peer mode for %s (%ld): %d\n", L_UNKNOWNxSTR,
