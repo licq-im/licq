@@ -558,11 +558,14 @@ char *CBuffer::PackString(const char *data, unsigned short max)
   }
   put_le_short(getDataPosWrite(), n + 1);
   incDataPosWrite(2);
-  memcpy(getDataPosWrite(), data, n);
-  incDataPosWrite(n);
+  if (n)
+  {
+    memcpy(getDataPosWrite(), data, n);
+    incDataPosWrite(n);
+  }
   *getDataPosWrite() = '\0';
   incDataPosWrite(1);
-  return getDataPosWrite() - n - 1;
+  return getDataPosWrite() - 2 - n - 1;
 }
 
 char *CBuffer::PackUnsignedShort(unsigned short data)
