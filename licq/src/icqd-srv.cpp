@@ -26,6 +26,19 @@
 #include "support.h"
 #include "licq_message.h"
 
+#ifdef PROTOCOL_PLUGIN
+#include "licq_protoplugind.h"
+
+void CICQDaemon::ProtoAddUser(const char *_szId, unsigned long _nPPID,
+                              bool _bAuthRequired)
+{
+  if (_nPPID == LICQ_PPID)
+    icqAddUser(strtoul(_szId, (char **)NULL, 10), _bAuthRequired);
+  else
+    PushProtoSignal(new CAddUserSignal(_szId, _bAuthRequired), _nPPID);
+}
+#endif
+
 //-----icqAddUser----------------------------------------------------------
 void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bAuthRequired)
 {
@@ -57,7 +70,7 @@ void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired)
     pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
       ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
-  
+
   char szUin[13];
   snprintf(szUin, 12, "%lu", _nUin);
   szUin[12] = 0;
@@ -254,6 +267,16 @@ void CICQDaemon::icqExportGroups(GroupList &groups)
 }
 
 //-----icqRemoveUser-------------------------------------------------------
+#ifdef PROTOCOL_PLUGIN
+void CICQDaemon::ProtoRemoveUser(const char *_szId, unsigned long _nPPID)
+{
+  if (_nPPID == LICQ_PPID)
+    icqRemoveUser(strtoul(_szId, (char **)NULL, 10));
+  else
+    PushProtoSignal(new CRemoveUserSignal(_szId), _nPPID);
+}
+#endif
+
 void CICQDaemon::icqRemoveUser(unsigned long _nUin)
 {
   // Remove from the SSList and update groups
@@ -360,11 +383,25 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
 }
 
 //-----icqFetchAutoResponseServer-----------------------------------------------
+#ifdef PROTOCOL_PLUGIN
+unsigned long CICQDaemon::ProtoFetchAutoResponseServer(const char *_szId, unsigned long _nPPID)
+{
+  unsigned long nRet = 0;
+
+  if (_nPPID == LICQ_PPID)
+    nRet = icqFetchAutoResponseServer(strtoul(_szId, (char **)NULL, 10));
+  else
+    ;
+
+  return nRet;
+}
+#endif
+
 unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
 {
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
   if (!u) return 0;
-  
+
   int nCmd;
   switch (u->Status())
   {
@@ -381,7 +418,7 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
   default:
     nCmd = ICQ_CMDxTCP_READxAWAYxMSG; break;
   }
-  
+
   CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, nCmd, 0);
   gLog.Info("%sRequesting auto response from %s (%ld).\n", L_SRVxSTR,
   	u->GetAlias(), p->Sequence());
@@ -399,7 +436,7 @@ unsigned long CICQDaemon::icqSetRandomChatGroup(unsigned long _nGroup)
   CPU_SetRandomChatGroup *p = new CPU_SetRandomChatGroup(_nGroup);
   gLog.Info("%sSetting random chat group (#%ld)...\n", L_SRVxSTR,
             p->Sequence());
- 
+
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
   if (e != NULL)
     return e->EventId();
@@ -486,6 +523,21 @@ unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
 }
 
 //-----icqSetStatus-------------------------------------------------------------
+#ifdef PROTOCOL_PLUGIN
+unsigned long CICQDaemon::ProtoSetStatus(unsigned long _nPPID,
+                                         unsigned short _nNewStatus)
+{
+  unsigned long nRet = 0;
+
+  if (_nPPID == LICQ_PPID)
+    nRet = icqSetStatus(_nNewStatus);
+  else
+    PushProtoSignal(new CChangeStatusSignal(_nNewStatus), _nPPID);
+
+  return nRet;
+}
+#endif
+
 unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
 {
   if (newStatus & ICQ_STATUS_DND)
@@ -1145,6 +1197,19 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
 }
 
 //-----ICQ::Logon--------------------------------------------------------------
+#ifdef PROTOCOL_PLUGIN
+unsigned long CICQDaemon::ProtoLogon(unsigned long _nPPID, unsigned short _nLogonStatus)
+{
+  unsigned long nRet = 0;
+
+  if (_nPPID == LICQ_PPID)
+    nRet = icqLogon(_nLogonStatus);
+  else
+    PushProtoSignal(new CLogonSignal(_nLogonStatus), _nPPID);
+
+  return nRet;
+}
+#endif
 
 unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
 {
@@ -1191,6 +1256,15 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
 }
 
 //-----ICQ::icqLogoff-----------------------------------------------------------
+#ifdef PROTOCOL_PLUGIN
+void CICQDaemon::ProtoLogoff(unsigned long _nPPID)
+{
+  if (_nPPID == LICQ_PPID)
+    icqLogoff();
+  else
+    PushProtoSignal(new CLogoffSignal(), _nPPID);
+}
+#endif
 void CICQDaemon::icqLogoff()
 {
   // Kill the udp socket asap to avoid race conditions
@@ -2825,6 +2899,10 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
       // Let's update server with local info!
       CheckExport();
+      
+      // Let's see who is online now
+      icqUpdateContactList();
+      
       break;
     } // case rost reply
 

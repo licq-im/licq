@@ -691,7 +691,47 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
   }
 
   // Get pointers to the functions
-  p->fMain = (int (*)(CICQDaemon *))FindFunction(handle, "LProto_Main");
+  p->fName = (char *(*)())FindFunction(handle, "LProto_Name");
+  if (p->fName == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Name in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  p->fVersion = (char *(*)())FindFunction(handle, "LProto_Version");
+  if (p->fVersion == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Version in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  p->fId = (char *(*)())FindFunction(handle, "LProto_Id");
+  if (p->fId == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Id in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  p->fInit = (bool (*)())FindFunction(handle, "LProto_Init");
+  if (p->fInit == NULL)
+  {
+    error = dlerror();
+    gLog.Error("%sFailed to find LProto_Init in plugin (%s): %s\n",
+      L_ERRORxSTR, _szName, error);
+    delete p;
+    return NULL;
+  }
+
+  p->fMain = (void (*)(CICQDaemon *))FindFunction(handle, "LProto_Main");
   if (p->fMain == NULL)
   {
     error = dlerror();
@@ -711,50 +751,17 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
     return NULL;
   }
 
-  p->fName = (const char *(*)())FindFunction(handle, "LProto_Name");
-  if (p->fName == NULL)
+  if (!(*p->fInit)())
   {
-    error = dlerror();
-    gLog.Error("%sFailed to find LProto_Name in plugin (%s): %s\n",
-               L_ERRORxSTR, _szName, error);
+    gLog.Error("%sFailed to initialize plugin (%s).\n", L_ERRORxSTR, p->Name());
     delete p;
     return NULL;
   }
 
-  p->fVersion = (const char *(*)())FindFunction(handle, "LProto_Version");
-  if (p->fVersion == NULL)
-  {
-    error = dlerror();
-    gLog.Error("%sFailed to find LProto_Version in plugin (%s): %s\n",
-      L_ERRORxSTR, _szName, error);
-    delete p;
-    return NULL;
-  }
+  // PPID
+  p->m_nPPID = p->fId()[0] << 24 | p->fId()[1] << 16 | p->fId()[2] << 8 | p->fId()[3];
 
-  p->fCapabilities = (unsigned long (*)())FindFunction(handle, "LProto_Capabilities");
-  if (p->fCapabilities == NULL)
-  {
-    error = dlerror();
-    gLog.Error("%sFailed to find LProto_Capabilities in plugin (%s): %s\n",
-               L_ERRORxSTR, _szName, error);
-    delete p;
-    return NULL;
-  }
-
-  // Make our protocol plugin Id
-  const char *(*f)() = (const char *(*)())FindFunction(handle, "LProto_Id");
-  if (f == NULL)
-  {
-    error = dlerror();
-   	gLog.Error("%sFalied to find LProto_Id in plugin (%s): %s\n", L_ERRORxSTR,
-      _szName, error);
-    delete p;
-    return NULL;
-  }
-
-  const char *szId = f();
-  p->m_nId = (szId[0] << 24) | (szId[1] << 16) | (szId[2] << 8) | (szId[3]);
-
+  // Finish it up
   p->m_pHandle = handle;
   pthread_mutex_lock(&mutex_protoplugins);
   list_protoplugins.push_back(p);

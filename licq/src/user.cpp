@@ -105,10 +105,8 @@ CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
 #endif
   m_nUserListLockType = m_nGroupListLockType = m_nGroupIDListLockType = LOCK_N;
 
-#ifndef PROTOCOL_PLUGIN
   m_xOwner = NULL;
   m_nOwnerUin = 0;
-#endif
 }
 
 
@@ -136,7 +134,11 @@ CUserManager::~CUserManager()
 
 void CUserManager::SetOwnerUin(unsigned long _nUin)
 {
-#ifndef PROTOCOL_PLUGIN
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%lu", _nUin);
+  AddOwner(szUin, LICQ_PPID);
+#else
   char buf[24];
   sprintf(buf, "%ld", _nUin);
   ICQOwner *o = FetchOwner(LOCK_W);
@@ -144,19 +146,16 @@ void CUserManager::SetOwnerUin(unsigned long _nUin)
   o->SetAlias(buf);
   DropOwner();
   m_nOwnerUin = _nUin;
-#else
-  char szUin[24];
-  sprintf(szUin, "%ld", _nUin);
-  AddOwner(szUin, LICQ_PPID);
 #endif
 }
 
 #ifdef PROTOCOL_PLUGIN
 void CUserManager::AddOwner(const char *_szId, unsigned long _nPPID)
 {
-  ICQOwner *o = new ICQOwner;
-  o->SetId(_szId);
-  o->SetPPID(_nPPID);
+  ICQOwner *o = new ICQOwner(_szId, _nPPID);
+
+  if (_nPPID == LICQ_PPID)
+    m_nOwnerUin = o->Uin();
 
   LockOwnerList(LOCK_W);
   m_vpcOwners.push_back(o);
@@ -169,7 +168,9 @@ void CUserManager::AddOwner(const char *_szId, unsigned long _nPPID)
  *-------------------------------------------------------------------------*/
 bool CUserManager::Load()
 {
-#ifndef PROTOCOL_PLUGIN
+#ifdef PROTOCOL_PLUGIN
+  //FIXME load owner of protocol plugins that are currently loaded
+#else
   // Create the owner
   m_xOwner = new ICQOwner;
   if (m_xOwner->Exception())
@@ -255,30 +256,27 @@ bool CUserManager::Load()
   }
 #else
   // TODO: We need to only load users of protocol plugins that are loaded!
-  char sUserIdKey[MAX_KEYxNAME_LEN];
-  char sUserPPIDKey[MAX_KEYxNAME_LEN];
+  char sUserKey[MAX_KEYxNAME_LEN];
+  char szFile[MAX_LINE_LEN];
   char szId[MAX_LINE_LEN];
+  char *sz;
   unsigned long nPPID;
   ICQUser *u;
   usersConf.SetFlags(INI_FxWARN);
   for (unsigned short i = 1; i<= nUsers; i++)
   {
-    sprintf(sUserIdKey, "User%d.Id", i);
-    sprintf(sUserPPIDKey, "User%d.PPID", i);
-    if (!usersConf.ReadStr(sUserIdKey, szId, ""))
+    sprintf(sUserKey, "User%d", i);
+    if (!usersConf.ReadStr(sUserKey, szFile, ""))
     {
-      gLog.Warn("%sSkipping user %i, Id not found.\n", L_WARNxSTR, i);
+      gLog.Warn("%sSkipping user %i, empty key.\n", L_WARNxSTR, i);
       continue;
     }
-    if (!usersConf.ReadNum(sUserPPIDKey, nPPID))
-    {
-      gLog.Warn("%sSkipping user %i, PPID not found.\n", L_WARNxSTR, i);
-      continue;
-    }
-    char *p = PPIDSTRING(nPPID);
-    snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
-             szId, p);
-    delete [] p;
+    snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/%s", BASE_DIR, USER_DIR,
+             szFile);
+    sz = strstr(szFile, ".");
+    strncpy(szId, szFile, sz - szFile);
+    szId[sz - szFile] = '\0';
+    nPPID = (*(sz+1)) << 24 | (*(sz+2)) << 16 | (*(sz+3)) << 8 | (*(sz+4));
     u = new ICQUser(szId, nPPID, filename);
     u->AddToContactList();
     m_hUsers.Store(u, szId, nPPID);
@@ -346,6 +344,12 @@ ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
       gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %s, found %s.\n",
                  L_ERRORxSTR, _szId, u->IdString());
   }
+  else
+  {
+     char *p = PPIDSTRING(_nPPID);
+     delete [] p;
+  }
+
   return u;
 }
 
@@ -1212,8 +1216,8 @@ ICQUser *CUserHashTable::Retrieve(const char *_szId, unsigned long _nPPID)
 
   ICQUser *u = NULL;
   UserList &l = m_vlTable[HashValue(_szId)];
-
-	char *szId;
+ 
+  char *szId;
   unsigned long nPPID;
   UserList::iterator iter;
   for (iter = l.begin(); iter != l.end(); iter++)
@@ -1268,7 +1272,7 @@ unsigned short CUserHashTable::HashValue(const char *_szId)
 {
   int j = strlen(_szId);
   unsigned short nRet = 0;
-  for (int i = 0; i < j && i < 5; i++)
+  for (int i = 0; i < j; i++)
     nRet += (unsigned short)_szId[i];
 
   return (nRet % (USER_HASH_SIZE - 1));
@@ -1661,9 +1665,6 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("InvisibleSID", m_nSID[INV_SID], 0);
   m_fConf.ReadNum("VisibleSID", m_nSID[VIS_SID], 0);
   m_fConf.ReadNum("GSID", m_nGSID, 0);
-#ifdef PROTOCOL_PLUGIN
-  m_fConf.ReadNum("PPID", m_nPPID, 0);
-#endif
 
   if (nNewMessages > 0)
   {
@@ -1968,7 +1969,11 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
     m_szId = 0;
   m_nPPID = _nPPID;
   
-  m_nUin = 0;
+  // gui plugin compat
+  if (m_nPPID == LICQ_PPID)
+    m_nUin = strtoul(m_szId, (char **)NULL, 10);
+  else
+   m_nUin = 0;
   SetStatus(ICQ_STATUS_OFFLINE);
   SetAutoResponse("");
   SetSendServer(false);
@@ -2831,9 +2836,6 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("InvisibleSID", m_nSID[INV_SID]);
    m_fConf.WriteNum("VisibleSID", m_nSID[VIS_SID]);
    m_fConf.WriteNum("GSID", m_nGSID);
-#ifdef PROTOCOL_PLUGIN
-   m_fConf.WriteNum("PPID", m_nPPID);
-#endif
 
    if (!m_fConf.FlushFile())
    {
@@ -3089,7 +3091,11 @@ ICQOwner::ICQOwner()
   m_bOnContactList = true;
 
   // Get data from the config file
+#ifdef PROTOCOL_PLUGIN
+  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.Licq", BASE_DIR);
+#else
   snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.uin", BASE_DIR);
+#endif
   filename[MAX_FILENAME_LEN - 1] = '\0';
 
   // Make sure owner.uin is mode 0600
@@ -3104,6 +3110,10 @@ ICQOwner::ICQOwner()
   m_fConf.ReadNum("Uin", m_nUin, 0);
   snprintf(m_szUinString, 12, "%lu", m_nUin);
   m_szUinString[12] = '\0';
+#ifdef PROTOCOL_PLUGIN
+  if (m_szId)  free (m_szId);
+  m_szId = strdup(m_szUinString);
+#endif
   m_fConf.ReadStr("Password", szTemp, "", false);
   SetPassword(&szTemp[1]); // skip leading space since we didn't trim
   m_fConf.ReadBool("WebPresence", m_bWebAware, false);
@@ -3139,13 +3149,13 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   m_bSavePassword = true;
   m_szPassword = NULL;
 
-  Init(0, 0);
+  Init(_szId, _nPPID);
   //SetOnContactList(true);
   m_bOnContactList = true;
 
   // Get data from the config file
   char *p = PPIDSTRING(_nPPID);
-  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.%s.%s", BASE_DIR, _szId, p);
+  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.%s", BASE_DIR, p);
   filename[MAX_FILENAME_LEN - 1] = '\0';
 
   // Make sure owner.uin is mode 0600
@@ -3269,3 +3279,4 @@ void ICQOwner::SetStatusOffline()
 {
   SetStatus(m_nStatus | ICQ_STATUS_OFFLINE);
 }
+

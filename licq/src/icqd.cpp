@@ -469,6 +469,14 @@ bool CICQDaemon::PluginLoad(const char *szPlugin, int argc, char **argv)
 }
 
 #ifdef PROTOCOL_PLUGIN
+void CICQDaemon::ProtoPluginList(ProtoPluginsList &lPlugins)
+{
+  lPlugins.erase(lPlugins.begin(), lPlugins.end());
+  pthread_mutex_lock(&licq->mutex_protoplugins);
+  lPlugins = licq->list_protoplugins;
+  pthread_mutex_unlock(&licq->mutex_protoplugins);
+}
+
 bool CICQDaemon::ProtoPluginLoad(const char *szPlugin)
 {
   CProtoPlugin *p = licq->LoadProtoPlugin(szPlugin);
@@ -848,7 +856,19 @@ void CICQDaemon::SaveUserList()
   nRet = write(fd, buff, n);
 
   unsigned short i = 1;
+#ifdef PROTOCOL_PLUGIN
+  //TODO: Work with other protocols
+  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
+  {
+    n = sprintf(buff, "User%d = %s.Licq\n", i, pUser->IdString());
+    nRet = write(fd, buff, n);
+    if (nRet == -1)
+      FOR_EACH_PROTO_USER_BREAK
 
+    i++;
+  }
+  FOR_EACH_PROTO_USER_END
+#else
   FOR_EACH_UIN_START
   {
     n = sprintf(buff, "User%d = %ld\n", i, nUin);
@@ -859,6 +879,7 @@ void CICQDaemon::SaveUserList()
     i++;
   }
   FOR_EACH_UIN_END
+#endif
 
   close(fd);
 
@@ -1746,6 +1767,42 @@ ICQEvent *CICQDaemon::PopPluginEvent()
 }
 
 
+#ifdef PROTOCOL_PLUGIN
+void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
+{
+  ProtoPluginsListIter iter;
+  pthread_mutex_lock(&licq->mutex_protoplugins);
+  for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
+       iter++)
+  {
+    if ((*iter)->Id() == _nPPID)
+    {
+      (*iter)->PushSignal(s);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&licq->mutex_protoplugins);
+}
+
+CSignal *CICQDaemon::PopProtoSignal()
+{
+  ProtoPluginsListIter iter;
+  CSignal *s = NULL;
+  pthread_mutex_lock(&licq->mutex_protoplugins);
+  for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
+       iter++)
+  {
+    if ((*iter)->CompareThread(pthread_self()))
+    {
+      s = (*iter)->PopSignal();
+      break;
+    }
+  }
+  pthread_mutex_unlock(&licq->mutex_protoplugins);
+  return s;
+}
+#endif
+
 //-----CICQDaemon::CancelEvent---------------------------------------------------------
 void CICQDaemon::CancelEvent(unsigned long t)
 {
@@ -2148,3 +2205,4 @@ bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 
   return (!*pcEnd);
 }
+

@@ -19,8 +19,13 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_plugind.h"
 #include "licq_color.h"
 
+#ifdef PROTOCOL_PLUGIN
+#include "licq_protoplugind.h"
+
+class CProtoPlugin
+#endif
+
 class CPlugin;
-class CProtoPlugin;
 class CPacket;
 class CPacketTcp;
 class CLicq;
@@ -93,11 +98,21 @@ public:
 
 #ifdef PROTOCOL_PLUGIN
   // GUI Plugins call these now
+  void ProtoAddUser(const char *szId, unsigned long nPPID, bool _bAuthRequired = false);
+
+  void ProtoRemoveUser(const char *szId, unsigned long nPPID);
+
+  unsigned long ProtoSetStatus(unsigned long nPPID, unsigned short nNewStatus);
+
+  unsigned long ProtoLogon(unsigned long nPPID, unsigned short nLogonStatus);
+  
+  void ProtoLogoff(unsigned long nPPID);
+
   unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
      const char *szMessage, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
 
-  unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
+  unsigned long ProtoSendUrl(const char *szId, unsigned long nPPID,
      const char *szUrl, const char *szDescription, bool bOnline,
      unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
@@ -106,8 +121,7 @@ public:
      UinList &uins, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
 
-  unsigned long ProtoFetchAutoResponse(const char *szId, unsigned long nPPID,
-     bool bServer = false);
+  unsigned long ProtoFetchAutoResponseServer(const char *szId, unsigned long nPPID);
 
   unsigned long ProtoChatRequest(const char *szId, unsigned long nPPID,
      const char *szReason, unsigned short nLevel, bool bServer);
@@ -252,8 +266,11 @@ public:
   void PluginDisable(int);
   bool PluginLoad(const char *, int, char **);
 
+#ifdef PROTOCOL_PLUGIN
+  void ProtoPluginList(ProtoPluginsList &);
   bool ProtoPluginLoad(const char *);
   int RegisterProtoPlugin();
+#endif
   
   void PluginUIViewEvent(unsigned long nUin) {
   	PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, nUin, 0, 0));
@@ -295,7 +312,7 @@ public:
   void SetICQServer(const char *s) {  SetString(&m_szICQServer, s);  }
   unsigned short ICQServerPort() {  return m_nICQServerPort;  }
   void SetICQServerPort(unsigned short p) {  m_nICQServerPort = p; }
-  
+
   // Firewall options
   bool TCPEnabled() { return m_bTCPEnabled; }
   void SetTCPEnabled(bool b) { m_bTCPEnabled = b; SetDirectMode(); }
@@ -335,7 +352,10 @@ public:
   void SetAlwaysOnlineNotify(bool);
   CICQSignal *PopPluginSignal();
   ICQEvent *PopPluginEvent();
-
+#ifdef PROTOCOL_PLUGIN
+  CSignal *PopProtoSignal();
+#endif
+  
   // Server Side List functions
   bool UseServerContactList()         { return m_bUseSS; }
   void SetUseServerContactList(bool b)  { m_bUseSS = b; }
@@ -449,6 +469,10 @@ protected:
   void PushExtendedEvent(ICQEvent *);
   void PushPluginSignal(CICQSignal *);
   void PushPluginEvent(ICQEvent *);
+#ifdef PROTOCOL_PLUGIN
+  void PushProtoSignal(CSignal *, unsigned long);
+#endif
+
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);
   void SendEvent_Server(CPacket *packet);

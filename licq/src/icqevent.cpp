@@ -9,14 +9,28 @@
 #include "licq_log.h"
 #include "licq_user.h"
 
-//TODO Change CSearchAck class for protocol plugin
 //-----CSearchAck------------------------------------------------------------
 CSearchAck::CSearchAck(unsigned long _nUin)
 {
   m_nUin = _nUin;
   m_szAlias = m_szFirstName = m_szLastName = m_szEmail = NULL;
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%lu", _nUin);
+  m_szId = strdup(szUin);
+  m_nPPID = LICQ_PPID;
+#endif
 }
 
+#ifdef PROTOCOL_PLUGIN
+CSearchAck::CSearchAck(const char *_szId, unsigned long _nPPID)
+{
+  m_nUin = 0;
+  m_szAlias = m_szFirstName = m_szLastName = m_szEmail = NULL;
+  m_szId = _szId ? strdup(_szId) : NULL;
+  m_nPPID = _nPPID;
+}
+#endif
 
 CSearchAck::~CSearchAck()
 {
@@ -24,6 +38,9 @@ CSearchAck::~CSearchAck()
   if (m_szFirstName != NULL) free(m_szFirstName);
   if (m_szLastName != NULL) free(m_szLastName);
   if (m_szEmail != NULL) free(m_szEmail);
+#ifdef PROTOCOL_PLUGIN
+  if (m_szId != NULL) free(m_szId);
+#endif
 }
 
 
@@ -268,21 +285,6 @@ ICQUser *ICQEvent::GrabUnknownUser()
 //=====CICQSignal===============================================================
 #ifdef PROTOCOL_PLUGIN
 CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
-                       unsigned long nUin, int nArgument,char *nParameters)
-{
-  m_nSignal = nSignal;
-  m_nSubSignal = nSubSignal;
-  m_nUin = nUin;
-  m_nArgument = nArgument;
-  m_szParameters = (nParameters!=NULL)?strdup(nParameters):NULL;
-
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
-}
-
-CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
                        const char *szId, unsigned long nPPID, int nArgument,char *nParameters)
 {
   m_nSignal = nSignal;
@@ -293,8 +295,8 @@ CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
   m_nArgument = nArgument;
   m_szParameters = (nParameters!=NULL)?strdup(nParameters):NULL;
 }
+#endif
 
-#else
 CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
                        unsigned long nUin, int nArgument,char *nParameters)
 {
@@ -303,8 +305,14 @@ CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
   m_nUin = nUin;
   m_nArgument = nArgument;
   m_szParameters = (nParameters!=NULL)?strdup(nParameters):NULL;
-}
+
+#ifdef PROTOCOL_PLUGIN
+  char szUin[24];
+  sprintf(szUin, "%lu", nUin);
+  m_szId = strdup(szUin);
+  m_nPPID = LICQ_PPID;
 #endif
+}
 
 CICQSignal::CICQSignal(CICQSignal *s)
 {
@@ -331,3 +339,48 @@ CICQSignal::~CICQSignal()
 #endif
 }
 
+#ifdef PROTOCOL_PLUGIN
+CSignal::CSignal(SIGNAL_TYPE e, const char *szId)
+{
+  m_eType = e;
+  if (szId)
+    m_szId = strdup(szId);
+  else
+    m_szId = 0;
+}
+
+CSignal::~CSignal()
+{
+  if (m_szId)
+    free(m_szId);
+}
+
+CLogonSignal::CLogonSignal(unsigned long nLogonStatus)
+  : CSignal(PROTOxLOGON, 0)
+{
+  m_nLogonStatus = nLogonStatus;
+}
+
+CLogoffSignal::CLogoffSignal()
+  : CSignal(PROTOxLOGOFF, 0)
+{
+}
+
+CChangeStatusSignal::CChangeStatusSignal(unsigned long nStatus)
+  : CSignal(PROTOxCHANGE_STATUS, 0)
+{
+  m_nStatus = nStatus;
+}
+
+CAddUserSignal::CAddUserSignal(const char *szId, bool bAuthRequired)
+  : CSignal(PROTOxADD_USER, szId)
+{
+  m_bAuthRequired = bAuthRequired;
+}
+
+CRemoveUserSignal::CRemoveUserSignal(const char *szId)
+  : CSignal(PROTOxREM_USER, szId)
+{
+}
+
+#endif

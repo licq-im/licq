@@ -49,6 +49,30 @@ class TCPSocket;
       {                                                  \
         pUser->Lock(y);                                  \
         {
+
+#define FOR_EACH_OWNER_START(x)                           \
+  {                                                       \
+    ICQOwner *pOwner;                                     \
+    OwnerList *_ol_ = gUserManager.LockOwnerList(LOCK_R); \
+    for (OwnerList::iterator _i_ = _ol_->begin();         \
+         _i_ != _ol_->end(); _i_++)                       \
+    {                                                     \
+      pOwner = *_i_;                                      \
+      pOwner->Lock(x);                                    \
+      {
+
+#define FOR_EACH_OWNER_END                                \
+      }                                                   \
+      pOwner->Unlock();                                   \
+    }                                                     \
+    gUserManager.UnlockOwnerList();                       \
+  }                                                       \
+
+#define FOR_EACH_OWNER_BREAK                              \
+        {                                                 \
+          gUserManager.DropOwner(pOwner->PPID());         \
+        }
+
 #endif
 
 #define FOR_EACH_USER_END                \
@@ -818,7 +842,7 @@ public:
   void DropUser(ICQUser *);
   ICQOwner *FetchOwner(unsigned short);
   void DropOwner();
-  unsigned long OwnerUin()  { return m_nOwnerUin; }
+  unsigned long OwnerUin()  {return m_nOwnerUin; }
   bool IsOnList(unsigned long nUin);
 
   UserList *LockUserList(unsigned short);

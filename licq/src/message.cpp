@@ -361,8 +361,11 @@ CEventAdded::CEventAdded(const char *_szId, unsigned long _nPPID, const char *_s
   m_szFirstName = strdup(_szFirstName);
   m_szLastName = strdup(_szLastName);
   m_szEmail = strdup(_szEmail);
-  m_nUin = 0;
   m_nPPID =_nPPID;
+  if (_nPPID == LICQ_PPID)
+    m_nUin = strtoul(_szId, (char **)NULL, 10);
+  else
+    m_nUin = 0;
 }
 #endif
 
@@ -392,8 +395,8 @@ void CEventAdded::CreateDescription()
   char *p = PPIDSTRING(m_nPPID);
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
                       strlen(m_szLastName) + strlen(m_szEmail) +
-                      strlen(m_szId) + strlen(p) + 1];
-  sprintf(m_szText, "Alias %s\nUser: %s\nProtocol: %s\nName: %s %s\nEmail: %s\n",
+                      strlen(m_szId) + strlen(p) + 512];
+  sprintf(m_szText, "Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n",
     m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
 #else
@@ -426,7 +429,7 @@ void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
                     strlen(m_szLastName) + strlen(m_szEmail) + strlen(m_szId) +
                     strlen(p)) * 2 + 20 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n:%s\n", m_szId,
+  nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n:%s\n:%s\n:%s\n", m_szId,
                   p, m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
 #else
@@ -459,7 +462,10 @@ CEventAuthRequest::CEventAuthRequest(const char *_szId, unsigned long _nPPID,
    m_szEmail = strdup(_szEmail);
    m_szReason = strdup(_szReason);
    m_nPPID = _nPPID;
-   m_nUin = 0;
+   if (_nPPID == LICQ_PPID)
+    m_nUin = strtoul(_szId, (char **)NULL, 10);
+   else
+    m_nUin = 0;
 }
 #endif
 
@@ -494,7 +500,7 @@ void CEventAuthRequest::CreateDescription()
                       + strlen(m_szReason) + strlen(m_szId) + strlen(p) + 256];
   //sprintf(m_szText, "%s (%s %s, %s), uin %ld, requests authorization to add you to their contact list:\n%s\n",
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
-  int pos = sprintf(m_szText, "Alias: %s\nId: %s\nProtocol: %s\nName: %s %s\nEmail: %s\n",
+  int pos = sprintf(m_szText, "Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n",
      m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
 #else
@@ -533,7 +539,7 @@ void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
                     strlen(m_szReason) + strlen(m_szId) +
                     strlen(p)) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n:%s\n", m_szId,
+  nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n:%s\n:%s\n:%s\n", m_szId,
                   p, m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
 #else
@@ -640,7 +646,10 @@ CEventAuthRefused::CEventAuthRefused(const char *_szId, unsigned long _nPPID,
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
   m_szId = strdup(_szId);
   m_nPPID = _nPPID;
-  m_nUin = 0;
+  if (_nPPID == LICQ_PPID)
+    m_nUin = strtoul(_szId, (char **)NULL, 10);
+  else
+    m_nUin = 0;
 }
 #endif
 

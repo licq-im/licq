@@ -23,6 +23,26 @@
 #include "support.h"
 
 //-----ICQ::sendMessage--------------------------------------------------------
+#ifdef PROTOCOL_PLUGIN
+#include "licq_protoplugind.h"
+
+unsigned long CICQDaemon::ProtoSendMessage(const char *_szId, unsigned long _nPPID,
+   const char *m, bool online, unsigned short nLevel, bool bMultipleRecipients,
+   CICQColor *pColor)
+{
+  unsigned long nRet = 0;
+
+  if (_nPPID == LICQ_PPID)
+    nRet = icqSendMessage(strtoul(_szId, (char **)NULL, 10), m, online, nLevel, bMultipleRecipients, pColor);
+  else
+  {
+    //CProtoPlugin *p = FindProtoPlugin(_nPPID);
+  }
+
+  return nRet;
+}
+#endif
+
 unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
    bool online, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
@@ -121,6 +141,25 @@ unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin, bool bServer)
 
 
 //-----CICQDaemon::sendUrl-----------------------------------------------------
+#ifdef PROTOCOL_PLUGIN
+unsigned long CICQDaemon::ProtoSendUrl(const char *_szId, unsigned long _nPPID,
+   const char *url, const char *description, bool online, unsigned short nLevel,
+   bool bMultipleRecipients, CICQColor *pColor)
+{
+  unsigned long nRet = 0;
+
+  if (_nPPID == LICQ_PPID)
+    nRet = icqSendUrl(strtoul(_szId, (char **)NULL, 10), url, description, online,
+      nLevel, bMultipleRecipients, pColor);
+  else
+  {
+
+  }
+
+  return nRet;
+}
+#endif
+
 unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
    const char *description, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)

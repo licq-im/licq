@@ -19,7 +19,7 @@ class CExtendedAck
 {
 public:
   // Accessors
-  
+
   //!Returns true if the remote end accepted the request, otherwise false.
   bool Accepted()         { return m_bAccepted; }
   //!The port to connect to if the request was accpeted.
@@ -53,7 +53,6 @@ const unsigned short  SA_DISABLED = 2;
     Result() returning EVENT_SUCCESS, which also signifies the search is
     complete.
 */
-//TODO Change CSearchAck class for Protocol Plugin
 class CSearchAck
 {
 public:
@@ -68,6 +67,12 @@ public:
   const char *LastName()   { return m_szLastName; }
   //! Returns the e-mail address of the search result.
   const char *Email()      { return m_szEmail; }
+#ifdef PROTOCOL_PLUGIN
+  //! Retunrs the Id string
+  const char *Id()         { return m_szId; }
+  //! Returns the protocol plugin id
+  unsigned long PPID()     { return m_nPPID; }
+#endif
   //! If non-zero, the number of search results that were found that could not
   //! be displayed.  The server has a 40 user limit on search results.  This
   //! is valid when Result() is EVENT_SUCCESS.
@@ -85,7 +90,12 @@ public:
 
 protected:
   CSearchAck(unsigned long _nUin);
+#ifdef PROTOCOL_PLUGIN
+  CSearchAck(const char *_szId, unsigned long _nPPID);
 
+  unsigned long m_nPPID;
+  char *m_szId;
+#endif
   unsigned long m_nUin;
   char *m_szAlias;
   char *m_szFirstName;
@@ -198,7 +208,7 @@ public:
   //!Contains the actual CUserEvent containing the message/url...that was
   //!sent to Uin().  Can be used to resend the event.
   CUserEvent *UserEvent()      { return m_pUserEvent; }
-  
+
   //!If the event was a user information update (basic/extended/meta) and
   //!the user does not exist on the contact list, this will return the user
   //!with the relevant fields set.  This is helpful in searches for example
@@ -252,8 +262,10 @@ protected:
   unsigned short m_nSubType;
   unsigned short m_nExtraInfo;
   int            m_nSocketDesc;
+#ifdef PROTOCOL_PLUGIN
   char           *m_szId;
   unsigned long  m_nPPID;
+#endif
   CPacket        *m_pPacket;
   pthread_t      thread_send;
   bool           thread_running;
@@ -410,5 +422,75 @@ protected:
   int m_nArgument;
   char * m_szParameters;
 };
+
+
+#ifdef PROTOCOL_PLUGIN
+enum SIGNAL_TYPE
+{
+  PROTOxLOGON = 1,
+  PROTOxLOGOFF,
+  PROTOxCHANGE_STATUS,
+  PROTOxADD_USER,
+  PROTOxREM_USER
+};
+
+class CSignal
+{
+public:
+  CSignal(SIGNAL_TYPE, const char *);
+  virtual ~CSignal();
+  SIGNAL_TYPE Type()  { return m_eType; }
+  char *Id()          { return m_szId; }
+
+private:
+  char  *m_szId;
+  SIGNAL_TYPE m_eType;
+};
+
+class CLogonSignal : public CSignal
+{
+public:
+  CLogonSignal(unsigned long);
+  virtual ~CLogonSignal() { }
+  unsigned long LogonStatus() { return m_nLogonStatus; }
+
+private:
+  unsigned long m_nLogonStatus;
+};
+
+class CLogoffSignal : public CSignal
+{
+public:
+  CLogoffSignal();
+};
+
+class CChangeStatusSignal : public CSignal
+{
+public:
+  CChangeStatusSignal(unsigned long);
+  unsigned long Status()  { return m_nStatus; }
+
+private:
+  unsigned long m_nStatus;
+};
+
+class CAddUserSignal : public CSignal
+{
+public:
+  CAddUserSignal(const char *, bool);
+  virtual ~CAddUserSignal() { }
+  bool AuthRequired() { return m_bAuthRequired; }
+
+private:
+  bool m_bAuthRequired;
+};
+
+class CRemoveUserSignal : public CSignal
+{
+public:
+  CRemoveUserSignal(const char *);
+};
+
+#endif
 
 #endif

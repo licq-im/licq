@@ -774,6 +774,8 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   m_sLocalAddr = from.m_sLocalAddr;
   m_sRemoteAddr = from.m_sRemoteAddr;
 #ifdef PROTOCOL_PLUGIN
+  if (m_szOwnerId)
+    free (m_szOwnerId);
   if (from.m_szOwnerId)
     m_szOwnerId = strdup(from.m_szOwnerId);
   m_nOwnerPPID = from.m_nOwnerPPID;
@@ -1312,7 +1314,7 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
   INetSocket *s = FetchSocket(nSd);
   if (s == NULL) return;
 #ifdef PROTOCOL_PLUGIN
-  char *szOwner = s->OwnerId();
+  char *szOwner = s->OwnerId() ? strdup(s->OwnerId()) : 0;
   unsigned long nPPID = s->OwnerPPID();
 #else
   unsigned long nOwner = s->Owner();
@@ -1332,7 +1334,12 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
   if (bClearUser)
   {
 #ifdef PROTOCOL_PLUGIN
-    ICQUser *u = gUserManager.FetchUser(szOwner, nPPID, LOCK_W);
+    ICQUser *u = NULL;
+    if (szOwner)
+    {
+      u = gUserManager.FetchUser(szOwner, nPPID, LOCK_W);
+      free(szOwner);
+    }
 #else
     ICQUser *u = gUserManager.FetchUser(nOwner, LOCK_W);
 #endif
