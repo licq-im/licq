@@ -253,6 +253,8 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
     return false;
   }
 
+  m_bThreadCreated = true;
+
   return true;
 }
 
