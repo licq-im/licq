@@ -13,7 +13,11 @@
    new dockable ones. */
 #define USE_DOCK
 
-/* Change this to MotifStyle if you want the old-school Motif
+/* Undefine this if you want a 64x48 icon, better suited for docking in
+   the KDE or Gnome panel. */
+#define SIXTYFOUR
+
+/* Change this to MOTIF if you want the old-school Motif
    widget look. */
 #define STYLE "WINDOWS" 
 
@@ -65,9 +69,6 @@
 
 /* Define if you have the <errno.h> header file.  */
 #undef HAVE_ERRNO_H
-
-/* Define if you have the gethostbyname_r function.  */
-#undef HAVE_GETHOSTBYNAME_R
 
 /* Define if you have the alphasort function.  */
 #undef HAVE_ALPHASORT

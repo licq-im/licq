@@ -4,7 +4,7 @@ AC_CONFIG_HEADER(config.h)
 
 dnl All versioning is done via these defines
 PACKAGE="Licq-Qt-GUI"
-VERSION=0.66
+VERSION=0.66.2
 
 dnl Chuck #defines for PACKAGE and VERSION into config.h
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
@@ -53,7 +53,7 @@ dnl Checks for library functions.
 AC_CHECK_LIB(xnet,inet_addr)
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, gethostbyname)
-AC_CHECK_FUNCS(alphasort inet_addr inet_aton scandir strerror gethostbyname_r)
+AC_CHECK_FUNCS(alphasort inet_addr inet_aton scandir strerror)
 
 dnl Check for QT
 AC_PATH_QT_LIB

@@ -56,11 +56,11 @@ AC_DEFUN(AC_PATH_QT_LIB,
         /usr/X11R6/lib/qt"
   
       if test "x$QTDIR" != x; then
-        qt_library_dirs="$qt_library_dirs $QTDIR/lib"
+        qt_library_dirs="$QTDIR/lib $qt_library_dirs"
       fi
   
       if test "x$QTLIB" != x; then
-        qt_library_dirs="$qt_library_dirs $QTLIB"
+        qt_library_dirs="$QTLIB $qt_library_dirs"
       fi
     
       for qt_dir in $qt_library_dirs; do
@@ -103,7 +103,7 @@ AC_DEFUN(AC_PATH_QT_INC,
     [  --with-qt-includes      where the QT headers are located. ],
     [  ac_qt_includes="$withval" ])
   
-  AC_CACHE_VAL(ac_cv_header_qtlib, [
+  AC_CACHE_VAL(ac_cv_header_qtinc, [
     
     dnl Did the user give --with-qt-includes?
     
@@ -120,39 +120,39 @@ AC_DEFUN(AC_PATH_QT_INC,
         /usr/local/include/qt \
         /usr/X11/include/qt \
         /usr/X11/include/X11/qt \
-	/usr/X11R6/include \        
-	/usr/X11R6/include/qt \
+      	/usr/X11R6/include \        
+        /usr/X11R6/include/qt \
         /usr/X11R6/include/X11/qt"
 
       if test "x$QTDIR" != x; then
-        qt_include_dirs="$qt_include_dirs $QTDIR/include"
+        qt_include_dirs="$QTDIR/include $qt_include_dirs"
       fi
 
       if test "x$QTINC" != x; then
-        qt_include_dirs="$qt_include_dirs $QTINC"
+        qt_include_dirs="$QTINC $qt_include_dirs"
       fi
-
+      
       for qt_dir in $qt_include_dirs; do
-        if test -r "$qt_dir/qlistbox.h"; then
+        if test -r "$qt_dir/qtabwidget.h"; then
           ac_qt_includes=$qt_dir
           break
         fi
       done
     fi
 
-    ac_cv_header_qtlib=$ac_qt_includes
+    ac_cv_header_qtinc=$ac_qt_includes
   
   ])
 
-  if test "$ac_cv_header_qtlib" = no; then
+  if test "$ac_cv_header_qtinc" = no; then
     have_qt_inc="no"
   else
     have_qt_inc="yes"
   fi
 
-  AC_MSG_RESULT([$ac_cv_header_qtlib])
-  QT_INCLUDES="-I$ac_cv_header_qtlib"
-  QT_INCDIR="$ac_cv_header_qtlib"
+  AC_MSG_RESULT([$ac_cv_header_qtinc])
+  QT_INCLUDES="-I$ac_cv_header_qtinc"
+  QT_INCDIR="$ac_cv_header_qtinc"
   AC_SUBST(QT_INCLUDES)
   AC_SUBST(QT_INCDIR)
 ])
@@ -163,7 +163,7 @@ AC_DEFUN(AC_PATH_QT_MOC,
     QT_MOC,
     moc,
     /usr/bin/moc,
-    $PATH:/usr/bin:/usr/X11R6/bin:$QTDIR/bin:/usr/lib/qt/bin:/usr/local/qt/bin)
+    $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
 ])
 
 ## ------------------------------------------------------------------------

@@ -5,11 +5,11 @@
 #, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Licq Qt GUI 0.62\n"
-"POT-Creation-Date: 1999-05-21 23:40+0100\n"
-"PO-Revision-Date: 1999-05-21 23:40+0100\n"
+"Project-Id-Version: 0.1\n"
+"POT-Creation-Date: 1999-04-16 21:28+0100\n"
+"PO-Revision-Date: 1999-06-08 16:50+0100\n"
 "Last-Translator: Vicente Aguilar <vaguilar@retemail.es>\n"
-"Language-Team: Spanish <es@li.org>\n"
+"Language-Team: Spanish <es@li.org>?\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset= CHARSET\n"
 "Content-Transfer-Encoding: ENCODING\n"
@@ -35,7 +35,7 @@ msgstr ""
 
 #: src/mainwin.cpp:558
 msgid "No msgs"
-msgstr "Ningún msg"
+msgstr "Ningún Mensaje"
 
 #: src/mainwin.cpp:931
 #, c-format
@@ -54,7 +54,7 @@ msgstr ""
 #: src/icqfunctions.cpp:732 src/mainwin.cpp:934 src/mainwin.cpp:953
 #: src/mainwin.cpp:1269 src/optionsdlg.cpp:30 src/showawaymsgdlg.cpp:16
 msgid "Ok"
-msgstr "Cerrar"
+msgstr "Si"
 
 #: src/filedlg.cpp:150 src/filedlg.cpp:174 src/icqfunctions.cpp:649
 #: src/icqfunctions.cpp:732 src/mainwin.cpp:934 src/mainwin.cpp:953
@@ -214,11 +214,11 @@ msgstr "Nivel de Depuración"
 
 #: src/mainwin.cpp:1571
 msgid "Next &Server"
-msgstr "&Siguiente &Servidor"
+msgstr "S&iguiente Servidor"
 
 #: src/mainwin.cpp:1573
 msgid "&About"
-msgstr "&Acerca de..."
+msgstr "Acerca &de..."
 
 #: src/klicq.cpp:80 src/mainwin.cpp:1574
 msgid "E&xit"
@@ -226,7 +226,7 @@ msgstr "&Salir"
 
 #: src/mainwin.cpp:1585
 msgid "&System"
-msgstr "S&istema"
+msgstr "&Sistema"
 
 #: src/mainwin.cpp:1589
 msgid "From Current Group"
@@ -234,11 +234,11 @@ msgstr ""
 
 #: src/mainwin.cpp:1590
 msgid "From Contact List"
-msgstr "&De la Lista de Contactos"
+msgstr "De la Lista de Contactos"
 
 #: src/mainwin.cpp:1611
 msgid "&View Event"
-msgstr "&Ver Evento"
+msgstr "&Ver Eventos"
 
 #: src/mainwin.cpp:1612
 msgid "&Send Message"
@@ -278,15 +278,15 @@ msgstr "Ver &Historia"
 
 #: src/mainwin.cpp:1623
 msgid "Online Notify"
-msgstr "Avisar cuando Conecte"
+msgstr "Avisar cuando se Conecte"
 
 #: src/mainwin.cpp:1624
 msgid "Invisible List"
-msgstr "Lista Invisible"
+msgstr "Lista Siempre Invisible"
 
 #: src/mainwin.cpp:1625
 msgid "Visible List"
-msgstr "Lista Visible"
+msgstr "Lista Siempre Visible"
 
 #: src/mainwin.cpp:1627
 msgid "Remove"
@@ -342,15 +342,15 @@ msgstr ""
 
 #: src/authuserdlg.cpp:15
 msgid "Authorize which user (UIN):"
-msgstr "Qué Usuario Autorizar (UIN):"
+msgstr "UIN del usuario a autorizar:"
 
 #: src/adduserdlg.cpp:14
 msgid "New User UIN:"
-msgstr "UIN del Usuario Nuevo:"
+msgstr "UIN Usuario:"
 
 #: src/adduserdlg.cpp:19
 msgid "&Alert User"
-msgstr "&Avisar al Usuario"
+msgstr "&Avisar"
 
 #: src/chatdlg.cpp:34
 msgid "Remote - Not connected"
@@ -588,7 +588,7 @@ msgstr "Transferencia de Ficheros"
 
 #: src/icqfunctions.cpp:79
 msgid "Send through server"
-msgstr "Enviar a través del servidor"
+msgstr "Enviar por servidor"
 
 #: src/icqfunctions.cpp:80
 msgid "Spoof UIN:"
@@ -604,7 +604,7 @@ msgstr ""
 
 #: src/icqfunctions.cpp:91
 msgid "Status:"
-msgstr "Estado:"
+msgstr "Estad.:"
 
 #: src/icqfunctions.cpp:92
 msgid "UIN:"
@@ -676,11 +676,11 @@ msgstr "Hombre"
 
 #: src/icqfunctions.cpp:126
 msgid "Phone:"
-msgstr "Teléfono:"
+msgstr "Teléf.:"
 
 #: src/icqfunctions.cpp:130
 msgid "About"
-msgstr "Acerca de..."
+msgstr "Descripción"
 
 #: src/icqfunctions.cpp:133
 msgid "History"
@@ -692,7 +692,7 @@ msgstr "Historia de sólo lectura"
 
 #: src/icqfunctions.cpp:145
 msgid "Auto Close"
-msgstr "Cerrar Automáticamente"
+msgstr "Cerrar Autom."
 
 #: src/icqfunctions.cpp:147 src/icqfunctions.cpp:388 src/icqfunctions.cpp:402
 #: src/icqfunctions.cpp:410
@@ -887,7 +887,7 @@ msgstr "Tipo de Evento"
 
 #: src/messagebox.cpp:47
 msgid "Time Received"
-msgstr "Fecha de Recepción"
+msgstr "Fecha Recepción"
 
 #: src/messagebox.cpp:48
 msgid "D"
@@ -908,7 +908,7 @@ msgstr "Familia:"
 
 #: src/optionsdlg.cpp:47
 msgid "Char Set:"
-msgstr "Juego de Caracteres:"
+msgstr "Caract.:"
 
 #. colors
 #: src/optionsdlg.cpp:67
@@ -925,7 +925,7 @@ msgstr "Ausente:"
 
 #: src/optionsdlg.cpp:77
 msgid "Offline:"
-msgstr "Desconectado:"
+msgstr "Desconect.:"
 
 #: src/optionsdlg.cpp:81
 msgid "New:"
@@ -941,15 +941,15 @@ msgstr "Rejilla:"
 
 #: src/optionsdlg.cpp:94
 msgid "Grid Lines"
-msgstr "Rejilla:"
+msgstr "Ver Rejilla"
 
 #: src/optionsdlg.cpp:96
 msgid "Show Column Headers"
-msgstr "Mostrar Cabeceras de las Columnas"
+msgstr "Mostrar Cabecera Columnas"
 
 #: src/optionsdlg.cpp:98
 msgid "Auto Close Function Window"
-msgstr "Cerrar Ventana de Funciones Automáticamente"
+msgstr "Cerrar Ventana Func. Autom."
 
 #: src/optionsdlg.cpp:102
 msgid "Info"
@@ -1022,15 +1022,15 @@ msgstr "Eventos"
 
 #: src/optionsdlg.cpp:153
 msgid "Chat Request:"
-msgstr "Petición de Charla:"
+msgstr "Charla:"
 
 #: src/optionsdlg.cpp:157
 msgid "File Transfer:"
-msgstr "Transferencia de Ficheros:"
+msgstr "Transferencia:"
 
 #: src/optionsdlg.cpp:161
 msgid "Online Notify:"
-msgstr "Aviso de Conexión:"
+msgstr "Conexión:"
 
 #: src/optionsdlg.cpp:167
 msgid "Servers: "
@@ -1038,19 +1038,19 @@ msgstr "Servidores: "
 
 #: src/optionsdlg.cpp:173
 msgid "Default Server Port:"
-msgstr "Puerto por Defecto del Servidor:"
+msgstr "Puerto por Defecto:"
 
 #: src/optionsdlg.cpp:178
 msgid "TCP Server Port:"
-msgstr "Puerto TCP del Servidor:"
+msgstr "Puerto TCP:"
 
 #: src/optionsdlg.cpp:183
 msgid "Max Users per Packet:"
-msgstr "Número Máximo de Usuarios por Paquete:"
+msgstr "Máx. Usuarios por Paquete:"
 
 #: src/optionsdlg.cpp:188
 msgid "Auto Logon:"
-msgstr "Conexión Automática:"
+msgstr "Estado Aut.:"
 
 #: src/optionsdlg.cpp:192
 msgid "Offline"
@@ -1086,11 +1086,11 @@ msgstr ""
 
 #: src/optionsdlg.cpp:201
 msgid "Auto Away:"
-msgstr "Ausencia Automática:"
+msgstr "Ausente Aut.:"
 
 #: src/optionsdlg.cpp:205
 msgid "Auto N/A:"
-msgstr "N/D Automática:"
+msgstr "N/D Autom.:"
 
 #: src/optionsdlg.cpp:211
 msgid "Error Log:"
@@ -1134,7 +1134,7 @@ msgstr ""
 
 #: src/outputwin.cpp:20
 msgid "Hide Window"
-msgstr "Esconder Ventana"
+msgstr "Ocultar"
 
 #: src/outputwin.cpp:23
 msgid "Clear"
@@ -1147,7 +1147,7 @@ msgstr ""
 #. pre-search widgets
 #: src/searchuserdlg.cpp:59
 msgid "Email Address:"
-msgstr "Dirección de Email:"
+msgstr "Dir. Email:"
 
 #: src/searchuserdlg.cpp:68
 msgid "First Name:"
@@ -1193,3 +1193,73 @@ msgstr ""
 #: src/userbox.cpp:202
 msgid "EMail Address"
 msgstr "Dirección de EMail"
+
+
+# These strings were not defined in the base POT file
+# Estas cadenas no estaban definidas en el fichero POT base
+
+msgid "Update All Users"
+msgstr "Actualizar Todos los Usuarios"
+
+msgid "&Expand Last Column"
+msgstr "&Expandir Última Columna"
+
+msgid "Show User Dividers"
+msgstr "Mostrar Divisiones entre Usuarios"
+
+# msgid "Use Font Style"
+# msgstr "Usar Estilos de Fuentes"
+
+msgid "OnEvent"
+msgstr "Tratar Eventos"
+
+msgid "OnEvents Enabled"
+msgstr "Activar Tratar Event."
+
+msgid "Command:"
+msgstr "Comando:"
+
+msgid "Parameters"
+msgstr "Parámetros"
+
+msgid "Servers:"
+msgstr "Servidores:"
+
+msgid "Web Presence Enabled"
+msgstr "Activar Presencia en Web"
+
+msgid "Hide IP"
+msgstr "Ocultar IP"
+
+msgid "Extensions"
+msgstr "Extensiones"
+
+msgid "Send Authorization"
+msgstr "Enviar Autorización"
+
+msgid "Send &Chat Request"
+msgstr "Petición de &Charla"
+
+msgid "From Current Group"
+msgstr "Del Grupo Actual"
+
+msgid "&Utilities"
+msgstr "&Utilidades"
+
+msgid "All Users"
+msgstr "Todos los Usuarios"
+
+msgid "New Users"
+msgstr "Usuarios Nuevos"
+
+msgid "Urgent"
+msgstr "Urgente"
+
+#msgid "default"
+#msgstr "(por defecto)"
+
+#msgid "(not supported yet)"
+#msgstr "(no soportado todavía)"
+
+#msgid "Offline"
+#msgstr "Desconectado"

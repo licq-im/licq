@@ -1,0 +1,65 @@
+From 031233v@dragon.acadiau.ca Sat Sep 11 17:05:17 1999
+Date: Sat, 31 Jul 1999 10:42:04 -0300
+From: Mark Veinot <031233v@dragon.acadiau.ca>
+Reply-To: licq@ctr.videotron.com
+To: "licq-dev@ctr.videotron.com" <licq-dev@ctr.videotron.com>
+Cc: licq@ctr.videotron.com
+Subject: [licq] Instructions for installing when you want to keep Qt 1.44
+
+Greets, people still seem to have problemsgetting this to work, so I thought
+I'd add my $0.02.
+
+System: Mandrake 5.3 (Kernel 2.2.10)
+
+I already had Qt 1.44 installed from source. (lib in /usr/lib/libqt.so.1.44
+with appropriate links)
+
+1) Untar qt-2.0.1.tar.gz in /usr/local
+
+1a) if you already have qt installed here, then leave the directory as
+"qt-2.0.1", else rename it to "qt"
+
+2) Set environment variables in your .login as per the INSTALL file and
+re-login.
+
+3) Do ./configure (you probably want to add -gif for gif support)
+
+4) then make
+
+5) When you're finished, libqt.so.2.0.1 and it's appropriate links will be in
+/usr/local/qt/lib (or /usr/local/qt-2.0.1/lib)
+
+6) as root, edit /etc/ld.so.conf and add the directory from step 5 to the file.
+
+7) while still root, run ldconfig
+
+-- now we try to compile LICQ --
+
+1) untar licq-0.70g-0.65.tar.gz somewhere (/usr/src is a good place)
+
+2) cd into the licq directory, and then to plugins, and then to qt-gui-0.65.
+
+3) Now this is the important part:
+do "./configure --with-x --with-qt-libraries=/usr/local/qt-2.0.1/lib
+--with-qt-inclides=/usr/local/qt-2.0.1/include"
+
+4) do make, this /should/ build successfully. If not, then there's probably
+something wrong with your compiler setup.
+
+5) when this finshes then do make install.
+
+6) now "./configure; make" for the LICQ daemon.
+
+7) and make install
+
+That should be it. 14 steps, nothing too tough.
+
+Hope that helps some of you.
+
+--Mark
+
+-------------------------------------------------
+The LICQ list.
+To unsubscribe send a mail with "unsubscribe licq"
+in the body to majordomo@ctr.videotron.com
+-------------------------------------------------
