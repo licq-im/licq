@@ -235,41 +235,45 @@ CBuffer::~CBuffer(void)
 }
 
 //-----add----------------------------------------------------------------------
-unsigned short CBuffer::add(const unsigned short &data)
-{
-  put_le_short(getDataPosWrite(), data);
-  incDataPosWrite(sizeof(unsigned short));
-  return sizeof(unsigned short);
-}
-
-unsigned short CBuffer::add(const unsigned long &data)
+char *CBuffer::PackUnsignedLong(unsigned long data)
 {
   put_le_long(getDataPosWrite(), data);
-  incDataPosWrite(sizeof(unsigned long));
-  return sizeof(unsigned long);
+  incDataPosWrite(4);
+  return getDataPosWrite() - 4;
 }
 
-unsigned short CBuffer::add(const char &data)
+char *CBuffer::PackChar(char data)
 {
   *getDataPosWrite() = data;
-  incDataPosWrite(sizeof(char));
-  return sizeof(char);
+  incDataPosWrite(1);
+  return getDataPosWrite() - 1;
 }
 
-unsigned short CBuffer::add(const char *data, int size)
+char *CBuffer::Pack(const char *data, int size)
 {
-   memcpy(getDataPosWrite(), data, size);
-   incDataPosWrite(size);
-   return size;
+  memcpy(getDataPosWrite(), data, size);
+  incDataPosWrite(size);
+  return getDataPosWrite() - size;
 }
 
-unsigned short CBuffer::PackString(const char *data)
+char *CBuffer::PackString(const char *data, unsigned short max)
 {
-   unsigned short n = strlen(data) + 1;
-   add(n);
-   add(data, n);
-   // We just added n+2 bytes to the packet
-   return n + 2;
+  unsigned short n = (data == NULL ? 0 : strlen(data));
+  if (max > 0 && n > max) n = max;
+  put_le_short(getDataPosWrite(), n + 1);
+  incDataPosWrite(2);
+  memcpy(getDataPosWrite(), data, n);
+  incDataPosWrite(n);
+  *getDataPosWrite() = '\0';
+  incDataPosWrite(1);
+  return getDataPosWrite() - n - 1;
+}
+
+char *CBuffer::PackUnsignedShort(unsigned short data)
+{
+  put_le_short(getDataPosWrite(), data);
+  incDataPosWrite(2);
+  return getDataPosWrite() - 2;
 }
 
 
@@ -278,7 +282,7 @@ char *CBuffer::print(char *&p)
 {
    static const unsigned short BYTES_PER_LINE = 24;
    static const unsigned long MAX_DATA_SIZE = 1024 * 1024;
-   
+
    if (getDataSize() > MAX_DATA_SIZE)
    {
      gLog.Error("%sInternal error: CBuffer::print(): Packet is suspiciously large (%lu bytes).\n%sAborting print.\n",
@@ -287,7 +291,7 @@ char *CBuffer::print(char *&p)
      strcpy(p, "- E R R O R -");
      return (p);
    }
-   
+
    unsigned short nLenBlank = strlen(L_BLANKxSTR);
    unsigned short nLenBuf = nLenBlank + getDataSize() * 3
                             + (int)(getDataSize() / BYTES_PER_LINE) * (1 + nLenBlank) 
@@ -300,10 +304,10 @@ char *CBuffer::print(char *&p)
    {
       sprintf(pPos, "%02X ", (unsigned char)getDataStart()[i]);
       pPos += 3;
-      if((i + 1) % BYTES_PER_LINE == 0) 
-      { 
-        sprintf(pPos, "\n%s", L_BLANKxSTR); 
-        pPos += 1 + nLenBlank; 
+      if((i + 1) % BYTES_PER_LINE == 0)
+      {
+        sprintf(pPos, "\n%s", L_BLANKxSTR);
+        pPos += 1 + nLenBlank;
       }
    }   
    return(p);

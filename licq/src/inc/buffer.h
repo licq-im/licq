@@ -48,11 +48,11 @@ public:
    CBuffer(CBuffer &);
    ~CBuffer(void);
 
-   unsigned short add(const char &data);
-   unsigned short add(const unsigned short &data);
-   unsigned short add(const unsigned long &data);
-   unsigned short add(const char *data, int size);
-   unsigned short PackString(const char *data);
+   char *Pack(const char *data, int size);
+   char *PackString(const char *data, unsigned short max = 0);
+   char *PackUnsignedShort(unsigned short data);
+   char *PackUnsignedLong(unsigned long data);
+   char *PackChar(char data);
    char *print(char *&);
    void Clear(void);
    void Reset(void);
