@@ -39,6 +39,15 @@ const unsigned short CODE_LISTxUSER = 204;
 const unsigned short CODE_LISTxGROUP = 205;
 const unsigned short CODE_LISTxDONE = 206;
 const unsigned short CODE_LOGxTYPE = 207;
+const unsigned short CODE_VIEWxMSG = 208;
+const unsigned short CODE_VIEWxURL = 209;
+const unsigned short CODE_VIEWxCHAT= 210;
+const unsigned short CODE_VIEWxFILE = 211;
+const unsigned short CODE_VIEWxTIME = 220;
+const unsigned short CODE_VIEWxFLAGS = 221;
+const unsigned short CODE_VIEWxTEXTxSTART = 222;
+const unsigned short CODE_VIEWxTEXTxEND = 223;
+const unsigned short CODE_VIEWxUNKNOWN = 299;
 // 300 - further action required
 const unsigned short CODE_ENTERxUIN = 300;
 const unsigned short CODE_ENTERxPASSWORD = 301;
@@ -50,11 +59,11 @@ const unsigned short CODE_INVALIDxCOMMAND = 401;
 const unsigned short CODE_INVALIDxUSER = 402;
 const unsigned short CODE_INVALIDxSTATUS = 403;
 const unsigned short CODE_EVENTxCANCELLED = 404;
+const unsigned short CODE_VIEWxNONE = 405;
 // 500 - server error
 const unsigned short CODE_EVENTxTIMEDOUT = 500;
 const unsigned short CODE_EVENTxFAILED = 501;
 const unsigned short CODE_EVENTxERROR = 502;
-
 
 const unsigned short STATE_UIN = 1;
 const unsigned short STATE_PASSWORD = 2;
@@ -97,7 +106,7 @@ static struct Command commands[NUM_COMMANDS] =
   { "LOG", &CRMSClient::Process_LOG,
     "Dump log messages { <log types> }." },
   { "VIEW", &CRMSClient::Process_VIEW,
-    "View event { <uin> } (not yet implemented)." },
+    "View event (next or specific user) { [ <uin> ] }." },
   { "AR", &CRMSClient::Process_AR,
     "Set your (or a user custom) auto response { [ <uin> ] }." }
 };
@@ -1020,9 +1029,41 @@ int CRMSClient::Process_LOG()
 }
 
 
+/*---------------------------------------------------------------------------
+ * CRMSClient::Process_VIEW
+ *
+ * Command:
+ *   VIEW <uin>
+ *
+ * Response:
+ *
+ *-------------------------------------------------------------------------*/
 int CRMSClient::Process_VIEW()
 {
-  unsigned long nUin = atol(data_arg);
+  unsigned long nUin = 0;
+
+  if (*data_arg != '\0')
+  {
+    nUin = atol(data_arg);
+  }
+  else
+  {
+    // XXX Check system messages first
+
+    // Check user messages now
+    FOR_EACH_USER_START(LOCK_R)
+    {
+      if(pUser->NewMessages() > 0)
+        nUin = pUser->Uin();
+    }
+    FOR_EACH_USER_END
+  
+    if (nUin == 0)
+    {
+      fprintf(fs, "%d No new messages.\n", CODE_VIEWxNONE);
+      return fflush(fs);
+    }
+  }
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL)
@@ -1030,9 +1071,64 @@ int CRMSClient::Process_VIEW()
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
+
+  CUserEvent *e = u->EventPop();
+  if (e)
+  {
+    char szEventHeader[75]; // Allows 50 chars for a nick
+    switch (e->SubCommand())
+    {
+      case ICQ_CMDxSUB_MSG:
+        sprintf(szEventHeader, "%d Message ", CODE_VIEWxMSG);
+        break;
+
+      case ICQ_CMDxSUB_URL:
+        sprintf(szEventHeader, "%d URL ", CODE_VIEWxURL);
+        break;
+
+      case ICQ_CMDxSUB_CHAT:
+        sprintf(szEventHeader, "%d Chat Request ", CODE_VIEWxCHAT);
+        break;
+
+      case ICQ_CMDxSUB_FILE:
+        sprintf(szEventHeader, "%d File Request ", CODE_VIEWxFILE);
+        break;
+
+      default:
+        sprintf(szEventHeader, "%d Unknown Event ", CODE_VIEWxUNKNOWN);
+    }
+
+    strcat(szEventHeader, "from ");
+    strncat(szEventHeader, u->GetAlias(), 50);
+    strcat(szEventHeader, "\n\0");
+
+    // Write out the event header
+    fprintf(fs, szEventHeader);
+
+    // Timestamp
+    char szTimestamp[39];
+    char szTime[25];
+    time_t nMessageTime = e->Time();
+    struct tm *pTM = localtime(&nMessageTime);
+    strftime(szTime, 25, "%H:%M:%S", pTM);
+    sprintf(szTimestamp, "%d Sent At ", CODE_VIEWxTIME);
+    strncat(szTimestamp, szTime, 25);
+    strcat(szTimestamp, "\n\0");
+    fprintf(fs, szTimestamp);
+
+    // Message
+    fprintf(fs, "%d Message Start\n", CODE_VIEWxTEXTxSTART);
+    fprintf(fs, e->Text());
+    fprintf(fs, "%d Message Complete\n", CODE_VIEWxTEXTxEND);
+  }
+  else
+  {
+    fprintf(fs, "%d Invalid event\n", CODE_EVENTxERROR);
+  }
+
   gUserManager.DropUser(u);
 
-  return 0;
+  return fflush(fs);
 }
 
 
