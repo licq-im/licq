@@ -1984,8 +1984,12 @@ void CLicqConsole::InputSendFile(int cIn)
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
                        !bDirect ? "trhough the server" : "direct");
 
+      ConstFileList lFileList;
+      lFileList.push_back(strdup(data->szFileName));
+
       winMain->event = licqDaemon->icqFileTransfer(data->nUin, data->szFileName,
-                       data->szDescription, ICQ_TCPxMSG_NORMAL, !bDirect);
+                       data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
+                       !bDirect);
       break;
     }
   case STATE_QUERY:
