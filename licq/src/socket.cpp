@@ -41,6 +41,7 @@ SSL_CTX *gSSL_CTX;
 
 #ifdef USE_SOCKS5
 #define SOCKS
+#define INCLUDE_PROTOTYPES
 extern "C" {
 #include <socks.h>
 }
@@ -291,7 +292,11 @@ void INetSocket::ResetSocket()
 bool INetSocket::SetLocalAddress(bool bIp)
 {
   // Setup the local structure
+#ifdef USE_SOCKS5
+  int sizeofSockaddr = sizeof(struct sockaddr_in);
+#else
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
+#endif
   if (getsockname(m_nDescriptor, (struct sockaddr *)&m_sLocalAddr, &sizeofSockaddr) < 0)
   {
     m_nErrorType = SOCK_ERROR_errno;
@@ -634,7 +639,11 @@ SrvSocket::~SrvSocket()
  *---------------------------------------------------------------------------*/
 void TCPSocket::RecvConnection(TCPSocket &newSocket)
 {
+#ifdef USE_SOCKS5
+  int sizeofSockaddr = sizeof(struct sockaddr_in);
+#else
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
+#endif
   newSocket.m_nDescriptor = accept(m_nDescriptor, (struct sockaddr *)&newSocket.m_sRemoteAddr, &sizeofSockaddr);
   newSocket.SetLocalAddress();
 }
