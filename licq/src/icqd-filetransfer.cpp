@@ -708,7 +708,7 @@ bool CFileTransferManager::StartReceivingFile(char *szFileName)
       
   if (m_nState != FT_STATE_CONFIRMINGxFILE)
   {
-     gLog.Warn(tr("%sFile Transfer: StartReceivingFile called without a pending confirmation.\n"),
+     gLog.Warn("%sFile Transfer: StartReceivingFile called without a pending confirmation.\n",
         L_WARNxSTR);
      return false;
   }

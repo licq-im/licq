@@ -41,7 +41,7 @@ void Trim(char *_sz)
 {
   if (_sz == NULL)
   {
-    gLog.Warn(tr("%sInternal Error: Trim(): _sz == NULL.\n"), L_WARNxSTR);
+    gLog.Warn("%sInternal Error: Trim(): _sz == NULL.\n", L_WARNxSTR);
     return;
   }
   char* b, *e;
