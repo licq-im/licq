@@ -28,7 +28,6 @@
 #include <qhbox.h>
 #include <qlabel.h>
 #include <qlayout.h>
-#include <qmessagebox.h>
 #include <qpainter.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>

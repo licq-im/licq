@@ -43,12 +43,16 @@
 #include <qtoolbutton.h>
 #include <qstatusbar.h>
 #include <qgroupbox.h>
-#include <qmenubar.h>
 #include <qpopupmenu.h>
 #include <qclipboard.h>
-#include <qfiledialog.h>
 #include <qtextstream.h>
 #include <qwindowsstyle.h>
+#include <qmenubar.h>
+#ifdef USE_KDE
+#include <kfiledialog.h>
+#else
+#include <qfiledialog.h>
+#endif
 
 #include "chatdlg.h"
 #include "ewidgets.h"
@@ -729,8 +733,13 @@ void ChatDlg::slot_save()
 {
   QString n = tr("/%1.chat").arg(chatUser == NULL ? QString::number(m_nUin) :
      QString::fromLocal8Bit(chatUser->Name()));
+#ifdef USE_KDE
+  QString fn = KFileDialog::getSaveFileName(QDir::homeDirPath() + n,
+     QString::null, this);
+#else
   QString fn = QFileDialog::getSaveFileName(QDir::homeDirPath() + n,
      QString::null, this);
+#endif
 
   if (!fn.isEmpty())
   {

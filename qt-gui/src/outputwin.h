@@ -21,7 +21,6 @@ class CQtLogWindow : public QDialog, public CPluginLog
 public:
   CQtLogWindow (QWidget *parent = 0, const char *name = 0);
 protected:
-  //MLEditWrap *outputBox;
   CLogWidget *outputBox;
   QPushButton *btnHide, *btnClear, *btnSave;
   QSocketNotifier *sn;
@@ -31,7 +30,7 @@ protected slots:
 
   virtual void showEvent(QShowEvent*);
 };
-
+#if 0
 class CLicqMessageBox : public QMessageBox
 {
 public:
@@ -46,6 +45,6 @@ protected:
     delete this;
   }
 };
-
+#endif
 
 #endif

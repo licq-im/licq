@@ -5,7 +5,6 @@
 #include <qpushbutton.h>
 #include <qlayout.h>
 #include <qdragobject.h>
-#include <qmessagebox.h>
 
 #include "forwarddlg.h"
 #include "mainwin.h"
@@ -118,7 +117,7 @@ void CForwardDlg::dropEvent(QDropEvent * de)
   // extract the text from the event
   if (QTextDrag::decode(de, text) == FALSE)
   {
-    QMessageBox::critical(NULL, "Error!", "Drag'n'Drop didn't work");
+    WarnUser(this, "Drag'n'Drop didn't work");
     return;
   }
 

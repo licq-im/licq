@@ -7,16 +7,23 @@
 #include <qpainter.h>
 #include <qbitmap.h>
 #include <qimage.h>
+#ifdef USE_KDE
+#include <kmessagebox.h>
 #include <qmessagebox.h>
+#else
+#include <qmessagebox.h>
+#endif
 #include <qapplication.h>
-#include <qlistbox.h>
 
 #include "ewidgets.h"
-#include "outputwin.h"
 
 bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2)
 {
+#ifdef USE_KDE
+  return ( KMessageBox::questionYesNo(q, szQuery, "Licq", szBtn1, szBtn2, false) == KMessageBox::Yes);
+#else
   return ( QMessageBox::information(q, "Licq", szQuery, szBtn1, szBtn2) == 0);
+#endif
 }
 
 
@@ -26,14 +33,34 @@ int QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, QStri
 }
 
 
-void InformUser(QWidget *q, QString szInfo)
+void InformUser(QWidget *q, QString sz)
 {
-  (void) new CLicqMessageBox(szInfo, QMessageBox::Information, q);
+  //(void) new CLicqMessageBox(szInfo, QMessageBox::Information, q);
+#ifdef USE_KDE
+  KMessageBox::information(q, sz, "Licq Information", QString::null, false);
+#else
+  QMessageBox::information(q, "Licq Information", sz, Ok | Default);
+#endif
 }
 
-void WarnUser(QWidget *q, QString szInfo)
+void WarnUser(QWidget *q, QString sz)
 {
-  (void) new CLicqMessageBox(szInfo, QMessageBox::Warning, q);
+  //(void) new CLicqMessageBox(szInfo, QMessageBox::Warning, q);
+#ifdef USE_KDE
+  KMessageBox::sorry(q, sz, "Licq Warning", false);
+#else
+  QMessageBox::warning(q, "Licq Warning", sz, Ok | Default);
+#endif
+}
+
+void CriticalUser(QWidget *q, QString sz)
+{
+  //(void) new CLicqMessageBox(szInfo, QMessageBox::Critical, q);
+#ifdef USE_KDE
+  KMessageBox::error(q, sz, "Licq Error", false);
+#else
+  QMessageBox::warning(q, "Licq Error", sz, Ok | Default);
+#endif
 }
 
 //-----CELabel------------------------------------------------------------------
@@ -48,6 +75,7 @@ CELabel::CELabel(bool _bTransparent, QPopupMenu *m, QWidget *parent, char *name)
 
 void CELabel::polish()
 {
+/*
   if (!testWState(WState_Polished))
   {
     setWState(WState_Polished);
@@ -55,7 +83,8 @@ void CELabel::polish()
       extraData()->style->polish(this);
     else
       qApp->polish(this);
-  }
+  }*/
+  QLabel::polish();
 }
 
 
@@ -178,14 +207,16 @@ CEButton::~CEButton()
 
 void CEButton::polish()
 {
+/*
   if (!testWState(WState_Polished))
   {
     setWState(WState_Polished);
     if (extraData() != NULL && extraData()->style != NULL)
       extraData()->style->polish(this);
     else
-	    qApp->polish(this);
-  }
+      qApp->polish(this);
+  }*/
+  QPushButton::polish();
 }
 
 void CEButton::enterEvent (QEvent *)

@@ -85,7 +85,9 @@ void CQtLogWindow::slot_log(int s)
     outputBox->removeLine(0);
 
   if (NextLogType() == L_ERROR)
-    (void) new CLicqMessageBox(str, QMessageBox::Critical);
+    CriticalUser(NULL, str);
+  else if (NextLogType() == L_MESSAGE)
+    InformUser(NULL, str);
 
   ClearLog();
 }

@@ -14,6 +14,7 @@ bool QueryUser(QWidget *, QString, QString, QString);
 int QueryUser(QWidget *, QString, QString, QString, QString);
 void InformUser(QWidget *q, QString);
 void WarnUser(QWidget *q, QString szInfo);
+void CriticalUser(QWidget *q, QString szInfo);
 
 
 class CELabel : public QLabel
@@ -53,7 +54,7 @@ public slots:
 protected:
   QPixmap *pmUpFocus, *pmUpNoFocus, *pmDown,
           *pmCurrent;
-  
+
   ButtonState whenPressed;
   // overloaded drawButton to remove typical button 3D effect
   virtual void drawButton(QPainter *);

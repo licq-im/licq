@@ -19,7 +19,12 @@
 #include "config.h"
 #endif
 
+#ifdef USE_KDE
+#include <kfiledialog.h>
+#else
 #include <qfiledialog.h>
+#endif
+
 #include <qdir.h>
 #include <qhbox.h>
 #include <qlayout.h>
@@ -192,7 +197,11 @@ bool CFileDlg::ReceiveFiles()
 {
   // Get the local directory to save to
   QString d;
+#ifdef USE_KDE
+  d = KFileDialog::getExistingDirectory(QString(QDir::homeDirPath()), this);
+#else
   d = QFileDialog::getExistingDirectory(QString(QDir::homeDirPath()), this);
+#endif
   if (d.isNull()) return false;
 
   if (!ftman->ReceiveFiles(d.latin1())) return false;

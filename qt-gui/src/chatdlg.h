@@ -21,7 +21,6 @@
 
 class QLabel;
 class QListBox;
-class QMenuBar;
 class QPopupMenu;
 class QGroupBox;
 class QPushButton;

@@ -29,13 +29,14 @@
 #include <qspinbox.h>
 #include <qradiobutton.h>
 #include <qbuttongroup.h>
-#include <qfontdialog.h>
 #include <qgroupbox.h>
 #include <qwhatsthis.h>
 #ifdef USE_KDE
 #include <kapp.h>
+#include <kfontdialog.h>
 #else
 #include <qapplication.h>
+#include <qfontdialog.h>
 #endif
 
 #include "optionsdlg.h"
@@ -461,7 +462,12 @@ void OptionsDlg::setupFontName(QLineEdit* le, const QFont& font)
 void OptionsDlg::slot_selectfont()
 {
   bool fontOk;
+#ifdef USE_KDE
+  QFont f = edtFont->font();
+  fontOk = (KFontDialog::getFont(f, false, this) == QDialog::Accepted);
+#else
   QFont f = QFontDialog::getFont(&fontOk, edtFont->font(), this);
+#endif
   if (fontOk) {
     setupFontName(edtFont, f);
     // default might have changed, so update that one as well
@@ -472,7 +478,12 @@ void OptionsDlg::slot_selectfont()
 void OptionsDlg::slot_selecteditfont()
 {
   bool fontOk;
+#ifdef USE_KDE
+  QFont f = edtFont->font();
+  fontOk = (KFontDialog::getFont(f, false, this) == QDialog::Accepted);
+#else
   QFont f = QFontDialog::getFont(&fontOk, edtEditFont->font(), this);
+#endif
   if (fontOk) {
     setupFontName(edtEditFont, f);
     ((QWidget*)edtEditFont)->setFont(f, true);
