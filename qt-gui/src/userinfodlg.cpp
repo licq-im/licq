@@ -26,6 +26,7 @@
 #include "config.h"
 #endif
 
+#include <qaccel.h>
 #include <qvbox.h>
 #include <qcheckbox.h>
 #include <qdatetime.h>
@@ -59,6 +60,10 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   icqEventTag = NULL;
   m_nUin = _nUin;
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
+
+  QAccel *a = new QAccel( this );
+  a->connectItem(a->insertItem(Key_Escape), this, SLOT(close()));
+  a->connectItem(a->insertItem(Key_Return), this, SLOT(close()));
 
   CreateGeneralInfo();
   CreateMoreInfo();

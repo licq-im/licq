@@ -23,6 +23,7 @@
 #include "config.h"
 #endif
 
+#include <qaccel.h>
 #include <qcheckbox.h>
 #include <qdatetime.h>
 #include <qvbox.h>
@@ -74,6 +75,9 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   m_nUin = _nUin;
   m_bOwner = (m_nUin == gUserManager.OwnerUin());
   m_bDeleteUser = false;
+
+  QAccel *a = new QAccel( this );
+  a->connectItem(a->insertItem(Key_Escape), this, SLOT(close()));
 
   top_hlay = new QHBoxLayout(this, 6);
   top_lay = new QVBoxLayout(top_hlay);
