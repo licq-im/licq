@@ -40,7 +40,7 @@ void SetString(char **szDest, const char *szSource)
 
 int Redirect(const char *_szFile)
 {
-  int fd = open(_szFile, O_WRONLY | O_CREAT | O_TRUNC);
+  int fd = open(_szFile, O_WRONLY | O_CREAT | O_APPEND, 00660);
   if (fd == -1) return 0;
   if (dup2(fd, STDOUT_FILENO) == -1) return 0;
   if (dup2(fd, STDERR_FILENO) == -1) return 0;
