@@ -99,9 +99,14 @@ void system_message_window()
 	}
 
 	/* Display the system message */
+	const gchar *time = g_strdup_printf("Time: %s\n",
+		ctime(&(event->Time())));
+	gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0, time, -1);
 	const gchar *message = event->Text();
 	gtk_text_insert(GTK_TEXT(sm->text), 0, 0, 0, message, -1);
-  delete event;
+
+	delete event;
+	
 	gUserManager.DropOwner();
 
 	/* Pack it */
