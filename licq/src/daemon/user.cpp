@@ -1101,7 +1101,7 @@ int ICQUser::SystemTimeGMTOffset()
   struct tm *tzone = localtime(&t);
 #ifdef USE_GMTOFF
   return -(tzone->tm_gmtoff); // seconds _east_ of UTC
-#elif USE_TIMEZONE
+#elif defined(USE_TIMEZONE)
   return timezone - (tzone->tm_isdst == 1 ? 3600 : 0); // seconds _west_ of UTC
 #else
 #warning Unable to determine local timezone
