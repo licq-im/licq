@@ -125,7 +125,7 @@ void CWindow::wprintf(char *formatIn, ...)
          i++;
 #if NCURSES_VERSION_PATCH < 990213
          (void) va_arg(argp, short);
-//         wcolor_set(win, dummy, NULL);
+//         wcolor_set(win, va_arg(argp, short), NULL);
 #else
          wcolor_set(win, va_arg(argp, short), NULL);
 #endif
@@ -159,7 +159,7 @@ void CWindow::wprintf(char *formatIn, ...)
    }
    va_end(argp);
 #if NCURSES_VERSION_PATCH < 990213
-   wattron(win, a);
+   wattr_set(win, a);
 #else
    wattr_set(win, a, p, NULL);
 #endif
