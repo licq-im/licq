@@ -285,6 +285,17 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   {
     RegistrationWizard();
   }
+  else
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    if (o->Password()[0] == '\0')
+    {
+      gUserManager.DropOwner();
+      UserSelect();
+    }
+    else
+      gUserManager.DropOwner();
+  }
 
   //fd_set fdSet;
   int nResult;
@@ -2800,9 +2811,8 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
               return;
             }
 
-            winMain->wprintf("\nRegistering you as a new user...\n");
-            licqDaemon->icqRegister(data->szPassword1);
-            winMain->state = STATE_PENDING;
+	    winMain->state = STATE_QUERY;
+	    winMain->wprintf("\nSave password? (y/N) ");
           }
           break;
         }
@@ -2849,12 +2859,14 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             }
 
             // Passwords match if we are this far, now set up the new user
+	    winMain->wprintf("Registration complete for user %s\n",data->szUin);
             gUserManager.SetOwnerUin(atol(data->szUin));
             ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
             owner->SetPassword(data->szPassword1);
             gUserManager.DropOwner();
-            winMain->wprintf("Registration complete for user %s\n", data->szUin);
-            winMain->fProcessInput = &CLicqConsole::InputCommand;
+
+	    winMain->wprintf("Save password? (y/N) ");
+	    winMain->state = STATE_QUERY;
           }
           break;
         }
@@ -2862,8 +2874,29 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
       default:
         winMain->wprintf("Invalid option: %c\n", data->szOption[0]);
       }
+      break;
     }
-
+  
+  case STATE_QUERY:
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    o->SetSavePassword(tolower(cIn) == 'y');
+    gUserManager.DropOwner();
+    
+    if (data->szOption[0] == '1')
+    {
+      winMain->wprintf("\nRegistering you as a new user...\n");
+      licqDaemon->icqRegister(data->szPassword1);
+      winMain->state = STATE_PENDING;
+    }
+    else
+    {
+      winMain->wprintf("\n%ADone. Awaiting commands.%Z\n", A_BOLD, A_BOLD);
+      winMain->state = STATE_COMMAND;
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
+    }
+  }
+  
   default:
     break;
   }
@@ -2992,7 +3025,7 @@ void CLicqConsole::UserCommand_Secure(unsigned long nUin, char *szStatus)
     winMain->wprintf("%ASecure channel is %s to %s\n", A_BOLD,
                      bOpen ? "open" : "closed", u->GetAlias());
   }
-  else if(strcasecmp(szStatus, "open") == 00 && bOpen)
+  else if(strcasecmp(szStatus, "open") == 0 && bOpen)
   {
     winMain->wprintf("%ASecure channel already open to %s\n", A_BOLD,
                      u->GetAlias());
@@ -3023,4 +3056,63 @@ void CLicqConsole::UserCommand_Secure(unsigned long nUin, char *szStatus)
 
   if(u)
     gUserManager.DropUser(u);
+}
+
+/*------------------------------------------------------------------------
+ * CLicqConsole::UserSelect
+ *----------------------------------------------------------------------*/
+void CLicqConsole::UserSelect()
+{
+  // Get the input now
+  winMain->fProcessInput = &CLicqConsole::InputUserSelect;
+  winMain->state = STATE_LE;
+  winMain->data = new DataUserSelect(gUserManager.OwnerUin()); 
+  
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  winMain->wprintf("%A%CEnter your password for %s (%lu):%C%Z\n", A_BOLD,
+                   COLOR_GREEN, o->GetAlias(), o->Uin(), COLOR_WHITE, A_BOLD);
+  gUserManager.DropOwner();
+}
+
+/*------------------------------------------------------------------------
+ * CLicqConsole::InputUserSelect
+ *----------------------------------------------------------------------*/
+void CLicqConsole::InputUserSelect(int cIn)
+{
+  DataUserSelect *data = (DataUserSelect *)winMain->data;
+  char *sz;
+
+  switch (winMain->state)
+  {
+    case STATE_LE:
+      if ((sz = Input_Line(data->szPassword, data->nPos, cIn, false)) == NULL)
+        return;
+
+      // Go back to the beginning
+      data->nPos = 0;
+
+      // Next stage is saving the password possibly
+      winMain->wprintf("%C%ASave password? (y/N) %C%Z", COLOR_GREEN, A_BOLD,
+                       COLOR_WHITE, A_BOLD);
+      winMain->state = STATE_QUERY;
+      break;
+    
+    case STATE_QUERY:
+    {
+      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      o->SetSavePassword(tolower(cIn) == 'y');
+      o->SetPassword(data->szPassword);
+      gUserManager.DropOwner();
+      winMain->wprintf("%A\nDone. Awaiting commands.%A\n", A_BOLD, A_BOLD);
+      winMain->fProcessInput = &CLicqConsole::InputCommand;
+      winMain->state = STATE_COMMAND;
+      break;
+    }
+
+    case STATE_PENDING:
+    case STATE_COMMAND:
+    case STATE_MLE:
+    default:
+      break;
+  }
 }

@@ -68,6 +68,13 @@ public:
   int nState;
 };
 
+class DataUserSelect : public CData
+{
+public:
+  DataUserSelect(unsigned long n) : CData(n)
+    {  szPassword[0] = '\0'; }
+  char szPassword[80];
+};
 
 class DataSearch : public CData
 {

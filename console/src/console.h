@@ -176,6 +176,8 @@ public:
   void FileChatOffer(unsigned long, unsigned long);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
+  void UserSelect();
+  void InputUserSelect(int cIn);
   bool ParseMacro(char *);
   unsigned long GetUinFromArg(char **);
 };
