@@ -37,27 +37,30 @@
 
 PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman,
                          QWidget *parent, const char *name)
-   : QDialog(parent, name)
+   : QDialog(parent, name, WDestructiveClose)
 {
   server = s;
   sigman = _sigman;
   tag = NULL;
 
+  setCaption(tr("Licq - Set Password"));
+
   QVBoxLayout *lay = new QVBoxLayout(this, 8);
-  QGroupBox *box = new QGroupBox(tr("Password"), this);
+  QGroupBox *box = new QGroupBox(2, Vertical, tr("Password"), this);
   lay->addWidget(box);
 
-  QGridLayout *blay = new QGridLayout(box, 2, 2, 15, 5);
+  lblPassword = new QLabel(tr("&Password:"), box);
+  lblVerify = new QLabel(tr("&Verify:"), box);
   edtFirst = new QLineEdit(box);
   edtFirst->setEchoMode(QLineEdit::Password);
   QWhatsThis::add(edtFirst, tr("Enter your ICQ password here."));
   edtSecond = new QLineEdit(box);
   edtSecond->setEchoMode(QLineEdit::Password);
   QWhatsThis::add(edtSecond, tr("Verify your ICQ password here."));
-  blay->addWidget(new QLabel(tr("&Password:"), box), 0, 0);
-  blay->addWidget(edtFirst, 0, 1);
-  blay->addWidget(new QLabel(tr("&Verify:"), box), 1, 0);
-  blay->addWidget(edtSecond, 1, 1);
+  lblPassword->setBuddy(edtFirst);
+  lblVerify->setBuddy(edtSecond);
+
+  lay->addStretch(1);
 
   btnUpdate = new QPushButton("&Update", this);
   btnUpdate->setDefault(true);
@@ -73,10 +76,8 @@ PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman,
   hlay->addWidget(btnCancel, 0, AlignLeft);
   lay->addLayout(hlay);
 
-  connect (btnUpdate, SIGNAL(clicked()), SLOT(ok()) );
+  connect (btnUpdate, SIGNAL(clicked()), SLOT(accept()) );
   connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
-
-  setCaption(tr("Set Password"));
 
   show();
 }
@@ -84,20 +85,11 @@ PasswordDlg::PasswordDlg(CICQDaemon *s, CSignalManager *_sigman,
 
 PasswordDlg::~PasswordDlg()
 {
-  if (tag != NULL)
-    delete tag;
+  delete tag;
 }
 
 
-
-void PasswordDlg::hide()
-{
-  QDialog::hide();
-  delete this;
-}
-
-
-void PasswordDlg::ok()
+void PasswordDlg::accept()
 {
   // Validate password
   if (edtFirst->text().isEmpty() || edtFirst->text().length() > 8)

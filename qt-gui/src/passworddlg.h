@@ -5,6 +5,7 @@
 
 class QPushButton;
 class QLineEdit;
+class QLabel;
 class ICQEvent;
 class CICQEventTag;
 
@@ -23,14 +24,15 @@ protected:
   CSignalManager *sigman;
   QPushButton *btnUpdate, *btnCancel;
   QLineEdit *edtFirst, *edtSecond;
+  QLabel *lblPassword, *lblVerify;
 
   CICQEventTag *tag;
 
 public slots:
-  virtual void hide();
   void slot_doneUserFcn(ICQEvent *);
+
 protected slots:
-  void ok();
+  virtual void accept();
 };
 
 
