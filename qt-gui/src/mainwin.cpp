@@ -1543,9 +1543,14 @@ void CMainWindow::updateGroups()
   cmbUserGroups->clear();
   mnuUserGroups->clear();
   mnuGroup->clear();
+  mnuServerGroup->clear();
   cmbUserGroups->insertItem(tr("All Users"));
   mnuUserGroups->insertItem(tr("All Users"));
   mnuUserGroups->insertSeparator();
+
+  // take care of this first
+  mnuGroup->insertItem(tr("Server Group"), mnuServerGroup);
+  mnuGroup->insertSeparator();
 
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   for (unsigned short i = 0; i < g->size(); i++)
@@ -1553,6 +1558,7 @@ void CMainWindow::updateGroups()
     cmbUserGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
     mnuUserGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
     mnuGroup->insertItem(QString::fromLocal8Bit((*g)[i]), i+1);
+    mnuServerGroup->insertItem(QString::fromLocal8Bit((*g)[i]), i+1);
   }
   gUserManager.UnlockGroupList();
   mnuUserGroups->insertSeparator();
@@ -2451,6 +2457,44 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group, unsi
   return false;
 }
 
+void CMainWindow::FillServerGroup()
+{
+  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_R);
+  if (u == NULL) return;
+
+  GroupList *g = gUserManager.LockGroupList(LOCK_R);
+  for (unsigned short i = 0; i < g->size(); i++)
+    mnuServerGroup->setItemChecked(i+1, false);
+
+  for (unsigned short i = 0; i < g->size(); i++)
+  {
+    if (u->GetSID() && (u->GetGSID() == gUserManager.GetIDFromGroup((*g)[i])))
+    {
+      mnuServerGroup->setItemChecked(i+1, true); 
+      break;
+    }
+  }
+  gUserManager.UnlockGroupList();
+  gUserManager.DropUser(u);
+}
+
+void CMainWindow::ServerGroupChanged(int n)
+{
+  if (mnuServerGroup->isItemChecked(n)) return;
+
+  ICQUser *u = gUserManager.FetchUser(m_nUserMenuUin, LOCK_R);
+  if (u == NULL) return;
+
+  GroupList *g = gUserManager.LockGroupList(LOCK_R);
+  for (unsigned int i = 0; i < g->size(); i++)
+    mnuServerGroup->setItemChecked(i+1, (int)(i+1) == n);
+
+  gUserManager.UnlockGroupList();
+  gUserManager.DropUser(u);
+
+  gUserManager.AddUserToGroup(m_nUserMenuUin, n);
+  updateUserWin();
+}
 
 //-----CMainWindow::saveAllUsers-----------------------------------------------
 void CMainWindow::saveAllUsers()
@@ -3324,6 +3368,11 @@ void CMainWindow::initMenu()
    mnuGroup->setCheckable(true);
    connect(mnuGroup, SIGNAL(activated(int)), this, SLOT(UserGroupToggled(int)));
    connect(mnuGroup, SIGNAL(aboutToShow()), this, SLOT(FillUserGroup()));
+
+   mnuServerGroup = new QPopupMenu(NULL);
+   mnuServerGroup->setCheckable(true);
+   connect(mnuServerGroup, SIGNAL(activated(int)), this, SLOT(ServerGroupChanged(int)));
+   connect(mnuServerGroup, SIGNAL(aboutToShow()), this, SLOT(FillServerGroup()));
 
    mnuUtilities = new QPopupMenu(NULL);
    for (unsigned short i = 0; i < gUtilityManager.NumUtilities(); i++)

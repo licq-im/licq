@@ -161,6 +161,7 @@ public:
              *mnuUser,
              *mnuUserGroups,
              *mnuGroup,
+             *mnuServerGroup,
              *mnuOwnerAdm,
              *mnuUserAdm,
              *mnuStatus,
@@ -233,7 +234,9 @@ public slots:
 protected slots:
   void slot_hints();
   void UserGroupToggled(int);
+  void ServerGroupChanged(int);
   void FillUserGroup();
+  void FillServerGroup();
   void saveAllUsers();
   void updateEvents();
   void updateStatus();
