@@ -126,6 +126,8 @@ protected:
   QSocketNotifier *snChatServer;
   bool m_bAudio;
 
+  friend class CJoinChatDlg;
+
 protected slots:
   void chatSend(QKeyEvent *);
   void chatRecv(int);
@@ -136,8 +138,6 @@ protected slots:
 
   void SwitchToPaneMode();
   void SwitchToIRCMode();
-
-friend class CJoinChatDlg;
 };
 
 #endif
