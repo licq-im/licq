@@ -393,10 +393,15 @@ void list_info_user(GtkWidget *window, ICQUser *user)
 		{
 			const SLanguage *lang =
 				GetLanguageByCode(user->GetLanguage(i));
-			label =
+			
+		  	label =
 				gtk_label_new(
 					g_strdup_printf("Language %d:", i + 1));
-			do_entry(iu->lang[i], lang->szName, FALSE);
+			if (lang)
+			  do_entry(iu->lang[i], lang->szName, FALSE);
+			else
+			  do_entry(iu->lang[i], "", false);
+
 			gtk_widget_set_usize(iu->lang[i], 75, 20);
 			gtk_box_pack_start(GTK_BOX(h_box), label, FALSE,
 				FALSE, 5);
