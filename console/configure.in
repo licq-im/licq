@@ -28,11 +28,6 @@ AC_PROG_INSTALL
 AC_PATH_PROG(PROG_STRIP,strip,:)
 AC_PATH_PROG(PROG_SIZE,size,:)
 
-dnl libtool checks
-AC_LIBTOOL_DLOPEN
-AC_DISABLE_STATIC
-AM_PROG_LIBTOOL
-
 dnl Checks for header files.
 AC_HEADER_STDC
 AC_CHECK_HEADERS(errno.h dirent.h getopt.h malloc.h pwd.h sys/time.h)
@@ -61,17 +56,33 @@ dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
 AC_LANG_CPLUSPLUS
 
-AC_CHECK_LIB(stdc++, getc,,
-  AC_MSG_ERROR(You need to have libstdc++ installed))
 AC_CHECK_HEADER(vector.h,,
   AC_MSG_ERROR(You need to have the libstdc++ headers installed))
 
 AC_LANG_RESTORE
 
+dnl check for ncurses
+AC_CHECK_LIB(ncurses, initscr,,
+  AC_MSG_ERROR([
+
+I can't find the ncurses library. This is needed if you want
+to compile this plugin. Sorry.
+]))
+
 dnl Checks for typedefs, structures, and compiler characteristics.
 AC_C_CONST
 
+dnl libtool checks
+AC_PROG_LD
+AC_OBJEXT
+AC_EXEEXT
+AC_LIBTOOL_DLOPEN
+AC_DISABLE_STATIC
+AM_PROG_LIBTOOL
+
+
 AC_OUTPUT(
-  src/Makefile
-	Makefile)
+  src/Makefile \
+  Makefile
+)
 

@@ -14,6 +14,4 @@ licq_console_la_SOURCES = console.cpp console_menu.cpp console_print.cpp \
 	console_tab.cpp eventdesc.cpp main.cpp window.cpp
 
 
-licq_console_la_LDFLAGS = -s -module -avoid-version -rpath $(plugindir)
-licq_console_la_LIBADD = -lncurses
-
+licq_console_la_LDFLAGS = -s -module -avoid-version 
