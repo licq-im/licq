@@ -768,7 +768,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
         contactName = codec->toUnicode(u->GetAlias());
       for (unsigned int x = 0; x < strlen(m_szId); x++)
       {
-        if (!isdigit(m_szId[x]))
+        if (!isdigit(m_szId[x]) && m_nPPID == LICQ_PPID)
         {
           bUseHTML = true;
           break;
