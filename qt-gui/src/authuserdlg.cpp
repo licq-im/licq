@@ -41,27 +41,35 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
   m_nUin = nUin;
   m_bGrant = bGrant;
 
-  setCaption(tr("Licq - Authorisation %1").arg(bGrant ? tr("Grant"):tr("Refuse")));
+  if(bGrant) 
+    setCaption(tr("Licq - Grant Authorisation"));
+  else
+    setCaption(tr("Licq - Refuse Authorisation"));
+
   QBoxLayout* toplay = new QVBoxLayout(this, 8, 8);
-  QBoxLayout* lay = new QHBoxLayout(toplay);
 
   lblUin = new QLabel(this);
-  lay->addWidget(lblUin);
-
+  lblUin->setAlignment(AlignCenter);
   if (m_nUin == 0)
   {
     lblUin->setText(tr("Authorize which user (UIN):"));
     edtUin = new QLineEdit(this);
     edtUin->setMinimumWidth(90);
     edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
+    connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
+    QBoxLayout* lay = new QHBoxLayout(toplay);
+    lay->addWidget(lblUin);
     lay->addWidget(edtUin);
   }
   else
   {
+    edtUin = NULL;
+    toplay->addWidget(lblUin);
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-    lblUin->setText(tr("%1 authorization to %2")
-       .arg(bGrant ? tr("Grant"):tr("Refuse"))
-       .arg(u->GetAlias()) );
+    if (bGrant) 
+      lblUin->setText(tr("Grant authorization to %1").arg(u->GetAlias()));
+    else
+      lblUin->setText(tr("Refuse authorization to %1").arg(u->GetAlias()));
     gUserManager.DropUser(u);
   }
 
@@ -72,9 +80,8 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
   toplay->setStretchFactor(grpResponse, 2);
 
   mleResponse = new MLEditWrap(true, grpResponse);
-  //mleResponse->setText(tr("Authorisation granted"));
 
-  lay = new QHBoxLayout(toplay);
+  QBoxLayout* lay = new QHBoxLayout(toplay);
   lay->addStretch(1);
   btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setMinimumWidth(75);
@@ -83,14 +90,11 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
   btnCancel->setMinimumWidth(75);
   lay->addWidget(btnCancel);
   connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
-  connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
   connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
 
-  /*if (UIN) {
-    mleResponse->selectAll();
+  if (m_nUin) 
     mleResponse->setFocus();
-  }
-  else*/
+  else
     edtUin->setFocus();
 
   show();
