@@ -5,7 +5,7 @@
 
 [skin]
 
-frame.pixmap = background.gif
+frame.pixmap = background.png
 frame.mask = none
 frame.border.top = 24
 frame.border.bottom = 57
@@ -22,16 +22,16 @@ lblStatus.rect.y2 = -5
 lblStatus.color.fg = white
 lblStatus.color.bg = default
 lblStatus.frameStyle = 51
-lblStatus.pixmap = status.xpm
+lblStatus.pixmap = status.png
 lblStatus.margin = 10
 
 btnSys.rect.x1 = 3  #20
 btnSys.rect.y1 = 3  
 btnSys.rect.x2 = 58
 btnSys.rect.y2 = 20
-btnSys.pixmapUpFocus = buttonLowered.xpm
-btnSys.pixmapUpNoFocus = buttonRaised.xpm
-btnSys.pixmapDown = buttonLowered.xpm
+btnSys.pixmapUpFocus = buttonLowered.png
+btnSys.pixmapUpNoFocus = buttonRaised.png
+btnSys.pixmapDown = buttonLowered.png
 btnSys.color.fg = default
 btnSys.color.bg = default
 btnSys.caption = none
@@ -43,7 +43,7 @@ lblMsg.rect.y2 = -30
 lblMsg.color.fg = white
 lblMsg.color.bg = default
 lblMsg.frameStyle = 51
-lblMsg.pixmap = msg.xpm
+lblMsg.pixmap = msg.png
 lblMsg.margin = 10
 
 cmbGroups.rect.x1 = 63

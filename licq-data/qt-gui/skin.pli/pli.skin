@@ -18,7 +18,7 @@
 
 [skin]
 
-frame.pixmap = Frame.gif
+frame.pixmap = Frame.png
 frame.mask = none
 frame.border.top = 28
 frame.border.bottom = 30
@@ -40,9 +40,9 @@ btnSys.rect.x1 = 4
 btnSys.rect.y1 = -26
 btnSys.rect.x2 = 54
 btnSys.rect.y2 = -6
-btnSys.pixmapUpFocus = MenuButtonUp.xpm
-btnSys.pixmapUpNoFocus = MenuButtonUp.xpm
-btnSys.pixmapDown = MenuButtonDown.xpm
+btnSys.pixmapUpFocus = MenuButtonUp.png
+btnSys.pixmapUpNoFocus = MenuButtonUp.png
+btnSys.pixmapDown = MenuButtonDown.png
 btnSys.color.fg = white
 btnSys.color.bg = #222222
 btnSys.caption = default
@@ -69,8 +69,7 @@ colors.online = white
 colors.away = grey80
 colors.offline = grey67
 colors.newuser = yellow
-colors.background = #303030
-#3c3e3c
+colors.background = #7a7d8a
 colors.gridlines = grey76
 
 # End of file

@@ -4,7 +4,7 @@
 
 [skin]
 
-frame.pixmap = Frame.xpm
+frame.pixmap = Frame.png
 frame.mask = none
 frame.border.top = 10
 frame.border.bottom = 55

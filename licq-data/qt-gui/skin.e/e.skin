@@ -8,7 +8,7 @@
 
 [skin]
 
-frame.pixmap = frame.gif
+frame.pixmap = frame.png
 frame.mask = none
 frame.border.top = 41
 frame.border.bottom = 40
@@ -29,9 +29,9 @@ btnSys.rect.x1 = 5
 btnSys.rect.y1 = -35
 btnSys.rect.x2 = 55
 btnSys.rect.y2 = -15
-btnSys.pixmapUpFocus = butMenuFocus.xpm
-btnSys.pixmapUpNoFocus = butMenu.xpm
-btnSys.pixmapDown = butMenuDown.xpm
+btnSys.pixmapUpFocus = butMenuFocus.png
+btnSys.pixmapUpNoFocus = butMenu.png
+btnSys.pixmapDown = butMenuDown.png
 btnSys.color.fg = default
 btnSys.color.bg = black
 btnSys.caption = default

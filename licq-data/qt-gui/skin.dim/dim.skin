@@ -40,8 +40,8 @@
 [skin]
 
 # --- Frame ---
-frame.pixmap = Frame.gif
-# frame.mask = mask.gif 
+frame.pixmap = Frame.png
+# frame.mask = mask.png 
 frame.mask = none
 frame.border.top = 43
 frame.border.bottom = 25
@@ -58,16 +58,16 @@ lblStatus.color.fg = green
 lblStatus.color.bg = #787878
 lblStatus.frameStyle = 0
 lblStatus.margin = 10
-lblStatus.pixmap = Status.xpm
+lblStatus.pixmap = Status.png
 
 # --- Menu button ---
 btnSys.rect.x1 = 1
 btnSys.rect.y1 = 24
 btnSys.rect.x2 = 60
 btnSys.rect.y2 = 40
-btnSys.pixmapDown = MenuDown.xpm
-btnSys.pixmapUpFocus = MenuUpFocus.xpm
-btnSys.pixmapUpNoFocus = MenuUpNoFocus.xpm
+btnSys.pixmapDown = MenuDown.png
+btnSys.pixmapUpFocus = MenuUpFocus.png
+btnSys.pixmapUpNoFocus = MenuUpNoFocus.png
 btnSys.color.fg = transparent
 btnSys.color.bg = transparent 
 btnSys.caption = default
@@ -80,7 +80,7 @@ lblMsg.rect.y2 = -3
 lblMsg.color.fg = white
 lblMsg.color.bg = black
 lblMsg.frameStyle = 0
-lblMsg.pixmap = Label-small.xpm
+lblMsg.pixmap = Label-small.png
 lblMsg.margin = 18
 
 
@@ -93,11 +93,4 @@ cmbGroups.rect.y2 = 777
 cmbGroups.color.fg = default
 cmbGroups.color.bg = default
 
-# --- colors ---
-colors.online = white
-colors.away = grey80
-colors.offline = grey67
-colors.newuser = yellow
-colors.background = grey25
-colors.gridlines = grey76
 

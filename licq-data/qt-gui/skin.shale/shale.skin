@@ -41,7 +41,7 @@
 
 [skin]
 
-frame.pixmap = frame.gif
+frame.pixmap = frame.png
 frame.mask = none
 frame.border.top = 56
 frame.border.bottom = 24
@@ -58,16 +58,16 @@ lblStatus.rect.y2 = 45
 lblStatus.color.fg = #902020
 lblStatus.color.bg = #dddddd
 lblStatus.frameStyle = 0
-lblStatus.pixmap = status.xpm
+lblStatus.pixmap = status.png
 lblStatus.margin = 5
 
 btnSys.rect.x1 = 4
 btnSys.rect.y1 = 24
 btnSys.rect.x2 = 47
 btnSys.rect.y2 = 45
-btnSys.pixmapUpFocus = butMenuFocus.xpm
-btnSys.pixmapUpNoFocus = butMenu.xpm
-btnSys.pixmapDown = butMenuDown.xpm
+btnSys.pixmapUpFocus = butMenuFocus.png
+btnSys.pixmapUpNoFocus = butMenu.png
+btnSys.pixmapDown = butMenuDown.png
 btnSys.color.fg = default
 btnSys.color.bg = #dddddd
 btnSys.caption = default
