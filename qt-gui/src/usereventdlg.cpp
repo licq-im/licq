@@ -1089,10 +1089,8 @@ void UserSendCommon::massMessageToggled(bool b)
   else
   {
     // doesn't work right TODO investigate why
-    int w = grpMR->width();
+    //int w = grpMR->width();
     grpMR->hide();
-    //resize(width()-w, height());
-    top_hlay->setGeometry(QRect(0, 0, width()-w, height()));
   }
 }
 

@@ -27,6 +27,7 @@
 #include <qstylesheet.h>
 #include <qdatetime.h>
 #include <qtextcodec.h>
+#include <qdrawutil.h>
 #include <qstyle.h>
 
 #include "userbox.moc"
@@ -446,38 +447,31 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
           w += gMainWindow->pmMessage.width() + 4;
         }
 
-        #if QT_VERSION >= 300
-        listView()->style().drawPrimitive(QStyle::PE_Separator, p,
-           QRect(w, height() >> 1, width - (listView()->header()->count() == 1 ? 5 : 1), height() >> 1),
-           cg);
-
-        #else
+#if QT_VERSION >= 300
+        qDrawShadeLine( p, 0, height() >> 1, width - 5, (height() >> 1) + 2, cg, true, 1, 0);
+#else
         listView()->style().drawSeparator(p,
-           w, height() >> 1, width - (listView()->header()->count() == 1 ? 5 : 1),
-           height() >> 1, cg);
-        #endif
+                                          w, height() >> 1, width - (listView()->header()->count() == 1 ? 5 : 1),
+                                          height() >> 1, cg);
+#endif
       }
       else if (column == listView()->header()->count() - 1)
       {
-        #if QT_VERSION >= 300
-        listView()->style().drawPrimitive(QStyle::PE_Separator, p,
-           QRect(0, height() >> 1, width - 5, height() >> 1),
-           cg);
-        #else
+#if QT_VERSION >= 300
+        qDrawShadeLine( p, 0, height() >> 1, width - 5, (height() >> 1) + 2, cg, true, 1, 0);
+#else
         listView()->style().drawSeparator(p, 0, height() >> 1, width - 5,
            height() >> 1, cg);
-        #endif
+#endif
       }
       else if (column > 1)
       {
-        #if QT_VERSION >= 300
-        listView()->style().drawPrimitive(QStyle::PE_Separator, p,
-           QRect(0, height() >> 1, width - 1, height() >> 1),
-           cg);
-        #else
+#if QT_VERSION >= 300
+        qDrawShadeLine( p, 0, height() >> 1, width - 5, (height() >> 1) + 2, cg, true, 1, 0);
+#else
         listView()->style().drawSeparator(p, 0, height() >> 1, width - 1,
            height() >> 1, cg);
-        #endif
+#endif
       }
     }
     // If this is the first column then add some extra icons after the text

@@ -297,14 +297,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #endif
   if (strcmp(szTemp, "default") != 0)
   {
-    f.setRawName(szTemp);
+    f.fromString(szTemp);
     qApp->setFont(f, true);
   }
   licqConf.ReadStr("EditFont", szTemp, "default");
   if(!strcmp(szTemp, "default"))
     f = qApp->font();
   else
-    f.setRawName(szTemp);
+    f.fromString(szTemp);
   delete MLEditWrap::editFont;
   MLEditWrap::editFont = new QFont(f);
 
@@ -2061,7 +2061,7 @@ void CMainWindow::slot_ui_viewevent(unsigned long nUin)
         nUin = pUser->Uin();
         t = pUser->Touched();
       }
-    }  
+    }
     FOR_EACH_USER_END
     if (nUin != 0) callFunction (mnuUserView, nUin);
   }
@@ -2310,11 +2310,11 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
-                    "default" : qApp->font().rawName().latin1());
+                    "default" : qApp->font().toString().latin1());
   licqConf.WriteStr("EditFont",
                     (MLEditWrap::editFont == NULL ||
                      *MLEditWrap::editFont == defaultFont) ?
-                     "default" : MLEditWrap::editFont->rawName().latin1());
+                     "default" : MLEditWrap::editFont->toString().latin1());
   licqConf.WriteBool("GridLines", m_bGridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteNum("Flash", (unsigned short)m_nFlash);
