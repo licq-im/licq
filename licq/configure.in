@@ -23,14 +23,15 @@ case "$host" in
 		CFLAGS="$CFLAGS -pthread"
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT"
 		CXXFLAGS="$CXXFLAGS -pthread"
+    LDFLAGS="$LDFLAGS -export-dynamic"
 		echo "Setting OpenBSD compilation options"
 		;;
 	*-*-freebsd*)
 		CFLAGS="$CFLAGS -pthread"
 		CPPFLAGS="$CPPFLAGS -D_THREAD_SAFE"
 		CXXFLAGS="$CXXFLAGS -pthread"
+    LDFLAGS="$LDFLAGS -export-dynamic"
 		echo "Setting FreeBSD compilation options"
-    echo "Note you will need to upgrade to a newer pthreads implementation"
 		;;
 	*-*-solaris*)
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS -DUSE_SOLARIS -DPIC -fPIC"
@@ -40,6 +41,7 @@ case "$host" in
 	*-*-linux*)
  		CPPFLAGS="$CPPFLAGS -fPIC -DPIC -D_REENTRANT"
 		CXXFLAGS="$CXXFLAGS -fno-rtti -fno-exceptions"
+    LDFLAGS="$LDFLAGS -rdynamic"
 		echo "Setting Linux compilation options"
 		;;
 	*)

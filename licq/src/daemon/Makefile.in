@@ -23,7 +23,7 @@ CC	 = @CC@
 CFLAGS	 = @CFLAGS@
 CXX	 = @CXX@
 CXXFLAGS = @CXXFLAGS@ -Wall
-CPPFLAGS = @CPPFLAGS@ -I$(srcdir) -I$(top_srcdir) -I.. -I../inc @DEFS@ 
+CPPFLAGS = -I$(srcdir) -I$(top_srcdir) -I.. -I../inc @CPPFLAGS@ @DEFS@ 
 
 OBJECTS	= obj/icqpacket.o obj/socket.o obj/icqd.o obj/remoteserver.o \
           obj/icqevent.o obj/buffer.o obj/user.o obj/history.o obj/utility.o \

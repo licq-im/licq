@@ -22,9 +22,10 @@ CC	 = @CC@
 CFLAGS	 = @CFLAGS@
 CXX	 = @CXX@
 CXXFLAGS = @CXXFLAGS@ -Wall
-CPPFLAGS = @CPPFLAGS@ -I$(srcdir) -I$(top_srcdir) -I$(srcdir)/inc @DEFS@ \
-	   -I$(srcdir)/daemon -DINSTALL_DIR="\"@prefix@\"" @SOCKS_INCDIR@
-LDFLAGS  = @SOCKS_LIBDIR@ -rdynamic
+CPPFLAGS = -I$(srcdir) -I$(top_srcdir) -I$(srcdir)/inc -I$(srcdir)/daemon \
+	         @CPPFLAGS@ -DINSTALL_DIR="\"@prefix@\"" @DEFS@ \
+           @SOCKS_INCDIR@
+LDFLAGS  = @SOCKS_LIBDIR@ @LDFLAGS@
 LDLIBS   = @LIBS@ @SOCKS_LIBS@
 STRIP    = @PROG_STRIP@
 SIZE     = @PROG_SIZE@
