@@ -3565,7 +3565,7 @@ char *PipeInput(char *m_szMessage)
   while (pipe != NULL)
   {
     char *sz = pipe;
-    char szCmd[81];
+    char szCmd[1024];
     char szCmdOutput[4097];
     unsigned short i;
     CUtilityInternalWindow win;
@@ -3573,10 +3573,9 @@ char *PipeInput(char *m_szMessage)
     // Move over the '|'
     sz++;
     // Find the end of the command
-    for (i = 0; *sz != '\r' && *sz != '\0'; i++)
+    for (i = 0; *sz != '\r' && *sz != '\0'; sz++)
     {
-      if (i < 80) szCmd[i] = *sz;
-      sz++;
+      if (i < sizeof(szCmd)) szCmd[i++] = *sz;
     }
     szCmd[i] = '\0';
     // Ensure sz points to after the command and \r\n
@@ -3593,7 +3592,7 @@ char *PipeInput(char *m_szMessage)
     {
       int c;
       i = 0;
-      while (((c = fgetc(win.StdOut())) != EOF) && (i < 4096))
+      while (((c = fgetc(win.StdOut())) != EOF) && (i < sizeof(szCmdOutput)))
       {
         szCmdOutput[i++] = c;
       }
@@ -3608,7 +3607,7 @@ char *PipeInput(char *m_szMessage)
 
     // Create the new response
     char *szNewMsg = (char *)malloc(
-     (pipe - m_szMessage) + (strlen(szCmdOutput) << 1) + strlen(sz) );
+     (pipe - m_szMessage) + (strlen(szCmdOutput) << 1) + strlen(sz) + 1);
     *pipe = '\0';
     strcpy(szNewMsg, m_szMessage);
     // Make pipe point to the same place in the new message
