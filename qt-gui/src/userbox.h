@@ -77,6 +77,7 @@ protected:
 
   unsigned long m_nUin;
   char *m_szId;
+  char *m_szAlias;
   unsigned long m_nPPID;
   unsigned short m_nStatus;
   unsigned long m_nStatusFull;

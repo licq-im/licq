@@ -69,6 +69,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
 
   m_nUin = _cUser->Uin();
   m_szId = _cUser->IdString() ? strdup(_cUser->IdString()) : 0;
+  m_szAlias = _cUser->GetAlias();
   m_nPPID = _cUser->PPID();
   m_bUrgent = false;
   m_bSecure = false;
@@ -88,6 +89,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_nGroupId = (unsigned short)(-1);
   m_nUin = _cUser->Uin();
   m_szId = _cUser->IdString() ? strdup(_cUser->IdString()) : 0;
+  m_szAlias = _cUser->GetAlias();
   m_nPPID = _cUser->PPID();
   m_bUrgent = false;
   m_bSecure = false;
@@ -107,6 +109,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
 {
   m_nUin = 0;
   m_szId = 0;
+  m_szAlias = 0;
   m_nPPID =0;
   m_pIcon = NULL;
   m_cBack = s_cBack;
@@ -448,18 +451,18 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
 
     QListViewItem::paintCell(p, cg, column, width, align);
 
-    // first we determine where to start painting
+    // first determine where to start painting for the current column
     int w = 0; // width
     switch (align)
     {
       case LEFT:
-                w = p->fontMetrics().width(text(1)) + 6;
+                w = p->fontMetrics().width(text(column)) + 6;
                 break;
       case RIGHT:
-                w = listView()->columnWidth(1) - p->fontMetrics().width(text(1)) - 6;
+                w = listView()->columnWidth(column) - p->fontMetrics().width(text(column)) - 6;
                 break;
       case CENTER:
-                w = (listView()->columnWidth(1) / 2) + (p->fontMetrics().width(text(1)) / 2) + 6;
+                w = (listView()->columnWidth(column) / 2) + (p->fontMetrics().width(text(column)) / 2) + 6;
                 break;
       default:
                 w = 0;
@@ -468,7 +471,7 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
 
     if (isGroupItem())
     {
-      if (column == 1) // hm, how can we reliable determine the column that holds the alias?!?
+      if (column == 1)
       {
         w = (align == RIGHT) ? w+2 : w-2;  //  +/- 2
 
@@ -490,7 +493,10 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         qDrawShadeLine( p, 0, height() >> 1, width - 5, (height() >> 1) + 2, cg, true, 1, 0);
       }
     } // isGroupItem
-    else if (column == 1 && gMainWindow->m_bShowExtendedIcons)
+    else if (m_szAlias                                        // this row contains a user 
+             && text(column).ascii()                          // ...+ it is not empty 
+             && strcmp(m_szAlias, text(column).ascii()) == 0  // ...+ this col contains the users alias 
+             && gMainWindow->m_bShowExtendedIcons)            // ...+ extended icons are enabled
     {
       // pmPhone
       if (width - w > 8 && (m_bPhone))
