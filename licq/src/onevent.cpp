@@ -86,6 +86,9 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
       u->usprintf(szFullParam, szParam, USPRINTF_LINEISCMD);
     else
       strcpy(szFullParam, szParam);
+
+    if (!strlen(szFullParam)) break;
+
     char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
     sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
     system(szCmd);

@@ -1082,88 +1082,56 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       delete [] buf;
       break;
     }
-    case 4:
+    case 4: 
+    //Version 5 protocol messages incapsulated in v7 packet.
     {
-      CBuffer msg = packet.UnpackTLV(0x05, 1);
-      char *mbuf;
-      gLog.Unknown("%sUnpacked message\n%s\n", L_UNKNOWNxSTR,
-                   msg.print(mbuf));
-      delete [] mbuf;
-      unsigned short type = msg.UnpackUnsignedShortBE();
+      CBuffer msgTxt = packet.UnpackTLV(0x05, 1);
+      msgTxt.UnpackUnsignedLongBE();
+      if (msgTxt.UnpackUnsignedShort()==0x001)//0x001=normal message
+       {
+      
+        nMsgLen = msgTxt.UnpackUnsignedShort();
+        nMsgLen -= 1;
+      
+        char* szMessage = new char[nMsgLen+1];
+        for (int i = 0; i < nMsgLen; ++i)
+          szMessage[i] = msgTxt.UnpackChar();
 
-      if (type != 0) {
-        gLog.Unknown("%sMessage through server with unknown format: %04hx\n%s\n", L_ERRORxSTR,
-                     mFormat, packet.print(mbuf));
-        delete [] mbuf;
-      }
-      msg.UnpackUnsignedLongBE();
-      msg.UnpackUnsignedLongBE();
-      msg.UnpackUnsignedLongBE();
-      msg.UnpackUnsignedLongBE();
-      msg.UnpackUnsignedLongBE();
-      msg.UnpackUnsignedLongBE();
+        szMessage[nMsgLen] = '\0';
+        char* szMsg = gTranslator.RNToN(szMessage);
+        delete [] szMessage;
 
-      if (!msg.readTLV()) {
-        gLog.Error("Fuck3\n");
-        return;
-      }
+        // now send the message to the user
+        CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxONLINE, timeSent, 0);
+        delete [] szMsg;
 
-      CBuffer payload = msg.UnpackTLV(0x2711, 1);
-      for (int i = 0; i < 2 + 1 + 19 + 4 + 1 + 2 + 2; ++i)
-        payload.UnpackChar(); // junk
-
-      unsigned short Cookie = payload.UnpackUnsignedShort();
-
-      for (int i = 0; i < 12; ++i)
-        payload.UnpackChar(); // junk
-
-      unsigned char msgType = payload.UnpackChar();
-      unsigned char msgFlags = payload.UnpackChar();
-
-      payload.UnpackUnsignedShortBE(); // ???
-      payload.UnpackUnsignedShortBE(); // ???
-
-
-      char* bufmsg = payload.UnpackString();
-      unsigned short msgLen = strlen(bufmsg);
-      gLog.Info("%sformat 4 variant message!\n", L_UNKNOWNxSTR);
-      char *buf;
-      gLog.Unknown("%sMessage through server with unknown format: %04hx\n%s\n", L_ERRORxSTR,
-                   mFormat, packet.print(buf));
-      delete [] buf;
-
-      CEventMsg *e = CEventMsg::Parse(bufmsg, ICQ_CMDxRCV_SYSxMSGxONLINE, 0, 0);
-      delete [] bufmsg;
-
-      // Lock the user to add the message to their queue
-      ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
-      if (u == NULL)
-      {
-        if (Ignore(IGNORE_NEWUSERS))
+        // Lock the user to add the message to their queue
+        ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
+        if (u == NULL)
         {
-          gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
-          RejectEvent(nUin, e);
-          break;
+          if (Ignore(IGNORE_NEWUSERS))
+          {
+            gLog.Info("%sMessage from new user (%ld), ignoring.\n", L_SBLANKxSTR, nUin);
+            RejectEvent(nUin, e);
+            break;
+          }
+          gLog.Info("%sMessage from new user (%ld).\n",
+                    L_SBLANKxSTR, nUin);
+          AddUserToList(nUin);
+          u = gUserManager.FetchUser(nUin, LOCK_W);
         }
-        gLog.Info("%sMessage from new user (%ld).\n",
-                  L_SBLANKxSTR, nUin);
-        AddUserToList(nUin);
-        u = gUserManager.FetchUser(nUin, LOCK_W);
-      }
-      else
-        gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
-                  u->GetAlias(), nUin);
+        else
+          gLog.Info("%sMessage through server from %s (%ld).\n", L_SBLANKxSTR,
+                    u->GetAlias(), nUin);
 
-      if (AddUserEvent(u, e))
-        m_xOnEventManager.Do(ON_EVENT_MSG, u);
-      gUserManager.DropUser(u);
+        if (AddUserEvent(u, e))
+          m_xOnEventManager.Do(ON_EVENT_MSG, u);
+        gUserManager.DropUser(u);
 
-      CSrvPacketTcp* p = new CPU_AckThroughServer(nUin, timestamp1, timestamp2, Cookie, msgType, msgFlags, msgLen);
-      // ### FIXME
-      SendExpectEvent_Server(0, p, NULL);
-
-      break;
+	break;
+      }    
     }
+
     default:
       char *buf;
       gLog.Unknown("%sMessage through server with unknown format: %04hx\n%s\n", L_ERRORxSTR,
