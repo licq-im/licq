@@ -54,7 +54,7 @@ dnl Checks for library functions.
 AC_CHECK_LIB(xnet,inet_addr)
 AC_CHECK_LIB(socket, socket)
 AC_CHECK_LIB(nsl, gethostbyname)
-AC_CHECK_FUNCS(alphasort inet_addr inet_aton scandir strerror)
+AC_CHECK_FUNCS(inet_addr inet_aton strerror)
 
 dnl Check for QT
 AC_PATH_QT_LIB
@@ -62,7 +62,8 @@ AC_PATH_QT_LIB
 if test "$have_qt_lib" = no; then
   AC_MSG_ERROR([
 
-I can't find the QT libraries.
+I can't find the QT libraries. It is recommended to set the QTDIR environment
+variable.
 
 Install the QT libraries, or if you have them installed, override this check
 with the --with-qt-libraries argument, and I'll take your word for it.
@@ -83,17 +84,15 @@ it.
 
 fi
 
-dnl This QT version check is not used yet (and will probably be enhanced)
-
-dnl AC_MSG_CHECKING(for QT >= 1.41)
-dnl if ! test -r $QT_INCDIR/qlistview.h; then
-dnl   AC_MSG_ERROR([
-dnl
-dnl Sorry, but you need QT version 1.41 or higher to compile $PACKAGE.
-dnl ])
-dnl else
-dnl   AC_MSG_RESULT(yes)
-dnl fi
+dnl Check for QT version
+AC_MSG_CHECKING(for QT >= 2.0)
+if ! test -r $QT_INCDIR/qstyle.h; then
+  AC_MSG_ERROR([
+    Sorry, but you need QT version 2.0 or higher to compile the Qt gui plugin.
+  ])
+else
+  AC_MSG_RESULT(yes)
+fi
 
 AC_PATH_QT_MOC
 AC_PATH_QT_FINDTR
