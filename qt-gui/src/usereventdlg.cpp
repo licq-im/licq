@@ -844,8 +844,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend = new MLEditWrap(true, mainWidget, true);
   setTabOrder(mleSend, btnSend);
   setTabOrder(btnSend, btnCancel);
-  mleSend->setBackground(QColor(icqColor.BackRed(), icqColor.BackGreen(), icqColor.BackBlue()));
-  mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
+  mleSend->setBackground(QColor(icqColor.DefaultBackRed(), icqColor.DefaultBackGreen(), icqColor.DefaultBackBlue()));
+  mleSend->setForeground(QColor(icqColor.DefaultForeRed(), icqColor.DefaultForeGreen(), icqColor.DefaultForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), gMainWindow, SLOT(slot_updatedUser(CICQSignal*)));
 }

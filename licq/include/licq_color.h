@@ -35,6 +35,8 @@ public:
   static unsigned long DefaultBackground();
 
   static void SetDefaultColors(CICQColor *c);
+  static void SetDefaultForeground(unsigned long);
+  static void SetDefaultBackground(unsigned long);
 
 protected:
   unsigned long foreground;
