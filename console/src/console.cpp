@@ -12,6 +12,7 @@ extern int errno
 #endif
 
 #include "console.h"
+#include "licq_filetransfer.h"
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "event_data.h"
@@ -491,7 +492,38 @@ void CLicqConsole::ProcessDoneEvent(CWindow *win, ICQEvent *e)
                      u->GetAlias(), ue->Description());
         gUserManager.DropUser(u);
       }
-      /*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
+      else if(e->SubCommand() == ICQ_CMDxSUB_FILE)
+      {
+        CExtendedAck *ea = e->ExtendedAck();
+
+	if( ea == NULL || ue == NULL)
+	{
+	   gLog.Error("%sInternal error: file request acknowledgement without extended result.\n", L_ERRORxSTR);
+	   return;
+	}
+
+	if(!ea->Accepted())
+	{
+	   u = gUserManager.FetchUser(e->Uin(), LOCK_R);
+	   win->wprintf("%s refused file: %s\n",
+	   		u->GetAlias(), ea->Response());
+	   gUserManager.DropUser(u);
+	}
+
+	else
+	{
+	  // For now don't check for a chat subcommand..
+	  // Invoke a file transfer manager here
+	  CEventFile *f = (CEventFile *)ue;
+	  CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
+	  							 e->Uin());
+	  ConstFileList fl;
+	  fl.push_back(f->Filename());
+	  if(!ftman->SendFiles(fl, ea->Port()))
+	     return;
+	}	  
+      }
+	/*else if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT || e->m_nSubCommand == ICQ_CMDxSUB_FILE)
       {
         struct SExtendedAck *ea = e->m_sExtendedAck;
         if (ea == NULL || ue == NULL)
