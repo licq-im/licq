@@ -12,10 +12,11 @@ CLicqAutoReply *licqAutoReply;
 const char *LP_Usage()
 {
   static const char usage[] =
-    "Usage:  Licq [options] -p autoreply -- [ -h ] [ -e ] [ -l <staus> ]\n"
+    "Usage:  Licq [options] -p autoreply -- [ -h ] [ -e ] [ -l <staus> ] [ -d ]\n"
     "         -h          : help\n"
     "         -e          : start enabled\n"
-    "         -l <status> : log on at startup\n";
+    "         -l <status> : log on at startup\n"
+    "         -d          : delete messages after auto-replying\n";
   return usage;
 }
 
@@ -35,7 +36,7 @@ const char *LP_Description()
 
 const char *LP_Version()
 {
-  static const char version[] = "0.10";
+  static const char version[] = "0.15";
   return version;
 }
 
@@ -55,25 +56,28 @@ bool LP_Init(int argc, char **argv)
   //textdomain (PACKAGE);
 
   // parse command line for arguments
-  bool bEnable = false;
+  bool bEnable = false, bDelete = false;
   char *szStatus = NULL;
   int i = 0;
-  while( (i = getopt(argc, argv, "hel:")) > 0)
+  while( (i = getopt(argc, argv, "dhel:")) > 0)
   {
     switch (i)
     {
-    case 'h':  // help
-      LP_Usage();
-      return false;
-    case 'e': // enable
-      bEnable = true;
-      break;
-    case 'l': //log on
-      szStatus = strdup(optarg);
-      break;
+      case 'h':  // help
+        LP_Usage();
+        return false;
+      case 'e': // enable
+        bEnable = true;
+        break;
+      case 'l': //log on
+        szStatus = strdup(optarg);
+        break;
+      case 'd': // delete new
+        bDelete = true;
+        break;
     }
   }
-  licqAutoReply = new CLicqAutoReply(bEnable, szStatus);
+  licqAutoReply = new CLicqAutoReply(bEnable, bDelete, szStatus);
   if (szStatus != NULL) free(szStatus);
   return (licqAutoReply != NULL);
 }

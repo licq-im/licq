@@ -15,7 +15,7 @@ class ICQEvent;
 class CLicqAutoReply
 {
 public:
-  CLicqAutoReply(bool, char *);
+  CLicqAutoReply(bool, bool, char *);
   ~CLicqAutoReply();
   int Run(CICQDaemon *);
   void Shutdown();
@@ -23,7 +23,7 @@ public:
 
 protected:
   int m_nPipe;
-  bool m_bExit, m_bEnabled;
+  bool m_bExit, m_bEnabled, m_bDelete;
   char *m_szStatus;
   char m_szProgram[512];
 
@@ -37,7 +37,6 @@ public:
 
   void ProcessUserEvent(unsigned long);
   bool ForwardEvent(ICQUser *, CUserEvent *);
-//  bool ForwardEvent_ICQ(ICQUser *, CUserEvent *);
 
 };
 

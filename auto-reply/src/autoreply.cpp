@@ -28,11 +28,12 @@ const unsigned short SUBJ_CHARS = 20;
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::Constructor
  *-------------------------------------------------------------------------*/
-CLicqAutoReply::CLicqAutoReply(bool _bEnable, char *_szStatus)
+CLicqAutoReply::CLicqAutoReply(bool _bEnable, bool _bDelete, char *_szStatus)
 {
   tcp = new TCPSocket;
   m_bExit = false;
   m_bEnabled = _bEnable;
+  m_bDelete = _bDelete;
   m_szStatus = _szStatus == NULL ? NULL : strdup(_szStatus);
 }
 
@@ -240,14 +241,24 @@ void CLicqAutoReply::ProcessUserEvent(unsigned long nUin)
   }
 
   CUserEvent *e = NULL;
-  while (u->NewMessages() > 0)
+
+  if (m_bDelete)
   {
-    // Fetch the event
-    e = u->GetEvent(0);
+    while (u->NewMessages() > 0)
+    {
+      // Fetch the event
+      e = u->EventPop();
+      // Forward it
+      if (!ForwardEvent(u, e)) break;
+      // Erase the event
+      delete e;
+    }
+  }
+  else
+  {
+    e = u->EventPeekLast();
     // Forward it
-    if (!ForwardEvent(u, e)) break;
-    // Erase the event
-    u->ClearEvent(0);
+    ForwardEvent(u, e);
   }
 
   gUserManager.DropUser(u);
@@ -260,6 +271,9 @@ bool CLicqAutoReply::ForwardEvent(ICQUser *u, CUserEvent *e)
   char m_szMessage[4096];
   char c;
   int pos = 0;
+
+  if (e == NULL) return false;
+
   for (int i = 0; i < 4096; i++)
   {
     m_szMessage[i] = '\0';
