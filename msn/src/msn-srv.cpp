@@ -344,6 +344,9 @@ void CMSN::SendPacket(CMSNPacket *p)
 
 void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
 {
+  if (_nStatus == ICQ_STATUS_OFFLINE)
+    return;
+
   ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_R);
   if (!o)
   {
@@ -388,6 +391,7 @@ void CMSN::MSNLogoff()
 
   CMSNPacket *pSend = new CPS_MSNLogoff();
   SendPacket(pSend);
+  m_nStatus = ICQ_STATUS_OFFLINE;
  
   // Close the socket
   INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
