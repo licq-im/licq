@@ -1823,7 +1823,7 @@ void CMainWindow::initMenu(void)
    mnuUser->insertItem(tr("Remove"), mnuRemove);
    mnuUser->insertItem(tr("Add To Group"), mnuGroup);
    mnuUser->insertSeparator();
-   mnuUser->insertItem(tr("&Utilities"), mnuUtilities);
+   mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
 }
 
