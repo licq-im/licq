@@ -769,6 +769,7 @@ void TCPSocket::RecvConnection(TCPSocket &newSocket)
   newSocket.SetLocalAddress();
 }
 
+#define m_pSSL ((SSL *) m_p_SSL)
 
 /*-----TCPSocket::TransferConnectionFrom---------------------------------------
  * Transfers a connection from the given socket to the current one and closes
@@ -808,7 +809,7 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   from.CloseConnection();
 }
 
-
+#define m_pSSL ( ( SSL * ) m_p_SSL )
 
 /*-----TCPSocket::SendPacket---------------------------------------------------
  * Sends a packet on a socket.  The socket is blocking, so we are guaranteed
@@ -1166,9 +1167,9 @@ bool TCPSocket::SecureConnect()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
   if (m_nOwnerPPID == LICQ_PPID)
-    m_pSSL = SSL_new(gSSL_CTX);
+    m_p_SSL = SSL_new(gSSL_CTX);
   else
-    m_pSSL = SSL_new(gSSL_CTX_NONICQ);
+    m_p_SSL = SSL_new(gSSL_CTX_NONICQ);
 #ifdef SSL_DEBUG
   m_pSSL->debug = 1;
 #endif
@@ -1202,9 +1203,9 @@ bool TCPSocket::SecureListen()
   pthread_mutex_init(&mutex_ssl, NULL);
 
   if (m_nOwnerPPID == LICQ_PPID)
-    m_pSSL = SSL_new(gSSL_CTX);
+    m_p_SSL = SSL_new(gSSL_CTX);
   else
-    m_pSSL = SSL_new(gSSL_CTX_NONICQ);
+    m_p_SSL = SSL_new(gSSL_CTX_NONICQ);
   SSL_set_session(m_pSSL, NULL);
   SSL_set_fd(m_pSSL, m_nDescriptor);
   int i = SSL_accept(m_pSSL);
