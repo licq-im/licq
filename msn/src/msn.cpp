@@ -894,6 +894,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       {
         string strDecodedNick = Decode(strNick);
         u->SetAlias(strDecodedNick.c_str());
+        u->SetEmailPrimary(strUser.c_str());
         u->SetNewUser(false);
         gUserManager.DropUser(u);
       }
@@ -1277,6 +1278,7 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin)
   
   ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   if (!u) return;
+  bool bOffline = u->StatusOffline();
   int nSockDesc = u->SocketDesc(ICQ_CHNxNONE);
   gUserManager.DropUser(u);
   
@@ -1286,6 +1288,19 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin)
   ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
   e->thread_plugin = _tPlugin;  
   CICQSignal *s = new CICQSignal(SIGNAL_EVENTxID, 0, strdup(_szUser), MSN_PPID, e->EventId());
+  
+  if (bOffline)
+  {
+    // MSN doesn't support sending to offline users.
+    // It'd be best to change the GUI, but Licq uses a
+    // GUI plugin system.. so that would force more requirements
+    // on the plugin. This allows the plugin to see that it has failed.
+    m_pDaemon->PushPluginSignal(s);
+    e->m_eResult = EVENT_FAILED;
+    m_pDaemon->PushPluginEvent(e);
+    gLog.Error("%sCannot send messages to offline MSN users.\n", L_ERRORxSTR);
+    return;
+  }
   
   if (nSockDesc > 0)
   {
