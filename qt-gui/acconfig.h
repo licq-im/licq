@@ -26,8 +26,14 @@
 /* The version of the package we're compiling */
 #undef VERSION
 
+/* The version of the package we're compiling */
+#undef INT_VERSION
+
 /* Whether or not to include KDE support */
 #undef USE_KDE
+
+/* Whether or not to include SOCKS5 support */
+#undef USE_SOCKS5
 
 /* Define this if the system headers don't */
 #undef socklen_t
@@ -37,6 +43,14 @@
 
 /* This gets defined if the system has the MIT X11 screensaver extensions */
 #undef USE_SCRNSAVER
+
+/* NLS stuff */
+#undef ENABLE_NLS
+#undef HAVE_CATGETS
+#undef HAVE_GETTEXT
+#undef HAVE_LC_MESSAGES
+#undef HAVE_STPCPY
+
 
 @TOP@
 @BOTTOM@
