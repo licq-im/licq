@@ -218,12 +218,12 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
   switch(d)
   {
   case D_SENDER:
-    gLog.Packet("%sPacket (%sv%d, %ld bytes) sent (%s:%d -> %s:%d):\n%s\n",
+    gLog.Packet("%sPacket (%sv%ld, %ld bytes) sent (%s:%d -> %s:%d):\n%s\n",
                 L_PACKETxSTR, m_szID, Version(), b->getDataSize(), LocalIpStr(szIpL),
                 LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
   case D_RECEIVER:
-     gLog.Packet("%sPacket (%sv%d, %ld bytes) received (%s:%d <- %s:%d):\n%s\n",
+     gLog.Packet("%sPacket (%sv%ld, %ld bytes) received (%s:%d <- %s:%d):\n%s\n",
                 L_PACKETxSTR, m_szID, Version(), b->getDataSize(), LocalIpStr(szIpL),
                 LocalPort(), RemoteIpStr(szIpR), RemotePort(), b->print(szPacket));
      break;
