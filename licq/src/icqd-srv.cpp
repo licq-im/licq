@@ -995,10 +995,10 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
     return -1;
   }
 
-  // Now get the real ip from this socket
+  // Now get the internal ip from this socket
   CPacket::SetLocalIp(  NetworkIpToPacketIp(s->LocalIp() ));
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->SetIp(s->LocalIp());
+  o->SetIntIp(s->LocalIp());
   gUserManager.DropOwner();
 
   gSocketManager.AddSocket(s);
@@ -1279,7 +1279,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
   {
   case ICQ_SNACxSUB_ONLINExLIST:
   {
-    unsigned long junk1, realIP, userPort, nUin, timestamp, nCookie;
+    unsigned long junk1, intIP, userPort, nUin, timestamp, nCookie;
     unsigned short junk2;
     unsigned char mode;
 
@@ -1320,7 +1320,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       if (userIP) {
         rev_e_long(userIP);
         userIP = PacketIpToNetworkIp(userIP);
-        u->SetIpPort(userIP, u->Port());
+        u->SetIp(userIP);
       }
     }
 
@@ -1332,42 +1332,42 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     if (packet.getTLVLen(0x000c) == 0x25) {
       CBuffer msg = packet.UnpackTLV(0x000c);
 
-      realIP = msg.UnpackUnsignedLong();
+      intIP = msg.UnpackUnsignedLong();
       userPort = msg.UnpackUnsignedLongBE();
       mode = msg.UnpackChar();
       unsigned short tcpVersion = msg.UnpackUnsignedShortBE();
-      /*unsigned long nTCPSession =*/ msg.UnpackUnsignedLongBE();
       nCookie = msg.UnpackUnsignedLongBE();
+      junk1 = msg.UnpackUnsignedLongBE();
       junk1 = msg.UnpackUnsignedLongBE();
       timestamp = msg.UnpackUnsignedLongBE();  // will be licq version
       junk1 = msg.UnpackUnsignedLongBE();
-      if (u->ClientTimestamp() != timestamp ||
-          u->Version() != tcpVersion) {
-        if((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
+      junk1 = msg.UnpackUnsignedLongBE();
+      junk2 = msg.UnpackUnsignedShortBE();
+      if (u->ClientTimestamp() != timestamp || u->Version() != tcpVersion) {
+        if ((timestamp & 0xFFFF0000) == LICQ_WITHSSL)
           gLog.Info("%s%s (%ld) changed connection info: v%01x [Licq %s/SSL].\n",
                     L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F,
                     CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
-      else if((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
-        gLog.Info("%s%s (%ld) changed connection inf:o v%01x [Licq %s].\n",
-                  L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F,
-                  CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
-        else if(timestamp == 0xffffffff)
+        else if ((timestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
+          gLog.Info("%s%s (%ld) changed connection info: v%01x [Licq %s].\n",
+                    L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F,
+                    CUserEvent::LicqVersionToString(timestamp & 0xFFFF));
+        else if (timestamp == 0xffffffff)
           gLog.Info("%s%s (%ld) changed connection info: v%01x [MIRANDA].\n",
                     L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F);
         else
           gLog.Info("%s%s (%ld) changed connection info: v%01x.\n",
                     L_SRVxSTR, u->GetAlias(), nUin, tcpVersion & 0x0F);
-
-
       }
 
-      if (realIP) {
-        realIP = PacketIpToNetworkIp(realIP);
-	u->SetRealIp(realIP);
+      if (intIP)
+      {
+        intIP = PacketIpToNetworkIp(intIP);
+        u->SetIntIp(intIP);
       }
-
+      
       if (userPort)
-        u->SetIpPort(u->Ip(), userPort);
+        u->SetPort(userPort);
 
       u->SetVersion(tcpVersion);
       u->SetCookie(nCookie);

@@ -260,7 +260,8 @@ bool CICQDaemon::Start()
   }
   gSocketManager.AddSocket(s);
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-  o->SetIpPort(s->LocalIp(), s->LocalPort());
+  o->SetIntIp(s->LocalIp());
+  o->SetPort(s->LocalPort());
   gUserManager.DropOwner();
   CPacket::SetLocalPort(s->LocalPort());
   gSocketManager.DropSocket(s);

@@ -1168,6 +1168,9 @@ void ICQUser::LoadLicqInfo()
   struct in_addr in;
   m_nIp = inet_aton(szTemp, &in);
   if (m_nIp != 0) m_nIp = in.s_addr;
+  m_fConf.ReadStr("IntIp", szTemp, "0.0.0.0");
+  m_nIntIp = inet_aton(szTemp, &in);
+  if (m_nIntIp != 0) m_nIntIp = in.s_addr;
   m_fConf.ReadNum("Port", m_nPort, 0);
   //m_fConf.ReadBool("NewUser", m_bNewUser, false);
   m_fConf.ReadNum("NewMessages", nNewMessages, 0);
@@ -1183,7 +1186,7 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   m_fConf.ReadStr("CustomAutoRsp", szTemp, "");
   m_fConf.ReadBool("SendServerLastSelected", m_bSendServerLastSelected, false);
-  m_fConf.ReadBool("SendRealIp", m_bSendRealIp, false);
+  m_fConf.ReadBool("SendIntIp", m_bSendIntIp, false);
   SetCustomAutoResponse(szTemp);
   m_fConf.ReadStr( "UserEncoding", szTemp, "" );
   SetString( &m_szEncoding, szTemp );
@@ -1381,15 +1384,15 @@ void ICQUser::Init(unsigned long _nUin)
   SetAutoResponse("");
   SetSendServer(false);
   SetSendServerLastSelected(false);
-  SetSendRealIp(false);
+  SetSendIntIp(false);
   SetSendServerLastSelected(false);
   SetShowAwayMsg(false);
   SetSequence(0xFFFFFFFF);
   SetOfflineOnDisconnect(false);
   ClearSocketDesc();
-  m_nIp = m_nPort = m_nRealIp = 0;
+  m_nIp = m_nPort = m_nIntIp = 0;
   m_nMode = MODE_DIRECT;
-  m_nVersion = 0x03;
+  m_nVersion = 0;
   m_nCookie = 0;
   m_nClientTimestamp = 0;
   Touch();
@@ -1606,7 +1609,7 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
       gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_nUin, m_bSecure ? 1 : 0));
   }
 
-  if (m_nIp == 0) m_nIp = s->RemoteIp();
+  if (m_nIntIp == 0) m_nIntIp = s->RemoteIp();
   if (m_nPort == 0) m_nPort = s->RemotePort();
 }
 
@@ -1717,6 +1720,7 @@ const char *ICQUser::StatusToStatusStr(unsigned short n, bool b)
   else return "Unknown";
 }
 
+
 const char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
 {
   if (n == ICQ_STATUS_OFFLINE) return b ? "(Off)" : "Off";
@@ -1730,56 +1734,62 @@ const char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
 }
 
 
-char *ICQUser::IpPortStr(char *rbuf)
+char *ICQUser::IpStr(char *rbuf)
 {
-  // Track down the current ip and port
-  char buf[32], ip[32], port[32];
-  if (SocketDesc() > 0)    // First check if we are connected
-  {
-    INetSocket *s = gSocketManager.FetchSocket(SocketDesc());
-    if (s != NULL)
-    {
-      if (User())
-      {
-        strcpy(ip, s->RemoteIpStr(buf));
-        sprintf(port, "%d", s->RemotePort());
-      }
-      else
-      {
-        strcpy(ip, s->LocalIpStr(buf));
-        sprintf(port, "%d", s->LocalPort());
-      }
-      gSocketManager.DropSocket(s);
-    }
-    else
-    {
-      strcpy(ip, "invalid");
-      strcpy(port, "invalid");
-    }
-  }
-  else
-  {
-    if (Ip() > 0)     // Default to the given ip
-      strcpy(ip, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
-    else                   // Otherwise we don't know
-      strcpy(ip, "???");
-
-    if (Port() > 0)
-      sprintf(port, "%d", Port());
-    else
-      strcpy(port, "??");
-  }
+  char ip[32], buf[32];
+  
+  if (Ip() > 0)     		// Default to the given ip
+    strcpy(ip, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+  else				// Otherwise we don't know
+    strcpy(ip, "Unknown");
 
   if (StatusHideIp())
-  {
-    strcpy(buf, ip);
-    sprintf(ip, "(%s)", buf);
-  }
-  sprintf(rbuf, "%s:%s", ip, port);
+    sprintf(rbuf, "(%s)", ip);
+  else
+    sprintf(rbuf, "%s", ip);
+
   return rbuf;
 }
 
 
+char *ICQUser::PortStr(char *rbuf)
+{
+  if (Port() > 0)     		// Default to the given port
+    sprintf(rbuf, "%d", Port());
+  else				// Otherwise we don't know
+    rbuf[0] = '\0';
+
+  return rbuf;
+}
+
+
+char *ICQUser::IntIpStr(char *rbuf)
+{
+  char buf[32];
+
+  if (SocketDesc() > 0)		// First check if we are connected
+  {
+    INetSocket *s = gSocketManager.FetchSocket(SocketDesc());
+    if (s != NULL)
+    {
+      strcpy(rbuf, s->RemoteIpStr(buf));
+      gSocketManager.DropSocket(s);
+    }
+    else
+      strcpy(rbuf, "Invalid");
+  }
+  else
+  {
+    if (IntIp() > 0)		// Default to the given ip
+      strcpy(rbuf, inet_ntoa_r(*(struct in_addr *)&m_nIntIp, buf));
+    else			// Otherwise we don't know
+      rbuf[0] = '\0';
+  }
+  
+  return rbuf;
+}
+
+ 			
 void ICQUser::usprintf(char *_sz, const char *_szFormat, unsigned long nFlags)
 {
   bool bLeft = false;
@@ -2155,6 +2165,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("Groups.System", GetGroups(GROUPS_SYSTEM));
    m_fConf.WriteNum("Groups.User", GetGroups(GROUPS_USER));
    m_fConf.WriteStr("Ip", inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+   m_fConf.WriteStr("IntIp", inet_ntoa_r(*(struct in_addr *)&m_nIntIp, buf));
    m_fConf.WriteNum("Port", Port());
    m_fConf.WriteNum("NewMessages", NewMessages());
    m_fConf.WriteNum("LastOnline", (unsigned long)LastOnline());
@@ -2165,7 +2176,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
    m_fConf.WriteBool("SendServerLastSelected", m_bSendServerLastSelected);
-   m_fConf.WriteBool("SendRealIp", m_bSendRealIp);
+   m_fConf.WriteBool("SendIntIp", m_bSendIntIp);
    m_fConf.WriteStr("UserEncoding", m_szEncoding);
    m_fConf.WriteNum("SID", m_nSID);
    m_fConf.WriteNum("GSID", m_nGSID);

@@ -741,22 +741,22 @@ bool CICQDaemon::OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
   char szAlias[64];
   snprintf(szAlias, sizeof(szAlias), "%s (%ld)", u->GetAlias(), u->Uin());
   unsigned long ip = u->Ip();
-  unsigned long realip = u->RealIp();
-  bool bSendRealIp = u->SendRealIp();
+  unsigned long intip = u->IntIp();
+  bool bSendIntIp = u->SendIntIp();
 
   gUserManager.DropUser(u);
 
-  return OpenConnectionToUser(szAlias, ip, realip, sock, nPort, bSendRealIp);
+  return OpenConnectionToUser(szAlias, ip, intip, sock, nPort, bSendIntIp);
 }
 
 
 bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
-   unsigned long nRealIp, TCPSocket *sock, unsigned short nPort, bool bSendRealIp)
+   unsigned long nIntIp, TCPSocket *sock, unsigned short nPort, bool bSendIntIp)
 {
   char buf[128];
 
   // Sending to internet ip
-  if (!bSendRealIp)
+  if (!bSendIntIp)
   {
     gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
       ip_ntoa(nIp, buf), nPort);
@@ -768,13 +768,13 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
       gLog.Warn("%sConnect to %s failed:\n%s%s.\n", L_WARNxSTR, szAlias,
                 L_BLANKxSTR, sock->ErrorStr(buf, 128));
 
-      // Now try the real ip if it is different from this one and we are behind a firewall
-      if (sock->Error() != EINTR && nRealIp != nIp &&
-          nRealIp != 0 && CPacket::Firewall())
+      // Now try the internal ip if it is different from this one and we are behind a firewall
+      if (sock->Error() != EINTR && nIntIp != nIp &&
+          nIntIp != 0 && CPacket::Firewall())
       {
         gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
-                  ip_ntoa(nRealIp, buf), nPort);
-        sock->SetRemoteAddr(nRealIp, nPort);
+                  ip_ntoa(nIntIp, buf), nPort);
+        sock->SetRemoteAddr(nIntIp, nPort);
 
         if (!sock->OpenConnection())
         {
@@ -791,12 +791,12 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
     }
   }
 
-  // Sending to Real IP
+  // Sending to Internal IP
   else
   {
     gLog.Info("%sConnecting to %s at %s:%d.\n", L_TCPxSTR, szAlias,
-       ip_ntoa(nRealIp, buf), nPort);
-    if (!sock->SetRemoteAddr(nRealIp, nPort)) return false;
+       ip_ntoa(nIntIp, buf), nPort);
+    if (!sock->SetRemoteAddr(nIntIp, nPort)) return false;
 
     if (!sock->OpenConnection())
     {
