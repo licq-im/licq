@@ -1110,18 +1110,19 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
       msgFlags = packet.UnpackUnsignedShort();
       packet >> messageLen;
 
-      // icq2002a is dumb
-      msgFlags <<= 4;
-      if (msgFlags & ICQ_TCPxMSG_URGENT)
+      // Stupid AOL
+      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+      if (u && (u->LicqVersion() == 0 || u->LicqVersion() >= 1022))
       {
-        msgFlags &= ~ICQ_TCPxMSG_URGENT;
-        msgFlags |= ICQ_TCPxMSG_LIST;
+        msgFlags <<= 4;
+        msgFlags &= 0x0060;
+        if (msgFlags & ICQ_TCPxMSG_URGENT)
+          msgFlags = ICQ_TCPxMSG_LIST;
+        else if (msgFlags & ICQ_TCPxMSG_LIST)
+          msgFlags = ICQ_TCPxMSG_URGENT;
       }
-      else if (msgFlags & ICQ_TCPxMSG_LIST)
-      {
-        msgFlags &= ~ICQ_TCPxMSG_LIST;
-        msgFlags |= ICQ_TCPxMSG_URGENT;
-      }
+      if (u)
+        gUserManager.DropUser(u);
 
       break;
     }
@@ -1229,7 +1230,17 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   case ICQ_CMDxTCP_START:
   {
     // Process the status bits
-    unsigned short s = msgFlags & 0xFF80, ns = 0;
+    unsigned short s = 0, ns = 0;
+
+    // Stupid AOL
+    if (nInVersion >= 7  && (u->LicqVersion() == 0 || u->LicqVersion() >= 1022))
+    {
+      s = 0;
+      ns = ackFlags;
+    }
+    else
+      s = msgFlags & 0xFF80;
+
     if (s & ICQ_TCPxMSG_FxINVISIBLE)
     {
       s &= ~ICQ_TCPxMSG_FxINVISIBLE;

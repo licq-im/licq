@@ -1483,6 +1483,7 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
 
   snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
 	   szParsedNumber, szMessage, szUin, o->GetAlias(), szTime);
+  szXmlStr[459] = '\0';
   gUserManager.DropOwner();
   
   int nLenXmlStr = strlen_safe(szXmlStr) + 1;
@@ -2538,7 +2539,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   char szStatebuf[6];
 
   szStatebuf[5] = '\0';
-  snprintf(szStatebuf, 6, szState);
+  snprintf(szStatebuf, 5, szState);
 
   int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szCity) + strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
 		    strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZip) + 2 + strlen_safe(szName) +
@@ -2868,6 +2869,23 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
   unsigned short s = o->Status();
   if (user->StatusToUser() != ICQ_STATUS_OFFLINE) s = user->StatusToUser();
   m_nLevel = nLevel;
+  m_nVersion = user->ConnectionVersion();
+  bool bHack = (m_nVersion >= 7 && 
+               (user->LicqVersion() == 0 || user->LicqVersion() >= 1022));
+
+  if (bHack)
+  {
+    if (nLevel & ICQ_TCPxMSG_URGENT)
+    {
+      nLevel &= ~ICQ_TCPxMSG_URGENT;
+      nLevel |= ICQ_TCPxMSG_URGENT2;
+    }
+    else if (nLevel & ICQ_TCPxMSG_LIST)
+    {
+      nLevel &= ~ICQ_TCPxMSG_LIST;
+      nLevel |= ICQ_TCPxMSG_LIST2; 
+    }
+  }
 
   switch(_nCommand)
   {
@@ -2876,6 +2894,12 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
     {
       m_nStatus = 0;
       m_nMsgType = nLevel;
+      if (bHack)
+      {
+        m_nStatus = s;
+        break;
+      }
+
       switch (s)
       {
         case ICQ_STATUS_AWAY: m_nMsgType |= ICQ_TCPxMSG_FxAWAY; break;
@@ -2898,6 +2922,7 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
         m_nStatus = ICQ_TCPxACK_REFUSE;
       // If we are accepting a chat or file request then always say we are online
       else if (nLevel == ICQ_TCPxMSG_URGENT ||
+               nLevel == ICQ_TCPxMSG_URGENT2 ||
                _nSubCommand == ICQ_CMDxSUB_CHAT ||
                _nSubCommand == ICQ_CMDxSUB_FILE)
         m_nStatus = ICQ_TCPxACK_ONLINE;
@@ -2933,8 +2958,6 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
 
   // don't increment the sequence if this is an ack and cancel packet
   if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = user->Sequence(true);
-
-  m_nVersion = user->ConnectionVersion();
 
   // v4,6 packets are smaller then v2 so we just set the size based on a v2 packet
   m_nSize = 18 + strlen(m_szMessage) + 25;
