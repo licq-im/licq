@@ -1754,8 +1754,8 @@ void UserSendFileEvent::browseFile()
     QStringList::ConstIterator it = fl.begin();
     QString f;
     
-    if (fl.size() > 1)
-      f = QString("%1 Files").arg(fl.size());
+    if (fl.count() > 1)
+      f = QString("%1 Files").arg(fl.count());
     else
       f = (*it);
       
