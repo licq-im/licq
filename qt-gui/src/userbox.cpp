@@ -1147,7 +1147,7 @@ void CUserView::maybeTip(const QPoint& c)
       if(u->AutoResponse() && *u->AutoResponse() &&
          item->m_nStatus != ICQ_STATUS_OFFLINE &&
          item->m_nStatus != ICQ_STATUS_ONLINE)
-        s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(QString(u->AutoResponse()));
+        s += tr("<br><u>Auto Response:</u>") + QStyleSheet::convertFromPlainText(QString::fromLocal8Bit(u->AutoResponse()));
 
       gUserManager.DropUser(u);
     }
