@@ -188,7 +188,14 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
   }
   else
   {
-    server->StartServer(nPort);
+    if (!server->StartServer(nPort))
+    {
+      gLog.Error("Could not start server on port %u, "
+                 "maybe this port is already in use?\n", nPort);
+      printf("Could not start server on port %u, "
+             "maybe this port is already in use?\n", nPort);
+      return 1;
+    };
   }
 
   gLog.Info("%sRMS server started on port %d.\n", L_RMSxSTR, server->LocalPort());
