@@ -177,6 +177,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         {
           string strDecodedNick = Decode(strNick);
           u->SetAlias(strDecodedNick.c_str());
+          m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
+                            u->IdString(), u->PPID()));
+
         }
         u->SetEmailPrimary(strUser.c_str());
         u->SetNewUser(false);
@@ -222,6 +225,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         {
           string strDecodedNick = Decode(strNick);
           u->SetAlias(strDecodedNick.c_str());
+          m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
+                            u->IdString(), u->PPID()));
           gUserManager.DropUser(u);
         }
       }
@@ -279,6 +284,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         {
           string strDecodedNick = Decode(strNick);
           u->SetAlias(strDecodedNick.c_str());
+          m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
+                             u->IdString(), u->PPID()));
+
         }
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->GetAlias(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
