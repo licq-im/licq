@@ -139,14 +139,12 @@ bool CICQEventTag::Equals(const ICQEvent *e)
 
 //=====CICQSignal===============================================================
 CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
-                       unsigned long nUin, unsigned long nArgument, 
-                       bool bIsEventClear)
+                       unsigned long nUin, int nArgument)
 {
   m_nSignal = nSignal;
   m_nSubSignal = nSubSignal;
   m_nUin = nUin;
   m_nArgument = nArgument;
-  m_bIsEventClear = bIsEventClear;
 }
 
 
@@ -156,7 +154,6 @@ CICQSignal::CICQSignal(CICQSignal *s)
   m_nSubSignal = s->SubSignal();
   m_nUin = s->Uin();
   m_nArgument = s->Argument();
-  m_bIsEventClear = s->IsEventClear();
 }
 
 

@@ -249,7 +249,7 @@ protected:
   bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
   void ChangeUserStatus(ICQUser *u, unsigned long s);
   bool AddUserEvent(ICQUser *, CUserEvent *);
-  void RemoveUserEvent(ICQUser *, unsigned long);
+  void RemoveUserEvent(ICQUser *, int);
   void RejectEvent(unsigned long, CUserEvent *);
 
   ICQEvent *DoneEvent(ICQEvent *e, EventResult _eResult);

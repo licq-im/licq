@@ -245,12 +245,12 @@ public:
   // Message/History functions
   unsigned short NewMessages()   { return(m_vcMessages.size()); }
   CUserEvent *EventPeek(unsigned short);
-  CUserEvent *EventPeekId(unsigned long);
+  CUserEvent *EventPeekId(int);
   CUserEvent *EventPeekFirst();
   CUserEvent *EventPeekLast();
   CUserEvent *EventPop();
   void EventClear(unsigned short);
-  void EventClearId(unsigned long);
+  void EventClearId(int);
   void EventPush(CUserEvent *);
   void WriteToHistory(const char *);
   void SetHistoryFile(const char *);

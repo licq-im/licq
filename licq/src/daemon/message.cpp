@@ -9,7 +9,7 @@
 #include "licq_message.h"
 #include "licq_user.h"
 
-unsigned long CUserEvent::s_nId = 1;
+int CUserEvent::s_nId = 1;
 
 //----CUserEvent::constructor---------------------------------------------------
 CUserEvent::CUserEvent(unsigned short _nSubCommand, unsigned short _nCommand,

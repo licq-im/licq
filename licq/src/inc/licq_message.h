@@ -40,7 +40,7 @@ public:
    unsigned long Sequence()  { return m_nSequence; }
    unsigned short Command()  { return m_nCommand; }
    unsigned short SubCommand()  { return m_nSubCommand; }
-   unsigned long Id()  { return m_nId; }
+   int Id()  { return m_nId; }
    bool IsDirect()  { return m_nFlags & E_DIRECT; }
    bool IsMultiRec()  { return m_nFlags & E_MULTIxREC; }
    bool IsUrgent()    { return m_nFlags & E_URGENT; }
@@ -58,14 +58,14 @@ protected:
    void Cancel() { m_nFlags |= E_CANCELLED; }
 
    virtual void CreateDescription() = 0;
-   static unsigned long s_nId;
+   static int s_nId;
 
    char *m_szText;
    direction m_eDir;
    unsigned short m_nCommand,
                   m_nSubCommand;
-   unsigned long  m_nSequence,
-                  m_nId;
+   unsigned long  m_nSequence;
+   int m_nId;
    time_t         m_tTime;
    unsigned long  m_nFlags;
 

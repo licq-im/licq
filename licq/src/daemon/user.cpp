@@ -1604,7 +1604,7 @@ CUserEvent *ICQUser::EventPeek(unsigned short index)
   return (m_vcMessages[index]);
 }
 
-CUserEvent *ICQUser::EventPeekId(unsigned long id)
+CUserEvent *ICQUser::EventPeekId(int id)
 {
   if (m_vcMessages.size() == 0) return NULL;
   CUserEvent *e = NULL;
@@ -1668,7 +1668,7 @@ void ICQUser::EventClear(unsigned short index)
 }
 
 
-void ICQUser::EventClearId(unsigned long id)
+void ICQUser::EventClearId(int id)
 {
   UserEventList::iterator iter;
   for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); iter++)
