@@ -10,6 +10,8 @@ class CICQDaemon;
  * Note that except for LP_Exit these functions must be implemented in each
  * plugin.
  *----------------------------------------------------------------------------*/
+#include <pthread.h>
+#include <list.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -75,8 +77,6 @@ void LP_Exit(int);
  * INTERNAL USE ONLY
  *============================================================================*/
 
-#include <pthread.h>
-#include <list.h>
 
 extern pthread_cond_t LP_IdSignal;
 extern pthread_mutex_t LP_IdMutex;
