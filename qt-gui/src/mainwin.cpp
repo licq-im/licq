@@ -168,8 +168,8 @@ static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border b
 
 QPixmap& CMainWindow::iconForStatus(unsigned long Status)
 {
-  if((unsigned short) Status != ICQ_STATUS_OFFLINE && (Status & ICQ_STATUS_FxPRIVATE))
-    return gMainWindow->pmPrivate;
+  //if((unsigned short) Status != ICQ_STATUS_OFFLINE && (Status & ICQ_STATUS_FxPRIVATE))
+  //  return gMainWindow->pmPrivate;
 
   if ((unsigned short) Status == ICQ_STATUS_OFFLINE) return gMainWindow->pmOffline;
   if (Status & ICQ_STATUS_DND) return gMainWindow->pmDnd;

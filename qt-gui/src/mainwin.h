@@ -190,6 +190,8 @@ public slots:
   void updateUserWin();
   void slot_shutdown();
   void saveOptions();
+  void slot_updatedList(CICQSignal *);
+  void slot_updatedUser(CICQSignal *);
 
 protected slots:
   void slot_hints();
@@ -239,8 +241,6 @@ protected slots:
   void nextServer();
   void autoAway();
   void aboutBox();
-  void slot_updatedList(CICQSignal *);
-  void slot_updatedUser(CICQSignal *);
   void slot_updateContactList();
   void slot_updateAllUsers();
   void slot_updateAllUsersInGroup();

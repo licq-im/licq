@@ -1,5 +1,5 @@
 /* XPM */
-static const char * iconBirthday_xpm[] = {
+static const char * pixBirthday_xpm[] = {
 "16 16 70 1",
 " 	c None",
 ".	c #000000",

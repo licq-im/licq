@@ -244,6 +244,8 @@ void CustomAwayMsgDlg::slot_clear()
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
   u->ClearCustomAutoResponse();
   gUserManager.DropUser(u);
+  CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_nUin);
+  gMainWindow->slot_updatedUser(&sig);
   accept();
   close();
 }

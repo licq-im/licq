@@ -39,8 +39,9 @@
 
 #include "xpm/itemCollapsed.xpm"
 #include "xpm/itemExpanded.xpm"
-#include "xpm/iconCustomAR.xpm"
-#include "xpm/iconBirthday.xpm"
+#include "xpm/pixCustomAR.xpm"
+#include "xpm/pixBirthday.xpm"
+#include "xpm/pixInvisible.xpm"
 
 #undef Status
 
@@ -164,7 +165,8 @@ void CUserViewItem::setGraphics(ICQUser *u)
    static char sTemp[128];
    CUserView *v = (CUserView *)listView();
 
-   if(parent()) {
+   if (parent())
+   {
      CUserViewItem* i = static_cast<CUserViewItem*>(parent());
      if(u->StatusOffline() && m_nStatus != ICQ_STATUS_OFFLINE)
        i->m_nOnlCount--;
@@ -176,11 +178,12 @@ void CUserViewItem::setGraphics(ICQUser *u)
                   + QString(")"));
      else
        i->setText(1,  QString::fromLocal8Bit(i->m_sGroupName));
-     }
+   }
 
    m_nStatus = u->Status();
    m_nStatusFull = u->StatusFull();
    m_bStatusInvisible = u->StatusInvisible();
+   m_bCustomAR = u->CustomAutoResponse()[0] != '\0';
 
    // Create any necessary bars
    if (u->StatusOffline())
@@ -207,24 +210,24 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
    switch (m_nStatus)
    {
-   case ICQ_STATUS_AWAY:
-   case ICQ_STATUS_OCCUPIED:
-   case ICQ_STATUS_DND:
-   case ICQ_STATUS_NA:
-     m_cFore = s_cAway;
-     break;
-   case ICQ_STATUS_OFFLINE:
-     m_cFore = s_cOffline;
-     m_sPrefix = "3";
-     break;
-   case ICQ_STATUS_ONLINE:
-   case ICQ_STATUS_FREEFORCHAT:
-   default:
-     m_cFore = s_cOnline;
+     case ICQ_STATUS_AWAY:
+     case ICQ_STATUS_OCCUPIED:
+     case ICQ_STATUS_DND:
+     case ICQ_STATUS_NA:
+       m_cFore = s_cAway;
+       break;
+     case ICQ_STATUS_OFFLINE:
+       m_cFore = s_cOffline;
+       m_sPrefix = "3";
+       break;
+     case ICQ_STATUS_ONLINE:
+     case ICQ_STATUS_FREEFORCHAT:
+     default:
+       m_cFore = s_cOnline;
    }
 
-   if (u->StatusInvisible())
-      m_cFore = s_cAway;
+   //if (u->StatusInvisible())
+   //   m_cFore = s_cAway;
 
    m_pIconStatus = m_pIcon;
 
@@ -370,12 +373,25 @@ void CUserViewItem::paintCell( QPainter * p, const QColorGroup & cgdefault, int 
            height() >> 1, cg);
       }
     }
-    else if (column == 1) {
+    // If this is the first column then add some extra icons after the text
+    else if (column == 1)
+    {
       int w = p->fontMetrics().width(text(1)) + 3;
 
-      if(width - w > 8 && (m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)) {
+      if (width - w > 8 && (m_nStatusFull & ICQ_STATUS_FxBIRTHDAY))
+      {
         p->drawPixmap(w, 0, *listView()->pixBirthday);
-        w += 11;
+        w += 18;
+      }
+      if (width - w > 8 && m_bStatusInvisible)
+      {
+        p->drawPixmap(w, 0, *listView()->pixInvisible);
+        w += 18;
+      }
+      if (width - w > 8 && m_bCustomAR)
+      {
+        p->drawPixmap(w, 0, *listView()->pixCustomAR);
+        w += 18;
       }
     }
   }
@@ -599,8 +615,9 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 
   pixCollapsed = new QPixmap(itemCollapsed_xpm);
   pixExpanded = new QPixmap(itemExpanded_xpm);
-  pixBirthday = new QPixmap(iconBirthday_xpm);
-  pixCustomAR = new QPixmap(iconCustomAR_xpm);
+  pixBirthday = new QPixmap(pixBirthday_xpm);
+  pixCustomAR = new QPixmap(pixCustomAR_xpm);
+  pixInvisible = new QPixmap(pixInvisible_xpm);
 
   if (parent != NULL)
   {
@@ -611,9 +628,6 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   }
   else
   {
-    /*XSetWindowAttributes wsa;
-    wsa.override_redirect = TRUE;
-    XChangeWindowAttributes( x11Display(), winId(), CWOverrideRedirect, &wsa );*/
     setWFlags(getWFlags() | WDestructiveClose);
     setShowHeader(false);
     setFrameStyle(33);

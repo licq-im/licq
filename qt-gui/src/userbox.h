@@ -91,7 +91,7 @@ protected:
   unsigned short m_nGroupId;
   int m_nOnlCount;
   QCString m_sGroupName;
-  bool m_bStatusInvisible;
+  bool m_bStatusInvisible, m_bCustomAR;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike, m_bUrgent;
   QString m_sPrefix, m_sSortKey;
@@ -147,7 +147,7 @@ protected:
   CUserViewTips *m_tips;
   CUserViewItem *barOnline, *barOffline;
   QPoint mousePressPos;
-  QPixmap *pixExpanded, *pixCollapsed, *pixCustomAR, *pixBirthday;
+  QPixmap *pixExpanded, *pixCollapsed, *pixCustomAR, *pixBirthday, *pixInvisible;
   int numOnline, numOffline;
   virtual void timerEvent(QTimerEvent*);
   virtual void viewportMousePressEvent(QMouseEvent *e);
