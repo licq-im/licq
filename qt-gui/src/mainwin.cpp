@@ -3469,12 +3469,10 @@ void CMainWindow::changeDebug(int _nId)
 //-----CMainWindow::slot_utility----------------------------------------------
 void CMainWindow::slot_utility(int _nId)
 {
-  int nUtility = mnuUtilities->indexOf(_nId);
-  CUtility *u = gUtilityManager.Utility(nUtility);
-  if (u == NULL) return;
-  //unsigned long nUin = userView->SelectedItemUin();
-  unsigned long nUin = m_nUserMenuUin;
-  if (nUin != 0) (void) new CUtilityDlg(u, nUin, licqDaemon);
+  CUtility *u = gUtilityManager.Utility(mnuUtilities->indexOf(_nId));
+  
+  if ( u && m_szUserMenuId )
+  	(void) new CUtilityDlg(u, m_szUserMenuId, m_nUserMenuPPID, licqDaemon);
 }
 
 

@@ -25,14 +25,12 @@ class CUtilityDlg : public QWidget
 {
   Q_OBJECT
 public:
-  CUtilityDlg(CUtility *u, unsigned long _nUin, CICQDaemon *_server);
   CUtilityDlg(CUtility *u, const char *szId, unsigned long nPPID,
     CICQDaemon *server);
   ~CUtilityDlg();
 protected:
   CUtility *m_xUtility;
   CICQDaemon *server;
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   bool m_bIntWin, m_bStdOutClosed, m_bStdErrClosed;
