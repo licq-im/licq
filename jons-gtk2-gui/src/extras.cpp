@@ -34,6 +34,7 @@
 #include "pixmaps/birthday.xpm"
 #include "pixmaps/securebday.xpm"
 #include "pixmaps/blank.xpm"
+#include "pixmaps/charset.xpm"
 
 #include "licq_gtk.h"
 
@@ -78,7 +79,8 @@ void do_colors()
   blue->pixel = (gulong)(255*256); 
 }
 
-void do_pixmaps()
+void 
+do_pixmaps()
 {
 	online = gdk_pixbuf_new_from_xpm_data((const char **)(online_xpm));
 	away = gdk_pixbuf_new_from_xpm_data((const char **)(away_xpm));
@@ -96,6 +98,7 @@ void do_pixmaps()
 	birthday_icon = gdk_pixbuf_new_from_xpm_data((const char **)(birthday_xpm));
 	securebday_icon = gdk_pixbuf_new_from_xpm_data((const char **)(securebday_xpm));
 	blank_icon = gdk_pixbuf_new_from_xpm_data((const char **)(blank_xpm));
+	charset_icon = gdk_pixbuf_new_from_xpm_data((const char **)(charset_xpm));
 }
 
 /* Used to create a message box ... will be improved down the road */

@@ -31,7 +31,8 @@ using namespace std;
 GdkColor *red, *blue, *online_color, *offline_color, *away_color;
 GdkPixbuf *online, *offline, *away, *na, *dnd, *occ, *ffc,
 	*invisible, *message_icon, *file_icon, *chat_icon, *url_icon,
-	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon;
+	*secure_icon, *birthday_icon, *securebday_icon, *blank_icon,
+	*charset_icon;
 
 struct SFlash
 {
