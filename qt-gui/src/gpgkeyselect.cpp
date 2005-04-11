@@ -36,117 +36,145 @@
 #include <qlayout.h>
 #include <qpushbutton.h>
 #include <qcheckbox.h>
+#include <qlineedit.h>
 
 GPGKeySelect::GPGKeySelect ( const char *szId, unsigned long nPPID, QWidget *parent) : QDialog( parent )
 {
-	if ( !szId || !nPPID ) return;
+  if ( !szId || !nPPID ) return;
 
-	setWFlags( WDestructiveClose );
+  setWFlags( WDestructiveClose );
 
-	ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_R );
-	if ( !u ) return;
+  ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_R );
+  if ( !u ) return;
 
-	setCaption( tr("Select GPG Key for user %1").arg(QString::fromLocal8Bit(u->GetAlias())) );
+  setCaption( tr("Select GPG Key for user %1").arg(QString::fromLocal8Bit(u->GetAlias())) );
 
-	this->szId = strdup( szId );
-	this->nPPID = nPPID;
+  this->szId = strdup( szId );
+  this->nPPID = nPPID;
 
-	QBoxLayout* top_lay = new QVBoxLayout(this, 11, 6);
-	
-	top_lay->addWidget( new QLabel( tr("Select a GPG key for user %1.").arg(QString::fromLocal8Bit(u->GetAlias())), this ) );
-	if ( strcmp( u->GPGKey(), "" )==0 )
-		top_lay->addWidget( new QLabel( tr("Current key: No key selected"), this ) );
-	else
-		top_lay->addWidget( new QLabel( tr("Current key: %1").arg(QString::fromLocal8Bit(u->GPGKey())), this ) );
+  QBoxLayout* top_lay = new QVBoxLayout(this, 11, 6);
+  
+  top_lay->addWidget( new QLabel( tr("Select a GPG key for user %1.").arg(QString::fromLocal8Bit(u->GetAlias())), this ) );
+  if ( strcmp( u->GPGKey(), "" )==0 )
+    top_lay->addWidget( new QLabel( tr("Current key: No key selected"), this ) );
+  else
+    top_lay->addWidget( new QLabel( tr("Current key: %1").arg(QString::fromLocal8Bit(u->GPGKey())), this ) );
 
-	useGPG = new QCheckBox( tr("Use GPG Encryption"), this );
-	useGPG->setChecked( u->UseGPG() || strcmp(u->GPGKey(),"")==0 );
-	top_lay->addWidget( useGPG );
-	
-	QBoxLayout* lay = new QHBoxLayout(top_lay);
-	keySelect = new KeyView( this, szId, nPPID );
-	lay->addSpacing(6);
-	lay->addWidget( keySelect );
-	lay->addSpacing(6);
+  useGPG = new QCheckBox( tr("Use GPG Encryption"), this );
+  useGPG->setChecked( u->UseGPG() || strcmp(u->GPGKey(),"")==0 );
+  top_lay->addWidget( useGPG );
 
-	lay = new QHBoxLayout(top_lay);
-	int bw = 0;
+  // Filter
+  QHBoxLayout *filterLayout = new QHBoxLayout( top_lay );
+  filterLayout->addWidget( new QLabel( tr("Filter:"), this ) );
+  QLineEdit *filterText = new QLineEdit( this );
+  filterText->setFocus();
+  connect( filterText, SIGNAL(textChanged ( const QString & )), this, SLOT(filterTextChanged( const QString & )) );
+  filterLayout->addWidget( filterText );
 
-	QPushButton *btnOk = new QPushButton(tr("&OK"), this);
-	connect (btnOk, SIGNAL(clicked()), this, SLOT(slot_ok()));
-	bw = QMAX( bw, btnOk->sizeHint().width() );
+  // public keys
+  keySelect = new KeyView( this, szId, nPPID );
+  top_lay->addWidget( keySelect );
+  connect( keySelect, SIGNAL(doubleClicked ( QListViewItem *, const QPoint &, int )), this, SLOT(slot_doubleClicked( QListViewItem *, const QPoint &, int )));
 
-	QPushButton *btnNoKey = new QPushButton(tr("&No Key"), this);
-	connect (btnNoKey, SIGNAL(clicked()), this, SLOT(slotNoKey()));
-	bw = QMAX( bw, btnNoKey->sizeHint().width() );
+  QBoxLayout *lay = new QHBoxLayout(top_lay);
+  int bw = 0;
 
-	QPushButton *btnCancel = new QPushButton(tr("&Cancel"), this);
-	connect (btnCancel, SIGNAL(clicked()), this, SLOT(slotCancel()));
-	bw = QMAX( bw, btnCancel->sizeHint().width() );
+  QPushButton *btnOk = new QPushButton(tr("&OK"), this);
+  connect (btnOk, SIGNAL(clicked()), this, SLOT(slot_ok()));
+  bw = QMAX( bw, btnOk->sizeHint().width() );
 
-	lay->addStretch(2);
-	btnOk->setFixedWidth(bw);
-	lay->addWidget(btnOk);
-	lay->addSpacing(6);
-	
-	btnNoKey->setFixedWidth(bw);
-	lay->addWidget(btnNoKey);
-	lay->addSpacing(6);
-	
-	btnCancel->setFixedWidth(bw);
-	lay->addWidget(btnCancel);
+  QPushButton *btnNoKey = new QPushButton(tr("&No Key"), this);
+  connect (btnNoKey, SIGNAL(clicked()), this, SLOT(slotNoKey()));
+  bw = QMAX( bw, btnNoKey->sizeHint().width() );
 
-	show();
-	gUserManager.DropUser( u );
+  QPushButton *btnCancel = new QPushButton(tr("&Cancel"), this);
+  connect (btnCancel, SIGNAL(clicked()), this, SLOT(slotCancel()));
+  bw = QMAX( bw, btnCancel->sizeHint().width() );
+
+  lay->addStretch(2);
+  btnOk->setFixedWidth(bw);
+  lay->addWidget(btnOk);
+  lay->addSpacing(6);
+  
+  btnNoKey->setFixedWidth(bw);
+  lay->addWidget(btnNoKey);
+  lay->addSpacing(6);
+  
+  btnCancel->setFixedWidth(bw);
+  lay->addWidget(btnCancel);
+
+  show();
+  gUserManager.DropUser( u );
 };
 
 GPGKeySelect::~GPGKeySelect()
 {
-	if ( szId )
-		free( szId );
+  if ( szId )
+    free( szId );
 
-	emit signal_done();
+  emit signal_done();
+};
+
+void GPGKeySelect::filterTextChanged ( const QString &str )
+{
+  QListViewItemIterator it( keySelect );
+  while ( it.current() )
+  {
+    QListViewItem *item = it.current();
+    item->setVisible( item->text(0).contains( str, false ) || item->text(1).contains( str, false ) || item->text(2).contains( str, false ) );
+    ++it;
+  }
+};
+
+void GPGKeySelect::slot_doubleClicked ( QListViewItem *item, const QPoint &pt, int i )
+{
+  if ( item )
+    slot_ok();
 };
 
 void GPGKeySelect::slot_ok()
 {
-	QListViewItem *curItem = keySelect->QListView::currentItem();
-	if ( curItem->parent() ) curItem=curItem->parent();
-	ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_W );
-	if ( u && curItem )
-	{
-		u->SetGPGKey( curItem->text(2).ascii() );
-		u->SetUseGPG( useGPG->isChecked() );
-		gUserManager.DropUser( u );
-		updateIcon();
-	}
-	close();
+  QListViewItem *curItem = keySelect->QListView::currentItem();
+  if ( curItem->parent() ) curItem=curItem->parent();
+  if ( curItem )
+  {
+    ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_W );
+    if ( u )
+    {
+      u->SetGPGKey( curItem->text(2).ascii() );
+      u->SetUseGPG( useGPG->isChecked() );
+      gUserManager.DropUser( u );
+      updateIcon();
+    }
+  }
+  close();
 }
 
 void GPGKeySelect::updateIcon()
 {
-	CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, szId, nPPID);
-	gMainWindow->slot_updatedUser(&s);
-	return;
+  CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, szId, nPPID);
+  gMainWindow->slot_updatedUser(&s);
+  return;
 }
 
 
 void GPGKeySelect::slotNoKey()
 {
-	ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_W );
-	if ( u )
-	{
-		u->SetGPGKey( "" );
-		gUserManager.DropUser( u );
-		updateIcon();
-	}
+  ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_W );
+  if ( u )
+  {
+    u->SetGPGKey( "" );
+    gUserManager.DropUser( u );
+    updateIcon();
+  }
 
-	close();
+  close();
 };
 
 void GPGKeySelect::slotCancel()
 {
-	close();
+  close();
 };
 
 gpgme_ctx_t mCtx;
@@ -155,19 +183,19 @@ gpgme_key_t key;
 
 KeyView::KeyView( QWidget *parent, const char *szId, unsigned long nPPID ) : QListView( parent )
 {
-	header()->setClickEnabled( FALSE );
-	addColumn( tr("Name") );
-	addColumn( "EMail" );
-	addColumn( "ID" );
+  header()->setClickEnabled( FALSE );
+  addColumn( tr("Name") );
+  addColumn( "EMail" );
+  addColumn( "ID" );
     
-	setAllColumnsShowFocus( TRUE );
+  setAllColumnsShowFocus( TRUE );
 
-	this->szId = szId;
-	this->nPPID = nPPID;
+  this->szId = szId;
+  this->nPPID = nPPID;
 
-	initKeyList();
+  initKeyList();
 
-	setRootIsDecorated( TRUE );
+  setRootIsDecorated( TRUE );
 }
 
 void KeyView::resizeEvent(QResizeEvent *e)
@@ -194,61 +222,61 @@ void KeyView::resizeEvent(QResizeEvent *e)
 
 void KeyView::testViewItem( QListViewItem *item, ICQUser *u )
 {
-	int val = 0;
-	for ( int i = 0; i<2; i++ )
-	{
-		if ( item->text(i).contains( u->GetFirstName(), false ) ) val++;
-		if ( item->text(i).contains( u->GetLastName(), false ) ) val++;
-		if ( item->text(i).contains( u->GetAlias(), false ) ) val++;
-		if ( item->text(i).contains( u->GetEmailPrimary(), false ) ) val++;
-	}
-	
-	if ( item->text(2).contains( u->GPGKey(), false ) ) val += 10;
+  int val = 0;
+  for ( int i = 0; i<2; i++ )
+  {
+    if ( item->text(i).contains( u->GetFirstName(), false ) ) val++;
+    if ( item->text(i).contains( u->GetLastName(), false ) ) val++;
+    if ( item->text(i).contains( u->GetAlias(), false ) ) val++;
+    if ( item->text(i).contains( u->GetEmailPrimary(), false ) ) val++;
+  }
+  
+  if ( item->text(2).contains( u->GPGKey(), false ) ) val += 10;
 
-	if ( val>maxItemVal )
-	{
-		maxItemVal = val;
-		maxItem = item;
-	}
+  if ( val>maxItemVal )
+  {
+    maxItemVal = val;
+    maxItem = item;
+  }
 }
 
 
 void KeyView::initKeyList()
 {
-	gpgme_new( &mCtx );
+  gpgme_new( &mCtx );
 
-	ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_R );
-	maxItemVal = -1;
-	maxItem = NULL;
+  ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_R );
+  maxItemVal = -1;
+  maxItem = NULL;
 
-	int err = gpgme_op_keylist_start( mCtx, NULL, 0);
+  int err = gpgme_op_keylist_start( mCtx, NULL, 0);
 
-	while ( !err)
-	{
-		err = gpgme_op_keylist_next( mCtx, &key );
-		if ( err ) break;
-		gpgme_user_id_t uid = key->uids;
-		if ( uid && key->can_encrypt && key->subkeys )
-		{
-			QListViewItem *f = new QListViewItem( this, uid->name, uid->email, QString( key->subkeys->keyid ).right(8) );
-			if ( u ) testViewItem( f, u );
-			uid = uid->next;
-			while ( uid )
-			{
-				QListViewItem *g = new QListViewItem( f, uid->name, uid->email );
-				if ( u ) testViewItem( g, u );
-				uid = uid->next;
-			}
-		}
-		gpgme_key_release (key);
-	}
+  while ( !err)
+  {
+    err = gpgme_op_keylist_next( mCtx, &key );
+    if ( err ) break;
+    gpgme_user_id_t uid = key->uids;
+    if ( uid && key->can_encrypt && key->subkeys )
+    {
+      QListViewItem *f = new QListViewItem( this, QString::fromUtf8(uid->name), QString::fromUtf8(uid->email), QString( key->subkeys->keyid ).right(8) );
+      if ( u ) testViewItem( f, u );
+      uid = uid->next;
+      while ( uid )
+      {
+        QListViewItem *g = new QListViewItem( f, QString::fromUtf8(uid->name), QString::fromUtf8(uid->email) );
+        if ( u ) testViewItem( g, u );
+        uid = uid->next;
+      }
+    }
+    gpgme_key_release (key);
+  }
 
-	if ( u )
-		gUserManager.DropUser( u );
-	
-	gpgme_release( mCtx );
-	if ( maxItem )
-		setCurrentItem( maxItem );
+  if ( u )
+    gUserManager.DropUser( u );
+  
+  gpgme_release( mCtx );
+  if ( maxItem )
+    setCurrentItem( maxItem );
 }
 
 #endif
