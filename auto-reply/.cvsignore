@@ -1,6 +1,8 @@
 aclocal.m4
 Makefile.in
 configure
+config.status
+config.log
 config.h
 config.h.in
 ltmain.sh
@@ -9,5 +11,5 @@ libtool
 stamp-h
 Makefile
 acinclude.m4
-stamp-h.in
-stamp-h
+stamp-h*
+autom4te.cache
