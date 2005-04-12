@@ -85,6 +85,9 @@
 #include "usercodec.h"
 #include "emoticon.h"
 #include "ownermanagerdlg.h"
+#ifdef USE_KDE
+    #include "licqkimiface.h"
+#endif
 
 #ifdef HAVE_LIBGPGME
 #include "gpgkeyselect.h"
@@ -800,6 +803,20 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   XSetClassHint(x11Display(), winId(), &ClassHint);
 #endif
 
+#ifdef USE_KDE
+    kdeIMInterface = new LicqKIMIface(this);
+    connect( kdeIMInterface,
+             SIGNAL(sendMessage(const char*, unsigned long, const QString&)),
+             this, SLOT(sendMsg(const char*, unsigned long, const QString&)) );
+    connect( kdeIMInterface,
+             SIGNAL(sendFileTransfer(const char*, unsigned long,
+                                     const QString&, const QString&)),
+             this, SLOT(sendFileTransfer(const char*, unsigned long,
+                        const QString&, const QString&)) );
+    connect( kdeIMInterface,
+             SIGNAL(sendChatRequest(const char*, unsigned long)),
+             this, SLOT(sendChatRequest(const char*, unsigned long)));
+#endif
 }
 
 //-----ApplySkin----------------------------------------------------------------
@@ -3689,6 +3706,7 @@ void CMainWindow::slot_miscmodes(int _nId)
     u->SetAutoSecure( !u->AutoSecure() );
     break;
   case 7:
+#ifdef HAVE_LIBGPGME
     if ( strcmp(u->GPGKey(),"")!=0 )
       u->SetUseGPG( !u->UseGPG() );
     else
@@ -3698,6 +3716,7 @@ void CMainWindow::slot_miscmodes(int _nId)
       new GPGKeySelect( m_szUserMenuId, m_nUserMenuPPID );
     }
     break;
+#endif
   case 8:
     u->SetSendRealIp( !u->SendRealIp() );
     break;
@@ -4061,8 +4080,10 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
    if (pmSharedFiles.isNull())
      pmSharedFiles = QPixmap(pixSharedFiles_xpm);
 
+#ifdef HAVE_LIBGPGME
    pmGPGKey = QPixmap(pixKeyEnabled_xpm);
    pmGPGKeyDisabled = QPixmap(pixKeyDisabled_xpm);
+#endif
 
    if (!_bInitial)
    {
@@ -4389,7 +4410,9 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()));
    mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()));
    mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
+#ifdef HAVE_LIBGPGME
    mnuSystem->insertItem(pmGPGKey, tr("&GPG Key Manager..."), this, SLOT(showGPGKeyManager()));
+#endif
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Sa&ve Settings"), this, SLOT(saveOptions()));
    mnuSystem->insertItem(tr("&Help"), mnuHelp);
@@ -4647,7 +4670,9 @@ void CMainWindow::showSkinBrowser()
 
 void CMainWindow::showGPGKeyManager()
 {
+#ifdef HAVE_LIBGPGME
   ( new GPGKeyManager() )->show();
+#endif
 }
 
 void CMainWindow::showPluginDlg()
@@ -4837,6 +4862,38 @@ void CMainWindow::slot_viewurl(QWidget *q, QString url)
     else if (!licqDaemon->ViewUrl(url.local8Bit().data()))
       WarnUser(q, tr("Licq is unable to start your browser and open the URL.\nYou will need to start the browser and open the URL manually."));
   }
+}
+
+// -----------------------------------------------------------------------------
+
+void CMainWindow::sendMsg(const char* szId, unsigned long nPPID, const QString& message)
+{
+    UserSendCommon* event =
+            static_cast<UserSendCommon*>(callFunction(mnuUserSendMsg, szId, nPPID));
+    if (event == 0) return;
+
+    event->setText(message);
+}
+
+// -----------------------------------------------------------------------------
+
+void CMainWindow::sendFileTransfer(const char* szId, unsigned long nPPID,
+                                   const QString& filename, const QString& description)
+{
+    UserSendFileEvent* event =
+            static_cast<UserSendFileEvent*>(callFunction(mnuUserSendFile, szId, nPPID));
+    if (event == 0) return;
+
+    event->setFile(filename, description);
+}
+
+// -----------------------------------------------------------------------------
+
+void CMainWindow::sendChatRequest(const char* szId, unsigned long nPPID)
+{
+    UserSendCommon* event =
+            static_cast<UserSendCommon*>(callFunction(mnuUserSendChat, szId, nPPID));
+    if (event == 0) return;
 }
 
 // -----------------------------------------------------------------------------
