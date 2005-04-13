@@ -1243,7 +1243,7 @@ CPU_CheckInvisible::CPU_CheckInvisible(const char *szId)
 //-----ThroughServer-------------------------------------------------------
 CPU_ThroughServer::CPU_ThroughServer(const char *szId,
                                      unsigned char msgType, char *szMessage,
-                                     unsigned short nCharset)
+                                     unsigned short nCharset, bool bOffline)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
 	m_nSubCommand = msgType;
@@ -1277,8 +1277,10 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
 		return;
   }
 
-  m_nSize += 11 + nTypeLen + nUinLen + 8; // 11 all bytes pre-tlv
-	//  8 fom tlv type, tlv len, and last 4 bytes
+  m_nSize += 11 + nTypeLen + nUinLen + 4; // 11 all bytes pre-tlv
+	//  8 fom tlv type, tlv len
+  if (bOffline)
+    m_nSize += 4;
 
 	InitBuffer();
 
@@ -1315,7 +1317,8 @@ CPU_ThroughServer::CPU_ThroughServer(const char *szId,
 	}
 
 	buffer->PackTLV(nTLVType, nTypeLen, &tlvData);
-	buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
+        if (bOffline)
+	  buffer->PackUnsignedLongBE(0x00060000); // tlv type: 6, tlv len: 0
 }
 
 CPU_ThroughServer::CPU_ThroughServer(unsigned long nDestinationUin,

@@ -613,7 +613,7 @@ class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
   CPU_ThroughServer(const char *szId, unsigned char format, char *_sMessage,
-                    unsigned short _nCharset = 0);
+                    unsigned short _nCharset = 0, bool bOffline = true);
   CPU_ThroughServer(unsigned long _nDestinationUin, unsigned char format,
                     char *_sMessage);
 protected:

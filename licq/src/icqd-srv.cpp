@@ -1445,8 +1445,11 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
   unsigned char format, char *_sMessage, CUserEvent* ue, unsigned short nCharset)
 {
   ICQEvent* result;
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+  bool bOffline = u->StatusOffline();
+  gUserManager.DropUser(u);
 
-  CPU_ThroughServer *p = new CPU_ThroughServer(szId, format, _sMessage, nCharset);
+  CPU_ThroughServer *p = new CPU_ThroughServer(szId, format, _sMessage, nCharset, bOffline);
 
   switch (format)
   {
