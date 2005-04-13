@@ -21,7 +21,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	mmlistview.h mmsenddlg.h userinfodlg.h usereventdlg.h keyrequestdlg.h \
 	jfcstyle.h usercodec.h reqauthdlg.h licqdialog.h userselectdlg.h \
 	editfilelistdlg.h emoticon.h catdlg.h phonedlg.h ownermanagerdlg.h \
-	gpgkeyselect.h gpgkeymanager.h
+	gpgkeyselect.h gpgkeymanager.h licqkimiface.h kimiface.h
 
 licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
@@ -34,10 +34,11 @@ licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp keyrequestdlg.cpp \
 	jfcstyle.cpp usercodec.cpp reqauthdlg.cpp licqdialog.cpp userselectdlg.cpp \
 	editfilelistdlg.cpp emoticon.cpp catdlg.cpp phonedlg.cpp \
-	ownermanagerdlg.cpp gpgkeyselect.cpp gpgkeymanager.cpp
+	ownermanagerdlg.cpp gpgkeyselect.cpp gpgkeymanager.cpp 
 
 licq_qt_gui_la_SOURCES = $(licq_gui)
-licq_kde_gui_la_SOURCES = $(licq_gui) wrap_kde_malloc.cpp
+licq_kde_gui_la_SOURCES = $(licq_gui) wrap_kde_malloc.cpp \
+	licqkimiface.cpp kimiface.stub kimiface.skel
 
 licq_qt_gui_la_LDFLAGS = $(X_LIBS) $(QT_LDFLAGS) \
 	-module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR) 
@@ -47,7 +48,7 @@ licq_qt_gui_la_LIBADD = $(LIB_QT) $(X_PRE_LIBS) -lX11 -lXext \
 licq_kde_gui_la_LDFLAGS = $(KDE_LDFLAGS) $(QT_LDFLAGS) $(X_LIBS) \
 	-module -avoid-version -rpath $(libdir) -R$(QT_LIBDIR)
 licq_kde_gui_la_LIBADD = $(KDE_LIBS) $(X_PRE_LIBS) -lX11 -lXext \
-	$(XSS_LIBS) $(X_EXTRA_LIBS)
+	$(XSS_LIBS) $(X_EXTRA_LIBS) -lkabc
 
 METASOURCES = AUTO
 KDE_OPTIONS = qtonly

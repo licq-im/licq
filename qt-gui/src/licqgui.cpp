@@ -251,7 +251,7 @@ void CLicqGui::saveState(QSessionManager& sm)
 
 CLicqGui::CLicqGui(int argc, char **argv)
 #ifdef USE_KDE
-  : KApplication(argc, argv, "Licq")
+  : KApplication(argc, argv, "licq")
 #else
   : QApplication(argc, argv)
 #endif

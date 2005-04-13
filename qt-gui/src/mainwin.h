@@ -59,6 +59,10 @@ class UserInfoDlg;
 class UserEventTabDlg;
 #endif
 
+#ifdef USE_KDE
+class LicqKIMIface;
+#endif
+
 #if QT_VERSION < 300
   typedef QList<UserViewEvent> UserViewEventList;
   typedef QList<UserInfoDlg> UserInfoList;
@@ -278,6 +282,10 @@ public:
   DockMode m_nDockMode;
   int mouseX, mouseY;
 
+#ifdef USE_KDE
+    LicqKIMIface* kdeIMInterface;
+#endif
+  
   // Functions
   void CreateUserView();
   void CreateUserFloaty(unsigned long nUin, unsigned short x = 0,
@@ -300,7 +308,7 @@ public:
   friend class OptionsDlg;
   friend class CUserViewItem;
   friend class UserSendCommon;
-
+  
 public slots:
   void updateUserWin();
   void slot_shutdown();
@@ -384,6 +392,11 @@ protected slots:
   void UserInfoDlg_finished(const char *, unsigned long);
   void slot_doneUserEventTabDlg();
   void slot_pluginUnloaded(unsigned long);
+
+  void sendMsg(const char* szId, unsigned long nPPID, const QString& message);
+  void sendFileTransfer(const char* szId, unsigned long nPPID,
+                        const QString& filename, const QString& description);
+  void sendChatRequest(const char* szId, unsigned long nPPID);
 
 signals:
   void changeDockStatus(unsigned short);

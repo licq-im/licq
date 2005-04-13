@@ -44,6 +44,14 @@
 
 #ifdef USE_KDE
 #include <kfiledialog.h>
+#include <kdeversion.h>
+#if KDE_IS_VERSION(3, 1, 0)
+#include <kabc/stdaddressbook.h>
+#include <kabc/addressee.h>
+#include <kabc/addresseedialog.h>
+#include <licqkimiface.h>
+#define USE_KABC
+#endif
 #else
 #include <qfiledialog.h>
 #endif
@@ -102,6 +110,9 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   CreatePicture();
   CreateHistory();
   CreateLastCountersInfo();
+#ifdef USE_KABC
+  CreateKABCInfo();
+#endif
 
   QBoxLayout *lay = new QVBoxLayout(this, 8);
 
@@ -117,6 +128,9 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   tabs->addTab(tabList[PictureInfo].tab, tabList[PictureInfo].label);
   tabs->addTab(tabList[HistoryInfo].tab, tabList[HistoryInfo].label);
   tabs->addTab(tabList[LastCountersInfo].tab, tabList[LastCountersInfo].label);
+#ifdef USE_KABC
+  tabs->addTab(tabList[KABCInfo].tab, tabList[KABCInfo].label);
+#endif
 
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
   connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
@@ -1600,6 +1614,94 @@ void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
   if (bDropUser) gUserManager.DropUser(u);
 }
 
+//-----KDE AddressBook info--------------------------------------------------------
+void UserInfoDlg::CreateKABCInfo()
+{
+#ifdef USE_KABC
+  tabList[KABCInfo].label = tr("KDE Addressbook");
+  tabList[KABCInfo].tab = new QWidget(this, tabList[KABCInfo].label.latin1());
+  tabList[KABCInfo].loaded = false;
+
+  QWidget *p = tabList[KABCInfo].tab;
+
+  QGridLayout *lay = new QGridLayout(p, 3, 2, 10, 5);
+
+  lay->addWidget(new QLabel(tr("Name:"), p), 0, 0);
+  nfoKABCName = new CInfoField(p, true);
+  lay->addWidget(nfoKABCName, 0, 1);
+
+  lay->addWidget(new QLabel(tr("Email:"), p), 1, 0);
+  nfoKABCEmail = new CInfoField(p, true);
+  lay->addWidget(nfoKABCEmail, 1, 1);
+  
+  lay->setRowStretch(2, 5);
+#endif
+}
+
+void UserInfoDlg::SetKABCInfo(ICQUser *u)
+{
+#ifdef USE_KABC
+  tabList[LastCountersInfo].loaded = true;
+  bool bDropUser = false;
+
+  if (u == NULL)
+  {
+    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    if (u == NULL) return;
+    bDropUser = true;
+  }
+
+  if (m_kabcID.isEmpty())
+  {
+    m_kabcID = mainwin->kdeIMInterface->kabcIDForUser(m_szId, m_nPPID);
+  }
+
+  if (!m_kabcID.isEmpty())
+  {
+    KABC::AddressBook* adrBook = KABC::StdAddressBook::self();
+    if (adrBook == 0)
+    {
+      if (bDropUser) gUserManager.DropUser(u);
+      return;
+    }
+
+    KABC::Addressee contact = adrBook->findByUid(m_kabcID);
+    if (!contact.isEmpty())
+    {
+      nfoKABCName->setData(contact.assembledName());
+      QString email = contact.preferredEmail();
+      nfoKABCEmail->setData(email);
+    }
+  }
+  
+  if (bDropUser) gUserManager.DropUser(u);
+
+#else
+    Q_UNUSED(u)
+#endif
+}
+
+void UserInfoDlg::UpdateKABCInfo()
+{
+#ifdef USE_KABC    
+    KABC::Addressee contact = KABC::AddresseeDialog::getAddressee(this);
+    if (!contact.isEmpty())
+    {
+      nfoKABCName->setData(contact.assembledName());
+      QString email = contact.preferredEmail();
+      nfoKABCEmail->setData(email);
+      m_kabcID = contact.uid();
+    }    
+#endif
+}
+
+void UserInfoDlg::SaveKABCInfo()
+{
+#ifdef USE_KABC
+    mainwin->kdeIMInterface->setKABCIDForUser(m_szId, m_nPPID, m_kabcID);
+#endif
+}
+
 // -----------------------------------------------------------------------------
 
 void UserInfoDlg::CreateHistory()
@@ -2139,6 +2241,20 @@ void UserInfoDlg::updateTab(const QString& txt)
     if (!tabList[LastCountersInfo].loaded)
       SetLastCountersInfo(NULL);
   }
+#ifdef USE_KABC
+  else if (txt == tabList[KABCInfo].label)
+  {
+    currentTab = KABCInfo;
+    btnMain3->setText(tr("&Browse"));
+    btnMain2->setText(tr("&Save"));
+    btnMain1->setText(m_bOwner ? tr("&Save") : tr("&Menu"));
+    btnMain3->setEnabled(true);
+    btnMain2->setEnabled(true);
+    btnMain1->setEnabled(true);
+    if (!tabList[KABCInfo].loaded)
+      SetKABCInfo(NULL);
+  }
+#endif
 }
 
 void UserInfoDlg::SaveSettings()
@@ -2175,6 +2291,11 @@ void UserInfoDlg::SaveSettings()
     break;
   case LastCountersInfo:
     break;
+#ifdef USE_KABC
+  case KABCInfo:
+    SaveKABCInfo();
+    break;
+#endif
   }
 }
 
@@ -2191,6 +2312,14 @@ void UserInfoDlg::slotRetrieve()
       ShowHistoryNext();
     return;
   }
+
+#ifdef USE_KABC
+  if (currentTab == KABCInfo)
+  {
+    UpdateKABCInfo();
+    return;
+  }
+#endif
   
   ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
   if(o == NULL)  return;

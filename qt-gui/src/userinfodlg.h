@@ -59,6 +59,9 @@ public:
     PictureInfo,
     HistoryInfo,
     LastCountersInfo,
+#ifdef USE_KDE
+    KABCInfo,
+#endif
     InfoTabCount
   };
 
@@ -145,6 +148,12 @@ protected:
   void CreateLastCountersInfo();
   CInfoField *nfoLastOnline, *nfoLastSent, *nfoLastRecv, *nfoLastCheckedAR, *nfoOnlineSince;
 
+  // KDE AddressBook
+  void CreateKABCInfo();
+  CInfoField *nfoKABCName;
+  CInfoField *nfoKABCEmail;
+  QString m_kabcID;
+  
   // History tab
   void CreateHistory();
   void SetupHistory();
@@ -171,6 +180,8 @@ protected:
   void UpdatePhoneBook(QTextCodec *);
   void SetPicture(ICQUser *);
   void SetLastCountersInfo(ICQUser *);
+  void SetKABCInfo(ICQUser *);
+  void UpdateKABCInfo();
   void SaveGeneralInfo();
   void SaveMoreInfo();
   void SaveMore2Info();
@@ -178,6 +189,7 @@ protected:
   void SaveAbout();
   void SavePhoneBook();
   void SavePicture();
+  void SaveKABCInfo();
   
   virtual void keyPressEvent(QKeyEvent*);
 
