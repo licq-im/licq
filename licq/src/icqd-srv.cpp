@@ -1189,11 +1189,11 @@ void CICQDaemon::icqToggleVisibleList(unsigned long nUin)
   char szUin[13];
   snprintf(szUin, 12, "%lu", nUin);
   szUin[12] = '\0';
-  icqToggleVisibleList(szUin, LICQ_PPID);
+  ProtoToggleVisibleList(szUin, LICQ_PPID);
 }
 
-//-----icqToggleVisibleList--------------------------------------------------
-void CICQDaemon::icqToggleVisibleList(const char* _szId, unsigned long _nPPID)
+//-----ProtoToggleVisibleList------------------------------------------------
+void CICQDaemon::ProtoToggleVisibleList(const char* _szId, unsigned long _nPPID)
 {
   ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
   if (u == NULL) return;
@@ -1201,9 +1201,15 @@ void CICQDaemon::icqToggleVisibleList(const char* _szId, unsigned long _nPPID)
   gUserManager.DropUser(u);
 
   if (b)
-    icqRemoveFromVisibleList(_szId, _nPPID);
+    if (_nPPID == LICQ_PPID)
+      icqRemoveFromVisibleList(_szId, _nPPID);
+    else
+      PushProtoSignal(new CUnacceptUserSignal(_szId), _nPPID);
   else
-    icqAddToVisibleList(_szId, _nPPID);
+    if (_nPPID == LICQ_PPID)
+      icqAddToVisibleList(_szId, _nPPID);
+    else
+      PushProtoSignal(new CAcceptUserSignal(_szId), _nPPID);
 }
 
 //-----icqToggleInvisibleList (deprecated!)-------------------------------------
@@ -1212,11 +1218,11 @@ void CICQDaemon::icqToggleInvisibleList(unsigned long nUin)
   char szUin[13];
   snprintf(szUin, 12, "%lu", nUin);
   szUin[12] = '\0';
-  icqToggleInvisibleList(szUin, LICQ_PPID);
+  ProtoToggleInvisibleList(szUin, LICQ_PPID);
 }
 
-//-----icqToggleInvisibleList---------------------------------------------------
-void CICQDaemon::icqToggleInvisibleList(const char *_szId, unsigned long _nPPID)
+//-----ProtoToggleInvisibleList-------------------------------------------------
+void CICQDaemon::ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID)
 {
   ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
   if (u == NULL) return;
@@ -1224,9 +1230,15 @@ void CICQDaemon::icqToggleInvisibleList(const char *_szId, unsigned long _nPPID)
   gUserManager.DropUser(u);
 
   if (b)
-    icqRemoveFromInvisibleList(_szId, _nPPID);
+    if (_nPPID == LICQ_PPID)
+      icqRemoveFromInvisibleList(_szId, _nPPID);
+    else
+      PushProtoSignal(new CUnblockUserSignal(_szId), _nPPID);
   else
-    icqAddToInvisibleList(_szId, _nPPID);
+    if (_nPPID == LICQ_PPID)
+      icqAddToInvisibleList(_szId, _nPPID);
+    else
+      PushProtoSignal(new CBlockUserSignal(_szId), _nPPID);
 }
 
 //-----icqToggleIgnoreList (deprecated!)----------------------------------------

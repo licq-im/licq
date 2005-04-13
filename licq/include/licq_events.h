@@ -468,7 +468,17 @@ enum SIGNAL_TYPE
   //! The user has requested the user's profile/information.
   PROTOxREQUESTxINFO,
   //! The user has requested to update the owner's profile/information.
-  PROTOxUPDATExINFO
+  PROTOxUPDATExINFO,
+  //! The user has requested this user be added to the Invisible/Block list.
+  PROTOxBLOCKxUSER,
+  //! The user has requested this user be removed from the Invisible/Block
+  //  list,
+  PROTOxUNBLOCKxUSER,
+  //! The user has requested this user be added to the Visible/Accept list.
+  PROTOxACCEPTxUSER,
+  //! The user has requested this user be removed fromt he Visible/Accept
+  //  list.
+  PROTOxUNACCEPTxUSER
 };
 
 //! The class that gets passed to protocol plugins when a signal
@@ -638,6 +648,30 @@ private:
        *m_szAddress,
        *m_szCellNumber,
        *m_szZipCode;
+};
+
+class CBlockUserSignal : public CSignal
+{
+public:
+  CBlockUserSignal(const char *);
+};
+
+class CUnblockUserSignal : public CSignal
+{
+public:
+  CUnblockUserSignal(const char *);
+};
+
+class CAcceptUserSignal : public CSignal
+{
+public:
+  CAcceptUserSignal(const char *);
+};
+
+class CUnacceptUserSignal : public CSignal
+{
+public:
+  CUnacceptUserSignal(const char *);
 };
 
 #endif

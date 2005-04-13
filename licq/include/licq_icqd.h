@@ -412,12 +412,13 @@ public:
   void icqCheckInvisible(const char *_szId);
   
   // Visible/Invisible/Ignore list functions
+  void ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID);
+  void ProtoToggleVisibleList(const char *_szId, unsigned long _nPPID);
+  
   void icqAddToVisibleList(const char *_szId, unsigned long _nPPID);
   void icqRemoveFromVisibleList(const char *_szId, unsigned long _nPPID);
-  void icqToggleVisibleList(const char *_szId, unsigned long _nPPID);
   void icqAddToInvisibleList(const char *_szId, unsigned long _nPPID);
   void icqRemoveFromInvisibleList(const char *_szId, unsigned long _nPPID);
-  void icqToggleInvisibleList(const char *_szId, unsigned long _nPPID);
   void icqAddToIgnoreList(const char *_szId, unsigned long _nPPID);
   void icqRemoveFromIgnoreList(const char *_szId, unsigned long _nPPID);
   void icqToggleIgnoreList(const char *_szId, unsigned long _nPPID);

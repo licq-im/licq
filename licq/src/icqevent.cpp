@@ -428,3 +428,23 @@ CUpdateInfoSignal::~CUpdateInfoSignal()
   if (m_szZipCode)
     free(m_szZipCode);
 }
+
+CBlockUserSignal::CBlockUserSignal(const char *szId)
+  : CSignal(PROTOxBLOCKxUSER, szId)
+{
+}
+
+CUnblockUserSignal::CUnblockUserSignal(const char *szId)
+  : CSignal(PROTOxUNBLOCKxUSER, szId)
+{
+}
+
+CAcceptUserSignal::CAcceptUserSignal(const char *szId)
+  : CSignal(PROTOxACCEPTxUSER, szId)
+{
+}
+
+CUnacceptUserSignal::CUnacceptUserSignal(const char *szId)
+  : CSignal(PROTOxUNACCEPTxUSER, szId)
+{
+}
