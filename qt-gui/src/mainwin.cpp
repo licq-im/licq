@@ -85,6 +85,7 @@
 #include "usercodec.h"
 #include "emoticon.h"
 #include "ownermanagerdlg.h"
+
 #ifdef USE_KDE
     #include "licqkimiface.h"
 #endif
@@ -4515,7 +4516,7 @@ void CMainWindow::slot_usermenu()
 
   const char *szStatus = u->StatusStrShort();
   unsigned short status = u->Status();
-
+  
   if (status == ICQ_STATUS_OFFLINE)
   {
     mnuUser->changeItem(mnuUserCheckResponse, tr("Check Auto Response"));
@@ -4562,6 +4563,55 @@ void CMainWindow::slot_usermenu()
   else
     mnuSend->changeItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
 
+  ProtoPluginsList pl;
+  ProtoPluginsListIter it;
+  licqDaemon->ProtoPluginList(pl);
+  unsigned long nSendFuncs = 0xFFFFFFFF;
+  bool bIsLicq = m_nUserMenuPPID == LICQ_PPID;
+  for (it = pl.begin(); it != pl.end(); it++)
+  {
+    if ((*it)->PPID() != LICQ_PPID && (*it)->PPID() == m_nUserMenuPPID)
+    {
+      nSendFuncs = (*it)->SendFunctions();
+      break;
+    }
+  }
+  
+  // The send submenu and misc modes submenu that depend on sending capabilities
+  mnuUser->setItemVisible(mnuUserSendMsg, nSendFuncs & PP_SEND_MSG);
+  mnuUser->setItemVisible(mnuUserSendUrl, nSendFuncs & PP_SEND_URL);
+  mnuUser->setItemVisible(mnuUserSendFile, nSendFuncs & PP_SEND_FILE);
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(4), nSendFuncs & PP_SEND_FILE);
+  mnuUser->setItemVisible(mnuUserSendChat, nSendFuncs & PP_SEND_CHAT);
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(5), nSendFuncs & PP_SEND_CHAT);
+  mnuUser->setItemVisible(mnuUserSendContact, nSendFuncs & PP_SEND_CONTACT);
+  mnuUser->setItemVisible(mnuUserAuthorize, nSendFuncs & PP_SEND_AUTH);
+  mnuUser->setItemVisible(mnuUserAuthorizeRequest, nSendFuncs & PP_SEND_AUTHxREQ);
+  mnuUser->setItemVisible(mnuUserSendSms, nSendFuncs & PP_SEND_SMS);
+  mnuUser->setItemVisible(mnuUserSendKey, nSendFuncs & PP_SEND_SECURE);
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(6), nSendFuncs & PP_SEND_SECURE);
+  
+  // ICQ Protocol only
+  mnuUser->setItemVisible(mnuUserSendInfoPluginListRequest, bIsLicq);
+  mnuUser->setItemVisible(mnuUserSendStatusPluginListRequest, bIsLicq);
+  mnuUser->setItemVisible(mnuUserSendPhoneFollowMeRequest, bIsLicq);
+  mnuUser->setItemVisible(mnuUserSendICQphoneRequest, bIsLicq);
+  mnuUser->setItemVisible(mnuUserSendFileServerRequest, bIsLicq);
+  mnuUser->setItemVisible(mnuUserCheckIfInvisible, bIsLicq);
+  mnuUser->setItemVisible(mnuUserCheckResponse, bIsLicq);
+  mnuUser->setItemVisible(mnuUserCustomAutoResponse, bIsLicq);
+  
+  // ICQ Protocol only
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(8), bIsLicq);
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(10), bIsLicq);
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(11), bIsLicq);
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(12), bIsLicq);
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(13), bIsLicq);
+  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(14), bIsLicq);  
+  
+  // FIXME: Groups! Show only what is for that protocol plugin in the submenu
+  // to properly manage users
+  
   gUserManager.DropUser(u);
 }
 
