@@ -108,6 +108,8 @@ private:
   void MSNRenameUser(char *);
   void MSNGrantAuth(char *);
   void MSNUpdateUser(char *);
+  void MSNBlockUser(char *);
+  void MSNUnblockUser(char *);
   
   // Internal functions
   int HashValue(int n) { return n % 211; }

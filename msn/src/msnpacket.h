@@ -249,5 +249,6 @@ public:
   CPS_MSNTypingNotification(const char *);
 };
 
+
 #endif // __MSNPACKET_H
 

@@ -179,6 +179,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
+        u->SetInvisibleList(nLists & FLAG_BLOCK_LIST);
+        
         if (!u->KeepAliasOnUpdate())
         {
           string strDecodedNick = Decode(strNick);
@@ -574,6 +576,44 @@ void CMSN::MSNUpdateUser(char *szAlias)
   string strEncodedNick = Encode(strNick);
   CMSNPacket *pSend = new CPS_MSNRenameUser(m_szUserName, strEncodedNick.c_str());
   SendPacket(pSend);
+}
+
+void CMSN::MSNBlockUser(char *szUser)
+{
+  ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_W);
+  if (u)
+  {
+    u->SetInvisibleList(true);
+    gUserManager.DropUser(u);
+  }
+  else
+    return;
+    
+  CMSNPacket *pRem = new CPS_MSNRemoveUser(szUser, ALLOW_LIST);
+  gLog.Info("%sRemoving user %s from the allow list.\n", L_MSNxSTR, szUser);
+  SendPacket(pRem);
+  CMSNPacket *pAdd = new CPS_MSNAddUser(szUser, BLOCK_LIST);
+  gLog.Info("%sAdding user %s to the block list.\n", L_MSNxSTR, szUser);
+  SendPacket(pAdd);
+}
+
+void CMSN::MSNUnblockUser(char *szUser)
+{
+  ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_W);
+  if (u)
+  {
+    u->SetInvisibleList(false);
+    gUserManager.DropUser(u);
+  }
+  else
+    return;
+    
+  CMSNPacket *pRem = new CPS_MSNRemoveUser(szUser, BLOCK_LIST);
+  gLog.Info("%sRemoving user %s from the block list\n", L_MSNxSTR, szUser);
+  SendPacket(pRem);
+  CMSNPacket *pAdd = new CPS_MSNAddUser(szUser, ALLOW_LIST);
+  gLog.Info("%sAdding user %s to the allow list.\n", L_MSNxSTR, szUser);
+  SendPacket(pAdd);
 }
 
 void CMSN::MSNPing()

@@ -501,6 +501,20 @@ void CMSN::ProcessSignal(CSignal *s)
       break;
     }
 
+    case PROTOxBLOCKxUSER:
+    {
+      CBlockUserSignal *sig = static_cast<CBlockUserSignal *>(s);
+      MSNBlockUser(sig->Id());
+      break;
+    }
+    
+    case PROTOxUNBLOCKxUSER:
+    {
+      CUnblockUserSignal *sig = static_cast<CUnblockUserSignal *>(s);
+      MSNUnblockUser(sig->Id());
+      break;
+    }
+   
     default:
       break;  //Do nothing now...
   }
