@@ -3273,14 +3273,14 @@ void CMainWindow::UserGroupToggled(int id)
     }
     case GROUP_VISIBLE_LIST:
     {
-      licqDaemon->icqToggleVisibleList(m_szUserMenuId, m_nUserMenuPPID);
+      licqDaemon->ProtoToggleVisibleList(m_szUserMenuId, m_nUserMenuPPID);
       if (m_bFontStyles)
         updateUserWin();
       break;
     }
     case GROUP_INVISIBLE_LIST:
     {
-      licqDaemon->icqToggleInvisibleList(m_szUserMenuId, m_nUserMenuPPID);
+      licqDaemon->ProtoToggleInvisibleList(m_szUserMenuId, m_nUserMenuPPID);
       if (m_bFontStyles)
         updateUserWin();
       break;
