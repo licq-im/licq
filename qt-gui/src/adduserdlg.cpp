@@ -34,7 +34,8 @@
 
 //TODO Add a drop down list of the avaialable protocols
 //     that a user may be added for
-AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
+AddUserDlg::AddUserDlg(CICQDaemon *s, const char* szId, unsigned long PPID,
+                       QWidget *parent)
    : LicqDialog(parent, "AddUserDialog")
 {
 	server = s;
@@ -61,10 +62,14 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
         ProtoPluginsList pl;
         ProtoPluginsListIter it;
         server->ProtoPluginList(pl);
-        for (it = pl.begin(); it != pl.end(); it++)
+        uint index = 0;
+        uint ppidIndex = 0;
+        for (it = pl.begin(); it != pl.end(); it++, ++index)
         {
-          cmbProtocol->insertItem((*it)->Name());  
+          cmbProtocol->insertItem((*it)->Name());
+          if ((*it)->PPID() == PPID) ppidIndex = index;
         }
+        cmbProtocol->setCurrentItem(ppidIndex);
         
         QBoxLayout *layUin = new QBoxLayout(frmUin, QBoxLayout::LeftToRight);
 	lblUin = new QLabel(tr("New User ID:"), frmUin);
@@ -72,6 +77,8 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
 	layUin->addWidget(lblUin);
 	layUin->addWidget(edtUin);
 
+    if (szId != 0) edtUin->setText(szId);
+    
 	QBoxLayout *layBtn = new QBoxLayout(frmBtn, QBoxLayout::LeftToRight);
 	btnOk = new QPushButton(tr("&Ok"), frmBtn);
 	btnCancel = new QPushButton(tr("&Cancel"), frmBtn);
@@ -94,7 +101,6 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, QWidget *parent)
 
 void AddUserDlg::show()
 {
-   edtUin->setText("");
    edtUin->setFocus();
    chkAlert->setChecked(true);
    QDialog::show();

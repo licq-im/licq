@@ -15,7 +15,8 @@ class AddUserDlg : public LicqDialog
 {
    Q_OBJECT
 public:
-   AddUserDlg (CICQDaemon *s, QWidget *parent = 0);
+   AddUserDlg (CICQDaemon *s, const char* szId = 0, unsigned long PPID = 0,
+               QWidget *parent = 0);
 protected:
    CICQDaemon *server;
    QPushButton *btnOk, *btnCancel;

@@ -44,8 +44,9 @@
 
 ///////////////////////////////////////////////////////////////////////////////
 
-LicqKIMIface::LicqKIMIface(QObject* parent, const char* name)
-    : DCOPObject("KIMIface"), QObject(parent, name)
+LicqKIMIface::LicqKIMIface(const QCString& appId, QObject* parent, const char* name)
+    : DCOPObject("KIMIface"), QObject(parent, name),
+      m_dcopAppID(appId)
 {
 }
 
@@ -398,8 +399,21 @@ void LicqKIMIface::messageContact(const QString& uid, const QString& message)
 
 void LicqKIMIface::messageNewContact(const QString& contactId, const QString& protocol)
 {
-    Q_UNUSED(contactId)
-    Q_UNUSED(protocol)
+    // check input values
+    if (contactId.isEmpty() || protocol.isEmpty()) return;
+
+    // check if we know about the protocol
+    unsigned long PPID = idForProtocol(protocol);
+    if (PPID == 0) return;
+
+    // check if user exists
+    ICQUser* pUser = gUserManager.FetchUser(contactId.latin1(), PPID, LOCK_R);
+    if (pUser != 0)
+    {
+        gUserManager.DropUser(pUser);
+
+        emit sendMessage(contactId.latin1(), PPID, QString::null);
+    }
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -468,10 +482,25 @@ void LicqKIMIface::sendFile(const QString& uid, const KURL& sourceURL,
 bool LicqKIMIface::addContact(const QString& contactId,
                               const QString& protocol)
 {
-    Q_UNUSED(contactId)
-    Q_UNUSED(protocol)
-    
-    return false;
+    // check input values
+    if (contactId.isEmpty() || protocol.isEmpty()) return false;
+
+    // check if we know about the protocol
+    unsigned long PPID = idForProtocol(protocol);
+    if (PPID == 0) return false;
+
+    // check if user already exists
+    ICQUser* pUser = gUserManager.FetchUser(contactId.latin1(), PPID, LOCK_R);
+    if (pUser != 0)
+    {
+        gUserManager.DropUser(pUser);
+        return false;
+    }
+
+    emit addUser(contactId.latin1(), PPID);
+
+    // assume the user was added
+    return true;
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -524,6 +553,21 @@ void LicqKIMIface::removeProtocol(unsigned long PPID)
 
 ///////////////////////////////////////////////////////////////////////////////
 
+void LicqKIMIface::userStatusChanged(const char* szId, unsigned long PPID)
+{
+    if (szId == 0) return;
+
+    QString kabcID = kabcIDForUser(szId, PPID);
+    if (kabcID.isEmpty()) return; // no mapping
+
+    int status = presenceStatus(kabcID);
+
+    // trigger DCOP signal
+    contactPresenceChanged(kabcID, m_dcopAppID, status);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+
 void LicqKIMIface::loadIDMapping(const QString& protocol)
 {
 //    kdDebug() << "LicqKIMIface::loadIDMapping(" << protocol << ")" << endl;
@@ -539,7 +583,7 @@ void LicqKIMIface::loadIDMapping(const QString& protocol)
 
     for(; it != endIt; ++it)
     {
-        setKABCIDForUser(it.key(), m_protoName2ID[protocol], it.data());
+        setKABCIDForUser(it.key(), idForProtocol(protocol), it.data());
     }
 }
 

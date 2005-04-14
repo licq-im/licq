@@ -397,6 +397,7 @@ protected slots:
   void sendFileTransfer(const char* szId, unsigned long nPPID,
                         const QString& filename, const QString& description);
   void sendChatRequest(const char* szId, unsigned long nPPID);
+  void addUser(const char* szId, unsigned long nPPID);
 
 signals:
   void changeDockStatus(unsigned short);

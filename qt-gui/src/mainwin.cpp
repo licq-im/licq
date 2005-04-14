@@ -88,6 +88,7 @@
 
 #ifdef USE_KDE
     #include "licqkimiface.h"
+    #include "dcopclient.h"
 #endif
 
 #ifdef HAVE_LIBGPGME
@@ -805,7 +806,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #endif
 
 #ifdef USE_KDE
-    kdeIMInterface = new LicqKIMIface(this);
+    kdeIMInterface = new LicqKIMIface(KApplication::dcopClient()->appId(), this);
     connect( kdeIMInterface,
              SIGNAL(sendMessage(const char*, unsigned long, const QString&)),
              this, SLOT(sendMsg(const char*, unsigned long, const QString&)) );
@@ -817,6 +818,18 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     connect( kdeIMInterface,
              SIGNAL(sendChatRequest(const char*, unsigned long)),
              this, SLOT(sendChatRequest(const char*, unsigned long)));
+    connect( kdeIMInterface,
+             SIGNAL(addUser(const char*, unsigned long)),
+             this, SLOT(addUser(const char*, unsigned long)));
+
+    ProtoPluginsList pl;
+    ProtoPluginsListIter it;
+    licqDaemon->ProtoPluginList(pl);
+    for (it = pl.begin(); it != pl.end(); it++)
+    {
+        kdeIMInterface->addProtocol((*it)->Name(), (*it)->PPID());
+    }
+   
 #endif
 }
 
@@ -1470,10 +1483,13 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       }
       // Fall through
     }
+    case USER_STATUS:
+#ifdef USE_KDE
+        kdeIMInterface->userStatusChanged(szId, nPPID);
+#endif
     case USER_BASIC:
     case USER_GENERAL:
     case USER_EXT:
-    case USER_STATUS:
     case USER_SECURITY:
     case USER_TYPING:
     {
@@ -3134,6 +3150,11 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
   m_nProtoNum++;
   
   updateStatus();
+
+#ifdef USE_KDE
+    // let KDE IM interface know about the new protocol
+    kdeIMInterface->addProtocol(QString(pName), nPPID);
+#endif
 }
 
 //-----slot_eventTag------------------------------------------------------------
@@ -4764,6 +4785,10 @@ void CMainWindow::slot_pluginUnloaded(unsigned long _nPPID)
       n++;
     }
   }
+
+#ifdef USE_KDE
+    kdeIMInterface->removeProtocol(_nPPID);
+#endif
 }
 
 void CMainWindow::slot_doneplugindlg()
@@ -4944,6 +4969,16 @@ void CMainWindow::sendChatRequest(const char* szId, unsigned long nPPID)
     UserSendCommon* event =
             static_cast<UserSendCommon*>(callFunction(mnuUserSendChat, szId, nPPID));
     if (event == 0) return;
+}
+
+// -----------------------------------------------------------------------------
+
+void CMainWindow::addUser(const char* szId, unsigned long nPPID)
+{
+    if (szId == 0 || nPPID == 0) return;
+
+    AddUserDlg* addUserDlg = new AddUserDlg(licqDaemon, szId, nPPID);
+    addUserDlg->show();
 }
 
 // -----------------------------------------------------------------------------

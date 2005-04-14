@@ -36,7 +36,7 @@ class LicqKIMIface : public QObject, public KIMIface
     Q_OBJECT
 public:
 
-    LicqKIMIface(QObject* parent = 0, const char* name = 0);
+    LicqKIMIface(const QCString& appid, QObject* parent = 0, const char* name = 0);
     virtual ~LicqKIMIface();
 
     /**
@@ -181,16 +181,8 @@ public:
      * protocol not supported, or add operation not supported.
      */
     virtual bool addContact(const QString& contactId, const QString& protocol);
-    
-// SIGNALS
-    /**
-     * Indicates that a contact's presence has changed
-     * @param uid the contact whose presence changed.
-     * @param appId the dcop application id of the program the signal originates from.
-     * @param presence the new numeric presence @ref presenceStatus
-     */
-    void contactPresenceChanged(QString uid, QCString appId, int presence);
 
+// public API of the interface for use by Licq
 public:
     /**
      * Maps an Licq user identifier (IdString) to a KABC uid.
@@ -235,7 +227,14 @@ public:
      * @param PPID the numerical protocol ID
      */
     void removeProtocol(unsigned long PPID);
-     
+
+    /**
+     * Tells the DCOP handler about a change of a user's status.
+     * @param szId the Licq user identifier
+     * @param PPID the Licq protocol identifier
+     */
+    void userStatusChanged(const char* szId, unsigned long PPID);
+    
 signals:
     /**
      * Asks for sending of a message to a given Licq user.
@@ -261,6 +260,13 @@ signals:
      * @param PPID the Licq protocol ID.
      */
     void sendChatRequest(const char* id, unsigned long PPID);
+
+    /**
+     * Asks for adding a user to the contact list
+     * @param szId the protocol specific user ID, for example UIN string in ICQ
+     * @param PPID the numerical protocol identifier
+     */
+    void addUser(const char* szId, unsigned long PPID);
     
 private:
     /**
@@ -299,6 +305,8 @@ private:
     void setKABCIDForUser(const QString& licqID, unsigned long PPID, const QString& kabcID);
     
 private:
+    QCString m_dcopAppID;
+
     QMap<unsigned long, QMap<QString, QString> > m_licq2KABC;
     QMap<QString, QPair<unsigned long, QString> > m_kabc2Licq;
     
