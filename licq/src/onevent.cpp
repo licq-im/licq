@@ -67,8 +67,8 @@ void COnEventManager::SetParameters(const char *_szCommand, const char **_aszPar
 void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 {
   unsigned long nPPID = LICQ_PPID;
-  if (u)
-    nPPID = u->PPID();
+  //if (u)
+  //  nPPID = u->PPID();
 
   // Check if globally command should be run
   ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
