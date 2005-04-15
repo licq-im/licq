@@ -413,6 +413,12 @@ void CMSN::ProcessPipe()
 
 void CMSN::ProcessSignal(CSignal *s)
 {
+  if (m_nServerSocket < 0 && s->Type() != PROTOxLOGON)
+  {
+    delete s;
+    return;
+  }
+
   switch (s->Type())
   {
     case PROTOxLOGON:
