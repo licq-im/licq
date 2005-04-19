@@ -52,3 +52,6 @@ licq_kde_gui_la_LIBADD = $(KDE_LIBS) $(X_PRE_LIBS) -lX11 -lXext \
 
 METASOURCES = AUTO
 KDE_OPTIONS = qtonly
+
+kde_services_DATA = licq-kimiface.desktop
+

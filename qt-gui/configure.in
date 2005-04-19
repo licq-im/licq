@@ -174,7 +174,7 @@ echo ""
 echo "Install prefix : $prefix"
 echo "Licq Includes  : $LICQ_INCLUDES"
 if test "$have_kde" = yes; then
-  echo "KDE            : includes in $kde_includes, libs in $kde_libraries"
+  echo "KDE            : includes in $kde_includes, libs in $kde_libraries, services in $kde_servicesdir"
 else
   echo "KDE            : disabled."
 fi

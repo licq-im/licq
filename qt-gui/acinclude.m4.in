@@ -448,6 +448,10 @@ AC_DEFUN([AC_PATH_KDE_LIBRARIES],
 
     have_kde=yes
     AC_SUBST(have_kde)
+
+    kde_servicesdir=`echo $kde_libraries | rev | cut -d\/ -f2- | rev`
+    kde_servicesdir="$kde_servicesdir/share/services"
+    AC_SUBST(kde_servicesdir)
   else
     LIB_NAME="licq_qt-gui.la"
     AC_MSG_RESULT([no])
