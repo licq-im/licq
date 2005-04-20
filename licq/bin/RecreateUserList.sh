@@ -18,7 +18,8 @@ fi
 echo "Rebuilding user list configuration file in $BASE..."
 cd ${BASE}/users
 echo "[users]" > $CONF
-echo "NumOfUsers = `ls *.uin | wc -l`" >> $CONF
-ls *.uin | awk 'BEGIN { i = 1 } { printf "User%d = %d\n", i++, $1 }' >> $CONF
+NumOfUsers=`ls *.uin *.Licq *.MSN_ | wc -l`
+echo "NumOfUsers = ${NumOfUsers}" >> $CONF
+ls *.Licq *.MSN_ *.uin | awk 'BEGIN { i = 1 } { printf "User%d = %s\n", i++, $1 }' >> $CONF
 echo "Done"
 
