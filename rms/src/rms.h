@@ -95,6 +95,7 @@ protected:
   unsigned long m_nLogTypes;
 
   unsigned long m_nUin;
+  char *m_szId;
   char m_szText[MAX_TEXT_LENGTH + 1];
   char m_szLine[MAX_LINE_LENGTH + 1];
   unsigned short m_nTextPos;

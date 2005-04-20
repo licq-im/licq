@@ -828,7 +828,7 @@ int CRMSClient::Process_LIST()
   char format[128], *ubuf;
   if (*data_arg == '\0')
   {
-    strcpy(format, "%9u %-20a %3m %s");
+    strcpy(format, "%u %-20a %3m %s");
   }
   else
   {
@@ -870,18 +870,19 @@ int CRMSClient::Process_LIST()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_MESSAGE()
 {
-  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
+//  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
 
-  if (nUin < 10000)
-  {
-    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
-    return fflush(fs);
-  }
+//  if (nUin < 10000)
+//  {
+//    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+//    return fflush(fs);
+//  }
 
   fprintf(fs, "%d Enter message, terminate with a . on a line by itself:\n",
      CODE_ENTERxTEXT);
 
-  m_nUin = nUin;
+//  m_nUin = nUin;
+  m_szId = strdup(data_arg);
   m_szText[0] = '\0';
   m_nTextPos = 0;
 
@@ -891,10 +892,10 @@ int CRMSClient::Process_MESSAGE()
 
 int CRMSClient::Process_MESSAGE_text()
 {
-  unsigned long tag = licqDaemon->icqSendMessage(m_nUin, m_szText, false, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = licqDaemon->icqSendMessage(m_szId, m_szText, false, ICQ_TCPxMSG_NORMAL);
 
-  fprintf(fs, "%d [%ld] Sending message to %ld.\n", CODE_COMMANDxSTART,
-     tag, m_nUin);
+  fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
+     tag, m_szId);
 
   tags.push_back(tag);
   m_nState = STATE_COMMAND;
@@ -1142,10 +1143,12 @@ int CRMSClient::Process_LOG()
 int CRMSClient::Process_VIEW()
 {
   unsigned long nUin = 0;
+  char *szId = 0;
 
   if (*data_arg != '\0')
   {
     nUin = strtoul(data_arg, (char**)NULL, 10);
+    szId = strdup(data_arg);
   }
   else
   {
@@ -1155,18 +1158,18 @@ int CRMSClient::Process_VIEW()
     FOR_EACH_USER_START(LOCK_R)
     {
       if(pUser->NewMessages() > 0)
-        nUin = pUser->Uin();
+        szId = strdup(pUser->IdString());
     }
     FOR_EACH_USER_END
   
-    if (nUin == 0)
+    if (szId == 0)
     {
       fprintf(fs, "%d No new messages.\n", CODE_VIEWxNONE);
       return fflush(fs);
     }
   }
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL)
   {
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
@@ -1230,6 +1233,7 @@ int CRMSClient::Process_VIEW()
 
   gUserManager.DropUser(u);
 
+  if (szId) free(szId);
   return fflush(fs);
 }
 
