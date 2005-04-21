@@ -24,6 +24,8 @@
 #include <qwidget.h>
 #include <qlistview.h>
 
+#include "mainwin.h"
+
 class QTabWidget;
 class QCheckBox;
 class QLabel;
@@ -64,7 +66,7 @@ class SearchUserDlg : public QWidget
 {
    Q_OBJECT
 public:
-   SearchUserDlg (CICQDaemon *s, CSignalManager *theSigMan, const QString &);
+   SearchUserDlg (CMainWindow *mainwin, CICQDaemon *s, CSignalManager *theSigMan, const QString &);
    ~SearchUserDlg();
 
 private:
@@ -72,6 +74,7 @@ private:
 
 protected:
 
+   CMainWindow *mainwin;
    CICQDaemon *server;
    CSignalManager *sigman;
    QPushButton *btnSearch, *btnReset;
@@ -87,7 +90,7 @@ protected:
    QCheckBox *chkOnlineOnly;
 
    unsigned long searchTag;
-   QPushButton *btnDone, *btnAdd;
+   QPushButton *btnDone, *btnInfo, *btnAdd;
    SearchUserView *foundView;
    QString m_Encoding;
 
@@ -97,6 +100,7 @@ protected:
 
 public slots:
    void startSearch();
+   void viewInfo();
    void addUser();
    void resetSearch();
    void searchResult(ICQEvent *);

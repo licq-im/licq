@@ -73,6 +73,7 @@ public:
   unsigned long PPID()  { return m_nPPID; }
   void showTab(int);
   bool isTabShown(int);
+  void retrieveSettings() { slotRetrieve(); }
 
 protected:
   // common stuff

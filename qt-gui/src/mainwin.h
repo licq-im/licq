@@ -196,7 +196,7 @@ public:
   QString usprintfHelp;
 
 public slots:
-  void callInfoTab(int, const char *, unsigned long, bool toggle=false);
+  void callInfoTab(int, const char *, unsigned long, bool = false, bool =false);
 
 public:
   // Command Tools

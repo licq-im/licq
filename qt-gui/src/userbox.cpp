@@ -88,6 +88,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
   m_bGPGKey = false;
+  m_bNotInList = _cUser->NotInList();
   setGraphics(_cUser);
 }
 
@@ -120,6 +121,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
   m_bGPGKey = false;
+  m_bNotInList = _cUser->NotInList();
   setGraphics(_cUser);
 }
 
@@ -176,8 +178,10 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
   m_sSortKey = "";
   if (barType == BAR_ONLINE)
     m_sPrefix = "0";
-  else
+  else if (barType == BAR_OFFLINE)
     m_sPrefix = "2";
+  else
+    m_sPrefix = "4";
 }
 
 void CUserViewItem::SetThreadViewGroupTitle()
@@ -201,13 +205,18 @@ CUserViewItem::~CUserViewItem()
 
   if (v == NULL) return;
 
-  if (this == v->barOffline || this == v->barOnline)
+  if (this == v->barOffline || this == v->barOnline || this == v->barNotInList)
     return;
 
-  if (m_nStatus == ICQ_STATUS_OFFLINE)
-    v->numOffline--;
+  if (m_bNotInList)
+    v->numNotInList--;
   else
-    v->numOnline--;
+  {
+    if (m_nStatus == ICQ_STATUS_OFFLINE)
+      v->numOffline--;
+    else
+      v->numOnline--;
+  }
 
   if (parent())
   {
@@ -226,6 +235,11 @@ CUserViewItem::~CUserViewItem()
   {
     delete v->barOnline;
     v->barOnline = NULL;
+  }
+  if (v->numNotInList == 0 && v->barNotInList != NULL)
+  {
+    delete v->barNotInList;
+    v->barNotInList = NULL;
   }
 }
 
@@ -267,23 +281,34 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_bGPGKeyEnabled = ( u->UseGPG() );
 
    // Create any necessary bars
-   if (u->StatusOffline())
+   if (u->NotInList())
    {
-     v->numOffline++;
-     if (v->barOffline == NULL && v->parent()
-         && gMainWindow->m_bShowDividers
+     v->numNotInList++;
+     if (v->barNotInList == NULL && v->parent()
          && !(gMainWindow->m_bThreadView && gMainWindow->m_nGroupType == GROUPS_USER
-              && gMainWindow->m_nCurrentGroup == 0))
-       v->barOffline = new CUserViewItem(BAR_OFFLINE, listView());
+         && gMainWindow->m_nCurrentGroup == 0))
+       v->barNotInList = new CUserViewItem(BAR_NOTINLIST, listView());
    }
    else
    {
-     v->numOnline++;
-     if (v->barOnline == NULL && v->parent()
-         && gMainWindow->m_bShowDividers &&
-         !(gMainWindow->m_bThreadView && gMainWindow->m_nGroupType == GROUPS_USER
+     if (u->StatusOffline())
+     {
+       v->numOffline++;
+       if (v->barOffline == NULL && v->parent()
+           && gMainWindow->m_bShowDividers
+           && !(gMainWindow->m_bThreadView && gMainWindow->m_nGroupType == GROUPS_USER
            && gMainWindow->m_nCurrentGroup == 0))
-       v->barOnline = new CUserViewItem(BAR_ONLINE, listView());
+         v->barOffline = new CUserViewItem(BAR_OFFLINE, listView());
+     }
+     else
+     {
+       v->numOnline++;
+       if (v->barOnline == NULL && v->parent()
+           && gMainWindow->m_bShowDividers &&
+           !(gMainWindow->m_bThreadView && gMainWindow->m_nGroupType == GROUPS_USER
+             && gMainWindow->m_nCurrentGroup == 0))
+         v->barOnline = new CUserViewItem(BAR_ONLINE, listView());
+     }
    }
 
    m_sPrefix = "1";
@@ -306,6 +331,9 @@ void CUserViewItem::setGraphics(ICQUser *u)
      default:
        m_cFore = s_cOnline;
    }
+
+   if (m_bNotInList)
+     m_sPrefix = "5";
 
    //if (u->StatusInvisible())
    //   m_cFore = s_cAway;
@@ -676,6 +704,8 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
       QString sz = CUserView::tr("Offline");
       if (m_sPrefix == "0")
         sz = CUserView::tr("Online");
+      else if (m_sPrefix == "4")
+        sz = CUserView::tr("Not In List");
 
       if (pix)
       {
@@ -900,8 +930,8 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   m_nFlashCounter = carCounter = onlCounter = 0;
   msgTimerId = carTimerId = onlTimerId = 0;
   mnuUser = m;
-  barOnline = barOffline = NULL;
-  numOnline = numOffline = 0;
+  barOnline = barOffline = barNotInList = NULL;
+  numOnline = numOffline = numNotInList = 0;
 
   m_typeAhead = "";
   m_typePos   = 0;
@@ -958,7 +988,7 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 
 CUserView::~CUserView()
 {
-  barOnline = barOffline = NULL;
+  barOnline = barOffline = barNotInList = NULL;
   if (parent() == NULL)
   {
     unsigned int i = 0;
@@ -997,9 +1027,9 @@ CUserView *CUserView::FindFloaty(const char *szId, unsigned long nPPID)
 
 void CUserView::clear()
 {
-  barOnline = barOffline = NULL;
+  barOnline = barOffline = barNotInList = NULL;
   QListView::clear();
-  numOffline = numOnline = 0;
+  numOffline = numOnline = numNotInList = 0;
 }
 
 

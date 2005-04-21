@@ -129,9 +129,10 @@ unsigned long SearchItem::uin()
 
 // -----------------------------------------------------------------------------
 
-SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan, const QString &encoding)
+SearchUserDlg::SearchUserDlg(CMainWindow *m, CICQDaemon *s, CSignalManager *theSigMan, const QString &encoding)
   : QWidget(NULL, "SearchUserDialog", WDestructiveClose)
 {
+  mainwin = m;
   server = s;
   sigman = theSigMan;
   m_Encoding = encoding;
@@ -276,12 +277,17 @@ SearchUserDlg::SearchUserDlg(CICQDaemon *s, CSignalManager *theSigMan, const QSt
 
   lay->addStretch(1);
 
+  btnInfo = new QPushButton(tr("View &Info"), this);
+  btnInfo->setEnabled(false);
+  lay->addWidget(btnInfo);
+
   btnAdd = new QPushButton(tr("&Add User"), this);
   btnAdd->setEnabled(false);
   lay->addWidget(btnAdd);
 
   connect(btnDone, SIGNAL(clicked()), this, SLOT(close()));
   connect(foundView, SIGNAL(selectionChanged()), this, SLOT(selectionChanged()));
+  connect(btnInfo, SIGNAL(clicked()), this, SLOT(viewInfo()));
   connect (btnAdd, SIGNAL(clicked()), this, SLOT(addUser()));
 
   top_lay->addWidget(lblSearch);
@@ -323,6 +329,7 @@ void SearchUserDlg::startSearch()
   btnReset->setEnabled(true);
   btnReset->setText(tr("Cancel"));
   btnDone->setEnabled(false);
+  btnInfo->setEnabled(false);
   btnAdd->setEnabled(false);
 
   if (search_tab->currentPage() == uin_tab)
@@ -405,6 +412,7 @@ void SearchUserDlg::resetSearch()
 
   btnDone->setEnabled(true);
   btnSearch->setEnabled(true);
+  btnInfo->setEnabled(false);
   btnAdd->setEnabled(false);
   lblSearch->setText(tr("Enter search parameters and select 'Search'"));
 }
@@ -482,9 +490,11 @@ void SearchUserDlg::selectionChanged()
     current = current->nextSibling();
   }
 
+  btnInfo->setEnabled(true);
   btnAdd->setEnabled(true);
   switch(count) {
   case 0:
+    btnInfo->setEnabled(false);
     btnAdd->setEnabled(false);
     // fall through
   case 1:
@@ -495,6 +505,29 @@ void SearchUserDlg::selectionChanged()
   }
 }
 
+void SearchUserDlg::viewInfo()
+{
+  SearchItem *current = static_cast<SearchItem *>(foundView->firstChild());
+
+  while (current)
+  {
+    if (current->isSelected())
+    {
+      //XXX Convert this to a string
+      char szId[64];
+      snprintf(szId, 64, "%lu", current->uin());
+      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+      if (!u)
+        server->AddUserToList(szId, LICQ_PPID, false, true);
+      else
+        gUserManager.DropUser(u);
+      
+      mainwin->callInfoTab(mnuUserGeneral, szId, LICQ_PPID, false, true);
+      break;
+    }
+    current = static_cast<SearchItem*>(current->nextSibling());
+  }
+}
 
 void SearchUserDlg::addUser()
 {

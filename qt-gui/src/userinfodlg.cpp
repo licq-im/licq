@@ -88,7 +88,7 @@
 
 // -----------------------------------------------------------------------------
 UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                         const char *szId, unsigned long nPPID, QWidget* parent)
+                         const char *szId, unsigned long nPPID, QWidget *parent)
   : QWidget(parent, "UserInfoDialog", WDestructiveClose)
 {
   server = s;

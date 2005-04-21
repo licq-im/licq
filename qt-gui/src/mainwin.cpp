@@ -1406,7 +1406,7 @@ void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 inline bool CMainWindow::show_user(ICQUser *u)
 {
   return (m_bShowOffline || !u->StatusOffline() || u->NewMessages() > 0 ||
-          (m_bAlwaysShowONU && u->OnlineNotify()));
+          (m_bAlwaysShowONU && u->OnlineNotify()) || u->NotInList());
 }
 
 
@@ -2598,7 +2598,7 @@ void CMainWindow::callUserFunction(int index)
 }
 
 void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
-  bool toggle)
+  bool toggle, bool bUpdateNow)
 {
   if(szId == 0 || nPPID == 0) return;
 
@@ -2664,6 +2664,8 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
   }
   f->show();
   f->raise();
+  if (bUpdateNow)
+    f->retrieveSettings();
 }
 
 
@@ -4685,7 +4687,7 @@ void CMainWindow::showOwnerManagerDlg()
 
 void CMainWindow::showSearchUserDlg()
 {
-  SearchUserDlg *searchUserDlg = new SearchUserDlg(licqDaemon, licqSigMan, m_DefaultEncoding);
+  SearchUserDlg *searchUserDlg = new SearchUserDlg(this, licqDaemon, licqSigMan, m_DefaultEncoding);
   searchUserDlg->show();
 }
 

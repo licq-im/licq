@@ -13,7 +13,8 @@ class CUserView;
 enum BarType
 {
   BAR_ONLINE,
-  BAR_OFFLINE
+  BAR_OFFLINE,
+  BAR_NOTINLIST
 };
 
 enum FlashType
@@ -84,7 +85,7 @@ protected:
   unsigned short m_nGroupId;
   int m_nOnlCount, m_nEvents;
   QCString m_sGroupName;
-  bool m_bStatusInvisible, m_bStatusTyping, m_bCustomAR, m_bSecure, m_bFlash, m_bBirthday, m_bPhone, m_bCellular, m_bGPGKey, m_bGPGKeyEnabled;
+  bool m_bStatusInvisible, m_bStatusTyping, m_bCustomAR, m_bSecure, m_bFlash, m_bBirthday, m_bPhone, m_bCellular, m_bGPGKey, m_bGPGKeyEnabled, m_bNotInList;
   unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
   QFont::Weight m_nWeight;
   bool m_bItalic, m_bStrike, m_bUrgent;
@@ -150,9 +151,9 @@ protected:
   unsigned int m_typePos;   /*! hmmm */
 
   QPopupMenu *mnuUser;
-  CUserViewItem *barOnline, *barOffline;
+  CUserViewItem *barOnline, *barOffline, *barNotInList;
   QPoint mousePressPos;
-  int numOnline, numOffline;
+  int numOnline, numOffline, numNotInList;
   virtual void timerEvent(QTimerEvent*);
 
   virtual void viewportMousePressEvent(QMouseEvent *e);
