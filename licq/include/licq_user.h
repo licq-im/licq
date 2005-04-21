@@ -361,7 +361,7 @@ public:
   ICQUser(unsigned long id, char *filename);
   ICQUser(unsigned long id);
   ICQUser(const char *id, unsigned long ppid, char *filename);
-  ICQUser(const char *id, unsigned long ppid);
+  ICQUser(const char *id, unsigned long ppid, bool bTempUser = false);
   virtual ~ICQUser();
   void RemoveFiles();
 
@@ -549,6 +549,7 @@ public:
   char *CustomAutoResponse()            { return m_szCustomAutoResponse; }
   unsigned long PPID()                  { return m_nPPID; }
   char *IdString()                      { return m_szId; }
+  bool NotInList()                      { return m_bNotInList; }
 
   char *usprintf(const char *szFormat, unsigned long nFlags = 0);
 
@@ -836,7 +837,8 @@ protected:
        m_bShowAwayMsg,
        m_bOfflineOnDisconnect,
        m_bConnectionInProgress,
-       m_bSecure;
+       m_bSecure,
+       m_bNotInList;
   unsigned short m_nStatusToUser, m_nSendLevel;
   bool m_bKeepAliasOnUpdate;
   unsigned short m_nAutoAccept;

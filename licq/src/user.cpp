@@ -645,21 +645,24 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
 {
   pUser->Lock(LOCK_W);
 
-  // Set this user to be on the contact list
-  pUser->AddToContactList();
-  //pUser->SetEnableSave(true);
-  pUser->SaveLicqInfo();
-  pUser->SaveGeneralInfo();
-  pUser->SaveMoreInfo();
-  pUser->SaveHomepageInfo();
-  pUser->SaveWorkInfo();
-  pUser->SaveAboutInfo();
-  pUser->SaveInterestsInfo();
-  pUser->SaveBackgroundsInfo();
-  pUser->SaveOrganizationsInfo();
-  pUser->SavePhoneBookInfo();
-  pUser->SavePictureInfo();
-  pUser->SaveExtInfo();
+  if (!pUser->NotInList())
+  {
+    // Set this user to be on the contact list
+    pUser->AddToContactList();
+    //pUser->SetEnableSave(true);
+    pUser->SaveLicqInfo();
+    pUser->SaveGeneralInfo();
+    pUser->SaveMoreInfo();
+    pUser->SaveHomepageInfo();
+    pUser->SaveWorkInfo();
+    pUser->SaveAboutInfo();
+    pUser->SaveInterestsInfo();
+    pUser->SaveBackgroundsInfo();
+    pUser->SaveOrganizationsInfo();
+    pUser->SavePhoneBookInfo();
+    pUser->SavePictureInfo();
+    pUser->SaveExtInfo();
+  }
 
   // Store the user in the hash table
   m_hUsers.Store(pUser, _szId, _nPPID);
@@ -671,7 +674,8 @@ void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
 {
   ICQUser *u = FetchUser(_szId, _nPPID, LOCK_W);
   if (u == NULL) return;
-  u->RemoveFiles();
+  if (!u->NotInList())
+    u->RemoveFiles();
   LockUserList(LOCK_W);
   UserList::iterator iter = m_vpcUsers.begin();
   while (iter != m_vpcUsers.end() && u != (*iter)) iter++;
@@ -1289,18 +1293,21 @@ void CUserManager::SaveAllUsers()
 {
   FOR_EACH_USER_START(LOCK_R)
   {
-    pUser->SaveLicqInfo();
-    pUser->SaveGeneralInfo();
-    pUser->SaveMoreInfo();
-    pUser->SaveHomepageInfo();
-    pUser->SaveWorkInfo();
-    pUser->SaveAboutInfo();
-    pUser->SaveInterestsInfo();
-    pUser->SaveBackgroundsInfo();
-    pUser->SaveOrganizationsInfo();
-    pUser->SavePhoneBookInfo();
-    pUser->SavePictureInfo();
-    pUser->SaveExtInfo();
+    if (!pUser->NotInList())
+    {
+      pUser->SaveLicqInfo();
+      pUser->SaveGeneralInfo();
+      pUser->SaveMoreInfo();
+      pUser->SaveHomepageInfo();
+      pUser->SaveWorkInfo();
+      pUser->SaveAboutInfo();
+      pUser->SaveInterestsInfo();
+      pUser->SaveBackgroundsInfo();
+      pUser->SaveOrganizationsInfo();
+      pUser->SavePhoneBookInfo();
+      pUser->SavePictureInfo();
+      pUser->SaveExtInfo();
+    }
   }
   FOR_EACH_USER_END
 }
@@ -1781,18 +1788,22 @@ ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, char *_szFilename)
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
-ICQUser::ICQUser(const char *_szId, unsigned long _nPPID)
+ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, bool bTempUser)
 {
   Init(_szId, _nPPID);
   SetDefaults();
-  char szFilename[MAX_FILENAME_LEN];
-  char *p = PPIDSTRING(_nPPID);
-  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
+  m_bNotInList = true;
+  if (!m_bNotInList)
+  {
+    char szFilename[MAX_FILENAME_LEN];
+    char *p = PPIDSTRING(_nPPID);
+    snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
            _szId, p);
-  delete [] p;
-  szFilename[MAX_FILENAME_LEN - 1] = '\0';
-  m_fConf.SetFileName(szFilename);
-  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
+    delete [] p;
+    szFilename[MAX_FILENAME_LEN - 1] = '\0';
+    m_fConf.SetFileName(szFilename);
+    m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
+  }
 }
 
 void ICQUser::AddToContactList()
@@ -2191,6 +2202,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_nWebAwareStatus = 2; //Status unknown
   m_bHideEmail = false;
   m_nTyping = ICQ_TYPING_INACTIVEx0;
+  m_bNotInList = false;
   
   // More Info
   m_nAge = 0xffff;

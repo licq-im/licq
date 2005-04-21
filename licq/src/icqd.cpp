@@ -1045,13 +1045,24 @@ void CICQDaemon::SaveUserList()
     return;
   }
      
-  n = sprintf(buff, "[users]\nNumOfUsers = %d\n", gUserManager.NumUsers());
+  // Don't save the temporary "Not In List" users
+  int nNumUsers = 0;
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (!pUser->NotInList())
+      nNumUsers++;
+  }
+  FOR_EACH_USER_END
+
+  n = sprintf(buff, "[users]\nNumOfUsers = %d\n", nNumUsers);
   nRet = write(fd, buff, n);
 
   unsigned short i = 1;
-  //TODO: Work with other protocols
   FOR_EACH_USER_START(LOCK_R)
   {
+    if (pUser->NotInList())
+      FOR_EACH_USER_CONTINUE
+
     char szPPID[5];
     unsigned long nPPID = pUser->PPID();
     szPPID[0] = (nPPID & 0xFF000000) >> 24;
@@ -1089,7 +1100,7 @@ void CICQDaemon::SetIgnore(unsigned short n, bool b)
 }
 
 bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
-                               bool bNotify)
+                               bool bNotify, bool bTempUser)
 {
   // Don't add invalid uins
   if (szId == 0 || nPPID == 0) return false;
@@ -1101,13 +1112,14 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
     return false;
   }
 
-  ICQUser *u = new ICQUser(szId, nPPID);
+  ICQUser *u = new ICQUser(szId, nPPID, bTempUser);
   gUserManager.AddUser(u);
   gUserManager.DropUser(u);
-  SaveUserList();
+  if (!bTempUser)
+    SaveUserList();
 
   // this notify is for local only adds
-  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify)
+  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify && !bTempUser)
     icqAddUser(szId);
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID));

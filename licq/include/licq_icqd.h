@@ -470,7 +470,8 @@ public:
   unsigned short BirthdayRange() { return m_nBirthdayRange; }
   void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
 
-  bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true);
+  bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true,
+                     bool bTempUser = false);
   bool AddUserToList(unsigned long _nUin, bool bNotify = true);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
