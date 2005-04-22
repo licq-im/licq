@@ -1,9 +1,0 @@
-[Desktop Entry]
-Encoding=UTF-8
-Name=Licq DCOP interface
-Type=Service
-Categories=Network;InstantMessaging
-
-X-DCOP-ServiceName=licq
-ServiceTypes=DCOP/InstantMessenger
-
