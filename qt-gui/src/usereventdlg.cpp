@@ -30,6 +30,7 @@
 #include <qaccel.h>
 #include <qcheckbox.h>
 #include <qdatetime.h>
+#include <qfileinfo.h>
 #include <qvbox.h>
 #include <qvgroupbox.h>
 #include <qhgroupbox.h>
@@ -2894,8 +2895,13 @@ void UserSendFileEvent::sendButton()
 
 void UserSendFileEvent::setFile(const QString& file, const QString& description)
 {
-  edtItem->setText(file);
-  setText(description);
+  QFileInfo fileinfo(file);
+  if (fileinfo.exists() && fileinfo.isReadable())
+  {
+    edtItem->setText(file);
+    setText(description);
+    m_lFileList.push_back(strdup(file.latin1()));
+  }
 }
 
 void UserSendFileEvent::resetSettings()
