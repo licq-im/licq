@@ -1,0 +1,133 @@
+<?xml version="1.0"?>
+<messaging-emoticon-map >
+
+<emoticon file="icq_s_happy">
+	<string>:-)</string>
+	<string>:)</string>
+</emoticon>
+
+<emoticon file="icq_s_sad">
+	<string>:(</string>
+	<string>:-(</string>
+</emoticon>
+
+<emoticon file="icq_s_wink">
+	<string>;-)</string>
+	<string>;)</string>
+</emoticon>
+
+<emoticon file="icq_s_tongue">
+	<string>:-P</string>
+	<string>:P</string>
+	<string>:-p</string>
+	<string>:p</string>
+</emoticon>
+
+<emoticon file="icq_s_surprised">
+	<string>:-O</string>
+	<string>:O</string>
+</emoticon>
+
+<emoticon file="icq_s_kiss">
+	<string>:-{}</string>
+	<string>:{}</string>
+</emoticon>
+
+<emoticon file="icq_s_angry">
+	<string>:-@</string>
+	<string>:@</string>
+</emoticon>
+
+<emoticon file="icq_s_glasses">
+	<string>8-)</string>
+	<string>8)</string>
+</emoticon>
+
+<emoticon file="icq_s_sealed">
+	<string>:-|</string>
+	<string>:|</string>
+</emoticon>
+
+<emoticon file="icq_s_nofingidea">
+	<string>:*)</string>
+</emoticon>
+
+<emoticon file="icq_s_embarrassed">
+	<string>:-&gt;</string>
+	<string>:&gt;</string>
+</emoticon>
+
+<emoticon file="icq_s_angel">
+	<string>O-)</string>
+	<string>O)</string>
+</emoticon>
+
+<emoticon file="icq_s_unsure">
+	<string>:-/</string>
+	<string>:/</string>
+	<string>:-\</string>
+	<string>:\</string>
+</emoticon>
+
+<emoticon file="icq_s_crying">
+	<string>:'-(</string>
+	<string>:'(</string>
+</emoticon>
+
+<emoticon file="icq_s_bandaid">
+	<string>:-X</string>
+	<string>:X</string>
+	<string>:-x</string>
+	<string>:x</string>
+</emoticon>
+
+<emoticon file="icq_s_teeth">
+	<string>:-D</string>
+	<string>:D</string>
+	<string>:-d</string>
+	<string>:d</string>
+</emoticon>
+
+<emoticon file="icq_e_annoyed">
+	<string>*ANNOYED*</string>
+</emoticon>
+
+<emoticon file="icq_e_disgusted">
+	<string>*DISGUSTED*</string>
+</emoticon>
+
+<emoticon file="icq_e_drooling">
+	<string>*DROOLING*</string>
+</emoticon>
+
+<emoticon file="icq_e_giggling">
+	<string>*GIGGLING*</string>
+</emoticon>
+
+<emoticon file="icq_e_jokingly">
+	<string>*JOKINGLY*</string>
+</emoticon>
+
+<emoticon file="icq_e_shocked">
+	<string>*SHOCKED*</string>
+</emoticon>
+
+<emoticon file="icq_e_whining">
+	<string>*WHINING*</string>
+</emoticon>
+
+<emoticon file="icq_e_surprised1">
+	<string>*SURPRISED*</string>
+</emoticon>
+
+<emoticon file="icq_e_surprised2">
+	<string>*SURPRISED*</string>
+</emoticon>
+
+<emoticon file="icq_e_inlove">
+	<string>*INLOVE*</string>
+	<string>*IN LOVE*</string>
+</emoticon>
+
+</messaging-emoticon-map>
+
