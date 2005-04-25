@@ -472,13 +472,17 @@ enum SIGNAL_TYPE
   //! The user has requested this user be added to the Invisible/Block list.
   PROTOxBLOCKxUSER,
   //! The user has requested this user be removed from the Invisible/Block
-  //  list,
+  //! list,
   PROTOxUNBLOCKxUSER,
   //! The user has requested this user be added to the Visible/Accept list.
   PROTOxACCEPTxUSER,
   //! The user has requested this user be removed fromt he Visible/Accept
-  //  list.
-  PROTOxUNACCEPTxUSER
+  //! list.
+  PROTOxUNACCEPTxUSER,
+  //! The user has requsted this user be put on the Ignore list.
+  PROTOxIGNORExUSER,
+  //! The user has requested this user be removed fromt he Ignore list.
+  PROTOxUNIGNORExUSER
 };
 
 //! The class that gets passed to protocol plugins when a signal
@@ -672,6 +676,18 @@ class CUnacceptUserSignal : public CSignal
 {
 public:
   CUnacceptUserSignal(const char *);
+};
+
+class CIgnoreUserSignal : public CSignal
+{
+public:
+  CIgnoreUserSignal(const char *);
+};
+
+class CUnignoreUserSignal : public CSignal
+{
+public:
+  CUnignoreUserSignal(const char *);
 };
 
 #endif

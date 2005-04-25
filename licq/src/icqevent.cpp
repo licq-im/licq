@@ -448,3 +448,14 @@ CUnacceptUserSignal::CUnacceptUserSignal(const char *szId)
   : CSignal(PROTOxUNACCEPTxUSER, szId)
 {
 }
+
+CIgnoreUserSignal::CIgnoreUserSignal(const char *szId)
+  : CSignal(PROTOxIGNORExUSER, szId)
+{
+}
+
+CUnignoreUserSignal::CUnignoreUserSignal(const char *szId)
+  : CSignal(PROTOxUNIGNORExUSER, szId)
+{
+}
+

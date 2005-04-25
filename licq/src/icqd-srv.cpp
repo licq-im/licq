@@ -1258,10 +1258,20 @@ void CICQDaemon::icqToggleIgnoreList(const char *_szId, unsigned long _nPPID)
   bool b = u->IgnoreList();
   gUserManager.DropUser(u);
 
-  if (b)
-    icqAddToIgnoreList(_szId, _nPPID);
+  if (_nPPID == LICQ_PPID)
+  {
+    if (b)
+      icqAddToIgnoreList(_szId, _nPPID);
+    else
+      icqRemoveFromIgnoreList(_szId, _nPPID);
+  }
   else
-    icqRemoveFromIgnoreList(_szId, _nPPID);
+  {
+    if (b)
+      PushProtoSignal(new CIgnoreUserSignal(_szId), _nPPID);
+    else
+      PushProtoSignal(new CUnignoreUserSignal(_szId), _nPPID);
+  }
 }
 
 //-----icqAddToVisibleList (deprecated!)----------------------------------------
