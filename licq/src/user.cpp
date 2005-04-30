@@ -1788,11 +1788,11 @@ ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, char *_szFilename)
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
-ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, bool bTempUser)
+ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, bool _bTempUser)
 {
   Init(_szId, _nPPID);
   SetDefaults();
-  m_bNotInList = true;
+  m_bNotInList = _bTempUser;
   if (!m_bNotInList)
   {
     char szFilename[MAX_FILENAME_LEN];
