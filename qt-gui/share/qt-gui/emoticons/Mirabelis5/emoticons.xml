@@ -35,7 +35,7 @@
 </emoticon>
 
 <emoticon file="Smiley6">
-	<string>:-</string>
+	<string>:- </string>
 </emoticon>
 
 <emoticon file="Smiley10">
@@ -113,4 +113,5 @@
 </emoticon>
 
 </messaging-emoticon-map>
+
 
