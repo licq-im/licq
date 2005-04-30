@@ -482,7 +482,18 @@ enum SIGNAL_TYPE
   //! The user has requsted this user be put on the Ignore list.
   PROTOxIGNORExUSER,
   //! The user has requested this user be removed fromt he Ignore list.
-  PROTOxUNIGNORExUSER
+  PROTOxUNIGNORExUSER,
+  //! The user has requested to send a file to this user.
+  PROTOxSENDxFILE,
+  //! The user has requested to send a chat invitation to this user.
+  PROTOxSENDxCHAT,
+  //! The user has requested to send an accept/refuse reply to a file/chat
+  //! request
+  PROTOxSENDxEVENTxREPLY,
+  //! The user has opened a chat window with this user
+  PROTOxOPENEDxWINDOW,
+  //! The user has closed a chat window with this user
+  PROTOxCLOSEDxWINDOW
 };
 
 //! The class that gets passed to protocol plugins when a signal
@@ -688,6 +699,60 @@ class CUnignoreUserSignal : public CSignal
 {
 public:
   CUnignoreUserSignal(const char *);
+};
+
+class CSendFileSignal : public CSignal
+{
+public:
+  CSendFileSignal(const char *_szUser, const char *_szFile,
+                  const char *_szMessage);
+  virtual ~CSendFileSignal();
+
+  char *GetFileName() { return m_szFile; }
+  char *GetMessage()  { return m_szMessage; }
+
+private:
+  char *m_szFile,
+       *m_szMessage;
+};
+
+class CSendChatSignal : public CSignal
+{
+public:
+  CSendChatSignal(const char *_szUser, const char *_szMessage);
+  virtual ~CSendChatSignal() { if (m_szMessage) free(m_szMessage); }
+
+  char *GetMessage() { return m_szMessage; }
+
+private:
+  char *m_szMessage;
+};
+
+class CSendEventReplySignal : public CSignal
+{
+public:
+  CSendEventReplySignal(const char *_szUser, const char *_szMessage,
+                        bool _bAccepted);
+  virtual ~CSendEventReplySignal() { if (m_szMessage) free(m_szMessage); }
+
+  char *GetMessage() { return m_szMessage; }
+  bool GetAccept()   { return m_bAccept; }
+
+private:
+  char *m_szMessage;
+  bool m_bAccept;
+};
+
+class COpenedWindowSignal : public CSignal
+{
+public:
+  COpenedWindowSignal(const char *);
+};
+
+class CClosedWindowSignal : public CSignal
+{
+public:
+  CClosedWindowSignal(const char *);
 };
 
 #endif

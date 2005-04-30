@@ -459,3 +459,47 @@ CUnignoreUserSignal::CUnignoreUserSignal(const char *szId)
 {
 }
 
+CSendFileSignal::CSendFileSignal(const char *szId, const char *szFile,
+                                 const char *szMessage)
+  : CSignal(PROTOxSENDxFILE, szId)
+{
+  if (szFile)
+    m_szFile = strdup(szFile);
+
+  if (szMessage)
+    m_szMessage = strdup(szMessage);
+}
+
+CSendFileSignal::~CSendFileSignal()
+{
+  if (m_szFile)    free(m_szFile);
+  if (m_szMessage) free(m_szMessage);
+}
+
+CSendChatSignal::CSendChatSignal(const char *szId, const char *szMessage)
+  : CSignal(PROTOxSENDxCHAT, szId)
+{
+  if (szMessage)
+    m_szMessage = strdup(szMessage);
+}
+
+CSendEventReplySignal::CSendEventReplySignal(const char *szId,
+                                             const char *szMessage, bool bAccept)
+  : CSignal(PROTOxSENDxEVENTxREPLY, szId)
+{
+  if (szMessage)
+    m_szMessage = strdup(szMessage);
+
+  m_bAccept = bAccept;
+}
+
+COpenedWindowSignal::COpenedWindowSignal(const char *szId)
+  : CSignal(PROTOxOPENEDxWINDOW, szId)
+{
+}
+
+CClosedWindowSignal::CClosedWindowSignal(const char *szId)
+  : CSignal(PROTOxCLOSEDxWINDOW, szId)
+{
+}
+
