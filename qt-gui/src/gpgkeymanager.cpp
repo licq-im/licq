@@ -21,146 +21,14 @@
 
 #ifdef HAVE_LIBGPGME
 
-#include "gpgkeymanager.moc"
-
-#include <licq_user.h>
-#include <licq_events.h>
-
-#include <qvariant.h>
-#include <qpushbutton.h>
-#include <qgroupbox.h>
-#include <qlabel.h>
 #include <qheader.h>
-#include <qlistview.h>
-#include <qlayout.h>
-#include <qtooltip.h>
-#include <qwhatsthis.h>
-#include <qimage.h>
-#include <qpixmap.h>
-#include <qhgroupbox.h>
 #include <qdragobject.h>
+#include <qgroupbox.h>
 #include <qmessagebox.h>
 #include <qpopupmenu.h>
+#include <qcursor.h>
 
-#include "mainwin.h"
-#include "gpgkeyselect.h"
-
-GPGKeyManager::GPGKeyManager( QWidget* parent )
-    : QDialog( parent )
-{
-  QVBoxLayout* GPGKeyManagerLayout = new QVBoxLayout( this, 11, 6 ); 
-
-  setCaption( tr( "Licq GPG Key Manager" ) );
-  setWFlags( WDestructiveClose );
-
-  // GPG Passphrase
-  QGroupBox *groupBox = new QGroupBox( tr("GPG Passphrase"), this );
-  groupBox->setColumnLayout(0, Qt::Vertical );
-  groupBox->layout()->setSpacing( 6 );
-  groupBox->layout()->setMargin( 11 );
-  QHBoxLayout* groupBox1Layout = new QHBoxLayout( groupBox->layout() );
-
-  passPhraseLabel = new QLabel( tr( "No passphrase set" ), groupBox );
-
-  groupBox1Layout->addWidget( passPhraseLabel );
-  groupBox1Layout->addStretch( 2 );
-
-  QPushButton *setGPGPassphraseButton = new QPushButton( tr( "Set GPG Passphrase" ), groupBox );
-  connect( setGPGPassphraseButton, SIGNAL(clicked()), this, SLOT(slot_setPassphrase()) );
-  groupBox1Layout->addWidget( setGPGPassphraseButton );
-
-  GPGKeyManagerLayout->addWidget( groupBox );
-
-  // User Keys
-  groupBox = new QGroupBox( tr("User Keys"), this );
-  groupBox->setColumnLayout(0, Qt::Vertical );
-  groupBox->layout()->setSpacing( 6 );
-  groupBox->layout()->setMargin( 11 );
-  QHBoxLayout* groupBox2Layout = new QHBoxLayout( groupBox->layout() );
-
-  listView2 = new KeyList( groupBox );
-  listView2->setAllColumnsShowFocus( true );
-  listView2->addColumn( tr( "User" ) );
-  listView2->addColumn( tr( "Active" ) );
-  listView2->addColumn( tr( "Key ID" ) );
-  listView2->setColumnAlignment( 2, Qt::AlignRight );
-  connect( listView2, SIGNAL(doubleClicked ( QListViewItem *, const QPoint &, int )), this, SLOT(slot_doubleClicked( QListViewItem *, const QPoint &, int )));
-  groupBox2Layout->addWidget( listView2 );
-
-  QVBoxLayout *layout10 = new QVBoxLayout( groupBox2Layout );
-  int bw=0;
-
-  QPushButton *addButton = new QPushButton( tr( "Add" ), groupBox );
-  connect( addButton, SIGNAL(clicked()), this, SLOT(slot_add()) );
-  layout10->addWidget( addButton );
-  bw = QMAX( bw, addButton->sizeHint().width() );
-
-  QPushButton *editButton = new QPushButton( tr( "Edit" ), groupBox );
-  connect( editButton, SIGNAL(clicked()), this, SLOT(slot_edit()) );
-  layout10->addWidget( editButton );
-  bw = QMAX( bw, editButton->sizeHint().width() );
-
-  QPushButton *removeButton = new QPushButton( tr( "Remove" ), groupBox );
-  connect( removeButton, SIGNAL(clicked()), this, SLOT(slot_remove()) );
-  bw = QMAX( bw, removeButton->sizeHint().width() );
-
-  addButton->setFixedWidth( bw );
-  editButton->setFixedWidth( bw );
-  removeButton->setFixedWidth( bw );
-  layout10->addWidget( removeButton );
-  QLabel *label = new QLabel( tr("Drag&Drop\nuser to add\nto list."), groupBox);
-  label->setMaximumWidth( bw );
-  layout10->addWidget(  label);
-
-  layout10->addStretch( 2 );
-
-  GPGKeyManagerLayout->addWidget( groupBox );
-
-  // Close
-  QHBoxLayout *layout9 = new QHBoxLayout( GPGKeyManagerLayout ); 
-  layout9->addStretch( 2 );
-
-  QPushButton *closeButton = new QPushButton( tr( "Close" ), this );
-  connect( closeButton, SIGNAL(clicked()), this, SLOT(slot_close()) );
-  closeButton->setAutoDefault( TRUE );
-  closeButton->setFixedWidth( closeButton->sizeHint().width() );
-  layout9->addWidget( closeButton );
-
-  resize( QSize(439, 541).expandedTo(minimumSizeHint()) );
-
-  initKeyList();
-}
-
-void GPGKeyManager::slot_setPassphrase()
-{
-  QMessageBox::information( this, tr("Set Passphrase"), tr("Not yet implemented. Use licq_gpg.conf.") );
-}
-
-void GPGKeyManager::slot_edit()
-{
-  QListViewItem *item = listView2->currentItem();
-  if ( item )
-    ( (KeyListItem*)item )->edit();
-}
-
-void GPGKeyManager::slot_doubleClicked ( QListViewItem *item, const QPoint &point, int i )
-{
-  if ( item )
-    ( (KeyListItem*)item )->edit();
-}
-
-void GPGKeyManager::slot_remove()
-{
-  KeyListItem *item = (KeyListItem*)listView2->currentItem();
-  if ( item )
-  {
-    if ( QMessageBox::question( this, tr("Remove GPG key"), tr("Do you want to remove the GPG key? The key isn't deleted from your keyring."), QMessageBox::Yes, QMessageBox::No )==QMessageBox::Yes )
-    {
-      item->unsetKey();
-      delete item;
-    };
-  }
-}
+#include "gpgkeymanager.h"
 
 struct luser
 {
@@ -178,16 +46,106 @@ protected:
   { return strcasecmp( ((luser*)item1)->alias, ((luser*)item2)->alias ); };
 };
 
+GPGKeyManager::GPGKeyManager( QWidget *_parent )
+  : LicqDialog( _parent )
+{
+  QVBoxLayout *lay_main = new QVBoxLayout( this, 11, 6 );
+  
+  setCaption( tr("Licq GPG Key Manager") );
+  setWFlags( WDestructiveClose );
+  
+  // GPG Passphrase box
+  QGroupBox *box_passphrase = new QGroupBox( tr("GPG Passphrase"), this, "Box Passphrase");
+  lay_main->addWidget( box_passphrase );
+  
+  box_passphrase->setColumnLayout( 1, Qt::Vertical );
+  box_passphrase->setInsideSpacing( 6 );
+  box_passphrase->setInsideMargin( 11 );
+  
+  lbl_passphrase = new QLabel( tr("No passphrase set"), box_passphrase );
+  QPushButton *btn_setPass = new QPushButton( tr("&Set GPG Passphrase"), box_passphrase);
+  connect(btn_setPass, SIGNAL(clicked()), this, SLOT(slot_setPassphrase()));
+  
+  // GPG User/Key list
+  QHBoxLayout *lay_hbox = new QHBoxLayout( lay_main, -1, "Keylist/buttons layout");
+  QGroupBox *box_keys = new QGroupBox( tr("User Keys"), this, "Box Keys" );
+  box_keys->setColumnLayout( 1, Qt::Vertical );
+  box_keys->setInsideSpacing( 6 );
+  box_keys->setInsideMargin( 11 );
+  
+  lay_hbox->addWidget( box_keys );
+  QVBoxLayout *lay_buttonBox = new QVBoxLayout( lay_hbox, -1, "Button layout");
+  QPushButton *btn_add = new QPushButton( tr("&Add"), this);
+  QPushButton *btn_edit = new QPushButton( tr("&Edit"), this);
+  QPushButton *btn_remove = new QPushButton( tr("&Remove"), this);
+  connect(btn_add,    SIGNAL(clicked()), this, SLOT(slot_add()));
+  connect(btn_edit,   SIGNAL(clicked()), this, SLOT(slot_edit()));
+  connect(btn_remove, SIGNAL(clicked()), this, SLOT(slot_remove()));
+  lbl_dragndrop = new QLabel( tr("<qt>Drag&Drop user to add to list.</qt>"), this);
+  
+  // create the keylist
+  lst_keyList = new KeyList( box_keys );
+  lst_keyList->setAllColumnsShowFocus( TRUE );
+  lst_keyList->addColumn( tr("User") );
+  lst_keyList->addColumn( tr("Active") );
+  lst_keyList->addColumn( tr("Key ID") );
+  connect( lst_keyList, SIGNAL(doubleClicked( QListViewItem *, const QPoint &, int)),
+           this, SLOT(slot_doubleClicked(QListViewItem *, const QPoint &, int )));
+
+  lay_buttonBox->addWidget(btn_add);
+  lay_buttonBox->addWidget(btn_edit);
+  lay_buttonBox->addWidget(btn_remove);
+  lay_buttonBox->addWidget(lbl_dragndrop);
+  lay_buttonBox->addStretch();
+  
+  
+  // Close
+  QHBoxLayout *lay_btnClose = new QHBoxLayout( lay_main, -1, "Close button layout");
+  QPushButton *btn_close = new QPushButton( tr("&Close"), this);
+  btn_close->setAutoDefault( TRUE );
+  lay_btnClose->addStretch();
+  lay_btnClose->addWidget( btn_close );
+  connect( btn_close, SIGNAL(clicked()), this, SLOT(slot_close()));
+  
+  initKeyList();
+}
+
+GPGKeyManager::~GPGKeyManager()
+{}
+
+void GPGKeyManager::slot_setPassphrase()
+{
+  QMessageBox::information( this, tr("Set Passphrase"), tr("Not yet implemented. Use licq_gpg.conf.") );
+}
+
+void GPGKeyManager::slot_close()
+{
+  close();
+}
+
+void GPGKeyManager::slot_edit()
+{
+  QListViewItem *item = lst_keyList->currentItem();
+  if (item )
+    ( (KeyListItem*)item )->edit();
+}
+
+void GPGKeyManager::slot_doubleClicked( QListViewItem *item, const QPoint &point, int i)
+{
+  if (item )
+    ( (KeyListItem*)item )->edit();
+}
+
 
 void GPGKeyManager::slot_add()
 {
   QPopupMenu popupMenu;
   gkm_UserList list;
-  list.setAutoDelete( true );
-
+  list.setAutoDelete( TRUE );
+  
   FOR_EACH_USER_START(LOCK_R)
   {
-    if ( strcmp( pUser->GPGKey(), "" )== 0 )
+    if (strcmp( pUser->GPGKey(), "") == 0)
     {
       luser *tmp = new luser;
       tmp->szId = pUser->IdString();
@@ -197,11 +155,11 @@ void GPGKeyManager::slot_add()
     }
   }
   FOR_EACH_USER_END
-
+  
   list.sort();
-
+  
   for ( unsigned int i=0; i<list.count(); i++ )
-    popupMenu.insertItem( list.at(i)->alias, i );
+  popupMenu.insertItem( list.at(i)->alias, i );
 
   int res = popupMenu.exec(QCursor::pos());
   if ( res<0 ) return;
@@ -218,7 +176,7 @@ void GPGKeyManager::slot_add()
 
 void GPGKeyManager::editUser( ICQUser *u )
 {
-  QListViewItemIterator it( listView2 );
+  QListViewItemIterator it( lst_keyList );
   while ( it.current() )
   {
     KeyListItem* item = (KeyListItem*)it.current();
@@ -230,16 +188,20 @@ void GPGKeyManager::editUser( ICQUser *u )
     ++it;
   }
   if ( ! it.current() )
-    ( new KeyListItem( listView2, u ) )->edit();
+    ( new KeyListItem( lst_keyList, u ) )->edit();
 };
 
-void GPGKeyManager::slot_close()
+void GPGKeyManager::slot_remove()
 {
-  close();
-}
-
-GPGKeyManager::~GPGKeyManager()
-{
+  KeyListItem *item = (KeyListItem*)lst_keyList->currentItem();
+  if ( item )
+  {
+    if ( QMessageBox::question( this, tr("Remove GPG key"), tr("Do you want to remove the GPG key? The key isn't deleted from your keyring."), QMessageBox::Yes, QMessageBox::No )==QMessageBox::Yes )
+    {
+      item->unsetKey();
+      delete item;
+    };
+  }
 }
 
 void GPGKeyManager::initKeyList()
@@ -248,13 +210,17 @@ void GPGKeyManager::initKeyList()
   {
     if ( strcmp( pUser->GPGKey(), "" )!= 0 )
     {
-      new KeyListItem( listView2, pUser );
+      new KeyListItem( lst_keyList, pUser );
     }
   }
   FOR_EACH_USER_END
 }
 
-KeyList::KeyList( QWidget *parent ) : QListView( parent )
+
+
+// THE KEYLIST
+KeyList::KeyList( QWidget *_parent )
+  : QListView( _parent )
 {
   setAcceptDrops( TRUE );
 }
@@ -323,6 +289,7 @@ void KeyList::resizeEvent(QResizeEvent *e)
   }
 }
 
+// KEYLISTITEM
 KeyListItem::KeyListItem( QListView *parent, ICQUser *u )
   :QListViewItem( parent )
 {
@@ -381,5 +348,7 @@ void KeyListItem::unsetKey()
     gMainWindow->slot_updatedUser(&s);
   }
 }
+
+#include "gpgkeymanager.moc"
 
 #endif

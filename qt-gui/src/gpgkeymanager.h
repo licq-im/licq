@@ -18,57 +18,54 @@
 #ifndef GPGKEYMANAGER_H
 #define GPGKEYMANAGER_H
 
-#include <qvariant.h>
-#include <qdialog.h>
+#include <qlayout.h>
+#include <qlabel.h>
+#include <qpushbutton.h>
 #include <qlistview.h>
 
-class QVBoxLayout;
-class QHBoxLayout;
-class QGridLayout;
-class QSpacerItem;
-class QLabel;
-class QPushButton;
-class QListView;
-class QListViewItem;
+#include "licqdialog.h"
+#include "licq_user.h"
+#include "licq_events.h"
+#include "mainwin.h"
+#include "gpgkeyselect.h"
 
-class ICQUser;
-class GPGKeySelect;
+class KeyList;
 
-class GPGKeyManager : public QDialog
+class GPGKeyManager : public LicqDialog
 {
-    Q_OBJECT
+  Q_OBJECT
 
 public:
-    GPGKeyManager( QWidget* parent = 0 );
-    ~GPGKeyManager();
-
-    QListView* listView2;
-    QLabel *passPhraseLabel;
+  GPGKeyManager( QWidget *_parent = 0 );
+  ~GPGKeyManager();
 
 protected:
-
-  void initKeyList();
+  KeyList *lst_keyList;
   void editUser( ICQUser *u );
+  void initKeyList();
 
 protected slots:
-  void slot_edit();
-  void slot_close();
-  void slot_remove();
-  void slot_add();
   void slot_setPassphrase();
-  void slot_doubleClicked ( QListViewItem *item, const QPoint &pt, int i );
+  void slot_close();
+  void slot_add();
+  void slot_edit();
+  void slot_remove();
+  void slot_doubleClicked( QListViewItem *item, const QPoint &point, int i);
+
+private:
+  QLabel *lbl_passphrase, *lbl_dragndrop;
 };
 
 class KeyList : public QListView
 {
 public:
-  KeyList( QWidget *parent );
+  KeyList( QWidget *_parent );
   ~KeyList();
-
+  
 protected:
-  void dragEnterEvent(QDragEnterEvent* event);
-  void dropEvent(QDropEvent * de);
-  virtual void resizeEvent(QResizeEvent *e);
+  void dragEnterEvent( QDragEnterEvent *event );
+  void dropEvent( QDropEvent *de );
+  virtual void resizeEvent( QResizeEvent *e );
 };
 
 class KeyListItem : public QObject, public QListViewItem
@@ -94,4 +91,4 @@ protected slots:
   void slot_done();
 };
 
-#endif // GPGKEYMANAGER_H
+#endif //GPGKEYMANAGER_H
