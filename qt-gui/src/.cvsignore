@@ -6,3 +6,5 @@ Makefile.in
 *.moc
 .deps
 .libs
+kimiface.kidl
+kimiface_*
