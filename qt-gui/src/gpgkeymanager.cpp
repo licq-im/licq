@@ -72,7 +72,7 @@ GPGKeyManager::GPGKeyManager( QWidget* parent )
   GPGKeyManagerLayout->addWidget( groupBox );
 
   // User Keys
-  groupBox = new QGroupBox( "User Keys", this );
+  groupBox = new QGroupBox( tr("User Keys"), this );
   groupBox->setColumnLayout(0, Qt::Vertical );
   groupBox->layout()->setSpacing( 6 );
   groupBox->layout()->setMargin( 11 );
@@ -133,7 +133,7 @@ GPGKeyManager::GPGKeyManager( QWidget* parent )
 
 void GPGKeyManager::slot_setPassphrase()
 {
-  QMessageBox::information( this, "Set Passphrase", "Not yet implemented. Use licq_gpg.conf." );
+  QMessageBox::information( this, tr("Set Passphrase"), tr("Not yet implemented. Use licq_gpg.conf.") );
 }
 
 void GPGKeyManager::slot_edit()
