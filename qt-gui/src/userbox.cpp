@@ -604,9 +604,9 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         if ( m_bGPGKeyEnabled )
         {
           if (align == RIGHT)
-            w -= gMainWindow->pmGPGKey.width();
-          p->drawPixmap(w, 0, gMainWindow->pmGPGKey);
-          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmGPGKey.width() + 2;
+            w -= gMainWindow->pmGPGKeyEnabled.width();
+          p->drawPixmap(w, 0, gMainWindow->pmGPGKeyEnabled);
+          w = (align == RIGHT) ? w - 2 : w + gMainWindow->pmGPGKeyEnabled.width() + 2;
         }
         else
         {

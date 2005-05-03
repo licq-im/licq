@@ -4105,8 +4105,17 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
      pmSharedFiles = QPixmap(pixSharedFiles_xpm);
 
 #ifdef HAVE_LIBGPGME
-   pmGPGKey = QPixmap(pixKeyEnabled_xpm);
-   pmGPGKeyDisabled = QPixmap(pixKeyDisabled_xpm);
+   fIconsConf.ReadStr("GPGKeyEnabled", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmGPGKeyEnabled.load(sFilepath);
+   if (pmGPGKeyEnabled.isNull())
+     pmGPGKeyEnabled = QPixmap(pixKeyEnabled_xpm);
+   
+   fIconsConf.ReadStr("GPGKeyDisabled", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmGPGKeyDisabled.load(sFilepath);
+   if (pmGPGKeyDisabled.isNull())
+     pmGPGKeyDisabled = QPixmap(pixKeyDisabled_xpm);
 #endif
 
    if (!_bInitial)
@@ -4286,6 +4295,13 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmSearch.load(sFilepath);
 
+#ifdef HAVE_LIBGPGME
+   fIconsConf.ReadStr("GPGKey", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmGPGKey.load(sFilepath);
+   if(pmGPGKey.isNull()) pmGPGKey = QPixmap(pixKeyEnabled_xpm);
+#endif
+
    if (!_bInitial)
    {
      mnuStatus->changeItem(pmOnline, tr("&Online"), ICQ_STATUS_ONLINE);
@@ -4313,10 +4329,14 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUserAdm->changeItem(MNU_USER_ADM_SEARCH_USER, pmSearch, tr("S&earch for User"));
      mnuUserAdm->changeItem(MNU_USER_ADM_AUTHORIZE_USER, pmAuthorize, tr("A&uthorize User"));
      mnuUserAdm->changeItem(MNU_USER_ADM_REQUEST_AUTH, pmAuthorize, tr("Re&quest Authorization"));
+#ifdef HAVE_LIBGPGME
+     mnuSystem->changeItem(pmGPGKey, tr("&GPG Key Manager..."), MNU_SYS_GPG);
+#endif
      CUserView::UpdateFloaties();
      updateUserWin();
      updateEvents();
      updateStatus(0); //This shows ICQ status for the status label and dock icon
+
    }
 }
 
@@ -4421,21 +4441,21 @@ void CMainWindow::initMenu()
 
    mnuSystem = new QPopupMenu(NULL);
    mnuSystem->setCheckable(true);
-   mnuSystem->insertItem(tr("System Functions"), mnuOwnerAdm);
-   mnuSystem->insertItem(tr("User Functions"), mnuUserAdm);
-   mnuSystem->insertItem(tr("&Status"), mnuStatus);
-   mnuSystem->insertItem(tr("&Group"), mnuUserGroups);
-   mnuSystem->insertItem(tr("Set &Auto Response..."), this, SLOT(slot_AwayMsgDlg()));
+   mnuSystem->insertItem(tr("System Functions"), mnuOwnerAdm, 0, MNU_SYS_SYSTEM_FUNCTIONS);
+   mnuSystem->insertItem(tr("User Functions"), mnuUserAdm, 0, MNU_SYS_USER_FUNCTIONS);
+   mnuSystem->insertItem(tr("&Status"), mnuStatus, 0, MNU_SYS_STATUS);
+   mnuSystem->insertItem(tr("&Group"), mnuUserGroups, 0, MNU_SYS_GROUP);
+   mnuSystem->insertItem(tr("Set &Auto Response..."), this, SLOT(slot_AwayMsgDlg()), 0, MNU_SYS_AUTO_RESPONSE);
    mnuSystem->insertSeparator();
-   mnuSystem->insertItem(tr("&Network Window"), licqLogWindow, SLOT(show()));
-   mnuSystem->insertItem(tr("&Mini Mode"), this, SLOT(ToggleMiniMode()));
-   mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()));
-   mnuSystem->insertItem(tr("&Thread Group View"), this, SLOT(ToggleThreadView()));
-   mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()));
-   mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()));
-   mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
+   mnuSystem->insertItem(tr("&Network Window"), licqLogWindow, SLOT(show()), 0, MNU_SYS_NETWORKWIN);
+   mnuSystem->insertItem(tr("&Mini Mode"), this, SLOT(ToggleMiniMode()), 0, MNU_SYS_MINI_MODE);
+   mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()), 0, MNU_SYS_SHOW_OFFLINE);
+   mnuSystem->insertItem(tr("&Thread Group View"), this, SLOT(ToggleThreadView()), MNU_SYS_THREAD_VIEW);
+   mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()), 0, MNU_SYS_OPTIONS);
+   mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()), 0, MNU_SYS_SKINBROWSER);
+   mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()), 0, MNU_SYS_PLUGINS);
 #ifdef HAVE_LIBGPGME
-   mnuSystem->insertItem(pmGPGKey, tr("&GPG Key Manager..."), this, SLOT(showGPGKeyManager()));
+   mnuSystem->insertItem(pmGPGKey, tr("&GPG Key Manager..."), this, SLOT(showGPGKeyManager()), 0, MNU_SYS_GPG);
 #endif
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Sa&ve Settings"), this, SLOT(saveOptions()));

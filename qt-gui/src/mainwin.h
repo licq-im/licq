@@ -73,24 +73,6 @@ class LicqKIMIface;
   typedef QPtrList<UserSendCommon> UserSendEventList;
 #endif
 
-enum { /* ID's for the menu items in mnuUserAdm.
-          Needed to reference individual menu items,
-          i.e. when changing icons or status of an item.
-       */
-       MNU_USER_ADM_ADD_USER = 0,
-       MNU_USER_ADM_SEARCH_USER = 1,
-       MNU_USER_ADM_AUTHORIZE_USER = 2,
-       MNU_USER_ADM_REQUEST_AUTH = 3,
-       MNU_USER_ADM_RANDOM_CHAT = 4,
-       MNU_USER_ADM_POPUP_ALL_MSG = 5,
-       MNU_USER_ADM_EDIT_GROUPS = 6,
-       MNU_USER_ADM_UPDATE_ALL_USERS = 7,
-       MNU_USER_ADM_UPDATE_CURRENT_GROUP = 8,
-       MNU_USER_ADM_REDRAW_USER_WIN = 9,
-       MNU_USER_ADM_SAVE_ALL_USERS = 10,
-       MNU_USER_ADM_REGISTER_USER = 11
-};
-
 using std::vector;
 
 //=====CMainWindow==============================================================
@@ -261,7 +243,7 @@ public:
           pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
           pmPhoneFollowMeBusy, pmSharedFiles, pmMSNOnline, pmMSNOffline,
           pmMSNOccupied, pmMSNPrivate, pmMSNAway, pmAIMOnline, pmAIMAway,
-          pmAIMOffline, pmGPGKey, pmGPGKeyDisabled;
+          pmAIMOffline, pmGPGKey, pmGPGKeyEnabled, pmGPGKeyDisabled;
   unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
   int m_nProtoNum;
@@ -403,6 +385,45 @@ signals:
   void changeDockStatus(unsigned short);
   void signal_sentevent(ICQEvent *e);
   void signal_doneRegisterUser(ICQEvent *e);
+
+private:
+  enum { /* ID's for the menu items in mnuUserAdm.
+            Needed to reference individual menu items,
+            i.e. when changing icons or status of an item.
+        */
+        MNU_USER_ADM_ADD_USER = 0,
+        MNU_USER_ADM_SEARCH_USER = 1,
+        MNU_USER_ADM_AUTHORIZE_USER = 2,
+        MNU_USER_ADM_REQUEST_AUTH = 3,
+        MNU_USER_ADM_RANDOM_CHAT = 4,
+        MNU_USER_ADM_POPUP_ALL_MSG = 5,
+        MNU_USER_ADM_EDIT_GROUPS = 6,
+        MNU_USER_ADM_UPDATE_ALL_USERS = 7,
+        MNU_USER_ADM_UPDATE_CURRENT_GROUP = 8,
+        MNU_USER_ADM_REDRAW_USER_WIN = 9,
+        MNU_USER_ADM_SAVE_ALL_USERS = 10,
+        MNU_USER_ADM_REGISTER_USER = 11
+  };
+  
+  enum { /* ID's for the menu items in mnuSystem.
+            Needed to reference individual menu items,
+            i.e. when changing icons or status of an item.
+        */
+        MNU_SYS_SYSTEM_FUNCTIONS = 0,
+        MNU_SYS_USER_FUNCTIONS = 1,
+        MNU_SYS_STATUS = 2,
+        MNU_SYS_GROUP= 3,
+        MNU_SYS_AUTO_RESPONSE = 4,
+        MNU_SYS_NETWORKWIN = 5,
+        MNU_SYS_MINI_MODE = 6,
+        MNU_SYS_SHOW_OFFLINE = 7,
+        MNU_SYS_THREAD_VIEW = 8,
+        MNU_SYS_OPTIONS = 9,
+        MNU_SYS_SKINBROWSER = 10,
+        MNU_SYS_PLUGINS = 11,
+        MNU_SYS_GPG = 12
+  };
+
 
 };
 
