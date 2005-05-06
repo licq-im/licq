@@ -525,7 +525,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
   {
     if (pUser->SocketDesc(ICQ_CHNxNONE) != -1)
     {
-      gSocketMan.CloseSocket(pUser->SocketDesc(ICQ_CHNxNONE));
+      gSocketMan.CloseSocket(pUser->SocketDesc(ICQ_CHNxNONE), false, true);
       pUser->ClearSocketDesc();
     }
     if (!pUser->StatusOffline())

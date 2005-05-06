@@ -309,7 +309,7 @@ void CMSN::Run()
           //SB socket
           INetSocket *s = gSocketMan.FetchSocket(nCurrent);
           TCPSocket *sock = static_cast<TCPSocket *>(s);
-          if (sock->RecvRaw())
+          if (sock && sock->RecvRaw())
           {
             CMSNBuffer packet(sock->RecvBuffer());
             bool bProcess = false;
@@ -374,7 +374,8 @@ void CMSN::Run()
           {
             // Shouldn't get here, as we close the socket with a BYE command.
             // But just to be safe..
-            gSocketMan.DropSocket(sock);
+            if (sock)
+              gSocketMan.DropSocket(sock);
             gSocketMan.CloseSocket(nCurrent);
           }
         }
