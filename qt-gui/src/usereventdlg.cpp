@@ -1548,7 +1548,17 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         QDateTime date;
         
         // Iterate through each message to add
-        for (int i = 0; i < SHOW_RECENT_NUM && lHistoryIter != lHistoryList.end(); i++)
+        // Only show old messages as recent ones. Don't show duplicates.
+        int nMaxNumToShow;
+        if (lHistoryList.size() <= SHOW_RECENT_NUM)
+          nMaxNumToShow = lHistoryList.size() - nNewMessages;
+        else
+          nMaxNumToShow = SHOW_RECENT_NUM;
+
+        // Safety net
+        if (nMaxNumToShow < 0)
+          nMaxNumToShow = 0;
+        for (int i = 0; i < nMaxNumToShow && lHistoryIter != lHistoryList.end(); i++)
         {
           QString str;
           date.setTime_t((*lHistoryIter)->Time());
