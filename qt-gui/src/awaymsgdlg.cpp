@@ -156,6 +156,13 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   mleAwayMsg->setFocus();
   QTimer::singleShot(0, mleAwayMsg, SLOT(selectAll()));
 
+  installEventFilter(this);
+  mleAwayMsg->installEventFilter(this);
+  connect(mleAwayMsg, SIGNAL(clicked(int, int)),
+          this, SLOT(slot_autocloseStop()));
+  m_autocloseCounter = 9;
+  slot_autocloseTick();
+
   if (!isVisible())
   {
     if (!snPos.isNull()) move(snPos);
@@ -179,6 +186,7 @@ void AwayMsgDlg::slot_hints()
 
 void AwayMsgDlg::ok()
 {
+  m_autocloseCounter = -1;
   QString s = mleAwayMsg->text();
   while (s[s.length()-1].isSpace())
     s.truncate(s.length()-1);
@@ -196,6 +204,7 @@ void AwayMsgDlg::ok()
 
 void AwayMsgDlg::reject()
 {
+  m_autocloseCounter = -1;
   QTimer::singleShot(0, this, SLOT(close()));
 }
 
@@ -218,6 +227,39 @@ void AwayMsgDlg::slot_selectMessage(int result)
 void AwayMsgDlg::closeEvent(QCloseEvent *e)
 {
   e->accept();
+}
+
+bool AwayMsgDlg::eventFilter(QObject *obj, QEvent *e)
+{
+  if (e->type() == QEvent::KeyPress ||
+      e->type() == QEvent::MouseButtonPress ||
+      e->type() == QEvent::Accel)
+  {      
+    slot_autocloseStop();
+  }
+  return FALSE;
+}
+
+void AwayMsgDlg::slot_autocloseTick()
+{
+  if (m_autocloseCounter >= 0)
+  {
+    btnOk->setText(tr("(Closing in %1)").arg(m_autocloseCounter));
+    m_autocloseCounter--;
+    if (m_autocloseCounter < 0)
+      ok();
+    else
+      QTimer::singleShot(1000, this, SLOT(slot_autocloseTick()));
+  }
+}
+
+void AwayMsgDlg::slot_autocloseStop()
+{
+  if (m_autocloseCounter >= 0)
+  {
+     m_autocloseCounter = -1;
+     btnOk->setText(tr("&Ok"));
+  }
 }
 
 

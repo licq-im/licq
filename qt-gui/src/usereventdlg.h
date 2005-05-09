@@ -93,6 +93,12 @@ public:
   void updateTabLabel(ICQUser *u);
   void gotTyping(ICQUser *u, int);
 
+#ifdef USE_KDE
+#if KDE_VERSION >= 320
+  virtual void setIcon(const QPixmap &icon);
+#endif   // KDE_VERSION
+#endif // USE_KDE
+  
 private:
   CETabWidget *tabw;
   CMainWindow *mainwin;

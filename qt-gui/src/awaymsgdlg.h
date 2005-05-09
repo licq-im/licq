@@ -23,8 +23,10 @@ protected:
   unsigned short m_nStatus;
   static QPoint snPos;
   short m_nSAR;
+  int m_autocloseCounter;
 
   void closeEvent(QCloseEvent *);
+  bool eventFilter(QObject *, QEvent *);
 
 signals:
   void popupOptions(int);
@@ -35,6 +37,8 @@ protected slots:
   virtual void reject();
   void slot_selectMessage(int);
   void slot_hints();
+  void slot_autocloseTick();
+  void slot_autocloseStop();
 };
 
 class CustomAwayMsgDlg : public LicqDialog

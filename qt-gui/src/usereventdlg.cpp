@@ -49,6 +49,9 @@
 #include <kapp.h>
 #include <kfiledialog.h>
 #include <kcolordialog.h>
+#if KDE_VERSION >= 320
+#include <kwin.h>
+#endif // KDE_VERSION
 #else
 #include <qfiledialog.h>
 #include <qcolordialog.h>
@@ -334,7 +337,8 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
     {        
       if (u->NewMessages() > 0)
       {        
-        setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
+        if (tabw->currentPageIndex() == index)
+          setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
         flashTaskbar(true);
 
         // to clear it..
@@ -373,7 +377,8 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       // use status icon
       else
       {
-        setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
+        if (tabw->currentPageIndex() == index)
+          setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
         flashTaskbar(false);
 
         tabw->setTabIconSet(tab, CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
@@ -419,6 +424,11 @@ void UserEventTabDlg::updateTitle(QWidget *tab)
 #if QT_VERSION >= 300
   if (tab->caption())
     setCaption(tab->caption());
+
+  if (!tabw->tabIconSet(tab).isNull() &&
+      !tabw->tabIconSet(tab).pixmap().isNull())
+    setIcon(tabw->tabIconSet(tab).pixmap());
+  
 #endif
 }
 
@@ -466,6 +476,20 @@ void UserEventTabDlg::moveRight()
     tabw->setCurrentPage(0);
 #endif
 }
+
+#ifdef USE_KDE
+#if KDE_VERSION >= 320
+
+/* KDE 3.2 handles app-icon updates differently, since KDE 3.2 a simple setIcon() call
+   does no longer update the icon in kicker anymore :(
+   So we do it the "kde-way" here */
+void UserEventTabDlg::setIcon(const QPixmap &icon)
+{
+  KWin::setIcons(winId(), icon, icon);
+}
+
+#endif   // KDE_VERSION
+#endif // USE_KDE
 
 // -----------------------------------------------------------------------------
 
