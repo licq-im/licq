@@ -160,6 +160,8 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   mleAwayMsg->installEventFilter(this);
   connect(mleAwayMsg, SIGNAL(clicked(int, int)),
           this, SLOT(slot_autocloseStop()));
+  connect(mnuSelect, SIGNAL(aboutToShow()),
+          this, SLOT(slot_autocloseStop()));
   m_autocloseCounter = 9;
   slot_autocloseTick();
 
