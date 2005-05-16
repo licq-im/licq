@@ -3421,13 +3421,6 @@ EmoticonLabel::EmoticonLabel(const QString &file, const QString &key,
   m_sKey = key;
   
   QImage img = QImage(file);
-    
-  // only draw the first 16 pixels
-  int max_area = 16;
-  QSize size = img.size();
-  if (size.isValid() && size.width() > max_area && size.height() > max_area)
-    img = img.scale(max_area, max_area, QImage::ScaleFree);
-
   QPixmap pm(img);  
   setPixmap(pm);
 }
