@@ -127,7 +127,9 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
 void OwnerEditDlg::slot_ok()
 {
   const char *szUser = edtId->text().latin1();
-  const char *szPassword = edtPassword->text().latin1();
+  const char *szPassword = 0;
+  if (!edtPassword->text().isEmpty())
+    szPassword = edtPassword->text().latin1();
   const char *szProtocol = cmbProtocol->currentText().latin1();
   unsigned long nPPID = 0;
   
@@ -150,14 +152,16 @@ void OwnerEditDlg::slot_ok()
   ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_W);
   if (o)
   {
-    o->SetPassword(szPassword);
+    if (szPassword)
+      o->SetPassword(szPassword);
     o->SetId(szUser);
   }
   else
   {
     gUserManager.AddOwner(szUser, nPPID);
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_W);
-    o->SetPassword(szPassword);
+    if (szPassword)
+      o->SetPassword(szPassword);
   }
   
   gUserManager.DropOwner(nPPID);
