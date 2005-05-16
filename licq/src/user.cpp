@@ -2822,6 +2822,22 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
           sprintf(szTemp, "%d", Port());
           sz = szTemp;
           break;
+        case 'P':
+        {
+          ProtoPluginsList pl;
+          ProtoPluginsListIter it;
+          gLicqDaemon->ProtoPluginList(pl);
+          for (it = pl.begin(); it != pl.end(); it++)
+          {
+            if (m_nPPID == (*it)->PPID())
+            {
+              strcpy(szTemp, (*it)->Name());
+              sz = szTemp;
+              break;
+            }
+          }
+          break;
+        }
         case 'e':
           sz = GetEmailPrimary();
           if (sz[0] == '\0')
