@@ -1121,9 +1121,11 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
   // this notify is for local only adds
   if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify && !bTempUser)
     icqAddUser(szId);
-
+  else if (nPPID != LICQ_PPID && bNotify)
+    PushProtoSignal(new CAddUserSignal(szId, false), nPPID);
+  
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID));
-  PushProtoSignal(new CAddUserSignal(szId, false), nPPID);
+
   return true;
 }
 
