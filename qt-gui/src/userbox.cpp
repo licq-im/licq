@@ -1155,12 +1155,22 @@ void CUserView::viewportDropEvent(QDropEvent* e)
       QStrList lst;
       if(QUriDrag::decode(e, lst))
       {
-        if(!(text = QUriDrag::uriToLocalFile(lst.first())).isEmpty())
+        QStrListIterator strIter(lst);
+        if(!(text = QUriDrag::uriToLocalFile(strIter)).isEmpty())
         {
           UserSendFileEvent *e = static_cast<UserSendFileEvent *>
             (gMainWindow->callFunction(mnuUserSendFile, it->ItemId(),
                 it->ItemPPID()));
           e->setFile(text, QString::null);
+          
+          // Add all the files
+          while (strIter != lst.getLast())
+          {
+            ++strIter;
+            if (!(text = QUriDrag::uriToLocalFile(strIter)).isEmpty())
+              e->addFile(text);
+          }
+          
           e->show();
         }
         else
@@ -1172,6 +1182,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
           e->show();
         }
       }
+      
       //TODO change this
       else if(QTextDrag::decode(e, text)) {
 //        const char *p = (text.left(4).latin1());

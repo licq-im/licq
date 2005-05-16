@@ -1,6 +1,7 @@
 #ifndef zE1D68C95080DE073514FA90C07628F92
 #define zE1D68C95080DE073514FA90C07628F92
 
+#include <qmap.h>
 #include <qstring.h>
 #include <qstringlist.h>
 
@@ -32,6 +33,9 @@ public:
 	/*! \returns the list of files for `theme` */
 	QStringList fileList(const char *theme);
 	
+        /*! \returns a mapping of icons to reg exps */
+        QMap<QString, QString> EmoticonsKeys();
+        
 	void ParseMessage(QString &msg);
 
 private:

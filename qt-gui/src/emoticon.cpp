@@ -310,6 +310,20 @@ QStringList CEmoticons::fileList(const char *theme)
   return ret;
 }
 
+QMap<QString, QString> CEmoticons::EmoticonsKeys()
+{
+  QMap<QString, QString> map;
+  
+  node_list_t list = data->emoticons;
+  node_list_t::iterator iter;
+  for (iter = list.begin(); iter != list.end(); ++iter)
+  {
+    map[(*iter).file] = (*iter).emoticon.first();
+  }
+  
+  return map;
+}
+
 void CEmoticons::ParseMessage(QString &msg)
 {
   /**
@@ -390,6 +404,6 @@ main(int argc, char **argv)
   std::cout << s;
   std::cout << "\n";
 
-  return 0;
+  return 0;\
 }
 #endif

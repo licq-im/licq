@@ -19,6 +19,8 @@
 #ifndef USEREVENTDLG_H
 #define USEREVENTDLG_H
 
+#include <qframe.h>
+#include <qlabel.h>
 #include <qwidget.h>
 #include <functional>
 #include <list>
@@ -155,7 +157,8 @@ protected:
   CSignalManager *sigman;
   std::list<unsigned long> m_lnEventTag;
   QWidget *mainWidget;
-  QPushButton *btnHistory, *btnInfo, *btnEncoding, *btnSecure, *btnForeColor, *btnBackColor;
+  QPushButton *btnHistory, *btnInfo, *btnEncoding, *btnSecure, 
+              *btnEmoticon, *btnForeColor, *btnBackColor;
   QPopupMenu * popupEncoding;
 
   CInfoField *nfoStatus, *nfoTimezone;
@@ -292,6 +295,8 @@ protected slots:
   void cancelSend();
   void massMessageToggled(bool);
   void slot_resettitle();
+  void slot_Emoticon();
+  void slot_insertEmoticon(const QString &);
   void slot_SetForegroundICQColor();
   void slot_SetBackgroundICQColor();
   void trySecure();
@@ -370,7 +375,8 @@ public:
   virtual ~UserSendFileEvent();
 
   void setFile(const QString& file, const QString& description);
-
+  void addFile(const QString& file);
+  
 protected:
   QLabel *lblItem;
   CInfoField *edtItem;
@@ -471,5 +477,35 @@ protected slots:
 };
 
 /* ----------------------------------------------------------------------------- */
+
+class EmoticonLabel : public QLabel
+{
+  Q_OBJECT
+public:
+  EmoticonLabel(const QString &file, const QString &key, QWidget *parent);
+
+signals:
+  void clicked(const QString &);
+
+protected:
+  void mouseReleaseEvent(QMouseEvent *);
+  
+  QString m_sKey;
+};
+  
+/* ----------------------------------------------------------------------------- */
+
+class SelectEmoticon : public QFrame
+{
+  Q_OBJECT
+public:
+  SelectEmoticon(QWidget *parent);
+  
+signals:
+  void selected(const QString &);
+  
+protected slots:
+  void emoticonClicked(const QString &);
+};
 
 #endif

@@ -34,8 +34,10 @@
 #include <qvbox.h>
 #include <qvgroupbox.h>
 #include <qhgroupbox.h>
+#include <qimage.h>
 #include <qlabel.h>
 #include <qlayout.h>
+#include <qmap.h>
 #include <qpushbutton.h>
 #include <qsplitter.h>
 #include <qapplication.h>
@@ -43,6 +45,7 @@
 #include <qtextcodec.h>
 #include <qwhatsthis.h>
 #include <qtabwidget.h>
+#include <qsize.h>
 #include <ctype.h>
 
 #ifdef USE_KDE
@@ -64,6 +67,7 @@
 #include "usercodec.h"
 
 #include "authuserdlg.h"
+#include "emoticon.h"
 #include "ewidgets.h"
 #include "mainwin.h"
 #include "messagebox.h"
@@ -83,6 +87,7 @@
 #include "usercodec.h"
 #include "xpm/chatChangeFg.xpm"
 #include "xpm/chatChangeBg.xpm"
+#include "xpm/smile.xpm"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -102,9 +107,13 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   server = s;
   mainwin = m;
   sigman = theSigMan;
-  m_szId = _szId ? strdup(_szId) : 0;
-  if (m_szId)
+  if (_szId)
+  {
+    ICQUser::MakeRealId(_szId, _nPPID, m_szId);
     m_lUsers.push_back(m_szId);
+  }
+  else
+    m_szId = 0;
   m_nPPID = _nPPID;
   m_bOwner = (gUserManager.FindOwner(m_lUsers.front().c_str(), m_nPPID) != NULL);
   m_bDeleteUser = false;
@@ -612,13 +621,18 @@ UserEventCommon::~UserEventCommon()
   if (m_bDeleteUser && !m_bOwner)
     mainwin->RemoveUserFromList(strdup(m_lUsers.front().c_str()), m_nPPID, this);
 
-  free(m_szId);
+  if (m_szId);
+    delete [] m_szId;
   m_lUsers.clear();
 }
 
 bool UserEventCommon::FindUserInConvo(char *szId)
 {
-  return (std::find(m_lUsers.begin(), m_lUsers.end(), szId) != m_lUsers.end());
+  char *szRealId;
+  ICQUser::MakeRealId(szId, m_nPPID, szRealId);
+  bool bFound = (std::find(m_lUsers.begin(), m_lUsers.end(), szRealId) != m_lUsers.end());
+  delete [] szRealId;
+  return bFound;
 }
 
 void UserEventCommon::gotTyping(unsigned short nTyping)
@@ -654,12 +668,16 @@ void UserEventCommon::slot_updatetyping()
 //-----UserEventCommon::slot_userupdated-------------------------------------
 void UserEventCommon::slot_userupdated(CICQSignal *sig)
 {
-  if (m_nPPID != sig->PPID() ||
-       std::find(m_lUsers.begin(), m_lUsers.end(), sig->Id()) == m_lUsers.end())
+  if (m_nPPID != sig->PPID() || !FindUserInConvo(sig->Id()))
+       //std::find(m_lUsers.begin(), m_lUsers.end(), sig->Id()) == m_lUsers.end())
   {
     if (sig->CID() == m_nConvoId && m_nConvoId != 0)
     { 
-      m_lUsers.push_back(sig->Id());
+      char *szRealId;
+      ICQUser::MakeRealId(sig->Id(), sig->PPID(), szRealId);
+      m_lUsers.push_back(szRealId);
+      delete [] szRealId;
+
       // Now update the tab label
       if (mainwin->userEventTabDlg)
         mainwin->userEventTabDlg->updateConvoLabel(this);
@@ -1494,6 +1512,10 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   chkMass = new QCheckBox(tr("M&ultiple recipients"), box);
   hlay->addWidget(chkMass);
   connect(chkMass, SIGNAL(toggled(bool)), this, SLOT(massMessageToggled(bool)));
+  btnEmoticon = new QPushButton(box);
+  btnEmoticon->setPixmap(smile_xpm);
+  connect(btnEmoticon, SIGNAL(clicked()), this, SLOT(slot_Emoticon()));
+  hlay->addWidget(btnEmoticon);
   btnForeColor = new QPushButton(box);
   btnForeColor->setPixmap(chatChangeFg_xpm);
   connect(btnForeColor, SIGNAL(clicked()), this, SLOT(slot_SetForegroundICQColor()));
@@ -1647,7 +1669,10 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
               if (e->ConvoId() == m_nConvoId)
               {
                 // add to the convo list (but what if they left by the time we open this?)
-                m_lUsers.push_back(pUser->IdString());
+                char *szRealId;
+                ICQUser::MakeRealId(pUser->IdString(), pUser->PPID(), szRealId);
+                m_lUsers.push_back(szRealId);
+                delete [] szRealId;
                 m_vMsgs.push_back(make_pair(e, strdup(pUser->IdString())));
               }
             }
@@ -1742,7 +1767,13 @@ void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
   }
 
   if (!FindUserInConvo(const_cast<char *>(szId)))
-    m_lUsers.push_back(szId);
+  {
+    char *szRealId;
+    //XXX The PPID?
+    ICQUser::MakeRealId(szId, LICQ_PPID, szRealId);
+    m_lUsers.push_back(szRealId);
+    delete [] szRealId;
+  }
   
   m_nConvoId = _nConvoId;
 
@@ -1775,7 +1806,15 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long _nConvoId)
   
   if (m_lUsers.size() > 1)
   {
-    m_lUsers.remove(szId);
+    list<string>::iterator it;
+    for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
+    {
+      if (strcasecmp(szId, it->c_str()) == 0)
+      {
+        m_lUsers.remove(*it);
+        break;
+      }
+    }
     mleHistory->setOwner(m_lUsers.front().c_str());
   }
   else
@@ -1808,6 +1847,41 @@ void UserSendCommon::slot_resettitle()
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
   setCaption(m_sBaseTitle);
+}
+
+//-----UserSendCommon::slot_Emoticon-----------------------------------------
+void UserSendCommon::slot_Emoticon()
+{
+  SelectEmoticon *p = new SelectEmoticon(this);
+
+  QWidget *desktop = qApp->desktop();
+  QSize s = p->sizeHint();
+  s = p->sizeHint();
+  QPoint pos = QPoint(0, btnEmoticon->height());
+  pos = btnEmoticon->mapToGlobal(pos);
+  if (pos.x() + s.width() > desktop->width())
+  {
+    pos.setX(desktop->width() - s.width());
+    if (pos.x() < 0)
+      pos.setX(0);
+  }
+  if (pos.y() + s.height() > desktop->height())
+  {
+    pos.setY(pos.y() - btnEmoticon->height() - s.height());
+    if (pos.y() < 0)
+      pos.setY(0);
+  }
+  
+  connect(p, SIGNAL(selected(const QString &)), this,
+    SLOT(slot_insertEmoticon(const QString &)));
+  p->move(pos);
+  p->show();
+}
+
+//-----UserSecondCommon::slot_insertEmoticon-----------------------------------
+void UserSendCommon::slot_insertEmoticon(const QString &sKey)
+{
+  mleSend->insert(sKey);
 }
 
 //-----UserSendCommon::slot_SetForegroundColor-------------------------------
@@ -2863,6 +2937,16 @@ void UserSendFileEvent::browseFile()
   edtItem->setText(f);
 }
 
+void UserSendFileEvent::addFile(const QString &file)
+{
+  if (m_lFileList.size() == 0) return;
+  
+  m_lFileList.push_back(strdup(file.latin1()));
+  
+  btnEdit->setEnabled(true);
+  QString f = QString("%1 Files").arg(m_lFileList.size());
+  edtItem->setText(f);
+}
 
 void UserSendFileEvent::editFileList()
 {
@@ -3327,6 +3411,75 @@ void UserSendSmsEvent::slot_count()
 {
   int len = 160 - strlen(mleSend->text().utf8().data());
   nfoCount->setData((len >= 0) ? len : 0);
+}
+
+//=====EmoticonLabel===========================================================
+EmoticonLabel::EmoticonLabel(const QString &file, const QString &key,
+                             QWidget *parent)
+  : QLabel(parent)
+{
+  m_sKey = key;
+  
+  QImage img = QImage(file);
+    
+  // only draw the first 16 pixels
+  int max_area = 16;
+  QSize size = img.size();
+  if (size.isValid() && size.width() > max_area && size.height() > max_area)
+    img = img.scale(max_area, max_area, QImage::ScaleFree);
+
+  QPixmap pm(img);  
+  setPixmap(pm);
+}
+
+//-----EmoticonLabel::mouseReleaseEvent----------------------------------------
+void EmoticonLabel::mouseReleaseEvent(QMouseEvent *)
+{
+  emit clicked(m_sKey);
+}
+
+//=====SelectEmoticon==========================================================
+SelectEmoticon::SelectEmoticon(QWidget *parent)
+  : QFrame(parent, "SelectEmoticon", WType_Popup | WStyle_Tool | 
+      WStyle_Customize | WDestructiveClose)
+{
+  CEmoticons *e = gMainWindow->emoticons;
+  QMap<QString, QString> map = e->EmoticonsKeys();
+  QMapIterator<QString, QString> iter;
+  
+  int nRows = ::sqrt(map.size());
+  double d = ::sqrt(map.size());
+  if (d - nRows != 0)
+    nRows++;
+  int nCols = nRows;
+  
+  QGridLayout *grid = new QGridLayout(this, nRows, nCols);
+  grid->setSpacing(3);
+  grid->setMargin(4);
+  int x = 0, y = 0;
+  for (iter = map.begin(); iter != map.end(); ++iter)
+  {
+    EmoticonLabel *lbl = new EmoticonLabel(iter.key(), iter.data(), this);
+    connect(lbl, SIGNAL(clicked(const QString &)), this,
+      SLOT(emoticonClicked(const QString &)));
+    
+    grid->addWidget(lbl, x++, y);
+    if (x == nCols)
+    {
+      x = 0;
+      y++;
+    }  
+  }
+
+  setFrameShadow(Sunken);
+  setFrameShape(PopupPanel);
+}
+
+//-----SelectEmoticon::emoticonClicked-----------------------------------------
+void SelectEmoticon::emoticonClicked(const QString &sKey)
+{
+  selected(sKey);
+  close();
 }
 
 // ----------------------------------------------------------------------------

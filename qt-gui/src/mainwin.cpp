@@ -1654,7 +1654,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           else
           {
             // For protocols that don't use a convo id
-            if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
+            if (strcasecmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
             {
               e = static_cast<UserSendCommon*>(*it);
               e->gotTyping(u->GetTyping());
@@ -2687,7 +2687,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
       QPtrListIterator<UserViewEvent> it(licqUserView);
 #endif
       for (; it.current(); ++it)
-        if ((*it)->Id() && strcmp((*it)->Id(), szId) == 0 &&
+        if ((*it)->Id() && strcasecmp((*it)->Id(), szId) == 0 &&
             (*it)->PPID() == nPPID)
         {
           e = *it;
