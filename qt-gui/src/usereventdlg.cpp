@@ -25,6 +25,7 @@
 
 #include <algorithm>
 #include <utility>
+#include <cmath>
 
 #include <assert.h>
 #include <qaccel.h>
