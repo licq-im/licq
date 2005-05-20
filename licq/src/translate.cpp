@@ -241,11 +241,11 @@ char *CTranslator::ToUnicode(char *_sz)
 char *CTranslator::FromUnicode(char *_sz)
 {
   if (_sz == NULL) return NULL;
-  unsigned short nLen = strlen(_sz);
+  unsigned short nLen = strlen(_sz) * 2;
   char *szNewStr = new char[nLen + 1];
   unsigned int nInSize, nOutSize;
 
-  char *szOut = _sz, *szIn = szNewStr;
+  char *szIn = _sz, *szOut = szNewStr;
   iconv_t tr;
 
   nInSize = nLen;
