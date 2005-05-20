@@ -348,7 +348,7 @@ protected slots:
   void showPluginDlg();
   void showGPGKeyManager();
   void slot_AwayMsgDlg();
-  void showAwayMsgDlg(unsigned short status);
+  void showAwayMsgDlg(unsigned short status, bool autoclose = false);
   void showOptionsDlg(int);
   void popupOptionsDlg() { emit showOptionsDlg(0); };
   void showAuthUserDlg();

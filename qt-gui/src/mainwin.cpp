@@ -2208,7 +2208,7 @@ void CMainWindow::slot_doneAwayMsgDlg()
 }
 
 
-void CMainWindow::showAwayMsgDlg(unsigned short nStatus)
+void CMainWindow::showAwayMsgDlg(unsigned short nStatus, bool autoclose)
 {
   if(awayMsgDlg == NULL) {
     awayMsgDlg = new AwayMsgDlg();
@@ -2218,7 +2218,7 @@ void CMainWindow::showAwayMsgDlg(unsigned short nStatus)
   else
     awayMsgDlg->raise();
 
-  awayMsgDlg->SelectAutoResponse(nStatus);
+  awayMsgDlg->SelectAutoResponse(nStatus, autoclose);
 }
 
 
@@ -2248,7 +2248,7 @@ void CMainWindow::changeStatusManualProtocol(int id)
     nRealID |= ICQ_STATUS_NA;
   
   if (nRealID != ICQ_STATUS_OFFLINE && (nRealID & 0xFF) != ICQ_STATUS_ONLINE)
-    showAwayMsgDlg(nRealID);
+    showAwayMsgDlg(nRealID, true);
 
   changeStatus(nRealID, nPPID);
 }
@@ -2257,7 +2257,7 @@ void CMainWindow::changeStatusManualProtocol(int id)
 void CMainWindow::changeStatusManual(int id)
 {
   if (id != ICQ_STATUS_OFFLINE && (id & 0xFF) != ICQ_STATUS_ONLINE)
-    showAwayMsgDlg(id);
+    showAwayMsgDlg(id, true);
 
   changeStatus(id);
 }

@@ -13,7 +13,7 @@ class AwayMsgDlg : public LicqDialog
 public:
   AwayMsgDlg(QWidget *parent = 0);
   ~AwayMsgDlg();
-  void SelectAutoResponse(unsigned short status);
+  void SelectAutoResponse(unsigned short status, bool autoclose = false);
 
 protected:
   MLEditWrap *mleAwayMsg;

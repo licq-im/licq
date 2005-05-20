@@ -105,12 +105,19 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   l->addSpacing(20);
   l->addWidget(btnOk);
   l->addWidget(btnCancel);
+
+  m_autocloseCounter = -1;
+  installEventFilter(this);
+  mleAwayMsg->installEventFilter(this);
+  connect(mleAwayMsg, SIGNAL(clicked(int, int)), SLOT(slot_autocloseStop()));
+  connect(mnuSelect, SIGNAL(aboutToShow()), SLOT(slot_autocloseStop()));
+  connect(btnHints, SIGNAL(clicked()), SLOT(slot_autocloseStop()));
 }
 
 
 // -----------------------------------------------------------------------------
 
-void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
+void AwayMsgDlg::SelectAutoResponse(unsigned short _status, bool autoclose)
 {
   if((_status & 0xFF) == ICQ_STATUS_ONLINE || _status == ICQ_STATUS_OFFLINE)
     _status = (_status & 0xFF00) | ICQ_STATUS_AWAY;
@@ -156,14 +163,10 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status)
   mleAwayMsg->setFocus();
   QTimer::singleShot(0, mleAwayMsg, SLOT(selectAll()));
 
-  installEventFilter(this);
-  mleAwayMsg->installEventFilter(this);
-  connect(mleAwayMsg, SIGNAL(clicked(int, int)),
-          this, SLOT(slot_autocloseStop()));
-  connect(mnuSelect, SIGNAL(aboutToShow()),
-          this, SLOT(slot_autocloseStop()));
-  m_autocloseCounter = 9;
-  slot_autocloseTick();
+  if (autoclose) {
+    m_autocloseCounter = 9;
+    slot_autocloseTick();
+  }
 
   if (!isVisible())
   {
