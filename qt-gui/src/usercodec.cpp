@@ -28,6 +28,8 @@
 #include "licq_user.h"
 #include "licq_chat.h"
 
+QString *uc_DefaultEncoding;
+
 UserCodec::encoding_t UserCodec::m_encodings[] = {
   { QT_TR_NOOP("Unicode"), "UTF-8", 106, ENCODING_DEFAULT, true },
   { QT_TR_NOOP("Unicode-16"), "ISO-10646-UCS-2", 1000 , ENCODING_DEFAULT, true },
@@ -79,6 +81,14 @@ UserCodec::encoding_t UserCodec::m_encodings[] = {
   { 0, 0, 0, 0, false } // end marker
 };
 
+QTextCodec* UserCodec::defaultEncoding()
+{
+  QTextCodec *codec = QTextCodec::codecForName(uc_DefaultEncoding->latin1());
+  if (codec)
+    return codec;
+  return QTextCodec::codecForLocale();
+}
+
 QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
 {
   char *preferred_encoding = u->UserEncoding();
@@ -88,13 +98,12 @@ QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
         return codec;
   }
 
-  // return default encoding
-  return QTextCodec::codecForLocale();
+  return defaultEncoding();
 }
 
 QTextCodec *UserCodec::codecForProtoUser(const char *szId, unsigned long nPPID)
 {
-  QTextCodec *codec = QTextCodec::codecForLocale();
+  QTextCodec *codec = defaultEncoding();
 
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u)

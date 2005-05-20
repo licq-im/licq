@@ -35,6 +35,8 @@ public:
 	bool isMinimal;
   };
 
+  // Retrieves the default codec
+  static QTextCodec * defaultEncoding();
   // Retrieves the codec for an ICQUser object
   static QTextCodec * codecForICQUser(ICQUser *u);
   // Retrieves the codec for an CChatUser object
@@ -51,5 +53,7 @@ public:
 public:
   static encoding_t m_encodings[];
 };
+
+extern QString *uc_DefaultEncoding;
 
 #endif

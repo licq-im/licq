@@ -712,6 +712,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    licqConf.SetSection("locale");
    licqConf.ReadStr("DefaultEncoding", szTemp, "");
    m_DefaultEncoding = QString::fromLatin1(szTemp);
+   uc_DefaultEncoding = &m_DefaultEncoding;
    licqConf.ReadBool("ShowAllEncodings", m_bShowAllEncodings, false);
 
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away

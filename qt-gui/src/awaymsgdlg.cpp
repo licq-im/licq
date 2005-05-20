@@ -25,12 +25,14 @@
 #include <qlayout.h>
 #include <qtimer.h>
 #include <qapplication.h>
+#include <qtextcodec.h>
 
 #include "awaymsgdlg.h"
 #include "licq_log.h"
 #include "mainwin.h"
 #include "mledit.h"
 #include "optionsdlg.h"
+#include "usercodec.h"
 #include "licq_sar.h"
 #include "licq_user.h"
 #include "licq_icqd.h"
@@ -151,8 +153,9 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status, bool autoclose)
   if (o == 0) return;
   setCaption(QString(tr("Set %1 Response for %2"))
              .arg(ICQUser::StatusToStatusStr(m_nStatus, false)).arg(QString::fromLocal8Bit(o->GetAlias())));
+  QTextCodec *codec = UserCodec::defaultEncoding();
   if (*o->AutoResponse())
-    mleAwayMsg->setText(QString::fromLocal8Bit(o->AutoResponse()));
+    mleAwayMsg->setText(codec->toUnicode(o->AutoResponse()));
   else
     mleAwayMsg->setText(tr("I'm currently %1, %a.\n"
                            "You can leave me a message.\n"
@@ -202,7 +205,8 @@ void AwayMsgDlg::ok()
     close();
     return;
   }
-  o->SetAutoResponse(s.local8Bit());
+  QTextCodec *codec = UserCodec::defaultEncoding();
+  o->SetAutoResponse(codec->fromUnicode(s));
   gUserManager.DropOwner();
   close();
 }
