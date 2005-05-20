@@ -4910,12 +4910,15 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           unsigned long nUin, nIp;
           char nMode;
           msg >> nUin;
-          gLog.Info(tr("%sRandom chat user found (%lu).\n"), L_SRVxSTR, nUin);
-          ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+          char szUin[14];
+          snprintf(szUin, sizeof(szUin), "%lu", nUin);
+          gLog.Info(tr("%sRandom chat user found (%s).\n"), L_SRVxSTR, szUin);
+          ICQUser *u = gUserManager.FetchUser(szUin, LICQ_PPID, LOCK_W);
           bool bNewUser = false;
           if (u == NULL)
           {
-             u = new ICQUser(nUin);
+             AddUserToList(szUin, LICQ_PPID, false, true);
+             u = gUserManager.FetchUser(szUin, LICQ_PPID, LOCK_W);
              bNewUser = true;
           }
 
@@ -4940,7 +4943,6 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           if (bNewUser)
           {
-            AddUserToList(nUin);
             icqRequestMetaInfo(nUin);
           }
 
