@@ -245,24 +245,24 @@ char *CTranslator::FromUnicode(char *_sz)
   char *szNewStr = new char[nLen + 1];
   unsigned int nInSize, nOutSize;
 
-  char *_bi = _sz, *_bo = szNewStr;
-  iconv_t _tr;
+  char *szOut = _sz, *szIn = szNewStr;
+  iconv_t tr;
 
-  _i = nLen;
-  _o = nLen;
+  nInSize = nLen;
+  nOutSize = nLen;
 
-  _tr = iconv_open("", "UTF-8");
-  size_t ret = iconv(_tr, &_bi, &_i, &_bo, &_o);
-  iconv_close(_tr);
+  tr = iconv_open("", "UTF-8");
+  size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+  iconv_close(tr);
 
   if (ret == (size_t)(-1))
   {
-    _tr = iconv_open("", "UCS-2BE");
-    iconv(_tr, &_bi, &_i, &_bo, &_o);
-    iconv_close(_tr);
+    tr = iconv_open("", "UCS-2BE");
+    iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+    iconv_close(tr);
   }
 
-  *_bo = '\0';
+  *szOut = '\0';
 
   return szNewStr;
 }
@@ -276,7 +276,7 @@ char *CTranslator::FromUTF16(char *_sz, int nMsgLen)
   unsigned int nInSize, nOutSize;
   
   char *szIn = _sz, *szOut = szNewStr;
-  iconv_t _tr;
+  iconv_t tr;
   
   nInSize = nLen;
   nOutSize = nLen * 2;
@@ -301,22 +301,22 @@ char *CTranslator::ToUTF16(char *_sz, size_t &nSize)
   if (_sz == NULL) return NULL;
   unsigned short nLen = strlen(_sz) * 3;
   char *szNewStr = new char[nLen + 1];
-  unsigned int _i, _o;
-  char *_bi = _sz, *_bo = szNewStr;
-  iconv_t _tr;
+  unsigned int nInSize, nOutSize;
+  char *szOut = _sz, *szIn = szNewStr;
+  iconv_t tr;
   
-  _i = strlen(_sz);
-  _o = nLen;
+  nInSize = strlen(_sz);
+  nOutSize = nLen;
   
-  _tr = iconv_open("UCS-2BE", "UTF-8");
-  size_t ret = iconv(_tr, &_bi, &_i, &_bo, &_o);
-  iconv_close(_tr);
+  tr = iconv_open("UCS-2BE", "UTF-8");
+  size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+  iconv_close(tr);
   
   if (ret == (size_t)-1)
     gLog.Error("Error encoding to UTF-16.\n");
     
-  *_bo = '\0';
-  nSize = nLen - _o;
+  *szOut = '\0';
+  nSize = nLen - nOutSize;
   
   return szNewStr;
 }
