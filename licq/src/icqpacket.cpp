@@ -1243,12 +1243,17 @@ CPU_CheckInvisible::CPU_CheckInvisible(const char *szId)
 //-----ThroughServer-------------------------------------------------------
 CPU_ThroughServer::CPU_ThroughServer(const char *szId,
                                      unsigned char msgType, char *szMessage,
-                                     unsigned short nCharset, bool bOffline)
+                                     unsigned short nCharset, bool bOffline,
+                                     size_t nLen)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
 	m_nSubCommand = msgType;
 
-  int msgLen = szMessage ? strlen(szMessage) : 0;
+  int msgLen;
+  if (nLen)
+    msgLen = nLen;
+  else
+    msgLen = szMessage ? strlen(szMessage) : 0;
   int nUinLen = strlen(szId);
   unsigned short nFormat = 0;
   int nTypeLen = 0, nTLVType = 0;
@@ -4113,7 +4118,8 @@ CBuffer *CPacketTcp::Finalize(INetSocket *s)
 }
 
 CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
-   const char *szMessage, bool _bAccept, unsigned short nLevel, ICQUser *user)
+   const char *szMessage, bool _bAccept, unsigned short nLevel, ICQUser *user,
+   size_t nLen)
 {
   // Setup the message type and status fields using our online status
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -4204,14 +4210,24 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
   m_nSourceUin = gUserManager.OwnerUin();
   m_nCommand = _nCommand;
   m_nSubCommand = _nSubCommand;
-  m_szMessage = (szMessage == NULL ? strdup("") : strdup(szMessage));
+  if (nLen)
+  {
+    m_szMessage = (char *)malloc(nLen);
+    memcpy(m_szMessage, szMessage, nLen);
+    m_nMsgLen = nLen;
+  }
+  else
+  {
+    m_szMessage = (szMessage == NULL ? strdup("") : strdup(szMessage));
+    m_nMsgLen = strlen(m_szMessage);
+  }
   m_nLocalPort = user->LocalPort();
 
   // don't increment the sequence if this is an ack and cancel packet
   if (m_nCommand == ICQ_CMDxTCP_START) m_nSequence = user->Sequence(true);
 
   // v4,6 packets are smaller then v2 so we just set the size based on a v2 packet
-  m_nSize = 18 + strlen(m_szMessage) + 25;
+  m_nSize = 18 + m_nMsgLen + 25;
   buffer = NULL;
 }
 
@@ -4275,7 +4291,7 @@ void CPacketTcp::InitBuffer_v2()
   buffer->PackUnsignedLong(m_nCommand);
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(m_nSubCommand);
-  buffer->PackString(m_szMessage);
+  buffer->Pack(m_szMessage, m_nMsgLen);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   m_szLocalPortOffset = buffer->getDataPosWrite();
@@ -4307,7 +4323,7 @@ void CPacketTcp::InitBuffer_v4()
   buffer->PackUnsignedLong(m_nCommand);
   buffer->PackUnsignedLong(m_nSourceUin);
   buffer->PackUnsignedShort(m_nSubCommand);
-  buffer->PackString(m_szMessage);
+  buffer->Pack(m_szMessage, m_nMsgLen);
   buffer->PackUnsignedLong(s_nLocalIp);
   buffer->PackUnsignedLong(s_nRealIp);
   m_szLocalPortOffset = buffer->getDataPosWrite();
@@ -4339,7 +4355,7 @@ void CPacketTcp::InitBuffer_v6()
   buffer->PackUnsignedShort(m_nSubCommand);
   buffer->PackUnsignedShort(m_nStatus);
   buffer->PackUnsignedShort(m_nMsgType);
-  buffer->PackString(m_szMessage);
+  buffer->Pack(m_szMessage, m_nMsgLen);
 
   m_szLocalPortOffset = NULL;
 }
@@ -4369,7 +4385,7 @@ void CPacketTcp::InitBuffer_v7()
 //  buffer->PackUnsignedShort(0x0021);
   if (Channel() == ICQ_CHNxNONE)
   {
-    buffer->PackString(m_szMessage);
+    buffer->Pack(m_szMessage, m_nMsgLen);
   }
   else
   {
@@ -4387,10 +4403,10 @@ void CPacketTcp::PostBuffer_v7()
 
 //-----Message------------------------------------------------------------------
 CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
- CICQColor *pColor, ICQUser *pUser)
+ CICQColor *pColor, ICQUser *pUser, size_t nLen)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_MSG | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),
-       _sMessage, true, nLevel, pUser)
+       _sMessage, true, nLevel, pUser, nLen)
 {
   InitBuffer();
   if (m_nVersion >= 6)

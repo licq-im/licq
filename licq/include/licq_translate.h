@@ -27,9 +27,13 @@ public:
     const char *getMapFileName() { return m_szMapFileName; }
     const char *getMapName() { return m_szMapName; }
     
+    unsigned short CheckEncoding(const char *, int);
+    
     // Muse use delete[] on the returned value if it is not NULL
     char *ToUnicode(char *_sz);
     char *FromUnicode(char *_sz);
+    char *FromUTF16(char *_sz, int nMsgLen = -1);
+    char *ToUTF16(char *_sz, size_t &nLen);
     char *NToRN(const char* _szOldStr);
     char *RNToN(const char* _szOldStr);
     bool utf16to8(unsigned long c, string &s);

@@ -677,7 +677,7 @@ protected:
   void icqSendInvisibleList();
   void icqRequestSystemMsg();
   ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, char *_sMessage,
-    CUserEvent *, unsigned short = 0);
+    CUserEvent *, unsigned short = 0, size_t = 0);
   ICQEvent* icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent *, unsigned short = 0);
   void SaveUserList();
 

@@ -439,6 +439,11 @@ const unsigned long ICQ_PLUGIN_RESP_PHONExBOOK  = 0x00000003;
 const unsigned long ICQ_PLUGIN_RESP_PICTURE     = 0x00000001;
 const unsigned long ICQ_PLUGIN_RESP_STATUSxLIST = 0x00010000;
 
+//charsets
+const unsigned short CHARSET_ASCII   = 0x0000;
+const unsigned short CHARSET_UNICODE = 0x0002;
+const unsigned short CHARSET_CUSTOM  = 0x0003;
+
 //actual plugins
 const char PLUGIN_PHONExBOOK[]        = { 0x90, 0x7C, 0x21, 0x2C, 0x91, 0x4D,
                                           0xD3, 0x11, 0xAD, 0xEB, 0x00, 0x04,

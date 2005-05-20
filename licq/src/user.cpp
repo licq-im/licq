@@ -2013,7 +2013,8 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadBool("UseGPG", m_bUseGPG, false );
   m_fConf.ReadStr("GPGKey", szTemp, "" );
   SetString( &m_szGPGKey, szTemp );
-
+  m_bSupportsUTF8 = false;
+  
   if (nNewMessages > 0)
   {
     HistoryList hist;

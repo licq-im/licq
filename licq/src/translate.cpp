@@ -25,6 +25,7 @@ extern int errno;
 
 #include "licq_translate.h"
 #include "licq_log.h"
+#include "licq_icq.h"
 
 CTranslator gTranslator;
 
@@ -145,6 +146,27 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
   return true;
 }
 
+//============ CheckEncoding ================//
+
+unsigned short CTranslator::CheckEncoding(const char *szCheck, int nSize)
+{
+  // We can't really differentiate between CUSTOM and UNICODE so the
+  // daemon will take care of. We just report ASCII or other (in this case
+  // UNICODE).
+  unsigned short nEncoding = CHARSET_ASCII;
+  
+  for (int i = 0; i < nSize; i++)
+  {
+    if ((unsigned char)szCheck[i] >= 0x80)
+    {
+      nEncoding = CHARSET_UNICODE;
+      break;
+    }
+  }
+  
+  return nEncoding;
+}
+
 //============ translateToClient ============//
 
 void CTranslator::ServerToClient(char *szString)
@@ -218,38 +240,84 @@ char *CTranslator::ToUnicode(char *_sz)
 //-----FromUTF8--------------------------------------------------------------
 char *CTranslator::FromUnicode(char *_sz)
 {
-  if (_sz == NULL)  return NULL;
+  if (_sz == NULL) return NULL;
   unsigned short nLen = strlen(_sz);
   char *szNewStr = new char[nLen + 1];
-  unsigned long j = 0;
-  for (unsigned long i = 0; i < nLen; i++)
+  unsigned int nInSize, nOutSize;
+
+  char *_bi = _sz, *_bo = szNewStr;
+  iconv_t _tr;
+
+  _i = nLen;
+  _o = nLen;
+
+  _tr = iconv_open("", "UTF-8");
+  size_t ret = iconv(_tr, &_bi, &_i, &_bo, &_o);
+  iconv_close(_tr);
+
+  if (ret == (size_t)(-1))
   {
-    if ((unsigned char)_sz[i] <= 0x7F) // good ole ascii
-      szNewStr[j++] = _sz[i];
-    else
-    {
-      unsigned short nChar;
-
-      if ((unsigned char)_sz[i] >= 0xE0)
-      {
-        nChar = ((_sz[i] & 0x0F) << 12) | ((_sz[i+1] & 0x3F) << 6) |
-                (_sz[i+2] & 0x3F);
-        i += 2;
-      }
-      else
-      {
-        nChar = ((_sz[i] & 0x1F) << 6) | (_sz[i+1] & 0x3F);
-        i++;
-      }
-
-      if (nChar > 0xFF)
-        szNewStr[j++] = '?';
-      else
-        szNewStr[j++] = (char)nChar;
-    }
+    _tr = iconv_open("", "UCS-2BE");
+    iconv(_tr, &_bi, &_i, &_bo, &_o);
+    iconv_close(_tr);
   }
 
-  szNewStr[j] = '\0';
+  *_bo = '\0';
+
+  return szNewStr;
+}
+
+//-----FromUTF8--------------------------------------------------------------
+char *CTranslator::FromUTF16(char *_sz, int nMsgLen)
+{
+  if (_sz == NULL) return NULL;
+  unsigned short nLen = nMsgLen > 0 ? nMsgLen : strlen(_sz);
+  char *szNewStr = new char[nLen * 2];
+  unsigned int nInSize, nOutSize;
+  
+  char *szIn = _sz, *szOut = szNewStr;
+  iconv_t _tr;
+  
+  nInSize = nLen;
+  nOutSize = nLen * 2;
+  
+  tr = iconv_open("", "UCS-2BE");
+  size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+  iconv_close(tr);
+  
+  if (ret == (size_t)(-1))
+  {
+    gLog.Error("Error decoding a UTF-16 message.\n");
+  }
+  
+  *szOut = '\0';
+  
+  return szNewStr;
+}
+
+//-----ToUTF16-----------------------------------------------------------------
+char *CTranslator::ToUTF16(char *_sz, size_t &nSize)
+{
+  if (_sz == NULL) return NULL;
+  unsigned short nLen = strlen(_sz) * 3;
+  char *szNewStr = new char[nLen + 1];
+  unsigned int _i, _o;
+  char *_bi = _sz, *_bo = szNewStr;
+  iconv_t _tr;
+  
+  _i = strlen(_sz);
+  _o = nLen;
+  
+  _tr = iconv_open("UCS-2BE", "UTF-8");
+  size_t ret = iconv(_tr, &_bi, &_i, &_bo, &_o);
+  iconv_close(_tr);
+  
+  if (ret == (size_t)-1)
+    gLog.Error("Error encoding to UTF-16.\n");
+    
+  *_bo = '\0';
+  nSize = nLen - _o;
+  
   return szNewStr;
 }
 

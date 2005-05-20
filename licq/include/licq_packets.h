@@ -613,7 +613,8 @@ class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
   CPU_ThroughServer(const char *szId, unsigned char format, char *_sMessage,
-                    unsigned short _nCharset = 0, bool bOffline = true);
+                    unsigned short _nCharset = 0, bool bOffline = true,
+                    size_t _nLen = 0);
   CPU_ThroughServer(unsigned long _nDestinationUin, unsigned char format,
                     char *_sMessage);
 protected:
@@ -1299,7 +1300,7 @@ public:
 protected:
    CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
       const char *szMessage, bool _bAccept, unsigned short nLevel,
-      ICQUser *_cUser);
+      ICQUser *_cUser, size_t _nLen = 0);
    void InitBuffer();
    void PostBuffer();
    void InitBuffer_v2();
@@ -1320,6 +1321,7 @@ protected:
    unsigned short m_nMsgType;
    unsigned short m_nSequence;
    bool           m_bPluginReq;
+   size_t         m_nMsgLen;
    
    char *m_szLocalPortOffset;
    unsigned short m_nLevel;
@@ -1332,7 +1334,7 @@ class CPT_Message : public CPacketTcp
 {
 public:
    CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
-    CICQColor *pColor, ICQUser *pUser);
+    CICQColor *pColor, ICQUser *pUser, size_t nLen = 0);
 };
 
 

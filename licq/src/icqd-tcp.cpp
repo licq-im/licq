@@ -62,6 +62,8 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
 
   ICQEvent *result = NULL;
   char *mDos = NULL;
+  char *szMessage = NULL;
+  bool bUTF16 = false;
   if (m != NULL)
   {
     mDos = gTranslator.NToRN(m);
@@ -83,23 +85,48 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
   if (bMultipleRecipients) f |= E_MULTIxREC;
 
-  if (!online) // send offline
+  // What kinda encoding do we have here?
+  unsigned short nCharset = CHARSET_ASCII;
+  size_t nUTFLen = 0;
+  if (gTranslator.CheckEncoding(mDos, strlen(mDos)) == CHARSET_UNICODE)
   {
-     unsigned short nCharset = 0;
-     u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
-     if (u && u->UserEncoding())
-       nCharset = 3;
-     gUserManager.DropUser(u);
-
+    u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+    if (u && isdigit(u->IdString()[0]))
+    {
+      // ICQ Users can send a flag that says UTF8/16 is ok
+      if (u->SupportsUTF8())
+        nCharset = CHARSET_UNICODE;     
+      else if (u->UserEncoding())
+        nCharset = CHARSET_CUSTOM;
+    }
+    else if(u && !(isdigit(u->IdString()[0])))
+    {
+      // AIM users support UTF8/16
+      nCharset = CHARSET_UNICODE;
+    }
+    gUserManager.DropUser(u);
+  }
+  
+  szMessage =  cipher ? cipher : mDos;
+  if (nCharset == CHARSET_UNICODE && cipher == 0)
+  {
+    bUTF16 = true;
+    szMessage = gTranslator.ToUTF16(mDos, nUTFLen);
+  }
+     
+  // We took care of the charset so lets finally start getting this message sent!
+  
+  if (!online) // send offline
+  {   
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-     if (strlen(mDos) > MAX_MESSAGE_SIZE)
+     if (strlen(szMessage) > MAX_MESSAGE_SIZE)
      {
        gLog.Warn(tr("%sTruncating message to %d characters to send through server.\n"),
                  L_WARNxSTR, MAX_MESSAGE_SIZE);
-       mDos[MAX_MESSAGE_SIZE] = '\0';
+       szMessage[MAX_MESSAGE_SIZE] = '\0';
      }
      result = icqSendThroughServer(szId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
-                                   cipher ? cipher : mDos, e, nCharset);
+                                   cipher ? cipher : szMessage, e, nCharset, nUTFLen);
      u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   }
   else        // send direct
@@ -109,7 +136,7 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
-    CPT_Message *p = new CPT_Message(cipher ? cipher : mDos, nLevel, bMultipleRecipients, pColor, u);
+    CPT_Message *p = new CPT_Message(cipher ? cipher : szMessage, nLevel, bMultipleRecipients, pColor, u, nUTFLen);
     gLog.Info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
@@ -127,11 +154,13 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
 
   if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
 
+  if (bUTF16 && szMessage)
+    delete [] szMessage;
   if (cipher)
     free(cipher);
   if (mDos)
     delete [] mDos;
-
+    
   if (result != NULL)
     return result->EventId();
   else

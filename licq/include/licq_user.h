@@ -509,6 +509,8 @@ public:
   char *AutoResponse()                  { return m_szAutoResponse; }
   //!Retrieves the encoding Licq uses for this user
   char *UserEncoding()                  { return m_szEncoding; }
+  //!True if they have sent the UTF8 Cap
+  bool SupportsUTF8()                   { return m_bSupportsUTF8; }
   bool SendServer()                     { return m_bSendServer; }
   unsigned short SendLevel()            { return m_nSendLevel; }
   bool EnableSave()                     { return m_bEnableSave; }
@@ -623,6 +625,7 @@ public:
   void SetSequence(unsigned short s)  { m_nSequence = s; }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }
   void SetUserEncoding(const char* s) { SetString(&m_szEncoding, s); }
+  void SetSupportsUTF8(bool b)        { m_bSupportsUTF8 = b; }
   void SetShowAwayMsg(bool s)         { m_bShowAwayMsg = s; }
   void SetMode(char s)                { m_nMode = s; }
   void SetVersion(unsigned long s)    { m_nVersion = s; }
@@ -827,6 +830,7 @@ protected:
   char *m_szClientInfo;
   char *m_szAutoResponse;
   char *m_szEncoding;
+  bool m_bSupportsUTF8;
   char *m_szCustomAutoResponse;
   char *m_szId;
   char m_szUinString[13];

@@ -1464,14 +1464,15 @@ void CICQDaemon::icqRemoveFromIgnoreList(const char *_szId, unsigned long _nPPID
 
 //-----icqSendThroughServer-----------------------------------------------------
 ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
-  unsigned char format, char *_sMessage, CUserEvent* ue, unsigned short nCharset)
+  unsigned char format, char *_sMessage, CUserEvent* ue, unsigned short nCharset,
+  size_t nMsgLen)
 {
   ICQEvent* result;
   ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
   bool bOffline = u->StatusOffline();
   gUserManager.DropUser(u);
 
-  CPU_ThroughServer *p = new CPU_ThroughServer(szId, format, _sMessage, nCharset, bOffline);
+  CPU_ThroughServer *p = new CPU_ThroughServer(szId, format, _sMessage, nCharset, bOffline, nMsgLen);
 
   switch (format)
   {
@@ -2497,6 +2498,30 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       u->SetSharedFilesStatus(ICQ_PLUGIN_STATUSxINACTIVE);
     }
     
+    if (packet.hasTLV(0x000D))
+    {
+      CBuffer capBuf = packet.UnpackTLV(0x000D);
+      int nCapSize = packet.getTLVLen(0x000D);
+      char *caps = new char[nCapSize];    
+      for (unsigned short i = 0; i < nCapSize; i++)
+        capBuf >> caps[i];
+
+      // Check if they support UTF8
+      bool bUTF8 = false;
+      for (int i = 0; i < (nCapSize / CAP_LENGTH); i++)
+      {
+        if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_UTF8, CAP_LENGTH) == 0)
+        {
+          bUTF8 = true;
+          break;
+        }
+      }  
+      delete [] caps;
+
+      if (u)
+        u->SetSupportsUTF8(bUTF8);
+    }
+    
     if (packet.hasTLV(0x0011))
     {
       CBuffer msg = packet.UnpackTLV(0x0011);
@@ -2771,15 +2796,15 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       nMsgLen -= 4;
 
       char* szMessage = new char[nMsgLen+1];
-      for (int i = 0; i < nMsgLen; ++i)
+      for (int i = 0; i < nMsgLen; i++)
         szMessage[i] = msgTxt.UnpackChar();
-
+      
       szMessage[nMsgLen] = '\0';
       char* szMsg = 0;
       if (nEncoding == 2) // utf-8 or utf-16?
       {
         char *szTmpMsg = 0;
-        szTmpMsg = gTranslator.FromUnicode(szMessage);
+        szTmpMsg = gTranslator.FromUTF16(szMessage, nMsgLen);
         szMsg = gTranslator.RNToN(szTmpMsg);
         delete [] szTmpMsg;
       }
@@ -2826,7 +2851,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     {
       //I must admit, any server that does anything like this is a pile of shit
       CBuffer msgTxt = packet.UnpackTLV(5);
-      if (msgTxt.getDataSize() == 0)  break;
+      if (msgTxt.getDataSize() == 0) break;
 
       unsigned short nCancel = msgTxt.UnpackUnsignedShort();
 
@@ -2846,6 +2871,18 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       CBuffer advMsg = msgTxt.UnpackTLV(0x2711);
       if (advMsg.getDataSize() == 0)  break;
+      
+      // Check if they support UTF8
+      bool bUTF8 = false;
+      if (memcmp(cap, ICQ_CAPABILITY_UTF8, CAP_LENGTH) == 0)
+        bUTF8 = true;
+        
+      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+      if (u)
+      {
+        u->SetSupportsUTF8(bUTF8);
+        gUserManager.DropUser(u);
+      }
       
       if (memcmp(cap, ICQ_CAPABILITY_DIRECT, CAP_LENGTH) == 0)
       {
@@ -2956,7 +2993,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       gTranslator.ServerToClient(szMsg);
 
       bool bNewUser = false;
-      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+      u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
       if (u == NULL)
       {
         u = new ICQUser(szId, LICQ_PPID);
