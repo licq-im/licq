@@ -768,7 +768,8 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
 {
   QString s;
   QString color;
-  
+  bool bAIM = (m_nPPID == LICQ_PPID) && !isdigit(m_szId[0]);
+
   if (fromHistory) 
     if (dir == D_RECEIVER) 
       color = m_colorRcvHistory.name();
@@ -818,6 +819,12 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
       s.append(QString("<font color=\"%1\">%2</font>")
                       .arg(color)
                       .arg(messageText));
+      if (bAIM)
+      {
+        s.prepend("<html><body>");
+        s.append("</body></html>");
+      }
+
       break;
     case 2:
       s = QString("<font color=\"%1\"><b>%2%3 - %4: </b></font>")
@@ -828,6 +835,13 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
       s.append(QString("<font color=\"%1\">%2</font>")
                       .arg(color)
                       .arg(messageText));
+
+      if (bAIM)
+      {
+        s.prepend("<html><body>");
+        s.append("</body></html>");
+      }
+
       break;  
     case 3:
       s = QString("<table border=\"1\"><tr><td><b><font color=\"%1\">%2%3</font><b><td><b><font color=\"%4\">%5</font></b></font></td>")
