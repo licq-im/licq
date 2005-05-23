@@ -738,7 +738,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   buffer->PackUnsignedLongBE(0x00000001);
   buffer->PackTLV(0x0001, uinlen, szUin);
   buffer->PackTLV(0x0002, pwlen, szEncPass);
-  buffer->PackTLV(0x0003,  0x0033, "ICQ Inc. - Product of ICQ (TM).2001b.5.17.1.3642.85");
+  buffer->PackTLV(0x0003,  0x0033, "ICQ Inc. - Product of ICQ (TM).2003a.5.45.1.3777.85");
 
   // Static versioning
   buffer->PackUnsignedLongBE(0x00160002);
@@ -748,12 +748,12 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   buffer->PackUnsignedShortBE(0x0005);
   // Client version minor
   buffer->PackUnsignedLongBE(0x00180002);
-  buffer->PackUnsignedShortBE(0x0011);
+  buffer->PackUnsignedShortBE(0x002D);
   buffer->PackUnsignedLongBE(0x00190002);
   buffer->PackUnsignedShortBE(0x0001);
   // Client version build
   buffer->PackUnsignedLongBE(0x001a0002);
-  buffer->PackUnsignedShortBE(0x0e3a);
+  buffer->PackUnsignedShortBE(0x0EC1);
   buffer->PackUnsignedLongBE(0x00140004);
   buffer->PackUnsignedLongBE(0x00000055);
 
