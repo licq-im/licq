@@ -2990,7 +2990,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       char *szMsg = parseRTF(szTmpMsg);
       delete [] szTmpMsg;
 
-      gTranslator.ServerToClient(szMsg);
+      // Seems to be misplaced, don't do it here
+      //gTranslator.ServerToClient(szMsg);
 
       bool bNewUser = false;
       u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
@@ -3019,6 +3020,13 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         gLog.Info(tr("%s%s (%s) is %s to us.\n"), L_TCPxSTR, u->GetAlias(),
           u->IdString(), u->StatusStr());
         if (r) u->SetOfflineOnDisconnect(true);
+      }
+
+      if (u->Version() == 0x0A)
+      {
+        // We removed the conversion from before, but with this version we need
+        // it back. Go figure.
+        gTranslator.ClientToServer(szMsg);
       }
 
       // Handle it
@@ -3779,7 +3787,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
               if (szNewName)
               {
-                if (szUnicodeName)
+                if (szUnicodeAlias)
                 {
                   u->SetAlias(szUnicodeAlias);
                 }
