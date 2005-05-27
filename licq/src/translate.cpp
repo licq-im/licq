@@ -302,10 +302,10 @@ char *CTranslator::ToUTF16(char *_sz, size_t &nSize)
   unsigned short nLen = strlen(_sz) * 3;
   char *szNewStr = new char[nLen + 1];
   unsigned int nInSize, nOutSize;
-  char *szOut = _sz, *szIn = szNewStr;
+  char *szOut = szNewStr, *szIn = _sz;
   iconv_t tr;
   
-  nInSize = strlen(_sz);
+  nInSize = strlen(szIn);
   nOutSize = nLen;
   
   tr = iconv_open("UCS-2BE", "UTF-8");
@@ -314,7 +314,7 @@ char *CTranslator::ToUTF16(char *_sz, size_t &nSize)
   
   if (ret == (size_t)-1)
     gLog.Error("Error encoding to UTF-16.\n");
-    
+
   *szOut = '\0';
   nSize = nLen - nOutSize;
   
