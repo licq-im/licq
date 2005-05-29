@@ -1,8 +1,6 @@
 <?
   include "header.php";
 
-  if (file_exists("/home/groups/l/li/licq/htdocs/zorbstats/zorblogs.php"))
-    include("/home/groups/l/li/licq/htdocs/zorbstats/zorblogs.php");
   if (file_exists("/home/groups/l/li/licq/htdocs/zorbstats/zorblogspages.php"))
   {
     include ("/home/groups/l/li/licq/htdocs/zorbstats/zorblogspages.php");

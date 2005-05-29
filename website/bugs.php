@@ -1,5 +1,15 @@
-	<? include "header.php" ?>
-      
+<?
+  include "header.php";
+
+  if (file_exists("/home/groups/l/li/licq/htdocs/zorbstats/zorblogspages.php"))
+  {
+    include ("/home/groups/l/li/licq/htdocs/zorbstats/zorblogspages.php");
+    $pagename = substr($PHP_SELF, 1);
+    $dispname = substr($PHP_SELF, 1, -4);
+    countpage($pagename, $dispname);
+  }
+?>
+ 
       <div id="content" > 
 
 				<div id="main"><img src="images/main_title_bugs.gif" alt="Bugtracker" /></div>
