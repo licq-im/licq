@@ -88,9 +88,14 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   // What kinda encoding do we have here?
   unsigned short nCharset = CHARSET_ASCII;
   size_t nUTFLen = 0;
+  char *szFromEncoding = 0;
   if (gTranslator.CheckEncoding(mDos, strlen(mDos)) == CHARSET_UNICODE)
   {
     u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+    if (u && u->UserEncoding())
+    {
+      szFromEncoding = strdup(u->UserEncoding());
+    }
     if (u && isdigit(u->IdString()[0]))
     {
       // ICQ Users can send a flag that says UTF8/16 is ok
@@ -111,7 +116,10 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   if (nCharset == CHARSET_UNICODE && cipher == 0)
   {
     bUTF16 = true;
-    szMessage = gTranslator.ToUTF16(mDos, nUTFLen);
+    if (szFromEncoding == 0)
+      szFromEncoding = strdup("UTF-8");
+    szMessage = gTranslator.ToUTF16(mDos, szFromEncoding, nUTFLen);
+    free(szFromEncoding);
   }
      
   // We took care of the charset so lets finally start getting this message sent!

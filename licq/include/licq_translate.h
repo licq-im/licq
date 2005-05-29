@@ -33,7 +33,7 @@ public:
     char *ToUnicode(char *_sz);
     char *FromUnicode(char *_sz);
     char *FromUTF16(char *_sz, int nMsgLen = -1);
-    char *ToUTF16(char *_sz, size_t &nLen);
+    char *ToUTF16(char *_sz, char *_szEncoding, size_t &nLen);
     char *NToRN(const char* _szOldStr);
     char *RNToN(const char* _szOldStr);
     bool utf16to8(unsigned long c, string &s);
