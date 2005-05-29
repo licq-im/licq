@@ -1,0 +1,2096 @@
+2004-09-30 01:51  emostar
+
+	* plugins/console/: README, configure.in, src/Makefile.am,
+	  src/console.cpp, src/console.h, src/console_menu.cpp,
+	  src/console_print.cpp, src/window.cpp, src/window.h: Fix Thomas'
+	  patch, it broke sending a message with ".d", ".s", or ".u"
+
+	  Add Philp Nelson's large update. Console plugin now requires CDK
+	  to be installed.
+
+2004-09-30 01:09  emostar
+
+	* doc/daemon.doxygen, plugins/qt-gui/doc/qt-gui.doxygen: Version
+	  1.3.0
+
+2004-09-30 01:08  emostar
+
+	* doc/: README-0.61-0.70, README-0.70-0.71, README-1.2.0: Moved to
+	  new directory
+
+2004-09-30 01:07  emostar
+
+	* README-0.61-0.70, README-0.70-0.71, README-1.2.0: Moving these
+
+2004-09-30 01:03  emostar
+
+	* README, README.GPG: Update the README for 1.3.0 Add a README for
+	  GPG
+
+2004-09-29 17:11  emostar
+
+	* plugins/email/src/forwarder.cpp: Update for Protocol Plugins
+
+2004-09-29 14:51  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mainwin.h, ownermanagerdlg.cpp,
+	  ownermanagerdlg.h, registeruser.h: Don't crash if the user tries
+	  to use the Owner Manager dialog more than once in a session.
+
+2004-09-27 23:01  emostar
+
+	* src/icqd-tcp.cpp: Set the flag for any encoding
+
+2004-09-26 11:20  dreamforce2
+
+	* doc/README: little documentation update.
+
+2004-09-25 23:19  emostar
+
+	* plugins/qt-gui/src/searchuserdlg.cpp: Fix a crash if there is no
+	  default encoding set.
+
+2004-09-24 22:30  emostar
+
+	* include/licq_translate.h: New function
+
+2004-09-24 16:56  dreamforce2
+
+	* plugins/qt-gui/src/userinfodlg.cpp: - the checkbox "keep alias on
+	  update" should work at every time, not only after pressing
+	  "save"! - fixes SF bug 972993.
+
+2004-09-24 15:44  dreamforce2
+
+	* plugins/console/src/console.cpp: - only send the message when we
+	  got a single dot on a line,	don't send when we got "..." or
+	  something like this.	- fixes SF bug 968508
+
+2004-09-24 15:30  emostar
+
+	* src/: rtf.cc, rtf.ll, translate.cpp: Fix a problem with UTF16 in
+	  RTF.
+
+2004-09-24 13:51  dreamforce2
+
+	* po/Makefile.in.in: - if msgfmt could not be found, we should not
+	  try to use it.  - fixes SF bug 1026711.
+
+2004-09-24 13:50  dreamforce2
+
+	* configure.in: - tell the user if they are missing msgfmt and that
+	  they are loosing   localization...
+
+2004-09-24 09:48  dreamforce2
+
+	* plugins/console/.cvsignore: little update.
+
+2004-09-24 09:43  dreamforce2
+
+	* plugins/email/: .cvsignore, src/.cvsignore: little update.
+
+2004-09-24 09:03  dreamforce2
+
+	* plugins/console/src/console_print.cpp: fix segfault when running
+	  console plugin and no owner.	this fixes SF bug 1033227.
+
+2004-09-23 01:07  emostar
+
+	* plugins/qt-gui/share/qt-gui/emoticons/msn/: emoticons.xml,
+	  kiss.png, roll_smile.png, sleepy_smile.png: Update some MSN icons
+	  and a few case sensitive triggers.
+
+2004-09-22 14:31  emostar
+
+	* src/icqd-filetransfer.cpp: Missed this, patch from Soenke
+	  Schwardt.
+
+2004-09-22 14:27  emostar
+
+	* src/: licq.cpp, licq.h: Build in the upgrade function.. now users
+	  upgrading from pre 1.2.8 do not need to run any scripts.
+
+2004-09-19 14:18  emostar
+
+	* src/icqd-tcp.cpp: Init to NULL just to be safe.
+
+2004-09-19 13:18  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, searchuserdlg.cpp,
+	  searchuserdlg.h: Search for users using the default encoding.
+	  Before it didn't work and was impossible to search for users of
+	  another codec, such as Japanese or Russian.
+
+2004-09-18 23:38  emostar
+
+	* src/icqd-tcp.cpp: RTF can be sent directly too.
+
+2004-09-17 14:30  emostar
+
+	* include/licq_icqd.h, include/licq_packets.h, src/icqd-srv.cpp,
+	  src/icqd-tcp.cpp, src/icqpacket.cpp: Set the flag when we send a
+	  ISO 8859-1 message. Fixes some problems with other clients.
+
+2004-09-16 18:18  emostar
+
+	* plugins/qt-gui/src/: wharf.cpp, wharf.h: Fix some problems with
+	  the docking icon. It should show the right size in Gnome now
+	  (Small Icon with Qt-GUI), but can someone confirm this? Changing
+	  the style of docking requires a restart of Licq, it doesn't show
+	  it properly otherwise. Hopefully this will be fixed soon.
+
+2004-09-16 18:13  dreamforce2
+
+	* plugins/qt-gui/share/qt-gui/extended.icons.basic/basic.icons: add
+	  a linefeed at the end of the file :)
+
+2004-09-16 16:03  emostar
+
+	* src/: rtf.cc, rtf.ll: Don't parse as an RTF message unless it is
+	  an RTF message ;)
+
+2004-09-16 09:19  dreamforce2
+
+	* plugins/qt-gui/po/de.po: hmpf... fix the broken header ;-)
+
+2004-09-16 08:42  dreamforce2
+
+	* plugins/qt-gui/po/: de.po, de.ts: Little fix.
+
+2004-09-15 15:14  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mainwin.h, ownermanagerdlg.cpp,
+	  ownermanagerdlg.h, registeruser.cpp, registeruser.h, sigman.cpp:
+	  Update the registration dialog. It is now part of the owner
+	  manager dialog. Also, update to handle the replies of registering
+	  new users.
+
+2004-09-15 15:12  emostar
+
+	* include/licq_icqd.h, src/icqd-srv.cpp, src/icqd.cpp,
+	  src/icqpacket.cpp: Properly send the registration replies to the
+	  plugin that called it.
+
+2004-09-15 15:11  emostar
+
+	* src/licq.conf.h: Update for protocol plugins.
+
+2004-09-14 22:23  emostar
+
+	* plugins/qt-gui/src/usercodec.cpp: We need to support 16-bit
+	  Unicode. This fixes the problem with communicating with clients
+	  in different languages. If you talk with a gaim user, the codec
+	  should be set to this.
+
+2004-09-14 22:20  emostar
+
+	* src/Makefile.am, src/icqd-srv.cpp, src/icqpacket.cpp, src/rtf.cc,
+	  src/rtf.ll, include/licq_icqd.h: Support RTF messages. This
+	  allows Licq to communicate with ICQ Lite in different languages
+	  (so far worked with Japanese OK..) Still requires the right codec
+	  to be set.
+
+2004-09-14 07:08  dreamforce2
+
+	* plugins/qt-gui/po/README.LOCALE.QT-3: Update documentation.
+
+2004-09-14 06:42  dreamforce2
+
+	* plugins/qt-gui/po/ru.po: A little fix by Peter Eisentraut. Thank
+	  you :)
+
+2004-09-12 12:44  dreamforce2
+
+	* plugins/qt-gui/po/de.po: update. converted the original de.ts
+	  into de.po
+
+2004-09-12 12:43  dreamforce2
+
+	* plugins/qt-gui/po/de.ts: Some typo fixes.
+
+2004-09-12 12:40  dreamforce2
+
+	* plugins/qt-gui/share/qt-gui/extended.icons.thomas/:
+	  pixICQphoneActive.xpm, pixICQphoneBusy.xpm,
+	  pixPhoneFollowMeActive.xpm, pixPhoneFollowMeBusy.xpm,
+	  pixSharedFiles.xpm, thomas.icons: More nice icons.
+
+2004-09-12 10:59  dreamforce2
+
+	* plugins/qt-gui/: share/qt-gui/icons.thomas/remove.xpm,
+	  share/qt-gui/icons.thomas/search.xpm,
+	  share/qt-gui/icons.thomas/thomas.icons, src/mainwin.cpp,
+	  src/xpm/remove.xpm, src/xpm/search.xpm, src/mainwin.h,
+	  src/skinbrowser.cpp: few more icons for the gui
+
+2004-09-11 17:20  dreamforce2
+
+	* .cvsignore, plugins/msn/.cvsignore, plugins/msn/README: update.
+
+2004-09-10 14:55  dreamforce2
+
+	* plugins/qt-gui/.cvsignore: ignore "autom4te.cache" :)
+
+2004-09-06 13:55  emostar
+
+	* include/licq_user.h, src/buffer.cpp, src/user.cpp: WARNING: This
+	  can break some behavior of the plugins.
+
+	  An ID of a ICQ Protocol user will not be stripped of all spaces
+	  and converted to lower case before it is stored in the user hash.
+	   This means if a plugin uses strcmp to make sure of a particular
+	  user, it will have to be updated to use ICQUser::MakeRealId().
+	  This function converts a user Id to the stored format.  I wrote
+	  the fix for the qt-gui, just take a look at that to fix other
+	  plugins (if they are broken from this).  This will need to be
+	  completely checked before 1.3.0 is released.
+
+	  Why was this done? AIM screen names do not care about case and
+	  spaces.  This fixes a bug if you add an AIM user's name
+	  differently than how they created it.  It would be added, but
+	  Licq would receive the real screen name and not be able to find
+	  that user in the hash.
+
+2004-09-06 13:45  emostar
+
+	* include/licq_icq.h: A few more server constants.
+
+2004-09-06 13:44  emostar
+
+	* src/icqd-srv.cpp: Send these packets too.. they might be
+	  important in the future.  Fix the icqRemoveUser() to use the new
+	  style function.
+
+2004-09-06 13:34  emostar
+
+	* src/icqd.cpp: Fix a small bug that didn't check the PPID for
+	  Licq.
+
+2004-09-06 13:33  emostar
+
+	* src/icqpacket.cpp: Send direct connect info here too.
+
+2004-09-06 12:50  emostar
+
+	* plugins/qt-gui/src/optionsdlg.cpp: Make sure close is called..
+	  maybe unnecessary, but there's some bug with Qt 3.3 that screws
+	  up the docking icon for Non-KDE systems.
+
+	  Don't crash if there isn't an owner available for the options.
+
+2004-09-05 14:28  emostar
+
+	* plugins/msn/src/msn.cpp: Prevent a crash that occurred when a
+	  logoff signal was sent to the plugin while it was already
+	  offline.
+
+2004-09-05 14:15  emostar
+
+	* plugins/msn/src/: msn.cpp, msnpacket.cpp: Fix redirects.
+
+2004-09-04 11:56  dreamforce2
+
+	* plugins/qt-gui/src/mainwin.cpp: Re-order the user menu
+
+2004-09-03 17:55  dreamforce2
+
+	* plugins/qt-gui/share/qt-gui/icons.thomas/README.txt: Be more
+	  precise with the license ;-)
+
+2004-09-03 10:37  dreamforce2
+
+	* plugins/qt-gui/share/qt-gui/icons.thomas/README.txt: A
+	  README-file for this Iconset
+
+2004-09-03 10:36  dreamforce2
+
+	* plugins/qt-gui/share/qt-gui/icons.thomas/icons.thomas.tar.bz2:
+	  Sources for AIM and MSN Icons for 1.3.0 :-)
+
+2004-09-03 10:10  dreamforce2
+
+	* plugins/qt-gui/share/qt-gui/icons.thomas/: msnaway.xpm,
+	  msnoccupied.xpm, msnoffline.xpm, msnonline.xpm, msnprivate.xpm:
+	  New MSN Icons for 1.3.0 :-)
+
+2004-09-03 06:22  dreamforce2
+
+	* plugins/qt-gui/share/qt-gui/icons.thomas/: aimaway.png,
+	  aimoffline.png, aimonline.png: New AIM Icons for 1.3.0 :-)
+
+2004-08-26 14:08  emostar
+
+	* plugins/qt-gui/src/wharf.cpp: Qt-GUI can now properly use the
+	  Small Icon for docking.
+
+2004-08-26 14:03  emostar
+
+	* src/licq.cpp: An old patch from Juan to remove the licq.pid file
+	  on exit.
+
+2004-08-26 08:19  dreamforce2
+
+	* plugins/qt-gui/po/fi.po: update. converted the original fi.ts
+	  into fi.po
+
+2004-08-26 08:14  dreamforce2
+
+	* plugins/qt-gui/po/fi.ts: updated translation by Tuomas Jaakola.
+
+2004-08-26 00:45  emostar
+
+	* plugins/msn/src/msn.cpp: Duh.. too tired last night I guess.
+
+2004-08-25 17:26  emostar
+
+	* plugins/msn/src/msn.cpp: Fix a crash if you receive a connection
+	  request from someone that is not on your contact list. Adds them
+	  as a new user.
+
+2004-08-25 17:25  emostar
+
+	* src/icqd.cpp: More protocol plugin support
+
+2004-08-25 14:07  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Update all icons when a new icon
+	  set is selected.
+
+2004-08-24 17:52  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Compilation fix
+
+2004-08-24 17:33  emostar
+
+	* plugins/qt-gui/src/userbox.cpp: Reverse horizontal bar commit,
+	  this caused a problem (bug #1010710) Get rid of the group icon
+	  item being set for a user after something was dropped onto him
+	  (bug #967862)
+
+2004-08-24 17:08  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Fix quoting partial
+	  messages, it was showing some HTML code before.
+
+2004-08-24 15:13  emostar
+
+	* plugins/qt-gui/src/: emoticon.cpp, mainwin.cpp: Fix the problem
+	  of setting "None" as the emoticons. Now they can be disabled.
+
+2004-08-24 14:25  dreamforce2
+
+	* po/de.po: updated german translation.
+
+2004-08-24 14:24  dreamforce2
+
+	* src/icqd-srv.cpp: remove some daemon-translations and 2 compiler
+	  warnings about unused variables
+
+2004-08-24 11:35  dreamforce2
+
+	* po/README.LOCALE: updated the README
+
+2004-08-24 08:29  dreamforce2
+
+	* plugins/qt-gui/po/de.po: update. converted the original de.ts
+	  into de.po
+
+2004-08-23 15:03  dreamforce2
+
+	* plugins/qt-gui/po/de.ts: updated german translation of qt-gui
+
+2004-08-23 14:36  dreamforce2
+
+	* plugins/qt-gui/qt-gui.pro: update. include new files.
+
+2004-08-22 20:48  dreamforce2
+
+	* plugins/qt-gui/po/ru.po: little fix to the russian translation by
+	  Peter Eisentraut. Male and Female were mixed up.
+
+2004-08-22 13:25  emostar
+
+	* LICENSE: Adjust the year
+
+2004-08-22 13:17  emostar
+
+	* post-install, upgrade/UPGRADE, upgrade/upgrade-1.3.0.sh: Update
+	  some documentation for upgrading.
+
+2004-08-22 09:01  dreamforce2
+
+	* doc/HINTS: typo fix.
+
+2004-08-18 14:49  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Properly translate tab
+	  titles.
+
+2004-08-18 14:41  emostar
+
+	* include/licq_chat.h, include/licq_filetransfer.h,
+	  src/icqd-chat.cpp, src/icqd-filetransfer.cpp: Fix a crash when no
+	  more ports are available.
+
+2004-08-17 04:38  emostar
+
+	* plugins/qt-gui/src/xpm/phonebookCellular.xpm,
+	  plugins/qt-gui/src/xpm/phonebookCellularSMS.xpm,
+	  plugins/qt-gui/src/xpm/phonebookPager.xpm,
+	  plugins/qt-gui/src/xpm/phonebookPhone.xpm,
+	  include/licq_backgroundcodes.h, include/licq_homepagecodes.h,
+	  include/licq_interestcodes.h, include/licq_organizationcodes.h:
+	  Remove compiler warnings.
+
+2004-08-17 04:15  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Compilation fix.
+
+2004-08-12 15:04  emostar
+
+	* configure.in, plugins/auto-reply/src/main.cpp,
+	  plugins/console/configure.in, plugins/console/src/main.cpp,
+	  plugins/email/src/main.cpp, plugins/qt-gui/configure.in,
+	  plugins/qt-gui/qt-gui.pro, plugins/rms/src/main.cpp: Licq 1.3.0:
+	  PRE-RELEASE
+
+2004-08-11 15:09  emostar
+
+	* plugins/qt-gui/src/userbox.cpp: Fix the horizontal scrollbar to
+	  be shown again.
+
+2004-08-11 13:12  emostar
+
+	* bin/viewurl-mozilla.sh: Fix
+
+2004-08-11 01:50  emostar
+
+	* src/icqd-srv.cpp: If you added a user to the invisible list, they
+	  would change groups locally to somethign different as well.
+
+2004-08-11 01:28  emostar
+
+	* bin/viewurl-mozilla.sh: Fix for URLs with spaces.
+
+2004-08-11 01:20  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnbuffer.cpp, msnbuffer.h: Add
+	  a header and clean up a few warnings.
+
+2004-08-10 16:02  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.ami/: ami.icons,
+	  msnprivate.png: Add a private icon for MSN
+
+2004-08-10 15:51  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.ami/: aimaway.png,
+	  aimoffline.png, aimonline.png, away.png, dnd.png, ffc.png,
+	  file.png, message.png, msnaway.png, msnoccupied.png,
+	  msnoffline.png, msnonline.png, na.png, occupied.png, offline.png,
+	  online.png, private.png, url.png: Add with a binary flag
+
+2004-08-10 15:46  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.ami/: aimaway.png,
+	  aimoffline.png, aimonline.png, away.png, dnd.png, ffc.png,
+	  file.png, message.png, msnaway.png, msnoccupied.png,
+	  msnoffline.png, msnonline.png, na.png, occupied.png, offline.png,
+	  online.png, private.png, url.png: Remove (forgot the binary flag)
+
+2004-08-10 15:11  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: And add support for protocol
+	  icons here too.
+
+2004-08-10 14:56  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Fix the icon for the
+	  KPassivePopup
+
+2004-08-10 14:52  emostar
+
+	* plugins/qt-gui/share/qt-gui/: emoticons/emoticon.xsd,
+	  emoticons/theme.xsd, icons.icq/aimaway.png,
+	  icons.icq/aimoffline.png, icons.icq/aimonline.png,
+	  icons.icq/icq.icons, icons.icq2/aimaway.png,
+	  icons.icq2/aimoffline.png, icons.icq2/aimonline.png,
+	  icons.icq2/icq2.icons, icons.thomas/aimaway.png,
+	  icons.thomas/aimoffline.png, icons.thomas/aimonline.png,
+	  icons.thomas/thomas.icons: Add some AIM icons.
+
+2004-08-10 13:51  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.ami/ami.icons: Fix a typo.
+
+2004-08-10 13:49  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mainwin.h, skinbrowser.cpp,
+	  userbox.cpp, usereventdlg.cpp: Support icons for AIM.
+
+2004-08-10 13:43  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.ami/: aimaway.png,
+	  aimoffline.png, aimonline.png, ami.icons, away.png, dnd.png,
+	  ffc.png, file.png, message.png, msnaway.png, msnoccupied.png,
+	  msnoffline.png, msnonline.png, na.png, occupied.png, offline.png,
+	  online.png, private.png, readme.txt, url.png: New icon set from
+	  Miranda
+
+2004-08-10 12:59  emostar
+
+	* src/icqd.cpp: Fix a race that prevented protocol plugins from
+	  being loaded sometimes.
+
+2004-08-10 02:23  emostar
+
+	* plugins/qt-gui/share/qt-gui/: icons.icq/icq.icons,
+	  icons.icq2/icq2.icons, icons.thomas/thomas.icons: Fix a typo.
+
+2004-08-10 02:17  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.thomas/: msnaway.xpm,
+	  msnoccupied.xpm, msnoffline.xpm, msnonline.xpm, msnprivate.xpm,
+	  thomas.icons: Add MSN icons.
+
+	  Thomas: Do you want to make these look better for your skin?
+
+2004-08-10 02:16  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.icq/: icq.icons, msnaway.xpm,
+	  msnoccupied.xpm, msnoffline.xpm, msnonline.xpm, msnprivate.xpm:
+	  Add MSN icons.
+
+2004-08-10 02:15  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.icq2/: msnaway.xpm,
+	  msnoccupied.xpm, msnoffline.xpm, msnonline.xpm, msnprivate.xpm:
+	  Add the new files.
+
+2004-08-10 02:14  emostar
+
+	* plugins/qt-gui/share/qt-gui/icons.icq2/icq2.icons: Add some MSN
+	  icons.
+
+2004-08-09 17:56  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h: *
+	  Add Decode and Encode functions.  * Support renaming users.
+
+2004-08-09 17:55  emostar
+
+	* plugins/qt-gui/src/userinfodlg.cpp: Support renaming all users
+	  now.
+
+2004-08-09 17:55  emostar
+
+	* include/licq_events.h, include/licq_icqd.h, src/icqd-srv.cpp,
+	  src/icqevent.cpp: Add renaming users to protocol plugins.
+
+2004-08-09 16:33  emostar
+
+	* plugins/qt-gui/src/skinbrowser.cpp: Show the MSN icons in the
+	  icon preview box.
+
+2004-08-09 16:29  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mainwin.h, userbox.cpp,
+	  usereventdlg.cpp: Support for MSN icons
+
+2004-08-09 15:27  emostar
+
+	* plugins/msn/src/msn.cpp: Don't need this debug string anymore
+
+2004-08-09 15:17  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Fix the typing indicator
+
+2004-08-09 15:08  emostar
+
+	* plugins/: email/README, auto-reply/README: Update
+
+2004-08-09 15:04  emostar
+
+	* plugins/console/licq_console.conf: Update this
+
+2004-08-09 15:01  emostar
+
+	* plugins/console/src/console.cpp: Another TODO removed.
+
+2004-08-09 14:48  emostar
+
+	* plugins/console/src/: console.cpp, console.h, console_menu.cpp,
+	  console_print.cpp, window.cpp, window.h: * Fix some documentation
+	  for the help.  * Add support for $ (last user)
+
+2004-08-09 01:04  emostar
+
+	* plugins/msn/src/plugin.cpp: Bump the version up...  0.1[0] ->
+	  0.11
+
+2004-08-09 00:36  emostar
+
+	* plugins/msn/src/msn.cpp: Get online notifies working
+
+2004-08-08 23:59  emostar
+
+	* src/onevent.cpp: Work with other protocols.
+
+2004-08-08 23:58  emostar
+
+	* src/icqd-srv.cpp: We don't need to wait for a reply for this
+	  packet.
+
+2004-08-04 00:11  emostar
+
+	* include/licq_packets.h, include/licq_user.h, src/icqd-srv.cpp,
+	  src/icqpacket.cpp: Fix a problem with ICQ4.0 not seeing our
+	  status if Phone Follow Me is enabled.
+
+2004-08-03 02:09  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, emoticon.cpp, emoticon.h: Patch
+	  by Juan Codagnone for emoticons in home directories.	With a fix
+	  to support allowing previews in the skin browser window.
+
+2004-08-03 00:34  emostar
+
+	* plugins/msn/configure.in: Add this.. patch was originally from
+	  Eric Enright <eric AT tiptsoft.com>
+
+2004-08-03 00:33  emostar
+
+	* plugins/msn/src/: msn.cpp, msnbuffer.cpp: Fix reading a packet,
+	  it read a little too far and got the last '\n' so SkipPacket was
+	  skipping the entire next packet.
+
+2004-07-29 16:53  dreamforce2
+
+	* plugins/qt-gui/src/ownermanagerdlg.cpp: little i18n-fixes and fix
+	  a typo
+
+2004-07-28 14:48  emostar
+
+	* src/user.cpp: Oops forgot the rest of the gcc3.4 patch
+
+2004-07-27 02:03  emostar
+
+	* include/licq_user.h: gcc3.4 fix
+
+2004-07-23 17:29  dreamforce2
+
+	* acinclude.m4.in, configure.in: Make "./configure --disable-gpgme"
+	  work.
+
+2004-07-23 09:43  emostar
+
+	* acinclude.m4.in, configure.in: Give an option to disable using
+	  LIBGPGME.  (./configure --disable-gpgme)
+
+2004-07-23 04:32  emostar
+
+	* doc/TODO: Update
+
+2004-07-22 16:43  emostar
+
+	* include/licq_chat.h, src/icqd-srv.cpp, src/icqd.cpp,
+	  src/licq.cpp, src/protoplugind.cpp: Fix registering a new user.
+	  A few other minor fixes/cleanups.
+
+2004-07-22 16:06  emostar
+
+	* include/licq_socket.h, src/socket.cpp: Patch by Daniel Glöckner
+	  <daniel-gl AT gmx.net> for INetSocket::SetOwner(unsigned long)
+
+2004-07-22 15:49  emostar
+
+	* src/icqd-filetransfer.cpp: Patch by Daniel Glöckner <daniel-gl
+	  AT gmx.net> for file transfers.
+
+2004-07-22 15:46  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Patch by Daniel Glöckner
+	  <daniel-gl AT gmx.net> for tabbed chatting.
+
+2004-07-22 15:44  emostar
+
+	* include/licq_icqd.h: fix having chats with users not on your
+	  contact list.
+
+2004-07-22 15:43  emostar
+
+	* src/: icqd-chat.cpp, icqd-tcp.cpp: Ptch by Daniel Glöckner
+	  <daniel-gl AT gmx.net> to fix multi-party chats.  Also, fix
+	  having chats with users not on your contact list.
+
+2004-07-20 23:11  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnbuffer.cpp, msnbuffer.h,
+	  msnpacket.cpp, msnpacket.h: Update for the new login process.
+	  Add some new server hadnling code.
+
+2004-07-19 22:59  emostar
+
+	* src/icqd-threads.cpp: Fix a crash..
+
+2004-07-12 15:36  emostar
+
+	* plugins/qt-gui/src/wharf.cpp: Get this code here too..
+
+2004-07-12 01:36  emostar
+
+	* plugins/qt-gui/src/: gui-defines.h, mainwin.cpp, optionsdlg.cpp,
+	  optionsdlg.h, wharf.cpp: Use the freedesktop.org style of docking
+	  for qt-gui. (Finally) Don't show the registration wizard if
+	  another protocol has an owner installed.
+
+2004-06-18 09:46  emostar
+
+	* plugins/msn/src/msn.cpp: Fix the reconnection problem that
+	  crashed Licq.
+
+2004-06-17 13:29  emostar
+
+	* include/: licq_chat.h, licq_filetransfer.h, licq_icqd.h,
+	  licq_packets.h: Add reverse connection support.
+
+2004-06-17 13:22  emostar
+
+	* src/: icqd-chat.cpp, icqd-filetransfer.cpp, icqd-srv.cpp,
+	  icqd-tcp.cpp, icqd-threads.cpp, icqpacket.cpp, user.cpp: Reverse
+	  connections support
+
+2004-06-17 12:46  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h: Add
+	  support for removing users from the contact list.  A few minor
+	  additions.
+
+2004-06-17 12:32  emostar
+
+	* src/icqd.cpp: Fix removing users from other protocols than ICQ.
+
+2004-06-17 10:28  emostar
+
+	* plugins/msn/.cvsignore: And add this one too
+
+2004-06-17 10:25  emostar
+
+	* plugins/msn/src/.cvsignore: Add a cvsignore file
+
+2004-06-17 10:24  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h:
+	  Support logging off.	Only add users that are on the contact list
+	  from the server (not blocked, etc).
+
+2004-06-13 23:20  emostar
+
+	* plugins/console/src/: console.cpp, console.h, console_menu.cpp,
+	  console_print.cpp, event_data.h, window.h: Patch by Philip Nelson
+	  <phatfil AT optusnet.com.au> to add initial support for protocol
+	  plugins to the console plugin.
+
+2004-06-13 23:19  emostar
+
+	* include/licq_user.h, src/user.cpp: New function to get the number
+	  of Owners.
+
+2004-06-12 15:14  emostar
+
+	* src/file.cpp: Patch by Jörg Mensmann <joerg_ml AT bitplanet.de>
+	  to fix a file deletion problem.
+
+2004-06-12 15:08  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, usereventdlg.cpp,
+	  userinfodlg.cpp: Patch by Jörg Mensmann <joerg_ml AT
+	  bitplanet.de> to fix the window title name and add a
+	  KPassivePopup.
+
+2004-06-11 22:56  emostar
+
+	* plugins/qt-gui/src/ewidgets.h: Missing include
+
+2004-06-11 22:48  emostar
+
+	* plugins/qt-gui/src/ownermanagerdlg.cpp: oops, quite important
+
+2004-06-11 10:56  emostar
+
+	* plugins/qt-gui/src/: Makefile.am, mainwin.cpp: Patch by Philip
+	  Nelson to fix a crash, improved to iterate protocol plugins to
+	  get the right user if only an id is specified.  Also fixes a
+	  crash if there is no owner and you try to login with a protocol
+	  plugin.
+
+2004-06-10 13:59  emostar
+
+	* plugins/qt-gui/src/: Makefile.am, gui-defines.h, mainwin.cpp,
+	  mainwin.h, ownermanagerdlg.cpp, ownermanagerdlg.h: Added an owner
+	  manager dialog to support managing other protocols.  Currently
+	  only one owner per protocol is supported.
+
+2004-06-10 13:55  emostar
+
+	* include/licq_user.h, src/icqd.cpp, src/user.cpp: Add removing
+	  owners.  Fix creating new owners.
+
+2004-06-06 23:14  emostar
+
+	* plugins/msn/src/msn.cpp: * Always send through server * Remove a
+	  few unnecessary variables
+
+2004-06-06 23:10  emostar
+
+	* plugins/msn/src/msn.cpp: Fix the online time to show something
+	  more readable..
+
+2004-06-06 12:32  emostar
+
+	* plugins/auto-reply/src/: autoreply.cpp, autoreply.h: Patch by
+	  Philip Nelson <phatfil AT optusnet.com.au> to make this plugin
+	  work with multiple protocols.
+
+2004-06-06 12:09  emostar
+
+	* upgrade/upgrade-1.3.0.sh: Change the version number
+
+2004-06-06 11:40  emostar
+
+	* plugins/msn/src/msn.cpp: Stupid mistake... allow getting long
+	  messages without cutting them off.
+
+2004-06-03 08:40  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Don't always reset the
+	  statistics.
+
+2004-06-03 08:14  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mainwin.h, plugindlg.cpp,
+	  plugindlg.h: Get plugin removal working.
+
+2004-06-03 05:35  emostar
+
+	* plugins/console/src/console.cpp: Compilation fix
+
+2004-06-03 01:57  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mainwin.h, sigman.cpp,
+	  sigman.h: Set the checkmark for the protocol's status.
+
+2004-06-02 14:35  emostar
+
+	* plugins/qt-gui/src/: gui-defines.h, mainwin.cpp, mainwin.h,
+	  usereventdlg.cpp, usereventdlg.h: * Fix a crash with users not
+	  using tabbed chatting and the new typing notification system.  *
+	  Simple status selection for each protocol.  Needs some
+	  improvement: Checkbox for the current status and removed when a
+	  protocol is unloaded.
+
+2004-05-30 12:34  emostar
+
+	* plugins/qt-gui/share/qt-gui/emoticons/msn/: dont_know_smile.png,
+	  party_smile.png, thinking_smile.png, wink_smile.png: Fix the
+	  problem with the animated icons. (Edit the frames of the gif to
+	  remove animation)
+
+2004-05-30 00:19  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Bug fix. Check all protocols for
+	  a system message.
+
+2004-05-28 15:24  emostar
+
+	* plugins/qt-gui/share/qt-gui/emoticons/msn/: airplane.png,
+	  angel_smile.png, angry_smile.png, asl.png, auto.png,
+	  baring_teeth_smile.png, bat.png, beer_mug.png, black_sheep.png,
+	  bowl.png, brb.png, broken_heart.png, cake.png, camera.png,
+	  cat.png, cigarette.png, clock.png, coffee.png, computer.png,
+	  confused_smile.png, cry_smile.png, devil_smile.png, dog.png,
+	  dont_know_smile.png, dont_tell_smile.png, envelope.png, film.png,
+	  fingerscrossed.png, girl.png, girl_hug.png, guy.png, guy_hug.png,
+	  handcuffs.png, heart.png, hifive.png, island_palm.png, kiss.png,
+	  lightbulb.png, lightning.png, martini.png, messenger.png,
+	  mobile_phone.png, money.png, moon.png, nerd_smile.png, note.png,
+	  omg_smile.png, party_smile.png, phone.png, pizza.png, plate.png,
+	  present.png, rainbow.png, red_smile.png, regular_smile.png,
+	  roll_smile.png, rose.png, sad_smile.png, sarcastic_smile.png,
+	  secret_smile.png, shades_smile.png, sick_smile.png,
+	  sleepy_smile.png, smilec.png, snail.png, soccer_ball.png,
+	  star.png, stormy.png, sun.png, teeth_smile.png,
+	  thinking_smile.png, thumbs_down.png, thumbs_up.png,
+	  tongue_smile.png, trillian_lol.png, trillian_roll.png,
+	  turtle.png, umbrella.png, what_smile.png, wilted_rose.png,
+	  wink_smile.png, xbox.png: Add them with the binary flag
+
+2004-05-28 15:21  emostar
+
+	* plugins/qt-gui/share/qt-gui/emoticons/msn/: airplane.png,
+	  angel_smile.png, angry_smile.png, asl.png, auto.png,
+	  baring_teeth_smile.png, bat.png, beer_mug.png, black_sheep.png,
+	  bowl.png, brb.png, broken_heart.png, cake.png, camera.png,
+	  cat.png, cigarette.png, clock.png, coffee.png, computer.png,
+	  confused_smile.png, cry_smile.png, devil_smile.png, dog.png,
+	  dont_know_smile.png, dont_tell_smile.png, envelope.png, film.png,
+	  fingerscrossed.png, girl.png, girl_hug.png, guy.png, guy_hug.png,
+	  handcuffs.png, heart.png, hifive.png, island_palm.png, kiss.png,
+	  lightbulb.png, lightning.png, martini.png, messenger.png,
+	  mobile_phone.png, money.png, moon.png, nerd_smile.png, note.png,
+	  omg_smile.png, party_smile.png, phone.png, pizza.png, plate.png,
+	  present.png, rainbow.png, red_smile.png, regular_smile.png,
+	  roll_smile.png, rose.png, sad_smile.png, sarcastic_smile.png,
+	  secret_smile.png, shades_smile.png, sick_smile.png,
+	  sleepy_smile.png, smilec.png, snail.png, soccer_ball.png,
+	  star.png, stormy.png, sun.png, teeth_smile.png, test.png,
+	  thinking_smile.png, thumbs_down.png, thumbs_up.png,
+	  tongue_smile.png, trillian_lol.png, trillian_roll.png,
+	  turtle.png, umbrella.png, what_smile.png, wilted_rose.png,
+	  wink_smile.png, xbox.png: Remove to add as binary
+
+2004-05-28 15:11  emostar
+
+	* plugins/qt-gui/share/qt-gui/emoticons/msn/: README.txt,
+	  airplane.png, angel_smile.png, angry_smile.png, asl.png,
+	  auto.png, baring_teeth_smile.png, bat.png, beer_mug.png,
+	  black_sheep.png, bowl.png, brb.png, broken_heart.png, cake.png,
+	  camera.png, cat.png, cigarette.png, clock.png, coffee.png,
+	  computer.png, confused_smile.png, cry_smile.png, devil_smile.png,
+	  dog.png, dont_know_smile.png, dont_tell_smile.png, emoticons.xml,
+	  envelope.png, film.png, fingerscrossed.png, girl.png,
+	  girl_hug.png, guy.png, guy_hug.png, handcuffs.png, heart.png,
+	  hifive.png, island_palm.png, kiss.png, lightbulb.png,
+	  lightning.png, martini.png, messenger.png, mobile_phone.png,
+	  money.png, moon.png, nerd_smile.png, note.png, omg_smile.png,
+	  party_smile.png, phone.png, pizza.png, plate.png, present.png,
+	  rainbow.png, red_smile.png, regular_smile.png, roll_smile.png,
+	  rose.png, sad_smile.png, sarcastic_smile.png, secret_smile.png,
+	  shades_smile.png, sick_smile.png, sleepy_smile.png, smilec.png,
+	  snail.png, soccer_ball.png, star.png, stormy.png, sun.png,
+	  teeth_smile.png, test.png, thinking_smile.png, thumbs_down.png,
+	  thumbs_up.png, tongue_smile.png, trillian_lol.png,
+	  trillian_roll.png, turtle.png, umbrella.png, what_smile.png,
+	  wilted_rose.png, wink_smile.png, xbox.png: MSN icon pack for
+	  emoticons.
+
+2004-05-27 07:32  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h: *
+	  Start using a basic config file (internal use only at the moment)
+	  * Support authorizing users to add you to their buddy list.
+	  Fixes the problem of always being offline to them.  * Add users
+
+2004-05-27 07:30  emostar
+
+	* plugins/qt-gui/src/: adduserdlg.cpp, adduserdlg.h,
+	  authuserdlg.cpp, ewidgets.cpp, mainwin.cpp, mainwin.h,
+	  userinfodlg.cpp: * Add users from other protocols.  *
+	  Grant/Refuse authorization requests from other protocols.  * Bug
+	  fixes.
+
+2004-05-27 07:00  emostar
+
+	* include/licq_events.h, include/licq_icqd.h,
+	  include/licq_message.h, src/icqd-srv.cpp, src/icqd.cpp,
+	  src/icqevent.cpp, src/message.cpp, src/user.cpp: Fixed a few
+	  crashes:   * Users of other protocols having their groups changed
+	  (disabled now)   * Unloading of protocol plugins (fixed)
+
+	  Added to protocol plugin API:   * Granting authorization to users
+	    * Refusing authorization to users
+
+2004-05-19 14:30  emostar
+
+	* plugins/msn/src/msn.cpp: Properly close the connection.
+
+2004-05-18 12:49  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Clear the yellow box when a
+	  message is received.
+
+2004-05-14 10:50  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Show typing status for
+	  people not using tabs.
+
+2004-05-13 22:56  emostar
+
+	* plugins/qt-gui/src/ewidgets.cpp: Compilation fix for Qt 3 to Qt
+	  3.1.X
+
+2004-05-12 10:37  dreamforce2
+
+	* src/user.cpp: Partially revert last commit, it's been a mistake.
+
+2004-05-12 10:12  dreamforce2
+
+	* src/user.cpp: Remove a warning about no newline at end of file.
+
+2004-05-12 10:08  dreamforce2
+
+	* include/licq_occupationcodes.h: Remove a warning about no newline
+	  at end of file.
+
+2004-05-12 09:55  dreamforce2
+
+	* plugins/qt-gui/src/mainwin.cpp: Don't crash when registering a
+	  new user. We should not operate on a NULL owner ;-) Additionally
+	  this patch removes an inconsistency in the way how "ICQOwner
+	  *owner" and "ICQOwner *o" is beeing used.
+
+2004-05-12 09:01  dreamforce2
+
+	* plugins/qt-gui/src/xpm/: pixICQphoneBusy.xpm,
+	  pixPhoneFollowMeActive.xpm, pixPhoneFollowMeBusy.xpm,
+	  pixSharedFiles.xpm: Remove some warnings about no newline at end
+	  of file.
+
+2004-05-09 16:04  emostar
+
+	* plugins/msn/src/msn.cpp: Fix a race by not sending typing
+	  notification if there is no open channel to the user.
+
+2004-05-09 15:53  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, usereventdlg.cpp,
+	  usereventdlg.h: 10 second timeout on typed messages.	for
+	  protocols that don't send a notification when they are done
+	  typing.
+
+2004-05-09 14:48  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h:
+	  Send typing notification for MSN.
+
+2004-05-09 11:24  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h:
+	  Support changing your status.
+
+2004-05-09 10:30  emostar
+
+	* src/icqd-srv.cpp: Fix seeing AIM users as always typing.  Needs
+	  to be tested, I can't test this with anyone.
+
+2004-05-09 10:14  emostar
+
+	* src/icqpacket.cpp, plugins/qt-gui/src/usereventdlg.cpp: Fix
+	  Typing Notification.
+
+2004-05-07 15:43  emostar
+
+	* doc/TODO: Update.
+
+2004-05-07 15:30  emostar
+
+	* plugins/msn/src/msn.cpp: Send typing notifications.  Soon to be
+	  an option that can make it disabled.
+
+2004-05-07 15:26  emostar
+
+	* include/licq_events.h, include/licq_icq.h, include/licq_icqd.h,
+	  include/licq_packets.h, src/icqd-srv.cpp,
+	  plugins/qt-gui/src/usereventdlg.cpp,
+	  plugins/qt-gui/src/usereventdlg.h, src/icqevent.cpp,
+	  src/icqpacket.cpp: Send typing notifications.  Soon to be an
+	  option that can make it disabled.
+
+2004-05-06 14:54  emostar
+
+	* plugins/msn/src/msn.cpp: Use the constant.. fixes a bug.
+
+2004-05-06 14:53  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Use the proper value.. 1
+	  means turned off
+
+2004-05-06 05:55  emostar
+
+	* src/icqd-srv.cpp: Fix the plugin responses.
+
+2004-05-05 23:51  emostar
+
+	* src/socket.cpp: Remove a dup
+
+2004-05-05 18:36  emostar
+
+	* plugins/msn/src/msn.cpp: Typing indicator for MSN.  Needs a
+	  timeout.  If a user types a message and never sends it, Licq will
+	  show that he is always typing.  The official client has a timeout
+	  of 10 seconds.
+
+2004-05-05 18:35  emostar
+
+	* plugins/qt-gui/src/: ewidgets.cpp, ewidgets.h, usereventdlg.cpp,
+	  usereventdlg.h: Typing indicator for the people that use tabbed
+	  chatting. The nick will change colors to indicate a special
+	  state.
+
+	  Green = User is typing Blue = User has a new message Black =
+	  Nothing...
+
+	  More to come later..
+
+2004-05-05 17:48  emostar
+
+	* plugins/msn/src/msn.cpp: Compilation fix
+
+2004-05-05 10:37  emostar
+
+	* include/licq_icq.h, src/icqpacket.cpp: Oops, get AIM working
+	  again
+
+2004-05-02 14:13  emostar
+
+	* src/Makefile.am, src/backgroundcodes.c, src/countrycodes.c,
+	  src/homepagecodes.c, src/icqd-srv.cpp, src/icqd-tcp.cpp,
+	  include/Makefile.am, include/licq_backgroundcodes.h,
+	  include/licq_constants.h, include/licq_countrycodes.h,
+	  include/licq_events.h, include/licq_homepagecodes.h,
+	  include/licq_icq.h, include/licq_icqd.h,
+	  include/licq_interestcodes.h, include/licq_languagecodes.h,
+	  include/licq_occupationcodes.h, include/licq_organizationcodes.h,
+	  include/licq_packets.h, include/licq_providers.h,
+	  include/licq_socket.h, include/licq_user.h, src/icqd-threads.cpp,
+	  src/icqd.cpp, src/icqpacket.cpp, src/interestcodes.c,
+	  src/languagecodes.c, src/occupationcodes.c,
+	  src/organizationcodes.c, src/providers.c, src/socket.cpp,
+	  src/user.cpp,
+	  plugins/qt-gui/share/qt-gui/extended.icons.basic/basic.icons,
+	  plugins/qt-gui/share/qt-gui/extended.icons.basic/pixICQphoneActive.xpm,
+	  plugins/qt-gui/share/qt-gui/extended.icons.basic/pixICQphoneBusy.xpm,
+	  plugins/qt-gui/share/qt-gui/extended.icons.basic/pixPhoneFollowMeActive.xpm,
+	  plugins/qt-gui/share/qt-gui/extended.icons.basic/pixPhoneFollowMeBusy.xpm,
+	  plugins/qt-gui/share/qt-gui/extended.icons.basic/pixSharedFiles.xpm,
+	  plugins/qt-gui/src/Makefile.am, plugins/qt-gui/src/catdlg.cpp,
+	  plugins/qt-gui/src/catdlg.h, plugins/qt-gui/src/gui-defines.h,
+	  plugins/qt-gui/src/mainwin.cpp, plugins/qt-gui/src/mainwin.h,
+	  plugins/qt-gui/src/optionsdlg.cpp,
+	  plugins/qt-gui/src/optionsdlg.h, plugins/qt-gui/src/phonedlg.cpp,
+	  plugins/qt-gui/src/phonedlg.h,
+	  plugins/qt-gui/src/showawaymsgdlg.cpp,
+	  plugins/qt-gui/src/skinbrowser.cpp,
+	  plugins/qt-gui/src/userbox.cpp, plugins/qt-gui/src/userbox.h,
+	  plugins/qt-gui/src/usereventdlg.cpp,
+	  plugins/qt-gui/src/usereventdlg.h,
+	  plugins/qt-gui/src/userinfodlg.cpp,
+	  plugins/qt-gui/src/userinfodlg.h,
+	  plugins/qt-gui/src/xpm/phonebookCellular.xpm,
+	  plugins/qt-gui/src/xpm/phonebookCellularSMS.xpm,
+	  plugins/qt-gui/src/xpm/phonebookFax.xpm,
+	  plugins/qt-gui/src/xpm/phonebookPager.xpm,
+	  plugins/qt-gui/src/xpm/phonebookPhone.xpm,
+	  plugins/qt-gui/src/xpm/pixICQphoneActive.xpm,
+	  plugins/qt-gui/src/xpm/pixICQphoneBusy.xpm,
+	  plugins/qt-gui/src/xpm/pixPhoneFollowMeActive.xpm,
+	  plugins/qt-gui/src/xpm/pixPhoneFollowMeBusy.xpm,
+	  plugins/qt-gui/src/xpm/pixSharedFiles.xpm: A patch from a long
+	  time ago by Dima K <dimakar AT yahoo.com>.  Adds Phone Book ,
+	  Typing Notification, and a few other things.	Reverse connections
+	  will come l ater.  Please report all bugs to the licq-devel
+	  mailing list.
+
+2004-04-16 13:23  dreamforce2
+
+	* po/README.LOCALE: New readme for daemon localization
+
+2004-03-24 00:13  emostar
+
+	* configure.in: Oops >_<
+
+2004-03-21 16:28  emostar
+
+	* src/gpg.cpp: oops
+
+2004-03-21 15:08  emostar
+
+	* src/gpg.cpp: Print this out after we know we can attempt to
+	  encrypt the message.
+
+2004-03-21 11:12  emostar
+
+	* include/licq_gpg.h, src/gpg.cpp: Make the GPG subsystem
+	  conditionally compiled.
+
+2004-03-21 11:05  emostar
+
+	* licq_gpg.conf, include/licq_gpg.h, src/Makefile.am, src/gpg.cpp,
+	  src/icqd-tcp.cpp, src/icqd.cpp, src/message.cpp: * Let the
+	  protocol plugins delete the signal, not the daemon.  Reverts to
+	  origi nal behaviour
+
+	  * Integrate the GPG patch by Richard Hirner, but slightly
+	  modified.  Works with protocol plugins.  Each protocol plugin
+	  will have to call the Encrypt() function, as this simplifies the
+	  Encryption flag and displaying of the unencrypted message to the
+	  message window.
+
+	  To use the GPG feature please check the licq_gpg.conf file for
+	  information.	It is best to have gpg-agent running.  This will
+	  allow you to not be forced to save your gpg password in plaintext
+	  to the config file.  Now we can send encryp ted messages through
+	  the server, and offline encrypted messages!
+
+2004-03-21 09:09  emostar
+
+	* plugins/msn/src/: msn.cpp, plugin.cpp: Updates.
+
+	  TODO: Check into cancelling the ping thread perhaps.	If
+	  pthread_cancel() is called, it will crash.
+
+2004-03-21 09:08  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, plugindlg.cpp: Show plugins
+	  correctly.  Small update to use the newer methodology for the
+	  protocol plugins.
+
+2004-03-21 09:07  emostar
+
+	* include/licq_events.h, include/licq_icqd.h,
+	  include/licq_protoplugin.h, include/licq_protoplugind.h,
+	  src/icqd.cpp, src/icqevent.cpp, src/licq.cpp,
+	  src/protoplugind.cpp: Change some internals of protocol plugins
+	  to be managed correctly.  Mimics the older plugin methodology.
+	  Should be working fine, let me know if there are anymore crashes.
+
+2004-03-13 23:20  emostar
+
+	* plugins/email/src/: forwarder.cpp, forwarder.h: Work with the new
+	  plugin protocol methods.  Update the e-mail address to reply, the
+	  old one doesn't work anymore.
+
+2004-03-13 11:02  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnbuffer.cpp, msnbuffer.h,
+	  msnpacket.cpp, msnpacket.h, plugin.cpp: Handle closing
+	  connections properly.. and whatever else that hasn't been
+	  commited yet.
+
+2004-03-13 10:33  emostar
+
+	* plugins/qt-gui/src/: licqgui.cpp, mainwin.cpp, mainwin.h,
+	  plugindlg.cpp: Show protocol plugins and be able to unload them
+	  from the GUI.
+
+2004-03-13 09:20  emostar
+
+	* include/: licq_events.h, licq_icqd.h, licq_protoplugind.h: More
+	  documentation :)
+
+	  header files for previous commit
+
+2004-03-13 09:20  emostar
+
+	* src/: icqd.cpp, licq.cpp: Save what protocol plugins are loaded
+	  and load them the next time licq runs.  Also, check for the
+	  config file version... forgot about this one awhile ago I guess.
+
+2004-03-11 22:50  dreamforce2
+
+	* admin/acinclude.m4.in, plugins/auto-reply/admin/acinclude.m4.in,
+	  plugins/console/admin/acinclude.m4.in,
+	  plugins/email/admin/acinclude.m4.in,
+	  plugins/qt-gui/admin/acinclude.m4.in,
+	  plugins/rms/admin/acinclude.m4.in,
+	  plugins/msn/admin/acinclude.m4.in: - make the "--enable-debug"
+	  switch work when one already has set $CXXFLAGS and $CFLAGS.  If
+	  those variables were set, configure didn't append -g :-/
+
+2004-03-08 10:45  dreamforce2
+
+	* po/de.po: oops, wrong headers ;-)
+
+2004-03-08 08:42  dreamforce2
+
+	* po/de.po: - finished german translation
+
+2004-03-08 08:31  dreamforce2
+
+	* po/licq.pot: - up-to-date translation template
+
+2004-03-07 18:59  dreamforce2
+
+	* src/icqd-tcp.cpp: dont translate those
+
+2004-02-22 14:30  emostar
+
+	* plugins/msn/src/: msn.cpp, msnbuffer.h, msnpacket.h: Remove all
+	  the warnings.
+
+2004-02-22 14:24  emostar
+
+	* plugins/msn/src/msnpacket.cpp: Remove the warnings.
+
+2004-02-22 14:18  emostar
+
+	* plugins/msn/src/msnpacket.cpp: Oops, fix a memory error.
+
+2004-02-22 12:35  daywalker
+
+	* include/licq_socket.h: remove ugly #define in public header file
+
+2004-02-22 12:34  daywalker
+
+	* src/socket.cpp: compilation fix (gcc 3.4+)
+
+2004-02-21 15:10  dreamforce2
+
+	* plugins/qt-gui/acinclude.m4.in: - fix warnings about unary
+	  operators under some cicrumstances
+
+2004-02-21 14:15  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h: Fix
+	  some memory errors and support sending the initial message.
+
+2004-02-19 11:10  dreamforce2
+
+	* plugins/qt-gui/src/ewidgets.cpp: - compile fix and remove a
+	  warning about comparing signed and unsigned int.
+
+2004-02-19 10:49  dreamforce2
+
+	* src/icqd-tcp.cpp: - little typo fix.
+
+2004-02-19 06:39  emostar
+
+	* plugins/msn/src/msn.cpp: Minor cleanup and seeing status changes.
+
+2004-02-18 17:50  emostar
+
+	* plugins/qt-gui/src/sigman.cpp: Remove a debug printf
+
+2004-02-18 17:48  emostar
+
+	* src/icqevent.cpp, include/licq_events.h, include/licq_icqd.h,
+	  include/licq_message.h, include/licq_user.h: More additions for
+	  protocol plugins.
+
+2004-02-18 17:46  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mainwin.h, sigman.cpp,
+	  sigman.h, usereventdlg.cpp, usereventdlg.h: Protocol plugin
+	  additions needed
+
+2004-02-18 17:45  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h: Fix
+	  a crash.  Support acknowleding when the message has been sent.
+
+2004-02-17 10:16  emostar
+
+	* plugins/msn/README: Bah
+
+2004-02-17 09:42  dreamforce2
+
+	* plugins/qt-gui/acinclude.m4.in: - configure should tell the users
+	  that it's searching for QT >= 3.x, we officially don't support
+	  earlier versions anymore
+
+2004-02-17 09:24  dreamforce2
+
+	* plugins/qt-gui/acinclude.m4.in: - Make "--without-kde" configure
+	  switch work (it didn't search for libqt-mt.so)
+
+2004-02-16 22:59  emostar
+
+	* plugins/msn/README: Add the requirements
+
+2004-02-16 22:49  emostar
+
+	* plugins/msn/README: A few instructions.
+
+2004-02-16 07:59  dreamforce2
+
+	* po/remove-potcdate.sed: - we don't want this in the repository
+
+2004-02-16 07:56  dreamforce2
+
+	* po/.cvsignore: - ignore remove-potcdate.sed, it will be rebuilt
+	  automatically when needed.
+
+2004-02-15 22:11  daywalker
+
+	* Makefile.am: make make -f Makefile.cvs work again. does nobody
+	  test their changes anymore?
+
+2004-02-15 16:09  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h:
+	  Ping thread.	Keeps us connected.
+
+2004-02-13 14:41  emostar
+
+	* src/icqd-tcp.cpp: Fix sending messages to AIM users again.
+
+2004-02-12 14:29  emostar
+
+	* include/licq_events.h, src/icqd-tcp.cpp, src/icqevent.cpp: Daemon
+	  support for protocol plugins ability to send messages.
+
+2004-02-12 14:27  emostar
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Minor modification.. needs
+	  more GUI work.
+
+2004-02-12 14:26  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnpacket.cpp, msnpacket.h:
+	  Sending messages on an already open SB connection.
+
+2004-02-12 13:40  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h, msnbuffer.cpp: Needs some more
+	  debugging and clean up.  MSN has a more complex method of
+	  receiving server data information, needs to be tested.  Supports
+	  receiving messages from MSN.	Sending will come later.
+
+2004-02-12 08:12  emostar
+
+	* plugins/qt-gui/src/: ewidgets.cpp, userinfodlg.cpp: Fix a problem
+	  with Qt3
+
+2004-02-11 14:09  emostar
+
+	* src/: icqd-tcp.cpp, icqd.cpp: Fix a deadlock when recv'ing a
+	  message from a new user directly.  Also, don't care about the
+	  cookie if it's 0.
+
+2004-02-10 17:40  emostar
+
+	* plugins/msn/src/: msn.cpp, msnpacket.cpp, msnpacket.h: Change to
+	  the correct signal, save some incomplete work.
+
+2004-02-10 17:40  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Protocol plugins can login/change
+	  status now from the GUI.
+
+2004-02-10 17:38  emostar
+
+	* include/licq_protoplugind.h, src/licq.cpp, src/protoplugind.cpp:
+	  Hack to add LICQ_PPID to the plugin list.
+
+2004-02-10 17:07  emostar
+
+	* src/icqd-srv.cpp: Only log off the icq users.
+
+2004-02-10 16:47  emostar
+
+	* plugins/qt-gui/src/plugindlg.cpp: Support protocol plugins in the
+	  plugin manager dialog.
+
+2004-02-04 17:00  emostar
+
+	* src/buffer.cpp, src/icqd.cpp, src/licq.cpp, src/socket.cpp,
+	  src/user.cpp, include/licq_buffer.h, include/licq_icqd.h,
+	  include/licq_socket.h: Some fixes/additions for protocol plugins
+
+2004-02-04 16:39  emostar
+
+	* plugins/msn/src/: msn.cpp, msnpacket.cpp: Remove printfs
+
+2004-02-04 00:23  emostar
+
+	* plugins/msn/src/: msn.cpp, msn.h: Minor cleanup.
+
+	  Many more are needed, this was coded quickly without much care...
+	  since I knew it wouldn't compile for anyone else anyways..
+
+	  I'm bad.
+
+2004-02-03 23:44  emostar
+
+	* CVSROOT/modules: New msn module
+
+2004-02-03 23:43  emostar
+
+	* plugins/msn/: Makefile.am, Makefile.cvs, acconfig.h,
+	  acinclude.m4.in, configure.in, owner.MSN_, src/Makefile.am,
+	  src/msn.cpp, src/msn.h, src/msnbuffer.cpp, src/msnbuffer.h,
+	  src/msnpacket.cpp, src/msnpacket.h, src/plugin.cpp: Import MSN
+	  protocol plugin.  Supports logging in and seeing who is online.
+	  Doesn't work with CVS Licq yet, requires more GUI and daemon
+	  changes that aren't ready for a commit yet.
+
+2004-02-03 23:43  emostar
+
+	* plugins/msn/: Makefile.am, Makefile.cvs, acconfig.h,
+	  acinclude.m4.in, configure.in, owner.MSN_, src/Makefile.am,
+	  src/msn.cpp, src/msn.h, src/msnbuffer.cpp, src/msnbuffer.h,
+	  src/msnpacket.cpp, src/msnpacket.h, src/plugin.cpp: Initial
+	  revision
+
+2004-01-29 14:34  dreamforce2
+
+	* src/: file.cpp, icqd-filetransfer.cpp: Don't translate those
+	  strings
+
+2004-01-29 14:32  dreamforce2
+
+	* po/: de.po, licq.pot: Save my work.
+
+2004-01-28 19:26  dreamforce2
+
+	* src/fifo.cpp: fix a typo
+
+2004-01-28 17:44  dreamforce2
+
+	* po/Makefile.in.in: - make it compile with different gettext
+	  versions.  (what i wonder: why does different gettext versions
+	  interpret the MKINSTALLDIRS variable differently???)
+
+2004-01-27 23:49  dreamforce2
+
+	* plugins/qt-gui/src/: emoticon.cpp, mainwin.cpp, userbox.cpp: Make
+	  it compile with QT 3.0.x
+
+2004-01-27 01:28  dreamforce2
+
+	* src/main.cpp: maybe we are not using NLS, so make it conditional
+
+2004-01-26 17:47  dreamforce2
+
+	* plugins/auto-reply/: src/autoreply.cpp, src/autoreply.h,
+	  licq_autoreply.conf: Make sending through server - work again :-)
+	  - optional through the config file
+
+2004-01-26 15:38  dreamforce2
+
+	* include/gettext.h: Make it work with --disable-nls
+
+2004-01-26 15:14  dreamforce2
+
+	* admin/config.rpath, plugins/auto-reply/admin/config.rpath,
+	  plugins/console/admin/config.rpath,
+	  plugins/email/admin/config.rpath,
+	  plugins/qt-gui/admin/config.rpath,
+	  plugins/rms/admin/config.rpath, plugins/msn/admin/config.rpath:
+	  Preparing for Daemon localization using gettext :-)
+
+2004-01-26 14:50  dreamforce2
+
+	* plugins/qt-gui/src/userinfodlg.cpp: isdigit() needs this
+
+2004-01-26 14:25  dreamforce2
+
+	* include/gettext.h: Preparing for Daemon localization using
+	  gettext :-)
+
+2004-01-26 14:15  dreamforce2
+
+	* src/: buffer.cpp, countrycodes.c, fifo.cpp, file.cpp,
+	  history.cpp, icqd-chat.cpp, Makefile.am, icqd-filetransfer.cpp,
+	  icqd-srv.cpp, icqd-tcp.cpp, icqd-threads.cpp, icqd.cpp,
+	  icqpacket.cpp, languagecodes.c, licq.cpp, main.cpp, message.cpp,
+	  proxy.cpp, sar.cpp, sighandler.c, socket.cpp, user.cpp,
+	  utility.cpp: Preparing for Daemon localization using gettext :-)
+
+2004-01-26 14:11  dreamforce2
+
+	* Makefile.am, configure.in: Preparing for Daemon localization
+	  using gettext :-)
+
+2004-01-26 14:08  dreamforce2
+
+	* m4/.cvsignore, m4/Makefile.am, m4/codeset.m4, m4/gettext.m4,
+	  m4/glibc21.m4, m4/iconv.m4, m4/intdiv0.m4, m4/inttypes-pri.m4,
+	  m4/inttypes.m4, m4/inttypes_h.m4, m4/isc-posix.m4,
+	  m4/lcmessage.m4, m4/lib-ld.m4, m4/lib-link.m4, m4/lib-prefix.m4,
+	  m4/nls.m4, m4/po.m4, m4/progtest.m4, m4/stdint_h.m4,
+	  m4/uintmax_t.m4, m4/ulonglong.m4, po/.cvsignore, po/LINGUAS,
+	  po/Makefile.in.in, po/Makevars, po/POTFILES.in, po/Rules-quot,
+	  po/boldquot.sed, po/de.po, po/en@boldquot.header,
+	  po/en@quot.header, po/insert-header.sin, po/licq.pot,
+	  po/quot.sed, po/remove-potcdate.sed, po/remove-potcdate.sin:
+	  Preparing for Daemon localization using gettext :-)
+
+2004-01-26 13:57  emostar
+
+	* plugins/qt-gui/src/ewidgets.cpp: Fixing the typo that someone
+	  told me about. But their message had a typo about my typo.  Too
+	  many typos tonight.
+
+2004-01-26 13:17  emostar
+
+	* plugins/qt-gui/src/ewidgets.cpp: Whoops
+
+2004-01-25 18:10  dreamforce2
+
+	* plugins/qt-gui/src/mmlistview.cpp: - don't free a uninitialized
+	  value :(
+
+2004-01-25 12:42  dreamforce2
+
+	* src/: icqd-tcp.cpp, socket.cpp: - patch from Tuomas Jaakola,
+	  implement INetSocket::SetOwner(const char*, long unsigned).
+
+2004-01-25 12:15  emostar
+
+	* src/icqpacket.cpp: Fix a possible remote crash.
+
+2004-01-25 11:40  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mmlistview.cpp,
+	  randomchatdlg.cpp, userbox.cpp, usercodec.cpp, usereventdlg.cpp:
+	  Cleanups
+
+2004-01-23 13:04  emostar
+
+	* include/licq_icqd.h, src/icqd-srv.cpp, src/icqd-tcp.cpp,
+	  src/user.cpp, plugins/qt-gui/src/mainwin.cpp,
+	  plugins/qt-gui/src/mainwin.h,
+	  plugins/qt-gui/src/showawaymsgdlg.cpp,
+	  plugins/qt-gui/src/userinfodlg.cpp: It's nice to see that the CVS
+	  server is back up so I can finally commit this...  Anyone else
+	  notice how useless the SF CVS server has become?
+
+	  Thomas' patch mixed with some of my work to improve AIM users on
+	  server side li sts.  Allows AIM users to be in groups and changed
+	  groups, and also supports re naming of their server side alias.
+
+2004-01-18 15:30  dreamforce2
+
+	* plugins/qt-gui/src/: optionsdlg.cpp, optionsdlg.h: - GUI
+	  counterpart of the new "ReconnectAfterUinClash" option.
+
+2004-01-18 12:17  dreamforce2
+
+	* include/licq_icqd.h, src/icqd-srv.cpp, src/icqd.cpp: - make the
+	  "reconnect after uin has been taken" optional.  the feature is
+	  turned off by default. turn on by setting ReconnectAfterUinClash
+	  = 1 in the config file.
+
+2004-01-17 16:55  dreamforce2
+
+	* src/icqd-srv.cpp, src/user.cpp, include/licq_icqd.h: - add
+	  support for moving AIM useres between (serverside) groups
+
+2004-01-17 14:41  dreamforce2
+
+	* src/icqpacket.cpp: properly unlock the user
+
+2004-01-17 13:18  dreamforce2
+
+	* plugins/qt-gui/src/mlview3.cpp: - we need those substitutions
+	  with ICQ messages for email and URL highlighting.  - tested with
+	  ICQ and AIM clients, seems to be ok.	kick my ass if i break
+	  something ;-)
+
+2004-01-15 19:28  dreamforce2
+
+	* plugins/qt-gui/src/mlview3.cpp: fix linebreaks.
+
+2004-01-14 13:48  emostar
+
+	* src/icqpacket.cpp: Don't crash when adding an AIM user to the
+	  list.
+
+2004-01-13 18:17  emostar
+
+	* plugins/qt-gui/src/userinfodlg.cpp: HTML conditional for history
+	  as well
+
+2004-01-13 18:05  emostar
+
+	* plugins/qt-gui/src/: ewidgets.cpp, mlview3.cpp, mlview3.h: Only
+	  interpret HTML tags for AIM accounts. ICQ won't use HTML. Should
+	  fix the problem everyone is complaining about these days ;)
+
+2004-01-12 22:13  dreamforce2
+
+	* Makefile.am, include/Makefile.am, plugins/qt-gui/po/Makefile.am,
+	  plugins/qt-gui/share/Makefile.am, plugins/qt-gui/src/Makefile.am,
+	  share/Makefile.am, src/Makefile.am: some cleanups, no
+	  functionality changes
+
+2004-01-12 18:57  dreamforce2
+
+	* plugins/qt-gui/src/: usereventdlg.cpp, usereventdlg.h: prevent
+	  users from typing in the wrong tab by setting the correct focus
+	  proxy.
+
+2004-01-12 15:26  dreamforce2
+
+	* src/socket.cpp: correctly initialize m_nOwner.  Thanks to Tuomas
+	  Jaakola. Fixes Bug 825627.
+
+2004-01-07 20:52  dreamforce2
+
+	* plugins/qt-gui/src/: registeruser.cpp, registeruser.h: - little
+	  improvement, one mouseclick less :)
+
+2004-01-06 15:25  dreamforce2
+
+	* plugins/auto-reply/examples/fortune-temp.sh: improve security.
+
+2004-01-06 14:13  dreamforce2
+
+	* plugins/auto-reply/examples/fortune-temp.sh: a nice example
+	  script for the auto-reply plugin.  Thanks to Eli Hayoon
+	  #124650632
+
+2004-01-01 21:04  dreamforce2
+
+	* configure.in, src/sighandler.c: Patch by Juan to make it compile
+	  with the Native Posix Threads Library (NPTL).  Currently
+	  untested, hopefully someone will ACK that this fix works ;-)
+
+2003-12-29 15:20  emostar
+
+	* plugins/qt-gui/src/wharf.cpp: Workaround a new problem that I
+	  noticed in KDE 3.2 Beta2 Maybe it:ll be fixed in 3.2 final.
+
+2003-12-29 13:09  dreamforce2
+
+	* plugins/qt-gui/src/registeruser.cpp: Allow to register an
+	  existing user without password.
+
+2003-12-29 12:53  dreamforce2
+
+	* src/: icqd.cpp, licq.conf.h: set onEvent soundfile-paths
+	  correctly by default.  fixes bug 740728.
+
+2003-12-13 17:23  dreamforce2
+
+	* plugins/qt-gui/po/: de.ts, de.po: updated german translation
+
+2003-12-13 16:24  dreamforce2
+
+	* plugins/qt-gui/share/qt-gui/emoticons/thomas/: README.txt,
+	  biggrin.png, confused.png, cry.png, emoticons.xcf.bz2,
+	  emoticons.xml, oh.png, pig.png, smile.png, sunglasses.png,
+	  tongue.png, unhappy.png, wink.png: another set of emoticons
+
+2003-12-13 16:12  dreamforce2
+
+	* plugins/qt-gui/share/Makefile.am: - remove a warning about space
+	  after trailing backslash - fix a little bug which created a empty
+	  directory "emoticons" inside /qt-gui/emoticons/
+
+2003-12-10 14:30  emostar
+
+	* plugins/qt-gui/share/Makefile.am: Temp hack
+
+2003-11-26 19:08  dreamforce2
+
+	* plugins/qt-gui/src/userbox.cpp: fix a crash that occured when
+	  someone checked your autoresponse while one of the group
+	  seperators had to be repainted.  may also fix bug 834540, i'm not
+	  sure if they are related.
+
+2003-11-26 16:06  emostar
+
+	* plugins/qt-gui/src/skinbrowser.cpp: useless
+
+2003-11-26 15:58  emostar
+
+	* plugins/qt-gui/share/Makefile.am: emoticons
+
+2003-11-26 13:02  emostar
+
+	* plugins/qt-gui/src/: Makefile.am, emoticon.cpp, emoticon.h,
+	  gui-defines.h, licq_qt-gui.conf.h, mainwin.cpp, mainwin.h,
+	  mlview3.cpp, skinbrowser.cpp, skinbrowser.h: emoticons
+
+2003-11-26 13:02  emostar
+
+	* plugins/qt-gui/share/qt-gui/emoticons/phpBB/: README.txt,
+	  biggrin.png, confused.png, cry.png, devil.png, emoticons.xml,
+	  oh.png, smile.png, sunglasses.png, tongue.png, unhappy.png,
+	  wink.png: Emoticons
+
+2003-11-26 12:58  emostar
+
+	* plugins/qt-gui/share/qt-gui/emoticons/: Default/README.txt,
+	  Default/biggrin.png, Default/confused.png, Default/cry.png,
+	  Default/emoticons.xml, Default/oh.png, Default/pig.png,
+	  Default/smile.png, Default/sunglasses.png, Default/tongue.png,
+	  Default/unhappy.png, Default/wink.png, None/emoticons.xml,
+	  ccmathteam.com/README, ccmathteam.com/biggrin.png,
+	  ccmathteam.com/confused.png, ccmathteam.com/cry.png,
+	  ccmathteam.com/devil.png, ccmathteam.com/emoticons.xml,
+	  ccmathteam.com/oh.png, ccmathteam.com/smile.png,
+	  ccmathteam.com/sunglasses.png, ccmathteam.com/tongue.png,
+	  ccmathteam.com/unhappy.png, ccmathteam.com/wink.png: Emoticons
+
+2003-11-13 21:24  dreamforce2
+
+	* plugins/qt-gui/src/mainwin.cpp,
+	  plugins/qt-gui/src/registeruser.cpp,
+	  plugins/qt-gui/src/securitydlg.cpp, src/icqd.cpp,
+	  src/licq.conf.h, src/licq.cpp, src/user.cpp: Fix: creating new
+	  user profiles was broken (for example by using -b <directory> ).
+	  A few lines are a bit ugly, this should get fixed when we finally
+	  implement multiple owners.
+
+2003-11-11 19:43  dreamforce2
+
+	* plugins/qt-gui/src/usereventdlg.cpp: make the input-area a little
+	  smaller and the send-history a little larger by default.
+
+2003-11-11 16:24  emostar
+
+	* plugins/qt-gui/share/Makefile.am: Patch by Juan
+
+2003-11-11 16:07  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Patch by Juan to fix autopopup in
+	  chatmode view.
+
+2003-11-11 08:33  dreamforce2
+
+	* acinclude.m4.in: OpenSSL on RedHat 9 has a dependency on kerberos
+	  headers, which are in /usr/kerberos/include.	Add this path so
+	  that licq finds the headers.
+
+2003-11-10 21:08  dreamforce2
+
+	* plugins/qt-gui/src/: ewidgets.cpp, ewidgets.h, mainwin.cpp:
+	  Prevent the user from accidently resetting his daemon stats by
+	  asking him for confirmation.
+
+2003-11-10 19:23  dreamforce2
+
+	* plugins/qt-gui/src/: optionsdlg.cpp, optionsdlg.h:
+	  enable/disabled onEvent options wether chkOnEvent is checked or
+	  not.	This gives better feedback to users, so they see what gets
+	  enabled/disbaled by this onEvent option.
+
+2003-11-10 18:40  dreamforce2
+
+	* plugins/qt-gui/src/usereventdlg.cpp: fix navigating through tabs
+	  using ALT+left/ALT+right after changing the message type.
+
+2003-11-10 16:32  dreamforce2
+
+	* README.OPENSSL: very minor documentation fix
+
+2003-11-06 13:46  emostar
+
+	* plugins/qt-gui/src/: userbox.cpp, userbox.h: Miranda like type
+	  ahead patch.	Backspace key isn't working for me.. with Qt v3.1.1
+	  Can someone check this?
+
+2003-11-05 15:46  emostar
+
+	* plugins/qt-gui/src/userbox.cpp: Other patch
+
+2003-11-05 15:39  emostar
+
+	* plugins/qt-gui/src/userbox.cpp: And the rest of the patch from
+	  Juan
+
+2003-11-05 15:35  emostar
+
+	* include/licq_user.h, src/icqd-srv.cpp, src/user.cpp: Part of a
+	  patch by Juan.  Slightly modified for better output.
+
+2003-11-04 00:00  emostar
+
+	* src/licq.cpp: Patch by Juan to prevent a possible crash on
+	  startup.
+
+2003-11-02 10:51  dreamforce2
+
+	* plugins/qt-gui/po/: de.po, de.ts: little translation update
+
+2003-10-23 04:04  emostar
+
+	* plugins/rms/src/: rms.cpp, rms.h: Patch by Alon Altman for SMS
+	  support in RMS.
+
+2003-10-22 15:46  emostar
+
+	* plugins/qt-gui/src/: usereventdlg.cpp, usereventdlg.h: Patch by
+	  Juan to fix bug #777187
+
+2003-10-22 15:45  emostar
+
+	* plugins/qt-gui/src/wharf.cpp: Patch to make the wharf icon like
+	  the kde dock icon.
+
+2003-10-20 12:40  emostar
+
+	* include/: licq_icq.h, licq_icqd.h, licq_packets.h: Update this
+	  directory too
+
+2003-10-16 09:40  dreamforce2
+
+	* plugins/qt-gui/src/mainwin.cpp: Fix updating the app-icon in KDE
+	  3.2's kicker.
+
+2003-10-16 06:31  emostar
+
+	* src/: icqd-srv.cpp, icqd.cpp, icqpacket.cpp, user.cpp: I think
+	  this is ok...  Updating info is screwy, I need to fix it to use
+	  the new method, so it works properly for all information fields.
+
+2003-10-16 04:53  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, mainwin.h, randomchatdlg.cpp,
+	  reqauthdlg.h, sigman.cpp, sigman.h, usereventdlg.cpp,
+	  usereventdlg.h, userinfodlg.cpp, userinfodlg.h: Patch from Juan
+	  to fix the deadlock mentioned on the ML.
+
+	  Stuff from my tree that looks like it works.	It's from July..
+	  maybe it has bugs. Let me know if it's ok or not....
+
+2003-09-25 19:30  daywalker
+
+	* plugins/qt-gui/src/licqgui.cpp: apply patch by Lubos Lunak to fix
+	  keyhandling in KDE-mode
+
+2003-08-06 19:26  dreamforce2
+
+	* plugins/qt-gui/po/hu_HU.po: updated hu_HU translation by Daniel
+	  Levai
+
+2003-07-13 20:25  dreamforce2
+
+	* plugins/qt-gui/po/hu_HU.po: updated translation by Daniel Levai
+
+2003-07-10 14:22  emostar
+
+	* src/icqd-srv.cpp: Fix authorization requests and refusals
+
+2003-07-10 13:59  emostar
+
+	* include/licq_icqd.h, src/fifo.cpp: Patch by Juan to get FIFO
+	  working again, with a minor fix (memory leak)
+
+2003-07-10 13:54  emostar
+
+	* include/licq_message.h: Patch by Juan, slightly modified.
+
+2003-07-10 13:52  emostar
+
+	* plugins/qt-gui/src/: keyrequestdlg.cpp, keyrequestdlg.h: Patch by
+	  Juan to fix secure connections in qt-gui
+
+2003-07-09 16:33  emostar
+
+	* plugins/qt-gui/src/: mainwin.cpp, utilitydlg.cpp, utilitydlg.h:
+	  Fix by Juan for utility dialog
+
+2003-07-09 09:03  dreamforce2
+
+	* plugins/rms/src/rms.cpp: bugfix. don't crash but quit with a
+	  warning if desired port for tcp server is already in use.
+
+2003-07-09 07:45  dreamforce2
+
+	* plugins/rms/src/rms.cpp: fix: use unsigned long int instead of
+	  long int for UINs.
+
+2003-07-09 06:31  dreamforce2
+
+	* plugins/rms/src/: rms.cpp, rms.h: patch by O. Novy, slightly
+	  revised.
+
+2003-07-08 21:26  dreamforce2
+
+	* include/Makefile.am: make it install all header files
+
+2003-07-08 11:37  dreamforce2
+
+	* plugins/qt-gui/src/mainwin.h: fix compiling with QT2. MOC in QT2
+	  does not allow to use default values with signals or slots.
+
+2003-07-08 11:22  dreamforce2
+
+	* plugins/qt-gui/src/mainwin.cpp: fix compiling with QT2
+
+2003-07-07 21:13  dreamforce2
+
+	* plugins/qt-gui/src/userinfodlg.cpp: fixes saving contact details
+	  and fixes submitting changed contact details to the server side
+	  list.
+
+2003-07-02 17:11  emostar
+
+	* plugins/qt-gui/src/mainwin.cpp: Another fix
+
+2003-07-02 15:58  emostar
+
+	* plugins/qt-gui/src/: ewidgets.cpp, mainwin.cpp, usereventdlg.cpp:
+	  Some fixes from the merge.  A few more are left.
+
+2003-07-02 04:44  emostar
+
+	* configure.in, plugins/qt-gui/configure.in: New CVS version
+
+2003-07-02 04:41  emostar
+
+	* upgrade/upgrade-1.3.0.sh: Update
+
+2003-07-02 04:41  emostar
+
+	* include/licq_buffer.h, src/Makefile.am, src/buffer.cpp,
+	  src/history.cpp, src/icqd-chat.cpp, src/icqd-srv.cpp,
+	  src/icqd-tcp.cpp, src/icqd.cpp, src/icqevent.cpp,
+	  src/icqpacket.cpp, src/licq.cpp, src/licq.h, src/message.cpp,
+	  src/socket.cpp, src/user.cpp, src/utility.cpp,
+	  include/licq_chat.h, include/licq_events.h,
+	  include/licq_history.h, include/licq_icqd.h,
+	  include/licq_message.h, include/licq_packets.h,
+	  include/licq_socket.h, include/licq_user.h,
+	  include/licq_utility.h, plugins/qt-gui/src/adduserdlg.cpp,
+	  plugins/qt-gui/src/authuserdlg.cpp,
+	  plugins/qt-gui/src/authuserdlg.h,
+	  plugins/qt-gui/src/awaymsgdlg.cpp,
+	  plugins/qt-gui/src/awaymsgdlg.h, plugins/qt-gui/src/chatdlg.cpp,
+	  plugins/qt-gui/src/chatdlg.h, plugins/qt-gui/src/ewidgets.cpp,
+	  plugins/qt-gui/src/ewidgets.h, plugins/qt-gui/src/filedlg.cpp,
+	  plugins/qt-gui/src/filedlg.h, plugins/qt-gui/src/forwarddlg.cpp,
+	  plugins/qt-gui/src/forwarddlg.h,
+	  plugins/qt-gui/src/keyrequestdlg.cpp,
+	  plugins/qt-gui/src/keyrequestdlg.h,
+	  plugins/qt-gui/src/mainwin.cpp, plugins/qt-gui/src/mainwin.h,
+	  plugins/qt-gui/src/mlview3.cpp,
+	  plugins/qt-gui/src/mmlistview.cpp,
+	  plugins/qt-gui/src/mmlistview.h,
+	  plugins/qt-gui/src/mmsenddlg.cpp, plugins/qt-gui/src/mmsenddlg.h,
+	  plugins/qt-gui/src/refusedlg.cpp, plugins/qt-gui/src/refusedlg.h,
+	  plugins/qt-gui/src/reqauthdlg.cpp,
+	  plugins/qt-gui/src/reqauthdlg.h,
+	  plugins/qt-gui/src/showawaymsgdlg.cpp,
+	  plugins/qt-gui/src/showawaymsgdlg.h,
+	  plugins/qt-gui/src/sigman.cpp, plugins/qt-gui/src/sigman.h,
+	  plugins/qt-gui/src/userbox.cpp, plugins/qt-gui/src/userbox.h,
+	  plugins/qt-gui/src/usercodec.cpp, plugins/qt-gui/src/usercodec.h,
+	  plugins/qt-gui/src/usereventdlg.cpp,
+	  plugins/qt-gui/src/usereventdlg.h,
+	  plugins/qt-gui/src/userinfodlg.cpp,
+	  plugins/qt-gui/src/userinfodlg.h,
+	  plugins/qt-gui/src/utilitydlg.cpp,
+	  plugins/qt-gui/src/utilitydlg.h: Merging the
+	  protocol_plugin_1_3_0 branch.  Lots of things might not work now.
+
+2003-06-30 18:18  dreamforce2
+
+	* plugins/qt-gui/src/usereventdlg.cpp: Improvement for ALT-Left and
+	  ALT-Right keys, rotate through the tabs if we have reached the
+	  left-/rightmost position
+
+2003-06-30 17:37  emostar
+
+	* plugins/rms/src/rms.cpp: Ensure that the message end code is on a
+	  new line
+
+2003-06-30 17:34  emostar
+
+	* plugins/qt-gui/po/: cs_CZ.po, cs_CZ.ts: A few updates by Ondrej
+	  Novy
+
+2003-06-30 14:55  dreamforce2
+
+	* plugins/qt-gui/src/wharf.cpp: fix bug 762586: "licq window lost
+	  if dock icon disabled while hidden"
+
+2003-06-30 06:22  dreamforce2
+
+	* plugins/qt-gui/po/: it.po, it.ts: italian translation update by
+	  Salvo Caligiore
+
