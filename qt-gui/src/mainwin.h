@@ -151,7 +151,8 @@ public:
        m_bShowHistory,
        m_bDisableDockIcon,
        m_bSortColumnAscending,
-       m_bAppendLineBreak;
+       m_bAppendLineBreak,
+       m_bFlashTaskbar;
 
   QString m_MsgAutopopupKey;
   QString m_DefaultEncoding;

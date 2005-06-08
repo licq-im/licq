@@ -237,6 +237,7 @@ void OptionsDlg::SetupOptions()
     chkShowHistory->setEnabled(false);
   }
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
+  chkFlashTaskbar->setChecked(mainwin->m_bFlashTaskbar);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
   chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
   popEmail->setChecked(mainwin->m_bPopEmail);
@@ -529,6 +530,7 @@ void OptionsDlg::ApplyOptions()
 #endif
   mainwin->m_bShowHistory = chkShowHistory->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
+  mainwin->m_bFlashTaskbar = chkFlashTaskbar->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
   mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
 
@@ -803,6 +805,8 @@ QWidget* OptionsDlg::new_appearance_options()
   chkAutoPosReplyWin = new QCheckBox(tr("Auto Position the Reply Window"), boxMainWin);
   QWhatsThis::add(chkAutoPosReplyWin, tr("Position a new reply window just underneath "
    "the message view window"));
+  chkFlashTaskbar = new QCheckBox(tr("Flash Taskbar on Incoming Msg"), boxMainWin);
+  QWhatsThis::add(chkFlashTaskbar, tr("Flash the Taskbar on incoming messages"));
   chkAutoSendThroughServer = new QCheckBox(tr("Auto send through server"), boxMainWin);
   QWhatsThis::add(chkAutoSendThroughServer, tr("Automatically send messages through the server "
    "if direct connection fails"));

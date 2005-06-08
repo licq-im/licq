@@ -349,6 +349,7 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       {        
         if (tabw->currentPageIndex() == index)
           setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
+	if (mainwin->m_bFlashTaskbar)
         flashTaskbar(true);
 
         // to clear it..
