@@ -161,6 +161,7 @@ CLicqConsole::CLicqConsole(int argc, char **argv)
   licqConf.ReadStr("AwayFormat", m_szAwayFormat, "%a [%S]");
   licqConf.ReadStr("OfflineFormat", m_szOfflineFormat, "%a");
   licqConf.ReadStr("CommandCharacter", m_szCommandChar, "/");
+  licqConf.ReadNum("Backspace", m_nBackspace, KEY_BACKSPACE);
 
   if (licqConf.SetSection("macros"))
   {
@@ -394,6 +395,7 @@ void CLicqConsole::DoneOptions()
   licqConf.WriteStr("AwayFormat", m_szAwayFormat);
   licqConf.WriteStr("OfflineFormat", m_szOfflineFormat);
   licqConf.WriteStr("CommandCharacter", m_szCommandChar);
+  licqConf.WriteNum("Backspace", (unsigned long)m_nBackspace);
 
   licqConf.SetSection("macros");
   char sz[32];
@@ -1059,6 +1061,14 @@ void CLicqConsole::ProcessStdin()
     MenuList((char *)NULL);
     return;
   }
+
+  // Some operating systems don't have a consistent set of settings for
+  // what key should erase characters.  In particular, FC3 sets the terminal
+  // erase character (kbs) for xterm to ^H instead of 127, even though the
+  // rest of the operating system follows the Debian conventions.
+  // This allows the user to override whatever the OS has chosen.
+  if (cIn == m_nBackspace)
+    cIn = KEY_BACKSPACE;
 
   (this->*(winMain->fProcessInput))(cIn);
 }

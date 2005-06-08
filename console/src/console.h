@@ -82,6 +82,7 @@ protected:
   char m_szAwayFormat[30];
   char m_szOfflineFormat[30];
   char m_szCommandChar[30];
+  short m_nBackspace;
 
   unsigned short m_nCurrentGroup, m_nCon;
   GroupType m_nGroupType;
