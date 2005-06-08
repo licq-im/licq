@@ -243,7 +243,7 @@ char *CTranslator::FromUnicode(char *_sz)
   if (_sz == NULL) return NULL;
   unsigned short nLen = strlen(_sz) * 2;
   char *szNewStr = new char[nLen + 1];
-  unsigned int nInSize, nOutSize;
+  size_t nInSize, nOutSize;
 
   char *szIn = _sz, *szOut = szNewStr;
   iconv_t tr;
@@ -273,7 +273,7 @@ char *CTranslator::FromUTF16(char *_sz, int nMsgLen)
   if (_sz == NULL) return NULL;
   unsigned short nLen = nMsgLen > 0 ? nMsgLen : strlen(_sz);
   char *szNewStr = new char[nLen * 2];
-  unsigned int nInSize, nOutSize;
+  size_t nInSize, nOutSize;
   
   char *szIn = _sz, *szOut = szNewStr;
   iconv_t tr;
@@ -301,7 +301,7 @@ char *CTranslator::ToUTF16(char *_sz, char *_szEncoding, size_t &nSize)
   if (_sz == NULL) return NULL;
   unsigned short nLen = strlen(_sz) * 3;
   char *szNewStr = new char[nLen + 1];
-  unsigned int nInSize, nOutSize;
+  size_t nInSize, nOutSize;
   char *szOut = szNewStr, *szIn = _sz;
   iconv_t tr;
   
