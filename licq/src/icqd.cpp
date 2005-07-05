@@ -2396,19 +2396,6 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   else
     nLevel = nMask;
 
-  bool bAccept = nMask & ICQ_TCPxMSG_URGENT || nMask & ICQ_TCPxMSG_LIST;
-  // Flag as sent urgent as well if we are in occ or dnd and auto-accept is on
-  if ( ((nOwnerStatus == ICQ_STATUS_OCCUPIED || u->StatusToUser() == ICQ_STATUS_OCCUPIED)
-         && u->AcceptInOccupied() ) ||
-       ((nOwnerStatus == ICQ_STATUS_DND || u->StatusToUser() == ICQ_STATUS_DND)
-         && u->AcceptInDND() ) ||
-       (u->StatusToUser() != ICQ_STATUS_OFFLINE && u->StatusToUser() != ICQ_STATUS_OCCUPIED
-         && u->StatusToUser() != ICQ_STATUS_DND) )
-  {
-    bAccept = true;
-    nLevel = ICQ_TCPxMSG_URGENT2;
-  }
-
   unsigned long nFlags = ((nMask & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
                          | ((nMask & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
 
@@ -2659,17 +2646,6 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     // If it parsed, did it parse properly?
     if (pEvent)
     {
-      // If we are in DND or Occupied and message isn't urgent then we ignore it
-      if (!bAccept)
-      {
-        if (nOwnerStatus == ICQ_STATUS_OCCUPIED || nOwnerStatus == ICQ_STATUS_DND)
-        {
-          delete pEvent;
-          if (szType) free(szType);
-          return;
-        }
-      }
-
       if (bNewUser)
       {
         if (Ignore(IGNORE_NEWUSERS))
