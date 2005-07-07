@@ -92,10 +92,12 @@ protected:
   char *data_arg;
   unsigned short data_line_pos;
   unsigned long m_nCheckUin;
+  char *m_szCheckId;
   unsigned long m_nLogTypes;
 
   unsigned long m_nUin;
   char *m_szId;
+  unsigned long m_nPPID;
   char m_szText[MAX_TEXT_LENGTH + 1];
   char m_szLine[MAX_LINE_LENGTH + 1];
   unsigned short m_nTextPos;
@@ -104,7 +106,9 @@ protected:
   int ProcessCommand();
   bool ProcessEvent(ICQEvent *);
   bool AddLineToText();
-
+  unsigned long GetProtocol(const char *);
+  void ParseUser(const char *);
+  
   int Process_MESSAGE_text();
   int Process_URL_url();
   int Process_URL_text();

@@ -94,25 +94,25 @@ struct Command
 static struct Command commands[] =
 {
   { "ADDUSER", &CRMSClient::Process_ADDUSER,
-    "Add user to contact list { <uin> }." },
+    "Add user to contact list { <id>[.<protocol>] }." },
   { "AR", &CRMSClient::Process_AR,
-    "Set your (or a user custom) auto response { [ <uin> ] }." },
+    "Set your (or a user custom) auto response { [ <id>[.<protocol>] ] }." },
   { "GROUPS", &CRMSClient::Process_GROUPS,
     "Show list of groups." },
   { "HELP", &CRMSClient::Process_HELP,
     "Print out help on commands." },
   { "INFO", &CRMSClient::Process_INFO,
-    "Print out user information.  Argument is the uin, or none for personal." },
+    "Print out user information.  Argument is the id and protocol, or none for personal." },
   { "LIST", &CRMSClient::Process_LIST,
     "List users { [ <group #> ] [ <online|offline|all> ] [ <format> ] }." },
   { "LOG", &CRMSClient::Process_LOG,
     "Dump log messages { <log types> }." },
   { "MESSAGE", &CRMSClient::Process_MESSAGE,
-    "Send a message { <uin> }." },
+    "Send a message { <id>[.<protocol>] }." },
   { "QUIT", &CRMSClient::Process_QUIT,
     "Close the connection.  With an argument of 1 causes the plugin to unload." },
   { "REMUSER", &CRMSClient::Process_REMUSER,
-    "Remove user from contact list { <uin> }." },
+    "Remove user from contact list { <id>[.<protocol>] }." },
   { "SECURE", &CRMSClient::Process_SECURE,
     "Open/close/check secure channel { <uin> [ <open|close> ] } ." },
   { "STATUS", &CRMSClient::Process_STATUS,
@@ -120,9 +120,9 @@ static struct Command commands[] =
   { "TERM", &CRMSClient::Process_TERM,
     "Terminate the licq daemon." },
   { "VIEW", &CRMSClient::Process_VIEW,
-    "View event (next or specific user) { [ <uin> ] }." },
+    "View event (next or specific user) { [ <id>[.<protocol>] ] }." },
   { "URL", &CRMSClient::Process_URL,
-    "Send a url { <uin> }." },
+    "Send a url { <id>[.<protocol>] }." },
   { "SMS", &CRMSClient::Process_SMS,
     "Send an sms { <uin> }." },
 };
@@ -173,7 +173,7 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
   // Register with the daemon, we only want the update user signal
   m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_UPDATExUSER);
   licqDaemon = _licqDaemon;
-
+  
   char filename[256];
   sprintf (filename, "%s/licq_rms.conf", BASE_DIR);
   CIniFile conf;
@@ -350,6 +350,10 @@ void CLicqRMS::ProcessSignal(CICQSignal *s)
   case SIGNAL_LOGON:
   default:
     break;
+    
+  case SIGNAL_EVENTxID:
+    //XXX Catch this
+    break;
   }
   delete s;
 }
@@ -402,6 +406,8 @@ CRMSClient::CRMSClient(TCPSocket *sin) : sock(0)
      "%d Enter your UIN:\n", LP_Version(), CODE_ENTERxUIN);
   fflush(fs);
 
+  m_szCheckId = 0;
+  m_szId = 0;
   m_nState = STATE_UIN;
   m_nLogTypes = 0;
   data_line_pos = 0;
@@ -414,8 +420,68 @@ CRMSClient::CRMSClient(TCPSocket *sin) : sock(0)
 CRMSClient::~CRMSClient()
 {
   sockman.CloseSocket(sock.Descriptor(), false, false);
+  
+  if (m_szCheckId)
+    free(m_szCheckId);
 }
 
+/*---------------------------------------------------------------------------
+ * CRMSClient::GetProtocol
+ *-------------------------------------------------------------------------*/
+unsigned long CRMSClient::GetProtocol(const char *szData)
+{
+  unsigned long nPPID = 0;
+  ProtoPluginsList pl;
+  ProtoPluginsListIter it;
+  licqDaemon->ProtoPluginList(pl);
+  for (it = pl.begin(); it != pl.end(); it++)
+  {
+    if (strcasecmp((*it)->Name(), szData) == 0)
+    {
+      nPPID = (*it)->PPID();
+      break;
+    }
+  }
+  
+  return nPPID;
+}
+
+/*---------------------------------------------------------------------------
+ * CRMSClient::ParseUser
+ *-------------------------------------------------------------------------*/
+void CRMSClient::ParseUser(const char *szData)
+{
+  if (m_szId)
+    free(m_szId);
+    
+  string strData(szData);
+  string::size_type nPos= strData.find_last_of(".");
+  if (nPos == string::npos)
+  {
+    m_szId = strdup(data_arg);
+    m_nPPID = 0;
+    ProtoPluginsList pl;
+    ProtoPluginsListIter it;
+    licqDaemon->ProtoPluginList(pl);
+    for (it = pl.begin(); it != pl.end(); it++)
+    {
+      ICQUser *u = gUserManager.FetchUser(m_szId, (*it)->PPID(), LOCK_R);
+      if (u)
+      {
+        gUserManager.DropUser(u);
+        m_nPPID = (*it)->PPID();
+        break;
+      }
+    }
+  }
+  else
+  {
+    string strId(strData, 0, strData.find_last_of("."));
+    string strProtocol(strData, strData.find_last_of(".")+1, strData.size());
+    m_szId = strdup(strId.c_str());
+    m_nPPID = GetProtocol(strProtocol.c_str());
+  }
+}
 
 /*---------------------------------------------------------------------------
  * CRMSClient::ProcessEvent
@@ -516,7 +582,7 @@ int CRMSClient::StateMachine()
   {
     case STATE_UIN:
     {
-      m_nCheckUin = strtoul(data_line, (char**)NULL, 10);
+      m_szCheckId = data_line ? strdup(data_line) : 0;
       fprintf(fs, "%d Enter your password:\n", CODE_ENTERxPASSWORD);
       fflush(fs);
       m_nState = STATE_PASSWORD;
@@ -525,14 +591,16 @@ int CRMSClient::StateMachine()
     case STATE_PASSWORD:
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-      bool ok = (m_nCheckUin == o->Uin() &&
+      bool ok = (strcmp(m_szCheckId, o->IdString()) == 0 &&
          strcmp(o->Password(), data_line) == 0);
+      free(m_szCheckId);
+      m_szCheckId = 0;
       if (!ok)
       {
         gUserManager.DropOwner();
         gLog.Info("%sClient failed validation from %s.\n", L_RMSxSTR,
            sock.RemoteIpStr(buf));
-        fprintf(fs, "%d Invalid UIN/Password.\n", CODE_INVALID);
+        fprintf(fs, "%d Invalid ID/Password.\n", CODE_INVALID);
         fflush(fs);
         return -1;
       }
@@ -630,27 +698,40 @@ int CRMSClient::ProcessCommand()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_INFO()
 {
-  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
+  char *szId = strdup(data_arg);
+  NEXT_WORD(data_arg);
+  unsigned long nPPID = GetProtocol(data_arg);
 
-  if (nUin == 0) nUin = gUserManager.OwnerUin();
+  //XXX Handle the case when we have the owner
+  if (szId == 0)
+    m_nUin = gUserManager.OwnerUin();
 
   // Print the user info
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL)
   {
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
 
-  fprintf(fs, "%d %ld Alias: %s\n", CODE_USERxINFO, u->Uin(), u->GetAlias());
-  fprintf(fs, "%d %ld Status: %s\n", CODE_USERxINFO, u->Uin(), u->StatusStr());
-  fprintf(fs, "%d %ld First Name: %s\n", CODE_USERxINFO, u->Uin(), u->GetFirstName());
-  fprintf(fs, "%d %ld Last Name: %s\n", CODE_USERxINFO, u->Uin(), u->GetLastName());
-  fprintf(fs, "%d %ld Email 1: %s\n", CODE_USERxINFO, u->Uin(), u->GetEmailPrimary());
-  fprintf(fs, "%d %ld Email 2: %s\n", CODE_USERxINFO, u->Uin(), u->GetEmailSecondary());
+  fprintf(fs, "%d %s Alias: %s\n", CODE_USERxINFO, u->IdString(),
+    u->GetAlias());
+  fprintf(fs, "%d %s Status: %s\n", CODE_USERxINFO, u->IdString(),
+    u->StatusStr());
+  fprintf(fs, "%d %s First Name: %s\n", CODE_USERxINFO, u->IdString(),
+    u->GetFirstName());
+  fprintf(fs, "%d %s Last Name: %s\n", CODE_USERxINFO, u->IdString(),
+    u->GetLastName());
+  fprintf(fs, "%d %s Email 1: %s\n", CODE_USERxINFO, u->IdString(),
+    u->GetEmailPrimary());
+  fprintf(fs, "%d %s Email 2: %s\n", CODE_USERxINFO, u->IdString(),
+    u->GetEmailSecondary());
 
   gUserManager.DropUser(u);
 
+  if (szId)
+    free(szId);
+    
   return fflush(fs);
 }
 
@@ -659,7 +740,7 @@ int CRMSClient::Process_INFO()
  * CRMSClient::Process_STATUS
  *
  * Command:
- *   STATUS [ status ]
+ *   STATUS [ status | protocol ]
  *
  * Response:
  *
@@ -669,9 +750,18 @@ int CRMSClient::Process_STATUS()
   // Show status
   if (data_arg[0] == '\0')
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    fprintf(fs, "%d %s\n", CODE_STATUS, o->StatusStr());
-    gUserManager.DropOwner();
+    ProtoPluginsList l;
+    ProtoPluginsListIter it;
+    licqDaemon->ProtoPluginList(l);
+    for (it = l.begin(); it != l.end(); it++)
+    {
+      ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      if (o)
+      {
+        fprintf(fs, "%d %s %s\n", CODE_STATUS, (*it)->Name(), o->StatusStr());
+        gUserManager.DropOwner((*it)->PPID());
+      }
+    }
     return fflush(fs);
   }
 
@@ -683,31 +773,41 @@ int CRMSClient::Process_STATUS()
     return fflush(fs);
   }
 
-  if (nStatus == ICQ_STATUS_OFFLINE)
+  ProtoPluginsList l;
+  ProtoPluginsListIter it;
+  licqDaemon->ProtoPluginList(l);
+  for (it = l.begin(); it != l.end(); it++)
   {
-    fprintf(fs, "%d [0] Logging off.\n", CODE_COMMANDxSTART);
-    fflush(fs);
-    licqDaemon->icqLogoff();
-    fprintf(fs, "%d [0] Event done.\n", CODE_RESULTxSUCCESS);
-    return fflush(fs);
+    if (nStatus == ICQ_STATUS_OFFLINE)
+    {
+      fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART,
+        (*it)->Name());
+      fflush(fs);
+      licqDaemon->ProtoLogoff((*it)->PPID());
+      fprintf(fs, "%d [0] Event done.\n", CODE_RESULTxSUCCESS);
+    }
+    else
+    {
+      ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      bool b = o->StatusOffline();
+      gUserManager.DropOwner((*it)->PPID());
+      unsigned long tag = 0;
+      if (b)
+      {
+        tag = licqDaemon->ProtoLogon((*it)->PPID(), nStatus);
+        fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag,
+          (*it)->Name());
+      }
+      else
+      {
+        tag = licqDaemon->ProtoSetStatus((*it)->PPID(), nStatus);
+        fprintf(fs, "%d [%ld] Setting status for %s.\n", CODE_COMMANDxSTART,
+          tag, (*it)->Name());
+      }
+      tags.push_back(tag);
+    }
   }
-
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  bool b = o->StatusOffline();
-  gUserManager.DropOwner();
-  unsigned long tag = 0;
-  if (b)
-  {
-    tag = licqDaemon->icqLogon(nStatus);
-    fprintf(fs, "%d [%ld] Logging on.\n", CODE_COMMANDxSTART, tag);
-  }
-  else
-  {
-    tag = licqDaemon->icqSetStatus(nStatus);
-    fprintf(fs, "%d [%ld] Setting status.\n", CODE_COMMANDxSTART, tag);
-  }
-  tags.push_back(tag);
-
+  
   return fflush(fs);
 }
 
@@ -717,7 +817,7 @@ int CRMSClient::Process_STATUS()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_QUIT()
 {
-  fprintf(fs, "%d Aurevoir.\n", CODE_QUIT);
+  fprintf(fs, "%d Sayonara.\n", CODE_QUIT);
   fflush(fs);
   if (strtoul(data_arg, (char**)NULL, 10) > 0) licqRMS->m_bExit = true;
   return -1;
@@ -784,14 +884,14 @@ int CRMSClient::Process_GROUPS()
  *     All options are optional and can be left out arbitrarily, ie
  *     "LIST all" is a valid call and will print all online and offline users.
  *     <format> is a printf style string using the user % symbols as
- *     documented in UTILITIES.HOWTO.  The default is "%9u %-20a %3m %s"
+ *     documented in UTILITIES.HOWTO.  The default is "%u %P %-20a %3m %s"
  *     and prints out users as follows.
  *
  * Response:
- *   CODE_LISTxUSER   5550000              AnAlias   2 Online
- *     The default line contains the uin, alias, number of new messages
- *     and status all column and white space deliminated.  Note that the
- *     alias may contain white space.
+ *   CODE_LISTxUSER   5550000 Licq            AnAlias   2 Online
+ *     The default line contains the uin, protocol, alias, number of new 
+ *     messages and status all column and white space deliminated.  Note that
+ *     the alias may contain white space.
  *   CODE_LISTxUSER ...
  *   ...
  *   CODE_LISTxDONE
@@ -828,7 +928,7 @@ int CRMSClient::Process_LIST()
   char format[128], *ubuf;
   if (*data_arg == '\0')
   {
-    strcpy(format, "%u %-20a %3m %s");
+    strcpy(format, "%u %P %-20a %3m %s");
   }
   else
   {
@@ -857,7 +957,7 @@ int CRMSClient::Process_LIST()
  * CRMSClient::Process_MESSAGE
  *
  * Command:
- *     MESSAGE <uin>
+ *     MESSAGE <id>[.<protocol>]
  *
  * Response:
  *   CODE_ENTERxTEXT | CODE_INVALIDxUSER
@@ -870,19 +970,11 @@ int CRMSClient::Process_LIST()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_MESSAGE()
 {
-//  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
-
-//  if (nUin < 10000)
-//  {
-//    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
-//    return fflush(fs);
-//  }
-
   fprintf(fs, "%d Enter message, terminate with a . on a line by itself:\n",
      CODE_ENTERxTEXT);
 
-//  m_nUin = nUin;
-  m_szId = strdup(data_arg);
+  ParseUser(data_arg);
+
   m_szText[0] = '\0';
   m_nTextPos = 0;
 
@@ -892,14 +984,17 @@ int CRMSClient::Process_MESSAGE()
 
 int CRMSClient::Process_MESSAGE_text()
 {
-  unsigned long tag = licqDaemon->icqSendMessage(m_szId, m_szText, false, ICQ_TCPxMSG_NORMAL);
+  //XXX Give a tag...
+  unsigned long tag = licqDaemon->ProtoSendMessage(m_szId, m_nPPID, m_szText,
+    false, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
      tag, m_szId);
-
-  tags.push_back(tag);
   m_nState = STATE_COMMAND;
 
+  if (m_nPPID == LICQ_PPID)
+    tags.push_back(tag);
+    
   return fflush(fs);
 }
 
@@ -909,7 +1004,7 @@ int CRMSClient::Process_MESSAGE_text()
  * CRMSClient::Process_URL
  *
  * Command:
- *   URL <uin>
+ *   URL <id>[.<protocol>]
  *
  * Response:
  *   CODE_ENTERxLINE | CODE_INVALIDxUSER
@@ -925,16 +1020,8 @@ int CRMSClient::Process_MESSAGE_text()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_URL()
 {
-  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
-
-  if (nUin < 10000)
-  {
-    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
-    return fflush(fs);
-  }
-  fprintf(fs, "%d Enter URL:\n", CODE_ENTERxLINE);
-
-  m_nUin = nUin;
+  ParseUser(data_arg);
+  
   m_nTextPos = 0;
 
   m_nState = STATE_ENTERxURL;
@@ -959,12 +1046,15 @@ int CRMSClient::Process_URL_url()
 
 int CRMSClient::Process_URL_text()
 {
-  unsigned long tag = licqDaemon->icqSendUrl(m_nUin, m_szLine, m_szText, false, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = licqDaemon->ProtoSendUrl(m_szId, m_nPPID, m_szLine,
+    m_szText, false, ICQ_TCPxMSG_NORMAL);
 
-  fprintf(fs, "%d [%ld] Sending URL to %ld.\n", CODE_COMMANDxSTART,
-     tag, m_nUin);
+  fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
+     tag, m_szId);
 
-  tags.push_back(tag);
+  if (m_nPPID == LICQ_PPID)
+    tags.push_back(tag);
+    
   m_nState = STATE_COMMAND;
 
   return fflush(fs);
@@ -1041,7 +1131,7 @@ int CRMSClient::Process_SMS_message()
  * CRMSClient::Process_AR
  *
  * Command:
- *     AR [ <uin> ]
+ *     AR [ <id>[.<protocol>] ]
  *
  * Response:
  *   CODE_ENTERxTEXT | CODE_INVALIDxUIN
@@ -1051,27 +1141,17 @@ int CRMSClient::Process_SMS_message()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_AR()
 {
-/*
-  if (data_arg[0] == '\0')
-  {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-    // print...
-    gUserManager.DropOwner();
-    return fflush(fs);
-  }
-*/
-  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
+  ParseUser(data_arg);
 
-  if (nUin != 0 && !gUserManager.IsOnList(nUin))
+  if (m_szId && !gUserManager.IsOnList(m_szId, m_nPPID))
   {
-    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+    fprintf(fs, "%d Invalid User.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
 
   fprintf(fs, "%d Enter %sauto response, terminate with a . on a line by itself:\n",
-     CODE_ENTERxTEXT, nUin == 0 ? "" : "custom " );
+     CODE_ENTERxTEXT, m_szId == 0 ? "" : "custom " );
 
-  m_nUin = nUin;
   m_szText[0] = '\0';
   m_nTextPos = 0;
 
@@ -1081,15 +1161,15 @@ int CRMSClient::Process_AR()
 
 int CRMSClient::Process_AR_text()
 {
-  if (m_nUin == 0)
+  if (m_szId == 0)
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_W);
     o->SetAutoResponse(m_szText);
     gUserManager.DropOwner();
   }
   else
   {
-    ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
     u->SetCustomAutoResponse(m_szText);
     gUserManager.DropUser(u);
   }
@@ -1135,20 +1215,16 @@ int CRMSClient::Process_LOG()
  * CRMSClient::Process_VIEW
  *
  * Command:
- *   VIEW <uin>
+ *   VIEW [ <id>[.<protocol> ]
  *
  * Response:
  *
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_VIEW()
 {
-  unsigned long nUin = 0;
-  char *szId = 0;
-
   if (*data_arg != '\0')
   {
-    nUin = strtoul(data_arg, (char**)NULL, 10);
-    szId = strdup(data_arg);
+    ParseUser(data_arg);
   }
   else
   {
@@ -1158,18 +1234,24 @@ int CRMSClient::Process_VIEW()
     FOR_EACH_USER_START(LOCK_R)
     {
       if(pUser->NewMessages() > 0)
-        szId = strdup(pUser->IdString());
+      {
+        if (m_szId)
+          free(m_szId);
+        m_szId = strdup(pUser->IdString());
+        m_nPPID = pUser->PPID();
+        FOR_EACH_USER_BREAK
+      }
     }
     FOR_EACH_USER_END
   
-    if (szId == 0)
+    if (m_szId == 0)
     {
       fprintf(fs, "%d No new messages.\n", CODE_VIEWxNONE);
       return fflush(fs);
     }
   }
 
-  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
   if (u == NULL)
   {
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
@@ -1232,8 +1314,7 @@ int CRMSClient::Process_VIEW()
   }
 
   gUserManager.DropUser(u);
-
-  if (szId) free(szId);
+    
   return fflush(fs);
 }
 
@@ -1241,31 +1322,26 @@ int CRMSClient::Process_VIEW()
  * CRMSClient::Process_ADDUSER
  *
  * Command:
- *   ADDUSER <uin>
+ *   ADDUSER <id> <protocol>
  *
  * Response:
  *
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_ADDUSER()
 {
-  unsigned long nUin = strtoul(data_arg, (char**)NULL, 10);
+  char *szId = strdup(data_arg);
+  NEXT_WORD(data_arg);
+  unsigned long nPPID = GetProtocol(data_arg);
 
-  if (nUin >= 10000)
+  if (licqDaemon->AddUserToList(szId, nPPID))
   {
-    if (licqDaemon->AddUserToList(nUin))
-    {
-      fprintf(fs, "%d User added\n", CODE_ADDUSERxDONE);
-    }
-    else
-    {
-      fprintf(fs, "%d User not added\n", CODE_ADDUSERxERROR);
-    }
+    fprintf(fs, "%d User added\n", CODE_ADDUSERxDONE);
   }
   else
   {
-    fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
+    fprintf(fs, "%d User not added\n", CODE_ADDUSERxERROR);
   }
-
+  
   return fflush(fs);
 }
 
