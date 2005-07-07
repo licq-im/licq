@@ -824,15 +824,20 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
              SIGNAL(addUser(const char*, unsigned long)),
              this, SLOT(addUser(const char*, unsigned long)));
 
+#endif
+
     ProtoPluginsList pl;
     ProtoPluginsListIter it;
     licqDaemon->ProtoPluginList(pl);
     for (it = pl.begin(); it != pl.end(); it++)
     {
+#ifdef USE_KDE
         kdeIMInterface->addProtocol((*it)->Name(), (*it)->PPID());
+#endif
+        if ((*it)->PPID() != LICQ_PPID) // XXX To be removed later
+        slot_protocolPlugin((*it)->PPID());
     }
    
-#endif
 }
 
 //-----ApplySkin----------------------------------------------------------------
