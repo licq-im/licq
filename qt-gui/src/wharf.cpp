@@ -68,13 +68,15 @@
   Constructs a WharfIcon widget.
 */
 IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent)
-  : QWidget(parent, "LicqWharf", WType_TopLevel)
+  : QWidget(NULL, "LicqWharf", WType_TopLevel)
 {
   setCaption("LicqWharf");
   m_nNewMsg = m_nSysMsg = 0;
   wharfIcon = NULL;
   mainwin = _mainwin;
   menu = _menu;
+
+  setBackgroundMode(X11ParentRelative);
 }
 
 
@@ -101,6 +103,7 @@ void IconManager::X11Init()
 
 #endif
 
+  move(-100, -100);
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
   show();
@@ -770,6 +773,7 @@ void WharfIcon::Set(QPixmap *pix)
   vis = new QPixmap(*pix);
   resize(vis->width(), vis->height());
   setMask(*vis->mask());
+  repaint();
 }
 
 WharfIcon::~WharfIcon()
@@ -792,6 +796,7 @@ void WharfIcon::paintEvent( QPaintEvent * )
 #ifdef DEBUG_WHARF
   printf("wharf paint\n");
 #endif
+  if (!vis) return;
   QPainter painter(this);
   painter.drawPixmap(0, 0, *vis);
   painter.end();
