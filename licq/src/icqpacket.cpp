@@ -2165,12 +2165,10 @@ CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
         case ICQ_STATUS_AWAY: m_nStatus = ICQ_TCPxACK_AWAY; break;
         case ICQ_STATUS_NA: m_nStatus = ICQ_TCPxACK_NA; break;
         case ICQ_STATUS_DND:
-          m_nStatus = (*u->CustomAutoResponse() && m_nSubCommand == ICQ_CMDxTCP_READxDNDxMSG)
-            ? ICQ_TCPxACK_DNDxCAR : ICQ_TCPxACK_DND;
+          m_nStatus = ICQ_TCPxACK_DNDxCAR;
           break;
         case ICQ_STATUS_OCCUPIED:
-          m_nStatus = (*u->CustomAutoResponse() && m_nSubCommand == ICQ_CMDxTCP_READxOCCUPIEDxMSG)
-            ? ICQ_TCPxACK_OCCUPIEDxCAR : ICQ_TCPxACK_OCCUPIED;
+          m_nStatus = ICQ_TCPxACK_OCCUPIEDxCAR;
           break;
         case ICQ_STATUS_ONLINE:
         case ICQ_STATUS_FREEFORCHAT:

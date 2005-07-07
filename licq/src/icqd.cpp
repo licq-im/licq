@@ -1212,13 +1212,19 @@ void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
 
 void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
 {
-  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
+  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (!u) return;
+  bool bTempUser = u->NotInList();
+  gUserManager.DropUser(u);
+  
+  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && !bTempUser)
     icqRemoveUser(szId);
   else if (nPPID != LICQ_PPID)
     ProtoRemoveUser(szId, nPPID);
 
   gUserManager.RemoveUser(szId, nPPID);
-  SaveUserList();
+  if (!bTempUser)
+    SaveUserList();
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, szId,
     nPPID));
@@ -2388,14 +2394,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   unsigned short nOwnerStatus = o->Status();
   gUserManager.DropOwner();
 
-  unsigned short nLevel;
-  if (nMask & ICQ_TCPxMSG_URGENT)
-    nLevel = ICQ_TCPxMSG_URGENT2;
-  else if (nMask & ICQ_TCPxMSG_LIST)
-    nLevel = ICQ_TCPxMSG_LIST2;
-  else
-    nLevel = nMask;
-
+  unsigned short nLevel = nMask;
   unsigned long nFlags = ((nMask & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
                          | ((nMask & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
 

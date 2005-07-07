@@ -2966,11 +2966,6 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         nMsgType &= ~ICQ_CMDxSUB_FxMULTIREC;
       }
 
-      if (nMsgFlags == ICQ_TCPxMSG_URGENT2)
-        nMask |= ICQ_TCPxMSG_URGENT;
-      if (nMsgFlags == ICQ_TCPxMSG_LIST2)
-        nMask |= ICQ_TCPxMSG_LIST;
-
       nLen = advMsg.UnpackUnsignedShort();
 
       // read the message in, except for DOS \r's

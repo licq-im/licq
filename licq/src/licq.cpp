@@ -384,6 +384,24 @@ bool CLicq::Init(int argc, char **argv)
     licqConf.FlushFile();
   }
 
+  // Find and load the protocol plugins before the UI plugins
+  if (!bHelp)
+  {
+    unsigned short nNumProtoPlugins = 0;
+    char szData[MAX_FILENAME_LEN];
+    if (licqConf.SetSection("plugins") && licqConf.ReadNum("NumProtoPlugins", nNumProtoPlugins) && nNumProtoPlugins > 0)
+    {
+      char szKey[20];
+      for (int i = 0; i < nNumProtoPlugins; i++)
+      {
+        sprintf(szKey, "ProtoPlugin%d", i+1);
+        if (!licqConf.ReadStr(szKey, szData)) continue;
+        if (LoadProtoPlugin(szData) == false) return false;
+      }
+    }
+  }
+
+
   // Find and load the plugins from the conf file
   if (!bHelp && !bCmdLinePlugins)
   {
@@ -430,8 +448,6 @@ bool CLicq::Init(int argc, char **argv)
   SSL_CTX_set_tmp_dh(gSSL_CTX, dh);
   DH_free(dh);
 #endif
-
-  //TODO Load protocol plugins
 
   // Start things going
   if (!gUserManager.Load())
@@ -925,6 +941,17 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
   *p->nId = m_nNextId++;
   p->m_pHandle = handle;
   pthread_mutex_lock(&mutex_protoplugins);
+  ProtoPluginsListIter p_iter;
+  for (p_iter = list_protoplugins.begin(); p_iter != list_protoplugins.end();
+      ++p_iter)
+  {
+    if ((*p_iter)->PPID() == p->m_nPPID)
+    {
+      delete p;
+      pthread_mutex_unlock(&mutex_protoplugins);
+      return NULL;
+    }
+  } 
   list_protoplugins.push_back(p);
   pthread_mutex_unlock(&mutex_protoplugins);
 
@@ -982,6 +1009,12 @@ int CLicq::Main()
   for (iter = list_plugins.begin(); iter != list_plugins.end(); iter++)
   {
     StartPlugin(*iter);
+  }
+  for (p_iter = list_protoplugins.begin(); p_iter != list_protoplugins.end();
+       p_iter++)
+  {
+    if ((*p_iter)->PPID() != LICQ_PPID)
+      StartProtoPlugin(*p_iter);
   }
 
   gLog.ModifyService(S_STDERR, DEBUG_LEVEL);
