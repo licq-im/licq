@@ -746,6 +746,12 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
       scon.nPPID = pUser->PPID();
       FOR_EACH_PROTO_USER_BREAK;
     }
+    else if (strcasecmp(szAlias, pUser->IdString()) == 0)
+    {
+      scon.szId = pUser->IdString();
+      scon.nPPID = pUser->PPID();
+      FOR_EACH_PROTO_USER_BREAK;
+    }
   }
   FOR_EACH_USER_END
   if (scon.szId == NULL)
@@ -993,21 +999,17 @@ void CLicqConsole::MenuAutoResponse(char *szArg)
 /*---------------------------------------------------------------------------
  * CLicqConsole::MenuRemove
  *-------------------------------------------------------------------------*/
-//TODO: add support for other protocols
 void CLicqConsole::MenuRemove(char *szArg)
 {
   char *sz = szArg;
-  unsigned long nUin = GetUinFromArg(&sz);
+  struct SContact scon = GetContactFromArg(&sz);
 
-  if (nUin == gUserManager.OwnerUin())
+  if (gUserManager.FindOwner(scon.szId, scon.nPPID))
     winMain->wprintf("%CYou can't remove yourself!\n", 16);
-  else if (nUin == 0)
+  else if (!scon.szId && scon.nPPID != (unsigned long)-1)
     winMain->wprintf("%CYou must specify a user to remove.\n", 16);
-  else if (nUin != (unsigned long)-1)
-  {
-    sprintf(szArg, "%lu", nUin);
-    UserCommand_Remove(szArg, LICQ_PPID, sz);
-  }
+  else
+    UserCommand_Remove(scon.szId, scon.nPPID, sz);
 }
 
 

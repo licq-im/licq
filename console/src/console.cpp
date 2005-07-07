@@ -246,7 +246,6 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
   // Register with the daemon, we want to receive all signals
   m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_ALL);
   m_bExit = false; 
-  _licqDaemon->AddProtocolPlugins();
   licqDaemon = _licqDaemon;
   m_nCurrentGroup = gUserManager.DefaultGroup();
 
@@ -1309,6 +1308,7 @@ void CLicqConsole::InputCommand(int cIn)
         // Set nTabs to 2 so the array is saved for the next tab hit
         nTabs = 2;
       }
+      free(szMatch);
       winPrompt->RefreshWin();
       break;
     }

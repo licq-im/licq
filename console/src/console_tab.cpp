@@ -20,7 +20,7 @@ int StrMatchLen(const char *_sz1, const char *_sz2, unsigned short _nStartPos)
 void CLicqConsole::TabCommand(char *_szPartialMatch,
                               struct STabCompletion &_sTabCompletion)
 {
-  char szMatch[32] = "";
+  char *szMatch = 0;
   unsigned short nLen = strlen(_szPartialMatch);
   for (unsigned short i = 0; i < NUM_COMMANDS; i++)
   {
@@ -28,17 +28,17 @@ void CLicqConsole::TabCommand(char *_szPartialMatch,
     snprintf(szTempCmd, 20, "%c%s", m_szCommandChar[0], aCommands[i].szName);
     if (strncasecmp(_szPartialMatch, szTempCmd, nLen) == 0)
     {
-      if (szMatch[0] == '\0')
-        strcpy(szMatch, szTempCmd);
+      if (szMatch == 0)
+        szMatch = strdup(szTempCmd);
       else
         szMatch[StrMatchLen(szMatch, szTempCmd, nLen)] = '\0';
       _sTabCompletion.vszPartialMatch.push_back(strdup(szTempCmd));
     }
   }
   if (nLen == 0)
-    _sTabCompletion.szPartialMatch[0] = '\0';
+    _sTabCompletion.szPartialMatch = 0;
   else
-    strcpy(_sTabCompletion.szPartialMatch, szMatch);
+    _sTabCompletion.szPartialMatch = szMatch;
 }
 
 
@@ -48,7 +48,7 @@ void CLicqConsole::TabCommand(char *_szPartialMatch,
 void CLicqConsole::TabUser(char *_szPartialMatch,
                            struct STabCompletion &_sTabCompletion)
 {
-  char szMatch[32] = "";
+  char *szMatch = 0;
   unsigned short nLen;
 /*  char *szSubCmd = NULL;
 
@@ -75,19 +75,27 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
 
       if (strncasecmp(_szPartialMatch, pUser->GetAlias(), nLen) == 0)
       {
-        if (szMatch[0] == '\0')
-          strcpy(szMatch, pUser->GetAlias());
+        if (szMatch == 0)
+          szMatch = strdup(pUser->GetAlias());
         else
           szMatch[StrMatchLen(szMatch, pUser->GetAlias(), nLen)] = '\0';
         _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->GetAlias()));
+      }
+      else if (strncasecmp(_szPartialMatch, pUser->IdString(), nLen) == 0)
+      {
+        if (szMatch == 0)
+          szMatch = strdup(pUser->IdString());
+        else
+          szMatch[StrMatchLen(szMatch, pUser->IdString(), nLen)] = '\0';
+        _sTabCompletion.vszPartialMatch.push_back(strdup(pUser->IdString()));
       }
     }
     FOR_EACH_USER_END
 
     if (nLen == 0)
-      _sTabCompletion.szPartialMatch[0] = '\0';
+      _sTabCompletion.szPartialMatch = 0;
     else
-      strcpy(_sTabCompletion.szPartialMatch, szMatch);
+      _sTabCompletion.szPartialMatch = szMatch;
   }
 /*  else // Sub command time
   {
@@ -121,23 +129,23 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
 void CLicqConsole::TabStatus(char *_szPartialMatch,
                              struct STabCompletion &_sTabCompletion)
 {
-  char szMatch[32] = "";
+  char *szMatch = 0;
   unsigned short nLen = strlen(_szPartialMatch);
   for (unsigned short i = 0; i < NUM_STATUS; i++)
   {
     if (strncasecmp(_szPartialMatch, aStatus[i].szName, nLen) == 0)
     {
-      if (szMatch[0] == '\0')
-        strcpy(szMatch, aStatus[i].szName);
+      if (szMatch == 0)
+        szMatch = strdup(aStatus[i].szName);
       else
         szMatch[StrMatchLen(szMatch, aStatus[i].szName, nLen)] = '\0';
       _sTabCompletion.vszPartialMatch.push_back(strdup(aStatus[i].szName));
     }
   }
   if (nLen == 0)
-    _sTabCompletion.szPartialMatch[0] = '\0';
+    _sTabCompletion.szPartialMatch = 0;
   else
-    strcpy(_sTabCompletion.szPartialMatch, szMatch);
+    _sTabCompletion.szPartialMatch = szMatch;
 }
 
 
@@ -147,22 +155,22 @@ void CLicqConsole::TabStatus(char *_szPartialMatch,
 void CLicqConsole::TabSet(char *_szPartialMatch,
                           struct STabCompletion &_sTabCompletion)
 {
-  char szMatch[32] = "";
+  char *szMatch = 0;
   unsigned short nLen = strlen(_szPartialMatch);
   for (unsigned short i = 0; i < NUM_VARIABLES; i++)
   {
     if (strncasecmp(_szPartialMatch, aVariables[i].szName, nLen) == 0)
     {
-      if (szMatch[0] == '\0')
-        strcpy(szMatch, aVariables[i].szName);
+      if (szMatch == 0)
+        szMatch = strdup(aVariables[i].szName);
       else
         szMatch[StrMatchLen(szMatch, aVariables[i].szName, nLen)] = '\0';
       _sTabCompletion.vszPartialMatch.push_back(strdup(aVariables[i].szName));
     }
   }
   if (nLen == 0)
-    _sTabCompletion.szPartialMatch[0] = '\0';
+    _sTabCompletion.szPartialMatch = 0;
   else
-    strcpy(_sTabCompletion.szPartialMatch, szMatch);
+    _sTabCompletion.szPartialMatch = szMatch;
 }
 

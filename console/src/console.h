@@ -215,7 +215,7 @@ public:
 struct STabCompletion
 {
   vector <char *> vszPartialMatch;
-  char szPartialMatch[32];
+  char *szPartialMatch;
 };
 
 struct SCommand
