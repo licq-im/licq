@@ -148,7 +148,15 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_nEvents = 0;
   m_nStatus = 0;
   // Other users group is sorted at the end
-  m_sSortKey = m_nGroupId ? QString("%1").arg((int)m_nGroupId, 10) : QString("9999999999");
+  if (m_nGroupId)
+  {
+    QString strTemp = QString("%1").arg((int)m_nGroupId);
+    while (strTemp.length() < 10)
+      strTemp = "0" + strTemp;
+    m_sSortKey = strTemp;
+  }
+  else
+    m_sSortKey = QString("9999999999");
   m_sPrefix = "1";
   setPixmap(0, gMainWindow->pmCollapsed);
   setText(1, QString::fromLocal8Bit(name));
