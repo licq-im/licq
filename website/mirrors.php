@@ -32,16 +32,19 @@
 <td><A HREF="ftp://ftp2.sourceforge.net/pub/sourceforge/licq/">ftp</A>
 <td>Sourceforge.
 <tr>
+<!--
 <td>New Zealand
 <td><A HREF="http://www.nz.licq.org/" target=_top>http</A>
 <td><A HREF="ftp://ftp.wibble.net/pub/licq/">ftp</A>
 <td><A HREF="mailto:sky@licq.org">Nick Bellamy</A> and Wibble.Net.
 <tr>
+-->
 <td>Canada
 <td><A HREF="http://www.ca.licq.org/" target=_top>http</A>
 <td><A HREF="ftp://ftp.fanfic.org/pub/licq/">ftp</A>
 <td><A HREF="mailto:dstenn@licq.org">Dennis Tenn</A>.
 <tr>
+<!--
 <td>United States #1
 <td><A HREF="http://www.us.licq.org/" target=_top>http</A>
 <td><A HREF="ftp://licq.darkorb.net/">ftp</A>
@@ -52,6 +55,7 @@
 <td><A HREF="ftp://ftp.us2.licq.org/pub/">ftp</A>
 <td><A HREF="mailto:miha@licq.org">Miha</A>.
 <tr>
+-->
 <td>Germany
 <td><A HREF="http://www.de.licq.org/" target=_top>http</A>
 <!--
@@ -77,7 +81,6 @@
 <td><A HREF="ftp://ftp.pt.licq.org/pub/mirrors/licq/">ftp</A>
 <td><A HREF="mailto:jgsilva@licq.org">Jorge Silva</A>.
 <tr>
--->
 <tr>
 <td>Russia
 <td><A HREF="http://www.ru.licq.org/" TARGET="_top">http</A>
@@ -93,7 +96,6 @@
 <td><A HREF="http://www.id.licq.org/" TARGET="_top">http</A>
 <td><A HREF="ftp://public.cakraweb.com/pub/licq/">ftp</A>
 <td><A HREF="mailto:asfik@licq.org">Asfihani</A>.
-<!--
 <tr>
 <td>Australia
 <td><A HREF="http://www.au.licq.org/" TARGET="_top">http</A>
