@@ -1,14 +1,3 @@
-<?
-  include "header.php";
-
-  if (file_exists("/home/groups/l/li/licq/htdocs/zorbstats/zorblogspages.php"))
-  {
-    include ("/home/groups/l/li/licq/htdocs/zorbstats/zorblogspages.php");
-    $pagename = substr($PHP_SELF, 1);
-    $dispname = substr($PHP_SELF, 1, -4);
-    countpage($pagename, $dispname);
-  }
-?>
       
       <div id="content" > 
 
@@ -45,6 +34,12 @@
                     <td>1.3.0</td>
                     <td>This is a console interface plugin for Licq using ncurses.  It features multiple command windows, and much of the basic icq functionality.  It can be retrieved using CVS as described in the <a href="http://www.rhrk.uni-kl.de/~dmuell/licq">Licq cvs page</a>, the module is called "console"..</td>
                   </tr>
+                  <tr>
+                    <td><a href="http://icqnd.sourceforge.net/">IcQnD Gtk-2 GUI</a></td>
+                    <td>0.1.6-1.31</td>
+                    <td>A <B>New</B> GTK2 Gui! This one looks like it has many features already and should be used instead of the other GTK plugins.</td>
+                  </tr>
+
                   <tr>
                     <td><a href="http://jons-gtk-gui.sourceforge.net">Jons GTK+ Gui</a></td>
                     <td>0.20</td>
