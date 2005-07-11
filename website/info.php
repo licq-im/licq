@@ -1,3 +1,6 @@
+<?
+  include "header.php";
+?>
       
       <div id="content" > 
 

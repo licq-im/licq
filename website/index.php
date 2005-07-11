@@ -1,3 +1,8 @@
+<?
+  include "header.php";
+  include "archive.php";
+?>
+
       <div id="content" > 
 
 				<div id="main"><img src="images/main_title_main.gif" alt="Main" /></div>

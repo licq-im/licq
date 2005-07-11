@@ -1,4 +1,6 @@
 <?
+  include "header.php";
+
   $skin = $_GET['skin'];
 
   $display = '';

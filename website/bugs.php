@@ -1,4 +1,7 @@
- 
+<?
+  include "header.php";
+?>
+
       <div id="content" > 
 
 				<div id="main"><img src="images/main_title_bugs.gif" alt="Bugtracker" /></div>

@@ -1,4 +1,7 @@
 <?
+  include "header.php";
+  include "archive.php";
+
     if ( empty( $news_action ) ) $news_action = "show_archive";
 ?>
       
