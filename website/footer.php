@@ -3,7 +3,7 @@
 				<div id="mainmenu"></div>
         <div id="nav">
         	<div class="menu_item"><a href="index.php"><span>Main</span></a></div>
-          <div class="menu_itme"><a href="news.php"><span>News</span></a></div>
+          <div class="menu_item"><a href="news.php"><span>News</span></a></div>
           <div class="menu_item"><a href="info.php"><span>Info</span></a></div>
           <div class="menu_item"><a href="faqs.php"><span>FAQs</span></a></div>
           <div class="menu_item"><a href="mirrors.php"><span>Mirrors</span></a></div>
