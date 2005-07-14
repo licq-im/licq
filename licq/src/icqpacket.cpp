@@ -4383,7 +4383,8 @@ void CPacketTcp::InitBuffer_v7()
 
   if (Channel() == ICQ_CHNxNONE)
   {
-    buffer->PackString(m_szMessage);
+    buffer->PackUnsignedShort(m_nMsgLen);
+    buffer->Pack(m_szMessage, m_nMsgLen);
   }
   else
   {
