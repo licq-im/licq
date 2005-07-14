@@ -4380,10 +4380,10 @@ void CPacketTcp::InitBuffer_v7()
   buffer->PackUnsignedShort(m_nSubCommand);
   buffer->PackUnsignedShort(m_nStatus);
   buffer->PackUnsignedShort((Channel() == ICQ_CHNxNONE) ? m_nMsgType : m_nLevel);
-//  buffer->PackUnsignedShort(0x0021);
+
   if (Channel() == ICQ_CHNxNONE)
   {
-    buffer->Pack(m_szMessage, m_nMsgLen);
+    buffer->PackString(m_szMessage);
   }
   else
   {
