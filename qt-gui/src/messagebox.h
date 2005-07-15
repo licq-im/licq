@@ -8,6 +8,7 @@
 
 class CUserEvent;
 class MsgView;
+class CMsgViewTips;
 
 //=====UserViewItem================================================================================
 class MsgViewItem : public QListViewItem
