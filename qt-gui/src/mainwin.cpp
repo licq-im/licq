@@ -4535,7 +4535,7 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("Send"), mnuSend);
    mnuUser->insertItem(tr("Misc Modes"), mnuMiscModes);
    mnuUser->insertItem(tr("U&tilities"), mnuUtilities);
-   mnuUser->insertItem(tr("Check If Invisible"), mnuUserCheckIfInvisible);
+   //mnuUser->insertItem(tr("Check If Invisible"), mnuUserCheckIfInvisible);
    mnuUser->insertItem(tr("Check Auto Response"), mnuUserCheckResponse);
    mnuUser->insertItem(pmCustomAR, tr("Custom Auto Response..."), mnuUserCustomAutoResponse);
    mnuUser->insertSeparator();
