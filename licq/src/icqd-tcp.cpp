@@ -76,7 +76,7 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   ICQUser *u;
   char *cipher = NULL;
   u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
-  if (u && u->UseGPG())
+  if (u && u->UseGPG() && online)
     cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
   gUserManager.DropUser(u);
 
