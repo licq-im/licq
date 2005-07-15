@@ -1,8 +1,7 @@
 <?php
-
+include "check_session.php";
 include "rms.php";
 include "config.php";
-include "check_session.php";
 
 $cmd = $_POST["cmd"];
 

@@ -33,7 +33,7 @@ function rmsLogin($uin, $passwd)
   // Get the UIN prompt
   $packet = socket_read($sock, 512, PHP_NORMAL_READ);
   
-  if (!strstr($packet, "300"))
+  if (!preg_match("/^300\s{1}.*/", $packet))
   {
      echo "Invalid response";
      socket_close($sock);
@@ -47,7 +47,7 @@ function rmsLogin($uin, $passwd)
     
   $packet = socket_read($sock, 512, PHP_NORMAL_READ);
   
-  if (!strstr($packet, "301"))
+  if (!preg_match("/^301\s{1}.*/", $packet))
   {
     echo "Invalid response";
     socket_close($sock);
@@ -60,7 +60,7 @@ function rmsLogin($uin, $passwd)
   
   $packet = socket_read($sock, 512, PHP_NORMAL_READ);
     
-  if (!strstr($packet, "200"))
+  if (!preg_match("/^200\s{1}.*/", $packet))
   {
     $errmsg = $packet;
     socket_close($sock);
@@ -86,7 +86,7 @@ function rmsGetOwnerStatus()
   socket_write($sock, $cmd, strlen($cmd));
   $packet = socket_read($sock, 512, PHP_NORMAL_READ);
   
-  if (strstr($packet, "202"))
+  if (preg_match("/^202\s{1}.*/", $packet))
   {
     //TODO Handle all the protocols seperately
     $i = 5;
@@ -133,9 +133,9 @@ function rmsGetlist()
   socket_write($sock, $cmd, strlen($cmd));
   $packet = socket_read($sock, 512, PHP_NORMAL_READ);
   
-  while (!strstr($packet, "206"))
+  while (!preg_match("/^206$/", $packet))
   {
-    if (strstr($packet, "204"))
+    if (preg_match("/^204\s{1}.*/", $packet))
     {
       $id = " ";
       $status = " ";

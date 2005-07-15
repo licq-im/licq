@@ -1,7 +1,6 @@
 <?php
-
-include "config.php";
 include "check_session.php";
+include "config.php";
 include "rms.php";
 
 function printHeader()
@@ -59,7 +58,7 @@ function printFooter()
       return;
     }
     
-    header('Location: main.php');
+    echo "<script>document.location.href='main.php'</script>";
   }
   
   //if ((!empty($errmsg)) || empty($login_uin) || empty($login_password))

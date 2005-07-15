@@ -1,9 +1,8 @@
- 
 <?php
-
-include "config.php";
 include "check_session.php";
+include "config.php";
 include "rms.php";
+include "kses.php";
 
 function rmsHandleCommand($cmd, $id = "", $pp = "")
 {
@@ -76,10 +75,24 @@ function rmsViewMessage($id, $pp)
   
   $packet = socket_read($sock, 1024, PHP_NORMAL_READ);
   $packet = socket_read($sock, 1024, PHP_BINARY_READ);
-  $msg = substr($packet, 0, strpos($packet, '223'));
   
-  $msg = str_replace("\r\n", "<BR>", $msg);
+  $msg = str_replace("\r\n", "<BR>", $packet);
   $msg = str_replace("\n", "<BR>", $msg);
+  
+  preg_match("/^(.*)<BR>223 Message Complete<BR>$/", $msg, $matches);
+  $msg = $matches[1];
+
+  // kses input filtering
+  $allowed = array('b' => array(),
+                   'i' => array(),
+                   'a' => array('href' => 1, 'title' => 1),
+                   'p' => array('align' => 1),
+                   'br' => array());
+
+  if (get_magic_quotes_gpc())
+    $msg = stripslashes($msg);
+  $msg = kses($msg, $allowed);
+  // --
   
   $location = "message.php?command=MSG&id=" . $id . "&pp=" . $pp;
 ?>
@@ -141,7 +154,7 @@ function rmsSendMessage()
   sendData($cmd);
   
   $packet = socket_read($sock, 1024, PHP_NORMAL_READ);
-  if (!strstr($packet, "302"))
+  if (!preg_match("/^302\s{1}.*/", $packet))
   {
     echo "<BR><B>Invalid response (" . $packet . ")</B><BR>\n";
     return;

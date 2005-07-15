@@ -1,7 +1,6 @@
 <?php
-
-include "config.php";
 include "check_session.php";
+include "config.php";
 include "rms.php";
 
 function printUserList()

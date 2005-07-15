@@ -9,6 +9,11 @@ function setVariable($strKey, $strVal, $isString)
 {
     $fc = file("config.php");
     $f = fopen("config.php", "w");
+    if (!$f)
+    {
+        echo "config.php not writable";
+        exit();
+    }
     
     foreach($fc as $line)
     {
