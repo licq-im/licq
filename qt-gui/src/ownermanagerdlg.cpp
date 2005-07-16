@@ -308,7 +308,7 @@ void OwnerManagerDlg::slot_registerClicked()
   if (gUserManager.OwnerUin() != 0)
   {
     QString buf = tr("You are currently registered as\n"
-                    "UIN (Account ID): %1\n"
+                    "UIN (User ID): %1\n"
                     "Base Directory: %2\n"
                     "Rerun licq with the -b option to select a new\n"
                     "base directory and then register a new user.")
