@@ -41,7 +41,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
                         "You can register a new user here.\n\n"
                         "Press \"Next\" to proceed."), this);
 
-  addPage(page1, tr("UIN Registration"));
+  addPage(page1, tr("Account Registration"));
   setHelpEnabled(page1, false);
 
   server = s;
@@ -60,7 +60,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
 
   chkSavePassword = new QCheckBox(tr("&Save Password"), grpInfo);
 
-  addPage(page2, tr("UIN Registration - Step 2"));
+  addPage(page2, tr("Account Registration - Step 2"));
   setHelpEnabled(page2, false);
 
   connect (cancelButton(), SIGNAL(clicked()), SLOT(hide()) );
@@ -73,14 +73,14 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
   connect(cancelButton(), SIGNAL(clicked()), this, SLOT(close()));
 
   page3 = new QVBox(this);
-  addPage(page3, tr("UIN Registration - Step 3"));
+  addPage(page3, tr("Account Registration - Step 3"));
   setHelpEnabled(page3, false);
 
   lblInfo = new QLabel(page3);
   lblInfo2 = new QLabel(page3);
 
   setMinimumSize(300, 200);
-  setCaption(tr("Licq User Registration"));
+  setCaption(tr("Licq Account Registration"));
 
   show();
 }
@@ -134,7 +134,7 @@ void RegisterUserDlg::nextPage()
 
 void RegisterUserDlg::accept()
 {
-  setCaption(tr("User Registration in Progress..."));
+  setCaption(tr("Account Registration in Progress..."));
   server->icqRegister(nfoPassword1->text().latin1());
   finishButton()->setEnabled(false);
   cancelButton()->setEnabled(false);

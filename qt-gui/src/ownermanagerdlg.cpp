@@ -28,7 +28,7 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
     : LicqDialog(parent, "OwnerEdit", false, WDestructiveClose)
 {
   server = s;
-  setCaption(tr("Edit Owner"));
+  setCaption(tr("Edit Account"));
   
   QGridLayout *lay = new QGridLayout(this, 1, 3, 8, 4);
   lay->setColStretch(2, 2);
@@ -95,7 +95,7 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
   {
     if (cmbProtocol->count() == 0)
     {
-      InformUser(this, tr("Currently only one owner per protocol is supported."));
+      InformUser(this, tr("Currently only one account per protocol is supported."));
       close();
       return;
     }
@@ -214,12 +214,12 @@ OwnerItem::OwnerItem(CICQDaemon *s, const char *szId, unsigned long nPPID,
 //----OwnerManagerDlg----------------------------------------------------------
 
 OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s)
-  : LicqDialog(NULL, "OwnerDialog", false, WDestructiveClose)
+  : LicqDialog(NULL, "AccountDialog", false, WDestructiveClose)
 {
   mainwin = m;
   server = s;
   registerUserDlg = 0;
-  setCaption(tr("Licq - Owner Manager"));
+  setCaption(tr("Licq - Account Manager"));
   
   QBoxLayout *toplay = new QVBoxLayout(this, 8, 8); 
   
@@ -259,9 +259,9 @@ OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s)
   // Show information to the user
   if (gUserManager.NumOwners() == 0)
   {
-    InformUser(this, tr("From the Owner Manager dialog you are able to add and register "
+    InformUser(this, tr("From the Account Manager dialog you are able to add and register "
                         "your accounts.\n"
-                        "Currently, only one owner per protocol is supported, but this "
+                        "Currently, only one account per protocol is supported, but this "
                         "will be changed in future versions."));
   }
 }
@@ -308,7 +308,7 @@ void OwnerManagerDlg::slot_registerClicked()
   if (gUserManager.OwnerUin() != 0)
   {
     QString buf = tr("You are currently registered as\n"
-                    "UIN: %1\n"
+                    "UIN (Account ID): %1\n"
                     "Base Directory: %2\n"
                     "Rerun licq with the -b option to select a new\n"
                     "base directory and then register a new user.")
