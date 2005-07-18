@@ -282,6 +282,20 @@ public:
 };
 #endif
 
+//-----VerifyRegistration------------------------------------------------------
+class CPU_VerifyRegistration : public CPU_CommonFamily
+{
+public:
+  CPU_VerifyRegistration();
+};
+
+//-----SendVerification--------------------------------------------------------
+class CPU_SendVerification : public CPU_CommonFamily
+{
+public:
+  CPU_SendVerification(const char *, const char *);
+};
+
 //-----ImICQ------------------------------------------------------------------
 class CPU_ImICQ : public CPU_CommonFamily
 {
@@ -765,7 +779,9 @@ class CPU_AckFileAccept : public CPU_AdvancedMessage
 {
 public:
   CPU_AckFileAccept(ICQUser *u, unsigned long nMsgID[],
-                    unsigned short nSequence,	unsigned short nPort);
+                    unsigned short nSequence, unsigned short nPort,
+                    const char *szDesc, const char *szFile,
+                    unsigned long nFileSize);
 };
 
 //-----AckFileRefuse-----------------------------------------------------------

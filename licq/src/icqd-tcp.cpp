@@ -840,23 +840,25 @@ void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned short nSeque
 
 //-----CICQDaemon::fileAccept-----------------------------------------------------------------------------
 void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
+   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect,
+   const char *szDesc, const char *szFile, unsigned long nFileSize)
 {
    // basically a fancy tcp ack packet which is sent late
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return;
-	gLog.Info(tr("%sAccepting file transfer from %s (#%hu).\n"),
-		  bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
-	if (bDirect)
-	{
-		CPT_AckFileAccept p(nPort, nSequence, u);
-		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
-	}
-	else
-	{
-		CPU_AckFileAccept *p = new CPU_AckFileAccept(u, nMsgID, nSequence, nPort);
-		SendEvent_Server(p);
-	}
+  gLog.Info(tr("%sAccepting file transfer from %s (#%hu).\n"),
+    bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
+  if (bDirect)
+  {
+    CPT_AckFileAccept p(nPort, nSequence, u);
+    AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
+  }
+  else
+  {
+    CPU_AckFileAccept *p = new CPU_AckFileAccept(u, nMsgID,
+      nSequence, nPort, szDesc, szFile, nFileSize);
+    SendEvent_Server(p);
+  }
 
   gUserManager.DropUser(u);
 }
@@ -1754,7 +1756,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     if (junkChar != 0x0D) messageTmp[j++] = junkChar;
   }
   messageTmp[j] = '\0';
-  
+
   message = parseRTF(messageTmp);
 
   if (nInVersion <= 4)

@@ -572,6 +572,12 @@ unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
 
 void CICQDaemon::icqRegister(const char *_szPasswd)
 {
+  if (m_szRegisterPasswd)
+  {
+    free(m_szRegisterPasswd);
+    m_szRegisterPasswd = 0;
+  }
+    
   m_szRegisterPasswd = strdup(_szPasswd);
   m_bRegistering = true;
   m_nRegisterThreadId = pthread_self();
@@ -591,7 +597,30 @@ void CICQDaemon::icqRegisterFinish()
   gLog.Info(tr("%sRegistering a new user...\n"), L_SRVxSTR);
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
   e->thread_plugin = m_nRegisterThreadId;
-  m_nRegisterThreadId = 0;
+}
+
+//-----ICQ::icqVerifyRegistration
+void CICQDaemon::icqVerifyRegistration()
+{
+  CPU_RegisterFirst *pFirst = new CPU_RegisterFirst();
+  SendEvent_Server(pFirst);
+    
+  CPU_VerifyRegistration *pVerify = new CPU_VerifyRegistration();
+  gLog.Info(tr("%sRequesting verification image...\n"), L_SRVxSTR);
+  SendEvent_Server(pVerify);
+  
+  m_nRegisterThreadId = pthread_self();
+}
+
+//-----ICQ::
+void CICQDaemon::icqVerify(const char *szVerification)
+{
+  CPU_SendVerification *p = new CPU_SendVerification(m_szRegisterPasswd,
+    szVerification);
+   gLog.Info(tr("%sSending verification for registration.\n"), L_SRVxSTR);
+   
+   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  // e->thread_plugin = m_nRegisterThreadId;
 }
 
 //-----ICQ::icqRelogon-------------------------------------------------------
@@ -2011,8 +2040,13 @@ bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
   case ICQ_CHNxNEW:
     if (m_bRegistering)
     {
-      icqRegisterFinish();
-      m_bRegistering = false;
+      if (m_bVerify)
+        icqVerifyRegistration();
+      else
+      {
+        icqRegisterFinish();
+        m_bRegistering = false;
+      }
     }
     break;
 
@@ -5530,12 +5564,23 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
   {
     case ICQ_SNACxNEW_UIN_ERROR:
     {
-      gLog.Warn(tr("%sRegistration error.\n"), L_WARNxSTR);
+      gLog.Warn(tr("%sVerification required. Reconnecting...\n"), L_WARNxSTR);
 
       ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
       if (e)
-        ProcessDoneEvent(e);
-
+        delete e;
+      m_bVerify = true;
+      
+      // Reconnect now
+      char *szPasswd = strdup(m_szRegisterPasswd); // gets deleted in postLogoff
+      int nSD = m_nTCPSrvSocketDesc;
+      m_nTCPSrvSocketDesc = -1;
+      m_eStatus = STATUS_OFFLINE_MANUAL;
+      m_bLoggingOn = false; 
+      gSocketManager.CloseSocket(nSD);
+      postLogoff(nSD, NULL);
+      icqRegister(szPasswd);
+      free(szPasswd);
       break;
     }
     case ICQ_SNACxNEW_UIN:
@@ -5545,13 +5590,15 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
       if (e)
         ProcessDoneEvent(e);
 
+      m_bVerify = false;
+      m_bRegistering = false;
+      
       packet.UnpackUnsignedShort(); // flags
       packet.UnpackUnsignedLong();  // id
 
-      // 46 bytes of shit
-      for (int x = 0; x < 11; x++)
+      // 40 bytes of shit
+      for (int x = 0; x < 10; x++)
         packet.UnpackUnsignedLong();
-      packet.UnpackUnsignedShort();
 
       unsigned long nNewUin = packet.UnpackUnsignedLong();
 
@@ -5576,6 +5623,8 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
         m_szRegisterPasswd = 0;
       }
 
+      PushPluginSignal(new CICQSignal(SIGNAL_NEW_OWNER, 0, szUin, LICQ_PPID));
+      
       // Reconnect now
       int nSD = m_nTCPSrvSocketDesc;
       m_nTCPSrvSocketDesc = -1;
@@ -5586,6 +5635,44 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
       icqLogon(ICQ_STATUS_ONLINE);
       break;
     }
+
+    case ICQ_SNACxSEND_IMAGE:
+    {
+      packet.UnpackUnsignedShort(); // flags
+      packet.UnpackUnsignedLong(); // id
+      m_bVerify = false;
+      
+      if (!packet.readTLV())
+      {
+        char *buf;
+        gLog.Unknown(tr("%sUnknown server response:\n%s\n"), L_UNKNOWNxSTR,
+           packet.print(buf));
+        delete [] buf;
+        break;
+      }
+
+      char *szJPEG = packet.UnpackStringTLV(0x0002);
+ 
+      // Save it in a file
+      char szFilename[MAX_FILENAME_LEN];
+      snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, "Licq_verify.jpg");
+      FILE *fp = fopen(szFilename, "w");
+      if (fp == 0)
+      {
+        gLog.Warn(tr("%sUnable to open file (%s):\n%s%s.\n"), L_WARNxSTR,
+          szFilename, L_BLANKxSTR, strerror(errno));
+        break;
+      }
+      
+      fwrite(szJPEG, packet.getTLVLen(0x0002), 1, fp);
+      fclose(fp);
+      
+      // Push a signal to the plugin to load the file
+      gLog.Info("%sReceived verification image.\n", L_SRVxSTR);
+      PushPluginSignal(new CICQSignal(SIGNAL_VERIFY_IMAGE, 0, 0, LICQ_PPID));
+      break;
+    }
+
     default:
     {
       char *buf;

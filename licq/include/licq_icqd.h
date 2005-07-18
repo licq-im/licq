@@ -300,7 +300,8 @@ public:
      unsigned short nSequence, unsigned long nMsgID[], bool bDirect);
   void icqFileTransferCancel(unsigned long nUin, unsigned short nSequence);
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-     unsigned short nSequence, unsigned long nMsgID[], bool bDirect);
+     unsigned short nSequence, unsigned long nMsgID[], bool bDirect,
+     const char *szDesc, const char *szFile, unsigned long nFileSize);
   unsigned long icqOpenSecureChannel(unsigned long nUin);
   unsigned long icqCloseSecureChannel(unsigned long nUin);
   void icqOpenSecureChannelCancel(unsigned long nUin, unsigned short nSequence);
@@ -319,6 +320,8 @@ public:
 
   // Server functions
   void icqRegister(const char *_szPasswd);
+  void icqVerifyRegistration();
+  void icqVerify(const char *);
   unsigned long icqFetchAutoResponseServer(const char *);
   unsigned long icqFetchAutoResponseServer(unsigned long);
   unsigned long icqLogon(unsigned short logonStatus);
@@ -612,7 +615,8 @@ protected:
        m_bOnlineNotifies,
        m_bAlwaysOnlineNotify,
        m_bTCPEnabled,
-       m_bFirewall;
+       m_bFirewall,
+       m_bVerify;
   time_t m_tLogonTime;
   char *m_szRegisterPasswd;
   pthread_t m_nRegisterThreadId;

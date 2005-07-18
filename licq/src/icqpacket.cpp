@@ -683,18 +683,53 @@ CPU_Register::CPU_Register(const char *szPasswd)
   buffer->PackUnsignedShortBE(0x0001);
   buffer->PackUnsignedShortBE(nPassLen+51);
   buffer->PackUnsignedLongBE(0x00000000);
-  buffer->PackUnsignedLongBE(0x28000300);
+  buffer->PackUnsignedLongBE(0x28000000);
   buffer->PackUnsignedLongBE(0);
   buffer->PackUnsignedLongBE(0);
-  buffer->PackUnsignedLongBE(0x82270000);
-  buffer->PackUnsignedLongBE(0x82270000);
+  buffer->PackUnsignedLongBE(0);//x82270000);
+  buffer->PackUnsignedLongBE(0);//x82270000);
   for (int x = 0; x < 4; x++) buffer->PackUnsignedLongBE(0);
   buffer->PackLNTS(szPasswd);
-  buffer->PackUnsignedLongBE(0x82270000);
-  buffer->PackUnsignedLongBE(0x00001902);
+  buffer->PackUnsignedLongBE(0);//x82270000);
+  buffer->PackUnsignedLongBE(0xf2070000);
 }
 
 #endif
+
+CPU_VerifyRegistration::CPU_VerifyRegistration()
+  : CPU_CommonFamily(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREQUEST_IMAGE)
+{
+  // Yes, it's empty
+  
+  InitBuffer();
+}
+
+CPU_SendVerification::CPU_SendVerification(const char *szPasswd, const char *szVerify)
+  : CPU_CommonFamily(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER)
+{
+  int nPassLen = strlen(szPasswd);
+  int nVerifyLen = strlen(szVerify);
+  m_nSize += 55 + nPassLen + nVerifyLen + 4;
+
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(nPassLen+51);
+  buffer->PackUnsignedLongBE(0x00000000);
+  buffer->PackUnsignedLongBE(0x28000000);
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE(0);
+  buffer->PackUnsignedLongBE(0);//x82270000);
+  buffer->PackUnsignedLongBE(0);//x82270000);
+  for (int x = 0; x < 4; x++) buffer->PackUnsignedLongBE(0);
+  buffer->PackLNTS(szPasswd);
+  buffer->PackUnsignedLongBE(0);//x82270000);
+  buffer->PackUnsignedLongBE(0xf2070000);
+  // Verification TLV
+  buffer->PackUnsignedShortBE(0x0009);
+  buffer->PackUnsignedShortBE(nVerifyLen);
+  buffer->Pack(szVerify, nVerifyLen);
+}
 
 //-----Logon--------------------------------------------------------------------
 CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _nLogonStatus)
@@ -2271,13 +2306,12 @@ CPU_AckGeneral::CPU_AckGeneral(ICQUser *u, unsigned long nMsgID1,
 
 //-----AckFileAccept-----------------------------------------------------------
 CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
-																		 unsigned long nMsgID[2],
-																		 unsigned short nSequence,
-																		 unsigned short nPort)
-	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_FILE, 0, true, nSequence, nMsgID[0],
-												nMsgID[1])
+   unsigned long nMsgID[2], unsigned short nSequence, unsigned short nPort,
+   const char *szDesc, const char *szFile, unsigned long nFileSize)
+   : CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, true, nSequence, nMsgID[0],
+       nMsgID[1])
 {
-#if 1
+#if 0
 	// XXX This is not the ICBM way yet!
 	// XXX It doesnt' even work! Perhaps try ICBM and it'll work?
 	m_nSize += 15;
@@ -2289,32 +2323,30 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 	buffer->PackUnsignedLong(0); // filesize
 	buffer->PackUnsignedLong(nPort); // port
 #else
-	m_nSize += 76;
-//  m_nExtraLen += 4; m_nSize += 4; //the ack request
+        int nFileLen = strlen(szFile), nDescLen = strlen(szDesc);
+	m_nSize += 66 + nFileLen + nDescLen;
 	InitBuffer();
 
-	buffer->PackUnsignedShort(0x32);  // len of following plugin info
+	buffer->PackUnsignedShort(0x29);  // len of following plugin info
 	buffer->PackUnsignedLongBE(0xF02D12D9);
 	buffer->PackUnsignedLongBE(0x3091D311);
 	buffer->PackUnsignedLongBE(0x8DD70010);
 	buffer->PackUnsignedLongBE(0x4B06462E);
 	buffer->PackUnsignedShortBE(0x0000);
-	buffer->PackUnsignedLong(13); // strlen - is 13 bytes though
-	buffer->Pack("File Transfer", 13);
-	buffer->PackUnsignedLongBE(0x00000101);
-	buffer->PackUnsignedLongBE(0x00000000);
+	buffer->PackUnsignedLong(4); // strlen - is 13 bytes though
+	buffer->Pack("File", 4);
+	buffer->PackUnsignedLongBE(0x00000100);
+	buffer->PackUnsignedLongBE(0x00010000);
 	buffer->PackUnsignedLongBE(0);
 	buffer->PackUnsignedShortBE(0);
 	buffer->PackChar(0);
-	buffer->PackUnsignedLong(20); //remaining  - is 4 bytes
-                                //dont count last 4 bytes
-	buffer->PackUnsignedLong(0); // file desc - is 4 bytes
-	buffer->PackChar(0); // file desc
+	buffer->PackUnsignedLong(19 + nDescLen + nFileLen);
+	buffer->PackUnsignedLong(nDescLen); // file desc - is 4 bytes
+	buffer->Pack(szDesc, nDescLen); // file desc
 	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
-	buffer->PackString(""); // filename
-	buffer->PackUnsignedLong(0); // filesize
+	buffer->PackString(szFile); // filename
+	buffer->PackUnsignedLong(nFileSize); // filesize
 	buffer->PackUnsignedLong(nPort); // port
-//	buffer->PackUnsignedLongBE(0x00030000); // ack request
 #endif
 }
 
@@ -4353,6 +4385,7 @@ void CPacketTcp::InitBuffer_v6()
   buffer->PackUnsignedShort(m_nSubCommand);
   buffer->PackUnsignedShort(m_nStatus);
   buffer->PackUnsignedShort(m_nMsgType);
+  buffer->PackUnsignedShort(m_nMsgLen);
   buffer->Pack(m_szMessage, m_nMsgLen);
 
   m_szLocalPortOffset = NULL;

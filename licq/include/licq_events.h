@@ -366,6 +366,11 @@ const unsigned long SIGNAL_CONVOxJOIN            = 0x00000400;
 const unsigned long SIGNAL_CONVOxLEAVE           = 0x00000800;
 //! A socket has been set for this user now.
 const unsigned long SIGNAL_SOCKET                = 0x00010000;
+//! A verification image is available for the gui to use
+//! that is located at BASE_DIR + "verify.jpg"
+const unsigned long SIGNAL_VERIFY_IMAGE          = 0x00020000;
+//! A new user has been successfully registered.
+const unsigned long SIGNAL_NEW_OWNER             = 0x00040000;
 //! Used by a UI plugin to tell the daemon that all signals should be
 //! sent to the UI plugin.
 const unsigned long SIGNAL_ALL                   = 0xFFFFFFFF;
