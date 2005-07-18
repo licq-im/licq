@@ -213,11 +213,12 @@ OwnerItem::OwnerItem(CICQDaemon *s, const char *szId, unsigned long nPPID,
 
 //----OwnerManagerDlg----------------------------------------------------------
 
-OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s)
+OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s, CSignalManager *sm)
   : LicqDialog(NULL, "AccountDialog", false, WDestructiveClose)
 {
   mainwin = m;
   server = s;
+  sigman = sm;
   registerUserDlg = 0;
   setCaption(tr("Licq - Account Manager"));
   
@@ -252,7 +253,7 @@ OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s)
   connect(btnModify, SIGNAL(clicked()), this, SLOT(slot_modifyClicked()));
   connect(btnDelete, SIGNAL(clicked()), this, SLOT(slot_deleteClicked()));
   connect(btnDone, SIGNAL(clicked()), this, SLOT(close()));
-    
+
   // Add the owners to the list now
   updateOwners();
 
@@ -321,20 +322,29 @@ void OwnerManagerDlg::slot_registerClicked()
     registerUserDlg->raise();
   else
   {
-    registerUserDlg = new RegisterUserDlg(server);
-    connect(registerUserDlg, SIGNAL(signal_done()), this, SLOT(slot_doneregister()));
+    registerUserDlg = new RegisterUserDlg(server, sigman);
+    connect(registerUserDlg, SIGNAL(signal_done(bool, char *, unsigned long)),
+      this, SLOT(slot_doneregister(bool, char *, unsigned long)));
   }
 }
 
-void OwnerManagerDlg::slot_doneregister()
+void OwnerManagerDlg::slot_doneregister(bool bSuccess, char *szNewId, unsigned long nPPID)
 {
   registerUserDlg = 0;
+  
+  if (bSuccess)
+  {
+    updateOwners();
+    mainwin->callInfoTab(mnuUserGeneral, szNewId, nPPID);
+  }
 }
 
 void OwnerManagerDlg::slot_doneRegisterUser(ICQEvent *e)
 {
+  // Deprecated
   delete registerUserDlg;
   registerUserDlg = NULL;
+  
   if (e->Result() == EVENT_SUCCESS)
   {
     updateOwners();

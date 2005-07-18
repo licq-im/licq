@@ -24,19 +24,25 @@
 #include <qgroupbox.h>
 #include <qvbox.h>
 #include <qlayout.h>
+#include <qpixmap.h>
 
+#include "sigman.h"
 #include "registeruser.h"
 #include "ewidgets.h"
 #include "licq_icqd.h"
 #include "licq_user.h"
 
 #ifdef USE_KDE
-RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : KWizard
+RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, CSignalManager *m, QWidget *parent)  : KWizard
 #else
-RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
+RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, CSignalManager *m, QWidget *parent)  : QWizard
 #endif
            (parent, "RegisterUserDialog", false, WDestructiveClose)
 {
+  m_bSuccess = false;
+  m_szId = 0;
+  m_nPPID = 0;
+  
   page1 = new QLabel(tr("Welcome to the Registration Wizard.\n\n"
                         "You can register a new user here.\n\n"
                         "Press \"Next\" to proceed."), this);
@@ -45,8 +51,12 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
   setHelpEnabled(page1, false);
 
   server = s;
+  sigMan = m;
+  
   page2 = new QVBox(this);
-
+  
+  (void) new QLabel(tr("Enter a password to protect your account."), grpInfo);
+    
   grpInfo = new QGroupBox(2, Horizontal, page2);
 
   (void) new QLabel(tr("Password:"), grpInfo);
@@ -58,7 +68,7 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
   nfoPassword2 = new CInfoField(grpInfo, false);
   nfoPassword2->setEchoMode(QLineEdit::Password);
 
-  chkSavePassword = new QCheckBox(tr("&Save Password"), grpInfo);
+  chkSavePassword = new QCheckBox(tr("&Remember Password"), grpInfo);
 
   addPage(page2, tr("Account Registration - Step 2"));
   setHelpEnabled(page2, false);
@@ -78,16 +88,20 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, QWidget *parent)  : QWizard
 
   lblInfo = new QLabel(page3);
   lblInfo2 = new QLabel(page3);
-
+  
   setMinimumSize(300, 200);
   setCaption(tr("Licq Account Registration"));
-
+  
+  connect(sigMan, SIGNAL(signal_verifyImage(unsigned long)), this,
+    SLOT(verifyImage(unsigned long)));
+  connect(sigMan, SIGNAL(signal_newOwner(const char *, unsigned long)),
+    this, SLOT(gotNewOwner(const char *, unsigned long)));
   show();
 }
 
 RegisterUserDlg::~RegisterUserDlg()
 {
-  emit signal_done();
+  emit signal_done(m_bSuccess, m_szId, m_nPPID);
 }
 
 void RegisterUserDlg::dataChanged()
@@ -143,6 +157,64 @@ void RegisterUserDlg::accept()
 
   server->SaveConf();
 //  close(true);
+}
+
+void RegisterUserDlg::verifyImage(unsigned long nPPID)
+{
+  // XXX Use nPPID
+  (void) new VerifyDlg(server, this);
+}
+
+void RegisterUserDlg::gotNewOwner(const char *szId, unsigned long nPPID)
+{
+  QString strMsg(tr("Account registration has been successfuly completed.\n"
+                    "Your new user id is %1.\n"
+                    "You are now being automatically logged on.\n"
+                    "Click OK to edit your personal details.\n"
+                    "After you are online, you can send your personal details to the server.")
+                    .arg(szId));
+  InformUser(this, strMsg);
+  
+  m_bSuccess = true;
+  m_szId = const_cast<char *>(szId);
+  m_nPPID = nPPID;
+  close(true);
+}
+
+VerifyDlg::VerifyDlg(CICQDaemon *s, QWidget *parent)
+  : QDialog(parent, "VerifyDlg", true, WDestructiveClose)
+{
+  server = s;
+  
+  // XXX Assume ICQ protocol
+  QString strFile = BASE_DIR;
+  strFile += "/Licq_verify.jpg";
+  QPixmap *pixVerify = new QPixmap(strFile);
+  
+  QGridLayout *lay = new QGridLayout(this, 3, 2, 10);
+  QLabel *lblPix = new QLabel(".", this);
+  lblPix->setPixmap(*pixVerify);
+  lay->addMultiCellWidget(lblPix, 0, 0, 0, 1);
+  
+  lay->addWidget(new QLabel(tr("Retype the letters shown above:"), this), 1, 0);
+  nfoVerify = new CInfoField(this, false);
+  lay->addWidget(nfoVerify, 1, 1);
+  
+  QHBox *hBox = new QHBox(this);
+  QPushButton *btnOk = new QPushButton(tr("&OK"), this);
+  btnOk->setDefault(true);
+  connect(btnOk, SIGNAL(clicked()), SLOT(ok()));
+  lay->addMultiCellWidget(hBox, 2, 2, 0, 1);
+  
+  setCaption(tr("Licq - New Account Verification"));
+  show();
+}
+
+void VerifyDlg::ok()
+{
+  QString strText = nfoVerify->text();
+  server->icqVerify(strText.latin1());
+  close();
 }
 
 #include "registeruser.moc"

@@ -129,6 +129,12 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
   case SIGNAL_CONVOxLEAVE:
     emit signal_convoLeave(s->Id(), s->PPID(), s->CID());
     break;
+  case SIGNAL_VERIFY_IMAGE:
+    emit signal_verifyImage(s->PPID());
+    break;
+  case SIGNAL_NEW_OWNER:
+    emit signal_newOwner(s->Id(), s->PPID());
+    break;
   default:
     gLog.Warn("%sInternal error: CSignalManager::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
               L_WARNxSTR, s->Signal());

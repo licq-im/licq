@@ -1290,7 +1290,8 @@ void UserViewEvent::slot_btnRead2()
       {
         //TODO in CICQDaemon
         server->icqFileTransferAccept(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
-          fileDlg->LocalPort(), f->Sequence(), f->MessageID(), f->IsDirect());
+          fileDlg->LocalPort(), f->Sequence(), f->MessageID(), f->IsDirect(),
+          f->FileDescription(), f->Filename(), f->FileSize());
       }
       break;
     }

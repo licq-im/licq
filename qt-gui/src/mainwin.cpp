@@ -3198,10 +3198,12 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
       if (e->Result() != EVENT_SUCCESS)
         WarnUser(this, tr("Logon failed.\nSee network window for details."));
       break;
-    case MAKESNAC(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER):
-      if (ownerManagerDlg)
-        ownerManagerDlg->slot_doneRegisterUser(e);
-      break;
+//  Deprecated
+//    case MAKESNAC(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER):
+//      if (ownerManagerDlg)
+//        ownerManagerDlg->slot_doneRegisterUser(e);
+//      break;
+
 /*
     case ICQ_CMDxSND_AUTHORIZE:
        if (e->Result() != EVENT_ACKED)
@@ -4707,7 +4709,7 @@ void CMainWindow::showOwnerManagerDlg()
     ownerManagerDlg->raise();
   else
   {
-    ownerManagerDlg = new OwnerManagerDlg(this, licqDaemon);
+    ownerManagerDlg = new OwnerManagerDlg(this, licqDaemon, licqSigMan);
     connect(ownerManagerDlg, SIGNAL(signal_done()), this, SLOT(slot_doneOwnerManager())); 
     ownerManagerDlg->show();
   }

@@ -376,6 +376,9 @@ void CLicqGui::Shutdown(void)
     delete licqMainWindow;
     licqMainWindow = 0;
   }
+
+  delete qApp;
+  qApp = 0;
 }
 
 

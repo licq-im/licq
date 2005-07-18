@@ -41,6 +41,8 @@ signals:
   void signal_socket(const char *, unsigned long, unsigned long);
   void signal_convoJoin(const char *, unsigned long, unsigned long);
   void signal_convoLeave(const char *, unsigned long, unsigned long);
+  void signal_verifyImage(unsigned long);
+  void signal_newOwner(const char *, unsigned long);
   
   // Event signals
   void signal_doneOwnerFcn(ICQEvent *);

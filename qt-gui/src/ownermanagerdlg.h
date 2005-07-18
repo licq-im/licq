@@ -12,6 +12,7 @@ class QLineEdit;
 class QComboBox;
 
 class CICQDaemon;
+class CSignalManager;
 class ICQEvent;
 class CMainWindow;
 
@@ -58,7 +59,7 @@ class OwnerManagerDlg : public LicqDialog
 {
    Q_OBJECT
 public:
-  OwnerManagerDlg(CMainWindow *m, CICQDaemon *s);
+  OwnerManagerDlg(CMainWindow *m, CICQDaemon *s, CSignalManager *sm);
   virtual ~OwnerManagerDlg();
   void slot_doneRegisterUser(ICQEvent *);
 
@@ -67,7 +68,7 @@ protected slots:
   void slot_listClicked(QListViewItem *, const QPoint &, int);
   void slot_addClicked();
   void slot_registerClicked();
-  void slot_doneregister();
+  void slot_doneregister(bool, char *, unsigned long);
   void slot_modifyClicked();
   void slot_deleteClicked();
   void slot_update();
@@ -77,6 +78,7 @@ protected:
   
   CMainWindow *mainwin;
   CICQDaemon *server;
+  CSignalManager *sigman;
   RegisterUserDlg *registerUserDlg;
   
   OwnerView *ownerView;
