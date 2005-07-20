@@ -1843,7 +1843,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
     m_szRegisterPasswd = 0;
   }
 
-  PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));
+  PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0, LICQ_PPID, 0, 0));
 }
 
 //-----ProtoTypingNotification-------------------------------------------------
@@ -5765,13 +5765,15 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   case 0x1D:
   case 0x18:
     gLog.Error(tr("%sRate limit exceeded.\n"), L_ERRORxSTR);
-    PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_RATE, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_RATE, 0,
+                                    LICQ_PPID, 0, 0));
     break;
 
   case 0x04:
   case 0x05:
     gLog.Error(tr("%sInvalid UIN and password combination.\n"), L_ERRORxSTR);
-    PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, 0,
+                                    LICQ_PPID, 0, 0));
     break;
     
   case 0x0C:
