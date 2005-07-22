@@ -612,15 +612,14 @@ void CICQDaemon::icqVerifyRegistration()
   m_nRegisterThreadId = pthread_self();
 }
 
-//-----ICQ::
+//-----ICQ::icqVerify--------------------------------------------------------
 void CICQDaemon::icqVerify(const char *szVerification)
 {
   CPU_SendVerification *p = new CPU_SendVerification(m_szRegisterPasswd,
     szVerification);
    gLog.Info(tr("%sSending verification for registration.\n"), L_SRVxSTR);
    
-   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  // e->thread_plugin = m_nRegisterThreadId;
+   SendExpectEvent_Server(0, p, NULL);
 }
 
 //-----ICQ::icqRelogon-------------------------------------------------------

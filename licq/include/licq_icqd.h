@@ -243,6 +243,19 @@ public:
   void ProtoChatRequestCancel(const char *szId, unsigned long nPPID,
      unsigned short nSequence);
   
+  unsigned long ProtoFileTransfer(const char *szId, unsigned long nPPID,
+     const char *szFilename, const char *szDescription, ConstFileList &lFileList,
+     unsigned short nLevel, bool bServer);
+  void ProtoFileTransferRefuse(const char *szId, unsigned long nPPID,
+     const char *szReason, unsigned long nSequence, unsigned long nFlag1,
+     unsigned long nFlag2, bool bDirect = false);
+  void ProtoFileTransferCancel(const char *szId, unsigned long nPPID,
+     unsigned long nSequence);
+  void ProtoFileTransferAccept(const char *szId, unsigned long nPPID,
+     unsigned short nPort, unsigned long nSequence = 0, unsigned long nFlag1 = 0,
+     unsigned long nFlag2 = 0, const char *szDesc = 0, const char *szFile = 0,
+     unsigned long nFileSize = 0,bool bDirect = false);
+  
   unsigned long ProtoAuthorizeGrant(const char *szId, unsigned long nPPID,
      const char *szMessage);
 
@@ -293,12 +306,21 @@ public:
      const char *szClients, unsigned short nSequence, unsigned long nMsgID[], bool bDirect);
   void icqChatRequestCancel(unsigned long nUin, unsigned short nSequence);
   // File Transfer
+  unsigned long icqFileTransfer(const char *szId, const char *szFilename,
+     const char *szDescription, ConstFileList &lFileList,
+     unsigned short nLevel, bool bServer);
   unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
      const char *szDescription, ConstFileList &lFileList,
      unsigned short nLevel, bool bServer);
+  void icqFileTransferRefuse(const char *szId, const char *szReason,
+     unsigned short nSequence, unsigned long nMsgID[], bool bDirect);  
   void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
      unsigned short nSequence, unsigned long nMsgID[], bool bDirect);
+  void icqFileTransferCancel(const char *szId, unsigned short nSequence);
   void icqFileTransferCancel(unsigned long nUin, unsigned short nSequence);
+  void icqFileTransferAccept(const char *szId, unsigned short nPort,
+     unsigned short nSequence, unsigned long nMsgID[], bool bDirect,
+     const char *szDesc, const char *szFile, unsigned long nFileSize);  
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
      unsigned short nSequence, unsigned long nMsgID[], bool bDirect,
      const char *szDesc, const char *szFile, unsigned long nFileSize);

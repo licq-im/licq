@@ -376,11 +376,26 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
 
 
 //-----CICQDaemon::sendFile---------------------------------------------------
-unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFilename,
+unsigned long CICQDaemon::ProtoFileTransfer(const char *szId, unsigned long nPPID,
+  const char *szFilename, const char *szDescription, ConstFileList &lFileList,
+  unsigned short nLevel, bool bServer)
+{
+  unsigned long nRet = 0;
+  if (nPPID == LICQ_PPID)
+    nRet = icqFileTransfer(szId, szFilename, szDescription, lFileList, nLevel,
+      bServer);
+  else
+    PushProtoSignal(new CSendFileSignal(szId, szFilename, szDescription,
+      lFileList), nPPID);
+
+  return nRet;
+}
+
+unsigned long CICQDaemon::icqFileTransfer(const char *szId, const char *szFilename,
                         const char *szDescription, ConstFileList &lFileList,
                         unsigned short nLevel, bool bServer)
 {
-  if (nUin == gUserManager.OwnerUin()) return 0;
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
 
   ICQEvent *result = NULL;
   char *szDosDesc = NULL;
@@ -391,7 +406,7 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
   }
   CEventFile *e = NULL;
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
 
   if (bServer)
@@ -409,7 +424,7 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
       nLevel = ICQ_TCPxMSG_LIST2;
 
     CPU_FileTransfer *p = new CPU_FileTransfer(u, lFileList, szFilename,
-				szDosDesc, nLevel, (u->Version() > 7));
+      szDosDesc, nLevel, (u->Version() > 7));
 
     if (!p->IsValid())
     {
@@ -423,12 +438,13 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
       gLog.Info(tr("%sSending file transfer to %s (#%hu).\n"), L_SRVxSTR, 
                 u->GetAlias(), -p->Sequence());
 
-      result = SendExpectEvent_Server(u->Uin(), p, e);
+      result = SendExpectEvent_Server(szId, LICQ_PPID, p, e);
     }
   }
   else
   {
-    CPT_FileTransfer *p = new CPT_FileTransfer(lFileList, szFilename, szDosDesc,                                               nLevel, u);
+    CPT_FileTransfer *p = new CPT_FileTransfer(lFileList, szFilename, szDosDesc, 
+      nLevel, u);
 
     if (!p->IsValid())
     {
@@ -464,6 +480,17 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
     return 0;
 }
 
+unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFilename,
+                        const char *szDescription, ConstFileList &lFileList,
+                        unsigned short nLevel, bool bServer)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  
+  return icqFileTransfer(szUin, szFilename, szDescription, lFileList,
+    nLevel, bServer);
+}
 
 //-----CICQDaemon::sendContactList-------------------------------------------
 unsigned long CICQDaemon::icqSendContactList(const char *szId,
@@ -825,10 +852,19 @@ unsigned long CICQDaemon::icqRequestICQphone(const char *szId,
 }
 
 //-----CICQDaemon::fileCancel-------------------------------------------------------------------------
-void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned short nSequence)
+void CICQDaemon::ProtoFileTransferCancel(const char *szId, unsigned long nPPID,
+  unsigned long nFlag)
+{
+  if (nPPID == LICQ_PPID)
+    icqFileTransferCancel(szId, (unsigned short)nFlag);
+  else
+    PushProtoSignal(new CCancelEventSignal(szId, nFlag), nPPID);
+}
+
+void CICQDaemon::icqFileTransferCancel(const char *szId, unsigned short nSequence)
 {
   // add to history ??
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
   if (u == NULL) return;
   gLog.Info(tr("%sCancelling file transfer to %s (#%hu).\n"), L_TCPxSTR, 
             u->GetAlias(), -nSequence);
@@ -837,14 +873,39 @@ void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned short nSeque
   gUserManager.DropUser(u);
 }
 
+void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned short nSequence)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0'; 
+
+  icqFileTransferCancel(szUin, nSequence);
+}
+
 
 //-----CICQDaemon::fileAccept-----------------------------------------------------------------------------
-void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
+void CICQDaemon::ProtoFileTransferAccept(const char *szId, unsigned long nPPID,
+   unsigned short nPort, unsigned long nSequence, unsigned long nFlag1,
+   unsigned long nFlag2, const char *szDesc, const char *szFile,
+   unsigned long nFileSize, bool bDirect)
+{
+  if (nPPID == LICQ_PPID)
+  {
+    unsigned long nMsgId[] = { nFlag1, nFlag2 };
+    icqFileTransferAccept(szId, nPort, (unsigned short)nSequence,
+      nMsgId, bDirect, szDesc, szFile, nFileSize);
+  }
+  else
+    PushProtoSignal(new CSendEventReplySignal(szId, 0, true, nPort, nSequence,
+      nFlag1, nFlag2, bDirect), nPPID);
+}
+ 
+void CICQDaemon::icqFileTransferAccept(const char *szId, unsigned short nPort,
    unsigned short nSequence, unsigned long nMsgID[2], bool bDirect,
    const char *szDesc, const char *szFile, unsigned long nFileSize)
 {
    // basically a fancy tcp ack packet which is sent late
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
   if (u == NULL) return;
   gLog.Info(tr("%sAccepting file transfer from %s (#%hu).\n"),
     bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
@@ -862,37 +923,74 @@ void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
 
   gUserManager.DropUser(u);
 }
+  
+void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
+   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect,
+   const char *szDesc, const char *szFile, unsigned long nFileSize)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0'; 
+  
+  icqFileTransferAccept(szUin, nPort, nSequence, nMsgID, bDirect,
+    szDesc, szFile, nFileSize);
+}
 
 
 
 //-----CICQDaemon::fileRefuse-----------------------------------------------------------------------------
-void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
+void CICQDaemon::ProtoFileTransferRefuse(const char *szId, unsigned long nPPID,
+     const char *szReason, unsigned long nSequence, unsigned long nFlag1,
+     unsigned long nFlag2, bool bDirect)
+{
+  if (nPPID == LICQ_PPID)
+  {
+    unsigned long nMsgId[] = { nFlag1, nFlag2 };
+    icqFileTransferRefuse(szId, szReason, (unsigned short)nSequence,
+      nMsgId, bDirect);
+  }
+  else
+    PushProtoSignal(new CSendEventReplySignal(szId, szReason, false, nSequence,
+      nFlag1, nFlag2, bDirect), nPPID);
+}
+
+void CICQDaemon::icqFileTransferRefuse(const char *szId, const char *szReason,
    unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
 {
    // add to history ??
   char *szReasonDos = gTranslator.NToRN(szReason);
   gTranslator.ClientToServer(szReasonDos);
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
   if (u == NULL) return;
   gLog.Info(tr("%sRefusing file transfer from %s (#%hu).\n"), 
             bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
 
-	if (bDirect)
-	{
-		CPT_AckFileRefuse p(szReasonDos, nSequence, u);
-		AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
+  if (bDirect)
+  {
+    CPT_AckFileRefuse p(szReasonDos, nSequence, u);
+    AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   }
-	else
-	{
-		CPU_AckFileRefuse *p = new CPU_AckFileRefuse(u, nMsgID, nSequence,
-																								 szReasonDos);
-		SendEvent_Server(p);
-	}
+  else
+  {
+    CPU_AckFileRefuse *p = new CPU_AckFileRefuse(u, nMsgID, nSequence,
+      szReasonDos);
+    SendEvent_Server(p);
+  }
 
-	gUserManager.DropUser(u);
+  gUserManager.DropUser(u);
 
   if (szReasonDos)
     delete [] szReasonDos;
+}
+
+void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
+   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0'; 
+
+  icqFileTransferRefuse(szUin, szReason, nSequence, nMsgID, bDirect);
 }
 
 

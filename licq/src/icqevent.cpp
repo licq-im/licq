@@ -460,7 +460,7 @@ CUnignoreUserSignal::CUnignoreUserSignal(const char *szId)
 }
 
 CSendFileSignal::CSendFileSignal(const char *szId, const char *szFile,
-                                 const char *szMessage)
+                                 const char *szMessage, ConstFileList &_lFileList)
   : CSignal(PROTOxSENDxFILE, szId)
 {
   if (szFile)
@@ -468,6 +468,8 @@ CSendFileSignal::CSendFileSignal(const char *szId, const char *szFile,
 
   if (szMessage)
     m_szMessage = strdup(szMessage);
+    
+  m_lFileList = _lFileList;
 }
 
 CSendFileSignal::~CSendFileSignal()
@@ -483,14 +485,27 @@ CSendChatSignal::CSendChatSignal(const char *szId, const char *szMessage)
     m_szMessage = strdup(szMessage);
 }
 
+CCancelEventSignal::CCancelEventSignal(const char *szId, unsigned long nFlag)
+  : CSignal(PROTOxCANCELxEVENT, szId)
+{
+  m_nFlag = nFlag;
+}
+
 CSendEventReplySignal::CSendEventReplySignal(const char *szId,
-                                             const char *szMessage, bool bAccept)
+  const char *szMessage, bool bAccept, unsigned short nPort,
+  unsigned long nSequence, unsigned long nFlag1, unsigned long nFlag2,
+  bool bDirect)
   : CSignal(PROTOxSENDxEVENTxREPLY, szId)
 {
   if (szMessage)
     m_szMessage = strdup(szMessage);
 
   m_bAccept = bAccept;
+  m_bDirect = bDirect;
+  m_nPort = nPort;
+  m_nSequence = nSequence;
+  m_nFlag = nFlag1;
+  m_nFlag2 = nFlag2;
 }
 
 COpenedWindowSignal::COpenedWindowSignal(const char *szId)

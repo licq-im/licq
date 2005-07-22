@@ -3,6 +3,7 @@
 
 #include "pthread_rdwr.h"
 #include "licq_constants.h"
+#include "licq_message.h"
 
 #include <stdlib.h>
 #include <vector>
@@ -492,6 +493,8 @@ enum SIGNAL_TYPE
   PROTOxSENDxFILE,
   //! The user has requested to send a chat invitation to this user.
   PROTOxSENDxCHAT,
+  //! The user is cancelling an event (chat or file for ICQ)
+  PROTOxCANCELxEVENT,
   //! The user has requested to send an accept/refuse reply to a file/chat
   //! request
   PROTOxSENDxEVENTxREPLY,
@@ -710,15 +713,17 @@ class CSendFileSignal : public CSignal
 {
 public:
   CSendFileSignal(const char *_szUser, const char *_szFile,
-                  const char *_szMessage);
+                  const char *_szMessage, ConstFileList &_lFileList);
   virtual ~CSendFileSignal();
 
   char *GetFileName() { return m_szFile; }
   char *GetMessage()  { return m_szMessage; }
-
+  ConstFileList GetFileList() { return m_lFileList; }
+  
 private:
   char *m_szFile,
        *m_szMessage;
+  ConstFileList m_lFileList;
 };
 
 class CSendChatSignal : public CSignal
@@ -733,19 +738,43 @@ private:
   char *m_szMessage;
 };
 
+class CCancelEventSignal : public CSignal
+{
+public:
+  CCancelEventSignal(const char *_szUser, unsigned long _nFlag);
+
+  unsigned long GetFlag() { return m_nFlag; }
+    
+private:
+  unsigned long m_nFlag;
+};
+
 class CSendEventReplySignal : public CSignal
 {
 public:
   CSendEventReplySignal(const char *_szUser, const char *_szMessage,
-                        bool _bAccepted);
+                        bool _bAccepted, unsigned short nPort,
+                        unsigned long nSequence = 0,
+                        unsigned long nFlag1 = 0, unsigned long nFlag2 = 0,
+                        bool bDirect = false);
   virtual ~CSendEventReplySignal() { if (m_szMessage) free(m_szMessage); }
 
   char *GetMessage() { return m_szMessage; }
   bool GetAccept()   { return m_bAccept; }
-
+  bool GetDirect()   { return m_bDirect; }
+  unsigned short GetPort()    { return m_nPort; }
+  unsigned long GetSequence() { return m_nSequence; }
+  unsigned long GetFlag()     { return m_nFlag; }
+  unsigned long GetFlag2()    { return m_nFlag2; } 
+  
 private:
   char *m_szMessage;
-  bool m_bAccept;
+  bool m_bAccept,
+       m_bDirect;
+  unsigned short m_nPort;
+  unsigned long m_nSequence,
+                m_nFlag,
+                m_nFlag2;
 };
 
 class COpenedWindowSignal : public CSignal
