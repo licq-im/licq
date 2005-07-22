@@ -518,3 +518,12 @@ CClosedWindowSignal::CClosedWindowSignal(const char *szId)
 {
 }
 
+COpenSecureSignal::COpenSecureSignal(const char *szId)
+  : CSignal(PROTOxOPENxSECURE, szId)
+{
+}
+
+CCloseSecureSignal::CCloseSecureSignal(const char *szId)
+  : CSignal(PROTOxCLOSExSECURE, szId)
+{
+}

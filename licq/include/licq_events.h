@@ -493,7 +493,7 @@ enum SIGNAL_TYPE
   PROTOxSENDxFILE,
   //! The user has requested to send a chat invitation to this user.
   PROTOxSENDxCHAT,
-  //! The user is cancelling an event (chat or file for ICQ)
+  //! The user is cancelling an event (chat, secure, or file for ICQ)
   PROTOxCANCELxEVENT,
   //! The user has requested to send an accept/refuse reply to a file/chat
   //! request
@@ -501,7 +501,11 @@ enum SIGNAL_TYPE
   //! The user has opened a chat window with this user
   PROTOxOPENEDxWINDOW,
   //! The user has closed a chat window with this user
-  PROTOxCLOSEDxWINDOW
+  PROTOxCLOSEDxWINDOW,
+  //! The user has requested an SSL secure channel with this user
+  PROTOxOPENxSECURE,
+  //! The user has requested to close the SSL secure channel with this user
+  PROTOxCLOSExSECURE
 };
 
 //! The class that gets passed to protocol plugins when a signal
@@ -787,6 +791,18 @@ class CClosedWindowSignal : public CSignal
 {
 public:
   CClosedWindowSignal(const char *);
+};
+
+class COpenSecureSignal : public CSignal
+{
+public:
+  COpenSecureSignal(const char *);
+};
+
+class CCloseSecureSignal : public CSignal
+{
+public:
+  CCloseSecureSignal(const char *);
 };
 
 #endif

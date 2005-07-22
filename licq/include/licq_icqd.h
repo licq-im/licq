@@ -270,6 +270,11 @@ public:
     const char *szFaxNumber, const char *szAddress, const char *szCellularNumber,
     const char *szZipCode, unsigned short nCountryCode, bool bHideEmail);
     
+  unsigned long ProtoOpenSecureChannel(const char *szId, unsigned long nPPID);
+  unsigned long ProtoCloseSecureChannel(const char *szId, unsigned long nPPID);
+  void ProtoOpenSecureChannelCancel(const char *szId, unsigned long nPPID,
+    unsigned long nSequence);
+    
   // TCP (user) functions
   // Message
   unsigned long icqSendMessage(const char *szId, const char *szMessage,
@@ -324,8 +329,11 @@ public:
   void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
      unsigned short nSequence, unsigned long nMsgID[], bool bDirect,
      const char *szDesc, const char *szFile, unsigned long nFileSize);
+  unsigned long icqOpenSecureChannel(const char *szId);
   unsigned long icqOpenSecureChannel(unsigned long nUin);
+  unsigned long icqCloseSecureChannel(const char *szId);
   unsigned long icqCloseSecureChannel(unsigned long nUin);
+  void icqOpenSecureChannelCancel(const char *szId, unsigned short nSequence);
   void icqOpenSecureChannelCancel(unsigned long nUin, unsigned short nSequence);
 
   // Plugins

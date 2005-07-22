@@ -1143,26 +1143,38 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
  * OpenSSL stuff
  *-------------------------------------------------------------------------*/
 
-unsigned long CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
+unsigned long CICQDaemon::ProtoOpenSecureChannel(const char *szId,
+  unsigned long nPPID)
 {
-  if (nUin == gUserManager.OwnerUin()) return 0;
+  unsigned long nRet = 0;
+  if (nPPID == LICQ_PPID)
+    nRet = icqOpenSecureChannel(szId);
+  else
+    PushProtoSignal(new COpenSecureSignal(szId), nPPID);
+   
+  return nRet;
+}
+
+unsigned long CICQDaemon::icqOpenSecureChannel(const char *szId)
+{
+  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
 
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn(tr("%sCannot send secure channel request to user not on list (%ld).\n"),
-       L_WARNxSTR, nUin);
+    gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
+       L_WARNxSTR, szId);
     return 0;
   }
 
   // Check that the user doesn't already have a secure channel
   if (u->Secure())
   {
-    gLog.Warn(tr("%s%s (%ld) already has a secure channel.\n"), L_WARNxSTR,
-       u->GetAlias(), nUin);
+    gLog.Warn(tr("%s%s (%s) already has a secure channel.\n"), L_WARNxSTR,
+       u->GetAlias(), szId);
     gUserManager.DropUser(u);
     return 0;
   }
@@ -1181,32 +1193,53 @@ unsigned long CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
   return 0;
 
 #else // No OpenSSL
-  gLog.Warn("%sicqOpenSecureChannel() to %ld called when we do not support OpenSSL.\n",
-     L_WARNxSTR, nUin);
+  gLog.Warn("%sicqOpenSecureChannel() to %s called when we do not support OpenSSL.\n",
+     L_WARNxSTR, szId);
   return 0;
 
 #endif
 }
 
+unsigned long CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
 
-unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
+  return icqOpenSecureChannel(szUin);
+}
+
+unsigned long CICQDaemon::ProtoCloseSecureChannel(const char *szId,
+  unsigned long nPPID)
+{
+  unsigned long nRet = 0;
+  if (nPPID == LICQ_PPID)
+    nRet = icqCloseSecureChannel(szId);
+  else
+    PushProtoSignal(new CCloseSecureSignal(szId), nPPID);
+    
+  return nRet;
+}
+
+
+unsigned long CICQDaemon::icqCloseSecureChannel(const char *szId)
 {
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn(tr("%sCannot send secure channel request to user not on list (%ld).\n"),
-       L_WARNxSTR, nUin);
+    gLog.Warn(tr("%sCannot send secure channel request to user not on list (%s).\n"),
+       L_WARNxSTR, szId);
     return 0;
   }
 
   // Check that the user doesn't already have a secure channel
   if (!u->Secure())
   {
-    gLog.Warn(tr("%s%s (%ld) does not have a secure channel.\n"), L_WARNxSTR,
-       u->GetAlias(), nUin);
+    gLog.Warn(tr("%s%s (%s) does not have a secure channel.\n"), L_WARNxSTR,
+       u->GetAlias(), szId);
     gUserManager.DropUser(u);
     return 0;
   }
@@ -1225,18 +1258,37 @@ unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
   return 0;
 
 #else // No OpenSSL
-  gLog.Warn("%sicqCloseSecureChannel() to %ld called when we do not support OpenSSL.\n",
-     L_WARNxSTR, nUin);
+  gLog.Warn("%sicqCloseSecureChannel() to %s called when we do not support OpenSSL.\n",
+     L_WARNxSTR, szId);
   return 0;
 
 #endif
 }
 
+unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  
+  return icqCloseSecureChannel(szUin);
+}
 
 //-----CICQDaemon::keyCancel-------------------------------------------------------------------------
-void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin, unsigned short nSequence)
+void CICQDaemon::ProtoOpenSecureChannelCancel(const char *szId,
+  unsigned long nPPID, unsigned long nSequence)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  if (nPPID == LICQ_PPID)
+    icqOpenSecureChannelCancel(szId, (unsigned short)nSequence);
+  else
+    PushProtoSignal(new CCancelEventSignal(szId, nSequence), nPPID);
+}
+
+
+void CICQDaemon::icqOpenSecureChannelCancel(const char *szId,
+  unsigned short nSequence)
+{
+  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return;
   gLog.Info(tr("%sCancelling secure channel request to %s (#%hu).\n"), L_TCPxSTR,
             u->GetAlias(), -nSequence);
@@ -1244,6 +1296,15 @@ void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin, unsigned short n
   gUserManager.DropUser(u);
 }
 
+void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin,
+  unsigned short nSequence)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", nUin);
+  szUin[12] = '\0';
+  
+  icqOpenSecureChannelCancel(szUin, nSequence);  
+}
 
 
 
