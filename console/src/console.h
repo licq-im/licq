@@ -108,7 +108,7 @@ public:
   void ProcessDoneSearch(ICQEvent *e);
   void ProcessStdin();
   void ProcessLog();
-  void ProcessFile(list<CFileTransferManager *>::iterator iter);
+  bool ProcessFile(CFileTransferManager *);
   char *CurrentGroupName();
   void SwitchToCon(unsigned short nCon);
   void CreateUserList();
@@ -201,7 +201,7 @@ public:
   void Command_Search();
 
   void Beep() { printf("\a"); fflush(stdout); }
-  void FileChatOffer(unsigned long, const char *, unsigned long);
+  void FileChatOffer(CUserEvent *, const char *, unsigned long);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
   void UserSelect();

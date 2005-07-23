@@ -353,7 +353,13 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
       {
         if (FD_ISSET((*iter)->Pipe(), &fdSet))
         {
-          ProcessFile(iter);
+          if (!ProcessFile(*iter))
+          {
+            delete *iter;
+#undef erase
+            m_lFileStat.erase(iter);
+          }
+
           break;
         }
       }
@@ -643,15 +649,15 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessFile
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessFile(list<CFileTransferManager *>::iterator iter)
+bool CLicqConsole::ProcessFile(CFileTransferManager *ftman)
 {
   char buf[32];
   bool bCloseFT = false;
-  read((*iter)->Pipe(), buf, 32);
+  read(ftman->Pipe(), buf, 32);
 
   CFileTransferEvent *e = NULL;
 
-  while ((e = (*iter)->PopFileTransferEvent()) != NULL)
+  while ((e = ftman->PopFileTransferEvent()) != NULL)
   {
     switch(e->Command())
     {
@@ -702,20 +708,23 @@ void CLicqConsole::ProcessFile(list<CFileTransferManager *>::iterator iter)
                        16, A_BOLD, 8, A_BOLD);
       bCloseFT = true;
       break;
+
+    case FT_CONFIRMxFILE:
+      ftman->StartReceivingFile(const_cast<char *>(ftman->FileName()));
+      break;
     }
 
     if (bCloseFT)
     {
-      (*iter)->CloseFileTransfer();
-      delete *iter;
-#undef erase
-      m_lFileStat.erase(iter);
+      ftman->CloseFileTransfer();
       delete e;
-      return;
+      return false;
     }
 
     delete e;
   }
+
+  return true;
 }
 
 
@@ -1595,8 +1604,7 @@ void CLicqConsole::UserCommand_View(const char *szId, unsigned long nPPID, char 
 
     // Do we want to accept the file transfer?
     if (e->SubCommand() == ICQ_CMDxSUB_FILE)
-      //FIXME
-      //FileChatOffer(e->Sequence(), u->Uin());
+      FileChatOffer(e, szId, nPPID);
 
     delete e;
     gUserManager.DropUser(u);
@@ -3039,12 +3047,13 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::FileChatOffer
  *-------------------------------------------------------------------------*/
-void CLicqConsole::FileChatOffer(unsigned long _nSequence, const char *_szId, unsigned long _nPPID)
+void CLicqConsole::FileChatOffer(CUserEvent *e, const char *_szId, unsigned long _nPPID)
 {
+  CEventFile *f = (CEventFile *)e;
   // Get y or n
   winMain->fProcessInput = &CLicqConsole::InputFileChatOffer;
   winMain->state = STATE_QUERY;
-  winMain->data = new DataFileChatOffer(_nSequence, _szId, _nPPID);
+  winMain->data = new DataFileChatOffer(f, _szId, _nPPID);
   winMain->wprintf("%C%ADo you wish to accept this request? (y/N) %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr, 8, A_BOLD);
   winMain->RefreshWin();
@@ -3059,6 +3068,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 {
   DataFileChatOffer *data = (DataFileChatOffer *)winMain->data;
   char *sz;
+  CEventFile *f = data->f;
 
   switch(winMain->state)
   {
@@ -3076,13 +3086,16 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           ftman->SetUpdatesEnabled(1);
           m_lFileStat.push_back(ftman);
 
+          // Now watch the file pipe
+          FD_SET(ftman->Pipe(), &fdSet);
+
+
           // Accept the file
           const char *home = getenv("HOME");
           ftman->ReceiveFiles(home);
-          // XXX hack
-          unsigned long dummy[2] = { 0, 0};
           licqDaemon->icqFileTransferAccept(strtoul(data->szId, (char **)NULL, 10), ftman->LocalPort(),
-                                            data->nSequence, dummy, true);
+                                            f->Sequence(), f->MessageID(), f->IsDirect(),
+                                            f->FileDescription(), f->Filename(), f->FileSize());
           winMain->fProcessInput = &CLicqConsole::InputCommand;
 
           if(winMain->data)
@@ -3114,7 +3127,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
       // XXX hack
       unsigned long dummy[2] = { 0, 0 };
       licqDaemon->icqFileTransferRefuse(strtoul(data->szId, (char **)NULL, 10), data->szReason,
-                                        data->nSequence, dummy, true);
+                                        f->Sequence(), dummy, true);
 
       // We are done now
       winMain->wprintf("%ARefusing file from %s with reason: %Z%s\n",

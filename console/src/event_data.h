@@ -114,10 +114,10 @@ public:
 class DataFileChatOffer : public CData
 {
 public:
-  DataFileChatOffer(unsigned long _nSeq, const char *i, unsigned long n) : CData(i, n)
-    { szReason[0] = '\0'; nSequence = _nSeq; }
+  DataFileChatOffer(CEventFile *_f, const char *i, unsigned long n) : CData(i, n)
+    { szReason[0] = '\0'; f = _f; }
+  CEventFile *f;
   char szReason[256];
-  unsigned long nSequence;
 };
 
 
