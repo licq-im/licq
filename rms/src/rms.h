@@ -82,6 +82,7 @@ public:
   int Process_ADDUSER();
   int Process_REMUSER();
   int Process_SECURE();
+  int Process_NOTIFY();
 
 protected:
   TCPSocket sock;
@@ -94,6 +95,7 @@ protected:
   unsigned long m_nCheckUin;
   char *m_szCheckId;
   unsigned long m_nLogTypes;
+  bool m_bNotify;
 
   unsigned long m_nUin;
   char *m_szId;
@@ -108,6 +110,7 @@ protected:
   bool AddLineToText();
   unsigned long GetProtocol(const char *);
   void ParseUser(const char *);
+  int ChangeStatus(unsigned long, unsigned long, const char *);
   
   int Process_MESSAGE_text();
   int Process_URL_url();

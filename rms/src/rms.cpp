@@ -43,6 +43,7 @@ const unsigned short CODE_VIEWxMSG = 208;
 const unsigned short CODE_VIEWxURL = 209;
 const unsigned short CODE_VIEWxCHAT= 210;
 const unsigned short CODE_VIEWxFILE = 211;
+const unsigned short CODE_STATUSxDONE = 212;
 const unsigned short CODE_VIEWxTIME = 220;
 const unsigned short CODE_VIEWxFLAGS = 221;
 const unsigned short CODE_VIEWxTEXTxSTART = 222;
@@ -52,6 +53,8 @@ const unsigned short CODE_REMUSERxDONE = 225;
 const unsigned short CODE_SECURExOPEN = 226;
 const unsigned short CODE_SECURExCLOSE = 227;
 const unsigned short CODE_SECURExSTAT = 228;
+const unsigned short CODE_NOTIFYxON = 229;
+const unsigned short CODE_NOTIFYxOFF = 230;
 const unsigned short CODE_VIEWxUNKNOWN = 299;
 // 300 - further action required
 const unsigned short CODE_ENTERxUIN = 300;
@@ -71,6 +74,9 @@ const unsigned short CODE_EVENTxFAILED = 501;
 const unsigned short CODE_EVENTxERROR = 502;
 const unsigned short CODE_ADDUSERxERROR = 503;
 const unsigned short CODE_SECURExNOTCOMPILED = 504;
+
+const unsigned short CODE_NOTIFYxSTATUS = 600;
+const unsigned short CODE_NOTIFYxMESSAGE = 601;
 
 const unsigned short STATE_UIN = 1;
 const unsigned short STATE_PASSWORD = 2;
@@ -116,7 +122,7 @@ static struct Command commands[] =
   { "SECURE", &CRMSClient::Process_SECURE,
     "Open/close/check secure channel { <uin> [ <open|close> ] } ." },
   { "STATUS", &CRMSClient::Process_STATUS,
-    "Set or show status.  Argument is new status, or blank to display current." },
+    "Set or show status.  Argument is new status and protocol, or blank to display current. { [ <status>[.<protocol>] ] }." },
   { "TERM", &CRMSClient::Process_TERM,
     "Terminate the licq daemon." },
   { "VIEW", &CRMSClient::Process_VIEW,
@@ -125,6 +131,8 @@ static struct Command commands[] =
     "Send a url { <id>[.<protocol>] }." },
   { "SMS", &CRMSClient::Process_SMS,
     "Send an sms { <uin> }." },
+  { "NOTIFY", &CRMSClient::Process_NOTIFY,
+    "Notify events" },
 };
 
 static const unsigned short NUM_COMMANDS = sizeof(commands)/sizeof(*commands);
@@ -196,8 +204,6 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
     {
       gLog.Error("Could not start server on port %u, "
                  "maybe this port is already in use?\n", nPort);
-      printf("Could not start server on port %u, "
-             "maybe this port is already in use?\n", nPort);
       return 1;
     };
   }
@@ -249,8 +255,8 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
             {
               if ((*iter)->Activity() == -1)
               {
-                delete *iter;
                 clients.erase(iter);
+                delete *iter;
                 if (clients.size() == 0 && log != NULL)
                   log->SetLogTypes(0);
               }
@@ -346,6 +352,49 @@ void CLicqRMS::ProcessSignal(CICQSignal *s)
   switch (s->Signal())
   {
   case SIGNAL_UPDATExUSER:
+    if (s->SubSignal() == USER_STATUS)
+    {
+      ICQUser *u = gUserManager.FetchUser(s->Id(), s->PPID(), LOCK_R);
+      if (u)
+      {
+        ClientList::iterator iter;
+        for (iter = clients.begin(); iter != clients.end(); iter++)
+        {
+          if ((*iter)->m_bNotify)
+          {
+            char format[128], *ubuf;
+			strcpy(format, "%u %P %-20a %3m %s");
+			ubuf = u->usprintf(format);
+            fprintf((*iter)->fs, "%d %s\n", CODE_NOTIFYxSTATUS, ubuf);
+			free(ubuf);
+            fflush((*iter)->fs);
+          }
+        }
+        gUserManager.DropUser(u);
+      }
+      break;
+    }
+    else if (s->SubSignal() == USER_EVENTS)
+    {
+      ICQUser *u = gUserManager.FetchUser(s->Id(), s->PPID(), LOCK_R);
+      if (u)
+      {
+        ClientList::iterator iter;
+        for (iter = clients.begin(); iter != clients.end(); iter++)
+        {
+          if ((*iter)->m_bNotify)
+          {
+            char format[128], *ubuf;
+			strcpy(format, "%u %P %3m");
+			ubuf = u->usprintf(format);
+            fprintf((*iter)->fs, "%d %s\n", CODE_NOTIFYxMESSAGE, ubuf);
+			free(ubuf);
+            fflush((*iter)->fs);
+          }
+        }
+        gUserManager.DropUser(u);
+      }
+    }
   case SIGNAL_UPDATExLIST:
   case SIGNAL_LOGON:
   default:
@@ -400,7 +449,6 @@ CRMSClient::CRMSClient(TCPSocket *sin) : sock(0)
   sockman.DropSocket(&sock);
 
   gLog.Info("%sClient connected from %s.\n", L_RMSxSTR, sock.RemoteIpStr(buf));
-
   fs = fdopen(sock.Descriptor(), "r+");
   fprintf(fs, "Licq Remote Management Server v%s\n"
      "%d Enter your UIN:\n", LP_Version(), CODE_ENTERxUIN);
@@ -411,6 +459,7 @@ CRMSClient::CRMSClient(TCPSocket *sin) : sock(0)
   m_nState = STATE_UIN;
   m_nLogTypes = 0;
   data_line_pos = 0;
+  m_bNotify = false;
 }
 
 
@@ -592,7 +641,7 @@ int CRMSClient::StateMachine()
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
       bool ok = (strcmp(m_szCheckId, o->IdString()) == 0 &&
-         strcmp(o->Password(), data_line) == 0);
+         (strcmp(o->Password(), data_line) == 0));
       free(m_szCheckId);
       m_szCheckId = 0;
       if (!ok)
@@ -758,59 +807,77 @@ int CRMSClient::Process_STATUS()
       ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
       if (o)
       {
-        fprintf(fs, "%d %s %s\n", CODE_STATUS, (*it)->Name(), o->StatusStr());
+        fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->IdString(), (*it)->Name(), o->StatusStr());
         gUserManager.DropOwner((*it)->PPID());
       }
     }
+    fprintf(fs, "%d\n", CODE_STATUSxDONE);
     return fflush(fs);
   }
 
   // Set status
-  unsigned long nStatus = StringToStatus(data_arg);
-  if (nStatus == INT_MAX)
+  string strData(data_arg);
+  string::size_type nPos = strData.find_last_of(".");
+  if (nPos == string::npos)
   {
-    fprintf(fs, "%d Invalid status.\n", CODE_INVALIDxSTATUS);
-    return fflush(fs);
-  }
-
-  ProtoPluginsList l;
-  ProtoPluginsListIter it;
-  licqDaemon->ProtoPluginList(l);
-  for (it = l.begin(); it != l.end(); it++)
-  {
-    if (nStatus == ICQ_STATUS_OFFLINE)
+    unsigned long nStatus = StringToStatus(data_arg);
+    ProtoPluginsList l;
+    ProtoPluginsListIter it;
+    licqDaemon->ProtoPluginList(l);
+    for (it = l.begin(); it != l.end(); it++)
     {
-      fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART,
-        (*it)->Name());
-      fflush(fs);
-      licqDaemon->ProtoLogoff((*it)->PPID());
-      fprintf(fs, "%d [0] Event done.\n", CODE_RESULTxSUCCESS);
-    }
-    else
-    {
-      ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
-      bool b = o->StatusOffline();
-      gUserManager.DropOwner((*it)->PPID());
-      unsigned long tag = 0;
-      if (b)
-      {
-        tag = licqDaemon->ProtoLogon((*it)->PPID(), nStatus);
-        fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag,
-          (*it)->Name());
-      }
-      else
-      {
-        tag = licqDaemon->ProtoSetStatus((*it)->PPID(), nStatus);
-        fprintf(fs, "%d [%ld] Setting status for %s.\n", CODE_COMMANDxSTART,
-          tag, (*it)->Name());
-      }
-      tags.push_back(tag);
+      ChangeStatus((*it)->PPID(), nStatus, data_arg);
     }
   }
-  
+  else
+  {
+    string strStatus(strData, 0, strData.find_last_of("."));
+    string strProtocol(strData, strData.find_last_of(".")+1, strData.size());
+    unsigned long nPPID = GetProtocol(strProtocol.c_str());
+    char *szStatus = strdup(strStatus.c_str());
+    unsigned long nStatus = StringToStatus(szStatus);
+    ChangeStatus(nPPID, nStatus, szStatus);
+    free(szStatus);
+  }
+  fprintf(fs, "%d Done setting status\n", CODE_STATUSxDONE);
   return fflush(fs);
 }
 
+int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const char *szStatus)
+{
+  if (nStatus == INT_MAX)
+  {
+    fprintf(fs, "%d Invalid status.\n", CODE_INVALIDxSTATUS);
+    return -1;
+  }
+  if (nStatus == ICQ_STATUS_OFFLINE)
+  {
+    fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART, szStatus);
+    fflush(fs);
+    licqDaemon->ProtoLogoff(nPPID);
+    fprintf(fs, "%d [0] Event done.\n", CODE_STATUSxDONE);
+    return 0;
+  }
+  else
+  {
+    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
+    bool b = o->StatusOffline();
+    gUserManager.DropOwner(nPPID);
+    unsigned long tag = 0;
+    if (b)
+    {
+      tag = licqDaemon->ProtoLogon(nPPID, nStatus);
+      fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag, szStatus);
+    }
+    else
+    {
+      tag = licqDaemon->ProtoSetStatus(nPPID, nStatus);
+      fprintf(fs, "%d [%ld] Setting status for %s.\n", CODE_COMMANDxSTART, tag, szStatus);
+    }
+    tags.push_back(tag);
+  }
+  return 0;
+}
 
 /*---------------------------------------------------------------------------
  * CRMSClient::Process_QUIT
@@ -985,6 +1052,7 @@ int CRMSClient::Process_MESSAGE()
 int CRMSClient::Process_MESSAGE_text()
 {
   //XXX Give a tag...
+  m_szText[strlen(m_szText) - 1] = '\0';
   unsigned long tag = licqDaemon->ProtoSendMessage(m_szId, m_nPPID, m_szText,
     false, ICQ_TCPxMSG_NORMAL);
 
@@ -1210,6 +1278,27 @@ int CRMSClient::Process_LOG()
   return fflush(fs);
 }
 
+/*---------------------------------------------------------------------------
+ * CRMSClient::Process_NOTIFY
+ *
+ * Command:
+ *   NOTIFY
+ *
+ * Response:
+ *   CODE_NOTIFYxON|CODE_NOTIFYxOFF
+ *   ...
+ *-------------------------------------------------------------------------*/
+int CRMSClient::Process_NOTIFY()
+{
+  m_bNotify = !m_bNotify;
+
+  if (m_bNotify)
+    fprintf(fs, "%d Notify set ON.\n", CODE_NOTIFYxON);
+  else
+    fprintf(fs, "%d Notify set OFF.\n", CODE_NOTIFYxOFF);
+
+  return fflush(fs);
+}
 
 /*---------------------------------------------------------------------------
  * CRMSClient::Process_VIEW
@@ -1304,7 +1393,7 @@ int CRMSClient::Process_VIEW()
 
     // Message
     fprintf(fs, "%d Message Start\n", CODE_VIEWxTEXTxSTART);
-    fprintf(fs, e->Text());
+    fprintf(fs, "%s", e->Text());
     fprintf(fs, "\n");
     fprintf(fs, "%d Message Complete\n", CODE_VIEWxTEXTxEND);
   }
