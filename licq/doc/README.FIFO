@@ -70,6 +70,16 @@ FIFO COMMANDS
  
   ui_message <buddy>
     Open the plugin's message composer to <buddy>.
+
+  list_plugins
+    Lists the loaded UI plugins.
+
+  load_plugin <plugin>
+    Loads the UI plugin called <plugin>.
+
+  unload_plugin <plugin>
+    Unloads the UI plugin called <plugin>.
+	Use list_plugins to see currently loaded UI plugins.
  
   help <command>
     print commands help information.
@@ -86,5 +96,4 @@ EXAMPLES
   $ echo 'url Bob http://www.licq.org "do you use it?" '
   # close licq
   $ echo 'exit' > $LICQ_FIFO
-  
   
