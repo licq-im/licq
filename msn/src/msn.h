@@ -64,6 +64,7 @@ struct SStartMessage
   ICQEvent *m_pEvent;
   CICQSignal *m_pSignal;
   char *m_szUser;
+  unsigned long m_nSeq;
 };
 
 typedef list<SStartMessage *> StartList;

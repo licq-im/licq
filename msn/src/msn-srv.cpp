@@ -432,6 +432,30 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     {
       m_bWaitingPingReply = false;
     }
+    else if (strCmd == "913")
+    {
+      unsigned long nSeq = m_pPacketBuf->GetParameterUnsignedLong();
+
+      // Search pStart for this sequence, mark it as an error, send the
+      // signals to the daemon and remove these item from the list.
+      SStartMessage *pStart = 0;
+      StartList::iterator it;
+      pthread_mutex_lock(&mutex_StartList);
+      for (it = m_lStart.begin(); it != m_lStart.end(); it++)
+      {
+        if ((*it)->m_nSeq == nSeq)
+        {
+          gLog.Error("%sCannot send messages while invisible.\n", L_ERRORxSTR);
+          pStart = *it;
+          m_pDaemon->PushPluginSignal(pStart->m_pSignal);
+          pStart->m_pEvent->m_eResult = EVENT_FAILED;
+          m_pDaemon->PushPluginEvent(pStart->m_pEvent);
+          m_lStart.erase(it);
+          break; 
+        }
+      }     
+      pthread_mutex_unlock(&mutex_StartList);
+    }
     else
     {
       gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());

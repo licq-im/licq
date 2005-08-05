@@ -53,6 +53,12 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       packet->SkipParameter(); // total users in conversation
       string strUser = packet->GetParameter();
 
+      ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
+      if (!u)
+        m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID, false, true);
+      else
+        gUserManager.DropUser(u);
+
       // Add the user to the conversation
       if (!m_pDaemon->FindConversation(nSock))
         m_pDaemon->AddConversation(nSock, MSN_PPID);  
@@ -119,6 +125,13 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSG, u);
         gUserManager.DropUser(u);
       }
+      else if (strncmp(strType.c_str(), "text/x-msmsgsinvite", 19) == 0)
+      {
+        packet->SkipRN();
+        packet->ParseHeaders();
+        
+        string strType = packet->GetValue("Application-Name");
+      }
     }
     else if (strCmd == "ACK")
     {
@@ -169,6 +182,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       pthread_mutex_lock(&mutex_StartList);
       SStartMessage *pStart = m_lStart.front();
       pReply = new CPS_MSNCall(pStart->m_szUser);
+      pStart->m_nSeq = pReply->Sequence();
       pthread_mutex_unlock(&mutex_StartList);
     }
     else if (strCmd == "JOI")
@@ -248,6 +262,30 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           m_pDaemon->RemoveConversation(pConv->CID());
         }
       }
+    }
+    else if (strCmd == "217")
+    {
+      unsigned long nSeq = packet->GetParameterUnsignedLong();
+
+      // Search pStart for this sequence, mark it as an error, send the
+      // signals to the daemon and remove these item from the list.
+      SStartMessage *pStart = 0;
+      StartList::iterator it;
+      pthread_mutex_lock(&mutex_StartList);
+      for (it = m_lStart.begin(); it != m_lStart.end(); it++)
+      {
+        if ((*it)->m_nSeq == nSeq)
+        {
+          gLog.Error("%sUser not online.\n", L_ERRORxSTR);
+          pStart = *it;
+          m_pDaemon->PushPluginSignal(pStart->m_pSignal);
+          pStart->m_pEvent->m_eResult = EVENT_FAILED;
+          m_pDaemon->PushPluginEvent(pStart->m_pEvent);
+          m_lStart.erase(it);
+          break; 
+        }
+      }     
+      pthread_mutex_unlock(&mutex_StartList);
     }
     else
     {
@@ -399,16 +437,12 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   }
   else
   {
-    u = new ICQUser(strUser.c_str(), MSN_PPID);
+    m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID, false, true);
+    u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
     u->SetSocketDesc(sock);
-    m_pDaemon->AddUserToList(u);
     bNewUser = true;
   }
   gUserManager.DropUser(u);
-  
-  if (bNewUser)
-    MSNAddUser(const_cast<char *>(strUser.c_str()));
-
   gSocketMan.DropSocket(sock);
   
   Send_SB_Packet(strUser, pReply, nSocket);
@@ -431,7 +465,6 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsig
   
   ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   if (!u) return;
-  bool bCantSend = u->StatusOffline() || (m_nStatus & ICQ_STATUS_FxPRIVATE);
   gUserManager.DropUser(u);
   
   CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
@@ -440,22 +473,6 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsig
   ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
   e->thread_plugin = _tPlugin;  
   CICQSignal *s = new CICQSignal(SIGNAL_EVENTxID, 0, strdup(_szUser), MSN_PPID, e->EventId());
-  
-  if (bCantSend)
-  {
-    // MSN doesn't support sending to offline users or if we are invisible.
-    // It'd be best to change the GUI, but Licq uses a
-    // GUI plugin system.. so that would force more requirements
-    // on the plugin. This allows the plugin to see that it has failed.
-    m_pDaemon->PushPluginSignal(s);
-    e->m_eResult = EVENT_FAILED;
-    m_pDaemon->PushPluginEvent(e);
-    if (m_nStatus & ICQ_STATUS_FxPRIVATE)
-      gLog.Error("%sCannot send messages while Invisible.\n", L_ERRORxSTR);
-    else
-      gLog.Error("%sCannot send messages to offline MSN users.\n", L_ERRORxSTR);
-    return;
-  }
   
   if (nSocket > 0)
   {
@@ -474,6 +491,7 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsig
     p->m_pEvent = e;
     p->m_pSignal = s;
     p->m_szUser = strdup(_szUser);
+    p->m_nSeq = pSB->Sequence();
     pthread_mutex_lock(&mutex_StartList);
     m_lStart.push_back(p);
     pthread_mutex_unlock(&mutex_StartList);
