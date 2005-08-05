@@ -564,6 +564,8 @@ void CMSN::MSNLogoff(bool bDisconnected)
   m_pDaemon->ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
   gUserManager.DropOwner(MSN_PPID);  
   //m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));   
+
+  SetWaitingPingReply(false);
 }
 
 void CMSN::MSNAddUser(char *szUser)
