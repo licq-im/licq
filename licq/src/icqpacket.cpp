@@ -1500,15 +1500,15 @@ void CPU_Type2Message::InitBuffer()
         buffer->PackUnsignedLongBE(0x000A0002); // tlv - ack or not
 	buffer->PackUnsignedShortBE((m_bAck ? 2 : 1));
 
+  buffer->PackUnsignedLongBE(0x000F0000); // tlv - empty
+
   if (nDirectInfo)
   {
-	  buffer->PackUnsignedLongBE(0x00050002); // tlv - listening port
-	  buffer->PackUnsignedShort(o->Port());
     buffer->PackUnsignedLongBE(0x00030004); // tlv - internal ip
     buffer->PackUnsignedLong(o->IntIp());
+    buffer->PackUnsignedLongBE(0x00050002); // tlv - listening port
+    buffer->PackUnsignedShort(o->Port());
   }
-
-  buffer->PackUnsignedLongBE(0x000F0000); // tlv - empty
 	buffer->PackUnsignedShortBE(0x2711); // tlv - more message info
 	buffer->PackUnsignedShortBE(m_nSize - 29 - nUinLen - 36 - nDirectInfo -
           m_nExtraLen);
@@ -1968,18 +1968,16 @@ CPU_StatusPluginResp::CPU_StatusPluginResp(ICQUser *u, unsigned long nMsgID1,
 
 //-----AdvancedMessage---------------------------------------------------------
 CPU_AdvancedMessage::CPU_AdvancedMessage(ICQUser *u, unsigned short _nMsgType,
-																			 unsigned short _nMsgFlags, bool _bAck,
-																				 unsigned short _nSequence,
-																				 unsigned long nMsgID1,
-																				 unsigned long nMsgID2)
+  unsigned short _nMsgFlags, bool _bAck, unsigned short _nSequence,
+  unsigned long nMsgID1, unsigned long nMsgID2)
   : CPU_Type2Message(u, _bAck,
-                     !_bAck && _nMsgType == ICQ_CMDxTCP_READxAWAYxMSG,
+                     (_nMsgType == ICQ_CMDxSUB_ICBM) || (!_bAck && _nMsgType == ICQ_CMDxTCP_READxAWAYxMSG),
                      ICQ_CAPABILITY_SRVxRELAY, nMsgID1, nMsgID2)
 {
-	m_nSize += 54;
+  m_nSize += 54;
 
-	m_nMsgFlags = _nMsgFlags;
-	m_nSequence = _nSequence;
+  m_nMsgFlags = _nMsgFlags;
+  m_nSequence = _nSequence;
 
   if (!_bAck && _nMsgType == ICQ_CMDxTCP_READxAWAYxMSG)
   {
@@ -2311,18 +2309,6 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
    : CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, true, nSequence, nMsgID[0],
        nMsgID[1])
 {
-#if 0
-	// XXX This is not the ICBM way yet!
-	// XXX It doesnt' even work! Perhaps try ICBM and it'll work?
-	m_nSize += 15;
-	InitBuffer();
-
-	//buffer->PackString(""); // description
-	buffer->PackUnsignedLong(ReversePort(nPort)); // port reversed
-	buffer->PackString(""); // filename
-	buffer->PackUnsignedLong(0); // filesize
-	buffer->PackUnsignedLong(nPort); // port
-#else
         int nFileLen = strlen(szFile), nDescLen = strlen(szDesc);
 	m_nSize += 66 + nFileLen + nDescLen;
 	InitBuffer();
@@ -2347,7 +2333,6 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 	buffer->PackString(szFile); // filename
 	buffer->PackUnsignedLong(nFileSize); // filesize
 	buffer->PackUnsignedLong(nPort); // port
-#endif
 }
 
 
