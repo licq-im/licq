@@ -298,7 +298,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       string strStatus = m_pPacketBuf->GetParameter();
       string strUser = m_pPacketBuf->GetParameter();
       string strNick = m_pPacketBuf->GetParameter();
-
+      string strClientId = m_pPacketBuf->GetParameter();
+      //string strMSNObject = m_pPacketBuf->GetParameter();
+      
       unsigned short nStatus = ICQ_STATUS_AWAY;
 
       if (strStatus == "NLN")
@@ -381,7 +383,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         m_nSessionStart = time(0);
 
         // We might have another packet attached
-        m_pPacketBuf->SkipRN();
+        //m_pPacketBuf->SkipRN();
       }
       else if (strType.find("text/x-msmsgsinitialemailnotification") != string::npos)
       {
