@@ -88,9 +88,14 @@ void IconManager::X11Init()
   WId win = winId();     // get the window
   XWMHints *hints;  // hints
   XClassHint classhint;  // class hints
+  XSizeHints sizeHints;
   classhint.res_name = "licq";  // res_name
   classhint.res_class = "Wharf";  // res_class
   XSetClassHint(dsp, win, &classhint); // set the class hints
+  sizeHints.flags= USPosition;
+  sizeHints.x = 0;
+  sizeHints.y = 0;
+  XSetWMNormalHints(dsp, win, &sizeHints);
   hints = XGetWMHints(dsp, win);  // init hints
   hints->initial_state = WithdrawnState;
   hints->icon_x = 0;
@@ -101,12 +106,14 @@ void IconManager::X11Init()
   XSetWMHints(dsp, win, hints);  // set the window hints for WM to use.
   XFree( hints );
 
+  XMapWindow(dsp, wharfIcon->winId());
+  XMapWindow(dsp, win);
+  XSync(dsp, False);
+
 #endif
 
-  move(-100, -100);
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
-  show();
 }
 
 
