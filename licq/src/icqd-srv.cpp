@@ -721,14 +721,14 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
   {
     CPU_SetPrivacy *priv = new CPU_SetPrivacy(ICQ_PRIVACY_ALLOW_FOLLOWING);
     SendEvent_Server(priv);
-//  icqSendVisibleList();
+    icqSendVisibleList();
   }
   else if (Invisible && !goInvisible)
   {
     CPU_SetPrivacy *priv = new CPU_SetPrivacy(ICQ_PRIVACY_BLOCK_FOLLOWING);
     SendEvent_Server(priv);
+    icqSendInvisibleList();
   }
- 
 
   CSrvPacketTcp* p;
   if (isLogon)
@@ -747,9 +747,6 @@ unsigned long CICQDaemon::icqSetStatus(unsigned short newStatus)
     p = new CPU_UpdateStatusTimestamp(PLUGIN_FOLLOWxME, pfm, s);
     SendEvent_Server(p);
   }
-
-  if (Invisible && !goInvisible)
-    icqSendInvisibleList();
 
   return 0;
 }
@@ -1406,7 +1403,7 @@ void CICQDaemon::icqAddToInvisibleList(const char* _szId, unsigned long _nPPID)
     pthread_mutex_unlock(&mutex_modifyserverusers);
 
     CSrvPacketTcp *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxINVISIBLE);
-    SendExpectEvent_Server(0, pAdd, NULL);
+    SendEvent_Server(pAdd);
   }
 }
 
@@ -1444,7 +1441,7 @@ void CICQDaemon::icqRemoveFromInvisibleList(const char *_szId, unsigned long _nP
 
       CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, 0, u->GetInvisibleSID(),
         ICQ_ROSTxINVISIBLE);
-      SendExpectEvent_Server(_szId, _nPPID, pRemove, NULL);
+      SendEvent_Server(pRemove);
       gUserManager.DropUser(u);
     }
   }
