@@ -114,6 +114,7 @@ void IconManager::X11Init()
 
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
+  show();
 }
 
 
@@ -770,7 +771,7 @@ WharfIcon::WharfIcon(QPixmap *p, QWidget *parent)
   QToolTip::add(this, tr("Left click - Show main window\n"
                          "Middle click - Show next message\n"
                          "Right click - System menu"));
-  show();
+  //show();
 }
 
 
