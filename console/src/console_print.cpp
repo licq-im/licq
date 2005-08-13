@@ -150,7 +150,7 @@ void CLicqConsole::PrintStatus()
     ICQUser *u = gUserManager.FetchUser(winMain->sLastContact.szId,
       winMain->sLastContact.nPPID, LOCK_R);
     if (u == NULL)
-      szLastUser = "<Removed>\0";
+      szLastUser = strdup("<Removed>");
     else
     {
       szLastUser = strdup(u->GetAlias());
@@ -158,7 +158,7 @@ void CLicqConsole::PrintStatus()
     }
   }
   else
-    szLastUser = "<None>\0";
+    szLastUser = strdup("<None>");
 
   o = gUserManager.FetchOwner(LOCK_R);
   wbkgdset(winStatus->Win(), COLOR_PAIR(8));
@@ -180,6 +180,7 @@ void CLicqConsole::PrintStatus()
   
   wclrtoeol(winStatus->Win());
   winStatus->RefreshWin();
+  free(szLastUser);
 }
 
 
