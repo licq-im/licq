@@ -1,0 +1,12 @@
+* fix plaintext passwords
+* fix redrawing all windows when contact list changes
+* fix logging off
+* get sent timestamps from server
+* sort by groups
+* options window:
+	* sort by group
+	* show offline users
+	* transparent windows
+	* colours
+* history viewing
+* resize windows

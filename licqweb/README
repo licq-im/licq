@@ -1,0 +1,19 @@
+licqweb 0.1
+
+To use this you need licq with the rms plugin and my rms patch found at http://whatsbeef.net/philip/licqweb/
+
+Edit config.php to suit your setup, should be self explanetory. If you want to see offline users, also edit 
+licqweb.js, line 22, change
+var showOffline = false;
+to true.
+
+Something that might need a bit of explaining is the way messages work. If you receive a message
+and don't have a window open for that contact, their name will highlight yellow in the contact
+list, and the title of the page will change to reflect the number of messages (if you're using
+tabbed browsing, which you should be because this is 2005, the title of the tab will change too).
+If, however, you already have a window open to that user, you will not get the notification - the
+message is displayed straight away in the window area.
+
+If after logging in nothing appears in the contact list, then licqweb probably couldn't communicate
+with the php scripts or could not login to rms. Check licq log, web logs, javascript console for
+more info. Delete the PHPSESSID cookie or close your browser to relogin.

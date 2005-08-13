@@ -1,0 +1,208 @@
+/*
+ * licqweb. Copyright 2005, Philip Nelson
+ *
+ * This file is part of licqweb.
+ *
+ * licqweb is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * licqweb is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with licqweb; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12px;
+}
+
+a {
+	text-decoration:none;
+}
+
+textarea {
+	width: 100%;
+	border-style: none;
+}
+
+.newmessage {
+	cursor: pointer;
+	line-height: 16px;
+	background-color: #ff0;
+}
+
+.invisible {
+    cursor: pointer;
+	line-height: 16px;
+	white-space: nowrap;
+}
+.Online {
+    cursor: pointer;
+	line-height: 16px;
+	white-space: nowrap;
+}
+.Away {
+    cursor: pointer;
+	line-height: 16px;
+	white-space: nowrap;
+}
+.NotAvailable {
+    cursor: pointer;
+	line-height: 16px;
+	white-space: nowrap;
+}
+.Occupied {
+    cursor: pointer;
+	line-height: 16px;
+	white-space: nowrap;
+}
+.DoNotDisturb {
+    cursor: pointer;
+	line-height: 16px;
+	white-space: nowrap;
+}
+.Offline {
+    cursor: pointer;
+	line-height: 16px;
+	white-space: nowrap;
+}
+
+#tooltip {
+    position: absolute;
+    border: 1px solid grey;
+    padding: 2px;
+    background-color: #9cf;
+    visibility: hidden;
+    z-index: 100;
+	opacity: 0.9;
+}
+
+#statusMenu {
+    position: absolute;
+    border: 1px solid grey;
+    padding: 2px;
+    background-color: #9cf;
+    display: none;
+	opacity: 0.9;
+	cursor: pointer;
+	line-height: 16px;
+}
+
+#contacts {
+	width: 200px;
+	height: 400px;
+	overflow: auto;
+}
+
+#viewEvent {
+	background-color: #aaf;
+	position: absolute;
+	width: 500px;
+	top: 300px;
+	left: 300px;
+}
+
+.box {
+	background-color: #eee;
+	border: 1px solid #000000;
+	color: #000000;
+	padding: 0px;
+	position: absolute;
+}
+
+.bar {
+	background-color: #333355;
+	color: #ffffff;
+	padding: 2px 2px 2px 4px;
+	height: 15px;
+}
+
+.wintitle {
+	background-color: #333355;
+	max-width: 350px;
+	overflow: hidden;
+	float: left;
+}
+
+.close {
+	background-color: #333355;
+	float: right;	
+    cursor: pointer;
+}
+
+.content {
+	padding: 1em;
+}
+
+.logWindow {
+	background-color: #aaf;
+	position: absolute;
+	width: 500px;
+	top: 500px;
+	left: 300px;
+	height: 100px;
+	opacity: 0.8;
+	overflow: auto;
+	overflow-y: scroll;
+	display: none;
+}
+
+.window {
+	background-color: #aaf;
+	border: 2px dashed #55f;
+	position: absolute;
+	width: 400px;
+	top: 300px;
+	left: 300px;
+	display: none;
+}
+
+.convo {
+	background-color: #ddd;
+	height: 100px;
+	overflow: auto;
+}
+
+.loginwin {
+	position: absolute;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+	width: 300px;
+	height: 150px;
+	margin: auto;
+	background-color: #aaf;
+	color: white;
+}
+
+.centre {
+	width: 100px;
+	margin: auto;
+	text-align: center;
+}
+
+.button {
+    color: #555;
+    font-size: 10px;
+    font-weight: normal;
+    background-color: #DEE4EC;
+    border: 1px solid #8CA8CF;
+    margin: 0;
+    text-decoration:none;
+    height: 20px;
+    padding-bottom: 3px;
+    vertical-align: middle;
+    cursor: pointer;
+}
+
+input {
+	border: 1px solid #8ca8cf;
+	width: 100px;
+}
