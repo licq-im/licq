@@ -816,13 +816,13 @@ CPU_SendCookie::CPU_SendCookie(const char *szCookie, int nLen)
 CPU_ImICQ::CPU_ImICQ()
   : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_IMxICQ)
 {
-  m_nSize += 36;
+  m_nSize += 40;
   InitBuffer();
 
   // setting communication parameters (key / value pair) ?
   // seems to say which channels should be enabled
-  buffer->PackUnsignedLongBE(0x00010003);
-  //buffer->PackUnsignedLongBE(0x00130002);
+  buffer->PackUnsignedLongBE(0x00010004);
+  buffer->PackUnsignedLongBE(0x00130004);
   buffer->PackUnsignedLongBE(0x00020001);
   buffer->PackUnsignedLongBE(0x00030001);
   buffer->PackUnsignedLongBE(0x00150001);
