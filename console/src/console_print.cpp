@@ -125,7 +125,7 @@ void CLicqConsole::PrintPrompt()
 void CLicqConsole::PrintStatus()
 {
   static char szMsgStr[16];
-  static char szLastUser[32];
+  static char *szLastUser;
 
   werase(winStatus->Win());
 
@@ -150,15 +150,15 @@ void CLicqConsole::PrintStatus()
     ICQUser *u = gUserManager.FetchUser(winMain->sLastContact.szId,
       winMain->sLastContact.nPPID, LOCK_R);
     if (u == NULL)
-      strcpy(szLastUser, "<Removed>");
+      szLastUser = "<Removed>\0";
     else
     {
-      strcpy(szLastUser, u->GetAlias());
+      szLastUser = strdup(u->GetAlias());
       gUserManager.DropUser(u);
     }
   }
   else
-    strcpy(szLastUser, "<None>");
+    szLastUser = "<None>\0";
 
   o = gUserManager.FetchOwner(LOCK_R);
   wbkgdset(winStatus->Win(), COLOR_PAIR(8));

@@ -1768,11 +1768,11 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
     gUserManager.DropUser(u);
     return;
   }
-  char szFrom[32];
+  char *szFrom;
   if (gUserManager.FindOwner(szId, nPPID))
-    strcpy(szFrom, "Server");
+    szFrom = "Server\0";
   else
-    strcpy(szFrom, u->GetAlias());
+    szFrom = strdup(u->GetAlias());
   gUserManager.DropUser(u);
 
   unsigned short nLast = lHistory.size();
@@ -1790,6 +1790,7 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
     {
       winMain->wprintf("%CNo System Events.\n", 8);
     }
+    free(szFrom);
     return;
   }
 
@@ -1806,12 +1807,14 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
   {
     winMain->wprintf("%CInvalid start range: %A%s\n", 16,
                      A_BOLD, szStart);
+    free(szFrom);
     return;
   }
   else if (nStart > nLast || nStart < 1)
   {
     winMain->wprintf("%CStart value out of range, history contains %d events.\n",
                      16, nLast);
+    free(szFrom);
     return;
   }
 
@@ -1822,12 +1825,14 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
     {
       winMain->wprintf("%CInvalid end range: %A%s\n", 16,
                        A_BOLD, szEnd);
+      free(szFrom);
       return;
     }
     else if (nEnd > nLast || nEnd < 1)
     {
       winMain->wprintf("%CEnd value out of range, history contains %d events.\n",
                        16, nLast);
+      free(szFrom);
       return;
     }
   }
@@ -1838,6 +1843,7 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
 
   winMain->nLastHistory = nEnd;
   PrintHistory(lHistory, nStart - 1, nEnd - 1, szFrom);
+  free(szFrom);
 }
 
 
