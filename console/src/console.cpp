@@ -256,6 +256,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
                             SCROLLBACK_BUFFER, true);
     scrollok(winCon[i]->Win(), true);
     winCon[i]->fProcessInput = &CLicqConsole::InputCommand;
+	winCon[i]->data = NULL;
   }
   winCon[0]->fProcessInput = &CLicqConsole::InputLogWindow;
   winStatus = new CWindow(2, COLS, LINES - 3, 0, false);
@@ -572,7 +573,7 @@ void CLicqConsole::AddEventTag(char *_szId, unsigned long _nPPID, unsigned long 
   for (i = 1; i <= MAX_CON; i++)
   {
     data = (CData *)winCon[i]->data;
-    if (strcmp(data->szId, _szId) == 0 && data->nPPID == _nPPID)
+    if (data && strcmp(data->szId, _szId) == 0 && data->nPPID == _nPPID)
     {
       winCon[i]->event = _nEventTag;
       break;
