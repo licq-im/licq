@@ -50,6 +50,7 @@ public:
   void ProcessEvent(ICQEvent *);
   void ProcessServer();
   void ProcessLog();
+  void AddEventTag(const char *, unsigned long, unsigned long);
 
 friend class CRMSClient;
 
@@ -103,6 +104,8 @@ protected:
   char m_szText[MAX_TEXT_LENGTH + 1];
   char m_szLine[MAX_LINE_LENGTH + 1];
   unsigned short m_nTextPos;
+  char *m_szEventId;
+  unsigned long m_nEventPPID;
 
   int StateMachine();
   int ProcessCommand();
@@ -111,6 +114,7 @@ protected:
   unsigned long GetProtocol(const char *);
   void ParseUser(const char *);
   int ChangeStatus(unsigned long, unsigned long, const char *);
+  void AddEventTag(const char *, unsigned long, unsigned long);
   
   int Process_MESSAGE_text();
   int Process_URL_url();

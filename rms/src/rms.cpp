@@ -179,7 +179,7 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
   unsigned short nPort;
 
   // Register with the daemon, we only want the update user signal
-  m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_UPDATExUSER);
+  m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_ALL);
   licqDaemon = _licqDaemon;
   
   char filename[256];
@@ -396,17 +396,30 @@ void CLicqRMS::ProcessSignal(CICQSignal *s)
       }
     }
   case SIGNAL_UPDATExLIST:
+    break;
   case SIGNAL_LOGON:
+    break;
+  case SIGNAL_EVENTxID:
+	AddEventTag(s->Id(), s->PPID(), s->Argument());
+    break;
   default:
     break;
     
-  case SIGNAL_EVENTxID:
-    //XXX Catch this
-    break;
   }
   delete s;
 }
 
+/*---------------------------------------------------------------------------
+ * CLicqRMS::AddEventTag
+ *-------------------------------------------------------------------------*/
+void CLicqRMS::AddEventTag(const char *_szId, unsigned long _nPPID, unsigned long _nEventTag)
+{
+  ClientList ::iterator iter;
+  for (iter = clients.begin(); iter != clients.end(); iter++)
+  {
+    (*iter)->AddEventTag(_szId, _nPPID, _nEventTag);
+  }
+}
 
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessEvent
@@ -460,6 +473,8 @@ CRMSClient::CRMSClient(TCPSocket *sin) : sock(0)
   m_nLogTypes = 0;
   data_line_pos = 0;
   m_bNotify = false;
+  m_szEventId = 0;
+  m_nEventPPID = 0;
 }
 
 
@@ -472,6 +487,23 @@ CRMSClient::~CRMSClient()
   
   if (m_szCheckId)
     free(m_szCheckId);
+}
+
+/*---------------------------------------------------------------------------
+ * CRMSClient::AddEventTag
+ *-------------------------------------------------------------------------*/
+void CRMSClient::AddEventTag(const char *_szId, unsigned long _nPPID, unsigned long _nEventTag)
+{
+  if (m_szEventId && m_nEventPPID &&
+       !strcmp(m_szEventId, _szId) && m_nEventPPID == _nPPID)
+  {
+    fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
+       _nEventTag, _szId);
+    tags.push_back(_nEventTag);
+	free(m_szEventId);
+	m_szEventId = 0;
+	m_nEventPPID = 0;
+  }
 }
 
 /*---------------------------------------------------------------------------
@@ -1037,6 +1069,13 @@ int CRMSClient::Process_LIST()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_MESSAGE()
 {
+  if (m_nEventPPID || m_szEventId)
+  {
+    //client is trying to send another message before we've received
+    //the event tag for a previous one
+    fprintf(fs, "%d Error, cannot send concurrent messages\n", CODE_INVALIDxCOMMAND);
+    return -1;
+  }
   fprintf(fs, "%d Enter message, terminate with a . on a line by itself:\n",
      CODE_ENTERxTEXT);
 
@@ -1056,13 +1095,19 @@ int CRMSClient::Process_MESSAGE_text()
   unsigned long tag = licqDaemon->ProtoSendMessage(m_szId, m_nPPID, m_szText,
     false, ICQ_TCPxMSG_NORMAL);
 
-  fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
-     tag, m_szId);
   m_nState = STATE_COMMAND;
 
   if (m_nPPID == LICQ_PPID)
+  {
+    fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
+       tag, m_szId);
     tags.push_back(tag);
-    
+  }
+  else
+  {
+    m_nEventPPID = m_nPPID;
+    m_szEventId = strdup(m_szId);
+  }
   return fflush(fs);
 }
 
