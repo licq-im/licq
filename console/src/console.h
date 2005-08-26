@@ -208,6 +208,7 @@ public:
   void InputUserSelect(int cIn);
   bool ParseMacro(char *);
   unsigned long GetUinFromArg(char **);
+  void SaveLastUser(const char *, unsigned long);
   struct SContact GetContactFromArg(char **);
 };
 

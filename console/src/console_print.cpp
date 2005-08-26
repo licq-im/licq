@@ -335,16 +335,16 @@ void CLicqConsole::CreateUserList()
       s->color = m_cColorNew;
 
     // Create the line to printout now
-	if (pUser->NewMessages() > 0)
+    if (pUser->NewMessages() > 0)
     {
       s->szLine = new char[strlen(szTmp) + 19];
       snprintf(s->szLine, strlen(szTmp) + 19, "</%d></K>%s<!K><!%d>", s->color->nColor - 6, szTmp ? szTmp : "", s->color->nColor - 6);
       s->szLine[strlen(szTmp) + 18] = '\0';
-	} else {
+    } else {
       s->szLine = new char[strlen(szTmp) + 11];
-	  snprintf(s->szLine, strlen(szTmp) + 11, "</%d>%s<!%d>", s->color->nColor, szTmp ? szTmp : "", s->color->nColor);
+      snprintf(s->szLine, strlen(szTmp) + 11, "</%d>%s<!%d>", s->color->nColor, szTmp ? szTmp : "", s->color->nColor);
       s->szLine[strlen(szTmp) + 10] = '\0';
-	}
+    }
     free(szTmp);
     
     // Insert into the list
@@ -384,11 +384,11 @@ void CLicqConsole::PrintUsers()
        it++)
   {
     s = new SScrollUser;
-	s->pos = i;
-	s->nPPID = (*it)->nPPID;
+    s->pos = i;
+    s->nPPID = (*it)->nPPID;
         s->color = (*it)->color;
-	sprintf(s->szId, "%s", (*it)->szId);
-	
+    sprintf(s->szId, "%s", (*it)->szId);
+
     m_lScrollUsers.push_back(s);
     ulist[i++] = copyChar((*it)->szLine);
   }

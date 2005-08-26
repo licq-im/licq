@@ -256,7 +256,7 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
                             SCROLLBACK_BUFFER, true);
     scrollok(winCon[i]->Win(), true);
     winCon[i]->fProcessInput = &CLicqConsole::InputCommand;
-	winCon[i]->data = NULL;
+    winCon[i]->data = NULL;
   }
   winCon[0]->fProcessInput = &CLicqConsole::InputLogWindow;
   winStatus = new CWindow(2, COLS, LINES - 3, 0, false);
@@ -1451,8 +1451,23 @@ bool CLicqConsole::ParseMacro(char *szMacro)
   return true;
 }
 
-
-
+/*---------------------------------------------------------------------------
+ * CLicqConsole::SaveLastUser
+ *-------------------------------------------------------------------------*/
+void CLicqConsole::SaveLastUser(const char *szId, unsigned long nPPID)
+{
+  // Save this as the last user
+  if (winMain->sLastContact.szId == 0 ||
+      !(strcmp(szId, winMain->sLastContact.szId) == 0 &&
+      nPPID == winMain->sLastContact.nPPID))
+  {
+    if (winMain->sLastContact.szId)
+      free(winMain->sLastContact.szId);
+    winMain->sLastContact.nPPID = nPPID;
+    winMain->sLastContact.szId = strdup(szId);
+    PrintStatus();
+  }
+}
 
 /*---------------------------------------------------------------------------
  * CLicqConsole::CurrentGroupName
@@ -2071,7 +2086,7 @@ void CLicqConsole::InputSendFile(int cIn)
       lFileList.push_back(strdup(data->szFileName));
 
       winMain->event = licqDaemon->icqFileTransfer(strtoul(data->szId, (char **)NULL, 10),
-		      data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
+              data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
                        !bDirect);
       break;
     }
@@ -2959,8 +2974,8 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
               return;
             }
 
-	    winMain->state = STATE_QUERY;
-	    winMain->wprintf("\nSave password? (y/N) ");
+            winMain->state = STATE_QUERY;
+            winMain->wprintf("\nSave password? (y/N) ");
           }
           break;
         }
@@ -3007,14 +3022,14 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             }
 
             // Passwords match if we are this far, now set up the new user
-	    winMain->wprintf("Registration complete for user %s\n",data->szUin);
+            winMain->wprintf("Registration complete for user %s\n",data->szUin);
             gUserManager.SetOwnerUin(atol(data->szUin));
             ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
             owner->SetPassword(data->szPassword1);
             gUserManager.DropOwner();
 
-	    winMain->wprintf("Save password? (y/N) ");
-	    winMain->state = STATE_QUERY;
+            winMain->wprintf("Save password? (y/N) ");
+            winMain->state = STATE_QUERY;
           }
           break;
         }

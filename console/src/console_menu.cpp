@@ -10,8 +10,8 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     " %B%cco%bntacts",
     "Force a refresh of the contact list." },
   { "console", &CLicqConsole::MenuSwitchConsole, NULL,
-	" %B%ccons%bole <num>",
-	"Switch to a console." },
+    " %B%ccons%bole <num>",
+    "Switch to a console." },
   { "group", &CLicqConsole::MenuGroup, NULL,
     " %B%cg%broup [ %B#%b ]",
     "Prints the group list or changes to the given group number." },
@@ -25,7 +25,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     " %B%cau%bthorize <grant | refuse> %B<uin>",
     "Authorize grant or refuse  the given user." },
   { "history", &CLicqConsole::MenuHistory, &CLicqConsole::TabUser,
-    " %B%chi%bstory %B<user>%b [ %B#%b,%B#%b ]",
+    " %B%chi%bstory %B<user>[.protocol]%b [ %B#%b,%B#%b ]",
     "Print the given range of events from the history.\n"
     "'$' represents the last message, and +/- can be used to specify "
     "an offset.  For example \"history $-5,$\" will print from the "
@@ -41,7 +41,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     "last \"history +1\"\n"
     "...\n" },
   { "message", &CLicqConsole::MenuMessage, &CLicqConsole::TabUser,
-    " %B%cm%bessage %B<user>%b",
+    " %B%cm%bessage %B<user>[.protocol]%b",
     "Send a message to a user." },
   { "url", &CLicqConsole::MenuUrl, &CLicqConsole::TabUser,
     " %B%cur%bl %B<user>%b",
@@ -56,7 +56,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     " %B%ci%bnfo %B<user>%b",
     "Display user information." },
   { "view", &CLicqConsole::MenuView, &CLicqConsole::TabUser,
-    " %B%cv%biew [ %B<user>%b ]",
+    " %B%cv%biew [ %B<user>[.protocol]%b ]",
     "View an incoming event." },
   { "secure", &CLicqConsole::MenuSecure, &CLicqConsole::TabUser,
     " %B%cs%becure %B<user>%b [ open | close ]",
@@ -65,7 +65,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
     " %B%ca%buto-response [ %B<user>%b ]",
     "View a user's auto-reponse or set your own (use #)." },
   { "remove", &CLicqConsole::MenuRemove, &CLicqConsole::TabUser,
-    " %B%cr%bemove %B<user>%b",
+    " %B%cr%bemove %B<user>[.protocol]%b",
     "Remove a user from your contact list." },
   { "status", &CLicqConsole::MenuStatus, &CLicqConsole::TabStatus,
     " %B%cst%batus [*]<online | away | na | dnd | occupied | ffc | offline>",
@@ -149,8 +149,9 @@ void CLicqConsole::MenuPopup(int userSelected) {
             UserCommand_View((*it)->szId, (*it)->nPPID, NULL);
             break;
         }
-	  }
-	  break;
+      }
+      SaveLastUser((*it)->szId, (*it)->nPPID);
+      break;
     }
   }
 }
@@ -188,7 +189,7 @@ void CLicqConsole::MenuList(char *_szArg)
   if (cdkUserList->exitType == vNORMAL)
   {
     list <SScrollUser *>::iterator it;
-	for (it = m_lScrollUsers.begin(); it != m_lScrollUsers.end(); it++)
+    for (it = m_lScrollUsers.begin(); it != m_lScrollUsers.end(); it++)
     {
       if ((*it)->pos == userSelected)
       {
@@ -204,6 +205,7 @@ void CLicqConsole::MenuList(char *_szArg)
           gUserManager.DropUser(u);
           UserCommand_Msg((*it)->szId, (*it)->nPPID, NULL);
         }
+        SaveLastUser((*it)->szId, (*it)->nPPID);
         break;
       }
     }
@@ -273,7 +275,7 @@ void CLicqConsole::MenuPlugins(char *_szArg)
   {
     PrintBoxLeft();
     winMain->wprintf("[%3d] %s v%s", (*pit)->Id(), (*pit)->Name(),
-		     (*pit)->Version());
+             (*pit)->Version());
     PrintBoxRight(70);
   }
   PrintBoxBottom(70);
@@ -691,12 +693,33 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
 {
   char *szAlias, *szCmd;
   char *szArg = *p_szArg;
+  unsigned long nPPID = 0;
   struct SContact scon;
   scon.szId = NULL;
 
   if (szArg == NULL) {
     return scon;
   }
+
+  string strArg(szArg);
+  string::size_type nPos = strArg.find_last_of(".");
+  if (nPos != string::npos)
+  {
+    string strProtocol(strArg, nPos + 1, strArg.size());
+    ProtoPluginsList pl;
+    ProtoPluginsListIter it;
+    licqDaemon->ProtoPluginList(pl);
+    for (it = pl.begin(); it != pl.end(); it++)
+    {
+      if (strcasecmp((*it)->Name(), strProtocol.c_str()) == 0)
+      {
+        nPPID = (*it)->PPID();
+        szArg[strArg.find_last_of(".")] = '\0';
+        break;
+      }
+    }
+  }
+ 
 
   // Check if the alias is quoted
   if (szArg[0] == '"')
@@ -740,13 +763,15 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
 
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (strcasecmp(szAlias, pUser->GetAlias()) == 0)
+    if ((nPPID && pUser->PPID() == nPPID && strcasecmp(szAlias, pUser->GetAlias()) == 0) ||
+        (!nPPID && strcasecmp(szAlias, pUser->GetAlias()) == 0))
     {
       scon.szId = pUser->IdString();
       scon.nPPID = pUser->PPID();
       FOR_EACH_PROTO_USER_BREAK;
     }
-    else if (strcasecmp(szAlias, pUser->IdString()) == 0)
+    else if ((nPPID && pUser->PPID() == nPPID && strcasecmp(szAlias, pUser->IdString()) == 0) ||
+             (!nPPID && strcasecmp(szAlias, pUser->IdString()) == 0))
     {
       scon.szId = pUser->IdString();
       scon.nPPID = pUser->PPID();
@@ -761,19 +786,7 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
     scon.nPPID = (unsigned long)-1;
     return scon;
   }
- 
-  // Save this as the last user
-  if (winMain->sLastContact.szId == 0 ||
-      !(strcmp(scon.szId, winMain->sLastContact.szId) == 0 &&
-      scon.nPPID == winMain->sLastContact.nPPID))
-  {
-    if (winMain->sLastContact.szId)
-      free(winMain->sLastContact.szId);
-    winMain->sLastContact.nPPID = scon.nPPID;
-    winMain->sLastContact.szId = strdup(scon.szId);
-    PrintStatus();
-  }
-
+  SaveLastUser(scon.szId, scon.nPPID);
   return scon;
 }
 
@@ -889,7 +902,7 @@ void CLicqConsole::MenuView(char *szArg)
       if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
       {
         szId = pUser->IdString();
-	nPPID = pUser->PPID();
+        nPPID = pUser->PPID();
         t = pUser->Touched();
       }
     }

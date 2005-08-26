@@ -62,7 +62,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _use
   }
   else
   {
-	win = newwin(rows, cols, y, x);
+    win = newwin(rows, cols, y, x);
     wmove(win, 0, 0);
   }
 
@@ -72,7 +72,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _use
   cdkscreen = NULL;
   if (_useCDK)
   { 
-	initCDKColor();
+    initCDKColor();
     cdkscreen = initCDKScreen(win);
     if (cdkscreen == NULL)
     {
@@ -80,7 +80,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _use
       exit(1);
     }
   }
-	
+
   nLastUin = 0;
   sLastContact.szId = 0;
   sLastContact.nPPID = 0;
