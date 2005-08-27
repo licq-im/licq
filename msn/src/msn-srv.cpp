@@ -238,8 +238,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
         if (u)
         {
-          string strDecodedNick = Decode(strNick);
-          u->SetAlias(strDecodedNick.c_str());
+          if (!u->KeepAliasOnUpdate())
+          {
+            string strDecodedNick = Decode(strNick);
+            u->SetAlias(strDecodedNick.c_str());
+          }
           m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
                             u->IdString(), u->PPID()));
           gUserManager.DropUser(u);
