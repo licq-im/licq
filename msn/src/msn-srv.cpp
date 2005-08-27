@@ -182,6 +182,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
+        u->SetEnableSave(false);
+        u->SetUserEncoding("UTF-8"); 
         u->SetInvisibleList(nLists & FLAG_BLOCK_LIST);
         
         if (!u->KeepAliasOnUpdate())
@@ -194,6 +196,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         }
         u->SetEmailPrimary(strUser.c_str());
         u->SetNewUser(false);
+        u->SetEnableSave(true);
+        u->SaveLicqInfo();             
         gUserManager.DropUser(u);
       }
     }
@@ -572,6 +576,13 @@ void CMSN::MSNLogoff(bool bDisconnected)
 
 void CMSN::MSNAddUser(char *szUser)
 {
+  ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_W);
+  u->SetEnableSave(false);
+  u->SetUserEncoding("UTF-8");
+  u->SetEnableSave(true);
+  u->SaveLicqInfo();       
+  gUserManager.DropUser(u);
+  
   CMSNPacket *pSend = new CPS_MSNAddUser(szUser, CONTACT_LIST);
   SendPacket(pSend);
 }
