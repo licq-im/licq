@@ -465,6 +465,15 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       }     
       pthread_mutex_unlock(&mutex_StartList);
     }
+    else if (strCmd == "GTC")
+    {
+    }
+    else if (strCmd == "BLP")
+    {
+    }
+    else if (strCmd == "PRP")
+    {
+    }    
     else
     {
       gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
