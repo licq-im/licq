@@ -55,8 +55,21 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
 
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
       if (!u)
+      {
         m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID, false, true);
-      else
+        
+        // MSN uses UTF-8 so we need to set this for all new users automatically
+        ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+        if (u) // To be safe
+        {
+          u->SetEnableSave(false);
+          u->SetUserEncoding("UTF-8");
+          u->SetEnableSave(true);
+          u->SaveLicqInfo();
+        }
+      }
+      
+      if (u)
         gUserManager.DropUser(u);
 
       // Add the user to the conversation
@@ -439,7 +452,11 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   {
     m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID, false, true);
     u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+    u->SetEnableSave(false);
+    u->SetUserEncoding("UTF-8");
     u->SetSocketDesc(sock);
+    u->SetEnableSave(true);
+    u->SaveLicqInfo();
     bNewUser = true;
   }
   gUserManager.DropUser(u);
