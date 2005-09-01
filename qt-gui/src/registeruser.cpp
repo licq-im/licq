@@ -54,9 +54,9 @@ RegisterUserDlg::RegisterUserDlg(CICQDaemon *s, CSignalManager *m, QWidget *pare
   sigMan = m;
   
   page2 = new QVBox(this);
-  
-  (void) new QLabel(tr("Enter a password to protect your account."), grpInfo);
-    
+
+  (void) new QLabel(tr("Enter a password to protect your account."), page2);
+
   grpInfo = new QGroupBox(2, Horizontal, page2);
 
   (void) new QLabel(tr("Password:"), grpInfo);
