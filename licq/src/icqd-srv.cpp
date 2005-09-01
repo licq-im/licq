@@ -5617,6 +5617,7 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
         gUserManager.DropOwner(LICQ_PPID);
         free(m_szRegisterPasswd);
         m_szRegisterPasswd = 0;
+        SaveConf();
       }
 
       PushPluginSignal(new CICQSignal(SIGNAL_NEW_OWNER, 0, szUin, LICQ_PPID));
