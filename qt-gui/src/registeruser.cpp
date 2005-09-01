@@ -201,7 +201,7 @@ VerifyDlg::VerifyDlg(CICQDaemon *s, QWidget *parent)
   lay->addWidget(nfoVerify, 1, 1);
   
   QHBox *hBox = new QHBox(this);
-  QPushButton *btnOk = new QPushButton(tr("&OK"), this);
+  QPushButton *btnOk = new QPushButton(tr("&OK"), hBox);
   btnOk->setDefault(true);
   connect(btnOk, SIGNAL(clicked()), SLOT(ok()));
   lay->addMultiCellWidget(hBox, 2, 2, 0, 1);
