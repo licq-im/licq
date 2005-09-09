@@ -822,7 +822,7 @@ void CICQDaemon::SaveConf()
   int n = 1;
   FOR_EACH_OWNER_START(LOCK_R)
   {
-    char szOwnerId[11], szOwnerPPID[11];
+    char szOwnerId[12], szOwnerPPID[14];
     char szPPID[5];
     sprintf(szOwnerId, "Owner%d.Id", n);
     sprintf(szOwnerPPID, "Owner%d.PPID", n++);
