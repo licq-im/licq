@@ -968,7 +968,7 @@ public:
   unsigned short GetSSCount()         { return m_nSSCount; }
   void SetSSCount(unsigned short n)   { m_nSSCount = n; }
   unsigned short GetPDINFO()          { return m_nPDINFO; }
-  void SetPDINFO(unsigned short n)    { m_nPDINFO = n; }
+  void SetPDINFO(unsigned short n)    { m_nPDINFO = n; SaveLicqInfo(); }
 
   void SetPicture(const char *f);
   
@@ -1081,6 +1081,8 @@ public:
   void RemoveUserFromGroup(const char *, unsigned long, unsigned short);
   void SaveAllUsers();
 
+  bool UpdateUsersInGroups();
+  
   unsigned short NumUsers();
   unsigned short NumOwners();
   unsigned short DefaultGroup()  { return m_nDefaultGroup; }

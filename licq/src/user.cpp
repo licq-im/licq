@@ -1060,7 +1060,7 @@ unsigned short CUserManager::GetIDFromGroup(const char *_szName)
 unsigned short CUserManager::GetGroupFromID(unsigned short nID)
 {
   unsigned short nGroup = 0;
-
+  
   LockGroupIDList(LOCK_R);
   for (GroupIDList::iterator i = m_vnGroupsID.begin(); i != m_vnGroupsID.end();
       ++i)
@@ -1197,6 +1197,7 @@ unsigned short CUserManager::GenerateSID()
       }
       gUserManager.UnlockGroupIDList();
     }
+
   } while (!bDone);
 
   return nSID;
@@ -1312,6 +1313,30 @@ void CUserManager::SaveAllUsers()
   FOR_EACH_USER_END
 }
 
+/*---------------------------------------------------------------------------
+ * CUserManager::UpdateUsersInGroups
+ *-------------------------------------------------------------------------*/
+bool CUserManager::UpdateUsersInGroups()
+{
+  bool bDid = false;
+  
+  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
+  {
+    unsigned short nGSID = pUser->GetGSID();
+    if (nGSID)
+    {
+      unsigned short nInGroup = gUserManager.GetGroupFromID(nGSID);
+      if (nInGroup != gUserManager.NumGroups())
+      {
+        pUser->AddToGroup(GROUPS_USER, nInGroup);
+        bDid = true;
+      }
+    }
+  }
+  FOR_EACH_PROTO_USER_END
+  
+  return bDid;
+}
 
 /*---------------------------------------------------------------------------
  * CUserManager::NumUsers
@@ -2251,7 +2276,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_bPicturePresent = false;
 
   // GPG key
-  m_szGPGKey = NULL;
+  m_szGPGKey = strdup("");
 
   if (_szId)
     m_szId = strdup(_szId);
@@ -3676,6 +3701,8 @@ ICQOwner::ICQOwner()
   m_fConf.ReadStr("AutoResponse", szTemp, "");
   m_fConf.ReadNum("SSTime", m_nSSTime, 0L);
   m_fConf.ReadNum("SSCount", m_nSSCount, 0);
+  m_fConf.ReadNum("PDINFO", m_nPDINFO, 0);
+
   SetAutoResponse(szTemp);
 
   m_fConf.CloseFile();
@@ -3746,6 +3773,8 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   m_fConf.ReadStr("AutoResponse", szTemp, "");
   m_fConf.ReadNum("SSTime", m_nSSTime, 0L);
   m_fConf.ReadNum("SSCount", m_nSSCount, 0);
+  m_fConf.ReadNum("PDINFO", m_nPDINFO, 0);
+  
   SetAutoResponse(szTemp);
 
   m_fConf.CloseFile();
@@ -3780,6 +3809,7 @@ ICQOwner::~ICQOwner()
   m_fConf.WriteStr("AutoResponse", AutoResponse());
   m_fConf.WriteNum("SSTime", m_nSSTime);
   m_fConf.WriteNum("SSCount", m_nSSCount);
+  m_fConf.WriteNum("PDINFO", m_nPDINFO);
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
@@ -3834,6 +3864,7 @@ void ICQOwner::SaveLicqInfo()
   m_fConf.WriteNum("RCG", RandomChatGroup());
   m_fConf.WriteNum("SSTime", m_nSSTime);
   m_fConf.WriteNum("SSCount", m_nSSCount);
+  m_fConf.WriteNum("PDINFO", m_nPDINFO);
   
   if (m_bSavePassword)
     m_fConf.WriteStr("Password", Password());

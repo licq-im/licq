@@ -437,6 +437,7 @@ public:
   void icqRenameUser(const char *_szId);
   void icqExportUsers(UserStringList &, unsigned short);
   void icqExportGroups(GroupList &);
+  void icqUpdateServerGroups();
   void icqUpdatePhoneBookTimestamp();
   void icqUpdatePictureTimestamp();
   void icqSetPhoneFollowMeStatus(unsigned long nNewStatus);
@@ -465,7 +466,8 @@ public:
   void icqAddToIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
   void icqRemoveFromIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
   void icqToggleIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-
+  
+  void icqClearServerList();
   void CheckExport();
 
   void PluginList(PluginsList &l);
@@ -709,6 +711,7 @@ protected:
   void icqPing();
   void icqSendVisibleList();
   void icqSendInvisibleList();
+  void icqCreatePDINFO();
   void icqRequestSystemMsg();
   ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, char *_sMessage,
     CUserEvent *, unsigned short = 0, size_t = 0);

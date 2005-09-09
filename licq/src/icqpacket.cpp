@@ -2671,6 +2671,28 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
   }
 }
 
+//-----AddPrivacyInfo-----------------------------------------------------------
+CPU_AddPDINFOToServerList::CPU_AddPDINFOToServerList()
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD), m_nSID(0),
+    m_nGSID(0)
+{
+  m_nSID = gUserManager.GenerateSID();
+  m_nSize += 15;
+  InitBuffer();
+  
+  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+  o->SetPDINFO(m_nSID);
+  gUserManager.DropOwner(LICQ_PPID);
+  
+  buffer->PackUnsignedShortBE(0);
+  buffer->PackUnsignedShortBE(0);
+  buffer->PackUnsignedShortBE(m_nSID);
+  buffer->PackUnsignedShortBE(ICQ_ROSTxPDINFO);
+  buffer->PackUnsignedShortBE(5);
+  buffer->PackUnsignedLongBE(0x00CA0001);
+  buffer->PackChar(ICQ_PRIVACY_ALLOW_ALL); // Default so users can see us
+}
+
 //-----AddToServerList----------------------------------------------------------
 CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
                                          unsigned short _nType,
@@ -2849,19 +2871,27 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
 }
 
 //-----ClearServerList------------------------------------------------------
-CPU_ClearServerList::CPU_ClearServerList(UinList &uins,
+CPU_ClearServerList::CPU_ClearServerList(UserStringList &uins,
                                          unsigned short _nType)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxREM)
 {
   int nSize = 0;
+  UserStringList::iterator i;
+    
+  if (_nType == ICQ_ROSTxGROUP)
+  {
+
+       
+    return;
+  }
   
-  UinList::iterator i;
+
   for (i = uins.begin(); i != uins.end(); i++)
   {
-    ICQUser *pUser = gUserManager.FetchUser(*i, LOCK_R);
+    ICQUser *pUser = gUserManager.FetchUser(*i, LICQ_PPID, LOCK_R);
     if (pUser)
     {
-      nSize += strlen(pUser->UinString()) + 2;
+      nSize += strlen(*i) + 2;
       nSize += 8;
       if (pUser->GetAwaitingAuth())
         nSize += 4;
@@ -2874,7 +2904,7 @@ CPU_ClearServerList::CPU_ClearServerList(UinList &uins,
   
   for (i = uins.begin(); i != uins.end(); i++)
   {
-    ICQUser *pUser = gUserManager.FetchUser(*i, LOCK_W);
+    ICQUser *pUser = gUserManager.FetchUser(*i, LICQ_PPID, LOCK_W);
     if (pUser)
     {
       bool bAuthReq = pUser->GetAwaitingAuth();
@@ -2883,8 +2913,8 @@ CPU_ClearServerList::CPU_ClearServerList(UinList &uins,
       if (_nType == ICQ_ROSTxNORMAL)
         nGSID = pUser->GetGSID();
         
-      buffer->PackUnsignedShortBE(strlen(pUser->UinString()));
-      buffer->Pack(pUser->UinString(), strlen(pUser->UinString()));
+      buffer->PackUnsignedShortBE(strlen(*i));
+      buffer->Pack(*i, strlen(*i));
       buffer->PackUnsignedShortBE(nGSID);
       buffer->PackUnsignedShortBE(pUser->GetSID());
       buffer->PackUnsignedShortBE(_nType);
@@ -2906,7 +2936,11 @@ CPU_ClearServerList::CPU_ClearServerList(UinList &uins,
       if (pUser->GetSID() == 0 && pUser->GetVisibleSID() == 0 &&
           pUser->GetInvisibleSID() == 0)
         pUser->SetAwaitingAuth(false);
+        
+      pUser->SaveLicqInfo();
+      gUserManager.DropUser(pUser);
     }
+    free(*i);
   }
 }
 

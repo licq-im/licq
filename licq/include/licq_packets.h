@@ -365,6 +365,20 @@ public:
   CPU_ExportGroupsToServerList(GroupList &);
 };
 
+//-----AddPrivacyInfo-----------------------------------------------------------
+class CPU_AddPDINFOToServerList : public CPU_CommonFamily
+{
+public:
+  CPU_AddPDINFOToServerList();
+  
+  unsigned short GetSID()   { return m_nSID; }
+  unsigned short GetGSID()  { return m_nGSID; }
+  
+protected:
+  unsigned short m_nSID,
+                 m_nGSID;
+};
+
 //-----AddToServerList----------------------------------------------------------
 class CPU_AddToServerList : public CPU_CommonFamily
 {
@@ -393,7 +407,7 @@ public:
 class CPU_ClearServerList : public CPU_CommonFamily
 {
  public:
-  CPU_ClearServerList(UinList &, unsigned short);
+  CPU_ClearServerList(UserStringList &, unsigned short);
 };
 
 //-----UpdateToServerList-------------------------------------------------------
