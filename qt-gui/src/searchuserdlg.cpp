@@ -233,10 +233,10 @@ SearchUserDlg::SearchUserDlg(CMainWindow *m, CICQDaemon *s, CSignalManager *theS
   QBoxLayout *misc_lay = new QHBoxLayout(uin_tab, 10);
   misc_lay->addWidget(new QLabel(tr("UIN#:"), uin_tab));
   edtUin = new QLineEdit(uin_tab);
-  edtUin->setValidator(new QIntValidator(10000,2000000000, this));
+  edtUin->setValidator(new QIntValidator(10000,2147483647, edtUin));
   misc_lay->addWidget(edtUin);
 
-  search_tab->addTab(uin_tab, tr("&Uin#"));
+  search_tab->addTab(uin_tab, tr("&UIN#"));
 
   lay->addWidget(search_tab, 1);
   misc_lay = new QVBoxLayout(lay, 10);
