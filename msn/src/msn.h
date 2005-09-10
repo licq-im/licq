@@ -116,7 +116,7 @@ private:
   int HashValue(int n) { return n % 211; }
   void StorePacket(SBuffer *, int);
   void RemovePacket(string, int);
-  SBuffer *RetrievePacket(string, int);
+  SBuffer *RetrievePacket(const string &, int);
   ICQEvent *RetrieveEvent(unsigned long);
   unsigned long SocketToCID(int);
   static string Decode(const string &);

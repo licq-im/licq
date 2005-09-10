@@ -140,7 +140,7 @@ void CMSN::RemovePacket(string _strUser, int _nSock)
   }
 }
 
-SBuffer *CMSN::RetrievePacket(string _strUser, int _nSock)
+SBuffer *CMSN::RetrievePacket(const string &_strUser, int _nSock)
 {
   BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
   BufferList::iterator it;
