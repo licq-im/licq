@@ -36,10 +36,11 @@
 
 <emoticon file="icq_s_kiss">
 	<string>:-{}</string>
+	<string>:-*</string>	
 </emoticon>
 
 <emoticon file="icq_s_ops">
-	<string>:- </string>
+	<string>:-[</string>
 </emoticon>
 
 <emoticon file="icq_s_holy">

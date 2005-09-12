@@ -32,10 +32,11 @@
 
 <emoticon file="Smiley2">
 	<string>:-{}</string>
+	<string>:-*</string>
 </emoticon>
 
 <emoticon file="Smiley6">
-	<string>:- </string>
+	<string>:-[</string>
 </emoticon>
 
 <emoticon file="Smiley10">
@@ -69,7 +70,6 @@
 
 <emoticon file="Smiley11">
 	<string>8-)</string>
-	<string>8)</string>
 </emoticon>
 
 <emoticon file="Smiley15">
@@ -93,11 +93,15 @@
 </emoticon>
 
 <emoticon file="Smiley12">
-	<string>@}->--</string>
+	<string>@}-&gt;--</string>
 </emoticon>
 
 <emoticon file="Smiley16">
 	<string>@=</string>
+</emoticon>
+
+<emoticon file="Smiley17">
+	<string>*JOKINGLY*</string>
 </emoticon>
 
 <emoticon file="Smiley20">
@@ -113,5 +117,4 @@
 </emoticon>
 
 </messaging-emoticon-map>
-
 
