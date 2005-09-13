@@ -1216,6 +1216,9 @@ void CLicqConsole::InputCommand(int cIn)
         break;
       }
 
+      if (!nPos)
+        break;
+
       szIn[nPos] = '\0';
       char *szArg = strchr(szIn, ' ');
       unsigned short nArgPos = 0;
