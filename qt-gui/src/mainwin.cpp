@@ -2149,8 +2149,12 @@ void CMainWindow::updateStatus(CICQSignal *s)
       for (it = m_lnProtMenu.begin(); it != m_lnProtMenu.end(); it++)
       {
         o = gUserManager.FetchOwner(*it, LOCK_R);
-        lblStatus->addPixmap(CMainWindow::iconForStatus(o->StatusFull(), o->IdString(), *it));
-        gUserManager.DropOwner(*it);
+        if (o)
+        {
+          lblStatus->addPixmap(CMainWindow::iconForStatus(o->StatusFull(),
+            o->IdString(), *it));
+          gUserManager.DropOwner(*it);
+        }
       }
       
       lblStatus->update();
@@ -2159,20 +2163,24 @@ void CMainWindow::updateStatus(CICQSignal *s)
     }
     
     // set icon of the licq main widget for window manager
+    if (o)
+    {
 #ifdef USE_KDE
 #if KDE_VERSION >= 320
     /* KDE 3.2 handles app-icon updates differently, since KDE 3.2 a simple setIcon() call
         does no longer update the icon in kicker anymore :(
         So we do it the "kde-way" here */
-    KWin::setIcons(winId(), CMainWindow::iconForStatus(o->StatusFull()), CMainWindow::iconForStatus(o->StatusFull()));
+      KWin::setIcons(winId(), CMainWindow::iconForStatus(o->StatusFull()),
+        CMainWindow::iconForStatus(o->StatusFull()));
 #else    // KDE_VERSION
-    setIcon(CMainWindow::iconForStatus(o->StatusFull()));
+      setIcon(CMainWindow::iconForStatus(o->StatusFull()));
 #endif   // KDE_VERSION
 #else   // USE_KDE
-    setIcon(CMainWindow::iconForStatus(o->StatusFull()));
+      setIcon(CMainWindow::iconForStatus(o->StatusFull()));
 #endif   // USE_KDE
   
-    gUserManager.DropOwner(nPPID);
+      gUserManager.DropOwner(nPPID);
+    }
    }
    else
    {
@@ -2184,8 +2192,12 @@ void CMainWindow::updateStatus(CICQSignal *s)
      for (it = m_lnProtMenu.begin(); it != m_lnProtMenu.end(); it++)
      {
        o = gUserManager.FetchOwner(*it, LOCK_R);
-       lblStatus->addPixmap(CMainWindow::iconForStatus(o->StatusFull(), o->IdString(), *it));
-       gUserManager.DropOwner(*it);
+       if (o)
+       {
+         lblStatus->addPixmap(CMainWindow::iconForStatus(o->StatusFull(),
+           o->IdString(), *it));
+         gUserManager.DropOwner(*it);
+       }
      }
      
      lblStatus->update();
