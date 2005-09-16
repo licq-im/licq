@@ -64,13 +64,14 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
 {
   m_pDaemon = _pDaemon;
   m_bExit = false;
-  m_bWaitingPingReply = false;
+  m_bWaitingPingReply = m_bCanPing = false;
   m_nPipe = _nPipe;
   m_nSSLSocket = m_nServerSocket = m_nNexusSocket = -1;
   m_pPacketBuf = 0;
   m_pNexusBuff = 0;
   m_pSSLPacket = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
+  m_nOldStatus = ICQ_STATUS_ONLINE;
   m_szUserName = 0;
   m_szPassword = 0;
   m_nSessionStart = 0;

@@ -79,8 +79,10 @@ public:
   
   void MSNPing();
   bool Connected() { return m_nServerSocket != -1; }
+  bool CanSendPing() { return m_bCanPing; }
   void MSNLogoff(bool = false);
-  
+  void MSNLogon(const char *, int);
+ 
   bool WaitingPingReply()          { return m_bWaitingPingReply; }
   void SetWaitingPingReply(bool b) { m_bWaitingPingReply = b; }
 private:
@@ -138,10 +140,12 @@ private:
   vector<BufferList> m_vlPacketBucket;
   list<ICQEvent *> m_pEvents;
   StartList m_lStart;
-  bool m_bWaitingPingReply;
+  bool m_bWaitingPingReply,
+       m_bCanPing;
   
   // Server variables
   unsigned long m_nStatus,
+                m_nOldStatus,
                 m_nSessionStart;
   string m_strMSPAuth,
          m_strSID,

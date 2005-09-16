@@ -474,6 +474,10 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     else if (strCmd == "PRP")
     {
     }    
+    else if (strCmd == "QRY")
+    {
+      m_bCanPing = true;
+    }
     else
     {
       gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
@@ -501,6 +505,11 @@ void CMSN::SendPacket(CMSNPacket *p)
     gSocketMan.DropSocket(sock);
   
   delete p;
+}
+
+void CMSN::MSNLogon(const char *_szServer, int _nPort)
+{
+  MSNLogon(_szServer, _nPort, m_nOldStatus);
 }
 
 void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
@@ -550,13 +559,18 @@ void CMSN::MSNLogoff(bool bDisconnected)
 {
   if (m_nServerSocket == -1) return;
 
-  if (bDisconnected)
+  if (!bDisconnected)
   {
     CMSNPacket *pSend = new CPS_MSNLogoff();
     SendPacket(pSend);
   }
+  
+  m_nOldStatus = m_nStatus;
   m_nStatus = ICQ_STATUS_OFFLINE;
  
+  // Don't try to send any more pings
+  m_bCanPing = false;
+
   // Close the server socket
   INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
   int nSD = m_nServerSocket;
@@ -582,8 +596,6 @@ void CMSN::MSNLogoff(bool bDisconnected)
   m_pDaemon->ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
   gUserManager.DropOwner(MSN_PPID);  
   //m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));   
-
-  SetWaitingPingReply(false);
 }
 
 void CMSN::MSNAddUser(char *szUser)
@@ -693,8 +705,9 @@ void *MSNPing_tep(void *p)
       gLog.Info("%sPing timeout. Reconnecting...\n", L_MSNxSTR);
       pMSN->SetWaitingPingReply(false);
       pMSN->MSNLogoff();
+      pMSN->MSNLogon("messenger.hotmail.com", 1863);
     }
-    else if (pMSN->Connected())
+    else if (pMSN->CanSendPing())
     {
       pMSN->MSNPing();
       pMSN->SetWaitingPingReply(true);
