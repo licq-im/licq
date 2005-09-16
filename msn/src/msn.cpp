@@ -36,6 +36,7 @@ using namespace std;
 #ifndef HAVE_STRNDUP
 
 #include <stdlib.h>
+#include <pthread.h>
 
 char *strndup(const char *s, size_t n)
 {
@@ -96,6 +97,7 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
 
   // pthread stuff now
   pthread_mutex_init(&mutex_StartList, 0);
+  pthread_mutex_init(&mutex_ServerSocket, 0);
 }
 
 CMSN::~CMSN()
@@ -234,6 +236,7 @@ void CMSN::Run()
   
   while (!m_bExit)
   {
+    pthread_mutex_lock(&mutex_ServerSocket);
     f = gSocketMan.SocketSet();
     nNumDesc = gSocketMan.LargestSocket() + 1;
  
@@ -244,8 +247,20 @@ void CMSN::Run()
         nNumDesc = m_nPipe + 1;
     }
 
-    nResult = select(nNumDesc, &f, NULL, NULL, NULL);
+    struct timeval tv;
+    tv.tv_sec = 10;
+    tv.tv_usec = 0;
+    nResult = select(nNumDesc, &f, NULL, NULL, &tv);
+    pthread_mutex_unlock(&mutex_ServerSocket);
   
+    if (nResult == 0)
+    {
+      // We need to call select to get a context switch to make
+      // the ping thread be notified that the mutex has been unlocked.
+      tv.tv_sec = 1; tv.tv_usec = 0;
+      select(0, NULL, NULL, NULL, &tv);
+    }
+
     nCurrent = 0;
     while (nResult > 0 && nCurrent < nNumDesc)
     {
@@ -384,9 +399,7 @@ void CMSN::Run()
 
       nCurrent++;
     }
-
   }
-  
   
   // Close out now
   pthread_cancel(m_tMSNPing);

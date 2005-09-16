@@ -26,6 +26,7 @@
 #include "licq_message.h"
 
 #include <openssl/md5.h>
+#include <unistd.h>
 
 #include <string>
 #include <list>
@@ -702,10 +703,12 @@ void *MSNPing_tep(void *p)
     
     if (pMSN->WaitingPingReply())
     {
+      pthread_mutex_lock(&(pMSN->mutex_ServerSocket));
       gLog.Info("%sPing timeout. Reconnecting...\n", L_MSNxSTR);
       pMSN->SetWaitingPingReply(false);
       pMSN->MSNLogoff();
       pMSN->MSNLogon("messenger.hotmail.com", 1863);
+      pthread_mutex_unlock(&(pMSN->mutex_ServerSocket));
     }
     else if (pMSN->CanSendPing())
     {

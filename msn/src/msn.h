@@ -85,6 +85,9 @@ public:
  
   bool WaitingPingReply()          { return m_bWaitingPingReply; }
   void SetWaitingPingReply(bool b) { m_bWaitingPingReply = b; }
+
+  pthread_mutex_t mutex_ServerSocket; // Ugly, but whatever.
+
 private:
   void ProcessSignal(CSignal *);
   void ProcessPipe();
