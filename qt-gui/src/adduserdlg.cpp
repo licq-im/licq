@@ -43,11 +43,9 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, const char* szId, unsigned long PPID,
         QBoxLayout *lay = new QBoxLayout(this, QBoxLayout::Down, 8);
         QFrame *frmProtocol = new QFrame(this);
         QFrame *frmUin = new QFrame(this);
-	chkAlert = new QCheckBox(tr("&Alert User"), this);
 	QFrame *frmBtn = new QFrame(this);
         lay->addWidget(frmProtocol);
         lay->addWidget(frmUin);
-	lay->addWidget(chkAlert);
 	lay->addSpacing(5);
 	lay->addStretch();
 	lay->addWidget(frmBtn);
@@ -93,8 +91,7 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, const char* szId, unsigned long PPID,
 	connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
 
 	// Set Tab Order
-	setTabOrder(edtUin, chkAlert);
-	setTabOrder(chkAlert, btnOk);
+	setTabOrder(edtUin, btnOk);
 	setTabOrder(btnOk, btnCancel);
 }
 
@@ -102,7 +99,6 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, const char* szId, unsigned long PPID,
 void AddUserDlg::show()
 {
    edtUin->setFocus();
-   chkAlert->setChecked(true);
    QDialog::show();
 }
 
