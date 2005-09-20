@@ -2095,8 +2095,6 @@ void CMainWindow::updateStatus(CICQSignal *s)
       theColor = skin->colors.away;
       break;
     }
-    if (status != ICQ_STATUS_OFFLINE)
-      mnuStatus->setItemChecked(MNUxITEM_STATUSxINVISIBLE, o->StatusInvisible());
   
     // Update the protocol menu if there is one
     int nAt = 0;
@@ -2112,6 +2110,10 @@ void CMainWindow::updateStatus(CICQSignal *s)
 
     if (nAt != -1)
     {
+      if (status != ICQ_STATUS_OFFLINE)
+        mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_PRV,
+          o->StatusInvisible());
+          
       mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_ONLINE | (nAt << 8),
         o->Status() == ICQ_STATUS_ONLINE); 
       mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_AWAY | (nAt << 8),
@@ -2287,6 +2289,20 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
 {
   unsigned long newStatus = ICQ_STATUS_OFFLINE;
 
+  // we may have been offline and gone online with invisible toggled
+  // so we will check the main invisiblity toggle for all plugins to obey.
+  bool bAllInvis = false;
+  if (_nPPID == 0xFFFFFFFF)
+  {
+    mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE,
+      !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE));
+    if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
+    {
+      newStatus |= ICQ_STATUS_FxPRIVATE;
+      bAllInvis = true;
+    }
+  }
+      
   ProtoPluginsList pl;
   ProtoPluginsListIter it;
   licqDaemon->ProtoPluginList(pl);
@@ -2296,8 +2312,19 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
     if (_nPPID != 0xFFFFFFFF && nPPID != _nPPID)
       continue;
        
+    // Find the menu to work with
+    std::vector<unsigned long>::iterator itMenu;
+    int nAt = 0;
+    for (itMenu = m_lnProtMenu.begin(); itMenu != m_lnProtMenu.end(); ++itMenu)
+    {
+      if ((*itMenu) == nPPID)
+        break;
+      nAt++;
+    }
+    
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (o == NULL) continue;
+               
     if (id == ICQ_STATUS_OFFLINE)
     {
       gUserManager.DropOwner(nPPID);
@@ -2306,14 +2333,20 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
     }
     else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
     {
-      mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE,
-                                !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE));
+      int nInvisibleLocation = (CHANGE_STATUS_PRV | nAt << 8);
+        
+      if (_nPPID == 0xFFFFFFFF)
+        mnuProtocolStatus[nAt]->setItemChecked(nInvisibleLocation, bAllInvis);
+      else
+        mnuProtocolStatus[nAt]->setItemChecked(nInvisibleLocation,
+          !mnuProtocolStatus[nAt]->isItemChecked(nInvisibleLocation));
+          
       if (o->StatusOffline())
       {
         gUserManager.DropOwner(nPPID);
         continue;
       }
-      if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
+      if (mnuProtocolStatus[nAt]->isItemChecked(nInvisibleLocation))
          newStatus = o->StatusFull() | ICQ_STATUS_FxPRIVATE;
       else
          newStatus = o->StatusFull() & (~ICQ_STATUS_FxPRIVATE);
@@ -2323,10 +2356,10 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
       newStatus = id;
     }
 
-    // we may have been offline and gone online with invisible toggled
-    if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
-       newStatus |= ICQ_STATUS_FxPRIVATE;
-
+    // Just to be safe
+    if (bAllInvis)
+      newStatus |= ICQ_STATUS_FxPRIVATE;
+      
     // disable combo box, flip pixmap...
     //lblStatus->setEnabled(false);
 
