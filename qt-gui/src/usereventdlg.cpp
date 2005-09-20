@@ -1197,7 +1197,7 @@ void UserViewEvent::slot_btnRead1()
       
       // Create the HTML 
       QString url = BASE_DIR;
-      url += ".msn_email";
+      url += "/.msn_email.html";
       
       QString strUser = p->To();
       QString strHTML = QString("<html><head><noscript><meta http-equiv=Refresh content=\"0; url=http://www.hotmail.com\">"
@@ -3445,7 +3445,7 @@ SelectEmoticon::SelectEmoticon(QWidget *parent)
   
   int nRows = ::sqrt(map.size());
   double d = ::sqrt(map.size());
-  if (d - nRows != 0)
+  if (d - (double)nRows != 0)
     nRows++;
   int nCols = nRows;
   
