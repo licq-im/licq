@@ -322,7 +322,7 @@ void OwnerManagerDlg::slot_registerClicked()
     registerUserDlg->raise();
   else
   {
-    registerUserDlg = new RegisterUserDlg(server, sigman);
+    registerUserDlg = new RegisterUserDlg(server, sigman, this);
     connect(registerUserDlg, SIGNAL(signal_done(bool, char *, unsigned long)),
       this, SLOT(slot_doneregister(bool, char *, unsigned long)));
   }
