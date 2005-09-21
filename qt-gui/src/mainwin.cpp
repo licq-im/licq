@@ -774,25 +774,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
      }
    }
 
-   // automatically logon if requested in conf file
-   if (m_nAutoLogon > 0)
-   {
-      if (m_nAutoLogon >= 10)
-        mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE, true);
-
-      switch (m_nAutoLogon % 10)
-      {
-      case 0: break;
-      case 1: changeStatus(ICQ_STATUS_ONLINE); break;
-      case 2: changeStatus(ICQ_STATUS_AWAY); break;
-      case 3: changeStatus(ICQ_STATUS_NA); break;
-      case 4: changeStatus(ICQ_STATUS_OCCUPIED); break;
-      case 5: changeStatus(ICQ_STATUS_DND); break;
-      case 6: changeStatus(ICQ_STATUS_FREEFORCHAT); break;
-      default: gLog.Warn("%sInvalid auto online id: %d.\n", L_WARNxSTR, m_nAutoLogon);
-      }
-   }
-   
    o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
    if (o != NULL)
    {
@@ -838,6 +819,32 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
         slot_protocolPlugin((*it)->PPID());
     }
    
+   // automatically logon if requested in conf file
+   if (m_nAutoLogon > 0)
+   {
+      if (m_nAutoLogon >= 10)
+      {
+        mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE, true);
+
+        // Check the protocol status menu items as well
+        std::vector<unsigned long>::iterator iter;
+        unsigned long nAt = 0;
+        for (iter = m_lnProtMenu.begin(); iter != m_lnProtMenu.end(); ++iter, nAt++)
+          mnuProtocolStatus[nAt]->setItemChecked(CHANGE_STATUS_PRV, true);
+      }
+
+      switch (m_nAutoLogon % 10)
+      {
+      case 0: break;
+      case 1: changeStatus(ICQ_STATUS_ONLINE); break;
+      case 2: changeStatus(ICQ_STATUS_AWAY); break;
+      case 3: changeStatus(ICQ_STATUS_NA); break;
+      case 4: changeStatus(ICQ_STATUS_OCCUPIED); break;
+      case 5: changeStatus(ICQ_STATUS_DND); break;
+      case 6: changeStatus(ICQ_STATUS_FREEFORCHAT); break;
+      default: gLog.Warn("%sInvalid auto online id: %d.\n", L_WARNxSTR, m_nAutoLogon);
+      }
+   }
 }
 
 //-----ApplySkin----------------------------------------------------------------
