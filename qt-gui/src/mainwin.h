@@ -310,7 +310,8 @@ protected slots:
   void updateEvents();
   void updateStatus(CICQSignal * = NULL);
   void updateGroups();
-  void changeStatus(int index, unsigned long nPPID = 0xFFFFFFFF); //all
+  void changeStatus(int index, unsigned long nPPID = 0xFFFFFFFF,
+                    bool _bAutoLogon = false); //all
   void changeStatusManualProtocol(int index);
   void changeStatusManual(int index);
   void changePFMStatus(int index);

@@ -836,12 +836,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
       switch (m_nAutoLogon % 10)
       {
       case 0: break;
-      case 1: changeStatus(ICQ_STATUS_ONLINE); break;
-      case 2: changeStatus(ICQ_STATUS_AWAY); break;
-      case 3: changeStatus(ICQ_STATUS_NA); break;
-      case 4: changeStatus(ICQ_STATUS_OCCUPIED); break;
-      case 5: changeStatus(ICQ_STATUS_DND); break;
-      case 6: changeStatus(ICQ_STATUS_FREEFORCHAT); break;
+      case 1: changeStatus(ICQ_STATUS_ONLINE, 0xFFFFFFFF, true); break;
+      case 2: changeStatus(ICQ_STATUS_AWAY, 0xFFFFFFFF, true); break;
+      case 3: changeStatus(ICQ_STATUS_NA, 0xFFFFFFFF, true); break;
+      case 4: changeStatus(ICQ_STATUS_OCCUPIED, 0xFFFFFFFF, true); break;
+      case 5: changeStatus(ICQ_STATUS_DND, 0xFFFFFFFF, true); break;
+      case 6: changeStatus(ICQ_STATUS_FREEFORCHAT, 0xFFFFFFFF, true); break;
       default: gLog.Warn("%sInvalid auto online id: %d.\n", L_WARNxSTR, m_nAutoLogon);
       }
    }
@@ -2292,24 +2292,27 @@ void CMainWindow::changeStatusManual(int id)
 
 
 //----CMainWindow::changeStatus-------------------------------------------------
-void CMainWindow::changeStatus(int id, unsigned long _nPPID)
+void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
 {
   unsigned long newStatus = ICQ_STATUS_OFFLINE;
 
   // we may have been offline and gone online with invisible toggled
   // so we will check the main invisiblity toggle for all plugins to obey.
   bool bAllInvis = false;
-  if (_nPPID == 0xFFFFFFFF)
+  if (_bAutoLogon)
   {
-    mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE,
-      !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE));
-    if (mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE))
+    if (_nPPID == 0xFFFFFFFF && mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE)) 
     {
       newStatus |= ICQ_STATUS_FxPRIVATE;
       bAllInvis = true;
     }
   }
-      
+  else if (_nPPID == 0xFFFFFFFF && id == ICQ_STATUS_FxPRIVATE)
+  {
+    bAllInvis = !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE);
+    mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE, bAllInvis);
+  }
+
   ProtoPluginsList pl;
   ProtoPluginsListIter it;
   licqDaemon->ProtoPluginList(pl);
@@ -2321,13 +2324,14 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
        
     // Find the menu to work with
     std::vector<unsigned long>::iterator itMenu;
-    int nAt = 0;
+    int nAt = -1;
     for (itMenu = m_lnProtMenu.begin(); itMenu != m_lnProtMenu.end(); ++itMenu)
     {
+      nAt++;
       if ((*itMenu) == nPPID)
         break;
-      nAt++;
     }
+    int nInvisibleLocation = (CHANGE_STATUS_PRV | nAt << 8);
     
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (o == NULL) continue;
@@ -2340,8 +2344,6 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
     }
     else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
     {
-      int nInvisibleLocation = (CHANGE_STATUS_PRV | nAt << 8);
-        
       if (_nPPID == 0xFFFFFFFF)
         mnuProtocolStatus[nAt]->setItemChecked(nInvisibleLocation, bAllInvis);
       else
@@ -2353,6 +2355,7 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
         gUserManager.DropOwner(nPPID);
         continue;
       }
+
       if (mnuProtocolStatus[nAt]->isItemChecked(nInvisibleLocation))
          newStatus = o->StatusFull() | ICQ_STATUS_FxPRIVATE;
       else
@@ -2365,7 +2368,11 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID)
 
     // Just to be safe
     if (bAllInvis)
+    {
       newStatus |= ICQ_STATUS_FxPRIVATE;
+      if (nAt != -1)
+        mnuProtocolStatus[nAt]->setItemChecked(nInvisibleLocation, true);
+    }
       
     // disable combo box, flip pixmap...
     //lblStatus->setEnabled(false);
