@@ -114,6 +114,7 @@ void IconManager::X11Init()
 
   resize (wharfIcon->width(), wharfIcon->height());
   setMask(*wharfIcon->vis->mask());
+  move(-100,-100);
   show();
 }
 
