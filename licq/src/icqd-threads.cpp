@@ -409,7 +409,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     gUserManager.DropOwner();
 
     int socket = -1;
-    if (nVersion > 6 && nMode != MODE_DIRECT)
+    if (!bSendIntIp && nVersion > 6 && nMode != MODE_DIRECT)
     {
       int nId = d->RequestReverseConnection(nDestinationUin, nChannel, nIP,
                                             nLocalPort, nRemotePort);
