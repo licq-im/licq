@@ -4261,14 +4261,15 @@ CPacketTcp::CPacketTcp(unsigned long _nCommand, unsigned short _nSubCommand,
   m_nSubCommand = _nSubCommand;
   if (nLen)
   {
-    m_szMessage = (char *)malloc(nLen);
+    m_szMessage = (char *)malloc(nLen + 1);
     memcpy(m_szMessage, szMessage, nLen);
-    m_nMsgLen = nLen;
+    m_szMessage[nLen] = 0;
+    m_nMsgLen = nLen + 1;
   }
   else
   {
     m_szMessage = (szMessage == NULL ? strdup("") : strdup(szMessage));
-    m_nMsgLen = strlen(m_szMessage);
+    m_nMsgLen = strlen(m_szMessage) + 1;
   }
   m_nLocalPort = user->LocalPort();
 
