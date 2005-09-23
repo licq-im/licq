@@ -1,7 +1,14 @@
+For v0.2
 * fix plaintext passwords
-* fix redrawing all windows when contact list changes
-* fix logging off
-* get sent timestamps from server
+* fix invisible status images
+* return characters in sent messages
+* html tags in user nicks + messages (should show unallowed html as plain text)
+* icons for AIM contacts
+* messages from offline users
+
+Other:
+* logging in/rms connectivity errors (display error to user if xml connection or rms connection is lost)
+* logging off
 * sort by groups
 * options window:
 	* sort by group
@@ -10,3 +17,4 @@
 	* colours
 * history viewing
 * resize windows
+* make/use generic php xml functions instead of creating xml everywhere messily

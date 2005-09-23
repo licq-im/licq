@@ -1,6 +1,6 @@
 licqweb 0.1
 
-To use this you need licq with the rms plugin and my rms patch found at http://whatsbeef.net/philip/licqweb/
+To use this you need latest cvs of licq with the rms plugin.
 
 Edit config.php to suit your setup, should be self explanetory. If you want to see offline users, also edit 
 licqweb.js, line 22, change
