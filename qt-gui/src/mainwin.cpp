@@ -2295,7 +2295,8 @@ void CMainWindow::changeStatusManual(int id)
 void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
 {
   unsigned long newStatus = ICQ_STATUS_OFFLINE;
-
+  bool bLicqOnly = false;
+  
   // we may have been offline and gone online with invisible toggled
   // so we will check the main invisiblity toggle for all plugins to obey.
   bool bAllInvis = false;
@@ -2316,12 +2317,15 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
   ProtoPluginsList pl;
   ProtoPluginsListIter it;
   licqDaemon->ProtoPluginList(pl);
+  if (pl.size() == 1)
+    bLicqOnly = true;
+    
   for (it = pl.begin(); it != pl.end(); it++)
   {
     unsigned long nPPID = (*it)->PPID();
     if (_nPPID != 0xFFFFFFFF && nPPID != _nPPID)
       continue;
-       
+      
     // Find the menu to work with
     std::vector<unsigned long>::iterator itMenu;
     int nAt = -1;
@@ -2331,11 +2335,23 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
       if ((*itMenu) == nPPID)
         break;
     }
-    int nInvisibleLocation = (CHANGE_STATUS_PRV | nAt << 8);
-    
+
+    QPopupMenu *pMenu;
+    int nInvisibleLocation;
+    if (bLicqOnly)
+    {
+      nInvisibleLocation = ICQ_STATUS_FxPRIVATE;
+      pMenu = mnuStatus;
+    }
+    else
+    {
+      nInvisibleLocation = (CHANGE_STATUS_PRV | nAt << 8);
+      pMenu = mnuProtocolStatus[nAt];
+    }
+        
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (o == NULL) continue;
-               
+              
     if (id == ICQ_STATUS_OFFLINE)
     {
       gUserManager.DropOwner(nPPID);
@@ -2343,12 +2359,12 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
       continue;
     }
     else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
-    {
+    {    
       if (_nPPID == 0xFFFFFFFF)
-        mnuProtocolStatus[nAt]->setItemChecked(nInvisibleLocation, bAllInvis);
+       pMenu->setItemChecked(nInvisibleLocation, bAllInvis);
       else
-        mnuProtocolStatus[nAt]->setItemChecked(nInvisibleLocation,
-          !mnuProtocolStatus[nAt]->isItemChecked(nInvisibleLocation));
+        pMenu->setItemChecked(nInvisibleLocation,
+          !pMenu->isItemChecked(nInvisibleLocation));
           
       if (o->StatusOffline())
       {
@@ -2356,10 +2372,10 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
         continue;
       }
 
-      if (mnuProtocolStatus[nAt]->isItemChecked(nInvisibleLocation))
-         newStatus = o->StatusFull() | ICQ_STATUS_FxPRIVATE;
+      if (pMenu->isItemChecked(nInvisibleLocation))
+        newStatus = o->StatusFull() | ICQ_STATUS_FxPRIVATE;
       else
-         newStatus = o->StatusFull() & (~ICQ_STATUS_FxPRIVATE);
+        newStatus = o->StatusFull() & (~ICQ_STATUS_FxPRIVATE);
     }
     else
     {
