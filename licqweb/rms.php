@@ -146,9 +146,16 @@ function rmsSendMessage($id, $pp, $msg) {
 
 	$msgcontent = $msg . "\r\n.\r\n";
 	sendData($msgcontent);
-	$packet = socket_read($sock, 1024, PHP_NORMAL_READ);
-	$packet = socket_read($sock, 1024, PHP_NORMAL_READ);
-	return true;
+	$packet = socket_read($sock, 1024, PHP_NORMAL_READ); //e.g. 102 [1254] Sending message to foo@hotmail.com.
+	preg_match("/\[(\d+)\]/", $packet, $matches);
+	$packet = socket_read($sock, 1024, PHP_NORMAL_READ); //e.g. 203 [1254] Event done
+	preg_match("/\[(\d+)\] Event (.*)/", $packet, $matches2);
+	while ($matches[1] != $matches2[1]) {
+		//Event tag doesn't match the Event Done tag, keep trying
+		$packet = socket_read($sock, 1024, PHP_NORMAL_READ);
+		preg_match("/\[(\d+)\]/", $packet, $matches2);
+	}
+	return $matches2[2];
 }
 
 function rmsGetStatus() {

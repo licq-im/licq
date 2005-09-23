@@ -32,8 +32,7 @@ if (!rmsLogin("$uin\r\n", "$password\r\n")) {
 	exit;
 }
 
-$ret = rmsSendMessage($_POST['id'], $_POST['pp'], stripslashes($_POST['msg']));
-$res = ($ret) ? 'success' : 'failed';
+$res = rmsSendMessage($_POST['id'], $_POST['pp'], stripslashes($_POST['msg']));
 
 header('Content-Type: text/xml');
 echo "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>";
@@ -42,6 +41,7 @@ echo "
   <method>ackSendMessage</method>
   <uid>" . $_POST['uid'] . "</uid>
   <result>$res</result>
+  <datetime>" . date('H:i:s') . "</datetime>
 </response>
 ";
 
