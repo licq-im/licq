@@ -184,7 +184,12 @@ function _updateUser(id, pp, status, messages, nick) {
 		contacts[pp][id].nick = nick;
 	} else {
 		contacts[pp][id] = new Contact(id, pp, nick, status, messages);
-		document.getElementById('windows').innerHTML += getWindowHtml(id, pp, nick);
+		var newcontact = document.createElement('div');
+		newcontact.innerHTML = getWindowHtml(id, pp, nick);
+		document.getElementById('windows').appendChild(newcontact);
+		//document.getElementById('windows').innerHTML += getWindowHtml(id, pp, nick);
+		var txtdiv = document.getElementById(id + '-' + pp + '-txt');
+		txtdiv.scrollTop = txtdiv.scrollHeight;
 	}
 }
 
@@ -231,11 +236,11 @@ function ackChangeStatus(response) {
 function ackSendMessage(response) {
 	var uid = response.getElementsByTagName('uid')[0].firstChild.data;
 	var res = response.getElementsByTagName('result')[0].firstChild.data;
+	var ts = response.getElementsByTagName('datetime')[0].firstChild.data;
 	var message = ackMessages[uid];
 	var txt = document.getElementById(message.id + '-' + message.pp + '-txt');
-	if (res == "success") {
-		var d = new Date();
-		txt.innerHTML += "(" + d.getHours() + ":" + d.getMinutes() + ":" + d.getSeconds() + ") " + nick + ": " + message.message + "<br/>";
+	if (res == "done.") {
+		txt.innerHTML += "(" + ts + ") " + nick + ": " + message.message + "<br/>";
 	} else {
 		txt.innerHTML += "--- Message failed!<br/>";
 	}
@@ -255,6 +260,10 @@ function showContactWindow(id, pp) {
 	} else {
 		win.style.display = 'block';
 	}
+	var txtdiv = document.getElementById(id + '-' + pp + '-txt');
+	txtdiv.scrollTop = txtdiv.scrollHeight;
+	//win.style.zIndex = ++dragwin.win.style.zIndex;
+	//dragwin.win = win;
 }
 
 function updateStatus(response) {
