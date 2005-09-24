@@ -700,12 +700,12 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
   if (szArg == NULL) {
     return scon;
   }
-
   string strArg(szArg);
   string::size_type nPos = strArg.find_last_of(".");
   if (nPos != string::npos)
   {
-    string strProtocol(strArg, nPos + 1, strArg.size());
+    string::size_type s = strArg.find_last_of(" ");
+    string strProtocol(strArg, nPos + 1, (s == string::npos) ? strArg.size() : s - nPos - 1);
     ProtoPluginsList pl;
     ProtoPluginsListIter it;
     licqDaemon->ProtoPluginList(pl);
@@ -715,11 +715,13 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
       {
         nPPID = (*it)->PPID();
         szArg[strArg.find_last_of(".")] = '\0';
+        string tmp(strArg, 0, nPos);
+        tmp.append(strArg, s, strArg.size());
+        szArg = (char *)tmp.c_str();
         break;
       }
     }
   }
- 
 
   // Check if the alias is quoted
   if (szArg[0] == '"')
