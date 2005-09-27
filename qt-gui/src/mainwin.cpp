@@ -2380,6 +2380,8 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
     else
     {
       newStatus = id;
+      if (pMenu->isItemChecked(nInvisibleLocation))
+        newStatus |= ICQ_STATUS_FxPRIVATE;
     }
 
     // Just to be safe
