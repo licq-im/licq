@@ -4,7 +4,7 @@ plugindir = $(libdir)
 licq_incdir = @LICQ_INCLUDES@
 
 
-INCLUDES = -Wall -I$(srcdir) -I$(licq_incdir) -I/usr/include/ncurses -I/usr/include/cdk
+INCLUDES = -Wall -I$(srcdir) -I$(licq_incdir) -I/usr/include/ncurses -I/usr/include/cdk -I/usr/local/include/cdk
 
 noinst_HEADERS = console.h event_data.h window.h
 
