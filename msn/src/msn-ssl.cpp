@@ -27,6 +27,7 @@
 
 #include <openssl/md5.h>
 
+#include <cstring>
 #include <string>
 #include <list>
 #include <vector>
