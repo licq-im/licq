@@ -38,7 +38,7 @@
           fclose($fd);
 	}
 
-        echo "<div class=\"news\"><div class=\"bar\">News</div>".$str."</div>\n";
+        echo "<div id=\"newsid\" class=\"news\"><div class=\"bar\">News</div>".$str."</div>\n";
 ?>
     </body>
 </html>

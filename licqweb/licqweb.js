@@ -153,12 +153,25 @@ function sortContacts() {
 		}
 	}
 	contacthtml = "";
+        var aimLower = 'abcdefghijklmnopqrstuvwxyz';
+        var aimUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	for (var status in statuss) {
 		j = sortedContacts[status].length;
 		for (var i = 0; i < j; ++i) {
 			var contact = sortedContacts[status][i];
 			var uclass = contact.status;
-			var imgsrc = "images/" + contact.pp.toLowerCase() + "." + contact.status.toLowerCase() + ".png";
+                        var pp = "";
+                        if (contact.pp.toLowerCase() == "licq" &&
+                            (aimLower.indexOf(contact.id.charAt(0), 0) != -1 ||
+                             aimUpper.indexOf(contact.id.charAt(0), 0) != -1)){
+ 
+				pp = "aim";
+			}
+                        else {
+                          pp = contact.pp.toLowerCase();
+			}
+                       
+			var imgsrc = "images/" + pp + "." + contact.status.toLowerCase() + ".png";
 			if (parseInt(contact.nummsgs) > 0) {
 				uclass = "newmessage";
 				imgsrc = "images/msg.png";
@@ -393,6 +406,7 @@ function doLogin(uin, password) {
 	xmlhttp.onload = acceptResponse;
 	xmlhttp.send(null);
 	document.getElementById('login').style.display = 'none';
+	document.getElementById('newsid').style.display = 'none';
 	document.getElementById('contactList').style.display = 'block';
 }
 
