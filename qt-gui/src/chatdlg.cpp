@@ -261,7 +261,7 @@ ChatDlg::ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
   QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
   qPixmaps.push_back(pixUnder);
   tbtUnderline = new QToolButton(*pixUnder, tr("Underline"),
-     tr("Toggles Bold font"), this, SLOT(fontStyleChanged()), barChat);
+     tr("Toggles Underline font"), this, SLOT(fontStyleChanged()), barChat);
   tbtUnderline->setToggleButton(true);
 
   QPixmap *pixStrike = new QPixmap(chatStrike_xpm);
@@ -543,7 +543,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   QPixmap *pixUnder = new QPixmap(chatUnder_xpm);
   qPixmaps.push_back(pixUnder);
   tbtUnderline = new QToolButton(*pixUnder, tr("Underline"),
-     tr("Toggles Bold font"), this, SLOT(fontStyleChanged()), barChat);
+     tr("Toggles Underline font"), this, SLOT(fontStyleChanged()), barChat);
   tbtUnderline->setToggleButton(true);
 
   QPixmap *pixStrike = new QPixmap(chatStrike_xpm);
