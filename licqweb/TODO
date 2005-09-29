@@ -3,7 +3,6 @@ For v0.2
 * fix invisible status images
 * return characters in sent messages
 * html tags in user nicks + messages (should show unallowed html as plain text)
-* icons for AIM contacts
 * messages from offline users
 
 Other:
