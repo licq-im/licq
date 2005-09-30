@@ -123,7 +123,7 @@
             <!-- Screenshot Item Begin-->
             <div class="news">
               <h2>Screenshot #2</h2>
-              <p><img src="Gifs/licq_licqweb_login.jpg" alt="Licqweb Login" /></p>
+              <p><a href="Gifs/licq_licqweb_login.jpg"><img src="Gifs/licq_licqweb_login.jpg" style="width: 177px; height: 154px; border: 0;" alt="Licqweb Login" /></a></p>
                 The new web based version of Licq!
               <div class="footer">
                 <div class="footer_right"></div>
@@ -134,7 +134,7 @@
             <!-- Screenshot Item Begin-->
             <div class="news">
               <h2>Screenshot #2</h2>
-              <p><img src="Gifs/licq_licqweb_usage.jpg" alt="Licqweb" /></p>
+              <p><a href="Gifs/licq_licqweb_usage.jpg"><img src="Gifs/licq_licqweb_usage.jpg" style="width: 177px; height: 154px; border: 0;" alt="Licqweb" /></a></p>
                 Using Licqweb makes it easy to control your list from one computer. No more having to disconnect your ICQ at home or use SSH/Telnet to connect to a screen session. The data is pushed to the browser, so you get real-time updates!
               <div class="footer">
                 <div class="footer_right"></div>
