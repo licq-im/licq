@@ -99,7 +99,7 @@ bool CSARManager::Load()
       sprintf(szTemp1, "SAR%d.Name", j + 1);
       m_fConf.ReadStr(szTemp1, szTemp2, "");
       sprintf(szTemp1, "SAR%d.Text", j + 1);
-      m_fConf.ReadStr(szTemp1, szTemp3, "");
+      m_fConf.ReadStr(szTemp1, szTemp3, "", true, sizeof(szTemp3));
       m_lSAR[i].push_back(new CSavedAutoResponse(szTemp2, szTemp3));
     }
   }

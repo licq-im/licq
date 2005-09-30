@@ -537,11 +537,12 @@ char *CIniFile::GetKeyFromLine(char *_szBuffer, const char *_szLine)
  * Returns NULL if the given line is NULL or there is no '=' on the line.
  */
 char *CIniFile::GetDataFromLine(char *_szBuffer, const char *_szLine,
-                                bool bTrim)
+                                bool bTrim, int _nMax)
 {
   //static char s_szData[MAX_LINE_LEN];
   char *szPostEquals;
   char szData[MAX_LINE_LEN];
+  int nMax = (_nMax > 0 ? _nMax : MAX_LINE_LEN);
 
   if (_szLine == NULL)
   {
@@ -562,8 +563,8 @@ char *CIniFile::GetDataFromLine(char *_szBuffer, const char *_szLine,
        return NULL;
     }
 
-    strncpy(szData, szPostEquals + 1, MAX_LINE_LEN);
-    szData[MAX_LINE_LEN - 1] = '\0';
+    strncpy(szData, szPostEquals + 1, nMax);
+    szData[nMax - 1] = '\0';
     if (bTrim) Trim(szData);
     AddNewLines(_szBuffer, szData);
   }
@@ -643,7 +644,7 @@ bool CIniFile::SetSection(const char *_szSection)
 /*! \brief Finds a key and sets the data.  Returns false if the key does not exist.
  */
 bool CIniFile::ReadStr(const char *szKey, char *szData,
-                       const char *szDefault, bool bTrim)
+                       const char *szDefault, bool bTrim, int _nMax)
 {
   char *sz, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
 
@@ -662,7 +663,7 @@ bool CIniFile::ReadStr(const char *szKey, char *szData,
   }
   while (strcmp(sz, szKey) != 0);
 
-  if ((sz = GetDataFromLine(szData, szLine, bTrim)) == NULL)
+  if ((sz = GetDataFromLine(szData, szLine, bTrim, _nMax)) == NULL)
   {
     if (szDefault != NULL) strcpy(szData, szDefault);
     return (false);
