@@ -1216,6 +1216,7 @@ void CLicqConsole::InputCommand(int cIn)
         break;
       }
 
+      // If we haven't typed anything, why should we tab?
       if (!nPos)
         break;
 
@@ -1285,7 +1286,8 @@ void CLicqConsole::InputCommand(int cIn)
       char *szMatch = sTabCompletion.szPartialMatch;
 
       if (sTabCompletion.vszPartialMatch.size() == 1)
-      { // Only one match
+      {
+        // Only one match
         // Check if there is a space in the match
         if (strchr(szMatch, ' ') != NULL)
         {
@@ -1303,7 +1305,9 @@ void CLicqConsole::InputCommand(int cIn)
         nTabs = 1;
       }
       else
-      { // Multiple matches
+      { 
+        if (szMatch == 0) break;
+        // Multiple matches
         Beep();
         // Check if there is a space in the match
         if (strchr(szMatch, ' ') != NULL)

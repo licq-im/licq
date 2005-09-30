@@ -73,7 +73,7 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
           (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
         FOR_EACH_USER_CONTINUE
 
-      if (strncasecmp(_szPartialMatch, pUser->GetAlias(), nLen) == 0)
+      if (nLen == 0 || strncasecmp(_szPartialMatch, pUser->GetAlias(), nLen) == 0)
       {
         if (szMatch == 0)
           szMatch = strdup(pUser->GetAlias());
@@ -92,10 +92,13 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
     }
     FOR_EACH_USER_END
 
+/* This is commented, so we get a list of every user if the user hits tab 
+   and hasn't typed anything. This might suck...
     if (nLen == 0)
       _sTabCompletion.szPartialMatch = 0;
     else
       _sTabCompletion.szPartialMatch = szMatch;
+*/
   }
 /*  else // Sub command time
   {
