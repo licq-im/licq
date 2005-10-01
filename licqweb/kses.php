@@ -105,9 +105,11 @@ function kses_split2($string, $allowed_html, $allowed_protocols)
   $elem = $matches[2];
   $attrlist = $matches[3];
 
-  if (!@isset($allowed_html[strtolower($elem)]))
-    return '';
+  if (!@isset($allowed_html[strtolower($elem)])) {
+    $string = str_replace(array('<', '>'), array('&lt;', '&gt;'), $string);
+    return $string;
     # They are using a not allowed HTML element
+  }
 
   if ($slash != '')
     return "<$slash$elem>";

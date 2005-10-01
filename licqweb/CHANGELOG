@@ -4,3 +4,4 @@ v0.2
 - use event tags from rms properly in rmsSendMessage()
 - sent messages with return characters get displayed properly
 - added aim icons
+- html tags that aren't allowed are now shown as plain text (instead of removing the whole tag + text)

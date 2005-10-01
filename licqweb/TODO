@@ -1,7 +1,6 @@
 For v0.2
 * fix plaintext passwords
 * fix invisible status images
-* html tags in user nicks + messages (should show unallowed html as plain text)
 * messages from offline users
 * focus issues
 
