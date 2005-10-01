@@ -218,22 +218,30 @@ void CTranslator::ClientToServer(char &_cChar)
 //-----ToUTF8----------------------------------------------------------------
 char *CTranslator::ToUnicode(char *_sz)
 {
-  if (_sz == NULL)  return NULL;
-  unsigned short nLen = strlen(_sz);
-  char *szNewStr = new char[(nLen << 1) + 1];
-  unsigned long j = 0;
-  for (unsigned long i = 0; i < nLen; i++)
+  if (_sz == NULL) return NULL;
+  unsigned short nLen = strlen(_sz) * 2;
+  char *szNewStr = new char[nLen + 1];
+  size_t nInSize, nOutSize;
+
+  char *szIn = _sz, *szOut = szNewStr;
+  iconv_t tr;
+
+  nInSize = nLen;
+  nOutSize = nLen;
+
+  tr = iconv_open("UTF-8", "");
+  size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+  iconv_close(tr);
+
+  if (ret == (size_t)(-1))
   {
-    if ((unsigned char)_sz[i] <= 0x7F) // good ole ascii
-      szNewStr[j++] = _sz[i];
-    else
-    {
-      szNewStr[j++] = ((unsigned char)_sz[i] >> 6) | 0xC0;
-      szNewStr[j++] = ((unsigned char)_sz[i] & 0x3F) | 0x80;
-    }
+    tr = iconv_open("UCS-2BE", "");
+    iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+    iconv_close(tr);
   }
 
-  szNewStr[j] = '\0';
+  *szOut = '\0';
+
   return szNewStr;
 }
 
