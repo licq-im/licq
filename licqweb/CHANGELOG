@@ -2,4 +2,5 @@ v0.2
 - message window should (might :P) now stay auto scrolled down after opening/closing and contact list changes
 - get sent message timestamp from server
 - use event tags from rms properly in rmsSendMessage()
-- window focus issues
+- sent messages with return characters get displayed properly
+- added aim icons

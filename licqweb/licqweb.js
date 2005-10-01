@@ -153,24 +153,21 @@ function sortContacts() {
 		}
 	}
 	contacthtml = "";
-        var aimLower = 'abcdefghijklmnopqrstuvwxyz';
-        var aimUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	var aimLower = 'abcdefghijklmnopqrstuvwxyz';
+	var aimUpper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	for (var status in statuss) {
 		j = sortedContacts[status].length;
 		for (var i = 0; i < j; ++i) {
 			var contact = sortedContacts[status][i];
 			var uclass = contact.status;
-                        var pp = "";
-                        if (contact.pp.toLowerCase() == "licq" &&
-                            (aimLower.indexOf(contact.id.charAt(0), 0) != -1 ||
-                             aimUpper.indexOf(contact.id.charAt(0), 0) != -1)){
- 
+			var pp = "";
+			if (contact.pp.toLowerCase() == "licq" &&
+				(aimLower.indexOf(contact.id.charAt(0), 0) != -1 ||
+				aimUpper.indexOf(contact.id.charAt(0), 0) != -1)) {
 				pp = "aim";
+			} else {
+				pp = contact.pp.toLowerCase();
 			}
-                        else {
-                          pp = contact.pp.toLowerCase();
-			}
-                       
 			var imgsrc = "images/" + pp + "." + contact.status.toLowerCase() + ".png";
 			if (parseInt(contact.nummsgs) > 0) {
 				uclass = "newmessage";
@@ -253,7 +250,7 @@ function ackSendMessage(response) {
 	var message = ackMessages[uid];
 	var txt = document.getElementById(message.id + '-' + message.pp + '-txt');
 	if (res == "done.") {
-		txt.innerHTML += "(" + ts + ") " + nick + ": " + message.message + "<br/>";
+		txt.innerHTML += "(" + ts + ") " + nick + ": " + message.message.replace(/[\r\n]+/g, "<br/>") + "<br/>";
 	} else {
 		txt.innerHTML += "--- Message failed!<br/>";
 	}

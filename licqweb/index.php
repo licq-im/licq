@@ -18,9 +18,9 @@
 		</div>
 	</div>
 	<div id="contactList" class="box" style="left:10px;top:150px;display:none;">
-	  <div class="bar" onmousedown="init_drag(event, 'contactList')" id="nick">licqweb</div>
-	  <div id="contacts"></div>
-	  <div id="ownerStatus"></div>
+		<div class="bar" onmousedown="init_drag(event, 'contactList')" id="nick">licqweb</div>
+		<div id="contacts"></div>
+		<div id="ownerStatus"></div>
 	</div>
 	<div id="statusMenu"></div>
 	<div id="windows"></div>
@@ -29,16 +29,14 @@
 <?
 	$fd = fopen("http://www.licq.org/licqweb-news.txt", "r");
 	if (!$fd)
-	  $fd = fopen("http://www.thejon.org/licqweb-news.txt", "r");
-        if ($fd)
-	{
-          $str = "";
-          while(!feof($fd))
-            $str .= fread($fd, 4096);
-          fclose($fd);
+		$fd = fopen("http://www.thejon.org/licqweb-news.txt", "r");
+	if ($fd) {
+		$str = "";
+		while(!feof($fd))
+			$str .= fread($fd, 4096);
+		fclose($fd);
 	}
-
-        echo "<div id=\"newsid\" class=\"news\"><div class=\"bar\">News</div>".$str."</div>\n";
+	echo "<div id=\"newsid\" class=\"news\"><div class=\"bar\">News</div>".$str."</div>\n";
 ?>
     </body>
 </html>

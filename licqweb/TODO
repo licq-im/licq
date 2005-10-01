@@ -1,9 +1,9 @@
 For v0.2
 * fix plaintext passwords
 * fix invisible status images
-* return characters in sent messages
 * html tags in user nicks + messages (should show unallowed html as plain text)
 * messages from offline users
+* focus issues
 
 Other:
 * logging in/rms connectivity errors (display error to user if xml connection or rms connection is lost)
