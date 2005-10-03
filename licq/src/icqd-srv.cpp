@@ -397,7 +397,6 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
     u->SetGSID(0);
     u->SetVisibleSID(0);
     u->SetVisibleList(false);
-    u->SetIgnoreList(false);
     u->SaveLicqInfo();
     gUserManager.DropUser(u);
 
