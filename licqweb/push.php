@@ -117,7 +117,7 @@ while (true) {
 	$message = "
 		<response>
 		  <method>$method</method>
-		  <result>$txt</result>
+		  <result>" . kses($txt) . "</result>
 		</response>
 	";
 	$message = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" . $message;

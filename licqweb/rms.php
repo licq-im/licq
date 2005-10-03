@@ -122,12 +122,12 @@ function rmsViewEvent($id, $pp) {
 	$msg = $matches[1];	
 	// kses input filtering
 	$allowed = array('b' => array(),
-	                 'i' => array(),
-	                 'a' => array('href' => 1, 'title' => 1),
-	                 'p' => array('align' => 1),
-	                 'br' => array(),
+					 'i' => array(),
+					 'a' => array('href' => 1, 'title' => 1),
+					 'p' => array('align' => 1),
+					 'br' => array(),
 					 'font' => array('size' => 1, 'color' => 1, 'face' => 1)
-					 );
+					);
 	
 	if (get_magic_quotes_gpc()) {
 		$msg = stripslashes($msg);
@@ -249,7 +249,7 @@ function getUserStuff($packet) {
 		$i--;
 	}
 	$nick = strrev($nick);
-	$nick = trim($nick);
+	$nick = kses(trim($nick));
 
 	// Now we have a user, lets build a list struct then display the list
 	$user = array('id' => $id, 'nick' => $nick, 'newmsgs' => $newmsgs, 'status' => $status, 'pp' => $pp);
