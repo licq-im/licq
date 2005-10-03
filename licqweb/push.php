@@ -100,7 +100,7 @@ while (true) {
 		case CODE_NOTIFYxSTATUS:
 			$user = getUserStuff($packet);
 			$method = "updateStatus";
-			$txt = "<newstatus><id>" . xmlentities($user['id']) . "</id><pp>" . xmlentities($user['pp']) . "</pp><nick>" . str_replace("\n", '', xmlentities($user['nick'])) . "</nick><nummsgs>" . trim(xmlentities($user['newmsgs'])) . "</nummsgs><status>" . str_replace(' ', '', xmlentities($user['status'])) . "</status></newstatus>";
+			$txt = "<newstatus><id>" . xmlentities($user['id']) . "</id><pp>" . xmlentities($user['pp']) . "</pp><nick>" . str_replace("\n", '', xmlentities(kses($user['nick']))) . "</nick><nummsgs>" . trim(xmlentities($user['newmsgs'])) . "</nummsgs><status>" . str_replace(' ', '', xmlentities($user['status'])) . "</status></newstatus>";
 			break;
 		case CODE_NOTIFYxMESSAGE:
 			list($id, $pp, $numMessages) = split(' ', substr($packet, 4), 3);
@@ -117,7 +117,7 @@ while (true) {
 	$message = "
 		<response>
 		  <method>$method</method>
-		  <result>" . kses($txt) . "</result>
+		  <result>$txt</result>
 		</response>
 	";
 	$message = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" . $message;
