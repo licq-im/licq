@@ -125,7 +125,9 @@ function rmsViewEvent($id, $pp) {
 	                 'i' => array(),
 	                 'a' => array('href' => 1, 'title' => 1),
 	                 'p' => array('align' => 1),
-	                 'br' => array());
+	                 'br' => array(),
+					 'font' => array('size' => 1, 'color' => 1, 'face' => 1)
+					 );
 	
 	if (get_magic_quotes_gpc()) {
 		$msg = stripslashes($msg);
