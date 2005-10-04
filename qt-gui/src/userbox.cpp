@@ -409,7 +409,10 @@ void CUserViewItem::setGraphics(ICQUser *u)
    {
      QTextCodec * codec = UserCodec::codecForICQUser(u);
      sTemp = u->usprintf(gMainWindow->colInfo[i]->m_szFormat);
-     setText(i + 1, codec->toUnicode(sTemp));
+     if (strcmp(gMainWindow->colInfo[i]->m_szFormat, "%a") == 0)
+       setText(i + 1, QString::fromUtf8(sTemp));
+     else
+       setText(i + 1, codec->toUnicode(sTemp));
      free(sTemp);
    }
 
