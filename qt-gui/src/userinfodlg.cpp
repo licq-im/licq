@@ -469,7 +469,7 @@ void UserInfoDlg::SaveGeneralInfo()
 
   u->SetEnableSave(false);
 
-  u->SetAlias(codec->fromUnicode(nfoAlias->text()));
+  u->SetAlias(nfoAlias->text().utf8());
   u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
   u->SetFirstName(codec->fromUnicode(nfoFirstName->text()));
   u->SetLastName(codec->fromUnicode(nfoLastName->text()));
@@ -2368,7 +2368,7 @@ void UserInfoDlg::slotRetrieve()
       if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       u->SetEnableSave(false);
-      u->SetAlias(codec->fromUnicode(nfoAlias->text()));
+      u->SetAlias(nfoAlias->text().utf8());
       u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
       u->SetEnableSave(true);
       u->SaveGeneralInfo();
