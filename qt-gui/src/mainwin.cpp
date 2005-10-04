@@ -4537,7 +4537,7 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("&Network Window"), licqLogWindow, SLOT(show()), 0, MNU_SYS_NETWORKWIN);
    mnuSystem->insertItem(tr("&Mini Mode"), this, SLOT(ToggleMiniMode()), 0, MNU_SYS_MINI_MODE);
    mnuSystem->insertItem(tr("Show Offline &Users"), this, SLOT(ToggleShowOffline()), 0, MNU_SYS_SHOW_OFFLINE);
-   mnuSystem->insertItem(tr("&Thread Group View"), this, SLOT(ToggleThreadView()), MNU_SYS_THREAD_VIEW);
+   mnuSystem->insertItem(tr("&Thread Group View"), this, SLOT(ToggleThreadView()), 0, MNU_SYS_THREAD_VIEW);
    mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()), 0, MNU_SYS_OPTIONS);
    mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()), 0, MNU_SYS_SKINBROWSER);
    mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()), 0, MNU_SYS_PLUGINS);
