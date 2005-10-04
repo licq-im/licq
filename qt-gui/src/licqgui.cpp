@@ -225,6 +225,19 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
   return s;
 }
 
+//-----------------------------------------------------------------------------
+
+const char *GetLocale()
+{
+  char *szLang;
+  szLang = getenv("LC_ALL");
+  if (szLang == 0)
+    szLang = getenv("LC_MESSAGES");
+  if (szLang == 0)
+    szLang = getenv("LANG");
+
+  return szLang;
+}
 
 // -----------------------------------------------------------------------------
 
@@ -352,9 +365,9 @@ CLicqGui::CLicqGui(int argc, char **argv)
 
   // Try and load a translation
   gLog.Info("%sAttempting to load %s Qt-GUI translation.\n", L_INITxSTR,
-            QTextCodec::locale());
+            GetLocale());
   QString str;
-  str.sprintf("%sqt-gui/locale/%s", SHARE_DIR, QTextCodec::locale());
+  str.sprintf("%sqt-gui/locale/%s", SHARE_DIR, GetLocale());
   QTranslator *trans = new QTranslator(this);
   trans->load(str);
   installTranslator(trans);
