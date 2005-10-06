@@ -151,7 +151,7 @@ void CForwardDlg::dropEvent(QDropEvent * de)
 
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
 
-  edtUser->setText(QString::fromLocal8Bit(u->GetAlias()) + " (" + text + ")");
+  edtUser->setText(QString::fromUtf8(u->GetAlias()) + " (" + text + ")");
   gUserManager.DropUser(u);
 }
 

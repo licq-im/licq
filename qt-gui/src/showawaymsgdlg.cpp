@@ -67,7 +67,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
   QTextCodec * codec = UserCodec::codecForICQUser(u);
 //  chkShowAgain->setChecked(u->ShowAwayMsg());
 
-  setCaption(QString(tr("%1 Response for %2")).arg(u->StatusStr()).arg(codec->toUnicode(u->GetAlias())));
+  setCaption(QString(tr("%1 Response for %2")).arg(u->StatusStr()).arg(QString::fromUtf8(u->GetAlias())));
 
   btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setMinimumWidth(75);

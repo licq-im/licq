@@ -199,9 +199,9 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
     else
       tmp = tmp + lastname;
     if (!tmp.isEmpty()) tmp = " (" + tmp + ")";
-    m_sBasic = tr("Licq - Info ") + codec->toUnicode(u->GetAlias()) + tmp;
+    m_sBasic = tr("Licq - Info ") + QString::fromUtf8(u->GetAlias()) + tmp;
     resetCaption();
-    setIconText(codec->toUnicode(u->GetAlias()));
+    setIconText(u->GetAlias());
     gUserManager.DropUser(u);
   }
 
@@ -393,7 +393,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   if(m_bOwner)
     chkKeepAliasOnUpdate->hide();
   chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
-  nfoAlias->setData(codec->toUnicode(u->GetAlias()));
+  nfoAlias->setData(u->GetAlias());
   connect(nfoAlias, SIGNAL(textChanged(const QString &)), this, SLOT(slot_aliasChanged(const QString &)));
   nfoFirstName->setData(codec->toUnicode(u->GetFirstName()));
   nfoLastName->setData(codec->toUnicode(u->GetLastName()));
@@ -2014,7 +2014,7 @@ void UserInfoDlg::ShowHistory()
   {
       codec = UserCodec::codecForICQUser(u);
       if (!m_bOwner)
-         contactName = codec->toUnicode(u->GetAlias());
+         contactName = QString::fromUtf8(u->GetAlias());
       for (unsigned int x = 0; x < strlen(m_szId); x++)
       {
         if (!isdigit(m_szId[x]))
@@ -2049,7 +2049,7 @@ void UserInfoDlg::ShowHistory()
                   (*tempIter)->IsMultiRec(),
                   (*tempIter)->IsUrgent(),
                   (*tempIter)->IsEncrypted(),
-                  QStyleSheet::escape(contactName),
+                  contactName,
                   MLView::toRichText(messageText, true, bUseHTML));
 #else
       // See CHistoryWidget::paintCell for reference on those Qt 2-only
@@ -2366,7 +2366,6 @@ void UserInfoDlg::slotRetrieve()
       // and the alias
       ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
       if (u == NULL) return;
-      QTextCodec * codec = UserCodec::codecForICQUser(u);
       u->SetEnableSave(false);
       u->SetAlias(nfoAlias->text().utf8());
       u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
@@ -2450,7 +2449,7 @@ void UserInfoDlg::slotUpdate()
     cc = GetCountryByIndex(i)->nCode;
     server->icqSetEmailInfo(codec->fromUnicode(nfoEmailSecondary->text()),
 			    codec->fromUnicode(nfoEmailOld->text()));
-    icqEventTag = server->ProtoSetGeneralInfo(m_nPPID, codec->fromUnicode(nfoAlias->text()),
+    icqEventTag = server->ProtoSetGeneralInfo(m_nPPID, nfoAlias->text(),
                                             codec->fromUnicode(nfoFirstName->text()),
                                             codec->fromUnicode(nfoLastName->text()),
                                             codec->fromUnicode(nfoEmailPrimary->text()),

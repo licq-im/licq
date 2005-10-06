@@ -72,7 +72,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
     ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
     if (u != NULL) {
        QTextCodec *codec = UserCodec::codecForICQUser(u);
-       userName = QString("%1 (%2)").arg(codec->toUnicode(u->GetAlias())).arg(m_szId);
+       userName = QString("%1 (%2)").arg(QString::fromUtf8(u->GetAlias())).arg(m_szId);
        gUserManager.DropUser(u);
     } else {
        userName = QString("%1").arg(m_szId);
@@ -153,7 +153,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, unsigned long nUin, bool bGrant,
     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
     if (u != NULL) {
        QTextCodec *codec = UserCodec::codecForICQUser(u);
-       userName = QString("%1 (%2)").arg(codec->toUnicode(u->GetAlias())).arg(m_nUin);
+       userName = QString("%1 (%2)").arg(QString::fromUtf8(u->GetAlias())).arg(m_nUin);
        gUserManager.DropUser(u);
     } else {
        userName = QString::number(m_nUin);

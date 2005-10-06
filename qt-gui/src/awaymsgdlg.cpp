@@ -319,7 +319,7 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(const char *szId,
 
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
   setCaption(QString(tr("Set Custom Auto Response for %1"))
-             .arg(QString::fromLocal8Bit(u->GetAlias())));
+             .arg(QString::fromUtf8(u->GetAlias())));
   if (*u->CustomAutoResponse())
     mleAwayMsg->setText(QString::fromLocal8Bit(u->CustomAutoResponse()));
   else if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
@@ -376,7 +376,7 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
 
   ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
   setCaption(QString(tr("Set Custom Auto Response for %1"))
-             .arg(QString::fromLocal8Bit(u->GetAlias())));
+             .arg(QString::fromUtf8(u->GetAlias())));
   if (*u->CustomAutoResponse())
     mleAwayMsg->setText(QString::fromLocal8Bit(u->CustomAutoResponse()));
   else if (u->StatusToUser() != ICQ_STATUS_OFFLINE)

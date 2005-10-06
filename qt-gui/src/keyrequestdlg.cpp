@@ -45,7 +45,7 @@ KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, const char *szId,
   icqEventTag = 0;
 
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-  setCaption(tr("Licq - Secure Channel with %1").arg(u->GetAlias()));
+  setCaption(tr("Licq - Secure Channel with %1").arg(QString::fromUtf8(u->GetAlias())));
 
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
 

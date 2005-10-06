@@ -616,7 +616,6 @@ void CInfoField::setData(const char *data)
   setText(QString::fromLocal8Bit(data));
 }
 
-
 void CInfoField::setData(QString data)
 {
   setText(data);
@@ -899,7 +898,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
     {
       codec = UserCodec::codecForICQUser(u);
       if (e->Direction() == D_RECEIVER)
-        contactName = codec->toUnicode(u->GetAlias());
+        contactName = QString::fromUtf8(u->GetAlias());
       for (unsigned int x = 0; x < strlen(m_szId); x++)
       {
         if (!isdigit(m_szId[x]) && m_nPPID == LICQ_PPID)

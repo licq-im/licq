@@ -251,8 +251,7 @@ void UserEventTabDlg::addTab(UserEventCommon *tab, int index)
   if (u == NULL) return;
 
   // initalize codec
-  QTextCodec *codec = UserCodec::codecForICQUser(u);
-  label = codec->toUnicode(u->GetAlias());
+  label = QString::fromUtf8(u->GetAlias());
   tabw->insertTab(tab, label, index);
   updateTabLabel(u);
   gUserManager.DropUser(u);
@@ -333,7 +332,7 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon *tab)
     }
     gUserManager.DropUser(u);
   }
-  tabw->changeTab(tab, newLabel.c_str());
+  tabw->changeTab(tab, QString::fromUtf8(newLabel.c_str()));
 }
 
 void UserEventTabDlg::updateTabLabel(ICQUser *u)
@@ -583,14 +582,14 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
   else
     tmp = tmp + lastname;
   if (!tmp.isEmpty()) tmp = " (" + tmp + ")";
-  m_sBaseTitle = codec->toUnicode(u->GetAlias()) + tmp;
+  m_sBaseTitle = QString::fromUtf8(u->GetAlias()) + tmp;
 #if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
   setCaption(m_sBaseTitle);
-  setIconText(codec->toUnicode(u->GetAlias()));
+  setIconText(u->GetAlias());
 }
 
 void UserEventCommon::FlashTaskbar(bool _bFlash)
@@ -1584,7 +1583,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         bool bUseHTML = !isdigit((m_lUsers.front().c_str())[1]); 
         QTextCodec *codec = UserCodec::codecForICQUser(u);
         QString tmp = "";
-        QString contactName = codec->toUnicode(u->GetAlias());
+        QString contactName = QString::fromUtf8(u->GetAlias());
         ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
         QString ownerName;
         if (o)
@@ -2297,7 +2296,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
 
     msg = tr("%1 is in %2 mode:\n%3\nSend...")
-             .arg(codec->toUnicode(u->GetAlias())).arg(u->StatusStr())
+             .arg(QString::fromUtf8(u->GetAlias())).arg(u->StatusStr())
              .arg(codec->toUnicode(u->AutoResponse()));
 
     u->SetShowAwayMsg( false );
@@ -2323,7 +2322,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   {
     u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
     msg = tr("%1 refused %2, send through server")
-          .arg(codec->toUnicode(u->GetAlias())).arg(EventDescription(ue));
+          .arg(QString::fromUtf8(u->GetAlias())).arg(EventDescription(ue));
     InformUser(this, msg);
     gUserManager.DropUser(u);
     return;
@@ -3044,7 +3043,7 @@ bool UserSendFileEvent::sendDone(ICQEvent *e)
     QString s(!e->ExtendedAck() ? tr("No reason provided") :
                                codec->toUnicode(e->ExtendedAck()->Response()));
     QString result = tr("File transfer with %2 refused:\n%3")
-                       .arg(codec->toUnicode(u->GetAlias()))
+                       .arg(QString::fromUtf8(u->GetAlias()))
                        .arg(s);
     gUserManager.DropUser(u);
     InformUser(this, result);
@@ -3176,7 +3175,7 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
     QString s(!e->ExtendedAck() ? tr("No reason provided") :
                                codec->toUnicode(e->ExtendedAck()->Response()));
     QString result = tr("Chat with %2 refused:\n%3")
-                       .arg(codec->toUnicode(u->GetAlias()))
+                       .arg(QString::fromUtf8(u->GetAlias()))
                        .arg(s);
     gUserManager.DropUser(u);
     InformUser(this, result);

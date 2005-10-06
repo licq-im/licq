@@ -1611,8 +1611,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         // User on notify list went online -> show popup at systray icon
         if (licqIcon && u->OnlineNotify())
         {
-          QTextCodec *codec = UserCodec::codecForICQUser(u);
-          QString alias = codec->toUnicode(u->GetAlias());
+          QString alias = QString::fromUtf8(u->GetAlias());
           // Escape HTML
           alias.replace(QChar('&'), "&amp;");
           alias.replace(QChar('<'), "&lt;");
@@ -3298,9 +3297,8 @@ bool CMainWindow::RemoveUserFromList(const char *szId, unsigned long nPPID, QWid
 {
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL) return true;
-  QTextCodec *codec = UserCodec::codecForICQUser(u);
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-                     .arg(codec->toUnicode(u->GetAlias()))
+                     .arg(QString::fromUtf8(u->GetAlias()))
                      .arg(u->IdString()) );
   gUserManager.DropUser(u);
   if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
@@ -3315,9 +3313,8 @@ bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
 {
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
   if (u == NULL) return true;
-  QTextCodec *codec = UserCodec::codecForICQUser(u);
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-                     .arg(codec->toUnicode(u->GetAlias()))
+                     .arg(QString::fromUtf8(u->GetAlias()))
                      .arg(nUin) );
   gUserManager.DropUser(u);
   if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
@@ -3400,7 +3397,7 @@ void CMainWindow::UserGroupToggled(int id)
       if (!u) return;
       if(!u->IgnoreList() && !QueryUser(this,
           tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
-          .arg(u->GetAlias()).arg(m_szUserMenuId), tr("&Yes"), tr("&No")))
+          .arg(QString::fromUtf8(u->GetAlias())).arg(m_szUserMenuId), tr("&Yes"), tr("&No")))
       {
         gUserManager.DropUser(u);
         break;
@@ -3428,7 +3425,7 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
       if (u == NULL) return true;
       GroupList *g = gUserManager.LockGroupList(LOCK_R);
       QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
-                         .arg(QString::fromLocal8Bit(u->GetAlias()))
+                         .arg(QString::fromUtf8(u->GetAlias()))
                          .arg(u->IdString()).arg(QString::fromLocal8Bit( (*g)[group - 1] )) );
       gUserManager.UnlockGroupList();
       gUserManager.DropUser(u);
@@ -3468,7 +3465,7 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group, unsi
       unsigned long nUin = u->Uin();
       GroupList *g = gUserManager.LockGroupList(LOCK_R);
       QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
-                         .arg(QString::fromLocal8Bit(u->GetAlias()))
+                         .arg(QString::fromUtf8(u->GetAlias()))
                          .arg(nUin).arg(QString::fromLocal8Bit( (*g)[group - 1] )) );
       gUserManager.UnlockGroupList();
       gUserManager.DropUser(u);

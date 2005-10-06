@@ -170,7 +170,7 @@ void CMMSendDlg::SendNext()
       ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
       if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
-      grpSending->setTitle(tr("Sending mass message to %1...").arg(codec->toUnicode(u->GetAlias())));
+      grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
       gUserManager.DropUser(u);
 
       // create initial strings (implicit copying, no allocation impact :)
@@ -240,8 +240,8 @@ void CMMSendDlg::SendNext()
     {
       ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
       if (u == NULL) return;
-      QTextCodec * codec = UserCodec::codecForICQUser(u);
-      grpSending->setTitle(tr("Sending mass URL to %1...").arg(codec->toUnicode(u->GetAlias())));
+      grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
+      QTextCodec *codec = UserCodec::codecForICQUser(u);
       gUserManager.DropUser(u);
 
       icqEventTag = server->ProtoSendUrl(m_szId, m_nPPID, s2.latin1(), codec->fromUnicode(s1),
@@ -252,8 +252,7 @@ void CMMSendDlg::SendNext()
     {
       ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
       if (u == NULL) return;
-      QTextCodec * codec = UserCodec::codecForICQUser(u);
-      grpSending->setTitle(tr("Sending mass list to %1...").arg(codec->toUnicode(u->GetAlias())));
+      grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
       gUserManager.DropUser(u);
 
       icqEventTag = server->icqSendContactList(m_szId, *users, false,

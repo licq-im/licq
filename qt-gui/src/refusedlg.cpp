@@ -34,7 +34,7 @@ CRefuseDlg::CRefuseDlg(const char *szId, unsigned long nPPID, QString t,
    : LicqDialog(parent, "RefuseDialog", true)
 {
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-  QLabel *lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromLocal8Bit(u->GetAlias()) + ":", this);
+  QLabel *lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromUtf8(u->GetAlias()) + ":", this);
   gUserManager.DropUser(u);
 
   mleRefuseMsg = new MLEditWrap(true, this);
@@ -65,7 +65,7 @@ CRefuseDlg::CRefuseDlg(unsigned long _nUin, QString t, QWidget* parent)
    : LicqDialog(parent, "RefuseDialog", true)
 {
   ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-  QLabel *lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromLocal8Bit(u->GetAlias()) + ":", this);
+  QLabel *lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromUtf8(u->GetAlias()) + ":", this);
   gUserManager.DropUser(u);
 
   mleRefuseMsg = new MLEditWrap(true, this);
