@@ -1204,7 +1204,7 @@ void UserInfoDlg::SetAbout(ICQUser *u)
   QString aboutstr = codec->toUnicode(u->GetAbout());
   aboutstr.replace(QRegExp("\r"), "");
   mlvAbout->clear();
-  mlvAbout->append(MLView::toRichText(u->GetAbout(), true, bUseHTML));
+  mlvAbout->append(MLView::toRichText(codec->toUnicode(u->GetAbout()), true, bUseHTML));
   
   if (bDropUser) gUserManager.DropUser(u);
 }
