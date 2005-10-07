@@ -393,7 +393,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   if(m_bOwner)
     chkKeepAliasOnUpdate->hide();
   chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
-  nfoAlias->setData(u->GetAlias());
+  nfoAlias->setData(QString::fromUtf8(u->GetAlias()));
   connect(nfoAlias, SIGNAL(textChanged(const QString &)), this, SLOT(slot_aliasChanged(const QString &)));
   nfoFirstName->setData(codec->toUnicode(u->GetFirstName()));
   nfoLastName->setData(codec->toUnicode(u->GetLastName()));
