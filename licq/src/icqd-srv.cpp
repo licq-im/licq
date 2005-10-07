@@ -3980,7 +3980,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               AddUserToList(szId, LICQ_PPID, false); // Don't notify server
             }
 
-            char *szUnicodeAlias = gTranslator.FromUnicode(szNewName);
+            char *szUnicodeAlias = szNewName ? strdup(szNewName) : 0;
 
             ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
             if (u)
@@ -4042,7 +4042,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             }
 
             if (szUnicodeAlias)
-              delete [] szUnicodeAlias;
+              free(szUnicodeAlias);
             if (szNewName)
               delete [] szNewName;
             if (szSMSNumber)

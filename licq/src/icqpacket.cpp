@@ -2537,12 +2537,12 @@ CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
       nSize += strlen(*i);
       nSize += 10;
 
-      char *szUnicode = gTranslator.ToUnicode(pUser->GetAlias());
+      char *szUnicode = strdup(pUser->GetAlias());
       int nAliasLen = strlen(szUnicode);
       if (nAliasLen && _nType == ICQ_ROSTxNORMAL)
           nSize += 4 + nAliasLen;
       if (szUnicode)
-        delete [] szUnicode;
+        free(szUnicode);
     }
     gUserManager.DropUser(pUser);
   }
@@ -2598,7 +2598,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
       gUserManager.UnlockGroupIDList();
 
       u->SetGSID(m_nGSID);
-      szUnicodeName = gTranslator.ToUnicode(u->GetAlias());
+      szUnicodeName = strdup(u->GetAlias());
       nAliasSize = strlen(szUnicodeName);
     }
 
@@ -2624,7 +2624,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
       buffer->PackUnsignedShortBE(0);
 
     if (szUnicodeName)
-      delete [] szUnicodeName;
+      free(szUnicodeName);
       
     free(*i);
   }
@@ -2703,7 +2703,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   unsigned short nStrLen = strlen(_szName);
   unsigned short nExportSize = 0;
   ICQUser *u = 0;
-  char *szUnicodeName = 0;
+  char *szUnicodeName = 0,
+       *szUnicodeAlias = 0;
 
   m_nSID = gUserManager.GenerateSID();
 
@@ -2754,8 +2755,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
           m_nGSID = 1; // General (unless user renamed group)
       }
 
-      szUnicodeName = gTranslator.ToUnicode(u->GetAlias());
-      nExportSize = 4 + strlen(szUnicodeName);
+      szUnicodeAlias = strdup(u->GetAlias());
+      nExportSize = 4 + strlen(szUnicodeAlias);
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
@@ -2822,7 +2823,10 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   {
     buffer->PackUnsignedShortBE(0x0131);
     buffer->PackUnsignedShortBE(nExportSize-4);
-    buffer->Pack(szUnicodeName, nExportSize-4);
+    if (szUnicodeAlias)
+      buffer->Pack(szUnicodeAlias, nExportSize-4);
+    else if (szUnicodeName)
+      buffer->Pack(szUnicodeName, nExportSize-4);
   }
   if (_bAuthReq)
     buffer->PackUnsignedLongBE(0x00660000);
@@ -2832,6 +2836,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
   if (szUnicodeName)
     delete [] szUnicodeName;
+  if (szUnicodeAlias)
+    free(szUnicodeAlias);
 }
 
 //-----RemoveFromServerList-----------------------------------------------------
@@ -2955,7 +2961,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   unsigned short nSID = 0;
   unsigned short nExtraLen = 0;
   unsigned short nNameLen = strlen(_szName);
-  char *szUnicodeName = 0;
+  char *szUnicodeName = 0,
+       *szUnicodeAlias = 0;
   GroupIDList *gID = 0;
 
   switch (_nType)
@@ -2970,8 +2977,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
         nGSID = u->GetGSID();
         nSID = u->GetSID();
-        szUnicodeName = gTranslator.ToUnicode(u->GetAlias());
-        nExtraLen = 4 + strlen(szUnicodeName);
+        szUnicodeAlias = strdup(u->GetAlias());
+        nExtraLen = 4 + strlen(szUnicodeAlias);
         gUserManager.DropUser(u);
       }
 
@@ -3026,7 +3033,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
     {
       buffer->PackUnsignedShortBE(0x0131);
       buffer->PackUnsignedShortBE(nExtraLen-4);
-      buffer->Pack(szUnicodeName, nExtraLen-4);
+      buffer->Pack(szUnicodeAlias, nExtraLen-4);
     }
     else if (_nType == ICQ_ROSTxGROUP)
     {
@@ -3058,6 +3065,8 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
   if (szUnicodeName)
     delete [] szUnicodeName;
+  if (szUnicodeAlias)
+    free(szUnicodeAlias);
 }
 
 //-----SearchWhitePages---------------------------------------------------------
