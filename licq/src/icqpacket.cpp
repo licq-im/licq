@@ -4792,7 +4792,9 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
 
   gTranslator.ClientToServer(m_szMessage);
 
-  m_nSize += strlen(m_szMessage);
+  m_nSize -= m_nMsgLen;
+  m_nMsgLen = strlen(m_szMessage);
+  m_nSize += m_nMsgLen;
 }
 
 
