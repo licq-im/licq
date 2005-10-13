@@ -216,7 +216,7 @@ void CTranslator::ClientToServer(char &_cChar)
 
 
 //-----ToUTF8----------------------------------------------------------------
-char *CTranslator::ToUnicode(char *_sz)
+char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
 {
   if (_sz == NULL) return NULL;
   unsigned short nLen = strlen(_sz) * 2;
@@ -229,25 +229,39 @@ char *CTranslator::ToUnicode(char *_sz)
   nInSize = nLen;
   nOutSize = nLen;
 
-  tr = iconv_open("UTF-8", "");
+  // Clean up for iconv, remove any spaces
+  int nFromLen = strlen(_szFrom);
+  int j = 0;
+  char *szFrom = new char [nFromLen+1];
+  for (int i = 0; i < nFromLen; i++)
+  {
+    if (_szFrom[i] != ' ')
+      szFrom[j++] = _szFrom[i];
+  }
+  szFrom[j] = '\0';
+  
+  
+  tr = iconv_open("UTF-8", szFrom);
   size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
   iconv_close(tr);
 
   if (ret == (size_t)(-1))
   {
-    tr = iconv_open("UCS-2BE", "");
+    tr = iconv_open("UCS-2BE", szFrom);
     iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
     iconv_close(tr);
   }
 
   *szOut = '\0';
+
+  delete [] szFrom;
 
   return szNewStr;
 }
 
 
 //-----FromUTF8--------------------------------------------------------------
-char *CTranslator::FromUnicode(char *_sz)
+char *CTranslator::FromUnicode(char *_sz, char *_szTo)
 {
   if (_sz == NULL) return NULL;
   unsigned short nLen = strlen(_sz) * 2;
@@ -260,18 +274,32 @@ char *CTranslator::FromUnicode(char *_sz)
   nInSize = nLen;
   nOutSize = nLen;
 
-  tr = iconv_open("", "UTF-8");
+  // Clean up for iconv, remove any spaces
+  int nToLen = strlen(_szTo);
+  int j = 0;
+  char *szTo = new char [nToLen+1];
+  for (int i = 0; i < nToLen; i++)
+  {
+    if (_szTo[i] != ' ')
+      szTo[j++] = _szTo[i];
+  }
+  szTo[j] = '\0';
+
+
+  tr = iconv_open(szTo, "UTF-8");
   size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
   iconv_close(tr);
 
   if (ret == (size_t)(-1))
   {
-    tr = iconv_open("", "UCS-2BE");
+    tr = iconv_open(szTo, "UCS-2BE");
     iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
     iconv_close(tr);
   }
 
   *szOut = '\0';
+
+  delete [] szTo;
 
   return szNewStr;
 }

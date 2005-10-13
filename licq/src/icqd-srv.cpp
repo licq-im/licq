@@ -5290,8 +5290,13 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (u->m_bKeepAliasOnUpdate)
             tmp = msg.UnpackString(); // Skip the alias, user wants to keep his own.
           else
-            u->SetAlias( tmp = msg.UnpackString() );
-          delete[] tmp;
+          {
+            tmp = msg.UnpackString();
+            char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->UserEncoding()) : 0;
+            u->SetAlias(szUTFAlias);
+          }
+          if (tmp)
+            delete[] tmp;
           u->SetFirstName( tmp = msg.UnpackString() );
           delete[] tmp;
           u->SetLastName( tmp = msg.UnpackString() );

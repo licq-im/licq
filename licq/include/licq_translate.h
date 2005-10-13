@@ -30,8 +30,8 @@ public:
     unsigned short CheckEncoding(const char *, int);
     
     // Muse use delete[] on the returned value if it is not NULL
-    char *ToUnicode(char *_sz);
-    char *FromUnicode(char *_sz);
+    char *ToUnicode(char *_sz, char *_szFrom = "");
+    char *FromUnicode(char *_sz, char *_szTo = "");
     char *FromUTF16(char *_sz, int nMsgLen = -1);
     char *ToUTF16(char *_sz, char *_szEncoding, size_t &nLen);
     char *NToRN(const char* _szOldStr);
