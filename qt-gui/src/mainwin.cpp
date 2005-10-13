@@ -442,7 +442,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
   licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
   licqConf.ReadNum("ChatMessageStyle", m_nMsgStyle, 0);
-  licqConf.ReadBool("ChatAppendLinebreak", m_bAppendLineBreak, true);
+  licqConf.ReadBool("ChatAppendLinebreak", m_bAppendLineBreak, false);
   licqConf.ReadBool("FlashTaskbar", m_bFlashTaskbar, true);
   
   licqConf.ReadStr("ReceiveMessageColor", szTemp, "red");
