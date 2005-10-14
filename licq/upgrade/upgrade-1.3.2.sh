@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASE=$HOME/.licq
+BASE=$HOME/varjat/.licq
 echo "Licq 1.3.2 Upgrade Script"
 echo
 echo "This script will upgrade licq's config files to be compatible"
@@ -28,7 +28,7 @@ for i in  *.Licq; do
     NEWALIAS=`iconv -f "$REALENCODING" -t "UTF-8" $i.nick`
   fi
 
-  sed "s/^Alias.*$/$NEWALIAS/1" $i > $i.temp
+  awk '/Alias =/ { printf "%s\n", "'"$NEWALIAS"'" } !/Alias =/ { print $0 }' $i > $i.temp
   mv $i.temp $i
   rm $i.nick
 done
