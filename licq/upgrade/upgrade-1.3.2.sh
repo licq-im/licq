@@ -1,6 +1,6 @@
 #!/bin/sh
 
-BASE=$HOME/varjat/.licq
+BASE=$HOME/.licq
 echo "Licq 1.3.2 Upgrade Script"
 echo
 echo "This script will upgrade licq's config files to be compatible"
