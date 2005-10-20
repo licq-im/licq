@@ -1195,7 +1195,8 @@ void UserViewEvent::slot_btnRead1()
       CEventEmailAlert *p = (CEventEmailAlert *)m_xCurrentReadEvent;
       
       // Create the HTML 
-      QString url = BASE_DIR;
+      QString url = "file://";
+      url += BASE_DIR;
       url += "/.msn_email.html";
       
       QString strUser = p->To();
