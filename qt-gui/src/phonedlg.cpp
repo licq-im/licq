@@ -237,6 +237,7 @@ void EditPhoneDlg::ok()
   gUserManager.DropOwner();
 
   struct PhoneBookEntry pbe;
+  memset(&pbe, 0, sizeof(pbe));
 
   QCString tmp = codec->fromUnicode(cmbDescription->currentText());
   pbe.szDescription = new char[tmp.length() + 1];
