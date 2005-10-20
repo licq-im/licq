@@ -696,6 +696,7 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
   unsigned long nPPID = 0;
   struct SContact scon;
   scon.szId = NULL;
+  scon.nPPID = 0;
 
   if (szArg == NULL) {
     return scon;
