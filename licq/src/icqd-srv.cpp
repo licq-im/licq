@@ -2852,8 +2852,11 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
     gLog.Info(tr("%s%s went offline.\n"), L_SRVxSTR, u->GetAlias());
     u->SetClientTimestamp(0);
-    ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
-    gUserManager.DropUser(u);
+    u->SetTyping(ICQ_TYPING_INACTIVEx0); 
+    ChangeUserStatus(u, ICQ_STATUS_OFFLINE); 
+    gUserManager.DropUser(u); 
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, 
+                                    u->IdString(), LICQ_PPID)); 
     break;
   }
   case ICQ_SNACxBDY_RIGHTSxGRANTED:
