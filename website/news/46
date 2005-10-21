@@ -2,6 +2,7 @@
 Licq 1.3.2
 First, a personal note... I'd like to dedicate this release to my grandfather who passed away on September 23rd, 2005. I have created a small photo album of him with more information and comments. Please feel free to leave your own comments for me and my family. Thanks. The URL is: <A HREF="http://gallery.thejon.org/papa">Lloyd Keating Photos</A><BR><BR>
 On a more happier note, after more than a year, we have a new Licq release that has many new features! Here is a short summary:
+<UL>
 <LI><B>NEW: Web Interface for Licq, control your Licq with a web browser!</B><BR
 >
 <LI><B>ICQ registration with image verifcation (CAPTCHA Verification)</B><BR>
@@ -33,5 +34,5 @@ On a more happier note, after more than a year, we have a new Licq release that 
 <LI>Get file transfers working again<BR>
 <LI>Fix invisible, visible and ignore lists<BR>
 <LI>Fix invisibility issues<BR>
-
+</UL>
 Whew.. that is long. Check out downloads, then post a message on the Blog or Mailing List (or IRC) if you want to suggest anything or just talk
