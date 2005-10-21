@@ -56,6 +56,7 @@
             <div class="news">
               <h2>New Features:</h2>
               <ul>
+		<li>Web Inteface</li>
                 <li>User groups - organize your users into groups.</li>
                 <li>Network monitor window - allows you to see the actual data being sent and received from mirabilis and other users.</li>
                 <li>Themed Docking - dock Licq using one of many different icon themes</li>

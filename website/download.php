@@ -1,26 +1,8 @@
-<?
-  include "header.php";
-?>
-
-      
-      <div id="content" > 
-
-				<div id="main"><img src="images/main_title_download.gif" alt="Downloads" /></div>
-        <div id="maincontent">
-          <div id="subcontent">
-            
-            If a signature is available, it will be signed by jon@licq.org 0x2290A71F
-            
-            <!-- Download Item Begin-->
-            <div class="news">
-              <h2>Licq</h2>
-
-              <div class="tables">
-                <table style="margin-left: 5%; width: 90%;"  border="0" cellpadding="5" cellspacing="0">
+table style="margin-left: 5%; width: 90%;"  border="0" cellpadding="5" cellspacing="0">
                   <tr>
-                    <td style="width: 30%"><a href="http://prdownloads.sourceforge.net/licq/licq-1.3.0.tar.bz2?download">licq-1.3.0.tar.bz2</a><br>
-                    <a href="http://prdownloads.sourceforge.net/licq/licq-1.3.0.tar.bz2.sig?download">(signature)</a></td>
-                    <td>Latest Stable Release<br>(md5sum: c1b05d1078b9826273191c05d0d1a969)</td>
+                    <td style="width: 30%"><a href="http://prdownloads.sourceforge.net/licq/licq-1.3.2.tar.bz2?download">licq-1.3.2.tar.bz2</a><br>
+                    <a href="http://prdownloads.sourceforge.net/licq/licq-1.3.0.tar.gz?download">licq-1.3.2.tar.gz</a></td>
+                    <td>Latest Stable Release<br>(bz2 md5sum: 0471bb8fed91eefb23dfe153c9a4a806)<br>(gz md5sum: d8412c20f106aa01d8b9b4f89d8d3130)</td>
                   </tr>
                   <tr>
                     <td><a href="licq-daily.tar.bz2">licq-daily.tar.bz2</a></td>

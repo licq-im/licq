@@ -1,0 +1,36 @@
+2005-10-21 22:54
+Licq 1.3.2
+Finally, after more than a year, we have a new Licq release that has many new features! Here is a short summary:
+<LI><B>NEW: Web Interface for Licq, control your Licq with a web browser!</B><BR
+>
+<LI><B>ICQ registration with image verifcation (CAPTCHA Verification)</B><BR>
+<LI><B>DCOP interopability (Send files from Konqueror)</B><BR>
+<LI>Show the 5 most recent messages in the chat window (New Option)<BR>
+<LI>GPG key selection dialog<BR>
+<LI>Temporary user list (No information saved for certain users, gone on restart
+)<BR>
+<LI>Typing notification icon in the main window<BR>
+<LI>Support not saving passwords (again)<BR>
+<LI>AIM: Show profiles/away messages properly<BR>
+<LI>MSN: Email alerts<BR>
+<LI>MSN: Multi-user group messaging (like a chat)<BR>
+<LI>MSN: Edit own alias<BR>
+<LI>MSN: Block list (Invisible List) and Ignore List support<BR>
+<LI>GPGME: Require v0.4.2 or higher<BR>
+<LI>Flash taskbar on new messages (New Option)<BR>
+<LI>Change message display format (New Option)<BR>
+<LI>Properly send and receive unicode messages<BR>
+<LI>New emoticons<BR>
+<LI>Quick emoticon insert button<BR>
+<LI>Drag'n'drop multiple files to send<BR>
+<LI>UTF-8 Nicks<BR>
+<LI>Away message countdown timer<BR>
+<LI>Fix encoding issues<BR>
+<LI>Show groups in the correct display order<BR>
+<LI>GCC4 compatible<BR>
+<LI>Load, list and unload plugins from the FIFO<BR>
+<LI>Get file transfers working again<BR>
+<LI>Fix invisible, visible and ignore lists<BR>
+<LI>Fix invisibility issues<BR>
+
+Whew.. that is long. Check out downloads, then post a message on the Blog or Mailing List (or IRC) if you want to suggest anything or just talk

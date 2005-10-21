@@ -29,12 +29,12 @@
                   </tr>
                   <tr>
                     <td>Qt GUI</td>
-                    <td>1.3.0</td>
+                    <td>1.3.2</td>
                     <td>The offical interface for Licq written in Qt. Comes with the main distribution. Includes all the features of Licq as listed in the Info page.  See the plugins/qt-gui/doc directory for more information.<br />Includes full KDE support as well if configured with "--with-kde".</td>
                   </tr>
                   <tr>
                     <td>Console</td>
-                    <td>1.3.0</td>
+                    <td>1.3.2</td>
                     <td>This is a console interface plugin for Licq using ncurses.  It features multiple command windows, and much of the basic icq functionality.  It can be retrieved using CVS as described in the <a href="http://www.rhrk.uni-kl.de/~dmuell/licq">Licq cvs page</a>, the module is called "console"..</td>
                   </tr>
                   <tr>
@@ -80,12 +80,12 @@
                   </tr>
                   <tr>
                     <td>Forwarder</td>
-                    <td>1.3.0</td>
+                    <td>1.3.2</td>
                     <td>A simple plugin to forward incoming ICQ events to either an email address or another ICQ account.  This is great for forwarding a secondary ICQ account or forwarding to a pager/mobile phone.  Also included in the main distribution.</td>
                   </tr>
                   <tr>
                     <td>Auto-Responder</td>
-                    <td>1.3.0</td>
+                    <td>1.3.2</td>
                     <td>Plugin to automatically respond to any incoming event with the output of a given program, which can be passed user arguments, or event the message text itself.  Often used in conjunction with "fortune" to send people fortunes.  Also included in the main distribution.</td>
                   </tr>
                   <tr>
@@ -100,8 +100,8 @@
                   </tr>
                   <tr>
                     <td>Remote Management Service</td>
-                    <td>0.30</td>
-                    <td>This plugin opens a TCP server on the Licq box which allows you to telnet in and perform commands and get information.  It acts much like the FIFO only is two way.  It is designed to be used to develop Perl bindings for Licq to be used in html documents, but is easily used interactively.  Currently it supports viewing/changing status, viewing the user list, viewing groups, sending messages/urls, and dumping the network log.<br />Basic security is implemented through the need to enter your UIN and ICQ password before being allowed access to commands.<br />Written by Graham Roff.  New enhancements by Jon Keating.</td>
+                    <td>1.3.2</td>
+                    <td>This plugin opens a TCP server on the Licq box which allows you to telnet in and perform commands and get information.  It works with the new licqweb web interface. It acts much like the FIFO only it is two way.  Currently it supports viewing/changing status, viewing the user list, viewing groups, sending messages/urls, and dumping the network log.<br />Basic security is implemented through the need to enter your UIN and ICQ password before being allowed access to commands.<br />Written by Graham Roff.  New enhancements by Jon Keating.</td>
                   </tr>
                   <tr>
                     <td><a href="http://licq-osd.sf.net">On Screen Display</a></td>
