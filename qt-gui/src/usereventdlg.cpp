@@ -1195,8 +1195,7 @@ void UserViewEvent::slot_btnRead1()
       CEventEmailAlert *p = (CEventEmailAlert *)m_xCurrentReadEvent;
       
       // Create the HTML 
-      QString url = "file://";
-      url += BASE_DIR;
+      QString url = BASE_DIR;
       url += "/.msn_email.html";
       
       QString strUser = p->To();
@@ -1222,6 +1221,10 @@ void UserViewEvent::slot_btnRead1()
       fileHTML.open(IO_WriteOnly);
       fileHTML.writeBlock(strHTML, strHTML.length());
       fileHTML.close();
+      
+      // Now we have to add the file:// after it was created, but before
+      // it is executed.
+      url = "file://" + url;
 #ifdef USE_KDE
       KApplication* app = static_cast<KApplication*>(qApp);
       // If no URL viewer is set, use KDE default
