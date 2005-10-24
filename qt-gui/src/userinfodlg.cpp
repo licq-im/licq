@@ -1618,7 +1618,7 @@ void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
 void UserInfoDlg::CreateKABCInfo()
 {
 #ifdef USE_KABC
-  tabList[KABCInfo].label = tr("KDE Addressbook");
+  tabList[KABCInfo].label = tr("&KDE Addressbook");
   tabList[KABCInfo].tab = new QWidget(this, tabList[KABCInfo].label.latin1());
   tabList[KABCInfo].loaded = false;
 
