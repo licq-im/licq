@@ -24,6 +24,8 @@
 #include "msnpacket.h"
 #include "licq_log.h"
 #include "licq_message.h"
+#include "licq_translate.h"
+
 
 #include <openssl/md5.h>
 
@@ -484,13 +486,16 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsig
   if (!u) return;
   gUserManager.DropUser(u);
   
-  CMSNPacket *pSend = new CPS_MSNMessage(_szMsg);
-  CEventMsg *m = new CEventMsg(_szMsg, 0, TIME_NOW, 0);
+  char *szRNMsg = gTranslator.NToRN(_szMsg);
+  CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
+  CEventMsg *m = new CEventMsg(szRNMsg, 0, TIME_NOW, 0);
   m->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
   e->thread_plugin = _tPlugin;  
   CICQSignal *s = new CICQSignal(SIGNAL_EVENTxID, 0, strdup(_szUser), MSN_PPID, e->EventId());
   
+  delete [] szRNMsg;
+
   if (nSocket > 0)
   {
     m_pEvents.push_back(e);
