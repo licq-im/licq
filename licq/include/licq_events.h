@@ -84,7 +84,7 @@ public:
   //! If non-zero, the number of search results that were found that could not
   //! be displayed.  The server has a 40 user limit on search results.  This
   //! is valid when Result() is EVENT_SUCCESS.
-  int More()     	   { return m_nMore; }
+  unsigned long More() 	   { return m_nMore; }
   //! The online status of the search result.
   char Status()            { return m_nStatus; }
   //! The gender of the search result.  Female = 1, Male = 2, Unknown = 3.
@@ -107,7 +107,7 @@ protected:
   char *m_szFirstName;
   char *m_szLastName;
   char *m_szEmail;
-  int m_nMore;
+  unsigned long m_nMore;
   char m_nStatus;
   char m_nGender;
   char m_nAge;

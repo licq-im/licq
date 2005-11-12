@@ -5233,6 +5233,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           unsigned long nMore = 0;
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
+          msg.UnpackUnsignedShort(); // unknown
           nMore = msg.UnpackUnsignedLong();
           e2->m_pSearchAck->m_nMore = nMore;
           e2->m_eResult = EVENT_SUCCESS;
