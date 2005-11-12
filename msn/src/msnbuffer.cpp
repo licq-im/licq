@@ -155,7 +155,11 @@ void CMSNBuffer::ClearHeaders()
   list<SHeader *>::iterator it;
   for (it = m_lHeader.begin(); it != m_lHeader.end(); ++it)
   {
-    delete *it;
+    if (*it)
+    { 
+      delete *it;
+     *it = 0;
+    }
   }
   m_lHeader.clear();
 }

@@ -97,7 +97,9 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
 
   // pthread stuff now
   pthread_mutex_init(&mutex_StartList, 0);
+  pthread_mutex_init(&mutex_MSNEventList, 0);
   pthread_mutex_init(&mutex_ServerSocket, 0);
+  pthread_mutex_init(&mutex_Bucket, 0);
 }
 
 CMSN::~CMSN()
@@ -125,36 +127,69 @@ CMSN::~CMSN()
 
 void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
 {
-  BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
-  b.push_front(_pBuf);
+  if (_pBuf->m_bStored == false)
+  {
+    pthread_mutex_lock(&mutex_Bucket);
+    BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
+    b.push_front(_pBuf);
+    pthread_mutex_unlock(&mutex_Bucket);
+  }
 }
 
-void CMSN::RemovePacket(string _strUser, int _nSock)
+void CMSN::RemovePacket(string _strUser, int _nSock, int nSize)
 {
+  pthread_mutex_lock(&mutex_Bucket);
   BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
   BufferList::iterator it;
+  SBuffer *pNewBuf = 0;
+  int nNewSize = 0;
+
   for (it = b.begin(); it != b.end(); it++)
   {
     if ((*it)->m_strUser == _strUser)
     {
+      // Found a packet that has part of another packet at the end
+      // so we have to save it and put it back on the queue.
+      if (nSize)
+      {
+	nNewSize = (*it)->m_pBuf->getDataSize() - nSize;
+	if (nNewSize)
+	{
+	  pNewBuf = new SBuffer;
+	  pNewBuf->m_strUser = _strUser;
+	  pNewBuf->m_pBuf = new CMSNBuffer(nNewSize);
+	  pNewBuf->m_pBuf->Pack((*it)->m_pBuf->getDataStart()+nSize,
+				nNewSize);
+	  pNewBuf->m_bStored = true;
+	}			   
+      }
+      
       b.erase(it);
       break;
     }
   }
+
+  // Now add it here
+  if (pNewBuf)
+    b.push_front(pNewBuf);
+  pthread_mutex_unlock(&mutex_Bucket);
 }
 
 SBuffer *CMSN::RetrievePacket(const string &_strUser, int _nSock)
 {
+  pthread_mutex_lock(&mutex_Bucket);
   BufferList &b = m_vlPacketBucket[HashValue(_nSock)];
   BufferList::iterator it;
   for (it = b.begin(); it != b.end(); it++)
   {
     if ((*it)->m_strUser == _strUser)
     {
+      pthread_mutex_unlock(&mutex_Bucket);
       return *it;
     }
   }
-  
+  pthread_mutex_unlock(&mutex_Bucket);
+
   return 0;
 }
   
@@ -334,7 +369,7 @@ void CMSN::Run()
             gSocketMan.DropSocket(sock);
             
             // Build the packet with last received portion
-            string strUser(szUser);
+	    string strUser(szUser);
             SBuffer *pBuf = RetrievePacket(strUser, nCurrent);
             if (pBuf)
             {
@@ -345,56 +380,117 @@ void CMSN::Run()
               pBuf = new SBuffer;
               pBuf->m_pBuf = new CMSNBuffer(packet);
               pBuf->m_strUser = strUser;
-            }
+	      pBuf->m_bStored = false;
+	    }
             
-            // Do we have the entire packet?
-            char *szNeedle;
-            if ((szNeedle = strstr((char *)pBuf->m_pBuf->getDataStart(), "\r\n")))
-            {
-              // We have a basic packet, now check for a packet that has a payload
-              if (memcmp(pBuf->m_pBuf->getDataStart(), "MSG", 3) == 0)
-              {
-                pBuf->m_pBuf->SkipParameter(); // command
-                pBuf->m_pBuf->SkipParameter(); // user id
-                pBuf->m_pBuf->SkipParameter(); // alias
-                string strSize = pBuf->m_pBuf->GetParameter();
-                int nSize = atoi(strSize.c_str());
-                  
-                // FIXME: Cut the packet instead of passing it all along
-                // we might receive 1 full packet and part of another.
-                if (nSize <= (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
-                {
-                  bProcess = true;
-                }
-                else
-                {
-                  StorePacket(pBuf, nCurrent);
-                }
-                
-                pBuf->m_pBuf->Reset();  
-              }
-              else
-                bProcess = true; // no payload
-            }  
-            
-            if (bProcess)
-            {
-              ProcessSBPacket(szUser, pBuf->m_pBuf, sock->Descriptor());
-              RemovePacket(strUser, nCurrent);
-              delete pBuf;
-            }
-            
-            free(szUser);
-          }
-          else
-          {
-            // Shouldn't get here, as we close the socket with a BYE command.
-            // But just to be safe..
-            if (sock)
-              gSocketMan.DropSocket(sock);
-            gSocketMan.CloseSocket(nCurrent);
-          }
-        }
+	    do
+	    {
+	      // Do we have the entire packet?
+	      char *szNeedle;
+	      CMSNBuffer *pPart = 0;
+	      int nFullSize = 0;
+	      bProcess = false;
+	      if ((szNeedle = strstr((char *)pBuf->m_pBuf->getDataStart(),
+				     "\r\n")))
+	      {
+		// Check for a packet that has a payload
+		if (memcmp(pBuf->m_pBuf->getDataStart(), "MSG", 3) == 0)
+		{
+		  pBuf->m_pBuf->SkipParameter(); // command
+		  pBuf->m_pBuf->SkipParameter(); // user id
+		  pBuf->m_pBuf->SkipParameter(); // alias
+		  string strSize = pBuf->m_pBuf->GetParameter();
+		  int nSize = atoi(strSize.c_str());
+  
+		  // Cut the packet instead of passing it all along
+		  // we might receive 1 full packet and part of another.
+		  if (nSize <= (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
+		  {
+		    nFullSize = nSize + pBuf->m_pBuf->getDataPosRead() - pBuf->m_pBuf->getDataStart() + 1;
+		    if (pBuf->m_pBuf->getDataSize() > nFullSize)
+		    {
+		      // Hack to save the part and delete the rest
+		      if (pBuf->m_bStored == false)
+		      {
+			StorePacket(pBuf, nCurrent);
+			pBuf->m_bStored = true;
+		      }
+
+		      // We have a packet, with part of another one at the end
+		      pPart = new CMSNBuffer(nFullSize);
+		      pPart->Pack(pBuf->m_pBuf->getDataStart(), nFullSize);
+		    }
+		    bProcess = true;
+		  }
+		}
+		else //if(memcmp(pBuf->m_pBuf->getDataStart(), "ACK", 3) == 0)
+		{
+		  int nSize = szNeedle - pBuf->m_pBuf->getDataStart() +1;
+
+		  // Cut the packet instead of passing it all along
+		  // we might receive 1 full packet and part of another.
+		  if (nSize <= (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
+		  {
+		    nFullSize = nSize + pBuf->m_pBuf->getDataPosRead() - pBuf->m_pBuf->getDataStart() + 1;
+		    if (pBuf->m_pBuf->getDataSize() > nFullSize)
+		    {
+		      // Hack to save the part and delete the rest
+		      if (pBuf->m_bStored == false)
+		      {
+			StorePacket(pBuf, nCurrent);
+			pBuf->m_bStored = true;
+		      }
+		 
+		      // We have a packet, with part of another one at the end
+		      pPart = new CMSNBuffer(nFullSize);
+		      pPart->Pack(pBuf->m_pBuf->getDataStart(), nFullSize);
+		    }
+		    bProcess = true;
+		  }
+		}
+
+		if (!bProcess)
+		{
+		  // Save it
+		  StorePacket(pBuf, nCurrent);
+		  pBuf->m_bStored = true;
+		}
+
+		pBuf->m_pBuf->Reset();  
+	      } 
+	      else
+	      {
+		// Need to save it, doens't have much data yet
+		StorePacket(pBuf, nCurrent);
+		pBuf->m_bStored = true;
+		bProcess = false;
+	      }
+
+	      if (bProcess)
+	      {
+		// Handle it, and then remove it from the queue
+		ProcessSBPacket(szUser, pPart ? pPart : pBuf->m_pBuf,
+				sock->Descriptor());
+		RemovePacket(strUser, nCurrent, nFullSize);
+		delete pBuf;
+		pBuf = RetrievePacket(strUser, nCurrent);
+	      }
+	      else
+		pBuf = 0;
+
+	    } while (pBuf);
+     
+	    free(szUser);
+	  }
+	  else
+	  {
+	    // Shouldn't get here, as we close the socket with a BYE command.
+	    // But just to be safe..
+	    if (sock)
+	      gSocketMan.DropSocket(sock);
+	    gSocketMan.CloseSocket(nCurrent);
+	  }
+	}
       }
 
       nCurrent++;
@@ -541,4 +637,77 @@ void CMSN::ProcessSignal(CSignal *s)
   }
 
   delete s;
+}
+
+void CMSN::WaitDataEvent(CMSNDataEvent *_pEvent)
+{
+  pthread_mutex_lock(&mutex_MSNEventList);
+  m_lMSNEvents.push_back(_pEvent);
+  pthread_mutex_unlock(&mutex_MSNEventList);
+}
+
+bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
+{
+  list<CMSNDataEvent *>::iterator it;
+  pthread_mutex_lock(&mutex_MSNEventList);
+  for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
+  {
+    if ((*it)->getUser() == pData->getUser() &&
+	(*it)->getSocket() == pData->getSocket())
+    {
+      m_lMSNEvents.erase(it);
+      delete pData;
+      pData = 0;
+      break;
+    }
+  }
+  pthread_mutex_unlock(&mutex_MSNEventList);
+
+  return (pData == 0);
+}
+
+CMSNDataEvent *CMSN::FetchDataEvent(const string &_strUser, int _nSocket)
+{
+  CMSNDataEvent *pReturn = 0;
+  list<CMSNDataEvent *>::iterator it;
+  pthread_mutex_lock(&mutex_MSNEventList);
+  for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
+  {
+    if ((*it)->getUser() == _strUser && (*it)->getSocket() == _nSocket)
+    {
+      pReturn = *it;
+      break;
+    }
+  }
+
+  if (!pReturn)
+  {
+    pReturn = FetchStartDataEvent(_strUser);
+    if (pReturn)
+      pReturn->setSocket(_nSocket);
+  }
+  pthread_mutex_unlock(&mutex_MSNEventList);
+
+  return pReturn;
+}
+
+CMSNDataEvent *CMSN::FetchStartDataEvent(const string &_strUser)
+{
+  CMSNDataEvent *pReturn = 0;
+  list<CMSNDataEvent *>::iterator it;
+  for (it = m_lMSNEvents.begin(); it != m_lMSNEvents.end(); it++)
+  {
+    if ((*it)->getUser() == _strUser && (*it)->getSocket() == -1)
+    {
+      pReturn = *it;
+      break;
+    }
+  }
+
+  return pReturn;  
+}
+
+void CMSN::PushPluginSignal(CICQSignal *p)
+{
+  m_pDaemon->PushPluginSignal(p);
 }

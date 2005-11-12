@@ -307,8 +307,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       string strUser = m_pPacketBuf->GetParameter();
       string strNick = m_pPacketBuf->GetParameter();
       string strClientId = m_pPacketBuf->GetParameter();
-      //string strMSNObject = m_pPacketBuf->GetParameter();
-      
+      string strMSNObject = m_pPacketBuf->GetParameter();
+      string strDecodedObject = strMSNObject.size() ? Decode(strMSNObject) :"";
+
       unsigned short nStatus = ICQ_STATUS_AWAY;
 
       if (strStatus == "NLN")
@@ -319,6 +320,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       {
         u->SetOnlineSince(time(NULL)); // Not in this protocol
         u->SetSendServer(true); // no direct connections
+
         if (!u->KeepAliasOnUpdate())
         {
           string strDecodedNick = Decode(strNick);
@@ -327,6 +329,17 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
                              u->IdString(), u->PPID()));
 
         }
+
+	// Get the display picture here, so it can be shown with the notify
+	if (strDecodedObject != u->GetPPField("MSNObject_DP"))
+	{
+	  u->SetPPField("MSNObject_DP", strDecodedObject);
+	  if (strDecodedObject.size())
+	  {
+	    MSNGetDisplayPicture(u->IdString(), strDecodedObject);
+	  }
+	}
+
         gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->GetAlias(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
 
@@ -682,6 +695,22 @@ void CMSN::MSNUnblockUser(char *szUser)
   gLog.Info("%sAdding user %s to the allow list.\n", L_MSNxSTR, szUser);
   SendPacket(pAdd);
 }
+
+void CMSN::MSNGetDisplayPicture(const string &strUser, const string &strMSNObject)
+{
+  char *szUser = const_cast<char *>(strUser.c_str());
+  CMSNPacket *pGetMSNDP = new CPS_MSNInvitation(szUser,
+						m_szUserName,
+						const_cast<char *>(strMSNObject.c_str()));
+  CMSNP2PPacket *p = (CMSNP2PPacket *)(pGetMSNDP);
+  CMSNDataEvent *pDataResponse = new CMSNDataEvent(MSN_DP_EVENT,
+						   p->SessionId(),
+						   p->BaseId(), strUser, this);
+  WaitDataEvent(pDataResponse);
+  gLog.Info("%sRequesting %s's display picture.\n", L_MSNxSTR, szUser);
+  MSNSendInvitation(szUser, pGetMSNDP);
+}
+
 
 void CMSN::MSNPing()
 {

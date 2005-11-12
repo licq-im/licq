@@ -40,8 +40,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
   char szCommand[4];
   CMSNPacket *pReply;
   bool bSkipPacket;
-  
-  while (!packet->End())
+
+  //while (!packet->End())
   {
     pReply = 0;
     bSkipPacket = true;
@@ -147,6 +147,39 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         
         string strType = packet->GetValue("Application-Name");
       }
+      else if (strncmp(strType.c_str(), "application/x-msnmsgrp2p", 24) == 0)
+      {
+	// Get the binary header
+	/*
+	  unsigned long nSessionID = packet->UnpackUnsignedLong();
+	unsigned long nIdentifier = packet->UnpackUnsignedLong();
+	unsigned long nOffset[2], nSize[2], nAckDataSize[2];
+	nOffset[0] = packet->UnpackUnsignedLong();
+	nOffset[1] = packet->UnpackUnsignedLong();
+	nSize[0] = packet->UnpackUnsignedLong();
+	nSize[1] = packet->UnpackUnsignedLong();
+	unsigned long nLen = packet->UnpackUnsignedLong();
+	unsigned long nFlag = packet->UnpackUnsignedLong();
+	unsigned long nAckID = packet->UnpackUnsignedLong();
+	unsigned long nAckUniqueID = packet->UnpackUnsignedLong();
+	nAckDataSize[0] = packet->UnpackUnsignedLong();
+	nAckDataSize[1] = packet->UnpackUnsignedLong();
+
+	printf("%ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld %ld\n",
+	      nSessionID, nIdentifier, nOffset[0], nOffset[1], nSize[0],
+	      nSize[1], nLen, nFlag, nAckID, nAckUniqueID,
+	      nAckDataSize[0], nAckDataSize[1]);
+	*/
+
+	CMSNDataEvent *p = FetchDataEvent(strUser, nSock);
+	if (p)
+	{
+	  if (p->ProcessPacket(packet) > 0)
+	  {
+	    RemoveDataEvent(p);
+	  }
+	}
+      }
     }
     else if (strCmd == "ACK")
     {
@@ -188,16 +221,33 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           }
           m_pDaemon->m_sStats[STATS_EventsSent].Inc();
         }
+	m_pDaemon->PushPluginEvent(e);
       }
-
-      m_pDaemon->PushPluginEvent(e);
+      else
+      {
+	// P2P response
+	//packet->SkipRN();
+      }
     }
     else if (strCmd == "USR")
     {
+      SStartMessage *pStart = 0;
       pthread_mutex_lock(&mutex_StartList);
-      SStartMessage *pStart = m_lStart.front();
-      pReply = new CPS_MSNCall(pStart->m_szUser);
-      pStart->m_nSeq = pReply->Sequence();
+      StartList::iterator it;
+      for (it = m_lStart.begin(); it != m_lStart.end(); it++)
+      {
+	if ((*it)->m_bConnecting == true)
+	  continue;
+	pStart = *it;
+	break;
+      }
+      
+      if (pStart)
+      {
+	pStart->m_bConnecting = true;
+	pReply = new CPS_MSNCall(pStart->m_szUser);
+	pStart->m_nSeq = pReply->Sequence();
+      }
       pthread_mutex_unlock(&mutex_StartList);
     }
     else if (strCmd == "JOI")
@@ -379,9 +429,23 @@ bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
     szServer[szPort - szParam] = '\0';
     *szPort++ = '\0';
   }
-  
+
+  SStartMessage *pStart = 0;  
   pthread_mutex_lock(&mutex_StartList);
-  SStartMessage *pStart = m_lStart.front();
+  StartList::iterator it;
+  for (it = m_lStart.begin(); it != m_lStart.end(); it++)
+  {
+    if ((*it)->m_bConnecting == true)
+      continue;
+    pStart = *it;
+    break;
+  }
+  if (!pStart)
+  {
+    pthread_mutex_unlock(&mutex_StartList);
+    return false;
+  }
+  //pStart->m_bConnecting = true;
   TCPSocket *sock = new TCPSocket(pStart->m_szUser, MSN_PPID);
   pthread_mutex_unlock(&mutex_StartList);
 
@@ -469,6 +533,28 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   return true;
 }
 
+void CMSN::MSNSendInvitation(char *_szUser, CMSNPacket *_pPacket)
+{
+  //ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
+  //if (!u) return;
+  //gUserManager.DropUser(u);
+
+  // Must connect to the SB and call the user
+  CMSNPacket *pSB = new CPS_MSNXfr();
+      
+  SStartMessage *p = new SStartMessage;
+  p->m_pPacket = _pPacket;
+  p->m_pEvent = 0;
+  p->m_pSignal = 0;
+  p->m_szUser = strdup(_szUser);
+  p->m_nSeq = pSB->Sequence();
+  p->m_bConnecting = false;
+  pthread_mutex_lock(&mutex_StartList);
+  m_lStart.push_back(p);
+  pthread_mutex_unlock(&mutex_StartList);
+  
+  SendPacket(pSB);
+}
 
 void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsigned long _nCID)
 {
@@ -514,6 +600,7 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsig
     p->m_pSignal = s;
     p->m_szUser = strdup(_szUser);
     p->m_nSeq = pSB->Sequence();
+    p->m_bConnecting = false;
     pthread_mutex_lock(&mutex_StartList);
     m_lStart.push_back(p);
     pthread_mutex_unlock(&mutex_StartList);

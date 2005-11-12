@@ -26,6 +26,15 @@
 #include <pthread.h>
 #include <stdlib.h>
 
+#include <string>
+
+using std::string;
+
+static const string base64_chars = 
+             "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+             "abcdefghijklmnopqrstuvwxyz"
+             "0123456789+/";
+
 class CMSNPacket : public CPacket
 {
 public:
@@ -40,7 +49,9 @@ public:
   const char* MSNCommand() { return m_szCommand; }
   
   virtual void InitBuffer();
-  
+
+  char *CreateGUID();
+
 protected:
   
   CMSNBuffer *m_pBuffer;
@@ -60,12 +71,43 @@ public:
   CMSNPayloadPacket(bool);
   virtual ~CMSNPayloadPacket() { }
   
-  void InitBuffer();
+  virtual void InitBuffer();
   
 protected:
-
   unsigned long m_nPayloadSize;
   bool m_bAck;
+};
+
+class CMSNP2PPacket : public CMSNPayloadPacket
+{
+public:
+  CMSNP2PPacket(const char *,unsigned long = 0, unsigned long = 0, unsigned long = 0,
+		unsigned long = 0, unsigned long = 0, unsigned long = 0,
+		unsigned long = 0, unsigned long = 0, unsigned long = 0,
+		unsigned long = 0, unsigned long = 0, unsigned long = 0);
+  virtual ~CMSNP2PPacket();
+
+  void InitBuffer();
+
+  unsigned long SessionId() { return m_nSessionId; }
+  unsigned long BaseId() { return m_nBaseId; }
+  // unsigned long DataSize() {}
+  //unsigned long Offset() {}
+
+protected:
+  char *m_szToEmail;
+  unsigned long m_nSessionId,
+    m_nBaseId,
+    m_nDataSizeLO,
+    m_nDataSizeHI,
+    m_nDataOffsetLO,
+    m_nDataOffsetHI,
+    m_nLen,
+    m_nFlag,
+    m_nAckId,
+    m_nAckUniqueId,
+    m_nAckDataLO,
+    m_nAckDataHI;
 };
 
 class CPS_MSNVersion : public CMSNPacket
@@ -249,6 +291,20 @@ public:
   CPS_MSNTypingNotification(const char *);
 };
 
+class CPS_MSNInvitation : public CMSNP2PPacket
+{
+public:
+  CPS_MSNInvitation(char *szToEmail, char *szFromEmail, char *szMSNObject);
+};
+
+class CPS_MSNP2PAck : public CMSNP2PPacket
+{
+public:
+  CPS_MSNP2PAck(const char *szId, unsigned long nSessionId,
+		unsigned long nBaseId, unsigned long nAckId,
+		unsigned long nAckBaseId, unsigned long nDataSizeHI,
+		unsigned long nDataSizeLO);
+};
 
 #endif // __MSNPACKET_H
 

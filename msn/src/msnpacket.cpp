@@ -17,10 +17,105 @@
 // written by Jon Keating <jon@licq.org>
 
 #include "msnpacket.h"
+#include "msn_constants.h"
 
-#include <string.h>
+#include <string>
 #include <stdio.h>
 #include <openssl/md5.h>
+
+static inline bool is_base64(unsigned char c)
+{
+  return (isalnum(c) || (c == '+') || (c == '/'));
+}
+
+string MSN_Base64Encode(unsigned char const* szIn, unsigned int nLen)
+{
+  string ret;
+  int i = 0;
+  int j = 0;
+  unsigned char char_array_3[3];
+  unsigned char char_array_4[4];
+
+  while (nLen--)
+  {
+    char_array_3[i++] = *(szIn++);
+    if (i == 3)
+    {
+      char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+      char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+      char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+      char_array_4[3] = char_array_3[2] & 0x3f;
+
+      for(i = 0; (i <4) ; i++)
+        ret += base64_chars[char_array_4[i]];
+      i = 0;
+    }
+  }
+
+  if (i)
+  {
+    for(j = i; j < 3; j++)
+      char_array_3[j] = '\0';
+
+    char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
+    char_array_4[1] = ((char_array_3[0] & 0x03) << 4) + ((char_array_3[1] & 0xf0) >> 4);
+    char_array_4[2] = ((char_array_3[1] & 0x0f) << 2) + ((char_array_3[2] & 0xc0) >> 6);
+    char_array_4[3] = char_array_3[2] & 0x3f;
+
+    for (j = 0; (j <= i + 1); j++)
+      ret += base64_chars[char_array_4[j]];
+
+    while((i++ < 2))
+      ret += '=';
+  }
+
+  return ret;
+}
+
+string MSN_Base64Decode(string const& strIn)
+{
+  int nLen = strIn.size();
+  int i = 0;
+  int j = 0;
+  int nIn = 0;
+  unsigned char char_array_4[4], char_array_3[3];
+  string ret;
+
+  while (nLen-- && (strIn[nIn] != '=') && is_base64(strIn[nIn]))
+  {
+    char_array_4[i++] = strIn[nIn];
+    nIn++;
+    if (i ==4)
+    {
+      for (i = 0; i < 4; i++)
+        char_array_4[i] = base64_chars.find(char_array_4[i]);
+
+      char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+      char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+      char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+      for (i = 0; i < 3; i++)
+        ret += char_array_3[i];
+      i = 0;
+    }
+  }
+
+  if (i) {
+    for (j = i; j <4; j++)
+      char_array_4[j] = 0;
+
+    for (j = 0; j <4; j++)
+      char_array_4[j] = base64_chars.find(char_array_4[j]);
+
+    char_array_3[0] = (char_array_4[0] << 2) + ((char_array_4[1] & 0x30) >> 4);
+    char_array_3[1] = ((char_array_4[1] & 0xf) << 4) + ((char_array_4[2] & 0x3c) >> 2);
+    char_array_3[2] = ((char_array_4[2] & 0x3) << 6) + char_array_4[3];
+
+    for (j = 0; j < i - 1; j++) ret += char_array_3[j];
+  }
+
+  return ret;
+}
 
 unsigned short CMSNPacket::s_nSequence = 0;
 pthread_mutex_t CMSNPacket::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
@@ -54,6 +149,19 @@ void CMSNPacket::InitBuffer()
   m_pBuffer->Pack(buf, strlen(buf));
 }
 
+char* CMSNPacket::CreateGUID()
+{
+  char *szGUID = new char[37];
+  static int x = 1;
+  x++;
+  // Create a random UID
+  srand(time(0)+x);
+  sprintf(szGUID, "%4X%4X-%4X-%4X-%4X-%4X%4X%4X",
+	 rand() % 0xFFFF, rand() % 0xFFFF, rand() % 0xFFFF, rand() % 0xFFFF,
+	 rand() % 0xFFFF, rand() % 0xFFFF, rand() % 0xFFFF, rand() % 0xFFFF);
+  return szGUID;
+}
+
 CMSNPayloadPacket::CMSNPayloadPacket(bool _bAck) : CMSNPacket(), m_bAck(_bAck)
 {
   m_nPayloadSize = 0;
@@ -71,6 +179,74 @@ void CMSNPayloadPacket::InitBuffer()
   
   m_pBuffer = new CMSNBuffer(m_nSize);
   m_pBuffer->Pack(buf, strlen(buf));
+}
+
+CMSNP2PPacket::CMSNP2PPacket(const char *szTo, unsigned long nSessionId,
+			     unsigned long nBaseId,unsigned long nDataOffsetHI,
+			     unsigned long nDataOffsetLO,
+			     unsigned long nDataSizeHI, unsigned long nDataSizeLO,
+			     unsigned long nLen, unsigned long nFlag,
+			     unsigned long nAckId, unsigned long nAckUniqueId,
+			     unsigned long nAckDataHI,unsigned long nAckDataLO)
+  : CMSNPayloadPacket(true)
+{
+  m_szToEmail = (szTo ? strdup(szTo) : strdup(""));
+  m_nSessionId = nSessionId;
+  m_nBaseId = nBaseId;
+  m_nDataOffsetLO = nDataOffsetLO;
+  m_nDataOffsetHI = nDataOffsetHI;
+  m_nDataSizeLO = nDataSizeLO;
+  m_nDataSizeHI = nDataSizeHI;
+  m_nLen = nLen;
+  m_nFlag = nFlag;
+  m_nAckId = nAckId;
+  m_nAckUniqueId = nAckUniqueId;
+  m_nAckDataLO = nAckDataLO;
+  m_nAckDataHI = nAckDataHI;
+}
+
+CMSNP2PPacket::~CMSNP2PPacket()
+{
+  if (m_szToEmail)
+    free(m_szToEmail);
+}
+
+void CMSNP2PPacket::InitBuffer()
+{
+  m_szCommand = strdup("MSG");
+
+  // The message
+  char szMsgBuf[128];
+  snprintf(szMsgBuf, sizeof(szMsgBuf)-1,
+           "MIME-Version: 1.0\r\n"
+           "Content-Type: application/x-msnmsgrp2p\r\n"
+           "P2P-Dest: %s\r\n"
+           "\r\n", m_szToEmail);
+
+  m_nPayloadSize += 4 + 48 + strlen(szMsgBuf);
+
+  char buf[32];
+  m_nSize = snprintf(buf, 32, "%s %hu D %lu\r\n", m_szCommand,
+		     m_nSequence, m_nPayloadSize);
+  m_nSize += m_nPayloadSize;
+
+  m_pBuffer = new CMSNBuffer(m_nSize);
+  m_pBuffer->Pack(buf, strlen(buf));
+  m_pBuffer->Pack(szMsgBuf, strlen(szMsgBuf));
+
+  // Binary header - 48 bytes
+  m_pBuffer->PackUnsignedLong(m_nSessionId);
+  m_pBuffer->PackUnsignedLong(m_nBaseId);
+  m_pBuffer->PackUnsignedLong(m_nDataOffsetLO);
+  m_pBuffer->PackUnsignedLong(m_nDataOffsetHI);
+  m_pBuffer->PackUnsignedLong(m_nDataSizeLO);
+  m_pBuffer->PackUnsignedLong(m_nDataSizeHI);
+  m_pBuffer->PackUnsignedLong(m_nLen);
+  m_pBuffer->PackUnsignedLong(m_nFlag);
+  m_pBuffer->PackUnsignedLong(m_nAckId);
+  m_pBuffer->PackUnsignedLong(m_nAckUniqueId);
+  m_pBuffer->PackUnsignedLong(m_nAckDataLO);
+  m_pBuffer->PackUnsignedLong(m_nAckDataHI);
 }
 
 CPS_MSNVersion::CPS_MSNVersion() : CMSNPacket()
@@ -443,4 +619,73 @@ CPS_MSNTypingNotification::CPS_MSNTypingNotification(const char *szEmail)
   m_pBuffer->Pack(szParams2, strlen(szParams2));
 }
 
+CPS_MSNInvitation::CPS_MSNInvitation(char *szToEmail, char *szFromEmail,
+				     char *szMSNObject)
+  : CMSNP2PPacket(szToEmail)
+{
+  char *szBranchGUID = CreateGUID();
+  char *szCallGUID = CreateGUID();
+  string strMSNObject64 = MSN_Base64Encode((unsigned char *)szMSNObject,
+    strlen(szMSNObject));
 
+  char szBodyBuf[512];
+  char szHeaderBuf[512];
+
+  m_nSessionId = rand();
+
+  // The invite message body
+  snprintf(szBodyBuf, sizeof(szBodyBuf)-1,
+	   "EUF-GUID: %s\r\n"
+	   "SessionID: %ld\r\n"
+	   "AppID: 1\r\n"
+	   "Context: %s\r\n"
+	   "\r\n", DP_EUF_GUID, m_nSessionId, strMSNObject64.c_str());
+
+  // The Invite header
+  snprintf(szHeaderBuf, sizeof(szHeaderBuf)-1,
+	   "INVITE MSNMSGR:%s MSNSLP/1.0\r\n"
+	   "To: <msnmsgr:%s>\r\n"
+	   "From: <msnmsgr:%s>\r\n"
+	   "Via: MSNSLP/1.0/TLP ;branch={%s}\r\n"
+	   "CSeq: 0\r\n"
+	   "Call-ID: {%s}\r\n"
+	   "Max-Forwards: 0\r\n"
+	   "Content-Type: application/x-msnmsgr-sessionreqbody\r\n"
+	   "Content-Length: %d\r\n"
+	   "\r\n", szToEmail, szToEmail, szFromEmail, szBranchGUID, szCallGUID,
+	   strlen(szBodyBuf)+1);
+
+  string strMsg = szHeaderBuf;
+  strMsg += szBodyBuf;
+  strMsg += '\0';
+
+  srand(time(0));
+  m_nBaseId = 4 + rand();
+  m_nSessionId = 0;
+  m_nAckId = rand();
+  m_nDataSizeLO = strlen(szBodyBuf)+strlen(szHeaderBuf)+1;
+  m_nLen = strlen(szBodyBuf)+strlen(szHeaderBuf)+1;
+  m_nPayloadSize = strMsg.size();
+  CMSNP2PPacket::InitBuffer();
+
+  m_pBuffer->Pack(strMsg.c_str(), strMsg.size());
+
+  // Footer
+  m_pBuffer->PackUnsignedLong(0);
+}
+
+CPS_MSNP2PAck::CPS_MSNP2PAck(const char *_szToEmail, unsigned long _nSessionId,
+			     unsigned long _nBaseId, unsigned long _nAckId,
+			     unsigned long _nAckBaseId,
+			     unsigned long _nDataSizeHI,
+			     unsigned long _nDataSizeLO)
+  : CMSNP2PPacket(_szToEmail, _nSessionId, _nBaseId, 0, 0, 0, 4, 0, 0x02,
+		  _nAckId, _nAckBaseId, _nDataSizeHI, _nDataSizeLO)
+{
+//  m_szToEmail = strdup(_szToEmail);
+
+  // No data...
+  CMSNP2PPacket::InitBuffer();
+
+  m_pBuffer->PackUnsignedLong(0);
+}

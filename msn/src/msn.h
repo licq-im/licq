@@ -24,6 +24,7 @@
 #include "licq_socket.h"
 
 #include "msnbuffer.h"
+#include "msnevent.h"
 
 #define MSN_PPID 0x4D534E5F
 #define L_MSNxSTR "[MSN] "
@@ -48,12 +49,16 @@ using std::list;
 using std::vector;
 using std::isalnum;
 
+  const unsigned long MSN_DP_EVENT = 1;
+
 class CMSNPacket;
+class CMSNDataEvent;
 
 struct SBuffer
 {
   CMSNBuffer *m_pBuf;
   string m_strUser;
+  bool m_bStored;
 };
 
 typedef list<SBuffer *> BufferList;
@@ -65,6 +70,7 @@ struct SStartMessage
   CICQSignal *m_pSignal;
   char *m_szUser;
   unsigned long m_nSeq;
+  bool m_bConnecting;
 };
 
 typedef list<SStartMessage *> StartList;
@@ -74,7 +80,7 @@ class CMSN
 public:
   CMSN(CICQDaemon *, int);
   ~CMSN();
-  
+
   void Run();
   
   void MSNPing();
@@ -105,7 +111,8 @@ private:
   void MSNAuthenticate(char *);
   bool MSNSBConnectStart(string &, string &);
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
-  
+
+  void MSNSendInvitation(char *, CMSNPacket *);
   void MSNSendMessage(char *, char *, pthread_t, unsigned long);
   void MSNSendTypingNotification(char *, unsigned long);
   void MSNChangeStatus(unsigned long);
@@ -116,17 +123,25 @@ private:
   void MSNUpdateUser(char *);
   void MSNBlockUser(char *);
   void MSNUnblockUser(char *);
-  
+  void MSNGetDisplayPicture(const string &, const string &);
+
   // Internal functions
   int HashValue(int n) { return n % 211; }
   void StorePacket(SBuffer *, int);
-  void RemovePacket(string, int);
+  void RemovePacket(string, int, int = 0);
   SBuffer *RetrievePacket(const string &, int);
   ICQEvent *RetrieveEvent(unsigned long);
   unsigned long SocketToCID(int);
   static string Decode(const string &);
   static string Encode(const string &);
-  
+  void WaitDataEvent(CMSNDataEvent *);
+  bool RemoveDataEvent(CMSNDataEvent *);
+  CMSNDataEvent *FetchDataEvent(const string &, int);
+  CMSNDataEvent *FetchStartDataEvent(const string &);
+
+  // Interface to CICQDaemon
+  void PushPluginSignal(CICQSignal *);
+
   // Config
   unsigned long m_nListVersion;
     
@@ -142,6 +157,7 @@ private:
              *m_pSSLPacket;
   vector<BufferList> m_vlPacketBucket;
   list<ICQEvent *> m_pEvents;
+  list<CMSNDataEvent *> m_lMSNEvents;
   StartList m_lStart;
   bool m_bWaitingPingReply,
        m_bCanPing;
@@ -155,11 +171,15 @@ private:
          m_strKV;
          
   pthread_t m_tMSNPing;
-  pthread_mutex_t mutex_StartList;
-  
+  pthread_mutex_t mutex_StartList,
+                  mutex_MSNEventList,
+                  mutex_Bucket;
+    
   char *m_szUserName,
        *m_szPassword,
        *m_szCookie;
+
+  friend class CMSNDataEvent;
 };
 
 extern CSocketManager gSocketMan;

@@ -1,0 +1,7 @@
+#ifndef __MSN_CONSTANTS_H
+#define __MSN_CONSTANTS_H
+
+const char DP_EUF_GUID[] = "{A4268EEC-FEC5-49E5-95C3-F126696BDBF6}";
+
+#endif
+
