@@ -263,6 +263,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   // Misc
   licqConf.ReadBool("UseSS", m_bUseSS, true); // server side list
+  licqConf.ReadBool("SendTypingNotification", m_bSendTN, true);
   licqConf.ReadBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
 
   // -----OnEvent configuration-----
@@ -794,6 +795,7 @@ void CICQDaemon::SaveConf()
 
   // Misc
   licqConf.WriteBool("UseSS", m_bUseSS); // server side list
+  licqConf.WriteBool("SendTypingNotification", m_bSendTN); 
   licqConf.WriteBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
 
   // save the sound stuff

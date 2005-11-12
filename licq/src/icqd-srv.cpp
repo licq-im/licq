@@ -1237,8 +1237,11 @@ void CICQDaemon::icqUpdateContactList()
 //-----icqTypingNotification---------------------------------------------------
 void CICQDaemon::icqTypingNotification(const char *_szId, bool _bActive)
 {
-  CSrvPacketTcp *p = new CPU_TypingNotification(_szId, _bActive);
-  SendEvent_Server(p);
+  if (m_bSendTN)
+  {
+    CSrvPacketTcp *p = new CPU_TypingNotification(_szId, _bActive);
+    SendEvent_Server(p);
+  }
 }
 
 //-----icqCheckInvisible--------------------------------------------------------
@@ -2022,10 +2025,14 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 void CICQDaemon::ProtoTypingNotification(const char *_szId,
   unsigned long _nPPID, bool _bActive, int nSocket)
 {
-  if (_nPPID == LICQ_PPID)
-    icqTypingNotification(_szId, _bActive);
-  else
-    PushProtoSignal(new CTypingNotificationSignal(_szId, _bActive, nSocket), _nPPID);
+  //TODO: Make for each plugin
+  if (m_bSendTN)
+  {
+    if (_nPPID == LICQ_PPID)
+      icqTypingNotification(_szId, _bActive);
+    else 
+      PushProtoSignal(new CTypingNotificationSignal(_szId, _bActive, nSocket), _nPPID);
+  }
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------

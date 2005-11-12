@@ -577,9 +577,12 @@ public:
   ICQEvent *PopPluginEvent();
   CSignal *PopProtoSignal();
 
-  // Server Side List functions
+  // ICQ options
   bool UseServerContactList()         { return m_bUseSS; }
-  void SetUseServerContactList(bool b)  { m_bUseSS = b; }
+  bool SendTypingNotification()       { return m_bSendTN; }
+
+  void SetUseServerContactList(bool b)   { m_bUseSS = b; }
+  void SetSendTypingNotification(bool b) { m_bSendTN = b; }
 
   // Misc functions
   bool ReconnectAfterUinClash()              { return m_bReconnectAfterUinClash; }
@@ -669,6 +672,7 @@ protected:
 
   // Misc
   bool m_bUseSS; // server side list
+  bool m_bSendTN; // Send typing notifications
   bool m_bReconnectAfterUinClash; // reconnect after uin has been used from another location?
   
   // Statistics
