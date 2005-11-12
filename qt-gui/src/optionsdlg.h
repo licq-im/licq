@@ -92,7 +92,7 @@ protected:
              *chkAlwaysShowONU, *chkScrollBar, *chkShowExtIcons,
              *chkSysBack, *chkSendFromClipboard, *chkMsgChatView, *chkAutoPosReplyWin,
 	     *chkFlashTaskbar, *chkAutoSendThroughServer, *chkTabbedChatting,
-             *chkEnableMainwinMouseMovement, *chkShowHistory;
+             *chkEnableMainwinMouseMovement, *chkShowHistory, *chkSendTN;
    QRadioButton *rdbDockDefault, *rdbDockThemed, *rdbDockSmall;
    QComboBox *cmbDockTheme, *cmbSortBy;
 

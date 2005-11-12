@@ -209,7 +209,7 @@ void OptionsDlg::SetupOptions()
   edtHotKey->setText(mainwin->m_MsgAutopopupKey);
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
-  chkMsgChatView->setChecked( mainwin->m_bMsgChatView );
+  chkMsgChatView->setChecked(mainwin->m_bMsgChatView);
   
   chkLineBreak->setChecked(mainwin->m_bAppendLineBreak);
   cmbStyle->setCurrentItem(mainwin->m_nMsgStyle);
@@ -236,6 +236,7 @@ void OptionsDlg::SetupOptions()
 #endif
     chkShowHistory->setEnabled(false);
   }
+  chkSendTN->setEnabled(mainwin->licqDaemon->SendTypingNotification());
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkFlashTaskbar->setChecked(mainwin->m_bFlashTaskbar);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
@@ -614,6 +615,7 @@ void OptionsDlg::ApplyOptions()
     mainwin->m_nDockMode = DockNone;
   }
 
+  mainwin->licqDaemon->SetSendTypingNotification(chkSendTN->isChecked());
   mainwin->licqDaemon->SetUseServerContactList(chkSSList->isChecked());
   mainwin->licqDaemon->SetICQServer(edtICQServer->text().local8Bit());
   mainwin->licqDaemon->SetICQServerPort(spnICQServerPort->value());
@@ -627,7 +629,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->SetProxyAuthEnabled(chkProxyAuthEnabled->isChecked());
   mainwin->licqDaemon->SetProxyLogin(edtProxyLogin->text().local8Bit());
   mainwin->licqDaemon->SetProxyPasswd(edtProxyPasswd->text().local8Bit());
-  
+
   mainwin->licqDaemon->setReconnectAfterUinClash(chkReconnectAfterUinClash->isChecked());
 
   mainwin->licqDaemon->SetIgnore(IGNORE_NEWUSERS, chkIgnoreNewUsers->isChecked());
@@ -826,6 +828,9 @@ QWidget* OptionsDlg::new_appearance_options()
   chkShowHistory = new QCheckBox(tr("Show recent messages"), boxMainWin);
   QWhatsThis::add(chkShowHistory, tr("Show the last 5 messages when a Send Window is opened"));
   connect(chkMsgChatView, SIGNAL(toggled(bool)), this, SLOT(slot_useMsgChatView(bool)));
+
+  chkSendTN = new QCheckBox(tr("Send typing notifications"), boxMainWin);
+  QWhatsThis::add(chkSendTN, tr("Send a notification to the user so they can see when you are typing a message to them"));
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(1, Horizontal, tr("Localization"), w);
