@@ -3,6 +3,9 @@
 
 #include <vector>
 #include <list>
+#include <map>
+#include <string>
+
 #include <time.h>
 
 #include "pthread_rdwr.h"
@@ -12,6 +15,8 @@
 #include "licq_file.h"
 #include "licq_icq.h"
 
+using std::map;
+using std::string;
 
 class TCPSocket;
 
@@ -498,6 +503,9 @@ public:
   // Picture Info
   bool GetPicturePresent()              { return m_bPicturePresent; }
 
+  // Dynamic info fields for protocol plugins
+  string GetPPField(const string &);
+
   // Licq Info
   bool GetAwaitingAuth()                { return m_bAwaitingAuth; }
   unsigned short GetSID()               { return m_nSID[NORMAL_SID]; }
@@ -658,6 +666,9 @@ public:
   { if(m_szClientInfo) free(m_szClientInfo); 
     if(s) m_szClientInfo = strdup(s); else m_szClientInfo = NULL; 
   }
+
+  // Dynamic info fields for protocol plugins
+  bool SetPPField(const string &, const string &);
 
   // Status
   unsigned short Status();
@@ -911,6 +922,9 @@ protected:
 
   // Picture Info
   bool m_bPicturePresent;
+
+  // Dynamic info fields for protocol plugins
+  map<string, string> m_mPPFields;
 
   // Protocol ID
   unsigned long m_nPPID;

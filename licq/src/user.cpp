@@ -1983,6 +1983,7 @@ void ICQUser::LoadLicqInfo()
   char szTemp[MAX_LINE_LEN];
   unsigned short nNewMessages;
   unsigned long nLast;
+  unsigned short nPPFieldCount;
   m_fConf.SetSection("user");
   m_fConf.ReadNum("Groups.System", m_nGroups[GROUPS_SYSTEM], 0);
   m_fConf.ReadNum("Groups.User", m_nGroups[GROUPS_USER], 0);
@@ -2038,6 +2039,22 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadBool("UseGPG", m_bUseGPG, false );
   m_fConf.ReadStr("GPGKey", szTemp, "" );
   SetString( &m_szGPGKey, szTemp );
+  m_fConf.ReadNum("PPFieldCount", nPPFieldCount, 0);
+  for (int i = 0; i < nPPFieldCount; i++)
+  {
+    char szBuf[15];
+    char szTempName[MAX_LINE_LEN], szTempValue[MAX_LINE_LEN];
+    sprintf(szBuf, "PPField%d.Name", i+1);
+    m_fConf.ReadStr(szBuf, szTempName, "");
+    if (strcmp(szTempName, "") != 0)
+    {
+      sprintf(szBuf, "PPField%d.Value", i+1);
+      m_fConf.ReadStr(szBuf, szTempValue, "");
+      if (strcmp(szTempValue, "") != 0)
+	m_mPPFields[szTempName] = szTempValue;
+    }
+  }
+
   m_bSupportsUTF8 = false;
   
   if (nNewMessages > 0)
@@ -3423,6 +3440,18 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("SharedFilesStatus", m_nSharedFilesStatus);
    m_fConf.WriteBool("UseGPG", m_bUseGPG );
    m_fConf.WriteStr("GPGKey", m_szGPGKey );
+   m_fConf.WriteNum("PPFieldCount", (unsigned short)m_mPPFields.size());
+   
+   std::map<string,string>::iterator iter;
+   int i = 0;
+   for (iter = m_mPPFields.begin(); iter != m_mPPFields.end(); ++iter)
+   {
+     char szBuf[25];
+     sprintf(szBuf, "PPField%d.Name", ++i);
+     m_fConf.WriteStr(szBuf, iter->first.c_str());
+     sprintf(szBuf, "PPField%d.Value", i);
+     m_fConf.WriteStr(szBuf, iter->second.c_str());
+   }
 
    if (!m_fConf.FlushFile())
    {
@@ -3657,6 +3686,20 @@ void ICQUser::decNumUserEvents()
   pthread_mutex_unlock(&mutex_nNumUserEvents);
 }
 
+bool ICQUser::SetPPField(const string &_sName, const string &_sValue)
+{
+  m_mPPFields[_sName] = _sValue;
+  return true;
+}
+
+string ICQUser::GetPPField(const string &_sName)
+{
+  map<string,string>::iterator iter = m_mPPFields.find(_sName);
+  if (iter != m_mPPFields.end())
+    return iter->second;
+
+  return string("");
+}
 
 //=====ICQOwner=================================================================
 
