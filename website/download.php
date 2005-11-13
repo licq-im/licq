@@ -12,10 +12,7 @@
        $desc = $item['description'];
        if (preg_match("/1.3.2 released/", $title))
        {
-
-echo $desc;
          preg_match("/bz2 (.*) to.*/", $desc, $matches);
-print_r($matches);
          $strDownload .= "<I>". $matches[1] . ")</I>";
        }
      }
