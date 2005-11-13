@@ -1,5 +1,25 @@
 <?
   include "header.php";
+
+   require_once('rss_fetch.inc');
+   $rss = fetch_rss("http://sourceforge.net/export/rss2_projfiles.php?group_id=254");
+   $strDownload = "";
+   if ($rss->items)
+   {
+     foreach ($rss->items as $item)
+     {
+       $title = $item['title'];
+       $desc = $item['description'];
+       if (preg_match("/1.3.2 released/", $title))
+       {
+
+echo $desc;
+         preg_match("/bz2 (.*) to.*/", $desc, $matches);
+print_r($matches);
+         $strDownload .= "<I>". $matches[1] . ")</I>";
+       }
+     }
+    }
 ?>
 
       
@@ -20,7 +40,7 @@
                    <tr>
                     <td style="width: 30%"><br><a href="http://prdownloads.sourceforge.net/licq/licq-1.3.2.tar.bz2?download">licq-1.3.2.tar.bz2</a><br>
                     <a href="http://prdownloads.sourceforge.net/licq/licq-1.3.2.tar.gz?download">licq-1.3.2.tar.gz</a></td>
-                    <td>Latest Stable Release<br>(bz2 md5sum: 0471bb8fed91eefb23dfe153c9a4a806)<br>(gz md5sum: d8412c20f106aa01d8b9b4f89d8d3130)</td>
+                    <td>Latest Stable Release<br>(bz2 md5sum: 0471bb8fed91eefb23dfe153c9a4a806)<br>(gz md5sum: d8412c20f106aa01d8b9b4f89d8d3130)<BR><?echo $strDownload?></td>
                   </tr>
                   <tr>
                     <td><a href="licq-daily.tar.bz2">licq-daily.tar.bz2</a></td>
