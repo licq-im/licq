@@ -1538,7 +1538,16 @@ void CUserView::maybeTip(const QPoint& c)
   if (item && item->m_szId)
   {
     QRect r(itemRect(item));
-    QString s = QString("<nobr>") + QString(ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible))
+    ICQUser *u = gUserManager.FetchUser(item->m_szId, item->m_nPPID, LOCK_R);
+    QTextCodec * codec = UserCodec::codecForICQUser(u);
+    QString strFileName = "";
+    if (u && u->GetPicturePresent())
+    {
+      strFileName = QString("<center><img src=") + QString(BASE_DIR) + QString("/") + QString(USER_DIR) +
+                    QString("/") + QString(u->IdString()) + QString(".pic></center>");
+    }
+
+    QString s = strFileName + QString("<nobr>") + QString(ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible))
       + QString("</nobr>");
 
     if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)
@@ -1568,8 +1577,6 @@ void CUserView::maybeTip(const QPoint& c)
     if (item->m_bCustomAR)
       s += tr("<br>Custom&nbsp;Auto&nbsp;Response");
 
-    ICQUser *u = gUserManager.FetchUser(item->m_szId, item->m_nPPID, LOCK_R);
-    QTextCodec * codec = UserCodec::codecForICQUser(u);
     if (u != NULL)
     {
       if (!u->StatusOffline() && u->ClientInfo() && *u->ClientInfo())
