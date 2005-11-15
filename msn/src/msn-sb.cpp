@@ -200,7 +200,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
               ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
               if (u)
               {
-                e->m_pUserEvent->AddToHistory(u, D_SENDER);
+                e->m_pUserEvent->AddToHistory(u, MSN_PPID, D_SENDER);
                 u->SetLastSentEvent();
                 if (strcmp(u->IdString(), e->m_szId) == 0)
                   m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
@@ -213,7 +213,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
             ICQUser *u = gUserManager.FetchUser(e->m_szId, e->m_nPPID, LOCK_R);
             if (u != NULL)
             {
-              e->m_pUserEvent->AddToHistory(u, D_SENDER);
+              e->m_pUserEvent->AddToHistory(u, MSN_PPID, D_SENDER);
               u->SetLastSentEvent();
               m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
               gUserManager.DropUser(u);

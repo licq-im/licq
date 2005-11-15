@@ -226,7 +226,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         if (m_pDaemon->AddUserEvent(o, e))
         {
           gUserManager.DropOwner(MSN_PPID);
-          e->AddToHistory(NULL, D_RECEIVER);
+          e->AddToHistory(NULL, MSN_PPID, D_RECEIVER);
           m_pDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
         }
         else
@@ -444,7 +444,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         if (m_pDaemon->AddUserEvent(o, pEmailAlert))
         {
           gUserManager.DropOwner(MSN_PPID);
-          pEmailAlert->AddToHistory(NULL, D_RECEIVER);
+          pEmailAlert->AddToHistory(NULL, MSN_PPID, D_RECEIVER);
           m_pDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
         }
         else
