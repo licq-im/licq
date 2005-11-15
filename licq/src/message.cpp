@@ -135,7 +135,7 @@ int CUserEvent::AddToHistory_Header(direction _nDir, char *szOut)
 }
 
 
-void CUserEvent::AddToHistory_Flush(ICQUser *u, char *szOut, unsigned long nPPID)
+void CUserEvent::AddToHistory_Flush(ICQUser *u, unsigned long nPPID, char *szOut)
 {
   if (u != NULL)
     u->WriteToHistory(szOut);
@@ -180,12 +180,12 @@ CEventMsg::~CEventMsg()
   free (m_szMessage);
 }
 
-void CEventMsg::AddToHistory(ICQUser *u, direction _nDir)
+void CEventMsg::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[ (strlen(m_szMessage) << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -235,14 +235,14 @@ CEventFile::~CEventFile()
    free (m_szFileDescription);
 }
 
-void CEventFile::AddToHistory(ICQUser *u, direction _nDir)
+void CEventFile::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[(strlen(m_szFilename) + strlen(m_szFileDescription)) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n", m_szFilename);
   nPos += sprintf(&szOut[nPos], ":%lu\n", m_nFileSize);
   AddStrWithColons(&szOut[nPos], m_szFileDescription);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -274,14 +274,14 @@ CEventUrl::~CEventUrl()
    free (m_szUrlDescription);
 }
 
-void CEventUrl::AddToHistory(ICQUser *u, direction _nDir)
+void CEventUrl::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[(strlen(m_szUrlDescription) << 1) +
                    (strlen(m_szUrl) << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n", m_szUrl);
   AddStrWithColons(&szOut[nPos], m_szUrlDescription);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -358,12 +358,12 @@ CEventChat::~CEventChat()
 }
 
 
-void CEventChat::AddToHistory(ICQUser *u, direction _nDir)
+void CEventChat::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[(strlen(Text()) << 1) + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   AddStrWithColons(&szOut[nPos], Text());
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -427,7 +427,7 @@ CEventAdded::~CEventAdded()
   free (m_szId);
 }
 
-void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
+void CEventAdded::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
@@ -437,7 +437,7 @@ void CEventAdded::AddToHistory(ICQUser *u, direction _nDir)
   nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n:%s\n:%s\n:%s\n", m_szId,
                   p, m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
-  AddToHistory_Flush(u, szOut, m_nPPID);
+  AddToHistory_Flush(u, m_nPPID, szOut);
   delete [] szOut;
 }
 
@@ -513,7 +513,7 @@ CEventAuthRequest::~CEventAuthRequest()
 }
 
 
-void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
+void CEventAuthRequest::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
@@ -526,7 +526,7 @@ void CEventAuthRequest::AddToHistory(ICQUser *u, direction _nDir)
   delete [] p;
 
   AddStrWithColons(&szOut[nPos], m_szReason);
-  AddToHistory_Flush(u, szOut, m_nPPID);
+  AddToHistory_Flush(u, m_nPPID, szOut);
   delete [] szOut;
 }
 
@@ -582,7 +582,7 @@ CEventAuthGranted::~CEventAuthGranted()
   free (m_szId);
 }
 
-void CEventAuthGranted::AddToHistory(ICQUser *u, direction _nDir)
+void CEventAuthGranted::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szId) + strlen(p) + strlen(m_szMessage))
@@ -592,7 +592,7 @@ void CEventAuthGranted::AddToHistory(ICQUser *u, direction _nDir)
   delete [] p;
 
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut, m_nPPID);
+  AddToHistory_Flush(u, m_nPPID, szOut);
   delete [] szOut;
 }
 
@@ -648,7 +648,7 @@ CEventAuthRefused::~CEventAuthRefused()
   free (m_szId);
 }
 
-void CEventAuthRefused::AddToHistory(ICQUser *u, direction _nDir)
+void CEventAuthRefused::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szId) + strlen(p) + strlen(m_szMessage)) * 2 +
@@ -658,7 +658,7 @@ void CEventAuthRefused::AddToHistory(ICQUser *u, direction _nDir)
   delete [] p;
 
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut, m_nPPID);
+  AddToHistory_Flush(u, m_nPPID, szOut);
   delete [] szOut;
 }
 
@@ -692,7 +692,7 @@ CEventWebPanel::~CEventWebPanel()
 }
 
 
-void CEventWebPanel::AddToHistory(ICQUser *u, direction _nDir)
+void CEventWebPanel::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
                     strlen(m_szMessage)) * 2 +
@@ -700,7 +700,7 @@ void CEventWebPanel::AddToHistory(ICQUser *u, direction _nDir)
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", m_szName, m_szEmail);
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -732,7 +732,7 @@ CEventEmailPager::~CEventEmailPager()
   free (m_szMessage);
 }
 
-void CEventEmailPager::AddToHistory(ICQUser *u, direction _nDir)
+void CEventEmailPager::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
                     strlen(m_szMessage)) * 2 +
@@ -740,7 +740,7 @@ void CEventEmailPager::AddToHistory(ICQUser *u, direction _nDir)
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", m_szName, m_szEmail);
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -780,7 +780,7 @@ CEventContactList::~CEventContactList()
 }
 
 
-void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
+void CEventContactList::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   unsigned long nPPID = LICQ_PPID;
   char *szOut = new char[m_vszFields.size() * 32 + EVENT_HEADER_SIZE];
@@ -794,7 +794,7 @@ void CEventContactList::AddToHistory(ICQUser *u, direction _nDir)
       p, (*iter)->Alias());
     delete [] p;
   }
-  AddToHistory_Flush(u, szOut, nPPID);
+  AddToHistory_Flush(u, nPPID, szOut);
   delete [] szOut;
 }
 
@@ -846,7 +846,7 @@ CEventSms::~CEventSms()
   free(m_szMessage);
 }
 
-void CEventSms::AddToHistory(ICQUser *u, direction _nDir)
+void CEventSms::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[ (strlen(m_szNumber) << 1) + 
 			  (strlen(m_szMessage) << 1) +
@@ -854,7 +854,7 @@ void CEventSms::AddToHistory(ICQUser *u, direction _nDir)
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n", m_szNumber);
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -905,14 +905,14 @@ void CEventServerMessage::CreateDescription()
           m_szEmail, m_szMessage);
 }
 
-void CEventServerMessage::AddToHistory(ICQUser *u, direction _nDir)
+void CEventServerMessage::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
                          (strlen(m_szMessage) * 2) + EVENT_HEADER_SIZE)];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n%s\n", m_szName, m_szEmail);
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -980,14 +980,14 @@ void CEventEmailAlert::CreateDescription()
           m_szEmail, m_szSubject);
 }
 
-void CEventEmailAlert::AddToHistory(ICQUser *u, direction _nDir)
+void CEventEmailAlert::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
 {
   char *szOut = new char[(strlen(m_szName) + strlen(m_szEmail) +
                          (strlen(m_szSubject) * 2) + EVENT_HEADER_SIZE)];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n%s\n", m_szName, m_szEmail);
+  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n", m_szName, m_szEmail);
   AddStrWithColons(&szOut[nPos], m_szSubject);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;
 }
 
@@ -1012,7 +1012,7 @@ CEventPlugin::~CEventPlugin()
   free(m_sz);
 }
 
-void CEventPlugin::AddToHistory(ICQUser *, direction)
+void CEventPlugin::AddToHistory(ICQUser *, unsigned long, direction)
 {
   // Don't write these to the history file
 }
@@ -1043,7 +1043,7 @@ CEventUnknownSysMsg::~CEventUnknownSysMsg()
   free(m_szMsg);
 }
 
-void CEventUnknownSysMsg::AddToHistory(ICQUser * /*u*/, direction /*_nDir*/)
+void CEventUnknownSysMsg::AddToHistory(ICQUser * /*u*/, unsigned long /*_nPPID*/, direction /*_nDir*/)
 {
 /*  char *szOut = new char[strlen(m_szMsg) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = sprintf(szOut, "[ %c | 0000 | %04d | %04d | %lu ]\n",
@@ -1051,7 +1051,7 @@ void CEventUnknownSysMsg::AddToHistory(ICQUser * /*u*/, direction /*_nDir*/)
           m_nCommand, (unsigned short)(m_nFlags >> 16), m_tTime);
   nPos += sprintf(&szOut[nPos], ":%lu\n", m_nUin);
   AddStrWithColons(&szOut[nPos], m_szMsg);
-  AddToHistory_Flush(u, szOut);
+  AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;*/
 }
 

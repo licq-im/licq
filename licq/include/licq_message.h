@@ -60,9 +60,9 @@ public:
    void SetPending(bool b)  { m_bPending = b; }
 
 protected:
-   virtual void AddToHistory(ICQUser *, direction) = 0;
+   virtual void AddToHistory(ICQUser *, unsigned long, direction) = 0;
    int AddToHistory_Header(direction, char *);
-   void AddToHistory_Flush(ICQUser *, char *, unsigned long = LICQ_PPID);
+   void AddToHistory_Flush(ICQUser *, unsigned long, char *);
 
    void SetDirection(direction d)  { m_eDir = d; }
    void Cancel() { m_nFlags |= E_CANCELLED; }
@@ -108,7 +108,7 @@ public:
         return e;
       }
    const char *Message()  { return m_szMessage; }
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
 
    static CEventMsg *Parse(char *sz, unsigned short nCmd, time_t nTime,
      unsigned long nFlags, unsigned long nConvoId = 0);
@@ -128,7 +128,7 @@ public:
               unsigned long _nFlags, unsigned long _nConovId = 0,
               unsigned long _nMsgID1 = 0, unsigned long _nMsgID2 = 0);
    virtual ~CEventFile();
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long,  direction);
    virtual CEventFile *Copy()
       {
         CEventFile *e = new CEventFile(m_szFilename, m_szFileDescription,
@@ -161,7 +161,7 @@ public:
              unsigned short _nCommand, time_t _tTime,
              unsigned long _nFlags, unsigned long _nConvoId = 0);
    virtual ~CEventUrl();
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
    virtual CEventUrl *Copy()
       {
         CEventUrl *e = new CEventUrl(m_szUrl, m_szUrlDescription, m_nCommand,
@@ -192,7 +192,7 @@ public:
       unsigned short nSequence, time_t tTime, unsigned long nFlags,
       unsigned long _nConvoId = 0, unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
   virtual ~CEventChat();
-  virtual void AddToHistory(ICQUser *, direction);
+  virtual void AddToHistory(ICQUser *, unsigned long, direction);
   virtual CEventChat *Copy()
      {
        CEventChat *e = new CEventChat(m_szText, m_szClients, m_nPort,
@@ -224,7 +224,7 @@ public:
                const char *_szLastName, const char *_szEmail,
                unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAdded();
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
    virtual CEventAdded *Copy()
       {
         CEventAdded *e = new CEventAdded(m_szId, m_nPPID, m_szAlias, m_szFirstName,
@@ -260,7 +260,7 @@ public:
                  const char *_szLastName, const char *_szEmail, const char *_szReason,
                  unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRequest();
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
    virtual CEventAuthRequest *Copy()
       {
         CEventAuthRequest *e = new CEventAuthRequest(m_szId, m_nPPID,
@@ -294,7 +294,7 @@ public:
    CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthGranted();
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
    virtual CEventAuthGranted *Copy()
       {
         CEventAuthGranted *e = new CEventAuthGranted(m_szId, m_nPPID, m_szMessage,
@@ -323,7 +323,7 @@ public:
    CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRefused();
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
    virtual CEventAuthRefused *Copy()
       {
         CEventAuthRefused *e = new CEventAuthRefused(m_szId, m_nPPID,
@@ -350,7 +350,7 @@ public:
    CEventWebPanel(const char *_szName, char *_szEmail, const char *_szMessage,
                    unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventWebPanel();
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
    virtual CEventWebPanel *Copy()
       {
         CEventWebPanel *e = new CEventWebPanel(m_szName, m_szEmail, m_szMessage,
@@ -373,7 +373,7 @@ public:
    CEventEmailPager(const char *_szName, char *_szEmail, const char *_szMessage,
                     unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventEmailPager();
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
    virtual CEventEmailPager *Copy()
       {
         CEventEmailPager *e = new CEventEmailPager(m_szName, m_szEmail,
@@ -418,7 +418,7 @@ public:
   CEventContactList(ContactList &cl, bool bDeep, unsigned short nCommand,
      time_t tTime, unsigned long nFlags);
   virtual ~CEventContactList();
-  virtual void AddToHistory(ICQUser *, direction);
+  virtual void AddToHistory(ICQUser *, unsigned long, direction);
   virtual CEventContactList *Copy()
     {
       CEventContactList *e = new CEventContactList(m_vszFields, true,
@@ -451,7 +451,7 @@ public:
    }
    const char *Number()  { return m_szNumber; }
    const char *Message()  { return m_szMessage; }
-   virtual void AddToHistory(ICQUser *, direction);
+   virtual void AddToHistory(ICQUser *, unsigned long, direction);
 
    static CEventSms *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
@@ -468,7 +468,7 @@ public:
                       const char *_szMessage, time_t _tTime);
   virtual ~CEventServerMessage();
 
-  virtual void AddToHistory(ICQUser *, direction);
+  virtual void AddToHistory(ICQUser *, unsigned long, direction);
 
   virtual CEventServerMessage *Copy()
   {
@@ -500,7 +500,7 @@ public:
                    const char *_szCreds = 0, unsigned long _nSessionLength = 0);
   virtual ~CEventEmailAlert();
 
-  virtual void AddToHistory(ICQUser *, direction);
+  virtual void AddToHistory(ICQUser *, unsigned long, direction);
 
   virtual CEventEmailAlert *Copy()
   {
@@ -551,7 +551,7 @@ public:
   CEventPlugin(const char *sz, unsigned short nSubCommand,
      time_t tTime, unsigned long nFlags);
   ~CEventPlugin();
-  virtual void AddToHistory(ICQUser *, direction);
+  virtual void AddToHistory(ICQUser *, unsigned long, direction);
   virtual CEventPlugin *Copy()
     { return new CEventPlugin(m_sz, m_nSubCommand, m_tTime, m_nFlags); }
 protected:
@@ -575,7 +575,7 @@ public:
                 const char *_szMsg,
                 time_t _tTime, unsigned long _nFlags);
   ~CEventUnknownSysMsg();
-  virtual void AddToHistory(ICQUser *, direction);
+  virtual void AddToHistory(ICQUser *, unsigned long, direction);
   virtual CEventUnknownSysMsg *Copy()
     {
 #if 0

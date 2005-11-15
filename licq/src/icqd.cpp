@@ -1280,7 +1280,7 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 //-----AddUserEvent-----------------------------------------------------------
 bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
 {
-  if (u->User()) e->AddToHistory(u, D_RECEIVER);
+  if (u->User()) e->AddToHistory(u, LICQ_PPID, D_RECEIVER);
   // Don't log a user event if this user is on the ignore list
   if (u->IgnoreList() ||
       (e->IsMultiRec() && Ignore(IGNORE_MASSMSG)) ||
@@ -1803,7 +1803,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
     if (u != NULL)
     {
-      e->m_pUserEvent->AddToHistory(u, D_SENDER);
+      e->m_pUserEvent->AddToHistory(u, LICQ_PPID, D_SENDER);
       u->SetLastSentEvent();
       m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
       gUserManager.DropUser(u);

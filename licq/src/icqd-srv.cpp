@@ -1742,7 +1742,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     ICQUser *u = gUserManager.FetchUser(e->m_szId, e->m_nPPID, LOCK_R);
     if (u != NULL)
     {
-      e->m_pUserEvent->AddToHistory(u, D_SENDER);
+      e->m_pUserEvent->AddToHistory(u, LICQ_PPID, D_SENDER);
       u->SetLastSentEvent();
       m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
       gUserManager.DropUser(u);
@@ -3648,7 +3648,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	    if (AddUserEvent(o, eEvent))
 	    {
 	      gUserManager.DropOwner(LICQ_PPID);
-	      eEvent->AddToHistory(NULL, D_RECEIVER);
+	      eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
 	      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
 	    }
 	    else
@@ -3678,7 +3678,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	      if (AddUserEvent(o, eEvent))
 	      {
 	        gUserManager.DropOwner();
-	        eEvent->AddToHistory(NULL, D_RECEIVER);
+	        eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
 	        m_xOnEventManager.Do(ON_EVENT_SMS, NULL);
 	      }
 	      else
@@ -4658,7 +4658,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             if (AddUserEvent(o, eEvent))
 	    {
               gUserManager.DropOwner();
-              eEvent->AddToHistory(NULL, D_RECEIVER);
+              eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
               m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
 	    }
 	    else
@@ -4685,7 +4685,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	      if (AddUserEvent(o, eEvent))
 	      {
 	        gUserManager.DropOwner();
-	        eEvent->AddToHistory(NULL, D_RECEIVER);
+	        eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
 	        m_xOnEventManager.Do(ON_EVENT_SMS, NULL);
 	      }
 	      else
@@ -5235,7 +5235,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
           msg.UnpackUnsignedShort(); // unknown
           nMore = msg.UnpackUnsignedLong();
-          e2->m_pSearchAck->m_nMore = nMore;
+          e2->m_pSearchAck->m_nMore = nMore - 1;
           e2->m_eResult = EVENT_SUCCESS;
         }
         else

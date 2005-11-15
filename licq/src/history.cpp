@@ -357,11 +357,24 @@ bool CUserHistory::Load(HistoryList &lHistory)
     case ICQ_CMDxSUB_MSGxSERVER:
     {
       GET_VALID_LINE_OR_BREAK;
-      const char *szName = strdup(&szResult[1]);
+      char *szName = strdup(&szResult[1]);
       SKIP_LINE;
       const char *szEmail = "";
       GET_VALID_LINES;
       e = new CEventServerMessage(szName, szEmail, szMsg, tTime);
+      free(szName);
+      break;
+    }
+    case ICQ_CMDxSUB_EMAILxALERT:
+    {
+      GET_VALID_LINE_OR_BREAK;
+      char *szName = strdup(&szResult[1]);
+      GET_VALID_LINE_OR_BREAK;
+      char *szEmail = strdup(&szResult[1]);
+      GET_VALID_LINES;
+      e = new CEventEmailAlert(szName, 0, szEmail, szMsg, tTime);
+      free(szName);
+      free(szEmail);
       break;
     }
     default:
