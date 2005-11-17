@@ -242,13 +242,13 @@ char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
   
   
   tr = iconv_open("UTF-8", szFrom);
-  size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+  size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
   iconv_close(tr);
 
   if (ret == (size_t)(-1))
   {
     tr = iconv_open("UCS-2BE", szFrom);
-    iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+    iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
     iconv_close(tr);
   }
 
@@ -287,13 +287,13 @@ char *CTranslator::FromUnicode(char *_sz, char *_szTo)
 
 
   tr = iconv_open(szTo, "UTF-8");
-  size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+  size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
   iconv_close(tr);
 
   if (ret == (size_t)(-1))
   {
     tr = iconv_open(szTo, "UCS-2BE");
-    iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+    iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
     iconv_close(tr);
   }
 
@@ -319,7 +319,7 @@ char *CTranslator::FromUTF16(char *_sz, int nMsgLen)
   nOutSize = nLen * 2;
   
   tr = iconv_open("", "UCS-2BE");
-  size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+  size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
   iconv_close(tr);
   
   if (ret == (size_t)(-1))
@@ -346,7 +346,7 @@ char *CTranslator::ToUTF16(char *_sz, char *_szEncoding, size_t &nSize)
   nOutSize = nLen;
   
   tr = iconv_open("UCS-2BE", _szEncoding);
-  size_t ret = iconv(tr, &szIn, &nInSize, &szOut, &nOutSize);
+  size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
   iconv_close(tr);
   
   if (ret == (size_t)-1)
