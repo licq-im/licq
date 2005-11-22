@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: Licq QT-GUI - Belarussian translation\n"
-"PO-Revision-Date: 2005-10-06 11:35 GMT+3\n"
+"PO-Revision-Date: 2005-11-22 13:19 GMT+2\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "MIME-Version: 1.0\n"
@@ -4188,3 +4188,11 @@ msgid "Left click - Show main window\n"
 msgstr "Клік левай кнопкай - паказаць галоўнае вакенца\n"
 "клік сярэдняй кнопкай - паказаць наступнае паведамленьне\n"
 "клік правай кнопкай - сістэмнае мяню"
+
+#: optiondlg.cpp:832
+msgid "Send typing notifications"
+msgstr "Адсылаць інфармацыю аб наборы паведамленьня"
+
+#: optiondlg.cpp:833
+msgid "Send a notification to the user so they can see when you are typing a message to them"
+msgstr "Адсылаць паведамленьні да карыстальніка, калі Вы рыхтуеце паведамленьне да яго (typing noification)"
