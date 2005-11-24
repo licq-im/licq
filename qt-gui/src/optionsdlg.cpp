@@ -236,7 +236,7 @@ void OptionsDlg::SetupOptions()
 #endif
     chkShowHistory->setEnabled(false);
   }
-  chkSendTN->setEnabled(mainwin->licqDaemon->SendTypingNotification());
+  chkSendTN->setChecked(mainwin->licqDaemon->SendTypingNotification());
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
   chkFlashTaskbar->setChecked(mainwin->m_bFlashTaskbar);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
