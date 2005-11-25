@@ -272,6 +272,7 @@ void CMSN::Run()
   while (!m_bExit)
   {
     pthread_mutex_lock(&mutex_ServerSocket);
+    FD_ZERO(&f);
     f = gSocketMan.SocketSet();
     nNumDesc = gSocketMan.LargestSocket() + 1;
  
