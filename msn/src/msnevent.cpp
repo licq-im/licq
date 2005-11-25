@@ -53,7 +53,12 @@ CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
 CMSNDataEvent::~CMSNDataEvent()
 {
   if (m_nSocketDesc)
-    close(m_nSocketDesc);
+  {
+    INetSocket *s = gSocketMan.FetchSocket(m_nSocketDesc);
+    gSocketMan.DropSocket(s);
+    gSocketMan.CloseSocket(m_nSocketDesc);
+  }
+
   if (m_nFileDesc)
     close(m_nFileDesc);
 }
@@ -192,6 +197,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 		     L_MSNxSTR);
 	}
 	close(m_nFileDesc);
+	m_nFileDesc = -1;
 	m_eState = STATE_FINISHED;
 	ICQUser *u = gUserManager.FetchUser(m_strId.c_str(), MSN_PPID, LOCK_W);
 	if (u)
