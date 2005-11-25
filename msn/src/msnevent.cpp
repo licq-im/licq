@@ -176,6 +176,9 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 		  L_MSNxSTR, m_nDataSize[0], m_nSessionId);
       }
 
+      if (nFlag != 0x00000020)
+        break;
+
       ssize_t nWrote = write(m_nFileDesc, p->getDataPosRead(), nLen);
       if (nWrote != (ssize_t)nLen)
       {
