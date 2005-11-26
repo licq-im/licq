@@ -197,6 +197,7 @@ void OptionsDlg::SetupOptions()
   chkShowGroupIfNoMsg->setChecked(mainwin->m_bShowGroupIfNoMsg);
   chkAutoClose->setChecked(mainwin->m_bAutoClose);
   chkTransparent->setChecked(mainwin->skin->frame.transparent);
+  chkShowUserIcons->setChecked(mainwin->m_bShowUserIcons);
   chkScrollBar->setChecked(mainwin->m_bScrollBar);
   chkFlashUrgent->setChecked(mainwin->m_nFlash == FLASH_URGENT || mainwin->m_nFlash == FLASH_ALL);
   chkFlashAll->setChecked(mainwin->m_nFlash == FLASH_ALL);
@@ -511,6 +512,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_nFlash = chkFlashAll->isChecked() ? FLASH_ALL :
                       ( chkFlashUrgent->isChecked() ? FLASH_URGENT : FLASH_NONE );
   mainwin->skin->frame.transparent = chkTransparent->isChecked();
+  mainwin->m_bShowUserIcons = chkShowUserIcons->isChecked();
   mainwin->skin->frame.frameStyle = edtFrameStyle->text().toUShort();
   mainwin->m_MsgAutopopupKey = edtHotKey->text();
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
@@ -1428,6 +1430,11 @@ QWidget* OptionsDlg::new_column_options()
                                 "<b>status</b> - Sort online users by status<br>\n"
                                 "<b>status + last event</b> - Sort online users by status and by last event<br>\n"
                                 "<b>status + new messages</b> - Sort online users by status and number of new messages"));
+
+  chkShowUserIcons = new QCheckBox(tr("Show user display picture"), boxUserWin);
+  QWhatsThis::add(chkShowUserIcons, tr("Show the user's display picture"
+				       " instead of a status icon, if the user"
+				       " is online and has a display picture"));
 
   boxPopWin = new QGroupBox(1, Horizontal, tr("Popup info"), w);
 

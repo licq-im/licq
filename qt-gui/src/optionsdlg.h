@@ -86,7 +86,7 @@ protected:
    QPushButton *btnFont, *btnEditFont;
    QCheckBox *chkSSList, *chkGridLines, *chkHeader, *chkAutoClose,
              *chkShowDividers, *chkFontStyles, *chkUseDock, *chkDockFortyEight,
-             *chkTransparent, *chkShowGroupIfNoMsg,
+             *chkTransparent, *chkShowUserIcons, *chkShowGroupIfNoMsg,
              *chkAutoPopup, *chkAutoRaise, *chkHidden, *chkFlashUrgent, *chkFlashAll,
              *chkBoldOnMsg, *chkManualNewUser,
              *chkAlwaysShowONU, *chkScrollBar, *chkShowExtIcons,
