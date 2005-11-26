@@ -89,6 +89,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
   m_nStatus = ICQ_STATUS_OFFLINE;
   m_bGPGKey = false;
   m_bNotInList = _cUser->NotInList();
+  m_pUserIcon = 0;
   setGraphics(_cUser);
 }
 
@@ -122,6 +123,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_nStatus = ICQ_STATUS_OFFLINE;
   m_bGPGKey = false;
   m_bNotInList = _cUser->NotInList();
+  m_pUserIcon = 0;
   setGraphics(_cUser);
 }
 
@@ -147,6 +149,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = 0;
+  m_pUserIcon = 0;
   // Other users group is sorted at the end
   if (m_nGroupId)
   {
@@ -181,6 +184,7 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
   m_nWeight = QFont::Normal;
   m_bUrgent = false;
   m_bSecure = false;
+  m_pUserIcon = 0;
   setSelectable(false);
   setHeight(10);
   m_sSortKey = "";
@@ -249,6 +253,9 @@ CUserViewItem::~CUserViewItem()
     delete v->barNotInList;
     v->barNotInList = NULL;
   }
+
+  if (m_pUserIcon)
+    delete m_pUserIcon;
 }
 
 //-----CUserViewItem::setGraphics-----------------------------------------------
@@ -348,6 +355,21 @@ void CUserViewItem::setGraphics(ICQUser *u)
 
    m_pIconStatus = m_pIcon;
 
+   if (u->GetPicturePresent() && m_nStatus != ICQ_STATUS_OFFLINE &&
+       gMainWindow->m_bShowUserIcons)
+   {
+     if (m_pUserIcon == 0)
+     {
+       QString strPath = QString(BASE_DIR) + QString("/") + QString(USER_DIR) +
+	 QString("/") + QString(u->IdString()) + QString(".pic");
+       QImage tmpImg(strPath);
+       m_pUserIcon = new QPixmap;
+       *m_pUserIcon  = tmpImg.scale(16, 16);
+     }
+    
+     m_pIcon = m_pUserIcon;
+   }
+
    if (u->NewMessages() > 0)
    {
      m_pIcon = NULL;
@@ -381,6 +403,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
      if(SubCommand)
        m_pIcon = &CMainWindow::iconForEvent(SubCommand);
    }
+
 
    m_bFlash = ((u->NewMessages() > 0 && gMainWindow->m_nFlash == FLASH_ALL) ||
        (m_bUrgent && gMainWindow->m_nFlash == FLASH_URGENT));

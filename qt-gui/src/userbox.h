@@ -74,7 +74,7 @@ protected:
   void SetThreadViewGroupTitle();
 
   QColor *m_cFore, *m_cBack;
-  QPixmap *m_pIcon, *m_pIconStatus;
+  QPixmap *m_pIcon, *m_pIconStatus, *m_pUserIcon;
 
   unsigned long m_nUin;
   char *m_szId;
