@@ -1228,10 +1228,12 @@ bool TCPSocket::SecureListen()
       case SSL_ERROR_SSL:
         err = ERR_get_error_line(&file, &line);
         gLog.Warn("%sSSL_accept error = %lx, %s:%i\n", L_SSLxSTR, err, file, line);
+        gLog.Warn("%s%s\n", L_SSLxSTR, ERR_error_string(err, 0));
         ERR_clear_error();
         break;
       default:
         gLog.Warn("%sSSL_accept error %d, SSL_%d\n", L_SSLxSTR, i, j);
+        gLog.Warn("%s%s\n", L_SSLxSTR, ERR_error_string(err, 0));
         break;
     }
     return false;

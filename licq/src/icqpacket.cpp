@@ -4827,7 +4827,8 @@ CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned short nSequence,
   m_nSize -= strlen(m_szMessage);
   free(m_szMessage);
   m_szMessage = strdup(ok ? "1" : "");
-  m_nSize += strlen(m_szMessage);
+  m_nMsgLen = strlen(m_szMessage) + 1;
+  m_nSize += m_nMsgLen;
 
   InitBuffer();
   PostBuffer();

@@ -443,6 +443,7 @@ bool CLicq::Init(int argc, char **argv)
 #ifdef SSL_DEBUG
   SSL_CTX_set_info_callback(gSSL_CTX, (void (*)())ssl_info_callback);
 #endif
+  SSL_load_error_strings();
 
   DH *dh = get_dh512();
   SSL_CTX_set_tmp_dh(gSSL_CTX, dh);
