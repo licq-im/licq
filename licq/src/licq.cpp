@@ -441,7 +441,7 @@ bool CLicq::Init(int argc, char **argv)
 #endif
 
 #ifdef SSL_DEBUG
-  SSL_CTX_set_info_callback(gSSL_CTX, (void (*)())ssl_info_callback);
+  SSL_CTX_set_info_callback(gSSL_CTX, (void (*)(const SSL *,int, int))ssl_info_callback);
 #endif
   SSL_load_error_strings();
 
