@@ -53,7 +53,6 @@ CLogService::CLogService(unsigned short _nLogTypes)
   SetData(NULL);
 }
 
-inline
 void CLogService::SetLogTypes(unsigned short _nLogTypes)
 {
   if ( (m_nLogTypes & L_PACKET) && !(_nLogTypes & L_PACKET) )
@@ -64,31 +63,26 @@ void CLogService::SetLogTypes(unsigned short _nLogTypes)
   m_nLogTypes = _nLogTypes;
 }
 
-inline
 void CLogService::SetData(void *_pData)
 {
   m_pData = _pData;
 }
 
-inline
 unsigned short CLogService::ServiceType()
 {
   return m_nServiceType;
 }
 
-inline
 unsigned short CLogService::LogType(unsigned short _nLogType)
 {
   return m_nLogTypes & _nLogType;
 }
 
-inline
 void CLogService::AddLogType(unsigned short _nLogType)
 {
   SetLogTypes(m_nLogTypes | _nLogType);
 }
 
-inline
 void CLogService::RemoveLogType(unsigned short _nLogType)
 {
   SetLogTypes(m_nLogTypes & ~_nLogType);
