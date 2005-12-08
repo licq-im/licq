@@ -118,15 +118,18 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
           // AIM users support UTF8/16
           nCharset = CHARSET_UNICODE;
         }
-        
+
         gUserManager.DropUser(u);
       }
 
-      bUTF16 = true;
-      if (szFromEncoding == 0)
-        szFromEncoding = strdup("UTF-8");
-      szMessage = gTranslator.ToUTF16(mDos, szFromEncoding, nUTFLen);
-      free(szFromEncoding);
+      if (nCharset == CHARSET_UNICODE)
+      {
+        bUTF16 = true;
+        if (szFromEncoding == 0)
+          szFromEncoding = strdup("UTF-8");
+        szMessage = gTranslator.ToUTF16(mDos, szFromEncoding, nUTFLen);
+        free(szFromEncoding);
+      }
     }
 
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
