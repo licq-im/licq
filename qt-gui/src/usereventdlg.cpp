@@ -2364,6 +2364,9 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
   {
     case ICQ_CMDxSUB_MSG:
     {
+      ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+      bool bUserOffline = u->StatusOffline();
+      gUserManager.DropUser(u);
       CEventMsg *ue = (CEventMsg *)e->UserEvent();
       // create initial strings (implicit copying, no allocation impact :)
       char *tmp = gTranslator.NToRN(ue->Message());
@@ -2371,9 +2374,11 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       delete [] tmp;
       unsigned int wholeMessagePos = 0;
 
+
       bool needsSplitting = false;
       // If we send through server (= have message limit), and we've crossed the limit
-      if (!bOnline && ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE))
+      unsigned short nMaxSize = bUserOffline ? MAX_OFFLINE_MESSAGE_SIZE : MAX_MESSAGE_SIZE;
+      if ((wholeMessageRaw.length() - wholeMessagePos) > nMaxSize)
       {
         needsSplitting = true;
       }
@@ -2390,13 +2395,13 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
           // really know how spaces are represented in its encoding), so
           // we take the maximum length, then convert back to a Unicode string
           // and then search for Unicode whitespaces.
-          messageRaw = wholeMessageRaw.mid(wholeMessagePos, MAX_MESSAGE_SIZE);
+          messageRaw = wholeMessageRaw.mid(wholeMessagePos, nMaxSize);
           tmp = gTranslator.RNToN(messageRaw);
           messageRaw = tmp;
           delete [] tmp;
           message = codec->toUnicode(messageRaw);
 
-          if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
+          if ((wholeMessageRaw.length() - wholeMessagePos) > nMaxSize)
           {
             // We try to find the optimal place to cut
             // (according to our narrow-minded Latin1 idea of optimal :)
@@ -2675,6 +2680,10 @@ void UserSendMsgEvent::sendButton()
 
   if (!UserSendCommon::checkSecure()) return;
 
+  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  bool bUserOffline = u->StatusOffline();
+  gUserManager.DropUser(u);
+
   // create initial strings (implicit copying, no allocation impact :)
   char *tmp = gTranslator.NToRN(codec->fromUnicode(mleSend->text()));
   QCString wholeMessageRaw(tmp);
@@ -2683,7 +2692,8 @@ void UserSendMsgEvent::sendButton()
 
   bool needsSplitting = false;
   // If we send through server (= have message limit), and we've crossed the limit
-  if (chkSendServer->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE))
+  unsigned short nMaxSize = bUserOffline ? MAX_OFFLINE_MESSAGE_SIZE : MAX_MESSAGE_SIZE;
+  if (chkSendServer->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > nMaxSize))
     needsSplitting = true;
 
   QString message;
@@ -2698,13 +2708,13 @@ void UserSendMsgEvent::sendButton()
         // really know how spaces are represented in its encoding), so
         // we take the maximum length, then convert back to a Unicode string
         // and then search for Unicode whitespaces.
-        messageRaw = wholeMessageRaw.mid(wholeMessagePos, MAX_MESSAGE_SIZE);
+        messageRaw = wholeMessageRaw.mid(wholeMessagePos, nMaxSize);
         tmp = gTranslator.RNToN(messageRaw);
         messageRaw = tmp;
         delete [] tmp;
         message = codec->toUnicode(messageRaw);
 
-        if ((wholeMessageRaw.length() - wholeMessagePos) > MAX_MESSAGE_SIZE)
+        if ((wholeMessageRaw.length() - wholeMessagePos) > nMaxSize)
         {
            // We try to find the optimal place to cut
            // (according to our narrow-minded Latin1 idea of optimal :)
