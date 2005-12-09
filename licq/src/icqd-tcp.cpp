@@ -2037,11 +2037,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 				else
 					gLog.Info(tr("%sMessage from %s (%ld).\n"), L_TCPxSTR, u->GetAlias(), nUin);
 
-				CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
-        e->SetColor(fore, back);
-
         CPT_AckGeneral p(newCommand, theSequence, true, bAccept, u);
         AckTCP(p, pSock);
+
+        CEventMsg *e = CEventMsg::Parse(message, ICQ_CMDxTCP_START, TIME_NOW, nMask);
+        e->SetColor(fore, back);
 
         // If we are in DND or Occupied and message isn't urgent then we ignore it
         if (!bAccept)
