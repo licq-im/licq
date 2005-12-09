@@ -77,10 +77,10 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   ICQUser *u;
   char *cipher = NULL;
   u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
-  if (u && u->UseGPG() && online)
-    cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
   if (u)
     bUserOffline = u->StatusOffline();
+  if (u && u->UseGPG() && !bUserOffline)
+    cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
   gUserManager.DropUser(u);
 
   if (cipher) f |= E_ENCRYPTED;
@@ -133,11 +133,12 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
     }
 
      e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-     if (strlen(szMessage) > MAX_MESSAGE_SIZE)
+     unsigned short nMaxSize = bUserOffline ? MAX_OFFLINE_MESSAGE_SIZE : MAX_MESSAGE_SIZE;
+     if (strlen(szMessage) > nMaxSize)
      {
        gLog.Warn(tr("%sTruncating message to %d characters to send through server.\n"),
-                 L_WARNxSTR, MAX_MESSAGE_SIZE);
-       szMessage[MAX_MESSAGE_SIZE] = '\0';
+                 L_WARNxSTR, nMaxSize);
+       szMessage[nMaxSize] = '\0';
      }
      result = icqSendThroughServer(szId, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
                                    cipher ? cipher : szMessage, e, nCharset, nUTFLen);
