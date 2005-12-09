@@ -1206,7 +1206,7 @@ CPU_ClientReady::CPU_ClientReady()
   buffer->PackUnsignedLongBE(0x000b0001);
   buffer->PackUnsignedLongBE(0x0110047b);
 #else
-  m_nSize += 64;
+  m_nSize += 72;
 
   InitBuffer();
 
@@ -1226,7 +1226,8 @@ CPU_ClientReady::CPU_ClientReady()
   buffer->PackUnsignedLongBE(0x0110028a);
   buffer->PackUnsignedLongBE(0x000a0001);
   buffer->PackUnsignedLongBE(0x0110028a);
-
+  buffer->PackUnsignedLongBE(0x00130004);
+  buffer->PackUnsignedLongBE(0x011008e4);
 #endif
 }
 

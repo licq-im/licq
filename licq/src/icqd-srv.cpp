@@ -4284,6 +4284,39 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
 
+    case ICQ_SNACxLIST_AUTHxREQxSRV:
+    {
+      // First 8 bytes - unknown
+      packet.UnpackUnsignedLong();
+      packet.UnpackUnsignedLong();
+
+      char *szId = packet.UnpackUserString();
+      gLog.Info(tr("%sAuthorization request from %s.\n"), L_SRVxSTR, szId);
+
+      unsigned short nMsgLen;
+      packet >> nMsgLen;
+      char *szMsg = new char[nMsgLen];
+      for (int i = 0; i < nMsgLen; i++)
+        packet >> szMsg[i];
+
+      CEventAuthRequest *e = new CEventAuthRequest(szId, LICQ_PPID, "", "", "", "", szMsg,
+                                                   ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+
+      ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+      if (AddUserEvent(o, e))
+      {
+        gUserManager.DropOwner(LICQ_PPID);
+        e->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
+        m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+      }
+      else
+        gUserManager.DropOwner(LICQ_PPID);
+       
+      delete [] szId;
+      delete [] szMsg;
+      break;
+    }
+
     default:
       gLog.Warn(tr("%sUnknown List Family Subtype: %04hx\n"), L_SRVxSTR, nSubtype);
       break;

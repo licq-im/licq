@@ -120,6 +120,7 @@ const unsigned short ICQ_SNACxLIST_ROSTxEDITxSTART = 0x0011; // client
 const unsigned short ICQ_SNACxLIST_ROSTxEDITxEND   = 0x0012; // client
 const unsigned short ICQ_SNACxLIST_AUTHxREQ2       = 0x0014; // client
 const unsigned short ICQ_SNACxLIST_AUTHxREQ        = 0x0018; // client
+const unsigned short ICQ_SNACxLIST_AUTHxREQxSRV    = 0x0019; // server
 const unsigned short ICQ_SNACxLIST_AUTHxREPLY      = 0x001A; // client
 const unsigned short ICQ_SNACxLIST_AUTHxRESPONS    = 0x001B; // server
 
