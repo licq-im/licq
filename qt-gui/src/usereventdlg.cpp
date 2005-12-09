@@ -171,7 +171,9 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
       setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
     else
       setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
-    FlashTaskbar(u->NewMessages() != 0);
+
+    if (mainwin->m_bFlashTaskbar)
+      FlashTaskbar(u->NewMessages() != 0);
 
     SetGeneralInfo(u);
 
@@ -348,8 +350,8 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       {        
         if (tabw->currentPageIndex() == index)
           setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
-	if (mainwin->m_bFlashTaskbar)
-        flashTaskbar(true);
+	//if (mainwin->m_bFlashTaskbar)
+          //flashTaskbar(true);
 
         // to clear it..
         tab->gotTyping(u->GetTyping());
@@ -698,7 +700,8 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
       if (u->NewMessages() == 0)
       {
         setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
-        FlashTaskbar(false);
+        if (mainwin->m_bFlashTaskbar)
+          FlashTaskbar(false);
       }
       break;
     }
@@ -715,7 +718,9 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
         setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
       else
         setIcon(CMainWindow::iconForEvent(ICQ_CMDxSUB_MSG));
-      FlashTaskbar(u->NewMessages() != 0);
+
+      if (mainwin->m_bFlashTaskbar)
+        FlashTaskbar(u->NewMessages() != 0);
       break;
     }
   }
