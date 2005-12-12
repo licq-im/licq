@@ -3915,6 +3915,10 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
   /*unsigned short nFlags = */packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
 
+  // First 8 bytes - unknown
+  packet.UnpackUnsignedLong();
+  packet.UnpackUnsignedLong();
+
   switch (nSubtype)
   {
     case ICQ_SNACxLIST_RIGHTSxGRANTED:
@@ -4286,10 +4290,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
     case ICQ_SNACxLIST_AUTHxREQxSRV:
     {
-      // First 8 bytes - unknown
-      packet.UnpackUnsignedLong();
-      packet.UnpackUnsignedLong();
-
       char *szId = packet.UnpackUserString();
       gLog.Info(tr("%sAuthorization request from %s.\n"), L_SRVxSTR, szId);
 
