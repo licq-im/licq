@@ -2010,6 +2010,10 @@ void CPU_AdvancedMessage::InitBuffer()
     nStatus = m_pUser->StatusToUser();
   gUserManager.DropOwner();
 
+  // XXX Is this really a status? XXX
+  // If this is non-zero, ICQ5 ignores our accept file ack.
+  nStatus = 0;
+
   buffer->PackUnsignedShort(0x001B); // len
   buffer->PackUnsignedShort(m_pUser->ConnectionVersion());
   buffer->Pack(PLUGIN_NORMAL, GUID_LENGTH);
