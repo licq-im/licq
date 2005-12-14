@@ -808,17 +808,15 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
 #endif
 
-    ProtoPluginsList pl;
-    ProtoPluginsListIter it;
-    licqDaemon->ProtoPluginList(pl);
-    for (it = pl.begin(); it != pl.end(); it++)
+    FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
     {
 #ifdef USE_KDE
-        kdeIMInterface->addProtocol((*it)->Name(), (*it)->PPID());
+        kdeIMInterface->addProtocol((*_ppit)->Name(), (*_ppit)->PPID());
 #endif
-        if ((*it)->PPID() != LICQ_PPID) // XXX To be removed later
-        slot_protocolPlugin((*it)->PPID());
+        if ((*_ppit)->PPID() != LICQ_PPID) // XXX To be removed later
+          slot_protocolPlugin((*_ppit)->PPID());
     }
+    FOR_EACH_PROTO_PLUGIN_END
    
    // automatically logon if requested in conf file
    if (m_nAutoLogon > 0)
@@ -2314,15 +2312,12 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
     mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE, bAllInvis);
   }
 
-  ProtoPluginsList pl;
-  ProtoPluginsListIter it;
-  licqDaemon->ProtoPluginList(pl);
-  if (pl.size() == 1)
-    bLicqOnly = true;
-    
-  for (it = pl.begin(); it != pl.end(); it++)
+  FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
   {
-    unsigned long nPPID = (*it)->PPID();
+    if (_pl_.size() == 1)
+      bLicqOnly = true;
+
+    unsigned long nPPID = (*_ppit)->PPID();
     if (_nPPID != 0xFFFFFFFF && nPPID != _nPPID)
       continue;
       
@@ -2403,6 +2398,7 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
     else
       licqDaemon->ProtoSetStatus(nPPID, newStatus);
   }
+  FOR_EACH_PROTO_PLUGIN_END
 }
 
 //----CMainWindow::changeStatus-------------------------------------------------
@@ -2496,43 +2492,39 @@ void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
   
   if (index == OwnerMenuView)
   {
-    ProtoPluginsList pl; 
-    ProtoPluginsListIter it;
-    licqDaemon->ProtoPluginList(pl);
-    for (it = pl.begin(); it != pl.end(); it++)
+    FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
     {
       char *szId = 0;
-      ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      ICQOwner *o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
       if (o == 0) continue;
       szId = strdup(o->IdString());
       unsigned short nNumMsg = o->NewMessages();
-      gUserManager.DropOwner((*it)->PPID());
+      gUserManager.DropOwner((*_ppit)->PPID());
       
       if (nNumMsg > 0)
-        callFunction(index, szId, (*it)->PPID());
+        callFunction(index, szId, (*_ppit)->PPID());
 
       free(szId);
     } 
+    FOR_EACH_PROTO_PLUGIN_END
   }
 
   else if (index == OwnerMenuGeneral || index == OwnerMenuHistory)
   {
     char *szId;
-    ProtoPluginsList pl;
-    ProtoPluginsListIter it;
-    licqDaemon->ProtoPluginList(pl);
-    for (it = pl.begin(); it != pl.end(); it++)
+    FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
     {
-      if ((*it)->PPID() == nThisPPID)
+      if ((*_ppit)->PPID() == nThisPPID)
       {
-        ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+        ICQOwner *o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
         if (o == 0) continue;
         szId = strdup(o->IdString());
-        gUserManager.DropOwner((*it)->PPID());
-        callInfoTab(index, szId, (*it)->PPID());
+        gUserManager.DropOwner((*_ppit)->PPID());
+        callInfoTab(index, szId, (*_ppit)->PPID());
         free(szId);
       }
     }
+    FOR_EACH_PROTO_PLUGIN_END
   }
 
   else if (index == OwnerMenuSecurity)
@@ -3025,21 +3017,19 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
   if (strcmp(szId, "0") == 0)
   {
     // Do system messages first
-    ProtoPluginsList pl;
-    ProtoPluginsListIter it;
-    licqDaemon->ProtoPluginList(pl);
-    for (it = pl.begin(); it != pl.end(); it++)
+    FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
     {
-      ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
+      ICQOwner *o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
       if (o == 0) continue; // just in case
       unsigned short nNumMsg = o->NewMessages();
-      gUserManager.DropOwner((*it)->PPID());
+      gUserManager.DropOwner((*_ppit)->PPID());
       if (nNumMsg > 0)
       {
-        callOwnerFunction(OwnerMenuView, (*it)->PPID());
+        callOwnerFunction(OwnerMenuView, (*_ppit)->PPID());
         return;
       }
     }
+    FOR_EACH_PROTO_PLUGIN_END
     
     time_t t = time(NULL);
     FOR_EACH_USER_START(LOCK_R)
@@ -3061,17 +3051,14 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
       ICQUser *u = 0;
       if (nPPID == 0)
       {
-        ProtoPluginsList pl;
-        ProtoPluginsListIter it;
-        licqDaemon->ProtoPluginList(pl);
-        for (it = pl.begin(); it != pl.end(); it++)
+        FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
         {
-          u = gUserManager.FetchUser(szId, (*it)->PPID(), LOCK_R);
+          u = gUserManager.FetchUser(szId, (*_ppit)->PPID(), LOCK_R);
           if (u)
           {
             if (u->NewMessages())
             {
-              nPPID = (*it)->PPID();
+              nPPID = (*_ppit)->PPID();
               break;
             }
             else
@@ -3081,6 +3068,7 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
             }
           }
         }  
+        FOR_EACH_PROTO_PLUGIN_END
       }
       else
         u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
@@ -4692,19 +4680,17 @@ void CMainWindow::slot_usermenu()
   else
     mnuSend->changeItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
 
-  ProtoPluginsList pl;
-  ProtoPluginsListIter it;
-  licqDaemon->ProtoPluginList(pl);
   unsigned long nSendFuncs = 0xFFFFFFFF;
   bool bIsLicq = m_nUserMenuPPID == LICQ_PPID;
-  for (it = pl.begin(); it != pl.end(); it++)
+  FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
   {
-    if ((*it)->PPID() != LICQ_PPID && (*it)->PPID() == m_nUserMenuPPID)
+    if ((*_ppit)->PPID() != LICQ_PPID && (*_ppit)->PPID() == m_nUserMenuPPID)
     {
-      nSendFuncs = (*it)->SendFunctions();
+      nSendFuncs = (*_ppit)->SendFunctions();
       break;
     }
   }
+  FOR_EACH_PROTO_PLUGIN_END
   
   // The send submenu and misc modes submenu that depend on sending capabilities
   mnuUser->setItemVisible(mnuUserSendMsg, nSendFuncs & PP_SEND_MSG);
