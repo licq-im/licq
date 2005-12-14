@@ -39,6 +39,18 @@ class ProxyServer;
 class CReverseConnectToUserData;
 class CMSN;
 
+#define FOR_EACH_PROTO_PLUGIN_START(d)                             \
+    {                                                              \
+      ProtoPluginsList _pl_;                                       \
+      ProtoPluginsListIter _ppit;                                  \
+      d->ProtoPluginList(_pl_);                                    \
+      for (_ppit = _pl_.begin(); _ppit != _pl_.end(); _ppit++)     \
+      { 
+
+#define FOR_EACH_PROTO_PLUGIN_END                                  \
+      }                                                            \
+    }
+
 /* Forward declarations for friend functions */
 void *Ping_tep(void *p);
 void *UpdateUsers_tep(void *p);
