@@ -191,6 +191,7 @@ CMSNP2PPacket::CMSNP2PPacket(const char *szTo, unsigned long nSessionId,
   : CMSNPayloadPacket(true)
 {
   m_szToEmail = (szTo ? strdup(szTo) : strdup(""));
+  m_szCallGUID = 0;
   m_nSessionId = nSessionId;
   m_nBaseId = nBaseId;
   m_nDataOffsetLO = nDataOffsetLO;
@@ -624,7 +625,7 @@ CPS_MSNInvitation::CPS_MSNInvitation(char *szToEmail, char *szFromEmail,
   : CMSNP2PPacket(szToEmail)
 {
   char *szBranchGUID = CreateGUID();
-  char *szCallGUID = CreateGUID();
+  m_szCallGUID = CreateGUID();
   string strMSNObject64 = MSN_Base64Encode((unsigned char *)szMSNObject,
     strlen(szMSNObject));
 
@@ -652,8 +653,8 @@ CPS_MSNInvitation::CPS_MSNInvitation(char *szToEmail, char *szFromEmail,
 	   "Max-Forwards: 0\r\n"
 	   "Content-Type: application/x-msnmsgr-sessionreqbody\r\n"
 	   "Content-Length: %d\r\n"
-	   "\r\n", szToEmail, szToEmail, szFromEmail, szBranchGUID, szCallGUID,
-	   strlen(szBodyBuf)+1);
+	   "\r\n", szToEmail, szToEmail, szFromEmail, szBranchGUID,
+	   m_szCallGUID, strlen(szBodyBuf)+1);
 
   string strMsg = szHeaderBuf;
   strMsg += szBodyBuf;
@@ -674,12 +675,54 @@ CPS_MSNInvitation::CPS_MSNInvitation(char *szToEmail, char *szFromEmail,
   m_pBuffer->PackUnsignedLong(0);
 }
 
+CPS_MSNP2PBye::CPS_MSNP2PBye(const char *_szToEmail, const char *_szFromEmail,
+			     const char *_szCallId, unsigned long _nBaseId,
+			     unsigned long _nAckId, unsigned long _nDataSizeHI,
+			     unsigned long _nDataSizeLO)
+  : CMSNP2PPacket(_szToEmail, 0, _nBaseId, 0, 0, 0, 4, 0, 0, _nAckId, 0, 0, 0)
+		     //SizeHI, _nDataSizeLO)
+{
+  char *szBranchGUID = CreateGUID();
+
+  char szMsgBuf[768];
+
+  snprintf(szMsgBuf, sizeof(szMsgBuf)-1,
+	   "BYE MSNMSGR:%s MSNSLP/1.0\r\n"
+	   "To: <msnmsgr:%s>\r\n"
+	   "From: <msnmsgr:%s>\r\n"
+	   "Via: MSNSLP/1.0/TLP ;branch={%s}\r\n"
+	   "CSeq: 0\r\n"
+	   "Call-ID: {%s}\r\n"
+	   "Max-Forwards: 0\r\n"
+	   "Content-Type: application/x-msnmsgr-sessionclosebody\r\n"
+	   "Content-Length: 3\r\n"
+	   "\r\n"
+	   "\r\n", _szToEmail, _szToEmail, _szFromEmail, szBranchGUID,
+	   _szCallId);
+
+  string strMsg = szMsgBuf;
+  strMsg += '\0';
+
+  srand(time(0));
+  m_nSessionId = 0;
+  m_nAckUniqueId = 0;
+  m_nDataSizeLO = strlen(szMsgBuf)+1;
+  m_nLen = strlen(szMsgBuf)+1;
+  m_nPayloadSize = strMsg.size();
+  CMSNP2PPacket::InitBuffer();
+
+  m_pBuffer->Pack(strMsg.c_str(), strMsg.size());
+
+  // Footer
+  m_pBuffer->PackUnsignedLong(0);
+}
+
 CPS_MSNP2PAck::CPS_MSNP2PAck(const char *_szToEmail, unsigned long _nSessionId,
 			     unsigned long _nBaseId, unsigned long _nAckId,
 			     unsigned long _nAckBaseId,
 			     unsigned long _nDataSizeHI,
 			     unsigned long _nDataSizeLO)
-  : CMSNP2PPacket(_szToEmail, _nSessionId, _nBaseId, 0, 0, 0, 4, 0, 0x02,
+  : CMSNP2PPacket(_szToEmail, _nSessionId, _nBaseId, 0, 0, _nDataSizeHI, _nDataSizeLO,  0, 0x02,
 		  _nAckId, _nAckBaseId, _nDataSizeHI, _nDataSizeLO)
 {
 //  m_szToEmail = strdup(_szToEmail);

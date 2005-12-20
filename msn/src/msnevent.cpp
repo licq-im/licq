@@ -25,10 +25,13 @@ CMSNDataEvent::CMSNDataEvent(CMSN *p)
   m_nBaseId = 0;
   m_nDataSize[0] = 0;
   m_nDataSize[1] = 0;
+  m_strFromId = "";
+  m_strCallId = "";
 }
 
 CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
 			     unsigned long _nBaseId, const string &_strId,
+			     const string &_strFromId, const string &_strCallId,
                              CMSN *p)
 {
   m_pMSN = p;
@@ -48,6 +51,8 @@ CMSNDataEvent::CMSNDataEvent(unsigned long _nEvent, unsigned long _nSessionId,
   m_nBaseId = _nBaseId;
   m_nDataSize[0] = 0;
   m_nDataSize[1] = 0;
+  m_strFromId = _strFromId;
+  m_strCallId = _strCallId;
 }
 
 CMSNDataEvent::~CMSNDataEvent()
@@ -211,7 +216,21 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 						  USER_PICTURE,
 						  m_strId.c_str(), MSN_PPID));
 	}
-	return 10;
+
+	// Ack that we got the data
+	CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,
+					     m_nBaseId-1, nIdentifier, nAckId,
+					     nDataSize[1], nDataSize[0]);
+	m_pMSN->Send_SB_Packet(m_strId, pAck, m_nSocketDesc);
+
+        // Send a bye command
+        CMSNPacket *pBye = new CPS_MSNP2PBye(m_strId.c_str(),
+					     m_strFromId.c_str(),
+					     m_strCallId.c_str(),
+	  				     ++m_nBaseId, nAckId,
+					     nDataSize[1], nDataSize[0]);
+        m_pMSN->Send_SB_Packet(m_strId, pBye, m_nSocketDesc);        
+	return 0;
       }
 
       break;
@@ -219,7 +238,8 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 
     case STATE_FINISHED:
     {
-      m_nFileDesc = -1;
+      // Don't have to send anything back, just return and close the socket.
+      return 10;
       break;
     }
 

@@ -704,8 +704,8 @@ void CMSN::MSNGetDisplayPicture(const string &strUser, const string &strMSNObjec
 						const_cast<char *>(strMSNObject.c_str()));
   CMSNP2PPacket *p = (CMSNP2PPacket *)(pGetMSNDP);
   CMSNDataEvent *pDataResponse = new CMSNDataEvent(MSN_DP_EVENT,
-						   p->SessionId(),
-						   p->BaseId(), strUser, this);
+						   p->SessionId(), p->BaseId(),  strUser, 
+                                                   m_szUserName, p->CallGUID(), this);
   WaitDataEvent(pDataResponse);
   gLog.Info("%sRequesting %s's display picture.\n", L_MSNxSTR, szUser);
   MSNSendInvitation(szUser, pGetMSNDP);

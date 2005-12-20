@@ -70,7 +70,8 @@ struct SStartMessage
   CICQSignal *m_pSignal;
   char *m_szUser;
   unsigned long m_nSeq;
-  bool m_bConnecting;
+  bool m_bConnecting,
+       m_bDataConnection;
 };
 
 typedef list<SStartMessage *> StartList;

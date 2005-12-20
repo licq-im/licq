@@ -255,20 +255,6 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       string strUser = packet->GetParameter();
       gLog.Info("%s%s joined the conversation.\n", L_MSNxSTR, strUser.c_str());
 
-      // Add the user to the conversation
-      if (!m_pDaemon->FindConversation(nSock))
-        m_pDaemon->AddConversation(nSock, MSN_PPID);
-        
-      m_pDaemon->AddUserConversation(nSock, strUser.c_str());
-      
-      // Notify the plugins of the new CID
-      m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_SOCKET, 0,
-        strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
-
-      // Notify the plugins
-      m_pDaemon->PushPluginSignal(new
-        CICQSignal(SIGNAL_CONVOxJOIN, 0, strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
-  
       SStartMessage *pStart = 0;
       StartList::iterator it;
       pthread_mutex_lock(&mutex_StartList);
@@ -282,6 +268,23 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         }
       }
       
+      if ((pStart && pStart->m_bDataConnection == false) || pStart == 0)
+      {
+        // Add the user to the conversation
+        if (!m_pDaemon->FindConversation(nSock))
+          m_pDaemon->AddConversation(nSock, MSN_PPID);
+
+        m_pDaemon->AddUserConversation(nSock, strUser.c_str());
+
+        // Notify the plugins of the new CID
+        m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_SOCKET, 0,
+          strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
+
+        // Notify the plugins
+        m_pDaemon->PushPluginSignal(new
+          CICQSignal(SIGNAL_CONVOxJOIN, 0, strdup(strUser.c_str()), MSN_PPID, 0, SocketToCID(nSock)));
+      }
+
       if (pStart)
       {
         if (pStart->m_pEvent)
@@ -466,6 +469,8 @@ bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
   ICQUser *u = gUserManager.FetchUser(pStart->m_szUser, MSN_PPID, LOCK_W);
   if (u)
   {
+    if (pStart->m_bDataConnection)
+      sock->SetChannel(ICQ_CHNxINFO);
     u->SetSocketDesc(sock);
     gUserManager.DropUser(u);
   }
@@ -549,6 +554,7 @@ void CMSN::MSNSendInvitation(char *_szUser, CMSNPacket *_pPacket)
   p->m_szUser = strdup(_szUser);
   p->m_nSeq = pSB->Sequence();
   p->m_bConnecting = false;
+  p->m_bDataConnection = true;
   pthread_mutex_lock(&mutex_StartList);
   m_lStart.push_back(p);
   pthread_mutex_unlock(&mutex_StartList);
@@ -601,6 +607,7 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsig
     p->m_szUser = strdup(_szUser);
     p->m_nSeq = pSB->Sequence();
     p->m_bConnecting = false;
+    p->m_bDataConnection = false;
     pthread_mutex_lock(&mutex_StartList);
     m_lStart.push_back(p);
     pthread_mutex_unlock(&mutex_StartList);
@@ -624,21 +631,5 @@ void CMSN::MSNSendTypingNotification(char *_szUser, unsigned long _nCID)
     
   if (nSockDesc > 0)
     Send_SB_Packet(strUser, pSend, nSockDesc);
-#if 0
-  else
-  {
-    // Must connect to the SB and call the user
-    CMSNPacket *pSB = new CPS_MSNXfr();
-      
-    SStartMessage *p = new SStartMessage;
-    p->m_pPacket = pSend;
-    p->m_pEvent = 0;
-    p->m_pSignal = 0;
-    p->m_szUser = strdup(_szUser);
-    m_lStart.push_back(p);
-   
-    SendPacket(pSB);    
-  }
-#endif
 }
 

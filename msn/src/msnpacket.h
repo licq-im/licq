@@ -91,11 +91,13 @@ public:
 
   unsigned long SessionId() { return m_nSessionId; }
   unsigned long BaseId() { return m_nBaseId; }
+  char *CallGUID() { return m_szCallGUID; }
   // unsigned long DataSize() {}
   //unsigned long Offset() {}
 
 protected:
-  char *m_szToEmail;
+  char *m_szToEmail,
+       *m_szCallGUID;
   unsigned long m_nSessionId,
     m_nBaseId,
     m_nDataSizeLO,
@@ -295,6 +297,14 @@ class CPS_MSNInvitation : public CMSNP2PPacket
 {
 public:
   CPS_MSNInvitation(char *szToEmail, char *szFromEmail, char *szMSNObject);
+};
+
+class CPS_MSNP2PBye : public CMSNP2PPacket
+{
+public:
+  CPS_MSNP2PBye(const char *szId, const char *szFromId, const char *szCallId,
+                unsigned long nBaseId, unsigned long nAckId,
+		unsigned long nDataSizeHI, unsigned long nDataSizeLO);
 };
 
 class CPS_MSNP2PAck : public CMSNP2PPacket

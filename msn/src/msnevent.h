@@ -17,7 +17,7 @@ class CMSNDataEvent
 public:
   CMSNDataEvent(CMSN *);
   CMSNDataEvent(unsigned long, unsigned long, unsigned long, const string &,
-                CMSN *);
+		const string &, const string &, CMSN *);
   ~CMSNDataEvent();
 
   int ProcessPacket(CMSNBuffer *);
@@ -35,7 +35,9 @@ protected:
 
   int m_nSocketDesc;
   unsigned long m_nEvent;
-  string m_strId;
+  string m_strId,
+         m_strFromId,
+         m_strCallId;
   ESTATE m_eState;
   int m_nFileDesc;
   string m_strFileName;
