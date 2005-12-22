@@ -132,6 +132,7 @@ private:
   void RemovePacket(string, int, int = 0);
   SBuffer *RetrievePacket(const string &, int);
   ICQEvent *RetrieveEvent(unsigned long);
+  void HandlePacket(int, CMSNBuffer &, const char *);
   unsigned long SocketToCID(int);
   static string Decode(const string &);
   static string Encode(const string &);

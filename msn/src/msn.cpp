@@ -211,6 +211,122 @@ ICQEvent *CMSN::RetrieveEvent(unsigned long _nTag)
   return e;
 }
 
+void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const char* _szUser)
+{
+  SBuffer *pBuf = RetrievePacket(_szUser, _nSocket);
+  bool bProcess = false;
+
+  if (pBuf)
+    *(pBuf->m_pBuf) += packet;
+  else
+  {
+    pBuf = new SBuffer;
+    pBuf->m_pBuf = new CMSNBuffer(packet);
+    pBuf->m_strUser = _szUser;
+    pBuf->m_bStored = false;
+  }
+
+  do
+  {
+    char *szNeedle;
+    CMSNBuffer *pPart = 0;
+    unsigned long nFullSize = 0;
+    bProcess = false;
+
+    if ((szNeedle = strstr((char *)pBuf->m_pBuf->getDataStart(),
+                           "\r\n")))
+    {
+      if (memcmp(pBuf->m_pBuf->getDataStart(), "MSG", 3) == 0)
+      {
+        pBuf->m_pBuf->SkipParameter(); // MSG
+        pBuf->m_pBuf->SkipParameter(); // Hotmail
+        pBuf->m_pBuf->SkipParameter(); // Hotmail
+        string strSize = pBuf->m_pBuf->GetParameter();
+        int nSize = atoi(strSize.c_str());
+
+        // Cut the packet instead of passing it all along
+        // we might receive 1 full packet and part of another.
+        if (nSize <= (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
+        {
+          nFullSize = nSize + pBuf->m_pBuf->getDataPosRead() - pBuf->m_pBuf->getDataStart() + 1;
+          if (pBuf->m_pBuf->getDataSize() > nFullSize)
+          {
+            // Hack to save the part and delete the rest
+            if (pBuf->m_bStored == false)
+            {
+              StorePacket(pBuf, _nSocket);
+              pBuf->m_bStored = true;
+            }
+
+            // We have a packet, with part of another one at the end
+            pPart = new CMSNBuffer(nFullSize);
+            pPart->Pack(pBuf->m_pBuf->getDataStart(), nFullSize);
+          }
+          bProcess = true;
+        }
+      }
+      else //if(memcmp(pBuf->m_pBuf->getDataStart(), "ACK", 3) == 0)
+      {
+        int nSize = szNeedle - pBuf->m_pBuf->getDataStart() +2;
+
+        // Cut the packet instead of passing it all along
+        // we might receive 1 full packet and part of another.
+        if (nSize <= (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
+        {
+          nFullSize = nSize + pBuf->m_pBuf->getDataPosRead() - pBuf->m_pBuf->getDataStart();
+
+          if (pBuf->m_pBuf->getDataSize() > nFullSize)
+          {
+            // Hack to save the part and delete the rest
+            if (pBuf->m_bStored == false)
+            {
+              StorePacket(pBuf, _nSocket);
+              pBuf->m_bStored = true;
+            }
+
+            // We have a packet, with part of another one at the end
+            pPart = new CMSNBuffer(nFullSize);
+            pPart->Pack(pBuf->m_pBuf->getDataStart(), nFullSize);
+          }
+          bProcess = true;
+        }
+      }
+
+      if (!bProcess)
+      {
+        // Save it
+        StorePacket(pBuf, _nSocket);
+        pBuf->m_bStored = true;
+      }
+
+      pBuf->m_pBuf->Reset();
+    }
+    else
+    {
+      // Need to save it, doens't have much data yet
+      StorePacket(pBuf, _nSocket);
+      pBuf->m_bStored = true;
+      bProcess = false;
+    }
+
+    if (bProcess)
+    {
+      // Handle it, and then remove it from the queue
+      if (m_nServerSocket == _nSocket)
+        ProcessServerPacket(pPart ? *pPart : *(pBuf->m_pBuf));
+      else
+        ProcessSBPacket(const_cast<char *>(_szUser), pPart ? pPart : pBuf->m_pBuf,
+                        _nSocket);
+      RemovePacket(_szUser, _nSocket, nFullSize);
+      delete pBuf;
+      pBuf = RetrievePacket(_szUser, _nSocket);
+    }
+    else
+      pBuf = 0;
+
+  } while (pBuf);
+}
+
 string CMSN::Decode(const string &strIn)
 {
   string strOut = "";
@@ -316,7 +432,8 @@ void CMSN::Run()
             CMSNBuffer packet(sock->RecvBuffer());
             sock->ClearRecvBuffer();
             gSocketMan.DropSocket(sock);
-            ProcessServerPacket(packet);
+
+            HandlePacket(m_nServerSocket, packet, m_szUserName);
           }
           else
           {
@@ -364,123 +481,12 @@ void CMSN::Run()
           if (sock && sock->RecvRaw())
           {
             CMSNBuffer packet(sock->RecvBuffer());
-            bool bProcess = false;
             sock->ClearRecvBuffer();
             char *szUser = strdup(sock->OwnerId());
             gSocketMan.DropSocket(sock);
+
+            HandlePacket(nCurrent, packet, szUser);
             
-            // Build the packet with last received portion
-	    string strUser(szUser);
-            SBuffer *pBuf = RetrievePacket(strUser, nCurrent);
-            if (pBuf)
-            {
-              *(pBuf->m_pBuf) += packet;
-            }
-            else
-            {
-              pBuf = new SBuffer;
-              pBuf->m_pBuf = new CMSNBuffer(packet);
-              pBuf->m_strUser = strUser;
-	      pBuf->m_bStored = false;
-	    }
-            
-	    do
-	    {
-	      // Do we have the entire packet?
-	      char *szNeedle;
-	      CMSNBuffer *pPart = 0;
-	      int nFullSize = 0;
-	      bProcess = false;
-	      if ((szNeedle = strstr((char *)pBuf->m_pBuf->getDataStart(),
-				     "\r\n")))
-	      {
-		// Check for a packet that has a payload
-		if (memcmp(pBuf->m_pBuf->getDataStart(), "MSG", 3) == 0)
-		{
-		  pBuf->m_pBuf->SkipParameter(); // command
-		  pBuf->m_pBuf->SkipParameter(); // user id
-		  pBuf->m_pBuf->SkipParameter(); // alias
-		  string strSize = pBuf->m_pBuf->GetParameter();
-		  int nSize = atoi(strSize.c_str());
-  
-		  // Cut the packet instead of passing it all along
-		  // we might receive 1 full packet and part of another.
-		  if (nSize <= (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
-		  {
-		    nFullSize = nSize + pBuf->m_pBuf->getDataPosRead() - pBuf->m_pBuf->getDataStart() + 1;
-		    if (pBuf->m_pBuf->getDataSize() > nFullSize)
-		    {
-		      // Hack to save the part and delete the rest
-		      if (pBuf->m_bStored == false)
-		      {
-			StorePacket(pBuf, nCurrent);
-			pBuf->m_bStored = true;
-		      }
-
-		      // We have a packet, with part of another one at the end
-		      pPart = new CMSNBuffer(nFullSize);
-		      pPart->Pack(pBuf->m_pBuf->getDataStart(), nFullSize);
-		    }
-		    bProcess = true;
-		  }
-		}
-		else //if(memcmp(pBuf->m_pBuf->getDataStart(), "ACK", 3) == 0)
-		{
-		  int nSize = szNeedle - pBuf->m_pBuf->getDataStart() +1;
-
-		  // Cut the packet instead of passing it all along
-		  // we might receive 1 full packet and part of another.
-		  if (nSize <= (pBuf->m_pBuf->getDataPosWrite() - pBuf->m_pBuf->getDataPosRead()))
-		  {
-		    nFullSize = nSize + pBuf->m_pBuf->getDataPosRead() - pBuf->m_pBuf->getDataStart() + 1;
-		    if (pBuf->m_pBuf->getDataSize() > nFullSize)
-		    {
-		      // Hack to save the part and delete the rest
-		      if (pBuf->m_bStored == false)
-		      {
-			StorePacket(pBuf, nCurrent);
-			pBuf->m_bStored = true;
-		      }
-		 
-		      // We have a packet, with part of another one at the end
-		      pPart = new CMSNBuffer(nFullSize);
-		      pPart->Pack(pBuf->m_pBuf->getDataStart(), nFullSize);
-		    }
-		    bProcess = true;
-		  }
-		}
-
-		if (!bProcess)
-		{
-		  // Save it
-		  StorePacket(pBuf, nCurrent);
-		  pBuf->m_bStored = true;
-		}
-
-		pBuf->m_pBuf->Reset();  
-	      } 
-	      else
-	      {
-		// Need to save it, doens't have much data yet
-		StorePacket(pBuf, nCurrent);
-		pBuf->m_bStored = true;
-		bProcess = false;
-	      }
-
-	      if (bProcess)
-	      {
-		// Handle it, and then remove it from the queue
-		ProcessSBPacket(szUser, pPart ? pPart : pBuf->m_pBuf,
-				sock->Descriptor());
-		RemovePacket(strUser, nCurrent, nFullSize);
-		delete pBuf;
-		pBuf = RetrievePacket(strUser, nCurrent);
-	      }
-	      else
-		pBuf = 0;
-
-	    } while (pBuf);
-     
 	    free(szUser);
 	  }
 	  else
