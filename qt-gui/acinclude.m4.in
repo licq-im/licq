@@ -29,13 +29,18 @@ AC_DEFUN([AC_PATH_QT_LIB],
       if test -z "$ac_qt_libraries"; then
         qt_library_dirs="\
           /usr/lib/qt3/lib \
+          /usr/lib/qt3/lib64 \
           /usr/lib/qt2/lib \
           /usr/lib \
+          /usr/lib64 \
           /usr/local/lib \
+          /usr/local/lib64 \
           /usr/lib/qt \
           /usr/lib/qt/lib \
+          /usr/lib/qt/lib64 \
           /usr/local/lib/qt \
           /usr/local/qt/lib \
+          /usr/local/qt/lib64 \
           /usr/X11/lib \
           /usr/X11/lib/qt \
           /usr/X11R6/lib \
