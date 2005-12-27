@@ -38,6 +38,11 @@ using namespace std;
 #include <stdlib.h>
 #include <pthread.h>
 
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 char *strndup(const char *s, size_t n)
 {
   char *str;
