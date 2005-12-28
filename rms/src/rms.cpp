@@ -2,6 +2,10 @@
 #include "config.h"
 #endif
 
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
 #include <string.h>
 #include <ctype.h>
 #include <stdio.h>
