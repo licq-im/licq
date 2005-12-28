@@ -6,6 +6,11 @@ header file containing all the main procedures to interface with the ICQ server 
 #ifndef ICQD_H
 #define ICQD_H
 
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <unistd.h>
+
 #include <vector>
 #include <list>
 #include <deque>
