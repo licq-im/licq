@@ -96,6 +96,10 @@ void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired)
     0, _bAuthRequired);
   gLog.Info(tr("%sAdding %s to server list...\n"), L_SRVxSTR, _szId);
   SendExpectEvent_Server(0, pAdd, NULL);
+
+  CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+                                              ICQ_SNACxLIST_ROSTxEDITxEND);
+  SendEvent_Server(pEnd);
 }
 
 void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired)
@@ -160,7 +164,10 @@ void CICQDaemon::CheckExport()
   FOR_EACH_PROTO_USER_END
 
   if (users.size())
+  {
     icqExportUsers(users, ICQ_ROSTxNORMAL);
+    icqUpdateServerGroups();
+  }
   
   UserStringList::iterator it;
   for (it = doneUsers.begin(); it != doneUsers.end(); it++)
@@ -198,8 +205,6 @@ void CICQDaemon::CheckExport()
   }
   FOR_EACH_PROTO_USER_END
 
-  icqUpdateServerGroups();
-  
   if (visibleUsers.size())
     icqExportUsers(visibleUsers, ICQ_ROSTxVISIBLE);
 
@@ -2281,6 +2286,10 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
   case ICQ_SNACxSRV_ACKxIMxICQ:
     {
+      ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+      unsigned long nListTime = o->GetSSTime();
+      gUserManager.DropOwner(LICQ_PPID);
+
       CSrvPacketTcp* p;
       gLog.Info(tr("%sServer sent us channel capability list (ignoring).\n"), L_SRVxSTR);
 
@@ -2293,9 +2302,10 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       SendEvent_Server(p);
 
       gLog.Info(tr("%sRequesting server contact list rights.\n"), L_SRVxSTR);
-      p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS);
-      SendEvent_Server(p);
-
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, nListTime == 0 ? ICQ_SNACxLIST_REQUESTxROST2 :
+                                                                    ICQ_SNACxLIST_REQUESTxRIGHTS);
+      SendExpectEvent_Server(0, p, 0);
+      
       gLog.Info(tr("%sRequesting Instant Messaging rights.\n"), L_SRVxSTR);
       p = new CPU_GenericFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_REQUESTxRIGHTS);
       SendEvent_Server(p);
@@ -3916,8 +3926,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
 
   // First 8 bytes - unknown
-  packet.UnpackUnsignedLong();
-  packet.UnpackUnsignedLong();
+  if (nSubtype != ICQ_SNACxLIST_ROSTxREPLY)
+  {
+    packet.UnpackUnsignedLong();
+    packet.UnpackUnsignedLong();
+  } 
 
   switch (nSubtype)
   {
@@ -3929,8 +3942,10 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       else
         gLog.Info(tr("%sRequesting Server Contact List.\n"), L_SRVxSTR);
 
+      DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+
       CSrvPacketTcp *p = new CPU_RequestList();
-      SendEvent_Server(p);
+      SendExpectEvent_Server(0, p, 0);
 
       break;
     }
@@ -3938,8 +3953,24 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_ROSTxREPLY:
     {
       static unsigned short nCount;
+      static bool sCheckExport = false;
       unsigned short nPacketCount;
       unsigned long nTime;
+
+      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+
+      if (e == NULL)
+      {
+        gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
+        break;
+      }
+
+      if (e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS) ||
+          e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxROST))
+      {
+        packet.UnpackUnsignedLong();
+        packet.UnpackUnsignedLong();
+      }
 
       gLog.Info(tr("%sReceived contact list.\n"), L_SRVxSTR);
 
@@ -4069,7 +4100,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           {
             if (!UseServerContactList()) break; 
                       
-            if (szId[0] != '\0')
+            if (szId[0] != '\0' && nTag != 0)
             {
               // Rename the group if we have it already or else add it
               unsigned short nGroup = gUserManager.GetGroupFromID(nTag);
@@ -4114,6 +4145,13 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           delete[] szId;
       } // for count
 
+      // First time we get this packet, check to upload our local list
+      if (sCheckExport == false)
+      {
+        sCheckExport = true;
+        CheckExport();
+      }
+      
       // Update local info about contact list
       nTime = packet.UnpackUnsignedLongBE();
       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
@@ -4131,6 +4169,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
     case ICQ_SNACxLIST_ROSTxSYNCED:
     {
+      DoneServerEvent(nSubSequence, EVENT_SUCCESS);
+
       gLog.Info(tr("%sContact list is synchronized.\n"), L_SRVxSTR);
       // The server says we are up to date, let's double check
       CheckExport();
@@ -4153,6 +4193,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         gLog.Warn(tr("%sServer list update ack without request.\n"), L_SRVxSTR);
         break;
       }
+
+      ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+      unsigned long nListTime = o->GetSSTime();
+      o->SetSSTime(time(0));
+      gUserManager.DropOwner(LICQ_PPID);
 
       CSrvPacketTcp *pReply = 0;
       bool bHandled = false;
@@ -4226,10 +4271,18 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               pthread_mutex_unlock(&mutex_modifyserverusers);
               gUserManager.UnlockGroupList();
 
+              // Start editing server list
+              CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+                                                            ICQ_SNACxLIST_ROSTxEDITxSTART);
+              SendEvent_Server(pStart);
+
               if (e->ExtraInfo() == 0)
               {
                 bTopLevelUpdated = true;
-                pReply = new CPU_UpdateToServerList("", ICQ_ROSTxGROUP, 0);
+                if (nListTime == 0)
+                  pReply = new CPU_AddToServerList("", ICQ_ROSTxGROUP, 0, false, true);
+                else
+                  pReply = new CPU_UpdateToServerList("", ICQ_ROSTxGROUP, 0);
                 gLog.Info(tr("%sUpdating top level group.\n"), L_SRVxSTR);
               }
               else
@@ -4239,6 +4292,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 gLog.Info(tr("%sUpdating group %s.\n"), L_SRVxSTR, szGroupName);
               }
               SendExpectEvent_Server(0, pReply, NULL);
+
+              // Finish editing server list
+              CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
+                                                          ICQ_SNACxLIST_ROSTxEDITxEND);
+              SendEvent_Server(pEnd);
             }
 
 

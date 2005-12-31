@@ -2701,7 +2701,8 @@ CPU_AddPDINFOToServerList::CPU_AddPDINFOToServerList()
 //-----AddToServerList----------------------------------------------------------
 CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
                                          unsigned short _nType,
-                                         unsigned short _nGroup, bool _bAuthReq)
+                                         unsigned short _nGroup, bool _bAuthReq,
+                                         bool _bTopLevel)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD), m_nSID(0),
     m_nGSID(0)
 {
@@ -2774,7 +2775,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     case ICQ_ROSTxGROUP:
     {
       // the way it works
-      m_nGSID = m_nSID;
+      m_nGSID = _bTopLevel ? 0 : m_nSID;
       m_nSID = 0;
       SetExtraInfo(0);
 
@@ -2784,7 +2785,10 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       // modifygroupid needs write access, so unlock to make sure it gets what it wants.
       gUserManager.UnlockGroupIDList();
 
-      gUserManager.ModifyGroupID(const_cast<char *>(_szName), m_nGSID);
+      if (!_bTopLevel)
+        gUserManager.ModifyGroupID(const_cast<char *>(_szName), m_nGSID);
+      else
+        nExportSize += 4 + (2 * gUserManager.NumGroups());
       break;
     }
 
@@ -2826,12 +2830,29 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   buffer->PackUnsignedShortBE(nExportSize+(_bAuthReq ? 4 : 0));
   if (nExportSize)
   {
-    buffer->PackUnsignedShortBE(0x0131);
-    buffer->PackUnsignedShortBE(nExportSize-4);
-    if (szUnicodeAlias)
-      buffer->Pack(szUnicodeAlias, nExportSize-4);
-    else if (szUnicodeName)
-      buffer->Pack(szUnicodeName, nExportSize-4);
+    if (_bTopLevel)
+    {
+      GroupIDList *pID = gUserManager.LockGroupIDList(LOCK_R);
+
+      // We are creating our top level group, so attach all the group ids now
+      buffer->PackUnsignedShortBE(0x00C8);
+      buffer->PackUnsignedShortBE(gUserManager.NumGroups() * 2);
+      
+      for (unsigned short i = 0; i < pID->size(); i++)
+        buffer->PackUnsignedShortBE((*pID)[i]);
+     
+      gUserManager.UnlockGroupIDList();
+    }
+    else
+    {
+      // Addming a normal user, so save their alias
+      buffer->PackUnsignedShortBE(0x0131);
+      buffer->PackUnsignedShortBE(nExportSize-4);
+      if (szUnicodeAlias)
+        buffer->Pack(szUnicodeAlias, nExportSize-4);
+      else if (szUnicodeName)
+        buffer->Pack(szUnicodeName, nExportSize-4);
+    }
   }
   if (_bAuthReq)
     buffer->PackUnsignedLongBE(0x00660000);
