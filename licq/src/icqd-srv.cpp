@@ -4075,6 +4075,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 u->SetNewUser(false);
               }
 
+              // Save the group that they are in
+              u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
+
               PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
                 u->IdString(), u->PPID()));
               gUserManager.DropUser(u);
