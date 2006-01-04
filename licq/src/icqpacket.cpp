@@ -1210,22 +1210,22 @@ CPU_ClientReady::CPU_ClientReady()
 
   InitBuffer();
 
-  buffer->PackUnsignedLongBE(0x00010003);
-  buffer->PackUnsignedLongBE(0x0110028a);
+  buffer->PackUnsignedLongBE(0x00010004);
+  buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x00020001);
-  buffer->PackUnsignedLongBE(0x0110028a);
+  buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x00030001);
-  buffer->PackUnsignedLongBE(0x0110028a);
+  buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x00150001);
-  buffer->PackUnsignedLongBE(0x0110028a);
+  buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x00040001);
-  buffer->PackUnsignedLongBE(0x0110028a);
+  buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x00060001);
-  buffer->PackUnsignedLongBE(0x0110028a);
+  buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x00090001);
-  buffer->PackUnsignedLongBE(0x0110028a);
+  buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x000a0001);
-  buffer->PackUnsignedLongBE(0x0110028a);
+  buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x00130004);
   buffer->PackUnsignedLongBE(0x011008e4);
 #endif
