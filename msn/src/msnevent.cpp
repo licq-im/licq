@@ -239,6 +239,8 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
     case STATE_FINISHED:
     {
       // Don't have to send anything back, just return and close the socket.
+      gLog.Info("%s Display Picture: closing connection with %s\n", L_MSNxSTR,
+                m_strId.c_str());
       return 10;
       break;
     }

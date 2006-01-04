@@ -667,6 +667,13 @@ bool CMSN::RemoveDataEvent(CMSNDataEvent *pData)
     if ((*it)->getUser() == pData->getUser() &&
 	(*it)->getSocket() == pData->getSocket())
     {
+      // Close the socket
+      gSocketMan.CloseSocket(pData->getSocket());
+
+      CConversation *pConv = m_pDaemon->FindConversation(pData->getSocket());
+      if (pConv)
+        m_pDaemon->RemoveConversation(pConv->CID());
+
       m_lMSNEvents.erase(it);
       delete pData;
       pData = 0;

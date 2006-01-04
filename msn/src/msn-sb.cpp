@@ -316,7 +316,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       if (u)
       {
         u->ClearSocketDesc(ICQ_CHNxNONE);
-        if (!pConv->IsEmpty())
+        if (pConv && !pConv->IsEmpty())
         {
           gUserManager.DropUser(u);
         }
@@ -327,7 +327,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           INetSocket *s = gSocketMan.FetchSocket(nThisSock);
           gSocketMan.DropSocket(s);  
           gSocketMan.CloseSocket(nSock);
-          m_pDaemon->RemoveConversation(pConv->CID());
+          if (pConv)
+            m_pDaemon->RemoveConversation(pConv->CID());
         }
       }
     }
@@ -410,7 +411,8 @@ void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, int nSocket, bool bDel
         gUserManager.DropUser(u);
         gSocketMan.DropSocket(s);
         gSocketMan.CloseSocket(nSock);
-        m_pDaemon->RemoveConversation(pConv->CID());
+        if (pConv)
+          m_pDaemon->RemoveConversation(pConv->CID());
       }
     }
   }
