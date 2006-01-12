@@ -227,7 +227,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
         CMSNPacket *pBye = new CPS_MSNP2PBye(m_strId.c_str(),
 					     m_strFromId.c_str(),
 					     m_strCallId.c_str(),
-	  				     ++m_nBaseId, nAckId,
+	  				     m_nBaseId, nAckId,
 					     nDataSize[1], nDataSize[0]);
         m_pMSN->Send_SB_Packet(m_strId, pBye, m_nSocketDesc);        
 	return 0;
