@@ -372,7 +372,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
     }
   }
   
-  delete packet;
+  //delete packet;
 }
 
 void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, int nSocket, bool bDelete)

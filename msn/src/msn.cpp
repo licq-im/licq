@@ -323,7 +323,10 @@ void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const char* _szUser)
         ProcessSBPacket(const_cast<char *>(_szUser), pPart ? pPart : pBuf->m_pBuf,
                         _nSocket);
       RemovePacket(_szUser, _nSocket, nFullSize);
-      delete pBuf;
+      if (pPart)
+        delete pPart;
+      else
+        delete pBuf;
       pBuf = RetrievePacket(_szUser, _nSocket);
     }
     else
