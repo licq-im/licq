@@ -6,6 +6,23 @@ extern "C" {
 #include <cdk.h>
 }
 
+#undef COLOR_GREEN
+#define COLOR_GREEN 24
+#undef COLOR_RED
+#define COLOR_RED 16
+#undef COLOR_CYAN
+#define COLOR_CYAN 56
+#undef COLOR_WHITE
+#define COLOR_WHITE 8
+#undef COLOR_MAGENTA
+#define COLOR_MAGENTA 48
+#undef COLOR_BLUE
+#define COLOR_BLUE 40
+#undef COLOR_YELLOW
+#define COLOR_YELLOW 32
+// #undef COLOR_BLACK
+// #define COLOR_BLACK 8
+
 #define COLOR_YELLOW_BLUE COLOR_YELLOW + 8
 #define COLOR_WHITE_BLUE  COLOR_WHITE + 8
 #define COLOR_CYAN_BLUE   COLOR_CYAN + 8

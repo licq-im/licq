@@ -43,7 +43,7 @@ char *EncodeFileSize(unsigned long nSize)
 void CLicqConsole::PrintBadInput(const char *_szIn)
 {
   winMain->wprintf("%CInvalid command [%A%s%Z].  Type \"help\" for help.\n",
-                   16, A_BOLD, _szIn, A_BOLD);
+                   COLOR_RED, A_BOLD, _szIn, A_BOLD);
 }
 
 
@@ -53,7 +53,7 @@ void CLicqConsole::PrintBadInput(const char *_szIn)
 void CLicqConsole::PrintBoxTop(const char *_szTitle, short _nColor, short _nLength)
 {
   unsigned short i, j;
-  wattrset(winMain->Win(), COLOR_PAIR(8));
+  wattrset(winMain->Win(), COLOR_PAIR(COLOR_WHITE));
   waddch(winMain->Win(), '\n');
   waddch(winMain->Win(), ACS_ULCORNER);
   for (i = 0; i < 10; i++)
@@ -104,7 +104,7 @@ void CLicqConsole::PrintBoxBottom(short _nLength)
   waddch(winMain->Win(), '\n');
 
   winMain->RefreshWin();
-  wattrset(winMain->Win(), COLOR_PAIR(8));
+  wattrset(winMain->Win(), COLOR_PAIR(COLOR_WHITE));
 }
 
 
@@ -114,7 +114,7 @@ void CLicqConsole::PrintBoxBottom(short _nLength)
 void CLicqConsole::PrintPrompt()
 {
   werase(winPrompt->Win());
-  winPrompt->wprintf("%C> ", 56);
+  winPrompt->wprintf("%C> ", COLOR_CYAN);
   winPrompt->RefreshWin();
 }
 
@@ -161,7 +161,7 @@ void CLicqConsole::PrintStatus()
     szLastUser = strdup("<None>");
 
   o = gUserManager.FetchOwner(LOCK_R);
-  wbkgdset(winStatus->Win(), COLOR_PAIR(8));
+  wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_WHITE));
   mvwhline(winStatus->Win(), 0, 0, ACS_HLINE, COLS);
   //mvwaddch(winStatus->Win(), 0, COLS - USER_WIN_WIDTH - 1, ACS_BTEE);
   wmove(winStatus->Win(), 1, 0);
@@ -191,7 +191,7 @@ void CLicqConsole::PrintGroups()
 {
   unsigned short j = 1, k;
 
-  PrintBoxTop("Groups", 8, 26);
+  PrintBoxTop("Groups", COLOR_WHITE, 26);
 
   PrintBoxLeft();
   winMain->wprintf("%A%C%3d. %-19s",
@@ -479,7 +479,7 @@ void CLicqConsole::PrintContactPopup(char *_szAlias)
  *-------------------------------------------------------------------------*/
 void CLicqConsole::PrintHelp()
 {
-  PrintBoxTop("Menu", 8, 48);
+  PrintBoxTop("Menu", COLOR_WHITE, 48);
 
   for (unsigned short i = 0; i < NUM_COMMANDS; i++)
   {
@@ -543,7 +543,7 @@ void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
     char *szTime = ctime(&t);
     szTime[16] = '\0';
     winMain->wprintf("%A%C[%d of %d] %s %s %s (%s) [%c%c%c]:\n%Z%s\n", A_BOLD,
-                     8, n + 1, lHistory.size(), (*it)->Description(),
+                     COLOR_WHITE, n + 1, lHistory.size(), (*it)->Description(),
                      (*it)->Direction() == D_RECEIVER ? "from" : "to", szFrom,
                      szTime, (*it)->IsDirect() ? 'D' : '-',
                      (*it)->IsMultiRec() ? 'M' : '-', (*it)->IsUrgent() ? 'U' : '-',
@@ -588,41 +588,41 @@ void CLicqConsole::PrintInfo_General(const char *szId, unsigned long nPPID)
   winMain->wprintf("%s %A(%Z%ld%A) General Info - %Z%s\n", u->GetAlias(), A_BOLD,
                    A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
 
-  winMain->wprintf("%C%AName: %Z%s %s\n", 8, A_BOLD, A_BOLD,
+  winMain->wprintf("%C%AName: %Z%s %s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    u->GetFirstName(), u->GetLastName());
-  winMain->wprintf("%C%AIp: %Z%s:%s\n", 8, A_BOLD, A_BOLD,
+  winMain->wprintf("%C%AIp: %Z%s:%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    u->IpStr(buf), u->PortStr(szPort));
-  winMain->wprintf("%C%AReal Ip: %Z%s\n", 8, A_BOLD, A_BOLD,
+  winMain->wprintf("%C%AReal Ip: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    szRealIp);
-  winMain->wprintf("%C%AEmail 1: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetEmailPrimary());
-  winMain->wprintf("%C%AEmail 2: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetEmailSecondary());
-  winMain->wprintf("%C%ACity: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCity());
-  winMain->wprintf("%C%AState: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetState());
-  winMain->wprintf("%C%AAddress: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetAddress());
-  winMain->wprintf("%C%APhone Number: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetPhoneNumber());
-  winMain->wprintf("%C%AFax Number: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetFaxNumber());
-  winMain->wprintf("%C%ACellular Number: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCellularNumber());
-  winMain->wprintf("%C%AZipcode: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetZipCode());
-  winMain->wprintf("%C%ACountry: ", 8, A_BOLD);
+  winMain->wprintf("%C%AEmail 1: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetEmailPrimary());
+  winMain->wprintf("%C%AEmail 2: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetEmailSecondary());
+  winMain->wprintf("%C%ACity: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCity());
+  winMain->wprintf("%C%AState: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetState());
+  winMain->wprintf("%C%AAddress: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetAddress());
+  winMain->wprintf("%C%APhone Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetPhoneNumber());
+  winMain->wprintf("%C%AFax Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetFaxNumber());
+  winMain->wprintf("%C%ACellular Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCellularNumber());
+  winMain->wprintf("%C%AZipcode: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetZipCode());
+  winMain->wprintf("%C%ACountry: ", COLOR_WHITE, A_BOLD);
   if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
-    winMain->wprintf("%CUnspecified\n", 8);
+    winMain->wprintf("%CUnspecified\n", COLOR_WHITE);
   else
   {
     const SCountry *c = GetCountryByCode(u->GetCountryCode());
     if (c == NULL)
-      winMain->wprintf("%CUnknown (%d)\n", 8, u->GetCountryCode());
+      winMain->wprintf("%CUnknown (%d)\n", COLOR_WHITE, u->GetCountryCode());
     else  // known
-      winMain->wprintf("%C%s\n", 8, c->szName);
+      winMain->wprintf("%C%s\n", COLOR_WHITE, c->szName);
   }
-  winMain->wprintf("%C%ATimezone: %ZGMT%c%02d%s\n", 8, A_BOLD, A_BOLD,
+  winMain->wprintf("%C%ATimezone: %ZGMT%c%02d%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    u->GetTimezone() > 0 ? '-' : '+',
                    u->GetTimezone() / 2,
                    u->GetTimezone() % 2 ? "30" : "00");
-  winMain->wprintf("%C%ALast Seen: %Z%s", 8, A_BOLD, A_BOLD,
+  winMain->wprintf("%C%ALast Seen: %Z%s", COLOR_WHITE, A_BOLD, A_BOLD,
     ctime(&nLast));
   if (!u->StatusOffline())
   {
-    winMain->wprintf("%C%AOnline Since: %Z%s", 8, A_BOLD, A_BOLD,
+    winMain->wprintf("%C%AOnline Since: %Z%s", COLOR_WHITE, A_BOLD, A_BOLD,
       (nOnSince ? ctime(&nOnSince) : "Unknown"));
   }
 
@@ -656,20 +656,20 @@ void CLicqConsole::PrintInfo_More(const char *szId, unsigned long nPPID)
                    A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
 
   if (u->GetAge() == AGE_UNSPECIFIED)
-    winMain->wprintf("%C%AAge: %ZUnspecified\n", 8, A_BOLD, A_BOLD);
+    winMain->wprintf("%C%AAge: %ZUnspecified\n", COLOR_WHITE, A_BOLD, A_BOLD);
   else
-    winMain->wprintf("%C%AAge: %Z%d\n", 8, A_BOLD, A_BOLD, u->GetAge());
-  winMain->wprintf("%C%AGender: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetGender() == GENDER_MALE ? "Male" : u->GetGender() == GENDER_FEMALE ? "Female" : "Unspecified");
-  winMain->wprintf("%C%AHomepage: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetHomepage());
-  winMain->wprintf("%C%ABirthday: %Z%d/%d/%d\n", 8, A_BOLD, A_BOLD, u->GetBirthDay(), u->GetBirthMonth(), u->GetBirthYear());
+    winMain->wprintf("%C%AAge: %Z%d\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetAge());
+  winMain->wprintf("%C%AGender: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetGender() == GENDER_MALE ? "Male" : u->GetGender() == GENDER_FEMALE ? "Female" : "Unspecified");
+  winMain->wprintf("%C%AHomepage: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetHomepage());
+  winMain->wprintf("%C%ABirthday: %Z%d/%d/%d\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetBirthDay(), u->GetBirthMonth(), u->GetBirthYear());
   for (unsigned short i = 0; i < 3; i++)
   {
-    winMain->wprintf("%C%ALanguage %d: ", 8, A_BOLD, i + 1);
+    winMain->wprintf("%C%ALanguage %d: ", COLOR_WHITE, A_BOLD, i + 1);
     const SLanguage *l = GetLanguageByCode(u->GetLanguage(i));
     if (l == NULL)
-      winMain->wprintf("%CUnknown (%d)\n", 8, u->GetLanguage(i));
+      winMain->wprintf("%CUnknown (%d)\n", COLOR_WHITE, u->GetLanguage(i));
     else  // known
-      winMain->wprintf("%C%s\n", 8, l->szName);
+      winMain->wprintf("%C%s\n", COLOR_WHITE, l->szName);
   }
 
   gUserManager.DropUser(u);
@@ -701,27 +701,27 @@ void CLicqConsole::PrintInfo_Work(const char *szId, unsigned long nPPID)
   winMain->wprintf("%s %A(%Z%ld%A) Work Info - %Z%s\n", u->GetAlias(), A_BOLD,
                    A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
 
-  winMain->wprintf("%C%ACompany Name: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyName());
-  winMain->wprintf("%C%ACompany Department: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyDepartment());
-  winMain->wprintf("%C%ACompany Position: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyPosition());
-  winMain->wprintf("%C%ACompany Phone Number: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyPhoneNumber());
-  winMain->wprintf("%C%ACompany Fax Number: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyFaxNumber());
-  winMain->wprintf("%C%ACompany City: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyCity());
-  winMain->wprintf("%C%ACompany State: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyState());
-  winMain->wprintf("%C%ACompany Address: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyAddress());
-  winMain->wprintf("%C%ACompany Zip Code: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyZip());
-  winMain->wprintf("%C%ACompany Country: ", 8, A_BOLD);
+  winMain->wprintf("%C%ACompany Name: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyName());
+  winMain->wprintf("%C%ACompany Department: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyDepartment());
+  winMain->wprintf("%C%ACompany Position: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyPosition());
+  winMain->wprintf("%C%ACompany Phone Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyPhoneNumber());
+  winMain->wprintf("%C%ACompany Fax Number: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyFaxNumber());
+  winMain->wprintf("%C%ACompany City: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyCity());
+  winMain->wprintf("%C%ACompany State: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyState());
+  winMain->wprintf("%C%ACompany Address: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyAddress());
+  winMain->wprintf("%C%ACompany Zip Code: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyZip());
+  winMain->wprintf("%C%ACompany Country: ", COLOR_WHITE, A_BOLD);
   if (u->GetCountryCode() == COUNTRY_UNSPECIFIED)
-    winMain->wprintf("%CUnspecified\n", 8);
+    winMain->wprintf("%CUnspecified\n", COLOR_WHITE);
   else
   {
     const SCountry *c = GetCountryByCode(u->GetCountryCode());
     if (c == NULL)
-      winMain->wprintf("%CUnknown (%d)\n", 8, u->GetCountryCode());
+      winMain->wprintf("%CUnknown (%d)\n", COLOR_WHITE, u->GetCountryCode());
     else  // known
-      winMain->wprintf("%C%s\n", 8, c->szName);
+      winMain->wprintf("%C%s\n", COLOR_WHITE, c->szName);
   }
-  winMain->wprintf("%C%ACompany Homepage: %Z%s\n", 8, A_BOLD, A_BOLD, u->GetCompanyHomepage());
+  winMain->wprintf("%C%ACompany Homepage: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyHomepage());
 
   gUserManager.DropUser(u);
 
@@ -780,7 +780,7 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
   strcat(szTitle, szAlias);
 
   // Current file name and Current File # slash Total Batch Files
-  PrintBoxTop(szTitle, 8, 48);
+  PrintBoxTop(szTitle, COLOR_WHITE, 48);
   waddch(winMain->Win(), ACS_VLINE);
   winMain->wprintf("%ACurrent File: %Z", A_BOLD, A_BOLD);
   winMain->wprintf(const_cast<char *>(ftman->FileName()));
@@ -836,14 +836,14 @@ void CLicqConsole::PrintMacros()
 {
   MacroList::iterator iter;
 
-  PrintBoxTop("Macros", 8, 40);
+  PrintBoxTop("Macros", COLOR_WHITE, 40);
 
   for (iter = listMacros.begin(); iter != listMacros.end(); iter++)
   {
     PrintBoxLeft();
     winMain->wprintf("%A%C%-10s %Z->%A %-19s",
         A_BOLD,
-        8,
+        COLOR_WHITE,
         (*iter)->szMacro, A_BOLD, A_BOLD, (*iter)->szCommand);
     PrintBoxRight(40);
   }

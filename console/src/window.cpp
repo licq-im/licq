@@ -67,7 +67,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _use
   }
 
   keypad(win, TRUE);
-  wbkgd(win, COLOR_PAIR(8));
+  wbkgd(win, COLOR_PAIR(COLOR_WHITE));
 
   cdkscreen = NULL;
   if (_useCDK)

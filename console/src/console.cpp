@@ -90,35 +90,35 @@ struct SVariable aVariables[NUM_VARIABLES] =
 const unsigned short NUM_COLORMAPS = 15;
 const struct SColorMap aColorMaps[NUM_COLORMAPS] =
   {
-    { "green", 24, A_NORMAL }
+    { "green", COLOR_GREEN, A_NORMAL }
     ,          // 0
-    { "red", 16, A_NORMAL }
+    { "red", COLOR_RED, A_NORMAL }
     ,              // 1
-    { "cyan", 56, A_NORMAL }
+    { "cyan", COLOR_CYAN, A_NORMAL }
     ,            // 2
-    { "white", 8, A_NORMAL }
+    { "white", COLOR_WHITE, A_NORMAL }
     ,          // 3
-    { "magenta", 48, A_NORMAL }
+    { "magenta", COLOR_MAGENTA, A_NORMAL }
     ,      // 4
-    { "blue", 40, A_NORMAL }
+    { "blue", COLOR_BLUE, A_NORMAL }
     ,            // 5
-    { "yellow", 32, A_NORMAL }
+    { "yellow", COLOR_YELLOW, A_NORMAL }
     ,        // 6
-    { "black", 8, A_NORMAL }
+    { "black", COLOR_BLACK, A_NORMAL }
     ,          // 7
-    { "bright_green", 24, A_BOLD }
+    { "bright_green", COLOR_GREEN, A_BOLD }
     ,     // 8
-    { "bright_red", 16, A_BOLD }
+    { "bright_red", COLOR_RED, A_BOLD }
     ,         // 9
-    { "bright_cyan", 56, A_BOLD }
+    { "bright_cyan", COLOR_CYAN, A_BOLD }
     ,       // 10
-    { "bright_white", 8, A_BOLD }
+    { "bright_white", COLOR_WHITE, A_BOLD }
     ,     // 11
-    { "bright_magenta", 48, A_BOLD }
+    { "bright_magenta", COLOR_MAGENTA, A_BOLD }
     , // 12
-    { "bright_blue", 40, A_BOLD }
+    { "bright_blue", COLOR_BLUE, A_BOLD }
     ,       // 13
-    { "bright_yellow", 32, A_BOLD }    // 14
+    { "bright_yellow", COLOR_YELLOW, A_BOLD }    // 14
   };
 
 const char MLE_HELP[] =
@@ -435,29 +435,29 @@ void CLicqConsole::ProcessLog()
   switch (log->NextLogType())
   {
   case L_WARN:
-    cp = 32;
+    cp = COLOR_YELLOW;
     break;
   case L_ERROR:
-    cp = 16;
+    cp = COLOR_RED;
     break;
   case L_PACKET:
-    cp = 40;
+    cp = COLOR_BLUE;
     break;
   case L_UNKNOWN:
-    cp = 48;
+    cp = COLOR_MAGENTA;
     break;
   case L_INFO:
   default:
-    cp = 8;
+    cp = COLOR_WHITE;
     break;
   }
   char *p = log->NextLogMsg();
   char *l = &p[LOG_PREFIX_OFFSET];
   p[LOG_PREFIX_OFFSET - 1] = '\0';
-  winLog->wprintf("%C%s %C%s", 24, p, cp, l);
+  winLog->wprintf("%C%s %C%s", COLOR_GREEN, p, cp, l);
   if (log->NextLogType() == L_ERROR)
   {
-    winMain->wprintf("%C%s %C%s", 24, p, cp, l);
+    winMain->wprintf("%C%s %C%s", COLOR_GREEN, p, cp, l);
     winMain->RefreshWin();
   }
   log->ClearLog();
@@ -631,7 +631,7 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
   case ICQ_CMDxSND_LOGON:
     if (e->Result() != EVENT_SUCCESS)
-      winMain->wprintf("%CLogon failed.  See the log console for details.\n", 16);
+      winMain->wprintf("%CLogon failed.  See the log console for details.\n", COLOR_RED);
     break;
 
   case ICQ_CMDxSND_REGISTERxUSER:
@@ -669,21 +669,21 @@ bool CLicqConsole::ProcessFile(CFileTransferManager *ftman)
     case FT_ERRORxCONNECT:
       winMain->wprintf("%C%AFile transfer could not connect.  See network "
                        "window for details.%C%Z\n",
-                       16, A_BOLD, 8, A_BOLD);
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
     case FT_ERRORxBIND:
       winMain->wprintf("%C%AFile transfer could not bind to a port.  See "
                        "network window for details.%C%Z\n",
-                       16, A_BOLD, 8, A_BOLD);
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
     case FT_ERRORxRESOURCES:
       winMain->wprintf("%C%AFile transfer unable to create new thread.  See "
                        "network window for details.%C%Z\n",
-                       16, A_BOLD, 8, A_BOLD);
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
            
@@ -692,25 +692,25 @@ bool CLicqConsole::ProcessFile(CFileTransferManager *ftman)
 
     case FT_DONExBATCH:
       winMain->wprintf("%C%AFile transfer successfuly finished.%C%Z\n",
-                       24, A_BOLD, 8, A_BOLD);
+                       COLOR_GREEN, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
     case FT_ERRORxCLOSED:
       winMain->wprintf("%C%AFile transfer closed.%C%Z\n",
-                       16, A_BOLD, 8, A_BOLD);
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
     case FT_ERRORxFILE:
       winMain->wprintf("%C%AFile transfer I/O error.%C%Z\n",
-                       16, A_BOLD, 8, A_BOLD);
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
     case FT_ERRORxHANDSHAKE:
       winMain->wprintf("%C%AFile transfer handshake error.%C%Z\n",
-                       16, A_BOLD, 8, A_BOLD);
+                       COLOR_RED, A_BOLD, COLOR_WHITE, A_BOLD);
       bCloseFT = true;
       break;
 
@@ -760,7 +760,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
 
   if (e == NULL)
   {
-    win->wprintf("%A%Cerror\n", A_BOLD, 16);
+    win->wprintf("%A%Cerror\n", A_BOLD, COLOR_RED);
   }
   else
   {
@@ -796,7 +796,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
          e->SubCommand() == ICQ_CMDxSUB_FILE) )
     {
       win->wprintf("%C%ADirect send failed, send through server (y/N)? %C%Z",
-                   m_cColorQuery->nColor, m_cColorQuery->nAttr, 8,
+                   m_cColorQuery->nColor, m_cColorQuery->nAttr, COLOR_WHITE,
                    A_BOLD);
       win->state = STATE_QUERY;
       win->data->nPos = 0;
@@ -964,7 +964,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
   if (e->SearchAck() != NULL && e->SearchAck()->Uin() != 0)
   {
     win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %lu %A(%Z%s%A)\n",
-                 8,
+                 COLOR_WHITE,
                  e->SearchAck()->Alias(),
                  A_BOLD, A_BOLD,
                  e->SearchAck()->FirstName(),
@@ -1002,7 +1002,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
   }
   else
   {
-    win->wprintf("%CSearch failed.\n", 16);
+    win->wprintf("%CSearch failed.\n", COLOR_RED);
   }
 
   win->fProcessInput = &CLicqConsole::InputCommand;
@@ -1038,7 +1038,7 @@ void CLicqConsole::SwitchToCon(unsigned short nCon)
     winConStatus->wprintf("%A%Clog console", A_BOLD, 5);
   winConStatus->wprintf("%A%C) ]", A_BOLD, 29);
   wclrtoeol(winConStatus->Win());
-  wbkgdset(winConStatus->Win(), COLOR_PAIR(8));
+  wbkgdset(winConStatus->Win(), COLOR_PAIR(COLOR_WHITE));
   mvwhline(winConStatus->Win(), 1, 0, ACS_HLINE, COLS);
   //mvwaddch(winConStatus->Win(), 1, COLS - USER_WIN_WIDTH - 1, ACS_TTEE);
   winConStatus->RefreshWin();
@@ -1273,7 +1273,7 @@ void CLicqConsole::InputCommand(int cIn)
       if (sTabCompletion.vszPartialMatch.size() == 0)
       { // No matches
         Beep();
-        winMain->wprintf("%CNo matches.\n", 16);
+        winMain->wprintf("%CNo matches.\n", COLOR_RED);
         wprintw(winPrompt->Win(), "");
         break;
       }
@@ -1453,7 +1453,7 @@ bool CLicqConsole::ParseMacro(char *szMacro)
 
   if (iter == listMacros.end())
   {
-    winMain->wprintf("%CNo such macro \"%A%s%Z\"\n", 16, A_BOLD,
+    winMain->wprintf("%CNo such macro \"%A%s%Z\"\n", COLOR_RED, A_BOLD,
                      szMacro, A_BOLD);
     szMacro[0] = '\0';
     return false;
@@ -1531,7 +1531,7 @@ void CLicqConsole::UserCommand_Info(const char *szId, unsigned long nPPID, char 
                    "(U)pdate Info\n"
                    "for %s (%s)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
-                   u->GetAlias(), szId, 8, A_BOLD);
+                   u->GetAlias(), szId, COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1573,7 +1573,7 @@ void CLicqConsole::InputInfo(int cIn)
     case '\r':
       break;
     default:
-      winMain->wprintf("%CInvalid key.\n", 16);
+      winMain->wprintf("%CInvalid key.\n", COLOR_RED);
     }
 
     winMain->fProcessInput = &CLicqConsole::InputCommand;
@@ -1589,7 +1589,7 @@ void CLicqConsole::InputInfo(int cIn)
     break;
 
   default:
-    winMain->wprintf("%CInvalid state: %A%d%Z.\n", 16, A_BOLD, A_BOLD);
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
   }
 
 }
@@ -1664,7 +1664,7 @@ void CLicqConsole::UserCommand_Remove(const char *szId, unsigned long nPPID, cha
 
   winMain->wprintf("%C%ARemove %s (%s) from contact list (y/N)? %C%Z",
                    m_cColorQuery->nColor, m_cColorQuery->nAttr,
-                   u->GetAlias(), szId, 8, A_BOLD);
+                   u->GetAlias(), szId, COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
   gUserManager.DropUser(u);
 }
@@ -1705,7 +1705,7 @@ void CLicqConsole::InputRemove(int cIn)
     break;
 
   default:
-    winMain->wprintf("%CInvalid state: %A%d%Z.\n", 16, A_BOLD, A_BOLD);
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
   }
 
 }
@@ -1811,11 +1811,11 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
     if (nLast > 0 )
     {
       winMain->wprintf("%CYou must specify an event number. (1-%d)\n",
-                       16, nLast);
+                       COLOR_RED, nLast);
     }
     else
     {
-      winMain->wprintf("%CNo System Events.\n", 8);
+      winMain->wprintf("%CNo System Events.\n", COLOR_WHITE);
     }
     free(szFrom);
     return;
@@ -1832,7 +1832,7 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
   nStart = StrToRange(szStart, nLast, winMain->nLastHistory);
   if (nStart == -1)
   {
-    winMain->wprintf("%CInvalid start range: %A%s\n", 16,
+    winMain->wprintf("%CInvalid start range: %A%s\n", COLOR_RED,
                      A_BOLD, szStart);
     free(szFrom);
     return;
@@ -1840,7 +1840,7 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
   else if (nStart > nLast || nStart < 1)
   {
     winMain->wprintf("%CStart value out of range, history contains %d events.\n",
-                     16, nLast);
+                     COLOR_RED, nLast);
     free(szFrom);
     return;
   }
@@ -1850,7 +1850,7 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
     nEnd = StrToRange(szEnd, nLast, nStart);
     if (nEnd == -1)
     {
-      winMain->wprintf("%CInvalid end range: %A%s\n", 16,
+      winMain->wprintf("%CInvalid end range: %A%s\n", COLOR_RED,
                        A_BOLD, szEnd);
       free(szFrom);
       return;
@@ -1858,7 +1858,7 @@ void CLicqConsole::UserCommand_History(const char *szId, unsigned long nPPID, ch
     else if (nEnd > nLast || nEnd < 1)
     {
       winMain->wprintf("%CEnd value out of range, history contains %d events.\n",
-                       16, nLast);
+                       COLOR_RED, nLast);
       free(szFrom);
       return;
     }
@@ -1991,7 +1991,7 @@ void CLicqConsole::InputMessage(int cIn)
     break;
 
   default:
-    winMain->wprintf("%CInvalid state: %A%d%Z.\n", 16, A_BOLD, A_BOLD);
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
   }
 
 }
@@ -2160,7 +2160,7 @@ void CLicqConsole::InputAutoResponse(int cIn)
     break;
 
   default:
-    winMain->wprintf("%CInvalid state: %A%d%Z.\n", 16, A_BOLD, A_BOLD);
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
   }
 
 }
@@ -2267,7 +2267,7 @@ void CLicqConsole::InputUrl(int cIn)
     break;
 
   default:
-    winMain->wprintf("%CInvalid state: %A%d%Z.\n", 16, A_BOLD, A_BOLD);
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
   }
 
 }
@@ -2340,7 +2340,7 @@ void CLicqConsole::InputSms(int cIn)
     }
 
   default:
-    winMain->wprintf("%CInvalid state: %A%d%Z.\n", 16, A_BOLD, A_BOLD);
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
   }
 
 }
@@ -2402,7 +2402,7 @@ void CLicqConsole::InputAuthorize(int cIn)
     }
 
   default:
-    winMain->wprintf("%CInvalid state: %A%d%Z.\n", 16, A_BOLD, A_BOLD);
+    winMain->wprintf("%CInvalid state: %A%d%Z.\n", COLOR_RED, A_BOLD, A_BOLD);
   }
 
 }
@@ -2701,7 +2701,7 @@ void CLicqConsole::InputSearch(int cIn)
                              "1 %A-%Z Female\n"
                              "2 %A-%Z Male\n"
                              "%A%CGender: ",
-                             8, A_BOLD, A_BOLD, A_BOLD, A_BOLD,
+                             COLOR_WHITE, A_BOLD, A_BOLD, A_BOLD, A_BOLD,
                              A_BOLD, A_BOLD, m_cColorQuery->nAttr, m_cColorQuery->nColor);
             return;
           }
@@ -2731,7 +2731,7 @@ void CLicqConsole::InputSearch(int cIn)
             for (unsigned short i = 0; i < NUM_LANGUAGES; i++)
             {
               winMain->wprintf("%C%s %A(%Z%d%A)%s%Z",
-                               8, gLanguages[i].szName,
+                               COLOR_WHITE, gLanguages[i].szName,
                                A_BOLD, A_BOLD, gLanguages[i].nCode,
                                A_BOLD,
                                i == NUM_LANGUAGES - 1 ? "\n" : ", ",
@@ -2789,7 +2789,7 @@ void CLicqConsole::InputSearch(int cIn)
             for (unsigned short i = 0; i < NUM_COUNTRIES; i++)
             {
               winMain->wprintf("%C%s %A(%Z%d%A)%s%Z",
-                               8, gCountries[i].szName,
+                               COLOR_WHITE, gCountries[i].szName,
                                A_BOLD, A_BOLD, gCountries[i].nCode,
                                A_BOLD,
                                i == NUM_COUNTRIES - 1 ? "\n" : ", ",
@@ -2901,7 +2901,7 @@ void CLicqConsole::RegistrationWizard()
   winMain->data = new DataRegWizard();
 
   winMain->wprintf("%A%CWelcome to the Licq Console Registration Wizard\n\nPress 1 to register a new UIN\nPress 2 if you have a UIN and password\n\n",
-                   A_BOLD, 24);
+                   A_BOLD, COLOR_GREEN);
 
   return;
 }
@@ -3088,7 +3088,7 @@ void CLicqConsole::FileChatOffer(CUserEvent *e, const char *_szId, unsigned long
   winMain->state = STATE_QUERY;
   winMain->data = new DataFileChatOffer(f, _szId, _nPPID);
   winMain->wprintf("%C%ADo you wish to accept this request? (y/N) %C%Z",
-                   m_cColorQuery->nColor, m_cColorQuery->nAttr, 8, A_BOLD);
+                   m_cColorQuery->nColor, m_cColorQuery->nAttr, COLOR_WHITE, A_BOLD);
   winMain->RefreshWin();
 
   return;
@@ -3111,7 +3111,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
       {
       case 'y':
         {
-          winMain->wprintf("%C%A\nAccepting file\n", 24, A_BOLD);
+          winMain->wprintf("%C%A\nAccepting file\n", COLOR_GREEN, A_BOLD);
 
           // Make the ftman
           CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
@@ -3188,14 +3188,14 @@ void CLicqConsole::UserCommand_Secure(const char *szId, unsigned long nPPID, cha
   if(!licqDaemon->CryptoEnabled())
   {
     winMain->wprintf("%CYou need to recompile Licq with OpenSSL for this "
-                     "feature to work!\n", 16);
+                     "feature to work!\n", COLOR_RED);
     return;
   }
 
   if(u->SecureChannelSupport() != SECURE_CHANNEL_SUPPORTED)
   {
     winMain->wprintf("%CThe remote end is not using a supported client.  "
-                     "This may not work!\n", 16);
+                     "This may not work!\n", COLOR_RED);
   }
 
   bool bOpen = u->Secure();
@@ -3237,7 +3237,7 @@ void CLicqConsole::UserCommand_Secure(const char *szId, unsigned long nPPID, cha
   }
   else
   {
-    winMain->wprintf("%C<user> secure <open | close | (blank)>\n", 16);
+    winMain->wprintf("%C<user> secure <open | close | (blank)>\n", COLOR_RED);
   }
 
   if(u)
@@ -3261,7 +3261,7 @@ void CLicqConsole::UserSelect()
   
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   winMain->wprintf("%A%CEnter your password for %s (%lu):%C%Z\n", A_BOLD,
-                   24, o->GetAlias(), o->Uin(), 8, A_BOLD);
+                   COLOR_GREEN, o->GetAlias(), o->Uin(), COLOR_WHITE, A_BOLD);
   gUserManager.DropOwner();
 }
 
@@ -3283,8 +3283,8 @@ void CLicqConsole::InputUserSelect(int cIn)
       data->nPos = 0;
 
       // Next stage is saving the password possibly
-      winMain->wprintf("%C%ASave password? (y/N) %C%Z", 24, A_BOLD,
-                       8, A_BOLD);
+      winMain->wprintf("%C%ASave password? (y/N) %C%Z", COLOR_GREEN, A_BOLD,
+                       COLOR_WHITE, A_BOLD);
       winMain->state = STATE_QUERY;
       break;
     
