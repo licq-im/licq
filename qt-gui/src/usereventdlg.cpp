@@ -1805,7 +1805,7 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long _nConvoId)
     
     // Remove the typing notification if active
     ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_W);
-    if (u->GetTyping() == ICQ_TYPING_ACTIVE)
+    if (u && u->GetTyping() == ICQ_TYPING_ACTIVE)
     {
       u->SetTyping(ICQ_TYPING_INACTIVEx0);
       nfoStatus->unsetPalette();
