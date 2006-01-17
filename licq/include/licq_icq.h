@@ -123,6 +123,7 @@ const unsigned short ICQ_SNACxLIST_AUTHxREQ        = 0x0018; // client
 const unsigned short ICQ_SNACxLIST_AUTHxREQxSRV    = 0x0019; // server
 const unsigned short ICQ_SNACxLIST_AUTHxREPLY      = 0x001A; // client
 const unsigned short ICQ_SNACxLIST_AUTHxRESPONS    = 0x001B; // server
+const unsigned short ICQ_SNACxLIST_AUTHxADDED      = 0x001C; // server
 
 // messagetypes
 const unsigned short ICQ_MSGxAUTHORIZE             = 0x0008;
@@ -520,6 +521,8 @@ const char ICQ_CAPABILITY_LICQxVER[]  = { 'L',  'i',  'c',  'q',  ' ',  'c',
                                           0x00, 0x00, 0x00, 0x00 };
  
 // For protocol plugins
+
+// Sending capabilities
 const unsigned long PP_SEND_MSG      = 0x00000001;
 const unsigned long PP_SEND_URL      = 0x00000002;
 const unsigned long PP_SEND_FILE     = 0x00000004;
@@ -529,5 +532,6 @@ const unsigned long PP_SEND_AUTH     = 0x00000020;
 const unsigned long PP_SEND_AUTHxREQ = 0x00000040;
 const unsigned long PP_SEND_SMS      = 0x00000080;
 const unsigned long PP_SEND_SECURE   = 0x00000100;
+const unsigned long PP_SEND_DIRECT   = 0x00000200;
 
 #endif
