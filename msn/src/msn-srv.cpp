@@ -35,24 +35,15 @@
 using namespace std;
 
 
-void CMSN::ProcessServerPacket(CMSNBuffer &packet)
+void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 {
   char szCommand[4];
   CMSNPacket *pReply;
   
-  // Build the entire packet
-  if (!m_pPacketBuf)
-    m_pPacketBuf = new CMSNBuffer(packet);
-  else
-    *m_pPacketBuf += packet;
-    
-  if (memcmp((void *)(&(m_pPacketBuf->getDataStart())[m_pPacketBuf->getDataSize() - 2]), "\x0D\x0A", 2))
-    return;
-  
-  while (!m_pPacketBuf->End())
+//while (!m_pPacketBuf->End())
   {
     pReply = 0;
-    m_pPacketBuf->UnpackRaw(szCommand, 3);
+    packet->UnpackRaw(szCommand, 3);
     string strCmd(szCommand);
     
     if (strCmd == "VER")
@@ -68,14 +59,14 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     else if (strCmd == "XFR")
     {
       //Time to transfer to a new server
-      m_pPacketBuf->SkipParameter(); // Seq
-      string strServType = m_pPacketBuf->GetParameter();
-      string strServer = m_pPacketBuf->GetParameter();
+      packet->SkipParameter(); // Seq
+      string strServType = packet->GetParameter();
+      string strServer = packet->GetParameter();
     
       if (strServType == "SB")
       {
-        m_pPacketBuf->SkipParameter(); // 'CKI'
-        string strCookie = m_pPacketBuf->GetParameter();
+        packet->SkipParameter(); // 'CKI'
+        string strCookie = packet->GetParameter();
         
         MSNSBConnectStart(strServer, strCookie);
       }
@@ -99,13 +90,13 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "USR")
     {
-      m_pPacketBuf->SkipParameter(); // Seq
-      string strType = m_pPacketBuf->GetParameter();
+      packet->SkipParameter(); // Seq
+      string strType = packet->GetParameter();
       
       if (strType == "OK")
       {
-        m_pPacketBuf->SkipParameter(); // email account
-        string strNick = m_pPacketBuf->GetParameter();
+        packet->SkipParameter(); // email account
+        string strNick = packet->GetParameter();
         string strDecodedNick = Decode(strNick);
         gLog.Info("%s%s logged in.\n", L_MSNxSTR, strDecodedNick.c_str());
        
@@ -125,8 +116,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       }
       else
       {
-        m_pPacketBuf->SkipParameter(); // "S"
-        string strParam = m_pPacketBuf->GetParameter();
+        packet->SkipParameter(); // "S"
+        string strParam = packet->GetParameter();
       
         m_szCookie = strdup(strParam.c_str());
 
@@ -137,15 +128,15 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "CHL")
     {
-      m_pPacketBuf->SkipParameter(); // Seq
-      string strHash = m_pPacketBuf->GetParameter();
+      packet->SkipParameter(); // Seq
+      string strHash = packet->GetParameter();
       
       pReply = new CPS_MSNChallenge(strHash.c_str());
     }
     else if (strCmd == "SYN")
     {
-      m_pPacketBuf->SkipParameter();
-      string strVersion = m_pPacketBuf->GetParameter();
+      packet->SkipParameter();
+      string strVersion = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
       
       pReply = new CPS_MSNChangeStatus(m_nStatus);
@@ -164,17 +155,17 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     else if (strCmd == "LST")
     {
       // Add user
-      string strUser = m_pPacketBuf->GetParameter();
-      string strNick = m_pPacketBuf->GetParameter();
-      string strLists = m_pPacketBuf->GetParameter();
+      string strUser = packet->GetParameter();
+      string strNick = packet->GetParameter();
+      string strLists = packet->GetParameter();
       string strUserLists;
 
       if (gUserManager.FindOwner(strUser.c_str(), MSN_PPID))
-        break;
+        return;
 
       int nLists = atoi(strLists.c_str());
       if (nLists & FLAG_CONTACT_LIST)
-        strUserLists = m_pPacketBuf->GetParameter();
+        strUserLists = packet->GetParameter();
         
       if ((nLists & FLAG_CONTACT_LIST) &&
           !gUserManager.IsOnList(strUser.c_str(), MSN_PPID))
@@ -210,11 +201,11 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "ADD")
     {
-      m_pPacketBuf->SkipParameter(); // What's this?
-      string strList = m_pPacketBuf->GetParameter();
-      string strVersion = m_pPacketBuf->GetParameter();
-      string strUser = m_pPacketBuf->GetParameter();
-      string strNick = m_pPacketBuf->GetParameter();
+      packet->SkipParameter(); // What's this?
+      string strList = packet->GetParameter();
+      string strVersion = packet->GetParameter();
+      string strUser = packet->GetParameter();
+      string strNick = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
       
       if (strList == "RL")
@@ -254,20 +245,20 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "REM")
     {      
-      m_pPacketBuf->SkipParameter(); // seq
-      m_pPacketBuf->SkipParameter(); // list
-      string strVersion = m_pPacketBuf->GetParameter();
-      string strUser = m_pPacketBuf->GetParameter();
+      packet->SkipParameter(); // seq
+      packet->SkipParameter(); // list
+      string strVersion = packet->GetParameter();
+      string strUser = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
     
       gLog.Info("%sRemoved %s from contact list.\n", L_MSNxSTR, strUser.c_str()); 
     }
     else if (strCmd == "REA")
     {
-      m_pPacketBuf->SkipParameter(); // seq
-      string strVersion = m_pPacketBuf->GetParameter();
-      string strUser = m_pPacketBuf->GetParameter();
-      string strNick = m_pPacketBuf->GetParameter();
+      packet->SkipParameter(); // seq
+      string strVersion = packet->GetParameter();
+      string strUser = packet->GetParameter();
+      string strNick = packet->GetParameter();
       
       m_nListVersion = atol(strVersion.c_str());
       if (strcmp(m_szUserName, strUser.c_str()) == 0)
@@ -282,8 +273,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "CHG")
     {
-      m_pPacketBuf->SkipParameter(); // seq
-      string strStatus = m_pPacketBuf->GetParameter();
+      packet->SkipParameter(); // seq
+      string strStatus = packet->GetParameter();
       ICQUser *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
       unsigned long nStatus;
       
@@ -304,12 +295,12 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     else if (strCmd == "ILN" || strCmd == "NLN")
     {
       if (strCmd == "ILN")
-        m_pPacketBuf->SkipParameter(); // seq
-      string strStatus = m_pPacketBuf->GetParameter();
-      string strUser = m_pPacketBuf->GetParameter();
-      string strNick = m_pPacketBuf->GetParameter();
-      string strClientId = m_pPacketBuf->GetParameter();
-      string strMSNObject = m_pPacketBuf->GetParameter();
+        packet->SkipParameter(); // seq
+      string strStatus = packet->GetParameter();
+      string strUser = packet->GetParameter();
+      string strNick = packet->GetParameter();
+      string strClientId = packet->GetParameter();
+      string strMSNObject = packet->GetParameter();
       string strDecodedObject = strMSNObject.size() ? Decode(strMSNObject) :"";
 
       unsigned short nStatus = ICQ_STATUS_AWAY;
@@ -353,7 +344,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "FLN")
     {
-      string strUser = m_pPacketBuf->GetParameter();
+      string strUser = packet->GetParameter();
       
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
@@ -380,53 +371,53 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "RNG")
     {
-      string strSessionID = m_pPacketBuf->GetParameter();
-      string strServer = m_pPacketBuf->GetParameter();
-      m_pPacketBuf->SkipParameter(); // 'CKI'
-      string strCookie = m_pPacketBuf->GetParameter();
-      string strUser = m_pPacketBuf->GetParameter();
+      string strSessionID = packet->GetParameter();
+      string strServer = packet->GetParameter();
+      packet->SkipParameter(); // 'CKI'
+      string strCookie = packet->GetParameter();
+      string strUser = packet->GetParameter();
       
       MSNSBConnectAnswer(strServer, strSessionID, strCookie, strUser);
     }
     else if (strCmd == "MSG")
     {
-      m_pPacketBuf->SkipParameter(); // 'Hotmail'
-      m_pPacketBuf->SkipParameter(); // 'Hotmail' again
-      m_pPacketBuf->SkipParameter(); // size
-      m_pPacketBuf->SkipRN(); // Skip \r\n
-      m_pPacketBuf->ParseHeaders();
+      packet->SkipParameter(); // 'Hotmail'
+      packet->SkipParameter(); // 'Hotmail' again
+      packet->SkipParameter(); // size
+      packet->SkipRN(); // Skip \r\n
+      packet->ParseHeaders();
       
-      string strType = m_pPacketBuf->GetValue("Content-Type");
+      string strType = packet->GetValue("Content-Type");
       
       if (strType.find("text/x-msmsgsprofile") != string::npos)
       {
-        m_strMSPAuth = m_pPacketBuf->GetValue("MSPAuth");
-        m_strSID = m_pPacketBuf->GetValue("sid");
-        m_strKV = m_pPacketBuf->GetValue("kv");
+        m_strMSPAuth = packet->GetValue("MSPAuth");
+        m_strSID = packet->GetValue("sid");
+        m_strKV = packet->GetValue("kv");
         m_nSessionStart = time(0);
 
         // We might have another packet attached
-        //m_pPacketBuf->SkipRN();
+        //packet->SkipRN();
       }
       else if (strType.find("text/x-msmsgsinitialemailnotification") != string::npos)
       {
         // Email alert when we sign in
         
         // Get the next part..
-        m_pPacketBuf->SkipRN();
-        m_pPacketBuf->ParseHeaders();
+        packet->SkipRN();
+        packet->ParseHeaders();
       }
       else if (strType.find("text/x-msmsgsemailnotification") != string::npos)
       {
         // Email we get while signed in
         
         // Get the next part..
-        m_pPacketBuf->SkipRN();
-        m_pPacketBuf->ParseHeaders();
+        packet->SkipRN();
+        packet->ParseHeaders();
         
-        string strFrom = m_pPacketBuf->GetValue("From");
-        string strFromAddr = m_pPacketBuf->GetValue("From-Addr");
-        string strSubject = m_pPacketBuf->GetValue("Subject");
+        string strFrom = packet->GetValue("From");
+        string strFromAddr = packet->GetValue("From-Addr");
+        string strSubject = packet->GetValue("Subject");
         
         string strToHash = m_strMSPAuth + "9" + m_szPassword;
         unsigned char szDigest[16];
@@ -438,8 +429,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
         gLog.Info("%sNew email from %s (%s)\n", L_MSNxSTR, strFrom.c_str(), strFromAddr.c_str());
         CEventEmailAlert *pEmailAlert = new CEventEmailAlert(strFrom.c_str(), m_szUserName,
           strFromAddr.c_str(), strSubject.c_str(), time(0), m_strMSPAuth.c_str(), m_strSID.c_str(),
-          m_strKV.c_str(), m_pPacketBuf->GetValue("id").c_str(),
-          m_pPacketBuf->GetValue("Post-URL").c_str(), m_pPacketBuf->GetValue("Message-URL").c_str(),
+          m_strKV.c_str(), packet->GetValue("id").c_str(),
+          packet->GetValue("Post-URL").c_str(), packet->GetValue("Message-URL").c_str(),
           szHexOut, m_nSessionStart);
           
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
@@ -459,7 +450,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
     }
     else if (strCmd == "913")
     {
-      unsigned long nSeq = m_pPacketBuf->GetParameterUnsignedLong();
+      unsigned long nSeq = packet->GetParameterUnsignedLong();
 
       // Search pStart for this sequence, mark it as an error, send the
       // signals to the daemon and remove these item from the list.
@@ -499,16 +490,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer &packet)
       gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());
     }
     
-    // Get the next packet
-    m_pPacketBuf->SkipPacket();
-    
     if (pReply)
       SendPacket(pReply);
   }
-  
-  // Clear it out
-  delete m_pPacketBuf;
-  m_pPacketBuf = 0;
 }
 
 void CMSN::SendPacket(CMSNPacket *p)

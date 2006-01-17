@@ -318,7 +318,7 @@ void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const char* _szUser)
     {
       // Handle it, and then remove it from the queue
       if (m_nServerSocket == _nSocket)
-        ProcessServerPacket(pPart ? *pPart : *(pBuf->m_pBuf));
+        ProcessServerPacket(pPart ? pPart : pBuf->m_pBuf);
       else
         ProcessSBPacket(const_cast<char *>(_szUser), pPart ? pPart : pBuf->m_pBuf,
                         _nSocket);

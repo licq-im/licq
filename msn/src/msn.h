@@ -98,7 +98,7 @@ public:
 private:
   void ProcessSignal(CSignal *);
   void ProcessPipe();
-  void ProcessServerPacket(CMSNBuffer &);
+  void ProcessServerPacket(CMSNBuffer *);
   void ProcessNexusPacket(CMSNBuffer &);
   void ProcessSSLServerPacket(CMSNBuffer &);
   void ProcessSBPacket(char *, CMSNBuffer *, int);
