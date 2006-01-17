@@ -2538,7 +2538,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     junk1 = packet.UnpackUnsignedLongBE(); // tlvcount
 
     if (!packet.readTLV()) {
-      gLog.Error("%sfuck\n", L_ERRORxSTR);
+      gLog.Error("%sTLV Error\n", L_ERRORxSTR);
       return;
     }
 
@@ -4234,8 +4234,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             break;
 
           default:
-            gLog.Error(tr("%sUnknown error modifying server list: 0x%02X (ID: %s)\n"),
-                       L_ERRORxSTR, nError & 0xFF, szPending);
+            gLog.Warn(tr("%sUnknown error modifying server list: 0x%02X (ID: %s)\n"),
+                         L_ERRORxSTR, nError & 0xFF, szPending);
         }
 
         if (nError && nError != 0x0E)
@@ -4356,11 +4356,12 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
       unsigned short nMsgLen;
       packet >> nMsgLen;
-      char *szMsg = new char[nMsgLen];
+      char *szMsg = new char[nMsgLen+1];
       for (int i = 0; i < nMsgLen; i++)
         packet >> szMsg[i];
-
-      CEventAuthRequest *e = new CEventAuthRequest(szId, LICQ_PPID, "", "", "", "", szMsg,
+      szMsg[nMsgLen] = '\0';
+      
+      CEventAuthRequest *e = new CEventAuthRequest(szId, LICQ_PPID, "", "", "", "", nMsgLen ? szMsg : "",
                                                    ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
 
       ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
@@ -4372,12 +4373,34 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
       else
         gUserManager.DropOwner(LICQ_PPID);
-       
+      
       delete [] szId;
       delete [] szMsg;
       break;
     }
 
+    case ICQ_SNACxLIST_AUTHxADDED: // You were added to a contact list
+    {
+      char *szId = packet.UnpackUserString();
+      gLog.Info(tr("%sUser %s added you to their contact list.\n"), L_SRVxSTR,
+                szId);
+
+      CEventAdded *e = new CEventAdded(szId, LICQ_PPID, "", "", "", "",
+                                       ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+      ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+      if (AddUserEvent(o, e))
+      {
+        gUserManager.DropOwner(LICQ_PPID);
+        e->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
+        m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+      }
+      else
+        gUserManager.DropOwner(LICQ_PPID);
+
+      delete [] szId;
+      break;
+    }
+    
     default:
       gLog.Warn(tr("%sUnknown List Family Subtype: %04hx\n"), L_SRVxSTR, nSubtype);
       break;
