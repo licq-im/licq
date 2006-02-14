@@ -2903,21 +2903,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     unsigned short err = packet.UnpackUnsignedShortBE();
 
     ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
-    
-    bool bHandled = false;
-    if (e && e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER))
-    {
-      bHandled = true;
-      ICQUser *u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
-      if (u->StatusOffline())
-      {
-        gLog.Info(tr("%s%s (%s) is Invisible.\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
-        u->SetOnlineSince(time(NULL));
-        ChangeUserStatus(u, ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE);
-      }
-      gUserManager.DropUser(u);
-    }
-    
+
     switch (err)
     {
     case 0x0004:
@@ -2927,8 +2913,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Warn(tr("%sClient does not understand type-2 messages.\n"), L_WARNxSTR);
       break;
     case 0x000e:
-      if (!bHandled)
-        gLog.Warn(tr("%sPacket was malformed.\n"), L_WARNxSTR);
+      gLog.Warn(tr("%sPacket was malformed.\n"), L_WARNxSTR);
       break;
     case 0x0015:
       gLog.Info(tr("%sList overflow.\n"), L_WARNxSTR);
@@ -4117,11 +4102,14 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 gUserManager.RenameGroup(nGroup, szUnicodeName, false);
               }
               
-              if (gUserManager.UpdateUsersInGroups())
-              {
-                PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST,
-                  LIST_ALL, 0));
-              }
+              // This is bad, i don't think we want to call this at all..
+              // it will add users to different groups that they werent even
+              // assigned to
+              //if (gUserManager.UpdateUsersInGroups())
+              //{
+              //  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST,
+              //    LIST_ALL, 0));
+              //}
             }
             break;
           }
