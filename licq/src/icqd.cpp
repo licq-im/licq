@@ -1599,7 +1599,7 @@ void CICQDaemon::FailEvents(int sd, int err)
 //---DoneSrvEvent--------------------------------------------------------------
 /*! \brief Marks the given event as done.
  *
- * Marks the given event as done and removese it from the running events list. 
+ * Marks the given event as done and removes it from the running events list. 
  * This is for new OSCAR server events. 
  * Basically this is DoneEvent (2)
  */
