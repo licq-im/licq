@@ -2853,10 +2853,27 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     unsigned long junk1;
     unsigned short junk2;
     char *szId;
+    bool bFake = false;
 
     junk1 = packet.UnpackUnsignedLongBE();
     junk2 = packet.UnpackUnsignedShortBE();
     szId = packet.UnpackUserString();
+
+    if (packet.readTLV())
+    {
+      if (packet.hasTLV(0x0000) && packet.getTLVLen(0x0000) == 2)
+        bFake = true;
+    }
+
+    // AIM users send this when they really do go offline, so skip it if it is
+    // an AIM user
+    if (bFake && isdigit(szId[0]))
+    {
+      gLog.Info("%sIgnoring fake offline:%s\n", L_SRVxSTR, szId);
+      delete [] szId;
+      break;
+    }
+
 
     ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
     if (u == NULL)
