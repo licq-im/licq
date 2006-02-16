@@ -170,7 +170,7 @@ void CICQDaemon::CheckExport()
   }
   
   UserStringList::iterator it;
-  for (it = doneUsers.begin(); it != doneUsers.end(); it++)
+  for (it = doneUsers.begin(); it != doneUsers.end(); ++it)
     free(*it);
 
   // Export visible/invisible/ignore list
@@ -1953,7 +1953,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
         e->thread_running = false;
       }
       std::list<ICQEvent *>::iterator i;
-      for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); i++)
+      for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); ++i)
       {
         if (*i == e)
         {
@@ -1964,12 +1964,12 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
       CancelEvent(e);
     }
     else
-      iter++;
+      ++iter;
   }
   assert(m_lxExtendedEvents.empty());
 
   // Queue should be empty, might not be due to peer-to-peer events
-  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
     gLog.Info(tr("Event #%hu is still on queue!\n"), (*iter)->Sequence());
 
   if (cancelledEvent != NULL)
@@ -1977,7 +1977,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 
   std::list<CReverseConnectToUserData *>::iterator rciter;
   for (rciter = m_lReverseConnect.begin(); rciter != m_lReverseConnect.end();
-                                           rciter++)
+                                           ++rciter)
   {
     delete *rciter;
   }
@@ -1994,7 +1994,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 #if 0
   // wipe out all extended events too...
   pthread_mutex_lock(&mutex_extendedevents);
-  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
+  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); ++iter)
   {
     (*iter)->m_eResult = EVENT_CANCELLED;
     ProcessDoneEvent(*iter);
@@ -2930,7 +2930,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       bool bFound = false;
       std::list<CReverseConnectToUserData *>::iterator iter;
       for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
-                                             iter++)
+                                             ++iter)
       {
         if ((*iter)->nId == nSubSequence)
         {
@@ -3722,7 +3722,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     std::list<CReverseConnectToUserData *>::iterator iter;
     bool bFound = false;
     for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
-                                           iter++)
+                                           ++iter)
     {
       if ((*iter)->nId == nMsgID && (*iter)->nUin == nUin)
       {

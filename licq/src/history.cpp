@@ -424,7 +424,7 @@ void CUserHistory::Clear(HistoryList &hist)
   while (it != hist.end())
   {
     delete *it;
-    it++;
+    ++it;
   }
   hist.erase(hist.begin(), hist.end());
 }

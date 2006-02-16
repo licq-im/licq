@@ -59,7 +59,7 @@ CUtilityManager::CUtilityManager()
 CUtilityManager::~CUtilityManager()
 {
   std::vector <CUtility *>::iterator iter;
-  for (iter = m_vxUtilities.begin(); iter != m_vxUtilities.end(); iter++)
+  for (iter = m_vxUtilities.begin(); iter != m_vxUtilities.end(); ++iter)
     delete *iter;
 }
 
@@ -188,7 +188,7 @@ CUtility::CUtility(const char *_szFileName)
 CUtility::~CUtility()
 {
   std::vector <CUtilityUserField *>::iterator iter;
-  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); iter++)
+  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); ++iter)
     delete *iter;
 
   if (m_szName)        free(m_szName);
@@ -209,7 +209,7 @@ bool CUtility::SetFields(unsigned long _nUin)
   m_szFullCommand[MAX_CMD_LEN - 1] = '\0';
   free(szTmp);
   vector<CUtilityUserField *>::iterator iter;
-  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); iter++)
+  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); ++iter)
     (*iter)->SetFields(u);
   gUserManager.DropUser(u);
   return true;
@@ -227,7 +227,7 @@ bool CUtility::SetFields(const char *szId, unsigned long nPPID)
   m_szFullCommand[MAX_CMD_LEN - 1] = '\0';
   free(szTmp);
   vector<CUtilityUserField *>::iterator iter;
-  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); iter++)
+  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); ++iter)
     (*iter)->SetFields(u);
   gUserManager.DropUser(u);
   return true;

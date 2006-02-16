@@ -329,7 +329,7 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
     unsigned long t;
     licqConf.ReadNum("Reset", t, 0);
     m_nResetTime = t;
-    for (iter = m_sStats.begin(); iter != m_sStats.end(); iter++)
+    for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
     {
       licqConf.ReadNum(iter->m_szTag, iter->m_nTotal, 0);
       iter->Init();
@@ -490,7 +490,7 @@ void CICQDaemon::UnregisterPlugin()
   pthread_mutex_lock(&licq->mutex_plugins);
   for (iter = licq->list_plugins.begin();
        iter != licq->list_plugins.end();
-       iter++)
+       ++iter)
   {
     if ((*iter)->CompareThread(pthread_self()))
     {
@@ -520,7 +520,7 @@ void CICQDaemon::PluginShutdown(int id)
 {
   PluginsListIter iter;
   pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); iter++)
+  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if (id == (*iter)->Id()) (*iter)->Shutdown();
   }
@@ -533,7 +533,7 @@ void CICQDaemon::PluginDisable(int id)
 {
   PluginsListIter iter;
   pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); iter++)
+  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if (id == (*iter)->Id()) (*iter)->Disable();
   }
@@ -546,7 +546,7 @@ void CICQDaemon::PluginEnable(int id)
 {
   PluginsListIter iter;
   pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); iter++)
+  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if (id == (*iter)->Id()) (*iter)->Enable();
   }
@@ -625,7 +625,7 @@ void CICQDaemon::UnregisterProtoPlugin()
   pthread_mutex_lock(&licq->mutex_protoplugins);
   for (iter = licq->list_protoplugins.begin();
        iter != licq->list_protoplugins.end();
-       iter++)
+       ++iter)
   {
     if ((*iter)->CompareThread(pthread_self()))
     {
@@ -663,7 +663,7 @@ void CICQDaemon::ProtoPluginShutdown(unsigned short _nId)
 {
   ProtoPluginsListIter iter;
   pthread_mutex_lock(&licq->mutex_protoplugins);
-  for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end(); iter++)
+  for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end(); ++iter)
   {
     if ((*iter)->Id() == _nId) (*iter)->Shutdown();
   }
@@ -697,7 +697,7 @@ void CICQDaemon::FlushStats()
 #ifdef SAVE_STATS
   // Verify we need to save anything
   DaemonStatsList::iterator iter;
-  for (iter = m_sStats.begin(); iter != m_sStats.end(); iter++)
+  for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
   {
     if (iter->Dirty()) break;
   }
@@ -708,7 +708,7 @@ void CICQDaemon::FlushStats()
   if (!licqConf.LoadFile(m_szConfigFile)) return;
   licqConf.SetSection("stats");
   licqConf.WriteNum("Reset", (unsigned long)m_nResetTime);
-  for (iter = m_sStats.begin(); iter != m_sStats.end(); iter++)
+  for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
   {
     licqConf.WriteNum(iter->m_szTag, iter->m_nTotal);
     iter->ClearDirty();
@@ -720,7 +720,7 @@ void CICQDaemon::FlushStats()
 void CICQDaemon::ResetStats()
 {
   DaemonStatsList::iterator iter;
-  for (iter = m_sStats.begin(); iter != m_sStats.end(); iter++)
+  for (iter = m_sStats.begin(); iter != m_sStats.end(); ++iter)
   {
     iter->Reset();
   }
@@ -1398,7 +1398,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long nPP
   {
     pthread_mutex_lock(&mutex_extendedevents);
     std::list<ICQEvent *>::iterator i;
-    for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); i++)
+    for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); ++i)
     {
       if (*i == e)
       {
@@ -1437,7 +1437,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet
   {
     pthread_mutex_lock(&mutex_extendedevents);
     std::list<ICQEvent *>::iterator i;
-    for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); i++)
+    for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); ++i)
     {
       if (*i == e)
       {
@@ -1504,7 +1504,7 @@ ICQEvent *CICQDaemon::SendExpectEvent(ICQEvent *e, void *(*fcn)(void *))
       pthread_mutex_lock(&mutex_sendqueue_server);
       list<ICQEvent *>::iterator iter;
       for (iter = m_lxSendQueue_Server.begin();
-           iter != m_lxSendQueue_Server.end(); iter++)
+           iter != m_lxSendQueue_Server.end(); ++iter)
       {
         if (e == *iter)
         {
@@ -1567,7 +1567,7 @@ void CICQDaemon::FailEvents(int sd, int err)
     e = NULL;
     pthread_mutex_lock(&mutex_runningevents);
     list<ICQEvent *>::iterator iter;
-    for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+    for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
     {
       if ((*iter)->m_nSocketDesc == sd)
       {
@@ -1608,7 +1608,7 @@ ICQEvent *CICQDaemon::DoneServerEvent(unsigned long _nSubSeq, EventResult _eResu
   pthread_mutex_lock(&mutex_runningevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
-  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if ((*iter)->CompareSubSequence(_nSubSeq) )
     {
@@ -1646,7 +1646,7 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
   pthread_mutex_lock(&mutex_runningevents);
   list<ICQEvent *>::iterator iter;
   bool bFound = false;
-  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if (e == *iter)
     {
@@ -1667,7 +1667,7 @@ ICQEvent *CICQDaemon::DoneEvent(ICQEvent *e, EventResult _eResult)
 #if 0
   if (m_lxRunningEvents.size()) {
     gLog.Info("doneevents: for: %p pending: \n", e);
-    for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+    for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
     {
       gLog.Info("%p Command: %d SubCommand: %d Sequence: %hu SubSequence: %d: Uin: %lu\n", *iter,
                 (*iter)->Command(), (*iter)->SubCommand(), (*iter)->Sequence(), (*iter)->SubSequence(),
@@ -1718,7 +1718,7 @@ ICQEvent *CICQDaemon::DoneEvent(int _nSD, unsigned short _nSequence, EventResult
   pthread_mutex_lock(&mutex_runningevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
-  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if ((*iter)->CompareEvent(_nSD, _nSequence) )
     {
@@ -1751,7 +1751,7 @@ ICQEvent *CICQDaemon::DoneEvent(unsigned long tag, EventResult _eResult)
   pthread_mutex_lock(&mutex_runningevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
-  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); iter++)
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if ((*iter)->Equals(tag))
     {
@@ -1933,7 +1933,7 @@ ICQEvent *CICQDaemon::DoneExtendedServerEvent(const unsigned short _nSubSequence
   pthread_mutex_lock(&mutex_extendedevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
-  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
+  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); ++iter)
   {
     if ((*iter)->m_nSubSequence == _nSubSequence)
     {
@@ -1952,7 +1952,7 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(ICQEvent *e, EventResult _eResult)
 {
   pthread_mutex_lock(&mutex_extendedevents);
   list<ICQEvent *>::iterator iter;
-  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
+  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); ++iter)
   {
     if (e == (*iter))
     {
@@ -1985,7 +1985,7 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(unsigned long tag, EventResult _eResult)
   pthread_mutex_lock(&mutex_extendedevents);
   ICQEvent *e = NULL;
   list<ICQEvent *>::iterator iter;
-  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); iter++)
+  for (iter = m_lxExtendedEvents.begin(); iter != m_lxExtendedEvents.end(); ++iter)
   {
     if ((*iter)->Equals(tag))
     {
@@ -2028,7 +2028,7 @@ void CICQDaemon::PushPluginEvent(ICQEvent *e)
 {
   PluginsListIter iter;
   pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); iter++)
+  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if ((*iter)->CompareThread(e->thread_plugin))
     {
@@ -2052,7 +2052,7 @@ void CICQDaemon::PushPluginSignal(CICQSignal *s)
 {
   PluginsListIter iter;
   pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); iter++)
+  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if ( (*iter)->CompareMask(s->Signal()) )
       (*iter)->PushSignal(new CICQSignal(s));
@@ -2072,7 +2072,7 @@ CICQSignal *CICQDaemon::PopPluginSignal()
   PluginsListIter iter;
   CICQSignal *s = NULL;
   pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); iter++)
+  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if ( (*iter)->CompareThread(pthread_self()) )
     {
@@ -2094,7 +2094,7 @@ ICQEvent *CICQDaemon::PopPluginEvent()
   PluginsListIter iter;
   ICQEvent *e = NULL;
   pthread_mutex_lock(&licq->mutex_plugins);
-  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); iter++)
+  for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if ( (*iter)->CompareThread(pthread_self()) )
     {
@@ -2112,7 +2112,7 @@ void CICQDaemon::PushProtoSignal(CSignal *s, unsigned long _nPPID)
   bool bExists = false;
   pthread_mutex_lock(&licq->mutex_protoplugins);
   for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
-       iter++)
+       ++iter)
   {
     if ((*iter)->PPID() == _nPPID)
     {
@@ -2137,7 +2137,7 @@ CSignal *CICQDaemon::PopProtoSignal()
   CSignal *s = NULL;
   pthread_mutex_lock(&licq->mutex_protoplugins);
   for (iter = licq->list_protoplugins.begin(); iter != licq->list_protoplugins.end();
-       iter++)
+       ++iter)
   {
     if ((*iter)->CompareThread(pthread_self()))
     {
@@ -2156,7 +2156,7 @@ void CICQDaemon::CancelEvent(unsigned long t)
   pthread_mutex_lock(&mutex_sendqueue_server);
   list<ICQEvent *>::iterator iter;
   for (iter = m_lxSendQueue_Server.begin();
-       iter != m_lxSendQueue_Server.end(); iter++)
+       iter != m_lxSendQueue_Server.end(); ++iter)
   {
     if ((*iter)->Equals(t))
     {
@@ -2265,7 +2265,7 @@ bool CICQDaemon::AddUserConversation(unsigned long _nCID, const char *_szId)
   bool bAdded = false;
   ConversationList::iterator iter;
   pthread_mutex_lock(&mutex_conversations);
-  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); ++iter)
   {
     if ((*iter)->CID() == _nCID)
     {
@@ -2284,7 +2284,7 @@ bool CICQDaemon::AddUserConversation(int _nSocket, const char *_szId)
   bool bAdded = false;
   ConversationList::iterator iter;
   pthread_mutex_lock(&mutex_conversations);
-  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); ++iter)
   {
     if ((*iter)->Socket() == _nSocket)
     {
@@ -2303,7 +2303,7 @@ bool CICQDaemon::RemoveUserConversation(unsigned long _nCID, const char *_szId)
   bool bRemoved = false;
   ConversationList::iterator iter;
   pthread_mutex_lock(&mutex_conversations);
-  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); ++iter)
   {
     if ((*iter)->CID() == _nCID)
     {
@@ -2321,7 +2321,7 @@ bool CICQDaemon::RemoveUserConversation(int _nSocket, const char *_szId)
   bool bRemoved = false;
   ConversationList::iterator iter;
   pthread_mutex_lock(&mutex_conversations);
-  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); ++iter)
   {
     if ((*iter)->Socket() == _nSocket)
     {
@@ -2338,7 +2338,7 @@ CConversation *CICQDaemon::FindConversation(int _nSocket)
 {
   pthread_mutex_lock(&mutex_conversations);
   ConversationList::iterator iter;
-  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); ++iter)
     if ((*iter)->Socket() == _nSocket)
       break;
   pthread_mutex_unlock(&mutex_conversations);
@@ -2350,7 +2350,7 @@ CConversation *CICQDaemon::FindConversation(unsigned long _nCID)
 {
   pthread_mutex_lock(&mutex_conversations);
   ConversationList::iterator iter;
-  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); ++iter)
     if ((*iter)->CID() == _nCID)
       break;
   pthread_mutex_unlock(&mutex_conversations);
@@ -2363,7 +2363,7 @@ bool CICQDaemon::RemoveConversation(unsigned long _nCID)
   bool bDeleted = false;
   pthread_mutex_lock(&mutex_conversations);
   ConversationList::iterator iter;
-  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); iter++)
+  for (iter = m_lConversations.begin(); iter != m_lConversations.end(); ++iter)
   {
     if ((*iter)->CID() == _nCID)
     {
@@ -2687,7 +2687,7 @@ bool CICQDaemon::WaitForReverseConnection(unsigned short id, unsigned long uin)
 
   std::list<CReverseConnectToUserData *>::iterator iter;
   for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
-    iter++)
+    ++iter)
   {
     if ((*iter)->nId == id && (*iter)->nUin == uin)
       break;
@@ -2707,7 +2707,7 @@ bool CICQDaemon::WaitForReverseConnection(unsigned short id, unsigned long uin)
   while (pthread_cond_timedwait(&cond_reverseconnect_done,
     &mutex_reverseconnect, &ts) == 0)
   {
-    for (iter = m_lReverseConnect.begin(); ; iter++)
+    for (iter = m_lReverseConnect.begin(); ; ++iter)
     {
       if (iter == m_lReverseConnect.end())
       {
@@ -2731,7 +2731,7 @@ bool CICQDaemon::WaitForReverseConnection(unsigned short id, unsigned long uin)
 
   // timed out, just remove the record
   for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
-    iter++)
+    ++iter)
   {
     if ((*iter)->nId == id && (*iter)->nUin == uin)
     {

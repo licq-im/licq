@@ -104,7 +104,7 @@ void CSocketSet::Set(int _nSD)
   Lock();
   FD_SET(_nSD, &sFd);
   list<int>::iterator i = lFd.begin();
-  while (i != lFd.end() && _nSD < *i) i++;
+  while (i != lFd.end() && _nSD < *i) ++i;
   lFd.insert(i, _nSD);
   Unlock();
 }
@@ -114,7 +114,7 @@ void CSocketSet::Clear (int _nSD)
   Lock();
   FD_CLR(_nSD, &sFd);
   list<int>::iterator i = lFd.begin();
-  while (i != lFd.end() && *i != _nSD) i++;
+  while (i != lFd.end() && *i != _nSD) ++i;
   if (i != lFd.end()) lFd.erase(i);
   Unlock();
 }
@@ -1334,7 +1334,7 @@ INetSocket *CSocketHashTable::Retrieve(int _nSd)
 
   int nSd;
   list<INetSocket *>::iterator iter;
-  for (iter = l.begin(); iter != l.end(); iter++)
+  for (iter = l.begin(); iter != l.end(); ++iter)
   {
     (*iter)->Lock();
     nSd = (*iter)->Descriptor();
@@ -1365,7 +1365,7 @@ void CSocketHashTable::Remove(int _nSd)
   list<INetSocket *> &l = m_vlTable[HashValue(_nSd)];
   int nSd;
   list<INetSocket *>::iterator iter;
-  for (iter = l.begin(); iter != l.end(); iter++)
+  for (iter = l.begin(); iter != l.end(); ++iter)
   {
     (*iter)->Lock();
     nSd = (*iter)->Descriptor();

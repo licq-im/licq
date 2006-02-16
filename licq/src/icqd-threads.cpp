@@ -101,7 +101,7 @@ void *ProcessRunningEvent_Server_tep(void *p)
   {
 
     for (iter = d->m_lxSendQueue_Server.begin();
-         iter != d->m_lxSendQueue_Server.end(); iter++)
+         iter != d->m_lxSendQueue_Server.end(); ++iter)
     {
       if ((*iter)->Channel() == ICQ_CHNxNEW)
       {

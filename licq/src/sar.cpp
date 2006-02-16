@@ -57,7 +57,7 @@ CSARManager::CSARManager()
 CSARManager::~CSARManager()
 {
   for (unsigned short i = 0; i < SAR_NUM_SECTIONS; i++)
-    for (SARListIter iter = m_lSAR[i].begin(); iter != m_lSAR[i].end(); iter++)
+    for (SARListIter iter = m_lSAR[i].begin(); iter != m_lSAR[i].end(); ++iter)
       delete (*iter);
 }
 
@@ -120,7 +120,7 @@ void CSARManager::Save()
     m_fConf.SetSection(n[i]);
     m_fConf.WriteNum("NumSAR", (unsigned short)m_lSAR[i].size());
     unsigned short j = 1;
-    for (SARListIter iter = m_lSAR[i].begin(); iter != m_lSAR[i].end(); iter++, j++)
+    for (SARListIter iter = m_lSAR[i].begin(); iter != m_lSAR[i].end(); ++iter, j++)
     {
       sprintf(sz, "SAR%d.Name", j);
       m_fConf.WriteStr(sz, (*iter)->Name());

@@ -765,7 +765,7 @@ void CEventContactList::CreateDescription()
   char *szEnd = m_szText;
   szEnd += sprintf(m_szText, tr("Contact list (%d contacts):\n"), m_vszFields.size());
   ContactList::const_iterator iter;
-  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
+  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
     szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->Alias(), (*iter)->IdString());
   }
@@ -775,7 +775,7 @@ void CEventContactList::CreateDescription()
 CEventContactList::~CEventContactList()
 {
   ContactList::iterator iter;
-  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
+  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
     delete *iter;
 }
 
@@ -786,7 +786,7 @@ void CEventContactList::AddToHistory(ICQUser *u, unsigned long _nPPID, direction
   char *szOut = new char[m_vszFields.size() * 32 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   ContactList::const_iterator iter;
-  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); iter++)
+  for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
     char *p = PPIDSTRING((*iter)->PPID());
     nPPID = (*iter)->PPID();

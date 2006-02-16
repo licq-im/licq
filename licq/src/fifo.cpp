@@ -221,7 +221,7 @@ static bool buffer_get_ids(CICQDaemon *d, char *buffer,
     *missing_protocol = false;
     
     d->ProtoPluginList(l);
-    for( it = l.begin() ; !found && it != l.end() ; it++)
+    for( it = l.begin() ; !found && it != l.end() ; ++it)
     {
       if( !strcmp( (*it)->Name(), buffer) )
       {
@@ -661,7 +661,7 @@ static int fifo_plugin_list(int argc, const char *const *argv, void *data)
   PluginsListIter it;
 
   d->PluginList(l);
-  for (it = l.begin(); it != l.end(); it++)
+  for (it = l.begin(); it != l.end(); ++it)
   {
     gLog.Info("[%3d] %s\n", (*it)->Id(), (*it)->Name());
   }
@@ -701,7 +701,7 @@ static int fifo_plugin_unload(int argc, const char *const *argv, void *data)
   }
   
   d->PluginList(l);
-  for (it = l.begin(); it != l.end(); it++)
+  for (it = l.begin(); it != l.end(); ++it)
   {
     if (strcmp((*it)->Name(), argv[1]) == 0)
     {

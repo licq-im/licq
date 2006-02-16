@@ -237,7 +237,7 @@ void ICQUserPhoneBook::ClearEntry(unsigned long nEntry)
     return;
 
   vector<struct PhoneBookEntry>::iterator i = PhoneBookVector.begin();
-  for (;nEntry > 0; nEntry--, i++);
+  for (;nEntry > 0; nEntry--, ++i);
 
   free((*i).szDescription);
   free((*i).szAreaCode);
@@ -260,7 +260,7 @@ void ICQUserPhoneBook::SetActive(long nEntry)
   vector<struct PhoneBookEntry>::iterator iter;
   long i;
   for (i = 0, iter = PhoneBookVector.begin(); iter != PhoneBookVector.end()
-                                                 ; i++, iter++)
+                                                 ; i++, ++iter)
     (*iter).nActive = (i == nEntry);
 }
 
@@ -495,17 +495,17 @@ CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
 CUserManager::~CUserManager()
 {
   UserList::iterator iter;
-  for (iter = m_vpcUsers.begin(); iter != m_vpcUsers.end(); iter++)
+  for (iter = m_vpcUsers.begin(); iter != m_vpcUsers.end(); ++iter)
   {
     delete *iter;
   }
 
   GroupList::iterator g_iter;
-  for (g_iter = m_vszGroups.begin(); g_iter != m_vszGroups.end(); g_iter++)
+  for (g_iter = m_vszGroups.begin(); g_iter != m_vszGroups.end(); ++g_iter)
     free(*g_iter);
 
   OwnerList::iterator o_iter;
-  for (o_iter = m_vpcOwners.begin(); o_iter != m_vpcOwners.end(); o_iter++)
+  for (o_iter = m_vpcOwners.begin(); o_iter != m_vpcOwners.end(); ++o_iter)
     delete *o_iter;
 }
 
@@ -678,7 +678,7 @@ void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
     u->RemoveFiles();
   LockUserList(LOCK_W);
   UserList::iterator iter = m_vpcUsers.begin();
-  while (iter != m_vpcUsers.end() && u != (*iter)) iter++;
+  while (iter != m_vpcUsers.end() && u != (*iter)) ++iter;
   if (iter == m_vpcUsers.end())
     gLog.Warn("%sInteral Error: CUserManager::RemoveUser():\n"
               "%sUser \"%s\" (%s) not found in vector.\n",
@@ -699,7 +699,7 @@ void CUserManager::RemoveOwner(unsigned long _nPPID)
   o->RemoveFiles();
   LockOwnerList(LOCK_W);
   OwnerList::iterator iter = m_vpcOwners.begin();
-  while (iter != m_vpcOwners.end() && o != (*iter)) iter++;
+  while (iter != m_vpcOwners.end() && o != (*iter)) ++iter;
   if (iter == m_vpcOwners.end())
     gLog.Warn("%sInternal Error: CUserManager::RemoveOwner():\n"
               "%sOwner not found in vector.\n",
@@ -768,7 +768,7 @@ ICQOwner *CUserManager::FindOwner(const char *_szId, unsigned long _nPPID)
 
   LockOwnerList(LOCK_R);
   OwnerList::iterator iter;
-  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); iter++)
+  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
   {
     if (_nPPID == (*iter)->PPID() && 
         strcmp(_szId, (*iter)->IdString()) == 0/* || strcmp(szId, (*iter)->IdString()) == 0)*/)
@@ -822,7 +822,7 @@ bool CUserManager::AddGroup(char *_szName, unsigned short nID)
     LockGroupList(LOCK_W);
 
     GroupList::iterator iter;
-    for (iter = m_vszGroups.begin(); iter != m_vszGroups.end(); iter++)
+    for (iter = m_vszGroups.begin(); iter != m_vszGroups.end(); ++iter)
     {
       if (strcasecmp(*iter, _szName) == 0)
       {
@@ -1250,7 +1250,7 @@ ICQOwner *CUserManager::FetchOwner(unsigned long _nPPID,
 
   LockOwnerList(LOCK_R);
   OwnerList::iterator iter;
-  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); iter++)
+  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
   {
     if ((*iter)->PPID() == _nPPID)
     {
@@ -1276,7 +1276,7 @@ void CUserManager::DropOwner(unsigned long _nPPID)
 {
   LockOwnerList(LOCK_R);
   OwnerList::iterator iter;
-  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); iter++)
+  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
   {
     if ((*iter)->PPID() == _nPPID)
     {
@@ -1606,7 +1606,7 @@ ICQUser *CUserHashTable::Retrieve(const char *_szId, unsigned long _nPPID)
   char *szTempId = 0;
   unsigned long nPPID;
   UserList::iterator iter;
-  for (iter = l.begin(); iter != l.end(); iter++)
+  for (iter = l.begin(); iter != l.end(); ++iter)
   {
     nPPID = (*iter)->PPID();
     ICQUser::MakeRealId((*iter)->IdString(), nPPID, szTempId);
@@ -1648,7 +1648,7 @@ void CUserHashTable::Remove(const char *_szId, unsigned long _nPPID)
   char *szId;
   unsigned long nPPID;
   UserList::iterator iter;
-  for (iter = l.begin(); iter != l.end(); iter++)
+  for (iter = l.begin(); iter != l.end(); ++iter)
   {
     (*iter)->Lock(LOCK_R);
     szId = (*iter)->IdString();
@@ -3555,7 +3555,7 @@ CUserEvent *ICQUser::EventPeekId(int id)
   if (m_vcMessages.size() == 0) return NULL;
   CUserEvent *e = NULL;
   UserEventList::iterator iter;
-  for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); iter++)
+  for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); ++iter)
   {
     if ((*iter)->Id() == id)
     {
@@ -3619,7 +3619,7 @@ void ICQUser::EventClear(unsigned short index)
 void ICQUser::EventClearId(int id)
 {
   UserEventList::iterator iter;
-  for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); iter++)
+  for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); ++iter)
   {
     if ((*iter)->Id() == id)
     {

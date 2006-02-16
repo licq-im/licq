@@ -269,7 +269,7 @@ void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
 
   struct stat buf;
   ConstFileList::iterator iter;
-  for (iter = lPathNames.begin(); iter != lPathNames.end(); iter++)
+  for (iter = lPathNames.begin(); iter != lPathNames.end(); ++iter)
   {
     if (stat(*iter, &buf) == -1)
     {
@@ -445,7 +445,7 @@ bool CFileTransferManager::ProcessPacket()
         std::list<CReverseConnectToUserData *>::iterator iter;
         bool bFound = false;
         for (iter = licqDaemon->m_lReverseConnect.begin();
-                          iter != licqDaemon->m_lReverseConnect.end();  iter++)
+                          iter != licqDaemon->m_lReverseConnect.end();  ++iter)
         {
           if ((*iter)->nId == nId && (*iter)->nUin == m_nUin)
           {
@@ -1300,7 +1300,7 @@ void FileWaitForSignal_cleanup(void *arg)
 CFileTransferManager *CFileTransferManager::FindByPort(unsigned short p)
 {
   FileTransferManagerList::iterator iter;
-  for (iter = ftmList.begin(); iter != ftmList.end(); iter++)
+  for (iter = ftmList.begin(); iter != ftmList.end(); ++iter)
   {
     if ( (*iter)->LocalPort() == p ) return *iter;
   }
@@ -1328,13 +1328,13 @@ CFileTransferManager::~CFileTransferManager()
   }
 
   FileList::iterator iter;
-  for (iter = m_lPathNames.begin(); iter != m_lPathNames.end(); iter++)
+  for (iter = m_lPathNames.begin(); iter != m_lPathNames.end(); ++iter)
   {
     free(*iter);
   }
 
   FileTransferManagerList::iterator fiter;
-  for (fiter = ftmList.begin(); fiter != ftmList.end(); fiter++)
+  for (fiter = ftmList.begin(); fiter != ftmList.end(); ++fiter)
   {
     if (*fiter == this) break;
   }

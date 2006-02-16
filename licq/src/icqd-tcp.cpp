@@ -512,7 +512,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
 
   ICQUser *u = NULL;
   UserStringList::iterator iter;
-  for (iter = users.begin(); iter != users.end(); iter++)
+  for (iter = users.begin(); iter != users.end(); ++iter)
   {
     u = gUserManager.FetchUser(*iter, LICQ_PPID, LOCK_R);
     p += sprintf(&m[p], "%s%c%s%c", *iter, char(0xFE),
@@ -580,7 +580,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
   char szUin[24];
 
   UinList::iterator it;
-  for (it = uins.begin(); it != uins.end(); it++)
+  for (it = uins.begin(); it != uins.end(); ++it)
   {
     sprintf(szUin, "%lu", *it);
     users.push_back(szUin);
@@ -598,7 +598,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
 
   ICQUser *u = NULL;
   UinList::iterator iter;
-  for (iter = uins.begin(); iter != uins.end(); iter++)
+  for (iter = uins.begin(); iter != uins.end(); ++iter)
   {
     u = gUserManager.FetchUser(*iter, LOCK_R);
     p += sprintf(&m[p], "%lu%c%s%c", *iter, char(0xFE),
@@ -3900,7 +3900,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
         {
           pthread_mutex_lock(&mutex_reverseconnect);
           std::list<CReverseConnectToUserData *>::iterator iter;
-          for (iter = m_lReverseConnect.begin(); ; iter++)
+          for (iter = m_lReverseConnect.begin(); ; ++iter)
           {
             if (iter == m_lReverseConnect.end())
             {
@@ -3980,7 +3980,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       pthread_mutex_lock(&mutex_reverseconnect);
       std::list<CReverseConnectToUserData *>::iterator iter;
       for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
-        iter++)
+        ++iter)
       {
         // For v6 there is no connection id, so just use uin
         if ((*iter)->nUin == nUin)
@@ -4026,7 +4026,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       pthread_mutex_lock(&mutex_reverseconnect);
       std::list<CReverseConnectToUserData *>::iterator iter;
       for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
-        iter++)
+        ++iter)
       {
         // For v4 there is no connection id, so just use uin
         if ((*iter)->nUin == nUin)
@@ -4073,7 +4073,7 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       pthread_mutex_lock(&mutex_reverseconnect);
       std::list<CReverseConnectToUserData *>::iterator iter;
       for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
-        iter++)
+        ++iter)
       {
         // For v2 there is no connection id, so just use uin
         if ((*iter)->nUin == nUin)

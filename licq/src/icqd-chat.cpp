@@ -343,7 +343,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   buffer->PackChar(clientList.size());
 
   ChatClientPList::iterator iter;
-  for (iter = clientList.begin(); iter != clientList.end(); iter++)
+  for (iter = clientList.begin(); iter != clientList.end(); ++iter)
   {
     buffer->PackUnsignedLong((*iter)->m_nVersion);
     buffer->PackUnsignedLong((*iter)->m_nPort);
@@ -889,7 +889,7 @@ CChatUser *CChatManager::FindChatUser(int sd)
 {
   // Find the right user (possible race condition, but we ignore it for now)
   ChatUserList::iterator iter;
-  for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+  for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
     if ( (*iter)->sock.Descriptor() == sd) break;
 
   if (iter == chatUsers.end())
@@ -957,7 +957,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
         pthread_mutex_lock(&licqDaemon->mutex_reverseconnect);
         std::list<CReverseConnectToUserData *>::iterator iter;
         for (iter = licqDaemon->m_lReverseConnect.begin();
-                         iter != licqDaemon->m_lReverseConnect.end();  iter++)
+                         iter != licqDaemon->m_lReverseConnect.end();  ++iter)
         {
           if ((*iter)->nUin == u->uin)
           {
@@ -1015,7 +1015,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       // Send the response
       ChatClientPList l;
       ChatUserList::iterator iter;
-      for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+      for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
       {
         // Skip this guys client info and anybody we haven't connected to yet
         if ((strcmp((*iter)->szId, u->szId) == 0 && (*iter)->nPPID == u->nPPID)
@@ -1096,7 +1096,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
         gLog.Info(tr("%sChat: Joined multiparty (%d people).\n"), L_TCPxSTR,
            pin.ChatClients().size() + 1);
         ChatClientList::iterator iter;
-        for (iter = pin.ChatClients().begin(); iter != pin.ChatClients().end(); iter++)
+        for (iter = pin.ChatClients().begin(); iter != pin.ChatClients().end(); ++iter)
         {
           ChatUserList::iterator iter2;
           for (iter2 = chatUsers.begin(); iter2 != chatUsers.end(); iter2++)
@@ -1373,7 +1373,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
 
         // Find the person that we receive the yes vote
         VoteInfoList::iterator iter;
-        for (iter = voteInfo.begin(); iter != voteInfo.end(); iter++)
+        for (iter = voteInfo.begin(); iter != voteInfo.end(); ++iter)
         {
           if ((*iter)->nUin == nUin)
             break;
@@ -1408,7 +1408,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
 
         // Find the person that we receive the yes vote
         VoteInfoList::iterator iter;
-        for (iter = voteInfo.begin(); iter != voteInfo.end(); iter++)
+        for (iter = voteInfo.begin(); iter != voteInfo.end(); ++iter)
         {
           if ((*iter)->nUin == nUin)
             break;
@@ -1443,7 +1443,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
 
         // Find the user and say bye-bye to him
         ChatUserList::iterator iter;
-        for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+        for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
         {
           if((*iter)->Uin() == nUin)
             break;
@@ -1665,7 +1665,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
 
           // Find the person that we received the yes vote for
           VoteInfoList::iterator iter;
-          for (iter = voteInfo.begin(); iter != voteInfo.end(); iter++)
+          for (iter = voteInfo.begin(); iter != voteInfo.end(); ++iter)
           {
             if ((*iter)->nUin == nUin)
               break;
@@ -1695,7 +1695,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
 
           // Find the person that we received the no vote for
           VoteInfoList::iterator iter;
-          for (iter = voteInfo.begin(); iter != voteInfo.end(); iter++)
+          for (iter = voteInfo.begin(); iter != voteInfo.end(); ++iter)
           {
             if ((*iter)->nUin == nUin)
               break;
@@ -1726,7 +1726,7 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
 
           // Find the user and say bye-bye to him
           ChatUserList::iterator iter;
-          for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+          for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
           {
             if((*iter)->Uin() == nUin)
              break;
@@ -1847,7 +1847,7 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
 
   if (_nUin != 0)
   {
-    for (u_iter = chatUsers.begin(); u_iter != chatUsers.end(); u_iter++)
+    for (u_iter = chatUsers.begin(); u_iter != chatUsers.end(); ++u_iter)
     {
       if ((*u_iter)->Uin() == _nUin)
         break;
@@ -1864,7 +1864,7 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
     // Send it to every user
     if (_nUin == 0)
     {
-      for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+      for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
         ok = SendBufferToClient(b, cmd, *iter);
     }
     else
@@ -1872,14 +1872,14 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
       // Send it to every user except _iter
       if (bNotIter)
       {
-        for (iter = chatUsers.begin(); iter != u_iter; iter++)
+        for (iter = chatUsers.begin(); iter != u_iter; ++iter)
           ok = SendBufferToClient(b, cmd, *iter);
 
         // Check to see if we are already at the end
         // And at the same time skip the user we don't want to send this to
         if (++iter == chatUsers.end())  return;
 
-        for (; iter != chatUsers.end(); iter++)
+        for (; iter != chatUsers.end(); ++iter)
           ok = SendBufferToClient(b, cmd, *iter);
       }
       // Send it only to _iter
@@ -1936,7 +1936,7 @@ void CChatManager::SendBuffer_Raw(CBuffer *b)
   while (!ok)
   {
     ok = true;
-    for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+    for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
     {
       u = *iter;
 
@@ -2033,7 +2033,7 @@ void CChatManager::SendKickNoVote(unsigned long _nUin)
 
   // And close the connection to the kicked user
   ChatUserList::iterator iter;
-  for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+  for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
   {
     if((*iter)->Uin() == _nUin)
       break;
@@ -2223,7 +2223,7 @@ void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
 {
   // Find the person we are kicking in the ChatUserList
   ChatUserList::iterator userIter;
-  for (userIter = chatUsers.begin(); userIter != chatUsers.end(); userIter++)
+  for (userIter = chatUsers.begin(); userIter != chatUsers.end(); ++userIter)
   {
     if ((*userIter)->Uin() == (*iter)->nUin)
       break;
@@ -2266,7 +2266,7 @@ void CChatManager::CloseClient(CChatUser *u)
 {
   // Remove the user from the user list
   ChatUserList::iterator iter;
-  for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+  for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
   {
     if (u == *iter)
     {
@@ -2291,7 +2291,7 @@ char *CChatManager::ClientsStr()
   int nPos = 0;
 
   ChatUserList::iterator iter;
-  for (iter = chatUsers.begin(); iter != chatUsers.end(); iter++)
+  for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
   {
     if (sz[0] != '\0') nPos += sprintf(&sz[nPos], ", ");
     if ((*iter)->Name()[0] == '\0')
@@ -2441,7 +2441,7 @@ void *ChatWaitForSignal_tep(void *arg)
     pthread_mutex_lock(&rc->m->thread_list_mutex);
     ThreadList::iterator iter;
     for (iter = rc->m->waitingThreads.begin();
-                                 iter != rc->m->waitingThreads.end(); iter++)
+                                 iter != rc->m->waitingThreads.end(); ++iter)
     {
       if (pthread_equal(*iter, pthread_self()))
       {
@@ -2496,7 +2496,7 @@ void *ChatWaitForSignal_tep(void *arg)
         pthread_mutex_lock(&rc->m->thread_list_mutex);
         ThreadList::iterator iter;
         for (iter = rc->m->waitingThreads.begin();
-                                   iter != rc->m->waitingThreads.end(); iter++)
+                                   iter != rc->m->waitingThreads.end(); ++iter)
         {
           if (pthread_equal(*iter, pthread_self()))
           {
@@ -2526,7 +2526,7 @@ void *ChatWaitForSignal_tep(void *arg)
   pthread_mutex_lock(&rc->m->thread_list_mutex);
   ThreadList::iterator iter2;
   for (iter2 = rc->m->waitingThreads.begin();
-                                  iter2 != rc->m->waitingThreads.end(); iter2++)
+                                  iter2 != rc->m->waitingThreads.end(); ++iter2)
   {
     if (pthread_equal(*iter2, pthread_self()))
     {
@@ -2560,7 +2560,7 @@ CChatManager *CChatManager::FindByPort(unsigned short p)
   pthread_mutex_lock(&cmList_mutex);
   ChatManagerList::iterator iter;
   CChatManager *cm = NULL;
-  for (iter = cmList.begin(); iter != cmList.end(); iter++)
+  for (iter = cmList.begin(); iter != cmList.end(); ++iter)
   {
     if ( (*iter)->LocalPort() == p)
     {
@@ -2611,7 +2611,7 @@ CChatManager::~CChatManager()
 
   pthread_mutex_lock(&cmList_mutex);
   ChatManagerList::iterator iter;
-  for (iter = cmList.begin(); iter != cmList.end(); iter++)
+  for (iter = cmList.begin(); iter != cmList.end(); ++iter)
   {
     if (*iter == this) break;
   }

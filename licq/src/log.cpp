@@ -228,7 +228,7 @@ CLogServer::~CLogServer()
 {
   pthread_mutex_lock(&mutex);
   vector<CLogService *>::iterator iter;
-  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
     delete *iter; 
   pthread_mutex_unlock(&mutex);
 
@@ -254,7 +254,7 @@ void CLogServer::AddLogTypeToService(unsigned short _nServiceType, unsigned shor
   pthread_mutex_lock(&mutex);
   // Go through the vector setting the log types
    vector<CLogService *>::iterator iter;
-   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
    {
       if ((*iter)->ServiceType() == _nServiceType)
          (*iter)->AddLogType(_nLogType);
@@ -267,7 +267,7 @@ void CLogServer::RemoveLogTypeFromService(unsigned short _nServiceType, unsigned
   pthread_mutex_lock(&mutex);
    // Go through the vector setting the log types
    vector<CLogService *>::iterator iter;
-   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
    {
       if ((*iter)->ServiceType() == _nServiceType)
          (*iter)->RemoveLogType(_nLogType);
@@ -280,7 +280,7 @@ void CLogServer::ModifyService(unsigned short _nServiceType, unsigned short _nLo
   pthread_mutex_lock(&mutex);
    // Go through the vector setting the log types
    vector<CLogService *>::iterator iter;
-   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+   for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
    {
       if ((*iter)->ServiceType() == _nServiceType)
          (*iter)->SetLogTypes(_nLogTypes);
@@ -294,7 +294,7 @@ unsigned short CLogServer::ServiceLogTypes(unsigned short _nServiceType)
   pthread_mutex_lock(&mutex);
   // Go through the vector setting the log types
   vector<CLogService *>::iterator iter;
-  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
   {
     if ((*iter)->ServiceType() == _nServiceType)
     {
@@ -310,7 +310,7 @@ void CLogServer::SetServiceData(unsigned short _nServiceType, void *_pData)
 {
   pthread_mutex_lock(&mutex);
   vector<CLogService *>::iterator iter;
-  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
   {
      if ((*iter)->ServiceType() == _nServiceType)
        (*iter)->SetData(_pData);
@@ -436,7 +436,7 @@ void CLogServer::Log(const unsigned short _nServiceTypes, const unsigned short _
 
   // Log the event to each server
   vector<CLogService *>::iterator iter;
-  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); iter++)
+  for (iter = m_vxLogServices.begin(); iter != m_vxLogServices.end(); ++iter)
   {
     if ((*iter)->LogType(_nLogType) && ((*iter)->ServiceType() & _nServiceTypes))
         (*iter)->LogMessage(szTime, szMsgMax, _nLogType);

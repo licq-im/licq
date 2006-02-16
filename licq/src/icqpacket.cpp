@@ -1105,7 +1105,7 @@ CPU_GenericUinList::CPU_GenericUinList(UserStringList &users, unsigned short fam
   len[1] = '\0';
   int nLen = 0;
   UserStringList::iterator it;
-  for (it = users.begin(); it != users.end(); it++)
+  for (it = users.begin(); it != users.end(); ++it)
     nLen += strlen(*it)+1;
 
   char *contacts = new char[nLen+1];
@@ -2534,7 +2534,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
   int nSize = 0;
 
   UserStringList::iterator i;
-  for (i = users.begin(); i != users.end(); i++)
+  for (i = users.begin(); i != users.end(); ++i)
   {
     ICQUser *pUser = gUserManager.FetchUser(*i, LICQ_PPID, LOCK_R);
     if (pUser)
@@ -2643,7 +2643,7 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
   int nGSID = 0;
 
   GroupList::iterator g;
-  for (g = groups.begin(); g != groups.end(); g++)
+  for (g = groups.begin(); g != groups.end(); ++g)
   {
     char *szUnicode = gTranslator.ToUnicode(*g);
     nSize += strlen(szUnicode);
@@ -2918,7 +2918,7 @@ CPU_ClearServerList::CPU_ClearServerList(UserStringList &uins,
   }
   
 
-  for (i = uins.begin(); i != uins.end(); i++)
+  for (i = uins.begin(); i != uins.end(); ++i)
   {
     ICQUser *pUser = gUserManager.FetchUser(*i, LICQ_PPID, LOCK_R);
     if (pUser)
@@ -5456,7 +5456,7 @@ CPX_FileTransfer::CPX_FileTransfer(ConstFileList &lFileList, const char *_szFile
   m_nFileSize = 0;
 
   ConstFileList::iterator it;
-  for (it = m_lFileList.begin(); it != m_lFileList.end(); it++)
+  for (it = m_lFileList.begin(); it != m_lFileList.end(); ++it)
   {
     // Check file exists and get size
     struct stat buf;
