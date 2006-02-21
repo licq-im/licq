@@ -2861,8 +2861,8 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
     if (packet.readTLV())
     {
-      if (packet.hasTLV(0x0000) && packet.getTLVLen(0x0000) == 2)
-        bFake = true;
+      //if (packet.hasTLV(0x0000) && packet.getTLVLen(0x0000) == 2)
+      //  bFake = true;
     }
 
     // AIM users send this when they really do go offline, so skip it if it is
