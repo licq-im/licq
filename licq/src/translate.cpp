@@ -242,16 +242,32 @@ char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
   
   
   tr = iconv_open("UTF-8", szFrom);
-  size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-  iconv_close(tr);
-
-  if (ret == (size_t)(-1))
+  if (tr != (iconv_t)-1)
   {
-    tr = iconv_open("UCS-2BE", szFrom);
-    iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
+    size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
     iconv_close(tr);
-  }
 
+    if (ret == (size_t)(-1))
+    {
+      tr = iconv_open("UCS-2BE", szFrom);
+      if (tr == (iconv_t)-1)
+      {
+        iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
+        iconv_close(tr);
+      }
+      else
+      {
+        gLog.Error("Error encoding to UCS-2BE from %s (unsupported conversion)\n",
+                   szFrom);
+      }
+    }
+  }
+  else
+  {
+    gLog.Error("Error encoding to UTF-8 from %s (unsupported conversion)\n",
+               szFrom);
+  }
+  
   *szOut = '\0';
 
   delete [] szFrom;
@@ -287,16 +303,32 @@ char *CTranslator::FromUnicode(char *_sz, char *_szTo)
 
 
   tr = iconv_open(szTo, "UTF-8");
-  size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-  iconv_close(tr);
-
-  if (ret == (size_t)(-1))
+  if (tr != (iconv_t)-1)
   {
-    tr = iconv_open(szTo, "UCS-2BE");
-    iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
+    size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
     iconv_close(tr);
-  }
 
+    if (ret == (size_t)(-1))
+    {
+      tr = iconv_open(szTo, "UCS-2BE");
+      if (tr != (iconv_t)-1)
+      {
+        iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
+        iconv_close(tr);
+      }
+      else
+      {
+        gLog.Error("Error encoding to %s from UCS-2BE (unsupported conversion)\n",
+                   szTo);
+      }
+    }
+  }
+  else
+  {
+    gLog.Error("Error encoding to %s from UTF-8 (unsupported conversion)\n",
+               szTo);
+  }
+  
   *szOut = '\0';
 
   delete [] szTo;
@@ -319,12 +351,19 @@ char *CTranslator::FromUTF16(char *_sz, int nMsgLen)
   nOutSize = nLen * 2;
   
   tr = iconv_open("", "UCS-2BE");
-  size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-  iconv_close(tr);
-  
-  if (ret == (size_t)(-1))
+  if (tr != (iconv_t)-1)
   {
-    gLog.Error("Error decoding a UTF-16 message.\n");
+    size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
+    iconv_close(tr);
+  
+    if (ret == (size_t)(-1))
+    {
+      gLog.Error("Error decoding a UTF-16 message.\n");
+    }
+  }
+  else
+  {
+    gLog.Error("Error decoding to UCS-2BE (unsupported conversion)\n");
   }
   
   *szOut = '\0';
@@ -344,16 +383,37 @@ char *CTranslator::ToUTF16(char *_sz, char *_szEncoding, size_t &nSize)
   
   nInSize = strlen(szIn);
   nOutSize = nLen;
+
+  // Clean up for iconv, remove any spaces
+  int nFromLen = strlen(_szEncoding);
+  int j = 0;
+  char *szFrom = new char [nFromLen+1];
+  for (int i = 0; i < nFromLen; i++)
+  {
+    if (_szEncoding[i] != ' ')
+      szFrom[j++] = _szEncoding[i];
+  }
+  szFrom[j] = '\0';
   
-  tr = iconv_open("UCS-2BE", _szEncoding);
-  size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-  iconv_close(tr);
+  tr = iconv_open("UCS-2BE", szFrom);
+  if (tr != (iconv_t)-1)
+  {
+    size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
+    iconv_close(tr);
   
-  if (ret == (size_t)-1)
-    gLog.Error("Error encoding to UTF-16 from %s\n", _szEncoding);
+    if (ret == (size_t)-1)
+      gLog.Error("Error encoding to UTF-16 from %s\n", szFrom);
+  }
+  else
+  {
+    gLog.Error("Error encoding to UTF-16 from %s (unsupported conversion)\n",
+               szFrom);
+  }
 
   *szOut = '\0';
   nSize = nLen - nOutSize;
+
+  delete [] szFrom;
   
   return szNewStr;
 }
