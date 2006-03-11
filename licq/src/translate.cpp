@@ -241,7 +241,7 @@ char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
   szFrom[j] = '\0';
   
   
-  tr = iconv_open("UTF-8", szFrom);
+  tr = iconv_open("UTF-8", szFrom[0] == '\0' ? "" : szFrom);
   if (tr != (iconv_t)-1)
   {
     size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
@@ -249,7 +249,7 @@ char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
 
     if (ret == (size_t)(-1))
     {
-      tr = iconv_open("UCS-2BE", szFrom);
+      tr = iconv_open("UCS-2BE", szFrom[0] == '\0' ? "" : szFrom);
       if (tr == (iconv_t)-1)
       {
         iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
