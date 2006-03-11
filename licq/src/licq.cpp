@@ -1093,7 +1093,8 @@ int CLicq::Main()
       pthread_join((*iter)->thread_plugin, (void **)&nPluginResult);
       gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*iter)->Name(), *nPluginResult);
       free (nPluginResult);
-      dlclose((*iter)->dl_handle);
+      // Causes Qt to crash on exit
+      //dlclose((*iter)->dl_handle);
       delete *iter;
       list_plugins.erase(iter);
     }
