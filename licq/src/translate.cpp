@@ -358,12 +358,23 @@ char *CTranslator::FromUTF16(char *_sz, int nMsgLen)
   
     if (ret == (size_t)(-1))
     {
-      gLog.Error("Error decoding a UTF-16 message.\n");
+      // Try decoding to UTF8
+      tr = iconv_open("UTF-8", "UCS-2BE");
+      if (tr != (iconv_t)-1)
+      {
+        size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
+        iconv_close(tr);
+
+        if (ret == (size_t)(-1))
+          gLog.Error("Error decoding a UCS-2BE message.\n");
+      }
+      else
+        gLog.Error("Error decoding from UCS-2BE to UTF-8 (unsupported conversion)\n");
     }
   }
   else
   {
-    gLog.Error("Error decoding to UCS-2BE (unsupported conversion)\n");
+    gLog.Error("Error decoding from UCS-2BE (unsupported conversion)\n");
   }
   
   *szOut = '\0';
