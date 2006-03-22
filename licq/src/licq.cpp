@@ -222,7 +222,7 @@ bool CLicq::Init(int argc, char **argv)
         bHelp = true;
         break;
       case 'b':  // base directory
-        snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s", optarg);
+        snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/", optarg);
         BASE_DIR[MAX_FILENAME_LEN - 1] = '\0';
         bBaseDir = true;
         break;
@@ -288,7 +288,7 @@ bool CLicq::Init(int argc, char **argv)
        gLog.Error("%sLicq: $HOME not set, unable to determine config base directory.\n", L_ERRORxSTR);
        return false;
      }
-     snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/.licq", home);
+     snprintf(BASE_DIR, MAX_FILENAME_LEN, "%s/.licq/", home);
      BASE_DIR[MAX_FILENAME_LEN - 1] = '\0';
   }
 
