@@ -896,6 +896,7 @@ unsigned long CICQDaemon::icqSetGeneralInfo(
 unsigned long CICQDaemon::icqSetEmailInfo(
                           const char *szEmailSecondary, const char *szEmailOld)
 {
+return 0;
   CPU_Meta_SetEmailInfo *p =
     new CPU_Meta_SetEmailInfo(szEmailSecondary, szEmailOld);
 
@@ -4069,6 +4070,12 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 u->SetSID(nID);
               }
 
+              if (nType == ICQ_ROSTxNORMAL)
+              {
+                // Save the group that they are in
+                u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
+              }
+
               u->SetIgnoreList(nType == ICQ_ROSTxIGNORE);
               
               if (!isOnList)
@@ -4076,9 +4083,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 // They aren't a new user if we added them to a server list
                 u->SetNewUser(false);
               }
-
-              // Save the group that they are in
-              u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
 
               PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
                 u->IdString(), u->PPID()));
