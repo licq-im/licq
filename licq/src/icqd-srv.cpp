@@ -4068,14 +4068,14 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               else
               {
                 u->SetSID(nID);
-              }
 
-              if (nType == ICQ_ROSTxNORMAL)
-              {
-                // Save the group that they are in
-                u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
+                if (nType == ICQ_ROSTxNORMAL)
+                {
+                  // Save the group that they are in
+                  u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
+                }
               }
-
+              
               u->SetIgnoreList(nType == ICQ_ROSTxIGNORE);
               
               if (!isOnList)
