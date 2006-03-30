@@ -3496,23 +3496,23 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
                           bool bHideEmail)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_GENERALxINFOxSET;
+  m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
 
   m_nCountryCode = nCountryCode;
   m_nTimezone = ICQUser::SystemTimezone();
   m_nHideEmail = bHideEmail ? 1 : 0;
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAlias) + strlen_safe(szFirstName) + strlen_safe(szLastName) +
-             strlen_safe(szEmailPrimary) + strlen_safe(szCity) +
-             strlen_safe(szState) + strlen_safe(szPhoneNumber) +
-             strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZipCode) +
-             strlen_safe(szCellularNumber) + 33 + 2 + 1 + 1;
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAlias) +
+    strlen_safe(szFirstName) + strlen_safe(szLastName) +
+    strlen_safe(szEmailPrimary) + strlen_safe(szCity) + strlen_safe(szState) +
+    strlen_safe(szPhoneNumber) + strlen_safe(szFaxNumber) +
+    strlen_safe(szAddress) + strlen_safe(szZipCode) +
+    strlen_safe(szCellularNumber) + 89;
   m_nSize += packetSize;
   InitBuffer();
 
   buffer->PackUnsignedShortBE(1);
   buffer->PackUnsignedShortBE(packetSize-2-2); 		// TLV 1
-
   buffer->PackUnsignedShort(packetSize-2-2-2); 		// bytes remaining
   buffer->PackUnsignedLong(gUserManager.OwnerUin());
   buffer->PackUnsignedShortBE(0xD007); 			// type
@@ -3531,29 +3531,67 @@ CPU_Meta_SetGeneralInfo::CPU_Meta_SetGeneralInfo(const char *szAlias,
   gTranslator.ClientToServer((char *) szCellularNumber);
   gTranslator.ClientToServer((char *) szZipCode);
 
-  m_szAlias = buffer->PackString(szAlias);
-  m_szFirstName = buffer->PackString(szFirstName);
-  m_szLastName = buffer->PackString(szLastName);
-  m_szEmailPrimary = buffer->PackString(szEmailPrimary);
-  m_szCity = buffer->PackString(szCity);
-  m_szState = buffer->PackString(szState);
-  m_szPhoneNumber = buffer->PackString(szPhoneNumber);
-  m_szFaxNumber = buffer->PackString(szFaxNumber);
-  m_szAddress = buffer->PackString(szAddress);
-  m_szCellularNumber = buffer->PackString(szCellularNumber);
-  m_szZipCode = buffer->PackString(szZipCode);
-  buffer->PackUnsignedShort(m_nCountryCode);
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxTIMEZONE);
+  buffer->PackUnsignedShort(0x0001);
   buffer->PackChar(m_nTimezone);
-  buffer->PackChar(m_nHideEmail);
+  
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxALIAS);
+  buffer->PackUnsignedShort(strlen_safe(szAlias)+3);
+  m_szAlias = buffer->PackString(szAlias);
+  
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxFNAME);
+  buffer->PackUnsignedShort(strlen_safe(szFirstName)+3);
+  m_szFirstName = buffer->PackString(szFirstName);
+  
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxLNAME);
+  buffer->PackUnsignedShort(strlen_safe(szLastName)+3);
+  m_szLastName = buffer->PackString(szLastName);
 
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxEMAIL);
+  buffer->PackUnsignedShort(strlen_safe(szEmailPrimary)+3);
+  m_szEmailPrimary = buffer->PackString(szEmailPrimary);
+  buffer->PackChar(m_nHideEmail);
+  
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxCITY);
+  buffer->PackUnsignedShort(strlen_safe(szCity)+3);
+  m_szCity = buffer->PackString(szCity);
+  
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxSTATE);
+  buffer->PackUnsignedShort(strlen_safe(szState)+3);
+  m_szState = buffer->PackString(szState);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxPHONExHOME);
+  buffer->PackUnsignedShort(strlen_safe(szPhoneNumber)+3);
+  m_szPhoneNumber = buffer->PackString(szPhoneNumber);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_FAX);
+  buffer->PackUnsignedShort(strlen_safe(szFaxNumber)+3);
+  m_szFaxNumber = buffer->PackString(szFaxNumber);
+  
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_ADDR);
+  buffer->PackUnsignedShort(strlen_safe(szAddress)+3);
+  m_szAddress = buffer->PackString(szAddress);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxPHONExCELL);
+  buffer->PackUnsignedShort(strlen_safe(szCellularNumber)+3);
+  m_szCellularNumber = buffer->PackString(szCellularNumber);
+  
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOME_ZIP);
+  buffer->PackUnsignedShort(strlen_safe(szZipCode)+3);
+  m_szZipCode = buffer->PackString(szZipCode);
+  
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOUNTRY);
+  buffer->PackUnsignedShort(0x0002);
+  buffer->PackUnsignedShort(m_nCountryCode);
+  
   // Check for possible problems
-  char *sz = m_szAlias;
-  while (*sz != '\0' && strncasecmp(sz, "icq", 3) != 0) sz++;
-  if (*sz != '\0')
-  {
-    gLog.Warn("%sAlias may not contain \"icq\".\n", L_WARNxSTR);
-    *sz = '-';
-  }
+  //ar *sz = m_szAlias;
+  //ile (*sz != '\0' && strncasecmp(sz, "icq", 3) != 0) sz++;
+  // (*sz != '\0')
+  //
+  //gLog.Warn("%sAlias may not contain \"icq\".\n", L_WARNxSTR);
+  //*sz = '-';
+  //
 }
 
 //-----Meta_SetEmailInfo------------------------------------------------------
@@ -3599,7 +3637,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
                        char nLanguage3)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_MORExINFOxSET;
+  m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
 
   m_nAge = nAge;
   m_nGender = nGender;
@@ -3610,7 +3648,7 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
   m_nLanguage2 = nLanguage2;
   m_nLanguage3 = nLanguage3;
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szHomepage)+3 + 10;
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szHomepage)+3 + 43;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -3625,15 +3663,35 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
 
   gTranslator.ClientToServer((char *) szHomepage);
 
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxAGE);
+  buffer->PackUnsignedShort(0x0002);
   buffer->PackUnsignedShort(m_nAge);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxGENDER);
+  buffer->PackUnsignedShort(0x0001);
   buffer->PackChar(nGender);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxHOMEPAGE);
+  buffer->PackUnsignedShort(strlen_safe(szHomepage)+3);
   m_szHomepage = buffer->PackString(szHomepage);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxBIRTHDAY);
+  buffer->PackUnsignedShort(0x0006);
   buffer->PackUnsignedShort(m_nBirthYear);
-  buffer->PackChar(m_nBirthMonth);
-  buffer->PackChar(m_nBirthDay);
-  buffer->PackChar(m_nLanguage1);
-  buffer->PackChar(m_nLanguage2);
-  buffer->PackChar(m_nLanguage3);
+  buffer->PackUnsignedShort(m_nBirthMonth);
+  buffer->PackUnsignedShort(m_nBirthDay);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxLANGUAGE);
+  buffer->PackUnsignedShort(0x0002);
+  buffer->PackUnsignedShort(m_nLanguage1);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxLANGUAGE);
+  buffer->PackUnsignedShort(0x0002);
+  buffer->PackUnsignedShort(m_nLanguage2);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxLANGUAGE);
+  buffer->PackUnsignedShort(0x0002);
+  buffer->PackUnsignedShort(m_nLanguage3);
 }
 
 //-----Meta_SetInterestsInfo----------------------------------------------------
@@ -3769,7 +3827,7 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
     const char *szHomepage)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_WORKxINFOxSET;
+  m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
   
   m_nCompanyCountry = nCompanyCountry;  
   m_nCompanyOccupation = nCompanyOccupation;
@@ -3778,10 +3836,11 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   strncpy(szStatebuf, szState, 6);
   szStatebuf[5] = '\0';
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szCity) + strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
-		    strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZip) + 2 + strlen_safe(szName) +
-		    strlen_safe(szDepartment) + strlen_safe(szPosition) + 2 +
-		    strlen_safe(szHomepage) + 30;
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szCity) +
+    strlen_safe(szStatebuf) + strlen_safe(szPhoneNumber) +
+    strlen_safe(szFaxNumber) + strlen_safe(szAddress) + strlen_safe(szZip) +
+    strlen_safe(szName) + strlen_safe(szDepartment) + strlen_safe(szPosition) +
+    strlen_safe(szHomepage) + 82;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -3805,17 +3864,52 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
   gTranslator.ClientToServer((char *) szPosition);
   gTranslator.ClientToServer((char *) szHomepage);
 
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_CITY);
+  buffer->PackUnsignedShort(strlen_safe(szCity)+3);
   m_szCity = buffer->PackString(szCity);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_STATE);
+  buffer->PackUnsignedShort(strlen_safe(szStatebuf)+3);
   m_szState = buffer->PackString(szStatebuf);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_PHONE);
+  buffer->PackUnsignedShort(strlen_safe(szPhoneNumber)+3);
   m_szPhoneNumber = buffer->PackString(szPhoneNumber);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_FAX);
+  buffer->PackUnsignedShort(strlen_safe(szFaxNumber)+3);
   m_szFaxNumber = buffer->PackString(szFaxNumber);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_ADDR);
+  buffer->PackUnsignedShort(strlen_safe(szAddress)+3);
   m_szAddress = buffer->PackString(szAddress);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_ZIP);
+  buffer->PackUnsignedShort(strlen_safe(szZip)+3);
   m_szZip = buffer->PackString(szZip);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_COUNTRY);
+  buffer->PackUnsignedShort(0x0002);
   buffer->PackUnsignedShort(m_nCompanyCountry);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOMPANY);
+  buffer->PackUnsignedShort(strlen_safe(szName)+3);
   m_szName = buffer->PackString(szName);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxCODEPT);
+  buffer->PackUnsignedShort(strlen_safe(szDepartment)+3);
   m_szDepartment = buffer->PackString(szDepartment);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxCOPOS);
+  buffer->PackUnsignedShort(strlen_safe(szPosition)+3);
   m_szPosition = buffer->PackString(szPosition);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxOCCUP);
+  buffer->PackUnsignedShort(0x0002);
   buffer->PackUnsignedShort(m_nCompanyOccupation);
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxWORK_URL);
+  buffer->PackUnsignedShort(strlen_safe(szHomepage)+3);
   m_szHomepage = buffer->PackString(szHomepage);
 }
 
@@ -3823,9 +3917,9 @@ CPU_Meta_SetWorkInfo::CPU_Meta_SetWorkInfo(
 CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
-  m_nMetaCommand = ICQ_CMDxMETA_ABOUTxSET;
+  m_nMetaCommand = ICQ_CMDxMETA_WPxINFOxSET;
 
-  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAbout) + 3;
+  int packetSize = 2+2+2+4+2+2+2 + strlen_safe(szAbout) + 7;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -3843,6 +3937,9 @@ CPU_Meta_SetAbout::CPU_Meta_SetAbout(const char *szAbout)
   gTranslator.ClientToServer(sz);
   if (strlen(sz) > MAX_MESSAGE_SIZE)
     sz[MAX_MESSAGE_SIZE] = '\0';
+
+  buffer->PackUnsignedShortBE(ICQ_CMDxWPxABOUT);
+  buffer->PackUnsignedShort(strlen_safe(sz)+3);
   buffer->PackString(sz);
   if (sz != NULL) delete [] sz;
 }

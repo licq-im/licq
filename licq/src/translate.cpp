@@ -257,8 +257,14 @@ char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
       }
       else
       {
-        gLog.Error("Error encoding to UCS-2BE from %s (unsupported conversion)\n",
-                   szFrom);
+        tr = iconv_open("UCS-2BE", "UTF-8");
+        size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
+        iconv_close(tr);
+        if (ret == (size_t)(-1))
+        {
+          gLog.Error("Error encoding (%s) to UCS-2BE from %s (unsupported conversion)\n",
+                     szIn, szFrom);
+        }
       }
     }
   }

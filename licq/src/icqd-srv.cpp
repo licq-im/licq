@@ -4438,7 +4438,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
   unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
   char *tmp;
-
+  
   switch (nSubtype)
   {
   case 0x0003: // multi-purpose sub-type
@@ -5293,6 +5293,20 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gLog.Info(tr("%sNo random chat user found.\n"), L_SRVxSTR);
         ProcessDoneEvent(e);
       }
+      else if (nSubtype == ICQ_CMDxMETA_WPxINFOxSET_RSP)
+      {
+        ICQEvent *e = DoneServerEvent(nSubSequence,
+                                      nResult == 0x0A ? EVENT_SUCCESS : EVENT_FAILED);
+        if (e == NULL)
+        {
+          gLog.Info(tr("%sReceived info update ack, without updating info.\n"), L_SRVxSTR);
+          break;
+        }
+
+        gLog.Info(tr("%sUpdated information successfully.\n"), L_SRVxSTR);
+                  
+        ProcessDoneEvent(e);
+      }
       else if (nSubtype == 0x0001)
       {
         ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_FAILED);
@@ -5424,13 +5438,14 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // main home info
           u->SetEnableSave(false);
-          if (u->m_bKeepAliasOnUpdate)
+          if (u->m_bKeepAliasOnUpdate && !gUserManager.FindOwner(szId, LICQ_PPID))
             tmp = msg.UnpackString(); // Skip the alias, user wants to keep his own.
           else
           {
             tmp = msg.UnpackString();
             char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->UserEncoding()) : 0;
             u->SetAlias(szUTFAlias);
+            printf("Alias: %s\n", szUTFAlias);
           }
           if (tmp)
             delete[] tmp;
