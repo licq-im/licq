@@ -92,8 +92,9 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
     int pos = 0;
     if (highlightURLs && (pos = text.find(reAHREF, pos)) == -1)
     {
-       QRegExp reURL("(\\b|^)(\\w+://\\S+)(\\s|$|\\n)");
-       reURL.setMinimal(true);
+       QRegExp reURL("(\\b|^)((https?|ftp)://([-a-z0-9]+(:[-a-z0-9]+)?@)?[-a-z0-9.]+[-a-z0-9](:[0-9]+)?(/([-a-z0-9%{}|\\\\^~`;/?:@=&$_.+!*'(),]|\\[|\\])*)?)");
+       reURL.setMinimal(false);
+       reURL.setCaseSensitive(false);
        pos = 0;
        while ( (pos = text.find(reURL, pos)) != -1 ) {
           QString url = reURL.cap(2);
