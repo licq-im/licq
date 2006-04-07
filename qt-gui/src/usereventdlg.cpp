@@ -1516,6 +1516,13 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     chkSendServer->setEnabled(false);
   }
     
+  // With MSN contacts always mark as SendServer and disable the checkbox
+  if (u->PPID() == MSN_PPID)
+  {
+    chkSendServer->setChecked(true);
+    chkSendServer->setEnabled(false);
+  }
+
   gUserManager.DropUser(u);
   hlay->addWidget(chkSendServer);
   chkUrgent = new QCheckBox(tr("U&rgent"), box);
