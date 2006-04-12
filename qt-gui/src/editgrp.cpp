@@ -145,6 +145,7 @@ void EditGrpDlg::slot_remove()
   if(QueryUser(this, warning, tr("Ok"), tr("Cancel"))) {
     gUserManager.RemoveGroup(n);
     RefreshList();
+    lstGroups->setCurrentItem(n - 1);
   }
 }
 
@@ -155,6 +156,7 @@ void EditGrpDlg::slot_up()
   if (n <= 0) return;
   gUserManager.SwapGroups(n + 1, n);
   RefreshList();
+  lstGroups->setCurrentItem(n);
 }
 
 
@@ -164,6 +166,10 @@ void EditGrpDlg::slot_down()
   if (n < 0 /* || n == max */) return;
   gUserManager.SwapGroups(n + 1, n + 2);
   RefreshList();
+  if (n + 2 >= lstGroups->count())
+    lstGroups->setCurrentItem(lstGroups->count() - 1);
+  else
+    lstGroups->setCurrentItem(n + 2);
 }
 
 
@@ -173,6 +179,7 @@ void EditGrpDlg::slot_default()
   if (n == -1) return;
   gUserManager.SetDefaultGroup(n);
   RefreshList();
+  lstGroups->setCurrentItem(n);
 }
 
 void EditGrpDlg::slot_newuser()
@@ -181,6 +188,7 @@ void EditGrpDlg::slot_newuser()
   if (n == -1 ) return;
   gUserManager.SetNewUserGroup(n);
   RefreshList();
+  lstGroups->setCurrentItem(n);
 }
 
 void EditGrpDlg::slot_edit()
@@ -204,6 +212,7 @@ void EditGrpDlg::slot_edit()
 
 void EditGrpDlg::slot_editok()
 {
+  int n = lstGroups->currentItem();
   gUserManager.RenameGroup(m_nEditGrp, edtName->text().local8Bit());
   RefreshList();
 
@@ -215,6 +224,7 @@ void EditGrpDlg::slot_editok()
   btnDone->setEnabled(true);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editok()));
   connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
+  lstGroups->setCurrentItem(n);
 }
 
 
