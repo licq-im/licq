@@ -470,22 +470,14 @@ void UserEventTabDlg::flashTaskbar(bool _bFlash)
 void UserEventTabDlg::moveLeft()
 {
 #if QT_VERSION >= 300
-  int index = tabw->currentPageIndex();
-  if (index > 0)
-    tabw->setCurrentPage(index - 1);
-  else // leftmost tab is selected, rotate!
-    tabw->setCurrentPage(tabw->count() - 1);
+  tabw->setPreviousPage();
 #endif
 }
 
 void UserEventTabDlg::moveRight()
 {
 #if QT_VERSION >= 300
-  int index = tabw->currentPageIndex();
-  if (index < tabw->count() - 1)
-    tabw->setCurrentPage(index + 1);
-  else // rightmost tab is selected, rotate!
-    tabw->setCurrentPage(0);
+  tabw->setNextPage();
 #endif
 }
 

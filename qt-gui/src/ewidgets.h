@@ -103,9 +103,13 @@ public:
   const QColor &tabColor(int) const;
   void setTabColor(int, const QColor &);
   virtual void removeTab(QTab *);
+
+  void setPreviousTab();
+  void setNextTab();
   
 protected:
   virtual void paintLabel(QPainter *, const QRect &, QTab *, bool) const;
+  virtual void wheelEvent(QWheelEvent *e);
   
 private:
   QMap<int, QColor> mTabColors;
@@ -117,6 +121,12 @@ class CETabWidget : public QTabWidget
 public:
   CETabWidget(QWidget * = 0, const char * = 0, WFlags = 0);
   void setTabColor(QWidget *, const QColor &);
+
+  void setPreviousPage();
+  void setNextPage();
+
+protected:
+  virtual void wheelEvent(QWheelEvent *e);
 };
 
 /* ----------------------------------------------------------------------------- */

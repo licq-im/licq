@@ -12,6 +12,7 @@
 #include <qtabwidget.h>
 #include <qtabbar.h>
 #include <qcursor.h>
+#include <qevent.h>
 #ifdef USE_KDE
 #include <kapp.h>
 #include <kmessagebox.h>
@@ -497,6 +498,24 @@ void CETabBar::removeTab(QTab *t)
   QTabBar::removeTab(t);
 }
 
+void CETabBar::setPreviousTab()
+{
+  int tab = currentTab() - 1;
+  if (tab < 0)
+    tab = count() - 1;
+
+  setCurrentTab(tab);
+}
+
+void CETabBar::setNextTab()
+{
+  int tab = currentTab() + 1;
+  if (tab >= count())
+    tab = 0;
+
+  setCurrentTab(tab);
+}
+
 void CETabBar::paintLabel(QPainter* p, const QRect &br,
                           QTab* t, bool has_focus) const
 {
@@ -554,6 +573,20 @@ void CETabBar::paintLabel(QPainter* p, const QRect &br,
                       t->isEnabled() ? cg: palette().disabled(),
                       flags, QStyleOption(t));
 }
+
+void CETabBar::wheelEvent(QWheelEvent *e)
+{
+  if (count() <= 1)
+  {
+    e->ignore();
+    return;
+  }
+
+  if (e->delta() > 0)
+    setPreviousTab();
+  else
+    setNextTab();
+}
          
 
 //CETabWidget
@@ -568,6 +601,39 @@ void CETabWidget::setTabColor(QWidget *w, const QColor &color)
   QTab *t = tabBar()->tabAt(indexOf(w));
   if (t)
     static_cast<CETabBar *>(tabBar())->setTabColor(t->identifier(), color);
+}
+
+void CETabWidget::setPreviousPage()
+{
+  static_cast<CETabBar *>(tabBar())->setPreviousTab();
+}
+
+void CETabWidget::setNextPage()
+{
+  static_cast<CETabBar *>(tabBar())->setNextTab();
+}
+
+void CETabWidget::wheelEvent(QWheelEvent *e)
+{
+  if (count() <= 1)
+  {
+    e->ignore();
+    return;
+  }
+
+  QTabBar *tabs = tabBar();
+  const bool cursorAboveTabBar = (e->y() < tabs->y());
+  const bool cursorBelowTabBar = (e->y() > (tabs->y() + tabs->height()));
+  if (cursorAboveTabBar || cursorBelowTabBar)
+  {
+    e->ignore();
+    return;
+  }
+
+  if (e->delta() > 0)
+    setPreviousPage();
+  else
+    setNextPage();
 }
 
 //-----CInfoField::constructor--------------------------------------------------
