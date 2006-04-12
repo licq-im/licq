@@ -116,6 +116,9 @@ void IconManager::X11Init()
   setMask(*wharfIcon->vis->mask());
   move(-100,-100);
   show();
+#ifndef USE_KDE
+  XWithdrawWindow(dsp, win, XScreenNumberOfScreen(DefaultScreenOfDisplay(dsp)));
+#endif
 }
 
 
