@@ -440,15 +440,15 @@ CPS_MSNSync::CPS_MSNSync(unsigned long nVersion) : CMSNPacket()
 CPS_MSNChallenge::CPS_MSNChallenge(const char *szHash) : CMSNPacket()
 {
   m_szCommand = strdup("QRY");
-  char szParams[] = "msmsgs@msnmsgr.com 32";
+  char *szParams = "msmsgs@msnmsgr.com 32";
   m_nSize += strlen(szParams) + 32; //payload
   InitBuffer();
   
-  char szSource[64];
+  char szSource[65];
   unsigned char szDigest[16];
-  char szHexOut[32];
+  char szHexOut[33];
   snprintf(szSource, 64, "%sQ1P7W2E4J9R8U3S5", szHash);
-  szSource[63] = '\0';
+  szSource[64] = '\0';
   MD5((const unsigned char *)szSource, strlen(szSource), szDigest);
   
   for (int i = 0; i < 16; i++)
