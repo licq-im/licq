@@ -4,9 +4,8 @@ Basic Installation of Qt-GUI Plugin for Licq
 Requirements for Qt-GUI:
 
   - X11 header files (xfree-devel)
-  - Qt 2.1 or greater (Qt 3.x or newer is recommended). Most distributions
-    come with packages like Qt and Qt-devel, you need both, please install 
-    the missing ones!
+  - Qt 3.0 or greater Most distributions come with packages like Qt and
+    Qt-devel, you need both, please install the missing ones!
   - A C++ compiler and libstc++-devel.  This compiler must be the same
           version that was used to compile Qt with.  If it is not, you will
           experience a crash on startup.
