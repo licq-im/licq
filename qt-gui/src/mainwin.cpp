@@ -590,7 +590,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (o != NULL)
   {
-    m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
+    m_szCaption = tr("Licq (%1)").arg(QString::fromUtf8(o->GetAlias()));
     gUserManager.DropOwner();
   }
   else
@@ -1512,7 +1512,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
         if (o != 0)
         {
-          m_szCaption = tr("Licq (%1)").arg(QString::fromLocal8Bit(o->GetAlias()));
+          m_szCaption = tr("Licq (%1)").arg(QString::fromUtf8(o->GetAlias()));
           gUserManager.DropOwner(nPPID);
         }
         else
