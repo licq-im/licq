@@ -1596,7 +1596,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         QString ownerName;
         if (o)
         {
-          ownerName = codec->toUnicode(o->GetAlias());
+          ownerName = QString::fromUtf8(o->GetAlias());
           gUserManager.DropOwner(m_nPPID);
         }
         else
