@@ -30,6 +30,8 @@
 #include <qpainter.h>
 #include <qaccel.h>
 #include <qregexp.h>
+#include <qapplication.h>
+#include <qclipboard.h>
 
 #include "ewidgets.h"
 #include "licq_icqd.h"
@@ -144,6 +146,36 @@ void MLView::setBackground(const QColor& c)
   setPaper(QBrush(c));
 }
 
+/** @brief Adds "Copy URL" to the popup menu if the user right clicks on a URL. */
+QPopupMenu* MLView::createPopupMenu(const QPoint& point)
+{
+  QPopupMenu *menu = QTextBrowser::createPopupMenu(point);
+
+  m_url = anchorAt(point);
+  if (!m_url.isNull() && !m_url.isEmpty())
+    menu->insertItem(tr("Copy URL"), this, SLOT(slotCopyUrl()));
+
+  return menu;
+}
+
+/** @brief Adds the contents of m_url to the clipboard. */
+void MLView::slotCopyUrl()
+{
+  if (!m_url.isNull() && !m_url.isEmpty())
+  {
+    // This copies m_url to both the normal clipboard (Ctrl+C/V/X)
+    // and the selection clipboard (paste with middle mouse button).
+    QClipboard *cb = QApplication::clipboard();
+    cb->setText(m_url);
+    if (cb->supportsSelection())
+    {
+      bool enabled = cb->selectionModeEnabled();
+      cb->setSelectionMode(!enabled);
+      cb->setText(m_url);
+      cb->setSelectionMode(enabled);
+    }
+  }
+}
 
 // -----------------------------------------------------------------------------
 

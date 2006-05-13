@@ -24,10 +24,18 @@ public:
   void setHandleLinks(bool enable);
 
   static QString toRichText(const QString& s, bool highlightURLs = false, bool useHTML = false);
+
+protected:
+  virtual QPopupMenu *createPopupMenu(const QPoint& pos);
+
 public slots:
   virtual void setSource(const QString& name);
+  void slotCopyUrl();
+
 private:
   bool m_handleLinks;
+  QString m_url;
+
 signals:
   void viewurl(QWidget*, QString);
 };
