@@ -1487,7 +1487,11 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   {
     a->connectItem(a->insertItem(ALT + Key_Left),
 		   mainwin->userEventTabDlg, SLOT(moveLeft()));
+    a->connectItem(a->insertItem(CTRL + SHIFT + Key_Tab),
+		   mainwin->userEventTabDlg, SLOT(moveLeft()));
     a->connectItem(a->insertItem(ALT + Key_Right),
+		   mainwin->userEventTabDlg, SLOT(moveRight()));
+    a->connectItem(a->insertItem(CTRL + Key_Tab),
 		   mainwin->userEventTabDlg, SLOT(moveRight()));
   }
 #endif
