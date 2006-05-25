@@ -30,6 +30,8 @@
 #include <qdrawutil.h>
 #include <qregexp.h>
 #include <qstyle.h>
+#include <qimage.h>
+#include <qmime.h>
 
 #include "userbox.moc"
 #include "skin.h"
@@ -363,11 +365,15 @@ void CUserViewItem::setGraphics(ICQUser *u)
        QString strPath = QString(BASE_DIR) + QString("/") + QString(USER_DIR) +
 	 QString("/") + QString(u->IdString()) + QString(".pic");
        QImage tmpImg(strPath);
-       m_pUserIcon = new QPixmap;
-       *m_pUserIcon  = tmpImg.scale(16, 16);
+       if (!tmpImg.isNull())
+       {
+         m_pUserIcon = new QPixmap;
+         *m_pUserIcon  = tmpImg.scale(16, 16);
+       }
      }
     
-     m_pIcon = m_pUserIcon;
+     if (m_pUserIcon)
+       m_pIcon = m_pUserIcon;
    }
 
    if (u->NewMessages() > 0)
@@ -1566,8 +1572,13 @@ void CUserView::maybeTip(const QPoint& c)
     QString strFileName = "";
     if (u && u->GetPicturePresent())
     {
-      strFileName = QString("<center><img src=") + QString(BASE_DIR) + QString("/") + QString(USER_DIR) +
-                    QString("/") + QString(u->IdString()) + QString(".pic></center>");
+      const QString file = QString("%1/%2/%3.pic").arg(BASE_DIR).arg(USER_DIR).arg(u->IdString());
+      const QImage picture = QImage(file);
+      if (!picture.isNull())
+      {
+        QMimeSourceFactory::defaultFactory()->setImage(file, picture);
+        strFileName = QString("<center><img src=\"%1\"></center>").arg(file);
+      }
     }
 
     QString s = strFileName + QString("<nobr>") + QString(ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible))
