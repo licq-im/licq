@@ -226,7 +226,7 @@ char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
   char *szIn = _sz, *szOut = szNewStr;
   iconv_t tr;
 
-  nInSize = nLen;
+  nInSize = strlen(_sz);
   nOutSize = nLen;
 
   // Clean up for iconv, remove any spaces
@@ -249,6 +249,12 @@ char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
 
     if (ret == (size_t)(-1))
     {
+      //set new values because iconv() is changing them
+      szIn = _sz;
+      szOut = szNewStr; 
+      nInSize = strlen(_sz);
+      nOutSize = nLen;
+      
       tr = iconv_open("UCS-2BE", szFrom[0] == '\0' ? "" : szFrom);
       if (tr == (iconv_t)-1)
       {
