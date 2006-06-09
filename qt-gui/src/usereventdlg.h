@@ -94,6 +94,7 @@ public:
   void updateConvoLabel(UserEventCommon *tab);
   void updateTabLabel(ICQUser *u);
   void gotTyping(ICQUser *u, int);
+  void changeMsgWinSticky(bool _bStick);
 
 #ifdef USE_KDE
 #if KDE_VERSION >= 320
@@ -112,6 +113,9 @@ public slots:
   void slot_currentChanged(QWidget *tab);
   void moveLeft();
   void moveRight();
+
+protected slots:
+  void setMsgWinSticky();
 
 signals:
   void signal_done();
@@ -136,6 +140,7 @@ public:
   bool FindUserInConvo(char *);
   void AddEventTag(unsigned long n)  { if (n) m_lnEventTag.push_back(n); }
   void gotTyping(unsigned short);
+  void changeMsgWinSticky(bool _bStick);
    
   enum type {
   	UC_MESSAGE,
@@ -186,6 +191,7 @@ protected slots:
   void slot_usermenu() { gMainWindow->SetUserMenuUser(m_szId, m_nPPID); }
   void slot_security();
   void slot_setEncoding(int encodingMib);
+  void setMsgWinSticky();
 
 signals:
   void finished(const char *, unsigned long);

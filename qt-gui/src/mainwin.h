@@ -26,6 +26,7 @@
 #include "licq_user.h"
 #include "licqdialog.h"
 #include "gui-defines.h"
+#include "support.h"
 
 #define MSN_PPID 0x4D534E5F
 
@@ -153,6 +154,8 @@ public:
        m_bSortColumnAscending,
        m_bAppendLineBreak,
        m_bFlashTaskbar,
+       m_bMainWinSticky,
+       m_bMsgWinSticky,
        m_bShowUserIcons;
 
   QString m_MsgAutopopupKey;
@@ -278,6 +281,7 @@ public:
     unsigned short x = 0, unsigned short y = 0, unsigned short w = 0);
   void initMenu();
   bool show_user(ICQUser *);
+  void changeMainWinSticky(bool _bStick);
 
   virtual void resizeEvent (QResizeEvent *);
   virtual void moveEvent(QMoveEvent*);
@@ -383,6 +387,7 @@ protected slots:
                         const QString& filename, const QString& description);
   void sendChatRequest(const char* szId, unsigned long nPPID);
   void addUser(const char* szId, unsigned long nPPID);
+  void setMainWinSticky();
 
 signals:
   void changeDockStatus(unsigned short);

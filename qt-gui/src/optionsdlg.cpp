@@ -242,6 +242,8 @@ void OptionsDlg::SetupOptions()
   chkFlashTaskbar->setChecked(mainwin->m_bFlashTaskbar);
   chkAutoSendThroughServer->setChecked(mainwin->m_bAutoSendThroughServer);
   chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
+  chkMainWinSticky->setChecked(mainwin->m_bMainWinSticky);
+  chkMsgWinSticky->setChecked(mainwin->m_bMsgWinSticky);
   popEmail->setChecked(mainwin->m_bPopEmail);
   popPhone->setChecked(mainwin->m_bPopPhone);
   popFax->setChecked(mainwin->m_bPopFax);
@@ -536,6 +538,10 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bFlashTaskbar = chkFlashTaskbar->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
   mainwin->m_bEnableMainwinMouseMovement = chkEnableMainwinMouseMovement->isChecked();
+
+  mainwin->m_bMainWinSticky = chkMainWinSticky->isChecked();
+  mainwin->changeMainWinSticky(chkMainWinSticky->isChecked());
+  mainwin->m_bMsgWinSticky = chkMsgWinSticky->isChecked();
 
   mainwin->m_bPopEmail= popEmail->isChecked();
   mainwin->m_bPopPhone= popPhone->isChecked();
@@ -833,6 +839,12 @@ QWidget* OptionsDlg::new_appearance_options()
 
   chkSendTN = new QCheckBox(tr("Send typing notifications"), boxMainWin);
   QWhatsThis::add(chkSendTN, tr("Send a notification to the user so they can see when you are typing a message to them"));
+
+  chkMainWinSticky = new QCheckBox(tr("Sticky Main Window"), boxMainWin);
+  QWhatsThis::add(chkMainWinSticky, tr("Makes the Main window visible on all desktops"));
+
+  chkMsgWinSticky = new QCheckBox(tr("Sticky Message Window"), boxMainWin);
+  QWhatsThis::add(chkMsgWinSticky, tr("Makes the Message window visible on all desktops"));
 
   l = new QVBoxLayout(l);
   boxLocale = new QGroupBox(1, Horizontal, tr("Localization"), w);

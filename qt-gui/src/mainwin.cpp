@@ -445,6 +445,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ChatAppendLinebreak", m_bAppendLineBreak, false);
   licqConf.ReadBool("FlashTaskbar", m_bFlashTaskbar, true);
   licqConf.ReadBool("ShowUserIcons", m_bShowUserIcons, true);
+  licqConf.ReadBool("MainWinSticky", m_bMainWinSticky, false);
+  licqConf.ReadBool("MsgWinSticky", m_bMsgWinSticky, false);
 
   licqConf.ReadStr("ReceiveMessageColor", szTemp, "red");
   m_colorRcv = QColor(szTemp);
@@ -817,6 +819,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
           slot_protocolPlugin((*_ppit)->PPID());
     }
     FOR_EACH_PROTO_PLUGIN_END
+
+   // Check if MainWin should be sticky
+   if (m_bMainWinSticky)
+   {
+     QTimer *timer = new QTimer( this );
+     connect( timer, SIGNAL(timeout()), this, SLOT(setMainWinSticky()));
+     timer->start( 100, TRUE ); // 100 milliseconds single-shot timer
+   }
    
    // automatically logon if requested in conf file
    if (m_nAutoLogon > 0)
@@ -2898,6 +2908,13 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
   {
     userEventTabDlg->addTab(e);
     userEventTabDlg->show();
+    // Check if we want the window sticky
+    if (m_bMsgWinSticky)
+    {
+      QTimer *timer = new QTimer( userEventTabDlg );
+      connect( timer, SIGNAL(timeout()), userEventTabDlg, SLOT(setMsgWinSticky()));
+      timer->start( 100, TRUE ); // 100 milliseconds single-shot timer
+    }
   }
   else
 #endif
@@ -3621,6 +3638,8 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement);
   licqConf.WriteBool("FlashTaskbar", m_bFlashTaskbar);
   licqConf.WriteBool("ShowUserIcons", m_bShowUserIcons);
+  licqConf.WriteBool("MainWinSticky", m_bMainWinSticky);
+  licqConf.WriteBool("MsgWinSticky", m_bMsgWinSticky);
 
   licqConf.WriteNum("ChatMessageStyle", m_nMsgStyle);
   licqConf.WriteBool("ChatAppendLinebreak", m_bAppendLineBreak);
@@ -5073,6 +5092,18 @@ void CMainWindow::addUser(const char* szId, unsigned long nPPID)
 
     AddUserDlg* addUserDlg = new AddUserDlg(licqDaemon, szId, nPPID);
     addUserDlg->show();
+}
+
+// -----------------------------------------------------------------------------
+
+void CMainWindow::setMainWinSticky()
+{
+  CSupport::changeWinSticky(winId(), true);
+}
+
+void CMainWindow::changeMainWinSticky(bool _bStick)
+{
+  CSupport::changeWinSticky(winId(), _bStick);
 }
 
 // -----------------------------------------------------------------------------

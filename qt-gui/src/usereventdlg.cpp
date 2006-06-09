@@ -89,6 +89,7 @@
 #include "xpm/chatChangeFg.xpm"
 #include "xpm/chatChangeBg.xpm"
 #include "xpm/smile.xpm"
+#include "support.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -217,6 +218,14 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
   mainWidget = new QWidget(this);
   top_lay->addWidget(mainWidget);
+
+  // Check if we want the window sticky
+  if (!m->m_bTabbedChatting && m->m_bMsgWinSticky)
+  {
+    QTimer *timer = new QTimer( this );
+    connect( timer, SIGNAL(timeout()), this, SLOT(setMsgWinSticky()) );
+    timer->start( 100, TRUE ); // 100 milliseconds single-shot timer
+  }
 }
 
 void UserEventCommon::slot_connectsignal()
@@ -495,6 +504,16 @@ void UserEventTabDlg::setIcon(const QPixmap &icon)
 #endif   // KDE_VERSION
 #endif // USE_KDE
 
+void UserEventTabDlg::setMsgWinSticky()
+{
+  CSupport::changeWinSticky(winId(), true);
+}
+
+void UserEventTabDlg::changeMsgWinSticky(bool _bStick)
+{
+  CSupport::changeWinSticky(winId(), _bStick);
+}
+
 // -----------------------------------------------------------------------------
 
 void UserEventCommon::slot_setEncoding(int encodingMib) {
@@ -598,6 +617,16 @@ void UserEventCommon::FlashTaskbar(bool _bFlash)
     hints->flags &= ~XUrgencyHint;
   XSetWMHints(dsp, win, hints); // set hints
   XFree(hints);
+}
+
+void UserEventCommon::setMsgWinSticky()
+{
+  CSupport::changeWinSticky(winId(), true);
+}
+
+void UserEventCommon::changeMsgWinSticky(bool _bStick)
+{
+  CSupport::changeWinSticky(winId(), _bStick);
 }
 
 void UserEventCommon::slot_updatetime()
