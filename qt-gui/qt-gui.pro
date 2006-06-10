@@ -51,6 +51,7 @@ HEADERS += src/adduserdlg.h \
            src/sigman.h \
            src/skin.h \
            src/skinbrowser.h \
+           src/support.h \
            src/userbox.h \
            src/usercodec.h \
            src/usereventdlg.h \
@@ -100,6 +101,7 @@ SOURCES += src/adduserdlg.cpp \
            src/sigman.cpp \
            src/skin.cpp \
            src/skinbrowser.cpp \
+           src/support.cpp \
            src/userbox.cpp \
            src/usercodec.cpp \
            src/usereventdlg.cpp \
