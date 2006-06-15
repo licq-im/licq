@@ -5889,23 +5889,34 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
   {
     case ICQ_SNACxNEW_UIN_ERROR:
     {
-      gLog.Warn(tr("%sVerification required. Reconnecting...\n"), L_WARNxSTR);
+      if (m_szRegisterPasswd)
+      {
+        gLog.Warn(tr("%sVerification required. Reconnecting...\n"), L_WARNxSTR);
 
-      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
-      if (e)
-        delete e;
-      m_bVerify = true;
-      
-      // Reconnect now
-      char *szPasswd = strdup(m_szRegisterPasswd); // gets deleted in postLogoff
-      int nSD = m_nTCPSrvSocketDesc;
-      m_nTCPSrvSocketDesc = -1;
-      m_eStatus = STATUS_OFFLINE_MANUAL;
-      m_bLoggingOn = false; 
-      gSocketManager.CloseSocket(nSD);
-      postLogoff(nSD, NULL);
-      icqRegister(szPasswd);
-      free(szPasswd);
+        ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+        if (e)
+          delete e;
+        m_bVerify = true;
+        
+        // Reconnect now
+        char *szPasswd = strdup(m_szRegisterPasswd); // gets deleted in postLogoff
+        int nSD = m_nTCPSrvSocketDesc;
+        m_nTCPSrvSocketDesc = -1;
+        m_eStatus = STATUS_OFFLINE_MANUAL;
+        m_bLoggingOn = false; 
+        gSocketManager.CloseSocket(nSD);
+        postLogoff(nSD, NULL);
+        icqRegister(szPasswd);
+        free(szPasswd);
+      }
+      else
+      {
+        ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_ERROR);
+        if (e)
+          delete e;
+        gLog.Error(tr("%sUnknown logon error. There appears to be an issue with the ICQ servers. Please try again later.\n"), L_ERRORxSTR);
+      }
+
       break;
     }
     case ICQ_SNACxNEW_UIN:
