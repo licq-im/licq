@@ -81,7 +81,7 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
   connect(mnuSelect, SIGNAL(activated(int)), this, SLOT(slot_selectMessage(int)));
 
   QBoxLayout* l = new QHBoxLayout(top_lay, 10);
-  int bw = 75;
+  int bw = QPushButton(tr("(Closing in %1)"), this).sizeHint().width();
   btnSelect = new QPushButton(tr("&Select"), this);
   btnSelect->setPopup(mnuSelect);
   QPushButton *btnHints = new QPushButton(tr("&Hints"), this);
@@ -102,7 +102,6 @@ AwayMsgDlg::AwayMsgDlg(QWidget *parent)
 
   l->addWidget(btnSelect);
   l->addStretch(1);
-  l->addSpacing(30);
   l->addWidget(btnHints);
   l->addSpacing(20);
   l->addWidget(btnOk);
