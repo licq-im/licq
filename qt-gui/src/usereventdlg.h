@@ -276,7 +276,7 @@ protected:
   CMessageViewWidget *mleHistory;
   QSplitter * splView;
   QCheckBox *chkSendServer, *chkUrgent, *chkMass;
-  QPushButton *btnSend, *btnCancel;
+  QPushButton *btnSend, *btnClose;
   QGroupBox *grpMR;
   QButtonGroup *grpCmd;
   QComboBox* cmbSendType;
@@ -298,7 +298,8 @@ protected slots:
   virtual void sendButton();
   virtual void sendDone_common(ICQEvent *);
 
-  void cancelSend();
+  void slot_close();
+  void slot_cancelSend();
   void massMessageToggled(bool);
   void slot_resettitle();
   void slot_Emoticon();

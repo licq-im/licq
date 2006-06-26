@@ -1509,7 +1509,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   clearDelay = 250;
 
   QAccel *a = new QAccel( this );
-  a->connectItem(a->insertItem(Key_Escape), this, SLOT(cancelSend()));
+  a->connectItem(a->insertItem(Key_Escape), this, SLOT(slot_cancelSend()));
 #if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       parent == mainwin->userEventTabDlg)
@@ -1592,13 +1592,13 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   // tries to establish a secure connection first.
   connect( btnSend, SIGNAL( clicked() ), this, SLOT( trySecure() ) );
 
-  btnCancel = new QPushButton(tr("&Close"), this);
-  w = QMAX(btnCancel->sizeHint().width(), w);
+  btnClose = new QPushButton(tr("&Close"), this);
+  w = QMAX(btnClose->sizeHint().width(), w);
   btnSend->setFixedWidth(w);
-  btnCancel->setFixedWidth(w);
+  btnClose->setFixedWidth(w);
   h_lay->addWidget(btnSend);
-  h_lay->addWidget(btnCancel);
-  connect(btnCancel, SIGNAL(clicked()), this, SLOT(cancelSend()));
+  h_lay->addWidget(btnClose);
+  connect(btnClose, SIGNAL(clicked()), this, SLOT(slot_close()));
   splView = new QSplitter(Vertical, mainWidget);
   //splView->setOpaqueResize();
   
@@ -1785,7 +1785,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   }
   setFocusProxy(mleSend);
   setTabOrder(mleSend, btnSend);
-  setTabOrder(btnSend, btnCancel);
+  setTabOrder(btnSend, btnClose);
   icqColor.SetToDefault();
   mleSend->setBackground(QColor(icqColor.BackRed(), icqColor.BackGreen(), icqColor.BackBlue()));
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
@@ -2231,8 +2231,11 @@ void UserSendCommon::sendButton()
 #endif
     setCaption(title);
     setCursor(waitCursor);
-    btnSend->setEnabled(false);
-    btnCancel->setText(tr("&Cancel"));
+    btnSend->setText(tr("&Cancel"));
+    btnClose->setEnabled(false);
+    disconnect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
+    connect(btnSend, SIGNAL(clicked()), this, SLOT(slot_cancelSend()));
+
     connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
   }
 }
@@ -2311,8 +2314,11 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   setCaption(title);
 
   setCursor(arrowCursor);
-  btnSend->setEnabled(true);
-  btnCancel->setText(tr("&Close"));
+  btnSend->setText(tr("&Send"));
+  btnClose->setEnabled(true);
+  disconnect(btnSend, SIGNAL(clicked()), this, SLOT(slot_cancelSend()));
+  connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
+
   // If cancelled automatically check "Send through Server"
   if (mainwin->m_bAutoSendThroughServer && e->Result() == EVENT_CANCELLED)
     chkSendServer->setChecked(true);
@@ -2545,42 +2551,40 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 }
 
 
-//-----UserSendCommon::cancelSend--------------------------------------------
-void UserSendCommon::cancelSend()
+//-----UserSendCommon::slot_close--------------------------------------------
+void UserSendCommon::slot_close()
+{
+  if (mainwin->m_bMsgChatView)
+  {
+    // the window is at the front, if the timer has not expired and we close
+    // the window, then the new events will stay there
+    slot_ClearNewEvents();
+  }
+#if QT_VERSION >= 300
+  if (mainwin->userEventTabDlg &&
+      mainwin->userEventTabDlg->tabExists(this))
+    mainwin->userEventTabDlg->removeTab(this);
+  else
+#endif
+    close();
+}
+
+//-----UserSendCommon::slot_cancelSend--------------------------------------------
+void UserSendCommon::slot_cancelSend()
 {
   unsigned long icqEventTag = 0;
   if (m_lnEventTag.size())
     icqEventTag = m_lnEventTag.front();
 
   if (!icqEventTag)
-  {
-    if (mainwin->m_bMsgChatView)
-    {
-      // the window is at the front, if the timer has not expired and we close
-      // the window, then the new events will stay there
-      slot_ClearNewEvents();
-    }
-#if QT_VERSION >= 300
-    if (mainwin->userEventTabDlg &&
-        mainwin->userEventTabDlg->tabExists(this))
-      mainwin->userEventTabDlg->removeTab(this);
-    else
-#endif
-      close();
     return;
-  }
 
 #if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 #endif
-  setCaption(m_sBaseTitle);
   server->CancelEvent(icqEventTag);
-  icqEventTag = 0;
-  btnSend->setEnabled(true);
-  btnCancel->setText(tr("&Close"));
-  setCursor(arrowCursor);
 }
 
 
