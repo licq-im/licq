@@ -3,7 +3,7 @@
 #sorry.. another hack for russian people with non-koi8 charset...
 #will be removed after qt2.1 releases
 
-localedir = $(DESTDIR)$(prefix)/share/licq/qt-gui/locale
+localedir = $(prefix)/share/licq/qt-gui/locale
 
 all-local:
 	@if test -x /usr/bin/test; then \
@@ -37,19 +37,19 @@ merge: template
 	done
 
 install-data-local:
-	$(mkinstalldirs) $(localedir)
+	$(mkinstalldirs) $(DESTDIR)$(localedir)
 	@for i in ./*.qm; do \
 	  if test "$$i" != "template.qm"; then \
-	    echo " $(INSTALL_DATA) $$i $(localedir)/$$i"; \
-	    $(INSTALL_DATA) $$i $(localedir)/$$i; \
+	    echo " $(INSTALL_DATA) $$i $(DESTDIR)$(localedir)/$$i"; \
+	    $(INSTALL_DATA) $$i $(DESTDIR)$(localedir)/$$i; \
 	  fi \
 	done; \
-	cd $(localedir) && rm -f cs.qm; \
-	cd $(localedir) && ln -s cs_CZ.qm cs.qm
+	cd $(DESTDIR)$(localedir) && rm -f cs.qm; \
+	cd $(DESTDIR)$(localedir) && ln -s cs_CZ.qm cs.qm
 
 template: 
 	cd $(top_srcdir)/src && $(QT_FINDTR) *.cpp *.h > $(top_builddir)/po/template.po
 	cat addon.qt >>template.po
 
 uninstall-local:
-	-rm -f $(localedir)/*.qm
+	-rm -f $(DESTDIR)$(localedir)/*.qm
