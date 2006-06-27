@@ -53,7 +53,8 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
   a->connectItem(a->insertItem(Key_Return + CTRL),
                  this, SIGNAL(signal_CtrlEnterPressed()));
 
-  if (editFont) QWidget::setFont(*editFont, true);
+  if (editFont)
+    QWidget::setFont(*editFont, true);
 }
 
 
@@ -122,7 +123,7 @@ void MLEditWrap::setForeground(const QColor& c)
 
 bool MLEditWrap::focusNextPrevChild( bool f)
 {
-    return QWidget::focusNextPrevChild(f);
+  return QWidget::focusNextPrevChild(f);
 }
 
 
@@ -154,8 +155,22 @@ void MLEditWrap::paintCell(QPainter* p, int row, int col)
 
 void MLEditWrap::keyPressEvent( QKeyEvent *e )
 {
-  if(e->state() & ControlButton) {
-    switch(e->key()) {
+  const bool isShift   = e->state() & ShiftButton;
+  const bool isControl = e->state() & ControlButton;
+
+  if (isShift && e->key() == Key_Insert)
+    return paste();
+
+  if (isShift && e->key() == Key_Delete)
+    return cut();
+
+  if (isControl && e->key() == Key_Insert)
+    return copy();
+
+  if (isControl)
+  {
+    switch (e->key())
+    {
     case Key_W:
       cursorWordBackward(true);
       del();

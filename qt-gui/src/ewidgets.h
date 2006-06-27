@@ -153,6 +153,7 @@ public:
   void setData(const unsigned long data);
   void SetReadOnly(bool);
 protected:
+  virtual void keyPressEvent(QKeyEvent *e);
   QColor baseRO, baseRW;
 };
 

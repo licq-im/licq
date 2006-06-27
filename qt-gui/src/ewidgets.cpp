@@ -695,6 +695,22 @@ void CInfoField::setData(const unsigned long data)
   setData(t);
 }
 
+void CInfoField::keyPressEvent(QKeyEvent *e)
+{
+  const bool isShift   = e->state() & ShiftButton;
+  const bool isControl = e->state() & ControlButton;
+
+  if (isShift && e->key() == Key_Insert)
+    return paste();
+
+  if (isShift && e->key() == Key_Delete)
+    return cut();
+
+  if (isControl && e->key() == Key_Insert)
+    return copy();
+
+  QLineEdit::keyPressEvent(e);
+}
 
 
 // -----------------------------------------------------------------------------
