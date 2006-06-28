@@ -813,3 +813,5 @@ void WharfIcon::paintEvent( QPaintEvent * )
   painter.drawPixmap(0, 0, *vis);
   painter.end();
 }
+
+#include "wharf.moc"

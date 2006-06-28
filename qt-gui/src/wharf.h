@@ -33,6 +33,8 @@ class CMainWindow;
 
 class WharfIcon : public QWidget
 {
+  Q_OBJECT
+
 public:
   WharfIcon(QPixmap *, QWidget *parent);
   virtual ~WharfIcon();
@@ -50,6 +52,8 @@ friend class IconManager_KDEStyle;
 
 class IconManager : public QWidget
 {
+  Q_OBJECT
+
 public:
   IconManager(CMainWindow *, QPopupMenu *, QWidget *parent = 0);
   virtual ~IconManager();
@@ -73,6 +77,8 @@ friend class WharfIcon;
 
 class IconManager_Default : public IconManager
 {
+  Q_OBJECT
+
 public:
   IconManager_Default(CMainWindow *, QPopupMenu *, bool, QWidget *parent = 0);
   virtual ~IconManager_Default();
@@ -89,6 +95,8 @@ protected:
 
 class IconManager_Themed : public IconManager
 {
+  Q_OBJECT
+
 public:
   IconManager_Themed(CMainWindow *, QPopupMenu *, const char *, QWidget *parent = 0);
   virtual ~IconManager_Themed();
@@ -106,6 +114,8 @@ protected:
 
 class IconManager_KDEStyle : public IconManager
 {
+  Q_OBJECT
+
 public:
   IconManager_KDEStyle(CMainWindow*, QPopupMenu*, QWidget* parent=0);
   virtual ~IconManager_KDEStyle();

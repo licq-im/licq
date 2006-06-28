@@ -98,3 +98,4 @@ QString CRefuseDlg::RefuseMessage()
   return mleRefuseMsg->text();
 }
 
+#include "refusedlg.moc"
