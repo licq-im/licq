@@ -15,136 +15,136 @@
     <message>
         <source>Right click - Status menu
 Double click - Set auto response</source>
-        <translation>Desni klik - Statusni meni
+        <translation type="obsolete">Desni klik - Statusni meni
 Dupli klik - Postavi auto-odgovor</translation>
     </message>
     <message>
         <source>Licq (%1)</source>
-        <translation>Licq (%1)</translation>
+        <translation type="obsolete">Licq (%1)</translation>
     </message>
     <message>
         <source>Other Users</source>
-        <translation>Ostali Korisnici</translation>
+        <translation type="obsolete">Ostali Korisnici</translation>
     </message>
     <message>
         <source>SysMsg</source>
-        <translation>SistPoruka</translation>
+        <translation type="obsolete">SistPoruka</translation>
     </message>
     <message>
         <source>System Message</source>
-        <translation>Sistemska Poruka</translation>
+        <translation type="obsolete">Sistemska Poruka</translation>
     </message>
     <message>
         <source>%1 msg%2</source>
-        <translation>%1 poruka%2</translation>
+        <translation type="obsolete">%1 poruka%2</translation>
     </message>
     <message>
         <source>s</source>
-        <translation>s</translation>
+        <translation type="obsolete">s</translation>
     </message>
     <message>
         <source>%1 message%2</source>
-        <translation>%1 poruka%2</translation>
+        <translation type="obsolete">%1 poruka%2</translation>
     </message>
     <message>
         <source>No msgs</source>
-        <translation>Nema poruka</translation>
+        <translation type="obsolete">Nema poruka</translation>
     </message>
     <message>
         <source>No messages</source>
-        <translation>Nema poruka</translation>
+        <translation type="obsolete">Nema poruka</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Svi Korisnici</translation>
+        <translation type="obsolete">Svi Korisnici</translation>
     </message>
     <message>
         <source>Server Group</source>
-        <translation>Grupa Servera</translation>
+        <translation type="obsolete">Grupa Servera</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Na-vezi obaveštenje</translation>
+        <translation type="obsolete">Na-vezi obaveštenje</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Vidljiva Lista</translation>
+        <translation type="obsolete">Vidljiva Lista</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Lista Nevidljivosti</translation>
+        <translation type="obsolete">Lista Nevidljivosti</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Lista Ignorisanja</translation>
+        <translation type="obsolete">Lista Ignorisanja</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Novi Korisnici</translation>
+        <translation type="obsolete">Novi Korisnici</translation>
     </message>
     <message>
         <source>Logon failed.
 See network window for details.</source>
-        <translation>Prijavljivanje neuspešno.
+        <translation type="obsolete">Prijavljivanje neuspešno.
 Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Successfully registered, your user identification
 number (UIN) is %1.
 Now set your personal information.</source>
-        <translation>Uspešno registrovanje, Vaš korisnički identifikacioni
+        <translation type="obsolete">Uspešno registrovanje, Vaš korisnički identifikacioni
 broj (UIN) je %1.
 Sad podesite vaše lične informacije.</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
-        <translation>Registracija neuspešna.  Pogledajte mrežni prozor za detalje.</translation>
+        <translation type="obsolete">Registracija neuspešna.  Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Error sending authorization.</source>
-        <translation>Greška kod slanja autorizacije.</translation>
+        <translation type="obsolete">Greška kod slanja autorizacije.</translation>
     </message>
     <message>
         <source>Authorization granted.</source>
-        <translation>Autorizacija odobrena.</translation>
+        <translation type="obsolete">Autorizacija odobrena.</translation>
     </message>
     <message>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
-        <translation>Da li ste sigurni da želite da uklonite
+        <translation type="obsolete">Da li ste sigurni da želite da uklonite
 %1 (%2)
 iz vaše kontakt liste?</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation>Ok</translation>
+        <translation type="obsolete">Ok</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Poništi</translation>
+        <translation type="obsolete">Poništi</translation>
     </message>
     <message>
         <source>Do you really want to add
 %1 (%2)
 to your ignore list?</source>
-        <translation>Da ku stvarni želite da dodate
+        <translation type="obsolete">Da ku stvarni želite da dodate
 %1 (%2)
 u vašu listu ignorisanja?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation>&amp;Da</translation>
+        <translation type="obsolete">&amp;Da</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation>&amp;Ne</translation>
+        <translation type="obsolete">&amp;Ne</translation>
     </message>
     <message>
         <source>Are you sure you want to remove
 %1 (%2)
 from the &apos;%3&apos; group?</source>
-        <translation>Da li ste sigurni da želite da uklonite
+        <translation type="obsolete">Da li ste sigurni da želite da uklonite
 %1 (%2)
 iz &apos;%3&apos; grupe?</translation>
     </message>
@@ -162,7 +162,7 @@ http://www.licq.org
 
 %3 (%4)
 %5 contacts.</source>
-        <translation>LIcq verzija %1%8.
+        <translation type="obsolete">LIcq verzija %1%8.
 Qt GUI dodatak verzija %2.
 Kompajlirano: %7
 %6
@@ -179,398 +179,398 @@ http://www.licq.org
     <message>
         <source>(with KDE support)
 </source>
-        <translation>(sa KDE podrškom)
+        <translation type="obsolete">(sa KDE podrškom)
 </translation>
     </message>
     <message>
         <source>Unable to open extended icons file
 %1.</source>
-        <translation>Ne mogu da otvorim dodatni fajl ikona
+        <translation type="obsolete">Ne mogu da otvorim dodatni fajl ikona
 %1.</translation>
     </message>
     <message>
         <source>Unable to open icons file
 %1.</source>
-        <translation>Ne mogu da otvorim fajl ikone
+        <translation type="obsolete">Ne mogu da otvorim fajl ikone
 %1.</translation>
     </message>
     <message>
         <source>&amp;Online</source>
-        <translation>&amp;Na vezi</translation>
+        <translation type="obsolete">&amp;Na vezi</translation>
     </message>
     <message>
         <source>&amp;Away</source>
-        <translation>&amp;Odsutnost</translation>
+        <translation type="obsolete">&amp;Odsutnost</translation>
     </message>
     <message>
         <source>&amp;Not Available</source>
-        <translation>&amp;Nije na raspolaganju</translation>
+        <translation type="obsolete">&amp;Nije na raspolaganju</translation>
     </message>
     <message>
         <source>O&amp;ccupied</source>
-        <translation>&amp;Zauzet</translation>
+        <translation type="obsolete">&amp;Zauzet</translation>
     </message>
     <message>
         <source>&amp;Do Not Disturb</source>
-        <translation>&amp;Ne Uznemiravaj</translation>
+        <translation type="obsolete">&amp;Ne Uznemiravaj</translation>
     </message>
     <message>
         <source>Free for C&amp;hat</source>
-        <translation>Slobodni za Ćas&amp;kanje</translation>
+        <translation type="obsolete">Slobodni za Ćas&amp;kanje</translation>
     </message>
     <message>
         <source>O&amp;ffline</source>
-        <translation>Nije na &amp;vezi</translation>
+        <translation type="obsolete">Nije na &amp;vezi</translation>
     </message>
     <message>
         <source>&amp;Invisible</source>
-        <translation>&amp;Nevidljivost</translation>
+        <translation type="obsolete">&amp;Nevidljivost</translation>
     </message>
     <message>
         <source>Send &amp;Message</source>
-        <translation>Pošalji &amp;Poruku</translation>
+        <translation type="obsolete">Pošalji &amp;Poruku</translation>
     </message>
     <message>
         <source>Send &amp;URL</source>
-        <translation>Pošalji &amp;URL</translation>
+        <translation type="obsolete">Pošalji &amp;URL</translation>
     </message>
     <message>
         <source>Send &amp;Chat Request</source>
-        <translation>Pošalji zahte&amp;v za Ćaskanje</translation>
+        <translation type="obsolete">Pošalji zahte&amp;v za Ćaskanje</translation>
     </message>
     <message>
         <source>Send &amp;File Transfer</source>
-        <translation>Pošalji Prenos &amp;Fajla</translation>
+        <translation type="obsolete">Pošalji Prenos &amp;Fajla</translation>
     </message>
     <message>
         <source>Send Contact &amp;List</source>
-        <translation>Pošalji Kontakt &amp;Listu</translation>
+        <translation type="obsolete">Pošalji Kontakt &amp;Listu</translation>
     </message>
     <message>
         <source>Send &amp;Authorization</source>
-        <translation>Pošalji &amp;Autorizaciju</translation>
+        <translation type="obsolete">Pošalji &amp;Autorizaciju</translation>
     </message>
     <message>
         <source>Send Authorization Re&amp;quest</source>
-        <translation>Pošalji &amp;Zahtev Autorizacije</translation>
+        <translation type="obsolete">Pošalji &amp;Zahtev Autorizacije</translation>
     </message>
     <message>
         <source>Send &amp;SMS</source>
-        <translation>Pošalji &amp;SMS</translation>
+        <translation type="obsolete">Pošalji &amp;SMS</translation>
     </message>
     <message>
         <source>Request &amp;Secure Channel</source>
-        <translation>Zahtevaj &amp;SIgurni Kanal</translation>
+        <translation type="obsolete">Zahtevaj &amp;SIgurni Kanal</translation>
     </message>
     <message>
         <source>&amp;Info</source>
-        <translation>&amp;Informacije</translation>
+        <translation type="obsolete">&amp;Informacije</translation>
     </message>
     <message>
         <source>View &amp;History</source>
-        <translation>Prikaži &amp;Istoriju</translation>
+        <translation type="obsolete">Prikaži &amp;Istoriju</translation>
     </message>
     <message>
         <source>Status Info</source>
-        <translation>Statusni Info</translation>
+        <translation type="obsolete">Statusni Info</translation>
     </message>
     <message>
         <source>Unknown Packets</source>
-        <translation>Nepoznati Paketi</translation>
+        <translation type="obsolete">Nepoznati Paketi</translation>
     </message>
     <message>
         <source>Errors</source>
-        <translation>Greške</translation>
+        <translation type="obsolete">Greške</translation>
     </message>
     <message>
         <source>Warnings</source>
-        <translation>Upozorenja</translation>
+        <translation type="obsolete">Upozorenja</translation>
     </message>
     <message>
         <source>Packets</source>
-        <translation>Paketi</translation>
+        <translation type="obsolete">Paketi</translation>
     </message>
     <message>
         <source>Set All</source>
-        <translation>Postavi Sve</translation>
+        <translation type="obsolete">Postavi Sve</translation>
     </message>
     <message>
         <source>Clear All</source>
-        <translation>Očisti Sve</translation>
+        <translation type="obsolete">Očisti Sve</translation>
     </message>
     <message>
         <source>&amp;View System Messages</source>
-        <translation>&amp;Prikaz Sistemskih Poruka</translation>
+        <translation type="obsolete">&amp;Prikaz Sistemskih Poruka</translation>
     </message>
     <message>
         <source>&amp;Security/Password Options</source>
-        <translation>&amp;Sigurnost/Lozinka Opcije</translation>
+        <translation type="obsolete">&amp;Sigurnost/Lozinka Opcije</translation>
     </message>
     <message>
         <source>&amp;Random Chat Group</source>
-        <translation>&amp;Slučajna Grupa za Ćaskanje</translation>
+        <translation type="obsolete">&amp;Slučajna Grupa za Ćaskanje</translation>
     </message>
     <message>
         <source>Debug Level</source>
-        <translation>Nivo debugovanja</translation>
+        <translation type="obsolete">Nivo debugovanja</translation>
     </message>
     <message>
         <source>&amp;Add User</source>
-        <translation>&amp;Dodaj Korisnika</translation>
+        <translation type="obsolete">&amp;Dodaj Korisnika</translation>
     </message>
     <message>
         <source>S&amp;earch for User</source>
-        <translation>Pr&amp;etraži za Korisnika</translation>
+        <translation type="obsolete">Pr&amp;etraži za Korisnika</translation>
     </message>
     <message>
         <source>A&amp;uthorize User</source>
-        <translation>A&amp;utorizuj Korisnika</translation>
+        <translation type="obsolete">A&amp;utorizuj Korisnika</translation>
     </message>
     <message>
         <source>Re&amp;quest Authorization</source>
-        <translation>Zaht&amp;evaj Autorizaciju</translation>
+        <translation type="obsolete">Zaht&amp;evaj Autorizaciju</translation>
     </message>
     <message>
         <source>R&amp;andom Chat</source>
-        <translation>Sl&amp;učajno ćaskanje</translation>
+        <translation type="obsolete">Sl&amp;učajno ćaskanje</translation>
     </message>
     <message>
         <source>&amp;Popup All Messages</source>
-        <translation>&amp;Iskakanje Svih Poruka</translation>
+        <translation type="obsolete">&amp;Iskakanje Svih Poruka</translation>
     </message>
     <message>
         <source>Edit &amp;Groups</source>
-        <translation>Izmeni &amp;Grupe</translation>
+        <translation type="obsolete">Izmeni &amp;Grupe</translation>
     </message>
     <message>
         <source>Update All Users</source>
-        <translation>Ažuriraj Sve Korisnike</translation>
+        <translation type="obsolete">Ažuriraj Sve Korisnike</translation>
     </message>
     <message>
         <source>Update Current Group</source>
-        <translation>Ažuriraj Trenutnu Grupu</translation>
+        <translation type="obsolete">Ažuriraj Trenutnu Grupu</translation>
     </message>
     <message>
         <source>&amp;Redraw User Window</source>
-        <translation>&amp;Ponovo nacrtaj Korisnikov Prozor</translation>
+        <translation type="obsolete">&amp;Ponovo nacrtaj Korisnikov Prozor</translation>
     </message>
     <message>
         <source>&amp;Save All Users</source>
-        <translation>&amp;Sačuvaj Sve Korisnike</translation>
+        <translation type="obsolete">&amp;Sačuvaj Sve Korisnike</translation>
     </message>
     <message>
         <source>Reg&amp;ister User</source>
-        <translation>Reg&amp;istruj Korisnika</translation>
+        <translation type="obsolete">Reg&amp;istruj Korisnika</translation>
     </message>
     <message>
         <source>&amp;Hints</source>
-        <translation>&amp;Saveti</translation>
+        <translation type="obsolete">&amp;Saveti</translation>
     </message>
     <message>
         <source>&amp;About</source>
-        <translation>&amp;O</translation>
+        <translation type="obsolete">&amp;O</translation>
     </message>
     <message>
         <source>&amp;Statistics</source>
-        <translation>&amp;Statistike</translation>
+        <translation type="obsolete">&amp;Statistike</translation>
     </message>
     <message>
         <source>System Functions</source>
-        <translation>Sistemske Funkcije</translation>
+        <translation type="obsolete">Sistemske Funkcije</translation>
     </message>
     <message>
         <source>User Functions</source>
-        <translation>Funkcije Korisnika</translation>
+        <translation type="obsolete">Funkcije Korisnika</translation>
     </message>
     <message>
         <source>&amp;Status</source>
-        <translation>&amp;Status</translation>
+        <translation type="obsolete">&amp;Status</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation>&amp;Grupa</translation>
+        <translation type="obsolete">&amp;Grupa</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
-        <translation>Postavi &amp;Auto Odgovor...</translation>
+        <translation type="obsolete">Postavi &amp;Auto Odgovor...</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
-        <translation>&amp;Prozor za mrežu</translation>
+        <translation type="obsolete">&amp;Prozor za mrežu</translation>
     </message>
     <message>
         <source>&amp;Mini Mode</source>
-        <translation>&amp;Mini Mod</translation>
+        <translation type="obsolete">&amp;Mini Mod</translation>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
-        <translation>Prikaži &amp;Korisnike koji nisu na vezi</translation>
+        <translation type="obsolete">Prikaži &amp;Korisnike koji nisu na vezi</translation>
     </message>
     <message>
         <source>&amp;Thread Group View</source>
-        <translation>&amp;Poveži grupni prikaz</translation>
+        <translation type="obsolete">&amp;Poveži grupni prikaz</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
-        <translation>&amp;Opcije...</translation>
+        <translation type="obsolete">&amp;Opcije...</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
-        <translation>Prikazivač S&amp;kinova...</translation>
+        <translation type="obsolete">Prikazivač S&amp;kinova...</translation>
     </message>
     <message>
         <source>&amp;Plugin Manager...</source>
-        <translation>&amp;Menadžer dodataka...</translation>
+        <translation type="obsolete">&amp;Menadžer dodataka...</translation>
     </message>
     <message>
         <source>Sa&amp;ve Settings</source>
-        <translation>Sačuvaj Podeša&amp;vanja</translation>
+        <translation type="obsolete">Sačuvaj Podeša&amp;vanja</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation>&amp;Pomoć</translation>
+        <translation type="obsolete">&amp;Pomoć</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>&amp;Izađi</translation>
+        <translation type="obsolete">&amp;Izađi</translation>
     </message>
     <message>
         <source>Accept in Away</source>
-        <translation>Prihvati u Odsutan</translation>
+        <translation type="obsolete">Prihvati u Odsutan</translation>
     </message>
     <message>
         <source>Accept in Not Available</source>
-        <translation>Prihvati u Nije Dostupan</translation>
+        <translation type="obsolete">Prihvati u Nije Dostupan</translation>
     </message>
     <message>
         <source>Accept in Occupied</source>
-        <translation>Prihvazi u Zauzet</translation>
+        <translation type="obsolete">Prihvazi u Zauzet</translation>
     </message>
     <message>
         <source>Accept in Do Not Disturb</source>
-        <translation>Prihvati u Ne Uznemiravaj</translation>
+        <translation type="obsolete">Prihvati u Ne Uznemiravaj</translation>
     </message>
     <message>
         <source>Auto Accept Files</source>
-        <translation>Auto-prihvati Fajlove</translation>
+        <translation type="obsolete">Auto-prihvati Fajlove</translation>
     </message>
     <message>
         <source>Auto Accept Chats</source>
-        <translation>Auto-prihvati Ćaskanja</translation>
+        <translation type="obsolete">Auto-prihvati Ćaskanja</translation>
     </message>
     <message>
         <source>Auto Request Secure</source>
-        <translation>Auto-zahtevaj Sigurnost</translation>
+        <translation type="obsolete">Auto-zahtevaj Sigurnost</translation>
     </message>
     <message>
         <source>Use Real Ip (LAN)</source>
-        <translation>Koristi stvarnu IP (LAN)</translation>
+        <translation type="obsolete">Koristi stvarnu IP (LAN)</translation>
     </message>
     <message>
         <source>Online to User</source>
-        <translation>Na-vezi za korisnika</translation>
+        <translation type="obsolete">Na-vezi za korisnika</translation>
     </message>
     <message>
         <source>Away to User</source>
-        <translation>Odsutan za korisnika</translation>
+        <translation type="obsolete">Odsutan za korisnika</translation>
     </message>
     <message>
         <source>Not Available to User</source>
-        <translation>Nedostupan za Korisnika</translation>
+        <translation type="obsolete">Nedostupan za Korisnika</translation>
     </message>
     <message>
         <source>Occupied to User</source>
-        <translation>Okupiran za Korisnika</translation>
+        <translation type="obsolete">Okupiran za Korisnika</translation>
     </message>
     <message>
         <source>Do Not Disturb to User</source>
-        <translation>Ne uznemiravaj za Korisnika</translation>
+        <translation type="obsolete">Ne uznemiravaj za Korisnika</translation>
     </message>
     <message>
         <source>&amp;View Event</source>
-        <translation>&amp;Prikaz događaja</translation>
+        <translation type="obsolete">&amp;Prikaz događaja</translation>
     </message>
     <message>
         <source>Send</source>
-        <translation>Pošalji</translation>
+        <translation type="obsolete">Pošalji</translation>
     </message>
     <message>
         <source>Misc Modes</source>
-        <translation>Razni Modovi</translation>
+        <translation type="obsolete">Razni Modovi</translation>
     </message>
     <message>
         <source>U&amp;tilities</source>
-        <translation>Pomoćni ala&amp;ti</translation>
+        <translation type="obsolete">Pomoćni ala&amp;ti</translation>
     </message>
     <message>
         <source>Check Auto Response</source>
-        <translation>Proveri Auto Odgovor</translation>
+        <translation type="obsolete">Proveri Auto Odgovor</translation>
     </message>
     <message>
         <source>Custom Auto Response...</source>
-        <translation>Korisnički Auto odgovor...</translation>
+        <translation type="obsolete">Korisnički Auto odgovor...</translation>
     </message>
     <message>
         <source>Toggle &amp;Floaty</source>
-        <translation>Uklj/Isklj &amp;Pokretno</translation>
+        <translation type="obsolete">Uklj/Isklj &amp;Pokretno</translation>
     </message>
     <message>
         <source>Edit User Group</source>
-        <translation>Izmeni Korisnikovu Grupu</translation>
+        <translation type="obsolete">Izmeni Korisnikovu Grupu</translation>
     </message>
     <message>
         <source>Remove From List</source>
-        <translation>Ukloni iz Liste</translation>
+        <translation type="obsolete">Ukloni iz Liste</translation>
     </message>
     <message>
         <source>Check %1 Response</source>
-        <translation>Proveri %1 Odgovor</translation>
+        <translation type="obsolete">Proveri %1 Odgovor</translation>
     </message>
     <message>
         <source>Close &amp;Secure Channel</source>
-        <translation>Zatvori &amp;Sigurni Kanal</translation>
+        <translation type="obsolete">Zatvori &amp;Sigurni Kanal</translation>
     </message>
     <message>
         <source>Daemon Statistics
 (Today/Total)
 </source>
-        <translation>Statistike demona
+        <translation type="obsolete">Statistike demona
 (Danas/Ukupno)
 </translation>
     </message>
     <message>
         <source>Up since %1
 </source>
-        <translation>Na vezi od %1
+        <translation type="obsolete">Na vezi od %1
 </translation>
     </message>
     <message>
         <source>Last reset %1
 
 </source>
-        <translation>Zadnji reset %1
+        <translation type="obsolete">Zadnji reset %1
 
 </translation>
     </message>
     <message>
         <source>%1: %2 / %3
 </source>
-        <translation>%1: %2 / %3
+        <translation type="obsolete">%1: %2 / %3
 </translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation>&amp;Ok</translation>
+        <translation type="obsolete">&amp;Ok</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
-        <translation>&amp;Resetuj</translation>
+        <translation type="obsolete">&amp;Resetuj</translation>
     </message>
     <message>
         <source>Daemon Statistics
 
 </source>
-        <translation>Statistike Demona
+        <translation type="obsolete">Statistike Demona
 
 </translation>
     </message>
@@ -578,14 +578,14 @@ http://www.licq.org
         <source>Up since %1
 
 </source>
-        <translation>Na vezi od %1
+        <translation type="obsolete">Na vezi od %1
 
 </translation>
     </message>
     <message>
         <source>%1: %2
 </source>
-        <translation>%1: %2
+        <translation type="obsolete">%1: %2
 </translation>
     </message>
     <message>
@@ -594,7 +594,7 @@ UIN: %1
 Base Directory: %2
 Rerun licq with the -b option to select a new
 base directory and then register a new user.</source>
-        <translation>Vi ste trenutno registrovani kao
+        <translation type="obsolete">Vi ste trenutno registrovani kao
 UIN: %1
 Osnovni Direktorijum: %2
 Pokrenite ponovo licq sa -b opcijom da izaberete nov
@@ -603,30 +603,30 @@ osnovni direktorijum i onda registrujete novog korisnika.</translation>
     <message>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
 </source>
-        <translation>&lt;h2&gt;Saveti za korišćenje&lt;br&gt;Licq Qt-GUI Dodatka&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Menjate vaš status desnim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Menjate vaš auto odgovor duplim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Pregled sistemskih poruka duplim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Promena grupe desnim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Koristite sledeće prečice za kontaktnu listu:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Uklj-isklj mini-mod&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Uklj-isklj prikaz korisnika koji nisu na vezi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Izlaz&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Sakrij&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Prikaži sledeću poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Prikaži poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Pošalji poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Pošalji URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Pošalji zahtev za ćaskanje&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Pošalji fajl&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Proveri Auto odgovor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Podigni sve poruke&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ponovi korisnikov prozor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Obriši korisnika iz trenutne grupe&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Obriši korisnika iz liste kontakata&lt;/li&gt;&lt;li&gt;Zadržite &lt;CTRL&gt; dok klikćete na &apos;zatvori&apos; u funkciji prozora da   uklonite korisnika iz vaše kontakt liste.&lt;/li&gt;&lt;li&gt;Pritisnite Ctrl-Enter za najčešća tekst polja da izaberete &quot;Ok&quot; ili &quot;Prihvati&quot;.
+        <translation type="obsolete">&lt;h2&gt;Saveti za korišćenje&lt;br&gt;Licq Qt-GUI Dodatka&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Menjate vaš status desnim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Menjate vaš auto odgovor duplim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Pregled sistemskih poruka duplim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Promena grupe desnim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Koristite sledeće prečice za kontaktnu listu:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Uklj-isklj mini-mod&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Uklj-isklj prikaz korisnika koji nisu na vezi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Izlaz&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Sakrij&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Prikaži sledeću poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Prikaži poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Pošalji poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Pošalji URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Pošalji zahtev za ćaskanje&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Pošalji fajl&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Proveri Auto odgovor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Podigni sve poruke&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ponovi korisnikov prozor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Obriši korisnika iz trenutne grupe&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Obriši korisnika iz liste kontakata&lt;/li&gt;&lt;li&gt;Zadržite &lt;CTRL&gt; dok klikćete na &apos;zatvori&apos; u funkciji prozora da   uklonite korisnika iz vaše kontakt liste.&lt;/li&gt;&lt;li&gt;Pritisnite Ctrl-Enter za najčešća tekst polja da izaberete &quot;Ok&quot; ili &quot;Prihvati&quot;.
    Kao primer u tabeli za slanje u prozoru funkcija korisnika.&lt;/li&gt;&lt;li&gt;Evo je kompletna lista korisničkih % opcija, koja može biti korišćena u &lt;b&gt;ZaDogađaj&lt;/b&gt;   parametre, &lt;b&gt;auto odgovore&lt;/b&gt;, i &lt;b&gt;pomoćne alate&lt;/b&gt;:
 </translation>
     </message>
     <message>
         <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation>&lt;hr&gt;&lt;p&gt; Za više informacija, pogledajte Licq web-stranu (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Za više informacija, pogledajte Licq web-stranu (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
     <message>
         <source>Licq - Hints</source>
-        <translation>Licq - Saveti</translation>
+        <translation type="obsolete">Licq - Saveti</translation>
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation>&amp;Zatvori</translation>
+        <translation type="obsolete">&amp;Zatvori</translation>
     </message>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation>Licq ne može da nađe aplikaciju pretraživača zbog interne greške.</translation>
+        <translation type="obsolete">Licq ne može da nađe aplikaciju pretraživača zbog interne greške.</translation>
     </message>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
-        <translation>Licq ne može da pokrene vaš pretraživač i otvori URL
+        <translation type="obsolete">Licq ne može da pokrene vaš pretraživač i otvori URL
 Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
 </context>
@@ -638,11 +638,11 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>New User UIN:</source>
-        <translation>Nov Korisnikov UIN</translation>
+        <translation type="obsolete">Nov Korisnikov UIN</translation>
     </message>
     <message>
         <source>&amp;Alert User</source>
-        <translation>&amp;Obavesti Korisnika</translation>
+        <translation type="obsolete">&amp;Obavesti Korisnika</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -651,6 +651,14 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     <message>
         <source>&amp;Ok</source>
         <translation>&amp;Ok</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New User ID:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -686,6 +694,10 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     <message>
         <source>Response</source>
         <translation>Odgovor</translation>
+    </message>
+    <message>
+        <source>Authorize which user (Id):</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -725,6 +737,10 @@ Možete ostaviti poruku.
     <message>
         <source>Set %1 Response for %2</source>
         <translation>Postavi %1 Odgovor za %2</translation>
+    </message>
+    <message>
+        <source>(Closing in %1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1193,59 +1209,59 @@ Pogledajte mrežni prozor za detalje.</translation>
     <name>CMainWindow</name>
     <message>
         <source>s</source>
-        <translation type="obsolete">s</translation>
+        <translation type="unfinished">s</translation>
     </message>
     <message>
         <source>Ok</source>
-        <translation type="obsolete">Ok</translation>
+        <translation type="unfinished">Ok</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation type="obsolete">&amp;Ne</translation>
+        <translation type="unfinished">&amp;Ne</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
+        <translation type="unfinished">&amp;Ok</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Da</translation>
+        <translation type="unfinished">&amp;Da</translation>
     </message>
     <message>
         <source>Send</source>
-        <translation type="obsolete">Pošalji</translation>
+        <translation type="unfinished">Pošalji</translation>
     </message>
     <message>
         <source>Online to User</source>
-        <translation type="obsolete">Na-vezi za korisnika</translation>
+        <translation type="unfinished">Na-vezi za korisnika</translation>
     </message>
     <message>
         <source>&amp;Away</source>
-        <translation type="obsolete">&amp;Odsutnost</translation>
+        <translation type="unfinished">&amp;Odsutnost</translation>
     </message>
     <message>
         <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Pomoć</translation>
+        <translation type="unfinished">&amp;Pomoć</translation>
     </message>
     <message>
         <source>&amp;Info</source>
-        <translation type="obsolete">&amp;Informacije</translation>
+        <translation type="unfinished">&amp;Informacije</translation>
     </message>
     <message>
         <source>U&amp;tilities</source>
-        <translation type="obsolete">Pomoćni ala&amp;ti</translation>
+        <translation type="unfinished">Pomoćni ala&amp;ti</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation type="obsolete">&amp;Izađi</translation>
+        <translation type="unfinished">&amp;Izađi</translation>
     </message>
     <message>
         <source>&amp;Options...</source>
-        <translation type="obsolete">&amp;Opcije...</translation>
+        <translation type="unfinished">&amp;Opcije...</translation>
     </message>
     <message>
         <source>R&amp;andom Chat</source>
-        <translation type="obsolete">Sl&amp;učajno ćaskanje</translation>
+        <translation type="unfinished">Sl&amp;učajno ćaskanje</translation>
     </message>
     <message>
         <source>Error sending authorization.</source>
@@ -1253,7 +1269,7 @@ Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>&amp;Random Chat Group</source>
-        <translation type="obsolete">&amp;Slučajna Grupa za Ćaskanje</translation>
+        <translation type="unfinished">&amp;Slučajna Grupa za Ćaskanje</translation>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
@@ -1262,12 +1278,12 @@ Pogledajte mrežni prozor za detalje.</translation>
     <message>
         <source>Up since %1
 </source>
-        <translation type="obsolete">Na vezi od %1
+        <translation type="unfinished">Na vezi od %1
 </translation>
     </message>
     <message>
         <source>Check %1 Response</source>
-        <translation type="obsolete">Proveri %1 Odgovor</translation>
+        <translation type="unfinished">Proveri %1 Odgovor</translation>
     </message>
     <message>
         <source>You are currently registered as
@@ -1283,89 +1299,89 @@ osnovni direktorijum i onda registrujete novog korisnika.</translation>
     </message>
     <message>
         <source>Auto Request Secure</source>
-        <translation type="obsolete">Auto-zahtevaj Sigurnost</translation>
+        <translation type="unfinished">Auto-zahtevaj Sigurnost</translation>
     </message>
     <message>
         <source>Unable to open icons file
 %1.</source>
-        <translation type="obsolete">Ne mogu da otvorim fajl ikone
+        <translation type="unfinished">Ne mogu da otvorim fajl ikone
 %1.</translation>
     </message>
     <message>
         <source>Send &amp;Authorization</source>
-        <translation type="obsolete">Pošalji &amp;Autorizaciju</translation>
+        <translation type="unfinished">Pošalji &amp;Autorizaciju</translation>
     </message>
     <message>
         <source>Auto Accept Chats</source>
-        <translation type="obsolete">Auto-prihvati Ćaskanja</translation>
+        <translation type="unfinished">Auto-prihvati Ćaskanja</translation>
     </message>
     <message>
         <source>Auto Accept Files</source>
-        <translation type="obsolete">Auto-prihvati Fajlove</translation>
+        <translation type="unfinished">Auto-prihvati Fajlove</translation>
     </message>
     <message>
         <source>&amp;Not Available</source>
-        <translation type="obsolete">&amp;Nije na raspolaganju</translation>
+        <translation type="unfinished">&amp;Nije na raspolaganju</translation>
     </message>
     <message>
         <source>&amp;About</source>
-        <translation type="obsolete">&amp;O ...</translation>
+        <translation type="unfinished">&amp;O ...</translation>
     </message>
     <message>
         <source>&amp;Group</source>
-        <translation type="obsolete">&amp;Grupa</translation>
+        <translation type="unfinished">&amp;Grupa</translation>
     </message>
     <message>
         <source>&amp;Hints</source>
-        <translation type="obsolete">&amp;Saveti</translation>
+        <translation type="unfinished">&amp;Saveti</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
-        <translation type="obsolete">&amp;Resetuj</translation>
+        <translation type="unfinished">&amp;Resetuj</translation>
     </message>
     <message>
         <source>Custom Auto Response...</source>
-        <translation type="obsolete">Korisnički Auto odgovor...</translation>
+        <translation type="unfinished">Korisnički Auto odgovor...</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation type="obsolete">Na-vezi obaveštenje</translation>
+        <translation type="unfinished">Na-vezi obaveštenje</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
-        <translation type="obsolete">Postavi &amp;Auto Odgovor...</translation>
+        <translation type="unfinished">Postavi &amp;Auto Odgovor...</translation>
     </message>
     <message>
         <source>Remove From List</source>
-        <translation type="obsolete">Ukloni iz Liste</translation>
+        <translation type="unfinished">Ukloni iz Liste</translation>
     </message>
     <message>
         <source>System Message</source>
-        <translation type="obsolete">Sistemska Poruka</translation>
+        <translation type="unfinished">Sistemska Poruka</translation>
     </message>
     <message>
         <source>%1 msg%2</source>
-        <translation type="obsolete">%1 por%2</translation>
+        <translation type="unfinished">%1 por%2</translation>
     </message>
     <message>
         <source>&amp;Popup All Messages</source>
-        <translation type="obsolete">&amp;Iskakanje svih poruka</translation>
+        <translation type="unfinished">&amp;Iskakanje svih poruka</translation>
     </message>
     <message>
         <source>Accept in Not Available</source>
-        <translation type="obsolete">Prihvati u Nije Dostupan</translation>
+        <translation type="unfinished">Prihvati u Nije Dostupan</translation>
     </message>
     <message>
         <source>View &amp;History</source>
-        <translation type="obsolete">Prikaži &amp;Istoriju</translation>
+        <translation type="unfinished">Prikaži &amp;Istoriju</translation>
     </message>
     <message>
         <source>Other Users</source>
-        <translation type="obsolete">Ostali Korisnici</translation>
+        <translation type="unfinished">Ostali Korisnici</translation>
     </message>
     <message>
         <source>Edit User Group</source>
-        <translation type="obsolete">Izmeni Korisnikovu Grupu</translation>
+        <translation type="unfinished">Izmeni Korisnikovu Grupu</translation>
     </message>
     <message>
         <source>Successfully registered, your user identification
@@ -1377,39 +1393,39 @@ Sad podesite vaše lične informacije.</translation>
     </message>
     <message>
         <source>Unknown Packets</source>
-        <translation type="obsolete">Nepoznati Paketi</translation>
+        <translation type="unfinished">Nepoznati Paketi</translation>
     </message>
     <message>
         <source>Send &amp;URL</source>
-        <translation type="obsolete">Pošalji &amp;URL</translation>
+        <translation type="unfinished">Pošalji &amp;URL</translation>
     </message>
     <message>
         <source>Send &amp;SMS</source>
-        <translation type="obsolete">Pošalji &amp;SMS</translation>
+        <translation type="unfinished">Pošalji &amp;SMS</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation type="obsolete">Poništi</translation>
+        <translation type="unfinished">Poništi</translation>
     </message>
     <message>
         <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Za više informacija, pogledajte Licq web-stranu (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
+        <translation type="unfinished">&lt;hr&gt;&lt;p&gt; Za više informacija, pogledajte Licq web-stranu (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&amp;Mini Mode</source>
-        <translation type="obsolete">&amp;Mini Mod</translation>
+        <translation type="unfinished">&amp;Mini Mod</translation>
     </message>
     <message>
         <source>Errors</source>
-        <translation type="obsolete">Greške</translation>
+        <translation type="unfinished">Greške</translation>
     </message>
     <message>
         <source>Close &amp;Secure Channel</source>
-        <translation type="obsolete">Zatvori &amp;Sigurni Kanal</translation>
+        <translation type="unfinished">Zatvori &amp;Sigurni Kanal</translation>
     </message>
     <message>
         <source>No msgs</source>
-        <translation type="obsolete">Nema poruka</translation>
+        <translation type="unfinished">Nema poruka</translation>
     </message>
     <message>
         <source>Licq version %1%8.
@@ -1437,19 +1453,19 @@ http://www.licq.org
         <source>Up since %1
 
 </source>
-        <translation type="obsolete">Na vezi od %1
+        <translation type="unfinished">Na vezi od %1
 
 </translation>
     </message>
     <message>
         <source>Misc Modes</source>
-        <translation type="obsolete">Razni Modovi</translation>
+        <translation type="unfinished">Razni Modovi</translation>
     </message>
     <message>
         <source>Daemon Statistics
 
 </source>
-        <translation type="obsolete">Statistike demona
+        <translation type="unfinished">Statistike demona
 
 </translation>
     </message>
@@ -1457,13 +1473,13 @@ http://www.licq.org
         <source>Daemon Statistics
 (Today/Total)
 </source>
-        <translation type="obsolete">Statistike demona
+        <translation type="unfinished">Statistike demona
 (Danas/Ukupno)
 </translation>
     </message>
     <message>
         <source>SysMsg</source>
-        <translation type="obsolete">SistPoruka</translation>
+        <translation type="unfinished">SistPoruka</translation>
     </message>
     <message>
         <source>System</source>
@@ -1473,7 +1489,7 @@ http://www.licq.org
         <source>Last reset %1
 
 </source>
-        <translation type="obsolete">Zadnji reset %1
+        <translation type="unfinished">Zadnji reset %1
 
 </translation>
     </message>
@@ -1481,7 +1497,7 @@ http://www.licq.org
         <source>Are you sure you want to remove
 %1 (%2)
 from the &apos;%3&apos; group?</source>
-        <translation type="obsolete">Da li ste sigurni da želite da uklonite
+        <translation type="unfinished">Da li ste sigurni da želite da uklonite
 %1 (%2)
 iz &apos;%3&apos; grupe?</translation>
     </message>
@@ -1489,70 +1505,70 @@ iz &apos;%3&apos; grupe?</translation>
         <source>Do you really want to add
 %1 (%2)
 to your ignore list?</source>
-        <translation type="obsolete">Da ku stvarni želite da dodate
+        <translation type="unfinished">Da ku stvarni želite da dodate
 %1 (%2)
 u vašu listu ignorisanja?</translation>
     </message>
     <message>
         <source>Packets</source>
-        <translation type="obsolete">Paketi</translation>
+        <translation type="unfinished">Paketi</translation>
     </message>
     <message>
         <source>&amp;Save All Users</source>
-        <translation type="obsolete">&amp;Sačuvaj Sve Korisnike</translation>
+        <translation type="unfinished">&amp;Sačuvaj Sve Korisnike</translation>
     </message>
     <message>
         <source>%1: %2 / %3
 </source>
-        <translation type="obsolete">%1: %2 / %3
+        <translation type="unfinished">%1: %2 / %3
 </translation>
     </message>
     <message>
         <source>Do Not Disturb to User</source>
-        <translation type="obsolete">Ne uznemiravaj za Korisnika</translation>
+        <translation type="unfinished">Ne uznemiravaj za Korisnika</translation>
     </message>
     <message>
         <source>Update All Users</source>
-        <translation type="obsolete">Ažuriraj Sve Korisnike</translation>
+        <translation type="unfinished">Ažuriraj Sve Korisnike</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
 </source>
-        <translation type="obsolete">&lt;h2&gt;Saveti za korišćenje&lt;br&gt;Licq Qt-GUI Dodatka&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Menjate vaš status desnim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Menjate vaš auto odgovor duplim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Pregled sistemskih poruka duplim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Promena grupe desnim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Koristite sledeće prečice za kontaktnu listu:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Uklj-isklj mini-mod&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Uklj-isklj prikaz korisnika koji nisu na vezi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Izlaz&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Sakrij&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Prikaži sledeću poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Prikaži poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Pošalji poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Pošalji URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Pošalji zahtev za ćaskanje&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Pošalji fajl&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Proveri Auto odgovor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Podigni sve poruke&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ponovi korisnikov prozor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Obriši korisnika iz trenutne grupe&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Obriši korisnika iz liste kontakata&lt;/li&gt;&lt;li&gt;Zadržite &lt;CTRL&gt; dok klikćete na &apos;zatvori&apos; u funkciji prozora da   uklonite korisnika iz vaše kontakt liste.&lt;/li&gt;&lt;li&gt;Pritisnite Ctrl-Enter za najčešća tekst polja da izaberete&quot;Ok&quot; ili &quot;Prihvati&quot;.
+        <translation type="unfinished">&lt;h2&gt;Saveti za korišćenje&lt;br&gt;Licq Qt-GUI Dodatka&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Menjate vaš status desnim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Menjate vaš auto odgovor duplim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Pregled sistemskih poruka duplim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Promena grupe desnim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Koristite sledeće prečice za kontaktnu listu:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Uklj-isklj mini-mod&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Uklj-isklj prikaz korisnika koji nisu na vezi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Izlaz&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Sakrij&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Prikaži sledeću poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Prikaži poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Pošalji poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Pošalji URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Pošalji zahtev za ćaskanje&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Pošalji fajl&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Proveri Auto odgovor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Podigni sve poruke&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ponovi korisnikov prozor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Obriši korisnika iz trenutne grupe&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Obriši korisnika iz liste kontakata&lt;/li&gt;&lt;li&gt;Zadržite &lt;CTRL&gt; dok klikćete na &apos;zatvori&apos; u funkciji prozora da   uklonite korisnika iz vaše kontakt liste.&lt;/li&gt;&lt;li&gt;Pritisnite Ctrl-Enter za najčešća tekst polja da izaberete&quot;Ok&quot; ili &quot;Prihvati&quot;.
    Kao primer u tabeli za slanje u prozoru funkcija korisnika.&lt;/li&gt;&lt;li&gt;Evo je kompletna lista korisničkih % opcija, koja može biti korišćena u &lt;b&gt;ZaDogađaj&lt;/b&gt;   parametre, &lt;b&gt;auto odgovore&lt;/b&gt;, i &lt;b&gt;pomoćne alate&lt;/b&gt;:
 </translation>
     </message>
     <message>
         <source>&amp;Redraw User Window</source>
-        <translation type="obsolete">&amp;Ponovo nacrtaj Korisnikov Prozor</translation>
+        <translation type="unfinished">&amp;Ponovo nacrtaj Korisnikov Prozor</translation>
     </message>
     <message>
         <source>(with KDE support)
 </source>
-        <translation type="obsolete">(sa KDE podrškom)
+        <translation type="unfinished">(sa KDE podrškom)
 </translation>
     </message>
     <message>
         <source>Occupied to User</source>
-        <translation type="obsolete">Okupiran za Korisnika</translation>
+        <translation type="unfinished">Okupiran za Korisnika</translation>
     </message>
     <message>
         <source>Logon failed.
 See network window for details.</source>
-        <translation type="obsolete">Prijavljivanje neuspešno.
+        <translation type="unfinished">Prijavljivanje neuspešno.
 Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Accept in Away</source>
-        <translation type="obsolete">Prihvati u Odsutan</translation>
+        <translation type="unfinished">Prihvati u Odsutan</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation type="obsolete">Lista Nevidljivosti</translation>
+        <translation type="unfinished">Lista Nevidljivosti</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation type="obsolete">Vidljiva Lista</translation>
+        <translation type="unfinished">Vidljiva Lista</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -1560,7 +1576,7 @@ Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Send &amp;Chat Request</source>
-        <translation type="obsolete">Pošalji zahte&amp;v za Ćaskanje</translation>
+        <translation type="unfinished">Pošalji zahte&amp;v za Ćaskanje</translation>
     </message>
     <message>
         <source>Reg&amp;ister User</source>
@@ -1568,20 +1584,20 @@ Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
-        <translation type="obsolete">Prikaži &amp;Korisnike koji nisu na vezi</translation>
+        <translation type="unfinished">Prikaži &amp;Korisnike koji nisu na vezi</translation>
     </message>
     <message>
         <source>%1 message%2</source>
-        <translation type="obsolete">%1 poruka%2</translation>
+        <translation type="unfinished">%1 poruka%2</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation type="obsolete">Lista Ignorisanja</translation>
+        <translation type="unfinished">Lista Ignorisanja</translation>
     </message>
     <message>
         <source>%1: %2
 </source>
-        <translation type="obsolete">%1: %2
+        <translation type="unfinished">%1: %2
 </translation>
     </message>
     <message>
@@ -1590,7 +1606,7 @@ Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Warnings</source>
-        <translation type="obsolete">Upozorenja</translation>
+        <translation type="unfinished">Upozorenja</translation>
     </message>
     <message>
         <source>&amp;Work Info</source>
@@ -1598,47 +1614,47 @@ Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Debug Level</source>
-        <translation type="obsolete">Nivo debugovanja</translation>
+        <translation type="unfinished">Nivo debugovanja</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation type="obsolete">Novi Korisnici</translation>
+        <translation type="unfinished">Novi Korisnici</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
-        <translation type="obsolete">&amp;Prozor za mrežu</translation>
+        <translation type="unfinished">&amp;Prozor za mrežu</translation>
     </message>
     <message>
         <source>&amp;View Event</source>
-        <translation type="obsolete">&amp;Prikaz događaja</translation>
+        <translation type="unfinished">&amp;Prikaz događaja</translation>
     </message>
     <message>
         <source>&amp;Plugin Manager...</source>
-        <translation type="obsolete">&amp;Menadžer dodataka...</translation>
+        <translation type="unfinished">&amp;Menadžer dodataka...</translation>
     </message>
     <message>
         <source>O&amp;ccupied</source>
-        <translation type="obsolete">&amp;Zauzet</translation>
+        <translation type="unfinished">&amp;Zauzet</translation>
     </message>
     <message>
         <source>Set All</source>
-        <translation type="obsolete">Postavi Sve</translation>
+        <translation type="unfinished">Postavi Sve</translation>
     </message>
     <message>
         <source>&amp;View System Messages</source>
-        <translation type="obsolete">&amp;Prikaz Sistemskih Poruka</translation>
+        <translation type="unfinished">&amp;Prikaz Sistemskih Poruka</translation>
     </message>
     <message>
         <source>&amp;Thread Group View</source>
-        <translation type="obsolete">&amp;Poveži grupni prikaz</translation>
+        <translation type="unfinished">&amp;Poveži grupni prikaz</translation>
     </message>
     <message>
         <source>Send &amp;Message</source>
-        <translation type="obsolete">Pošalji &amp;Poruku</translation>
+        <translation type="unfinished">Pošalji &amp;Poruku</translation>
     </message>
     <message>
         <source>Update Current Group</source>
-        <translation type="obsolete">Ažuriraj Trenutnu Grupu</translation>
+        <translation type="unfinished">Ažuriraj Trenutnu Grupu</translation>
     </message>
     <message>
         <source>Licq (%1)</source>
@@ -1647,16 +1663,16 @@ Pogledajte mrežni prozor za detalje.</translation>
     <message>
         <source>Right click - Status menu
 Double click - Set auto response</source>
-        <translation type="obsolete">Desni klik - Statusni meni
+        <translation type="unfinished">Desni klik - Statusni meni
 Dupli klik - Postavi auto-odgovor</translation>
     </message>
     <message>
         <source>&amp;Add User</source>
-        <translation type="obsolete">&amp;Dodaj Korisnika</translation>
+        <translation type="unfinished">&amp;Dodaj Korisnika</translation>
     </message>
     <message>
         <source>Accept in Do Not Disturb</source>
-        <translation type="obsolete">Prihvati u Ne Uznemiravaj</translation>
+        <translation type="unfinished">Prihvati u Ne Uznemiravaj</translation>
     </message>
     <message>
         <source>&amp;Security Options</source>
@@ -1664,19 +1680,19 @@ Dupli klik - Postavi auto-odgovor</translation>
     </message>
     <message>
         <source>&amp;Statistics</source>
-        <translation type="obsolete">&amp;Statistike</translation>
+        <translation type="unfinished">&amp;Statistike</translation>
     </message>
     <message>
         <source>&amp;Online</source>
-        <translation type="obsolete">&amp;Na vezi</translation>
+        <translation type="unfinished">&amp;Na vezi</translation>
     </message>
     <message>
         <source>Clear All</source>
-        <translation type="obsolete">Očisti Sve</translation>
+        <translation type="unfinished">Očisti Sve</translation>
     </message>
     <message>
         <source>&amp;Status</source>
-        <translation type="obsolete">&amp;Status</translation>
+        <translation type="unfinished">&amp;Status</translation>
     </message>
     <message>
         <source>&amp;System</source>
@@ -1684,19 +1700,19 @@ Dupli klik - Postavi auto-odgovor</translation>
     </message>
     <message>
         <source>Accept in Occupied</source>
-        <translation type="obsolete">Prihvazi u Zauzet</translation>
+        <translation type="unfinished">Prihvazi u Zauzet</translation>
     </message>
     <message>
         <source>Send Contact &amp;List</source>
-        <translation type="obsolete">Pošalji Kontakt &amp;Listu</translation>
+        <translation type="unfinished">Pošalji Kontakt &amp;Listu</translation>
     </message>
     <message>
         <source>Status Info</source>
-        <translation type="obsolete">Statusni Info</translation>
+        <translation type="unfinished">Statusni Info</translation>
     </message>
     <message>
         <source>&amp;Do Not Disturb</source>
-        <translation type="obsolete">&amp;Ne Uznemiravaj</translation>
+        <translation type="unfinished">&amp;Ne Uznemiravaj</translation>
     </message>
     <message>
         <source>Change &amp;Password</source>
@@ -1706,35 +1722,35 @@ Dupli klik - Postavi auto-odgovor</translation>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
-        <translation type="obsolete">Da li ste sigurni da želite da uklonite
+        <translation type="unfinished">Da li ste sigurni da želite da uklonite
 %1 (%2)
 iz vaše kontakt liste?</translation>
     </message>
     <message>
         <source>O&amp;ffline</source>
-        <translation type="obsolete">Nije na &amp;vezi</translation>
+        <translation type="unfinished">Nije na &amp;vezi</translation>
     </message>
     <message>
         <source>A&amp;uthorize User</source>
-        <translation type="obsolete">A&amp;utorizuj Korisnika</translation>
+        <translation type="unfinished">A&amp;utorizuj Korisnika</translation>
     </message>
     <message>
         <source>Free for C&amp;hat</source>
-        <translation type="obsolete">Slobodni za Ćas&amp;kanje</translation>
+        <translation type="unfinished">Slobodni za Ćas&amp;kanje</translation>
     </message>
     <message>
         <source>Right click - User groups
 Double click - Show next message</source>
-        <translation type="obsolete">Desni klik - Grupe korisnika
+        <translation type="unfinished">Desni klik - Grupe korisnika
 Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>No messages</source>
-        <translation type="obsolete">Nema poruka</translation>
+        <translation type="unfinished">Nema poruka</translation>
     </message>
     <message>
         <source>&amp;Invisible</source>
-        <translation type="obsolete">&amp;Nevidljivost</translation>
+        <translation type="unfinished">&amp;Nevidljivost</translation>
     </message>
     <message>
         <source>&amp;General Info</source>
@@ -1742,15 +1758,15 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>Send &amp;File Transfer</source>
-        <translation type="obsolete">Pošalji Prenos &amp;Fajla</translation>
+        <translation type="unfinished">Pošalji Prenos &amp;Fajla</translation>
     </message>
     <message>
         <source>User Functions</source>
-        <translation type="obsolete">Funkcije Korisnika</translation>
+        <translation type="unfinished">Funkcije Korisnika</translation>
     </message>
     <message>
         <source>Check Auto Response</source>
-        <translation type="obsolete">Proveri Auto Odgovor</translation>
+        <translation type="unfinished">Proveri Auto Odgovor</translation>
     </message>
     <message>
         <source>Authorization granted.</source>
@@ -1758,27 +1774,27 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>System Functions</source>
-        <translation type="obsolete">Sistemske Funkcije</translation>
+        <translation type="unfinished">Sistemske Funkcije</translation>
     </message>
     <message>
         <source>Edit &amp;Groups</source>
-        <translation type="obsolete">Izmeni &amp;Grupe</translation>
+        <translation type="unfinished">Izmeni &amp;Grupe</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation type="obsolete">Svi Korisnici</translation>
+        <translation type="unfinished">Svi Korisnici</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
-        <translation type="obsolete">Prikazivač S&amp;kinova...</translation>
+        <translation type="unfinished">Prikazivač S&amp;kinova...</translation>
     </message>
     <message>
         <source>Request &amp;Secure Channel</source>
-        <translation type="obsolete">Zahtevaj &amp;SIgurni Kanal</translation>
+        <translation type="unfinished">Zahtevaj &amp;SIgurni Kanal</translation>
     </message>
     <message>
         <source>S&amp;earch for User</source>
-        <translation type="obsolete">Pr&amp;etraži za Korisnika</translation>
+        <translation type="unfinished">Pr&amp;etraži za Korisnika</translation>
     </message>
     <message>
         <source>Next &amp;Server</source>
@@ -1790,19 +1806,59 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>Not Available to User</source>
-        <translation type="obsolete">Nedostupan za Korisnika</translation>
+        <translation type="unfinished">Nedostupan za Korisnika</translation>
     </message>
     <message>
         <source>Toggle &amp;Floaty</source>
-        <translation type="obsolete">Uklj/Isklj &amp;Pokretno</translation>
+        <translation type="unfinished">Uklj/Isklj &amp;Pokretno</translation>
     </message>
     <message>
         <source>Sa&amp;ve Settings</source>
-        <translation type="obsolete">Sačuvaj Podeša&amp;vanja</translation>
+        <translation type="unfinished">Sačuvaj Podeša&amp;vanja</translation>
     </message>
     <message>
         <source>Away to User</source>
-        <translation type="obsolete">Odsutan za korisnika</translation>
+        <translation type="unfinished">Odsutan za korisnika</translation>
+    </message>
+    <message>
+        <source>Send Authorization Re&amp;quest</source>
+        <translation type="unfinished">Pošalji &amp;Zahtev Autorizacije</translation>
+    </message>
+    <message>
+        <source>&amp;Last</source>
+        <translation type="obsolete">Pos&amp;lednji</translation>
+    </message>
+    <message>
+        <source>&amp;Security/Password Options</source>
+        <translation type="unfinished">&amp;Sigurnost/Lozinka Opcije</translation>
+    </message>
+    <message>
+        <source>Re&amp;quest Authorization</source>
+        <translation type="unfinished">Zaht&amp;evaj Autorizaciju</translation>
+    </message>
+    <message>
+        <source>Use Real Ip (LAN)</source>
+        <translation type="unfinished">Koristi stvarnu IP (LAN)</translation>
+    </message>
+    <message>
+        <source>Error! No owner set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server Group</source>
+        <translation type="unfinished">Grupa Servera</translation>
+    </message>
+    <message>
+        <source>(Error! No owner set)</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Licq version %1%8.
@@ -1814,31 +1870,105 @@ Contributions by Dirk A. Mueller
 Original Author: Graham Roff
 
 http://www.licq.org
-#licq on irc.openprojects.net
+#licq on irc.freenode.net
 
 %3 (%4)
 %5 contacts.</source>
-        <translation type="obsolete"></translation>
+        <translation type="unfinished">LIcq verzija %1%8.
+Qt GUI dodatak verzija %2.
+Kompajlirano: %7
+%6
+Održava: Jon Keating
+Saradnik Dirk A. Mueller
+Originalni Autor: Graham Roff
+
+http://www.licq.org
+#licq on irc.freenode.net
+
+%3 (%4)
+%5 kontakata.</translation>
     </message>
     <message>
-        <source>Send Authorization Re&amp;quest</source>
-        <translation type="obsolete"></translation>
+        <source>Unable to open extended icons file
+%1.</source>
+        <translation type="unfinished">Ne mogu da otvorim dodatni fajl ikona
+%1.</translation>
     </message>
     <message>
-        <source>&amp;Last</source>
-        <translation type="obsolete">Pos&amp;lednji</translation>
+        <source>&amp;GPG Key Manager...</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&amp;Security/Password Options</source>
-        <translation type="obsolete"></translation>
+        <source>Don&apos;t Show</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Re&amp;quest Authorization</source>
-        <translation type="obsolete"></translation>
+        <source>Available</source>
+        <translation type="unfinished">Omogućeni</translation>
     </message>
     <message>
-        <source>Use Real Ip (LAN)</source>
-        <translation type="obsolete"></translation>
+        <source>Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone &quot;Follow Me&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Owner Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use GPG Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Info Plugin List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Status Plugin List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Phone &quot;Follow Me&quot; Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update ICQphone Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update File Server Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to reset your stats?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq is unable to find a browser application due to an internal error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq is unable to start your browser and open the URL.
+You will need to start the browser and open the URL manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CMessageViewWidget</name>
+    <message>
+        <source>%1 from %2</source>
+        <translation type="unfinished">%1 od %2</translation>
+    </message>
+    <message>
+        <source>%1 to %2</source>
+        <translation type="unfinished">%1 za %2</translation>
     </message>
 </context>
 <context>
@@ -2143,11 +2273,11 @@ http://www.licq.org
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1/SSL</source>
-        <translation>&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
+        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1/SSL</translation>
     </message>
     <message>
         <source>&lt;br&gt;Licq&amp;nbsp;%1</source>
-        <translation>&lt;br&gt;Licq&amp;nbsp;%1</translation>
+        <translation type="obsolete">&lt;br&gt;Licq&amp;nbsp;%1</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
@@ -2237,6 +2367,42 @@ http://www.licq.org
         <source>0 minutes</source>
         <translation>0 minuta</translation>
     </message>
+    <message>
+        <source>Not In List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CUtilityDlg</name>
@@ -2316,28 +2482,12 @@ http://www.licq.org
 <context>
     <name>ChangePassDlg</name>
     <message>
-        <source>Licq - Set UIN/Password</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source>Login Information</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source>&amp;UIN:</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
         <source>&amp;Password:</source>
         <translation type="obsolete">&amp;Lozinka:</translation>
     </message>
     <message>
         <source>&amp;Verify:</source>
         <translation type="obsolete">Pro&amp;veri:</translation>
-    </message>
-    <message>
-        <source>Enter your UIN here.</source>
-        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Enter your ICQ password here.</source>
@@ -2550,6 +2700,10 @@ Pogledajte mrežni prozor za detalje.</translation>
         <source>/%1.chat</source>
         <translation>/%1.ćaskanje</translation>
     </message>
+    <message>
+        <source>Toggles Underline font</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CustomAwayMsgDlg</name>
@@ -2578,6 +2732,21 @@ Možete da mi ostavite poruku.</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Poništi</translation>
+    </message>
+</context>
+<context>
+    <name>EditCategoryDlg</name>
+    <message>
+        <source>Unspecified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Poništi</translation>
     </message>
 </context>
 <context>
@@ -2703,6 +2872,113 @@ grupu &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
+    <name>EditPhoneDlg</name>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished">Opis:</translation>
+    </message>
+    <message>
+        <source>Home Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Private Cellular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Cellular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home Fax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Fax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wireless Pager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone</source>
+        <translation type="unfinished">Telefon</translation>
+    </message>
+    <message>
+        <source>Cellular</source>
+        <translation type="unfinished">Mobilni</translation>
+    </message>
+    <message>
+        <source>Cellular SMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fax</source>
+        <translation type="unfinished">Faks</translation>
+    </message>
+    <message>
+        <source>Pager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Country:</source>
+        <translation type="unfinished">Zemlja:</translation>
+    </message>
+    <message>
+        <source>Network #/Area code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extension:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E-mail Gateway:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove leading 0s from Area Code/Network #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Poništi</translation>
+    </message>
+    <message>
+        <source>@</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter a phone number</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Event</name>
     <message>
         <source>SMS</source>
@@ -2768,16 +3044,130 @@ grupu &apos;%1&apos;?</translation>
         <source>System Server Message</source>
         <translation>Sistemska Poruka Servera</translation>
     </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GPGKeyManager</name>
+    <message>
+        <source>Licq GPG Key Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No passphrase set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Set GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished">Izm&amp;ena</translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not yet implemented. Use licq_gpg.conf.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GPGKeySelect</name>
+    <message>
+        <source>Select GPG Key for user %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a GPG key for user %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current key: No key selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current key: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use GPG Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;No Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Poništi</translation>
+    </message>
 </context>
 <context>
     <name>HintsDlg</name>
     <message>
         <source>&amp;Close</source>
-        <translation type="obsolete">Za&amp;tvori</translation>
+        <translation type="unfinished">Za&amp;tvori</translation>
     </message>
     <message>
         <source>Licq - Hints</source>
-        <translation type="obsolete">Licq - Saveti</translation>
+        <translation type="unfinished">Licq - Saveti</translation>
     </message>
 </context>
 <context>
@@ -2814,6 +3204,17 @@ grupu &apos;%1&apos;?</translation>
 %1</source>
         <translation>Ne mogu da učitam sliku dock teme
 %1</translation>
+    </message>
+</context>
+<context>
+    <name>KeyListItem</name>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Da</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ne</translation>
     </message>
 </context>
 <context>
@@ -2918,15 +3319,17 @@ Ova opcija neće raditi.</translation>
     </message>
 </context>
 <context>
+    <name>KeyView</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MLView</name>
     <message>
-        <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete"></translation>
+        <source>Copy URL</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3809,6 +4212,252 @@ changes here require a Restart to take effect!
 &lt;b&gt;status + new messages&lt;/b&gt; - Sort online users by status and number of new messages</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Message Display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flash Taskbar on Incoming Msg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flash the Taskbar on incoming messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tabbed Chatting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use tabs in Send Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show recent messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the last 5 messages when a Send Window is opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send typing notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send a notification to the user so they can see when you are typing a message to them</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Main Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Main window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Message Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Message window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Small Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reconnect after Uin clash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show user display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; server stored information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Info Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone Book and Picture.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Status Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert Horizontal Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message Received:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Received:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Sent:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Typing Notification Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OwnerEditDlg</name>
+    <message>
+        <source>Edit Account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished">Lozinka:</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently only one account per protocol is supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished">&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Poništi</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerManagerDlg</name>
+    <message>
+        <source>Licq - Account Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Register</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Modify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D&amp;elete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Done</source>
+        <translation type="unfinished">&amp;Gotovo</translation>
+    </message>
+    <message>
+        <source>From the Account Manager dialog you are able to add and register your accounts.
+Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are currently registered as
+UIN (User ID): %1
+Base Directory: %2
+Rerun licq with the -b option to select a new
+base directory and then register a new user.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Successfully registered, your user identification
+number (UIN) is %1.
+Now set your personal information.</source>
+        <translation type="unfinished">Uspešno registrovanje, Vaš korisnički identifikacioni
+broj (UIN) je %1.
+Sad podesite vaše lične informacije.</translation>
+    </message>
+    <message>
+        <source>Registration failed.  See network window for details.</source>
+        <translation type="unfinished">Registracija neuspešna.  Pogledajte mrežni prozor za detalje.</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerView</name>
+    <message>
+        <source>User ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Invalid ID)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid Protocol</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PasswordDlg</name>
@@ -3905,19 +4554,19 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Configure</source>
-        <translation>Podesi</translation>
+        <translation type="obsolete">Podesi</translation>
     </message>
     <message>
         <source>Loaded</source>
-        <translation>Učitano</translation>
+        <translation type="obsolete">Učitano</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Status</translation>
+        <translation type="obsolete">Status</translation>
     </message>
     <message>
         <source>Unload</source>
-        <translation>Izčitaj</translation>
+        <translation type="obsolete">Izčitaj</translation>
     </message>
     <message>
         <source>Licq Plugin %1 %2
@@ -3927,7 +4576,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Available</source>
-        <translation>Omogućeni</translation>
+        <translation type="obsolete">Omogućeni</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -3939,15 +4588,27 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Details</source>
-        <translation>Detalji</translation>
+        <translation type="obsolete">Detalji</translation>
     </message>
     <message>
         <source>Disable</source>
-        <translation>Onemogući</translation>
+        <translation type="obsolete">Onemogući</translation>
     </message>
     <message>
         <source>Version</source>
         <translation>Verzija</translation>
+    </message>
+    <message>
+        <source>Standard Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Unloaded)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4262,6 +4923,14 @@ Proverite putanju i ime fajla.</translation>
         <source>Licq Information</source>
         <translation>Licq Informacije</translation>
     </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Da</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ne</translation>
+    </message>
 </context>
 <context>
     <name>QString</name>
@@ -4277,7 +4946,7 @@ Proverite putanju i ime fajla.</translation>
     <message>
         <source>Right click - User groups
 Double click - Show next message</source>
-        <translation>Desni klik - Grupe korisnika
+        <translation type="obsolete">Desni klik - Grupe korisnika
 Dupli klik - Prikaz sledeće poruke</translation>
     </message>
 </context>
@@ -4308,7 +4977,7 @@ Dupli klik - Prikaz sledeće poruke</translation>
     <name>RegisterUserDlg</name>
     <message>
         <source>Uin:</source>
-        <translation>Uin:</translation>
+        <translation type="obsolete">Uin:</translation>
     </message>
     <message>
         <source>Please enter your password in both input fields.</source>
@@ -4316,11 +4985,11 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation>Registrovanje uspešno. Sad se ulogujte i osvežite vaš lični info.</translation>
+        <translation type="obsolete">Registrovanje uspešno. Sad se ulogujte i osvežite vaš lični info.</translation>
     </message>
     <message>
         <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation>Neophodno je da unesete ispravan UIN kad pokušate da registrujete postojećeg korisnika.</translation>
+        <translation type="obsolete">Neophodno je da unesete ispravan UIN kad pokušate da registrujete postojećeg korisnika.</translation>
     </message>
     <message>
         <source>Now please click &apos;Finish&apos; to start the registration process.</source>
@@ -4328,7 +4997,7 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>User Registration in Progress...</source>
-        <translation>Registrovanje korisnika u toku...</translation>
+        <translation type="obsolete">Registrovanje korisnika u toku...</translation>
     </message>
     <message>
         <source>Now please press the &apos;Back&apos; button and try again.</source>
@@ -4336,7 +5005,7 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>&amp;Register Existing User</source>
-        <translation>&amp;Registruj Postojećeg Korisnika</translation>
+        <translation type="obsolete">&amp;Registruj Postojećeg Korisnika</translation>
     </message>
     <message>
         <source>The passwords don&apos;t seem to match.</source>
@@ -4344,11 +5013,11 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>UIN Registration - Step 2</source>
-        <translation>UIN Registracija - Korak 2</translation>
+        <translation type="obsolete">UIN Registracija - Korak 2</translation>
     </message>
     <message>
         <source>UIN Registration - Step 3</source>
-        <translation>UIN Registracija - Korak 3</translation>
+        <translation type="obsolete">UIN Registracija - Korak 3</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -4356,7 +5025,7 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>Invalid UIN.  Try again.</source>
-        <translation>Neispravan UIN. Probajte ponovo.</translation>
+        <translation type="obsolete">Neispravan UIN. Probajte ponovo.</translation>
     </message>
     <message>
         <source>Verify:</source>
@@ -4364,7 +5033,7 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>Licq User Registration</source>
-        <translation>Licq Registracija Korisnika</translation>
+        <translation type="obsolete">Licq Registracija Korisnika</translation>
     </message>
     <message>
         <source>Welcome to the Registration Wizard.
@@ -4376,7 +5045,7 @@ If you already have a uin, then toggle &quot;Register Existing User&quot;,
 enter your uin and your password, and click &quot;OK&quot;
 
 Press &quot;Next&quot; to proceed.</source>
-        <translation>Dobrodošli kod Čarobnjaka za Registrovanje.
+        <translation type="obsolete">Dobrodošli kod Čarobnjaka za Registrovanje.
 
 Ovde možete registrovati novog korisnika, ili podesiti Licq da koristi postojeći UIN.
 
@@ -4388,15 +5057,59 @@ Pritisnite &quot;Sledeće&quot; za nastavak.</translation>
     </message>
     <message>
         <source>UIN Registration</source>
-        <translation>UIN Registracija</translation>
+        <translation type="obsolete">UIN Registracija</translation>
     </message>
     <message>
         <source>&amp;Save Password</source>
-        <translation>&amp;Sačuvaj Lozinku</translation>
+        <translation type="obsolete">&amp;Sačuvaj Lozinku</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
         <translation>Pogrešna lozinka, mora biti između 1 i 8 karaktera.</translation>
+    </message>
+    <message>
+        <source>Welcome to the Registration Wizard.
+
+You can register a new user here.
+
+Press &quot;Next&quot; to proceed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a password to protect your account.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remember Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration - Step 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration - Step 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq Account Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration in Progress...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account registration has been successfuly completed.
+Your new user id is %1.
+You are now being automatically logged on.
+Click OK to edit your personal details.
+After you are online, you can send your personal details to the server.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4442,7 +5155,7 @@ Pritisnite &quot;Sledeće&quot; za nastavak.</translation>
     </message>
     <message>
         <source>&amp;Uin#</source>
-        <translation>&amp;Uin#</translation>
+        <translation type="obsolete">&amp;Uin#</translation>
     </message>
     <message>
         <source>City:</source>
@@ -4596,6 +5309,14 @@ Pritisnite &quot;Sledeće&quot; za nastavak.</translation>
         <source>Search complete.</source>
         <translation>Pretraga kompletna.</translation>
     </message>
+    <message>
+        <source>&amp;UIN#</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View &amp;Info</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SearchUserView</name>
@@ -4725,20 +5446,12 @@ ICQ Mrežu da bi promenili podešavanja.</translation>
         <translation>&amp;Uin:</translation>
     </message>
     <message>
-        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; ischecked.</source>
-        <translation type="obsolete"></translation>
-    </message>
-    <message>
         <source>&amp;Password:</source>
         <translation>&amp;Lozinka:</translation>
     </message>
     <message>
         <source>Enter your ICQ password here.</source>
         <translation>Unesite ovde vašu ICQ lozinku.</translation>
-    </message>
-    <message>
-        <source>&amp;Verify</source>
-        <translation type="obsolete"></translation>
     </message>
     <message>
         <source>Verify your ICQ password here.</source>
@@ -4958,6 +5671,18 @@ Dodatni set ikona &apos;%2&apos; je bio onemogućen.</translation>
         <translation>Ne mogu da otvorim dodatni fajl ikona
 %1</translation>
     </message>
+    <message>
+        <source>E&amp;moticons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use this combo box to select one of the available emoticon icon sets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Emoticons:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserCodec</name>
@@ -5029,6 +5754,10 @@ Dodatni set ikona &apos;%2&apos; je bio onemogućen.</translation>
         <source>Ukrainian</source>
         <translation>Ukrajinski</translation>
     </message>
+    <message>
+        <source>Unicode-16</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserEventCommon</name>
@@ -5097,7 +5826,7 @@ Dodatni set ikona &apos;%2&apos; je bio onemogućen.</translation>
     </message>
     <message>
         <source>UIN:</source>
-        <translation>UIN:</translation>
+        <translation type="obsolete">UIN:</translation>
     </message>
     <message>
         <source>Zip:</source>
@@ -5389,6 +6118,136 @@ Opis: %2</translation>
         <source>Last Checked Auto Response:</source>
         <translation>Zadnji Proveren Auto Odgovor:</translation>
     </message>
+    <message>
+        <source>Keep Alias on Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Normally Licq overwrites the Alias when updating user details.
+Check this if you want to keep your changes to the Alias.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Category:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished">Opis:</translation>
+    </message>
+    <message>
+        <source>User has an ICQ Homepage </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User has no ICQ Homepage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M&amp;ore II</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(none)</source>
+        <translation type="unfinished">(nijedan)</translation>
+    </message>
+    <message>
+        <source>Occupation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Vrsta</translation>
+    </message>
+    <message>
+        <source>Number/Gateway</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Country/Provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently at:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>) </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P&amp;icture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation type="unfinished">Nije na raspolaganju</translation>
+    </message>
+    <message>
+        <source>Failed to Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;KDE Addressbook</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Email:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Retrieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;end</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation type="unfinished">&amp;Očisti</translation>
+    </message>
+    <message>
+        <source>&amp;Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select your picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is over %1 bytes.
+Select another picture?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Da</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ne</translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -5418,7 +6277,7 @@ Opis: %2</translation>
     </message>
     <message>
         <source>%1 (%2)</source>
-        <translation>%1 (%2)</translation>
+        <translation type="obsolete">%1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -5444,6 +6303,10 @@ Opis: %2</translation>
     <message>
         <source> - Chat Request</source>
         <translation>Zahtev za Ćaskanje</translation>
+    </message>
+    <message>
+        <source>No reason provided</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5588,7 +6451,11 @@ kroz server sa sigurnošću!</translation>
     </message>
     <message>
         <source>%1 refused %2, send through server</source>
-        <translation>%1 odbijeno %2, slanje kroz server</translation>
+        <translation type="obsolete">%1 odbijeno %2, slanje kroz server</translation>
+    </message>
+    <message>
+        <source>Error! no owner set</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5633,6 +6500,10 @@ kroz server sa sigurnošću!</translation>
     <message>
         <source>Edit</source>
         <translation>Izmeni</translation>
+    </message>
+    <message>
+        <source>No reason provided</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5791,6 +6662,34 @@ Zahtev je poništen.</translation>
     <message>
         <source>&amp;Forward</source>
         <translation>Prosled&amp;i</translation>
+    </message>
+    <message>
+        <source>&amp;View Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq is unable to find a browser application due to an internal error.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq is unable to start your browser and open the URL.
+You will need to start the browser and open the URL manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VerifyDlg</name>
+    <message>
+        <source>Retype the letters shown above:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>Licq - New Account Verification</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

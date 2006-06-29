@@ -1139,6 +1139,10 @@ You will need to start the browser and open the URL manually.</source>
         <translation>Licq невзмозі запустити Ваш бравзер та відкрити посилання.
 Вам необхідно запустити Ваш бравзер та вручну відкрити посилання.</translation>
     </message>
+    <message>
+        <source> </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CMessageViewWidget</name>
@@ -2093,6 +2097,77 @@ the group &apos;%1&apos;?</source>
     </message>
 </context>
 <context>
+    <name>GPGKeyManager</name>
+    <message>
+        <source>Licq GPG Key Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No passphrase set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Set GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished">&amp;Додати</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished">&amp;Закрити</translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not yet implemented. Use licq_gpg.conf.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>GPGKeySelect</name>
     <message>
         <source>Select GPG Key for user %1</source>
@@ -2176,6 +2251,17 @@ the group &apos;%1&apos;?</source>
 %1</source>
         <translation>Неможливо завантажити зображення теми лотка
 %1</translation>
+    </message>
+</context>
+<context>
+    <name>KeyListItem</name>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Так</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Ні</translation>
     </message>
 </context>
 <context>
@@ -2283,6 +2369,13 @@ Rebuild Licq with OpenSSL support.</source>
     <message>
         <source>Name</source>
         <translation>Назва</translation>
+    </message>
+</context>
+<context>
+    <name>MLView</name>
+    <message>
+        <source>Copy URL</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3280,6 +3373,38 @@ changes here require a Restart to take effect!
     <message>
         <source>Previous Message</source>
         <translation>Попереднє повідомлення</translation>
+    </message>
+    <message>
+        <source>Send typing notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send a notification to the user so they can see when you are typing a message to them</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Main Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Main window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Message Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Message window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show user display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4520,7 +4645,7 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>KDE Addressbook</source>
-        <translation>Адресна книга KDE</translation>
+        <translation type="obsolete">Адресна книга KDE</translation>
     </message>
     <message>
         <source>Email:</source>
@@ -4649,6 +4774,10 @@ Select another picture?</source>
     <message>
         <source>timed out</source>
         <translation>вичерпався час</translation>
+    </message>
+    <message>
+        <source>&amp;KDE Addressbook</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

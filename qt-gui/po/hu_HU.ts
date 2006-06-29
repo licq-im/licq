@@ -1,5 +1,16 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name></name>
+    <message>
+        <source>KDE default</source>
+        <translation type="unfinished">KDE alapértelmezés</translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation type="unfinished">semmi</translation>
+    </message>
+</context>
+<context>
     <name>AddUserDlg</name>
     <message>
         <source>&amp;Ok</source>
@@ -11,11 +22,11 @@
     </message>
     <message>
         <source>New User UIN:</source>
-        <translation>Új felhasználó UIN:</translation>
+        <translation type="obsolete">Új felhasználó UIN:</translation>
     </message>
     <message>
         <source>&amp;Alert User</source>
-        <translation>Felhasználó figyelmeztetése</translation>
+        <translation type="obsolete">Felhasználó figyelmeztetése</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -23,7 +34,15 @@
     </message>
     <message>
         <source>New User Id:</source>
-        <translation>Új azonosító:</translation>
+        <translation type="obsolete">Új azonosító:</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New User ID:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -98,6 +117,14 @@ Hagyhatsz üzenetet.
     <message>
         <source>Set %1 Response for %2</source>
         <translation>%1 válasz beállítása (%2)</translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;Hints for Setting&lt;br&gt;your Auto-Response&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias.&lt;br&gt;Examples of popular uses include:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;|date&lt;/tt&gt;: Will replace that line by the current date&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|fortune&lt;/tt&gt;: Show a fortune, as a tagline for example&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a&lt;/tt&gt;: Run a script, passing the uin and alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|myscript.sh %u %a &gt; /dev/null&lt;/tt&gt;: Run the same script but ignore the output (for tracking auto response checks or something)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;|if [ %u -lt 100000 ]; then echo &quot;You are special&quot;; fi&lt;/tt&gt;: Useless, but shows how you can use shell script.&lt;/li&gt;&lt;/ul&gt;Of course, multiple &quot;|&quot; can appear in the auto response, and commands and regular text can be mixed line by line.&lt;/li&gt;&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Closing in %1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -313,6 +340,10 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
         <source>File transfer complete.</source>
         <translation>Fájl átvitel befejezve.</translation>
     </message>
+    <message>
+        <source>Batch:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CForwardDlg</name>
@@ -392,7 +423,7 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     <name>CMMSendDlg</name>
     <message>
         <source>none</source>
-        <translation>semmi</translation>
+        <translation type="obsolete">semmi</translation>
     </message>
     <message>
         <source>Sending mass message to %1...</source>
@@ -424,7 +455,7 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     </message>
     <message>
         <source>KDE default</source>
-        <translation>KDE alapértelmezés</translation>
+        <translation type="obsolete">KDE alapértelmezés</translation>
     </message>
     <message>
         <source>Sending mass list to %1...</source>
@@ -526,7 +557,7 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     </message>
     <message>
         <source>Error sending authorization.</source>
-        <translation>Hiba az engedély küldésekor.</translation>
+        <translation type="obsolete">Hiba az engedély küldésekor.</translation>
     </message>
     <message>
         <source>&amp;Random Chat Group</source>
@@ -562,7 +593,7 @@ UIN: %1
 Base Directory: %2
 Rerun licq with the -b option to select a new
 base directory and then register a new user.</source>
-        <translation>Te most ezzel a számmal vagy bejelentkezve:
+        <translation type="obsolete">Te most ezzel a számmal vagy bejelentkezve:
 iCQ szám: %1
 Könyvtár: %2
 Indítsd újra a programot a &apos;-b&apos; kapcsolóval hogy új könyvtárat
@@ -662,7 +693,7 @@ választhass és regisztrálj egy új Felhasználót.</translation>
         <source>Successfully registered, your user identification
 number (UIN) is %1.
 Now set your personal information.</source>
-        <translation>A regisztrálás sikeres volt
+        <translation type="obsolete">A regisztrálás sikeres volt
 az iCQ számod (UIN): %1
 Most állítsd be a személyes adataidat.</translation>
     </message>
@@ -826,7 +857,7 @@ Nyisd meg a Hálózat Info ablakot a részletekért</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
-        <translation>A regisztráció során hiba lépett fel. Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
+        <translation type="obsolete">A regisztráció során hiba lépett fel. Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     </message>
     <message>
         <source>Send &amp;Chat Request</source>
@@ -834,7 +865,7 @@ Nyisd meg a Hálózat Info ablakot a részletekért</translation>
     </message>
     <message>
         <source>Reg&amp;ister User</source>
-        <translation>Felhasználó regisztrálása</translation>
+        <translation type="obsolete">Felhasználó regisztrálása</translation>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
@@ -1042,7 +1073,7 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>Authorization granted.</source>
-        <translation>Engedély megadva.</translation>
+        <translation type="obsolete">Engedély megadva.</translation>
     </message>
     <message>
         <source>System Functions</source>
@@ -1091,6 +1122,85 @@ Dupla klikk - Következő üzenet</translation>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
         <translation>A Licq nem talált megfelelő bongészőt egy belső hiba következtében.</translation>
+    </message>
+    <message>
+        <source>Error! No owner set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Error! No owner set)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;GPG Key Manager...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t Show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Available</source>
+        <translation type="unfinished">Elérhető</translation>
+    </message>
+    <message>
+        <source>Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone &quot;Follow Me&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Owner Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use GPG Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Info Plugin List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Status Plugin List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Phone &quot;Follow Me&quot; Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update ICQphone Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update File Server Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to reset your stats?</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CMessageViewWidget</name>
+    <message>
+        <source>%1 from %2</source>
+        <translation type="unfinished">%1 tőle: %2</translation>
+    </message>
+    <message>
+        <source>%1 to %2</source>
+        <translation type="unfinished">%1 neki: %2</translation>
     </message>
 </context>
 <context>
@@ -1303,7 +1413,7 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>Thai</source>
-        <translation>Thai</translation>
+        <translation type="obsolete">Thai</translation>
     </message>
     <message>
         <source> days</source>
@@ -1323,15 +1433,15 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>Greek</source>
-        <translation>Görög</translation>
+        <translation type="obsolete">Görög</translation>
     </message>
     <message>
         <source>Tamil</source>
-        <translation>Tamil</translation>
+        <translation type="obsolete">Tamil</translation>
     </message>
     <message>
         <source>Cyrillic</source>
-        <translation>Cirill</translation>
+        <translation type="obsolete">Cirill</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
@@ -1359,19 +1469,19 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>Baltic</source>
-        <translation>Balti</translation>
+        <translation type="obsolete">Balti</translation>
     </message>
     <message>
         <source>Arabic</source>
-        <translation>Arab</translation>
+        <translation type="obsolete">Arab</translation>
     </message>
     <message>
         <source>Hebrew</source>
-        <translation>Héber</translation>
+        <translation type="obsolete">Héber</translation>
     </message>
     <message>
         <source>Korean</source>
-        <translation>Kórea</translation>
+        <translation type="obsolete">Kórea</translation>
     </message>
     <message>
         <source>Online</source>
@@ -1383,11 +1493,11 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>Western European</source>
-        <translation>Nyugat-Európa</translation>
+        <translation type="obsolete">Nyugat-Európa</translation>
     </message>
     <message>
         <source>Esperanto</source>
-        <translation>Eszperantó</translation>
+        <translation type="obsolete">Eszperantó</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
@@ -1411,7 +1521,7 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>Central European</source>
-        <translation>Közép-Európa</translation>
+        <translation type="obsolete">Közép-Európa</translation>
     </message>
     <message>
         <source> minute</source>
@@ -1423,11 +1533,11 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>Japanese</source>
-        <translation>Japán</translation>
+        <translation type="obsolete">Japán</translation>
     </message>
     <message>
         <source>Ukrainian</source>
-        <translation>Ukrán</translation>
+        <translation type="obsolete">Ukrán</translation>
     </message>
     <message>
         <source>%1 Floaty (%2)</source>
@@ -1435,19 +1545,19 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>Chinese</source>
-        <translation>Kínai</translation>
+        <translation type="obsolete">Kínai</translation>
     </message>
     <message>
         <source>Turkish</source>
-        <translation>Török</translation>
+        <translation type="obsolete">Török</translation>
     </message>
     <message>
         <source>Unicode</source>
-        <translation>Unicode</translation>
+        <translation type="obsolete">Unicode</translation>
     </message>
     <message>
         <source>Chinese Traditional</source>
-        <translation>Kínai Tradicionális</translation>
+        <translation type="obsolete">Kínai Tradicionális</translation>
     </message>
     <message>
         <source>&lt;/nobr&gt;</source>
@@ -1456,6 +1566,50 @@ Dupla klikk - Következő üzenet</translation>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
         <translation>&lt;br&gt;&lt;nobr&gt;Bejelentkezve: </translation>
+    </message>
+    <message>
+        <source>Not In List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1527,6 +1681,10 @@ Dupla klikk - Következő üzenet</translation>
     <message>
         <source>Window:</source>
         <translation>Ablak:</translation>
+    </message>
+    <message>
+        <source>Edit final command</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1709,6 +1867,10 @@ See Network Window for details.</source>
         <translation>Nem sikerült megnyitni a távoli csevegést.
 Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     </message>
+    <message>
+        <source>Toggles Underline font</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CustomAwayMsgDlg</name>
@@ -1737,6 +1899,21 @@ Hagyhatsz üzenetet.</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Mégsem</translation>
+    </message>
+</context>
+<context>
+    <name>EditCategoryDlg</name>
+    <message>
+        <source>Unspecified</source>
+        <translation type="unfinished">Nem megadott</translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Mégsem</translation>
     </message>
 </context>
 <context>
@@ -1858,6 +2035,113 @@ ezt a csoportot: &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
+    <name>EditPhoneDlg</name>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished">Leírás:</translation>
+    </message>
+    <message>
+        <source>Home Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Private Cellular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Cellular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home Fax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Fax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wireless Pager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone</source>
+        <translation type="unfinished">Telefon</translation>
+    </message>
+    <message>
+        <source>Cellular</source>
+        <translation type="unfinished">Mobil</translation>
+    </message>
+    <message>
+        <source>Cellular SMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fax</source>
+        <translation type="unfinished">Fax</translation>
+    </message>
+    <message>
+        <source>Pager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Country:</source>
+        <translation type="unfinished">Ország:</translation>
+    </message>
+    <message>
+        <source>Network #/Area code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extension:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E-mail Gateway:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove leading 0s from Area Code/Network #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Mégsem</translation>
+    </message>
+    <message>
+        <source>@</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter a phone number</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>Event</name>
     <message>
         <source>SMS</source>
@@ -1923,6 +2207,120 @@ ezt a csoportot: &apos;%1&apos;?</translation>
         <source>Contact List</source>
         <translation>Felhasználó Lista</translation>
     </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GPGKeyManager</name>
+    <message>
+        <source>Licq GPG Key Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No passphrase set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Set GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not yet implemented. Use licq_gpg.conf.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GPGKeySelect</name>
+    <message>
+        <source>Select GPG Key for user %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a GPG key for user %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current key: No key selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current key: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use GPG Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;No Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Mégsem</translation>
+    </message>
 </context>
 <context>
     <name>HintsDlg</name>
@@ -1969,6 +2367,17 @@ ezt a csoportot: &apos;%1&apos;?</translation>
         <translation>Nem sikerült betölteni a dokkolós téma fájlt
 (%1)
 :%2</translation>
+    </message>
+</context>
+<context>
+    <name>KeyListItem</name>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2070,6 +2479,20 @@ This might not work.</source>
         <translation>Ez csak 0.85-nél frissebb Licq-val működik
 A távoli gépen nem úgy néz ki, mintha ez futna.
 Ez így nem fog menni.</translation>
+    </message>
+</context>
+<context>
+    <name>KeyView</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Név</translation>
+    </message>
+</context>
+<context>
+    <name>MLView</name>
+    <message>
+        <source>Copy URL</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2950,6 +3373,256 @@ A változtatások után újra kell indítani a programot!
         <source>Alignment</source>
         <translation>Tájolás</translation>
     </message>
+    <message>
+        <source>Message Display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flash Taskbar on Incoming Msg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flash the Taskbar on incoming messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show recent messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the last 5 messages when a Send Window is opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send typing notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send a notification to the user so they can see when you are typing a message to them</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Main Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Main window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Message Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Message window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Small Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reconnect after Uin clash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Always show online notify users</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show online notify users who are offline even when offline users are hidden.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show user display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Idle Time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; server stored information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Info Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone Book and Picture.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Status Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert Horizontal Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message Received:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Received:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Sent:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Typing Notification Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OwnerEditDlg</name>
+    <message>
+        <source>Edit Account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished">Jelszó:</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently only one account per protocol is supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished">&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Mégsem</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerManagerDlg</name>
+    <message>
+        <source>Licq - Account Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Register</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Modify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D&amp;elete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Done</source>
+        <translation type="unfinished">&amp;Kész</translation>
+    </message>
+    <message>
+        <source>From the Account Manager dialog you are able to add and register your accounts.
+Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are currently registered as
+UIN (User ID): %1
+Base Directory: %2
+Rerun licq with the -b option to select a new
+base directory and then register a new user.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Successfully registered, your user identification
+number (UIN) is %1.
+Now set your personal information.</source>
+        <translation type="unfinished">A regisztrálás sikeres volt
+az iCQ számod (UIN): %1
+Most állítsd be a személyes adataidat.</translation>
+    </message>
+    <message>
+        <source>Registration failed.  See network window for details.</source>
+        <translation type="unfinished">A regisztráció során hiba lépett fel. Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerView</name>
+    <message>
+        <source>User ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Invalid ID)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid Protocol</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PluginDlg</name>
@@ -2979,19 +3652,19 @@ A változtatások után újra kell indítani a programot!
     </message>
     <message>
         <source>Configure</source>
-        <translation>Beállítás</translation>
+        <translation type="obsolete">Beállítás</translation>
     </message>
     <message>
         <source>Loaded</source>
-        <translation>Betöltve</translation>
+        <translation type="obsolete">Betöltve</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Állapot</translation>
+        <translation type="obsolete">Állapot</translation>
     </message>
     <message>
         <source>Unload</source>
-        <translation>Kivesz</translation>
+        <translation type="obsolete">Kivesz</translation>
     </message>
     <message>
         <source>Licq Plugin %1 %2
@@ -3001,7 +3674,7 @@ A változtatások után újra kell indítani a programot!
     </message>
     <message>
         <source>Available</source>
-        <translation>Elérhető</translation>
+        <translation type="obsolete">Elérhető</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -3013,309 +3686,321 @@ A változtatások után újra kell indítani a programot!
     </message>
     <message>
         <source>Details</source>
-        <translation>Részletek</translation>
+        <translation type="obsolete">Részletek</translation>
     </message>
     <message>
         <source>Disable</source>
-        <translation>Letilt</translation>
+        <translation type="obsolete">Letilt</translation>
     </message>
     <message>
         <source>Version</source>
         <translation>Verzió</translation>
+    </message>
+    <message>
+        <source>Standard Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Unloaded)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QFileDialog</name>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation>&amp;Nem</translation>
+        <translation type="obsolete">&amp;Nem</translation>
     </message>
     <message>
         <source>Dir</source>
-        <translation>Kvtár</translation>
+        <translation type="obsolete">Kvtár</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation>&amp;Igen</translation>
+        <translation type="obsolete">&amp;Igen</translation>
     </message>
     <message>
         <source>Back</source>
-        <translation>Vissza</translation>
+        <translation type="obsolete">Vissza</translation>
     </message>
     <message>
         <source>Date</source>
-        <translation>Dátum</translation>
+        <translation type="obsolete">Dátum</translation>
     </message>
     <message>
         <source>File</source>
-        <translation>Fájl</translation>
+        <translation type="obsolete">Fájl</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Név</translation>
+        <translation type="obsolete">Név</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation>Megnyit</translation>
+        <translation type="obsolete">Megnyit</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Mentés</translation>
+        <translation type="obsolete">Mentés</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Méret</translation>
+        <translation type="obsolete">Méret</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation>Rendez</translation>
+        <translation type="obsolete">Rendez</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Típus</translation>
+        <translation type="obsolete">Típus</translation>
     </message>
     <message>
         <source>&amp;Open</source>
-        <translation>&amp;Megnyit</translation>
+        <translation type="obsolete">&amp;Megnyit</translation>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation>&amp;Mentés</translation>
+        <translation type="obsolete">&amp;Mentés</translation>
     </message>
     <message>
         <source>ERROR</source>
-        <translation>HIBA</translation>
+        <translation type="obsolete">HIBA</translation>
     </message>
     <message>
         <source>Error</source>
-        <translation>Hiba</translation>
+        <translation type="obsolete">Hiba</translation>
     </message>
     <message>
         <source>Sort by &amp;Size</source>
-        <translation>&amp;Méret szerint rendez</translation>
+        <translation type="obsolete">&amp;Méret szerint rendez</translation>
     </message>
     <message>
         <source>Sort by &amp;Date</source>
-        <translation>&amp;Dátum szerint rendez</translation>
+        <translation type="obsolete">&amp;Dátum szerint rendez</translation>
     </message>
     <message>
         <source>Sort by &amp;Name</source>
-        <translation>&amp;Név szerint rendez</translation>
+        <translation type="obsolete">&amp;Név szerint rendez</translation>
     </message>
     <message>
         <source>New Folder 1</source>
-        <translation>Új könyvtár 1</translation>
+        <translation type="obsolete">Új könyvtár 1</translation>
     </message>
     <message>
         <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation>&lt;qt&gt;Biztosan törölni akarod őt: %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
+        <translation type="obsolete">&lt;qt&gt;Biztosan törölni akarod őt: %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
     </message>
     <message>
         <source>the directory</source>
-        <translation>a könyvtár</translation>
+        <translation type="obsolete">a könyvtár</translation>
     </message>
     <message>
         <source>File &amp;type:</source>
-        <translation>Fájl &amp;típus</translation>
+        <translation type="obsolete">Fájl &amp;típus</translation>
     </message>
     <message>
         <source>File &amp;name:</source>
-        <translation>Fájl &amp;név:</translation>
+        <translation type="obsolete">Fájl &amp;név:</translation>
     </message>
     <message>
         <source>Delete %1</source>
-        <translation>%1 törlése</translation>
+        <translation type="obsolete">%1 törlése</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Mégsem</translation>
+        <translation type="obsolete">Mégsem</translation>
     </message>
     <message>
         <source>R&amp;eload</source>
-        <translation>Ú&amp;jratölt</translation>
+        <translation type="obsolete">Ú&amp;jratölt</translation>
     </message>
     <message>
         <source>New Folder</source>
-        <translation>Új könyvtár</translation>
+        <translation type="obsolete">Új könyvtár</translation>
     </message>
     <message>
         <source>&amp;Unsorted</source>
-        <translation>&amp;Rendezetlen</translation>
+        <translation type="obsolete">&amp;Rendezetlen</translation>
     </message>
     <message>
         <source>Look &amp;in:</source>
-        <translation>Belené&amp;z:</translation>
+        <translation type="obsolete">Belené&amp;z:</translation>
     </message>
     <message>
         <source>Preview File Contents</source>
-        <translation>Tartalom előnézet</translation>
+        <translation type="obsolete">Tartalom előnézet</translation>
     </message>
     <message>
         <source>New Folder %1</source>
-        <translation>Új könyvtár %1</translation>
+        <translation type="obsolete">Új könyvtár %1</translation>
     </message>
     <message>
         <source>Read-write</source>
-        <translation>Írható-Olvasható</translation>
+        <translation type="obsolete">Írható-Olvasható</translation>
     </message>
     <message>
         <source>Read-only</source>
-        <translation>Csak olvasható</translation>
+        <translation type="obsolete">Csak olvasható</translation>
     </message>
     <message>
         <source>Find Directory</source>
-        <translation>Könyvtár keresése</translation>
+        <translation type="obsolete">Könyvtár keresése</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation>Jogok</translation>
+        <translation type="obsolete">Jogok</translation>
     </message>
     <message>
         <source>Show &amp;hidden files</source>
-        <translation>&amp;Rejtett fájlokat mutat</translation>
+        <translation type="obsolete">&amp;Rejtett fájlokat mutat</translation>
     </message>
     <message>
         <source>Save as</source>
-        <translation>Mentés másként</translation>
+        <translation type="obsolete">Mentés másként</translation>
     </message>
     <message>
         <source>Inaccessible</source>
-        <translation>Elérhetetlen</translation>
+        <translation type="obsolete">Elérhetetlen</translation>
     </message>
     <message>
         <source>%1
 File not found.
 Check path and filename.</source>
-        <translation>%1
+        <translation type="obsolete">%1
 Fájl nem található.
 Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>List View</source>
-        <translation>Lista nézet</translation>
+        <translation type="obsolete">Lista nézet</translation>
     </message>
     <message>
         <source>Special</source>
-        <translation>Egyedi</translation>
+        <translation type="obsolete">Egyedi</translation>
     </message>
     <message>
         <source>Write-only</source>
-        <translation>Írható</translation>
+        <translation type="obsolete">Írható</translation>
     </message>
     <message>
         <source>the symlink</source>
-        <translation>a szimlink</translation>
+        <translation type="obsolete">a szimlink</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>&amp;Töröl</translation>
+        <translation type="obsolete">&amp;Töröl</translation>
     </message>
     <message>
         <source>All files (*)</source>
-        <translation>Minden fájl (*)</translation>
+        <translation type="obsolete">Minden fájl (*)</translation>
     </message>
     <message>
         <source>Directories</source>
-        <translation>Könyvtárak</translation>
+        <translation type="obsolete">Könyvtárak</translation>
     </message>
     <message>
         <source>Symlink to Special</source>
-        <translation>Szimbolikus link egyedire</translation>
+        <translation type="obsolete">Szimbolikus link egyedire</translation>
     </message>
     <message>
         <source>&amp;Rename</source>
-        <translation>&amp;Átnevez</translation>
+        <translation type="obsolete">&amp;Átnevez</translation>
     </message>
     <message>
         <source>One directory up</source>
-        <translation>Egy szinttel feljebb</translation>
+        <translation type="obsolete">Egy szinttel feljebb</translation>
     </message>
     <message>
         <source>Preview File Info</source>
-        <translation>Fájl info</translation>
+        <translation type="obsolete">Fájl info</translation>
     </message>
     <message>
         <source>the file</source>
-        <translation>a fájl</translation>
+        <translation type="obsolete">a fájl</translation>
     </message>
     <message>
         <source>Create New Folder</source>
-        <translation>Új könyvtár</translation>
+        <translation type="obsolete">Új könyvtár</translation>
     </message>
     <message>
         <source>Symlink to File</source>
-        <translation>Szimbolikus link fájlra</translation>
+        <translation type="obsolete">Szimbolikus link fájlra</translation>
     </message>
     <message>
         <source>Symlink to Directory</source>
-        <translation>Szimbolikus link könyvtárra</translation>
+        <translation type="obsolete">Szimbolikus link könyvtárra</translation>
     </message>
     <message>
         <source>Detail View</source>
-        <translation>Részletek</translation>
+        <translation type="obsolete">Részletek</translation>
     </message>
 </context>
 <context>
     <name>QFontDialog</name>
     <message>
         <source>OK</source>
-        <translation>OK</translation>
+        <translation type="obsolete">OK</translation>
     </message>
     <message>
         <source>&amp;Font</source>
-        <translation>&amp;Font</translation>
+        <translation type="obsolete">&amp;Font</translation>
     </message>
     <message>
         <source>&amp;Size</source>
-        <translation>&amp;Méret</translation>
+        <translation type="obsolete">&amp;Méret</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation>Alkalmaz</translation>
+        <translation type="obsolete">Alkalmaz</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Bezár</translation>
+        <translation type="obsolete">Bezár</translation>
     </message>
     <message>
         <source>&amp;Color</source>
-        <translation>&amp;Szín</translation>
+        <translation type="obsolete">&amp;Szín</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Mégsem</translation>
+        <translation type="obsolete">Mégsem</translation>
     </message>
     <message>
         <source>Sample</source>
-        <translation>Minta</translation>
+        <translation type="obsolete">Minta</translation>
     </message>
     <message>
         <source>Font st&amp;yle</source>
-        <translation>Font &amp;stílus</translation>
+        <translation type="obsolete">Font &amp;stílus</translation>
     </message>
     <message>
         <source>Scr&amp;ipt</source>
-        <translation>Scr&amp;ipt</translation>
+        <translation type="obsolete">Scr&amp;ipt</translation>
     </message>
     <message>
         <source>Select Font</source>
-        <translation>Font választása</translation>
+        <translation type="obsolete">Font választása</translation>
     </message>
     <message>
         <source>&amp;Underline</source>
-        <translation>&amp;Aláhúzás</translation>
+        <translation type="obsolete">&amp;Aláhúzás</translation>
     </message>
     <message>
         <source>Effects</source>
-        <translation>Hatások</translation>
+        <translation type="obsolete">Hatások</translation>
     </message>
     <message>
         <source>Stri&amp;keout</source>
-        <translation>Á&amp;thúzott</translation>
+        <translation type="obsolete">Á&amp;thúzott</translation>
     </message>
 </context>
 <context>
@@ -3336,39 +4021,47 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
         <source>Licq Information</source>
         <translation>Licq info</translation>
     </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QWizard</name>
     <message>
         <source>Help</source>
-        <translation>Segítség</translation>
+        <translation type="obsolete">Segítség</translation>
     </message>
     <message>
         <source>&lt; Back</source>
-        <translation>&lt; Vissza</translation>
+        <translation type="obsolete">&lt; Vissza</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Mégsem</translation>
+        <translation type="obsolete">Mégsem</translation>
     </message>
     <message>
         <source>Finish</source>
-        <translation>Befejez</translation>
+        <translation type="obsolete">Befejez</translation>
     </message>
     <message>
         <source>Next &gt;</source>
-        <translation>Következő &gt;</translation>
+        <translation type="obsolete">Következő &gt;</translation>
     </message>
 </context>
 <context>
     <name>RegisterUserDlg</name>
     <message>
         <source>Uin:</source>
-        <translation>iCQ szám:</translation>
+        <translation type="obsolete">iCQ szám:</translation>
     </message>
     <message>
         <source>&amp;Save Password</source>
-        <translation>Jelszó &amp;mentése</translation>
+        <translation type="obsolete">Jelszó &amp;mentése</translation>
     </message>
     <message>
         <source>Please enter your password in both input fields.</source>
@@ -3376,7 +4069,7 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation>A regisztrálás sikeres. Most jelentkezz be, és frissítsd a személyes adataidat.</translation>
+        <translation type="obsolete">A regisztrálás sikeres. Most jelentkezz be, és frissítsd a személyes adataidat.</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
@@ -3384,7 +4077,7 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation>Egy valós iCQ számot kell, hogy beírj, ahhoz, hogy egy már létező Felhasználót regisztrálhass</translation>
+        <translation type="obsolete">Egy valós iCQ számot kell, hogy beírj, ahhoz, hogy egy már létező Felhasználót regisztrálhass</translation>
     </message>
     <message>
         <source>Now please click &apos;Finish&apos; to start the registration process.</source>
@@ -3392,7 +4085,7 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>User Registration in Progress...</source>
-        <translation>Felhasználó regisztrálása folyamatban...</translation>
+        <translation type="obsolete">Felhasználó regisztrálása folyamatban...</translation>
     </message>
     <message>
         <source>Now please press the &apos;Back&apos; button and try again.</source>
@@ -3400,7 +4093,7 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>&amp;Register Existing User</source>
-        <translation>Létező Felhasználó &amp;regisztrálása</translation>
+        <translation type="obsolete">Létező Felhasználó &amp;regisztrálása</translation>
     </message>
     <message>
         <source>The passwords don&apos;t seem to match.</source>
@@ -3408,11 +4101,11 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>UIN Registration - Step 2</source>
-        <translation>UIN regisztráció - 2 oldal</translation>
+        <translation type="obsolete">UIN regisztráció - 2 oldal</translation>
     </message>
     <message>
         <source>UIN Registration - Step 3</source>
-        <translation>UIN regisztráció - 3 oldal</translation>
+        <translation type="obsolete">UIN regisztráció - 3 oldal</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -3420,7 +4113,7 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>Invalid UIN.  Try again.</source>
-        <translation>Helytelen UIN.  Próbáld újra.</translation>
+        <translation type="obsolete">Helytelen UIN.  Próbáld újra.</translation>
     </message>
     <message>
         <source>Verify:</source>
@@ -3428,7 +4121,7 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>Licq User Registration</source>
-        <translation>Licq Felhasználó regisztrálása</translation>
+        <translation type="obsolete">Licq Felhasználó regisztrálása</translation>
     </message>
     <message>
         <source>Welcome to the Registration Wizard.
@@ -3440,7 +4133,7 @@ If you already have a uin, then toggle &quot;Register Existing User&quot;,
 enter your uin and your password, and click &quot;OK&quot;
 
 Press &quot;Next&quot; to proceed.</source>
-        <translation>Üdvözöllek a Regisztráció Varázslóban.
+        <translation type="obsolete">Üdvözöllek a Regisztráció Varázslóban.
 
 Itt hozhatsz létre új Felhasználót, vagy állíthatod be a Licq-t, hogy egy már létezőt használjon.
 
@@ -3451,7 +4144,51 @@ Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
     </message>
     <message>
         <source>UIN Registration</source>
-        <translation>UIN regisztráció</translation>
+        <translation type="obsolete">UIN regisztráció</translation>
+    </message>
+    <message>
+        <source>Welcome to the Registration Wizard.
+
+You can register a new user here.
+
+Press &quot;Next&quot; to proceed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a password to protect your account.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remember Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration - Step 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration - Step 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq Account Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration in Progress...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account registration has been successfuly completed.
+Your new user id is %1.
+You are now being automatically logged on.
+Click OK to edit your personal details.
+After you are online, you can send your personal details to the server.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3497,7 +4234,7 @@ Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
     </message>
     <message>
         <source>&amp;Uin#</source>
-        <translation>iC&amp;Q szám</translation>
+        <translation type="obsolete">iC&amp;Q szám</translation>
     </message>
     <message>
         <source>City:</source>
@@ -3643,6 +4380,14 @@ Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
         <source>Licq - User Search</source>
         <translation>Licq - Felhasználó keresés</translation>
     </message>
+    <message>
+        <source>&amp;UIN#</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View &amp;Info</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SearchUserView</name>
@@ -3697,6 +4442,14 @@ Nyomd meg a &quot;Következő&quot; gombot a továbblépéshez.</translation>
     <message>
         <source>Unknown</source>
         <translation>Ismeretlen</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3862,6 +4615,10 @@ hogy ezt megváltoztathasd.</translation>
         <source>&amp;Show Again</source>
         <translation>&amp;Újra mutat</translation>
     </message>
+    <message>
+        <source>%1 Response for %2</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SkinBrowserDlg</name>
@@ -3961,6 +4718,93 @@ Ikoncsomag &apos;%2&apos; letiltva</translation>
         <source>Extended Icons:</source>
         <translation>Bővített ikonok:</translation>
     </message>
+    <message>
+        <source>E&amp;moticons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use this combo box to select one of the available emoticon icon sets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Emoticons:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserCodec</name>
+    <message>
+        <source>Unicode</source>
+        <translation type="unfinished">Unicode</translation>
+    </message>
+    <message>
+        <source>Unicode-16</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arabic</source>
+        <translation type="unfinished">Arab</translation>
+    </message>
+    <message>
+        <source>Baltic</source>
+        <translation type="unfinished">Balti</translation>
+    </message>
+    <message>
+        <source>Central European</source>
+        <translation type="unfinished">Közép-Európa</translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation type="unfinished">Kínai</translation>
+    </message>
+    <message>
+        <source>Chinese Traditional</source>
+        <translation type="unfinished">Kínai Tradicionális</translation>
+    </message>
+    <message>
+        <source>Cyrillic</source>
+        <translation type="unfinished">Cirill</translation>
+    </message>
+    <message>
+        <source>Esperanto</source>
+        <translation type="unfinished">Eszperantó</translation>
+    </message>
+    <message>
+        <source>Greek</source>
+        <translation type="unfinished">Görög</translation>
+    </message>
+    <message>
+        <source>Hebrew</source>
+        <translation type="unfinished">Héber</translation>
+    </message>
+    <message>
+        <source>Japanese</source>
+        <translation type="unfinished">Japán</translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation type="unfinished">Kórea</translation>
+    </message>
+    <message>
+        <source>Western European</source>
+        <translation type="unfinished">Nyugat-Európa</translation>
+    </message>
+    <message>
+        <source>Tamil</source>
+        <translation type="unfinished">Tamil</translation>
+    </message>
+    <message>
+        <source>Thai</source>
+        <translation type="unfinished">Thai</translation>
+    </message>
+    <message>
+        <source>Turkish</source>
+        <translation type="unfinished">Török</translation>
+    </message>
+    <message>
+        <source>Ukrainian</source>
+        <translation type="unfinished">Ukrán</translation>
+    </message>
 </context>
 <context>
     <name>UserEventCommon</name>
@@ -4025,7 +4869,7 @@ Ikoncsomag &apos;%2&apos; letiltva</translation>
     </message>
     <message>
         <source>UIN:</source>
-        <translation>iCQ szám:</translation>
+        <translation type="obsolete">iCQ szám:</translation>
     </message>
     <message>
         <source>Zip:</source>
@@ -4331,6 +5175,123 @@ Description: %2</source>
         <translation>Hiba az előzmények betöltése közben: %1
 Leírás: %2</translation>
     </message>
+    <message>
+        <source>Retrieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Category:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished">Leírás:</translation>
+    </message>
+    <message>
+        <source>User has an ICQ Homepage </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User has no ICQ Homepage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M&amp;ore II</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(none)</source>
+        <translation type="unfinished">(semmi)</translation>
+    </message>
+    <message>
+        <source>Occupation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Típus</translation>
+    </message>
+    <message>
+        <source>Number/Gateway</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Country/Provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently at:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>) </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P&amp;icture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation type="unfinished">Nem elérhető</translation>
+    </message>
+    <message>
+        <source>Failed to Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;KDE Addressbook</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Email:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation type="unfinished">&amp;Töröl</translation>
+    </message>
+    <message>
+        <source>&amp;Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select your picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is over %1 bytes.
+Select another picture?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -4352,7 +5313,7 @@ Leírás: %2</translation>
     </message>
     <message>
         <source>%1 (%2)</source>
-        <translation>%1 (%2)</translation>
+        <translation type="obsolete">%1 (%2)</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -4382,6 +5343,14 @@ Leírás: %2</translation>
     <message>
         <source> - Chat Request</source>
         <translation> - Csevegés kezdeményezése</translation>
+    </message>
+    <message>
+        <source>Multiparty: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No reason provided</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4514,7 +5483,7 @@ a szerveren keresztül!</translation>
     </message>
     <message>
         <source>%1 refused %2, send through server</source>
-        <translation>%1 visszautasította ezt: %2, küld szerveren keresztül</translation>
+        <translation type="obsolete">%1 visszautasította ezt: %2, küld szerveren keresztül</translation>
     </message>
     <message>
         <source>M&amp;ultiple recipients</source>
@@ -4523,6 +5492,10 @@ a szerveren keresztül!</translation>
     <message>
         <source>Se&amp;nd through server</source>
         <translation>&amp;Szerveren keresztüli küldés</translation>
+    </message>
+    <message>
+        <source>Error! no owner set</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4567,6 +5540,10 @@ a szerveren keresztül!</translation>
     <message>
         <source>Select files to send</source>
         <translation>Válaszd ki a küldeni kívánt fájlokat</translation>
+    </message>
+    <message>
+        <source>No reason provided</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4721,6 +5698,35 @@ Kérés megszakítva.</translation>
     <message>
         <source>&amp;Forward</source>
         <translation>&amp;Továbbít</translation>
+    </message>
+    <message>
+        <source>&amp;View Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq is unable to find a browser application due to an internal error.</source>
+        <translation type="unfinished">A Licq nem talált megfelelő bongészőt egy belső hiba következtében.</translation>
+    </message>
+    <message>
+        <source>Licq is unable to start your browser and open the URL.
+You will need to start the browser and open the URL manually.</source>
+        <translation type="unfinished">A Licq nem tudta elindítani a bongésződet és megnyitni a címet.
+Indítsd újra a böngésződet, és nyisd meg a címet kézzel.</translation>
+    </message>
+</context>
+<context>
+    <name>VerifyDlg</name>
+    <message>
+        <source>Retype the letters shown above:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>Licq - New Account Verification</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -111,7 +111,7 @@ Vill du skicka det i alla fall?</translation>
     </message>
     <message>
         <source>&amp;Alert User</source>
-        <translation>&amp;Varna användare</translation>
+        <translation type="obsolete">&amp;Varna användare</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -990,7 +990,7 @@ Dubbelklicka - Sätt autosvar</translation>
     <message>
         <source>&amp;System</source>
         <translation>&amp;System</translation>
- </message>
+    </message>
     <message>
         <source>Accept in Occupied</source>
         <translation>Tillåt i Upptagen</translation>
@@ -1296,6 +1296,10 @@ Du måste starta din webbläsare och öppna länken manuellt.</translation>
     <message>
         <source>Do you really want to reset your stats?</source>
         <translation>Vill du verkligen nollställa din statistik?</translation>
+    </message>
+    <message>
+        <source> </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1913,6 +1917,10 @@ Se nätverksfönstret för mer information.</translation>
         <source>/%1.chat</source>
         <translation>/%1.chat</translation>
     </message>
+    <message>
+        <source>Toggles Underline font</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CustomAwayMsgDlg</name>
@@ -2255,6 +2263,77 @@ gruppen &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
+    <name>GPGKeyManager</name>
+    <message>
+        <source>Licq GPG Key Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No passphrase set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Set GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished">&amp;Lägg till</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not yet implemented. Use licq_gpg.conf.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>GPGKeySelect</name>
     <message>
         <source>Select GPG Key for user %1</source>
@@ -2338,6 +2417,17 @@ gruppen &apos;%1&apos;?</translation>
         <translation>Kunde inte ladda temafilen för docken
 (%1)
 :%2</translation>
+    </message>
+</context>
+<context>
+    <name>KeyListItem</name>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Ja</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished">Nej</translation>
     </message>
 </context>
 <context>
@@ -2446,6 +2536,13 @@ Det här kommer troligen inte att fungera.</translation>
     <message>
         <source>Name</source>
         <translation>Namn</translation>
+    </message>
+</context>
+<context>
+    <name>MLView</name>
+    <message>
+        <source>Copy URL</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2959,7 +3056,7 @@ Följande parametrar kan användas:
     </message>
     <message>
         <source>System Msg:</source>
-   <translation>Systemmeddelande:</translation>
+        <translation>Systemmeddelande:</translation>
     </message>
     <message>
         <source>Show group name if no messages</source>
@@ -3264,7 +3361,7 @@ förändringar här kräver en omstart av programmet innan de får effekt!</tran
     </message>
     <message>
         <source>Fax</source>
-     <translation>Fax</translation>
+        <translation>Fax</translation>
     </message>
     <message>
         <source>Cellular</source>
@@ -3375,7 +3472,7 @@ förändringar här kräver en omstart av programmet innan de får effekt!</tran
     </message>
     <message>
         <source>Licq can reconnect you when you got disconnected because your Uinwas used from another location. Check this if you want Licq to reconnect automatically.</source>
-        <translation>Licq kan återansluta dig när du blir bortkopplad pga. att ditt UIN används från en annan plats. Kryssa i denna om du vill att Licq återansluter dig automatiskt.</translation>
+        <translation type="obsolete">Licq kan återansluta dig när du blir bortkopplad pga. att ditt UIN används från en annan plats. Kryssa i denna om du vill att Licq återansluter dig automatiskt.</translation>
     </message>
     <message>
         <source>Protocol ID</source>
@@ -3440,6 +3537,42 @@ förändringar här kräver en omstart av programmet innan de får effekt!</tran
     <message>
         <source>Background Color:</source>
         <translation>Bakgrundsfärg:</translation>
+    </message>
+    <message>
+        <source>Send typing notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send a notification to the user so they can see when you are typing a message to them</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Main Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Main window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Message Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Message window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show user display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3843,7 +3976,7 @@ Efter att du anslutit kan du skicka dina personliga uppgifter till servern.</tra
     </message>
     <message>
         <source>&amp;Uin#</source>
-        <translation>&amp;Uin#</translation>
+        <translation type="obsolete">&amp;Uin#</translation>
     </message>
     <message>
         <source>UIN#:</source>
@@ -3973,7 +4106,7 @@ Efter att du anslutit kan du skicka dina personliga uppgifter till servern.</tra
         <source>Company Department:</source>
         <translation>Avdelning:</translation>
     </message>
- <message>
+    <message>
         <source>Company Position:</source>
         <translation>Position i företaget:</translation>
     </message>
@@ -4000,6 +4133,10 @@ Efter att du anslutit kan du skicka dina personliga uppgifter till servern.</tra
     <message>
         <source>View &amp;Info</source>
         <translation>Visa &amp;Information</translation>
+    </message>
+    <message>
+        <source>&amp;UIN#</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4731,7 +4868,7 @@ ICQ-nätverket för att ändra dina inställningar.</translation>
     </message>
     <message>
         <source>Gender:</source>
- <translation>Kön:</translation>
+        <translation>Kön:</translation>
     </message>
     <message>
         <source>&amp;General</source>
@@ -4867,7 +5004,7 @@ Markera här för att behålla ändringar av smeknamnet.</translation>
     </message>
     <message>
         <source>KDE Addressbook</source>
-     <translation>KDE Adressbok</translation>
+        <translation type="obsolete">KDE Adressbok</translation>
     </message>
     <message>
         <source>Email:</source>
@@ -4902,6 +5039,10 @@ Välj en annan bild?</translation>
     <message>
         <source>No</source>
         <translation>Nej</translation>
+    </message>
+    <message>
+        <source>&amp;KDE Addressbook</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5352,4 +5493,3 @@ Högerklicka - System meny</translation>
     </message>
 </context>
 </TS>
-

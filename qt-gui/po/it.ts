@@ -1,5 +1,16 @@
 <!DOCTYPE TS><TS>
 <context>
+    <name></name>
+    <message>
+        <source>KDE default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>none</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>AddUserDlg</name>
     <message>
         <source>Licq - Add User</source>
@@ -7,11 +18,11 @@
     </message>
     <message>
         <source>New User UIN:</source>
-        <translation>Nuovo UIN Utente:</translation>
+        <translation type="obsolete">Nuovo UIN Utente:</translation>
     </message>
     <message>
         <source>&amp;Alert User</source>
-        <translation>&amp;Avvisa Utente</translation>
+        <translation type="obsolete">&amp;Avvisa Utente</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -19,7 +30,19 @@
     </message>
     <message>
         <source>New User Id:</source>
-        <translation>Nuovo Id Utente</translation>
+        <translation type="obsolete">Nuovo Id Utente</translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>New User ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -56,6 +79,10 @@
         <source>Response</source>
         <translation>Risposta</translation>
     </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>AwayMsgDlg</name>
@@ -90,6 +117,14 @@ Mi puoi lasciare un messaggio.
     <message>
         <source>Set %1 Response for %2</source>
         <translation>Configura Risposta %1 per %2</translation>
+    </message>
+    <message>
+        <source>(Closing in %1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -273,6 +308,43 @@ Guarda la  Finestra id Rete per i dettagli.</translation>
         <source>File transfer complete.</source>
         <translation>Trasferimento file completo.</translation>
     </message>
+    <message>
+        <source>Batch:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ETA:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1/%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bind error.
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>MB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>KB</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Bytes</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Byte</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CForwardDlg</name>
@@ -352,7 +424,7 @@ Guarda la  Finestra id Rete per i dettagli.</translation>
     <name>CMMSendDlg</name>
     <message>
         <source>none</source>
-        <translation>nessuno</translation>
+        <translation type="obsolete">nessuno</translation>
     </message>
     <message>
         <source>Sending mass message to %1...</source>
@@ -458,7 +530,7 @@ Guarda la  Finestra id Rete per i dettagli.</translation>
     </message>
     <message>
         <source>Error sending authorization.</source>
-        <translation>Errore durante l&apos;invio autorizzazione.</translation>
+        <translation type="obsolete">Errore durante l&apos;invio autorizzazione.</translation>
     </message>
     <message>
         <source>&amp;Random Chat Group</source>
@@ -494,7 +566,7 @@ UIN: %1
 Base Directory: %2
 Rerun licq with the -b option to select a new
 base directory and then register a new user.</source>
-        <translation>Sei correntemente registrato come
+        <translation type="obsolete">Sei correntemente registrato come
 UIN: %1
 Base Directory: %2
 Riesegui licq con l&apos;optzione -b per selezionare un nuovo
@@ -582,7 +654,7 @@ base directory e registrare poi un nuovo utente.</translation>
         <source>Successfully registered, your user identification
 number (UIN) is %1.
 Now set your personal information.</source>
-        <translation>Registrazione ottenuta, il tuo user identification
+        <translation type="obsolete">Registrazione ottenuta, il tuo user identification
 number (UIN) è %1.
 Ora  aggiorna i tuoi dati personali</translation>
     </message>
@@ -734,7 +806,7 @@ Controlla la finestra di rete per dettagli.</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
-        <translation>Registrazione fallita.  Controlla la finestra di rete per dettagli.</translation>
+        <translation type="obsolete">Registrazione fallita.  Controlla la finestra di rete per dettagli.</translation>
     </message>
     <message>
         <source>Send &amp;Chat Request</source>
@@ -742,7 +814,7 @@ Controlla la finestra di rete per dettagli.</translation>
     </message>
     <message>
         <source>Reg&amp;ister User</source>
-        <translation>Reg&amp;istra Utente</translation>
+        <translation type="obsolete">Reg&amp;istra Utente</translation>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
@@ -940,7 +1012,7 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>Authorization granted.</source>
-        <translation>Autorizzazione concessa.</translation>
+        <translation type="obsolete">Autorizzazione concessa.</translation>
     </message>
     <message>
         <source>System Functions</source>
@@ -981,6 +1053,155 @@ Doppio click - Mostra prossimo messaggio</translation>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
         <translation>Licq non trova un applicazione browser a causa di un errore interno</translation>
+    </message>
+    <message>
+        <source>Licq (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error! No owner set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SysMsg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 msg%2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>s</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No msgs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>O&amp;ffline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Error! No owner set)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;GPG Key Manager...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t Show</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Available</source>
+        <translation type="unfinished">Disponibile</translation>
+    </message>
+    <message>
+        <source>Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone &quot;Follow Me&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Owner Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;kin Browser...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use GPG Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Info Plugin List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Status Plugin List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update Phone &quot;Follow Me&quot; Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update ICQphone Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Update File Server Status</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggle &amp;Floaty</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1: %2 / %3
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Reset</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you really want to reset your stats?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1: %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CMessageViewWidget</name>
+    <message>
+        <source>%1 from %2</source>
+        <translation type="unfinished">%1 da %2</translation>
+    </message>
+    <message>
+        <source>%1 to %2</source>
+        <translation type="unfinished">%1 a %2</translation>
     </message>
 </context>
 <context>
@@ -1201,11 +1422,11 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>Greek</source>
-        <translation>Greco</translation>
+        <translation type="obsolete">Greco</translation>
     </message>
     <message>
         <source>Cyrillic</source>
-        <translation>Cirillico</translation>
+        <translation type="obsolete">Cirillico</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
@@ -1233,19 +1454,19 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>Baltic</source>
-        <translation>Baltico</translation>
+        <translation type="obsolete">Baltico</translation>
     </message>
     <message>
         <source>Arabic</source>
-        <translation>Arabo</translation>
+        <translation type="obsolete">Arabo</translation>
     </message>
     <message>
         <source>Hebrew</source>
-        <translation>Ebraico</translation>
+        <translation type="obsolete">Ebraico</translation>
     </message>
     <message>
         <source>Korean</source>
-        <translation>Coreano</translation>
+        <translation type="obsolete">Coreano</translation>
     </message>
     <message>
         <source>Online</source>
@@ -1253,7 +1474,7 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>Western European</source>
-        <translation>Europeo Occidentale</translation>
+        <translation type="obsolete">Europeo Occidentale</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
@@ -1261,7 +1482,7 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>Central European</source>
-        <translation>Centroeuropeo</translation>
+        <translation type="obsolete">Centroeuropeo</translation>
     </message>
     <message>
         <source> minute</source>
@@ -1273,15 +1494,15 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>Japanese</source>
-        <translation>Giapponese</translation>
+        <translation type="obsolete">Giapponese</translation>
     </message>
     <message>
         <source>Ukrainian</source>
-        <translation>Ucraino</translation>
+        <translation type="obsolete">Ucraino</translation>
     </message>
     <message>
         <source>Chinese</source>
-        <translation>Cinese</translation>
+        <translation type="obsolete">Cinese</translation>
     </message>
     <message>
         <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
@@ -1293,15 +1514,87 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>Turkish</source>
-        <translation>Turco</translation>
+        <translation type="obsolete">Turco</translation>
     </message>
     <message>
         <source>Chinese Traditional</source>
-        <translation>Cinese Tradizionale</translation>
+        <translation type="obsolete">Cinese Tradizionale</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
         <translation>&lt;br&gt;&lt;nobr&gt;Loggato dentro: </translation>
+    </message>
+    <message>
+        <source>%1 Floaty (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not In List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;/nobr&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1373,6 +1666,10 @@ Doppio click - Mostra prossimo messaggio</translation>
     <message>
         <source>Window:</source>
         <translation>Finestra:</translation>
+    </message>
+    <message>
+        <source>GUI</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1501,6 +1798,61 @@ See Network Window for details.</source>
         <translation>Impossibile connettersi ad una chat remota.
 Guarda la finestra di rete per i dettagli.</translation>
     </message>
+    <message>
+        <source>Licq - Chat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Audio</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Pane Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;IRC Mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Beep</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Toggles Underline font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local - %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>
+&lt;--BEEP--&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&gt; &lt;--BEEP--&gt;
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq - Chat %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>/%1.chat</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CustomAwayMsgDlg</name>
@@ -1526,6 +1878,25 @@ Mi puoi lasciare un messaggio.</translation>
         <source>&amp;Cancel</source>
         <translation>&amp;Annulla</translation>
     </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EditCategoryDlg</name>
+    <message>
+        <source>Unspecified</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Annulla</translation>
+    </message>
 </context>
 <context>
     <name>EditFileDlg</name>
@@ -1545,6 +1916,10 @@ Mi puoi lasciare un messaggio.</translation>
     <message>
         <source>[ Read-Only ]</source>
         <translation>[ Sola-Lettura ]</translation>
+    </message>
+    <message>
+        <source>Licq File Editor - %1</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1635,6 +2010,117 @@ il gruppo &apos;%1&apos;?</translation>
         <source>Shift Up</source>
         <translation>Sposta Su</translation>
     </message>
+    <message>
+        <source>Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EditPhoneDlg</name>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished">Descrizione</translation>
+    </message>
+    <message>
+        <source>Home Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Private Cellular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Cellular</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Home Fax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Work Fax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wireless Pager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone</source>
+        <translation type="unfinished">Telefono</translation>
+    </message>
+    <message>
+        <source>Cellular</source>
+        <translation type="unfinished">Cellulare</translation>
+    </message>
+    <message>
+        <source>Cellular SMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Pager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Country:</source>
+        <translation type="unfinished">Nazione:</translation>
+    </message>
+    <message>
+        <source>Network #/Area code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Extension:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Provider:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E-mail Gateway:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove leading 0s from Area Code/Network #</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Annulla</translation>
+    </message>
+    <message>
+        <source>@</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Please enter a phone number</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>Event</name>
@@ -1686,6 +2172,136 @@ il gruppo &apos;%1&apos;?</translation>
         <source>Contact List</source>
         <translation>Lista Contatti</translation>
     </message>
+    <message>
+        <source>Plugin Event</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URL</source>
+        <translation type="unfinished">URL</translation>
+    </message>
+    <message>
+        <source></source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Web Panel</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>SMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GPGKeyManager</name>
+    <message>
+        <source>Licq GPG Key Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No passphrase set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Set GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished">&amp;Chiudi</translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not yet implemented. Use licq_gpg.conf.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GPGKeySelect</name>
+    <message>
+        <source>Select GPG Key for user %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a GPG key for user %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current key: No key selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current key: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use GPG Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;No Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Annulla</translation>
+    </message>
 </context>
 <context>
     <name>HintsDlg</name>
@@ -1708,6 +2324,14 @@ il gruppo &apos;%1&apos;?</translation>
         <source>&lt;br&gt;&lt;b&gt;%1 system messages&lt;/b&gt;</source>
         <translation>&lt;br&gt;&lt;b&gt;%1 Messaggi di sistema&lt;/b&gt;</translation>
     </message>
+    <message>
+        <source>&lt;br&gt;%1 msgs</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;1 msg</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>IconManager_Themed</name>
@@ -1724,6 +2348,17 @@ il gruppo &apos;%1&apos;?</translation>
         <translation>Impossibile caricare il file del tema
 (%1)
 :%2</translation>
+    </message>
+</context>
+<context>
+    <name>KeyListItem</name>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Sì</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1828,6 +2463,20 @@ Potrebbe non funzionare.</translation>
     </message>
 </context>
 <context>
+    <name>KeyView</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nome</translation>
+    </message>
+</context>
+<context>
+    <name>MLView</name>
+    <message>
+        <source>Copy URL</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MsgView</name>
     <message>
         <source>Time</source>
@@ -1856,6 +2505,14 @@ Potrebbe non funzionare.</translation>
     <message>
         <source>Multiple Recipients</source>
         <translation>Riceventi Multipli</translation>
+    </message>
+    <message>
+        <source>D</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Server</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2592,6 +3249,359 @@ I seguenti parametri possono esssere usati:
         <source>Alignment</source>
         <translation>Allineamento</translation>
     </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message Display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flash Taskbar on Incoming Msg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flash the Taskbar on incoming messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tabbed Chatting</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show recent messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the last 5 messages when a Send Window is opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send typing notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send a notification to the user so they can see when you are typing a message to them</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Main Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Main window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Message Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Message window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Docking</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Controls whether or not the dockable icon should be displayed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>64 x 48 Dock Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Small Icon</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Font</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URL:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ICQ Server:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Firewall</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proxy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use proxy server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>HTTPS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Proxy Server:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Reconnect after Uin clash</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Preset slot:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Online</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto N/A:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The string which will appear in the list box column header</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hot key: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hotkey pops up the next pending message
+Enter the hotkey literally, like &quot;shift+f10&quot;, &quot;none&quot; for disabling
+changes here require a Restart to take effect!
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show user display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fax</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IP</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Paranoia</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N/A:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Info</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; server stored information.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Info Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone Book and Picture.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Update Status Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert Horizontal Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message Received:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Received:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Sent:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Typing Notification Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>OwnerEditDlg</name>
+    <message>
+        <source>Edit Account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently only one account per protocol is supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Annulla</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerManagerDlg</name>
+    <message>
+        <source>Licq - Account Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Register</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Modify</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>D&amp;elete</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Done</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>From the Account Manager dialog you are able to add and register your accounts.
+Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are currently registered as
+UIN (User ID): %1
+Base Directory: %2
+Rerun licq with the -b option to select a new
+base directory and then register a new user.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Successfully registered, your user identification
+number (UIN) is %1.
+Now set your personal information.</source>
+        <translation type="unfinished">Registrazione ottenuta, il tuo user identification
+number (UIN) è %1.
+Ora  aggiorna i tuoi dati personali</translation>
+    </message>
+    <message>
+        <source>Registration failed.  See network window for details.</source>
+        <translation type="unfinished">Registrazione fallita.  Controlla la finestra di rete per dettagli.</translation>
+    </message>
+</context>
+<context>
+    <name>OwnerView</name>
+    <message>
+        <source>User ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Invalid ID)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Invalid Protocol</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PluginDlg</name>
@@ -2617,23 +3627,23 @@ I seguenti parametri possono esssere usati:
     </message>
     <message>
         <source>Configure</source>
-        <translation>Configura</translation>
+        <translation type="obsolete">Configura</translation>
     </message>
     <message>
         <source>Loaded</source>
-        <translation>Caricati</translation>
+        <translation type="obsolete">Caricati</translation>
     </message>
     <message>
         <source>Status</source>
-        <translation>Stato</translation>
+        <translation type="obsolete">Stato</translation>
     </message>
     <message>
         <source>Unload</source>
-        <translation>Scarica</translation>
+        <translation type="obsolete">Scarica</translation>
     </message>
     <message>
         <source>Available</source>
-        <translation>Disponibile</translation>
+        <translation type="obsolete">Disponibile</translation>
     </message>
     <message>
         <source>Refresh</source>
@@ -2645,261 +3655,282 @@ I seguenti parametri possono esssere usati:
     </message>
     <message>
         <source>Details</source>
-        <translation>Dettagli</translation>
+        <translation type="obsolete">Dettagli</translation>
     </message>
     <message>
         <source>Disable</source>
-        <translation>Disabilita</translation>
+        <translation type="obsolete">Disabilita</translation>
     </message>
     <message>
         <source>Version</source>
         <translation>Versione</translation>
+    </message>
+    <message>
+        <source>Standard Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Id</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq Plugin %1 %2
+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Unloaded)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QFileDialog</name>
     <message>
         <source>Back</source>
-        <translation>Indietro</translation>
+        <translation type="obsolete">Indietro</translation>
     </message>
     <message>
         <source>Date</source>
-        <translation>Data</translation>
+        <translation type="obsolete">Data</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation>Nome</translation>
+        <translation type="obsolete">Nome</translation>
     </message>
     <message>
         <source>Open</source>
-        <translation>Apri</translation>
+        <translation type="obsolete">Apri</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Salva</translation>
+        <translation type="obsolete">Salva</translation>
     </message>
     <message>
         <source>Size</source>
-        <translation>Dimensioni</translation>
+        <translation type="obsolete">Dimensioni</translation>
     </message>
     <message>
         <source>Sort</source>
-        <translation>Ordina</translation>
+        <translation type="obsolete">Ordina</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation>Tipo</translation>
+        <translation type="obsolete">Tipo</translation>
     </message>
     <message>
         <source>&amp;Open</source>
-        <translation>&amp;O Apri</translation>
+        <translation type="obsolete">&amp;O Apri</translation>
     </message>
     <message>
         <source>&amp;Save</source>
-        <translation>&amp;Salva</translation>
+        <translation type="obsolete">&amp;Salva</translation>
     </message>
     <message>
         <source>Sort by &amp;Size</source>
-        <translation>Ordina per Dimen&amp;sioni</translation>
+        <translation type="obsolete">Ordina per Dimen&amp;sioni</translation>
     </message>
     <message>
         <source>Sort by &amp;Date</source>
-        <translation>Ordina per &amp;Data</translation>
+        <translation type="obsolete">Ordina per &amp;Data</translation>
     </message>
     <message>
         <source>Sort by &amp;Name</source>
-        <translation>Ordina per &amp;Nome</translation>
+        <translation type="obsolete">Ordina per &amp;Nome</translation>
     </message>
     <message>
         <source>New Folder 1</source>
-        <translation>Nuova Cartella 1</translation>
+        <translation type="obsolete">Nuova Cartella 1</translation>
     </message>
     <message>
         <source>&lt;qt&gt;Do you really want to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation>&lt;qt&gt;Vuoi Veramente cancellare %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
+        <translation type="obsolete">&lt;qt&gt;Vuoi Veramente cancellare %1 &quot;%2&quot;?&lt;/qt&gt;</translation>
     </message>
     <message>
         <source>the directory</source>
-        <translation>la cartella</translation>
+        <translation type="obsolete">la cartella</translation>
     </message>
     <message>
         <source>File &amp;type:</source>
-        <translation>&amp;tipo File:</translation>
+        <translation type="obsolete">&amp;tipo File:</translation>
     </message>
     <message>
         <source>File &amp;name:</source>
-        <translation>&amp;nome File:</translation>
+        <translation type="obsolete">&amp;nome File:</translation>
     </message>
     <message>
         <source>Delete %1</source>
-        <translation>Cancella %1</translation>
+        <translation type="obsolete">Cancella %1</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation type="obsolete">Annulla</translation>
     </message>
     <message>
         <source>New Folder</source>
-        <translation>Nuova Cartella</translation>
+        <translation type="obsolete">Nuova Cartella</translation>
     </message>
     <message>
         <source>&amp;Unsorted</source>
-        <translation>&amp;U Disordinati</translation>
+        <translation type="obsolete">&amp;U Disordinati</translation>
     </message>
     <message>
         <source>Look &amp;in:</source>
-        <translation>Guarda &amp;in</translation>
+        <translation type="obsolete">Guarda &amp;in</translation>
     </message>
     <message>
         <source>Preview File Contents</source>
-        <translation>Anteprima Contenuto File</translation>
+        <translation type="obsolete">Anteprima Contenuto File</translation>
     </message>
     <message>
         <source>New Folder %1</source>
-        <translation>Nuova Cartella %1</translation>
+        <translation type="obsolete">Nuova Cartella %1</translation>
     </message>
     <message>
         <source>Read-write</source>
-        <translation>Sola-scrittura</translation>
+        <translation type="obsolete">Sola-scrittura</translation>
     </message>
     <message>
         <source>Read-only</source>
-        <translation>Sola-Lettura</translation>
+        <translation type="obsolete">Sola-Lettura</translation>
     </message>
     <message>
         <source>Find Directory</source>
-        <translation>Trova Cartella</translation>
+        <translation type="obsolete">Trova Cartella</translation>
     </message>
     <message>
         <source>Attributes</source>
-        <translation>Attributi</translation>
+        <translation type="obsolete">Attributi</translation>
     </message>
     <message>
         <source>Show &amp;hidden files</source>
-        <translation>Mostra file nascosti &amp;h</translation>
+        <translation type="obsolete">Mostra file nascosti &amp;h</translation>
     </message>
     <message>
         <source>Save as</source>
-        <translation>Salva come</translation>
+        <translation type="obsolete">Salva come</translation>
     </message>
     <message>
         <source>Inaccessible</source>
-        <translation>Inaccessibile</translation>
+        <translation type="obsolete">Inaccessibile</translation>
     </message>
     <message>
         <source>%1
 File not found.
 Check path and filename.</source>
-        <translation>%1
+        <translation type="obsolete">%1
 File non trovato
 Controlla percorso e nome file.</translation>
     </message>
     <message>
         <source>List View</source>
-        <translation>Vista lista</translation>
+        <translation type="obsolete">Vista lista</translation>
     </message>
     <message>
         <source>Special</source>
-        <translation>Speciale</translation>
+        <translation type="obsolete">Speciale</translation>
     </message>
     <message>
         <source>Write-only</source>
-        <translation>Sola-scrittura</translation>
+        <translation type="obsolete">Sola-scrittura</translation>
     </message>
     <message>
         <source>the symlink</source>
-        <translation>il link simbolico</translation>
+        <translation type="obsolete">il link simbolico</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation>&amp;D Cancella</translation>
+        <translation type="obsolete">&amp;D Cancella</translation>
     </message>
     <message>
         <source>All files (*)</source>
-        <translation>Tutti il files (*)</translation>
+        <translation type="obsolete">Tutti il files (*)</translation>
     </message>
     <message>
         <source>Directories</source>
-        <translation>Cartelle</translation>
+        <translation type="obsolete">Cartelle</translation>
     </message>
     <message>
         <source>Symlink to Special</source>
-        <translation>Link simbolico allo speciale</translation>
+        <translation type="obsolete">Link simbolico allo speciale</translation>
     </message>
     <message>
         <source>&amp;Rename</source>
-        <translation>&amp;Rinomina</translation>
+        <translation type="obsolete">&amp;Rinomina</translation>
     </message>
     <message>
         <source>One directory up</source>
-        <translation>Una cartella su</translation>
+        <translation type="obsolete">Una cartella su</translation>
     </message>
     <message>
         <source>Preview File Info</source>
-        <translation>Anteprima Info File</translation>
+        <translation type="obsolete">Anteprima Info File</translation>
     </message>
     <message>
         <source>the file</source>
-        <translation>Il file</translation>
+        <translation type="obsolete">Il file</translation>
     </message>
     <message>
         <source>Create New Folder</source>
-        <translation>Crea Nuova Cartella</translation>
+        <translation type="obsolete">Crea Nuova Cartella</translation>
     </message>
     <message>
         <source>Symlink to File</source>
-        <translation>Link simbolico al File</translation>
+        <translation type="obsolete">Link simbolico al File</translation>
     </message>
     <message>
         <source>Symlink to Directory</source>
-        <translation>Link simbolico alla Cartella</translation>
+        <translation type="obsolete">Link simbolico alla Cartella</translation>
     </message>
     <message>
         <source>Detail View</source>
-        <translation>Vista Dettagli</translation>
+        <translation type="obsolete">Vista Dettagli</translation>
     </message>
 </context>
 <context>
     <name>QFontDialog</name>
     <message>
         <source>&amp;Size</source>
-        <translation>Dimen&amp;sione</translation>
+        <translation type="obsolete">Dimen&amp;sione</translation>
     </message>
     <message>
         <source>Apply</source>
-        <translation>Applica</translation>
+        <translation type="obsolete">Applica</translation>
     </message>
     <message>
         <source>Close</source>
-        <translation>Chiudi</translation>
+        <translation type="obsolete">Chiudi</translation>
     </message>
     <message>
         <source>&amp;Color</source>
-        <translation>&amp;Colore</translation>
+        <translation type="obsolete">&amp;Colore</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annulla</translation>
+        <translation type="obsolete">Annulla</translation>
     </message>
     <message>
         <source>Sample</source>
-        <translation>Esempio</translation>
+        <translation type="obsolete">Esempio</translation>
     </message>
     <message>
         <source>Select Font</source>
-        <translation>Seleziona Font</translation>
+        <translation type="obsolete">Seleziona Font</translation>
     </message>
     <message>
         <source>&amp;Underline</source>
-        <translation>Sottolineato &amp;u</translation>
+        <translation type="obsolete">Sottolineato &amp;u</translation>
     </message>
     <message>
         <source>Effects</source>
-        <translation>Effetti</translation>
+        <translation type="obsolete">Effetti</translation>
     </message>
     <message>
         <source>Stri&amp;keout</source>
-        <translation>Sbarrato &amp;k</translation>
+        <translation type="obsolete">Sbarrato &amp;k</translation>
     </message>
 </context>
 <context>
@@ -2920,35 +3951,43 @@ Controlla percorso e nome file.</translation>
         <source>Licq Information</source>
         <translation>Informazioni Licq</translation>
     </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Sì</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>QWizard</name>
     <message>
         <source>Help</source>
-        <translation>Aiuto</translation>
+        <translation type="obsolete">Aiuto</translation>
     </message>
     <message>
         <source>&lt; Back</source>
-        <translation>&lt; Indietro</translation>
+        <translation type="obsolete">&lt; Indietro</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Annula</translation>
+        <translation type="obsolete">Annula</translation>
     </message>
     <message>
         <source>Finish</source>
-        <translation>Fine</translation>
+        <translation type="obsolete">Fine</translation>
     </message>
     <message>
         <source>Next &gt;</source>
-        <translation>Prossimo &gt;</translation>
+        <translation type="obsolete">Prossimo &gt;</translation>
     </message>
 </context>
 <context>
     <name>RegisterUserDlg</name>
     <message>
         <source>&amp;Save Password</source>
-        <translation>&amp;Salva Password</translation>
+        <translation type="obsolete">&amp;Salva Password</translation>
     </message>
     <message>
         <source>Please enter your password in both input fields.</source>
@@ -2956,7 +3995,7 @@ Controlla percorso e nome file.</translation>
     </message>
     <message>
         <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation>Registrazione con successo. Ora accedi e aggiorna le tue informazioni personali.</translation>
+        <translation type="obsolete">Registrazione con successo. Ora accedi e aggiorna le tue informazioni personali.</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
@@ -2964,7 +4003,7 @@ Controlla percorso e nome file.</translation>
     </message>
     <message>
         <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation>Tu hai bisogno di mettere un UIN valido quando tenti di registrare un utente esistente. </translation>
+        <translation type="obsolete">Tu hai bisogno di mettere un UIN valido quando tenti di registrare un utente esistente. </translation>
     </message>
     <message>
         <source>Now please click &apos;Finish&apos; to start the registration process.</source>
@@ -2972,7 +4011,7 @@ Controlla percorso e nome file.</translation>
     </message>
     <message>
         <source>User Registration in Progress...</source>
-        <translation>Registrazione Utente in progresso...</translation>
+        <translation type="obsolete">Registrazione Utente in progresso...</translation>
     </message>
     <message>
         <source>Now please press the &apos;Back&apos; button and try again.</source>
@@ -2980,7 +4019,7 @@ Controlla percorso e nome file.</translation>
     </message>
     <message>
         <source>&amp;Register Existing User</source>
-        <translation>&amp;Registra Utente Esistente</translation>
+        <translation type="obsolete">&amp;Registra Utente Esistente</translation>
     </message>
     <message>
         <source>The passwords don&apos;t seem to match.</source>
@@ -2988,15 +4027,15 @@ Controlla percorso e nome file.</translation>
     </message>
     <message>
         <source>UIN Registration - Step 2</source>
-        <translation>Registrazione UIN - Passo 2</translation>
+        <translation type="obsolete">Registrazione UIN - Passo 2</translation>
     </message>
     <message>
         <source>UIN Registration - Step 3</source>
-        <translation>Registrazione UIN - Passo 3</translation>
+        <translation type="obsolete">Registrazione UIN - Passo 3</translation>
     </message>
     <message>
         <source>Invalid UIN.  Try again.</source>
-        <translation>UIN Invalido. Tenta ancora.</translation>
+        <translation type="obsolete">UIN Invalido. Tenta ancora.</translation>
     </message>
     <message>
         <source>Verify:</source>
@@ -3004,7 +4043,7 @@ Controlla percorso e nome file.</translation>
     </message>
     <message>
         <source>Licq User Registration</source>
-        <translation>Licq Registrazione Utente</translation>
+        <translation type="obsolete">Licq Registrazione Utente</translation>
     </message>
     <message>
         <source>Welcome to the Registration Wizard.
@@ -3016,7 +4055,7 @@ If you already have a uin, then toggle &quot;Register Existing User&quot;,
 enter your uin and your password, and click &quot;OK&quot;
 
 Press &quot;Next&quot; to proceed.</source>
-        <translation>Benvenuto nella Registration Wizard.
+        <translation type="obsolete">Benvenuto nella Registration Wizard.
 
 Qui puoi registrare un nuovo utente, o configurare Licq per usare un UIN esistente.
 
@@ -3028,7 +4067,55 @@ Premi  &quot;Next&quot; per procedere.</translation>
     </message>
     <message>
         <source>UIN Registration</source>
-        <translation>Registrazione UIN</translation>
+        <translation type="obsolete">Registrazione UIN</translation>
+    </message>
+    <message>
+        <source>Welcome to the Registration Wizard.
+
+You can register a new user here.
+
+Press &quot;Next&quot; to proceed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a password to protect your account.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remember Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration - Step 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration - Step 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq Account Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration in Progress...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account registration has been successfuly completed.
+Your new user id is %1.
+You are now being automatically logged on.
+Click OK to edit your personal details.
+After you are online, you can send your personal details to the server.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3044,6 +4131,14 @@ Premi  &quot;Next&quot; per procedere.</translation>
     <message>
         <source>Request</source>
         <translation>Richiesta</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Annulla</translation>
     </message>
 </context>
 <context>
@@ -3172,6 +4267,50 @@ Premi  &quot;Next&quot; per procedere.</translation>
         <source>Licq - User Search</source>
         <translation>Licq - Ricerca Utenti</translation>
     </message>
+    <message>
+        <source>Alias:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>18 - 22</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>23 - 29</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>30 - 39</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>40 - 49</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>50 - 59</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>60+</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Whitepages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UIN#:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;UIN#</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View &amp;Info</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>SearchUserView</name>
@@ -3198,6 +4337,42 @@ Premi  &quot;Next&quot; per procedere.</translation>
     <message>
         <source>Unknown</source>
         <translation>Sconosciuto</translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>UIN</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Sì</translation>
     </message>
 </context>
 <context>
@@ -3328,6 +4503,14 @@ Rete ICQ per cambiare le impostazioni.</translation>
         <source>Hide IP</source>
         <translation>Nascondi IP</translation>
     </message>
+    <message>
+        <source>&amp;Uin:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ShowAwayMsgDlg</name>
@@ -3354,6 +4537,10 @@ Rete ICQ per cambiare le impostazioni.</translation>
     <message>
         <source>%1 Response for %2</source>
         <translation>%1 Risposta per %2</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3425,6 +4612,121 @@ L&apos;insieme delle icone&apos;%2&apos; è stato diabilitato.</translation>
     <message>
         <source>Extended Icons:</source>
         <translation>Icone Estese:</translation>
+    </message>
+    <message>
+        <source>Skin selection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;kins:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E&amp;moticons</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use this combo box to select one of the available emoticon icon sets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Skin:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Emoticons:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit Skin</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Annulla</translation>
+    </message>
+    <message>
+        <source>Licq Skin Browser</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>UserCodec</name>
+    <message>
+        <source>Unicode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Unicode-16</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Arabic</source>
+        <translation type="unfinished">Arabo</translation>
+    </message>
+    <message>
+        <source>Baltic</source>
+        <translation type="unfinished">Baltico</translation>
+    </message>
+    <message>
+        <source>Central European</source>
+        <translation type="unfinished">Centroeuropeo</translation>
+    </message>
+    <message>
+        <source>Chinese</source>
+        <translation type="unfinished">Cinese</translation>
+    </message>
+    <message>
+        <source>Chinese Traditional</source>
+        <translation type="unfinished">Cinese Tradizionale</translation>
+    </message>
+    <message>
+        <source>Cyrillic</source>
+        <translation type="unfinished">Cirillico</translation>
+    </message>
+    <message>
+        <source>Esperanto</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Greek</source>
+        <translation type="unfinished">Greco</translation>
+    </message>
+    <message>
+        <source>Hebrew</source>
+        <translation type="unfinished">Ebraico</translation>
+    </message>
+    <message>
+        <source>Japanese</source>
+        <translation type="unfinished">Giapponese</translation>
+    </message>
+    <message>
+        <source>Korean</source>
+        <translation type="unfinished">Coreano</translation>
+    </message>
+    <message>
+        <source>Western European</source>
+        <translation type="unfinished">Europeo Occidentale</translation>
+    </message>
+    <message>
+        <source>Tamil</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Thai</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Turkish</source>
+        <translation type="unfinished">Turco</translation>
+    </message>
+    <message>
+        <source>Ukrainian</source>
+        <translation type="unfinished">Ucraino</translation>
     </message>
 </context>
 <context>
@@ -3712,6 +5014,203 @@ Description: %2</source>
         <translation>Errore nel caricare il file della storia :%1
 Descrizione: %2</translation>
     </message>
+    <message>
+        <source>Retrieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq - Info </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>IP:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Timezone:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EMail 1:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>EMail 2:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Fax:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Zip:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GMT%1%1%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Homepage:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Category:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Description:</source>
+        <translation type="unfinished">Descrizione</translation>
+    </message>
+    <message>
+        <source>User has an ICQ Homepage </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User has no ICQ Homepage</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>M&amp;ore II</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(none)</source>
+        <translation type="unfinished">(nessuno)</translation>
+    </message>
+    <message>
+        <source>Occupation:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;About</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Phone</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Type</source>
+        <translation type="unfinished">Tipo</translation>
+    </message>
+    <message>
+        <source>Number/Gateway</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Country/Provider</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently at:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>) </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P&amp;icture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation type="unfinished">Non Disponibile</translation>
+    </message>
+    <message>
+        <source>Failed to Load</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Last</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Offline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;KDE Addressbook</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Email:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Retrieve</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>S&amp;end</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Clear</source>
+        <translation type="unfinished">&amp;Cancella</translation>
+    </message>
+    <message>
+        <source>&amp;Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select your picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> is over %1 bytes.
+Select another picture?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Sì</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>timed out</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -3722,6 +5221,22 @@ Descrizione: %2</translation>
     <message>
         <source>&amp;User:</source>
         <translation>&amp;Utente:</translation>
+    </message>
+    <message>
+        <source>&amp;Password:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Annulla</translation>
+    </message>
+    <message>
+        <source>Licq User Select</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3747,6 +5262,10 @@ Descrizione: %2</translation>
     <message>
         <source> - Chat Request</source>
         <translation> - Richiesta Chat</translation>
+    </message>
+    <message>
+        <source>Multiparty: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3857,6 +5376,38 @@ attraverso il server!</translation>
         <source>Se&amp;nd through server</source>
         <translation>I&amp;nvia attraverso server</translation>
     </message>
+    <message>
+        <source>&amp;Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>URL</source>
+        <translation type="unfinished">URL</translation>
+    </message>
+    <message>
+        <source>SMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Error! no owner set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>via server</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>error</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>timed out</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSendContactEvent</name>
@@ -3897,6 +5448,14 @@ attraverso il server!</translation>
         <source>Select files to send</source>
         <translation>Seleziona files da inviare</translation>
     </message>
+    <message>
+        <source>File(s): </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Browse</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSendMsgEvent</name>
@@ -3909,6 +5468,14 @@ attraverso il server!</translation>
 Do you really want to send it?</source>
         <translation>Non vuoi modificare il messaggio.
 Vuoi veramente inviare?</translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation type="unfinished">&amp;Sì</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3927,12 +5494,32 @@ Vuoi veramente inviarlo?</translation>
         <source>Phone : </source>
         <translation>Telefono :</translation>
     </message>
+    <message>
+        <source> - SMS</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Yes</source>
+        <translation type="unfinished">&amp;Sì</translation>
+    </message>
+    <message>
+        <source>&amp;No</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSendUrlEvent</name>
     <message>
         <source>No URL specified</source>
         <translation>Nessun URL specificato</translation>
+    </message>
+    <message>
+        <source>URL : </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> - URL</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4014,6 +5601,43 @@ La richiesta è stata annullata.</translation>
     <message>
         <source>&amp;Forward</source>
         <translation>Inoltra &amp;F</translation>
+    </message>
+    <message>
+        <source>&amp;Menu</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;View Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq is unable to find a browser application due to an internal error.</source>
+        <translation type="unfinished">Licq non trova un applicazione browser a causa di un errore interno</translation>
+    </message>
+    <message>
+        <source>Licq is unable to start your browser and open the URL.
+You will need to start the browser and open the URL manually.</source>
+        <translation type="unfinished">Licq non riesce a fart partire il tuo browser e aprire l&apos;URL.
+Dovrai far partire il tuo browser e aprire l&apos;URL manualmente.</translation>
+    </message>
+    <message>
+        <source>Chat</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>VerifyDlg</name>
+    <message>
+        <source>Retype the letters shown above:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq - New Account Verification</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

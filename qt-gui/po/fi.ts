@@ -103,7 +103,7 @@ Haluatko varmasti lähettää sen?</translation>
     <name>AddUserDlg</name>
     <message>
         <source>&amp;Alert User</source>
-        <translation>&amp;Ilmoita käyttäjälle</translation>
+        <translation type="obsolete">&amp;Ilmoita käyttäjälle</translation>
     </message>
     <message>
         <source>New User UIN:</source>
@@ -210,6 +210,10 @@ You can leave me a message.
         <translation>Olen tällä hetkellä %1, %a.
 Voit jättää minulle viestin.
 (Sinulta odottaa %m viestiä).</translation>
+    </message>
+    <message>
+        <source>(Closing in %1)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -672,21 +676,21 @@ Katso tarkempia tietoja Verkkolokista.</translation>
         <source>Successfully registered, your user identification
 number (UIN) is %1.
 Now set your personal information.</source>
-        <translation>Rekisteröityminen onnistui, käyttäjätunnusnumerosi
+        <translation type="obsolete">Rekisteröityminen onnistui, käyttäjätunnusnumerosi
 (UIN) on %1.
 Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
-        <translation>Rekisteröityminen epäonnistui. Katso tarkempia tietoja Verkkolokista.</translation>
+        <translation type="obsolete">Rekisteröityminen epäonnistui. Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
     <message>
         <source>Error sending authorization.</source>
-        <translation>Virhe valtuutusta lähetettäessä.</translation>
+        <translation type="obsolete">Virhe valtuutusta lähetettäessä.</translation>
     </message>
     <message>
         <source>Authorization granted.</source>
-        <translation>Valtuutus myönnetty.</translation>
+        <translation type="obsolete">Valtuutus myönnetty.</translation>
     </message>
     <message>
         <source>Are you sure you want to remove
@@ -939,7 +943,7 @@ ei voida avata.</translation>
     </message>
     <message>
         <source>Reg&amp;ister User</source>
-        <translation>Rek&amp;isteröi käyttäjä</translation>
+        <translation type="obsolete">Rek&amp;isteröi käyttäjä</translation>
     </message>
     <message>
         <source>&amp;Hints</source>
@@ -1173,7 +1177,7 @@ UIN: %1
 Base Directory: %2
 Rerun licq with the -b option to select a new
 base directory and then register a new user.</source>
-        <translation>Olet tällä hetkellä rekisteröitynyt
+        <translation type="obsolete">Olet tällä hetkellä rekisteröitynyt
 UIN-numerolla %1
 Päähakemisto: %1
 Käynnistä licq uudelleen parametrin -b kanssa,
@@ -1251,6 +1255,41 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     <message>
         <source></source>
         <translation></translation>
+    </message>
+    <message>
+        <source>Error! No owner set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source> </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Error! No owner set)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;GPG Key Manager...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use GPG Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CMessageViewWidget</name>
+    <message>
+        <source>%1 from %2</source>
+        <translation type="unfinished">%1 käyttäjältä %2</translation>
+    </message>
+    <message>
+        <source>%1 to %2</source>
+        <translation type="unfinished">%1 käyttäjälle %2</translation>
     </message>
 </context>
 <context>
@@ -1589,6 +1628,18 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
         <source>&lt;br&gt;&lt;nobr&gt;</source>
         <translation>&lt;br&gt;&lt;nobr&gt;</translation>
     </message>
+    <message>
+        <source>Not In List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CUtilityDlg</name>
@@ -1844,6 +1895,10 @@ Katso tarkempia tietoja Verkkolokista.</translation>
     <message>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
         <translation>Enkoodausta &lt;b&gt;%1&lt;/b&gt; ei voi ladata. Viestien sisällöt voivat näyttää sekavilta.</translation>
+    </message>
+    <message>
+        <source>Toggles Underline font</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2187,6 +2242,116 @@ ryhmän &apos;%1&apos;?</translation>
     </message>
 </context>
 <context>
+    <name>GPGKeyManager</name>
+    <message>
+        <source>Licq GPG Key Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No passphrase set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Set GPG Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User Keys</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Add</source>
+        <translation type="unfinished">&amp;Lisää</translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remove</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>User</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Active</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Key ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Close</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Set Passphrase</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Not yet implemented. Use licq_gpg.conf.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Remove GPG key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>GPGKeySelect</name>
+    <message>
+        <source>Select GPG Key for user %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Select a GPG key for user %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current key: No key selected</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Current key: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use GPG Encryption</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Filter:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>&amp;No Key</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Cancel</source>
+        <translation type="unfinished">&amp;Peruuta</translation>
+    </message>
+</context>
+<context>
     <name>HintsDlg</name>
     <message>
         <source>Licq - Hints</source>
@@ -2231,6 +2396,17 @@ ryhmän &apos;%1&apos;?</translation>
 %1</source>
         <translation>Ei voi ladata telakointiteemakuvaa
 %1</translation>
+    </message>
+</context>
+<context>
+    <name>KeyListItem</name>
+    <message>
+        <source>Yes</source>
+        <translation type="unfinished">Kyllä</translation>
+    </message>
+    <message>
+        <source>No</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2330,6 +2506,20 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
 </source>
         <translation>&lt;font color=&quot;blue&quot;&gt;Suojattu yhteys suljettu.&lt;/font&gt;
 </translation>
+    </message>
+</context>
+<context>
+    <name>KeyView</name>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nimi</translation>
+    </message>
+</context>
+<context>
+    <name>MLView</name>
+    <message>
+        <source>Copy URL</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3270,12 +3460,100 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
         <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
         <translation>Päivitä käyttäjien Puhelin &quot;Seuraa minua&quot;, tiedostopalvelimen ja ICQphonen tila.</translation>
     </message>
+    <message>
+        <source>Message Display</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flash Taskbar on Incoming Msg</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Flash the Taskbar on incoming messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show recent messages</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the last 5 messages when a Send Window is opened</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send typing notifications</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Send a notification to the user so they can see when you are typing a message to them</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Main Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Main window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sticky Message Window</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Makes the Message window visible on all desktops</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show user display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol ID</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Style:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert Horizontal Line</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Colors</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Message Received:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Received:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Sent:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Typing Notification Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Background Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OwnerEditDlg</name>
     <message>
         <source>Edit Owner</source>
-        <translation>Muokkaa omistajaa</translation>
+        <translation type="obsolete">Muokkaa omistajaa</translation>
     </message>
     <message>
         <source>User ID:</source>
@@ -3291,7 +3569,7 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     </message>
     <message>
         <source>Currently only one owner per protocol is supported.</source>
-        <translation>Tällä hetkellä vain yksi protokolla per käyttäjä on tuettu.</translation>
+        <translation type="obsolete">Tällä hetkellä vain yksi protokolla per käyttäjä on tuettu.</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
@@ -3301,12 +3579,20 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
         <source>&amp;Cancel</source>
         <translation>&amp;Peruuta</translation>
     </message>
+    <message>
+        <source>Edit Account</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Currently only one account per protocol is supported.</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OwnerManagerDlg</name>
     <message>
         <source>Licq - Owner Manager</source>
-        <translation>Licq - Omistajan hallinta</translation>
+        <translation type="obsolete">Licq - Omistajan hallinta</translation>
     </message>
     <message>
         <source>&amp;Add</source>
@@ -3323,6 +3609,39 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     <message>
         <source>&amp;Done</source>
         <translation>&amp;Valmis</translation>
+    </message>
+    <message>
+        <source>Licq - Account Manager</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Register</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>From the Account Manager dialog you are able to add and register your accounts.
+Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>You are currently registered as
+UIN (User ID): %1
+Base Directory: %2
+Rerun licq with the -b option to select a new
+base directory and then register a new user.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Successfully registered, your user identification
+number (UIN) is %1.
+Now set your personal information.</source>
+        <translation type="unfinished">Rekisteröityminen onnistui, käyttäjätunnusnumerosi
+(UIN) on %1.
+Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
+    </message>
+    <message>
+        <source>Registration failed.  See network window for details.</source>
+        <translation type="unfinished">Rekisteröityminen epäonnistui. Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
 </context>
 <context>
@@ -3348,7 +3667,7 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     <name>PluginDlg</name>
     <message>
         <source>Loaded</source>
-        <translation>Ladattu</translation>
+        <translation type="obsolete">Ladattu</translation>
     </message>
     <message>
         <source>Id</source>
@@ -3364,7 +3683,7 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     </message>
     <message>
         <source>Status</source>
-        <translation>Tila</translation>
+        <translation type="obsolete">Tila</translation>
     </message>
     <message>
         <source>Description</source>
@@ -3376,23 +3695,23 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     </message>
     <message>
         <source>Disable</source>
-        <translation>Aseta pois päältä</translation>
+        <translation type="obsolete">Aseta pois päältä</translation>
     </message>
     <message>
         <source>Unload</source>
-        <translation>Pura</translation>
+        <translation type="obsolete">Pura</translation>
     </message>
     <message>
         <source>Details</source>
-        <translation>Tarkemmat tiedot</translation>
+        <translation type="obsolete">Tarkemmat tiedot</translation>
     </message>
     <message>
         <source>Configure</source>
-        <translation>Konfiguroi</translation>
+        <translation type="obsolete">Konfiguroi</translation>
     </message>
     <message>
         <source>Available</source>
-        <translation>Saatavilla</translation>
+        <translation type="obsolete">Saatavilla</translation>
     </message>
     <message>
         <source>Load</source>
@@ -3415,6 +3734,18 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     <message>
         <source>Plugin %1 has no configuration file</source>
         <translation>Pluginilla %1 ei ole konfiguraatiotiedostoa</translation>
+    </message>
+    <message>
+        <source>Standard Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Protocol Plugins</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>(Unloaded)</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3456,7 +3787,7 @@ If you already have a uin, then toggle &quot;Register Existing User&quot;,
 enter your uin and your password, and click &quot;OK&quot;
 
 Press &quot;Next&quot; to proceed.</source>
-        <translation>Tervetuloa rekisteröitymisvelhoon.
+        <translation type="obsolete">Tervetuloa rekisteröitymisvelhoon.
 
 Voit rekisteröidä uuden käyttäjän täällä tai konfiguroida Licq:n käyttämään jo olemassa olevaa UIN:ia.
 
@@ -3468,15 +3799,15 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>UIN Registration</source>
-        <translation>UIN:n rekisteröiminen</translation>
+        <translation type="obsolete">UIN:n rekisteröiminen</translation>
     </message>
     <message>
         <source>&amp;Register Existing User</source>
-        <translation>&amp;Rekisteröi vanha käyttäjä</translation>
+        <translation type="obsolete">&amp;Rekisteröi vanha käyttäjä</translation>
     </message>
     <message>
         <source>Uin:</source>
-        <translation>Uin:</translation>
+        <translation type="obsolete">Uin:</translation>
     </message>
     <message>
         <source>Password:</source>
@@ -3488,23 +3819,23 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>&amp;Save Password</source>
-        <translation>&amp;Tallenna salasana</translation>
+        <translation type="obsolete">&amp;Tallenna salasana</translation>
     </message>
     <message>
         <source>UIN Registration - Step 2</source>
-        <translation>UIN:n rekisteröinti - vaihe 2</translation>
+        <translation type="obsolete">UIN:n rekisteröinti - vaihe 2</translation>
     </message>
     <message>
         <source>UIN Registration - Step 3</source>
-        <translation>UIN:n rekisteröinti - vaihe 3</translation>
+        <translation type="obsolete">UIN:n rekisteröinti - vaihe 3</translation>
     </message>
     <message>
         <source>Licq User Registration</source>
-        <translation>Licq-käyttäjän rekisteröinti</translation>
+        <translation type="obsolete">Licq-käyttäjän rekisteröinti</translation>
     </message>
     <message>
         <source>You need to enter a valid UIN when you try to register an existing user. </source>
-        <translation>Sinun tulee antaa oikea UIN rekisteröitäessäsi jo olemassa olevan käyttäjän. </translation>
+        <translation type="obsolete">Sinun tulee antaa oikea UIN rekisteröitäessäsi jo olemassa olevan käyttäjän. </translation>
     </message>
     <message>
         <source>Please enter your password in both input fields.</source>
@@ -3524,19 +3855,63 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>Invalid UIN.  Try again.</source>
-        <translation>Virheellinen UIN.  Yritä uudelleen.</translation>
+        <translation type="obsolete">Virheellinen UIN.  Yritä uudelleen.</translation>
     </message>
     <message>
         <source>Registered succesfully.  Now log on and update your personal info.</source>
-        <translation>Rekisteröiminen onnistui.  Kirjaudu sisään ja päivitä henkilökohtaiset tietosi.</translation>
+        <translation type="obsolete">Rekisteröiminen onnistui.  Kirjaudu sisään ja päivitä henkilökohtaiset tietosi.</translation>
     </message>
     <message>
         <source>User Registration in Progress...</source>
-        <translation>Rekisteröinti käynnissä...</translation>
+        <translation type="obsolete">Rekisteröinti käynnissä...</translation>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
         <translation>Kelvoton salasana, pituus täytyy olla 1-8 kirjainta.</translation>
+    </message>
+    <message>
+        <source>Welcome to the Registration Wizard.
+
+You can register a new user here.
+
+Press &quot;Next&quot; to proceed.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Enter a password to protect your account.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Remember Password</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration - Step 2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration - Step 3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq Account Registration</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account Registration in Progress...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Account registration has been successfuly completed.
+Your new user id is %1.
+You are now being automatically logged on.
+Click OK to edit your personal details.
+After you are online, you can send your personal details to the server.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3674,7 +4049,7 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     </message>
     <message>
         <source>&amp;Uin#</source>
-        <translation>&amp;Uin#</translation>
+        <translation type="obsolete">&amp;Uin#</translation>
     </message>
     <message>
         <source>&amp;Search</source>
@@ -3727,6 +4102,14 @@ Paina &quot;Seuraava&quot; jatkaaksesi.</translation>
     <message>
         <source>&amp;Add %1 Users</source>
         <translation>&amp;Lisää %1 käyttäjää</translation>
+    </message>
+    <message>
+        <source>&amp;UIN#</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>View &amp;Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4140,6 +4523,10 @@ Lisäkuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
     <message>
         <source>Ukrainian</source>
         <translation>ukraina</translation>
+    </message>
+    <message>
+        <source>Unicode-16</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4621,6 +5008,14 @@ Valitaanko toinen kuva?</translation>
         <source>No</source>
         <translation>Ei</translation>
     </message>
+    <message>
+        <source>&amp;KDE Addressbook</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Email:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -4650,7 +5045,7 @@ Valitaanko toinen kuva?</translation>
     </message>
     <message>
         <source>%1 (%2)</source>
-        <translation>%1 (%2)</translation>
+        <translation type="obsolete">%1 (%2)</translation>
     </message>
 </context>
 <context>
@@ -4821,6 +5216,10 @@ palvelimen kautta!</translation>
     <message>
         <source>Send anyway</source>
         <translation>Lähetä kuitenkin</translation>
+    </message>
+    <message>
+        <source>Error! no owner set</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5023,6 +5422,35 @@ Pyyntö peruttu.</translation>
     <message>
         <source>File Transfer</source>
         <translation>Tiedostonsiirto</translation>
+    </message>
+    <message>
+        <source>&amp;View Email</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq is unable to find a browser application due to an internal error.</source>
+        <translation type="unfinished">Licq ei löydä selainohjelmaa sisäisen virheen vuoksi.</translation>
+    </message>
+    <message>
+        <source>Licq is unable to start your browser and open the URL.
+You will need to start the browser and open the URL manually.</source>
+        <translation type="unfinished">Licq ei voi käynnistää selaintasi ja avata URLia.
+Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
+    </message>
+</context>
+<context>
+    <name>VerifyDlg</name>
+    <message>
+        <source>Retype the letters shown above:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;OK</source>
+        <translation type="unfinished">&amp;OK</translation>
+    </message>
+    <message>
+        <source>Licq - New Account Verification</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
