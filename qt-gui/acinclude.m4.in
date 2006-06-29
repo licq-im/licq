@@ -332,6 +332,36 @@ AC_DEFUN([AC_PATH_QT_MERGETR],
   AC_SUBST(QT_MERGETR)
 ])
 
+AC_DEFUN([AC_PATH_QT_LUPDATE],
+[
+  AC_PATH_PROG(
+    QT_LUPDATE,
+    lupdate,
+    echo,
+    $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
+
+  if test "$QT_LUPDATE" = "echo"; then
+    echo "** lupdate could not be found. You will not be able to update the translations."
+  fi
+
+  AC_SUBST(QT_LUPDATE)
+])
+
+AC_DEFUN([AC_PATH_QT_LRELEASE],
+[
+  AC_PATH_PROG(
+    QT_LRELEASE,
+    lrelease,
+    echo,
+    $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
+
+  if test "$QT_LRELEASE" = "echo"; then
+    echo "** lrelease could not be found. You're losing the localisation."
+  fi
+
+  AC_SUBST(QT_LRELEASE)
+])
+
 ## ------------------------------------------------------------------------
 ## KDE detection. Terribly simple.
 ## ------------------------------------------------------------------------
