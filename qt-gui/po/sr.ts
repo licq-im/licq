@@ -1952,12 +1952,13 @@ http://www.licq.org
     </message>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Licq ne može da nađe aplikaciju pretraživača zbog interne greške.</translation>
     </message>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Licq ne može da pokrene vaš pretraživač i otvori URL
+Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
 </context>
 <context>
@@ -6669,12 +6670,13 @@ Zahtev je poništen.</translation>
     </message>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Licq ne može da nađe aplikaciju pretraživača zbog interne greške.</translation>
     </message>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Licq ne može da pokrene vaš pretraživač i otvori URL
+Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
 </context>
 <context>

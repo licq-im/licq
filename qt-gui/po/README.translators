@@ -1,25 +1,25 @@
 THIS README TRIES TO KEEP TRACK ON TRANSLATION MAINTAINERS
 ==========================================================
 
-(use 2 spaces for tab-stops to read/modify this document)
-
 Who is doing which translation?
 
-Language:         Maintainer:                                       Used Filetype: (ts/po)
----------         -----------                                       --------------
-bg_BG, Bulgarian  Ivan Dimitrov <dobber@bastun.net>                 po
-cs_CZ, czech      Martin Hnatek <m.hnatek@sh.cvut.cz>               ts
-de, german        Thomas Reitelbach <thomas@licq.org>               po
-es, espania       -unknown/none-
-fi, finnish       Tuomas Jaakola <tuomas.jaakola@iki.fi>            ts
-fr                Yves Dessertine <yves.d@hrnet.fr>                 
-hu_HU, hungarian  Daniel Levai <leva@fbi.hu>                        po
-it, italian       Salvatore Caligiore <caligiore@bigfoot.com>       
-ja_JP             Nobuaki Takahashi <nobu@icnet.ne.jp>              
-pl, poland        Grzegorz Nosek <blackfire@virtual.net.pl>         
-pt_BR             Gustavo Pichorim Boiko <gustavoboiko@brturbo.com> po
-ru                Leonid Kabanov <lkabanov@krasu.ru>                
-sv, swedish       Samuel Blomqvist <salblt97@student.umu.se>        ts
-tr, turkish       -unknown/none-
-uk                -unknown/none-
-sr, serbian       Aleksandar Spasojevic <prethorian@microsky.net>   ts
+Language:             File:  Maintainer:             Email:
+--------------------  -----  ----------------------  ------------------------
+Belarusian            be     --                      --
+Bulgarian             bg_BG  Ivan Dimitrov           dobber@bastun.net
+Czech                 cs_CZ  Martin Hnatek           m.hnatek@sh.cvut.cz
+German                de     Thomas Reitelbach       thomas@licq.org
+Spanish               es     --                      --
+Finnish               fi     Tuomas Jaakola          tuomas.jaakola@iki.fi
+French                fr     Yves Dessertine         yves.d@hrnet.fr
+Hungarian             hu_HU  Daniel Levai            leva@fbi.hu
+Italian               it     Salvatore Caligiore     caligiore@bigfoot.com
+Japanese              ja_JP  Nobuaki Takahashi       nobu@icnet.ne.jp
+Polish                pl     Grzegorz Nosek          blackfire@virtual.net.pl
+Portuguese            pt     --                      --
+Brazilian Portuguese  pt_BR  Gustavo Pichorim Boiko  gustavoboiko@brturbo.com
+Russian               ru     Leonid Kabanov          lkabanov@krasu.ru
+Serbian               sr     Aleksandar Spasojevic   prethorian@microsky.net
+Swedish               sv     Samuel Blomqvist        salblt97@student.umu.se
+Turkish               tr     --                      --
+Ukrainian             uk     --                      --
