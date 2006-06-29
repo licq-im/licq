@@ -3979,7 +3979,7 @@ void CMainWindow::autoAway()
   if ( (autoOfflineTime > 0) &&
        (unsigned long)idleTime > (unsigned long)(autoOfflineTime * 60000))
   {
-    if (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY || status == ICQ_STATUS_NA)
+    if (status != ICQ_STATUS_OFFLINE)
     {
       changeStatus(ICQ_STATUS_OFFLINE);
       bAutoOffline = true;
@@ -3990,38 +3990,40 @@ void CMainWindow::autoAway()
   else if ( (autoNATime > 0) &&
        (unsigned long)idleTime > (unsigned long)(autoNATime * 60000))
   {
-    if (status == ICQ_STATUS_ONLINE || status == ICQ_STATUS_AWAY)
+    if (status != ICQ_STATUS_NA)
     {
-      if (autoNAMess) {
-       SARList &sar = gSARManager.Fetch(SAR_NA);
-       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-       if (o != 0)
-       {
-        o->SetAutoResponse(QString(sar[autoNAMess-1]->AutoResponse()).local8Bit());
-        gUserManager.DropOwner();
-       }
-       gSARManager.Drop();
+      if (autoNAMess)
+      {
+        SARList &sar = gSARManager.Fetch(SAR_NA);
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+        if (o != 0)
+        {
+          o->SetAutoResponse(QString(sar[autoNAMess-1]->AutoResponse()).local8Bit());
+          gUserManager.DropOwner();
+        }
+        gSARManager.Drop();
       }
 
       changeStatus(ICQ_STATUS_NA);
       bAutoNA = true;
-      bAutoAway = (status == ICQ_STATUS_ONLINE || bAutoAway);
+      bAutoAway = true;
     }
   }
   else if ( (autoAwayTime > 0) &&
             (unsigned long)idleTime > (unsigned long)(autoAwayTime * 60000))
   {
-    if (status == ICQ_STATUS_ONLINE)
+    if (status != ICQ_STATUS_AWAY)
     {
-      if (autoAwayMess) {
-       SARList &sar = gSARManager.Fetch(SAR_AWAY);
-       ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-       if (o != 0)
-       {
-        o->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
-        gUserManager.DropOwner();
-       }
-       gSARManager.Drop();
+      if (autoAwayMess)
+      {
+        SARList &sar = gSARManager.Fetch(SAR_AWAY);
+        ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+        if (o != 0)
+        {
+          o->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
+          gUserManager.DropOwner();
+        }
+        gSARManager.Drop();
       }
 
       changeStatus(ICQ_STATUS_AWAY);
