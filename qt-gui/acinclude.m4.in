@@ -391,7 +391,7 @@ AC_DEFUN([AC_PATH_DCOP],
       /opt/kde3/bin:/opt/kde2/bin:/opt/kde/bin:/usr/lib/kde/bin:/usr/local/kde/bin/:/usr/kde/bin:/usr/lib/kde/bin:/usr/bin:/usr/X11R6/bin:$PATH)
 
 
-    if test "$DCOPIDL" = "echo" || "$DCOPIDL2CPP" = "echo"; then
+    if test "$DCOPIDL" = "echo" || test "$DCOPIDL2CPP" = "echo"; then
       AC_MSG_ERROR(["DCOP must be installed. Could not find dcopidl or dcopidl2cpp"])
     fi
   fi
