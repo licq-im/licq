@@ -42,10 +42,13 @@ Using a translation File
 Once the .ts file has been created and translated, it must be converted into
 a Qt .qm file. This is done using the program lrelease (it comes with your
 Qt-3.x installation), which can be invoked by using "lrelease <lang>.ts"
-assuming <lang>.ts exists.
+or "make <lang>.qm" assuming <lang>.ts exists.
 
-You can convert all .ts files in the po directory by simply doing
-"cd po && make".
+You can convert all .ts files in the po directory by simply doing "make".
+
+To get statistics about finished, unfinished and untranslated messages run
+"make <lang>.qm QT_LRELEASE='lrelease -verbose'" or just 
+"make QT_LRELEASE='lrelease -verbose'"
 
 Once you have the .qm file, simply copy it to
 <licq prefix>/share/licq/qt-gui/locale/<lang>.qm or do "cd po && make install"

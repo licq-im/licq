@@ -1,12 +1,11 @@
 localedir = $(prefix)/share/licq/qt-gui/locale
 
-$(top_builddir)/po/%.qm: $(top_srcdir)/po/%.ts
+%.qm: $(top_srcdir)/po/%.ts
 	$(QT_LRELEASE) $< -qm $@
 
-# The magic below transforms:
-# $(top_srcdir)/po/*.ts => $(top_builddir)/po/*.qm
-# forcing all ts-files in the po dir to be compiled into qm-files.
-all-local: $(patsubst %.ts, $(top_builddir)/po/%.qm, $(notdir $(wildcard $(top_srcdir)/po/*.ts)))
+# The row below transforms $(top_srcdir)/po/*.ts into *.qm
+# forcing all .ts files in the po dir to be compiled into .qm files.
+all-local: $(addsuffix .qm, $(basename $(notdir $(wildcard $(top_srcdir)/po/*.ts))))
 
 clean-local:
 	-rm -f $(top_builddir)/po/*.qm
