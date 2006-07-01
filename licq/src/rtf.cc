@@ -2150,7 +2150,7 @@ const unsigned RED			= 2;
 const unsigned GREEN		= 3;
 const unsigned BLUE			= 4;
 const unsigned CF			= 5;
-const unsigned FS			= 6;
+const unsigned FSX			= 6;
 const unsigned HIGHLIGHT	= 7;
 const unsigned PARD			= 8;
 const unsigned PAR			= 9;
@@ -2354,7 +2354,7 @@ string RTF2HTML::Parse(const char *rtf)
                 case CF:
                     cur_level.setFontColor(cmd_value);
                     break;
-                case FS:
+                case FSX:
                     cur_level.setFontSize(cmd_value);
                     break;
                 case HIGHLIGHT:
