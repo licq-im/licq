@@ -127,11 +127,11 @@ Do you really want to send it?</source>
     </message>
     <message>
         <source>Protocol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Протокол:</translation>
     </message>
     <message>
         <source>New User ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор пользователя</translation>
     </message>
 </context>
 <context>
@@ -213,7 +213,7 @@ You can leave me a message.
     </message>
     <message>
         <source>(Closing in %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Закроется через %1с)</translation>
     </message>
 </context>
 <context>
@@ -1206,86 +1206,86 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source> </source>
-        <translation type="unfinished"></translation>
+        <translation> </translation>
     </message>
     <message>
         <source>Error! No owner set</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка! Пользователь не задан</translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;%1&lt;/b&gt; в сети</translation>
     </message>
     <message>
         <source>(Error! No owner set)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Ошибка! Пользователь не задан)</translation>
     </message>
     <message>
         <source>&amp;GPG Key Manager...</source>
-        <translation type="unfinished"></translation>
+        <translation>Менеджер ключей &amp;GPG...</translation>
     </message>
     <message>
         <source>Don&apos;t Show</source>
-        <translation type="unfinished"></translation>
+        <translation>Не показывать</translation>
     </message>
     <message>
         <source>Available</source>
-        <translation type="unfinished">Доступные модули</translation>
+        <translation>Доступные модули</translation>
     </message>
     <message>
         <source>Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>Занят</translation>
     </message>
     <message>
         <source>Phone &quot;Follow Me&quot;</source>
-        <translation type="unfinished"></translation>
+        <translation>Телефон &quot;Следуй за мной&quot;</translation>
     </message>
     <message>
         <source>&amp;Owner Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Менеджер владельцев</translation>
     </message>
     <message>
         <source>Use GPG Encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать GPG криптование</translation>
     </message>
     <message>
         <source>Update Info Plugin List</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить плагин информации</translation>
     </message>
     <message>
         <source>Update Status Plugin List</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить плагин статуса</translation>
     </message>
     <message>
         <source>Update Phone &quot;Follow Me&quot; Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить статуса &quot;Следуй за мной&quot;</translation>
     </message>
     <message>
         <source>Update ICQphone Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить статус ICQphone </translation>
     </message>
     <message>
         <source>Update File Server Status</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновить статус сервера файлов</translation>
     </message>
     <message>
         <source>Set GPG key</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить GPG ключ</translation>
     </message>
     <message>
         <source>Do you really want to reset your stats?</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите обнулить всю статистику?</translation>
     </message>
 </context>
 <context>
     <name>CMessageViewWidget</name>
     <message>
         <source>%1 from %2</source>
-        <translation type="unfinished">%1 от пользователя %2</translation>
+        <translation>%1 от пользователя %2</translation>
     </message>
     <message>
         <source>%1 to %2</source>
-        <translation type="unfinished">%1 к пользователю %2</translation>
+        <translation>%1 к пользователю %2</translation>
     </message>
 </context>
 <context>
@@ -1424,7 +1424,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>General</source>
-        <translation>Разное</translation>
+        <translation>Основное</translation>
     </message>
     <message>
         <source>Romance</source>
@@ -1603,39 +1603,39 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Not In List</source>
-        <translation type="unfinished"></translation>
+        <translation>Не в листе</translation>
     </message>
     <message>
         <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Набирает&amp;nbsp;сообщение</translation>
     </message>
     <message>
         <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Телефон&amp;nbsp;&amp;quot;Следуй&amp;nbsp;за&amp;nbsp;мной&amp;quot;:&amp;nbsp;Доступен</translation>
     </message>
     <message>
         <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>lt;br&gt;Телефон&amp;nbsp;&amp;quot;Следуй&amp;nbsp;за&amp;nbsp;мной&amp;quot;:&amp;nbsp;Занят</translation>
     </message>
     <message>
         <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;ICQphone:&amp;nbsp;Доступен</translation>
     </message>
     <message>
         <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;ICQphone:&amp;nbsp;Занят</translation>
     </message>
     <message>
         <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Файловый&amp;nbsp;сервер:&amp;nbsp;Включен</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Идентификатор: </translation>
     </message>
 </context>
 <context>
@@ -1737,7 +1737,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&amp;Pane Mode</source>
-        <translation type="unfinished">&amp;Оконный режим</translation>
+        <translation>&amp;Оконный режим</translation>
     </message>
     <message>
         <source>&amp;IRC Mode</source>
@@ -1895,7 +1895,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>Toggles Underline font</source>
-        <translation type="unfinished"></translation>
+        <translation>Подчёркнутый шрифт</translation>
     </message>
 </context>
 <context>
@@ -1931,15 +1931,15 @@ You can leave me a message.</source>
     <name>EditCategoryDlg</name>
     <message>
         <source>Unspecified</source>
-        <translation type="unfinished">Не указанно</translation>
+        <translation>Не указанно</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;Ок</translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>О&amp;тменить</translation>
     </message>
 </context>
 <context>
@@ -2064,107 +2064,107 @@ the group &apos;%1&apos;?</source>
     <name>EditPhoneDlg</name>
     <message>
         <source>Description:</source>
-        <translation type="unfinished">Описание:</translation>
+        <translation>Описание:</translation>
     </message>
     <message>
         <source>Home Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Домашний телефон</translation>
     </message>
     <message>
         <source>Work Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>Рабочий телефон</translation>
     </message>
     <message>
         <source>Private Cellular</source>
-        <translation type="unfinished"></translation>
+        <translation>Мобильный телефон</translation>
     </message>
     <message>
         <source>Work Cellular</source>
-        <translation type="unfinished"></translation>
+        <translation>Мобильный рабочий телефон</translation>
     </message>
     <message>
         <source>Home Fax</source>
-        <translation type="unfinished"></translation>
+        <translation>Факс</translation>
     </message>
     <message>
         <source>Work Fax</source>
-        <translation type="unfinished"></translation>
+        <translation>Рабочий факс</translation>
     </message>
     <message>
         <source>Wireless Pager</source>
-        <translation type="unfinished"></translation>
+        <translation>Пейджер</translation>
     </message>
     <message>
         <source>Type:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип:</translation>
     </message>
     <message>
         <source>Phone</source>
-        <translation type="unfinished">Телефон</translation>
+        <translation>Телефон</translation>
     </message>
     <message>
         <source>Cellular</source>
-        <translation type="unfinished">Сотовый</translation>
+        <translation>Сотовый</translation>
     </message>
     <message>
         <source>Cellular SMS</source>
-        <translation type="unfinished"></translation>
+        <translation>Сотовый СМС</translation>
     </message>
     <message>
         <source>Fax</source>
-        <translation type="unfinished">Факс</translation>
+        <translation>Факс</translation>
     </message>
     <message>
         <source>Pager</source>
-        <translation type="unfinished"></translation>
+        <translation>Пейджер</translation>
     </message>
     <message>
         <source>Country:</source>
-        <translation type="unfinished">Страна:</translation>
+        <translation>Страна:</translation>
     </message>
     <message>
         <source>Network #/Area code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Код сети</translation>
     </message>
     <message>
         <source>Number:</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер:</translation>
     </message>
     <message>
         <source>Extension:</source>
-        <translation type="unfinished"></translation>
+        <translation>Дополнительный:</translation>
     </message>
     <message>
         <source>Provider:</source>
-        <translation type="unfinished"></translation>
+        <translation>Оператор:</translation>
     </message>
     <message>
         <source>Custom</source>
-        <translation type="unfinished"></translation>
+        <translation>Другой</translation>
     </message>
     <message>
         <source>E-mail Gateway:</source>
-        <translation type="unfinished"></translation>
+        <translation>Почтовый шлюз</translation>
     </message>
     <message>
         <source>Remove leading 0s from Area Code/Network #</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалять нули в начале кода сети</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;Ок</translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>О&amp;тменить</translation>
     </message>
     <message>
         <source>@</source>
-        <translation type="unfinished"></translation>
+        <translation>@</translation>
     </message>
     <message>
         <source>Please enter a phone number</source>
-        <translation type="unfinished"></translation>
+        <translation>Пожалуйста введите номер телефона</translation>
     </message>
 </context>
 <context>
@@ -2223,7 +2223,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>SMS</source>
-        <translation>SMS</translation>
+        <translation>СМС</translation>
     </message>
     <message>
         <source>Unknown Event</source>
@@ -2242,110 +2242,110 @@ the group &apos;%1&apos;?</source>
     <name>GPGKeyManager</name>
     <message>
         <source>Licq GPG Key Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq менеджер ключей GPG</translation>
     </message>
     <message>
         <source>GPG Passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль GPG</translation>
     </message>
     <message>
         <source>No passphrase set</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль не установлен</translation>
     </message>
     <message>
         <source>&amp;Set GPG Passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Установить пароль GPG</translation>
     </message>
     <message>
         <source>User Keys</source>
-        <translation type="unfinished"></translation>
+        <translation>Ключи пользователей</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Добавить</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редактировать</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Удалить</translation>
     </message>
     <message>
         <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;qt&gt;Перетяните мышкой пользователя, чтоб добавить в список.&lt;/qt&gt;</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользователь</translation>
     </message>
     <message>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Активно</translation>
     </message>
     <message>
         <source>Key ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор ключа</translation>
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрыть</translation>
+        <translation>&amp;Закрыть</translation>
     </message>
     <message>
         <source>Set Passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>Установить пароль</translation>
     </message>
     <message>
         <source>Not yet implemented. Use licq_gpg.conf.</source>
-        <translation type="unfinished"></translation>
+        <translation>Не реализовано до конца. Используйте licq_gpg.conf.</translation>
     </message>
     <message>
         <source>Remove GPG key</source>
-        <translation type="unfinished"></translation>
+        <translation>Удалить ключ GPG</translation>
     </message>
     <message>
         <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вы действительно хотите отказаться от использования этого ключа GPG в LICQ?</translation>
     </message>
 </context>
 <context>
     <name>GPGKeySelect</name>
     <message>
         <source>Select GPG Key for user %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Выбор ключа GPG для пользователя %1</translation>
     </message>
     <message>
         <source>Select a GPG key for user %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите ключ GPG для пользователя %1.</translation>
     </message>
     <message>
         <source>Current key: No key selected</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущий ключ: не задан</translation>
     </message>
     <message>
         <source>Current key: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Текущий ключ: %1</translation>
     </message>
     <message>
         <source>Use GPG Encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать шифрование GPG</translation>
     </message>
     <message>
         <source>Filter:</source>
-        <translation type="unfinished"></translation>
+        <translation>Фильтр:</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;Ок</translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;No Key</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Без ключа</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>О&amp;тменить</translation>
     </message>
 </context>
 <context>
@@ -2399,11 +2399,11 @@ the group &apos;%1&apos;?</source>
     <name>KeyListItem</name>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Да</translation>
+        <translation>Да</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Нет</translation>
+        <translation>Нет</translation>
     </message>
 </context>
 <context>
@@ -2512,14 +2512,14 @@ Rebuild Licq with OpenSSL support.</source>
     <name>KeyView</name>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
 </context>
 <context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Копировать ссылку</translation>
     </message>
 </context>
 <context>
@@ -3420,202 +3420,204 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Message Display</source>
-        <translation type="unfinished"></translation>
+        <translation>Вид сообщений</translation>
     </message>
     <message>
         <source>Flash Taskbar on Incoming Msg</source>
-        <translation type="unfinished"></translation>
+        <translation>Мигающая иконка в панели задач </translation>
     </message>
     <message>
         <source>Flash the Taskbar on incoming messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Мигающая иконка в панели задачи при получении нового сообщения</translation>
     </message>
     <message>
         <source>Show recent messages</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать предыдущие сообщения</translation>
     </message>
     <message>
         <source>Show the last 5 messages when a Send Window is opened</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать 5 последних сообщений в окне отправки</translation>
     </message>
     <message>
         <source>Send typing notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Посылать уведомление о наборе текста</translation>
     </message>
     <message>
         <source>Send a notification to the user so they can see when you are typing a message to them</source>
-        <translation type="unfinished"></translation>
+        <translation>Посылать уведомление удалённому пользователю во время набора текста сообщения</translation>
     </message>
     <message>
         <source>Sticky Main Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрепить Главное окно</translation>
     </message>
     <message>
         <source>Makes the Main window visible on all desktops</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать Главное окно видимым на всех рабочих столах</translation>
     </message>
     <message>
         <source>Sticky Message Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Закрепить окно сообщений</translation>
     </message>
     <message>
         <source>Makes the Message window visible on all desktops</source>
-        <translation type="unfinished"></translation>
+        <translation>Сделать окно сообщений видимым на всех рабочих столах</translation>
     </message>
     <message>
         <source>Small Icon</source>
-        <translation type="unfinished"></translation>
+        <translation>Маленькие иконки</translation>
     </message>
     <message>
         <source>Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers.</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать стандарт freedesktop.org для доков и иконок в оконных менеджерах. Работает с большинством оконных менеджеров. </translation>
     </message>
     <message>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Соединение</translation>
     </message>
     <message>
         <source>Reconnect after Uin clash</source>
-        <translation type="unfinished"></translation>
+        <translation>Восстанавливать соединение после обрыва</translation>
     </message>
     <message>
         <source>Licq can reconnect you when you got disconnected because your Uin was used from another location. Check this if you want Licq to reconnect automatically.</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq может восстанавливать соединение в случаях, когда Ваш номер ICQ использовался на другой машине. Установите этот флаг для автоматического реконнекта.</translation>
     </message>
     <message>
         <source>Show user display picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать иконку пользователя</translation>
     </message>
     <message>
         <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Использовать иконку-рисунок пользователя вместо иконки статуса в случаях, когда пользователь в сети и имеет такую иконку.</translation>
     </message>
     <message>
         <source>Protocol ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Протокол</translation>
     </message>
     <message>
         <source>Auto Update</source>
-        <translation type="unfinished"></translation>
+        <translation>Автообновление</translation>
     </message>
     <message>
         <source>Auto Update Info</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически обновлять информацию</translation>
     </message>
     <message>
         <source>Automatically update users&apos; server stored information.</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически обновлять информацию о пользователях с сервера</translation>
     </message>
     <message>
         <source>Auto Update Info Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически обновлять информацию плагинов</translation>
     </message>
     <message>
         <source>Automatically update users&apos; Phone Book and Picture.</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически обновлять телефонную книгу и картинку пользователя</translation>
     </message>
     <message>
         <source>Auto Update Status Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически обновлять статус пользователей</translation>
     </message>
     <message>
         <source>Automatically update users&apos; Phone &quot;Follow Me&quot;, File Server and ICQphone status.</source>
-        <translation type="unfinished"></translation>
+        <translation>Автоматически обновлять статус &quot;Следуй за мной&quot;, файлового сервера и ICQphone</translation>
     </message>
     <message>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стиль</translation>
     </message>
     <message>
         <source>Insert Horizontal Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставлять горизонтальные линии</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвета</translation>
     </message>
     <message>
         <source>Message Received:</source>
-        <translation type="unfinished"></translation>
+        <translation>Полученое сообщение:</translation>
     </message>
     <message>
         <source>History Received:</source>
-        <translation type="unfinished"></translation>
+        <translation>История сообщений, полученное:</translation>
     </message>
     <message>
         <source>History Sent:</source>
-        <translation type="unfinished"></translation>
+        <translation>История сообщений, отправленное:</translation>
     </message>
     <message>
         <source>Typing Notification Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет уведомления о наборе сообщения:</translation>
     </message>
     <message>
         <source>Background Color:</source>
-        <translation type="unfinished"></translation>
+        <translation>Цвет фона:</translation>
     </message>
 </context>
 <context>
     <name>OwnerEditDlg</name>
     <message>
         <source>Edit Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактирование учётной записи</translation>
     </message>
     <message>
         <source>User ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор пользователя:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="unfinished">Пароль:</translation>
+        <translation>Пароль:</translation>
     </message>
     <message>
         <source>Protocol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Протокол:</translation>
     </message>
     <message>
         <source>Currently only one account per protocol is supported.</source>
-        <translation type="unfinished"></translation>
+        <translation>В настоящее время поддерживается только одна учётная запись для каждого из протоколов.</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished">&amp;Ок</translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished"></translation>
+        <translation>О&amp;тменить</translation>
     </message>
 </context>
 <context>
     <name>OwnerManagerDlg</name>
     <message>
         <source>Licq - Account Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Менеджер учётных записей</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Добавить</translation>
     </message>
     <message>
         <source>&amp;Register</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Зарегестрировать</translation>
     </message>
     <message>
         <source>&amp;Modify</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Изменить</translation>
     </message>
     <message>
         <source>D&amp;elete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Удалить</translation>
     </message>
     <message>
         <source>&amp;Done</source>
-        <translation type="unfinished">&amp;Завершить</translation>
+        <translation>&amp;Завершить</translation>
     </message>
     <message>
         <source>From the Account Manager dialog you are able to add and register your accounts.
 Currently, only one account per protocol is supported, but this will be changed in future versions.</source>
-        <translation type="unfinished"></translation>
+        <translation>С помощью Менеджера учётных записей Вы можете добавить и зарегестрировать Ваш аккаунт.
+В настоящее время поддерживается работа только с одной учётной записью для каждого из протоколов.
+Работу с несколькими учётными записями одновременно планируется реализовать в ближайшем будущем.</translation>
     </message>
     <message>
         <source>You are currently registered as
@@ -3623,38 +3625,42 @@ UIN (User ID): %1
 Base Directory: %2
 Rerun licq with the -b option to select a new
 base directory and then register a new user.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ваши регистрационные данные:
+Пользователь (UIN): %1
+Рабочий каталог: %2
+Перезапустите licq с опцией -b чтобы выбрать другой
+рабочий каталог или зарегистрировать другого пользователя. </translation>
     </message>
     <message>
         <source>Successfully registered, your user identification
 number (UIN) is %1.
 Now set your personal information.</source>
-        <translation type="unfinished">Регистрация прошла успешно. 
+        <translation>Регистрация прошла успешно. 
 Ваш идентификационный номер (UIN) - %1.
 Теперь введите информацию о себе.</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
-        <translation type="unfinished">Регистрация не удалась. Подробности в окне отладки.</translation>
+        <translation>Регистрация не удалась. Подробности в окне отладки.</translation>
     </message>
 </context>
 <context>
     <name>OwnerView</name>
     <message>
         <source>User ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор пользователя</translation>
     </message>
     <message>
         <source>Protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Протокол</translation>
     </message>
     <message>
         <source>(Invalid ID)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Неверный идентификатор)</translation>
     </message>
     <message>
         <source>Invalid Protocol</source>
-        <translation type="unfinished"></translation>
+        <translation>Неверный протокол</translation>
     </message>
 </context>
 <context>
@@ -3727,19 +3733,19 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Plugin %1 has no configuration file</source>
-        <translation>Модуль %1 не использует файл настройки</translation>
+        <translation>Модуль %1 не использует файл настроек</translation>
     </message>
     <message>
         <source>Standard Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартные модули</translation>
     </message>
     <message>
         <source>Protocol Plugins</source>
-        <translation type="unfinished"></translation>
+        <translation>Модули протоколов</translation>
     </message>
     <message>
         <source>(Unloaded)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Выгружен)</translation>
     </message>
 </context>
 <context>
@@ -3762,11 +3768,11 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Да</translation>
+        <translation>Да</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Нет</translation>
+        <translation>Нет</translation>
     </message>
 </context>
 <context>
@@ -3834,7 +3840,7 @@ Press &quot;Next&quot; to proceed.</source>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation>Неправильный пароль, должен быть от 1 до 8 символов.</translation>
+        <translation>Неправильный пароль, он должен быть от 1 до 8 символов.</translation>
     </message>
     <message>
         <source>Please enter your password in both input fields.</source>
@@ -3870,35 +3876,39 @@ Press &quot;Next&quot; to proceed.</source>
 You can register a new user here.
 
 Press &quot;Next&quot; to proceed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Мастер регистрации приветсвует Вас
+
+Вы можете зарегестрировать нового пользователя здесь.
+
+Нажмите &quot;Далее&quot;, чтобы продолжить.</translation>
     </message>
     <message>
         <source>Account Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Регистрация учётной записи</translation>
     </message>
     <message>
         <source>Enter a password to protect your account.</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите пароль для защиты Вашего аккаунта.</translation>
     </message>
     <message>
         <source>&amp;Remember Password</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Запомнить пароль</translation>
     </message>
     <message>
         <source>Account Registration - Step 2</source>
-        <translation type="unfinished"></translation>
+        <translation>Регистрация учётной записи - второй шаг</translation>
     </message>
     <message>
         <source>Account Registration - Step 3</source>
-        <translation type="unfinished"></translation>
+        <translation>Регистрация учётной записи - третий шаг</translation>
     </message>
     <message>
         <source>Licq Account Registration</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Регистрация учётной записи</translation>
     </message>
     <message>
         <source>Account Registration in Progress...</source>
-        <translation type="unfinished"></translation>
+        <translation>Выполняется регистрация...</translation>
     </message>
     <message>
         <source>Account registration has been successfuly completed.
@@ -3906,7 +3916,11 @@ Your new user id is %1.
 You are now being automatically logged on.
 Click OK to edit your personal details.
 After you are online, you can send your personal details to the server.</source>
-        <translation type="unfinished"></translation>
+        <translation>Регистрация учётной записи завершена успешно.
+Ваш идентификатор - %1.
+Сейчас будет произведён автоматический вход в сеть.
+Нажмите ОК чтобы изменить Ваши персональные данные.
+После того, как клиент войдёт в сеть, Вы сможете отправить Ваши данные на сервер.</translation>
     </message>
 </context>
 <context>
@@ -4100,11 +4114,11 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>&amp;UIN#</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер ICQ:</translation>
     </message>
     <message>
         <source>View &amp;Info</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Просмотр деталей</translation>
     </message>
 </context>
 <context>
@@ -4438,15 +4452,15 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>E&amp;moticons</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Смайлики</translation>
     </message>
     <message>
         <source>Use this combo box to select one of the available emoticon icon sets</source>
-        <translation type="unfinished"></translation>
+        <translation>Используйте данный список для выбора набора смайликов</translation>
     </message>
     <message>
         <source>Emoticons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Смайлики:</translation>
     </message>
 </context>
 <context>
@@ -4521,7 +4535,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>Unicode-16</source>
-        <translation type="unfinished"></translation>
+        <translation>Юникод-16</translation>
     </message>
 </context>
 <context>
@@ -4895,120 +4909,121 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>Retrieve</source>
-        <translation type="unfinished"></translation>
+        <translation>Получить</translation>
     </message>
     <message>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентификатор:</translation>
     </message>
     <message>
         <source>Category:</source>
-        <translation type="unfinished"></translation>
+        <translation>Категория:</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation type="unfinished">Описание:</translation>
+        <translation>Описание:</translation>
     </message>
     <message>
         <source>User has an ICQ Homepage </source>
-        <translation type="unfinished"></translation>
+        <translation>Пользователь имеет домашнюю ICQ-страницу</translation>
     </message>
     <message>
         <source>User has no ICQ Homepage</source>
-        <translation type="unfinished"></translation>
+        <translation>Пользователь не имеет домашней ICQ-страницы</translation>
     </message>
     <message>
         <source>M&amp;ore II</source>
-        <translation type="unfinished"></translation>
+        <translation>&gt;Д&amp;ополнительно</translation>
     </message>
     <message>
         <source>(none)</source>
-        <translation type="unfinished">(нет)</translation>
+        <translation>(нет)</translation>
     </message>
     <message>
         <source>Occupation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Род занятий:</translation>
     </message>
     <message>
         <source>&amp;Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Телефон</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>Number/Gateway</source>
-        <translation type="unfinished"></translation>
+        <translation>Номер/Шлюз</translation>
     </message>
     <message>
         <source>Country/Provider</source>
-        <translation type="unfinished"></translation>
+        <translation>Страна/Оператор</translation>
     </message>
     <message>
         <source>Currently at:</source>
-        <translation type="unfinished"></translation>
+        <translation>Сейчас в:</translation>
     </message>
     <message>
         <source>(</source>
-        <translation type="unfinished"></translation>
+        <translation>(</translation>
     </message>
     <message>
         <source>) </source>
-        <translation type="unfinished"></translation>
+        <translation>)</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>P&amp;icture</source>
-        <translation type="unfinished"></translation>
+        <translation>И&amp;зображение</translation>
     </message>
     <message>
         <source>Not Available</source>
-        <translation type="unfinished">Недоступен</translation>
+        <translation>Недоступен</translation>
     </message>
     <message>
         <source>Failed to Load</source>
-        <translation type="unfinished"></translation>
+        <translation>Невозможно загрузить</translation>
     </message>
     <message>
         <source>&amp;KDE Addressbook</source>
-        <translation type="unfinished"></translation>
+        <translation>Адресная книга &amp;KDE</translation>
     </message>
     <message>
         <source>Email:</source>
-        <translation type="unfinished"></translation>
+        <translation>Почта:</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Добавить</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
-        <translation type="unfinished">О&amp;чистить</translation>
+        <translation>О&amp;чистить</translation>
     </message>
     <message>
         <source>&amp;Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Просмотреть</translation>
     </message>
     <message>
         <source>Select your picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Выберите Ваше изображение</translation>
     </message>
     <message>
         <source> is over %1 bytes.
 Select another picture?</source>
-        <translation type="unfinished"></translation>
+        <translation> больше %1 байт.
+Выбрать другое изображение?</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Да</translation>
+        <translation>Да</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Нет</translation>
+        <translation>Нет</translation>
     </message>
 </context>
 <context>
@@ -5046,28 +5061,28 @@ Select another picture?</source>
     <name>UserSendChatEvent</name>
     <message>
         <source>Multiparty: </source>
-        <translation type="unfinished">Многопользовательский:</translation>
+        <translation>Многопользовательский:</translation>
     </message>
     <message>
         <source>Invite</source>
-        <translation type="unfinished">Пригласить</translation>
+        <translation>Пригласить</translation>
     </message>
     <message>
         <source> - Chat Request</source>
-        <translation type="unfinished">- Запрос чата</translation>
+        <translation> - Запрос чата</translation>
     </message>
     <message>
         <source>Clear</source>
-        <translation type="unfinished">Очистить</translation>
+        <translation>Очистить</translation>
     </message>
     <message>
         <source>No reason provided</source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
     <message>
         <source>Chat with %2 refused:
 %3</source>
-        <translation type="unfinished">%2 отказался учавствовать в чате:
+        <translation>%2 отказался учавствовать в чате:
 %3</translation>
     </message>
 </context>
@@ -5213,54 +5228,54 @@ through the server!</source>
     </message>
     <message>
         <source>Error! no owner set</source>
-        <translation type="unfinished"></translation>
+        <translation>Ошибка! Не задан владелец</translation>
     </message>
 </context>
 <context>
     <name>UserSendContactEvent</name>
     <message>
         <source>Drag Users Here - Right Click for Options</source>
-        <translation type="unfinished">Перенесите пользователей сюда - используйте правую кнопку мыши для изменения списка</translation>
+        <translation>Перенесите пользователей сюда - используйте правую кнопку мыши для изменения списка</translation>
     </message>
     <message>
         <source> - Contact List</source>
-        <translation type="unfinished"> - Список контактов</translation>
+        <translation> - Список контактов</translation>
     </message>
 </context>
 <context>
     <name>UserSendFileEvent</name>
     <message>
         <source>File(s): </source>
-        <translation type="unfinished">Файл(ы): </translation>
+        <translation>Файл(ы): </translation>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished">Просмотр</translation>
+        <translation>Просмотр</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished">Редактировать</translation>
+        <translation>Редактировать</translation>
     </message>
     <message>
         <source> - File Transfer</source>
-        <translation type="unfinished"> - Передача файла</translation>
+        <translation> - Передача файла</translation>
     </message>
     <message>
         <source>Select files to send</source>
-        <translation type="unfinished">Выберите файлы для отправки</translation>
+        <translation>Выберите файлы для отправки</translation>
     </message>
     <message>
         <source>You must specify a file to transfer!</source>
-        <translation type="unfinished">Вы должны указать файл для передачи!</translation>
+        <translation>Вы должны указать файл для передачи!</translation>
     </message>
     <message>
         <source>No reason provided</source>
-        <translation type="unfinished"></translation>
+        <translation>Причина не известна</translation>
     </message>
     <message>
         <source>File transfer with %2 refused:
 %3</source>
-        <translation type="unfinished">В передаче файла к %2 отказано::
+        <translation>В передаче файла к %2 отказано::
 %3</translation>
     </message>
 </context>
@@ -5289,29 +5304,29 @@ Do you really want to send it?</source>
     <name>UserSendSmsEvent</name>
     <message>
         <source>Phone : </source>
-        <translation type="unfinished">Телефон :</translation>
+        <translation>Телефон :</translation>
     </message>
     <message>
         <source>Chars left : </source>
-        <translation type="unfinished">Осталось символов : </translation>
+        <translation>Осталось символов : </translation>
     </message>
     <message>
         <source> - SMS</source>
-        <translation type="unfinished"> - SMS</translation>
+        <translation> - SMS</translation>
     </message>
     <message>
         <source>You didn&apos;t edit the SMS.
 Do you really want to send it?</source>
-        <translation type="unfinished">Вы не отредактировали SMS сообщение.
+        <translation>Вы не отредактировали SMS сообщение.
 Вы действительно хотите его отослать?</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Да</translation>
+        <translation>&amp;Да</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Нет</translation>
+        <translation>&amp;Нет</translation>
     </message>
 </context>
 <context>
@@ -5420,16 +5435,16 @@ Request was cancelled.</source>
     </message>
     <message>
         <source>&amp;View Email</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Показать почтовый адрес</translation>
     </message>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
-        <translation type="unfinished">Licq не в состоянии найти приложение-браузер в следствии внутренней ошибки.</translation>
+        <translation>Licq не в состоянии найти приложение-браузер в следствии внутренней ошибки.</translation>
     </message>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
-        <translation type="unfinished">Licq не в состоянии запустить браузер и открыть ссылку.
+        <translation>Licq не в состоянии запустить браузер и открыть ссылку.
 Вам небходимо запустить браузер вручную.</translation>
     </message>
 </context>
@@ -5437,15 +5452,15 @@ You will need to start the browser and open the URL manually.</source>
     <name>VerifyDlg</name>
     <message>
         <source>Retype the letters shown above:</source>
-        <translation type="unfinished"></translation>
+        <translation>Введите буквы, показанные выше:</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">&amp;Ок</translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>Licq - New Account Verification</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Проверка новой учётной записи</translation>
     </message>
 </context>
 <context>
