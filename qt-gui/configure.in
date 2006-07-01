@@ -144,6 +144,7 @@ AC_PATH_QT_LRELEASE
 
 AC_PATH_KDE_LIBRARIES
 AC_PATH_DCOP
+AC_PATH_KDE_CONFIG
 LICQ_CHECK_GPGME
 
 dnl Switch to C++ mode and check for needed C++ headers

@@ -9,15 +9,17 @@ sharedir = @datadir@/licq/
 pkgdatadir = $(datadir)/@PACKAGE@
 
 install-data-local:
-	@if test "$(KDEDIR)" != ""; then \
-	   if test -w "$(KDEDIR)"; then \
-	     $(mkinstalldirs) $(DESTDIR)$(KDEDIR)/share/applnk/Internet; \
-	     $(INSTALL_DATA) $(srcdir)/licq.desktop \
-	                          $(DESTDIR)$(KDEDIR)/share/applnk/Internet; \
-	   else \
-	     $(mkinstalldirs) $(HOME)/.kde/share/applnk/Internet; \
-	     $(INSTALL_DATA) $(srcdir)/licq.desktop $(HOME)/.kde/share/applnk/Internet; \
-	   fi  \
+	@if test "$(have_kde)" = "yes"; then \
+		appsdir="`$(KDE_CONFIG) --install xdgdata-apps`"; \
+		if test "$$appsdir" = "NONE"; then \
+			appsdir="`$(KDE_CONFIG) --install apps`/Internet"; \
+		fi; \
+		appsdir=`echo $$appsdir | sed -e 's#$${datadir}#$(datadir)#'`; \
+		$(mkinstalldirs) $(DESTDIR)$$appsdir; \
+		$(INSTALL_DATA) $(srcdir)/licq.desktop $(DESTDIR)$$appsdir; \
+	else \
+		$(mkinstalldirs) $(DESTDIR)$(datadir)/applications; \
+		$(INSTALL_DATA) $(srcdir)/licq.desktop $(DESTDIR)$(datadir)/applications; \
 	fi
 	$(mkinstalldirs) $(DESTDIR)$(sharedir)
 	$(mkinstalldirs) $(DESTDIR)$(sharedir)/qt-gui/locale
@@ -62,7 +64,7 @@ install-data-local:
 	  done; \
 	done
 	$(mkinstalldirs) $(DESTDIR)$(sharedir)/qt-gui/emoticons
-	@for j in `echo $(srcdir)/qt-gui/emoticons/*|sed s/"$(srcdir)\/qt-gui\/emoticons\/CVS"//g`; do \
+	@for j in `echo $(srcdir)/qt-gui/emoticons/*|sed s#$(srcdir)/qt-gui/emoticons/CVS##g`; do \
 	  jj="qt-gui/emoticons/`basename $$j`" ; \
 	  if test -d $$j; then \
 	    echo "Installing emoticon $$jj"; \
