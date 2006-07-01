@@ -1539,7 +1539,7 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Больш падрабязныя дадзеная магчыма знайсьци на старонцы (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
+        <translation type="obsolete">&lt;hr&gt;&lt;p&gt; Больш падрабязныя дадзеныя магчыма знайсьці на старонцы (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&amp;Mini Mode</source>
@@ -7497,7 +7497,7 @@ changes here require a Restart to take effect!
     <name>OwnerEditDlg</name>
     <message>
         <source>Edit Account</source>
-        <translation>Рэдагаваць уліковы запіс</translation>
+        <translation>Рэдагаваньне уліковага запісу</translation>
     </message>
     <message>
         <source>User ID:</source>
@@ -8346,7 +8346,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>Hebrew</source>
-        <translation>Харвацкае</translation>
+        <translation>Іўрыт</translation>
     </message>
     <message>
         <source>Japanese</source>
