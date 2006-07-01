@@ -4714,36 +4714,42 @@ void CMainWindow::slot_usermenu()
   FOR_EACH_PROTO_PLUGIN_END
   
   // The send submenu and misc modes submenu that depend on sending capabilities
-  mnuUser->setItemVisible(mnuUserSendMsg, nSendFuncs & PP_SEND_MSG);
-  mnuUser->setItemVisible(mnuUserSendUrl, nSendFuncs & PP_SEND_URL);
-  mnuUser->setItemVisible(mnuUserSendFile, nSendFuncs & PP_SEND_FILE);
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(4), nSendFuncs & PP_SEND_FILE);
-  mnuUser->setItemVisible(mnuUserSendChat, nSendFuncs & PP_SEND_CHAT);
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(5), nSendFuncs & PP_SEND_CHAT);
-  mnuUser->setItemVisible(mnuUserSendContact, nSendFuncs & PP_SEND_CONTACT);
-  mnuUser->setItemVisible(mnuUserAuthorize, nSendFuncs & PP_SEND_AUTH);
-  mnuUser->setItemVisible(mnuUserAuthorizeRequest, nSendFuncs & PP_SEND_AUTHxREQ);
-  mnuUser->setItemVisible(mnuUserSendSms, nSendFuncs & PP_SEND_SMS);
-  mnuUser->setItemVisible(mnuUserSendKey, nSendFuncs & PP_SEND_SECURE);
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(6), nSendFuncs & PP_SEND_SECURE);
+#if QT_VERSION >= 0x030100
+#define HIDE_MENU(x, y, z) x->setItemVisible(y, z);
+#else
+#define HIDE_MENU(x, y, z) x->setItemEnabled(y, false);
+#endif
+
+  HIDE_MENU(mnuUser, mnuUserSendMsg, nSendFuncs & PP_SEND_MSG)
+  HIDE_MENU(mnuUser, mnuUserSendUrl, nSendFuncs & PP_SEND_URL)
+  HIDE_MENU(mnuUser, mnuUserSendFile, nSendFuncs & PP_SEND_FILE)
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(4), nSendFuncs & PP_SEND_FILE)
+  HIDE_MENU(mnuUser, mnuUserSendChat, nSendFuncs & PP_SEND_CHAT)
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(5), nSendFuncs & PP_SEND_CHAT)
+  HIDE_MENU(mnuUser, mnuUserSendContact, nSendFuncs & PP_SEND_CONTACT)
+  HIDE_MENU(mnuUser, mnuUserAuthorize, nSendFuncs & PP_SEND_AUTH)
+  HIDE_MENU(mnuUser, mnuUserAuthorizeRequest, nSendFuncs & PP_SEND_AUTHxREQ)
+  HIDE_MENU(mnuUser, mnuUserSendSms, nSendFuncs & PP_SEND_SMS)
+  HIDE_MENU(mnuUser, mnuUserSendKey, nSendFuncs & PP_SEND_SECURE)
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(6), nSendFuncs & PP_SEND_SECURE)
   
   // ICQ Protocol only
-  mnuUser->setItemVisible(mnuUserSendInfoPluginListRequest, bIsLicq);
-  mnuUser->setItemVisible(mnuUserSendStatusPluginListRequest, bIsLicq);
-  mnuUser->setItemVisible(mnuUserSendPhoneFollowMeRequest, bIsLicq);
-  mnuUser->setItemVisible(mnuUserSendICQphoneRequest, bIsLicq);
-  mnuUser->setItemVisible(mnuUserSendFileServerRequest, bIsLicq);
-  mnuUser->setItemVisible(mnuUserCheckIfInvisible, bIsLicq);
-  mnuUser->setItemVisible(mnuUserCheckResponse, bIsLicq);
-  mnuUser->setItemVisible(mnuUserCustomAutoResponse, bIsLicq);
+  HIDE_MENU(mnuUser, mnuUserSendInfoPluginListRequest, bIsLicq)
+  HIDE_MENU(mnuUser, mnuUserSendStatusPluginListRequest, bIsLicq)
+  HIDE_MENU(mnuUser, mnuUserSendPhoneFollowMeRequest, bIsLicq)
+  HIDE_MENU(mnuUser, mnuUserSendICQphoneRequest, bIsLicq)
+  HIDE_MENU(mnuUser, mnuUserSendFileServerRequest, bIsLicq)
+  HIDE_MENU(mnuUser, mnuUserCheckIfInvisible, bIsLicq)
+  HIDE_MENU(mnuUser, mnuUserCheckResponse, bIsLicq)
+  HIDE_MENU(mnuUser, mnuUserCustomAutoResponse, bIsLicq)
   
   // ICQ Protocol only
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(8), bIsLicq);
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(10), bIsLicq);
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(11), bIsLicq);
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(12), bIsLicq);
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(13), bIsLicq);
-  mnuMiscModes->setItemVisible(mnuMiscModes->idAt(14), bIsLicq);  
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(8), bIsLicq)
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(10), bIsLicq)
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(11), bIsLicq)
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(12), bIsLicq)
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(13), bIsLicq)
+  HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(14), bIsLicq)
   
   // FIXME: Groups! Show only what is for that protocol plugin in the submenu
   // to properly manage users

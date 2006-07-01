@@ -184,7 +184,7 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
       QString strResponse(codec->toUnicode(szAutoResp));
       QRegExp regExp("<.*>");
       regExp.setMinimal(true);
-      strResponse.remove(regExp);
+      strResponse.replace(regExp, "");
       mleAwayMsg->setText(strResponse);
     }
     else
