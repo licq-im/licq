@@ -45,7 +45,9 @@ case "$host" in
 		;;
 	*-*-solaris*)
 		CPPFLAGS="$CPPFLAGS -D_REENTRANT -D_POSIX_PTHREAD_SEMANTICS -DUSE_SOLARIS -DPIC -fPIC"
-		LDFLAGS="$LDFLAGS -mimpure-text"
+		if test $GXX != yes; then
+			LDFLAGS="$LDFLAGS -mimpure-text"
+		fi
 		echo "Setting Solaris compilation options"
 		;;
 	*-*-linux*)
