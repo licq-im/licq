@@ -21,8 +21,10 @@ class QRadioButton;
 class QTabWidget;
 
 #ifdef USE_KDE
+# define DEFAULT_URL_VIEWER tr("KDE default")
 class KURLRequester;
 #else
+# define DEFAULT_URL_VIEWER "viewurl-mozilla.sh"
 class KURLRequester : public QLineEdit
 {
 public:

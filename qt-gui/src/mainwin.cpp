@@ -5051,6 +5051,10 @@ void CMainWindow::slot_viewurl(QWidget *q, QString url)
   if (licqDaemon && (!licqDaemon->getUrlViewer()))
     app->invokeBrowser( url );
   else
+#else
+  // If no URL viewer is set, try DEFAULT_URL_VIEWER (mozilla)
+  if (licqDaemon && (!licqDaemon->getUrlViewer()))
+    licqDaemon->setUrlViewer(DEFAULT_URL_VIEWER);
 #endif
   {
     if (licqDaemon == NULL)

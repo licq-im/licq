@@ -40,11 +40,9 @@
 #include <kapp.h>
 #include <kfontdialog.h>
 #include <kurlrequester.h>
-#define DEFAULT_URL_VIEWER tr("KDE default")
 #else
 #include <qapplication.h>
 #include <qfontdialog.h>
-#define DEFAULT_URL_VIEWER tr("none")
 #endif
 
 #include "optionsdlg.h"
@@ -650,9 +648,11 @@ void OptionsDlg::ApplyOptions()
   mainwin->licqDaemon->SetAutoUpdateStatusPlugins(chkAutoUpdateStatusPlugins->isChecked());
 
   // Plugin tab
+#ifdef USE_KDE
   if (cmbUrlViewer->currentText() == DEFAULT_URL_VIEWER)
     mainwin->licqDaemon->setUrlViewer("none");  // untranslated!
   else
+#endif
     mainwin->licqDaemon->setUrlViewer(cmbUrlViewer->currentText().local8Bit());
 
   mainwin->licqDaemon->SetTerminal(edtTerminal->text().local8Bit());
@@ -1488,7 +1488,9 @@ QWidget* OptionsDlg::new_misc_options()
   QWhatsThis::add(lblUrlViewer, tr("The command to run to view a URL.  Will be passed the URL "
                                   "as a parameter."));
   cmbUrlViewer = new QComboBox(true, boxExtensions);
+#ifdef USE_KDE
   cmbUrlViewer->insertItem(DEFAULT_URL_VIEWER);
+#endif
   cmbUrlViewer->insertItem("viewurl-lynx.sh");
   cmbUrlViewer->insertItem("viewurl-mozilla.sh");
   cmbUrlViewer->insertItem("viewurl-ncftp.sh");
