@@ -431,6 +431,9 @@ AC_DEFUN([AC_PATH_KDE_INCLUDES],
   if test -n "$KDEDIR"; then
     kde_incdirs="$KDEDIR/include $KDEDIR $kde_incdirs"
   fi
+  if test -n "$ac_kde"; then
+    kde_incdirs="$ac_kde/include $ac_kde $kde_incdirs"
+  fi
 
   LICQ_FIND_FILE(kaction.h, $kde_incdirs, kde_incdir)
   kde_includes=$kde_incdir
@@ -476,6 +479,9 @@ AC_DEFUN([AC_PATH_KDE_LIBRARIES],
   kde_libdirs="/opt/kde3/lib /opt/kde2/lib /opt/kde/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/local/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
   if test -n "$KDEDIR"; then
     kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
+  fi
+  if test -n "$ac_kde"; then
+    kde_libdirs="$ac_kde/lib $ac_kde $kde_libdirs"
   fi
 
   LICQ_FIND_FILE(libkdecore.la, $kde_libdirs, kde_libdir)
