@@ -257,6 +257,7 @@ public:
                  const char *_szId, unsigned long _nPPID, QWidget *parent = 0,
                  const char *name = 0);
   virtual ~UserSendCommon();
+  virtual bool eventFilter(QObject *watched, QEvent *e);
 
   void setText(const QString& txt);
   void convoJoin(const char *, unsigned long _nConvoId);
@@ -355,6 +356,7 @@ public:
   UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
   virtual ~UserSendUrlEvent();
+  virtual bool eventFilter(QObject *watched, QEvent *e);
 
   void setUrl(const QString& url, const QString& description);
 

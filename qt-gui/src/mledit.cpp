@@ -47,12 +47,6 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
     setWordWrap(NoWrap);
   }
 
-  QAccel *a = new QAccel( this );
-  a->connectItem(a->insertItem(Key_Enter + CTRL),
-                 this, SIGNAL(signal_CtrlEnterPressed()));
-  a->connectItem(a->insertItem(Key_Return + CTRL),
-                 this, SIGNAL(signal_CtrlEnterPressed()));
-
   if (editFont)
     QWidget::setFont(*editFont, true);
 }
@@ -181,6 +175,10 @@ void MLEditWrap::keyPressEvent( QKeyEvent *e )
       break;
     case Key_L:
       clear();
+      break;
+    case Key_Return:
+    case Key_Enter:
+      emit signal_CtrlEnterPressed();
       break;
     default:
       QMultiLineEdit::keyPressEvent(e);

@@ -242,6 +242,7 @@ void OptionsDlg::SetupOptions()
   chkEnableMainwinMouseMovement->setChecked(mainwin->m_bEnableMainwinMouseMovement);
   chkMainWinSticky->setChecked(mainwin->m_bMainWinSticky);
   chkMsgWinSticky->setChecked(mainwin->m_bMsgWinSticky);
+  chkSingleLineChatMode->setChecked(mainwin->m_bSingleLineChatMode);
   popEmail->setChecked(mainwin->m_bPopEmail);
   popPhone->setChecked(mainwin->m_bPopPhone);
   popFax->setChecked(mainwin->m_bPopFax);
@@ -540,6 +541,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bMainWinSticky = chkMainWinSticky->isChecked();
   mainwin->changeMainWinSticky(chkMainWinSticky->isChecked());
   mainwin->m_bMsgWinSticky = chkMsgWinSticky->isChecked();
+  mainwin->m_bSingleLineChatMode = chkSingleLineChatMode->isChecked();
 
   mainwin->m_bPopEmail= popEmail->isChecked();
   mainwin->m_bPopPhone= popPhone->isChecked();
@@ -823,6 +825,10 @@ QWidget* OptionsDlg::new_appearance_options()
   chkEnableMainwinMouseMovement = new QCheckBox(tr("Allow dragging main window"), boxMainWin);
   QWhatsThis::add(chkEnableMainwinMouseMovement, tr("Lets you drag around the main window "
    "with your mouse"));
+
+  chkSingleLineChatMode = new QCheckBox(tr("Single line chat mode"), boxMainWin);
+  QWhatsThis::add(chkSingleLineChatMode, tr("In single line chat mode you send messages with Enter "
+    "and insert new lines with Ctrl+Enter, opposite of the normal mode"));
 
   chkMsgChatView = new QCheckBox(tr("Chatmode Messageview"), boxMainWin);
   QWhatsThis::add(chkMsgChatView, tr("Show the current chat history in Send Window"));

@@ -31,6 +31,7 @@
 #include <qaccel.h>
 #include <qcheckbox.h>
 #include <qdatetime.h>
+#include <qevent.h>
 #include <qfileinfo.h>
 #include <qvbox.h>
 #include <qvgroupbox.h>
@@ -1778,6 +1779,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   }
 
   mleSend = new MLEditWrap(true, splView, true);
+  mleSend->installEventFilter(this); // Enables send with enter
+
   if (mainwin->m_bMsgChatView)
   {
     splView->setResizeMode(mleSend, QSplitter::KeepSize);
@@ -1796,6 +1799,32 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
 UserSendCommon::~UserSendCommon()
 {
+}
+
+#undef KeyPress
+bool UserSendCommon::eventFilter(QObject *watched, QEvent *e)
+{
+  if (watched == mleSend)
+  {
+    // If we're in single line chat mode we send messages with Enter and
+    // insert new lines with Ctrl+Enter.
+    if (mainwin->m_bSingleLineChatMode && e->type() == QEvent::KeyPress)
+    {
+      QKeyEvent *key = static_cast<QKeyEvent*>(e);
+      const bool isEnter = (key->key() == Key_Enter || key->key() == Key_Return);
+      if (isEnter)
+      {
+       if (key->state() & ControlButton)
+          mleSend->newLine();
+        else
+          btnSend->animateClick();
+        return true; // filter the event out
+      }
+    }
+    return false;
+  }
+  else
+    return UserEventCommon::eventFilter(watched, e);
 }
 
 void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
@@ -2834,6 +2863,7 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(lblItem);
   edtItem = new CInfoField(mainWidget, false);
   h_lay->addWidget(edtItem);
+  edtItem->installEventFilter(this);
 
   m_sBaseTitle += tr(" - URL");
 #if QT_VERSION >= 300
@@ -2847,6 +2877,26 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
 
 UserSendUrlEvent::~UserSendUrlEvent()
 {
+}
+
+bool UserSendUrlEvent::eventFilter(QObject *watched, QEvent *e)
+{
+  if (watched == edtItem)
+  {
+    if (e->type() == QEvent::KeyPress)
+    {
+      QKeyEvent *key = static_cast<QKeyEvent*>(e);
+      const bool isEnter = (key->key() == Key_Enter || key->key() == Key_Return);
+      if (isEnter && (mainwin->m_bSingleLineChatMode || key->state() & ControlButton))
+      {
+        btnSend->animateClick();
+        return true; // filter the event out
+      }
+    }
+    return false;
+  }
+  else
+    return UserSendCommon::eventFilter(watched, e);
 }
 
 void UserSendUrlEvent::setUrl(const QString& url, const QString& description)

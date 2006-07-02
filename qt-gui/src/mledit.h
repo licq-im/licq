@@ -14,8 +14,7 @@ public:
   void append(const QString& s);
   void GotoEnd();
 
-  using QMultiLineEdit::hasMarkedText;
-  using QMultiLineEdit::markedText;
+  using QMultiLineEdit::newLine; // make newLine() public
 
   void setBackground(const QColor&);
   void setForeground(const QColor&);

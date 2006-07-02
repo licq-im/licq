@@ -156,6 +156,7 @@ public:
        m_bFlashTaskbar,
        m_bMainWinSticky,
        m_bMsgWinSticky,
+       m_bSingleLineChatMode,
        m_bShowUserIcons;
 
   QString m_MsgAutopopupKey;

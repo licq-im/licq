@@ -447,6 +447,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("ShowUserIcons", m_bShowUserIcons, true);
   licqConf.ReadBool("MainWinSticky", m_bMainWinSticky, false);
   licqConf.ReadBool("MsgWinSticky", m_bMsgWinSticky, false);
+  licqConf.ReadBool("SingleLineChatMode", m_bSingleLineChatMode, false);
 
   licqConf.ReadStr("ReceiveMessageColor", szTemp, "red");
   m_colorRcv = QColor(szTemp);
@@ -3640,6 +3641,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("ShowUserIcons", m_bShowUserIcons);
   licqConf.WriteBool("MainWinSticky", m_bMainWinSticky);
   licqConf.WriteBool("MsgWinSticky", m_bMsgWinSticky);
+  licqConf.WriteBool("SingleLineChatMode", m_bSingleLineChatMode);
 
   licqConf.WriteNum("ChatMessageStyle", m_nMsgStyle);
   licqConf.WriteBool("ChatAppendLinebreak", m_bAppendLineBreak);
