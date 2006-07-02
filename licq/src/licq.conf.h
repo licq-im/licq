@@ -23,7 +23,6 @@ static const char LICQ_CONF[] =
 "ErrorTypes = 6\n"
 "Rejects = log.rejects\n"
 "Translation = none\n"
-"UrlViewer = viewurl-netscape.sh\n"
 "Terminal = xterm -T Licq -e \n"
 "ProxyEnabled = 0\n"
 "ProxyServerType = 1\n"
