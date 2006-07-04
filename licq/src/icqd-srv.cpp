@@ -2862,15 +2862,15 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
     if (packet.readTLV())
     {
-      //if (packet.hasTLV(0x0000) && packet.getTLVLen(0x0000) == 2)
-      //  bFake = true;
+      if (packet.hasTLV(0x0003) && packet.getTLVLen(0x0003) == 4)
+        bFake = true;
     }
 
     // AIM users send this when they really do go offline, so skip it if it is
     // an AIM user
     if (bFake && isdigit(szId[0]))
     {
-      gLog.Info("%sIgnoring fake offline:%s\n", L_SRVxSTR, szId);
+      gLog.Error("%sIgnoring fake offline:%s\n", L_SRVxSTR, szId);
       delete [] szId;
       break;
     }
