@@ -2744,6 +2744,18 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         {
           bUTF8 = true;
         }
+        else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_LICQxVER,
+                 strlen(ICQ_CAPABILITY_LICQxVER)) == 0)
+        {
+          char *verStr = caps+((i+1)*CAP_LENGTH-4);
+          ver1 = verStr[0];
+          ver2 = verStr[1]%100;
+          ver3 = verStr[2];
+          snprintf(tmpVer, sizeof(tmpVer)-1, "%u.%u.%u", ver1, ver2, ver3);
+          version = "Licq v" + string(tmpVer);
+          if (verStr[3] == 1)
+            version += "/SSL";
+        }
         else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_KOPETExVER,
                  strlen(ICQ_CAPABILITY_KOPETExVER)) == 0)
         {
@@ -2753,12 +2765,12 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           ver3 = verStr[2]*100;
           ver3 += verStr[3];
           snprintf(tmpVer, sizeof(tmpVer)-1, "%u.%u.%u", ver1, ver2, ver3);
-          version = "Kopete " + string(tmpVer);
+          version = "Kopete v" + string(tmpVer);
         }
         else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_SIMxVER,
                  strlen(ICQ_CAPABILITY_SIMxVER)) == 0)
         {
-          version = "Sim";
+          version = "SIM";
         }
         else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_MICQxVER,
                  strlen(ICQ_CAPABILITY_MICQxVER)) == 0)
