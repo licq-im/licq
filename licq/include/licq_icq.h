@@ -538,6 +538,17 @@ const char ICQ_CAPABILITY_LICQxVER[]  = { 'L',  'i',  'c',  'q',  ' ',  'c',
                                           'l',  'i',  'e',  'n',  't',  ' ',
                                           0x00, 0x00, 0x00, 0x00 };
  
+const char ICQ_CAPABILITY_SIMxVER[]   = { 'S',  'I',  'M',  ' ',  'c',  'l', 
+                                          'i',  'e',  'n',  't',  ' ',  ' ',
+                                          0x00, 0x00, 0x00, 0x00 };
+
+const char ICQ_CAPABILITY_KOPETExVER[] ={ 'K',  'o',  'p',  'e',  't',  'e',
+                                          ' ',  'I',  'C',  'Q',  ' ',  ' ',
+                                          0x00, 0x00, 0x00, 0x00 };
+
+const char ICQ_CAPABILITY_MICQxVER[]  = { 'm',  'I',  'C',  'Q',  ' ', 0xA9,
+                                          ' ',  'R',  '.',  'K',  '.',  ' ', 
+                                          0x00, 0x00, 0x00, 0x00 };
 // For protocol plugins
 
 // Sending capabilities

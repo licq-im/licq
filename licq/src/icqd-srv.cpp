@@ -2732,18 +2732,48 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
       // Check if they support UTF8
       bool bUTF8 = false;
+
+      // Check capability flags for their client version
+      string version = "";
+      char tmpVer[24];
+      unsigned int ver1, ver2, ver3;
+
       for (int i = 0; i < (nCapSize / CAP_LENGTH); i++)
       {
         if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_UTF8, CAP_LENGTH) == 0)
         {
           bUTF8 = true;
-          break;
+        }
+        else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_KOPETExVER,
+                 strlen(ICQ_CAPABILITY_KOPETExVER)) == 0)
+        {
+          char *verStr = caps+((i+1)*CAP_LENGTH-4);
+          ver1 = verStr[0];
+          ver2 = verStr[1];
+          ver3 = verStr[2]*100;
+          ver3 += verStr[3];
+          snprintf(tmpVer, sizeof(tmpVer)-1, "%u.%u.%u", ver1, ver2, ver3);
+          version = "Kopete " + string(tmpVer);
+        }
+        else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_SIMxVER,
+                 strlen(ICQ_CAPABILITY_SIMxVER)) == 0)
+        {
+          version = "Sim";
+        }
+        else if (memcmp(caps+(i * CAP_LENGTH), ICQ_CAPABILITY_MICQxVER,
+                 strlen(ICQ_CAPABILITY_MICQxVER)) == 0)
+        {
+          version = "mICQ";
         }
       }  
       delete [] caps;
 
       if (u)
+      {
         u->SetSupportsUTF8(bUTF8);
+        if (version != "")
+          u->SetClientInfo(version.c_str());
+      }
     }
     
     if (packet.hasTLV(0x0011))
