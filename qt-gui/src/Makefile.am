@@ -1,7 +1,6 @@
 EXTRA_DIST = xpm
 
-#hack, FIXME this in a clean manner
-libdir=$(prefix)/lib/licq
+libdir=@libdir@/licq
 licq_incdir = $(LICQ_INCLUDES)
 
 AM_CPPFLAGS = -D_REENTRANT \
