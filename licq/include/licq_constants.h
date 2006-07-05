@@ -4,8 +4,6 @@
 
 // Directory constants
 const char DEFAULT_HOME_DIR[]                      = ".licq";
-const char BASE_SHARE_DIR[]                        = "share/licq/";
-const char BASE_LIB_DIR[]                          = "lib/licq/";
 const char USER_DIR[]                              = "users";
 const char HISTORY_DIR[]                           = "history";
 const char HISTORY_EXT[]                           = "history";

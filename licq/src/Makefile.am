@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -Wall -I$(top_srcdir)/include -DINSTALL_PREFIX=\"@prefix@\" @SOCKS_INCDIR@
+AM_CPPFLAGS = -Wall -I$(top_srcdir)/include @SOCKS_INCDIR@
 
 datadir = @datadir@
 localedir = $(datadir)/locale
@@ -18,8 +18,8 @@ licq_SOURCES = licq.cpp main.cpp \
 	 onevent.cpp plugind.cpp sar.cpp languagecodes.c \
 	 icqd-chat.cpp sighandler.c icqd-filetransfer.cpp \
 	 hebrev.c icqcolor.cpp fifo.cpp  protoplugind.cpp gpg.cpp \
-         occupationcodes.c homepagecodes.c interestcodes.c \
-         organizationcodes.c backgroundcodes.c providers.c rtf.cc
+	 occupationcodes.c homepagecodes.c interestcodes.c \
+	 organizationcodes.c backgroundcodes.c providers.c rtf.cc
 
 licq_LDADD = @SOCKS_LIBS@ 
 licq_LDFLAGS = -export-dynamic @SOCKS_LIBDIR@

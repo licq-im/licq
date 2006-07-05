@@ -297,8 +297,12 @@ bool CLicq::Init(int argc, char **argv)
     return false;
 
   // Define the directory for all the shared data
-  sprintf(SHARE_DIR, "%s/%s", INSTALL_PREFIX, BASE_SHARE_DIR);
-  sprintf(LIB_DIR, "%s/%s", INSTALL_PREFIX, BASE_LIB_DIR);
+  strncpy(SHARE_DIR, INSTALL_SHAREDIR, MAX_FILENAME_LEN);
+  SHARE_DIR[MAX_FILENAME_LEN - 1] = '\0';
+
+  strncpy(LIB_DIR, INSTALL_LIBDIR, MAX_FILENAME_LEN);
+  LIB_DIR[MAX_FILENAME_LEN - 1] = '\0';
+
 
   // Check pid
   char szConf[MAX_FILENAME_LEN], szKey[32];
