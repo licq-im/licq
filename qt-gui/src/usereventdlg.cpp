@@ -2606,7 +2606,7 @@ void UserSendCommon::slot_cancelSend()
     icqEventTag = m_lnEventTag.front();
 
   if (!icqEventTag)
-    return;
+    return slot_close(); // if we're not sending atm, let ESC close the window
 
 #if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
