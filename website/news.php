@@ -2,6 +2,7 @@
   include "header.php";
   include "archive.php";
 
+$news_action = $_REQUEST['news_action']
     if ( empty( $news_action ) ) $news_action = "show_archive";
 ?>
       

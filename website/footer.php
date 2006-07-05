@@ -6,11 +6,11 @@
           <div class="menu_item"><a href="http://www.licq.org/news.php"><span>News</span></a></div>
           <div class="menu_item"><a href="http://www.licq.org/info.php"><span>Info</span></a></div>
           <div class="menu_item"><a href="http://blog.licq.org"><span>Blog</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/faqs.php"><span>FAQs</span></a></div>
+          <div class="menu_item"><a href="http://wiki.licq.org"><span>Wiki</span></a></div>
           <div class="menu_item"><a href="http://www.licq.org/mirrors.php"><span>Mirrors</span></a></div>
           <div class="menu_item"><a href="http://www.licq.org/help.php"><span>Help</span></a></div>
           <div class="menu_item"><a href="http://www.licq.org/download.php"><span>Downloads</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/daily.php"><span>CVS Dailies</span></a></div>
+          <div class="menu_item"><a href="http://www.licq.org/daily.php"><span>SVN Dailies</span></a></div>
           <div class="menu_item"><a href="http://www.licq.org/shots.php"><span>Screenshots</span></a></div>
           <div class="menu_item"><a href="http://www.licq.org/skins.php"><span>Skins</span></a></div>
           <div class="menu_item"><a href="http://www.licq.org/plugins.php"><span>Plugins</span></a></div>
@@ -22,7 +22,7 @@
         <div id="menucrew"></div>
         <div id="crew">
           <ul>
-            <li><img src="http://web.icq.com/whitepages/online?icq=16325723&amp;img=5" alt="Jon_status"/>Jon Keating
+            <li><img src="http://web.icq.com/whitepages/online?icq=16325723&amp;img=5" alt="Jon_status"/><a href="http://www.thejon.org/">Jon Keating</a>
               <ul>
                 <li>Alias: Emostar</li>
               </ul>

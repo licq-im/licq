@@ -1,5 +1,5 @@
-      
-      <div id="content" > 
+<? include('header.php'); ?>
+  <div id="content" > 
 
       <div id="main"><img src="images/main_title_dailies.gif" alt="CVS Dailies" /></div>
         <div id="maincontent">
@@ -12,10 +12,12 @@
              <h2>CVS snapshots</h2>
              <p>CVS snapshots, in addition to anonymous CVS (see below), are available daily. If you want to participate in development and get full CVS access, please ask <a href="mailto:jon@licq.org">Jon</a>.</p>
              <p>If you want to know what has changed in every detail, you should subscribe to the Licq CVS commit mailinglist.To do so, write an email to <a href=" mailto:licq-cvs-request@lists.sourceforge.net">licq-cvs-request@lists.sourceforge.net</a> and put 'subscribe' in the subject.</p>
-             <p>Brief summary of changes for the last week:
-             <pre><?php require("xlog.html"); ?></pre></p>
+             <p>Brief summary of changes for the last week:<br>
+             <?php require("xlog.html"); ?>
+             </p>
+
              <p>
-             You can download the current Licq snapshot <a href="licq-daily.tar.bz2">licq-20050529</a>.<br>
+             You can download the current Licq snapshot <a href="http://licq.sf.net/licq-daily.tar.bz2">licq-20060705</a>.<br>
              <p>Remember, these are development versions, so they might have new and untested features or contain bugs. They might not even compile, so use them at your own risk.
              <p>Please join the Licq development mailinglist when you use the snapshots regularly.
              You should report problems with the snapshots or

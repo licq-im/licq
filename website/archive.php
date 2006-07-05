@@ -50,13 +50,13 @@ function news_show_item( $data )
     $date = date( "M jS G:i Y", mktime($aux[3],$aux[4],0,$aux[1],$aux[2],$aux[0] ) );
     ?>
     <div class="news">
-      <h2><B><?echo $title;?></B> - <I><?echo $date;?></I></h2>
+      <h2><B><?echo $title;?></B> - <I><?echo $date;?></I></h2
       <p>
       <? for ( $i =2; $i < count ( $data ); $i++ ) echo $data[$i]; ?>
-      </p>
+      </p
       <div class="footer">
-        <div class="footer_right"></div>
-      </div>
+        <div class="footer_right"></div
+      </div
     </div>
     <?
 }
@@ -108,7 +108,12 @@ function news_show_archive()
 
 function news_show_single_item()
 {
-    global $item_id;
+    //global $item_id;
+$item_id = $_REQUEST['item_id']
+if (!is_numeric($item_id)
+{ echo "NO."
+exit
+
     $data = news_read_item( $item_id );
     news_show_item( $data );
     $prev_id = news_check_prev_item( $item_id );
@@ -122,19 +127,19 @@ function news_show_single_item()
     echo "</center>";
 }
 
-/*
- * Get all directory entries except . and ..
- */
-function dir_get_entries( $path ) {
-    $i = 0;
-    $hdir = opendir( $path );
-    while( $entry = readdir( $hdir ) ) {
-        if ( $entry == "." ) continue;
-        if ( $entry == ".." ) continue;
-        $data[$i++] = $entry;
-    }
-    closedir( $hdir );
-    if ( !empty( $data ) ) sort( $data );
-    return $data;
-}
-?>
+/
+ * Get all directory entries except . and .
+ *
+function dir_get_entries( $path ) 
+    $i = 0
+    $hdir = opendir( $path )
+    while( $entry = readdir( $hdir ) ) 
+        if ( $entry == "." ) continue
+        if ( $entry == ".." ) continue
+        $data[$i++] = $entry
+    
+    closedir( $hdir )
+    if ( !empty( $data ) ) sort( $data )
+    return $data
+
+?

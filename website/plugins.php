@@ -44,16 +44,6 @@
                   </tr>
 
                   <tr>
-                    <td><a href="http://jons-gtk-gui.sourceforge.net">Jons GTK+ Gui</a></td>
-                    <td>0.20</td>
-                    <td>A pretty functional GTK+ interface. <b>MAINTAINER NEEDED</b></td>
-                  </tr>
-                  <tr>
-                    <td><a href="http://gtk.licq.org/">GTK+Licq</a></td>
-                    <td>0.50.1</td>
-                    <td>A easy to use gui using Gtk with optional GNOME support including a nice applet.</td>
-                  </tr>
-                  <tr>
                     <td><a href="http://nicq.sourceforge.net">Nicq</a></td>
                     <td>0.40</td>
                     <td>An excellent Qt based GUI which uses an IRC style single window interface.</td>

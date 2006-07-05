@@ -12,6 +12,7 @@
             <!-- News Item Begin-->
             <div class="news">
               <p>
+Currenly only the main site is up! The main server's hard disk crashed and we are in the process of restoring the DNS entries.
 <TABLE CELLSPACING="3" CELLPADDING="3">
 <tr>
 <TH WIDTH="120">Country
@@ -22,7 +23,7 @@
 <td>Main Site
 <td><A HREF="http://www.licq.org/" target=_top>http</A>
 <td><A HREF="ftp://ftp2.sourceforge.net/pub/sourceforge/licq/">ftp</A>
-<td>Sourceforge.
+<td>Jon Keating (Japan)
 <tr>
 <!--
 <td>New Zealand
