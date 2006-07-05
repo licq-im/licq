@@ -1,6 +1,6 @@
 EXTRA_DIST = xpm
 
-libdir=@libdir@/licq
+libdir=@libdir@/licq/
 licq_incdir = $(LICQ_INCLUDES)
 
 AM_CPPFLAGS = -D_REENTRANT \
