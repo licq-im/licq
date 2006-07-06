@@ -2262,6 +2262,7 @@ void UserSendCommon::sendButton()
     setCursor(waitCursor);
     btnSend->setText(tr("&Cancel"));
     btnClose->setEnabled(false);
+    mleSend->setEnabled(false);
     disconnect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
     connect(btnSend, SIGNAL(clicked()), this, SLOT(slot_cancelSend()));
 
@@ -2345,6 +2346,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   setCursor(arrowCursor);
   btnSend->setText(tr("&Send"));
   btnClose->setEnabled(true);
+  mleSend->setEnabled(true);
   disconnect(btnSend, SIGNAL(clicked()), this, SLOT(slot_cancelSend()));
   connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
 
