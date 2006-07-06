@@ -237,8 +237,8 @@ int gethostbyname_r_portable(const char *szHostName, struct hostent *h, char *bu
 #if defined(__GLIBC__)
   struct hostent *h_buf;
   int herror = 0;
-  gethostbyname_r(szHostName, h, buf, buflen, &h_buf, &herror);
-  return herror;
+  int retval = gethostbyname_r(szHostName, h, buf, buflen, &h_buf, &herror);
+  return ((retval == 0 && h_buf != NULL) ? 0 /* success */ : herror);
 // Solaris, Irix
 #elif defined(sun) || defined(__sgi)
   struct hostent *h_buf;
