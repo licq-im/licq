@@ -1953,12 +1953,16 @@ void UserSendCommon::slot_Emoticon()
 //-----UserSecondCommon::slot_insertEmoticon-----------------------------------
 void UserSendCommon::slot_insertEmoticon(const QString &sKey)
 {
-  mleSend->insert(sKey);
+  if (mleSend)
+    mleSend->insert(sKey);
 }
 
 //-----UserSendCommon::slot_SetForegroundColor-------------------------------
 void UserSendCommon::slot_SetForegroundICQColor()
 {
+  if (!mleSend)
+    return;
+
 #ifdef USE_KDE
   QColor c = mleSend->foregroundColor();
   if (KColorDialog::getColor(c, this) != KColorDialog::Accepted) return;
@@ -2022,6 +2026,9 @@ void UserSendCommon::slot_textChanged_timeout()
 //-----UserSendCommon::slot_SetBackgroundColor-------------------------------
 void UserSendCommon::slot_SetBackgroundICQColor()
 {
+  if (!mleSend)
+    return;
+
 #ifdef USE_KDE
   QColor c = mleSend->backgroundColor();
   if (KColorDialog::getColor(c, this) != KColorDialog::Accepted) return;
@@ -3307,6 +3314,12 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
                                            unsigned long nPPID, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendContactEvent")
 {
+  chkMass->setChecked(false);
+  chkMass->setEnabled(false);
+  btnForeColor->setEnabled(false);
+  btnBackColor->setEnabled(false);
+  btnEmoticon->setEnabled(false);
+
   delete mleSend; mleSend = NULL;
 
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
