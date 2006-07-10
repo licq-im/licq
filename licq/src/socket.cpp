@@ -1232,6 +1232,7 @@ bool TCPSocket::SecureListen()
         ERR_clear_error();
         break;
       default:
+        err = ERR_get_error();
         gLog.Warn("%sSSL_accept error %d, SSL_%d\n", L_SSLxSTR, i, j);
         gLog.Warn("%s%s\n", L_SSLxSTR, ERR_error_string(err, 0));
         break;
