@@ -760,7 +760,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   unsigned int uinlen = strlen(szUin);
   unsigned int pwlen = strlen(szPass);
 
-  m_nSize = uinlen + pwlen + 117;
+  m_nSize = uinlen + pwlen + 74;
   InitBuffer();
 
   // Encrypt our password here
@@ -773,28 +773,28 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   buffer->PackUnsignedLongBE(0x00000001);
   buffer->PackTLV(0x0001, uinlen, szUin);
   buffer->PackTLV(0x0002, pwlen, szEncPass);
-  buffer->PackTLV(0x0003,  0x0033, "ICQ Inc. - Product of ICQ (TM).2003a.5.45.1.3777.85");
+  buffer->PackTLV(0x0003,  0x0008, "ICQBasic");
 
   // Static versioning
   buffer->PackUnsignedLongBE(0x00160002);
-  buffer->PackUnsignedShortBE(0x010a);
+  buffer->PackUnsignedShortBE(0x010A);
   // Client version major (4 == ICQ2000, 5 == ICQ2001)
   buffer->PackUnsignedLongBE(0x00170002);
-  buffer->PackUnsignedShortBE(0x0005);
+  buffer->PackUnsignedShortBE(0x0014);
   // Client version minor
   buffer->PackUnsignedLongBE(0x00180002);
-  buffer->PackUnsignedShortBE(0x002D);
+  buffer->PackUnsignedShortBE(0x0022);
   buffer->PackUnsignedLongBE(0x00190002);
-  buffer->PackUnsignedShortBE(0x0001);
+  buffer->PackUnsignedShortBE(0x0000);
   // Client version build
   buffer->PackUnsignedLongBE(0x001a0002);
-  buffer->PackUnsignedShortBE(0x0EC1);
+  buffer->PackUnsignedShortBE(0x0AF0);
   buffer->PackUnsignedLongBE(0x00140004);
-  buffer->PackUnsignedLongBE(0x00000055);
+  buffer->PackUnsignedLongBE(0x0000043D);
 
   // locale info, just use english, usa for now, i don't know what else they use
-  buffer->PackTLV(0x000e, 0x0002, "us");
   buffer->PackTLV(0x000f, 0x0002, "en");
+  buffer->PackTLV(0x000e, 0x0002, "us");
 }
 
 //-----SendCookie------------------------------------------------------------
@@ -1206,7 +1206,7 @@ CPU_ClientReady::CPU_ClientReady()
   buffer->PackUnsignedLongBE(0x000b0001);
   buffer->PackUnsignedLongBE(0x0110047b);
 #else
-  m_nSize += 72;
+  m_nSize += 80;
 
   InitBuffer();
 
@@ -1227,6 +1227,8 @@ CPU_ClientReady::CPU_ClientReady()
   buffer->PackUnsignedLongBE(0x000a0001);
   buffer->PackUnsignedLongBE(0x011008e4);
   buffer->PackUnsignedLongBE(0x00130004);
+  buffer->PackUnsignedLongBE(0x011008e4);
+  buffer->PackUnsignedLongBE(0x000b0004);
   buffer->PackUnsignedLongBE(0x011008e4);
 #endif
 }
@@ -2952,7 +2954,7 @@ CPU_ClearServerList::CPU_ClearServerList(UserStringList &uins,
       buffer->PackUnsignedShortBE(_nType);
       buffer->PackUnsignedShortBE(bAuthReq ? 4 : 0);
       if (bAuthReq)
-        buffer->PackUnsignedShortBE(0x00660000);
+        buffer->PackUnsignedLongBE(0x00660000);
         
       // Clear their info now
       if (_nType == ICQ_ROSTxNORMAL)
