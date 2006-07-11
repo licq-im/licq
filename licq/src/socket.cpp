@@ -71,7 +71,8 @@ using namespace std;
 
 char *ip_ntoa(unsigned long in, char *buf)
 {
-  return inet_ntoa_r( *(struct in_addr *)&in, buf);
+  in_addr _in = { in };
+  return inet_ntoa_r(_in, buf);
 }
 
 char *inet_ntoa_r(struct in_addr in, char *buf)

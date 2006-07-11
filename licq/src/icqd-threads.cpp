@@ -41,10 +41,10 @@ void cleanup_socket(void *s)
 void *cleanup_thread_tep(void *t)
 {
   pthread_detach(pthread_self());
-  int *s;
-  pthread_join(*((pthread_t *)t), (void **)&s);
+  void *s;
+  pthread_join(*((pthread_t *)t), &s);
   delete (pthread_t *)t;
-  delete s;
+  delete (int *)s;
   pthread_exit(NULL);
 }
 

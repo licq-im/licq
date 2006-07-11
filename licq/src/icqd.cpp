@@ -2393,9 +2393,9 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   unsigned short nPort;
 
   // Do we accept it if we are in Occ or DND?
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  unsigned short nOwnerStatus = o->Status();
-  gUserManager.DropOwner();
+  // ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  // unsigned short nOwnerStatus = o->Status();
+  // gUserManager.DropOwner();
 
   unsigned short nLevel = nMask;
   unsigned long nFlags = ((nMask & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)

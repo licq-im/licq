@@ -2311,7 +2311,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   SetSendServer(false);
   SetSendIntIp(false);
   SetShowAwayMsg(false);
-  SetSequence(0xFFFFFFFF);
+  SetSequence(-1); // set all bits 0xFFFF
   SetOfflineOnDisconnect(false);
   ClearSocketDesc();
   m_nIp = m_nPort = m_nIntIp = 0;
@@ -2731,7 +2731,7 @@ char *ICQUser::IpStr(char *rbuf)
   char ip[32], buf[32];
 
   if (Ip() > 0)     		// Default to the given ip
-    strcpy(ip, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+    strcpy(ip, ip_ntoa(m_nIp, buf));
   else				// Otherwise we don't know
     strcpy(ip, tr("Unknown"));
 
@@ -2778,7 +2778,7 @@ char *ICQUser::IntIpStr(char *rbuf)
   else
   {
     if (IntIp() > 0)		// Default to the given ip
-      strcpy(rbuf, inet_ntoa_r(*(struct in_addr *)&m_nIntIp, buf));
+      strcpy(rbuf, ip_ntoa(m_nIntIp, buf));
     else			// Otherwise we don't know
       rbuf[0] = '\0';
   }
@@ -2858,7 +2858,7 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
       {
         case 'i':
           char buf[32];
-          strcpy(szTemp, inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
+          strcpy(szTemp, ip_ntoa(m_nIp, buf));
           sz = szTemp;
           break;
         case 'p':
@@ -3411,8 +3411,8 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteStr("History", HistoryName());
    m_fConf.WriteNum("Groups.System", GetGroups(GROUPS_SYSTEM));
    m_fConf.WriteNum("Groups.User", GetGroups(GROUPS_USER));
-   m_fConf.WriteStr("Ip", inet_ntoa_r(*(struct in_addr *)&m_nIp, buf));
-   m_fConf.WriteStr("IntIp", inet_ntoa_r(*(struct in_addr *)&m_nIntIp, buf));
+   m_fConf.WriteStr("Ip", ip_ntoa(m_nIp, buf));
+   m_fConf.WriteStr("IntIp", ip_ntoa(m_nIntIp, buf));
    m_fConf.WriteNum("Port", Port());
    m_fConf.WriteNum("NewMessages", NewMessages());
    m_fConf.WriteNum("LastOnline", (unsigned long)LastOnline());

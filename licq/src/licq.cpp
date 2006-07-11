@@ -1025,7 +1025,6 @@ int CLicq::Main()
   gLog.ModifyService(S_STDERR, DEBUG_LEVEL);
 
   unsigned short nExitId;
-  int *nPluginResult;
   bool bDaemonShutdown = false;
   
   //FIXME ICQ Plugin can't be taken out really
@@ -1094,8 +1093,9 @@ int CLicq::Main()
 
     if (bUIPlugin)
     {
-      pthread_join((*iter)->thread_plugin, (void **)&nPluginResult);
-      gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*iter)->Name(), *nPluginResult);
+      void *nPluginResult;
+      pthread_join((*iter)->thread_plugin, &nPluginResult);
+      gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*iter)->Name(), *((int*)nPluginResult));
       free (nPluginResult);
       // Causes Qt to crash on exit
       //dlclose((*iter)->dl_handle);
@@ -1107,8 +1107,9 @@ int CLicq::Main()
       //FIXME
       if ((*p_iter)->PPID() != LICQ_PPID)
       {
-        pthread_join((*p_iter)->thread_plugin, (void **)&nPluginResult);
-        gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*p_iter)->Name(), *nPluginResult);
+        void *nPluginResult;
+        pthread_join((*p_iter)->thread_plugin, &nPluginResult);
+        gLog.Info(tr("%sPlugin %s exited with code %d.\n"), L_ENDxSTR, (*p_iter)->Name(), *((int*)nPluginResult));
         free (nPluginResult);
         dlclose((*p_iter)->m_pHandle);
         delete *p_iter;
