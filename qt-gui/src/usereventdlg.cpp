@@ -3562,7 +3562,7 @@ SelectEmoticon::SelectEmoticon(QWidget *parent)
   QMap<QString, QString> map = e->EmoticonsKeys();
   QMapIterator<QString, QString> iter;
   
-  int nRows = ::sqrt(map.size());
+  int nRows = static_cast<int>(::sqrt(map.size()));
   double d = ::sqrt(map.size());
   if (d - (double)nRows != 0)
     nRows++;

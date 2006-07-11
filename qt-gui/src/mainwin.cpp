@@ -2783,7 +2783,11 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
           {
             e->raise();
 #ifdef USE_KDE
+# if KDE_VERSION >= 320
+            KWin::activateWindow(e->winId());
+# else
             KWin::setActiveWindow(e->winId());
+# endif
 #endif
           }
           return e;
@@ -2823,7 +2827,11 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
               userEventTabDlg->selectTab(e);
               userEventTabDlg->raise();
 #ifdef USE_KDE
+# if KDE_VERSION >= 320
+              KWin::activateWindow(userEventTabDlg->winId());
+# else
               KWin::setActiveWindow(userEventTabDlg->winId());
+# endif
 #endif
             }
             else
@@ -2834,7 +2842,11 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
               {
                 e->raise();
 #ifdef USE_KDE
+# if KDE_VERSION >= 320
+                KWin::activateWindow(e->winId());
+# else
                 KWin::setActiveWindow(e->winId());
+# endif
 #endif
               }
             }
