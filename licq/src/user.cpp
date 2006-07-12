@@ -3742,7 +3742,7 @@ ICQOwner::ICQOwner()
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
   m_fConf.ReadStr("AutoResponse", szTemp, "");
-  m_fConf.ReadNum("SSTime", m_nSSTime, 0L);
+  m_fConf.ReadNum("SSTime", (unsigned long&)m_nSSTime, 0L);
   m_fConf.ReadNum("SSCount", m_nSSCount, 0);
   m_fConf.ReadNum("PDINFO", m_nPDINFO, 0);
 
@@ -3814,7 +3814,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   m_fConf.ReadBool("HideIP", m_bHideIp, false);
   m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
   m_fConf.ReadStr("AutoResponse", szTemp, "");
-  m_fConf.ReadNum("SSTime", m_nSSTime, 0L);
+  m_fConf.ReadNum("SSTime", (unsigned long&)m_nSSTime, 0L);
   m_fConf.ReadNum("SSCount", m_nSSCount, 0);
   m_fConf.ReadNum("PDINFO", m_nPDINFO, 0);
   
@@ -3850,7 +3850,7 @@ ICQOwner::~ICQOwner()
   }
   m_fConf.SetSection("user");
   m_fConf.WriteStr("AutoResponse", AutoResponse());
-  m_fConf.WriteNum("SSTime", m_nSSTime);
+  m_fConf.WriteNum("SSTime", (unsigned long)m_nSSTime);
   m_fConf.WriteNum("SSCount", m_nSSCount);
   m_fConf.WriteNum("PDINFO", m_nPDINFO);
   if (!m_fConf.FlushFile())
@@ -3905,7 +3905,7 @@ void ICQOwner::SaveLicqInfo()
   m_fConf.WriteBool("HideIP", HideIp());
   m_fConf.WriteBool("Authorization", GetAuthorization());
   m_fConf.WriteNum("RCG", RandomChatGroup());
-  m_fConf.WriteNum("SSTime", m_nSSTime);
+  m_fConf.WriteNum("SSTime", (unsigned long)m_nSSTime);
   m_fConf.WriteNum("SSCount", m_nSSCount);
   m_fConf.WriteNum("PDINFO", m_nPDINFO);
   

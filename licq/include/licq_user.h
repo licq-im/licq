@@ -999,7 +999,7 @@ protected:
        m_bSavePassword;
   unsigned long  m_nRandomChatGroup;
   unsigned short m_nSSCount;
-  time_t unsigned long m_nSSTime;
+  time_t m_nSSTime;
   unsigned short m_nPDINFO;
 };
 
