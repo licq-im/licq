@@ -1626,8 +1626,8 @@ QWidget* OptionsDlg::new_chat_options()
 void OptionsDlg::slot_refresh_msgViewer()
 {
   QDateTime date;
-  char *names[2] = {"Marge", "Homer"};
-  char *msgs[7] = {
+  const char *names[2] = {"Marge", "Homer"};
+  const char *msgs[7] = {
       "This is received message",
       "This is a sent message",
       "Have you gone to the Licq IRC Channel?",

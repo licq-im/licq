@@ -1,5 +1,5 @@
 /* XPM */
-static char * iconBack_48_xpm[] = {
+static const char * iconBack_48_xpm[] = {
 "64 48 11 1",
 " 	c None",
 ".	c #202020",

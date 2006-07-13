@@ -1,5 +1,5 @@
 /* XPM */
-static char * iconFFC_xpm[] = {
+static const char * iconFFC_xpm[] = {
 "64 20 6 1",
 " 	c None",
 ".	c #202020",

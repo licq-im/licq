@@ -513,7 +513,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadStr("MsgPopupKey", szTemp, "none");
 
   m_MsgAutopopupKey = QString::fromLatin1(szTemp);
-  if(!(!szTemp || !strcmp(szTemp, "none"))) {
+  if (m_MsgAutopopupKey != "none")
+  {
     if(!static_cast<CLicqGui*>(qApp)->grabKey(m_MsgAutopopupKey))
        gLog.Error("%sUnknown popup key: %s\n", L_INITxSTR, szTemp);
   }
