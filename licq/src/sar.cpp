@@ -69,7 +69,7 @@ bool CSARManager::Load()
 {
   char filename[128], szTemp1[32], szTemp2[128], szTemp3[512];
   unsigned short nTemp;
-  char *n[] = SAR_SECTIONS;
+  const char *n[] = SAR_SECTIONS;
 
   gLog.Info(tr("%sLoading saved auto-responses.\n"), L_INITxSTR);
 
