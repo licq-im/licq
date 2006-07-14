@@ -98,8 +98,7 @@
     main distribution.
 <LI><B>Thread-safe X11 libraries</B>.  Again, most operating systems have no problem with
     this, but if you are using libc5 under Linux (ie you get "Fatal IO Error" when starting
-    Licq) you will have to make sure that
-    you are using thread-safe libraries (see <A HREF="http://www.xmms.org/faq.html#r2" TARGET="_top">www.xmms.org</A>).
+    Licq) you will have to make sure that you are using thread-safe libraries.
 <LI><B>Qt 3.0</B> (libraries and developement headers).  Check out <A HREF="http://www.trolltech.com" TARGET="_top">
     http://www.trolltech.com</A> for more information.  This is only required if you
     want to use the Qt gui plugin (recommended).
