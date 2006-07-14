@@ -109,10 +109,9 @@ function news_show_archive()
 function news_show_single_item()
 {
     //global $item_id;
-$item_id = $_REQUEST['item_id']
-if (!is_numeric($item_id)
-{ echo "NO."
-exit
+$item_id = $_REQUEST['item_id'];
+if (!is_numeric($item_id);
+{ 
 
     $data = news_read_item( $item_id );
     news_show_item( $data );
