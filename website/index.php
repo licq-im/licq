@@ -1,12 +1,12 @@
 <?
   include "header.php";
   include "archive.php";
-    include("/var/www/htdocs/zorbstats/zorblogs.php")
+    include("/var/www/htdocs/zorbstats/zorblogs.php");
 
-    include ("/var/www/htdocs/zorbstats/zorblogspages.php")
-    $pagename = "licq".substr($PHP_SELF,1) 
-    $dispname = "licq".substr($PHP_SELF,1,-4) 
-    countpage($pagename,$dispname) 
+    include ("/var/www/htdocs/zorbstats/zorblogspages.php");
+    $pagename = "licq".substr($PHP_SELF,1);
+    $dispname = "licq".substr($PHP_SELF,1,-4);
+    countpage($pagename,$dispname);
 
 ?>
 
