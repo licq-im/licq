@@ -60,7 +60,7 @@
                   </tr>
                   <tr>
                     <td>vnc</td>
-                    <td>opens a <a href="http://www.uk.research.att.com/vnc" >vnc</a> viewer of the remote user's window</td>
+                    <td>opens a <a href="http://www.realvnc.com/">vnc</a> viewer of the remote user's window</td>
                   </tr>
                   <tr>
                     <td>traceroute</td>

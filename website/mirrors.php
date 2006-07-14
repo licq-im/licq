@@ -100,6 +100,11 @@ Currenly only the main site is up! The main server's hard disk crashed and we ar
 <td><A HREF="http://www.cz.licq.org/" TARGET="_top">http</A>
 <td><A HREF="ftp://ftp.cz.licq.org/pub/licq/">ftp</A>
 <td><A HREF="mailto:onovy@licq.org">Ondrej Novy</A> and <A HREF="mailto:tomi@licq.org">Tomas Janousek</A>.
+<tr>
+<td>Sweden
+<td><a href="http://www.se.licq.org/">http</a>
+<td>ftp
+<td><a href="http://ejohansson.se/">Erik Johansson</a>
 </TABLE>
 <P>
 

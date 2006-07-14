@@ -2,22 +2,22 @@
 				<div id="menutop"></div> 
 				<div id="mainmenu"></div>
         <div id="nav">
-        	<div class="menu_item"><a href="http://www.licq.org/index.php"><span>Main</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/news.php"><span>News</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/info.php"><span>Info</span></a></div>
+        	<div class="menu_item"><a href="/index.php"><span>Main</span></a></div>
+          <div class="menu_item"><a href="/news.php"><span>News</span></a></div>
+          <div class="menu_item"><a href="/info.php"><span>Info</span></a></div>
           <div class="menu_item"><a href="http://blog.licq.org"><span>Blog</span></a></div>
           <div class="menu_item"><a href="http://wiki.licq.org"><span>Wiki</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/mirrors.php"><span>Mirrors</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/help.php"><span>Help</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/download.php"><span>Downloads</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/daily.php"><span>SVN Dailies</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/shots.php"><span>Screenshots</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/skins.php"><span>Skins</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/plugins.php"><span>Plugins</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/utilities.php"><span>Utilities</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/bugs.php"><span>Bugtrack</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/contact.php"><span>Contact</span></a></div>
-          <div class="menu_item"><a href="http://www.licq.org/credits.php"><span>Credits</span></a></div>
+          <div class="menu_item"><a href="/mirrors.php"><span>Mirrors</span></a></div>
+          <div class="menu_item"><a href="/help.php"><span>Help</span></a></div>
+          <div class="menu_item"><a href="/download.php"><span>Downloads</span></a></div>
+          <div class="menu_item"><a href="/daily.php"><span>SVN Dailies</span></a></div>
+          <div class="menu_item"><a href="/shots.php"><span>Screenshots</span></a></div>
+          <div class="menu_item"><a href="/skins.php"><span>Skins</span></a></div>
+          <div class="menu_item"><a href="/plugins.php"><span>Plugins</span></a></div>
+          <div class="menu_item"><a href="/utilities.php"><span>Utilities</span></a></div>
+          <div class="menu_item"><a href="/bugs.php"><span>Bugtrack</span></a></div>
+          <div class="menu_item"><a href="/contact.php"><span>Contact</span></a></div>
+          <div class="menu_item"><a href="/credits.php"><span>Credits</span></a></div>
         </div>
         <div id="menucrew"></div>
         <div id="crew">

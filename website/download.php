@@ -40,8 +40,8 @@
                     <td>Latest Stable Release<br>(bz2 md5sum: 0471bb8fed91eefb23dfe153c9a4a806)<br>(gz md5sum: d8412c20f106aa01d8b9b4f89d8d3130)<BR><?echo $strDownload?></td>
                   </tr>
                   <tr>
-                    <td><a href="licq-daily.tar.bz2">licq-daily.tar.bz2</a></td>
-                    <td>Latest CVS Snapshot</td>
+                    <td><a href="/daily.php">SVN Dalies</a></td>
+                    <td>Latest SVN Snapshot</td>
                   </tr>
                   <tr>
                     <td><a href="plugins.php">GTK GUI, Nicq, Console UI...</a></td>
@@ -308,59 +308,59 @@
               <div class="tables">
                 <table style="margin-left: 5%; width: 90%;"  border="0" cellpadding="5" cellspacing="0">
                   <tr>
-                    <td style="width: 30%"><a href="licq.micqconvert">licq.micqconvert</a></td>
+                    <td style="width: 30%"><a href="converters/licq.micqconvert">licq.micqconvert</a></td>
                     <td>Micq.  Thanks to Daniel Fraga.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.javaconvert">licq.javaconvert</a></td>
+                    <td><a href="converters/licq.javaconvert">licq.javaconvert</a></td>
                     <td>JavaICQ.  Thanks to Nic Bellamy.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.winconvert98">licq.winconvert98</a></td>
+                    <td><a href="converters/licq.winconvert98">licq.winconvert98</a></td>
                     <td rowspan="3">Windows client converters</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.winconvert99a">licq.winconvert99a</a></td>
+                    <td><a href="converters/licq.winconvert99a">licq.winconvert99a</a></td>
                
                   </tr>
                   <tr>
-                    <td><a href="licq.winconvert99b-2000">licq.winconvert99b-2000</a></td>
+                    <td><a href="converters/licq.winconvert99b-2000">licq.winconvert99b-2000</a></td>
                 
                   </tr>
                   <tr>
-                    <td><a href="licq.icq-clb.c">licq.icq-clb.c</a></td>
+                    <td><a href="converters/licq.icq-clb.c">licq.icq-clb.c</a></td>
                     <td>Converter for ICQ CLB file.  Thanks to Philip Nelson.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.gicqconvert">licq.gicqconvert</a></td>
+                    <td><a href="converters/licq.gicqconvert">licq.gicqconvert</a></td>
                     <td>Converter for gicq.  Thanks to Firebird.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.zicqconvert">licq.zicqconvert</a></td>
+                    <td><a href="converters/licq.zicqconvert">licq.zicqconvert</a></td>
                     <td>Converter for zicq.  Thanks to Bragatto.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.kicqconvert">licq.kicqconvert</a></td>
+                    <td><a href="converters/licq.kicqconvert">licq.kicqconvert</a></td>
                     <td>Converter for kicq.  Thanks to Nathan Benson.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.gnomeicuconvert">licq.gnomeicuconvert</a></td>
+                    <td><a href="converters/licq.gnomeicuconvert">licq.gnomeicuconvert</a></td>
                     <td>Converter for gnomeicq.  Thanks to Stijn.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.kxicqconvert">licq.kxicqconvert</a></td>
+                    <td><a href="converters/licq.kxicqconvert">licq.kxicqconvert</a></td>
                     <td>Converter for kxicq.  Thanks to conon.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.centericqconvert">licq.centericqconvert</a></td>
+                    <td><a href="converters/licq.centericqconvert">licq.centericqconvert</a></td>
                     <td>Converter for centericq.  Thanks to conon.</td>
                   </tr>
                   <tr>
-                    <td><a href="licq.trillianconvert">licq.trillianconvert</a></td>
+                    <td><a href="converters/licq.trillianconvert">licq.trillianconvert</a></td>
                     <td>Converter for trillian. Thanks to Steffen Stein.</td>
                   </tr>
                   <tr>
-                    <td><a href="trillian.licqconvert">trillian.licqconvert</a></td>
+                    <td><a href="converters/trillian.licqconvert">trillian.licqconvert</a></td>
                     <td>Converter to trillian. Thanks to Steffen Stein.</td>
                   </tr>
                 </table>
