@@ -3,7 +3,7 @@
 <head>
 <title>Licq - ICQ Client/Multi-protocol Messenger</title>
 <meta http-equiv="content-type" content="text/html;charset=utf-8" />
-<meta http-equiv="Content-Style-Type" content="text/css" />
+<meta http-equiv="content-style-type" content="text/css" />
 <link rel="stylesheet" href="style.css" type="text/css" />
 </head>
 <body>

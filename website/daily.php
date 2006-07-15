@@ -52,7 +52,7 @@
             <!-- Screenshot Item End-->
 
 <br>
-            Last Modified: <?require("modify.html")?>
+            Last Modified: <?php echo preg_replace('/\$Date: (.*)\$/', '$1', '$Date$'); ?>
 <br>
           </div>
         </div>
