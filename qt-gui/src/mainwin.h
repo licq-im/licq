@@ -157,6 +157,7 @@ public:
        m_bMainWinSticky,
        m_bMsgWinSticky,
        m_bSingleLineChatMode,
+       m_bCheckSpellingEnabled,
        m_bShowUserIcons;
 
   QString m_MsgAutopopupKey;

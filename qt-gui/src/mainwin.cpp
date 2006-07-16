@@ -110,8 +110,10 @@
 #include "xpm/pixCellular.xpm"
 #include "xpm/pixBirthday.xpm"
 #include "xpm/pixInvisible.xpm"
-#include "xpm/pixKeyEnabled.xpm"
-#include "xpm/pixKeyDisabled.xpm"
+#ifdef HAVE_LIBGPGME
+# include "xpm/pixKeyEnabled.xpm"
+# include "xpm/pixKeyDisabled.xpm"
+#endif
 #include "xpm/pixTyping.xpm"
 #include "xpm/pixICQphoneActive.xpm"
 #include "xpm/pixICQphoneBusy.xpm"
@@ -448,6 +450,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("MainWinSticky", m_bMainWinSticky, false);
   licqConf.ReadBool("MsgWinSticky", m_bMsgWinSticky, false);
   licqConf.ReadBool("SingleLineChatMode", m_bSingleLineChatMode, false);
+  licqConf.ReadBool("CheckSpellingEnabled", m_bCheckSpellingEnabled, false);
 
   licqConf.ReadStr("ReceiveMessageColor", szTemp, "red");
   m_colorRcv = QColor(szTemp);
@@ -3655,6 +3658,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("MainWinSticky", m_bMainWinSticky);
   licqConf.WriteBool("MsgWinSticky", m_bMsgWinSticky);
   licqConf.WriteBool("SingleLineChatMode", m_bSingleLineChatMode);
+  licqConf.WriteBool("CheckSpellingEnabled", m_bCheckSpellingEnabled);
 
   licqConf.WriteNum("ChatMessageStyle", m_nMsgStyle);
   licqConf.WriteBool("ChatAppendLinebreak", m_bAppendLineBreak);

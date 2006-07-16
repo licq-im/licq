@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2 -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 // written by Graham Roff <graham@licq.org>
 // contributions by Dirk A. Mueller <dirk@licq.org>
@@ -24,8 +26,7 @@
 #endif
 
 #include <qfont.h>
-#include <qpainter.h>
-#include <qaccel.h>
+#include <qpopupmenu.h>
 
 #include "mledit.h"
 
@@ -33,18 +34,19 @@
 QFont *MLEditWrap::editFont = NULL;
 
 MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const char *name)
-  : QMultiLineEdit(parent, name)
+  : MLEditWrapBase(parent, name), m_fixSetTextNewlines(true)
 {
-  m_bDoQuotes = doQuotes;
+  setTextFormat(Qt::PlainText);
+  setTabChangesFocus(true);
 
   if (wordWrap)
   {
-    setWordWrap(WidgetWidth);
-    setWrapPolicy(AtWhiteSpace);
+    setWordWrap(QTextEdit::WidgetWidth);
+    setWrapPolicy(QTextEdit::AtWhiteSpace);
   }
   else
   {
-    setWordWrap(NoWrap);
+    setWordWrap(QTextEdit::NoWrap);
   }
 
   if (editFont)
@@ -54,42 +56,29 @@ MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const cha
 
 void MLEditWrap::appendNoNewLine(const QString& s)
 {
-  if (!atEnd()) GotoEnd();
-  QMultiLineEdit::insert(s);
+  GotoEnd();
+  insert(s);
 }
 
 void MLEditWrap::append(const QString& s)
 {
-#if QT_VERSION < 300
-  appendNoNewLine(s + "\n");
-#else
+  MLEditWrapBase::append(s);
   if (strcmp(qVersion(), "3.0.0") == 0 ||
       strcmp(qVersion(), "3.0.1") == 0 ||
       strcmp(qVersion(), "3.0.2") == 0 ||
-      strcmp(qVersion(), "3.0.3") == 0 || 
+      strcmp(qVersion(), "3.0.3") == 0 ||
       strcmp(qVersion(), "3.0.4") == 0)
   {
-     // Workaround --
-     // In those versions, QTextEdit::append didn't add a new paragraph.
-     QTextEdit::append(s);
-     QTextEdit::append("\n");
+    // Workaround --
+    // In those versions, QTextEdit::append didn't add a new paragraph.
+    MLEditWrapBase::append("\n");
   }
-  else
-  {
-     QTextEdit::append(s);
-  }
-#endif
 }
 
 void MLEditWrap::GotoEnd()
 {
-#if QT_VERSION >= 300
   moveCursor(QTextEdit::MoveEnd, false);
-#else
-  setCursorPosition(numLines() - 1, lineLength(numLines() - 1) - 1);
-#endif
 }
-
 
 void MLEditWrap::setBackground(const QColor& c)
 {
@@ -101,10 +90,6 @@ void MLEditWrap::setBackground(const QColor& c)
   setPalette(pal);
 }
 
-
-// -----------------------------------------------------------------------------
-
-
 void MLEditWrap::setForeground(const QColor& c)
 {
   QPalette pal = palette();
@@ -115,35 +100,19 @@ void MLEditWrap::setForeground(const QColor& c)
   setPalette(pal);
 }
 
-bool MLEditWrap::focusNextPrevChild( bool f)
+void MLEditWrap::setCheckSpellingEnabled(bool check)
 {
-  return QWidget::focusNextPrevChild(f);
+#ifdef MLEDIT_USE_KTEXTEDIT
+  MLEditWrapBase::setCheckSpellingEnabled(check);
+#endif
 }
 
-
-// -----------------------------------------------------------------------------
-
-void MLEditWrap::paintCell(QPainter* p, int row, int col)
+bool MLEditWrap::checkSpellingEnabled() const
 {
-
-#if QT_VERSION >= 210 && QT_VERSION < 300
-  if (m_bDoQuotes)
-  {
-    QString s = stringShown(row);
-    int i = (s[0] == ' ');
-    bool italic = (s[i] == '>' && (s[i+1] == ' ' || s[i+1] == '>'));
-
-    if (italic ^ p->font().italic())
-    {
-      QFont f(p->font());
-      f.setItalic(italic);
-      p->setFont(f);
-    }
-  }
-#endif
-
-#if QT_VERSION < 300
-  QMultiLineEdit::paintCell(p, row, col);
+#ifdef MLEDIT_USE_KTEXTEDIT
+  return MLEditWrapBase::checkSpellingEnabled();
+#else
+  return false;
 #endif
 }
 
@@ -166,12 +135,12 @@ void MLEditWrap::keyPressEvent( QKeyEvent *e )
     switch (e->key())
     {
     case Key_W:
-      cursorWordBackward(true);
+      moveCursor(QTextEdit::MoveWordBackward, true);
       del();
       break;
     case Key_U:
-      home();
-      killLine();
+      moveCursor(QTextEdit::MoveHome, false);
+      doKeyboardAction(QTextEdit::ActionKill);
       break;
     case Key_L:
       clear();
@@ -181,29 +150,92 @@ void MLEditWrap::keyPressEvent( QKeyEvent *e )
       emit signal_CtrlEnterPressed();
       break;
     default:
-      QMultiLineEdit::keyPressEvent(e);
+      MLEditWrapBase::keyPressEvent(e);
     }
     return;
   }
 
-  QMultiLineEdit::keyPressEvent(e);
+  MLEditWrapBase::keyPressEvent(e);
 }
 
-void MLEditWrap::setCellWidth ( int cellW )
+QPopupMenu *MLEditWrap::createPopupMenu(const QPoint &pos)
 {
-#if QT_VERSION == 210
-    if ( cellWidth() == cellW )
-        return;
-
-    QTableView::setCellWidth(cellW);
-
-    if ( autoUpdate() && isVisible() )
-        repaint();
-#else
-#if QT_VERSION < 300
-    QMultiLineEdit::setCellWidth( cellW );
+  QPopupMenu *menu = MLEditWrapBase::createPopupMenu(pos);
+#ifndef MLEDIT_USE_KTEXTEDIT
+  menu->insertSeparator();
+  int id = menu->insertItem(tr("Allow Tabulations"), this, SLOT(slotToggleAllowTab()));
+  menu->setItemChecked(id, !tabChangesFocus());
 #endif
+  return menu;
+}
+
+void MLEditWrap::slotToggleAllowTab()
+{
+  setTabChangesFocus(!tabChangesFocus());
+}
+
+/**
+ * @return the number of characters @a c at the end of @a str.
+ */
+static unsigned int countCharRev(const QString& str, const QChar c)
+{
+  unsigned int count = 0;
+  for (unsigned int pos = str.length() - 1; pos >= 0; pos--)
+  {
+    if (str.at(pos) != c)
+      break;
+    count += 1;
+  }
+  return count;
+}
+
+/*
+ * KTextEdit adds a menu entry for doing spell checking. Unfortunatly KSpell
+ * (which is what KTextEdit uses to do the spell check) messes with the newlines
+ * at the end of the text it checks. That's why we need the hack below. It uses
+ * the fact that setText(const QString&) is non-virtual and only calls the
+ * virtual setText(const QString&, const QString&) with a null context.
+ *
+ * When KTextEdit calls setText(correctedText) after the spell check is done
+ * it will call QTextEdit::setText (since it's non-virtual). QTextEdit will
+ * then call setText(correctedText, QString::null) which will end up in the
+ * setText below (since it's virtual). And with m_fixSetTextNewlines set to
+ * true we can fix so that there is as many newlines at the end of the corrected
+ * text as there is in the old.
+ *
+ * On the other hand, when any class that uses MLEditWrap calls
+ * myMLEditWrapInstance->setText(myText) the call will end up at
+ * MLEditWrap::setText(myText) which will set m_fixSetTextNewlines to false before
+ * calling QTextEdit::setText(myText).
+ */
+void MLEditWrap::setText(const QString& text)
+{
+  m_fixSetTextNewlines = false;
+  MLEditWrapBase::setText(text);
+}
+
+void MLEditWrap::setText(const QString& txt, const QString& context)
+{
+  const bool modified = isModified(); // don't let setText reset this flag
+#ifdef MLEDIT_USE_KTEXTEDIT
+  const QString current = text();
+  if (m_fixSetTextNewlines && context.isNull())
+  {
+    const unsigned int currentNL = countCharRev(current, '\n');
+    const unsigned int txtNL = countCharRev(txt, '\n');
+    if (currentNL > txtNL)
+      MLEditWrapBase::setText(txt + QString().fill('\n', currentNL - txtNL), context);
+    else if (txtNL > currentNL)
+      MLEditWrapBase::setText(txt.left(txt.length() - (txtNL - currentNL)), context);
+    else
+      MLEditWrapBase::setText(txt, context);
+  }
+  else
 #endif
+    MLEditWrapBase::setText(txt, context);
+
+  setModified(modified);
+  m_fixSetTextNewlines = true;
 }
 
 #include "mledit.moc"

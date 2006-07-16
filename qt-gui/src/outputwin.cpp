@@ -100,10 +100,10 @@ void CQtLogWindow::slot_log(int s)
   outputBox->GotoEnd();
 
   // hardcoded limit, maybe should be user configurable?
-  if (outputBox->numLines() > 564) {
-      int todo = outputBox->numLines() - 500;
+  if (outputBox->paragraphs() > 564) {
+      int todo = outputBox->paragraphs() - 500;
       for (int i = 0; i < todo; ++i)
-          outputBox->removeLine(0);
+          outputBox->removeParagraph(0);
   }
 
   /* The next call will block, so we need to clear the log so that processing

@@ -11,8 +11,6 @@
 #include <list>
 #include <deque>
 
-#include "mledit.h"
-
 class CChatManager;
 class CChatUser;
 

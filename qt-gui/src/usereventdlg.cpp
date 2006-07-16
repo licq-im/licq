@@ -91,6 +91,7 @@
 #include "xpm/chatChangeBg.xpm"
 #include "xpm/smile.xpm"
 #include "support.h"
+#include "mledit.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -1779,6 +1780,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   }
 
   mleSend = new MLEditWrap(true, splView, true);
+  mleSend->setCheckSpellingEnabled(mainwin->m_bCheckSpellingEnabled);
   mleSend->installEventFilter(this); // Enables send with enter
 
   if (mainwin->m_bMsgChatView)
@@ -1815,7 +1817,7 @@ bool UserSendCommon::eventFilter(QObject *watched, QEvent *e)
       if (isEnter)
       {
        if (key->state() & ControlButton)
-          mleSend->newLine();
+          mleSend->insert("\n");
         else
           btnSend->animateClick();
         return true; // filter the event out
@@ -2121,7 +2123,7 @@ void UserSendCommon::changeEventType(int id)
     if (e->mleSend && mleSend)
     {
       e->mleSend->setText(mleSend->text());
-      e->mleSend->setEdited(e->mleSend->length());
+      e->mleSend->setModified(e->mleSend->length());
     }
     if (e->mleHistory && mleHistory){
       e->mleHistory->setText(mleHistory->text());
@@ -2284,7 +2286,7 @@ void UserSendCommon::setText(const QString& txt)
   if(!mleSend) return;
   mleSend->setText(txt);
   mleSend->GotoEnd();
-  mleSend->setEdited(false);
+  mleSend->setModified(false);
 }
 
 
@@ -2598,6 +2600,7 @@ void UserSendCommon::slot_close()
     // the window, then the new events will stay there
     slot_ClearNewEvents();
   }
+  mainwin->m_bCheckSpellingEnabled = mleSend->checkSpellingEnabled();
 #if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabExists(this))
@@ -2744,7 +2747,7 @@ void UserSendMsgEvent::sendButton()
 
   if (icqEventTag != 0) return;
 
-  if(!mleSend->edited() &&
+  if(!mleSend->isModified() &&
      !QueryUser(this, tr("You didn't edit the message.\n"
                          "Do you really want to send it?"), tr("&Yes"), tr("&No")))
     return;
@@ -3497,7 +3500,7 @@ void UserSendSmsEvent::sendButton()
   if (icqEventTag != 0)
     return;
 
-  if(!mleSend->edited() &&
+  if(!mleSend->isModified() &&
      !QueryUser(this, tr("You didn't edit the SMS.\n"
                          "Do you really want to send it?"), tr("&Yes"), tr("&No")))
     return;

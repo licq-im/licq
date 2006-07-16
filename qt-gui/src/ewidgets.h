@@ -11,7 +11,6 @@
 #include <qtabwidget.h>
 #include <qmap.h>
 
-#include "mledit.h"
 #include "mlview.h"
 #include "licq_message.h"
 
