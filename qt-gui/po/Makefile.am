@@ -1,7 +1,7 @@
 localedir = $(prefix)/share/licq/qt-gui/locale
 
 %.qm: $(top_srcdir)/po/%.ts
-	$(QT_LRELEASE) $< -qm $@
+	$(QT_LRELEASE) -verbose $< -qm $@
 
 # The row below transforms $(top_srcdir)/po/*.ts into *.qm
 # forcing all .ts files in the po dir to be compiled into .qm files.
