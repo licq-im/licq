@@ -23,20 +23,11 @@
 #include "config.h"
 #endif
 
-#include <qglobal.h>
-#if QT_VERSION >= 300
-
-#include <qfont.h>
-#include <qpainter.h>
-#include <qaccel.h>
-#include <qregexp.h>
 #include <qapplication.h>
 #include <qclipboard.h>
+#include <qregexp.h>
 
-#include "ewidgets.h"
-#include "licq_icqd.h"
-
-#include "mlview3.h"
+#include "mlview.h"
 
 MLView::MLView (QWidget* parent, const char *name)
   : QTextBrowser(parent, name), m_handleLinks(true)
@@ -65,14 +56,12 @@ void MLView::append(const QString& s)
       strcmp(qVersion(), "3.0.3") == 0 ||
       strcmp(qVersion(), "3.0.4") == 0)
   {
-     // Workaround --
-     // In those versions, QTextEdit::append didn't add a new paragraph.
-     QTextBrowser::append("<p>" + s);
+    // Workaround --
+    // In those versions, QTextEdit::append didn't add a new paragraph.
+    QTextBrowser::append("<p>" + s);
   }
   else
-  {
-     QTextBrowser::append(s);
-  }
+    QTextBrowser::append(s);
 }
 
 #include "emoticon.h"
@@ -228,6 +217,4 @@ QString MLView::markedText() const
   return selectedText();
 }
 
-#include "mlview3.moc"
-
-#endif
+#include "mlview.moc"

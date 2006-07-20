@@ -1,10 +1,41 @@
 #ifndef MLVIEW_H
 #define MLVIEW_H
 
-#if QT_VERSION >= 300
-#include "mlview3.h"
-#else
-#include "mlview2.h"
-#endif
+#include <qtextbrowser.h>
+
+class MLView : public QTextBrowser
+{
+  Q_OBJECT
+public:
+  MLView (QWidget* parent=0, const char *name=0);
+  virtual ~MLView() {}
+
+  void appendNoNewLine(const QString& s);
+  void append(const QString& s);
+  void GotoEnd();
+
+  bool hasMarkedText() const;
+  QString markedText() const;
+
+  void setBackground(const QColor&);
+  void setForeground(const QColor&);
+  void setHandleLinks(bool enable);
+
+  static QString toRichText(const QString& s, bool highlightURLs = false, bool useHTML = false);
+
+protected:
+  virtual QPopupMenu *createPopupMenu(const QPoint& pos);
+
+public slots:
+  virtual void setSource(const QString& name);
+  void slotCopyUrl();
+
+private:
+  bool m_handleLinks;
+  QString m_url;
+
+signals:
+  void viewurl(QWidget*, QString);
+};
 
 #endif
