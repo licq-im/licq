@@ -87,51 +87,73 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
 
   gMainWindow->emoticons->ParseMessage(text);
 
-    // We must hightlight URLs at this step, before we convert
-    // linebreaks to richtext tags and such.  Also, check to make sure
-    // that the text is not prepared to be highlighted already (by AIM).
-    QRegExp reAHREF("<a href", false);
+  // We must hightlight URLs at this step, before we convert
+  // linebreaks to richtext tags and such.  Also, check to make sure
+  // that the text is not prepared to be highlighted already (by AIM).
+  QRegExp reAHREF("<a href", false);
+  if (highlightURLs && text.find(reAHREF) == -1)
+  {
+    QRegExp reURL(
+      "(?:(https?|ftp)://(.+(:.+)?@)?|www\\d?\\.)"  // protocoll://[user[:password]@] or www[digit].
+      "[a-z0-9.-]+\\.([a-z]+|[0-9]+)"               // hostname.tld or ip address
+      "(:[0-9]+)?"                                  // optional port
+      "(/([-a-z0-9%{}|\\\\^~`;/?:@=&$_.+!*'(),#]|\\[|\\])*)?");
+    reURL.setMinimal(false);
+    reURL.setCaseSensitive(false);
+
+    QRegExp reMail(
+      "(mailto:)?"
+      "[a-z9-0._%+-]+"
+      "@"
+      "[a-z0-9.-]+\\.(?:[a-z]+|[0-9]+)");
+    reMail.setMinimal(false);
+    reMail.setCaseSensitive(false);
+
     int pos = 0;
-    if (highlightURLs && (pos = text.find(reAHREF, pos)) == -1)
+    while ((unsigned int)pos < text.length())
     {
-       QRegExp reURL("(\\b|^)((https?|ftp)://([-a-z0-9]+(:[-a-z0-9]+)?@)?[-a-z0-9.]+[-a-z0-9](:[0-9]+)?(/([-a-z0-9%{}|\\\\^~`;/?:@=&$_.+!*'(),#]|\\[|\\])*)?)");
-       reURL.setMinimal(false);
-       reURL.setCaseSensitive(false);
-       pos = 0;
-       while ( (pos = text.find(reURL, pos)) != -1 ) {
-          QString url = reURL.cap(2);
-          QString link = QString::fromLatin1("<a href=\"") + url + QString::fromLatin1("\">") + url + QString::fromLatin1("</a>");
-          text.replace(pos, url.length(), link);
-          pos += reURL.matchedLength() - url.length() + link.length();
-       }
+      // We try to match both url and mail at the same time, and then
+      // uses the one that matched first.
+      const int urlPos = text.find(reURL, pos);
+      const int mailPos = text.find(reMail, pos);
 
-       QRegExp reMail("(mailto:)?([\\d\\w\\.\\-_]+@[\\d\\w\\.\\-_]+)(\\s+|$)");
-       reMail.setMinimal(true);
-       pos = 0;
-       while ( (pos = text.find(reMail, pos)) != -1 ) {
-          QString mail = reMail.cap(2);
-          QString link = QString::fromLatin1("<a href=\"mailto:") + mail + QString::fromLatin1("\">") + mail + QString::fromLatin1("</a>");
-          text.replace(pos, mail.length(), link);
-          pos += reMail.matchedLength() - mail.length() + link.length();
-       }
+      if (urlPos == -1 && mailPos == -1)
+        break;
 
+      if ((urlPos != -1 && urlPos <= mailPos) || mailPos == -1)
+      {
+        const QString url = reURL.cap();
+        const QString fullurl = (reURL.cap(1).isEmpty() ? QString("http://%1").arg(url) : url);
+        const QString link = QString("<a href=\"%1\">%2</a>").arg(fullurl).arg(url);
+        text.replace(urlPos, reURL.matchedLength(), link);
+        pos = urlPos + link.length();
+      }
+      else
+      {
+        const QString mail = reMail.cap();
+        const QString fullmail = (reMail.cap(1).isEmpty() ? QString("mailto:%1").arg(mail) : mail);
+        const QString link = QString("<a href=\"%1\">%2</a>").arg(fullmail).arg(mail);
+        text.replace(mailPos, reMail.matchedLength(), link);
+        pos = mailPos + link.length();
+      }
     }
+  }
 
-    // convert linebreaks to <br>
-    text.replace(QRegExp("\n"), "<br>\n");
-    // We keep the first space character as-is (to allow line wrapping)
-    // and convert the next characters to &nbsp;s (to preserve multiple
-    // spaces).
-    QRegExp longSpaces(" ([ ]+)");
-    pos = 0;
-    QString cap;
-    while ((pos = longSpaces.search(text)) > -1)
-    {
-       cap = longSpaces.cap(1);
-       cap.replace(QRegExp(" "), "&nbsp;");
-       text.replace(pos+1, longSpaces.matchedLength()-1, cap);
-    }
-    text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
+  // convert linebreaks to <br>
+  text.replace(QRegExp("\n"), "<br>\n");
+  // We keep the first space character as-is (to allow line wrapping)
+  // and convert the next characters to &nbsp;s (to preserve multiple
+  // spaces).
+  QRegExp longSpaces(" ([ ]+)");
+  QString cap;
+  int pos = 0;
+  while ((pos = longSpaces.search(text)) > -1)
+  {
+    cap = longSpaces.cap(1);
+    cap.replace(QRegExp(" "), "&nbsp;");
+    text.replace(pos+1, longSpaces.matchedLength()-1, cap);
+  }
+  text.replace(QRegExp("\t"), " &nbsp;&nbsp;&nbsp;");
 
   return text;
 }
