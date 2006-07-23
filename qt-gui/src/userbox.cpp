@@ -503,9 +503,9 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
                    strcmp(listView()->onlId, m_szId) == 0 &&
                    listView()->onlPPID == m_nPPID && listView()->onlCounter & 1);
 
-  QColorGroup cg(cgdefault.foreground(), cgdefault.background(),
-    cgdefault.light(), cgdefault.dark(), cgdefault.mid(),
-    onlBlink ? *s_cOffline : *m_cFore, *m_cBack);
+  QColorGroup cg(cgdefault);
+  cg.setColor(QColorGroup::Text, (onlBlink ? *s_cOffline : *m_cFore));
+  cg.setColor(QColorGroup::Base, *m_cBack);
 
   const QPixmap *pix = NULL;
 
