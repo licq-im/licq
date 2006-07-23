@@ -18,7 +18,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	securitydlg.h showawaymsgdlg.h sigman.h skin.h skinbrowser.h userbox.h\
 	utilitydlg.h wharf.h randomchatdlg.h forwarddlg.h chatjoin.h \
 	mmlistview.h mmsenddlg.h userinfodlg.h usereventdlg.h keyrequestdlg.h \
-	jfcstyle.h usercodec.h reqauthdlg.h licqdialog.h userselectdlg.h \
+	usercodec.h reqauthdlg.h licqdialog.h userselectdlg.h \
 	editfilelistdlg.h emoticon.h catdlg.h phonedlg.h ownermanagerdlg.h \
 	gpgkeyselect.h gpgkeymanager.h licqkimiface.h kimiface.h support.h
 
@@ -31,7 +31,7 @@ licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	sigman.cpp skin.cpp skinbrowser.cpp userbox.cpp utilitydlg.cpp \
 	wharf.cpp randomchatdlg.cpp forwarddlg.cpp chatjoin.cpp mmlistview.cpp \
 	mmsenddlg.cpp userinfodlg.cpp usereventdlg.cpp keyrequestdlg.cpp \
-	jfcstyle.cpp usercodec.cpp reqauthdlg.cpp licqdialog.cpp userselectdlg.cpp \
+	usercodec.cpp reqauthdlg.cpp licqdialog.cpp userselectdlg.cpp \
 	editfilelistdlg.cpp emoticon.cpp catdlg.cpp phonedlg.cpp \
 	ownermanagerdlg.cpp gpgkeyselect.cpp gpgkeymanager.cpp support.cpp
 

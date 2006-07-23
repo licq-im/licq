@@ -54,9 +54,6 @@
 #endif
 #include <unistd.h> // for getopt
 
-#if QT_VERSION < 300
-#include "jfcstyle.h"
-#endif
 #include "mainwin.h"
 #include "sigman.h"
 #include "outputwin.h"
@@ -80,11 +77,7 @@ const char *LP_Usage(void)
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
     " -e : set the extended icons to use (must be in [base dir]/qt-gui/extended.icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE /"
-#if QT_VERSION < 300
-    " JFC /"
-#endif
-    " GTK / SGI / LCD), ignored by KDE support\n"
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / GTK / SGI / LCD), ignored by KDE support\n"
     " -d : start hidden (dock icon only)\n"
     " -D : disable dock icon for this session (does not affect dock icon settings)";
 #else
@@ -94,11 +87,7 @@ const char *LP_Usage(void)
     " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
     " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
     " -e : set the extended icons to use (must be in [base dir]/qt-gui/extended.icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE /"
-#if QT_VERSION < 300
-    " JFC /"
-#endif
-    " GTK / SGI / LCD), ignored by KDE support\n"
+    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / GTK / SGI / LCD), ignored by KDE support\n"
     " -d : start hidden (dock icon only)\n"
     " -D : disable dock icon for this session (does not affect dock icon settings)";
 #endif
@@ -200,10 +189,6 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
 #if (QT_VERSION >= 230) && defined(QINTERLACESTYLE_H)
   else if (strncmp( _szStyle, "LCD", 3 ) == 0 )
     s = new QInterlaceStyle;
-#endif
-#if QT_VERSION < 300
-  else if (strncmp(_szStyle, "JFC", 3) == 0)
-    s = new JFCStyle;
 #endif
 #if QT_VERSION >= 220
   else if (strncmp(_szStyle, "GTK", 3) == 0)
