@@ -27,9 +27,11 @@
 
 #include <qapplication.h>
 #include <qclipboard.h>
+#include <qpopupmenu.h>
 #include <qregexp.h>
 
 #include "mlview.h"
+#include "emoticon.h"
 
 MLView::MLView (QWidget* parent, const char *name)
   : QTextBrowser(parent, name), m_handleLinks(true)
@@ -66,17 +68,12 @@ void MLView::append(const QString& s)
     QTextBrowser::append(s);
 }
 
-#include "emoticon.h"
-#include "mainwin.h" // for the CEmoticon instance
-
 QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
 {
   // We cannot use QStyleSheet::convertFromPlainText
   // since it has a bug in Qt 3 which causes line breaks to mix up.
   // not used for html now QString text = QStyleSheet::escape(s);
   QString text = useHTML ? s: QStyleSheet::escape(s);
-
-  gMainWindow->emoticons->ParseMessage(text);
 
   // We must hightlight URLs at this step, before we convert
   // linebreaks to richtext tags and such.  Also, check to make sure
@@ -129,6 +126,8 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
       }
     }
   }
+
+  CEmoticons::self()->parseMessage(text);
 
   // convert linebreaks to <br>
   text.replace(QRegExp("\n"), "<br>\n");

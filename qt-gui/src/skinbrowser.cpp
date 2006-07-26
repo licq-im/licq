@@ -336,18 +336,14 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 		}
 	}
 
-	CEmoticons *emoticons = gMainWindow->emoticons;
-	QStringList themes = emoticons->Themes();
-	const char *selected  = emoticons->Theme();
-	int i=0, emoticonid= 0;
-	for ( QStringList::Iterator it = themes.begin();
-	      it != themes.end(); ++it, i++ )
-	{
-		cmbEmoticon->insertItem(*it, i);
-		if (selected && !strcmp(selected, (*it).ascii() ))
-				emoticonid = i;
-	}
-	cmbEmoticon->setCurrentItem(emoticonid);
+  const CEmoticons *emoticons = CEmoticons::self();
+  const QStringList themes = emoticons->themes();
+  cmbEmoticon->insertStringList(themes, 0);
+
+  const QString selected = emoticons->theme();
+  const int index = themes.findIndex(selected);
+  if (index != -1)
+    cmbEmoticon->setCurrentItem(index);
 
 	// setup connections
 	connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edtSkin()));
@@ -398,16 +394,17 @@ void SkinBrowserDlg::slot_ok()
  */
 void SkinBrowserDlg::slot_apply()
 {
-	if (cmbSkin->currentText() != mainwin->skin->szSkinName)
-		mainwin->ApplySkin(cmbSkin->currentText().local8Bit());
+  if (cmbSkin->currentText() != mainwin->skin->szSkinName)
+    mainwin->ApplySkin(cmbSkin->currentText().local8Bit());
 
-	if (cmbIcon->currentText() != mainwin->m_szIconSet)
-		mainwin->ApplyIcons(cmbIcon->currentText().local8Bit());
+  if (cmbIcon->currentText() != mainwin->m_szIconSet)
+    mainwin->ApplyIcons(cmbIcon->currentText().local8Bit());
 
-	if (cmbExtIcon->currentText() != mainwin->m_szExtendedIconSet)
-		mainwin->ApplyExtendedIcons(cmbExtIcon->currentText().local8Bit());
-	if (cmbEmoticon->currentText() != mainwin->emoticons->Theme())
-		mainwin->emoticons->SetTheme(cmbEmoticon->currentText());
+  if (cmbExtIcon->currentText() != mainwin->m_szExtendedIconSet)
+    mainwin->ApplyExtendedIcons(cmbExtIcon->currentText().local8Bit());
+
+  if (cmbEmoticon->currentText() != CEmoticons::self()->theme())
+    CEmoticons::self()->setTheme(cmbEmoticon->currentText());
 }
 
 /*!	\brief Creates a new skin editor dialog
@@ -516,26 +513,22 @@ void SkinBrowserDlg::slot_loadExtIcons(const QString &extIcon)
  */
 void SkinBrowserDlg::slot_loadEmoticons(const QString &emoticon)
 {
-	lstEmoticons->clear();
-	CEmoticons *e = gMainWindow->emoticons;
-	QStringList files = e->fileList(emoticon);
-	for (QStringList::Iterator it = files.begin(); it != files.end(); ++it)
-	{
-		QImage img = QImage(*it);
-		/* hack: SkinBrowserPreviewArea only draws the
-		 * first 16 pixels
-		 */
-		int max_area = 16;
-		QSize size = img.size();
-		if (size.isValid() &&
-		    size.width() > max_area && size.height() > max_area)
-			img = img.scale(max_area, max_area, QImage::ScaleFree);
+  lstEmoticons->clear();
+  const QStringList files = CEmoticons::self()->fileList(emoticon);
+  for (QStringList::ConstIterator it = files.begin(); it != files.end(); ++it)
+  {
+    QImage img = QImage(*it);
+    // hack: SkinBrowserPreviewArea only draws the first 16 pixels
+    const int max_area = 16;
+    QSize size = img.size();
+    if (size.isValid() && size.width() > max_area && size.height() > max_area)
+      img = img.scale(max_area, max_area, QImage::ScaleFree);
 
-		QPixmap pm(img);
-		if (!pm.isNull())
-			lstEmoticons->append(pm);
-	}
-	lblPaintEmoticon->setPixmapList(lstEmoticons);
+    QPixmap pm(img);
+    if (!pm.isNull())
+      lstEmoticons->append(pm);
+  }
+  lblPaintEmoticon->setPixmapList(lstEmoticons);
 }
 
 /*! \brief provide correct repainting when resizing the main widget

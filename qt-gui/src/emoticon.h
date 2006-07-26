@@ -1,44 +1,74 @@
-#ifndef zE1D68C95080DE073514FA90C07628F92
-#define zE1D68C95080DE073514FA90C07628F92
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 2003-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+#ifndef EMOTICON_H
+#define EMOTICON_H
 
 #include <qmap.h>
-#include <qstring.h>
+#include <qobject.h>
 #include <qstringlist.h>
 
-class CEmoticons {
+class CEmoticons : public QObject
+{
+  Q_OBJECT;
 
-public:
-	/*!
-	 * \param basedir  base dir for icons
-	 * \param theme    sets the current theme
-	 */
-	CEmoticons(const char *basedir, const char *altdir=0, const char *theme = 0 );
-	~CEmoticons();
+  public:
+    CEmoticons();
+    virtual ~CEmoticons();
 
-	/*! \returns the list of themes available */
-	QStringList Themes();
-	
-	/*!
-	 * sets the current theme
-	 * \retuns a negative number on error
-	 */
-	int SetTheme(const char *theme);
-	
-	/*! \returns the current theme */
-	const char *Theme(void);
-	
-	/*! \returns the list of files of the current emoticon theme */
-	QStringList fileList();
-	
-	/*! \returns the list of files for `theme` */
-	QStringList fileList(const char *theme);
-	
-        /*! \returns a mapping of icons to reg exps */
-        QMap<QString, QString> EmoticonsKeys();
-        
-	void ParseMessage(QString &msg);
+    /// Get singleton instance
+    static CEmoticons* self();
 
-private:
-	struct Emoticons *data;
+    /// Set dirs to search themes in to @a basedirs
+    void setBasedirs(const QStringList &basedirs);
+
+    /** @returns the list of themes available */
+    QStringList themes() const;
+
+    /** @returns the list of files of the current emoticon theme */
+    QStringList fileList() const;
+
+    /** @returns the list of files for @a theme */
+    QStringList fileList(const QString &theme) const;
+
+    /**
+     * Sets the current theme to @a theme.
+     * @returns false if @a theme could not be loaded.
+     */
+    bool setTheme(const QString &theme);
+
+    /** @returns the current theme */
+    QString theme() const;
+
+    /** @returns a mapping of files to smileys */
+    QMap<QString, QString> emoticonsKeys() const;
+
+    void parseMessage(QString &message) const;
+
+  signals:
+    void themeChanged();
+
+  private:
+    static CEmoticons *m_self;
+
+    class Impl;
+    Impl *pimpl;
 };
-#endif
+
+#endif // EMOTICON_H

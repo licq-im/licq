@@ -3561,8 +3561,7 @@ SelectEmoticon::SelectEmoticon(QWidget *parent)
   : QFrame(parent, "SelectEmoticon", WType_Popup | WStyle_Tool | 
       WStyle_Customize | WDestructiveClose)
 {
-  CEmoticons *e = gMainWindow->emoticons;
-  QMap<QString, QString> map = e->EmoticonsKeys();
+  QMap<QString, QString> map = CEmoticons::self()->emoticonsKeys();
   QMapIterator<QString, QString> iter;
   
   int nRows = static_cast<int>(::sqrt(map.size()));

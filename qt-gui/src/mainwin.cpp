@@ -24,6 +24,7 @@
 #include <kapp.h>
 #include <kglobal.h>
 #include <kglobalsettings.h>
+#include <kstandarddirs.h>
 #include <kwin.h>
 #include <kiconloader.h>
 #include <kurl.h>
@@ -564,14 +565,18 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   // Load the Emoticons
   char szEmoticons[MAX_FILENAME_LEN];
-  licqConf.ReadStr("Emoticons", szEmoticons, "Default" );
-  QString s =  QString::fromLatin1(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
-  QString alt = QString::fromLatin1(BASE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
-  emoticons = new CEmoticons(s.latin1(), alt.latin1());
-  if (*szEmoticons)
-     if (emoticons->SetTheme(szEmoticons) < 0)
-       gLog.Error("%s Loading emoticons theme `%s'\n", L_ERRORxSTR,
-                  szEmoticons);
+  licqConf.ReadStr("Emoticons", szEmoticons, "Default");
+  QStringList emoticonsDirs;
+  emoticonsDirs += QString::fromLatin1(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
+  emoticonsDirs += QString::fromLatin1(BASE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
+#if defined(USE_KDE)
+  // emoticons resource added in KDE 3.4
+  if (KDE::version() >= KDE_MAKE_VERSION(3, 4, 0))
+    emoticonsDirs += KGlobal::dirs()->findDirs("emoticons", "");
+#endif
+  CEmoticons::self()->setBasedirs(emoticonsDirs);
+  if (!CEmoticons::self()->setTheme(szEmoticons))
+    gLog.Error("%sLoading emoticons theme '%s'\n", L_ERRORxSTR, szEmoticons);
 
   // Load the skin
   char szSkin[MAX_FILENAME_LEN] = "basic";
@@ -1125,7 +1130,6 @@ void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
 CMainWindow::~CMainWindow()
 {
   delete licqIcon;
-  if (emoticons) delete emoticons;
   if (skin) delete skin;
   if (m_szExtendedIconSet) free(m_szExtendedIconSet);
   if (pmBorder) delete pmBorder;
@@ -3607,7 +3611,8 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
   licqConf.WriteStr("ExtendedIcons", m_szExtendedIconSet);
-  licqConf.WriteStr("Emoticons", emoticons->Theme() ? emoticons->Theme() : "None");
+  const QString emoticon = CEmoticons::self()->theme();
+  licqConf.WriteStr("Emoticons", emoticon.isEmpty() ? "None" : emoticon.latin1());
 
 #if QT_VERSION >= 300
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?

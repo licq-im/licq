@@ -36,7 +36,6 @@ class QTextView;
 class CSignalManager;
 class CQtLogWindow;
 class CSkin;
-class CEmoticons;
 class CICQDaemon;
 class ICQEvent;
 class OptionsDlg;
@@ -166,7 +165,6 @@ public:
   ColumnInfos colInfo;
   FlashType m_nFlash;
   CSkin *skin;
-  CEmoticons *emoticons;
 
   unsigned long m_nCurrentGroup, m_nGroupStates;
   unsigned short m_nSortByStatus,
