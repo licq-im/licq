@@ -10,6 +10,9 @@
 #include <qtabbar.h>
 #include <qtabwidget.h>
 #include <qmap.h>
+#include <qmessagebox.h>
+#include <qsize.h>
+#include <qlistview.h>
 
 #include "mlview.h"
 #include "licq_message.h"
@@ -205,5 +208,65 @@ public slots:
   void addMsg(ICQEvent *);
 };
 
+/* ----------------------------------------------------------------------------- */
+
+class CLicqMessageBox : public QDialog
+{
+  Q_OBJECT
+public:
+  CLicqMessageBox(QWidget *parent = 0);
+  void addMessage(QMessageBox::Icon type, const QString &msg);
+
+public slots:
+  void slot_toggleMore();
+  void slot_clickNext();
+  void slot_clickOk();
+  void slot_listChanged(QListViewItem *);
+
+private:
+  QPixmap getMessageIcon(QMessageBox::Icon);
+
+  int m_nUnreadNum;
+  QLabel *m_lblIcon,
+         *m_lblMessage;
+  QPushButton *m_btnNext,
+              *m_btnMore,
+              *m_btnOk;
+  QListView *m_lstMsg;
+  QFrame *m_frmList;
+  QSize m_Size;
+};
+
+class CLicqMessageManager
+{
+public:
+  CLicqMessageManager();
+  ~CLicqMessageManager();
+
+  void addMessage(QMessageBox::Icon type, const QString &msg, QWidget *p);
+
+private:
+  CLicqMessageBox *m_pMsgDlg;
+};
+
+class CLicqMessageBoxItem : public QListViewItem
+{
+public:
+  CLicqMessageBoxItem(QListView *, QListViewItem *);
+  void paintCell(QPainter *, const QColorGroup &, int, int, int);
+
+  void setMessage(const QString &s) { m_msg = s; }
+  void setFullIcon(const QPixmap &p) { m_fullIcon = p; }
+  void setUnread(bool b) { m_unread = b; }
+
+  QString getMessage() const { return m_msg; }
+  QPixmap getFullIcon() const { return m_fullIcon; }
+  bool isUnread() const { return m_unread; }
+
+private:
+  QString m_msg;
+  QPixmap m_fullIcon;
+  bool m_unread;
+};
 
 #endif

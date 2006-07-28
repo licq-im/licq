@@ -15,6 +15,7 @@
 #include <qevent.h>
 #ifdef USE_KDE
 #include <kapp.h>
+#include <kiconloader.h>
 #include <kmessagebox.h>
 #include <qmessagebox.h>
 #else
@@ -23,7 +24,10 @@
 #include <qapplication.h>
 #include <qstyle.h>
 #include <qdatetime.h>
+#include <qlayout.h>
+#include <qheader.h>
 #include <ctype.h>
+#include <algorithm>
 
 #include "licq_history.h"
 #include "licq_events.h"
@@ -34,6 +38,8 @@
 #include "usereventdlg.h"
 
 using namespace std;
+
+CLicqMessageManager *pMessageMgr = new CLicqMessageManager();
 
 /*! \brief Dialog with configurable yes/no buttons
  *
@@ -88,6 +94,8 @@ int QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, QStri
 
 void InformUser(QWidget *q, QString sz)
 {
+  pMessageMgr->addMessage(QMessageBox::Information, sz, q);
+  return;
   //(void) new CLicqMessageBox(szInfo, QMessageBox::Information, q);
 #ifdef USE_KDE
   KMessageBox::information(q, sz, QMessageBox::tr("Licq Information"), QString::null, false);
@@ -98,7 +106,8 @@ void InformUser(QWidget *q, QString sz)
 
 void WarnUser(QWidget *q, QString sz)
 {
-  //(void) new CLicqMessageBox(szInfo, QMessageBox::Warning, q);
+  pMessageMgr->addMessage(QMessageBox::Warning, sz, q);
+  return;
 #ifdef USE_KDE
   KMessageBox::sorry(q, sz, QMessageBox::tr("Licq Warning"), false);
 #else
@@ -108,6 +117,8 @@ void WarnUser(QWidget *q, QString sz)
 
 void CriticalUser(QWidget *q, QString sz)
 {
+  pMessageMgr->addMessage(QMessageBox::Critical, sz, q);
+  return;
   //(void) new CLicqMessageBox(szInfo, QMessageBox::Critical, q);
 #ifdef USE_KDE
   KMessageBox::error(q, sz, QMessageBox::tr("Licq Error"), false);
@@ -1112,6 +1123,308 @@ void CMessageViewWidget::addNotice(QString dateTime, QString messageText)
   append(s);
   if (m_bAppendLineBreak)
     append("<hr>");
+}
+
+CLicqMessageBox::CLicqMessageBox(QWidget *parent)
+  : QDialog(parent, "LicqInfo", false, WDestructiveClose), m_nUnreadNum(0)
+{
+  setCaption("Licq");
+
+  // Start with no message
+  QString msg = "";
+  QMessageBox::Icon type = QMessageBox::Information;
+
+  QVBoxLayout *topLay = new QVBoxLayout(this, 11, 6);
+
+  // Make the first horizontal layout for the icon and message
+  QFrame *frmMessage = new QFrame(this);
+  QHBoxLayout *lay = new QHBoxLayout(frmMessage, 5, 6);
+  m_lblIcon = new QLabel(frmMessage);
+  QPixmap icon = getMessageIcon(type);
+  m_lblIcon->setPixmap(icon);
+  m_lblMessage = new QLabel(msg, frmMessage);
+
+  lay->addWidget(m_lblIcon, 0, Qt::AlignCenter);
+  lay->addWidget(m_lblMessage);
+
+  // Make the list box of all the pending messages, starts out hidden
+  m_frmList = new QFrame(this);
+  QHBoxLayout *layList = new QHBoxLayout(m_frmList);
+  m_lstMsg = new QListView(m_frmList);
+  m_lstMsg->addColumn(""); // Only use one column
+  m_lstMsg->setFixedHeight(100); // This seems to be a good height
+  QHeader *hdr = m_lstMsg->header();
+  hdr->hide(); // Don't need to show the list's headers
+  layList->addWidget(m_lstMsg);
+  // Add this listbox as an extension to the dialog, and make it shown at the
+  // bottom part of the dialog.
+  setOrientation(Qt::Vertical);
+  setExtension(m_frmList);
+
+  // Make the second horizontal layout for the buttons
+  QFrame *frmButtons = new QFrame(this);
+  QHBoxLayout *lay2 = new QHBoxLayout(frmButtons, 0, 15);
+  m_btnMore = new QPushButton("&List", frmButtons);
+  //m_btnMore->setDisabled(true);
+  m_btnNext = new QPushButton("&Next", frmButtons);
+  m_btnNext->setDisabled(true);
+  m_btnOk = new QPushButton("&OK", frmButtons);
+  m_btnOk->setDefault(true);
+
+  lay2->addWidget(m_btnMore);
+  lay2->addWidget(m_btnNext);
+  lay2->addWidget(m_btnOk);
+
+  topLay->addWidget(frmMessage, 0, Qt::AlignCenter);
+  topLay->addWidget(frmButtons, 0, Qt::AlignCenter);
+
+  m_Size = sizeHint();
+  setFixedSize(m_Size);
+
+  // Connect all the signals here
+  connect(m_btnMore, SIGNAL(clicked()), this, SLOT(slot_toggleMore()));
+  connect(m_btnNext, SIGNAL(clicked()), this, SLOT(slot_clickNext()));
+  connect(m_btnOk, SIGNAL(clicked()), this, SLOT(slot_clickOk()));
+  connect(m_lstMsg, SIGNAL(selectionChanged(QListViewItem *)),
+      this, SLOT(slot_listChanged(QListViewItem *)));
+
+  // Make the column take up the entire width
+  m_lstMsg->setColumnWidth(0, m_Size.width());
+
+  show();
+}
+
+void CLicqMessageBox::addMessage(QMessageBox::Icon type, const QString &msg)
+{
+  bool unread = false;
+
+  // The icons we will show
+  QPixmap pix = getMessageIcon(type);
+  QImage img;
+
+
+  // If we have only one message in queue, show that one, otherwise update
+  // the number of pending messages.
+  if (m_lstMsg->childCount() == 0)
+  { 
+    m_lblIcon->setPixmap(pix);
+    m_lblMessage->setText(msg);
+    m_btnNext->setText("&Next");
+    m_btnNext->setEnabled(false);
+    m_btnMore->setEnabled(false);
+    showExtension(false); // We are opening the window, so default to not showing this
+  }
+  else
+  {
+    m_nUnreadNum++;
+    unread = true; // It is unread
+    QString nextStr = QString("&Next (%1)").arg(m_nUnreadNum);
+    m_btnNext->setText(nextStr);
+    if (!m_btnNext->isEnabled())
+      m_btnNext->setEnabled(true);
+    if (!m_btnMore->isEnabled())
+      m_btnMore->setEnabled(true);
+  }
+
+  // Add it to the list
+  CLicqMessageBoxItem *pEntry = new CLicqMessageBoxItem(m_lstMsg,
+      m_lstMsg->firstChild());
+  // Resize the icon
+  img = pix;
+  QPixmap scaledPix(img.scale(16, 16));
+  // Add the columns now
+  pEntry->setPixmap(0, scaledPix);
+  pEntry->setText(0, msg.left(std::min(50, msg.find('\n')))); // Put this in setMessage()
+  // Set the special data
+  pEntry->setMessage(msg);
+  pEntry->setFullIcon(pix);
+  pEntry->setUnread(unread);
+}
+
+/// ////////////////////////////////////////////////////////
+/// @brief Toggline the detailed list view
+///
+/// When the more button is clicked, toggle showing the list view of
+/// pending messages. When we hide the list view, we need to show the
+/// oldest unread message.
+/// ////////////////////////////////////////////////////////
+void CLicqMessageBox::slot_toggleMore()
+{
+  showExtension(m_frmList->isHidden());
+}
+
+/// ////////////////////////////////////////////////////////
+/// @brief Show the next pending message
+///
+/// When the next button is clicked, we will show the next pending 
+/// unread message. The text and icon will both be updated.
+/// ////////////////////////////////////////////////////////
+void CLicqMessageBox::slot_clickNext()
+{
+  // Find the next unread message
+  bool bFound = false;
+  QListViewItem *i = m_lstMsg->selectedItem();
+  CLicqMessageBoxItem *item = 0;
+  while (i != 0)
+  {
+    item = dynamic_cast<CLicqMessageBoxItem *>(i);
+    if (item->isUnread())
+    {
+      bFound = true;
+      break;
+    }
+    i = i->itemAbove();
+  }
+
+  // If no unread item was found, search from the bottom
+  if (!bFound)
+  {
+    i = m_lstMsg->lastItem();
+    while (i != 0)
+    {
+      item = dynamic_cast<CLicqMessageBoxItem *>(i);
+      if (item->isUnread())
+      {
+        bFound = true;
+        break;
+      }
+      i = i->itemAbove();
+    }
+  }
+
+  // Only change the item if there something to change it to
+  if (bFound)
+    m_lstMsg->setCurrentItem(item);
+}
+
+/// ////////////////////////////////////////////////////////
+/// @brief Close the message box
+///
+/// When the ok button is clicked, we will close the dialog and
+/// remove the oldest message (the one that was just shown) from the
+/// pending message queue.
+/// ////////////////////////////////////////////////////////
+void CLicqMessageBox::slot_clickOk()
+{
+  // Hide the window first
+  hide();
+
+  // Remove any items that have been read
+  QListViewItemIterator it(m_lstMsg);
+  while (it.current())
+  {
+    CLicqMessageBoxItem *item = dynamic_cast<CLicqMessageBoxItem *>(it.current());
+    if (!item->isUnread())
+      delete it.current();
+    else
+      ++it;
+  }
+}
+
+/// ////////////////////////////////////////////////////////
+/// @brief The user changed the selected list item
+/// 
+/// When the item changes, the message box's icon and message that
+/// it shows, must be changed to match what the user selected.
+///
+/// @param item The new QListViewItem that has been selected
+/// ////////////////////////////////////////////////////////
+void CLicqMessageBox::slot_listChanged(QListViewItem *i)
+{
+  CLicqMessageBoxItem *item = dynamic_cast<CLicqMessageBoxItem *>(i);
+  m_lblIcon->setPixmap(item->getFullIcon());
+  m_lblMessage->setText(item->getMessage());
+
+  // Mark it as read
+  if (item->isUnread())
+  {
+    m_nUnreadNum--;
+    item->setUnread(false);
+  }
+
+  // Update the next button
+  QString nextStr;
+  if (m_nUnreadNum > 0)
+    nextStr = QString("&Next (%1)").arg(m_nUnreadNum);
+  else
+  {
+    // No more unread messages
+    nextStr = QString("&Next");
+    m_btnNext->setEnabled(false);
+  }
+  m_btnNext->setText(nextStr);
+}
+
+QPixmap CLicqMessageBox::getMessageIcon(QMessageBox::Icon type)
+{
+#ifdef USE_KDE
+  QString iconName;
+  switch (type)
+  {
+    case QMessageBox::Information:
+      iconName = "messagebox_info";
+      break;
+    case QMessageBox::Warning:
+      iconName = "messagebox_warning";
+      break;
+    case QMessageBox::Critical:
+      iconName = "messagebox_critical";
+      break;
+    case QMessageBox::NoIcon:
+    case QMessageBox::Question:
+    default:
+      return QPixmap();
+  }
+
+  QPixmap icon = KApplication::kApplication()->iconLoader()->loadIcon(iconName,
+    KIcon::NoGroup, KIcon::SizeMedium, KIcon::DefaultState, 0, true);
+  if (icon.isNull())
+    icon = QMessageBox::standardIcon(type);
+#else
+  QPixmap icon = QMessageBox::standardIcon(type);
+#endif
+
+  return icon;
+}
+
+CLicqMessageManager::CLicqMessageManager()
+  : m_pMsgDlg(0)
+{
+}
+
+CLicqMessageManager::~CLicqMessageManager()
+{
+  if (m_pMsgDlg)
+    delete m_pMsgDlg;
+}
+
+void CLicqMessageManager::addMessage(QMessageBox::Icon type, const QString &msg,
+  QWidget *parent)
+{
+  if (m_pMsgDlg == 0)
+    m_pMsgDlg = new CLicqMessageBox(parent);
+
+  m_pMsgDlg->addMessage(type, msg);
+  m_pMsgDlg->show();
+}
+
+CLicqMessageBoxItem::CLicqMessageBoxItem(QListView *parent, QListViewItem *after)
+  : QListViewItem(parent, after)
+{
+  m_unread = false;
+}
+
+void CLicqMessageBoxItem::paintCell(QPainter *p, const QColorGroup &cg,
+    int column, int width, int alignment)
+{
+  QColorGroup _cg(cg);
+  QColor c = _cg.text(); // Save it to revert it when we are done
+
+  if (isUnread())
+    _cg.setColor(QColorGroup::Text, Qt::red);
+
+  QListViewItem::paintCell(p, _cg, column, width, alignment);
+  _cg.setColor(QColorGroup::Text, c);
 }
 
 #include "ewidgets.moc"
