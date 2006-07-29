@@ -18,7 +18,7 @@
  */
 
 #ifdef HAVE_CONFIG_H
-#include "config.h"
+# include "config.h"
 #endif
 
 #ifdef USE_KDE
@@ -27,7 +27,6 @@
 # include <qapplication.h>
 #endif
 
-#include <qmap.h>
 #include <qdir.h>
 #include <qdom.h>
 #include <qstylesheet.h>
@@ -36,8 +35,10 @@
 
 #include "emoticon.h"
 
-static const QString DEFAULT_THEME("Default");
-static const QString NO_THEME("None");
+const QString CEmoticons::DEFAULT_THEME =
+  QString::fromLatin1(QT_TRANSLATE_NOOP("CEmoticons", "Default"));
+const QString CEmoticons::NO_THEME =
+  QString::fromLatin1(QT_TRANSLATE_NOOP("CEmoticons", "None"));
 
 struct Emoticon
 {
@@ -63,6 +64,7 @@ public:
 };
 
 /**
+ * @param theme the untranslated name of a theme
  * @returns the full path to @a theme, or QString::null if no such theme was found.
  */
 QString CEmoticons::Impl::themeDir(const QString &theme) const
@@ -105,6 +107,23 @@ CEmoticons* CEmoticons::self()
   return m_self;
 }
 
+QString CEmoticons::translateThemeName(const QString &name)
+{
+  if (name == DEFAULT_THEME || name == NO_THEME)
+    return tr(name);
+  return name;
+}
+
+QString CEmoticons::untranslateThemeName(const QString &name)
+{
+  if (name == tr(DEFAULT_THEME))
+    return DEFAULT_THEME;
+  else if (name == tr(NO_THEME))
+    return NO_THEME;
+  else
+    return name;
+}
+
 void CEmoticons::setBasedirs(const QStringList &basedirs)
 {
   pimpl->basedirs = basedirs;
@@ -129,6 +148,9 @@ QStringList CEmoticons::themes() const
     QStringList::ConstIterator subdir = subdirs.begin();
     for (; subdir != subdirs.end(); subdir++)
     {
+      if (*subdir == "." || *subdir == "..")
+        continue;
+
       if (*subdir == NO_THEME)
         continue; // Add this later
 
@@ -149,9 +171,10 @@ QStringList CEmoticons::themes() const
 
   themes.sort();
 
+  // Adding these at the front so that they will be first in the list shown to the user.
   if (defaultExists)
-    themes.push_front(DEFAULT_THEME);
-  themes.push_front(NO_THEME);
+    themes.push_front(translateThemeName(DEFAULT_THEME));
+  themes.push_front(translateThemeName(NO_THEME));
 
   return themes;
 }
@@ -161,7 +184,7 @@ QStringList CEmoticons::themes() const
  * @param file filename (without extension) to search for
  * @returns the full filename or QString::null if no such file exists.
  */
-QString fullFilename(const QString &dir, const QString &file)
+static QString fullFilename(const QString &dir, const QString &file)
 {
   const QString base = QString("%1/%2").arg(dir).arg(file);
 
@@ -173,6 +196,8 @@ QString fullFilename(const QString &dir, const QString &file)
     return base + ".jpg";
   else if (QFile::exists(base + ".gif"))
     return base + ".gif";
+  else if (QFile::exists(base + ".mng"))
+    return base + ".mng";
 
   gLog.Warn("%sUnknown file '%s'.\n", L_WARNxSTR, base.latin1());
   return QString::null;
@@ -200,7 +225,7 @@ QString fullFilename(const QString &dir, const QString &file)
  *
  * </messaging-emoticon-map>
  */
-bool parseXml(const QString &dir, QMap<QChar, QValueList<Emoticon> > *emoticons, QMap<QString, QString> *fileSmiley)
+static bool parseXml(const QString &dir, QMap<QChar, QValueList<Emoticon> > *emoticons, QMap<QString, QString> *fileSmiley)
 {
   QFile xmlfile(dir + QString::fromLatin1("/emoticons.xml"));
   if (!xmlfile.open(IO_ReadOnly))
@@ -235,9 +260,8 @@ bool parseXml(const QString &dir, QMap<QChar, QValueList<Emoticon> > *emoticons,
         // The first one is added to fileSmiley, so that when the user clicks
         // on the icon, this is the smiley that is inserted into the document.
         //
-        // All smileys are then indexed on the first character in the emoticons
-        // map. Both the original and the escaped (< replaced with &lt; etc)
-        // versions are inserted (if the differ).
+        // All smileys are then indexed in the emoticons map on the first character
+        // in the escaped smiley.
         QDomElement string = stringNode.toElement();
         if (!string.isNull() && string.tagName() == QString::fromLatin1("string"))
         {
@@ -276,8 +300,10 @@ QStringList CEmoticons::fileList() const
 // Similar to setTheme(const QString_&) but with the difference that
 // here we don't update currentTheme. We're just interested in getting
 // the filelist.
-QStringList CEmoticons::fileList(const QString &theme) const
+QStringList CEmoticons::fileList(const QString &theme_in) const
 {
+  const QString theme = untranslateThemeName(theme_in);
+
   if (theme.isEmpty() || theme == NO_THEME)
     return QStringList();
 
@@ -298,8 +324,10 @@ QStringList CEmoticons::fileList(const QString &theme) const
   return QStringList();
 }
 
-bool CEmoticons::setTheme(const QString &theme)
+bool CEmoticons::setTheme(const QString &theme_in)
 {
+  const QString theme = untranslateThemeName(theme_in);
+
   if (theme.isEmpty() || theme == NO_THEME)
   {
     pimpl->currentTheme = NO_THEME;
@@ -332,7 +360,7 @@ bool CEmoticons::setTheme(const QString &theme)
 
 QString CEmoticons::theme() const
 {
-  return pimpl->currentTheme;
+  return translateThemeName(pimpl->currentTheme);
 }
 
 QMap<QString, QString> CEmoticons::emoticonsKeys() const
@@ -346,7 +374,7 @@ QMap<QString, QString> CEmoticons::emoticonsKeys() const
 static bool containsAt(const QString &s1, const QString &s2, const uint start)
 {
   const uint end = start + s2.length();
-  if (s1.length() < end)
+  if (s1.length() < end || start > s1.length())
     return false;
 
   for (uint pos = start; pos < end; pos++)
@@ -357,63 +385,82 @@ static bool containsAt(const QString &s1, const QString &s2, const uint start)
   return true;
 }
 
-void CEmoticons::parseMessage(QString &message) const
+/**
+ * @param message is assumed to be in html, so that all \< is part of a tag.
+ */
+void CEmoticons::parseMessage(QString &message, ParseMode mode) const
 {
   // Short-circuit if we don't have any emoticons
   if (pimpl->emoticons.isEmpty())
     return;
 
-//   qDebug("message b: '%s'", message.latin1());
+//   qDebug("message pre: '%s'", message.latin1());
 
   QChar p(' '), c; // previous and current char
   for (uint pos = 0; pos < message.length(); pos++)
   {
     c = message[pos];
+
     if (c == '<')
     {
-      // If this is an a tag, skip it completly
-      if (message[pos + 1] == 'a')
+      // If this is an a tag ("<a "), skip it completly
+      if (message[pos + 1] == 'a' && message[pos + 2].isSpace())
       {
         const int index = message.find("</a>", pos);
         if (index == -1)
-          return; // We're done
-//         qDebug(" Skipping '%s', point at '%c'", message.mid(pos, index + 3 - pos).latin1(), message[index + 3].latin1());
+          return; // Bad html
         pos = index + 3; // Fast-forward pos to point at '>'
       }
       else // Skip just the tag
       {
         const int index = message.find('>', pos);
         if (index == -1)
-          return; // We're done
-//         qDebug(" Skipping '%s', point at '%c'", message.mid(pos, index - pos).latin1(), message[index].latin1());
+          return; // Bad html
         pos = index; // Fast-forward pos to point at '>'
       }
       p = '>';
       continue;
     }
 
-    // Only insert smileys after a space, tag or html entitiy
-    if (!p.isSpace() && p != '>' && p != ';')
+    // Only insert smileys after a space in strict and normal mode
+    if (mode == StrictMode || mode == NormalMode)
     {
-      p = c;
-      continue;
+      if (!p.isSpace() && !containsAt(message, QString::fromLatin1("<br />"), pos - 6))
+      {
+        p = c;
+        continue;
+      }
     }
 
     if (pimpl->emoticons.contains(c))
     {
       const QValueList<Emoticon> emolist = pimpl->emoticons[c];
       QValueList<Emoticon>::ConstIterator it = emolist.begin();
+
       for (; it != emolist.end(); it++)
       {
         const Emoticon &emo = *it;
         if (containsAt(message, emo.escapedSmiley, pos))
         {
-          const QString img = QString::fromLatin1("<img src=\"%1\" />&nbsp;").arg(emo.file);
+          // In strict and normal mode we need to check the char after the smiley
+          if (mode == StrictMode || mode == NormalMode)
+          {
+            const uint nextPos = pos + emo.escapedSmiley.length();
+            const QChar &n = message[nextPos];
+            if (!(n.isSpace() || n.isNull() || containsAt(message, QString::fromLatin1("<br"), nextPos)))
+            {
+              if (mode == StrictMode)
+                break;
+              else if (!n.isPunct()) // In normal mode we allow punct as well
+                break;
+            }
+          }
+
+          const QString img = QString::fromLatin1("<img src=\"%1\" title=\"%2\" />").arg(emo.file).arg(emo.escapedSmiley);
 //           qDebug(" Replacing '%s' with '%s'", message.mid(pos, emo.escapedSmiley.length()).latin1(), img.latin1());
           message.replace(pos, emo.escapedSmiley.length(), img);
-          pos += img.length() - 1; // Point pos at ';'
-//           qDebug(" Pointing at '%c'", message[pos].latin1());
-          c = ';';
+          pos += img.length() - 1; // Point pos at '>'
+          c = '>';
           break;
         }
       }
@@ -421,66 +468,7 @@ void CEmoticons::parseMessage(QString &message) const
 
     p = c;
   }
-//   qDebug("message a: '%s'", message.latin1());
+//   qDebug("message post: '%s'", message.latin1());
 }
 
 #include "emoticon.moc"
-
-#ifdef EMOTICON_TEST_DRIVER
-#include <stdio.h>
-#include <iostream>
-
-int
-main(int argc, char **argv)
-{
-  CEmoticons *e;
-
-  if (argc != 1)
-    e = new CEmoticons(argv[1], argv[2]);
-  else
-  {
-    std::cout << "missing theme dir\n";
-    return 0;
-  }
-
-  QStringList themes = e->Themes();
-
-  std::cout << "Themes available:\n";
-  for ( QStringList::Iterator it = themes.begin();
-         it != themes.end(); ++it )
-    std::cout << "\t" << *it << "\n";
-
-  std::cout << "\n";
-  printf("Current theme %s\n",e->Theme());
-  std::cout << "Set Theme: to abcde(" << e->SetTheme("abcde") << ")\n";
-  printf("Current theme %s\n",e->Theme());
-
-  std::cout << "\n";
-  printf("Current theme %s\n",e->Theme());
-  
-  const char *d = "Default";
-  std::cout << "Set Theme: to (" << d << " " << e->SetTheme(d) << ")\n";
-  printf("Current theme %s\n",e->Theme());
-
-  std::cout << "\n";
-  std::cout << "Filelist:\n";
-  QStringList files = e->fileList();
-  for ( QStringList::Iterator it = files.begin(); it != files.end(); ++it)
-    std::cout << "\t" << *it << "\n";
-
-  std::cout << "\nFilelist for theme: KMess\n";
-  files = e->fileList("KMess");
-  for( QStringList::Iterator it = files.begin(); it != files.end(); ++it)
-    std::cout << "\t" << *it << "\n";
-
-  QString s = "hello word :) :( :P :-) :P";
-  std::cout << "-- Before\n";
-  std::cout << s;
-  e->ParseMessage(s);
-  std::cout << "\n-- After\n";
-  std::cout << s;
-  std::cout << "\n";
-
-  return 0;\
-}
-#endif

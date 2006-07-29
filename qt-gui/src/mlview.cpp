@@ -127,7 +127,7 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
     }
   }
 
-  CEmoticons::self()->parseMessage(text);
+  CEmoticons::self()->parseMessage(text, CEmoticons::NormalMode);
 
   // convert linebreaks to <br>
   text.replace(QRegExp("\n"), "<br>\n");

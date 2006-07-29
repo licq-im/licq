@@ -29,6 +29,16 @@ class CEmoticons : public QObject
   Q_OBJECT;
 
   public:
+    /// Theme name constants (not translated).
+    static const QString DEFAULT_THEME;
+    static const QString NO_THEME;
+
+    /// Helper functions so that when we save the theme name we can save
+    /// it untranslated, and later when we load it we can translate it again before
+    /// setting the theme.
+    static QString translateThemeName(const QString &name);
+    static QString untranslateThemeName(const QString &name);
+
     CEmoticons();
     virtual ~CEmoticons();
 
@@ -38,28 +48,36 @@ class CEmoticons : public QObject
     /// Set dirs to search themes in to @a basedirs
     void setBasedirs(const QStringList &basedirs);
 
-    /** @returns the list of themes available */
+    /// @returns the list of available (translated) theme names
     QStringList themes() const;
 
-    /** @returns the list of files of the current emoticon theme */
+    /// @returns the list of files of the current emoticon theme
     QStringList fileList() const;
 
-    /** @returns the list of files for @a theme */
+    /// @param theme is the translated name of the theme
+    /// @returns the list of files for @a theme
     QStringList fileList(const QString &theme) const;
 
-    /**
-     * Sets the current theme to @a theme.
-     * @returns false if @a theme could not be loaded.
-     */
+    /// Loads @a theme and returns true; or false if @a theme could not be loaded.
+    /// @param theme is the translated name of the theme
     bool setTheme(const QString &theme);
 
-    /** @returns the current theme */
+    /// @returns the current theme name (translated)
     QString theme() const;
 
-    /** @returns a mapping of files to smileys */
+    /// @returns a mapping of files to smileys
     QMap<QString, QString> emoticonsKeys() const;
 
-    void parseMessage(QString &message) const;
+    /**
+     * In no mode is any replacing done within "<a ...</a>" or "<...>".
+     * StrictMode: Require a blank (space) before and after the smiley.
+     * NormalMode: Require a blank (space) before and a blank or punctuation after the smiley.
+     * RelaxedMode: Anything matching a smiley is replaced.
+     */
+    enum ParseMode { StrictMode, NormalMode, RelaxedMode };
+
+    /// Replaces all smileys in @a message with their icon.
+    void parseMessage(QString &message, ParseMode mode) const;
 
   signals:
     void themeChanged();

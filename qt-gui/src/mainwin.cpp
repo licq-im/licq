@@ -565,7 +565,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 
   // Load the Emoticons
   char szEmoticons[MAX_FILENAME_LEN];
-  licqConf.ReadStr("Emoticons", szEmoticons, "Default");
+  licqConf.ReadStr("Emoticons", szEmoticons, CEmoticons::DEFAULT_THEME.latin1());
   QStringList emoticonsDirs;
   emoticonsDirs += QString::fromLatin1(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
   emoticonsDirs += QString::fromLatin1(BASE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
@@ -575,7 +575,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     emoticonsDirs += KGlobal::dirs()->findDirs("emoticons", "");
 #endif
   CEmoticons::self()->setBasedirs(emoticonsDirs);
-  if (!CEmoticons::self()->setTheme(szEmoticons))
+  if (!CEmoticons::self()->setTheme(CEmoticons::translateThemeName(szEmoticons)))
     gLog.Error("%sLoading emoticons theme '%s'\n", L_ERRORxSTR, szEmoticons);
 
   // Load the skin
@@ -3611,8 +3611,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("Skin", skin->szSkinName);
   licqConf.WriteStr("Icons", m_szIconSet);
   licqConf.WriteStr("ExtendedIcons", m_szExtendedIconSet);
-  const QString emoticon = CEmoticons::self()->theme();
-  licqConf.WriteStr("Emoticons", emoticon.isEmpty() ? "None" : emoticon.latin1());
+  licqConf.WriteStr("Emoticons", CEmoticons::untranslateThemeName(CEmoticons::self()->theme()).latin1());
 
 #if QT_VERSION >= 300
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
