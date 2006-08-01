@@ -1359,6 +1359,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       callMsgFunction();
       break;
 
+    case Qt::Key_Q: // fall through
     case Qt::Key_X:
       slot_shutdown();
       break;
