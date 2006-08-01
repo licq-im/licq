@@ -788,7 +788,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   buffer->PackUnsignedShortBE(0x0000);
   // Client version build
   buffer->PackUnsignedLongBE(0x001a0002);
-  buffer->PackUnsignedShortBE(0x0AF0);
+  buffer->PackUnsignedShortBE(0x0BB8);
   buffer->PackUnsignedLongBE(0x00140004);
   buffer->PackUnsignedLongBE(0x0000043D);
 
