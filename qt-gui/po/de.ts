@@ -3,11 +3,11 @@
     <name></name>
     <message>
         <source>KDE default</source>
-        <translation type="unfinished">KDE-Voreinstellung</translation>
+        <translation type="obsolete">KDE-Voreinstellung</translation>
     </message>
     <message>
         <source>none</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">nichts</translation>
     </message>
 </context>
 <context>
@@ -488,6 +488,10 @@ ließ sich nicht schreiben</translation>
         <source>Detail View</source>
         <translation type="obsolete">Detailansicht</translation>
     </message>
+    <message>
+        <source>KDE default</source>
+        <translation>KDE-Voreinstellung</translation>
+    </message>
 </context>
 <context>
     <name>AddUserDlg</name>
@@ -615,6 +619,17 @@ Sie können mir eine Nachricht hinterlassen.
     <message>
         <source>&amp;Delete</source>
         <translation>&amp;Entfernen</translation>
+    </message>
+</context>
+<context>
+    <name>CEmoticons</name>
+    <message>
+        <source>Default</source>
+        <translation>Voreinstellung</translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation>Nichts</translation>
     </message>
 </context>
 <context>
@@ -2928,10 +2943,17 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
     </message>
 </context>
 <context>
+    <name>MLEditWrap</name>
+    <message>
+        <source>Allow Tabulations</source>
+        <translation>Tabulatoren erlauben</translation>
+    </message>
+</context>
+<context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
-        <translation type="unfinished"></translation>
+        <translation>URL kopieren</translation>
     </message>
 </context>
 <context>
@@ -3925,42 +3947,53 @@ Wenn aktiviert, wird bei Bedarf eine Bildlaufleiste eingeblendet.</translation>
     </message>
     <message>
         <source>Send typing notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Sende Benachrichtigung beim Tippen</translation>
     </message>
     <message>
         <source>Send a notification to the user so they can see when you are typing a message to them</source>
-        <translation type="unfinished"></translation>
+        <translation>Sendet eine Benachrichtigung an den Benutzer, so dass er sehen kann, wenn Du ihm eine Nachricht schreibst</translation>
     </message>
     <message>
         <source>Sticky Main Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Hauptfenster auf allen Desktops</translation>
     </message>
     <message>
         <source>Makes the Main window visible on all desktops</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Hauptfenster wird auf allen Desktops angezeigt</translation>
     </message>
     <message>
         <source>Sticky Message Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Nachrichtenfenster auf allen Desktops</translation>
     </message>
     <message>
         <source>Makes the Message window visible on all desktops</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Nachrichtenfenster wird auf allen Desktops angezeigt</translation>
     </message>
     <message>
         <source>Hotkey pops up the next pending message
 Enter the hotkey literally, like &quot;shift+f10&quot;, &quot;none&quot; for disabling
 changes here require a Restart to take effect!
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Das Tastenkürzel zeigt die nächste neue Nachricht an
+Gib das Kürzel wörtlich ein, wie &quot;shift+f10&quot; gib &quot;none&quot; ein um das Kürzel zu deaktivieren
+Bei einer Änderung ist ein Neustart erforderlich!
+</translation>
     </message>
     <message>
         <source>Show user display picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige Benutzerbild an</translation>
     </message>
     <message>
         <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeigt das Benutzerbild anstelle des Satus-Icons an, falls der User online ist und ein Benutzerbild angegeben hat</translation>
+    </message>
+    <message>
+        <source>Single line chat mode</source>
+        <translation>Einzeiliger Chat-Mode</translation>
+    </message>
+    <message>
+        <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
+        <translation>Im einzeiligen Chat-Mode werden Nachrichten mit Enter gesendet und neue Zeilen mit Strg+Enter eingefügt, welches das Gegenteil vom normalen Modus ist</translation>
     </message>
 </context>
 <context>
@@ -4147,11 +4180,11 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nein</translation>
+        <translation>Nein</translation>
     </message>
 </context>
 <context>
@@ -4492,11 +4525,11 @@ Schreibweise eingeben.</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Nein</translation>
+        <translation>Nein</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Ja</translation>
+        <translation>Ja</translation>
     </message>
 </context>
 <context>
@@ -4782,75 +4815,75 @@ Symbol-Paket &apos;%2&apos; wurde daher deaktiviert.</translation>
     <name>UserCodec</name>
     <message>
         <source>Unicode</source>
-        <translation type="unfinished">Unicode</translation>
+        <translation>Unicode</translation>
     </message>
     <message>
         <source>Unicode-16</source>
-        <translation type="unfinished">Unicode-16</translation>
+        <translation>Unicode-16</translation>
     </message>
     <message>
         <source>Arabic</source>
-        <translation type="unfinished">Arabisch</translation>
+        <translation>Arabisch</translation>
     </message>
     <message>
         <source>Baltic</source>
-        <translation type="unfinished">Baltisch</translation>
+        <translation>Baltisch</translation>
     </message>
     <message>
         <source>Central European</source>
-        <translation type="unfinished">Zentraleuropäisch</translation>
+        <translation>Zentraleuropäisch</translation>
     </message>
     <message>
         <source>Chinese</source>
-        <translation type="unfinished">Chinesisch</translation>
+        <translation>Chinesisch</translation>
     </message>
     <message>
         <source>Chinese Traditional</source>
-        <translation type="unfinished">Chinesisch traditionell</translation>
+        <translation>Chinesisch traditionell</translation>
     </message>
     <message>
         <source>Cyrillic</source>
-        <translation type="unfinished">Kyrillisch</translation>
+        <translation>Kyrillisch</translation>
     </message>
     <message>
         <source>Esperanto</source>
-        <translation type="unfinished">Spanisch</translation>
+        <translation>Spanisch</translation>
     </message>
     <message>
         <source>Greek</source>
-        <translation type="unfinished">Grieschisch</translation>
+        <translation>Grieschisch</translation>
     </message>
     <message>
         <source>Hebrew</source>
-        <translation type="unfinished">Hebräisch</translation>
+        <translation>Hebräisch</translation>
     </message>
     <message>
         <source>Japanese</source>
-        <translation type="unfinished">Japanisch</translation>
+        <translation>Japanisch</translation>
     </message>
     <message>
         <source>Korean</source>
-        <translation type="unfinished">Koreanisch</translation>
+        <translation>Koreanisch</translation>
     </message>
     <message>
         <source>Western European</source>
-        <translation type="unfinished">Westeuropäisch</translation>
+        <translation>Westeuropäisch</translation>
     </message>
     <message>
         <source>Tamil</source>
-        <translation type="unfinished">Tamil</translation>
+        <translation>Tamil</translation>
     </message>
     <message>
         <source>Thai</source>
-        <translation type="unfinished">Thailändisch</translation>
+        <translation>Thailändisch</translation>
     </message>
     <message>
         <source>Turkish</source>
-        <translation type="unfinished">Türkisch</translation>
+        <translation>Türkisch</translation>
     </message>
     <message>
         <source>Ukrainian</source>
-        <translation type="unfinished">Ukrainisch</translation>
+        <translation>Ukrainisch</translation>
     </message>
 </context>
 <context>
@@ -5336,7 +5369,7 @@ Beschreibung: %2</translation>
     </message>
     <message>
         <source>&amp;KDE Addressbook</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;KDE Adressbuch</translation>
     </message>
 </context>
 <context>
