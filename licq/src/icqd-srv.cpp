@@ -2294,6 +2294,18 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       CSrvPacketTcp* p;
       gLog.Info(tr("%sServer sent us channel capability list (ignoring).\n"), L_SRVxSTR);
 
+      gLog.Info(tr("%sRequesting self info.\n"), L_SRVxSTR);
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_GETxUSERxINFO);
+      SendEvent_Server(p);
+
+      gLog.Info(tr("%sRequesting list rights.\n"), L_SRVxSTR);
+      p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS);
+      SendEvent_Server(p);
+
+      gLog.Info(tr("%sRequesting list.\n"), L_SRVxSTR);
+      p = new CPU_RequestList();
+      SendEvent_Server(p);
+
       gLog.Info(tr("%sRequesting location rights.\n"), L_SRVxSTR);
       p = new CPU_GenericFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_REQUESTxRIGHTS);
       SendEvent_Server(p);
@@ -2302,11 +2314,6 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       p = new CPU_GenericFamily(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REQUESTxRIGHTS);
       SendEvent_Server(p);
 
-      gLog.Info(tr("%sRequesting server contact list rights.\n"), L_SRVxSTR);
-      p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, nListTime == 0 ? ICQ_SNACxLIST_REQUESTxROST2 :
-                                                                    ICQ_SNACxLIST_REQUESTxRIGHTS);
-      SendExpectEvent_Server(0, p, 0);
-      
       gLog.Info(tr("%sRequesting Instant Messaging rights.\n"), L_SRVxSTR);
       p = new CPU_GenericFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_REQUESTxRIGHTS);
       SendEvent_Server(p);
@@ -2326,7 +2333,9 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       gLog.Info(tr("%sSetting ICQ Instant Messaging Mode.\n"), L_SRVxSTR);
       p = new CPU_ICQMode(1, 11); // enable typing notifications
       SendEvent_Server(p);
-      p = new CPU_ICQMode(0, 3); // set default flags for all channels
+      p = new CPU_ICQMode(2, 3); // set default flags for all channels
+      SendEvent_Server(p);
+      p = new CPU_ICQMode(4, 3); // set default flags for all channels
       SendEvent_Server(p);
 
       gLog.Info(tr("%sSending capability settings (?)\n"),L_SRVxSTR);
@@ -3981,16 +3990,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
   {
     case ICQ_SNACxLIST_RIGHTSxGRANTED:
     {
-      gLog.Info(tr("%sServer granted Server Contact List.\n"), L_SRVxSTR);
-      if (!UseServerContactList())
-        gLog.Info(tr("%sRequesting Server Contact List for special contacts.\n"), L_SRVxSTR);
-      else
-        gLog.Info(tr("%sRequesting Server Contact List.\n"), L_SRVxSTR);
-
+      gLog.Info(tr("%sServer granted contact list rights.\n"), L_SRVxSTR);
       DoneServerEvent(nSubSequence, EVENT_SUCCESS);
-
-      CSrvPacketTcp *p = new CPU_RequestList();
-      SendExpectEvent_Server(0, p, 0);
 
       break;
     }
