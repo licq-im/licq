@@ -29,6 +29,7 @@
 
 #include <qdir.h>
 #include <qdom.h>
+#include <qregexp.h>
 #include <qstylesheet.h>
 
 #include "licq_log.h"
@@ -456,7 +457,7 @@ void CEmoticons::parseMessage(QString &message, ParseMode mode) const
             }
           }
 
-          const QString img = QString::fromLatin1("<img src=\"%1\" title=\"%2\" />").arg(emo.file).arg(emo.escapedSmiley);
+          const QString img = QString::fromLatin1("<img alt=\"%1\" src=\"%2\" > ").arg(emo.escapedSmiley).arg(emo.file);
 //           qDebug(" Replacing '%s' with '%s'", message.mid(pos, emo.escapedSmiley.length()).latin1(), img.latin1());
           message.replace(pos, emo.escapedSmiley.length(), img);
           pos += img.length() - 1; // Point pos at '>'
@@ -469,6 +470,15 @@ void CEmoticons::parseMessage(QString &message, ParseMode mode) const
     p = c;
   }
 //   qDebug("message post: '%s'", message.latin1());
+}
+
+/**
+ * "unparse" the message, removing all <img> tags and replacing them with the smiley.
+ */
+void CEmoticons::unparseMessage(QString &message)
+{
+  const QRegExp imageAlt("<img alt=([^>]*) src=[^>]* >");
+  message.replace(imageAlt, "\\1");
 }
 
 #include "emoticon.moc"

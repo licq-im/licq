@@ -27,6 +27,8 @@
 
 #include <qapplication.h>
 #include <qclipboard.h>
+#include <qdragobject.h>
+#include <qmime.h>
 #include <qpopupmenu.h>
 #include <qregexp.h>
 
@@ -34,7 +36,7 @@
 #include "emoticon.h"
 
 MLView::MLView (QWidget* parent, const char *name)
-  : QTextBrowser(parent, name), m_handleLinks(true)
+  : QTextBrowser(parent, name), m_handleLinks(true), m_clipboardMode(-1)
 {
   setWordWrap(WidgetWidth);
 #if QT_VERSION >= 0x030100
@@ -178,13 +180,67 @@ void MLView::slotCopyUrl()
     // This copies m_url to both the normal clipboard (Ctrl+C/V/X)
     // and the selection clipboard (paste with middle mouse button).
     QClipboard *cb = QApplication::clipboard();
-    cb->setText(m_url);
+    cb->setText(m_url, QClipboard::Clipboard);
     if (cb->supportsSelection())
+      cb->setText(m_url, QClipboard::Selection);
+  }
+}
+
+/** @see MLView::copy() */
+void MLView::slotClipboardSelectionChanged()
+{
+  m_clipboardMode = QClipboard::Selection;
+}
+
+/** @see MLView::copy() */
+void MLView::slotClipboardDataChanged()
+{
+  m_clipboardMode = QClipboard::Clipboard;
+}
+
+/**
+ * After we have copied the text, we update the copy so that all emoticons are
+ * replaced with their respective smiley.
+ */
+void MLView::copy()
+{
+  m_clipboardMode = -1;
+
+  // We connect these so that we know which clipboard changed (selection or data)
+  connect(QApplication::clipboard(), SIGNAL(selectionChanged()), this, SLOT(slotClipboardSelectionChanged()));
+  connect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(slotClipboardDataChanged()));
+
+  QTextBrowser::copy();
+
+  disconnect(QApplication::clipboard(), SIGNAL(selectionChanged()), this, SLOT(slotClipboardSelectionChanged()));
+  disconnect(QApplication::clipboard(), SIGNAL(dataChanged()), this, SLOT(slotClipboardDataChanged()));
+
+  // m_clipboardMode is set in one of slotClipboard{Selection,Data}Changed()
+  if (m_clipboardMode != -1)
+  {
+    // QTextEdit copies the text both as rich text and as regular text.
+    // We parse the rich text and then update the regular text.
+    QMimeSource *m = QApplication::clipboard()->data(static_cast<QClipboard::Mode>(m_clipboardMode));
+    if (m->provides("application/x-qrichtext") && QTextDrag::canDecode(m))
     {
-      bool enabled = cb->selectionModeEnabled();
-      cb->setSelectionMode(!enabled);
-      cb->setText(m_url);
-      cb->setSelectionMode(enabled);
+      if (QTextDrag *drag = dynamic_cast<QTextDrag*>(m))
+      {
+        QString text = QString::fromUtf8(m->encodedData("application/x-qrichtext").data());
+
+        CEmoticons::unparseMessage(text);
+
+        const QRegExp newline("<br( /)?>");
+        text.replace(newline, "\n");
+
+        const QRegExp htmlTags("</?[^>]+>");
+        text.remove(htmlTags);
+
+        text.replace("&lt;", "<");
+        text.replace("&gt;", ">");
+        text.replace("&amp;", "&");
+
+        drag->setText(text);
+      }
     }
   }
 }

@@ -47,11 +47,17 @@ protected:
 
 public slots:
   virtual void setSource(const QString& name);
+  virtual void copy();
+
+private slots:
   void slotCopyUrl();
+  void slotClipboardSelectionChanged();
+  void slotClipboardDataChanged();
 
 private:
   bool m_handleLinks;
   QString m_url;
+  int m_clipboardMode;
 
 signals:
   void viewurl(QWidget*, QString);

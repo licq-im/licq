@@ -79,10 +79,16 @@ class CEmoticons : public QObject
     /// Replaces all smileys in @a message with their icon.
     void parseMessage(QString &message, ParseMode mode) const;
 
+    /// Replace all emoticons with their smiley
+    static void unparseMessage(QString &message);
+
   signals:
     void themeChanged();
 
   private:
+    CEmoticons(const CEmoticons&);
+    CEmoticons& operator=(const CEmoticons&);
+
     static CEmoticons *m_self;
 
     class Impl;
