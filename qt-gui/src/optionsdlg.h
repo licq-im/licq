@@ -135,8 +135,9 @@ protected:
    // display tab
    QWidget* new_popup_options();
    QGroupBox *boxPopWin;
-   QCheckBox *popEmail, *popPhone, *popFax, *popCellular, *popIP,
-	*popLastOnline, *popOnlineSince, *popIdleTime, *popID;
+   QCheckBox *popAlias, *popName, *popEmail, *popPhone,
+             *popFax, *popCellular, *popIP,
+             *popLastOnline, *popOnlineSince, *popIdleTime, *popID;
 
    QWidget* new_chat_options();
    CMessageViewWidget *msgViewer;

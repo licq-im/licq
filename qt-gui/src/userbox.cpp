@@ -1583,6 +1583,21 @@ void CUserView::maybeTip(const QPoint& c)
 
     QString s = strFileName + QString("<nobr>") + QString(ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible))
       + QString("</nobr>");
+    
+    if (*u->GetAlias() && gMainWindow->m_bPopAlias)
+      s += tr("<br><nobr>") + codec->toUnicode(u->GetAlias()) + tr("</nobr>");
+
+    if ((*u->GetFirstName() || *u->GetLastName()) && gMainWindow->m_bPopName)
+    {
+      s += tr("<br><nobr>");
+      if (*u->GetFirstName())
+        s += codec->toUnicode(u->GetFirstName());
+      if (*u->GetFirstName() && *u->GetLastName())
+        s += " ";
+      if (*u->GetLastName())
+        s += codec->toUnicode(u->GetLastName());
+      s += tr("</nobr>");
+    }
 
     if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)
       s += tr("<br><b>Birthday&nbsp;Today!</b>");

@@ -469,12 +469,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadStr("ChatBackground", szTemp, "white");
   m_colorChatBkg = QColor(szTemp);
 
-  licqConf.ReadBool("showPopEmail",m_bPopEmail, false);
-  licqConf.ReadBool("showPopPhone",m_bPopPhone, true);
-  licqConf.ReadBool("showPopFax",m_bPopFax, false);
-  licqConf.ReadBool("showPopCellular",m_bPopCellular, true);
-  licqConf.ReadBool("showPopIP",m_bPopIP, false);
-  licqConf.ReadBool("showPopLastOnelin",m_bPopLastOnline, false);
+  licqConf.ReadBool("showPopAlias", m_bPopAlias, false);
+  licqConf.ReadBool("showPopName", m_bPopName, false);
+  licqConf.ReadBool("showPopEmail", m_bPopEmail, false);
+  licqConf.ReadBool("showPopPhone", m_bPopPhone, true);
+  licqConf.ReadBool("showPopFax", m_bPopFax, false);
+  licqConf.ReadBool("showPopCellular", m_bPopCellular, true);
+  licqConf.ReadBool("showPopIP", m_bPopIP, false);
+  licqConf.ReadBool("showPopLastOnelin", m_bPopLastOnline, false);
   licqConf.ReadBool("showPopOnlineSince", m_bPopOnlineSince, false);
   licqConf.ReadBool("showPopIdleTime", m_bPopIdleTime, true);
   licqConf.ReadBool("showPopID", m_bPopID, true);
@@ -3675,12 +3677,14 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("TabOnTypingColor", m_colorTabTyping.name());
   licqConf.WriteStr("ChatBackground", m_colorChatBkg.name());
   
-  licqConf.WriteBool("showPopEmail",m_bPopEmail);
-  licqConf.WriteBool("showPopPhone",m_bPopPhone);
-  licqConf.WriteBool("showPopFax",m_bPopFax);
-  licqConf.WriteBool("showPopCellular",m_bPopCellular);
-  licqConf.WriteBool("showPopIP",m_bPopIP);
-  licqConf.WriteBool("showPopLastOnelin",m_bPopLastOnline);
+  licqConf.WriteBool("showPopAlias", m_bPopAlias);
+  licqConf.WriteBool("showPopName", m_bPopName);
+  licqConf.WriteBool("showPopEmail", m_bPopEmail);
+  licqConf.WriteBool("showPopPhone", m_bPopPhone);
+  licqConf.WriteBool("showPopFax", m_bPopFax);
+  licqConf.WriteBool("showPopCellular", m_bPopCellular);
+  licqConf.WriteBool("showPopIP", m_bPopIP);
+  licqConf.WriteBool("showPopLastOnelin", m_bPopLastOnline);
   licqConf.WriteBool("showPopOnlineSince", m_bPopOnlineSince);
   licqConf.WriteBool("showPopIdleTime", m_bPopIdleTime);
   licqConf.WriteBool("showPopID", m_bPopID);

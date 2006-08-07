@@ -243,6 +243,8 @@ void OptionsDlg::SetupOptions()
   chkMainWinSticky->setChecked(mainwin->m_bMainWinSticky);
   chkMsgWinSticky->setChecked(mainwin->m_bMsgWinSticky);
   chkSingleLineChatMode->setChecked(mainwin->m_bSingleLineChatMode);
+  popAlias->setChecked(mainwin->m_bPopAlias);
+  popName->setChecked(mainwin->m_bPopName);
   popEmail->setChecked(mainwin->m_bPopEmail);
   popPhone->setChecked(mainwin->m_bPopPhone);
   popFax->setChecked(mainwin->m_bPopFax);
@@ -543,12 +545,14 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bMsgWinSticky = chkMsgWinSticky->isChecked();
   mainwin->m_bSingleLineChatMode = chkSingleLineChatMode->isChecked();
 
-  mainwin->m_bPopEmail= popEmail->isChecked();
-  mainwin->m_bPopPhone= popPhone->isChecked();
-  mainwin->m_bPopFax= popFax->isChecked();
-  mainwin->m_bPopCellular= popCellular->isChecked();
-  mainwin->m_bPopIP= popIP->isChecked();
-  mainwin->m_bPopLastOnline= popLastOnline->isChecked();
+  mainwin->m_bPopAlias = popAlias->isChecked();
+  mainwin->m_bPopName = popName->isChecked();
+  mainwin->m_bPopEmail = popEmail->isChecked();
+  mainwin->m_bPopPhone = popPhone->isChecked();
+  mainwin->m_bPopFax = popFax->isChecked();
+  mainwin->m_bPopCellular = popCellular->isChecked();
+  mainwin->m_bPopIP = popIP->isChecked();
+  mainwin->m_bPopLastOnline = popLastOnline->isChecked();
   mainwin->m_bPopOnlineSince = popOnlineSince->isChecked();
   mainwin->m_bPopIdleTime = popIdleTime->isChecked();
   mainwin->m_bPopID = popID->isChecked();
@@ -1456,6 +1460,8 @@ QWidget* OptionsDlg::new_column_options()
 
   boxPopWin = new QGroupBox(1, Horizontal, tr("Popup info"), w);
 
+  popAlias  = new QCheckBox(tr("Alias"), boxPopWin);
+  popName   = new QCheckBox(tr("Name"),  boxPopWin);
   popEmail  = new QCheckBox(tr("Email"), boxPopWin);
   popPhone  = new QCheckBox(tr("Phone"), boxPopWin);
   popFax    = new QCheckBox(tr("Fax"),   boxPopWin);

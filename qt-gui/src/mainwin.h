@@ -137,6 +137,8 @@ public:
        m_bAutoPosReplyWin,
        m_bAutoSendThroughServer,
        m_bEnableMainwinMouseMovement,
+       m_bPopAlias,
+       m_bPopName,
        m_bPopEmail,
        m_bPopPhone,
        m_bPopFax,
