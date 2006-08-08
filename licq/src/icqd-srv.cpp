@@ -2342,23 +2342,6 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       p = new CPU_CapabilitySettings();
       SendEvent_Server(p);
 
-      icqSetStatus(m_nDesiredStatus);
-
-      gLog.Info(tr("%sSending client ready...\n"), L_SRVxSTR);
-      p = new CPU_ClientReady();
-      SendEvent_Server(p);
-
-      gLog.Info(tr("%sSending offline message request...\n"), L_SRVxSTR);
-      p = new CPU_RequestSysMsg;
-      SendEvent_Server(p);
-
-      m_eStatus = STATUS_ONLINE;
-      m_bLoggingOn = false;
-      // ### FIX subsequence !!
-      ICQEvent *e = DoneExtendedServerEvent(0, EVENT_SUCCESS);
-      if (e != NULL) ProcessDoneEvent(e);
-      PushPluginSignal(new CICQSignal(SIGNAL_LOGON, 0, 0));
-
       break;
     }
 
@@ -4465,10 +4448,29 @@ void CICQDaemon::ProcessBOSFam(CBuffer &packet, unsigned short nSubtype)
   switch (nSubtype)
   {
   case ICQ_SNACxBOS_RIGHTSxGRANTED:
+  {
     gLog.Info(tr("%sReceived BOS rights.\n"), L_SRVxSTR);
+
+    icqSetStatus(m_nDesiredStatus);
+
+    gLog.Info(tr("%sSending client ready...\n"), L_SRVxSTR);
+    CSrvPacketTcp *p = new CPU_ClientReady();
+    SendEvent_Server(p);
+
+    gLog.Info(tr("%sSending offline message request...\n"), L_SRVxSTR);
+    p = new CPU_RequestSysMsg;
+    SendEvent_Server(p);
+
+    m_eStatus = STATUS_ONLINE;
+    m_bLoggingOn = false;
+    // ### FIX subsequence !!
+    ICQEvent *e = DoneExtendedServerEvent(0, EVENT_SUCCESS);
+    if (e != NULL) ProcessDoneEvent(e);
+    PushPluginSignal(new CICQSignal(SIGNAL_LOGON, 0, 0));
+
     //icqSetStatus(m_nDesiredStatus);
     break;
-
+  }
   default:
     gLog.Warn(tr("%sUnknown BOS Family Subtype: %04hx\n"), L_SRVxSTR, nSubtype);
     break;
