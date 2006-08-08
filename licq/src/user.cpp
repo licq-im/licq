@@ -2311,7 +2311,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   SetSendServer(false);
   SetSendIntIp(false);
   SetShowAwayMsg(false);
-  SetSequence(-1); // set all bits 0xFFFF
+  SetSequence(static_cast<unsigned short>(-1)); // set all bits 0xFFFF
   SetOfflineOnDisconnect(false);
   ClearSocketDesc();
   m_nIp = m_nPort = m_nIntIp = 0;
