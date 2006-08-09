@@ -3969,12 +3969,13 @@ void CMainWindow::autoAway()
     gUserManager.DropOwner();
   }
 
-  if (mit_info == NULL) {
+  if (mit_info == NULL)
+  {
     int event_base, error_base;
-    if(XScreenSaverQueryExtension(x11Display(), &event_base, &error_base)) {
+    if(XScreenSaverQueryExtension(x11Display(), &event_base, &error_base))
       mit_info = XScreenSaverAllocInfo ();
-    }
-    else {
+    else
+    {
       gLog.Warn("%sNo XScreenSaver extension found on current XServer, disabling auto-away.\n",
                 L_WARNxSTR);
       autoAwayTimer.stop();
@@ -3982,7 +3983,8 @@ void CMainWindow::autoAway()
     }
   }
 
-  if (!XScreenSaverQueryInfo(x11Display(), qt_xrootwin(), mit_info)) {
+  if (!XScreenSaverQueryInfo(x11Display(), qt_xrootwin(), mit_info))
+  {
     gLog.Warn("%sXScreenSaverQueryInfo failed, disabling auto-away.\n",
               L_WARNxSTR);
     autoAwayTimer.stop();
@@ -4018,7 +4020,7 @@ void CMainWindow::autoAway()
   else if ( (autoNATime > 0) &&
        (unsigned long)idleTime > (unsigned long)(autoNATime * 60000))
   {
-    if (status != ICQ_STATUS_NA)
+    if (status != ICQ_STATUS_NA && status != ICQ_STATUS_OFFLINE)
     {
       if (autoNAMess)
       {
@@ -4040,7 +4042,7 @@ void CMainWindow::autoAway()
   else if ( (autoAwayTime > 0) &&
             (unsigned long)idleTime > (unsigned long)(autoAwayTime * 60000))
   {
-    if (status != ICQ_STATUS_AWAY)
+    if (status != ICQ_STATUS_AWAY && status != ICQ_STATUS_OFFLINE)
     {
       if (autoAwayMess)
       {
