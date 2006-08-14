@@ -3,11 +3,11 @@
     <name></name>
     <message>
         <source>KDE default</source>
-        <translation>KDE predefinisano</translation>
+        <translation type="obsolete">KDE predefinisano</translation>
     </message>
     <message>
         <source>none</source>
-        <translation>ništa</translation>
+        <translation type="obsolete">ništa</translation>
     </message>
 </context>
 <context>
@@ -629,6 +629,10 @@ You will need to start the browser and open the URL manually.</source>
         <translation type="obsolete">Licq ne može da pokrene vaš pretraživač i otvori URL
 Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
+    <message>
+        <source>KDE default</source>
+        <translation type="unfinished">KDE predefinisano</translation>
+    </message>
 </context>
 <context>
     <name>AddUserDlg</name>
@@ -764,6 +768,17 @@ Možete ostaviti poruku.
     <message>
         <source>&amp;Delete</source>
         <translation>O&amp;briši</translation>
+    </message>
+</context>
+<context>
+    <name>CEmoticons</name>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3327,6 +3342,13 @@ Ova opcija neće raditi.</translation>
     </message>
 </context>
 <context>
+    <name>MLEditWrap</name>
+    <message>
+        <source>Allow Tabulations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
@@ -4355,6 +4377,22 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Background Color:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single line chat mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">Alijas</translation>
+    </message>
+    <message>
+        <source>Name</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

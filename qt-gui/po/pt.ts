@@ -2,12 +2,15 @@
 <context>
     <name></name>
     <message>
+        <source>none</source>
+        <translation type="obsolete">Nenhuma</translation>
+    </message>
+</context>
+<context>
+    <name>@default</name>
+    <message>
         <source>KDE default</source>
         <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="unfinished">Nenhuma</translation>
     </message>
 </context>
 <context>
@@ -174,6 +177,17 @@ You can leave me a message.
     </message>
     <message>
         <source>&amp;Delete</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CEmoticons</name>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished">Default</translation>
+    </message>
+    <message>
+        <source>None</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3070,6 +3084,13 @@ Rebuild Licq with OpenSSL support.</source>
     </message>
 </context>
 <context>
+    <name>MLEditWrap</name>
+    <message>
+        <source>Allow Tabulations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
@@ -4239,6 +4260,22 @@ changes here require a Restart to take effect!
     <message>
         <source>Background Color:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single line chat mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">Alias</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nome</translation>
     </message>
 </context>
 <context>

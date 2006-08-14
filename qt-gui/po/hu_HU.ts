@@ -3,11 +3,18 @@
     <name></name>
     <message>
         <source>KDE default</source>
-        <translation type="unfinished">KDE alapértelmezés</translation>
+        <translation type="obsolete">KDE alapértelmezés</translation>
     </message>
     <message>
         <source>none</source>
-        <translation type="unfinished">semmi</translation>
+        <translation type="obsolete">semmi</translation>
+    </message>
+</context>
+<context>
+    <name>@default</name>
+    <message>
+        <source>KDE default</source>
+        <translation type="unfinished">KDE alapértelmezés</translation>
     </message>
 </context>
 <context>
@@ -148,6 +155,17 @@ Hagyhatsz üzenetet.
     <message>
         <source>&amp;Delete</source>
         <translation>&amp;Töröl</translation>
+    </message>
+</context>
+<context>
+    <name>CEmoticons</name>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2489,6 +2507,13 @@ Ez így nem fog menni.</translation>
     </message>
 </context>
 <context>
+    <name>MLEditWrap</name>
+    <message>
+        <source>Allow Tabulations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
@@ -3520,6 +3545,22 @@ A változtatások után újra kell indítani a programot!
     <message>
         <source>Background Color:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single line chat mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">Becenév</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Név</translation>
     </message>
 </context>
 <context>

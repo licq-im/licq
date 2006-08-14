@@ -3,11 +3,11 @@
     <name></name>
     <message>
         <source>KDE default</source>
-        <translation>KDE standard</translation>
+        <translation type="obsolete">KDE standard</translation>
     </message>
     <message>
         <source>none</source>
-        <translation>ingen</translation>
+        <translation type="obsolete">ingen</translation>
     </message>
 </context>
 <context>
@@ -97,6 +97,10 @@
 Do you really want to send it?</source>
         <translation type="obsolete">Du har inte redigerat SMS:et.
 Vill du skicka det i alla fall?</translation>
+    </message>
+    <message>
+        <source>KDE default</source>
+        <translation type="unfinished">KDE standard</translation>
     </message>
 </context>
 <context>
@@ -237,6 +241,17 @@ Du kan lämna ett meddelande.
     <message>
         <source>&amp;Delete</source>
         <translation>&amp;Ta Bort</translation>
+    </message>
+</context>
+<context>
+    <name>CEmoticons</name>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2539,6 +2554,13 @@ Det här kommer troligen inte att fungera.</translation>
     </message>
 </context>
 <context>
+    <name>MLEditWrap</name>
+    <message>
+        <source>Allow Tabulations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
@@ -3573,6 +3595,22 @@ förändringar här kräver en omstart av programmet innan de får effekt!</tran
     <message>
         <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single line chat mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">Alias</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Namn</translation>
     </message>
 </context>
 <context>

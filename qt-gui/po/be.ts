@@ -3,11 +3,11 @@
     <name></name>
     <message>
         <source>KDE default</source>
-        <translation>KDE па змоўчаньню</translation>
+        <translation type="obsolete">KDE па змоўчаньню</translation>
     </message>
     <message>
         <source>none</source>
-        <translation>адсутнічае</translation>
+        <translation type="obsolete">адсутнічае</translation>
     </message>
 </context>
 <context>
@@ -3062,7 +3062,7 @@ UIN (ідэнтыфікатарам карыстальніка): %1
     </message>
     <message>
         <source>KDE default</source>
-        <translation type="obsolete">KDE па змощчаньню</translation>
+        <translation type="unfinished">KDE па змощчаньню</translation>
     </message>
     <message>
         <source>Authorize</source>
@@ -4225,6 +4225,17 @@ You can leave me a message.
     <message>
         <source>&amp;Delete</source>
         <translation>&amp;Выдаліць</translation>
+    </message>
+</context>
+<context>
+    <name>CEmoticons</name>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -6457,6 +6468,13 @@ Rebuild Licq with OpenSSL support.</source>
     </message>
 </context>
 <context>
+    <name>MLEditWrap</name>
+    <message>
+        <source>Allow Tabulations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
@@ -7491,6 +7509,22 @@ changes here require a Restart to take effect!
     <message>
         <source>Previous Message</source>
         <translation>Папярэдняе паведамленьне</translation>
+    </message>
+    <message>
+        <source>Single line chat mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">Мянушка</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Імя</translation>
     </message>
 </context>
 <context>

@@ -3,11 +3,11 @@
     <name></name>
     <message>
         <source>KDE default</source>
-        <translation>KDE-oletus</translation>
+        <translation type="obsolete">KDE-oletus</translation>
     </message>
     <message>
         <source>none</source>
-        <translation>Licq-varoitus</translation>
+        <translation type="obsolete">Licq-varoitus</translation>
     </message>
 </context>
 <context>
@@ -97,6 +97,10 @@ Haluatko varmasti lähettää sen?</translation>
     <message>
         <source>&amp;No</source>
         <translation type="obsolete">&amp;En</translation>
+    </message>
+    <message>
+        <source>KDE default</source>
+        <translation type="unfinished">KDE-oletus</translation>
     </message>
 </context>
 <context>
@@ -237,6 +241,17 @@ Voit jättää minulle viestin.
     <message>
         <source>&amp;Delete</source>
         <translation>&amp;Poista</translation>
+    </message>
+</context>
+<context>
+    <name>CEmoticons</name>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>None</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -2516,6 +2531,13 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
     </message>
 </context>
 <context>
+    <name>MLEditWrap</name>
+    <message>
+        <source>Allow Tabulations</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
@@ -3547,6 +3569,22 @@ Nämä muutokset vaativat uudelleenkäynnistystä ennen kuin ne toimivat!</trans
     <message>
         <source>Background Color:</source>
         <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Single line chat mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">Käyttäjätunnus</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Nimi</translation>
     </message>
 </context>
 <context>

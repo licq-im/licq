@@ -3995,6 +3995,14 @@ Bei einer Änderung ist ein Neustart erforderlich!
         <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
         <translation>Im einzeiligen Chat-Mode werden Nachrichten mit Enter gesendet und neue Zeilen mit Strg+Enter eingefügt, welches das Gegenteil vom normalen Modus ist</translation>
     </message>
+    <message>
+        <source>Alias</source>
+        <translation type="unfinished">Alias</translation>
+    </message>
+    <message>
+        <source>Name</source>
+        <translation type="unfinished">Name</translation>
+    </message>
 </context>
 <context>
     <name>OwnerEditDlg</name>
