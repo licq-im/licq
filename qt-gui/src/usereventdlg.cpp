@@ -2858,6 +2858,10 @@ void UserSendMsgEvent::resetSettings()
 {
   mleSend->clear();
   mleSend->setFocus();
+
+  // Makes the cursor blink so that the user sees that the text edit has focus.
+  mleSend->moveCursor(QTextEdit::MoveHome, false);
+
   massMessageToggled( false );
 }
 
