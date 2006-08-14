@@ -3997,11 +3997,11 @@ Bei einer Änderung ist ein Neustart erforderlich!
     </message>
     <message>
         <source>Alias</source>
-        <translation type="unfinished">Alias</translation>
+        <translation>Alias</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Name</translation>
+        <translation>Name</translation>
     </message>
 </context>
 <context>
