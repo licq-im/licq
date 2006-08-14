@@ -22,4 +22,4 @@ licq_SOURCES = licq.cpp main.cpp \
 	 organizationcodes.c backgroundcodes.c providers.c rtf.cc
 
 licq_LDADD = @SOCKS_LIBS@ 
-licq_LDFLAGS = -export-dynamic @SOCKS_LIBDIR@
+licq_LDFLAGS = -export-dynamic @SOCKS_LIBDIR@ @LTLIBICONV@
