@@ -210,6 +210,29 @@ public slots:
 
 /* ----------------------------------------------------------------------------- */
 
+class CLicqMessageBoxItem : public QListViewItem
+{
+public:
+  CLicqMessageBoxItem(QListView *, QListViewItem *);
+  void paintCell(QPainter *, const QColorGroup &, int, int, int);
+
+  void setMessage(const QString &s) { m_msg = s; }
+  void setFullIcon(const QPixmap &p) { m_fullIcon = p; }
+  void setUnread(bool b) { m_unread = b; }
+  void setType(QMessageBox::Icon t) { m_type = t; }
+
+  QString getMessage() const { return m_msg; }
+  QPixmap getFullIcon() const { return m_fullIcon; }
+  bool isUnread() const { return m_unread; }
+  QMessageBox::Icon getType() const { return m_type; }
+
+private:
+  QString m_msg;
+  QPixmap m_fullIcon;
+  bool m_unread;
+  QMessageBox::Icon m_type;
+};
+
 class CLicqMessageBox : public QDialog
 {
   Q_OBJECT
@@ -220,18 +243,19 @@ public:
 public slots:
   void slot_toggleMore();
   void slot_clickNext();
-  void slot_clickOk();
+  void slot_clickClear();
   void slot_listChanged(QListViewItem *);
 
 private:
   QPixmap getMessageIcon(QMessageBox::Icon);
+  void updateCaption(CLicqMessageBoxItem *);
 
   int m_nUnreadNum;
   QLabel *m_lblIcon,
          *m_lblMessage;
   QPushButton *m_btnNext,
               *m_btnMore,
-              *m_btnOk;
+              *m_btnClear;
   QListView *m_lstMsg;
   QFrame *m_frmList;
   QSize m_Size;
@@ -240,33 +264,19 @@ private:
 class CLicqMessageManager
 {
 public:
-  CLicqMessageManager();
   ~CLicqMessageManager();
+
+  static CLicqMessageManager *Instance();
 
   void addMessage(QMessageBox::Icon type, const QString &msg, QWidget *p);
 
 private:
+  CLicqMessageManager();
+  CLicqMessageManager(const CLicqMessageManager &);
+  CLicqMessageManager &operator=(const CLicqMessageManager &);
+
+  static CLicqMessageManager *m_pInstance;
   CLicqMessageBox *m_pMsgDlg;
-};
-
-class CLicqMessageBoxItem : public QListViewItem
-{
-public:
-  CLicqMessageBoxItem(QListView *, QListViewItem *);
-  void paintCell(QPainter *, const QColorGroup &, int, int, int);
-
-  void setMessage(const QString &s) { m_msg = s; }
-  void setFullIcon(const QPixmap &p) { m_fullIcon = p; }
-  void setUnread(bool b) { m_unread = b; }
-
-  QString getMessage() const { return m_msg; }
-  QPixmap getFullIcon() const { return m_fullIcon; }
-  bool isUnread() const { return m_unread; }
-
-private:
-  QString m_msg;
-  QPixmap m_fullIcon;
-  bool m_unread;
 };
 
 #endif
