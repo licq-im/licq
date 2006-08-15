@@ -277,9 +277,19 @@ static bool parseXml(const QString &dir, QMap<QChar, QValueList<Emoticon> > *emo
             first = false;
           }
 
-          //emoticons[emo.smiley[0]].append(emo);
-          //if (emo.smiley != emo.escapedSmiley)
-          (*emoticons)[emo.escapedSmiley[0]].append(emo);
+          // Insert the smiley sorted by length with longest first. This way, if we have
+          // a smiley :) with image A and :)) with image B, the string :)) will always
+          // be replaced by image B.
+          QValueList<Emoticon>::iterator it = (*emoticons)[emo.escapedSmiley[0]].begin();
+          QValueList<Emoticon>::iterator end = (*emoticons)[emo.escapedSmiley[0]].end();
+          while (it != end)
+          {
+            if ((*it).escapedSmiley.length() < emo.escapedSmiley.length())
+              break;
+            else
+              it++;
+          }
+          (*emoticons)[emo.escapedSmiley[0]].insert(it, emo);
         }
         else
         {
