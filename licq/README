@@ -12,12 +12,6 @@ In doc/ there are the previous README files for you to peruse.
 run the upgrade/upgrade-1.3.2.pl script to convert your aliases to UTF8,
 which is now what is used.
 
-
-Once again it has been over a year since the last version of Licq, 1.3.0
-was released. I have now decided to do my best to keep to a more timely 
-release schedule, around 1 release per month. Which should make things
-progress more nicely!
-
 In addition, many many bugs have been fixed, please take a look at the CHANGELOG
 for a more detailed list.
 
