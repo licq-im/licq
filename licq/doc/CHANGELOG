@@ -1,23 +1,26 @@
 Change log for Licq.
 
-v1.3.4
-o Make sending typing notifications optional
-o Iconv fixes
-o Fixes for newly registered users
-o Fix a few bugs where users would falsely go offline
-o ICQ: Update the protocol to properly set info
-o ICQ: Show more version information of remote clients
-o Compilation fixes 
-o 64-bit compatibility changes
-o KDE: Addressbook fix
-o QT/KDE: Show user's pictures as a tooltip or status icon
-o QT/KDE: Improve hyperlink detection
-o QT/KDE: Improve emoticon detection and processing
-o KDE: Add spell checking to the kde-gui (Using KSpell)
-o QT/KDE: Add a custom message box handler
-o MSN: Fix a race error in MSN packet parsing
-o MSN: Fix socket handling
-o Many various minor bugs and crashes fixed... Use 'svn log' for the details :-)
+New in 1.3.4
+o  Make sending typing notifications optional
+o  Iconv fixes
+o  Fixes for newly registered users
+o  Fix a few bugs where users would falsely go offline
+o  ICQ: Update the protocol to properly set info
+o  ICQ: Show more version information of remote clients
+o  ICQ: Fix a bug where contacts would receive empty messages
+o  Compilation fixes 
+o  64-bit compatibility changes
+o  KDE: Addressbook fix
+o  Qt/KDE: Show user's pictures as a tooltip or status icon
+o  Qt/KDE: Optional "Send with Enter"
+o  Qt/KDE: Improve hyperlink detection
+o  Qt/KDE: Improve emoticon detection and processing
+o  KDE: Add spell checking to the kde-gui (Using KSpell)
+o  Qt/KDE: Add a custom message box handler
+o  MSN: Fix a race error in MSN packet parsing
+o  MSN: Fix socket handling
+o  Many various minor bugs and crashes fixed... Use 'svn log' for the details :-)
+
 
 New in 1.2.0
 o  Lots and lots of bug fixes
@@ -28,7 +31,8 @@ o  Sending SMS
 o  Improved buffer overflow prevention
 o  ICQ CLB file converter
 o  So many other things
-  
+
+
 New in 1.0.4
 o  Bug fixes
 o  workarounds for reoccuring offline messages
@@ -43,7 +47,8 @@ Note: This is the very last release that uses the old, not well
 Note: This is the very last release of an outdated code base. 
    If it doesn't work for you, please help with the development
    of the new, ICQ2001 based protocol. 
-   
+
+
 New in 1.0.3
 o  Bug fixes
 
@@ -165,7 +170,7 @@ New in 0.70f
 o  Added USE_FIFO option to config.h to disable the licq fifo if it's causing
    problems
 
-   
+
 New in 0.70e
 o  Redirection option on the command line or using the fifo to redirect
    stdout and stderr dynamically (usefull for running licq from the dock)
@@ -414,7 +419,7 @@ o  Icon added, thanks to Dave and the Gimp.
 o  Docking now supported in WindowMaker, BlackBox...
 o  Sound support added.  Currently only one sound which plays on
    incoming messages.
- 
+
 
 New in v0.33
 
