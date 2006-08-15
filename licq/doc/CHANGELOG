@@ -1,5 +1,24 @@
 Change log for Licq.
 
+v1.3.4
+o Make sending typing notifications optional
+o Iconv fixes
+o Fixes for newly registered users
+o Fix a few bugs where users would falsely go offline
+o ICQ: Update the protocol to properly set info
+o ICQ: Show more version information of remote clients
+o Compilation fixes 
+o 64-bit compatibility changes
+o KDE: Addressbook fix
+o QT/KDE: Show user's pictures as a tooltip or status icon
+o QT/KDE: Improve hyperlink detection
+o QT/KDE: Improve emoticon detection and processing
+o KDE: Add spell checking to the kde-gui (Using KSpell)
+o QT/KDE: Add a custom message box handler
+o MSN: Fix a race error in MSN packet parsing
+o MSN: Fix socket handling
+o Many various minor bugs and crashes fixed... Use 'svn log' for the details :-)
+
 New in 1.2.0
 o  Lots and lots of bug fixes
 o  Memory management fixes
