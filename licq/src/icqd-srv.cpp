@@ -2904,8 +2904,11 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     // an AIM user
     if (bFake && isdigit(szId[0]))
     {
-      gLog.Error("%sIgnoring fake offline:%s\n", L_SRVxSTR, szId);
+      ICQUser *user = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+      gLog.Error("%sIgnoring fake offline: %s (%s)\n", L_SRVxSTR,
+          user->GetAlias(), szId);
       delete [] szId;
+      gUserManager.DropUser(user);
       break;
     }
 
