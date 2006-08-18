@@ -19,6 +19,7 @@
 #include "ewidgets.h"
 #include "mainwin.h"
 #include "licq_icqd.h"
+#include "licq_log.h"
 #include "licq_user.h"
 
 //----OwnerEditDlg-------------------------------------------------------------
@@ -147,7 +148,10 @@ void OwnerEditDlg::slot_ok()
   
   // Invalid protocol
   if (nPPID == 0)
+  {
+    gLog.Error("%sInvalid protocol '%s'\n", L_ERRORxSTR, szProtocol);
     return;
+  }
   
   ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_W);
   if (o)
