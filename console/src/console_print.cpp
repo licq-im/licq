@@ -393,6 +393,12 @@ void CLicqConsole::PrintUsers()
     ulist[i++] = copyChar((*it)->szLine);
   }
 
+  // No users, so let's tell the user that
+  if (i == 0)
+  {
+    ulist[i++] = "No users found";
+  }
+
   if (!cdkUserList)
   {
     cdkUserList = newCDKScroll(winUsers->CDKScreen(), 0, 0, 
