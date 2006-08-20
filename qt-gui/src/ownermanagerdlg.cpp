@@ -131,7 +131,7 @@ void OwnerEditDlg::slot_ok()
   const char *szPassword = 0;
   if (!edtPassword->text().isEmpty())
     szPassword = edtPassword->text().latin1();
-  const char *szProtocol = cmbProtocol->currentText().latin1();
+  QString szProtocol = cmbProtocol->currentText();
   unsigned long nPPID = 0;
   
   ProtoPluginsList pl;
@@ -139,7 +139,7 @@ void OwnerEditDlg::slot_ok()
   server->ProtoPluginList(pl);
   for (it = pl.begin(); it != pl.end(); it++)
   {
-    if (strcmp(szProtocol, (*it)->Name()) == 0)
+    if (szProtocol == QString((*it)->Name()))
     {
       nPPID = (*it)->PPID();
       break;
@@ -149,7 +149,7 @@ void OwnerEditDlg::slot_ok()
   // Invalid protocol
   if (nPPID == 0)
   {
-    gLog.Error("%sInvalid protocol '%s'\n", L_ERRORxSTR, szProtocol);
+    gLog.Error("%sInvalid protocol '%s'\n", L_ERRORxSTR, szProtocol.latin1());
     return;
   }
   
