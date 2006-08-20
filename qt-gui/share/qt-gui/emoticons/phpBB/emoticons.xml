@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<messaging-emoticon-map >
+<messaging-emoticon-map>
 
 <emoticon file="smile">
 	<string>:-)</string>
@@ -31,7 +31,6 @@
 	<string>:d</string>
 </emoticon>
 
-
 <emoticon file="cry">
 	<string>:'-(</string>
 	<string>:'(</string>
@@ -46,30 +45,11 @@
 	<string>:o</string>
 </emoticon>
 
-<emoticon file="sleep">
-	<string>:-Z</string>
-	<string>:Z</string>
-	<string>:-z</string>
-	<string>:z</string>
-</emoticon>
-
 <emoticon file="confused">
 	<string>:-S</string>
 	<string>:S</string>
 	<string>:-s</string>
 	<string>:s</string>
-</emoticon>
-
-<emoticon file="kiss">
-	<string>:-X</string>
-	<string>:X</string>
-	<string>:-x</string>
-	<string>:x</string>
-</emoticon>
-
-<emoticon file="vempire">
-	<string>:-[</string>
-	<string>:[</string>
 </emoticon>
 
 <emoticon file="devil">
@@ -79,32 +59,9 @@
 	<string>}:&gt;</string>
 </emoticon>
 
-<emoticon file="angel">
-	<string>O:-)</string>
-	<string>O:)</string>
-	<string>o:-)</string>
-	<string>o:)</string>
-</emoticon>
-
 <emoticon file="sunglasses">
 	<string>8-)</string>
 	<string>8)</string>
 </emoticon>
 
-<emoticon file="scream">
-	<string>:-@</string>
-	<string>:@</string>
-	<string></string>
-	<string></string>
-</emoticon>
-
-<emoticon file="smoke">
-	<string>:-Q</string>
-	<string>:Q</string>
-	<string>:-q</string>
-	<string>:q</string>
-</emoticon>
-
-
 </messaging-emoticon-map>
-
