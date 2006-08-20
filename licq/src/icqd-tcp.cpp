@@ -18,6 +18,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <ctype.h>
+#include <langinfo.h>
 
 // Localization
 #include "gettext.h"
@@ -125,8 +126,11 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
       if (nCharset == CHARSET_UNICODE)
       {
         bUTF16 = true;
-        if (szFromEncoding == 0)
-          szFromEncoding = strdup("UTF-8");
+        if (!szFromEncoding || strlen(szFromEncoding) == 0)
+        {
+          free(szFromEncoding);
+          szFromEncoding = strdup(nl_langinfo(CODESET));
+        }
         szMessage = gTranslator.ToUTF16(mDos, szFromEncoding, nUTFLen);
         free(szFromEncoding);
       }
