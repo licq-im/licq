@@ -2600,7 +2600,10 @@ void UserSendCommon::slot_close()
     // the window, then the new events will stay there
     slot_ClearNewEvents();
   }
-  mainwin->m_bCheckSpellingEnabled = mleSend->checkSpellingEnabled();
+
+  if (mleSend)
+    mainwin->m_bCheckSpellingEnabled = mleSend->checkSpellingEnabled();
+
 #if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabExists(this))
