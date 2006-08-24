@@ -489,20 +489,26 @@ void CETabBar::removeTab(QTab *t)
 
 void CETabBar::setPreviousTab()
 {
-  int tab = currentTab() - 1;
+  if (currentTab() == -1)
+    return; // No current tab
+
+  int tab = indexOf(currentTab()) - 1;
   if (tab < 0)
     tab = count() - 1;
 
-  setCurrentTab(tab);
+  setCurrentTab(tabAt(tab));
 }
 
 void CETabBar::setNextTab()
 {
-  int tab = currentTab() + 1;
+  if (currentTab() == -1)
+    return; // No current tab
+
+  int tab = indexOf(currentTab()) + 1;
   if (tab >= count())
     tab = 0;
 
-  setCurrentTab(tab);
+  setCurrentTab(tabAt(tab));
 }
 
 void CETabBar::paintLabel(QPainter* p, const QRect &br,
