@@ -1104,7 +1104,7 @@ void CMessageViewWidget::addNotice(QString dateTime, QString messageText)
 }
 
 CLicqMessageBox::CLicqMessageBox(QWidget *parent)
-  : QDialog(0, "LicqInfo", false, WDestructiveClose), m_nUnreadNum(0)
+  : QDialog(parent, "LicqInfo", false, Qt::WType_Dialog|Qt::WShowModal), m_nUnreadNum(0)
 {
   setCaption("Licq");
 
@@ -1357,6 +1357,12 @@ void CLicqMessageBox::updateCaption(CLicqMessageBoxItem *item)
 
     case QMessageBox::Critical:
       strCaption = "Licq Critical";
+      break;
+
+    case QMessageBox::NoIcon:
+    case QMessageBox::Question:
+    default:
+      strCaption = "Licq";
       break;
   }
   setCaption(strCaption);
