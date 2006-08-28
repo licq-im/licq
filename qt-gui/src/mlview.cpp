@@ -87,7 +87,7 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
       "(?:(https?|ftp)://(.+(:.+)?@)?|www\\d?\\.)"  // protocoll://[user[:password]@] or www[digit].
       "[a-z0-9.-]+\\.([a-z]+|[0-9]+)"               // hostname.tld or ip address
       "(:[0-9]+)?"                                  // optional port
-      "(/([-a-z0-9%{}|\\\\^~`;/?:@=&$_.+!*'(),#]|\\[|\\])*)?");
+      "(/([-\\w%{}|\\\\^~`;/?:@=&$_.+!*'(),#]|\\[|\\])*)?");
     reURL.setMinimal(false);
     reURL.setCaseSensitive(false);
 
@@ -114,7 +114,12 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
       {
         const QString url = reURL.cap();
         const QString fullurl = (reURL.cap(1).isEmpty() ? QString("http://%1").arg(url) : url);
-        const QString link = QString("<a href=\"%1\">%2</a>").arg(fullurl).arg(url);
+
+        // Can't use QString("<a href=\"%1\">%2</a>").arg(fullurl).arg(url) since it breaks
+        // down when fullurl contains urlencoded chars (%##).
+        const QString link = QString::fromLatin1("<a href=\"") + fullurl + QString::fromLatin1("\">") +
+            url + QString::fromLatin1("</a>");
+
         text.replace(urlPos, reURL.matchedLength(), link);
         pos = urlPos + link.length();
       }
@@ -122,7 +127,8 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
       {
         const QString mail = reMail.cap();
         const QString fullmail = (reMail.cap(1).isEmpty() ? QString("mailto:%1").arg(mail) : mail);
-        const QString link = QString("<a href=\"%1\">%2</a>").arg(fullmail).arg(mail);
+        const QString link = QString::fromLatin1("<a href=\"") + fullmail + QString::fromLatin1("\">") +
+            mail + QString::fromLatin1("</a>");
         text.replace(mailPos, reMail.matchedLength(), link);
         pos = mailPos + link.length();
       }
