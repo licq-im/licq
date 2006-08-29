@@ -131,13 +131,13 @@ sub update_users_conf {
 	print TMP "User" . ($j + $initial_users + 1) . " = " . $contacts_list[$j] . "\n";
     }    
     
+    close (IN);
+    close (TMP);
+
     $system_commands = "cp $filename_tmp $filename; rm $filename_tmp";
     system($system_commands) == 0 or die "system() call failed: $?";
     
     print "Done.\n\n";
-    
-    close (IN);
-    close (TMP);
 }
 
 
