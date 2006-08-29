@@ -580,8 +580,7 @@ void CLicqConsole::PrintInfo_General(const char *szId, unsigned long nPPID)
   char buf[32];
   char szPort[32];
   char szRealIp[32];
-  const unsigned long nRealIp = u->RealIp();
-  strcpy(szRealIp, inet_ntoa_r(*(struct in_addr *)&nRealIp, buf));
+  strcpy(szRealIp, ip_ntoa(u->RealIp(), buf));
   time_t nLast = u->LastOnline();
   time_t nOnSince = u->OnlineSince();
 
