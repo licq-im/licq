@@ -42,6 +42,7 @@
 #include "usereventdlg.h"
 #include "usercodec.h"
 
+#include "licq_icqd.h"
 #include "licq_user.h"
 #include "licq_socket.h"
 
@@ -1182,6 +1183,68 @@ void CUserView::viewportDragEnterEvent(QDragEnterEvent* e)
   e->accept(QTextDrag::canDecode(e) || QUriDrag::canDecode(e));
 }
 
+/**
+ * Get a pointer to a dialog for sending events with the given @a type, to the contact
+ * @a szId over the protocol @a nPPID. If the dialog is already open, the dialog is
+ * converted to the correct type before being returned.
+ *
+ * @returns a pointer to a send event dialog of type @a T, or NULL on error.
+ */
+template<typename T>
+static T* getSendEventDialog(UserEventCommon::type type, const char *szId, unsigned long nPPID)
+{
+  int function;
+  if (type == UserEventCommon::UC_CONTACT)
+    function = mnuUserSendContact;
+  else if (type == UserEventCommon::UC_FILE)
+    function = mnuUserSendFile;
+  else if (type == UserEventCommon::UC_MESSAGE)
+    function = mnuUserSendMsg;
+  else if (type == UserEventCommon::UC_URL)
+    function = mnuUserSendUrl;
+  else
+    return NULL;
+
+  UserEventCommon *common = gMainWindow->callFunction(function, szId, nPPID);
+  if (!common)
+    return NULL;
+
+  T *dialog = dynamic_cast<T *>(common);
+  if (!dialog)
+  {
+    UserSendCommon *base = dynamic_cast<UserSendCommon *>(common);
+    if (!base)
+      return NULL;
+
+    base->changeEventType(type);
+    dialog = dynamic_cast<T *>(gMainWindow->callFunction(function, szId, nPPID));
+    if (!dialog)
+      return NULL;
+  }
+
+  return dialog;
+}
+
+/// Convenient, wrapper functions for getSendEventDialog.
+static inline UserSendContactEvent* getSendContactEventDialog(const char *szId, unsigned long nPPID)
+{
+  return getSendEventDialog<UserSendContactEvent>(UserEventCommon::UC_CONTACT, szId, nPPID);
+}
+
+static inline UserSendFileEvent* getSendFileEventDialog(const char *szId, unsigned long nPPID)
+{
+  return getSendEventDialog<UserSendFileEvent>(UserEventCommon::UC_FILE, szId, nPPID);
+}
+
+static inline UserSendMsgEvent* getSendMsgEventDialog(const char *szId, unsigned long nPPID)
+{
+  return getSendEventDialog<UserSendMsgEvent>(UserEventCommon::UC_MESSAGE, szId, nPPID);
+}
+
+static inline UserSendUrlEvent* getSendUrlEventDialog(const char *szId, unsigned long nPPID)
+{
+  return getSendEventDialog<UserSendUrlEvent>(UserEventCommon::UC_URL, szId, nPPID);
+}
 
 void CUserView::viewportDropEvent(QDropEvent* e)
 {
@@ -1190,153 +1253,126 @@ void CUserView::viewportDropEvent(QDropEvent* e)
   e->ignore();
 
   CUserViewItem* it = static_cast<CUserViewItem*>(itemAt(e->pos()));
+  if (!it)
+    return;
 
-  if (it)
+  if (it->ItemId())
   {
-    if (it->ItemId())
+    QString text;
+    QStrList lst;
+    if (QUriDrag::decode(e, lst))
     {
-      QString text;
-      QStrList lst;
-      if (QUriDrag::decode(e, lst))
+      QStrListIterator strIter(lst);
+      if (!(text = QUriDrag::uriToLocalFile(strIter)).isEmpty())
       {
-        QStrListIterator strIter(lst);
-        if (!(text = QUriDrag::uriToLocalFile(strIter)).isEmpty())
+        UserSendFileEvent *sendFile = getSendFileEventDialog(it->ItemId(), it->ItemPPID());
+        if (!sendFile)
+          return;
+
+        sendFile->setFile(text, QString::null);
+
+        // Add all the files
+        while (strIter != lst.getLast())
         {
-          UserSendCommon *basePtr = dynamic_cast<UserSendCommon *>
-              (gMainWindow->callFunction(mnuUserSendFile, it->ItemId(), it->ItemPPID()));
-          if (!basePtr)
-            return;
-
-          UserSendFileEvent *sendFile;
-          if (!(sendFile = dynamic_cast<UserSendFileEvent *>(basePtr)))
-          {
-            basePtr->changeEventType(UserEventCommon::UC_FILE);
-            sendFile = dynamic_cast<UserSendFileEvent *>
-                (gMainWindow->callFunction(mnuUserSendFile, it->ItemId(), it->ItemPPID()));
-            if (!sendFile)
-              return;
-          }
-
-          sendFile->setFile(text, QString::null);
-
-          // Add all the files
-          while (strIter != lst.getLast())
-          {
-            ++strIter;
-            if (!(text = QUriDrag::uriToLocalFile(strIter)).isEmpty())
-              sendFile->addFile(text);
-          }
-
-          sendFile->show();
+          ++strIter;
+          if (!(text = QUriDrag::uriToLocalFile(strIter)).isEmpty())
+            sendFile->addFile(text);
         }
-        else
-        {
-          UserSendCommon *basePtr = dynamic_cast<UserSendCommon *>
-              (gMainWindow->callFunction(mnuUserSendUrl, it->ItemId(),it->ItemPPID()));
-          if (!basePtr)
-            return;
 
-          UserSendUrlEvent *sendUrl;
-          if (!(sendUrl = dynamic_cast<UserSendUrlEvent *>(basePtr)))
-          {
-            basePtr->changeEventType(UserSendCommon::UC_URL);
-            sendUrl = dynamic_cast<UserSendUrlEvent *>
-                (gMainWindow->callFunction(mnuUserSendUrl, it->ItemId(),it->ItemPPID()));
-            if (!sendUrl)
-              return;
-          }
-
-          sendUrl->setUrl(QString(strIter), QString::null);
-          sendUrl->show();
-        }
+        sendFile->show();
       }
-
-      //TODO change this
-      else if (QTextDrag::decode(e, text))
+      else
       {
-//        const char *p = (text.left(4).latin1());
-        char *szId = strdup((text.mid(4, text.length() - 4).latin1()));
-        unsigned long nPPID = LICQ_PPID; //TODO fix this
+        UserSendUrlEvent *sendUrl = getSendUrlEventDialog(it->ItemId(), it->ItemPPID());
+        if (!sendUrl)
+          return;
 
-        if (szId)
-        {
-          if (strcmp(szId, it->ItemId()) == 0 && nPPID == it->ItemPPID())
-          {
-            free(szId);
-            return;
-          }
-
-          UserSendCommon *basePtr = dynamic_cast<UserSendCommon *>
-              (gMainWindow->callFunction(mnuUserSendContact, it->ItemId(), it->ItemPPID()));
-          if (!basePtr)
-          {
-            free(szId);
-            return;
-          }
-
-          UserSendContactEvent* sendContact;
-          if (!(sendContact = dynamic_cast<UserSendContactEvent *>(basePtr)))
-          {
-            basePtr->changeEventType(UserSendCommon::UC_CONTACT);
-            sendContact = dynamic_cast<UserSendContactEvent *>
-                (gMainWindow->callFunction(mnuUserSendContact, it->ItemId(), it->ItemPPID()));
-            if (!sendContact)
-            {
-              free(szId);
-              return;
-            }
-          }
-
-          ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-          QString alias = u ? u->GetAlias() : "";
-          gUserManager.DropUser(u);
-
-          sendContact->setContact(szId, nPPID, alias);
-          sendContact->show();
-        }
-        else // if (szId)
-        {
-          UserSendCommon *basePtr = dynamic_cast<UserSendCommon *>
-              (gMainWindow->callFunction(mnuUserSendMsg, it->ItemId(), it->ItemPPID()));
-          if (!basePtr)
-            return;
-
-          UserSendMsgEvent* sendMsg;
-          if (!(sendMsg = dynamic_cast<UserSendMsgEvent *>(basePtr)))
-          {
-            basePtr->changeEventType(UserSendCommon::UC_MESSAGE);
-            sendMsg = dynamic_cast<UserSendMsgEvent *>
-                (gMainWindow->callFunction(mnuUserSendMsg, it->ItemId(), it->ItemPPID()));
-            if (!sendMsg)
-              return;
-          }
-
-          sendMsg->setText(text);
-          sendMsg->show();
-        }
-
-        free (szId);
+        sendUrl->setUrl(QString(strIter), QString::null);
+        sendUrl->show();
       }
     }
-    //TODO Change this
-    else if (it->isGroupItem())
-    {
-      QString text;
-      if (QTextDrag::decode(e, text))
-      {
-//        const char *p = (text.left(4).latin1());
-        char *szId = strdup(text.mid(4, text.length() - 4).latin1());
-        unsigned long nPPID = LICQ_PPID; //TODO Fix this
 
-        if (szId)
+    else if (QTextDrag::decode(e, text))
+    {
+      unsigned long nPPID = 0;
+      FOR_EACH_PROTO_PLUGIN_START(gMainWindow->licqDaemon)
+      {
+        if (text.startsWith(PPIDSTRING((*_ppit)->PPID())))
         {
-          gUserManager.AddUserToGroup(szId, nPPID, it->GroupId());
-          gMainWindow->updateUserWin();
+          nPPID = (*_ppit)->PPID();
+          break;
         }
+      }
+      FOR_EACH_PROTO_PLUGIN_END;
+
+      if (nPPID && text.length() > 4)
+      {
+        char *szId = strdup(text.mid(4).latin1());
+        if (strcmp(szId, it->ItemId()) == 0 && nPPID == it->ItemPPID())
+        {
+          free(szId);
+          return;
+        }
+
+        UserSendContactEvent* sendContact = getSendContactEventDialog(it->ItemId(), it->ItemPPID());
+        if (!sendContact)
+        {
+          free(szId);
+          return;
+        }
+
+        ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+        QString alias = u ? u->GetAlias() : "";
+        gUserManager.DropUser(u);
+
+        sendContact->setContact(szId, nPPID, alias);
+        sendContact->show();
 
         free(szId);
       }
+      else
+      {
+        UserSendMsgEvent* sendMsg = getSendMsgEventDialog(it->ItemId(), it->ItemPPID());
+        if (!sendMsg)
+          return;
+
+        sendMsg->setText(text);
+        sendMsg->show();
+      }
     }
+  }
+
+  else if (it->isGroupItem())
+  {
+    QString text;
+    if (QTextDrag::decode(e, text) && text.length() > 4)
+    {
+      unsigned long nPPID = 0;
+      FOR_EACH_PROTO_PLUGIN_START(gMainWindow->licqDaemon)
+      {
+        if (text.startsWith(PPIDSTRING((*_ppit)->PPID())))
+        {
+          nPPID = (*_ppit)->PPID();
+          break;
+        }
+      }
+      FOR_EACH_PROTO_PLUGIN_END;
+
+      if (nPPID == 0)
+        return;
+
+      char *szId = strdup(text.mid(4).latin1());
+
+      if (szId)
+      {
+        gUserManager.AddUserToGroup(szId, nPPID, it->GroupId());
+        gMainWindow->updateUserWin();
+      }
+
+      free(szId);
+    }
+    else
+      return; // Not accepted
   }
 
   e->accept();
@@ -1361,7 +1397,8 @@ void CUserView::keyPressEvent(QKeyEvent *e)
       CUserViewItem* item = static_cast<CUserViewItem*>(currentItem());
       if(item == NULL) return;
 
-      if(item->isGroupItem()) {
+      if(item->isGroupItem())
+      {
         setOpen(item, !item->isOpen());
         return;
       }
@@ -1392,7 +1429,8 @@ void CUserView::keyPressEvent(QKeyEvent *e)
 
       QListViewItemIterator it(this);
       QListViewItem* lastitem = 0;
-      while(it.current() != NULL) {
+      while(it.current() != NULL)
+      {
         lastitem = it.current();
         ++it;
       }
@@ -1410,18 +1448,18 @@ void CUserView::keyPressEvent(QKeyEvent *e)
       if (m_typePos > 0)
       {
         m_typeAhead.truncate(m_typeAhead.length()-1);
-	m_typePos--;
+        m_typePos--;
       }
       /* fall through */
-      
+
     default:
     {
       int ascii = tolower(e->ascii());
       if (!isalnum(ascii) && e->key() != Key_Backspace)
       {
         QListView::keyPressEvent(e);
-	m_typeAhead = "";
-	m_typePos = 0 ;
+        m_typeAhead = "";
+        m_typePos = 0 ;
         return;
       }
 
@@ -1429,20 +1467,18 @@ void CUserView::keyPressEvent(QKeyEvent *e)
       m_typePos++;
 
       QListViewItemIterator it(firstChild());
-      
+
       while (it.current() != NULL)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
+        if (item->text(1).lower().startsWith(m_typeAhead))
         {
-	  if (item->text(1).lower().startsWith(m_typeAhead))
-	  {
-            setSelected(item, true);
-            ensureItemVisible(item);
-	    item->repaint();
-            return;
-          }
-          ++it;
+          setSelected(item, true);
+          ensureItemVisible(item);
+          item->repaint();
+          return;
         }
+        ++it;
       }
 
       // If we are here we didn't find any names
