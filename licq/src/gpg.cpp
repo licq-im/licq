@@ -153,7 +153,7 @@ void CGPGHelper::Start()
   mKeysIni.LoadFile(buf);
 
   mKeysIni.SetSection("gpg");
-  mKeysIni.ReadStr("passphrase", buf); mGPGPassphrase = strdup(buf);
+  mKeysIni.ReadStr("passphrase", buf, ""); mGPGPassphrase = strdup(buf);
 
   const char *gpgme_ver = gpgme_check_version(0);
   gLog.Info("%s[GPG] gpgme library found: %s\n", L_INITxSTR, gpgme_ver);
