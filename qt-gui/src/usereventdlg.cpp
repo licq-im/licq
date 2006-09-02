@@ -99,7 +99,7 @@
 using std::pair;
 using std::make_pair;
 
-const int SHOW_RECENT_NUM = 5;
+const size_t SHOW_RECENT_NUM = 5;
 
 // -----------------------------------------------------------------------------
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
@@ -1620,7 +1620,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         // Make sure we don't show the new messages waiting.
         unsigned short nNewMessages = u->NewMessages();
         HistoryListIter lHistoryIter = lHistoryList.end();
-        for (int i = 0; i < (SHOW_RECENT_NUM + nNewMessages) && lHistoryIter != lHistoryList.begin(); i++)
+        for (size_t i = 0; i < (SHOW_RECENT_NUM + nNewMessages) && lHistoryIter != lHistoryList.begin(); i++)
           lHistoryIter--;
           
         bool bUseHTML = !isdigit((m_lUsers.front().c_str())[1]); 

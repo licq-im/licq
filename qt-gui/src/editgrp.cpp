@@ -166,7 +166,7 @@ void EditGrpDlg::slot_down()
   if (n < 0 /* || n == max */) return;
   gUserManager.SwapGroups(n + 1, n + 2);
   RefreshList();
-  if (n + 2 >= lstGroups->count())
+  if (n + 2 >= int(lstGroups->count()))
     lstGroups->setCurrentItem(lstGroups->count() - 1);
   else
     lstGroups->setCurrentItem(n + 2);
