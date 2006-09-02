@@ -54,7 +54,7 @@ public:
    unsigned short LicqVersion()  { return m_nFlags & E_LICQxVER; }
    direction Direction()  {  return m_eDir; }
    CICQColor *Color() { return &m_sColor; }
-   int ConvoId() { return m_nConvoId; }
+   unsigned long ConvoId() { return m_nConvoId; }
    
    bool Pending() { return m_bPending; }
    void SetPending(bool b)  { m_bPending = b; }

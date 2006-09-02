@@ -2287,9 +2287,9 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
   case ICQ_SNACxSRV_ACKxIMxICQ:
     {
-      ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-      unsigned long nListTime = o->GetSSTime();
-      gUserManager.DropOwner(LICQ_PPID);
+      // ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+      // unsigned long nListTime = o->GetSSTime();
+      // gUserManager.DropOwner(LICQ_PPID);
 
       CSrvPacketTcp* p;
       gLog.Info(tr("%sServer sent us channel capability list (ignoring).\n"), L_SRVxSTR);

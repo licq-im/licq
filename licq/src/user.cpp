@@ -2792,7 +2792,6 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
   bool bLeft = false;
   unsigned long i = 0, j, nField = 0, nPos = 0;
   char szTemp[128];
-  const char *sz;
 
   // Our secure string for escaping stuff
   bool bSecure = (_szFormat[0] == '|' && (nFlags & USPRINTF_PIPEISCMD)) ||
@@ -2854,6 +2853,7 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
         }
       }
 
+      const char *sz = 0;
       switch(_szFormat[i])
       {
         case 'i':
@@ -3025,6 +3025,9 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
           nField = 0;
           break;
       }
+
+      if (!sz)
+        continue;
 
       // If we need to be secure, then quote the % string
       if (bSecure)
