@@ -4025,7 +4025,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       nPacketCount = packet.UnpackUnsignedShortBE();
       nCount += nPacketCount;
 
-      gLog.Info(tr("Total Number: %d\n"), nPacketCount);
       for (unsigned short i = 0; i < nPacketCount; i++)
       {
         char *szId;
@@ -4037,9 +4036,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         nID = packet.UnpackUnsignedShortBE();
         nType = packet.UnpackUnsignedShortBE();
         nByteLen = packet.UnpackUnsignedShortBE();
-
-        if (i < 150)
-          gLog.Info(tr("Number: %d, ID: %s\n"), i+1, szId);
 
         char *szUnicodeName = gTranslator.FromUnicode(szId);
 
