@@ -1595,6 +1595,27 @@ void CICQDaemon::FailEvents(int sd, int err)
   } while (e != NULL);
 }
 
+/**
+ * Search the running event queue for a specific event by subsequence.
+ */
+bool CICQDaemon::hasServerEvent(unsigned long _nSubSequence)
+{
+  bool hasEvent = false;
+  pthread_mutex_lock(&mutex_runningevents);
+  list<ICQEvent *>::iterator iter;
+  for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
+  {
+    if ((*iter)->CompareSubSequence(_nSubSequence))
+    {
+      hasEvent = true;
+      break;
+    }
+  }
+
+  pthread_mutex_unlock(&mutex_runningevents);
+  return hasEvent;
+}
+ 
 
 //---DoneSrvEvent--------------------------------------------------------------
 /*! \brief Marks the given event as done.

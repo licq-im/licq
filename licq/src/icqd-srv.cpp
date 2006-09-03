@@ -2304,7 +2304,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
       gLog.Info(tr("%sRequesting list.\n"), L_SRVxSTR);
       p = new CPU_RequestList();
-      SendEvent_Server(p);
+      SendExpectEvent_Server(0, p, NULL);
 
       gLog.Info(tr("%sRequesting location rights.\n"), L_SRVxSTR);
       p = new CPU_GenericFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_REQUESTxRIGHTS);
@@ -3962,7 +3962,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 //--------ProcessListFam--------------------------------------------
 void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 {
-  /*unsigned short nFlags = */packet.UnpackUnsignedShortBE();
+  unsigned short nFlags = packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
 
   // First 8 bytes - unknown
@@ -3989,29 +3989,43 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       unsigned short nPacketCount;
       unsigned long nTime;
 
-      ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
-
-      if (e == NULL)
+      if (nFlags & 0x0001)
       {
-        gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
-        break;
+        if (!hasServerEvent(nSubSequence))
+          gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
+        else
+          gLog.Info(tr("%sReceived contact list.\n"), L_SRVxSTR);
       }
-
-      if (e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS) ||
-          e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxROST))
+      else
       {
-        packet.UnpackUnsignedLong();
-        packet.UnpackUnsignedLong();
-      }
+        // This is the last packet so mark it as done
+        ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
 
-      gLog.Info(tr("%sReceived contact list.\n"), L_SRVxSTR);
+        if (e == NULL)
+        {
+          gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
+          break;
+        }
+
+        /* This isn't used anymore. At least with SSI Version 0.
+        if (e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS) ||
+            e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxROST))
+        {
+          packet.UnpackUnsignedLong();
+          packet.UnpackUnsignedLong();
+        }
+        */
+
+        gLog.Info(tr("%sReceived end of contact list.\n"), L_SRVxSTR);
+      }
 
       m_bOnlineNotifies = true;
 
-      packet.UnpackChar();  // unknown
+      packet.UnpackChar();  // SSI Version
       nPacketCount = packet.UnpackUnsignedShortBE();
       nCount += nPacketCount;
 
+      gLog.Info(tr("Total Number: %d\n"), nPacketCount);
       for (unsigned short i = 0; i < nPacketCount; i++)
       {
         char *szId;
@@ -4024,6 +4038,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         nType = packet.UnpackUnsignedShortBE();
         nByteLen = packet.UnpackUnsignedShortBE();
 
+        if (i < 150)
+          gLog.Info(tr("Number: %d, ID: %s\n"), i+1, szId);
+
         char *szUnicodeName = gTranslator.FromUnicode(szId);
 
         if (nByteLen)
@@ -4031,7 +4048,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           if (!packet.readTLV(-1, nByteLen))
           {
             gLog.Error("%sUnable to parse contact list TLV, aborting!\n",
-											 L_ERRORxSTR);
+                L_ERRORxSTR);
             delete[] szId;
             return;
           }
@@ -4161,6 +4178,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               //    LIST_ALL, 0));
               //}
             }
+            else
+            {
+              gLog.Info(tr("%sGot Master Group record.\n"), L_SRVxSTR);
+            }
+
             break;
           }
 

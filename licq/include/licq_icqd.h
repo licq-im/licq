@@ -757,6 +757,7 @@ protected:
   ICQEvent *DoneExtendedServerEvent(const unsigned short, EventResult);
   ICQEvent *DoneExtendedEvent(ICQEvent *, EventResult);
   ICQEvent *DoneExtendedEvent(unsigned long tag, EventResult _eResult);
+  bool hasServerEvent(unsigned long);
   void ProcessDoneEvent(ICQEvent *);
   void PushExtendedEvent(ICQEvent *);
   void PushPluginSignal(CICQSignal *);
