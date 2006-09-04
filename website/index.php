@@ -18,7 +18,7 @@
         <div id="maincontent">
           <div id="subcontent">
             <h2>Welcome to the Licq homepage.</h2>
-            <p>Latest Update: <b>October 21, 2005</b><br />Stable Version: <b>1.3.2</b><br />Devel Version: <b>1.3.2</b></p>
+            <p>Latest Update: <b>October 21, 2005</b><br />Stable Version: <b>1.3.2</b><br />Devel Version: <b>1.3.4 RC1</b></p>
             
 <a href="http://sourceforge.net/donate/index.php?group_id=254"><img src="http://images.sourceforge.net/images/project-support.jpg" width="88" height="32" border="0" alt="Support This Project" /> </a>
 <? 

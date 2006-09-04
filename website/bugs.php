@@ -15,7 +15,7 @@
               <ol>
               <li> Check the open and closed bugs (called tickets) at the <a href="http://trac.licq.org/">Bug Tracking</a> site.</li>
 
-              <li> Check the <a href="http://sourceforge.net/mail/?group_id=254">Licq mailing lists</a>.</li>
+              <li> Check the <a href="http://trac.licq.org/wiki/MailingList">Licq mailing lists</a>.</li>
               <li> Ensure that the problem can be reproduced with the latest <a href="/daily.php">SVN Snapshot</a>. If it cannot be reproduced then please do not report it.</li>
               <li> Ensure that you have included an email address where you can be reached for questions.</li>
               <li> Be as descriptive as you can about the bug. Include OS, OS Version, Qt Version if you are using the qt-gui, Error messages, etc..  Not just &quot;It does not work&quot;.</li>
@@ -32,7 +32,7 @@
             <!-- News Item Begin-->
             <div class="news">
               <h2>Feature Requests</h2>
-              <p>Before submitting feature requests, or if you want to help with Licq, see the <a href="http://trac.licq.org/query?status=new&amp;status=assigned&amp;status=reopened&amp;type=Feature+Requests&amp;order=id">list of  requested features</a>. If you are curious about upcoming features, see the <a href="http://trac.licq.org/roadmap">roadmap</a>.</p>
+              <p>Before submitting feature requests, or if you want to help with Licq, see the <a href="http://trac.licq.org/query?status=new&amp;status=assigned&amp;status=reopened&amp;type=enhancement&amp;order=id">list of requested features</a>. If you are curious about upcoming features, see the <a href="http://trac.licq.org/roadmap">roadmap</a>.</p>
               <div class="footer">
                 <div class="footer_right"></div>
               </div>

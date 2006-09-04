@@ -6,7 +6,7 @@
           <div class="menu_item"><a href="/news.php"><span>News</span></a></div>
           <div class="menu_item"><a href="/info.php"><span>Info</span></a></div>
           <div class="menu_item"><a href="http://blog.licq.org"><span>Blog</span></a></div>
-          <div class="menu_item"><a href="http://wiki.licq.org"><span>Wiki</span></a></div>
+          <div class="menu_item"><a href="http://trac.licq.org"><span>Wiki</span></a></div>
           <div class="menu_item"><a href="/mirrors.php"><span>Mirrors</span></a></div>
           <div class="menu_item"><a href="/help.php"><span>Help</span></a></div>
           <div class="menu_item"><a href="/download.php"><span>Downloads</span></a></div>

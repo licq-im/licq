@@ -10,7 +10,7 @@
 
             <!-- News Item Begin-->
             <div class="news">
-              <p>Before submitting feature requests, or if you are curious about upcoming features or want to help with Licq, see the <a href="http://sourceforge.net/pm/?group_id=254" >task manager</a>.</p>
+              <p>Before submitting feature requests, or if you are curious about upcoming features or want to help with Licq, see the <a href="http://trac.licq.org/query?status=new&amp;status=assigned&amp;status=reopened&amp;type=enhancement&amp;type=task&amp;order=id">task manager</a>.</p>
               <ul>
                 <li><strong>Jon Keating</strong> (<a href="mailto:jon@licq.org">jon@licq.org</a>): Primary Licq Developer.</li>
                 <li><strong>Dirk Mueller</strong> (<a href="mailto:dirk@licq.org">dirk@licq.org</a>): Primary Licq Developer.</li>
