@@ -1503,11 +1503,13 @@ QWidget* OptionsDlg::new_misc_options()
 #ifdef USE_KDE
   cmbUrlViewer->insertItem(DEFAULT_URL_VIEWER);
 #endif
+  cmbUrlViewer->insertItem("viewurl-firefox.sh");
   cmbUrlViewer->insertItem("viewurl-lynx.sh");
   cmbUrlViewer->insertItem("viewurl-mozilla.sh");
   cmbUrlViewer->insertItem("viewurl-ncftp.sh");
   cmbUrlViewer->insertItem("viewurl-netscape.sh");
   cmbUrlViewer->insertItem("viewurl-opera.sh");
+  cmbUrlViewer->insertItem("viewurl-seamonkey.sh");
   cmbUrlViewer->insertItem("viewurl-w3m.sh");
 
   lblTerminal = new QLabel(tr("Terminal:"), boxExtensions);
