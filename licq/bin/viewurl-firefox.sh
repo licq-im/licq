@@ -22,7 +22,7 @@
 #
 
 if [ -z "${VURL_MOZILLA}" ]; then
-  MOZILLA=mozilla
+  MOZILLA=firefox
 else
   MOZILLA=${VURL_MOZILLA}
 fi
