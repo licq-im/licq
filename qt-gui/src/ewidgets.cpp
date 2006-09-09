@@ -1302,6 +1302,7 @@ void CLicqMessageBox::slot_clickClear()
   QListViewItemIterator it(m_lstMsg);
   while (it.current())
     delete it.current();
+  m_nUnreadNum = 0;
 }
 
 /// ////////////////////////////////////////////////////////
@@ -1336,6 +1337,7 @@ void CLicqMessageBox::slot_listChanged(QListViewItem *i)
     // No more unread messages
     nextStr = QString("&Next");
     m_btnNext->setEnabled(false);
+    m_nUnreadNum = 0;
   }
   m_btnNext->setText(nextStr);
 }
