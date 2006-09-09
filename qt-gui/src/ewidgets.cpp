@@ -1195,6 +1195,8 @@ void CLicqMessageBox::addMessage(QMessageBox::Icon type, const QString &msg)
     m_btnNext->setText("&Next");
     m_btnNext->setEnabled(false);
     m_btnMore->setEnabled(false);
+    m_btnNext->hide();
+    m_btnMore->hide();
     m_btnClear->setText("&Ok");
     showExtension(false); // We are opening the window, so default to not showing this
   }
@@ -1206,9 +1208,15 @@ void CLicqMessageBox::addMessage(QMessageBox::Icon type, const QString &msg)
     QString nextStr = QString("&Next (%1)").arg(m_nUnreadNum);
     m_btnNext->setText(nextStr);
     if (!m_btnNext->isEnabled())
+    {
       m_btnNext->setEnabled(true);
+      m_btnNext->show();
+    }
     if (!m_btnMore->isEnabled())
+    {
       m_btnMore->setEnabled(true);
+      m_btnMore->show();
+    }
   }
 
   // Add it to the list
@@ -1432,8 +1440,13 @@ CLicqMessageManager *CLicqMessageManager::Instance()
 void CLicqMessageManager::addMessage(QMessageBox::Icon type, const QString &msg,
   QWidget *parent)
 {
+  // We should pass parent to it, but it causes a crash after the parent closes
+  // and we try to show another message box. I tried to reparent m_pMsgDlg, but
+  // that didnt help much.
+  // So for now.. we do this:
+  parent = 0; // XXX See comment above
   if (m_pMsgDlg == 0)
-    m_pMsgDlg = new CLicqMessageBox(parent);
+    m_pMsgDlg = new CLicqMessageBox(parent); 
 
   m_pMsgDlg->addMessage(type, msg);
   m_pMsgDlg->show();
