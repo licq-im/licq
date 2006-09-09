@@ -4435,6 +4435,56 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
 
+    case ICQ_SNACxLIST_AUTHxRESPONS: // The resonse to our authorization request
+    {
+      char *szId = packet.UnpackUserString();
+      unsigned char granted;
+
+      packet >> granted;
+      unsigned short nMsgLen;
+      packet >> nMsgLen;
+      char *szMsg = new char[nMsgLen+1];
+      for (int i = 0; i < nMsgLen; i++)
+       packet >> szMsg[i];
+      szMsg[nMsgLen] = '\0';
+
+      gLog.Info(tr("%sAuthorization %s by %s.\n"), L_SRVxSTR,
+         granted ? "granted" : "refused", szId);
+
+      CUserEvent *eEvent;
+      if (granted)
+      {
+         eEvent = new CEventAuthGranted(szId, LICQ_PPID, szMsg,
+           ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+
+         ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+         if (u)
+         {
+           u->SetAwaitingAuth(false);
+           gUserManager.DropUser(u);
+         }
+      }
+      else
+      {
+        eEvent = new CEventAuthRefused(szId, LICQ_PPID, szMsg,
+            ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
+      }
+
+      ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+      if (AddUserEvent(o, eEvent))
+      {
+        gUserManager.DropOwner(LICQ_PPID);
+        eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
+        m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
+      }
+      else
+        gUserManager.DropOwner(LICQ_PPID);
+
+      delete [] szId;
+      delete [] szMsg;
+      break;
+    }
+
     case ICQ_SNACxLIST_AUTHxADDED: // You were added to a contact list
     {
       char *szId = packet.UnpackUserString();
