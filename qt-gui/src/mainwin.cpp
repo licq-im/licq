@@ -3960,14 +3960,9 @@ void CMainWindow::autoAway()
   static bool bAutoNA = false;
   static bool bAutoOffline = false;
 
-  // Fetch current status
-  unsigned short status = ICQ_STATUS_OFFLINE;
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  if (o != NULL)
-  {
-    status = o->Status();
-    gUserManager.DropOwner();
-  }
+  bool bTempAutoAway = false;
+  bool bTempAutoNA = false;
+  bool bTempAutoOffline = false;
 
   if (mit_info == NULL)
   {
@@ -3992,113 +3987,133 @@ void CMainWindow::autoAway()
   }
   Time idleTime = mit_info->idle;
 
-  // Check no one changed the status behind our back
-  if ( (bAutoOffline && status != ICQ_STATUS_OFFLINE) ||
-       (bAutoNA && status != ICQ_STATUS_NA && !bAutoOffline) ||
-       (bAutoAway && status != ICQ_STATUS_AWAY && !bAutoNA && !bAutoOffline) )
+  // Go through each protocol, as the statuses may differ
+  FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
   {
-    bAutoOffline = false;
-    bAutoNA = false;
-    bAutoAway = false;
-    return;
-  }
+    unsigned long nPPID = (*_ppit)->PPID();
 
-//  gLog.Info("offl %d, n/a %d, away %d idlt %d\n",
-//            bAutoOffline, bAutoNA, bAutoAway, idleTime);
-
-  if ( (autoOfflineTime > 0) &&
-       (unsigned long)idleTime > (unsigned long)(autoOfflineTime * 60000))
-  {
-    if (status != ICQ_STATUS_OFFLINE)
+    // Fetch current status
+    unsigned short status = ICQ_STATUS_OFFLINE;
+    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
+    if (o != NULL)
     {
-      changeStatus(ICQ_STATUS_OFFLINE);
-      bAutoOffline = true;
-      bAutoAway = (status == ICQ_STATUS_ONLINE || bAutoAway);
-      bAutoNA = ((status == ICQ_STATUS_AWAY && bAutoAway) || bAutoNA);
+      status = o->Status();
+      gUserManager.DropOwner(nPPID);
     }
-  }
-  else if ( (autoNATime > 0) &&
-       (unsigned long)idleTime > (unsigned long)(autoNATime * 60000))
-  {
-    if (status != ICQ_STATUS_NA && status != ICQ_STATUS_OFFLINE)
+
+    // Check no one changed the status behind our back
+    if ( (bAutoOffline && status != ICQ_STATUS_OFFLINE) ||
+         (bAutoNA && status != ICQ_STATUS_NA && !bAutoOffline) ||
+         (bAutoAway && status != ICQ_STATUS_AWAY && !bAutoNA && !bAutoOffline) )
     {
-      if (autoNAMess)
+      bAutoOffline = false;
+      bAutoNA = false;
+      bAutoAway = false;
+      return;
+    }
+
+  //  gLog.Info("offl %d, n/a %d, away %d idlt %d\n",
+  //            bAutoOffline, bAutoNA, bAutoAway, idleTime);
+
+    if ( (autoOfflineTime > 0) &&
+         (unsigned long)idleTime > (unsigned long)(autoOfflineTime * 60000))
+    {
+      if (status != ICQ_STATUS_OFFLINE)
       {
-        SARList &sar = gSARManager.Fetch(SAR_NA);
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-        if (o != 0)
-        {
-          o->SetAutoResponse(QString(sar[autoNAMess-1]->AutoResponse()).local8Bit());
-          gUserManager.DropOwner();
-        }
-        gSARManager.Drop();
+        changeStatus(ICQ_STATUS_OFFLINE, nPPID);
+        bTempAutoOffline = true;
+        bTempAutoAway = (status == ICQ_STATUS_ONLINE || bAutoAway);
+        bTempAutoNA = ((status == ICQ_STATUS_AWAY && bAutoAway) || bAutoNA);
       }
-
-      changeStatus(ICQ_STATUS_NA);
-      bAutoNA = true;
-      bAutoAway = true;
     }
-  }
-  else if ( (autoAwayTime > 0) &&
-            (unsigned long)idleTime > (unsigned long)(autoAwayTime * 60000))
-  {
-    if (status != ICQ_STATUS_AWAY && status != ICQ_STATUS_OFFLINE)
+    else if ( (autoNATime > 0) &&
+         (unsigned long)idleTime > (unsigned long)(autoNATime * 60000))
     {
-      if (autoAwayMess)
+      if (status != ICQ_STATUS_NA && status != ICQ_STATUS_OFFLINE)
       {
-        SARList &sar = gSARManager.Fetch(SAR_AWAY);
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-        if (o != 0)
+        if (autoNAMess)
         {
-          o->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
-          gUserManager.DropOwner();
+          SARList &sar = gSARManager.Fetch(SAR_NA);
+          ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_W);
+          if (o != 0)
+          {
+            o->SetAutoResponse(QString(sar[autoNAMess-1]->AutoResponse()).local8Bit());
+            gUserManager.DropOwner(nPPID);
+          }
+          gSARManager.Drop();
         }
-        gSARManager.Drop();
-      }
 
-      changeStatus(ICQ_STATUS_AWAY);
-      bAutoAway = true;
+        changeStatus(ICQ_STATUS_NA, nPPID);
+        bTempAutoNA = true;
+        bTempAutoAway = true;
+      }
     }
-  }
-  else
-  {
-    if (bAutoOffline)
+    else if ( (autoAwayTime > 0) &&
+              (unsigned long)idleTime > (unsigned long)(autoAwayTime * 60000))
     {
-      if (bAutoNA && bAutoAway)
+      if (status != ICQ_STATUS_AWAY && status != ICQ_STATUS_OFFLINE)
       {
-        changeStatus(ICQ_STATUS_ONLINE);
-        bAutoOffline = bAutoNA = bAutoAway = false;
+        if (autoAwayMess)
+        {
+          SARList &sar = gSARManager.Fetch(SAR_AWAY);
+          ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_W);
+          if (o != 0)
+          {
+            o->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
+            gUserManager.DropOwner(nPPID);
+          }
+          gSARManager.Drop();
+        }
+
+        changeStatus(ICQ_STATUS_AWAY, nPPID);
+        bTempAutoAway = true;
+      }
+    }
+    else
+    {
+      if (bAutoOffline)
+      {
+        if (bAutoNA && bAutoAway)
+        {
+          changeStatus(ICQ_STATUS_ONLINE, nPPID);
+          bTempAutoOffline = bTempAutoNA = bTempAutoAway = false;
+        }
+        else if (bAutoNA)
+        {
+          changeStatus(ICQ_STATUS_AWAY, nPPID);
+          bTempAutoNA = bTempAutoOffline = false;
+        }
+        else
+        {
+          changeStatus(ICQ_STATUS_NA, nPPID);
+          bTempAutoOffline = false;
+        }
       }
       else if (bAutoNA)
       {
-        changeStatus(ICQ_STATUS_AWAY);
-        bAutoNA = bAutoOffline = false;
+        if (bAutoAway)
+        {
+          changeStatus(ICQ_STATUS_ONLINE, nPPID);
+          bTempAutoNA = bTempAutoAway = false;
+        }
+        else
+        {
+          changeStatus(ICQ_STATUS_AWAY, nPPID);
+          bTempAutoNA = false;
+        }
       }
-      else
+      else if (bAutoAway)
       {
-        changeStatus(ICQ_STATUS_NA);
-        bAutoOffline = false;
+        changeStatus(ICQ_STATUS_ONLINE, nPPID);
+        bTempAutoAway = false;
       }
-    }
-    else if (bAutoNA)
-    {
-      if (bAutoAway)
-      {
-        changeStatus(ICQ_STATUS_ONLINE);
-        bAutoNA = bAutoAway = false;
-      }
-      else
-      {
-        changeStatus(ICQ_STATUS_AWAY);
-        bAutoNA = false;
-      }
-    }
-    else if (bAutoAway)
-    {
-      changeStatus(ICQ_STATUS_ONLINE);
-      bAutoAway = false;
     }
   }
+  FOR_EACH_PROTO_PLUGIN_END
+  
+  bAutoOffline = bTempAutoOffline;
+  bAutoNA = bTempAutoNA;
+  bAutoAway = bTempAutoAway;
 
 #endif // USE_SCRNSAVER
 }
