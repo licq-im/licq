@@ -1091,7 +1091,7 @@ Sie müssen den Browser selbst starten und die URL in die Adressleiste kopieren.
     </message>
     <message>
         <source>Send &amp;Authorization</source>
-        <translation>&amp;Autorisierung sendensation</translation>
+        <translation>&amp;Autorisierung senden</translation>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
@@ -4172,11 +4172,11 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Licq Fehler</translation>
+        <translation type="obsolete">Licq Fehler</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq Warnung</translation>
+        <translation type="obsolete">Licq Warnung</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -4184,7 +4184,7 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq Information</translation>
+        <translation type="obsolete">Licq Information</translation>
     </message>
     <message>
         <source>Yes</source>
