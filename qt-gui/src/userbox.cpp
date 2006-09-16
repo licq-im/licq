@@ -1693,7 +1693,7 @@ void CUserView::maybeTip(const QPoint& c)
       + QString("</nobr>");
     
     if (*u->GetAlias() && gMainWindow->m_bPopAlias)
-      s += tr("<br><nobr>") + codec->toUnicode(u->GetAlias()) + tr("</nobr>");
+      s += tr("<br><nobr>") + QString::fromUtf8(u->GetAlias()) + tr("</nobr>");
 
     if ((*u->GetFirstName() || *u->GetLastName()) && gMainWindow->m_bPopName)
     {
