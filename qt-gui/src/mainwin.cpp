@@ -147,6 +147,8 @@ using std::isdigit;
 #undef FocusOut
 #undef Status
 
+extern char *PPIDSTRING(unsigned long);
+
 static QPixmap *ScaleWithBorder(const QPixmap &pm, int w, int h, struct Border border)
 {
    QPainter p;
@@ -3960,9 +3962,9 @@ void CMainWindow::autoAway()
   static bool bAutoNA = false;
   static bool bAutoOffline = false;
 
-  bool bTempAutoAway = false;
-  bool bTempAutoNA = false;
-  bool bTempAutoOffline = false;
+  bool bTempAutoAway = bAutoAway;
+  bool bTempAutoNA = bAutoNA;
+  bool bTempAutoOffline = bAutoOffline;
 
   if (mit_info == NULL)
   {
@@ -4000,6 +4002,11 @@ void CMainWindow::autoAway()
       status = o->Status();
       gUserManager.DropOwner(nPPID);
     }
+
+    // Since MSN doesn't support NA, we have to "fake" it.
+    const bool isMsn = (strcmp(PPIDSTRING(nPPID), "MSN_") == 0);
+    if (isMsn && bAutoNA && !bAutoOffline && status == ICQ_STATUS_AWAY)
+      status = ICQ_STATUS_NA;
 
     // Check no one changed the status behind our back
     if ( (bAutoOffline && status != ICQ_STATUS_OFFLINE) ||
