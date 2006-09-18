@@ -4004,8 +4004,7 @@ void CMainWindow::autoAway()
     }
 
     // Since MSN doesn't support NA, we have to "fake" it.
-    const bool isMsn = (strcmp(PPIDSTRING(nPPID), "MSN_") == 0);
-    if (isMsn && bAutoNA && !bAutoOffline && status == ICQ_STATUS_AWAY)
+    if (nPPID == MSN_PPID && bAutoNA && !bAutoOffline && status == ICQ_STATUS_AWAY)
       status = ICQ_STATUS_NA;
 
     // Check no one changed the status behind our back
