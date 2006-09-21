@@ -1094,7 +1094,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       if (pin.ChatClients().size() > 0)
       {
         gLog.Info(tr("%sChat: Joined multiparty (%d people).\n"), L_TCPxSTR,
-           pin.ChatClients().size() + 1);
+           int(pin.ChatClients().size() + 1));
         ChatClientList::iterator iter;
         for (iter = pin.ChatClients().begin(); iter != pin.ChatClients().end(); ++iter)
         {

@@ -238,7 +238,7 @@ void CUtility::SetUserFields(const vector <const char *> &_vszUserFields)
   if ( _vszUserFields.size() != NumUserFields())
   {
     gLog.Warn("%sInternal error: CUtility::SetUserFields(): incorrect number of data fields (%d/%d).\n",
-              L_WARNxSTR, _vszUserFields.size(), NumUserFields());
+              L_WARNxSTR, int(_vszUserFields.size()), NumUserFields());
     return;
   }
   // Do a quick check to see if there are any users fields at all

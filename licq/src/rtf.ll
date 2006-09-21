@@ -178,7 +178,7 @@ void RTF2HTML::FlushOut()
         switch (t.tag){
         case TAG_FONT_COLOR:
             if ((unsigned)t.param < (unsigned)colors.size()){
-                color &c = colors[t.param];
+                //color &c = colors[t.param];
                 //PrintUnquoted("<font color=\"#%02X%02X%02X\">", c.red, c.green, c.blue);
             }else{
                 t.tag = TAG_NONE;
@@ -188,7 +188,7 @@ void RTF2HTML::FlushOut()
             //PrintUnquoted("<font size=%u>", t.param);
             break;
         case TAG_BG_COLOR:{
-                color &c = colors[t.param];
+                //color &c = colors[t.param];
                 //PrintUnquoted("<span style=\"bgcolor:#%02X%02X%02X;\">", c.red, c.green, c.blue);
                 break;
             }

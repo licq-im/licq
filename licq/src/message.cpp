@@ -763,7 +763,7 @@ void CEventContactList::CreateDescription()
   if (m_szText) delete [] m_szText;
   m_szText = new char [m_vszFields.size() * 32 + 128];
   char *szEnd = m_szText;
-  szEnd += sprintf(m_szText, tr("Contact list (%d contacts):\n"), m_vszFields.size());
+  szEnd += sprintf(m_szText, tr("Contact list (%d contacts):\n"), int(m_vszFields.size()));
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {

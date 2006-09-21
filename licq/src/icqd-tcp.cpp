@@ -511,7 +511,7 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
   if (gUserManager.FindOwner(szId, LICQ_PPID) != NULL) return 0;
 
   char *m = new char[3 + users.size() * 80];
-  int p = sprintf(m, "%d%c", users.size(), char(0xFE));
+  int p = sprintf(m, "%d%c", int(users.size()), char(0xFE));
   ContactList vc;
 
   ICQUser *u = NULL;
