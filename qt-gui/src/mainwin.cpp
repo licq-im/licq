@@ -1680,7 +1680,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           if ((*it)->PPID() == MSN_PPID)
           {
             // For protocols that use the convo id
-            if ((*it)->ConvoId() == sig->Argument() && (*it)->PPID() == nPPID)
+            if ((*it)->ConvoId() == (unsigned long)(sig->Argument()) && (*it)->PPID() == nPPID)
             {
               e = static_cast<UserSendCommon *>(*it);
               e->gotTyping(u->GetTyping());
@@ -2329,7 +2329,7 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
       bAllInvis = true;
     }
   }
-  else if (_nPPID == 0xFFFFFFFF && id == ICQ_STATUS_FxPRIVATE)
+  else if (_nPPID == 0xFFFFFFFF && id == int(ICQ_STATUS_FxPRIVATE))
   {
     bAllInvis = !mnuStatus->isItemChecked(ICQ_STATUS_FxPRIVATE);
     mnuStatus->setItemChecked(ICQ_STATUS_FxPRIVATE, bAllInvis);
@@ -2826,7 +2826,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
           // the icq protocol because the convo id will be the server socket.. which does
           // not meet the requirement that convo ids must be unique for each conversation.
           if ( ((nPPID == MSN_PPID && (*it)->PPID() == MSN_PPID) && ((*it)->FindUserInConvo(const_cast<char *>(szId)) ||
-                 ((*it)->ConvoId() == nConvoId && (*it)->ConvoId() != -1))) ||
+                 ((*it)->ConvoId() == (unsigned long)(nConvoId) && (*it)->ConvoId() != (unsigned long)(-1)))) ||
                ((*it)->FindUserInConvo(const_cast<char *>(szId)) && (*it)->PPID() == nPPID))
           {
             e = static_cast<UserSendCommon*>(*it);
