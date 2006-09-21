@@ -1647,7 +1647,7 @@ Doppelklick - Nächste Nachricht</translation>
     <name>CMessageViewWidget</name>
     <message>
         <source>%1 to %2</source>
-        <translation>%1 bis %2</translation>
+        <translation>%1 an %2</translation>
     </message>
     <message>
         <source>%1 from %2</source>
