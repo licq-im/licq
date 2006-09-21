@@ -13,6 +13,7 @@
 #include <stdlib.h>
 #include <sys/stat.h>
 #include <sys/types.h>
+#include <sys/wait.h>
 #include <signal.h>
 #include <fcntl.h>
 #include <unistd.h>
@@ -320,10 +321,37 @@ bool CLicq::Init(int argc, char **argv)
       }
       else
       {
-        gLog.Error(tr("%sLicq: Already running at pid %d.\n"
-                      "%s      Kill process or remove %s.\n"),
-                   L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
+        const size_t ERR_SIZE = 511;
+        char error[ERR_SIZE + 1];
+        snprintf(error, ERR_SIZE,
+            tr("%sLicq: Already running at pid %d.\n"
+               "%s      Kill process or remove %s.\n"),
+            L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
+        error[ERR_SIZE] = '\0';
+
+        gLog.Error(error);
         m_bDeletePID = false;
+
+        // Try to show the error if we're running X
+        if (getenv("DISPLAY") != NULL)
+        {
+          pid_t child = fork();
+          if (child == 0)
+          {
+            // execlp never returns (except on error).
+            execlp("kdialog", "kdialog", "--error", error, NULL);
+            execlp("Xdialog", "Xdialog", "--title", "Error", "--msgbox", error, "0", "0", NULL);
+            execlp("xmessage", "xmessage", "-center", error, NULL);
+
+            exit(EXIT_FAILURE);
+          }
+          else if (child != -1)
+          {
+            int status;
+            waitpid(child, &status, 0);
+          }
+        }
+
         return false;
       }
     }
