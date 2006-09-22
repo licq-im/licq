@@ -304,6 +304,7 @@ QPixmap& CMainWindow::iconForEvent(unsigned short SubCommand)
   case ICQ_CMDxSUB_CONTACTxLIST:
     return gMainWindow->pmContact;
   case ICQ_CMDxSUB_AUTHxREQUEST:
+    return gMainWindow->pmReqAuthorize;
   case ICQ_CMDxSUB_AUTHxREFUSED:
   case ICQ_CMDxSUB_AUTHxGRANTED:
     return gMainWindow->pmAuthorize;
@@ -4383,6 +4384,11 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    pmAuthorize.load(sFilepath);
    if(pmAuthorize.isNull()) pmAuthorize = pmMessage;
 
+   fIconsConf.ReadStr("ReqAuthorize", sFilename, "");
+   snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
+   pmReqAuthorize.load(sFilepath);
+   if(pmReqAuthorize.isNull()) pmReqAuthorize = pmAuthorize;
+
    fIconsConf.ReadStr("SMS", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmSMS.load(sFilepath);
@@ -4435,7 +4441,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUser->changeItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
      mnuUser->changeItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
      mnuUser->changeItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
-     mnuUser->changeItem(pmAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
+     mnuUser->changeItem(pmReqAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
      mnuUser->changeItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
      mnuUser->changeItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
      mnuUser->changeItem(pmRemove, tr("Remove From List"), mnuUserRemoveFromList);
@@ -4445,7 +4451,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuOwnerAdm->changeItem(pmHistory, tr("View &History"), OwnerMenuHistory);
      mnuUserAdm->changeItem(MNU_USER_ADM_SEARCH_USER, pmSearch, tr("S&earch for User"));
      mnuUserAdm->changeItem(MNU_USER_ADM_AUTHORIZE_USER, pmAuthorize, tr("A&uthorize User"));
-     mnuUserAdm->changeItem(MNU_USER_ADM_REQUEST_AUTH, pmAuthorize, tr("Re&quest Authorization"));
+     mnuUserAdm->changeItem(MNU_USER_ADM_REQUEST_AUTH, pmReqAuthorize, tr("Re&quest Authorization"));
 #ifdef HAVE_LIBGPGME
      mnuSystem->changeItem(pmGPGKey, tr("&GPG Key Manager..."), MNU_SYS_GPG);
 #endif
@@ -4540,7 +4546,7 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertItem(tr("&Add User"), this, SLOT(showAddUserDlg()), 0, MNU_USER_ADM_ADD_USER);
    mnuUserAdm->insertItem(pmSearch, tr("S&earch for User"), this, SLOT(showSearchUserDlg()), 0, MNU_USER_ADM_SEARCH_USER);
    mnuUserAdm->insertItem(pmAuthorize, tr("A&uthorize User"), this, SLOT(showAuthUserDlg()), 0, MNU_USER_ADM_AUTHORIZE_USER);
-   mnuUserAdm->insertItem(pmAuthorize, tr("Re&quest Authorization"), this, SLOT(showReqAuthDlg(int)), 0, MNU_USER_ADM_REQUEST_AUTH);
+   mnuUserAdm->insertItem(pmReqAuthorize, tr("Re&quest Authorization"), this, SLOT(showReqAuthDlg(int)), 0, MNU_USER_ADM_REQUEST_AUTH);
    mnuUserAdm->insertItem(tr("R&andom Chat"), this, SLOT(slot_randomchatsearch()), 0, MNU_USER_ADM_RANDOM_CHAT);
    mnuUserAdm->insertSeparator();
    mnuUserAdm->insertItem(tr("&Popup All Messages"), this, SLOT(slot_popupall()), 0, MNU_USER_ADM_POPUP_ALL_MSG);
@@ -4626,7 +4632,7 @@ void CMainWindow::initMenu()
    mnuSend->insertItem(pmFile, tr("Send &File Transfer"), mnuUserSendFile);
    mnuSend->insertItem(pmContact, tr("Send Contact &List"), mnuUserSendContact);
    mnuSend->insertItem(pmAuthorize, tr("Send &Authorization"), mnuUserAuthorize);
-   mnuSend->insertItem(pmAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
+   mnuSend->insertItem(pmReqAuthorize, tr("Send Authorization Re&quest"), mnuUserAuthorizeRequest);
    mnuSend->insertItem(pmSMS, tr("Send &SMS"), mnuUserSendSms);
    mnuSend->insertItem(tr("Update Info Plugin List"),
                        mnuUserSendInfoPluginListRequest);

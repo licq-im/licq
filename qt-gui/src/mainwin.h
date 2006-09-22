@@ -244,7 +244,7 @@ public:
        *m_szExtendedIconSet;
   QPixmap pmOnline, pmOffline, pmAway, pmDnd, pmOccupied, pmNa,
           pmPrivate, pmFFC, pmMessage, pmUrl, pmChat, pmFile, pmContact, 
-          pmSms, pmAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, 
+          pmSms, pmAuthorize, pmReqAuthorize, pmSMS, pmSecureOn, pmSecureOff, pmHistory, 
           pmInfo, pmRemove, pmEncoding, pmBirthday, pmPhone, pmCellular, 
           pmInvisible, pmTyping, pmCustomAR, pmCollapsed, pmExpanded, pmSearch,
           pmICQphoneActive, pmICQphoneBusy, pmPhoneFollowMeActive,
