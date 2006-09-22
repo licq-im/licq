@@ -62,7 +62,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	// this list will be the order that the icons get rendered in the preview.
 	*lstAIcons << "Online" << "Offline" << "FFC" << "Away" << "NA"
                    << "Occupied" << "DND" << "Private" << "Message" << "Url"
-                   << "Chat" << "File" << "SMS" << "Contact" << "Authorize"
+                   << "Chat" << "File" << "SMS" << "Contact" << "Authorize" << "ReqAuthorize"
                    << "SecureOff" << "SecureOn" << "Search" << "Remove" << "History" 
                    << "Info" << "AIMOnline" << "AIMOffline" << "AIMAway"
                    << "MSNOnline" << "MSNOffline" << "MSNAway"
