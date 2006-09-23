@@ -19,6 +19,10 @@
 #ifndef __MSN_H
 #define __MSN_H
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 #include "licq_events.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
@@ -37,6 +41,10 @@ const unsigned short FLAG_CONTACT_LIST = 1;
 const unsigned short FLAG_ALLOW_LIST   = 2;
 const unsigned short FLAG_BLOCK_LIST   = 4;
 const unsigned short FLAG_REVERSE_LIST = 8;
+
+#ifndef HAVE_STRNDUP
+char *strndup(const char *s, size_t n);
+#endif
 
 #include <string>
 #include <list>
