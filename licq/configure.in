@@ -202,7 +202,6 @@ AM_GNU_GETTEXT([external])
 
 AC_OUTPUT( 
   po/Makefile.in \
-	m4/Makefile \
   bin/Makefile \
   share/Makefile \
   src/Makefile \
