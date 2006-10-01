@@ -1,11 +1,13 @@
 AC_PREREQ(2.57)
 AC_INIT(licq_osd_plugin, 1.3.2.1, martinmaurer@gmx.at)
+AC_DEFINE([INT_VERSION], [], [Description])
 AC_CONFIG_AUX_DIR(admin)
 AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
 AC_CONFIG_SRCDIR([src/my_xosd.h])
 AM_INIT_AUTOMAKE
+AM_CONFIG_HEADER([config.h])
 
 dnl Chuck #defines for PACKAGE and VERSION into config.h
 AC_DEFINE_UNQUOTED(PACKAGE, "$PACKAGE")
@@ -82,7 +84,7 @@ AC_CHECK_HEADERS(errno.h dirent.h getopt.h malloc.h pwd.h sys/time.h)
 AC_CHECK_HEADERS([unistd.h])
 LICQ_CHECK_LICQ
 
-AC_OUTPUT( po/Makefile.in m4/Makefile 
+AC_OUTPUT( po/Makefile.in
   src/Makefile
   Makefile
 )
