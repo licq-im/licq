@@ -1,0 +1,2 @@
+svn status | grep '?' | cut -f7 -d' ' | xargs rm -r
+

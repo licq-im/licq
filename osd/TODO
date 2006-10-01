@@ -1,0 +1,3 @@
+- display messages only when kde-gui is docked
+  we will do this as a patch against kde-gui.
+  

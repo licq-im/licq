@@ -1,0 +1,81 @@
+# Swedish translations for licq_osd_plugin package.
+# Copyright (C) 2003 Martin Maurer
+# This file is distributed under the same license as the licq_osd_plugin package.
+# Martin Maurer <martinmaurer@gmx.at>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: licq_osd_plugin 1.2.7.4\n"
+"Report-Msgid-Bugs-To: martinmaurer@gmx.at\n"
+"POT-Creation-Date: 2003-11-08 12:55+0100\n"
+"PO-Revision-Date: 2004-06-09 14:56+0100\n"
+"Last-Translator: Michael Svensson <dragon@gentoo.org>\n"
+"Language-Team: Swedish <dragon@gentoo.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/licq-osd.cpp:540
+msgid " checked your auto-response"
+msgstr " Kontrollerade ditt auto-meddelande"
+
+#: src/licq-osd.cpp:565
+msgid "Message from "
+msgstr "Meddelande från "
+
+#: src/licq-osd.cpp:581
+msgid " logged on"
+msgstr " Är online"
+
+#: src/licq-osd.cpp:583
+msgid " logged off"
+msgstr " är offline"
+
+#: src/licq-osd.cpp:596
+msgid " changed status to: "
+msgstr " ändrade status till: "
+
+#: src/licq-osd.cpp:598
+msgid "do not disturb"
+msgstr "stör ej"
+
+#: src/licq-osd.cpp:600
+msgid "occupied"
+msgstr "upptagen"
+
+#: src/licq-osd.cpp:602
+msgid "not available"
+msgstr "inte tillgänglig"
+
+#: src/licq-osd.cpp:604
+msgid "away"
+msgstr "inte vid datorn"
+
+#: src/licq-osd.cpp:606
+msgid "online"
+msgstr "online"
+
+#: src/licq-osd.cpp:608
+msgid "free for chat"
+msgstr "tillgänglig för chat"
+
+#: src/licq-osd.cpp:610
+msgid "invisible"
+msgstr "osynlig"
+
+#: src/licq-osd.cpp:612
+#, fuzzy
+msgid "offline"
+msgstr "offline"
+
+#: src/licq-osd.cpp:614
+msgid "unknown"
+msgstr "okänd"
+
+#: src/my_xosd.cpp:155
+msgid "System"
+msgstr "System"
+
+#: src/my_xosd.cpp:155
+msgid "XOSD plugin initialized"
+msgstr "XOSD plugin anslutet"

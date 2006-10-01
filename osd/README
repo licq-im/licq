@@ -1,0 +1,83 @@
+LICQ-OSD:
+
+This is a small licq-plugin, which uses libxosd2 to
+display new arriving messages as OSD (On Screen Display)
+text on your desktop. 
+I wrote this, as I saw this feature in sim and wanted
+to have the same functionality in licq.
+
+If you have any problems with this plugin, please take a look at
+http://licq-osd.sf.net, if there is a newer version available.
+licq will ship with the newest version available on release (of licq)
+Any bugfixes between releases will be done on the project page.
+
+INSTALL:
+
+- make sure you have a recent libxosd (http://www.ignavus.net/software.html)
+- untar it to the plugin directory of the licq sources (dont have to be compiled/configured)
+- ./build
+- ./configure --prefix=yourprefix
+  you dont have to specify a prefix if you didnt when you compiled licq. This information is only
+  used for the make install step below
+- make
+- stop licq
+- as root: make install
+    copies the two plugin files (licq_osd.(so/la)) to yourprefix/lib/licq
+- start licq
+- load the plugin from plugin manager
+
+some notes regarding libxosd:
+if the configure step doesnt find libxosd although you installed it, try
+./configure --with-xosd-config=/usr/local/bin/xosd-config ...
+(adapt the path if you specified a prefix when you installed libxosd)
+
+Localization:
+licq-osd messages are since version 1.2.7.3 translated. Anyways,
+there are only a few translations available, so you will have to look
+if your language is supported. (Languages are listed in po/LINGUAS)
+If it is, just set LC_MESSAGES correctly using
+  export LC_MESSAGES=de_AT
+Warning: if LANG is set, then the settings of LC_MESSAGES wont take effect.
+in this case you would have to set LANG instead.
+If you want to add a translation simply contact me at martinmaurer@gmx.at
+I would strongly recommend to look at 
+http://svn.nomi.cz:81/svn/licq_osd/main/po if there is already a translated 
+version in my development tree.
+
+ERROR message:
+error: Unable to create xosd object: 5 lines: Default font not found
+
+if you get this error you most likely have a configuration problem 
+regarding your locales. Try 
+unset LANG
+unset LC_CTYPE
+licq
+
+if it works then, rebuild the correct locales. In debian do "dpkg-reconfigure locales"
+
+XOSD Outline problem:
+libxosd as of version 2.2.2 has a few problems drawing text outline correctly.
+It should be fixed with one of the next versions, but for now you can
+use the patch "xosd-2.2.1-fixed.patch" for fixing it in the xosd sources.
+
+one common Problem:
+If you have problem with displaying certain characters 
+(umlauts in germany,austria, ...), be sure you have set the correct
+LC_CTYPE and configured the locales correctly. 
+This is NOT the same problem as stated in the TODO file.
+example (when locales are set up correctly):
+in a shell type:
+export LC_CTYPE=de_AT
+licq
+
+subversion repository :
+There is now a subversion repository at http://svn.nomi.cz/svn/licq_osd/
+Thanks to Ondrej Novy and Tomas Janousek (NOMI team) for offering that.
+
+If you have any comments, questions, ...
+feel free to send my an E-Mail.
+The license of this plugin is the GPL. 
+
+have fun
+Martin Maurer
+martinmaurer@gmx.at

@@ -1,0 +1,16 @@
+Source: licq-osd
+Section: net
+Priority: optional
+Maintainer: Martin Maurer <martinmaurer@gmx.at>
+Build-Depends: debhelper (>> 3.0.0), libxosd-dev (>= 2.1.0), licq-dev (>= 1.3.2), libtool, autoconf, automake1.7
+Standards-Version: 3.5.2
+
+Package: licq-plugin-osd
+Architecture: any
+Depends: ${shlibs:Depends}, debconf, licq (>= 1.3.2)
+Description: OSD plugin for licq
+ This is a small plugin for licq, which enables it to display new
+ messages as an On Screen Display message.
+ User logged on/off and status changed messages are supported too.
+ There is an example config file which may be copied to each users
+ licq directory.

@@ -1,0 +1,98 @@
+# German translations for licq_osd_plugin package.
+# Copyright (C) 2003 Martin Maurer
+# This file is distributed under the same license as the licq_osd_plugin package.
+# Martin Maurer <martinmaurer@gmx.at>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: licq_osd_plugin 1.2.7.3\n"
+"Report-Msgid-Bugs-To: martinmaurer@gmx.at\n"
+"POT-Creation-Date: 2003-11-08 12:55+0100\n"
+"PO-Revision-Date: 2003-06-27 21:16+0200\n"
+"Last-Translator: Martin Maurer <martinmaurer@gmx.at>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%"
+"10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+
+#: src/licq-osd.cpp:540
+msgid " checked your auto-response"
+msgstr ""
+
+# example: "Message from lonestar"
+#: src/licq-osd.cpp:565
+msgid "Message from "
+msgstr "Mensaje de "
+
+# example: "lonestar logged on"
+#: src/licq-osd.cpp:581
+msgid " logged on"
+msgstr " se conectó"
+
+# example: "lonestar logged off"
+#: src/licq-osd.cpp:583
+msgid " logged off"
+msgstr " se desconectó"
+
+# example: "lonestar changed status to: away"
+#: src/licq-osd.cpp:596
+msgid " changed status to: "
+msgstr " cambió su estado a: "
+
+# example: "lonestar changed status to: do not disturb"
+#: src/licq-osd.cpp:598
+msgid "do not disturb"
+msgstr "no molestar"
+
+# example: "lonestar changed status to: occupied"
+#: src/licq-osd.cpp:600
+msgid "occupied"
+msgstr "ocupado"
+
+# example: "lonestar changed status to: not available"
+#: src/licq-osd.cpp:602
+msgid "not available"
+msgstr "no disponible"
+
+# example: "lonestar changed status to: away"
+#: src/licq-osd.cpp:604
+msgid "away"
+msgstr "lejos"
+
+# example: "lonestar changed status to: online"
+#: src/licq-osd.cpp:606
+msgid "online"
+msgstr "en línea"
+
+# example: "lonestar changed status to: free for chat"
+#: src/licq-osd.cpp:608
+msgid "free for chat"
+msgstr "libre para charlar"
+
+# example: "lonestar changed status to: invisible"
+#: src/licq-osd.cpp:610
+msgid "invisible"
+msgstr "invisible"
+
+# example: "lonestar changed status to: online"
+#: src/licq-osd.cpp:612
+#, fuzzy
+msgid "offline"
+msgstr "en línea"
+
+# example: "lonestar changed status to: unknown"
+#: src/licq-osd.cpp:614
+msgid "unknown"
+msgstr "desconocido"
+
+# example: "System: XOSD plugin initialized"
+#: src/my_xosd.cpp:155
+msgid "System"
+msgstr "Sistema"
+
+# example: "System: XOSD plugin initialized"
+#: src/my_xosd.cpp:155
+msgid "XOSD plugin initialized"
+msgstr "Plugin XOSD inicialiado"

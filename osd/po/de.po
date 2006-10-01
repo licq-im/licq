@@ -1,0 +1,81 @@
+# German translations for licq_osd_plugin package.
+# Copyright (C) 2003 Martin Maurer
+# This file is distributed under the same license as the licq_osd_plugin package.
+# Martin Maurer <martinmaurer@gmx.at>, 2003.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: licq_osd_plugin 1.2.7.4\n"
+"Report-Msgid-Bugs-To: martinmaurer@gmx.at\n"
+"POT-Creation-Date: 2003-11-08 12:55+0100\n"
+"PO-Revision-Date: 2003-07-22 21:31+0100\n"
+"Last-Translator: Joerg Rieger <Joerg.Rieger@informatik.med.uni-giessen.de>\n"
+"Language-Team: German <de@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=ISO-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: src/licq-osd.cpp:540
+msgid " checked your auto-response"
+msgstr " hat Ihre automatische Antwort abgefragt"
+
+#: src/licq-osd.cpp:565
+msgid "Message from "
+msgstr "Nachricht von "
+
+#: src/licq-osd.cpp:581
+msgid " logged on"
+msgstr " ist online"
+
+#: src/licq-osd.cpp:583
+msgid " logged off"
+msgstr " ist offline"
+
+#: src/licq-osd.cpp:596
+msgid " changed status to: "
+msgstr " änderte seinen Status zu: "
+
+#: src/licq-osd.cpp:598
+msgid "do not disturb"
+msgstr "nicht stören"
+
+#: src/licq-osd.cpp:600
+msgid "occupied"
+msgstr "beschäftigt"
+
+#: src/licq-osd.cpp:602
+msgid "not available"
+msgstr "nicht verfügbar"
+
+#: src/licq-osd.cpp:604
+msgid "away"
+msgstr "abwesend"
+
+#: src/licq-osd.cpp:606
+msgid "online"
+msgstr "online"
+
+#: src/licq-osd.cpp:608
+msgid "free for chat"
+msgstr "frei für chat"
+
+#: src/licq-osd.cpp:610
+msgid "invisible"
+msgstr "unsichtbar"
+
+#: src/licq-osd.cpp:612
+#, fuzzy
+msgid "offline"
+msgstr "online"
+
+#: src/licq-osd.cpp:614
+msgid "unknown"
+msgstr "unbekannt"
+
+#: src/my_xosd.cpp:155
+msgid "System"
+msgstr "System"
+
+#: src/my_xosd.cpp:155
+msgid "XOSD plugin initialized"
+msgstr "XOSD plugin wurde initialisiert"
