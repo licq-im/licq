@@ -401,6 +401,7 @@ const unsigned long USER_HP                     = 11;
 const unsigned long USER_PHONExBOOK             = 12;
 const unsigned long USER_PICTURE                = 13;
 const unsigned long USER_TYPING                 = 14;
+const unsigned long USER_PLUGIN_STATUS          = 15; // Which Plugin?
 
 const unsigned long LIST_ADD                     = 1;
 const unsigned long LIST_REMOVE                  = 2;

@@ -3737,8 +3737,9 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
           u->SetICQphoneStatus(nState);
         }
 
+        // Which plugin?
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                        USER_STATUS, u->Uin(), 0));
+                                        USER_PLUGIN_STATUS, u->Uin(), 0));
 
         ProcessDoneEvent(e);
         return false;

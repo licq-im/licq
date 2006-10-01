@@ -2858,8 +2858,9 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
           u->SetOurClientStatusTimestamp(nTime);
 
 
+        // Which Plugin?
         PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                         USER_STATUS, u->IdString(), u->PPID(), 0));
+                                        USER_PLUGIN_STATUS, u->IdString(), u->PPID(), 0));
 
         break;
       }
