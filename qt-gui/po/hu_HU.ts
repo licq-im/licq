@@ -4048,11 +4048,11 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Licq hiba</translation>
+        <translation type="obsolete">Licq hiba</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq figyelmeztetés</translation>
+        <translation type="obsolete">Licq figyelmeztetés</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -4060,7 +4060,7 @@ Ellenőrizd az elérési utat, és a nevet.</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq info</translation>
+        <translation type="obsolete">Licq info</translation>
     </message>
     <message>
         <source>Yes</source>

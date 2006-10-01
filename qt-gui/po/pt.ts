@@ -4476,18 +4476,6 @@ Now set your personal information.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Licq Information</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Licq Error</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Yes</source>
         <translation type="unfinished">Sim</translation>
     </message>

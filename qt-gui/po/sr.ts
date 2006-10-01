@@ -4948,11 +4948,11 @@ Proverite putanju i ime fajla.</translation>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Licq Greška</translation>
+        <translation type="obsolete">Licq Greška</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq Upozorenje</translation>
+        <translation type="obsolete">Licq Upozorenje</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -4960,7 +4960,7 @@ Proverite putanju i ime fajla.</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq Informacije</translation>
+        <translation type="obsolete">Licq Informacije</translation>
     </message>
     <message>
         <source>Yes</source>

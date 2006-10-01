@@ -3628,15 +3628,15 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Інформація Licq</translation>
+        <translation type="obsolete">Інформація Licq</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Застереження Licq</translation>
+        <translation type="obsolete">Застереження Licq</translation>
     </message>
     <message>
         <source>Licq Error</source>
-        <translation>Помилка Licq</translation>
+        <translation type="obsolete">Помилка Licq</translation>
     </message>
 </context>
 <context>

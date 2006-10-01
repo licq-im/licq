@@ -3809,11 +3809,11 @@ Fyll i din personliga information nu.</translation>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Licq Fel</translation>
+        <translation type="obsolete">Licq Fel</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq Varning</translation>
+        <translation type="obsolete">Licq Varning</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -3821,7 +3821,7 @@ Fyll i din personliga information nu.</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq Information</translation>
+        <translation type="obsolete">Licq Information</translation>
     </message>
     <message>
         <source>Yes</source>

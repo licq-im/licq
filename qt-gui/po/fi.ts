@@ -3794,15 +3794,15 @@ Muokkaa seuraavaksi henkilökohtaiset tietosi.</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq-tiedot</translation>
+        <translation type="obsolete">Licq-tiedot</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq-varoitus</translation>
+        <translation type="obsolete">Licq-varoitus</translation>
     </message>
     <message>
         <source>Licq Error</source>
-        <translation>Licq-virhe</translation>
+        <translation type="obsolete">Licq-virhe</translation>
     </message>
     <message>
         <source>Yes</source>

@@ -1,8 +1,5 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-</context>
-<context>
     <name>@default</name>
     <message>
         <source>KDE default</source>
@@ -3727,11 +3724,11 @@ Now set your personal information.</source>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Licq Грешка</translation>
+        <translation type="obsolete">Licq Грешка</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq Предупреждение</translation>
+        <translation type="obsolete">Licq Предупреждение</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -3739,7 +3736,7 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq Информация</translation>
+        <translation type="obsolete">Licq Информация</translation>
     </message>
     <message>
         <source>Yes</source>

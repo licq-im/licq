@@ -4347,11 +4347,11 @@ Check path and filename.</source>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Licqエラー</translation>
+        <translation type="obsolete">Licqエラー</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq警告</translation>
+        <translation type="obsolete">Licq警告</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -4359,7 +4359,7 @@ Check path and filename.</source>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq情報</translation>
+        <translation type="obsolete">Licq情報</translation>
     </message>
     <message>
         <source>Yes</source>

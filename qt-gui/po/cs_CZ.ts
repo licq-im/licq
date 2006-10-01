@@ -3644,11 +3644,11 @@ Nyní můžete nastavit své osobní údaje.</translation>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Licq chyba</translation>
+        <translation type="obsolete">Licq chyba</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq varování</translation>
+        <translation type="obsolete">Licq varování</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -3656,7 +3656,7 @@ Nyní můžete nastavit své osobní údaje.</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq informace</translation>
+        <translation type="obsolete">Licq informace</translation>
     </message>
     <message>
         <source>Yes</source>

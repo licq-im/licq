@@ -1,8 +1,5 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-</context>
-<context>
     <name>@default</name>
     <message>
         <source>KDE default</source>
@@ -3970,11 +3967,11 @@ Controlla percorso e nome file.</translation>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Errori Licq</translation>
+        <translation type="obsolete">Errori Licq</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Avvertimenti Licq</translation>
+        <translation type="obsolete">Avvertimenti Licq</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -3982,7 +3979,7 @@ Controlla percorso e nome file.</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Informazioni Licq</translation>
+        <translation type="obsolete">Informazioni Licq</translation>
     </message>
     <message>
         <source>Yes</source>

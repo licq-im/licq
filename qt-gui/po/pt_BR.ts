@@ -4050,11 +4050,11 @@ Verifique o caminho e o nome do arquivo.</translation>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Erro do Licq</translation>
+        <translation type="obsolete">Erro do Licq</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Alerta do Licq</translation>
+        <translation type="obsolete">Alerta do Licq</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -4062,7 +4062,7 @@ Verifique o caminho e o nome do arquivo.</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Informação do Licq</translation>
+        <translation type="obsolete">Informação do Licq</translation>
     </message>
     <message>
         <source>Yes</source>

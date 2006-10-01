@@ -4127,11 +4127,11 @@ Now set your personal information.</source>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Licq Fehler</translation>
+        <translation type="obsolete">Licq Fehler</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq Warnung</translation>
+        <translation type="obsolete">Licq Warnung</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -4139,7 +4139,7 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq Information</translation>
+        <translation type="obsolete">Licq Information</translation>
     </message>
     <message>
         <source>Yes</source>

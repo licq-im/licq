@@ -7707,15 +7707,15 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq Інфармацыя</translation>
+        <translation type="obsolete">Licq Інфармацыя</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq Папярэджваньне</translation>
+        <translation type="obsolete">Licq Папярэджваньне</translation>
     </message>
     <message>
         <source>Licq Error</source>
-        <translation>Licq Памылка</translation>
+        <translation type="obsolete">Licq Памылка</translation>
     </message>
 </context>
 <context>

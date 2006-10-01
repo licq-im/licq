@@ -3794,15 +3794,15 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Licq - Информация</translation>
+        <translation type="obsolete">Licq - Информация</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Licq - Предупреждение</translation>
+        <translation type="obsolete">Licq - Предупреждение</translation>
     </message>
     <message>
         <source>Licq Error</source>
-        <translation>Licq - Ошибка</translation>
+        <translation type="obsolete">Licq - Ошибка</translation>
     </message>
     <message>
         <source>Yes</source>

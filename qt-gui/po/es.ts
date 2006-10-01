@@ -3586,11 +3586,11 @@ Ahora introduzca sus datos personales.</translation>
     <name>QMessageBox</name>
     <message>
         <source>Licq Error</source>
-        <translation>Error de Licq</translation>
+        <translation type="obsolete">Error de Licq</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation>Advertencia de Licq</translation>
+        <translation type="obsolete">Advertencia de Licq</translation>
     </message>
     <message>
         <source>Licq Question</source>
@@ -3598,7 +3598,7 @@ Ahora introduzca sus datos personales.</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation>Información de Licq</translation>
+        <translation type="obsolete">Información de Licq</translation>
     </message>
     <message>
         <source>Yes</source>
