@@ -676,6 +676,9 @@ int CRMSClient::StateMachine()
     case STATE_PASSWORD:
     {
       ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+      if (o == NULL)
+        return -1;
+
       bool ok = (strcmp(m_szCheckId, o->IdString()) == 0 &&
          (strcmp(o->Password(), data_line) == 0));
       free(m_szCheckId);
