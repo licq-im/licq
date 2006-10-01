@@ -27,7 +27,7 @@ cvs-clean:
 		exit 1 ;\
 	fi;\
 	svn status --ignore-externals --no-ignore --non-interactive | \
-	grep '^I' | awk '{print $$2}' | \
+	grep '^I' | sed -e 's/^I *//' | \
 	xargs -I file rm -rfv "file"
 
 svn: cvs
