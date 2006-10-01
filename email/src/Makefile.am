@@ -1,5 +1,4 @@
-#HACK, FIXME this in a clean manner
-libdir = $(prefix)/lib/licq/
+libdir=@libdir@/licq/
 plugindir = $(libdir)
 licq_incdir = @LICQ_INCLUDES@
 

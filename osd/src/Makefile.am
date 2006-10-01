@@ -1,4 +1,4 @@
-libdir=$(prefix)/lib/licq
+libdir=@libdir@/licq/
 localedir=$(datadir)/locale
 
 AM_CXXFLAGS =  -I$(LICQ_INCLUDES) -I.. @LIBXOSD_CFLAGS@ -DLOCALEDIR=\"$(localedir)\"
