@@ -341,7 +341,7 @@ bool CLicq::Init(int argc, char **argv)
   szConf[MAX_FILENAME_LEN - 1] = '\0';
 
   // Never close pidFile!
-  int pidFile = open(szConf, O_RDWR | O_CREAT);
+  int pidFile = open(szConf, O_RDWR | O_CREAT, S_IRUSR | S_IWUSR);
   if (pidFile < 0)
   {
     // We couldn't open (or create) the file for writing.
@@ -375,7 +375,7 @@ bool CLicq::Init(int argc, char **argv)
       else
       {
         snprintf(error, ERR_SIZE,
-                 tr("%sLicq: Unabled to determine pid of running Licq instance.\n"),
+                 tr("%sLicq: Unable to determine pid of running Licq instance.\n"),
                  L_ERRORxSTR);
       }
 
@@ -402,7 +402,7 @@ bool CLicq::Init(int argc, char **argv)
       if (fcntl(pidFile, F_GETLK, &lock) != 0)
       {
         snprintf(error, ERR_SIZE,
-                tr("%sLicq: Unabled to determine pid of running Licq instance.\n"),
+                tr("%sLicq: Unable to determine pid of running Licq instance.\n"),
                 L_ERRORxSTR);
       }
       else
