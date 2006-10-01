@@ -3,7 +3,7 @@ cvs:
 	@-rm -f acinclude.m4
 	@$(MAKE) -f Makefile.am top_srcdir=. acinclude.m4
 	@echo "*** Retrieving configure tests needed by configure.in"
-	@aclocal
+	@aclocal $(ACLOCAL_FLAGS)
 	@echo "*** Scanning for include statements"
 	@autoheader
 	@echo "*** Building Makefile templates (step one)"
