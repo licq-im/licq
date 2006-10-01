@@ -94,7 +94,7 @@ AC_OUTPUT( po/Makefile.in
 AC_MSG_NOTICE( [
 Configuration for $PACKAGE $VERSION :
 -------------------------------------
- install path (prefix+licq path)..: $prefix/lib/licq
+ install path (libdir+licq path)..: $libdir/licq
    Look for any WARNINGs output by the configure script 
    (run ./configure --help to see all options).
    If you're satisfied, type 'make' to build $PACKAGE $VERSION,
