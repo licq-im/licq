@@ -148,6 +148,34 @@ void ssl_info_callback(SSL *s, int where, int ret)
 #endif
 /*-----End of OpenSSL code-------------------------------------------------*/
 
+/**
+ * Prints the @a error to stderr (by means of gLog), and if the user is running
+ * X, tries to show a dialog with the error.
+ */
+static void DisplayFatalError(const char* error)
+{
+  gLog.Error(error);
+
+  // Try to show the error if we're running X
+  if (getenv("DISPLAY") != NULL)
+  {
+    pid_t child = fork();
+    if (child == 0)
+    {
+      // execlp never returns (except on error).
+      execlp("kdialog", "kdialog", "--error", error, NULL);
+      execlp("Xdialog", "Xdialog", "--title", "Error", "--msgbox", error, "0", "0", NULL);
+      execlp("xmessage", "xmessage", "-center", error, NULL);
+
+      exit(EXIT_FAILURE);
+    }
+    else if (child != -1)
+    {
+      int status;
+      waitpid(child, &status, 0);
+    }
+  }
+}
 
 /*-----Helper functions for CLicq::UpgradeLicq-----------------------------*/
 int SelectUserUtility(const struct dirent *d)
@@ -179,7 +207,6 @@ CLicq::CLicq()
   licqDaemon = NULL;
   pthread_mutex_init(&mutex_plugins, NULL);
   pthread_mutex_init(&mutex_protoplugins, NULL);
-  m_bDeletePID = true;
 
   //FIXME ICQ should be put into its own plugin.
   CProtoPlugin *p = new CProtoPlugin;
@@ -306,68 +333,98 @@ bool CLicq::Init(int argc, char **argv)
 
 
   // Check pid
+  // We do this by acquiring a write lock on the pid file and never closing the file.
+  // When Licq is killed (normally or abnormally) the file will be closed by the operating
+  // system and the lock released.
   char szConf[MAX_FILENAME_LEN], szKey[32];
   snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
   szConf[MAX_FILENAME_LEN - 1] = '\0';
-  FILE *fs = fopen(szConf, "r");
-  if (fs != NULL)
+
+  // Never close pidFile!
+  int pidFile = open(szConf, O_RDWR | O_CREAT);
+  if (pidFile < 0)
   {
-    fgets(szKey, 32, fs);
-    pid_t pid = atol(szKey);
-    if (pid != 0)
+    // We couldn't open (or create) the file for writing.
+    // If the file doesn't exists we continue without lockfile protection.
+    // If it does exist, we bail out.
+    struct stat buf;
+    if (stat(szConf, &buf) < 0 && errno == ENOENT)
     {
-      if (kill(pid, 0) == -1) {
-        gLog.Warn(tr("%sLicq: Ignoring stale lockfile (pid %d)\n"), L_WARNxSTR, pid);
+      gLog.Warn(tr("%sLicq: %s cannot be opened for writing.\n"
+                   "%s      skipping lockfile protection.\n"),
+                L_WARNxSTR, szConf, L_BLANKxSTR);
+    }
+    else
+    {
+      const size_t ERR_SIZE = 511;
+      char error[ERR_SIZE + 1];
+
+      // Try to read the pid of running Licq instance.
+      FILE* fs = fopen(szConf, "r");
+      if (fs != NULL)
+      {
+          fgets(szKey, 32, fs);
+          pid_t pid = atol(szKey);
+
+          snprintf(error, ERR_SIZE,
+                   tr("%sLicq: Already running at pid %d.\n"
+                      "%s      Kill process or remove %s.\n"),
+                   L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
+          fclose(fs);
       }
       else
       {
-        const size_t ERR_SIZE = 511;
-        char error[ERR_SIZE + 1];
         snprintf(error, ERR_SIZE,
-            tr("%sLicq: Already running at pid %d.\n"
-               "%s      Kill process or remove %s.\n"),
-            L_ERRORxSTR, pid, L_BLANKxSTR, szConf);
-        error[ERR_SIZE] = '\0';
-
-        gLog.Error(error);
-        m_bDeletePID = false;
-
-        // Try to show the error if we're running X
-        if (getenv("DISPLAY") != NULL)
-        {
-          pid_t child = fork();
-          if (child == 0)
-          {
-            // execlp never returns (except on error).
-            execlp("kdialog", "kdialog", "--error", error, NULL);
-            execlp("Xdialog", "Xdialog", "--title", "Error", "--msgbox", error, "0", "0", NULL);
-            execlp("xmessage", "xmessage", "-center", error, NULL);
-
-            exit(EXIT_FAILURE);
-          }
-          else if (child != -1)
-          {
-            int status;
-            waitpid(child, &status, 0);
-          }
-        }
-
-        return false;
+                 tr("%sLicq: Unabled to determine pid of running Licq instance.\n"),
+                 L_ERRORxSTR);
       }
+
+      error[ERR_SIZE] = '\0';
+      DisplayFatalError(error);
+
+      return false;
     }
-    fclose(fs);
-  }
-  fs = fopen(szConf, "w");
-  if (fs != NULL)
-  {
-    chmod(szConf, 00600);
-    fprintf(fs, "%d\n", getpid());
-    fclose(fs);
   }
   else
-    gLog.Warn(tr("%sLicq: %s cannot be opened for writing.\n"
-                 "%s      skipping lockfile protection.\n"),
-              L_WARNxSTR, szConf, L_BLANKxSTR);
+  {
+    struct flock lock;
+    lock.l_type = F_WRLCK; // Write lock is exclusive lock
+    lock.l_whence = SEEK_SET;
+    lock.l_start = 0;
+    lock.l_len = 0; // Lock file through to the end of file
+
+    if (fcntl(pidFile, F_SETLK, &lock) != 0)
+    {
+      // Failed to get the lock => Licq is already running
+      const size_t ERR_SIZE = 511;
+      char error[ERR_SIZE + 1];
+
+      if (fcntl(pidFile, F_GETLK, &lock) != 0)
+      {
+        snprintf(error, ERR_SIZE,
+                tr("%sLicq: Unabled to determine pid of running Licq instance.\n"),
+                L_ERRORxSTR);
+      }
+      else
+      {
+        snprintf(error, ERR_SIZE,
+                tr("%sLicq: Already running at pid %d.\n"),
+                L_ERRORxSTR, lock.l_pid);
+      }
+
+      error[ERR_SIZE] = '\0';
+      DisplayFatalError(error);
+
+      return false;
+    }
+    else
+    {
+      // Save our pid in the file
+      ftruncate(pidFile, 0);
+      int size = snprintf(szKey, 32, "%d\n", getpid());
+      write(pidFile, szKey, (size > 32 ? 32 : size));
+    }
+  }
 
   // Open the config file
   CIniFile licqConf(INI_FxWARN | INI_FxALLOWxCREATE);
@@ -501,14 +558,6 @@ CLicq::~CLicq()
   //...
   // Kill the daemon
   if (licqDaemon != NULL) delete licqDaemon;
-
-  // Remove the lock file
-  if (m_bDeletePID)
-  {
-    char szConf[MAX_FILENAME_LEN];
-    snprintf(szConf, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
-    remove(szConf);
-  }
 }
 
 
@@ -1172,12 +1221,6 @@ int CLicq::Main()
 
   pthread_t *t = licqDaemon->Shutdown();
   pthread_join(*t, NULL);
-
-  // Remove the pid flag
-  char sz[MAX_FILENAME_LEN];
-  snprintf(sz, MAX_FILENAME_LEN, "%s/licq.pid", BASE_DIR);
-  sz[MAX_FILENAME_LEN - 1] = '\0';
-  remove(sz);
 
   return list_plugins.size();
 }
