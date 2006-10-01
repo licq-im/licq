@@ -277,19 +277,23 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strStatus = packet->GetParameter();
       ICQUser *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
       unsigned long nStatus;
+      bool bHidden = false;
       
       if (strStatus == "NLN")
         nStatus = ICQ_STATUS_ONLINE;
       else if (strStatus == "BSY")
         nStatus = ICQ_STATUS_DND;
       else if (strStatus == "HDN")
+      {
         nStatus = ICQ_STATUS_ONLINE | ICQ_STATUS_FxPRIVATE;
+        bHidden = true;
+      }
       else
         nStatus = ICQ_STATUS_AWAY;
         
       m_pDaemon->ChangeUserStatus(o, nStatus);
       m_nStatus = nStatus;
-      gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR, ICQUser::StatusToStatusStr(o->Status(), false));
+      gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR, ICQUser::StatusToStatusStr(o->Status(), bHidden));
       gUserManager.DropOwner(MSN_PPID);
     }
     else if (strCmd == "ILN" || strCmd == "NLN")
