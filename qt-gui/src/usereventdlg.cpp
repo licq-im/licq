@@ -1997,7 +1997,8 @@ void UserSendCommon::trySecure()
 
 void UserSendCommon::slot_textChanged()
 {
-  if (mleSend->text().isEmpty()) return;
+  if (mleSend == NULL || mleSend->text().isEmpty())
+    return;
 
   strTempMsg = mleSend->text();
   server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, true, m_nConvoId);
@@ -2007,6 +2008,12 @@ void UserSendCommon::slot_textChanged()
 
 void UserSendCommon::slot_textChanged_timeout()
 {
+  if (mleSend == NULL)
+  {
+    tmrSendTyping->stop();
+    return;
+  }
+
   QString str = mleSend->text();
 
   if (str != strTempMsg)
@@ -2271,7 +2278,10 @@ void UserSendCommon::sendButton()
     setCursor(waitCursor);
     btnSend->setText(tr("&Cancel"));
     btnClose->setEnabled(false);
-    mleSend->setEnabled(false);
+
+    if (mleSend != NULL)
+      mleSend->setEnabled(false);
+
     disconnect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
     connect(btnSend, SIGNAL(clicked()), this, SLOT(slot_cancelSend()));
 
@@ -2355,7 +2365,10 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   setCursor(arrowCursor);
   btnSend->setText(tr("&Send"));
   btnClose->setEnabled(true);
-  mleSend->setEnabled(true);
+
+  if (mleSend != NULL)
+    mleSend->setEnabled(true);
+
   disconnect(btnSend, SIGNAL(clicked()), this, SLOT(slot_cancelSend()));
   connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
 
@@ -3361,7 +3374,6 @@ void UserSendContactEvent::sendButton()
 {
   // Take care of typing notification now
   tmrSendTyping->stop();
-  connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
   
   CMMUserViewItem *i = static_cast<CMMUserViewItem*>(lstContacts->firstChild());
