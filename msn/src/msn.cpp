@@ -447,6 +447,7 @@ void CMSN::Run()
           {
             // Time to reconnect
             gLog.Info("%sDisconnected from server, reconnecting.\n", L_MSNxSTR);
+            sleep(1);
             int nSD = m_nServerSocket;
             m_nServerSocket = -1;
             gSocketMan.DropSocket(sock);
