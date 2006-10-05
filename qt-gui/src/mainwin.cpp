@@ -1821,7 +1821,10 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
         {
           if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
           {
-            it.current()->close();
+            if (userEventTabDlg && userEventTabDlg->tabExists(it.current()))
+              userEventTabDlg->removeTab(it.current());
+            else
+              it.current()->close();
             licqUserSend.remove(it.current());
             break;
           }
