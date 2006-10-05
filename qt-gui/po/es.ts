@@ -608,7 +608,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>View &amp;History</source>
-        <translation>Ver &amp;Historia</translation>
+        <translation>Ver &amp;Historial</translation>
     </message>
     <message>
         <source>Other Users</source>
@@ -732,7 +732,7 @@ a su lista de ignorados?</translation>
     </message>
     <message>
         <source>Occupied to User</source>
-        <translation>ocupado/a para este Usuario</translation>
+        <translation>Ocupado/a para este Usuario</translation>
     </message>
     <message>
         <source>Logon failed.
@@ -858,7 +858,7 @@ Doble Pulsación - Configurar respuesta automática</translation>
     </message>
     <message>
         <source>Accept in Occupied</source>
-        <translation>Aceptar en ocupado/a</translation>
+        <translation>Aceptar en Ocupado/a</translation>
     </message>
     <message>
         <source>Send Contact &amp;List</source>
@@ -1087,7 +1087,7 @@ http://www.licq.org
     </message>
     <message>
         <source>Busy</source>
-        <translation>ocupado/a</translation>
+        <translation>Ocupado/a</translation>
     </message>
     <message>
         <source>Phone &quot;Follow Me&quot;</source>
@@ -1357,7 +1357,7 @@ Deberá iniciar el navegador y abrir la URL de forma manual.</translation>
     <name>CUserView</name>
     <message>
         <source>S</source>
-        <translation>S</translation>
+        <translation>E</translation>
     </message>
     <message>
         <source>Online</source>
@@ -2582,7 +2582,7 @@ Podría no funcionar.</translation>
     </message>
     <message>
         <source>Bold Message Label on Incoming Msg</source>
-        <translation>Etiqueta en negrita cuando lleguen mensajes.</translation>
+        <translation>Etiqueta en negrita cuando lleguen mensajes</translation>
     </message>
     <message>
         <source>Column %1</source>
@@ -2794,7 +2794,7 @@ Podría no funcionar.</translation>
     </message>
     <message>
         <source>Occupied</source>
-        <translation>ocupado/a</translation>
+        <translation>Ocupado/a</translation>
     </message>
     <message>
         <source>Show User Dividers</source>
@@ -2862,7 +2862,7 @@ Se pueden utilizar los siguientes parámetros:
     </message>
     <message>
         <source>Auto Close Function Window</source>
-        <translation>Cerrar Ventana de Funciones Autom.</translation>
+        <translation>Cerrar Ventana de Funciones Automáticamente</translation>
     </message>
     <message>
         <source>Perform OnEvent command in away mode</source>
@@ -2886,7 +2886,7 @@ Se pueden utilizar los siguientes parámetros:
     </message>
     <message>
         <source>Show group name if no messages</source>
-        <translation>Mostrar nombre del grupo si no hay msjs.</translation>
+        <translation>Mostrar nombre del grupo si no hay mensajes</translation>
     </message>
     <message>
         <source>Free for Chat</source>
@@ -3416,6 +3416,10 @@ Se requiere que se reinicie la aplicación para que estos cambios tengan efecto!
         <translation>Nombre</translation>
     </message>
     <message>
+        <source>to</source>
+        <translation type="obsolete">a</translation>
+    </message>
+    <message>
         <source><byte value="x9"/>to</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3585,20 +3589,8 @@ Ahora introduzca sus datos personales.</translation>
 <context>
     <name>QMessageBox</name>
     <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Error de Licq</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Advertencia de Licq</translation>
-    </message>
-    <message>
         <source>Licq Question</source>
         <translation>Pregunta de Licq</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Información de Licq</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -4498,7 +4490,7 @@ El paquete de íconos extendidos %2 ha sido deshabilitado.</translation>
     </message>
     <message>
         <source>Country:</source>
-        <translation>país:</translation>
+        <translation>País:</translation>
     </message>
     <message>
         <source>failed</source>
@@ -4604,7 +4596,7 @@ Descripción: %2</translation>
     </message>
     <message>
         <source>Old Email:</source>
-        <translation>Correo-E Anterior:</translation>
+        <translation>Correo-E Viejo:</translation>
     </message>
     <message>
         <source>&amp;Last</source>
@@ -4668,7 +4660,7 @@ Seleccione esta opción si desea mantener el Alias actual luego de los cambios.<
     </message>
     <message>
         <source>Category:</source>
-        <translation>Categoría</translation>
+        <translation>Categoría:</translation>
     </message>
     <message>
         <source>Description:</source>
@@ -4748,11 +4740,11 @@ Seleccione esta opción si desea mantener el Alias actual luego de los cambios.<
     </message>
     <message>
         <source>&amp;Retrieve</source>
-        <translation>&amp;Recuperar:</translation>
+        <translation>&amp;Recuperar</translation>
     </message>
     <message>
         <source>S&amp;end</source>
-        <translation>&amp;Enviar:</translation>
+        <translation>&amp;Enviar</translation>
     </message>
     <message>
         <source>&amp;Add</source>
