@@ -183,6 +183,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
     // restore prefered encoding
     codec = UserCodec::codecForICQUser(u);
 
+    gotTyping(u->GetTyping());
     gUserManager.DropUser(u);
   }
 
