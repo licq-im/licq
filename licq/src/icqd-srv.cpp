@@ -3695,6 +3695,16 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_WEBxPANEL:
 	  case ICQ_CMDxSUB_EMAILxPAGER:
 	  {
+            ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+            bool bIgnore = (u && u->IgnoreList());
+            gUserManager.DropUser(u);
+
+            if (bIgnore)
+            {
+              delete eEvent; // Processing stops here, needs to be deleted
+              break;
+            }
+
 	    ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
 	    if (AddUserEvent(o, eEvent))
 	    {
@@ -4409,6 +4419,16 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_AUTHxREQxSRV:
     {
       char *szId = packet.UnpackUserString();
+      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+      bool bIgnore = (u && u->IgnoreList());
+      gUserManager.DropUser(u);
+
+      if (bIgnore)
+      {
+        delete [] szId;
+        break;
+      }
+
       gLog.Info(tr("%sAuthorization request from %s.\n"), L_SRVxSTR, szId);
 
       unsigned short nMsgLen;
@@ -4897,6 +4917,17 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_WEBxPANEL:
 	  case ICQ_CMDxSUB_EMAILxPAGER:
 	  {
+            ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+            bool bIgnore = u->IgnoreList();
+            gUserManager.DropUser(u);
+
+            if (bIgnore)
+            {
+              delete eEvent; // Processing stops here, needs to be deleted
+              gLog.Info("Ignored!");
+              break;
+            }
+
 	    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
             if (AddUserEvent(o, eEvent))
 	    {
