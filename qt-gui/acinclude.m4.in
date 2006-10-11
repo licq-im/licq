@@ -203,7 +203,7 @@ AC_DEFUN([AC_PATH_QT_MOC],
       MOC,
       moc,
       $QTDIR/bin/moc,
-      $QTDIR/bin:/usr/lib/qt2/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH
+      $QTDIR/bin:/usr/lib/qt3/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:/usr/local/qt3/bin:$PATH
     )
   else
     AC_MSG_CHECKING(for moc)
@@ -337,7 +337,7 @@ AC_DEFUN([AC_PATH_QT_LUPDATE],
     QT_LUPDATE,
     lupdate,
     echo,
-    $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
+    $QTDIR/bin:/usr/lib/qt3/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:/usr/local/qt3/bin:$PATH)
 
   if test "$QT_LUPDATE" = "echo"; then
     echo "** lupdate could not be found. You will not be able to update the translations."
@@ -352,7 +352,7 @@ AC_DEFUN([AC_PATH_QT_LRELEASE],
     QT_LRELEASE,
     lrelease,
     echo,
-    $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
+    $QTDIR/bin:/usr/lib/qt3/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:/usr/local/qt3/bin:$PATH)
 
   if test "$QT_LRELEASE" = "echo"; then
     echo "** lrelease could not be found. You're losing the localisation."
