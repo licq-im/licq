@@ -243,8 +243,10 @@ void MLView::copy()
 
         text.replace("&lt;", "<");
         text.replace("&gt;", ">");
-        text.replace("&amp;", "&");
         text.replace("&quot;", "\"");
+
+        // &amp; => & needs to be last
+        text.replace("&amp;", "&");
 
         drag->setText(text);
       }
