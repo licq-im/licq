@@ -244,6 +244,7 @@ void MLView::copy()
         text.replace("&lt;", "<");
         text.replace("&gt;", ">");
         text.replace("&amp;", "&");
+        text.replace("&quot;", "\"");
 
         drag->setText(text);
       }
