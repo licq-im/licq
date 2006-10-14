@@ -36,7 +36,6 @@ body
 #licqnav
 {
   position: absolute;
-  float: left;
   margin-top: 1ex;
   background: #fff url(menu_top.gif) no-repeat top left;
   width: 176px;
@@ -70,7 +69,7 @@ body
   background-color: transparent;
 }
 
-#main
+#main, #footer
 {
   margin: 1ex 0 1ex 189px;
   background-color: #fff;
@@ -85,7 +84,6 @@ body
 
 #footer
 {
-  background-color: #fff;
-  margin: 0px -5px;
-  padding-right: 3ex;
+  padding: 1ex;
+  border-width: 1px;
 }
