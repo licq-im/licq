@@ -19,4 +19,15 @@
  <li><a href="/wiki/PluginList">Plugins</a></li>
  <li><a href="/wiki/DeveloperArea">Developers</a></li>
 </ul>
+
+<form id="licqsearch" action="<?cs var:trac.href.search ?>" method="get">
+ <?cs if:trac.acl.SEARCH_VIEW ?><div>
+  <input type="text" id="proj-search" name="q" size="10" accesskey="f" value="" />
+  <input type="submit" value="Search" />
+  <input type="hidden" name="wiki" value="on" />
+  <input type="hidden" name="changeset" value="on" />
+  <input type="hidden" name="ticket" value="on" />
+ </div><?cs /if ?>
+</form>
+
 </div>
