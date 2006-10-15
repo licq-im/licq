@@ -1581,6 +1581,8 @@ QWidget* OptionsDlg::new_chat_options()
   cmbDateFormat->insertItem("yyyy-MM-dd");
   cmbDateFormat->insertItem("yyyy/MM/dd hh:mm:ss");
   cmbDateFormat->insertItem("yyyy/MM/dd");
+  cmbDateFormat->insertItem("dd.MM.yyyy hh:mm:ss");
+  cmbDateFormat->insertItem("dd.MM.yyyy");
   connect(cmbDateFormat, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
 
   chkCustomDateFormat = new QCheckBox(tr("Custom Date Format"), boxOptions);
@@ -1591,30 +1593,30 @@ QWidget* OptionsDlg::new_chat_options()
   connect(chkCustomDateFormat, SIGNAL(toggled(bool)), customDateFormat, SLOT(setEnabled(bool)));
   connect(customDateFormat, SIGNAL(textChanged(const QString&)), this, SLOT(slot_refresh_msgViewer()));
   QWhatsThis::add(customDateFormat, tr(
-      "<p>Available custom date format variables.</p>"
-      "<table>"
-      "<tr><th>Expression</th><th>Output</th></tr>"
-      "<tr><td>d</td>   <td>the day as number without a leading zero (1-31)</td></tr>"
-      "<tr><td>dd</td>  <td>the day as number with a leading zero (01-31)</td></tr>"
-      "<tr><td>ddd</td> <td>the abbreviated localized day name (e.g. 'Mon'..'Sun')</td></tr>"
-      "<tr><td>dddd</td><td>the long localized day name (e.g. 'Monday'..'Sunday')</td></tr>"
-      "<tr><td>M</td>   <td>the month as number without a leading zero (1-12)</td></tr>"
-      "<tr><td>MM</td>  <td>the month as number with a leading zero (01-12)</td></tr>"
-      "<tr><td>MMM</td> <td>the abbreviated localized month name (e.g. 'Jan'..'Dec')</td></tr>"
-      "<tr><td>MMMM</td><td>the long localized month name (e.g. 'January'..'December')</td></tr>"
-      "<tr><td>yy</td>  <td>the year as two digit number (00-99)</td></tr>"
-      "<tr><td>yyyy</td><td>the year as four digit number (1752-8000)</td></tr>"
-      "<tr><td colspan=2></td></tr>"
-      "<tr><td>h</td>   <td>the hour without a leading zero (0..23 or 1..12 if AM/PM display)</td></tr>"
-      "<tr><td>hh</td>  <td>the hour with a leading zero (00..23 or 01..12 if AM/PM display</td></tr>"
-      "<tr><td>m</td>   <td>the minute without a leading zero (0..59</td></tr>"
-      "<tr><td>mm</td>  <td>the minute with a leading zero (00..59</td></tr>"
-      "<tr><td>s</td>   <td>the second whithout a leading zero (0..59)</td></tr>"
-      "<tr><td>ss</td>  <td>the second whith a leading zero (00..59</td></tr>"
-      "<tr><td>z</td>   <td>the milliseconds without leading zeroes (0..999)</td></tr>"
-      "<tr><td>zzz</td> <td>the milliseconds with leading zeroes (000..999</td></tr>"
-      "<tr><td>AP</td>  <td>use AM/PM display. AP will be replaced by either 'AM' or 'PM'</td></tr>"
-      "<tr><td>ap</td>  <td>use am/pm display. ap will be replaced by either 'am' or 'pm'</td></tr>"
+      "<p>Available custom date format variables.</p>\n"
+      "<table>\n"
+      "<tr><th>Expression</th><th>Output</th></tr>\n"
+      "<tr><td>d</td><td>the day as number without a leading zero (1-31)</td></tr>\n"
+      "<tr><td>dd</td><td>the day as number with a leading zero (01-31)</td></tr>\n"
+      "<tr><td>ddd</td><td>the abbreviated localized day name (e.g. 'Mon'..'Sun')</td></tr>\n"
+      "<tr><td>dddd</td><td>the long localized day name (e.g. 'Monday'..'Sunday')</td></tr>\n"
+      "<tr><td>M</td><td>the month as number without a leading zero (1-12)</td></tr>\n"
+      "<tr><td>MM</td><td>the month as number with a leading zero (01-12)</td></tr>\n"
+      "<tr><td>MMM</td><td>the abbreviated localized month name (e.g. 'Jan'..'Dec')</td></tr>\n"
+      "<tr><td>MMMM</td><td>the long localized month name (e.g. 'January'..'December')</td></tr>\n"
+      "<tr><td>yy</td><td>the year as two digit number (00-99)</td></tr>\n"
+      "<tr><td>yyyy</td><td>the year as four digit number (1752-8000)</td></tr>\n"
+      "<tr><td colspan=2></td></tr>\n"
+      "<tr><td>h</td><td>the hour without a leading zero (0..23 or 1..12 if AM/PM display)</td></tr>\n"
+      "<tr><td>hh</td><td>the hour with a leading zero (00..23 or 01..12 if AM/PM display)</td></tr>\n"
+      "<tr><td>m</td><td>the minute without a leading zero (0..59)</td></tr>\n"
+      "<tr><td>mm</td><td>the minute with a leading zero (00..59)</td></tr>\n"
+      "<tr><td>s</td><td>the second whithout a leading zero (0..59)</td></tr>\n"
+      "<tr><td>ss</td><td>the second whith a leading zero (00..59)</td></tr>\n"
+      "<tr><td>z</td><td>the milliseconds without leading zeroes (0..999)</td></tr>\n"
+      "<tr><td>zzz</td><td>the milliseconds with leading zeroes (000..999)</td></tr>\n"
+      "<tr><td>AP</td><td>use AM/PM display. AP will be replaced by either 'AM' or 'PM'</td></tr>\n"
+      "<tr><td>ap</td><td>use am/pm display. ap will be replaced by either 'am' or 'pm'</td></tr>\n"
       "</table>"));
 
   QGroupBox *boxColors = new QGroupBox(2, Horizontal, tr("Colors"), boxRight);
