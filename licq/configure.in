@@ -5,8 +5,8 @@ AC_CANONICAL_SYSTEM
 AC_ARG_PROGRAM
 
 dnl All versioning is done via these defines
-INT_VERSION=1032
-AM_INIT_AUTOMAKE(licq, 1.3.2)
+INT_VERSION=1034
+AM_INIT_AUTOMAKE(licq, 1.3.4)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -172,11 +172,6 @@ AC_LANG_CPLUSPLUS
 AC_CHECK_HEADER(vector,,
   AC_MSG_ERROR(You need to have the libstdc++ headers installed))
 
-AC_CHECK_HEADER(iconv.h,,
-  AC_MSG_ERROR(Could not find iconv.h. Install libiconv.))
-
-AM_ICONV
-
 AC_LANG_RESTORE
 
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -198,6 +193,10 @@ AC_PROG_LIBTOOL
 AC_LIBTOOL_CXX
 
 AM_GNU_GETTEXT([external])
+AM_ICONV
+if test "$am_cv_func_iconv" != "yes"; then
+  AC_MSG_ERROR(Please install the iconv library.)
+fi
 
 AC_OUTPUT( 
   po/Makefile.in \
