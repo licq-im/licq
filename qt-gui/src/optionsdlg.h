@@ -162,6 +162,9 @@ protected:
    CMessageViewWidget *msgViewer;
    QTabWidget *tabViewer;
    QComboBox *cmbStyle;
+   QComboBox *cmbDateFormat;
+   QCheckBox *chkCustomDateFormat;
+   QLineEdit *customDateFormat;
    QCheckBox *chkLineBreak;
    CColorOption *btnColorRcv;
    CColorOption *btnColorSnt;
@@ -200,6 +203,9 @@ protected slots:
   void slot_ok();
   void slot_chkOnEventsToggled(bool);
   void slot_refresh_msgViewer();
+
+private:
+  QString getCurrentDateFormat() const;
 };
 
 

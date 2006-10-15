@@ -179,6 +179,7 @@ public:
   unsigned short m_nSortByStatus,
                  m_nSortColumn,
                  m_nMsgStyle;
+  QString m_nDateFormat;
                  
   QColor m_colorRcvHistory,
          m_colorSntHistory,

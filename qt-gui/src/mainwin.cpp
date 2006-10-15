@@ -440,6 +440,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("MsgWinSticky", m_bMsgWinSticky, false);
   licqConf.ReadBool("SingleLineChatMode", m_bSingleLineChatMode, false);
   licqConf.ReadBool("CheckSpellingEnabled", m_bCheckSpellingEnabled, false);
+  licqConf.ReadStr("DateFormat", szTemp, "hh:mm:ss");
+  m_nDateFormat = QString::fromLatin1(szTemp);
 
   licqConf.ReadStr("ReceiveMessageColor", szTemp, "red");
   m_colorRcv = QColor(szTemp);
@@ -3580,7 +3582,8 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("TabFontColor", m_colorTab.name());
   licqConf.WriteStr("TabOnTypingColor", m_colorTabTyping.name());
   licqConf.WriteStr("ChatBackground", m_colorChatBkg.name());
-  
+  licqConf.WriteStr("DateFormat", m_nDateFormat.latin1());
+
   licqConf.WriteBool("showPopAlias", m_bPopAlias);
   licqConf.WriteBool("showPopName", m_bPopName);
   licqConf.WriteBool("showPopEmail", m_bPopEmail);

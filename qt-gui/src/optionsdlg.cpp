@@ -211,7 +211,24 @@ void OptionsDlg::SetupOptions()
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkMsgChatView->setChecked(mainwin->m_bMsgChatView);
-  
+
+  bool isCustomDate = true;
+  for (int i = 0; i < cmbDateFormat->count(); i++)
+  {
+    if (cmbDateFormat->text(i) == mainwin->m_nDateFormat)
+    {
+      cmbDateFormat->setCurrentItem(i);
+      isCustomDate = false;
+      break;
+    }
+  }
+
+  // Make sure the checkbox is actually toggled, so that widgets are enabled/disabled.
+  chkCustomDateFormat->setChecked(!isCustomDate);
+  chkCustomDateFormat->setChecked(isCustomDate);
+
+  customDateFormat->setText(mainwin->m_nDateFormat);
+
   chkLineBreak->setChecked(mainwin->m_bAppendLineBreak);
   cmbStyle->setCurrentItem(mainwin->m_nMsgStyle);
   btnColorRcv->setPaletteBackgroundColor(mainwin->m_colorRcv);
@@ -509,6 +526,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bMsgChatView = chkMsgChatView->isChecked();
   mainwin->m_bAppendLineBreak = chkLineBreak->isChecked();
   mainwin->m_nMsgStyle = cmbStyle->currentItem();
+  mainwin->m_nDateFormat = getCurrentDateFormat();
   mainwin->m_colorRcv = btnColorRcv->paletteBackgroundColor();
   mainwin->m_colorSnt = btnColorSnt->paletteBackgroundColor();
   mainwin->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
@@ -1541,7 +1559,7 @@ QWidget* OptionsDlg::new_chat_options()
 
   QVBox* boxRight = new QVBox(w);
   lay->addWidget(boxRight);
-  
+
   QGroupBox* boxOptions = new QGroupBox(1, Horizontal, tr("Options"), boxRight);
 
   new QLabel(tr("Style:"), boxOptions);
@@ -1552,15 +1570,58 @@ QWidget* OptionsDlg::new_chat_options()
   cmbStyle->insertItem("Table");
   cmbStyle->insertItem("History");
   connect(cmbStyle, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
-  
+
   chkLineBreak = new QCheckBox(tr("Insert Horizontal Line"), boxOptions);
   connect(chkLineBreak, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
-  
+
+  new QLabel(tr("Date Format:"), boxOptions);
+  cmbDateFormat = new QComboBox(false, boxOptions);
+  cmbDateFormat->insertItem("hh:mm:ss");
+  cmbDateFormat->insertItem("yyyy-MM-dd hh:mm:ss");
+  cmbDateFormat->insertItem("yyyy-MM-dd");
+  cmbDateFormat->insertItem("yyyy/MM/dd hh:mm:ss");
+  cmbDateFormat->insertItem("yyyy/MM/dd");
+  connect(cmbDateFormat, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
+
+  chkCustomDateFormat = new QCheckBox(tr("Custom Date Format"), boxOptions);
+  connect(chkCustomDateFormat, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
+  connect(chkCustomDateFormat, SIGNAL(toggled(bool)), cmbDateFormat, SLOT(setDisabled(bool)));
+
+  customDateFormat = new QLineEdit(boxOptions);
+  connect(chkCustomDateFormat, SIGNAL(toggled(bool)), customDateFormat, SLOT(setEnabled(bool)));
+  connect(customDateFormat, SIGNAL(textChanged(const QString&)), this, SLOT(slot_refresh_msgViewer()));
+  QWhatsThis::add(customDateFormat, tr(
+      "<p>Available custom date format variables.</p>"
+      "<table>"
+      "<tr><th>Expression</th><th>Output</th></tr>"
+      "<tr><td>d</td>   <td>the day as number without a leading zero (1-31)</td></tr>"
+      "<tr><td>dd</td>  <td>the day as number with a leading zero (01-31)</td></tr>"
+      "<tr><td>ddd</td> <td>the abbreviated localized day name (e.g. 'Mon'..'Sun')</td></tr>"
+      "<tr><td>dddd</td><td>the long localized day name (e.g. 'Monday'..'Sunday')</td></tr>"
+      "<tr><td>M</td>   <td>the month as number without a leading zero (1-12)</td></tr>"
+      "<tr><td>MM</td>  <td>the month as number with a leading zero (01-12)</td></tr>"
+      "<tr><td>MMM</td> <td>the abbreviated localized month name (e.g. 'Jan'..'Dec')</td></tr>"
+      "<tr><td>MMMM</td><td>the long localized month name (e.g. 'January'..'December')</td></tr>"
+      "<tr><td>yy</td>  <td>the year as two digit number (00-99)</td></tr>"
+      "<tr><td>yyyy</td><td>the year as four digit number (1752-8000)</td></tr>"
+      "<tr><td colspan=2></td></tr>"
+      "<tr><td>h</td>   <td>the hour without a leading zero (0..23 or 1..12 if AM/PM display)</td></tr>"
+      "<tr><td>hh</td>  <td>the hour with a leading zero (00..23 or 01..12 if AM/PM display</td></tr>"
+      "<tr><td>m</td>   <td>the minute without a leading zero (0..59</td></tr>"
+      "<tr><td>mm</td>  <td>the minute with a leading zero (00..59</td></tr>"
+      "<tr><td>s</td>   <td>the second whithout a leading zero (0..59)</td></tr>"
+      "<tr><td>ss</td>  <td>the second whith a leading zero (00..59</td></tr>"
+      "<tr><td>z</td>   <td>the milliseconds without leading zeroes (0..999)</td></tr>"
+      "<tr><td>zzz</td> <td>the milliseconds with leading zeroes (000..999</td></tr>"
+      "<tr><td>AP</td>  <td>use AM/PM display. AP will be replaced by either 'AM' or 'PM'</td></tr>"
+      "<tr><td>ap</td>  <td>use am/pm display. ap will be replaced by either 'am' or 'pm'</td></tr>"
+      "</table>"));
+
   QGroupBox *boxColors = new QGroupBox(2, Horizontal, tr("Colors"), boxRight);
 
   new QLabel(tr("Message Received:"), boxColors);
   btnColorRcv = new CColorOption(boxColors);
-  
+
   new QLabel(tr("Message Sent:"), boxColors);
   btnColorSnt = new CColorOption(boxColors);
 
@@ -1586,21 +1647,31 @@ QWidget* OptionsDlg::new_chat_options()
   /*connect(btnColorTabLabel, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));*/
   connect(btnColorTypingLabel, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
   connect(btnColorChatBkg, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
-  
+
   tabViewer = new QTabWidget(w);
   lay->addWidget(tabViewer);
-  
+
   msgViewer = new CMessageViewWidget(0, gMainWindow, tabViewer);
   tabViewer->insertTab(msgViewer, "Marge");
-  
+
   lay->activate();
 
   return w;
 }
 
+QString OptionsDlg::getCurrentDateFormat() const
+{
+  if (chkCustomDateFormat->isChecked())
+    return customDateFormat->text();
+  else
+    return cmbDateFormat->currentText();
+}
+
 void OptionsDlg::slot_refresh_msgViewer()
 {
-  QDateTime date;
+  // Don't update the time at every refresh
+  static QDateTime date = QDateTime::currentDateTime();
+
   const char *names[2] = {"Marge", "Homer"};
   const char *msgs[7] = {
       "This is received message",
@@ -1610,7 +1681,7 @@ void OptionsDlg::slot_refresh_msgViewer()
       "#Licq on irc.freenode.net",
       "Cool, I'll see you there :)",
       "We'll be waiting!"};
-  
+
   msgViewer->m_nMsgStyle = cmbStyle->currentItem();
   msgViewer->m_bAppendLineBreak = chkLineBreak->isChecked();
   msgViewer->m_colorSnt = btnColorSnt->paletteBackgroundColor();
@@ -1619,7 +1690,9 @@ void OptionsDlg::slot_refresh_msgViewer()
   msgViewer->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
   tabViewer->setPaletteForegroundColor(btnColorTypingLabel->paletteBackgroundColor());
   msgViewer->setPaletteBackgroundColor(btnColorChatBkg->paletteBackgroundColor());
-  
+
+  msgViewer->m_nDateFormat = getCurrentDateFormat();
+
   msgViewer->clear();
   for (unsigned int i = 0; i<7; i++)
   {

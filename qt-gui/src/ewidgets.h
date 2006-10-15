@@ -211,6 +211,7 @@ public:
   void addNotice(QString dateTime, QString messageText);
 
   unsigned short m_nMsgStyle;
+  QString m_nDateFormat;
   bool m_bAppendLineBreak;
   QColor m_colorRcvHistory;
   QColor m_colorSntHistory;

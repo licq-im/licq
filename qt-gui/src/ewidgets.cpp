@@ -668,6 +668,7 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
   m_nMsgStyle = m->m_nMsgStyle;
+  m_nDateFormat = m->m_nDateFormat;
   m_bAppendLineBreak = m->m_bAppendLineBreak;
   m_colorRcv = m->m_colorRcv;
   m_colorSnt = m->m_colorSnt;
@@ -701,6 +702,7 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
   m_nUin= _nUin;
   m_szId = NULL; // avoid desalocation error at destructor
   m_nMsgStyle = m->m_nMsgStyle;
+  m_nDateFormat = m->m_nDateFormat;
   m_bAppendLineBreak = m->m_bAppendLineBreak;
   m_colorRcv = m->m_colorRcv;
   m_colorSnt = m->m_colorSnt;
@@ -776,13 +778,14 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
     }
   }
      
+  QString my_date = date.toString( m_nDateFormat );
   
   switch (m_nMsgStyle) {
     case 0:
       s = QString("<html><body><font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
                   .arg(color)
                   .arg(eventDescription)
-                  .arg(date.time().toString())
+                  .arg(my_date)
                   .arg(isDirect ? 'D' : '-')
                   .arg(isMultiRec ? 'M' : '-')
                   .arg(isUrgent ? 'U' : '-')
@@ -796,7 +799,7 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
       s = QString("<font color=\"%1\"><b>(%2%3) [%4%5%6%7] %8: </b></font>")
                   .arg(color)
                   .arg(eventDescription)
-                  .arg(date.time().toString())
+                  .arg(my_date)
                   .arg(isDirect ? 'D' : '-')
                   .arg(isMultiRec ? 'M' : '-')
                   .arg(isUrgent ? 'U' : '-')
@@ -816,7 +819,7 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
       s = QString("<font color=\"%1\"><b>%2%3 - %4: </b></font>")
                   .arg(color)
                   .arg(eventDescription)
-                  .arg(date.time().toString())
+                  .arg(my_date)
                   .arg(contactName);
       s.append(QString("<font color=\"%1\">%2</font>")
                       .arg(color)
@@ -833,7 +836,7 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
       s = QString("<table border=\"1\"><tr><td><b><font color=\"%1\">%2%3</font><b><td><b><font color=\"%4\">%5</font></b></font></td>")
                   .arg(color)
                   .arg(eventDescription)
-                  .arg(date.time().toString())
+                  .arg(my_date)
                   .arg(color)
                   .arg(contactName);
       s.append(QString("<td><font color=\"%1\">%2</font></td></tr></table>")
@@ -846,7 +849,7 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
                   .arg((dir == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2")))
                   .arg(eventDescription)
                   .arg(contactName)
-                  .arg(date.toString())
+                  .arg(my_date)
                   .arg(isDirect ? 'D' : '-')
                   .arg(isMultiRec ? 'M' : '-')
                   .arg(isUrgent ? 'U' : '-')
@@ -871,7 +874,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
 {
   QDateTime date;
   date.setTime_t(e->Time());
-  QString sd = date.time().toString();
+  QString sd = date.time().toString( m_nDateFormat );
   bool bUseHTML = false;
 
   QString contactName;
