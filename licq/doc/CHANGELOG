@@ -1,25 +1,29 @@
 Change log for Licq.
 
 New in 1.3.4
-o  Make sending typing notifications optional
-o  Iconv fixes
-o  Fixes for newly registered users
-o  Fix a few bugs where users would falsely go offline
-o  ICQ: Update the protocol to properly set info
-o  ICQ: Show more version information of remote clients
-o  ICQ: Fix a bug where contacts would receive empty messages
-o  Compilation fixes 
-o  64-bit compatibility changes
-o  KDE: Addressbook fix
-o  Qt/KDE: Show user's pictures as a tooltip or status icon
-o  Qt/KDE: Optional "Send with Enter"
-o  Qt/KDE: Improve hyperlink detection
-o  Qt/KDE: Improve emoticon detection and processing
-o  KDE: Add spell checking to the kde-gui (Using KSpell)
-o  Qt/KDE: Add a custom message box handler
-o  MSN: Fix a race error in MSN packet parsing
-o  MSN: Fix socket handling
-o  Many various minor bugs and crashes fixed... Use 'svn log' for the details :-)
+o Fix a few bugs where users would falsely go offline 
+o Make sending typing notifications optional 
+o Fixes for newly registered users 
+o Fix the handling of pidfiles so that Licq always starts unless there actually is an other instance of Licq running. 
+o 64-bit compatibility changes 
+o Compilation fixes 
+o Fixes for Licq on Mac OS X (with Fink) 
+o Iconv fixes 
+o ICQ: Fix a bug where contacts would receive empty messages 
+o ICQ: Update the protocol to properly set info 
+o ICQ: Show more version information of remote clients 
+o ICQ: Fix SSL issue
+o MSN: Fix a race error in MSN packet parsing 
+o MSN: Fix socket handling 
+o KDE: Addressbook fix 
+o KDE: Add spell checking to the kde-gui (Using KSpell) 
+o Qt/KDE: Show user's pictures as a tooltip or status icon 
+o Qt/KDE: Optional "Send with Enter" 
+o Qt/KDE: Improve hyperlink detection 
+o Qt/KDE: Improve emoticon detection and processing 
+o Qt/KDE: Add a custom message box handler 
+o Qt/KDE: New KDE iconset to better integrate with the KDE desktop 
+Many various minor bugs and crashes fixed... See http://tinyurl.com/ygdrfo for details.
 
 
 New in 1.2.0
