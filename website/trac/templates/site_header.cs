@@ -9,7 +9,7 @@
 <div id="licqnav">
 <ul>
  <li><a href="/wiki/WikiStart">Main</a></li>
- <li><a href="/tags/news">News</a></li>
+ <li><a href="/wiki/LicqNews">News</a></li>
  <li><a href="/blog">Blog</a></li>
  <li><a href="/wiki/LicqFeatures">Features</a></li>
  <li><a href="/wiki/LicqScreenshots">Screenshots</a></li>
