@@ -3189,6 +3189,14 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
         <translation>Horizontale Trennlinie</translation>
     </message>
     <message>
+        <source>Date Format:</source>
+        <translation>Datumsformatierung:</translation>
+    </message>
+    <message>
+        <source>Custom Date Format</source>
+        <translation>Eigene Datumsformatierung</translation>
+    </message>
+    <message>
         <source>Accept Modes</source>
         <translation>Per-Status-Einstellungen für Ereignisse</translation>
     </message>
@@ -4002,6 +4010,34 @@ Bei einer Änderung ist ein Neustart erforderlich!
     <message>
         <source>Name</source>
         <translation>Name</translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second whithout a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second whith a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the milliseconds without leading zeroes (0..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the milliseconds with leading zeroes (000..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -5118,7 +5154,7 @@ ICQ Network to retrieve your settings.</source>
     </message>
     <message>
         <source>%1 to %2</source>
-        <translation>%1 an %2</translation>
+        <translation type="obsolete">%1 an %2</translation>
     </message>
     <message>
         <source>EMail 1:</source>
@@ -5345,7 +5381,7 @@ ICQ Network to change your settings.</source>
     </message>
     <message>
         <source>%1 from %2</source>
-        <translation>%1 von %2</translation>
+        <translation type="obsolete">%1 von %2</translation>
     </message>
     <message>
         <source>Gender:</source>
