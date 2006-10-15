@@ -33,6 +33,8 @@ to the development of Licq:
    * Served as reference for ICQ's SMS protocol.
  * Kenny Lim
    * Contributed a logo for Licq.
+ * Loki <loki@cpan.org.ua>
+   * Contributed patch to allow customized date format.
  * Emilio Lopez-Gabeiras
    * Original ICQ event sounds.
  * Jeff Meininger
