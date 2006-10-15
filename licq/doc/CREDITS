@@ -3,58 +3,56 @@ Credits list for Licq
 The following people and projects have made valuable contributions
 to the development of Licq:
 
-Graham Roff
-   o  Primary developer and maintainer for Licq < 1.0.4
-Juan Codagnone
-   o  Several patches
-Tim van Erven
-   o  Patches, including reliability patches to prevent buffer overflows.
-Dmitry Karasik
-   o  Patches for chats, file transfers and some threading issues.
-libicq2000 Project
-   o  Served as reference for ICQ's SMS protocol.
-David W. Murphy
-   o  Contributed the code for auto back when auto away was enabled.    
-Rob Dale:  
-   o  Contributed to the code for multiple server support.
-Nic Bellamy:  
-   o  Added autoconf support to Licq. 
-   o  Assisted with command line parsing
-   o  Tracked down the segfault on startup if not connected bug and contributed
-      suitable replacement code.
-Bernd Johannes Wuebben:
-   o  Wrote KEdit utility which supplied part of the code for word wrap.
-Brian Feldman:
-   o  Port to FreeBSD.
-Dave:
-   o  Made the first icon for Licq.
-Jeff Covey:
-   o  Contributed the sandy background.
-Kenny Lim
-   o  Contributed a logo for Licq.
-Alan Penner
-   o  Wrote the code for the search user function.  An excellent and valuable
-      contribution.  
-Thomas Nilsson
-   o  Created the nice licq logo on the web page.
-Mark Veinot
-   o  Contributed a new set of status images.
-Jeff Meininger
-   o  Contributed a new set of status images.
-George Hartz
-   o  Began work on blinking icon support.
-Eugene Aleynikov
-   o  Port to FreeBSD and socket bug fixes.
-Bucky LaDieu
-   o  Sound patch to allow different sounds for different events.
-Emilio Lopez-Gabeiras
-   o  Original ICQ event sounds.
-Andrew Frolov
-   o  Translation support.
-Taral
-   o  Various patches for miscellaneous things.
-Peter <peter@nadasi.net> UIN:2890694
-   o  Debian package
+ * Eugene Aleynikov
+   * Port to FreeBSD and socket bug fixes.
+ * Nic Bellamy
+   * Added autoconf support to Licq.
+   * Assisted with command line parsing
+   * Tracked down the segfault on startup if not connected bug and contributed suitable replacement code.
+ * Juan Codagnone
+   * Several patches
+ * Jeff Covey
+   * Contributed the sandy background.
+ * Rob Dale
+   * Contributed to the code for multiple server support.
+ * Dave
+   * Made the first icon for Licq.
+ * Tim van Erven
+   * Patches, including reliability patches to prevent buffer overflows.
+ * Brian Feldman
+   * Port to FreeBSD.
+ * Andrew Frolov
+   * Translation support.
+ * George Hartz
+   * Began work on blinking icon support.
+ * Dmitry Karasik
+   * Patches for chats, file transfers and some threading issues.
+ * Bucky LaDieu
+   * Sound patch to allow different sounds for different events.
+ * libicq2000 Project
+   * Served as reference for ICQ's SMS protocol.
+ * Kenny Lim
+   * Contributed a logo for Licq.
+ * Emilio Lopez-Gabeiras
+   * Original ICQ event sounds.
+ * Jeff Meininger
+   * Contributed a new set of status images.
+ * David W. Murphy
+   * Contributed the code for auto back when auto away was enabled.
+ * Thomas Nilsson
+   * Created the nice licq logo on the web page.
+ * Alan Penner
+   * Wrote the code for the search user function. An excellent and valuable contribution.
+ * Peter <peter@nadasi.net> UIN:2890694
+   * Debian package
+ * Graham Roff
+   * Primary developer and maintainer for Licq < 1.0.4
+ * Taral
+   * Various patches for miscellaneous things.
+ * Mark Veinot
+   * Contributed a new set of status images.
+ * Bernd Johannes Wuebben
+   * Wrote KEdit utility which supplied part of the code for word wrap.
 
 There are many many other people who sent invaluable bug reports
 and suggestions. Thanks to everyone for your support and contributions.
