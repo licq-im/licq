@@ -18,6 +18,7 @@
  <li><a href="/wiki/LicqTips">Tips</a></li>
  <li><a href="/wiki/PluginList">Plugins</a></li>
  <li><a href="/wiki/DeveloperArea">Developers</a></li>
+ <li><a href="/wiki/LicqTeam">Credits</a></li>
 </ul>
 
 <form id="licqsearch" action="<?cs var:trac.href.search ?>" method="get">
