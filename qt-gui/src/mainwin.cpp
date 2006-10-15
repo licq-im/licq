@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2 -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -28,7 +30,7 @@
 #include <kwin.h>
 #include <kiconloader.h>
 #include <kurl.h>
-#if KDE_VERSION >= 310
+#if KDE_IS_VERSION(3, 1, 0)
 #include <kpassivepopup.h>
 #endif
 #else
@@ -45,11 +47,7 @@
 #include <qtextview.h>
 #include <qpainter.h>
 #include <qtabwidget.h>
-#if QT_VERSION >= 300
 #include <qstylefactory.h>
-#else
-#include <qwindowsstyle.h>
-#endif
 
 #include "licqgui.h"
 #include "mainwin.h"
@@ -400,22 +398,14 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 #endif
   if (strcmp(szTemp, "default") != 0)
   {
-#if QT_VERSION >= 300
     f.fromString(szTemp);
-#else
-    f.setRawName(szTemp);
-#endif
     qApp->setFont(f, true);
   }
   licqConf.ReadStr("EditFont", szTemp, "default");
   if(!strcmp(szTemp, "default"))
     f = qApp->font();
   else
-#if QT_VERSION >= 300
     f.fromString(szTemp);
-#else
-    f.setRawName(szTemp);
-#endif
   delete MLEditWrap::editFont;
   MLEditWrap::editFont = new QFont(f);
 
@@ -437,11 +427,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("SystemBackground", m_bSystemBackground, false);
   licqConf.ReadBool("SendFromClipboard", m_bSendFromClipboard, true);
   licqConf.ReadBool("MsgChatView", m_bMsgChatView, true );
-#if QT_VERSION < 300
-  m_bTabbedChatting = false;
-#else
   licqConf.ReadBool("TabbedChatting", m_bTabbedChatting, true);
-#endif
   licqConf.ReadBool("ShowHistory", m_bShowHistory, true);
   licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
@@ -573,7 +559,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   QStringList emoticonsDirs;
   emoticonsDirs += QString::fromLatin1(SHARE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
   emoticonsDirs += QString::fromLatin1(BASE_DIR) + QTGUI_DIR + EMOTICONS_DIR;
-#if defined(USE_KDE)
+#ifdef USE_KDE
   // emoticons resource added in KDE 3.4
   if (KDE::version() >= KDE_MAKE_VERSION(3, 4, 0))
     emoticonsDirs += KGlobal::dirs()->findDirs("emoticons", "");
@@ -589,18 +575,12 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   else
     strcpy(szSkin, skinName);
 
-#if QT_VERSION >= 300
   style = QStyleFactory::create("windows");
-#else
-  style = new QWindowsStyle;
-#endif
   awayMsgDlg = NULL;
   optionsDlg = NULL;
   ownerManagerDlg = NULL;
   pluginDlg = NULL;
-#if QT_VERSION >= 300
   userEventTabDlg = NULL;
-#endif
   m_nRealHeight = 0;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
@@ -632,13 +612,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   pmInfo = QPixmap(info_xpm);
   pmRemove = QPixmap(remove_xpm);
   pmSearch = QPixmap(search_xpm);
-  #ifdef USE_KDE
+#ifdef USE_KDE
   pmEncoding = KGlobal::iconLoader()->loadIcon("charset", KIcon::Small, 0, KIcon::DefaultState, 0L, true);
   if (pmEncoding.isNull())
     pmEncoding = QPixmap(charset_xpm);
-  #else
+#else
   pmEncoding = QPixmap(charset_xpm);
-  #endif
+#endif
   ApplyIcons(szIcons, true);
   ApplyExtendedIcons(szExtendedIcons, true);
   initMenu();
@@ -798,12 +778,10 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     gUserManager.DropOwner();
    }
 
-#if QT_VERSION > 3
   XClassHint ClassHint;
   ClassHint.res_class = (char *)qAppName();
   ClassHint.res_name = (char *)name();
   XSetClassHint(x11Display(), winId(), &ClassHint);
-#endif
 
 #ifdef USE_KDE
     kdeIMInterface = new LicqKIMIface(KApplication::dcopClient()->appId(), this);
@@ -893,9 +871,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   else
   {
     setBackgroundMode(PaletteBackground);
-#if QT_VERSION >= 300
     unsetPalette();
-#endif
   }
 
   if (skin->frame.mask != NULL)
@@ -971,10 +947,6 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblMsg->setNamedBgColor(skin->lblMsg.color.bg);
   if (skin->lblMsg.pixmap != NULL)
   {
-#if QT_VERSION < 300
-    lblMsg->setBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
-  }
-#else
     lblMsg->setBackgroundOrigin(WidgetOrigin);
     lblMsg->setPaletteBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
   }
@@ -983,7 +955,6 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
     lblMsg->setBackgroundOrigin(ParentOrigin);
     lblMsg->setPaletteBackgroundPixmap(QPixmap(skin->frame.pixmap));
   }
-#endif
 
   connect(lblMsg, SIGNAL(doubleClicked()), this, SLOT(callMsgFunction()));
   QToolTip::add(lblMsg, tr("Right click - User groups\n"
@@ -1000,10 +971,6 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
   lblStatus->setNamedBgColor(skin->lblStatus.color.bg);
   if (skin->lblStatus.pixmap != NULL)
   {
-#if QT_VERSION < 300
-    lblStatus->setBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
-  }
-#else
     lblStatus->setBackgroundOrigin(WidgetOrigin);
     lblStatus->setPaletteBackgroundPixmap(QPixmap(skin->lblStatus.pixmap));
   }
@@ -1012,7 +979,6 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
     lblStatus->setBackgroundOrigin(ParentOrigin);
     lblStatus->setPaletteBackgroundPixmap(QPixmap(skin->frame.pixmap));
   }
-#endif
 
   connect(lblStatus, SIGNAL(doubleClicked()), this, SLOT(slot_AwayMsgDlg()));
   QToolTip::add(lblStatus, tr("Right click - Status menu\n"
@@ -1161,7 +1127,6 @@ void CMainWindow::resizeEvent (QResizeEvent *)
   if (skin->frame.pixmap != NULL)
   {
     p = ScaleWithBorder(*pmBorder, width(), height(), skin->frame.border);
-#if QT_VERSION >= 300
     setPaletteBackgroundPixmap(*p);
 
     // set the palette for the labels here as well
@@ -1170,9 +1135,6 @@ void CMainWindow::resizeEvent (QResizeEvent *)
 
     if (skin->lblStatus.transparent)
       lblStatus->setPaletteBackgroundPixmap(*p);
-#else
-    setBackgroundPixmap(*p);
-#endif
     delete p;
   }
   if (skin->frame.mask != NULL)
@@ -1630,7 +1592,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       if(sig->SubSignal() == USER_STATUS && sig->Argument() == 1)
       {
         userView->AnimationOnline(szId, nPPID);
-#if defined(USE_KDE) && (KDE_VERSION >= 310)
+#if defined(USE_KDE) && (KDE_IS_VERSION(3, 1, 0))
         // User on notify list went online -> show popup at systray icon
         if (licqIcon && u->OnlineNotify())
         {
@@ -1656,7 +1618,6 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         v->triggerUpdate();
       }
 
-#if QT_VERSION >= 300
       // update the tab icon of this user
       if (m_bTabbedChatting && userEventTabDlg)
       {
@@ -1665,15 +1626,11 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         userEventTabDlg->updateTabLabel(u);
       }
       else
-#endif
+
       if (sig->SubSignal() == USER_TYPING)
       {
         // First, update the window if available
-#if QT_VERSION < 300
-        QListIterator<UserSendCommon> it(licqUserSend );
-#else
         QPtrListIterator<UserSendCommon> it(licqUserSend);
-#endif
         UserEventCommon *e = 0;
 
         for (; it.current(); ++it)
@@ -1778,11 +1735,8 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       updateEvents();
       // If their box is open, kill it
       {
-#if QT_VERSION < 300
-        QListIterator<UserViewEvent> it(licqUserView);
-#else
         QPtrListIterator<UserViewEvent> it(licqUserView);
-#endif
+
         for (; it.current() != NULL; ++it)
         {
           if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
@@ -1795,11 +1749,8 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       }
       {
         // if their info box is open, kill it
-#if QT_VERSION < 300
-        QListIterator<UserInfoDlg> it(licqUserInfo);
-#else
         QPtrListIterator<UserInfoDlg> it(licqUserInfo);
-#endif
+
         for(; it.current() != NULL; ++it)
         {
           if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
@@ -1812,11 +1763,8 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       }
       {
         // if their send box is open, kill it
-#if QT_VERSION < 300
-        QListIterator<UserSendCommon> it(licqUserSend);
-#else
         QPtrListIterator<UserSendCommon> it(licqUserSend);
-#endif
+
         for(; it.current() != NULL; ++it)
         {
           if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
@@ -1840,11 +1788,8 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, unsigned long nConvoId)
 {
   // Add the user to an ongoing conversation
-#if QT_VERSION < 300
-  QListIterator<UserSendCommon> it(licqUserSend);
-#else
   QPtrListIterator<UserSendCommon> it(licqUserSend);
-#endif
+
   for (; it.current(); ++it)
   {
     if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
@@ -1858,11 +1803,8 @@ void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, unsigned lo
 void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, unsigned long nConvoId)
 {
   // Add the user to an ongoing conversation
-#if QT_VERSION < 300
-  QListIterator<UserSendCommon> it(licqUserSend);
-#else
   QPtrListIterator<UserSendCommon> it(licqUserSend);
-#endif
+
   for (; it.current(); ++it)
   {
     if ((*it)->ConvoId() == nConvoId)
@@ -1879,11 +1821,8 @@ void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, unsigned
 void CMainWindow::slot_convoLeave(const char *szId, unsigned long nPPID, unsigned long nConvoId)
 {
   // Add the user to an ongoing conversation
-#if QT_VERSION < 300
-  QListIterator<UserSendCommon> it(licqUserSend);
-#else
   QPtrListIterator<UserSendCommon> it(licqUserSend);
-#endif
+
   for (; it.current(); ++it)
   {
     if ((*it)->ConvoId() == nConvoId)
@@ -2200,15 +2139,15 @@ void CMainWindow::updateStatus(CICQSignal *s)
     if (o)
     {
 #ifdef USE_KDE
-#if KDE_VERSION >= 320
+#if KDE_IS_VERSION(3, 2, 0)
     /* KDE 3.2 handles app-icon updates differently, since KDE 3.2 a simple setIcon() call
         does no longer update the icon in kicker anymore :(
         So we do it the "kde-way" here */
       KWin::setIcons(winId(), CMainWindow::iconForStatus(o->StatusFull()),
         CMainWindow::iconForStatus(o->StatusFull()));
-#else    // KDE_VERSION
+#else    // KDE_IS_VERSION
       setIcon(CMainWindow::iconForStatus(o->StatusFull()));
-#endif   // KDE_VERSION
+#endif   // KDE_IS_VERSION
 #else   // USE_KDE
       setIcon(CMainWindow::iconForStatus(o->StatusFull()));
 #endif   // USE_KDE
@@ -2706,11 +2645,7 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
   if(szId == 0 || nPPID == 0) return;
 
   UserInfoDlg *f = NULL;
-#if QT_VERSION < 300
-  QListIterator<UserInfoDlg> it(licqUserInfo);
-#else
   QPtrListIterator<UserInfoDlg> it(licqUserInfo);
-#endif
 
   for(; it.current(); ++it)
   {
@@ -2784,11 +2719,8 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
   {
     case mnuUserView:
     {
-#if QT_VERSION < 300
-      QListIterator<UserViewEvent> it(licqUserView);
-#else
       QPtrListIterator<UserViewEvent> it(licqUserView);
-#endif
+
       for (; it.current(); ++it)
         if ((*it)->Id() && strcasecmp((*it)->Id(), szId) == 0 &&
             (*it)->PPID() == nPPID)
@@ -2799,7 +2731,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
           {
             e->raise();
 #ifdef USE_KDE
-# if KDE_VERSION >= 320
+# if KDE_IS_VERSION(3, 2, 0)
             KWin::activateWindow(e->winId());
 # else
             KWin::setActiveWindow(e->winId());
@@ -2817,11 +2749,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
     case mnuUserSendContact:
     case mnuUserSendSms:
     {
-#if QT_VERSION < 300
-        QListIterator<UserSendCommon> it(licqUserSend );
-#else
         QPtrListIterator<UserSendCommon> it(licqUserSend);
-#endif
 
         if (!m_bMsgChatView) break;
 
@@ -2836,14 +2764,14 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
             e = static_cast<UserSendCommon*>(*it);
             //if (!e->FindUserInConvo(const_cast<char *>(szId)))
             //  e->convoJoin(szId);
-#if QT_VERSION >= 300
+
             if (userEventTabDlg && userEventTabDlg->tabExists(e))
             {
               userEventTabDlg->show();
               userEventTabDlg->selectTab(e);
               userEventTabDlg->raise();
 #ifdef USE_KDE
-# if KDE_VERSION >= 320
+# if KDE_IS_VERSION(3, 2, 0)
               KWin::activateWindow(userEventTabDlg->winId());
 # else
               KWin::setActiveWindow(userEventTabDlg->winId());
@@ -2851,14 +2779,13 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
 #endif
             }
             else
-#endif
             {
               e->show();
               if (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon"))
               {
                 e->raise();
 #ifdef USE_KDE
-# if KDE_VERSION >= 320
+# if KDE_IS_VERSION(3, 2, 0)
                 KWin::activateWindow(e->winId());
 # else
                 KWin::setActiveWindow(e->winId());
@@ -2874,7 +2801,6 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
   }
 
   QWidget *parent = NULL;
-#if QT_VERSION >= 300
   if (m_bTabbedChatting)
   {
     if (userEventTabDlg != NULL)
@@ -2887,7 +2813,6 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
     }
     parent = userEventTabDlg;
   }
-#endif
 
   switch (fcn)
   {
@@ -2932,7 +2857,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
   if (e == NULL) return NULL;
 
   connect(e, SIGNAL(viewurl(QWidget*, QString)), this, SLOT(slot_viewurl(QWidget *, QString)));
-#if QT_VERSION >= 300
+
   if (m_bTabbedChatting && fcn != mnuUserView)
   {
     userEventTabDlg->addTab(e);
@@ -2946,7 +2871,6 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
     }
   }
   else
-#endif
     e->show();
 
   // there might be more than one send window open
@@ -2971,11 +2895,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
 // -----------------------------------------------------------------------------
 void CMainWindow::UserInfoDlg_finished(const char *szId, unsigned long nPPID)
 {
-#if QT_VERSION < 300
-  QListIterator<UserInfoDlg> it(licqUserInfo);
-#else
   QPtrListIterator<UserInfoDlg> it(licqUserInfo);
-#endif
 
   for ( ; it.current(); ++it)
   {
@@ -2994,18 +2914,12 @@ void CMainWindow::UserInfoDlg_finished(const char *szId, unsigned long nPPID)
 // -----------------------------------------------------------------------------
 void CMainWindow::slot_doneUserEventTabDlg()
 {
-#if QT_VERSION >= 300
   userEventTabDlg = NULL;
-#endif
 }
 
 void CMainWindow::slot_userfinished(const char *szId, unsigned long nPPID)
 {
-#if QT_VERSION < 300
-  QListIterator<UserViewEvent> it(licqUserView);
-#else
   QPtrListIterator<UserViewEvent> it(licqUserView);
-#endif
 
   for ( ; it.current(); ++it)
   {
@@ -3020,11 +2934,8 @@ void CMainWindow::slot_userfinished(const char *szId, unsigned long nPPID)
 
 void CMainWindow::slot_sendfinished(const char *szId, unsigned long nPPID)
 {
-#if QT_VERSION < 300
-  QListIterator<UserSendCommon> it(licqUserSend);
-#else
   QPtrListIterator<UserSendCommon> it(licqUserSend);
-#endif
+
   // go through the whole list, there might be more than
   // one hit
   for ( ; it.current(); ++it)
@@ -3284,11 +3195,8 @@ void CMainWindow::slot_eventTag(const char *_szId, unsigned long _nPPID,
   if (!_szId || !_nPPID || !_nEventTag)
     return;
 
-#if QT_VERSION < 300
-  QListIterator<UserSendCommon> it(licqUserSend);
-#else
   QPtrListIterator<UserSendCommon> it(licqUserSend);
-#endif
+
   for(; it.current() != NULL; ++it)
   {
     if (strcmp((*it)->Id(), _szId) == 0 && (*it)->PPID() == _nPPID)
@@ -3621,21 +3529,12 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("ExtendedIcons", m_szExtendedIconSet);
   licqConf.WriteStr("Emoticons", CEmoticons::untranslateThemeName(CEmoticons::self()->theme()).latin1());
 
-#if QT_VERSION >= 300
   licqConf.WriteStr("Font", qApp->font() == defaultFont ?
                     "default" : qApp->font().toString().latin1());
   licqConf.WriteStr("EditFont",
                     (MLEditWrap::editFont == NULL ||
                      *MLEditWrap::editFont == defaultFont) ?
                      "default" : MLEditWrap::editFont->toString().latin1());
-#else
-  licqConf.WriteStr("Font", qApp->font() == defaultFont ?
-                    "default" : qApp->font().rawName().latin1());
-  licqConf.WriteStr("EditFont",
-                    (MLEditWrap::editFont == NULL ||
-                     *MLEditWrap::editFont == defaultFont) ?
-                     "default" : MLEditWrap::editFont->rawName().latin1());
-#endif
   licqConf.WriteBool("GridLines", m_bGridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteNum("Flash", (unsigned short)m_nFlash);
@@ -4781,7 +4680,9 @@ void CMainWindow::slot_usermenu()
   HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(12), bIsLicq)
   HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(13), bIsLicq)
   HIDE_MENU(mnuMiscModes, mnuMiscModes->idAt(14), bIsLicq)
-  
+
+#undef HIDE_MENU
+
   // FIXME: Groups! Show only what is for that protocol plugin in the submenu
   // to properly manage users
   

@@ -1,3 +1,22 @@
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
 #ifndef MAINWIN_H
 #define MAINWIN_H
 
@@ -11,11 +30,7 @@
 #include <qmenubar.h>
 #endif
 
-#if QT_VERSION < 300
-  #include <qlist.h>
-#else
-  #include <qptrlist.h>
-#endif
+#include <qptrlist.h>
 #include <qwidget.h>
 #include <qtimer.h>
 #include <qbitmap.h>
@@ -55,23 +70,15 @@ class IconManager;
 
 class CICQSignal;
 class UserInfoDlg;
-#if QT_VERSION >= 300
 class UserEventTabDlg;
-#endif
 
 #ifdef USE_KDE
 class LicqKIMIface;
 #endif
 
-#if QT_VERSION < 300
-  typedef QList<UserViewEvent> UserViewEventList;
-  typedef QList<UserInfoDlg> UserInfoList;
-  typedef QList<UserSendCommon> UserSendEventList;
-#else
-  typedef QPtrList<UserViewEvent> UserViewEventList;
-  typedef QPtrList<UserInfoDlg> UserInfoList;
-  typedef QPtrList<UserSendCommon> UserSendEventList;
-#endif
+typedef QPtrList<UserViewEvent> UserViewEventList;
+typedef QPtrList<UserInfoDlg> UserInfoList;
+typedef QPtrList<UserSendCommon> UserSendEventList;
 
 using std::vector;
 
@@ -202,9 +209,7 @@ public:
   OptionsDlg *optionsDlg;
   OwnerManagerDlg *ownerManagerDlg;
   PluginDlg *pluginDlg;
-#if QT_VERSION >= 300
   UserEventTabDlg *userEventTabDlg;
-#endif
 
   // Widgets
   CUserView *userView;

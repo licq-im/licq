@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2 -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 2000-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 // written by Graham Roff <graham@licq.org>
 // contributions by Dirk A. Mueller <dirk@licq.org>
@@ -54,9 +56,9 @@
 #include <kapp.h>
 #include <kfiledialog.h>
 #include <kcolordialog.h>
-#if KDE_VERSION >= 320
+#if KDE_IS_VERSION(3, 2, 0)
 #include <kwin.h>
-#endif // KDE_VERSION
+#endif // KDE_IS_VERSION
 #else
 #include <qfiledialog.h>
 #include <qcolordialog.h>
@@ -241,25 +243,20 @@ UserEventTabDlg::UserEventTabDlg(CMainWindow *mainwin, QWidget *parent, const ch
   : QWidget(parent, name, WDestructiveClose)
 {
   this->mainwin = mainwin;
-#if QT_VERSION >= 300
   QBoxLayout *lay = new QVBoxLayout(this);
   tabw = new CETabWidget(this);
   lay->addWidget(tabw);
   connect(tabw, SIGNAL(currentChanged(QWidget *)),
           this, SLOT(slot_currentChanged(QWidget *)));
-#endif
 }
 
 UserEventTabDlg::~UserEventTabDlg()
 {
-#if QT_VERSION >= 300
   emit signal_done();
-#endif
 }
 
 void UserEventTabDlg::addTab(UserEventCommon *tab, int index)
 {
-#if QT_VERSION >= 300
   QString label;
   ICQUser *u = gUserManager.FetchUser(tab->Id(), tab->PPID(), LOCK_W);
   if (u == NULL) return;
@@ -270,12 +267,10 @@ void UserEventTabDlg::addTab(UserEventCommon *tab, int index)
   updateTabLabel(u);
   gUserManager.DropUser(u);
   tabw->showPage(tab);
-#endif
 }
 
 void UserEventTabDlg::removeTab(QWidget *tab)
 {
-#if QT_VERSION >= 300
   if (tabw->count() > 1)
   {
     tabw->removePage(tab);
@@ -285,47 +280,34 @@ void UserEventTabDlg::removeTab(QWidget *tab)
   }
   else
     close();
-#endif
 }
 
 void UserEventTabDlg::selectTab(QWidget *tab)
 {
-#if QT_VERSION >= 300
   tabw->showPage(tab);
   updateTitle(tab);
-#endif
 }
 
 void UserEventTabDlg::replaceTab(QWidget *oldTab,
 				 UserEventCommon *newTab)
 {
-#if QT_VERSION >= 300
   addTab(newTab, tabw->indexOf(oldTab));
   removeTab(oldTab);
-#endif
 }
 
 bool UserEventTabDlg::tabIsSelected(QWidget *tab)
 {
-#if QT_VERSION >= 300
   if (tabw->currentPageIndex() == tabw->indexOf(tab))
     return true;
   else
     return false;
-#else
-  return false; //should never be used with QT < 3!
-#endif
 }
 
 bool UserEventTabDlg::tabExists(QWidget *tab)
 {
-#if QT_VERSION >= 300
   if (tabw->indexOf(tab) != -1)
     return true;
   else return false;
-#else
-  return false; //should never be used with QT < 3!
-#endif
 }
 
 void UserEventTabDlg::updateConvoLabel(UserEventCommon *tab)
@@ -351,7 +333,6 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon *tab)
 
 void UserEventTabDlg::updateTabLabel(ICQUser *u)
 {
-#if QT_VERSION >= 300
   for (int index = 0; index < tabw->count(); index++)
   {
     UserEventCommon *tab = static_cast<UserEventCommon*>(tabw->page(index));
@@ -414,12 +395,10 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
       return;
     }
   }
-#endif
 }
 
 void UserEventTabDlg::gotTyping(ICQUser *u, int nConvoId)
 {
-#if QT_VERSION >= 300
   for (int index = 0; index < tabw->count(); index++)
   {
     UserEventCommon *tab = static_cast<UserEventCommon*>(tabw->page(index));
@@ -430,7 +409,6 @@ void UserEventTabDlg::gotTyping(ICQUser *u, int nConvoId)
       tab->gotTyping(u->GetTyping());
     }
   }
-#endif
 }
 
 /*! This slot should get called when the current tab has 
@@ -445,24 +423,19 @@ void UserEventTabDlg::slot_currentChanged(QWidget *tab)
 
 void UserEventTabDlg::updateTitle(QWidget *tab)
 {
-#if QT_VERSION >= 300
   if (tab->caption())
     setCaption(tab->caption());
 
   if (!tabw->tabIconSet(tab).isNull() &&
       !tabw->tabIconSet(tab).pixmap().isNull())
     setIcon(tabw->tabIconSet(tab).pixmap());
-  
-#endif
 }
 
 void UserEventTabDlg::clearEvents(QWidget *tab)
 {
-#if QT_VERSION >= 300
   if (!isActiveWindow()) return;
   UserSendCommon *e = static_cast<UserSendCommon*>(tab);
   QTimer::singleShot(e->clearDelay, e, SLOT(slot_ClearNewEvents()));
-#endif
 }
 
 void UserEventTabDlg::flashTaskbar(bool _bFlash)
@@ -481,21 +454,15 @@ void UserEventTabDlg::flashTaskbar(bool _bFlash)
 
 void UserEventTabDlg::moveLeft()
 {
-#if QT_VERSION >= 300
   tabw->setPreviousPage();
-#endif
 }
 
 void UserEventTabDlg::moveRight()
 {
-#if QT_VERSION >= 300
   tabw->setNextPage();
-#endif
 }
 
-#ifdef USE_KDE
-#if KDE_VERSION >= 320
-
+#if defined(USE_KDE) && KDE_IS_VERSION(3, 2, 0)
 /* KDE 3.2 handles app-icon updates differently, since KDE 3.2 a simple setIcon() call
    does no longer update the icon in kicker anymore :(
    So we do it the "kde-way" here */
@@ -503,9 +470,7 @@ void UserEventTabDlg::setIcon(const QPixmap &icon)
 {
   KWin::setIcons(winId(), icon, icon);
 }
-
-#endif   // KDE_VERSION
-#endif // USE_KDE
+#endif
 
 void UserEventTabDlg::setMsgWinSticky()
 {
@@ -599,11 +564,11 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
     tmp = tmp + lastname;
   if (!tmp.isEmpty()) tmp = " (" + tmp + ")";
   m_sBaseTitle = QString::fromUtf8(u->GetAlias()) + tmp;
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   setCaption(m_sBaseTitle);
   setIconText(u->GetAlias());
 }
@@ -788,11 +753,9 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
 
   msgView = new MsgView(splRead);
   mlvRead = new MLView(splRead, "mlvRead");
-#if QT_VERSION < 300
-  mlvRead->setFormatQuoted(true);
-#else
+
   connect(mlvRead, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
-#endif
+
   splRead->setResizeMode(msgView, QSplitter::FollowSizeHint);
   splRead->setResizeMode(mlvRead, QSplitter::Stretch);
 
@@ -984,14 +947,12 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
      m_messageText = QString::fromUtf8(m->Text());
   else
      m_messageText = codec->toUnicode(m->Text());
-#if QT_VERSION < 300
-  mlvRead->setText(m_messageText);
-#else
+
   // Looks like there's no other way to set color in Qt 3's RichText control
   QString colorAttr;
   colorAttr.sprintf(QString::fromLatin1("#%02x%02x%02x"), m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue());
   mlvRead->setText("<font color=\"" + colorAttr + "\">" + MLView::toRichText(m_messageText, true) + "</font>");
-#endif
+
   mlvRead->setCursorPosition(0, 0);
 
   if (m->Direction() == D_RECEIVER && (m->Command() == ICQ_CMDxTCP_START || m->Command() == ICQ_CMDxRCV_SYSxMSGxONLINE || m->Command() == ICQ_CMDxRCV_SYSxMSGxOFFLINE))
@@ -1513,7 +1474,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
   QAccel *a = new QAccel( this );
   a->connectItem(a->insertItem(Key_Escape), this, SLOT(slot_cancelSend()));
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       parent == mainwin->userEventTabDlg)
   {
@@ -1526,7 +1487,6 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     a->connectItem(a->insertItem(CTRL + Key_Tab),
 		   mainwin->userEventTabDlg, SLOT(moveRight()));
   }
-#endif
 
   QGroupBox *box = new QGroupBox(this);
   top_lay->addWidget(box);
@@ -1768,9 +1728,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     }
     
     gUserManager.DropUser(u);
-#if QT_VERSION >= 300
+
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
-#endif
     connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
@@ -1903,7 +1862,6 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long _nConvoId)
   }
 }
 
-#if QT_VERSION >= 300
 //-----UserSendCommon::windowActivationChange--------------------------------
 void UserSendCommon::windowActivationChange(bool oldActive)
 {
@@ -1911,16 +1869,14 @@ void UserSendCommon::windowActivationChange(bool oldActive)
     QTimer::singleShot(clearDelay, this, SLOT(slot_ClearNewEvents()));
   QWidget::windowActivationChange(oldActive);
 }
-#endif
 
 //-----UserSendCommon::slot_resettitle---------------------------------------
 void UserSendCommon::slot_resettitle()
 {
-#if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   setCaption(m_sBaseTitle);
 }
 
@@ -2062,12 +2018,10 @@ void UserSendCommon::slot_ClearNewEvents()
   {
     u = gUserManager.FetchUser((*it).c_str(), m_nPPID, LOCK_W);
     if (mainwin->m_bMsgChatView
-#if QT_VERSION >= 300
         && isActiveWindow() && (!mainwin->userEventTabDlg ||
         (mainwin->userEventTabDlg &&
           (!mainwin->userEventTabDlg->tabExists(this) ||
             mainwin->userEventTabDlg->tabIsSelected(this))))
-#endif
         )
     {
       if (u != NULL && u->NewMessages() > 0)
@@ -2097,10 +2051,10 @@ void UserSendCommon::changeEventType(int id)
   if (isType(id)) return;
   UserSendCommon* e = NULL;
   QWidget *parent = NULL;
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg && mainwin->userEventTabDlg->tabExists(this))
     parent = mainwin->userEventTabDlg;
-#endif
+
   switch(id)
   {
 
@@ -2158,10 +2112,8 @@ void UserSendCommon::changeEventType(int id)
       QTimer::singleShot(10, e, SLOT(show()));
       QTimer::singleShot(100, this, SLOT(close()));
     }
-#if QT_VERSION >= 300
     else
       mainwin->userEventTabDlg->replaceTab(this, e);
-#endif
   }
 }
 
@@ -2175,12 +2127,11 @@ void UserSendCommon::massMessageToggled(bool b)
   if (b)
   {
     chkMass->setChecked(true);
-#if QT_VERSION >= 300
+
     if (mainwin->userEventTabDlg &&
         mainwin->userEventTabDlg->tabIsSelected(this))
       tmpWidgetWidth = mainwin->userEventTabDlg->width();
     else
-#endif
       tmpWidgetWidth = width();
     if (grpMR == NULL)
     {
@@ -2209,7 +2160,6 @@ void UserSendCommon::massMessageToggled(bool b)
       // resize the widget to it's origin width.
       // This is a workaround and not perfect, but resize() does not
       // work as expected. Maybe we find a better solution for this in future.
-#if QT_VERSION >= 300
       if (mainwin->userEventTabDlg &&
           mainwin->userEventTabDlg->tabIsSelected(this))
       {
@@ -2224,7 +2174,6 @@ void UserSendCommon::massMessageToggled(bool b)
         mainwin->userEventTabDlg->setMaximumSize(tmpMaxSize);
       }
       else
-#endif
       {
         QSize tmpMaxSize = maximumSize();
         if (tmpWidgetWidth == 0)
@@ -2270,11 +2219,11 @@ void UserSendCommon::sendButton()
     m_sProgressMsg += via_server ? tr("via server") : tr("direct");
     m_sProgressMsg += "...";
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + "]";
-#if QT_VERSION >= 300
+
     if (mainwin->userEventTabDlg &&
         mainwin->userEventTabDlg->tabIsSelected(this))
       mainwin->userEventTabDlg->setCaption(title);
-#endif
+
     setCaption(title);
     setCursor(waitCursor);
     btnSend->setText(tr("&Cancel"));
@@ -2307,11 +2256,11 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   if (e == NULL)
   {
     QString title = m_sBaseTitle + " [" + m_sProgressMsg + tr("error") + "]";
-#if QT_VERSION >= 300
+
     if (mainwin->userEventTabDlg &&
         mainwin->userEventTabDlg->tabIsSelected(this))
       mainwin->userEventTabDlg->setCaption(title);
-#endif
+
     setCaption(title);
 
     return;
@@ -2356,11 +2305,11 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     break;
   }
   title = m_sBaseTitle + " [" + m_sProgressMsg + result + "]";
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(title);
-#endif
+
   setCaption(title);
 
   setCursor(arrowCursor);
@@ -2618,12 +2567,10 @@ void UserSendCommon::slot_close()
   if (mleSend)
     mainwin->m_bCheckSpellingEnabled = mleSend->checkSpellingEnabled();
 
-#if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabExists(this))
     mainwin->userEventTabDlg->removeTab(this);
   else
-#endif
     close();
 }
 
@@ -2637,11 +2584,10 @@ void UserSendCommon::slot_cancelSend()
   if (!icqEventTag)
     return slot_close(); // if we're not sending atm, let ESC close the window
 
-#if QT_VERSION >= 300
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   server->CancelEvent(icqEventTag);
 }
 
@@ -2734,11 +2680,11 @@ UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setFocus ();
 
   m_sBaseTitle += tr(" - Message");
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(UC_MESSAGE);
 }
@@ -2899,11 +2845,11 @@ UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
   edtItem->installEventFilter(this);
 
   m_sBaseTitle += tr(" - URL");
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(UC_URL);
 }
@@ -3032,11 +2978,11 @@ UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(btnEdit);
 
   m_sBaseTitle += tr(" - File Transfer");
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(UC_FILE);
 }
@@ -3226,11 +3172,11 @@ UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(btnBrowse);
 
   m_sBaseTitle += tr(" - Chat Request");
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(UC_CHAT);
 }
@@ -3356,11 +3302,11 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   lay->addWidget(lstContacts);
 
   m_sBaseTitle += tr(" - Contact List");
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(UC_CONTACT);
 }
@@ -3490,11 +3436,11 @@ UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
   }
 
   m_sBaseTitle += tr(" - SMS");
-#if QT_VERSION >= 300
+
   if (mainwin->userEventTabDlg &&
       mainwin->userEventTabDlg->tabIsSelected(this))
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
-#endif
+
   setCaption(m_sBaseTitle);
   cmbSendType->setCurrentItem(UC_SMS);
 }

@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2 -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #include <qdir.h>
 #include <qframe.h>
@@ -606,18 +608,12 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	if (skin->frame.pixmap != NULL)
 	{
 		p = (QImage(skin->frame.pixmap).smoothScale(w.width(), w.height()));
-#if QT_VERSION < 300
-		w.setBackgroundPixmap(p);
-#else
 		w.setPaletteBackgroundPixmap(p);
-#endif
 	}
 	else
 	{
 		setBackgroundMode(PaletteBackground);
-#if QT_VERSION >= 300
 		unsetPalette();
-#endif
 	}
 
 	// Group Combo Box
@@ -663,10 +659,6 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	lblMsg->setNamedBgColor(skin->lblMsg.color.bg);
 	if (skin->lblMsg.pixmap != NULL)
 	{
-#if QT_VERSION < 300
-		lblMsg->setBackgroundPixmap(QPixmap(skin->lblMsg.pixmap));
-	}
-#else
 		lblMsg->setBackgroundOrigin(w.ParentOrigin);
 		lblMsg->setPaletteBackgroundPixmap(p);
 		lblMsg->setPixmap(QPixmap(skin->lblMsg.pixmap));
@@ -676,7 +668,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 		lblMsg->setBackgroundOrigin(w.ParentOrigin);
 		lblMsg->setPaletteBackgroundPixmap(p);
 	}
-#endif
+
 	lblMsg->setGeometry(skin->borderToRect(&skin->lblMsg, &w));
 	lblMsg->setText("New Users");
 
@@ -688,10 +680,6 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	lblStatus->setNamedBgColor(skin->lblStatus.color.bg);
 	if (skin->lblStatus.pixmap != NULL)
 	{
-#if QT_VERSION < 300
-		lblStatus->setBackgroundPixmap(p);
-	}
-#else
 		lblStatus->setBackgroundOrigin(w.ParentOrigin);
 		lblStatus->setPaletteBackgroundPixmap(p);
 		lblStatus->setPixmap(QPixmap(skin->lblStatus.pixmap));
@@ -701,7 +689,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 		lblStatus->setBackgroundOrigin(w.ParentOrigin);
 		lblStatus->setPaletteBackgroundPixmap(p);
 	}
-#endif
+
 	lblStatus->setGeometry(skin->borderToRect(&skin->lblStatus, &w));
 	lblStatus->setText("Online");
 	lblStatus->setPrependPixmap(CMainWindow::iconForStatus(ICQ_STATUS_ONLINE));
@@ -724,12 +712,8 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 											skin->colors.background, skin->colors.gridlines);
 	if (skin->frame.transparent)
 	{
-#if QT_VERSION < 300
-	userView.setBackgroundPixmap(p);
-#else
 	userView.setBackgroundOrigin(w.ParentOrigin);
 	userView.setPaletteBackgroundPixmap(p);
-#endif
 	}
 	userView.show();
 

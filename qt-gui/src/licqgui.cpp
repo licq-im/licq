@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2; -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -22,28 +24,7 @@
 
 #ifdef USE_KDE
 #include <kapp.h>
-#if KDE_VERSION < 290
-#include <kthemestyle.h>
 #endif
-#endif
-
-// In Qt 3.x and above, we should use QStyleFactory, since the styles
-// can come as plugins.
-#if QT_VERSION < 300
-#include <qwindowsstyle.h>
-#include <qmotifstyle.h>
-#include <qplatinumstyle.h>
-#include <qcdestyle.h>
-#if QT_VERSION >= 230
-#if HAVE_QINTERLACESTYLE_H
-#include <qinterlacestyle.h>
-#endif
-#endif
-#if QT_VERSION >= 220
-#include <qsgistyle.h>
-#include <qmotifplusstyle.h>
-#endif
-#endif // end of QT_VERSION < 300
 
 #include <qsessionmanager.h>
 #include <qaccel.h>
@@ -62,9 +43,7 @@
 
 #include "licq_icqd.h"
 
-#if QT_VERSION >= 300
 #include <qstylefactory.h>
-#endif
 
 CLicqGui *licqQtGui;
 
@@ -173,28 +152,6 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
 {
   QStyle *s = NULL;
 
-#if QT_VERSION < 300
-  if (strncmp(_szStyle, "MOTIF", 3) == 0)
-    s = new QMotifStyle;
-  else if (strncmp(_szStyle, "WINDOWS", 3) == 0)
-    s = new QWindowsStyle;
-  else if (strncmp(_szStyle, "MAC", 3) == 0)
-    s = new QPlatinumStyle;
-  else if (strncmp(_szStyle, "CDE", 3) == 0)
-    s = new QCDEStyle;
-#if QT_VERSION >= 220
-  else if (strncmp( _szStyle, "SGI", 3 ) == 0 )
-    s = new QSGIStyle;
-#endif
-#if (QT_VERSION >= 230) && defined(QINTERLACESTYLE_H)
-  else if (strncmp( _szStyle, "LCD", 3 ) == 0 )
-    s = new QInterlaceStyle;
-#endif
-#if QT_VERSION >= 220
-  else if (strncmp(_szStyle, "GTK", 3) == 0)
-    s = new QMotifPlusStyle(true);
-#endif
-#else  // QT_VERSION >= 300
   if (strncmp(_szStyle, "MOTIF", 3) == 0)
     s = QStyleFactory::create("motif");
   else if (strncmp(_szStyle, "WINDOWS", 3) == 0)
@@ -205,7 +162,6 @@ QStyle *CLicqGui::SetStyle(const char *_szStyle)
     s = QStyleFactory::create("cde");
   else if (strncmp( _szStyle, "SGI", 3 ) == 0 )
     s = QStyleFactory::create("sgi");
-#endif
 
   return s;
 }

@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2 -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 2000-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 // written by Graham Roff <graham@licq.org>
 // contributions by Dirk A. Mueller <dirk@licq.org>
@@ -1180,10 +1182,7 @@ void UserInfoDlg::CreateAbout()
   mlvAbout = new CHistoryWidget(p, "About");//EditWrap(true, p);
   mlvAbout->setReadOnly(!m_bOwner);
   mlvAbout->setTextFormat(RichText);
-#if QT_VERSION >= 300
   connect(mlvAbout, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
-#endif
-
 }
 
 void UserInfoDlg::SetAbout(ICQUser *u)
@@ -1728,9 +1727,9 @@ void UserInfoDlg::CreateHistory()
 
   mlvHistory = new CMessageViewWidget(m_szId, m_nPPID, mainwin, p, "history");
   mlvHistory->m_nMsgStyle = 4; /* STYLE_HISTORY */
-#if QT_VERSION >= 300
+
   connect(mlvHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
-#endif
+
   lay->addWidget(mlvHistory, 1);
 
   l = new QHBoxLayout(lay);
@@ -2041,7 +2040,6 @@ void UserInfoDlg::ShowHistory()
       else
         messageText = codec->toUnicode((*tempIter)->Text());
 
-#if QT_VERSION >= 300
       mlvHistory->addMsg((*tempIter)->Direction(), false,
                   EventDescription(*tempIter),
                   date,
@@ -2051,23 +2049,6 @@ void UserInfoDlg::ShowHistory()
                   (*tempIter)->IsEncrypted(),
                   contactName,
                   MLView::toRichText(messageText, true, bUseHTML));
-#else
-      // See CHistoryWidget::paintCell for reference on those Qt 2-only
-      // formatting escape codes.
-      s.sprintf("%c%s\n%c%s [%c%c%c%c]\n\n%s\n\n",
-                ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
-                ((*tempIter)->Direction() == D_RECEIVER ? tr("%1 from %2") : tr("%1 to %2"))
-                  .arg(EventDescription(*tempIter)).arg(contactName).utf8().data(),
-                ((*tempIter)->Direction() == D_RECEIVER ? '\001' : '\002'),
-                date.toString().utf8().data(),
-                (*tempIter)->IsDirect() ? 'D' : '-',
-                (*tempIter)->IsMultiRec() ? 'M' : '-',
-                (*tempIter)->IsUrgent() ? 'U' : '-',
-                (*tempIter)->IsEncrypted() ? 'E' : '-',
-                messageText.utf8().data()
-      );
-      tmp.append(s);
-#endif
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);
     }

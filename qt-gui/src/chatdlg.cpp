@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2 -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 // written by Graham Roff <graham@licq.org>
 // Contributions by Dirk A. Mueller <dirk@licq.org>
@@ -129,11 +131,7 @@ ChatDlg::ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
 
   setOpaqueMoving(true);
   setToolBarsMovable(true);
-#if QT_VERSION < 300
-  setDockEnabled(Bottom, true);
-#else
   setDockEnabled(DockBottom, true);
-#endif
   setUsesBigPixmaps(false);
 
   // Pane mode setup
@@ -353,12 +351,12 @@ ChatDlg::ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
   QFontInfo fi(mlePaneLocal->font());
   QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
   unsigned char style = STYLE_DONTCARE;
-#if QT_VERSION >= 230
+
   if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
     style |= STYLE_FIXEDxPITCH;
   else
     style |= STYLE_VARIABLExPITCH;
-#endif
+
   unsigned char encoding = UserCodec::charsetForName(codec->name());
   //TODO in daemon
   chatman = new CChatManager(daemon, strtoul(m_szId, (char **)NULL, 10),
@@ -411,11 +409,7 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
 
   setOpaqueMoving(true);
   setToolBarsMovable(true);
-#if QT_VERSION < 300
-  setDockEnabled(Bottom, true);
-#else
   setDockEnabled(DockBottom, true);
-#endif
   setUsesBigPixmaps(false);
 
   // Pane mode setup
@@ -635,12 +629,12 @@ ChatDlg::ChatDlg(unsigned long _nUin, CICQDaemon *daemon,
   QFontInfo fi(mlePaneLocal->font());
   QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
   unsigned char style = STYLE_DONTCARE;
-#if QT_VERSION >= 230
+
   if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
     style |= STYLE_FIXEDxPITCH;
   else
     style |= STYLE_VARIABLExPITCH;
-#endif
+
   unsigned char encoding = UserCodec::charsetForName(codec->name());
   chatman = new CChatManager(daemon, _nUin, fi.family().local8Bit(),
      encoding, style, fi.pointSize(), fi.bold(), fi.italic(), fi.underline(),
@@ -749,12 +743,11 @@ void ChatDlg::sendFontInfo()
   QFontInfo fi(mlePaneLocal->font());
   QFontDatabase fd; //QFontInfo.fixedPitch returns incorrect info???
   unsigned char style = STYLE_DONTCARE;
-#if QT_VERSION >= 230
+
   if (fd.isFixedPitch(fi.family(), fd.styleString(mlePaneLocal->font())))
     style |= STYLE_FIXEDxPITCH;
   else
     style |= STYLE_VARIABLExPITCH;
-#endif
 
   unsigned char encoding = UserCodec::charsetForName(codec->name());
 
@@ -861,9 +854,8 @@ void ChatDlg::updateRemoteStyle()
       QColor bg(iter->u->ColorBg()[0], iter->u->ColorBg()[1],
                          iter->u->ColorBg()[2]);
       QFont f(iter->w->font());
-#if QT_VERSION >= 230
       f.setFixedPitch(iter->u->FontStyle() & 0x0F == STYLE_FIXEDxPITCH);
-#endif
+
       switch (iter->u->FontStyle() & 0xF0)
       {
       case STYLE_ROMAN:
@@ -1097,15 +1089,15 @@ void ChatDlg::slot_chat()
 
       case CHAT_BACKSPACE:   // backspace
       {
-#if QT_VERSION >= 300
+
         GetWindow(u)->setReadOnly(false);
         GetWindow(u)->setCursorPosition(-1, -1, false);
-#endif
+
         GetWindow(u)->backspace();
-#if QT_VERSION >= 300
+
         GetWindow(u)->setReadOnly(true);
         GetWindow(u)->update();
-#endif
+
         break;
       }
 
@@ -1131,9 +1123,8 @@ void ChatDlg::slot_chat()
         if (tbtIgnore->state() == QButton::Off)
         {
           QFont f(GetWindow(u)->font());
-#if QT_VERSION >= 230
           f.setFixedPitch(u->FontStyle() & 0x0F == STYLE_FIXEDxPITCH);
-#endif
+
           switch (u->FontStyle() & 0xF0)
           {
           case STYLE_ROMAN:

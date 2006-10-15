@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2 -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 2000-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #ifndef USEREVENTDLG_H
 #define USEREVENTDLG_H
@@ -35,6 +37,12 @@ using std::string;
 #include "licq_color.h"
 #include "licq_filetransfer.h"
 #include "licq_message.h"
+
+#ifdef USE_KDE
+#include <kdeversion.h>
+#else
+#define KDE_IS_VERSION(a, b, c) 0
+#endif
 
 class QTabWidget;
 class QBoxLayout;
@@ -96,11 +104,9 @@ public:
   void gotTyping(ICQUser *u, int);
   void changeMsgWinSticky(bool _bStick);
 
-#ifdef USE_KDE
-#if KDE_VERSION >= 320
+#if defined(USE_KDE) && KDE_IS_VERSION(3, 2, 0)
   virtual void setIcon(const QPixmap &icon);
-#endif   // KDE_VERSION
-#endif // USE_KDE
+#endif
   
 private:
   CETabWidget *tabw;
@@ -262,10 +268,8 @@ public:
   void setText(const QString& txt);
   void convoJoin(const char *, unsigned long _nConvoId);
   void convoLeave(const char *, unsigned long _nConvoId);
-  
-#if QT_VERSION >= 300
+
   virtual void windowActivationChange(bool oldActive);
-#endif
   int clearDelay;
   
 signals:

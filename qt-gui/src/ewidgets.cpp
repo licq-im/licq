@@ -1,4 +1,22 @@
 // -*- c-basic-offset: 2 -*-
+/*
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -56,21 +74,12 @@ bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, bool
   bool result;
 
 #ifdef USE_KDE
-#if KDE_VERSION >= 290
   result = ( KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"), szBtn1, szBtn2, QString::null, false) == KMessageBox::Yes);
   // The user must confirm his decision!
   if(result == true && bConfirmYes && szConfirmYes)
     result = ( KMessageBox::questionYesNo(q, szConfirmYes, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), QString::null, false) == KMessageBox::Yes);
   else if(result == false && bConfirmNo && szConfirmNo)
     result = ( KMessageBox::questionYesNo(q, szConfirmNo, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), QString::null, false) == KMessageBox::Yes);
-#else
-  result = ( KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"), szBtn1, szBtn2, false) == KMessageBox::Yes);
-  // The user must confirm his decision!
-  if(result == true && bConfirmYes && szConfirmYes)
-    result = ( KMessageBox::questionYesNo(q, szConfirmYes, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), false) == KMessageBox::Yes);
-  else if(result == false && bConfirmNo && szConfirmNo)
-    result = ( KMessageBox::questionYesNo(q, szConfirmNo, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), false) == KMessageBox::Yes);
-#endif
 #else
   result = ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2) == 0);
   // The user must confirm his decision!
@@ -111,12 +120,6 @@ CELabel::CELabel(bool _bTransparent, QPopupMenu *m, QWidget *parent, char *name)
 {
   mnuPopUp = m;
   m_bTransparent = _bTransparent;
-  if (_bTransparent)
-  {
-#if QT_VERSION < 300
-    setAutoMask(true);
-#endif
-  }
 }
 
 
@@ -189,13 +192,8 @@ void CELabel::setNamedFgColor(char *theColor)
    if (!c.isValid()) return;
 
    QPalette pal(palette());
-#if QT_VERSION >= 210
    pal.setColor(QPalette::Active, QColorGroup::Foreground, c);
    pal.setColor(QPalette::Inactive, QColorGroup::Foreground, c);
-#else
-   pal.setColor(QPalette::Active, QColorGroup::Text, c);
-   pal.setColor(QPalette::Normal, QColorGroup::Text, c);
-#endif
 
    setPalette(pal);
 }
@@ -210,22 +208,13 @@ void CELabel::setNamedBgColor(char *theColor)
    QPalette pal(palette());
 // Since Qt sucks we have to use this cheap hack instead of the documented
 // and correct way to set the color
-#if QT_VERSION < 300
-   QColorGroup normal(pal.normal());
-#else
-   QColorGroup normal(pal.active()); 
-#endif
+   QColorGroup normal(pal.active());
    QColorGroup newNormal(normal.foreground(), c, normal.light(), normal.dark(),
                          normal.mid(), normal.text(), normal.base());
    pal = QPalette(newNormal, newNormal, newNormal);
 #if 0
-#if QT_VERSION >= 210
    pal.setColor(QPalette::Active, QColorGroup::Background, c);
    pal.setColor(QPalette::Inactive, QColorGroup::Background, c);
-#else
-   pal.setColor(QPalette::Active, QColorGroup::Background, c);
-   pal.setColor(QPalette::Normal, QColorGroup::Background, c);
-#endif
 #endif
 
    setPalette(pal);
@@ -252,7 +241,6 @@ void CELabel::drawContents(QPainter* p)
 
 void CELabel::resizeEvent (QResizeEvent *)
 {
-#if QT_VERSION >= 300
   if (paletteBackgroundPixmap() != NULL)
   {
     // Scale it if it is not transparent
@@ -264,18 +252,6 @@ void CELabel::resizeEvent (QResizeEvent *)
       setPaletteBackgroundPixmap(pm);
     }
   }
-#else 
-  // Resize the background pixmap properly
-  if (autoMask()) updateMask();
-
-  if (backgroundPixmap() != NULL)
-  {
-    QImage im = (backgroundPixmap()->convertToImage()).smoothScale(width(), height());
-    QPixmap pm;
-    pm.convertFromImage(im);
-    setBackgroundPixmap(pm);
-  }
-#endif
 }
 
 void CELabel::mousePressEvent(QMouseEvent* e)
@@ -389,11 +365,7 @@ void CEButton::setNamedFgColor(char *theColor)
    if (theColor == NULL) return;
 
    QPalette pal(palette());
-#if QT_VERSION < 300
-   QColorGroup normal(pal.normal());
-#else
    QColorGroup normal(pal.active());
-#endif
    QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
                          normal.mid(), QColor(theColor), normal.base());
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
@@ -404,11 +376,7 @@ void CEButton::setNamedBgColor(char *theColor)
    if (theColor == NULL) return;
 
    QPalette pal(palette());
-#if QT_VERSION < 300
-   QColorGroup normal(pal.normal());
-#else
    QColorGroup normal(pal.active());
-#endif
    QColorGroup newNormal(normal.foreground(), QColor(theColor), normal.light(), normal.dark(),
                          normal.mid(), normal.text(), normal.base());
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
@@ -423,11 +391,7 @@ CEComboBox::CEComboBox(bool _bAppearEnabledAlways, QWidget *parent, char *name)
    if (m_bAppearEnabledAlways)
    {
       QPalette pal(palette());
-#if QT_VERSION < 300
-      setPalette(QPalette(pal.normal(), pal.normal(), pal.normal()));
-#else
       setPalette(QPalette(pal.active(), pal.active(), pal.active()));
-#endif
    }
 }
 
@@ -437,11 +401,7 @@ void CEComboBox::setNamedFgColor(char *theColor)
    if (theColor == NULL) return;
 
    QPalette pal(palette());
-#if QT_VERSION < 300
-   QColorGroup normal(pal.normal());
-#else
    QColorGroup normal(pal.active());
-#endif
    QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
                          normal.mid(), QColor(theColor), normal.base());
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
@@ -453,11 +413,7 @@ void CEComboBox::setNamedBgColor(char *theColor)
    if (theColor == NULL) return;
 
    QPalette pal(palette());
-#if QT_VERSION < 300
-   QColorGroup normal(pal.normal());
-#else
    QColorGroup normal(pal.active());
-#endif
    QColorGroup newNormal(normal.foreground(), normal.background(), normal.light(), normal.dark(),
                          normal.mid(), normal.text(), QColor(theColor));
    setPalette(QPalette(newNormal, pal.disabled(), newNormal));
@@ -636,11 +592,7 @@ CInfoField::CInfoField(QWidget *parent, bool readonly)
   : QLineEdit(parent)
 {
   baseRO = palette().disabled().base();
-#if QT_VERSION < 300
-  baseRW = palette().normal().base();
-#else
   baseRW = palette().active().base();
-#endif
 
   // Set colors
   SetReadOnly(readonly);
@@ -648,15 +600,6 @@ CInfoField::CInfoField(QWidget *parent, bool readonly)
 
 void CInfoField::SetReadOnly(bool b)
 {
-#if QT_VERSION < 300
-  QColorGroup cg(palette().normal().foreground(),
-                 palette().normal().background(),
-                 palette().normal().light(),
-                 palette().normal().dark(),
-                 palette().normal().mid(),
-                 palette().normal().text(),
-                 b ? baseRO : baseRW);
-#else
   QColorGroup cg(palette().active().foreground(),
                  palette().active().background(),
                  palette().active().light(),
@@ -664,7 +607,6 @@ void CInfoField::SetReadOnly(bool b)
                  palette().active().mid(),
                  palette().active().text(),
                  b ? baseRO : baseRW);
-#endif
 
   setPalette(QPalette(cg, palette().disabled(), cg));
   setReadOnly(b);
@@ -713,42 +655,10 @@ void CInfoField::keyPressEvent(QKeyEvent *e)
 CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
   : MLView(parent, name)
 {
-#if QT_VERSION >= 300
   setTextFormat(RichText);
-#endif
 };
 
 // -----------------------------------------------------------------------------
-
-#if QT_VERSION < 300
-void CHistoryWidget::paintCell(QPainter* p, int row, int col)
-{
-  QPalette& pal = const_cast<QPalette&>(palette());
-
-  QString s = stringShown(row);
-  bool bold = (s[0] == '\001' || s[0] == '\002');
-  if(bold ^ p->font().bold()) {
-    QFont f(p->font());
-    f.setBold(bold);
-    p->setFont(f);
-  }
-
-  int i= row;
-  pal.setColor(QColorGroup::Text, Qt::blue);
-  while(i >= 0)
-  {
-    QString s2 = stringShown(i--);
-    if (s2[0] == '\002')  break;
-    if(s2[0] == '\001')
-    {
-      pal.setColor(QColorGroup::Text, Qt::red);
-      break;
-    }
-  }
-
-  MLView::paintCell(p, row, col);
-}
-#endif
 
 //- Message View Widget ---------------------------------------------------------
 CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
@@ -1003,7 +913,6 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
 
   QString s;
 
-#if QT_VERSION >= 300
   QString messageText;
   if (e->SubCommand() == ICQ_CMDxSUB_SMS)
      messageText = QString::fromUtf8(e->Text());
@@ -1019,25 +928,6 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
          e->IsEncrypted(),
          contactName,
          MLView::toRichText(messageText, true, bUseHTML));
-#else
-  QString messageText = codec->toUnicode(e->Text());
-  s.sprintf("%c%s%s [%c%c%c%c] %s:\n%s",
-            (e->Direction() == D_RECEIVER) ? '\001' : '\002',
-            e->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") :
-              (EventDescription(e) + " ").utf8().data(),
-            sd.utf8().data(),
-            e->IsDirect() ? 'D' : '-',
-            e->IsMultiRec() ? 'M' : '-',
-            e->IsUrgent() ? 'U' : '-',
-            e->IsEncrypted() ? 'E' : '-',
-            contactName.utf8().data(),
-            messageText.utf8().data()
-           );
-  append(s);
-#endif
-#if QT_VERSION < 300
-  repaint(false);
-#endif
   GotoEnd();
 
   QWidget *parent = NULL;
@@ -1045,12 +935,9 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
       parentWidget()->parentWidget() &&
       parentWidget()->parentWidget()->parentWidget())
     parent = parentWidget()->parentWidget()->parentWidget();
-  if (
-#if QT_VERSION >= 300
-      parent && parent->isActiveWindow() &&
+  if (parent && parent->isActiveWindow() &&
       (!mainwin->m_bTabbedChatting || (mainwin->m_bTabbedChatting &&
        mainwin->userEventTabDlg->tabIsSelected(parent))) &&
-#endif
       e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
   {
     UserSendCommon *s = static_cast<UserSendCommon*>(parent);

@@ -104,16 +104,16 @@ else
 fi
 AC_SUBST(XSS_LIBS)
 
-dnl Check for QT & KDE
+dnl Check for Qt & KDE
 AC_PATH_QT
 AC_PATH_QT_INC
 
 if test "$have_qt_inc" = "no"; then
   AC_MSG_ERROR([
 
-I can't find the QT header files.
+I can't find the Qt header files.
 
-Install the QT development package, or if you have them installed, override
+Install the Qt development package, or if you have them installed, override
 this check with the --with-qt-includes argument, and I'll take your word for
 it.
 ])
@@ -128,16 +128,16 @@ AC_PATH_QT_LIB
 if test "$have_qt_lib" = "no"; then
   AC_MSG_ERROR([
 
-I can't find the QT libraries. It is recommended to set the QTDIR environment
+I can't find the Qt libraries. It is recommended to set the QTDIR environment
 variable.
 
-Install the QT libraries, or if you have them installed, override this check
+Install the Qt libraries, or if you have them installed, override this check
 with the --with-qt-libraries argument, and I'll take your word for it.
 ])
 
 fi
 
-dnl Check for QT version
+dnl Check for Qt version
 AC_CHECK_QT_SETUP
 
 AC_PATH_QT_MOC

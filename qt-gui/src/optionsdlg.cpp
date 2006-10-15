@@ -1,20 +1,22 @@
 // -*- c-basic-offset: 2 -*-
 /*
-    This program is free software; you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation; either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program; if not, write to the Free Software
-    Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
-
-*/
+ * This file is part of Licq, an instant messaging client for UNIX.
+ * Copyright (C) 1999-2006 Licq developers
+ *
+ * Licq is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * Licq is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with Licq; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+ */
 
 #ifdef HAVE_CONFIG_H
 #include "config.h"
@@ -223,16 +225,12 @@ void OptionsDlg::SetupOptions()
   
   if (mainwin->m_bMsgChatView)
   {
-#if QT_VERSION >= 300
     chkTabbedChatting->setChecked(mainwin->m_bTabbedChatting);
-#endif
     chkShowHistory->setChecked(mainwin->m_bShowHistory);
   }
   else
   {
-#if QT_VERSION >= 300
     chkTabbedChatting->setEnabled(false);
-#endif
     chkShowHistory->setEnabled(false);
   }
   chkSendTN->setChecked(mainwin->licqDaemon->SendTypingNotification());
@@ -382,13 +380,8 @@ void OptionsDlg::SetupOptions()
                                                 ->AutoUpdateStatusPlugins());
 
   // plugins tab
-#if QT_VERSION > 300
   cmbUrlViewer->setCurrentText(mainwin->licqDaemon->getUrlViewer() == NULL ?
              DEFAULT_URL_VIEWER : QString(mainwin->licqDaemon->getUrlViewer()));
-#else
-  cmbUrlViewer->changeItem(mainwin->licqDaemon->getUrlViewer() == NULL ?
-             DEFAULT_URL_VIEWER : QString(mainwin->licqDaemon->getUrlViewer()), cmbUrlViewer->currentItem());
-#endif
   edtTerminal->setText(mainwin->licqDaemon->Terminal() == NULL ?
                        tr("none") : QString(mainwin->licqDaemon->Terminal()));
 
@@ -480,21 +473,14 @@ void OptionsDlg::ApplyOptions()
 {
   QFont f(mainwin->defaultFont);
   if(edtEditFont->text().find(tr("default"), 0, false) != 0)
-#if QT_VERSION >= 300
     f.fromString(edtEditFont->text());
-#else
-    f.setRawName(edtEditFont->text());
-#endif
+
   delete MLEditWrap::editFont;
   MLEditWrap::editFont = new QFont(f);
 
   f = mainwin->defaultFont;
   if(edtFont->text().find(tr("default"), 0, false) != 0)
-#if QT_VERSION >= 300
     f.fromString(edtFont->text());
-#else
-    f.setRawName(edtFont->text());
-#endif
   qApp->setFont(f, true);
 
   mainwin->m_bGridLines = chkGridLines->isChecked();
@@ -531,9 +517,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_colorTabTyping = btnColorTypingLabel->paletteBackgroundColor();
   mainwin->m_colorChatBkg = btnColorChatBkg->paletteBackgroundColor();
 
-#if QT_VERSION >= 300
   mainwin->m_bTabbedChatting = chkTabbedChatting->isChecked();
-#endif
   mainwin->m_bShowHistory = chkShowHistory->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bFlashTaskbar = chkFlashTaskbar->isChecked();
@@ -735,17 +719,11 @@ void OptionsDlg::ApplyOptions()
 void OptionsDlg::setupFontName(QLineEdit* le, const QFont& font)
 {
   QString s;
-#if QT_VERSION >= 300
   if (font == mainwin->defaultFont)
     s = tr("default (%1)").arg(font.toString());
   else
     s = font.toString();
-#else
-  if (font == mainwin->defaultFont)
-    s = tr("default (%1)").arg(font.rawName());
-  else
-    s = font.rawName();
-#endif
+
   le->setFont(font);
   le->setText(s);
   le->setCursorPosition(0);
@@ -837,11 +815,9 @@ QWidget* OptionsDlg::new_appearance_options()
   chkMsgChatView = new QCheckBox(tr("Chatmode Messageview"), boxMainWin);
   QWhatsThis::add(chkMsgChatView, tr("Show the current chat history in Send Window"));
 
-#if QT_VERSION >= 300
   chkTabbedChatting = new QCheckBox(tr("Tabbed Chatting"), boxMainWin);
   QWhatsThis::add(chkTabbedChatting, tr("Use tabs in Send Window"));
   //connect(chkMsgChatView, SIGNAL(toggled(bool)), this, SLOT(slot_useMsgChatView(bool)));
-#endif
 
   chkShowHistory = new QCheckBox(tr("Show recent messages"), boxMainWin);
   QWhatsThis::add(chkShowHistory, tr("Show the last 5 messages when a Send Window is opened"));
@@ -874,10 +850,6 @@ QWidget* OptionsDlg::new_appearance_options()
   chkShowAllEncodings = new QCheckBox(tr("Show all encodings"), boxLocale);
   QWhatsThis::add(chkShowAllEncodings, tr("Show all available encodings in the User Encoding selection menu. Normally, this menu shows only commonly used encodings."));
 
-#if QT_VERSION < 210
-  QWidget* dummy_w = new QWidget(boxLocale);
-  if (dummy_w);
-#endif
   l->addWidget(boxLocale);
 
   boxDocking = new QGroupBox(1, Horizontal, tr("Docking"), w);
@@ -1530,11 +1502,6 @@ QWidget* OptionsDlg::new_misc_options()
 
   chkIgnoreEmailPager = new QCheckBox(tr("Ignore Email Pager"), boxParanoia);
   QWhatsThis::add(chkIgnoreEmailPager, tr("Determines if email pager messages are ignored or not."));
-
-#if QT_VERSION < 210
-  QWidget* dummy_w= new QWidget(boxParanoia);
-  dummy_w->setMinimumHeight(10);
-#endif
 
   QWidget* boxAutoStatus = new QGroupBox(2, Horizontal, tr("Auto Away Messages"), w);
   lay->addWidget(boxAutoStatus);

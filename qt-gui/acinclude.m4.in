@@ -5,7 +5,7 @@ dnl Copyright (c) 2000 Dirk A. Mueller
 AC_DEFUN([AC_PATH_QT],
 [
   AC_ARG_WITH(qt,
-    [  --with-qt               where QT v3.x or higher is located. ],
+    [  --with-qt               where Qt v3.x or higher is located. ],
     [  QTDIR="$withval" ])
 ])
 
@@ -13,10 +13,10 @@ AC_DEFUN([AC_PATH_QT_LIB],
 [
   AC_REQUIRE_CPP()
   AC_REQUIRE([AC_PATH_X])
-  AC_MSG_CHECKING(for QT libraries)
+  AC_MSG_CHECKING(for Qt libraries)
 
   AC_ARG_WITH(qt-libraries,
-    [  --with-qt-libraries     where the QT libraries are located. ],
+    [  --with-qt-libraries     where the Qt libraries are located. ],
     [  ac_qt_libraries="$withval" ], ac_qt_libraries="")
 
   AC_CACHE_VAL(ac_cv_lib_qtlib, [
@@ -114,10 +114,10 @@ AC_DEFUN([AC_PATH_QT_INC],
 [
   AC_REQUIRE_CPP()
   AC_REQUIRE([AC_PATH_X])
-  AC_MSG_CHECKING(for QT includes)
+  AC_MSG_CHECKING(for Qt includes)
 
   AC_ARG_WITH(qt-includes,
-    [  --with-qt-includes      where the QT headers are located. ],
+    [  --with-qt-includes      where the Qt headers are located. ],
     [  ac_qt_includes="$withval" ], ac_qt_includes="")
 
   AC_CACHE_VAL(ac_cv_header_qtinc, [
@@ -129,7 +129,6 @@ AC_DEFUN([AC_PATH_QT_INC],
       dnl If you need to add extra directories to check, add them here.
       qt_include_dirs="\
         /usr/lib/qt3/include \
-        /usr/lib/qt2/include \
         /usr/lib/qt/include \
         /usr/include/qt \
         /usr/include/qt3 \
@@ -177,7 +176,7 @@ AC_DEFUN([AC_PATH_QT_INC],
   else
     have_qt_inc="yes"
   fi
-  
+
   AC_MSG_RESULT([$ac_cv_header_qtinc])
   QT_INCLUDES="-I$ac_cv_header_qtinc"
   QT_INCDIR="$ac_cv_header_qtinc"
@@ -189,14 +188,14 @@ AC_DEFUN([AC_PATH_QT_INC],
 AC_DEFUN([AC_PATH_QT_MOC],
 [
   AC_ARG_WITH(qt-moc,
-    [  --with-qt-moc           where the QT 3.x moc is located. ],
+    [  --with-qt-moc           where the Qt 3.x moc is located. ],
     [  ac_qt_moc="$withval" ], ac_qt_moc="")
 
   if test -z "$ac_qt_moc"; then
     dnl search on our own
 
     if test -z "$QTDIR"; then
-      AC_MSG_WARN(environment variable QTDIR is not set, moc might not be found)
+      AC_MSG_WARN([environment variable QTDIR is not set, moc might not be found])
     fi
 
     AC_PATH_PROG(
@@ -249,17 +248,17 @@ AC_DEFUN([AC_PATH_QT_MOC],
 
 AC_DEFUN([AC_CHECK_QT_SETUP],
 [
-  AC_MSG_CHECKING(for QT >= 3.x)
+  AC_MSG_CHECKING(for Qt >= 3.x)
 
   AC_CACHE_VAL(ac_cv_qt_setup, 
   [
     AC_LANG_SAVE
     AC_LANG_CPLUSPLUS
-    
+
     save_CXXFLAGS="$CXXFLAGS"
     save_LDFLAGS="$LDFLAGS"
     save_LIBS="$LIBS"
-     
+
     CXXFLAGS="$CXXFLAGS $QT_INCLUDES $X_CFLAGS"
     LDFLAGS="$X_LIBS $QT_LDFLAGS $LDFLAGS"
     LIBS="$LIB_QT $X_PRE_LIBS -lX11 -lXext $LIBS"
@@ -268,7 +267,7 @@ AC_DEFUN([AC_CHECK_QT_SETUP],
       #include <qglobal.h>
     ],
     [
-      #if QT_VERSION < 300 
+      #if QT_VERSION < 0x030000
          choke me
       #endif
     ],
@@ -281,54 +280,9 @@ AC_DEFUN([AC_CHECK_QT_SETUP],
 
   if test "$ac_cv_qt_setup" != "yes"; then
     AC_MSG_ERROR([
-      Sorry, but you need QT version 3.x or higher to compile the Qt gui plugin.
+      Sorry, but you need Qt version 3.x or higher to compile the Qt gui plugin.
     ])
   fi
-])
-
-AC_DEFUN([AC_PATH_QT_FINDTR],
-[
-  AC_PATH_PROG(
-    QT_FINDTR,
-    findtr,
-    echo,
-    $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
-
-  if test "$QT_FINDTR" = "echo"; then
-    echo "** findtr could not be found. You're losing the localisation."
-  fi
-
-  AC_SUBST(QT_FINDTR)
-])
-
-AC_DEFUN([AC_PATH_QT_MSGTOQM],
-[
-  AC_PATH_PROG(
-    QT_MSG2QM,
-    msg2qm,
-    echo,
-    $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
-
-  if test "$QT_MSG2QM" = "echo"; then
-    echo "** msg2qm could not be found. You're losing the localisation."
-  fi
-
-  AC_SUBST(QT_MSG2QM)
-])
-
-AC_DEFUN([AC_PATH_QT_MERGETR],
-[
-  AC_PATH_PROG(
-    QT_MERGETR,
-    mergetr,
-    echo,
-    $QTDIR/bin:/usr/bin:/usr/X11R6/bin:/usr/lib/qt/bin:/usr/local/qt/bin:$PATH)
-
-  if test "$QT_MERGETR" = "echo"; then
-    echo "** mergetr could not be found. You're losing the localisation."
-  fi
-
-  AC_SUBST(QT_MERGETR)
 ])
 
 AC_DEFUN([AC_PATH_QT_LUPDATE],
@@ -381,7 +335,7 @@ AC_DEFUN([AC_PATH_KDE_CONFIG],
       KDE_CONFIG,
       kde-config,
       no,
-      /opt/kde3/bin:/opt/kde2/bin:/opt/kde/bin:/usr/lib/kde/bin:/usr/local/kde/bin/:/usr/kde/bin:/usr/lib/kde/bin:/usr/bin:/usr/X11R6/bin:$PATH)
+      /opt/kde3/bin:/opt/kde/bin:/usr/lib/kde/bin:/usr/local/kde/bin/:/usr/kde/bin:/usr/lib/kde/bin:/usr/bin:/usr/X11R6/bin:$PATH)
 
     if test "$KDE_CONFIG" = "no"; then
       AC_MSG_ERROR(["Could not find kde-config, make sure it's in your PATH"])
@@ -398,13 +352,13 @@ AC_DEFUN([AC_PATH_DCOP],
       DCOPIDL,
       dcopidl,
       echo,
-      /opt/kde3/bin:/opt/kde2/bin:/opt/kde/bin:/usr/lib/kde/bin:/usr/local/kde/bin/:/usr/kde/bin:/usr/lib/kde/bin:/usr/bin:/usr/X11R6/bin:$PATH)
+      /opt/kde3/bin:/opt/kde/bin:/usr/lib/kde/bin:/usr/local/kde/bin/:/usr/kde/bin:/usr/lib/kde/bin:/usr/bin:/usr/X11R6/bin:$PATH)
 
     AC_PATH_PROG(
       DCOPIDL2CPP,
       dcopidl2cpp,
       echo,
-      /opt/kde3/bin:/opt/kde2/bin:/opt/kde/bin:/usr/lib/kde/bin:/usr/local/kde/bin/:/usr/kde/bin:/usr/lib/kde/bin:/usr/bin:/usr/X11R6/bin:$PATH)
+      /opt/kde3/bin:/opt/kde/bin:/usr/lib/kde/bin:/usr/local/kde/bin/:/usr/kde/bin:/usr/lib/kde/bin:/usr/bin:/usr/X11R6/bin:$PATH)
 
 
     if test "$DCOPIDL" = "echo" || test "$DCOPIDL2CPP" = "echo"; then
@@ -426,7 +380,7 @@ AC_DEFUN([AC_PATH_KDE_INCLUDES],
   kde_includes=""
 
   dnl check for KDE includes
-  kde_incdirs="/opt/kde3/include /opt/kde2/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include /usr/local/include $x_includes $qt_includes"
+  kde_incdirs="/opt/kde3/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include /usr/local/include $x_includes $qt_includes"
   if test -n "$KDEDIR"; then
     kde_incdirs="$KDEDIR/include $KDEDIR $kde_incdirs"
   fi
@@ -446,16 +400,16 @@ AC_DEFUN([AC_PATH_KDE_INCLUDES],
 
     # KDE 2 or 3?
     if test -r $kde_includes/kdeversion.h; then
-	  # KDE 3 or later ;-)
+      # KDE 3 or later ;-)
       kde_version=`grep -w '#define KDE_VERSION_MAJOR' < $kde_includes/kdeversion.h | tr -d '#A-Za-z_\t '`
-	else
-	  # KDE 2
-	  kde_version=`grep -w '#define KDE_VERSION_MAJOR' < $kde_includes/kapp.h | tr -d '#A-Za-z_\t '`
-	fi
+    else
+      # KDE 2
+      kde_version=`grep -w '#define KDE_VERSION_MAJOR' < $kde_includes/kapp.h | tr -d '#A-Za-z_\t '`
+    fi
 
   else
     AC_MSG_RESULT([no])
-	kde_includes=""
+    kde_includes=""
     KDE_INCLUDES=""
   fi
 
