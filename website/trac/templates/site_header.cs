@@ -16,7 +16,9 @@
  <li><a href="/wiki/LicqDownload">Download</a></li>
  <li><a href="/wiki/LicqFaq">FAQ</a></li>
  <li><a href="/wiki/LicqTips">Tips</a></li>
+ <li><a href="/wiki/LicqSupport">Support</a></li>
  <li><a href="/wiki/PluginList">Plugins</a></li>
+ <li><a href="/wiki/LicqUtilities">Utilities</a></li>
  <li><a href="/wiki/DeveloperArea">Developers</a></li>
  <li><a href="/wiki/LicqTeam">Credits</a></li>
 </ul>

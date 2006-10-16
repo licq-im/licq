@@ -36,6 +36,7 @@ body
 #licqnav
 {
   position: absolute;
+  left: 5px;
   margin-top: 1ex;
   background: #fff url(menu_top.gif) no-repeat top left;
   width: 176px;
@@ -60,6 +61,7 @@ body
 {
   margin: 0px;
   padding-bottom: 1ex;
+  padding-left: 6ex;
   list-style-image: url(flower.gif);
   border-width: 0px 2px 0px 2px;
 }
