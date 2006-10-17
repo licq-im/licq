@@ -1011,10 +1011,13 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
     setWFlags(getWFlags() | WDestructiveClose);
     setShowHeader(false);
     setFrameStyle(33);
+
     XClassHint classhint;
-    classhint.res_name = "licq";
+    classhint.res_name = strdup("licq");
     classhint.res_class = szClass;
     XSetClassHint(x11Display(), winId(), &classhint);
+    free(classhint.res_name);
+
     XWMHints *hints = XGetWMHints(x11Display(), winId());
     hints->window_group = winId();
     hints->flags = WindowGroupHint;

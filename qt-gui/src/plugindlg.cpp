@@ -135,9 +135,10 @@ void PluginDlg::slot_standard(int nRow, int nCol)
     QCheckTableItem *chkLoad = dynamic_cast<QCheckTableItem *>(tblStandard->item(nRow, 3));
     if (chkLoad->isChecked())
     {
-      char *sz[] = { "licq", NULL };
+      char *sz[] = { strdup("licq"), NULL };
       QString plugin = tblStandard->text(nRow, 1);
       gLicqDaemon->PluginLoad(plugin.latin1(), 1, sz);
+      free(sz[0]);
     }
     else
       gLicqDaemon->PluginShutdown(tblStandard->text(nRow, 0).toUShort());
