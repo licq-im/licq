@@ -11,7 +11,7 @@
             <div class="news">
              <h2>SVN snapshots</h2>
              <p>SVN snapshots, in addition to anonymous SVN (see below), are available daily. If you want to participate in development and get full SVN access, please ask <a href="mailto:jon@licq.org">Jon</a>.</p>
-             <p>If you want to know what has changed in every detail, you should subscribe to the <a href="https://lists.sourceforge.net/lists/listinfo/licq-cvs">Licq CVS commit mailinglist</a>. To do so, write an email to <a href=" mailto:licq-cvs-request@lists.sourceforge.net?subject=subscribe">licq-cvs-request@lists.sourceforge.net</a> and put 'subscribe' in the subject.</p>
+             <p>If you want to know what has changed in every detail, you should subscribe to the <a href="http://trac.licq.org/wiki/MailingList">Licq commit mailinglist</a>.</p>
              <p>Brief summary of changes for the last week:<br>
              <?php require("xlog.html"); ?>
              </p>
@@ -19,9 +19,9 @@
              <p>
              You can download the current Licq snapshot <a href="http://licq.sf.net/licq-daily.tar.bz2">licq-20060705</a>.<br>
              <p>Remember, these are development versions, so they might have new and untested features or contain bugs. They might not even compile, so use them at your own risk.
-             <p>Please join the Licq development mailinglist when you use the snapshots regularly.
+             <p>Please join the Licq <a href="http://trac.licq.org/wiki/MailingList">development mailinglist</a> when you use the snapshots regularly.
              You should report problems with the snapshots or
-             discuss feature requests/patches there. To subscribe, write an email to <a href="mailto:licq-devel-request@lists.sourceforge.net?subject=subscribe">licq-devel-request@lists.sourceforge.net</a> and put 'subscribe' in the subject.
+             discuss feature requests/patches there.
              <p>If there is a problem with the snapshot itself, please tell <a href="mailto:jon@licq.org">me</a>.
               <div class="footer">
                 <div class="footer_right"></div>
@@ -51,8 +51,6 @@
             </div>
             <!-- Screenshot Item End-->
 
-<br>
-            Last Modified: <?php echo preg_replace('/\$Date: (.*)\$/', '$1', '$Date$'); ?>
 <br>
           </div>
         </div>
