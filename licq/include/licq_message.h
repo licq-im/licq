@@ -1,8 +1,9 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include <ctime>
 #include <list>
-#include <time.h>
+#include <sstream>
 
 #include "licq_buffer.h"
 #include "licq_constants.h"
@@ -393,10 +394,19 @@ protected:
 class CContact
 {
 public:
-  CContact(const char *s, unsigned long n, const char *a)
-    {  m_szId = strdup(s); m_nPPID = n; m_szAlias = strdup(a); m_nUin = strtoul(s, (char**)NULL, 10); }
-  CContact(unsigned long n, const char *a)
-    { asprintf(&m_szId, "%lu", n); m_nPPID = 0; m_nUin = n; m_szAlias = strdup(a); }
+  CContact(const char *s, unsigned long n, const char *a) : m_nPPID(n)
+  {
+    m_szId = strdup(s);
+    m_szAlias = strdup(a);
+    m_nUin = strtoul(s, (char**)NULL, 10);
+  }
+  CContact(unsigned long n, const char *a) : m_nUin(n), m_nPPID(0)
+  {
+    std::ostringstream ss;
+    ss << n;
+    m_szId = strdup(ss.str().c_str());
+    m_szAlias = strdup(a);
+  }
   ~CContact() { free(m_szAlias); free(m_szId); }
 
   unsigned long Uin() { return m_nUin; }
