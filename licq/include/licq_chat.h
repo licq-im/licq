@@ -209,7 +209,7 @@ public:
   int ColorBackGreen() { return m_nColorBackGreen; }
   int ColorBackBlue() { return m_nColorBackBlue; }
 
-  virtual ~CPChat_Color() { if (m_szName != NULL) free(m_szName); if (m_szId != NULL) free(m_szId); }
+  virtual ~CPChat_Color();
 
 protected:
   unsigned long m_nUin;
@@ -236,7 +236,7 @@ public:
   CChatClient(ICQUser *);
   CChatClient(const CChatClient &);
   CChatClient& operator=(const CChatClient &);
-  ~CChatClient() { if (m_szId) free(m_szId); }
+  ~CChatClient();
 
   // Initialize from the handshake buffer (does not set the session
   // or port fields however)
@@ -285,7 +285,7 @@ public:
 
   CPChat_ColorFont(CBuffer &);
 
-  virtual ~CPChat_ColorFont()  {  if (m_szName != NULL) free (m_szName); if (m_szFontFamily != NULL) free(m_szFontFamily); if (m_szId != NULL) free(m_szId); }
+  virtual ~CPChat_ColorFont();
 
   // Accessors
   const char *Name() { return m_szName; }
@@ -344,7 +344,7 @@ public:
                bool bFontStrikeOut, const char *szFontFamily,
                unsigned char nFontEncoding, unsigned char nFontStyle);
    CPChat_Font(CBuffer &);
-   virtual ~CPChat_Font()  { if (m_szFontFamily != NULL) free (m_szFontFamily); }
+   virtual ~CPChat_Font();
 
   unsigned short Port() { return m_nPort; }
   unsigned short Session() { return m_nSession; }
@@ -490,7 +490,7 @@ public:
   bool Focus()                 { return focus; }
   bool Sleep()                 { return sleep; }
 
-  ~CChatUser() {if (szId) free(szId);}
+  ~CChatUser();
 
 protected:
   CChatUser();

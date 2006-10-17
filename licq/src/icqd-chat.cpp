@@ -103,6 +103,12 @@ CPChat_Color::CPChat_Color(CBuffer &b)
   b.UnpackChar();
 }
 
+CPChat_Color::~CPChat_Color()
+{
+  free(m_szName);
+  free(m_szId);
+}
+
 
 //-----ChatColorFont----------------------------------------------------------------
 CChatClient::CChatClient()
@@ -140,6 +146,11 @@ CChatClient::CChatClient(const CChatClient &p)
 {
   m_szId = NULL;
   *this = p;
+}
+
+CChatClient::~CChatClient()
+{
+  free(m_szId);
 }
 
 CChatClient& CChatClient::operator=(const CChatClient &p)
@@ -399,7 +410,12 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
 
 }
 
-
+CPChat_ColorFont::~CPChat_ColorFont()
+{
+  free(m_szName);
+  free(m_szFontFamily);
+  free(m_szId);
+}
 
 //-----ChatFont---------------------------------------------------------------------
 CPChat_Font::CPChat_Font(unsigned short nLocalPort, unsigned short nSession,
@@ -451,6 +467,11 @@ CPChat_Font::CPChat_Font(CBuffer &b)
   m_szFontFamily = strdup(b.UnpackString(buf, sizeof(buf)));
   m_nFontEncoding = b.UnpackChar();
   m_nFontStyle = b.UnpackChar();
+}
+
+CPChat_Font::~CPChat_Font()
+{
+  free(m_szFontFamily);
 }
 
 /*
@@ -618,6 +639,10 @@ CChatUser::CChatUser()
   pthread_mutex_init(&mutex, NULL);
 }
 
+CChatUser::~CChatUser()
+{
+  free(szId);
+}
 
 CChatEvent::CChatEvent(unsigned char nCommand, CChatUser *u, char *szData)
 {
@@ -630,8 +655,9 @@ CChatEvent::CChatEvent(unsigned char nCommand, CChatUser *u, char *szData)
 
 CChatEvent::~CChatEvent()
 {
-  if (m_szData != NULL) free(m_szData);
-  if (m_bLocked) pthread_mutex_unlock(&m_pUser->mutex);
+  free(m_szData);
+  if (m_bLocked)
+    pthread_mutex_unlock(&m_pUser->mutex);
 }
 
 
@@ -2617,7 +2643,7 @@ CChatManager::~CChatManager()
   }
   if (iter != cmList.end()) cmList.erase(iter);
   pthread_mutex_unlock(&cmList_mutex);
-  
-  if (m_szId) free(m_szId);
+
+  free(m_szId);
 }
 

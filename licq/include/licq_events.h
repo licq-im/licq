@@ -538,7 +538,7 @@ class CLogonSignal : public CSignal
 {
 public:
   CLogonSignal(unsigned long);
-  virtual ~CLogonSignal() { }
+  virtual ~CLogonSignal();
   //! The requested initial status.
   unsigned long LogonStatus() { return m_nLogonStatus; }
 
@@ -550,12 +550,14 @@ class CLogoffSignal : public CSignal
 {
 public:
   CLogoffSignal();
+  virtual ~CLogoffSignal();
 };
 
 class CChangeStatusSignal : public CSignal
 {
 public:
   CChangeStatusSignal(unsigned long);
+  virtual ~CChangeStatusSignal();
   //! The requested status.
   unsigned long Status()  { return m_nStatus; }
 
@@ -567,7 +569,7 @@ class CAddUserSignal : public CSignal
 {
 public:
   CAddUserSignal(const char *, bool);
-  virtual ~CAddUserSignal() { }
+  virtual ~CAddUserSignal();
   //! True if authorization is required to add this user.
   bool AuthRequired() { return m_bAuthRequired; }
 
@@ -579,12 +581,14 @@ class CRemoveUserSignal : public CSignal
 {
 public:
   CRemoveUserSignal(const char *);
+  virtual ~CRemoveUserSignal();
 };
 
 class CRenameUserSignal : public CSignal
 {
 public:
   CRenameUserSignal(const char *);
+  virtual ~CRenameUserSignal();
 };
 
 /*! \brief Signal to a protocol plugin to send a messasge
@@ -597,7 +601,7 @@ class CSendMessageSignal : public CSignal
 {
 public:
   CSendMessageSignal(const char *szId, const char *szMsg, unsigned long nCID = 0);
-  virtual ~CSendMessageSignal() { if (m_szMsg) free(m_szMsg); }
+  virtual ~CSendMessageSignal();
   //! The message to be sent
   char *Message() { return m_szMsg; }
   
@@ -609,6 +613,7 @@ class CTypingNotificationSignal : public CSignal
 {
 public:
   CTypingNotificationSignal(const char *szId, bool bActive, unsigned long nCID = 0);
+  virtual ~CTypingNotificationSignal();
   bool Active() { return m_bActive; }
 private:
   bool m_bActive;
@@ -618,7 +623,7 @@ class CGrantAuthSignal : public CSignal
 {
 public:
   CGrantAuthSignal(const char *, const char *);
-  virtual ~CGrantAuthSignal() { if (m_szMsg) free(m_szMsg); }
+  virtual ~CGrantAuthSignal();
   char *Message() { return m_szMsg; }
 
 private:
@@ -629,7 +634,7 @@ class CRefuseAuthSignal : public CSignal
 {
 public:
   CRefuseAuthSignal(const char *, const char *);
-  virtual ~CRefuseAuthSignal() { if (m_szMsg) free(m_szMsg); }
+  virtual ~CRefuseAuthSignal();
 
 private:
   char *m_szMsg;
@@ -639,6 +644,7 @@ class CRequestInfo : public CSignal
 {
 public:
   CRequestInfo(const char *);
+  virtual ~CRequestInfo();
 };
 
 class CUpdateInfoSignal : public CSignal
@@ -682,36 +688,42 @@ class CBlockUserSignal : public CSignal
 {
 public:
   CBlockUserSignal(const char *);
+  virtual ~CBlockUserSignal();
 };
 
 class CUnblockUserSignal : public CSignal
 {
 public:
   CUnblockUserSignal(const char *);
+  virtual ~CUnblockUserSignal();
 };
 
 class CAcceptUserSignal : public CSignal
 {
 public:
   CAcceptUserSignal(const char *);
+  virtual ~CAcceptUserSignal();
 };
 
 class CUnacceptUserSignal : public CSignal
 {
 public:
   CUnacceptUserSignal(const char *);
+  virtual ~CUnacceptUserSignal();
 };
 
 class CIgnoreUserSignal : public CSignal
 {
 public:
   CIgnoreUserSignal(const char *);
+  virtual ~CIgnoreUserSignal();
 };
 
 class CUnignoreUserSignal : public CSignal
 {
 public:
   CUnignoreUserSignal(const char *);
+  virtual ~CUnignoreUserSignal();
 };
 
 class CSendFileSignal : public CSignal
@@ -735,7 +747,7 @@ class CSendChatSignal : public CSignal
 {
 public:
   CSendChatSignal(const char *_szUser, const char *_szMessage);
-  virtual ~CSendChatSignal() { if (m_szMessage) free(m_szMessage); }
+  virtual ~CSendChatSignal();
 
   char *GetMessage() { return m_szMessage; }
 
@@ -747,9 +759,10 @@ class CCancelEventSignal : public CSignal
 {
 public:
   CCancelEventSignal(const char *_szUser, unsigned long _nFlag);
+  virtual ~CCancelEventSignal();
 
   unsigned long GetFlag() { return m_nFlag; }
-    
+
 private:
   unsigned long m_nFlag;
 };
@@ -762,7 +775,7 @@ public:
                         unsigned long nSequence = 0,
                         unsigned long nFlag1 = 0, unsigned long nFlag2 = 0,
                         bool bDirect = false);
-  virtual ~CSendEventReplySignal() { if (m_szMessage) free(m_szMessage); }
+  virtual ~CSendEventReplySignal();
 
   char *GetMessage() { return m_szMessage; }
   bool GetAccept()   { return m_bAccept; }
@@ -786,24 +799,28 @@ class COpenedWindowSignal : public CSignal
 {
 public:
   COpenedWindowSignal(const char *);
+  virtual ~COpenedWindowSignal();
 };
 
 class CClosedWindowSignal : public CSignal
 {
 public:
   CClosedWindowSignal(const char *);
+  virtual ~CClosedWindowSignal();
 };
 
 class COpenSecureSignal : public CSignal
 {
 public:
   COpenSecureSignal(const char *);
+  virtual ~COpenSecureSignal();
 };
 
 class CCloseSecureSignal : public CSignal
 {
 public:
   CCloseSecureSignal(const char *);
+  virtual ~CCloseSecureSignal();
 };
 
 #endif

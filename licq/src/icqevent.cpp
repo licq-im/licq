@@ -39,11 +39,11 @@ CSearchAck::CSearchAck(const char *_szId, unsigned long _nPPID)
 
 CSearchAck::~CSearchAck()
 {
-  if (m_szAlias != NULL) free(m_szAlias);
-  if (m_szFirstName != NULL) free(m_szFirstName);
-  if (m_szLastName != NULL) free(m_szLastName);
-  if (m_szEmail != NULL) free(m_szEmail);
-  if (m_szId != NULL) free(m_szId);
+  free(m_szAlias);
+  free(m_szFirstName);
+  free(m_szLastName);
+  free(m_szEmail);
+  free(m_szId);
 }
 
 
@@ -57,8 +57,7 @@ CExtendedAck::CExtendedAck(bool bAccepted, unsigned short nPort, char *szRespons
 
 CExtendedAck::~CExtendedAck()
 {
-  if (m_szResponse != NULL)
-    free(m_szResponse);
+  free(m_szResponse);
 }
 
 
@@ -192,8 +191,7 @@ ICQEvent::~ICQEvent()
   assert(!m_Deleted);
   m_Deleted = true;
 
-  if (m_szId)
-    free(m_szId);
+  free(m_szId);
   delete m_pPacket;
   delete m_pUserEvent;
   delete m_pExtendedAck;
@@ -316,8 +314,7 @@ CSignal::CSignal(CSignal *s)
 
 CSignal::~CSignal()
 {
-  if (m_szId)
-    free(m_szId);
+  free(m_szId);
 }
 
 CLogonSignal::CLogonSignal(unsigned long nLogonStatus)
@@ -326,9 +323,19 @@ CLogonSignal::CLogonSignal(unsigned long nLogonStatus)
   m_nLogonStatus = nLogonStatus;
 }
 
+CLogonSignal::~CLogonSignal()
+{
+  // Empty
+}
+
 CLogoffSignal::CLogoffSignal()
   : CSignal(PROTOxLOGOFF, 0)
 {
+}
+
+CLogoffSignal::~CLogoffSignal()
+{
+  // Empty
 }
 
 CChangeStatusSignal::CChangeStatusSignal(unsigned long nStatus)
@@ -337,10 +344,20 @@ CChangeStatusSignal::CChangeStatusSignal(unsigned long nStatus)
   m_nStatus = nStatus;
 }
 
+CChangeStatusSignal::~CChangeStatusSignal()
+{
+  // Empty
+}
+
 CAddUserSignal::CAddUserSignal(const char *szId, bool bAuthRequired)
   : CSignal(PROTOxADD_USER, szId)
 {
   m_bAuthRequired = bAuthRequired;
+}
+
+CAddUserSignal::~CAddUserSignal()
+{
+  // Empty
 }
 
 CRemoveUserSignal::CRemoveUserSignal(const char *szId)
@@ -348,9 +365,19 @@ CRemoveUserSignal::CRemoveUserSignal(const char *szId)
 {
 }
 
+CRemoveUserSignal::~CRemoveUserSignal()
+{
+  // Empty
+}
+
 CRenameUserSignal::CRenameUserSignal(const char *szId)
   : CSignal(PROTOxRENAME_USER, szId)
 {
+}
+
+CRenameUserSignal::~CRenameUserSignal()
+{
+  // Empty
 }
 
 CSendMessageSignal::CSendMessageSignal(const char *szId, const char *szMsg, unsigned long nCID)
@@ -359,10 +386,20 @@ CSendMessageSignal::CSendMessageSignal(const char *szId, const char *szMsg, unsi
   m_szMsg = szMsg ? strdup(szMsg) : 0;
 }
 
+CSendMessageSignal::~CSendMessageSignal()
+{
+  free(m_szMsg);
+}
+
 CTypingNotificationSignal::CTypingNotificationSignal(const char *szId,
   bool bActive, unsigned long nCID)
     : CSignal(PROTOxSENDxTYPING_NOTIFICATION, szId, nCID), m_bActive(bActive)
 {
+}
+
+CTypingNotificationSignal::~CTypingNotificationSignal()
+{
+  // Empty
 }
 
 CGrantAuthSignal::CGrantAuthSignal(const char *szId, const char *szMsg)
@@ -371,15 +408,30 @@ CGrantAuthSignal::CGrantAuthSignal(const char *szId, const char *szMsg)
   m_szMsg = szMsg ? strdup(szMsg) : 0;
 }
 
+CGrantAuthSignal::~CGrantAuthSignal()
+{
+  free(m_szMsg);
+}
+
 CRefuseAuthSignal::CRefuseAuthSignal(const char *szId, const char *szMsg)
   : CSignal(PROTOxSENDxREFUSExAUTH, szId)
 {
   m_szMsg = szMsg ? strdup(szMsg) : 0;
 }
 
+CRefuseAuthSignal::~CRefuseAuthSignal()
+{
+  free(m_szMsg);
+}
+
 CRequestInfo::CRequestInfo(const char *szId)
   : CSignal(PROTOxREQUESTxINFO, szId)
 {
+}
+
+CRequestInfo::~CRequestInfo()
+{
+  // Empty
 }
 
 CUpdateInfoSignal::CUpdateInfoSignal(const char *szAlias, const char *szFirstName,
@@ -405,28 +457,17 @@ CUpdateInfoSignal::CUpdateInfoSignal(const char *szAlias, const char *szFirstNam
 
 CUpdateInfoSignal::~CUpdateInfoSignal()
 {
-  if (m_szAlias)
-    free(m_szAlias);
-  if (m_szFirstName)
-    free(m_szFirstName);
-  if (m_szLastName)
-    free(m_szLastName);
-  if (m_szEmail)
-    free(m_szEmail);
-  if (m_szCity)
-    free(m_szCity);
-  if (m_szState)
-    free(m_szState);
-  if (m_szPhoneNumber)
-    free(m_szPhoneNumber);
-  if (m_szFaxNumber)
-    free(m_szFaxNumber);
-  if (m_szAddress)
-    free(m_szAddress);
-  if (m_szCellNumber)
-    free(m_szCellNumber);
-  if (m_szZipCode)
-    free(m_szZipCode);
+  free(m_szAlias);
+  free(m_szFirstName);
+  free(m_szLastName);
+  free(m_szEmail);
+  free(m_szCity);
+  free(m_szState);
+  free(m_szPhoneNumber);
+  free(m_szFaxNumber);
+  free(m_szAddress);
+  free(m_szCellNumber);
+  free(m_szZipCode);
 }
 
 CBlockUserSignal::CBlockUserSignal(const char *szId)
@@ -434,9 +475,19 @@ CBlockUserSignal::CBlockUserSignal(const char *szId)
 {
 }
 
+CBlockUserSignal::~CBlockUserSignal()
+{
+  // Empty
+}
+
 CUnblockUserSignal::CUnblockUserSignal(const char *szId)
   : CSignal(PROTOxUNBLOCKxUSER, szId)
 {
+}
+
+CUnblockUserSignal::~CUnblockUserSignal()
+{
+  // Empty
 }
 
 CAcceptUserSignal::CAcceptUserSignal(const char *szId)
@@ -444,9 +495,19 @@ CAcceptUserSignal::CAcceptUserSignal(const char *szId)
 {
 }
 
+CAcceptUserSignal::~CAcceptUserSignal()
+{
+  // Empty
+}
+
 CUnacceptUserSignal::CUnacceptUserSignal(const char *szId)
   : CSignal(PROTOxUNACCEPTxUSER, szId)
 {
+}
+
+CUnacceptUserSignal::~CUnacceptUserSignal()
+{
+  // Empty
 }
 
 CIgnoreUserSignal::CIgnoreUserSignal(const char *szId)
@@ -454,35 +515,47 @@ CIgnoreUserSignal::CIgnoreUserSignal(const char *szId)
 {
 }
 
+CIgnoreUserSignal::~CIgnoreUserSignal()
+{
+  // Empty
+}
+
 CUnignoreUserSignal::CUnignoreUserSignal(const char *szId)
   : CSignal(PROTOxUNIGNORExUSER, szId)
 {
+}
+
+CUnignoreUserSignal::~CUnignoreUserSignal()
+{
+  // Empty
 }
 
 CSendFileSignal::CSendFileSignal(const char *szId, const char *szFile,
                                  const char *szMessage, ConstFileList &_lFileList)
   : CSignal(PROTOxSENDxFILE, szId)
 {
-  if (szFile)
-    m_szFile = strdup(szFile);
+  m_szFile = (szFile ? strdup(szFile) : NULL);
 
-  if (szMessage)
-    m_szMessage = strdup(szMessage);
-    
+  m_szMessage = (szMessage ? strdup(szMessage) : NULL);
+
   m_lFileList = _lFileList;
 }
 
 CSendFileSignal::~CSendFileSignal()
 {
-  if (m_szFile)    free(m_szFile);
-  if (m_szMessage) free(m_szMessage);
+  free(m_szFile);
+  free(m_szMessage);
 }
 
 CSendChatSignal::CSendChatSignal(const char *szId, const char *szMessage)
   : CSignal(PROTOxSENDxCHAT, szId)
 {
-  if (szMessage)
-    m_szMessage = strdup(szMessage);
+  m_szMessage = (szMessage ? strdup(szMessage) : 0);
+}
+
+CSendChatSignal::~CSendChatSignal()
+{
+  free(m_szMessage);
 }
 
 CCancelEventSignal::CCancelEventSignal(const char *szId, unsigned long nFlag)
@@ -491,14 +564,18 @@ CCancelEventSignal::CCancelEventSignal(const char *szId, unsigned long nFlag)
   m_nFlag = nFlag;
 }
 
+CCancelEventSignal::~CCancelEventSignal()
+{
+  // Empty
+}
+
 CSendEventReplySignal::CSendEventReplySignal(const char *szId,
   const char *szMessage, bool bAccept, unsigned short nPort,
   unsigned long nSequence, unsigned long nFlag1, unsigned long nFlag2,
   bool bDirect)
   : CSignal(PROTOxSENDxEVENTxREPLY, szId)
 {
-  if (szMessage)
-    m_szMessage = strdup(szMessage);
+  m_szMessage = (szMessage ? strdup(szMessage) : 0);
 
   m_bAccept = bAccept;
   m_bDirect = bDirect;
@@ -508,9 +585,19 @@ CSendEventReplySignal::CSendEventReplySignal(const char *szId,
   m_nFlag2 = nFlag2;
 }
 
+CSendEventReplySignal::~CSendEventReplySignal()
+{
+  free(m_szMessage);
+}
+
 COpenedWindowSignal::COpenedWindowSignal(const char *szId)
   : CSignal(PROTOxOPENEDxWINDOW, szId)
 {
+}
+
+COpenedWindowSignal::~COpenedWindowSignal()
+{
+  // Empty
 }
 
 CClosedWindowSignal::CClosedWindowSignal(const char *szId)
@@ -518,12 +605,27 @@ CClosedWindowSignal::CClosedWindowSignal(const char *szId)
 {
 }
 
+CClosedWindowSignal::~CClosedWindowSignal()
+{
+  // Empty
+}
+
 COpenSecureSignal::COpenSecureSignal(const char *szId)
   : CSignal(PROTOxOPENxSECURE, szId)
 {
 }
 
+COpenSecureSignal::~COpenSecureSignal()
+{
+  // Empty
+}
+
 CCloseSecureSignal::CCloseSecureSignal(const char *szId)
   : CSignal(PROTOxCLOSExSECURE, szId)
 {
+}
+
+CCloseSecureSignal::~CCloseSecureSignal()
+{
+  // Empty
 }
