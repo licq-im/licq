@@ -33,13 +33,13 @@
 #include <qpainter.h>
 #include <qpushbutton.h>
 #include <qlineedit.h>
-#include <qtabwidget.h>
 #include <qvbuttongroup.h>
 #include <qvalidator.h>
 #include <qcombobox.h>
 #include <qspinbox.h>
 #include <qtextcodec.h>
 
+#include "ewidgets.h"
 #include "searchuserdlg.h"
 #include "sigman.h"
 
@@ -143,7 +143,7 @@ SearchUserDlg::SearchUserDlg(CMainWindow *m, CICQDaemon *s, CSignalManager *theS
   QBoxLayout* lay = new QHBoxLayout(top_lay, 10);
 
   // pre-search widgets
-  search_tab = new QTabWidget(this);
+  search_tab = new CETabWidget(this);
 
   //-- first tab: search by Alias/name
   whitepages_tab = new QWidget(this);

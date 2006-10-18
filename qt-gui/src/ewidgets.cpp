@@ -527,7 +527,7 @@ void CETabBar::paintLabel(QPainter* p, const QRect &br,
 
 void CETabBar::wheelEvent(QWheelEvent *e)
 {
-  if (count() <= 1)
+  if (count() <= 1 || !hasMouse())
   {
     e->ignore();
     return;

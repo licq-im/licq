@@ -47,6 +47,7 @@
 #include <qfontdialog.h>
 #endif
 
+#include "ewidgets.h"
 #include "optionsdlg.h"
 #include "licq_log.h"
 #include "licq_constants.h"
@@ -69,7 +70,7 @@ OptionsDlg::OptionsDlg(CMainWindow *_mainwin, tabs settab, QWidget *parent)
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 4);
 
-  tabw = new QTabWidget(this);
+  tabw = new CETabWidget(this);
   top_lay->addWidget(tabw);
 
   QBoxLayout* lay = new QHBoxLayout(top_lay);

@@ -118,7 +118,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 
   QBoxLayout *lay = new QVBoxLayout(this, 8);
 
-  tabs = new QTabWidget(this);
+  tabs = new CETabWidget(this);
   lay->addWidget(tabs, 2);
 
   tabs->addTab(tabList[GeneralInfo].tab, tabList[GeneralInfo].label);
