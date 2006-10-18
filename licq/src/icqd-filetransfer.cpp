@@ -44,6 +44,16 @@ const unsigned short FT_STATE_CONFIRMINGxFILE = 8;
 
 //=====FILE==================================================================
 
+//-----PacketFile---------------------------------------------------------------
+CPacketFile::CPacketFile()
+{
+  // Empty
+}
+
+CPacketFile::~CPacketFile()
+{
+  // Empty
+}
 
 //-----FileInitClient-----------------------------------------------------------
 CPFile_InitClient::CPFile_InitClient(char *_szLocalName,
@@ -61,6 +71,10 @@ CPFile_InitClient::CPFile_InitClient(char *_szLocalName,
   buffer->PackString(_szLocalName);
 }
 
+CPFile_InitClient::~CPFile_InitClient()
+{
+  // Empty
+}
 
 //-----FileInitServer-----------------------------------------------------------
 CPFile_InitServer::CPFile_InitServer(char *_szLocalName)
@@ -73,6 +87,10 @@ CPFile_InitServer::CPFile_InitServer(char *_szLocalName)
   buffer->PackString(_szLocalName);
 }
 
+CPFile_InitServer::~CPFile_InitServer()
+{
+  // Empty
+}
 
 //-----FileBatch----------------------------------------------------------------
 CPFile_Info::CPFile_Info(const char *_szFileName)
@@ -131,6 +149,10 @@ CPFile_Start::CPFile_Start(unsigned long nFilePos, unsigned long nFile)
   buffer->PackUnsignedLong(nFile);
 }
 
+CPFile_Start::~CPFile_Start()
+{
+  // Empty
+}
 
 //-----FileSpeed----------------------------------------------------------------
 CPFile_SetSpeed::CPFile_SetSpeed(unsigned long nSpeed)
@@ -142,6 +164,10 @@ CPFile_SetSpeed::CPFile_SetSpeed(unsigned long nSpeed)
   buffer->PackUnsignedLong(nSpeed);
 }
 
+CPFile_SetSpeed::~CPFile_SetSpeed()
+{
+  // Empty
+}
 
 //=====FileTransferManager===========================================================
 CFileTransferEvent::CFileTransferEvent(unsigned char t, char *d)
@@ -153,7 +179,10 @@ CFileTransferEvent::CFileTransferEvent(unsigned char t, char *d)
     m_szData = NULL;
 }
 
-
+CFileTransferEvent::~CFileTransferEvent()
+{
+  free(m_szData);
+}
 
 
 FileTransferManagerList CFileTransferManager::ftmList;

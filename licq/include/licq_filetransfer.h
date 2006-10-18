@@ -87,6 +87,9 @@ struct SFileReverseConnectInfo
 class CPacketFile : public CPacket
 {
 public:
+  CPacketFile();
+  virtual ~CPacketFile();
+
   virtual const unsigned short Sequence()    { return 0; };
   virtual const unsigned short SubSequence() { return 0; };
   virtual const unsigned short Command()     { return 0; };
@@ -101,8 +104,9 @@ protected:
 class CPFile_InitClient : public CPacketFile
 {
 public:
-   CPFile_InitClient(char *_szLocalName, unsigned long _nNumFiles,
-                     unsigned long _nTotalSize);
+  CPFile_InitClient(char *_szLocalName, unsigned long _nNumFiles,
+                    unsigned long _nTotalSize);
+  virtual ~CPFile_InitClient();
 };
 
 
@@ -111,7 +115,8 @@ public:
 class CPFile_InitServer : public CPacketFile
 {
 public:
-   CPFile_InitServer(char *_szLocalName);
+  CPFile_InitServer(char *_szLocalName);
+  virtual ~CPFile_InitServer();
 };
 
 
@@ -121,20 +126,21 @@ public:
 class CPFile_Info : public CPacketFile
 {
 public:
-   CPFile_Info(const char *_szFileName);
-   virtual ~CPFile_Info();
-   bool IsValid()  { return m_bValid; };
-   unsigned long GetFileSize()
-     { return m_nFileSize; };
-   const char *GetFileName()
-     { return m_szFileName; }
-   const char *ErrorStr()
-     { return strerror(m_nError); }
+  CPFile_Info(const char *_szFileName);
+  virtual ~CPFile_Info();
+
+  bool IsValid()  { return m_bValid; };
+  unsigned long GetFileSize()
+    { return m_nFileSize; };
+  const char *GetFileName()
+    { return m_szFileName; }
+  const char *ErrorStr()
+    { return strerror(m_nError); }
 protected:
-   bool m_bValid;
-   int m_nError;
-   char *m_szFileName;
-   unsigned long m_nFileSize;
+  bool m_bValid;
+  int m_nError;
+  char *m_szFileName;
+  unsigned long m_nFileSize;
 };
 
 
@@ -143,7 +149,8 @@ protected:
 class CPFile_Start : public CPacketFile
 {
 public:
-   CPFile_Start(unsigned long nFilePos, unsigned long nFile);
+  CPFile_Start(unsigned long nFilePos, unsigned long nFile);
+  virtual ~CPFile_Start();
 };
 
 
@@ -152,7 +159,8 @@ public:
 class CPFile_SetSpeed : public CPacketFile
 {
 public:
-   CPFile_SetSpeed(unsigned long nSpeed);
+  CPFile_SetSpeed(unsigned long nSpeed);
+  virtual ~CPFile_SetSpeed();
 };
 
 
@@ -170,7 +178,7 @@ public:
   unsigned char Command() { return m_nCommand; }
   const char *Data() { return m_szData; }
 
-  ~CFileTransferEvent() { if (m_szData != NULL) free(m_szData); }
+  ~CFileTransferEvent();
 
 protected:
   CFileTransferEvent(unsigned char t, char *d = NULL);
@@ -208,10 +216,10 @@ public:
   unsigned short BatchFiles() { return m_nBatchFiles; }
   unsigned long BatchSize() { return m_nBatchSize; }
   time_t BatchStartTime() { return m_nBatchStartTime; }
-  
+
   // Available between FT_CONFIRMxFILE and FT_STATE_
 
-	// You must use this function to start receiving the incoming file, possibly
+  // You must use this function to start receiving the incoming file, possibly
   // giving it a different name on the local machine.
   bool StartReceivingFile(char *szFileName = NULL);
 

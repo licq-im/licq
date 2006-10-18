@@ -93,11 +93,16 @@ CSocketManager gSocketManager;
 
 
 //=====CFdSet===================================================================
-CSocketSet::CSocketSet ()
+CSocketSet::CSocketSet()
 {
   FD_ZERO(&sFd);
   // Initialise the mutex
   pthread_mutex_init(&mutex, NULL);
+}
+
+CSocketSet::~CSocketSet()
+{
+  // Empty
 }
 
 void CSocketSet::Set(int _nSD)
@@ -631,6 +636,24 @@ bool INetSocket::RecvRaw()
 
 //=====SrvSocket===============================================================
 
+SrvSocket::SrvSocket(unsigned long _nOwner) : INetSocket(_nOwner)
+{
+  strcpy(m_szID, "SRV");
+  m_nSockType = SOCK_STREAM;
+}
+
+SrvSocket::SrvSocket(const char *s, unsigned long n) : INetSocket(s, n)
+{
+  strcpy(m_szID, "SRV");
+  m_nSockType = SOCK_STREAM;
+}
+
+SrvSocket::~SrvSocket()
+{
+  // Empty
+}
+
+
 /*-----SrvSocket::SendPacket---------------------------------------------------
  * Sends a packet on a socket.  The socket is blocking, so we are guaranteed
  * that the entire packet will be sent, however, it may block if the tcp
@@ -758,12 +781,32 @@ bool SrvSocket::RecvPacket()
   return (true);
 }
 
-
-SrvSocket::~SrvSocket()
+//=====TCPSocket===============================================================
+TCPSocket::TCPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
 {
+  strcpy(m_szID, "TCP");
+  m_nSockType = SOCK_STREAM;
+  m_p_SSL = NULL;
 }
 
-//=====TCPSocket===============================================================
+TCPSocket::TCPSocket(const char *s, unsigned long n) : INetSocket(s, n)
+{
+  strcpy(m_szID, "TCP");
+  m_nSockType = SOCK_STREAM;
+  m_p_SSL = NULL;
+}
+
+TCPSocket::TCPSocket() : INetSocket(0, 0)
+{
+  strcpy(m_szID, "TCP");
+  m_nSockType = SOCK_STREAM;
+  m_p_SSL = NULL;
+}
+
+TCPSocket::~TCPSocket()
+{
+  SecureStop();
+}
 
 
 /*-----TCPSocket::ReceiveConnection--------------------------------------------
@@ -1153,12 +1196,6 @@ bool TCPSocket::SSLRecv()
 }
 
 
-TCPSocket::~TCPSocket()
-{
-  SecureStop();
-}
-
-
 bool TCPSocket::SSL_Pending()
 {
 #ifdef USE_OPENSSL
@@ -1273,7 +1310,16 @@ void TCPSocket::SecureStop()
 
 #endif /*-----End of OpenSSL code------------------------------------------*/
 
+UDPSocket::UDPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
+{
+  strcpy(m_szID, "UDP");
+  m_nSockType = SOCK_DGRAM;
+}
 
+UDPSocket::~UDPSocket()
+{
+  // Empty
+}
 
 //=====Locking==================================================================
 void INetSocket::Lock()
@@ -1293,6 +1339,10 @@ CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize)
   pthread_rdwr_init_np(&mutex_rw, NULL);
 }
 
+CSocketHashTable::~CSocketHashTable()
+{
+  // Empty
+}
 
 void CSocketHashTable::Lock(unsigned short _nLockType)
 {

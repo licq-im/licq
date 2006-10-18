@@ -90,7 +90,7 @@ public:
 
   void SetChannel(unsigned char nChannel) { m_nChannel = nChannel; }
   unsigned char Channel()                 { return m_nChannel; }
-  
+
 protected:
   const char *GetIDStr()  { return (m_szID); }
   bool SetLocalAddress(bool bIp = true);
@@ -116,12 +116,9 @@ protected:
 class TCPSocket : public INetSocket
 {
 public:
-  TCPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
-    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
-  TCPSocket(const char *s, unsigned long n) : INetSocket(s, n)
-    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
-  TCPSocket() : INetSocket(0, 0)
-    { strcpy(m_szID, "TCP"); m_nSockType = SOCK_STREAM; m_p_SSL = NULL;}
+  TCPSocket(unsigned long _nOwner);
+  TCPSocket(const char *s, unsigned long n);
+  TCPSocket();
   virtual ~TCPSocket();
 
   // Abstract base class overloads
@@ -156,10 +153,8 @@ protected:
 class SrvSocket : public INetSocket
 {
 public:
-  SrvSocket(unsigned long _nOwner) : INetSocket(_nOwner)
-    { strcpy(m_szID, "SRV"); m_nSockType = SOCK_STREAM; }
-  SrvSocket(const char *s, unsigned long n) : INetSocket(s, n)
-    { strcpy(m_szID, "SRV"); m_nSockType = SOCK_STREAM; }
+  SrvSocket(unsigned long _nOwner);
+  SrvSocket(const char *s, unsigned long n);
   virtual ~SrvSocket();
 
   // Abstract base class overloads
@@ -178,8 +173,8 @@ public:
 class UDPSocket : public INetSocket
 {
 public:
-  UDPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
-    { strcpy(m_szID, "UDP"); m_nSockType = SOCK_DGRAM; }
+  UDPSocket(unsigned long _nOwner);
+  virtual ~UDPSocket();
 
   // Abstract base class overloads
   virtual bool Send(CBuffer *b)
@@ -194,6 +189,8 @@ class CSocketHashTable
 {
 public:
   CSocketHashTable(unsigned short _nSize);
+  ~CSocketHashTable();
+
   INetSocket *Retrieve(int _nSd);
   void Store(INetSocket *s, int _nSd);
   void Remove(int _nSd);
@@ -220,7 +217,8 @@ class CSocketSet
 friend class CSocketManager;
 
 public:
-  CSocketSet ();
+  CSocketSet();
+  ~CSocketSet();
 
   unsigned short Num();
   int Largest();

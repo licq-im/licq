@@ -44,7 +44,7 @@ class CPX_FileTransfer
 public:
 	CPX_FileTransfer(ConstFileList &lFileList, const char *szFileName);
 
-	virtual ~CPX_FileTransfer()	{ }
+	virtual ~CPX_FileTransfer();
 
 	bool IsValid()	{ return m_bValid; }
 	ConstFileList GetFileList()	{ return m_lFileList; }

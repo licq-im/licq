@@ -76,6 +76,8 @@ const unsigned short IGNORE_WEBPANEL   = 8;
 class CDaemonStats
 {
 public:
+  ~CDaemonStats();
+
   // Accessors
   //! Total number of events.
   unsigned long Total() { return m_nTotal; }
@@ -122,28 +124,28 @@ public:
   bool HasUser(const char *sz);
   bool IsEmpty()        { return m_vUsers.size() == 0; }
   int NumUsers()        { return m_vUsers.size(); }
-    
+
   int Socket()          { return m_nSocket; }
   unsigned long CID()   { return m_nCID; }
-  
+
   string GetUser(int n) { return m_vUsers[n]; }
 
-private:  
+private:
   CConversation(int nSocket, unsigned long nPPID);
-  ~CConversation() { }
-    
+  ~CConversation();
+
   bool AddUser(const char *sz);
   bool RemoveUser(const char *sz);
-  
+
   int m_nSocket;
   unsigned long m_nPPID;
   unsigned long m_nCID;
   vector<string> m_vUsers;
-  
+
   static unsigned long s_nCID;
   static pthread_mutex_t s_xMutex;
-  
-  friend class CICQDaemon;
+
+friend class CICQDaemon;
 };
 
 typedef std::list<CConversation *> ConversationList;
@@ -269,7 +271,7 @@ public:
      unsigned long nMsgID[], bool bDirect);
   void ProtoChatRequestCancel(const char *szId, unsigned long nPPID,
      unsigned short nSequence);
-  
+
   unsigned long ProtoFileTransfer(const char *szId, unsigned long nPPID,
      const char *szFilename, const char *szDescription, ConstFileList &lFileList,
      unsigned short nLevel, bool bServer);
@@ -282,7 +284,7 @@ public:
      unsigned short nPort, unsigned long nSequence = 0, unsigned long nFlag1 = 0,
      unsigned long nFlag2 = 0, const char *szDesc = 0, const char *szFile = 0,
      unsigned long nFileSize = 0,bool bDirect = false);
-  
+
   unsigned long ProtoAuthorizeGrant(const char *szId, unsigned long nPPID,
      const char *szMessage);
 
@@ -296,12 +298,12 @@ public:
     const char *szCity, const char *szState, const char *szPhoneNumber,
     const char *szFaxNumber, const char *szAddress, const char *szCellularNumber,
     const char *szZipCode, unsigned short nCountryCode, bool bHideEmail);
-    
+
   unsigned long ProtoOpenSecureChannel(const char *szId, unsigned long nPPID);
   unsigned long ProtoCloseSecureChannel(const char *szId, unsigned long nPPID);
   void ProtoOpenSecureChannelCancel(const char *szId, unsigned long nPPID,
     unsigned long nSequence);
-    
+
   // TCP (user) functions
   // Message
   unsigned long icqSendMessage(const char *szId, const char *szMessage,
@@ -397,7 +399,7 @@ public:
   unsigned long icqSetWorkInfo(const char *_szCity, const char *_szState,
                            const char *_szPhone,
                            const char *_szFax, const char *_szAddress,
-			   const char *_szZip, unsigned short _nCompanyCountry,
+                           const char *_szZip, unsigned short _nCompanyCountry,
                            const char *_szName, const char *_szDepartment,
                            const char *_szPosition, unsigned short _nCompanyOccupation,
                            const char *_szHomepage);
@@ -433,7 +435,7 @@ public:
                             const char *szState, unsigned short nCountryCode,
                             const char *szCoName, const char *szCoDept,
                             const char *szCoPos, const char *szKeyword,
-			    bool bOnlineOnly);
+                            bool bOnlineOnly);
   unsigned long icqSearchByUin(unsigned long);
 
   void icqLogoff();
@@ -471,11 +473,11 @@ public:
   void icqUpdateContactList();
   void icqTypingNotification(const char *_szId, bool _bActive);
   void icqCheckInvisible(const char *_szId);
-  
+
   // Visible/Invisible/Ignore list functions
   void ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID);
   void ProtoToggleVisibleList(const char *_szId, unsigned long _nPPID);
-  
+
   void icqAddToVisibleList(const char *_szId, unsigned long _nPPID);
   void icqRemoveFromVisibleList(const char *_szId, unsigned long _nPPID);
   void icqAddToInvisibleList(const char *_szId, unsigned long _nPPID);
@@ -493,7 +495,7 @@ public:
   void icqAddToIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
   void icqRemoveFromIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
   void icqToggleIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  
+
   void icqClearServerList();
   void CheckExport();
 
@@ -541,7 +543,7 @@ public:
 
   // SMS
   unsigned long icqSendSms(const char *szNumber, const char *szMessage,
-			   unsigned long nUin);
+                           unsigned long nUin);
 
   // NOT MT SAFE
   const char *getUrlViewer();
@@ -617,7 +619,7 @@ public:
   bool AddProtocolPlugins();
   char *parseRTF(const char *);
 
-    
+
   // Statistics
   CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }
   DaemonStatsList &AllStats() { return m_sStats; }
@@ -635,7 +637,7 @@ public:
   CConversation *FindConversation(int nSocket);
   CConversation *FindConversation(unsigned long nCID);
   bool RemoveConversation(unsigned long nCID);
-  
+
   // Common message handler
   void ProcessMessage(ICQUser *user, CBuffer &packet, char *message,
      unsigned short nMsgType, unsigned long nMask,
@@ -647,7 +649,7 @@ public:
      unsigned long nMsgID2, unsigned short nSequence,
      TCPSocket *pSock);
   bool WaitForReverseConnection(unsigned short id, unsigned long uin);
-  
+
 protected:
   CLicq *licq;
   COnEventManager m_xOnEventManager;
@@ -701,19 +703,19 @@ protected:
   bool m_bUseSS; // server side list
   bool m_bSendTN; // Send typing notifications
   bool m_bReconnectAfterUinClash; // reconnect after uin has been used from another location?
-  
+
   // Statistics
   void FlushStats();
   DaemonStatsList m_sStats;
   time_t m_nStartTime, m_nResetTime;
-  
+
   static std::list <CReverseConnectToUserData *> m_lReverseConnect;
   static pthread_mutex_t mutex_reverseconnect;
   static pthread_cond_t  cond_reverseconnect_done;
 
   ConversationList m_lConversations;
   pthread_mutex_t mutex_conversations;
-  
+
   std::list <ICQEvent *> m_lxRunningEvents;
   pthread_mutex_t mutex_runningevents;
   std::list <ICQEvent *> m_lxExtendedEvents;
@@ -849,12 +851,10 @@ class CReverseConnectToUserData
 {
 public:
   CReverseConnectToUserData(unsigned long uin, unsigned long id,
-   unsigned long data, unsigned long ip, unsigned short port,
-   unsigned short version, unsigned short failedport, unsigned long msgid1,
-   unsigned long msgid2) :
-   nUin(uin), nId(id), nData(data), nIp(ip), nPort(port),
-   nFailedPort(failedport), nVersion(version), nMsgID1(msgid1),
-   nMsgID2(msgid2), bSuccess(false), bFinished(false) {}
+      unsigned long data, unsigned long ip, unsigned short port,
+      unsigned short version, unsigned short failedport, unsigned long msgid1,
+      unsigned long msgid2);
+  ~CReverseConnectToUserData();
 
   unsigned long nUin;
   unsigned long nId;

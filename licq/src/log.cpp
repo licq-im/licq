@@ -53,6 +53,11 @@ CLogService::CLogService(unsigned short _nLogTypes)
   SetData(NULL);
 }
 
+CLogService::~CLogService()
+{
+  // Empty
+}
+
 void CLogService::SetLogTypes(unsigned short _nLogTypes)
 {
   if ( (m_nLogTypes & L_PACKET) && !(_nLogTypes & L_PACKET) )
@@ -100,8 +105,8 @@ CLogService_StdErr::CLogService_StdErr(unsigned short _nLogTypes, bool _bUseColo
 
 
 void CLogService_StdErr::LogMessage(const char *_szPrefix, 
-				    const char *_szMessage,
-				    const unsigned short _nLogType)
+                                    const char *_szMessage,
+                                    const unsigned short _nLogType)
 {
   if (m_bUseColor)
     fprintf(stderr, "%s%s%s", COLOR_PREFIX, _szPrefix, COLOR_MSG[_nLogType == L_MESSAGE ? L_INFO : _nLogType]);
@@ -138,8 +143,8 @@ bool CLogService_File::SetLogFile(const char *_szFile, const char *_szFlags)
 }
 
 void CLogService_File::LogMessage(const char *_szPrefix, 
-				  const char *_szMessage,
-				  const unsigned short _nLogType)
+                                  const char *_szMessage,
+                                  const unsigned short _nLogType)
 {
   if (m_fLog == NULL) return;
   fprintf(m_fLog, "%s%s", _szPrefix, _szMessage);
@@ -155,6 +160,12 @@ CPluginLog::CPluginLog()
   pipe(pipe_log);
   pthread_mutex_init(&mutex, NULL);
 }
+
+CPluginLog::~CPluginLog()
+{
+  // Empty
+}
+
 
 char *CPluginLog::NextLogMsg()
 {
@@ -205,8 +216,8 @@ bool CLogService_Plugin::SetLogWindow(CPluginLog *_xWindow)
 }
 
 void CLogService_Plugin::LogMessage(const char *_szPrefix, 
-				    const char *_szMessage,
-				    const unsigned short _nLogType)
+                                    const char *_szMessage,
+                                    const unsigned short _nLogType)
 {
   static char szMsgMax[MAX_MSG_SIZE];
 

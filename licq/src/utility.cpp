@@ -191,10 +191,10 @@ CUtility::~CUtility()
   for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); ++iter)
     delete *iter;
 
-  if (m_szName)        free(m_szName);
-  if (m_szCommand)     free(m_szCommand);
-  if (m_szDescription) free(m_szDescription);
-  if (m_szFullCommand) delete []m_szFullCommand;
+  free(m_szName);
+  free(m_szCommand);
+  free(m_szDescription);
+  delete []m_szFullCommand;
 }
 
 bool CUtility::SetFields(unsigned long _nUin)
@@ -265,7 +265,19 @@ void CUtility::SetUserFields(const vector <const char *> &_vszUserFields)
   free(szTemp);
 }
 
+//===========================================================================
 
+CUtilityUserField::CUtilityUserField(const char *_szTitle, const char *_szDefault)
+{
+  m_szTitle = strdup(_szTitle);
+  m_szDefault = strdup(_szDefault);
+}
+
+CUtilityUserField::~CUtilityUserField()
+{
+  free (m_szTitle);
+  free (m_szDefault);
+}
 
 bool CUtilityUserField::SetFields(ICQUser *u)
 {
@@ -390,6 +402,3 @@ pclose_leave:
    return WEXITSTATUS(pstat);
 
 }
-
-
-

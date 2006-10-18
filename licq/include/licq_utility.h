@@ -34,16 +34,9 @@ protected:
 class CUtilityUserField
 {
 public:
-  CUtilityUserField(const char *_szTitle, const char *_szDefault)
-  {
-    m_szTitle = strdup(_szTitle);
-    m_szDefault = strdup(_szDefault);
-  }
-  ~CUtilityUserField()
-  {
-    free (m_szTitle);
-    free (m_szDefault);
-  }
+  CUtilityUserField(const char *_szTitle, const char *_szDefault);
+  ~CUtilityUserField();
+
   const char *Title()  { return m_szTitle; }
   const char *Default()  { return m_szDefault; }
   const char *FullDefault()  { return m_szFullDefault; }

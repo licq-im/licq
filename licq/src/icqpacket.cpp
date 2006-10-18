@@ -5573,3 +5573,8 @@ CPX_FileTransfer::CPX_FileTransfer(ConstFileList &lFileList, const char *_szFile
   else
      m_szFilename = strdup(_szFilename);
 }
+
+CPX_FileTransfer::~CPX_FileTransfer()
+{
+  // Empty
+}

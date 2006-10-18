@@ -275,7 +275,7 @@ private:
                     const char *const szCat,const char *const szDescr);
 
   unsigned short used;
-  
+
   struct cat
   {       unsigned short id;
           char *descr;
@@ -663,8 +663,9 @@ public:
   void SetPPID(unsigned long n)       { m_nPPID = n; }
   void SetId(const char *s)            { SetString(&m_szId, s); SaveLicqInfo(); }
   void SetClientInfo(const char *s)
-  { if(m_szClientInfo) free(m_szClientInfo); 
-    if(s) m_szClientInfo = strdup(s); else m_szClientInfo = NULL; 
+  {
+    free(m_szClientInfo);
+    m_szClientInfo = (s ? strdup(s) : NULL);
   }
 
   // Dynamic info fields for protocol plugins
@@ -754,15 +755,15 @@ public:
   void SetSendIntIp(bool s)	{ m_bSendIntIp = s; }
 
   // for backward compatibility
-  unsigned long RealIp()         	{ return IntIp(); }
-  void SetRealIp(unsigned long s) 	{ SetIntIp(s); }
-  bool SendRealIp()			{ return SendIntIp(); }
-  void SetSendRealIp(bool s)		{ SetSendIntIp(s); }
-  
+  unsigned long RealIp()          { return IntIp(); }
+  void SetRealIp(unsigned long s) { SetIntIp(s); }
+  bool SendRealIp()               { return SendIntIp(); }
+  void SetSendRealIp(bool s)      { SetSendIntIp(s); }
+
   char *IpStr(char *rbuf);
   char *IntIpStr(char *rbuf);
   char *PortStr(char *rbuf);
-  
+
   // Don't call these:
   int SocketDesc(unsigned char);
   void ClearSocketDesc();
@@ -780,7 +781,7 @@ public:
 
   // Crypto
   bool Secure() { return m_bSecure; }
-    
+
   virtual bool User()  { return true; }
   void Lock(unsigned short);
   void Unlock();
@@ -881,7 +882,7 @@ protected:
   bool m_bAuthorization;
   bool m_bHideEmail;
   unsigned char m_nWebAwareStatus;
-  
+
   // More Info
   unsigned short m_nAge;
   char m_nGender;
@@ -911,7 +912,7 @@ protected:
 
   // About Info
   char *m_szAbout;
-  
+
   // More2 Info
   ICQUserCategory *m_Interests;
   ICQUserCategory *m_Backgrounds;
@@ -985,7 +986,7 @@ public:
   void SetPDINFO(unsigned short n)    { m_nPDINFO = n; SaveLicqInfo(); }
 
   void SetPicture(const char *f);
-  
+
   // Virtual overloaded functions
   virtual void SaveLicqInfo();
   virtual void SetStatusOffline();
@@ -1010,10 +1011,11 @@ class CUserHashTable
 {
 public:
   CUserHashTable(unsigned short _nSize);
-  
+  ~CUserHashTable();
+
   // For protocol plugins
   ICQUser *Retrieve(const char *, unsigned long);
-	void Store(ICQUser *, const char *, unsigned long);
+  void Store(ICQUser *, const char *, unsigned long);
   void Remove(const char *, unsigned long);
 
   // For ICQ (Licq way)
@@ -1021,7 +1023,7 @@ public:
   void Store(ICQUser *u, unsigned long _nUin);
   void Remove(unsigned long _nUin);
 protected:
-	// For protocol plugin
+  // For protocol plugin
   unsigned short HashValue(const char *);
 
   // For ICQ (Licq way)
@@ -1042,7 +1044,7 @@ public:
   ~CUserManager();
   bool Load();
   void SetOwnerUin(unsigned long _nUin);
-  
+
   // For protocol plugins
   void AddOwner(const char *, unsigned long);
   void AddUser(ICQUser *, const char *, unsigned long);
@@ -1084,7 +1086,7 @@ public:
   void RemoveGroupID(unsigned short);
   void ModifyGroupID(char *, unsigned short);
   void SaveGroupIDs();
-	unsigned short GetIDFromGroup(const char *);
+  unsigned short GetIDFromGroup(const char *);
   unsigned short GetGroupFromID(unsigned short);
 
   unsigned short GenerateSID();
@@ -1096,7 +1098,7 @@ public:
   void SaveAllUsers();
 
   bool UpdateUsersInGroups();
-  
+
   unsigned short NumUsers();
   unsigned short NumOwners();
   unsigned short DefaultGroup()  { return m_nDefaultGroup; }

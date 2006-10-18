@@ -1595,6 +1595,11 @@ CUserHashTable::CUserHashTable(unsigned short _nSize) : m_vlTable(_nSize)
   m_nLockType = LOCK_R;
 }
 
+CUserHashTable::~CUserHashTable()
+{
+  // Empty
+}
+
 ICQUser *CUserHashTable::Retrieve(const char *_szId, unsigned long _nPPID)
 {
   Lock(LOCK_R);

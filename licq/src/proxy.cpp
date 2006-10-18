@@ -62,8 +62,8 @@ ProxyServer::ProxyServer()
 ProxyServer::~ProxyServer()
 {
   CloseConnection();
-  if (m_szProxyLogin != NULL) free (m_szProxyLogin);
-  if (m_szProxyPasswd != NULL) free (m_szProxyPasswd);
+  free (m_szProxyLogin);
+  free (m_szProxyPasswd);
 }
 
 
@@ -272,6 +272,18 @@ static void base64_encode (const char *s, char *store, int length)
 }
 
 
+HTTPProxyServer::HTTPProxyServer() : ProxyServer()
+{
+  // Empty
+}
+
+//-----HTTPProxyServer::~HTTPProxyServer----------------------------------------
+HTTPProxyServer::~HTTPProxyServer()
+{
+  // Empty
+}
+
+
 //-----HTTPProxyServer::HTTPInitProxy-------------------------------------------
 bool HTTPProxyServer::HTTPInitProxy()
 {
@@ -350,10 +362,4 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
   m_nErrorType = PROXY_ERROR_internal;
   CloseConnection();
   return(false);
-}
-
-
-//-----HTTPProxyServer::~HTTPProxyServer----------------------------------------
-HTTPProxyServer::~HTTPProxyServer()
-{
 }

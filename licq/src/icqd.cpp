@@ -63,6 +63,10 @@ CDaemonStats::CDaemonStats(const char *name, const char *tag)
   strcpy(m_szTag, tag);
 }
 
+CDaemonStats::~CDaemonStats()
+{
+  // Empty
+}
 
 void CDaemonStats::Reset()
 {
@@ -85,6 +89,11 @@ CConversation::CConversation(int nSocket, unsigned long nPPID)
   pthread_mutex_lock(&s_xMutex);
   m_nCID = ++s_nCID;
   pthread_mutex_unlock(&s_xMutex);
+}
+
+CConversation::~CConversation()
+{
+  // Empty
 }
 
 bool CConversation::HasUser(const char *szUser)
@@ -2766,7 +2775,23 @@ done:
   pthread_mutex_unlock(&mutex_reverseconnect);
   return bSuccess;
 }
- 
+
+CReverseConnectToUserData::CReverseConnectToUserData(unsigned long uin, unsigned long id,
+      unsigned long data, unsigned long ip, unsigned short port,
+      unsigned short version, unsigned short failedport, unsigned long msgid1,
+      unsigned long msgid2) :
+  nUin(uin), nId(id), nData(data), nIp(ip), nPort(port),
+  nFailedPort(failedport), nVersion(version), nMsgID1(msgid1),
+  nMsgID2(msgid2), bSuccess(false), bFinished(false)
+{
+  // Empty
+}
+
+CReverseConnectToUserData::~CReverseConnectToUserData()
+{
+  // Empty
+}
+
 //-----ParseFE------------------------------------------------------------------
 bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
 {

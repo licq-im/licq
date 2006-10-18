@@ -54,10 +54,10 @@ class CLogService
 {
 public:
   CLogService(unsigned short _nLogTypes);
-  virtual ~CLogService() { }
+  virtual ~CLogService();
 
   virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
-			  unsigned short _nLogType) = 0;
+                          unsigned short _nLogType) = 0;
   void SetLogTypes(unsigned short _nLogTypes);
   unsigned short ServiceType();
   unsigned short LogType(unsigned short _nLogType);
@@ -82,7 +82,7 @@ class CLogService_StdErr : public CLogService
 public:
   CLogService_StdErr(unsigned short _nLogTypes, bool _bUseColor);
   virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
-			  unsigned short _nLogType);
+                          unsigned short _nLogType);
 protected:
   bool m_bUseColor;
 };
@@ -93,11 +93,11 @@ class CLogService_File : public CLogService
 {
 public:
    CLogService_File(unsigned short _nLogTypes);
-   ~CLogService_File();
+   virtual ~CLogService_File();
 
    bool SetLogFile(const char *_szFile, const char *_szFlags);
    virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
-			   unsigned short _nLogType);
+                           unsigned short _nLogType);
 protected:
    FILE *m_fLog;
 };
@@ -108,6 +108,8 @@ class CPluginLog
 {
 public:
   CPluginLog();
+  ~CPluginLog();
+
   char *NextLogMsg();
   unsigned short NextLogType();
   void ClearLog();

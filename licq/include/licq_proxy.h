@@ -20,7 +20,7 @@ typedef enum ProxyError_et_
   PROXY_ERROR_h_errno,
   PROXY_ERROR_internal
 } ProxyError_et;
-	   
+
 //=====ProxyServer==============================================================
 class ProxyServer
 {
@@ -32,7 +32,7 @@ public:
 
   int Error();
   char *ErrorStr(char *buf, int buflen);
-  
+
   struct sockaddr_in *ProxyAddr()  { return (&m_sProxyAddr); };
   bool SetProxyAddr(const char *_szProxyName, unsigned short _nProxyPort);
   void SetProxyAuth(const char *_szProxyLogin, const char *_szProxyPasswd);
@@ -41,7 +41,7 @@ public:
   bool OpenConnection();
   void CloseConnection();
   virtual bool OpenProxyConnection(const char *_szRemoteName, unsigned short _nRemotePort) = 0;
-  
+
   static unsigned long GetIpByName(const char *_szHostName);
 
 protected:
@@ -55,7 +55,7 @@ protected:
 class HTTPProxyServer : public ProxyServer
 {
 public:
-  HTTPProxyServer() : ProxyServer() { }
+  HTTPProxyServer();
   virtual ~HTTPProxyServer();
 
   // Abstract base class overload
