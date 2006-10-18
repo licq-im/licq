@@ -286,6 +286,11 @@ CSrvPacketTcp::CSrvPacketTcp(unsigned char nChannel)
   m_szSequenceOffset = NULL;
 }
 
+CSrvPacketTcp::~CSrvPacketTcp()
+{
+  // Empty
+}
+
 CBuffer *CSrvPacketTcp::Finalize(INetSocket *)
 {
   //  m_szSequenceOffset
@@ -499,6 +504,16 @@ unsigned long CPacket::s_nRealIp = 0;
 unsigned short CPacket::s_nLocalPort = 0;
 char CPacket::s_nMode = MODE_DIRECT;
 
+CPacket::CPacket() : buffer(NULL)
+{
+  // Empty
+}
+
+CPacket::~CPacket()
+{
+  delete buffer;
+}
+
 //----SetIps-----------------------------------------------------------------
 void CPacket::SetIps(INetSocket *s)
 {
@@ -573,6 +588,10 @@ CPacketUdp::CPacketUdp(unsigned short _nCommand)
 #endif
 }
 
+CPacketUdp::~CPacketUdp()
+{
+  // Empty
+}
 
 void CPacketUdp::InitBuffer()
 {
@@ -654,6 +673,11 @@ CPU_Register::CPU_Register(const char *szPasswd)
   buffer->PackUnsignedLong(0x00000000);
 }
 
+CPU_Register::~CPU_Register()
+{
+  // Empty
+}
+
 #elif ICQ_VERSION >= 7
 
 CPU_RegisterFirst::CPU_RegisterFirst()
@@ -670,6 +694,11 @@ CPU_RegisterFirst::CPU_RegisterFirst()
   InitBuffer();
 
   buffer->PackUnsignedLongBE(1);
+}
+
+CPU_RegisterFirst::~CPU_RegisterFirst()
+{
+  // Empty
 }
 
 CPU_Register::CPU_Register(const char *szPasswd)
@@ -694,6 +723,11 @@ CPU_Register::CPU_Register(const char *szPasswd)
   buffer->PackUnsignedLongBE(0xf2070000);
 }
 
+CPU_Register::~CPU_Register()
+{
+  // Empty
+}
+
 #endif
 
 CPU_VerifyRegistration::CPU_VerifyRegistration()
@@ -702,6 +736,11 @@ CPU_VerifyRegistration::CPU_VerifyRegistration()
   // Yes, it's empty
   
   InitBuffer();
+}
+
+CPU_VerifyRegistration::~CPU_VerifyRegistration()
+{
+  // Empty
 }
 
 CPU_SendVerification::CPU_SendVerification(const char *szPasswd, const char *szVerify)
@@ -729,6 +768,11 @@ CPU_SendVerification::CPU_SendVerification(const char *szPasswd, const char *szV
   buffer->PackUnsignedShortBE(0x0009);
   buffer->PackUnsignedShortBE(nVerifyLen);
   buffer->Pack(szVerify, nVerifyLen);
+}
+
+CPU_SendVerification::~CPU_SendVerification()
+{
+  // Empty
 }
 
 //-----Logon--------------------------------------------------------------------
@@ -797,6 +841,11 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
   buffer->PackTLV(0x000e, 0x0002, "us");
 }
 
+CPU_Logon::~CPU_Logon()
+{
+  // Empty
+}
+
 //-----SendCookie------------------------------------------------------------
 CPU_SendCookie::CPU_SendCookie(const char *szCookie, int nLen)
   : CSrvPacketTcp(ICQ_CHNxNEW)
@@ -810,6 +859,11 @@ CPU_SendCookie::CPU_SendCookie(const char *szCookie, int nLen)
 
   buffer->PackUnsignedLongBE(0x00000001);
   buffer->PackTLV(0x0006, nLen, szCookie);
+}
+
+CPU_SendCookie::~CPU_SendCookie()
+{
+  // Empty
 }
 
 //-----ImICQ-----------------------------------------------------------------
@@ -1156,6 +1210,11 @@ CPU_GenericFamily::CPU_GenericFamily(unsigned short Family, unsigned short SubTy
   InitBuffer();
 }
 
+CPU_GenericFamily::~CPU_GenericFamily()
+{
+  // Empty
+}
+
 CPU_CommonFamily::CPU_CommonFamily(unsigned short Family, unsigned short SubType)
   : CSrvPacketTcp(ICQ_CHNxDATA)
 {
@@ -1163,6 +1222,11 @@ CPU_CommonFamily::CPU_CommonFamily(unsigned short Family, unsigned short SubType
 
   m_nFamily = Family;
   m_nSubType = SubType;
+}
+
+CPU_CommonFamily::~CPU_CommonFamily()
+{
+  // Empty
 }
 
 void CPU_CommonFamily::InitBuffer()
@@ -2501,6 +2565,11 @@ CPU_Logoff::CPU_Logoff()
   : CSrvPacketTcp(ICQ_CHNxCLOSE)
 {
   InitBuffer();
+}
+
+CPU_Logoff::~CPU_Logoff()
+{
+  // Empty
 }
 
 //-----RequestList--------------------------------------------------------------
@@ -4008,6 +4077,10 @@ CPU_Meta_RequestAllInfo::CPU_Meta_RequestAllInfo(const char *_szId)
   buffer->PackUnsignedLong(strtoul(m_szId, (char **)NULL, 10));
 }
 
+CPU_Meta_RequestAllInfo::~CPU_Meta_RequestAllInfo()
+{
+  free(m_szId);
+}
 
 //-----Meta_RequestInfo------------------------------------------------------
 CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(const char *_szId)
@@ -4027,6 +4100,11 @@ CPU_Meta_RequestBasicInfo::CPU_Meta_RequestBasicInfo(const char *_szId)
   buffer->PackUnsignedShort(m_nMetaCommand);
   buffer->PackUnsignedShort(m_nSubSequence);
   buffer->PackUnsignedLong(strtoul(m_szId, (char **)NULL, 10));
+}
+
+CPU_Meta_RequestBasicInfo::~CPU_Meta_RequestBasicInfo()
+{
+  free(m_szId);
 }
 
 //-----RequestInfo-------------------------------------------------------------
@@ -4922,6 +5000,10 @@ CPT_Ack::CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
   m_nSize += m_nMsgLen;
 }
 
+CPT_Ack::~CPT_Ack()
+{
+  // Empty
+}
 
 //-----AckGeneral---------------------------------------------------------------
 CPT_AckGeneral::CPT_AckGeneral(unsigned short nCmd, unsigned short nSequence,

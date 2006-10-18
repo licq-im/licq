@@ -42,24 +42,23 @@ char *PipeInput(char *m_szMessage);
 class CPX_FileTransfer
 {
 public:
-	CPX_FileTransfer(ConstFileList &lFileList, const char *szFileName);
+  CPX_FileTransfer(ConstFileList &lFileList, const char *szFileName);
+  virtual ~CPX_FileTransfer();
 
-	virtual ~CPX_FileTransfer();
-
-	bool IsValid()	{ return m_bValid; }
-	ConstFileList GetFileList()	{ return m_lFileList; }
-	const char *GetFilename()	{ return m_szFilename; }
-	const char *GetDescription() { return m_szDesc; }
-	unsigned long GetFileSize()	{ return m_nFileSize; }
+  bool IsValid()	{ return m_bValid; }
+  ConstFileList GetFileList()	{ return m_lFileList; }
+  const char *GetFilename()	{ return m_szFilename; }
+  const char *GetDescription() { return m_szDesc; }
+  unsigned long GetFileSize()	{ return m_nFileSize; }
 
 protected:
-	CPX_FileTransfer();
+  CPX_FileTransfer();
 
-	bool					m_bValid;
-	char					*m_szDesc;
-	char					*m_szFilename;
-	ConstFileList				m_lFileList;
-	unsigned long				m_nFileSize;
+  bool          m_bValid;
+  char          *m_szDesc;
+  char          *m_szFilename;
+  ConstFileList m_lFileList;
+  unsigned long m_nFileSize;
 };
 
 
@@ -69,7 +68,7 @@ protected:
 class CPacket
 {
 public:
-   virtual ~CPacket() { if (buffer != NULL) delete buffer; }
+   virtual ~CPacket();
 
    CBuffer *getBuffer()  { return buffer; };
    virtual CBuffer *Finalize(INetSocket *) { return NULL; }
@@ -95,7 +94,7 @@ public:
    static unsigned long LocalIp() { return s_nLocalIp; }
 
 protected:
-   CPacket() { buffer = NULL; };
+   CPacket();
 
    CBuffer *buffer;
    unsigned short m_nSize;
@@ -113,6 +112,8 @@ protected:
 class CSrvPacketTcp : public CPacket
 {
 public:
+  virtual ~CSrvPacketTcp();
+
   // Packet details
   virtual const unsigned char  Channel()     { return m_nChannel; }
   virtual const unsigned short Sequence()    { return m_nSequence; }
@@ -154,6 +155,8 @@ protected:
 class CPacketUdp : public CPacket
 {
 public:
+   virtual ~CPacketUdp();
+
    virtual CBuffer *Finalize(INetSocket *);
    virtual const unsigned short Sequence() { return m_nSequence; }
    virtual const unsigned short SubSequence() { return m_nSubSequence; }
@@ -198,6 +201,7 @@ class CPU_Logon : public CSrvPacketTcp
 {
 public:
   CPU_Logon(const char *_szPassword, const char *_szUin, unsigned short _nLogonStatus);
+  virtual ~CPU_Logon();
 protected:
   unsigned long  m_nLogonStatus;
   unsigned long  m_nTcpVersion;
@@ -208,6 +212,7 @@ class CPU_Logoff : public CSrvPacketTcp
 {
 public:
    CPU_Logoff();
+   virtual ~CPU_Logoff();
 };
 
 //-----SendCookie---------------------------------------------------------------
@@ -215,6 +220,7 @@ class CPU_SendCookie : public CSrvPacketTcp
 {
 public:
   CPU_SendCookie(const char *, int len);
+  virtual ~CPU_SendCookie();
 };
 
 //-----CommonFamily----------------------------------------------------------
@@ -222,6 +228,7 @@ class CPU_CommonFamily : public CSrvPacketTcp
 {
 public:
   CPU_CommonFamily(unsigned short Family, unsigned short SubType);
+  virtual ~CPU_CommonFamily();
 
 protected:
   void InitBuffer();
@@ -230,8 +237,8 @@ protected:
 class CPU_GenericFamily : public CPU_CommonFamily
 {
 public:
-    CPU_GenericFamily(unsigned short Family, unsigned short SubType);
-
+  CPU_GenericFamily(unsigned short Family, unsigned short SubType);
+  virtual ~CPU_GenericFamily();
 };
 
 #if ICQ_VERSION == 2 || ICQ_VERSION == 6
@@ -267,18 +274,21 @@ class CPU_Register : public CPacketUdp
 {
 public:
   CPU_Register(const char *_szPasswd);
+  virtual ~CPU_Register();
 };
 #elif ICQ_VERSION > 6
 class CPU_RegisterFirst : public CSrvPacketTcp
 {
 public:
   CPU_RegisterFirst();
+  virtual ~CPU_RegisterFirst();
 };
 
 class CPU_Register : public CPU_CommonFamily
 {
 public:
   CPU_Register(const char *_szPasswd);
+  virtual ~CPU_Register();
 };
 #endif
 
@@ -287,6 +297,7 @@ class CPU_VerifyRegistration : public CPU_CommonFamily
 {
 public:
   CPU_VerifyRegistration();
+  virtual ~CPU_VerifyRegistration();
 };
 
 //-----SendVerification--------------------------------------------------------
@@ -294,6 +305,7 @@ class CPU_SendVerification : public CPU_CommonFamily
 {
 public:
   CPU_SendVerification(const char *, const char *);
+  virtual ~CPU_SendVerification();
 };
 
 //-----ImICQ------------------------------------------------------------------
@@ -370,10 +382,10 @@ class CPU_AddPDINFOToServerList : public CPU_CommonFamily
 {
 public:
   CPU_AddPDINFOToServerList();
-  
+
   unsigned short GetSID()   { return m_nSID; }
   unsigned short GetGSID()  { return m_nGSID; }
-  
+
 protected:
   unsigned short m_nSID,
                  m_nGSID;
@@ -389,7 +401,7 @@ public:
 
   unsigned short GetSID()   { return m_nSID; }
   unsigned short GetGSID()  { return m_nGSID; }
-  
+
 protected:
   unsigned short m_nSID,
                  m_nGSID;
@@ -406,7 +418,7 @@ public:
 //-----ClearServerList----------------------------------------------------------
 class CPU_ClearServerList : public CPU_CommonFamily
 {
- public:
+public:
   CPU_ClearServerList(UserStringList &, unsigned short);
 };
 
@@ -429,20 +441,20 @@ public:
 class CPU_SetStatus : public CPU_CommonFamily
 {
 public:
-   CPU_SetStatus(unsigned long _nNewStatus);
+  CPU_SetStatus(unsigned long _nNewStatus);
 
 private:
-   unsigned long m_nNewStatus;
+  unsigned long m_nNewStatus;
 };
 
 class CPU_SetStatusFamily : public CPU_CommonFamily
 {
 public:
-   CPU_SetStatusFamily();
+  CPU_SetStatusFamily();
 
 protected:
-   void InitBuffer();
-   unsigned long m_nNewStatus;
+  void InitBuffer();
+  unsigned long m_nNewStatus;
 };
 
 class CPU_SetLogonStatus : public CPU_SetStatusFamily
@@ -751,7 +763,7 @@ class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
 {
 public:
   CPU_FileTransfer(ICQUser *, ConstFileList &lFileList, const char *_szFile,
-		   const char *_szDesc, unsigned short nLevel, bool bICBM);
+                   const char *_szDesc, unsigned short nLevel, bool bICBM);
 };
 
 //-----NoManager--------------------------------------------------------
@@ -836,7 +848,6 @@ class CPU_InfoPluginListResp : public CPU_AckThroughServer
 public:
   CPU_InfoPluginListResp(ICQUser *u, unsigned long nMsgID1,
                          unsigned long nMsgID2, unsigned short nSequence);
-
 };
 
 //-----InfoPhoneBookResp-------------------------------------------------------
@@ -1101,7 +1112,7 @@ class CPU_Meta_SetAbout : public CPU_CommonFamily
 {
 public:
   CPU_Meta_SetAbout(const char *szAbout);
-  ~CPU_Meta_SetAbout();
+  virtual ~CPU_Meta_SetAbout();
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
@@ -1134,9 +1145,8 @@ public:
   unsigned long Uin()	{ return 0; }
 protected:
   unsigned short m_nMetaCommand;
-	
-	char *m_szPassword;
-	
+  char *m_szPassword;
+
 friend class CICQDaemon;
 };
 
@@ -1166,7 +1176,7 @@ class CPU_Meta_RequestAllInfo : public CPU_CommonFamily
 {
 public:
   CPU_Meta_RequestAllInfo(const char *_szId);
-  virtual ~CPU_Meta_RequestAllInfo() { free(m_szId); }
+  virtual ~CPU_Meta_RequestAllInfo();
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
   const char *Id()  {  return m_szId; }
 protected:
@@ -1180,7 +1190,7 @@ class CPU_Meta_RequestBasicInfo : public CPU_CommonFamily
 {
 public:
   CPU_Meta_RequestBasicInfo(const char *_szId);
-  virtual ~CPU_Meta_RequestBasicInfo() { free(m_szId); }
+  virtual ~CPU_Meta_RequestBasicInfo();
   virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
   const char *Id()  {  return m_szId; }
 protected:
@@ -1276,7 +1286,7 @@ public:
   char Mode()  { return m_nMode; }
   unsigned long SessionId() { return m_nSessionId; }
   unsigned long Id() { return m_nId; }
-  
+
 protected:
   char m_nHandshake;
   unsigned short m_nVersionMajor;
@@ -1352,7 +1362,7 @@ protected:
    unsigned short m_nSequence;
    bool           m_bPluginReq;
    size_t         m_nMsgLen;
-   
+
    char *m_szLocalPortOffset;
    unsigned short m_nLevel;
    unsigned short m_nVersion;
@@ -1452,6 +1462,7 @@ class CPT_Ack : public CPacketTcp
 protected:
   CPT_Ack(unsigned short _nSubCommand, unsigned short _nSequence,
      bool _bAccept, bool _bUrgent, ICQUser *_cUser);
+  virtual ~CPT_Ack();
 };
 
 
