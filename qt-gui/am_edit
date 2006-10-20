@@ -295,7 +295,7 @@ sub processMakefile ($)
             }
             for $source (keys %source_dict) {
                 next if (!$source);
-                if ($source_dict{$source}) {
+                if ($source_dict{$source} && $source ne '$(licq_gui)') {
                     # sanity check
                     if (! -f $source) {
                         print STDERR "Error: $source is listed in a _SOURCE line in $printname, but doesn't exist yet. Put it in DISTCLEANFILES!\n";
