@@ -1,7 +1,7 @@
 Note that KDE support is now integrated into Licq.
 Just run configure with --with-kde to enable some KDE
 features, including styles and panel docking.
-Note that this requires KDE 2.x or 3.x.
+Note that this requires KDE 3.x.
 
 After you compiled and installed Qt-GUI with KDE support, run
 `licq -p kde-gui' to start the kde-gui plugin. This is a one-time hassle,

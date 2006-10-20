@@ -1,4 +1,4 @@
-LICQ Qt-GUI Plugin
+Licq Qt-GUI Plugin
 
 A plugin for Licq to enable a gui based on Qt.
 
@@ -32,45 +32,15 @@ INSTALLATION:
    /usr/local).
 
 Licq Qt-GUI requires the following:
-Qt >= 2.1 (if you are using rpm then it requires the qt and qt-devel rpm)
+Qt >= 3.0 (if you are using rpm then it requires the qt and qt-devel rpm)
 Some C++ compiler
-KDE >= 2.0 for KDE support
-
-* * * IF CONFIGURE CAN'T FIND msg2qm AND mergetr READ THIS! * * *
-The files you need for translations are located in $QTDIR/tools/mergetr and 
-$QTDIR/tools/msg2qm.  Just make a symbolic link of these files in $QTDIR/bin
-and everything will be working.
-
-* * * IF YOU USE Qt-1.x PROGRAMS (like KDE), READ THIS! * * *
-If you get errors about unknown symbols in the qt-gui plugin library,
-make sure you're using the Qt-2 moc program and that you're linking
-to libqt.so.2.
-1. At the shell you're invoking "configure" for the plugin type
-   > echo $QTDIR
-   You should see the path to Qt-2 (probably /usr/lib/qt-2.0.x, depending
-   on the version you're using).
-   a) If you don't, and you _have_ Qt-2 binary and headers (qt and qt-devel
-      for RedHat users) installed for sure, issue the following command:
-      > ls /usr/lib/qt-2*/lib/libqt.so.2
-   b) If ls didn't print any line, try substituting /usr/lib with
-      /usr/local/lib, so that the command looks like:
-      > ls /usr/local/lib/qt-2*/lib/libqt.so.2
-   c) if you see a file name printed in either step a) or b), cut the
-      /lib/libqt.so.2 off its end and set QTDIR to the remainder, e.g.
-      if you see "/usr/lib/qt-2.0.2/lib/libqt.so.2", type
-      > export QTDIR="/usr/lib/qt-2.0.2"
-      If you use csh or a compatible shell, type
-      > setenv QTDIR "/usr/lib/qt-2.0.2"
-      instead.
-
-2. Compile the plugin
-   Refer to the instructions under INSTALLATION (above)
+KDE >= 3.0 for KDE support
 
 
 CONFIGURATION:
 
 Configuration is done through the ~/.licq/licq_qt-gui.conf file, which 
-contains .ini style options.  Help on each option is include in the file.  
+contains .ini style options. Help on each option is include in the file.
 
 USE:
 
@@ -95,4 +65,4 @@ See the BUGS file for reports on known bugs and problems.
 
 CONTACTS:
 
-Send any questions, comments, or other complaints to graham@licq.org.
+Send any questions, comments, or other complaints to licq-dev@googlegroups.com.
