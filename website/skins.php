@@ -1,19 +1,3 @@
-<?
-  include "header.php";
-?>
-      
-      <div id="content" > 
-
-				<div id="main"><img src="images/main_title_skins.gif" alt="Main" /></div>
-        <div id="maincontent">
-          <div id="subcontent">
-
-          <p>Skins for Licq work with the Qt-GUI plugin and are easy to make (see the <a href="SKINS.HOWTO">SKINS.HOWTO</a>) and easy to install.</p>
-          <p>To use one, simply unpack it into the qt-gui directory (/usr/local/share/licq/qt-gui or /usr/share/licq/qt-gui) or your licq directory (~/.licq) and then select it from the Skin Browser, or use the -s option to the qt-gui.</p> 
-          <p>You can also test a skin by unpacking it anywhere and passing the gui the full pathname to the directory.</p>
-
-          <h3><a href="skins.php">Skins</a> :: <a href="iconsets.php">Icons</a> :: Sounds :: Click Images to Zoom</h3> 
-            
             <?
 
             $filetypes = array('.gz');
@@ -82,11 +66,3 @@
               </tr>
             </table>
       
-          </div>
-        </div>
-
-        <div id="mainfooter"><p id="mainfooter_left"></p><!-- <img src="images/main_bg_bottomleft.gif" border="0" alt="Main" /> --></div>
-
-			</div> 
-
-<? include "footer.php" ?>
