@@ -1,8 +1,8 @@
 static const char QTGUI_CONF[] =
 "[appearance]\n"
-"Skin = basic\n"
-"Icons = computer\n"
-"Emoticons = Default\n"
+"Skin = basic-ncb\n"
+"Icons = ami\n"
+"Emoticons = ccmathteam.com\n"
 "ExtendedIcons = basic\n"
 "Font = default\n"
 "GridLines = 0\n"
