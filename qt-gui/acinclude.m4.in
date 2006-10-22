@@ -380,7 +380,17 @@ AC_DEFUN([AC_PATH_KDE_INCLUDES],
   kde_includes=""
 
   dnl check for KDE includes
-  kde_incdirs="/opt/kde3/include /opt/kde/include /usr/lib/kde/include /usr/local/kde/include /usr/kde/include /usr/include/kde /usr/include /usr/local/include $x_includes $qt_includes"
+  kde_incdirs="\
+    /opt/kde3/include \
+    /opt/kde/include \
+    /usr/lib/kde/include \
+    /usr/local/kde/include \
+    /usr/kde/include \
+    /usr/include/kde \
+    /usr/include \
+    /usr/local/include \
+    $x_includes \
+    $qt_includes"
   if test -n "$KDEDIR"; then
     kde_incdirs="$KDEDIR/include $KDEDIR $kde_incdirs"
   fi
@@ -429,7 +439,27 @@ AC_DEFUN([AC_PATH_KDE_LIBRARIES],
   kde_libraries=""
 
   dnl check for KDE libraries
-  kde_libdirs="/opt/kde3/lib64 /opt/kde3/lib /opt/kde/lib /usr/lib/kde/lib /usr/local/kde/lib /usr/kde/lib /usr/lib/kde /usr/lib /usr/local/lib /usr/X11R6/lib /usr/X11R6/kde/lib"
+  kde_libdirs="\
+    /opt/kde3/lib64 \
+    /opt/kde3/lib \
+    /opt/kde/lib64 \
+    /opt/kde/lib \
+    /usr/lib/kde/lib64 \
+    /usr/lib/kde/lib \
+    /usr/local/kde/lib64 \
+    /usr/local/kde/lib \
+    /usr/kde/lib64 \
+    /usr/kde/lib \
+    /usr/lib64/kde \
+    /usr/lib/kde \
+    /usr/lib64 \
+    /usr/lib \
+    /usr/local/lib64 \
+    /usr/local/lib \
+    /usr/X11R6/lib64 \
+    /usr/X11R6/lib \
+    /usr/X11R6/kde/lib64 \
+    /usr/X11R6/kde/lib"
   if test -n "$KDEDIR"; then
     kde_libdirs="$KDEDIR/lib $KDEDIR $kde_libdirs"
   fi
