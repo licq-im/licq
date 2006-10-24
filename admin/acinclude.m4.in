@@ -252,6 +252,32 @@ AC_DEFUN([LICQ_CHECK_GPGME],
         fi
      fi
   fi
+
+  if test $ok = yes; then
+    CPPFLAGS_SAVE="$CPPFLAGS"
+    LIBS_SAVE="$LIBS"
+
+    GPGME_CFLAGS=`$GPGME_CONFIG --cflags`
+    GPGME_LIBS=`$GPGME_CONFIG --libs`
+    CPPFLAGS="$CPPFLAGS $GPGME_CFLAGS"
+    LIBS="$LIBS $GPGME_LIBS"
+
+    AC_TRY_LINK([
+      #include <gpgme.h>
+    ],[
+      gpgme_data_t data;
+      if (gpgme_data_new(&data) == GPG_ERR_NO_ERROR)
+        gpgme_data_release(data);
+    ],[
+      ok=yes
+    ],[
+      ok=no
+    ])
+
+    CPPFLAGS="$CPPFLAGS_SAVE"
+    LIBS="$LIBS_SAVE"
+  fi
+
   if test $ok = yes; then
     GPGME_CFLAGS=`$GPGME_CONFIG --cflags`
     GPGME_LIBS=`$GPGME_CONFIG --libs`
