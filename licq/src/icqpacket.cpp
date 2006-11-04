@@ -923,7 +923,7 @@ CPU_RateAck::CPU_RateAck()
 CPU_CapabilitySettings::CPU_CapabilitySettings()
   : CPU_CommonFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_SETxUSERxINFO)
 {
-  char data[6][CAP_LENGTH];
+  char data[7][CAP_LENGTH];
   m_nSize += 4 + sizeof(data);
   InitBuffer();
 
