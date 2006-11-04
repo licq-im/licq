@@ -923,23 +923,6 @@ CPU_RateAck::CPU_RateAck()
 CPU_CapabilitySettings::CPU_CapabilitySettings()
   : CPU_CommonFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_SETxUSERxINFO)
 {
-#if 0
-  m_nSize += 68;
-  InitBuffer();
-
-  char data[0x40] = { 0x09, 0x46, 0x13, 0x49, 0x4c, 0x7f, 0x11, 0xd1,
-		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00,
-		      0x09, 0x46, 0x13, 0x44, 0x4c, 0x7f, 0x11, 0xd1,
-		      0x82, 0x22, 0x44, 0x45, 0x53, 0x54, 0x00, 0x00,
-                      0x97, 0xb1, 0x27, 0x51, 0x24, 0x3c, 0x43, 0x34,
-                      0xad, 0x22, 0xd6, 0xab, 0xf7, 0x3f, 0x14, 0x92,
-                      0x2e, 0x7a, 0x64, 0x75, 0xfa, 0xdf, 0x4d, 0xc8,
-                      0x88, 0x6f, 0xea, 0x35, 0x95, 0xfd, 0xb6, 0xdf
-                    };
-
-  buffer->PackTLV(0x05, 0x40, data);
-#else
-
   char data[6][CAP_LENGTH];
   m_nSize += 4 + sizeof(data);
   InitBuffer();
@@ -950,15 +933,17 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   memcpy(data[3], ICQ_CAPABILITY_LICQxVER, CAP_LENGTH);
   memcpy(data[4], ICQ_CAPABILITY_AIMxINTER, CAP_LENGTH);
   memcpy(data[5], ICQ_CAPABILITY_RTFxMSGS, CAP_LENGTH);
+  memcpy(data[6], ICQ_CAPABILITY_ICHAT, CAP_LENGTH);
+
+  // Send our licq version
   data[3][12] = INT_VERSION / 1000;
   data[3][13] = (INT_VERSION / 10) % 1000;
   data[3][14] = INT_VERSION % 10;
 #ifdef USE_OPENSSL
+  // If we support SSL
   data[3][15] = 1;
 #endif
   buffer->PackTLV(0x05, sizeof(data), (char *)data);  
-
-#endif
 }
 
 //-----SetPrivacy---------------------------------------------------------------
