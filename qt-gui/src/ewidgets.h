@@ -208,7 +208,7 @@ public:
   void addMsg(direction dir, bool fromHistory, QString eventDescription, QDateTime date, 
     bool isDirect, bool isMultiRec, bool isUrgent, bool isEncrypted, 
     QString contactName, QString messageText);
-  void addNotice(QString dateTime, QString messageText);
+  void addNotice(QDateTime dateTime, QString messageText);
 
   unsigned short m_nMsgStyle;
   QString m_nDateFormat;

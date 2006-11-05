@@ -948,11 +948,12 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
   }
 }
 
-void CMessageViewWidget::addNotice(QString dateTime, QString messageText)
+void CMessageViewWidget::addNotice(QDateTime dt, QString messageText)
 {
   QString color = "green";
   QString s = "";
-  
+  const QString dateTime = dt.toString( m_nDateFormat );
+
   /* Remove trailing line breaks. */
   for (unsigned int i = messageText.length() - 1; i >= 0; i--)
   {
@@ -961,8 +962,8 @@ void CMessageViewWidget::addNotice(QString dateTime, QString messageText)
     else
       break;
   }
-     
-  
+
+
   switch (m_nMsgStyle)
   {
     case 1:
@@ -993,7 +994,7 @@ void CMessageViewWidget::addNotice(QString dateTime, QString messageText)
                   .arg(messageText);
       break;    
   }
-  
+
   append(s);
   if (m_bAppendLineBreak)
     append("<hr>");
