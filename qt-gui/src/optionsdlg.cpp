@@ -1686,14 +1686,15 @@ void OptionsDlg::slot_refresh_msgViewer()
 
   const char *names[2] = {"Marge", "Homer"};
   const char *msgs[8] = {
-      "This is received message",
-      "This is a sent message",
-      "Have you gone to the Licq IRC Channel?",
-      "No, where is it?",
-      "#Licq on irc.freenode.net",
-      "Cool, I'll see you there :)",
-      "We'll be waiting!",
-      "Marge has left the conversation."};
+      QT_TR_NOOP("This is received message"),
+      QT_TR_NOOP("This is a sent message"),
+      QT_TR_NOOP("Have you gone to the Licq IRC Channel?"),
+      QT_TR_NOOP("No, where is it?"),
+      QT_TR_NOOP("#Licq on irc.freenode.net"),
+      QT_TR_NOOP("Cool, I'll see you there :)"),
+      QT_TR_NOOP("We'll be waiting!"),
+      QT_TR_NOOP("Marge has left the conversation.")
+  };
 
   msgViewer->m_nMsgStyle = cmbStyle->currentItem();
   msgViewer->m_bAppendLineBreak = chkLineBreak->isChecked();
@@ -1715,9 +1716,9 @@ void OptionsDlg::slot_refresh_msgViewer()
           date,
           true, false, false, false, 
           names[i % 2],
-          MLView::toRichText(msgs[i], true, true));
+          MLView::toRichText(tr(msgs[i]), true, true));
   }
-  msgViewer->addNotice(date, MLView::toRichText(msgs[7], true, true));
+  msgViewer->addNotice(date, MLView::toRichText(tr(msgs[7]), true, true));
 }
 
 CColorOption::CColorOption (QWidget* parent)
