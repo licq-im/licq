@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<messaging-emoticon-map>
+  <emoticon file="smile.png">
+    <string>:-)</string>
+    <string>:)</string>
+  </emoticon>
+  <emoticon file="wink.png">
+    <string>;-)</string>
+    <string>;)</string>
+  </emoticon>
+  <emoticon file="grin.png">
+    <string>:-D</string>
+    <string>:D</string>
+    <string>:d</string>
+    <string>:-d</string>
+  </emoticon>
+  <emoticon file="laughing.png">
+    <string>(old:-D)</string>
+    <string>(old:D)</string>
+    <string>(old:-d)</string>
+    <string>(old:d)</string>
+  </emoticon>
+  <emoticon file="meh.png">
+    <string>:-P</string>
+    <string>:P</string>
+    <string>:-p</string>
+    <string>:p</string>
+  </emoticon>
+  <emoticon file="frown.png">
+    <string>:-(</string>
+    <string>:(</string>
+  </emoticon>
+  <emoticon file="boring.png">
+    <string>:-|</string>
+    <string>:|</string>
+  </emoticon>
+  <emoticon file="halfsmile.png">
+    <string>:-J</string>
+    <string>:J</string>
+    <string>:-j</string>
+    <string>:j</string>
+  </emoticon>
+  <emoticon file="sleeping.png">
+    <string>|-)</string>
+    <string>|)</string>
+    <string>(zzz)</string>
+  </emoticon>
+  <emoticon file="ohmygod.png">
+    <string>:-O</string>
+    <string>:O</string>
+  </emoticon>
+  <emoticon file="huh.png">
+    <string>:-?</string>
+    <string>:?</string>
+    <string>(?)</string>
+  </emoticon>
+  <emoticon file="unimpressed.png">
+    <string>:-/</string>
+    <string>:/</string>
+    <string>:-\</string>
+    <string>:\</string>
+  </emoticon>
+  <emoticon file="angry.png">
+    <string>&gt;:-O</string>
+    <string>&gt;:O</string>
+    <string>&gt;:-o</string>
+    <string>&gt;:o</string>
+    <string>{-O</string>
+    <string>{O</string>
+    <string>{-o</string>
+    <string>{o</string>
+  </emoticon>
+  <emoticon file="sour.png">
+    <string>:-$</string>
+    <string>:$</string>
+    <string>:-S</string>
+    <string>:S</string>
+    <string>:-s</string>
+    <string>:s</string>
+  </emoticon>
+  <emoticon file="sick.png">
+    <string>:-@</string>
+    <string>:@</string>
+  </emoticon>
+  <emoticon file="dead.png">
+    <string>X-P</string>
+    <string>X-P</string>
+    <string>+-P</string>
+    <string>+P</string>
+  </emoticon>
+  <emoticon file="aww.png">
+    <string>:-}</string>
+    <string>:}</string>
+  </emoticon>
+  <emoticon file="blush.png">
+    <string>:-&gt;</string>
+    <string>:&gt;</string>
+    <string>:#)</string>
+  </emoticon>
+  <emoticon file="love.png">
+    <string>:-*</string>
+    <string>:*</string>
+    <string>(l)</string>
+    <string>(L)</string>
+    <string>\~/s</string>
+  </emoticon>
+  <emoticon file="cool.png">
+    <string>B-)</string>
+    <string>B)</string>
+  </emoticon>
+  <emoticon file="nerd.png">
+    <string>8-)</string>
+    <string>8-i</string>
+  </emoticon>
+  <emoticon file="yeah.png">
+    <string>X-D</string>
+    <string>XD</string>
+  </emoticon>
+  <emoticon file="heh.png">
+    <string>;-P</string>
+    <string>;P</string>
+    <string>;-p</string>
+    <string>;p</string>
+  </emoticon>
+  <emoticon file="err.png">
+    <string>{:-D</string>
+    <string>{:D</string>
+    <string>oo;</string>
+    <string>OO;</string>
+  </emoticon>
+  <emoticon file="hellyes.png">
+    <string>&gt;:-D</string>
+    <string>&gt;:D</string>
+  </emoticon>
+  <emoticon file="erm.png">
+    <string>O_o</string>
+    <string>o_O</string>
+    <string>o.O</string>
+    <string>O.o</string>
+    <string>0_o</string>
+    <string>o_0</string>
+    <string>o.0</string>
+    <string>0.o</string>
+  </emoticon>
+  <emoticon file="whistling.png">
+    <string>:-"</string>
+    <string>:"</string>
+  </emoticon>
+  <emoticon file="drool.png">
+    <string>:-D~</string>
+    <string>:D~</string>
+  </emoticon>
+  <emoticon file="star.png">
+    <string>(*)</string>
+  </emoticon>
+  <emoticon file="peaceout.png">
+    <string>:)&gt;-</string>
+    <string>(Y)</string>
+    <string>(peace)</string>
+  </emoticon>
+  <emoticon file="ninja.png">
+    <string>(:)</string>
+    <string>(ninja)</string>
+  </emoticon>
+  <emoticon file="logo.png">
+    <string>(Chromakode)</string>
+    <string>(chromakode)</string>
+  </emoticon>
+</messaging-emoticon-map>
+
+
+
