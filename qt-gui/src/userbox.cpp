@@ -1684,7 +1684,7 @@ void CUserView::maybeTip(const QPoint& c)
     ICQUser *u = gUserManager.FetchUser(item->m_szId, item->m_nPPID, LOCK_R);
     QTextCodec * codec = UserCodec::codecForICQUser(u);
     QString strFileName = "";
-    if (u && u->GetPicturePresent())
+    if (u && u->GetPicturePresent() && gMainWindow->m_bPopPicture)
     {
       const QString file = QString("%1/%2/%3.pic").arg(BASE_DIR).arg(USER_DIR).arg(u->IdString());
       const QImage picture = QImage(file);

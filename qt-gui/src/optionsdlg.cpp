@@ -259,6 +259,7 @@ void OptionsDlg::SetupOptions()
   chkMainWinSticky->setChecked(mainwin->m_bMainWinSticky);
   chkMsgWinSticky->setChecked(mainwin->m_bMsgWinSticky);
   chkSingleLineChatMode->setChecked(mainwin->m_bSingleLineChatMode);
+  popPicture->setChecked(mainwin->m_bPopPicture);
   popAlias->setChecked(mainwin->m_bPopAlias);
   popName->setChecked(mainwin->m_bPopName);
   popEmail->setChecked(mainwin->m_bPopEmail);
@@ -548,6 +549,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bMsgWinSticky = chkMsgWinSticky->isChecked();
   mainwin->m_bSingleLineChatMode = chkSingleLineChatMode->isChecked();
 
+  mainwin->m_bPopPicture = popPicture->isChecked();
   mainwin->m_bPopAlias = popAlias->isChecked();
   mainwin->m_bPopName = popName->isChecked();
   mainwin->m_bPopEmail = popEmail->isChecked();
@@ -1451,6 +1453,7 @@ QWidget* OptionsDlg::new_column_options()
 
   boxPopWin = new QGroupBox(1, Horizontal, tr("Popup info"), w);
 
+  popPicture= new QCheckBox(tr("Picture"), boxPopWin);
   popAlias  = new QCheckBox(tr("Alias"), boxPopWin);
   popName   = new QCheckBox(tr("Name"),  boxPopWin);
   popEmail  = new QCheckBox(tr("Email"), boxPopWin);

@@ -459,6 +459,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadStr("ChatBackground", szTemp, "white");
   m_colorChatBkg = QColor(szTemp);
 
+  licqConf.ReadBool("showPopPicture", m_bPopPicture, true);
   licqConf.ReadBool("showPopAlias", m_bPopAlias, false);
   licqConf.ReadBool("showPopName", m_bPopName, false);
   licqConf.ReadBool("showPopEmail", m_bPopEmail, false);
@@ -3584,6 +3585,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("ChatBackground", m_colorChatBkg.name());
   licqConf.WriteStr("DateFormat", m_nDateFormat.latin1());
 
+  licqConf.WriteBool("showPopPicture", m_bPopPicture);
   licqConf.WriteBool("showPopAlias", m_bPopAlias);
   licqConf.WriteBool("showPopName", m_bPopName);
   licqConf.WriteBool("showPopEmail", m_bPopEmail);

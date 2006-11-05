@@ -154,7 +154,7 @@ protected:
    // display tab
    QWidget* new_popup_options();
    QGroupBox *boxPopWin;
-   QCheckBox *popAlias, *popName, *popEmail, *popPhone,
+   QCheckBox *popPicture, *popAlias, *popName, *popEmail, *popPhone,
              *popFax, *popCellular, *popIP,
              *popLastOnline, *popOnlineSince, *popIdleTime, *popID;
 
