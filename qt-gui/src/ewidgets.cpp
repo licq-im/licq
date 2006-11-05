@@ -674,6 +674,7 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
   m_colorSnt = m->m_colorSnt;
   m_colorRcvHistory = m->m_colorRcvHistory;
   m_colorSntHistory = m->m_colorSntHistory;
+  m_colorNotice = m->m_colorNotice;
   setPaletteBackgroundColor(m->m_colorChatBkg);
   mainwin = m;
 
@@ -708,6 +709,7 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
   m_colorSnt = m->m_colorSnt;
   m_colorRcvHistory = m->m_colorRcvHistory;
   m_colorSntHistory = m->m_colorSntHistory;
+  m_colorNotice = m->m_colorNotice;
   setPaletteBackgroundColor(m->m_colorChatBkg);
   mainwin = m;
 /*
@@ -950,7 +952,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
 
 void CMessageViewWidget::addNotice(QDateTime dt, QString messageText)
 {
-  QString color = "green";
+  QString color = m_colorNotice.name();
   QString s = "";
   const QString dateTime = dt.toString( m_nDateFormat );
 

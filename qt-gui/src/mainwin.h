@@ -186,6 +186,7 @@ public:
          m_colorSntHistory,
          m_colorRcv,
          m_colorSnt,
+         m_colorNotice,
          m_colorTab,
          m_colorTabTyping,
          m_colorChatBkg;

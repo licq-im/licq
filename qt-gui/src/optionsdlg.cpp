@@ -236,6 +236,7 @@ void OptionsDlg::SetupOptions()
   btnColorSnt->setPaletteBackgroundColor(mainwin->m_colorSnt);
   btnColorRcvHistory->setPaletteBackgroundColor(mainwin->m_colorRcvHistory);
   btnColorSntHistory->setPaletteBackgroundColor(mainwin->m_colorSntHistory);
+  btnColorNotice->setPaletteBackgroundColor(mainwin->m_colorNotice);
   /*btnColorTabLabel->setPaletteBackgroundColor(mainwin->m_colorTab);*/
   btnColorTypingLabel->setPaletteBackgroundColor(mainwin->m_colorTabTyping);
   btnColorChatBkg->setPaletteBackgroundColor(mainwin->m_colorChatBkg);
@@ -533,6 +534,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_colorSnt = btnColorSnt->paletteBackgroundColor();
   mainwin->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
   mainwin->m_colorSntHistory = btnColorSntHistory->paletteBackgroundColor();
+  mainwin->m_colorNotice = btnColorNotice->paletteBackgroundColor();
   /*mainwin->m_colorTab = btnColorTabLabel->paletteBackgroundColor();*/
   mainwin->m_colorTabTyping = btnColorTypingLabel->paletteBackgroundColor();
   mainwin->m_colorChatBkg = btnColorChatBkg->paletteBackgroundColor();
@@ -1637,6 +1639,9 @@ QWidget* OptionsDlg::new_chat_options()
   new QLabel(tr("History Sent:"), boxColors);
   btnColorSntHistory = new CColorOption(boxColors);
 
+  new QLabel(tr("Notice:"), boxColors);
+  btnColorNotice = new CColorOption(boxColors);
+
   /*new QLabel(tr("Tab Label Color:"), boxColors);
   btnColorTabLabel = new CColorOption(boxColors);*/
 
@@ -1650,6 +1655,7 @@ QWidget* OptionsDlg::new_chat_options()
   connect(btnColorRcv, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
   connect(btnColorSntHistory, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
   connect(btnColorRcvHistory, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
+  connect(btnColorNotice, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
   /*connect(btnColorTabLabel, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));*/
   connect(btnColorTypingLabel, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
   connect(btnColorChatBkg, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
@@ -1679,14 +1685,15 @@ void OptionsDlg::slot_refresh_msgViewer()
   static QDateTime date = QDateTime::currentDateTime();
 
   const char *names[2] = {"Marge", "Homer"};
-  const char *msgs[7] = {
+  const char *msgs[8] = {
       "This is received message",
       "This is a sent message",
       "Have you gone to the Licq IRC Channel?",
       "No, where is it?",
       "#Licq on irc.freenode.net",
       "Cool, I'll see you there :)",
-      "We'll be waiting!"};
+      "We'll be waiting!",
+      "Marge has left the conversation."};
 
   msgViewer->m_nMsgStyle = cmbStyle->currentItem();
   msgViewer->m_bAppendLineBreak = chkLineBreak->isChecked();
@@ -1694,6 +1701,7 @@ void OptionsDlg::slot_refresh_msgViewer()
   msgViewer->m_colorRcv = btnColorRcv->paletteBackgroundColor();
   msgViewer->m_colorSntHistory = btnColorSntHistory->paletteBackgroundColor();
   msgViewer->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
+  msgViewer->m_colorNotice = btnColorNotice->paletteBackgroundColor();
   tabViewer->setPaletteForegroundColor(btnColorTypingLabel->paletteBackgroundColor());
   msgViewer->setPaletteBackgroundColor(btnColorChatBkg->paletteBackgroundColor());
 
@@ -1709,6 +1717,7 @@ void OptionsDlg::slot_refresh_msgViewer()
           names[i % 2],
           MLView::toRichText(msgs[i], true, true));
   }
+  msgViewer->addNotice(date, MLView::toRichText(msgs[7], true, true));
 }
 
 CColorOption::CColorOption (QWidget* parent)

@@ -451,6 +451,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   m_colorSnt = QColor(szTemp);
   licqConf.ReadStr("SentHistoryColor", szTemp, "light blue");
   m_colorSntHistory = QColor(szTemp);
+  licqConf.ReadStr("NoticeColor", szTemp, "green");
+  m_colorNotice = QColor(szTemp);
   licqConf.ReadStr("TabFontColor", szTemp, 
       QApplication::palette(this).active().text().name());
   m_colorTab = QColor(szTemp);
@@ -3580,6 +3582,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("ReceiveHistoryColor", m_colorRcvHistory.name());
   licqConf.WriteStr("SentMessageColor", m_colorSnt.name());
   licqConf.WriteStr("SentHistoryColor", m_colorSntHistory.name());
+  licqConf.WriteStr("NoticeColor", m_colorNotice.name());
   licqConf.WriteStr("TabFontColor", m_colorTab.name());
   licqConf.WriteStr("TabOnTypingColor", m_colorTabTyping.name());
   licqConf.WriteStr("ChatBackground", m_colorChatBkg.name());

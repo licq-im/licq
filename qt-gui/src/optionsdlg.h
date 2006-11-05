@@ -170,6 +170,7 @@ protected:
    CColorOption *btnColorSnt;
    CColorOption *btnColorRcvHistory;
    CColorOption *btnColorSntHistory;
+   CColorOption *btnColorNotice;
    CColorOption *btnColorTabLabel;
    CColorOption *btnColorTypingLabel;
    CColorOption *btnColorChatBkg;

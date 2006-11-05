@@ -217,6 +217,7 @@ public:
   QColor m_colorSntHistory;
   QColor m_colorRcv;
   QColor m_colorSnt;
+  QColor m_colorNotice;
   
 public slots:
   virtual void addMsg(CUserEvent *, const char * = 0, unsigned long = 0);
