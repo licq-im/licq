@@ -487,7 +487,7 @@ void CEmoticons::parseMessage(QString &message, ParseMode mode) const
  */
 void CEmoticons::unparseMessage(QString &message)
 {
-  const QRegExp imageAlt("<img alt=([^>]*) src=[^>]* >");
+  const QRegExp imageAlt("<img[^>]* alt=\"?([^\\s]*)\"?[^>]*>");
   message.replace(imageAlt, "\\1");
 }
 
