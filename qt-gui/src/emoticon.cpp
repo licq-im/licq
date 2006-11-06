@@ -127,7 +127,10 @@ QString CEmoticons::untranslateThemeName(const QString &name)
 
 void CEmoticons::setBasedirs(const QStringList &basedirs)
 {
-  pimpl->basedirs = basedirs;
+  pimpl->basedirs.clear();
+  QStringList::ConstIterator basedir = basedirs.begin();
+  for (; basedir != basedirs.end(); basedir++)
+    pimpl->basedirs += QDir(*basedir).absPath();
 }
 
 /**
