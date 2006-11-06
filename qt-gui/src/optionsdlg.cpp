@@ -1686,7 +1686,7 @@ void OptionsDlg::slot_refresh_msgViewer()
 
   const char *names[2] = {"Marge", "Homer"};
   const char *msgs[8] = {
-      QT_TR_NOOP("This is received message"),
+      QT_TR_NOOP("This is a received message"),
       QT_TR_NOOP("This is a sent message"),
       QT_TR_NOOP("Have you gone to the Licq IRC Channel?"),
       QT_TR_NOOP("No, where is it?"),

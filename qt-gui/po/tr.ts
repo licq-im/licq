@@ -3912,6 +3912,46 @@ changes here require a Restart to take effect!
 &lt;/table&gt;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Picture</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Notice:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is a sent message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Have you gone to the Licq IRC Channel?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>No, where is it?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>#Licq on irc.freenode.net</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Cool, I&apos;ll see you there :)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>We&apos;ll be waiting!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Marge has left the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This is a received message</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>OwnerEditDlg</name>

@@ -1471,6 +1471,7 @@ Betreuer: Jon Keating
 Beiträge von Dirk A. Mueller
 Ursprünglicher Autor: Graham Roff
 Übersetzung: Thomas Reitelbach
+und Arne Schmitz
 
 http://www.licq.org
 #licq auf irc.freenode.net
@@ -4062,6 +4063,46 @@ Bei einer Änderung ist ein Neustart erforderlich!
 &lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;benutze AM/PM-Anzeige. AP wird entweder durch &apos;AM&apos; oder &apos;PM&apos; ersetzt&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;benutze am/pm-Anzeige. ap wird entweder durch &apos;am&apos; oder &apos;pm&apos; ersetzt&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;</translation>
+    </message>
+    <message>
+        <source>Picture</source>
+        <translation>Bild</translation>
+    </message>
+    <message>
+        <source>Notice:</source>
+        <translation>Benachrichtigung:</translation>
+    </message>
+    <message>
+        <source>This is a sent message</source>
+        <translation>Dies ist eine gesendete Nachricht</translation>
+    </message>
+    <message>
+        <source>Have you gone to the Licq IRC Channel?</source>
+        <translation>Warst du schon im Licq IRC Kanal?</translation>
+    </message>
+    <message>
+        <source>No, where is it?</source>
+        <translation>Nein, wo finde ich den?</translation>
+    </message>
+    <message>
+        <source>#Licq on irc.freenode.net</source>
+        <translation>#Licq auf irc.freenode.net</translation>
+    </message>
+    <message>
+        <source>Cool, I&apos;ll see you there :)</source>
+        <translation>Cool, wir sehen uns dort! :)</translation>
+    </message>
+    <message>
+        <source>We&apos;ll be waiting!</source>
+        <translation>Wir warten auf dich!</translation>
+    </message>
+    <message>
+        <source>Marge has left the conversation.</source>
+        <translation>Marge hat die Unterhaltung verlassen.</translation>
+    </message>
+    <message>
+        <source>This is a received message</source>
+        <translation>Dies ist eine empfangene Nachricht</translation>
     </message>
 </context>
 <context>
