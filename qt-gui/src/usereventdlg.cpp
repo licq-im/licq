@@ -1795,8 +1795,16 @@ void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
   
   if (mainwin->m_bMsgChatView)
   {
+    ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_R);
+    QString userName;
+    if (u)
+      userName = QString::fromUtf8(u->GetAlias());
+    else
+      userName = szId;
+    gUserManager.DropUser(u);
+
     QString strMsg = QString("%1 has joined the conversation.")
-      .arg(szId);
+      .arg(userName);
     mleHistory->addNotice(QDateTime::currentDateTime(), strMsg);
   }
 
@@ -1822,12 +1830,18 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long _nConvoId)
   
   if (mainwin->m_bMsgChatView)
   {
+    ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_R);
+    QString userName;
+    if (u)
+      userName = QString::fromUtf8(u->GetAlias());
+    else
+      userName = szId;
+
     QString strMsg = QString("%1 has left the conversation.")
-      .arg(szId);
+      .arg(userName);
     mleHistory->addNotice(QDateTime::currentDateTime(), strMsg);
     
     // Remove the typing notification if active
-    ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_W);
     if (u && u->GetTyping() == ICQ_TYPING_ACTIVE)
     {
       u->SetTyping(ICQ_TYPING_INACTIVEx0);
