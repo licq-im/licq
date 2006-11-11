@@ -100,7 +100,7 @@ Do you really want to send it?</source>
     </message>
     <message>
         <source>KDE default</source>
-        <translation type="unfinished">KDE по умолчанию</translation>
+        <translation>KDE по умолчанию</translation>
     </message>
 </context>
 <context>
@@ -247,11 +247,11 @@ You can leave me a message.
     <name>CEmoticons</name>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартные</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Отключить</translation>
     </message>
 </context>
 <context>
@@ -2250,7 +2250,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source></source>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
@@ -2534,7 +2534,7 @@ Rebuild Licq with OpenSSL support.</source>
     <name>MLEditWrap</name>
     <message>
         <source>Allow Tabulations</source>
-        <translation type="unfinished"></translation>
+        <translation>Разрешить табуляцию</translation>
     </message>
 </context>
 <context>
@@ -2684,8 +2684,7 @@ Rebuild Licq with OpenSSL support.</source>
     </message>
     <message>
         <source>Bold Message Label on Incoming Msg</source>
-        <translation>Выделять утолщенным шрифтом 
-приходящие сообщения</translation>
+        <translation>Выделять утолщенным шрифтом приходящие сообщения</translation>
     </message>
     <message>
         <source>Show the message info label in bold font if there are incoming messages</source>
@@ -2693,7 +2692,7 @@ Rebuild Licq with OpenSSL support.</source>
     </message>
     <message>
         <source>Manual &quot;New User&quot; group handling</source>
-        <translation>Не обрабатывать атоматически новых пользователей</translation>
+        <translation>Обрабатывать группу новых пользователей вручную</translation>
     </message>
     <message>
         <source>If not checked, a user will be automatically removed from &quot;New User&quot; group when you first send an event to them</source>
@@ -3578,27 +3577,27 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Single line chat mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Однострочный режим ввода</translation>
     </message>
     <message>
         <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
-        <translation type="unfinished"></translation>
+        <translation>В однострочном режиме ввода сообщения посылаются при нажатии Enter, а переход на новую строку -- Ctrl+Enter</translation>
     </message>
     <message>
         <source>Alias</source>
-        <translation type="unfinished">Псевдоним</translation>
+        <translation>Псевдоним</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished"></translation>
+        <translation>Имя</translation>
     </message>
     <message>
         <source>Date Format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат даты:</translation>
     </message>
     <message>
         <source>Custom Date Format</source>
-        <translation type="unfinished"></translation>
+        <translation>Личный формат даты</translation>
     </message>
     <message>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;
@@ -3626,47 +3625,71 @@ changes here require a Restart to take effect!
 &lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Переменные для личного формата даты.&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Выражение&lt;/th&gt;&lt;th&gt;Вывод&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;дни месяца без нуля в начале (1-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;дни месяца с нулем в начале (01-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;сокращенные дни недели (&apos;Пнд&apos;..&apos;Вск&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;полные дни недели (&apos;Понедельник&apos;..&apos;Воскресенье&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;номер месяца без нуля в начале (1-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;номер месяца с нулем в начале (01-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;сокращенные месяцы (&apos;Янв&apos;..&apos;Дек&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;полные месяцы (&apos;Январь&apos;..&apos;Декабрь&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;две цифры года (00-99)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;четыре цифры года (1752-8000)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;часы без нуля в начале (0..23 или 1..12 при AM/PM отображении)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;часы с нулем в начале (00..23 или 01..12 при AM/PM отображении)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;минуты без нуля в начале (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;минуты с нулем в начале (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;секунды без нуля в начале (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;секунды с нулем в начале (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;миллисекунды без нуля в начале (0..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;миллисекунды с нулем в начале (000..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;отображение AM/PM. AP будет заменено на &apos;AM&apos; либо &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;отображение am/pm. ap будет заменено на &apos;am&apos; либо &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</translation>
     </message>
     <message>
         <source>Picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Картинка</translation>
     </message>
     <message>
         <source>Notice:</source>
-        <translation type="unfinished"></translation>
+        <translation>Примечание:</translation>
     </message>
     <message>
         <source>This is a sent message</source>
-        <translation type="unfinished"></translation>
+        <translation>Это отправленное сообщение</translation>
     </message>
     <message>
         <source>Have you gone to the Licq IRC Channel?</source>
-        <translation type="unfinished"></translation>
+        <translation>А ты бывал на IRC канале Licq?</translation>
     </message>
     <message>
         <source>No, where is it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Нет, а где он?</translation>
     </message>
     <message>
         <source>#Licq on irc.freenode.net</source>
-        <translation type="unfinished"></translation>
+        <translation>#Licq на irc.freenode.net</translation>
     </message>
     <message>
         <source>Cool, I&apos;ll see you there :)</source>
-        <translation type="unfinished"></translation>
+        <translation>Клево, до встречи там :)</translation>
     </message>
     <message>
         <source>We&apos;ll be waiting!</source>
-        <translation type="unfinished"></translation>
+        <translation>Будем ждать!</translation>
     </message>
     <message>
         <source>Marge has left the conversation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Marge удалилась.</translation>
     </message>
     <message>
         <source>This is a received message</source>
-        <translation type="unfinished"></translation>
+        <translation>Это полученное сообщение</translation>
     </message>
 </context>
 <context>
