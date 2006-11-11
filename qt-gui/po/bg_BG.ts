@@ -26,15 +26,15 @@
     </message>
     <message>
         <source>Protocol:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Протокол:</translation>
     </message>
     <message>
         <source>New User ID:</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">Нов потребител:</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ок</translation>
     </message>
 </context>
 <context>
@@ -80,7 +80,7 @@
     <name>AwayMsgDlg</name>
     <message>
         <source>&amp;Ok</source>
-        <translation>Добре</translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>I&apos;m currently %1, %a.
@@ -127,19 +127,19 @@ You can leave me a message.
     </message>
     <message>
         <source>&amp;Done</source>
-        <translation type="unfinished">Готово</translation>
+        <translation>Готово</translation>
     </message>
     <message>
         <source>&amp;Up</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Нагоре</translation>
     </message>
     <message>
         <source>&amp;Down</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Надолу</translation>
     </message>
     <message>
         <source>&amp;Delete</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Изтриване</translation>
     </message>
 </context>
 <context>
@@ -165,7 +165,7 @@ You can leave me a message.
     </message>
     <message>
         <source>OK</source>
-        <translation>Добре</translation>
+        <translation>ОК</translation>
     </message>
     <message>
         <source>Byte</source>
@@ -386,7 +386,7 @@ See Network Window for details.</source>
     <name>CJoinChatDlg</name>
     <message>
         <source>Invite to Join Chat</source>
-        <translation>Пакана за чат</translation>
+        <translation>Покана за чат</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
@@ -398,7 +398,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>&amp;Invite</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Покани</translation>
     </message>
     <message>
         <source>Select chat to join:</source>
@@ -410,7 +410,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>&amp;Join</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Влез</translation>
     </message>
 </context>
 <context>
@@ -487,7 +487,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>Ok</source>
-        <translation>Добре</translation>
+        <translation>Ок</translation>
     </message>
     <message>
         <source>&amp;No</source>
@@ -495,7 +495,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation>&amp;Добре</translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;Yes</source>
@@ -519,7 +519,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>&amp;Info</source>
-        <translation>Информация</translation>
+        <translation>&amp;Информация</translation>
     </message>
     <message>
         <source>&amp;Last</source>
@@ -1160,7 +1160,7 @@ You will need to start the browser and open the URL manually.</source>
     <name>CMessageViewWidget</name>
     <message>
         <source>%1 from %2</source>
-        <translation type="unfinished">%1 от %2</translation>
+        <translation>%1 от %2</translation>
     </message>
     <message>
         <source>%1 to %2</source>
@@ -1180,7 +1180,8 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>Failed to open file:
 %1</source>
-        <translation>Файлът не може да бъде отворе%1</translation>
+        <translation>Файлът не може да бъде отворен:
+%1</translation>
     </message>
     <message>
         <source>C&amp;lear</source>
@@ -1301,7 +1302,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Women Seeking Men</source>
-        <translation type="obsolete">Жена търсеща мъж</translation>
+        <translation type="obsolete">Жени търсещи мъже</translation>
     </message>
     <message>
         <source>error</source>
@@ -1317,7 +1318,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Men Seeking Women</source>
-        <translation type="obsolete">Мъж търсещ жена</translation>
+        <translation type="obsolete">Мъже търсещи жени</translation>
     </message>
     <message>
         <source>40 Something</source>
@@ -1353,11 +1354,11 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(няма)</translation>
     </message>
     <message>
         <source>General</source>
-        <translation type="unfinished">Общи</translation>
+        <translation>Общи</translation>
     </message>
     <message>
         <source>Seeking Women</source>
@@ -1540,39 +1541,39 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source> weeks</source>
-        <translation type="unfinished"></translation>
+        <translation> седмици</translation>
     </message>
     <message>
         <source> week</source>
-        <translation type="unfinished"></translation>
+        <translation> седмица</translation>
     </message>
     <message>
         <source> days</source>
-        <translation type="unfinished"></translation>
+        <translation> дни</translation>
     </message>
     <message>
         <source> day</source>
-        <translation type="unfinished"></translation>
+        <translation> ден</translation>
     </message>
     <message>
         <source> hours</source>
-        <translation type="unfinished"></translation>
+        <translation> часове</translation>
     </message>
     <message>
         <source> hour</source>
-        <translation type="unfinished"></translation>
+        <translation> час</translation>
     </message>
     <message>
         <source> minutes</source>
-        <translation type="unfinished"></translation>
+        <translation> минути</translation>
     </message>
     <message>
         <source> minute</source>
-        <translation type="unfinished"></translation>
+        <translation> минута</translation>
     </message>
     <message>
         <source>0 minutes</source>
-        <translation type="unfinished"></translation>
+        <translation>0 минути</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
@@ -1730,7 +1731,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&amp;Close Chat</source>
-        <translation>Затвори чата</translation>
+        <translation>Затвори чат сесията</translation>
     </message>
     <message>
         <source>Underline</source>
@@ -1738,15 +1739,15 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&amp;Save Chat</source>
-        <translation>Запази чата</translation>
+        <translation>Запази чат сесията</translation>
     </message>
     <message>
         <source>Changes the background color</source>
-        <translation>Променяне цвета на бакграунда</translation>
+        <translation>Променяне цвета на фона</translation>
     </message>
     <message>
         <source>Ignore user settings</source>
-        <translation>Игнорира потребителските настройки</translation>
+        <translation>Игнориране на потребителски настройки</translation>
     </message>
     <message>
         <source>Remote - Not connected</source>
@@ -1813,7 +1814,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>%1 closed connection.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 прекъсна връзката.</translation>
     </message>
     <message>
         <source>
@@ -1833,7 +1834,8 @@ See Network Window for details.</source>
     <message>
         <source>Failed to open file:
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Файлът не може да бъде отворен:
+%1</translation>
     </message>
     <message>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
@@ -1844,7 +1846,7 @@ See Network Window for details.</source>
     <name>CustomAwayMsgDlg</name>
     <message>
         <source>&amp;Ok</source>
-        <translation>Добре</translation>
+        <translation>&amp;Oк</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
@@ -1865,22 +1867,23 @@ See Network Window for details.</source>
     <message>
         <source>I am currently %1.
 You can leave me a message.</source>
-        <translation type="unfinished"></translation>
+        <translation>В момента съм %1.
+Можете да ми оставите съобщение.</translation>
     </message>
 </context>
 <context>
     <name>EditCategoryDlg</name>
     <message>
         <source>Unspecified</source>
-        <translation type="unfinished">Не е указан</translation>
+        <translation>Не е указан</translation>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">Добре</translation>
+        <translation>&amp;ОК</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">Отказ</translation>
+        <translation>Отказ</translation>
     </message>
 </context>
 <context>
@@ -1896,7 +1899,8 @@ You can leave me a message.</source>
     <message>
         <source>Failed to open file:
 %1</source>
-        <translation>Файлът не може да бъде отворе%1</translation>
+        <translation>Файлът не може да бъде отворен:
+%1</translation>
     </message>
     <message>
         <source>[ Read-Only ]</source>
@@ -3014,11 +3018,11 @@ Rebuild Licq with OpenSSL support.</source>
     </message>
     <message>
         <source>Theme:</source>
-        <translation type="unfinished"></translation>
+        <translation>Тема:</translation>
     </message>
     <message>
         <source>Edit Font:</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактиране на шрифт:</translation>
     </message>
     <message>
         <source>Font used in message editor etc.</source>
@@ -3122,7 +3126,7 @@ Rebuild Licq with OpenSSL support.</source>
     </message>
     <message>
         <source>Firewall</source>
-        <translation type="unfinished"></translation>
+        <translation>Защитна стена</translation>
     </message>
     <message>
         <source>I am behind a firewall</source>
@@ -3154,7 +3158,7 @@ Rebuild Licq with OpenSSL support.</source>
     </message>
     <message>
         <source>Connection</source>
-        <translation type="unfinished"></translation>
+        <translation>Връзка</translation>
     </message>
     <message>
         <source>Reconnect after Uin clash</source>
@@ -3334,7 +3338,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>status</source>
-        <translation type="unfinished"></translation>
+        <translation>статус</translation>
     </message>
     <message>
         <source>status + last event</source>
@@ -3365,7 +3369,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Last online</source>
-        <translation type="unfinished"></translation>
+        <translation>Последно онлайн</translation>
     </message>
     <message>
         <source>Online Time</source>
@@ -3385,7 +3389,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Ignore New Users</source>
-        <translation type="unfinished"></translation>
+        <translation>Игнориране на нови потребители</translation>
     </message>
     <message>
         <source>Determines if new users are automatically added to your list or must first request authorization.</source>
@@ -3445,15 +3449,15 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Style:</source>
-        <translation type="unfinished"></translation>
+        <translation>Стил:</translation>
     </message>
     <message>
         <source>Insert Horizontal Line</source>
-        <translation type="unfinished"></translation>
+        <translation>Добави хоризонтална линия</translation>
     </message>
     <message>
         <source>Colors</source>
-        <translation type="unfinished"></translation>
+        <translation>Цветове</translation>
     </message>
     <message>
         <source>Message Received:</source>
@@ -3485,15 +3489,15 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Alias</source>
-        <translation type="unfinished">Прякор</translation>
+        <translation>Прякор</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Име</translation>
+        <translation>Име</translation>
     </message>
     <message>
         <source>Date Format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат на датата:</translation>
     </message>
     <message>
         <source>Custom Date Format</source>
@@ -3529,7 +3533,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение</translation>
     </message>
     <message>
         <source>Notice:</source>
@@ -3541,23 +3545,23 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Have you gone to the Licq IRC Channel?</source>
-        <translation type="unfinished"></translation>
+        <translation>Посетихте ли IRC канала на Licq?</translation>
     </message>
     <message>
         <source>No, where is it?</source>
-        <translation type="unfinished"></translation>
+        <translation>Не, къде да го открия?</translation>
     </message>
     <message>
         <source>#Licq on irc.freenode.net</source>
-        <translation type="unfinished"></translation>
+        <translation>Канал #Licq в irc.freenode.net</translation>
     </message>
     <message>
         <source>Cool, I&apos;ll see you there :)</source>
-        <translation type="unfinished"></translation>
+        <translation>Супер, ще се видим там :)</translation>
     </message>
     <message>
         <source>We&apos;ll be waiting!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ще те чакаме!</translation>
     </message>
     <message>
         <source>Marge has left the conversation.</source>
@@ -3572,19 +3576,19 @@ changes here require a Restart to take effect!
     <name>OwnerEditDlg</name>
     <message>
         <source>Edit Account</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактиране на акаунт</translation>
     </message>
     <message>
         <source>User ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID на потребител:</translation>
     </message>
     <message>
         <source>Password:</source>
-        <translation type="unfinished">Парола:</translation>
+        <translation>Парола:</translation>
     </message>
     <message>
         <source>Protocol:</source>
-        <translation type="unfinished"></translation>
+        <translation>Протокол:</translation>
     </message>
     <message>
         <source>Currently only one account per protocol is supported.</source>
@@ -3592,11 +3596,11 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">Отказ</translation>
+        <translation>Отказ</translation>
     </message>
 </context>
 <context>
@@ -3607,7 +3611,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Добави</translation>
     </message>
     <message>
         <source>&amp;Register</source>
@@ -3623,7 +3627,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>&amp;Done</source>
-        <translation type="unfinished">Готово</translation>
+        <translation>Готово</translation>
     </message>
     <message>
         <source>From the Account Manager dialog you are able to add and register your accounts.
@@ -3816,11 +3820,11 @@ Now set your personal information.</source>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Да</translation>
+        <translation>Да</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Не</translation>
+        <translation>Не</translation>
     </message>
 </context>
 <context>
@@ -3919,7 +3923,7 @@ Press &quot;Next&quot; to proceed.</source>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невалидна парола, трябва да е между 1 и 8 символа.</translation>
     </message>
     <message>
         <source>Now please press the &apos;Back&apos; button and try again.</source>
@@ -3958,11 +3962,11 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">Отказ</translation>
+        <translation>Отказ</translation>
     </message>
 </context>
 <context>
@@ -4073,7 +4077,7 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>&amp;Search</source>
-        <translation>Дирене</translation>
+        <translation>Търсене</translation>
     </message>
     <message>
         <source>Unspecified</source>
@@ -4089,15 +4093,15 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>60+</source>
-        <translation type="unfinished">60+</translation>
+        <translation>60+</translation>
     </message>
     <message>
         <source>Keyword:</source>
-        <translation type="unfinished"></translation>
+        <translation>Ключова дума:</translation>
     </message>
     <message>
         <source>Return Online Users Only</source>
-        <translation type="unfinished"></translation>
+        <translation>Покажи само онлайн потребители</translation>
     </message>
     <message>
         <source>&amp;Whitepages</source>
@@ -4109,7 +4113,7 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>Reset Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Изчистване на търсенето</translation>
     </message>
     <message>
         <source>Enter search parameters and select &apos;Search&apos;</source>
@@ -4125,11 +4129,11 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>Searching (this can take awhile)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Търсене (може да отнеме известно време)...</translation>
     </message>
     <message>
         <source>Search complete.</source>
-        <translation type="unfinished"></translation>
+        <translation>Търсенето приключи.</translation>
     </message>
     <message>
         <source>More users found. Narrow search.</source>
@@ -4141,7 +4145,7 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>Search failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Търсенето бе неуспешно.</translation>
     </message>
 </context>
 <context>
@@ -4168,7 +4172,7 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>Sex &amp; Age</source>
-        <translation type="unfinished"></translation>
+        <translation>Пол и възраст</translation>
     </message>
     <message>
         <source>Authorize</source>
@@ -4176,11 +4180,11 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>Offline</source>
-        <translation type="unfinished">Изключен(а)</translation>
+        <translation>Изключен(а)</translation>
     </message>
     <message>
         <source>Online</source>
-        <translation type="unfinished">Включен(а)</translation>
+        <translation>Включен(а)</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -4188,23 +4192,23 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>F</source>
-        <translation type="unfinished"></translation>
+        <translation>Ж</translation>
     </message>
     <message>
         <source>M</source>
-        <translation type="unfinished"></translation>
+        <translation>М</translation>
     </message>
     <message>
         <source>?</source>
-        <translation type="unfinished"></translation>
+        <translation>?</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Не</translation>
+        <translation>Не</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Да</translation>
+        <translation>Да</translation>
     </message>
 </context>
 <context>
@@ -4242,24 +4246,24 @@ After you are online, you can send your personal details to the server.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Enter the UIN which you want to use.  Only available if &quot;Local changes only&quot; is checked.</source>
+        <source>Enter the UIN which you want to use. Only available if &quot;Local changes only&quot; is checked.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Password:</source>
-        <translation type="unfinished">&amp;Парола:</translation>
+        <translation>&amp;Парола:</translation>
     </message>
     <message>
         <source>Enter your ICQ password here.</source>
-        <translation type="unfinished">Въведете вашата ICQ парола тук.</translation>
+        <translation>Въведете вашата ICQ парола тук.</translation>
     </message>
     <message>
         <source>&amp;Verify:</source>
-        <translation type="unfinished">П&amp;отвърждение:</translation>
+        <translation>П&amp;отвърждение:</translation>
     </message>
     <message>
         <source>Verify your ICQ password here.</source>
-        <translation type="unfinished">Потвърдете Вашата ICQ парола тук.</translation>
+        <translation>Потвърдете Вашата ICQ парола тук.</translation>
     </message>
     <message>
         <source>&amp;Local changes only</source>
@@ -4291,16 +4295,17 @@ After you are online, you can send your personal details to the server.</source>
     </message>
     <message>
         <source>Invalid password, must be between 1 and 8 characters.</source>
-        <translation type="unfinished"></translation>
+        <translation>Невалидна парола, трябва да е между 1 и 8 символа.</translation>
     </message>
     <message>
         <source>Passwords do not match, try again.</source>
-        <translation type="unfinished">Паролите не съвпадат. Опитайте отново.</translation>
+        <translation>Паролите не съвпадат. Опитайте отново.</translation>
     </message>
     <message>
         <source>You need to be connected to the
 ICQ Network to change the settings.</source>
-        <translation type="unfinished"></translation>
+        <translation>Трябва да сте свързани към
+мрежата на ICQ, за да промените тези настройки.</translation>
     </message>
     <message>
         <source>ICQ Security Options [Setting...]</source>
@@ -4316,7 +4321,7 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>Changing password failed.</source>
-        <translation type="unfinished"></translation>
+        <translation>Смяната на парола се провали.</translation>
     </message>
     <message>
         <source>timed out</source>
@@ -4339,7 +4344,7 @@ ICQ Network to change the settings.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>ICQ Security Options [Setting...</source>
+        <source>ICQ Security Options [Setting...]</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4347,7 +4352,7 @@ ICQ Network to change the settings.</source>
     <name>ShowAwayMsgDlg</name>
     <message>
         <source>&amp;Ok</source>
-        <translation>Добре</translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>error</source>
@@ -4410,15 +4415,15 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>Licq Skin Browser</source>
-        <translation>Licq скин менажер</translation>
+        <translation>Licq скин мениджър</translation>
     </message>
     <message>
         <source>Skin selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Избор на скин</translation>
     </message>
     <message>
         <source>Preview</source>
-        <translation type="unfinished"></translation>
+        <translation>Преглед</translation>
     </message>
     <message>
         <source>S&amp;kins:</source>
@@ -4430,7 +4435,7 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>&amp;Icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Икони:</translation>
     </message>
     <message>
         <source>Use this combo box to select one of the available icon sets</source>
@@ -4446,7 +4451,7 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>E&amp;moticons</source>
-        <translation type="unfinished"></translation>
+        <translation>Емотикони</translation>
     </message>
     <message>
         <source>Use this combo box to select one of the available emoticon icon sets</source>
@@ -4454,31 +4459,31 @@ ICQ Network to change the settings.</source>
     </message>
     <message>
         <source>Skin:</source>
-        <translation type="unfinished"></translation>
+        <translation>Скин:</translation>
     </message>
     <message>
         <source>Icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Икони:</translation>
     </message>
     <message>
         <source>Extended Icons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Допълнителни икони:</translation>
     </message>
     <message>
         <source>Emoticons:</source>
-        <translation type="unfinished"></translation>
+        <translation>Емотикони:</translation>
     </message>
     <message>
         <source>&amp;Edit Skin</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редактиране на скин</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">Отказ</translation>
+        <translation>Отказ</translation>
     </message>
     <message>
         <source>Unable to open icons file
@@ -4507,59 +4512,59 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     <name>UserCodec</name>
     <message>
         <source>Unicode</source>
-        <translation type="unfinished">Уникод</translation>
+        <translation>Уникод</translation>
     </message>
     <message>
         <source>Unicode-16</source>
-        <translation type="unfinished"></translation>
+        <translation>Уникод-16</translation>
     </message>
     <message>
         <source>Arabic</source>
-        <translation type="unfinished">Арабски</translation>
+        <translation>Арабски</translation>
     </message>
     <message>
         <source>Baltic</source>
-        <translation type="unfinished">Балтийски</translation>
+        <translation>Балтийски</translation>
     </message>
     <message>
         <source>Central European</source>
-        <translation type="unfinished">Централно Европейски</translation>
+        <translation>Централно Европейски</translation>
     </message>
     <message>
         <source>Chinese</source>
-        <translation type="unfinished">Китайски</translation>
+        <translation>Китайски</translation>
     </message>
     <message>
         <source>Chinese Traditional</source>
-        <translation type="unfinished">Традиционен Китайски</translation>
+        <translation>Традиционен Китайски</translation>
     </message>
     <message>
         <source>Cyrillic</source>
-        <translation type="unfinished">Кирилица</translation>
+        <translation>Кирилица</translation>
     </message>
     <message>
         <source>Esperanto</source>
-        <translation type="unfinished">Есперанто</translation>
+        <translation>Есперанто</translation>
     </message>
     <message>
         <source>Greek</source>
-        <translation type="unfinished">Гръцки</translation>
+        <translation>Гръцки</translation>
     </message>
     <message>
         <source>Hebrew</source>
-        <translation type="unfinished">Еврейски</translation>
+        <translation>Еврейски</translation>
     </message>
     <message>
         <source>Japanese</source>
-        <translation type="unfinished">Японски</translation>
+        <translation>Японски</translation>
     </message>
     <message>
         <source>Korean</source>
-        <translation type="unfinished">Корейски</translation>
+        <translation>Корейски</translation>
     </message>
     <message>
         <source>Western European</source>
-        <translation type="unfinished">Западно Европейски</translation>
+        <translation>Западно Европейски</translation>
     </message>
     <message>
         <source>Tamil</source>
@@ -4567,22 +4572,22 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>Thai</source>
-        <translation type="unfinished">Тайландски</translation>
+        <translation>Тайландски</translation>
     </message>
     <message>
         <source>Turkish</source>
-        <translation type="unfinished">Турски</translation>
+        <translation>Турски</translation>
     </message>
     <message>
         <source>Ukrainian</source>
-        <translation type="unfinished">Украински</translation>
+        <translation>Украински</translation>
     </message>
 </context>
 <context>
     <name>UserEventCommon</name>
     <message>
         <source>Show User Info</source>
-        <translation>Информация за потребителя</translation>
+        <translation>Информация за потребител</translation>
     </message>
     <message>
         <source>Status:</source>
@@ -4594,7 +4599,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>Time:</source>
-        <translation type="unfinished">Време:</translation>
+        <translation>Време:</translation>
     </message>
     <message>
         <source>Open / Close secure channel</source>
@@ -4669,7 +4674,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>&amp;Filter: </source>
-        <translation>&amp;Филтъ</translation>
+        <translation>&amp;Филтър: </translation>
     </message>
     <message>
         <source>City:</source>
@@ -4705,15 +4710,15 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>Cellular:</source>
-        <translation>Мобилен телефон</translation>
+        <translation>Мобилен телефон:</translation>
     </message>
     <message>
         <source>EMail 1:</source>
-        <translation>E-Mail 1</translation>
+        <translation>E-Mail 1:</translation>
     </message>
     <message>
         <source>EMail 2:</source>
-        <translation>E-Mail 2</translation>
+        <translation>E-Mail 2:</translation>
     </message>
     <message>
         <source>Homepage:</source>
@@ -4733,7 +4738,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>Old Email:</source>
-        <translation>Стар E-Mail</translation>
+        <translation>Стар E-Mail:</translation>
     </message>
     <message>
         <source>Female</source>
@@ -4833,7 +4838,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>&amp;History</source>
-        <translation>История</translation>
+        <translation>&amp;История</translation>
     </message>
     <message>
         <source>Retrieve</source>
@@ -4850,7 +4855,7 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>ID:</source>
-        <translation type="unfinished"></translation>
+        <translation>ID:</translation>
     </message>
     <message>
         <source>Unknown</source>
@@ -4862,11 +4867,11 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>Category:</source>
-        <translation type="unfinished"></translation>
+        <translation>Категория:</translation>
     </message>
     <message>
         <source>Description:</source>
-        <translation type="unfinished">Описание:</translation>
+        <translation>Описание:</translation>
     </message>
     <message>
         <source>Authorization Required</source>
@@ -4878,11 +4883,11 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>User has an ICQ Homepage </source>
-        <translation type="unfinished"></translation>
+        <translation>Потребителят има ICQ страница</translation>
     </message>
     <message>
         <source>User has no ICQ Homepage</source>
-        <translation type="unfinished"></translation>
+        <translation>Потребителят няма ICQ страница</translation>
     </message>
     <message>
         <source>M&amp;ore II</source>
@@ -4890,19 +4895,19 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>(none)</source>
-        <translation type="unfinished"></translation>
+        <translation>(няма)</translation>
     </message>
     <message>
         <source>Occupation:</source>
-        <translation type="unfinished"></translation>
+        <translation>Професия:</translation>
     </message>
     <message>
         <source>&amp;Phone</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Телефон</translation>
     </message>
     <message>
         <source>Type</source>
-        <translation type="unfinished"></translation>
+        <translation>Тип</translation>
     </message>
     <message>
         <source>Number/Gateway</source>
@@ -4918,23 +4923,23 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>(</source>
-        <translation type="unfinished"></translation>
+        <translation>(</translation>
     </message>
     <message>
         <source>) </source>
-        <translation type="unfinished"></translation>
+        <translation>) </translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"></translation>
+        <translation>-</translation>
     </message>
     <message>
         <source>P&amp;icture</source>
-        <translation type="unfinished"></translation>
+        <translation>Изображение</translation>
     </message>
     <message>
         <source>Not Available</source>
-        <translation type="unfinished">Липсвам за момента</translation>
+        <translation>Липсва</translation>
     </message>
     <message>
         <source>Failed to Load</source>
@@ -4942,11 +4947,11 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>&amp;Last</source>
-        <translation type="unfinished">Последен</translation>
+        <translation>&amp;Последен</translation>
     </message>
     <message>
         <source>Last Online:</source>
-        <translation type="unfinished"></translation>
+        <translation>Последно онлайн:</translation>
     </message>
     <message>
         <source>Last Sent Event:</source>
@@ -4962,15 +4967,15 @@ Check this if you want to keep your changes to the Alias.</source>
     </message>
     <message>
         <source>Online Since:</source>
-        <translation type="unfinished"></translation>
+        <translation>Онлайн от:</translation>
     </message>
     <message>
         <source>&amp;KDE Addressbook</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;KDE Addressbook</translation>
     </message>
     <message>
         <source>Email:</source>
-        <translation type="unfinished"></translation>
+        <translation>Email:</translation>
     </message>
     <message>
         <source>Rever&amp;se</source>
@@ -4999,15 +5004,15 @@ Description: %2</source>
     </message>
     <message>
         <source>S&amp;end</source>
-        <translation type="unfinished"></translation>
+        <translation>Изпращане</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Добави</translation>
     </message>
     <message>
         <source>&amp;Clear</source>
-        <translation type="unfinished">Изчисти</translation>
+        <translation>&amp;Изчисти</translation>
     </message>
     <message>
         <source>&amp;Browse</source>
@@ -5025,28 +5030,29 @@ ICQ Network to change your settings.</source>
     </message>
     <message>
         <source>Select your picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Избор на изображение</translation>
     </message>
     <message>
         <source> is over %1 bytes.
 Select another picture?</source>
-        <translation type="unfinished"></translation>
+        <translation> е над %1 байта.
+Избор на друг файл?</translation>
     </message>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Да</translation>
+        <translation>Да</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Не</translation>
+        <translation>Не</translation>
     </message>
     <message>
         <source>Updating server...</source>
-        <translation type="unfinished"></translation>
+        <translation>Обновяване на сървър...</translation>
     </message>
     <message>
         <source>done</source>
-        <translation type="unfinished">готово</translation>
+        <translation>готово</translation>
     </message>
     <message>
         <source>failed</source>
@@ -5061,23 +5067,23 @@ Select another picture?</source>
     <name>UserSelectDlg</name>
     <message>
         <source>&amp;User:</source>
-        <translation type="unfinished"></translation>
+        <translation>По&amp;требител:</translation>
     </message>
     <message>
         <source>&amp;Password:</source>
-        <translation type="unfinished">&amp;Парола:</translation>
+        <translation>&amp;Парола:</translation>
     </message>
     <message>
         <source>&amp;Save Password</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Запомни парола</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ок</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
-        <translation type="unfinished">Отказ</translation>
+        <translation>От&amp;каз</translation>
     </message>
     <message>
         <source>Licq User Select</source>
@@ -5104,7 +5110,7 @@ Select another picture?</source>
     </message>
     <message>
         <source>No reason provided</source>
-        <translation type="unfinished"></translation>
+        <translation>Не е посочена причина</translation>
     </message>
     <message>
         <source>Chat with %2 refused:
@@ -5128,11 +5134,11 @@ Select another picture?</source>
     </message>
     <message>
         <source>&amp;Menu</source>
-        <translation>Меню</translation>
+        <translation>&amp;Меню</translation>
     </message>
     <message>
         <source>&amp;Send</source>
-        <translation>Изпрати</translation>
+        <translation>&amp;Изпрати</translation>
     </message>
     <message>
         <source>error</source>
@@ -5196,11 +5202,11 @@ Select another picture?</source>
     </message>
     <message>
         <source>Chat Request</source>
-        <translation type="unfinished">Заявка за Чат</translation>
+        <translation>Заявка за Чат</translation>
     </message>
     <message>
         <source>SMS</source>
-        <translation type="unfinished">SMS</translation>
+        <translation>SMS</translation>
     </message>
     <message>
         <source>Error! no owner set</source>
@@ -5213,7 +5219,7 @@ Right Click for Options</source>
     </message>
     <message>
         <source>done</source>
-        <translation type="unfinished">готово</translation>
+        <translation>готово</translation>
     </message>
     <message>
         <source>cancelled</source>
@@ -5252,7 +5258,7 @@ through the server!</source>
     <name>UserSendContactEvent</name>
     <message>
         <source> - Contact List</source>
-        <translation> - Списък с контактите</translation>
+        <translation> - Списък с контакти</translation>
     </message>
     <message>
         <source>Drag Users Here - Right Click for Options</source>
@@ -5263,7 +5269,7 @@ through the server!</source>
     <name>UserSendFileEvent</name>
     <message>
         <source>File(s): </source>
-        <translation>Файл(ове</translation>
+        <translation>Файл(ове): </translation>
     </message>
     <message>
         <source> - File Transfer</source>
@@ -5275,19 +5281,19 @@ through the server!</source>
     </message>
     <message>
         <source>Browse</source>
-        <translation type="unfinished"></translation>
+        <translation>Разлистване</translation>
     </message>
     <message>
         <source>Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>Редактиране</translation>
     </message>
     <message>
         <source>You must specify a file to transfer!</source>
-        <translation type="unfinished"></translation>
+        <translation>Нужно е да посочите файл за трансфер!</translation>
     </message>
     <message>
         <source>No reason provided</source>
-        <translation type="unfinished"></translation>
+        <translation>Не е посочена причина</translation>
     </message>
     <message>
         <source>File transfer with %2 refused:
@@ -5319,15 +5325,15 @@ Do you really want to send it?</source>
     <name>UserSendSmsEvent</name>
     <message>
         <source>Phone : </source>
-        <translation type="unfinished"></translation>
+        <translation>Телефон : </translation>
     </message>
     <message>
         <source>Chars left : </source>
-        <translation type="unfinished"></translation>
+        <translation>Оставащи символи : </translation>
     </message>
     <message>
         <source> - SMS</source>
-        <translation type="unfinished"></translation>
+        <translation> - SMS</translation>
     </message>
     <message>
         <source>You didn&apos;t edit the SMS.
@@ -5336,11 +5342,11 @@ Do you really want to send it?</source>
     </message>
     <message>
         <source>&amp;Yes</source>
-        <translation type="unfinished">&amp;Да</translation>
+        <translation>&amp;Да</translation>
     </message>
     <message>
         <source>&amp;No</source>
-        <translation type="unfinished">&amp;Не</translation>
+        <translation>&amp;Не</translation>
     </message>
 </context>
 <context>
@@ -5351,7 +5357,7 @@ Do you really want to send it?</source>
     </message>
     <message>
         <source>URL : </source>
-        <translation>UR</translation>
+        <translation>URL : </translation>
     </message>
     <message>
         <source>No URL specified</source>
@@ -5406,7 +5412,7 @@ Do you really want to send it?</source>
     </message>
     <message>
         <source>&amp;Forward</source>
-        <translation>Препрати</translation>
+        <translation>&amp;Препрати</translation>
     </message>
     <message>
         <source>Aut&amp;o Close</source>
@@ -5429,7 +5435,7 @@ Request was cancelled.</source>
     </message>
     <message>
         <source>Start Chat</source>
-        <translation type="unfinished"></translation>
+        <translation>Започни чат</translation>
     </message>
     <message>
         <source>A&amp;uthorize</source>
@@ -5465,11 +5471,11 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&amp;OK</source>
-        <translation type="unfinished">Добре</translation>
+        <translation>&amp;ОК</translation>
     </message>
     <message>
         <source>Licq - New Account Verification</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Проверка на нова регистрация</translation>
     </message>
 </context>
 <context>
@@ -5478,7 +5484,9 @@ You will need to start the browser and open the URL manually.</source>
         <source>Left click - Show main window
 Middle click - Show next message
 Right click - System menu</source>
-        <translation type="unfinished"></translation>
+        <translation>Ляв бутон - Главен прозорец
+Среден бутон - Следващо съобщение
+Десен бутон - Системно меню</translation>
     </message>
 </context>
 </TS>
