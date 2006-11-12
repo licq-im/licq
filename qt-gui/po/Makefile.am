@@ -29,7 +29,10 @@ uninstall-local:
 	-rm -f $(DESTDIR)$(localedir)/*.qm
 
 merge:
-	$(QT_LUPDATE) -noobsolete $(top_srcdir)/src/*.cpp $(top_srcdir)/src/*.h -ts $(top_srcdir)/po/*.ts
+	$(QT_LUPDATE) $(LUPDATE_OPTS) $(top_srcdir)/src/*.cpp $(top_srcdir)/src/*.h -ts $(top_srcdir)/po/*.ts
+
+clean-merge: LUPDATE_OPTS=-noobsolete
+clean-merge: merge
 
 template:
 	$(QT_LUPDATE) $(top_srcdir)/src/*.cpp $(top_srcdir)/src/*.h -ts $(top_builddir)/po/template.ts
