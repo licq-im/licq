@@ -153,7 +153,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status, bool autoclose)
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (o == 0) return;
   setCaption(QString(tr("Set %1 Response for %2"))
-             .arg(ICQUser::StatusToStatusStr(m_nStatus, false)).arg(QString::fromLocal8Bit(o->GetAlias())));
+             .arg(ICQUser::StatusToStatusStr(m_nStatus, false)).arg(QString::fromUtf8(o->GetAlias())));
   QTextCodec *codec = UserCodec::defaultEncoding();
   if (*o->AutoResponse())
     mleAwayMsg->setText(codec->toUnicode(o->AutoResponse()));

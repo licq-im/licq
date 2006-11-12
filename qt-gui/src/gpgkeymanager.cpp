@@ -161,7 +161,7 @@ void GPGKeyManager::slot_add()
   list.sort();
   
   for ( unsigned int i=0; i<list.count(); i++ )
-  popupMenu.insertItem( list.at(i)->alias, i );
+  popupMenu.insertItem( QString::fromUtf8(list.at(i)->alias), i );
 
   int res = popupMenu.exec(QCursor::pos());
   if ( res<0 ) return;
@@ -308,7 +308,7 @@ KeyListItem::~KeyListItem()
 
 void KeyListItem::updateText( ICQUser *u )
 {
-  setText( 0, u->GetAlias() );
+  setText( 0, QString::fromUtf8(u->GetAlias()) );
   setText( 1, u->UseGPG() ? tr("Yes") : tr("No") );
   setText( 2, u->GPGKey() );
 }

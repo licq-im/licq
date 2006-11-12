@@ -49,14 +49,14 @@ GPGKeySelect::GPGKeySelect ( const char *szId, unsigned long nPPID, QWidget *par
   ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_R );
   if ( !u ) return;
 
-  setCaption( tr("Select GPG Key for user %1").arg(QString::fromLocal8Bit(u->GetAlias())) );
+  setCaption( tr("Select GPG Key for user %1").arg(QString::fromUtf8(u->GetAlias())) );
 
   this->szId = strdup( szId );
   this->nPPID = nPPID;
 
   QBoxLayout* top_lay = new QVBoxLayout(this, 11, 6);
   
-  top_lay->addWidget( new QLabel( tr("Select a GPG key for user %1.").arg(QString::fromLocal8Bit(u->GetAlias())), this ) );
+  top_lay->addWidget( new QLabel( tr("Select a GPG key for user %1.").arg(QString::fromUtf8(u->GetAlias())), this ) );
   if ( strcmp( u->GPGKey(), "" )==0 )
     top_lay->addWidget( new QLabel( tr("Current key: No key selected"), this ) );
   else

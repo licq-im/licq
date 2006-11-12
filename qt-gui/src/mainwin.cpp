@@ -3660,7 +3660,7 @@ void CMainWindow::aboutBox()
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   
   // We might have no owner
-  QString m_Alias = (o == 0) ? QString(tr("(Error! No owner set)")) : QString::fromLocal8Bit(o->GetAlias());
+  QString m_Alias = (o == 0) ? QString(tr("(Error! No owner set)")) : QString::fromUtf8(o->GetAlias());
   unsigned long m_Uin = (o == 0) ? 0 : o->Uin();
   
   QString about(tr("Licq version %1%8.\n"
