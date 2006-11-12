@@ -105,7 +105,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	QWhatsThis::add(cmbExtIcon, tr("Use this combo box to select one of the available extended icon sets"));
 	lblExtIcon->setBuddy(cmbExtIcon);
 
-	QLabel *lblEmoticons = new QLabel(tr("E&moticons"), boxSkin);
+	QLabel *lblEmoticons = new QLabel(tr("E&moticons:"), boxSkin);
 	cmbEmoticon = new QComboBox(boxSkin);
 	QWhatsThis::add(cmbEmoticon, tr("Use this combo box to select one of "
 	                                "the available emoticon icon sets"));
