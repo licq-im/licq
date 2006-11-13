@@ -81,12 +81,12 @@ bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, bool
   else if(result == false && bConfirmNo && szConfirmNo)
     result = ( KMessageBox::questionYesNo(q, szConfirmNo, QMessageBox::tr("Licq Question"), QMessageBox::tr("Yes"), QMessageBox::tr("No"), QString::null, false) == KMessageBox::Yes);
 #else
-  result = ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2) == 0);
+  result = ( QMessageBox::question(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2) == 0);
   // The user must confirm his decision!
   if(result == true && bConfirmYes && szConfirmYes)
-    result = ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szConfirmYes, QMessageBox::tr("Yes"), QMessageBox::tr("No")) == 0);
+    result = ( QMessageBox::question(q, QMessageBox::tr("Licq Question"), szConfirmYes, QMessageBox::tr("Yes"), QMessageBox::tr("No")) == 0);
   else if(result == false && bConfirmNo && szConfirmNo)
-    result = ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szConfirmNo, QMessageBox::tr("Yes"), QMessageBox::tr("No")) == 0);
+    result = ( QMessageBox::question(q, QMessageBox::tr("Licq Question"), szConfirmNo, QMessageBox::tr("Yes"), QMessageBox::tr("No")) == 0);
 #endif
   
   return result;
@@ -95,7 +95,7 @@ bool QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, bool
 
 int QueryUser(QWidget *q, QString szQuery, QString szBtn1, QString szBtn2, QString szBtn3)
 {
-  return ( QMessageBox::information(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2, szBtn3));
+  return ( QMessageBox::question(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2, szBtn3));
 }
 
 
@@ -1005,7 +1005,7 @@ void CMessageViewWidget::addNotice(QDateTime dt, QString messageText)
 CLicqMessageBox::CLicqMessageBox(QWidget *parent)
   : QDialog(parent, "LicqInfo", false, Qt::WType_Dialog|Qt::WShowModal), m_nUnreadNum(0)
 {
-  setCaption("Licq");
+  setCaption(tr("Licq"));
 
   // Start with no message
   QString msg = "";
@@ -1041,11 +1041,11 @@ CLicqMessageBox::CLicqMessageBox(QWidget *parent)
   // Make the second horizontal layout for the buttons
   QFrame *frmButtons = new QFrame(this);
   QHBoxLayout *lay2 = new QHBoxLayout(frmButtons, 0, 15);
-  m_btnMore = new QPushButton("&List", frmButtons);
+  m_btnMore = new QPushButton(tr("&List"), frmButtons);
   //m_btnMore->setDisabled(true);
-  m_btnNext = new QPushButton("&Next", frmButtons);
+  m_btnNext = new QPushButton(tr("&Next"), frmButtons);
   m_btnNext->setDisabled(true);
-  m_btnClear = new QPushButton("&Ok", frmButtons);
+  m_btnClear = new QPushButton(tr("&Ok"), frmButtons);
   m_btnClear->setDefault(true);
 
   lay2->addWidget(m_btnMore);
@@ -1085,20 +1085,20 @@ void CLicqMessageBox::addMessage(QMessageBox::Icon type, const QString &msg)
   { 
     m_lblIcon->setPixmap(pix);
     m_lblMessage->setText(msg);
-    m_btnNext->setText("&Next");
+    m_btnNext->setText(tr("&Next"));
     m_btnNext->setEnabled(false);
     m_btnMore->setEnabled(false);
     m_btnNext->hide();
     m_btnMore->hide();
-    m_btnClear->setText("&Ok");
+    m_btnClear->setText(tr("&Ok"));
     showExtension(false); // We are opening the window, so default to not showing this
   }
   else
   {
     m_nUnreadNum++;
     unread = true; // It is unread
-    m_btnClear->setText("&Clear All");
-    QString nextStr = QString("&Next (%1)").arg(m_nUnreadNum);
+    m_btnClear->setText(tr("&Clear All"));
+    QString nextStr = QString(tr("&Next (%1)")).arg(m_nUnreadNum);
     m_btnNext->setText(nextStr);
     if (!m_btnNext->isEnabled())
     {
@@ -1232,11 +1232,11 @@ void CLicqMessageBox::slot_listChanged(QListViewItem *i)
   // Update the next button
   QString nextStr;
   if (m_nUnreadNum > 0)
-    nextStr = QString("&Next (%1)").arg(m_nUnreadNum);
+    nextStr = QString(tr("&Next (%1)")).arg(m_nUnreadNum);
   else
   {
     // No more unread messages
-    nextStr = QString("&Next");
+    nextStr = QString(tr("&Next"));
     m_btnNext->setEnabled(false);
     m_nUnreadNum = 0;
   }
@@ -1257,21 +1257,21 @@ void CLicqMessageBox::updateCaption(CLicqMessageBoxItem *item)
   switch (item->getType())
   {
     case QMessageBox::Information:
-      strCaption = "Licq Information";
+      strCaption = tr("Licq Information");
       break;
 
     case QMessageBox::Warning:
-      strCaption = "Licq Warning";
+      strCaption = tr("Licq Warning");
       break;
 
     case QMessageBox::Critical:
-      strCaption = "Licq Critical";
+      strCaption = tr("Licq Critical");
       break;
 
     case QMessageBox::NoIcon:
     case QMessageBox::Question:
     default:
-      strCaption = "Licq";
+      strCaption = tr("Licq");
       break;
   }
   setCaption(strCaption);
