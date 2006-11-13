@@ -26,11 +26,11 @@
     </message>
     <message>
         <source>Protocol:</source>
-        <translation type="unfinished">Протокол:</translation>
+        <translation>Протокол:</translation>
     </message>
     <message>
         <source>New User ID:</source>
-        <translation type="unfinished">Нов потребител:</translation>
+        <translation >Нов потребител:</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
@@ -86,7 +86,7 @@
         <source>I&apos;m currently %1, %a.
 You can leave me a message.
 (%m messages pending from you).</source>
-        <translation>Понастоящем съм %1, %a.
+        <translation>В момента съм %1, %a.
 Можете да ми оставите съобщение.
 (%m чакащи съобщения от вас).</translation>
     </message>
@@ -112,7 +112,7 @@ You can leave me a message.
     </message>
     <message>
         <source>(Closing in %1)</source>
-        <translation type="unfinished"></translation>
+        <translation>(Затваряне след %1)</translation>
     </message>
     <message>
         <source>&amp;Edit Items</source>
@@ -123,7 +123,7 @@ You can leave me a message.
     <name>CEditFileListDlg</name>
     <message>
         <source>Licq - Files to send</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Файлове за изпращане</translation>
     </message>
     <message>
         <source>&amp;Done</source>
@@ -209,11 +209,11 @@ You can leave me a message.
     </message>
     <message>
         <source>Waiting for connection...</source>
-        <translation>Чакам осъществяване на връзка...</translation>
+        <translation>Осъществяване на връзка...</translation>
     </message>
     <message>
         <source>File already exists and appears incomplete.</source>
-        <translation>Файлът вече съществува но изглежда не е цял.</translation>
+        <translation>Файлът вече съществува, но изглежда не е цял.</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -229,23 +229,23 @@ You can leave me a message.
     </message>
     <message>
         <source>Sending file...</source>
-        <translation>Изпращам файл...</translation>
+        <translation>Изпращане на файл...</translation>
     </message>
     <message>
         <source>File transfer cancelled.</source>
-        <translation>Копирането на файла приключи.</translation>
+        <translation>Копирането на файла бе прекъснато.</translation>
     </message>
     <message>
         <source>Receiving file...</source>
-        <translation>Получавам файл...</translation>
+        <translation>Получаване на файл...</translation>
     </message>
     <message>
         <source>Current:</source>
-        <translation>Текущ</translation>
+        <translation>Текущ:</translation>
     </message>
     <message>
         <source>Open error - unable to open file for writing.</source>
-        <translation>Грешка. Файлът не може да бъде отворен за писане.</translation>
+        <translation>Грешка - файлът не може да бъде отворен за писане.</translation>
     </message>
     <message>
         <source>Overwrite</source>
@@ -253,7 +253,7 @@ You can leave me a message.
     </message>
     <message>
         <source>&amp;Cancel Transfer</source>
-        <translation>Откажи трансфера</translation>
+        <translation>Отказ на трансфер</translation>
     </message>
     <message>
         <source>Received %1 from %2 successfully.</source>
@@ -261,7 +261,7 @@ You can leave me a message.
     </message>
     <message>
         <source>File transfer complete.</source>
-        <translation>Файловия трансфер е завършен.</translation>
+        <translation>Файловият трансфер е завършен.</translation>
     </message>
     <message>
         <source>Batch:</source>
@@ -273,15 +273,15 @@ You can leave me a message.
     </message>
     <message>
         <source>&amp;Open</source>
-        <translation type="unfinished"></translation>
+        <translation>Отваряне</translation>
     </message>
     <message>
         <source>O&amp;pen Dir</source>
-        <translation type="unfinished"></translation>
+        <translation>Отваряне на папка</translation>
     </message>
     <message>
         <source>Remote side disconnected.</source>
-        <translation type="unfinished"></translation>
+        <translation>Отсрещната страна прекъсна връзката.</translation>
     </message>
     <message>
         <source>File I/O error: %1.</source>
@@ -307,7 +307,8 @@ See Network Window for details.</source>
     <message>
         <source>Connection error.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Грешка при свързване.
+</translation>
     </message>
     <message>
         <source>Unable to reach remote host.
@@ -327,7 +328,8 @@ See Network Window for details.</source>
     <message>
         <source>Not enough resources.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>Няма достатъчно ресурси.
+</translation>
     </message>
     <message>
         <source>Unable to create a thread.
@@ -425,7 +427,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>Sending mass URL to %1...</source>
-        <translation>Изпращане/URL до %1...</translation>
+        <translation>Изпращане на URL до %1...</translation>
     </message>
     <message>
         <source>Multiple Recipient Contact List</source>
@@ -441,7 +443,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>Sending mass list to %1...</source>
-        <translation>Изпращане/списък с потребители до %1...</translation>
+        <translation>Изпращане на списък с потребители до %1...</translation>
     </message>
     <message>
         <source>Multiple Recipient Message</source>
@@ -507,7 +509,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>Online to User</source>
-        <translation>&apos;Винаги достъпен/достъпна&apos; за този потребител</translation>
+        <translation>&apos;Винаги Онлайн&apos; за този потребител</translation>
     </message>
     <message>
         <source>&amp;Away</source>
@@ -631,7 +633,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation>&lt;hr&gt;&lt;p&gt; За повече информация се обърнете към web сайтът на Licq (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
+        <translation>&lt;hr&gt;&lt;p&gt; За повече информация се обърнете към web сайта на Licq (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
     <message>
         <source>&amp;Mini Mode</source>
@@ -725,7 +727,7 @@ to your ignore list?</source>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
-        <translation type="obsolete">Регистрацията не може да бъде осъществена. За повече информация погледнете мрежовата статистика.</translation>
+        <translation type="obsolete">Регистрацията се провали. За повече информация погледнете мрежовата статистика.</translation>
     </message>
     <message>
         <source>Reg&amp;ister User</source>
@@ -733,7 +735,7 @@ to your ignore list?</source>
     </message>
     <message>
         <source>Show Offline &amp;Users</source>
-        <translation>Показвай и изключените потребители</translation>
+        <translation>Показвай и офлайн потребители</translation>
     </message>
     <message>
         <source>%1 message%2</source>
@@ -773,7 +775,7 @@ to your ignore list?</source>
     </message>
     <message>
         <source>&amp;Plugin Manager...</source>
-        <translation>Plugin менажер</translation>
+        <translation>Plugin мениджър...</translation>
     </message>
     <message>
         <source>O&amp;ccupied</source>
@@ -837,7 +839,7 @@ to your ignore list?</source>
     </message>
     <message>
         <source>Send Contact &amp;List</source>
-        <translation>Изпращане списък с потребители</translation>
+        <translation>Изпращане на списък с потребители</translation>
     </message>
     <message>
         <source>Status Info</source>
@@ -901,7 +903,7 @@ from your contact list?</source>
     </message>
     <message>
         <source>Edit &amp;Groups</source>
-        <translation>Редактиране/Групи</translation>
+        <translation>Редактиране на групи</translation>
     </message>
     <message>
         <source>All Users</source>
@@ -909,7 +911,7 @@ from your contact list?</source>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
-        <translation>Скин менажер</translation>
+        <translation>Скин мениджър</translation>
     </message>
     <message>
         <source>S&amp;earch for User</source>
@@ -942,12 +944,14 @@ from your contact list?</source>
     <message>
         <source>Right click - User groups
 Double click - Show next message</source>
-        <translation type="unfinished"></translation>
+        <translation>Десен бутон - Потребителски групи
+Двойно кликване - Следващо съобщение</translation>
     </message>
     <message>
         <source>Right click - Status menu
 Double click - Set auto response</source>
-        <translation type="unfinished"></translation>
+        <translation>Десен бутон - Статус меню
+Двойно кликване - Настройка на автоматичен отговор</translation>
     </message>
     <message>
         <source>Error! No owner set</source>
@@ -955,7 +959,7 @@ Double click - Set auto response</source>
     </message>
     <message>
         <source>&lt;b&gt;%1&lt;/b&gt; is online</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;b&gt;%1&lt;/b&gt; е онлайн</translation>
     </message>
     <message>
         <source>s</source>
@@ -996,7 +1000,19 @@ http://www.licq.org
 
 %3 (%4)
 %5 contacts.</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq версия %1%8.
+Qt GUI plugin версия %2.
+Компилирано на: %7
+%6
+Разработчик: Jon Keating
+Със съдействието на Dirk A. Mueller
+Автор: Graham Roff
+
+http://www.licq.org
+#licq в irc.freenode.net
+
+%3 (%4)
+%5 контакти.</translation>
     </message>
     <message>
         <source>Unable to open extended icons file
@@ -1033,7 +1049,7 @@ http://www.licq.org
     </message>
     <message>
         <source>Available</source>
-        <translation type="unfinished">Достъпен</translation>
+        <translation>Достъпен</translation>
     </message>
     <message>
         <source>Busy</source>
@@ -1069,7 +1085,7 @@ http://www.licq.org
     </message>
     <message>
         <source>Use GPG Encryption</source>
-        <translation type="unfinished"></translation>
+        <translation>Използване на GPG криптиране</translation>
     </message>
     <message>
         <source>Update Info Plugin List</source>
@@ -1126,20 +1142,22 @@ http://www.licq.org
     <message>
         <source>%1: %2 / %3
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2 / %3
+</translation>
     </message>
     <message>
         <source>&amp;Reset</source>
-        <translation type="unfinished"></translation>
+        <translation>Изчисти</translation>
     </message>
     <message>
         <source>Do you really want to reset your stats?</source>
-        <translation type="unfinished"></translation>
+        <translation>Сигурни ли сте, че желаете да изчистите Вашата статистика?</translation>
     </message>
     <message>
         <source>%1: %2
 </source>
-        <translation type="unfinished"></translation>
+        <translation>%1: %2
+</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
@@ -1153,7 +1171,8 @@ http://www.licq.org
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq не може да стартира Вашия браузър и да отвори този уеб адрес.
+Ще се наложи да стартирате браузъра и да отворите желания адрес ръчно.</translation>
     </message>
 </context>
 <context>
@@ -1200,7 +1219,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Women Seeking Men</source>
-        <translation type="obsolete">Жена търсеща мъж</translation>
+        <translation type="obsolete">Жени търсещи мъже</translation>
     </message>
     <message>
         <source>20 Something</source>
@@ -1212,7 +1231,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Men Seeking Women</source>
-        <translation type="obsolete">Мъж търсещ жена</translation>
+        <translation type="obsolete">Мъже търсещи жени</translation>
     </message>
     <message>
         <source>40 Something</source>
@@ -1437,7 +1456,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation>&lt;br&gt;&lt;b&gt;Рожден Ден!!&lt;/b&gt;</translation>
+        <translation>&lt;br&gt;&lt;b&gt;Рожден Ден!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Japanese</source>
@@ -1481,7 +1500,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;Пише&amp;nbsp;&amp;nbsp;съобщение</translation>
     </message>
     <message>
         <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
