@@ -3488,10 +3488,6 @@ changes here require a Restart to take effect!
         <translation>Формат даты:</translation>
     </message>
     <message>
-        <source>Custom Date Format</source>
-        <translation>Личный формат даты</translation>
-    </message>
-    <message>
         <source>Picture</source>
         <translation>Картинка</translation>
     </message>
@@ -3582,6 +3578,10 @@ changes here require a Restart to take effect!
 &lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;отображение AM/PM. AP будет заменено на &apos;AM&apos; либо &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;отображение am/pm. ap будет заменено на &apos;am&apos; либо &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;</translation>
+    </message>
+    <message>
+        <source>Custom Date Format:</source>
+        <translation>Личный формат даты:</translation>
     </message>
 </context>
 <context>

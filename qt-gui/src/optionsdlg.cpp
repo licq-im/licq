@@ -1591,7 +1591,7 @@ QWidget* OptionsDlg::new_chat_options()
   cmbDateFormat->insertItem("dd.MM.yyyy");
   connect(cmbDateFormat, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
 
-  chkCustomDateFormat = new QCheckBox(tr("Custom Date Format"), boxOptions);
+  chkCustomDateFormat = new QCheckBox(tr("Custom Date Format:"), boxOptions);
   connect(chkCustomDateFormat, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
   connect(chkCustomDateFormat, SIGNAL(toggled(bool)), cmbDateFormat, SLOT(setDisabled(bool)));
 

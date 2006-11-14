@@ -1,20 +1,9 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE без обумовлення</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">нема</translation>
-    </message>
-</context>
-<context>
     <name>@default</name>
     <message>
         <source>KDE default</source>
-        <translation type="unfinished">KDE без обумовлення</translation>
+        <translation>KDE за замовчанням</translation>
     </message>
 </context>
 <context>
@@ -149,11 +138,11 @@ You can leave me a message.
     <name>CEmoticons</name>
     <message>
         <source>Default</source>
-        <translation type="unfinished"></translation>
+        <translation>Стандартні</translation>
     </message>
     <message>
         <source>None</source>
-        <translation type="unfinished"></translation>
+        <translation>Відсутні</translation>
     </message>
 </context>
 <context>
@@ -425,6 +414,45 @@ See Network Window for details.</source>
     <message>
         <source>&amp;Join</source>
         <translation>&amp;Під&apos;єднатися</translation>
+    </message>
+</context>
+<context>
+    <name>CLicqMessageBox</name>
+    <message>
+        <source>Licq</source>
+        <translation>Licq</translation>
+    </message>
+    <message>
+        <source>&amp;List</source>
+        <translation>&amp;Список</translation>
+    </message>
+    <message>
+        <source>&amp;Next</source>
+        <translation>&amp;Далі</translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation>&amp;Гаразд</translation>
+    </message>
+    <message>
+        <source>&amp;Clear All</source>
+        <translation>&amp;Видалити всі</translation>
+    </message>
+    <message>
+        <source>&amp;Next (%1)</source>
+        <translation>&amp;Далі (%1)</translation>
+    </message>
+    <message>
+        <source>Licq Information</source>
+        <translation>Інформація Licq</translation>
+    </message>
+    <message>
+        <source>Licq Warning</source>
+        <translation>Застереження Licq</translation>
+    </message>
+    <message>
+        <source>Licq Critical</source>
+        <translation>Критична помилка Licq</translation>
     </message>
 </context>
 <context>
@@ -1159,7 +1187,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source> </source>
-        <translation type="unfinished"></translation>
+        <translation> </translation>
     </message>
 </context>
 <context>
@@ -2118,71 +2146,72 @@ the group &apos;%1&apos;?</source>
     <name>GPGKeyManager</name>
     <message>
         <source>Licq GPG Key Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Менеджер GPG ключа Licq</translation>
     </message>
     <message>
         <source>GPG Passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>GPG пароль</translation>
     </message>
     <message>
         <source>No passphrase set</source>
-        <translation type="unfinished"></translation>
+        <translation>Пароль не встановлено</translation>
     </message>
     <message>
         <source>&amp;Set GPG Passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Встановити GPG пароль</translation>
     </message>
     <message>
         <source>User Keys</source>
-        <translation type="unfinished"></translation>
+        <translation>Ключі користувачів</translation>
     </message>
     <message>
         <source>&amp;Add</source>
-        <translation type="unfinished">&amp;Додати</translation>
+        <translation>&amp;Додати</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Редагувати</translation>
     </message>
     <message>
         <source>&amp;Remove</source>
-        <translation type="unfinished"></translation>
+        <translation>В&amp;идалити</translation>
     </message>
     <message>
         <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;qt&gt;Перетягніть користувача, щоб додати його до списку.&lt;/qt&gt;</translation>
     </message>
     <message>
         <source>User</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувач</translation>
     </message>
     <message>
         <source>Active</source>
-        <translation type="unfinished"></translation>
+        <translation>Активно</translation>
     </message>
     <message>
         <source>Key ID</source>
-        <translation type="unfinished"></translation>
+        <translation>Идентифікатор ключа</translation>
     </message>
     <message>
         <source>&amp;Close</source>
-        <translation type="unfinished">&amp;Закрити</translation>
+        <translation>&amp;Закрити</translation>
     </message>
     <message>
         <source>Set Passphrase</source>
-        <translation type="unfinished"></translation>
+        <translation>Встановити пароль</translation>
     </message>
     <message>
         <source>Not yet implemented. Use licq_gpg.conf.</source>
-        <translation type="unfinished"></translation>
+        <translation>Функція поки що у розробці.
+Користуйтеся файлом конфигурації licq_gpg.conf.</translation>
     </message>
     <message>
         <source>Remove GPG key</source>
-        <translation type="unfinished"></translation>
+        <translation>Видалити GPG ключ</translation>
     </message>
     <message>
         <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
-        <translation type="unfinished"></translation>
+        <translation>Ви дійсно бажаєте видалити GPG ключ? З системи його видалено не буде.</translation>
     </message>
 </context>
 <context>
@@ -2275,11 +2304,11 @@ the group &apos;%1&apos;?</source>
     <name>KeyListItem</name>
     <message>
         <source>Yes</source>
-        <translation type="unfinished">Так</translation>
+        <translation>Так</translation>
     </message>
     <message>
         <source>No</source>
-        <translation type="unfinished">Ні</translation>
+        <translation>Ні</translation>
     </message>
 </context>
 <context>
@@ -2393,14 +2422,14 @@ Rebuild Licq with OpenSSL support.</source>
     <name>MLEditWrap</name>
     <message>
         <source>Allow Tabulations</source>
-        <translation type="unfinished"></translation>
+        <translation>Дозволити табуляцію</translation>
     </message>
 </context>
 <context>
     <name>MLView</name>
     <message>
         <source>Copy URL</source>
-        <translation type="unfinished"></translation>
+        <translation>Скопіювати посилання</translation>
     </message>
 </context>
 <context>
@@ -3401,59 +3430,95 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Send typing notifications</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомляти про друк</translation>
     </message>
     <message>
         <source>Send a notification to the user so they can see when you are typing a message to them</source>
-        <translation type="unfinished"></translation>
+        <translation>Користувачам будуть надсилатися повідомлення так, щоб вони бачили, що Ви друкуєте їм</translation>
     </message>
     <message>
         <source>Sticky Main Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Кріпити головне вікно</translation>
     </message>
     <message>
         <source>Makes the Main window visible on all desktops</source>
-        <translation type="unfinished"></translation>
+        <translation>Головне вікно буде зображено на всіх робочих столах</translation>
     </message>
     <message>
         <source>Sticky Message Window</source>
-        <translation type="unfinished"></translation>
+        <translation>Кріпити вікно повідомлень</translation>
     </message>
     <message>
         <source>Makes the Message window visible on all desktops</source>
-        <translation type="unfinished"></translation>
+        <translation>Вікно повідомлень буде зображено на всіх робочих столах</translation>
     </message>
     <message>
         <source>Show user display picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Зображати картинку</translation>
     </message>
     <message>
         <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Замість іконки статусу буде зображено зменшену картинку користувача, якщо користувач в сеті та встановив цю картинку</translation>
     </message>
     <message>
         <source>Single line chat mode</source>
-        <translation type="unfinished"></translation>
+        <translation>Однорядковий режим </translation>
     </message>
     <message>
         <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
-        <translation type="unfinished"></translation>
+        <translation>В однонрядковому режимі Ви надсилаєте повідомлення за допомогою Enter, та переходите на новий рядок за допомогою Ctrl+Enter</translation>
     </message>
     <message>
         <source>Alias</source>
-        <translation type="unfinished">Прізвисько</translation>
+        <translation>Прізвисько</translation>
     </message>
     <message>
         <source>Name</source>
-        <translation type="unfinished">Назва</translation>
+        <translation>Ім&apos;я</translation>
     </message>
     <message>
         <source>Date Format:</source>
-        <translation type="unfinished"></translation>
+        <translation>Формат дати:</translation>
     </message>
     <message>
-        <source>Custom Date Format</source>
-        <translation type="unfinished"></translation>
+        <source>Picture</source>
+        <translation>Картинка</translation>
+    </message>
+    <message>
+        <source>Notice:</source>
+        <translation>Звістка:</translation>
+    </message>
+    <message>
+        <source>This is a sent message</source>
+        <translation>Це надіслане повідомлення</translation>
+    </message>
+    <message>
+        <source>Have you gone to the Licq IRC Channel?</source>
+        <translation>Ти був на IRC каналі Licq?</translation>
+    </message>
+    <message>
+        <source>No, where is it?</source>
+        <translation>Ні, а де він?</translation>
+    </message>
+    <message>
+        <source>#Licq on irc.freenode.net</source>
+        <translation>#Licq на irc.freenode.net</translation>
+    </message>
+    <message>
+        <source>Cool, I&apos;ll see you there :)</source>
+        <translation>Добре, до зустрічи там :)</translation>
+    </message>
+    <message>
+        <source>We&apos;ll be waiting!</source>
+        <translation>Ми будемо чекати!</translation>
+    </message>
+    <message>
+        <source>Marge has left the conversation.</source>
+        <translation>Marge облишила розмову.</translation>
+    </message>
+    <message>
+        <source>This is a received message</source>
+        <translation>Це прийняте повідомлення</translation>
     </message>
     <message>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;
@@ -3474,54 +3539,42 @@ changes here require a Restart to take effect!
 &lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second whithout a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second whith a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the milliseconds without leading zeroes (0..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the milliseconds with leading zeroes (000..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Доступні змінні для свого формату дати.&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Вираз&lt;/th&gt;&lt;th&gt;Значення&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;номер дня без нуля попереду (1-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;номер дня з нулем пепереду (01-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;скорочена назва дня тижня (&apos;Пнд&apos;..&apos;Ндл&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;повна назва дня тижня (&apos;Понеділок&apos;..&apos;Неділя&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;номер місяця без нуля попереду (1-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;номер місяця з нелем пепереду (01-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;скорочена назва місяця (&apos;Счн&apos;..&apos;Грд&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;повна назва місяця (e.g. &apos;Січень&apos;..&apos;Грудень&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;рік двома цифрами (00-99)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;рік чотирма цифрами (1752-8000)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;година без нуля попереду (0..23 або 1..12 при AM/PM зображенні)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;година з нулем попереду (00..23 або 01..12 при AM/PM зображенні)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;хвилина без нуля попереду (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;хвилина з нулем попереду (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;секунда без нуля попереду (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;секунда з нулем попереду (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;мілісекунда без нуля попереду (0..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;мілісекунда з нулем попереду (000..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;AM/PM зображення. AP буде змінено на &apos;AM&apos; або &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;am/pm зображення. ap буде змінено на &apos;am&apos; або &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</translation>
     </message>
     <message>
-        <source>Picture</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Notice:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This is a sent message</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Have you gone to the Licq IRC Channel?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>No, where is it?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>#Licq on irc.freenode.net</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Cool, I&apos;ll see you there :)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>We&apos;ll be waiting!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Marge has left the conversation.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>This is a received message</source>
-        <translation type="unfinished"></translation>
+        <source>Custom Date Format:</source>
+        <translation>Свій формат дати:</translation>
     </message>
 </context>
 <context>
@@ -3701,18 +3754,6 @@ Now set your personal information.</source>
     <message>
         <source>No</source>
         <translation>Ні</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Інформація Licq</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Застереження Licq</translation>
-    </message>
-    <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Помилка Licq</translation>
     </message>
 </context>
 <context>
@@ -4258,10 +4299,6 @@ ICQ Network to change the settings.</source>
         <translation>Використати цей випадаючий список для вибору одного з доступних встановлених додаткових піктограм</translation>
     </message>
     <message>
-        <source>E&amp;moticons</source>
-        <translation>&amp;Емоції</translation>
-    </message>
-    <message>
         <source>Use this combo box to select one of the available emoticon icon sets</source>
         <translation>Використати цей випадаючий список для вибору одного з доступних встановлених емоційних піктограм</translation>
     </message>
@@ -4332,6 +4369,10 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
 %1</source>
         <translation>Неможливо відкрити файл додаткових піктограм
 %1</translation>
+    </message>
+    <message>
+        <source>E&amp;moticons:</source>
+        <translation>&amp;Емоції:</translation>
     </message>
 </context>
 <context>
@@ -4761,10 +4802,6 @@ Check this if you want to keep your changes to the Alias.</source>
         <translation>Відсутність в мережі</translation>
     </message>
     <message>
-        <source>KDE Addressbook</source>
-        <translation type="obsolete">Адресна книга KDE</translation>
-    </message>
-    <message>
         <source>Email:</source>
         <translation>Email:</translation>
     </message>
@@ -4793,14 +4830,6 @@ Description: %2</source>
     <message>
         <source>server</source>
         <translation>сервер</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 від %2</translation>
-    </message>
-    <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 до %2</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
@@ -4894,7 +4923,7 @@ Select another picture?</source>
     </message>
     <message>
         <source>&amp;KDE Addressbook</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Адресна книга KDE</translation>
     </message>
 </context>
 <context>
