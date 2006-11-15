@@ -5594,7 +5594,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             tmp = msg.UnpackString();
             char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->UserEncoding()) : 0;
             u->SetAlias(szUTFAlias);
-            printf("Alias: %s\n", szUTFAlias);
+            //printf("Alias: %s\n", szUTFAlias);
           }
           if (tmp)
             delete[] tmp;
