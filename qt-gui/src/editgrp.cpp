@@ -53,9 +53,15 @@ EditGrpDlg::EditGrpDlg(QWidget *parent)
   btnEdit = new QPushButton(tr("Edit Name"), grpGroups);
   QWhatsThis::add(btnEdit, tr("Edit group name (hit enter to save)."));
   btnDefault = new QPushButton(tr("Set Default"), grpGroups);
-  QWhatsThis::add(btnDefault, tr("The default group to start up in."));
+  QString defaultWhatsThis = tr("The default group to start up in.");
+  QWhatsThis::add(btnDefault, defaultWhatsThis);
   btnNewUser = new QPushButton(tr("Set New Users"), grpGroups);
-  QWhatsThis::add(btnNewUser, tr("The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group."));
+  QString newUserWhatsThis
+      = tr("The group to which new users will be automatically added.  "
+           "All new users will be in the local system group New Users "
+           "but for server side storage will also be stored in the "
+           "specified group.");
+  QWhatsThis::add(btnNewUser, newUserWhatsThis);
   vlay->addWidget(btnAdd);
   vlay->addWidget(btnRemove);
   vlay->addWidget(btnUp);
@@ -66,9 +72,11 @@ EditGrpDlg::EditGrpDlg(QWidget *parent)
 
   glay->addWidget(new QLabel(tr("Default:"), grpGroups), 1, 0);
   nfoDefault = new CInfoField(grpGroups, true);
+  QWhatsThis::add(nfoDefault, defaultWhatsThis);
   glay->addMultiCellWidget(nfoDefault, 1, 1, 1, 2);
   glay->addWidget(new QLabel(tr("New User:"), grpGroups), 2, 0);
   nfoNewUser = new CInfoField(grpGroups, true);
+  QWhatsThis::add(nfoNewUser, newUserWhatsThis);
   glay->addMultiCellWidget(nfoNewUser, 2, 2, 1, 2);
 
   edtName = new QLineEdit(grpGroups);
