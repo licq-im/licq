@@ -7,8 +7,8 @@
 #define MODE_INDIRECT 0x02
 #define MODE_DENIED   0x01  // user denies direct connection from "any" user
 
-#define ICQ_VERSION 9
-const unsigned short ICQ_VERSION_TCP               = 0x0009;
+#define ICQ_VERSION 8
+const unsigned short ICQ_VERSION_TCP               = 0x0008;
 
 #define LICQ_WITHSSL     0x7D800000
 #define LICQ_WITHOUTSSL  0x7D000000
