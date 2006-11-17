@@ -4488,10 +4488,6 @@ void CPacketTcp::InitBuffer()
 {
   switch (m_nVersion)
   {
-    case 7:
-    case 8:
-      InitBuffer_v7();
-      break;
     case 6:
       InitBuffer_v6();
       break;
@@ -4502,6 +4498,11 @@ void CPacketTcp::InitBuffer()
     case 2:
     case 3:
       InitBuffer_v2();
+      break;
+    case 7:
+    case 8:
+    default:
+      InitBuffer_v7();
       break;
   }
 }
