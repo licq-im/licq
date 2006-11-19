@@ -2571,6 +2571,8 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 //-----UserSendCommon::slot_close--------------------------------------------
 void UserSendCommon::slot_close()
 {
+  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
+  
   if (mainwin->m_bMsgChatView)
   {
     // the window is at the front, if the timer has not expired and we close
