@@ -893,7 +893,7 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
         contactName = QString::fromUtf8(u->GetAlias());
       for (unsigned int x = 0; x < strlen(m_szId); x++)
       {
-        if (!isdigit(m_szId[x]) && m_nPPID == LICQ_PPID)
+        if (!isdigit(m_szId[x]) && m_nPPID == LICQ_PPID && e->Direction() == D_RECEIVER)
         {
           bUseHTML = true;
           break;
