@@ -732,6 +732,12 @@ string RTF2HTML::Parse(const char *rtf)
                     case 0x0F:
                         PrintQuoted(":-D");
                         break;
+                    case 0x10:
+                        PrintQuoted("*STOP*");
+                        break;
+                    case 0x14:
+                        PrintQuoted("*JOKINGLY*");
+                        break;
                     }
                 }else{
                 }
