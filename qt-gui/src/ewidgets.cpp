@@ -711,6 +711,7 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
     m_extraSpacing = m->m_chatVertSpacing;
     m_appendLineBreak = m->m_chatAppendLineBreak;
   }
+  m_showNotices = m->m_showNotices;
   m_colorRcv = m->m_colorRcv;
   m_colorSnt = m->m_colorSnt;
   m_colorRcvHistory = m->m_colorRcvHistory;
@@ -761,6 +762,7 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
     m_extraSpacing = m->m_chatVertSpacing;
     m_appendLineBreak = m->m_chatAppendLineBreak;
   }
+  m_showNotices = m->m_showNotices;
   m_colorRcv = m->m_colorRcv;
   m_colorSnt = m->m_colorSnt;
   m_colorRcvHistory = m->m_colorRcvHistory;
@@ -1083,19 +1085,22 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
 
 void CMessageViewWidget::addNotice(QDateTime dt, QString messageText)
 {
+  if (!m_showNotices)
+    return;
+
   QString color = m_colorNotice.name();
   QString s = "";
   const QString dateTime = dt.toString( m_nDateFormat );
 
-  /* Remove trailing line breaks. */
-  for (unsigned int i = messageText.length() - 1; i >= 0; i--)
+  // Remove trailing line breaks.
+  for (int i = messageText.length(); i >= 0; i--)
   {
-    if (messageText.at(i) == '\n' || messageText.at(i) == '\r')
+    if (messageText.at(i - 1) != '\n' && messageText.at(i - 1) != '\r')
+    {
       messageText.truncate(i);
-    else
       break;
+    }
   }
-
 
   switch (m_nMsgStyle)
   {

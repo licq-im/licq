@@ -228,16 +228,18 @@ void OptionsDlg::SetupOptions()
   btnColorTypingLabel->setPaletteBackgroundColor(mainwin->m_colorTabTyping);
   btnColorChatBkg->setPaletteBackgroundColor(mainwin->m_colorChatBkg);
   slot_refresh_msgViewer();
-  
+
   if (mainwin->m_bMsgChatView)
   {
     chkTabbedChatting->setChecked(mainwin->m_bTabbedChatting);
     chkShowHistory->setChecked(mainwin->m_bShowHistory);
+    chkShowNotices->setChecked(mainwin->m_showNotices);
   }
   else
   {
     chkTabbedChatting->setEnabled(false);
     chkShowHistory->setEnabled(false);
+    chkShowNotices->setChecked(false);
   }
   chkSendTN->setChecked(mainwin->licqDaemon->SendTypingNotification());
   chkAutoPosReplyWin->setChecked(mainwin->m_bAutoPosReplyWin);
@@ -532,6 +534,7 @@ void OptionsDlg::ApplyOptions()
 
   mainwin->m_bTabbedChatting = chkTabbedChatting->isChecked();
   mainwin->m_bShowHistory = chkShowHistory->isChecked();
+  mainwin->m_showNotices = chkShowNotices->isChecked();
   mainwin->m_bAutoPosReplyWin = chkAutoPosReplyWin->isChecked();
   mainwin->m_bFlashTaskbar = chkFlashTaskbar->isChecked();
   mainwin->m_bAutoSendThroughServer = chkAutoSendThroughServer->isChecked();
@@ -836,6 +839,10 @@ QWidget* OptionsDlg::new_appearance_options()
   chkShowHistory = new QCheckBox(tr("Show recent messages"), boxMainWin);
   QWhatsThis::add(chkShowHistory, tr("Show the last 5 messages when a Send Window is opened"));
   connect(chkMsgChatView, SIGNAL(toggled(bool)), this, SLOT(slot_useMsgChatView(bool)));
+
+  chkShowNotices = new QCheckBox(tr("Show Join/Left Notices"), boxMainWin);
+  QWhatsThis::add(chkShowNotices, tr("Show a notice in the chat window when a user joins or leaves the conversation."));
+  connect(chkShowNotices, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
 
   chkSendTN = new QCheckBox(tr("Send typing notifications"), boxMainWin);
   QWhatsThis::add(chkSendTN, tr("Send a notification to the user so they can see when you are typing a message to them"));
@@ -1155,10 +1162,12 @@ void OptionsDlg::slot_useMsgChatView(bool b)
   {
     chkTabbedChatting->setChecked(false);
     chkShowHistory->setChecked(false);
+    chkShowNotices->setEnabled(false);
   }
 
   chkTabbedChatting->setEnabled(b);
   chkShowHistory->setEnabled(b);
+  chkShowNotices->setEnabled(b);
 }
 
 void OptionsDlg::slot_useProxy(bool b)
@@ -1694,8 +1703,8 @@ void OptionsDlg::slot_refresh_msgViewer()
   // Don't update the time at every refresh
   static QDateTime date = QDateTime::currentDateTime();
 
-  const char *names[2] = {"Marge", "Homer"};
-  const char *msgs[8] = {
+  const char* const names[2] = {"Marge", "Homer"};
+  const char* const msgs[8] = {
       QT_TR_NOOP("This is a received message"),
       QT_TR_NOOP("This is a sent message"),
       QT_TR_NOOP("Have you gone to the Licq IRC Channel?"),
@@ -1709,6 +1718,7 @@ void OptionsDlg::slot_refresh_msgViewer()
   msgChatViewer->m_nMsgStyle = cmbChatStyle->currentItem();
   msgChatViewer->m_extraSpacing = chkChatVertSpacing->isChecked();
   msgChatViewer->m_appendLineBreak = chkChatLineBreak->isChecked();
+  msgChatViewer->m_showNotices = chkShowNotices->isChecked();
   msgChatViewer->m_colorSnt = btnColorSnt->paletteBackgroundColor();
   msgChatViewer->m_colorRcv = btnColorRcv->paletteBackgroundColor();
   msgChatViewer->m_colorSntHistory = btnColorSntHistory->paletteBackgroundColor();
@@ -1728,23 +1738,28 @@ void OptionsDlg::slot_refresh_msgViewer()
 
   msgChatViewer->clear();
   msgHistViewer->clear();
+
+  QDateTime msgDate = date;
   for (unsigned int i = 0; i<7; i++)
   {
     msgChatViewer->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, (i<2),
           QString(""),
-          date,
+          msgDate,
           true, false, false, false, 
           names[i % 2],
           MLView::toRichText(tr(msgs[i]), true, true));
 
     msgHistViewer->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, false,
           QString(""),
-          date,
+          msgDate,
           true, false, false, false,
           names[i % 2],
           MLView::toRichText(tr(msgs[i]), true, true));
+
+    msgDate = msgDate.addSecs(i + 12);
   }
-  msgChatViewer->addNotice(date, MLView::toRichText(tr(msgs[7]), true, true));
+  msgDate = msgDate.addSecs(12);
+  msgChatViewer->addNotice(msgDate, MLView::toRichText(tr(msgs[7]), true, true));
 
   msgHistViewer->updateContent();
 }

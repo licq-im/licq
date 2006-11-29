@@ -220,6 +220,7 @@ public:
   bool m_extraSpacing;
   bool m_appendLineBreak;
   bool m_useBuffer;
+  bool m_showNotices;
   QColor m_colorRcvHistory;
   QColor m_colorSntHistory;
   QColor m_colorRcv;

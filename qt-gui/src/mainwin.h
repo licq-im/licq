@@ -159,6 +159,7 @@ public:
        m_bShowAllEncodings,
        m_bTabbedChatting,
        m_bShowHistory,
+       m_showNotices,
        m_bDisableDockIcon,
        m_bSortColumnAscending,
        m_chatVertSpacing,

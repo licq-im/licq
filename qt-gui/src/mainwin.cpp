@@ -429,6 +429,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("MsgChatView", m_bMsgChatView, true );
   licqConf.ReadBool("TabbedChatting", m_bTabbedChatting, true);
   licqConf.ReadBool("ShowHistory", m_bShowHistory, true);
+  licqConf.ReadBool("ShowNotices", m_showNotices, true);
   licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
   licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
@@ -3571,6 +3572,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("MsgChatView", m_bMsgChatView);
   licqConf.WriteBool("TabbedChatting", m_bTabbedChatting);
   licqConf.WriteBool("ShowHistory", m_bShowHistory);
+  licqConf.WriteBool("ShowNotices", m_showNotices);
   licqConf.WriteBool("AutoPosReplyWin", m_bAutoPosReplyWin);
   licqConf.WriteBool("AutoSendThroughServer", m_bAutoSendThroughServer);
   licqConf.WriteBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement);
