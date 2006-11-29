@@ -32,6 +32,7 @@
 #include <qmessagebox.h>
 #include <qsize.h>
 #include <qlistview.h>
+#include <qstringlist.h>
 
 #include "mlview.h"
 #include "licq_message.h"
@@ -198,13 +199,17 @@ private:
   unsigned long m_nUin;
   CMainWindow *mainwin;
 public:
+  static QStringList getStyleNames(bool includeHistoryStyles = false);
+
   CMessageViewWidget(const char *szId, unsigned long nPPID,
-    CMainWindow *m, QWidget *parent = 0, const char *name = 0);
+    CMainWindow *m, QWidget *parent = 0, const char *name = 0, bool historyMode = false);
   CMessageViewWidget(unsigned long _nUin, CMainWindow *m,
-		     QWidget* parent=0, const char * name =0);
+    QWidget* parent = 0, const char *name = 0, bool historyMode = false);
   virtual ~CMessageViewWidget();
 
   void setOwner(const char *szId);
+  void updateContent();
+  void clear();
   void addMsg(direction dir, bool fromHistory, QString eventDescription, QDateTime date, 
     bool isDirect, bool isMultiRec, bool isUrgent, bool isEncrypted, 
     QString contactName, QString messageText);
@@ -212,7 +217,9 @@ public:
 
   unsigned short m_nMsgStyle;
   QString m_nDateFormat;
-  bool m_bAppendLineBreak;
+  bool m_extraSpacing;
+  bool m_appendLineBreak;
+  bool m_useBuffer;
   QColor m_colorRcvHistory;
   QColor m_colorSntHistory;
   QColor m_colorRcv;
@@ -222,6 +229,10 @@ public:
 public slots:
   virtual void addMsg(CUserEvent *, const char * = 0, unsigned long = 0);
   void addMsg(ICQEvent *);
+
+private:
+  void internalAddMsg(QString s);
+  QString m_buffer;
 };
 
 /* ----------------------------------------------------------------------------- */

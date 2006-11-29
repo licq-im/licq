@@ -432,8 +432,9 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("AutoPosReplyWin", m_bAutoPosReplyWin, true);
   licqConf.ReadBool("AutoSendThroughServer", m_bAutoSendThroughServer, false);
   licqConf.ReadBool("EnableMainwinMouseMovement", m_bEnableMainwinMouseMovement, true);
-  licqConf.ReadNum("ChatMessageStyle", m_nMsgStyle, 0);
-  licqConf.ReadBool("ChatAppendLinebreak", m_bAppendLineBreak, false);
+  licqConf.ReadNum("ChatMessageStyle", m_chatMsgStyle, 0);
+  licqConf.ReadBool("ChatVerticalSpacing", m_chatVertSpacing, true);
+  licqConf.ReadBool("ChatAppendLinebreak", m_chatAppendLineBreak, false);
   licqConf.ReadBool("FlashTaskbar", m_bFlashTaskbar, true);
   licqConf.ReadBool("ShowUserIcons", m_bShowUserIcons, true);
   licqConf.ReadBool("MainWinSticky", m_bMainWinSticky, false);
@@ -441,7 +442,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("SingleLineChatMode", m_bSingleLineChatMode, false);
   licqConf.ReadBool("CheckSpellingEnabled", m_bCheckSpellingEnabled, false);
   licqConf.ReadStr("DateFormat", szTemp, "hh:mm:ss");
-  m_nDateFormat = QString::fromLatin1(szTemp);
+  m_chatDateFormat = QString::fromLatin1(szTemp);
+  licqConf.ReadNum("HistoryMessageStyle", m_histMsgStyle, 0);
+  licqConf.ReadBool("HistoryVerticalSpacing", m_histVertSpacing, true);
+  licqConf.ReadStr("HistoryDateFormat", szTemp, "yyyy-MM-dd hh:mm:ss");
+  m_histDateFormat = QString::fromLatin1(szTemp);
 
   licqConf.ReadStr("ReceiveMessageColor", szTemp, "red");
   m_colorRcv = QColor(szTemp);
@@ -3576,8 +3581,9 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("SingleLineChatMode", m_bSingleLineChatMode);
   licqConf.WriteBool("CheckSpellingEnabled", m_bCheckSpellingEnabled);
 
-  licqConf.WriteNum("ChatMessageStyle", m_nMsgStyle);
-  licqConf.WriteBool("ChatAppendLinebreak", m_bAppendLineBreak);
+  licqConf.WriteNum("ChatMessageStyle", m_chatMsgStyle);
+  licqConf.WriteBool("ChatVerticalSpacing", m_chatVertSpacing);
+  licqConf.WriteBool("ChatAppendLinebreak", m_chatAppendLineBreak);
   licqConf.WriteStr("ReceiveMessageColor", m_colorRcv.name());
   licqConf.WriteStr("ReceiveHistoryColor", m_colorRcvHistory.name());
   licqConf.WriteStr("SentMessageColor", m_colorSnt.name());
@@ -3586,7 +3592,10 @@ void CMainWindow::saveOptions()
   licqConf.WriteStr("TabFontColor", m_colorTab.name());
   licqConf.WriteStr("TabOnTypingColor", m_colorTabTyping.name());
   licqConf.WriteStr("ChatBackground", m_colorChatBkg.name());
-  licqConf.WriteStr("DateFormat", m_nDateFormat.latin1());
+  licqConf.WriteStr("DateFormat", m_chatDateFormat.latin1());
+  licqConf.WriteNum("HistoryMessageStyle", m_histMsgStyle);
+  licqConf.WriteBool("HistoryVerticalSpacing", m_histVertSpacing);
+  licqConf.WriteStr("HistoryDateFormat", m_histDateFormat.latin1());
 
   licqConf.WriteBool("showPopPicture", m_bPopPicture);
   licqConf.WriteBool("showPopAlias", m_bPopAlias);

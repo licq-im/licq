@@ -31,6 +31,7 @@ public:
 
   void appendNoNewLine(const QString& s);
   void append(const QString& s);
+  void GotoHome();
   void GotoEnd();
 
   bool hasMarkedText() const;

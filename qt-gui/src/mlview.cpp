@@ -156,6 +156,11 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
   return text;
 }
 
+void MLView::GotoHome()
+{
+  setContentsPos(0, 0);
+}
+
 void MLView::GotoEnd()
 {
   moveCursor(QTextBrowser::MoveEnd, false);

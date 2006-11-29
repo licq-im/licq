@@ -1725,8 +1725,7 @@ void UserInfoDlg::CreateHistory()
   chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
   l->addWidget(chkHistoryReverse);
 
-  mlvHistory = new CMessageViewWidget(m_szId, m_nPPID, mainwin, p, "history");
-  mlvHistory->m_nMsgStyle = 4; /* STYLE_HISTORY */
+  mlvHistory = new CMessageViewWidget(m_szId, m_nPPID, mainwin, p, "history", true);
 
   connect(mlvHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 
@@ -2027,7 +2026,18 @@ void UserInfoDlg::ShowHistory()
   barFiltering->setTotalSteps(NUM_MSG_PER_HISTORY);
   char* ftxt = qstrdup(codec->fromUnicode(lneFilter->text()));
   int flen = strlen(ftxt);
-  
+
+  QString ownerName;
+  ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+  if (o != NULL)
+  {
+    // Don't use this codec to decode our conversation with the contact
+    // since we're using the contact's encoding, not ours.
+    QTextCodec *ownerCodec = UserCodec::codecForICQUser(o);
+    ownerName = ownerCodec->toUnicode(o->GetAlias());
+    gUserManager.DropOwner(m_nPPID);
+  }
+
   mlvHistory->clear();
   while (m_nHistoryShowing < (NUM_MSG_PER_HISTORY))
   {
@@ -2041,13 +2051,13 @@ void UserInfoDlg::ShowHistory()
         messageText = codec->toUnicode((*tempIter)->Text());
 
       mlvHistory->addMsg((*tempIter)->Direction(), false,
-                  EventDescription(*tempIter),
+                  ((*tempIter)->SubCommand() == ICQ_CMDxSUB_MSG ? QString("") : (EventDescription(*tempIter) + " ")),
                   date,
                   (*tempIter)->IsDirect(),
                   (*tempIter)->IsMultiRec(),
                   (*tempIter)->IsUrgent(),
                   (*tempIter)->IsEncrypted(),
-                  contactName,
+                  ((*tempIter)->Direction() == D_RECEIVER ? contactName : ownerName),
                   MLView::toRichText(messageText, true, bUseHTML));
       m_nHistoryShowing++;
       barFiltering->setProgress(m_nHistoryShowing);
@@ -2067,6 +2077,10 @@ void UserInfoDlg::ShowHistory()
          break;
     }
   }
+
+  // History view is buffered so tell it write buffer to output now that all entries have been added
+  mlvHistory->updateContent();
+
   delete [] ftxt;
   if(lneFilter->text().isEmpty())
     lblHistory->setText(tr("[<font color=\"%1\">Received</font>] "
@@ -2089,7 +2103,7 @@ void UserInfoDlg::ShowHistory()
   if(!m_bHistoryReverse)
     mlvHistory->GotoEnd();
   else
-    mlvHistory->setCursorPosition(0, 0);
+    mlvHistory->GotoHome();
   barFiltering->reset();
 }
 

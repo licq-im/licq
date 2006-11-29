@@ -212,26 +212,13 @@ void OptionsDlg::SetupOptions()
   chkSysBack->setChecked(mainwin->m_bSystemBackground);
   chkSendFromClipboard->setChecked(mainwin->m_bSendFromClipboard);
   chkMsgChatView->setChecked(mainwin->m_bMsgChatView);
-
-  bool isCustomDate = true;
-  for (int i = 0; i < cmbDateFormat->count(); i++)
-  {
-    if (cmbDateFormat->text(i) == mainwin->m_nDateFormat)
-    {
-      cmbDateFormat->setCurrentItem(i);
-      isCustomDate = false;
-      break;
-    }
-  }
-
-  // Make sure the checkbox is actually toggled, so that widgets are enabled/disabled.
-  chkCustomDateFormat->setChecked(!isCustomDate);
-  chkCustomDateFormat->setChecked(isCustomDate);
-
-  customDateFormat->setText(mainwin->m_nDateFormat);
-
-  chkLineBreak->setChecked(mainwin->m_bAppendLineBreak);
-  cmbStyle->setCurrentItem(mainwin->m_nMsgStyle);
+  cmbChatDateFormat->lineEdit()->setText(mainwin->m_chatDateFormat);
+  chkChatVertSpacing->setChecked(mainwin->m_chatVertSpacing);
+  chkChatLineBreak->setChecked(mainwin->m_chatAppendLineBreak);
+  cmbChatStyle->setCurrentItem(mainwin->m_chatMsgStyle);
+  cmbHistStyle->setCurrentItem(mainwin->m_histMsgStyle);
+  chkHistVertSpacing->setChecked(mainwin->m_histVertSpacing);
+  cmbHistDateFormat->lineEdit()->setText(mainwin->m_histDateFormat);
   btnColorRcv->setPaletteBackgroundColor(mainwin->m_colorRcv);
   btnColorSnt->setPaletteBackgroundColor(mainwin->m_colorSnt);
   btnColorRcvHistory->setPaletteBackgroundColor(mainwin->m_colorRcvHistory);
@@ -527,9 +514,13 @@ void OptionsDlg::ApplyOptions()
   mainwin->m_bSystemBackground = chkSysBack->isChecked();
   mainwin->m_bSendFromClipboard = chkSendFromClipboard->isChecked();
   mainwin->m_bMsgChatView = chkMsgChatView->isChecked();
-  mainwin->m_bAppendLineBreak = chkLineBreak->isChecked();
-  mainwin->m_nMsgStyle = cmbStyle->currentItem();
-  mainwin->m_nDateFormat = getCurrentDateFormat();
+  mainwin->m_chatVertSpacing = chkChatVertSpacing->isChecked();
+  mainwin->m_chatAppendLineBreak = chkChatLineBreak->isChecked();
+  mainwin->m_chatMsgStyle = cmbChatStyle->currentItem();
+  mainwin->m_chatDateFormat = cmbChatDateFormat->currentText();
+  mainwin->m_histMsgStyle = cmbHistStyle->currentItem();
+  mainwin->m_histVertSpacing = chkHistVertSpacing->isChecked();
+  mainwin->m_histDateFormat = cmbHistDateFormat->currentText();
   mainwin->m_colorRcv = btnColorRcv->paletteBackgroundColor();
   mainwin->m_colorSnt = btnColorSnt->paletteBackgroundColor();
   mainwin->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
@@ -1566,39 +1557,40 @@ QWidget* OptionsDlg::new_chat_options()
   QVBox* boxRight = new QVBox(w);
   lay->addWidget(boxRight);
 
-  QGroupBox* boxOptions = new QGroupBox(1, Horizontal, tr("Options"), boxRight);
+  QGroupBox* boxChatOptions = new QGroupBox(1, Horizontal, tr("Chat Options"), boxRight);
 
-  new QLabel(tr("Style:"), boxOptions);
-  cmbStyle = new QComboBox(false, boxOptions);
-  cmbStyle->insertItem("Default");
-  cmbStyle->insertItem("Compact");
-  cmbStyle->insertItem("Tiny");
-  cmbStyle->insertItem("Table");
-  cmbStyle->insertItem("History");
-  connect(cmbStyle, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
+  static const int dateFormatsLength = 7;
+  static const char *const dateFormats[dateFormatsLength] = {
+      "hh:mm:ss",
+      "yyyy-MM-dd hh:mm:ss",
+      "yyyy-MM-dd",
+      "yyyy/MM/dd hh:mm:ss",
+      "yyyy/MM/dd",
+      "dd.MM.yyyy hh:mm:ss",
+      "dd.MM.yyyy"
+  };
 
-  chkLineBreak = new QCheckBox(tr("Insert Horizontal Line"), boxOptions);
-  connect(chkLineBreak, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
+  new QLabel(tr("Style:"), boxChatOptions);
+  cmbChatStyle = new QComboBox(false, boxChatOptions);
+  cmbChatStyle->insertStringList(CMessageViewWidget::getStyleNames(false));
+  connect(cmbChatStyle, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
 
-  new QLabel(tr("Date Format:"), boxOptions);
-  cmbDateFormat = new QComboBox(false, boxOptions);
-  cmbDateFormat->insertItem("hh:mm:ss");
-  cmbDateFormat->insertItem("yyyy-MM-dd hh:mm:ss");
-  cmbDateFormat->insertItem("yyyy-MM-dd");
-  cmbDateFormat->insertItem("yyyy/MM/dd hh:mm:ss");
-  cmbDateFormat->insertItem("yyyy/MM/dd");
-  cmbDateFormat->insertItem("dd.MM.yyyy hh:mm:ss");
-  cmbDateFormat->insertItem("dd.MM.yyyy");
-  connect(cmbDateFormat, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
+  chkChatVertSpacing = new QCheckBox(tr("Insert Vertical Spacing"), boxChatOptions);
+  connect(chkChatVertSpacing, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
+  QWhatsThis::add(chkChatVertSpacing, tr("Insert extra space between messages."));
 
-  chkCustomDateFormat = new QCheckBox(tr("Custom Date Format:"), boxOptions);
-  connect(chkCustomDateFormat, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
-  connect(chkCustomDateFormat, SIGNAL(toggled(bool)), cmbDateFormat, SLOT(setDisabled(bool)));
+  chkChatLineBreak = new QCheckBox(tr("Insert Horizontal Line"), boxChatOptions);
+  connect(chkChatLineBreak, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
+  QWhatsThis::add(chkChatLineBreak, tr("Insert a line between each message."));
 
-  customDateFormat = new QLineEdit(boxOptions);
-  connect(chkCustomDateFormat, SIGNAL(toggled(bool)), customDateFormat, SLOT(setEnabled(bool)));
-  connect(customDateFormat, SIGNAL(textChanged(const QString&)), this, SLOT(slot_refresh_msgViewer()));
-  QWhatsThis::add(customDateFormat, tr(
+  QLabel* lblChatDateFormat = new QLabel(tr("Date Format:"), boxChatOptions);
+  cmbChatDateFormat = new QComboBox(true, boxChatOptions);
+  for(int i = 0; i < dateFormatsLength; ++i)
+    cmbChatDateFormat->insertItem(dateFormats[i]);
+  connect(cmbChatDateFormat, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
+  connect(cmbChatDateFormat, SIGNAL(textChanged(const QString&)), this, SLOT(slot_refresh_msgViewer()));
+
+  QString helpDateFormat = tr(
       "<p>Available custom date format variables.</p>\n"
       "<table>\n"
       "<tr><th>Expression</th><th>Output</th></tr>\n"
@@ -1623,7 +1615,30 @@ QWidget* OptionsDlg::new_chat_options()
       "<tr><td>zzz</td><td>the millisecond with leading zero (000..999)</td></tr>\n"
       "<tr><td>AP</td><td>use AM/PM display. AP will be replaced by either 'AM' or 'PM'</td></tr>\n"
       "<tr><td>ap</td><td>use am/pm display. ap will be replaced by either 'am' or 'pm'</td></tr>\n"
-      "</table>"));
+      "</table>");
+
+  QWhatsThis::add(lblChatDateFormat, helpDateFormat);
+  QWhatsThis::add(cmbChatDateFormat, helpDateFormat);
+
+  QGroupBox* boxHistOptions = new QGroupBox(1, Horizontal, tr("History Options"), boxRight);
+  new QLabel(tr("Style:"), boxHistOptions);
+  cmbHistStyle = new QComboBox(false, boxHistOptions);
+  cmbHistStyle->insertStringList(CMessageViewWidget::getStyleNames(true));
+  connect(cmbHistStyle, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
+
+  chkHistVertSpacing = new QCheckBox(tr("Insert Vertical Spacing"), boxHistOptions);
+  connect(chkHistVertSpacing, SIGNAL(toggled(bool)), this, SLOT(slot_refresh_msgViewer()));
+  QWhatsThis::add(chkHistVertSpacing, tr("Insert extra space between messages."));
+
+  QLabel* lblHistDateFormat = new QLabel(tr("Date Format:"), boxHistOptions);
+  cmbHistDateFormat = new QComboBox(true, boxHistOptions);
+  for(int i = 0; i < dateFormatsLength; ++i)
+    cmbHistDateFormat->insertItem(dateFormats[i]);
+  connect(cmbHistDateFormat, SIGNAL(activated(int)), this, SLOT(slot_refresh_msgViewer()));
+  connect(cmbHistDateFormat, SIGNAL(textChanged(const QString&)), this, SLOT(slot_refresh_msgViewer()));
+  QWhatsThis::add(lblHistDateFormat, helpDateFormat);
+  QWhatsThis::add(cmbHistDateFormat, helpDateFormat);
+
 
   QGroupBox *boxColors = new QGroupBox(2, Horizontal, tr("Colors"), boxRight);
 
@@ -1660,23 +1675,18 @@ QWidget* OptionsDlg::new_chat_options()
   connect(btnColorTypingLabel, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
   connect(btnColorChatBkg, SIGNAL(changed()), this, SLOT(slot_refresh_msgViewer()));
 
-  tabViewer = new QTabWidget(w);
+  tabViewer = new CETabWidget(w);
   lay->addWidget(tabViewer);
 
-  msgViewer = new CMessageViewWidget(0, gMainWindow, tabViewer);
-  tabViewer->insertTab(msgViewer, "Marge");
+  msgChatViewer = new CMessageViewWidget(0, gMainWindow, tabViewer);
+  tabViewer->insertTab(msgChatViewer, "Marge");
+
+  msgHistViewer = new CMessageViewWidget(0, gMainWindow, tabViewer, 0, true);
+  tabViewer->insertTab(msgHistViewer, "History");
 
   lay->activate();
 
   return w;
-}
-
-QString OptionsDlg::getCurrentDateFormat() const
-{
-  if (chkCustomDateFormat->isChecked())
-    return customDateFormat->text();
-  else
-    return cmbDateFormat->currentText();
 }
 
 void OptionsDlg::slot_refresh_msgViewer()
@@ -1696,29 +1706,47 @@ void OptionsDlg::slot_refresh_msgViewer()
       QT_TR_NOOP("Marge has left the conversation.")
   };
 
-  msgViewer->m_nMsgStyle = cmbStyle->currentItem();
-  msgViewer->m_bAppendLineBreak = chkLineBreak->isChecked();
-  msgViewer->m_colorSnt = btnColorSnt->paletteBackgroundColor();
-  msgViewer->m_colorRcv = btnColorRcv->paletteBackgroundColor();
-  msgViewer->m_colorSntHistory = btnColorSntHistory->paletteBackgroundColor();
-  msgViewer->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
-  msgViewer->m_colorNotice = btnColorNotice->paletteBackgroundColor();
-  tabViewer->setPaletteForegroundColor(btnColorTypingLabel->paletteBackgroundColor());
-  msgViewer->setPaletteBackgroundColor(btnColorChatBkg->paletteBackgroundColor());
+  msgChatViewer->m_nMsgStyle = cmbChatStyle->currentItem();
+  msgChatViewer->m_extraSpacing = chkChatVertSpacing->isChecked();
+  msgChatViewer->m_appendLineBreak = chkChatLineBreak->isChecked();
+  msgChatViewer->m_colorSnt = btnColorSnt->paletteBackgroundColor();
+  msgChatViewer->m_colorRcv = btnColorRcv->paletteBackgroundColor();
+  msgChatViewer->m_colorSntHistory = btnColorSntHistory->paletteBackgroundColor();
+  msgChatViewer->m_colorRcvHistory = btnColorRcvHistory->paletteBackgroundColor();
+  msgChatViewer->m_colorNotice = btnColorNotice->paletteBackgroundColor();
+  tabViewer->setTabColor(msgChatViewer, btnColorTypingLabel->paletteBackgroundColor());
+  msgChatViewer->setPaletteBackgroundColor(btnColorChatBkg->paletteBackgroundColor());
 
-  msgViewer->m_nDateFormat = getCurrentDateFormat();
+  msgChatViewer->m_nDateFormat = cmbChatDateFormat->currentText();
 
-  msgViewer->clear();
+  msgHistViewer->m_nMsgStyle = cmbHistStyle->currentItem();
+  msgHistViewer->m_extraSpacing = chkHistVertSpacing->isChecked();
+  msgHistViewer->m_colorSnt = btnColorSnt->paletteBackgroundColor();
+  msgHistViewer->m_colorRcv = btnColorRcv->paletteBackgroundColor();
+  msgHistViewer->setPaletteBackgroundColor(btnColorChatBkg->paletteBackgroundColor());
+  msgHistViewer->m_nDateFormat = cmbHistDateFormat->currentText();
+
+  msgChatViewer->clear();
+  msgHistViewer->clear();
   for (unsigned int i = 0; i<7; i++)
   {
-    msgViewer->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, (i<2),
+    msgChatViewer->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, (i<2),
           QString(""),
           date,
           true, false, false, false, 
           names[i % 2],
           MLView::toRichText(tr(msgs[i]), true, true));
+
+    msgHistViewer->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, false,
+          QString(""),
+          date,
+          true, false, false, false,
+          names[i % 2],
+          MLView::toRichText(tr(msgs[i]), true, true));
   }
-  msgViewer->addNotice(date, MLView::toRichText(tr(msgs[7]), true, true));
+  msgChatViewer->addNotice(date, MLView::toRichText(tr(msgs[7]), true, true));
+
+  msgHistViewer->updateContent();
 }
 
 CColorOption::CColorOption (QWidget* parent)

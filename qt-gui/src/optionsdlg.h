@@ -151,21 +151,24 @@ protected:
    QComboBox* cmbSARgroup, *cmbSARmsg;
    MLEditWrap* edtSARtext;
 
-   // display tab
-   QWidget* new_popup_options();
+  // popup info group (contact list tab)
    QGroupBox *boxPopWin;
    QCheckBox *popPicture, *popAlias, *popName, *popEmail, *popPhone,
              *popFax, *popCellular, *popIP,
              *popLastOnline, *popOnlineSince, *popIdleTime, *popID;
 
+  // Message display tab
    QWidget* new_chat_options();
-   CMessageViewWidget *msgViewer;
-   QTabWidget *tabViewer;
-   QComboBox *cmbStyle;
-   QComboBox *cmbDateFormat;
-   QCheckBox *chkCustomDateFormat;
-   QLineEdit *customDateFormat;
-   QCheckBox *chkLineBreak;
+  CMessageViewWidget *msgChatViewer;
+  CMessageViewWidget *msgHistViewer;
+  CETabWidget *tabViewer;
+  QComboBox *cmbChatStyle;
+  QComboBox *cmbChatDateFormat;
+  QCheckBox *chkChatVertSpacing;
+  QCheckBox *chkChatLineBreak;
+  QComboBox *cmbHistStyle;
+  QCheckBox *chkHistVertSpacing;
+  QComboBox *cmbHistDateFormat;
    CColorOption *btnColorRcv;
    CColorOption *btnColorSnt;
    CColorOption *btnColorRcvHistory;
@@ -206,7 +209,6 @@ protected slots:
   void slot_refresh_msgViewer();
 
 private:
-  QString getCurrentDateFormat() const;
 };
 
 

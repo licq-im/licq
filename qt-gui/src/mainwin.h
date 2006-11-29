@@ -161,7 +161,9 @@ public:
        m_bShowHistory,
        m_bDisableDockIcon,
        m_bSortColumnAscending,
-       m_bAppendLineBreak,
+       m_chatVertSpacing,
+       m_chatAppendLineBreak,
+       m_histVertSpacing,
        m_bFlashTaskbar,
        m_bMainWinSticky,
        m_bMsgWinSticky,
@@ -179,9 +181,12 @@ public:
   unsigned long m_nCurrentGroup, m_nGroupStates;
   unsigned short m_nSortByStatus,
                  m_nSortColumn,
-                 m_nMsgStyle;
-  QString m_nDateFormat;
-                 
+                 m_chatMsgStyle,
+                 m_histMsgStyle;
+
+  QString m_chatDateFormat,
+          m_histDateFormat;
+
   QColor m_colorRcvHistory,
          m_colorSntHistory,
          m_colorRcv,

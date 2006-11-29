@@ -44,6 +44,7 @@
 #include <qdatetime.h>
 #include <qlayout.h>
 #include <qheader.h>
+#include <qstringlist.h>
 #include <ctype.h>
 #include <algorithm>
 
@@ -661,15 +662,55 @@ CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
 // -----------------------------------------------------------------------------
 
 //- Message View Widget ---------------------------------------------------------
+
+QStringList CMessageViewWidget::getStyleNames(bool includeHistoryStyles)
+{
+  static const char *const styleNames[] = {
+    QT_TR_NOOP("Default"),
+    QT_TR_NOOP("Compact"),
+    QT_TR_NOOP("Tiny"),
+    QT_TR_NOOP("Table"),
+    QT_TR_NOOP("Long"),
+    QT_TR_NOOP("Wide")
+  };
+
+  int listLength;
+
+  // Style 5 (Wide) is currently only supported in buffered mode which is not used for chat
+  if(includeHistoryStyles)
+    listLength = 6;
+  else
+    listLength = 5;
+
+  QStringList styleList;
+  for(int i = 0; i < listLength; ++i)
+    styleList.append(tr(styleNames[i]));
+
+  return styleList;
+}
+
 CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
-  CMainWindow *m, QWidget* parent, const char * name)
+  CMainWindow *m, QWidget* parent, const char *name, bool historyMode)
   : CHistoryWidget(parent, name)
 {
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
-  m_nMsgStyle = m->m_nMsgStyle;
-  m_nDateFormat = m->m_nDateFormat;
-  m_bAppendLineBreak = m->m_bAppendLineBreak;
+  if (historyMode)
+  {
+    m_useBuffer = true;
+    m_nMsgStyle = m->m_histMsgStyle;
+    m_nDateFormat = m->m_histDateFormat;
+    m_extraSpacing = m->m_histVertSpacing;
+    m_appendLineBreak = false;
+  }
+  else
+  {
+    m_useBuffer = false;
+    m_nMsgStyle = m->m_chatMsgStyle;
+    m_nDateFormat = m->m_chatDateFormat;
+    m_extraSpacing = m->m_chatVertSpacing;
+    m_appendLineBreak = m->m_chatAppendLineBreak;
+  }
   m_colorRcv = m->m_colorRcv;
   m_colorSnt = m->m_colorSnt;
   m_colorRcvHistory = m->m_colorRcvHistory;
@@ -677,6 +718,8 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
   m_colorNotice = m->m_colorNotice;
   setPaletteBackgroundColor(m->m_colorChatBkg);
   mainwin = m;
+
+  clear();
 
 /*
   // add all unread messages.
@@ -697,14 +740,27 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
 */
 }
 
-CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWidget* parent, const char * name)
+CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWidget *parent, const char *name, bool historyMode)
 :CHistoryWidget(parent,name)
 {
   m_nUin= _nUin;
   m_szId = NULL; // avoid desalocation error at destructor
-  m_nMsgStyle = m->m_nMsgStyle;
-  m_nDateFormat = m->m_nDateFormat;
-  m_bAppendLineBreak = m->m_bAppendLineBreak;
+  if (historyMode)
+  {
+    m_useBuffer = true;
+    m_nMsgStyle = m->m_histMsgStyle;
+    m_nDateFormat = m->m_histDateFormat;
+    m_extraSpacing = m->m_histVertSpacing;
+    m_appendLineBreak = false;
+  }
+  else
+  {
+    m_useBuffer = false;
+    m_nMsgStyle = m->m_chatMsgStyle;
+    m_nDateFormat = m->m_chatDateFormat;
+    m_extraSpacing = m->m_chatVertSpacing;
+    m_appendLineBreak = m->m_chatAppendLineBreak;
+  }
   m_colorRcv = m->m_colorRcv;
   m_colorSnt = m->m_colorSnt;
   m_colorRcvHistory = m->m_colorRcvHistory;
@@ -712,6 +768,9 @@ CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWid
   m_colorNotice = m->m_colorNotice;
   setPaletteBackgroundColor(m->m_colorChatBkg);
   mainwin = m;
+
+  clear();
+
 /*
   // add all unread messages.
   vector<CUserEvent*> newEventList;
@@ -745,6 +804,69 @@ void CMessageViewWidget::setOwner(const char *_szId)
   m_szId = strdup(_szId);
 }
 
+void CMessageViewWidget::clear()
+{
+  CHistoryWidget::clear();
+
+  m_buffer = "";
+
+  switch (m_nMsgStyle)
+  {
+    case 5:
+      // table doesn't work when appending so must buffer when using this style
+      m_buffer.append("<table border=\"0\">");
+      m_useBuffer = true;
+      break;
+  }
+  if (m_useBuffer)
+    m_buffer.prepend("<html><body>");
+}
+
+void CMessageViewWidget::updateContent()
+{
+  if (m_useBuffer)
+    setText(m_buffer);
+}
+
+void CMessageViewWidget::internalAddMsg(QString s)
+{
+  if (m_extraSpacing)
+  {
+    if (m_nMsgStyle != 5)
+    {
+      if (m_useBuffer)
+      {
+        s.prepend("<p>");
+        s.append("</p>");
+      }
+      else
+      {
+        s.append("<br>");
+      }
+    }
+    else
+    {
+      s.append("<tr><td colspan=\"3\"></td></tr>");
+    }
+  }
+
+  if (m_useBuffer)
+  {
+    if (!m_extraSpacing && m_nMsgStyle != 5)
+      s.append("<br>");
+
+    m_buffer.append(s);
+    if (m_appendLineBreak)
+      m_buffer.append("<hr>");
+  }
+  else
+  {
+    append(s);
+    if (m_appendLineBreak)
+      append("<hr>");
+  }
+}
+
 void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
   if (strcmp(_e->Id(), m_szId) == 0 && _e->PPID() == m_nPPID &&
@@ -758,33 +880,46 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
 {
   QString s;
   QString color;
-  bool bAIM = (m_nPPID == LICQ_PPID) && !isdigit(m_szId[0]);
 
-  if (fromHistory) 
+  if (fromHistory)
+  {
     if (dir == D_RECEIVER) 
       color = m_colorRcvHistory.name();
     else 
-      color = m_colorSntHistory.name();  
+      color = m_colorSntHistory.name();
+  }
   else
+  {
     if (dir == D_RECEIVER) 
       color = m_colorRcv.name();
     else 
-      color = m_colorSnt.name();  
-  
-  /* Remove trailing line breaks. */
-  for (unsigned int i = messageText.length() - 1; i>=0; i--) {
-    if (messageText.at(i) == '\n' || messageText.at(i) == '\r') {
+      color = m_colorSnt.name();
+  }
+
+  // Remove trailing line breaks.
+  for (int i = messageText.length(); i >= 0; i--)
+  {
+    if (messageText.at(i - 1) != '\n' && messageText.at(i - 1) != '\r')
+    {
       messageText.truncate(i);
-    } else {
       break;
     }
   }
-     
+
+  // Extract everything inside <body>...</body>
+  // Leaving <html> and <body> messes with our message display
+  QRegExp body("<body[^>]*>(.*)</body>");
+  if (body.search(messageText) != -1)
+    messageText = body.cap(1);
+
+  // Remove all font tags
+  messageText.replace(QRegExp("</?font[^>]*>"), "");
+
   QString my_date = date.toString( m_nDateFormat );
-  
+
   switch (m_nMsgStyle) {
     case 0:
-      s = QString("<html><body><font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
+      s = QString("<font color=\"%1\"><b>%2%3 [%4%5%6%7] %8:</b></font><br>")
                   .arg(color)
                   .arg(eventDescription)
                   .arg(my_date)
@@ -793,7 +928,7 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
                   .arg(isUrgent ? 'U' : '-')
                   .arg(isEncrypted ? 'E' : '-')
                   .arg(contactName);
-      s.append(QString("<font color=\"%1\">%2</font></body></html>")
+      s.append(QString("<font color=\"%1\">%2</font>")
                       .arg(color)
                       .arg(messageText));
       break;
@@ -810,12 +945,6 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
       s.append(QString("<font color=\"%1\">%2</font>")
                       .arg(color)
                       .arg(messageText));
-      if (bAIM)
-      {
-        s.prepend("<html><body>");
-        s.append("</body></html>");
-      }
-
       break;
     case 2:
       s = QString("<font color=\"%1\"><b>%2%3 - %4: </b></font>")
@@ -826,13 +955,6 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
       s.append(QString("<font color=\"%1\">%2</font>")
                       .arg(color)
                       .arg(messageText));
-
-      if (bAIM)
-      {
-        s.prepend("<html><body>");
-        s.append("</body></html>");
-      }
-
       break;  
     case 3:
       s = QString("<table border=\"1\"><tr><td><b><font color=\"%1\">%2%3</font><b><td><b><font color=\"%4\">%5</font></b></font></td>")
@@ -863,13 +985,22 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
       s.append(QString("<font color=\"%1\">%2</font><br><br>")
                   .arg(color)
                   .arg(messageText));
-    break;     
+      break;
+    case 5:
+      // Mode 5 is a table so it cannot be displayed in paragraphs
+      s = QString("<tr><td><nobr><b><font color=\"%1\">%2</font><b></nobr></td>")
+                  .arg(color)
+                  .arg(my_date);
+      s.append(QString("<td><b><font color=\"%3\">%4</font></b></font></td>")
+                       .arg(color)
+                       .arg(contactName));
+      s.append(QString("<td><font color=\"%1\">%2</font></td></tr>")
+                      .arg(color)
+                      .arg(messageText));
+      break;
   }
-  
-  append(s);
-  if (m_bAppendLineBreak) {
-    append("<hr>");
-  }
+
+  internalAddMsg(s);
 }
 
 void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long _nPPID)
@@ -988,18 +1119,24 @@ void CMessageViewWidget::addNotice(QDateTime dt, QString messageText)
                   .arg(messageText);
       break; 
 
+    case 5:
+      s = QString("<tr><td><b><font color=\"%1\">%2</font><b></td><td colspan=\"2\"><b><font color=\"%3\">%4</font></b></font></td></tr>")
+                  .arg(color)
+                  .arg(dateTime)
+                  .arg(color)
+                  .arg(messageText);
+      break;
+
     case 0:
     default:
-      s = QString("<html><body><font color=\"%1\"><b>[%2] %3</b></font><br></body></html>")
+      s = QString("<font color=\"%1\"><b>[%2] %3</b></font><br>")
                   .arg(color)
                   .arg(dateTime)
                   .arg(messageText);
       break;    
   }
 
-  append(s);
-  if (m_bAppendLineBreak)
-    append("<hr>");
+  internalAddMsg(s);
 }
 
 CLicqMessageBox::CLicqMessageBox(QWidget *parent)
