@@ -36,7 +36,10 @@ void CLicqConsole::TabCommand(char *_szPartialMatch,
     }
   }
   if (nLen == 0)
-    _sTabCompletion.szPartialMatch = 0;
+  {
+    free(szMatch);
+    _sTabCompletion.szPartialMatch = strdup("");
+  }
   else
     _sTabCompletion.szPartialMatch = szMatch;
 }
@@ -92,13 +95,14 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
     }
     FOR_EACH_USER_END
 
-/* This is commented, so we get a list of every user if the user hits tab 
-   and hasn't typed anything. This might suck...
     if (nLen == 0)
-      _sTabCompletion.szPartialMatch = 0;
+    {
+      free(szMatch);
+      _sTabCompletion.szPartialMatch = strdup("");
+    }
     else
       _sTabCompletion.szPartialMatch = szMatch;
-*/
+
   }
 /*  else // Sub command time
   {
@@ -146,7 +150,10 @@ void CLicqConsole::TabStatus(char *_szPartialMatch,
     }
   }
   if (nLen == 0)
-    _sTabCompletion.szPartialMatch = 0;
+  {
+    free(szMatch);
+    _sTabCompletion.szPartialMatch = strdup("");
+  }
   else
     _sTabCompletion.szPartialMatch = szMatch;
 }
@@ -172,7 +179,10 @@ void CLicqConsole::TabSet(char *_szPartialMatch,
     }
   }
   if (nLen == 0)
-    _sTabCompletion.szPartialMatch = 0;
+  {
+    free(szMatch);
+    _sTabCompletion.szPartialMatch = strdup("");
+  }
   else
     _sTabCompletion.szPartialMatch = szMatch;
 }
