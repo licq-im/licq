@@ -2345,6 +2345,9 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   if (m_lnEventTag.size() == 0)
     disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
 
+  if (mleSend != NULL)
+    mleSend->setFocus();
+
   if (e->Result() != EVENT_ACKED)
   {
     if (e->Command() == ICQ_CMDxTCP_START && e->Result() != EVENT_CANCELLED &&
