@@ -1634,6 +1634,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         }
         if (tmp != "")
           mleHistory->append(tmp);
+
+        mleHistory->GotoEnd();
       }
     }
     
