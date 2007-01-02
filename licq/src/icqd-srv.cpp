@@ -4919,8 +4919,12 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_EMAILxPAGER:
 	  {
             ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-            bool bIgnore = u->IgnoreList();
-            gUserManager.DropUser(u);
+            bool bIgnore = false;
+            if (u)
+            {
+              bIgnore = u->IgnoreList();
+              gUserManager.DropUser(u);
+            }
 
             if (bIgnore)
             {
