@@ -132,7 +132,7 @@ void GPGKeyManager::slot_edit()
     ( (KeyListItem*)item )->edit();
 }
 
-void GPGKeyManager::slot_doubleClicked( QListViewItem *item, const QPoint &point, int i)
+void GPGKeyManager::slot_doubleClicked( QListViewItem *item, const QPoint& /* point */, int /* i */)
 {
   if (item )
     ( (KeyListItem*)item )->edit();

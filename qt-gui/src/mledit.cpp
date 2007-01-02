@@ -33,7 +33,7 @@
 
 QFont *MLEditWrap::editFont = NULL;
 
-MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool doQuotes, const char *name)
+MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool /* doQuotes */, const char *name)
   : MLEditWrapBase(parent, name), m_fixSetTextNewlines(true)
 {
   setTextFormat(Qt::PlainText);
@@ -104,6 +104,8 @@ void MLEditWrap::setCheckSpellingEnabled(bool check)
 {
 #ifdef MLEDIT_USE_KTEXTEDIT
   MLEditWrapBase::setCheckSpellingEnabled(check);
+#else
+  (void) check; // Remove warning about unused parameter
 #endif
 }
 
@@ -174,13 +176,14 @@ void MLEditWrap::slotToggleAllowTab()
   setTabChangesFocus(!tabChangesFocus());
 }
 
+#ifdef MLEDIT_USE_KTEXTEDIT
 /**
  * @return the number of characters @a c at the end of @a str.
  */
 static unsigned int countCharRev(const QString& str, const QChar c)
 {
   unsigned int count = 0;
-  for (unsigned int pos = str.length() - 1; pos >= 0; pos--)
+  for (int pos = str.length() - 1; pos >= 0; pos--)
   {
     if (str.at(pos) != c)
       break;
@@ -188,6 +191,7 @@ static unsigned int countCharRev(const QString& str, const QChar c)
   }
   return count;
 }
+#endif
 
 /*
  * KTextEdit adds a menu entry for doing spell checking. Unfortunatly KSpell

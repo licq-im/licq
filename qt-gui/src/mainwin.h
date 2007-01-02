@@ -342,8 +342,6 @@ protected slots:
   void callDefaultFunction(QListViewItem *);
   void callOwnerFunction(int, unsigned long = LICQ_PPID);
   void callMsgFunction();
-  void callFileFunction (const char *);
-  void callUrlFunction (const char *);
   void callUserFunction(int);
   void slot_socket(const char *, unsigned long, unsigned long);
   void slot_convoJoin(const char *, unsigned long, unsigned long);

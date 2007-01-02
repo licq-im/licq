@@ -129,7 +129,7 @@ void GPGKeySelect::filterTextChanged ( const QString &str )
   }
 };
 
-void GPGKeySelect::slot_doubleClicked ( QListViewItem *item, const QPoint &pt, int i )
+void GPGKeySelect::slot_doubleClicked ( QListViewItem *item, const QPoint& /* pt */, int /* i */)
 {
   if ( item )
     slot_ok();

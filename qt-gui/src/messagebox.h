@@ -43,7 +43,7 @@ public:
 
 protected:
   virtual void paintCell(QPainter *, const QColorGroup &, int column, int width, int align);
-  virtual void paintFocus(QPainter *, const QColorGroup &cg, const QRect &r) {}
+  virtual void paintFocus(QPainter *, const QColorGroup &, const QRect &) {}
 
   void SetEventLine();
 

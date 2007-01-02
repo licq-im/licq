@@ -1811,7 +1811,7 @@ void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, unsigned lo
   }
 }
 
-void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, unsigned long nConvoId)
+void CMainWindow::slot_convoJoin(const char *szId, unsigned long /* nPPID */, unsigned long nConvoId)
 {
   // Add the user to an ongoing conversation
   QPtrListIterator<UserSendCommon> it(licqUserSend);
@@ -1829,7 +1829,7 @@ void CMainWindow::slot_convoJoin(const char *szId, unsigned long nPPID, unsigned
   
 }
 
-void CMainWindow::slot_convoLeave(const char *szId, unsigned long nPPID, unsigned long nConvoId)
+void CMainWindow::slot_convoLeave(const char *szId, unsigned long /* nPPID */, unsigned long nConvoId)
 {
   // Add the user to an ongoing conversation
   QPtrListIterator<UserSendCommon> it(licqUserSend);
@@ -2461,7 +2461,7 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
     ((CUserViewItem *)i)->ItemPPID());
 }
 
-void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
+void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
 {
   int nAt = (index & 0x00FF0000) >> 16;
   unsigned long nThisPPID = nAt > 0 ? m_lnProtMenu[nAt] : LICQ_PPID;
@@ -2517,20 +2517,6 @@ void CMainWindow::callOwnerFunction(int index, unsigned long nPPID)
     gLog.Warn("%sInternal Error: CMainWindow::callOwnerFunction(): Unknown index (%d).\n",
               L_WARNxSTR, index);
 }
-
-
-void CMainWindow::callUrlFunction (const char *_szUrl)
-{
-//  ICQFunctions *f = callFunction(-1, true);
-//  if (f != NULL) f->SendUrl(_szUrl, "");
-}
-
-void CMainWindow::callFileFunction (const char *_szFile)
-{
-//  ICQFunctions *f = callFunction(-1, true);
-//  if (f != NULL) f->SendFile(_szFile, "");
-}
-
 
 void CMainWindow::callMsgFunction()
 {
@@ -4775,7 +4761,7 @@ void CMainWindow::showAuthUserDlg()
 }
 
 // Wrapper for the true function, necessary to kill a Qt2 warning
-void CMainWindow::showReqAuthDlg(int nId)
+void CMainWindow::showReqAuthDlg(int /* nId */)
 {
   showReqAuthDlg((char *)0, (unsigned long)0);
 }

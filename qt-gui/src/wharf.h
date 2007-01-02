@@ -62,7 +62,7 @@ public:
   virtual ~IconManager();
   // reimplement these two
   virtual void SetDockIconStatus() {};
-  virtual void SetDockIconMsg(unsigned short nNewMsg, unsigned short nSysMsg) {};
+  virtual void SetDockIconMsg(unsigned short, unsigned short) {};
 
 protected:
   CMainWindow *mainwin;

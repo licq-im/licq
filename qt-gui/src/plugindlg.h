@@ -45,7 +45,6 @@ protected slots:
   void slot_standard(int, int);
   void slot_stdConfig(int, int, int, const QPoint &);
   void slot_protocol(int, int);
-  void slot_prtConfig(int, int, int, const QPoint &);
   void slot_details();
   void slot_refresh();
 };

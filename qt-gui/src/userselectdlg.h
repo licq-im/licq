@@ -54,7 +54,6 @@ protected:
   
 protected slots:
   void slot_ok();
-  void slot_cmbSelectUser(const QString &);
 };
 
 #endif

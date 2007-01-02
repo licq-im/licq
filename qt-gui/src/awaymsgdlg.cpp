@@ -239,7 +239,7 @@ void AwayMsgDlg::closeEvent(QCloseEvent *e)
   e->accept();
 }
 
-bool AwayMsgDlg::eventFilter(QObject *obj, QEvent *e)
+bool AwayMsgDlg::eventFilter(QObject* /* obj */, QEvent *e)
 {
   if (e->type() == QEvent::KeyPress ||
       e->type() == QEvent::MouseButtonPress ||

@@ -539,7 +539,7 @@ void SkinBrowserDlg::slot_loadEmoticons(const QString &emoticon)
  *	preview areas to be updated so that it looks nice with structured
  *	backgrounds.
  */
-void SkinBrowserDlg::resizeEvent(QResizeEvent *e)
+void SkinBrowserDlg::resizeEvent(QResizeEvent* /* e */)
 {
 	lblPaintSkin->update();
 	lblPaintIcon->update();
@@ -566,7 +566,7 @@ void SkinBrowserPreviewArea::setPixmapList(QValueList<QPixmap> *_lstPm)
 	this->update();
 }
 
-void SkinBrowserPreviewArea::paintEvent(QPaintEvent *e)
+void SkinBrowserPreviewArea::paintEvent(QPaintEvent* /* e */)
 {
 	QPainter p(this);
 	unsigned short int X = 0;

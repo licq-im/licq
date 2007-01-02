@@ -70,7 +70,7 @@
 /*
   Constructs a WharfIcon widget.
 */
-IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget *parent)
+IconManager::IconManager(CMainWindow *_mainwin, QPopupMenu *_menu, QWidget* /* parent */)
   : QWidget(NULL, "LicqWharf", WType_TopLevel)
 {
   setCaption("LicqWharf");
@@ -694,13 +694,13 @@ void IconManager_KDEStyle::SetDockIconMsg(unsigned short nNewMsg, unsigned short
   repaint();
 }
 
-void IconManager_KDEStyle::timerEvent(QTimerEvent* e)
+void IconManager_KDEStyle::timerEvent(QTimerEvent* /* e */)
 {
   m_timerToggle = !m_timerToggle;
   repaint();
 }
 
-void IconManager_KDEStyle::paintEvent( QPaintEvent *e)
+void IconManager_KDEStyle::paintEvent( QPaintEvent* /* e */)
 {
   QPainter p(this);
 

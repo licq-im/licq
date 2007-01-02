@@ -73,7 +73,6 @@ UserSelectDlg::UserSelectDlg(CICQDaemon *s, QWidget *parent)
 	lay->addStretch();
 	lay->addWidget(frmButtons);
 
-	connect(cmbUser, SIGNAL(activated(const QString &)), SLOT(slot_cmbSelectUser(const QString &)));
 	connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
 	connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
 
@@ -114,11 +113,6 @@ void UserSelectDlg::slot_ok()
 
   close();
 }
-
-void UserSelectDlg::slot_cmbSelectUser(const QString &str)
-{
-} 
-
 
 #include "userselectdlg.moc"
 

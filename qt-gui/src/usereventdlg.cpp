@@ -1826,7 +1826,7 @@ void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
     mainwin->userEventTabDlg->updateConvoLabel(this);
 }
 
-void UserSendCommon::convoLeave(const char *szId, unsigned long _nConvoId)
+void UserSendCommon::convoLeave(const char *szId, unsigned long /* _nConvoId */)
 {
   if (szId == 0) return;
   
@@ -2821,7 +2821,7 @@ void UserSendMsgEvent::sendButton()
 
 
 //-----UserSendMsgEvent::sendDone--------------------------------------------
-bool UserSendMsgEvent::sendDone(ICQEvent *e)
+bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
 {
   mleSend->setText(QString::null);
 
@@ -3513,7 +3513,7 @@ void UserSendSmsEvent::resetSettings()
 }
 
 //-----UserSendSmsEvent::sendDone----------------------------------------------
-bool UserSendSmsEvent::sendDone(ICQEvent *e)
+bool UserSendSmsEvent::sendDone(ICQEvent* /* e */)
 {
   return true;
 }

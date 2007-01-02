@@ -137,7 +137,7 @@ void EditCategoryDlg::ok()
 
 //------------------------------------------------------------------------------
 
-void EditCategoryDlg::checkEnabled(int index)
+void EditCategoryDlg::checkEnabled(int /* index */)
 {
   for (unsigned short i = 0; i < m_nCats; i++)
     leDescr[i]->setEnabled(cbCat[i]->currentItem() != 0);

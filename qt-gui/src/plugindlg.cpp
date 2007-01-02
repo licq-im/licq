@@ -91,8 +91,6 @@ PluginDlg::PluginDlg()
   connect(tblStandard, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
     this, SLOT(slot_stdConfig(int, int, int, const QPoint &)));
   connect(tblProtocol, SIGNAL(valueChanged(int, int)), this, SLOT(slot_protocol(int, int)));
-  connect(tblProtocol, SIGNAL(doubleClicked(int, int, int, const QPoint &)),
-    this, SLOT(slot_prtConfig(int, int, int, const QPoint &)));  
   QPushButton *btnRefresh = new QPushButton(tr("Refresh"), this);
   connect(btnRefresh, SIGNAL(clicked()), this, SLOT(slot_refresh()));
   QPushButton *btnDone = new QPushButton(tr("Done"), this);
@@ -214,7 +212,7 @@ void PluginDlg::slot_details()
 }
 
 
-void PluginDlg::slot_stdConfig(int nRow, int nCol, int, const QPoint &)
+void PluginDlg::slot_stdConfig(int nRow, int /* nCol */, int, const QPoint &)
 {
   PluginsList l;
   PluginsListIter it;
@@ -236,12 +234,6 @@ void PluginDlg::slot_stdConfig(int nRow, int nCol, int, const QPoint &)
   f.sprintf("%s/%s", BASE_DIR, (*it)->ConfigFile());
   (void) new EditFileDlg(f);  
 }
-
-
-void PluginDlg::slot_prtConfig(int nRow, int nCol, int, const QPoint &)
-{
-}
-
 
 void PluginDlg::slot_refresh()
 {

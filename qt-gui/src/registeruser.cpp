@@ -161,7 +161,7 @@ void RegisterUserDlg::accept()
 //  close(true);
 }
 
-void RegisterUserDlg::verifyImage(unsigned long nPPID)
+void RegisterUserDlg::verifyImage(unsigned long /* nPPID */)
 {
   // XXX Use nPPID
   (void) new VerifyDlg(server, this);
