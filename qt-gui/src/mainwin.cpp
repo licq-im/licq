@@ -1455,7 +1455,8 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             s = o->Status();
             gUserManager.DropOwner(nPPID);
           }
-          if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
+          if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT
+             || s == ICQ_STATUS_AWAY || s == ICQ_STATUS_NA)
           {
             bool bCallUserView = false, bCallSendMsg = false;
 
