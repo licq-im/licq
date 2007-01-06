@@ -688,6 +688,10 @@ void CMSN::MSNUnblockUser(char *szUser)
 
 void CMSN::MSNGetDisplayPicture(const string &strUser, const string &strMSNObject)
 {
+  // If we are invisible, this will result in an error, so don't allow it
+  if (m_nStatus & ICQ_STATUS_FxPRIVATE)
+    return;
+
   char *szUser = const_cast<char *>(strUser.c_str());
   CMSNPacket *pGetMSNDP = new CPS_MSNInvitation(szUser,
 						m_szUserName,
