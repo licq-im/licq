@@ -2616,7 +2616,7 @@ void ICQUser::ClearSocketDesc(unsigned char nChannel)
     gLog.Info("%sUnknown channel %u\n", L_WARNxSTR, nChannel);
     return;
   }
-  if (m_nStatusSocketDesc == m_nInfoSocketDesc == m_nNormalSocketDesc == -1)
+  if ((m_nStatusSocketDesc == -1) && (m_nInfoSocketDesc == -1) && (m_nNormalSocketDesc == -1))
     ClearSocketDesc();
   else if (gLicqDaemon != NULL && m_bOnContactList)
     gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_szId, m_nPPID, 0));
