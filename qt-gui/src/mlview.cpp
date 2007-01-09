@@ -87,7 +87,7 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML)
       "(?:(https?|ftp)://(.+(:.+)?@)?|www\\d?\\.)"  // protocoll://[user[:password]@] or www[digit].
       "[a-z0-9.-]+\\.([a-z]+|[0-9]+)"               // hostname.tld or ip address
       "(:[0-9]+)?"                                  // optional port
-      "(/([-\\w%{}|\\\\^~`;/?:@=&$_.+!*'(),#]|\\[|\\])*)?");
+      "(/(([-\\w%{}|\\\\^~`;/?:@=&$_.+!*'(),#]|\\[|\\])*[^.,:;?!\\s])*)?");
     reURL.setMinimal(false);
     reURL.setCaseSensitive(false);
 
