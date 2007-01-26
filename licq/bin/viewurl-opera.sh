@@ -16,4 +16,4 @@ else
   URL=$1
 fi
 
-  ${OPERA} "$URL" &
+${OPERA} -newpage "$URL" &
