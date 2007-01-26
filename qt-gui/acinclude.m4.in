@@ -280,7 +280,7 @@ AC_DEFUN([AC_CHECK_QT_SETUP],
 
   if test "$ac_cv_qt_setup" != "yes"; then
     AC_MSG_ERROR([
-      Sorry, but you need Qt version 3.x or higher to compile the Qt gui plugin.
+      Sorry, but you need Qt version 3.x to compile the Qt gui plugin.
     ])
   fi
 ])
