@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <ctime>
 #include <ctype.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
@@ -2940,6 +2941,48 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
         {
           time_t t = time(NULL);
           strftime(szTemp, 128, "%b %d %R %Z", localtime(&t));
+          sz = szTemp;
+          break;
+        }
+
+        case 'z':
+        {
+          char zone = GetTimezone();
+          if (zone == TIMEZONE_UNKNOWN)
+            strcpy(szTemp, tr("Unknown"));
+          else
+            sprintf(szTemp, tr("GMT%c%i%c0"), (zone > 0 ? '-' : '+'), abs(zone / 2), (zone & 1 ? '3' : '0'));
+          sz = szTemp;
+          break;
+        }
+
+        case 'L':
+        {
+          char zone = GetTimezone();
+          if (zone == TIMEZONE_UNKNOWN)
+            strcpy(szTemp, tr("Unknown"));
+          else
+          {
+            time_t t = time(NULL) - zone*30*60;
+            struct tm ts;
+            strftime(szTemp, 128, "%R", gmtime_r(&t, &ts));
+          }
+
+          sz = szTemp;
+          break;
+        }
+        case 'F':
+        {
+          char zone = GetTimezone();
+          if (zone == TIMEZONE_UNKNOWN)
+            strcpy(szTemp, tr("Unknown"));
+          else
+          {
+            time_t t = time(NULL) - zone*30*60;
+            struct tm ts;
+            strftime(szTemp, 128, "%c", gmtime_r(&t, &ts));
+          }
+
           sz = szTemp;
           break;
         }
