@@ -1854,10 +1854,18 @@ void CUserView::maybeTip(const QPoint& c)
         QString temp(szTemp);
         free(szTemp);
         s += tr("<br><nobr>Idle: ") + temp + tr("</nobr>");
-        tip (r, s);
       }
     }
-   
+
+    if (gMainWindow->m_bPopLocalTime)
+    {
+      char *szTemp;
+      szTemp = u->usprintf("%F");
+      QString temp(szTemp);
+      free(szTemp);
+      s += tr("<br><nobr>Local time: ") + temp + tr("</nobr>");
+    }
+
     if (gMainWindow->m_bPopID)
     {
       char *szTemp;
@@ -1865,7 +1873,6 @@ void CUserView::maybeTip(const QPoint& c)
       QString temp(szTemp);
       free(szTemp);
       s += tr("<br><nobr>ID: ") + temp + tr("</nobr>");
-      tip (r, s);
     }
 
     tip(r, s);

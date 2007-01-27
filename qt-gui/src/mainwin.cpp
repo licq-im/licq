@@ -478,6 +478,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadBool("showPopLastOnelin", m_bPopLastOnline, false);
   licqConf.ReadBool("showPopOnlineSince", m_bPopOnlineSince, false);
   licqConf.ReadBool("showPopIdleTime", m_bPopIdleTime, true);
+  licqConf.ReadBool("showPopLocalTime", m_bPopLocalTime, false);
   licqConf.ReadBool("showPopID", m_bPopID, true);
   
   unsigned short nFlash;
@@ -3597,6 +3598,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteBool("showPopLastOnelin", m_bPopLastOnline);
   licqConf.WriteBool("showPopOnlineSince", m_bPopOnlineSince);
   licqConf.WriteBool("showPopIdleTime", m_bPopIdleTime);
+  licqConf.WriteBool("showPopLocalTime", m_bPopLocalTime);
   licqConf.WriteBool("showPopID", m_bPopID);
 
   licqConf.WriteNum("UseDock", (unsigned short)m_nDockMode);

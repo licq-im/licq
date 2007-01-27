@@ -155,6 +155,7 @@ public:
        m_bPopLastOnline,
        m_bPopOnlineSince,
        m_bPopIdleTime,
+       m_bPopLocalTime,
        m_bPopID,
        m_bShowAllEncodings,
        m_bTabbedChatting,

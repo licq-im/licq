@@ -155,7 +155,7 @@ protected:
    QGroupBox *boxPopWin;
    QCheckBox *popPicture, *popAlias, *popName, *popEmail, *popPhone,
              *popFax, *popCellular, *popIP,
-             *popLastOnline, *popOnlineSince, *popIdleTime, *popID;
+             *popLastOnline, *popOnlineSince, *popIdleTime, *popLocalTime, *popID;
 
   // Message display tab
    QWidget* new_chat_options();
