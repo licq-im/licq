@@ -685,6 +685,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                     "<li><tt>%h - </tt>phone number</li>"
                     "<li><tt>%i - </tt>user ip</li>"
                     "<li><tt>%l - </tt>last name</li>"
+                    "<li><tt>%L - </tt>local time</li>"
                     "<li><tt>%m - </tt># pending messages</li>"
                     "<li><tt>%n - </tt>full name</li>"
                     "<li><tt>%o - </tt>last seen online</li>"

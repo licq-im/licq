@@ -35,6 +35,7 @@
 #include <qstyle.h>
 #include <qimage.h>
 #include <qmime.h>
+#include <qtimer.h>
 
 #include "userbox.moc"
 #include "skin.h"
@@ -1028,6 +1029,11 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
   }
 
   carId = onlId = 0;
+
+  // Redraw once a minute in case there are cells showing timestamps
+  tmrRefresh = new QTimer(this);
+  connect(tmrRefresh, SIGNAL(timeout()), this, SLOT(updateItems()));
+  tmrRefresh->start(60000);
 }
 
 // -----------------------------------------------------------------------------
@@ -1035,6 +1041,7 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
 
 CUserView::~CUserView()
 {
+  tmrRefresh->stop();
   barOnline = barOffline = barNotInList = NULL;
   if (parent() == NULL)
   {
@@ -1624,6 +1631,22 @@ void CUserView::UpdateFloaties()
   }
 }
 
+// -----------------------------------------------------------------------------
+
+void CUserView::updateItems()
+{
+  for (QListViewItemIterator it(firstChild()); it.current() != 0; ++it)
+  {
+    CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
+
+    ICQUser *u = gUserManager.FetchUser(item->ItemId(), item->ItemPPID(), LOCK_R);
+    if (u == 0)
+      continue;
+    item->setGraphics(u);
+    gUserManager.DropUser(u);
+  }
+  triggerUpdate();
+}
 
 // -----------------------------------------------------------------------------
 

@@ -26,6 +26,7 @@
 #include <qtooltip.h>
 #include <qptrvector.h>
 
+class QTimer;
 class ICQUser;
 class CUserView;
 
@@ -154,6 +155,9 @@ public:
   static void UpdateFloaties();
   virtual void setSorting( int column, bool ascending = true);
 
+public slots:
+  void updateItems();
+
 protected:
   int m_nFlashCounter;
   int msgTimerId;
@@ -165,6 +169,7 @@ protected:
   char *onlId;
   unsigned long carPPID;
   unsigned long onlPPID;
+  QTimer *tmrRefresh;
 
   QString m_typeAhead;	    /*! type-ahead buffer  */
   unsigned int m_typePos;   /*! hmmm */
