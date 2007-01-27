@@ -50,6 +50,7 @@
 
 #include "licq_history.h"
 #include "licq_events.h"
+#include "licq_user.h"
 #include "mainwin.h"
 #include "eventdesc.h"
 #include "ewidgets.h"
@@ -650,6 +651,63 @@ void CInfoField::keyPressEvent(QKeyEvent *e)
   QLineEdit::keyPressEvent(e);
 }
 
+// -----------------------------------------------------------------------------
+
+CTimeZoneField::CTimeZoneField(QWidget *parent)
+    : QSpinBox(-24, 24, 1, parent)
+{
+  // The world is round so let timezones wrap
+  setWrapping(true);
+
+  // Plus and minus seems more fitting than up and down
+  setButtonSymbols(QSpinBox::PlusMinus);
+
+  // Force the input to be in format GMT+500, GMT-1030, etc...
+  setPrefix("GMT");
+  setValidator(new QRegExpValidator(QRegExp("^[\\+\\-](1[012]|\\d)[03]0$|^Unknown$"), this));
+
+  // Allow the value to be undefined as well. This will replace the lowest value (-24)
+  setSpecialValueText(tr("Unknown"));
+}
+
+void CTimeZoneField::setData(char data)
+{
+  // The spinbox uses the lowest value to mark the undefined state but the constant is some other value so we need to change it
+  // For all defined values, the sign is inverted
+  setValue(data == TIMEZONE_UNKNOWN ? undefinedValue : static_cast<int>(-data));
+}
+
+char CTimeZoneField::data()
+{
+  int v = value();
+  if (v == undefinedValue)
+    return TIMEZONE_UNKNOWN;
+  return static_cast<char>(-v);
+}
+
+QString CTimeZoneField::mapValueToText(int v)
+{
+  // The internal value in the spinbox is 30min intervals so convert it to something more readable
+  return QString("%1%2%3").arg(v < 0 ? "-" : "+").arg(abs(v) / 2).arg(v % 2 ? "30" : "00");
+}
+
+int CTimeZoneField::mapTextToValue(bool *ok)
+{
+  // The user entered something so now we must try and convert it back to the internal int
+  QRegExp rx("^(\\+|-)(\\d+)(0|3)0$");
+  if (rx.search(cleanText()) == -1)
+  {
+    *ok = false;
+    return 0;
+  }
+  int ret = rx.cap(2).toInt() * 2;
+  if (rx.cap(3) == "3")
+    ret++;
+  if (rx.cap(1) == "-")
+    ret = -ret;
+  *ok = true;
+  return ret;
+}
 
 // -----------------------------------------------------------------------------
 
@@ -657,7 +715,7 @@ CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
   : MLView(parent, name)
 {
   setTextFormat(RichText);
-};
+}
 
 // -----------------------------------------------------------------------------
 

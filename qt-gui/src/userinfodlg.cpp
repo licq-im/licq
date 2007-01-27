@@ -307,8 +307,8 @@ void UserInfoDlg::CreateGeneralInfo()
   nfoStatus = new CInfoField(p, true);
   lay->addWidget(nfoStatus, CR, 1);
   lay->addWidget(new QLabel(tr("Timezone:"), p), CR, 3);
-  nfoTime = new CInfoField(p, true);
-  lay->addWidget(nfoTime, CR, 4);
+  tznZone = new CTimeZoneField(p);
+  lay->addWidget(tznZone, CR, 4);
 
   lay->addWidget(new QLabel(tr("Name:"), p), ++CR, 0);
   nfoFirstName = new CInfoField(p, false);
@@ -413,17 +413,13 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
     ip.append(QString(":%1").arg(u->PortStr(buf)));
   }
   nfoIp->setData(ip);
-  if (u->GetTimezone() == TIMEZONE_UNKNOWN)
-    nfoTime->setText(tr("Unknown"));
-  else
-  {
-    nfoTime->setText(tr("GMT%1%1%1")
-       .arg(u->GetTimezone() > 0 ? "-" : "+")
-       .arg(abs(u->GetTimezone() / 2)).arg(u->GetTimezone() % 2 ? "30" : "00") );
-  }
+  tznZone->setData(u->GetTimezone());
   nfoStatus->setData(u->StatusStr());
   if (m_bOwner)
   {
+    // Owner timezone is not editable, it is taken from system timezone instead
+    tznZone->setEnabled(false);
+
     const SCountry *c = GetCountryByCode(u->GetCountryCode());
     if (c == NULL)
       cmbCountry->setCurrentItem(0);
@@ -490,6 +486,7 @@ void UserInfoDlg::SaveGeneralInfo()
     unsigned short i = cmbCountry->currentItem();
     u->SetCountryCode(GetCountryByIndex(i)->nCode);
   }
+  u->SetTimezone(tznZone->data());
 
   u->SetEnableSave(true);
   u->SaveGeneralInfo();

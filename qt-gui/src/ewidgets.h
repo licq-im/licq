@@ -33,6 +33,7 @@
 #include <qsize.h>
 #include <qlistview.h>
 #include <qstringlist.h>
+#include <qspinbox.h>
 
 #include "mlview.h"
 #include "licq_message.h"
@@ -179,6 +180,23 @@ protected:
   QColor baseRO, baseRW;
 };
 
+/* ----------------------------------------------------------------------------- */
+
+/**
+ * Input field for timezones.
+ */
+class CTimeZoneField : public QSpinBox
+{
+public:
+  CTimeZoneField(QWidget *parent);
+  void setData(char data);
+  char data();
+protected:
+  QString mapValueToText(int v);
+  int mapTextToValue(bool* ok);
+
+  static const int undefinedValue = -24;
+};
 
 /* ----------------------------------------------------------------------------- */
 

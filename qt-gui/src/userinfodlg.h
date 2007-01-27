@@ -103,10 +103,11 @@ protected:
   CInfoField *nfoFirstName, *nfoLastName, *nfoEmailPrimary, *nfoEmailSecondary, *nfoEmailOld,
              *nfoAlias, *nfoIp, *nfoUin, *nfoCity, *nfoState,
              *nfoZipCode, *nfoAddress, *nfoCountry, *nfoFax, *nfoCellular,
-             *nfoPhone, *nfoTime, *nfoStatus;
+             *nfoPhone, *nfoStatus;
   QCheckBox *chkKeepAliasOnUpdate;
   CEComboBox *cmbCountry;
   QLabel *lblAuth, *lblICQHomepage;
+  CTimeZoneField *tznZone;
 
   // More info
   void CreateMoreInfo();
