@@ -1694,7 +1694,7 @@ QWidget* OptionsDlg::new_chat_options()
   tabViewer->insertTab(msgChatViewer, "Marge");
 
   msgHistViewer = new CMessageViewWidget(0, gMainWindow, tabViewer, 0, true);
-  tabViewer->insertTab(msgHistViewer, "History");
+  tabViewer->insertTab(msgHistViewer, tr("History"));
 
   lay->activate();
 
