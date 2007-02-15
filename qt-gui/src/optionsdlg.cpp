@@ -249,6 +249,7 @@ void OptionsDlg::SetupOptions()
   chkMainWinSticky->setChecked(mainwin->m_bMainWinSticky);
   chkMsgWinSticky->setChecked(mainwin->m_bMsgWinSticky);
   chkSingleLineChatMode->setChecked(mainwin->m_bSingleLineChatMode);
+  chkUseDoubleReturn->setChecked(MLEditWrap::useDoubleReturn);
   popPicture->setChecked(mainwin->m_bPopPicture);
   popAlias->setChecked(mainwin->m_bPopAlias);
   popName->setChecked(mainwin->m_bPopName);
@@ -545,6 +546,7 @@ void OptionsDlg::ApplyOptions()
   mainwin->changeMainWinSticky(chkMainWinSticky->isChecked());
   mainwin->m_bMsgWinSticky = chkMsgWinSticky->isChecked();
   mainwin->m_bSingleLineChatMode = chkSingleLineChatMode->isChecked();
+  MLEditWrap::useDoubleReturn = chkUseDoubleReturn->isChecked();
 
   mainwin->m_bPopPicture = popPicture->isChecked();
   mainwin->m_bPopAlias = popAlias->isChecked();
@@ -830,6 +832,10 @@ QWidget* OptionsDlg::new_appearance_options()
   chkSingleLineChatMode = new QCheckBox(tr("Single line chat mode"), boxMainWin);
   QWhatsThis::add(chkSingleLineChatMode, tr("In single line chat mode you send messages with Enter "
     "and insert new lines with Ctrl+Enter, opposite of the normal mode"));
+
+  chkUseDoubleReturn = new QCheckBox(tr("Use double return"), boxMainWin);
+  QWhatsThis::add(chkUseDoubleReturn, tr("Hitting Return twice will be used instead of Ctrl+Return "
+    "to send messages and close input dialogs. Multiple new lines can be inserted with Ctrl+Return."));
 
   chkMsgChatView = new QCheckBox(tr("Chatmode Messageview"), boxMainWin);
   QWhatsThis::add(chkMsgChatView, tr("Show the current chat history in Send Window"));

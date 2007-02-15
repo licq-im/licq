@@ -67,6 +67,7 @@ public:
   bool checkSpellingEnabled() const;
 
   static QFont *editFont;
+  static bool useDoubleReturn;
 
 protected:
   virtual void keyPressEvent(QKeyEvent *e);
@@ -84,6 +85,7 @@ signals:
 
 private:
   bool m_fixSetTextNewlines;
+  bool m_lastKeyWasReturn;
 };
 
 #endif

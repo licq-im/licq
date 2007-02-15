@@ -32,9 +32,12 @@
 
 
 QFont *MLEditWrap::editFont = NULL;
+bool MLEditWrap::useDoubleReturn = false;
 
 MLEditWrap::MLEditWrap (bool wordWrap, QWidget* parent, bool /* doQuotes */, const char *name)
-  : MLEditWrapBase(parent, name), m_fixSetTextNewlines(true)
+  : MLEditWrapBase(parent, name),
+    m_fixSetTextNewlines(true),
+    m_lastKeyWasReturn(false)
 {
   setTextFormat(Qt::PlainText);
   setTabChangesFocus(true);
@@ -123,6 +126,10 @@ void MLEditWrap::keyPressEvent( QKeyEvent *e )
   const bool isShift   = e->state() & ShiftButton;
   const bool isControl = e->state() & ControlButton;
 
+  // Get flag from last time and reset it before any possible returns
+  bool lastKeyWasReturn = m_lastKeyWasReturn;
+  m_lastKeyWasReturn = false;
+
   if (isShift && e->key() == Key_Insert)
     return paste();
 
@@ -149,12 +156,38 @@ void MLEditWrap::keyPressEvent( QKeyEvent *e )
       break;
     case Key_Return:
     case Key_Enter:
-      emit signal_CtrlEnterPressed();
+      if (useDoubleReturn)
+        insert("\n");
+      else
+        emit signal_CtrlEnterPressed();
       break;
     default:
       MLEditWrapBase::keyPressEvent(e);
     }
     return;
+  }
+
+  if ((e->state() & Qt::KeyButtonMask) == 0)
+  {
+    switch (e->key())
+    {
+      case Key_Return:
+      case Key_Enter:
+        if (lastKeyWasReturn && useDoubleReturn)
+        {
+          // Return pressed twice, remove the previous line break and emit signal
+          moveCursor(QTextEdit::MoveBackward, true);
+          del();
+          emit signal_CtrlEnterPressed();
+          return;
+        }
+        else
+        {
+          // Return pressed once
+          m_lastKeyWasReturn = true;
+        }
+        break;
+    }
   }
 
   MLEditWrapBase::keyPressEvent(e);

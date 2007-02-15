@@ -408,6 +408,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     f.fromString(szTemp);
   delete MLEditWrap::editFont;
   MLEditWrap::editFont = new QFont(f);
+  licqConf.ReadBool("UseDoubleReturn", MLEditWrap::useDoubleReturn, false);
 
   licqConf.ReadBool("GridLines", m_bGridLines, false);
   licqConf.ReadBool("FontStyles", m_bFontStyles, true);
@@ -3534,6 +3535,7 @@ void CMainWindow::saveOptions()
                     (MLEditWrap::editFont == NULL ||
                      *MLEditWrap::editFont == defaultFont) ?
                      "default" : MLEditWrap::editFont->toString().latin1());
+  licqConf.WriteBool("UseDoubleReturn", MLEditWrap::useDoubleReturn);
   licqConf.WriteBool("GridLines", m_bGridLines);
   licqConf.WriteBool("FontStyles", m_bFontStyles);
   licqConf.WriteNum("Flash", (unsigned short)m_nFlash);
