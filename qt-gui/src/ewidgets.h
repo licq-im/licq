@@ -187,6 +187,7 @@ protected:
  */
 class CTimeZoneField : public QSpinBox
 {
+  Q_OBJECT
 public:
   CTimeZoneField(QWidget *parent);
   void setData(char data);
