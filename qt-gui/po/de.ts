@@ -3389,7 +3389,7 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
     </message>
     <message>
         <source>OnEvent in N/A</source>
-        <translation>Aktiviert bei Status: &apos;Nicht erreichbar&apos;</translation>
+        <translation>Aktiviert bei Status: &apos;Nicht verfügbar&apos;</translation>
     </message>
     <message>
         <source>History Sent:</source>
@@ -3686,7 +3686,7 @@ Benutzer immer anzeigen</translation>
     </message>
     <message>
         <source>Perform OnEvent command in not available mode</source>
-        <translation>Kommando auch bei Status &apos;nicht erreichbar&apos; ausführen</translation>
+        <translation>Kommando auch bei Status &apos;nicht verfügbar&apos; ausführen</translation>
     </message>
     <message>
         <source>Occupied</source>
@@ -4269,6 +4269,14 @@ Bei einer Änderung ist ein Neustart erforderlich!
     <message>
         <source>History</source>
         <translation>Verlauf</translation>
+    </message>
+    <message>
+        <source>Use double return</source>
+        <translation>Doppeltes Enter benutzen</translation>
+    </message>
+    <message>
+        <source>Hitting Return twice will be used instead of Ctrl+Return to send messages and close input dialogs. Multiple new lines can be inserted with Ctrl+Return.</source>
+        <translation>Statt Strg+Enter wird zweifaches Drücken der Entertaste genutzt, um das Senden einer Nachricht abzuschließen. Neue Zeilen werden mit Strg+Enter eingefügt.</translation>
     </message>
 </context>
 <context>
