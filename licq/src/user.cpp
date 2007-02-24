@@ -1840,6 +1840,7 @@ ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, bool _bTempUser)
 void ICQUser::AddToContactList()
 {
   m_bOnContactList = m_bEnableSave = true;
+  m_bNotInList = false;
 
   // Check for old history file
   if (access(m_fHistory.FileName(), F_OK) == -1)
@@ -2354,6 +2355,41 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_szUinString[12] = '\0';
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
+}
+
+void ICQUser::SetPermanent()
+{
+  // Set the flags and check for history file to recover
+  AddToContactList();
+
+  // Create the user file
+  char szFilename[MAX_FILENAME_LEN];
+  char *p = PPIDSTRING(m_nPPID);
+  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
+         m_szId, p);
+  delete [] p;
+  szFilename[MAX_FILENAME_LEN - 1] = '\0';
+  m_fConf.SetFileName(szFilename);
+  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
+
+  // Save all the info now
+  SaveLicqInfo();
+  SaveGeneralInfo();
+  SaveMoreInfo();
+  SaveHomepageInfo();
+  SaveWorkInfo();
+  SaveAboutInfo();
+  SaveInterestsInfo();
+  SaveBackgroundsInfo();
+  SaveOrganizationsInfo();
+  SavePhoneBookInfo();
+  SavePictureInfo();
+  SaveExtInfo();
+
+  // Notify the plugins of the change
+  // Send a USER_BASIC, don't want a new signal just for this.
+  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
+        USER_BASIC, m_szId, m_nPPID, 0));
 }
 
 //-----ICQUser::SetDefaults-----------------------------------------------------

@@ -667,6 +667,7 @@ public:
     free(m_szClientInfo);
     m_szClientInfo = (s ? strdup(s) : NULL);
   }
+  void SetPermanent();
 
   // Dynamic info fields for protocol plugins
   bool SetPPField(const string &, const string &);
