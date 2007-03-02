@@ -116,7 +116,8 @@ protected:
                  *s_cOffline,
                  *s_cNew,
                  *s_cBack,
-                 *s_cGridLines;
+                 *s_cGridLines,
+                 *s_cGroupBack;
 
 private:
   enum alignment { LEFT = 1, RIGHT = 2, CENTER = 4 };
@@ -141,7 +142,7 @@ public:
   CUserViewItem *firstChild() const { return (CUserViewItem *)QListView::firstChild(); }
 
   void setColors(char *_sOnline, char *_sAway, char *_sOffline,
-                 char *_sNew, char *_sBack, char *_sGridLines);
+                 char *_sNew, char *_sBack, char *_sGridLines, char *_sGroupBack);
   void setShowHeader(bool);
   void AnimationAutoResponseCheck(unsigned long uin);
   void AnimationOnline(unsigned long uin);

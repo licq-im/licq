@@ -64,7 +64,8 @@ QColor  *CUserViewItem::s_cOnline = NULL,
         *CUserViewItem::s_cOffline = NULL,
         *CUserViewItem::s_cNew = NULL,
         *CUserViewItem::s_cBack = NULL,
-        *CUserViewItem::s_cGridLines = NULL;
+        *CUserViewItem::s_cGridLines = NULL,
+        *CUserViewItem::s_cGroupBack = 0;
 
 //-----CUserViewItem::constructor-----------------------------------------------
 CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
@@ -144,7 +145,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_szAlias = 0;
   m_nPPID =0;
   m_pIcon = NULL;
-  m_cBack = s_cBack;
+  m_cBack = s_cGroupBack;
   m_cFore = s_cGridLines;
   m_bItalic = m_bStrike = false;
   m_nWeight = QFont::Bold;
@@ -1089,7 +1090,7 @@ void CUserView::clear()
 
 //-----CUserView::setColors-----------------------------------------------------
 void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
-                          char *_sNew, char *_sBack, char *_sGridLines)
+                          char *_sNew, char *_sBack, char *_sGridLines, char *_sGroupBack)
 {
    if (CUserViewItem::s_cOnline == NULL) CUserViewItem::s_cOnline = new QColor;
    if (CUserViewItem::s_cAway == NULL) CUserViewItem::s_cAway = new QColor;
@@ -1097,12 +1098,14 @@ void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
    if (CUserViewItem::s_cNew == NULL) CUserViewItem::s_cNew = new QColor;
    if (CUserViewItem::s_cBack == NULL) CUserViewItem::s_cBack = new QColor;
    if (CUserViewItem::s_cGridLines == NULL) CUserViewItem::s_cGridLines = new QColor;
+  if (CUserViewItem::s_cGroupBack == 0) CUserViewItem::s_cGroupBack = new QColor;
 
    CUserViewItem::s_cOnline->setNamedColor(_sOnline);
    CUserViewItem::s_cAway->setNamedColor(_sAway);
    CUserViewItem::s_cOffline->setNamedColor(_sOffline);
    CUserViewItem::s_cNew->setNamedColor(_sNew);
    CUserViewItem::s_cGridLines->setNamedColor(_sGridLines);
+  CUserViewItem::s_cGroupBack->setNamedColor(_sGroupBack);
    if (gMainWindow->m_bSystemBackground)
    {
      *CUserViewItem::s_cBack =
@@ -1110,10 +1113,7 @@ void CUserView::setColors(char *_sOnline, char *_sAway, char *_sOffline,
    }
    else
    {
-     if (_sBack != NULL)
-       CUserViewItem::s_cBack->setNamedColor(_sBack);
-     else
-       CUserViewItem::s_cBack->setNamedColor("grey76");
+    CUserViewItem::s_cBack->setNamedColor(_sBack);
 
      QPalette pal(QListView::palette());
      pal.setColor(QColorGroup::Base, *CUserViewItem::s_cBack);

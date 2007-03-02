@@ -1005,7 +1005,7 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
     userView->QListView::setPalette(skin->palette(this));
     userView->setColors(skin->colors.online, skin->colors.away,
                         skin->colors.offline, skin->colors.newuser,
-                        skin->colors.background, skin->colors.gridlines);
+                        skin->colors.background, skin->colors.gridlines, skin->colors.groupBack);
     // Update all the floaties
     CUserView::UpdateFloaties();
 
@@ -1047,7 +1047,7 @@ void CMainWindow::CreateUserView()
   userView = new CUserView(mnuUser, this);
   userView->QListView::setPalette(skin->palette(this));
   userView->setColors(skin->colors.online, skin->colors.away, skin->colors.offline,
-                      skin->colors.newuser, skin->colors.background, skin->colors.gridlines);
+                      skin->colors.newuser, skin->colors.background, skin->colors.gridlines, skin->colors.groupBack);
   connect (userView, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
 }
 

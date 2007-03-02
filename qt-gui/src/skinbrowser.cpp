@@ -705,11 +705,12 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	char * c_newuser    = mainwin->skin->colors.newuser;
 	char * c_background = mainwin->skin->colors.background;
 	char * c_gridlines  = mainwin->skin->colors.gridlines;
+  char* c_groupBack     = mainwin->skin->colors.groupBack;
 
   userView.QListView::setPalette(skin->palette(this));
-	userView.setColors(skin->colors.online, skin->colors.away,
-											skin->colors.offline, skin->colors.newuser,
-											skin->colors.background, skin->colors.gridlines);
+  userView.setColors(skin->colors.online, skin->colors.away,
+      skin->colors.offline, skin->colors.newuser,
+      skin->colors.background, skin->colors.gridlines, skin->colors.groupBack);
 	if (skin->frame.transparent)
 	{
 	userView.setBackgroundOrigin(w.ParentOrigin);
@@ -722,7 +723,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	ret.convertFromImage(QImage(tmp.convertToImage().smoothScale(75, MAX_HEIGHT_SKIN)));
 
 	// Reset origin colors
-	userView.setColors(c_online, c_away, c_offline, c_newuser, c_background, c_gridlines);
+  userView.setColors(c_online, c_away, c_offline, c_newuser, c_background, c_gridlines, c_groupBack);
 
 	delete btnSystem;
 	delete lblMsg;

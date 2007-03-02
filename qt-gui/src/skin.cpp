@@ -253,7 +253,7 @@ CSkin::CSkin(const char *skinname)
      colors.offline = strdup(temp);
    skinFile.ReadStr("colors.background", temp, "default");
    if (strncmp(temp, "default", 7) == 0)
-     colors.background = NULL;//strdup("grey76");
+    colors.background = strdup("grey76");
    else
      colors.background = strdup(temp);
    skinFile.ReadStr("colors.gridlines", temp, "default");
@@ -276,6 +276,12 @@ CSkin::CSkin(const char *skinname)
      colors.btnTxt = NULL;
    else
      colors.btnTxt = strdup(temp);
+
+  skinFile.ReadStr("colors.groupBack", temp, "default");
+  if (strncmp(temp, "default", 7) == 0)
+    colors.groupBack = strdup(colors.background);
+  else
+    colors.groupBack = strdup(temp);
 }
 
 
@@ -306,6 +312,7 @@ CSkin::~CSkin(void)
   free (colors.newuser);
   free (colors.scrollbar);
   free (colors.btnTxt);
+  free(colors.groupBack);
 }
 
 
@@ -365,7 +372,7 @@ void CSkin::SetDefaultValues()
   colors.gridlines = strdup("black");
   colors.scrollbar = NULL;
   colors.btnTxt = NULL;
-
+  colors.groupBack = strdup(colors.background);
 }
 
 
