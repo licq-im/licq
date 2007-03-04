@@ -238,9 +238,9 @@ bool CLicq::Init(int argc, char **argv)
   {
     int i = 0;
 #ifdef __GLIBC__
-    while( (i = getopt(argc, argv, "--hd:b:p:Io:fc")) > 0)
+    while( (i = getopt(argc, argv, "--hd:b:p:Io:fcv")) > 0)
 #else
-    while( (i = getopt(argc, argv, "hd:b:p:Io:fc")) > 0)
+    while( (i = getopt(argc, argv, "hd:b:p:Io:fcv")) > 0)
 #endif
     {
       switch (i)
@@ -272,6 +272,10 @@ bool CLicq::Init(int argc, char **argv)
         break;
       case 'f':  // fork
         bFork = true;
+        break;
+      case 'v':  // show version
+        printf(tr("%s version %s, compiled on %s\n"), PACKAGE, VERSION, __DATE__);
+        return false;
         break;
       }
     }
