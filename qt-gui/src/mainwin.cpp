@@ -548,6 +548,13 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     d.mkdir(QString("%1/%2").arg(BASE_DIR).arg(QTGUI_DIR));
   }
 
+  // all settings relating to localization
+  licqConf.SetSection("locale");
+  licqConf.ReadStr("DefaultEncoding", szTemp, "");
+  m_DefaultEncoding = QString::fromLatin1(szTemp);
+  uc_DefaultEncoding = &m_DefaultEncoding;
+  licqConf.ReadBool("ShowAllEncodings", m_bShowAllEncodings, false);
+
   // Load the icons
   licqConf.SetSection("appearance");
   licqConf.SetFlags(0);
@@ -719,13 +726,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
 	}
 #endif
   }
-
-   // all settings relating to localization
-   licqConf.SetSection("locale");
-   licqConf.ReadStr("DefaultEncoding", szTemp, "");
-   m_DefaultEncoding = QString::fromLatin1(szTemp);
-   uc_DefaultEncoding = &m_DefaultEncoding;
-   licqConf.ReadBool("ShowAllEncodings", m_bShowAllEncodings, false);
 
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 
