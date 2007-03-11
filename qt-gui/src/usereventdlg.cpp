@@ -248,6 +248,7 @@ UserEventTabDlg::UserEventTabDlg(CMainWindow *mainwin, QWidget *parent, const ch
   lay->addWidget(tabw);
   connect(tabw, SIGNAL(currentChanged(QWidget *)),
           this, SLOT(slot_currentChanged(QWidget *)));
+  connect(tabw, SIGNAL(middleClick(QWidget*)), this, SLOT(removeTab(QWidget*)));
 }
 
 UserEventTabDlg::~UserEventTabDlg()

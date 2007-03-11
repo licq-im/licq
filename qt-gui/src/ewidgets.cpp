@@ -540,13 +540,43 @@ void CETabBar::wheelEvent(QWheelEvent *e)
   else
     setNextTab();
 }
-         
+
+void CETabBar::mousePressEvent(QMouseEvent* e)
+{
+  if ((e->button() & Qt::MouseButtonMask) == Qt::MidButton)
+  {
+    QTab* tab = selectTab(e->pos());
+    if (tab != 0)
+      clickedTab = indexOf(tab->identifier());
+  }
+
+  QTabBar::mousePressEvent(e);
+}
+
+void CETabBar::mouseReleaseEvent(QMouseEvent* e)
+{
+  if ((e->button() & Qt::MouseButtonMask) == Qt::MidButton)
+  {
+    QTab* tab = selectTab(e->pos());
+    if (tab != 0)
+    {
+      int t = indexOf(tab->identifier());
+      if (t == clickedTab)
+        emit middleClick(t);
+    }
+  }
+
+  clickedTab = -1;
+  QTabBar::mouseReleaseEvent(e);
+}
 
 //CETabWidget
 CETabWidget::CETabWidget(QWidget *parent, const char *name, WFlags f)
   : QTabWidget(parent, name, f)
 {
-  setTabBar(new CETabBar(this, "tabbar"));
+  CETabBar* tb = new CETabBar(this, "tabbar");
+  setTabBar(tb);
+  connect(tb, SIGNAL(middleClick(int)), this, SLOT(slot_middleClick(int)));
 }
 
 void CETabWidget::setTabColor(QWidget *w, const QColor &color)
@@ -587,6 +617,13 @@ void CETabWidget::wheelEvent(QWheelEvent *e)
     setPreviousPage();
   else
     setNextPage();
+}
+
+void CETabWidget::slot_middleClick(int t)
+{
+  QWidget* p = page(t);
+  if (p)
+    emit middleClick(p);
 }
 
 //-----CInfoField::constructor--------------------------------------------------

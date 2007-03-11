@@ -129,13 +129,19 @@ public:
 
   void setPreviousTab();
   void setNextTab();
-  
+
+signals:
+  void middleClick(int t);
+
 protected:
   virtual void paintLabel(QPainter *, const QRect &, QTab *, bool) const;
   virtual void wheelEvent(QWheelEvent *e);
-  
+  virtual void mousePressEvent(QMouseEvent* e);
+  virtual void mouseReleaseEvent(QMouseEvent* e);
+
 private:
   QMap<int, QColor> mTabColors;
+  int clickedTab;
 };
 
 class CETabWidget : public QTabWidget
@@ -148,8 +154,14 @@ public:
   void setPreviousPage();
   void setNextPage();
 
+signals:
+  void middleClick(QWidget *p);
+
 protected:
   virtual void wheelEvent(QWheelEvent *e);
+
+protected slots:
+  void slot_middleClick(int t);
 };
 
 /* ----------------------------------------------------------------------------- */

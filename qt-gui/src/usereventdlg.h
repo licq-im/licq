@@ -94,7 +94,6 @@ public:
   ~UserEventTabDlg();
 
   void addTab(UserEventCommon *tab, int index = -1);
-  void removeTab(QWidget *tab);
   void selectTab(QWidget *tab);
   void replaceTab(QWidget *oldTab, UserEventCommon *newTab);
   bool tabIsSelected(QWidget *tab);
@@ -119,6 +118,7 @@ public slots:
   void slot_currentChanged(QWidget *tab);
   void moveLeft();
   void moveRight();
+  void removeTab(QWidget* tab);
 
 protected slots:
   void setMsgWinSticky();
