@@ -4076,7 +4076,7 @@ Bei einer Änderung ist ein Neustart erforderlich!
     </message>
     <message>
         <source>Single line chat mode</source>
-        <translation>Einzeiliger Chat-Mode</translation>
+        <translation>Nachricht mit einfachem Enter senden</translation>
     </message>
     <message>
         <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
