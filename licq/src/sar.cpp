@@ -11,6 +11,7 @@
 #endif
 #include <string.h>
 #include <sys/stat.h>
+#include <stdlib.h>
 
 // Localization
 #include "gettext.h"

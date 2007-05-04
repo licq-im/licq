@@ -1,6 +1,7 @@
 #ifndef USER_H
 #define USER_H
 
+#include <cstdlib>
 #include <vector>
 #include <list>
 #include <map>

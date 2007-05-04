@@ -23,6 +23,7 @@ extern int errno;
 #endif
 #include <string.h>
 #include <iconv.h>
+#include <stdlib.h>
 
 #include "licq_translate.h"
 #include "licq_log.h"

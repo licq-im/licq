@@ -13,6 +13,8 @@
 #include <signal.h>
 #include <stdlib.h>
 
+#include <locale>
+
 #include "licq.h"
 #include "licq_sighandler.h"
 
