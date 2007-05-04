@@ -4018,7 +4018,7 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
   m_nWebAware = bWebAware ? 1 : 0;
 
 
-  int packetSize = 2+2+2+4+2+2+2+4;
+  int packetSize = 2+2+2+4+2+2+2+4+6;
   m_nSize += packetSize;
   InitBuffer();
 
@@ -4030,10 +4030,14 @@ CPU_Meta_SetSecurityInfo::CPU_Meta_SetSecurityInfo(
   buffer->PackUnsignedShortBE(0xd007); // type
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); // subtype
-  buffer->PackChar(m_nAuthorization);
+  buffer->PackUnsignedShortBE(0x0C03);
+  buffer->PackUnsignedShortBE(0x0100);
   buffer->PackChar(m_nWebAware);
+  buffer->PackChar(0xF8);
+  buffer->PackChar(2);
   buffer->PackChar(1);
   buffer->PackChar(0);
+  buffer->PackChar(m_nAuthorization);
 }
 
 

@@ -1087,6 +1087,21 @@ void CICQDaemon::icqRequestAuth(unsigned long _nUin, const char *_szMessage)
 //-----icqSetSecurityInfo----------------------------------------------------
 unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware)
 {
+  // Since ICQ5.1, the status change packet is sent first, which means it is
+  // assumed that the set security info packet works.
+  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  o->SetEnableSave(false);
+  o->SetAuthorization(bAuthorize);
+  o->SetWebAware(bWebAware);
+  o->SetHideIp(bHideIp);
+  o->SetEnableSave(true);
+  o->SaveLicqInfo();
+  unsigned short s = o->StatusFull();
+  gUserManager.DropOwner();
+  // Set status to ensure the status flags are set
+  icqSetStatus(s);
+
+  // Now send the set security info packet
     CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
     gLog.Info(tr("%sUpdating security info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
     ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
@@ -4986,6 +5001,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
     case 0x07DA:
+    case 0x07D0: // XXX Now I see this one, huh?
     {
       unsigned short nSubtype;
       unsigned char nResult;
@@ -5014,23 +5030,6 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         szType = strdup(tr("Security info"));
         pEvent = DoneServerEvent(nSubSequence,
           nResult == META_SUCCESS ? EVENT_SUCCESS : EVENT_FAILED);
-
-        if (pEvent != NULL && nResult == META_SUCCESS)
-        {
-          CPU_Meta_SetSecurityInfo *p = (CPU_Meta_SetSecurityInfo *)pEvent->m_pPacket;
-          ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
-          o->SetEnableSave(false);
-          o->SetAuthorization(p->Authorization());
-          o->SetWebAware(p->WebAware());
-          o->SetHideIp(p->HideIp());
-          o->SetEnableSave(true);
-          o->SaveLicqInfo();
-          unsigned short s = o->StatusFull();
-          gUserManager.DropOwner();
-
-          // Set status to ensure the status flags are set
-          icqSetStatus(s);
-        }
       }
       else if (nSubtype == ICQ_CMDxMETA_GENERALxINFOxRSP)
       {
