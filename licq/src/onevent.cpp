@@ -108,9 +108,11 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
     {
       char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
       sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
-      free(szFullParam);
       system(szCmd);
     }
+
+    if (szFullParam)
+      free(szFullParam);
   }
   pthread_mutex_unlock(&mutex);
 }

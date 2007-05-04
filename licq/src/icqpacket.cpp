@@ -1150,7 +1150,7 @@ CPU_GenericUinList::CPU_GenericUinList(UserStringList &users, unsigned short fam
   char *contacts = new char[nLen+1];
   contacts[0] = '\0';
 
-  for (it = users.begin(); it != users.end(); it++) {
+  for (it = users.begin(); it != users.end(); ++it) {
     len[0] = strlen(*it);
     strcat(contacts, len);
     strcat(contacts, *it);
@@ -1161,6 +1161,8 @@ CPU_GenericUinList::CPU_GenericUinList(UserStringList &users, unsigned short fam
   InitBuffer();
 
   buffer->Pack(contacts, strlen(contacts));
+
+  delete [] contacts;
 }
 
 CPU_GenericUinList::CPU_GenericUinList(const char *szId, unsigned short family, unsigned short Subtype)

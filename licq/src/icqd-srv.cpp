@@ -3976,6 +3976,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     gUserManager.DropUser(u);
     PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
                                     LICQ_PPID));
+    delete [] szId;
     break;
   }
 	default:
