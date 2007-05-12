@@ -629,7 +629,7 @@ public:
   void SetVisibleSID(unsigned short s){ m_nSID[VIS_SID] = s; }
   void SetGSID(unsigned short s)      { m_nGSID = s; }
   void SetEnableSave(bool s)          { if (m_bOnContactList) m_bEnableSave = s; }
-  void SetSendServer(bool s)          { m_bSendServer = s; }
+  void SetSendServer(bool s)          { m_bSendServer = s; SaveLicqInfo(); }
   void SetSendLevel(unsigned short s) { m_nSendLevel = s; }
   void SetSequence(unsigned short s)  { m_nSequence = s; }
   void SetAutoResponse(const char *s) { SetString(&m_szAutoResponse, s); }

@@ -2046,6 +2046,7 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadBool("UseGPG", m_bUseGPG, false );
   m_fConf.ReadStr("GPGKey", szTemp, "" );
   SetString( &m_szGPGKey, szTemp );
+  m_fConf.ReadBool("SendServer", m_bSendServer, false);
   m_fConf.ReadNum("PPFieldCount", nPPFieldCount, 0);
   for (int i = 0; i < nPPFieldCount; i++)
   {
@@ -3527,6 +3528,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("SharedFilesStatus", m_nSharedFilesStatus);
    m_fConf.WriteBool("UseGPG", m_bUseGPG );
    m_fConf.WriteStr("GPGKey", m_szGPGKey );
+   m_fConf.WriteBool("SendServer", m_bSendServer);
    m_fConf.WriteNum("PPFieldCount", (unsigned short)m_mPPFields.size());
    
    std::map<string,string>::iterator iter;

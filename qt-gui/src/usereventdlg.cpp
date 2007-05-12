@@ -1760,6 +1760,9 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
+  // Do not connect this before the check box gets set automatically. If the user is offline
+  // the send through server flag gets set, and then that setting gets saved to disk.
+  connect(chkSendServer, SIGNAL(toggled(bool)), this, SLOT(slot_sendServerToggled(bool)));
 }
 
 UserSendCommon::~UserSendCommon()
@@ -2004,6 +2007,17 @@ void UserSendCommon::slot_textChanged_timeout()
     connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
     server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
   }
+}
+
+void UserSendCommon::slot_sendServerToggled(bool sendServer)
+{
+  // When the "Send through server" checkbox is toggled, we will save the setting
+  // to disk, so it will be persistent.
+
+  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  if (u)
+    u->SetSendServer(sendServer);
+  gUserManager.DropUser(u);
 }
 
 //-----UserSendCommon::slot_SetBackgroundColor-------------------------------

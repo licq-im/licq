@@ -315,6 +315,7 @@ protected slots:
   void slot_ClearNewEvents();
   void slot_textChanged();
   void slot_textChanged_timeout();
+  void slot_sendServerToggled(bool);
 
 public slots:
   void changeEventType(int);
