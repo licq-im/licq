@@ -395,13 +395,18 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
     SendEvent_Server(pStart);
 
     ICQUser *u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_W);
+    // When we remove a user, we remove them from all parts of the list:
+    // Visible, Invisible and Ignore lists as well.
     unsigned short nGSID = u->GetGSID();
     unsigned short nSID = u->GetSID();
     unsigned short nVisibleSID = u->GetVisibleSID();
+    unsigned short nInvisibleSID = u->GetInvisibleSID();
     bool bIgnored = u->IgnoreList();
     u->SetGSID(0);
     u->SetVisibleSID(0);
+    u->SetInvisibleSID(0);
     u->SetVisibleList(false);
+    u->SetInvisibleList(false);
     u->SaveLicqInfo();
     gUserManager.DropUser(u);
 
@@ -421,6 +426,13 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
       CSrvPacketTcp *pVisRemove = new CPU_RemoveFromServerList(_szId, 0,
         nVisibleSID, ICQ_ROSTxVISIBLE);
       SendEvent_Server(pVisRemove);
+    }
+
+    if (nInvisibleSID)
+    {
+      CSrvPacketTcp *pInvisRemove = new CPU_RemoveFromServerList(_szId, 0,
+          nInvisibleSID, ICQ_ROSTxINVISIBLE);
+      SendEvent_Server(pInvisRemove);
     }
   }
 
