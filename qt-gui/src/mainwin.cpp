@@ -2862,6 +2862,16 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
   {
     userEventTabDlg->addTab(e);
     userEventTabDlg->show();
+#ifdef USE_KDE
+# if KDE_IS_VERSION(3, 2, 0)
+    KWin::activateWindow(userEventTabDlg->winId());
+# else
+    KWin::setActiveWindow(userEventTabDlg->winId());
+# endif
+#else
+    userEventTabDlg->raise();
+#endif
+
     // Check if we want the window sticky
     if (m_bMsgWinSticky)
     {
