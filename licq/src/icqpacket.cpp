@@ -5026,7 +5026,7 @@ CPT_AckOpenSecureChannel::CPT_AckOpenSecureChannel(unsigned short nSequence,
   m_nSize -= strlen(m_szMessage);
   free(m_szMessage);
   m_szMessage = strdup(ok ? "1" : "");
-  m_nMsgLen = strlen(m_szMessage);
+  m_nMsgLen = strlen(m_szMessage)+1;
   m_nSize += m_nMsgLen;
 
   InitBuffer();
@@ -5041,7 +5041,7 @@ CPT_AckOldSecureChannel::CPT_AckOldSecureChannel(unsigned short nSequence,
   m_nSize -= strlen(m_szMessage);
   free(m_szMessage);
   m_szMessage = strdup("");
-  m_nSize += strlen(m_szMessage);
+  m_nSize += strlen(m_szMessage)+1;
 
   InitBuffer();
   if (m_nVersion == 6)
@@ -5060,7 +5060,7 @@ CPT_AckCloseSecureChannel::CPT_AckCloseSecureChannel(unsigned short nSequence,
   m_nSize -= strlen(m_szMessage);
   free(m_szMessage);
   m_szMessage = strdup("");
-  m_nSize += strlen(m_szMessage);
+  m_nSize += strlen(m_szMessage)+1;
 
   InitBuffer();
   PostBuffer();
