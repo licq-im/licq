@@ -489,6 +489,13 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     {
       m_bCanPing = true;
     }
+    else if (strCmd == "NOT")
+    {
+      // For the moment, skip the notification... consider it spam from MSN
+      unsigned long nSize = packet->GetParameterUnsignedLong(); // size
+      packet->SkipRN(); // Skip \r\n
+      packet->Skip(nSize);
+    }
     else
     {
       gLog.Warn("%sUnhandled command (%s).\n", L_MSNxSTR, strCmd.c_str());

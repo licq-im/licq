@@ -56,6 +56,7 @@ public:
   unsigned short GetParameterUnsignedShort();
   unsigned long GetParameterUnsignedLong();
   void SkipPacket();
+  void Skip(unsigned long);
   
 private:
   list<SHeader *> m_lHeader;  

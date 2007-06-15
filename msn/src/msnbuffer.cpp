@@ -236,3 +236,9 @@ void CMSNBuffer::SkipPacket()
   while (cCheck != '\n' && !End())
     *this >> cCheck;
 }
+
+void CMSNBuffer::Skip(unsigned long _nSize)
+{
+  incDataPosRead(_nSize);
+}
+

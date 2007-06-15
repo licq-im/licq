@@ -241,11 +241,17 @@ void CMSN::HandlePacket(int _nSocket, CMSNBuffer &packet, const char* _szUser)
     if ((szNeedle = strstr((char *)pBuf->m_pBuf->getDataStart(),
                            "\r\n")))
     {
-      if (memcmp(pBuf->m_pBuf->getDataStart(), "MSG", 3) == 0)
+      bool isMSG = (memcmp(pBuf->m_pBuf->getDataStart(), "MSG", 3) == 0);
+
+      if (/*memcmp(pBuf->m_pBuf->getDataStart(), "MSG", 3) == 0*/ isMSG ||
+          memcmp(pBuf->m_pBuf->getDataStart(), "NOT", 3) == 0)
       {
-        pBuf->m_pBuf->SkipParameter(); // MSG
-        pBuf->m_pBuf->SkipParameter(); // Hotmail
-        pBuf->m_pBuf->SkipParameter(); // Hotmail
+        pBuf->m_pBuf->SkipParameter(); // MSG, NOT
+        if (isMSG)
+        {
+          pBuf->m_pBuf->SkipParameter(); // Hotmail
+          pBuf->m_pBuf->SkipParameter(); // Hotmail
+        }
         string strSize = pBuf->m_pBuf->GetParameter();
         int nSize = atoi(strSize.c_str());
 
