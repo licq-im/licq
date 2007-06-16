@@ -964,10 +964,6 @@ Doble Pulsación - Mostrar mensaje siguiente</translation>
       <translation>Mensaje del Sistema</translation>
     </message>
     <message>
-      <source></source>
-      <translation> </translation>
-    </message>
-    <message>
       <source>%1 message%2</source>
       <translation>%1 mensaje%2</translation>
     </message>
@@ -1139,10 +1135,6 @@ http://www.licq.org
 You will need to start the browser and open the URL manually.</source>
       <translation>Licq no ha podido iniciar su navegador y abrir la URL. 
 Deberá iniciar el navegador y abrir la URL de forma manual.</translation>
-    </message>
-    <message>
-      <source></source>
-      <translation> </translation>
     </message>
   </context>
   <context>
@@ -2084,10 +2076,6 @@ el grupo '%1'?</translation>
     <message>
       <source>(cancelled)</source>
       <translation>(cancelado)</translation>
-    </message>
-    <message>
-      <source></source>
-      <translation> </translation>
     </message>
     <message>
       <source>System Server Message</source>
@@ -3407,6 +3395,22 @@ Se requiere que se reinicie la aplicación para que estos cambios tengan efecto!
     <message>
       <source>In single line chat mode you send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
       <translation>En modo de charla de una sola línea se envían los mensajes pulsando Enter y se inserta una nueva línea con Ctrl+Enter, contrariamente al modo normal</translation>
+    </message>
+    <message>
+      <source>Use double return</source>
+      <translation>Usar doble retorno</translation>
+    </message>
+    <message>
+      <source>Hitting Return twice will be used instead of Ctrl+Return to send messages and close input dialogs. Multiple new lines can be inserted with Ctrl+Return.</source>
+      <translation>Pulsar dos veces la tecla de retorno se utilizará en reemplazo de Ctrl+Return para enviar mensajes y cerrar los diálogos de entrada. Múltiples líneas pueden insertarse con Ctrl+Return.</translation>
+    </message>
+    <message>
+      <source>Show Join/Left Notices</source>
+      <translation>Mostrar notificación de ingreso y salida del chat</translation>
+    </message>
+    <message>
+      <source>Show a notice in the chat window when a user joins or leaves the conversation.</source>
+      <translation>Mostrar una notificación en la ventana de charla cuando un usuario se une o deja una conversación.</translation>
     </message>
     <message>
       <source>Alias</source>
