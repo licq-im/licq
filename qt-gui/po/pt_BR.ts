@@ -436,6 +436,45 @@ Veja a Janela de Rede para detalhes.</translation>
     </message>
 </context>
 <context>
+    <name>CLicqMessageBox</name>
+    <message>
+        <source>Licq</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;List</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Next</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Ok</source>
+        <translation type="unfinished">&amp;Ok</translation>
+    </message>
+    <message>
+        <source>&amp;Clear All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Next (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Licq Information</source>
+        <translation type="unfinished">Informação do Licq</translation>
+    </message>
+    <message>
+        <source>Licq Warning</source>
+        <translation type="unfinished">Alerta do Licq</translation>
+    </message>
+    <message>
+        <source>Licq Critical</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CMMSendDlg</name>
     <message>
         <source>none</source>
@@ -581,7 +620,7 @@ Veja a Janela de Rede para detalhes.</translation>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;apelido de usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;e-mail&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;primeiro nome&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;número telefônico&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip do usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;último nome&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# mensagens pendentes&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;nome completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;última vez que esteve online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online desde&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;porta do usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;status completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;status abreviado&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;apelido de usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;e-mail&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;primeiro nome&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;número telefônico&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip do usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;último nome&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# mensagens pendentes&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;nome completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;última vez que esteve online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online desde&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;porta do usuário&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;status completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;status abreviado&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>Licq is unable to start your browser and open the URL.
@@ -1208,6 +1247,10 @@ Duplo clique - Mostrar próxima mensagem</translation>
         <source>Do you really want to reset your stats?</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CMessageViewWidget</name>
@@ -1218,6 +1261,30 @@ Duplo clique - Mostrar próxima mensagem</translation>
     <message>
         <source>%1 to %2</source>
         <translation type="unfinished">%1 para %2</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tiny</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Long</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wide</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1416,6 +1483,13 @@ Duplo clique - Mostrar próxima mensagem</translation>
     <message>
         <source>Setting Random Chat Group...</source>
         <translation>Configurando Grupo de Chat Aleatório...</translation>
+    </message>
+</context>
+<context>
+    <name>CTimeZoneField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Desconhecido</translation>
     </message>
 </context>
 <context>
@@ -1634,6 +1708,10 @@ Duplo clique - Mostrar próxima mensagem</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3569,38 +3647,6 @@ changes here require a Restart to take effect!
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Custom Date Format</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;
-&lt;table&gt;
-&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second whithout a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second whith a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the milliseconds without leading zeroes (0..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the milliseconds with leading zeroes (000..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Picture</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3638,6 +3684,78 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>This is a received message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Use double return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hitting Return twice will be used instead of Ctrl+Return to send messages and close input dialogs. Multiple new lines can be inserted with Ctrl+Return.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Join/Left Notices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show a notice in the chat window when a user joins or leaves the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chat Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert Vertical Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert extra space between messages.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a line between each message.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4839,15 +4957,15 @@ Definição de ícones &apos;%2&apos; foi desabilitada.</translation>
         <translation>Ícones Estendidos:</translation>
     </message>
     <message>
-        <source>E&amp;moticons</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Use this combo box to select one of the available emoticon icon sets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Emoticons:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E&amp;moticons:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5159,7 +5277,7 @@ Rede ICQ para recuperar suas configurações.</translation>
     </message>
     <message>
         <source>GMT%1%1%1</source>
-        <translation>GMT%1%1%1</translation>
+        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>

@@ -529,7 +529,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;псевдоним пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;адрес электронной почты&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;имя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;номер телефона&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip адрес пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;фамилия&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;количество непрочитаных сообщений&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;имя и фамилия&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;последний раз в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;с какого времени в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;полный статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;сокращенный статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;домашняя страничка&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;псевдоним пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;адрес электронной почты&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;имя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;номер телефона&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip адрес пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;фамилия&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;количество непрочитаных сообщений&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;имя и фамилия&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;последний раз в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;с какого времени в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;полный статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;сокращенный статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;домашняя страничка&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>System</source>
@@ -1185,6 +1185,10 @@ You will need to start the browser and open the URL manually.</source>
         <source>Do you really want to reset your stats?</source>
         <translation>Вы действительно хотите обнулить всю статистику?</translation>
     </message>
+    <message>
+        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CMessageViewWidget</name>
@@ -1195,6 +1199,30 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>%1 to %2</source>
         <translation>%1 к %2</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished">Стандартные</translation>
+    </message>
+    <message>
+        <source>Compact</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Tiny</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Table</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Long</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Wide</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1397,6 +1425,13 @@ You will need to start the browser and open the URL manually.</source>
     </message>
 </context>
 <context>
+    <name>CTimeZoneField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Неизвестно</translation>
+    </message>
+</context>
+<context>
     <name>CUserView</name>
     <message>
         <source>%1 Floaty (%2)</source>
@@ -1537,6 +1572,10 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
         <translation>&lt;br&gt;&lt;nobr&gt;Идентификатор: </translation>
+    </message>
+    <message>
+        <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3581,7 +3620,51 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Custom Date Format:</source>
-        <translation>Личный формат даты:</translation>
+        <translation type="obsolete">Личный формат даты:</translation>
+    </message>
+    <message>
+        <source>Use double return</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Hitting Return twice will be used instead of Ctrl+Return to send messages and close input dialogs. Multiple new lines can be inserted with Ctrl+Return.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show Join/Left Notices</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Show a notice in the chat window when a user joins or leaves the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local time</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Chat Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert Vertical Spacing</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert extra space between messages.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a line between each message.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History Options</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>History</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4597,7 +4680,7 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     </message>
     <message>
         <source>GMT%1%1%1</source>
-        <translation>GMT%1%1%1</translation>
+        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>Unknown (%1)</source>
