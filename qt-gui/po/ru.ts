@@ -528,10 +528,6 @@ See Network Window for details.</source>
         <translation>Licq (%1)</translation>
     </message>
     <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;псевдоним пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;адрес электронной почты&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;имя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;номер телефона&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip адрес пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;фамилия&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;количество непрочитаных сообщений&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;имя и фамилия&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;последний раз в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;с какого времени в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;полный статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;сокращенный статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;домашняя страничка&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
         <source>System</source>
         <translation>Система</translation>
     </message>
@@ -1187,7 +1183,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;псевдоним пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;адрес электронной почты&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;имя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;номер телефона&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip адрес пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;фамилия&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;время пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;количество непрочитаных сообщений&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;имя и фамилия&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;последний раз в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;с какого времени в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт пользователя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;полный статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;сокращенный статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;домашняя страница&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
 </context>
 <context>
@@ -1202,27 +1198,27 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">Стандартные</translation>
+        <translation>Стандартный</translation>
     </message>
     <message>
         <source>Compact</source>
-        <translation type="unfinished"></translation>
+        <translation>Компактный</translation>
     </message>
     <message>
         <source>Tiny</source>
-        <translation type="unfinished"></translation>
+        <translation>Укороченный</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Табличный</translation>
     </message>
     <message>
         <source>Long</source>
-        <translation type="unfinished"></translation>
+        <translation>Длинный</translation>
     </message>
     <message>
         <source>Wide</source>
-        <translation type="unfinished"></translation>
+        <translation>Широкий</translation>
     </message>
 </context>
 <context>
@@ -1428,7 +1424,7 @@ You will need to start the browser and open the URL manually.</source>
     <name>CTimeZoneField</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished">Неизвестно</translation>
+        <translation>Неизвестна</translation>
     </message>
 </context>
 <context>
@@ -1575,7 +1571,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Время пользователя: </translation>
     </message>
 </context>
 <context>
@@ -3416,7 +3412,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>Small Icon</source>
-        <translation>Маленькие иконки</translation>
+        <translation>Маленькая иконка</translation>
     </message>
     <message>
         <source>Uses the freedesktop.org standard to dock a small icon into the window manager.  Works with many different window managers.</source>
@@ -3556,7 +3552,7 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>We&apos;ll be waiting!</source>
-        <translation>Будем ждать!</translation>
+        <translation>Мы будем ждать!</translation>
     </message>
     <message>
         <source>Marge has left the conversation.</source>
@@ -3619,52 +3615,48 @@ changes here require a Restart to take effect!
 &lt;/table&gt;</translation>
     </message>
     <message>
-        <source>Custom Date Format:</source>
-        <translation type="obsolete">Личный формат даты:</translation>
-    </message>
-    <message>
         <source>Use double return</source>
-        <translation type="unfinished"></translation>
+        <translation>Двойной перенос</translation>
     </message>
     <message>
         <source>Hitting Return twice will be used instead of Ctrl+Return to send messages and close input dialogs. Multiple new lines can be inserted with Ctrl+Return.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вместо Ctrl+Return будет использоваться двойной перенос строки для отправки сообщений и закрытия окна ввода. Для вставки пустых строк нажимайте Ctrl+Return.</translation>
     </message>
     <message>
         <source>Show Join/Left Notices</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать сообщения о входе/выходе</translation>
     </message>
     <message>
         <source>Show a notice in the chat window when a user joins or leaves the conversation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Показывать сообщение в окне диалога о том, что пользователь присоединился или удалился.</translation>
     </message>
     <message>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Время пользователя</translation>
     </message>
     <message>
         <source>Chat Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки диалога</translation>
     </message>
     <message>
         <source>Insert Vertical Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертикальный отступ</translation>
     </message>
     <message>
         <source>Insert extra space between messages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставлять дополнительное расстояние между сообщениями.</translation>
     </message>
     <message>
         <source>Insert a line between each message.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставлять линейку между сообщениями.</translation>
     </message>
     <message>
         <source>History Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Настройки истории</translation>
     </message>
     <message>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>История</translation>
     </message>
 </context>
 <context>
@@ -4677,10 +4669,6 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     <message>
         <source>Unknown</source>
         <translation>Неизвестно</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>Unknown (%1)</source>

@@ -528,10 +528,6 @@ See Network Window for details.</source>
         <translation>Licq (%1)</translation>
     </message>
     <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;призвисько користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;адреса електронної пошти&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;ім&apos;я&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;номер телефону&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip-адреса користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;прізвище&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;кількість нерозглянутих повідомлень&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;П.І.Б.&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;останій раз в мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;з якого часу в мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;повний стан&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;скорочений стан&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;тенетсторінка&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
         <source>System</source>
         <translation>Система</translation>
     </message>
@@ -574,10 +570,6 @@ Double click - Set auto response</source>
     <message>
         <source>%1 msg%2</source>
         <translation>%1 повідомлення%2</translation>
-    </message>
-    <message>
-        <source></source>
-        <translation></translation>
     </message>
     <message>
         <source>s</source>
@@ -1191,7 +1183,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;прізвисько&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;електронна пошта&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;і&apos;мя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;номер телефону&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;IP користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;прізвище&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;час користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;кількість непрочитаних повідомлень&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;повне і&apos;мя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;востаннє був у мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;час у мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;повний статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;скорочений статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;веб-сторінка&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
 </context>
 <context>
@@ -1206,27 +1198,27 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">Стандартні</translation>
+        <translation>Стандартний</translation>
     </message>
     <message>
         <source>Compact</source>
-        <translation type="unfinished"></translation>
+        <translation>Компактний</translation>
     </message>
     <message>
         <source>Tiny</source>
-        <translation type="unfinished"></translation>
+        <translation>Скорочений</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Табличний</translation>
     </message>
     <message>
         <source>Long</source>
-        <translation type="unfinished"></translation>
+        <translation>Довгий</translation>
     </message>
     <message>
         <source>Wide</source>
-        <translation type="unfinished"></translation>
+        <translation>Широкий</translation>
     </message>
 </context>
 <context>
@@ -1431,7 +1423,7 @@ You will need to start the browser and open the URL manually.</source>
     <name>CTimeZoneField</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Невідомо</translation>
     </message>
 </context>
 <context>
@@ -1578,7 +1570,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Час користувача: </translation>
     </message>
 </context>
 <context>
@@ -3612,52 +3604,48 @@ changes here require a Restart to take effect!
 &lt;/table&gt;</translation>
     </message>
     <message>
-        <source>Custom Date Format:</source>
-        <translation type="obsolete">Свій формат дати:</translation>
-    </message>
-    <message>
         <source>Use double return</source>
-        <translation type="unfinished"></translation>
+        <translation>Подвійний перенос</translation>
     </message>
     <message>
         <source>Hitting Return twice will be used instead of Ctrl+Return to send messages and close input dialogs. Multiple new lines can be inserted with Ctrl+Return.</source>
-        <translation type="unfinished"></translation>
+        <translation>Замість Ctrl+Return користуйтеся подвійним переносом щоб відправити та закрити вікно діалогу. Нові строки вставляються за допомогою Ctrl+Return.</translation>
     </message>
     <message>
         <source>Show Join/Left Notices</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомляти про вхід/вихід</translation>
     </message>
     <message>
         <source>Show a notice in the chat window when a user joins or leaves the conversation.</source>
-        <translation type="unfinished"></translation>
+        <translation>Повідомляти у діалоговому вікні коли користувач вийшов або увійшов.</translation>
     </message>
     <message>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Час користувача</translation>
     </message>
     <message>
         <source>Chat Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування діалогу</translation>
     </message>
     <message>
         <source>Insert Vertical Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Вертикальний відступ</translation>
     </message>
     <message>
         <source>Insert extra space between messages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставляти додатковий відступ між повідомленнями.</translation>
     </message>
     <message>
         <source>Insert a line between each message.</source>
-        <translation type="unfinished"></translation>
+        <translation>Вставляти лінійку між повідомленнями.</translation>
     </message>
     <message>
         <source>History Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Налаштування історії</translation>
     </message>
     <message>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Історія</translation>
     </message>
 </context>
 <context>
@@ -4687,10 +4675,6 @@ Check this if you want to keep your changes to the Alias.</source>
     <message>
         <source>Unknown</source>
         <translation>Невідомо</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>Unknown (%1)</source>
