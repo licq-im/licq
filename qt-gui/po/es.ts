@@ -411,42 +411,158 @@ See Network Window for details.</source>
     </message>
 </context>
 <context>
+    <name>CLicq</name>
+    <message>
+        <source>Session management is not supported by Licq.
+</source>
+        <translation type="obsolete">El manejo de sesiones no está soportado por Licq</translation>
+    </message>
+    <message>
+        <source>%s version %s, compiled on %s
+</source>
+        <translation type="obsolete">%s versión %s, compilada el %s</translation>
+    </message>
+    <message>
+        <source>%sOutput redirected to &quot;%s&quot;.
+</source>
+        <translation type="obsolete">%sSalida redirigida a &quot;%s&quot;.</translation>
+    </message>
+    <message>
+        <source>%sRedirection to &quot;%s&quot; failed:
+%s%s.
+</source>
+        <translation type="obsolete">%sRedirección a &quot;%s&quot; falló:
+%s%s.</translation>
+    </message>
+    <message>
+        <source>%sLicq: %s cannot be opened for writing.
+%s      skipping lockfile protection.
+</source>
+        <translation type="obsolete">%sLicq: %s no pudo ser abierto para escritura.
+%s      Esquivando la protección de fichero bloqueado.
+</translation>
+    </message>
+    <message>
+        <source>%sLicq: Already running at pid %d.
+%s      Kill process or remove %s.
+</source>
+        <translation type="obsolete">%sLicq: ya se está ejecutando con pid %d.
+%s      Mate el proceso o elimine %s.
+</translation>
+    </message>
+    <message>
+        <source>%sLicq: Unable to determine pid of running Licq instance.
+</source>
+        <translation type="obsolete">%sLicq: No se puedo determinar el pid de la instancia en ejecución de Licq</translation>
+    </message>
+    <message>
+        <source>%sLicq: Already running at pid %d.
+</source>
+        <translation type="obsolete">%sLicq: Ya se está ejecutando con pid %d.</translation>
+    </message>
+    <message>
+        <source>%sStarting plugin %s (version %s).
+</source>
+        <translation type="obsolete">%sIniciando plugin %s (versión %s).
+</translation>
+    </message>
+    <message>
+        <source>%sStarting protocol plugin %s (version %s).
+</source>
+        <translation type="obsolete">%sIniciando plugin de protocolo %s (versión %s).</translation>
+    </message>
+    <message>
+        <source>%sNo plugins specified on the command-line (-p option).
+%sSee the README for more information.
+</source>
+        <translation type="obsolete">%sNo se especificaron plugins en la línea de comandos (opción -p).
+%sVea el fichero README para más información.
+</translation>
+    </message>
+    <message>
+        <source>%sPlugin %s exited with code %d.
+</source>
+        <translation type="obsolete">%sPlugin %s finalizó con código %d.</translation>
+    </message>
+    <message>
+        <source>%sPlugin %s failed to exit.
+</source>
+        <translation type="obsolete">%sPlugin %s falló al salir.</translation>
+    </message>
+    <message>
+        <source>%s version %s.
+Usage:  Licq [-h] [-d #] [-b configdir] [-I] [-p plugin] [-o file] [ -- &lt;plugin #1 parameters&gt;] [-- &lt;plugin #2 parameters&gt;...]
+
+ -h : this help screen (and any plugin help screens as well)
+ -d : set what information is logged to standard output:
+        1  status information
+        2  unknown packets
+        4  errors
+        8  warnings
+       16  all packets
+      add values together for multiple options
+ -c : disable color at standard output
+ -b : set the base directory for the config and data files (~/.licq by default)
+ -I : force initialization of the given base directory
+ -p : load the given plugin library
+ -o : redirect stderr to &lt;file&gt;, which can be a device (ie /dev/ttyp4)
+</source>
+        <translation type="obsolete">%s versión %s.
+Uso:  Licq [-h] [-d #] [-b configdir] [-I] [-p añadido] [-o fichero] [ -- &lt;añadido #1 parámetros&gt;] [-- &lt;añadido #2 parametros&gt;...]
+
+ -h : esta ventana de ayuda (y la ventana de ayuda de cualquier añadido)
+ -d : determina que información es enviada a la salida estándar:
+        1  información de estado
+        2  paquetes desconocidos
+        4  errores
+        8  adevertencias
+       16  todos los paquetes
+      Añada los valores para obtener opciones múltiples
+ -c : deshabilite los colores en la salida estándar
+ -b : determine el directorio base para los ficheros de configuración y datos (~/.licq por defecto)
+ -I : fuerza la inicialización del directorio base dado
+ -p : carga la biblioteca de añadidos especificada
+ -o : redirecciona stderr a &lt;fichero&gt;, que puede ser un dispositivo (p.ej. /dev/ttyp4)
+</translation>
+    </message>
+</context>
+<context>
     <name>CLicqMessageBox</name>
     <message>
         <source>Licq</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq</translation>
     </message>
     <message>
         <source>&amp;List</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Lista</translation>
     </message>
     <message>
         <source>&amp;Next</source>
-        <translation type="unfinished"></translation>
+        <translation>Siguiente</translation>
     </message>
     <message>
         <source>&amp;Ok</source>
-        <translation type="unfinished">&amp;Ok</translation>
+        <translation>&amp;Ok</translation>
     </message>
     <message>
         <source>&amp;Clear All</source>
-        <translation type="unfinished"></translation>
+        <translation>Limpiar Todo</translation>
     </message>
     <message>
         <source>&amp;Next (%1)</source>
-        <translation type="unfinished"></translation>
+        <translation>Siguiente (%1)</translation>
     </message>
     <message>
         <source>Licq Information</source>
-        <translation type="unfinished"></translation>
+        <translation>Informatión de Licq</translation>
     </message>
     <message>
         <source>Licq Warning</source>
-        <translation type="unfinished"></translation>
+        <translation>Advertencia de Licq</translation>
     </message>
     <message>
         <source>Licq Critical</source>
-        <translation type="unfinished"></translation>
+        <translation>Mensaje Crítico de Licq</translation>
     </message>
 </context>
 <context>
@@ -994,10 +1110,6 @@ Doble Pulsación - Mostrar mensaje siguiente</translation>
         <translation>Ausente para el Usuario</translation>
     </message>
     <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;alias del usuario&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;correo electrónico&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;nombre&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;teléfono&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip del usuario&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;apellido&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# mensajes pendientes&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;nombre completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;conectado/a por última vez&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;conectado/a desde&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;puerto&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;estado completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;estado abreviado&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
         <source>System Message</source>
         <translation>Mensaje del Sistema</translation>
     </message>
@@ -1176,6 +1288,10 @@ Deberá iniciar el navegador y abrir la URL de forma manual.</translation>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;Apodo de usuario&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;Nombre&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;Número de teléfono&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;ip del usuario&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;Apellido&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;hora local&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# mensajes pendientes&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;Nombre completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;última vez visto en línea&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;en línea desde&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;puerto del usuario&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;estado completo&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;estado abreviado&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;sitio web&lt;/li&gt;&lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <source></source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1195,27 +1311,27 @@ Deberá iniciar el navegador y abrir la URL de forma manual.</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished">Por defecto</translation>
+        <translation>Por defecto</translation>
     </message>
     <message>
         <source>Compact</source>
-        <translation type="unfinished"></translation>
+        <translation>Compacto</translation>
     </message>
     <message>
         <source>Tiny</source>
-        <translation type="unfinished"></translation>
+        <translation>Pequeño</translation>
     </message>
     <message>
         <source>Table</source>
-        <translation type="unfinished"></translation>
+        <translation>Tabla</translation>
     </message>
     <message>
         <source>Long</source>
-        <translation type="unfinished"></translation>
+        <translation>Largo</translation>
     </message>
     <message>
         <source>Wide</source>
-        <translation type="unfinished"></translation>
+        <translation>Ancho</translation>
     </message>
 </context>
 <context>
@@ -1420,7 +1536,7 @@ Deberá iniciar el navegador y abrir la URL de forma manual.</translation>
     <name>CTimeZoneField</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished"></translation>
+        <translation>Desconocido</translation>
     </message>
 </context>
 <context>
@@ -1567,7 +1683,7 @@ Deberá iniciar el navegador y abrir la URL de forma manual.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;br&gt;&lt;nobr&gt;Hora local: </translation>
     </message>
 </context>
 <context>
@@ -3506,95 +3622,32 @@ Se requiere que se reinicie la aplicación para que estos cambios tengan efecto!
         <translation>Nombre</translation>
     </message>
     <message>
-        <source>to</source>
-        <translation type="obsolete">a</translation>
-    </message>
-    <message>
         <source>Date Format:</source>
         <translation>Formato de Fecha:</translation>
     </message>
     <message>
-        <source>Custom Date Format</source>
-        <translation type="obsolete">Formato de Fecha personalizado</translation>
-    </message>
-    <message>
-        <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;
-&lt;table&gt;
-&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second whithout a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second whith a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the milliseconds without leading zeroes (0..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the milliseconds with leading zeroes (000..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Variables disponibles para la personalización del formato de fecha.&lt;/p&gt;
-&lt;table&gt;
-&lt;tr&gt;&lt;th&gt;Expresión&lt;/th&gt;&lt;th&gt;Salida&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;El número de día sin el cero por delante (1-31)&lt;td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;El número de día con el cero por delante (01-31)&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;El nombre del día abreviado (p. ej. &apos;Lun&apos;..&apos;Dom&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;El nombre completo del día (e.g. &apos;Lunes&apos;..&apos;Domingo&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;El número de mes sin el cero por delante (1-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;El número de mes con el cero por delante (01-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;El nombre del mes abreviado (p.ej. &apos;Ene&apos;..&apos;Dic&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;El nombre completo del día (p.ej. &apos;Enero&apos;..&apos;Diciembre&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;El año en dos dígitos (00-99)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;El año en cuatro dígitos (1752-8000)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;La hora sin el cero por delante (0..23 o 1..12 si es AM/PM )&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;La hora con el cero por delante (00..23 o 01..12 si es AM/PM)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;Los minutos sin el cero por delante (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;Los minutos con el cero por delante (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;Los segundos sin el cero por delante (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;Los segundos con el cero por delante (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;Los milisegundos sin los ceros por delante (0..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;Los milisegundos con los ceros por delante (000..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;Mostrar AM/PM. AP será reemplazado por &apos;AM&apos; o &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;Mostrar am/pm. ap será reemplazado por &apos;am&apos; o &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;</translation>
-    </message>
-    <message>
-        <source><byte value="x9"/>to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Picture</source>
-        <translation type="unfinished"></translation>
+        <translation>Foto</translation>
     </message>
     <message>
         <source>Local time</source>
-        <translation type="unfinished"></translation>
+        <translation>Hora local</translation>
     </message>
     <message>
         <source>Chat Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones de charla</translation>
     </message>
     <message>
         <source>Insert Vertical Spacing</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserte espaciado vertical</translation>
     </message>
     <message>
         <source>Insert extra space between messages.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserte espacio extra entre los mensajes</translation>
     </message>
     <message>
         <source>Insert a line between each message.</source>
-        <translation type="unfinished"></translation>
+        <translation>Inserte una línea entre cada mensaje</translation>
     </message>
     <message>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;
@@ -3622,50 +3675,82 @@ Se requiere que se reinicie la aplicación para que estos cambios tengan efecto!
 &lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
 &lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
 &lt;/table&gt;</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;p&gt;Variables disponibles para personalizar fecha y hora.&lt;/p&gt;
+&lt;table&gt;
+&lt;tr&gt;&lt;th&gt;Expresión&lt;/th&gt;&lt;th&gt;Salida&lt;/th&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;el día como número sin cero al principio (1-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;el día como número con cero al principio (01-31)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;el nombre del día abreviado (p.ej. &apos;Lun&apos;..&apos;Dom&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;el nombre del día (p.ej. &apos;Lunes&apos;..&apos;Domingo&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;el mes como número sin cero al principio (1-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;el mes como número con cero al principio (01-12)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;el nombre del mes abreviado (p.ej. &apos;Ene&apos;..&apos;Dic&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;el nombre del mes (p.ej. &apos;Enero&apos;..&apos;Diciembre&apos;)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;el año en dos dígitos (00-99)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;el año en cuatro dígitos (1752-8000)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;la hora sin cero al principio (0..23 o 1..12 si se muestra en formato AM/PM)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;la hora con cero al principio (00..23 o 01..12 si se muestra en formato AM/PM)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;los minutos sin cero al principio (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;los minutos sin cero al principio (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;los segundos sin cero al principio (0..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;los segundos con cero al principio (00..59)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;los milisegundos sin cero al principio (0..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;los milisegundos sin cero al principio (000..999)&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;mostrar en formato AM/PM. AP será reemplazado por &apos;AM&apos; o &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;mostrar en formato am/pm. ap será reemplazado por &apos;am&apos; o &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
+&lt;/table&gt;</translation>
     </message>
     <message>
         <source>History Options</source>
-        <translation type="unfinished"></translation>
+        <translation>Opciones de historial</translation>
     </message>
     <message>
         <source>Notice:</source>
-        <translation type="unfinished"></translation>
+        <translation>Aviso:</translation>
     </message>
     <message>
         <source>History</source>
-        <translation type="unfinished"></translation>
+        <translation>Historial</translation>
     </message>
     <message>
         <source>This is a received message</source>
-        <translation type="unfinished"></translation>
+        <translation>Este es un mensaje recibido</translation>
     </message>
     <message>
         <source>This is a sent message</source>
-        <translation type="unfinished"></translation>
+        <translation>Este es un mensaje enviado</translation>
     </message>
     <message>
         <source>Have you gone to the Licq IRC Channel?</source>
-        <translation type="unfinished"></translation>
+        <translation>Pasaste por el canal de IRC de Licq?</translation>
     </message>
     <message>
         <source>No, where is it?</source>
-        <translation type="unfinished"></translation>
+        <translation>No, ¿adónde está?</translation>
     </message>
     <message>
         <source>#Licq on irc.freenode.net</source>
-        <translation type="unfinished"></translation>
+        <translation>#Licq on irc.freenode.net</translation>
     </message>
     <message>
         <source>Cool, I&apos;ll see you there :)</source>
-        <translation type="unfinished"></translation>
+        <translation>Genial, nos vemos ahí :)</translation>
     </message>
     <message>
         <source>We&apos;ll be waiting!</source>
-        <translation type="unfinished"></translation>
+        <translation>¡Te estaremos esperando!</translation>
     </message>
     <message>
         <source>Marge has left the conversation.</source>
+        <translation>Marge dejó la conversación.</translation>
+    </message>
+    <message>
+        <source>to</source>
+        <translation type="obsolete">a</translation>
+    </message>
+    <message>
+        <source><byte value="x9"/>to</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4401,10 +4486,6 @@ para cambiar la configuración.</translation>
         <translation>Use las opciones para seleccionar uno de los paquetes de íconos disponibles.</translation>
     </message>
     <message>
-        <source>E&amp;moticons</source>
-        <translation type="obsolete">E&amp;moticones</translation>
-    </message>
-    <message>
         <source>Use this combo box to select one of the available emoticon icon sets</source>
         <translation>Use las opciones para seleccionar uno de los paquetes de íconos disponibles.</translation>
     </message>
@@ -4466,7 +4547,7 @@ El paquete de íconos extendidos %2 ha sido deshabilitado.</translation>
     </message>
     <message>
         <source>E&amp;moticons:</source>
-        <translation type="unfinished"></translation>
+        <translation>E&amp;moticones:</translation>
     </message>
 </context>
 <context>
@@ -4728,10 +4809,6 @@ El paquete de íconos extendidos %2 ha sido deshabilitado.</translation>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
         <translation>[&lt;font color=&quot;%1&quot;&gt;Recibido&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Enviado&lt;/font&gt;] %3 de %4 coincidencias</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
