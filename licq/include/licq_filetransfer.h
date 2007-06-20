@@ -55,6 +55,7 @@
  *-------------------------------------------------------------------------*/
 
 #include <sys/time.h>
+#include <cstring>
 
 #include "licq_packets.h"
 class CICQDaemon;
@@ -90,10 +91,10 @@ public:
   CPacketFile();
   virtual ~CPacketFile();
 
-  virtual const unsigned short Sequence()    { return 0; };
-  virtual const unsigned short SubSequence() { return 0; };
-  virtual const unsigned short Command()     { return 0; };
-  virtual const unsigned short SubCommand()  { return 0; };
+  virtual unsigned short Sequence()    { return 0; };
+  virtual unsigned short SubSequence() { return 0; };
+  virtual unsigned short Command()     { return 0; };
+  virtual unsigned short SubCommand()  { return 0; };
 protected:
    void InitBuffer()   { buffer = new CBuffer(m_nSize); };
 };

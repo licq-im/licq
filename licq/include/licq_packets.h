@@ -73,14 +73,14 @@ public:
    CBuffer *getBuffer()  { return buffer; };
    virtual CBuffer *Finalize(INetSocket *) { return NULL; }
 
-   virtual const unsigned short Sequence() = 0;
-   virtual const unsigned short SubSequence() = 0;
-   virtual const unsigned short Command() = 0;
-   virtual const unsigned short SubCommand() = 0;
+   virtual unsigned short Sequence() = 0;
+   virtual unsigned short SubSequence() = 0;
+   virtual unsigned short Command() = 0;
+   virtual unsigned short SubCommand() = 0;
 
-   virtual const unsigned char  Channel()   { return ICQ_CHNxNONE; }
-   virtual const unsigned long  SNAC()      { return 0; }
-   virtual const unsigned short ExtraInfo() { return 0; }
+   virtual unsigned char  Channel()   { return ICQ_CHNxNONE; }
+   virtual unsigned long  SNAC()      { return 0; }
+   virtual unsigned short ExtraInfo() { return 0; }
 
 
    static void SetMode(char c) { s_nMode = c; }
@@ -115,17 +115,17 @@ public:
   virtual ~CSrvPacketTcp();
 
   // Packet details
-  virtual const unsigned char  Channel()     { return m_nChannel; }
-  virtual const unsigned short Sequence()    { return m_nSequence; }
-  virtual const unsigned short SubSequence() { return m_nSubSequence; }
-  virtual const unsigned long  SNAC() { return ((m_nFamily << 16) | (m_nSubType)); }
-  virtual const unsigned short SubCommand()  { return m_nSubCommand; }
+  virtual unsigned char  Channel()     { return m_nChannel; }
+  virtual unsigned short Sequence()    { return m_nSequence; }
+  virtual unsigned short SubSequence() { return m_nSubSequence; }
+  virtual unsigned long  SNAC() { return ((m_nFamily << 16) | (m_nSubType)); }
+  virtual unsigned short SubCommand()  { return m_nSubCommand; }
 
   // Not used anymore here, use SNAC instead.
-  virtual const unsigned short Command()     { return 0; }
+  virtual unsigned short Command()     { return 0; }
 
   // Misc.
-  virtual const unsigned short ExtraInfo() { return m_nExtraInfo; }
+  virtual unsigned short ExtraInfo() { return m_nExtraInfo; }
   virtual CBuffer *Finalize(INetSocket *);
   void SetExtraInfo(unsigned short e)  { m_nExtraInfo = e; }
 
@@ -158,10 +158,10 @@ public:
    virtual ~CPacketUdp();
 
    virtual CBuffer *Finalize(INetSocket *);
-   virtual const unsigned short Sequence() { return m_nSequence; }
-   virtual const unsigned short SubSequence() { return m_nSubSequence; }
-   virtual const unsigned short Command()  { return m_nCommand; }
-   virtual const unsigned short SubCommand()  { return 0; }
+   virtual unsigned short Sequence() { return m_nSequence; }
+   virtual unsigned short SubSequence() { return m_nSubSequence; }
+   virtual unsigned short Command()  { return m_nCommand; }
+   virtual unsigned short SubCommand()  { return 0; }
 protected:
    CPacketUdp(unsigned short _nCommand);
    void InitBuffer();
@@ -251,10 +251,10 @@ public:
   CPU_Register(const char *_szPasswd);
   virtual ~CPU_Register();
 
-  virtual const unsigned short Sequence() { return m_nSequence; }
-  virtual const unsigned short SubSequence() { return 0; }
-  virtual const unsigned short Command()  { return m_nCommand; }
-  virtual const unsigned short SubCommand() { return 0; }
+  virtual unsigned short Sequence() { return m_nSequence; }
+  virtual unsigned short SubSequence() { return 0; }
+  virtual unsigned short Command()  { return m_nCommand; }
+  virtual unsigned short SubCommand() { return 0; }
 protected:
   virtual unsigned long getSize()	{ return 1; }
 
@@ -501,7 +501,7 @@ class CPU_RequestSysMsg : public CPU_CommonFamily
 {
 public:
    CPU_RequestSysMsg();
-   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+   virtual unsigned short SubCommand()   { return m_nMetaCommand; }
 
 protected:
    unsigned short m_nMetaCommand;
@@ -512,7 +512,7 @@ class CPU_SysMsgDoneAck : public CPU_CommonFamily
 {
 public:
   CPU_SysMsgDoneAck(unsigned short nId);
-  virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()   { return m_nMetaCommand; }
 
 protected:
   unsigned short m_nMetaCommand;
@@ -566,7 +566,7 @@ public:
                    const char *szState, unsigned short nCountryCode,
                    const char *szCoName, const char *szCoDept,
                    const char *szCoPos, const char *szKeyword, bool bOnlineOnly);
-   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+   virtual unsigned short SubCommand()   { return m_nMetaCommand; }
    unsigned long Uin()  { return 0; }
    void PackSearch(unsigned short nCmd, const char *szField);
 protected:
@@ -579,7 +579,7 @@ class CPU_SearchByUin : public CPU_CommonFamily
 {
 public:
    CPU_SearchByUin(unsigned long nUin);
-   virtual const unsigned short SubCommand()   { return m_nMetaCommand; }
+   virtual unsigned short SubCommand()   { return m_nMetaCommand; }
 protected:
    unsigned long m_nMetaCommand;
 };
@@ -715,7 +715,7 @@ class CPU_InfoPluginReq : public CPU_PluginMessage
 public:
   CPU_InfoPluginReq(ICQUser *u, const char *GUID, unsigned long nTime);
   virtual const char *RequestGUID() { return m_ReqGUID; }
-  virtual const unsigned short ExtraInfo() { return ServerInfoPluginRequest; }
+  virtual unsigned short ExtraInfo() { return ServerInfoPluginRequest; }
 
 protected:
   char m_ReqGUID[GUID_LENGTH];
@@ -726,7 +726,7 @@ class CPU_StatusPluginReq : public CPU_PluginMessage
 {
 public:
   CPU_StatusPluginReq(ICQUser *u, const char *GUID, unsigned long nTime);
-  virtual const unsigned short ExtraInfo() { return ServerStatusPluginRequest; }
+  virtual unsigned short ExtraInfo() { return ServerStatusPluginRequest; }
   virtual const char *RequestGUID() { return m_ReqGUID; }
 
 protected:
@@ -888,7 +888,7 @@ class CPU_SendSms : public CPU_CommonFamily
 {
 public:
    CPU_SendSms(const char *szNumber, const char *szMessage);
-   virtual const unsigned short SubCommand() { return m_nMetaCommand; }
+   virtual unsigned short SubCommand() { return m_nMetaCommand; }
 protected:
    unsigned long m_nMetaCommand;
 };
@@ -930,7 +930,7 @@ class CPU_SetRandomChatGroup : public CPU_CommonFamily
 public:
   CPU_SetRandomChatGroup(unsigned long nGroup);
   unsigned long Group() { return m_nGroup; }
-  virtual const unsigned short SubCommand() { return m_nMetaCommand; }
+  virtual unsigned short SubCommand() { return m_nMetaCommand; }
 protected:
   unsigned long m_nGroup;
   unsigned long m_nMetaCommand;
@@ -943,7 +943,7 @@ class CPU_RandomChatSearch : public CPU_CommonFamily
 {
 public:
   CPU_RandomChatSearch(unsigned long nGroup);
-  virtual const unsigned short SubCommand() { return m_nMetaCommand; }
+  virtual unsigned short SubCommand() { return m_nMetaCommand; }
 protected:
   unsigned long m_nMetaCommand;
 };
@@ -967,7 +967,7 @@ public:
                           const char *szZipCode,
                           unsigned short nCountryCode,
                           bool bHideEmail);
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -996,7 +996,7 @@ class CPU_Meta_SetEmailInfo : public CPU_CommonFamily
 public:
   CPU_Meta_SetEmailInfo(const char *szEmailSecondary,
                         const char *szEmailOld);
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -1020,7 +1020,7 @@ public:
                        char nLanguage1,
                        char nLanguage2,
                        char nLanguage3);
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -1043,7 +1043,7 @@ class CPU_Meta_SetInterestsInfo : public CPU_CommonFamily
 public:
   CPU_Meta_SetInterestsInfo(const ICQUserCategory* interests);
   ~CPU_Meta_SetInterestsInfo();
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -1060,7 +1060,7 @@ public:
   CPU_Meta_SetOrgBackInfo(const ICQUserCategory* orgs,
                           const ICQUserCategory* background);
   ~CPU_Meta_SetOrgBackInfo();
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -1086,7 +1086,7 @@ public:
                        const char *szPosition,
                        unsigned short nCompanyOccupation,
                        const char *szHomepage);
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -1113,7 +1113,7 @@ class CPU_Meta_SetAbout : public CPU_CommonFamily
 public:
   CPU_Meta_SetAbout(const char *szAbout);
   virtual ~CPU_Meta_SetAbout();
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
@@ -1141,7 +1141,7 @@ class CPU_SetPassword : public CPU_CommonFamily
 {
 public:
   CPU_SetPassword(const char *szPassword);
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
   unsigned long Uin()	{ return 0; }
 protected:
   unsigned short m_nMetaCommand;
@@ -1158,7 +1158,7 @@ public:
   CPU_Meta_SetSecurityInfo(bool bAuthorization,
                            bool bHideIp,
                            bool bWebAware);
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 
   bool Authorization()  { return m_nAuthorization == 0; }
   bool HideIp()         { return m_nHideIp == 1; }
@@ -1177,7 +1177,7 @@ class CPU_Meta_RequestAllInfo : public CPU_CommonFamily
 public:
   CPU_Meta_RequestAllInfo(const char *_szId);
   virtual ~CPU_Meta_RequestAllInfo();
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
   const char *Id()  {  return m_szId; }
 protected:
   unsigned short m_nMetaCommand;
@@ -1191,7 +1191,7 @@ class CPU_Meta_RequestBasicInfo : public CPU_CommonFamily
 public:
   CPU_Meta_RequestBasicInfo(const char *_szId);
   virtual ~CPU_Meta_RequestBasicInfo();
-  virtual const unsigned short SubCommand()  { return m_nMetaCommand; }
+  virtual unsigned short SubCommand()  { return m_nMetaCommand; }
   const char *Id()  {  return m_szId; }
 protected:
   unsigned short m_nMetaCommand;
@@ -1207,10 +1207,10 @@ void Encrypt_Client(CBuffer *pkt, unsigned long version);
 class CPacketTcp_Handshake : public CPacket
 {
 public:
-  virtual const unsigned short Sequence()   { return 0; }
-  virtual const unsigned short SubSequence()   { return 0; }
-  virtual const unsigned short Command()    { return ICQ_CMDxTCP_HANDSHAKE; }
-  virtual const unsigned short SubCommand() { return 0; }
+  virtual unsigned short Sequence()   { return 0; }
+  virtual unsigned short SubSequence()   { return 0; }
+  virtual unsigned short Command()    { return ICQ_CMDxTCP_HANDSHAKE; }
+  virtual unsigned short SubCommand() { return 0; }
 };
 
 //-----PacketTcp_Handshake------------------------------------------------------
@@ -1314,7 +1314,7 @@ public:
   CPacketTcp_Handshake_Confirm(unsigned char nChannel, unsigned short nSequence);
   CPacketTcp_Handshake_Confirm(CBuffer *inbuf);
 
-  virtual const unsigned char Channel() { return m_nChannel; }
+  virtual unsigned char Channel() { return m_nChannel; }
   unsigned long Id() { return m_nId; }
 protected:
   unsigned char m_nChannel;
@@ -1329,10 +1329,10 @@ public:
    virtual ~CPacketTcp();
 
    virtual CBuffer *Finalize(INetSocket *);
-   virtual const unsigned short Sequence()   { return m_nSequence; }
-   virtual const unsigned short SubSequence()   { return 0; }
-   virtual const unsigned short Command()    { return m_nCommand; }
-   virtual const unsigned short SubCommand() { return m_nSubCommand; }
+   virtual unsigned short Sequence()   { return m_nSequence; }
+   virtual unsigned short SubSequence()   { return 0; }
+   virtual unsigned short Command()    { return m_nCommand; }
+   virtual unsigned short SubCommand() { return m_nSubCommand; }
 
    char *LocalPortOffset()  {  return m_szLocalPortOffset; }
    unsigned short Level()  { return m_nLevel; }
@@ -1624,7 +1624,7 @@ class CPT_PluginError : public CPacketTcp
 public:
    CPT_PluginError(ICQUser *_cUser, unsigned short nSequence,
      unsigned char nChannel);
-   virtual const unsigned char Channel() { return m_nChannel; }
+   virtual unsigned char Channel() { return m_nChannel; }
 
 protected:
    unsigned char m_nChannel;
@@ -1635,9 +1635,9 @@ class CPT_InfoPluginReq : public CPacketTcp
 {
 public:
    CPT_InfoPluginReq(ICQUser *_cUser, const char *GUID, unsigned long int nTime);
-   virtual const unsigned char Channel()   { return ICQ_CHNxINFO; }
+   virtual unsigned char Channel()   { return ICQ_CHNxINFO; }
    virtual const char *RequestGUID()        { return m_ReqGUID; }
-   virtual const unsigned short ExtraInfo() { return DirectInfoPluginRequest; }
+   virtual unsigned short ExtraInfo() { return DirectInfoPluginRequest; }
 
 protected:
    char m_ReqGUID[GUID_LENGTH];
@@ -1648,7 +1648,7 @@ class CPT_InfoPhoneBookResp : public CPacketTcp
 {
 public:
    CPT_InfoPhoneBookResp(ICQUser *_cUser, unsigned short nSequence);
-   virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
+   virtual unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
 //-----Response to picture request----------------------------------------------
@@ -1656,7 +1656,7 @@ class CPT_InfoPictureResp : public CPacketTcp
 {
 public:
    CPT_InfoPictureResp(ICQUser *_cUser, unsigned short nSequence);
-   virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
+   virtual unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
 //----Response to info plugin list request--------------------------------------
@@ -1664,7 +1664,7 @@ class CPT_InfoPluginListResp : public CPacketTcp
 {
 public:
    CPT_InfoPluginListResp(ICQUser *_cUser, unsigned short nSequence);
-   virtual const unsigned char Channel() { return ICQ_CHNxINFO; }
+   virtual unsigned char Channel() { return ICQ_CHNxINFO; }
 };
 
 //----Send status plugin request------------------------------------------------
@@ -1672,8 +1672,8 @@ class CPT_StatusPluginReq : public CPacketTcp
 {
 public:
    CPT_StatusPluginReq(ICQUser *_cUser, const char *GUID, unsigned long nTime);
-   virtual const unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
-   virtual const unsigned short ExtraInfo() { return DirectStatusPluginRequest;}
+   virtual unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
+   virtual unsigned short ExtraInfo() { return DirectStatusPluginRequest;}
    virtual const char *RequestGUID() { return m_ReqGUID; }
 
 protected:
@@ -1685,7 +1685,7 @@ class CPT_StatusPluginListResp : public CPacketTcp
 {
 public:
   CPT_StatusPluginListResp(ICQUser *_cUser, unsigned short nSequence);
-  virtual const unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
+  virtual unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
 };
 
 //----Response to status request------------------------------------------------
@@ -1694,7 +1694,7 @@ class CPT_StatusPluginResp : public CPacketTcp
 public:
   CPT_StatusPluginResp(ICQUser *_cUser, unsigned short nSequence,
                        unsigned long nStatus);
-  virtual const unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
+  virtual unsigned char  Channel()   { return ICQ_CHNxSTATUS; }
 };
 
 #endif
