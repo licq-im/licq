@@ -47,11 +47,11 @@
 		For more information, including how to subscribe/unsubscribe, and an archive of past
 		posts, follow the relevant link below.
 		<P>
-		<A HREF="http://lists.sourceforge.net/mailman/listinfo/licq-announce" TARGET="_top">licq-announce</A> - For announcements of new releases only.<BR>
-		<A HREF="http://lists.sourceforge.net/mailman/listinfo/licq-main" TARGET="_top">licq-main</A> - For general discussion and help.<BR>
-		<A HREF="http://lists.sourceforge.net/mailman/listinfo/licq-devel" TARGET="_top">licq-devel</A> - For developers/patches/cvs discussion.<BR>
-			<A HREF="http://lists.sourceforge.net/mailman/listinfo/licq-cvs" TARGET="_top">licq-cvs</A> - For CVS commits, a "read-only" list.<BR>
-			<A HREF="http://lists.sourceforge.net/mailman/listinfo/licq-bugs" TARGET="_top">licq-bugs</A> - For SF.net bug reports, very high traffic! For Developers.<BR>
+		<A HREF="http://groups.google.com/group/licq-announce" TARGET="_top">licq-announce</A> - For announcements of new releases only.<BR>
+		<A HREF="http://groups.google.com/group/licq-users" TARGET="_top">licq-users</A> - For general discussion and help.<BR>
+		<A HREF="http://groups.google.com/group/licq-dev" TARGET="_top">licq-dev</A> - For developers/patches/svn discussion.<BR>
+			<A HREF="http://groups.google.com/group/licq-commits" TARGET="_top">licq-commits</A> - For SVN commits, a "read-only" list.<BR>
+			<A HREF="http://groups.google.com/group/licq-tickets" TARGET="_top">licq-tickets</A> - For bug reports, very high traffic! For Developers.<BR>
 			
 			<div class="footer">
 			<div class="footer_right"></div>

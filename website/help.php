@@ -25,7 +25,7 @@
 
               </ul>
               <p>If you have found a new bug, please submit it to <a href="http://trac.licq.org/">Bug Tracking</a> or subscribe to the <a h
-ref="http://lists.sourceforge.net/mailman/listinfo/licq-devel" >LICQ Developers
+ref="http://trac.licq.org/wiki/MailingList">Licq Developers
 Mailing List</a> and post your Bug Report there.<br /><br />Remember in order for the developers to resolve bugs they need to communicate with the people reporting them.  Please keep in touch with them and answer any questions that they may have to the best of your ability.</p>
               <div class="footer">
                 <div class="footer_right"></div>

@@ -21,7 +21,7 @@
               <li> Be as descriptive as you can about the bug. Include OS, OS Version, Qt Version if you are using the qt-gui, Error messages, etc..  Not just &quot;It does not work&quot;.</li>
               <li> Regularly check your own <a href="http://trac.licq.org/">Bug Reports</a> as notes will be added by one of the developers.</li>
               </ol>
-              <p>If you have found a new bug, please submit it to <a href="http://trac.licq.org/">Bug Tracking</a> or subscribe to the <a href="http://lists.sourceforge.net/mailman/listinfo/licq-devel">LICQ Developers Mailing List</a> and post your Bug Report there.</p>
+              <p>If you have found a new bug, please submit it to <a href="http://trac.licq.org/">Bug Tracking</a> or subscribe to the <a href="http://groups.google.com/group/licq-dev">LICQ Developers Mailing List</a> and post your Bug Report there.</p>
               <p>Remember in order for the developers to resolve bugs they need to communicate with the people reporting them.  Please keep in touch with them and answer any questions that they may have to the best of your ability.</p>
               <div class="footer">
                 <div class="footer_right"></div>
