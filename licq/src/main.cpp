@@ -11,7 +11,8 @@
 #endif
 
 #include <signal.h>
-#include <stdlib.h>
+#include <cstdlib>
+#include <cstring>
 
 #include <locale>
 
@@ -48,7 +49,7 @@ int main(int argc, char **argv)
   
 // Make sure argv[0] is defined otherwise licq will crash if it is NULL
   if (argv[0] == NULL)
-     argv[0] = "licq";
+    argv[0] = strdup("licq");
 #ifdef USE_SOCKS5
    SOCKSinit(argv[0]);
 #endif
@@ -56,6 +57,7 @@ int main(int argc, char **argv)
   licq_signal_handler();
 
   CLicq licq;
-  if (!licq.Init(argc, argv)) return 1;
+  if (!licq.Init(argc, argv))
+    return 1;
   return licq.Main();
 }

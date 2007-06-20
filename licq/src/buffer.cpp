@@ -10,12 +10,13 @@
 #include "config.h"
 #endif
 
-#include <stdlib.h>
-#include <stdio.h>
+#include <cstdlib>
+#include <cstdio>
 #include <sys/types.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <ctype.h>
+#include <cstring>
 
 // Localization
 #include "gettext.h"

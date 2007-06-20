@@ -3303,7 +3303,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       // Special status to us?
       if (!bIsAck && !bNewUser && nStatus != ICQ_STATUS_OFFLINE &&
           !(nStatus == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
-          nStatus != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
+          nStatus != (u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
       {
         bool r = u->OfflineOnDisconnect() || u->StatusOffline();
         ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | nStatus);

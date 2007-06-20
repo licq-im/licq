@@ -463,9 +463,7 @@ char *yytext_ptr;
 #include <vector>
 #include <stack>
 #include <string>
-#include <stdarg.h>
-
-using namespace std;
+#include <cstdarg>
 
 #define UP			1	
 #define DOWN			2
@@ -1672,7 +1670,7 @@ typedef struct color
 typedef struct fontDef
 {
     int		charset;
-    string	name;
+    std::string	name;
 } fontDef;
 
 class RTF2HTML;
@@ -1714,7 +1712,7 @@ public:
     void reset();
     void resetTag(Tag);
 protected:
-    string text;
+    std::string text;
     void Init();
     RTF2HTML *p;
     void resetColors() { m_nRed = m_nGreen = m_nBlue = 0; m_bColorInit = false; }
@@ -1751,27 +1749,27 @@ class RTF2HTML
 public:
     RTF2HTML(CICQDaemon *server)
             : rtf_ptr(NULL), m_pDaemon(server), cur_level(this) {}
-    string Parse(const char *rtf);
+    std::string Parse(const char *rtf);
     void PrintUnquoted(const char *str, ...);
     void PrintQuoted(const char *str);
 protected:
-    string s;
+    std::string s;
     const char *rtf_ptr;
     CICQDaemon *m_pDaemon;
     void PutTag(Tag n) { tags.push(n); }
-    vector<OutTag> oTags;
-    stack<Tag> tags;
-    stack<Level> stack;
+    std::vector<OutTag> oTags;
+    std::stack<Tag> tags;
+    std::stack<Level> stack;
     Level cur_level;
-    vector<fontDef> fonts;
-    vector<color>   colors;
+    std::vector<fontDef> fonts;
+    std::vector<color>   colors;
     void FlushOut();
     friend class Level;
 };
 
 void RTF2HTML::FlushOut()
 {
-    vector<OutTag>::iterator iter;
+    std::vector<OutTag>::iterator iter;
     for (iter = oTags.begin(); iter != oTags.end(); iter++)
     {
         OutTag &t = *iter;
@@ -1810,7 +1808,7 @@ void RTF2HTML::FlushOut()
 
 void Level::resetTag(Tag tag)
 {
-    stack<Tag> s;
+    std::stack<Tag> s;
     while (p->tags.size() > m_nTags){
         Tag nTag = p->tags.top();
         if (p->oTags.empty()){
@@ -2236,7 +2234,7 @@ static char h2d(char c)
     return 0;
 }
 
-string RTF2HTML::Parse(const char *rtf)
+std::string RTF2HTML::Parse(const char *rtf)
 {
     yy_current_buffer = yy_scan_string(rtf);
     s.erase();
@@ -2353,7 +2351,7 @@ string RTF2HTML::Parse(const char *rtf)
             break;
         case UNICODE_CHAR:{
                 cur_level.flush();
-                string s;
+                std::string s;
                 gTranslator.utf16to8(atol(yytext + 2), s);
                 PrintQuoted(s.c_str());
                 break;
@@ -2445,7 +2443,7 @@ string RTF2HTML::Parse(const char *rtf)
 
 char *CICQDaemon::parseRTF(const char *rtf)
 {
-    string str;
+    std::string str;
     char _RTF[] = "{\\rtf";
     if ((strlen(rtf) > strlen(_RTF)) && !memcmp(rtf, _RTF, strlen(_RTF)))
     {

@@ -2000,7 +2000,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         !((ns & ICQ_STATUS_FxPRIVATE) && u->StatusOffline()))*/
     if (!bNewUser && ns != ICQ_STATUS_OFFLINE &&
         !(ns == ICQ_STATUS_ONLINE && u->Status() == ICQ_STATUS_FREEFORCHAT) &&
-        ns != u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0))
+        ns != (u->Status() | (u->StatusInvisible() ? ICQ_STATUS_FxPRIVATE : 0)))
     {
       bool r = u->OfflineOnDisconnect() || u->StatusOffline();
       ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);

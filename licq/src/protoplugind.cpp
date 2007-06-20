@@ -10,6 +10,7 @@
 #include "licq_constants.h"
 
 #include <unistd.h>
+#include <cstring>
 
 class CSignal;
 

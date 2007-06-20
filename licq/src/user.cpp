@@ -174,8 +174,9 @@ bool ICQUserCategory::Get(unsigned d,short unsigned *id, char const*  * descr)
 
   //assert(id && descr);
 
-  if(nRet = (d < used ))
+  if (d < used)
   {
+    nRet = true;
     *id = data[d].id;
     *descr = (const char *)data[d].descr;
   }

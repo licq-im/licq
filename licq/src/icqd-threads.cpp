@@ -950,9 +950,9 @@ void *UpdateUsers_tep(void *p)
             //Don't bother clients that we know don't support plugins
             pUser->Version() >= 7 &&
             //Old versions of Licq
-            ((pUser->ClientTimestamp() & 0xFFFF0000 != LICQ_WITHSSL &&
-              pUser->ClientTimestamp() & 0xFFFF0000 != LICQ_WITHOUTSSL) ||
-             pUser->ClientTimestamp() & 0xFFFF > 1026) &&
+            (((pUser->ClientTimestamp() & 0xFFFF0000) != LICQ_WITHSSL &&
+              (pUser->ClientTimestamp() & 0xFFFF0000) != LICQ_WITHOUTSSL) ||
+             (pUser->ClientTimestamp() & 0xFFFF) > 1026) &&
             pUser->ClientTimestamp() != 0xFFFFFF42 && //mICQ
             pUser->ClientTimestamp() != 0xFFFFFFFF && //Miranda
             pUser->ClientTimestamp() != 0xFFFFFF7F && //&RQ
