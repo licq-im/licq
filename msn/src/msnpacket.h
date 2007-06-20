@@ -42,10 +42,10 @@ public:
   virtual ~CMSNPacket() { if (m_pBuffer) delete m_pBuffer; if (m_szCommand) free(m_szCommand); }
   CMSNBuffer *getBuffer() { return m_pBuffer; }
   
-  const unsigned short Command() { return 0; }
-  const unsigned short SubSequence() { return 0; }
-  const unsigned short SubCommand() { return 0; }
-  const unsigned short Sequence() { return m_nSequence; }
+  unsigned short Command() { return 0; }
+  unsigned short SubSequence() { return 0; }
+  unsigned short SubCommand() { return 0; }
+  unsigned short Sequence() { return m_nSequence; }
   const char* MSNCommand() { return m_szCommand; }
   
   virtual void InitBuffer();

@@ -16,6 +16,8 @@
 
 // written by Jon Keating <jon@licq.org>
 
+#include <cstdlib>
+#include <cstring>
 #include "msnbuffer.h"
 
 CMSNBuffer::CMSNBuffer(CMSNBuffer &b)
