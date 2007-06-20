@@ -12,6 +12,7 @@ class CICQDaemon;
  *----------------------------------------------------------------------------*/
 #include <pthread.h>
 #include <list>
+#include <cstdlib>
 
 #ifdef __cplusplus
 extern "C" {
