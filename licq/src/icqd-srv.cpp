@@ -88,13 +88,10 @@ void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired)
       ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(_szId));
-  pthread_mutex_unlock(&mutex_modifyserverusers);
-
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxNORMAL,
     0, _bAuthRequired);
   gLog.Info(tr("%sAdding %s to server list...\n"), L_SRVxSTR, _szId);
+  addToModifyUsers(pAdd->SubSequence(), _szId);
   SendExpectEvent_Server(0, pAdd, NULL);
 
   CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
@@ -124,10 +121,6 @@ void CICQDaemon::CheckExport()
     if ((*gID)[i] == 0)
     {
       groups.push_back((*g)[i]);
-
-      pthread_mutex_lock(&mutex_modifyserverusers);
-      m_lszModifyServerUsers.push_back( strdup((*g)[i]) );
-      pthread_mutex_unlock(&mutex_modifyserverusers);
     }
   }
 
@@ -154,10 +147,6 @@ void CICQDaemon::CheckExport()
         // Keep track of who has been done
         users.push_back(strdup(pUser->IdString()));
         doneUsers.push_back(strdup(pUser->IdString()));
-
-        pthread_mutex_lock(&mutex_modifyserverusers);
-        m_lszModifyServerUsers.push_back(strdup(""));
-        pthread_mutex_unlock(&mutex_modifyserverusers);
       }
     }
   }
@@ -180,26 +169,17 @@ void CICQDaemon::CheckExport()
     if (pUser->IgnoreList() && pUser->GetSID() == 0)
     {
       ignoredUsers.push_back(strdup(pUser->IdString()));
-      pthread_mutex_lock(&mutex_modifyserverusers);
-      m_lszModifyServerUsers.push_back(strdup(""));
-      pthread_mutex_unlock(&mutex_modifyserverusers);
     }
     else
     {
       if (pUser->InvisibleList() && pUser->GetInvisibleSID() == 0)
       {
         invisibleUsers.push_back(strdup(pUser->IdString()));
-        pthread_mutex_lock(&mutex_modifyserverusers);
-        m_lszModifyServerUsers.push_back(strdup(""));
-        pthread_mutex_unlock(&mutex_modifyserverusers);
       }
 
       if (pUser->VisibleList() && pUser->GetVisibleSID() == 0)
       {
         visibleUsers.push_back(strdup(pUser->IdString()));
-        pthread_mutex_lock(&mutex_modifyserverusers);
-        m_lszModifyServerUsers.push_back(strdup(""));
-        pthread_mutex_unlock(&mutex_modifyserverusers);
       }
     }
   }
@@ -225,6 +205,7 @@ void CICQDaemon::icqExportUsers(UserStringList &users, unsigned short _nType)
 
   CSrvPacketTcp *pExport = new CPU_ExportToServerList(users, _nType);
   gLog.Info(tr("%sExporting users to server contact list...\n"), L_SRVxSTR);
+  addToModifyUsers(pExport->SubSequence(), "");
   SendEvent_Server(pExport);
 
   CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
@@ -239,9 +220,7 @@ void CICQDaemon::icqUpdateServerGroups()
   CSrvPacketTcp *pReply;
   
   pReply = new CPU_UpdateToServerList("", ICQ_ROSTxGROUP, 0);
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(""));
-  pthread_mutex_unlock(&mutex_modifyserverusers);
+  addToModifyUsers(pReply->SubSequence(), "");
   gLog.Info(tr("%sUpdating top level group.\n"), L_SRVxSTR);
   SendExpectEvent_Server(0, pReply, NULL);
  
@@ -255,9 +234,7 @@ void CICQDaemon::icqUpdateServerGroups()
       pReply = new CPU_UpdateToServerList((*g)[i], ICQ_ROSTxGROUP,
         (*gID)[i]);
       gLog.Info(tr("%sUpdating group %s.\n"), L_SRVxSTR, (*g)[i]);   
-      pthread_mutex_lock(&mutex_modifyserverusers);
-      m_lszModifyServerUsers.push_back(strdup(""));
-      pthread_mutex_unlock(&mutex_modifyserverusers);
+      addToModifyUsers(pReply->SubSequence(), "");
       SendExpectEvent_Server(0, pReply, NULL);
     }
   }
@@ -275,13 +252,10 @@ void CICQDaemon::icqAddGroup(const char *_szName)
     ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(_szName));
-  pthread_mutex_unlock(&mutex_modifyserverusers);
-
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szName, ICQ_ROSTxGROUP);
   int nGSID = pAdd->GetGSID();
   gLog.Info(tr("%sAdding group %s (%d) to server list ...\n"), L_SRVxSTR, _szName, nGSID);
+  addToModifyUsers(pAdd->SubSequence(), _szName);
   SendExpectEvent_Server(0L, pAdd, NULL);
 }
 
@@ -305,18 +279,15 @@ void CICQDaemon::icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
   snprintf(szUin, 12, "%lu", _nUin);
   szUin[12] = '\0';
 
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(szUin)); // add
-  m_lszModifyServerUsers.push_back(strdup(szUin)); // remove
-  pthread_mutex_unlock(&mutex_modifyserverusers);
-
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(szUin, _nNewType,
                                                       _nNewGroup);
   gLog.Info(tr("%sChanging group on server list for %s ...\n"), L_SRVxSTR, szUin);
+  addToModifyUsers(pAdd->SubSequence(), szUin);
   SendExpectEvent_Server(0, pAdd, NULL);
 
   CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(szUin, _nOldGSID,
                                                         nSID, _nOldType);
+  addToModifyUsers(pRemove->SubSequence(), szUin);
   SendExpectEvent_Server(0, pRemove, NULL);
 }
 
@@ -335,18 +306,15 @@ void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
                                                 ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(_szId)); // add
-  m_lszModifyServerUsers.push_back(strdup(_szId)); // remove
-  pthread_mutex_unlock(&mutex_modifyserverusers);
-
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, _nNewType,
                                                       _nNewGroup);
   gLog.Info(tr("%sChanging group on server list for %s ...\n"), L_SRVxSTR, _szId);
+  addToModifyUsers(pAdd->SubSequence(), _szId);
   SendExpectEvent_Server(0, pAdd, NULL);
 
   CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, _nOldGSID,
                                                         nSID, _nOldType);
+  addToModifyUsers(pRemove->SubSequence(), _szId);
   SendExpectEvent_Server(0, pRemove, NULL);
 }
 
@@ -360,6 +328,10 @@ void CICQDaemon::icqExportGroups(GroupList &groups)
 
   CSrvPacketTcp *pExport = new CPU_ExportGroupsToServerList(groups);
   gLog.Info(tr("%sExporting groups to server contact list...\n"), L_SRVxSTR);
+  // We lump all the groups into one packet, so the success/failure result will
+  // be based on all of them. So a generic name should be fine, but then we need
+  // to add a flag to signify if it is a real user/group or a generic one.
+  addToModifyUsers(pExport->SubSequence(), "");
   SendExpectEvent_Server(0, pExport, NULL);
   
   CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
@@ -410,21 +382,23 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
     u->SaveLicqInfo();
     gUserManager.DropUser(u);
 
-    pthread_mutex_lock(&mutex_modifyserverusers);
-    m_lszModifyServerUsers.push_back(strdup(_szId));
-    pthread_mutex_unlock(&mutex_modifyserverusers);
-
     CSrvPacketTcp *pRemove = 0;
     if (bIgnored)
       pRemove = new CPU_RemoveFromServerList(_szId, nGSID, nSID, ICQ_ROSTxIGNORE);
     else
       pRemove = new CPU_RemoveFromServerList(_szId, nGSID, nSID, ICQ_ROSTxNORMAL);
+    addToModifyUsers(pRemove->SubSequence(), _szId);
     SendExpectEvent_Server(0, pRemove, NULL);
 
     if (nVisibleSID)
     {
       CSrvPacketTcp *pVisRemove = new CPU_RemoveFromServerList(_szId, 0,
         nVisibleSID, ICQ_ROSTxVISIBLE);
+      /* XXX Check if we get an ack response on this packet
+      pthread_mutex_lock(&mutex_modifyserverusers);
+      m_lszModifyServerUsers[pVisRemove->SubSequence()] = _szId;
+      pthread_mutex_unlock(&mutex_modifyserverusers);
+      */
       SendEvent_Server(pVisRemove);
     }
 
@@ -432,6 +406,11 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
     {
       CSrvPacketTcp *pInvisRemove = new CPU_RemoveFromServerList(_szId, 0,
           nInvisibleSID, ICQ_ROSTxINVISIBLE);
+      /* XXX Check if we get an ack response on this packet
+      pthread_mutex_lock(&mutex_modifyserverusers);
+      m_lszModifyServerUsers[pInvisRemove->SubSequence()] = _szId;
+      pthread_mutex_unlock(&mutex_modifyserverusers);
+      */
       SendEvent_Server(pInvisRemove);
     }
   }
@@ -461,11 +440,8 @@ void CICQDaemon::icqRemoveUser(unsigned long _nUin)
     u->SetGSID(0);
     gUserManager.DropUser(u);
 
-    pthread_mutex_lock(&mutex_modifyserverusers);
-    m_lszModifyServerUsers.push_back(strdup(szUin));
-    pthread_mutex_unlock(&mutex_modifyserverusers);
-
     CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(szUin, nGSID, nSID, ICQ_ROSTxNORMAL);
+    addToModifyUsers(pRemove->SubSequence(), szUin);
     SendExpectEvent_Server(0, pRemove, NULL);
   }
 
@@ -485,13 +461,10 @@ void CICQDaemon::icqRemoveGroup(const char *_szName)
     ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(_szName));
-  pthread_mutex_unlock(&mutex_modifyserverusers);
-
   CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szName,
     gUserManager.GetIDFromGroup(_szName), 0, ICQ_ROSTxGROUP);
   gLog.Info(tr("%sRemoving group from server side list (%s)...\n"), L_SRVxSTR, _szName);
+  addToModifyUsers(pRemove->SubSequence(), _szName);
   SendExpectEvent_Server(0, pRemove, NULL);
 }
 
@@ -500,14 +473,11 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
 {
   if (!UseServerContactList() || !_nGSID || m_nTCPSrvSocketDesc == -1) return;
 
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(_szNewName));
-  pthread_mutex_unlock(&mutex_modifyserverusers);
-
   CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(_szNewName,
     ICQ_ROSTxGROUP, _nGSID);
   gLog.Info(tr("%sRenaming group with id %d to %s...\n"), L_SRVxSTR, _nGSID,
     _szNewName);
+  addToModifyUsers(pUpdate->SubSequence(), _szNewName);
   SendExpectEvent_Server(0, pUpdate, NULL);
 }
 
@@ -538,12 +508,9 @@ void CICQDaemon::icqRenameUser(const char *_szId)
   char *szNewAlias = u->GetAlias();
   gUserManager.DropUser(u);
 
-  pthread_mutex_lock(&mutex_modifyserverusers);
-  m_lszModifyServerUsers.push_back(strdup(_szId));
-  pthread_mutex_unlock(&mutex_modifyserverusers);
-
   CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(_szId, ICQ_ROSTxNORMAL);
   gLog.Info(tr("%sRenaming %s to %s...\n"), L_SRVxSTR, _szId, szNewAlias);
+  addToModifyUsers(pUpdate->SubSequence(), _szId);
   SendExpectEvent_Server(0, pUpdate, NULL);
 }
 
@@ -1435,11 +1402,8 @@ void CICQDaemon::icqAddToVisibleList(const char* _szId, unsigned long _nPPID)
 
   if (UseServerContactList())
   {
-    pthread_mutex_lock(&mutex_modifyserverusers);
-    m_lszModifyServerUsers.push_back(strdup(_szId));
-    pthread_mutex_unlock(&mutex_modifyserverusers);
-
     CSrvPacketTcp *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxVISIBLE);
+    addToModifyUsers(pAdd->SubSequence(), _szId);
     SendExpectEvent_Server(0, pAdd, NULL);
   }
 }
@@ -1472,12 +1436,9 @@ void CICQDaemon::icqRemoveFromVisibleList(const char* _szId, unsigned long _nPPI
     u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
     if (u != NULL)
     {
-      pthread_mutex_lock(&mutex_modifyserverusers);
-      m_lszModifyServerUsers.push_back(strdup(_szId));
-      pthread_mutex_unlock(&mutex_modifyserverusers);
-
       CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, 0, u->GetVisibleSID(),
         ICQ_ROSTxVISIBLE);
+      addToModifyUsers(pRemove->SubSequence(), _szId);
       SendExpectEvent_Server(_szId, _nPPID, pRemove, NULL);
       gUserManager.DropUser(u);
     }
@@ -1509,11 +1470,8 @@ void CICQDaemon::icqAddToInvisibleList(const char* _szId, unsigned long _nPPID)
 
   if (UseServerContactList())
   {
-    pthread_mutex_lock(&mutex_modifyserverusers);
-    m_lszModifyServerUsers.push_back(strdup(_szId));
-    pthread_mutex_unlock(&mutex_modifyserverusers);
-
     CSrvPacketTcp *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxINVISIBLE);
+    addToModifyUsers(pAdd->SubSequence(), _szId);
     SendEvent_Server(pAdd);
   }
 }
@@ -1546,12 +1504,9 @@ void CICQDaemon::icqRemoveFromInvisibleList(const char *_szId, unsigned long _nP
     u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
     if (u)
     {
-      pthread_mutex_lock(&mutex_modifyserverusers);
-      m_lszModifyServerUsers.push_back(strdup(_szId));
-      pthread_mutex_unlock(&mutex_modifyserverusers);
-
       CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, 0, u->GetInvisibleSID(),
         ICQ_ROSTxINVISIBLE);
+      addToModifyUsers(pRemove->SubSequence(), _szId);
       SendEvent_Server(pRemove);
       gUserManager.DropUser(u);
     }
@@ -4305,13 +4260,16 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       do
       {
         pthread_mutex_lock(&mutex_modifyserverusers);
-        char *szPending = m_lszModifyServerUsers.front();
-        m_lszModifyServerUsers.pop_front();
+        std::map<unsigned long, std::string>::iterator mapIter = m_lszModifyServerUsers.find(nSubSequence);
         pthread_mutex_unlock(&mutex_modifyserverusers);
 
-       unsigned long nUin = 0;
-        if (szPending && strcmp(szPending, "") != 0)
-          nUin = atol(szPending);
+        if (mapIter == m_lszModifyServerUsers.end())
+        {
+          gLog.Info(tr("%sSkipping invalid server side list ack (%ld).\n"),
+              L_SRVxSTR, nSubSequence);
+          break;
+        }
+        std::string pending = mapIter->second;
 
         nError = packet.UnpackUnsignedShortBE();
 
@@ -4321,17 +4279,17 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
           case 0x0E:
             gLog.Info(tr("%s%s added to awaiting authorization group on server list.\n"),
-                       L_SRVxSTR, szPending);
+                       L_SRVxSTR, pending.c_str());
             break;
 
           case 0x02:
             gLog.Warn(tr("%sUser/Group %s not found on server list.\n"),
-                       L_WARNxSTR,szPending);
+                       L_WARNxSTR, pending.c_str());
             break;
 
           default:
             gLog.Warn(tr("%sUnknown error modifying server list: 0x%02X (ID: %s)\n"),
-                         L_ERRORxSTR, nError & 0xFF, szPending);
+                         L_ERRORxSTR, nError & 0xFF, pending.c_str());
         }
 
         if (nError && nError != 0x0E)
@@ -4344,8 +4302,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           {
             if (nError == 0x0E && e->SubType() == ICQ_SNACxLIST_ROSTxADD)
             {
-              if (szPending)
-                icqAddUserServer(szPending, true);
+              if (pending.length())
+                icqAddUserServer(pending.c_str(), true);
               break;
             }
 
@@ -4360,14 +4318,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
 
               GroupList *g = gUserManager.LockGroupList(LOCK_R);
-              pthread_mutex_lock(&mutex_modifyserverusers);
-              char *szGroupName = 0;
+              std::string groupName;
               if (e->ExtraInfo() == 0)
-                szGroupName = strdup(tr("top level"));
+                groupName = ""; // top level
               else
-                szGroupName = strdup((*g)[n-1]);
-              m_lszModifyServerUsers.push_back(szGroupName);
-              pthread_mutex_unlock(&mutex_modifyserverusers);
+                groupName = (*g)[n-1];
               gUserManager.UnlockGroupList();
 
               // Start editing server list
@@ -4386,10 +4341,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               }
               else
               {
-                pReply = new CPU_UpdateToServerList(szGroupName, ICQ_ROSTxGROUP,
+                pReply = new CPU_UpdateToServerList(groupName.c_str(), ICQ_ROSTxGROUP,
                                                     e->ExtraInfo());
-                gLog.Info(tr("%sUpdating group %s.\n"), L_SRVxSTR, szGroupName);
+                gLog.Info(tr("%sUpdating group %s.\n"), L_SRVxSTR, groupName.c_str());
               }
+              addToModifyUsers(pReply->SubSequence(), groupName);
               SendExpectEvent_Server(0, pReply, NULL);
 
               // Finish editing server list
@@ -4403,14 +4359,14 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             // that will send a message out to the server AGAIN
             if (e->SubType() == ICQ_SNACxLIST_ROSTxADD && !bTopLevelUpdated)
             {
-              ICQUser *u = gUserManager.FetchUser(szPending, LICQ_PPID, LOCK_R);
+              ICQUser *u = gUserManager.FetchUser(pending.c_str(), LICQ_PPID, LOCK_R);
               if (u)
               {
                 u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(
                               e->ExtraInfo()));
                 gUserManager.DropUser(u);
                 PushPluginSignal(new CICQSignal(SIGNAL_ADDxSERVERxLIST, 0,
-                                                szPending, LICQ_PPID));
+                                                pending.c_str(), LICQ_PPID));
               }
             }
 
@@ -4423,15 +4379,13 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             {
               bHandled = true;
               gLog.Info(tr("%sUpdated %s successfully.\n"), L_SRVxSTR,
-                        szPending);
+                        pending.c_str());
                 
               if (nError == 0x0E)
               {
-                pReply = new CPU_UpdateToServerList(szPending,
+                pReply = new CPU_UpdateToServerList(pending.c_str(),
                   ICQ_ROSTxNORMAL, 0, true);
-                pthread_mutex_lock(&mutex_modifyserverusers);
-                m_lszModifyServerUsers.push_back(strdup(szPending));
-                pthread_mutex_unlock(&mutex_modifyserverusers);
+                addToModifyUsers(pReply->SubSequence(), pending);
                 SendExpectEvent_Server(0, pReply, NULL);
               }
             }
@@ -4439,7 +4393,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             break;
           }
         }
-        free(szPending);
+
+        // Remove it from the map now that we will process it
+        m_lszModifyServerUsers.erase(mapIter);
       } while (!packet.End());
 
       break;
@@ -6371,6 +6327,13 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   delete [] szCookie;
 
   return true;
+}
+
+void  CICQDaemon::addToModifyUsers(unsigned long unique_id, const std::string data)
+{
+  pthread_mutex_lock(&mutex_modifyserverusers);
+  m_lszModifyServerUsers[unique_id] = data;
+  pthread_mutex_unlock(&mutex_modifyserverusers);
 }
 
 int CICQDaemon::RequestReverseConnection(unsigned long nUin,

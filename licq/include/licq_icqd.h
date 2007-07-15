@@ -13,6 +13,7 @@ header file containing all the main procedures to interface with the ICQ server 
 
 #include <vector>
 #include <list>
+#include <map>
 #include <deque>
 #include <string>
 #include <algorithm>
@@ -722,7 +723,7 @@ protected:
   pthread_mutex_t mutex_extendedevents;
   std::list <ICQEvent *> m_lxSendQueue_Server;
   pthread_mutex_t mutex_sendqueue_server;
-  std::list <char *> m_lszModifyServerUsers;
+  std::map <unsigned long, std::string> m_lszModifyServerUsers;
   pthread_mutex_t mutex_modifyserverusers;
   pthread_mutex_t mutex_cancelthread;
   pthread_t thread_monitorsockets,
@@ -818,6 +819,9 @@ protected:
   void icqUpdateInfoTimestamp(const char *);
 
   void StupidChatLinkageFix();
+
+  // Helpers
+  void addToModifyUsers(unsigned long, const std::string);
 
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);
