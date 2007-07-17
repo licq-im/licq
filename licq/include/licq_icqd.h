@@ -821,7 +821,7 @@ protected:
   void StupidChatLinkageFix();
 
   // Helpers
-  void addToModifyUsers(unsigned long, const std::string);
+  void addToModifyUsers(unsigned long unique_id, const std::string data);
 
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);
