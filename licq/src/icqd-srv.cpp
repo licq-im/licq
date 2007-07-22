@@ -264,31 +264,11 @@ void CICQDaemon::icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
                                 unsigned short _nOldGSID, unsigned short _nNewType,
                                 unsigned short _nOldType)
 {
-  if (!UseServerContactList())  return;
-
-  // Get their old SID
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-  int nSID = u->GetSID();
-  gUserManager.DropUser(u);
-
-  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-                                                ICQ_SNACxLIST_ROSTxEDITxSTART);
-  SendEvent_Server(pStart);
-
   char szUin[13];
   snprintf(szUin, 12, "%lu", _nUin);
   szUin[12] = '\0';
 
-  CPU_AddToServerList *pAdd = new CPU_AddToServerList(szUin, _nNewType,
-                                                      _nNewGroup);
-  gLog.Info(tr("%sChanging group on server list for %s ...\n"), L_SRVxSTR, szUin);
-  addToModifyUsers(pAdd->SubSequence(), szUin);
-  SendExpectEvent_Server(0, pAdd, NULL);
-
-  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(szUin, _nOldGSID,
-                                                        nSID, _nOldType);
-  addToModifyUsers(pRemove->SubSequence(), szUin);
-  SendExpectEvent_Server(0, pRemove, NULL);
+  icqChangeGroup(szUin, LICQ_PPID, _nNewGroup, _nOldGSID, _nNewType, _nOldType);
 }
 
 void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
@@ -302,20 +282,25 @@ void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
   int nSID = u->GetSID();
   gUserManager.DropUser(u);
 
+  gLog.Info(tr("%sChanging group on server list for %s ...\n"), L_SRVxSTR, _szId);
+
+  // Start transaction
   CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
                                                 ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
-  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, _nNewType,
-                                                      _nNewGroup);
-  gLog.Info(tr("%sChanging group on server list for %s ...\n"), L_SRVxSTR, _szId);
-  addToModifyUsers(pAdd->SubSequence(), _szId);
-  SendExpectEvent_Server(0, pAdd, NULL);
-
+  // Delete the user
   CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, _nOldGSID,
                                                         nSID, _nOldType);
   addToModifyUsers(pRemove->SubSequence(), _szId);
   SendExpectEvent_Server(0, pRemove, NULL);
+
+  // Add the user, with the new group
+  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, _nNewType,
+                                                      _nNewGroup);
+  addToModifyUsers(pAdd->SubSequence(), _szId);
+  SendExpectEvent_Server(0, pAdd, NULL);
+
 }
 
 //-----icqExportGroups----------------------------------------------------------
