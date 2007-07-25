@@ -50,14 +50,12 @@ CMMUserViewItem::CMMUserViewItem(ICQUser *u, QListView *parent)
   m_szId = u->IdString() ? strdup(u->IdString()) : 0;
   m_nPPID = u->PPID();
 
-  QTextCodec * codec = UserCodec::codecForICQUser(u);
-
   CMMUserView *v = (CMMUserView *)listView();
 
   for (unsigned short i = 0; i < v->colInfo.size(); i++)
   {
     sTemp = u->usprintf(v->colInfo[i]->m_szFormat);
-    setText(i, codec->toUnicode(sTemp));
+    setText(i, QString::fromUtf8(sTemp));
     free(sTemp);
   }
 }
