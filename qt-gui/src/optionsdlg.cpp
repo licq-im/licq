@@ -1360,7 +1360,7 @@ QWidget* OptionsDlg::new_column_options()
   lblColFormat = new QLabel (tr("Format"), grp);
   QWhatsThis::add(lblColFormat, QStyleSheet::convertFromPlainText(tr("The format string used to define what will "
                                    "appear in each column.\n"
-                                   "The following parameters can be used:\n")) + gMainWindow->usprintfHelp);
+                                   "The following parameters can be used:")) + gMainWindow->usprintfHelp);
   lblColWidth = new QLabel (tr("Width"), grp);
   QWhatsThis::add(lblColWidth, tr("The width of the column"));
   lblColAlign = new QLabel(tr("Alignment"), grp);

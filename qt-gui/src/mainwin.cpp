@@ -696,6 +696,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
                     "<li><tt>%l - </tt>last name</li>"
                     "<li><tt>%L - </tt>local time</li>"
                     "<li><tt>%m - </tt># pending messages</li>"
+                    "<li><tt>%M - </tt># pending messages (if any)</li>"
                     "<li><tt>%n - </tt>full name</li>"
                     "<li><tt>%o - </tt>last seen online</li>"
 		    "<li><tt>%O - </tt>online since</li>"
@@ -4957,7 +4958,7 @@ void CMainWindow::slot_hints()
     "<li>Hit Ctrl-Enter from most text entry fields to select \"Ok\" or \"Accept\"."
     "   For example in the send tab of the user function window.</li>"
     "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
-    "   parameters, <b>auto responses</b>, and <b>utilities</b>:\n") + gMainWindow->usprintfHelp +
+    "   parameters, <b>auto responses</b>, and <b>utilities</b>:") + gMainWindow->usprintfHelp +
                    "</li></ul>" + tr(
     "<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>");
 
