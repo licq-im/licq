@@ -3095,8 +3095,12 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
         }
 
         case 'm':
-          sprintf(szTemp, "%d", NewMessages());
-          sz = szTemp;
+        case 'M':
+          if (_szFormat[i] == 'm' || NewMessages())
+            sprintf(szTemp, "%d", NewMessages());
+          else
+            szTemp[0] = '\0';
+	  sz = szTemp;
           break;
         case '%':
           strcpy(szTemp, "\%");
