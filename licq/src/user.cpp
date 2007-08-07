@@ -3100,7 +3100,7 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
             sprintf(szTemp, "%d", NewMessages());
           else
             szTemp[0] = '\0';
-	  sz = szTemp;
+          sz = szTemp;
           break;
         case '%':
           strcpy(szTemp, "\%");
