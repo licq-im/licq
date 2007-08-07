@@ -417,12 +417,12 @@ bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
 class CUserManager gUserManager;
 
 const char *GroupsSystemNames[NUM_GROUPS_SYSTEM+1] = {
-  "",
-  "Online Notify",
-  "Visible List",
-  "Invisible List",
-  "Ignore List",
-  "New Users"
+  tr("All Users"),
+  tr("Online Notify"),
+  tr("Visible List"),
+  tr("Invisible List"),
+  tr("Ignore List"),
+  tr("New Users")
 };
 
 char *PPIDSTRING(unsigned long id)
