@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2006-11-08 21:36-0300\n"
+"POT-Creation-Date: 2007-08-10 21:50+0300\n"
 "PO-Revision-Date: 2006-11-08 23:51-0300\n"
 "Last-Translator: Sebastian Renzi <srenzi@gmail.com>\n"
 "Language-Team: \n"
@@ -18,14 +18,14 @@ msgstr ""
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
 
-#: src/buffer.cpp:508
+#: src/buffer.cpp:509
 #, c-format
 msgid "%sPackUnsignedLong(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackUnsignedLong(): Intentando insertar más información de la que CBuffer "
 "puede albergar!\n"
 
-#: src/buffer.cpp:521
+#: src/buffer.cpp:522
 #, c-format
 msgid ""
 "%sPackUnsignedLongBE(): Trying to pack more data than CBuffer can hold!\n"
@@ -33,28 +33,28 @@ msgstr ""
 "%sPackUnsignedLongBE(): Intentando insertar más información de la que "
 "CBuffer puede albergar!\n"
 
-#: src/buffer.cpp:534
+#: src/buffer.cpp:535
 #, c-format
 msgid "%sPackChar(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackChar(): Intentando insertar más información de la que CBuffer puede "
 "albergar!\n"
 
-#: src/buffer.cpp:547 src/buffer.cpp:561
+#: src/buffer.cpp:548 src/buffer.cpp:562
 #, c-format
 msgid "%sPack(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPack(): Intentando insertar más información de la que CBuffer puede "
 "albergar!\n"
 
-#: src/buffer.cpp:585
+#: src/buffer.cpp:586
 #, c-format
 msgid "%sPackString(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackString(): Intentando insertar más información de la que CBuffer puede "
 "albergar!\n"
 
-#: src/buffer.cpp:605
+#: src/buffer.cpp:606
 #, c-format
 msgid ""
 "%sPackUnsignedShort(): Trying to pack more data than CBuffer can hold!\n"
@@ -62,7 +62,7 @@ msgstr ""
 "%sPackUnsignedShort(): Intentando insertar más información de la que CBuffer "
 "puede albergar!\n"
 
-#: src/buffer.cpp:618
+#: src/buffer.cpp:619
 #, c-format
 msgid ""
 "%sPackUnsignedShortBE(): Trying to pack more data than CBuffer can hold!\n"
@@ -70,12 +70,12 @@ msgstr ""
 "%sPackUnsignedShortBE(): Intentando insertar más información de la que "
 "CBuffer puede albergar!\n"
 
-#: src/buffer.cpp:671
+#: src/buffer.cpp:672
 #, c-format
 msgid "%sRead too much TLV data!\n"
 msgstr "%s Leyó demasiada información TLV!\n"
 
-#: src/buffer.cpp:679
+#: src/buffer.cpp:680
 #, c-format
 msgid "%sUnable to read requested amount of TLV data!\n"
 msgstr "%sNo puede leer la cantidad de datos TLV solicitados!\n"
@@ -1527,7 +1527,7 @@ msgstr "%sNo se puede abrir \"%s\" para escritura.\n"
 msgid "%sCancelled event not found.\n"
 msgstr "%sNo se encuentra el evento cancelado.\n"
 
-#: src/icqd.cpp:2455 src/icqd-srv.cpp:3410 src/icqd-srv.cpp:4647
+#: src/icqd.cpp:2455 src/icqd-srv.cpp:3377 src/icqd-srv.cpp:4616
 #: src/message.cpp:1212
 msgid "Message"
 msgstr "Mensaje"
@@ -1540,7 +1540,7 @@ msgstr "Petición de charla"
 msgid "File transfer request through server"
 msgstr "Pedido de transferencia de fichero a través del servidor"
 
-#: src/icqd.cpp:2534 src/icqd-srv.cpp:3425 src/icqd-srv.cpp:4663
+#: src/icqd.cpp:2534 src/icqd-srv.cpp:3392 src/icqd-srv.cpp:4632
 #: src/message.cpp:1215
 msgid "URL"
 msgstr "URL"
@@ -1549,13 +1549,13 @@ msgstr "URL"
 msgid "Contact list"
 msgstr "Lista de contactos"
 
-#: src/icqd.cpp:2568 src/icqd-srv.cpp:3885
+#: src/icqd.cpp:2568 src/icqd-srv.cpp:3852
 #, c-format
 msgid "%sAuto response from %s (#%lu).\n"
 msgstr "%sRespuesta automática de %s (#%lu).\n"
 
-#: src/icqd.cpp:2579 src/icqd.cpp:2672 src/icqd-srv.cpp:3832
-#: src/icqd-srv.cpp:3920 src/icqd-tcp.cpp:3032
+#: src/icqd.cpp:2579 src/icqd.cpp:2672 src/icqd-srv.cpp:3799
+#: src/icqd-srv.cpp:3887 src/icqd-tcp.cpp:3032
 #, c-format
 msgid "%sAck for unknown event.\n"
 msgstr "%sAck para evento desconocido.\n"
@@ -1785,248 +1785,248 @@ msgstr "%sTransferencia de Ficehros: No existe el socket.\n"
 msgid "%sAlerting server to new user (#%hu)...\n"
 msgstr "%sAlertando al servidor sobre el nuevo usuario (#%hu)...\n"
 
-#: src/icqd-srv.cpp:97
+#: src/icqd-srv.cpp:93
 #, c-format
 msgid "%sAdding %s to server list...\n"
 msgstr "%sAgregando a %s a la lista del servidor...\n"
 
-#: src/icqd-srv.cpp:227
+#: src/icqd-srv.cpp:207
 #, c-format
 msgid "%sExporting users to server contact list...\n"
 msgstr "%sExportando usuarios a la lista de contactos del servidor...\n"
 
-#: src/icqd-srv.cpp:245 src/icqd-srv.cpp:4357
+#: src/icqd-srv.cpp:224 src/icqd-srv.cpp:4325
 #, c-format
 msgid "%sUpdating top level group.\n"
 msgstr "%sActualizando el grupo de nivel superior.\n"
 
-#: src/icqd-srv.cpp:257 src/icqd-srv.cpp:4363
+#: src/icqd-srv.cpp:236 src/icqd-srv.cpp:4331
 #, c-format
 msgid "%sUpdating group %s.\n"
 msgstr "%sActualizando el grupo %s.\n"
 
-#: src/icqd-srv.cpp:284
+#: src/icqd-srv.cpp:257
 #, c-format
 msgid "%sAdding group %s (%d) to server list ...\n"
 msgstr "%sAgregando el grupo %s (%d) a la lista del servidor ...\n"
 
-#: src/icqd-srv.cpp:315 src/icqd-srv.cpp:345
+#: src/icqd-srv.cpp:285
 #, c-format
 msgid "%sChanging group on server list for %s ...\n"
 msgstr "%sModificando grupo en la lista del servidor para %s ...\n"
 
-#: src/icqd-srv.cpp:362
+#: src/icqd-srv.cpp:315
 #, c-format
 msgid "%sExporting groups to server contact list...\n"
 msgstr "%sExportando grupos a la lista de contactos del servidor...\n"
 
-#: src/icqd-srv.cpp:374
+#: src/icqd-srv.cpp:331
 #, c-format
 msgid "%sAdding privacy information to server side list...\n"
 msgstr ""
 "%sagregando información de privacidad a la lista del lado del servidor...\n"
 
-#: src/icqd-srv.cpp:429 src/icqd-srv.cpp:462
+#: src/icqd-srv.cpp:405 src/icqd-srv.cpp:435
 #, c-format
 msgid "%sAlerting server to remove user (#%hu)...\n"
 msgstr "%sAlertando al servidor que deseamos remover un usuario (#%hu)...\n"
 
-#: src/icqd-srv.cpp:482
+#: src/icqd-srv.cpp:451
 #, c-format
 msgid "%sRemoving group from server side list (%s)...\n"
 msgstr "%sRemoviendo grupo de la lista del lado del servidor (%s)...\n"
 
-#: src/icqd-srv.cpp:497
+#: src/icqd-srv.cpp:463
 #, c-format
 msgid "%sRenaming group with id %d to %s...\n"
 msgstr "%sRenombrando el grupo con id %d a %s...\n"
 
-#: src/icqd-srv.cpp:534
+#: src/icqd-srv.cpp:497
 #, c-format
 msgid "%sRenaming %s to %s...\n"
 msgstr "%sRenombrando %s a %s...\n"
 
-#: src/icqd-srv.cpp:548
+#: src/icqd-srv.cpp:512
 #, c-format
 msgid "%sAlerting user they were added (#%hu)...\n"
 msgstr "%sAlertando al usuario que ha sido añadido (#%hu)...\n"
 
-#: src/icqd-srv.cpp:599
+#: src/icqd-srv.cpp:563
 #, c-format
 msgid "%sRequesting auto response from %s (%hu).\n"
 msgstr "%sSolicitando respuesta automática de %s (%hu).\n"
 
-#: src/icqd-srv.cpp:621
+#: src/icqd-srv.cpp:585
 #, c-format
 msgid "%sSetting random chat group (#%hu)...\n"
 msgstr "%sEstableciendo grupo de charla aleatorio (#%hu)...\n"
 
-#: src/icqd-srv.cpp:634
+#: src/icqd-srv.cpp:598
 #, c-format
 msgid "%sSearching for random chat user (#%hu)...\n"
 msgstr "%sBuscando grupo de charla aleatorio (#%hu)...\n"
 
-#: src/icqd-srv.cpp:667
+#: src/icqd-srv.cpp:631
 #, c-format
 msgid "%sRegistering a new user...\n"
 msgstr "%sRegistrando un nuevo usuario...\n"
 
-#: src/icqd-srv.cpp:679
+#: src/icqd-srv.cpp:643
 #, c-format
 msgid "%sRequesting verification image...\n"
 msgstr "%sSolicitando imagen de verificación...\n"
 
-#: src/icqd-srv.cpp:690
+#: src/icqd-srv.cpp:654
 #, c-format
 msgid "%sSending verification for registration.\n"
 msgstr "%sEnviando verificación para la registración.\n"
 
-#: src/icqd-srv.cpp:740
+#: src/icqd-srv.cpp:704
 #, c-format
 msgid "%sRequesting meta info for %s (#%hu/#%d)...\n"
 msgstr "%sSolicitando metainformación de%s (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:819
+#: src/icqd-srv.cpp:783
 #, c-format
 msgid "%sChanging status to %s (#%hu)...\n"
 msgstr "%sCambiando estado a %s (#%hu)...\n"
 
-#: src/icqd-srv.cpp:838
+#: src/icqd-srv.cpp:802
 #, c-format
 msgid "%sUpdating password (#%hu/#%d)...\n"
 msgstr "%sActualizando contraseña (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:887
+#: src/icqd-srv.cpp:851
 #, c-format
 msgid "%sUpdating general info (#%hu/#%d)...\n"
 msgstr "%sActualizando información general (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:903
+#: src/icqd-srv.cpp:867
 #, c-format
 msgid "%sUpdating additional E-Mail info (#%hu/#%d)...\n"
 msgstr "%sActualizando información adicional de E-Mail (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:924
+#: src/icqd-srv.cpp:888
 #, c-format
 msgid "%sUpdating more info (#%hu/#%d)...\n"
 msgstr "%sActualizando más info (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:974
+#: src/icqd-srv.cpp:938
 #, c-format
 msgid "%sUpdating work info (#%hu/#%d)...\n"
 msgstr "%sActualizando info de trabajo (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:989
+#: src/icqd-srv.cpp:953
 #, c-format
 msgid "%sUpdating about (#%hu/#%d)...\n"
 msgstr "%sActualizando Acerca de(#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1030
+#: src/icqd-srv.cpp:994
 #, c-format
 msgid "%sAuthorizing user %s (#%hu)...\n"
 msgstr "%sAutorizando al usuario %s (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1070
+#: src/icqd-srv.cpp:1034
 #, c-format
 msgid "%sRefusing authorization to user %s (#%hu)...\n"
 msgstr "%sDenegando autorización al usuario %s (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1091
+#: src/icqd-srv.cpp:1070
 #, c-format
 msgid "%sUpdating security info (#%hu/#%d)...\n"
 msgstr "%sActualizando info de seguridad (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1112
+#: src/icqd-srv.cpp:1091
 #, c-format
 msgid "%sStarting white pages search (#%hu/#%d)...\n"
 msgstr "%sIniciando búsqueda en las páginas blancas (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1124
+#: src/icqd-srv.cpp:1103
 #, c-format
 msgid "%sStarting search by UIN for user (#%hu/#%d)...\n"
 msgstr "%sIniciando búsqueda por UIN para el usuario (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1141
+#: src/icqd-srv.cpp:1120
 #, c-format
 msgid "%sRequesting user info (#%hu/#%d)...\n"
 msgstr "%sSolicitando info de usuario (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1227 src/icqd-srv.cpp:1239
+#: src/icqd-srv.cpp:1206 src/icqd-srv.cpp:1218
 #, c-format
 msgid "%sUpdating contact list (#%hu)...\n"
 msgstr "%sActualizando lista de contactos (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1274
+#: src/icqd-srv.cpp:1253
 #, c-format
 msgid "%sSending visible list (#%hu)...\n"
 msgstr "%sEnviando lista visible (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1291
+#: src/icqd-srv.cpp:1270
 #, c-format
 msgid "%sSending invisible list (#%hu)...\n"
 msgstr "%sEnviando lista invisible (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1405
+#: src/icqd-srv.cpp:1384
 #, c-format
 msgid "%sAdding user %s to visible list (#%hu)...\n"
 msgstr "%sAgregando el usuario %s a la lista visible (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1439
+#: src/icqd-srv.cpp:1415
 #, c-format
 msgid "%sRemoving user %s from visible list (#%hu)...\n"
 msgstr "%sQuitando al usuario %s de la lista visible (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1479
+#: src/icqd-srv.cpp:1452
 #, c-format
 msgid "%sAdding user %s to invisible list (#%hu)...\n"
 msgstr "%sAgregando al usuario %s a la lista invisible (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1513
+#: src/icqd-srv.cpp:1483
 #, c-format
 msgid "%sRemoving user %s from invisible list (#%hu)...\n"
 msgstr "%sQuitando al usuario %s de la lista invisible (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1589 src/icqd-srv.cpp:1600
+#: src/icqd-srv.cpp:1556 src/icqd-srv.cpp:1567
 #, c-format
 msgid "%sDeleting server list users (#%hu)...\n"
 msgstr "%sBorrando usuarios de la lista del servidor (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1623 src/icqd-srv.cpp:1635
+#: src/icqd-srv.cpp:1590 src/icqd-srv.cpp:1602
 #, c-format
 msgid "%sDeleting server list invisible list users (#%hu)...\n"
 msgstr "%sBorrando usuarios de la lista invisible del servidor (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1656 src/icqd-srv.cpp:1668
+#: src/icqd-srv.cpp:1623 src/icqd-srv.cpp:1635
 #, c-format
 msgid "%sDeleting server list visible list users (#%hu)...\n"
 msgstr "%sBorrando usuarios de la lista visible del servidor (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1690
+#: src/icqd-srv.cpp:1657
 #, c-format
 msgid "%sSending message through server (#%hu).\n"
 msgstr "%sEnviando mensaje a través del servidor (#%hu).\n"
 
-#: src/icqd-srv.cpp:1693
+#: src/icqd-srv.cpp:1660
 #, c-format
 msgid "%sSending url through server (#%hu).\n"
 msgstr "%sEnviando url a través del servidor (#%hu).\n"
 
-#: src/icqd-srv.cpp:1696
+#: src/icqd-srv.cpp:1663
 #, c-format
 msgid "%sSending contact list through server (#%hu).\n"
 msgstr "%sEnviando lista de contactos a través del servidor (#%hu).\n"
 
-#: src/icqd-srv.cpp:1699
+#: src/icqd-srv.cpp:1666
 #, c-format
 msgid "%sSending misc through server (#%hu).\n"
 msgstr "%sEnviando misceláneas a través del servidor (#%hu).\n"
 
-#: src/icqd-srv.cpp:1728
+#: src/icqd-srv.cpp:1695
 #, c-format
 msgid "%sSending SMS through server (#%hu/#%d)...\n"
 msgstr "%sEnviando SMS a través del servidor (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1844
+#: src/icqd-srv.cpp:1811
 #, c-format
 msgid ""
 "%sAttempt to logon while already logged or logging on, logoff and try "
@@ -2035,7 +2035,7 @@ msgstr ""
 "%sIntentando conectarse cuando ya estaba conectado. Desconéctese e inténtelo "
 "de nuevo.\n"
 
-#: src/icqd-srv.cpp:1857
+#: src/icqd-srv.cpp:1824
 #, c-format
 msgid ""
 "%sNo password set.  Edit ~/.licq/owner.Licq and fill in the password field.\n"
@@ -2043,37 +2043,37 @@ msgstr ""
 "%sNo se configuró la contraseña.  Edite ~/.licq/owner.Licq y complete el "
 "campo password.\n"
 
-#: src/icqd-srv.cpp:1869
+#: src/icqd-srv.cpp:1836
 #, c-format
 msgid "%sRequesting logon (#%hu)...\n"
 msgstr "%sPedido de conexión (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1899
+#: src/icqd-srv.cpp:1866
 #, c-format
 msgid "%sAttempt to logoff while not logged on.\n"
 msgstr "%sIntento de desconexión cuando no estaba conectado.\n"
 
-#: src/icqd-srv.cpp:1905
+#: src/icqd-srv.cpp:1872
 #, c-format
 msgid "%sLogging off.\n"
 msgstr "%sDesconectándose.\n"
 
-#: src/icqd-srv.cpp:1974
+#: src/icqd-srv.cpp:1941
 #, c-format
 msgid "Event #%hu is still on queue!\n"
 msgstr "El evento #%hu todavía está en la cola!\n"
 
-#: src/icqd-srv.cpp:2068
+#: src/icqd-srv.cpp:2035
 #, c-format
 msgid "%sProxy server not properly configured.\n"
 msgstr "%sEl servidor proxy no está correctamente configurado.\n"
 
-#: src/icqd-srv.cpp:2084
+#: src/icqd-srv.cpp:2051
 #, c-format
 msgid "%sResolving %s port %d...\n"
 msgstr "%sResolviendo %s puerto %d...\n"
 
-#: src/icqd-srv.cpp:2087
+#: src/icqd-srv.cpp:2054
 #, c-format
 msgid ""
 "%sUnable to resolve %s:\n"
@@ -2082,17 +2082,17 @@ msgstr ""
 "%sNo se puede resolver %s:\n"
 "%s%s.\n"
 
-#: src/icqd-srv.cpp:2092
+#: src/icqd-srv.cpp:2059
 #, c-format
 msgid "%sICQ server found at %s:%d.\n"
 msgstr "%sServidor ICQ encontrado en %s:%d.\n"
 
-#: src/icqd-srv.cpp:2102
+#: src/icqd-srv.cpp:2069
 #, c-format
 msgid "%sOpening socket to server.\n"
 msgstr "%sAbriendo socket en el servidor.\n"
 
-#: src/icqd-srv.cpp:2108
+#: src/icqd-srv.cpp:2075
 #, c-format
 msgid ""
 "%sUnable to connect to %s:%d:\n"
@@ -2101,24 +2101,24 @@ msgstr ""
 "%sNo se puede conectar a %s:%d:\n"
 "%s%s.\n"
 
-#: src/icqd-srv.cpp:2120
+#: src/icqd-srv.cpp:2087
 #, c-format
 msgid "%sConnection to server already exists, aborting.\n"
 msgstr "%sLa conexión con el servidor ya existe, abortando.\n"
 
-#: src/icqd-srv.cpp:2153
+#: src/icqd-srv.cpp:2120
 #, c-format
 msgid "%sResponse to unknown %s info request for unknown user (%s).\n"
 msgstr ""
 "%sRespuesta a %s pedido de info desconocido para usuario desconocido (%s).\n"
 
-#: src/icqd-srv.cpp:2172
+#: src/icqd-srv.cpp:2139
 #, c-format
 msgid "%sReceived %s information for %s (%s).\n"
 msgstr "%sSe recibe %s información para %s (%s).\n"
 
-#: src/icqd-srv.cpp:2209 src/icqd-srv.cpp:2365 src/icqd-srv.cpp:4588
-#: src/icqd-srv.cpp:4598 src/icqd-srv.cpp:6134
+#: src/icqd-srv.cpp:2176 src/icqd-srv.cpp:2332 src/icqd-srv.cpp:4557
+#: src/icqd-srv.cpp:4567 src/icqd-srv.cpp:6091
 #, c-format
 msgid ""
 "%sUnknown server response:\n"
@@ -2127,232 +2127,232 @@ msgstr ""
 "%sRespuesta del servidor desconocida:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:2243
+#: src/icqd-srv.cpp:2210
 #, c-format
 msgid "%sPacket on unhandled Channel 'Error' received!\n"
 msgstr "%sPaquete de 'Error' en canal sin manejar!\n"
 
-#: src/icqd-srv.cpp:2251
+#: src/icqd-srv.cpp:2218
 #, c-format
 msgid "%sServer send unknown channel: %02x\n"
 msgstr "%sEl servidor envió canal desconocido: %02x\n"
 
-#: src/icqd-srv.cpp:2271
+#: src/icqd-srv.cpp:2238
 #, c-format
 msgid "%sServer says he's ready.\n"
 msgstr "%sEl servidor dice que está listo.\n"
 
-#: src/icqd-srv.cpp:2273
+#: src/icqd-srv.cpp:2240
 #, c-format
 msgid "%sSending our channel capability list...\n"
 msgstr "%sEnviando nuestra lista de capacidades de canal...\n"
 
-#: src/icqd-srv.cpp:2277
+#: src/icqd-srv.cpp:2244
 #, c-format
 msgid "%sRequesting rate info...\n"
 msgstr "%sPidiendo información de tasa...\n"
 
-#: src/icqd-srv.cpp:2295
+#: src/icqd-srv.cpp:2262
 #, c-format
 msgid "%sServer sent us channel capability list (ignoring).\n"
 msgstr "%sEl servidor nos envió la lista de capacidades (se ignora).\n"
 
-#: src/icqd-srv.cpp:2297
+#: src/icqd-srv.cpp:2264
 #, c-format
 msgid "%sRequesting self info.\n"
 msgstr "%sPidiendo información propia.\n"
 
-#: src/icqd-srv.cpp:2301
+#: src/icqd-srv.cpp:2268
 #, c-format
 msgid "%sRequesting list rights.\n"
 msgstr "%sPidiendo derechos de la lista.\n"
 
-#: src/icqd-srv.cpp:2305
+#: src/icqd-srv.cpp:2272
 #, c-format
 msgid "%sRequesting list.\n"
 msgstr "%sPidiendo la lista.\n"
 
-#: src/icqd-srv.cpp:2309
+#: src/icqd-srv.cpp:2276
 #, c-format
 msgid "%sRequesting location rights.\n"
 msgstr "%sPidiendo los derechos del lugar.\n"
 
-#: src/icqd-srv.cpp:2313
+#: src/icqd-srv.cpp:2280
 #, c-format
 msgid "%sRequesting contact list rights.\n"
 msgstr "%sPidiendo derechos de la lista de contactos.\n"
 
-#: src/icqd-srv.cpp:2317
+#: src/icqd-srv.cpp:2284
 #, c-format
 msgid "%sRequesting Instant Messaging rights.\n"
 msgstr "%sPidiendo derechos de mensajes instantáneos.\n"
 
-#: src/icqd-srv.cpp:2321
+#: src/icqd-srv.cpp:2288
 #, c-format
 msgid "%sRequesting BOS rights.\n"
 msgstr "%sPidiendo derechos BOS.\n"
 
-#: src/icqd-srv.cpp:2329
+#: src/icqd-srv.cpp:2296
 #, c-format
 msgid "%sServer sent us rate information.\n"
 msgstr "%sEl servidor nos envió información de tasa.\n"
 
-#: src/icqd-srv.cpp:2333
+#: src/icqd-srv.cpp:2300
 #, c-format
 msgid "%sSetting ICQ Instant Messaging Mode.\n"
 msgstr "%sConfigurando modo de mensajeria instantánea de ICQ.\n"
 
-#: src/icqd-srv.cpp:2341
+#: src/icqd-srv.cpp:2308
 #, c-format
 msgid "%sSending capability settings (?)\n"
 msgstr "%sEnviando configuración de capacidades (?)\n"
 
-#: src/icqd-srv.cpp:2354
+#: src/icqd-srv.cpp:2321
 #, c-format
 msgid "%sGot Name Info from Server\n"
 msgstr "%sSe recibió info de nombre desde el servidor\n"
 
-#: src/icqd-srv.cpp:2390
+#: src/icqd-srv.cpp:2357
 #, c-format
 msgid "%sServer says we are at %s.\n"
 msgstr "%sEl servidor dice que estamos en %s.\n"
 
-#: src/icqd-srv.cpp:2405
+#: src/icqd-srv.cpp:2372
 #, c-format
 msgid "%sServer says we're now: %s\n"
 msgstr "%sEl servidor dice que ahora estamos: %s\n"
 
-#: src/icqd-srv.cpp:2423
+#: src/icqd-srv.cpp:2390
 #, c-format
 msgid "%sServer is going to disconnect/pause. Lets reconnect to another one.\n"
 msgstr "%sEl servidor se va a a desconectar/pausar. Nos reconectamos a otro.\n"
 
-#: src/icqd-srv.cpp:2443
+#: src/icqd-srv.cpp:2410
 #, c-format
 msgid "%sReceived rights for Location Services.\n"
 msgstr "%sSe recibieron los derechos de servicios del lugar.\n"
 
-#: src/icqd-srv.cpp:2461
+#: src/icqd-srv.cpp:2428
 #, c-format
 msgid "%sReceived away message for %s.\n"
 msgstr "%sSe recibe el mensaje de ausente de %s.\n"
 
-#: src/icqd-srv.cpp:2478
+#: src/icqd-srv.cpp:2445
 #, c-format
 msgid "%sReceived user information for %s.\n"
 msgstr "%sSe recibe la información de usuario de %s.\n"
 
-#: src/icqd-srv.cpp:2543
+#: src/icqd-srv.cpp:2510
 #, c-format
 msgid "%sUnknown user (%s) changed status.\n"
 msgstr "%sEl usuario desconocido (%s) cambió de estado.\n"
 
-#: src/icqd-srv.cpp:2648
+#: src/icqd-srv.cpp:2615
 #, c-format
 msgid "%s%s (%s) changed status: %s (v%d)%s"
 msgstr "%s%s (%s) cambió de estado: %s (v%d)%s"
 
-#: src/icqd-srv.cpp:2697
+#: src/icqd-srv.cpp:2664
 #, c-format
 msgid "%s%s changed status: %s (AIM).\n"
 msgstr "%s%s cambió de estado: %s (AIM).\n"
 
-#: src/icqd-srv.cpp:2838
+#: src/icqd-srv.cpp:2805
 #, c-format
 msgid "%s%s changed Phone \"Follow Me\" status to %s.\n"
 msgstr "%s%s cambió el estado de Teléfono \"Sígame\" a %s.\n"
 
-#: src/icqd-srv.cpp:2844
+#: src/icqd-srv.cpp:2811
 #, c-format
 msgid "%s%s changed Shared Files Directory status to %s.\n"
 msgstr "%s%s cambió el estado de Directorio Compartido a %s.\n"
 
-#: src/icqd-srv.cpp:2850
+#: src/icqd-srv.cpp:2817
 #, c-format
 msgid "%s%s changed ICQphone status to %s.\n"
 msgstr "%s%s cambió el estado de ICQphone a %s.\n"
 
-#: src/icqd-srv.cpp:2869
+#: src/icqd-srv.cpp:2836
 #, c-format
 msgid "%sUnknown index %d from %s.\n"
 msgstr "%sÍndice desconocido %d de %s.\n"
 
-#: src/icqd-srv.cpp:2921
+#: src/icqd-srv.cpp:2888
 #, c-format
 msgid "%sUnknown user (%s) has gone offline.\n"
 msgstr "%sEl usuario desconocido (%s) se ha desconectado.\n"
 
-#: src/icqd-srv.cpp:2927
+#: src/icqd-srv.cpp:2894
 #, c-format
 msgid "%s%s went offline.\n"
 msgstr "%s%s se desconectó.\n"
 
-#: src/icqd-srv.cpp:2938
+#: src/icqd-srv.cpp:2905
 #, c-format
 msgid "%sReceived rights for Contact List..\n"
 msgstr "%sSe reciben derechos de la lista de contactos..\n"
 
-#: src/icqd-srv.cpp:2967
+#: src/icqd-srv.cpp:2934
 #, c-format
 msgid "%sUser is offline.\n"
 msgstr "%sEl usuario está desconectado.\n"
 
-#: src/icqd-srv.cpp:2970
+#: src/icqd-srv.cpp:2937
 #, c-format
 msgid "%sClient does not understand type-2 messages.\n"
 msgstr "%sEl cliente no entiende mensajes del tipo-2.\n"
 
-#: src/icqd-srv.cpp:2973
+#: src/icqd-srv.cpp:2940
 #, c-format
 msgid "%sPacket was malformed.\n"
 msgstr "%sEl paquete estaba malformado.\n"
 
-#: src/icqd-srv.cpp:2976
+#: src/icqd-srv.cpp:2943
 #, c-format
 msgid "%sList overflow.\n"
 msgstr "%sDesbordamiento de la lista.\n"
 
-#: src/icqd-srv.cpp:2979
+#: src/icqd-srv.cpp:2946
 #, c-format
 msgid "%sUnknown ICBM error: 0x%04x.\n"
 msgstr "%sError ICBM desconocido: 0x%04x.\n"
 
-#: src/icqd-srv.cpp:3093
+#: src/icqd-srv.cpp:3060
 #, c-format
 msgid "%sMessage from new user (%s), ignoring.\n"
 msgstr "%sMensaje de usuario nuevo (%s), se ignora.\n"
 
-#: src/icqd-srv.cpp:3099
+#: src/icqd-srv.cpp:3066
 #, c-format
 msgid "%sMessage from new user (%s).\n"
 msgstr "%sMensaje de usuario nuevo (%s).\n"
 
-#: src/icqd-srv.cpp:3106
+#: src/icqd-srv.cpp:3073
 #, c-format
 msgid "%sMessage through server from %s (%s).\n"
 msgstr "%sMensaje a traves del servidor de %s (%s).\n"
 
-#: src/icqd-srv.cpp:3283
+#: src/icqd-srv.cpp:3250
 #, c-format
 msgid "%s%s (%s) is %s to us.\n"
 msgstr "%s%s (%s) está %s para nosotros.\n"
 
-#: src/icqd-srv.cpp:3334
+#: src/icqd-srv.cpp:3301
 #, c-format
 msgid "%sReceived SMS receipt indicating success.\n"
 msgstr "%sSe recibe confirmación de SMS indicando éxito.\n"
 
-#: src/icqd-srv.cpp:3338
+#: src/icqd-srv.cpp:3305
 #, c-format
 msgid "%sReceived SMS receipt indicating failure.\n"
 msgstr "%sSe recibe confirmación de SMS indicando error.\n"
 
-#: src/icqd-srv.cpp:3354
+#: src/icqd-srv.cpp:3321
 #, c-format
 msgid "%sInvalid tag in SMS message."
 msgstr "%sTag inválido en mensaje SMS"
 
-#: src/icqd-srv.cpp:3365
+#: src/icqd-srv.cpp:3332
 #, c-format
 msgid ""
 "%sUnknown tag in SMS message:\n"
@@ -2361,13 +2361,13 @@ msgstr ""
 "%sTag desconocido en mensaje SMS:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3379
+#: src/icqd-srv.cpp:3346
 #, c-format
 msgid "%sSMS message packet was too large (claimed size: %lu bytes)\n"
 msgstr ""
 "%sEl paquete del mensaje SMS era demasiado grande (tamaño: %lu bytes)\n"
 
-#: src/icqd-srv.cpp:3421 src/icqd-tcp.cpp:2146 src/icqd-tcp.cpp:2478
+#: src/icqd-srv.cpp:3388 src/icqd-tcp.cpp:2146 src/icqd-tcp.cpp:2478
 #, c-format
 msgid ""
 "%sInvalid URL message:\n"
@@ -2376,12 +2376,12 @@ msgstr ""
 "%sMensaje URL inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3432 src/icqd-srv.cpp:4433
+#: src/icqd-srv.cpp:3399 src/icqd-srv.cpp:4402
 #, c-format
 msgid "%sAuthorization request from %s.\n"
 msgstr "%sPedido de autorización de %s.\n"
 
-#: src/icqd-srv.cpp:3438
+#: src/icqd-srv.cpp:3405
 #, c-format
 msgid ""
 "%sInvalid authorization request system message:\n"
@@ -2390,22 +2390,22 @@ msgstr ""
 "%sMensaje del sistema con pedido de autorización no válido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3464
+#: src/icqd-srv.cpp:3431
 #, c-format
 msgid "%sAuthorization refused by %s.\n"
 msgstr "%sAutorización rechazada por %s.\n"
 
-#: src/icqd-srv.cpp:3477
+#: src/icqd-srv.cpp:3444
 #, c-format
 msgid "%sAuthorization granted by %s.\n"
 msgstr "%sAutorización aceptada por %s.\n"
 
-#: src/icqd-srv.cpp:3496
+#: src/icqd-srv.cpp:3463
 #, c-format
 msgid "%sServer message.\n"
 msgstr "%sMensaje del servidor.\n"
 
-#: src/icqd-srv.cpp:3504 src/icqd-srv.cpp:4738
+#: src/icqd-srv.cpp:3471 src/icqd-srv.cpp:4707
 #, c-format
 msgid ""
 "%sInvalid Server Message:\n"
@@ -2414,12 +2414,12 @@ msgstr ""
 "%sMensaje del servidor no válido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3514 src/icqd-srv.cpp:4513
+#: src/icqd-srv.cpp:3481 src/icqd-srv.cpp:4482
 #, c-format
 msgid "%sUser %s added you to their contact list.\n"
 msgstr "%sEl usuario %s te ha agregado a su lista de usuarios.\n"
 
-#: src/icqd-srv.cpp:3521
+#: src/icqd-srv.cpp:3488
 #, c-format
 msgid ""
 "%sInvalid added to list system message:\n"
@@ -2428,12 +2428,12 @@ msgstr ""
 "%sMensaje del sistema de agregado de usuario inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3542
+#: src/icqd-srv.cpp:3509
 #, c-format
 msgid "%sMessage through web panel.\n"
 msgstr "%sMensaje a través del panel web.\n"
 
-#: src/icqd-srv.cpp:3549
+#: src/icqd-srv.cpp:3516
 #, c-format
 msgid ""
 "%sInvalid web panel system message:\n"
@@ -2442,18 +2442,18 @@ msgstr ""
 "%sMensaje del sistema de panel web inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3561 src/icqd-srv.cpp:3590 src/icqd-srv.cpp:4796
-#: src/icqd-srv.cpp:4825
+#: src/icqd-srv.cpp:3528 src/icqd-srv.cpp:3557 src/icqd-srv.cpp:4765
+#: src/icqd-srv.cpp:4794
 #, c-format
 msgid "%sFrom %s (%s).\n"
 msgstr "%sDe %s (%s).\n"
 
-#: src/icqd-srv.cpp:3571
+#: src/icqd-srv.cpp:3538
 #, c-format
 msgid "%sEmail pager message.\n"
 msgstr "%sMensaje del localizador de Email.\n"
 
-#: src/icqd-srv.cpp:3578
+#: src/icqd-srv.cpp:3545
 #, c-format
 msgid ""
 "%sInvalid email pager system message:\n"
@@ -2462,7 +2462,7 @@ msgstr ""
 "%sMensaje del sistema de localizador de Email inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3605
+#: src/icqd-srv.cpp:3572
 #, c-format
 msgid ""
 "%sInvalid Contact List message:\n"
@@ -2471,11 +2471,11 @@ msgstr ""
 "%sMensaje de lista de contacto inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3611 src/icqd-srv.cpp:4844
+#: src/icqd-srv.cpp:3578 src/icqd-srv.cpp:4813
 msgid "Contacts"
 msgstr "Contactos"
 
-#: src/icqd-srv.cpp:3623 src/icqd-srv.cpp:4856
+#: src/icqd-srv.cpp:3590 src/icqd-srv.cpp:4825
 #, c-format
 msgid ""
 "%sInvalid SMS message:\n"
@@ -2484,7 +2484,7 @@ msgstr ""
 "%sMensaje SMS inválido :\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3637
+#: src/icqd-srv.cpp:3604
 #, c-format
 msgid ""
 "%sUnknown system message (0x%04x):\n"
@@ -2493,32 +2493,32 @@ msgstr ""
 "%sMensaje del sistema desconocido (0x%04x):\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3664
+#: src/icqd-srv.cpp:3631
 #, c-format
 msgid "%s%s from new user (%s), ignoring.\n"
 msgstr "%s%s de un usuario nuevo (%s), se ignora.\n"
 
-#: src/icqd-srv.cpp:3673
+#: src/icqd-srv.cpp:3640
 #, c-format
 msgid "%s%s from new user (%s).\n"
 msgstr "%s%s de un usuario nuevo (%s).\n"
 
-#: src/icqd-srv.cpp:3678
+#: src/icqd-srv.cpp:3645
 #, c-format
 msgid "%s%s through server from %s (%s).\n"
 msgstr "%s%s a través del servidor de %s (%s).\n"
 
-#: src/icqd-srv.cpp:3730
+#: src/icqd-srv.cpp:3697
 #, c-format
 msgid "%sSMS from %s - %s (%lu).\n"
 msgstr "%sSMS de %s - %s (%lu).\n"
 
-#: src/icqd-srv.cpp:3739
+#: src/icqd-srv.cpp:3706
 #, c-format
 msgid "%sSMS from %s.\n"
 msgstr "%sSMS de %s.\n"
 
-#: src/icqd-srv.cpp:3760
+#: src/icqd-srv.cpp:3727
 #, c-format
 msgid ""
 "%sMessage through server with unknown format: %04hx\n"
@@ -2527,27 +2527,27 @@ msgstr ""
 "%sMensaje a través del servidor con formato desconocido: %04hx\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3783
+#: src/icqd-srv.cpp:3750
 #, c-format
 msgid "%sUnexpected new user in subtype 0x%04x.\n"
 msgstr "%sNuevo usuario no esperado en subtipo 0x%04x.\n"
 
-#: src/icqd-srv.cpp:3820
+#: src/icqd-srv.cpp:3787
 #, c-format
 msgid "%s%s doesn't have a manager for this event.\n"
 msgstr "%s%s no tiene un manejador para este evento.\n"
 
-#: src/icqd-srv.cpp:3875
+#: src/icqd-srv.cpp:3842
 #, c-format
 msgid "%sRefusal from %s (#%lu).\n"
 msgstr "%sdenegación de %s (#%lu).\n"
 
-#: src/icqd-srv.cpp:3928
+#: src/icqd-srv.cpp:3895
 #, c-format
 msgid "%sReceived rights for Instant Messaging..\n"
 msgstr "%sSe reciben derechos de mensaje instantáneo..\n"
 
-#: src/icqd-srv.cpp:3940
+#: src/icqd-srv.cpp:3907
 #, c-format
 msgid ""
 "%sMessage was sent to an offline user. It will be delivered when the user "
@@ -2556,124 +2556,125 @@ msgstr ""
 "%sEl mensaje se envió a un usuario desconectado. Se entregará cuando el "
 "usuario se conecte.\n"
 
-#: src/icqd-srv.cpp:3956
+#: src/icqd-srv.cpp:3923
 #, c-format
 msgid "%sTyping status received for unknown user (%s).\n"
 msgstr "%sSe recibe estado de tipeo de usuario desconocido (%s).\n"
 
-#: src/icqd-srv.cpp:3968
+#: src/icqd-srv.cpp:3936
 #, c-format
 msgid "%sUnknown Message Family Subtype: %04hx\n"
 msgstr "%sSubtipo de familia de mensaje desconocido: %04hx\n"
 
-#: src/icqd-srv.cpp:3991
+#: src/icqd-srv.cpp:3959
 #, c-format
 msgid "%sServer granted contact list rights.\n"
 msgstr "%sEl servidor autorizó los derechos de la lista de contactos.\n"
 
-#: src/icqd-srv.cpp:4007 src/icqd-srv.cpp:4018
+#: src/icqd-srv.cpp:3975 src/icqd-srv.cpp:3986
 #, c-format
 msgid "%sContact list without request.\n"
 msgstr "%sLista de contactos sin requerimiento.\n"
 
-#: src/icqd-srv.cpp:4009
+#: src/icqd-srv.cpp:3977
 #, c-format
 msgid "%sReceived contact list.\n"
 msgstr "%sSe recibe lista de contactos.\n"
 
-#: src/icqd-srv.cpp:4031
+#: src/icqd-srv.cpp:3999
 #, c-format
 msgid "%sReceived end of contact list.\n"
 msgstr "%sSe recibió fin de la lista de contactos.\n"
 
-#: src/icqd-srv.cpp:4148
+#: src/icqd-srv.cpp:4116
 #, c-format
 msgid "%sAdded %s (%s) to list from server.\n"
 msgstr "%sAgregado %s (%s) a la lista desde el servidor.\n"
 
-#: src/icqd-srv.cpp:4191
+#: src/icqd-srv.cpp:4159
 #, c-format
 msgid "%sGot Master Group record.\n"
 msgstr "%sSe obtuvo campo de grupo maestro.\n"
 
-#: src/icqd-srv.cpp:4202
+#: src/icqd-srv.cpp:4170
 #, c-format
 msgid "%sGot Privacy Setting.\n"
 msgstr "%sSe ovtuvo configuración de privacidad.\n"
 
-#: src/icqd-srv.cpp:4233 src/icqd-srv.cpp:4249
+#: src/icqd-srv.cpp:4201 src/icqd-srv.cpp:4217
 #, c-format
 msgid "%sActivate server contact list.\n"
 msgstr "%sActivar lista de contactos del servidor.\n"
 
-#: src/icqd-srv.cpp:4245
+#: src/icqd-srv.cpp:4213
 #, c-format
 msgid "%sContact list is synchronized.\n"
 msgstr "%sLa lista de contactos está sincronizada.\n"
 
-#: src/icqd-srv.cpp:4264
+#: src/icqd-srv.cpp:4232
 #, c-format
 msgid "%sServer list update ack without request.\n"
 msgstr "%sReconocimiento de actualización de lista del servidor sin pedido.\n"
 
-#: src/icqd-srv.cpp:4295
+#: src/icqd-srv.cpp:4253
+#, fuzzy, c-format
+msgid "%sSkipping invalid server side list ack (%ld).\n"
+msgstr "%sRemoviendo grupo de la lista del lado del servidor (%s)...\n"
+
+#: src/icqd-srv.cpp:4266
 #, c-format
 msgid "%s%s added to awaiting authorization group on server list.\n"
 msgstr ""
 "%s%s agregado al grupo \"awaiting authorization group\" en la lista del "
 "servidor.\n"
 
-#: src/icqd-srv.cpp:4300
+#: src/icqd-srv.cpp:4271
 #, c-format
 msgid "%sUser/Group %s not found on server list.\n"
 msgstr "%sUsuario/Grupo %s no encontrado en la lista del servidor.\n"
 
-#: src/icqd-srv.cpp:4305
+#: src/icqd-srv.cpp:4276
 #, c-format
 msgid "%sUnknown error modifying server list: 0x%02X (ID: %s)\n"
 msgstr ""
 "%sError desconocido al modificar la lista del servidor: 0x%02X (ID: %s)\n"
 
-#: src/icqd-srv.cpp:4338
-msgid "top level"
-msgstr "nivel más alto"
-
-#: src/icqd-srv.cpp:4397
+#: src/icqd-srv.cpp:4366
 #, c-format
 msgid "%sUpdated %s successfully.\n"
 msgstr "%sSe actualizó %s satisfactoriamente.\n"
 
-#: src/icqd-srv.cpp:4473
+#: src/icqd-srv.cpp:4442
 #, c-format
 msgid "%sAuthorization %s by %s.\n"
 msgstr "%sAutorización %s de %s\n"
 
-#: src/icqd-srv.cpp:4533
+#: src/icqd-srv.cpp:4502
 #, c-format
 msgid "%sUnknown List Family Subtype: %04hx\n"
 msgstr "%sSubtipo de listado de familia desconocido: %04hx\n"
 
-#: src/icqd-srv.cpp:4545
+#: src/icqd-srv.cpp:4514
 #, c-format
 msgid "%sReceived BOS rights.\n"
 msgstr "%sSe recibieron los derechos BOS.\n"
 
-#: src/icqd-srv.cpp:4549
+#: src/icqd-srv.cpp:4518
 #, c-format
 msgid "%sSending client ready...\n"
 msgstr "%sEnvío de cliente listo...\n"
 
-#: src/icqd-srv.cpp:4553
+#: src/icqd-srv.cpp:4522
 #, c-format
 msgid "%sSending offline message request...\n"
 msgstr "%sEnviando pedido de mensaje sin conexión...\n"
 
-#: src/icqd-srv.cpp:4568
+#: src/icqd-srv.cpp:4537
 #, c-format
 msgid "%sUnknown BOS Family Subtype: %04hx\n"
 msgstr "%sSubtipo de familia BOS desconocido: %04hx\n"
 
-#: src/icqd-srv.cpp:4659
+#: src/icqd-srv.cpp:4628
 #, c-format
 msgid ""
 "%sInvalid offline URL message:\n"
@@ -2682,12 +2683,12 @@ msgstr ""
 "%sMensaje de URL sin conexión inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4670
+#: src/icqd-srv.cpp:4639
 #, c-format
 msgid "%sOffline authorization request from %lu.\n"
 msgstr "%sPedido de autorizaciónsin conexión de %lu.\n"
 
-#: src/icqd-srv.cpp:4678
+#: src/icqd-srv.cpp:4647
 #, c-format
 msgid ""
 "%sInvalid offline authorization request system message:\n"
@@ -2697,28 +2698,28 @@ msgstr ""
 "Mensaje del sistema de pedido de autorización fuera de línea inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4700
+#: src/icqd-srv.cpp:4669
 #, c-format
 msgid "%sOffline authorization refused by %lu.\n"
 msgstr "%sAutorización sin conexión denegada por %lu.\n"
 
-#: src/icqd-srv.cpp:4712
+#: src/icqd-srv.cpp:4681
 #, c-format
 msgid "%sOffline authorization granted by %lu.\n"
 msgstr "%sAutorización sin conexión condedida por %lu.\n"
 
-#: src/icqd-srv.cpp:4731
+#: src/icqd-srv.cpp:4700
 #, c-format
 msgid "%sOffline server message.\n"
 msgstr "%sMensaje del servidor sin conexión.\n"
 
-#: src/icqd-srv.cpp:4747
+#: src/icqd-srv.cpp:4716
 #, c-format
 msgid "%sUser %lu added you to their contact list (offline).\n"
 msgstr ""
 "%sEl usuario %lu te ha agregado a su lista de contactos (sin conexión).\n"
 
-#: src/icqd-srv.cpp:4755
+#: src/icqd-srv.cpp:4724
 #, c-format
 msgid ""
 "%sInvalid offline added to list system message:\n"
@@ -2727,12 +2728,12 @@ msgstr ""
 "%sMensaje del sistema de agregado de usuario sin conexión inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4776
+#: src/icqd-srv.cpp:4745
 #, c-format
 msgid "%sOffline message through web panel.\n"
 msgstr "%sMensaje sin conexión a través del panel web.\n"
 
-#: src/icqd-srv.cpp:4784
+#: src/icqd-srv.cpp:4753
 #, c-format
 msgid ""
 "%sInvalid offline web panel system message:\n"
@@ -2741,12 +2742,12 @@ msgstr ""
 "%sMensaje del panel web sin conexión inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4805
+#: src/icqd-srv.cpp:4774
 #, c-format
 msgid "%sEmail pager offline message.\n"
 msgstr "%sMensaje sin conexión del localizador de Email.\n"
 
-#: src/icqd-srv.cpp:4813
+#: src/icqd-srv.cpp:4782
 #, c-format
 msgid ""
 "%sInvalid offline email pager system message:\n"
@@ -2755,7 +2756,7 @@ msgstr ""
 "%sMensaje del sistema del localizador de email sin conexión inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4839
+#: src/icqd-srv.cpp:4808
 #, c-format
 msgid ""
 "%sInvalid offline Contact List message:\n"
@@ -2764,95 +2765,95 @@ msgstr ""
 "%sMensaje de la lista de contactos sin conexión inválido:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4894
+#: src/icqd-srv.cpp:4863
 #, c-format
 msgid "%sOffline %s from new user (%lu), ignoring.\n"
 msgstr "%s%s sin conexión de usuario nuevo (%lu), ignorado.\n"
 
-#: src/icqd-srv.cpp:4899
+#: src/icqd-srv.cpp:4868
 #, c-format
 msgid "%sOffline %s from new user (%lu).\n"
 msgstr "%s%s sin conexión de usuario nuevo (%lu).\n"
 
-#: src/icqd-srv.cpp:4904
+#: src/icqd-srv.cpp:4873
 #, c-format
 msgid "%sOffline %s through server from %s (%lu).\n"
 msgstr "%s%s sin conexión a través del servidor de %s (%lu).\n"
 
-#: src/icqd-srv.cpp:4951
+#: src/icqd-srv.cpp:4924
 #, c-format
 msgid "%sOffline SMS from %s - %s (%lu).\n"
 msgstr "%sSMS sin conexión de %s - %s (%lu).\n"
 
-#: src/icqd-srv.cpp:4959
+#: src/icqd-srv.cpp:4932
 #, c-format
 msgid "%sOffline SMS from %s.\n"
 msgstr "%sSMS sin conexión de %s.\n"
 
-#: src/icqd-srv.cpp:4978
+#: src/icqd-srv.cpp:4951
 #, c-format
 msgid "%sEnd of Offline messages (nId: %04hx).\n"
 msgstr "%sFin de los mensajes sin conexión (nId: %04hx).\n"
 
-#: src/icqd-srv.cpp:4995
+#: src/icqd-srv.cpp:4969
 msgid "Password change"
 msgstr "Cambio de contraseña"
 
-#: src/icqd-srv.cpp:5010
+#: src/icqd-srv.cpp:4984
 msgid "Security info"
 msgstr "Información de seguridad"
 
-#: src/icqd-srv.cpp:5033
+#: src/icqd-srv.cpp:4990
 msgid "General info"
 msgstr "Información general"
 
-#: src/icqd-srv.cpp:5078
+#: src/icqd-srv.cpp:5035
 msgid "E-mail info"
 msgstr "Información de Correo-E"
 
-#: src/icqd-srv.cpp:5102
+#: src/icqd-srv.cpp:5059
 msgid "More info"
 msgstr "Más información"
 
-#: src/icqd-srv.cpp:5159
+#: src/icqd-srv.cpp:5116
 msgid "Work info"
 msgstr "Información del trabajo"
 
-#: src/icqd-srv.cpp:5201
+#: src/icqd-srv.cpp:5158
 msgid "About"
 msgstr "Acerca de"
 
-#: src/icqd-srv.cpp:5288
+#: src/icqd-srv.cpp:5245
 #, c-format
 msgid "%sSMS delivered.\n"
 msgstr "%sSMS entregado.\n"
 
-#: src/icqd-srv.cpp:5301
+#: src/icqd-srv.cpp:5258
 #, c-format
 msgid "%sSMS not delivered, error #%s, param: %s\n"
 msgstr "%sSMS no entregado, error #%s, param: %s\n"
 
-#: src/icqd-srv.cpp:5319
+#: src/icqd-srv.cpp:5276
 #, c-format
 msgid "%sSending SMS via SMTP not supported yet.\n"
 msgstr "%sEnvío de SMS via SMTP no soportado aún.\n"
 
-#: src/icqd-srv.cpp:5324
+#: src/icqd-srv.cpp:5281
 #, c-format
 msgid "%sFrom: %s\n"
 msgstr "%sDe: %s\n"
 
-#: src/icqd-srv.cpp:5330
+#: src/icqd-srv.cpp:5287
 #, c-format
 msgid "%sTo: %s\n"
 msgstr "%sA: %s\n"
 
-#: src/icqd-srv.cpp:5336
+#: src/icqd-srv.cpp:5293
 #, c-format
 msgid "%sSubject: %s\n"
 msgstr "%sAsunto: %s\n"
 
-#: src/icqd-srv.cpp:5349
+#: src/icqd-srv.cpp:5306
 #, c-format
 msgid ""
 "%sUnknown SMS response:\n"
@@ -2861,83 +2862,83 @@ msgstr ""
 "%sRespuesta de SMS desconocida:\n"
 "%s"
 
-#: src/icqd-srv.cpp:5365
+#: src/icqd-srv.cpp:5322
 #, c-format
 msgid "%sUndeliverable SMS.\n"
 msgstr "%sSMS no entregable.\n"
 
-#: src/icqd-srv.cpp:5382
+#: src/icqd-srv.cpp:5339
 msgid "Random chat group"
 msgstr "Grupo de charla aleatorio"
 
-#: src/icqd-srv.cpp:5405
+#: src/icqd-srv.cpp:5362
 #, c-format
 msgid "%sRandom chat user found (%s).\n"
 msgstr "%sUsuario para charla aleatoria encontrado (%s).\n"
 
-#: src/icqd-srv.cpp:5442
+#: src/icqd-srv.cpp:5399
 #, c-format
 msgid "%sNo random chat user found.\n"
 msgstr "%sNo se encontró usuario para charla aleatoria.\n"
 
-#: src/icqd-srv.cpp:5451
+#: src/icqd-srv.cpp:5408
 #, c-format
 msgid "%sReceived info update ack, without updating info.\n"
 msgstr ""
 "%sSe recibió reconocimiento de actualización de información, sin actualizar "
 "información.\n"
 
-#: src/icqd-srv.cpp:5455
+#: src/icqd-srv.cpp:5412
 #, c-format
 msgid "%sUpdated information successfully.\n"
 msgstr "%sLa información se actualizó correctamente.\n"
 
-#: src/icqd-srv.cpp:5462
+#: src/icqd-srv.cpp:5419
 #, c-format
 msgid "%sSMS failed to send.\n"
 msgstr "%sFallñó el envío de SMS.\n"
 
-#: src/icqd-srv.cpp:5474
+#: src/icqd-srv.cpp:5431
 #, c-format
 msgid "%sWhitePages search found no users.\n"
 msgstr "%sLa búsqueda en Páginas Blancas no encontró usuarios.\n"
 
-#: src/icqd-srv.cpp:5553
+#: src/icqd-srv.cpp:5510
 #, c-format
 msgid "%sFailed to update user info: %x.\n"
 msgstr "%sFallo al actualizar info de usuario: %x.\n"
 
-#: src/icqd-srv.cpp:5577
+#: src/icqd-srv.cpp:5534
 #, c-format
 msgid "%scan't find user for updating!\n"
 msgstr "%sNo se puede encontrar usuario para actualizar!\n"
 
-#: src/icqd-srv.cpp:5586
+#: src/icqd-srv.cpp:5543
 #, c-format
 msgid "%sGeneral info on %s (%s).\n"
 msgstr "%sInformación general de %s (%s).\n"
 
-#: src/icqd-srv.cpp:5669
+#: src/icqd-srv.cpp:5626
 #, c-format
 msgid "%sMore info on %s (%s).\n"
 msgstr "%sMás info de %s (%s).\n"
 
-#: src/icqd-srv.cpp:5725
+#: src/icqd-srv.cpp:5682
 #, c-format
 msgid "%sEmail info on %s (%s).\n"
 msgstr "%sInfo de Correo-E de %s (%s).\n"
 
-#: src/icqd-srv.cpp:5805
+#: src/icqd-srv.cpp:5762
 #, c-format
 msgid "%sWork info on %s (%s).\n"
 msgstr "%sInfo del trabajo de %s (%s).\n"
 
-#: src/icqd-srv.cpp:5856
+#: src/icqd-srv.cpp:5813
 #, c-format
 msgid "%sAbout info on %s (%s).\n"
 msgstr "%sInfo Acerca de de %s (%s).\n"
 
-#: src/icqd-srv.cpp:5975
+#: src/icqd-srv.cpp:5932
 #, c-format
 msgid ""
 "%sunknown info: %04hx\n"
@@ -2946,27 +2947,27 @@ msgstr ""
 "%sinformación desconocida: %04hx\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:5986
+#: src/icqd-srv.cpp:5943
 #, c-format
 msgid "%sResponse to unknown extended info request for %s (%s).\n"
 msgstr "%sRespuesta a requerimiento de información extendida de %s (%s).\n"
 
-#: src/icqd-srv.cpp:6000
+#: src/icqd-srv.cpp:5957
 #, c-format
 msgid "%s%s updated.\n"
 msgstr "%s%s actualiazado.\n"
 
-#: src/icqd-srv.cpp:6002
+#: src/icqd-srv.cpp:5959
 #, c-format
 msgid "%s%s update failed.\n"
 msgstr "%s%s falló la actualización.\n"
 
-#: src/icqd-srv.cpp:6006
+#: src/icqd-srv.cpp:5963
 #, c-format
 msgid "%sUnexpected result for %s.\n"
 msgstr "%sResultado inesperado de %s.\n"
 
-#: src/icqd-srv.cpp:6024
+#: src/icqd-srv.cpp:5981
 #, c-format
 msgid ""
 "%sUnknown Various Family Subtype: %04hx\n"
@@ -2975,12 +2976,12 @@ msgstr ""
 "%sSubtipo de la familia varios desconocido: %04hx\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:6043
+#: src/icqd-srv.cpp:6000
 #, c-format
 msgid "%sVerification required. Reconnecting...\n"
 msgstr "%sVerificación requerida. Reconectando...\n"
 
-#: src/icqd-srv.cpp:6066
+#: src/icqd-srv.cpp:6023
 #, c-format
 msgid ""
 "%sUnknown logon error. There appears to be an issue with the ICQ servers. "
@@ -2989,17 +2990,17 @@ msgstr ""
 "%sError de conexión desconocido. Parece haber un error con los servidores de "
 "ICQ. Por favor inténtelo nuevamente más tarde.\n"
 
-#: src/icqd-srv.cpp:6092
+#: src/icqd-srv.cpp:6049
 #, c-format
 msgid "%sReceived new uin (%lu) when already have a uin (%lu).\n"
 msgstr "%sSe recibió un nuevo uin (%lu) cuando ya se tenía uno (%lu).\n"
 
-#: src/icqd-srv.cpp:6097
+#: src/icqd-srv.cpp:6054
 #, c-format
 msgid "%sReceived new uin: %lu\n"
 msgstr "%sSe recibió nuevo uin: %lu\n"
 
-#: src/icqd-srv.cpp:6148
+#: src/icqd-srv.cpp:6105
 #, c-format
 msgid ""
 "%sUnable to open file (%s):\n"
@@ -3008,22 +3009,22 @@ msgstr ""
 "%sNo se puede abrir fichero (%s):\n"
 "%s%s.\n"
 
-#: src/icqd-srv.cpp:6238
+#: src/icqd-srv.cpp:6195
 #, c-format
 msgid "%sWe're logging off..\n"
 msgstr "%sNos estamos desconectando..\n"
 
-#: src/icqd-srv.cpp:6253
+#: src/icqd-srv.cpp:6210
 #, c-format
 msgid "%sRate limit exceeded.\n"
 msgstr "%sTasa excedida.\n"
 
-#: src/icqd-srv.cpp:6260
+#: src/icqd-srv.cpp:6217
 #, c-format
 msgid "%sInvalid UIN and password combination.\n"
 msgstr "%sCombinación de UIN y contraseña inválida.\n"
 
-#: src/icqd-srv.cpp:6273
+#: src/icqd-srv.cpp:6230
 #, c-format
 msgid ""
 "%sThe requested network service is temporarily unavailable.\n"
@@ -3032,12 +3033,12 @@ msgstr ""
 "%sEl servicio de red solicitado se encuentra momentáneamente no disponible.\n"
 "Por favor inténtelo nuevamente más tarde.\n"
 
-#: src/icqd-srv.cpp:6298
+#: src/icqd-srv.cpp:6255
 #, c-format
 msgid "%sYour ICQ number is used from another location.\n"
 msgstr "%sSu número de ICQ está siendo utilizado en otro lugar.\n"
 
-#: src/icqd-srv.cpp:6303
+#: src/icqd-srv.cpp:6260
 #, c-format
 msgid ""
 "%sYour ICQ number is used from another location.\n"
@@ -3046,7 +3047,7 @@ msgstr ""
 "%sSu número de ICQ está siendo utilizado en otro lugar.\n"
 "La reconexión automática está deshabilitada.\n"
 
-#: src/icqd-srv.cpp:6345
+#: src/icqd-srv.cpp:6302
 #, c-format
 msgid "%sAuthenticated. Connecting to %s port %s.\n"
 msgstr "%sAutentificado. Conextando a %s puerto %s.\n"
@@ -3463,7 +3464,7 @@ msgstr "%sCustom %s respuesta de %s (#%hu)%s.\n"
 msgid "DnD"
 msgstr "No Molestar"
 
-#: src/icqd-tcp.cpp:3010 src/user.cpp:2712
+#: src/icqd-tcp.cpp:3010 src/user.cpp:2751
 msgid "Occupied"
 msgstr "Ocupado"
 
@@ -3601,12 +3602,12 @@ msgstr ""
 msgid "%sPassword too long, truncated to 8 Characters!\n"
 msgstr "%sCopntraseña demasiado larga, truncada a 8 caracteres!\n"
 
-#: src/icqpacket.cpp:4885
+#: src/icqpacket.cpp:4892
 #, c-format
 msgid "%sCould not execute \"%s\" for auto-response.\n"
 msgstr "%sNo se pudo ejecutar \"%s\" para respuesta automática.\n"
 
-#: src/icqpacket.cpp:4900
+#: src/icqpacket.cpp:4907
 #, c-format
 msgid "%s%s returned abnormally: exit code %d\n"
 msgstr "%s%s retornó de forma anormal: código de retorno %d\n"
@@ -3906,12 +3907,17 @@ msgstr "Yoruba"
 msgid "Session management is not supported by Licq.\n"
 msgstr "El manejo de sesiones no es soportado por Licq.\n"
 
-#: src/licq.cpp:302
+#: src/licq.cpp:277
+#, c-format
+msgid "%s version %s, compiled on %s\n"
+msgstr ""
+
+#: src/licq.cpp:306
 #, c-format
 msgid "%sOutput redirected to \"%s\".\n"
 msgstr "%sSalida redirigida a \"%s\".\n"
 
-#: src/licq.cpp:304
+#: src/licq.cpp:308
 #, c-format
 msgid ""
 "%sRedirection to \"%s\" failed:\n"
@@ -3920,7 +3926,7 @@ msgstr ""
 "%sRedireccionamiento a \"%s\" falló:\n"
 "%s%s.\n"
 
-#: src/licq.cpp:353
+#: src/licq.cpp:357
 #, fuzzy, c-format
 msgid ""
 "%sLicq: %s cannot be opened for writing.\n"
@@ -3929,7 +3935,7 @@ msgstr ""
 "%sLicq: %s no puede ser abierto para escritura.\n"
 "%s      salteando protección de lockfile.\n"
 
-#: src/licq.cpp:370
+#: src/licq.cpp:374
 #, c-format
 msgid ""
 "%sLicq: Already running at pid %d.\n"
@@ -3938,29 +3944,29 @@ msgstr ""
 "%sLicq: Ya se está ejecutando con el pid %d.\n"
 "%s      mate el proceso o borre %s.\n"
 
-#: src/licq.cpp:378 src/licq.cpp:405
+#: src/licq.cpp:382 src/licq.cpp:409
 #, c-format
 msgid "%sLicq: Unable to determine pid of running Licq instance.\n"
 msgstr ""
 "%sLicq: No se puede determinar el pid del proceso en ejecución de la "
 "instancia de Licq.\n"
 
-#: src/licq.cpp:411
+#: src/licq.cpp:415
 #, c-format
 msgid "%sLicq: Already running at pid %d.\n"
 msgstr "%sLicq: Ya se está ejecutando con pid %d.\n"
 
-#: src/licq.cpp:899
+#: src/licq.cpp:903
 #, c-format
 msgid "%sStarting plugin %s (version %s).\n"
 msgstr "%sIniciando añadido %s (versión %s).\n"
 
-#: src/licq.cpp:1049
+#: src/licq.cpp:1053
 #, c-format
 msgid "%sStarting protocol plugin %s (version %s).\n"
 msgstr "%sIniciando añadido de protocolo %s (versión %s).\n"
 
-#: src/licq.cpp:1077
+#: src/licq.cpp:1081
 #, c-format
 msgid ""
 "%sNo plugins specified on the command-line (-p option).\n"
@@ -3969,17 +3975,17 @@ msgstr ""
 "%sNo se han especificado añadidos en la línea de comandos (opción -p).\n"
 "%sLea el archivo README para más información.\n"
 
-#: src/licq.cpp:1175 src/licq.cpp:1189
+#: src/licq.cpp:1179 src/licq.cpp:1193
 #, c-format
 msgid "%sPlugin %s exited with code %d.\n"
 msgstr "%sEl añadido %s salió con código %d.\n"
 
-#: src/licq.cpp:1202 src/licq.cpp:1216
+#: src/licq.cpp:1206 src/licq.cpp:1220
 #, c-format
 msgid "%sPlugin %s failed to exit.\n"
 msgstr "%sEl añadido %s falló al terminar.\n"
 
-#: src/licq.cpp:1231
+#: src/licq.cpp:1235
 #, c-format
 msgid ""
 "%s version %s.\n"
@@ -4195,29 +4201,29 @@ msgstr "Evento desconocido"
 msgid " (cancelled)"
 msgstr " (cancelado)"
 
-#: src/proxy.cpp:96
+#: src/proxy.cpp:97
 #, c-format
 msgid "proxy hostname resolution failure (%d)"
 msgstr "Fallo en la resolución del proxy (%d)"
 
-#: src/proxy.cpp:102
+#: src/proxy.cpp:103
 msgid "No proxy error detected"
 msgstr "No se detectó error en el proxy"
 
-#: src/proxy.cpp:107
+#: src/proxy.cpp:108
 msgid "Internal proxy error"
 msgstr "Error interno del proxy"
 
-#: src/proxy.cpp:112
+#: src/proxy.cpp:113
 msgid "Unknown proxy error"
 msgstr "Error desconocido del proxy"
 
-#: src/proxy.cpp:352
+#: src/proxy.cpp:353
 #, c-format
 msgid "%sCould not parse HTTP status line from proxy\n"
 msgstr "%sNo se pudo procesar la línea de estado HTTP del proxy\n"
 
-#: src/proxy.cpp:360
+#: src/proxy.cpp:361
 #, c-format
 msgid ""
 "%sHTTPS proxy return error code: %d, error string:\n"
@@ -4226,7 +4232,7 @@ msgstr ""
 "%sEl proxy HTTPS retornó el código de error: %d, mensaje de error:\n"
 "%s\n"
 
-#: src/sar.cpp:74
+#: src/sar.cpp:75
 #, c-format
 msgid "%sLoading saved auto-responses.\n"
 msgstr "%sCargando respuestas automáticas salvadas.\n"
@@ -4286,22 +4292,47 @@ msgstr ""
 "%serror al recibir desde el socket del servidor:-((\n"
 "%s%s\n"
 
-#: src/user.cpp:536
+#: src/user.cpp:420
+msgid "All Users"
+msgstr ""
+
+#: src/user.cpp:421
+#, fuzzy
+msgid "Online Notify"
+msgstr "Conectado/a"
+
+#: src/user.cpp:422
+msgid "Visible List"
+msgstr ""
+
+#: src/user.cpp:423
+msgid "Invisible List"
+msgstr ""
+
+#: src/user.cpp:424
+msgid "Ignore List"
+msgstr ""
+
+#: src/user.cpp:425
+msgid "New Users"
+msgstr ""
+
+#: src/user.cpp:538
 #, c-format
 msgid "%sUser configuration.\n"
 msgstr "%sConfiguración de usuario.\n"
 
-#: src/user.cpp:605
+#: src/user.cpp:607
 #, c-format
 msgid "%sLoading %d users.\n"
 msgstr "%sCargando %d usuarios.\n"
 
-#: src/user.cpp:619
+#: src/user.cpp:621
 #, c-format
 msgid "%sSkipping user %i, empty key.\n"
 msgstr "%sSalteando el usuario %i, clave vacía.\n"
 
-#: src/user.cpp:627
+#: src/user.cpp:629
 #, c-format
 msgid ""
 "%sFatal error reading protocol information for User%d with ID '%s'.\n"
@@ -4310,12 +4341,12 @@ msgstr ""
 "%sError fatal al leer información del protocolo del usuario %d con ID '%s'.\n"
 "%sPor favor verifique \"%s/users.conf\".\n"
 
-#: src/user.cpp:837
+#: src/user.cpp:839
 #, c-format
 msgid "%sGroup %s already on list.\n"
 msgstr "%sEl Grupo %s ya está en la lista.\n"
 
-#: src/user.cpp:1857
+#: src/user.cpp:1860
 #, c-format
 msgid ""
 "%sFailed to rename old history file (%s):\n"
@@ -4324,15 +4355,16 @@ msgstr ""
 "%sError al renombrar el fichero de historial (%s):\n"
 "%s%s\n"
 
-#: src/user.cpp:1893 src/user.cpp:2741 src/user.cpp:2960
+#: src/user.cpp:1896 src/user.cpp:2780 src/user.cpp:2990 src/user.cpp:3001
+#: src/user.cpp:3016 src/user.cpp:3041
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: src/user.cpp:1920
+#: src/user.cpp:1923
 msgid "<none>"
 msgstr "<ninguno>"
 
-#: src/user.cpp:2210
+#: src/user.cpp:2214
 #, c-format
 msgid ""
 "%sFailed to rename history file (%s):\n"
@@ -4341,160 +4373,165 @@ msgstr ""
 "%sError al renomobrar el fichero de historial (%s):\n"
 "%s%s\n"
 
-#: src/user.cpp:2710
+#: src/user.cpp:2749
 msgid "(Offline)"
 msgstr "(Desconectado/a)"
 
-#: src/user.cpp:2710
+#: src/user.cpp:2749
 msgid "Offline"
 msgstr "Desconectado/a"
 
-#: src/user.cpp:2711
+#: src/user.cpp:2750
 msgid "(Do Not Disturb)"
 msgstr "(No molestar)"
 
-#: src/user.cpp:2711
+#: src/user.cpp:2750
 msgid "Do Not Disturb"
 msgstr "No molestar"
 
-#: src/user.cpp:2712
+#: src/user.cpp:2751
 msgid "(Occupied)"
 msgstr "(Ocupado/a)"
 
-#: src/user.cpp:2713
+#: src/user.cpp:2752
 msgid "(Not Available)"
 msgstr "(No Disponible)"
 
-#: src/user.cpp:2713
+#: src/user.cpp:2752
 msgid "Not Available"
 msgstr "No Disponible"
 
-#: src/user.cpp:2714 src/user.cpp:2727
+#: src/user.cpp:2753 src/user.cpp:2766
 msgid "(Away)"
 msgstr "(Ausente)"
 
-#: src/user.cpp:2714 src/user.cpp:2727
+#: src/user.cpp:2753 src/user.cpp:2766
 msgid "Away"
 msgstr "Ausente"
 
-#: src/user.cpp:2715
+#: src/user.cpp:2754
 msgid "(Free for Chat)"
 msgstr "(Disponible para Charlar)"
 
-#: src/user.cpp:2715
+#: src/user.cpp:2754
 msgid "Free for Chat"
 msgstr "Disponible para Charlar"
 
-#: src/user.cpp:2716
+#: src/user.cpp:2755
 msgid "(Online)"
 msgstr "(Conectado/a)"
 
-#: src/user.cpp:2716
+#: src/user.cpp:2755
 msgid "Online"
 msgstr "Conectado/a"
 
-#: src/user.cpp:2723
+#: src/user.cpp:2762
 msgid "(Off)"
 msgstr "(Desc)"
 
-#: src/user.cpp:2723
+#: src/user.cpp:2762
 msgid "Off"
 msgstr "Desc"
 
-#: src/user.cpp:2724
+#: src/user.cpp:2763
 msgid "(DND)"
 msgstr "(No Mol)"
 
-#: src/user.cpp:2724
+#: src/user.cpp:2763
 msgid "DND"
 msgstr "No Mol"
 
-#: src/user.cpp:2725
+#: src/user.cpp:2764
 msgid "(Occ)"
 msgstr "(Ocu)"
 
-#: src/user.cpp:2725
+#: src/user.cpp:2764
 msgid "Occ"
 msgstr "Ocu"
 
-#: src/user.cpp:2726
+#: src/user.cpp:2765
 msgid "(N/A)"
 msgstr "(N/D)"
 
-#: src/user.cpp:2726
+#: src/user.cpp:2765
 msgid "N/A"
 msgstr "N/D"
 
-#: src/user.cpp:2728
+#: src/user.cpp:2767
 msgid "(FFC)"
 msgstr "(LPC)"
 
-#: src/user.cpp:2728
+#: src/user.cpp:2767
 msgid "FFC"
 msgstr "LPC"
 
-#: src/user.cpp:2729
+#: src/user.cpp:2768
 msgid "(On)"
 msgstr "(Con)"
 
-#: src/user.cpp:2729
+#: src/user.cpp:2768
 msgid "On"
 msgstr "Con"
 
-#: src/user.cpp:2781
+#: src/user.cpp:2820
 msgid "Invalid"
 msgstr "Inválido"
 
-#: src/user.cpp:2950
+#: src/user.cpp:2992
+#, c-format
+msgid "GMT%c%i%c0"
+msgstr ""
+
+#: src/user.cpp:3031
 msgid "Never"
 msgstr "Nunca"
 
-#: src/user.cpp:2984
+#: src/user.cpp:3065
 #, c-format
 msgid "%d days "
 msgstr "%d días"
 
-#: src/user.cpp:2986
+#: src/user.cpp:3067
 #, c-format
 msgid "%d day "
 msgstr "%d día "
 
-#: src/user.cpp:2993
+#: src/user.cpp:3074
 #, c-format
 msgid "%d hours "
 msgstr "%d horas "
 
-#: src/user.cpp:2995
+#: src/user.cpp:3076
 #, c-format
 msgid "%d hour "
 msgstr "%d hora"
 
-#: src/user.cpp:3002
+#: src/user.cpp:3083
 #, c-format
 msgid "%d minutes"
 msgstr "%d minutos"
 
-#: src/user.cpp:3004
+#: src/user.cpp:3085
 #, c-format
 msgid "%d minute"
 msgstr "%d minuto"
 
-#: src/user.cpp:3009
+#: src/user.cpp:3090
 msgid "Active"
 msgstr "Activo"
 
-#: src/user.cpp:3717
+#: src/user.cpp:3803
 #, c-format
 msgid "%sOwner configuration.\n"
 msgstr "%sConfiguración del dueño.\n"
 
-#: src/user.cpp:3736 src/user.cpp:3801
+#: src/user.cpp:3822 src/user.cpp:3887
 #, c-format
 msgid "%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"
 msgstr ""
 "%sNo se puede poner %s en modo 0600. Su contraseña de ICQ es vulnerable.\n"
 
-#: src/user.cpp:3766 src/user.cpp:3841
+#: src/user.cpp:3852 src/user.cpp:3927
 #, c-format
 msgid ""
 "%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
@@ -4504,7 +4541,7 @@ msgstr ""
 "configuración de diferencia horaria GMT del sistema (%d).\n"
 "%sActualice la información general en el servidor para corregirlo.\n"
 
-#: src/user.cpp:3833
+#: src/user.cpp:3919
 #, c-format
 msgid "%sOwner configuration for %s.\n"
 msgstr "%sConfiguración de dueño para %s.\n"
@@ -4531,3 +4568,6 @@ msgstr ""
 #: src/utility.cpp:138
 msgid "none"
 msgstr "ninguno"
+
+#~ msgid "top level"
+#~ msgstr "nivel más alto"
