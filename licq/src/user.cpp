@@ -416,13 +416,17 @@ bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
 
 class CUserManager gUserManager;
 
+/* This array is provided for plugin writers' convenience only.
+ * No translation is done here. Thus, if your plugin wishes to translate
+ * these names, replicate the array into your plugin and do it there.
+ */
 const char *GroupsSystemNames[NUM_GROUPS_SYSTEM_ALL] = {
-  tr("All Users"),
-  tr("Online Notify"),
-  tr("Visible List"),
-  tr("Invisible List"),
-  tr("Ignore List"),
-  tr("New Users")
+  "All Users",
+  "Online Notify",
+  "Visible List",
+  "Invisible List",
+  "Ignore List",
+  "New Users"
 };
 
 char *PPIDSTRING(unsigned long id)
