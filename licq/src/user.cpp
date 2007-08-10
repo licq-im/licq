@@ -416,7 +416,7 @@ bool ICQUserPhoneBook::LoadFromDisk(CIniFile &m_fConf)
 
 class CUserManager gUserManager;
 
-const char *GroupsSystemNames[NUM_GROUPS_SYSTEM+1] = {
+const char *GroupsSystemNames[NUM_GROUPS_SYSTEM_ALL] = {
   tr("All Users"),
   tr("Online Notify"),
   tr("Visible List"),

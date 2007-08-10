@@ -212,15 +212,26 @@ typedef enum SecureChannelSupport_et_ {
 
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
 
+const unsigned long GROUP_ALL_USERS       = 0;
 const unsigned long GROUP_ONLINE_NOTIFY   = 1;
 const unsigned long GROUP_VISIBLE_LIST    = 2;
 const unsigned long GROUP_INVISIBLE_LIST  = 3;
 const unsigned long GROUP_IGNORE_LIST     = 4;
 const unsigned long GROUP_NEW_USERS       = 5;
-const unsigned long NUM_GROUPS_SYSTEM = 5;
-// We stick in an empty group 0 so that the names correspond
-// to the identifiers
-extern const char *GroupsSystemNames[NUM_GROUPS_SYSTEM+1];
+
+/**
+ * The amount of registered system groups
+ */
+const unsigned long NUM_GROUPS_SYSTEM_ALL = 6;
+
+/**
+ * The amount of registered system groups, excluding the 'All Users' group.
+ *
+ * @deprecated Scheduled for removal, use NUM_GROUPS_SYSTEM_ALL instead.
+ */
+const unsigned long NUM_GROUPS_SYSTEM     = NUM_GROUPS_SYSTEM_ALL - 1;
+
+extern const char *GroupsSystemNames[NUM_GROUPS_SYSTEM_ALL];
 
 const unsigned short NORMAL_SID         = 0;
 const unsigned short INV_SID            = 1;
