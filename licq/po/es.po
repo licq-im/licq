@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Sebastian Renzi <sebastianrenzi@hotpop.com>, 2006.
-# Sebastian Renzi <srenzi@gmail.com>, 2006.
+# Sebastian Renzi <srenzi@gmail.com>, 2006, 2007.
 msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
 "POT-Creation-Date: 2007-08-11 02:03+0300\n"
-"PO-Revision-Date: 2006-11-08 23:51-0300\n"
+"PO-Revision-Date: 2007-08-17 20:05-0300\n"
 "Last-Translator: Sebastian Renzi <srenzi@gmail.com>\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
@@ -27,8 +27,7 @@ msgstr ""
 
 #: src/buffer.cpp:522
 #, c-format
-msgid ""
-"%sPackUnsignedLongBE(): Trying to pack more data than CBuffer can hold!\n"
+msgid "%sPackUnsignedLongBE(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackUnsignedLongBE(): Intentando insertar más información de la que "
 "CBuffer puede albergar!\n"
@@ -56,16 +55,14 @@ msgstr ""
 
 #: src/buffer.cpp:606
 #, c-format
-msgid ""
-"%sPackUnsignedShort(): Trying to pack more data than CBuffer can hold!\n"
+msgid "%sPackUnsignedShort(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackUnsignedShort(): Intentando insertar más información de la que CBuffer "
 "puede albergar!\n"
 
 #: src/buffer.cpp:619
 #, c-format
-msgid ""
-"%sPackUnsignedShortBE(): Trying to pack more data than CBuffer can hold!\n"
+msgid "%sPackUnsignedShortBE(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackUnsignedShortBE(): Intentando insertar más información de la que "
 "CBuffer puede albergar!\n"
@@ -1339,8 +1336,7 @@ msgstr ""
 #: src/history.cpp:381
 #, c-format
 msgid "%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"
-msgstr ""
-"%sFichero de historial corrompido (%s): sub-comando 0x%04X.desconocido\n"
+msgstr "%sFichero de historial corrompido (%s): sub-comando 0x%04X.desconocido\n"
 
 #: src/icqd-chat.cpp:729 src/icqd-filetransfer.cpp:228
 #, c-format
@@ -1823,8 +1819,7 @@ msgstr "%sExportando grupos a la lista de contactos del servidor...\n"
 #: src/icqd-srv.cpp:331
 #, c-format
 msgid "%sAdding privacy information to server side list...\n"
-msgstr ""
-"%sagregando información de privacidad a la lista del lado del servidor...\n"
+msgstr "%sagregando información de privacidad a la lista del lado del servidor...\n"
 
 #: src/icqd-srv.cpp:405 src/icqd-srv.cpp:435
 #, c-format
@@ -2037,8 +2032,7 @@ msgstr ""
 
 #: src/icqd-srv.cpp:1824
 #, c-format
-msgid ""
-"%sNo password set.  Edit ~/.licq/owner.Licq and fill in the password field.\n"
+msgid "%sNo password set.  Edit ~/.licq/owner.Licq and fill in the password field.\n"
 msgstr ""
 "%sNo se configuró la contraseña.  Edite ~/.licq/owner.Licq y complete el "
 "campo password.\n"
@@ -2109,8 +2103,7 @@ msgstr "%sLa conexión con el servidor ya existe, abortando.\n"
 #: src/icqd-srv.cpp:2120
 #, c-format
 msgid "%sResponse to unknown %s info request for unknown user (%s).\n"
-msgstr ""
-"%sRespuesta a %s pedido de info desconocido para usuario desconocido (%s).\n"
+msgstr "%sRespuesta a %s pedido de info desconocido para usuario desconocido (%s).\n"
 
 #: src/icqd-srv.cpp:2139
 #, c-format
@@ -2364,8 +2357,7 @@ msgstr ""
 #: src/icqd-srv.cpp:3346
 #, c-format
 msgid "%sSMS message packet was too large (claimed size: %lu bytes)\n"
-msgstr ""
-"%sEl paquete del mensaje SMS era demasiado grande (tamaño: %lu bytes)\n"
+msgstr "%sEl paquete del mensaje SMS era demasiado grande (tamaño: %lu bytes)\n"
 
 #: src/icqd-srv.cpp:3388 src/icqd-tcp.cpp:2146 src/icqd-tcp.cpp:2478
 #, c-format
@@ -2617,9 +2609,9 @@ msgid "%sServer list update ack without request.\n"
 msgstr "%sReconocimiento de actualización de lista del servidor sin pedido.\n"
 
 #: src/icqd-srv.cpp:4253
-#, fuzzy, c-format
+#, c-format
 msgid "%sSkipping invalid server side list ack (%ld).\n"
-msgstr "%sRemoviendo grupo de la lista del lado del servidor (%s)...\n"
+msgstr "%sIgnorando reconocimiento inválido del lado del servidor (%ld)...\n"
 
 #: src/icqd-srv.cpp:4266
 #, c-format
@@ -2636,8 +2628,7 @@ msgstr "%sUsuario/Grupo %s no encontrado en la lista del servidor.\n"
 #: src/icqd-srv.cpp:4276
 #, c-format
 msgid "%sUnknown error modifying server list: 0x%02X (ID: %s)\n"
-msgstr ""
-"%sError desconocido al modificar la lista del servidor: 0x%02X (ID: %s)\n"
+msgstr "%sError desconocido al modificar la lista del servidor: 0x%02X (ID: %s)\n"
 
 #: src/icqd-srv.cpp:4366
 #, c-format
@@ -2716,8 +2707,7 @@ msgstr "%sMensaje del servidor sin conexión.\n"
 #: src/icqd-srv.cpp:4716
 #, c-format
 msgid "%sUser %lu added you to their contact list (offline).\n"
-msgstr ""
-"%sEl usuario %lu te ha agregado a su lista de contactos (sin conexión).\n"
+msgstr "%sEl usuario %lu te ha agregado a su lista de contactos (sin conexión).\n"
 
 #: src/icqd-srv.cpp:4724
 #, c-format
@@ -3055,8 +3045,7 @@ msgstr "%sAutentificado. Conextando a %s puerto %s.\n"
 #: src/icqd-tcp.cpp:143 src/icqd-tcp.cpp:215
 #, c-format
 msgid "%sTruncating message to %d characters to send through server.\n"
-msgstr ""
-"%sTruncando el mensaje a %d caracteres para enviar a través del servidor.\n"
+msgstr "%sTruncando el mensaje a %d caracteres para enviar a través del servidor.\n"
 
 #: src/icqd-tcp.cpp:159 src/icqd-tcp.cpp:231
 #, c-format
@@ -3096,8 +3085,7 @@ msgstr "%sEnviando %stransferencia de ficheros a %s (#%hu).\n"
 #: src/icqd-tcp.cpp:530
 #, c-format
 msgid "%sContact list too large to send through server.\n"
-msgstr ""
-"%sLa lista de contactos es muy grande para enviar a través del servidor.\n"
+msgstr "%sLa lista de contactos es muy grande para enviar a través del servidor.\n"
 
 #: src/icqd-tcp.cpp:559
 #, c-format
@@ -3147,8 +3135,7 @@ msgstr "%sAceptando pedido de charla con %s (#%hu).\n"
 #: src/icqd-tcp.cpp:1179 src/icqd-tcp.cpp:1244
 #, c-format
 msgid "%sCannot send secure channel request to user not on list (%s).\n"
-msgstr ""
-"%sNo se puede pedir canal seguro a un usuario que no está en la lista (%s).\n"
+msgstr "%sNo se puede pedir canal seguro a un usuario que no está en la lista (%s).\n"
 
 #: src/icqd-tcp.cpp:1187
 #, c-format
@@ -3361,8 +3348,7 @@ msgstr "%sPedido de transferencia de ficheros de %s (%ld).\n"
 
 #: src/icqd-tcp.cpp:2540
 #, c-format
-msgid ""
-"%sReceived old-style key request from %s (%ld) but we do not support it.\n"
+msgid "%sReceived old-style key request from %s (%ld) but we do not support it.\n"
 msgstr ""
 "%sSe recibió pedido de llave versión vieja de %s (%ld) pero ya no lo "
 "soportamos.\n"
@@ -3406,8 +3392,7 @@ msgstr "%sCanal seguro cerrado por %s (%ld).\n"
 msgid ""
 "%sReceived secure channel close from %s (%ld) but we do not support "
 "OpenSSL.\n"
-msgstr ""
-"%sSe recibió cierre del canal seguro de %s (%ld) pero no soportamos SSL.\n"
+msgstr "%sSe recibió cierre del canal seguro de %s (%ld) pero no soportamos SSL.\n"
 
 #: src/icqd-tcp.cpp:2779
 #, c-format
@@ -3427,8 +3412,7 @@ msgstr "%s%s (%ld) no soporta OpenSSL.\n"
 #: src/icqd-tcp.cpp:2875
 #, c-format
 msgid "%sSecure channel response from %s (%ld) when no request in progress.\n"
-msgstr ""
-"%sRespuesta a cana lseguro de %s (%ld) cuando no había pedido en progreso.\n"
+msgstr "%sRespuesta a cana lseguro de %s (%ld) cuando no había pedido en progreso.\n"
 
 #: src/icqd-tcp.cpp:2924
 #, c-format
@@ -3613,9 +3597,8 @@ msgid "%s%s returned abnormally: exit code %d\n"
 msgstr "%s%s retornó de forma anormal: código de retorno %d\n"
 
 #: src/languagecodes.c:24
-#, fuzzy
 msgid "Afrikaans"
-msgstr "Afrikaans"
+msgstr "Afrikáans"
 
 #: src/languagecodes.c:25
 msgid "Albanian"
@@ -3638,9 +3621,8 @@ msgid "Belorussian"
 msgstr "Bielorruso"
 
 #: src/languagecodes.c:30
-#, fuzzy
 msgid "Bhojpuri"
-msgstr "Bhojpuri"
+msgstr "Bhojpurí"
 
 #: src/languagecodes.c:31
 msgid "Bosnian"
@@ -3699,9 +3681,8 @@ msgid "Estonian"
 msgstr "Estonio"
 
 #: src/languagecodes.c:45
-#, fuzzy
 msgid "Farsi"
-msgstr "Farsi"
+msgstr "Persa"
 
 #: src/languagecodes.c:46
 msgid "Finnish"
@@ -3910,7 +3891,7 @@ msgstr "El manejo de sesiones no es soportado por Licq.\n"
 #: src/licq.cpp:277
 #, c-format
 msgid "%s version %s, compiled on %s\n"
-msgstr ""
+msgstr "%s versión %s, compilada el %s\n"
 
 #: src/licq.cpp:306
 #, c-format
@@ -3927,13 +3908,13 @@ msgstr ""
 "%s%s.\n"
 
 #: src/licq.cpp:357
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%sLicq: %s cannot be opened for writing.\n"
 "%s      skipping lockfile protection.\n"
 msgstr ""
 "%sLicq: %s no puede ser abierto para escritura.\n"
-"%s      salteando protección de lockfile.\n"
+"%s      salteando protección del fichero de bloqueo.\n"
 
 #: src/licq.cpp:374
 #, c-format
@@ -4455,7 +4436,7 @@ msgstr "Inválido"
 #: src/user.cpp:2996
 #, c-format
 msgid "GMT%c%i%c0"
-msgstr ""
+msgstr "GMT%c%i%c0"
 
 #: src/user.cpp:3035
 msgid "Never"
@@ -4503,8 +4484,7 @@ msgstr "%sConfiguración del dueño.\n"
 #: src/user.cpp:3826 src/user.cpp:3891
 #, c-format
 msgid "%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"
-msgstr ""
-"%sNo se puede poner %s en modo 0600. Su contraseña de ICQ es vulnerable.\n"
+msgstr "%sNo se puede poner %s en modo 0600. Su contraseña de ICQ es vulnerable.\n"
 
 #: src/user.cpp:3856 src/user.cpp:3931
 #, c-format
@@ -4543,3 +4523,4 @@ msgstr ""
 #: src/utility.cpp:138
 msgid "none"
 msgstr "ninguno"
+
