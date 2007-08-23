@@ -220,6 +220,7 @@ bool CLicq::Init(int argc, char **argv)
   char *szRedirect = NULL;
   char szFilename[MAX_FILENAME_LEN];
   vector <char *> vszPlugins;
+  vector <char *> vszProtoPlugins;
 
   // parse command line for arguments
   bool bHelp = false;
@@ -227,6 +228,7 @@ bool CLicq::Init(int argc, char **argv)
   bool bBaseDir = false;
   bool bForceInit = false;
   bool bCmdLinePlugins = false;
+  bool bCmdLineProtoPlugins = false;
   bool bRedirect_ok = false;
   bool bUseColor = true;
   // Check the no one is trying session management on us
@@ -238,9 +240,9 @@ bool CLicq::Init(int argc, char **argv)
   {
     int i = 0;
 #ifdef __GLIBC__
-    while( (i = getopt(argc, argv, "--hd:b:p:Io:fcv")) > 0)
+    while( (i = getopt(argc, argv, "--hd:b:p:l:Io:fcv")) > 0)
 #else
-    while( (i = getopt(argc, argv, "hd:b:p:Io:fcv")) > 0)
+    while( (i = getopt(argc, argv, "hd:b:p:l:Io:fcv")) > 0)
 #endif
     {
       switch (i)
@@ -266,6 +268,10 @@ bool CLicq::Init(int argc, char **argv)
       case 'p':  // new plugin
         vszPlugins.push_back(strdup(optarg));
         bCmdLinePlugins = true;
+        break;
+      case 'l':  // new protocol plugin
+        vszProtoPlugins.push_back(strdup(optarg));
+        bCmdLineProtoPlugins = true;
         break;
       case 'o':  // redirect stderr
         szRedirect = strdup(optarg);
@@ -445,11 +451,23 @@ bool CLicq::Init(int argc, char **argv)
     if (!LoadPlugin(*iter, argc, argv)) return false;
     if (bHelp)
     {
-      fprintf(stderr, "Licq Plugin: %s %s\n%s\n----------\n",
+      fprintf(stderr, "----------\nLicq Plugin: %s %s\n%s\n",
           list_plugins.back()->Name(),
           list_plugins.back()->Version(),
           (*(list_plugins.back())->fUsage)() );
       list_plugins.pop_back();
+    }
+    free(*iter);
+  }
+  for (iter = vszProtoPlugins.begin(); iter != vszProtoPlugins.end(); ++iter)
+  {
+    if (!LoadProtoPlugin(*iter)) return false;
+    if (bHelp)
+    {
+      fprintf(stderr, "----------\nLicq Protocol Plugin: %s %s\n",
+          list_protoplugins.back()->Name(),
+          list_protoplugins.back()->Version());
+      list_protoplugins.pop_back();
     }
     free(*iter);
   }
@@ -1233,7 +1251,7 @@ int CLicq::Main()
 void CLicq::PrintUsage()
 {
   printf(tr("%s version %s.\n"
-         "Usage:  Licq [-h] [-d #] [-b configdir] [-I] [-p plugin] [-o file] [ -- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n\n"
+         "Usage:  Licq [-h] [-d #] [-b configdir] [-I] [-p plugin] [-l protoplugin] [-o file] [-- <plugin #1 parameters>] [-- <plugin #2 parameters>...]\n\n"
          " -h : this help screen (and any plugin help screens as well)\n"
          " -d : set what information is logged to standard output:\n"
          "        1  status information\n"
@@ -1246,6 +1264,7 @@ void CLicq::PrintUsage()
          " -b : set the base directory for the config and data files (~/.licq by default)\n"
          " -I : force initialization of the given base directory\n"
          " -p : load the given plugin library\n"
+         " -l : load the given protocol plugin library\n"
          " -o : redirect stderr to <file>, which can be a device (ie /dev/ttyp4)\n"),
          PACKAGE, VERSION);
 }
