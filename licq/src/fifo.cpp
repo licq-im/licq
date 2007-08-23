@@ -117,6 +117,16 @@ static const char* const HELP_PLUGINUNLOAD = tr(
 		"\tunload_plugin <plugin>\n"
 		"\t\tUnloads the UI plugin called <plugin>.\n"
 		"\t\tUse list_plugins to see currently loaded UI plugins.\n");
+static const char* const HELP_PROTOPLUGINLIST = tr(
+		"\tlist_proto_plugins\n"
+		"\t\tLists the loaded protocol plugins\n");
+static const char* const HELP_PROTOPLUGINLOAD = tr(
+		"\tload_proto_plugin <protoplugin>\n"
+		"\t\tLoads the protocol plugin called <protoplugin>\n");
+static const char* const HELP_PROTOPLUGINUNLOAD = tr(
+		"\tunload_proto_plugin <protoplugin>\n"
+		"\t\tUnloads the protocol plugin called <protoplugin>.\n"
+		"\t\tUse list_proto_plugins to see currently loaded protocol plugins.\n");
 static const char* const HELP_HELP = tr(
         "\thelp <<command> | all>\n" 
         "\t\tPrint help information for <command> or for all commands.\n");
@@ -713,6 +723,62 @@ static int fifo_plugin_unload(int argc, const char *const *argv, void *data)
   return -1;
 }
 
+static int fifo_proto_plugin_list(int argc, const char *const *argv, void *data)
+{
+  CICQDaemon *d = (CICQDaemon *) data;
+  ProtoPluginsList l;
+  ProtoPluginsListIter it;
+
+  d->ProtoPluginList(l);
+  for (it = l.begin(); it != l.end(); ++it)
+  {
+    gLog.Info("[%3d] %s\n", (*it)->Id(), (*it)->Name());
+  }
+  return 0;
+}
+
+static int fifo_proto_plugin_load(int argc, const char *const *argv, void *data)
+{
+  CICQDaemon *d = (CICQDaemon *) data;
+
+  if (argc == 1)
+  {
+    ReportMissingParams(argv[0]);
+    return -1;
+  }
+  
+  if (d->ProtoPluginLoad(argv[1]))
+    return 0;
+  
+  gLog.Info("Couldn't load protocol plugin '%s'\n", argv[1]);
+  return -1;
+}
+
+static int fifo_proto_plugin_unload(int argc, const char *const *argv, void *data)
+{
+  CICQDaemon *d = (CICQDaemon *) data;
+  ProtoPluginsList l;
+  ProtoPluginsListIter it;
+
+  if (argc == 1)
+  {
+    ReportMissingParams(argv[0]);
+    return -1;
+  }
+
+  d->ProtoPluginList(l);
+  for (it = l.begin(); it != l.end(); ++it)
+  {
+    if (strcmp((*it)->Name(), argv[1]) == 0)
+    {
+      d->ProtoPluginShutdown((*it)->Id());
+      return 0;
+    }
+  }
+  gLog.Info("Couldn't find protocol plugin '%s'\n", argv[1]);
+  return -1;
+}
+
 static int fifo_help ( int argc, const char *const *argv, void *data)
 {
   struct command_t *table = (struct command_t *)data;
@@ -759,24 +825,27 @@ static int fifo_help ( int argc, const char *const *argv, void *data)
 
 static struct command_t fifocmd_table[]=
 {
-  {"status",       fifo_status,       HELP_STATUS,       0},
-  {"auto_response",fifo_auto_response,HELP_AUTO,         0},
-  {"message",      fifo_message,      HELP_MSG,          0},
-  {"url",          fifo_url,          HELP_URL,          0},
-  {"sms",          fifo_sms,          HELP_SMS,          0},
-  {"sms-number",   fifo_sms_number,   HELP_SMS_NUMBER,   0},
-  {"redirect",     fifo_redirect,     HELP_REDIRECT,     0},
-  {"debuglvl",     fifo_debuglvl,     HELP_DEBUGLVL,     0},
-  {"adduser",      fifo_adduser,      HELP_ADDUSER,      0},
-  {"userinfo",     fifo_userinfo,     HELP_USERINFO,     0},
-  {"exit",         fifo_exit,         HELP_EXIT,         0},
-  {"ui_viewevent", fifo_ui_viewevent, HELP_UIVIEWEVENT,  0},
-  {"ui_message",   fifo_ui_message,   HELP_UIMESSAGE,    0},
-  {"list_plugins", fifo_plugin_list,  HELP_PLUGINLIST,   0},
-  {"load_plugin",  fifo_plugin_load,  HELP_PLUGINLOAD,   0},
-  {"unload_plugin",fifo_plugin_unload,HELP_PLUGINUNLOAD, 0},
-  {"help",         fifo_help,         HELP_HELP,         1},
-  {NULL,           NULL,              NULL,              0}
+  {"status",              fifo_status,              HELP_STATUS,            0},
+  {"auto_response",       fifo_auto_response,       HELP_AUTO,              0},
+  {"message",             fifo_message,             HELP_MSG,               0},
+  {"url",                 fifo_url,                 HELP_URL,               0},
+  {"sms",                 fifo_sms,                 HELP_SMS,               0},
+  {"sms-number",          fifo_sms_number,          HELP_SMS_NUMBER,        0},
+  {"redirect",            fifo_redirect,            HELP_REDIRECT,          0},
+  {"debuglvl",            fifo_debuglvl,            HELP_DEBUGLVL,          0},
+  {"adduser",             fifo_adduser,             HELP_ADDUSER,           0},
+  {"userinfo",            fifo_userinfo,            HELP_USERINFO,          0},
+  {"exit",                fifo_exit,                HELP_EXIT,              0},
+  {"ui_viewevent",        fifo_ui_viewevent,        HELP_UIVIEWEVENT,       0},
+  {"ui_message",          fifo_ui_message,          HELP_UIMESSAGE,         0},
+  {"list_plugins",        fifo_plugin_list,         HELP_PLUGINLIST,        0},
+  {"load_plugin",         fifo_plugin_load,         HELP_PLUGINLOAD,        0},
+  {"unload_plugin",       fifo_plugin_unload,       HELP_PLUGINUNLOAD,      0},
+  {"list_proto_plugins",  fifo_proto_plugin_list,   HELP_PROTOPLUGINLIST,   0},
+  {"load_proto_plugin",   fifo_proto_plugin_load,   HELP_PROTOPLUGINLOAD,   0},
+  {"unload_proto_plugin", fifo_proto_plugin_unload, HELP_PROTOPLUGINUNLOAD, 0},
+  {"help",                fifo_help,                HELP_HELP,              1},
+  {NULL,                  NULL,                     NULL,                   0}
 };
 
 //-----ProcessFifo--------------------------------------------------------------
