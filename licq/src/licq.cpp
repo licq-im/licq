@@ -496,7 +496,7 @@ bool CLicq::Init(int argc, char **argv)
   }
 
   // Find and load the protocol plugins before the UI plugins
-  if (!bHelp)
+  if (!bHelp && !bCmdLineProtoPlugins)
   {
     unsigned short nNumProtoPlugins = 0;
     char szData[MAX_FILENAME_LEN];
