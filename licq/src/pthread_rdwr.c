@@ -18,6 +18,7 @@
  *
  * Library of functions implementing reader/writer locks
  */
+#include <assert.h>
 #include <pthread.h>
 #include "pthread_rdwr.h"
 
@@ -46,6 +47,7 @@ int pthread_rdwr_rlock_np(pthread_rdwr_t *rdwrp){
 int pthread_rdwr_runlock_np(pthread_rdwr_t *rdwrp)
 {
   pthread_mutex_lock(&(rdwrp->mutex));
+  assert(rdwrp->readers_reading > 0);
   if (rdwrp->readers_reading == 0) {
     pthread_mutex_unlock(&(rdwrp->mutex));
     return -1;
@@ -74,6 +76,7 @@ int pthread_rdwr_wlock_np(pthread_rdwr_t *rdwrp)
 int pthread_rdwr_wunlock_np(pthread_rdwr_t *rdwrp)
 {
   pthread_mutex_lock(&(rdwrp->mutex));
+  assert(rdwrp->writer_writing > 0);
   if (rdwrp->writer_writing == 0) {
     pthread_mutex_unlock(&(rdwrp->mutex));
     return -1;
