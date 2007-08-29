@@ -14,6 +14,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <netinet/in.h>
+#include <cassert>
 #include <ctime>
 #include <ctype.h>
 #include <sys/socket.h>
@@ -454,7 +455,8 @@ void ICQUser::Lock(unsigned short _nLockType)
     pthread_rdwr_wlock_np(&mutex_rw);
     break;
   default:
-    break;
+    assert(false);
+    return;
   }
   m_nLockType = _nLockType;
 }
@@ -476,6 +478,7 @@ void ICQUser::Unlock()
     pthread_rdwr_wunlock_np(&mutex_rw);
     break;
   default:
+    assert(false);
     break;
   }
 }
@@ -1393,7 +1396,8 @@ UserList *CUserManager::LockUserList(unsigned short _nLockType)
     pthread_rdwr_wlock_np(&mutex_userlist);
     break;
   default:
-    break;
+    assert(false);
+    return NULL;
   }
   m_nUserListLockType = _nLockType;
   return &m_vpcUsers;
@@ -1415,6 +1419,7 @@ void CUserManager::UnlockUserList()
     pthread_rdwr_wunlock_np(&mutex_userlist);
     break;
   default:
+    assert(false);
     break;
   }
 }
@@ -1435,7 +1440,8 @@ GroupList *CUserManager::LockGroupList(unsigned short _nLockType)
     pthread_rdwr_wlock_np(&mutex_grouplist);
     break;
   default:
-    break;
+    assert(false);
+    return NULL;
   }
   m_nGroupListLockType = _nLockType;
   return &m_vszGroups;
@@ -1459,6 +1465,7 @@ void CUserManager::UnlockGroupList()
     pthread_rdwr_wunlock_np(&mutex_grouplist);
     break;
   default:
+    assert(false);
     break;
   }
 }
@@ -1480,7 +1487,8 @@ GroupIDList *CUserManager::LockGroupIDList(unsigned short _nLockType)
     pthread_rdwr_wlock_np(&mutex_groupidlist);
     break;
   default:
-    break;
+    assert(false);
+    return NULL;
   }
   m_nGroupIDListLockType = _nLockType;
   return &m_vnGroupsID;
@@ -1504,6 +1512,7 @@ void CUserManager::UnlockGroupIDList()
     pthread_rdwr_wunlock_np(&mutex_groupidlist);
     break;
   default:
+    assert(false);
     break;
   }
 }
@@ -1519,7 +1528,8 @@ OwnerList *CUserManager::LockOwnerList(unsigned short _nLockType)
     pthread_rdwr_wlock_np(&mutex_ownerlist);
     break;
   default:
-    break;
+    assert(false);
+    return NULL;
   }
   m_nOwnerListLockType = _nLockType;
   return &m_vpcOwners;
@@ -1538,6 +1548,7 @@ void CUserManager::UnlockOwnerList()
     pthread_rdwr_wunlock_np(&mutex_ownerlist);
     break;
   default:
+    assert(false);
     break;
   }
 }
@@ -1724,7 +1735,8 @@ void CUserHashTable::Lock(unsigned short _nLockType)
     pthread_rdwr_wlock_np(&mutex_rw);
     break;
   default:
-    break;
+    assert(false);
+    return;
   }
   m_nLockType = _nLockType;
 }
@@ -1742,6 +1754,7 @@ void CUserHashTable::Unlock()
     pthread_rdwr_wunlock_np(&mutex_rw);
     break;
   default:
+    assert(false);
     break;
   }
 }
