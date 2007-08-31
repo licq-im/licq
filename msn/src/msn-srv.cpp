@@ -28,6 +28,7 @@
 #include <openssl/md5.h>
 #include <unistd.h>
 
+#include <cassert>
 #include <string>
 #include <list>
 #include <vector>
@@ -510,6 +511,7 @@ void CMSN::SendPacket(CMSNPacket *p)
 {
   INetSocket *s = gSocketMan.FetchSocket(m_nServerSocket);
   SrvSocket *sock = static_cast<SrvSocket *>(s);
+  assert(sock != NULL);
   if (!sock->SendRaw(p->getBuffer()))
     MSNLogoff(true);
   else
