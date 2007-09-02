@@ -2915,9 +2915,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   if (_bAuthReq)
     buffer->PackUnsignedLongBE(0x00660000);
 
-  if (u)
-    gUserManager.DropUser(u);
-
   if (szUnicodeName)
     delete [] szUnicodeName;
   if (szUnicodeAlias)
