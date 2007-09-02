@@ -2840,9 +2840,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       szUnicodeName = gTranslator.ToUnicode((char *)_szName);
       nStrLen = strlen(szUnicodeName);
 
-      // modifygroupid needs write access, so unlock to make sure it gets what it wants.
-      gUserManager.UnlockGroupIDList();
-
       if (!_bTopLevel)
         gUserManager.ModifyGroupID(const_cast<char *>(_szName), m_nGSID);
       else
