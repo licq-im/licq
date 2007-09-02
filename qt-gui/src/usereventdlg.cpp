@@ -1706,6 +1706,9 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
       // using the old nConvoId
       if (s->FindConversation(m_nConvoId) == 0)
         m_nConvoId = 0;
+
+      // Fetch the user again since we dropped it above
+      u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
     }
     
     // Do we already have an open socket?
