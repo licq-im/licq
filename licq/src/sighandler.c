@@ -11,6 +11,7 @@
 #endif
 
 #include "licq_sighandler.h"
+#include "licq_constants.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -87,6 +88,10 @@ void licq_handle_sigabrt(int s)
   }
 
 #ifdef HAVE_BACKTRACE
+  char filename[MAX_FILENAME_LEN];
+  snprintf(filename, MAX_FILENAME_LEN, "%s/licq.backtrace", BASE_DIR);
+  FILE* file = fopen(filename, "w");
+
   fprintf(stderr, tr("Backtrace:\n"));
   {
     const int size = 100;
@@ -95,7 +100,11 @@ void licq_handle_sigabrt(int s)
     int n = backtrace(array, size);
     char **res = backtrace_symbols(array, n);
     for (i = 0; i < n; i++)
+    {
       fprintf(stderr, "%s\n", res[i]);
+      if (file != NULL)
+        fprintf(file, "%s\n", res[i]);
+    }
 
     free(res);
     /*array[0] = si->si_addr;
@@ -103,6 +112,9 @@ void licq_handle_sigabrt(int s)
     fprintf(stderr, "%s\n", res[0]);*/
   }
   fprintf(stderr, tr("Attempting to generate core file.\n"));
+
+  if (file != NULL)
+    fclose(file);
 
   #ifdef HAVE_PTHREAD_KILL_OTHER_THREADS_NP
   // only available in LinuxThreads, not in NPTL
