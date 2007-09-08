@@ -1337,6 +1337,7 @@ void INetSocket::Unlock()
 CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 {
   pthread_rdwr_init_np(&mutex_rw, NULL);
+  pthread_rdwr_set_name(&mutex_rw, __func__);
 }
 
 CSocketHashTable::~CSocketHashTable()

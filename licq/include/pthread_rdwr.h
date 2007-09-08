@@ -27,17 +27,43 @@
 extern "C" {
 #endif
 
+/*
+ * Define DEBUG_RW_MUTEX and recompile the daemon and all plugins to
+ * debug deadlocks. If a (potential) deadlock is discovered, the
+ * daemon will print a message to stderr (and to the file
+ * /tmp/licq.debug_rw_mutex) and than hang forever (if it's a real
+ * deadlock).
+ * 
+ * This is when you should attach gdb to the process (gdb --pid `pidof
+ * licq`) and run the command "thread apply all backtrace" to be able
+ * to see which thread that didn't release a lock and which thread
+ * that is hanging trying to acquire a lock.
+ */
+/* #define DEBUG_RW_MUTEX */
 
 typedef struct rdwr_var {
   int readers_reading;
   int writer_writing;
   pthread_mutex_t mutex;
   pthread_cond_t lock_free;
+#ifdef DEBUG_RW_MUTEX
+#define RW_MUTEX_MAX_READERS 20
+  pthread_t writer;
+  pthread_t readers[RW_MUTEX_MAX_READERS];
+  char* name;
+#endif
 } pthread_rdwr_t;
 
 typedef void * pthread_rdwrattr_t;
 
 #define pthread_rdwrattr_default NULL;
+
+#ifdef DEBUG_RW_MUTEX
+#define pthread_rdwr_set_name(rdwrp, new_name) \
+  do { free((rdwrp)->name); (rdwrp)->name = strdup((new_name)); } while (0)
+#else
+#define pthread_rdwr_set_name(rdwrp, new_name) do {} while (0)
+#endif
 
 int pthread_rdwr_init_np(pthread_rdwr_t *rdwrp, pthread_rdwrattr_t *attrp);
 int pthread_rdwr_rlock_np(pthread_rdwr_t *rdwrp);

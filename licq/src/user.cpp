@@ -490,9 +490,17 @@ CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
 {
   // Set up the basic all users and new users group
   pthread_rdwr_init_np(&mutex_grouplist, NULL);
+  pthread_rdwr_set_name(&mutex_grouplist, "grouplist");
+
   pthread_rdwr_init_np(&mutex_userlist, NULL);
+  pthread_rdwr_set_name(&mutex_userlist, "userlist");
+
   pthread_rdwr_init_np(&mutex_groupidlist, NULL);
+  pthread_rdwr_set_name(&mutex_groupidlist, "groupidlist");
+
   pthread_rdwr_init_np(&mutex_ownerlist, NULL);
+  pthread_rdwr_set_name(&mutex_ownerlist, "ownerlist");
+
   m_nOwnerListLockType = LOCK_N;
   m_nUserListLockType = m_nGroupListLockType = m_nGroupIDListLockType = LOCK_N;
 
@@ -1609,6 +1617,7 @@ void CUserManager::RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGro
 CUserHashTable::CUserHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 {
   pthread_rdwr_init_np(&mutex_rw, NULL);
+  pthread_rdwr_set_name(&mutex_rw, __func__);
   m_nLockType = LOCK_R;
 }
 
@@ -2374,6 +2383,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_szUinString[12] = '\0';
 
   pthread_rdwr_init_np (&mutex_rw, NULL);
+  pthread_rdwr_set_name(&mutex_rw, m_szUinString);
 }
 
 void ICQUser::SetPermanent()
