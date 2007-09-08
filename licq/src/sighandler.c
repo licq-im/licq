@@ -18,6 +18,7 @@
 #include <signal.h>
 #include <sys/types.h>
 #include <sys/wait.h>
+#include <unistd.h>
 
 #if __GLIBC__ == 2 && __GLIBC_MINOR__ >= 1
 #define HAVE_BACKTRACE
@@ -87,12 +88,42 @@ void licq_handle_sigabrt(int s)
     return;
   }
 
+  /*
+   * Use gdb to try to generate a backtrace for all threads and save
+   * it in BASE_DIR/licq.backtrace.gdb.
+   */
+  char cmd[MAX_FILENAME_LEN];
+  snprintf(cmd, MAX_FILENAME_LEN, "%s/licqcmd.gdb", BASE_DIR);
+  FILE* cmdfile = fopen(cmd, "w");
+  if (cmdfile != NULL)
+  {
+    fprintf(cmdfile, "set logging file %s/licq.backtrace.gdb\n", BASE_DIR);
+    fprintf(cmdfile, "set logging overwrite\n");
+    fprintf(cmdfile, "set logging redirect on\n");
+    fprintf(cmdfile, "set logging on\n");
+    fprintf(cmdfile, "thread apply all bt\n");
+    fprintf(cmdfile, "thread apply all bt full\n");
+    fprintf(cmdfile, "detach\n");
+    fclose(cmdfile);
+  
+    char command[64 + MAX_FILENAME_LEN];
+    snprintf(command, 64 + MAX_FILENAME_LEN,
+             "gdb --batch-silent -x %s --pid %u", cmd, getpid());
+
+    fprintf(stderr, "\nUsing gdb to save backtrace to %s/licq.backtrace.gdb\n"
+            "Running: '%s'... ", BASE_DIR, command);
+    int ret = system(command);
+    fprintf(stderr, "%s (exit code %d)\n\n", (ret == 0) ? "done" : "failed", ret);
+
+    unlink(cmd);
+  }
+
 #ifdef HAVE_BACKTRACE
   char filename[MAX_FILENAME_LEN];
   snprintf(filename, MAX_FILENAME_LEN, "%s/licq.backtrace", BASE_DIR);
   FILE* file = fopen(filename, "w");
 
-  fprintf(stderr, tr("Backtrace:\n"));
+  fprintf(stderr, tr("Backtrace (saved in %s):\n"), filename);
   {
     const int size = 100;
     int i;
