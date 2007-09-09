@@ -171,7 +171,9 @@ int pthread_rdwr_rlock_np(pthread_rdwr_t *rdwrp)
 int pthread_rdwr_runlock_np(pthread_rdwr_t *rdwrp)
 {
   pthread_mutex_lock(&(rdwrp->mutex));
+#ifdef DEBUG_RW_MUTEX
   assert(rdwrp->readers_reading > 0);
+#endif
   if (rdwrp->readers_reading == 0)
   {
     pthread_mutex_unlock(&(rdwrp->mutex));
@@ -212,7 +214,9 @@ int pthread_rdwr_wlock_np(pthread_rdwr_t *rdwrp)
 int pthread_rdwr_wunlock_np(pthread_rdwr_t *rdwrp)
 {
   pthread_mutex_lock(&(rdwrp->mutex));
+#ifdef DEBUG_RW_MUTEX
   assert(rdwrp->writer_writing > 0);
+#endif
   if (rdwrp->writer_writing == 0)
   {
     pthread_mutex_unlock(&(rdwrp->mutex));
