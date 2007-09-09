@@ -55,10 +55,10 @@ static void print_users(FILE* file, pthread_rdwr_t *rdwrp, int reading)
 
   fprintf(file,
           "Possible deadlock for thread %d trying to get a %s lock on '%s'\n",
-          pthread_self(), (reading ? "read" : "write"), rdwrp->name);
+          (int)pthread_self(), (reading ? "read" : "write"), rdwrp->name);
 
   if (rdwrp->writer_writing > 0)
-    fprintf(file, "Thread %d holds the write lock\n", rdwrp->writer);
+    fprintf(file, "Thread %d holds the write lock\n", (int)rdwrp->writer);
   else
     fprintf(file, "No thread holds the write lock\n");
 
@@ -66,7 +66,7 @@ static void print_users(FILE* file, pthread_rdwr_t *rdwrp, int reading)
   {
     fprintf(file, "These threads hold the read lock:");
     for (i = 0; i < rdwrp->readers_reading; ++i)
-      fprintf(file, " %d", rdwrp->readers[i]);
+      fprintf(file, " %lu", rdwrp->readers[i]);
     fprintf(file, "\n");
   }
   else
