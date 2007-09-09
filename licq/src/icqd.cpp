@@ -2431,6 +2431,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   unsigned long nFlags = ((nMask & ICQ_CMDxSUB_FxMULTIREC) ? E_MULTIxREC : 0)
                          | ((nMask & ICQ_TCPxMSG_URGENT) ? E_URGENT : 0);
 
+  u->Lock(LOCK_W);
+
   switch (nMsgType)
   {
   case ICQ_CMDxSUB_MSG:
@@ -2593,6 +2595,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
                        u->Uin()));
     }
+    u->Unlock();
     return;
     
     break; // bah!
@@ -2627,6 +2630,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     if (nCommand == 0)
     {
       gLog.Warn(tr("%sUnknown ICBM plugin type: %s\n"), L_SRVxSTR, szPlugin);
+      u->Unlock();
       return;
     }
 
@@ -2641,6 +2645,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     char *msg = (message[0] != '\0') ? message : szMessage;
 
     // recursion
+    u->Unlock();
     ProcessMessage(u, packet, msg, nCommand, nMask, nMsgID,
                    nSequence, bIsAck, bNewUser);
     return;
@@ -2664,8 +2669,9 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
       gLog.Info(tr("%s%s accepted from %s (%lu).\n"), L_SRVxSTR, szType,
                 u->GetAlias(), u->Uin());
-      gUserManager.DropUser(u);
+      u->Unlock();
       ProcessDoneEvent(pAckEvent);
+      u->Lock(LOCK_W);
     }
     else
     {
@@ -2686,6 +2692,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
                     szType, u->Uin());
           if (szType)  free(szType);
           RejectEvent(u->Uin(), pEvent);
+          u->Unlock();
           return;
         }
         gLog.Info(tr("%s%s from new user (%lu).\n"), L_SRVxSTR, szType, u->Uin());
@@ -2706,6 +2713,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       delete [] buf;
     }
   }
+
+  u->Unlock();
 
   if (szType)  free(szType);
 }

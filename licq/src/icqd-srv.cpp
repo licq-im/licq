@@ -3259,6 +3259,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         gTranslator.ClientToServer(szMsg);
       }
 
+      if (!bNewUser)
+        gUserManager.DropUser(u);
+
       // Handle it
       ProcessMessage(u, advMsg, szMsg, nMsgType, nMask, nMsgID,
                      nSequence, bIsAck, bNewUser);
@@ -3270,7 +3273,6 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         break;
       }
 
-      gUserManager.DropUser(u);
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
                                       LICQ_PPID));
       break;
