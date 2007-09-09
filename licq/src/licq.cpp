@@ -341,6 +341,35 @@ bool CLicq::Init(int argc, char **argv)
   strncpy(LIB_DIR, INSTALL_LIBDIR, MAX_FILENAME_LEN);
   LIB_DIR[MAX_FILENAME_LEN - 1] = '\0';
 
+  // Load up the plugins
+  m_nNextId = 1;
+  vector <char *>::iterator iter;
+  for (iter = vszPlugins.begin(); iter != vszPlugins.end(); ++iter)
+  {
+    if (!LoadPlugin(*iter, argc, argv)) return false;
+    if (bHelp)
+    {
+      fprintf(stderr, "----------\nLicq Plugin: %s %s\n%s\n",
+          list_plugins.back()->Name(),
+          list_plugins.back()->Version(),
+          (*(list_plugins.back())->fUsage)() );
+      list_plugins.pop_back();
+    }
+    free(*iter);
+  }
+  for (iter = vszProtoPlugins.begin(); iter != vszProtoPlugins.end(); ++iter)
+  {
+    if (!LoadProtoPlugin(*iter)) return false;
+    if (bHelp)
+    {
+      fprintf(stderr, "----------\nLicq Protocol Plugin: %s %s\n",
+          list_protoplugins.back()->Name(),
+          list_protoplugins.back()->Version());
+      list_protoplugins.pop_back();
+    }
+    free(*iter);
+  }
+  if (bHelp) return false;
 
   // Check pid
   // We do this by acquiring a write lock on the pid file and never closing the file.
@@ -442,36 +471,6 @@ bool CLicq::Init(int argc, char **argv)
   szConf[MAX_FILENAME_LEN - 1] = '\0';
   if (licqConf.LoadFile(szConf) == false)
     return false;
-
-  // Load up the plugins
-  m_nNextId = 1;
-  vector <char *>::iterator iter;
-  for (iter = vszPlugins.begin(); iter != vszPlugins.end(); ++iter)
-  {
-    if (!LoadPlugin(*iter, argc, argv)) return false;
-    if (bHelp)
-    {
-      fprintf(stderr, "----------\nLicq Plugin: %s %s\n%s\n",
-          list_plugins.back()->Name(),
-          list_plugins.back()->Version(),
-          (*(list_plugins.back())->fUsage)() );
-      list_plugins.pop_back();
-    }
-    free(*iter);
-  }
-  for (iter = vszProtoPlugins.begin(); iter != vszProtoPlugins.end(); ++iter)
-  {
-    if (!LoadProtoPlugin(*iter)) return false;
-    if (bHelp)
-    {
-      fprintf(stderr, "----------\nLicq Protocol Plugin: %s %s\n",
-          list_protoplugins.back()->Name(),
-          list_protoplugins.back()->Version());
-      list_protoplugins.pop_back();
-    }
-    free(*iter);
-  }
-  if (bHelp) return false;
 
   // Verify the version
   licqConf.SetSection("licq");
