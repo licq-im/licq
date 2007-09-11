@@ -336,7 +336,9 @@ void IconManager_Default::SetDockIconMsg(unsigned short nNewMsg, unsigned short 
   {
     // Draw the little icon now
     QPixmap *m = NULL;
-    if (nSysMsg > 0 || nNewMsg > 0)
+    if (nSysMsg > 0)
+      m = &mainwin->pmReqAuthorize;
+    else if (nNewMsg > 0)
       m = &mainwin->pmMessage;
     else
       m = GetDockIconStatusIcon();
@@ -681,7 +683,12 @@ void IconManager_KDEStyle::SetDockIconMsg(unsigned short nNewMsg, unsigned short
   m_nSysMsg = nSysMsg;
 
   killTimers();
-  if(m_nNewMsg + m_nSysMsg)
+  if (m_nSysMsg > 0)
+  {
+    m_eventIcon = mainwin->pmReqAuthorize;
+    startTimer(500);
+  }
+  else if (m_nNewMsg > 0)
   {
     m_eventIcon = mainwin->pmMessage;
     startTimer(500);

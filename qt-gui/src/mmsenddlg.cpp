@@ -46,7 +46,6 @@ CMMSendDlg::CMMSendDlg(CICQDaemon *_server, CSignalManager *sigman,
   CMMUserView *_mmv, QWidget *p)
   : LicqDialog(p, "MMSendDialog", true, WDestructiveClose)
 {
-  m_nUin = 0;
   m_szId = 0;
   m_nPPID = 0;
   icqEventTag = 0;

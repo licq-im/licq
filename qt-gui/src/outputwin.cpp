@@ -96,7 +96,7 @@ void CQtLogWindow::slot_log(int s)
   char buf[4];
   read(s, buf, 1);
 
-  QString str = QString::fromLocal8Bit(NextLogMsg());
+  QString str = QString::fromUtf8(NextLogMsg());
 
   outputBox->appendNoNewLine(str);
   outputBox->GotoEnd();

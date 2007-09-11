@@ -324,7 +324,7 @@ void OptionsDlg::SetupOptions()
 #endif
   }
   if (mainwin->m_bDisableDockIcon)
-    boxDocking->setEnabled(FALSE);
+    boxDocking->setEnabled(false);
 
   edtICQServer->setText(QString(mainwin->licqDaemon->ICQServer()));
   spnICQServerPort->setValue(mainwin->licqDaemon->ICQServerPort());

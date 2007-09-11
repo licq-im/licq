@@ -78,7 +78,7 @@ void CEditFileListDlg::RefreshList()
   btnDel->setEnabled(false);
   
   for (it = m_lFileList->begin(); it != m_lFileList->end(); it++ )
-    lstFiles->insertItem(*it, -1);
+    lstFiles->insertItem(QString::fromLocal8Bit(*it), -1);
 }
 
 void CEditFileListDlg::slot_selectionChanged(QListBoxItem *item)

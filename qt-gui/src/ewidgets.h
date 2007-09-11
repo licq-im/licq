@@ -213,15 +213,7 @@ protected:
 
 /* ----------------------------------------------------------------------------- */
 
-class CHistoryWidget : public MLView
-{
-  Q_OBJECT
-public:
-  CHistoryWidget(QWidget* parent = 0, const char* name = 0);
-  virtual ~CHistoryWidget() {};
-};
-
-class CMessageViewWidget : public CHistoryWidget
+class CMessageViewWidget : public MLView
 {
   Q_OBJECT
 private:

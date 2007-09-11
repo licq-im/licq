@@ -1176,7 +1176,7 @@ void UserInfoDlg::CreateAbout()
   p->setSpacing(8);
 
   lblAbout = new QLabel(tr("About:"), p);
-  mlvAbout = new CHistoryWidget(p, "About");//EditWrap(true, p);
+  mlvAbout = new MLView(p, "About");//EditWrap(true, p);
   mlvAbout->setReadOnly(!m_bOwner);
   mlvAbout->setTextFormat(RichText);
   connect(mlvAbout, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
@@ -1892,6 +1892,7 @@ void UserInfoDlg::SetupHistory()
       mlvHistory->setText(tr("Sorry, history is disabled for this person."));
 
     btnMain2->setEnabled(false);
+    gUserManager.DropUser(u);
   }
   else
   {
@@ -1905,11 +1906,11 @@ void UserInfoDlg::SetupHistory()
       m_iHistorySIter--;
     }
     m_nHistoryIndex = m_lHistoryList.size();
+    gUserManager.DropUser(u);
     ShowHistory();
 
     btnMain2->setEnabled((m_nHistoryIndex - m_nHistoryShowing) != 0);
   }
-  gUserManager.DropUser(u);
 
   btnMain3->setEnabled(false);
 }

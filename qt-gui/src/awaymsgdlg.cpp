@@ -247,7 +247,7 @@ bool AwayMsgDlg::eventFilter(QObject* /* obj */, QEvent *e)
   {      
     slot_autocloseStop();
   }
-  return FALSE;
+  return false;
 }
 
 void AwayMsgDlg::slot_autocloseTick()

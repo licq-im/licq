@@ -498,8 +498,8 @@ void CETabBar::paintLabel(QPainter* p, const QRect &br,
     
     p->drawPixmap(br.left() + 2 + xoff, br.center().y()-pixh/2 + yoff, pixmap);
 #else
-    p->drawPixmap(br.left() + 2 + ((selected == TRUE) ? 0 : 2),
-                  br.center().y()-pixh/2 + ((selected == TRUE) ? 0 : 2),
+    p->drawPixmap(br.left() + 2 + ((selected == true) ? 0 : 2),
+                  br.center().y()-pixh/2 + ((selected == true) ? 0 : 2),
                   pixmap);
 #endif
   }
@@ -746,15 +746,6 @@ int CTimeZoneField::mapTextToValue(bool *ok)
   return ret;
 }
 
-// -----------------------------------------------------------------------------
-
-CHistoryWidget::CHistoryWidget(QWidget* parent, const char* name)
-  : MLView(parent, name)
-{
-  setTextFormat(RichText);
-}
-
-// -----------------------------------------------------------------------------
 
 //- Message View Widget ---------------------------------------------------------
 
@@ -786,8 +777,9 @@ QStringList CMessageViewWidget::getStyleNames(bool includeHistoryStyles)
 
 CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
   CMainWindow *m, QWidget* parent, const char *name, bool historyMode)
-  : CHistoryWidget(parent, name)
+  : MLView(parent, name)
 {
+  setTextFormat(RichText);
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
   if (historyMode)
@@ -837,8 +829,9 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
 }
 
 CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWidget *parent, const char *name, bool historyMode)
-:CHistoryWidget(parent,name)
+  : MLView(parent,name)
 {
+  setTextFormat(RichText);
   m_nUin= _nUin;
   m_szId = NULL; // avoid desalocation error at destructor
   if (historyMode)
@@ -903,7 +896,7 @@ void CMessageViewWidget::setOwner(const char *_szId)
 
 void CMessageViewWidget::clear()
 {
-  CHistoryWidget::clear();
+  MLView::clear();
 
   m_buffer = "";
 
@@ -994,7 +987,7 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
   }
 
   // Remove trailing line breaks.
-  for (int i = messageText.length(); i >= 0; i--)
+  for (int i = messageText.length(); i > 0; i--)
   {
     if (messageText.at(i - 1) != '\n' && messageText.at(i - 1) != '\r')
     {
@@ -1127,8 +1120,8 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
           break;
         }
       }
+      gUserManager.DropUser(u);
     }
-    gUserManager.DropUser(u);
   }
 
   if (e->Direction() != D_RECEIVER)
@@ -1143,8 +1136,6 @@ void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long 
       gUserManager.DropOwner(m_nPPID);
     }
   }
-
-  QString s;
 
   QString messageText;
   if (e->SubCommand() == ICQ_CMDxSUB_SMS)
@@ -1455,15 +1446,18 @@ void CLicqMessageBox::slot_listChanged(QListViewItem *i)
 {
   // Change the icon, message and caption
   CLicqMessageBoxItem *item = dynamic_cast<CLicqMessageBoxItem *>(i);
-  m_lblIcon->setPixmap(item->getFullIcon());
-  m_lblMessage->setText(item->getMessage());
-  updateCaption(item);
-
-  // Mark it as read
-  if (item->isUnread())
+  if (item != NULL)
   {
-    m_nUnreadNum--;
-    item->setUnread(false);
+    m_lblIcon->setPixmap(item->getFullIcon());
+    m_lblMessage->setText(item->getMessage());
+    updateCaption(item);
+
+    // Mark it as read
+    if (item->isUnread())
+    {
+      m_nUnreadNum--;
+      item->setUnread(false);
+    }
   }
 
   // Update the next button

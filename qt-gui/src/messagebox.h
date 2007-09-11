@@ -27,7 +27,6 @@
 
 class CUserEvent;
 class MsgView;
-class CMsgViewTips;
 
 //=====UserViewItem================================================================================
 class MsgViewItem : public QListViewItem
@@ -47,7 +46,6 @@ protected:
 
   void SetEventLine();
 
-friend class CMsgViewTips;
 friend class MsgView;
 };
 
@@ -65,7 +63,6 @@ signals:
   void sizeChange(int, int, int);
 
 protected:
-  CMsgViewTips *tips;
 
   virtual void resizeEvent(QResizeEvent *e);
   virtual void maybeTip(const QPoint&);

@@ -45,7 +45,6 @@ CForwardDlg::CForwardDlg(CSignalManager *sigMan, CUserEvent *e, QWidget *p)
   sigman = sigMan;
 
   m_nEventType = e->SubCommand();
-  m_nUin = 0;
   m_szId = 0;
   m_nPPID = 0;
 

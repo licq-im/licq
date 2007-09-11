@@ -95,8 +95,6 @@ public:
               const char *extendedIconsName, bool bDisableDockIcon,
               QWidget *parent = 0);
   virtual ~CMainWindow();
-  bool RemoveUserFromList(unsigned long, QWidget *);
-  bool RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long, QWidget *);
   UserEventCommon *callFunction(int fcn, const char *, unsigned long, int = -1);
   bool RemoveUserFromList(const char *, unsigned long, QWidget *);
   bool RemoveUserFromGroup(GroupType, unsigned long, const char *,
@@ -107,13 +105,11 @@ public:
   void ApplyExtendedIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
   QPopupMenu *UserMenu() { return mnuUser; }
-  void SetUserMenuUin(unsigned long n) { m_nUserMenuUin = n; } // deprecated, use SetUserMenuUser instead!
   void SetUserMenuUser(const char *_szId, unsigned long _nPPID)
   {
     if (m_szUserMenuId)  free(m_szUserMenuId);
     m_szUserMenuId = strdup(_szId);
     m_nUserMenuPPID = _nPPID;
-    m_nUserMenuUin = strtoul(_szId, (char **)NULL, 10); // deprecated, use m_nUserMenuId instead!
   }
   static QPixmap &iconForStatus(unsigned long FullStatus, const char *szId = "0",
     unsigned long nPPID = LICQ_PPID);
@@ -266,7 +262,6 @@ public:
           pmPhoneFollowMeBusy, pmSharedFiles, pmMSNOnline, pmMSNOffline,
           pmMSNOccupied, pmMSNPrivate, pmMSNAway, pmAIMOnline, pmAIMAway,
           pmAIMOffline, pmGPGKey, pmGPGKeyEnabled, pmGPGKeyDisabled;
-  unsigned long m_nUserMenuUin;
   unsigned int positionChanges;
   int m_nProtoNum;
   char *m_szUserMenuId;

@@ -87,7 +87,7 @@ GPGKeyManager::GPGKeyManager( QWidget *_parent )
   
   // create the keylist
   lst_keyList = new KeyList( box_keys );
-  lst_keyList->setAllColumnsShowFocus( TRUE );
+  lst_keyList->setAllColumnsShowFocus(true);
   lst_keyList->addColumn( tr("User") );
   lst_keyList->addColumn( tr("Active") );
   lst_keyList->addColumn( tr("Key ID") );
@@ -104,7 +104,7 @@ GPGKeyManager::GPGKeyManager( QWidget *_parent )
   // Close
   QHBoxLayout *lay_btnClose = new QHBoxLayout( lay_main, -1, "Close button layout");
   QPushButton *btn_close = new QPushButton( tr("&Close"), this);
-  btn_close->setAutoDefault( TRUE );
+  btn_close->setAutoDefault(true);
   lay_btnClose->addStretch();
   lay_btnClose->addWidget( btn_close );
   connect( btn_close, SIGNAL(clicked()), this, SLOT(slot_close()));
@@ -143,7 +143,7 @@ void GPGKeyManager::slot_add()
 {
   QPopupMenu popupMenu;
   gkm_UserList list;
-  list.setAutoDelete( TRUE );
+  list.setAutoDelete(true);
   
   FOR_EACH_USER_START(LOCK_R)
   {
@@ -224,7 +224,7 @@ void GPGKeyManager::initKeyList()
 KeyList::KeyList( QWidget *_parent )
   : QListView( _parent )
 {
-  setAcceptDrops( TRUE );
+  setAcceptDrops(true);
 }
 
 KeyList::~KeyList()

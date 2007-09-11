@@ -246,6 +246,7 @@ void SecurityDlg::ok()
 
     if (chkOnlyLocal->isChecked())
     {
+      o = gUserManager.FetchOwner(LOCK_W);
       gUserManager.SetOwnerUin(edtUin->text().toULong());
       o->SetPassword(edtFirst->text().latin1());
       gUserManager.DropOwner();

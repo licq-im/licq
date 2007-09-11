@@ -229,7 +229,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   {
     QTimer *timer = new QTimer( this );
     connect( timer, SIGNAL(timeout()), this, SLOT(setMsgWinSticky()) );
-    timer->start( 100, TRUE ); // 100 milliseconds single-shot timer
+    timer->start(100, true); // 100 milliseconds single-shot timer
   }
 }
 
@@ -614,7 +614,7 @@ UserEventCommon::~UserEventCommon()
   if (m_bDeleteUser && !m_bOwner)
     mainwin->RemoveUserFromList(strdup(m_lUsers.front().c_str()), m_nPPID, this);
 
-  if (m_szId);
+  if (m_szId)
     delete [] m_szId;
   m_lUsers.clear();
 }
@@ -3057,7 +3057,7 @@ void UserSendFileEvent::browseFile()
   }
 
   for(; it != fl.end(); it++)
-    m_lFileList.push_back(strdup((*it).latin1()));
+    m_lFileList.push_back(strdup((*it).local8Bit()));
 
   edtItem->setText(f);
 }
@@ -3066,7 +3066,7 @@ void UserSendFileEvent::addFile(const QString &file)
 {
   if (m_lFileList.size() == 0) return;
   
-  m_lFileList.push_back(strdup(file.latin1()));
+  m_lFileList.push_back(strdup(file.local8Bit()));
   
   btnEdit->setEnabled(true);
   QString f = QString("%1 Files").arg(m_lFileList.size());
@@ -3139,11 +3139,12 @@ void UserSendFileEvent::sendButton()
 void UserSendFileEvent::setFile(const QString& file, const QString& description)
 {
   QFileInfo fileinfo(file);
-  if (fileinfo.exists() && fileinfo.isReadable())
+  if (fileinfo.exists() && fileinfo.isFile() && fileinfo.isReadable())
   {
     edtItem->setText(file);
     setText(description);
-    m_lFileList.push_back(strdup(file.latin1()));
+    m_lFileList.push_back(strdup(file.local8Bit()));
+    btnEdit->setEnabled(true);
   }
 }
 

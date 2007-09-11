@@ -832,7 +832,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    {
      QTimer *timer = new QTimer( this );
      connect( timer, SIGNAL(timeout()), this, SLOT(setMainWinSticky()));
-     timer->start( 100, TRUE ); // 100 milliseconds single-shot timer
+     timer->start(100, true); // 100 milliseconds single-shot timer
    }
    
    // automatically logon if requested in conf file
@@ -2878,7 +2878,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
     {
       QTimer *timer = new QTimer( userEventTabDlg );
       connect( timer, SIGNAL(timeout()), userEventTabDlg, SLOT(setMsgWinSticky()));
-      timer->start( 100, TRUE ); // 100 milliseconds single-shot timer
+      timer->start(100, true); // 100 milliseconds single-shot timer
     }
   }
   else
@@ -3263,22 +3263,6 @@ bool CMainWindow::RemoveUserFromList(const char *szId, unsigned long nPPID, QWid
   return false;
 }
 
-bool CMainWindow::RemoveUserFromList(unsigned long nUin, QWidget *p)
-{
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  if (u == NULL) return true;
-  QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
-                     .arg(QString::fromUtf8(u->GetAlias()))
-                     .arg(nUin) );
-  gUserManager.DropUser(u);
-  if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
-  {
-    licqDaemon->RemoveUserFromList(nUin);
-    return true;
-  }
-  return false;
-}
-
 void CMainWindow::FillUserGroup()
 {
   ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
@@ -3395,46 +3379,6 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
   {
     if (group == 0) return true;
     ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_W);
-    if (u == NULL) return true;
-    u->RemoveFromGroup(GROUPS_SYSTEM, group);
-    gUserManager.DropUser(u);
-    updateUserWin();
-    return true;
-  }
-
-  return false;
-}
-
-
-bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group, unsigned long nUin, QWidget *p)
-{
-  if (gtype == GROUPS_USER)
-  {
-    if (group == 0)
-      return RemoveUserFromList(nUin, p);
-    else
-    {
-      ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-      if (u == NULL) return true;
-      unsigned long nUin = u->Uin();
-      GroupList *g = gUserManager.LockGroupList(LOCK_R);
-      QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
-                         .arg(QString::fromUtf8(u->GetAlias()))
-                         .arg(nUin).arg(QString::fromLocal8Bit( (*g)[group - 1] )) );
-      gUserManager.UnlockGroupList();
-      gUserManager.DropUser(u);
-      if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
-      {
-         gUserManager.RemoveUserFromGroup(nUin, group);
-         updateUserWin();
-         return true;
-      }
-    }
-  }
-  else if (gtype == GROUPS_SYSTEM)
-  {
-    if (group == 0) return true;
-    ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
     if (u == NULL) return true;
     u->RemoveFromGroup(GROUPS_SYSTEM, group);
     gUserManager.DropUser(u);
@@ -3748,7 +3692,6 @@ void CMainWindow::slot_utility(int _nId)
 void CMainWindow::slot_miscmodes(int _nId)
 {
   int nAwayModes = mnuMiscModes->indexOf(_nId);
-  //ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_W);
   ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
   if (u == NULL) return;
 
@@ -4593,7 +4536,6 @@ void CMainWindow::initMenu()
 
 void CMainWindow::slot_usermenu()
 {
-  //ICQUser *u = gUserManager.FetchUser(userView->SelectedItemUin(), LOCK_R);
   ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
 
   if (u == NULL)

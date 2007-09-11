@@ -45,7 +45,6 @@ protected:
   QPushButton *btnOk, *btnCancel;
   char *m_szId;
   unsigned long m_nPPID;
-  unsigned long m_nUin;
 protected slots:
   void slot_ok();
 };

@@ -73,7 +73,7 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
 {
   if(listView()->parent() == NULL)
     listView()->setCaption(CUserView::tr("%1 Floaty (%2)")
-                           .arg(_cUser->GetAlias()).arg(_cUser->IdString()));
+                           .arg(QString::fromUtf8(_cUser->GetAlias())).arg(_cUser->IdString()));
 
   m_nUin = _cUser->Uin();
   if (_cUser->IdString())

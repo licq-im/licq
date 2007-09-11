@@ -45,7 +45,6 @@ class CMainWindow;
 class CEInfoField;
 class CEComboBox;
 class ICQUser;
-class CHistoryWidget;
 
 class UserInfoDlg : public QWidget
 {

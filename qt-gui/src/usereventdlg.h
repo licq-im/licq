@@ -336,8 +336,6 @@ class UserSendMsgEvent : public UserSendCommon
 public:
 
   UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                  unsigned long _nUin, QWidget* parent = 0);
-  UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
   virtual ~UserSendMsgEvent();
 
@@ -443,8 +441,6 @@ class UserSendContactEvent : public UserSendCommon
   Q_OBJECT
 public:
 
-  UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                       unsigned long _nUin, QWidget* parent = 0);
   UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
                   const char *_szId, unsigned long _nPPID, QWidget *parent = 0);
   virtual ~UserSendContactEvent();

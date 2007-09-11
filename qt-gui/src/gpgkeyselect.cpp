@@ -74,6 +74,8 @@ GPGKeySelect::GPGKeySelect ( const char *szId, unsigned long nPPID, QWidget *par
   connect( filterText, SIGNAL(textChanged ( const QString & )), this, SLOT(filterTextChanged( const QString & )) );
   filterLayout->addWidget( filterText );
 
+  gUserManager.DropUser(u);
+
   // public keys
   keySelect = new KeyView( this, szId, nPPID );
   top_lay->addWidget( keySelect );
@@ -107,7 +109,6 @@ GPGKeySelect::GPGKeySelect ( const char *szId, unsigned long nPPID, QWidget *par
   lay->addWidget(btnCancel);
 
   show();
-  gUserManager.DropUser( u );
 };
 
 GPGKeySelect::~GPGKeySelect()
@@ -185,19 +186,19 @@ gpgme_key_t key;
 
 KeyView::KeyView( QWidget *parent, const char *szId, unsigned long nPPID ) : QListView( parent )
 {
-  header()->setClickEnabled( FALSE );
+  header()->setClickEnabled(false);
   addColumn( tr("Name") );
   addColumn( "EMail" );
   addColumn( "ID" );
     
-  setAllColumnsShowFocus( TRUE );
+  setAllColumnsShowFocus(true);
 
   this->szId = szId;
   this->nPPID = nPPID;
 
   initKeyList();
 
-  setRootIsDecorated( TRUE );
+  setRootIsDecorated(true);
 }
 
 void KeyView::resizeEvent(QResizeEvent *e)

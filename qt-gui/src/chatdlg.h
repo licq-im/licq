@@ -99,8 +99,6 @@ class ChatDlg : public QMainWindow
 {
    Q_OBJECT
 public:
-  ChatDlg(unsigned long _nUin, CICQDaemon *daemon, CMainWindow *m,
-          QWidget *parent = 0);
   ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
           CMainWindow *m, QWidget *parent = 0);
   virtual ~ChatDlg();
@@ -111,7 +109,6 @@ public:
   unsigned short LocalPort();
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-  unsigned long Uin()  { return m_nUin; };
 
   QString ChatClients();
   QString ChatName();
@@ -144,7 +141,6 @@ protected:
   ChatUserWindowsList chatUserWindows;
   QPixmapList qPixmaps; //pixmaps are not deleted by qt destructor
 
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   QSocketNotifier *sn;
