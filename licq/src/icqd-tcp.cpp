@@ -79,10 +79,13 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   char *cipher = NULL;
   u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
   if (u)
+  {
     bUserOffline = u->StatusOffline();
-  if (u && u->UseGPG() && !bUserOffline)
-    cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
-  gUserManager.DropUser(u);
+    bool useGpg = u->UseGPG();
+    gUserManager.DropUser(u);
+    if (useGpg && !bUserOffline)
+      cipher = gGPGHelper.Encrypt(mDos, szId, LICQ_PPID);
+  }
 
   if (cipher) f |= E_ENCRYPTED;
   if (online) f |= E_DIRECT;
