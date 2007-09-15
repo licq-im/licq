@@ -91,7 +91,10 @@ static void debug_cond_wait(pthread_rdwr_t *rdwrp, int reading)
     // Also save it in /tmp/licq.debug_rw_mutex
     FILE* file = fopen("/tmp/licq.debug_rw_mutex", "w");
     if (file != NULL)
+    {
       print_users(file, rdwrp, reading);
+      fclose(file);
+    }
 
     // Continue waiting (will probably hang licq forever)
     pthread_cond_wait(&(rdwrp->lock_free), &(rdwrp->mutex));
