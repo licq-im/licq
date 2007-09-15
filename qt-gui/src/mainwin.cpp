@@ -47,6 +47,7 @@
 #include <qtextview.h>
 #include <qpainter.h>
 #include <qtabwidget.h>
+#include <qstyle.h>
 #include <qstylefactory.h>
 
 #include "licqgui.h"
@@ -1120,6 +1121,13 @@ CMainWindow::~CMainWindow()
   if (m_szExtendedIconSet) free(m_szExtendedIconSet);
   if (pmBorder) delete pmBorder;
   if (pmMask) delete pmMask;
+  delete style;
+  delete MLEditWrap::editFont;
+
+  for (ColumnInfos::size_type i = 0; i < colInfo.size(); ++i)
+    delete colInfo[i];
+  colInfo.clear();
+
   gMainWindow = NULL;
   if (m_szUserMenuId)
     free(m_szUserMenuId);
