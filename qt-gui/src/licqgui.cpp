@@ -319,6 +319,9 @@ CLicqGui::~CLicqGui(void)
 {
   delete licqSignalManager;
   delete licqLogWindow;
+  free(m_szSkin);
+  free(m_szIcons);
+  free(m_szExtendedIcons);
 }
 
 void CLicqGui::Shutdown(void)

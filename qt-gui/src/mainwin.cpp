@@ -1116,6 +1116,7 @@ CMainWindow::~CMainWindow()
 {
   delete licqIcon;
   if (skin) delete skin;
+  if (m_szIconSet) free(m_szIconSet);
   if (m_szExtendedIconSet) free(m_szExtendedIconSet);
   if (pmBorder) delete pmBorder;
   if (pmMask) delete pmMask;
