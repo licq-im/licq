@@ -98,6 +98,7 @@ void licq_handle_sigabrt(int s)
   if (cmdfile != NULL)
   {
     fprintf(cmdfile, "set logging file %s/licq.backtrace.gdb\n", BASE_DIR);
+    fprintf(cmdfile, "set pagination off\n");
     fprintf(cmdfile, "set logging overwrite\n");
     fprintf(cmdfile, "set logging redirect on\n");
     fprintf(cmdfile, "set logging on\n");
@@ -105,13 +106,13 @@ void licq_handle_sigabrt(int s)
     fprintf(cmdfile, "thread apply all bt full\n");
     fprintf(cmdfile, "detach\n");
     fclose(cmdfile);
-  
+
     char command[64 + MAX_FILENAME_LEN];
     snprintf(command, 64 + MAX_FILENAME_LEN,
              "gdb --batch-silent -x %s --pid %u", cmd, getpid());
 
     fprintf(stderr, "\nUsing gdb to save backtrace to %s/licq.backtrace.gdb\n"
-            "Running: '%s'... ", BASE_DIR, command);
+            "Running: %s\n", BASE_DIR, command);
     int ret = system(command);
     fprintf(stderr, "%s (exit code %d)\n\n", (ret == 0) ? "done" : "failed", ret);
 
