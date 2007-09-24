@@ -7,5 +7,5 @@ lib_LTLIBRARIES = licq_osd.la
 
 licq_osd_la_SOURCES = licq-osd.cpp my_xosd.cpp
 
-licq_osd_la_LDFLAGS = -s -module -avoid-version
+licq_osd_la_LDFLAGS = -module -avoid-version
 licq_osd_la_LIBADD =  @LIBXOSD_LIBS@

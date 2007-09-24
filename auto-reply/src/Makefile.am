@@ -10,5 +10,5 @@ lib_LTLIBRARIES = licq_autoreply.la
 
 licq_autoreply_la_SOURCES = autoreply.cpp main.cpp
 
-licq_autoreply_la_LDFLAGS = -s -module -avoid-version
+licq_autoreply_la_LDFLAGS = -module -avoid-version
 

@@ -41,6 +41,5 @@ licq_jons_gtk_gui_la_SOURCES =  about_window.cpp \
 				user_menu.cpp \
 				user_info_window.cpp 
 
-licq_jons_gtk_gui_la_LDFLAGS = -s -module -avoid-version \
-	 `gtk-config --libs`
+licq_jons_gtk_gui_la_LDFLAGS = -module -avoid-version `gtk-config --libs`
 

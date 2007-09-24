@@ -11,6 +11,6 @@ lib_LTLIBRARIES = licq_forwarder.la
 
 licq_forwarder_la_SOURCES = forwarder.cpp main.cpp
 
-licq_forwarder_la_LDFLAGS = -s -module -avoid-version
+licq_forwarder_la_LDFLAGS = -module -avoid-version
 licq_forwarder_la_LIBADD = -lncurses
 
