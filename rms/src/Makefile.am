@@ -11,6 +11,6 @@ lib_LTLIBRARIES = licq_rms.la
 
 licq_rms_la_SOURCES = rms.cpp main.cpp
 
-licq_rms_la_LDFLAGS = -s -module -avoid-version -rpath $(plugindir)
+licq_rms_la_LDFLAGS = -s -module -avoid-version
 licq_rms_la_LIBADD = 
 

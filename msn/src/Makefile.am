@@ -12,6 +12,6 @@ lib_LTLIBRARIES = protocol_msn.la
 protocol_msn_la_SOURCES = plugin.cpp msn.cpp msn-ssl.cpp msn-sb.cpp \
                           msn-srv.cpp msnpacket.cpp msnbuffer.cpp msnevent.cpp
 
-protocol_msn_la_LDFLAGS = -s -module -avoid-version -rpath $(plugindir)
+protocol_msn_la_LDFLAGS = -s -module -avoid-version
 protocol_msn_la_LIBADD =
 

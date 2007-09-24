@@ -44,6 +44,6 @@ licq_jons_gtk2_gui_la_SOURCES =  about_window.cpp \
 				eggtrayicon.c \
 				utilities.cpp
 
-licq_jons_gtk2_gui_la_LDFLAGS = -s -module -avoid-version -rpath $(libdir) \
+licq_jons_gtk2_gui_la_LDFLAGS = -s -module -avoid-version \
 	 `pkg-config --libs gtk+-2.0` $(X_LIBS) $(XSS_LIBS)
 
