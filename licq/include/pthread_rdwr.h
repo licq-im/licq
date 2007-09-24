@@ -39,7 +39,7 @@ extern "C" {
  * to see which thread that didn't release a lock and which thread
  * that is hanging trying to acquire a lock.
  */
-/* #define DEBUG_RW_MUTEX */
+#define DEBUG_RW_MUTEX
 
 typedef struct rdwr_var {
   int readers_reading;
