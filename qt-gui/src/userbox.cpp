@@ -1705,11 +1705,12 @@ void CUserView::maybeTip(const QPoint& c)
   {
     QRect r(itemRect(item));
     ICQUser *u = gUserManager.FetchUser(item->m_szId, item->m_nPPID, LOCK_R);
-    QTextCodec * codec = UserCodec::codecForICQUser(u);
+
     QString strFileName = "";
     if (u && u->GetPicturePresent() && gMainWindow->m_bPopPicture)
     {
-      const QString file = QString("%1/%2/%3.pic").arg(BASE_DIR).arg(USER_DIR).arg(u->IdString());
+      const QString file =
+          QString("%1/%2/%3.pic").arg(BASE_DIR).arg(USER_DIR).arg(u->IdString());
       const QImage picture = QImage(file);
       if (!picture.isNull())
       {
@@ -1718,13 +1719,19 @@ void CUserView::maybeTip(const QPoint& c)
       }
     }
 
-    QString s = strFileName + QString("<nobr>") + QString(ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible))
-      + QString("</nobr>");
-    
-    if (*u->GetAlias() && gMainWindow->m_bPopAlias)
+    QString s = strFileName + QString("<nobr>") +
+        QString(ICQUser::StatusToStatusStr(item->m_nStatus,
+                                           item->m_bStatusInvisible)) +
+        QString("</nobr>");
+
+    QTextCodec* codec = UserCodec::defaultEncoding();
+    if (u != NULL)
+      codec = UserCodec::codecForICQUser(u);
+
+    if (u && *u->GetAlias() && gMainWindow->m_bPopAlias)
       s += tr("<br><nobr>") + QString::fromUtf8(u->GetAlias()) + tr("</nobr>");
 
-    if ((*u->GetFirstName() || *u->GetLastName()) && gMainWindow->m_bPopName)
+    if (u && (*u->GetFirstName() || *u->GetLastName()) && gMainWindow->m_bPopName)
     {
       s += tr("<br><nobr>");
       if (*u->GetFirstName())
@@ -1763,31 +1770,32 @@ void CUserView::maybeTip(const QPoint& c)
     if (item->m_bCustomAR)
       s += tr("<br>Custom&nbsp;Auto&nbsp;Response");
 
-    if (u != NULL)
-    {
-      if (!u->StatusOffline() && u->ClientInfo() && *u->ClientInfo())
+    if (u && !u->StatusOffline() && u->ClientInfo() && *u->ClientInfo())
       s += tr("<br><nobr>") + codec->toUnicode(u->ClientInfo()) + tr("</nobr>");
       
-      if (u->AutoResponse() && *u->AutoResponse() &&
-          item->m_nStatus != ICQ_STATUS_OFFLINE &&
-          item->m_nStatus != ICQ_STATUS_ONLINE)
-        s += tr("<br><u>Auto Response:</u>") + codec->toUnicode(u->AutoResponse());
-      gUserManager.DropUser(u);
-    }
+    if (u && u->AutoResponse() && *u->AutoResponse() &&
+	item->m_nStatus != ICQ_STATUS_OFFLINE &&
+	item->m_nStatus != ICQ_STATUS_ONLINE)
+      s += tr("<br><u>Auto Response:</u>") + codec->toUnicode(u->AutoResponse());
 
-    if (*u->GetEmailPrimary() && gMainWindow->m_bPopEmail)
-      s += tr("<br><nobr>E: ") + codec->toUnicode(u->GetEmailPrimary()) + tr("</nobr>");
+    if (u && *u->GetEmailPrimary() && gMainWindow->m_bPopEmail)
+      s += tr("<br><nobr>E: ") + codec->toUnicode(u->GetEmailPrimary()) +
+	tr("</nobr>");
 
-    if (item->m_bPhone && gMainWindow->m_bPopPhone)
-      s += tr("<br><nobr>P: ") + codec->toUnicode(u->GetPhoneNumber()) + tr("</nobr>");
+    if (u && item->m_bPhone && gMainWindow->m_bPopPhone)
+      s += tr("<br><nobr>P: ") + codec->toUnicode(u->GetPhoneNumber()) +
+	tr("</nobr>");
 
-    if (item->m_bCellular && gMainWindow->m_bPopCellular)
-      s += tr("<br><nobr>C: ") + codec->toUnicode(u->GetCellularNumber()) + tr("</nobr>");
+    if (u && item->m_bCellular && gMainWindow->m_bPopCellular)
+      s += tr("<br><nobr>C: ") + codec->toUnicode(u->GetCellularNumber()) +
+	tr("</nobr>");
 
-    if ((u->GetFaxNumber()[0]!='\0') && gMainWindow->m_bPopEmail)
-      s += tr("<br><nobr>F: ") + codec->toUnicode(u->GetFaxNumber()) + tr("</nobr>");
+    if (u && (u->GetFaxNumber()[0]!='\0') && gMainWindow->m_bPopEmail)
+      s += tr("<br><nobr>F: ") + codec->toUnicode(u->GetFaxNumber()) +
+	tr("</nobr>");
 
-    if ((u->Ip() || u->IntIp()) && gMainWindow->m_bPopIP) {
+    if (u && (u->Ip() || u->IntIp()) && gMainWindow->m_bPopIP)
+    {
       char buf_ip[32];
       char buf_int_ip[32];
       ip_ntoa(u->Ip(), buf_ip);
@@ -1798,14 +1806,16 @@ void CUserView::maybeTip(const QPoint& c)
         s += tr("<br><nobr>Ip: ") + buf_ip + tr("</nobr>");
     }
 
-    if ((u->LastOnline()>0) && gMainWindow->m_bPopLastOnline) {
+    if (u && (u->LastOnline()>0) && gMainWindow->m_bPopLastOnline)
+    {
       QDateTime t;
       t.setTime_t(u->LastOnline());
       QString ds = t.toString();
       s += tr("<br><nobr>O: ") +  ds + tr("</nobr>");
     }
 
-    if ((!u->StatusOffline()) && gMainWindow->m_bPopOnlineSince) {
+    if (u && (!u->StatusOffline()) && gMainWindow->m_bPopOnlineSince)
+    {
       time_t nLoggedIn = time(0) - u->OnlineSince();
       unsigned long nWeek, nDay, nHour, nMinute;
       nWeek = nLoggedIn / 604800;
@@ -1847,7 +1857,7 @@ void CUserView::maybeTip(const QPoint& c)
 
     if (gMainWindow->m_bPopIdleTime)
     {
-      if (u->IdleSince())
+      if (u && u->IdleSince())
       {
         char *szTemp;
         szTemp = u->usprintf("%I");
@@ -1857,7 +1867,7 @@ void CUserView::maybeTip(const QPoint& c)
       }
     }
 
-    if (gMainWindow->m_bPopLocalTime)
+    if (u && gMainWindow->m_bPopLocalTime)
     {
       char *szTemp;
       szTemp = u->usprintf("%F");
@@ -1866,7 +1876,7 @@ void CUserView::maybeTip(const QPoint& c)
       s += tr("<br><nobr>Local time: ") + temp + tr("</nobr>");
     }
 
-    if (gMainWindow->m_bPopID)
+    if (u && gMainWindow->m_bPopID)
     {
       char *szTemp;
       szTemp = u->usprintf("%u");
@@ -1874,6 +1884,8 @@ void CUserView::maybeTip(const QPoint& c)
       free(szTemp);
       s += tr("<br><nobr>ID: ") + temp + tr("</nobr>");
     }
+
+    gUserManager.DropUser(u);
 
     tip(r, s);
   }
