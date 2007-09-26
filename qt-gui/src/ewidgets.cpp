@@ -1179,7 +1179,7 @@ void CMessageViewWidget::addNotice(QDateTime dt, QString messageText)
   const QString dateTime = dt.toString( m_nDateFormat );
 
   // Remove trailing line breaks.
-  for (int i = messageText.length(); i >= 0; i--)
+  for (int i = messageText.length(); i > 0; i--)
   {
     if (messageText.at(i - 1) != '\n' && messageText.at(i - 1) != '\r')
     {
