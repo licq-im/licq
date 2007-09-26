@@ -31,8 +31,8 @@ extern "C" {
  * Define DEBUG_RW_MUTEX and recompile the daemon and all plugins to
  * debug deadlocks. If a (potential) deadlock is discovered, the
  * daemon will print a message to stderr (and to the file
- * /tmp/licq.debug_rw_mutex) and than hang forever (if it's a real
- * deadlock).
+ * <basedir>/licq.debug_rw_mutex) and than hang forever (if it's a
+ * real deadlock).
  * 
  * This is when you should attach gdb to the process (gdb --pid `pidof
  * licq`) and run the command "thread apply all backtrace" to be able

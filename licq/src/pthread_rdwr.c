@@ -28,6 +28,8 @@
 #include <string.h>
 #include <sys/time.h>
 #include <time.h>
+
+extern char BASE_DIR[];
 #endif
 
 int pthread_rdwr_init_np(pthread_rdwr_t *rdwrp, pthread_rdwrattr_t *attrp)
@@ -96,8 +98,10 @@ static void debug_cond_wait(pthread_rdwr_t *rdwrp, int reading)
     // Print to stderr
     print_users(stderr, rdwrp, reading);
 
-    // Also save it in /tmp/licq.debug_rw_mutex
-    FILE* file = fopen("/tmp/licq.debug_rw_mutex", "w");
+    // Also save it in <basedir>/licq.debug_rw_mutex
+    char filename[255];
+    snprintf(filename, 255, "%s/licq.debug_rw_mutex", BASE_DIR);
+    FILE* file = fopen(filename, "w");
     if (file != NULL)
     {
       print_users(file, rdwrp, reading);
