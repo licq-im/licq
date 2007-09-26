@@ -520,7 +520,7 @@ void ProcessSignal(CICQSignal *s)
 
 		    char *username_translated_temp = my_translate(s->Uin(), username.c_str(), "UTF-8");
 		    username = username_translated_temp;
-		    delete []username_translated_temp;
+		    free(username_translated_temp);
 
                     if (
 			(s->SubSignal() == USER_EVENTS) &&
@@ -592,7 +592,7 @@ void ProcessSignal(CICQSignal *s)
 			msg="(S) ";
 		    msg+=translated;
 		    my_xosd_display(username.c_str(), msg.c_str(), config.colour);
-		    delete[] translated;
+		    free(translated);
 		}
 		if (
 		    (config.Showmessages==3) ||   // only display information about message on screen
@@ -786,7 +786,9 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 // some day i will do this more elegant
 char *my_translate(unsigned long uin, const char *msg, char *userenc)
 {
-    char *result=new char[strlen(msg)+1]; // will be deleted outside of this function
+    // will be deleted outside of this function
+    char *result = (char*)malloc(strlen(msg) + 1);
+
     iconv_t conv;
     size_t fromsize, tosize, ressize;
     const char *msgptr;
