@@ -1224,29 +1224,10 @@ void CMainWindow::closeEvent( QCloseEvent *e )
     // need some more error checking here...
     licqConf.LoadFile(buf);
 
-    int x, y;
-    if(pos().x() < 2 || pos().y() < 2) {
-      // WMaker bug.  will investigate...
-      QPoint p  = mapToGlobal(QPoint(0, 0));
-
-//      qDebug("wmaker workaround enabled");
-
-      x = p.x() - 1 - ( geometry().x() < p.x() ? geometry().x() : 0);
-      y = p.y() - 1 - ( geometry().y() < p.y() ? geometry().y() : 0);
-    }
-    else
-    {
-      x = pos().x();
-      y = pos().y();
-    }
-
-    x = x < 0 ? 0 : x;
-    y = y < 0 ? 0 : y;
-
     licqConf.SetSection("geometry");
     // I'm not sure if we should really test for negative values...
-    licqConf.WriteNum("x", (unsigned short)x);
-    licqConf.WriteNum("y", (unsigned short)y);
+    licqConf.WriteNum("x", static_cast<short>(x()));
+    licqConf.WriteNum("y", static_cast<short>(y()));
     licqConf.WriteNum("h", (unsigned short)(size().height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : size().height())));
     licqConf.WriteNum("w", (unsigned short)(size().width() < 0 ? 0 : size().width()));
 

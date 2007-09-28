@@ -2493,7 +2493,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 
             if (foundIndex > 0)
             {
-              message.truncate(foundIndex);
+              message.truncate(foundIndex + 1);
               messageRaw = codec->fromUnicode(message);
             }
           }
@@ -2807,7 +2807,7 @@ void UserSendMsgEvent::sendButton()
 
            if (foundIndex > 0)
            {
-              message.truncate(foundIndex);
+              message.truncate(foundIndex + 1);
               messageRaw = codec->fromUnicode(message);
            }
         }
