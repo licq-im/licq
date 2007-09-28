@@ -128,7 +128,7 @@ static unsigned char icq_check_data[256] = {
 };
 #endif
 
-void Encrypt_Server(CBuffer *buffer)
+void Encrypt_Server(CBuffer* /* buffer */)
 {
 #if ICQ_VERSION == 2
 // No encryption in V2
@@ -3417,7 +3417,7 @@ CPU_ReverseTCPRequest::CPU_ReverseTCPRequest(unsigned long nDestinationUin,
 
 
 //-----Authorize----------------------------------------------------------------
-CPU_Authorize::CPU_Authorize(unsigned long nAuthorizeUin) : CPacketUdp(ICQ_CMDxRCV_REVERSExTCP)
+CPU_Authorize::CPU_Authorize(unsigned long /* nAuthorizeUin */) : CPacketUdp(ICQ_CMDxRCV_REVERSExTCP)
 {
 }
 
@@ -4158,7 +4158,7 @@ CPacketTcp_Handshake_v4::CPacketTcp_Handshake_v4(unsigned long nLocalPort)
 
 //=====PacketTcp_Handshake======================================================
 CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
-   unsigned long nSessionId, unsigned short nLocalPort)
+   unsigned long /* nSessionId */, unsigned short nLocalPort)
 {
   m_nDestinationUin = nDestinationUin;
 
@@ -4215,7 +4215,7 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(CBuffer *inbuf)
 
 
 CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
-   unsigned long nSessionId, unsigned short nLocalPort, unsigned long nId)
+   unsigned long /* nSessionId */, unsigned short nLocalPort, unsigned long nId)
 {
   m_nDestinationUin = nDestinationUin;
 

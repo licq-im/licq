@@ -467,7 +467,7 @@ CEventAdded* CEventAdded::Copy()
   return e;
 }
 
-void CEventAdded::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
+void CEventAdded::AddToHistory(ICQUser *u, unsigned long /* _nPPID */, direction _nDir)
 {
   char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
@@ -561,7 +561,7 @@ CEventAuthRequest* CEventAuthRequest::Copy()
   return e;
 }
 
-void CEventAuthRequest::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
+void CEventAuthRequest::AddToHistory(ICQUser *u, unsigned long /* _nPPID */, direction _nDir)
 {
   char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
@@ -638,7 +638,7 @@ CEventAuthGranted* CEventAuthGranted::Copy()
   return e;
 }
 
-void CEventAuthGranted::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
+void CEventAuthGranted::AddToHistory(ICQUser *u, unsigned long /* _nPPID */, direction _nDir)
 {
   char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szId) + strlen(p) + strlen(m_szMessage))
@@ -712,7 +712,7 @@ CEventAuthRefused* CEventAuthRefused::Copy()
   return e;
 }
 
-void CEventAuthRefused::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
+void CEventAuthRefused::AddToHistory(ICQUser *u, unsigned long /* _nPPID */, direction _nDir)
 {
   char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szId) + strlen(p) + strlen(m_szMessage)) * 2 +
@@ -886,7 +886,7 @@ CEventContactList* CEventContactList::Copy()
   return e;
 }
 
-void CEventContactList::AddToHistory(ICQUser *u, unsigned long _nPPID, direction _nDir)
+void CEventContactList::AddToHistory(ICQUser *u, unsigned long /* _nPPID */, direction _nDir)
 {
   unsigned long nPPID = LICQ_PPID;
   char *szOut = new char[m_vszFields.size() * 32 + EVENT_HEADER_SIZE];
@@ -1037,9 +1037,8 @@ void CEventServerMessage::AddToHistory(ICQUser *u, unsigned long _nPPID, directi
 }
 
 
-CEventServerMessage *CEventServerMessage::Parse(char *sz, unsigned short nCmd,
-                                                time_t nTime,
-                                                unsigned long nFlags)
+CEventServerMessage *CEventServerMessage::Parse(char *sz, unsigned short /* nCmd */,
+    time_t nTime, unsigned long /* nFlags */)
 {
   char **szMsg = new char*[6]; // name, email, msg
   if (!ParseFE(sz, &szMsg, 6))

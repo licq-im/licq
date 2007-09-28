@@ -1381,7 +1381,7 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
 #endif
 }
 
-ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long nPPID,
+ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long /* nPPID */,
    CPacket *packet, CUserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events

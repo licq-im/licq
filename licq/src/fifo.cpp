@@ -385,7 +385,7 @@ static int fifo_status( int argc, const char *const *argv, void *data)
 
 
 // auto_response <auto response>
-static int fifo_auto_response( int argc, const char *const *argv, void *data)
+static int fifo_auto_response( int argc, const char *const *argv, void* /* data */)
 {
   ICQOwner *o; 
 
@@ -512,7 +512,7 @@ static int fifo_sms_number(int argc, const char *const *argv, void *data)
 }
 
 // redirect <file>
-static int fifo_redirect ( int argc, const char *const *argv, void *data)
+static int fifo_redirect ( int argc, const char *const *argv, void* /* data */)
 {
   if( argc == 1 )
   {
@@ -533,7 +533,7 @@ static int fifo_redirect ( int argc, const char *const *argv, void *data)
 }
 
 // debuglvl <level>
-static int fifo_debuglvl ( int argc, const char *const *argv, void *data)
+static int fifo_debuglvl ( int argc, const char *const *argv, void* /* data */)
 {
   int nRet = 0; 
  
@@ -603,7 +603,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
 }
 
 // exit
-static int fifo_exit ( int argc, const char *const *argv, void *data)
+static int fifo_exit(int /* argc */, const char* const* /* argv */, void* data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
   d->Shutdown();
@@ -616,11 +616,10 @@ static int fifo_ui_viewevent ( int argc, const char *const *argv, void *data)
   CICQDaemon *d = (CICQDaemon *) data; 
   unsigned long nPPID;
   char *szId = 0; 
-  char *none = "0";
   
   if( argc ==1 )
   {
-    szId = none;
+    szId = strdup("0");
     nPPID = 0;
   }
   else if( !atoid(argv[1], true, &szId, &nPPID, d) )
@@ -633,7 +632,7 @@ static int fifo_ui_viewevent ( int argc, const char *const *argv, void *data)
   
   d->PluginUIViewEvent(szId, nPPID);
 
-  if( szId != none )
+  if (szId != NULL)
     free(szId);
 
   return 0;
@@ -664,7 +663,7 @@ static int fifo_ui_message ( int argc, const char *const *argv, void *data)
   return nRet;
 }
 
-static int fifo_plugin_list(int argc, const char *const *argv, void *data)
+static int fifo_plugin_list(int /* argc */, const char* const* /* argv */, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
   PluginsList l;
@@ -690,8 +689,8 @@ static int fifo_plugin_load(int argc, const char *const *argv, void *data)
     return -1;
   }
   
-  char *sz[] = { "licq", NULL };
-  if (d->PluginLoad(argv[1], 1, sz))
+  const char *sz[] = { "licq", NULL };
+  if (d->PluginLoad(argv[1], 1, const_cast<char**>(sz)))
     return 0;
   
   gLog.Info("Couldn't load plugin '%s'\n", argv[1]);
@@ -723,7 +722,7 @@ static int fifo_plugin_unload(int argc, const char *const *argv, void *data)
   return -1;
 }
 
-static int fifo_proto_plugin_list(int argc, const char *const *argv, void *data)
+static int fifo_proto_plugin_list(int /* argc */, const char* const* /* argv */, void *data)
 {
   CICQDaemon *d = (CICQDaemon *) data;
   ProtoPluginsList l;

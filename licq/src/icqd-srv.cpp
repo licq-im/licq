@@ -520,8 +520,6 @@ unsigned long CICQDaemon::ProtoFetchAutoResponseServer(const char *_szId, unsign
 
   if (_nPPID == LICQ_PPID)
     nRet = icqFetchAutoResponseServer(_szId);
-  else
-    ;
 
   return nRet;
 }
@@ -1508,7 +1506,7 @@ void CICQDaemon::icqAddToIgnoreList(unsigned long nUin)
 }
 
 //-----icqAddToIgnoreList-------------------------------------------------------
-void CICQDaemon::icqAddToIgnoreList(const char *_szId, unsigned long _nPPID)
+void CICQDaemon::icqAddToIgnoreList(const char *_szId, unsigned long /* _nPPID */)
 {
   if (!UseServerContactList()) return;
 
@@ -1528,7 +1526,7 @@ void CICQDaemon::icqRemoveFromIgnoreList(unsigned long nUin)
 }
 
 //-----icqRemoveFromIgnoreList--------------------------------------------------
-void CICQDaemon::icqRemoveFromIgnoreList(const char *_szId, unsigned long _nPPID)
+void CICQDaemon::icqRemoveFromIgnoreList(const char *_szId, unsigned long /* _nPPID */)
 {
   if (!UseServerContactList()) return;
 
@@ -2791,7 +2789,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
         msg.incDataPosRead(1);  /* 01 */
 
         unsigned long nPluginStatus = msg.UnpackUnsignedLong();
-        char *state;
+        const char* state;
         switch (nPluginStatus)
         {
           case ICQ_PLUGIN_STATUSxINACTIVE: state = "inactive"; break;
@@ -4507,7 +4505,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 }
 
 //--------ProcessBosFam---------------------------------------------
-void CICQDaemon::ProcessBOSFam(CBuffer &packet, unsigned short nSubtype)
+void CICQDaemon::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
 {
   switch (nSubtype)
   {

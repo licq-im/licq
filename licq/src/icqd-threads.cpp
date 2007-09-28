@@ -73,7 +73,7 @@ void *ConnectToServer_tep(void *s)
  * now popped off the send queue to prevent packets being sent out of order
  * which is a severe error with OSCAR.
  *----------------------------------------------------------------------------*/
-void *ProcessRunningEvent_Server_tep(void *p)
+void *ProcessRunningEvent_Server_tep(void* /* p */)
 {
   pthread_detach(pthread_self());
 
@@ -746,7 +746,7 @@ void *MonitorSockets_tep(void *p)
               CBuffer packet(srvTCP->RecvBuffer());
               srvTCP->ClearRecvBuffer();
               gSocketManager.DropSocket(srvTCP);
-              if (!d->ProcessSrvPacket(packet));// d->icqRelogon();
+              if (!d->ProcessSrvPacket(packet)) {} // d->icqRelogon();
             }
             else {
               // probably server closed socket, try to relogon after a while

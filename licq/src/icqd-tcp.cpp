@@ -256,7 +256,7 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
 
 
 //-----CICQDaemon::icqFetchAutoResponse (deprecated!)---------------------------
-unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long nUin, bool bServer)
+unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long /* nUin */, bool /* bServer */)
 {
   char szId[13];
   snprintf(szId, 12, "%lu", gUserManager.OwnerUin());
@@ -3712,7 +3712,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
         if (nTime == u->ClientStatusTimestamp())
           u->SetOurClientStatusTimestamp(nTime);
 
-        char *szState;
+        const char* szState;
         switch (nState)
         {
           case ICQ_PLUGIN_STATUSxINACTIVE: szState = "inactive"; break;
