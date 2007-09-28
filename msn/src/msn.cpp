@@ -623,13 +623,13 @@ void CMSN::ProcessSignal(CSignal *s)
 
     case PROTOxSENDxREFUSExAUTH:
     {
-      CRefuseAuthSignal *sig = static_cast<CRefuseAuthSignal *>(s);
+//      CRefuseAuthSignal *sig = static_cast<CRefuseAuthSignal *>(s);
       break;
     }
 
     case PROTOxREQUESTxINFO:
     {
-      CRequestInfo *sig = static_cast<CRequestInfo *>(s);
+//      CRequestInfo *sig = static_cast<CRequestInfo *>(s);
       break;
     }
 

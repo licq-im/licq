@@ -407,7 +407,7 @@ void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, int nSocket, bool bDel
       }
       else
       {
-        int nThisSock = u->SocketDesc(ICQ_CHNxNONE);
+//        int nThisSock = u->SocketDesc(ICQ_CHNxNONE);
         gUserManager.DropUser(u);
         gSocketMan.DropSocket(s);
         gSocketMan.CloseSocket(nSock);

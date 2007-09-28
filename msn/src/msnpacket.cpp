@@ -440,7 +440,7 @@ CPS_MSNSync::CPS_MSNSync(unsigned long nVersion) : CMSNPacket()
 CPS_MSNChallenge::CPS_MSNChallenge(const char *szHash) : CMSNPacket()
 {
   m_szCommand = strdup("QRY");
-  char *szParams = "msmsgs@msnmsgr.com 32";
+  const char *szParams = "msmsgs@msnmsgr.com 32";
   m_nSize += strlen(szParams) + 32; //payload
   InitBuffer();
   

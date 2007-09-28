@@ -367,7 +367,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (*it && strcmp(strUser.c_str(), (*it)->m_szUser) == 0)
         {
           gLog.Info("%sRemoving connection attempt to %s.\n", L_MSNxSTR, strUser.c_str());
-          SStartMessage *pStart = (*it);
+//          SStartMessage *pStart = (*it);
           m_lStart.erase(it);
           break;
         }
