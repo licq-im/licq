@@ -111,10 +111,23 @@ void licq_handle_sigabrt(int s)
     snprintf(command, 64 + MAX_FILENAME_LEN,
              "gdb --batch-silent -x %s --pid %u", cmd, getpid());
 
-    fprintf(stderr, "\nUsing gdb to save backtrace to %s/licq.backtrace.gdb\n"
-            "Running: %s\n", BASE_DIR, command);
-    int ret = system(command);
-    fprintf(stderr, "%s (exit code %d)\n\n", (ret == 0) ? "done" : "failed", ret);
+    pid_t child = fork();
+    if (child == 0)
+    {
+      if (setsid() < 0)
+        exit(EXIT_FAILURE);
+
+      fprintf(stderr, "\nUsing gdb to save backtrace to %s/licq.backtrace.gdb\n"
+              "Running: %s\n", BASE_DIR, command);
+      int ret = system(command);
+      fprintf(stderr, "gdb exited with exit code %d\n\n", ret);
+      exit(ret);
+    }
+    else if (child > 0)
+    {
+      int status;
+      waitpid(child, &status, 0);
+    }
 
     unlink(cmd);
   }
