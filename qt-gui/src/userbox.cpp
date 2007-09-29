@@ -369,7 +369,7 @@ void CUserViewItem::setGraphics(ICQUser *u)
      if (m_pUserIcon == 0)
      {
        QString strPath = QString(BASE_DIR) + QString("/") + QString(USER_DIR) +
-	 QString("/") + QString(u->IdString()) + QString(".pic");
+          QString("/") + QString(u->IdString()) + QString(".pic");
        QImage tmpImg(strPath);
        if (!tmpImg.isNull())
        {
@@ -1701,13 +1701,18 @@ void CUserView::itemCollapsed(QListViewItem* i)
 void CUserView::maybeTip(const QPoint& c)
 {
   CUserViewItem* item = static_cast<CUserViewItem*>(itemAt(c));
-  if (item && item->m_szId)
-  {
-    QRect r(itemRect(item));
-    ICQUser *u = gUserManager.FetchUser(item->m_szId, item->m_nPPID, LOCK_R);
+  if (item == NULL || item->m_szId == NULL)
+    return;
 
-    QString strFileName = "";
-    if (u && u->GetPicturePresent() && gMainWindow->m_bPopPicture)
+  QString s = "<nobr>";
+  s += ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible);
+
+  QRect r(itemRect(item));
+
+  ICQUser* u = gUserManager.FetchUser(item->m_szId, item->m_nPPID, LOCK_R);
+  if (u != NULL)
+  {
+    if (u->GetPicturePresent() && gMainWindow->m_bPopPicture)
     {
       const QString file =
           QString("%1/%2/%3.pic").arg(BASE_DIR).arg(USER_DIR).arg(u->IdString());
@@ -1715,106 +1720,94 @@ void CUserView::maybeTip(const QPoint& c)
       if (!picture.isNull())
       {
         QMimeSourceFactory::defaultFactory()->setImage(file, picture);
-        strFileName = QString("<center><img src=\"%1\"></center>").arg(file);
+        s = QString("<center><img src=\"%1\"></center>").arg(file) + s;
       }
     }
 
-    QString s = strFileName + QString("<nobr>") +
-        QString(ICQUser::StatusToStatusStr(item->m_nStatus,
-                                           item->m_bStatusInvisible)) +
-        QString("</nobr>");
+    QTextCodec* codec = UserCodec::codecForICQUser(u);
 
-    QTextCodec* codec = UserCodec::defaultEncoding();
-    if (u != NULL)
-      codec = UserCodec::codecForICQUser(u);
+    if (*u->GetAlias() && gMainWindow->m_bPopAlias)
+      s += "<br>" + QString::fromUtf8(u->GetAlias());
 
-    if (u && *u->GetAlias() && gMainWindow->m_bPopAlias)
-      s += tr("<br><nobr>") + QString::fromUtf8(u->GetAlias()) + tr("</nobr>");
-
-    if (u && (*u->GetFirstName() || *u->GetLastName()) && gMainWindow->m_bPopName)
+    if ((*u->GetFirstName() || *u->GetLastName()) && gMainWindow->m_bPopName)
     {
-      s += tr("<br><nobr>");
+      s += "<br>";
       if (*u->GetFirstName())
         s += codec->toUnicode(u->GetFirstName());
       if (*u->GetFirstName() && *u->GetLastName())
         s += " ";
       if (*u->GetLastName())
         s += codec->toUnicode(u->GetLastName());
-      s += tr("</nobr>");
     }
 
     if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)
-      s += tr("<br><b>Birthday&nbsp;Today!</b>");
-    
+      s += "<br><b>" + tr("Birthday Today!") + "</b>";
+
     if (item->m_nStatus != ICQ_STATUS_OFFLINE)
     {
       if (item->m_bStatusTyping)
-        s += tr("<br>Typing&nbsp;a&nbsp;message");
+        s += "<br>" + tr("Typing a message");
       if (item->m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxACTIVE)
-        s += tr("<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Available");
+        s += "<br>" + tr("Phone &quot;Follow Me&quot;: Available");
       else if (item->m_nPhoneFollowMeStatus == ICQ_PLUGIN_STATUSxBUSY)
-        s += tr("<br>Phone&nbsp;&quot;Follow&nbsp;Me&quot;:&nbsp;Busy");
+        s += "<br>" + tr("Phone &quot;Follow Me&quot;: Busy");
 
       if (item->m_nICQphoneStatus == ICQ_PLUGIN_STATUSxACTIVE)
-        s += tr("<br>ICQphone:&nbsp;Available");
+        s += "<br>" + tr("ICQphone: Available");
       else if (item->m_nICQphoneStatus == ICQ_PLUGIN_STATUSxBUSY)
-        s += tr("<br>ICQphone:&nbsp;Busy");
+        s += "<br>" + tr("ICQphone: Busy");
 
       if (item->m_nSharedFilesStatus == ICQ_PLUGIN_STATUSxACTIVE)
-        s += tr("<br>File&nbsp;Server:&nbsp;Enabled");
+        s += "<br>" + tr("File Server: Enabled");
     }
 
     if (item->m_bSecure)
-      s += tr("<br>Secure&nbsp;connection");
+      s += "<br>" + tr("Secure connection");
 
     if (item->m_bCustomAR)
-      s += tr("<br>Custom&nbsp;Auto&nbsp;Response");
+      s += "<br>" + tr("Custom Auto Response");
 
-    if (u && !u->StatusOffline() && u->ClientInfo() && *u->ClientInfo())
-      s += tr("<br><nobr>") + codec->toUnicode(u->ClientInfo()) + tr("</nobr>");
-      
-    if (u && u->AutoResponse() && *u->AutoResponse() &&
-	item->m_nStatus != ICQ_STATUS_OFFLINE &&
-	item->m_nStatus != ICQ_STATUS_ONLINE)
-      s += tr("<br><u>Auto Response:</u>") + codec->toUnicode(u->AutoResponse());
+    if (!u->StatusOffline() && u->ClientInfo() && *u->ClientInfo())
+      s += "<br>" + codec->toUnicode(u->ClientInfo());
 
-    if (u && *u->GetEmailPrimary() && gMainWindow->m_bPopEmail)
-      s += tr("<br><nobr>E: ") + codec->toUnicode(u->GetEmailPrimary()) +
-	tr("</nobr>");
+    if (u->AutoResponse() && *u->AutoResponse() &&
+        item->m_nStatus != ICQ_STATUS_OFFLINE &&
+        item->m_nStatus != ICQ_STATUS_ONLINE)
+      s += "<br><u>" + tr("Auto Response:") + "</u>" + codec->toUnicode(u->AutoResponse());
 
-    if (u && item->m_bPhone && gMainWindow->m_bPopPhone)
-      s += tr("<br><nobr>P: ") + codec->toUnicode(u->GetPhoneNumber()) +
-	tr("</nobr>");
+    if (*u->GetEmailPrimary() && gMainWindow->m_bPopEmail)
+      s += "<br>" + tr("E: ") + codec->toUnicode(u->GetEmailPrimary());
 
-    if (u && item->m_bCellular && gMainWindow->m_bPopCellular)
-      s += tr("<br><nobr>C: ") + codec->toUnicode(u->GetCellularNumber()) +
-	tr("</nobr>");
+    if (item->m_bPhone && gMainWindow->m_bPopPhone)
+      s += "<br>" + tr("P: ") + codec->toUnicode(u->GetPhoneNumber());
 
-    if (u && (u->GetFaxNumber()[0]!='\0') && gMainWindow->m_bPopEmail)
-      s += tr("<br><nobr>F: ") + codec->toUnicode(u->GetFaxNumber()) +
-	tr("</nobr>");
+    if (item->m_bCellular && gMainWindow->m_bPopCellular)
+      s += "<br>" + tr("C: ") + codec->toUnicode(u->GetCellularNumber());
 
-    if (u && (u->Ip() || u->IntIp()) && gMainWindow->m_bPopIP)
+    if ((u->GetFaxNumber()[0] != '\0') && gMainWindow->m_bPopEmail)
+      s += "<br>" + tr("F: ") + codec->toUnicode(u->GetFaxNumber());
+
+    if ((u->Ip() || u->IntIp()) && gMainWindow->m_bPopIP)
     {
       char buf_ip[32];
       char buf_int_ip[32];
       ip_ntoa(u->Ip(), buf_ip);
       ip_ntoa(u->IntIp(), buf_int_ip);
       if (u->Ip() != u->IntIp() && u->IntIp() != 0)
-        s += tr("<br><nobr>Ip: ") + buf_ip + "/" + buf_int_ip + tr("</nobr>");
+        s += "<br>" + tr("Ip: ") + buf_ip + "/" + buf_int_ip;
       else
-        s += tr("<br><nobr>Ip: ") + buf_ip + tr("</nobr>");
+        s += "<br>" + tr("Ip: ") + buf_ip;
     }
 
-    if (u && (u->LastOnline()>0) && gMainWindow->m_bPopLastOnline)
+    if ((u->LastOnline() > 0) && gMainWindow->m_bPopLastOnline)
     {
       QDateTime t;
       t.setTime_t(u->LastOnline());
       QString ds = t.toString();
-      s += tr("<br><nobr>O: ") +  ds + tr("</nobr>");
+      s += "<br>" + tr("O: ") +  ds;
     }
 
-    if (u && (!u->StatusOffline()) && gMainWindow->m_bPopOnlineSince)
+    if ((!u->StatusOffline()) && gMainWindow->m_bPopOnlineSince)
     {
       time_t nLoggedIn = time(0) - u->OnlineSince();
       unsigned long nWeek, nDay, nHour, nMinute;
@@ -1852,43 +1845,44 @@ void CUserView::maybeTip(const QPoint& c)
       if (!nWeek && !nDay && !nHour && !nMinute)
         ds += tr("0 minutes");
 
-      s += tr("<br><nobr>Logged In: ") + ds + tr("</nobr>");
+      s += "<br>" + tr("Logged In: ") + ds;
     }
 
     if (gMainWindow->m_bPopIdleTime)
     {
-      if (u && u->IdleSince())
+      if (u->IdleSince())
       {
         char *szTemp;
         szTemp = u->usprintf("%I");
         QString temp(szTemp);
         free(szTemp);
-        s += tr("<br><nobr>Idle: ") + temp + tr("</nobr>");
+        s += "<br>" + tr("Idle: ") + temp;
       }
     }
 
-    if (u && gMainWindow->m_bPopLocalTime)
+    if (gMainWindow->m_bPopLocalTime)
     {
       char *szTemp;
       szTemp = u->usprintf("%F");
       QString temp(szTemp);
       free(szTemp);
-      s += tr("<br><nobr>Local time: ") + temp + tr("</nobr>");
+      s += "<br>" + tr("Local time: ") + temp;
     }
 
-    if (u && gMainWindow->m_bPopID)
+    if (gMainWindow->m_bPopID)
     {
       char *szTemp;
       szTemp = u->usprintf("%u");
       QString temp(szTemp);
       free(szTemp);
-      s += tr("<br><nobr>ID: ") + temp + tr("</nobr>");
+      s += "<br>" + tr("ID: ") + temp;
     }
 
     gUserManager.DropUser(u);
-
-    tip(r, s);
   }
+
+  s += "</nobr>";
+  tip(r, s);
 }
 
 void CUserView::setSorting( int column, bool ascending)
