@@ -85,6 +85,7 @@
 #include "usercodec.h"
 #include "emoticon.h"
 #include "ownermanagerdlg.h"
+#include "strings.h"
 
 #ifdef USE_KDE
     #include "licqkimiface.h"
@@ -2110,7 +2111,7 @@ void CMainWindow::updateStatus(CICQSignal *s)
     {
       // Only one protocol is loaded, show some text too
       lblStatus->clearPixmaps();
-      lblStatus->setText(o->StatusStr());
+      lblStatus->setText(Strings::getStatus(o));
       lblStatus->setPrependPixmap(CMainWindow::iconForStatus(o->StatusFull()));
       lblStatus->update();
     }
@@ -4535,7 +4536,6 @@ void CMainWindow::slot_usermenu()
     return;
   }
 
-  const char *szStatus = u->StatusStrShort();
   unsigned short status = u->Status();
   
   if (status == ICQ_STATUS_OFFLINE)
@@ -4550,7 +4550,9 @@ void CMainWindow::slot_usermenu()
   }
   else
   {
-    mnuUser->changeItem(mnuUserCheckResponse, QString(tr("Check %1 Response")).arg(szStatus));
+    mnuUser->changeItem(mnuUserCheckResponse,
+                        QString(tr("Check %1 Response"))
+                        .arg(Strings::getShortStatus(u, false)));
     mnuUser->setItemEnabled(mnuUserCheckResponse, true);
   }
 

@@ -81,6 +81,7 @@
 #include "sigman.h"
 #include "mledit.h"
 #include "mlview.h"
+#include "strings.h"
 
 #include "xpm/phonebookPhone.xpm"
 #include "xpm/phonebookCellular.xpm"
@@ -414,7 +415,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
   }
   nfoIp->setData(ip);
   tznZone->setData(u->GetTimezone());
-  nfoStatus->setData(u->StatusStr());
+  nfoStatus->setData(Strings::getStatus(u));
   if (m_bOwner)
   {
     // Owner timezone is not editable, it is taken from system timezone instead

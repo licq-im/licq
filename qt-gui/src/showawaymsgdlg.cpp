@@ -33,6 +33,7 @@
 #include "showawaymsgdlg.h"
 #include "sigman.h"
 #include "licq_user.h"
+#include "strings.h"
 #include "usercodec.h"
 #include <ctype.h>
 
@@ -69,7 +70,9 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
   QTextCodec * codec = UserCodec::codecForICQUser(u);
 //  chkShowAgain->setChecked(u->ShowAwayMsg());
 
-  setCaption(QString(tr("%1 Response for %2")).arg(u->StatusStr()).arg(QString::fromUtf8(u->GetAlias())));
+  setCaption(QString(tr("%1 Response for %2"))
+             .arg(Strings::getStatus(u, false))
+             .arg(QString::fromUtf8(u->GetAlias())));
 
   btnOk = new QPushButton(tr("&Ok"), this);
   btnOk->setMinimumWidth(75);

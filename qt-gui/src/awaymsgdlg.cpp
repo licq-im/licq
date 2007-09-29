@@ -153,7 +153,8 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status, bool autoclose)
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (o == 0) return;
   setCaption(QString(tr("Set %1 Response for %2"))
-             .arg(ICQUser::StatusToStatusStr(m_nStatus, false)).arg(QString::fromUtf8(o->GetAlias())));
+             .arg(Strings::getStatus(m_nStatus, false))
+             .arg(QString::fromUtf8(o->GetAlias())));
   QTextCodec *codec = UserCodec::defaultEncoding();
   if (*o->AutoResponse())
     mleAwayMsg->setText(codec->toUnicode(o->AutoResponse()));
@@ -161,7 +162,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status, bool autoclose)
     mleAwayMsg->setText(tr("I'm currently %1, %a.\n"
                            "You can leave me a message.\n"
                            "(%m messages pending from you).")
-                        .arg(ICQUser::StatusToStatusStr(m_nStatus, false)));
+                        .arg(Strings::getStatus(m_nStatus, false)));
   gUserManager.DropOwner();
 
   mleAwayMsg->setFocus();
@@ -325,7 +326,7 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(const char *szId,
     mleAwayMsg->setText(QString::fromLocal8Bit(u->CustomAutoResponse()));
   else if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
     mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
-                        .arg(ICQUser::StatusToStatusStr(u->StatusToUser(), false)));
+                        .arg(Strings::getStatus(u->StatusToUser(), false)));
 
   gUserManager.DropUser(u);
 
@@ -382,7 +383,7 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
     mleAwayMsg->setText(QString::fromLocal8Bit(u->CustomAutoResponse()));
   else if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
     mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
-                        .arg(ICQUser::StatusToStatusStr(u->StatusToUser(), false)));
+                        .arg(Strings::getStatus(u->StatusToUser(), false)));
 
   gUserManager.DropUser(u);
 

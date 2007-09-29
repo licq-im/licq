@@ -52,6 +52,7 @@
 #include "mainwin.h"
 #include "licq_user.h"
 #include "ewidgets.h"
+#include "strings.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -757,8 +758,8 @@ void IconManager_KDEStyle::mousePressEvent( QMouseEvent *e )
 void IconManager_KDEStyle::updateTooltip()
 {
   QToolTip::remove(this);
-  QString s = QString("<nobr>") + QString(ICQUser::StatusToStatusStr(m_ownerStatus, m_bStatusInvisible))
-      + QString("</nobr>");
+  QString s = QString("<nobr>%1</nobr>")
+      .arg(Strings::getStatus(m_ownerStatus, m_bStatusInvisible));
 
   if(m_nSysMsg)
     s += tr("<br><b>%1 system messages</b>").arg(m_nSysMsg);

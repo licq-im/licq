@@ -41,6 +41,7 @@
 // local includes
 #include "licqkimiface.h"
 #include "mainwin.h"
+#include "strings.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -209,9 +210,7 @@ QString LicqKIMIface::presenceString(const QString& uid)
 /*        kdDebug() << pUser->GetAlias()
                     << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
                     << "KABC ID=" << kabcID << endl;*/
-        QTextCodec* codec = UserCodec::codecForICQUser(pUser);
-        QCString rawStatus = pUser->StatusStr();
-        status = codec->toUnicode(rawStatus);
+        status = Strings::getStatus(pUser);
         FOR_EACH_PROTO_USER_BREAK
     }
     FOR_EACH_PROTO_USER_END

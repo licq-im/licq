@@ -1705,7 +1705,7 @@ void CUserView::maybeTip(const QPoint& c)
     return;
 
   QString s = "<nobr>";
-  s += ICQUser::StatusToStatusStr(item->m_nStatus, item->m_bStatusInvisible);
+  s += Strings::getStatus(item->m_nStatus, item->m_bStatusInvisible);
 
   QRect r(itemRect(item));
 

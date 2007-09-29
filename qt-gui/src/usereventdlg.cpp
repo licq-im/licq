@@ -94,6 +94,7 @@
 #include "xpm/smile.xpm"
 #include "support.h"
 #include "mledit.h"
+#include "strings.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
@@ -171,7 +172,7 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
   if (u != NULL)
   {
-    nfoStatus->setData(u->StatusStr());
+    nfoStatus->setData(Strings::getStatus(u));
     if (u->NewMessages() == 0)
       setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
     else
@@ -686,7 +687,7 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
   {
     case USER_STATUS:
     {
-      nfoStatus->setData(u->StatusStr());
+      nfoStatus->setData(Strings::getStatus(u));
       if (u->NewMessages() == 0)
       {
         setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
@@ -2385,8 +2386,9 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
 
     msg = tr("%1 is in %2 mode:\n%3\nSend...")
-             .arg(QString::fromUtf8(u->GetAlias())).arg(u->StatusStr())
-             .arg(codec->toUnicode(u->AutoResponse()));
+        .arg(QString::fromUtf8(u->GetAlias()))
+        .arg(Strings::getStatus(u))
+        .arg(codec->toUnicode(u->AutoResponse()));
 
     u->SetShowAwayMsg( false );
     gUserManager.DropUser(u);
