@@ -3384,22 +3384,22 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
 
 void CMainWindow::FillServerGroup()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
-  if (u == NULL) return;
+  ICQUser* u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
+  if (u == NULL)
+    return;
 
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned short i = 0; i < g->size(); i++)
-    mnuServerGroup->setItemChecked(i+1, false);
-
-  for (unsigned short i = 0; i < g->size(); i++)
+  for (uint index = 0; index < mnuServerGroup->count(); index++)
   {
-    if (u->GetSID() && (u->GetGSID() == gUserManager.GetIDFromGroup((*g)[i])))
-    {
-      mnuServerGroup->setItemChecked(i+1, true);
-      break;
-    }
+    const int id = mnuServerGroup->idAt(index);
+    const QCString text = mnuServerGroup->text(id).local8Bit();
+
+    bool checked = false;
+    if (u->GetSID() && (u->GetGSID() == gUserManager.GetIDFromGroup(text.data())))
+      checked = true;
+
+    mnuServerGroup->setItemChecked(id, checked);
   }
-  gUserManager.UnlockGroupList();
+
   gUserManager.DropUser(u);
 }
 
