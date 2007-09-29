@@ -1588,7 +1588,7 @@ u vašu listu ignorisanja?</translation>
     <message>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
 </source>
-        <translation type="unfinished">&lt;h2&gt;Saveti za korišćenje&lt;br&gt;Licq Qt-GUI Dodatka&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Menjate vaš status desnim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Menjate vaš auto odgovor duplim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Pregled sistemskih poruka duplim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Promena grupe desnim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Koristite sledeće prečice za kontaktnu listu:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Uklj-isklj mini-mod&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Uklj-isklj prikaz korisnika koji nisu na vezi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Izlaz&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Sakrij&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Prikaži sledeću poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Prikaži poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Pošalji poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Pošalji URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Pošalji zahtev za ćaskanje&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Pošalji fajl&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Proveri Auto odgovor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Podigni sve poruke&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ponovi korisnikov prozor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Obriši korisnika iz trenutne grupe&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Obriši korisnika iz liste kontakata&lt;/li&gt;&lt;li&gt;Zadržite &lt;CTRL&gt; dok klikćete na &apos;zatvori&apos; u funkciji prozora da   uklonite korisnika iz vaše kontakt liste.&lt;/li&gt;&lt;li&gt;Pritisnite Ctrl-Enter za najčešća tekst polja da izaberete&quot;Ok&quot; ili &quot;Prihvati&quot;.
+        <translation type="obsolete">&lt;h2&gt;Saveti za korišćenje&lt;br&gt;Licq Qt-GUI Dodatka&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Menjate vaš status desnim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Menjate vaš auto odgovor duplim klikom na statusnu labelu.&lt;/li&gt;&lt;li&gt;Pregled sistemskih poruka duplim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Promena grupe desnim klikom na labelu poruka.&lt;/li&gt;&lt;li&gt;Koristite sledeće prečice za kontaktnu listu:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Uklj-isklj mini-mod&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Uklj-isklj prikaz korisnika koji nisu na vezi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Izlaz&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Sakrij&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Prikaži sledeću poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Prikaži poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Pošalji poruku&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Pošalji URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Pošalji zahtev za ćaskanje&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Pošalji fajl&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Proveri Auto odgovor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Podigni sve poruke&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ponovi korisnikov prozor&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Obriši korisnika iz trenutne grupe&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Obriši korisnika iz liste kontakata&lt;/li&gt;&lt;li&gt;Zadržite &lt;CTRL&gt; dok klikćete na &apos;zatvori&apos; u funkciji prozora da   uklonite korisnika iz vaše kontakt liste.&lt;/li&gt;&lt;li&gt;Pritisnite Ctrl-Enter za najčešća tekst polja da izaberete&quot;Ok&quot; ili &quot;Prihvati&quot;.
    Kao primer u tabeli za slanje u prozoru funkcija korisnika.&lt;/li&gt;&lt;li&gt;Evo je kompletna lista korisničkih % opcija, koja može biti korišćena u &lt;b&gt;ZaDogađaj&lt;/b&gt;   parametre, &lt;b&gt;auto odgovore&lt;/b&gt;, i &lt;b&gt;pomoćne alate&lt;/b&gt;:
 </translation>
     </message>
@@ -2015,7 +2015,11 @@ You will need to start the browser and open the URL manually.</source>
 Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
+        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -2287,7 +2291,7 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Ip: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
     </message>
     <message>
         <source>Greek</source>
@@ -2303,7 +2307,7 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation>&lt;br&gt;&lt;u&gt;Automatski Odgovor:&lt;/u&gt;</translation>
+        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Automatski Odgovor:&lt;/u&gt;</translation>
     </message>
     <message>
         <source>Baltic</source>
@@ -2339,23 +2343,23 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;C: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;C: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;F: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;E: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;P: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;P: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;O: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;O: </translation>
     </message>
     <message>
         <source>Central European</source>
@@ -2371,7 +2375,7 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation>CUserView::&lt;br&gt;&lt;b&gt;Rođendan&amp;nbsp;Danas!&lt;/b&gt;</translation>
+        <translation type="obsolete">CUserView::&lt;br&gt;&lt;b&gt;Rođendan&amp;nbsp;Danas!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Japanese</source>
@@ -2391,11 +2395,11 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation>&lt;br&gt;Prilagođen&amp;nbsp;Automatski&amp;nbsp;Odgovor</translation>
+        <translation type="obsolete">&lt;br&gt;Prilagođen&amp;nbsp;Automatski&amp;nbsp;Odgovor</translation>
     </message>
     <message>
         <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation>&lt;br&gt;Sigurna&amp;nbsp;konekcija</translation>
+        <translation type="obsolete">&lt;br&gt;Sigurna&amp;nbsp;konekcija</translation>
     </message>
     <message>
         <source>Turkish</source>
@@ -2411,15 +2415,15 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>&lt;/nobr&gt;</source>
-        <translation>&lt;/nobr&gt;</translation>
+        <translation type="obsolete">&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Prijavljen U:</translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Prijavljen U:</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Neaktivan:</translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Neaktivan:</translation>
     </message>
     <message>
         <source> weeks</source>
@@ -2462,39 +2466,83 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
+        <source>Birthday Today!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
+        <source>Typing a message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
+        <source>Phone &amp;quot;Follow Me&amp;quot;: Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
+        <source>Phone &amp;quot;Follow Me&amp;quot;: Busy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
+        <source>ICQphone: Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
+        <source>ICQphone: Busy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
+        <source>File Server: Enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
+        <source>Secure connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
+        <source>Custom Auto Response</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Response:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ip: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>O: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Logged In: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Idle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local time: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4187,12 +4235,6 @@ Ova opcija neće raditi.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Store your contacts on the server so they are accessible from different locations and/or programs</source>
         <translation>Smestite Vašu listu kontakta na server da bi ste bili u mogućnosti da joj pristupate sa različitih lokacija i/ili programa</translation>
     </message>
@@ -4587,6 +4629,11 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The format string used to define what will appear in each column.
+The following parameters can be used:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -5914,6 +5961,69 @@ Dodatni set ikona &apos;%2&apos; je bio onemogućen.</translation>
     </message>
     <message>
         <source>E&amp;moticons:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Status</name>
+    <message>
+        <source>Offline</source>
+        <translation type="unfinished">Nije na vezi</translation>
+    </message>
+    <message>
+        <source>Online</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Away</source>
+        <translation type="unfinished">Odsutnost</translation>
+    </message>
+    <message>
+        <source>Do Not Disturb</source>
+        <translation type="unfinished">Ne Uznemiravaj</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation type="unfinished">Nije na raspolaganju</translation>
+    </message>
+    <message>
+        <source>Occupied</source>
+        <translation type="unfinished">Okupiran</translation>
+    </message>
+    <message>
+        <source>Free for Chat</source>
+        <translation type="unfinished">Slobodni za Ćaskanje</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DND</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N/A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Occ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FFC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>???</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

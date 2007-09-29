@@ -1160,7 +1160,7 @@ http://www.licq.org
     <message>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
 </source>
-        <translation>&lt;h2&gt;Підказки для використання&lt;br&gt; Licq QT-GUI втулки&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Ваш стан можна змінити клацанням правої кнопки мишки на позначці стану.&lt;/li&gt;&lt;li&gt;АвтоВідповідь можна змінити подвійним клацанням кнопки мишки на позначці стану.&lt;/li&gt;&lt;li&gt;Системні повідомлення можна побачити подвійним клацанням кнопки мишки на позначці повідомлень.&lt;/li&gt;&lt;li&gt;Групи можна змінити клацанням правої кнопки мишки на позначці повідомлень.&lt;/li&gt;&lt;li&gt;В списку контактів можна використати наступні комбінації клавіш:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Перемикання мінірежиму&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Перемикання  користувачів які вийшли з мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Вихід&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Сховати&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Перегляд наступного повідомлення&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Перегляд повідомлення&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Відіслати повідомлення&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Відіслати посилання&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Відіслати запит чату&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Відіслати файл&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Перевірити АвтоВідповідь&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Відкрити всі повідомлення&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Поновити вікно користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Видалити користувача з поточної групи&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Видалити користувача зі списку контактів&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Якщо натиснути кнопку &quot;закрити&quot; притримавши клавішу Ctrl,   то можливо одразу ж видалити користувача зі списку контактів.&lt;/li&gt;&lt;li&gt;Можна використати Ctrl-Enter в багатьох полях вводу при натиснені &quot;Гаразд&quot; або &quot;Підтвердити&quot;.   Наприклад, у вікні надсилання повідомлення.&lt;/li&gt;&lt;li&gt;Далі наведено перелік усіх %-змінних, які можуть бути вікористані як опції в &lt;b&gt;Дія на подію&lt;/b&gt;,   &lt;b&gt;АвтоВідповідях&lt;/b&gt;, та &lt;b&gt;утілітах&lt;/b&gt;:
+        <translation type="obsolete">&lt;h2&gt;Підказки для використання&lt;br&gt; Licq QT-GUI втулки&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Ваш стан можна змінити клацанням правої кнопки мишки на позначці стану.&lt;/li&gt;&lt;li&gt;АвтоВідповідь можна змінити подвійним клацанням кнопки мишки на позначці стану.&lt;/li&gt;&lt;li&gt;Системні повідомлення можна побачити подвійним клацанням кнопки мишки на позначці повідомлень.&lt;/li&gt;&lt;li&gt;Групи можна змінити клацанням правої кнопки мишки на позначці повідомлень.&lt;/li&gt;&lt;li&gt;В списку контактів можна використати наступні комбінації клавіш:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Перемикання мінірежиму&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Перемикання  користувачів які вийшли з мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Вихід&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Сховати&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Перегляд наступного повідомлення&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Перегляд повідомлення&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Відіслати повідомлення&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Відіслати посилання&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Відіслати запит чату&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Відіслати файл&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Перевірити АвтоВідповідь&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Відкрити всі повідомлення&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Поновити вікно користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Видалити користувача з поточної групи&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Видалити користувача зі списку контактів&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Якщо натиснути кнопку &quot;закрити&quot; притримавши клавішу Ctrl,   то можливо одразу ж видалити користувача зі списку контактів.&lt;/li&gt;&lt;li&gt;Можна використати Ctrl-Enter в багатьох полях вводу при натиснені &quot;Гаразд&quot; або &quot;Підтвердити&quot;.   Наприклад, у вікні надсилання повідомлення.&lt;/li&gt;&lt;li&gt;Далі наведено перелік усіх %-змінних, які можуть бути вікористані як опції в &lt;b&gt;Дія на подію&lt;/b&gt;,   &lt;b&gt;АвтоВідповідях&lt;/b&gt;, та &lt;b&gt;утілітах&lt;/b&gt;:
 </translation>
     </message>
     <message>
@@ -1183,7 +1183,15 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;прізвисько&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;електронна пошта&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;і&apos;мя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;номер телефону&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;IP користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;прізвище&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;час користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;кількість непрочитаних повідомлень&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;повне і&apos;мя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;востаннє був у мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;час у мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;повний статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;скорочений статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;веб-сторінка&lt;/li&gt;&lt;/ul&gt;</translation>
+        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;прізвисько&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;електронна пошта&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;і&apos;мя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;номер телефону&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;IP користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;прізвище&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;час користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;кількість непрочитаних повідомлень&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;повне і&apos;мя&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;востаннє був у мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;час у мережі&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;порт користувача&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;повний статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;скорочений статус&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;веб-сторінка&lt;/li&gt;&lt;/ul&gt;</translation>
+    </message>
+    <message>
+        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -1450,75 +1458,75 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation>&lt;br&gt;&lt;b&gt;Сьогодні&amp;nbsp;День&amp;nbsp;Народження!&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Сьогодні&amp;nbsp;День&amp;nbsp;Народження!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
-        <translation>&lt;br&gt;Набирати&amp;nbsp;повідомлення</translation>
+        <translation type="obsolete">&lt;br&gt;Набирати&amp;nbsp;повідомлення</translation>
     </message>
     <message>
         <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation>&lt;br&gt;Телефон&amp;nbsp;&amp;quot;Йди&amp;nbsp;за&amp;nbsp;мною&amp;quot;:&amp;nbsp;досяжний</translation>
+        <translation type="obsolete">&lt;br&gt;Телефон&amp;nbsp;&amp;quot;Йди&amp;nbsp;за&amp;nbsp;мною&amp;quot;:&amp;nbsp;досяжний</translation>
     </message>
     <message>
         <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation>&lt;br&gt;Телефон&amp;nbsp;&amp;quot;Йди&amp;nbsp;за&amp;nbsp;мною&amp;quot;:&amp;nbsp;зайнятий</translation>
+        <translation type="obsolete">&lt;br&gt;Телефон&amp;nbsp;&amp;quot;Йди&amp;nbsp;за&amp;nbsp;мною&amp;quot;:&amp;nbsp;зайнятий</translation>
     </message>
     <message>
         <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation>&lt;br&gt;ICQтелефон&amp;nbsp;досяжний</translation>
+        <translation type="obsolete">&lt;br&gt;ICQтелефон&amp;nbsp;досяжний</translation>
     </message>
     <message>
         <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation>&lt;br&gt;ICQтелефон&amp;nbsp;зайнятий</translation>
+        <translation type="obsolete">&lt;br&gt;ICQтелефон&amp;nbsp;зайнятий</translation>
     </message>
     <message>
         <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation>&lt;br&gt;Файловий&amp;nbsp;сервер&amp;nbsp;увімкнено</translation>
+        <translation type="obsolete">&lt;br&gt;Файловий&amp;nbsp;сервер&amp;nbsp;увімкнено</translation>
     </message>
     <message>
         <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation>&lt;br&gt;Захищений&amp;nbsp;зв&apos;язок</translation>
+        <translation type="obsolete">&lt;br&gt;Захищений&amp;nbsp;зв&apos;язок</translation>
     </message>
     <message>
         <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation>&lt;br&gt;Особлива&amp;nbsp;АвтоВідповідь</translation>
+        <translation type="obsolete">&lt;br&gt;Особлива&amp;nbsp;АвтоВідповідь</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation>&lt;br&gt;&lt;nobr&gt;</translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;/nobr&gt;</source>
-        <translation>&lt;/nobr&gt;</translation>
+        <translation type="obsolete">&lt;/nobr&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation>&lt;br&gt;&lt;u&gt;АвтоВідповідь:&lt;/u&gt;</translation>
+        <translation type="obsolete">&lt;br&gt;&lt;u&gt;АвтоВідповідь:&lt;/u&gt;</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;E: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;P: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;P: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;C: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;C: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;F: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;F: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Ip: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ip: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;O: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;O: </translation>
     </message>
     <message>
         <source> weeks</source>
@@ -1558,19 +1566,99 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Під&apos;єднаний: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Під&apos;єднаний: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Відсутній: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Відсутній: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;ID: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;ID: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Час користувача: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Час користувача: </translation>
+    </message>
+    <message>
+        <source>Birthday Today!</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Typing a message</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone &amp;quot;Follow Me&amp;quot;: Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Phone &amp;quot;Follow Me&amp;quot;: Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ICQphone: Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ICQphone: Busy</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>File Server: Enabled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Secure connection</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Custom Auto Response</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Auto Response:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>E: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>P: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>C: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>F: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Ip: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>O: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Logged In: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Idle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local time: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID: </source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -3100,7 +3188,7 @@ Rebuild Licq with OpenSSL support.</source>
         <source>The format string used to define what will appear in each column.
 The following parameters can be used:
 </source>
-        <translation>Формат рядка, який буде означати, що відобразити в кожному стовпчику.
+        <translation type="obsolete">Формат рядка, який буде означати, що відобразити в кожному стовпчику.
 Можуть бути використані наступні параметри:
 </translation>
     </message>
@@ -3646,6 +3734,11 @@ changes here require a Restart to take effect!
     <message>
         <source>History</source>
         <translation>Історія</translation>
+    </message>
+    <message>
+        <source>The format string used to define what will appear in each column.
+The following parameters can be used:</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -4444,6 +4537,69 @@ Extended Iconset &apos;%2&apos; has been disabled.</source>
     <message>
         <source>E&amp;moticons:</source>
         <translation>&amp;Емоції:</translation>
+    </message>
+</context>
+<context>
+    <name>Status</name>
+    <message>
+        <source>Offline</source>
+        <translation type="unfinished">Відсутність в мережі</translation>
+    </message>
+    <message>
+        <source>Online</source>
+        <translation type="unfinished">В мережі</translation>
+    </message>
+    <message>
+        <source>Away</source>
+        <translation type="unfinished">Відійшов</translation>
+    </message>
+    <message>
+        <source>Do Not Disturb</source>
+        <translation type="unfinished">Не турбувати</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Occupied</source>
+        <translation type="unfinished">Зайнятий</translation>
+    </message>
+    <message>
+        <source>Free for Chat</source>
+        <translation type="unfinished">Вільний для чату</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DND</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N/A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Occ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FFC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>???</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

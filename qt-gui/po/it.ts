@@ -815,7 +815,7 @@ alla tua lista ignorati?</translation>
     <message>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
 </source>
-        <translation>&lt;h2&gt;Consigli per usare&lt;br&gt;Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Cambia la tua stato col click destro sull&apos;etichetta di stato.&lt;/li&gt;&lt;li&gt;Cambia la tua autorisposta col doppio-click sull&apos;etichetta distato.&lt;/li&gt;&lt;li&gt;Vedi i messaggi di sistema col doppio click sull&apos;etichetta deimessaggi.&lt;/li&gt;&lt;li&gt;Cambia gruppo col click destro sull&apos;etichetta messaggi.&lt;/li&gt;&lt;li&gt;Usa i seguenti tasti rapidi dalla lista contatti:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M: &lt;/tt&gt;Spunta su modalità minima&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Spunta mostra utenti offline&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X :&lt;/tt&gt;Uscita&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Nascondi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Vedi il prossimo messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Vedi messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Invia Messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Invia Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Invia richiesta chat&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Invia File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Controlla Autorisposta&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Fuori tutti messaggi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ridisegna la finestra utente&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Cancella utente dal gruppo corrente&lt;li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Cancella utente dalla lista contatti&lt;li&gt;&lt;li&gt;Tieni premuto control mentre clicchi su funzione di chiusura della finestra per rimuovere l&apos;utente dalla lista contatti.&lt;/li&gt;&lt;li&gt;Premi Ctrl-Enter dalla maggior parte di campi per selezionare &quot;Ok&quot;o &quot;Accept&quot;. Per esempio nell&apos;invio scheda della finestra utente.&lt;/li&gt;&lt;li&gt;qui c&apos;è una completa lista delle optioni utente %, che possono essere usate &lt;b&gt;Su Evento&lt;/b&gt;   parametri, &lt;b&gt;autoresposte&lt;/b&gt;, e &lt;b&gt;utilità&lt;/b&gt;:
+        <translation type="obsolete">&lt;h2&gt;Consigli per usare&lt;br&gt;Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Cambia la tua stato col click destro sull&apos;etichetta di stato.&lt;/li&gt;&lt;li&gt;Cambia la tua autorisposta col doppio-click sull&apos;etichetta distato.&lt;/li&gt;&lt;li&gt;Vedi i messaggi di sistema col doppio click sull&apos;etichetta deimessaggi.&lt;/li&gt;&lt;li&gt;Cambia gruppo col click destro sull&apos;etichetta messaggi.&lt;/li&gt;&lt;li&gt;Usa i seguenti tasti rapidi dalla lista contatti:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M: &lt;/tt&gt;Spunta su modalità minima&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Spunta mostra utenti offline&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X :&lt;/tt&gt;Uscita&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Nascondi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Vedi il prossimo messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Vedi messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Invia Messaggio&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Invia Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Invia richiesta chat&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Invia File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Controlla Autorisposta&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Fuori tutti messaggi&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Ridisegna la finestra utente&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Cancella utente dal gruppo corrente&lt;li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Cancella utente dalla lista contatti&lt;li&gt;&lt;li&gt;Tieni premuto control mentre clicchi su funzione di chiusura della finestra per rimuovere l&apos;utente dalla lista contatti.&lt;/li&gt;&lt;li&gt;Premi Ctrl-Enter dalla maggior parte di campi per selezionare &quot;Ok&quot;o &quot;Accept&quot;. Per esempio nell&apos;invio scheda della finestra utente.&lt;/li&gt;&lt;li&gt;qui c&apos;è una completa lista delle optioni utente %, che possono essere usate &lt;b&gt;Su Evento&lt;/b&gt;   parametri, &lt;b&gt;autoresposte&lt;/b&gt;, e &lt;b&gt;utilità&lt;/b&gt;:
 </translation>
     </message>
     <message>
@@ -1239,7 +1239,11 @@ Doppio click - Mostra prossimo messaggio</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
+        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -1511,11 +1515,11 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt; Inattiva: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt; Inattiva: </translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation>&lt;br&gt;&lt;u&gt;AutoRisposta:&lt;/u&gt;</translation>
+        <translation type="obsolete">&lt;br&gt;&lt;u&gt;AutoRisposta:&lt;/u&gt;</translation>
     </message>
     <message>
         <source> hours</source>
@@ -1559,7 +1563,7 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt; C </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt; C </translation>
     </message>
     <message>
         <source>Central European</source>
@@ -1571,7 +1575,7 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation>&lt;br&gt;&lt;b&gt;Compleanno&amp;nbsp;Oggi!&lt;/b&gt;</translation>
+        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Compleanno&amp;nbsp;Oggi!&lt;/b&gt;</translation>
     </message>
     <message>
         <source>Japanese</source>
@@ -1587,11 +1591,11 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation>&lt;br&gt;Auto&amp;nbsp;Risposta&amp;nbsp;Personalizzata</translation>
+        <translation type="obsolete">&lt;br&gt;Auto&amp;nbsp;Risposta&amp;nbsp;Personalizzata</translation>
     </message>
     <message>
         <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation>&lt;br&gt;Connessione&amp;nbsp;sicura</translation>
+        <translation type="obsolete">&lt;br&gt;Connessione&amp;nbsp;sicura</translation>
     </message>
     <message>
         <source>Turkish</source>
@@ -1603,7 +1607,7 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation>&lt;br&gt;&lt;nobr&gt;Loggato dentro: </translation>
+        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Loggato dentro: </translation>
     </message>
     <message>
         <source>%1 Floaty (%2)</source>
@@ -1622,63 +1626,83 @@ Doppio click - Mostra prossimo messaggio</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
+        <source>Birthday Today!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
+        <source>Typing a message</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
+        <source>Phone &amp;quot;Follow Me&amp;quot;: Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
+        <source>Phone &amp;quot;Follow Me&amp;quot;: Busy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
+        <source>ICQphone: Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
+        <source>ICQphone: Busy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
+        <source>File Server: Enabled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;/nobr&gt;</source>
+        <source>Secure connection</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
+        <source>Custom Auto Response</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
+        <source>Auto Response:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
+        <source>E: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
+        <source>P: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
+        <source>C: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
+        <source>F: </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
+        <source>Ip: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>O: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Logged In: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Idle: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Local time: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>ID: </source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -3099,7 +3123,7 @@ Potrebbe non funzionare.</translation>
         <source>The format string used to define what will appear in each column.
 The following parameters can be used:
 </source>
-        <translation>Il formato della stringa usato per definire che cosa apparirà in ogni colonna.
+        <translation type="obsolete">Il formato della stringa usato per definire che cosa apparirà in ogni colonna.
 I seguenti parametri possono esssere usati: 
 </translation>
     </message>
@@ -3722,6 +3746,11 @@ changes here require a Restart to take effect!
     </message>
     <message>
         <source>History</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>The format string used to define what will appear in each column.
+The following parameters can be used:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -4875,6 +4904,69 @@ L&apos;insieme delle icone&apos;%2&apos; è stato diabilitato.</translation>
     </message>
     <message>
         <source>E&amp;moticons:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Status</name>
+    <message>
+        <source>Offline</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Online</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Away</source>
+        <translation type="unfinished">Assente</translation>
+    </message>
+    <message>
+        <source>Do Not Disturb</source>
+        <translation type="unfinished">Non Disturbare</translation>
+    </message>
+    <message>
+        <source>Not Available</source>
+        <translation type="unfinished">Non Disponibile</translation>
+    </message>
+    <message>
+        <source>Occupied</source>
+        <translation type="unfinished">Occupato</translation>
+    </message>
+    <message>
+        <source>Free for Chat</source>
+        <translation type="unfinished">Libero per Chat</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Sconosciuto</translation>
+    </message>
+    <message>
+        <source>Off</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>On</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>DND</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>N/A</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Occ</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>FFC</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>???</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
