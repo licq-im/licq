@@ -2001,8 +2001,10 @@ void CMainWindow::updateGroups()
   mnuUserGroups->clear();
   mnuGroup->clear();
   mnuServerGroup->clear();
-  cmbUserGroups->insertItem(tr("All Users"));
-  mnuUserGroups->insertItem(tr("All Users"));
+
+  QString group = Strings::getSystemGroupName(GROUP_ALL_USERS);
+  cmbUserGroups->insertItem(group);
+  mnuUserGroups->insertItem(group);
   mnuUserGroups->insertSeparator();
 
   // take care of this first
@@ -2021,21 +2023,21 @@ void CMainWindow::updateGroups()
   mnuUserGroups->insertSeparator();
   mnuGroup->insertSeparator();
 
-  cmbUserGroups->insertItem(tr("Online Notify"));
-  mnuUserGroups->insertItem(tr("Online Notify"));
-  mnuGroup->insertItem(tr("Online Notify"), 1000+GROUP_ONLINE_NOTIFY);
-  cmbUserGroups->insertItem(tr("Visible List"));
-  mnuUserGroups->insertItem(tr("Visible List"));
-  mnuGroup->insertItem(tr("Visible List"), 1000+GROUP_VISIBLE_LIST);
-  cmbUserGroups->insertItem(tr("Invisible List"));
-  mnuUserGroups->insertItem(tr("Invisible List"));
-  mnuGroup->insertItem(tr("Invisible List"), 1000+GROUP_INVISIBLE_LIST);
-  cmbUserGroups->insertItem(tr("Ignore List"));
-  mnuUserGroups->insertItem(tr("Ignore List"));
-  mnuGroup->insertItem(tr("Ignore List"), 1000+GROUP_IGNORE_LIST);
-  cmbUserGroups->insertItem(tr("New Users"));
-  mnuUserGroups->insertItem(tr("New Users"));
-  mnuGroup->insertItem(tr("New Users"), 1000+GROUP_NEW_USERS);
+  const unsigned long groups[] = {
+    GROUP_ONLINE_NOTIFY,
+    GROUP_VISIBLE_LIST,
+    GROUP_INVISIBLE_LIST,
+    GROUP_IGNORE_LIST,
+    GROUP_NEW_USERS
+  };
+
+  for (int i = 0; i < (sizeof(groups)/sizeof(groups[0])); i++)
+  {
+    group = Strings::getSystemGroupName(groups[i]);
+    cmbUserGroups->insertItem(group);
+    mnuUserGroups->insertItem(group);
+    mnuGroup->insertItem(group, 1000+groups[i]);
+  }
 
   int index = m_nCurrentGroup;
   if (m_nGroupType == GROUPS_SYSTEM)

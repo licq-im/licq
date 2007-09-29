@@ -32,6 +32,8 @@ public:
 
   static QString getShortStatus(unsigned short status, bool invisible);
   static QString getShortStatus(ICQUser* user, bool useInvisible = true);
+
+  static QString getSystemGroupName(unsigned long group);
 };
 
 #endif

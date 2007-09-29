@@ -91,3 +91,24 @@ QString Strings::getShortStatus(ICQUser* user, bool useInvisible)
 
   return getShortStatus(user->Status(), useInvisible && user->StatusInvisible());
 }
+
+QString Strings::getSystemGroupName(unsigned long group)
+{
+  switch (group)
+  {
+  case GROUP_ALL_USERS:
+    return qApp->translate("Groups", "All Users");
+  case GROUP_ONLINE_NOTIFY:
+    return qApp->translate("Groups", "Online Notify");
+  case GROUP_VISIBLE_LIST:
+    return qApp->translate("Groups", "Visible List");
+  case GROUP_INVISIBLE_LIST:
+    return qApp->translate("Groups", "Invisible List");
+  case GROUP_IGNORE_LIST:
+    return qApp->translate("Groups", "Ignore List");
+  case GROUP_NEW_USERS:
+    return qApp->translate("Groups", "New Users");
+  }
+
+  return qApp->translate("Groups", "Unknown");
+}

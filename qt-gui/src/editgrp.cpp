@@ -31,6 +31,7 @@
 
 #include "editgrp.h"
 #include "ewidgets.h"
+#include "strings.h"
 #include "licq_user.h"
 
 EditGrpDlg::EditGrpDlg(QWidget *parent)
@@ -114,11 +115,15 @@ EditGrpDlg::EditGrpDlg(QWidget *parent)
 void EditGrpDlg::RefreshList()
 {
   lstGroups->clear();
-  lstGroups->insertItem(tr("All Users"));
-  if (gUserManager.DefaultGroup() == 0)
-    nfoDefault->setText(tr("All Users"));
-  if (gUserManager.NewUserGroup() == 0)
-    nfoNewUser->setText(tr("All Users"));
+
+  const QString allUsers = Strings::getSystemGroupName(GROUP_ALL_USERS);
+
+  lstGroups->insertItem(allUsers);
+  if (gUserManager.DefaultGroup() == GROUP_ALL_USERS)
+    nfoDefault->setText(allUsers);
+  if (gUserManager.NewUserGroup() == GROUP_ALL_USERS)
+    nfoNewUser->setText(allUsers);
+
   GroupList *g = gUserManager.LockGroupList(LOCK_R);
   for (unsigned short i = 0; i < g->size(); i++)
   {
