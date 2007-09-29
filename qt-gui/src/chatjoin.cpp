@@ -128,7 +128,7 @@ ChatDlg *CJoinChatDlg::JoinedChat()
 
   for (iter = ChatDlg::chatDlgs.begin();
        iter != ChatDlg::chatDlgs.end() && *iter != cd;
-       iter++);
+       iter++) {}
 
   // Check that this chat still exists
   if (iter == ChatDlg::chatDlgs.end()) return NULL;
