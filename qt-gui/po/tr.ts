@@ -2295,7 +2295,7 @@ istiyor musun?</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>TÜm kişi&apos;ler</translation>
+        <translation type="obsolete">TÜm kişi&apos;ler</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -2619,6 +2619,37 @@ istiyor musun?</translation>
     </message>
     <message>
         <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">Bağlantı notu</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">Görebilir listesi</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">Görünmezler listesi</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">Umursanmayanlar listesi</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">Yeni kişi</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

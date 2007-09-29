@@ -2299,7 +2299,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Wszyscy</translation>
+        <translation type="obsolete">Wszyscy</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -2624,6 +2624,37 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>&amp;Cancel</source>
         <translation type="unfinished">&amp;Anuluj</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished">Wszyscy</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">Powiadomienie online</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">Lista ``widzialnych&apos;&apos;</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">Lista ``niewidzialnych&apos;&apos;</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">Lista ignorowanych</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">Nowi użytkownicy</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

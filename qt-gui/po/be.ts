@@ -6150,7 +6150,7 @@ You can leave me a message.</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Усе карыстальнікі</translation>
+        <translation type="obsolete">Усе карыстальнікі</translation>
     </message>
     <message>
         <source>noname</source>
@@ -6457,6 +6457,37 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Выкасаваць</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished">Усе карыстальнікі</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">Паведаміць аб з&apos;яўленьні</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">У спісе бачных</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">У спісе нябачных</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">У спісе ігнараваных</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">Новыя карыстальнікі</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Не вядома</translation>
     </message>
 </context>
 <context>

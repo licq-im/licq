@@ -2207,7 +2207,7 @@ Voit jättää minulle viestin.</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Kaikki käyttäjät</translation>
+        <translation type="obsolete">Kaikki käyttäjät</translation>
     </message>
     <message>
         <source>noname</source>
@@ -2514,6 +2514,37 @@ ryhmän &apos;%1&apos;?</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation type="unfinished">&amp;Peruuta</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">Online-huomautus</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">Näkyvissä-lista</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">Näkymättömissä-lista</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">Huomiotta-lista</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">Uudet</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Tuntematon</translation>
     </message>
 </context>
 <context>

@@ -2644,7 +2644,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Alle Benutzer</translation>
+        <translation type="obsolete">Alle Benutzer</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -2941,6 +2941,37 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>Filter:</source>
         <translation>Filter:</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation>Alle Benutzer</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation>Online-Benachrichtigung</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation>Sichtbar</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation>Unsichtbar</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation>Ignorieren</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation>Neue Benutzer</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation>Unbekannt</translation>
     </message>
 </context>
 <context>

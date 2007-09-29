@@ -2247,7 +2247,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>全ユーザ</translation>
+        <translation type="obsolete">全ユーザ</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -2572,6 +2572,37 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>&amp;Cancel</source>
         <translation type="unfinished">キャンセル</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished">全ユーザ</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">オンライン通知</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">可視リスト</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">不可視リスト</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">無視リスト</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">新ユーザ</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">未知</translation>
     </message>
 </context>
 <context>

@@ -1997,7 +1997,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Všichni</translation>
+        <translation type="obsolete">Všichni</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -2313,6 +2313,37 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>&amp;Cancel</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">&amp;Online upozornění</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">Visi&amp;ble seznam</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">I&amp;nvisible seznam</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">I&amp;gnore seznam</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">New Users</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

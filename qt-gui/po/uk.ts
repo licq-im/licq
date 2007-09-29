@@ -2062,7 +2062,7 @@ You can leave me a message.</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Всі користувачі</translation>
+        <translation type="obsolete">Всі користувачі</translation>
     </message>
     <message>
         <source>noname</source>
@@ -2370,6 +2370,37 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Скасувати</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished">Всі користувачі</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">Сповіщати про появу в мережі</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">Список видимих</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">Список невидимих</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">Список ігноруємих</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">Нові користувачі</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

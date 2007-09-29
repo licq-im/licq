@@ -2978,7 +2978,7 @@ grupu &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Svi Korisnici</translation>
+        <translation type="obsolete">Svi Korisnici</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -3299,6 +3299,37 @@ grupu &apos;%1&apos;?</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation type="unfinished">&amp;Poništi</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished">Svi Korisnici</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">Na-vezi obaveštenje</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">Vidljiva Lista</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">Lista Nevidljivosti</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">Lista Ignorisanja</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">Novi Korisnici</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

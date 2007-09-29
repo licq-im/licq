@@ -2222,7 +2222,7 @@ gruppen &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Alla användare</translation>
+        <translation type="obsolete">Alla användare</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -2539,6 +2539,37 @@ gruppen &apos;%1&apos;?</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>&amp;Avbryt</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished">Alla användare</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">Anslutningsavisering</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">Synlighetslista</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">Osynlighetslista</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">Ignoreringslista</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">Nya användare</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Okänd</translation>
     </message>
 </context>
 <context>

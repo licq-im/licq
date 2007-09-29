@@ -2109,7 +2109,7 @@ il gruppo &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Tutti gli Utenti</translation>
+        <translation type="obsolete">Tutti gli Utenti</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -2410,6 +2410,37 @@ il gruppo &apos;%1&apos;?</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation type="unfinished">&amp;Annulla</translation>
+    </message>
+</context>
+<context>
+    <name>Groups</name>
+    <message>
+        <source>All Users</source>
+        <translation type="unfinished">Tutti gli Utenti</translation>
+    </message>
+    <message>
+        <source>Online Notify</source>
+        <translation type="unfinished">Attualmente in Linea</translation>
+    </message>
+    <message>
+        <source>Visible List</source>
+        <translation type="unfinished">Lista Visibili</translation>
+    </message>
+    <message>
+        <source>Invisible List</source>
+        <translation type="unfinished">Lista Invisibili</translation>
+    </message>
+    <message>
+        <source>Ignore List</source>
+        <translation type="unfinished">Lista Ignorati</translation>
+    </message>
+    <message>
+        <source>New Users</source>
+        <translation type="unfinished">Nuovi Utenti</translation>
+    </message>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Sconosciuto</translation>
     </message>
 </context>
 <context>
