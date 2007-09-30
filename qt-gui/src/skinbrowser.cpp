@@ -37,6 +37,7 @@
 #include "mainwin.h"
 #include "skin.h"
 #include "skinbrowser.h"
+#include "strings.h"
 #include "emoticon.h"
 
 enum {
@@ -621,7 +622,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	cmbUserGroups->setNamedBgColor(skin->cmbGroups.color.bg);
 	cmbUserGroups->setNamedFgColor(skin->cmbGroups.color.fg);
 	cmbUserGroups->setGeometry(skin->borderToRect(&skin->cmbGroups, &w));
-	cmbUserGroups->insertItem("All Users");
+	cmbUserGroups->insertItem(Strings::getSystemGroupName(GROUP_ALL_USERS));
 
 	// The Menu Button
 	if (!skin->frame.hasMenuBar)
@@ -670,7 +671,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	}
 
 	lblMsg->setGeometry(skin->borderToRect(&skin->lblMsg, &w));
-	lblMsg->setText("New Users");
+	lblMsg->setText(Strings::getSystemGroupName(GROUP_NEW_USERS));
 
   // Status Label
 	lblStatus = new CELabel(skin->lblStatus.transparent, NULL, &w);
@@ -691,7 +692,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString &skinName)
 	}
 
 	lblStatus->setGeometry(skin->borderToRect(&skin->lblStatus, &w));
-	lblStatus->setText("Online");
+	lblStatus->setText(Strings::getStatus(ICQ_STATUS_ONLINE, false));
 	lblStatus->setPrependPixmap(CMainWindow::iconForStatus(ICQ_STATUS_ONLINE));
 
 	// Userview
