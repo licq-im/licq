@@ -152,9 +152,12 @@ void ssl_info_callback(SSL *s, int where, int ret)
  * Prints the @a error to stderr (by means of gLog), and if the user is running
  * X, tries to show a dialog with the error.
  */
-static void DisplayFatalError(const char* error)
+extern "C" void DisplayFatalError(const char* error, int useLicqLog)
 {
-  gLog.Error(error);
+  if (useLicqLog)
+    gLog.Error(error);
+  else
+    fprintf(stderr, "\n%s\n", error);
 
   // Try to show the error if we're running X
   if (getenv("DISPLAY") != NULL)
@@ -419,7 +422,7 @@ bool CLicq::Init(int argc, char **argv)
       }
 
       error[ERR_SIZE] = '\0';
-      DisplayFatalError(error);
+      DisplayFatalError(error, 1);
 
       return false;
     }
@@ -452,7 +455,7 @@ bool CLicq::Init(int argc, char **argv)
       }
 
       error[ERR_SIZE] = '\0';
-      DisplayFatalError(error);
+      DisplayFatalError(error, 1);
 
       return false;
     }

@@ -35,6 +35,8 @@ void licq_handle_sigsegv(int);
 void licq_handle_sigabrt(int);
 void licq_handle_sigchld(int);
 
+void DisplayFatalError(const char* error, int useLicqLog);
+
 /*
 void licq_segv_handler(void (*f)(int, siginfo_t *, void *))
 {
@@ -121,6 +123,17 @@ void licq_handle_sigabrt(int s)
               "Running: %s\n", BASE_DIR, command);
       int ret = system(command);
       fprintf(stderr, "gdb exited with exit code %d\n\n", ret);
+
+      // Include time in file
+      char filename[MAX_FILENAME_LEN];
+      snprintf(filename, MAX_FILENAME_LEN, "%s/licq.backtrace.gdb", BASE_DIR);
+      FILE* file = fopen(filename, "a");
+      if (file != NULL)
+      {
+        fprintf(file, "\ntime: %lu\n", time(NULL));
+        fclose(file);
+      }
+
       exit(ret);
     }
     else if (child > 0)
@@ -136,6 +149,8 @@ void licq_handle_sigabrt(int s)
   char filename[MAX_FILENAME_LEN];
   snprintf(filename, MAX_FILENAME_LEN, "%s/licq.backtrace", BASE_DIR);
   FILE* file = fopen(filename, "w");
+  if (file != NULL)
+    fprintf(file, "time: %lu\n", time(NULL));
 
   fprintf(stderr, tr("Backtrace (saved in %s):\n"), filename);
   {
@@ -166,6 +181,25 @@ void licq_handle_sigabrt(int s)
   pthread_kill_other_threads_np();
   #endif
 #endif
+
+  char error[1024];
+  snprintf(error, 1024,
+           "Licq has encountered a fatal error.\n"
+           "Please report this error either by creating a new ticket "
+           "at http://trac.licq.org/ or by sending an e-mail to the mailing list "
+           "licq-dev@googlegroups.com (see http://trac.licq.org/wiki/MailingList).\n"
+           "\n"
+           "To help us debug the error, please include a full description of "
+           "what you did when the error occurred. Additionally, please include "
+           "the following files (if they exist):\n"
+           "%s/licq.backtrace\n"
+           "%s/licq.backtrace.gdb\n"
+           "%s/licq.debug_rw_mutex\n"
+           "\n"
+           "Thanks, "
+           "The Licq Team",
+           BASE_DIR, BASE_DIR, BASE_DIR);
+  DisplayFatalError(error, 0);
 }
 
 
@@ -180,6 +214,3 @@ void licq_handle_sigchld(int s)
 
   wait(NULL);
 }
-
-
-
