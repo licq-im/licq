@@ -705,7 +705,7 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   handle = dlopen (szPlugin, DLOPEN_POLICY);
   if (handle == NULL)
   {
-    const char *error = dlerror();
+    error = dlerror();
     gLog.Error("%sUnable to load plugin (%s): %s.\n", L_ERRORxSTR, _szName,
      error);
 
