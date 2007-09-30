@@ -137,6 +137,11 @@ bool LP_Init(int argc, char **argv)
 
 int LP_Main(CICQDaemon *_licqDaemon)
 {
+#ifdef USE_KDE
+  // Don't use the KDE crash handler (drkonqi).
+  setenv("KDE_DEBUG", "true", 0);
+#endif
+
   licqQtGui = new CLicqGui(gui_argc, gui_argv);
 
   int nResult = licqQtGui->Run(_licqDaemon);
