@@ -37,7 +37,7 @@
 #include "mainwin.h"
 #include "skin.h"
 #include "skinbrowser.h"
-#include "strings.h"
+#include "gui-strings.h"
 #include "emoticon.h"
 
 enum {

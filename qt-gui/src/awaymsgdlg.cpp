@@ -30,6 +30,7 @@
 #include <qtextcodec.h>
 
 #include "awaymsgdlg.h"
+#include "gui-strings.h"
 #include "licq_log.h"
 #include "mainwin.h"
 #include "mledit.h"

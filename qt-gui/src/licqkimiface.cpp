@@ -41,7 +41,7 @@
 // local includes
 #include "licqkimiface.h"
 #include "mainwin.h"
-#include "strings.h"
+#include "gui-strings.h"
 
 ///////////////////////////////////////////////////////////////////////////////
 

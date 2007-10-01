@@ -42,6 +42,7 @@
 #include "mainwin.h"
 #include "userbox.h"
 #include "gui-defines.h"
+#include "gui-strings.h"
 #include "mainwin.h"
 #include "usereventdlg.h"
 #include "usercodec.h"

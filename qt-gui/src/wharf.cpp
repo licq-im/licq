@@ -52,7 +52,7 @@
 #include "mainwin.h"
 #include "licq_user.h"
 #include "ewidgets.h"
-#include "strings.h"
+#include "gui-strings.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>

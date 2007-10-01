@@ -85,7 +85,7 @@
 #include "usercodec.h"
 #include "emoticon.h"
 #include "ownermanagerdlg.h"
-#include "strings.h"
+#include "gui-strings.h"
 
 #ifdef USE_KDE
     #include "licqkimiface.h"

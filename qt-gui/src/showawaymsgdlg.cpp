@@ -33,7 +33,7 @@
 #include "showawaymsgdlg.h"
 #include "sigman.h"
 #include "licq_user.h"
-#include "strings.h"
+#include "gui-strings.h"
 #include "usercodec.h"
 #include <ctype.h>
 

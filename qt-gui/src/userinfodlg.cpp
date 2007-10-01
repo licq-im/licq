@@ -81,7 +81,7 @@
 #include "sigman.h"
 #include "mledit.h"
 #include "mlview.h"
-#include "strings.h"
+#include "gui-strings.h"
 
 #include "xpm/phonebookPhone.xpm"
 #include "xpm/phonebookCellular.xpm"

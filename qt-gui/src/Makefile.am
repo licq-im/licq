@@ -21,7 +21,7 @@ noinst_HEADERS = adduserdlg.h authuserdlg.h awaymsgdlg.h refusedlg.h \
 	usercodec.h reqauthdlg.h licqdialog.h userselectdlg.h \
 	editfilelistdlg.h emoticon.h catdlg.h phonedlg.h ownermanagerdlg.h \
 	gpgkeyselect.h gpgkeymanager.h licqkimiface.h kimiface.h support.h \
-	strings.h
+	gui-strings.h
 
 licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	refusedlg.cpp chatdlg.cpp editgrp.cpp editfile.cpp eventdesc.cpp \
@@ -35,7 +35,7 @@ licq_gui = adduserdlg.cpp authuserdlg.cpp awaymsgdlg.cpp \
 	usercodec.cpp reqauthdlg.cpp licqdialog.cpp userselectdlg.cpp \
 	editfilelistdlg.cpp emoticon.cpp catdlg.cpp phonedlg.cpp \
 	ownermanagerdlg.cpp gpgkeyselect.cpp gpgkeymanager.cpp support.cpp \
-	strings.cpp
+	gui-strings.cpp
 
 licq_qt_gui_la_SOURCES = $(licq_gui)
 licq_kde_gui_la_SOURCES = $(licq_gui) wrap_kde_malloc.cpp \

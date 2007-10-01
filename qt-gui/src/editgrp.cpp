@@ -31,7 +31,7 @@
 
 #include "editgrp.h"
 #include "ewidgets.h"
-#include "strings.h"
+#include "gui-strings.h"
 #include "licq_user.h"
 
 EditGrpDlg::EditGrpDlg(QWidget *parent)
