@@ -1552,6 +1552,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(cmbSendType);
   h_lay->addStretch(1);
   btnSend = new QPushButton(tr("&Send"), this);
+  btnSend->installEventFilter(this);
   int w = QMAX(btnSend->sizeHint().width(), 75);
   // add a wrapper around the send button that
   // tries to establish a secure connection first.
@@ -1792,6 +1793,16 @@ bool UserSendCommon::eventFilter(QObject *watched, QEvent *e)
           btnSend->animateClick();
         return true; // filter the event out
       }
+    }
+    return false;
+  }
+  else if (watched == btnSend && e->type() == QEvent::KeyPress)
+  {
+    QKeyEvent *key = static_cast<QKeyEvent*>(e);
+    if (key->key() == Key_Enter || key->key() == Key_Return)
+    {
+      btnSend->animateClick();
+      return true;
     }
     return false;
   }
