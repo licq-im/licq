@@ -2031,7 +2031,7 @@ void CMainWindow::updateGroups()
     GROUP_NEW_USERS
   };
 
-  for (int i = 0; i < (sizeof(groups)/sizeof(groups[0])); i++)
+  for (unsigned short i = 0; i < (sizeof(groups)/sizeof(groups[0])); i++)
   {
     group = Strings::getSystemGroupName(groups[i]);
     cmbUserGroups->insertItem(group);
