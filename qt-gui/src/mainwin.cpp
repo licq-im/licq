@@ -4184,14 +4184,17 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    fIconsConf.ReadStr("Url", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmUrl.load(sFilepath);
+   if(pmUrl.isNull()) pmUrl = pmMessage;
 
    fIconsConf.ReadStr("Chat", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmChat.load(sFilepath);
+   if(pmChat.isNull()) pmChat = pmMessage;
 
    fIconsConf.ReadStr("File", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmFile.load(sFilepath);
+   if(pmFile.isNull()) pmFile = pmMessage;
 
    fIconsConf.ReadStr("AIMOnline", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
