@@ -1552,13 +1552,14 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   h_lay->addWidget(cmbSendType);
   h_lay->addStretch(1);
   btnSend = new QPushButton(tr("&Send"), this);
-  btnSend->installEventFilter(this);
+  btnSend->setDefault(true);
   int w = QMAX(btnSend->sizeHint().width(), 75);
   // add a wrapper around the send button that
   // tries to establish a secure connection first.
   connect( btnSend, SIGNAL( clicked() ), this, SLOT( trySecure() ) );
 
   btnClose = new QPushButton(tr("&Close"), this);
+  btnClose->setAutoDefault(true);
   w = QMAX(btnClose->sizeHint().width(), w);
   btnSend->setFixedWidth(w);
   btnClose->setFixedWidth(w);
@@ -1793,16 +1794,6 @@ bool UserSendCommon::eventFilter(QObject *watched, QEvent *e)
           btnSend->animateClick();
         return true; // filter the event out
       }
-    }
-    return false;
-  }
-  else if (watched == btnSend && e->type() == QEvent::KeyPress)
-  {
-    QKeyEvent *key = static_cast<QKeyEvent*>(e);
-    if (key->key() == Key_Enter || key->key() == Key_Return)
-    {
-      btnSend->animateClick();
-      return true;
     }
     return false;
   }
