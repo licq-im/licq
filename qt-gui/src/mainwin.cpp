@@ -2194,13 +2194,13 @@ void CMainWindow::updateStatus(CICQSignal *s)
 void CMainWindow::slot_AwayMsgDlg()
 {
   //TODO iterate all owners that support fetching away message
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  if (o != NULL)
-  {
-    unsigned short status = o->Status();
-    gUserManager.DropOwner();
-    showAwayMsgDlg(status);
-  }
+  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  if (o == NULL)
+    return;
+
+  unsigned short status = o->Status();
+  gUserManager.DropOwner();
+  showAwayMsgDlg(status);
 }
 
 
