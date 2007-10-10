@@ -1861,8 +1861,7 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long /* _nConvoId */)
       if (mainwin->m_bTabbedChatting && mainwin->userEventTabDlg)
         mainwin->userEventTabDlg->updateTabLabel(u);  
     }
-    if (u)
-      gUserManager.DropUser(u);
+    gUserManager.DropUser(u);
   }
   
   if (m_lUsers.size() > 1)
