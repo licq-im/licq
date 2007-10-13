@@ -230,7 +230,7 @@ void CELabel::drawContents(QPainter* p)
   if (m_lPixmaps.size())
   {
     list<QPixmap>::iterator it;
-    int i = 2;
+    int i = indent();
     for (it = m_lPixmaps.begin(); it != m_lPixmaps.end(); it++)
     {
       p->drawPixmap(i, height() / 2 - it->height() / 2, *it);
