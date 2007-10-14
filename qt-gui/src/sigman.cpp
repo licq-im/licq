@@ -42,6 +42,11 @@ CSignalManager::CSignalManager(CICQDaemon *d, int _nPipe)
   sn->setEnabled(true);
 }
 
+CSignalManager::~CSignalManager()
+{
+  delete sn;
+}
+
 void CSignalManager::slot_incoming()
 {
   char buf[16];

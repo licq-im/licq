@@ -33,8 +33,9 @@ class CSignalManager: public QObject
   Q_OBJECT
 public:
   CSignalManager(CICQDaemon *, int);
+  ~CSignalManager();
 
-protected:
+private:
   CICQDaemon *licqDaemon;
   int m_nPipe;
   QSocketNotifier *sn;
