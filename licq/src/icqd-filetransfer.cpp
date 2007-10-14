@@ -191,6 +191,7 @@ pthread_mutex_t CFileTransferManager::thread_cancel_mutex
                                                    = PTHREAD_MUTEX_INITIALIZER;
 
 CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
+  : m_bThreadRunning(false)
 {
   // Create the plugin notification pipe
   pipe(pipe_thread);
