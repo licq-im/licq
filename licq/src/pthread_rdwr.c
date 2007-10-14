@@ -89,7 +89,7 @@ static void debug_cond_wait(pthread_rdwr_t *rdwrp, int reading)
   gettimeofday(&now, NULL);
 
   struct timespec timeout;
-  timeout.tv_sec = now.tv_sec + 5;
+  timeout.tv_sec = now.tv_sec + 10;
   timeout.tv_nsec = now.tv_usec * 1000;
 
   int ret = pthread_cond_timedwait(&(rdwrp->lock_free), &(rdwrp->mutex), &timeout);
@@ -109,8 +109,7 @@ static void debug_cond_wait(pthread_rdwr_t *rdwrp, int reading)
       fclose(file);
     }
 
-    // Continue waiting (will probably hang licq forever)
-    pthread_cond_wait(&(rdwrp->lock_free), &(rdwrp->mutex));
+    abort();
   }
 }
 
