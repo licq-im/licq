@@ -4348,8 +4348,8 @@ void CMainWindow::initMenu()
    connect(a, SIGNAL(activatedAmbiguously(int)), this, SLOT(changeStatusManual(int)));
 #endif
 
-   mnuStatus = new QPopupMenu(NULL);
-   mnuPFM = new QPopupMenu(NULL);
+   mnuStatus = new QPopupMenu(this);
+   mnuPFM = new QPopupMenu(this);
    mnuPFM->insertItem(tr("Don't Show"), (int)ICQ_PLUGIN_STATUSxINACTIVE);
    mnuPFM->insertItem(tr("Available"), ICQ_PLUGIN_STATUSxACTIVE);
    mnuPFM->insertItem(tr("Busy"), ICQ_PLUGIN_STATUSxBUSY);
@@ -4376,10 +4376,10 @@ void CMainWindow::initMenu()
 
    connect(mnuStatus, SIGNAL(activated(int)), this, SLOT(changeStatusManual(int)));
 
-   mnuUserGroups = new QPopupMenu(NULL);
+   mnuUserGroups = new QPopupMenu(this);
    connect(mnuUserGroups, SIGNAL(activated(int)), this, SLOT(setCurrentGroupMenu(int)));
 
-   mnuDebug = new QPopupMenu(NULL);
+   mnuDebug = new QPopupMenu(this);
    mnuDebug->insertItem(tr("Status Info"));
    mnuDebug->insertItem(tr("Unknown Packets"));
    mnuDebug->insertItem(tr("Errors"));
@@ -4393,7 +4393,7 @@ void CMainWindow::initMenu()
      mnuDebug->setItemChecked(mnuDebug->idAt(i), DEBUG_LEVEL & (1 << i));
    connect(mnuDebug, SIGNAL(activated(int)), this, SLOT(changeDebug(int)));
 
-   mnuOwnerAdm = new QPopupMenu(NULL);
+   mnuOwnerAdm = new QPopupMenu(this);
    mnuOwnerAdm->insertItem(tr("&View System Messages"), OwnerMenuView);
    mnuOwnerAdm->insertSeparator();
    mnuOwnerAdm->insertItem(pmInfo, tr("&Info"), OwnerMenuGeneral);
@@ -4406,7 +4406,7 @@ void CMainWindow::initMenu()
    mnuOwnerAdm->insertItem(tr("Debug Level"), mnuDebug);
    connect (mnuOwnerAdm, SIGNAL(activated(int)), this, SLOT(callOwnerFunction(int)));
 
-   mnuUserAdm = new QPopupMenu(NULL);
+   mnuUserAdm = new QPopupMenu(this);
    mnuUserAdm->insertItem(tr("&Add User"), this, SLOT(showAddUserDlg()), 0, MNU_USER_ADM_ADD_USER);
    mnuUserAdm->insertItem(pmSearch, tr("S&earch for User"), this, SLOT(showSearchUserDlg()), 0, MNU_USER_ADM_SEARCH_USER);
    mnuUserAdm->insertItem(pmAuthorize, tr("A&uthorize User"), this, SLOT(showAuthUserDlg()), 0, MNU_USER_ADM_AUTHORIZE_USER);
@@ -4421,12 +4421,12 @@ void CMainWindow::initMenu()
    mnuUserAdm->insertItem(tr("&Redraw User Window"), this, SLOT(updateUserWin()), 0, MNU_USER_ADM_REDRAW_USER_WIN);
    mnuUserAdm->insertItem(tr("&Save All Users"), this, SLOT(saveAllUsers()), 0, MNU_USER_ADM_SAVE_ALL_USERS);
 
-   QPopupMenu *mnuHelp = new QPopupMenu(NULL);
+   QPopupMenu *mnuHelp = new QPopupMenu(this);
    mnuHelp->insertItem(tr("&Hints"), this, SLOT(slot_hints()));
    mnuHelp->insertItem(tr("&About"), this, SLOT(aboutBox()));
    mnuHelp->insertItem(tr("&Statistics"), this, SLOT(slot_stats()));
 
-   mnuSystem = new QPopupMenu(NULL);
+   mnuSystem = new QPopupMenu(this);
    mnuSystem->setCheckable(true);
    mnuSystem->insertItem(tr("System Functions"), mnuOwnerAdm, 0, MNU_SYS_SYSTEM_FUNCTIONS);
    mnuSystem->insertItem(tr("User Functions"), mnuUserAdm, 0, MNU_SYS_USER_FUNCTIONS);
@@ -4451,24 +4451,24 @@ void CMainWindow::initMenu()
    mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_SHOWxOFFLINE), m_bShowOffline);
    mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_THREADxVIEW), m_bThreadView);
 
-   mnuGroup = new QPopupMenu(NULL);
+   mnuGroup = new QPopupMenu(this);
    mnuGroup->setCheckable(true);
    connect(mnuGroup, SIGNAL(activated(int)), this, SLOT(UserGroupToggled(int)));
    connect(mnuGroup, SIGNAL(aboutToShow()), this, SLOT(FillUserGroup()));
 
-   mnuServerGroup = new QPopupMenu(NULL);
+   mnuServerGroup = new QPopupMenu(this);
    mnuServerGroup->setCheckable(true);
    connect(mnuServerGroup, SIGNAL(activated(int)), this, SLOT(ServerGroupChanged(int)));
    connect(mnuServerGroup, SIGNAL(aboutToShow()), this, SLOT(FillServerGroup()));
 
-   mnuUtilities = new QPopupMenu(NULL);
+   mnuUtilities = new QPopupMenu(this);
    for (unsigned short i = 0; i < gUtilityManager.NumUtilities(); i++)
    {
      mnuUtilities->insertItem(gUtilityManager.Utility(i)->Name());
    }
    connect(mnuUtilities, SIGNAL(activated(int)), this, SLOT(slot_utility(int)));
 
-   mnuMiscModes = new QPopupMenu(NULL);
+   mnuMiscModes = new QPopupMenu(this);
    mnuMiscModes->setCheckable(true);
    mnuMiscModes->insertItem(tr("Accept in Away"));
    mnuMiscModes->insertItem(tr("Accept in Not Available"));
@@ -4487,7 +4487,7 @@ void CMainWindow::initMenu()
    mnuMiscModes->insertItem(tr("Do Not Disturb to User"));
    connect(mnuMiscModes, SIGNAL(activated(int)), this, SLOT(slot_miscmodes(int)));
 
-   mnuUser = new QPopupMenu(NULL);
+   mnuUser = new QPopupMenu(this);
    mnuUser->insertItem(tr("&View Event"), mnuUserView);
    mnuSend = new QPopupMenu(this);
    mnuSend->insertItem(pmMessage, tr("Send &Message"), mnuUserSendMsg);
