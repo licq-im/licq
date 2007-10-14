@@ -1640,6 +1640,10 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
           mleHistory->append(tmp);
 
         mleHistory->GotoEnd();
+
+        for (HistoryListIter it = lHistoryList.begin(), end = lHistoryList.end();
+             it != end; ++it)
+          delete (*it);
       }
     }
     
