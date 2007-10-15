@@ -1641,9 +1641,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
         mleHistory->GotoEnd();
 
-        for (HistoryListIter it = lHistoryList.begin(), end = lHistoryList.end();
-             it != end; ++it)
-          delete (*it);
+        ICQUser::ClearHistory(lHistoryList);
       }
     }
     
