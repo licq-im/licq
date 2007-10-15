@@ -1342,7 +1342,7 @@ CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 
 CSocketHashTable::~CSocketHashTable()
 {
-  // Empty
+  pthread_rdwr_destroy_np(&mutex_rw);
 }
 
 void CSocketHashTable::Lock(unsigned short _nLockType)

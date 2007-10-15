@@ -60,6 +60,7 @@ typedef void * pthread_rdwrattr_t;
 #endif
 
 int pthread_rdwr_init_np(pthread_rdwr_t *rdwrp, pthread_rdwrattr_t *attrp);
+int pthread_rdwr_destroy_np(pthread_rdwr_t *rdwrp);
 int pthread_rdwr_rlock_np(pthread_rdwr_t *rdwrp);
 int pthread_rdwr_runlock_np(pthread_rdwr_t *rdwrp);
 int pthread_rdwr_wlock_np(pthread_rdwr_t *rdwrp);

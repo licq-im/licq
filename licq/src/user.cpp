@@ -524,6 +524,11 @@ CUserManager::~CUserManager()
   OwnerList::iterator o_iter;
   for (o_iter = m_vpcOwners.begin(); o_iter != m_vpcOwners.end(); ++o_iter)
     delete *o_iter;
+
+  pthread_rdwr_destroy_np(&mutex_ownerlist);
+  pthread_rdwr_destroy_np(&mutex_groupidlist);
+  pthread_rdwr_destroy_np(&mutex_userlist);
+  pthread_rdwr_destroy_np(&mutex_grouplist);
 }
 
 void CUserManager::SetOwnerUin(unsigned long _nUin)
@@ -1623,7 +1628,7 @@ CUserHashTable::CUserHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 
 CUserHashTable::~CUserHashTable()
 {
-  // Empty
+  pthread_rdwr_destroy_np(&mutex_rw);
 }
 
 ICQUser *CUserHashTable::Retrieve(const char *_szId, unsigned long _nPPID)
@@ -2216,6 +2221,8 @@ ICQUser::~ICQUser()
     nResult = pthread_mutex_destroy(&mutex);
   } while (nResult != 0);
 */
+
+  pthread_rdwr_destroy_np(&mutex_rw);
 }
 
 

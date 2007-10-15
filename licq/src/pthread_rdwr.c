@@ -24,6 +24,7 @@
 
 #ifdef DEBUG_RW_MUTEX
 #include <errno.h>
+#include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
 #include <sys/time.h>
@@ -44,6 +45,19 @@ int pthread_rdwr_init_np(pthread_rdwr_t *rdwrp, pthread_rdwrattr_t *attrp)
 
 #ifdef DEBUG_RW_MUTEX
   rdwrp->name = strdup("no name");
+#endif
+
+  return 0;
+}
+
+int pthread_rdwr_destroy_np(pthread_rdwr_t *rdwrp)
+{
+#ifdef DEBUG_RW_MUTEX
+  assert(rdwrp->readers_reading == 0);
+  assert(rdwrp->writer_writing == 0);
+
+  free(rdwrp->name);
+  rdwrp->name = NULL;
 #endif
 
   return 0;
