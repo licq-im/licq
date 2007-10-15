@@ -234,6 +234,7 @@ UserInfoDlg::~UserInfoDlg()
     delete m_PhoneBook;
 
   emit finished(m_szId, m_nPPID);
+  free(m_szId);
 
   ICQUser::ClearHistory(m_lHistoryList);
 }
