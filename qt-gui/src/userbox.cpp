@@ -126,7 +126,6 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   m_bBirthday = false;
   m_bPhone = false;
   m_bCellular = false;
-  m_bGPGKey = false;
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = ICQ_STATUS_OFFLINE;
@@ -158,6 +157,8 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = 0;
+  m_bGPGKey = false;
+  m_bNotInList = true;
   m_pUserIcon = 0;
   // Other users group is sorted at the end
   if (m_nGroupId)
@@ -186,6 +187,8 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = 0;
+  m_bGPGKey = false;
+  m_bNotInList = true;
   m_pIcon = NULL;
   m_cBack = s_cBack;
   m_cFore = s_cOnline;
