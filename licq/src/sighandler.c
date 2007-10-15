@@ -12,6 +12,7 @@
 
 #include "licq_sighandler.h"
 #include "licq_constants.h"
+#include "pthread_rdwr.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -194,7 +195,9 @@ void licq_handle_sigabrt(int s)
            "the following files (if they exist):\n"
            "%s/licq.backtrace\n"
            "%s/licq.backtrace.gdb\n"
+#ifdef DEBUG_RW_MUTEX
            "%s/licq.debug_rw_mutex\n"
+#endif
            "\n"
            "Thanks, "
            "The Licq Team",
