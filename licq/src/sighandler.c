@@ -201,7 +201,12 @@ void licq_handle_sigabrt(int s)
            "\n"
            "Thanks, "
            "The Licq Team",
-           BASE_DIR, BASE_DIR, BASE_DIR);
+           BASE_DIR,
+           BASE_DIR
+#ifdef DEBUG_RW_MUTEX
+           , BASE_DIR
+#endif
+    );
   DisplayFatalError(error, 0);
 }
 
