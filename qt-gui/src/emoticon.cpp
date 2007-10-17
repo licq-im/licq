@@ -27,6 +27,14 @@
 # include <qapplication.h>
 #endif
 
+//#define EMOTICON_DEBUG
+
+#ifdef EMOTICON_DEBUG
+# define TRACE(x...) qDebug(x)
+#else
+# define TRACE(x...) ((void)0)
+#endif
+
 #include <qdir.h>
 #include <qdom.h>
 #include <qregexp.h>
@@ -100,7 +108,7 @@ CEmoticons::~CEmoticons()
   delete pimpl;
 }
 
-CEmoticons *CEmoticons::m_self = 0L;
+CEmoticons* CEmoticons::m_self = 0L;
 CEmoticons* CEmoticons::self()
 {
   if (!m_self)
@@ -134,9 +142,9 @@ void CEmoticons::setBasedirs(const QStringList &basedirs)
 }
 
 /**
- * In every subdir in every basedir, we check for a file
- * named emoticons.xml, and if we find one, subdir is added
- * to the list of themes.
+ * In every subdir in every basedir, we check for a file named
+ * emoticons.xml, and if we find one, subdir is added to the list of
+ * themes.
  */
 QStringList CEmoticons::themes() const
 {
@@ -175,7 +183,8 @@ QStringList CEmoticons::themes() const
 
   themes.sort();
 
-  // Adding these at the front so that they will be first in the list shown to the user.
+  // Adding these at the front so that they will be first in the list
+  // shown to the user.
   if (defaultExists)
     themes.push_front(translateThemeName(DEFAULT_THEME));
   themes.push_front(translateThemeName(NO_THEME));
@@ -209,8 +218,8 @@ static QString fullFilename(const QString &dir, const QString &file)
 
 /**
  * Parses the emoticons.xml file in @a dir.
- * @param emoticons  For every smiley, the first character is added as a key
- *                   and its Emoticon instance is appened to the list.
+ * @param emoticons For every smiley, the first character is added as
+ * a key and its Emoticon instance is appened to the list.
  * @param fileSmiley Maps the filename of an emoticon to a smiley.
  * @returns true on success; otherwise false.
  *
@@ -229,7 +238,9 @@ static QString fullFilename(const QString &dir, const QString &file)
  *
  * </messaging-emoticon-map>
  */
-static bool parseXml(const QString &dir, QMap<QChar, QValueList<Emoticon> > *emoticons, QMap<QString, QString> *fileSmiley)
+static bool parseXml(const QString &dir,
+                     QMap<QChar, QValueList<Emoticon> > *emoticons,
+                     QMap<QString, QString> *fileSmiley)
 {
   QFile xmlfile(dir + QString::fromLatin1("/emoticons.xml"));
   if (!xmlfile.open(IO_ReadOnly))
@@ -260,12 +271,13 @@ static bool parseXml(const QString &dir, QMap<QChar, QValueList<Emoticon> > *emo
       QDomNode stringNode = n.firstChild();
       for (; !stringNode.isNull(); stringNode = stringNode.nextSibling())
       {
-        // We extract all smileys from <string> elements (<string>smiley</string>).
-        // The first one is added to fileSmiley, so that when the user clicks
-        // on the icon, this is the smiley that is inserted into the document.
+        // We extract all smileys from <string> elements
+        // (<string>smiley</string>). The first one is added to
+        // fileSmiley, so that when the user clicks on the icon, this
+        // is the smiley that is inserted into the document.
         //
-        // All smileys are then indexed in the emoticons map on the first character
-        // in the escaped smiley.
+        // All smileys are then indexed in the emoticons map on the
+        // first character in the escaped smiley.
         QDomElement string = stringNode.toElement();
         if (!string.isNull() && string.tagName() == QString::fromLatin1("string"))
         {
@@ -280,13 +292,21 @@ static bool parseXml(const QString &dir, QMap<QChar, QValueList<Emoticon> > *emo
             first = false;
           }
 
-          // Insert the smiley sorted by length with longest first. This way, if we have
-          // a smiley :) with image A and :)) with image B, the string :)) will always
-          // be replaced by image B.
+          // Insert the smiley sorted by length with longest
+          // first. This way, if we have a smiley :) with image A and
+          // :)) with image B, the string :)) will always be replaced
+          // by image B.
           QValueList<Emoticon>::iterator it = (*emoticons)[emo.escapedSmiley[0]].begin();
           QValueList<Emoticon>::iterator end = (*emoticons)[emo.escapedSmiley[0]].end();
           while (it != end)
           {
+#ifdef EMOTICON_DEBUG
+            if ((*it).escapedSmiley == emo.escapedSmiley)
+              TRACE("The smiley '%s' (%s) is already mapped to %s",
+                    emo.smiley.latin1(),
+                    QFileInfo(file).fileName().latin1(),
+                    QFileInfo((*it).file).fileName().latin1());
+#endif
             if ((*it).escapedSmiley.length() < emo.escapedSmiley.length())
               break;
             else
@@ -408,7 +428,7 @@ void CEmoticons::parseMessage(QString &message, ParseMode mode) const
   if (pimpl->emoticons.isEmpty())
     return;
 
-//   qDebug("message pre: '%s'", message.latin1());
+  TRACE("message pre: '%s'", message.latin1());
 
   QChar p(' '), c; // previous and current char
   for (uint pos = 0; pos < message.length(); pos++)
@@ -461,7 +481,8 @@ void CEmoticons::parseMessage(QString &message, ParseMode mode) const
           {
             const uint nextPos = pos + emo.escapedSmiley.length();
             const QChar &n = message[nextPos];
-            if (!(n.isSpace() || n.isNull() || containsAt(message, QString::fromLatin1("<br"), nextPos)))
+            if (!(n.isSpace() || n.isNull() ||
+                  containsAt(message, QString::fromLatin1("<br"), nextPos)))
             {
               if (mode == StrictMode)
                 break;
@@ -470,8 +491,11 @@ void CEmoticons::parseMessage(QString &message, ParseMode mode) const
             }
           }
 
-          const QString img = QString::fromLatin1("<img alt=\"%1\" src=\"%2\" > ").arg(emo.escapedSmiley).arg(emo.file);
-//           qDebug(" Replacing '%s' with '%s'", message.mid(pos, emo.escapedSmiley.length()).latin1(), img.latin1());
+          const QString img = QString::fromLatin1("<img alt=\"%1\" src=\"%2\" > ")
+              .arg(emo.escapedSmiley).arg(emo.file);
+          TRACE(" Replacing '%s' with '%s'",
+                 message.mid(pos, emo.escapedSmiley.length()).latin1(),
+                 img.latin1());
           message.replace(pos, emo.escapedSmiley.length(), img);
           pos += img.length() - 1; // Point pos at '>'
           c = '>';
@@ -482,11 +506,12 @@ void CEmoticons::parseMessage(QString &message, ParseMode mode) const
 
     p = c;
   }
-//   qDebug("message post: '%s'", message.latin1());
+  TRACE("message post: '%s'", message.latin1());
 }
 
 /**
- * "unparse" the message, removing all <img> tags and replacing them with the smiley.
+ * "unparse" the message, removing all <img> tags and replacing them
+ * with the smiley.
  */
 void CEmoticons::unparseMessage(QString &message)
 {
