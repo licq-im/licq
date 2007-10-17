@@ -43,7 +43,7 @@ void CSupport::changeWinSticky(WId win, bool stick)
   Display* dsp = QPaintDevice::x11AppDisplay();
   Window root  = DefaultRootWindow(dsp);
 
-  unsigned long all = 0xFFFFFFFF;
+  unsigned long all = ~(0UL);
   unsigned long* current;
 
   if (!stick)
