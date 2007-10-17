@@ -21,6 +21,8 @@
 #include "config.h"
 #endif
 
+#include <qpaintdevice.h>
+
 #include "support.h"
 #include "licq_log.h"
 #ifdef USE_KDE
@@ -30,53 +32,52 @@
 #include <X11/Xutil.h>
 #endif
 
-void CSupport::changeWinSticky(WId win, bool _bStick)
+void CSupport::changeWinSticky(WId win, bool stick)
 {
-  // Philipp Kolmann: 2006-06-06
-  // Code from
-  // http://lists.trolltech.com/qt-interest/2006-01/thread00352-0.html
-  // provided by Bob Shaffer II qt-interest@bobshaffer.net
-
-  gLog.Info("Setting Sticky state of window 0x%x to %d.\n",
-    (unsigned int) win, _bStick);
+  gLog.Info("Setting Sticky state of window 0x%lx to %s.\n",
+      static_cast<unsigned long>(win), stick ? "true" : "false");
 
 #ifdef USE_KDE
-  KWin::setOnAllDesktops(win, _bStick);
+  KWin::setOnAllDesktops(win, stick);
 #else
-  // connect to display
-  Display *display = XOpenDisplay("");
+  Display* dsp = QPaintDevice::x11AppDisplay();
+  Window root  = DefaultRootWindow(dsp);
 
-  // root window receives these events
-  Window rootwinid = DefaultRootWindow(display);
+  unsigned long all = 0xFFFFFFFF;
+  unsigned long* current;
 
-  // initialize necessary atoms
-  Atom StateAtom = XInternAtom(display, "_WIN_STATE", false);
-  Atom LayerAtom = XInternAtom(display, "_WIN_LAYER", false);
+  if (!stick)
+  {
+    Atom retAtom;
+    int retFormat;
+    unsigned long retNItems;
+    unsigned long retMoreBytes;
 
-  // construct and send (un)stick event
+    XGetWindowProperty(dsp, root,
+        XInternAtom(dsp, "_NET_CURRENT_DESKTOP", false),  // property
+        0UL, sizeof(unsigned long), false,                // offset, size, del
+        XInternAtom(dsp, "CARDINAL", false),              // property type
+        &retAtom, &retFormat, &retNItems, &retMoreBytes,  // returned parameters
+        (unsigned char**)&current);
+
+    if (retFormat != 32 || retNItems != 1 || retMoreBytes != 0)
+      gLog.Info("Error reading current desktop property.");
+  }
+
   XEvent xev;
   xev.type = ClientMessage;
   xev.xclient.type = ClientMessage;
+  xev.xclient.display = dsp;
   xev.xclient.window = win;
-  xev.xclient.message_type = StateAtom;
+  xev.xclient.message_type = XInternAtom(dsp, "_NET_WM_DESKTOP", false);
   xev.xclient.format = 32;
-  xev.xclient.data.l[0] = (1<<0);
-  xev.xclient.data.l[1] = (_bStick?(1<<0):0);
-  XSendEvent(display, rootwinid, False, SubstructureRedirectMask |
-    SubstructureNotifyMask, &xev);
+  xev.xclient.data.l[0] = stick ? all : *current;
 
-  // construct and send layer setting event
-  // fyi: layers are 0=desktop 2=below 4=normal 6=above 8=dock 10=abovedock
-  xev.xclient.type = ClientMessage;
-  xev.xclient.window = win;
-  xev.xclient.message_type = LayerAtom;
-  xev.xclient.format = 32;
-  // Put it to 4=normal for now
-  xev.xclient.data.l[0] = 4;
-  XSendEvent(display, rootwinid, False, SubstructureRedirectMask |
-      SubstructureNotifyMask, &xev);
+  XSendEvent(dsp, root, false,
+      SubstructureRedirectMask | SubstructureNotifyMask, &xev);
 
-  // close display
-  XCloseDisplay(display);
+  if (!stick)
+    XFree(current);
+
 #endif //USE_KDE
 }

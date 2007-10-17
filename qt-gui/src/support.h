@@ -35,7 +35,7 @@
 
 class CSupport {
 public:
-  static void changeWinSticky(WId win, bool _bStick);
+  static void changeWinSticky(WId win, bool stick);
 };
 
 #endif
