@@ -1541,7 +1541,7 @@ Du måste starta din webbläsare och öppna länken manuellt.</translation>
     </message>
     <message>
         <source>Awaiting authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Väntar på godkännande</translation>
     </message>
 </context>
 <context>
