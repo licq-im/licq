@@ -670,14 +670,15 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   CreateUserView();
 
   unsigned short nFloaties = 0, xPosF, yPosF, wValF;
-  unsigned long nUin;
+  unsigned long ppid;
   licqConf.SetSection("floaties");
   licqConf.ReadNum("Num", nFloaties, 0);
   for (unsigned short i = 0; i < nFloaties; i++)
   {
-    //TODO for protocol plugin
+    sprintf(key, "Floaty%d.Ppid", i);
+    licqConf.ReadNum(key, ppid, LICQ_PPID);
     sprintf(key, "Floaty%d.Uin", i);
-    licqConf.ReadNum(key, nUin, 0);
+    licqConf.ReadStr(key, szTemp, "");
     sprintf(key, "Floaty%d.X", i);
     licqConf.ReadNum(key, xPosF, 0);
     sprintf(key, "Floaty%d.Y", i);
@@ -685,8 +686,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     sprintf(key, "Floaty%d.W", i);
     licqConf.ReadNum(key, wValF, 80);
 
-    if (nUin != 0)
-      CreateUserFloaty(nUin, xPosF, yPosF, wValF);
+    if (szTemp[0] != 0)
+      CreateUserFloaty(szTemp, ppid, xPosF, yPosF, wValF);
   }
 
   usprintfHelp = tr("<ul>"
@@ -1084,35 +1085,6 @@ void CMainWindow::CreateUserFloaty(const char *szId, unsigned long nPPID,
   f->show();
 }
 
-void CMainWindow::CreateUserFloaty(unsigned long nUin, unsigned short x,
-   unsigned short y, unsigned short w)
-{
-  if (nUin == 0) return;
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  if (u == NULL) return;
-
-  CUserView *f = new CUserView(mnuUser);
-  connect (f, SIGNAL(doubleClicked(QListViewItem *)), SLOT(callDefaultFunction(QListViewItem *)));
-
-  CUserViewItem *i = new CUserViewItem(u, f);
-
-  gUserManager.DropUser(u);
-
-  // not so good, we should allow for multiple guys in one box...
-  // perhaps use the viewport sizeHint
-  f->setFixedHeight(i->height() + f->frameWidth() * 2);
-
-  if (w != 0)
-  {
-    if (y > QApplication::desktop()->height() - 16) y = 0;
-    if (x > QApplication::desktop()->width() - 16) x = 0;
-    f->setGeometry(x, y, w, f->height());
-  }
-
-  f->show();
-}
-
-
 //-----CMainWindow::destructor--------------------------------------------------
 CMainWindow::~CMainWindow()
 {
@@ -1240,8 +1212,10 @@ void CMainWindow::closeEvent( QCloseEvent *e )
     for (; i < CUserView::floaties->size(); )
     {
       CUserView* iter = CUserView::floaties->at(i);
+      sprintf(key, "Floaty%d.Ppid", i);
+      licqConf.WriteNum(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemPPID());
       sprintf(key, "Floaty%d.Uin", i);
-      licqConf.WriteNum(key, iter->firstChild()->ItemUin());
+      licqConf.WriteStr(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemId());
       sprintf(key, "Floaty%d.X", i);
       licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
       sprintf(key, "Floaty%d.Y", i);
@@ -3587,8 +3561,10 @@ void CMainWindow::saveOptions()
   for (unsigned short i = 0; i < CUserView::floaties->size(); i++)
   {
     CUserView* iter = CUserView::floaties->at(i);
+    sprintf(key, "Floaty%d.Ppid", i);
+    licqConf.WriteNum(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemPPID());
     sprintf(key, "Floaty%d.Uin", i);
-    licqConf.WriteNum(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemUin());
+    licqConf.WriteStr(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemId());
     sprintf(key, "Floaty%d.X", i);
     licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
     sprintf(key, "Floaty%d.Y", i);

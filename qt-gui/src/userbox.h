@@ -74,7 +74,6 @@ public:
 
   virtual ~CUserViewItem();
   virtual QString key(int column, bool ascending) const;
-  unsigned long ItemUin() const { return m_nUin; }
   char *ItemId() { return m_szId; }
   unsigned long ItemPPID() { return m_nPPID; }
   unsigned short GroupId() const { return m_nGroupId; }
@@ -96,7 +95,6 @@ protected:
   QColor *m_cFore, *m_cBack;
   QPixmap *m_pIcon, *m_pIconStatus, *m_pUserIcon;
 
-  unsigned long m_nUin;
   char *m_szId;
   char *m_szAlias;
   unsigned long m_nPPID;
@@ -144,9 +142,6 @@ public:
   void setColors(char *_sOnline, char *_sAway, char *_sOffline,
                  char *_sNew, char *_sBack, char *_sGridLines, char *_sGroupBack);
   void setShowHeader(bool);
-  void AnimationAutoResponseCheck(unsigned long uin);
-  void AnimationOnline(unsigned long uin);
-  unsigned long MainWindowSelectedItemUin();
   void AnimationAutoResponseCheck(const char *, unsigned long);
   void AnimationOnline(const char *, unsigned long);
   bool MainWindowSelectedItemUser(char *&, unsigned long &);
@@ -164,8 +159,6 @@ protected:
   int msgTimerId;
   int onlTimerId, onlCounter;
   int carTimerId, carCounter;
-  unsigned long carUin;
-  unsigned long onlUin;
   char *carId;
   char *onlId;
   unsigned long carPPID;

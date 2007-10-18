@@ -287,8 +287,6 @@ public:
   
   // Functions
   void CreateUserView();
-  void CreateUserFloaty(unsigned long nUin, unsigned short x = 0,
-     unsigned short y = 0, unsigned short w = 0);
   void CreateUserFloaty(const char *szId, unsigned long nPPID,
     unsigned short x = 0, unsigned short y = 0, unsigned short w = 0);
   void initMenu();

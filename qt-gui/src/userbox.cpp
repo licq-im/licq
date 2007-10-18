@@ -76,7 +76,6 @@ CUserViewItem::CUserViewItem(ICQUser *_cUser, QListView *parent)
     listView()->setCaption(CUserView::tr("%1 Floaty (%2)")
                            .arg(QString::fromUtf8(_cUser->GetAlias())).arg(_cUser->IdString()));
 
-  m_nUin = _cUser->Uin();
   if (_cUser->IdString())
   {
     char *szRealId = 0;
@@ -108,7 +107,6 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
     m_sGroupName()
 {
   m_nGroupId = (unsigned short)(-1);
-  m_nUin = _cUser->Uin();
   if (_cUser->IdString())
   {
     char *szRealId = 0;
@@ -140,7 +138,6 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
     m_nGroupId(Id),
     m_sGroupName(name)
 {
-  m_nUin = 0;
   m_szId = 0;
   m_szAlias = 0;
   m_nPPID =0;
@@ -181,7 +178,6 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
     m_sGroupName()
 {
   m_nGroupId = (unsigned short)(-1);
-  m_nUin = 0;
   m_szId = 0;
   m_nPPID = 0;
   m_nOnlCount = 0;
@@ -863,8 +859,6 @@ void CUserView::timerEvent(QTimerEvent* e)
     }
 
     if(--carCounter == 0) {
-      carUin = 0;
-
       if (carId)
       {
         free(carId);
@@ -907,8 +901,6 @@ void CUserView::timerEvent(QTimerEvent* e)
     }
 
     if(!found || (--onlCounter == 0)) {
-      onlUin = 0;
-
       if (onlId)
       {
         free(onlId);
@@ -1131,13 +1123,6 @@ void CUserView::setShowHeader(bool isHeader)
   isHeader ? header()->show() : header()->hide();
 }
 
-
-unsigned long CUserView::MainWindowSelectedItemUin()
-{
-   CUserViewItem *i = (CUserViewItem *)currentItem();
-   if (i == NULL) return (0);
-   return i->ItemUin();
-}
 
 bool CUserView::MainWindowSelectedItemUser(char *&_szId, unsigned long &_nPPID)
 {
@@ -1531,17 +1516,6 @@ void CUserView::resizeEvent(QResizeEvent *e)
   }
 }
 
-void CUserView::AnimationAutoResponseCheck(unsigned long uin)
-{
-  if(carTimerId == 0) {
-    // no animation yet running, so start the timer
-    carTimerId = startTimer(FLASH_TIME);
-    carCounter = 5*1000/FLASH_TIME; // run about 5 seconds
-    carUin = uin;
-  }
-  // well, maybe we should move the animation to the other user
-}
-
 void CUserView::AnimationAutoResponseCheck(const char *szId, unsigned long nPPID)
 {
   if(carTimerId == 0) {
@@ -1552,27 +1526,6 @@ void CUserView::AnimationAutoResponseCheck(const char *szId, unsigned long nPPID
     carPPID = nPPID;
   }
   // well, maybe we should move the animation to the other user
-}
-
-void CUserView::AnimationOnline(unsigned long uin)
-{
-  if(onlTimerId == 0) {
-    onlTimerId = startTimer(FLASH_TIME);
-    // run about 5 seconds, make sure that that the
-    // actual "flashing" starts with a delay, because of the
-    // logon case.
-    onlCounter = ((5*1000/FLASH_TIME)+1)&(-2);
-    onlUin = uin;
-  }
-  else if((onlCounter & 1) == 0 && onlUin != uin)
-  {
-    // whoops, another user went online
-    // we just block here the blinking for the
-    // rest of the time
-    onlUin = 0;
-    // no need for a redraw, as the user is already shown
-    // correctly.
-  }
 }
 
 void CUserView::AnimationOnline(const char *szId, unsigned long nPPID)
