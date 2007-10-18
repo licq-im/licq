@@ -1771,6 +1771,9 @@ void CUserView::maybeTip(const QPoint& c)
     if (item->m_bCustomAR)
       s += "<br>" + tr("Custom Auto Response");
 
+    if (u->GetAwaitingAuth())
+      s += "<br>" + tr("Awaiting authorization");
+
     if (!u->StatusOffline() && u->ClientInfo() && *u->ClientInfo())
       s += "<br>" + codec->toUnicode(u->ClientInfo());
 
