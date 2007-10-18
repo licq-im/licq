@@ -762,7 +762,7 @@ to your ignore list?</source>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Списък с невидими потребители</translation>
+        <translation type="obsolete">Списък с невидими потребители</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -782,7 +782,7 @@ to your ignore list?</source>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Игнорирани потребители</translation>
+        <translation type="obsolete">Игнорирани потребители</translation>
     </message>
     <message>
         <source>&amp;More Info</source>
@@ -802,7 +802,7 @@ to your ignore list?</source>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Нови потребители</translation>
+        <translation type="obsolete">Нови потребители</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -946,7 +946,7 @@ from your contact list?</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Всички потребители</translation>
+        <translation type="obsolete">Всички потребители</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1002,14 +1002,6 @@ Double click - Set auto response</source>
     </message>
     <message>
         <source>Server Group</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Visible List</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1685,6 +1677,10 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

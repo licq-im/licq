@@ -4690,7 +4690,7 @@ Double click - Set auto response</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Усе карыстальнікі</translation>
+        <translation type="obsolete">Усе карыстальнікі</translation>
     </message>
     <message>
         <source>Server Group</source>
@@ -4698,23 +4698,23 @@ Double click - Set auto response</source>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Паведаміць аб з&apos;яўленьні</translation>
+        <translation type="obsolete">Паведаміць аб з&apos;яўленьні</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>У спісе бачных</translation>
+        <translation type="obsolete">У спісе бачных</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>У спісе нябачных</translation>
+        <translation type="obsolete">У спісе нябачных</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>У спісе ігнараваных</translation>
+        <translation type="obsolete">У спісе ігнараваных</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Новыя карыстальнікі</translation>
+        <translation type="obsolete">Новыя карыстальнікі</translation>
     </message>
     <message>
         <source>&amp;Online</source>
@@ -5746,6 +5746,10 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

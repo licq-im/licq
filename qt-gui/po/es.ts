@@ -739,7 +739,7 @@ Uso:  Licq [-h] [-d #] [-b configdir] [-I] [-p añadido] [-o fichero] [ -- &lt;a
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Aviso de Conexión</translation>
+        <translation type="obsolete">Aviso de Conexión</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -901,11 +901,11 @@ Para más detalles, mire en la Ventana de Red.</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Lista Invisible</translation>
+        <translation type="obsolete">Lista Invisible</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Lista Visible</translation>
+        <translation type="obsolete">Lista Visible</translation>
     </message>
     <message>
         <source>Send &amp;Chat Request</source>
@@ -917,7 +917,7 @@ Para más detalles, mire en la Ventana de Red.</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Lista de Ignorados</translation>
+        <translation type="obsolete">Lista de Ignorados</translation>
     </message>
     <message>
         <source>%1: %2
@@ -935,7 +935,7 @@ Para más detalles, mire en la Ventana de Red.</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Usuarios Nuevos</translation>
+        <translation type="obsolete">Usuarios Nuevos</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1079,7 +1079,7 @@ Doble Pulsación - Mostrar mensaje siguiente</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Todos</translation>
+        <translation type="obsolete">Todos</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1771,6 +1771,10 @@ Deberá iniciar el navegador y abrir la URL de forma manual.</translation>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

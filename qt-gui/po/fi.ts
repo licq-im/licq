@@ -694,7 +694,7 @@ Tuplaklikkaus - Automaattisen vastauksen asetus</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Kaikki</translation>
+        <translation type="obsolete">Kaikki</translation>
     </message>
     <message>
         <source>Server Group</source>
@@ -702,23 +702,23 @@ Tuplaklikkaus - Automaattisen vastauksen asetus</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Online-huomautus</translation>
+        <translation type="obsolete">Online-huomautus</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Näkyvissä-lista</translation>
+        <translation type="obsolete">Näkyvissä-lista</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Näkymättömissä-lista</translation>
+        <translation type="obsolete">Näkymättömissä-lista</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Huomiotta-lista</translation>
+        <translation type="obsolete">Huomiotta-lista</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Uudet</translation>
+        <translation type="obsolete">Uudet</translation>
     </message>
     <message>
         <source>Logon failed.
@@ -1803,6 +1803,10 @@ Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

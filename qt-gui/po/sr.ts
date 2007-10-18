@@ -1399,7 +1399,7 @@ osnovni direktorijum i onda registrujete novog korisnika.</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation type="unfinished">Na-vezi obaveštenje</translation>
+        <translation type="obsolete">Na-vezi obaveštenje</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -1618,11 +1618,11 @@ Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation type="unfinished">Lista Nevidljivosti</translation>
+        <translation type="obsolete">Lista Nevidljivosti</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation type="unfinished">Vidljiva Lista</translation>
+        <translation type="obsolete">Vidljiva Lista</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -1646,7 +1646,7 @@ Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation type="unfinished">Lista Ignorisanja</translation>
+        <translation type="obsolete">Lista Ignorisanja</translation>
     </message>
     <message>
         <source>%1: %2
@@ -1672,7 +1672,7 @@ Pogledajte mrežni prozor za detalje.</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation type="unfinished">Novi Korisnici</translation>
+        <translation type="obsolete">Novi Korisnici</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1836,7 +1836,7 @@ Dupli klik - Prikaz sledeće poruke</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation type="unfinished">Svi Korisnici</translation>
+        <translation type="obsolete">Svi Korisnici</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -2543,6 +2543,10 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

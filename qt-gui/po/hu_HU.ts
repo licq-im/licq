@@ -708,7 +708,7 @@ választhass és regisztrálj egy új Felhasználót.</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Csatlakozáskor értesít</translation>
+        <translation type="obsolete">Csatlakozáskor értesít</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -906,11 +906,11 @@ Nyisd meg a Hálózat Info ablakot a részletekért</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Láthatatlanság lista</translation>
+        <translation type="obsolete">Láthatatlanság lista</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Látók listája :))</translation>
+        <translation type="obsolete">Látók listája :))</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -934,7 +934,7 @@ Nyisd meg a Hálózat Info ablakot a részletekért</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Tiltás lista</translation>
+        <translation type="obsolete">Tiltás lista</translation>
     </message>
     <message>
         <source>%1: %2
@@ -952,7 +952,7 @@ Nyisd meg a Hálózat Info ablakot a részletekért</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Új Felhasználók</translation>
+        <translation type="obsolete">Új Felhasználók</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1142,7 +1142,7 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Összes felhasználó</translation>
+        <translation type="obsolete">Összes felhasználó</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1745,6 +1745,10 @@ Dupla klikk - Következő üzenet</translation>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -2233,6 +2233,10 @@ Doppelklick - Nächste Nachricht</translation>
         <source>ID: </source>
         <translation>ID: </translation>
     </message>
+    <message>
+        <source>Awaiting authorization</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CUtilityDlg</name>

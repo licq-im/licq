@@ -1539,6 +1539,10 @@ Du måste starta din webbläsare och öppna länken manuellt.</translation>
         <source>ID: </source>
         <translation>ID: </translation>
     </message>
+    <message>
+        <source>Awaiting authorization</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CUtilityDlg</name>

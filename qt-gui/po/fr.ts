@@ -752,7 +752,7 @@ répertoire de base et enregistrer alors un nouvel utilisateur.</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Signaler présence en ligne</translation>
+        <translation type="obsolete">Signaler présence en ligne</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -900,11 +900,11 @@ Voyez la fenêtre réseau pour les détails.</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Liste invisible</translation>
+        <translation type="obsolete">Liste invisible</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Liste visible</translation>
+        <translation type="obsolete">Liste visible</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -924,7 +924,7 @@ Voyez la fenêtre réseau pour les détails.</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Ignorer la liste</translation>
+        <translation type="obsolete">Ignorer la liste</translation>
     </message>
     <message>
         <source>&amp;Send Message</source>
@@ -1096,7 +1096,7 @@ Double clic - Voir message suivant</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Tous les utilisateurs</translation>
+        <translation type="obsolete">Tous les utilisateurs</translation>
     </message>
     <message>
         <source>From Contact List</source>
@@ -1148,10 +1148,6 @@ Double clic - Voir message suivant</translation>
     </message>
     <message>
         <source>No messages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New Users</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -1837,6 +1833,10 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -667,7 +667,7 @@ adresáře a poté se zaregistrujte jako nový uživatel.</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>&amp;Online upozornění</translation>
+        <translation type="obsolete">&amp;Online upozornění</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -852,11 +852,11 @@ Síťový záznam obsahuje detaily.</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>I&amp;nvisible seznam</translation>
+        <translation type="obsolete">I&amp;nvisible seznam</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Visi&amp;ble seznam</translation>
+        <translation type="obsolete">Visi&amp;ble seznam</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -880,7 +880,7 @@ Síťový záznam obsahuje detaily.</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>I&amp;gnore seznam</translation>
+        <translation type="obsolete">I&amp;gnore seznam</translation>
     </message>
     <message>
         <source>%1: %2
@@ -898,7 +898,7 @@ Síťový záznam obsahuje detaily.</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>New Users</translation>
+        <translation type="obsolete">New Users</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1050,7 +1050,7 @@ Dvojklik - ukázat další zprávu</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>All Users</translation>
+        <translation type="obsolete">All Users</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1611,6 +1611,10 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

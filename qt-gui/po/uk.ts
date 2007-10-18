@@ -1538,6 +1538,10 @@ You will need to start the browser and open the URL manually.</source>
         <source>ID: </source>
         <translation>ID: </translation>
     </message>
+    <message>
+        <source>Awaiting authorization</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>CUtilityDlg</name>

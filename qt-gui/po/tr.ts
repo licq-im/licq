@@ -751,7 +751,7 @@ yaratıp, başka bir kullanıcı da ekleyebilirsiniz.</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Bağlantı notu</translation>
+        <translation type="obsolete">Bağlantı notu</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -910,11 +910,11 @@ Detaylar için Ağ penceresine bakın.</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Görünmezler listesi</translation>
+        <translation type="obsolete">Görünmezler listesi</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Görebilir listesi</translation>
+        <translation type="obsolete">Görebilir listesi</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -938,7 +938,7 @@ Detaylar için Ağ penceresine bakın.</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Umursanmayanlar listesi</translation>
+        <translation type="obsolete">Umursanmayanlar listesi</translation>
     </message>
     <message>
         <source>&amp;More Info</source>
@@ -962,7 +962,7 @@ Detaylar için Ağ penceresine bakın.</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Yeni kişi</translation>
+        <translation type="obsolete">Yeni kişi</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1150,7 +1150,7 @@ emin misiniz?</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Tüm Kişi&apos;ler</translation>
+        <translation type="obsolete">Tüm Kişi&apos;ler</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1817,6 +1817,10 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

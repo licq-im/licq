@@ -706,7 +706,7 @@ diretório base e então registrar mais um usário.</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Notificação Online</translation>
+        <translation type="obsolete">Notificação Online</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -905,11 +905,11 @@ Veja a Janela de Rede para detalhes.</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Lista de Invisíveis</translation>
+        <translation type="obsolete">Lista de Invisíveis</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Lista Visível</translation>
+        <translation type="obsolete">Lista Visível</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -933,7 +933,7 @@ Veja a Janela de Rede para detalhes.</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Lista de Ignorados</translation>
+        <translation type="obsolete">Lista de Ignorados</translation>
     </message>
     <message>
         <source>%1: %2
@@ -951,7 +951,7 @@ Veja a Janela de Rede para detalhes.</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Novos Usuários</translation>
+        <translation type="obsolete">Novos Usuários</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1141,7 +1141,7 @@ Duplo clique - Mostrar próxima mensagem</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Todos os Usuários</translation>
+        <translation type="obsolete">Todos os Usuários</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1760,6 +1760,10 @@ Duplo clique - Mostrar próxima mensagem</translation>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

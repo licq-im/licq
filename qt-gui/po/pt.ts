@@ -749,7 +749,7 @@ See Network Window for details.</source>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Online Notify</translation>
+        <translation type="obsolete">Online Notify</translation>
     </message>
     <message>
         <source>%1 msg%2</source>
@@ -835,11 +835,11 @@ Verifique a NetWork Window para mais detalhes.</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Lista de Invisible</translation>
+        <translation type="obsolete">Lista de Invisible</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Lista Visível</translation>
+        <translation type="obsolete">Lista Visível</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -855,7 +855,7 @@ Verifique a NetWork Window para mais detalhes.</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Lista de Ignorados</translation>
+        <translation type="obsolete">Lista de Ignorados</translation>
     </message>
     <message>
         <source>&amp;Send Message</source>
@@ -1001,7 +1001,7 @@ e atualize seus dados pessoais.</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Todos</translation>
+        <translation type="obsolete">Todos</translation>
     </message>
     <message>
         <source>Send Authorization</source>
@@ -1063,7 +1063,7 @@ Double click - Set auto response</source>
     </message>
     <message>
         <source>New Users</source>
-        <translation type="unfinished">Novos Usr.</translation>
+        <translation type="obsolete">Novos Usr.</translation>
     </message>
     <message>
         <source>Are you sure you want to remove
@@ -1846,6 +1846,10 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

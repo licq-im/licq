@@ -662,7 +662,7 @@ base directory e registrare poi un nuovo utente.</translation>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>Attualmente in Linea</translation>
+        <translation type="obsolete">Attualmente in Linea</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -844,11 +844,11 @@ Controlla la finestra di rete per dettagli.</translation>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>Lista Invisibili</translation>
+        <translation type="obsolete">Lista Invisibili</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>Lista Visibili</translation>
+        <translation type="obsolete">Lista Visibili</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -872,7 +872,7 @@ Controlla la finestra di rete per dettagli.</translation>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>Lista Ignorati</translation>
+        <translation type="obsolete">Lista Ignorati</translation>
     </message>
     <message>
         <source>Warnings</source>
@@ -884,7 +884,7 @@ Controlla la finestra di rete per dettagli.</translation>
     </message>
     <message>
         <source>New Users</source>
-        <translation>Nuovi Utenti</translation>
+        <translation type="obsolete">Nuovi Utenti</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1070,7 +1070,7 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>All Users</source>
-        <translation>Tutti gli Utenti</translation>
+        <translation type="obsolete">Tutti gli Utenti</translation>
     </message>
     <message>
         <source>&amp;Security/Password Options</source>
@@ -1703,6 +1703,10 @@ Doppio click - Mostra prossimo messaggio</translation>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

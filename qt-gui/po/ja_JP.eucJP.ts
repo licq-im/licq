@@ -760,7 +760,7 @@ base directory and then register a new user.</source>
     </message>
     <message>
         <source>Online Notify</source>
-        <translation>オンライン通知</translation>
+        <translation type="obsolete">オンライン通知</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -970,11 +970,11 @@ See network window for details.</source>
     </message>
     <message>
         <source>Invisible List</source>
-        <translation>不可視リスト</translation>
+        <translation type="obsolete">不可視リスト</translation>
     </message>
     <message>
         <source>Visible List</source>
-        <translation>可視リスト</translation>
+        <translation type="obsolete">可視リスト</translation>
     </message>
     <message>
         <source>Registration failed.  See network window for details.</source>
@@ -998,7 +998,7 @@ See network window for details.</source>
     </message>
     <message>
         <source>Ignore List</source>
-        <translation>無視リスト</translation>
+        <translation type="obsolete">無視リスト</translation>
     </message>
     <message>
         <source>%1: %2
@@ -1024,7 +1024,7 @@ See network window for details.</source>
     </message>
     <message>
         <source>New Users</source>
-        <translation>新ユーザ</translation>
+        <translation type="obsolete">新ユーザ</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1192,7 +1192,7 @@ Double click - Show next message</source>
     </message>
     <message>
         <source>All Users</source>
-        <translation>全ユーザ</translation>
+        <translation type="obsolete">全ユーザ</translation>
     </message>
     <message>
         <source>S&amp;kin Browser...</source>
@@ -1809,6 +1809,10 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>ID: </source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Awaiting authorization</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
