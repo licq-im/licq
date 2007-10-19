@@ -1540,7 +1540,7 @@ You will need to start the browser and open the URL manually.</source>
     </message>
     <message>
         <source>Awaiting authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Очікуємо на авторизацію</translation>
     </message>
 </context>
 <context>
