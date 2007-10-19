@@ -2235,7 +2235,7 @@ Doppelklick - Nächste Nachricht</translation>
     </message>
     <message>
         <source>Awaiting authorization</source>
-        <translation type="unfinished"></translation>
+        <translation>Erwarte Autorisierung</translation>
     </message>
 </context>
 <context>
