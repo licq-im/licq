@@ -1,16 +1,16 @@
 #!/bin/bash
 #
 # Script to create a source tarball from Licq's svn repository.
-# 
-# Author: Erik Johansson <erik@ejohansson.se>
 # Latest version: http://svn.licq.org/svn/trunk/scripts/
-# 
-# Usage: ./create-licq-tarball.sh [tardir]
-#        [tardir] - optional directory to place tarball in;
-#                   defaults to current directory
+#
+# Copyright (c) 2007 Erik Johansson <erijo@licq.org>
+# Distributed under the terms of the GNU GPL version 2.
+#
 
-# Where to save the tarball(s) (default: first argument or current dir)
-TARDIR="${1:-.}"
+### DEFAULT SETTINGS ###
+
+# Where to save the tarball(s)
+TARDIR="."
 
 # What to name the tarball (REV is replaced with the svn revision)
 # Note: Don't add .tar.gz or .tar.bz2
@@ -18,14 +18,11 @@ TARNAME="licq-1.3.5~rREV"
 #TARNAME="licq-1.3.5-rc2"
 
 # Archives to create (1 = create; 0 = don't create)
-CREATE_GZ=1
+CREATE_GZ=0
 CREATE_BZ2=0
 
 # Sign archives using default GPG key (1 = sign; 0 = don't sign)
 SIGN=0
-
-# What to name the directory in the tarball (REV is replaced with the svn revision)
-DIRNAME="${TARNAME}"
 
 # What revision to export
 LICQREV="HEAD"
@@ -39,9 +36,68 @@ REPO="http://svn.licq.org/svn"
 
 ### END SETTINGS ###
 
-#------------------------------------------------------------------#
+# Prints the usage
+function usage()
+{
+    echo "Usage: $0 [-r rev] [-o dir] [-n name] [-g] [-b] [-s]"
+    echo "  -h, --help   This message"
+    echo "  -r rev       Create tarball from revision rev (default: ${LICQREV})"
+    echo "  -o dir       Save tarball in directory dir (default: ${TARDIR})"
+    echo "  -n name      Name the tarball name (default: ${TARNAME})"
+    echo "               REV is replaced with the svn revision"
+    echo "  -g, --gzip   Create a tar.gz archive"
+    echo "  -b, --bzip2  Create a tar.bz archive"
+    echo "  -s, --sign   Sign archive(s) with default GPG key"
+}
+
+if [ $# -eq 0 ]; then
+    echo "$0: Missing required argument (-g and/or -b)"
+    echo "Try \`$0 --help' for more information"
+    exit 2
+fi
+
+# Parse command line options
+args=$(getopt -n "$0" -o h,r:,o:,n:,g,b,s -l help -- $*)
+if [ $? -ne 0 ]; then
+    echo ""
+    usage
+    exit 1
+fi
+
+set -- $args
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help) usage; exit 0 ;;
+	-r) LICQREV=$(eval echo $2); shift ;;
+	-o) TARDIR=$(eval echo $2); shift ;;
+	-n) TARNAME=$(eval echo $2); shift ;;
+	-g|--gzip) CREATE_GZ=1 ;;
+	-b|--bzip2) CREATE_BZ2=1 ;;
+	-s|--sign) SIGN=1 ;;
+	--) ;;
+	*) echo "$0: unknown option '$1'"; exit 1 ;;
+    esac
+    shift
+done
+
+if [ $CREATE_GZ -eq 0 -a $CREATE_BZ2 -eq 0 ]; then
+    echo "$0: You must choose to create a gzip and/or bzip2 archive"
+    echo ""
+    usage
+    exit 1
+fi
+
+# Workdir
+TMPDIR=$(mktemp -d) || failed "mktemp -d"
+
+# Remove workdir
+function cleanup()
+{
+   echo "Removing ${TMPDIR}"
+   rm -rf "${TMPDIR}"
+}
+
 # Echos "$1 failed" or "failed" and then exits.
-#------------------------------------------------------------------#
 function failed()
 {
    if [ -z $1 ]; then
@@ -49,13 +105,13 @@ function failed()
    else
       echo "$1 failed"
    fi
+   cleanup
    exit 1
 }
 
 SVNREV=$(svn info -r"${LICQREV}" "${REPO}" | grep "^Revision:" | awk '{print $2}') || failed
 
-TMPDIR=$(mktemp -d) || failed "mktemp -d"
-DIRNAME="${DIRNAME//REV/$SVNREV}"
+DIRNAME="${TARNAME//REV/$SVNREV}"
 TARNAME="${TARNAME//REV/$SVNREV}"
 LICQDIR="${TMPDIR}/${DIRNAME}"
 
@@ -76,16 +132,11 @@ function svnexport()
 
 function makecvs()
 {
-   echo "Running make -f $1/Makefile.cvs"
+   echo -n "Running make -f $1/Makefile.cvs... "
    make -C "${LICQDIR}/$1" -f "${LICQDIR}/$1/Makefile.cvs" > /dev/null 2>&1 || failed
    rm -rf "${LICQDIR}/$1/autom4te.cache"
    rm -f "${LICQDIR}/$1/Makefile.cvs"
-}
-
-function cleanup()
-{
-   echo "Removing ${TMPDIR}"
-   rm -rf "${TMPDIR}"
+   echo "done"
 }
 
 test ${CREATE_GZ}  -ne 0 && exit_if_exists "${TARDIR}/${TARNAME}.tar.gz"
