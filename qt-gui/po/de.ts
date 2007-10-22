@@ -1,493 +1,6 @@
 <!DOCTYPE TS><TS>
 <context>
-    <name></name>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE-Voreinstellung</translation>
-    </message>
-    <message>
-        <source>none</source>
-        <translation type="obsolete">nichts</translation>
-    </message>
-</context>
-<context>
     <name>@default</name>
-    <message>
-        <source>OK</source>
-        <translation type="obsolete">Ok</translation>
-    </message>
-    <message>
-        <source>&amp;No</source>
-        <translation type="obsolete">&amp;Nein</translation>
-    </message>
-    <message>
-        <source>Alt</source>
-        <translation type="obsolete">Alt</translation>
-    </message>
-    <message>
-        <source>Cut</source>
-        <translation type="obsolete">Ausschneiden</translation>
-    </message>
-    <message>
-        <source>Dir</source>
-        <translation type="obsolete">Ordner</translation>
-    </message>
-    <message>
-        <source>&amp;Yes</source>
-        <translation type="obsolete">&amp;Ja</translation>
-    </message>
-    <message>
-        <source>Back</source>
-        <translation type="obsolete">Zurück</translation>
-    </message>
-    <message>
-        <source>Cu&amp;t</source>
-        <translation type="obsolete">&amp;Ausschneiden</translation>
-    </message>
-    <message>
-        <source>Date</source>
-        <translation type="obsolete">Datum</translation>
-    </message>
-    <message>
-        <source>Ctrl</source>
-        <translation type="obsolete">Strg</translation>
-    </message>
-    <message>
-        <source>File</source>
-        <translation type="obsolete">Datei</translation>
-    </message>
-    <message>
-        <source>Name</source>
-        <translation type="obsolete">Name</translation>
-    </message>
-    <message>
-        <source>Open</source>
-        <translation type="obsolete">Öffnen</translation>
-    </message>
-    <message>
-        <source>Save</source>
-        <translation type="obsolete">Speichern</translation>
-    </message>
-    <message>
-        <source>Size</source>
-        <translation type="obsolete">Größe</translation>
-    </message>
-    <message>
-        <source>Sort</source>
-        <translation type="obsolete">Sortieren</translation>
-    </message>
-    <message>
-        <source>Type</source>
-        <translation type="obsolete">Typ</translation>
-    </message>
-    <message>
-        <source>&amp;Copy</source>
-        <translation type="obsolete">&amp;Kopieren</translation>
-    </message>
-    <message>
-        <source>&amp;Font</source>
-        <translation type="obsolete">&amp;Schrift</translation>
-    </message>
-    <message>
-        <source>&amp;Help</source>
-        <translation type="obsolete">&amp;Hilfe</translation>
-    </message>
-    <message>
-        <source>&amp;Open</source>
-        <translation type="obsolete">&amp;Öffnen</translation>
-    </message>
-    <message>
-        <source>&amp;Red:</source>
-        <translation type="obsolete">&amp;Rot:</translation>
-    </message>
-    <message>
-        <source>&amp;Redo</source>
-        <translation type="obsolete">&amp;Wiederherstellen</translation>
-    </message>
-    <message>
-        <source>&amp;Sat:</source>
-        <translation type="obsolete">&amp;Sättigung:</translation>
-    </message>
-    <message>
-        <source>&amp;Save</source>
-        <translation type="obsolete">&amp;Speichern</translation>
-    </message>
-    <message>
-        <source>&amp;Size</source>
-        <translation type="obsolete">&amp;Größe</translation>
-    </message>
-    <message>
-        <source>&amp;Undo</source>
-        <translation type="obsolete">&amp;Rückgängig</translation>
-    </message>
-    <message>
-        <source>&amp;Val:</source>
-        <translation type="obsolete">&amp;Wert:</translation>
-    </message>
-    <message>
-        <source>Apply</source>
-        <translation type="obsolete">Übernehmen</translation>
-    </message>
-    <message>
-        <source>Clear</source>
-        <translation type="obsolete">Löschen</translation>
-    </message>
-    <message>
-        <source>Close</source>
-        <translation type="obsolete">Schließen</translation>
-    </message>
-    <message>
-        <source>Error</source>
-        <translation type="obsolete">Fehler</translation>
-    </message>
-    <message>
-        <source>Hu&amp;e:</source>
-        <translation type="obsolete">Farb&amp;ton:</translation>
-    </message>
-    <message>
-        <source>Could not open
-%1</source>
-        <translation type="obsolete">%1
-ließ sich nicht öffnen.</translation>
-    </message>
-    <message>
-        <source>Open </source>
-        <translation type="obsolete">Öffnen </translation>
-    </message>
-    <message>
-        <source>Shift</source>
-        <translation type="obsolete">Umschalt</translation>
-    </message>
-    <message>
-        <source>What&apos;s This?</source>
-        <translation type="obsolete">Was ist das?</translation>
-    </message>
-    <message>
-        <source>Could not remove file or directory
-%1</source>
-        <translation type="obsolete">Ordner oder Datei konnte nicht entfernt werden:
-%1</translation>
-    </message>
-    <message>
-        <source>What&apos;s this?</source>
-        <translation type="obsolete">Was ist das?</translation>
-    </message>
-    <message>
-        <source>Write: %1</source>
-        <translation type="obsolete">Schreiben: %1</translation>
-    </message>
-    <message>
-        <source>&amp;Define Custom Colors &gt;&gt;</source>
-        <translation type="obsolete">Eigene Farben &amp;festlegen &gt;&gt;</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Size</source>
-        <translation type="obsolete">Nach &amp;Größe sortieren</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Date</source>
-        <translation type="obsolete">Nach &amp;Datum sortieren</translation>
-    </message>
-    <message>
-        <source>Sort by &amp;Name</source>
-        <translation type="obsolete">Nach &amp;Name sortieren</translation>
-    </message>
-    <message>
-        <source>Could not create directory
-%1</source>
-        <translation type="obsolete">Ordner ließ sich nicht erzeugen:
-%1</translation>
-    </message>
-    <message>
-        <source>New Folder 1</source>
-        <translation type="obsolete">Neuer Ordner 1</translation>
-    </message>
-    <message>
-        <source>the directory</source>
-        <translation type="obsolete">der Ordner</translation>
-    </message>
-    <message>
-        <source>File &amp;type:</source>
-        <translation type="obsolete">Datei&amp;typ:</translation>
-    </message>
-    <message>
-        <source>File &amp;name:</source>
-        <translation type="obsolete">Datei&amp;name:</translation>
-    </message>
-    <message>
-        <source>&amp;Color</source>
-        <translation type="obsolete">&amp;Farbe</translation>
-    </message>
-    <message>
-        <source>&amp;Paste</source>
-        <translation type="obsolete">&amp;Einfügen</translation>
-    </message>
-    <message>
-        <source>Delete %1</source>
-        <translation type="obsolete">%1 löschen</translation>
-    </message>
-    <message>
-        <source>Paste special...</source>
-        <translation type="obsolete">Einfügen spezial...</translation>
-    </message>
-    <message>
-        <source>Select color</source>
-        <translation type="obsolete">Farbe auswählen</translation>
-    </message>
-    <message>
-        <source>&amp;Add to Custom Colors</source>
-        <translation type="obsolete">Zu eigenen Farben &amp;hinzufügen</translation>
-    </message>
-    <message>
-        <source>Bl&amp;ue:</source>
-        <translation type="obsolete">&amp;Blau:</translation>
-    </message>
-    <message>
-        <source>QT_LAYOUT_DIRECTION</source>
-        <translation type="obsolete">LTR</translation>
-    </message>
-    <message>
-        <source>Cancel</source>
-        <translation type="obsolete">Abbrechen</translation>
-    </message>
-    <message>
-        <source>R&amp;eload</source>
-        <translation type="obsolete">A&amp;ktualisieren</translation>
-    </message>
-    <message>
-        <source>New Folder</source>
-        <translation type="obsolete">Neuer Ordner</translation>
-    </message>
-    <message>
-        <source>Sample</source>
-        <translation type="obsolete">Beispiel</translation>
-    </message>
-    <message>
-        <source>&amp;Unsorted</source>
-        <translation type="obsolete">&amp;Unsortiert</translation>
-    </message>
-    <message>
-        <source>Look &amp;in:</source>
-        <translation type="obsolete">Suchen &amp;in:</translation>
-    </message>
-    <message>
-        <source>Preview File Contents</source>
-        <translation type="obsolete">Vorschau für Dateiinhalt</translation>
-    </message>
-    <message>
-        <source>New Folder %1</source>
-        <translation type="obsolete">Neuer Ordner %1</translation>
-    </message>
-    <message>
-        <source>Open URL</source>
-        <translation type="obsolete">URL öffnen</translation>
-    </message>
-    <message>
-        <source>Read-write</source>
-        <translation type="obsolete">Lesen-Schreiben</translation>
-    </message>
-    <message>
-        <source>Read-only</source>
-        <translation type="obsolete">Nur-Lesen</translation>
-    </message>
-    <message>
-        <source>Font st&amp;yle</source>
-        <translation type="obsolete">Schrift&amp;art</translation>
-    </message>
-    <message>
-        <source>Copy or Move a File</source>
-        <translation type="obsolete">Kopieren oder Verschieben einer Datei</translation>
-    </message>
-    <message>
-        <source>&lt;qt&gt;Are you sure you wish to delete %1 &quot;%2&quot;?&lt;/qt&gt;</source>
-        <translation type="obsolete">&lt;qt&gt;Soll %1 &quot;%2&quot; wirklich gelöscht werden?&lt;/qt&gt;</translation>
-    </message>
-    <message>
-        <source>Could not read directory
-%1</source>
-        <translation type="obsolete">Ordner konnte nicht eingelesen werden:
-%1</translation>
-    </message>
-    <message>
-        <source>Find Directory</source>
-        <translation type="obsolete">Ordner suchen</translation>
-    </message>
-    <message>
-        <source>Attributes</source>
-        <translation type="obsolete">Attribute</translation>
-    </message>
-    <message>
-        <source>Show &amp;hidden files</source>
-        <translation type="obsolete">&amp;Versteckte Dateien anzeigen</translation>
-    </message>
-    <message>
-        <source>Save As</source>
-        <translation type="obsolete">Speichern unter</translation>
-    </message>
-    <message>
-        <source>Scr&amp;ipt</source>
-        <translation type="obsolete">S&amp;kript</translation>
-    </message>
-    <message>
-        <source>Inaccessible</source>
-        <translation type="obsolete">nicht zugreifbar</translation>
-    </message>
-    <message>
-        <source>%1
-File not found.
-Check path and filename.</source>
-        <translation type="obsolete">%1
-Datei nicht gefunden.
-Bitte Pfad und Dateiname prüfen.</translation>
-    </message>
-    <message>
-        <source>Select Font</source>
-        <translation type="obsolete">Schrift wählen</translation>
-    </message>
-    <message>
-        <source>List View</source>
-        <translation type="obsolete">Listenansicht</translation>
-    </message>
-    <message>
-        <source>Special</source>
-        <translation type="obsolete">Spezialdatei</translation>
-    </message>
-    <message>
-        <source>Write-only</source>
-        <translation type="obsolete">Nur-Schreiben</translation>
-    </message>
-    <message>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Ab&amp;brechen</translation>
-    </message>
-    <message>
-        <source>the symlink</source>
-        <translation type="obsolete">der Symbolische Link</translation>
-    </message>
-    <message>
-        <source>&amp;Delete</source>
-        <translation type="obsolete">&amp;Löschen</translation>
-    </message>
-    <message>
-        <source>&amp;Underline</source>
-        <translation type="obsolete">&amp;Unterstrichen</translation>
-    </message>
-    <message>
-        <source>&amp;Finish</source>
-        <translation type="obsolete">&amp;Fertigstellen</translation>
-    </message>
-    <message>
-        <source>&amp;Green:</source>
-        <translation type="obsolete">&amp;Grün:</translation>
-    </message>
-    <message>
-        <source>All Files (*)</source>
-        <translation type="obsolete">Alle Dateien (*)</translation>
-    </message>
-    <message>
-        <source>Directories</source>
-        <translation type="obsolete">Ordner</translation>
-    </message>
-    <message>
-        <source>Symlink to Special</source>
-        <translation type="obsolete">Symbolischer Link auf Spezialdatei</translation>
-    </message>
-    <message>
-        <source>Select a Directory</source>
-        <translation type="obsolete">Ordner wählen</translation>
-    </message>
-    <message>
-        <source>&amp;Next &gt;</source>
-        <translation type="obsolete">&amp;Weiter &gt;</translation>
-    </message>
-    <message>
-        <source>All Files (*.*)</source>
-        <translation type="obsolete">Alle Dateien (*.*)</translation>
-    </message>
-    <message>
-        <source>Read: %1</source>
-        <translation type="obsolete">Lesen: %1</translation>
-    </message>
-    <message>
-        <source>&amp;Rename</source>
-        <translation type="obsolete">&amp;Umbenennen</translation>
-    </message>
-    <message>
-        <source>Could not rename
-%1
-to
-%2</source>
-        <translation type="obsolete">Umbenennen fehlgeschlagen von
-%1
-zu
-%2</translation>
-    </message>
-    <message>
-        <source>Select All</source>
-        <translation type="obsolete">Alles auswählen</translation>
-    </message>
-    <message>
-        <source>Directory:</source>
-        <translation type="obsolete">Ordner:</translation>
-    </message>
-    <message>
-        <source>Effects</source>
-        <translation type="obsolete">Effekte</translation>
-    </message>
-    <message>
-        <source>Stri&amp;keout</source>
-        <translation type="obsolete">&amp;Durchgestrichen</translation>
-    </message>
-    <message>
-        <source>&amp;Basic colors</source>
-        <translation type="obsolete">Gr&amp;undfarben</translation>
-    </message>
-    <message>
-        <source>&amp;Custom colors</source>
-        <translation type="obsolete">&amp;Eigene Farben</translation>
-    </message>
-    <message>
-        <source>Could not write
-%1</source>
-        <translation type="obsolete">%1
-ließ sich nicht schreiben</translation>
-    </message>
-    <message>
-        <source>A&amp;lpha channel:</source>
-        <translation type="obsolete">A&amp;lpha-Kanal:</translation>
-    </message>
-    <message>
-        <source>One directory up</source>
-        <translation type="obsolete">Ordner aufwärts</translation>
-    </message>
-    <message>
-        <source>Preview File Info</source>
-        <translation type="obsolete">Vorschau für Dateiinfo</translation>
-    </message>
-    <message>
-        <source>&lt; &amp;Back</source>
-        <translation type="obsolete">&lt; &amp;Zurück</translation>
-    </message>
-    <message>
-        <source>the file</source>
-        <translation type="obsolete">die Datei</translation>
-    </message>
-    <message>
-        <source>Create New Folder</source>
-        <translation type="obsolete">Neuen Ordner erstellen</translation>
-    </message>
-    <message>
-        <source>Symlink to File</source>
-        <translation type="obsolete">Symbolischer Link auf Datei</translation>
-    </message>
-    <message>
-        <source>Symlink to Directory</source>
-        <translation type="obsolete">Symbolischer Link auf Ordner</translation>
-    </message>
-    <message>
-        <source>Detail View</source>
-        <translation type="obsolete">Detailansicht</translation>
-    </message>
     <message>
         <source>KDE default</source>
         <translation>KDE-Voreinstellung</translation>
@@ -945,10 +458,6 @@ Siehe Netzwerkfenster für Details.</translation>
 <context>
     <name>CMMSendDlg</name>
     <message>
-        <source>none</source>
-        <translation type="obsolete">keiner</translation>
-    </message>
-    <message>
         <source>Sending mass message to %1...</source>
         <translation>Massen-Nachricht senden an %1...</translation>
     </message>
@@ -975,10 +484,6 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <source>&amp;Cancel</source>
         <translation>Ab&amp;brechen</translation>
-    </message>
-    <message>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE-Voreinstellung</translation>
     </message>
     <message>
         <source>Sending mass list to %1...</source>
@@ -1087,10 +592,6 @@ Siehe Netzwerkfenster für Details.</translation>
         <translation>&amp;Zufällige Chat-Gruppe</translation>
     </message>
     <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;Benutzername (Alias)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;E-Mail-Adresse&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;Vorname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;Telefonnummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;IP-Adresse&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;Nachname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;Anzahl der wartenden Nachrichten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;Vollständiger Name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;Letztes Mal online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;Online seit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;Benutzer-Port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;Vollständiger Status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;Kurzer Status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;Homepage&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq kann den Browser nicht starten um die URL zu öffnen
@@ -1171,10 +672,6 @@ Sie müssen den Browser selbst starten und die URL in die Adressleiste kopieren.
     <message>
         <source>(Error! No owner set)</source>
         <translation>(Fehler! Kein Eigentümer eingerichtet)</translation>
-    </message>
-    <message>
-        <source>Online Notify</source>
-        <translation type="obsolete">Online-Benachrichtigung</translation>
     </message>
     <message>
         <source>Set &amp;Auto Response...</source>
@@ -1359,12 +856,6 @@ wirklich zur Ignorieren-Gruppe hinzugefügt werden?</translation>
         <translation>Alle &amp;Benutzer aktualisieren</translation>
     </message>
     <message>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:
-</source>
-        <translation type="obsolete">&lt;h2&gt;Tipps für die Benutzung&lt;br&gt;des Licq Qt-GUI-Plugins&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Sie können Ihren Status durch einen Klick mit der rechten Maustaste auf die Status-Anzeige ändern.&lt;/li&gt;&lt;li&gt;Durch einen Doppelklick auf die Status-Anzeige können Sie Ihre Auto-Antwort ändern.&lt;/li&gt;&lt;li&gt;Systemnachrichten sehen Sie durch einen Doppelklick auf das Info-Feld.&lt;/li&gt;&lt;li&gt;Wechseln Sie die angezeigte Benutzergruppe durch einen Rechtsklick auf das Info-Feld.&lt;/li&gt;&lt;li&gt;Nutzen Sie die folgenden Tastenkürzel in der Kontaktliste:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Strg + M:&lt;/tt&gt; Miniaturansicht ein-/ausschalten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + O:&lt;/tt&gt; Offline-Benutzer anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + X:&lt;/tt&gt; Beenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + H:&lt;/tt&gt; Hauptfenster verstecken&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + I:&lt;/tt&gt; Nächste Nachricht anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + V:&lt;/tt&gt; Nachricht anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + S:&lt;/tt&gt; Nachricht senden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + U:&lt;/tt&gt; URL senden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + C:&lt;/tt&gt; Chatanfrage senden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + F:&lt;/tt&gt; Datei senden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + A:&lt;/tt&gt; Auto-Antwort lesen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + P:&lt;/tt&gt; Alle Nachrichten automatisch öffnen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + L:&lt;/tt&gt; Fenster auffrischen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Entf:&lt;/tt&gt; Den Benutzer aus der aktuellen Gruppe löschen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg + Entf:&lt;/tt&gt; Den Benutzer aus der Kontaktliste löschen&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Halten Sie im Funktions-Fenster die Strg-Taste gedrückt während Sie auf &quot;Schließen&quot; klicken, um den Benutzer von der Kontaktliste zu entfernen.&lt;/li&gt;&lt;li&gt;In den meisten Text-Feldern können Sie Strg + Eingabe drücken, um &quot;Ok&quot; oder &quot;Annehmen&quot; auszuwählen, zum Beispiel beim Senden einer Nachricht.&lt;/li&gt;&lt;li&gt;Hier ist die komplette Liste der %-Platzhalter, die unter &lt;b&gt;Ereignisse&lt;/b&gt; im Optionen-Menü,   &lt;b&gt;Auto-Antwort&lt;/b&gt; und &lt;b&gt;Hilfsmittel&lt;/b&gt; benutzt werden können:
-</translation>
-    </message>
-    <message>
         <source>&amp;Redraw User Window</source>
         <translation>&amp;Hauptfenster auffrischen</translation>
     </message>
@@ -1389,14 +880,6 @@ Siehe Netzwerkfenster für Details.</translation>
         <translation>Bei &apos;Abwesenheit&apos; akzeptieren</translation>
     </message>
     <message>
-        <source>Invisible List</source>
-        <translation type="obsolete">Unsichtbar</translation>
-    </message>
-    <message>
-        <source>Visible List</source>
-        <translation type="obsolete">Sichtbar</translation>
-    </message>
-    <message>
         <source>Send &amp;Chat Request</source>
         <translation>&amp;Chatanfrage senden</translation>
     </message>
@@ -1411,10 +894,6 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <source>%1 message%2</source>
         <translation>%1 Nachricht%2</translation>
-    </message>
-    <message>
-        <source>Ignore List</source>
-        <translation type="obsolete">Ignorieren</translation>
     </message>
     <message>
         <source>%1: %2
@@ -1437,10 +916,6 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <source>Use GPG Encryption</source>
         <translation>GPG-Verschlüsselung &amp;aktivieren</translation>
-    </message>
-    <message>
-        <source>New Users</source>
-        <translation type="obsolete">Neue Benutzer</translation>
     </message>
     <message>
         <source>&amp;Network Window</source>
@@ -1635,10 +1110,6 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>Gruppen &amp;bearbeiten</translation>
     </message>
     <message>
-        <source>All Users</source>
-        <translation type="obsolete">Alle Benutzer</translation>
-    </message>
-    <message>
         <source>Don&apos;t Show</source>
         <translation>Nicht zeigen</translation>
     </message>
@@ -1683,16 +1154,12 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>Sollen Ihre Statistiken wirklich zurückgesetzt werden?</translation>
     </message>
     <message>
-        <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
-        <translation type="obsolete">&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;Alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;Emailadresse&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;Vorname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;Telefonnummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;IP&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;Nachname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;Ortszeit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;Anzahl der wartenden Nachrichten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;Kompletter Name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;Zuletzt online gesehen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;Online seit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;Port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;Kompletter Status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;Abgekürzter Status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;Icq-Nummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;Internetseite&lt;/li&gt;&lt;/ul&gt;</translation>
-    </message>
-    <message>
         <source>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;user alias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;first name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;phone number&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;user ip&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;last name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;local time&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# pending messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# pending messages (if any)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;full name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;last seen online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;online since&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;user port&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;full status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;abbreviated status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;uin&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;webpage&lt;/li&gt;&lt;/ul&gt;</source>
         <translation>&lt;ul&gt;&lt;li&gt;&lt;tt&gt;%a - &lt;/tt&gt;Benutzeralias&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%e - &lt;/tt&gt;Email&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%f - &lt;/tt&gt;Vorname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%h - &lt;/tt&gt;Telefonnummer&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%i - &lt;/tt&gt;Benutzer IP&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%l - &lt;/tt&gt;Nachname&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%L - &lt;/tt&gt;Ortszeit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%m - &lt;/tt&gt;# wartende Nachrichten&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%M - &lt;/tt&gt;# wartende Nachrichten (wenn vorhanden)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%n - &lt;/tt&gt;Voller Name&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%o - &lt;/tt&gt;Letztes mal Online&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%O - &lt;/tt&gt;Online seit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%p - &lt;/tt&gt;Benutzerport&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%s - &lt;/tt&gt;Voller Status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%S - &lt;/tt&gt;Abgekürzter Status&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%u - &lt;/tt&gt;UIN&lt;/li&gt;&lt;li&gt;&lt;tt&gt;%w - &lt;/tt&gt;Webseite&lt;/li&gt;&lt;/ul&gt;</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="unfinished"></translation>
+        <translation>&lt;h2&gt;Hinweise für die Benutzung&lt;br&gt;des Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Änderung des Status durch Rechtsklick auf das Status-Label.&lt;/li&gt;&lt;li&gt;Änderung der Autoantwort durch Doppelklick auf das Status-Label.&lt;/li&gt;&lt;li&gt;Anzeigen von Nachrichten durch Doppelklick auf das Nachrichten-Label.&lt;/li&gt;&lt;li&gt;Gruppe wechseln durch Rechtsklick auf Nachrichten-Label.&lt;/li&gt;&lt;li&gt;Folgende Tastenkürzel sind in der Kontaktliste aktiv:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Strg-M : &lt;/tt&gt;Mini-Modus&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-O : &lt;/tt&gt;Offline-Benutzer anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-X : &lt;/tt&gt;Beenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-H : &lt;/tt&gt;Hauptfenster verstecken&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-I : &lt;/tt&gt;Zeige nächste Nachricht an&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-V : &lt;/tt&gt;Zeige Nachricht an&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-S : &lt;/tt&gt;Sende Nachricht&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-U : &lt;/tt&gt;Sende URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-C : &lt;/tt&gt;Sende Chat-Anfrage&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-F : &lt;/tt&gt;Sende Datei&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-A : &lt;/tt&gt;Überprüfe Auto-Antwort&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-P : &lt;/tt&gt;Alle Nachrichten anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-L : &lt;/tt&gt;Benutzerfenster neu zeichnen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Entf : &lt;/tt&gt;Benutzer aus aktueller Gruppe löschen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-Entf : &lt;/tt&gt;Lösche Benutzer aus Kontaktliste&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Strg halten während des Klickens festhalten um   den Benutzer von der Kontaktliste zu entfernen.&lt;/li&gt;&lt;li&gt;Strg-Enter selektiert in den meisten Textfeldern &quot;Ok&quot; oder &quot;Anwenden&quot;.   Zum Beispiel im Chatfenster.&lt;/li&gt;&lt;li&gt;Hier ist die komplette Liste von Benutzeroptionen für &lt;b&gt;OnEvent&lt;/b&gt;,    &lt;b&gt;Auto-Antworten&lt;/b&gt; und &lt;b&gt;Werkzeuge&lt;/b&gt; in den Benutzerfunktionen:</translation>
     </message>
 </context>
 <context>
@@ -1946,10 +1413,6 @@ Doppelklick - Nächste Nachricht</translation>
         <translation> Tag</translation>
     </message>
     <message>
-        <source>Thai</source>
-        <translation type="obsolete">Thailändisch</translation>
-    </message>
-    <message>
         <source> days</source>
         <translation> Tage</translation>
     </message>
@@ -1962,40 +1425,8 @@ Doppelklick - Nächste Nachricht</translation>
         <translation> Woche</translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;nobr&gt;ID: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;ID: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Ip: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;IP: </translation>
-    </message>
-    <message>
-        <source>Greek</source>
-        <translation type="obsolete">Grieschisch</translation>
-    </message>
-    <message>
         <source>Not In List</source>
         <translation>Nicht in der Liste</translation>
-    </message>
-    <message>
-        <source>Tamil</source>
-        <translation type="obsolete">Tamil</translation>
-    </message>
-    <message>
-        <source>Cyrillic</source>
-        <translation type="obsolete">Kyrillisch</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Idle: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Untätig: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;u&gt;Auto Response:&lt;/u&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;u&gt;Auto-Antwort:&lt;/u&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;</translation>
     </message>
     <message>
         <source> hours</source>
@@ -2006,32 +1437,12 @@ Doppelklick - Nächste Nachricht</translation>
         <translation> Wochen</translation>
     </message>
     <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Besetzt</translation>
-    </message>
-    <message>
         <source> minutes</source>
         <translation> Minuten</translation>
     </message>
     <message>
         <source>0 minutes</source>
         <translation>0 Minuten</translation>
-    </message>
-    <message>
-        <source>Baltic</source>
-        <translation type="obsolete">Baltisch</translation>
-    </message>
-    <message>
-        <source>Arabic</source>
-        <translation type="obsolete">Arabisch</translation>
-    </message>
-    <message>
-        <source>Hebrew</source>
-        <translation type="obsolete">Hebräisch</translation>
-    </message>
-    <message>
-        <source>Korean</source>
-        <translation type="obsolete">Koreanisch</translation>
     </message>
     <message>
         <source>Online</source>
@@ -2042,116 +1453,12 @@ Doppelklick - Nächste Nachricht</translation>
         <translation>Offline</translation>
     </message>
     <message>
-        <source>Western European</source>
-        <translation type="obsolete">Westeuropäisch</translation>
-    </message>
-    <message>
-        <source>Esperanto</source>
-        <translation type="obsolete">Spanisch</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;ICQphone:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;ICQphone:&amp;nbsp;Verf&amp;uuml;gbar</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;C: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Mobil: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;F: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Fax: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;E: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;E-Mail: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;P: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Fon: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;O: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Online: </translation>
-    </message>
-    <message>
-        <source>Central European</source>
-        <translation type="obsolete">Zentraleuropäisch</translation>
-    </message>
-    <message>
         <source> minute</source>
         <translation> Minute</translation>
     </message>
     <message>
-        <source>&lt;br&gt;&lt;b&gt;Birthday&amp;nbsp;Today!&lt;/b&gt;</source>
-        <translation type="obsolete">&lt;br&gt;&lt;b&gt;Heute&amp;nbsp;Geburtstag!&lt;/b&gt;</translation>
-    </message>
-    <message>
-        <source>Japanese</source>
-        <translation type="obsolete">Japanisch</translation>
-    </message>
-    <message>
-        <source>Ukrainian</source>
-        <translation type="obsolete">Ukrainisch</translation>
-    </message>
-    <message>
         <source>%1 Floaty (%2)</source>
         <translation>%1 schwebend (%2)</translation>
-    </message>
-    <message>
-        <source>Chinese</source>
-        <translation type="obsolete">Chinesisch</translation>
-    </message>
-    <message>
-        <source>Unicode-16</source>
-        <translation type="obsolete">Unicode-16</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Custom&amp;nbsp;Auto&amp;nbsp;Response</source>
-        <translation type="obsolete">&lt;br&gt;Spezielle&amp;nbsp;Auto-Antwort</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Secure&amp;nbsp;connection</source>
-        <translation type="obsolete">&lt;br&gt;Verschlüsselte&amp;nbsp;Verbindung</translation>
-    </message>
-    <message>
-        <source>Turkish</source>
-        <translation type="obsolete">Türkisch</translation>
-    </message>
-    <message>
-        <source>Unicode</source>
-        <translation type="obsolete">Unicode</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;File&amp;nbsp;Server:&amp;nbsp;Enabled</source>
-        <translation type="obsolete">&lt;br&gt;Datei-Server:&amp;nbsp;Aktiviert</translation>
-    </message>
-    <message>
-        <source>Chinese Traditional</source>
-        <translation type="obsolete">Chinesisch traditionell</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Available</source>
-        <translation type="obsolete">&lt;br&gt;&amp;quot;Telefon&amp;nbsp;folgen&amp;quot;:&amp;nbsp;verf&amp;uuml;gbar</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Typing&amp;nbsp;a&amp;nbsp;message</source>
-        <translation type="obsolete">&lt;br&gt;Schreibt&amp;nbsp;gerade&amp;nbsp;eine&amp;nbsp;Nachricht</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;Phone&amp;nbsp;&amp;quot;Follow&amp;nbsp;Me&amp;quot;:&amp;nbsp;Busy</source>
-        <translation type="obsolete">&lt;br&gt;&amp;quot;Telefon&amp;nbsp;folgen&amp;quot;:&amp;nbsp;Besetzt</translation>
-    </message>
-    <message>
-        <source>&lt;/nobr&gt;</source>
-        <translation type="obsolete">&lt;/nobr&gt;</translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Logged In: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Angemeldet: </translation>
-    </message>
-    <message>
-        <source>&lt;br&gt;&lt;nobr&gt;Local time: </source>
-        <translation type="obsolete">&lt;br&gt;&lt;nobr&gt;Ortszeit: </translation>
     </message>
     <message>
         <source>Birthday Today!</source>
@@ -2645,10 +1952,6 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>Shift Down</source>
         <translation>Nach unten</translation>
-    </message>
-    <message>
-        <source>All Users</source>
-        <translation type="obsolete">Alle Benutzer</translation>
     </message>
     <message>
         <source>Licq - Edit Groups</source>
@@ -3395,10 +2698,6 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
         <translation>Datumsformatierung:</translation>
     </message>
     <message>
-        <source>Custom Date Format</source>
-        <translation type="obsolete">Eigene Datumsformatierung</translation>
-    </message>
-    <message>
         <source>Accept Modes</source>
         <translation>Per-Status-Einstellungen für Ereignisse</translation>
     </message>
@@ -3828,14 +3127,6 @@ Benutzer immer anzeigen</translation>
         <translation>Aktiviert bei Status: &apos;Beschäftigt&apos;</translation>
     </message>
     <message>
-        <source>The format string used to define what will appear in each column.
-The following parameters can be used:
-</source>
-        <translation type="obsolete">Der Format-String, der bestimmt, was in der Spalte angezeigt wird.
-Folgende Platzhalter können verwendet werden:
-</translation>
-    </message>
-    <message>
         <source>Parameter for received system messages</source>
         <translation>Parameter für empfangene Systemnachrichten</translation>
     </message>
@@ -4214,58 +3505,6 @@ Bei einer Änderung ist ein Neustart erforderlich!
         <translation>Name</translation>
     </message>
     <message>
-        <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;
-&lt;table&gt;
-&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second whithout a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second whith a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the milliseconds without leading zeroes (0..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the milliseconds with leading zeroes (000..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;</source>
-        <translation type="obsolete">&lt;p&gt;Verfügbare Variablen für die benutzerdefinierte Datumsformatierung.&lt;/p&gt;
-&lt;table&gt;
-&lt;tr&gt;&lt;th&gt;Ausdruck&lt;/th&gt;&lt;th&gt;Ergebnis&lt;/th&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;der Tag als Zahl ohne führende Null (1-31)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;der Tag als Zahl mit führender Null (01-31)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;die lokalisierte Abkürzung des Tages (z.B. &apos;Mon&apos;..&apos;Son&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lokalisierte Tagesname (z.B. &apos;Montag&apos;..&apos;Sonntag&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;der Monat als Zahl ohne führende Null (1-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;der Monat als Zahl mit führender Null (01-12)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;die lokalisierte Abkürzung des Monats (z.B. &apos;Jan&apos;..&apos;Dez&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;der lokalisierte Monatsname (z.B. &apos;Januar&apos;..&apos;Dezember&apos;)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;das Jahr als zweistellige Zahl (00-99)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;das Jahr als vierstellige Zahl (1752-8000)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;die Stunde ohne führende Null (0..23 oder 1..12 falls AM/PM-Anzeige)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;die Stunde mit führender Null (00..23 oder 01..12 falls AM/PM-Anzeige)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;die Minute ohne führende Null (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;die Minute mit führender Null (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;die Sekunde ohne führende Null (0..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;die Sekunde mit führender Null (00..59)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;die Millisekunde ohne führende Nullen (0..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;die Milliesekunden mit führenden Nullen (000..999)&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;benutze AM/PM-Anzeige. AP wird entweder durch &apos;AM&apos; oder &apos;PM&apos; ersetzt&lt;/td&gt;&lt;/tr&gt;
-&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;benutze am/pm-Anzeige. ap wird entweder durch &apos;am&apos; oder &apos;pm&apos; ersetzt&lt;/td&gt;&lt;/tr&gt;
-&lt;/table&gt;</translation>
-    </message>
-    <message>
         <source>Picture</source>
         <translation>Bild</translation>
     </message>
@@ -4575,20 +3814,8 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
 <context>
     <name>QMessageBox</name>
     <message>
-        <source>Licq Error</source>
-        <translation type="obsolete">Licq Fehler</translation>
-    </message>
-    <message>
-        <source>Licq Warning</source>
-        <translation type="obsolete">Licq Warnung</translation>
-    </message>
-    <message>
         <source>Licq Question</source>
         <translation>Licq Frage</translation>
-    </message>
-    <message>
-        <source>Licq Information</source>
-        <translation type="obsolete">Licq Information</translation>
     </message>
     <message>
         <source>Yes</source>
@@ -5169,10 +4396,6 @@ Erweiterte-Symbole-Paket &apos;%2&apos; wurde daher deaktiviert.</translation>
         <translation>S&amp;kins:</translation>
     </message>
     <message>
-        <source>E&amp;moticons</source>
-        <translation type="obsolete">E&amp;moticons</translation>
-    </message>
-    <message>
         <source>Use this combo box to select one of the available icon sets</source>
         <translation>Benutzen Sie diese Auswahlbox, um aus den verfügbaren Symbolen zu wählen.</translation>
     </message>
@@ -5588,10 +4811,6 @@ ICQ Network to retrieve your settings.</source>
         <translation>Mobiltelefon:</translation>
     </message>
     <message>
-        <source>%1 to %2</source>
-        <translation type="obsolete">%1 an %2</translation>
-    </message>
-    <message>
         <source>EMail 1:</source>
         <translation>Email 1:</translation>
     </message>
@@ -5666,10 +4885,6 @@ ICQ Network to retrieve your settings.</source>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 out of %4 matches</source>
         <translation>[&lt;font color=&quot;%1&quot;&gt;Empfangen&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Gesendet&lt;/font&gt;] %3 von %4 Übereinstimmungen</translation>
-    </message>
-    <message>
-        <source>GMT%1%1%1</source>
-        <translation type="obsolete">GMT%1%1%1</translation>
     </message>
     <message>
         <source>[&lt;font color=&quot;%1&quot;&gt;Received&lt;/font&gt;] [&lt;font color=&quot;%2&quot;&gt;Sent&lt;/font&gt;] %3 to %4 of %5</source>
@@ -5787,10 +5002,6 @@ ICQ Network to change your settings.</source>
         <translation>&amp;Aktualisieren</translation>
     </message>
     <message>
-        <source>KDE Addressbook</source>
-        <translation type="obsolete">KDE Adressbuch</translation>
-    </message>
-    <message>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
@@ -5813,10 +5024,6 @@ ICQ Network to change your settings.</source>
     <message>
         <source>M&amp;ore II</source>
         <translation>&amp;Noch mehr</translation>
-    </message>
-    <message>
-        <source>%1 from %2</source>
-        <translation type="obsolete">%1 von %2</translation>
     </message>
     <message>
         <source>Gender:</source>
