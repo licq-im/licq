@@ -14,8 +14,8 @@ TARDIR="."
 
 # What to name the tarball (REV is replaced with the svn revision)
 # Note: Don't add .tar.gz or .tar.bz2
-TARNAME="licq-1.3.5~rREV"
-#TARNAME="licq-1.3.5-rc2"
+TARNAME="licq-1.3.6~rREV"
+#TARNAME="licq-1.3.6-rc1"
 
 # Archives to create (1 = create; 0 = don't create)
 CREATE_GZ=0
