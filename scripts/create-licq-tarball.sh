@@ -57,7 +57,7 @@ if [ $# -eq 0 ]; then
 fi
 
 # Parse command line options
-args=$(getopt -n "$0" -o h,r:,o:,n:,g,b,s -l help -- $*)
+args=$(getopt -n "$0" -o h,r:,o:,n:,g,b,s -l help,gzip,bzip2,sign -- $*)
 if [ $? -ne 0 ]; then
     echo ""
     usage
