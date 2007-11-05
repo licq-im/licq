@@ -13,15 +13,38 @@
 REPO="svn+ssh://licq"
 
 ### END SETTINGS ###
+function usage()
+{
+    echo "Usage: $0 -v version -r rev"
+    echo "  -h, --help  This message"
+    echo "  -v          Name the tag licq-<version> (e.g. 1.3.5-rc3)"
+    echo "  -r          Revision to tag (e.g. 5656)"
+}
 
-if [ $# -ne 2 ]; then
-  echo "Usage: $0 <version> <revision>"
-  echo "E.g. $0 1.3.5-rc3 5656"
-  exit 1
+args=$(getopt -n "$0" -o h,v:,r: -l help -- $*)
+if [ $? -ne 0 ]; then
+    echo ""
+    usage
+    exit 1
 fi
 
-VERSION="licq-$1"
-REV=$2
+set -- $args
+while [ $# -gt 0 ]; do
+    case $1 in
+	-h|--help) usage; exit 0 ;;
+	-v) VERSION="licq-$(eval echo $2)"; shift ;;
+	-r) REV=$(eval echo $2); shift ;;
+	--) ;;
+	*) echo "$0: unknown option '$1'"; exit 1 ;;
+    esac
+    shift
+done
+
+if [ -z "$VERSION" -o -z "$REV" ]; then
+    echo "$0: Missing argument"
+    echo "Try \`$0 --help' for more information"
+    exit 2
+fi
 
 TMPDIR=$(mktemp -d) || exit 1
 TAGDIR="${TMPDIR}/${VERSION}"
