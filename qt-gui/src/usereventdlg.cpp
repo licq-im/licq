@@ -620,7 +620,7 @@ UserEventCommon::~UserEventCommon()
   m_lUsers.clear();
 }
 
-bool UserEventCommon::FindUserInConvo(char *szId)
+bool UserEventCommon::FindUserInConvo(const char *szId)
 {
   char *szRealId;
   ICQUser::MakeRealId(szId, m_nPPID, szRealId);
@@ -1817,7 +1817,7 @@ void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
       userName = szId;
     gUserManager.DropUser(u);
 
-    QString strMsg = QString("%1 has joined the conversation.")
+    QString strMsg = QString(tr("%1 has joined the conversation."))
       .arg(userName);
     mleHistory->addNotice(QDateTime::currentDateTime(), strMsg);
   }
@@ -1825,8 +1825,7 @@ void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
   if (!FindUserInConvo(const_cast<char *>(szId)))
   {
     char *szRealId;
-    //XXX The PPID?
-    ICQUser::MakeRealId(szId, LICQ_PPID, szRealId);
+    ICQUser::MakeRealId(szId, m_nPPID, szRealId);
     m_lUsers.push_back(szRealId);
     delete [] szRealId;
   }
@@ -1851,17 +1850,20 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long /* _nConvoId */)
     else
       userName = szId;
 
-    QString strMsg = QString("%1 has left the conversation.")
+    QString strMsg = QString(tr("%1 has left the conversation."))
       .arg(userName);
     mleHistory->addNotice(QDateTime::currentDateTime(), strMsg);
     
     // Remove the typing notification if active
-    if (u && u->GetTyping() == ICQ_TYPING_ACTIVE)
+    if (u != 0)
     {
-      u->SetTyping(ICQ_TYPING_INACTIVEx0);
-      nfoStatus->unsetPalette();
-      if (mainwin->m_bTabbedChatting && mainwin->userEventTabDlg)
-        mainwin->userEventTabDlg->updateTabLabel(u);  
+      if (u->GetTyping() == ICQ_TYPING_ACTIVE)
+      {
+        u->SetTyping(ICQ_TYPING_INACTIVEx0);
+        nfoStatus->unsetPalette();
+        if (mainwin->m_bTabbedChatting && mainwin->userEventTabDlg)
+          mainwin->userEventTabDlg->updateTabLabel(u);  
+      }
     }
     gUserManager.DropUser(u);
   }
@@ -1915,7 +1917,6 @@ void UserSendCommon::slot_Emoticon()
 
   QWidget *desktop = qApp->desktop();
   QSize s = p->sizeHint();
-  s = p->sizeHint();
   QPoint pos = QPoint(0, btnEmoticon->height());
   pos = btnEmoticon->mapToGlobal(pos);
   if (pos.x() + s.width() > desktop->width())

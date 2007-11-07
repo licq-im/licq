@@ -90,7 +90,7 @@ AddUserDlg::AddUserDlg(CICQDaemon *s, const char* szId, unsigned long PPID,
 	setCaption(tr("Licq - Add User"));
 	connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
 	connect (edtUin, SIGNAL(returnPressed()), SLOT(ok()) );
-	connect (btnCancel, SIGNAL(clicked()), SLOT(reject()) );
+  connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
 
 	// Set Tab Order
 	setTabOrder(edtUin, btnOk);

@@ -603,7 +603,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   ownerManagerDlg = NULL;
   pluginDlg = NULL;
   userEventTabDlg = NULL;
-  m_nRealHeight = 0;
+  m_nRealHeight = hVal;
 
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   if (o != NULL)
@@ -953,7 +953,10 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
     skin->AdjustForMenuBar(menu->height());
   }
 
-  
+  unsigned minHeight = skin->frame.border.top + skin->frame.border.bottom;
+  setMinimumHeight(minHeight);
+  setMaximumHeight(m_bInMiniMode ? minHeight : QWIDGETSIZE_MAX);
+
   // Message Label
   delete lblMsg;
   lblMsg = new CELabel(skin->lblMsg.transparent, mnuUserGroups, this);
@@ -1765,50 +1768,44 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
   }  // Switch
 }
 
-void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, unsigned long nConvoId)
+void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, unsigned long convoId)
 {
-  // Add the user to an ongoing conversation
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
   for (; it.current(); ++it)
   {
     if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
     {
-      (*it)->SetConvoId(nConvoId);
+      (*it)->SetConvoId(convoId);
       break;
     }
   }
 }
 
-void CMainWindow::slot_convoJoin(const char *szId, unsigned long /* nPPID */, unsigned long nConvoId)
+void CMainWindow::slot_convoJoin(const char *szId, unsigned long ppid, unsigned long convoId)
 {
-  // Add the user to an ongoing conversation
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
   for (; it.current(); ++it)
   {
-    if ((*it)->ConvoId() == nConvoId)
+    if ((*it)->PPID() == ppid && (*it)->ConvoId() == convoId)
     {
-      (*it)->convoJoin(szId, nConvoId);
-      return;
+      (*it)->convoJoin(szId, convoId);
+      break;
     }
   }
-  
-  // No conversation shown, so make one
-  
 }
 
-void CMainWindow::slot_convoLeave(const char *szId, unsigned long /* nPPID */, unsigned long nConvoId)
+void CMainWindow::slot_convoLeave(const char *szId, unsigned long ppid, unsigned long convoId)
 {
-  // Add the user to an ongoing conversation
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
   for (; it.current(); ++it)
   {
-    if ((*it)->ConvoId() == nConvoId)
+    if ((*it)->PPID() == ppid && (*it)->ConvoId() == convoId && (*it)->FindUserInConvo(szId))
     {
-      (*it)->convoLeave(szId, nConvoId);
-      return;
+      (*it)->convoLeave(szId, convoId);
+      break;
     }
   }
 }
@@ -2634,7 +2631,7 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
       tab = UserInfoDlg::HistoryInfo;
       break;
     case mnuUserGeneral:
-      if (isalpha(szId[0]))
+      if (nPPID == LICQ_PPID && isalpha(szId[0]))
         tab = UserInfoDlg::AboutInfo;
       else
         tab = UserInfoDlg::GeneralInfo;
@@ -2664,7 +2661,7 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
       f->showTab(UserInfoDlg::HistoryInfo);
       break;
     case mnuUserGeneral:
-      if (isalpha(szId[0]))
+      if (nPPID == LICQ_PPID && isalpha(szId[0]))
         f->showTab(UserInfoDlg::AboutInfo);
       else
         f->showTab(UserInfoDlg::GeneralInfo);
@@ -3768,25 +3765,22 @@ void CMainWindow::ToggleThreadView()
 //-----CMainWindow::ToggleMiniMode--------------------------------------------------
 void CMainWindow::ToggleMiniMode()
 {
+  m_bInMiniMode = !m_bInMiniMode;
 
-   if (m_bInMiniMode)
-   {
-      userView->show();
-      setMaximumHeight(4096);
-      resize(width(), m_nRealHeight);
-      setMinimumHeight(100);
-   }
-   else
-   {
-      userView->QWidget::hide();
-      m_nRealHeight = height();
-      unsigned short newH = skin->frame.border.top + skin->frame.border.bottom;
-      setMinimumHeight(newH);
-      resize(width(), newH);
-      setMaximumHeight(newH);
-   }
-   m_bInMiniMode = !m_bInMiniMode;
-   mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_MINIxMODE), m_bInMiniMode);
+  if (m_bInMiniMode)
+  {
+    m_nRealHeight = height();
+    setMaximumHeight(minimumHeight());
+    userView->QWidget::hide();
+  }
+  else
+  {
+    setMaximumHeight(QWIDGETSIZE_MAX);
+    resize(width(), m_nRealHeight);
+    userView->show();
+  }
+
+  mnuSystem->setItemChecked(mnuSystem->idAt(MNUxITEM_MINIxMODE), m_bInMiniMode);
 }
 
 struct SAutoAwayInfo

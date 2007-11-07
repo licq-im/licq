@@ -50,9 +50,9 @@ CQtLogWindow::CQtLogWindow(QWidget *parent)
   QBoxLayout* top_lay = new QVBoxLayout(this, 8);
 
   outputBox = new CLogWidget(this);
-  outputBox->setMinimumHeight(outputBox->frameWidth()*2
-                              + 16*outputBox->fontMetrics().lineSpacing());
-  outputBox->setMinimumWidth(outputBox->minimumHeight()*2);
+  outputBox->setMinimumHeight(outputBox->frameWidth() * 2
+      + 16 * outputBox->fontMetrics().lineSpacing());
+  outputBox->setMinimumWidth(outputBox->minimumHeight() * 2);
   top_lay->addWidget(outputBox);
 
   QBoxLayout* lay = new QHBoxLayout(top_lay, 8);
@@ -76,6 +76,8 @@ CQtLogWindow::CQtLogWindow(QWidget *parent)
   lay->addSpacing(30);
   lay->addWidget(btnClear);
   lay->addWidget(btnHide);
+
+  adjustSize();
 
   sn = new QSocketNotifier(Pipe(), QSocketNotifier::Read, this);
   connect (sn, SIGNAL(activated(int)), this, SLOT(slot_log(int)));

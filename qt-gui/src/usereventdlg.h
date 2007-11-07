@@ -143,7 +143,7 @@ public:
   list<string>& ConvoUsers() { return m_lUsers; }
   void SetConvoId(unsigned long n)  { m_nConvoId = n; }
   
-  bool FindUserInConvo(char *);
+  bool FindUserInConvo(const char* id);
   void AddEventTag(unsigned long n)  { if (n) m_lnEventTag.push_back(n); }
   void gotTyping(unsigned short);
   void changeMsgWinSticky(bool _bStick);

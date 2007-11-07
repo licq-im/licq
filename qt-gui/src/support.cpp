@@ -61,7 +61,10 @@ void CSupport::changeWinSticky(WId win, bool stick)
         (unsigned char**)&current);
 
     if (retFormat != 32 || retNItems != 1 || retMoreBytes != 0)
+    {
       gLog.Info("Error reading current desktop property.");
+      *current = 0UL;
+    }
   }
 
   XEvent xev;
