@@ -173,7 +173,8 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 
     case STATE_RECV_DATA:
     {
-      if (m_nDataSize[0] == 0)
+      // Picture data has the 0x20 Flag, so only set data when we get the first picture data packet
+      if (m_nDataSize[0] == 0 && nFlag == 0x00000020)
       {
 	m_nDataSize[0] = nDataSize[0];
 	m_nDataSize[1] = nDataSize[1];
@@ -182,7 +183,10 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       }
 
       if (nFlag != 0x00000020)
+      {
+        gLog.Info("%sDisplay Picture: Skipping packet without 0x20 flag.\n", L_MSNxSTR);
         break;
+      }
 
       ssize_t nWrote = write(m_nFileDesc, p->getDataPosRead(), nLen);
       if (nWrote != (ssize_t)nLen)
@@ -192,6 +196,10 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       }
 
       m_nBytesTransferred += nLen;
+
+      gLog.Info("%sDisplay Picture: Wrote %ld of %ld bytes.\n",
+          L_MSNxSTR, m_nBytesTransferred, m_nDataSize[0]);
+
       if (m_nBytesTransferred >= m_nDataSize[0])
       {
 	if (m_nBytesTransferred == m_nDataSize[0])
