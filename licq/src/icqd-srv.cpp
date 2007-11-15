@@ -5461,7 +5461,13 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         msg.UnpackChar(); // unknown
         s->m_nGender = msg.UnpackChar(); // gender
         s->m_nAge = msg.UnpackChar(); // age
+        //TODO: Find out what these unknowns are. The first UnpackChar has been unknown for a long time, the others
+        //seem fairly new.
         msg.UnpackChar(); // unknown
+        msg.UnpackChar();
+        msg.UnpackUnsignedLong();
+        msg.UnpackUnsignedLong();
+        msg.UnpackUnsignedLong();
 
         // translating string with Translation Table
         gTranslator.ServerToClient(s->m_szAlias);
@@ -5479,9 +5485,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           unsigned long nMore = 0;
           e2->m_nSubCommand = ICQ_CMDxMETA_SEARCHxWPxLAST_USER;
-          msg.UnpackUnsignedShort(); // unknown
           nMore = msg.UnpackUnsignedLong();
-          e2->m_pSearchAck->m_nMore = nMore - 1;
+          // No more subtraction by 1, and now it seems to always be 0
+          e2->m_pSearchAck->m_nMore = nMore;
           e2->m_eResult = EVENT_SUCCESS;
         }
         else
