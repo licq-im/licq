@@ -729,7 +729,7 @@ void CUserManager::RemoveOwner(unsigned long _nPPID)
   else
     m_vpcOwners.erase(iter);
   UnlockOwnerList();
-  DropOwner(_nPPID);
+  o->Unlock();
   delete o;
 }
 
