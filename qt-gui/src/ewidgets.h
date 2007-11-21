@@ -185,7 +185,8 @@ public:
   CInfoField(QWidget *parent, bool readonly);
   void setData(const char *data);
   void setData(QString data);
-  void setData(const unsigned long data);
+  void setData(unsigned long data);
+  void setDateTime(uint timestamp);
   void SetReadOnly(bool);
 protected:
   virtual void keyPressEvent(QKeyEvent *e);

@@ -1548,68 +1548,27 @@ void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
   if (u == NULL)
   {
     u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-    if (u == NULL) return;
+    if (u == NULL)
+      return;
     bDropUser = true;
   }
 
-  QDateTime t;
-  QString ds;
-
   if (!u->StatusOffline())
     nfoLastOnline->setData(tr("Now"));
-  else if (u->LastOnline() == 0)
-    nfoLastOnline->setData(tr("Unknown"));
   else
-  {
-    t.setTime_t(u->LastOnline());
-    ds = t.toString();
-    ds.truncate(ds.length() - 8);
-    nfoLastOnline->setData(ds);
-  }
+    nfoLastOnline->setDateTime(u->LastOnline());
 
-  if (u->LastSentEvent() == 0)
-    nfoLastSent->setData(tr("Unknown"));
-  else
-  {
-    t.setTime_t(u->LastSentEvent());
-    ds = t.toString();
-    ds.truncate(ds.length() - 8);
-    nfoLastSent->setData(ds);
-  }
-
-  if (u->LastReceivedEvent() == 0)
-    nfoLastRecv->setData(tr("Unknown"));
-  else
-  {
-    t.setTime_t(u->LastReceivedEvent());
-    ds = t.toString();
-    ds.truncate(ds.length() - 8);
-    nfoLastRecv->setData(ds);
-  }
-
-  if (u->LastCheckedAutoResponse() == 0)
-    nfoLastCheckedAR->setData(tr("Unknown"));
-  else
-  {
-    t.setTime_t(u->LastCheckedAutoResponse());
-    ds = t.toString();
-    ds.truncate(ds.length() - 8);
-    nfoLastCheckedAR->setData(ds);
-  }
+  nfoLastSent->setDateTime(u->LastSentEvent());
+  nfoLastRecv->setDateTime(u->LastReceivedEvent());
+  nfoLastCheckedAR->setDateTime(u->LastCheckedAutoResponse());
 
   if (u->StatusOffline())
     nfoOnlineSince->setData(tr("Offline"));
-  else if (u->OnlineSince() == 0)
-    nfoOnlineSince->setData(tr("Unknown"));
   else
-  {
-    t.setTime_t(u->OnlineSince());
-    ds = t.toString();
-    ds.truncate(ds.length() - 8);
-    nfoOnlineSince->setData(ds);
-  }
+    nfoOnlineSince->setDateTime(u->OnlineSince());
 
-  if (bDropUser) gUserManager.DropUser(u);
+  if (bDropUser)
+    gUserManager.DropUser(u);
 }
 
 //-----KDE AddressBook info--------------------------------------------------------

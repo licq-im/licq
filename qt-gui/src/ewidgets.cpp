@@ -663,12 +663,21 @@ void CInfoField::setData(QString data)
   setText(data);
 }
 
-
-void CInfoField::setData(const unsigned long data)
+void CInfoField::setData(unsigned long data)
 {
-  char t[32];
-  sprintf(t, "%lu", data);
-  setData(t);
+  setText(QString::number(data));
+}
+
+void CInfoField::setDateTime(uint timestamp)
+{
+  if (timestamp == 0)
+    setText(tr("Unknown"));
+  else
+  {
+    QDateTime t;
+    t.setTime_t(timestamp);
+    setText(t.toString());
+  }
 }
 
 void CInfoField::keyPressEvent(QKeyEvent *e)
