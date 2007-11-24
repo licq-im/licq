@@ -145,13 +145,11 @@ bool CLogService_File::SetLogFile(const char *_szFile, const char *_szFlags)
 
 void CLogService_File::LogMessage(const char *_szPrefix, 
                                   const char *_szMessage,
-                                  const unsigned short _nLogType)
+                                  const unsigned short /* _nLogType */)
 {
   if (m_fLog == NULL) return;
   fprintf(m_fLog, "%s%s", _szPrefix, _szMessage);
   fflush(m_fLog);
-  // Avoid warnings
-  if (_nLogType);
 }
 
 
