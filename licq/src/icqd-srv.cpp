@@ -2485,6 +2485,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     unsigned long junk1, intIP, userPort, nInfoTimestamp = 0,
                   nStatusPluginTimestamp = 0, nInfoPluginTimestamp = 0, nCookie,
                   nUserIP;
+    time_t registeredTimestamp;
     unsigned short junk2;
     unsigned char mode;
     char *szId;
@@ -2541,7 +2542,14 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     if( u->StatusOffline() || nUserIP )
       u->SetIp(nUserIP);
 
-    if (packet.getTLVLen(0x0003) == 4) {
+    if (packet.getTLVLen(0x0002) == 4)
+    {
+      registeredTimestamp = packet.UnpackUnsignedLongTLV(0x0002);
+      u->SetRegisteredTime(registeredTimestamp);
+    }
+
+    if (packet.getTLVLen(0x0003) == 4)
+    {
       time_t nOnlineSince = packet.UnpackUnsignedLongTLV(0x0003);
       u->SetOnlineSince(nOnlineSince);
     }
@@ -2553,6 +2561,13 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     }
     else
       u->SetIdleSince(0);
+
+    // Sometimes there ix 0x0005 instead of 0x0002. They appear to be mutually exclusive.
+    if (packet.getTLVLen(0x0005) == 4)
+    {
+      registeredTimestamp = packet.UnpackUnsignedLongTLV(0x0005);
+      u->SetRegisteredTime(registeredTimestamp);
+    }
 
     if (packet.getTLVLen(0x000c) == 0x25)
     {

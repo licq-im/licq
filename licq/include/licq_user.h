@@ -558,6 +558,7 @@ public:
   time_t LastCheckedAutoResponse()      { return m_nLastCounters[LAST_CHECKED_AR]; }
   time_t OnlineSince()      		{ return m_nOnlineSince; }
   time_t IdleSince()                    { return m_nIdleSince; }
+  time_t RegisteredTime()               { return m_nRegisteredTime; }
   bool UseGPG()				{ return m_bUseGPG; }
   char* GPGKey()			{ return m_szGPGKey; }
   bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
@@ -831,6 +832,7 @@ protected:
 
   void SetOnlineSince(time_t t)     { m_nOnlineSince = t; }
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
+  void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
@@ -839,6 +841,7 @@ protected:
   time_t m_nLastCounters[4];
   time_t m_nOnlineSince;
   time_t m_nIdleSince;
+  time_t m_nRegisteredTime;
   bool m_bOnContactList;
   unsigned long m_nIp, m_nIntIp, m_nVersion, m_nClientTimestamp, m_nCookie;
   unsigned long m_nClientInfoTimestamp, m_nClientStatusTimestamp;
