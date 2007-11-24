@@ -2485,7 +2485,6 @@ unsigned short ICQUser::Status()
    else if (m_nStatus & ICQ_STATUS_AWAY) return ICQ_STATUS_AWAY;
    else if (m_nStatus & ICQ_STATUS_FREEFORCHAT) return ICQ_STATUS_FREEFORCHAT;
    else if ((m_nStatus & 0xFF) == 0x00) return ICQ_STATUS_ONLINE;
-   else if (m_nStatus & ICQ_STATUS_XTRAZ) return ICQ_STATUS_XTRAZ;
    else return (ICQ_STATUS_OFFLINE - 1);
 }
 
@@ -2788,7 +2787,6 @@ const char *ICQUser::StatusToStatusStr(unsigned short n, bool b)
   else if (n & ICQ_STATUS_NA) return b ? tr("(Not Available)") : tr("Not Available");
   else if (n & ICQ_STATUS_AWAY) return b ? tr("(Away)") : tr("Away");
   else if (n & ICQ_STATUS_FREEFORCHAT) return b ? tr("(Free for Chat)") : tr("Free for Chat");
-  else if (n & ICQ_STATUS_XTRAZ) return b ? tr("(Xstatus)") : tr("Xstatus");
   else if (n << 24 == 0x00) return b ? tr("(Online)") : tr("Online");
   else return "Unknown";
 }
@@ -2802,7 +2800,6 @@ const char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
   else if (n & ICQ_STATUS_NA) return b ? tr("(N/A)") : tr("N/A");
   else if (n & ICQ_STATUS_AWAY) return b ? tr("(Away)") : tr("Away");
   else if (n & ICQ_STATUS_FREEFORCHAT) return b ? tr("(FFC)") : tr("FFC");
-  else if (n & ICQ_STATUS_XTRAZ) return b ? tr("(Xtra)") : tr("Xtra");
   else if (n << 24 == 0x00) return b ? tr("(On)") : tr("On");
   else return "???";
 }
