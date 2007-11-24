@@ -1537,6 +1537,10 @@ void UserInfoDlg::CreateLastCountersInfo()
   nfoOnlineSince = new CInfoField(p, true);
   lay->addWidget(nfoOnlineSince, CR, 1);
 
+  lay->addWidget(new QLabel(tr("Registration Date:"), p), ++CR, 0);
+  nfoRegDate = new CInfoField(p, true);
+  lay->addWidget(nfoRegDate, CR, 1);
+
   lay->setRowStretch(++CR, 5);
 }
 
@@ -1561,6 +1565,7 @@ void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
   nfoLastSent->setDateTime(u->LastSentEvent());
   nfoLastRecv->setDateTime(u->LastReceivedEvent());
   nfoLastCheckedAR->setDateTime(u->LastCheckedAutoResponse());
+  nfoRegDate->setDateTime(u->RegisteredTime());
 
   if (u->StatusOffline())
     nfoOnlineSince->setData(tr("Offline"));

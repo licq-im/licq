@@ -149,7 +149,7 @@ protected:
 
   // Last Counters
   void CreateLastCountersInfo();
-  CInfoField *nfoLastOnline, *nfoLastSent, *nfoLastRecv, *nfoLastCheckedAR, *nfoOnlineSince;
+  CInfoField *nfoLastOnline, *nfoLastSent, *nfoLastRecv, *nfoLastCheckedAR, *nfoOnlineSince, *nfoRegDate;
 
   // KDE AddressBook
   void CreateKABCInfo();
