@@ -160,17 +160,19 @@ void licq_handle_sigabrt(int s)
     void *array[size];
     int n = backtrace(array, size);
     char **res = backtrace_symbols(array, n);
-    for (i = 0; i < n; i++)
+    if (res == NULL)
+      fprintf(stderr, tr("Failed to retrive backtrace symbols"));
+    else
     {
-      fprintf(stderr, "%s\n", res[i]);
-      if (file != NULL)
-        fprintf(file, "%s\n", res[i]);
-    }
+      for (i = 0; i < n; i++)
+      {
+        fprintf(stderr, "%s\n", res[i]);
+        if (file != NULL)
+          fprintf(file, "%s\n", res[i]);
+      }
 
-    free(res);
-    /*array[0] = si->si_addr;
-    res = backtrace_symbols(array, 1);
-    fprintf(stderr, "%s\n", res[0]);*/
+      free(res);
+    }
   }
   fprintf(stderr, tr("Attempting to generate core file.\n"));
 
