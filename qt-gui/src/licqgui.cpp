@@ -319,6 +319,8 @@ CLicqGui::CLicqGui(int argc, char **argv)
 
 CLicqGui::~CLicqGui(void)
 {
+  licqMainWindow->hide();
+  delete licqMainWindow;
   delete licqSignalManager;
   delete licqLogWindow;
   free(m_szSkin);
