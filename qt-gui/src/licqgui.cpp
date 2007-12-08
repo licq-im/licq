@@ -45,8 +45,6 @@
 
 #include <qstylefactory.h>
 
-CLicqGui *licqQtGui;
-
 const char *LP_Usage(void)
 {
 #ifdef USE_KDE
@@ -142,10 +140,9 @@ int LP_Main(CICQDaemon *_licqDaemon)
   setenv("KDE_DEBUG", "true", 0);
 #endif
 
-  licqQtGui = new CLicqGui(gui_argc, gui_argv);
+  CLicqGui licqQtGui(gui_argc, gui_argv);
 
-  int nResult = licqQtGui->Run(_licqDaemon);
-  licqQtGui->Shutdown();
+  int nResult = licqQtGui.Run(_licqDaemon);
 
   gui_argc = 0;
   gui_argv = NULL;
@@ -329,21 +326,6 @@ CLicqGui::~CLicqGui(void)
   free(m_szExtendedIcons);
 }
 
-void CLicqGui::Shutdown(void)
-{
-  gLog.Info("%sShutting down gui.\n", L_ENDxSTR);
-  gLog.ModifyService(S_PLUGIN, 0);
-  if(licqMainWindow) {
-    licqMainWindow->close();
-    delete licqMainWindow;
-    licqMainWindow = 0;
-  }
-
-  delete qApp;
-  qApp = 0;
-}
-
-
 int CLicqGui::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we want to receive all signals
@@ -359,6 +341,8 @@ int CLicqGui::Run(CICQDaemon *_licqDaemon)
   setMainWidget(licqMainWindow);
   int r = exec();
   _licqDaemon->UnregisterPlugin();
+  gLog.Info("%sShutting down gui.\n", L_ENDxSTR);
+  gLog.ModifyService(S_PLUGIN, 0);
 
   return r;
 }

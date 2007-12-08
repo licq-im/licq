@@ -46,7 +46,6 @@ public:
   CLicqGui(int, char **);
   ~CLicqGui(void);
   int Run(CICQDaemon *);
-  void Shutdown(void);
   virtual bool x11EventFilter(XEvent *);
 
   virtual void commitData(QSessionManager& sm);
