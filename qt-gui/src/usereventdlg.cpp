@@ -73,6 +73,7 @@
 #include "authuserdlg.h"
 #include "emoticon.h"
 #include "ewidgets.h"
+#include "gui-defines.h"
 #include "mainwin.h"
 #include "messagebox.h"
 #include "mmlistview.h"

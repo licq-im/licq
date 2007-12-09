@@ -89,6 +89,7 @@ protected slots:
   void slot_registerClicked();
   void slot_doneregister(bool, char *, unsigned long);
   void slot_modifyClicked();
+  void modifyOwner(QListViewItem* item);
   void slot_deleteClicked();
   void slot_update();
   

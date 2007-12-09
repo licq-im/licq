@@ -43,8 +43,6 @@
 #include "gui-defines.h"
 #include "support.h"
 
-#define MSN_PPID 0x4D534E5F
-
 class QStyle;
 
 class QTextView;

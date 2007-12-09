@@ -271,6 +271,8 @@ OwnerManagerDlg::OwnerManagerDlg(CMainWindow *m, CICQDaemon *s, CSignalManager *
           this, SLOT(slot_listClicked(QListViewItem *)));
   connect(ownerView, SIGNAL(spacePressed(QListViewItem *)),
           this, SLOT(slot_listClicked(QListViewItem *)));
+  connect(ownerView, SIGNAL(doubleClicked(QListViewItem*)),
+      this, SLOT(modifyOwner(QListViewItem*)));
   connect(btnAdd, SIGNAL(clicked()), this, SLOT(slot_addClicked()));
   connect(btnRegister, SIGNAL(clicked()), this, SLOT(slot_registerClicked()));
   connect(btnModify, SIGNAL(clicked()), this, SLOT(slot_modifyClicked()));
@@ -388,9 +390,14 @@ void OwnerManagerDlg::slot_doneRegisterUser(ICQEvent *e)
 
 void OwnerManagerDlg::slot_modifyClicked()
 {
-  OwnerItem *i = dynamic_cast<OwnerItem *>(ownerView->selectedItem());
+  modifyOwner(ownerView->selectedItem());
+}
+
+void OwnerManagerDlg::modifyOwner(QListViewItem* item)
+{
+  OwnerItem *i = dynamic_cast<OwnerItem *>(item);
   if (i == 0) return;
-  
+
   OwnerEditDlg *d = new OwnerEditDlg(server, i->Id(), i->PPID(), this);
   d->show();
   connect(d, SIGNAL(destroyed()), this, SLOT(slot_update()));
