@@ -3417,8 +3417,17 @@ CPU_ReverseTCPRequest::CPU_ReverseTCPRequest(unsigned long nDestinationUin,
 
 
 //-----Authorize----------------------------------------------------------------
-CPU_Authorize::CPU_Authorize(unsigned long /* nAuthorizeUin */) : CPacketUdp(ICQ_CMDxRCV_REVERSExTCP)
+CPU_Authorize::CPU_Authorize(const char* szId)
+ : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_AUTHxGRANT)
 {
+  size_t idLen = strlen(szId); 
+  m_nSize += 1 + idLen + 5;
+  InitBuffer();
+
+  buffer->PackChar(idLen);
+  buffer->Pack(szId, idLen);
+  buffer->PackChar(0x01);
+  buffer->PackUnsignedLong(0);
 }
 
 //------SetPassword---------------------------------------------------------

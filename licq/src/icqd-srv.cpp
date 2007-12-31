@@ -982,19 +982,10 @@ unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMe
 unsigned long CICQDaemon::icqAuthorizeGrant(const char *szId,
   const char *szMessage)
 {
-  char *sz = NULL;
-  if (szMessage != NULL)
-  {
-    sz = gTranslator.NToRN(szMessage);
-    gTranslator.ClientToServer(sz);
-  }
-  CPU_ThroughServer *p = new CPU_ThroughServer(szId, ICQ_CMDxSUB_AUTHxGRANTED, sz);
-  gLog.Info(tr("%sAuthorizing user %s (#%hu)...\n"), L_SRVxSTR, szId, p->Sequence());
-  delete [] sz;
+  CPU_Authorize *p = new CPU_Authorize(szId);
+  gLog.Info(tr("%sAuthorizing user %s\n"), L_SRVxSTR, szId);
+  SendEvent_Server(p);
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  if (e != NULL)
-    return e->EventId();
   return 0;
 }
 

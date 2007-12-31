@@ -912,13 +912,10 @@ public:
 };
 
 //-----Authorize----------------------------------------------------------------
-class CPU_Authorize : public CPacketUdp
+class CPU_Authorize : public CPU_CommonFamily
 {
 public:
-   CPU_Authorize(unsigned long _nAuthorizeUin);
-protected:
-   /* 02 00 56 04 05 00 50 A5 82 00 A7 B8 19 00 08 00 01 00 00 */
-   unsigned long m_nAuthorizeUin;
+   CPU_Authorize(const char *szId);
 };
 
 
