@@ -506,7 +506,7 @@ char *CIniFile::GetKeyFromLine(char *_szBuffer, const char *_szLine)
   if (_szLine == NULL) return NULL;
 
   // Skip the line if it is blank or a comment
-  if (_szLine[0] == '\n' || _szLine[0] == '#')
+  if (_szLine[0] == '\n' || _szLine[0] == '#' || _szLine[0] == ';')
   {
     _szBuffer[0] = '\0';
   }
