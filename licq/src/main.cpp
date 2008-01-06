@@ -41,8 +41,7 @@ int main(int argc, char **argv)
 {
 #if ENABLE_NLS
   // prepare daemon localization
-  setlocale(LC_MESSAGES,"");
-  setlocale(LC_CTYPE,"");
+  setlocale(LC_ALL, "");
   bindtextdomain(PACKAGE, LOCALEDIR);
   textdomain(PACKAGE);
 #endif
