@@ -533,21 +533,27 @@ void SearchUserDlg::addUser()
 {
   SearchItem* current = static_cast<SearchItem*>(foundView->firstChild());
 
-  while(current) {
-    if(current->isSelected()) {
-      ICQUser* user = gUserManager.FetchUser(current->uin(), LOCK_N);
+  while (current)
+  {
+    if (current->isSelected())
+    {
+      ICQUser* user = gUserManager.FetchUser(current->uin(), LOCK_R);
 
-      if(user)
+      if (user)
+      {
+        bool tempUser = user->NotInList();
         gUserManager.DropUser(user);
-      else {
-        server->AddUserToList(current->uin());
-        if (qcbAlertUser->isChecked()) // alert the user they were added
-            server->icqAlertUser(current->uin());
+        if (tempUser)
+          gUserManager.RemoveUser(current->uin());
       }
-//      current->setSelected(false);
+
+      if (server->AddUserToList(current->uin()) &&
+          qcbAlertUser->isChecked()) // alert the user they were added
+        server->icqAlertUser(current->uin());
     }
     current = static_cast<SearchItem*>(current->nextSibling());
   }
+
   foundView->triggerUpdate();
   selectionChanged();
 }
