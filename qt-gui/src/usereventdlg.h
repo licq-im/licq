@@ -29,10 +29,7 @@
 #include <string>
 #include <utility>
 
-using std::binary_function;
 using std::list;
-using std::pair;
-using std::string;
 
 #include "licq_color.h"
 #include "licq_filetransfer.h"
@@ -73,17 +70,6 @@ class CEButton;
 class CETabWidget;
 class CMessageViewWidget;
 class MLView;
-
-/* ----------------------------------------------------------------------------- */
-typedef pair<CUserEvent *, char *> MessageIter;
-
-struct OrderMessages : public binary_function<const MessageIter &, const MessageIter &, bool>
-{
-  bool operator()(const MessageIter& m1, const MessageIter& m2)
-  {
-    return (m1.first->Time() < m2.first->Time());
-  }
-};
 
 /* ----------------------------------------------------------------------------- */
 class UserEventTabDlg : public QWidget

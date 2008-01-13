@@ -105,6 +105,13 @@ using std::make_pair;
 
 const size_t SHOW_RECENT_NUM = 5;
 
+typedef pair<CUserEvent *, char *> MessageIter;
+
+bool OrderMessages(const MessageIter& m1, const MessageIter& m2)
+{
+  return (m1.first->Time() < m2.first->Time());
+}
+
 // -----------------------------------------------------------------------------
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
                                  CMainWindow *m, const char *_szId,
@@ -1697,7 +1704,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
       }
 
       // Sort the messages by time
-      sort(m_vMsgs.begin(), m_vMsgs.end(), OrderMessages());
+      stable_sort(m_vMsgs.begin(), m_vMsgs.end(), OrderMessages);
     
       // Now, finally add them
       vector< pair<CUserEvent *, char *> >::iterator MsgIter;
