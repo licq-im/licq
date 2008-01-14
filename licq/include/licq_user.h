@@ -982,7 +982,7 @@ public:
   char *Password() { return(m_szPassword); }
   void SetPassword(const char *s) { SetString(&m_szPassword, s); SaveLicqInfo(); }
   void SetWebAware(bool b)     {  m_bWebAware = b; SaveLicqInfo(); }
-  virtual void SetWebAwareStatus(unsigned char c) { SetWebAware(c); }
+  virtual void SetWebAwareStatus(char c) { SetWebAware(c); }
   void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
   void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
   void SetUin(unsigned long n) { m_nUin = n; SaveLicqInfo(); }
