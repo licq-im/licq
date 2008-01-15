@@ -386,6 +386,13 @@ See Network Window for details.</source>
     </message>
 </context>
 <context>
+    <name>CInfoField</name>
+    <message>
+        <source>Unknown</source>
+        <translation>Невідомо</translation>
+    </message>
+</context>
+<context>
     <name>CJoinChatDlg</name>
     <message>
         <source>Select chat to invite:</source>
@@ -5050,6 +5057,10 @@ Select another picture?</source>
         <source>&amp;KDE Addressbook</source>
         <translation>&amp;Адресна книга KDE</translation>
     </message>
+    <message>
+        <source>Registration Date:</source>
+        <translation>Дата реєстрації:</translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -5246,6 +5257,14 @@ through the server!</source>
     <message>
         <source>Send anyway</source>
         <translation>Відіслати в будь якому випадку</translation>
+    </message>
+    <message>
+        <source>%1 has joined the conversation.</source>
+        <translation>%1 приєднався до розмови.</translation>
+    </message>
+    <message>
+        <source>%1 has left the conversation.</source>
+        <translation>%1 покинув розмову.</translation>
     </message>
 </context>
 <context>
