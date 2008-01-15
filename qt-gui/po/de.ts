@@ -386,6 +386,13 @@ Siehe Netzwerkfenster für Details.</translation>
     </message>
 </context>
 <context>
+    <name>CInfoField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Unbekannt</translation>
+    </message>
+</context>
+<context>
     <name>CJoinChatDlg</name>
     <message>
         <source>&amp;Join</source>
@@ -5057,6 +5064,10 @@ Beschreibung: %2</translation>
         <source>&amp;KDE Addressbook</source>
         <translation>&amp;KDE Adressbuch</translation>
     </message>
+    <message>
+        <source>Registration Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -5253,6 +5264,14 @@ through the server!</source>
     <message>
         <source>Se&amp;nd through server</source>
         <translation>Über S&amp;erver senden</translation>
+    </message>
+    <message>
+        <source>%1 has joined the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has left the conversation.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

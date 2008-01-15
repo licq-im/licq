@@ -4479,6 +4479,13 @@ See Network Window for details.</source>
     </message>
 </context>
 <context>
+    <name>CInfoField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Не вядома</translation>
+    </message>
+</context>
+<context>
     <name>CJoinChatDlg</name>
     <message>
         <source>Select chat to invite:</source>
@@ -9278,6 +9285,10 @@ Select another picture?</source>
         <source>timed out</source>
         <translation>скончыўся час</translation>
     </message>
+    <message>
+        <source>Registration Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -9474,6 +9485,14 @@ through the server!</source>
     <message>
         <source>Send anyway</source>
         <translation>Адаслаць усёроўна</translation>
+    </message>
+    <message>
+        <source>%1 has joined the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has left the conversation.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

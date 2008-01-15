@@ -397,6 +397,13 @@ Guarda la  Finestra id Rete per i dettagli.</translation>
     </message>
 </context>
 <context>
+    <name>CInfoField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Sconosciuto</translation>
+    </message>
+</context>
+<context>
     <name>CJoinChatDlg</name>
     <message>
         <source>&amp;Join</source>
@@ -5558,6 +5565,10 @@ Select another picture?</source>
         <source>timed out</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Registration Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -5753,6 +5764,14 @@ attraverso il server!</translation>
     </message>
     <message>
         <source>No</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has joined the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has left the conversation.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

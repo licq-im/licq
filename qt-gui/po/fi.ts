@@ -495,6 +495,13 @@ Katso tarkempia tietoja Verkkolokista.</translation>
     </message>
 </context>
 <context>
+    <name>CInfoField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Tuntematon</translation>
+    </message>
+</context>
+<context>
     <name>CJoinChatDlg</name>
     <message>
         <source>Select chat to invite:</source>
@@ -5427,6 +5434,10 @@ Valitaanko toinen kuva?</translation>
         <source>Email:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Registration Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -5630,6 +5641,14 @@ palvelimen kautta!</translation>
     </message>
     <message>
         <source>Error! no owner set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has joined the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has left the conversation.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

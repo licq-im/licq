@@ -382,6 +382,13 @@ se nätverksfönstret för mer information.</translation>
     </message>
 </context>
 <context>
+    <name>CInfoField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Okänd</translation>
+    </message>
+</context>
+<context>
     <name>CJoinChatDlg</name>
     <message>
         <source>Select chat to join:</source>
@@ -5020,6 +5027,10 @@ Välj en annan bild?</translation>
         <source>&amp;KDE Addressbook</source>
         <translation>&amp;KDEs adressbok</translation>
     </message>
+    <message>
+        <source>Registration Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -5216,6 +5227,14 @@ genom servern!</translation>
     <message>
         <source>Error! no owner set</source>
         <translation>Fel! ingen ägare vald</translation>
+    </message>
+    <message>
+        <source>%1 has joined the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has left the conversation.</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

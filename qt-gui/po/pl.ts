@@ -499,6 +499,13 @@ See Network Window for details.</source>
     </message>
 </context>
 <context>
+    <name>CInfoField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>CJoinChatDlg</name>
     <message>
         <source>Select chat to join:</source>
@@ -5801,6 +5808,10 @@ Select another picture?</source>
         <source>No</source>
         <translation type="unfinished">Nie</translation>
     </message>
+    <message>
+        <source>Registration Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -6007,6 +6018,14 @@ through the server!</source>
     </message>
     <message>
         <source>cancelled</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has joined the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has left the conversation.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

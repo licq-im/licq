@@ -407,6 +407,13 @@ Nyisd meg a Hálózat Info ablakot a részletekért.</translation>
     </message>
 </context>
 <context>
+    <name>CInfoField</name>
+    <message>
+        <source>Unknown</source>
+        <translation type="unfinished">Ismeretlen</translation>
+    </message>
+</context>
+<context>
     <name>CJoinChatDlg</name>
     <message>
         <source>&amp;Join</source>
@@ -5670,6 +5677,10 @@ Select another picture?</source>
         <source>No</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Registration Date:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>UserSelectDlg</name>
@@ -5873,6 +5884,14 @@ a szerveren keresztül!</translation>
     </message>
     <message>
         <source>Error! no owner set</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has joined the conversation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 has left the conversation.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
