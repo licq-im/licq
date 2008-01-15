@@ -181,6 +181,7 @@ protected:
 
 class CInfoField : public QLineEdit
 {
+  Q_OBJECT
 public:
   CInfoField(QWidget *parent, bool readonly);
   void setData(const char *data);
