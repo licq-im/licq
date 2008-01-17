@@ -531,11 +531,15 @@ bool CLicq::Init(int argc, char **argv)
     }
     else  // If no plugins, try some defaults one by one
     {
-      if (LoadPlugin("qt-gui", argc, argv) == NULL)
-        if (LoadPlugin("kde-gui", argc, argv) == NULL)
-          if (LoadPlugin("jons-gtk-gui", argc, argv) == NULL)
-            if (LoadPlugin("console", argc, argv) == NULL)
-              return false;
+      const char* plugins[] =
+        {"qt4-gui", "kde4-gui", "qt-gui", "kde-gui", "jons-gtk-gui", "console"};
+      unsigned short i = 0, size = sizeof(plugins) / sizeof(char*);
+      CPlugin* ptr = NULL;
+
+      while (i < size && ptr == NULL)
+        ptr = LoadPlugin(plugins[i++], argc, argv);
+      if (ptr == NULL)
+        return false;
     }
   }
 
