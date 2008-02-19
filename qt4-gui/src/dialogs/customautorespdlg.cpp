@@ -51,6 +51,7 @@ CustomAutoRespDlg::CustomAutoRespDlg(QString id, unsigned long ppid, QWidget* pa
   QVBoxLayout* lay = new QVBoxLayout(this);
 
   myMessage = new MLEdit(true);
+  myMessage->setSizeHintLines(5);
   connect(myMessage, SIGNAL(ctrlEnterPressed()), SLOT(ok()));
   lay->addWidget(myMessage);
 
