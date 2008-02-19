@@ -91,7 +91,7 @@ echo "done"
 
 # Add admin and all plugins
 svncp admin admin
-for plugin in auto-reply console email licqweb msn osd qt-gui rms; do
+for plugin in auto-reply console email licqweb msn osd qt-gui qt4-gui rms; do
   svncp $plugin plugins/$plugin
 done
 
