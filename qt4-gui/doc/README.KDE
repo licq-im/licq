@@ -1,0 +1,11 @@
+Note that KDE support is now integrated into Licq.
+Just run cmake with -DWITH_KDE=ON to enable some KDE
+features. Note that this requires KDE 4.x.
+
+After you compiled and installed Qt-GUI with KDE support, run
+`licq -p kde4-gui' to start the kde-gui plugin. This is a one-time hassle,
+after the first successfull start you will never have to type in the -p kde4-gui
+again, except if you again would like to use qt4-gui instead of kde4-gui, in such
+a case type `licq -p qt4-gui' and have your old good qt4-gui back again :)
+
+Have fun :-)

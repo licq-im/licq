@@ -1,0 +1,382 @@
+<?xml version="1.0"?>
+<messaging-emoticon-map>
+
+<emoticon file="airplane">
+<string>(ap)</string>
+<string>(AP)</string>
+</emoticon>
+
+<emoticon file="angel_smile">
+<string>(a)</string>
+<string>(A)</string>
+</emoticon>
+
+<emoticon file="angry_smile">
+<string>:@</string>
+<string>:-@</string>
+</emoticon>
+
+<emoticon file="asl">
+<string>(?)</string>
+</emoticon>
+
+<emoticon file="auto">
+<string>(au)</string>
+<string>(AU)</string>
+</emoticon>
+
+<emoticon file="baring_teeth_smile">
+<string>8o|</string>
+</emoticon>
+
+<emoticon file="bat">
+<string>:-[</string>
+<string>:[</string>
+</emoticon>
+
+<emoticon file="beer_mug">
+<string>(b)</string>
+<string>(B)</string>
+</emoticon>
+
+<emoticon file="black_sheep">
+<string>(bah)</string>
+<string>(BAH)</string>
+</emoticon>
+
+<emoticon file="bowl">
+<string>(||)</string>
+</emoticon>
+
+<emoticon file="brb">
+<string>(brb)</string>
+<string>(BRB)</string>
+</emoticon>
+
+<emoticon file="broken_heart">
+<string>(u)</string>
+<string>(U)</string>
+</emoticon>
+
+<emoticon file="cake">
+<string>(^)</string>
+</emoticon>
+
+<emoticon file="camera">
+<string>(p)</string>
+<string>(P)</string>
+</emoticon>
+
+<emoticon file="cat">
+<string>(@)</string>
+</emoticon>
+
+<emoticon file="cigarette">
+<string>(ci)</string>
+<string>(CI)</string>
+</emoticon>
+
+<emoticon file="clock">
+<string>(o)</string>
+<string>(O)</string>
+</emoticon>
+
+<emoticon file="coffee">
+<string>(c)</string>
+<string>(C)</string>
+</emoticon>
+
+<emoticon file="computer">
+<string>(co)</string>
+<string>(CO)</string>
+</emoticon>
+
+<emoticon file="confused_smile">
+<string>:S</string>
+<string>:-S</string>
+<string>:s</string>
+<string>:-s</string>
+</emoticon>
+
+<emoticon file="cry_smile">
+<string>:'(</string>
+</emoticon>
+
+<emoticon file="devil_smile">
+<string>(6)</string>
+</emoticon>
+
+<emoticon file="dont_know_smile">
+<string>:^)</string>
+</emoticon>
+
+<emoticon file="dont_tell_smile">
+<string>:-#</string>
+</emoticon>
+
+<emoticon file="envelope">
+<string>(e)</string>
+<string>(E)</string>
+</emoticon>
+
+<emoticon file="film">
+<string>(~)</string>
+</emoticon>
+
+<emoticon file="fingerscrossed">
+<string>(yn)</string>
+<string>(YN)</string>
+</emoticon>
+
+<emoticon file="girl_hug">
+<string>(})</string>
+</emoticon>
+
+<emoticon file="girl">
+<string>(x)</string>
+<string>(X)</string>
+</emoticon>
+
+<emoticon file="guy_hug">
+<string>({)</string>
+</emoticon>
+
+<emoticon file="guy">
+<string>(z)</string>
+<string>(Z)</string>
+</emoticon>
+
+<emoticon file="handcuffs">
+<string>(%)</string>
+</emoticon>
+
+<emoticon file="heart">
+<string>(l)</string>
+<string>(L)</string>
+</emoticon>
+
+<emoticon file="hifive">
+<string>(h5)</string>
+<string>(H5)</string>
+</emoticon>
+
+<emoticon file="island_palm">
+<string>(ip)</string>
+<string>(IP)</string>
+</emoticon>
+
+<emoticon file="kiss">
+<string>(k)</string>
+<string>(K)</string>
+</emoticon>
+
+<emoticon file="lightbulb">
+<string>(i)</string>
+<string>(I)</string>
+</emoticon>
+
+<emoticon file="lightning">
+<string>(li)</string>
+</emoticon>
+
+<emoticon file="martini">
+<string>(d)</string>
+<string>(D)</string>
+</emoticon>
+
+<emoticon file="messenger">
+<string>(m)</string>
+<string>(M)</string>
+</emoticon>
+
+<emoticon file="mobile_phone">
+<string>(mp)</string>
+<string>(mp)</string>
+</emoticon>
+
+<emoticon file="money">
+<string>(mo)</string>
+<string>(mo)</string>
+</emoticon>
+
+<emoticon file="moon">
+<string>(s)</string>
+<string>(S)</string>
+</emoticon>
+
+<emoticon file="nerd_smile">
+<string>8-|</string>
+</emoticon>
+
+<emoticon file="note">
+<string>(8)</string>
+</emoticon>
+
+<emoticon file="omg_smile">
+<string>:o</string>
+<string>:O</string>
+<string>:-O</string>
+<string>:-o</string>
+</emoticon>
+
+<emoticon file="party_smile">
+<string>&lt;:o)</string>
+</emoticon>
+
+<emoticon file="phone">
+<string>(t)</string>
+<string>(T)</string>
+</emoticon>
+
+<emoticon file="pizza">
+<string>(pi)</string>
+<string>(PI)</string>
+</emoticon>
+
+<emoticon file="plate">
+<string>(pl)</string>
+<string>(PL)</string>
+</emoticon>
+
+<emoticon file="present">
+<string>(g)</string>
+<string>(G)</string>
+</emoticon>
+
+<emoticon file="rainbow">
+<string>(r)</string>
+<string>(R)</string>
+</emoticon>
+
+<emoticon file="red_smile">
+<string>:$</string>
+<string>:-$</string>
+</emoticon>
+
+<emoticon file="regular_smile">
+<string>:)</string>
+<string>:-)</string>
+</emoticon>
+
+<emoticon file="roll_smile">
+<string>8-)</string>
+<string>8)</string>
+</emoticon>
+
+<emoticon file="rose">
+<string>(f)</string>
+<string>(F)</string>
+</emoticon>
+
+<emoticon file="sad_smile">
+<string>:(</string>
+<string>:-(</string>
+</emoticon>
+
+<emoticon file="sarcastic_smile">
+<string>^o)</string>
+</emoticon>
+
+<emoticon file="secret_smile">
+<string>:-*</string>
+</emoticon>
+
+<emoticon file="shades_smile">
+<string>(h)</string>
+<string>(H)</string>
+</emoticon>
+
+<emoticon file="sick_smile">
+<string>+o(</string>
+</emoticon>
+
+<emoticon file="sleepy_smile">
+<string>|-)</string>
+</emoticon>
+
+<emoticon file="smilec">
+<string>:`(</string>
+</emoticon>
+
+<emoticon file="snail">
+<string>(sn)</string>
+<string>(SN)</string>
+</emoticon>
+
+<emoticon file="soccer_ball">
+<string>(so)</string>
+<string>(SO)</string>
+</emoticon>
+
+<emoticon file="star">
+<string>(*)</string>
+</emoticon>
+
+<emoticon file="stormy">
+<string>(st)</string>
+<string>(ST)</string>
+</emoticon>
+
+<emoticon file="sun">
+<string>(#)</string>
+</emoticon>
+
+<emoticon file="teeth_smile">
+<string>:D</string>
+<string>:-D</string>
+<string>:d</string>
+<string>:&gt;</string>
+<string>:-&gt;</string>
+</emoticon>
+
+<emoticon file="thinking_smile">
+<string>*-)</string>
+</emoticon>
+
+<emoticon file="thumbs_down">
+<string>(n)</string>
+<string>(N)</string>
+</emoticon>
+
+<emoticon file="thumbs_up">
+<string>(y)</string>
+<string>(Y)</string>
+</emoticon>
+
+<emoticon file="tongue_smile">
+<string>:P</string>
+<string>:-P</string>
+<string>:p</string>
+</emoticon>
+
+<emoticon file="turtle">
+<string>(tu)</string>
+<string>(TU)</string>
+</emoticon>
+
+<emoticon file="umbrella">
+<string>(um)</string>
+<string>(UM)</string>
+</emoticon>
+
+<emoticon file="what_smile">
+<string>:|</string>
+<string>:-|</string>
+</emoticon>
+
+<emoticon file="wilted_rose">
+<string>(w)</string>
+<string>(W)</string>
+</emoticon>
+
+<emoticon file="wink_smile">
+<string>;)</string>
+<string>;-)</string>
+</emoticon>
+
+<emoticon file="xbox">
+<string>(xx)</string>
+<string>(XX)</string>
+</emoticon>
+
+</messaging-emoticon-map>

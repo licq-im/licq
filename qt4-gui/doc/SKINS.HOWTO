@@ -1,0 +1,184 @@
+=======================================
+Licq Skins Howto
+
+February 6 2000, v1.5
+
+Graham Roff
+
+Modified by Thomas Reitelbach
+=======================================
+
+Revision 1.5: (2003-03, by Thomas Reitelbach)
+  - added scrollbar color support:
+    - colors.scrollbar = #22436a
+    - colors.btnTxt = #e6e6e6
+
+    -> colors.scrollbar is the main color for the scrollbar. It also affects
+       the userlist table head.
+    -> colors.btnTxt is the text color of the userlist table head and the
+       direction arrows of the scrollbar
+    Both options support "default" as value, which means to use the systems
+    default color, or you can use named colors like "white" or "yellow"
+    instead of hex-values.
+
+Revision 1.4:
+  - when using a menu bar, all position height positions can be set
+    assuming 0 is the bottom of the menu bar
+
+Revision 1.3:
+  - added frame.frameStyle option
+  - added frame.transparent option
+
+Revision 1.2:
+  - added the colors.xxx section (at the bottom)
+
+Revision 1.1:
+  - added "label.bg = transparent" option to have transparent labels
+  - fixed problems setting colors for the combo box
+  - added "label.margin = #" option to allow setting the left margin for a
+    label
+
+
+Skins Howto:
+
+  Making a skin for Licq is fairly straightforward.  To begin with, skins
+  can be:
+  1) Transparent
+  2) Non-rectangular (essentially using transparency)
+  3) Any color
+
+  A skin is composed of a skin.name directory in {prefix}/share/licq/qt-gui,
+a name.skin file in that directory, and any graphics files necessary, also
+in that directory.
+  The best way to explain how to build a skin is to look at a sample
+name.skin file.  Basically each object has various fields that must be
+specified.  All fields must be specified, text fields can have a value of
+"default" to use the default behavior.  Pixmap fields can have a value of
+"none" as well to specify no pixmap.  All pixmaps specified must be located
+in the {prefix}/share/licq/qt-gui/skin.name directory.
+  To not display an object, set all the position coordinates to be
+the same (non-zero) value and it will be hidden.
+
+
+# ==============================================================================
+# Border Skin
+
+# Frame Styles, add them together for combinations
+#  NoFrame = 0, Box = 1, Panel = 2, WinPanel = 3
+#  Plain = 16, Raised = 32, Sunken = 48, MShadow = 240
+
+[skin]
+
+# ---Frame---
+# The frame represents the background image and overall structure of the skin
+# It can be of any format supported by Qt (bmp, xpm, ppm, gif)
+# The mask is a 1 bit (black and white) image used for transparencies.  Any
+# region of the mask graphic containing 0's (white) will be transparent,
+# a region with 1's (black) will be opaque.
+frame.pixmap = frame-t.xpm
+frame.mask = mask.gif
+
+# The frame style uses the numbers above to create the frame around the user
+# window.  The transparent options (which can be 1 or 0 for true/false)
+# indicates whether the user window should be transparent or use the
+# background color specified below.
+frame.frameStyle = 51
+frame.transparent = 0
+
+# The frame.border specifiers are used in two cases.  First to determine where
+# to place the user list (it will be places inside of the border), and second
+# for resize effects.  A typical graphics resize will ruin a border by
+# stretching it in all directions.  Licq will resize the frame pixmap by
+# stretching only the section inside of the border in both directions, and
+# expanding the horizontal and vertical borders in one direction only.
+frame.border.top = 15
+frame.border.bottom = 110
+frame.border.left = 15
+frame.border.right = 15
+
+# If this is set to a non-zero value then the skin will have a menu bar with
+# the system button as the only member.  This precludes any settings in
+# btnSys below.  Any height positions specified for other widgets will be
+# automatically adjusted to be below the menu bar (ie 0 corresponds to the
+# pixel right below the menu bar)
+frame.hasMenuBar = 0
+
+# ---Status Label---
+# The rect specifiers show where to place the object.  A negative specification
+# for any field indicates a number of pixels back from the opposite side of the
+# window.  So setting x1 to 20 and x2 to -20 means the label will strech across
+# the entire window with a 20 pixel border on each side.  The two points are
+# the top left and bottom right corners of the object.
+lblStatus.rect.x1 = 20
+lblStatus.rect.y1 = -40
+lblStatus.rect.x2 = -20
+lblStatus.rect.y2 = -20
+
+# Colors are pretty self-explanatory.  Using "default" will use the default
+# colors.  Also, setting .bg to "transparent" will make the label be
+# transparent.
+lblStatus.color.fg = default
+lblStatus.color.bg = black
+
+# Frame style allows setting of what type of frame the object has.  Get the
+# values above, and OR them together for a combination.
+lblStatus.frameStyle = 0
+
+# Margin sets the left margin for the label, typically it would be combined
+# with a pixmap to give a nicer interior look to it.
+lblStatus.margin = 0
+
+# This sets the background pixmap for the object.
+lblStatus.pixmap = none
+
+# ---System Button---
+btnSys.rect.x1 = 20
+btnSys.rect.y1 = -65
+btnSys.rect.x2 = 70
+btnSys.rect.y2 = -45
+
+# These three pixmaps are what the button will look like when it's up and has
+# the focus, up and without the focus and down.
+btnSys.pixmapUpFocus = btnsysupfocus.xpm
+btnSys.pixmapUpNoFocus = btnsysupnofocus.xpm
+btnSys.pixmapDown = btnsysdown.xpm
+btnSys.color.fg = default
+btnSys.color.bg = black
+
+# This is the text that will appear on the System Button.  If there is a pixmap
+# set then this will be ignored.
+btnSys.caption = default
+
+# ---Message Label---
+lblMsg.rect.x1 = 75
+lblMsg.rect.y1 = -65
+lblMsg.rect.x2 = -20
+lblMsg.rect.y2 = -45
+lblMsg.color.fg = yellow
+lblMsg.color.bg = transparent
+lblMsg.frameStyle = 0
+lblMsg.pixmap = none
+lblMsg.margin = 0
+
+# ---Group Combobox---
+cmbGroups.rect.x1 = 25
+cmbGroups.rect.y1 = -90
+cmbGroups.rect.x2 = -25
+cmbGroups.rect.y2 = -70
+cmbGroups.color.fg = default
+cmbGroups.color.bg = silver
+
+# --- colors ---
+colors.online = blue
+colors.away = dark green
+colors.offline = firebrick
+colors.newuser = yellow
+colors.background = default
+colors.gridlines = black
+colors.scrollbar = #22436a
+colors.btnTxt = #e6e6e6
+
+# ==============================================================================
+
+
+

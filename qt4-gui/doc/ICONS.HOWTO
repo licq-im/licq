@@ -1,0 +1,57 @@
+#--------------------------------------
+# Licq Icons Pack Howto
+# Version 1.1, November 7th, 2002
+# Jon Keating
+#--------------------------------------
+#
+# There are two kinds of icon packs that can be made.  Both are
+# easy to create.  The first step is creaing the following icons,
+# and store them and the relevent config file in the proper
+# directory.
+#
+# If you are making a normal icon pack for statuses and events
+# the config file name is <name>.icons.  The directory name is
+# icons.<name>.
+#
+# If you are making an extended icon pack the config file name is
+# <name>.icons.  The directory name is extended.icons.<name>.
+#
+# See below for for example icon and extended icon config files.
+#
+# XPM, PNG and GIF formats are supported.  Any non-specified icons
+# will be blank except event icons which will default to the basic
+# message icon.  With extended icons, any non-specified icons will
+# default to the icons found in the extended icon pack 'basic'
+
+
+# Sample icon pack config file
+[icons]
+Online = online.xpm
+Offline = offline.xpm
+FFC = ffchat.xpm
+Away = sign.xpm
+NA = cross.xpm
+Occupied = chess.xpm
+DND = lock.xpm
+Private = private.xpm
+Message = message.xpm
+Url = url.xpm
+Chat = chat.xpm
+File = file.xpm
+Authorize = authorize.xpm
+SMS = sms.xpm
+Contact = contact.xpm
+SecureOff = secureoff.xpm
+SecureOn = secureon.xpm
+History = history.xpm
+Info = info.xpm
+
+# Sample extended icon pack config file
+[icons]
+Collapsed = collapsed.xpm
+Expanded = expanded.xpm
+Phone = phone.xpm
+Cellular = cellular.xpm
+CustomAR = customar.xpm
+Birthday = birthday.xpm
+Invisible = invisible.xpm

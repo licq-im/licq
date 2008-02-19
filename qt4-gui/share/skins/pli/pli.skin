@@ -1,0 +1,77 @@
+# pli-skin, v2 (made for Licq version 0.51)
+# by Per Liden, UIN #4872493
+#
+# I've stolen the menu button from the e-skin made by Danne Lundqvist.
+# Recommended licq.conf settings to use with this skin:
+#  [appearance]
+#  Skin = pli
+#  Icons = mark
+#  FontFamily = system
+#  FontSize = 12
+#  ColorOnline = white
+#  ColorAway = khaki4
+#  ColorOffline = darkgrey
+#  ColorNew = yellow
+#  ColorBackground = #222222
+#  GridLines = 0
+#  ShowHeader = 0
+
+[skin]
+
+frame.pixmap = Frame.png
+frame.mask = none
+frame.border.top = 28
+frame.border.bottom = 30
+frame.border.left = 4
+frame.border.right = 5
+frame.hasMenuBar = 0
+
+lblStatus.rect.x1 = 59
+lblStatus.rect.y1 = -26
+lblStatus.rect.x2 = -6
+lblStatus.rect.y2 = -6
+lblStatus.color.fg = white
+lblStatus.color.bg = #222222
+lblStatus.frameStyle = 51
+lblStatus.pixmap = none
+lblStatus.margin = 5
+
+btnSys.rect.x1 = 4
+btnSys.rect.y1 = -26
+btnSys.rect.x2 = 54
+btnSys.rect.y2 = -6
+btnSys.pixmapUpFocus = MenuButtonUp.png
+btnSys.pixmapUpNoFocus = MenuButtonUp.png
+btnSys.pixmapDown = MenuButtonDown.png
+btnSys.color.fg = white
+btnSys.color.bg = #222222
+btnSys.caption = default
+
+lblMsg.rect.x1 = 4
+lblMsg.rect.y1 = 5
+lblMsg.rect.x2 = -6
+lblMsg.rect.y2 = 25
+lblMsg.color.fg = white
+lblMsg.color.bg = #222222
+lblMsg.frameStyle = 51
+lblMsg.pixmap = none
+lblMsg.margin = 5
+
+cmbGroups.rect.x1 = 1
+cmbGroups.rect.y1 = 1
+cmbGroups.rect.x2 = 1
+cmbGroups.rect.y2 = 1
+cmbGroups.color.fg = default
+cmbGroups.color.bg = default
+
+# --- colors ---
+colors.online = white
+colors.away = #cccccc
+colors.offline = #ababab
+colors.newuser = yellow
+colors.background = #7a7d8a
+colors.gridlines = silver
+colors.scrollbar = lightgrey
+colors.btnTxt = default
+
+# End of file

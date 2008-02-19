@@ -1,0 +1,25 @@
+# Kde2 Dock icon theme
+# Ivo Schooneman Thanx to the makers of the flower dock theme.
+# I only resized it for kde2
+
+[background]
+NoMessages = nomsg.xpm
+NoMessagesMask = mask.xpm
+RegularMessages = regmsg.xpm
+RegularMessagesMask = mask.xpm
+SystemMessages = sysmsg.xpm
+SystemMessagesMask = mask.xpm
+BothMessages = bothmsg.xpm
+BothMessagesMask = mask.xpm
+
+[status]
+Mask = statusmask.xpm
+Online = online.xpm
+Offline = offline.xpm
+Away = away.xpm
+NA = na.xpm
+Occupied = occupied.xpm
+DND = dnd.xpm
+FFC = ffc.xpm
+Invisible = invisible.xpm
+

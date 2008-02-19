@@ -1,0 +1,33 @@
+Basic Installation of Qt4-GUI Plugin for Licq
+=============================================
+
+Requirements for Qt4-GUI:
+
+  - X11 header files (xfree-devel or xorg-devel)
+  - Qt 4.3.2 or greater. Most distributions come with packages like Qt and
+    Qt-devel, you need both, please install the missing ones!
+  - A C++ compiler and libstc++-devel.  This compiler must be the same
+          version that was used to compile Qt with.  If it is not, you will
+          probably experience a crash on startup.
+  - cmake 2.4.2 or greater.
+  - GNU make
+
+Qt can be downloaded from ftp://ftp.trolltech.com/pub/qt/source
+(search for qt-x11-opensource-src-X.X.X.tar.gz).
+
+
+These are the installation instructions:
+
+  1. Go to the directory where you unpacked Qt4-GUI sources and create
+     the new directory named build. Go into that directory and type
+     'cmake ..' (without quotes).
+     This will check for required components and create the build tree
+     along with needed Makefiles. While running, it prints some messages
+     telling which features it is checking for. If you want KDE support,
+     please read README.KDE.
+
+  2. Type 'make' to compile the package.
+
+  3. Type 'make install' to install the plugin, data files and
+     documentation. You have to be 'root' for this to work.
+     Per default files are installed with /usr/local prefix.

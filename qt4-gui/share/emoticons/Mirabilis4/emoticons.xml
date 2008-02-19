@@ -1,0 +1,122 @@
+<?xml version="1.0"?>
+<messaging-emoticon-map >
+
+<emoticon file="icq_s_smile">
+	<string>:-)</string>
+	<string>:)</string>
+</emoticon>
+
+<emoticon file="icq_s_sad">
+	<string>:-(</string>
+	<string>:(</string>
+</emoticon>
+
+<emoticon file="icq_s_wink">
+	<string>;-)</string>
+	<string>;)</string>
+</emoticon>
+
+<emoticon file="icq_s_tongue">
+	<string>:-P</string>
+	<string>:P</string>
+</emoticon>
+
+<emoticon file="icq_s_jokingly">
+	<string>*JOKINGLY*</string>
+</emoticon>
+
+<emoticon file="icq_s_crying">
+	<string>:'-(</string>
+	<string>:'(</string>
+</emoticon>
+
+<emoticon file="icq_s_kissed">
+	<string>*KISSED*</string>
+</emoticon>
+
+<emoticon file="icq_s_kiss">
+	<string>:-{}</string>
+	<string>:-*</string>
+</emoticon>
+
+<emoticon file="icq_s_ops">
+	<string>:-[</string>
+</emoticon>
+
+<emoticon file="icq_s_holy">
+	<string>O-)</string>
+</emoticon>
+
+<emoticon file="icq_s_mutely">
+	<string>:-X</string>
+</emoticon>
+
+<emoticon file="icq_s_unsure">
+	<string>:-/</string>
+</emoticon>
+
+<emoticon file="icq_s_angry">
+	<string>:-@</string>
+</emoticon>
+
+<emoticon file="icq_s_lol">
+	<string>:-D</string>
+	<string>:D</string>
+</emoticon>
+
+<emoticon file="icq_s_confused">
+	<string>:-|</string>
+</emoticon>
+
+<emoticon file="icq_s_shocked">
+	<string>:-O</string>
+</emoticon>
+
+<emoticon file="icq_s_cool">
+	<string>8-)</string>
+	<string>8)</string>
+</emoticon>
+
+<emoticon file="icq_s_listen">
+	<string>[:-}</string>
+</emoticon>
+
+<emoticon file="icq_s_tiredly">
+	<string>*TIRED*</string>
+</emoticon>
+
+<emoticon file="icq_s_stop">
+	<string>:*)</string>
+</emoticon>
+
+<emoticon file="icq_s_kissing">
+	<string>*KISSING*</string>
+</emoticon>
+
+<emoticon file="icq_s_evil">
+	<string>]:-&gt;</string>
+	<string>]:-&#62;</string>
+</emoticon>
+
+<emoticon file="icq_s_flower">
+	<string>@}-&gt;--</string>
+</emoticon>
+
+<emoticon file="icq_s_bomb">
+	<string>@=</string>
+</emoticon>
+
+<emoticon file="icq_s_ack">
+	<string>*THUMBS UP*</string>
+</emoticon>
+
+<emoticon file="icq_s_drink">
+	<string>*DRINK*</string>
+</emoticon>
+
+<emoticon file="icq_s_love">
+	<string>*IN LOVE*</string>
+</emoticon>
+
+</messaging-emoticon-map>
+

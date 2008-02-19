@@ -1,0 +1,19 @@
+# Extended icon pack file
+# Quentin Denis
+
+[icons]
+Collapsed = collapsed.png
+Expanded = expanded.png
+Birthday = birthday.png
+Cellular = phone2.png
+CustomAR = customar.png
+Invisible = invisible.png
+Phone = phone.png
+PhoneFollowMeActive = pixPhoneFollowMeActive.png
+PhoneFollowMeBusy = pixPhoneFollowMeBusy.png
+ICQphoneActive = pixICQphoneActive.png
+ICQphoneBusy = pixICQphoneBusy.png
+SharedFiles = sharedfiles.png
+GPGKeyEnabled = gpgkey_enabled.png
+GPGKeyDisabled = gpgkey_disabled.png
+Typing = typing.png

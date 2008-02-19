@@ -1,0 +1,20 @@
+[icons]
+Online = online.png
+Away = away.png
+NA = na.png
+Occupied = occupied.png
+DND = dnd.png
+FFC = ffc.png
+Offline = offline.png
+Private = private.png
+File = file.png
+Message = message.png
+Url = url.png
+AIMOnline = aimonline.png
+AIMOffline = aimoffline.png
+AIMAway = aimaway.png
+MSNOnline = msnonline.png
+MSNOffline = msnoffline.png
+MSNAway = msnaway.png
+MSNOccupied = msnoccupied.png
+MSNPrivate = msnprivate.png

@@ -1,0 +1,1 @@
+# TODO: licq.desktop installation

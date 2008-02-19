@@ -1,0 +1,97 @@
+# dim skin by ydum
+# e-mail: kesha@soften.ktu.lt
+# UIN: 9036516
+#
+# Modified by Graham Roff to fix a few small things
+#
+# For the skin to look as it was originally designed, remove
+# any window decarations, provided by your window manager. Also,
+# edit your licq.conf & geometry.conf files as shown below.
+# NOTE: you should quit licq before editing these files!
+#
+# Mark's Icon pack is a good spice up for this skin.
+#
+### licq.conf
+# [appearance]
+# FontFamily = vga
+# FontSize = 12
+#
+# ColorOnline = white
+# ColorAway = dark green
+# ColorOffline = firebrick
+# ColorNew = yellow
+# ColorBackground = black
+# GridLines = 1
+# ShowHeader = 0
+#
+# NumColumns = 1
+# Column1Info = 1
+# Column1Width = 150
+# Column1Align = 0
+#
+### geometry.conf
+# [geometry]
+# x = 0
+# y = 0
+# w = 175
+# h = 435
+
+
+[skin]
+
+# --- Frame ---
+frame.pixmap = Frame.png
+# frame.mask = mask.png
+frame.mask = none
+frame.border.top = 43
+frame.border.bottom = 25
+frame.border.left = 1
+frame.border.right = 1
+frame.hasMenuBar = 0
+
+# --- Status Label ---
+lblStatus.rect.x1 = 63
+lblStatus.rect.y1 = 24
+lblStatus.rect.x2 = -1
+lblStatus.rect.y2 = 40
+lblStatus.color.fg = green
+lblStatus.color.bg = #787878
+lblStatus.frameStyle = 0
+lblStatus.margin = 10
+lblStatus.pixmap = Status.png
+
+# --- Menu button ---
+btnSys.rect.x1 = 1
+btnSys.rect.y1 = 24
+btnSys.rect.x2 = 60
+btnSys.rect.y2 = 40
+btnSys.pixmapDown = MenuDown.png
+btnSys.pixmapUpFocus = MenuUpFocus.png
+btnSys.pixmapUpNoFocus = MenuUpNoFocus.png
+btnSys.color.fg = transparent
+btnSys.color.bg = transparent
+btnSys.caption = default
+
+# --- Message Label ---
+lblMsg.rect.x1 = 3
+lblMsg.rect.y1 = -21
+lblMsg.rect.x2 = 90
+lblMsg.rect.y2 = -3
+lblMsg.color.fg = white
+lblMsg.color.bg = black
+lblMsg.frameStyle = 0
+lblMsg.pixmap = Label-small.png
+lblMsg.margin = 18
+
+
+# --- groups ---
+# we don't want groups in this skin
+cmbGroups.rect.x1 = 777
+cmbGroups.rect.y1 = 777
+cmbGroups.rect.x2 = 777
+cmbGroups.rect.y2 = 777
+cmbGroups.color.fg = default
+cmbGroups.color.bg = default
+
+colors.scrollbar = #4c4e4e
+colors.btnTxt = #dddddd

@@ -1,0 +1,6 @@
+add_subdirectory(dock)
+add_subdirectory(emoticons)
+add_subdirectory(exticons)
+add_subdirectory(icons)
+add_subdirectory(misc)
+add_subdirectory(skins)

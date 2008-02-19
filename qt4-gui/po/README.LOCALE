@@ -1,0 +1,83 @@
+Licq Qt4-GUI Translation Support
+
+Creating a New Translation File
+===============================
+
+If there is no .ts file for your language, you will need to create
+a template first. It could be done by running "make template" in the build
+directory. Which creates template.ts file in the po directory.
+Then rename it in accordance to the language you are going to translate into
+(e.g. ru.ts for Russian) and open it with Qt4 Linguist to start translating.
+
+Edit po/CMakeLists.txt and add ru.ts to the po_SRCS list.
+
+
+Updating a Translation File
+===========================
+
+Text strings are updated with each new Licq release, thus it is necessary
+to update the .ts files. This is done simply by running "make merge" in the
+build directory. The updated .ts file can now be edited and any necessary
+translations be added or updated.
+
+After several updates you will notice obsolete translations in the .ts file.
+In order to properly remove them you can run "make clean-merge".
+(This is advised to do after translation is done, not before.)
+
+
+Installing a Translation File
+=============================
+
+Once the .ts file has been created and translated, it must be converted into
+a .qm file. This is done simply by doing "make". Once you have the .qm file,
+it must be installed with "make install".
+
+
+Using a Translation File
+========================
+
+Set the environment variable LC_MESSAGES to the desired language code
+(as per GNU gettext standard) and it will be loaded next time the Licq
+is started.
+
+
+Notes
+=====
+
+Help on using Qt4 Linguist can be found on Trolltech documentation homepage:
+http://doc.trolltech.com/4.3/linguist-manual.html
+
+
+Executive Summary
+=================
+
+Note that we call the Linguist linguist-qt4 here. The name might also be
+just linguist on your installation. Notably Debian calls it the former
+way.
+
+First translation:
+
+licq$ mkdir build
+licq$ cd build
+build$ cmake ..
+build$ make template
+build$ cd ../po
+po$ mv template.ts ru.ts
+
+Updating the translation:
+
+licq$ cd build
+build$ make merge
+build$ cd ../po
+po$ linguist-qt4 ru.ts
+po$ cd ../build
+build$ make clean-merge
+
+Installing the translation:
+
+licq$ cd build
+build$ make install
+
+Using the translation:
+
+$ LC_MESSAGES="ru" licq

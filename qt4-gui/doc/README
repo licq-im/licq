@@ -1,0 +1,44 @@
+Licq Qt4-GUI Plugin
+
+A plugin for Licq to enable a gui based on Qt.
+
+
+LICENSE
+
+This program is licensed under the terms of the GNU GPL, with the
+exception that it may be compiled and linked with the TrollTech QT
+library without implying that any of the rights or restrictions
+associated with the GPL are applied to the QT library.
+
+
+INSTALLATION:
+
+See the INSTALL file within this directory.
+
+
+CONFIGURATION:
+
+Configuration is done through the licq_qt-gui.conf file in your base dir,
+which contains .ini style options.
+
+
+USE:
+
+Type licq -h -p qt4-gui for command line help.
+
+Using licq is very straight-forward. To access any of the options, just
+right click on a user and select the relevant command, or double click on
+the user.  A window will open containing a dialog with all the possible
+things to do. In this way you can read a new message, check user info,
+and send a message all from the same window at the same time.
+
+One key feature of licq is the network status window, which can be viewed
+by selecting "Show Network Window" under the "System" menu. This screen
+will show you exactly what is occurring at the protocol level.
+The menu option "<your alias>" will allow you to view your own settings
+and to check system messages.
+
+
+CONTACTS:
+
+Send any questions, comments, or other complaints to licq-dev@googlegroups.com.

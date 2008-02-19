@@ -1,0 +1,21 @@
+[icons]
+Online = online.ppm
+FFC = online.ppm
+Offline = offline.ppm
+Away = away.ppm
+NA = na.ppm
+Occupied = occupied.ppm
+DND = dnd.ppm
+Private = private.xpm
+Message = message.ppm
+Url = message.ppm
+Chat = message.ppm
+File = message.ppm
+AIMOnline = aimonline.png
+AIMOffline = aimoffline.png
+AIMAway = aimaway.png
+MSNOnline = msnonline.xpm
+MSNOffline = msnoffline.xpm
+MSNAway = msnaway.xpm
+MSNPrivate = msnprivate.xpm
+MSNOccupied = msnoccupied.xpm

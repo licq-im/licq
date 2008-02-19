@@ -1,0 +1,85 @@
+# compact marble skin by Marcus Majewski
+# majewski@apollo.nu
+# UIN 345886
+#
+# I wanted a compact skin, here's the result.
+# I use icons.mark and the following settings
+# licq.conf
+#
+# BEFORE EDITING licq.conf, CLOSE LICQ!
+#
+# (in licq.conf)
+# [appearance]
+# FontFamily = helvetica
+# FontSize = 8
+#
+# ColorOnline = #ffffff
+# ColorAway = #707070
+# ColorOffline = #505050
+# ColorNew = #ff0000
+# ColorBackground = #000000
+# GridLines = 0
+# ShowHeader = 0
+#
+# NumColumns = 1
+# Column1Info = 3
+# Column1Width = 81
+# Column1Align = 1
+#
+# (in geometry.conf)
+# [geometry]
+# x = 7
+# y = 7
+# w = 111
+# h = 256
+
+
+[skin]
+
+frame.pixmap = frame.png
+frame.mask = none
+frame.border.top = 19
+frame.border.bottom = 19
+frame.border.left = 4
+frame.border.right = 4
+frame.hasMenuBar = 0
+
+lblStatus.rect.x1 = -76
+lblStatus.rect.y1 = 4
+lblStatus.rect.x2 = -6
+lblStatus.rect.y2 = 16
+lblStatus.color.fg = #000000
+lblStatus.color.bg = #000000
+lblStatus.frameStyle = 0
+lblStatus.pixmap = status.png
+
+btnSys.rect.x1 = 6
+btnSys.rect.y1 = 4
+btnSys.rect.x2 = 20
+btnSys.rect.y2 = 15
+btnSys.pixmapUpFocus = button.png
+btnSys.pixmapUpNoFocus = button.png
+btnSys.pixmapDown = button.png
+btnSys.color.fg = #000000
+btnSys.color.bg = #000000
+btnSys.caption = none
+
+lblMsg.rect.x1 = 6
+lblMsg.rect.y1 = -16
+lblMsg.rect.x2 = -6
+lblMsg.rect.y2 = -4
+lblMsg.color.fg = #000000
+lblMsg.color.bg = #000000
+lblMsg.frameStyle = 0
+lblMsg.pixmap = msg.png
+
+cmbGroups.rect.x1 = 1
+cmbGroups.rect.y1 = 1
+cmbGroups.rect.x2 = 1
+cmbGroups.rect.y2 = 1
+cmbGroups.color.fg = #000000
+cmbGroups.color.bg = #000000
+colors.scrollbar = #828282
+colors.btnTxt = default
+
+

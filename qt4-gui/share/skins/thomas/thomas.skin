@@ -1,0 +1,59 @@
+
+[skin]
+
+frame.pixmap = background.png
+frame.mask = none
+frame.border.top = 10
+frame.border.bottom = 55
+frame.border.left = 9
+frame.border.right = 9
+frame.hasMenuBar = 0
+frame.frameStyle = 0
+frame.transparent = 1
+
+lblMsg.rect.x1 = 68
+lblMsg.rect.y1 = -30
+lblMsg.rect.x2 = -10
+lblMsg.rect.y2 = -10
+lblStatus.color.fg = white
+lblStatus.color.bg = transparent
+lblStatus.frameStyle = 33
+lblStatus.pixmap = none
+lblStatus.margin = 5
+
+btnSys.rect.x1 = 10
+btnSys.rect.y1 = -30
+btnSys.rect.x2 = 62
+btnSys.rect.y2 = -10
+btnSys.pixmapUpFocus = btnHighlight.png
+btnSys.pixmapUpNoFocus = btnUp.png
+btnSys.pixmapDown = btnDown.png
+btnSys.color.fg = white
+btnSys.color.bg = black
+btnSys.caption = default
+
+lblStatus.rect.x1 = 10
+lblStatus.rect.y1 = -55
+lblStatus.rect.x2 = -10
+lblStatus.rect.y2 = -35
+lblMsg.color.fg = white
+lblMsg.color.bg = transparent
+lblMsg.frameStyle = 33
+lblMsg.pixmap = none
+lblMsg.margin = 5
+
+cmbGroups.rect.x1 = 1
+cmbGroups.rect.y1 = 1
+cmbGroups.rect.x2 = 1
+cmbGroups.rect.y2 = 1
+cmbGroups.color.fg = default
+cmbGroups.color.bg = default
+
+colors.online = white
+colors.away = #8c8c8c
+colors.offline = #cccccc
+colors.newuser = yellow
+colors.background = #191970
+colors.gridlines = silver
+colors.scrollbar = #1f3663
+colors.btnTxt = #e6e6e6

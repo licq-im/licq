@@ -1,0 +1,67 @@
+# Basic Skin
+# Recommend licq.conf settings:
+#  [appearance]
+#  ColorBackground = silver
+#  Show Header = 0
+
+# Frame Styles, OR them together for combinations
+#  NoFrame = 0, Box = 0x0001, Panel = 0x0002, WinPanel = 0x0003, HLine = 0x0004,
+#  VLine = 0x0005, MShape = 0x000f, Plain = 0x0010, Raised = 0x0020,
+#  Sunken = 0x0030, MShadow = 0x00f0
+
+[skin]
+
+frame.pixmap = none
+frame.mask = none
+frame.border.top = 0
+frame.border.bottom = 48
+frame.border.left = 0
+frame.border.right = 0
+frame.hasMenuBar = 0
+
+lblStatus.rect.x1 = 50
+lblStatus.rect.y1 = -24
+lblStatus.rect.x2 = -2
+lblStatus.rect.y2 = -2
+lblStatus.color.fg = default
+lblStatus.color.bg = default
+lblStatus.frameStyle = 51
+lblStatus.pixmap = none
+
+btnSys.rect.x1 = 2
+btnSys.rect.y1 = -24
+btnSys.rect.x2 = 48
+btnSys.rect.y2 = -2
+btnSys.pixmapUpFocus = none
+btnSys.pixmapUpNoFocus = none
+btnSys.pixmapDown = none
+btnSys.color.fg = default
+btnSys.color.bg = default
+btnSys.caption = Licq
+
+lblMsg.rect.x1 = 2
+lblMsg.rect.y1 = -48
+lblMsg.rect.x2 = -2
+lblMsg.rect.y2 = -26
+lblMsg.color.fg = default
+lblMsg.color.bg = default
+lblMsg.frameStyle = 51
+lblMsg.pixmap = none
+
+cmbGroups.rect.x1 = -1
+cmbGroups.rect.y1 = -1
+cmbGroups.rect.x2 = -1
+cmbGroups.rect.y2 = -1
+cmbGroups.color.fg = default
+cmbGroups.color.bg = default
+
+# --- colors ---
+colors.online = default
+colors.away = default
+colors.offline = default
+colors.newuser = default
+colors.background = default
+colors.gridlines = default
+colors.scrollbar = lightblue
+colors.btnTxt = default
+

@@ -1,0 +1,50 @@
+Licq Qt-Gui Plugin
+Docking Howto
+
+Graham Roff
+
+
+Docking the licq qt-gui status icon is fairly simple to do.  Here is a list
+of window managers and what to do.  First, do the following:
+
+1. Remove any old dock icons for licq.
+2. Start licq and enable the dock icon in Options->Extensions->UseDockIcon
+3. Select "Save Options" from the system menu.
+4. Restart Licq (very important).
+
+
+WindowMaker
+
+5. Drag the status icon to the dock and voila.
+Note that the other icon that appears is from windowmaker and can be set
+to something nice, or disable entirely using the windowmaker menu.
+
+
+AfterStep
+
+5. Add the following to your ~/GNUstep/Library/AfterStep/wharf file:
+   "*Wharf licq      - Swallow "LicqWharf" echo &"
+6. Next time start Licq, the icon should appear in the wharf.
+
+
+KDE
+
+5. Configure licq with --with-kde and then licq will dock in the kde panel.
+6. Start Licq and there it goes!
+
+Gnome
+
+1. Start licq and enable a dock icon. The dock icon appears on the
+   desktop
+2. In de panel choose Panel->Add to Panel->Swallowed App...
+3. Title of appl: LicqWharf
+   Width=64, Height=48
+4. Press OK
+5. You now get an EMPTY swallowed icon. Licq still is on the desktop.
+6. Remove the emty icon from the panel now.
+   Both the empty swallowed icon AND the licq icon on the desktop
+   disappear!!
+   Keep licq running..
+7. Repeat steps 2, 3 and 4.
+   Now the licq dock icon correctly appears in the panel as wanted.
+
