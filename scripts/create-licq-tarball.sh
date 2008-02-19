@@ -158,7 +158,7 @@ for plugin in licqweb; do
    svnexport "trunk/${plugin}" "plugins/${plugin}"
 done
 
-svnexport "branches/qt-gui_qt4" "plugins/qt4-gui"
+svnexport "trunk/qt4-gui" "plugins/qt4-gui"
 
 echo "Creating tarball ${TARNAME}.tar"
 tar --owner "${OWNER}" --group "${GROUP}" -C "${TMPDIR}" -cf "${TMPDIR}/${TARNAME}.tar" "${DIRNAME}" || failed
