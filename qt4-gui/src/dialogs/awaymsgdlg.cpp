@@ -76,6 +76,7 @@ AwayMsgDlg::AwayMsgDlg(QWidget* parent)
   QVBoxLayout* top_lay = new QVBoxLayout(this);
 
   myAwayMsg = new MLEdit(true);
+  myAwayMsg->setSizeHintLines(5);
   connect(myAwayMsg, SIGNAL(clicked()), SLOT(autoCloseStop()));
   connect(myAwayMsg, SIGNAL(ctrlEnterPressed()), SLOT(ok()));
   myAwayMsg->installEventFilter(this);
