@@ -941,7 +941,18 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
             return;
           }
       }
+      break;
     }
+
+    case USER_SECURITY:
+      // Automatically unset 'send through server' upon
+      // establishing secure channel
+      if (u->Secure())
+      {
+        u->SetSendServer(false);
+        chkSendServer->setChecked(false);
+      }
+      break;
   }
 
   gUserManager.DropUser(u);
