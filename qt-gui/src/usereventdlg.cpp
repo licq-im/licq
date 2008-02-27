@@ -2688,6 +2688,16 @@ void UserSendCommon::UserUpdated(CICQSignal *sig, char *szId, unsigned long nPPI
           }
         }
       }
+      break;
+    }
+    case USER_SECURITY:
+    {
+      if (u->Secure())
+      {
+        u->SetSendServer(false);
+        chkSendServer->setChecked(false);
+      }
+      break;
     }
   }
   gUserManager.DropUser(u);
