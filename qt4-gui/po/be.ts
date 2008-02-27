@@ -2,6 +2,14 @@
 <!DOCTYPE TS><TS version="1.1" language="be_BY">
 <defaultcodec></defaultcodec>
 <context>
+    <name></name>
+    <message>
+        <location filename="../src/core/gui-defines.h" line="39"/>
+        <source>KDE default</source>
+        <translation>KDE па-змоўчаньню</translation>
+    </message>
+</context>
+<context>
     <name>Groups</name>
     <message>
         <location filename="../src/helpers/licqstrings.cpp" line="108"/>
