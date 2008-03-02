@@ -33,7 +33,6 @@
 #include <KDE/KWindowSystem>
 #include <KDE/KIconLoader>
 #include <KDE/KUrl>
-#include <KDE/KPassivePopup>
 #else
 #include <QApplication>
 #endif
@@ -629,21 +628,13 @@ void MainWindow::slot_updatedUser(CICQSignal* sig)
       if (sig->SubSignal() == USER_STATUS &&
           sig->Argument() == 1)
       {
-#if defined(USE_KDE)
         // User on notify list went online -> show popup at systray icon
         if (LicqGui::instance()->dockIcon() != NULL && u->OnlineNotify())
         {
           QString alias = QString::fromUtf8(u->GetAlias());
-          // Escape HTML
-          alias.replace(QChar('&'), "&amp;");
-          alias.replace(QChar('<'), "&lt;");
-          alias.replace(QChar('>'), "&gt;");
-
-          QString msg(tr("%1 is online").arg("<b>" + alias + "</b>"));
           QPixmap px = IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID());
-          KPassivePopup::message("Licq", msg, px, LicqGui::instance()->dockIcon(), 4000);
+          LicqGui::instance()->dockIcon()->popupMessage(alias, tr("is online"), px, 4000);
         }
-#endif
       }
 
       gUserManager.DropUser(u);

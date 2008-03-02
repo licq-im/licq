@@ -21,6 +21,10 @@
 
 #include "config.h"
 
+#ifdef USE_KDE
+#include <KDE/KPassivePopup>
+#endif
+
 #include "config/general.h"
 
 using namespace LicqQtGui;
@@ -59,6 +63,27 @@ void SystemTrayIcon::updateIconMessages(int newMsg, int sysMsg)
   }
 
   DockIcon::updateIconMessages(newMsg, sysMsg);
+}
+
+#ifdef USE_KDE
+void SystemTrayIcon::popupMessage(QString title, QString message, const QPixmap& icon, int timeout)
+#else
+void SystemTrayIcon::popupMessage(QString title, QString message, const QPixmap& /* icon */, int timeout)
+#endif
+{
+#ifdef USE_KDE
+  // Escape HTML
+  title.replace('&', "&amp;");
+  title.replace('<', "&lt;");
+  title.replace('>', "&gt;");
+  message.replace('&', "&amp;");
+  message.replace('<', "&lt;");
+  message.replace('>', "&gt;");
+  KPassivePopup::message(title, message, icon, myTrayIcon, timeout);
+#else
+  if (myTrayIcon->supportsMessages())
+    myTrayIcon->showMessage(title, message, QSystemTrayIcon::NoIcon, timeout);
+#endif
 }
 
 void SystemTrayIcon::updateStatusIcon()

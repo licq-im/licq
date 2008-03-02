@@ -52,6 +52,17 @@ public:
    */
   virtual void updateIconMessages(int newMsg, int sysMsg);
 
+  /**
+   * Popup message from system tray
+   * NOT IMPLEMENTED FOR DEFAULT ICON
+   *
+   * @param title Popup title text
+   * @param message Message text
+   * @param icon Icon to display in the popup
+   * @param timeout Time before hiding popup
+   */
+  virtual void popupMessage(QString /* title */, QString /* message */, const QPixmap& /* icon */, int /* timeout */) {}
+
 protected slots:
   /**
    * Updated the icon for current status
