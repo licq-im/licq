@@ -259,6 +259,9 @@ void MLEdit::toggleAllowTab()
   setTabChangesFocus(!tabChangesFocus());
 }
 
+#if 0
+//TODO: This may or may not be needed for KTextEdit in KDE 4
+
 #ifdef MLEDIT_USE_KTEXTEDIT
 /**
  * @return the number of characters @a c at the end of @a str.
@@ -276,8 +279,6 @@ static unsigned int countCharRev(const QString& str, const QChar c)
 }
 #endif
 
-#if 0
-//TODO: This may or may not be needed for KTextEdit in KDE 4
 /*
  * KTextEdit adds a menu entry for doing spell checking. Unfortunatly KSpell
  * (which is what KTextEdit uses to do the spell check) messes with the newlines

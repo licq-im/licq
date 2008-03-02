@@ -63,6 +63,17 @@ public:
    */
   void sort(int column = 0, int role = Qt::DisplayRole, Qt::SortOrder order = Qt::AscendingOrder);
 
+  /**
+   * Same sort as above but with same parameters as base class so we overload
+   * it. Also this sort() has no default values to sovle problems when calls
+   * to sort() would be ambiguous with base sort() accessable.
+   *
+   * @param column Column to sort on
+   * @param order Order to sort
+   */
+  virtual void sort(int column, Qt::SortOrder order)
+  { sort(column, Qt::DisplayRole, order); }
+
 private:
   /**
    * Compare sorting order of two items

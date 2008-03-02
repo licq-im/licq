@@ -83,6 +83,9 @@ public:
 
   virtual ~ButtonSkin() { }
   virtual void loadSkin(CIniFile& skinFile, QString name, QString baseSkinDir);
+
+private:
+  using ShapeSkin::loadSkin;
 };
 
 class LabelSkin : public ShapeSkin
@@ -95,6 +98,9 @@ public:
 
   virtual ~LabelSkin() { }
   virtual void loadSkin(CIniFile& skinFile, QString name, QString baseSkinDir);
+
+private:
+  using ShapeSkin::loadSkin;
 };
 
 class ComboSkin : public ShapeSkin { };
