@@ -17,12 +17,19 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
+#include "config.h"
+
 #include "tabwidget.h"
 
-#include <QWheelEvent>
+#ifdef USE_KDE
+# include <QTabBar>
+#else
+# include <QWheelEvent>
+#endif
 
 using namespace LicqQtGui;
 
+#ifndef USE_KDE
 TabBar::TabBar(QWidget* parent)
   : QTabBar(parent)
 {
@@ -77,39 +84,55 @@ void TabBar::mouseReleaseEvent(QMouseEvent* e)
   {
     int t = tabAt(e->pos());
     if (t > -1 && t == myClickedTab)
-      emit middleClick(t);
+      emit mouseMiddleClick(t);
   }
 
   myClickedTab = -1;
   QTabBar::mouseReleaseEvent(e);
 }
+#endif
 
 
 TabWidget::TabWidget(QWidget* parent)
-  : QTabWidget(parent)
+  : TABWIDGET_BASE(parent)
 {
+#ifndef USE_KDE
   TabBar* tb = new TabBar(this);
   setTabBar(tb);
-  connect(tb, SIGNAL(middleClick(int)), SLOT(slot_middleClick(int)));
+  connect(tb, SIGNAL(mouseMiddleClick(int)), SLOT(slot_middleClick(int)));
+#endif
 }
 
 void TabWidget::setTabColor(QWidget* tab, const QColor& color)
 {
   int index = indexOf(tab);
   if (index != -1)
+#ifdef USE_KDE
+    setTabTextColor(index, color);
+#else
     tabBar()->setTabTextColor(index, color);
+#endif
 }
 
 void TabWidget::setPreviousPage()
 {
-  dynamic_cast<TabBar*>(tabBar())->setPreviousTab();
+  int index = tabBar()->currentIndex() - 1;
+  if (index < 0)
+    index = tabBar()->count() - 1;
+
+  tabBar()->setCurrentIndex(index);
 }
 
 void TabWidget::setNextPage()
 {
-  dynamic_cast<TabBar*>(tabBar())->setNextTab();
+  int index = tabBar()->currentIndex() + 1;
+  if (index >= tabBar()->count())
+    index = 0;
+
+  tabBar()->setCurrentIndex(index);
 }
 
+#ifndef USE_KDE
 void TabWidget::wheelEvent(QWheelEvent* e)
 {
   if (count() <= 1)
@@ -139,5 +162,6 @@ void TabWidget::slot_middleClick(int t)
 {
   QWidget* p = widget(t);
   if (p)
-    emit middleClick(p);
+    emit mouseMiddleClick(p);
 }
+#endif

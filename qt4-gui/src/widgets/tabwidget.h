@@ -20,12 +20,21 @@
 #ifndef TABWIDGET_H
 #define TABWIDGET_H
 
-#include <QTabBar>
-#include <QTabWidget>
+#include "config.h"
+
+#ifdef USE_KDE
+# include <KDE/KTabWidget>
+# define TABWIDGET_BASE KTabWidget
+#else
+# include <QTabBar>
+# include <QTabWidget>
+# define TABWIDGET_BASE QTabWidget
+#endif
 
 namespace LicqQtGui
 {
 
+#ifndef USE_KDE
 class TabBar : public QTabBar
 {
   Q_OBJECT
@@ -37,7 +46,7 @@ public:
   void setNextTab();
 
 signals:
-  void middleClick(int t);
+  void mouseMiddleClick(int t);
 
 private:
   virtual void wheelEvent(QWheelEvent* e);
@@ -46,9 +55,10 @@ private:
 
   int myClickedTab;
 };
+#endif
 
 
-class TabWidget : public QTabWidget
+class TabWidget : public TABWIDGET_BASE
 {
   Q_OBJECT
 
@@ -59,14 +69,16 @@ public:
   void setPreviousPage();
   void setNextPage();
 
+#ifndef USE_KDE
 signals:
-  void middleClick(QWidget* p);
+  void mouseMiddleClick(QWidget* p);
 
 private slots:
   void slot_middleClick(int t);
 
 private:
   virtual void wheelEvent(QWheelEvent* e);
+#endif
 };
 
 } // namespace LicqQtGui

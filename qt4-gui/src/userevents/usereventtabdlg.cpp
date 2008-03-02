@@ -59,7 +59,7 @@ UserEventTabDlg::UserEventTabDlg(QWidget* parent, const char* name)
 
   connect(tabw, SIGNAL(currentChanged(int)),
           SLOT(slotCurrentChanged(int)));
-  connect(tabw, SIGNAL(middleClick(QWidget*)),
+  connect(tabw, SIGNAL(mouseMiddleClick(QWidget*)),
           SLOT(slotRemoveTab(QWidget*)));
 }
 
