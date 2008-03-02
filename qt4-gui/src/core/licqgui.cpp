@@ -137,7 +137,9 @@ static int licq_xerrhandler(Display* dpy, XErrorEvent* err)
 LicqGui* LicqGui::myInstance = NULL;
 
 LicqGui::LicqGui(int& argc, char** argv) :
-#ifndef USE_KDE
+#ifdef USE_KDE
+  KApplication(true),
+#else
   QApplication(argc, argv),
 #endif
   myStartHidden(false),
