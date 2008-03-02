@@ -19,26 +19,30 @@
 
 #include "colorbutton.h"
 
+#ifndef USE_KDE
 #include <QColorDialog>
+#endif
 
 using namespace LicqQtGui;
 
-
 ColorButton::ColorButton(QWidget* parent)
-  : QPushButton(parent)
+  : COLORBUTTON_BASE(parent)
 {
+#ifndef USE_KDE
   setFixedSize(40, 20);
   connect(this, SIGNAL(clicked()), SLOT(selectColor()));
-}
-
-QColor ColorButton::getColor() const
-{
-  return palette().color(backgroundRole());
+#endif
 }
 
 QString ColorButton::colorName() const
 {
-  return palette().color(backgroundRole()).name();
+  return color().name();
+}
+
+#ifndef USE_KDE
+QColor ColorButton::color() const
+{
+  return palette().color(backgroundRole());
 }
 
 void ColorButton::selectColor()
@@ -53,5 +57,6 @@ void ColorButton::setColor(const QColor& color)
   QPalette pal(palette());
   pal.setColor(backgroundRole(), color);
   setPalette(pal);
-  emit changed();
+  emit changed(color);
 }
+#endif

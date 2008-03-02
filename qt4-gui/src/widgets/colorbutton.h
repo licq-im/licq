@@ -20,25 +20,35 @@
 #ifndef COLORBUTTON_H
 #define COLORBUTTON_H
 
+#include "config.h"
+
+#ifdef USE_KDE
+#include <KDE/KColorButton>
+#define COLORBUTTON_BASE KColorButton
+#else
 #include <QPushButton>
+#define COLORBUTTON_BASE QPushButton
+#endif
 
 namespace LicqQtGui
 {
-class ColorButton : public QPushButton
+class ColorButton : public COLORBUTTON_BASE
 {
   Q_OBJECT
 
 public:
   ColorButton(QWidget* parent = NULL);
-  QColor getColor() const;
   QString colorName() const;
+#ifndef USE_KDE
+  QColor color() const;
 
 public slots:
   void selectColor();
   void setColor(const QColor& color);
 
 signals:
-   void changed();
+   void changed(const QColor& color);
+#endif
 };
 
 } // namespace LicqQtGui

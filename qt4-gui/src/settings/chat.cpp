@@ -308,43 +308,43 @@ QWidget* Settings::Chat::createPageChatDisp(QWidget* parent)
   lblColorRcv = new QLabel(tr("Message received:"));
   layChatColors->addWidget(lblColorRcv, 0, 0);
   btnColorRcv = new ColorButton();
-  connect(btnColorRcv, SIGNAL(changed()), SLOT(slot_refresh_msgViewer()));
+  connect(btnColorRcv, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
   layChatColors->addWidget(btnColorRcv, 0, 1);
 
   lblColorSnt = new QLabel(tr("Message sent:"));
   layChatColors->addWidget(lblColorSnt, 1, 0);
   btnColorSnt = new ColorButton();
-  connect(btnColorSnt, SIGNAL(changed()), SLOT(slot_refresh_msgViewer()));
+  connect(btnColorSnt, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
   layChatColors->addWidget(btnColorSnt, 1, 1);
 
   lblColorRcvHistory = new QLabel(tr("History received:"));
   layChatColors->addWidget(lblColorRcvHistory, 2, 0);
   btnColorRcvHistory = new ColorButton();
-  connect(btnColorRcvHistory, SIGNAL(changed()), SLOT(slot_refresh_msgViewer()));
+  connect(btnColorRcvHistory, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
   layChatColors->addWidget(btnColorRcvHistory, 2, 1);
 
   lblColorSntHistory = new QLabel(tr("History sent:"));
   layChatColors->addWidget(lblColorSntHistory, 3, 0);
   btnColorSntHistory = new ColorButton();
-  connect(btnColorSntHistory, SIGNAL(changed()), SLOT(slot_refresh_msgViewer()));
+  connect(btnColorSntHistory, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
   layChatColors->addWidget(btnColorSntHistory, 3, 1);
 
   lblColorNotice = new QLabel(tr("Notice:"));
   layChatColors->addWidget(lblColorNotice, 4, 0);
   btnColorNotice = new ColorButton();
-  connect(btnColorNotice, SIGNAL(changed()), SLOT(slot_refresh_msgViewer()));
+  connect(btnColorNotice, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
   layChatColors->addWidget(btnColorNotice, 4, 1);
 
   lblColorTypingLabel = new QLabel(tr("Typing notification color:"));
   layChatColors->addWidget(lblColorTypingLabel, 5, 0);
   btnColorTypingLabel = new ColorButton();
-  connect(btnColorTypingLabel, SIGNAL(changed()), SLOT(slot_refresh_msgViewer()));
+  connect(btnColorTypingLabel, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
   layChatColors->addWidget(btnColorTypingLabel, 5, 1);
 
   lblColorChatBkg = new QLabel(tr("Background color:"));
   layChatColors->addWidget(lblColorChatBkg, 6, 0);
   btnColorChatBkg = new ColorButton();
-  connect(btnColorChatBkg, SIGNAL(changed()), SLOT(slot_refresh_msgViewer()));
+  connect(btnColorChatBkg, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
   layChatColors->addWidget(btnColorChatBkg, 6, 1);
 
   layChatColors->setRowStretch(7, 1);
@@ -455,7 +455,7 @@ void Settings::Chat::slot_refresh_msgViewer()
   msgChatViewer->setColors(btnColorChatBkg->colorName(), btnColorRcv->colorName(),
       btnColorSnt->colorName(), btnColorRcvHistory->colorName(),
       btnColorSntHistory->colorName(), btnColorNotice->colorName());
-  tabViewer->setTabColor(msgChatViewer, btnColorTypingLabel->getColor());
+  tabViewer->setTabColor(msgChatViewer, btnColorTypingLabel->color());
 
   msgHistViewer->setHistoryConfig(cmbHistStyle->currentIndex(), cmbHistDateFormat->currentText(),
       chkHistVertSpacing->isChecked(), chkHistReverse->isChecked());
