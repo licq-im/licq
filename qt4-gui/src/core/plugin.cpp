@@ -22,10 +22,11 @@
 
 #include <QApplication>
 #include <QString>
-#include <QStyleFactory>
 
 #ifdef USE_KDE
 #include <KDE/KCmdLineArgs>
+#else
+# include <QStyleFactory>
 #endif
 
 #include <licq_log.h>
