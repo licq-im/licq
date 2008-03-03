@@ -30,15 +30,14 @@ class QFont;
 class QGridLayout;
 class QGroupBox;
 class QLabel;
-class QLineEdit;
-class QPushButton;
 class QRadioButton;
 class QVBoxLayout;
 class QWidget;
 
 namespace LicqQtGui
 {
-  class SettingsDlg;
+class FontEdit;
+class SettingsDlg;
 
 namespace Settings
 {
@@ -56,8 +55,7 @@ public:
 
 private slots:
   void slot_useDockToggled(bool);
-  void slot_selectfont();
-  void slot_selecteditfont();
+  void normalFontChanged(const QFont& font);
 
 private:
   /**
@@ -73,8 +71,6 @@ private:
    * @return a widget with the fonts and localization settings
    */
   QWidget* createPageFonts(QWidget* parent);
-
-  void setupFontName(QLineEdit*, const QFont&);
 
   // Widgets for docking settings
   QVBoxLayout* layPageDocking;
@@ -97,10 +93,8 @@ private:
   QVBoxLayout* layLocale;
   QLabel* lblFont;
   QLabel* lblEditFont;
-  QLineEdit* edtFont;
-  QLineEdit* edtEditFont;
-  QPushButton* btnFont;
-  QPushButton* btnEditFont;
+  FontEdit* myNormalFontEdit;
+  FontEdit* myEditFontEdit;
   QLabel* lblDefaultEncoding;
   QCheckBox* chkShowAllEncodings;
   QComboBox* cmbDefaultEncoding;

@@ -2,6 +2,7 @@ set(widgets_SRCS
   calendar.cpp
   colorbutton.cpp
   filenameedit.cpp
+  fontedit.cpp
   historyview.cpp
   infofield.cpp
   messagelist.cpp

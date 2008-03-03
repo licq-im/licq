@@ -25,24 +25,17 @@
 #include <QCheckBox>
 #include <QComboBox>
 #include <QDir>
-#include <QFontDialog>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
-#include <QLineEdit>
-#include <QPushButton>
 #include <QRadioButton>
 #include <QVBoxLayout>
-
-#ifdef USE_KDE
-#include <KDE/KFontDialog>
-#endif
 
 #include <licq_constants.h>
 
 #include "config/general.h"
-
 #include "core/gui-defines.h"
+#include "widgets/fontedit.h"
 
 #include "settingsdlg.h"
 
@@ -129,27 +122,20 @@ QWidget* Settings::General::createPageFonts(QWidget* parent)
   lblFont = new QLabel(tr("General:"));
   lblFont->setToolTip(tr("Used for normal text."));
   layFont->addWidget(lblFont, 0, 0);
-  edtFont = new QLineEdit();
-  edtFont->setToolTip(lblFont->toolTip());
-  lblFont->setBuddy(edtFont);
-  layFont->addWidget(edtFont, 0, 1);
-  btnFont = new QPushButton(tr("Select Font"));
-  btnFont->setToolTip(tr("Select a font from the system list."));
-  layFont->addWidget(btnFont, 0, 2);
-  connect(btnFont, SIGNAL(clicked()), SLOT(slot_selectfont()));
+  myNormalFontEdit = new FontEdit();
+  myNormalFontEdit->setToolTip(lblFont->toolTip());
+  lblFont->setBuddy(myNormalFontEdit);
+  layFont->addWidget(myNormalFontEdit, 0, 1);
+  connect(myNormalFontEdit, SIGNAL(fontSelected(const QFont&)), SLOT(normalFontChanged(const QFont&)));
 
   // Edit font
   lblEditFont = new QLabel(tr("Editing:"));
   lblEditFont->setToolTip(tr("Used in message editor etc."));
   layFont->addWidget(lblEditFont, 1, 0);
-  edtEditFont = new QLineEdit(boxFont);
-  edtEditFont->setToolTip(lblEditFont->toolTip());
-  lblEditFont->setBuddy(edtEditFont);
-  layFont->addWidget(edtEditFont, 1, 1);
-  btnEditFont = new QPushButton(tr("Select Font"));
-  btnEditFont->setToolTip(tr("Select a font from the system list."));
-  layFont->addWidget(btnEditFont, 1, 2);
-  connect(btnEditFont, SIGNAL(clicked()), SLOT(slot_selecteditfont()));
+  myEditFontEdit = new FontEdit();
+  myEditFontEdit->setToolTip(lblFont->toolTip());
+  lblFont->setBuddy(myEditFontEdit);
+  layFont->addWidget(myEditFontEdit, 1, 1);
 
   layPageFonts->addWidget(boxFont);
   layPageFonts->addStretch(1);
@@ -206,48 +192,9 @@ void Settings::General::slot_useDockToggled(bool b)
 #endif
 }
 
-void Settings::General::setupFontName(QLineEdit* le, const QFont& font)
+void Settings::General::normalFontChanged(const QFont& font)
 {
-  QString s;
-  if (font == Config::General::instance()->defaultFont())
-    s = tr("default (%1)").arg(font.toString());
-  else
-    s = font.toString();
-
-  le->setFont(font);
-  le->setText(s);
-  le->setCursorPosition(0);
-}
-
-void Settings::General::slot_selectfont()
-{
-  bool fontOk;
-#ifdef USE_KDE
-  QFont f = edtFont->font();
-  fontOk = (KFontDialog::getFont(f, false, dynamic_cast<QWidget*>(parent())) == QDialog::Accepted);
-#else
-  QFont f = QFontDialog::getFont(&fontOk, edtFont->font(), dynamic_cast<QWidget*>(parent()));
-#endif
-  if (fontOk) {
-    setupFontName(edtFont, f);
-    // default might have changed, so update that one as well
-    setupFontName(edtEditFont, f);
-  }
-}
-
-void Settings::General::slot_selecteditfont()
-{
-  bool fontOk;
-#ifdef USE_KDE
-  QFont f = edtFont->font();
-  fontOk = (KFontDialog::getFont(f, false, dynamic_cast<QWidget*>(this)) == QDialog::Accepted);
-#else
-  QFont f = QFontDialog::getFont(&fontOk, edtEditFont->font(), dynamic_cast<QWidget*>(this));
-#endif
-  if (fontOk) {
-    setupFontName(edtEditFont, f);
-    ((QWidget*)edtEditFont)->setFont(f);
-  }
+  myEditFontEdit->setFont(font);
 }
 
 void Settings::General::load()
@@ -273,8 +220,8 @@ void Settings::General::load()
   chkDockTrayBlink->setChecked(generalConfig->trayBlink());
   slot_useDockToggled(chkUseDock->isChecked());
 
-  setupFontName(edtFont, generalConfig->normalFont());
-  setupFontName(edtEditFont, generalConfig->editFont());
+  myNormalFontEdit->setFont(QFont(generalConfig->normalFont()));
+  myEditFontEdit->setFont(QFont(generalConfig->editFont()));
 }
 
 void Settings::General::apply()
@@ -304,15 +251,15 @@ void Settings::General::apply()
 #endif
   generalConfig->setTrayBlink(chkDockTrayBlink->isChecked());
 
-  if(edtFont->text().indexOf(tr("default"), 0, Qt::CaseInsensitive) == 0)
+  if (myNormalFontEdit->font() == Config::General::instance()->defaultFont())
     generalConfig->setNormalFont(QString());
   else
-    generalConfig->setNormalFont(edtFont->text());
+    generalConfig->setNormalFont(myNormalFontEdit->font().toString());
 
-  if (edtEditFont->text().indexOf(tr("default"), 0, Qt::CaseInsensitive) == 0)
+  if (myEditFontEdit->font() == Config::General::instance()->defaultFont())
     generalConfig->setEditFont(QString());
   else
-    generalConfig->setEditFont(edtEditFont->text());
+    generalConfig->setEditFont(myEditFontEdit->font().toString());
 
   generalConfig->blockUpdates(false);
 }
