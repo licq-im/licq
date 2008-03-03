@@ -81,11 +81,11 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
 
   chkTabbedChatting = new QCheckBox(tr("Tabbed chatting"));
   chkTabbedChatting->setToolTip(tr("Use tabs in Send Window"));
-  layChat->addWidget(chkTabbedChatting, 0, 1);
+  layChat->addWidget(chkTabbedChatting, 1, 0);
 
   chkSingleLineChatMode = new QCheckBox(tr("Single line chat mode"));
-  chkSingleLineChatMode->setToolTip(tr("Send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode"));
-  layChat->addWidget(chkSingleLineChatMode, 1, 0);
+  chkSingleLineChatMode->setToolTip(tr("Send messages with Return and insert new lines with Ctrl+Return, opposite of the normal mode"));
+  layChat->addWidget(chkSingleLineChatMode, 0, 1);
 
   chkUseDoubleReturn = new QCheckBox(tr("Use double return"));
   chkUseDoubleReturn->setToolTip(tr("Hitting Return twice will be used instead of Ctrl+Return\n"
