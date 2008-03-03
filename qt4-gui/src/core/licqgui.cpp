@@ -606,9 +606,9 @@ bool LicqGui::x11EventFilter(XEvent* event)
     }
   }
 #ifdef USE_KDE
-    return KApplication::x11EventFilter(event);
+  return KApplication::x11EventFilter(event);
 #else
-    return QApplication::x11EventFilter(event);
+  return QApplication::x11EventFilter(event);
 #endif
 }
 
@@ -644,7 +644,7 @@ void LicqGui::grabKey(QString key)
 #endif /* defined(Q_WS_X11) */
 
 #ifndef USE_KDE
-QStyle* LicqGui::createStyle(const char* name)
+QStyle* LicqGui::createStyle(const char* name) const
 {
   QStyle* s = NULL;
 

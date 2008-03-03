@@ -26,9 +26,9 @@
 #include <vector>
 
 #ifdef USE_KDE
-#include <kmenubar.h>
+# include <KDE/KMenuBar>
 #else
-#include <QMenuBar>
+# include <QMenuBar>
 #endif
 
 #include <QBitmap>

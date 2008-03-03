@@ -282,7 +282,9 @@ private:
   int grabKeysym;
   QTimer myAutoAwayTimer;
 
-  QStyle* createStyle(const char* name);
+#ifndef USE_KDE
+  QStyle* createStyle(const char* name) const;
+#endif
 };
 
 } // namespace LicqQtGui
