@@ -32,14 +32,15 @@
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QSessionManager>
-#include <QStyle>
-#include <QStyleFactory>
 #include <QTranslator>
 
 #ifdef USE_KDE
 #include <KDE/KStandardDirs>
 #include <KDE/KToolInvocation>
 #include <KDE/KUrl>
+#else
+# include <QStyle>
+# include <QStyleFactory>
 #endif
 
 #if defined(Q_WS_X11)
@@ -149,7 +150,9 @@ LicqGui::LicqGui(int& argc, char** argv) :
 {
   myInstance = this;
 
+#ifndef USE_KDE
   char styleName[32] = "";
+#endif
   int i = 1;
 
   setQuitOnLastWindowClosed(false);
@@ -161,7 +164,11 @@ LicqGui::LicqGui(int& argc, char** argv) :
     myCmdLineParams << argv[i];
 
   // parse command line for arguments
+#ifdef USE_KDE
+  while ((i = getopt(argc, argv, "hs:i:e:dD")) > 0)
+#else
   while ((i = getopt(argc, argv, "hs:i:e:g:dD")) > 0)
+#endif
   {
     switch (i)
     {
@@ -177,10 +184,12 @@ LicqGui::LicqGui(int& argc, char** argv) :
         myExtendedIcons = optarg;
         break;
 
+#ifndef USE_KDE
       case 'g':   // gui style
         strncpy(styleName, optarg, sizeof(styleName));
         styleName[sizeof(styleName) - 1] = '\0';
         break;
+#endif
 
       case 'd':   // dock icon
         if (!myDisableDockIcon)
@@ -634,6 +643,7 @@ void LicqGui::grabKey(QString key)
 }
 #endif /* defined(Q_WS_X11) */
 
+#ifndef USE_KDE
 QStyle* LicqGui::createStyle(const char* name)
 {
   QStyle* s = NULL;
@@ -644,6 +654,7 @@ QStyle* LicqGui::createStyle(const char* name)
 
   return s;
 }
+#endif
 
 void LicqGui::changeStatus(unsigned long status, bool invisible)
 {
