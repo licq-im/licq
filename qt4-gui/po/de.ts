@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de_DE">
+<defaultcodec></defaultcodec>
 <context>
     <name></name>
     <message>
@@ -3477,7 +3478,7 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
     <message>
         <location filename="../src/settings/contactlist.cpp" line="97"/>
         <source>Show the user&apos;s display picture instead of a status icon, if the user is online and has a display picture</source>
-        <translation>Zeigt das Benutzerbild anstelle des Satus-Icons an, falls der User online ist und ein Benutzerbild angegeben hat</translation>
+        <translation>Zeigt das Benutzerbild anstelle des Status-Icons an, falls der User online ist und ein Benutzerbild angegeben hat</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="140"/>
@@ -3524,7 +3525,7 @@ Benutzer immer anzeigen</translation>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="153"/>
         <source>Sticky main window</source>
-        <translation>Klebendes Haupfenster</translation>
+        <translation>Klebendes Hauptfenster</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="154"/>
@@ -3830,7 +3831,7 @@ Benutzer immer anzeigen</translation>
     <message>
         <location filename="../src/settings/events.cpp" line="71"/>
         <source>Auto-popup message</source>
-        <translation>Nachricht automatisch nach vorne bringen</translation>
+        <translation>Nachricht automatisch öffnen</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="72"/>
