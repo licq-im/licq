@@ -80,6 +80,7 @@ private:
   QCheckBox* chkHidden;
   QCheckBox* chkDockFortyEight;
   QCheckBox* chkDockTrayBlink;
+  QCheckBox* chkDockTrayMessage;
   QRadioButton* rdbDockDefault;
   QRadioButton* rdbDockThemed;
   QRadioButton* rdbDockTray;

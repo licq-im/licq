@@ -98,6 +98,7 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   myThemedIconTheme = szDockTheme;
 #endif
   iniFile.ReadBool("TrayBlink", myTrayBlink, true);
+  iniFile.ReadBool("TrayShowMessage", myShowMessage, true);
 
   iniFile.SetSection("startup");
   iniFile.ReadNum("Logon", myAutoLogon, 0);
@@ -154,6 +155,7 @@ void Config::General::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteStr("DockTheme", myThemedIconTheme.toLatin1());
 #endif
   iniFile.WriteBool("TrayBlink", myTrayBlink);
+  iniFile.WriteBool("TrayShowMessage", myShowMessage);
 
   iniFile.SetSection("startup");
   iniFile.WriteNum("Logon", myAutoLogon);
@@ -394,6 +396,21 @@ void Config::General::setTrayBlink(bool trayBlink)
     emit dockChanged();
 }
 
+void Config::General::setShowMessage(bool showMessage)
+{
+  if (showMessage == myShowMessage)
+    return;
+
+  myShowMessage = showMessage;
+  if (myDockMode != DockTray)
+    return;
+
+  if (myBlockUpdates)
+    myDockHasChanged = true;
+  else
+    emit dockChanged();
+}
+
 void Config::General::setAutoLogon(unsigned short autoLogon)
 {
   if (autoLogon == myAutoLogon)
@@ -441,4 +458,3 @@ void Config::General::setAutoNaMess(unsigned short autoNaMess)
 
   myAutoNaMess = autoNaMess;
 }
-

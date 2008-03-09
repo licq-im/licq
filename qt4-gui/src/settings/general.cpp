@@ -90,6 +90,10 @@ QWidget* Settings::General::createPageDocking(QWidget* parent)
   chkDockTrayBlink->setToolTip(tr("Make tray icon blink on unread incoming events."));
   layDocking->addWidget(chkDockTrayBlink, 3, 1);
 
+  chkDockTrayMessage = new QCheckBox(tr("Show messages"));
+  chkDockTrayMessage->setToolTip(tr("Show balloon popup messages."));
+  layDocking->addWidget(chkDockTrayMessage, 4, 1);
+
   cmbDockTheme = new QComboBox();
   // Set the currently available themes
   QString szDockThemesDir = QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + DOCK_DIR;
@@ -154,6 +158,7 @@ void Settings::General::slot_useDockToggled(bool b)
     rdbDockTray->setEnabled(false);
     chkDockFortyEight->setEnabled(false);
     chkDockTrayBlink->setEnabled(false);
+    chkDockTrayMessage->setEnabled(false);
 #endif
     chkHidden->setEnabled(false);
     chkHidden->setChecked(false);
@@ -174,18 +179,21 @@ void Settings::General::slot_useDockToggled(bool b)
     chkDockFortyEight->setEnabled(true);
     cmbDockTheme->setEnabled(false);
     chkDockTrayBlink->setEnabled(false);
+    chkDockTrayMessage->setEnabled(false);
   }
   else if (rdbDockThemed->isChecked())
   {
     chkDockFortyEight->setEnabled(false);
     cmbDockTheme->setEnabled(true);
     chkDockTrayBlink->setEnabled(false);
+    chkDockTrayMessage->setEnabled(false);
   }
   else if (rdbDockTray->isChecked())
   {
     chkDockFortyEight->setEnabled(false);
     cmbDockTheme->setEnabled(false);
     chkDockTrayBlink->setEnabled(true);
+    chkDockTrayMessage->setEnabled(true);
   }
   else
     rdbDockDefault->setChecked(true);
@@ -218,6 +226,7 @@ void Settings::General::load()
 #endif
   rdbDockTray->setChecked(generalConfig->dockMode() == Config::General::DockTray);
   chkDockTrayBlink->setChecked(generalConfig->trayBlink());
+  chkDockTrayMessage->setChecked(generalConfig->showMessage());
   slot_useDockToggled(chkUseDock->isChecked());
 
   myNormalFontEdit->setFont(QFont(generalConfig->normalFont()));
@@ -250,6 +259,7 @@ void Settings::General::apply()
   generalConfig->setThemedIconTheme(cmbDockTheme->currentText());
 #endif
   generalConfig->setTrayBlink(chkDockTrayBlink->isChecked());
+  generalConfig->setShowMessage(chkDockTrayMessage->isChecked());
 
   if (myNormalFontEdit->font() == Config::General::instance()->defaultFont())
     generalConfig->setNormalFont(QString());

@@ -96,6 +96,7 @@ public:
   QString themedIconTheme() const { return myThemedIconTheme; }
 #endif
   bool trayBlink() const { return myTrayBlink; }
+  bool showMessage() const { return myShowMessage; }
 
   unsigned short autoLogon() const { return myAutoLogon; }
   unsigned short autoAwayTime() const { return myAutoAwayTime; }
@@ -136,6 +137,7 @@ public slots:
   void setThemedIconTheme(QString themedIconTheme);
 #endif
   void setTrayBlink(bool trayBlink);
+  void setShowMessage(bool showMessage);
 
   void setAutoLogon(unsigned short autoLogon);
   void setAutoAwayTime(unsigned short autoAwayTime);
@@ -208,6 +210,7 @@ private:
   QString myThemedIconTheme;
 #endif
   bool myTrayBlink;
+  bool myShowMessage;
 
   // Auto status configuration
   unsigned short myAutoLogon;
