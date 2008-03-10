@@ -51,9 +51,9 @@ public:
   void apply();
 
 private slots:
-  void slot_useProxy(bool);
-  void slot_useFirewall(bool);
-  void slot_usePortRange(bool b);
+  void useProxyToggled(bool useProxy);
+  void useFirewallToggled(bool useFirewall);
+  void usePortRangeToggled(bool usePortRange);
 
 private:
   /**
@@ -71,41 +71,41 @@ private:
   QWidget* createPageIcq(QWidget* parent);
 
   // Widgets for network settings
-  QVBoxLayout* layPageNetwork;
-  QGroupBox* boxFirewall;
-  QGroupBox* boxProxy;
-  QGridLayout* layFirewall;
-  QGridLayout* layProxy;
-  QCheckBox* chkFirewall;
-  QCheckBox* chkTCPEnabled;
-  QLabel* lblPortsIn;
-  QLabel* lblPortsIn2;
-  QSpinBox* spnPortLow;
-  QSpinBox* spnPortHigh;
-  QLabel* lblProxyType;
-  QLabel* lblProxyHost;
-  QLabel* lblProxyPort;
-  QLabel* lblProxyLogin;
-  QLabel* lblProxyPasswd;
-  QCheckBox* chkProxyEnabled;
-  QCheckBox* chkProxyAuthEnabled;
-  QCheckBox* chkReconnectAfterUinClash;
-  QComboBox* cmbProxyType;
-  QLineEdit* edtProxyHost;
-  QLineEdit* edtProxyLogin;
-  QLineEdit* edtProxyPasswd;
-  QSpinBox* spnProxyPort;
+  QVBoxLayout* myPageNetworkLayout;
+  QGroupBox* myFirewallBox;
+  QGroupBox* myProxyBox;
+  QGridLayout* myFirewallLayout;
+  QGridLayout* myProxyLayout;
+  QCheckBox* myFirewallCheck;
+  QCheckBox* myTcpEnabledCheck;
+  QLabel* myPortsInLabel;
+  QLabel* myPortsIn2Label;
+  QSpinBox* myPortLowSpin;
+  QSpinBox* myPortHighSpin;
+  QLabel* myProxyTypeLabel;
+  QLabel* myProxyHostLabel;
+  QLabel* myProxyPortLabel;
+  QLabel* myProxyLoginLabel;
+  QLabel* myProxyPasswdLabel;
+  QCheckBox* myProxyEnabledCheck;
+  QCheckBox* myProxyAuthEnabledCheck;
+  QCheckBox* myReconnectAfterUinClashCheck;
+  QComboBox* myProxyTypeCombo;
+  QLineEdit* myProxyHostEdit;
+  QLineEdit* myProxyLoginEdit;
+  QLineEdit* myProxyPasswdEdit;
+  QSpinBox* myProxyPortSpin;
 
   // Widgets for icq network settings
-  QVBoxLayout* layPageIcq;
-  QGroupBox* boxIcqServer;
-  QGroupBox* boxIcqConnection;
-  QGridLayout* layIcqServer;
-  QVBoxLayout* layIcqConnection;
-  QLabel* lblICQServer;
-  QLabel* lblICQServerPort;
-  QLineEdit* edtICQServer;
-  QSpinBox* spnICQServerPort;
+  QVBoxLayout* myPageIcqLayout;
+  QGroupBox* myIcqServerBox;
+  QGroupBox* myIcqConnectionBox;
+  QGridLayout* myIcqServerLayout;
+  QVBoxLayout* myIcqConnectionLayout;
+  QLabel* myIcqServerLabel;
+  QLabel* myIcqServerPortLabel;
+  QLineEdit* myIcqServerEdit;
+  QSpinBox* myIcqServerPortSpin;
 };
 
 } // namespace Settings

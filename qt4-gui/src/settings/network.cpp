@@ -53,98 +53,98 @@ Settings::Network::Network(SettingsDlg* parent)
 QWidget* Settings::Network::createPageNetwork(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageNetwork = new QVBoxLayout(w);
-  layPageNetwork->setContentsMargins(0, 0, 0, 0);
+  myPageNetworkLayout = new QVBoxLayout(w);
+  myPageNetworkLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxFirewall = new QGroupBox(tr("Firewall"));
-  layFirewall = new QGridLayout(boxFirewall);
+  myFirewallBox = new QGroupBox(tr("Firewall"));
+  myFirewallLayout = new QGridLayout(myFirewallBox);
 
-  chkFirewall = new QCheckBox(tr("I am behind a firewall"));
-  connect(chkFirewall, SIGNAL(toggled(bool)), SLOT(slot_useFirewall(bool)));
-  layFirewall->addWidget(chkFirewall, 0, 0);
+  myFirewallCheck = new QCheckBox(tr("I am behind a firewall"));
+  connect(myFirewallCheck, SIGNAL(toggled(bool)), SLOT(useFirewallToggled(bool)));
+  myFirewallLayout->addWidget(myFirewallCheck, 0, 0);
 
-  chkTCPEnabled = new QCheckBox(tr("I can receive direct connections"));
-  connect(chkTCPEnabled, SIGNAL(toggled(bool)), SLOT(slot_usePortRange(bool)));
-  layFirewall->addWidget(chkTCPEnabled, 1, 0);
+  myTcpEnabledCheck = new QCheckBox(tr("I can receive direct connections"));
+  connect(myTcpEnabledCheck, SIGNAL(toggled(bool)), SLOT(usePortRangeToggled(bool)));
+  myFirewallLayout->addWidget(myTcpEnabledCheck, 1, 0);
 
-  QHBoxLayout* layPortsIn = new QHBoxLayout();
-  layPortsIn->addStretch(1);
-  lblPortsIn = new QLabel(tr("Port range:"));
-  lblPortsIn->setToolTip(tr("TCP port range for incoming connections."));
-  layPortsIn->addWidget(lblPortsIn);
-  spnPortLow = new QSpinBox();
-  spnPortLow->setRange(0, 0xFFFF);
-  spnPortLow->setSpecialValueText(tr("Auto"));
-  lblPortsIn->setBuddy(spnPortLow);
-  layPortsIn->addWidget(spnPortLow);
-  lblPortsIn2 = new QLabel(tr("to"));
-  layPortsIn->addWidget(lblPortsIn2);
-  spnPortHigh = new QSpinBox();
-  spnPortHigh->setRange(0, 0xFFFF);
-  spnPortHigh->setSpecialValueText(tr("Auto"));
-  lblPortsIn2->setBuddy(spnPortHigh);
-  layPortsIn->addWidget(spnPortHigh);
-  layFirewall->addLayout(layPortsIn, 1, 1);
-
-
-  boxProxy = new QGroupBox(tr("Proxy"));
-  layProxy = new QGridLayout(boxProxy);
-
-  chkProxyEnabled = new QCheckBox(tr("Use proxy server"));
-  connect(chkProxyEnabled, SIGNAL(toggled(bool)), SLOT(slot_useProxy(bool)));
-  layProxy->addWidget(chkProxyEnabled, 0, 0);
-
-  QHBoxLayout* layProxyType = new QHBoxLayout();
-  layProxyType->addStretch(1);
-  lblProxyType = new QLabel(tr("Proxy type:"));
-  layProxyType->addWidget(lblProxyType);
-  cmbProxyType = new QComboBox();
-  cmbProxyType->setFixedWidth(80);
-  cmbProxyType->addItem(tr("HTTPS"));
-  lblProxyType->setBuddy(cmbProxyType);
-  layProxyType->addWidget(cmbProxyType);
-  layProxy->addLayout(layProxyType, 0, 1);
-
-  lblProxyHost = new QLabel(tr("Proxy server:"));
-  layProxy->addWidget(lblProxyHost, 1, 0);
-
-  edtProxyHost = new QLineEdit();
-  lblProxyHost->setBuddy(edtProxyHost);
-  layProxy->addWidget(edtProxyHost, 1, 1);
-
-  lblProxyPort = new QLabel(tr("Proxy server port:"));
-  layProxy->addWidget(lblProxyPort, 2, 0);
-
-  spnProxyPort = new QSpinBox();
-  spnProxyPort->setRange(0, 0xFFFF);
-  lblProxyPort->setBuddy(spnProxyPort);
-  layProxy->addWidget(spnProxyPort, 2, 1);
-
-  chkProxyAuthEnabled = new QCheckBox(tr("Use authorization"));
-  layProxy->addWidget(chkProxyAuthEnabled, 3, 0);
-
-  lblProxyLogin = new QLabel(tr("Username:"));
-  layProxy->addWidget(lblProxyLogin, 4, 0);
-
-  edtProxyLogin = new QLineEdit();
-  lblProxyLogin->setBuddy(edtProxyLogin);
-  layProxy->addWidget(edtProxyLogin, 4, 1);
-
-  lblProxyPasswd = new QLabel(tr("Password:"));
-  layProxy->addWidget(lblProxyPasswd, 5, 0);
-
-  edtProxyPasswd = new QLineEdit();
-  edtProxyPasswd->setEchoMode(QLineEdit::Password);
-  lblProxyPasswd->setBuddy(edtProxyPasswd);
-  layProxy->addWidget(edtProxyPasswd, 5, 1);
-
-  connect(chkProxyAuthEnabled, SIGNAL(toggled(bool)), edtProxyLogin, SLOT(setEnabled(bool)));
-  connect(chkProxyAuthEnabled, SIGNAL(toggled(bool)), edtProxyPasswd, SLOT(setEnabled(bool)));
+  QHBoxLayout* myPortsInLayout = new QHBoxLayout();
+  myPortsInLayout->addStretch(1);
+  myPortsInLabel = new QLabel(tr("Port range:"));
+  myPortsInLabel->setToolTip(tr("TCP port range for incoming connections."));
+  myPortsInLayout->addWidget(myPortsInLabel);
+  myPortLowSpin = new QSpinBox();
+  myPortLowSpin->setRange(0, 0xFFFF);
+  myPortLowSpin->setSpecialValueText(tr("Auto"));
+  myPortsInLabel->setBuddy(myPortLowSpin);
+  myPortsInLayout->addWidget(myPortLowSpin);
+  myPortsIn2Label = new QLabel(tr("to"));
+  myPortsInLayout->addWidget(myPortsIn2Label);
+  myPortHighSpin = new QSpinBox();
+  myPortHighSpin->setRange(0, 0xFFFF);
+  myPortHighSpin->setSpecialValueText(tr("Auto"));
+  myPortsIn2Label->setBuddy(myPortHighSpin);
+  myPortsInLayout->addWidget(myPortHighSpin);
+  myFirewallLayout->addLayout(myPortsInLayout, 1, 1);
 
 
-  layPageNetwork->addWidget(boxFirewall);
-  layPageNetwork->addWidget(boxProxy);
-  layPageNetwork->addStretch(1);
+  myProxyBox = new QGroupBox(tr("Proxy"));
+  myProxyLayout = new QGridLayout(myProxyBox);
+
+  myProxyEnabledCheck = new QCheckBox(tr("Use proxy server"));
+  connect(myProxyEnabledCheck, SIGNAL(toggled(bool)), SLOT(useProxyToggled(bool)));
+  myProxyLayout->addWidget(myProxyEnabledCheck, 0, 0);
+
+  QHBoxLayout* myProxyTypeLayout = new QHBoxLayout();
+  myProxyTypeLayout->addStretch(1);
+  myProxyTypeLabel = new QLabel(tr("Proxy type:"));
+  myProxyTypeLayout->addWidget(myProxyTypeLabel);
+  myProxyTypeCombo = new QComboBox();
+  myProxyTypeCombo->setFixedWidth(80);
+  myProxyTypeCombo->addItem(tr("HTTPS"));
+  myProxyTypeLabel->setBuddy(myProxyTypeCombo);
+  myProxyTypeLayout->addWidget(myProxyTypeCombo);
+  myProxyLayout->addLayout(myProxyTypeLayout, 0, 1);
+
+  myProxyHostLabel = new QLabel(tr("Proxy server:"));
+  myProxyLayout->addWidget(myProxyHostLabel, 1, 0);
+
+  myProxyHostEdit = new QLineEdit();
+  myProxyHostLabel->setBuddy(myProxyHostEdit);
+  myProxyLayout->addWidget(myProxyHostEdit, 1, 1);
+
+  myProxyPortLabel = new QLabel(tr("Proxy server port:"));
+  myProxyLayout->addWidget(myProxyPortLabel, 2, 0);
+
+  myProxyPortSpin = new QSpinBox();
+  myProxyPortSpin->setRange(0, 0xFFFF);
+  myProxyPortLabel->setBuddy(myProxyPortSpin);
+  myProxyLayout->addWidget(myProxyPortSpin, 2, 1);
+
+  myProxyAuthEnabledCheck = new QCheckBox(tr("Use authorization"));
+  myProxyLayout->addWidget(myProxyAuthEnabledCheck, 3, 0);
+
+  myProxyLoginLabel = new QLabel(tr("Username:"));
+  myProxyLayout->addWidget(myProxyLoginLabel, 4, 0);
+
+  myProxyLoginEdit = new QLineEdit();
+  myProxyLoginLabel->setBuddy(myProxyLoginEdit);
+  myProxyLayout->addWidget(myProxyLoginEdit, 4, 1);
+
+  myProxyPasswdLabel = new QLabel(tr("Password:"));
+  myProxyLayout->addWidget(myProxyPasswdLabel, 5, 0);
+
+  myProxyPasswdEdit = new QLineEdit();
+  myProxyPasswdEdit->setEchoMode(QLineEdit::Password);
+  myProxyPasswdLabel->setBuddy(myProxyPasswdEdit);
+  myProxyLayout->addWidget(myProxyPasswdEdit, 5, 1);
+
+  connect(myProxyAuthEnabledCheck, SIGNAL(toggled(bool)), myProxyLoginEdit, SLOT(setEnabled(bool)));
+  connect(myProxyAuthEnabledCheck, SIGNAL(toggled(bool)), myProxyPasswdEdit, SLOT(setEnabled(bool)));
+
+
+  myPageNetworkLayout->addWidget(myFirewallBox);
+  myPageNetworkLayout->addWidget(myProxyBox);
+  myPageNetworkLayout->addStretch(1);
 
   return w;
 }
@@ -152,150 +152,150 @@ QWidget* Settings::Network::createPageNetwork(QWidget* parent)
 QWidget* Settings::Network::createPageIcq(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageIcq = new QVBoxLayout(w);
-  layPageIcq->setContentsMargins(0, 0, 0, 0);
+  myPageIcqLayout = new QVBoxLayout(w);
+  myPageIcqLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxIcqServer = new QGroupBox(tr("Server Settings"));
-  layIcqServer = new QGridLayout(boxIcqServer);
-
-
-  lblICQServer = new QLabel(tr("ICQ server:"));
-  layIcqServer->addWidget(lblICQServer, 0, 0);
-
-  edtICQServer = new QLineEdit();
-  lblICQServer->setBuddy(edtICQServer);
-  layIcqServer->addWidget(edtICQServer, 0, 1);
-
-  lblICQServerPort = new QLabel(tr("ICQ server port:"));
-  layIcqServer->addWidget(lblICQServerPort, 1, 0);
-
-  spnICQServerPort = new QSpinBox();
-  spnICQServerPort->setRange(0, 0xFFFF);
-  lblICQServerPort->setBuddy(spnICQServerPort);
-  layIcqServer->addWidget(spnICQServerPort, 1, 1);
+  myIcqServerBox = new QGroupBox(tr("Server Settings"));
+  myIcqServerLayout = new QGridLayout(myIcqServerBox);
 
 
-  boxIcqConnection = new QGroupBox(tr("Connection"));
-  layIcqConnection = new QVBoxLayout(boxIcqConnection);
+  myIcqServerLabel = new QLabel(tr("ICQ server:"));
+  myIcqServerLayout->addWidget(myIcqServerLabel, 0, 0);
 
-  chkReconnectAfterUinClash = new QCheckBox(tr("Reconnect after Uin clash"));
-  chkReconnectAfterUinClash->setToolTip(tr("Licq can reconnect you when you got "
-                                                "disconnected because your Uin was used "
-                                                "from another location. Check this if you "
-                                                "want Licq to reconnect automatically."));
+  myIcqServerEdit = new QLineEdit();
+  myIcqServerLabel->setBuddy(myIcqServerEdit);
+  myIcqServerLayout->addWidget(myIcqServerEdit, 0, 1);
 
-  layIcqConnection->addWidget(chkReconnectAfterUinClash);
+  myIcqServerPortLabel = new QLabel(tr("ICQ server port:"));
+  myIcqServerLayout->addWidget(myIcqServerPortLabel, 1, 0);
+
+  myIcqServerPortSpin = new QSpinBox();
+  myIcqServerPortSpin->setRange(0, 0xFFFF);
+  myIcqServerPortLabel->setBuddy(myIcqServerPortSpin);
+  myIcqServerLayout->addWidget(myIcqServerPortSpin, 1, 1);
 
 
-  layPageIcq->addWidget(boxIcqServer);
-  layPageIcq->addWidget(boxIcqConnection);
-  layPageIcq->addStretch(1);
+  myIcqConnectionBox = new QGroupBox(tr("Connection"));
+  myIcqConnectionLayout = new QVBoxLayout(myIcqConnectionBox);
+
+  myReconnectAfterUinClashCheck = new QCheckBox(tr("Reconnect after Uin clash"));
+  myReconnectAfterUinClashCheck->setToolTip(tr("Licq can reconnect you when you got "
+        "disconnected because your Uin was used "
+        "from another location. Check this if you "
+        "want Licq to reconnect automatically."));
+
+  myIcqConnectionLayout->addWidget(myReconnectAfterUinClashCheck);
+
+
+  myPageIcqLayout->addWidget(myIcqServerBox);
+  myPageIcqLayout->addWidget(myIcqConnectionBox);
+  myPageIcqLayout->addStretch(1);
 
   return w;
 }
 
-void Settings::Network::slot_useFirewall(bool b)
+void Settings::Network::useFirewallToggled(bool useFirewall)
 {
-  chkTCPEnabled->setEnabled(b);
-  slot_usePortRange(b && chkTCPEnabled->isChecked());
+  myTcpEnabledCheck->setEnabled(useFirewall);
+  usePortRangeToggled(useFirewall && myTcpEnabledCheck->isChecked());
 }
 
-void Settings::Network::slot_usePortRange(bool b)
+void Settings::Network::usePortRangeToggled(bool usePortRange)
 {
-  spnPortLow->setEnabled(b);
-  spnPortHigh->setEnabled(b);
+  myPortLowSpin->setEnabled(usePortRange);
+  myPortHighSpin->setEnabled(usePortRange);
 }
 
-
-void Settings::Network::slot_useProxy(bool b)
+void Settings::Network::useProxyToggled(bool useProxy)
 {
-  if (b)
+  if (useProxy)
   {
-    cmbProxyType->setEnabled(true);
-    edtProxyHost->setEnabled(true);
-    spnProxyPort->setEnabled(true);
-    chkProxyAuthEnabled->setEnabled(true);
-    if (chkProxyAuthEnabled->isChecked())
+    myProxyTypeCombo->setEnabled(true);
+    myProxyHostEdit->setEnabled(true);
+    myProxyPortSpin->setEnabled(true);
+    myProxyAuthEnabledCheck->setEnabled(true);
+    if (myProxyAuthEnabledCheck->isChecked())
     {
-      edtProxyLogin->setEnabled(true);
-      edtProxyPasswd->setEnabled(true);
+      myProxyLoginEdit->setEnabled(true);
+      myProxyPasswdEdit->setEnabled(true);
     }
-    spnICQServerPort->setValue(DEFAULT_SSL_PORT);
-  } else
+    myIcqServerPortSpin->setValue(DEFAULT_SSL_PORT);
+  }
+  else
   {
-    cmbProxyType->setEnabled(false);
-    edtProxyHost->setEnabled(false);
-    spnProxyPort->setEnabled(false);
-    chkProxyAuthEnabled->setEnabled(false);
-    edtProxyLogin->setEnabled(false);
-    edtProxyPasswd->setEnabled(false);
-    spnICQServerPort->setValue(DEFAULT_SERVER_PORT);
+    myProxyTypeCombo->setEnabled(false);
+    myProxyHostEdit->setEnabled(false);
+    myProxyPortSpin->setEnabled(false);
+    myProxyAuthEnabledCheck->setEnabled(false);
+    myProxyLoginEdit->setEnabled(false);
+    myProxyPasswdEdit->setEnabled(false);
+    myIcqServerPortSpin->setValue(DEFAULT_SERVER_PORT);
   }
 }
 
 void Settings::Network::load()
 {
-  edtICQServer->setText(QString(gLicqDaemon->ICQServer()));
-  spnICQServerPort->setValue(gLicqDaemon->ICQServerPort());
-  chkFirewall->setChecked(gLicqDaemon->Firewall());
-  chkTCPEnabled->setChecked(gLicqDaemon->TCPEnabled());
-  spnPortLow->setValue(gLicqDaemon->TCPPortsLow());
-  spnPortHigh->setValue(gLicqDaemon->TCPPortsHigh());
+  myIcqServerEdit->setText(QString(gLicqDaemon->ICQServer()));
+  myIcqServerPortSpin->setValue(gLicqDaemon->ICQServerPort());
+  myFirewallCheck->setChecked(gLicqDaemon->Firewall());
+  myTcpEnabledCheck->setChecked(gLicqDaemon->TCPEnabled());
+  myPortLowSpin->setValue(gLicqDaemon->TCPPortsLow());
+  myPortHighSpin->setValue(gLicqDaemon->TCPPortsHigh());
 
   if (!gLicqDaemon->Firewall())
   {
-    chkTCPEnabled->setEnabled(false);
-    spnPortLow->setEnabled(false);
-    spnPortHigh->setEnabled(false);
+    myTcpEnabledCheck->setEnabled(false);
+    myPortLowSpin->setEnabled(false);
+    myPortHighSpin->setEnabled(false);
   }
   else
   {
     if (!gLicqDaemon->TCPEnabled())
     {
-      spnPortLow->setEnabled(false);
-      spnPortHigh->setEnabled(false);
+      myPortLowSpin->setEnabled(false);
+      myPortHighSpin->setEnabled(false);
     }
   }
 
-  chkProxyEnabled->setChecked(gLicqDaemon->ProxyEnabled());
-  cmbProxyType->setCurrentIndex(gLicqDaemon->ProxyType() - 1);
-  edtProxyHost->setText(QString(gLicqDaemon->ProxyHost()));
-  spnProxyPort->setValue(gLicqDaemon->ProxyPort());
-  chkProxyAuthEnabled->setChecked(gLicqDaemon->ProxyAuthEnabled());
-  edtProxyLogin->setText(QString(gLicqDaemon->ProxyLogin()));
-  edtProxyPasswd->setText(QString(gLicqDaemon->ProxyPasswd()));
+  myProxyEnabledCheck->setChecked(gLicqDaemon->ProxyEnabled());
+  myProxyTypeCombo->setCurrentIndex(gLicqDaemon->ProxyType() - 1);
+  myProxyHostEdit->setText(QString(gLicqDaemon->ProxyHost()));
+  myProxyPortSpin->setValue(gLicqDaemon->ProxyPort());
+  myProxyAuthEnabledCheck->setChecked(gLicqDaemon->ProxyAuthEnabled());
+  myProxyLoginEdit->setText(QString(gLicqDaemon->ProxyLogin()));
+  myProxyPasswdEdit->setText(QString(gLicqDaemon->ProxyPasswd()));
 
-  chkReconnectAfterUinClash->setChecked(gLicqDaemon->ReconnectAfterUinClash());
+  myReconnectAfterUinClashCheck->setChecked(gLicqDaemon->ReconnectAfterUinClash());
 
   if (!gLicqDaemon->ProxyEnabled())
   {
-    cmbProxyType->setEnabled(false);
-    edtProxyHost->setEnabled(false);
-    spnProxyPort->setEnabled(false);
-    chkProxyAuthEnabled->setEnabled(false);
-    edtProxyLogin->setEnabled(false);
-    edtProxyPasswd->setEnabled(false);
+    myProxyTypeCombo->setEnabled(false);
+    myProxyHostEdit->setEnabled(false);
+    myProxyPortSpin->setEnabled(false);
+    myProxyAuthEnabledCheck->setEnabled(false);
+    myProxyLoginEdit->setEnabled(false);
+    myProxyPasswdEdit->setEnabled(false);
   } else if (!gLicqDaemon->ProxyAuthEnabled())
   {
-    edtProxyLogin->setEnabled(false);
-    edtProxyPasswd->setEnabled(false);
+    myProxyLoginEdit->setEnabled(false);
+    myProxyPasswdEdit->setEnabled(false);
   }
 }
 
 void Settings::Network::apply()
 {
-  gLicqDaemon->SetICQServer(edtICQServer->text().toLocal8Bit());
-  gLicqDaemon->SetICQServerPort(spnICQServerPort->value());
-  gLicqDaemon->SetTCPPorts(spnPortLow->value(), spnPortHigh->value());
-  gLicqDaemon->SetTCPEnabled(chkTCPEnabled->isChecked());
-  gLicqDaemon->SetFirewall(chkFirewall->isChecked());
-  gLicqDaemon->SetProxyEnabled(chkProxyEnabled->isChecked());
-  gLicqDaemon->SetProxyType(cmbProxyType->currentIndex() + 1);
-  gLicqDaemon->SetProxyHost(edtProxyHost->text().toLocal8Bit());
-  gLicqDaemon->SetProxyPort(spnProxyPort->value());
-  gLicqDaemon->SetProxyAuthEnabled(chkProxyAuthEnabled->isChecked());
-  gLicqDaemon->SetProxyLogin(edtProxyLogin->text().toLocal8Bit());
-  gLicqDaemon->SetProxyPasswd(edtProxyPasswd->text().toLocal8Bit());
+  gLicqDaemon->SetICQServer(myIcqServerEdit->text().toLocal8Bit());
+  gLicqDaemon->SetICQServerPort(myIcqServerPortSpin->value());
+  gLicqDaemon->SetTCPPorts(myPortLowSpin->value(), myPortHighSpin->value());
+  gLicqDaemon->SetTCPEnabled(myTcpEnabledCheck->isChecked());
+  gLicqDaemon->SetFirewall(myFirewallCheck->isChecked());
+  gLicqDaemon->SetProxyEnabled(myProxyEnabledCheck->isChecked());
+  gLicqDaemon->SetProxyType(myProxyTypeCombo->currentIndex() + 1);
+  gLicqDaemon->SetProxyHost(myProxyHostEdit->text().toLocal8Bit());
+  gLicqDaemon->SetProxyPort(myProxyPortSpin->value());
+  gLicqDaemon->SetProxyAuthEnabled(myProxyAuthEnabledCheck->isChecked());
+  gLicqDaemon->SetProxyLogin(myProxyLoginEdit->text().toLocal8Bit());
+  gLicqDaemon->SetProxyPasswd(myProxyPasswdEdit->text().toLocal8Bit());
 
-  gLicqDaemon->setReconnectAfterUinClash(chkReconnectAfterUinClash->isChecked());
+  gLicqDaemon->setReconnectAfterUinClash(myReconnectAfterUinClashCheck->isChecked());
 }

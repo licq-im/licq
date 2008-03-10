@@ -64,117 +64,117 @@ Settings::ContactList::ContactList(SettingsDlg* parent)
 QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageContactList = new QVBoxLayout(w);
-  layPageContactList->setContentsMargins(0, 0, 0, 0);
+  myPageContactListLayout = new QVBoxLayout(w);
+  myPageContactListLayout->setContentsMargins(0, 0, 0, 0);
 
-  appearanceBox = new QGroupBox(tr("Contact List Appearance"));
-  appearanceLayout = new QGridLayout(appearanceBox);
+  myAppearanceBox = new QGroupBox(tr("Contact List Appearance"));
+  myAppearanceLayout = new QGridLayout(myAppearanceBox);
 
-  chkGridLines = new QCheckBox(tr("Show grid lines"));
-  chkGridLines->setToolTip(tr("Draw boxes around each square in the user list"));
-  appearanceLayout->addWidget(chkGridLines, 0, 0);
+  myGridLinesCheck = new QCheckBox(tr("Show grid lines"));
+  myGridLinesCheck->setToolTip(tr("Draw myesBox around each square in the user list"));
+  myAppearanceLayout->addWidget(myGridLinesCheck, 0, 0);
 
-  chkHeader = new QCheckBox(tr("Show column headers"));
-  chkHeader->setToolTip(tr("Turns on or off the display of headers above each column in the user list"));
-  appearanceLayout->addWidget(chkHeader, 1, 0);
+  myHeaderCheck = new QCheckBox(tr("Show column headers"));
+  myHeaderCheck->setToolTip(tr("Turns on or off the display of headers above each column in the user list"));
+  myAppearanceLayout->addWidget(myHeaderCheck, 1, 0);
 
-  chkShowDividers = new QCheckBox(tr("Show user dividers"));
-  chkShowDividers->setToolTip(tr("Show the \"--online--\" and \"--offline--\" bars in the contact list"));
-  appearanceLayout->addWidget(chkShowDividers, 2, 0);
+  myShowDividersCheck = new QCheckBox(tr("Show user dividers"));
+  myShowDividersCheck->setToolTip(tr("Show the \"--online--\" and \"--offline--\" bars in the contact list"));
+  myAppearanceLayout->addWidget(myShowDividersCheck, 2, 0);
 
-  chkFontStyles = new QCheckBox(tr("Use font styles"));
-  chkFontStyles->setToolTip(tr("Use italics and bold in the user list to "
+  myFontStylesCheck = new QCheckBox(tr("Use font styles"));
+  myFontStylesCheck->setToolTip(tr("Use italics and bold in the user list to "
       "indicate special characteristics such as online notify and visible list"));
-  appearanceLayout->addWidget(chkFontStyles, 3, 0);
+  myAppearanceLayout->addWidget(myFontStylesCheck, 3, 0);
 
-  chkShowExtIcons = new QCheckBox(tr("Show extended icons"));
-  chkShowExtIcons->setToolTip(tr("Show birthday, invisible, and custom auto response icons to the right of users in the list"));
-  appearanceLayout->addWidget(chkShowExtIcons, 4, 0);
+  myShowExtIconsCheck = new QCheckBox(tr("Show extended icons"));
+  myShowExtIconsCheck->setToolTip(tr("Show birthday, invisible, and custom auto response icons to the right of users in the list"));
+  myAppearanceLayout->addWidget(myShowExtIconsCheck, 4, 0);
 
-  chkShowUserIcons = new QCheckBox(tr("Show user display picture"));
-  chkShowUserIcons->setToolTip(tr("Show the user's display picture"
+  myShowUserIconsCheck = new QCheckBox(tr("Show user display picture"));
+  myShowUserIconsCheck->setToolTip(tr("Show the user's display picture"
       " instead of a status icon, if the user"
       " is online and has a display picture"));
-  appearanceLayout->addWidget(chkShowUserIcons, 5, 0);
+  myAppearanceLayout->addWidget(myShowUserIconsCheck, 5, 0);
 
-  chkAlwaysShowONU = new QCheckBox(tr("Always show online notify users"));
-  chkAlwaysShowONU->setToolTip(tr("Show online notify users who are offline even when offline users are hidden."));
-  appearanceLayout->addWidget(chkAlwaysShowONU, 0, 1);
+  myAlwaysShowONUCheck = new QCheckBox(tr("Always show online notify users"));
+  myAlwaysShowONUCheck->setToolTip(tr("Show online notify users who are offline even when offline users are hidden."));
+  myAppearanceLayout->addWidget(myAlwaysShowONUCheck, 0, 1);
 
-  chkTransparent = new QCheckBox(tr("Transparent when possible"));
-  chkTransparent->setToolTip(tr("Make the user window transparent when there is no scroll bar"));
-  appearanceLayout->addWidget(chkTransparent, 1, 1);
+  myTransparentCheck = new QCheckBox(tr("Transparent when possible"));
+  myTransparentCheck->setToolTip(tr("Make the user window transparent when there is no scroll bar"));
+  myAppearanceLayout->addWidget(myTransparentCheck, 1, 1);
 
-  chkShowGroupIfNoMsg = new QCheckBox(tr("Show group name if no messages"));
-  chkShowGroupIfNoMsg->setToolTip(tr("Show the name of the current group in the messages label when there are no new messages"));
-  appearanceLayout->addWidget(chkShowGroupIfNoMsg, 2, 1);
+  myShowGroupIfNoMsgCheck = new QCheckBox(tr("Show group name if no messages"));
+  myShowGroupIfNoMsgCheck->setToolTip(tr("Show the name of the current group in the messages label when there are no new messages"));
+  myAppearanceLayout->addWidget(myShowGroupIfNoMsgCheck, 2, 1);
 
-  chkSysBack = new QCheckBox(tr("Use system background color"));
-  appearanceLayout->addWidget(chkSysBack, 3, 1);
+  mySysBackCheck = new QCheckBox(tr("Use system background color"));
+  myAppearanceLayout->addWidget(mySysBackCheck, 3, 1);
 
-  chkScrollBar = new QCheckBox(tr("Allow scroll bar"));
-  chkScrollBar->setToolTip(tr("Allow the vertical scroll bar in the user list"));
-  appearanceLayout->addWidget(chkScrollBar, 4, 1);
+  myScrollBarCheck = new QCheckBox(tr("Allow scroll bar"));
+  myScrollBarCheck->setToolTip(tr("Allow the vertical scroll bar in the user list"));
+  myAppearanceLayout->addWidget(myScrollBarCheck, 4, 1);
 
-  QHBoxLayout* layFrameStyle = new QHBoxLayout();
-  lblFrameStyle = new QLabel(tr("Frame style:"));
-  layFrameStyle->addWidget(lblFrameStyle);
-  lblFrameStyle->setToolTip(tr("Override the skin setting for the frame style of the user window:\n"
-                               "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
-                               " + 16 (Plain), 32 (Raised), 48 (Sunken), 240 (Shadow)"));
-  edtFrameStyle = new QLineEdit();
-  edtFrameStyle->setValidator(new QIntValidator(edtFrameStyle));
-  edtFrameStyle->setToolTip(lblFrameStyle->toolTip());
-  lblFrameStyle->setBuddy(edtFrameStyle);
-  layFrameStyle->addWidget(edtFrameStyle);
-  appearanceLayout->addLayout(layFrameStyle, 5, 1);
+  QHBoxLayout* myFrameStyleLayout = new QHBoxLayout();
+  myFrameStyleLabel = new QLabel(tr("Frame style:"));
+  myFrameStyleLayout->addWidget(myFrameStyleLabel);
+  myFrameStyleLabel->setToolTip(tr("Override the skin setting for the frame style of the user window:\n"
+      "   0 (No frame), 1 (Box), 2 (Panel), 3 (WinPanel)\n"
+      " + 16 (Plain), 32 (Raised), 48 (Sunken), 240 (Shadow)"));
+  myFrameStyleEdit = new QLineEdit();
+  myFrameStyleEdit->setValidator(new QIntValidator(myFrameStyleEdit));
+  myFrameStyleEdit->setToolTip(myFrameStyleLabel->toolTip());
+  myFrameStyleLabel->setBuddy(myFrameStyleEdit);
+  myFrameStyleLayout->addWidget(myFrameStyleEdit);
+  myAppearanceLayout->addLayout(myFrameStyleLayout, 5, 1);
 
   // Make the columns evenly wide, otherwise the QLineEdit steals the space
-  appearanceLayout->setColumnStretch(0, 1);
-  appearanceLayout->setColumnStretch(1, 1);
+  myAppearanceLayout->setColumnStretch(0, 1);
+  myAppearanceLayout->setColumnStretch(1, 1);
 
 
-  behaviourBox = new QGroupBox(tr("Contact List Behaviour"));
-  behaviourLayout = new QGridLayout(behaviourBox);
+  myBehaviourBox = new QGroupBox(tr("Contact List Behaviour"));
+  myBehaviourLayout = new QGridLayout(myBehaviourBox);
 
-  chkSSList = new QCheckBox(tr("Use server side contact list"));
-  chkSSList->setToolTip(tr("Store your contacts on the server so they are accessible from different locations and/or programs"));
-  behaviourLayout->addWidget(chkSSList, 0, 0);
+  mySSListCheck = new QCheckBox(tr("Use server side contact list"));
+  mySSListCheck->setToolTip(tr("Store your contacts on the server so they are accessible from different locations and/or programs"));
+  myBehaviourLayout->addWidget(mySSListCheck, 0, 0);
 
-  chkManualNewUser = new QCheckBox(tr("Manual \"New User\" group handling"));
-  chkManualNewUser->setToolTip(tr("If not checked, a user will be automatically removed from "
+  myManualNewUserCheck = new QCheckBox(tr("Manual \"New User\" group handling"));
+  myManualNewUserCheck->setToolTip(tr("If not checked, a user will be automatically removed from "
                                   "\"New User\" group when you first send an event to them."));
-  behaviourLayout->addWidget(chkManualNewUser, 1, 0);
+  myBehaviourLayout->addWidget(myManualNewUserCheck, 1, 0);
 
-  chkEnableMainwinMouseMovement = new QCheckBox(tr("Allow dragging main window"));
-  chkEnableMainwinMouseMovement->setToolTip(tr("Lets you drag around the main window with your mouse"));
-  behaviourLayout->addWidget(chkEnableMainwinMouseMovement, 2, 0);
+  myEnableMainwinMouseMovementCheck = new QCheckBox(tr("Allow dragging main window"));
+  myEnableMainwinMouseMovementCheck->setToolTip(tr("Lets you drag around the main window with your mouse"));
+  myBehaviourLayout->addWidget(myEnableMainwinMouseMovementCheck, 2, 0);
 
-  chkMainWinSticky = new QCheckBox(tr("Sticky main window"));
-  chkMainWinSticky->setToolTip(tr("Makes the Main window visible on all desktops"));
-  behaviourLayout->addWidget(chkMainWinSticky, 0, 1);
+  myMainWinStickyCheck = new QCheckBox(tr("Sticky main window"));
+  myMainWinStickyCheck->setToolTip(tr("Makes the Main window visible on all desktops"));
+  myBehaviourLayout->addWidget(myMainWinStickyCheck, 0, 1);
 
-  QHBoxLayout* laySortBy = new QHBoxLayout();
-  lblSortBy = new QLabel(tr("Additional sorting:"));
-  lblSortBy->setToolTip(tr("<b>none:</b> - Don't sort online users by Status<br>\n"
-                                "<b>status</b> - Sort online users by status<br>\n"
-                                "<b>status + last event</b> - Sort online users by status and by last event<br>\n"
-                                "<b>status + new messages</b> - Sort online users by status and number of new messages"));
-  laySortBy->addWidget(lblSortBy);
-  cmbSortBy = new QComboBox();
-  cmbSortBy->addItem(tr("none"), 0);
-  cmbSortBy->addItem(tr("status"), 1);
-  cmbSortBy->addItem(tr("status + last event"), 2);
-  cmbSortBy->addItem(tr("status + new messages"), 3);
-  cmbSortBy->setToolTip(lblSortBy->toolTip());
-  lblSortBy->setBuddy(cmbSortBy);
-  laySortBy->addWidget(cmbSortBy);
-  behaviourLayout->addLayout(laySortBy, 1, 1);
+  QHBoxLayout* mySortByLayout = new QHBoxLayout();
+  mySortByLabel = new QLabel(tr("Additional sorting:"));
+  mySortByLabel->setToolTip(tr("<b>none:</b> - Don't sort online users by Status<br>\n"
+      "<b>status</b> - Sort online users by status<br>\n"
+      "<b>status + last event</b> - Sort online users by status and by last event<br>\n"
+      "<b>status + new messages</b> - Sort online users by status and number of new messages"));
+  mySortByLayout->addWidget(mySortByLabel);
+  mySortByCombo = new QComboBox();
+  mySortByCombo->addItem(tr("none"), 0);
+  mySortByCombo->addItem(tr("status"), 1);
+  mySortByCombo->addItem(tr("status + last event"), 2);
+  mySortByCombo->addItem(tr("status + new messages"), 3);
+  mySortByCombo->setToolTip(mySortByLabel->toolTip());
+  mySortByLabel->setBuddy(mySortByCombo);
+  mySortByLayout->addWidget(mySortByCombo);
+  myBehaviourLayout->addLayout(mySortByLayout, 1, 1);
 
 
-  layPageContactList->addWidget(appearanceBox);
-  layPageContactList->addWidget(behaviourBox);
-  layPageContactList->addStretch(1);
+  myPageContactListLayout->addWidget(myAppearanceBox);
+  myPageContactListLayout->addWidget(myBehaviourBox);
+  myPageContactListLayout->addStretch(1);
 
   return w;
 }
@@ -182,58 +182,58 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
 QWidget* Settings::ContactList::createPageColumns(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageColumns = new QVBoxLayout(w);
-  layPageColumns->setContentsMargins(0, 0, 0, 0);
+  myPageColumnsLayout = new QVBoxLayout(w);
+  myPageColumnsLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxColumns = new QGroupBox (tr("Column Configuration"));
-  layColumns = new QGridLayout(boxColumns);
+  myColumnsBox = new QGroupBox (tr("Column Configuration"));
+  myColumnsLayout = new QGridLayout(myColumnsBox);
 
   // Headings
-  lblColTitle = new QLabel (tr("Title"));
-  lblColTitle->setToolTip(tr("The string which will appear in the list box column header"));
-  layColumns->addWidget(lblColTitle, 0, 1);
-  lblColFormat = new QLabel (tr("Format"));
-  lblColFormat->setToolTip(tr("The format string used to define what will appear in each column.<br>"
-                              "The following parameters can be used:")
-                           + gMainWindow->usprintfHelp);
-  layColumns->addWidget(lblColFormat, 0, 2);
-  lblColWidth = new QLabel (tr("Width"));
-  lblColWidth->setToolTip(tr("The width of the column"));
-  layColumns->addWidget(lblColWidth, 0, 3);
-  lblColAlign = new QLabel(tr("Alignment"));
-  lblColAlign->setToolTip(tr("The alignment of the column"));
-  layColumns->addWidget(lblColAlign, 0, 4);
+  myColTitleLabel = new QLabel (tr("Title"));
+  myColTitleLabel->setToolTip(tr("The string which will appear in the list myBox column header"));
+  myColumnsLayout->addWidget(myColTitleLabel, 0, 1);
+  myColFormatLabel = new QLabel (tr("Format"));
+  myColFormatLabel->setToolTip(tr("The format string used to define what will appear in each column.<br>"
+      "The following parameters can be used:")
+      + gMainWindow->usprintfHelp);
+  myColumnsLayout->addWidget(myColFormatLabel, 0, 2);
+  myColWidthLabel = new QLabel (tr("Width"));
+  myColWidthLabel->setToolTip(tr("The width of the column"));
+  myColumnsLayout->addWidget(myColWidthLabel, 0, 3);
+  myColAlignLabel = new QLabel(tr("Alignment"));
+  myColAlignLabel->setToolTip(tr("The alignment of the column"));
+  myColumnsLayout->addWidget(myColAlignLabel, 0, 4);
 
   for (unsigned short i = 0; i < MAX_COLUMNCOUNT; i++)
   {
-    rdbColNumber[i] = new QRadioButton(QString::number(i+1));
-    rdbColNumber[i]->setToolTip(tr("Number of columns"));
-    connect(rdbColNumber[i], SIGNAL(toggled(bool)), SLOT(colEnable(bool)));
-    layColumns->addWidget(rdbColNumber[i], i+1, 0);
+    myColNumberRadio[i] = new QRadioButton(QString::number(i+1));
+    myColNumberRadio[i]->setToolTip(tr("Number of columns"));
+    connect(myColNumberRadio[i], SIGNAL(toggled(bool)), SLOT(numColumnsChanged()));
+    myColumnsLayout->addWidget(myColNumberRadio[i], i+1, 0);
 
-    edtColTitle[i] = new QLineEdit();
-    edtColTitle[i]->setToolTip(lblColTitle->toolTip());
-    layColumns->addWidget(edtColTitle[i], i+1, 1);
+    myColTitleEdit[i] = new QLineEdit();
+    myColTitleEdit[i]->setToolTip(myColTitleLabel->toolTip());
+    myColumnsLayout->addWidget(myColTitleEdit[i], i+1, 1);
 
-    edtColFormat[i] = new QLineEdit();
-    edtColFormat[i]->setToolTip(lblColFormat->toolTip());
-    layColumns->addWidget(edtColFormat[i], i+1, 2);
+    myColFormatEdit[i] = new QLineEdit();
+    myColFormatEdit[i]->setToolTip(myColFormatLabel->toolTip());
+    myColumnsLayout->addWidget(myColFormatEdit[i], i+1, 2);
 
-    spnColWidth[i] = new QSpinBox();
-    spnColWidth[i]->setToolTip(lblColWidth->toolTip());
-    spnColWidth[i]->setRange(0, 2048);
-    layColumns->addWidget(spnColWidth[i], i+1, 3);
+    myColWidthSpin[i] = new QSpinBox();
+    myColWidthSpin[i]->setToolTip(myColWidthLabel->toolTip());
+    myColWidthSpin[i]->setRange(0, 2048);
+    myColumnsLayout->addWidget(myColWidthSpin[i], i+1, 3);
 
-    cmbColAlign[i] = new QComboBox();
-    cmbColAlign[i]->setToolTip(lblColAlign->toolTip());
-    cmbColAlign[i]->addItem(tr("Left"));
-    cmbColAlign[i]->addItem(tr("Right"));
-    cmbColAlign[i]->addItem(tr("Center"));
-    layColumns->addWidget(cmbColAlign[i], i+1, 4);
+    myColAlignCombo[i] = new QComboBox();
+    myColAlignCombo[i]->setToolTip(myColAlignLabel->toolTip());
+    myColAlignCombo[i]->addItem(tr("Left"));
+    myColAlignCombo[i]->addItem(tr("Right"));
+    myColAlignCombo[i]->addItem(tr("Center"));
+    myColumnsLayout->addWidget(myColAlignCombo[i], i+1, 4);
   }
 
-  layPageColumns->addWidget(boxColumns);
-  layPageColumns->addStretch(1);
+  myPageColumnsLayout->addWidget(myColumnsBox);
+  myPageColumnsLayout->addStretch(1);
 
   return w;
 }
@@ -241,77 +241,77 @@ QWidget* Settings::ContactList::createPageColumns(QWidget* parent)
 QWidget* Settings::ContactList::createPageContactInfo(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageContactInfo = new QVBoxLayout(w);
-  layPageContactInfo->setContentsMargins(0, 0, 0, 0);
+  myPageContactInfoLayout = new QVBoxLayout(w);
+  myPageContactInfoLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxPopup = new QGroupBox(tr("Popup info"));
-  layPopup = new QGridLayout(boxPopup);
+  myPopupBox = new QGroupBox(tr("Popup info"));
+  myPopupLayout = new QGridLayout(myPopupBox);
 
-  popPicture = new QCheckBox(tr("Picture"));
-  layPopup->addWidget(popPicture, 0, 0);
-  popAlias = new QCheckBox(tr("Alias"));
-  layPopup->addWidget(popAlias, 1, 0);
-  popName = new QCheckBox(tr("Full name"));
-  layPopup->addWidget(popName, 2, 0);
-  popEmail = new QCheckBox(tr("Email"));
-  layPopup->addWidget(popEmail, 3, 0);
-  popPhone = new QCheckBox(tr("Phone"));
-  layPopup->addWidget(popPhone, 4, 0);
-  popFax = new QCheckBox(tr("Fax"));
-  layPopup->addWidget(popFax, 5, 0);
-  popCellular = new QCheckBox(tr("Cellular"));
-  layPopup->addWidget(popCellular, 6, 0);
-  popIP = new QCheckBox(tr("IP address"));
-  layPopup->addWidget(popIP, 0, 1);
-  popLastOnline = new QCheckBox(tr("Last online"));
-  layPopup->addWidget(popLastOnline, 1, 1);
-  popOnlineSince = new QCheckBox(tr("Online time"));
-  layPopup->addWidget(popOnlineSince, 2, 1);
-  popIdleTime = new QCheckBox(tr("Idle time"));
-  layPopup->addWidget(popIdleTime, 3, 1);
-  popLocalTime = new QCheckBox(tr("Local time"));
-  layPopup->addWidget(popLocalTime, 4, 1);
-  popID = new QCheckBox(tr("Protocol ID"));
-  layPopup->addWidget(popID, 5, 1);
-  popAuth = new QCheckBox(tr("Authorization status"));
-  layPopup->addWidget(popAuth, 6, 1);
+  myPopupPictureCheck = new QCheckBox(tr("Picture"));
+  myPopupLayout->addWidget(myPopupPictureCheck, 0, 0);
+  myPopupAliasCheck = new QCheckBox(tr("Alias"));
+  myPopupLayout->addWidget(myPopupAliasCheck, 1, 0);
+  myPopupNameCheck = new QCheckBox(tr("Full name"));
+  myPopupLayout->addWidget(myPopupNameCheck, 2, 0);
+  myPopupEmailCheck = new QCheckBox(tr("Email"));
+  myPopupLayout->addWidget(myPopupEmailCheck, 3, 0);
+  myPopupPhoneCheck = new QCheckBox(tr("Phone"));
+  myPopupLayout->addWidget(myPopupPhoneCheck, 4, 0);
+  myPopupFaxCheck = new QCheckBox(tr("Fax"));
+  myPopupLayout->addWidget(myPopupFaxCheck, 5, 0);
+  myPopupCellularCheck = new QCheckBox(tr("Cellular"));
+  myPopupLayout->addWidget(myPopupCellularCheck, 6, 0);
+  myPopupIpCheck = new QCheckBox(tr("IP address"));
+  myPopupLayout->addWidget(myPopupIpCheck, 0, 1);
+  myPopupLastOnlineCheck = new QCheckBox(tr("Last online"));
+  myPopupLayout->addWidget(myPopupLastOnlineCheck, 1, 1);
+  myPopupOnlineSinceCheck = new QCheckBox(tr("Online time"));
+  myPopupLayout->addWidget(myPopupOnlineSinceCheck, 2, 1);
+  myPopupIdleTimeCheck = new QCheckBox(tr("Idle time"));
+  myPopupLayout->addWidget(myPopupIdleTimeCheck, 3, 1);
+  myPopupLocalTimeCheck = new QCheckBox(tr("Local time"));
+  myPopupLayout->addWidget(myPopupLocalTimeCheck, 4, 1);
+  myPopupIdCheck = new QCheckBox(tr("Protocol ID"));
+  myPopupLayout->addWidget(myPopupIdCheck, 5, 1);
+  myPopupAuthCheck = new QCheckBox(tr("Authorization status"));
+  myPopupLayout->addWidget(myPopupAuthCheck, 6, 1);
 
-  boxAutoUpdate = new QGroupBox(tr("Automatic Update"));
-  layAutoUpdate = new QVBoxLayout(boxAutoUpdate);
+  myAutoUpdateBox = new QGroupBox(tr("Automatic Update"));
+  myAutoUpdateLayout = new QVBoxLayout(myAutoUpdateBox);
 
-  chkAutoUpdateInfo = new QCheckBox(tr("Contact information"));
-  chkAutoUpdateInfo->setToolTip(tr("Automatically update users' server stored information."));
-  layAutoUpdate->addWidget(chkAutoUpdateInfo);
+  myAutoUpdateInfoCheck = new QCheckBox(tr("Contact information"));
+  myAutoUpdateInfoCheck->setToolTip(tr("Automatically update users' server stored information."));
+  myAutoUpdateLayout->addWidget(myAutoUpdateInfoCheck);
 
-  chkAutoUpdateInfoPlugins = new QCheckBox(tr("Info plugins"));
-  chkAutoUpdateInfoPlugins->setToolTip(tr("Automatically update users' Phone Book and Picture."));
-  layAutoUpdate->addWidget(chkAutoUpdateInfoPlugins);
+  myAutoUpdateInfoPluginsCheck = new QCheckBox(tr("Info plugins"));
+  myAutoUpdateInfoPluginsCheck->setToolTip(tr("Automatically update users' Phone Book and Picture."));
+  myAutoUpdateLayout->addWidget(myAutoUpdateInfoPluginsCheck);
 
-  chkAutoUpdateStatusPlugins = new QCheckBox(tr("Status plugins"));
-  chkAutoUpdateStatusPlugins->setToolTip(tr("Automatically update users' Phone \"Follow Me\", File Server and ICQphone status."));
-  layAutoUpdate->addWidget(chkAutoUpdateStatusPlugins);
+  myAutoUpdateStatusPluginsCheck = new QCheckBox(tr("Status plugins"));
+  myAutoUpdateStatusPluginsCheck->setToolTip(tr("Automatically update users' Phone \"Follow Me\", File Server and ICQphone status."));
+  myAutoUpdateLayout->addWidget(myAutoUpdateStatusPluginsCheck);
 
-  layPageContactInfo->addWidget(boxPopup);
-  layPageContactInfo->addWidget(boxAutoUpdate);
-  layPageContactInfo->addStretch(1);
+  myPageContactInfoLayout->addWidget(myPopupBox);
+  myPageContactInfoLayout->addWidget(myAutoUpdateBox);
+  myPageContactInfoLayout->addStretch(1);
 
   return w;
 }
 
-void Settings::ContactList::colEnable(bool /* isOn */)
+void Settings::ContactList::numColumnsChanged()
 {
   // Starting from the top, rows should be enabled
   bool enableRow = true;
 
   for (unsigned short i = 0; i < MAX_COLUMNCOUNT; ++i)
   {
-    edtColTitle[i]->setEnabled(enableRow);
-    edtColFormat[i]->setEnabled(enableRow);
-    spnColWidth[i]->setEnabled(enableRow);
-    cmbColAlign[i]->setEnabled(enableRow);
+    myColTitleEdit[i]->setEnabled(enableRow);
+    myColFormatEdit[i]->setEnabled(enableRow);
+    myColWidthSpin[i]->setEnabled(enableRow);
+    myColAlignCombo[i]->setEnabled(enableRow);
 
     // We've found the checked row, so all rows below this should be disabled
-    if(rdbColNumber[i]->isChecked())
+    if(myColNumberRadio[i]->isChecked())
       enableRow = false;
   }
 }
@@ -322,67 +322,66 @@ void Settings::ContactList::load()
   Config::ContactList* contactListConfig = Config::ContactList::instance();
   Config::General* generalConfig = Config::General::instance();
 
-  chkManualNewUser->setChecked(chatConfig->manualNewUser());
+  myManualNewUserCheck->setChecked(chatConfig->manualNewUser());
 
-  chkShowGroupIfNoMsg->setChecked(generalConfig->showGroupIfNoMsg());
-  chkEnableMainwinMouseMovement->setChecked(generalConfig->mainwinDraggable());
-  chkMainWinSticky->setChecked(generalConfig->mainwinSticky());
+  myShowGroupIfNoMsgCheck->setChecked(generalConfig->showGroupIfNoMsg());
+  myEnableMainwinMouseMovementCheck->setChecked(generalConfig->mainwinDraggable());
+  myMainWinStickyCheck->setChecked(generalConfig->mainwinSticky());
 
-  chkGridLines->setChecked(contactListConfig->showGridLines());
-  chkFontStyles->setChecked(contactListConfig->useFontStyles());
-  chkShowExtIcons->setChecked(contactListConfig->showExtendedIcons());
-  chkHeader->setChecked(contactListConfig->showHeader());
-  chkShowDividers->setChecked(contactListConfig->showDividers());
-  cmbSortBy->setCurrentIndex(contactListConfig->sortByStatus());
-  chkAlwaysShowONU->setChecked(contactListConfig->alwaysShowONU());
-  chkShowUserIcons->setChecked(contactListConfig->showUserIcons());
-  chkScrollBar->setChecked(contactListConfig->allowScrollBar());
-  chkSysBack->setChecked(contactListConfig->useSystemBackground());
+  myGridLinesCheck->setChecked(contactListConfig->showGridLines());
+  myFontStylesCheck->setChecked(contactListConfig->useFontStyles());
+  myShowExtIconsCheck->setChecked(contactListConfig->showExtendedIcons());
+  myHeaderCheck->setChecked(contactListConfig->showHeader());
+  myShowDividersCheck->setChecked(contactListConfig->showDividers());
+  mySortByCombo->setCurrentIndex(contactListConfig->sortByStatus());
+  myAlwaysShowONUCheck->setChecked(contactListConfig->alwaysShowONU());
+  myShowUserIconsCheck->setChecked(contactListConfig->showUserIcons());
+  myScrollBarCheck->setChecked(contactListConfig->allowScrollBar());
+  mySysBackCheck->setChecked(contactListConfig->useSystemBackground());
 
   int numColumns = contactListConfig->columnCount();
   if(numColumns < 1)
-    rdbColNumber[0]->setChecked(true);
+    myColNumberRadio[0]->setChecked(true);
   else if(numColumns > MAX_COLUMNCOUNT)
-    rdbColNumber[MAX_COLUMNCOUNT - 1]->setChecked(true);
+    myColNumberRadio[MAX_COLUMNCOUNT - 1]->setChecked(true);
   else
-    rdbColNumber[numColumns - 1]->setChecked(true);
+    myColNumberRadio[numColumns - 1]->setChecked(true);
 
   for (int i = 0; i < MAX_COLUMNCOUNT; ++i)
   {
-    edtColTitle[i]->setText(contactListConfig->columnHeading(i));
-    edtColFormat[i]->setText(contactListConfig->columnFormat(i));
-    spnColWidth[i]->setValue(contactListConfig->columnWidth(i));
-    cmbColAlign[i]->setCurrentIndex(contactListConfig->columnAlignment(i));
+    myColTitleEdit[i]->setText(contactListConfig->columnHeading(i));
+    myColFormatEdit[i]->setText(contactListConfig->columnFormat(i));
+    myColWidthSpin[i]->setValue(contactListConfig->columnWidth(i));
+    myColAlignCombo[i]->setCurrentIndex(contactListConfig->columnAlignment(i));
 
-    edtColTitle[i]->setEnabled(i < numColumns);
-    edtColFormat[i]->setEnabled(i < numColumns);
-    spnColWidth[i]->setEnabled(i < numColumns);
-    cmbColAlign[i]->setEnabled(i < numColumns);
+    myColTitleEdit[i]->setEnabled(i < numColumns);
+    myColFormatEdit[i]->setEnabled(i < numColumns);
+    myColWidthSpin[i]->setEnabled(i < numColumns);
+    myColAlignCombo[i]->setEnabled(i < numColumns);
   }
 
-  popPicture->setChecked(contactListConfig->popupPicture());
-  popAlias->setChecked(contactListConfig->popupAlias());
-  popAuth->setChecked(contactListConfig->popupAuth());
-  popName->setChecked(contactListConfig->popupName());
-  popEmail->setChecked(contactListConfig->popupEmail());
-  popPhone->setChecked(contactListConfig->popupPhone());
-  popFax->setChecked(contactListConfig->popupFax());
-  popCellular->setChecked(contactListConfig->popupCellular());
-  popIP->setChecked(contactListConfig->popupIP());
-  popLastOnline->setChecked(contactListConfig->popupLastOnline());
-  popOnlineSince->setChecked(contactListConfig->popupOnlineSince());
-  popIdleTime->setChecked(contactListConfig->popupIdleTime());
-  popLocalTime->setChecked(contactListConfig->popupLocalTime());
-  popID->setChecked(contactListConfig->popupID());
+  myPopupPictureCheck->setChecked(contactListConfig->popupPicture());
+  myPopupAliasCheck->setChecked(contactListConfig->popupAlias());
+  myPopupAuthCheck->setChecked(contactListConfig->popupAuth());
+  myPopupNameCheck->setChecked(contactListConfig->popupName());
+  myPopupEmailCheck->setChecked(contactListConfig->popupEmail());
+  myPopupPhoneCheck->setChecked(contactListConfig->popupPhone());
+  myPopupFaxCheck->setChecked(contactListConfig->popupFax());
+  myPopupCellularCheck->setChecked(contactListConfig->popupCellular());
+  myPopupIpCheck->setChecked(contactListConfig->popupIP());
+  myPopupLastOnlineCheck->setChecked(contactListConfig->popupLastOnline());
+  myPopupOnlineSinceCheck->setChecked(contactListConfig->popupOnlineSince());
+  myPopupIdleTimeCheck->setChecked(contactListConfig->popupIdleTime());
+  myPopupLocalTimeCheck->setChecked(contactListConfig->popupLocalTime());
+  myPopupIdCheck->setChecked(contactListConfig->popupID());
 
-  chkSSList->setChecked(gLicqDaemon->UseServerContactList());
-  chkTransparent->setChecked(Config::Skin::active()->frame.transparent);
-  edtFrameStyle->setText(QString::number(static_cast<int>(Config::Skin::active()->frame.frameStyle)));
+  mySSListCheck->setChecked(gLicqDaemon->UseServerContactList());
+  myTransparentCheck->setChecked(Config::Skin::active()->frame.transparent);
+  myFrameStyleEdit->setText(QString::number(static_cast<int>(Config::Skin::active()->frame.frameStyle)));
 
-  chkAutoUpdateInfo->setChecked(gLicqDaemon->AutoUpdateInfo());
-  chkAutoUpdateInfoPlugins->setChecked(gLicqDaemon->AutoUpdateInfoPlugins());
-  chkAutoUpdateStatusPlugins->setChecked(gLicqDaemon->AutoUpdateStatusPlugins());
-
+  myAutoUpdateInfoCheck->setChecked(gLicqDaemon->AutoUpdateInfo());
+  myAutoUpdateInfoPluginsCheck->setChecked(gLicqDaemon->AutoUpdateInfoPlugins());
+  myAutoUpdateStatusPluginsCheck->setChecked(gLicqDaemon->AutoUpdateStatusPlugins());
 }
 
 void Settings::ContactList::apply()
@@ -394,57 +393,57 @@ void Settings::ContactList::apply()
   contactListConfig->blockUpdates(true);
   generalConfig->blockUpdates(true);
 
-  chatConfig->setManualNewUser(chkManualNewUser->isChecked());
+  chatConfig->setManualNewUser(myManualNewUserCheck->isChecked());
 
-  generalConfig->setShowGroupIfNoMsg(chkShowGroupIfNoMsg->isChecked());
-  generalConfig->setMainwinDraggable(chkEnableMainwinMouseMovement->isChecked());
-  generalConfig->setMainwinSticky(chkMainWinSticky->isChecked());
+  generalConfig->setShowGroupIfNoMsg(myShowGroupIfNoMsgCheck->isChecked());
+  generalConfig->setMainwinDraggable(myEnableMainwinMouseMovementCheck->isChecked());
+  generalConfig->setMainwinSticky(myMainWinStickyCheck->isChecked());
 
-  contactListConfig->setShowGridLines(chkGridLines->isChecked());
-  contactListConfig->setUseFontStyles(chkFontStyles->isChecked());
-  contactListConfig->setShowExtendedIcons(chkShowExtIcons->isChecked());
-  contactListConfig->setShowHeader(chkHeader->isChecked());
-  contactListConfig->setShowDividers(chkShowDividers->isChecked());
-  contactListConfig->setSortByStatus(cmbSortBy->currentIndex());
-  contactListConfig->setAlwaysShowONU(chkAlwaysShowONU->isChecked());
-  contactListConfig->setShowUserIcons(chkShowUserIcons->isChecked());
-  contactListConfig->setAllowScrollBar(chkScrollBar->isChecked());
-  contactListConfig->setUseSystemBackground(chkSysBack->isChecked());
+  contactListConfig->setShowGridLines(myGridLinesCheck->isChecked());
+  contactListConfig->setUseFontStyles(myFontStylesCheck->isChecked());
+  contactListConfig->setShowExtendedIcons(myShowExtIconsCheck->isChecked());
+  contactListConfig->setShowHeader(myHeaderCheck->isChecked());
+  contactListConfig->setShowDividers(myShowDividersCheck->isChecked());
+  contactListConfig->setSortByStatus(mySortByCombo->currentIndex());
+  contactListConfig->setAlwaysShowONU(myAlwaysShowONUCheck->isChecked());
+  contactListConfig->setShowUserIcons(myShowUserIconsCheck->isChecked());
+  contactListConfig->setAllowScrollBar(myScrollBarCheck->isChecked());
+  contactListConfig->setUseSystemBackground(mySysBackCheck->isChecked());
 
   for (unsigned short i = 0; i < MAX_COLUMNCOUNT; ++i)
   {
     contactListConfig->setColumn(i,
-        edtColTitle[i]->text(),
-        edtColFormat[i]->text(),
-        spnColWidth[i]->value(),
-        static_cast<Config::ContactList::AlignmentMode>(cmbColAlign[i]->currentIndex()));
+        myColTitleEdit[i]->text(),
+        myColFormatEdit[i]->text(),
+        myColWidthSpin[i]->value(),
+        static_cast<Config::ContactList::AlignmentMode>(myColAlignCombo[i]->currentIndex()));
 
-    if (rdbColNumber[i]->isChecked())
+    if (myColNumberRadio[i]->isChecked())
       contactListConfig->setColumnCount(i + 1);
   }
 
-  contactListConfig->setPopupPicture(popPicture->isChecked());
-  contactListConfig->setPopupAlias(popAlias->isChecked());
-  contactListConfig->setPopupAuth(popAuth->isChecked());
-  contactListConfig->setPopupName(popName->isChecked());
-  contactListConfig->setPopupEmail(popEmail->isChecked());
-  contactListConfig->setPopupPhone(popPhone->isChecked());
-  contactListConfig->setPopupFax(popFax->isChecked());
-  contactListConfig->setPopupCellular(popCellular->isChecked());
-  contactListConfig->setPopupIP(popIP->isChecked());
-  contactListConfig->setPopupLastOnline(popLastOnline->isChecked());
-  contactListConfig->setPopupOnlineSince(popOnlineSince->isChecked());
-  contactListConfig->setPopupIdleTime(popIdleTime->isChecked());
-  contactListConfig->setPopupLocalTime(popLocalTime->isChecked());
-  contactListConfig->setPopupID(popID->isChecked());
+  contactListConfig->setPopupPicture(myPopupPictureCheck->isChecked());
+  contactListConfig->setPopupAlias(myPopupAliasCheck->isChecked());
+  contactListConfig->setPopupAuth(myPopupAuthCheck->isChecked());
+  contactListConfig->setPopupName(myPopupNameCheck->isChecked());
+  contactListConfig->setPopupEmail(myPopupEmailCheck->isChecked());
+  contactListConfig->setPopupPhone(myPopupPhoneCheck->isChecked());
+  contactListConfig->setPopupFax(myPopupFaxCheck->isChecked());
+  contactListConfig->setPopupCellular(myPopupCellularCheck->isChecked());
+  contactListConfig->setPopupIP(myPopupIpCheck->isChecked());
+  contactListConfig->setPopupLastOnline(myPopupLastOnlineCheck->isChecked());
+  contactListConfig->setPopupOnlineSince(myPopupOnlineSinceCheck->isChecked());
+  contactListConfig->setPopupIdleTime(myPopupIdleTimeCheck->isChecked());
+  contactListConfig->setPopupLocalTime(myPopupLocalTimeCheck->isChecked());
+  contactListConfig->setPopupID(myPopupIdCheck->isChecked());
 
-  gLicqDaemon->SetUseServerContactList(chkSSList->isChecked());
-  Config::Skin::active()->setFrameTransparent(chkTransparent->isChecked());
-  Config::Skin::active()->setFrameStyle(edtFrameStyle->text().toUShort());
+  gLicqDaemon->SetUseServerContactList(mySSListCheck->isChecked());
+  Config::Skin::active()->setFrameTransparent(myTransparentCheck->isChecked());
+  Config::Skin::active()->setFrameStyle(myFrameStyleEdit->text().toUShort());
 
-  gLicqDaemon->SetAutoUpdateInfo(chkAutoUpdateInfo->isChecked());
-  gLicqDaemon->SetAutoUpdateInfoPlugins(chkAutoUpdateInfoPlugins->isChecked());
-  gLicqDaemon->SetAutoUpdateStatusPlugins(chkAutoUpdateStatusPlugins->isChecked());
+  gLicqDaemon->SetAutoUpdateInfo(myAutoUpdateInfoCheck->isChecked());
+  gLicqDaemon->SetAutoUpdateInfoPlugins(myAutoUpdateInfoPluginsCheck->isChecked());
+  gLicqDaemon->SetAutoUpdateStatusPlugins(myAutoUpdateStatusPluginsCheck->isChecked());
 
   chatConfig->blockUpdates(false);
   contactListConfig->blockUpdates(false);

@@ -56,61 +56,61 @@ Settings::General::General(SettingsDlg* parent)
 QWidget* Settings::General::createPageDocking(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  QVBoxLayout* layPageDocking = new QVBoxLayout(w);
-  layPageDocking->setContentsMargins(0, 0, 0, 0);
+  QVBoxLayout* myPageDockingLayout = new QVBoxLayout(w);
+  myPageDockingLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxDocking = new QGroupBox(tr("Docking"));
-  layDocking = new QGridLayout(boxDocking);
+  myDockingBox = new QGroupBox(tr("Docking"));
+  myDockingLayout = new QGridLayout(myDockingBox);
 
-  chkUseDock = new QCheckBox(tr("Use dock icon"), boxDocking);
-  chkUseDock->setToolTip(tr("Controls whether or not the dockable icon should be displayed."));
-  layDocking->addWidget(chkUseDock, 0, 0);
+  myUseDockCheck = new QCheckBox(tr("Use dock icon"), myDockingBox);
+  myUseDockCheck->setToolTip(tr("Controls whether or not the dockable icon should be displayed."));
+  myDockingLayout->addWidget(myUseDockCheck, 0, 0);
 
-  chkHidden = new QCheckBox(tr("Start hidden"));
-  chkHidden->setToolTip(tr("Start main window hidden. Only the dock icon will be visible."));
-  layDocking->addWidget(chkHidden, 0, 1);
+  myHiddenCheck = new QCheckBox(tr("Start hidden"));
+  myHiddenCheck->setToolTip(tr("Start main window hidden. Only the dock icon will be visible."));
+  myDockingLayout->addWidget(myHiddenCheck, 0, 1);
 
-  rdbDockDefault = new QRadioButton(tr("Default icon"));
-  layDocking->addWidget(rdbDockDefault, 1, 0);
+  myDockDefaultRadio = new QRadioButton(tr("Default icon"));
+  myDockingLayout->addWidget(myDockDefaultRadio, 1, 0);
 
-  chkDockFortyEight = new QCheckBox(tr("64 x 48 dock icon"));
-  chkDockFortyEight->setToolTip(tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf\n"
-                                        "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
-  layDocking->addWidget(chkDockFortyEight, 1, 1);
+  myDockFortyEightCheck = new QCheckBox(tr("64 x 48 dock icon"));
+  myDockFortyEightCheck->setToolTip(tr("Selects between the standard 64x64 icon used in the WindowMaker/Afterstep wharf\n"
+      "and a shorter 64x48 icon for use in the Gnome/KDE panel."));
+  myDockingLayout->addWidget(myDockFortyEightCheck, 1, 1);
 
-  rdbDockThemed = new QRadioButton(tr("Themed icon"));
-  layDocking->addWidget(rdbDockThemed, 2, 0);
+  myDockThemedRadio = new QRadioButton(tr("Themed icon"));
+  myDockingLayout->addWidget(myDockThemedRadio, 2, 0);
 
-  rdbDockTray = new QRadioButton(tr("Tray icon"));
-  rdbDockTray->setToolTip(tr("Uses the freedesktop.org standard to dock a small icon into the system tray.\n"
-                              "Works with many different window managers."));
-  layDocking->addWidget(rdbDockTray, 3, 0);
+  myDockTrayRadio = new QRadioButton(tr("Tray icon"));
+  myDockTrayRadio->setToolTip(tr("Uses the freedesktop.org standard to dock a small icon into the system tray.\n"
+      "Works with many different window managers."));
+  myDockingLayout->addWidget(myDockTrayRadio, 3, 0);
 
-  chkDockTrayBlink = new QCheckBox(tr("Blink on events"));
-  chkDockTrayBlink->setToolTip(tr("Make tray icon blink on unread incoming events."));
-  layDocking->addWidget(chkDockTrayBlink, 3, 1);
+  myDockTrayBlinkCheck = new QCheckBox(tr("Blink on events"));
+  myDockTrayBlinkCheck->setToolTip(tr("Make tray icon blink on unread incoming events."));
+  myDockingLayout->addWidget(myDockTrayBlinkCheck, 3, 1);
 
   // TODO: Move this to Event pages when we get different kinds of popup
   myTrayMsgOnlineNotify = new QCheckBox(tr("Show popup for Online notify"));
   myTrayMsgOnlineNotify->setToolTip(tr("Show balloon popup message when contacts marked for online notify comes online."));
-  layDocking->addWidget(myTrayMsgOnlineNotify, 4, 1);
+  myDockingLayout->addWidget(myTrayMsgOnlineNotify, 4, 1);
 
-  cmbDockTheme = new QComboBox();
+  myDockThemeCombo = new QComboBox();
   // Set the currently available themes
   QString szDockThemesDir = QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + DOCK_DIR;
   QDir d(szDockThemesDir);
   d.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-  cmbDockTheme->addItems(d.entryList());
-  connect(rdbDockDefault, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
-  connect(rdbDockThemed, SIGNAL(toggled(bool)), cmbDockTheme, SLOT(setEnabled(bool)));
-  connect(rdbDockTray, SIGNAL(toggled(bool)), chkDockTrayBlink, SLOT(setEnabled(bool)));
-  connect(rdbDockTray, SIGNAL(toggled(bool)), myTrayMsgOnlineNotify, SLOT(setEnabled(bool)));
-  connect(chkUseDock, SIGNAL(toggled(bool)), SLOT(slot_useDockToggled(bool)));
-  layDocking->addWidget(cmbDockTheme, 2, 1);
+  myDockThemeCombo->addItems(d.entryList());
+  connect(myDockDefaultRadio, SIGNAL(toggled(bool)), myDockFortyEightCheck, SLOT(setEnabled(bool)));
+  connect(myDockThemedRadio, SIGNAL(toggled(bool)), myDockThemeCombo, SLOT(setEnabled(bool)));
+  connect(myDockTrayRadio, SIGNAL(toggled(bool)), myDockTrayBlinkCheck, SLOT(setEnabled(bool)));
+  connect(myDockTrayRadio, SIGNAL(toggled(bool)), myTrayMsgOnlineNotify, SLOT(setEnabled(bool)));
+  connect(myUseDockCheck, SIGNAL(toggled(bool)), SLOT(useDockToggled(bool)));
+  myDockingLayout->addWidget(myDockThemeCombo, 2, 1);
 
 
-  layPageDocking->addWidget(boxDocking);
-  layPageDocking->addStretch(1);
+  myPageDockingLayout->addWidget(myDockingBox);
+  myPageDockingLayout->addStretch(1);
 
   return w;
 }
@@ -118,87 +118,87 @@ QWidget* Settings::General::createPageDocking(QWidget* parent)
 QWidget* Settings::General::createPageFonts(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageFonts = new QVBoxLayout(w);
-  layPageFonts->setContentsMargins(0, 0, 0, 0);
+  myPageFontsLayout = new QVBoxLayout(w);
+  myPageFontsLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxFont = new QGroupBox(tr("Fonts"));
-  layFont = new QGridLayout(boxFont);
+  myFontBox = new QGroupBox(tr("Fonts"));
+  myFontLayout = new QGridLayout(myFontBox);
 
   // Standard font
-  lblFont = new QLabel(tr("General:"));
-  lblFont->setToolTip(tr("Used for normal text."));
-  layFont->addWidget(lblFont, 0, 0);
+  myFontLabel = new QLabel(tr("General:"));
+  myFontLabel->setToolTip(tr("Used for normal text."));
+  myFontLayout->addWidget(myFontLabel, 0, 0);
   myNormalFontEdit = new FontEdit();
-  myNormalFontEdit->setToolTip(lblFont->toolTip());
-  lblFont->setBuddy(myNormalFontEdit);
-  layFont->addWidget(myNormalFontEdit, 0, 1);
+  myNormalFontEdit->setToolTip(myFontLabel->toolTip());
+  myFontLabel->setBuddy(myNormalFontEdit);
+  myFontLayout->addWidget(myNormalFontEdit, 0, 1);
   connect(myNormalFontEdit, SIGNAL(fontSelected(const QFont&)), SLOT(normalFontChanged(const QFont&)));
 
   // Edit font
-  lblEditFont = new QLabel(tr("Editing:"));
-  lblEditFont->setToolTip(tr("Used in message editor etc."));
-  layFont->addWidget(lblEditFont, 1, 0);
+  myEditFontLabel = new QLabel(tr("Editing:"));
+  myEditFontLabel->setToolTip(tr("Used in message editor etc."));
+  myFontLayout->addWidget(myEditFontLabel, 1, 0);
   myEditFontEdit = new FontEdit();
-  myEditFontEdit->setToolTip(lblFont->toolTip());
-  lblFont->setBuddy(myEditFontEdit);
-  layFont->addWidget(myEditFontEdit, 1, 1);
+  myEditFontEdit->setToolTip(myFontLabel->toolTip());
+  myFontLabel->setBuddy(myEditFontEdit);
+  myFontLayout->addWidget(myEditFontEdit, 1, 1);
 
-  layPageFonts->addWidget(boxFont);
-  layPageFonts->addStretch(1);
+  myPageFontsLayout->addWidget(myFontBox);
+  myPageFontsLayout->addStretch(1);
 
   return w;
 }
 
-void Settings::General::slot_useDockToggled(bool b)
+void Settings::General::useDockToggled(bool useDock)
 {
-  if (!b)
+  if (!useDock)
   {
 #ifndef USE_KDE
-    cmbDockTheme->setEnabled(false);
-    rdbDockDefault->setEnabled(false);
-    rdbDockThemed->setEnabled(false);
-    rdbDockTray->setEnabled(false);
-    chkDockFortyEight->setEnabled(false);
-    chkDockTrayBlink->setEnabled(false);
+    myDockThemeCombo->setEnabled(false);
+    myDockDefaultRadio->setEnabled(false);
+    myDockThemedRadio->setEnabled(false);
+    myDockTrayRadio->setEnabled(false);
+    myDockFortyEightCheck->setEnabled(false);
+    myDockTrayBlinkCheck->setEnabled(false);
     myTrayMsgOnlineNotify->setEnabled(false);
 #endif
-    chkHidden->setEnabled(false);
-    chkHidden->setChecked(false);
+    myHiddenCheck->setEnabled(false);
+    myHiddenCheck->setChecked(false);
     return;
   }
   else
   {
-    chkHidden->setEnabled(true);
+    myHiddenCheck->setEnabled(true);
   }
 
   // Turned on
 #ifndef USE_KDE
-  rdbDockDefault->setEnabled(true);
-  rdbDockThemed->setEnabled(true);
-  rdbDockTray->setEnabled(true);
-  if (rdbDockDefault->isChecked())
+  myDockDefaultRadio->setEnabled(true);
+  myDockThemedRadio->setEnabled(true);
+  myDockTrayRadio->setEnabled(true);
+  if (myDockDefaultRadio->isChecked())
   {
-    chkDockFortyEight->setEnabled(true);
-    cmbDockTheme->setEnabled(false);
-    chkDockTrayBlink->setEnabled(false);
+    myDockFortyEightCheck->setEnabled(true);
+    myDockThemeCombo->setEnabled(false);
+    myDockTrayBlinkCheck->setEnabled(false);
     myTrayMsgOnlineNotify->setEnabled(false);
   }
-  else if (rdbDockThemed->isChecked())
+  else if (myDockThemedRadio->isChecked())
   {
-    chkDockFortyEight->setEnabled(false);
-    cmbDockTheme->setEnabled(true);
-    chkDockTrayBlink->setEnabled(false);
+    myDockFortyEightCheck->setEnabled(false);
+    myDockThemeCombo->setEnabled(true);
+    myDockTrayBlinkCheck->setEnabled(false);
     myTrayMsgOnlineNotify->setEnabled(false);
   }
-  else if (rdbDockTray->isChecked())
+  else if (myDockTrayRadio->isChecked())
   {
-    chkDockFortyEight->setEnabled(false);
-    cmbDockTheme->setEnabled(false);
-    chkDockTrayBlink->setEnabled(true);
+    myDockFortyEightCheck->setEnabled(false);
+    myDockThemeCombo->setEnabled(false);
+    myDockTrayBlinkCheck->setEnabled(true);
     myTrayMsgOnlineNotify->setEnabled(true);
   }
   else
-    rdbDockDefault->setChecked(true);
+    myDockDefaultRadio->setChecked(true);
 #endif
 }
 
@@ -211,25 +211,25 @@ void Settings::General::load()
 {
   Config::General* generalConfig = Config::General::instance();
 
-  chkHidden->setChecked(generalConfig->mainwinStartHidden());
-  chkUseDock->setChecked(generalConfig->dockMode() != Config::General::DockNone);
+  myHiddenCheck->setChecked(generalConfig->mainwinStartHidden());
+  myUseDockCheck->setChecked(generalConfig->dockMode() != Config::General::DockNone);
 #ifndef USE_KDE
-  rdbDockDefault->setChecked(generalConfig->dockMode() == Config::General::DockDefault);
-  chkDockFortyEight->setChecked(generalConfig->defaultIconFortyEight());
-  rdbDockThemed->setChecked(generalConfig->dockMode() == Config::General::DockThemed);
-  for (unsigned short i = 0; i < cmbDockTheme->count(); i++)
+  myDockDefaultRadio->setChecked(generalConfig->dockMode() == Config::General::DockDefault);
+  myDockFortyEightCheck->setChecked(generalConfig->defaultIconFortyEight());
+  myDockThemedRadio->setChecked(generalConfig->dockMode() == Config::General::DockThemed);
+  for (unsigned short i = 0; i < myDockThemeCombo->count(); ++i)
   {
-    if (cmbDockTheme->itemText(i) == generalConfig->themedIconTheme())
+    if (myDockThemeCombo->itemText(i) == generalConfig->themedIconTheme())
     {
-      cmbDockTheme->setCurrentIndex(i);
+      myDockThemeCombo->setCurrentIndex(i);
       break;
     }
   }
 #endif
-  rdbDockTray->setChecked(generalConfig->dockMode() == Config::General::DockTray);
-  chkDockTrayBlink->setChecked(generalConfig->trayBlink());
+  myDockTrayRadio->setChecked(generalConfig->dockMode() == Config::General::DockTray);
+  myDockTrayBlinkCheck->setChecked(generalConfig->trayBlink());
   myTrayMsgOnlineNotify->setChecked(generalConfig->trayMsgOnlineNotify());
-  slot_useDockToggled(chkUseDock->isChecked());
+  useDockToggled(myUseDockCheck->isChecked());
 
   myNormalFontEdit->setFont(QFont(generalConfig->normalFont()));
   myEditFontEdit->setFont(QFont(generalConfig->editFont()));
@@ -240,27 +240,27 @@ void Settings::General::apply()
   Config::General* generalConfig = Config::General::instance();
   generalConfig->blockUpdates(true);
 
-  generalConfig->setMainwinStartHidden(chkHidden->isChecked());
+  generalConfig->setMainwinStartHidden(myHiddenCheck->isChecked());
   Config::General::DockMode newDockMode = Config::General::DockNone;
-  if (chkUseDock->isChecked())
+  if (myUseDockCheck->isChecked())
   {
 #ifdef USE_KDE
     newDockMode = Config::General::DockTray;
 #else
-    if (rdbDockDefault->isChecked())
+    if (myDockDefaultRadio->isChecked())
       newDockMode = Config::General::DockDefault;
-    else if (rdbDockThemed->isChecked())
+    else if (myDockThemedRadio->isChecked())
       newDockMode = Config::General::DockThemed;
-    else if (rdbDockTray->isChecked())
+    else if (myDockTrayRadio->isChecked())
       newDockMode = Config::General::DockTray;
 #endif
   }
   generalConfig->setDockMode(newDockMode);
 #ifndef USE_KDE
-  generalConfig->setDefaultIconFortyEight(chkDockFortyEight->isChecked());
-  generalConfig->setThemedIconTheme(cmbDockTheme->currentText());
+  generalConfig->setDefaultIconFortyEight(myDockFortyEightCheck->isChecked());
+  generalConfig->setThemedIconTheme(myDockThemeCombo->currentText());
 #endif
-  generalConfig->setTrayBlink(chkDockTrayBlink->isChecked());
+  generalConfig->setTrayBlink(myDockTrayBlinkCheck->isChecked());
   generalConfig->setTrayMsgOnlineNotify(myTrayMsgOnlineNotify->isChecked());
 
   if (myNormalFontEdit->font() == Config::General::instance()->defaultFont())

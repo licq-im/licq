@@ -68,66 +68,66 @@ Settings::Chat::Chat(SettingsDlg* parent)
 QWidget* Settings::Chat::createPageChat(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageChat = new QVBoxLayout(w);
-  layPageChat->setContentsMargins(0, 0, 0, 0);
+  myPageChatLayout = new QVBoxLayout(w);
+  myPageChatLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxChat = new QGroupBox(tr("General Chat Options"));
-  layChat = new QGridLayout(boxChat);
+  myChatBox = new QGroupBox(tr("General Chat Options"));
+  myChatLayout = new QGridLayout(myChatBox);
 
-  chkMsgChatView = new QCheckBox(tr("Chatmode messageview"));
-  chkMsgChatView->setToolTip(tr("Show the current chat history in Send Window"));
-  connect(chkMsgChatView, SIGNAL(toggled(bool)), SLOT(slot_useMsgChatView(bool)));
-  layChat->addWidget(chkMsgChatView, 0, 0);
+  myMsgChatViewCheck = new QCheckBox(tr("Chatmode messageview"));
+  myMsgChatViewCheck->setToolTip(tr("Show the current chat history in Send Window"));
+  connect(myMsgChatViewCheck, SIGNAL(toggled(bool)), SLOT(useMsgChatViewChanged(bool)));
+  myChatLayout->addWidget(myMsgChatViewCheck, 0, 0);
 
-  chkTabbedChatting = new QCheckBox(tr("Tabbed chatting"));
-  chkTabbedChatting->setToolTip(tr("Use tabs in Send Window"));
-  layChat->addWidget(chkTabbedChatting, 1, 0);
+  myTabbedChattingCheck = new QCheckBox(tr("Tabbed chatting"));
+  myTabbedChattingCheck->setToolTip(tr("Use tabs in Send Window"));
+  myChatLayout->addWidget(myTabbedChattingCheck, 1, 0);
 
-  chkSingleLineChatMode = new QCheckBox(tr("Single line chat mode"));
-  chkSingleLineChatMode->setToolTip(tr("Send messages with Return and insert new lines with Ctrl+Return, opposite of the normal mode"));
-  layChat->addWidget(chkSingleLineChatMode, 0, 1);
+  mySingleLineChatModeCheck = new QCheckBox(tr("Single line chat mode"));
+  mySingleLineChatModeCheck->setToolTip(tr("Send messages with Return and insert new lines with Ctrl+Return, opposite of the normal mode"));
+  myChatLayout->addWidget(mySingleLineChatModeCheck, 0, 1);
 
-  chkUseDoubleReturn = new QCheckBox(tr("Use double return"));
-  chkUseDoubleReturn->setToolTip(tr("Hitting Return twice will be used instead of Ctrl+Return\n"
-    "to send messages and close input dialogs.\n"
-    "Multiple new lines can be inserted with Ctrl+Return."));
-  layChat->addWidget(chkUseDoubleReturn, 1, 1);
+  myUseDoubleReturnCheck = new QCheckBox(tr("Use double return"));
+  myUseDoubleReturnCheck->setToolTip(tr("Hitting Return twice will be used instead of Ctrl+Return\n"
+      "to send messages and close input dialogs.\n"
+      "Multiple new lines can be inserted with Ctrl+Return."));
+  myChatLayout->addWidget(myUseDoubleReturnCheck, 1, 1);
 
-  chkShowSendClose = new QCheckBox(tr("Show Send/Close buttons"));
-  chkShowSendClose->setToolTip(tr("Show Send and Close buttons in the chat dialog."));
-  layChat->addWidget(chkShowSendClose, 2, 0);
+  myShowSendCloseCheck = new QCheckBox(tr("Show Send/Close buttons"));
+  myShowSendCloseCheck->setToolTip(tr("Show Send and Close buttons in the chat dialog."));
+  myChatLayout->addWidget(myShowSendCloseCheck, 2, 0);
 
-  chkMsgWinSticky = new QCheckBox(tr("Sticky message window(s)"));
-  chkMsgWinSticky->setToolTip(tr("Makes the message window(s) visible on all desktops"));
-  layChat->addWidget(chkMsgWinSticky, 3, 0);
+  myMsgWinStickyCheck = new QCheckBox(tr("Sticky message window(s)"));
+  myMsgWinStickyCheck->setToolTip(tr("Makes the message window(s) visible on all desktops"));
+  myChatLayout->addWidget(myMsgWinStickyCheck, 3, 0);
 
-  chkAutoClose = new QCheckBox(tr("Auto close function window"));
-  chkAutoClose->setToolTip(tr("Auto close the user function window after a successful event"));
-  layChat->addWidget(chkAutoClose, 3, 1);
+  myAutoCloseCheck = new QCheckBox(tr("Auto close function window"));
+  myAutoCloseCheck->setToolTip(tr("Auto close the user function window after a successful event"));
+  myChatLayout->addWidget(myAutoCloseCheck, 3, 1);
 
-  chkSendFromClipboard = new QCheckBox(tr("Check clipboard For URIs/files"));
-  chkSendFromClipboard->setToolTip(tr("When double-clicking on a user to send a message check for urls/files in the clipboard"));
-  layChat->addWidget(chkSendFromClipboard, 4, 0);
+  mySendFromClipboardCheck = new QCheckBox(tr("Check clipboard For URIs/files"));
+  mySendFromClipboardCheck->setToolTip(tr("When double-clicking on a user to send a message check for urls/files in the clipboard"));
+  myChatLayout->addWidget(mySendFromClipboardCheck, 4, 0);
 
-  chkAutoPosReplyWin = new QCheckBox(tr("Auto position the reply window"));
-  chkAutoPosReplyWin->setToolTip(tr("Position a new reply window just underneath the message view window"));
-  layChat->addWidget(chkAutoPosReplyWin, 4, 1);
+  myAutoPosReplyWinCheck = new QCheckBox(tr("Auto position the reply window"));
+  myAutoPosReplyWinCheck->setToolTip(tr("Position a new reply window just underneath the message view window"));
+  myChatLayout->addWidget(myAutoPosReplyWinCheck, 4, 1);
 
-  chkAutoSendThroughServer = new QCheckBox(tr("Auto send through server"));
-  chkAutoSendThroughServer->setToolTip(tr("Automatically send messages through the server if direct connection fails"));
-  layChat->addWidget(chkAutoSendThroughServer, 5, 0);
+  myAutoSendThroughServerCheck = new QCheckBox(tr("Auto send through server"));
+  myAutoSendThroughServerCheck->setToolTip(tr("Automatically send messages through the server if direct connection fails"));
+  myChatLayout->addWidget(myAutoSendThroughServerCheck, 5, 0);
 
-  chkSendTN = new QCheckBox(tr("Send typing notifications"));
-  chkSendTN->setToolTip(tr("Send a notification to the user so they can see when you are typing a message to them"));
-  layChat->addWidget(chkSendTN, 5, 1);
+  mySendTNCheck = new QCheckBox(tr("Send typing notifications"));
+  mySendTNCheck->setToolTip(tr("Send a notification to the user so they can see when you are typing a message to them"));
+  myChatLayout->addWidget(mySendTNCheck, 5, 1);
 
-  chkShowUserPic = new QCheckBox(tr("Show user picture"));
-  chkShowUserPic->setToolTip(tr("Show user picture next to the input area"));
-  layChat->addWidget(chkShowUserPic, 6, 0);
+  myShowUserPicCheck = new QCheckBox(tr("Show user picture"));
+  myShowUserPicCheck->setToolTip(tr("Show user picture next to the input area"));
+  myChatLayout->addWidget(myShowUserPicCheck, 6, 0);
 
-  chkShowUserPicHidden = new QCheckBox(tr("Minimize user picture"));
-  chkShowUserPicHidden->setToolTip(tr("Hide user picture upon opening"));
-  layChat->addWidget(chkShowUserPicHidden, 6, 1);
+  myShowUserPicHiddenCheck = new QCheckBox(tr("Minimize user picture"));
+  myShowUserPicHiddenCheck->setToolTip(tr("Hide user picture upon opening"));
+  myChatLayout->addWidget(myShowUserPicHiddenCheck, 6, 1);
 
 
   myLocaleBox = new QGroupBox(tr("Localization"));
@@ -161,45 +161,45 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myLocaleLayout->addWidget(myShowAllEncodingsCheck);
 
 
-  boxExtensions = new QGroupBox(tr("Extensions"));
-  layExtensions = new QGridLayout(boxExtensions);
-  layExtensions->setColumnStretch(1, 1);
+  myExtensionsBox = new QGroupBox(tr("Extensions"));
+  myExtensionsLayout = new QGridLayout(myExtensionsBox);
+  myExtensionsLayout->setColumnStretch(1, 1);
 
-  lblUrlViewer = new QLabel(tr("URI viewer:"));
-  lblUrlViewer->setToolTip(tr("The command to run to view a URL.  Will be passed the URL as a parameter."));
-  layExtensions->addWidget(lblUrlViewer, 0, 0);
+  myUrlViewerLabel = new QLabel(tr("URI viewer:"));
+  myUrlViewerLabel->setToolTip(tr("The command to run to view a URL.  Will be passed the URL as a parameter."));
+  myExtensionsLayout->addWidget(myUrlViewerLabel, 0, 0);
 
-  cmbUrlViewer = new QComboBox();
-  cmbUrlViewer->setEditable(true);
+  myUrlViewerCombo = new QComboBox();
+  myUrlViewerCombo->setEditable(true);
 #ifdef USE_KDE
-  cmbUrlViewer->addItem(tr("KDE default"));
+  myUrlViewerCombo->addItem(tr("KDE default"));
 #endif
-  cmbUrlViewer->addItem("viewurl-firefox.sh");
-  cmbUrlViewer->addItem("viewurl-lynx.sh");
-  cmbUrlViewer->addItem("viewurl-mozilla.sh");
-  cmbUrlViewer->addItem("viewurl-ncftp.sh");
-  cmbUrlViewer->addItem("viewurl-netscape.sh");
-  cmbUrlViewer->addItem("viewurl-opera.sh");
-  cmbUrlViewer->addItem("viewurl-seamonkey.sh");
-  cmbUrlViewer->addItem("viewurl-w3m.sh");
-  cmbUrlViewer->setToolTip(lblUrlViewer->toolTip());
-  lblUrlViewer->setBuddy(cmbUrlViewer);
-  layExtensions->addWidget(cmbUrlViewer, 0, 1);
+  myUrlViewerCombo->addItem("viewurl-firefox.sh");
+  myUrlViewerCombo->addItem("viewurl-lynx.sh");
+  myUrlViewerCombo->addItem("viewurl-mozilla.sh");
+  myUrlViewerCombo->addItem("viewurl-ncftp.sh");
+  myUrlViewerCombo->addItem("viewurl-netscape.sh");
+  myUrlViewerCombo->addItem("viewurl-opera.sh");
+  myUrlViewerCombo->addItem("viewurl-seamonkey.sh");
+  myUrlViewerCombo->addItem("viewurl-w3m.sh");
+  myUrlViewerCombo->setToolTip(myUrlViewerLabel->toolTip());
+  myUrlViewerLabel->setBuddy(myUrlViewerCombo);
+  myExtensionsLayout->addWidget(myUrlViewerCombo, 0, 1);
 
-  lblTerminal = new QLabel(tr("Terminal:"));
-  lblTerminal->setToolTip(tr("The command to run to start your terminal program."));
-  layExtensions->addWidget(lblTerminal, 1, 0);
+  myTerminalLabel = new QLabel(tr("Terminal:"));
+  myTerminalLabel->setToolTip(tr("The command to run to start your terminal program."));
+  myExtensionsLayout->addWidget(myTerminalLabel, 1, 0);
 
-  edtTerminal = new QLineEdit(tr("Terminal:"));
-  edtTerminal->setToolTip(lblTerminal->toolTip());
-  lblTerminal->setBuddy(edtTerminal);
-  layExtensions->addWidget(edtTerminal, 1, 1);
+  myTerminalEdit = new QLineEdit(tr("Terminal:"));
+  myTerminalEdit->setToolTip(myTerminalLabel->toolTip());
+  myTerminalLabel->setBuddy(myTerminalEdit);
+  myExtensionsLayout->addWidget(myTerminalEdit, 1, 1);
 
 
-  layPageChat->addWidget(boxChat);
-  layPageChat->addWidget(myLocaleBox);
-  layPageChat->addWidget(boxExtensions);
-  layPageChat->addStretch(1);
+  myPageChatLayout->addWidget(myChatBox);
+  myPageChatLayout->addWidget(myLocaleBox);
+  myPageChatLayout->addWidget(myExtensionsBox);
+  myPageChatLayout->addStretch(1);
 
   return w;
 }
@@ -247,115 +247,115 @@ static const char* const helpDateFormat
 QWidget* Settings::Chat::createPageChatDisp(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageChatDisp = new QGridLayout(w);
-  layPageChatDisp->setContentsMargins(0, 0, 0, 0);
-  layPageChatDisp->setRowStretch(1, 1);
+  myPageChatDispLayout = new QGridLayout(w);
+  myPageChatDispLayout->setContentsMargins(0, 0, 0, 0);
+  myPageChatDispLayout->setRowStretch(1, 1);
 
-  boxChatDisp = new QGroupBox(tr("Chat Display"));
-  layChatDisp = new QVBoxLayout(boxChatDisp);
+  myChatDispBox = new QGroupBox(tr("Chat Display"));
+  myChatDispLayout = new QVBoxLayout(myChatDispBox);
 
-  QHBoxLayout* layChatStyle = new QHBoxLayout();
-  lblChatStyle = new QLabel(tr("Style:"));
-  layChatStyle->addWidget(lblChatStyle);
-  cmbChatStyle = new QComboBox();
-  cmbChatStyle->addItems(HistoryView::getStyleNames(false));
-  lblChatStyle->setBuddy(cmbChatStyle);
-  connect(cmbChatStyle, SIGNAL(activated(int)), SLOT(slot_refresh_msgViewer()));
-  layChatStyle->addWidget(cmbChatStyle);
-  layChatDisp->addLayout(layChatStyle);
+  QHBoxLayout* myChatLayoutStyle = new QHBoxLayout();
+  myChatStyleLabel = new QLabel(tr("Style:"));
+  myChatLayoutStyle->addWidget(myChatStyleLabel);
+  myChatStyleCombo = new QComboBox();
+  myChatStyleCombo->addItems(HistoryView::getStyleNames(false));
+  myChatStyleLabel->setBuddy(myChatStyleCombo);
+  connect(myChatStyleCombo, SIGNAL(activated(int)), SLOT(updatePreviews()));
+  myChatLayoutStyle->addWidget(myChatStyleCombo);
+  myChatDispLayout->addLayout(myChatLayoutStyle);
 
-  QHBoxLayout* layChatDateFormat = new QHBoxLayout();
-  lblChatDateFormat = new QLabel(tr("Date format:"));
-  lblChatDateFormat->setToolTip(tr(helpDateFormat));
-  layChatDateFormat->addWidget(lblChatDateFormat);
-  cmbChatDateFormat = new QComboBox();
-  cmbChatDateFormat->setEditable(true);
-  cmbChatDateFormat->setToolTip(lblChatDateFormat->toolTip());
-  lblChatDateFormat->setBuddy(cmbChatDateFormat);
+  QHBoxLayout* myChatLayoutDateFormat = new QHBoxLayout();
+  myChatDateFormatLabel = new QLabel(tr("Date format:"));
+  myChatDateFormatLabel->setToolTip(tr(helpDateFormat));
+  myChatLayoutDateFormat->addWidget(myChatDateFormatLabel);
+  myChatDateFormatCombo = new QComboBox();
+  myChatDateFormatCombo->setEditable(true);
+  myChatDateFormatCombo->setToolTip(myChatDateFormatLabel->toolTip());
+  myChatDateFormatLabel->setBuddy(myChatDateFormatCombo);
   for(int i = 0; i < dateFormatsLength; ++i)
-    cmbChatDateFormat->addItem(dateFormats[i]);
-  connect(cmbChatDateFormat, SIGNAL(activated(int)), SLOT(slot_refresh_msgViewer()));
-  connect(cmbChatDateFormat, SIGNAL(editTextChanged(const QString&)), SLOT(slot_refresh_msgViewer()));
-  layChatDateFormat->addWidget(cmbChatDateFormat);
-  layChatDisp->addLayout(layChatDateFormat);
+    myChatDateFormatCombo->addItem(dateFormats[i]);
+  connect(myChatDateFormatCombo, SIGNAL(activated(int)), SLOT(updatePreviews()));
+  connect(myChatDateFormatCombo, SIGNAL(editTextChanged(const QString&)), SLOT(updatePreviews()));
+  myChatLayoutDateFormat->addWidget(myChatDateFormatCombo);
+  myChatDispLayout->addLayout(myChatLayoutDateFormat);
 
-  chkChatVertSpacing = new QCheckBox(tr("Insert vertical spacing"));
-  connect(chkChatVertSpacing, SIGNAL(toggled(bool)), SLOT(slot_refresh_msgViewer()));
-  chkChatVertSpacing->setToolTip(tr("Insert extra space between messages."));
-  layChatDisp->addWidget(chkChatVertSpacing);
+  myChatVertSpacingCheck = new QCheckBox(tr("Insert vertical spacing"));
+  connect(myChatVertSpacingCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
+  myChatVertSpacingCheck->setToolTip(tr("Insert extra space between messages."));
+  myChatDispLayout->addWidget(myChatVertSpacingCheck);
 
-  chkChatLineBreak = new QCheckBox(tr("Insert horizontal line"));
-  connect(chkChatLineBreak, SIGNAL(toggled(bool)), SLOT(slot_refresh_msgViewer()));
-  chkChatLineBreak->setToolTip(tr("Insert a line between each message."));
-  layChatDisp->addWidget(chkChatLineBreak);
+  myChatLineBreakCheck = new QCheckBox(tr("Insert horizontal line"));
+  connect(myChatLineBreakCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
+  myChatLineBreakCheck->setToolTip(tr("Insert a line between each message."));
+  myChatDispLayout->addWidget(myChatLineBreakCheck);
 
-  chkShowHistory = new QCheckBox(tr("Show recent messages"));
-  chkShowHistory->setToolTip(tr("Show the last 5 messages when a Send Window is opened"));
-  connect(chkShowHistory, SIGNAL(toggled(bool)), SLOT(slot_refresh_msgViewer()));
-  layChatDisp->addWidget(chkShowHistory);
+  myShowHistoryCheck = new QCheckBox(tr("Show recent messages"));
+  myShowHistoryCheck->setToolTip(tr("Show the last 5 messages when a Send Window is opened"));
+  connect(myShowHistoryCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
+  myChatDispLayout->addWidget(myShowHistoryCheck);
 
-  chkShowNotices = new QCheckBox(tr("Show join/left notices"));
-  chkShowNotices->setToolTip(tr("Show a notice in the chat window when a user joins or leaves the conversation."));
-  connect(chkShowNotices, SIGNAL(toggled(bool)), SLOT(slot_refresh_msgViewer()));
-  layChatDisp->addWidget(chkShowNotices);
+  myShowNoticesCheck = new QCheckBox(tr("Show join/left notices"));
+  myShowNoticesCheck->setToolTip(tr("Show a notice in the chat window when a user joins or leaves the conversation."));
+  connect(myShowNoticesCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
+  myChatDispLayout->addWidget(myShowNoticesCheck);
 
-  layChatDisp->addStretch(1);
+  myChatDispLayout->addStretch(1);
 
 
-  boxChatColors = new QGroupBox(tr("Colors"));
-  layChatColors = new QGridLayout(boxChatColors);
+  myChatColorsBox = new QGroupBox(tr("Colors"));
+  myChatColorsLayout = new QGridLayout(myChatColorsBox);
 
-  lblColorRcv = new QLabel(tr("Message received:"));
-  layChatColors->addWidget(lblColorRcv, 0, 0);
-  btnColorRcv = new ColorButton();
-  connect(btnColorRcv, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
-  layChatColors->addWidget(btnColorRcv, 0, 1);
+  myColorRcvLabel = new QLabel(tr("Message received:"));
+  myChatColorsLayout->addWidget(myColorRcvLabel, 0, 0);
+  myColorRcvButton = new ColorButton();
+  connect(myColorRcvButton, SIGNAL(changed(const QColor&)), SLOT(updatePreviews()));
+  myChatColorsLayout->addWidget(myColorRcvButton, 0, 1);
 
-  lblColorSnt = new QLabel(tr("Message sent:"));
-  layChatColors->addWidget(lblColorSnt, 1, 0);
-  btnColorSnt = new ColorButton();
-  connect(btnColorSnt, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
-  layChatColors->addWidget(btnColorSnt, 1, 1);
+  myColorSntLabel = new QLabel(tr("Message sent:"));
+  myChatColorsLayout->addWidget(myColorSntLabel, 1, 0);
+  myColorSntButton = new ColorButton();
+  connect(myColorSntButton, SIGNAL(changed(const QColor&)), SLOT(updatePreviews()));
+  myChatColorsLayout->addWidget(myColorSntButton, 1, 1);
 
-  lblColorRcvHistory = new QLabel(tr("History received:"));
-  layChatColors->addWidget(lblColorRcvHistory, 2, 0);
-  btnColorRcvHistory = new ColorButton();
-  connect(btnColorRcvHistory, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
-  layChatColors->addWidget(btnColorRcvHistory, 2, 1);
+  myColorRcvHistoryLabel = new QLabel(tr("History received:"));
+  myChatColorsLayout->addWidget(myColorRcvHistoryLabel, 2, 0);
+  myColorRcvHistoryButton = new ColorButton();
+  connect(myColorRcvHistoryButton, SIGNAL(changed(const QColor&)), SLOT(updatePreviews()));
+  myChatColorsLayout->addWidget(myColorRcvHistoryButton, 2, 1);
 
-  lblColorSntHistory = new QLabel(tr("History sent:"));
-  layChatColors->addWidget(lblColorSntHistory, 3, 0);
-  btnColorSntHistory = new ColorButton();
-  connect(btnColorSntHistory, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
-  layChatColors->addWidget(btnColorSntHistory, 3, 1);
+  myColorSntHistoryLabel = new QLabel(tr("History sent:"));
+  myChatColorsLayout->addWidget(myColorSntHistoryLabel, 3, 0);
+  myColorSntHistoryButton = new ColorButton();
+  connect(myColorSntHistoryButton, SIGNAL(changed(const QColor&)), SLOT(updatePreviews()));
+  myChatColorsLayout->addWidget(myColorSntHistoryButton, 3, 1);
 
-  lblColorNotice = new QLabel(tr("Notice:"));
-  layChatColors->addWidget(lblColorNotice, 4, 0);
-  btnColorNotice = new ColorButton();
-  connect(btnColorNotice, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
-  layChatColors->addWidget(btnColorNotice, 4, 1);
+  myColorNoticeLabel = new QLabel(tr("Notice:"));
+  myChatColorsLayout->addWidget(myColorNoticeLabel, 4, 0);
+  myColorNoticeButton = new ColorButton();
+  connect(myColorNoticeButton, SIGNAL(changed(const QColor&)), SLOT(updatePreviews()));
+  myChatColorsLayout->addWidget(myColorNoticeButton, 4, 1);
 
-  lblColorTypingLabel = new QLabel(tr("Typing notification color:"));
-  layChatColors->addWidget(lblColorTypingLabel, 5, 0);
-  btnColorTypingLabel = new ColorButton();
-  connect(btnColorTypingLabel, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
-  layChatColors->addWidget(btnColorTypingLabel, 5, 1);
+  myColorTypingLabelLabel = new QLabel(tr("Typing notification color:"));
+  myChatColorsLayout->addWidget(myColorTypingLabelLabel, 5, 0);
+  myColorTypingLabelButton = new ColorButton();
+  connect(myColorTypingLabelButton, SIGNAL(changed(const QColor&)), SLOT(updatePreviews()));
+  myChatColorsLayout->addWidget(myColorTypingLabelButton, 5, 1);
 
-  lblColorChatBkg = new QLabel(tr("Background color:"));
-  layChatColors->addWidget(lblColorChatBkg, 6, 0);
-  btnColorChatBkg = new ColorButton();
-  connect(btnColorChatBkg, SIGNAL(changed(const QColor&)), SLOT(slot_refresh_msgViewer()));
-  layChatColors->addWidget(btnColorChatBkg, 6, 1);
+  myColorChatBkgLabel = new QLabel(tr("Background color:"));
+  myChatColorsLayout->addWidget(myColorChatBkgLabel, 6, 0);
+  myColorChatBkgButton = new ColorButton();
+  connect(myColorChatBkgButton, SIGNAL(changed(const QColor&)), SLOT(updatePreviews()));
+  myChatColorsLayout->addWidget(myColorChatBkgButton, 6, 1);
 
-  layChatColors->setRowStretch(7, 1);
+  myChatColorsLayout->setRowStretch(7, 1);
 
-  tabViewer = new TabWidget(w);
-  msgChatViewer = new HistoryView(false, QString(), 0, tabViewer);
-  tabViewer->addTab(msgChatViewer, "Marge");
+  myChatTabs = new TabWidget(w);
+  myChatView = new HistoryView(false, QString(), 0, myChatTabs);
+  myChatTabs->addTab(myChatView, "Marge");
 
-  layPageChatDisp->addWidget(boxChatDisp, 0, 0);
-  layPageChatDisp->addWidget(boxChatColors, 0, 1);
-  layPageChatDisp->addWidget(tabViewer, 1, 0, 1, 2);
+  myPageChatDispLayout->addWidget(myChatDispBox, 0, 0);
+  myPageChatDispLayout->addWidget(myChatColorsBox, 0, 1);
+  myPageChatDispLayout->addWidget(myChatTabs, 1, 0, 1, 2);
 
   return w;
 }
@@ -363,76 +363,76 @@ QWidget* Settings::Chat::createPageChatDisp(QWidget* parent)
 QWidget* Settings::Chat::createPageHistDisp(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageHistDisp = new QVBoxLayout(w);
-  layPageHistDisp->setContentsMargins(0, 0, 0, 0);
+  myPageHistDispLayout = new QVBoxLayout(w);
+  myPageHistDispLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxHistDisp = new QGroupBox(tr("History Display"));
-  layHistDisp = new QVBoxLayout(boxHistDisp);
+  myHistDispBox = new QGroupBox(tr("History Display"));
+  myHistDispLayout = new QVBoxLayout(myHistDispBox);
 
-  QHBoxLayout* layHistStyle = new QHBoxLayout();
-  lblHistStyle = new QLabel(tr("Style:"));
-  layHistStyle->addWidget(lblHistStyle);
-  cmbHistStyle = new QComboBox();
-  cmbHistStyle->addItems(HistoryView::getStyleNames(true));
-  lblHistStyle->setBuddy(cmbHistStyle);
-  connect(cmbHistStyle, SIGNAL(activated(int)), SLOT(slot_refresh_msgViewer()));
-  layHistStyle->addWidget(cmbHistStyle);
-  layHistDisp->addLayout(layHistStyle);
+  QHBoxLayout* myHistStyleLayout = new QHBoxLayout();
+  myHistStyleLabel = new QLabel(tr("Style:"));
+  myHistStyleLayout->addWidget(myHistStyleLabel);
+  myHistStyleCombo = new QComboBox();
+  myHistStyleCombo->addItems(HistoryView::getStyleNames(true));
+  myHistStyleLabel->setBuddy(myHistStyleCombo);
+  connect(myHistStyleCombo, SIGNAL(activated(int)), SLOT(updatePreviews()));
+  myHistStyleLayout->addWidget(myHistStyleCombo);
+  myHistDispLayout->addLayout(myHistStyleLayout);
 
-  QHBoxLayout* layHistDateFormat = new QHBoxLayout();
-  lblHistDateFormat = new QLabel(tr("Date format:"));
-  lblHistDateFormat->setToolTip(tr(helpDateFormat));
-  layHistDateFormat->addWidget(lblHistDateFormat);
-  cmbHistDateFormat = new QComboBox();
-  cmbHistDateFormat->setEditable(true);
+  QHBoxLayout* myHistDateFormatLayout = new QHBoxLayout();
+  myHistDateFormatLabel = new QLabel(tr("Date format:"));
+  myHistDateFormatLabel->setToolTip(tr(helpDateFormat));
+  myHistDateFormatLayout->addWidget(myHistDateFormatLabel);
+  myHistDateFormatCombo = new QComboBox();
+  myHistDateFormatCombo->setEditable(true);
   for(int i = 0; i < dateFormatsLength; ++i)
-    cmbHistDateFormat->addItem(dateFormats[i]);
-  cmbHistDateFormat->setToolTip(lblHistDateFormat->toolTip());
-  lblHistDateFormat->setBuddy(cmbHistDateFormat);
-  connect(cmbHistDateFormat, SIGNAL(activated(int)), SLOT(slot_refresh_msgViewer()));
-  connect(cmbHistDateFormat, SIGNAL(editTextChanged(const QString&)), SLOT(slot_refresh_msgViewer()));
-  layHistDateFormat->addWidget(cmbHistDateFormat);
-  layHistDisp->addLayout(layHistDateFormat);
+    myHistDateFormatCombo->addItem(dateFormats[i]);
+  myHistDateFormatCombo->setToolTip(myHistDateFormatLabel->toolTip());
+  myHistDateFormatLabel->setBuddy(myHistDateFormatCombo);
+  connect(myHistDateFormatCombo, SIGNAL(activated(int)), SLOT(updatePreviews()));
+  connect(myHistDateFormatCombo, SIGNAL(editTextChanged(const QString&)), SLOT(updatePreviews()));
+  myHistDateFormatLayout->addWidget(myHistDateFormatCombo);
+  myHistDispLayout->addLayout(myHistDateFormatLayout);
 
-  QHBoxLayout* layHistOpts = new QHBoxLayout();
-  chkHistVertSpacing = new QCheckBox(tr("Insert vertical spacing"));
-  connect(chkHistVertSpacing, SIGNAL(toggled(bool)), SLOT(slot_refresh_msgViewer()));
-  chkHistVertSpacing->setToolTip(tr("Insert extra space between messages."));
-  layHistOpts->addWidget(chkHistVertSpacing);
+  QHBoxLayout* myHistOptsLayout = new QHBoxLayout();
+  myHistVertSpacingCheck = new QCheckBox(tr("Insert vertical spacing"));
+  connect(myHistVertSpacingCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
+  myHistVertSpacingCheck->setToolTip(tr("Insert extra space between messages."));
+  myHistOptsLayout->addWidget(myHistVertSpacingCheck);
 
-  chkHistReverse = new QCheckBox(tr("Reverse history"));
-  connect(chkHistReverse, SIGNAL(toggled(bool)), SLOT(slot_refresh_msgViewer()));
-  chkHistReverse->setToolTip(tr("Put recent messages on top."));
-  layHistOpts->addWidget(chkHistReverse);
-  layHistDisp->addLayout(layHistOpts);
+  myHistReverseCheck = new QCheckBox(tr("Reverse history"));
+  connect(myHistReverseCheck, SIGNAL(toggled(bool)), SLOT(updatePreviews()));
+  myHistReverseCheck->setToolTip(tr("Put recent messages on top."));
+  myHistOptsLayout->addWidget(myHistReverseCheck);
+  myHistDispLayout->addLayout(myHistOptsLayout);
 
-  boxHistPreview = new QGroupBox(tr("Preview"));
-  layHistPreview = new QVBoxLayout(boxHistPreview);
+  myHistPreviewBox = new QGroupBox(tr("Preview"));
+  myHistPreviewLayout = new QVBoxLayout(myHistPreviewBox);
 
-  msgHistViewer = new HistoryView(true);
-  layHistPreview->addWidget(msgHistViewer);
+  myHistoryView = new HistoryView(true);
+  myHistPreviewLayout->addWidget(myHistoryView);
 
-  layPageHistDisp->addWidget(boxHistDisp);
-  layPageHistDisp->addWidget(boxHistPreview);
+  myPageHistDispLayout->addWidget(myHistDispBox);
+  myPageHistDispLayout->addWidget(myHistPreviewBox);
 
   return w;
 }
 
-void Settings::Chat::slot_useMsgChatView(bool b)
+void Settings::Chat::useMsgChatViewChanged(bool b)
 {
   if (!b)
   {
-    chkTabbedChatting->setChecked(false);
-    chkShowHistory->setChecked(false);
-    chkShowNotices->setEnabled(false);
+    myTabbedChattingCheck->setChecked(false);
+    myShowHistoryCheck->setChecked(false);
+    myShowNoticesCheck->setEnabled(false);
   }
 
-  chkTabbedChatting->setEnabled(b);
-  chkShowHistory->setEnabled(b);
-  chkShowNotices->setEnabled(b);
+  myTabbedChattingCheck->setEnabled(b);
+  myShowHistoryCheck->setEnabled(b);
+  myShowNoticesCheck->setEnabled(b);
 }
 
-void Settings::Chat::slot_refresh_msgViewer()
+void Settings::Chat::updatePreviews()
 {
   // Don't update the time at every refresh
   static QDateTime date = QDateTime::currentDateTime();
@@ -449,35 +449,35 @@ void Settings::Chat::slot_refresh_msgViewer()
       QT_TR_NOOP("Marge has left the conversation.")
   };
 
-  msgChatViewer->setChatConfig(cmbChatStyle->currentIndex(), cmbChatDateFormat->currentText(),
-      chkChatVertSpacing->isChecked(), chkChatLineBreak->isChecked(), chkShowNotices->isChecked());
+  myChatView->setChatConfig(myChatStyleCombo->currentIndex(), myChatDateFormatCombo->currentText(),
+      myChatVertSpacingCheck->isChecked(), myChatLineBreakCheck->isChecked(), myShowNoticesCheck->isChecked());
 
-  msgChatViewer->setColors(btnColorChatBkg->colorName(), btnColorRcv->colorName(),
-      btnColorSnt->colorName(), btnColorRcvHistory->colorName(),
-      btnColorSntHistory->colorName(), btnColorNotice->colorName());
-  tabViewer->setTabColor(msgChatViewer, btnColorTypingLabel->color());
+  myChatView->setColors(myColorChatBkgButton->colorName(), myColorRcvButton->colorName(),
+      myColorSntButton->colorName(), myColorRcvHistoryButton->colorName(),
+      myColorSntHistoryButton->colorName(), myColorNoticeButton->colorName());
+  myChatTabs->setTabColor(myChatView, myColorTypingLabelButton->color());
 
-  msgHistViewer->setHistoryConfig(cmbHistStyle->currentIndex(), cmbHistDateFormat->currentText(),
-      chkHistVertSpacing->isChecked(), chkHistReverse->isChecked());
-  msgHistViewer->setColors(btnColorChatBkg->colorName(), btnColorRcv->colorName(), btnColorSnt->colorName());
+  myHistoryView->setHistoryConfig(myHistStyleCombo->currentIndex(), myHistDateFormatCombo->currentText(),
+      myHistVertSpacingCheck->isChecked(), myHistReverseCheck->isChecked());
+  myHistoryView->setColors(myColorChatBkgButton->colorName(), myColorRcvButton->colorName(), myColorSntButton->colorName());
 
-  msgChatViewer->clear();
-  msgHistViewer->clear();
+  myChatView->clear();
+  myHistoryView->clear();
 
   QDateTime msgDate = date;
   for (unsigned int i = 0; i<7; i++)
   {
-    if (i < 2 && chkShowHistory->isChecked() == false)
+    if (i < 2 && myShowHistoryCheck->isChecked() == false)
       continue;
 
-    msgChatViewer->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, (i<2),
+    myChatView->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, (i<2),
           QString(""),
           msgDate,
           true, false, false, false,
           names[i % 2],
           MLView::toRichText(tr(msgs[i]), true, true));
 
-    msgHistViewer->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, false,
+    myHistoryView->addMsg(i%2 == 0 ? D_RECEIVER : D_SENDER, false,
           QString(""),
           msgDate,
           true, false, false, false,
@@ -487,9 +487,9 @@ void Settings::Chat::slot_refresh_msgViewer()
     msgDate = msgDate.addSecs(i + 12);
   }
   msgDate = msgDate.addSecs(12);
-  msgChatViewer->addNotice(msgDate, MLView::toRichText(tr(msgs[7]), true, true));
+  myChatView->addNotice(msgDate, MLView::toRichText(tr(msgs[7]), true, true));
 
-  msgHistViewer->updateContent();
+  myHistoryView->updateContent();
 }
 
 void Settings::Chat::load()
@@ -497,48 +497,48 @@ void Settings::Chat::load()
   Config::Chat* chatConfig = Config::Chat::instance();
   Config::General* generalConfig = Config::General::instance();
 
-  chkUseDoubleReturn->setChecked(generalConfig->useDoubleReturn());
+  myUseDoubleReturnCheck->setChecked(generalConfig->useDoubleReturn());
 
-  chkAutoClose->setChecked(chatConfig->autoClose());
-  chkSendFromClipboard->setChecked(chatConfig->sendFromClipboard());
-  chkMsgChatView->setChecked(chatConfig->msgChatView());
-  cmbChatDateFormat->lineEdit()->setText(chatConfig->chatDateFormat());
-  chkChatVertSpacing->setChecked(chatConfig->chatVertSpacing());
-  chkChatLineBreak->setChecked(chatConfig->chatAppendLineBreak());
-  cmbChatStyle->setCurrentIndex(chatConfig->chatMsgStyle());
-  cmbHistStyle->setCurrentIndex(chatConfig->histMsgStyle());
-  chkHistVertSpacing->setChecked(chatConfig->histVertSpacing());
-  chkHistReverse->setChecked(chatConfig->reverseHistory());
-  cmbHistDateFormat->lineEdit()->setText(chatConfig->histDateFormat());
-  btnColorRcv->setColor(chatConfig->recvColor());
-  btnColorSnt->setColor(chatConfig->sentColor());
-  btnColorRcvHistory->setColor(chatConfig->recvHistoryColor());
-  btnColorSntHistory->setColor(chatConfig->sentHistoryColor());
-  btnColorNotice->setColor(chatConfig->noticeColor());
-  btnColorTypingLabel->setColor(chatConfig->tabTypingColor());
-  btnColorChatBkg->setColor(chatConfig->chatBackColor());
-  chkAutoPosReplyWin->setChecked(chatConfig->autoPosReplyWin());
-  chkAutoSendThroughServer->setChecked(chatConfig->autoSendThroughServer());
-  chkShowSendClose->setChecked(chatConfig->showSendClose());
-  chkMsgWinSticky->setChecked(chatConfig->msgWinSticky());
-  chkSingleLineChatMode->setChecked(chatConfig->singleLineChatMode());
-  chkTabbedChatting->setChecked(chatConfig->tabbedChatting());
-  chkShowHistory->setChecked(chatConfig->showHistory());
-  chkShowNotices->setChecked(chatConfig->showNotices());
-  chkShowUserPic->setChecked(chatConfig->showUserPic());
-  chkShowUserPicHidden->setChecked(chatConfig->showUserPicHidden());
+  myAutoCloseCheck->setChecked(chatConfig->autoClose());
+  mySendFromClipboardCheck->setChecked(chatConfig->sendFromClipboard());
+  myMsgChatViewCheck->setChecked(chatConfig->msgChatView());
+  myChatDateFormatCombo->lineEdit()->setText(chatConfig->chatDateFormat());
+  myChatVertSpacingCheck->setChecked(chatConfig->chatVertSpacing());
+  myChatLineBreakCheck->setChecked(chatConfig->chatAppendLineBreak());
+  myChatStyleCombo->setCurrentIndex(chatConfig->chatMsgStyle());
+  myHistStyleCombo->setCurrentIndex(chatConfig->histMsgStyle());
+  myHistVertSpacingCheck->setChecked(chatConfig->histVertSpacing());
+  myHistReverseCheck->setChecked(chatConfig->reverseHistory());
+  myHistDateFormatCombo->lineEdit()->setText(chatConfig->histDateFormat());
+  myColorRcvButton->setColor(chatConfig->recvColor());
+  myColorSntButton->setColor(chatConfig->sentColor());
+  myColorRcvHistoryButton->setColor(chatConfig->recvHistoryColor());
+  myColorSntHistoryButton->setColor(chatConfig->sentHistoryColor());
+  myColorNoticeButton->setColor(chatConfig->noticeColor());
+  myColorTypingLabelButton->setColor(chatConfig->tabTypingColor());
+  myColorChatBkgButton->setColor(chatConfig->chatBackColor());
+  myAutoPosReplyWinCheck->setChecked(chatConfig->autoPosReplyWin());
+  myAutoSendThroughServerCheck->setChecked(chatConfig->autoSendThroughServer());
+  myShowSendCloseCheck->setChecked(chatConfig->showSendClose());
+  myMsgWinStickyCheck->setChecked(chatConfig->msgWinSticky());
+  mySingleLineChatModeCheck->setChecked(chatConfig->singleLineChatMode());
+  myTabbedChattingCheck->setChecked(chatConfig->tabbedChatting());
+  myShowHistoryCheck->setChecked(chatConfig->showHistory());
+  myShowNoticesCheck->setChecked(chatConfig->showNotices());
+  myShowUserPicCheck->setChecked(chatConfig->showUserPic());
+  myShowUserPicHiddenCheck->setChecked(chatConfig->showUserPicHidden());
 
   if (!chatConfig->msgChatView())
   {
-    chkTabbedChatting->setEnabled(false);
-    chkShowHistory->setEnabled(false);
-    chkShowNotices->setChecked(false);
+    myTabbedChattingCheck->setEnabled(false);
+    myShowHistoryCheck->setEnabled(false);
+    myShowNoticesCheck->setChecked(false);
   }
 
-  chkSendTN->setChecked(gLicqDaemon->SendTypingNotification());
+  mySendTNCheck->setChecked(gLicqDaemon->SendTypingNotification());
 
   myDefaultEncodingCombo->setCurrentIndex(0);
-  // first combo box item is the locale encoding, so we skip it
+  // first combo myBox item is the locale encoding, so we skip it
   for (int i = 1; i < myDefaultEncodingCombo->count(); i++)
   {
     if (UserCodec::encodingForName(myDefaultEncodingCombo->itemText(i)) == chatConfig->defaultEncoding())
@@ -549,13 +549,13 @@ void Settings::Chat::load()
   }
   myShowAllEncodingsCheck->setChecked(chatConfig->showAllEncodings());
 
-  cmbUrlViewer->setItemText(cmbUrlViewer->currentIndex(),
+  myUrlViewerCombo->setItemText(myUrlViewerCombo->currentIndex(),
       gLicqDaemon->getUrlViewer() == NULL ?
       DEFAULT_URL_VIEWER : QString(gLicqDaemon->getUrlViewer()));
-  edtTerminal->setText(gLicqDaemon->Terminal() == NULL ?
+  myTerminalEdit->setText(gLicqDaemon->Terminal() == NULL ?
       tr("none") : QString(gLicqDaemon->Terminal()));
 
-  slot_refresh_msgViewer();
+  updatePreviews();
 }
 
 void Settings::Chat::apply()
@@ -565,47 +565,47 @@ void Settings::Chat::apply()
   chatConfig->blockUpdates(true);
   generalConfig->blockUpdates(true);
 
-  generalConfig->setUseDoubleReturn(chkUseDoubleReturn->isChecked());
+  generalConfig->setUseDoubleReturn(myUseDoubleReturnCheck->isChecked());
 
-  chatConfig->setAutoClose(chkAutoClose->isChecked());
-  chatConfig->setSendFromClipboard(chkSendFromClipboard->isChecked());
-  chatConfig->setMsgChatView(chkMsgChatView->isChecked());
-  chatConfig->setChatVertSpacing(chkChatVertSpacing->isChecked());
-  chatConfig->setChatAppendLineBreak(chkChatLineBreak->isChecked());
-  chatConfig->setChatMsgStyle(cmbChatStyle->currentIndex());
-  chatConfig->setChatDateFormat(cmbChatDateFormat->currentText());
-  chatConfig->setHistMsgStyle(cmbHistStyle->currentIndex());
-  chatConfig->setHistVertSpacing(chkHistVertSpacing->isChecked());
-  chatConfig->setReverseHistory(chkHistReverse->isChecked());
-  chatConfig->setHistDateFormat(cmbHistDateFormat->currentText());
-  chatConfig->setRecvColor(btnColorRcv->colorName());
-  chatConfig->setSentColor(btnColorSnt->colorName());
-  chatConfig->setRecvHistoryColor(btnColorRcvHistory->colorName());
-  chatConfig->setSentHistoryColor(btnColorSntHistory->colorName());
-  chatConfig->setNoticeColor(btnColorNotice->colorName());
-  chatConfig->setTabTypingColor(btnColorTypingLabel->colorName());
-  chatConfig->setChatBackColor(btnColorChatBkg->colorName());
-  chatConfig->setTabbedChatting(chkTabbedChatting->isChecked());
-  chatConfig->setShowHistory(chkShowHistory->isChecked());
-  chatConfig->setShowNotices(chkShowNotices->isChecked());
-  chatConfig->setAutoPosReplyWin(chkAutoPosReplyWin->isChecked());
-  chatConfig->setAutoSendThroughServer(chkAutoSendThroughServer->isChecked());
-  chatConfig->setShowSendClose(chkShowSendClose->isChecked());
-  chatConfig->setMsgWinSticky(chkMsgWinSticky->isChecked());
-  chatConfig->setSingleLineChatMode(chkSingleLineChatMode->isChecked());
-  chatConfig->setShowUserPic(chkShowUserPic->isChecked());
-  chatConfig->setShowUserPicHidden(chkShowUserPicHidden->isChecked());
+  chatConfig->setAutoClose(myAutoCloseCheck->isChecked());
+  chatConfig->setSendFromClipboard(mySendFromClipboardCheck->isChecked());
+  chatConfig->setMsgChatView(myMsgChatViewCheck->isChecked());
+  chatConfig->setChatVertSpacing(myChatVertSpacingCheck->isChecked());
+  chatConfig->setChatAppendLineBreak(myChatLineBreakCheck->isChecked());
+  chatConfig->setChatMsgStyle(myChatStyleCombo->currentIndex());
+  chatConfig->setChatDateFormat(myChatDateFormatCombo->currentText());
+  chatConfig->setHistMsgStyle(myHistStyleCombo->currentIndex());
+  chatConfig->setHistVertSpacing(myHistVertSpacingCheck->isChecked());
+  chatConfig->setReverseHistory(myHistReverseCheck->isChecked());
+  chatConfig->setHistDateFormat(myHistDateFormatCombo->currentText());
+  chatConfig->setRecvColor(myColorRcvButton->colorName());
+  chatConfig->setSentColor(myColorSntButton->colorName());
+  chatConfig->setRecvHistoryColor(myColorRcvHistoryButton->colorName());
+  chatConfig->setSentHistoryColor(myColorSntHistoryButton->colorName());
+  chatConfig->setNoticeColor(myColorNoticeButton->colorName());
+  chatConfig->setTabTypingColor(myColorTypingLabelButton->colorName());
+  chatConfig->setChatBackColor(myColorChatBkgButton->colorName());
+  chatConfig->setTabbedChatting(myTabbedChattingCheck->isChecked());
+  chatConfig->setShowHistory(myShowHistoryCheck->isChecked());
+  chatConfig->setShowNotices(myShowNoticesCheck->isChecked());
+  chatConfig->setAutoPosReplyWin(myAutoPosReplyWinCheck->isChecked());
+  chatConfig->setAutoSendThroughServer(myAutoSendThroughServerCheck->isChecked());
+  chatConfig->setShowSendClose(myShowSendCloseCheck->isChecked());
+  chatConfig->setMsgWinSticky(myMsgWinStickyCheck->isChecked());
+  chatConfig->setSingleLineChatMode(mySingleLineChatModeCheck->isChecked());
+  chatConfig->setShowUserPic(myShowUserPicCheck->isChecked());
+  chatConfig->setShowUserPicHidden(myShowUserPicHiddenCheck->isChecked());
 
-  gLicqDaemon->SetSendTypingNotification(chkSendTN->isChecked());
+  gLicqDaemon->SetSendTypingNotification(mySendTNCheck->isChecked());
 
 #ifdef USE_KDE
-  if (cmbUrlViewer->currentText() == DEFAULT_URL_VIEWER)
+  if (myUrlViewerCombo->currentText() == DEFAULT_URL_VIEWER)
     gLicqDaemon->setUrlViewer("none");
   else
 #endif
-    gLicqDaemon->setUrlViewer(cmbUrlViewer->currentText().toLocal8Bit());
+    gLicqDaemon->setUrlViewer(myUrlViewerCombo->currentText().toLocal8Bit());
 
-  gLicqDaemon->SetTerminal(edtTerminal->text().toLocal8Bit());
+  gLicqDaemon->SetTerminal(myTerminalEdit->text().toLocal8Bit());
 
   if (myDefaultEncodingCombo->currentIndex() > 0)
     chatConfig->setDefaultEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()));

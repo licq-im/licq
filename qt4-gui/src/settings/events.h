@@ -52,7 +52,7 @@ public:
   void apply();
 
 private slots:
-  void slot_chkOnEventsToggled(bool);
+  void setOnEventsEnabled(bool enable);
 
 private:
   /**
@@ -70,53 +70,53 @@ private:
   QWidget* createPageSounds(QWidget* parent);
 
   // Widgets for on event settings
-  QVBoxLayout* layPageOnEvent;
-  QGroupBox* boxNewMsgActions;
-  QGroupBox* boxParanoia;
-  QVBoxLayout* layParanoia;
+  QVBoxLayout* myPageOnEventLayout;
+  QGroupBox* myNewMsgActionsBox;
+  QGroupBox* myParanoiaBox;
+  QVBoxLayout* myParanoiaLayout;
   QGridLayout* myMsgActionsLayout;
-  QCheckBox* chkOEAway;
-  QCheckBox* chkOENA;
-  QCheckBox* chkOEOccupied;
-  QCheckBox* chkOEDND;
-  QCheckBox* chkAlwaysOnlineNotify;
-  QCheckBox* chkBoldOnMsg;
-  QCheckBox* chkAutoPopup;
-  QCheckBox* chkAutoRaise;
-  QCheckBox* chkAutoFocus;
-  QCheckBox* chkFlashTaskbar;
-  QCheckBox* chkFlashAll;
-  QCheckBox* chkFlashUrgent;
-  QCheckBox* chkIgnoreNewUsers;
-  QCheckBox* chkIgnoreWebPanel;
-  QCheckBox* chkIgnoreMassMsg;
-  QCheckBox* chkIgnoreEmailPager;
+  QCheckBox* myOnEventAwayCheck;
+  QCheckBox* myOnEventNaCheck;
+  QCheckBox* myOnEventOccupiedCheck;
+  QCheckBox* myOnEventDndCheck;
+  QCheckBox* myAlwaysOnlineNotifyCheck;
+  QCheckBox* myBoldOnMsgCheck;
+  QCheckBox* myAutoPopupCheck;
+  QCheckBox* myAutoRaiseCheck;
+  QCheckBox* myAutoFocusCheck;
+  QCheckBox* myFlashTaskbarCheck;
+  QCheckBox* myFlashAllCheck;
+  QCheckBox* myFlashUrgentCheck;
+  QCheckBox* myIgnoreNewUsersCheck;
+  QCheckBox* myIgnoreWebPanelCheck;
+  QCheckBox* myIgnoreMassMsgCheck;
+  QCheckBox* myIgnoreEmailPagerCheck;
   QLabel* myHotKeyLabel;
   QLineEdit* myHotKeyField;
 
   // Widget for sounds settings
-  QVBoxLayout* layPageSounds;
-  QGroupBox* boxEventParams;
-  QGroupBox* boxAcceptEvents;
-  QGridLayout* layEventParams;
-  QGridLayout* layAcceptEvents;
-  QCheckBox* chkOnEvents;
-  QLabel* lblSndPlayer;
-  QLabel* lblSndMsg;
-  QLabel* lblSndChat;
-  QLabel* lblSndUrl;
-  QLabel* lblSndFile;
-  QLabel* lblSndNotify;
-  QLabel* lblSndSysMsg;
-  QLabel* lblSndMsgSent;
-  FileNameEdit* edtSndPlayer;
-  FileNameEdit* edtSndMsg;
-  FileNameEdit* edtSndChat;
-  FileNameEdit* edtSndUrl;
-  FileNameEdit* edtSndFile;
-  FileNameEdit* edtSndNotify;
-  FileNameEdit* edtSndSysMsg;
-  FileNameEdit* edtSndMsgSent;
+  QVBoxLayout* myPageSoundsLayout;
+  QGroupBox* myEventParamsBox;
+  QGroupBox* myAcceptEventsBox;
+  QGridLayout* myEventParamsLayout;
+  QGridLayout* myAcceptEventsLayout;
+  QCheckBox* myOnEventsCheck;
+  QLabel* mySndPlayerLabel;
+  QLabel* mySndMsgLabel;
+  QLabel* mySndChatLabel;
+  QLabel* mySndUrlLabel;
+  QLabel* mySndFileLabel;
+  QLabel* mySndNotifyLabel;
+  QLabel* mySndSysMsgLabel;
+  QLabel* mySndMsgSentLabel;
+  FileNameEdit* mySndPlayerEdit;
+  FileNameEdit* mySndMsgEdit;
+  FileNameEdit* mySndChatEdit;
+  FileNameEdit* mySndUrlEdit;
+  FileNameEdit* mySndFileEdit;
+  FileNameEdit* mySndNotifyEdit;
+  FileNameEdit* mySndSysMsgEdit;
+  FileNameEdit* mySndMsgSentEdit;
 };
 
 } // namespace Settings

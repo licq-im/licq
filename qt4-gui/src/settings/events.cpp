@@ -58,39 +58,39 @@ Settings::Events::Events(SettingsDlg* parent)
 QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageOnEvent = new QVBoxLayout(w);
-  layPageOnEvent->setContentsMargins(0, 0, 0, 0);
+  myPageOnEventLayout = new QVBoxLayout(w);
+  myPageOnEventLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxNewMsgActions = new QGroupBox(tr("Actions On Incoming Messages"));
-  myMsgActionsLayout = new QGridLayout(boxNewMsgActions);
+  myNewMsgActionsBox = new QGroupBox(tr("Actions On Incoming Messages"));
+  myMsgActionsLayout = new QGridLayout(myNewMsgActionsBox);
 
-  chkBoldOnMsg = new QCheckBox(tr("Bold message label"));
-  chkBoldOnMsg->setToolTip(tr("Show the message info label in bold font if there are incoming messages"));
-  myMsgActionsLayout->addWidget(chkBoldOnMsg, 0, 0);
+  myBoldOnMsgCheck = new QCheckBox(tr("Bold message label"));
+  myBoldOnMsgCheck->setToolTip(tr("Show the message info label in bold font if there are incoming messages"));
+  myMsgActionsLayout->addWidget(myBoldOnMsgCheck, 0, 0);
 
-  chkAutoPopup = new QCheckBox(tr("Auto-popup message"));
-  chkAutoPopup->setToolTip(tr("Open all incoming messages automatically when received if we are online (or free for chat)"));
-  myMsgActionsLayout->addWidget(chkAutoPopup, 1, 0);
+  myAutoPopupCheck = new QCheckBox(tr("Auto-popup message"));
+  myAutoPopupCheck->setToolTip(tr("Open all incoming messages automatically when received if we are online (or free for chat)"));
+  myMsgActionsLayout->addWidget(myAutoPopupCheck, 1, 0);
 
-  chkAutoFocus = new QCheckBox(tr("Auto-focus message"));
-  chkAutoFocus->setToolTip(tr("Automatically focus opened message windows."));
-  myMsgActionsLayout->addWidget(chkAutoFocus, 2, 0);
+  myAutoFocusCheck = new QCheckBox(tr("Auto-focus message"));
+  myAutoFocusCheck->setToolTip(tr("Automatically focus opened message windows."));
+  myMsgActionsLayout->addWidget(myAutoFocusCheck, 2, 0);
 
-  chkAutoRaise = new QCheckBox(tr("Auto-raise main window"));
-  chkAutoRaise->setToolTip(tr("Raise the main window on incoming messages"));
-  myMsgActionsLayout->addWidget(chkAutoRaise, 3, 0);
+  myAutoRaiseCheck = new QCheckBox(tr("Auto-raise main window"));
+  myAutoRaiseCheck->setToolTip(tr("Raise the main window on incoming messages"));
+  myMsgActionsLayout->addWidget(myAutoRaiseCheck, 3, 0);
 
-  chkFlashTaskbar = new QCheckBox(tr("Flash taskbar"));
-  chkFlashTaskbar->setToolTip(tr("Flash the taskbar on incoming messages"));
-  myMsgActionsLayout->addWidget(chkFlashTaskbar, 0, 1);
+  myFlashTaskbarCheck = new QCheckBox(tr("Flash taskbar"));
+  myFlashTaskbarCheck->setToolTip(tr("Flash the taskbar on incoming messages"));
+  myMsgActionsLayout->addWidget(myFlashTaskbarCheck, 0, 1);
 
-  chkFlashAll = new QCheckBox(tr("Blink all events"));
-  chkFlashAll->setToolTip(tr("All incoming events will blink"));
-  myMsgActionsLayout->addWidget(chkFlashAll, 1, 1);
+  myFlashAllCheck = new QCheckBox(tr("Blink all events"));
+  myFlashAllCheck->setToolTip(tr("All incoming events will blink"));
+  myMsgActionsLayout->addWidget(myFlashAllCheck, 1, 1);
 
-  chkFlashUrgent = new QCheckBox(tr("Blink urgent events"));
-  chkFlashUrgent->setToolTip(tr("Only urgent events will blink"));
-  myMsgActionsLayout->addWidget(chkFlashUrgent, 2, 1);
+  myFlashUrgentCheck = new QCheckBox(tr("Blink urgent events"));
+  myFlashUrgentCheck->setToolTip(tr("Only urgent events will blink"));
+  myMsgActionsLayout->addWidget(myFlashUrgentCheck, 2, 1);
 
   QHBoxLayout* hotKeyLayout = new QHBoxLayout();
   myHotKeyLabel = new QLabel(tr("Hot key:"));
@@ -107,29 +107,29 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   myMsgActionsLayout->setColumnStretch(0, 1);
   myMsgActionsLayout->setColumnStretch(1, 1);
 
-  boxParanoia = new QGroupBox(tr("Paranoia"));
-  layParanoia = new QVBoxLayout(boxParanoia);
+  myParanoiaBox = new QGroupBox(tr("Paranoia"));
+  myParanoiaLayout = new QVBoxLayout(myParanoiaBox);
 
-  chkIgnoreNewUsers = new QCheckBox(tr("Ignore new users"));
-  chkIgnoreNewUsers->setToolTip(tr("Determines if new users are automatically added to your list or must first request authorization."));
-  layParanoia->addWidget(chkIgnoreNewUsers);
+  myIgnoreNewUsersCheck = new QCheckBox(tr("Ignore new users"));
+  myIgnoreNewUsersCheck->setToolTip(tr("Determines if new users are automatically added to your list or must first request authorization."));
+  myParanoiaLayout->addWidget(myIgnoreNewUsersCheck);
 
-  chkIgnoreMassMsg = new QCheckBox(tr("Ignore mass messages"));
-  chkIgnoreMassMsg->setToolTip(tr("Determines if mass messages are ignored or not."));
-  layParanoia->addWidget(chkIgnoreMassMsg);
+  myIgnoreMassMsgCheck = new QCheckBox(tr("Ignore mass messages"));
+  myIgnoreMassMsgCheck->setToolTip(tr("Determines if mass messages are ignored or not."));
+  myParanoiaLayout->addWidget(myIgnoreMassMsgCheck);
 
-  chkIgnoreWebPanel = new QCheckBox(tr("Ignore web panel"));
-  chkIgnoreWebPanel->setToolTip(tr("Determines if web panel messages are ignored or not."));
-  layParanoia->addWidget(chkIgnoreWebPanel);
+  myIgnoreWebPanelCheck = new QCheckBox(tr("Ignore web panel"));
+  myIgnoreWebPanelCheck->setToolTip(tr("Determines if web panel messages are ignored or not."));
+  myParanoiaLayout->addWidget(myIgnoreWebPanelCheck);
 
-  chkIgnoreEmailPager = new QCheckBox(tr("Ignore email pager"));
-  chkIgnoreEmailPager->setToolTip(tr("Determines if email pager messages are ignored or not."));
-  layParanoia->addWidget(chkIgnoreEmailPager);
+  myIgnoreEmailPagerCheck = new QCheckBox(tr("Ignore email pager"));
+  myIgnoreEmailPagerCheck->setToolTip(tr("Determines if email pager messages are ignored or not."));
+  myParanoiaLayout->addWidget(myIgnoreEmailPagerCheck);
 
 
-  layPageOnEvent->addWidget(boxNewMsgActions);
-  layPageOnEvent->addWidget(boxParanoia);
-  layPageOnEvent->addStretch(1);
+  myPageOnEventLayout->addWidget(myNewMsgActionsBox);
+  myPageOnEventLayout->addWidget(myParanoiaBox);
+  myPageOnEventLayout->addStretch(1);
 
   return w;
 }
@@ -137,144 +137,144 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
 QWidget* Settings::Events::createPageSounds(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageSounds = new QVBoxLayout(w);
-  layPageSounds->setContentsMargins(0, 0, 0, 0);
+  myPageSoundsLayout = new QVBoxLayout(w);
+  myPageSoundsLayout->setContentsMargins(0, 0, 0, 0);
 
-  QHBoxLayout* laySndTopRow = new QHBoxLayout();
+  QHBoxLayout* mySndTopRowLayout = new QHBoxLayout();
 
-  chkOnEvents = new QCheckBox(tr("Sounds enabled"));
-  chkOnEvents->setToolTip(tr("Enable running of \"Command\" when the relevant event occurs."));
-  connect(chkOnEvents, SIGNAL(toggled(bool)), SLOT(slot_chkOnEventsToggled(bool)));
-  laySndTopRow->addWidget(chkOnEvents);
+  myOnEventsCheck = new QCheckBox(tr("Sounds enabled"));
+  myOnEventsCheck->setToolTip(tr("Enable running of \"Command\" when the relevant event occurs."));
+  connect(myOnEventsCheck, SIGNAL(toggled(bool)), SLOT(setOnEventsEnabled(bool)));
+  mySndTopRowLayout->addWidget(myOnEventsCheck);
 
   QWidget* dummy = new QWidget();
   dummy->setFixedSize(50, 1);
-  laySndTopRow->addWidget(dummy);
+  mySndTopRowLayout->addWidget(dummy);
 
-  lblSndPlayer = new QLabel(tr("Command:"));
-  lblSndPlayer->setToolTip("<p>" + tr("Command to execute when an event is received.<br>"
+  mySndPlayerLabel = new QLabel(tr("Command:"));
+  mySndPlayerLabel->setToolTip("<p>" + tr("Command to execute when an event is received.<br>"
       "It will be passed the relevant parameters from below.<br>"
       "Parameters can contain the following expressions <br> "
       "which will be replaced with the relevant information:") + "</p>" +
       gMainWindow->usprintfHelp);
-  laySndTopRow->addWidget(lblSndPlayer);
+  mySndTopRowLayout->addWidget(mySndPlayerLabel);
 
-  edtSndPlayer = new FileNameEdit();
-  edtSndPlayer->setToolTip(lblSndPlayer->toolTip());
-  lblSndPlayer->setBuddy(edtSndPlayer);
-  laySndTopRow->addWidget(edtSndPlayer);
-
-
-  boxEventParams = new QGroupBox(tr("Parameters"));
-  layEventParams = new QGridLayout(boxEventParams);
-
-  lblSndMsg = new QLabel(tr("Message:"));
-  lblSndMsg->setToolTip(tr("Parameter for received messages"));
-  layEventParams->addWidget(lblSndMsg, 0, 0);
-  edtSndMsg = new FileNameEdit();
-  edtSndMsg->setToolTip(lblSndMsg->toolTip());
-  lblSndMsg->setBuddy(edtSndMsg);
-  layEventParams->addWidget(edtSndMsg, 0, 1);
-
-  lblSndUrl = new QLabel(tr("URL:"));
-  lblSndUrl->setToolTip(tr("Parameter for received URLs"));
-  layEventParams->addWidget(lblSndUrl, 1, 0);
-  edtSndUrl = new FileNameEdit();
-  edtSndUrl->setToolTip(lblSndUrl->toolTip());
-  lblSndUrl->setBuddy(edtSndUrl);
-  layEventParams->addWidget(edtSndUrl, 1, 1);
-
-  lblSndChat = new QLabel(tr("Chat request:"));
-  lblSndChat->setToolTip(tr("Parameter for received chat requests"));
-  layEventParams->addWidget(lblSndChat, 2, 0);
-  edtSndChat = new FileNameEdit();
-  edtSndChat->setToolTip(lblSndChat->toolTip());
-  lblSndChat->setBuddy(edtSndChat);
-  layEventParams->addWidget(edtSndChat, 2, 1);
-
-  lblSndFile = new QLabel(tr("File transfer:"));
-  lblSndFile->setToolTip(tr("Parameter for received file transfers"));
-  layEventParams->addWidget(lblSndFile, 3, 0);
-  edtSndFile = new FileNameEdit();
-  edtSndFile->setToolTip(lblSndFile->toolTip());
-  lblSndFile->setBuddy(edtSndFile);
-  layEventParams->addWidget(edtSndFile, 3, 1);
-
-  lblSndNotify = new QLabel(tr("Online notify:"));
-  lblSndNotify->setToolTip(tr("Parameter for online notification"));
-  layEventParams->addWidget(lblSndNotify, 4, 0);
-  edtSndNotify = new FileNameEdit();
-  edtSndNotify->setToolTip(lblSndNotify->toolTip());
-  lblSndNotify->setBuddy(edtSndNotify);
-  layEventParams->addWidget(edtSndNotify, 4, 1);
-
-  lblSndSysMsg = new QLabel(tr("System msg:"));
-  lblSndSysMsg->setToolTip(tr("Parameter for received system messages"));
-  layEventParams->addWidget(lblSndSysMsg, 5, 0);
-  edtSndSysMsg = new FileNameEdit();
-  edtSndSysMsg->setToolTip(lblSndSysMsg->toolTip());
-  lblSndSysMsg->setBuddy(edtSndSysMsg);
-  layEventParams->addWidget(edtSndSysMsg, 5, 1);
-
-  lblSndMsgSent = new QLabel(tr("Message sent:"));
-  lblSndMsgSent->setToolTip(tr("Parameter for sent messages"));
-  layEventParams->addWidget(lblSndMsgSent, 6, 0);
-  edtSndMsgSent = new FileNameEdit();
-  edtSndMsgSent->setToolTip(lblSndMsgSent->toolTip());
-  lblSndMsgSent->setBuddy(edtSndMsgSent);
-  layEventParams->addWidget(edtSndMsgSent, 6, 1);
+  mySndPlayerEdit = new FileNameEdit();
+  mySndPlayerEdit->setToolTip(mySndPlayerLabel->toolTip());
+  mySndPlayerLabel->setBuddy(mySndPlayerEdit);
+  mySndTopRowLayout->addWidget(mySndPlayerEdit);
 
 
-  boxAcceptEvents = new QGroupBox(tr("Enable Events"));
-  layAcceptEvents = new QGridLayout(boxAcceptEvents);
+  myEventParamsBox = new QGroupBox(tr("Parameters"));
+  myEventParamsLayout = new QGridLayout(myEventParamsBox);
 
-  chkOEAway = new QCheckBox(tr("Sounds when Away"));
-  chkOEAway->setToolTip(tr("Perform OnEvent command in away mode"));
-  layAcceptEvents->addWidget(chkOEAway, 0, 0);
+  mySndMsgLabel = new QLabel(tr("Message:"));
+  mySndMsgLabel->setToolTip(tr("Parameter for received messages"));
+  myEventParamsLayout->addWidget(mySndMsgLabel, 0, 0);
+  mySndMsgEdit = new FileNameEdit();
+  mySndMsgEdit->setToolTip(mySndMsgLabel->toolTip());
+  mySndMsgLabel->setBuddy(mySndMsgEdit);
+  myEventParamsLayout->addWidget(mySndMsgEdit, 0, 1);
 
-  chkOENA = new QCheckBox(tr("Sounds when N/A"), boxAcceptEvents);
-  chkOENA->setToolTip(tr("Perform OnEvent command in not available mode"));
-  layAcceptEvents->addWidget(chkOENA, 1, 0);
+  mySndUrlLabel = new QLabel(tr("URL:"));
+  mySndUrlLabel->setToolTip(tr("Parameter for received URLs"));
+  myEventParamsLayout->addWidget(mySndUrlLabel, 1, 0);
+  mySndUrlEdit = new FileNameEdit();
+  mySndUrlEdit->setToolTip(mySndUrlLabel->toolTip());
+  mySndUrlLabel->setBuddy(mySndUrlEdit);
+  myEventParamsLayout->addWidget(mySndUrlEdit, 1, 1);
 
-  chkOEOccupied = new QCheckBox(tr("Sounds when Occupied"), boxAcceptEvents);
-  chkOEOccupied->setToolTip(tr("Perform OnEvent command in occupied mode"));
-  layAcceptEvents->addWidget(chkOEOccupied, 2, 0);
+  mySndChatLabel = new QLabel(tr("Chat request:"));
+  mySndChatLabel->setToolTip(tr("Parameter for received chat requests"));
+  myEventParamsLayout->addWidget(mySndChatLabel, 2, 0);
+  mySndChatEdit = new FileNameEdit();
+  mySndChatEdit->setToolTip(mySndChatLabel->toolTip());
+  mySndChatLabel->setBuddy(mySndChatEdit);
+  myEventParamsLayout->addWidget(mySndChatEdit, 2, 1);
 
-  chkOEDND = new QCheckBox(tr("Sounds when DND"), boxAcceptEvents);
-  chkOEDND->setToolTip(tr("Perform OnEvent command in do not disturb mode"));
-  layAcceptEvents->addWidget(chkOEDND, 3, 0);
+  mySndFileLabel = new QLabel(tr("File transfer:"));
+  mySndFileLabel->setToolTip(tr("Parameter for received file transfers"));
+  myEventParamsLayout->addWidget(mySndFileLabel, 3, 0);
+  mySndFileEdit = new FileNameEdit();
+  mySndFileEdit->setToolTip(mySndFileLabel->toolTip());
+  mySndFileLabel->setBuddy(mySndFileEdit);
+  myEventParamsLayout->addWidget(mySndFileEdit, 3, 1);
 
-  chkAlwaysOnlineNotify = new QCheckBox(tr("Online notify when logging on"), boxAcceptEvents);
-  chkAlwaysOnlineNotify->setToolTip(tr("Perform the online notify OnEvent "
+  mySndNotifyLabel = new QLabel(tr("Online notify:"));
+  mySndNotifyLabel->setToolTip(tr("Parameter for online notification"));
+  myEventParamsLayout->addWidget(mySndNotifyLabel, 4, 0);
+  mySndNotifyEdit = new FileNameEdit();
+  mySndNotifyEdit->setToolTip(mySndNotifyLabel->toolTip());
+  mySndNotifyLabel->setBuddy(mySndNotifyEdit);
+  myEventParamsLayout->addWidget(mySndNotifyEdit, 4, 1);
+
+  mySndSysMsgLabel = new QLabel(tr("System msg:"));
+  mySndSysMsgLabel->setToolTip(tr("Parameter for received system messages"));
+  myEventParamsLayout->addWidget(mySndSysMsgLabel, 5, 0);
+  mySndSysMsgEdit = new FileNameEdit();
+  mySndSysMsgEdit->setToolTip(mySndSysMsgLabel->toolTip());
+  mySndSysMsgLabel->setBuddy(mySndSysMsgEdit);
+  myEventParamsLayout->addWidget(mySndSysMsgEdit, 5, 1);
+
+  mySndMsgSentLabel = new QLabel(tr("Message sent:"));
+  mySndMsgSentLabel->setToolTip(tr("Parameter for sent messages"));
+  myEventParamsLayout->addWidget(mySndMsgSentLabel, 6, 0);
+  mySndMsgSentEdit = new FileNameEdit();
+  mySndMsgSentEdit->setToolTip(mySndMsgSentLabel->toolTip());
+  mySndMsgSentLabel->setBuddy(mySndMsgSentEdit);
+  myEventParamsLayout->addWidget(mySndMsgSentEdit, 6, 1);
+
+
+  myAcceptEventsBox = new QGroupBox(tr("Enable Events"));
+  myAcceptEventsLayout = new QGridLayout(myAcceptEventsBox);
+
+  myOnEventAwayCheck = new QCheckBox(tr("Sounds when Away"));
+  myOnEventAwayCheck->setToolTip(tr("Perform OnEvent command in away mode"));
+  myAcceptEventsLayout->addWidget(myOnEventAwayCheck, 0, 0);
+
+  myOnEventNaCheck = new QCheckBox(tr("Sounds when N/A"), myAcceptEventsBox);
+  myOnEventNaCheck->setToolTip(tr("Perform OnEvent command in not available mode"));
+  myAcceptEventsLayout->addWidget(myOnEventNaCheck, 1, 0);
+
+  myOnEventOccupiedCheck = new QCheckBox(tr("Sounds when Occupied"), myAcceptEventsBox);
+  myOnEventOccupiedCheck->setToolTip(tr("Perform OnEvent command in occupied mode"));
+  myAcceptEventsLayout->addWidget(myOnEventOccupiedCheck, 2, 0);
+
+  myOnEventDndCheck = new QCheckBox(tr("Sounds when DND"), myAcceptEventsBox);
+  myOnEventDndCheck->setToolTip(tr("Perform OnEvent command in do not disturb mode"));
+  myAcceptEventsLayout->addWidget(myOnEventDndCheck, 3, 0);
+
+  myAlwaysOnlineNotifyCheck = new QCheckBox(tr("Online notify when logging on"), myAcceptEventsBox);
+  myAlwaysOnlineNotifyCheck->setToolTip(tr("Perform the online notify OnEvent "
      "when logging on (this is different from how the Mirabilis client works)"));
-  layAcceptEvents->addWidget(chkAlwaysOnlineNotify, 0, 1);
+  myAcceptEventsLayout->addWidget(myAlwaysOnlineNotifyCheck, 0, 1);
 
 
-  layPageSounds->addLayout(laySndTopRow);
-  layPageSounds->addWidget(boxEventParams);
-  layPageSounds->addWidget(boxAcceptEvents);
-  layPageSounds->addStretch(1);
+  myPageSoundsLayout->addLayout(mySndTopRowLayout);
+  myPageSoundsLayout->addWidget(myEventParamsBox);
+  myPageSoundsLayout->addWidget(myAcceptEventsBox);
+  myPageSoundsLayout->addStretch(1);
 
-  slot_chkOnEventsToggled(chkOnEvents->isChecked());
+  setOnEventsEnabled(myOnEventsCheck->isChecked());
 
   return w;
 }
 
-void Settings::Events::slot_chkOnEventsToggled(bool b_checked)
+void Settings::Events::setOnEventsEnabled(bool enable)
 {
-  edtSndPlayer->setEnabled(b_checked);
-  edtSndMsg->setEnabled(b_checked);
-  edtSndUrl->setEnabled(b_checked);
-  edtSndChat->setEnabled(b_checked);
-  edtSndFile->setEnabled(b_checked);
-  edtSndNotify->setEnabled(b_checked);
-  edtSndSysMsg->setEnabled(b_checked);
-  edtSndMsgSent->setEnabled(b_checked);
-  chkOEAway->setEnabled(b_checked);
-  chkOENA->setEnabled(b_checked);
-  chkOEOccupied->setEnabled(b_checked);
-  chkOEDND->setEnabled(b_checked);
-  chkAlwaysOnlineNotify->setEnabled(b_checked);
+  mySndPlayerEdit->setEnabled(enable);
+  mySndMsgEdit->setEnabled(enable);
+  mySndUrlEdit->setEnabled(enable);
+  mySndChatEdit->setEnabled(enable);
+  mySndFileEdit->setEnabled(enable);
+  mySndNotifyEdit->setEnabled(enable);
+  mySndSysMsgEdit->setEnabled(enable);
+  mySndMsgSentEdit->setEnabled(enable);
+  myOnEventAwayCheck->setEnabled(enable);
+  myOnEventNaCheck->setEnabled(enable);
+  myOnEventOccupiedCheck->setEnabled(enable);
+  myOnEventDndCheck->setEnabled(enable);
+  myAlwaysOnlineNotifyCheck->setEnabled(enable);
 }
 
 void Settings::Events::load()
@@ -283,46 +283,46 @@ void Settings::Events::load()
   Config::ContactList* contactListConfig = Config::ContactList::instance();
   Config::General* generalConfig = Config::General::instance();
 
-  chkAutoRaise->setChecked(generalConfig->autoRaiseMainwin());
-  chkBoldOnMsg->setChecked(generalConfig->boldOnMsg());
+  myAutoRaiseCheck->setChecked(generalConfig->autoRaiseMainwin());
+  myBoldOnMsgCheck->setChecked(generalConfig->boldOnMsg());
   myHotKeyField->setText(generalConfig->msgPopupKey().isEmpty() ? "none" : generalConfig->msgPopupKey());
 
   Config::ContactList::FlashMode flash = contactListConfig->flash();
-  chkFlashUrgent->setChecked(flash == Config::ContactList::FlashUrgent || flash == Config::ContactList::FlashAll);
-  chkFlashAll->setChecked(flash == Config::ContactList::FlashAll);
+  myFlashUrgentCheck->setChecked(flash == Config::ContactList::FlashUrgent || flash == Config::ContactList::FlashAll);
+  myFlashAllCheck->setChecked(flash == Config::ContactList::FlashAll);
 
-  chkAutoPopup->setChecked(chatConfig->autoPopup());
-  chkAutoFocus->setChecked(chatConfig->autoFocus());
-  chkFlashTaskbar->setChecked(chatConfig->flashTaskbar());
+  myAutoPopupCheck->setChecked(chatConfig->autoPopup());
+  myAutoFocusCheck->setChecked(chatConfig->autoFocus());
+  myFlashTaskbarCheck->setChecked(chatConfig->flashTaskbar());
 
-  chkIgnoreNewUsers->setChecked(gLicqDaemon->Ignore(IGNORE_NEWUSERS));
-  chkIgnoreMassMsg->setChecked(gLicqDaemon->Ignore(IGNORE_MASSMSG));
-  chkIgnoreWebPanel->setChecked(gLicqDaemon->Ignore(IGNORE_WEBPANEL));
-  chkIgnoreEmailPager->setChecked(gLicqDaemon->Ignore(IGNORE_EMAILPAGER));
+  myIgnoreNewUsersCheck->setChecked(gLicqDaemon->Ignore(IGNORE_NEWUSERS));
+  myIgnoreMassMsgCheck->setChecked(gLicqDaemon->Ignore(IGNORE_MASSMSG));
+  myIgnoreWebPanelCheck->setChecked(gLicqDaemon->Ignore(IGNORE_WEBPANEL));
+  myIgnoreEmailPagerCheck->setChecked(gLicqDaemon->Ignore(IGNORE_EMAILPAGER));
 
   COnEventManager* oem = gLicqDaemon->OnEventManager();
-  chkOnEvents->setChecked(oem->CommandType() != ON_EVENT_IGNORE);
+  myOnEventsCheck->setChecked(oem->CommandType() != ON_EVENT_IGNORE);
   oem->Lock();
-  edtSndPlayer->setFileName(oem->Command());
-  edtSndMsg->setFileName(oem->Parameter(ON_EVENT_MSG));
-  edtSndUrl->setFileName(oem->Parameter(ON_EVENT_URL));
-  edtSndChat->setFileName(oem->Parameter(ON_EVENT_CHAT));
-  edtSndFile->setFileName(oem->Parameter(ON_EVENT_FILE));
-  edtSndNotify->setFileName(oem->Parameter(ON_EVENT_NOTIFY));
-  edtSndSysMsg->setFileName(oem->Parameter(ON_EVENT_SYSMSG));
-  edtSndMsgSent->setFileName(oem->Parameter(ON_EVENT_MSGSENT));
+  mySndPlayerEdit->setFileName(oem->Command());
+  mySndMsgEdit->setFileName(oem->Parameter(ON_EVENT_MSG));
+  mySndUrlEdit->setFileName(oem->Parameter(ON_EVENT_URL));
+  mySndChatEdit->setFileName(oem->Parameter(ON_EVENT_CHAT));
+  mySndFileEdit->setFileName(oem->Parameter(ON_EVENT_FILE));
+  mySndNotifyEdit->setFileName(oem->Parameter(ON_EVENT_NOTIFY));
+  mySndSysMsgEdit->setFileName(oem->Parameter(ON_EVENT_SYSMSG));
+  mySndMsgSentEdit->setFileName(oem->Parameter(ON_EVENT_MSGSENT));
   oem->Unlock();
   //TODO make general for all plugins
   ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
   if (o != NULL)
   {
-    chkOEAway->setChecked(o->AcceptInAway());
-    chkOENA->setChecked(o->AcceptInNA());
-    chkOEOccupied->setChecked(o->AcceptInOccupied());
-    chkOEDND->setChecked(o->AcceptInDND());
+    myOnEventAwayCheck->setChecked(o->AcceptInAway());
+    myOnEventNaCheck->setChecked(o->AcceptInNA());
+    myOnEventOccupiedCheck->setChecked(o->AcceptInOccupied());
+    myOnEventDndCheck->setChecked(o->AcceptInDND());
     gUserManager.DropOwner();
   }
-  chkAlwaysOnlineNotify->setChecked(gLicqDaemon->AlwaysOnlineNotify());
+  myAlwaysOnlineNotifyCheck->setChecked(gLicqDaemon->AlwaysOnlineNotify());
 }
 
 void Settings::Events::apply()
@@ -334,37 +334,37 @@ void Settings::Events::apply()
   contactListConfig->blockUpdates(true);
   generalConfig->blockUpdates(true);
 
-  generalConfig->setAutoRaiseMainwin(chkAutoRaise->isChecked());
-  generalConfig->setBoldOnMsg(chkBoldOnMsg->isChecked());
+  generalConfig->setAutoRaiseMainwin(myAutoRaiseCheck->isChecked());
+  generalConfig->setBoldOnMsg(myBoldOnMsgCheck->isChecked());
   generalConfig->setMsgPopupKey(myHotKeyField->text() != "none" ? myHotKeyField->text() : QString());
 
-  if (chkFlashAll->isChecked())
+  if (myFlashAllCheck->isChecked())
     contactListConfig->setFlash(Config::ContactList::FlashAll);
-  else if(chkFlashUrgent->isChecked())
+  else if(myFlashUrgentCheck->isChecked())
     contactListConfig->setFlash(Config::ContactList::FlashUrgent);
   else
     contactListConfig->setFlash(Config::ContactList::FlashNone);
 
-  chatConfig->setAutoPopup(chkAutoPopup->isChecked());
-  chatConfig->setAutoFocus(chkAutoFocus->isChecked());
-  chatConfig->setFlashTaskbar(chkFlashTaskbar->isChecked());
+  chatConfig->setAutoPopup(myAutoPopupCheck->isChecked());
+  chatConfig->setAutoFocus(myAutoFocusCheck->isChecked());
+  chatConfig->setFlashTaskbar(myFlashTaskbarCheck->isChecked());
 
-  gLicqDaemon->SetIgnore(IGNORE_NEWUSERS, chkIgnoreNewUsers->isChecked());
-  gLicqDaemon->SetIgnore(IGNORE_MASSMSG, chkIgnoreMassMsg->isChecked());
-  gLicqDaemon->SetIgnore(IGNORE_WEBPANEL, chkIgnoreWebPanel->isChecked());
-  gLicqDaemon->SetIgnore(IGNORE_EMAILPAGER, chkIgnoreEmailPager->isChecked());
+  gLicqDaemon->SetIgnore(IGNORE_NEWUSERS, myIgnoreNewUsersCheck->isChecked());
+  gLicqDaemon->SetIgnore(IGNORE_MASSMSG, myIgnoreMassMsgCheck->isChecked());
+  gLicqDaemon->SetIgnore(IGNORE_WEBPANEL, myIgnoreWebPanelCheck->isChecked());
+  gLicqDaemon->SetIgnore(IGNORE_EMAILPAGER, myIgnoreEmailPagerCheck->isChecked());
 
   COnEventManager* oem = gLicqDaemon->OnEventManager();
-  oem->SetCommandType(chkOnEvents->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
+  oem->SetCommandType(myOnEventsCheck->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
 
-  QString txtSndPlayer = edtSndPlayer->fileName();
-  QString txtSndMsg = edtSndMsg->fileName();
-  QString txtSndUrl = edtSndUrl->fileName();
-  QString txtSndChat = edtSndChat->fileName();
-  QString txtSndFile = edtSndFile->fileName();
-  QString txtSndNotify = edtSndNotify->fileName();
-  QString txtSndSysMsg = edtSndSysMsg->fileName();
-  QString txtSndMsgSent = edtSndMsgSent->fileName();
+  QString txtSndPlayer = mySndPlayerEdit->fileName();
+  QString txtSndMsg = mySndMsgEdit->fileName();
+  QString txtSndUrl = mySndUrlEdit->fileName();
+  QString txtSndChat = mySndChatEdit->fileName();
+  QString txtSndFile = mySndFileEdit->fileName();
+  QString txtSndNotify = mySndNotifyEdit->fileName();
+  QString txtSndSysMsg = mySndSysMsgEdit->fileName();
+  QString txtSndMsgSent = mySndMsgSentEdit->fileName();
 
   const char* oemparams[8] = {
       txtSndMsg.toLatin1(),
@@ -383,15 +383,15 @@ void Settings::Events::apply()
   if (o)
   {
     o->SetEnableSave(false);
-    o->SetAcceptInAway(chkOEAway->isChecked());
-    o->SetAcceptInNA(chkOENA->isChecked());
-    o->SetAcceptInOccupied(chkOEOccupied->isChecked());
-    o->SetAcceptInDND(chkOEDND->isChecked());
+    o->SetAcceptInAway(myOnEventAwayCheck->isChecked());
+    o->SetAcceptInNA(myOnEventNaCheck->isChecked());
+    o->SetAcceptInOccupied(myOnEventOccupiedCheck->isChecked());
+    o->SetAcceptInDND(myOnEventDndCheck->isChecked());
     o->SetEnableSave(true);
     o->SaveLicqInfo();
     gUserManager.DropOwner();
   }
-  gLicqDaemon->SetAlwaysOnlineNotify(chkAlwaysOnlineNotify->isChecked());
+  gLicqDaemon->SetAlwaysOnlineNotify(myAlwaysOnlineNotifyCheck->isChecked());
 
   chatConfig->blockUpdates(false);
   contactListConfig->blockUpdates(true);

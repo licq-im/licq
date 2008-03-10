@@ -54,7 +54,7 @@ public:
   void apply();
 
 private slots:
-  void slot_useDockToggled(bool);
+  void useDockToggled(bool useDock);
   void normalFontChanged(const QFont& font);
 
 private:
@@ -73,32 +73,32 @@ private:
   QWidget* createPageFonts(QWidget* parent);
 
   // Widgets for docking settings
-  QVBoxLayout* layPageDocking;
-  QGroupBox* boxDocking;
-  QGridLayout* layDocking;
-  QCheckBox* chkUseDock;
-  QCheckBox* chkHidden;
-  QCheckBox* chkDockFortyEight;
-  QCheckBox* chkDockTrayBlink;
+  QVBoxLayout* myPageDockingLayout;
+  QGroupBox* myDockingBox;
+  QGridLayout* myDockingLayout;
+  QCheckBox* myUseDockCheck;
+  QCheckBox* myHiddenCheck;
+  QCheckBox* myDockFortyEightCheck;
+  QCheckBox* myDockTrayBlinkCheck;
   QCheckBox* myTrayMsgOnlineNotify;
-  QRadioButton* rdbDockDefault;
-  QRadioButton* rdbDockThemed;
-  QRadioButton* rdbDockTray;
-  QComboBox* cmbDockTheme;
+  QRadioButton* myDockDefaultRadio;
+  QRadioButton* myDockThemedRadio;
+  QRadioButton* myDockTrayRadio;
+  QComboBox* myDockThemeCombo;
 
   // Widgets for fonts and localization settings
-  QVBoxLayout* layPageFonts;
-  QGroupBox* boxFont;
-  QGroupBox* boxLocale;
-  QGridLayout* layFont;
-  QVBoxLayout* layLocale;
-  QLabel* lblFont;
-  QLabel* lblEditFont;
+  QVBoxLayout* myPageFontsLayout;
+  QGroupBox* myFontBox;
+  QGroupBox* myLocaleBox;
+  QGridLayout* myFontLayout;
+  QVBoxLayout* myLocaleLayout;
+  QLabel* myFontLabel;
+  QLabel* myEditFontLabel;
   FontEdit* myNormalFontEdit;
   FontEdit* myEditFontEdit;
-  QLabel* lblDefaultEncoding;
-  QCheckBox* chkShowAllEncodings;
-  QComboBox* cmbDefaultEncoding;
+  QLabel* myDefaultEncodingLabel;
+  QCheckBox* myShowAllEncodingsCheck;
+  QComboBox* myDefaultEncodingCombo;
 };
 
 } // namespace Settings

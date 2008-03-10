@@ -52,10 +52,10 @@ public:
   void apply();
 
 private slots:
-  void slot_SARmsg_act(int);
-  void slot_SARgroup_act(int);
-  void slot_SARsave_act();
-  void slot_SARhints();
+  void sarMsgChanged(int msg);
+  void sarGroupChanged(int group);
+  void saveSar();
+  void showSarHints();
 
 private:
   /**
@@ -72,36 +72,36 @@ private:
    */
   QWidget* createPageRespMsg(QWidget* parent);
 
-  void buildAutoStatusCombos(bool);
+  void buildAutoStatusCombos(bool firstTime);
 
   // Widgets for status settings
-  QVBoxLayout* layPageStatus;
-  QGroupBox* boxAutoLogon;
-  QGroupBox* boxAutoAway;
-  QVBoxLayout* layAutoLogon;
-  QGridLayout* layAutoAway;
-  QComboBox* cmbAutoLogon;
-  QCheckBox* chkAutoLogonInvisible;
-  QLabel* lblAutoAway;
-  QLabel* lblAutoNa;
-  QLabel* lblAutoOffline;
-  QSpinBox* spnAutoAway;
-  QSpinBox* spnAutoNa;
-  QSpinBox* spnAutoOffline;
-  QComboBox* cmbAutoAwayMess;
-  QComboBox* cmbAutoNAMess;
+  QVBoxLayout* myPageStatusLayout;
+  QGroupBox* myAutoLogonBox;
+  QGroupBox* myAutoAwayBox;
+  QVBoxLayout* myAutoLogonLayout;
+  QGridLayout* myAutoAwayLayout;
+  QComboBox* myAutoLogonCombo;
+  QCheckBox* myAutoLogonInvisibleCheck;
+  QLabel* myAutoAwayLabel;
+  QLabel* myAutoNaLabel;
+  QLabel* myAutoOfflineLabel;
+  QSpinBox* myAutoAwaySpin;
+  QSpinBox* myAutoNaSpin;
+  QSpinBox* myAutoOfflineSpin;
+  QComboBox* myAutoAwayMessCombo;
+  QComboBox* myAutoNaMessCombo;
 
   // Widgets for response message settings
-  QVBoxLayout* layPageRespMsg;
-  QGroupBox* boxDefRespMsg;
-  QGridLayout* layDefRespMsg;
-  QLabel* lblSARgroup;
-  QLabel* lblSARmsg;
-  QComboBox* cmbSARgroup;
-  QComboBox* cmbSARmsg;
-  MLEdit* edtSARtext;
-  QPushButton* btnSARsave;
-  QPushButton* btnSARhints;
+  QVBoxLayout* myPageRespMsgLayout;
+  QGroupBox* myDefRespMsgBox;
+  QGridLayout* myDefRespMsgLayout;
+  QLabel* mySarGroupLabel;
+  QLabel* mySarMsgLabel;
+  QComboBox* mySarGroupCombo;
+  QComboBox* mySarMsgCombo;
+  MLEdit* mySartextEdit;
+  QPushButton* mySarsaveButton;
+  QPushButton* mySarhintsButton;
 };
 
 } // namespace Settings

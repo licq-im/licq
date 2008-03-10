@@ -55,8 +55,8 @@ public:
   void apply();
 
 private slots:
-  void slot_useMsgChatView(bool);
-  void slot_refresh_msgViewer();
+  void useMsgChatViewChanged(bool);
+  void updatePreviews();
 
 private:
   /**
@@ -81,24 +81,24 @@ private:
   QWidget* createPageHistDisp(QWidget* parent);
 
   // Widget for chat settings
-  QVBoxLayout* layPageChat;
-  QGroupBox* boxChat;
-  QGroupBox* boxExtensions;
-  QGridLayout* layChat;
-  QGridLayout* layExtensions;
-  QCheckBox* chkSendFromClipboard;
-  QCheckBox* chkAutoPosReplyWin;
-  QCheckBox* chkAutoSendThroughServer;
-  QCheckBox* chkSingleLineChatMode;
-  QCheckBox* chkUseDoubleReturn;
-  QCheckBox* chkMsgChatView;
-  QCheckBox* chkTabbedChatting;
-  QCheckBox* chkSendTN;
-  QCheckBox* chkMsgWinSticky;
-  QCheckBox* chkAutoClose;
-  QCheckBox* chkShowSendClose;
-  QCheckBox* chkShowUserPic;
-  QCheckBox* chkShowUserPicHidden;
+  QVBoxLayout* myPageChatLayout;
+  QGroupBox* myChatBox;
+  QGroupBox* myExtensionsBox;
+  QGridLayout* myChatLayout;
+  QGridLayout* myExtensionsLayout;
+  QCheckBox* mySendFromClipboardCheck;
+  QCheckBox* myAutoPosReplyWinCheck;
+  QCheckBox* myAutoSendThroughServerCheck;
+  QCheckBox* mySingleLineChatModeCheck;
+  QCheckBox* myUseDoubleReturnCheck;
+  QCheckBox* myMsgChatViewCheck;
+  QCheckBox* myTabbedChattingCheck;
+  QCheckBox* mySendTNCheck;
+  QCheckBox* myMsgWinStickyCheck;
+  QCheckBox* myAutoCloseCheck;
+  QCheckBox* myShowSendCloseCheck;
+  QCheckBox* myShowUserPicCheck;
+  QCheckBox* myShowUserPicHiddenCheck;
 
   QGroupBox* myLocaleBox;
   QVBoxLayout* myLocaleLayout;
@@ -106,57 +106,57 @@ private:
   QLabel* myDefaultEncodingLabel;
   QComboBox* myDefaultEncodingCombo;
 
-  QLabel* lblUrlViewer;
-  QLabel* lblTerminal;
-  QComboBox* cmbUrlViewer;
-  QLineEdit* edtTerminal;
+  QLabel* myUrlViewerLabel;
+  QLabel* myTerminalLabel;
+  QComboBox* myUrlViewerCombo;
+  QLineEdit* myTerminalEdit;
 
   // Widget for chat display settings
-  QGridLayout* layPageChatDisp;
-  QGroupBox* boxChatDisp;
-  QGroupBox* boxChatColors;
-  QVBoxLayout* layChatDisp;
-  QGridLayout* layChatColors;
-  QLabel* lblChatStyle;
-  QLabel* lblChatDateFormat;
-  QComboBox* cmbChatStyle;
-  QComboBox* cmbChatDateFormat;
-  QCheckBox* chkChatVertSpacing;
-  QCheckBox* chkChatLineBreak;
-  QCheckBox* chkShowHistory;
-  QCheckBox* chkShowNotices;
-  QLabel* lblColorRcv;
-  QLabel* lblColorSnt;
-  QLabel* lblColorRcvHistory;
-  QLabel* lblColorSntHistory;
-  QLabel* lblColorNotice;
-  QLabel* lblColorTabLabel;
-  QLabel* lblColorTypingLabel;
-  QLabel* lblColorChatBkg;
-  ColorButton* btnColorRcv;
-  ColorButton* btnColorSnt;
-  ColorButton* btnColorRcvHistory;
-  ColorButton* btnColorSntHistory;
-  ColorButton* btnColorNotice;
-  ColorButton* btnColorTabLabel;
-  ColorButton* btnColorTypingLabel;
-  ColorButton* btnColorChatBkg;
-  TabWidget* tabViewer;
-  HistoryView* msgChatViewer;
+  QGridLayout* myPageChatDispLayout;
+  QGroupBox* myChatDispBox;
+  QGroupBox* myChatColorsBox;
+  QVBoxLayout* myChatDispLayout;
+  QGridLayout* myChatColorsLayout;
+  QLabel* myChatStyleLabel;
+  QLabel* myChatDateFormatLabel;
+  QComboBox* myChatStyleCombo;
+  QComboBox* myChatDateFormatCombo;
+  QCheckBox* myChatVertSpacingCheck;
+  QCheckBox* myChatLineBreakCheck;
+  QCheckBox* myShowHistoryCheck;
+  QCheckBox* myShowNoticesCheck;
+  QLabel* myColorRcvLabel;
+  QLabel* myColorSntLabel;
+  QLabel* myColorRcvHistoryLabel;
+  QLabel* myColorSntHistoryLabel;
+  QLabel* myColorNoticeLabel;
+  QLabel* myColorTabLabelLabel;
+  QLabel* myColorTypingLabelLabel;
+  QLabel* myColorChatBkgLabel;
+  ColorButton* myColorRcvButton;
+  ColorButton* myColorSntButton;
+  ColorButton* myColorRcvHistoryButton;
+  ColorButton* myColorSntHistoryButton;
+  ColorButton* myColorNoticeButton;
+  ColorButton* myColorTabLabelButton;
+  ColorButton* myColorTypingLabelButton;
+  ColorButton* myColorChatBkgButton;
+  TabWidget* myChatTabs;
+  HistoryView* myChatView;
 
   // Widget for history display settings
-  QVBoxLayout* layPageHistDisp;
-  QGroupBox* boxHistDisp;
-  QGroupBox* boxHistPreview;
-  QVBoxLayout* layHistDisp;
-  QVBoxLayout* layHistPreview;
-  QLabel* lblHistStyle;
-  QLabel* lblHistDateFormat;
-  QComboBox* cmbHistStyle;
-  QCheckBox* chkHistVertSpacing;
-  QCheckBox* chkHistReverse;
-  QComboBox* cmbHistDateFormat;
-  HistoryView* msgHistViewer;
+  QVBoxLayout* myPageHistDispLayout;
+  QGroupBox* myHistDispBox;
+  QGroupBox* myHistPreviewBox;
+  QVBoxLayout* myHistDispLayout;
+  QVBoxLayout* myHistPreviewLayout;
+  QLabel* myHistStyleLabel;
+  QLabel* myHistDateFormatLabel;
+  QComboBox* myHistStyleCombo;
+  QCheckBox* myHistVertSpacingCheck;
+  QCheckBox* myHistReverseCheck;
+  QComboBox* myHistDateFormatCombo;
+  HistoryView* myHistoryView;
 };
 
 } // namespace Settings

@@ -55,7 +55,7 @@ public:
   void apply();
 
 private slots:
-  void colEnable(bool);
+  void numColumnsChanged();
 
 private:
   /**
@@ -80,68 +80,68 @@ private:
   QWidget* createPageContactInfo(QWidget* parent);
 
   // Widget for general contact list settings
-  QVBoxLayout* layPageContactList;
-  QGroupBox* appearanceBox;
-  QGroupBox* behaviourBox;
-  QGridLayout* appearanceLayout;
-  QGridLayout* behaviourLayout;
-  QLabel* lblFrameStyle;
-  QLabel* lblSortBy;
-  QLineEdit* edtFrameStyle;
-  QComboBox* cmbSortBy;
-  QCheckBox* chkSSList;
-  QCheckBox* chkGridLines;
-  QCheckBox* chkHeader;
-  QCheckBox* chkShowDividers;
-  QCheckBox* chkFontStyles;
-  QCheckBox* chkAlwaysShowONU;
-  QCheckBox* chkScrollBar;
-  QCheckBox* chkShowExtIcons;
-  QCheckBox* chkSysBack;
-  QCheckBox* chkShowUserIcons;
-  QCheckBox* chkManualNewUser;
-  QCheckBox* chkShowGroupIfNoMsg;
-  QCheckBox* chkEnableMainwinMouseMovement;
-  QCheckBox* chkMainWinSticky;
-  QCheckBox* chkTransparent;
+  QVBoxLayout* myPageContactListLayout;
+  QGroupBox* myAppearanceBox;
+  QGroupBox* myBehaviourBox;
+  QGridLayout* myAppearanceLayout;
+  QGridLayout* myBehaviourLayout;
+  QLabel* myFrameStyleLabel;
+  QLabel* mySortByLabel;
+  QLineEdit* myFrameStyleEdit;
+  QComboBox* mySortByCombo;
+  QCheckBox* mySSListCheck;
+  QCheckBox* myGridLinesCheck;
+  QCheckBox* myHeaderCheck;
+  QCheckBox* myShowDividersCheck;
+  QCheckBox* myFontStylesCheck;
+  QCheckBox* myAlwaysShowONUCheck;
+  QCheckBox* myScrollBarCheck;
+  QCheckBox* myShowExtIconsCheck;
+  QCheckBox* mySysBackCheck;
+  QCheckBox* myShowUserIconsCheck;
+  QCheckBox* myManualNewUserCheck;
+  QCheckBox* myShowGroupIfNoMsgCheck;
+  QCheckBox* myEnableMainwinMouseMovementCheck;
+  QCheckBox* myMainWinStickyCheck;
+  QCheckBox* myTransparentCheck;
 
   // Widgets for contact list column settings
-  QVBoxLayout* layPageColumns;
-  QGroupBox* boxColumns;
-  QGridLayout* layColumns;
-  QLabel* lblColWidth;
-  QLabel* lblColAlign;
-  QLabel* lblColTitle;
-  QLabel* lblColFormat;
-  QRadioButton* rdbColNumber[MAX_COLUMNCOUNT];
-  QSpinBox* spnColWidth[MAX_COLUMNCOUNT];
-  QComboBox* cmbColAlign[MAX_COLUMNCOUNT];
-  QLineEdit* edtColTitle[MAX_COLUMNCOUNT];
-  QLineEdit* edtColFormat[MAX_COLUMNCOUNT];
+  QVBoxLayout* myPageColumnsLayout;
+  QGroupBox* myColumnsBox;
+  QGridLayout* myColumnsLayout;
+  QLabel* myColWidthLabel;
+  QLabel* myColAlignLabel;
+  QLabel* myColTitleLabel;
+  QLabel* myColFormatLabel;
+  QRadioButton* myColNumberRadio[MAX_COLUMNCOUNT];
+  QSpinBox* myColWidthSpin[MAX_COLUMNCOUNT];
+  QComboBox* myColAlignCombo[MAX_COLUMNCOUNT];
+  QLineEdit* myColTitleEdit[MAX_COLUMNCOUNT];
+  QLineEdit* myColFormatEdit[MAX_COLUMNCOUNT];
 
   // Widgets for contact info settings
-  QVBoxLayout* layPageContactInfo;
-  QGroupBox* boxPopup;
-  QGroupBox* boxAutoUpdate;
-  QGridLayout* layPopup;
-  QVBoxLayout* layAutoUpdate;
-  QCheckBox* popPicture;
-  QCheckBox* popAlias;
-  QCheckBox* popAuth;
-  QCheckBox* popName;
-  QCheckBox* popEmail;
-  QCheckBox* popPhone;
-  QCheckBox* popFax;
-  QCheckBox* popCellular;
-  QCheckBox* popIP;
-  QCheckBox* popLastOnline;
-  QCheckBox* popOnlineSince;
-  QCheckBox* popIdleTime;
-  QCheckBox* popLocalTime;
-  QCheckBox* popID;
-  QCheckBox* chkAutoUpdateInfo;
-  QCheckBox* chkAutoUpdateInfoPlugins;
-  QCheckBox* chkAutoUpdateStatusPlugins;
+  QVBoxLayout* myPageContactInfoLayout;
+  QGroupBox* myPopupBox;
+  QGroupBox* myAutoUpdateBox;
+  QGridLayout* myPopupLayout;
+  QVBoxLayout* myAutoUpdateLayout;
+  QCheckBox* myPopupPictureCheck;
+  QCheckBox* myPopupAliasCheck;
+  QCheckBox* myPopupAuthCheck;
+  QCheckBox* myPopupNameCheck;
+  QCheckBox* myPopupEmailCheck;
+  QCheckBox* myPopupPhoneCheck;
+  QCheckBox* myPopupFaxCheck;
+  QCheckBox* myPopupCellularCheck;
+  QCheckBox* myPopupIpCheck;
+  QCheckBox* myPopupLastOnlineCheck;
+  QCheckBox* myPopupOnlineSinceCheck;
+  QCheckBox* myPopupIdleTimeCheck;
+  QCheckBox* myPopupLocalTimeCheck;
+  QCheckBox* myPopupIdCheck;
+  QCheckBox* myAutoUpdateInfoCheck;
+  QCheckBox* myAutoUpdateInfoPluginsCheck;
+  QCheckBox* myAutoUpdateStatusPluginsCheck;
 };
 
 } // namespace Settings

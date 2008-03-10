@@ -59,69 +59,69 @@ Settings::Status::Status(SettingsDlg* parent)
 QWidget* Settings::Status::createPageStatus(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageStatus = new QVBoxLayout(w);
-  layPageStatus->setContentsMargins(0, 0, 0, 0);
+  myPageStatusLayout = new QVBoxLayout(w);
+  myPageStatusLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxAutoLogon = new QGroupBox(tr("Startup"));
-  layAutoLogon = new QVBoxLayout(boxAutoLogon);
+  myAutoLogonBox = new QGroupBox(tr("Startup"));
+  myAutoLogonLayout = new QVBoxLayout(myAutoLogonBox);
 
-  cmbAutoLogon = new QComboBox();
-  cmbAutoLogon->addItem(tr("Offline"));
-  cmbAutoLogon->addItem(tr("Online"));
-  cmbAutoLogon->addItem(tr("Away"));
-  cmbAutoLogon->addItem(tr("Not Available"));
-  cmbAutoLogon->addItem(tr("Occupied"));
-  cmbAutoLogon->addItem(tr("Do Not Disturb"));
-  cmbAutoLogon->addItem(tr("Free for Chat"));
-  cmbAutoLogon->setToolTip(tr("Automatically log on when first starting up."));
-  layAutoLogon->addWidget(cmbAutoLogon);
+  myAutoLogonCombo = new QComboBox();
+  myAutoLogonCombo->addItem(tr("Offline"));
+  myAutoLogonCombo->addItem(tr("Online"));
+  myAutoLogonCombo->addItem(tr("Away"));
+  myAutoLogonCombo->addItem(tr("Not Available"));
+  myAutoLogonCombo->addItem(tr("Occupied"));
+  myAutoLogonCombo->addItem(tr("Do Not Disturb"));
+  myAutoLogonCombo->addItem(tr("Free for Chat"));
+  myAutoLogonCombo->setToolTip(tr("Automatically log on when first starting up."));
+  myAutoLogonLayout->addWidget(myAutoLogonCombo);
 
-  chkAutoLogonInvisible = new QCheckBox(tr("Invisible"));
-  layAutoLogon->addWidget(chkAutoLogonInvisible);
+  myAutoLogonInvisibleCheck = new QCheckBox(tr("Invisible"));
+  myAutoLogonLayout->addWidget(myAutoLogonInvisibleCheck);
 
 
-  boxAutoAway = new QGroupBox(tr("Auto Change Status"));
-  layAutoAway = new QGridLayout(boxAutoAway);
-  layAutoAway->setColumnMinimumWidth(2, 20);
+  myAutoAwayBox = new QGroupBox(tr("Auto Change Status"));
+  myAutoAwayLayout = new QGridLayout(myAutoAwayBox);
+  myAutoAwayLayout->setColumnMinimumWidth(2, 20);
 
-  lblAutoAway = new QLabel(tr("Auto Away:"));
-  lblAutoAway->setToolTip(tr("Number of minutes of inactivity after which to "
-                                 "automatically be marked \"away\".  Set to \"0\" to disable."));
-  layAutoAway->addWidget(lblAutoAway, 0, 0);
+  myAutoAwayLabel = new QLabel(tr("Auto Away:"));
+  myAutoAwayLabel->setToolTip(tr("Number of minutes of inactivity after which to "
+        "automatically be marked \"away\".  Set to \"0\" to disable."));
+  myAutoAwayLayout->addWidget(myAutoAwayLabel, 0, 0);
 
-  spnAutoAway = new QSpinBox();
-  spnAutoAway->setSpecialValueText(tr("Never"));
-  layAutoAway->addWidget(spnAutoAway, 0, 1);
+  myAutoAwaySpin = new QSpinBox();
+  myAutoAwaySpin->setSpecialValueText(tr("Never"));
+  myAutoAwayLayout->addWidget(myAutoAwaySpin, 0, 1);
 
-  cmbAutoAwayMess = new QComboBox();
-  layAutoAway->addWidget(cmbAutoAwayMess, 0, 3);
+  myAutoAwayMessCombo = new QComboBox();
+  myAutoAwayLayout->addWidget(myAutoAwayMessCombo, 0, 3);
 
-  lblAutoNa = new QLabel(tr("Auto N/A:"));
-  lblAutoNa->setToolTip(tr("Number of minutes of inactivity after which to "
-                               "automatically be marked \"not available\".  Set to \"0\" to disable."));
-  layAutoAway->addWidget(lblAutoNa, 1, 0);
+  myAutoNaLabel = new QLabel(tr("Auto N/A:"));
+  myAutoNaLabel->setToolTip(tr("Number of minutes of inactivity after which to "
+        "automatically be marked \"not available\".  Set to \"0\" to disable."));
+  myAutoAwayLayout->addWidget(myAutoNaLabel, 1, 0);
 
-  spnAutoNa = new QSpinBox();
-  spnAutoNa->setSpecialValueText(tr("Never"));
-  layAutoAway->addWidget(spnAutoNa, 1, 1);
+  myAutoNaSpin = new QSpinBox();
+  myAutoNaSpin->setSpecialValueText(tr("Never"));
+  myAutoAwayLayout->addWidget(myAutoNaSpin, 1, 1);
 
-  cmbAutoNAMess = new QComboBox();
-  layAutoAway->addWidget(cmbAutoNAMess, 1, 3);
+  myAutoNaMessCombo = new QComboBox();
+  myAutoAwayLayout->addWidget(myAutoNaMessCombo, 1, 3);
 
-  lblAutoOffline = new QLabel(tr("Auto Offline:"));
-  lblAutoOffline->setToolTip(tr("Number of minutes of inactivity after which to "
-                               "automatically go offline.  Set to \"0\" to disable."));
-  layAutoAway->addWidget(lblAutoOffline, 2, 0);
+  myAutoOfflineLabel = new QLabel(tr("Auto Offline:"));
+  myAutoOfflineLabel->setToolTip(tr("Number of minutes of inactivity after which to "
+        "automatically go offline.  Set to \"0\" to disable."));
+  myAutoAwayLayout->addWidget(myAutoOfflineLabel, 2, 0);
 
-  spnAutoOffline = new QSpinBox();
-  spnAutoOffline->setSpecialValueText(tr("Never"));
-  layAutoAway->addWidget(spnAutoOffline, 2, 1);
+  myAutoOfflineSpin = new QSpinBox();
+  myAutoOfflineSpin->setSpecialValueText(tr("Never"));
+  myAutoAwayLayout->addWidget(myAutoOfflineSpin, 2, 1);
 
   buildAutoStatusCombos(1);
 
-  layPageStatus->addWidget(boxAutoLogon);
-  layPageStatus->addWidget(boxAutoAway);
-  layPageStatus->addStretch(1);
+  myPageStatusLayout->addWidget(myAutoLogonBox);
+  myPageStatusLayout->addWidget(myAutoAwayBox);
+  myPageStatusLayout->addStretch(1);
 
   return w;
 }
@@ -129,55 +129,55 @@ QWidget* Settings::Status::createPageStatus(QWidget* parent)
 QWidget* Settings::Status::createPageRespMsg(QWidget* parent)
 {
   QWidget* w = new QWidget(parent);
-  layPageRespMsg = new QVBoxLayout(w);
-  layPageRespMsg->setContentsMargins(0, 0, 0, 0);
+  myPageRespMsgLayout = new QVBoxLayout(w);
+  myPageRespMsgLayout->setContentsMargins(0, 0, 0, 0);
 
-  boxDefRespMsg = new QGroupBox(tr("Default Auto Response Messages"));
-  layPageRespMsg->addWidget(boxDefRespMsg);
+  myDefRespMsgBox = new QGroupBox(tr("Default Auto Response Messages"));
+  myPageRespMsgLayout->addWidget(myDefRespMsgBox);
 
-  layDefRespMsg = new QGridLayout(boxDefRespMsg);
+  myDefRespMsgLayout = new QGridLayout(myDefRespMsgBox);
 
-  lblSARgroup = new QLabel(tr("Status:"));
-  layDefRespMsg->addWidget(lblSARgroup, 0, 0);
+  mySarGroupLabel = new QLabel(tr("Status:"));
+  myDefRespMsgLayout->addWidget(mySarGroupLabel, 0, 0);
 
-  cmbSARgroup = new QComboBox();
-  cmbSARgroup->addItem(tr("Away"), SAR_AWAY);
-  cmbSARgroup->addItem(tr("Not Available"), SAR_NA);
-  cmbSARgroup->addItem(tr("Occupied"), SAR_OCCUPIED);
-  cmbSARgroup->addItem(tr("Do Not Disturb"), SAR_DND);
-  cmbSARgroup->addItem(tr("Free For Chat"), SAR_FFC);
-  connect(cmbSARgroup, SIGNAL(activated(int)), SLOT(slot_SARgroup_act(int)));
-  layDefRespMsg->addWidget(cmbSARgroup, 0, 1);
+  mySarGroupCombo = new QComboBox();
+  mySarGroupCombo->addItem(tr("Away"), SAR_AWAY);
+  mySarGroupCombo->addItem(tr("Not Available"), SAR_NA);
+  mySarGroupCombo->addItem(tr("Occupied"), SAR_OCCUPIED);
+  mySarGroupCombo->addItem(tr("Do Not Disturb"), SAR_DND);
+  mySarGroupCombo->addItem(tr("Free For Chat"), SAR_FFC);
+  connect(mySarGroupCombo, SIGNAL(activated(int)), SLOT(sarGroupChanged(int)));
+  myDefRespMsgLayout->addWidget(mySarGroupCombo, 0, 1);
 
-  lblSARmsg = new QLabel(tr("Preset slot:"));
-  layDefRespMsg->addWidget(lblSARmsg, 1, 0);
+  mySarMsgLabel = new QLabel(tr("Preset slot:"));
+  myDefRespMsgLayout->addWidget(mySarMsgLabel, 1, 0);
 
-  cmbSARmsg = new QComboBox();
-  cmbSARmsg->setEditable(true);
-  cmbSARmsg->setInsertPolicy(QComboBox::InsertAtCurrent);
-  connect(cmbSARmsg, SIGNAL(activated(int)), SLOT(slot_SARmsg_act(int)));
-  layDefRespMsg->addWidget(cmbSARmsg, 1, 1);
+  mySarMsgCombo = new QComboBox();
+  mySarMsgCombo->setEditable(true);
+  mySarMsgCombo->setInsertPolicy(QComboBox::InsertAtCurrent);
+  connect(mySarMsgCombo, SIGNAL(activated(int)), SLOT(sarMsgChanged(int)));
+  myDefRespMsgLayout->addWidget(mySarMsgCombo, 1, 1);
 
-  edtSARtext = new MLEdit(true);
-  layDefRespMsg->addWidget(edtSARtext, 2, 0, 1, 3);
+  mySartextEdit = new MLEdit(true);
+  myDefRespMsgLayout->addWidget(mySartextEdit, 2, 0, 1, 3);
 
   QHBoxLayout* buttons = new QHBoxLayout();
 
-  btnSARhints = new QPushButton(tr("Hints"));
-  buttons->addWidget(btnSARhints);
-  connect(btnSARhints, SIGNAL(clicked()), SLOT(slot_SARhints()));
+  mySarhintsButton = new QPushButton(tr("Hints"));
+  buttons->addWidget(mySarhintsButton);
+  connect(mySarhintsButton, SIGNAL(clicked()), SLOT(showSarHints()));
 
   buttons->addStretch();
 
-  btnSARsave = new QPushButton(tr("Save"));
-  buttons->addWidget(btnSARsave);
-  connect(btnSARsave, SIGNAL(clicked()), SLOT(slot_SARsave_act()));
+  mySarsaveButton = new QPushButton(tr("Save"));
+  buttons->addWidget(mySarsaveButton);
+  connect(mySarsaveButton, SIGNAL(clicked()), SLOT(saveSar()));
 
-  layDefRespMsg->addLayout(buttons, 3, 0, 1, 3);
+  myDefRespMsgLayout->addLayout(buttons, 3, 0, 1, 3);
 
-  layDefRespMsg->setColumnStretch(2, 1);
+  myDefRespMsgLayout->setColumnStretch(2, 1);
 
-  slot_SARgroup_act(SAR_AWAY);
+  sarGroupChanged(SAR_AWAY);
 
   return w;
 }
@@ -194,59 +194,59 @@ void Settings::Status::buildAutoStatusCombos(bool firstTime)
   }
   else
   {
-    selectedAway = cmbAutoAwayMess->currentIndex();
-    selectedNA   = cmbAutoNAMess->currentIndex();
+    selectedAway = myAutoAwayMessCombo->currentIndex();
+    selectedNA   = myAutoNaMessCombo->currentIndex();
   }
 
-  cmbAutoAwayMess->clear();
-  cmbAutoAwayMess->addItem(tr("Previous Message"),0);
+  myAutoAwayMessCombo->clear();
+  myAutoAwayMessCombo->addItem(tr("Previous Message"),0);
   SARList &sara = gSARManager.Fetch(SAR_AWAY);
   for (unsigned i = 0; i < sara.size(); i++)
-    cmbAutoAwayMess->addItem(sara[i]->Name(),i+1);
+    myAutoAwayMessCombo->addItem(sara[i]->Name(),i+1);
   gSARManager.Drop();
 
-  cmbAutoNAMess->clear();
-  cmbAutoNAMess->addItem(tr("Previous Message"),0);
+  myAutoNaMessCombo->clear();
+  myAutoNaMessCombo->addItem(tr("Previous Message"),0);
   SARList &sarn = gSARManager.Fetch(SAR_NA);
   for (unsigned i = 0; i < sarn.size(); i++)
-    cmbAutoNAMess->addItem(sarn[i]->Name(),i+1);
+    myAutoNaMessCombo->addItem(sarn[i]->Name(),i+1);
   gSARManager.Drop();
 
-  cmbAutoAwayMess->setCurrentIndex(selectedAway);
-  cmbAutoNAMess->setCurrentIndex(selectedNA);
+  myAutoAwayMessCombo->setCurrentIndex(selectedAway);
+  myAutoNaMessCombo->setCurrentIndex(selectedNA);
 }
 
-void Settings::Status::slot_SARmsg_act(int n)
+void Settings::Status::sarMsgChanged(int msg)
 {
-  if (n < 0)
+  if (msg < 0)
     return;
 
-  SARList &sar = gSARManager.Fetch(cmbSARgroup->currentIndex());
-  edtSARtext->setText(QString::fromLocal8Bit(sar[n]->AutoResponse()));
+  SARList &sar = gSARManager.Fetch(mySarGroupCombo->currentIndex());
+  mySartextEdit->setText(QString::fromLocal8Bit(sar[msg]->AutoResponse()));
   gSARManager.Drop();
 }
 
-void Settings::Status::slot_SARgroup_act(int n)
+void Settings::Status::sarGroupChanged(int group)
 {
-  if (n < 0)
+  if (group < 0)
     return;
 
-  cmbSARmsg->clear();
-  SARList &sar = gSARManager.Fetch(n);
+  mySarMsgCombo->clear();
+  SARList &sar = gSARManager.Fetch(group);
   for (SARListIter i = sar.begin(); i != sar.end(); i++)
-    cmbSARmsg->addItem(QString::fromLocal8Bit((*i)->Name()));
+    mySarMsgCombo->addItem(QString::fromLocal8Bit((*i)->Name()));
   gSARManager.Drop();
 
-  slot_SARmsg_act(0);
+  sarMsgChanged(0);
 }
 
-void Settings::Status::slot_SARsave_act()
+void Settings::Status::saveSar()
 {
-  SARList& sar = gSARManager.Fetch(cmbSARgroup->currentIndex());
-  delete sar[cmbSARmsg->currentIndex()];
-  sar[cmbSARmsg->currentIndex()] =
-    new CSavedAutoResponse(cmbSARmsg->currentText().toLocal8Bit().data(),
-                           edtSARtext->toPlainText().toLocal8Bit().data());
+  SARList& sar = gSARManager.Fetch(mySarGroupCombo->currentIndex());
+  delete sar[mySarMsgCombo->currentIndex()];
+  sar[mySarMsgCombo->currentIndex()] =
+    new CSavedAutoResponse(mySarMsgCombo->currentText().toLocal8Bit().data(),
+        mySartextEdit->toPlainText().toLocal8Bit().data());
 
   gSARManager.Drop();
   gSARManager.Save();
@@ -254,7 +254,7 @@ void Settings::Status::slot_SARsave_act()
   buildAutoStatusCombos(0);
 }
 
-void Settings::Status::slot_SARhints()
+void Settings::Status::showSarHints()
 {
   gMainWindow->showAutoResponseHints(dynamic_cast<QWidget*>(parent()));
 }
@@ -263,11 +263,11 @@ void Settings::Status::load()
 {
   Config::General* generalConfig = Config::General::instance();
 
-  spnAutoAway->setValue(generalConfig->autoAwayTime());
-  spnAutoNa->setValue(generalConfig->autoNaTime());
-  spnAutoOffline->setValue(generalConfig->autoOfflineTime());
-  cmbAutoLogon->setCurrentIndex(generalConfig->autoLogon() % 10);
-  chkAutoLogonInvisible->setChecked(generalConfig->autoLogon() >= 10);
+  myAutoAwaySpin->setValue(generalConfig->autoAwayTime());
+  myAutoNaSpin->setValue(generalConfig->autoNaTime());
+  myAutoOfflineSpin->setValue(generalConfig->autoOfflineTime());
+  myAutoLogonCombo->setCurrentIndex(generalConfig->autoLogon() % 10);
+  myAutoLogonInvisibleCheck->setChecked(generalConfig->autoLogon() >= 10);
 }
 
 void Settings::Status::apply()
@@ -275,13 +275,13 @@ void Settings::Status::apply()
   Config::General* generalConfig = Config::General::instance();
   generalConfig->blockUpdates(true);
 
-  generalConfig->setAutoAwayTime(spnAutoAway->value());
-  generalConfig->setAutoNaTime(spnAutoNa->value());
-  generalConfig->setAutoOfflineTime(spnAutoOffline->value());
-  generalConfig->setAutoLogon(cmbAutoLogon->currentIndex() +
-      (chkAutoLogonInvisible->isChecked() ? 10 : 0));
-  generalConfig->setAutoAwayMess(cmbAutoAwayMess->currentIndex());
-  generalConfig->setAutoNaMess(cmbAutoNAMess->currentIndex());
+  generalConfig->setAutoAwayTime(myAutoAwaySpin->value());
+  generalConfig->setAutoNaTime(myAutoNaSpin->value());
+  generalConfig->setAutoOfflineTime(myAutoOfflineSpin->value());
+  generalConfig->setAutoLogon(myAutoLogonCombo->currentIndex() +
+      (myAutoLogonInvisibleCheck->isChecked() ? 10 : 0));
+  generalConfig->setAutoAwayMess(myAutoAwayMessCombo->currentIndex());
+  generalConfig->setAutoNaMess(myAutoNaMessCombo->currentIndex());
 
   generalConfig->blockUpdates(false);
 }
