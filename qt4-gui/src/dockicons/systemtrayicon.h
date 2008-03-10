@@ -107,7 +107,6 @@ private:
   QSystemTrayIcon* myTrayIcon;
   bool myTimerToggle;
   bool myBlink;
-  bool myShowMessage;
 };
 
 } // namespace LicqQtGui

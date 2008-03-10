@@ -98,7 +98,7 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   myThemedIconTheme = szDockTheme;
 #endif
   iniFile.ReadBool("TrayBlink", myTrayBlink, true);
-  iniFile.ReadBool("TrayShowMessage", myShowMessage, true);
+  iniFile.ReadBool("TrayMsgOnlineNotify", myTrayMsgOnlineNotify, true);
 
   iniFile.SetSection("startup");
   iniFile.ReadNum("Logon", myAutoLogon, 0);
@@ -155,7 +155,7 @@ void Config::General::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteStr("DockTheme", myThemedIconTheme.toLatin1());
 #endif
   iniFile.WriteBool("TrayBlink", myTrayBlink);
-  iniFile.WriteBool("TrayShowMessage", myShowMessage);
+  iniFile.WriteBool("TrayMsgOnlineNotify", myTrayMsgOnlineNotify);
 
   iniFile.SetSection("startup");
   iniFile.WriteNum("Logon", myAutoLogon);
@@ -396,19 +396,12 @@ void Config::General::setTrayBlink(bool trayBlink)
     emit dockChanged();
 }
 
-void Config::General::setShowMessage(bool showMessage)
+void Config::General::setTrayMsgOnlineNotify(bool trayMsgOnlineNotify)
 {
-  if (showMessage == myShowMessage)
+  if (trayMsgOnlineNotify == myTrayMsgOnlineNotify)
     return;
 
-  myShowMessage = showMessage;
-  if (myDockMode != DockTray)
-    return;
-
-  if (myBlockUpdates)
-    myDockHasChanged = true;
-  else
-    emit dockChanged();
+  myTrayMsgOnlineNotify = trayMsgOnlineNotify;
 }
 
 void Config::General::setAutoLogon(unsigned short autoLogon)

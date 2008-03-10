@@ -71,9 +71,6 @@ void SystemTrayIcon::popupMessage(QString title, QString message, const QPixmap&
 void SystemTrayIcon::popupMessage(QString title, QString message, const QPixmap& /* icon */, int timeout)
 #endif
 {
-  if (!myShowMessage)
-    return;
-
 #ifdef USE_KDE
   // Escape HTML
   title.replace('&', "&amp;");
@@ -104,7 +101,6 @@ void SystemTrayIcon::updateEventIcon()
 void SystemTrayIcon::updateConfig()
 {
   myBlink = Config::General::instance()->trayBlink();
-  myShowMessage = Config::General::instance()->showMessage();
   updateIconMessages(myNewMsg, mySysMsg);
 }
 

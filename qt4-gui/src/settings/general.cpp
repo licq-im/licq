@@ -90,9 +90,10 @@ QWidget* Settings::General::createPageDocking(QWidget* parent)
   chkDockTrayBlink->setToolTip(tr("Make tray icon blink on unread incoming events."));
   layDocking->addWidget(chkDockTrayBlink, 3, 1);
 
-  chkDockTrayMessage = new QCheckBox(tr("Show messages"));
-  chkDockTrayMessage->setToolTip(tr("Show balloon popup messages."));
-  layDocking->addWidget(chkDockTrayMessage, 4, 1);
+  // TODO: Move this to Event pages when we get different kinds of popup
+  myTrayMsgOnlineNotify = new QCheckBox(tr("Show popup for Online notify"));
+  myTrayMsgOnlineNotify->setToolTip(tr("Show balloon popup message when contacts marked for online notify comes online."));
+  layDocking->addWidget(myTrayMsgOnlineNotify, 4, 1);
 
   cmbDockTheme = new QComboBox();
   // Set the currently available themes
@@ -103,6 +104,7 @@ QWidget* Settings::General::createPageDocking(QWidget* parent)
   connect(rdbDockDefault, SIGNAL(toggled(bool)), chkDockFortyEight, SLOT(setEnabled(bool)));
   connect(rdbDockThemed, SIGNAL(toggled(bool)), cmbDockTheme, SLOT(setEnabled(bool)));
   connect(rdbDockTray, SIGNAL(toggled(bool)), chkDockTrayBlink, SLOT(setEnabled(bool)));
+  connect(rdbDockTray, SIGNAL(toggled(bool)), myTrayMsgOnlineNotify, SLOT(setEnabled(bool)));
   connect(chkUseDock, SIGNAL(toggled(bool)), SLOT(slot_useDockToggled(bool)));
   layDocking->addWidget(cmbDockTheme, 2, 1);
 
@@ -158,7 +160,7 @@ void Settings::General::slot_useDockToggled(bool b)
     rdbDockTray->setEnabled(false);
     chkDockFortyEight->setEnabled(false);
     chkDockTrayBlink->setEnabled(false);
-    chkDockTrayMessage->setEnabled(false);
+    myTrayMsgOnlineNotify->setEnabled(false);
 #endif
     chkHidden->setEnabled(false);
     chkHidden->setChecked(false);
@@ -179,21 +181,21 @@ void Settings::General::slot_useDockToggled(bool b)
     chkDockFortyEight->setEnabled(true);
     cmbDockTheme->setEnabled(false);
     chkDockTrayBlink->setEnabled(false);
-    chkDockTrayMessage->setEnabled(false);
+    myTrayMsgOnlineNotify->setEnabled(false);
   }
   else if (rdbDockThemed->isChecked())
   {
     chkDockFortyEight->setEnabled(false);
     cmbDockTheme->setEnabled(true);
     chkDockTrayBlink->setEnabled(false);
-    chkDockTrayMessage->setEnabled(false);
+    myTrayMsgOnlineNotify->setEnabled(false);
   }
   else if (rdbDockTray->isChecked())
   {
     chkDockFortyEight->setEnabled(false);
     cmbDockTheme->setEnabled(false);
     chkDockTrayBlink->setEnabled(true);
-    chkDockTrayMessage->setEnabled(true);
+    myTrayMsgOnlineNotify->setEnabled(true);
   }
   else
     rdbDockDefault->setChecked(true);
@@ -226,7 +228,7 @@ void Settings::General::load()
 #endif
   rdbDockTray->setChecked(generalConfig->dockMode() == Config::General::DockTray);
   chkDockTrayBlink->setChecked(generalConfig->trayBlink());
-  chkDockTrayMessage->setChecked(generalConfig->showMessage());
+  myTrayMsgOnlineNotify->setChecked(generalConfig->trayMsgOnlineNotify());
   slot_useDockToggled(chkUseDock->isChecked());
 
   myNormalFontEdit->setFont(QFont(generalConfig->normalFont()));
@@ -259,7 +261,7 @@ void Settings::General::apply()
   generalConfig->setThemedIconTheme(cmbDockTheme->currentText());
 #endif
   generalConfig->setTrayBlink(chkDockTrayBlink->isChecked());
-  generalConfig->setShowMessage(chkDockTrayMessage->isChecked());
+  generalConfig->setTrayMsgOnlineNotify(myTrayMsgOnlineNotify->isChecked());
 
   if (myNormalFontEdit->font() == Config::General::instance()->defaultFont())
     generalConfig->setNormalFont(QString());

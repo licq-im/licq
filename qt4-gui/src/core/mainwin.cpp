@@ -626,7 +626,8 @@ void MainWindow::slot_updatedUser(CICQSignal* sig)
       }
 
       if (sig->SubSignal() == USER_STATUS &&
-          sig->Argument() == 1)
+          sig->Argument() == 1 &&
+          Config::General::instance()->trayMsgOnlineNotify())
       {
         // User on notify list went online -> show popup at systray icon
         if (LicqGui::instance()->dockIcon() != NULL && u->OnlineNotify())
