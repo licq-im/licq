@@ -66,15 +66,14 @@ public:
   UserInfoDlg(QString id, unsigned long ppid, QWidget* parent = 0);
   virtual ~UserInfoDlg();
 
-  QString Id() { return myId; }
-  unsigned long PPID()  { return m_nPPID; }
+  QString Id() const { return myId; }
+  unsigned long PPID() const { return m_nPPID; }
   void showTab(int);
   bool isTabShown(int);
   void retrieveSettings() { slotRetrieve(); }
 
 signals:
-  void finished(QString id, unsigned long ppid);
-  void finished(unsigned long);
+  void finished(UserInfoDlg* dialog);
 
 private:
   // common stuff

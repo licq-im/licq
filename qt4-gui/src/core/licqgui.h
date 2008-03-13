@@ -219,7 +219,7 @@ private slots:
   void grabKey(QString key);
 #endif
 
-  void userInfoDlgFinished(QString id, unsigned long ppid);
+  void userInfoDlgFinished(UserInfoDlg* dialog);
   void userEventTabDlgDone();
   void userEventFinished(QString id, unsigned long ppid);
   void sendEventFinished(QString id, unsigned long ppid);

@@ -227,7 +227,7 @@ UserInfoDlg::~UserInfoDlg()
   if (m_PhoneBook != NULL)
     delete m_PhoneBook;
 
-  emit finished(myId, m_nPPID);
+  emit finished(this);
 }
 
 // -----------------------------------------------------------------------------
