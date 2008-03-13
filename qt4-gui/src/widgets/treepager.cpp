@@ -64,7 +64,7 @@ void TreePager::addPage(QWidget* page, QString title, /* QIcon icon, */ QWidget*
 //  item->setIcon(0, icon);
   myTreeList->expandItem(item);
   myTreeList->resizeColumnToContents(0);
-  myTreeList->setFixedWidth(myTreeList->columnWidth(0) + 5);
+  myTreeList->setFixedWidth(myTreeList->columnWidth(0) + myTreeList->frameWidth() * 2);
 
   myPageStack->addWidget(page);
   myPageMap.insert(item, page);
