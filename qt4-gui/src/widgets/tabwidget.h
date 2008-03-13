@@ -69,7 +69,24 @@ public:
   void setPreviousPage();
   void setNextPage();
 
-#ifndef USE_KDE
+#ifdef USE_KDE
+  /**
+   * Overloaded to fix tab shortcuts
+   */
+  void setTabText(int index, const QString& label);
+
+protected:
+  /**
+   * Overloaded to fix tab shortcuts
+   */
+  virtual void resizeEvent(QResizeEvent* event);
+
+private:
+  /**
+   * Restore tab shortcuts after KTabWidget has broken them
+   */
+  void restoreShortcuts();
+#else
 signals:
   void mouseMiddleClick(QWidget* p);
 

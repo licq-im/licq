@@ -132,6 +132,36 @@ void TabWidget::setNextPage()
   tabBar()->setCurrentIndex(index);
 }
 
+#ifdef USE_KDE
+void TabWidget::restoreShortcuts()
+{
+  // KTabWidget destroys any shortcuts so we have the following options:
+  // 1) Don't specify any shortcuts. This is bad since it means qt-gui won't
+  //    have any shortcuts.
+  // 2) Remove shortcuts from strings when compiling for kde. This will result
+  //    in different shortcuts for qt-gui and kde-gui.
+  // 3) Don't use KTabWidget. We want the rest of the function and look of kde
+  //    so using KTabWidget is preferred.
+  // 4) Restore our shortcuts every time KTabWidget has messed with them.
+  //    This is an ugly workaround but it'll work as a compromise.
+
+  for (int i = 0; i < count(); ++i)
+    QTabWidget::setTabText(i, tabText(i).replace("&&", "&"));
+}
+
+void TabWidget::setTabText(int index, const QString& label)
+{
+  TABWIDGET_BASE::setTabText(index, label);
+  restoreShortcuts();
+}
+
+void TabWidget::resizeEvent(QResizeEvent* event)
+{
+  TABWIDGET_BASE::resizeEvent(event);
+  restoreShortcuts();
+}
+#endif
+
 #ifndef USE_KDE
 void TabWidget::wheelEvent(QWheelEvent* e)
 {
