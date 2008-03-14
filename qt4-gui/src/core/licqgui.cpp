@@ -909,6 +909,16 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
                 e->activateWindow();
               }
             }
+            // Make the existing event dialog change to the new event type
+            switch (fcn)
+            {
+              case mnuUserSendMsg: e->changeEventType(ET_MESSAGE); break;
+              case mnuUserSendUrl: e->changeEventType(ET_URL); break;
+              case mnuUserSendChat: e->changeEventType(ET_CHAT); break;
+              case mnuUserSendFile: e->changeEventType(ET_FILE); break;
+              case mnuUserSendContact: e->changeEventType(ET_CONTACT); break;
+              case mnuUserSendSms: e->changeEventType(ET_SMS); break;
+            }
             return e;
           }
         }
