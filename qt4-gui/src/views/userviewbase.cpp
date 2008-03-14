@@ -43,57 +43,6 @@ extern char* PPIDSTRING(unsigned long);
 
 using namespace LicqQtGui;
 
-/**
- * Get a pointer to a dialog for sending events with the given @a type, to the contact
- * @a id over the protocol @a ppid. If the dialog is already open, the dialog is
- * converted to the correct type before being returned.
- *
- * @returns a pointer to a send event dialog of type @a T, or NULL on error.
- */
-template<typename T>
-static T* getSendEventDialog(EventType type, QString id, unsigned long ppid)
-{
-  UserEventCommon* common = LicqGui::instance()->showEventDialog(type, id, ppid);
-  if (!common)
-    return NULL;
-
-  T* dialog = dynamic_cast<T*>(common);
-  if (!dialog)
-  {
-    UserSendCommon* base = dynamic_cast<UserSendCommon*>(common);
-    if (!base)
-      return NULL;
-
-    base->changeEventType(type);
-    dialog = dynamic_cast<T*>(LicqGui::instance()->showEventDialog(type, id, ppid));
-    if (!dialog)
-      return NULL;
-  }
-
-  return dialog;
-}
-
-/// Convenient, wrapper functions for getSendEventDialog.
-static inline UserSendContactEvent* getSendContactEventDialog(QString id, unsigned long ppid)
-{
-  return getSendEventDialog<UserSendContactEvent>(ContactEvent, id, ppid);
-}
-
-static inline UserSendFileEvent* getSendFileEventDialog(QString id, unsigned long ppid)
-{
-  return getSendEventDialog<UserSendFileEvent>(FileEvent, id, ppid);
-}
-
-static inline UserSendMsgEvent* getSendMsgEventDialog(QString id, unsigned long ppid)
-{
-  return getSendEventDialog<UserSendMsgEvent>(MessageEvent, id, ppid);
-}
-
-static inline UserSendUrlEvent* getSendUrlEventDialog(QString id, unsigned long ppid)
-{
-  return getSendEventDialog<UserSendUrlEvent>(UrlEvent, id, ppid);
-}
-
 UserViewBase::UserViewBase(ContactListModel* contactList, UserMenu* mnuUser, QWidget* parent)
   : QTreeView(parent),
     myContactList(contactList),
@@ -228,7 +177,8 @@ void UserViewBase::dropEvent(QDropEvent* event)
 
         if (!(text = firstUrl.toLocalFile()).isEmpty())
         {
-          UserSendFileEvent* sendFile = getSendFileEventDialog(id, ppid);
+          UserSendFileEvent* sendFile = dynamic_cast<UserSendFileEvent*>(
+              LicqGui::instance()->showEventDialog(FileEvent, id, ppid));
           if (!sendFile)
             return;
 
@@ -245,7 +195,8 @@ void UserViewBase::dropEvent(QDropEvent* event)
         }
         else
         {
-          UserSendUrlEvent* sendUrl = getSendUrlEventDialog(id, ppid);
+          UserSendUrlEvent* sendUrl = dynamic_cast<UserSendUrlEvent*>(
+              LicqGui::instance()->showEventDialog(UrlEvent, id, ppid));
           if (!sendUrl)
             return;
 
@@ -274,7 +225,8 @@ void UserViewBase::dropEvent(QDropEvent* event)
           if (id == dropId && ppid == dropPpid)
             return;
 
-          UserSendContactEvent* sendContact = getSendContactEventDialog(id, ppid);
+          UserSendContactEvent* sendContact = dynamic_cast<UserSendContactEvent*>(
+              LicqGui::instance()->showEventDialog(ContactEvent, id, ppid));
           if (!sendContact)
             return;
 
@@ -283,7 +235,8 @@ void UserViewBase::dropEvent(QDropEvent* event)
         }
         else
         {
-          UserSendMsgEvent* sendMsg = getSendMsgEventDialog(id, ppid);
+          UserSendMsgEvent* sendMsg = dynamic_cast<UserSendMsgEvent*>(
+              LicqGui::instance()->showEventDialog(MessageEvent, id, ppid));
           if (!sendMsg)
             return;
 
