@@ -38,6 +38,7 @@
 
 #include <licq_icqd.h>
 
+#include "core/gui-defines.h"
 #include "core/licqgui.h"
 #include "core/messagebox.h"
 
@@ -53,7 +54,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendFileEvent */
 
 UserSendFileEvent::UserSendFileEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(ET_FILE, id, ppid, parent, "UserSendFileEvent")
+  : UserSendCommon(FileEvent, id, ppid, parent, "UserSendFileEvent")
 {
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
@@ -87,7 +88,7 @@ UserSendFileEvent::UserSendFileEvent(QString id, unsigned long ppid, QWidget* pa
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(ET_FILE)->setChecked(true);
+  grpSendType->actions().at(FileEvent)->setChecked(true);
 }
 
 UserSendFileEvent::~UserSendFileEvent()

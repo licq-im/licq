@@ -29,6 +29,7 @@
 #include <licq_user.h>
 #include <licq_icqd.h>
 
+#include "core/gui-defines.h"
 #include "core/licqgui.h"
 
 #include "dialogs/mmsenddlg.h"
@@ -44,7 +45,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendContactEvent */
 
 UserSendContactEvent::UserSendContactEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(ET_CONTACT, id, ppid, parent, "UserSendContactEvent")
+  : UserSendCommon(ContactEvent, id, ppid, parent, "UserSendContactEvent")
 {
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
@@ -77,7 +78,7 @@ UserSendContactEvent::UserSendContactEvent(QString id, unsigned long ppid, QWidg
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(ET_CONTACT)->setChecked(true);
+  grpSendType->actions().at(ContactEvent)->setChecked(true);
 }
 
 UserSendContactEvent::~UserSendContactEvent()

@@ -129,6 +129,14 @@ public:
   void showInfoDialog(int fcn, QString id, unsigned long ppid, bool toggle = false, bool updateNow = false);
 
   /**
+   * Show contact view event dialog (used when chat mode is disabled)
+   *
+   * @param id Contact id
+   * @param ppid Contact protocol id
+   */
+  UserViewEvent* showViewEventDialog(QString id, unsigned long ppid);
+
+  /**
    * Show contact event dialog
    *
    * @param fcn Type of event to open

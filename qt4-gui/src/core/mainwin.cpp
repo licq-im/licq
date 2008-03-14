@@ -160,11 +160,11 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   a->setShortcut(key); \
   a->setData(data);
 
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_V, mnuUserView)
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_S, mnuUserSendMsg)
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_U, mnuUserSendUrl)
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_C, mnuUserSendChat)
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_F, mnuUserSendFile)
+  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_V, -1)
+  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_S, MessageEvent)
+  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_U, UrlEvent)
+  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_C, ChatEvent)
+  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_F, FileEvent)
 #undef ADD_USERFUNCACTION
   addActions(userFuncGroup->actions());
 
@@ -519,7 +519,10 @@ void MainWindow::callUserFunction(QAction* action)
   unsigned long ppid = 0;
   myUserView->MainWindowSelectedItemUser(id, ppid);
 
-  LicqGui::instance()->showEventDialog(index, id, ppid);
+  if (index == -1)
+    LicqGui::instance()->showViewEventDialog(id, ppid);
+  else
+    LicqGui::instance()->showEventDialog(index, id, ppid);
 }
 
 void MainWindow::checkUserAutoResponse()

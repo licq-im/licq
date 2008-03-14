@@ -106,12 +106,12 @@ private:
   // Internal numbering of send sub menu entries
   enum SendModes
   {
-    SendMessage = mnuUserSendMsg,
-    SendUrl = mnuUserSendUrl,
-    SendChat = mnuUserSendChat,
-    SendFile = mnuUserSendFile,
-    SendContact = mnuUserSendContact,
-    SendSms = mnuUserSendSms,
+    SendMessage = MessageEvent,
+    SendUrl = UrlEvent,
+    SendChat = ChatEvent,
+    SendFile = FileEvent,
+    SendContact = ContactEvent,
+    SendSms = SmsEvent,
     SendAuthorize,
     SendReqAuthorize,
     RequestUpdateInfoPlugin,

@@ -132,7 +132,7 @@ void RandomChatDlg::slot_doneUserFcn(ICQEvent* e)
     break;
   default:
     //TODO when CSearchAck changes
-    LicqGui::instance()->showEventDialog(mnuUserSendChat, e->SearchAck()->Id(),
+    LicqGui::instance()->showEventDialog(ChatEvent, e->SearchAck()->Id(),
                           e->SearchAck()->PPID() );
     close();
     return;

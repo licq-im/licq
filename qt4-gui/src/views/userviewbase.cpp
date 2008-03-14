@@ -53,19 +53,7 @@ using namespace LicqQtGui;
 template<typename T>
 static T* getSendEventDialog(EventType type, QString id, unsigned long ppid)
 {
-  int function;
-  if (type == ET_CONTACT)
-    function = mnuUserSendContact;
-  else if (type == ET_FILE)
-    function = mnuUserSendFile;
-  else if (type == ET_MESSAGE)
-    function = mnuUserSendMsg;
-  else if (type == ET_URL)
-    function = mnuUserSendUrl;
-  else
-    return NULL;
-
-  UserEventCommon* common = LicqGui::instance()->showEventDialog(function, id, ppid);
+  UserEventCommon* common = LicqGui::instance()->showEventDialog(type, id, ppid);
   if (!common)
     return NULL;
 
@@ -77,7 +65,7 @@ static T* getSendEventDialog(EventType type, QString id, unsigned long ppid)
       return NULL;
 
     base->changeEventType(type);
-    dialog = dynamic_cast<T*>(LicqGui::instance()->showEventDialog(function, id, ppid));
+    dialog = dynamic_cast<T*>(LicqGui::instance()->showEventDialog(type, id, ppid));
     if (!dialog)
       return NULL;
   }
@@ -88,22 +76,22 @@ static T* getSendEventDialog(EventType type, QString id, unsigned long ppid)
 /// Convenient, wrapper functions for getSendEventDialog.
 static inline UserSendContactEvent* getSendContactEventDialog(QString id, unsigned long ppid)
 {
-  return getSendEventDialog<UserSendContactEvent>(ET_CONTACT, id, ppid);
+  return getSendEventDialog<UserSendContactEvent>(ContactEvent, id, ppid);
 }
 
 static inline UserSendFileEvent* getSendFileEventDialog(QString id, unsigned long ppid)
 {
-  return getSendEventDialog<UserSendFileEvent>(ET_FILE, id, ppid);
+  return getSendEventDialog<UserSendFileEvent>(FileEvent, id, ppid);
 }
 
 static inline UserSendMsgEvent* getSendMsgEventDialog(QString id, unsigned long ppid)
 {
-  return getSendEventDialog<UserSendMsgEvent>(ET_MESSAGE, id, ppid);
+  return getSendEventDialog<UserSendMsgEvent>(MessageEvent, id, ppid);
 }
 
 static inline UserSendUrlEvent* getSendUrlEventDialog(QString id, unsigned long ppid)
 {
-  return getSendEventDialog<UserSendUrlEvent>(ET_URL, id, ppid);
+  return getSendEventDialog<UserSendUrlEvent>(UrlEvent, id, ppid);
 }
 
 UserViewBase::UserViewBase(ContactListModel* contactList, UserMenu* mnuUser, QWidget* parent)

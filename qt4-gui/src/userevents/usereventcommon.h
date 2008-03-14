@@ -43,16 +43,6 @@ namespace LicqQtGui
 {
 class InfoField;
 
-enum EventType
-{
-  ET_MESSAGE,
-  ET_URL,
-  ET_CHAT,
-  ET_FILE,
-  ET_CONTACT,
-  ET_SMS
-};
-
 class UserEventCommon : public QWidget
 {
   Q_OBJECT

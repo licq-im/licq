@@ -46,16 +46,21 @@
 namespace LicqQtGui
 {
 
-enum UserFunctions {
-  mnuUserView,
-  mnuUserSendMsg,
-  mnuUserSendUrl,
-  mnuUserSendChat,
-  mnuUserSendFile,
-  mnuUserSendContact,
-  mnuUserSendSms,
-  mnuUserGeneral,
+// Event types, used by event dialog but placed here since callers to
+//   LicqGui::showEventDialog also needs them
+enum EventType
+{
+  MessageEvent,
+  UrlEvent,
+  ChatEvent,
+  FileEvent,
+  ContactEvent,
+  SmsEvent,
 };
+
+// Constant used to select opening page when calling LicqGui::showInfoDialog
+// Leave it for now as the fcn parameter may be needed when user info dialog has been remade
+static const int mnuUserGeneral = 0;
 
 } // namespace LicqQtGui
 

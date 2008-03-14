@@ -839,92 +839,84 @@ void LicqGui::showInfoDialog(int /* fcn */, QString id, unsigned long ppid,
     f->retrieveSettings();
 }
 
+UserViewEvent* LicqGui::showViewEventDialog(QString id, unsigned long ppid)
+{
+  if (id.isEmpty() || ppid == 0)
+    return NULL;
+
+  for (int i = 0; i < myUserViewList.size(); ++i)
+  {
+    UserViewEvent* e = myUserViewList.at(i);
+    if (id.compare(e->id(), Qt::CaseInsensitive) == 0 && e->ppid() == ppid)
+    {
+      e->show();
+      if (Config::Chat::instance()->autoFocus() &&
+          (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon")))
+      {
+        e->raise();
+        e->activateWindow();
+      }
+      return e;
+    }
+  }
+
+  UserViewEvent* e = new UserViewEvent(id, ppid);
+  connect(e, SIGNAL(viewUrl(QWidget*, QString)), SLOT(viewUrl(QWidget*, QString)));
+
+  e->show();
+  userEventFinished(id, ppid);
+  connect(e, SIGNAL(finished(QString, unsigned long)), SLOT(userEventFinished(QString, unsigned long)));
+  myUserViewList.append(e);
+
+  return e;
+}
+
 UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppid, int convoId)
 {
   if (id.isEmpty() || ppid == 0)
     return NULL;
 
-  switch (fcn)
+  if (Config::Chat::instance()->msgChatView())
   {
-    case mnuUserView:
+    for (int i = 0; i < myUserSendList.size(); ++i)
+    {
+      UserSendCommon* e = myUserSendList.at(i);
+
+      // Protocols (MSN only atm) that support convo ids are differentiated from
+      // the icq protocol because the convo id will be the server socket.. which does
+      // not meet the requirement that convo ids must be unique for each conversation.
+      if ( ((ppid == MSN_PPID && e->ppid() == MSN_PPID) && (e->isUserInConvo(id) ||
+              (e->convoId() == (unsigned long)(convoId) && e->convoId() != (unsigned long)(-1)))) ||
+          (e->isUserInConvo(id) && e->ppid() == ppid))
       {
-        for (int i = 0; i < myUserViewList.size(); ++i)
+        //if (!e->FindUserInConvo(id))
+        //  e->convoJoin(id);
+
+        if (myUserEventTabDlg && myUserEventTabDlg->tabExists(e))
         {
-          UserViewEvent* e = myUserViewList.at(i);
-          if (id.compare(e->id(), Qt::CaseInsensitive) == 0 && e->ppid() == ppid)
+          myUserEventTabDlg->show();
+          if (Config::Chat::instance()->autoFocus())
           {
-            e->show();
-            if (Config::Chat::instance()->autoFocus() &&
-                (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon")))
-            {
-              e->raise();
-              e->activateWindow();
-            }
-            return e;
+            myUserEventTabDlg->selectTab(e);
+            myUserEventTabDlg->raise();
+            myUserEventTabDlg->activateWindow();
           }
         }
-      }
-      break;
-    case mnuUserSendMsg:
-    case mnuUserSendUrl:
-    case mnuUserSendChat:
-    case mnuUserSendFile:
-    case mnuUserSendContact:
-    case mnuUserSendSms:
-      {
-        if (!Config::Chat::instance()->msgChatView())
-          break;
-
-        for (int i = 0; i < myUserSendList.size(); ++i)
+        else
         {
-          UserSendCommon* e = myUserSendList.at(i);
-
-          // Protocols (MSN only atm) that support convo ids are differentiated from
-          // the icq protocol because the convo id will be the server socket.. which does
-          // not meet the requirement that convo ids must be unique for each conversation.
-          if ( ((ppid == MSN_PPID && e->ppid() == MSN_PPID) && (e->isUserInConvo(id) ||
-                  (e->convoId() == (unsigned long)(convoId) && e->convoId() != (unsigned long)(-1)))) ||
-              (e->isUserInConvo(id) && e->ppid() == ppid))
+          e->show();
+          if (Config::Chat::instance()->autoFocus() &&
+              (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon")))
           {
-            //if (!e->FindUserInConvo(id))
-            //  e->convoJoin(id);
-
-            if (myUserEventTabDlg && myUserEventTabDlg->tabExists(e))
-            {
-              myUserEventTabDlg->show();
-              if (Config::Chat::instance()->autoFocus())
-              {
-                myUserEventTabDlg->selectTab(e);
-                myUserEventTabDlg->raise();
-                myUserEventTabDlg->activateWindow();
-              }
-            }
-            else
-            {
-              e->show();
-              if (Config::Chat::instance()->autoFocus() &&
-                  (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon")))
-              {
-                e->raise();
-                e->activateWindow();
-              }
-            }
-            // Make the existing event dialog change to the new event type
-            switch (fcn)
-            {
-              case mnuUserSendMsg: e->changeEventType(ET_MESSAGE); break;
-              case mnuUserSendUrl: e->changeEventType(ET_URL); break;
-              case mnuUserSendChat: e->changeEventType(ET_CHAT); break;
-              case mnuUserSendFile: e->changeEventType(ET_FILE); break;
-              case mnuUserSendContact: e->changeEventType(ET_CONTACT); break;
-              case mnuUserSendSms: e->changeEventType(ET_SMS); break;
-            }
-            return e;
+            e->raise();
+            e->activateWindow();
           }
         }
+        // Make the existing event dialog change to the new event type
+        e->changeEventType(fcn);
+        return e;
       }
-    default:
-      break;
+    }
   }
 
   bool newtabw = false;
@@ -953,41 +945,30 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
 
   switch (fcn)
   {
-    case mnuUserView:
-      {
-        e = new UserViewEvent(id, ppid);
-        break;
-      }
-    case mnuUserSendMsg:
-      {
-        e = new UserSendMsgEvent(id, ppid, parent);
-        break;
-      }
-    case mnuUserSendUrl:
-      {
-        e = new UserSendUrlEvent(id, ppid, parent);
-        break;
-      }
-    case mnuUserSendChat:
-      {
-        e = new UserSendChatEvent(id, ppid, parent);
-        break;
-      }
-    case mnuUserSendFile:
-      {
-        e = new UserSendFileEvent(id, ppid, parent);
-        break;
-      }
-    case mnuUserSendContact:
-      {
-        e = new UserSendContactEvent(id, ppid, parent);
-        break;
-      }
-    case mnuUserSendSms:
-      {
-        e = new UserSendSmsEvent(id, ppid, parent);
-        break;
-      }
+    case MessageEvent:
+      e = new UserSendMsgEvent(id, ppid, parent);
+      break;
+
+    case UrlEvent:
+      e = new UserSendUrlEvent(id, ppid, parent);
+      break;
+
+    case ChatEvent:
+      e = new UserSendChatEvent(id, ppid, parent);
+      break;
+
+    case FileEvent:
+      e = new UserSendFileEvent(id, ppid, parent);
+      break;
+
+    case ContactEvent:
+      e = new UserSendContactEvent(id, ppid, parent);
+      break;
+
+    case SmsEvent:
+      e = new UserSendSmsEvent(id, ppid, parent);
+      break;
+
     default:
       gLog.Warn("%sunknown callFunction() fcn: %d\n", L_WARNxSTR, fcn);
   }
@@ -995,7 +976,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
 
   connect(e, SIGNAL(viewUrl(QWidget*, QString)), SLOT(viewUrl(QWidget*, QString)));
 
-  if (Config::Chat::instance()->tabbedChatting() && fcn != mnuUserView)
+  if (Config::Chat::instance()->tabbedChatting())
   {
     myUserEventTabDlg->addTab(e);
     myUserEventTabDlg->show();
@@ -1017,18 +998,10 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
 
   // there might be more than one send window open
   // make sure we only remember one, or it will get complicated
-  if (fcn == mnuUserView)
-  {
-    userEventFinished(id, ppid);
-    connect(e, SIGNAL(finished(QString, unsigned long)), SLOT(userEventFinished(QString, unsigned long)));
-    myUserViewList.append(static_cast<UserViewEvent*>(e));
-  }
-  else
-  {
-    sendEventFinished(id, ppid);
-    connect(e, SIGNAL(finished(QString, unsigned long)), SLOT(sendEventFinished(QString, unsigned long)));
-    myUserSendList.append(static_cast<UserSendCommon*>(e));
-  }
+  sendEventFinished(id, ppid);
+  connect(e, SIGNAL(finished(QString, unsigned long)), SLOT(sendEventFinished(QString, unsigned long)));
+  myUserSendList.append(static_cast<UserSendCommon*>(e));
+
   return e;
 }
 
@@ -1042,12 +1015,12 @@ void LicqGui::replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newD
 
 void LicqGui::showMessageDialog(QString id, unsigned long ppid)
 {
-  showEventDialog(mnuUserSendMsg, id, ppid);
+  showEventDialog(MessageEvent, id, ppid);
 }
 
 void LicqGui::sendMsg(QString id, unsigned long ppid, const QString& message)
 {
-  UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(mnuUserSendMsg, id, ppid));
+  UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(MessageEvent, id, ppid));
   if (event == 0)
     return;
 
@@ -1056,7 +1029,7 @@ void LicqGui::sendMsg(QString id, unsigned long ppid, const QString& message)
 
 void LicqGui::sendFileTransfer(QString id, unsigned long ppid, const QString& filename, const QString& description)
 {
-  UserSendFileEvent* event = dynamic_cast<UserSendFileEvent*>(showEventDialog(mnuUserSendFile, id, ppid));
+  UserSendFileEvent* event = dynamic_cast<UserSendFileEvent*>(showEventDialog(FileEvent, id, ppid));
   if (event == 0)
     return;
 
@@ -1065,7 +1038,7 @@ void LicqGui::sendFileTransfer(QString id, unsigned long ppid, const QString& fi
 
 void LicqGui::sendChatRequest(QString id, unsigned long ppid)
 {
-  UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(mnuUserSendChat, id, ppid));
+  UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(ChatEvent, id, ppid));
   if (event == 0)
     return;
 }
@@ -1146,8 +1119,8 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
 
   // set default function to read or send depending on whether or not
   // there are new messages
-  int fcn = (u->NewMessages() == 0 ? mnuUserSendMsg : mnuUserView);
-  if (fcn == mnuUserView && Config::Chat::instance()->msgChatView())
+  bool send = (u->NewMessages() == 0);
+  if (!send && Config::Chat::instance()->msgChatView())
   {
     // if one of the new events is a msg in chatview mode,
     // change def function to send
@@ -1156,14 +1129,21 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
           u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
       {
         convoId = u->EventPeek(i)->ConvoId();
-        fcn = mnuUserSendMsg;
+        send = true;
         break;
       }
   }
   gUserManager.DropUser(u);
 
+  if (!send)
+  {
+    // Messages pending and not open in chatview mode so open view event dialog
+    showViewEventDialog(id, ppid);
+    return;
+  }
+
   // See if the clipboard contains a url
-  if (fcn == mnuUserSendMsg && Config::Chat::instance()->sendFromClipboard())
+  if (Config::Chat::instance()->sendFromClipboard())
   {
     QClipboard* clip = QApplication::clipboard();
     QClipboard::Mode mode = QClipboard::Clipboard;
@@ -1178,7 +1158,7 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
 
     if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:")
     {
-      UserEventCommon* ec = showEventDialog(mnuUserSendUrl, id, ppid);
+      UserEventCommon* ec = showEventDialog(UrlEvent, id, ppid);
       if (!ec || ec->objectName() != "UserSendUrlEvent")
         return;
       UserSendUrlEvent* e = dynamic_cast<UserSendUrlEvent*>(ec);
@@ -1190,7 +1170,7 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
     }
     else if (c.left(5) == "file:" || c.left(1) == "/")
     {
-      UserEventCommon* ec = showEventDialog(mnuUserSendFile, id, ppid);
+      UserEventCommon* ec = showEventDialog(FileEvent, id, ppid);
       if (!ec || ec->objectName() != "UserSendFileEvent")
         return;
       UserSendFileEvent* e = dynamic_cast<UserSendFileEvent*>(ec);
@@ -1207,7 +1187,7 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
     }
   }
 
-  showEventDialog(fcn, id, ppid, convoId);
+  showEventDialog(MessageEvent, id, ppid, convoId);
 }
 
 void LicqGui::showAllOwnerEvents()
@@ -1222,7 +1202,7 @@ void LicqGui::showAllOwnerEvents()
     gUserManager.DropOwner((*_ppit)->PPID());
 
     if (nNumMsg > 0)
-      showEventDialog(mnuUserView, id, (*_ppit)->PPID());
+      showViewEventDialog(id, (*_ppit)->PPID());
   }
   FOR_EACH_PROTO_PLUGIN_END
 }
@@ -1304,14 +1284,14 @@ void LicqGui::showNextEvent(QString id)
             u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_URL)
         {
           gUserManager.DropUser(u);
-          showEventDialog(mnuUserSendMsg, id, ppid, u->EventPeek(i)->ConvoId());
+          showEventDialog(MessageEvent, id, ppid, u->EventPeek(i)->ConvoId());
           return;
         }
       }
       gUserManager.DropUser(u);
     }
 
-    showEventDialog(mnuUserView, id, ppid);
+    showViewEventDialog(id, ppid);
   }
 }
 
@@ -1541,9 +1521,9 @@ void LicqGui::userUpdated(CICQSignal* sig)
             gUserManager.DropUser(u);
 
             if (bCallSendMsg)
-              showEventDialog(mnuUserSendMsg, id, ppid, sig->CID());
+              showEventDialog(MessageEvent, id, ppid, sig->CID());
             if (bCallUserView)
-              showEventDialog(mnuUserView, id, ppid, sig->CID());
+              showViewEventDialog(id, ppid);
           }
         }
       }

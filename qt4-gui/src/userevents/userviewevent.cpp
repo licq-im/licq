@@ -559,7 +559,7 @@ void UserViewEvent::slotBtnRead4()
   switch (currentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:
-      LicqGui::instance()->showEventDialog(mnuUserSendChat, myUsers.front().c_str(), myPpid);
+      LicqGui::instance()->showEventDialog(ChatEvent, myUsers.front().c_str(), myPpid);
       break;
 
     case ICQ_CMDxSUB_CHAT:  // join to current chat

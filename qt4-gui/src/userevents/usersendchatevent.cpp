@@ -31,6 +31,7 @@
 
 #include "config/chat.h"
 
+#include "core/gui-defines.h"
 #include "core/licqgui.h"
 #include "core/messagebox.h"
 
@@ -46,7 +47,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendChatEvent */
 
 UserSendChatEvent::UserSendChatEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(ET_CHAT, id, ppid, parent, "UserSendChatEvent")
+  : UserSendCommon(ChatEvent, id, ppid, parent, "UserSendChatEvent")
 {
   myChatPort = 0;
   chkMass->setChecked(false);
@@ -78,7 +79,7 @@ UserSendChatEvent::UserSendChatEvent(QString id, unsigned long ppid, QWidget* pa
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(ET_CHAT)->setChecked(true);
+  grpSendType->actions().at(ChatEvent)->setChecked(true);
 }
 
 UserSendChatEvent::~UserSendChatEvent()

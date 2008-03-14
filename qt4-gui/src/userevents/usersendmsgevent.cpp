@@ -32,6 +32,7 @@
 
 #include "config/chat.h"
 
+#include "core/gui-defines.h"
 #include "core/licqgui.h"
 #include "core/messagebox.h"
 
@@ -47,7 +48,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendMsgEvent */
 
 UserSendMsgEvent::UserSendMsgEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(ET_MESSAGE, id, ppid, parent, "UserSendMsgEvent")
+  : UserSendCommon(MessageEvent, id, ppid, parent, "UserSendMsgEvent")
 {
   mainWidget->addWidget(splView);
   mleSend->setFocus();
@@ -61,7 +62,7 @@ UserSendMsgEvent::UserSendMsgEvent(QString id, unsigned long ppid, QWidget* pare
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(ET_MESSAGE)->setChecked(true);
+  grpSendType->actions().at(MessageEvent)->setChecked(true);
 }
 
 UserSendMsgEvent::~UserSendMsgEvent()

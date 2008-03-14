@@ -55,6 +55,7 @@
 #include "config/emoticons.h"
 #include "config/iconmanager.h"
 
+#include "core/gui-defines.h"
 #include "core/licqgui.h"
 #include "core/mainwin.h"
 #include "core/messagebox.h"
@@ -128,27 +129,27 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   QAction* action;
 
   action = new QAction(tr("Message"), grpSendType);
-  action->setData(ET_MESSAGE);
+  action->setData(MessageEvent);
   action->setCheckable(true);
 
   action = new QAction(tr("URL"), grpSendType);
-  action->setData(ET_URL);
+  action->setData(UrlEvent);
   action->setCheckable(true);
 
   action = new QAction(tr("Chat Request"), grpSendType);
-  action->setData(ET_CHAT);
+  action->setData(ChatEvent);
   action->setCheckable(true);
 
   action = new QAction(tr("File Transfer"), grpSendType);
-  action->setData(ET_FILE);
+  action->setData(FileEvent);
   action->setCheckable(true);
 
   action = new QAction(tr("Contact List"), grpSendType);
-  action->setData(ET_CONTACT);
+  action->setData(ContactEvent);
   action->setCheckable(true);
 
   action = new QAction(tr("SMS"), grpSendType);
-  action->setData(ET_SMS);
+  action->setData(SmsEvent);
   action->setCheckable(true);
 
   QMenu* mnuSendType = new QMenu(this);
@@ -531,22 +532,22 @@ const QPixmap& UserSendCommon::iconForType(int type) const
 {
   switch (type)
   {
-    case ET_URL:
+    case UrlEvent:
       return IconManager::instance()->getIcon(IconManager::UrlMessageIcon);
 
-    case ET_CHAT:
+    case ChatEvent:
       return IconManager::instance()->getIcon(IconManager::ChatMessageIcon);
 
-    case ET_FILE:
+    case FileEvent:
       return IconManager::instance()->getIcon(IconManager::FileMessageIcon);
 
-    case ET_CONTACT:
+    case ContactEvent:
       return IconManager::instance()->getIcon(IconManager::ContactMessageIcon);
 
-    case ET_SMS:
+    case SmsEvent:
       return IconManager::instance()->getIcon(IconManager::SmsMessageIcon);
 
-    case ET_MESSAGE:
+    case MessageEvent:
     default:
       return IconManager::instance()->getIcon(IconManager::StandardMessageIcon);
   }
@@ -677,22 +678,22 @@ void UserSendCommon::changeEventType(int type)
 
   switch (type)
   {
-    case ET_MESSAGE:
+    case MessageEvent:
       e = new UserSendMsgEvent(myUsers.front().c_str(), myPpid, parent);
       break;
-    case ET_URL:
+    case UrlEvent:
       e = new UserSendUrlEvent(myUsers.front().c_str(), myPpid, parent);
       break;
-    case ET_CHAT:
+    case ChatEvent:
       e = new UserSendChatEvent(myUsers.front().c_str(), myPpid, parent);
       break;
-    case ET_FILE:
+    case FileEvent:
       e = new UserSendFileEvent(myUsers.front().c_str(), myPpid, parent);
       break;
-    case ET_CONTACT:
+    case ContactEvent:
       e = new UserSendContactEvent(myUsers.front().c_str(), myPpid, parent);
       break;
-    case ET_SMS:
+    case SmsEvent:
       e = new UserSendSmsEvent(myUsers.front().c_str(), myPpid, parent);
       break;
     default:

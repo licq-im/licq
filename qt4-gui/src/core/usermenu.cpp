@@ -344,7 +344,7 @@ void UserMenu::popup(QPoint pos, QString id, unsigned ppid)
 
 void UserMenu::viewEvent()
 {
-  LicqGui::instance()->showEventDialog(mnuUserView, myId, myPpid);
+  LicqGui::instance()->showViewEventDialog(myId, myPpid);
 }
 
 void UserMenu::checkInvisible()
