@@ -40,14 +40,14 @@ public:
   ~RandomChatDlg();
 
 private:
-  QListWidget* lstGroups;
-  QPushButton* btnOk;
-  QPushButton* btnCancel;
-  unsigned long tag;
+  QListWidget* myGroupsList;
+  QPushButton* myOkButton;
+  QPushButton* myCancelButton;
+  unsigned long myTag;
 
 private slots:
-  void slot_ok();
-  void slot_doneUserFcn(ICQEvent*);
+  void okPressed();
+  void userEventDone(ICQEvent* event);
 };
 
 class SetRandomChatGroupDlg : public QDialog
@@ -59,14 +59,14 @@ public:
   ~SetRandomChatGroupDlg();
 
 private:
-  QListWidget* lstGroups;
-  QPushButton* btnOk;
-  QPushButton* btnCancel;
-  unsigned long tag;
+  QListWidget* myGroupsList;
+  QPushButton* myOkButton;
+  QPushButton* myCancelButton;
+  unsigned long myTag;
 
 private slots:
-  void slot_ok();
-  void slot_doneUserFcn(ICQEvent *);
+  void okPressed();
+  void userEventDone(ICQEvent* event);
 };
 
 } // namespace LicqQtGui

@@ -42,59 +42,57 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::RandomChatDlg */
 /* TRANSLATOR LicqQtGui::SetRandomChatGroupDlg */
 
-RandomChatDlg::RandomChatDlg(QWidget* p)
-  : QDialog(p),
-    tag(0)
+RandomChatDlg::RandomChatDlg(QWidget* parent)
+  : QDialog(parent),
+    myTag(0)
 {
   Support::setWidgetProps(this, "RandomChatDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(tr("Random Chat Search"));
 
-  QVBoxLayout* top_lay = new QVBoxLayout(this);
-  lstGroups = new QListWidget(this);
-  top_lay->addWidget(lstGroups);
+  QVBoxLayout* topLayout = new QVBoxLayout(this);
+  myGroupsList = new QListWidget(this);
+  topLayout->addWidget(myGroupsList);
 
   QDialogButtonBox* buttons = new QDialogButtonBox();
-  top_lay->addWidget(buttons);
-  btnOk = buttons->addButton(QDialogButtonBox::Ok);
-  btnOk->setText(tr("&Search"));
-  btnCancel = buttons->addButton(QDialogButtonBox::Cancel);
+  topLayout->addWidget(buttons);
+  myOkButton = buttons->addButton(QDialogButtonBox::Ok);
+  myOkButton->setText(tr("&Search"));
+  myCancelButton = buttons->addButton(QDialogButtonBox::Cancel);
 
-  connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
-  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
+  connect(myOkButton, SIGNAL(clicked()), SLOT(okPressed()));
+  connect(myCancelButton, SIGNAL(clicked()), SLOT(close()));
 
   // Fill in the combo box
-  lstGroups->addItem(tr("General"));
-  lstGroups->addItem(tr("Romance"));
-  lstGroups->addItem(tr("Games"));
-  lstGroups->addItem(tr("Students"));
-  lstGroups->addItem(tr("20 Something"));
-  lstGroups->addItem(tr("30 Something"));
-  lstGroups->addItem(tr("40 Something"));
-  lstGroups->addItem(tr("50 Plus"));
-  lstGroups->addItem(tr("Seeking Women"));
-  lstGroups->addItem(tr("Seeking Men"));
+  myGroupsList->addItem(tr("General"));
+  myGroupsList->addItem(tr("Romance"));
+  myGroupsList->addItem(tr("Games"));
+  myGroupsList->addItem(tr("Students"));
+  myGroupsList->addItem(tr("20 Something"));
+  myGroupsList->addItem(tr("30 Something"));
+  myGroupsList->addItem(tr("40 Something"));
+  myGroupsList->addItem(tr("50 Plus"));
+  myGroupsList->addItem(tr("Seeking Women"));
+  myGroupsList->addItem(tr("Seeking Men"));
 
-  lstGroups->setCurrentRow(0);
+  myGroupsList->setCurrentRow(0);
 
   show();
 }
 
-
 RandomChatDlg::~RandomChatDlg()
 {
-  if (tag != 0)
-    gLicqDaemon->CancelEvent(tag);
+  if (myTag != 0)
+    gLicqDaemon->CancelEvent(myTag);
 }
 
-
-void RandomChatDlg::slot_ok()
+void RandomChatDlg::okPressed()
 {
-  btnOk->setEnabled(false);
+  myOkButton->setEnabled(false);
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(ICQEvent*)), SLOT(slot_doneUserFcn(ICQEvent*)));
+      SIGNAL(doneUserFcn(ICQEvent*)), SLOT(userEventDone(ICQEvent*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
-  switch(lstGroups->currentRow())
+  switch(myGroupsList->currentRow())
   {
     case 0: nGroup = ICQ_RANDOMxCHATxGROUP_GENERAL; break;
     case 1: nGroup = ICQ_RANDOMxCHATxGROUP_ROMANCE; break;
@@ -107,80 +105,80 @@ void RandomChatDlg::slot_ok()
     case 8: nGroup = ICQ_RANDOMxCHATxGROUP_MxSEEKxF; break;
     case 9: nGroup = ICQ_RANDOMxCHATxGROUP_FxSEEKxM; break;
   }
-  tag = gLicqDaemon->icqRandomChatSearch(nGroup);
+  myTag = gLicqDaemon->icqRandomChatSearch(nGroup);
   setWindowTitle(tr("Searching for Random Chat Partner..."));
 }
 
-
-void RandomChatDlg::slot_doneUserFcn(ICQEvent* e)
+void RandomChatDlg::userEventDone(ICQEvent* event)
 {
-  if (!e->Equals(tag)) return;
-
-  btnOk->setEnabled(true);
-  tag = 0;
-
-  switch (e->Result())
-  {
-  case EVENT_FAILED:
-    WarnUser(this, tr("No random chat user found in that group."));
-    break;
-  case EVENT_TIMEDOUT:
-    WarnUser(this, tr("Random chat search timed out."));
-    break;
-  case EVENT_ERROR:
-    WarnUser(this, tr("Random chat search had an error."));
-    break;
-  default:
-    //TODO when CSearchAck changes
-    LicqGui::instance()->showEventDialog(ChatEvent, e->SearchAck()->Id(),
-                          e->SearchAck()->PPID() );
-    close();
+  if (!event->Equals(myTag))
     return;
+
+  myOkButton->setEnabled(true);
+  myTag = 0;
+
+  switch (event->Result())
+  {
+    case EVENT_FAILED:
+      WarnUser(this, tr("No random chat user found in that group."));
+      break;
+    case EVENT_TIMEDOUT:
+      WarnUser(this, tr("Random chat search timed out."));
+      break;
+    case EVENT_ERROR:
+      WarnUser(this, tr("Random chat search had an error."));
+      break;
+    default:
+      //TODO when CSearchAck changes
+      LicqGui::instance()->showEventDialog(ChatEvent, event->SearchAck()->Id(),
+          event->SearchAck()->PPID() );
+      close();
+      return;
   }
 
 }
 
 //=====SetRandomChatGroupDlg================================================
 
-SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* p)
-  : QDialog(p),
-    tag(0)
+SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
+  : QDialog(parent),
+    myTag(0)
 {
   Support::setWidgetProps(this, "SetRandomChatGroupDlg");
   setWindowTitle(tr("Set Random Chat Group"));
 
-  QVBoxLayout* top_lay = new QVBoxLayout(this);
-  lstGroups = new QListWidget(this);
-  top_lay->addWidget(lstGroups);
+  QVBoxLayout* topLayout = new QVBoxLayout(this);
+  myGroupsList = new QListWidget(this);
+  topLayout->addWidget(myGroupsList);
 
   QHBoxLayout* lay = new QHBoxLayout();
 
   lay->addStretch(2);
-  btnOk = new QPushButton(tr("&Set"), this);
-  lay->addWidget(btnOk);
+  myOkButton = new QPushButton(tr("&Set"), this);
+  lay->addWidget(myOkButton);
 
   lay->addSpacing(10);
-  btnCancel = new QPushButton(tr("&Close"), this);
-  lay->addWidget(btnCancel);
+  myCancelButton = new QPushButton(tr("&Close"), this);
+  lay->addWidget(myCancelButton);
   lay->addStretch(2);
 
-  top_lay->addLayout(lay);
+  topLayout->addLayout(lay);
 
-  connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
-  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
+  connect(myOkButton, SIGNAL(clicked()), SLOT(okPressed()));
+  connect(myCancelButton, SIGNAL(clicked()), SLOT(close()));
 
   // Fill in the combo box
-  lstGroups->addItem(tr("(none)"));
-  lstGroups->addItem(tr("General"));
-  lstGroups->addItem(tr("Romance"));
-  lstGroups->addItem(tr("Games"));
-  lstGroups->addItem(tr("Students"));
-  lstGroups->addItem(tr("20 Something"));
-  lstGroups->addItem(tr("30 Something"));
-  lstGroups->addItem(tr("40 Something"));
-  lstGroups->addItem(tr("50 Plus"));
-  lstGroups->addItem(tr("Seeking Women"));
-  lstGroups->addItem(tr("Seeking Men"));
+  myGroupsList->addItem(tr("(none)"));
+  myGroupsList->addItem(tr("General"));
+  myGroupsList->addItem(tr("Romance"));
+  myGroupsList->addItem(tr("Games"));
+  myGroupsList->addItem(tr("Students"));
+  myGroupsList->addItem(tr("20 Something"));
+  myGroupsList->addItem(tr("30 Something"));
+  myGroupsList->addItem(tr("40 Something"));
+  myGroupsList->addItem(tr("50 Plus"));
+  myGroupsList->addItem(tr("Seeking Women"));
+  myGroupsList->addItem(tr("Seeking Men"));
 
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == 0)
@@ -190,41 +188,39 @@ SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* p)
   }
   switch(o->RandomChatGroup())
   {
-    case ICQ_RANDOMxCHATxGROUP_GENERAL: lstGroups->setCurrentRow(1); break;
-    case ICQ_RANDOMxCHATxGROUP_ROMANCE: lstGroups->setCurrentRow(2); break;
-    case ICQ_RANDOMxCHATxGROUP_GAMES: lstGroups->setCurrentRow(3); break;
-    case ICQ_RANDOMxCHATxGROUP_STUDENTS: lstGroups->setCurrentRow(4); break;
-    case ICQ_RANDOMxCHATxGROUP_20SOME: lstGroups->setCurrentRow(5); break;
-    case ICQ_RANDOMxCHATxGROUP_30SOME: lstGroups->setCurrentRow(6); break;
-    case ICQ_RANDOMxCHATxGROUP_40SOME: lstGroups->setCurrentRow(7); break;
-    case ICQ_RANDOMxCHATxGROUP_50PLUS: lstGroups->setCurrentRow(8); break;
-    case ICQ_RANDOMxCHATxGROUP_MxSEEKxF: lstGroups->setCurrentRow(9); break;
-    case ICQ_RANDOMxCHATxGROUP_FxSEEKxM: lstGroups->setCurrentRow(10); break;
+    case ICQ_RANDOMxCHATxGROUP_GENERAL: myGroupsList->setCurrentRow(1); break;
+    case ICQ_RANDOMxCHATxGROUP_ROMANCE: myGroupsList->setCurrentRow(2); break;
+    case ICQ_RANDOMxCHATxGROUP_GAMES: myGroupsList->setCurrentRow(3); break;
+    case ICQ_RANDOMxCHATxGROUP_STUDENTS: myGroupsList->setCurrentRow(4); break;
+    case ICQ_RANDOMxCHATxGROUP_20SOME: myGroupsList->setCurrentRow(5); break;
+    case ICQ_RANDOMxCHATxGROUP_30SOME: myGroupsList->setCurrentRow(6); break;
+    case ICQ_RANDOMxCHATxGROUP_40SOME: myGroupsList->setCurrentRow(7); break;
+    case ICQ_RANDOMxCHATxGROUP_50PLUS: myGroupsList->setCurrentRow(8); break;
+    case ICQ_RANDOMxCHATxGROUP_MxSEEKxF: myGroupsList->setCurrentRow(9); break;
+    case ICQ_RANDOMxCHATxGROUP_FxSEEKxM: myGroupsList->setCurrentRow(10); break;
     case ICQ_RANDOMxCHATxGROUP_NONE:
     default:
-      lstGroups->setCurrentRow(0); break;
+      myGroupsList->setCurrentRow(0); break;
   }
   gUserManager.DropOwner();
 
   show();
 }
 
-
 SetRandomChatGroupDlg::~SetRandomChatGroupDlg()
 {
-  if (tag != 0)
-    gLicqDaemon->CancelEvent(tag);
+  if (myTag != 0)
+    gLicqDaemon->CancelEvent(myTag);
 }
 
-
-void SetRandomChatGroupDlg::slot_ok()
+void SetRandomChatGroupDlg::okPressed()
 {
-  btnOk->setEnabled(false);
-  btnCancel = new QPushButton(tr("&Cancel"), this);
+  myOkButton->setEnabled(false);
+  myCancelButton = new QPushButton(tr("&Cancel"), this);
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(ICQEvent*)), SLOT(slot_doneUserFcn(ICQEvent*)));
+      SIGNAL(doneUserFcn(ICQEvent*)), SLOT(userEventDone(ICQEvent*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
-  switch(lstGroups->currentRow())
+  switch(myGroupsList->currentRow())
   {
     case 0: nGroup = ICQ_RANDOMxCHATxGROUP_NONE; break;
     case 1: nGroup = ICQ_RANDOMxCHATxGROUP_GENERAL; break;
@@ -238,33 +234,32 @@ void SetRandomChatGroupDlg::slot_ok()
     case 9: nGroup = ICQ_RANDOMxCHATxGROUP_MxSEEKxF; break;
     case 10: nGroup = ICQ_RANDOMxCHATxGROUP_FxSEEKxM; break;
   }
-  tag = gLicqDaemon->icqSetRandomChatGroup(nGroup);
+  myTag = gLicqDaemon->icqSetRandomChatGroup(nGroup);
   setWindowTitle(tr("Setting Random Chat Group..."));
 }
 
-
-void SetRandomChatGroupDlg::slot_doneUserFcn(ICQEvent* e)
+void SetRandomChatGroupDlg::userEventDone(ICQEvent* event)
 {
-  if (!e->Equals(tag)) return;
+  if (!event->Equals(myTag))
+    return;
 
-  btnOk->setEnabled(true);
-  btnCancel = new QPushButton(tr("&Close"), this);
-  tag = 0;
+  myOkButton->setEnabled(true);
+  myCancelButton = new QPushButton(tr("&Close"), this);
+  myTag = 0;
 
-  switch (e->Result())
+  switch (event->Result())
   {
-  case EVENT_FAILED:
-    setWindowTitle(windowTitle() + tr("failed"));
-    break;
-  case EVENT_TIMEDOUT:
-    setWindowTitle(windowTitle() + tr("timed out"));
-    break;
-  case EVENT_ERROR:
-    setWindowTitle(windowTitle() + tr("error"));
-    break;
-  default:
-    setWindowTitle(windowTitle() + tr("done"));
-    break;
+    case EVENT_FAILED:
+      setWindowTitle(windowTitle() + tr("failed"));
+      break;
+    case EVENT_TIMEDOUT:
+      setWindowTitle(windowTitle() + tr("timed out"));
+      break;
+    case EVENT_ERROR:
+      setWindowTitle(windowTitle() + tr("error"));
+      break;
+    default:
+      setWindowTitle(windowTitle() + tr("done"));
+      break;
   }
-
 }
