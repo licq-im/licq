@@ -59,6 +59,21 @@ public:
    */
   void showPage(QWidget* page);
 
+  /**
+   * Get current visible page
+   *
+   * @return Current page
+   */
+  QWidget* currentPage() const;
+
+signals:
+  /**
+   * Current page has changed
+   *
+   * @param page New current page
+   */
+  void currentPageChanged(QWidget* page);
+
 private:
   QStackedLayout* myPageStack;
   QTreeWidget* myTreeList;

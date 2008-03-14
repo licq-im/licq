@@ -74,11 +74,20 @@ void TreePager::showPage(QWidget* page)
 {
   myPageStack->setCurrentWidget(page);
   myTreeList->setCurrentItem(myPageMap.key(page));
+  emit currentPageChanged(page);
+}
+
+QWidget* TreePager::currentPage() const
+{
+  return myPageStack->currentWidget();
 }
 
 void TreePager::flipPage(QTreeWidgetItem* selection)
 {
   QWidget* w = myPageMap[selection];
-  if (w != NULL)
-    myPageStack->setCurrentWidget(w);
+  if (w == NULL)
+    return;
+
+  myPageStack->setCurrentWidget(w);
+  emit currentPageChanged(w);
 }
