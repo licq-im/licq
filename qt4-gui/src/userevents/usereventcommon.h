@@ -70,6 +70,7 @@ protected:
   unsigned long myConvoId;
   time_t myRemoteTimeOffset;
   list<string> myUsers;
+  unsigned long mySendFuncs;
 
   // ID of the higest event we've processed. Helps determine
   // which events we already processed in the ctor.

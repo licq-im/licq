@@ -73,6 +73,21 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
     delete [] realId;
   }
 
+  // Find out what's supported for this protocol
+  mySendFuncs = 0xFFFFFFFF;
+  if (ppid != LICQ_PPID)
+  {
+    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+    {
+      if ((*_ppit)->PPID() == ppid)
+      {
+        mySendFuncs = (*_ppit)->SendFunctions();
+        break;
+      }
+    }
+    FOR_EACH_PROTO_PLUGIN_END
+  }
+
   myCodec = QTextCodec::codecForLocale();
   myIsOwner = (gUserManager.FindOwner(myUsers.front().c_str(), myPpid) != NULL);
   myDeleteUser = false;
@@ -130,6 +145,8 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   mySecure = myToolBar->addAction(tr("Secure Channel"), this, SLOT(slotSwitchSecurity()));
   mySecure->setShortcut(Qt::ALT + Qt::Key_E);
   pushToolTip(mySecure, tr("Open / Close secure channel"));
+  if (!(mySendFuncs & PP_SEND_SECURE))
+    mySecure->setEnabled(false);
 
   tmrTime = NULL;
   tmrTyping = NULL;

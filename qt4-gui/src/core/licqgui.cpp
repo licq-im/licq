@@ -1142,8 +1142,8 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
     return;
   }
 
-  // See if the clipboard contains a url or file (but only message events supported for msn)
-  if (Config::Chat::instance()->sendFromClipboard() && ppid != MSN_PPID)
+  // See if the clipboard contains a url or file
+  if (Config::Chat::instance()->sendFromClipboard())
   {
     QClipboard* clip = QApplication::clipboard();
     QClipboard::Mode mode = QClipboard::Clipboard;
@@ -1156,7 +1156,22 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
       c = clip->text(mode);
     }
 
-    if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:")
+    // Check which message types are supported for this protocol
+    unsigned long sendFuncs = 0xFFFFFFFF;
+    if (ppid != LICQ_PPID)
+    {
+      FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+      {
+        if ((*_ppit)->PPID() == ppid)
+        {
+          sendFuncs = (*_ppit)->SendFunctions();
+          break;
+        }
+      }
+      FOR_EACH_PROTO_PLUGIN_END
+    }
+
+    if (sendFuncs & PP_SEND_URL && (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:"))
     {
       UserEventCommon* ec = showEventDialog(UrlEvent, id, ppid);
       if (!ec || ec->objectName() != "UserSendUrlEvent")
@@ -1168,7 +1183,7 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
       clip->clear(mode);
       return;
     }
-    else if (c.left(5) == "file:" || c.left(1) == "/")
+    else if (sendFuncs & PP_SEND_FILE && (c.left(5) == "file:" || c.left(1) == "/"))
     {
       UserEventCommon* ec = showEventDialog(FileEvent, id, ppid);
       if (!ec || ec->objectName() != "UserSendFileEvent")

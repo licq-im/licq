@@ -47,6 +47,7 @@
 #include <KDE/KColorDialog>
 #endif
 
+#include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_translate.h>
@@ -128,30 +129,25 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   connect(grpSendType, SIGNAL(triggered(QAction*)), SLOT(slotChangeEventType(QAction*)));
 
   QAction* action;
+  int eventTypesCount = 0;
 
-  action = new QAction(tr("Message"), grpSendType);
-  action->setData(MessageEvent);
-  action->setCheckable(true);
+#define ADD_SENDTYPE(eventFlag, eventType, caption) \
+    if (mySendFuncs & eventFlag) { \
+      action = new QAction(caption, grpSendType); \
+      action->setData(eventType); \
+      action->setCheckable(true); \
+      eventTypesCount++; \
+    }
 
-  action = new QAction(tr("URL"), grpSendType);
-  action->setData(UrlEvent);
-  action->setCheckable(true);
+  // Populated menu for switching event type
+  ADD_SENDTYPE(PP_SEND_MSG, MessageEvent, tr("Message"));
+  ADD_SENDTYPE(PP_SEND_URL, UrlEvent, tr("URL"));
+  ADD_SENDTYPE(PP_SEND_CHAT, ChatEvent, tr("Chat Request"));
+  ADD_SENDTYPE(PP_SEND_FILE, FileEvent, tr("File Transfer"));
+  ADD_SENDTYPE(PP_SEND_CONTACT, ContactEvent, tr("Contact List"));
+  ADD_SENDTYPE(PP_SEND_SMS, SmsEvent, tr("SMS"));
 
-  action = new QAction(tr("Chat Request"), grpSendType);
-  action->setData(ChatEvent);
-  action->setCheckable(true);
-
-  action = new QAction(tr("File Transfer"), grpSendType);
-  action->setData(FileEvent);
-  action->setCheckable(true);
-
-  action = new QAction(tr("Contact List"), grpSendType);
-  action->setData(ContactEvent);
-  action->setCheckable(true);
-
-  action = new QAction(tr("SMS"), grpSendType);
-  action->setData(SmsEvent);
-  action->setCheckable(true);
+#undef ADD_SENDTYPE
 
   QMenu* mnuSendType = new QMenu(this);
   mnuSendType->addActions(grpSendType->actions());
@@ -160,7 +156,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   cmbSendType->setShortcut(Qt::ALT + Qt::Key_P);
   pushToolTip(cmbSendType, tr("Select type of message to send"));
   cmbSendType->setMenu(mnuSendType);
-  if (ppid == MSN_PPID)
+  if (eventTypesCount <= 1)
     cmbSendType->setEnabled(false);
 
   chkSendServer = myToolBar->addAction(tr("Send through server"));
@@ -168,24 +164,22 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   pushToolTip(chkSendServer, tr("Send through server"));
   chkSendServer->setCheckable(true);
 
+  bool canSendDirect = (mySendFuncs & PP_SEND_DIRECT);
+
   ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
 
-  if (u != 0)
+  if (u != NULL)
   {
     chkSendServer->setChecked(u->SendServer() ||
         (u->StatusOffline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
 
     if (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST) ||
-        u->PPID() == MSN_PPID ||
         (u->Port() == 0 && u->SocketDesc(ICQ_CHNxNONE) == -1))
-    {
-      chkSendServer->setChecked(true);
-      chkSendServer->setEnabled(false);
-    }
+      canSendDirect = false;
 
     gUserManager.DropUser(u);
   }
-  else
+  if (!canSendDirect)
   {
     chkSendServer->setChecked(true);
     chkSendServer->setEnabled(false);
@@ -699,28 +693,34 @@ void UserSendCommon::changeEventType(int type)
   switch (type)
   {
     case MessageEvent:
-      e = new UserSendMsgEvent(myUsers.front().c_str(), myPpid, parent);
+      if (mySendFuncs & PP_SEND_MSG)
+        e = new UserSendMsgEvent(myUsers.front().c_str(), myPpid, parent);
       break;
     case UrlEvent:
-      e = new UserSendUrlEvent(myUsers.front().c_str(), myPpid, parent);
+      if (mySendFuncs & PP_SEND_URL)
+        e = new UserSendUrlEvent(myUsers.front().c_str(), myPpid, parent);
       break;
     case ChatEvent:
-      e = new UserSendChatEvent(myUsers.front().c_str(), myPpid, parent);
+      if (mySendFuncs & PP_SEND_CHAT)
+        e = new UserSendChatEvent(myUsers.front().c_str(), myPpid, parent);
       break;
     case FileEvent:
-      e = new UserSendFileEvent(myUsers.front().c_str(), myPpid, parent);
+      if (mySendFuncs & PP_SEND_FILE)
+        e = new UserSendFileEvent(myUsers.front().c_str(), myPpid, parent);
       break;
     case ContactEvent:
-      e = new UserSendContactEvent(myUsers.front().c_str(), myPpid, parent);
+      if (mySendFuncs & PP_SEND_CONTACT)
+        e = new UserSendContactEvent(myUsers.front().c_str(), myPpid, parent);
       break;
     case SmsEvent:
-      e = new UserSendSmsEvent(myUsers.front().c_str(), myPpid, parent);
+      if (mySendFuncs & PP_SEND_SMS)
+        e = new UserSendSmsEvent(myUsers.front().c_str(), myPpid, parent);
       break;
     default:
       assert(false);
   }
 
-  if (e != 0)
+  if (e != NULL)
   {
     if (e->mleSend != 0 && mleSend != 0)
     {
