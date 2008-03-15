@@ -315,7 +315,7 @@ public:
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
   // Url
-  unsigned long icqSendUrl(unsigned long nUin, const char *szUrl,
+  unsigned long icqSendUrl(const char *szId, const char *szUrl,
      const char *szDescription, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
   // Contact List

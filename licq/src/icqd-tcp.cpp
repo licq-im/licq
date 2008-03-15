@@ -311,7 +311,7 @@ unsigned long CICQDaemon::ProtoSendUrl(const char *_szId, unsigned long _nPPID,
   unsigned long nRet = 0;
 
   if (_nPPID == LICQ_PPID)
-    nRet = icqSendUrl(strtoul(_szId, (char **)NULL, 10), url, description, online,
+    nRet = icqSendUrl(_szId, url, description, online,
       nLevel, bMultipleRecipients, pColor);
   else
   {
@@ -325,9 +325,18 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
    const char *description, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
-  if (_nUin == gUserManager.OwnerUin()) return 0;
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  if (o != NULL)
+  {
+    bool isOwner = false;
+    if (strcmp(o->IdString(), _szId) == 0)
+      isOwner = true;
+    gUserManager.DropOwner(LICQ_PPID);
+    if (isOwner)
+      return 0;
+  }
 
-   // make the URL info string
+  // make the URL info string
   char *szDescDos = NULL;
   CEventUrl *e = NULL;
   szDescDos = gTranslator.NToRN(description);
@@ -349,18 +358,18 @@ unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
   if (!online) // send offline
   {
     unsigned short nCharset = 0;
-    u = gUserManager.FetchUser(_nUin, LOCK_R);
+    u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_R);
     if (u && u->UserEncoding())
       nCharset = 3;
     gUserManager.DropUser(u);
 
     e = new CEventUrl(url, description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    result = icqSendThroughServer(_nUin, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
-    u = gUserManager.FetchUser(_nUin, LOCK_W);
+    result = icqSendThroughServer(_szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
+    u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_W);
   }
   else
   {
-    u = gUserManager.FetchUser(_nUin, LOCK_W);
+    u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_W);
     if (u == NULL) return 0;
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventUrl(url, description, ICQ_CMDxTCP_START, TIME_NOW, f);
