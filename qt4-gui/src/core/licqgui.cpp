@@ -1142,8 +1142,8 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
     return;
   }
 
-  // See if the clipboard contains a url
-  if (Config::Chat::instance()->sendFromClipboard())
+  // See if the clipboard contains a url or file (but only message events supported for msn)
+  if (Config::Chat::instance()->sendFromClipboard() && ppid != MSN_PPID)
   {
     QClipboard* clip = QApplication::clipboard();
     QClipboard::Mode mode = QClipboard::Clipboard;
