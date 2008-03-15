@@ -217,7 +217,7 @@ void CTranslator::ClientToServer(char &_cChar)
 
 
 //-----ToUTF8----------------------------------------------------------------
-char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
+char* CTranslator::ToUnicode(char* _sz, const char* _szFrom)
 {
   if (_sz == NULL) return NULL;
   unsigned short nLen = strlen(_sz) * 2;
@@ -290,7 +290,7 @@ char *CTranslator::ToUnicode(char *_sz, char *_szFrom)
 
 
 //-----FromUTF8--------------------------------------------------------------
-char *CTranslator::FromUnicode(char *_sz, char *_szTo)
+char* CTranslator::FromUnicode(char* _sz, const char* _szTo)
 {
   if (_sz == NULL) return NULL;
   unsigned short nLen = strlen(_sz) * 2;

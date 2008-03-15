@@ -980,7 +980,7 @@ unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMe
 }
 
 unsigned long CICQDaemon::icqAuthorizeGrant(const char *szId,
-  const char *szMessage)
+  const char* /* szMessage*/)
 {
   CPU_Authorize *p = new CPU_Authorize(szId);
   gLog.Info(tr("%sAuthorizing user %s\n"), L_SRVxSTR, szId);

@@ -114,7 +114,7 @@ bool CSARManager::Load()
  *-------------------------------------------------------------------------*/
 void CSARManager::Save()
 {
-  char *n[] = SAR_SECTIONS;
+  const char* n[] = SAR_SECTIONS;
   char sz[32];
   for (unsigned short i = 0; i < SAR_NUM_SECTIONS; i ++)
   {
