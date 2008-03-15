@@ -801,13 +801,10 @@ void LicqGui::showInfoDialog(int /* fcn */, QString id, unsigned long ppid,
     }
   }
 
+  int tab = UserInfoDlg::GeneralInfo;
+
   if (f != NULL)
   {
-    int tab = UserInfoDlg::WorkInfo;
-    if (ppid == LICQ_PPID && id[0].isLetter())
-      tab = UserInfoDlg::AboutInfo;
-    else
-      tab = UserInfoDlg::GeneralInfo;
     if (toggle && f->isTabShown(tab))
     {
       delete f; // will notify us about deletion
@@ -828,11 +825,7 @@ void LicqGui::showInfoDialog(int /* fcn */, QString id, unsigned long ppid,
     myUserInfoList.append(f);
   }
 
-  if (ppid == LICQ_PPID && id[0].isLetter())
-    f->showTab(UserInfoDlg::AboutInfo);
-  else
-    f->showTab(UserInfoDlg::GeneralInfo);
-
+  f->showTab(tab);
   f->show();
   f->raise();
   if (updateNow)
