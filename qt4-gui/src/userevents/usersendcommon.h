@@ -26,11 +26,13 @@
 #include <licq_color.h>
 
 class QGroupBox;
+class QLabel;
 class QPushButton;
 class QSplitter;
 
 class CICQSignal;
 class ICQEvent;
+class ICQUser;
 
 namespace LicqQtGui
 {
@@ -73,15 +75,18 @@ protected:
   QAction* cmbSendType;
   QActionGroup* grpSendType;
   QGroupBox* grpMR;
+  QLabel* lblPicture;
   QPushButton* btnClose;
   QPushButton* btnSend;
   QSplitter* splView;
+  QSplitter* splPicture;
   QString strTempMsg;
   QTimer* tmrSendTyping;
   int myType;
 
   void retrySend(ICQEvent* e, bool online, unsigned short level);
   virtual void userUpdated(CICQSignal* sig, QString id = QString::null, unsigned long ppid = 0);
+  void updatePicture(ICQUser* u = NULL);
   bool checkSecure();
 
   /**

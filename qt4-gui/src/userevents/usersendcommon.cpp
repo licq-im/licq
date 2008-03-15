@@ -102,6 +102,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
     myType(type)
 {
   grpMR = NULL;
+  lblPicture = NULL;
   clearDelay = 250;
 
   QShortcut* a = new QShortcut(Qt::Key_Escape, this);
@@ -420,40 +421,17 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
     connect(tmrSendTyping, SIGNAL(timeout()), SLOT(slotTextChangedTimeout()));
   }
 
-  QSplitter* bottom = new QSplitter(splView);
+  splPicture = new QSplitter(splView);
 
-  mleSend = new MLEdit(true, bottom, true);
+  mleSend = new MLEdit(true, splPicture, true);
   mleSend->setSizeHintLines(3);
   mleSend->setCheckSpellingEnabled(Config::Chat::instance()->checkSpelling());
   mleSend->installEventFilter(this); // Enables send with enter
 
-  if (Config::Chat::instance()->showUserPic())
-  {
-    u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
-    if (u != NULL)
-    {
-      if (u->GetPicturePresent())
-      {
-        QString picPath = QString(BASE_DIR) + USER_DIR + "/" + u->IdString() + ".pic";
-        QMovie* picMovie = new QMovie(picPath);
-        if (picMovie->isValid())
-        {
-          QLabel* picLabel = new QLabel(bottom);
-          picLabel->setMovie(picMovie);
-          picMovie->start();
-          picLabel->setFixedWidth(picLabel->sizeHint().width());
-          if (Config::Chat::instance()->showUserPicHidden())
-            bottom->setSizes(QList<int>() << 1 << 0);
-        }
-      }
-      gUserManager.DropUser(u);
-    }
-  }
-
   if (Config::Chat::instance()->msgChatView())
   {
     splView->setStretchFactor(splView->indexOf(mleHistory), 1);
-    splView->setStretchFactor(splView->indexOf(bottom), 0);
+    splView->setStretchFactor(splView->indexOf(splPicture), 0);
 
     connect(mleHistory, SIGNAL(quote(const QString&)),
         mleSend, SLOT(insertPlainText(const QString&)));
@@ -471,6 +449,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
 
   updateIcons();
+  updatePicture();
 
   connect(mleSend, SIGNAL(ctrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(mleSend, SIGNAL(textChanged()), SLOT(messageTextChanged()));
@@ -526,6 +505,47 @@ void UserSendCommon::updateIcons()
   // Update message type icons in menu
   foreach (QAction* a, grpSendType->actions())
     a->setIcon(iconForType(a->data().toInt()));
+}
+
+void UserSendCommon::updatePicture(ICQUser* u)
+{
+  bool fetched = false;
+
+  if (u == NULL)
+  {
+    u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+    fetched = true;
+  }
+  if (u == NULL)
+    return;
+
+  if (lblPicture != NULL)
+  {
+    delete lblPicture;
+    lblPicture = NULL;
+  }
+
+  if (Config::Chat::instance()->showUserPic() &&
+      u->GetPicturePresent())
+  {
+    QString picPath = QString(BASE_DIR) + USER_DIR + "/" + u->IdString() + ".pic";
+    QMovie* picMovie = new QMovie(picPath);
+    if (picMovie->isValid())
+    {
+      lblPicture = new QLabel();
+      splPicture->insertWidget(1, lblPicture);
+      lblPicture->setMovie(picMovie);
+      picMovie->start();
+      lblPicture->setFixedWidth(lblPicture->sizeHint().width());
+      if (Config::Chat::instance()->showUserPicHidden())
+        splPicture->setSizes(QList<int>() << 1 << 0);
+    }
+    else
+      delete picMovie;
+  }
+
+  if (fetched)
+    gUserManager.DropUser(u);
 }
 
 const QPixmap& UserSendCommon::iconForType(int type) const
@@ -954,6 +974,9 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
         chkSendServer->setChecked(false);
       }
       break;
+
+    case USER_PICTURE:
+      updatePicture(u);
   }
 
   gUserManager.DropUser(u);
