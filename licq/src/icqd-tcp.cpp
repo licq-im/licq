@@ -321,7 +321,7 @@ unsigned long CICQDaemon::ProtoSendUrl(const char *_szId, unsigned long _nPPID,
   return nRet;
 }
 
-unsigned long CICQDaemon::icqSendUrl(unsigned long _nUin, const char *url,
+unsigned long CICQDaemon::icqSendUrl(const char *_szId, const char *url,
    const char *description, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
