@@ -1442,7 +1442,7 @@ void LicqGui::listUpdated(CICQSignal* sig)
         if (item->id() == sig->Id() && item->ppid() == sig->PPID())
         {
           if (myUserEventTabDlg && myUserEventTabDlg->tabExists(item))
-            myUserEventTabDlg->slotRemoveTab(item);
+            myUserEventTabDlg->removeTab(item);
           else
             item->close();
           myUserSendList.removeAll(item);

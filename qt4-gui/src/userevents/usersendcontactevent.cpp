@@ -47,18 +47,18 @@ using namespace LicqQtGui;
 UserSendContactEvent::UserSendContactEvent(QString id, unsigned long ppid, QWidget* parent)
   : UserSendCommon(ContactEvent, id, ppid, parent, "UserSendContactEvent")
 {
-  chkMass->setChecked(false);
-  chkMass->setEnabled(false);
+  myMassMessageCheck->setChecked(false);
+  myMassMessageCheck->setEnabled(false);
   myForeColor->setEnabled(false);
   myBackColor->setEnabled(false);
   myEmoticon->setEnabled(false);
 
-  mainWidget->addWidget(splView);
+  myMainWidget->addWidget(myViewSplitter);
 
-  QSplitter* bottom = dynamic_cast<QSplitter*>(mleSend->parentWidget());
-  int ind = bottom->indexOf(mleSend);
-  delete mleSend;
-  mleSend = NULL;
+  QSplitter* bottom = dynamic_cast<QSplitter*>(myMessageEdit->parentWidget());
+  int ind = bottom->indexOf(myMessageEdit);
+  delete myMessageEdit;
+  myMessageEdit = NULL;
 
   QWidget* w = new QWidget();
   bottom->insertWidget(ind, w);
@@ -67,9 +67,9 @@ UserSendContactEvent::UserSendContactEvent(QString id, unsigned long ppid, QWidg
 
   w->setToolTip(tr("Drag Users Here - Right Click for Options"));
 
-  lstContacts = new MMUserView(myUsers.front().c_str(), myPpid,
+  myContactsList = new MMUserView(myUsers.front().c_str(), myPpid,
       LicqGui::instance()->contactList());
-  lay->addWidget(lstContacts);
+  lay->addWidget(myContactsList);
 
   myBaseTitle += tr(" - Contact List");
 
@@ -78,7 +78,7 @@ UserSendContactEvent::UserSendContactEvent(QString id, unsigned long ppid, QWidg
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(ContactEvent)->setChecked(true);
+  myEventTypeGroup->actions().at(ContactEvent)->setChecked(true);
 }
 
 UserSendContactEvent::~UserSendContactEvent()
@@ -92,7 +92,7 @@ void UserSendContactEvent::setContact(QString id, unsigned long ppid)
 
   if (u != NULL)
   {
-    lstContacts->add(id, ppid);
+    myContactsList->add(id, ppid);
     gUserManager.DropUser(u);
   }
 }
@@ -118,21 +118,21 @@ bool UserSendContactEvent::sendDone(ICQEvent* e)
 
 void UserSendContactEvent::resetSettings()
 {
-  lstContacts->clear();
-  slotMassMessageToggled(false);
+  myContactsList->clear();
+  massMessageToggled(false);
 }
 
 //TODO Fix this for new protocol plugin
 void UserSendContactEvent::send()
 {
   // Take care of typing notification now
-  tmrSendTyping->stop();
+  mySendTypingTimer->stop();
   gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
 
   UserStringList users;
 
   QPair<QString, unsigned long> i;
-  foreach (i, lstContacts->contacts())
+  foreach (i, myContactsList->contacts())
   {
     users.push_back(i.first.toLatin1().data());
   }
@@ -143,9 +143,9 @@ void UserSendContactEvent::send()
   if (!checkSecure())
     return;
 
-  if (chkMass->isChecked())
+  if (myMassMessageCheck->isChecked())
   {
-    MMSendDlg* m = new MMSendDlg(lstMultipleRecipients, this);
+    MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
     int r = m->go_contact(users);
     delete m;
     if (r != QDialog::Accepted) return;
@@ -155,10 +155,10 @@ void UserSendContactEvent::send()
   icqEventTag = gLicqDaemon->icqSendContactList(
       myUsers.front().c_str(),
       users,
-      chkSendServer->isChecked() ? false : true,
-      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-      chkMass->isChecked(),
-      &icqColor);
+      mySendServerCheck->isChecked() ? false : true,
+      myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+      myMassMessageCheck->isChecked(),
+      &myIcqColor);
   myEventTag.push_back(icqEventTag);
 
   UserSendCommon::send();

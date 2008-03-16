@@ -41,8 +41,8 @@ public:
   void setUrl(const QString& url, const QString& description);
 
 private:
-  QLabel* lblItem;
-  InfoField* edtItem;
+  QLabel* myUrlLabel;
+  InfoField* myUrlEdit;
   virtual bool sendDone(ICQEvent* e);
   virtual void resetSettings();
 

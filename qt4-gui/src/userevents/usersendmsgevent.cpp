@@ -50,10 +50,10 @@ using namespace LicqQtGui;
 UserSendMsgEvent::UserSendMsgEvent(QString id, unsigned long ppid, QWidget* parent)
   : UserSendCommon(MessageEvent, id, ppid, parent, "UserSendMsgEvent")
 {
-  mainWidget->addWidget(splView);
-  mleSend->setFocus();
+  myMainWidget->addWidget(myViewSplitter);
+  myMessageEdit->setFocus();
   if (!Config::Chat::instance()->msgChatView())
-    mleSend->setMinimumHeight(150);
+    myMessageEdit->setMinimumHeight(150);
 
   myBaseTitle += tr(" - Message");
 
@@ -62,7 +62,7 @@ UserSendMsgEvent::UserSendMsgEvent(QString id, unsigned long ppid, QWidget* pare
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(MessageEvent)->setChecked(true);
+  myEventTypeGroup->actions().at(MessageEvent)->setChecked(true);
 }
 
 UserSendMsgEvent::~UserSendMsgEvent()
@@ -72,7 +72,7 @@ UserSendMsgEvent::~UserSendMsgEvent()
 
 bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
 {
-  mleSend->setText(QString::null);
+  myMessageEdit->setText(QString::null);
 
   bool showAwayDlg = false;
   ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
@@ -90,21 +90,21 @@ bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
 
 void UserSendMsgEvent::resetSettings()
 {
-  mleSend->clear();
-  mleSend->setFocus();
+  myMessageEdit->clear();
+  myMessageEdit->setFocus();
 
   // Makes the cursor blink so that the user sees that the text edit has focus.
-  mleSend->moveCursor(QTextCursor::Start);
+  myMessageEdit->moveCursor(QTextCursor::Start);
 
-  slotMassMessageToggled(false);
+  massMessageToggled(false);
 }
 
 void UserSendMsgEvent::send()
 {
   // Take care of typing notification now
-  if (tmrSendTyping->isActive())
-    tmrSendTyping->stop();
-  connect(mleSend, SIGNAL(textChanged()), SLOT(messageTextChanged()));
+  if (mySendTypingTimer->isActive())
+    mySendTypingTimer->stop();
+  connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
   gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
 
   // do nothing if a command is already being processed
@@ -115,12 +115,12 @@ void UserSendMsgEvent::send()
   if (icqEventTag != 0)
     return;
 
-  if (!mleSend->document()->isModified() &&
+  if (!myMessageEdit->document()->isModified() &&
       !QueryYesNo(this, tr("You didn't edit the message.\nDo you really want to send it?")))
     return;
 
   // don't let the user send empty messages
-  if (mleSend->toPlainText().trimmed().isEmpty())
+  if (myMessageEdit->toPlainText().trimmed().isEmpty())
     return;
 
   if (!checkSecure())
@@ -135,7 +135,7 @@ void UserSendMsgEvent::send()
   }
 
   // create initial strings (implicit copying, no allocation impact :)
-  char* tmp = gTranslator.NToRN(myCodec->fromUnicode(mleSend->toPlainText()));
+  char* tmp = gTranslator.NToRN(myCodec->fromUnicode(myMessageEdit->toPlainText()));
   QByteArray wholeMessageRaw(tmp);
   delete [] tmp;
   int wholeMessagePos = 0;
@@ -143,7 +143,7 @@ void UserSendMsgEvent::send()
   bool needsSplitting = false;
   // If we send through server (= have message limit), and we've crossed the limit
   unsigned short maxSize = userOffline ? MAX_OFFLINE_MESSAGE_SIZE : MAX_MESSAGE_SIZE;
-  if (chkSendServer->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > maxSize))
+  if (mySendServerCheck->isChecked() && ((wholeMessageRaw.length() - wholeMessagePos) > maxSize))
     needsSplitting = true;
 
   QString message;
@@ -183,13 +183,13 @@ void UserSendMsgEvent::send()
     }
     else
     {
-      message = mleSend->toPlainText();
+      message = myMessageEdit->toPlainText();
       messageRaw = myCodec->fromUnicode(message);
     }
 
-    if (chkMass->isChecked())
+    if (myMassMessageCheck->isChecked())
     {
-      MMSendDlg* m = new MMSendDlg(lstMultipleRecipients, this);
+      MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
       m->go_message(message);
     }
 
@@ -197,10 +197,10 @@ void UserSendMsgEvent::send()
         myUsers.front().c_str(),
         myPpid,
         messageRaw.data(),
-        chkSendServer->isChecked() ? false : true,
-        chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-        chkMass->isChecked(),
-        &icqColor,
+        mySendServerCheck->isChecked() ? false : true,
+        myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+        myMassMessageCheck->isChecked(),
+        &myIcqColor,
         myConvoId);
     if (myPpid == LICQ_PPID)
       myEventTag.push_back(icqEventTag);

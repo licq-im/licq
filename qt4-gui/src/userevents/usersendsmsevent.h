@@ -37,10 +37,10 @@ public:
   virtual ~UserSendSmsEvent();
 
 private:
-  QLabel* lblNumber;
-  QLabel* lblCount;
-  InfoField* nfoNumber;
-  InfoField* nfoCount;
+  QLabel* myNumberLabel;
+  QLabel* myCountLabel;
+  InfoField* myNumberField;
+  InfoField* myCountField;
 
   virtual bool sendDone(ICQEvent* e);
   virtual void resetSettings();

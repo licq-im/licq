@@ -37,9 +37,9 @@ public:
   virtual ~UserSendChatEvent();
 
 private:
-  QLabel* lblItem;
-  InfoField* edtItem;
-  QPushButton* btnBrowse;
+  QLabel* myItemLabel;
+  InfoField* myItemEdit;
+  QPushButton* myBrowseButton;
   QString myChatClients;
   unsigned short myChatPort;
 

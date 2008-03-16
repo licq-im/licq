@@ -57,14 +57,14 @@ signals:
   void signal_done();
 
 public slots:
-  void slotCurrentChanged(int index);
-  void slotMoveLeft();
-  void slotMoveRight();
-  void slotRemoveTab(QWidget* tab);
-  void slotSetMsgWinSticky(bool sticky = true);
+  void currentChanged(int index);
+  void moveLeft();
+  void moveRight();
+  void removeTab(QWidget* tab);
+  void setMsgWinSticky(bool sticky = true);
 
 private:
-  TabWidget* tabw;
+  TabWidget* myTabs;
 
   void updateTitle(QWidget* tab);
   void clearEvents(QWidget* tab);

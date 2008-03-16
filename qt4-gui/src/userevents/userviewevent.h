@@ -48,17 +48,17 @@ public:
   virtual ~UserViewEvent();
 
 private:
-  QSplitter* splRead;
-  MLView* mlvRead;
-  MessageList* msgView;
-  CUserEvent* currentEvent;
-  QCheckBox* chkAutoClose;
-  QPushButton* btnRead1;
-  QPushButton* btnRead2;
-  QPushButton* btnRead3;
-  QPushButton* btnRead4;
-  QPushButton* btnReadNext;
-  SkinnableButton* btnClose;
+  QSplitter* myReadSplitter;
+  MLView* myMessageView;
+  MessageList* myMessageList;
+  CUserEvent* myCurrentEvent;
+  QCheckBox* myAutoCloseCheck;
+  QPushButton* myRead1Button;
+  QPushButton* myRead2Button;
+  QPushButton* myRead3Button;
+  QPushButton* myRead4Button;
+  QPushButton* myReadNextButton;
+  SkinnableButton* myCloseButton;
 
   // The currently displayed message in decoded (Unicode) form.
   QString myMessageText;
@@ -69,18 +69,18 @@ private:
   virtual void userUpdated(CICQSignal* sig, QString id = QString::null, unsigned long ppid = 0);
 
 private slots:
-  void slotAutoClose();
-  void slotBtnRead1();
-  void slotBtnRead2();
-  void slotBtnRead3();
-  void slotBtnRead4();
-  void slotBtnReadNext();
-  void slotClearEvent();
-  void slotClose();
-  void slotMsgTypeChanged(UserSendCommon* from, UserSendCommon* to);
-  void slotPrintMessage(QTreeWidgetItem* item);
-  void slotSentEvent(ICQEvent* e);
-  void slotSetEncoding();
+  void autoClose();
+  void read1();
+  void read2();
+  void read3();
+  void read4();
+  void readNext();
+  void clearEvent();
+  void closeDialog();
+  void msgTypeChanged(UserSendCommon* from, UserSendCommon* to);
+  void printMessage(QTreeWidgetItem* item);
+  void sentEvent(ICQEvent* e);
+  void setEncoding();
 };
 
 } // namespace LicqQtGui

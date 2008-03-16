@@ -37,7 +37,7 @@ public:
   void setContact(QString id, unsigned long ppid);
 
 private:
-  MMUserView* lstContacts;
+  MMUserView* myContactsList;
 
   virtual bool sendDone(ICQEvent* e);
   virtual void resetSettings();

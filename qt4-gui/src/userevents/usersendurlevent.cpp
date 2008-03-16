@@ -53,16 +53,16 @@ using namespace LicqQtGui;
 UserSendUrlEvent::UserSendUrlEvent(QString id, unsigned long ppid, QWidget* parent)
   : UserSendCommon(UrlEvent, id, ppid, parent, "UserSendUrlEvent")
 {
-  mainWidget->addWidget(splView);
-  mleSend->setFocus();
+  myMainWidget->addWidget(myViewSplitter);
+  myMessageEdit->setFocus();
 
   QHBoxLayout* h_lay = new QHBoxLayout();
-  mainWidget->addLayout(h_lay);
-  lblItem = new QLabel(tr("URL : "));
-  h_lay->addWidget(lblItem);
-  edtItem = new InfoField(false);
-  h_lay->addWidget(edtItem);
-  edtItem->installEventFilter(this);
+  myMainWidget->addLayout(h_lay);
+  myUrlLabel = new QLabel(tr("URL : "));
+  h_lay->addWidget(myUrlLabel);
+  myUrlEdit = new InfoField(false);
+  h_lay->addWidget(myUrlEdit);
+  myUrlEdit->installEventFilter(this);
 
   myBaseTitle += tr(" - URL");
 
@@ -71,7 +71,7 @@ UserSendUrlEvent::UserSendUrlEvent(QString id, unsigned long ppid, QWidget* pare
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(UrlEvent)->setChecked(true);
+  myEventTypeGroup->actions().at(UrlEvent)->setChecked(true);
 }
 
 UserSendUrlEvent::~UserSendUrlEvent()
@@ -81,7 +81,7 @@ UserSendUrlEvent::~UserSendUrlEvent()
 
 bool UserSendUrlEvent::eventFilter(QObject* watched, QEvent* e)
 {
-  if (watched == edtItem)
+  if (watched == myUrlEdit)
   {
     if (e->type() == QEvent::KeyPress)
     {
@@ -89,7 +89,7 @@ bool UserSendUrlEvent::eventFilter(QObject* watched, QEvent* e)
       const bool isEnter = (key->key() == Qt::Key_Enter || key->key() == Qt::Key_Return);
       if (isEnter && (Config::Chat::instance()->singleLineChatMode() || key->modifiers() & Qt::ControlModifier))
       {
-        btnSend->animateClick();
+        mySendButton->animateClick();
         return true; // filter the event out
       }
     }
@@ -101,7 +101,7 @@ bool UserSendUrlEvent::eventFilter(QObject* watched, QEvent* e)
 
 void UserSendUrlEvent::setUrl(const QString& url, const QString& description)
 {
-  edtItem->setText(url);
+  myUrlEdit->setText(url);
   setText(description);
 }
 
@@ -126,20 +126,20 @@ bool UserSendUrlEvent::sendDone(ICQEvent* e)
 
 void UserSendUrlEvent::resetSettings()
 {
-  mleSend->clear();
-  edtItem->clear();
-  mleSend->setFocus();
-  slotMassMessageToggled(false);
+  myMessageEdit->clear();
+  myUrlEdit->clear();
+  myMessageEdit->setFocus();
+  massMessageToggled(false);
 }
 
 void UserSendUrlEvent::send()
 {
   // Take care of typing notification now
-  tmrSendTyping->stop();
-  connect(mleSend, SIGNAL(textChanged()), SLOT(messageTextChanged()));
+  mySendTypingTimer->stop();
+  connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
   gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
 
-  if (edtItem->text().trimmed().isEmpty())
+  if (myUrlEdit->text().trimmed().isEmpty())
   {
     InformUser(this, tr("No URL specified"));
     return;
@@ -148,10 +148,10 @@ void UserSendUrlEvent::send()
   if (!checkSecure())
     return;
 
-  if (chkMass->isChecked())
+  if (myMassMessageCheck->isChecked())
   {
-    MMSendDlg* m = new MMSendDlg(lstMultipleRecipients, this);
-    int r = m->go_url(edtItem->text(), mleSend->toPlainText());
+    MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
+    int r = m->go_url(myUrlEdit->text(), myMessageEdit->toPlainText());
     delete m;
     if (r != QDialog::Accepted)
       return;
@@ -161,12 +161,12 @@ void UserSendUrlEvent::send()
   icqEventTag = gLicqDaemon->ProtoSendUrl(
       myUsers.front().c_str(),
       myPpid,
-      edtItem->text().toLatin1(),
-      myCodec->fromUnicode(mleSend->toPlainText()),
-      chkSendServer->isChecked() ? false : true,
-      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-      chkMass->isChecked(),
-      &icqColor);
+      myUrlEdit->text().toLatin1(),
+      myCodec->fromUnicode(myMessageEdit->toPlainText()),
+      mySendServerCheck->isChecked() ? false : true,
+      myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+      myMassMessageCheck->isChecked(),
+      &myIcqColor);
 
   myEventTag.push_back(icqEventTag);
 

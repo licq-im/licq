@@ -42,6 +42,9 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserEventTabDlg */
 
+using std::list;
+using std::string;
+
 UserEventTabDlg::UserEventTabDlg(QWidget* parent, const char* name)
   : QWidget(parent)
 {
@@ -54,13 +57,11 @@ UserEventTabDlg::UserEventTabDlg(QWidget* parent, const char* name)
   if (Config::Chat::instance()->dialogRect().isValid())
     setGeometry(Config::Chat::instance()->dialogRect());
 
-  tabw = new TabWidget();
-  lay->addWidget(tabw);
+  myTabs = new TabWidget();
+  lay->addWidget(myTabs);
 
-  connect(tabw, SIGNAL(currentChanged(int)),
-          SLOT(slotCurrentChanged(int)));
-  connect(tabw, SIGNAL(mouseMiddleClick(QWidget*)),
-          SLOT(slotRemoveTab(QWidget*)));
+  connect(myTabs, SIGNAL(currentChanged(int)), SLOT(currentChanged(int)));
+  connect(myTabs, SIGNAL(mouseMiddleClick(QWidget*)), SLOT(removeTab(QWidget*)));
 }
 
 UserEventTabDlg::~UserEventTabDlg()
@@ -77,12 +78,12 @@ void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
     return;
 
   label = QString::fromUtf8(u->GetAlias());
-  index = tabw->insertTab(index, tab, label);
+  index = myTabs->insertTab(index, tab, label);
   updateTabLabel(u);
   gUserManager.DropUser(u);
-  QWidget* fw = tabw->focusWidget();
+  QWidget* fw = myTabs->focusWidget();
   if (Config::Chat::instance()->autoFocus())
-    tabw->setCurrentIndex(index);
+    myTabs->setCurrentIndex(index);
   else
     if (fw != NULL)
       fw->setFocus();
@@ -90,24 +91,24 @@ void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
 
 void UserEventTabDlg::selectTab(QWidget* tab)
 {
-  tabw->setCurrentIndex(tabw->indexOf(tab));
+  myTabs->setCurrentIndex(myTabs->indexOf(tab));
   updateTitle(tab);
 }
 
 void UserEventTabDlg::replaceTab(QWidget* oldTab, UserEventCommon* newTab)
 {
-  addTab(newTab, tabw->indexOf(oldTab));
-  slotRemoveTab(oldTab);
+  addTab(newTab, myTabs->indexOf(oldTab));
+  removeTab(oldTab);
 }
 
 bool UserEventTabDlg::tabIsSelected(QWidget* tab)
 {
-  return (tabw->currentIndex() == tabw->indexOf(tab));
+  return (myTabs->currentIndex() == myTabs->indexOf(tab));
 }
 
 bool UserEventTabDlg::tabExists(QWidget* tab)
 {
-  return (tabw->indexOf(tab) != -1);
+  return (myTabs->indexOf(tab) != -1);
 }
 
 void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
@@ -133,7 +134,7 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
     }
   }
 
-  tabw->setTabText(tabw->indexOf(tab), newLabel);
+  myTabs->setTabText(myTabs->indexOf(tab), newLabel);
 }
 
 void UserEventTabDlg::updateTabLabel(ICQUser* u)
@@ -141,9 +142,9 @@ void UserEventTabDlg::updateTabLabel(ICQUser* u)
   if (u == 0)
     return;
 
-  for (int index = 0; index < tabw->count(); index++)
+  for (int index = 0; index < myTabs->count(); index++)
   {
-    UserEventCommon* tab = dynamic_cast<UserEventCommon*>(tabw->widget(index));
+    UserEventCommon* tab = dynamic_cast<UserEventCommon*>(myTabs->widget(index));
 
     if (tab->ppid() == u->PPID() && tab->isUserInConvo(u->IdString()))
     {
@@ -176,7 +177,7 @@ void UserEventTabDlg::updateTabLabel(ICQUser* u)
           }
 
         icon = IconManager::instance()->iconForEvent(SubCommand);
-        tabw->setTabColor(tab, QColor("blue"));
+        myTabs->setTabColor(tab, QColor("blue"));
 
         // to clear it..
         tab->setTyping(u->GetTyping());
@@ -186,13 +187,13 @@ void UserEventTabDlg::updateTabLabel(ICQUser* u)
         icon = IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID());
 
         if (u->GetTyping() == ICQ_TYPING_ACTIVE)
-          tabw->setTabColor(tab, Config::Chat::instance()->tabTypingColor());
+          myTabs->setTabColor(tab, Config::Chat::instance()->tabTypingColor());
         else
-          tabw->setTabColor(tab, QColor("black"));
+          myTabs->setTabColor(tab, QColor("black"));
       }
 
-      tabw->setTabIcon(index, icon);
-      if (tabw->currentIndex() == index)
+      myTabs->setTabIcon(index, icon);
+      if (myTabs->currentIndex() == index)
         setWindowIcon(icon);
 
       break;
@@ -202,9 +203,9 @@ void UserEventTabDlg::updateTabLabel(ICQUser* u)
 
 void UserEventTabDlg::setTyping(ICQUser* u, int convoId)
 {
-  for (int index = 0; index < tabw->count(); index++)
+  for (int index = 0; index < myTabs->count(); index++)
   {
-    UserEventCommon* tab = dynamic_cast<UserEventCommon*>(tabw->widget(index));
+    UserEventCommon* tab = dynamic_cast<UserEventCommon*>(myTabs->widget(index));
 
     if (tab->convoId() == static_cast<unsigned long>(convoId) &&
         tab->ppid() == u->PPID() &&
@@ -226,30 +227,30 @@ void UserEventTabDlg::setIcon(const QPixmap& icon)
 /*! This slot should get called when the current tab has
  *  changed.
  */
-void UserEventTabDlg::slotCurrentChanged(int index)
+void UserEventTabDlg::currentChanged(int index)
 {
-  QWidget* tab = tabw->widget(index);
+  QWidget* tab = myTabs->widget(index);
   tab->setFocus();  // prevents users from accidentally typing in the wrong widget
   updateTitle(tab);
   clearEvents(tab);
 }
 
-void UserEventTabDlg::slotMoveLeft()
+void UserEventTabDlg::moveLeft()
 {
-  tabw->setPreviousPage();
+  myTabs->setPreviousPage();
 }
 
-void UserEventTabDlg::slotMoveRight()
+void UserEventTabDlg::moveRight()
 {
-  tabw->setNextPage();
+  myTabs->setNextPage();
 }
 
-void UserEventTabDlg::slotRemoveTab(QWidget* tab)
+void UserEventTabDlg::removeTab(QWidget* tab)
 {
-  if (tabw->count() > 1)
+  if (myTabs->count() > 1)
   {
-    int index = tabw->indexOf(tab);
-    tabw->removeTab(index);
+    int index = myTabs->indexOf(tab);
+    myTabs->removeTab(index);
     tab->close();
     tab->setEnabled(false);
     tab->deleteLater();
@@ -258,7 +259,7 @@ void UserEventTabDlg::slotRemoveTab(QWidget* tab)
     close();
 }
 
-void UserEventTabDlg::slotSetMsgWinSticky(bool sticky)
+void UserEventTabDlg::setMsgWinSticky(bool sticky)
 {
   Support::changeWinSticky(winId(), sticky);
 }
@@ -269,7 +270,7 @@ void UserEventTabDlg::updateTitle(QWidget* tab)
   if (!title.isEmpty())
     setWindowTitle(title);
 
-  QIcon icon = tabw->tabIcon(tabw->indexOf(tab));
+  QIcon icon = myTabs->tabIcon(myTabs->indexOf(tab));
   if (!icon.isNull())
     setWindowIcon(icon);
 }
@@ -280,7 +281,7 @@ void UserEventTabDlg::clearEvents(QWidget* tab)
     return;
 
   UserSendCommon* e = dynamic_cast<UserSendCommon*>(tab);
-  QTimer::singleShot(e->clearDelay, e, SLOT(slotClearNewEvents()));
+  QTimer::singleShot(e->clearDelay, e, SLOT(clearNewEvents()));
 }
 
 void UserEventTabDlg::saveGeometry()

@@ -42,10 +42,10 @@ public:
   void addFile(const QString& file);
 
 private:
-  QLabel* lblItem;
-  InfoField* edtItem;
-  QPushButton* btnBrowse;
-  QPushButton* btnEdit;
+  QLabel* myFileLabel;
+  InfoField* myFileEdit;
+  QPushButton* myBrowseButton;
+  QPushButton* myEditButton;
   ConstFileList myFileList;
 
   virtual bool sendDone(ICQEvent* e);

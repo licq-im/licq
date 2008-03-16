@@ -56,30 +56,30 @@ using namespace LicqQtGui;
 UserSendFileEvent::UserSendFileEvent(QString id, unsigned long ppid, QWidget* parent)
   : UserSendCommon(FileEvent, id, ppid, parent, "UserSendFileEvent")
 {
-  chkMass->setChecked(false);
-  chkMass->setEnabled(false);
+  myMassMessageCheck->setChecked(false);
+  myMassMessageCheck->setEnabled(false);
   myForeColor->setEnabled(false);
   myBackColor->setEnabled(false);
 
-  mainWidget->addWidget(splView);
+  myMainWidget->addWidget(myViewSplitter);
 
   QHBoxLayout* h_lay = new QHBoxLayout();
-  mainWidget->addLayout(h_lay);
-  lblItem = new QLabel(tr("File(s): "));
-  h_lay->addWidget(lblItem);
+  myMainWidget->addLayout(h_lay);
+  myFileLabel = new QLabel(tr("File(s): "));
+  h_lay->addWidget(myFileLabel);
 
-  edtItem = new InfoField(false);
-  edtItem->setReadOnly(true);
-  h_lay->addWidget(edtItem);
+  myFileEdit = new InfoField(false);
+  myFileEdit->setReadOnly(true);
+  h_lay->addWidget(myFileEdit);
 
-  btnBrowse = new QPushButton(tr("Browse"));
-  connect(btnBrowse, SIGNAL(clicked()), SLOT(browseFile()));
-  h_lay->addWidget(btnBrowse);
+  myBrowseButton = new QPushButton(tr("Browse"));
+  connect(myBrowseButton, SIGNAL(clicked()), SLOT(browseFile()));
+  h_lay->addWidget(myBrowseButton);
 
-  btnEdit = new QPushButton(tr("Edit"));
-  btnEdit->setEnabled(false);
-  connect(btnEdit, SIGNAL(clicked()), SLOT(editFileList()));
-  h_lay->addWidget(btnEdit);
+  myEditButton = new QPushButton(tr("Edit"));
+  myEditButton->setEnabled(false);
+  connect(myEditButton, SIGNAL(clicked()), SLOT(editFileList()));
+  h_lay->addWidget(myEditButton);
 
   myBaseTitle += tr(" - File Transfer");
 
@@ -88,7 +88,7 @@ UserSendFileEvent::UserSendFileEvent(QString id, unsigned long ppid, QWidget* pa
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(FileEvent)->setChecked(true);
+  myEventTypeGroup->actions().at(FileEvent)->setChecked(true);
 }
 
 UserSendFileEvent::~UserSendFileEvent()
@@ -101,10 +101,10 @@ void UserSendFileEvent::setFile(const QString& file, const QString& description)
   QFileInfo fileinfo(file);
   if (fileinfo.exists() && fileinfo.isFile() && fileinfo.isReadable())
   {
-    edtItem->setText(file);
+    myFileEdit->setText(file);
     setText(description);
     myFileList.push_back(strdup(file.toLocal8Bit()));
-    btnEdit->setEnabled(true);
+    myEditButton->setEnabled(true);
   }
 }
 
@@ -115,8 +115,8 @@ void UserSendFileEvent::addFile(const QString& file)
 
   myFileList.push_back(strdup(file.toLocal8Bit()));
 
-  btnEdit->setEnabled(true);
-  edtItem->setText(QString(tr("%1 Files")).arg(myFileList.size()));
+  myEditButton->setEnabled(true);
+  myFileEdit->setText(QString(tr("%1 Files")).arg(myFileList.size()));
 }
 
 bool UserSendFileEvent::sendDone(ICQEvent* e)
@@ -148,12 +148,12 @@ bool UserSendFileEvent::sendDone(ICQEvent* e)
 
 void UserSendFileEvent::resetSettings()
 {
-  mleSend->clear();
-  edtItem->clear();
-  mleSend->setFocus();
+  myMessageEdit->clear();
+  myFileEdit->clear();
+  myMessageEdit->setFocus();
   myFileList.clear();
-  btnEdit->setEnabled(false);
-  slotMassMessageToggled(false);
+  myEditButton->setEnabled(false);
+  massMessageToggled(false);
 }
 
 void UserSendFileEvent::browseFile()
@@ -186,12 +186,12 @@ void UserSendFileEvent::updateLabel(unsigned count)
 {
   QString f;
 
-  btnEdit->setEnabled(true);
+  myEditButton->setEnabled(true);
 
   switch (count)
   {
     case 0:
-      btnEdit->setEnabled(false);
+      myEditButton->setEnabled(false);
       f = QString::null;
       break;
 
@@ -204,17 +204,17 @@ void UserSendFileEvent::updateLabel(unsigned count)
       break;
   }
 
-  edtItem->setText(f);
+  myFileEdit->setText(f);
 }
 
 void UserSendFileEvent::send()
 {
   // Take care of typing notification now
-  tmrSendTyping->stop();
-  connect(mleSend, SIGNAL(textChanged()), SLOT(messageTextChanged()));
+  mySendTypingTimer->stop();
+  connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
   gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
 
-  if (edtItem->text().trimmed().isEmpty())
+  if (myFileEdit->text().trimmed().isEmpty())
   {
     WarnUser(this, tr("You must specify a file to transfer!"));
     return;
@@ -224,11 +224,11 @@ void UserSendFileEvent::send()
   //TODO in daemon
   icqEventTag = gLicqDaemon->icqFileTransfer(
       strtoul(myUsers.front().c_str(), NULL, 10),
-      myCodec->fromUnicode(edtItem->text()),
-      myCodec->fromUnicode(mleSend->toPlainText()),
+      myCodec->fromUnicode(myFileEdit->text()),
+      myCodec->fromUnicode(myMessageEdit->toPlainText()),
       myFileList,
-      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-      chkSendServer->isChecked());
+      myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+      mySendServerCheck->isChecked());
 
   myEventTag.push_back(icqEventTag);
 

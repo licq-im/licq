@@ -50,27 +50,27 @@ UserSendChatEvent::UserSendChatEvent(QString id, unsigned long ppid, QWidget* pa
   : UserSendCommon(ChatEvent, id, ppid, parent, "UserSendChatEvent")
 {
   myChatPort = 0;
-  chkMass->setChecked(false);
-  chkMass->setEnabled(false);
+  myMassMessageCheck->setChecked(false);
+  myMassMessageCheck->setEnabled(false);
   myForeColor->setEnabled(false);
   myBackColor->setEnabled(false);
 
-  mainWidget->addWidget(splView);
+  myMainWidget->addWidget(myViewSplitter);
 
   if (!Config::Chat::instance()->msgChatView())
-    mleSend->setMinimumHeight(150);
+    myMessageEdit->setMinimumHeight(150);
 
   QHBoxLayout* h_lay = new QHBoxLayout();
-  mainWidget->addLayout(h_lay);
-  lblItem = new QLabel(tr("Multiparty: "));
-  h_lay->addWidget(lblItem);
+  myMainWidget->addLayout(h_lay);
+  myItemLabel = new QLabel(tr("Multiparty: "));
+  h_lay->addWidget(myItemLabel);
 
-  edtItem = new InfoField(false);
-  h_lay->addWidget(edtItem);
+  myItemEdit = new InfoField(false);
+  h_lay->addWidget(myItemEdit);
 
-  btnBrowse = new QPushButton(tr("Invite"));
-  connect(btnBrowse, SIGNAL(clicked()), SLOT(inviteUser()));
-  h_lay->addWidget(btnBrowse);
+  myBrowseButton = new QPushButton(tr("Invite"));
+  connect(myBrowseButton, SIGNAL(clicked()), SLOT(inviteUser()));
+  h_lay->addWidget(myBrowseButton);
 
   myBaseTitle += tr(" - Chat Request");
 
@@ -79,7 +79,7 @@ UserSendChatEvent::UserSendChatEvent(QString id, unsigned long ppid, QWidget* pa
     tabDlg->setWindowTitle(myBaseTitle);
 
   setWindowTitle(myBaseTitle);
-  grpSendType->actions().at(ChatEvent)->setChecked(true);
+  myEventTypeGroup->actions().at(ChatEvent)->setChecked(true);
 }
 
 UserSendChatEvent::~UserSendChatEvent()
@@ -117,10 +117,10 @@ bool UserSendChatEvent::sendDone(ICQEvent* e)
 
 void UserSendChatEvent::resetSettings()
 {
-  mleSend->clear();
-  edtItem->clear();
-  mleSend->setFocus();
-  slotMassMessageToggled(false);
+  myMessageEdit->clear();
+  myItemEdit->clear();
+  myMessageEdit->setFocus();
+  massMessageToggled(false);
 }
 
 void UserSendChatEvent::inviteUser()
@@ -133,28 +133,28 @@ void UserSendChatEvent::inviteUser()
       JoinChatDlg* j = new JoinChatDlg(true, this);
       if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
       {
-        edtItem->setText(j->ChatClients());
+        myItemEdit->setText(j->ChatClients());
         myChatPort = chatDlg->LocalPort();
         myChatClients = chatDlg->ChatName() + ", " + chatDlg->ChatClients();
       }
       delete j;
-      btnBrowse->setText(tr("Clear"));
+      myBrowseButton->setText(tr("Clear"));
     }
   }
   else
   {
     myChatPort = 0;
     myChatClients = "";
-    edtItem->setText("");
-    btnBrowse->setText(tr("Invite"));
+    myItemEdit->setText("");
+    myBrowseButton->setText(tr("Invite"));
   }
 }
 
 void UserSendChatEvent::send()
 {
   // Take care of typing notification now
-  tmrSendTyping->stop();
-  connect(mleSend, SIGNAL(textChanged()), SLOT(messageTextChanged()));
+  mySendTypingTimer->stop();
+  connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
   gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
 
   unsigned long icqEventTag;
@@ -163,17 +163,17 @@ void UserSendChatEvent::send()
     //TODO in daemon
     icqEventTag = gLicqDaemon->icqChatRequest(
         strtoul(myUsers.front().c_str(), NULL, 10),
-        myCodec->fromUnicode(mleSend->toPlainText()),
-        chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-        chkSendServer->isChecked());
+        myCodec->fromUnicode(myMessageEdit->toPlainText()),
+        myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+        mySendServerCheck->isChecked());
   else
     icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(
         strtoul(myUsers.front().c_str(), NULL, 10),
-        myCodec->fromUnicode(mleSend->toPlainText()),
+        myCodec->fromUnicode(myMessageEdit->toPlainText()),
         myCodec->fromUnicode(myChatClients),
         myChatPort,
-        chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
-        chkSendServer->isChecked());
+        myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
+        mySendServerCheck->isChecked());
 
   myEventTag.push_back(icqEventTag);
 

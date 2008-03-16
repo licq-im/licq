@@ -70,78 +70,78 @@ using namespace LicqQtGui;
 UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
   : UserEventCommon(id, ppid, parent, "UserViewEvent")
 {
-  splRead = new QSplitter(Qt::Vertical);
-  splRead->setOpaqueResize();
-  mainWidget->addWidget(splRead);
+  myReadSplitter = new QSplitter(Qt::Vertical);
+  myReadSplitter->setOpaqueResize();
+  myMainWidget->addWidget(myReadSplitter);
 
   QShortcut* a = new QShortcut(Qt::Key_Escape, this);
-  connect(a, SIGNAL(activated()), SLOT(close()));
+  connect(a, SIGNAL(activated()), SLOT(closeDialog()));
 
-  msgView = new MessageList();
-  splRead->addWidget(msgView);
+  myMessageList = new MessageList();
+  myReadSplitter->addWidget(myMessageList);
 
-  mlvRead = new MLView();
-  splRead->addWidget(mlvRead);
+  myMessageView = new MLView();
+  myReadSplitter->addWidget(myMessageView);
 
-  splRead->setStretchFactor(0, 0);
-  splRead->setStretchFactor(1, 1);
+  myReadSplitter->setStretchFactor(0, 0);
+  myReadSplitter->setStretchFactor(1, 1);
 
-  connect(msgView, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
-      SLOT(slotPrintMessage(QTreeWidgetItem*)));
+  connect(myMessageList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
+      SLOT(printMessage(QTreeWidgetItem*)));
   connect(gMainWindow, SIGNAL(signal_sentevent(ICQEvent*)),
-      SLOT(slotSentEvent(ICQEvent*)));
-  connect(mlvRead, SIGNAL(viewurl(QWidget*, QString)),
+      SLOT(sentEvent(ICQEvent*)));
+  connect(myMessageView, SIGNAL(viewurl(QWidget*, QString)),
       LicqGui::instance(), SLOT(viewUrl(QWidget*, QString)));
 
   QGroupBox* h_action = new QGroupBox();
-  mainWidget->addSpacing(10);
-  mainWidget->addWidget(h_action);
+  myMainWidget->addSpacing(10);
+  myMainWidget->addWidget(h_action);
 
   QHBoxLayout* h_action_lay = new QHBoxLayout(h_action);
 
-  btnRead1 = new QPushButton();
-  btnRead2 = new QPushButton();
-  btnRead3 = new QPushButton();
-  btnRead4 = new QPushButton();
+  myRead1Button = new QPushButton();
+  myRead2Button = new QPushButton();
+  myRead3Button = new QPushButton();
+  myRead4Button = new QPushButton();
 
-  btnRead1->setEnabled(false);
-  btnRead2->setEnabled(false);
-  btnRead3->setEnabled(false);
-  btnRead4->setEnabled(false);
+  myRead1Button->setEnabled(false);
+  myRead2Button->setEnabled(false);
+  myRead3Button->setEnabled(false);
+  myRead4Button->setEnabled(false);
 
-  connect(btnRead1, SIGNAL(clicked()), SLOT(slotBtnRead1()));
-  connect(btnRead2, SIGNAL(clicked()), SLOT(slotBtnRead2()));
-  connect(btnRead3, SIGNAL(clicked()), SLOT(slotBtnRead3()));
-  connect(btnRead4, SIGNAL(clicked()), SLOT(slotBtnRead4()));
+  connect(myRead1Button, SIGNAL(clicked()), SLOT(read1()));
+  connect(myRead2Button, SIGNAL(clicked()), SLOT(read2()));
+  connect(myRead3Button, SIGNAL(clicked()), SLOT(read3()));
+  connect(myRead4Button, SIGNAL(clicked()), SLOT(read4()));
 
-  h_action_lay->addWidget(btnRead1);
-  h_action_lay->addWidget(btnRead2);
-  h_action_lay->addWidget(btnRead3);
-  h_action_lay->addWidget(btnRead4);
+  h_action_lay->addWidget(myRead1Button);
+  h_action_lay->addWidget(myRead2Button);
+  h_action_lay->addWidget(myRead3Button);
+  h_action_lay->addWidget(myRead4Button);
 
   QHBoxLayout* h_lay = new QHBoxLayout();
-  top_lay->addLayout(h_lay);
+  myTopLayout->addLayout(h_lay);
 
   if (!myIsOwner)
   {
-    chkAutoClose = new QCheckBox(tr("Aut&o Close"));
-    chkAutoClose->setChecked(Config::Chat::instance()->autoClose());
-    h_lay->addWidget(chkAutoClose);
+    myAutoCloseCheck = new QCheckBox(tr("Aut&o Close"));
+    myAutoCloseCheck->setChecked(Config::Chat::instance()->autoClose());
+    h_lay->addWidget(myAutoCloseCheck);
   }
 
   h_lay->addStretch(1);
 
-  btnReadNext = new QPushButton(tr("Nex&t"));
-  btnReadNext->setEnabled(false);
-  connect(btnReadNext, SIGNAL(clicked()), SLOT(slotBtnReadNext()));
-  h_lay->addWidget(btnReadNext);
-  setTabOrder(btnRead4, btnReadNext);
+  myReadNextButton = new QPushButton(tr("Nex&t"));
+  myReadNextButton->setEnabled(false);
+  connect(myReadNextButton, SIGNAL(clicked()), SLOT(readNext()));
+  h_lay->addWidget(myReadNextButton);
+  setTabOrder(myRead4Button, myReadNextButton);
 
-  btnClose = new SkinnableButton(tr("&Close"));
-  btnClose->setToolTip(tr("Normal Click - Close Window\n<CTRL>+Click - also delete User"));
-  connect(btnClose, SIGNAL(clicked()), SLOT(slotClose()));
-  h_lay->addWidget(btnClose);
-  setTabOrder(btnReadNext, btnClose);
+  myCloseButton = new SkinnableButton(tr("&Close"));
+  myCloseButton->setToolTip(tr("Normal Click - Close Window\n<CTRL>+Click - also delete User"));
+  connect(myCloseButton, SIGNAL(clicked()), SLOT(closeDialog()));
+  h_lay->addWidget(myCloseButton);
+  setTabOrder(myReadNextButton, myCloseButton);
 
   ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
   if (u != NULL && u->NewMessages() > 0)
@@ -158,7 +158,7 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
         i = 0;
     }
 
-    MessageListItem* e = new MessageListItem(u->EventPeek(i), myCodec, msgView);
+    MessageListItem* e = new MessageListItem(u->EventPeek(i), myCodec, myMessageList);
     myHighestEventId = u->EventPeek(i)->Id();
 
     /* Create items for all the messages which already await
@@ -173,7 +173,7 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
           (event->SubCommand() != ICQ_CMDxSUB_MSG &&
            event->SubCommand() != ICQ_CMDxSUB_URL))
       {
-        new MessageListItem(event, myCodec, msgView);
+        new MessageListItem(event, myCodec, myMessageList);
         // Make sure we don't add this message again,
         // even if we receive an userUpdated signal for it.
         if (myHighestEventId < event->Id())
@@ -182,17 +182,17 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
     }
 
     gUserManager.DropUser(u);
-    for (unsigned short i = 0; i < msgView->columnCount(); i++)
-      msgView->resizeColumnToContents(i);
-    msgView->setCurrentItem(e, 0);
-    msgView->scrollToItem(e);
-    slotPrintMessage(e);
+    for (unsigned short i = 0; i < myMessageList->columnCount(); i++)
+      myMessageList->resizeColumnToContents(i);
+    myMessageList->setCurrentItem(e, 0);
+    myMessageList->scrollToItem(e);
+    printMessage(e);
   }
   else
     if (u != NULL)
       gUserManager.DropUser(u);
 
-  connect(this, SIGNAL(encodingChanged()), SLOT(slotSetEncoding()));
+  connect(this, SIGNAL(encodingChanged()), SLOT(setEncoding()));
 }
 
 UserViewEvent::~UserViewEvent()
@@ -204,11 +204,11 @@ void UserViewEvent::generateReply()
 {
   QString s = QString("> ");
 
-  if (!mlvRead->markedText().trimmed().isEmpty())
-    s += mlvRead->markedText().trimmed();
+  if (!myMessageView->markedText().trimmed().isEmpty())
+    s += myMessageView->markedText().trimmed();
   else
-    if (!mlvRead->toPlainText().trimmed().isEmpty())
-      s += mlvRead->toPlainText().trimmed();
+    if (!myMessageView->toPlainText().trimmed().isEmpty())
+      s += myMessageView->toPlainText().trimmed();
     else
       s = QString::null;
 
@@ -229,7 +229,7 @@ void UserViewEvent::sendMsg(QString text)
   // Find a good position for the new window
   if (Config::Chat::instance()->autoPosReplyWin())
   {
-    int yp = btnRead1->parentWidget()->mapToGlobal(QPoint(0, 0)).y();
+    int yp = myRead1Button->parentWidget()->mapToGlobal(QPoint(0, 0)).y();
     if (yp + e->height() + 8 > QApplication::desktop()->height())
       yp = QApplication::desktop()->height() - e->height() - 8;
     e->move(x(), yp);
@@ -237,25 +237,25 @@ void UserViewEvent::sendMsg(QString text)
 
   QTimer::singleShot(10, e, SLOT(show()));
 
-  connect(e, SIGNAL(autoCloseNotify()), SLOT(slotAutoClose()));
+  connect(e, SIGNAL(autoCloseNotify()), SLOT(autoClose()));
   connect(e, SIGNAL(msgTypeChanged(UserSendCommon*, UserSendCommon*)),
-      SLOT(slotMsgTypeChanged(UserSendCommon*, UserSendCommon*)));
+      SLOT(msgTypeChanged(UserSendCommon*, UserSendCommon*)));
 }
 
 void UserViewEvent::updateNextButton()
 {
-  int num = msgView->getNumUnread();
-  MessageListItem* e = msgView->getNextUnread();
+  int num = myMessageList->getNumUnread();
+  MessageListItem* e = myMessageList->getNextUnread();
 
-  btnReadNext->setEnabled(num > 0);
+  myReadNextButton->setEnabled(num > 0);
 
   if (num > 1)
-    btnReadNext->setText(tr("Nex&t (%1)").arg(num));
+    myReadNextButton->setText(tr("Nex&t (%1)").arg(num));
   else if (num == 1)
-    btnReadNext->setText(tr("Nex&t"));
+    myReadNextButton->setText(tr("Nex&t"));
 
   if (e != NULL && e->msg() != NULL)
-    btnReadNext->setIcon(IconManager::instance()->iconForEvent(e->msg()->SubCommand()));
+    myReadNextButton->setIcon(IconManager::instance()->iconForEvent(e->msg()->SubCommand()));
 }
 
 void UserViewEvent::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
@@ -278,8 +278,8 @@ void UserViewEvent::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
             e->SubCommand() != ICQ_CMDxSUB_URL)))
       {
          myHighestEventId = eventId;
-         MessageListItem* m = new MessageListItem(e, myCodec, msgView);
-         msgView->scrollToItem(m);
+         MessageListItem* m = new MessageListItem(e, myCodec, myMessageList);
+         myMessageList->scrollToItem(m);
       }
     }
 
@@ -290,9 +290,9 @@ void UserViewEvent::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
   gUserManager.DropUser(u);
 }
 
-void UserViewEvent::slotAutoClose()
+void UserViewEvent::autoClose()
 {
-  if (!chkAutoClose->isChecked())
+  if (!myAutoCloseCheck->isChecked())
     return;
 
   ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
@@ -306,15 +306,15 @@ void UserViewEvent::slotAutoClose()
   }
 
   if (doclose)
-    close();
+    closeDialog();
 }
 
-void UserViewEvent::slotBtnRead1()
+void UserViewEvent::read1()
 {
-  if (currentEvent == 0)
+  if (myCurrentEvent == 0)
     return;
 
-  switch (currentEvent->SubCommand())
+  switch (myCurrentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:  // reply/quote
     case ICQ_CMDxSUB_URL:
@@ -325,28 +325,28 @@ void UserViewEvent::slotBtnRead1()
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
-      CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(currentEvent);
+      CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
       new AuthUserDlg(p->IdString(), p->PPID(), true);
       break;
     }
 
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
-      CEventAuthGranted* p = dynamic_cast<CEventAuthGranted*>(currentEvent);
+      CEventAuthGranted* p = dynamic_cast<CEventAuthGranted*>(myCurrentEvent);
       gLicqDaemon->AddUserToList(p->IdString(), p->PPID());
       break;
     }
 
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
-      CEventAdded* p = dynamic_cast<CEventAdded*>(currentEvent);
+      CEventAdded* p = dynamic_cast<CEventAdded*>(myCurrentEvent);
       gLicqDaemon->AddUserToList(p->IdString(), p->PPID());
       break;
     }
 
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      const ContactList& cl = dynamic_cast<CEventContactList*>(currentEvent)->Contacts();
+      const ContactList& cl = dynamic_cast<CEventContactList*>(myCurrentEvent)->Contacts();
       ContactList::const_iterator it;
 
       for (it = cl.begin(); it != cl.end(); ++it)
@@ -360,14 +360,14 @@ void UserViewEvent::slotBtnRead1()
         gUserManager.DropUser(u);
       }
 
-      btnRead1->setEnabled(false);
+      myRead1Button->setEnabled(false);
       break;
     }
 
     case ICQ_CMDxSUB_EMAILxALERT:
     {
       // FIXME: For now assume MSN protocol, will need to be fixed soon.
-      CEventEmailAlert* p = dynamic_cast<CEventEmailAlert*>(currentEvent);
+      CEventEmailAlert* p = dynamic_cast<CEventEmailAlert*>(myCurrentEvent);
 
       // Create the HTML
       QString url = BASE_DIR;
@@ -419,12 +419,12 @@ void UserViewEvent::slotBtnRead1()
   } // switch
 }
 
-void UserViewEvent::slotBtnRead2()
+void UserViewEvent::read2()
 {
-  if (currentEvent == NULL)
+  if (myCurrentEvent == NULL)
     return;
 
-  switch (currentEvent->SubCommand())
+  switch (myCurrentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:  // quote
     case ICQ_CMDxSUB_URL:
@@ -433,10 +433,10 @@ void UserViewEvent::slotBtnRead2()
 
     case ICQ_CMDxSUB_CHAT:  // accept a chat request
     {
-      currentEvent->SetPending(false);
-      btnRead2->setEnabled(false);
-      btnRead3->setEnabled(false);
-      CEventChat* c = dynamic_cast<CEventChat*>(currentEvent);
+      myCurrentEvent->SetPending(false);
+      myRead2Button->setEnabled(false);
+      myRead3Button->setEnabled(false);
+      CEventChat* c = dynamic_cast<CEventChat*>(myCurrentEvent);
       ChatDlg* chatDlg = new ChatDlg(myUsers.front().c_str(), myPpid);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
@@ -461,10 +461,10 @@ void UserViewEvent::slotBtnRead2()
 
     case ICQ_CMDxSUB_FILE:  // accept a file transfer
     {
-      currentEvent->SetPending(false);
-      btnRead2->setEnabled(false);
-      btnRead3->setEnabled(false);
-      CEventFile* f = dynamic_cast<CEventFile*>(currentEvent);
+      myCurrentEvent->SetPending(false);
+      myRead2Button->setEnabled(false);
+      myRead3Button->setEnabled(false);
+      CEventFile* f = dynamic_cast<CEventFile*>(myCurrentEvent);
       FileDlg* fileDlg = new FileDlg(myUsers.front().c_str(), myPpid);
 
       if (fileDlg->ReceiveFiles())
@@ -478,24 +478,24 @@ void UserViewEvent::slotBtnRead2()
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
-      CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(currentEvent);
+      CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
       new AuthUserDlg(p->IdString(), p->PPID(), false);
       break;
     }
   } // switch
 }
 
-void UserViewEvent::slotBtnRead3()
+void UserViewEvent::read3()
 {
-  if (currentEvent == NULL)
+  if (myCurrentEvent == NULL)
     return;
 
-  switch (currentEvent->SubCommand())
+  switch (myCurrentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:  // Forward
     case ICQ_CMDxSUB_URL:
     {
-      ForwardDlg* f = new ForwardDlg(currentEvent, this);
+      ForwardDlg* f = new ForwardDlg(myCurrentEvent, this);
       f->show();
       break;
     }
@@ -506,15 +506,15 @@ void UserViewEvent::slotBtnRead3()
 
       if (r->exec())
       {
-        currentEvent->SetPending(false);
-        CEventChat* c = dynamic_cast<CEventChat*>(currentEvent);
-        btnRead2->setEnabled(false);
-        btnRead3->setEnabled(false);
+        myCurrentEvent->SetPending(false);
+        CEventChat* c = dynamic_cast<CEventChat*>(myCurrentEvent);
+        myRead2Button->setEnabled(false);
+        myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->icqChatRequestRefuse(
             strtoul(myUsers.front().c_str(), NULL, 10),
-            myCodec->fromUnicode(r->RefuseMessage()), currentEvent->Sequence(),
+            myCodec->fromUnicode(r->RefuseMessage()), myCurrentEvent->Sequence(),
             c->MessageID(), c->IsDirect());
       }
       delete r;
@@ -527,15 +527,15 @@ void UserViewEvent::slotBtnRead3()
 
       if (r->exec())
       {
-        currentEvent->SetPending(false);
-        CEventFile* f = dynamic_cast<CEventFile*>(currentEvent);
-        btnRead2->setEnabled(false);
-        btnRead3->setEnabled(false);
+        myCurrentEvent->SetPending(false);
+        CEventFile* f = dynamic_cast<CEventFile*>(myCurrentEvent);
+        myRead2Button->setEnabled(false);
+        myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->icqFileTransferRefuse(
             strtoul(myUsers.front().c_str(), NULL, 10),
-            myCodec->fromUnicode(r->RefuseMessage()), currentEvent->Sequence(),
+            myCodec->fromUnicode(r->RefuseMessage()), myCurrentEvent->Sequence(),
             f->MessageID(), f->IsDirect());
       }
       delete r;
@@ -544,19 +544,19 @@ void UserViewEvent::slotBtnRead3()
 
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
-      CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(currentEvent);
+      CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
       gLicqDaemon->AddUserToList(p->IdString(), p->PPID());
       break;
     }
   } // switch
 }
 
-void UserViewEvent::slotBtnRead4()
+void UserViewEvent::read4()
 {
-  if (currentEvent == NULL)
+  if (myCurrentEvent == NULL)
     return;
 
-  switch (currentEvent->SubCommand())
+  switch (myCurrentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:
       LicqGui::instance()->showEventDialog(ChatEvent, myUsers.front().c_str(), myPpid);
@@ -564,7 +564,7 @@ void UserViewEvent::slotBtnRead4()
 
     case ICQ_CMDxSUB_CHAT:  // join to current chat
     {
-      CEventChat* c = dynamic_cast<CEventChat*>(currentEvent);
+      CEventChat* c = dynamic_cast<CEventChat*>(myCurrentEvent);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
         ChatDlg* chatDlg = new ChatDlg(myUsers.front().c_str(), myPpid);
@@ -589,76 +589,76 @@ void UserViewEvent::slotBtnRead4()
     }
 
     case ICQ_CMDxSUB_URL:   // view a url
-      emit viewUrl(this, dynamic_cast<CEventUrl*>(currentEvent)->Url());
+      emit viewUrl(this, dynamic_cast<CEventUrl*>(myCurrentEvent)->Url());
       break;
   } // switch
 }
 
-void UserViewEvent::slotBtnReadNext()
+void UserViewEvent::readNext()
 {
-  MessageListItem* e = msgView->getNextUnread();
+  MessageListItem* e = myMessageList->getNextUnread();
 
   updateNextButton();
 
   if (e != NULL)
   {
-    msgView->setCurrentItem(e, 0);
-    msgView->scrollToItem(e);
-    slotPrintMessage(e);
+    myMessageList->setCurrentItem(e, 0);
+    myMessageList->scrollToItem(e);
+    printMessage(e);
   }
 }
 
-void UserViewEvent::slotClearEvent()
+void UserViewEvent::clearEvent()
 {
   ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_W);
 
   if (u == NULL)
     return;
 
-  u->EventClearId(currentEvent->Id());
+  u->EventClearId(myCurrentEvent->Id());
   gUserManager.DropUser(u);
 }
 
-void UserViewEvent::slotClose()
+void UserViewEvent::closeDialog()
 {
-  myDeleteUser = btnClose->modifiersWhenPressed() & Qt::ControlModifier;
+  myDeleteUser = myCloseButton->modifiersWhenPressed() & Qt::ControlModifier;
   close();
 }
 
-void UserViewEvent::slotMsgTypeChanged(UserSendCommon* from, UserSendCommon* to)
+void UserViewEvent::msgTypeChanged(UserSendCommon* from, UserSendCommon* to)
 {
-  disconnect(from, SIGNAL(autoCloseNotify()), this, SLOT(slotAutoClose()));
+  disconnect(from, SIGNAL(autoCloseNotify()), this, SLOT(autoClose()));
   disconnect(from, SIGNAL(msgTypeChanged(UserSendCommon*, UserSendCommon*)),
-      this, SLOT(slotMsgTypeChanged(UserSendCommon*, UserSendCommon*)));
+      this, SLOT(msgTypeChanged(UserSendCommon*, UserSendCommon*)));
 
-  connect(to, SIGNAL(autoCloseNotify()), SLOT(slotAutoClose()));
+  connect(to, SIGNAL(autoCloseNotify()), SLOT(autoClose()));
   connect(to, SIGNAL(msgTypeChanged(UserSendCommon*, UserSendCommon*)),
-      SLOT(slotMsgTypeChanged(UserSendCommon*, UserSendCommon*)));
+      SLOT(msgTypeChanged(UserSendCommon*, UserSendCommon*)));
 }
 
-void UserViewEvent::slotPrintMessage(QTreeWidgetItem* item)
+void UserViewEvent::printMessage(QTreeWidgetItem* item)
 {
   if (item == NULL)
     return;
 
   MessageListItem* e = dynamic_cast<MessageListItem*>(item);
 
-  btnRead1->setText("");
-  btnRead2->setText("");
-  btnRead3->setText("");
-  btnRead4->setText("");
-  btnRead1->setEnabled(false);
-  btnRead2->setEnabled(false);
-  btnRead3->setEnabled(false);
-  btnRead4->setEnabled(false);
+  myRead1Button->setText("");
+  myRead2Button->setText("");
+  myRead3Button->setText("");
+  myRead4Button->setText("");
+  myRead1Button->setEnabled(false);
+  myRead2Button->setEnabled(false);
+  myRead3Button->setEnabled(false);
+  myRead4Button->setEnabled(false);
   myEncoding->setEnabled(true);
 
   CUserEvent* m = e->msg();
-  currentEvent = m;
+  myCurrentEvent = m;
 
   // Set the color for the message
-  mlvRead->setBackground(QColor(m->Color()->BackRed(), m->Color()->BackGreen(), m->Color()->BackBlue()));
-  mlvRead->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
+  myMessageView->setBackground(QColor(m->Color()->BackRed(), m->Color()->BackGreen(), m->Color()->BackBlue()));
+  myMessageView->setForeground(QColor(m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue()));
 
   // Set the text
   if (m->SubCommand() == ICQ_CMDxSUB_SMS)
@@ -668,9 +668,9 @@ void UserViewEvent::slotPrintMessage(QTreeWidgetItem* item)
 
   QString colorAttr;
   colorAttr.sprintf("#%02lx%02lx%02lx", m->Color()->ForeRed(), m->Color()->ForeGreen(), m->Color()->ForeBlue());
-  mlvRead->setText("<font color=\"" + colorAttr + "\">" + MLView::toRichText(myMessageText, true) + "</font>");
+  myMessageView->setText("<font color=\"" + colorAttr + "\">" + MLView::toRichText(myMessageText, true) + "</font>");
 
-  mlvRead->GotoHome();
+  myMessageView->GotoHome();
 
   if (m->Direction() == D_RECEIVER &&
       (m->Command() == ICQ_CMDxTCP_START ||
@@ -681,30 +681,30 @@ void UserViewEvent::slotPrintMessage(QTreeWidgetItem* item)
     {
       case ICQ_CMDxSUB_CHAT:  // accept or refuse a chat request
       case ICQ_CMDxSUB_FILE:  // accept or refuse a file transfer
-        btnRead1->setText(tr("&Reply"));
+        myRead1Button->setText(tr("&Reply"));
         if (m->IsCancelled())
-          mlvRead->append(tr("\n--------------------\nRequest was cancelled."));
+          myMessageView->append(tr("\n--------------------\nRequest was cancelled."));
         else
         {
           if (m->Pending())
           {
-            btnRead2->setText(tr("A&ccept"));
-            btnRead3->setText(tr("&Refuse"));
+            myRead2Button->setText(tr("A&ccept"));
+            myRead3Button->setText(tr("&Refuse"));
           }
           // If this is a chat, and we already have chats going, and this is
           // not a join request, then we can join
           if (m->SubCommand() == ICQ_CMDxSUB_CHAT &&
               ChatDlg::chatDlgs.size() > 0 &&
               dynamic_cast<CEventChat*>(m)->Port() == 0)
-            btnRead4->setText(tr("&Join"));
+            myRead4Button->setText(tr("&Join"));
         }
         break;
 
       case ICQ_CMDxSUB_MSG:
-        btnRead1->setText(tr("&Reply"));
-        btnRead2->setText(tr("&Quote"));
-        btnRead3->setText(tr("&Forward"));
-        btnRead4->setText(tr("Start Chat"));
+        myRead1Button->setText(tr("&Reply"));
+        myRead2Button->setText(tr("&Quote"));
+        myRead3Button->setText(tr("&Forward"));
+        myRead4Button->setText(tr("Start Chat"));
         break;
 
       case ICQ_CMDxSUB_SMS:
@@ -712,23 +712,23 @@ void UserViewEvent::slotPrintMessage(QTreeWidgetItem* item)
         break;
 
       case ICQ_CMDxSUB_URL:   // view a url
-        btnRead1->setText(tr("&Reply"));
-        btnRead2->setText(tr("&Quote"));
-        btnRead3->setText(tr("&Forward"));
+        myRead1Button->setText(tr("&Reply"));
+        myRead2Button->setText(tr("&Quote"));
+        myRead3Button->setText(tr("&Forward"));
 #ifndef USE_KDE
         if (gLicqDaemon->getUrlViewer() != NULL)
 #endif
-          btnRead4->setText(tr("&View"));
+          myRead4Button->setText(tr("&View"));
         break;
 
       case ICQ_CMDxSUB_AUTHxREQUEST:
       {
-        btnRead1->setText(tr("A&uthorize"));
-        btnRead2->setText(tr("&Refuse"));
+        myRead1Button->setText(tr("A&uthorize"));
+        myRead2Button->setText(tr("&Refuse"));
         CEventAuthRequest* pAuthReq = dynamic_cast<CEventAuthRequest*>(m);
         ICQUser* u = gUserManager.FetchUser(pAuthReq->IdString(), pAuthReq->PPID(), LOCK_R);
         if (u == NULL)
-          btnRead3->setText(tr("A&dd User"));
+          myRead3Button->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -739,7 +739,7 @@ void UserViewEvent::slotPrintMessage(QTreeWidgetItem* item)
         CEventAuthGranted* pAuth = dynamic_cast<CEventAuthGranted*>(m);
         ICQUser* u = gUserManager.FetchUser(pAuth->IdString(), pAuth->PPID(), LOCK_R);
         if (u == NULL)
-          btnRead1->setText(tr("A&dd User"));
+          myRead1Button->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -750,7 +750,7 @@ void UserViewEvent::slotPrintMessage(QTreeWidgetItem* item)
         CEventAdded* pAdd = dynamic_cast<CEventAdded*>(m);
         ICQUser* u = gUserManager.FetchUser(pAdd->IdString(), pAdd->PPID(), LOCK_R);
         if (u == NULL)
-          btnRead1->setText(tr("A&dd User"));
+          myRead1Button->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
         break;
@@ -760,50 +760,50 @@ void UserViewEvent::slotPrintMessage(QTreeWidgetItem* item)
       {
         int s = dynamic_cast<CEventContactList*>(m)->Contacts().size();
         if (s > 1)
-          btnRead1->setText(tr("A&dd %1 Users").arg(s));
+          myRead1Button->setText(tr("A&dd %1 Users").arg(s));
         else
           if (s == 1)
-            btnRead1->setText(tr("A&dd User"));
+            myRead1Button->setText(tr("A&dd User"));
         break;
       }
 
       case ICQ_CMDxSUB_EMAILxALERT:
-        btnRead1->setText(tr("&View Email"));
+        myRead1Button->setText(tr("&View Email"));
         break;
     } // switch
   }  // if
 
-  if (!btnRead1->text().isEmpty())
-    btnRead1->setEnabled(true);
-  if (!btnRead2->text().isEmpty())
-    btnRead2->setEnabled(true);
-  if (!btnRead3->text().isEmpty())
-    btnRead3->setEnabled(true);
-  if (!btnRead4->text().isEmpty())
-    btnRead4->setEnabled(true);
+  if (!myRead1Button->text().isEmpty())
+    myRead1Button->setEnabled(true);
+  if (!myRead2Button->text().isEmpty())
+    myRead2Button->setEnabled(true);
+  if (!myRead3Button->text().isEmpty())
+    myRead3Button->setEnabled(true);
+  if (!myRead4Button->text().isEmpty())
+    myRead4Button->setEnabled(true);
 
-  btnRead1->setFocus();
+  myRead1Button->setFocus();
 
   if (e->isUnread())
   {
     // clear the event only after all the slots have been invoked
-    QTimer::singleShot(20, this, SLOT(slotClearEvent()));
+    QTimer::singleShot(20, this, SLOT(clearEvent()));
     e->MarkRead();
   }
 }
 
-void UserViewEvent::slotSentEvent(ICQEvent* e)
+void UserViewEvent::sentEvent(ICQEvent* e)
 {
   if (e->PPID() != myPpid || strcmp(myUsers.front().c_str(), e->Id()) != 0)
     return;
 
   if (!Config::Chat::instance()->msgChatView())
-    new MessageListItem(e->GrabUserEvent(), myCodec, msgView);
+    new MessageListItem(e->GrabUserEvent(), myCodec, myMessageList);
 }
 
-void UserViewEvent::slotSetEncoding()
+void UserViewEvent::setEncoding()
 {
   // if we have an open view, just refresh it
-  if (msgView != NULL)
-    slotPrintMessage(msgView->currentItem());
+  if (myMessageList != NULL)
+    printMessage(myMessageList->currentItem());
 }

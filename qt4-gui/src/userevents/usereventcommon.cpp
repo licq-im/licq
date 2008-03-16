@@ -56,6 +56,9 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserEventCommon */
 
+using std::list;
+using std::string;
+
 UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent, const char* name)
   : QWidget(parent),
     myPpid(ppid),
@@ -93,13 +96,13 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   myDeleteUser = false;
   myConvoId = 0;
 
-  top_hlay = new QHBoxLayout(this);
-  top_lay = new QVBoxLayout();
-  top_hlay->addLayout(top_lay);
-  top_hlay->setStretchFactor(top_lay, 1);
+  myTophLayout = new QHBoxLayout(this);
+  myTopLayout = new QVBoxLayout();
+  myTophLayout->addLayout(myTopLayout);
+  myTophLayout->setStretchFactor(myTopLayout, 1);
 
   QHBoxLayout* layt = new QHBoxLayout();
-  top_lay->addLayout(layt);
+  myTopLayout->addLayout(layt);
 
   myToolBar = new QToolBar();
   myToolBar->setIconSize(QSize(16, 16));
@@ -118,38 +121,38 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   myTimezone->setFocusPolicy(Qt::ClickFocus);
   layt->addWidget(myTimezone);
 
-  myMenu = myToolBar->addAction(tr("Menu"), this, SLOT(slotUserMenu()));
+  myMenu = myToolBar->addAction(tr("Menu"), this, SLOT(showUserMenu()));
   myMenu->setShortcut(Qt::ALT + Qt::Key_M);
   pushToolTip(myMenu, tr("Open user menu"));
   myMenu->setMenu(LicqGui::instance()->userMenu());
   if (myIsOwner)
     myMenu->setEnabled(false);
 
-  myHistory = myToolBar->addAction(tr("History..."), this, SLOT(slotShowHistory()));
+  myHistory = myToolBar->addAction(tr("History..."), this, SLOT(showHistory()));
   myHistory->setShortcut(Qt::ALT + Qt::Key_H);
   pushToolTip(myHistory, tr("Show user history"));
 
-  myInfo = myToolBar->addAction(tr("User Info..."), this, SLOT(slotShowUserInfo()));
+  myInfo = myToolBar->addAction(tr("User Info..."), this, SLOT(showUserInfo()));
   myInfo->setShortcut(Qt::ALT + Qt::Key_I);
   pushToolTip(myInfo, tr("Show user information"));
 
-  popupEncoding = new QMenu(this);
+  myEncodingsMenu = new QMenu(this);
 
   myEncoding = myToolBar->addAction(tr("Encoding"), this, SLOT(showEncodingsMenu()));
   myEncoding->setShortcut(Qt::ALT + Qt::Key_O);
   pushToolTip(myEncoding, tr("Select the text encoding used for outgoing messages."));
-  myEncoding->setMenu(popupEncoding);
+  myEncoding->setMenu(myEncodingsMenu);
 
   myToolBar->addSeparator();
 
-  mySecure = myToolBar->addAction(tr("Secure Channel"), this, SLOT(slotSwitchSecurity()));
+  mySecure = myToolBar->addAction(tr("Secure Channel"), this, SLOT(switchSecurity()));
   mySecure->setShortcut(Qt::ALT + Qt::Key_E);
   pushToolTip(mySecure, tr("Open / Close secure channel"));
   if (!(mySendFuncs & PP_SEND_SECURE))
     mySecure->setEnabled(false);
 
-  tmrTime = NULL;
-  tmrTyping = NULL;
+  myTimeTimer = NULL;
+  myTypingTimer = NULL;
 
   ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
   if (u != NULL)
@@ -171,8 +174,8 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
     gUserManager.DropUser(u);
   }
 
-  encodingsGroup = new QActionGroup(this);
-  connect(encodingsGroup, SIGNAL(triggered(QAction*)), SLOT(slotSetEncoding(QAction*)));
+  myEncodingsGroup = new QActionGroup(this);
+  connect(myEncodingsGroup, SIGNAL(triggered(QAction*)), SLOT(setEncoding(QAction*)));
 
   QString codec_name = QString::fromLatin1(myCodec->name()).toLower();
 
@@ -189,7 +192,7 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
     if (!currentCodec && !Config::Chat::instance()->showAllEncodings() && !it->isMinimal)
       continue;
 
-    QAction* a = new QAction(UserCodec::nameForEncoding(it->encoding), encodingsGroup);
+    QAction* a = new QAction(UserCodec::nameForEncoding(it->encoding), myEncodingsGroup);
     a->setCheckable(true);
     a->setData(it->mib);
 
@@ -199,22 +202,22 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
     if (currentCodec && !Config::Chat::instance()->showAllEncodings() && !it->isMinimal)
     {
       // if the current encoding does not appear in the minimal list
-      popupEncoding->insertSeparator(popupEncoding->actions()[0]);
-      popupEncoding->insertAction(popupEncoding->actions()[0], a);
+      myEncodingsMenu->insertSeparator(myEncodingsMenu->actions()[0]);
+      myEncodingsMenu->insertAction(myEncodingsMenu->actions()[0], a);
     }
     else
     {
-      popupEncoding->addAction(a);
+      myEncodingsMenu->addAction(a);
     }
   }
 
   // We might be called from a slot so connect the signal only after all the
   // existing signals are handled.
-  QTimer::singleShot(0, this, SLOT(slotConnectSignal()));
+  QTimer::singleShot(0, this, SLOT(connectSignal()));
 
-  mainWidget = new QVBoxLayout();
-  mainWidget->setContentsMargins(0, 0, 0, 0);
-  top_lay->addLayout(mainWidget);
+  myMainWidget = new QVBoxLayout();
+  myMainWidget->setContentsMargins(0, 0, 0, 0);
+  myTopLayout->addLayout(myMainWidget);
 
   updateIcons();
   connect(IconManager::instance(), SIGNAL(generalIconsChanged()), SLOT(updateIcons()));
@@ -222,7 +225,7 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   // Check if we want the window sticky
   if (!Config::Chat::instance()->tabbedChatting() &&
       Config::Chat::instance()->msgWinSticky())
-    QTimer::singleShot(100, this, SLOT(slotSetMsgWinSticky()));
+    QTimer::singleShot(100, this, SLOT(setMsgWinSticky()));
 }
 
 UserEventCommon::~UserEventCommon()
@@ -258,10 +261,10 @@ void UserEventCommon::setTyping(unsigned short type)
 {
   if (type == ICQ_TYPING_ACTIVE)
   {
-    if (tmrTyping->isActive())
-      tmrTyping->stop();
-    tmrTyping->setSingleShot(true);
-    tmrTyping->start(10000);
+    if (myTypingTimer->isActive())
+      myTypingTimer->stop();
+    myTypingTimer->setSingleShot(true);
+    myTypingTimer->start(10000);
 
     QPalette p = myTimezone->palette();
     p.setColor(myTimezone->backgroundRole(), Config::Chat::instance()->tabTypingColor());
@@ -288,20 +291,20 @@ void UserEventCommon::updateWidgetInfo(ICQUser* u)
   else
   {
     myRemoteTimeOffset = u->LocalTimeOffset();
-    slotUpdateTime();
+    updateTime();
 
-    if (tmrTime == NULL)
+    if (myTimeTimer == NULL)
     {
-      tmrTime = new QTimer(this);
-      connect(tmrTime, SIGNAL(timeout()), SLOT(slotUpdateTime()));
-      tmrTime->start(3000);
+      myTimeTimer = new QTimer(this);
+      connect(myTimeTimer, SIGNAL(timeout()), SLOT(updateTime()));
+      myTimeTimer->start(3000);
     }
   }
 
-  if (tmrTyping == NULL)
+  if (myTypingTimer == NULL)
   {
-    tmrTyping = new QTimer(this);
-    connect(tmrTyping, SIGNAL(timeout()), SLOT(slotUpdateTyping()));
+    myTypingTimer = new QTimer(this);
+    connect(myTypingTimer, SIGNAL(timeout()), SLOT(updateTyping()));
   }
 
   if (u->Secure())
@@ -344,13 +347,13 @@ void UserEventCommon::pushToolTip(QAction* action, QString tooltip)
   action->setToolTip(newtip);
 }
 
-void UserEventCommon::slotConnectSignal()
+void UserEventCommon::connectSignal()
 {
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(CICQSignal*)), SLOT(slotUserUpdated(CICQSignal*)));
+      SIGNAL(updatedUser(CICQSignal*)), SLOT(updatedUser(CICQSignal*)));
 }
 
-void UserEventCommon::slotSetEncoding(QAction* action)
+void UserEventCommon::setEncoding(QAction* action)
 {
   int encodingMib = action->data().toUInt();
 
@@ -383,34 +386,34 @@ void UserEventCommon::slotSetEncoding(QAction* action)
   }
 }
 
-void UserEventCommon::slotSetMsgWinSticky(bool sticky)
+void UserEventCommon::setMsgWinSticky(bool sticky)
 {
   Support::changeWinSticky(winId(), sticky);
 }
 
-void UserEventCommon::slotShowHistory()
+void UserEventCommon::showHistory()
 {
   new HistoryDlg(myUsers.front().c_str(), myPpid);
 }
 
-void UserEventCommon::slotShowUserInfo()
+void UserEventCommon::showUserInfo()
 {
   LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUsers.front().c_str(), myPpid, true);
 }
 
-void UserEventCommon::slotSwitchSecurity()
+void UserEventCommon::switchSecurity()
 {
   new KeyRequestDlg(QString::fromAscii(myUsers.front().c_str()), myPpid);
 }
 
-void UserEventCommon::slotUpdateTime()
+void UserEventCommon::updateTime()
 {
   QDateTime t;
   t.setTime_t(time(NULL) + myRemoteTimeOffset);
   myTimezone->setText(t.time().toString());
 }
 
-void UserEventCommon::slotUpdateTyping()
+void UserEventCommon::updateTyping()
 {
   // MSN needs this, ICQ/AIM doesn't send additional packets
   // This does need to be verified with the official AIM client, there is a
@@ -428,7 +431,7 @@ void UserEventCommon::slotUpdateTyping()
   gUserManager.DropUser(u);
 }
 
-void UserEventCommon::slotUserMenu()
+void UserEventCommon::showUserMenu()
 {
   // Tell menu which contact to use and show it immediately.
   // Menu is normally delayed but if we use InstantPopup mode we won't get
@@ -443,7 +446,7 @@ void UserEventCommon::showEncodingsMenu()
   dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myEncoding))->showMenu();
 }
 
-void UserEventCommon::slotUserUpdated(CICQSignal* sig)
+void UserEventCommon::updatedUser(CICQSignal* sig)
 {
   if (myPpid != sig->PPID() || !isUserInConvo(sig->Id()))
   {

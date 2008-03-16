@@ -102,38 +102,38 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   : UserEventCommon(id, ppid, parent, name),
     myType(type)
 {
-  grpMR = NULL;
-  lblPicture = NULL;
+  myMassMessageBox = NULL;
+  myPictureLabel = NULL;
   clearDelay = 250;
 
   QShortcut* a = new QShortcut(Qt::Key_Escape, this);
-  connect(a, SIGNAL(activated()), SLOT(slotCancelSend()));
+  connect(a, SIGNAL(activated()), SLOT(cancelSend()));
 
   UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
   if (tabDlg != NULL && parent == tabDlg)
   {
     a = new QShortcut(Qt::ALT + Qt::Key_Left, this);
-    connect(a, SIGNAL(activated()), tabDlg, SLOT(slotMoveLeft()));
+    connect(a, SIGNAL(activated()), tabDlg, SLOT(moveLeft()));
 
     a = new QShortcut(Qt::CTRL + Qt::SHIFT + Qt::Key_Tab, this);
-    connect(a, SIGNAL(activated()), tabDlg, SLOT(slotMoveLeft()));
+    connect(a, SIGNAL(activated()), tabDlg, SLOT(moveLeft()));
 
     a = new QShortcut(Qt::ALT + Qt::Key_Right, this);
-    connect(a, SIGNAL(activated()), tabDlg, SLOT(slotMoveRight()));
+    connect(a, SIGNAL(activated()), tabDlg, SLOT(moveRight()));
 
     a = new QShortcut(Qt::CTRL + Qt::Key_Tab, this);
-    connect(a, SIGNAL(activated()), tabDlg, SLOT(slotMoveRight()));
+    connect(a, SIGNAL(activated()), tabDlg, SLOT(moveRight()));
   }
 
-  grpSendType = new QActionGroup(this);
-  connect(grpSendType, SIGNAL(triggered(QAction*)), SLOT(slotChangeEventType(QAction*)));
+  myEventTypeGroup = new QActionGroup(this);
+  connect(myEventTypeGroup, SIGNAL(triggered(QAction*)), SLOT(changeEventType(QAction*)));
 
   QAction* action;
   int eventTypesCount = 0;
 
 #define ADD_SENDTYPE(eventFlag, eventType, caption) \
     if (mySendFuncs & eventFlag) { \
-      action = new QAction(caption, grpSendType); \
+      action = new QAction(caption, myEventTypeGroup); \
       action->setData(eventType); \
       action->setCheckable(true); \
       eventTypesCount++; \
@@ -150,19 +150,19 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 #undef ADD_SENDTYPE
 
   QMenu* mnuSendType = new QMenu(this);
-  mnuSendType->addActions(grpSendType->actions());
+  mnuSendType->addActions(myEventTypeGroup->actions());
 
-  cmbSendType = myToolBar->addAction(tr("Message type"), this, SLOT(slotShowSendTypeMenu()));
-  cmbSendType->setShortcut(Qt::ALT + Qt::Key_P);
-  pushToolTip(cmbSendType, tr("Select type of message to send"));
-  cmbSendType->setMenu(mnuSendType);
+  myEventTypeMenu = myToolBar->addAction(tr("Message type"), this, SLOT(showSendTypeMenu()));
+  myEventTypeMenu->setShortcut(Qt::ALT + Qt::Key_P);
+  pushToolTip(myEventTypeMenu, tr("Select type of message to send"));
+  myEventTypeMenu->setMenu(mnuSendType);
   if (eventTypesCount <= 1)
-    cmbSendType->setEnabled(false);
+    myEventTypeMenu->setEnabled(false);
 
-  chkSendServer = myToolBar->addAction(tr("Send through server"));
-  chkSendServer->setShortcut(Qt::ALT + Qt::Key_N);
-  pushToolTip(chkSendServer, tr("Send through server"));
-  chkSendServer->setCheckable(true);
+  mySendServerCheck = myToolBar->addAction(tr("Send through server"));
+  mySendServerCheck->setShortcut(Qt::ALT + Qt::Key_N);
+  pushToolTip(mySendServerCheck, tr("Send through server"));
+  mySendServerCheck->setCheckable(true);
 
   bool canSendDirect = (mySendFuncs & PP_SEND_DIRECT);
 
@@ -170,7 +170,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 
   if (u != NULL)
   {
-    chkSendServer->setChecked(u->SendServer() ||
+    mySendServerCheck->setChecked(u->SendServer() ||
         (u->StatusOffline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
 
     if (u->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST) ||
@@ -181,58 +181,58 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   }
   if (!canSendDirect)
   {
-    chkSendServer->setChecked(true);
-    chkSendServer->setEnabled(false);
+    mySendServerCheck->setChecked(true);
+    mySendServerCheck->setEnabled(false);
   }
 
-  chkUrgent = myToolBar->addAction(tr("Urgent"));
-  chkUrgent->setShortcut(Qt::ALT + Qt::Key_R);
-  pushToolTip(chkUrgent, tr("Urgent"));
-  chkUrgent->setCheckable(true);
+  myUrgentCheck = myToolBar->addAction(tr("Urgent"));
+  myUrgentCheck->setShortcut(Qt::ALT + Qt::Key_R);
+  pushToolTip(myUrgentCheck, tr("Urgent"));
+  myUrgentCheck->setCheckable(true);
 
-  chkMass = myToolBar->addAction(tr("Multiple Recipients"));
-  chkMass->setShortcut(Qt::ALT + Qt::Key_U);
-  pushToolTip(chkMass, tr("Multiple recipients"));
-  chkMass->setCheckable(true);
-  connect(chkMass, SIGNAL(toggled(bool)), SLOT(slotMassMessageToggled(bool)));
+  myMassMessageCheck = myToolBar->addAction(tr("Multiple Recipients"));
+  myMassMessageCheck->setShortcut(Qt::ALT + Qt::Key_U);
+  pushToolTip(myMassMessageCheck, tr("Multiple recipients"));
+  myMassMessageCheck->setCheckable(true);
+  connect(myMassMessageCheck, SIGNAL(toggled(bool)), SLOT(massMessageToggled(bool)));
 
   myToolBar->addSeparator();
 
-  myEmoticon = myToolBar->addAction(tr("Smileys"), this, SLOT(slotEmoticon()));
+  myEmoticon = myToolBar->addAction(tr("Smileys"), this, SLOT(showEmoticonsMenu()));
   myEmoticon->setShortcut(Qt::ALT + Qt::Key_L);
   pushToolTip(myEmoticon, tr("Insert smileys"));
 
-  myForeColor = myToolBar->addAction(tr("Text Color..."), this, SLOT(slotSetForegroundICQColor()));
+  myForeColor = myToolBar->addAction(tr("Text Color..."), this, SLOT(setForegroundICQColor()));
   myForeColor->setShortcut(Qt::ALT + Qt::Key_T);
   pushToolTip(myForeColor, tr("Change text color"));
 
-  myBackColor = myToolBar->addAction(tr("Background Color..."), this, SLOT(slotSetBackgroundICQColor()));
+  myBackColor = myToolBar->addAction(tr("Background Color..."), this, SLOT(setBackgroundICQColor()));
   myBackColor->setShortcut(Qt::ALT + Qt::Key_B);
   pushToolTip(myBackColor, tr("Change background color"));
 
   QDialogButtonBox* buttons = new QDialogButtonBox();
-  top_lay->addWidget(buttons);
+  myTopLayout->addWidget(buttons);
 
-  btnSend = buttons->addButton(tr("&Send"), QDialogButtonBox::ActionRole);
-  btnSend->setDefault(true);
+  mySendButton = buttons->addButton(tr("&Send"), QDialogButtonBox::ActionRole);
+  mySendButton->setDefault(true);
   // add a wrapper around the send button that
   // tries to establish a secure connection first.
-  connect(btnSend, SIGNAL(clicked()), SLOT(sendTrySecure()));
+  connect(mySendButton, SIGNAL(clicked()), SLOT(sendTrySecure()));
 
-  btnClose = buttons->addButton(QDialogButtonBox::Close);
-  btnClose->setAutoDefault(true);
-  connect(btnClose, SIGNAL(clicked()), SLOT(slotClose()));
+  myCloseButton = buttons->addButton(QDialogButtonBox::Close);
+  myCloseButton->setAutoDefault(true);
+  connect(myCloseButton, SIGNAL(clicked()), SLOT(closeDialog()));
 
   buttons->setVisible(Config::Chat::instance()->showSendClose());
 
-  splView = new QSplitter(Qt::Vertical);
-  top_lay->addWidget(splView);
+  myViewSplitter = new QSplitter(Qt::Vertical);
+  myTopLayout->addWidget(myViewSplitter);
 
-  mleHistory = 0;
+  myHistoryView = 0;
   if (Config::Chat::instance()->msgChatView())
   {
-    mleHistory = new HistoryView(false, myUsers.front().c_str(), myPpid, splView);
-    connect(mleHistory, SIGNAL(messageAdded()), SLOT(slotMessageAdded()));
+    myHistoryView = new HistoryView(false, myUsers.front().c_str(), myPpid, myViewSplitter);
+    connect(myHistoryView, SIGNAL(messageAdded()), SLOT(messageAdded()));
 
     u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
     if (u != NULL && Config::Chat::instance()->showHistory())
@@ -285,7 +285,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
           else
             messageText = myCodec->toUnicode((*lHistoryIter)->Text());
 
-          mleHistory->addMsg(
+          myHistoryView->addMsg(
               (*lHistoryIter)->Direction(),
               true,
               (*lHistoryIter)->SubCommand() == ICQ_CMDxSUB_MSG ? "" : EventDescription(*lHistoryIter) + " ",
@@ -299,7 +299,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
           lHistoryIter++;
         }
 
-        mleHistory->GotoEnd();
+        myHistoryView->GotoEnd();
 
         ICQUser::ClearHistory(lHistoryList);
       }
@@ -365,7 +365,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
       vector<messagePair>::iterator messageIter;
       for (messageIter = messages.begin(); messageIter != messages.end(); messageIter++)
       {
-        mleHistory->addMsg((*messageIter).first, (*messageIter).second, myPpid);
+        myHistoryView->addMsg((*messageIter).first, (*messageIter).second, myPpid);
         free((*messageIter).second);
       }
       messages.clear();
@@ -403,52 +403,52 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 
     gUserManager.DropUser(u);
 
-    connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)),
+    connect(myHistoryView, SIGNAL(viewurl(QWidget*, QString)),
         LicqGui::instance(), SLOT(viewUrl(QWidget*, QString)));
     connect(gMainWindow, SIGNAL(signal_sentevent(ICQEvent*)),
-            mleHistory, SLOT(addMsg(ICQEvent*)));
-    //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
+        myHistoryView, SLOT(addMsg(ICQEvent*)));
+    //myViewSplitter->setResizeMode(myHistoryView, QSplitter::FollowSizeHint);
   }
 
   {
-    tmrSendTyping = new QTimer(this);
-    connect(tmrSendTyping, SIGNAL(timeout()), SLOT(slotTextChangedTimeout()));
+    mySendTypingTimer = new QTimer(this);
+    connect(mySendTypingTimer, SIGNAL(timeout()), SLOT(textChangedTimeout()));
   }
 
-  splPicture = new QSplitter(splView);
+  myPictureSplitter = new QSplitter(myViewSplitter);
 
-  mleSend = new MLEdit(true, splPicture, true);
-  mleSend->setSizeHintLines(3);
-  mleSend->setCheckSpellingEnabled(Config::Chat::instance()->checkSpelling());
-  mleSend->installEventFilter(this); // Enables send with enter
+  myMessageEdit = new MLEdit(true, myPictureSplitter, true);
+  myMessageEdit->setSizeHintLines(3);
+  myMessageEdit->setCheckSpellingEnabled(Config::Chat::instance()->checkSpelling());
+  myMessageEdit->installEventFilter(this); // Enables send with enter
 
   if (Config::Chat::instance()->msgChatView())
   {
-    splView->setStretchFactor(splView->indexOf(mleHistory), 1);
-    splView->setStretchFactor(splView->indexOf(splPicture), 0);
+    myViewSplitter->setStretchFactor(myViewSplitter->indexOf(myHistoryView), 1);
+    myViewSplitter->setStretchFactor(myViewSplitter->indexOf(myPictureSplitter), 0);
 
-    connect(mleHistory, SIGNAL(quote(const QString&)),
-        mleSend, SLOT(insertPlainText(const QString&)));
+    connect(myHistoryView, SIGNAL(quote(const QString&)),
+        myMessageEdit, SLOT(insertPlainText(const QString&)));
   }
 
-  setFocusProxy(mleSend);
+  setFocusProxy(myMessageEdit);
   if (Config::Chat::instance()->showSendClose())
   {
-    setTabOrder(mleSend, btnSend);
-    setTabOrder(btnSend, btnClose);
+    setTabOrder(myMessageEdit, mySendButton);
+    setTabOrder(mySendButton, myCloseButton);
   }
 
-  icqColor.SetToDefault();
-  mleSend->setBackground(QColor(icqColor.BackRed(), icqColor.BackGreen(), icqColor.BackBlue()));
-  mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
+  myIcqColor.SetToDefault();
+  myMessageEdit->setBackground(QColor(myIcqColor.BackRed(), myIcqColor.BackGreen(), myIcqColor.BackBlue()));
+  myMessageEdit->setForeground(QColor(myIcqColor.ForeRed(), myIcqColor.ForeGreen(), myIcqColor.ForeBlue()));
 
   updateIcons();
   updatePicture();
 
-  connect(mleSend, SIGNAL(ctrlEnterPressed()), btnSend, SIGNAL(clicked()));
-  connect(mleSend, SIGNAL(textChanged()), SLOT(messageTextChanged()));
+  connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
+  connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
   connect(this, SIGNAL(updateUser(CICQSignal*)), gMainWindow, SLOT(slot_updatedUser(CICQSignal*)));
-  connect(chkSendServer, SIGNAL(triggered(bool)), SLOT(slotSendServerToggled(bool)));
+  connect(mySendServerCheck, SIGNAL(triggered(bool)), SLOT(sendServerToggled(bool)));
 }
 
 UserSendCommon::~UserSendCommon()
@@ -458,7 +458,7 @@ UserSendCommon::~UserSendCommon()
 
 bool UserSendCommon::eventFilter(QObject* watched, QEvent* e)
 {
-  if (watched == mleSend)
+  if (watched == myMessageEdit)
   {
     // If we're in single line chat mode we send messages with Enter and
     // insert new lines with Ctrl+Enter.
@@ -469,9 +469,9 @@ bool UserSendCommon::eventFilter(QObject* watched, QEvent* e)
       if (isEnter)
       {
         if (key->modifiers() & Qt::ControlModifier)
-          mleSend->insertPlainText("\n");
+          myMessageEdit->insertPlainText("\n");
         else
-          btnSend->animateClick();
+          mySendButton->animateClick();
         return true; // filter the event out
       }
     }
@@ -488,16 +488,16 @@ void UserSendCommon::updateIcons()
   IconManager* iconman = IconManager::instance();
 
   // Toolbar buttons
-  cmbSendType->setIcon(iconForType(myType));
-  chkSendServer->setIcon(iconman->getIcon(IconManager::ThroughServerIcon));
-  chkUrgent->setIcon(iconman->getIcon(IconManager::UrgentIcon));
-  chkMass->setIcon(iconman->getIcon(IconManager::MultipleRecIcon));
+  myEventTypeMenu->setIcon(iconForType(myType));
+  mySendServerCheck->setIcon(iconman->getIcon(IconManager::ThroughServerIcon));
+  myUrgentCheck->setIcon(iconman->getIcon(IconManager::UrgentIcon));
+  myMassMessageCheck->setIcon(iconman->getIcon(IconManager::MultipleRecIcon));
   myEmoticon->setIcon(iconman->getIcon(IconManager::SmileIcon));
   myForeColor->setIcon(iconman->getIcon(IconManager::TextColorIcon));
   myBackColor->setIcon(iconman->getIcon(IconManager::BackColorIcon));
 
   // Update message type icons in menu
-  foreach (QAction* a, grpSendType->actions())
+  foreach (QAction* a, myEventTypeGroup->actions())
     a->setIcon(iconForType(a->data().toInt()));
 }
 
@@ -513,10 +513,10 @@ void UserSendCommon::updatePicture(ICQUser* u)
   if (u == NULL)
     return;
 
-  if (lblPicture != NULL)
+  if (myPictureLabel != NULL)
   {
-    delete lblPicture;
-    lblPicture = NULL;
+    delete myPictureLabel;
+    myPictureLabel = NULL;
   }
 
   if (Config::Chat::instance()->showUserPic() &&
@@ -526,13 +526,13 @@ void UserSendCommon::updatePicture(ICQUser* u)
     QMovie* picMovie = new QMovie(picPath);
     if (picMovie->isValid())
     {
-      lblPicture = new QLabel();
-      splPicture->insertWidget(1, lblPicture);
-      lblPicture->setMovie(picMovie);
+      myPictureLabel = new QLabel();
+      myPictureSplitter->insertWidget(1, myPictureLabel);
+      myPictureLabel->setMovie(picMovie);
       picMovie->start();
-      lblPicture->setFixedWidth(lblPicture->sizeHint().width());
+      myPictureLabel->setFixedWidth(myPictureLabel->sizeHint().width());
       if (Config::Chat::instance()->showUserPicHidden())
-        splPicture->setSizes(QList<int>() << 1 << 0);
+        myPictureSplitter->setSizes(QList<int>() << 1 << 0);
     }
     else
       delete picMovie;
@@ -569,12 +569,12 @@ const QPixmap& UserSendCommon::iconForType(int type) const
 
 void UserSendCommon::setText(const QString& text)
 {
-  if (mleSend == 0)
+  if (myMessageEdit == 0)
     return;
 
-  mleSend->setText(text);
-  mleSend->GotoEnd();
-  mleSend->document()->setModified(false);
+  myMessageEdit->setText(text);
+  myMessageEdit->GotoEnd();
+  myMessageEdit->document()->setModified(false);
 }
 
 void UserSendCommon::convoJoin(QString id, unsigned long convoId)
@@ -594,7 +594,7 @@ void UserSendCommon::convoJoin(QString id, unsigned long convoId)
     else
       userName = id;
 
-    mleHistory->addNotice(QDateTime::currentDateTime(),
+    myHistoryView->addNotice(QDateTime::currentDateTime(),
         tr("%1 has joined the conversation.").arg(userName));
   }
 
@@ -628,7 +628,7 @@ void UserSendCommon::convoLeave(QString id, unsigned long /* convoId */)
     else
       userName = id;
 
-    mleHistory->addNotice(QDateTime::currentDateTime(),
+    myHistoryView->addNotice(QDateTime::currentDateTime(),
         tr("%1 has left the conversation.").arg(userName));
 
     // Remove the typing notification if active
@@ -657,7 +657,7 @@ void UserSendCommon::convoLeave(QString id, unsigned long /* convoId */)
         break;
       }
     }
-    mleHistory->setOwner(myUsers.front().c_str());
+    myHistoryView->setOwner(myUsers.front().c_str());
   }
   else
     myConvoId = 0;
@@ -674,7 +674,7 @@ void UserSendCommon::convoLeave(QString id, unsigned long /* convoId */)
 void UserSendCommon::windowActivationChange(bool oldActive)
 {
   if (isActiveWindow())
-    QTimer::singleShot(clearDelay, this, SLOT(slotClearNewEvents()));
+    QTimer::singleShot(clearDelay, this, SLOT(clearNewEvents()));
   QWidget::windowActivationChange(oldActive);
 }
 
@@ -722,15 +722,15 @@ void UserSendCommon::changeEventType(int type)
 
   if (e != NULL)
   {
-    if (e->mleSend != 0 && mleSend != 0)
+    if (e->myMessageEdit != 0 && myMessageEdit != 0)
     {
-      e->mleSend->setText(mleSend->toPlainText());
-      e->mleSend->document()->setModified(mleSend->document()->isModified());
+      e->myMessageEdit->setText(myMessageEdit->toPlainText());
+      e->myMessageEdit->document()->setModified(myMessageEdit->document()->isModified());
     }
-    if (e->mleHistory != 0 && mleHistory != 0)
+    if (e->myHistoryView != 0 && myHistoryView != 0)
     {
-      e->mleHistory->setHtml(mleHistory->toHtml());
-      e->mleHistory->GotoEnd();
+      e->myHistoryView->setHtml(myHistoryView->toHtml());
+      e->myHistoryView->GotoEnd();
     }
 
     if (parent == 0)
@@ -756,8 +756,8 @@ void UserSendCommon::changeEventType(int type)
 void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
 {
   unsigned long icqEventTag = 0;
-  chkSendServer->setChecked(!online);
-  chkUrgent->setChecked(level == ICQ_TCPxMSG_URGENT);
+  mySendServerCheck->setChecked(!online);
+  myUrgentCheck->setChecked(level == ICQ_TCPxMSG_URGENT);
 
   switch (e->UserEvent()->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
   {
@@ -824,7 +824,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
         }
 
         icqEventTag = gLicqDaemon->icqSendMessage(myUsers.front().c_str(), messageRaw.data(),
-            online, level, false, &icqColor);
+            online, level, false, &myIcqColor);
 
         myEventTag.push_back(icqEventTag);
 
@@ -843,7 +843,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
       CEventUrl* ue = dynamic_cast<CEventUrl*>(e->UserEvent());
 
       icqEventTag = gLicqDaemon->ProtoSendUrl(myUsers.front().c_str(), myPpid, ue->Url(),
-          ue->Description(), online, level, false, &icqColor);
+          ue->Description(), online, level, false, &myIcqColor);
 
       break;
     }
@@ -861,7 +861,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
         break;
 
       icqEventTag = gLicqDaemon->icqSendContactList(strtoul(myUsers.front().c_str(), NULL, 10),
-          uins, online, level, false, &icqColor);
+          uins, online, level, false, &myIcqColor);
 
       break;
     }
@@ -932,14 +932,14 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
     {
       if (u->Port() == 0)
       {
-        chkSendServer->setChecked(true);
-        chkSendServer->setEnabled(false);
+        mySendServerCheck->setChecked(true);
+        mySendServerCheck->setEnabled(false);
       }
       else
-        chkSendServer->setEnabled(true);
+        mySendServerCheck->setEnabled(true);
 
       if (u->StatusOffline())
-        chkSendServer->setChecked(true);
+        mySendServerCheck->setChecked(true);
 
       break;
     }
@@ -949,7 +949,7 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
       CUserEvent* e = u->EventPeekId(sig->Argument());
 
       if (e != NULL && myHighestEventId < sig->Argument() &&
-          mleHistory && sig->Argument() > 0)
+          myHistoryView && sig->Argument() > 0)
       {
         myHighestEventId = sig->Argument();
         e = u->EventPeekId(sig->Argument());
@@ -958,7 +958,7 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
           if (sig->PPID() != MSN_PPID || (sig->PPID() == MSN_PPID && sig->CID() == myConvoId))
           {
             gUserManager.DropUser(u);
-            mleHistory->addMsg(e, id, ppid);
+            myHistoryView->addMsg(e, id, ppid);
             return;
           }
       }
@@ -971,7 +971,7 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
       if (u->Secure())
       {
         u->SetSendServer(false);
-        chkSendServer->setChecked(false);
+        mySendServerCheck->setChecked(false);
       }
       break;
 
@@ -994,7 +994,7 @@ bool UserSendCommon::checkSecure()
 
   gUserManager.DropUser(u);
 
-  if (chkSendServer->isChecked() && secure)
+  if (mySendServerCheck->isChecked() && secure)
   {
     if (!QueryYesNo(this, tr("Message can't be sent securely through the server!\n"
             "Send anyway?")))
@@ -1039,7 +1039,7 @@ void UserSendCommon::send()
 
   if (icqEventTag != 0 || myPpid != LICQ_PPID)
   {
-    bool via_server = chkSendServer->isChecked();
+    bool via_server = mySendServerCheck->isChecked();
     myProgressMsg = tr("Sending ");
     myProgressMsg += via_server ? tr("via server") : tr("direct");
     myProgressMsg += "...";
@@ -1051,21 +1051,21 @@ void UserSendCommon::send()
 
     setWindowTitle(title);
     setCursor(Qt::WaitCursor);
-    btnSend->setText(tr("&Cancel"));
-    btnClose->setEnabled(false);
+    mySendButton->setText(tr("&Cancel"));
+    myCloseButton->setEnabled(false);
 
-    if (mleSend != NULL)
-      mleSend->setEnabled(false);
+    if (myMessageEdit != NULL)
+      myMessageEdit->setEnabled(false);
 
-    disconnect(btnSend, SIGNAL(clicked()), this, SLOT(send()));
-    connect(btnSend, SIGNAL(clicked()), SLOT(slotCancelSend()));
+    disconnect(mySendButton, SIGNAL(clicked()), this, SLOT(send()));
+    connect(mySendButton, SIGNAL(clicked()), SLOT(cancelSend()));
 
     connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(ICQEvent*)), SLOT(slotSendDone(ICQEvent*)));
+        SIGNAL(doneUserFcn(ICQEvent*)), SLOT(eventDoneReceived(ICQEvent*)));
   }
 }
 
-void UserSendCommon::slotSendDone(ICQEvent* e)
+void UserSendCommon::eventDoneReceived(ICQEvent* e)
 {
   if (e == NULL)
   {
@@ -1081,7 +1081,7 @@ void UserSendCommon::slotSendDone(ICQEvent* e)
   }
 
   unsigned long icqEventTag = 0;
-  std::list<unsigned long>::iterator iter;
+  list<unsigned long>::iterator iter;
 
   for (iter = myEventTag.begin(); iter != myEventTag.end(); iter++)
   {
@@ -1102,7 +1102,7 @@ void UserSendCommon::slotSendDone(ICQEvent* e)
     case EVENT_ACKED: // Fall through
     case EVENT_SUCCESS:
       result = tr("done");
-      QTimer::singleShot(5000, this, SLOT(slotResetTitle()));
+      QTimer::singleShot(5000, this, SLOT(resetTitle()));
       break;
     case EVENT_CANCELLED:
       result = tr("cancelled");
@@ -1128,25 +1128,25 @@ void UserSendCommon::slotSendDone(ICQEvent* e)
   setWindowTitle(title);
 
   setCursor(Qt::ArrowCursor);
-  btnSend->setText(tr("&Send"));
-  btnClose->setEnabled(true);
+  mySendButton->setText(tr("&Send"));
+  myCloseButton->setEnabled(true);
 
-  if (mleSend != NULL)
-    mleSend->setEnabled(true);
+  if (myMessageEdit != NULL)
+    myMessageEdit->setEnabled(true);
 
-  disconnect(btnSend, SIGNAL(clicked()), this, SLOT(slotCancelSend()));
-  connect(btnSend, SIGNAL(clicked()), SLOT(send()));
+  disconnect(mySendButton, SIGNAL(clicked()), this, SLOT(cancelSend()));
+  connect(mySendButton, SIGNAL(clicked()), SLOT(send()));
 
   // If cancelled automatically, check "Send through Server"
   if (Config::Chat::instance()->autoSendThroughServer() && e->Result() == EVENT_CANCELLED)
-    chkSendServer->setChecked(true);
+    mySendServerCheck->setChecked(true);
 
   if (myEventTag.size() == 0)
     disconnect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(ICQEvent*)), this, SLOT(slotSendDone(ICQEvent*)));
+        SIGNAL(doneUserFcn(ICQEvent*)), this, SLOT(eventDoneReceived(ICQEvent*)));
 
-  if (mleSend != NULL)
-    mleSend->setFocus();
+  if (myMessageEdit != NULL)
+    myMessageEdit->setFocus();
 
   if (e->Result() != EVENT_ACKED)
   {
@@ -1201,9 +1201,9 @@ void UserSendCommon::slotSendDone(ICQEvent* e)
     if (sendDone(e))
     {
       emit gMainWindow->signal_sentevent(e);
-      if (Config::Chat::instance()->msgChatView() && mleHistory != NULL)
+      if (Config::Chat::instance()->msgChatView() && myHistoryView != NULL)
       {
-        mleHistory->GotoEnd();
+        myHistoryView->GotoEnd();
         resetSettings();
       }
       else
@@ -1212,7 +1212,7 @@ void UserSendCommon::slotSendDone(ICQEvent* e)
   }
 }
 
-void UserSendCommon::slotCancelSend()
+void UserSendCommon::cancelSend()
 {
   unsigned long icqEventTag = 0;
 
@@ -1220,7 +1220,7 @@ void UserSendCommon::slotCancelSend()
     icqEventTag = myEventTag.front();
 
   if (icqEventTag == 0)
-    return slotClose(); // if we're not sending atm, let ESC close the window
+    return closeDialog(); // if we're not sending atm, let ESC close the window
 
   UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
@@ -1229,12 +1229,12 @@ void UserSendCommon::slotCancelSend()
   gLicqDaemon->CancelEvent(icqEventTag);
 }
 
-void UserSendCommon::slotChangeEventType(QAction* action)
+void UserSendCommon::changeEventType(QAction* action)
 {
   changeEventType(action->data().toInt());
 }
 
-void UserSendCommon::slotClearNewEvents()
+void UserSendCommon::clearNewEvents()
 {
   ICQUser* u = NULL;
 
@@ -1272,7 +1272,7 @@ void UserSendCommon::slotClearNewEvents()
   }
 }
 
-void UserSendCommon::slotClose()
+void UserSendCommon::closeDialog()
 {
   gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
 
@@ -1280,20 +1280,20 @@ void UserSendCommon::slotClose()
   {
     // the window is at the front, if the timer has not expired and we close
     // the window, then the new events will stay there
-    slotClearNewEvents();
+    clearNewEvents();
   }
 
-  if (mleSend)
-    Config::Chat::instance()->setCheckSpelling(mleSend->checkSpellingEnabled());
+  if (myMessageEdit)
+    Config::Chat::instance()->setCheckSpelling(myMessageEdit->checkSpellingEnabled());
 
   UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabExists(this))
-    tabDlg->slotRemoveTab(this);
+    tabDlg->removeTab(this);
   else
     close();
 }
 
-void UserSendCommon::slotEmoticon()
+void UserSendCommon::showEmoticonsMenu()
 {
   // If no emoticons are available, don't display an empty window
   if (Emoticons::self()->emoticonsKeys().size() <= 0)
@@ -1319,50 +1319,50 @@ void UserSendCommon::slotEmoticon()
       pos.setY(0);
   }
 
-  connect(p, SIGNAL(selected(const QString&)), SLOT(slotInsertEmoticon(const QString&)));
+  connect(p, SIGNAL(selected(const QString&)), SLOT(insertEmoticon(const QString&)));
   p->move(pos);
   p->show();
 }
 
-void UserSendCommon::slotInsertEmoticon(const QString& value)
+void UserSendCommon::insertEmoticon(const QString& value)
 {
-  if (mleSend)
-    mleSend->insertPlainText(value);
+  if (myMessageEdit)
+    myMessageEdit->insertPlainText(value);
 }
 
 /*! This slot creates/removes a little widget into the usereventdlg
  *  which enables the user to collect users for mass messaging.
  */
-void UserSendCommon::slotMassMessageToggled(bool b)
+void UserSendCommon::massMessageToggled(bool b)
 {
-  if (grpMR == NULL)
+  if (myMassMessageBox == NULL)
   {
-    grpMR = new QGroupBox();
-    top_hlay->addWidget(grpMR);
-    QVBoxLayout* layMR = new QVBoxLayout(grpMR);
+    myMassMessageBox = new QGroupBox();
+    myTophLayout->addWidget(myMassMessageBox);
+    QVBoxLayout* layMR = new QVBoxLayout(myMassMessageBox);
 
     layMR->addWidget(new QLabel(tr("Drag Users Here\nRight Click for Options")));
 
-    lstMultipleRecipients = new MMUserView(myUsers.front().c_str(), myPpid,
+    myMassMessageList = new MMUserView(myUsers.front().c_str(), myPpid,
         LicqGui::instance()->contactList());
-    lstMultipleRecipients->setFixedWidth(gMainWindow->getUserView()->width());
-    layMR->addWidget(lstMultipleRecipients);
+    myMassMessageList->setFixedWidth(gMainWindow->getUserView()->width());
+    layMR->addWidget(myMassMessageList);
   }
 
-  chkMass->setChecked(b);
-  grpMR->setVisible(b);
+  myMassMessageCheck->setChecked(b);
+  myMassMessageBox->setVisible(b);
 }
 
-void UserSendCommon::slotMessageAdded()
+void UserSendCommon::messageAdded()
 {
   UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
   if (isActiveWindow() &&
       (!Config::Chat::instance()->tabbedChatting() ||
        (tabDlg != NULL && tabDlg->tabIsSelected(this))))
-    QTimer::singleShot(clearDelay, this, SLOT(slotClearNewEvents()));
+    QTimer::singleShot(clearDelay, this, SLOT(clearNewEvents()));
 }
 
-void UserSendCommon::slotResetTitle()
+void UserSendCommon::resetTitle()
 {
   UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
   if (tabDlg != NULL && tabDlg->tabIsSelected(this))
@@ -1371,7 +1371,7 @@ void UserSendCommon::slotResetTitle()
   setWindowTitle(myBaseTitle);
 }
 
-void UserSendCommon::slotSendServerToggled(bool sendServer)
+void UserSendCommon::sendServerToggled(bool sendServer)
 {
   // When the "Send through server" checkbox is toggled by the user,
   // we save the setting to disk, so it is persistent.
@@ -1384,83 +1384,83 @@ void UserSendCommon::slotSendServerToggled(bool sendServer)
   }
 }
 
-void UserSendCommon::slotSetBackgroundICQColor()
+void UserSendCommon::setBackgroundICQColor()
 {
-  if (mleSend == NULL)
+  if (myMessageEdit == NULL)
     return;
 
 #ifdef USE_KDE
-  QColor c = mleSend->palette().color(mleSend->backgroundRole());
+  QColor c = myMessageEdit->palette().color(myMessageEdit->backgroundRole());
   if (KColorDialog::getColor(c, this) != KColorDialog::Accepted)
     return;
 #else
-  QColor c = QColorDialog::getColor(mleSend->palette().color(mleSend->backgroundRole()), this);
+  QColor c = QColorDialog::getColor(myMessageEdit->palette().color(myMessageEdit->backgroundRole()), this);
   if (!c.isValid())
     return;
 #endif
 
-  icqColor.SetBackground(c.red(), c.green(), c.blue());
-  mleSend->setBackground(c);
+  myIcqColor.SetBackground(c.red(), c.green(), c.blue());
+  myMessageEdit->setBackground(c);
 }
 
-void UserSendCommon::slotSetForegroundICQColor()
+void UserSendCommon::setForegroundICQColor()
 {
-  if (mleSend == NULL)
+  if (myMessageEdit == NULL)
     return;
 
 #ifdef USE_KDE
-  QColor c = mleSend->palette().color(mleSend->foregroundRole());
+  QColor c = myMessageEdit->palette().color(myMessageEdit->foregroundRole());
   if (KColorDialog::getColor(c, this) != KColorDialog::Accepted)
     return;
 #else
-  QColor c = QColorDialog::getColor(mleSend->palette().color(mleSend->foregroundRole()), this);
+  QColor c = QColorDialog::getColor(myMessageEdit->palette().color(myMessageEdit->foregroundRole()), this);
   if (!c.isValid())
     return;
 #endif
 
-  icqColor.SetForeground(c.red(), c.green(), c.blue());
-  mleSend->setForeground(c);
+  myIcqColor.SetForeground(c.red(), c.green(), c.blue());
+  myMessageEdit->setForeground(c);
 }
 
-void UserSendCommon::slotShowSendTypeMenu()
+void UserSendCommon::showSendTypeMenu()
 {
   // Menu is normally delayed but if we use InstantPopup mode shortcut won't work
-  dynamic_cast<QToolButton*>(myToolBar->widgetForAction(cmbSendType))->showMenu();
+  dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myEventTypeMenu))->showMenu();
 }
 
 void UserSendCommon::messageTextChanged()
 {
-  if (mleSend == NULL || mleSend->toPlainText().isEmpty())
+  if (myMessageEdit == NULL || myMessageEdit->toPlainText().isEmpty())
     return;
 
-  strTempMsg = mleSend->toPlainText();
+  myTempMessage = myMessageEdit->toPlainText();
   gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, true, myConvoId);
-  disconnect(mleSend, SIGNAL(textChanged()), this, SLOT(messageTextChanged()));
-  tmrSendTyping->start(5000);
+  disconnect(myMessageEdit, SIGNAL(textChanged()), this, SLOT(messageTextChanged()));
+  mySendTypingTimer->start(5000);
 }
 
-void UserSendCommon::slotTextChangedTimeout()
+void UserSendCommon::textChangedTimeout()
 {
-  if (mleSend == NULL)
+  if (myMessageEdit == NULL)
   {
-    tmrSendTyping->stop();
+    mySendTypingTimer->stop();
     return;
   }
 
-  QString str = mleSend->toPlainText();
+  QString str = myMessageEdit->toPlainText();
 
-  if (str != strTempMsg)
+  if (str != myTempMessage)
   {
-    strTempMsg = str;
+    myTempMessage = str;
     // Hack to not keep sending the typing notification to ICQ
     if (myPpid != LICQ_PPID)
       gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, true, myConvoId);
   }
   else
   {
-    if (tmrSendTyping->isActive())
-      tmrSendTyping->stop();
-    connect(mleSend, SIGNAL(textChanged()), SLOT(messageTextChanged()));
+    if (mySendTypingTimer->isActive())
+      mySendTypingTimer->stop();
+    connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
     gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
   }
 }
@@ -1474,12 +1474,12 @@ void UserSendCommon::sendTrySecure()
   {
     autoSecure = (u->AutoSecure() && gLicqDaemon->CryptoEnabled() &&
         u->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED &&
-        !chkSendServer->isChecked() && !u->Secure());
+        !mySendServerCheck->isChecked() && !u->Secure());
     gUserManager.DropUser(u);
   }
 
-  disconnect(btnSend, SIGNAL(clicked()), this, SLOT(sendTrySecure()));
-  connect(btnSend, SIGNAL(clicked()), SLOT(send()));
+  disconnect(mySendButton, SIGNAL(clicked()), this, SLOT(sendTrySecure()));
+  connect(mySendButton, SIGNAL(clicked()), SLOT(send()));
 
   if (autoSecure)
   {

@@ -35,9 +35,6 @@ class QVBoxLayout;
 class CICQSignal;
 class ICQUser;
 
-using std::list;
-using std::string;
-
 
 namespace LicqQtGui
 {
@@ -54,7 +51,7 @@ public:
   QString id() { return QString::fromAscii(myUsers.front().c_str()); }
   unsigned long ppid() { return myPpid; }
   unsigned long convoId() { return myConvoId; }
-  list<string>& convoUsers() { return myUsers; }
+  std::list<std::string>& convoUsers() { return myUsers; }
   void setConvoId(unsigned long n) { myConvoId = n; }
   void addEventTag(unsigned long n) { if (n) myEventTag.push_back(n); }
 
@@ -69,7 +66,7 @@ protected:
   unsigned long myPpid;
   unsigned long myConvoId;
   time_t myRemoteTimeOffset;
-  list<string> myUsers;
+  std::list<std::string> myUsers;
   unsigned long mySendFuncs;
 
   // ID of the higest event we've processed. Helps determine
@@ -80,12 +77,12 @@ protected:
   QString myBaseTitle;
   QString myProgressMsg;
 
-  QHBoxLayout* top_hlay;
-  QVBoxLayout* top_lay;
-  QVBoxLayout* mainWidget;
+  QHBoxLayout* myTophLayout;
+  QVBoxLayout* myTopLayout;
+  QVBoxLayout* myMainWidget;
   QToolBar* myToolBar;
-  QMenu* popupEncoding;
-  QActionGroup* encodingsGroup;
+  QMenu* myEncodingsMenu;
+  QActionGroup* myEncodingsGroup;
   QAction* myMenu;
   QAction* myHistory;
   QAction* myInfo;
@@ -96,8 +93,8 @@ protected:
   QAction* myBackColor;
   InfoField* myTimezone;
   QTextCodec* myCodec;
-  QTimer* tmrTime;
-  QTimer* tmrTyping;
+  QTimer* myTimeTimer;
+  QTimer* myTypingTimer;
 
   void flashTaskbar();
   void updateWidgetInfo(ICQUser* u);
@@ -111,17 +108,17 @@ protected slots:
    */
   virtual void updateIcons();
 
-  void slotConnectSignal();
-  void slotSetEncoding(QAction* action);
-  void slotSetMsgWinSticky(bool sticky = true);
-  void slotShowHistory();
-  void slotShowUserInfo();
-  void slotSwitchSecurity();
-  void slotUpdateTime();
-  void slotUpdateTyping();
-  void slotUserMenu();
+  void connectSignal();
+  void setEncoding(QAction* action);
+  void setMsgWinSticky(bool sticky = true);
+  void showHistory();
+  void showUserInfo();
+  void switchSecurity();
+  void updateTime();
+  void updateTyping();
+  void showUserMenu();
   void showEncodingsMenu();
-  void slotUserUpdated(CICQSignal* sig);
+  void updatedUser(CICQSignal* sig);
 
 signals:
   void finished(QString id, unsigned long ppid);

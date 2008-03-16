@@ -65,23 +65,23 @@ public slots:
   void changeEventType(int type);
 
 protected:
-  CICQColor icqColor;
-  HistoryView* mleHistory;
-  MLEdit* mleSend;
-  MMUserView* lstMultipleRecipients;
-  QAction* chkMass;
-  QAction* chkSendServer;
-  QAction* chkUrgent;
-  QAction* cmbSendType;
-  QActionGroup* grpSendType;
-  QGroupBox* grpMR;
-  QLabel* lblPicture;
-  QPushButton* btnClose;
-  QPushButton* btnSend;
-  QSplitter* splView;
-  QSplitter* splPicture;
-  QString strTempMsg;
-  QTimer* tmrSendTyping;
+  CICQColor myIcqColor;
+  HistoryView* myHistoryView;
+  MLEdit* myMessageEdit;
+  MMUserView* myMassMessageList;
+  QAction* myMassMessageCheck;
+  QAction* mySendServerCheck;
+  QAction* myUrgentCheck;
+  QAction* myEventTypeMenu;
+  QActionGroup* myEventTypeGroup;
+  QGroupBox* myMassMessageBox;
+  QLabel* myPictureLabel;
+  QPushButton* myCloseButton;
+  QPushButton* mySendButton;
+  QSplitter* myViewSplitter;
+  QSplitter* myPictureSplitter;
+  QString myTempMessage;
+  QTimer* mySendTypingTimer;
   int myType;
 
   void retrySend(ICQEvent* e, bool online, unsigned short level);
@@ -107,23 +107,23 @@ protected slots:
   virtual void updateIcons();
 
   virtual void send();
-  virtual void slotSendDone(ICQEvent* e);
+  virtual void eventDoneReceived(ICQEvent* e);
 
-  void slotCancelSend();
-  void slotChangeEventType(QAction* action);
-  void slotClearNewEvents();
-  void slotClose();
-  void slotEmoticon();
-  void slotInsertEmoticon(const QString& value);
-  void slotMassMessageToggled(bool on);
-  void slotMessageAdded();
-  void slotResetTitle();
-  void slotSendServerToggled(bool on);
-  void slotSetBackgroundICQColor();
-  void slotSetForegroundICQColor();
-  void slotShowSendTypeMenu();
+  void cancelSend();
+  void changeEventType(QAction* action);
+  void clearNewEvents();
+  void closeDialog();
+  void showEmoticonsMenu();
+  void insertEmoticon(const QString& value);
+  void massMessageToggled(bool on);
+  void messageAdded();
+  void resetTitle();
+  void sendServerToggled(bool on);
+  void setBackgroundICQColor();
+  void setForegroundICQColor();
+  void showSendTypeMenu();
   void messageTextChanged();
-  void slotTextChangedTimeout();
+  void textChangedTimeout();
   void sendTrySecure();
 };
 
