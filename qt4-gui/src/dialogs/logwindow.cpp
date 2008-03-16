@@ -52,7 +52,8 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LogWindow */
 
 LogWindow::LogWindow(QWidget* parent)
-  : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
+  : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint
+      | Qt::WindowMinimizeButtonHint)
 {
   Support::setWidgetProps(this, "NetworkLog");
   setWindowTitle(tr("Licq Network Log"));
