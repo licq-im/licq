@@ -84,24 +84,6 @@ void MLEdit::setForeground(const QColor& color)
   setPalette(pal);
 }
 
-void MLEdit::setCheckSpellingEnabled(bool check)
-{
-#ifdef MLEDIT_USE_KTEXTEDIT
-  KTextEdit::setCheckSpellingEnabled(check);
-#else
-  (void) check; // Remove warning about unused parameter
-#endif
-}
-
-bool MLEdit::checkSpellingEnabled() const
-{
-#ifdef MLEDIT_USE_KTEXTEDIT
-  return KTextEdit::checkSpellingEnabled();
-#else
-  return false;
-#endif
-}
-
 void MLEdit::keyPressEvent(QKeyEvent* event)
 {
   const bool isShift   = event->modifiers() & Qt::ShiftModifier;
@@ -206,6 +188,7 @@ void MLEdit::mousePressEvent(QMouseEvent* event)
   BaseClass::mousePressEvent(event);
 }
 
+#ifndef USE_KDE
 void MLEdit::contextMenuEvent(QContextMenuEvent* event)
 {
   QMenu* menu=createStandardContextMenu();
@@ -222,6 +205,7 @@ void MLEdit::contextMenuEvent(QContextMenuEvent* event)
   menu->exec(event->globalPos());
   delete menu;
 }
+#endif
 
 void MLEdit::updateFont()
 {

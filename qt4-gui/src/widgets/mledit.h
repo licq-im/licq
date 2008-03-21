@@ -63,8 +63,10 @@ public:
   void setBackground(const QColor& color);
   void setForeground(const QColor& color);
 
-  void setCheckSpellingEnabled(bool check);
-  bool checkSpellingEnabled() const;
+#ifndef USE_KDE
+  void setCheckSpellingEnabled(bool /* check */) {}
+  bool checkSpellingEnabled() const { return false; }
+#endif
 
   /**
    * Caclulate height for widget to fit a specified number of lines with
@@ -101,7 +103,9 @@ private:
 
   virtual void keyPressEvent(QKeyEvent* event);
   virtual void mousePressEvent(QMouseEvent* event);
+#ifndef USE_KDE
   virtual void contextMenuEvent(QContextMenuEvent* event);
+#endif
 
 #if 0
 //TODO: This may or may not be needed for KTextEdit in KDE 4

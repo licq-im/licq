@@ -97,6 +97,13 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myShowSendCloseCheck->setToolTip(tr("Show Send and Close buttons in the chat dialog."));
   myChatLayout->addWidget(myShowSendCloseCheck, 2, 0);
 
+  myCheckSpelling = new QCheckBox(tr("Check spelling"));
+  myCheckSpelling->setToolTip(tr("Mark misspelled word as you type."));
+#ifndef USE_KDE
+  myCheckSpelling->setVisible(false);
+#endif
+  myChatLayout->addWidget(myCheckSpelling, 2, 1);
+
   myMsgWinStickyCheck = new QCheckBox(tr("Sticky message window(s)"));
   myMsgWinStickyCheck->setToolTip(tr("Makes the message window(s) visible on all desktops"));
   myChatLayout->addWidget(myMsgWinStickyCheck, 3, 0);
@@ -520,6 +527,7 @@ void Settings::Chat::load()
   myAutoPosReplyWinCheck->setChecked(chatConfig->autoPosReplyWin());
   myAutoSendThroughServerCheck->setChecked(chatConfig->autoSendThroughServer());
   myShowSendCloseCheck->setChecked(chatConfig->showSendClose());
+  myCheckSpelling->setChecked(chatConfig->checkSpelling());
   myMsgWinStickyCheck->setChecked(chatConfig->msgWinSticky());
   mySingleLineChatModeCheck->setChecked(chatConfig->singleLineChatMode());
   myTabbedChattingCheck->setChecked(chatConfig->tabbedChatting());
@@ -591,6 +599,7 @@ void Settings::Chat::apply()
   chatConfig->setAutoPosReplyWin(myAutoPosReplyWinCheck->isChecked());
   chatConfig->setAutoSendThroughServer(myAutoSendThroughServerCheck->isChecked());
   chatConfig->setShowSendClose(myShowSendCloseCheck->isChecked());
+  chatConfig->setCheckSpelling(myCheckSpelling->isChecked());
   chatConfig->setMsgWinSticky(myMsgWinStickyCheck->isChecked());
   chatConfig->setSingleLineChatMode(mySingleLineChatModeCheck->isChecked());
   chatConfig->setShowUserPic(myShowUserPicCheck->isChecked());

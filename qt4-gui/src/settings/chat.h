@@ -97,6 +97,7 @@ private:
   QCheckBox* myMsgWinStickyCheck;
   QCheckBox* myAutoCloseCheck;
   QCheckBox* myShowSendCloseCheck;
+  QCheckBox* myCheckSpelling;
   QCheckBox* myShowUserPicCheck;
   QCheckBox* myShowUserPicHiddenCheck;
 
