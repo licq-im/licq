@@ -32,7 +32,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MLEdit */
 
 MLEdit::MLEdit(bool wordWrap, QWidget* parent, bool /* doQuotes */, const char* name)
-  : BaseClass(parent),
+  : MLEDIT_BASE(parent),
     myFixSetTextNewlines(true),
     myLastKeyWasReturn(false),
     myLinesHint(0)
@@ -138,7 +138,7 @@ void MLEdit::keyPressEvent(QKeyEvent* event)
           emit ctrlEnterPressed();
         break;
       default:
-        BaseClass::keyPressEvent(event);
+        MLEDIT_BASE::keyPressEvent(event);
         break;
     }
     return;
@@ -179,13 +179,13 @@ void MLEdit::keyPressEvent(QKeyEvent* event)
     }
   }
 
-  BaseClass::keyPressEvent(event);
+  MLEDIT_BASE::keyPressEvent(event);
 }
 
 void MLEdit::mousePressEvent(QMouseEvent* event)
 {
   emit clicked();
-  BaseClass::mousePressEvent(event);
+  MLEDIT_BASE::mousePressEvent(event);
 }
 
 #ifndef USE_KDE
@@ -232,7 +232,7 @@ void MLEdit::setSizeHintLines(int lines)
 
 QSize MLEdit::sizeHint() const
 {
-  QSize s = BaseClass::sizeHint();
+  QSize s = MLEDIT_BASE::sizeHint();
   if (myLinesHint > 0)
     s.setHeight(heightForLines(myLinesHint));
   return s;

@@ -24,34 +24,20 @@
 #include "config.h"
 
 #ifdef USE_KDE
-# include <kdeversion.h>
-#  define MLEDIT_USE_KTEXTEDIT 1
-#endif
-
-#ifdef MLEDIT_USE_KTEXTEDIT
-# include <ktextedit.h>
+# include <KDE/KTextEdit>
+# define MLEDIT_BASE KTextEdit
 #else
 # include <QTextEdit>
+# define MLEDIT_BASE QTextEdit
 #endif
 
 
 namespace LicqQtGui
 {
 
-class MLEdit
-#ifdef MLEDIT_USE_KTEXTEDIT
-  : public KTextEdit
-#else
-  : public QTextEdit
-#endif
+class MLEdit : public MLEDIT_BASE
 {
   Q_OBJECT
-
-#ifdef MLEDIT_USE_KTEXTEDIT
-  typedef KTextEdit BaseClass;
-#else
-  typedef QTextEdit BaseClass;
-#endif
 
 public:
   MLEdit(bool wordWrap, QWidget* parent = 0, bool handlequotes = false, const char* name = 0);
