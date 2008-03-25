@@ -737,7 +737,7 @@ QString ContactUserData::tooltip() const
 
   if (config->popupOnlineSince() && !u->StatusOffline())
   {
-    time_t nLoggedIn = time(0) - u->OnlineSince();
+    time_t nLoggedIn = (time(0) > u->OnlineSince() ? time(0) - u->OnlineSince() : 0);
     unsigned long nWeek, nDay, nHour, nMinute;
     nWeek = nLoggedIn / 604800;
     nDay = (nLoggedIn % 604800) / 86400;
