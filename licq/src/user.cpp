@@ -2044,6 +2044,8 @@ void ICQUser::LoadLicqInfo()
   m_nLastCounters[LAST_RECV_EVENT] = nLast;
   m_fConf.ReadNum("LastCheckedAR", nLast, 0);
   m_nLastCounters[LAST_CHECKED_AR] = nLast;
+  m_fConf.ReadNum("RegisteredTime", nLast, 0);
+  m_nRegisteredTime = nLast;
   m_fConf.ReadNum("AutoAccept", m_nAutoAccept, 0);
   m_fConf.ReadNum("StatusToUser", m_nStatusToUser, ICQ_STATUS_OFFLINE);
   if (User()) // Only allow to keep a modified alias for user uins
@@ -3547,6 +3549,7 @@ void ICQUser::SaveLicqInfo()
    m_fConf.WriteNum("LastSent", (unsigned long)LastSentEvent());
    m_fConf.WriteNum("LastRecv", (unsigned long)LastReceivedEvent());
    m_fConf.WriteNum("LastCheckedAR", (unsigned long)LastCheckedAutoResponse());
+   m_fConf.WriteNum("RegisteredTime", (unsigned long)RegisteredTime());
    m_fConf.WriteNum("AutoAccept", m_nAutoAccept);
    m_fConf.WriteNum("StatusToUser", m_nStatusToUser);
    m_fConf.WriteStr("CustomAutoRsp", CustomAutoResponse());
