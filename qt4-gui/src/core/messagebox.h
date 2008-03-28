@@ -33,79 +33,68 @@ class ICQUser;
 
 namespace LicqQtGui
 {
-bool QueryUser(QWidget*, QString, QString, QString, bool bConfirmYes=false,
-    QString szConfirm=NULL, bool bConfirmNo=false, QString szConfirmNo=NULL);
-int QueryUser(QWidget*, QString, QString, QString, QString);
+bool QueryUser(QWidget* q, QString query, QString button1, QString button2,
+    bool confirmYes = false, QString confirmYesText = NULL,
+    bool confirmNo = false, QString confirmNoText = NULL);
+int QueryUser(QWidget* parent, QString query, QString button1, QString button2,
+    QString button3);
 bool QueryYesNo(QWidget* parent, QString query);
-void InformUser(QWidget* q, QString);
-void WarnUser(QWidget* q, QString szInfo);
-void CriticalUser(QWidget* q, QString szInfo);
+void InformUser(QWidget* parent, QString text);
+void WarnUser(QWidget* parent, QString text);
+void CriticalUser(QWidget* parent, QString text);
+
 
 class MessageBoxItem : public QListWidgetItem
 {
 public:
   MessageBoxItem(QListWidget* parent = 0);
 
-  void setMessage(const QString& s) { m_msg = s; }
-  void setFullIcon(const QPixmap& p) { m_fullIcon = p; }
-  void setUnread(bool b);
-  void setType(QMessageBox::Icon t) { m_type = t; }
+  void setMessage(const QString& s) { myMessage = s; }
+  void setFullIcon(const QPixmap& p) { myFullIcon = p; }
+  void setUnread(bool unread);
+  void setType(QMessageBox::Icon t) { myType = t; }
 
-  QString getMessage() const { return m_msg; }
-  QPixmap getFullIcon() const { return m_fullIcon; }
-  bool isUnread() const { return m_unread; }
-  QMessageBox::Icon getType() const { return m_type; }
+  QString getMessage() const { return myMessage; }
+  QPixmap getFullIcon() const { return myFullIcon; }
+  bool isUnread() const { return myUnread; }
+  QMessageBox::Icon getType() const { return myType; }
 
 private:
-  QString m_msg;
-  QPixmap m_fullIcon;
-  bool m_unread;
-  QMessageBox::Icon m_type;
+  QString myMessage;
+  QPixmap myFullIcon;
+  bool myUnread;
+  QMessageBox::Icon myType;
 };
 
 class MessageBox : public QDialog
 {
   Q_OBJECT
 public:
-  MessageBox(QWidget* parent = 0);
-  void addMessage(QMessageBox::Icon type, const QString& msg);
+  static void addMessage(QMessageBox::Icon type, const QString& msg, QWidget* p);
 
 public slots:
-  void slot_toggleMore();
-  void slot_clickNext();
-  void slot_clickClear();
-  void slot_listChanged(QListWidgetItem* current, QListWidgetItem* previous);
+  void showNext();
+  void closeDialog();
+  void updateCurrentMessage(QListWidgetItem* current, QListWidgetItem* previous);
 
 private:
+  MessageBox(QWidget* parent = 0);
+  ~MessageBox();
+  void addMessage(QMessageBox::Icon type, const QString& msg);
+
   QPixmap getMessageIcon(QMessageBox::Icon);
   void updateCaption(MessageBoxItem*);
 
-  int m_nUnreadNum;
-  QLabel* m_lblIcon;
-  QLabel* m_lblMessage;
-  QPushButton* m_btnNext;
-  QPushButton* m_btnMore;
-  QPushButton* m_btnClear;
-  QListWidget* m_lstMsg;
-  QFrame* m_frmList;
-};
+  static MessageBox* myMessageDialog;
 
-class MessageManager
-{
-public:
-  ~MessageManager();
-
-  static MessageManager* Instance();
-
-  void addMessage(QMessageBox::Icon type, const QString& msg, QWidget* p);
-
-private:
-  MessageManager();
-  MessageManager(const MessageManager&);
-  MessageManager& operator=(const MessageManager&);
-
-  static MessageManager* m_pInstance;
-  MessageBox* m_pMsgDlg;
+  int myUnreadCount;
+  QLabel* myIconLabel;
+  QLabel* myMessageLabel;
+  QPushButton* myNextButton;
+  QPushButton* myMoreButton;
+  QPushButton* myCloseButton;
+  QListWidget* myMessageList;
+  QWidget* myExtension;
 };
 
 } // namespace LicqQtGui

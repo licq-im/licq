@@ -22,10 +22,6 @@
 
 #include "config.h"
 
-#include <algorithm>
-#include <ctype.h>
-#include <stdio.h>
-
 #include <QHBoxLayout>
 #include <QImage>
 #include <QLabel>
@@ -47,9 +43,9 @@ using namespace LicqQtGui;
 
 /*! \brief Dialog with configurable yes/no buttons
  *
- * In it's easiest form, this dialog displays szQuery and the buttons szBtn1 and szBtn2.
- * szBtn1 means true/yes,
- * szBtn2 means false/no.
+ * In it's easiest form, this dialog displays query and the buttons button1 and button2.
+ * button1 means true/yes,
+ * button2 means false/no.
  *
  * When bConfirmYes is true, then a second dialog asks the user to confirm his positive
  * decision, the displayed confirmation message is passed using the QString szConfirmYes.
@@ -57,39 +53,39 @@ using namespace LicqQtGui;
  * When bConfirmNo is true, then a second dialog asks the user to confirm his negative
  * decision, the displayed confirmation message is passed using the QString szConfirmNo.
  */
-bool LicqQtGui::QueryUser(QWidget* q, QString szQuery, QString szBtn1, QString szBtn2,
-    bool bConfirmYes, QString szConfirmYes, bool bConfirmNo, QString szConfirmNo)
+bool LicqQtGui::QueryUser(QWidget* parent, QString query, QString button1, QString button2,
+    bool confirmYes, QString confirmYesText, bool confirmNo, QString confirmNoText)
 {
   bool result;
 
 #ifdef USE_KDE
-  result = (KMessageBox::questionYesNo(q, szQuery, QMessageBox::tr("Licq Question"),
-        KGuiItem(szBtn1), KGuiItem(szBtn2)) == KMessageBox::Yes);
+  result = (KMessageBox::questionYesNo(parent, query, QMessageBox::tr("Licq Question"),
+        KGuiItem(button1), KGuiItem(button2)) == KMessageBox::Yes);
   // The user must confirm his decision!
-  if (result == true && bConfirmYes && !szConfirmYes.isEmpty())
-    result = (KMessageBox::questionYesNo(q, szConfirmYes,
+  if (result == true && confirmYes && !confirmYesText.isEmpty())
+    result = (KMessageBox::questionYesNo(parent, confirmYesText,
           QMessageBox::tr("Licq Question")) == KMessageBox::Yes);
-  else if (result == false && bConfirmNo && !szConfirmNo.isEmpty())
-    result = (KMessageBox::questionYesNo(q, szConfirmNo,
+  else if (result == false && confirmNo && !confirmNoText.isEmpty())
+    result = (KMessageBox::questionYesNo(parent, confirmNoText,
           QMessageBox::tr("Licq Question")) == KMessageBox::Yes);
 #else
-  result = (QMessageBox::question(q, QMessageBox::tr("Licq Question"), szQuery,
-        szBtn1, szBtn2) == 0);
+  result = (QMessageBox::question(parent, QMessageBox::tr("Licq Question"), query,
+        button1, button2) == 0);
   // The user must confirm his decision!
-  if (result == true && bConfirmYes && !szConfirmYes.isEmpty())
-    result = (QMessageBox::question(q, QMessageBox::tr("Licq Question"), szConfirmYes,
+  if (result == true && confirmYes && !confirmYesText.isEmpty())
+    result = (QMessageBox::question(parent, QMessageBox::tr("Licq Question"), confirmYesText,
           QMessageBox::tr("Yes"), QMessageBox::tr("No")) == 0);
-  else if (result == false && bConfirmNo && !szConfirmNo.isEmpty())
-    result = (QMessageBox::question(q, QMessageBox::tr("Licq Question"), szConfirmNo,
+  else if (result == false && confirmNo && !confirmNoText.isEmpty())
+    result = (QMessageBox::question(parent, QMessageBox::tr("Licq Question"), confirmNoText,
           QMessageBox::tr("Yes"), QMessageBox::tr("No")) == 0);
 #endif
 
   return result;
 }
 
-int LicqQtGui::QueryUser(QWidget* q, QString szQuery, QString szBtn1, QString szBtn2, QString szBtn3)
+int LicqQtGui::QueryUser(QWidget* parent, QString query, QString button1, QString button2, QString button3)
 {
-  return ( QMessageBox::question(q, QMessageBox::tr("Licq Question"), szQuery, szBtn1, szBtn2, szBtn3));
+  return ( QMessageBox::question(parent, QMessageBox::tr("Licq Question"), query, button1, button2, button3));
 }
 
 bool LicqQtGui::QueryYesNo(QWidget* parent, QString query)
@@ -97,26 +93,25 @@ bool LicqQtGui::QueryYesNo(QWidget* parent, QString query)
   return (QMessageBox::question(parent, QMessageBox::tr("Licq Question"), query, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes);
 }
 
-
-void LicqQtGui::InformUser(QWidget* q, QString sz)
+void LicqQtGui::InformUser(QWidget* parent, QString text)
 {
-  MessageManager::Instance()->addMessage(QMessageBox::Information, sz, q);
+  MessageBox::addMessage(QMessageBox::Information, text, parent);
 }
 
-void LicqQtGui::WarnUser(QWidget* q, QString sz)
+void LicqQtGui::WarnUser(QWidget* parent, QString text)
 {
-  MessageManager::Instance()->addMessage(QMessageBox::Warning, sz, q);
+  MessageBox::addMessage(QMessageBox::Warning, text, parent);
 }
 
-void LicqQtGui::CriticalUser(QWidget* q, QString sz)
+void LicqQtGui::CriticalUser(QWidget* parent, QString text)
 {
-  MessageManager::Instance()->addMessage(QMessageBox::Critical, sz, q);
+  MessageBox::addMessage(QMessageBox::Critical, text, parent);
 }
 
 // -----------------------------------------------------------------------------
 
 MessageBox::MessageBox(QWidget* parent)
-  : QDialog(parent, Qt::Dialog), m_nUnreadNum(0)
+  : QDialog(parent, Qt::Dialog), myUnreadCount(0)
 {
   setModal(true);
   setObjectName("LicqInfo");
@@ -126,55 +121,62 @@ MessageBox::MessageBox(QWidget* parent)
   QString msg = "";
   QMessageBox::Icon type = QMessageBox::Information;
 
-  QVBoxLayout* topLay = new QVBoxLayout(this);
+  QVBoxLayout* topLayout = new QVBoxLayout(this);
 
   // Make the first horizontal layout for the icon and message
-  QFrame* frmMessage = new QFrame();
-  QHBoxLayout* lay = new QHBoxLayout(frmMessage);
-  m_lblIcon = new QLabel();
+  QHBoxLayout* messageLayout = new QHBoxLayout();
+  myIconLabel = new QLabel();
   QPixmap icon = getMessageIcon(type);
-  m_lblIcon->setPixmap(icon);
-  m_lblMessage = new QLabel(msg);
+  myIconLabel->setPixmap(icon);
+  myMessageLabel = new QLabel(msg);
 
-  lay->addWidget(m_lblIcon, 0, Qt::AlignCenter);
-  lay->addWidget(m_lblMessage);
+  messageLayout->addStretch(1);
+  messageLayout->addWidget(myIconLabel);
+  messageLayout->addWidget(myMessageLabel);
+  messageLayout->addStretch(1);
 
   // Make the list box of all the pending messages, starts out hidden
-  m_frmList = new QFrame();
-  QHBoxLayout* layList = new QHBoxLayout(m_frmList);
-  m_lstMsg = new QListWidget();
-  m_lstMsg->setFixedHeight(100); // This seems to be a good height
-  layList->addWidget(m_lstMsg);
-  // Add this listbox as an extension to the dialog, and make it shown at the
-  // bottom part of the dialog.
-  setOrientation(Qt::Vertical);
-  setExtension(m_frmList);
+  myExtension = new QWidget();
+  myExtension->hide();
+  QHBoxLayout* listLayout = new QHBoxLayout(myExtension);
+  listLayout->setMargin(0);
+  myMessageList = new QListWidget();
+  myMessageList->setFixedHeight(100); // This seems to be a good height
+  listLayout->addWidget(myMessageList);
 
   // Make the second horizontal layout for the buttons
-  QFrame* frmButtons = new QFrame();
-  QHBoxLayout* lay2 = new QHBoxLayout(frmButtons);
-  m_btnMore = new QPushButton(tr("&List"));
-  //m_btnMore->setDisabled(true);
-  m_btnNext = new QPushButton(tr("&Next"));
-  m_btnNext->setDisabled(true);
-  m_btnClear = new QPushButton(tr("&Ok"));
-  m_btnClear->setDefault(true);
+  QHBoxLayout* buttonsLayout = new QHBoxLayout();
+  myMoreButton = new QPushButton(tr("&List"));
+  myMoreButton->setCheckable(true);
+  //myMoreButton->setDisabled(true);
+  myNextButton = new QPushButton(tr("&Next"));
+  myNextButton->setDisabled(true);
+  myCloseButton = new QPushButton(tr("&Ok"));
+  myCloseButton->setDefault(true);
 
-  lay2->addWidget(m_btnMore);
-  lay2->addWidget(m_btnNext);
-  lay2->addWidget(m_btnClear);
+  buttonsLayout->addStretch(1);
+  buttonsLayout->addWidget(myMoreButton);
+  buttonsLayout->addWidget(myNextButton);
+  buttonsLayout->addWidget(myCloseButton);
+  buttonsLayout->addStretch(1);
 
-  topLay->addWidget(frmMessage, 0, Qt::AlignCenter);
-  topLay->addWidget(frmButtons, 0, Qt::AlignCenter);
+  topLayout->addLayout(messageLayout);
+  topLayout->addLayout(buttonsLayout);
+  topLayout->addWidget(myExtension);
 
   // Connect all the signals here
-  connect(m_btnMore, SIGNAL(clicked()), SLOT(slot_toggleMore()));
-  connect(m_btnNext, SIGNAL(clicked()), SLOT(slot_clickNext()));
-  connect(m_btnClear, SIGNAL(clicked()), SLOT(slot_clickClear()));
-  connect(m_lstMsg, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
-      SLOT(slot_listChanged(QListWidgetItem*, QListWidgetItem*)));
+  connect(myMoreButton, SIGNAL(toggled(bool)), myExtension, SLOT(setVisible(bool)));
+  connect(myNextButton, SIGNAL(clicked()), SLOT(showNext()));
+  connect(myCloseButton, SIGNAL(clicked()), SLOT(closeDialog()));
+  connect(myMessageList, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+      SLOT(updateCurrentMessage(QListWidgetItem*, QListWidgetItem*)));
 
   show();
+}
+
+MessageBox::~MessageBox()
+{
+  myMessageDialog = NULL;
 }
 
 void MessageBox::addMessage(QMessageBox::Icon type, const QString& msg)
@@ -187,38 +189,37 @@ void MessageBox::addMessage(QMessageBox::Icon type, const QString& msg)
 
   // If we have only one message in queue, show that one, otherwise update
   // the number of pending messages.
-  if (m_lstMsg->count() == 0)
+  if (myMessageList->count() == 0)
   {
-    m_lblIcon->setPixmap(pix);
-    m_lblMessage->setText(msg);
-    m_btnNext->setText(tr("&Next"));
-    m_btnNext->setEnabled(false);
-    m_btnMore->setEnabled(false);
-    m_btnNext->hide();
-    m_btnMore->hide();
-    m_btnClear->setText(tr("&Ok"));
-    showExtension(false); // We are opening the window, so default to not showing this
+    myIconLabel->setPixmap(pix);
+    myMessageLabel->setText(msg);
+    myNextButton->setText(tr("&Next"));
+    myNextButton->setEnabled(false);
+    myMoreButton->setEnabled(false);
+    myNextButton->hide();
+    myMoreButton->hide();
+    myCloseButton->setText(tr("&Ok"));
   }
   else
   {
-    m_nUnreadNum++;
+    myUnreadCount++;
     unread = true; // It is unread
-    m_btnClear->setText(tr("&Clear All"));
-    QString nextStr = QString(tr("&Next (%1)")).arg(m_nUnreadNum);
-    m_btnNext->setText(nextStr);
-    if (!m_btnNext->isEnabled())
+    myCloseButton->setText(tr("&Clear All"));
+    QString nextStr = QString(tr("&Next (%1)")).arg(myUnreadCount);
+    myNextButton->setText(nextStr);
+    if (!myNextButton->isEnabled())
     {
-      m_btnNext->setEnabled(true);
-      m_btnNext->show();
+      myNextButton->setEnabled(true);
+      myNextButton->show();
     }
-    if (!m_btnMore->isEnabled())
+    if (!myMoreButton->isEnabled())
     {
-      m_btnMore->setEnabled(true);
-      m_btnMore->show();
+      myMoreButton->setEnabled(true);
+      myMoreButton->show();
     }
   }
 
-  MessageBoxItem* pEntry = new MessageBoxItem();
+  MessageBoxItem* entry = new MessageBoxItem();
   // Resize the icon
   img = pix.toImage();
   if (img.width() > img.height())
@@ -227,31 +228,19 @@ void MessageBox::addMessage(QMessageBox::Icon type, const QString& msg)
     img = img.scaledToHeight(16);
   QPixmap scaledPix(QPixmap::fromImage(img));
   // Add the columns now
-  pEntry->setIcon(scaledPix);
-  pEntry->setText(msg.left(qMin(50, msg.indexOf('\n')))); // Put this in setMessage()
+  entry->setIcon(scaledPix);
+  entry->setText(msg.left(qMin(50, msg.indexOf('\n')))); // Put this in setMessage()
   // Set the special data
-  pEntry->setMessage(msg);
-  pEntry->setFullIcon(pix);
-  pEntry->setUnread(unread);
-  pEntry->setType(type);
+  entry->setMessage(msg);
+  entry->setFullIcon(pix);
+  entry->setUnread(unread);
+  entry->setType(type);
 
-  m_lstMsg->insertItem(0, pEntry);
+  myMessageList->insertItem(0, entry);
 
   // Set the caption if we set the text and icon here
-  if (m_nUnreadNum == 0)
-    updateCaption(pEntry);
-}
-
-/// ////////////////////////////////////////////////////////
-/// @brief Toggline the detailed list view
-///
-/// When the more button is clicked, toggle showing the list view of
-/// pending messages. When we hide the list view, we need to show the
-/// oldest unread message.
-/// ////////////////////////////////////////////////////////
-void MessageBox::slot_toggleMore()
-{
-  showExtension(m_frmList->isHidden());
+  if (myUnreadCount == 0)
+    updateCaption(entry);
 }
 
 /// ////////////////////////////////////////////////////////
@@ -260,38 +249,38 @@ void MessageBox::slot_toggleMore()
 /// When the next button is clicked, we will show the next pending
 /// unread message. The text and icon will both be updated.
 /// ////////////////////////////////////////////////////////
-void MessageBox::slot_clickNext()
+void MessageBox::showNext()
 {
   // Find the next unread message
-  bool bFound = false;
+  bool found = false;
   MessageBoxItem* item = 0;
-  for (int i = m_lstMsg->currentRow(); i >= 0; --i)
+  for (int i = myMessageList->currentRow(); i >= 0; --i)
   {
-    item = dynamic_cast<MessageBoxItem*>(m_lstMsg->item(i));
+    item = dynamic_cast<MessageBoxItem*>(myMessageList->item(i));
     if (item->isUnread())
     {
-      bFound = true;
+      found = true;
       break;
     }
   }
 
   // If no unread item was found, search from the bottom
-  if (!bFound)
+  if (!found)
   {
-    for (int i = m_lstMsg->count() - 1; i >= 0; --i)
+    for (int i = myMessageList->count() - 1; i >= 0; --i)
     {
-      item = dynamic_cast<MessageBoxItem*>(m_lstMsg->item(i));
+      item = dynamic_cast<MessageBoxItem*>(myMessageList->item(i));
       if (item->isUnread())
       {
-        bFound = true;
+        found = true;
         break;
       }
     }
   }
 
   // Only change the item if there something to change it to
-  if (bFound)
-    m_lstMsg->setCurrentItem(item);
+  if (found)
+    myMessageList->setCurrentItem(item);
 }
 
 /// ////////////////////////////////////////////////////////
@@ -300,14 +289,14 @@ void MessageBox::slot_clickNext()
 /// When the clear all button is clicked, we will close the dialog and
 /// remove all messages from the queue.
 /// ////////////////////////////////////////////////////////
-void MessageBox::slot_clickClear()
+void MessageBox::closeDialog()
 {
   // Hide the window first
   hide();
 
   // Remove all items that have been read
-  m_lstMsg->clear();
-  m_nUnreadNum = 0;
+  myMessageList->clear();
+  myUnreadCount = 0;
 }
 
 /// ////////////////////////////////////////////////////////
@@ -319,36 +308,36 @@ void MessageBox::slot_clickClear()
 /// @param i The new QListWidgetItem* that has been selected
 /// @param previous The QListWidgetItem* that has been selected prior
 /// ////////////////////////////////////////////////////////
-void MessageBox::slot_listChanged(QListWidgetItem* i, QListWidgetItem* /* previous */)
+void MessageBox::updateCurrentMessage(QListWidgetItem* i, QListWidgetItem* /* previous */)
 {
   // Change the icon, message and caption
   MessageBoxItem* item = dynamic_cast<MessageBoxItem*>(i);
   if (item != NULL)
   {
-    m_lblIcon->setPixmap(item->getFullIcon());
-    m_lblMessage->setText(item->getMessage());
+    myIconLabel->setPixmap(item->getFullIcon());
+    myMessageLabel->setText(item->getMessage());
     updateCaption(item);
 
     // Mark it as read
     if (item->isUnread())
     {
-      m_nUnreadNum--;
+      myUnreadCount--;
       item->setUnread(false);
     }
   }
 
   // Update the next button
   QString nextStr;
-  if (m_nUnreadNum > 0)
-    nextStr = QString(tr("&Next (%1)")).arg(m_nUnreadNum);
+  if (myUnreadCount > 0)
+    nextStr = QString(tr("&Next (%1)")).arg(myUnreadCount);
   else
   {
     // No more unread messages
     nextStr = QString(tr("&Next"));
-    m_btnNext->setEnabled(false);
-    m_nUnreadNum = 0;
+    myNextButton->setEnabled(false);
+    myUnreadCount = 0;
   }
-  m_btnNext->setText(nextStr);
+  myNextButton->setText(nextStr);
 }
 
 /// ////////////////////////////////////////////////////////
@@ -361,28 +350,28 @@ void MessageBox::updateCaption(MessageBoxItem* item)
   if (!item)
     return;
 
-  QString strCaption;
+  QString caption;
   switch (item->getType())
   {
     case QMessageBox::Information:
-      strCaption = tr("Licq Information");
+      caption = tr("Licq Information");
       break;
 
     case QMessageBox::Warning:
-      strCaption = tr("Licq Warning");
+      caption = tr("Licq Warning");
       break;
 
     case QMessageBox::Critical:
-      strCaption = tr("Licq Critical");
+      caption = tr("Licq Critical");
       break;
 
     case QMessageBox::NoIcon:
     case QMessageBox::Question:
     default:
-      strCaption = tr("Licq");
+      caption = tr("Licq");
       break;
   }
-  setWindowTitle(strCaption);
+  setWindowTitle(caption);
 }
 
 QPixmap MessageBox::getMessageIcon(QMessageBox::Icon type)
@@ -418,52 +407,33 @@ QPixmap MessageBox::getMessageIcon(QMessageBox::Icon type)
   return icon;
 }
 
-MessageManager* MessageManager::m_pInstance = 0;
+MessageBox* MessageBox::myMessageDialog = 0;
 
-MessageManager::MessageManager()
-  : m_pMsgDlg(0)
-{
-}
-
-MessageManager::~MessageManager()
-{
-  if (m_pMsgDlg)
-    delete m_pMsgDlg;
-}
-
-MessageManager* MessageManager::Instance()
-{
-  if (m_pInstance == 0)
-    m_pInstance = new MessageManager;
-
-  return m_pInstance;
-}
-
-void MessageManager::addMessage(QMessageBox::Icon type, const QString& msg,
+void MessageBox::addMessage(QMessageBox::Icon type, const QString& msg,
   QWidget* parent)
 {
   // We should pass parent to it, but it causes a crash after the parent closes
-  // and we try to show another message box. I tried to reparent m_pMsgDlg, but
+  // and we try to show another message box. I tried to reparent myMessageDialog, but
   // that didnt help much.
   // So for now.. we do this:
   parent = 0; // XXX See comment above
-  if (m_pMsgDlg == 0)
-    m_pMsgDlg = new MessageBox(parent);
+  if (myMessageDialog == 0)
+    myMessageDialog = new MessageBox(parent);
 
-  m_pMsgDlg->addMessage(type, msg);
-  m_pMsgDlg->show();
+  myMessageDialog->addMessage(type, msg);
+  myMessageDialog->show();
 }
 
 MessageBoxItem::MessageBoxItem(QListWidget* parent)
   : QListWidgetItem(parent)
 {
-  m_unread = false;
+  myUnread = false;
 }
 
-void MessageBoxItem::setUnread(bool b)
+void MessageBoxItem::setUnread(bool unread)
 {
-  m_unread = b;
-  if (m_unread)
+  myUnread = unread;
+  if (myUnread)
     setForeground(Qt::red);
   else
     setForeground(Qt::black);
