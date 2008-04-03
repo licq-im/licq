@@ -775,11 +775,15 @@ void CICQDaemon::SaveConf()
 
   // Utility tab
   licqConf.WriteStr("UrlViewer", m_szUrlViewer);
-  const char *pc = strrchr(gTranslator.getMapName(), '/');
-  if (pc != NULL)
-    pc++;
+  const char* pc = gTranslator.getMapName();
+  if (pc == NULL)
+    pc = "none";
   else
-    pc = gTranslator.getMapName();
+  {
+    const char* pc2 = strrchr(pc, '/');
+    if (pc2 != NULL)
+      pc = pc2++;
+  }
   licqConf.WriteStr("Translation", pc);
   licqConf.WriteStr("Terminal", m_szTerminal);
   licqConf.WriteStr("Errors", m_szErrorFile);

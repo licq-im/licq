@@ -31,63 +31,64 @@ extern int errno;
 
 CTranslator gTranslator;
 
-//============ CTranslator ============//
-
-CTranslator::CTranslator()
+CTranslator::CTranslator() :
+  myMapName(NULL),
+  myMapFileName(NULL)
 {
-  m_szMapFileName = NULL;
-  m_szMapName = NULL;
   setDefaultTranslationMap();
 }
 
-//============ ~CTranslator ============//
-
 CTranslator::~CTranslator()
 {
-  if (m_szMapFileName != NULL) free(m_szMapFileName);
-  if (m_szMapName != NULL) free(m_szMapName);
+  if (myMapName != NULL)
+    free(myMapName);
+  if (myMapFileName != NULL)
+    free(myMapFileName);
 }
-
-//============ setDefaultTranslationMap ============//
 
 void CTranslator::setDefaultTranslationMap()
 {
-  for(int i = 0; i < 256; i++)
+  if (myMapDefault)
+    return;
+
+  for (int i = 0; i < 256; i++)
   {
     serverToClientTab[i]=i;
     clientToServerTab[i]=i;
   }
 
-  m_bDefault = true;
-  if (m_szMapFileName != NULL) free(m_szMapFileName);
-  if (m_szMapName != NULL) free(m_szMapName);
-  m_szMapFileName = strdup("none");
-  m_szMapName = strdup("none");
+  myMapDefault = true;
 
+  if (myMapName != NULL)
+  {
+    free(myMapName);
+    myMapName = NULL;
+  }
+  if (myMapFileName != NULL)
+  {
+    free(myMapFileName);
+    myMapFileName = NULL;
+  }
 }
 
-//============ setTranslationMap ============//
-
-bool CTranslator::setTranslationMap(const char *_szMapFileName)
+bool CTranslator::setTranslationMap(const char* mapFileName)
 {
   // Map name is the file name with no path
-  char *szMapName = strrchr(_szMapFileName, '/');
-  if (szMapName == NULL)
-    m_szMapName = strdup(_szMapFileName);
-  else
-    m_szMapName = strdup(szMapName + 1);
+  char* sep = strrchr(mapFileName, '/');
+  const char* mapName = (sep == NULL ? mapFileName : sep + 1);
 
-  if(strcmp(m_szMapName, "LATIN_1") == 0)
+  if (strcmp(mapName, "LATIN_1") == 0)
   {
     setDefaultTranslationMap();
     return true;
   }
 
-  FILE *mapFile = fopen(_szMapFileName, "r");
+  FILE* mapFile = fopen(mapFileName, "r");
   if (mapFile == NULL)
   {
     gLog.Error("%sCould not open the translation file (%s) for reading:\n%s%s.\n",
-               L_ERRORxSTR, _szMapFileName, L_BLANKxSTR, strerror(errno));
+        L_ERRORxSTR, mapFileName,
+        L_BLANKxSTR, strerror(errno));
     setDefaultTranslationMap();
     return false;
   }
@@ -110,17 +111,20 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
   unsigned char temp_table[512];
   int c = 0;
 
-  while(fgets(buffer, 80, mapFile) != NULL && c < 512)
+  while (fgets(buffer, 80, mapFile) != NULL &&
+      c < 512)
   {
-    if(sscanf(buffer, "0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x",
-              inputs+0, inputs+1, inputs+2, inputs+3,
-              inputs+4, inputs+5, inputs+6, inputs+7) < 8)
+    if (sscanf(buffer, "0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x,0x%x",
+          inputs+0, inputs+1, inputs+2, inputs+3,
+          inputs+4, inputs+5, inputs+6, inputs+7) < 8)
     {
-      gLog.Error("%sSyntax error in translation file '%s'.\n", L_ERRORxSTR, _szMapFileName);
+      gLog.Error("%sSyntax error in translation file '%s'.\n",
+          L_ERRORxSTR, mapFileName);
       setDefaultTranslationMap();
       fclose(mapFile);
       return false;
     }
+
     for (int j = 0; j < 8; j++)
       temp_table[c++] = (unsigned char)inputs[j];
   }
@@ -137,425 +141,348 @@ bool CTranslator::setTranslationMap(const char *_szMapFileName)
   }
   else
   {
-    gLog.Error("%sTranslation file '%s' corrupted.\n", L_ERRORxSTR, _szMapFileName);
+    gLog.Error("%sTranslation file '%s' corrupted.\n",
+        L_ERRORxSTR, mapFileName);
     setDefaultTranslationMap();
     return false;
   }
 
-  m_bDefault = false;
-  if (m_szMapFileName != NULL) free(m_szMapFileName);
-  m_szMapFileName = strdup(_szMapFileName);
+  myMapDefault = false;
+  if (myMapName != NULL)
+    free(myMapName);
+  myMapName = strdup(mapName);
+  if (myMapFileName != NULL)
+    free(myMapFileName);
+  myMapFileName = strdup(mapFileName);
   return true;
 }
 
-//============ CheckEncoding ================//
-
-unsigned short CTranslator::CheckEncoding(const char *szCheck, int nSize)
+void CTranslator::ServerToClient(char* array)
 {
-  // We can't really differentiate between CUSTOM and UNICODE so the
-  // daemon will take care of. We just report ASCII or other (in this case
-  // UNICODE).
-  unsigned short nEncoding = CHARSET_ASCII;
-  
-  for (int i = 0; i < nSize; i++)
+  if (array == NULL || myMapDefault)
+    return;
+
+  char* ptr = array;
+  while (*ptr)
   {
-    if ((unsigned char)szCheck[i] >= 0x80)
+    *ptr = serverToClientTab[(unsigned char)(*ptr)];
+    ptr++;
+  }
+}
+
+void CTranslator::ServerToClient(char& value)
+{
+  if (!myMapDefault)
+    value = serverToClientTab[(unsigned char)(value)];
+}
+
+void CTranslator::ClientToServer(char* array)
+{
+  if (array == NULL || myMapDefault)
+    return;
+
+  char *ptr = array;
+  while (*ptr)
+  {
+    *ptr = clientToServerTab[(unsigned char)(*ptr)];
+    ptr++;
+  }
+}
+
+void CTranslator::ClientToServer(char& value)
+{
+  if (!myMapDefault)
+    value = clientToServerTab[(unsigned char)(value)];
+}
+
+bool CTranslator::isAscii(const char* array, int length)
+{
+  bool ascii = true;
+
+  if (length == -1)
+    length = strlen(array);
+
+  for (int i = 0; i < length; i++)
+  {
+    if ((unsigned char)array[i] >= 0x80)
     {
-      nEncoding = CHARSET_UNICODE;
+      ascii = false;
       break;
     }
   }
   
-  return nEncoding;
+  return ascii;
 }
 
-//============ translateToClient ============//
-
-void CTranslator::ServerToClient(char *szString)
+char* CTranslator::nameForIconv(const char* licqName)
 {
-  if (szString == NULL) return;
-  if (!m_bDefault)
+  size_t i = 0, j = 0;
+  size_t len = (licqName == NULL ? 0 : strlen(licqName));
+  char* iconvName = new char[len + 1];
+
+  for (; i < len; i++)
+    if (licqName[i] != ' ')
+      iconvName[j++] = licqName[i];
+
+  iconvName[j] = '\0';
+
+  return iconvName;
+}
+
+char* CTranslator::ToUnicode(char* array, const char* fromEncoding)
+{
+  if (array == NULL)
+    return NULL;
+
+  bool ok = true;
+  char* from = nameForIconv(fromEncoding);
+  char* result = iconvConvert(array, "UTF-8", from, ok);
+
+  if (!ok)
   {
-    char *pC = szString;
-    while(*pC)
+    delete [] result;
+    result = iconvConvert(array, "UCS-2BE", from, ok);
+    if (!ok)
     {
-      *pC = serverToClientTab[(unsigned char)(*pC)];
-      pC++;
+      delete [] result;
+      result = iconvConvert(array, "UCS-2BE", "UTF-8", ok);
     }
   }
+
+  delete [] from;
+
+  return result;
 }
 
-
-//============ translateToServer ============//
-
-void CTranslator::ClientToServer(char *szString)
+char* CTranslator::FromUnicode(char* array, const char* toEncoding)
 {
-  if (m_bDefault || szString == NULL) return;
-  char *pC = szString;
-  while(*pC)
+  if (array == NULL)
+    return NULL;
+
+  bool ok = true;
+  char* to = nameForIconv(toEncoding);
+  char* result = iconvConvert(array, to, "UTF-8", ok);
+
+  if (!ok)
   {
-    *pC = clientToServerTab[(unsigned char)(*pC)];
-    pC++;
+    delete [] result;
+    result = iconvConvert(array, to, "UCS-2BE", ok);
   }
+
+  delete [] to;
+
+  return result;
 }
 
-
-//-----translateToClient (char)-------------------------------------------------
-void CTranslator::ServerToClient(char &_cChar)
+char* CTranslator::FromUTF16(char* array, const char* toEncoding, int length)
 {
-  if (m_bDefault) return;
-  _cChar = serverToClientTab[(unsigned char)(_cChar)];
-}
+  if (array == NULL)
+    return NULL;
 
+  bool ok = true;
+  char* to = nameForIconv(toEncoding);
+  char* result = iconvConvert(array, to, "UCS-2BE", ok, length);
 
-//-----translateToServer (char)-------------------------------------------------
-void CTranslator::ClientToServer(char &_cChar)
-{
-  if (m_bDefault) return;
-  _cChar = clientToServerTab[(unsigned char)(_cChar)];
-}
-
-
-//-----ToUTF8----------------------------------------------------------------
-char* CTranslator::ToUnicode(char* _sz, const char* _szFrom)
-{
-  if (_sz == NULL) return NULL;
-  unsigned short nLen = strlen(_sz) * 2;
-  char *szNewStr = new char[nLen + 1];
-  size_t nInSize, nOutSize;
-
-  char *szIn = _sz, *szOut = szNewStr;
-  iconv_t tr;
-
-  nInSize = strlen(_sz);
-  nOutSize = nLen;
-
-  // Clean up for iconv, remove any spaces
-  int nFromLen = strlen(_szFrom);
-  int j = 0;
-  char *szFrom = new char [nFromLen+1];
-  for (int i = 0; i < nFromLen; i++)
+  if (!ok)
   {
-    if (_szFrom[i] != ' ')
-      szFrom[j++] = _szFrom[i];
+    delete [] result;
+    result = iconvConvert(array, "UTF-8", "UCS-2BE", ok, length);
   }
-  szFrom[j] = '\0';
-  
-  
-  tr = iconv_open("UTF-8", szFrom[0] == '\0' ? "" : szFrom);
-  if (tr != (iconv_t)-1)
-  {
-    size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-    iconv_close(tr);
 
-    if (ret == (size_t)(-1))
-    {
-      //set new values because iconv() is changing them
-      szIn = _sz;
-      szOut = szNewStr; 
-      nInSize = strlen(_sz);
-      nOutSize = nLen;
-      
-      tr = iconv_open("UCS-2BE", szFrom[0] == '\0' ? "" : szFrom);
-      if (tr == (iconv_t)-1)
-      {
-        iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-        iconv_close(tr);
-      }
-      else
-      {
-        tr = iconv_open("UCS-2BE", "UTF-8");
-        size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-        iconv_close(tr);
-        if (ret == (size_t)(-1))
-        {
-          gLog.Error("Error encoding (%s) to UCS-2BE from %s (unsupported conversion)\n",
-                     szIn, szFrom);
-        }
-      }
-    }
+  delete [] to;
+  
+  return result;
+}
+
+char* CTranslator::ToUTF16(char* array, const char* fromEncoding, size_t& outDone)
+{
+  if (array == NULL)
+    return NULL;
+
+  bool ok = true;
+  char* from = nameForIconv(fromEncoding);
+  char* result = iconvConvert(array, "UCS-2BE", from, ok, -2, &outDone);
+
+  delete [] from;
+
+  return result;
+}
+
+bool CTranslator::utf16to8(unsigned long c, string& s)
+{
+  if (c <= 0x7F)
+  {
+    /* Leave ASCII encoded */
+    s += (char)c;
+  }
+  else if (c <= 0x07FF)
+  {
+    /* 110xxxxx 10xxxxxx */
+    s += (char)(0xC0 | (c >> 6));
+    s += (char)(0x80 | (c & 0x3F));
+  }
+  else if (c <= 0xFFFF)
+  {
+    /* 1110xxxx + 2 */
+    s += (char)(0xE0 | (c >> 12));
+    s += (char)(0x80 | ((c >> 6) & 0x3F));
+    s += (char)(0x80 | (c & 0x3F));
+  }
+  else if (c <= 0x1FFFFF)
+  {
+    /* 11110xxx + 3 */
+    s += (char)(0xF0 | (c >> 18));
+    s += (char)(0x80 | ((c >> 12) & 0x3F));
+    s += (char)(0x80 | ((c >> 6) & 0x3F));
+    s += (char)(0x80 | (c & 0x3F));
+  }
+  else if (c <= 0x3FFFFFF)
+  {
+    /* 111110xx + 4 */
+    s += (char)(0xF8 | (c >> 24));
+    s += (char)(0x80 | ((c >> 18) & 0x3F));
+    s += (char)(0x80 | ((c >> 12) & 0x3F));
+    s += (char)(0x80 | ((c >> 6) & 0x3F));
+    s += (char)(0x80 | (c & 0x3F));
+  }
+  else if (c <= 0x7FFFFFFF)
+  {
+    /* 1111110x + 5 */
+    s += (char)(0xFC | (c >> 30));
+    s += (char)(0x80 | ((c >> 24) & 0x3F));
+    s += (char)(0x80 | ((c >> 18) & 0x3F));
+    s += (char)(0x80 | ((c >> 12) & 0x3F));
+    s += (char)(0x80 | ((c >> 6) & 0x3F));
+    s += (char)(0x80 | (c & 0x3F));
   }
   else
   {
-    gLog.Error("Error encoding to UTF-8 from %s (unsupported conversion)\n",
-               szFrom);
+    return false;
   }
-  
-  *szOut = '\0';
-
-  delete [] szFrom;
-
-  return szNewStr;
+  return true;
 }
 
-
-//-----FromUTF8--------------------------------------------------------------
-char* CTranslator::FromUnicode(char* _sz, const char* _szTo)
-{
-  if (_sz == NULL) return NULL;
-  unsigned short nLen = strlen(_sz) * 2;
-  char *szNewStr = new char[nLen + 1];
-  size_t nInSize, nOutSize;
-
-  char *szIn = _sz, *szOut = szNewStr;
-  iconv_t tr;
-
-  nInSize = nLen;
-  nOutSize = nLen;
-
-  // Clean up for iconv, remove any spaces
-  int nToLen = strlen(_szTo);
-  int j = 0;
-  char *szTo = new char [nToLen+1];
-  for (int i = 0; i < nToLen; i++)
-  {
-    if (_szTo[i] != ' ')
-      szTo[j++] = _szTo[i];
-  }
-  szTo[j] = '\0';
-
-
-  tr = iconv_open(szTo, "UTF-8");
-  if (tr != (iconv_t)-1)
-  {
-    size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-    iconv_close(tr);
-
-    if (ret == (size_t)(-1))
-    {
-      tr = iconv_open(szTo, "UCS-2BE");
-      if (tr != (iconv_t)-1)
-      {
-        iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-        iconv_close(tr);
-      }
-      else
-      {
-        gLog.Error("Error encoding to %s from UCS-2BE (unsupported conversion)\n",
-                   szTo);
-      }
-    }
-  }
-  else
-  {
-    gLog.Error("Error encoding to %s from UTF-8 (unsupported conversion)\n",
-               szTo);
-  }
-  
-  *szOut = '\0';
-
-  delete [] szTo;
-
-  return szNewStr;
-}
-
-//-----FromUTF8--------------------------------------------------------------
-char *CTranslator::FromUTF16(char *_sz, int nMsgLen)
-{
-  if (_sz == NULL) return NULL;
-  unsigned short nLen = nMsgLen > 0 ? nMsgLen : strlen(_sz);
-  char *szNewStr = new char[nLen * 2];
-  size_t nInSize, nOutSize;
-  
-  char *szIn = _sz, *szOut = szNewStr;
-  iconv_t tr;
-  
-  nInSize = nLen;
-  nOutSize = nLen * 2;
-  
-  tr = iconv_open("", "UCS-2BE");
-  if (tr != (iconv_t)-1)
-  {
-    size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-    iconv_close(tr);
-  
-    if (ret == (size_t)(-1))
-    {
-      // Try decoding to UTF8
-      tr = iconv_open("UTF-8", "UCS-2BE");
-      if (tr != (iconv_t)-1)
-      {
-        size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-        iconv_close(tr);
-
-        if (ret == (size_t)(-1))
-          gLog.Error("Error decoding a UCS-2BE message.\n");
-      }
-      else
-        gLog.Error("Error decoding from UCS-2BE to UTF-8 (unsupported conversion)\n");
-    }
-  }
-  else
-  {
-    gLog.Error("Error decoding from UCS-2BE (unsupported conversion)\n");
-  }
-  
-  *szOut = '\0';
-  
-  return szNewStr;
-}
-
-//-----ToUTF16-----------------------------------------------------------------
-char *CTranslator::ToUTF16(char *_sz, char *_szEncoding, size_t &nSize)
-{
-  if (_sz == NULL) return NULL;
-  unsigned short nLen = strlen(_sz) * 3;
-  char *szNewStr = new char[nLen + 1];
-  size_t nInSize, nOutSize;
-  char *szOut = szNewStr, *szIn = _sz;
-  iconv_t tr;
-  
-  nInSize = strlen(szIn);
-  nOutSize = nLen;
-
-  // Clean up for iconv, remove any spaces
-  int nFromLen = strlen(_szEncoding);
-  int j = 0;
-  char *szFrom = new char [nFromLen+1];
-  for (int i = 0; i < nFromLen; i++)
-  {
-    if (_szEncoding[i] != ' ')
-      szFrom[j++] = _szEncoding[i];
-  }
-  szFrom[j] = '\0';
-  
-  tr = iconv_open("UCS-2BE", szFrom);
-  if (tr != (iconv_t)-1)
-  {
-    size_t ret = iconv(tr, (ICONV_CONST char**)&szIn, &nInSize, &szOut, &nOutSize);
-    iconv_close(tr);
-  
-    if (ret == (size_t)-1)
-      gLog.Error("Error encoding to UTF-16 from %s\n", szFrom);
-  }
-  else
-  {
-    gLog.Error("Error encoding to UTF-16 from %s (unsupported conversion)\n",
-               szFrom);
-  }
-
-  *szOut = '\0';
-  nSize = nLen - nOutSize;
-
-  delete [] szFrom;
-  
-  return szNewStr;
-}
-
-bool CTranslator::utf16to8(unsigned long c, string &s)
-{
-    if (c <= 0x7F)
-    {
-        /* Leave ASCII encoded */
-        s += (char)c;
-    }
-    else if (c <= 0x07FF)
-    {
-        /* 110xxxxx 10xxxxxx */
-        s += (char)(0xC0 | (c >> 6));
-        s += (char)(0x80 | (c & 0x3F));
-    }
-    else if (c <= 0xFFFF)
-    {
-        /* 1110xxxx + 2 */
-        s += (char)(0xE0 | (c >> 12));
-        s += (char)(0x80 | ((c >> 6) & 0x3F));
-        s += (char)(0x80 | (c & 0x3F));
-    }
-    else if (c <= 0x1FFFFF)
-    {
-        /* 11110xxx + 3 */
-        s += (char)(0xF0 | (c >> 18));
-        s += (char)(0x80 | ((c >> 12) & 0x3F));
-        s += (char)(0x80 | ((c >> 6) & 0x3F));
-        s += (char)(0x80 | (c & 0x3F));
-    }
-    else if (c <= 0x3FFFFFF)
-    {
-        /* 111110xx + 4 */
-        s += (char)(0xF8 | (c >> 24));
-        s += (char)(0x80 | ((c >> 18) & 0x3F));
-        s += (char)(0x80 | ((c >> 12) & 0x3F));
-        s += (char)(0x80 | ((c >> 6) & 0x3F));
-        s += (char)(0x80 | (c & 0x3F));
-    }
-    else if (c <= 0x7FFFFFFF)
-    {
-        /* 1111110x + 5 */
-        s += (char)(0xFC | (c >> 30));
-        s += (char)(0x80 | ((c >> 24) & 0x3F));
-        s += (char)(0x80 | ((c >> 18) & 0x3F));
-        s += (char)(0x80 | ((c >> 12) & 0x3F));
-        s += (char)(0x80 | ((c >> 6) & 0x3F));
-        s += (char)(0x80 | (c & 0x3F));
-    }
-    else
-    {
-        return false;
-    }
-    return true;
-}
-
-//-----NToRN--------------------------------------------------------------------
-char *CTranslator::NToRN(const char *_szOldStr)
+char* CTranslator::NToRN(const char* array)
 // convert a unix style string (0x0A for returns) to a dos style string (0x0A 0x0D)
 // also encodes the string if necessary
 {
-  if (_szOldStr == NULL) return NULL;
-  unsigned short nLen = strlen(_szOldStr);
-  char *szNewStr = new char[(nLen << 1) + 1];
-  unsigned long j = 0;
-  for (unsigned long i = 0; i <= nLen; i++)
+  if (array == NULL)
+    return NULL;
+
+  unsigned long len = strlen(array);
+  char* result = new char[(len << 1) + 1];
+
+  unsigned long i = 0, j = 0;
+
+  for (i = 0, j = 0; i <= len; i++)
   {
-    if (_szOldStr[i] == (char)0x0A &&
-       (!i || _szOldStr[i-1] != (char)0x0D))
-      szNewStr[j++] = 0x0D;
-    szNewStr[j++] = _szOldStr[i];
+    if (array[i] == (char)0x0A &&
+        (i == 0 || array[i-1] != (char)0x0D))
+      result[j++] = 0x0D;
+
+    result[j++] = array[i];
   }
-  return (szNewStr);
+
+  return result;
 }
 
-//-----RNToN--------------------------------------------------------------------
-char *CTranslator::RNToN(const char *_szOldStr)
+char* CTranslator::RNToN(const char* array)
 // converts a dos (CRLF) or mac style (CR) style string to
 // a unix style string (LF only)
 {
-  if (_szOldStr == NULL) return NULL;
-  unsigned short nLen = strlen(_szOldStr);
+  if (array == NULL)
+    return NULL;
 
-  char *szNewStr = new char[nLen + 1]; // can't be getting longer than the old string
+  unsigned long len = strlen(array);
+
+  char* result = new char[len + 1];
   unsigned long j = 0;
 
   bool skipCR = false;
   bool skipLF = false;
 
-  for (const char* ptr = _szOldStr; *ptr; ++ptr) {
+  for (const char* ptr = array; *ptr != '\0'; ptr++)
+  {
     if (skipCR && *ptr != '\r')
       skipCR = false;
     if (skipLF && *ptr != '\n')
       skipLF = false;
 
-    if (skipCR || skipLF) {
+    if (skipCR || skipLF)
+    {
       skipCR = skipLF = false;
       continue; // skip it
     }
 
-    if (*ptr == '\r') {
-      szNewStr[j++] = '\n';
+    if (*ptr == '\r')
+    {
+      result[j++] = '\n';
       skipLF = true;
       continue;
     }
 
-    if (*ptr == '\n') {
-      szNewStr[j++] = '\n';
+    if (*ptr == '\n')
+    {
+      result[j++] = '\n';
       skipCR = true;
       continue;
     }
 
-    szNewStr[j++] = *ptr;
+    result[j++] = *ptr;
   }
 
-  szNewStr[j] = '\0';
+  result[j] = '\0';
 
-  return szNewStr;
+  return result;
+}
+
+char* CTranslator::iconvConvert(char* array, const char* to, const char* from,
+    bool& ok, int length, size_t* outDone)
+{
+  ok = true;
+
+  if (array == NULL)
+  {
+    ok = false;
+    return NULL;
+  }
+
+  size_t inLen = (length > -1 ? length : strlen(array));
+  size_t outLen = inLen * (length == -2 ? 3 : 2);
+  size_t outSize = outLen;
+
+  char* result = new char[outLen + 1];
+
+  char* inPtr = array;
+  char* outPtr = result;
+  iconv_t tr;
+
+  tr = iconv_open(to, from);
+  if (tr == (iconv_t)(-1))
+  {
+    ok = false;
+    gLog.Error("Unsupported encoding conversion from %s to %s.\n",
+        from[0] == '\0' ? "[LOCALE]" : from,
+        to[0] == '\0' ? "[LOCALE]" : to);
+  }
+  else
+  {
+    size_t ret = iconv(tr, &inPtr, &inLen, &outPtr, &outLen);
+    iconv_close(tr);
+
+    if (outDone != NULL)
+      *outDone = outSize - outLen;
+
+    if (ret == (size_t)(-1))
+    {
+      ok = false;
+      gLog.Error("Error encoding from %s to %s.\n",
+          from[0] == '\0' ? "LOCALE" : from,
+          to[0] == '\0' ? "LOCALE" : to);
+    }
+  }
+
+  *outPtr = '\0';
+
+  return result;
 }

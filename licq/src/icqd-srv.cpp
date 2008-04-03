@@ -3037,24 +3037,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       char* szMessage = new char[nMsgLen+1];
       for (int i = 0; i < nMsgLen; i++)
         szMessage[i] = msgTxt.UnpackChar();
-      
       szMessage[nMsgLen] = '\0';
-      char* szMsg = 0;
-      if (nEncoding == 2) // utf-8 or utf-16?
-      {
-        char *szTmpMsg = 0;
-        szTmpMsg = gTranslator.FromUTF16(szMessage, nMsgLen);
-        szMsg = gTranslator.RNToN(szTmpMsg);
-        delete [] szTmpMsg;
-      }
-      else
-        szMsg = gTranslator.RNToN(szMessage);
-      delete [] szMessage;
-
-      // now send the message to the user
-      CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
-      delete [] szMsg;
-
+      
+      bool ignore = false;
       // Lock the user to add the message to their queue
       ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
       if (u == NULL)
@@ -3063,20 +3048,41 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         {
           gLog.Info(tr("%sMessage from new user (%s), ignoring.\n"), L_SBLANKxSTR, szId);
           //TODO
-          RejectEvent(strtoul(szId, (char **)NULL, 10), e);
-          break;
+          ignore = true;
         }
-
-        gLog.Info(tr("%sMessage from new user (%s).\n"),
-                  L_SBLANKxSTR, szId);
-
-        AddUserToList(szId, LICQ_PPID);
-        u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+        else
+        {
+          gLog.Info(tr("%sMessage from new user (%s).\n"),
+                    L_SBLANKxSTR, szId);
+          AddUserToList(szId, LICQ_PPID);
+          u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+        }
       }
       else
         gLog.Info(tr("%sMessage through server from %s (%s).\n"), L_SRVxSTR,
           u->GetAlias(), szId);
     
+      if (nEncoding == 2) // utf-8 or utf-16?
+      {
+        const char* szEncoding = ignore ? "" : u->UserEncoding();
+        char* szTmpMsg = gTranslator.FromUTF16(szMessage, szEncoding, nMsgLen);
+        delete [] szMessage;
+        szMessage = szTmpMsg;
+      }
+
+      char* szMsg = gTranslator.RNToN(szMessage);
+      delete [] szMessage;
+
+      // now send the message to the user
+      CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
+      delete [] szMsg;
+
+      if (ignore)
+      {
+        RejectEvent(strtoul(szId, (char **)NULL, 10), e);
+        break;
+      }
+
       u->SetTyping(ICQ_TYPING_INACTIVEx0);
       
       if (AddUserEvent(u, e))

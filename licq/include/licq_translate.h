@@ -15,34 +15,45 @@ using namespace std;
 class CTranslator
 {
 public:
-    CTranslator();
-    ~CTranslator();
-    void setDefaultTranslationMap();
-    bool setTranslationMap(const char *szMapFileName);
-    void ServerToClient(char *szString);
-    void ClientToServer(char *szString);
-    void ServerToClient(char &_cChar);
-    void ClientToServer(char &_cChar);
-    bool usingDefaultMap()  { return m_bDefault; }
-    const char *getMapFileName() { return m_szMapFileName; }
-    const char *getMapName() { return m_szMapName; }
-    
-    unsigned short CheckEncoding(const char *, int);
-    
-    // Muse use delete[] on the returned value if it is not NULL
-  char* ToUnicode(char* _sz, const char *_szFrom = "");
-  char* FromUnicode(char* _sz, const char* _szTo = "");
-    char *FromUTF16(char *_sz, int nMsgLen = -1);
-    char *ToUTF16(char *_sz, char *_szEncoding, size_t &nLen);
-    char *NToRN(const char* _szOldStr);
-    char *RNToN(const char* _szOldStr);
-    bool utf16to8(unsigned long c, string &s);
+  CTranslator();
+  ~CTranslator();
+
+  void setDefaultTranslationMap();
+  bool setTranslationMap(const char* mapFileName);
+  bool isDefaultMap() { return myMapDefault; }
+  const char* getMapName() { return myMapName; }
+  const char* getMapFileName() { return myMapFileName; }
+
+  void ServerToClient(char* array);
+  void ServerToClient(char& value);
+  void ClientToServer(char* array);
+  void ClientToServer(char& value);
+
+  bool isAscii(const char* array, int length = -1);
+
+  // Must use delete[] on the returned value if it is not NULL
+  char* nameForIconv(const char* licqName);
+
+  char* ToUnicode(char* array, const char* fromEncoding = "");
+  char* FromUnicode(char* array, const char* toEncoding = "");
+
+  char* FromUTF16(char* array, const char* toEncoding, int length = -1);
+  char* ToUTF16(char* array, const char* fromEncoding, size_t& outDone);
+
+  char* NToRN(const char* array);
+  char* RNToN(const char* array);
+
+  bool utf16to8(unsigned long c, string &s);
 
 protected:
-    unsigned char serverToClientTab[256];
-    unsigned char clientToServerTab[256];
-    char *m_szMapFileName, *m_szMapName;
-    bool m_bDefault;
+  bool myMapDefault;
+  char* myMapName;
+  char* myMapFileName;
+  unsigned char serverToClientTab[256];
+  unsigned char clientToServerTab[256];
+
+  char* iconvConvert(char* array, const char* to, const char* from, bool& ok,
+      int length = -1, size_t* outDone = NULL);
 };
 
 extern CTranslator gTranslator;

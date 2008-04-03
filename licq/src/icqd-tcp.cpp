@@ -103,7 +103,7 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
   { 
     if (!bUserOffline && cipher == 0)
     {
-      if (gTranslator.CheckEncoding(mDos, strlen(mDos)) == CHARSET_UNICODE)
+      if (!gTranslator.isAscii(mDos))
       {
         u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
         if (u && u->UserEncoding())
