@@ -71,7 +71,7 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   myAppearanceLayout = new QGridLayout(myAppearanceBox);
 
   myGridLinesCheck = new QCheckBox(tr("Show grid lines"));
-  myGridLinesCheck->setToolTip(tr("Draw myesBox around each square in the user list"));
+  myGridLinesCheck->setToolTip(tr("Draw the box around each square in the user list"));
   myAppearanceLayout->addWidget(myGridLinesCheck, 0, 0);
 
   myHeaderCheck = new QCheckBox(tr("Show column headers"));
