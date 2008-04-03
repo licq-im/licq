@@ -190,7 +190,7 @@ QWidget* Settings::ContactList::createPageColumns(QWidget* parent)
 
   // Headings
   myColTitleLabel = new QLabel (tr("Title"));
-  myColTitleLabel->setToolTip(tr("The string which will appear in the list myBox column header"));
+  myColTitleLabel->setToolTip(tr("The string which will appear in the column header"));
   myColumnsLayout->addWidget(myColTitleLabel, 0, 1);
   myColFormatLabel = new QLabel (tr("Format"));
   myColFormatLabel->setToolTip(tr("The format string used to define what will appear in each column.<br>"
