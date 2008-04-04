@@ -3089,7 +3089,7 @@ char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
           {
             unsigned short nDays, nHours, nMinutes;
             char szTime[128];
-            unsigned long nIdleTime = time(NULL) - m_nIdleSince;
+            time_t nIdleTime = (time(NULL) > m_nIdleSince ? time(NULL) - m_nIdleSince : 0);
             nDays = nIdleTime / ( 60 * 60 * 24);
             nHours = (nIdleTime % (60 * 60 * 24)) / (60 * 60);
             nMinutes = (nIdleTime % (60 * 60)) / 60;
