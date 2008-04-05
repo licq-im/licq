@@ -310,7 +310,7 @@ void MainWindow::updateConfig()
 
 void MainWindow::trayIconClicked()
 {
-  if (isVisible() && !isMinimized())
+  if (isVisible() && !isMinimized() && isActiveWindow())
   {
     hide();
   }
@@ -329,6 +329,7 @@ void MainWindow::trayIconClicked()
     if (Config::General::instance()->mainwinSticky())
       setMainwinSticky(true);
 
+    activateWindow();
     raise();
   }
 }
