@@ -142,20 +142,22 @@ void UserView::expandGroups()
 
 void UserView::setGroupSpanning()
 {
-  int rows = model()->rowCount(rootIndex());
+  QModelIndex root = rootIndex();
+  int rows = model()->rowCount(root);
 
-  if (rootIndex().isValid())
+  if (root.isValid())
   {
     // Single group (non-threaded) view - bars are sorted with contacts
     for (int i = 0; i < rows; ++i)
-      if (model()->data(model()->index(i, 0, rootIndex()), ContactListModel::ItemTypeRole).toUInt() == ContactListModel::BarItem)
-        setFirstColumnSpanned(i, rootIndex(), true);
+      if (model()->data(model()->index(i, 0, root), ContactListModel::ItemTypeRole).toUInt() ==
+          ContactListModel::BarItem)
+        setFirstColumnSpanned(i, root, true);
   }
   else
   {
     // Full tree (threaded) view - all top level items are groups
     for (int i = 0; i < rows; ++i)
-      setFirstColumnSpanned(i, rootIndex(), true);
+      setFirstColumnSpanned(i, root, true);
   }
 }
 
