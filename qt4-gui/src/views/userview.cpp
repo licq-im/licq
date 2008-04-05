@@ -53,9 +53,7 @@ UserView::UserView(ContactListModel* contactList, UserMenu* mnuUser, QWidget* pa
   // Base class constructor doesn't know we overridden applySkin() so it we must call it here again
   applySkin();
   setVerticalScrollBarPolicy(Config::ContactList::instance()->allowScrollBar() ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff);
-  expandGroups();
 
-  configUpdated();
   updateRootIndex();
 
   connect(this, SIGNAL(expanded(const QModelIndex&)), SLOT(slotExpanded(const QModelIndex&)));
