@@ -374,6 +374,9 @@ bool Config::ContactList::groupState(unsigned short group) const
 
 void Config::ContactList::setGroupState(unsigned short group, bool expanded)
 {
+  if(group > 31)
+    group = 31;
+
   if (expanded)
     myGroupStates |= (1 << group);
   else
