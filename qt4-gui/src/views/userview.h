@@ -84,6 +84,16 @@ protected slots:
    */
   virtual void applySkin();
 
+  /**
+   * Overload the base class so we can analyze the rows
+   * which were inserted and act accordingly
+   *
+   * @param parent The view index which was populated
+   * @param start The number of the first inserted row
+   * @param end The number of the last inserted row
+   */
+  virtual void rowsInserted(const QModelIndex& parent, int start, int end);
+
 private:
   /**
    * Mouse button was pressed
@@ -107,9 +117,13 @@ private:
   virtual void mouseMoveEvent(QMouseEvent* event);
 
   /**
-   * Set group spanning for header rows
+   * Sets row spanning for particular rows in the given group
+   *
+   * @param parent The view index to analyze
+   * @param start The count of the first row
+   * @param end The count of the last row
    */
-  void setGroupSpanning();
+  void spanRowRange(const QModelIndex& parent, int start, int end);
 
 private slots:
   /**

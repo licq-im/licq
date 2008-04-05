@@ -126,7 +126,7 @@ void UserView::configUpdated()
   else
     header()->hide();
 
-  setGroupSpanning();
+  spanRowRange(rootIndex(), 0, model()->rowCount(rootIndex()) - 1);
 }
 
 void UserView::expandGroups()
@@ -140,24 +140,17 @@ void UserView::expandGroups()
   }
 }
 
-void UserView::setGroupSpanning()
+void UserView::spanRowRange(const QModelIndex& parent, int start, int end)
 {
-  QModelIndex root = rootIndex();
-  int rows = model()->rowCount(root);
+  for (int i = start; i <= end; i++)
+  {
+    // get the real model index
+    QModelIndex index = model()->index(i, 0, parent);
+    unsigned itemType = model()->data(index, ContactListModel::ItemTypeRole).toUInt();
 
-  if (root.isValid())
-  {
-    // Single group (non-threaded) view - bars are sorted with contacts
-    for (int i = 0; i < rows; ++i)
-      if (model()->data(model()->index(i, 0, root), ContactListModel::ItemTypeRole).toUInt() ==
-          ContactListModel::BarItem)
-        setFirstColumnSpanned(i, root, true);
-  }
-  else
-  {
-    // Full tree (threaded) view - all top level items are groups
-    for (int i = 0; i < rows; ++i)
-      setFirstColumnSpanned(i, root, true);
+    if (itemType == ContactListModel::GroupItem ||
+        itemType == ContactListModel::BarItem)
+      setFirstColumnSpanned(i, parent, true);
   }
 }
 
@@ -178,6 +171,12 @@ void UserView::applySkin()
 {
   setFrameStyle(Config::Skin::active()->frame.frameStyle);
   UserViewBase::applySkin();
+}
+
+void UserView::rowsInserted(const QModelIndex& parent, int start, int end)
+{
+  spanRowRange(parent, start, end);
+  UserViewBase::rowsInserted(parent, start, end);
 }
 
 void UserView::mousePressEvent(QMouseEvent* event)
