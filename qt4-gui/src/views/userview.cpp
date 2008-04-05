@@ -106,6 +106,9 @@ void UserView::updateRootIndex()
     {
       // Turn off group filtering first, otherwise we cannot switch from threaded view to a system group
       dynamic_cast<MainContactListProxy*>(myListProxy)->setThreadedView(false);
+
+      // Hidden groups may not be sorted, force a resort just in case
+      resort();
     }
   }
 
