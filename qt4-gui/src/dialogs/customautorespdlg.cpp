@@ -20,15 +20,14 @@
 
 #include "customautorespdlg.h"
 
-#include <QVBoxLayout>
 #include <QDialogButtonBox>
 #include <QPushButton>
 #include <QTimer>
+#include <QVBoxLayout>
 
 #include <licq_user.h>
-#include <licq_events.h>
 
-#include "core/mainwin.h"
+#include "core/licqgui.h"
 
 #include "helpers/licqstrings.h"
 #include "helpers/support.h"
@@ -103,8 +102,10 @@ void CustomAutoRespDlg::ok()
   {
     u->SetCustomAutoResponse(s.toLocal8Bit());
     gUserManager.DropUser(u);
-    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, myId.toLatin1(), myPpid);
-    gMainWindow->slot_updatedUser(&sig);
+
+    // Daemon doesn't send signal when autoresponse is changed so we must tell
+    // contact list to update since custom autoresponse affects extended icons
+    LicqGui::instance()->updateUserData(myId, myPpid);
   }
   close();
 }
@@ -116,8 +117,10 @@ void CustomAutoRespDlg::clear()
   {
     u->ClearCustomAutoResponse();
     gUserManager.DropUser(u);
-    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, myId.toLatin1(), myPpid);
-    gMainWindow->slot_updatedUser(&sig);
+
+    // Daemon doesn't send signal when autoresponse is changed so we must tell
+    // contact list to update since custom autoresponse affects extended icons
+    LicqGui::instance()->updateUserData(myId, myPpid);
   }
   close();
 }
