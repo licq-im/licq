@@ -131,6 +131,10 @@ void UserView::configUpdated()
 
 void UserView::expandGroups()
 {
+  // No point in expanding groups unless we can actually see them
+  if (rootIndex().isValid())
+    return;
+
   for (int i = 0; i < myListProxy->rowCount(QModelIndex()); ++i)
   {
     QModelIndex index = myListProxy->index(i, 0, QModelIndex());
