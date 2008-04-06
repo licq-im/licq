@@ -98,10 +98,8 @@ ContactUserData::ContactUserData(ICQUser* licqUser, QObject* parent)
 ContactUserData::~ContactUserData()
 {
   // Free up animation timer resource if we were using it
-  myFlash = false;
-  myOnlCounter = 0;
-  myCarCounter = 0;
-  stopAnimation();
+  if (myFlash || myOnlCounter > 0 || myCarCounter > 0)
+    stopAnimation();
 
   // Remove this user from all groups
   while (!myUserInstances.isEmpty())
@@ -118,7 +116,7 @@ void ContactUserData::update(CICQSignal* sig)
     case USER_EVENTS:
       if (sig->Argument() == 0)
       {
-        // User came online
+        // User fetched our auto respons message
         myCarCounter = ((5*1000/FLASH_TIME)+1)&(-2);
         startAnimation();
         return;
@@ -128,7 +126,7 @@ void ContactUserData::update(CICQSignal* sig)
     case USER_STATUS:
       if (sig->Argument() == 1)
       {
-        // User fetched our auto respons message
+        // User came online
         myOnlCounter = 5*1000/FLASH_TIME; // run about 5 seconds
         startAnimation();
         // Fall trough to actually update status
@@ -494,7 +492,7 @@ void ContactUserData::refresh()
 void ContactUserData::startAnimation()
 {
   // Start common timer if not already running
-  if (myAnimatorCount == 0)
+  if (!myAnimateTimer->isActive())
     myAnimateTimer->start();
 
   // Attach to signal if we are not already animating something else
@@ -508,18 +506,15 @@ void ContactUserData::startAnimation()
 
 void ContactUserData::stopAnimation()
 {
-  myAnimating = myFlash || myOnlCounter || myCarCounter;
+  // Disconnect from timer and keep track of usage
+  disconnect(myAnimateTimer, SIGNAL(timeout()), this, SLOT(animate()));
+  myAnimatorCount--;
 
-  // If this was the only or last animation disconnect from timer
-  if (!myAnimating)
-  {
-    disconnect(myAnimateTimer, SIGNAL(timeout()), this, SLOT(animate()));
-    myAnimatorCount--;
+  // Stop animation timer if noone is using it anymore
+  if (myAnimatorCount == 0)
+    myAnimateTimer->stop();
 
-    // Stop animation timer if noone is using it anymore
-    if (myAnimatorCount == 0)
-      myAnimateTimer->stop();
-  }
+  myAnimating = false;
 }
 
 void ContactUserData::animate()
@@ -537,7 +532,8 @@ void ContactUserData::animate()
     myCarCounter--;
 
   // Release timer if this was last animation
-  stopAnimation();
+  if (!myFlash && myOnlCounter == 0 && myCarCounter == 0)
+    stopAnimation();
 
   // data() will check the counter value to determine which icon to show so nothing to do here except triggering an update
   emit dataChanged(this);
