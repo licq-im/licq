@@ -50,6 +50,7 @@ RefuseDlg::RefuseDlg(QString id, unsigned long ppid, QString t, QWidget* parent)
   gUserManager.DropUser(u);
 
   mleRefuseMsg = new MLEdit(true);
+  mleRefuseMsg->setSizeHintLines(5);
   lay->addWidget(mleRefuseMsg);
 
   QDialogButtonBox* buttons = new QDialogButtonBox();

@@ -69,6 +69,7 @@ ReqAuthDlg::ReqAuthDlg(QString id, unsigned long /* ppid */, QWidget* parent)
 
   QVBoxLayout* layRequest = new QVBoxLayout(grpRequest);
   mleRequest = new MLEdit(true);
+  mleRequest->setSizeHintLines(5);
   layRequest->addWidget(mleRequest);
 
   QDialogButtonBox* buttons = new QDialogButtonBox();

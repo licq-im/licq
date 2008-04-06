@@ -63,6 +63,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(QString id, unsigned long ppid,
 
   mleAwayMsg = new MLEdit(true, this);
   mleAwayMsg->setReadOnly(true);
+  mleAwayMsg->setSizeHintLines(5);
   connect(mleAwayMsg, SIGNAL(ctrlEnterPressed()), SLOT(close()));
   top_lay->addWidget(mleAwayMsg);
 

@@ -87,7 +87,7 @@ AuthUserDlg::AuthUserDlg(QString id, unsigned long ppid, bool grant, QWidget* pa
 
   QVBoxLayout* layResponse = new QVBoxLayout(grpResponse);
   myResponse = new MLEdit(true);
-  myResponse->setMinimumSize(150, 150);
+  myResponse->setSizeHintLines(5);
   connect(myResponse, SIGNAL(ctrlEnterPressed()), SLOT(ok()));
   layResponse->addWidget(myResponse);
 
