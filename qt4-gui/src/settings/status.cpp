@@ -268,6 +268,8 @@ void Settings::Status::load()
   myAutoOfflineSpin->setValue(generalConfig->autoOfflineTime());
   myAutoLogonCombo->setCurrentIndex(generalConfig->autoLogon() % 10);
   myAutoLogonInvisibleCheck->setChecked(generalConfig->autoLogon() >= 10);
+  myAutoAwayMessCombo->setCurrentIndex(generalConfig->autoAwayMess());
+  myAutoNaMessCombo->setCurrentIndex(generalConfig->autoNaMess());
 }
 
 void Settings::Status::apply()
