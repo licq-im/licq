@@ -3034,7 +3034,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       
       nMsgLen -= 4;
 
-      char* szMessage = new char[nMsgLen+1];
+        char* szMessage = new char[nMsgLen+1];
       for (int i = 0; i < nMsgLen; i++)
         szMessage[i] = msgTxt.UnpackChar();
       szMessage[nMsgLen] = '\0';
@@ -3841,7 +3841,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     
     packet >> nAckFlags >> nMsgFlags >> nLen;
     
-    char szMessage[nLen + 1];
+    char* szMessage = new char[nLen + 1];
     for (unsigned short i = 0; i < nLen; i++)
       packet >> szMessage[i];
     szMessage[nLen] = '\0';
@@ -3885,7 +3885,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                                       szMessage);
     }
     gUserManager.DropUser(u);
-    
+
+    delete [] szMessage;
+
     ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ACKED);
     if (e)
     {

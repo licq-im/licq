@@ -1042,7 +1042,9 @@ void CICQDaemon::SaveUserList()
   static const char file[] = "users.conf";
 
   size_t nLen = strlen(BASE_DIR) + sizeof(file) + sizeof(suffix) + 2;
-  char szTmpName[nLen], szFilename[nLen], buff[128];
+  char* szTmpName = new char[nLen];
+  char* szFilename = new char[nLen];
+  char buff[128];
   int nRet, n, fd;
  
   snprintf(szFilename, nLen, "%s/%s", BASE_DIR, file);
@@ -1058,6 +1060,8 @@ void CICQDaemon::SaveUserList()
     if (!m_bShuttingDown)
       gLog.Error("%sFailed updating %s: `%s'\n", L_ERRORxSTR,
                  szFilename, strerror(errno));
+    delete [] szTmpName;
+    delete [] szFilename;
     return;
   }
      
@@ -1105,6 +1109,9 @@ void CICQDaemon::SaveUserList()
   else if (!m_bShuttingDown)
     gLog.Error("%sFailed updating %s: `%s'\n", L_ERRORxSTR,
                szFilename, strerror(errno));
+
+  delete [] szTmpName;
+  delete [] szFilename;
 }
 
 void CICQDaemon::SetIgnore(unsigned short n, bool b)
@@ -2505,7 +2512,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     packet >> nFilenameLen;
     if (!bIsAck)
     {
-      char szFilename[nFilenameLen+1];
+      char* szFilename = new char[nFilenameLen+1];
       for (unsigned short i = 0; i < nFilenameLen; i++)
         packet >> szFilename[i];
       szFilename[nFilenameLen] = '\0'; // be safe
@@ -2518,6 +2525,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
                                      0, nMsgID[0], nMsgID[1]);
       nEventType = ON_EVENT_FILE;
       pEvent = e;
+
+      delete [] szFilename;
     }
     else
       packet.incDataPosRead(nFilenameLen + 4);
@@ -2613,7 +2622,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     packet >> nLen;
     packet.incDataPosRead(18);
     packet >> nLongLen; // plugin len
-    char szPlugin[nLongLen+1];
+      char* szPlugin = new char[nLongLen+1];
     for (unsigned long i = 0; i < nLongLen; i++)
       packet >> szPlugin[i];
     szPlugin[nLongLen] = '\0';
@@ -2639,7 +2648,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     }
 
     packet >> nLongLen;
-    char szMessage[nLongLen+1];
+      char* szMessage = new char[nLongLen+1];
     for (unsigned long i = 0; i < nLongLen; i++)
       packet >> szMessage[i];
     szMessage[nLongLen] = '\0';
@@ -2652,10 +2661,12 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     u->Unlock();
     ProcessMessage(u, packet, msg, nCommand, nMask, nMsgID,
                    nSequence, bIsAck, bNewUser);
-    return;
+      delete [] szPlugin;
+      delete [] szMessage;
+      return;
 
-    break; // bah!
-  }
+      break; // bah!
+    }
 
   default:
     gTranslator.ServerToClient(message);

@@ -106,9 +106,10 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 
     if (strlen(szFullParam))
     {
-      char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
+      char* szCmd = new char[strlen(m_szCommand) + strlen(szFullParam) + 8];
       sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
       system(szCmd);
+      delete [] szCmd;
     }
 
     if (szFullParam)
