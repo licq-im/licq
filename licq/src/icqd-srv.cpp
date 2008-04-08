@@ -2352,6 +2352,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
     unsigned long nPFM = o->PhoneFollowMeStatus();
     // Workaround for the ICQ4.0 problem of it not liking the PFM flags
+    m_nDesiredStatus &= ~(ICQ_STATUS_FxPFM | ICQ_STATUS_FxPFMxAVAILABLE);
     if (nPFM != ICQ_PLUGIN_STATUSxINACTIVE)
       m_nDesiredStatus |= ICQ_STATUS_FxPFM;
     if (nPFM == ICQ_PLUGIN_STATUSxACTIVE)
