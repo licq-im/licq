@@ -2,7 +2,7 @@
 #
 # Brian Hunt ( bmh at canada.com ), December 1999
 #
-# set OPERA to your netscape binary.
+# set OPERA to your opera binary.
 # set URLHOME to your default homepage.
 #
 # OPERA VERSION -> TRME
