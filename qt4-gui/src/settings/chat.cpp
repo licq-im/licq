@@ -136,6 +136,10 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myShowUserPicHiddenCheck->setToolTip(tr("Hide user picture upon opening"));
   myChatLayout->addWidget(myShowUserPicHiddenCheck, 6, 1);
 
+  myPopupAutoResponseCheck = new QCheckBox(tr("Popup auto response"));
+  myPopupAutoResponseCheck->setToolTip(tr("Popup auto responses received when sending to contacts that are away."));
+  myChatLayout->addWidget(myPopupAutoResponseCheck, 7, 0);
+
 
   myLocaleBox = new QGroupBox(tr("Localization"));
   myLocaleLayout = new QVBoxLayout(myLocaleBox);
@@ -535,6 +539,7 @@ void Settings::Chat::load()
   myShowNoticesCheck->setChecked(chatConfig->showNotices());
   myShowUserPicCheck->setChecked(chatConfig->showUserPic());
   myShowUserPicHiddenCheck->setChecked(chatConfig->showUserPicHidden());
+  myPopupAutoResponseCheck->setChecked(chatConfig->popupAutoResponse());
 
   if (!chatConfig->msgChatView())
   {
@@ -604,6 +609,7 @@ void Settings::Chat::apply()
   chatConfig->setSingleLineChatMode(mySingleLineChatModeCheck->isChecked());
   chatConfig->setShowUserPic(myShowUserPicCheck->isChecked());
   chatConfig->setShowUserPicHidden(myShowUserPicHiddenCheck->isChecked());
+  chatConfig->setPopupAutoResponse(myPopupAutoResponseCheck->isChecked());
 
   gLicqDaemon->SetSendTypingNotification(mySendTNCheck->isChecked());
 

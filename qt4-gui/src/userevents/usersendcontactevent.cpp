@@ -29,6 +29,8 @@
 #include <licq_user.h>
 #include <licq_icqd.h>
 
+#include "config/chat.h"
+
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
 
@@ -110,7 +112,7 @@ bool UserSendContactEvent::sendDone(ICQEvent* e)
     gUserManager.DropUser(u);
   }
 
-  if (showAwayDlg)
+  if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())
     new ShowAwayMsgDlg(myUsers.front().c_str(), myPpid);
 
   return true;

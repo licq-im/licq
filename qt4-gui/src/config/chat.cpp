@@ -96,6 +96,7 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("AutoClose", myAutoClose, true);
   iniFile.ReadBool("AutoPopup", myAutoPopup, false);
   iniFile.ReadBool("AutoFocus", myAutoFocus, true);
+  iniFile.ReadBool("PopupAutoResponse", myPopupAutoResponse, true);
 
   iniFile.SetSection("locale");
   iniFile.ReadStr("DefaultEncoding", szTemp, "");
@@ -154,6 +155,7 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("AutoClose", myAutoClose);
   iniFile.WriteBool("AutoPopup", myAutoPopup);
   iniFile.WriteBool("AutoFocus", myAutoFocus);
+  iniFile.WriteBool("PopupAutoResponse", myPopupAutoResponse);
 
   iniFile.SetSection("locale");
   iniFile.WriteStr("DefaultEncoding", myDefaultEncoding);
@@ -282,6 +284,14 @@ void Config::Chat::setShowUserPicHidden(bool showUserPicHidden)
     return;
 
   myShowUserPicHidden = showUserPicHidden;
+}
+
+void Config::Chat::setPopupAutoResponse(bool popupAutoResponse)
+{
+  if (popupAutoResponse == myPopupAutoResponse)
+    return;
+
+  myPopupAutoResponse = popupAutoResponse;
 }
 
 void Config::Chat::setAutoPosReplyWin(bool autoPosReplyWin)

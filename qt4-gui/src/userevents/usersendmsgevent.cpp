@@ -82,7 +82,7 @@ bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
     gUserManager.DropUser(u);
   }
 
-  if (showAwayDlg)
+  if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())
     new ShowAwayMsgDlg(myUsers.front().c_str(), myPpid);
 
   return true;

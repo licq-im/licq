@@ -100,6 +100,7 @@ private:
   QCheckBox* myCheckSpelling;
   QCheckBox* myShowUserPicCheck;
   QCheckBox* myShowUserPicHiddenCheck;
+  QCheckBox* myPopupAutoResponseCheck;
 
   QGroupBox* myLocaleBox;
   QVBoxLayout* myLocaleLayout;

@@ -81,6 +81,7 @@ public:
   bool showNotices() const { return myShowNotices; }
   bool showUserPic() const { return myShowUserPic; }
   bool showUserPicHidden() const { return myShowUserPicHidden; }
+  bool popupAutoResponse() const { return myPopupAutoResponse; }
   bool chatVertSpacing() const { return myChatVertSpacing; }
   bool chatAppendLineBreak() const { return myChatAppendLineBreak; }
   bool flashTaskbar() const { return myFlashTaskbar; }
@@ -130,6 +131,7 @@ public slots:
   void setShowNotices(bool showNotices);
   void setShowUserPic(bool showUserPic);
   void setShowUserPicHidden(bool showUserPicHidden);
+  void setPopupAutoResponse(bool popupAutoResponse);
   void setChatVertSpacing(bool chatVertSpacing);
   void setChatAppendLineBreak(bool chatAppendLineBreak);
   void setFlashTaskbar(bool flashTaskbar);
@@ -184,6 +186,7 @@ private:
   bool myReverseHistory;
   bool myShowUserPic;
   bool myShowUserPicHidden;
+  bool myPopupAutoResponse;
 
   unsigned short myChatMsgStyle;
   unsigned short myHistMsgStyle;
