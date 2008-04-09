@@ -77,6 +77,7 @@ public:
   // Get functions
   bool useDoubleReturn() const { return myUseDoubleReturn; }
   QString msgPopupKey() const { return myMsgPopupKey; }
+  bool delayStatusChange() const { return myDelayStatusChange; }
   QFont defaultFont() const { return myDefaultFont; }
   QFont normalFont() const;
   QFont editFont() const { return myEditFont; }
@@ -119,6 +120,7 @@ public slots:
   // Set functions
   void setUseDoubleReturn(bool useDoubleReturn);
   void setMsgPopupKey(QString msgPopupKey);
+  void setDelayStatusChange(bool delayStatusChange);
   void setNormalFont(QString normalFont);
   void setEditFont(QString editFont);
 
@@ -188,6 +190,7 @@ private:
   // General configuration
   bool myUseDoubleReturn;
   QString myMsgPopupKey;
+  bool myDelayStatusChange;
   QFont myDefaultFont;
   QFont myEditFont;
 

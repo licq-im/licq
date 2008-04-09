@@ -444,11 +444,14 @@ void SystemMenu::setFollowMeStatus(QAction* action)
 void SystemMenu::setMainStatus(QAction* action)
 {
   unsigned long status = action->data().toUInt();
+  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE);
+  bool changeNow = !Config::General::instance()->delayStatusChange();
 
-  if (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE)
-    AwayMsgDlg::showAwayMsgDlg(status, true);
+  if (withMsg)
+    AwayMsgDlg::showAwayMsgDlg(status, true, 0, myStatusInvisibleAction->isChecked(), !changeNow);
 
-  LicqGui::instance()->changeStatus(status, myStatusInvisibleAction->isChecked());
+  if (changeNow || !withMsg)
+    LicqGui::instance()->changeStatus(status, myStatusInvisibleAction->isChecked());
 }
 
 void SystemMenu::toggleMainInvisibleStatus()
@@ -696,9 +699,14 @@ void OwnerData::viewHistory()
 void OwnerData::setStatus(QAction* action)
 {
   int status = action->data().toInt();
-  if (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE)
-    AwayMsgDlg::showAwayMsgDlg(status, true);
-  LicqGui::instance()->changeStatus(status, myPpid, myStatusInvisibleAction->isChecked());
+  bool withMsg = (status != ICQ_STATUS_OFFLINE && status != ICQ_STATUS_ONLINE);
+  bool changeNow = !Config::General::instance()->delayStatusChange();
+
+  if (withMsg)
+    AwayMsgDlg::showAwayMsgDlg(status, true, myPpid, myStatusInvisibleAction->isChecked(), !changeNow);
+
+  if (changeNow || !withMsg)
+    LicqGui::instance()->changeStatus(status, myPpid, myStatusInvisibleAction->isChecked());
 }
 
 void OwnerData::toggleInvisibleStatus()

@@ -75,6 +75,9 @@ private:
   void buildAutoStatusCombos(bool firstTime);
 
   // Widgets for status settings
+  QGroupBox* myGeneralBox;
+  QVBoxLayout* myGeneralLayout;
+  QCheckBox* myDelayStatusChangeCheck;
   QVBoxLayout* myPageStatusLayout;
   QGroupBox* myAutoLogonBox;
   QGroupBox* myAutoAwayBox;

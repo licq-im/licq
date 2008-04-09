@@ -39,6 +39,8 @@
 #include <licq_sar.h>
 #include <licq_user.h>
 
+#include "core/licqgui.h"
+
 #include "helpers/licqstrings.h"
 #include "helpers/support.h"
 #include "helpers/usercodec.h"
@@ -54,14 +56,15 @@ using namespace LicqQtGui;
 
 AwayMsgDlg* AwayMsgDlg::myInstance = NULL;
 
-void AwayMsgDlg::showAwayMsgDlg(unsigned short status, bool autoClose)
+void AwayMsgDlg::showAwayMsgDlg(unsigned short status, bool autoClose,
+    unsigned long ppid, bool invisible, bool setStatus)
 {
   if (myInstance == NULL)
     myInstance = new AwayMsgDlg();
   else
     myInstance->raise();
 
-  myInstance->selectAutoResponse(status, autoClose);
+  myInstance->selectAutoResponse(status, autoClose, ppid, invisible, setStatus);
 }
 
 AwayMsgDlg::AwayMsgDlg(QWidget* parent)
@@ -108,7 +111,8 @@ AwayMsgDlg::~AwayMsgDlg()
   myInstance = NULL;
 }
 
-void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose)
+void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
+    unsigned long ppid, bool invisible, bool setStatus)
 {
   switch (status & 0x00FF)
   {
@@ -119,6 +123,9 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose)
   }
 
   myStatus = status;
+  myInvisible = invisible;
+  myPpid = ppid;
+  mySetStatus = setStatus;
 
   // Fill in the select menu
   myMenu->clear();
@@ -233,6 +240,14 @@ bool AwayMsgDlg::eventFilter(QObject* /* watched */, QEvent* event)
 void AwayMsgDlg::ok()
 {
   myAutoCloseCounter = -1;
+
+  if (mySetStatus)
+  {
+    if (myPpid == 0)
+      LicqGui::instance()->changeStatus(myStatus, myInvisible);
+    else
+      LicqGui::instance()->changeStatus(myStatus, myPpid, myInvisible);
+  }
 
   QString s = myAwayMsg->toPlainText().trimmed();
 
