@@ -663,9 +663,9 @@ void LicqGui::changeStatus(unsigned long status, bool invisible)
     unsigned long ppid = (*_ppit)->PPID();
 
     // Keep invisible mode on protocols when changing global status
-    unsigned long protoInvisible = invisible;
-    if (status != ICQ_STATUS_FxPRIVATE)
-      protoInvisible |= myMainWindow->systemMenu()->getInvisibleStatus(ppid);
+    bool protoInvisible = invisible;
+    if (status != ICQ_STATUS_FxPRIVATE && myMainWindow->systemMenu()->getInvisibleStatus(ppid))
+      protoInvisible = true;
 
     changeStatus(status, ppid, protoInvisible);
   }
