@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include <QCheckBox>
+#include <QComboBox>
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
@@ -68,17 +69,29 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   myBoldOnMsgCheck->setToolTip(tr("Show the message info label in bold font if there are incoming messages"));
   myMsgActionsLayout->addWidget(myBoldOnMsgCheck, 0, 0);
 
-  myAutoPopupCheck = new QCheckBox(tr("Auto-popup message"));
-  myAutoPopupCheck->setToolTip(tr("Open all incoming messages automatically when received if we are online (or free for chat)"));
-  myMsgActionsLayout->addWidget(myAutoPopupCheck, 1, 0);
-
   myAutoFocusCheck = new QCheckBox(tr("Auto-focus message"));
   myAutoFocusCheck->setToolTip(tr("Automatically focus opened message windows."));
-  myMsgActionsLayout->addWidget(myAutoFocusCheck, 2, 0);
+  myMsgActionsLayout->addWidget(myAutoFocusCheck, 1, 0);
 
   myAutoRaiseCheck = new QCheckBox(tr("Auto-raise main window"));
   myAutoRaiseCheck->setToolTip(tr("Raise the main window on incoming messages"));
-  myMsgActionsLayout->addWidget(myAutoRaiseCheck, 3, 0);
+  myMsgActionsLayout->addWidget(myAutoRaiseCheck, 2, 0);
+
+  QHBoxLayout* autoPopupLayout = new QHBoxLayout();
+  QLabel* autoPopupLabel = new QLabel(tr("Auto-popup message:"));
+  autoPopupLayout->addWidget(autoPopupLabel);
+  myAutoPopupCombo = new QComboBox();
+  myAutoPopupCombo->addItem(tr("Never"));
+  myAutoPopupCombo->addItem(tr("Only when online"));
+  myAutoPopupCombo->addItem(tr("When online or away"));
+  myAutoPopupCombo->addItem(tr("When online, away or N/A"));
+  myAutoPopupCombo->addItem(tr("Always except DND"));
+  myAutoPopupCombo->addItem(tr("Always"));
+  myAutoPopupCombo->setToolTip(tr("Select for which statuses incoming messages should "
+      "open automatically.\nOnline also includes Free for chat."));
+  autoPopupLabel->setBuddy(myAutoPopupCombo);
+  autoPopupLayout->addWidget(myAutoPopupCombo);
+  myMsgActionsLayout->addLayout(autoPopupLayout, 3, 0);
 
   myFlashTaskbarCheck = new QCheckBox(tr("Flash taskbar"));
   myFlashTaskbarCheck->setToolTip(tr("Flash the taskbar on incoming messages"));
@@ -291,7 +304,7 @@ void Settings::Events::load()
   myFlashUrgentCheck->setChecked(flash == Config::ContactList::FlashUrgent || flash == Config::ContactList::FlashAll);
   myFlashAllCheck->setChecked(flash == Config::ContactList::FlashAll);
 
-  myAutoPopupCheck->setChecked(chatConfig->autoPopup());
+  myAutoPopupCombo->setCurrentIndex(chatConfig->autoPopup());
   myAutoFocusCheck->setChecked(chatConfig->autoFocus());
   myFlashTaskbarCheck->setChecked(chatConfig->flashTaskbar());
 
@@ -345,7 +358,7 @@ void Settings::Events::apply()
   else
     contactListConfig->setFlash(Config::ContactList::FlashNone);
 
-  chatConfig->setAutoPopup(myAutoPopupCheck->isChecked());
+  chatConfig->setAutoPopup(myAutoPopupCombo->currentIndex());
   chatConfig->setAutoFocus(myAutoFocusCheck->isChecked());
   chatConfig->setFlashTaskbar(myFlashTaskbarCheck->isChecked());
 

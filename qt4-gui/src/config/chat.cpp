@@ -94,7 +94,7 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
 
   iniFile.SetSection("functions");
   iniFile.ReadBool("AutoClose", myAutoClose, true);
-  iniFile.ReadBool("AutoPopup", myAutoPopup, false);
+  iniFile.ReadNum("AutoPopup", myAutoPopup, 0);
   iniFile.ReadBool("AutoFocus", myAutoFocus, true);
   iniFile.ReadBool("PopupAutoResponse", myPopupAutoResponse, true);
 
@@ -153,7 +153,7 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
 
   iniFile.SetSection("functions");
   iniFile.WriteBool("AutoClose", myAutoClose);
-  iniFile.WriteBool("AutoPopup", myAutoPopup);
+  iniFile.WriteNum("AutoPopup", myAutoPopup);
   iniFile.WriteBool("AutoFocus", myAutoFocus);
   iniFile.WriteBool("PopupAutoResponse", myPopupAutoResponse);
 
@@ -190,7 +190,7 @@ void Config::Chat::setAutoClose(bool autoClose)
   myAutoClose = autoClose;
 }
 
-void Config::Chat::setAutoPopup(bool autoPopup)
+void Config::Chat::setAutoPopup(unsigned short autoPopup)
 {
   if (autoPopup == myAutoPopup)
     return;

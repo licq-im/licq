@@ -25,6 +25,7 @@
 #include <QObject>
 
 class QCheckBox;
+class QComboBox;
 class QGridLayout;
 class QGroupBox;
 class QLabel;
@@ -81,7 +82,7 @@ private:
   QCheckBox* myOnEventDndCheck;
   QCheckBox* myAlwaysOnlineNotifyCheck;
   QCheckBox* myBoldOnMsgCheck;
-  QCheckBox* myAutoPopupCheck;
+  QComboBox* myAutoPopupCombo;
   QCheckBox* myAutoRaiseCheck;
   QCheckBox* myAutoFocusCheck;
   QCheckBox* myFlashTaskbarCheck;

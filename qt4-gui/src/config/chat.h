@@ -66,7 +66,7 @@ public:
 
   // Get functions
   bool autoClose() const { return myAutoClose; }
-  bool autoPopup() const { return myAutoPopup; }
+  unsigned short autoPopup() const { return myAutoPopup; }
   bool autoFocus() const { return myAutoFocus; }
   bool manualNewUser() const { return myManualNewUser; }
   bool sendFromClipboard() const { return mySendFromClipboard; }
@@ -116,7 +116,7 @@ public slots:
 
   // Set functions
   void setAutoClose(bool autoClose);
-  void setAutoPopup(bool autoPopup);
+  void setAutoPopup(unsigned short autoPopup);
   void setAutoFocus(bool autoFocus);
   void setManualNewUser(bool manualNewUser);
   void setSendFromClipboard(bool sendFromClipboard);
@@ -164,7 +164,7 @@ private:
   bool myColorsHaveChanged;
 
   bool myAutoFocus;
-  bool myAutoPopup;
+  unsigned short myAutoPopup;
   bool myAutoClose;
   bool myManualNewUser;
   bool mySendFromClipboard;

@@ -1479,9 +1479,9 @@ void LicqGui::userUpdated(CICQSignal* sig)
       if (sig->Argument() == 0)
         break;
 
-      if (Config::Chat::instance()->autoPopup() && sig->Argument() > 0)
+      if (sig->Argument() > 0)
       {
-        bool popCheck = false;
+        unsigned short popCheck = 99;
 
         ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
         if (o != NULL)
@@ -1490,13 +1490,25 @@ void LicqGui::userUpdated(CICQSignal* sig)
           {
             case ICQ_STATUS_ONLINE:
             case ICQ_STATUS_FREEFORCHAT:
-              popCheck = true;
-            default:
-              gUserManager.DropOwner(ppid);
+              popCheck = 1;
+              break;
+            case ICQ_STATUS_AWAY:
+              popCheck = 2;
+              break;
+            case ICQ_STATUS_NA:
+              popCheck = 3;
+              break;
+            case ICQ_STATUS_OCCUPIED:
+              popCheck = 4;
+              break;
+            case ICQ_STATUS_DND:
+              popCheck = 5;
+              break;
           }
+          gUserManager.DropOwner(ppid);
         }
 
-        if (popCheck)
+        if (Config::Chat::instance()->autoPopup() >= popCheck)
         {
           ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
           if (u != NULL)
