@@ -217,6 +217,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myShowOfflineAction->setShortcut(Qt::CTRL + Qt::Key_O);
   myThreadViewAction = addAction(tr("&Thread Group View"), Config::ContactList::instance(), SLOT(setThreadView(bool)));
   myThreadViewAction->setCheckable(true);
+  myThreadViewAction->setShortcut(Qt::CTRL + Qt::Key_T);
   myShowEmptyGroupsAction = addAction(tr("Sh&ow Empty Groups"), Config::ContactList::instance(), SLOT(setShowEmptyGroups(bool)));
   myShowEmptyGroupsAction->setCheckable(true);
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
