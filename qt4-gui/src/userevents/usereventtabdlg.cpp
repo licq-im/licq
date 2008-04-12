@@ -81,12 +81,6 @@ void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
   index = myTabs->insertTab(index, tab, label);
   updateTabLabel(u);
   gUserManager.DropUser(u);
-  QWidget* fw = myTabs->focusWidget();
-  if (Config::Chat::instance()->autoFocus())
-    myTabs->setCurrentIndex(index);
-  else
-    if (fw != NULL)
-      fw->setFocus();
 }
 
 void UserEventTabDlg::selectTab(QWidget* tab)

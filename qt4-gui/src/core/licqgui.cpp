@@ -869,6 +869,15 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
   if (id.isEmpty() || ppid == 0)
     return NULL;
 
+  // Check if a message window should be made active
+  bool activateMsgwin = Config::Chat::instance()->autoFocus();
+
+  // Don't change focus if another message window is already active
+  const QWidget* activeWin = QApplication::activeWindow();
+  if (activeWin != NULL && ((qobject_cast<const UserEventCommon*>(activeWin)) != NULL ||
+      (qobject_cast<const UserEventTabDlg*>(activeWin)) != NULL))
+    activateMsgwin = false;
+
   if (Config::Chat::instance()->msgChatView())
   {
     for (int i = 0; i < myUserSendList.size(); ++i)
@@ -885,26 +894,23 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
         //if (!e->FindUserInConvo(id))
         //  e->convoJoin(id);
 
-        if (myUserEventTabDlg && myUserEventTabDlg->tabExists(e))
+        QWidget* msgWindow = e;
+        if (myUserEventTabDlg != NULL && myUserEventTabDlg->tabExists(e))
         {
-          myUserEventTabDlg->show();
-          if (Config::Chat::instance()->autoFocus())
-          {
+          msgWindow = myUserEventTabDlg;
+          if (activateMsgwin)
             myUserEventTabDlg->selectTab(e);
-            myUserEventTabDlg->raise();
-            myUserEventTabDlg->activateWindow();
-          }
         }
-        else
+
+        msgWindow->show();
+        msgWindow->setWindowState(msgWindow->windowState() & ~Qt::WindowMinimized);
+        if (activateMsgwin)
         {
-          e->show();
-          if (Config::Chat::instance()->autoFocus() &&
-              (!qApp->activeWindow() || !qApp->activeWindow()->inherits("UserEventCommon")))
-          {
-            e->raise();
-            e->activateWindow();
-          }
+          // FIXME: When restoring from minimized, the window isn't activated (at least not on KDE)
+          msgWindow->raise();
+          msgWindow->activateWindow();
         }
+
         // Make the existing event dialog change to the new event type
         e->changeEventType(fcn);
         return e;
@@ -916,15 +922,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
   QWidget* parent = NULL;
   if (Config::Chat::instance()->tabbedChatting())
   {
-    if (myUserEventTabDlg != NULL)
-    {
-      if (Config::Chat::instance()->autoFocus())
-      {
-        myUserEventTabDlg->raise();
-        myUserEventTabDlg->activateWindow();
-      }
-    }
-    else
+    if (myUserEventTabDlg == NULL)
     {
       // create the tab dialog if it does not exist
       myUserEventTabDlg = new UserEventTabDlg(0, "UserEventTabbedDialog");
@@ -969,25 +967,29 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
 
   connect(e, SIGNAL(viewUrl(QWidget*, QString)), SLOT(viewUrl(QWidget*, QString)));
 
+  QWidget* msgWindow = e;
   if (Config::Chat::instance()->tabbedChatting())
   {
-    myUserEventTabDlg->addTab(e);
-    myUserEventTabDlg->show();
-    if (newtabw)
-      e->setFocus();
+    msgWindow = myUserEventTabDlg;
 
-    if (Config::Chat::instance()->autoFocus())
-    {
-      myUserEventTabDlg->raise();
-      myUserEventTabDlg->activateWindow();
-    }
+    myUserEventTabDlg->addTab(e);
+    if (activateMsgwin)
+      myUserEventTabDlg->selectTab(e);
 
     // Check if we want the window sticky
     if (Config::Chat::instance()->msgWinSticky())
       QTimer::singleShot(100, myUserEventTabDlg, SLOT(slotSetMsgWinSticky()));
   }
-  else
-    e->show();
+
+  // FIXME: New windows always become active stealing focus from other event windows (at least on KDE)
+  msgWindow->show();
+  msgWindow->setWindowState(msgWindow->windowState() & ~Qt::WindowMinimized);
+  if (activateMsgwin)
+  {
+    // FIXME: When restoring from minimized, the window isn't activated (at least not on KDE)
+    msgWindow->raise();
+    msgWindow->activateWindow();
+  }
 
   // there might be more than one send window open
   // make sure we only remember one, or it will get complicated
