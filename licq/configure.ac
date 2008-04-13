@@ -164,6 +164,7 @@ AC_CHECK_FUNC(pthread_kill_other_threads_np,[AC_DEFINE([HAVE_PTHREAD_KILL_OTHER_
 AC_CHECK_SOCKS5
 LICQ_CHECK_GPGME
 LICQ_CHECK_OPENSSL
+AX_BOOST_BASE([1.33.1])
 
 dnl Switch to C++ mode and check for needed C++ headers
 AC_LANG_SAVE
