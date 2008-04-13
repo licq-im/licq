@@ -401,7 +401,19 @@ Qt::ItemFlags ContactListModel::flags(const QModelIndex& index) const
   if (!index.isValid())
     return Qt::ItemIsEnabled;
 
-  return Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+  Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
+
+  ItemType itemType = static_cast<ContactItem*>(index.internalPointer())->itemType();
+
+  // Only editing of alias for contacts
+  if (itemType == UserItem && Config::ContactList::instance()->columnFormat(index.column()) == "%a")
+    f |= Qt::ItemIsEditable;
+
+  // Group names are editable in first column unless it's a system group
+  if (itemType == GroupItem && index.column() == 0 && index.row() != 0 && index.row() < myUserGroups.size())
+    f |= Qt::ItemIsEditable;
+
+  return f;
 }
 
 QVariant ContactListModel::headerData(int section, Qt::Orientation orientation, int role) const
@@ -447,4 +459,9 @@ QModelIndex ContactListModel::groupIndex(GroupType type, unsigned long id) const
   }
 
   return QModelIndex();
+}
+
+bool ContactListModel::setData(const QModelIndex& index, const QVariant& value, int role)
+{
+  return static_cast<ContactItem*>(index.internalPointer())->setData(value, role);
 }

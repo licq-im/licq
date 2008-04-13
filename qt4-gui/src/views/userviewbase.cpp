@@ -49,6 +49,7 @@ UserViewBase::UserViewBase(ContactListModel* contactList, UserMenu* mnuUser, QWi
     myUserMenu(mnuUser)
 {
   setItemDelegate(new ContactDelegate(this, this));
+  setEditTriggers(EditKeyPressed);
 
   // Look'n'Feel
   setIndentation(0);

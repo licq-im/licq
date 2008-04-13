@@ -399,6 +399,8 @@ bool ContactUserData::updateText(ICQUser* licqUser)
 {
   bool hasChanged = false;
 
+  myAlias = QString::fromUtf8(licqUser->GetAlias());
+
   for (unsigned short i = 0; i < Config::ContactList::instance()->columnCount(); i++)
   {
     QString format = Config::ContactList::instance()->columnFormat(i);
@@ -409,11 +411,7 @@ bool ContactUserData::updateText(ICQUser* licqUser)
     QString newStr = codec->toUnicode(temp);
     free(temp);
 
-    temp = licqUser->usprintf("%a");
-    QString alias = QString::fromUtf8(temp);
-    free(temp);
-
-    newStr.replace("@_USER_ALIAS_@", alias);
+    newStr.replace("@_USER_ALIAS_@", myAlias);
 
     if (newStr != myText[i])
     {
@@ -468,6 +466,32 @@ void ContactUserData::updateVisibility()
     user->group()->updateVisibility(visibility);
 
   myVisibility = visibility;
+}
+
+bool ContactUserData::setData(const QVariant& value, int role)
+{
+  if (role != Qt::EditRole || !value.isValid())
+    return false;
+
+  if (value.toString() == myAlias)
+    return true;
+
+  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  if (u == NULL)
+    return false;
+
+  myAlias = value.toString();
+  u->SetAlias(myAlias.toUtf8());
+  u->SetKeepAliasOnUpdate(true);
+
+  // Daemon dosen't send signal when alias is changed so trigger update from here
+  updateText(u);
+  updateSorting();
+
+  gUserManager.DropUser(u);
+
+  emit dataChanged(this);
+  return true;
 }
 
 void ContactUserData::refresh()
@@ -557,6 +581,9 @@ QVariant ContactUserData::data(int column, int role) const
       if (column >= 0 && column < MAX_COLUMNCOUNT)
         return myText[column];
       break;
+
+    case Qt::EditRole:
+      return myAlias;
 
     case Qt::ToolTipRole:
       return tooltip();

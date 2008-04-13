@@ -142,6 +142,15 @@ public:
    */
   QVariant data(int column, int role) const;
 
+  /**
+   * Set data for this group
+   *
+   * @param value New value to set
+   * @param role Role to set
+   * @return True if any data was changed
+   */
+  virtual bool setData(const QVariant& value, int role = Qt::EditRole);
+
 signals:
   /**
    * Signal emitted when data for the group has changed

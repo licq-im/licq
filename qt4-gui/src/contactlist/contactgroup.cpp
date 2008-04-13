@@ -160,6 +160,9 @@ QVariant ContactGroup::data(int column, int role) const
       }
       break;
 
+    case Qt::EditRole:
+      return myName;
+
     case ContactListModel::ItemTypeRole:
       return ContactListModel::GroupItem;
 
@@ -183,4 +186,25 @@ QVariant ContactGroup::data(int column, int role) const
   }
 
   return QVariant();
+}
+
+bool ContactGroup::setData(const QVariant& value, int role)
+{
+  if (role != Qt::EditRole || !value.isValid())
+    return false;
+
+  // Don't allow system groups or "Other users" to be renamed this way
+  if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
+    return false;
+
+  if (value.toString() == myName)
+    return true;
+
+  myName = value.toString();
+  gUserManager.RenameGroup(myGroupId, myName.toLocal8Bit());
+
+  // Daemon doesn't signal when groups change so trigger update from here
+  emit dataChanged(this);
+
+  return true;
 }

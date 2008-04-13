@@ -51,3 +51,8 @@ QVariant ContactUser::data(int column, int role) const
 
   return myUserData->data(column, role);
 }
+
+bool ContactUser::setData(const QVariant& value, int role)
+{
+  return myUserData->setData(value, role);
+}

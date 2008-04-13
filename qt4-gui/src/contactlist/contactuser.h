@@ -98,6 +98,15 @@ public:
    */
   QVariant data(int column, int role) const;
 
+  /**
+   * Set data for this user
+   *
+   * @param value New value to set
+   * @param role Role to set
+   * @return True if any data was changed
+   */
+  virtual bool setData(const QVariant& value, int role = Qt::EditRole);
+
 private:
   ContactUserData* myUserData;
   ContactGroup* myGroup;

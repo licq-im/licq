@@ -65,6 +65,15 @@ public:
    */
   virtual QVariant data(int column, int role) const = 0;
 
+  /**
+   * Set data for this item
+   *
+   * @param value New value to set
+   * @param role Role to set
+   * @return True if any data was changed
+   */
+  virtual bool setData(const QVariant& value, int role = Qt::EditRole);
+
 private:
   ContactListModel::ItemType myItemType;
 };

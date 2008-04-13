@@ -290,6 +290,15 @@ public:
   virtual QVariant headerData(int section, Qt::Orientation orientation, int role = Qt::DisplayRole) const;
 
   /**
+   * Set item data
+   *
+   * @param index Index for the item to update
+   * @param value Value to set
+   * @param role Role to update
+   */
+  virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+
+  /**
    * Get index for a specific user
    *
    * @param id Licq user id

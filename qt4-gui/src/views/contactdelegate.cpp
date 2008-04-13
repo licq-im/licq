@@ -22,6 +22,9 @@
 
 #include "contactdelegate.h"
 
+#include <QApplication>
+#include <QKeyEvent>
+#include <QLineEdit>
 #include <QPainter>
 
 #include "config/contactlist.h"
@@ -494,3 +497,69 @@ void ContactDelegate::drawExtIcons(Parameters& arg) const
   }
 #undef EXTICON
 }
+
+QWidget* ContactDelegate::createEditor(QWidget* parent, const QStyleOptionViewItem& /* option */, const QModelIndex& /* index */) const
+{
+  QLineEdit* editor = new QLineEdit(parent);
+
+  // Don't use the view's skinned palette
+  editor->setPalette(QApplication::palette());
+
+  return editor;
+}
+
+void ContactDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
+{
+  QString value = index.model()->data(index, Qt::EditRole).toString();
+
+  QLineEdit* lineedit = dynamic_cast<QLineEdit*>(editor);
+  lineedit->setText(value);
+}
+
+void ContactDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
+{
+  QLineEdit* lineedit = dynamic_cast<QLineEdit*>(editor);
+  model->setData(index, lineedit->text(), Qt::EditRole);
+}
+
+void ContactDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const
+{
+  QRect r = option.rect;
+
+  // Leave space for icon in first column
+  if (index.column() == 0)
+    r.setLeft(r.left() + 18);
+
+  editor->setGeometry(r);
+}
+
+bool ContactDelegate::eventFilter(QObject* object, QEvent* event)
+{
+  QWidget* editor = qobject_cast<QWidget*>(object);
+  if (editor == NULL)
+    return false;
+
+  if (event->type() == QEvent::KeyPress)
+  {
+    switch (static_cast<QKeyEvent*>(event)->key())
+    {
+      case Qt::Key_Enter:
+      case Qt::Key_Return:
+        emit commitData(editor);
+        emit closeEditor(editor, QAbstractItemDelegate::SubmitModelCache);
+        return true;
+      case Qt::Key_Escape:
+        // don't commit data
+        emit closeEditor(editor, QAbstractItemDelegate::RevertModelCache);
+        return true;
+    }
+  }
+  else if (event->type() == QEvent::FocusOut)
+  {
+    emit commitData(editor);
+    emit closeEditor(editor, NoHint);
+  }
+
+  return QAbstractItemDelegate::eventFilter(object, event);
+}
+

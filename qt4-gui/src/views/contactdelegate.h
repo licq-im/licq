@@ -71,6 +71,51 @@ public:
    */
   virtual void paint(QPainter* p, const QStyleOptionViewItem& option, const QModelIndex& index) const;
 
+  /**
+   * Create widget that can be used for editing data in an item
+   *
+   * @param parent Parent widget for the editor
+   * @param option Style options
+   * @param index Item to edit
+   * @return An editor widget
+   */
+  virtual QWidget* createEditor(QWidget* parent, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+
+  /**
+   * Set data for an editor widget
+   *
+   * @param editor Existing editor widget to update with data
+   * @param index Item to get data from
+   */
+  virtual void setEditorData(QWidget* editor, const QModelIndex& index) const;
+
+  /**
+   * Get data from editor widget and update model
+   *
+   * @param editor Existing editor widget with data
+   * @param model Model to write data to
+   * @param index Index of item to update
+   */
+  virtual void setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const;
+
+  /**
+   * Update geometry of an editor widget
+   *
+   * @param editor Existing editor widget to update geometry for
+   * @param option Style options, including new rect for editor
+   * @param index Index of item being edited
+   */
+  virtual void updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const;
+
+  /**
+   * Catch events for other objects. Used to get events for editor widget
+   *
+   * @param object Object the event happened for
+   * @param event Event for that object
+   * @return True if event should not be forwarded to object
+   */
+  virtual bool eventFilter(QObject* object, QEvent* event);
+
 private:
   /**
    * The data structure to be passed to private helpers

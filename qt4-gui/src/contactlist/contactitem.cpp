@@ -26,3 +26,8 @@ ContactItem::ContactItem(ContactListModel::ItemType type)
   : myItemType(type)
 {
 }
+
+bool ContactItem::setData(const QVariant& /* value */, int /* role */)
+{
+  return false;
+}

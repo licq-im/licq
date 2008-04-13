@@ -148,6 +148,16 @@ public:
    */
   QVariant data(int column, int role) const;
 
+  /**
+   * Set data for this user
+   * Currently only alias may be change this way
+   *
+   * @param value New value to set
+   * @param role Must be Qt::EditRole
+   * @return True if alias was changed
+   */
+  virtual bool setData(const QVariant& value, int role = Qt::EditRole);
+
 signals:
   /**
    * Signal emitted when user data has changed
@@ -240,6 +250,7 @@ private:
   QImage* myUserIcon;
   bool myUrgent;
   QString myText[4];
+  QString myAlias;
   QList<ContactUser*> myUserInstances;
 
   static QTimer* myRefreshTimer;
