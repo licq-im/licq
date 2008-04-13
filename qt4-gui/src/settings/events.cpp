@@ -407,6 +407,6 @@ void Settings::Events::apply()
   gLicqDaemon->SetAlwaysOnlineNotify(myAlwaysOnlineNotifyCheck->isChecked());
 
   chatConfig->blockUpdates(false);
-  contactListConfig->blockUpdates(true);
+  contactListConfig->blockUpdates(false);
   generalConfig->blockUpdates(false);
 }
