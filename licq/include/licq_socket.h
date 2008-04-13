@@ -250,6 +250,7 @@ public:
 
   fd_set SocketSet()   {  return m_sSockets.SocketSet(); }
   int LargestSocket()  {  return m_sSockets.Largest(); }
+  unsigned short Num() {  return m_sSockets.Num(); }
 
 protected:
   CSocketSet m_sSockets;

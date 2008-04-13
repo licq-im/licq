@@ -23,6 +23,7 @@
 // Localization
 #include "gettext.h"
 
+#define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
 
 
@@ -2383,16 +2384,24 @@ void *ChatManager_tep(void *arg)
         // Connection on the server port ---------------------------------------
         else if (nCurrentSocket == chatman->chatServer.Descriptor())
         {
-          CChatUser *u = new CChatUser;
-          u->m_pClient = new CChatClient;
+          if (chatman->sockman.Num() >= MAX_CONNECTS)
+          {
+            // Too many sockets, drop this one
+            gLog.Warn(tr("%sToo many connected clients, rejecting new connection.\n"), L_WARNxSTR);
+          }
+          else
+          {
+            CChatUser *u = new CChatUser;
+            u->m_pClient = new CChatClient;
 
-          chatman->chatServer.RecvConnection(u->sock);
-          chatman->sockman.AddSocket(&u->sock);
-          chatman->sockman.DropSocket(&u->sock);
+            chatman->chatServer.RecvConnection(u->sock);
+            chatman->sockman.AddSocket(&u->sock);
+            chatman->sockman.DropSocket(&u->sock);
 
-          u->state = CHAT_STATE_HANDSHAKE;
-          chatman->chatUsers.push_back(u);
-          gLog.Info(tr("%sChat: Received connection.\n"), L_TCPxSTR);
+            u->state = CHAT_STATE_HANDSHAKE;
+            chatman->chatUsers.push_back(u);
+            gLog.Info(tr("%sChat: Received connection.\n"), L_TCPxSTR);
+          }
         }
 
         // Message from connected socket----------------------------------------

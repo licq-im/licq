@@ -817,8 +817,26 @@ void TCPSocket::RecvConnection(TCPSocket &newSocket)
 {
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
 
-  newSocket.m_nDescriptor = accept(m_nDescriptor, (struct sockaddr *)&newSocket.m_sRemoteAddr, &sizeofSockaddr);
-  newSocket.SetLocalAddress();
+  // Make sure we stay under FD_SETSIZE
+  // See:
+  // * http://www.securityfocus.com/archive/1/490711
+  // * http://securityvulns.com/docs7669.html
+  // for more details
+  // This probably has no affect, since we are using multiple threads, but keep it here 
+  // to be used as a sanity check.
+  int newDesc = accept(m_nDescriptor, (struct sockaddr *)&newSocket.m_sRemoteAddr, &sizeofSockaddr);
+  if (newDesc < FD_SETSIZE)
+  {
+    newSocket.m_nDescriptor = newDesc;
+    newSocket.SetLocalAddress();
+  }
+  else
+  {
+    gLog.Error(tr("%sCannot accept new connection, too many descriptors in use.\n"), L_ERRORxSTR);
+    close(newDesc);
+
+    // TODO throw an exception, or do something to tell the caller it failed
+  }
 }
 
 #define m_pSSL ((SSL *) m_p_SSL)

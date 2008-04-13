@@ -23,6 +23,7 @@
 // Localization
 #include "gettext.h"
 
+#define MAX_CONNECTS  256
 #define DEBUG_THREADS(x)
 //#define DEBUG_THREADS(x) gLog.Info(x)
 
@@ -780,8 +781,21 @@ void *MonitorSockets_tep(void *p)
               TCPSocket *newSocket = new TCPSocket(0);
               tcp->RecvConnection(*newSocket);
               gSocketManager.DropSocket(tcp);
-              gSocketManager.AddSocket(newSocket);
-              gSocketManager.DropSocket(newSocket);
+
+              // Make sure we can handle another socket before accepting it
+              if (gSocketManager.Num() > MAX_CONNECTS)
+              {
+                // Too many sockets, drop this one
+                char remoteIp[32];
+                gLog.Warn(tr("%sToo many connected sockets, rejecting connection from %s.\n"),
+                    L_WARNxSTR, newSocket->RemoteIpStr(remoteIp));
+                delete newSocket;
+              }
+              else
+              {
+                gSocketManager.AddSocket(newSocket);
+                gSocketManager.DropSocket(newSocket);
+              }
             }
           }
 
