@@ -510,7 +510,7 @@ QWidget* ContactDelegate::createEditor(QWidget* parent, const QStyleOptionViewIt
 
 void ContactDelegate::setEditorData(QWidget* editor, const QModelIndex& index) const
 {
-  QString value = index.model()->data(index, Qt::EditRole).toString();
+  QString value = index.model()->data(index, ContactListModel::NameRole).toString();
 
   QLineEdit* lineedit = dynamic_cast<QLineEdit*>(editor);
   lineedit->setText(value);
@@ -519,7 +519,7 @@ void ContactDelegate::setEditorData(QWidget* editor, const QModelIndex& index) c
 void ContactDelegate::setModelData(QWidget* editor, QAbstractItemModel* model, const QModelIndex& index) const
 {
   QLineEdit* lineedit = dynamic_cast<QLineEdit*>(editor);
-  model->setData(index, lineedit->text(), Qt::EditRole);
+  model->setData(index, lineedit->text(), ContactListModel::NameRole);
 }
 
 void ContactDelegate::updateEditorGeometry(QWidget* editor, const QStyleOptionViewItem& option, const QModelIndex& index) const

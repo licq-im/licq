@@ -153,10 +153,10 @@ public:
    * Currently only alias may be change this way
    *
    * @param value New value to set
-   * @param role Must be Qt::EditRole
+   * @param role Must be ContactListModel::NameRole
    * @return True if alias was changed
    */
-  virtual bool setData(const QVariant& value, int role = Qt::EditRole);
+  virtual bool setData(const QVariant& value, int role = ContactListModel::NameRole);
 
 signals:
   /**

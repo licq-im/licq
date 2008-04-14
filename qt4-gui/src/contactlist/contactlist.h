@@ -72,6 +72,7 @@ public:
   enum DataRole
   {
     ItemTypeRole = Qt::UserRole,        // Type of item (one of enum ItemType)
+    NameRole,                           // Item name (alias for UserItems)
     SortPrefixRole,                     // Primary sort index
     SortRole,                           // Secondary sort index
     UnreadEventsRole,                   // Number of unread events
@@ -296,7 +297,7 @@ public:
    * @param value Value to set
    * @param role Role to update
    */
-  virtual bool setData(const QModelIndex& index, const QVariant& value, int role = Qt::EditRole);
+  virtual bool setData(const QModelIndex& index, const QVariant& value, int role = ContactListModel::NameRole);
 
   /**
    * Get index for a specific user

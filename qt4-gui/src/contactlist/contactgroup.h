@@ -149,7 +149,7 @@ public:
    * @param role Role to set
    * @return True if any data was changed
    */
-  virtual bool setData(const QVariant& value, int role = Qt::EditRole);
+  virtual bool setData(const QVariant& value, int role = ContactListModel::NameRole);
 
 signals:
   /**

@@ -160,7 +160,7 @@ QVariant ContactGroup::data(int column, int role) const
       }
       break;
 
-    case Qt::EditRole:
+    case ContactListModel::NameRole:
       return myName;
 
     case ContactListModel::ItemTypeRole:
@@ -190,7 +190,7 @@ QVariant ContactGroup::data(int column, int role) const
 
 bool ContactGroup::setData(const QVariant& value, int role)
 {
-  if (role != Qt::EditRole || !value.isValid())
+  if (role != ContactListModel::NameRole || !value.isValid())
     return false;
 
   // Don't allow system groups or "Other users" to be renamed this way

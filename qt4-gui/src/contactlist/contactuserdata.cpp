@@ -470,7 +470,7 @@ void ContactUserData::updateVisibility()
 
 bool ContactUserData::setData(const QVariant& value, int role)
 {
-  if (role != Qt::EditRole || !value.isValid())
+  if (role != ContactListModel::NameRole || !value.isValid())
     return false;
 
   if (value.toString() == myAlias)
@@ -582,7 +582,7 @@ QVariant ContactUserData::data(int column, int role) const
         return myText[column];
       break;
 
-    case Qt::EditRole:
+    case ContactListModel::NameRole:
       return myAlias;
 
     case Qt::ToolTipRole:

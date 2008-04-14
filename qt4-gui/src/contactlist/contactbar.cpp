@@ -71,6 +71,9 @@ QVariant ContactBar::data(int column, int role) const
         return myText;
       break;
 
+    case ContactListModel::NameRole:
+      return myText;
+
     case ContactListModel::ItemTypeRole:
       return ContactListModel::BarItem;
 
