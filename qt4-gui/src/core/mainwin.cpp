@@ -422,8 +422,7 @@ void MainWindow::updateSkin()
 
 void MainWindow::CreateUserView()
 {
-  myUserView = new UserView(
-      LicqGui::instance()->contactList(), LicqGui::instance()->userMenu(), this);
+  myUserView = new UserView(LicqGui::instance()->contactList(), this);
   connect (myUserView, SIGNAL(userDoubleClicked(QString, unsigned long)),
       LicqGui::instance(), SLOT(showDefaultEventDialog(QString, unsigned long)));
 }

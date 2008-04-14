@@ -1360,7 +1360,7 @@ void LicqGui::createFloaty(QString id, unsigned long ppid,
   if (u == NULL)
     return;
 
-  FloatyView* f = new FloatyView(myContactList, u, myUserMenu);
+  FloatyView* f = new FloatyView(myContactList, u);
 
   connect(f, SIGNAL(userDoubleClicked(QString, unsigned long)),
       SLOT(showDefaultEventDialog(QString, unsigned long)));

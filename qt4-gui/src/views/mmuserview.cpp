@@ -49,7 +49,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMUserView */
 
 MMUserView::MMUserView(QString id, unsigned long ppid, ContactListModel* contactList, QWidget* parent)
-  : UserViewBase(contactList, NULL, parent),
+  : UserViewBase(contactList, parent),
     myId(id),
     myPpid(ppid)
 {

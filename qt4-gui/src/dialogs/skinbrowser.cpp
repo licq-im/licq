@@ -734,7 +734,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString& skinName)
   lblStatus->setPrependPixmap(IconManager::instance()->iconForStatus(ICQ_STATUS_ONLINE));
 
   // Userview
-  UserView userView(LicqGui::instance()->contactList(), 0, &w);
+  UserView userView(LicqGui::instance()->contactList(), &w);
   userView.setGeometry(skin->frame.border.left, skin->frame.border.top,
                         w.width() - skin->frameWidth(), w.height() - skin->frameHeight());
 

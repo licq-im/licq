@@ -44,10 +44,9 @@ public:
    *
    * @param contactList The contact list instance
    * @param licqUser The daemon contact to create floaty for
-   * @param userMenu User menu instance
    * @param parent Parent object
    */
-  FloatyView(ContactListModel* contactList, ICQUser* licqUser, UserMenu* userMenu, QWidget* parent = 0);
+  FloatyView(ContactListModel* contactList, ICQUser* licqUser, QWidget* parent = 0);
 
   /**
    * Destructor

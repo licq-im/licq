@@ -38,8 +38,8 @@ using namespace LicqQtGui;
 
 UserFloatyList FloatyView::floaties;
 
-FloatyView::FloatyView(ContactListModel* contactList, ICQUser* licqUser, UserMenu* userMenu, QWidget* parent)
-  : UserViewBase(contactList, userMenu, parent),
+FloatyView::FloatyView(ContactListModel* contactList, ICQUser* licqUser,  QWidget* parent)
+  : UserViewBase(contactList, parent),
   myPpid(licqUser->PPID())
 {
   setWindowFlags(Qt::FramelessWindowHint);

@@ -32,12 +32,10 @@ extern char* PPIDSTRING(unsigned long);
 
 #include "contactlist/maincontactlistproxy.h"
 
-#include "core/usermenu.h"
-
 using namespace LicqQtGui;
 
-UserView::UserView(ContactListModel* contactList, UserMenu* mnuUser, QWidget* parent)
-  : UserViewBase(contactList, mnuUser, parent)
+UserView::UserView(ContactListModel* contactList, QWidget* parent)
+  : UserViewBase(contactList, parent)
 {
   // Use a proxy model for sorting and filtering
   myListProxy = new MainContactListProxy(myContactList, this);
@@ -237,12 +235,9 @@ void UserView::keyPressEvent(QKeyEvent* event)
       {
         setExpanded(currentIndex(), !isExpanded(currentIndex()));
       }
-      else if (itemType == ContactListModel::UserItem)
+      else
       {
-        QString id = currentIndex().data(ContactListModel::UserIdRole).toString();
-        unsigned long ppid = currentIndex().data(ContactListModel::PpidRole).toUInt();
-
-        myUserMenu->popup(viewport()->mapToGlobal(QPoint(40, visualRect(currentIndex()).y())), id, ppid);
+        popupMenu(viewport()->mapToGlobal(QPoint(40, visualRect(currentIndex()).y())), currentIndex());
       }
       return;
 

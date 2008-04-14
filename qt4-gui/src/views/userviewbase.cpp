@@ -43,10 +43,9 @@ extern char* PPIDSTRING(unsigned long);
 
 using namespace LicqQtGui;
 
-UserViewBase::UserViewBase(ContactListModel* contactList, UserMenu* mnuUser, QWidget* parent)
+UserViewBase::UserViewBase(ContactListModel* contactList, QWidget* parent)
   : QTreeView(parent),
-    myContactList(contactList),
-    myUserMenu(mnuUser)
+    myContactList(contactList)
 {
   setItemDelegate(new ContactDelegate(this, this));
   setEditTriggers(EditKeyPressed);
@@ -123,22 +122,26 @@ void UserViewBase::mouseReleaseEvent(QMouseEvent* event)
 
 void UserViewBase::contextMenuEvent(QContextMenuEvent* event)
 {
-  if (myUserMenu == NULL)
-    return;
-
   QModelIndex clickedItem = indexAt(event->pos());
   if (clickedItem.isValid())
   {
     setCurrentIndex(clickedItem);
 
-    if (static_cast<ContactListModel::ItemType>
-        (clickedItem.data(ContactListModel::ItemTypeRole).toInt()) == ContactListModel::UserItem)
-    {
-      QString id = clickedItem.data(ContactListModel::UserIdRole).toString();
-      unsigned long ppid = clickedItem.data(ContactListModel::PpidRole).toUInt();
+    popupMenu(viewport()->mapToGlobal(event->pos()), clickedItem);
+  }
+}
 
-      myUserMenu->popup(viewport()->mapToGlobal(event->pos()), id, ppid);
-    }
+void UserViewBase::popupMenu(QPoint point, QModelIndex item)
+{
+  ContactListModel::ItemType itemType = static_cast<ContactListModel::ItemType>
+    (item.data(ContactListModel::ItemTypeRole).toInt());
+
+  if (itemType == ContactListModel::UserItem)
+  {
+    QString id = item.data(ContactListModel::UserIdRole).toString();
+    unsigned long ppid = item.data(ContactListModel::PpidRole).toUInt();
+
+    LicqGui::instance()->userMenu()->popup(point, id, ppid);
   }
 }
 

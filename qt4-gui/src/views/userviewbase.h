@@ -29,7 +29,6 @@ namespace LicqQtGui
 {
 
 class ContactListModel;
-class UserMenu;
 
 /**
  * Base class for contact views
@@ -45,10 +44,9 @@ public:
    * Constructor
    *
    * @param contactList The contact list instance
-   * @param mnuUser User menu instance
    * @param parent Parent object
    */
-  UserViewBase(ContactListModel* contactList, UserMenu* mnuUser, QWidget* parent = 0);
+  UserViewBase(ContactListModel* contactList, QWidget* parent = 0);
 
   /**
    * Destructor
@@ -100,6 +98,14 @@ protected:
   virtual void contextMenuEvent(QContextMenuEvent* event);
 
   /**
+   * Show popup menu for an item
+   *
+   * @param point Coordinate to show menu from
+   * @param item Index to show menu for
+   */
+  void popupMenu(QPoint point, QModelIndex item);
+
+  /**
    * Item is being dragged
    *
    * @param event Drag event
@@ -122,7 +128,6 @@ protected:
 
   ContactListModel* myContactList;
   QAbstractProxyModel* myListProxy;
-  UserMenu* myUserMenu;
   QPoint myMousePressPos;
 
   /**

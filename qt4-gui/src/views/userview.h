@@ -27,7 +27,6 @@
 
 namespace LicqQtGui
 {
-class UserMenu;
 
 /**
  * Contact list view that can show either single groups or a threaded view
@@ -41,10 +40,9 @@ public:
    * Constructor
    *
    * @param contactList The contact list instance
-   * @param userMenu User menu instance
    * @param parent Parent object
    */
-  UserView(ContactListModel* contactList, UserMenu* userMenu, QWidget* parent = 0);
+  UserView(ContactListModel* contactList, QWidget* parent = 0);
 
   /**
    * Destructor
