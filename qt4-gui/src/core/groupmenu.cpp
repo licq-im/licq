@@ -30,6 +30,7 @@
 #include "helpers/licqstrings.h"
 
 #include "licqgui.h"
+#include "mainwin.h"
 #include "messagebox.h"
 
 using namespace LicqQtGui;
@@ -140,6 +141,7 @@ void GroupMenu::moveGroupUp()
 
   // Daemon doesn't notify us when groups change so notify model from here
   LicqGui::instance()->contactList()->reloadAll();
+  LicqGui::instance()->mainWindow()->updateGroups();
 }
 
 void GroupMenu::moveGroupDown()
@@ -149,6 +151,7 @@ void GroupMenu::moveGroupDown()
 
   // Daemon doesn't notify us when groups change so notify model from here
   LicqGui::instance()->contactList()->reloadAll();
+  LicqGui::instance()->mainWindow()->updateGroups();
 }
 
 void GroupMenu::removeGroup()
@@ -164,6 +167,7 @@ void GroupMenu::removeGroup()
 
   // Daemon doesn't notify us when groups change so notify model from here
   LicqGui::instance()->contactList()->reloadAll();
+  LicqGui::instance()->mainWindow()->updateGroups();
 }
 
 void GroupMenu::addUsersToGroup(QAction* action)

@@ -768,7 +768,6 @@ void MainWindow::updateGroups(bool initial)
     // needs to update
     LicqGui::instance()->contactList()->reloadAll();
     myUserView->updateRootIndex();
-    myUserView->expandGroups();
 
     // update group list in user and system menus
     LicqGui::instance()->userMenu()->updateGroups();
