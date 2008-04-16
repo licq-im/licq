@@ -461,6 +461,14 @@ QModelIndex ContactListModel::groupIndex(GroupType type, unsigned long id) const
   return QModelIndex();
 }
 
+QModelIndex ContactListModel::groupIndex(unsigned long id) const
+{
+  if (id >= SystemGroupOffset)
+    return groupIndex(GROUPS_SYSTEM, id - SystemGroupOffset);
+  else
+    return groupIndex(GROUPS_USER, id);
+}
+
 bool ContactListModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
   return static_cast<ContactItem*>(index.internalPointer())->setData(value, role);

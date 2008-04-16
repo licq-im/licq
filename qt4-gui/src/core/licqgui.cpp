@@ -107,6 +107,7 @@ extern "C"
 
 #include "xpm/licq.xpm"
 
+#include "groupmenu.h"
 #include "gui-defines.h"
 #include "mainwin.h"
 #include "messagebox.h"
@@ -288,6 +289,7 @@ LicqGui::~LicqGui()
   delete myLogWindow;
   delete myMainWindow;
   delete myContactList;
+  delete myGroupMenu;
   delete myUserMenu;
   delete myDockIcon;
 }
@@ -517,6 +519,7 @@ int LicqGui::Run(CICQDaemon* daemon)
       SLOT(addEventTag(QString, unsigned long, unsigned long)));
 
   myUserMenu = new UserMenu();
+  myGroupMenu = new GroupMenu();
   myDockIcon = NULL;
 
   // Overwrite Qt's event handler

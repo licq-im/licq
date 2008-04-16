@@ -41,6 +41,7 @@ namespace LicqQtGui
 {
 class ContactListModel;
 class DockIcon;
+class GroupMenu;
 class LogWindow;
 class MainWindow;
 class SignalManager;
@@ -84,6 +85,7 @@ public:
   LogWindow* logWindow() { return myLogWindow; }
   ContactListModel* contactList() { return myContactList; }
   UserMenu* userMenu() { return myUserMenu; }
+  GroupMenu* groupMenu() { return myGroupMenu; }
   DockIcon* dockIcon() { return myDockIcon; }
   UserEventTabDlg* userEventTabDlg() { return myUserEventTabDlg; }
 
@@ -278,6 +280,7 @@ private:
   LogWindow* myLogWindow;
   ContactListModel* myContactList;
   UserMenu* myUserMenu;
+  GroupMenu* myGroupMenu;
   DockIcon* myDockIcon;
 
   // User dialogs

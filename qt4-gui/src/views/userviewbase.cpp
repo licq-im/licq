@@ -35,6 +35,7 @@ extern char* PPIDSTRING(unsigned long);
 #include "config/contactlist.h"
 #include "config/skin.h"
 
+#include "core/groupmenu.h"
 #include "core/licqgui.h"
 #include "core/mainwin.h"
 #include "core/usermenu.h"
@@ -142,6 +143,12 @@ void UserViewBase::popupMenu(QPoint point, QModelIndex item)
     unsigned long ppid = item.data(ContactListModel::PpidRole).toUInt();
 
     LicqGui::instance()->userMenu()->popup(point, id, ppid);
+  }
+  else if (itemType == ContactListModel::GroupItem)
+  {
+    unsigned int id = item.data(ContactListModel::GroupIdRole).toUInt();
+
+    LicqGui::instance()->groupMenu()->popup(point, id);
   }
 }
 

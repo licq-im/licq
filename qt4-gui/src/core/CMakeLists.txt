@@ -1,4 +1,5 @@
 set(core_SRCS
+  groupmenu.cpp
   licqgui.cpp
   mainwin.cpp
   messagebox.cpp

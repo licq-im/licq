@@ -314,6 +314,15 @@ public:
    */
   QModelIndex groupIndex(GroupType type, unsigned long id) const;
 
+  /**
+   * Get index for a group. This function uses model id for groups
+   * Requesting group id 0 will return other users group.
+   *
+   * @param id Id of the group or 0 to get other users group
+   * @return An index for the group or an invalid index if the group does not exist
+   */
+  QModelIndex groupIndex(unsigned long id) const;
+
 public slots:
   /**
    * The daemon list has changed
