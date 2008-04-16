@@ -1146,7 +1146,8 @@ void UserSendCommon::eventDoneReceived(ICQEvent* e)
         SIGNAL(doneUserFcn(ICQEvent*)), this, SLOT(eventDoneReceived(ICQEvent*)));
 
   if (myMessageEdit != NULL)
-    myMessageEdit->setFocus();
+    if(tabDlg == NULL || !tabDlg->tabExists(this) || tabDlg->tabIsSelected(this))
+      myMessageEdit->setFocus();
 
   if (e->Result() != EVENT_ACKED)
   {
