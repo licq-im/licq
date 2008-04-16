@@ -458,8 +458,11 @@ void ContactDelegate::drawExtIcons(Parameters& arg) const
 
     if (Config::ContactList::instance()->showExtendedIcons())
     {
-      EXTICON(ContactListModel::PhoneStatus, IconManager::PhoneIcon);
-      EXTICON(ContactListModel::CellularStatus, IconManager::CellularIcon);
+      if (Config::ContactList::instance()->showPhoneIcons())
+      {
+        EXTICON(ContactListModel::PhoneStatus, IconManager::PhoneIcon);
+        EXTICON(ContactListModel::CellularStatus, IconManager::CellularIcon);
+      }
       EXTICON(ContactListModel::BirthdayStatus, IconManager::BirthdayIcon);
       EXTICON(ContactListModel::InvisibleStatus, IconManager::InvisibleIcon);
 
@@ -474,7 +477,7 @@ void ContactDelegate::drawExtIcons(Parameters& arg) const
       }
 #endif
 
-      if (arg.status != ContactListModel::OfflineStatus)
+      if (arg.status != ContactListModel::OfflineStatus && Config::ContactList::instance()->showPhoneIcons())
       {
         EXTICON(ContactListModel::PhoneFollowMeActiveStatus,
             IconManager::PfmActiveIcon);

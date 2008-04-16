@@ -104,6 +104,7 @@ public:
   unsigned short sortColumn() const { return mySortColumn; }
   bool sortColumnAscending() const { return mySortColumnAscending; }
   bool showExtendedIcons() const { return myShowExtendedIcons; }
+  bool showPhoneIcons() const { return myShowPhoneIcons; }
   bool showUserIcons() const { return myShowUserIcons; }
   FlashMode flash() const { return myFlash; }
   bool allowScrollBar() const { return myAllowScrollBar; }
@@ -153,6 +154,7 @@ public slots:
   void setSortColumn(unsigned short column, bool ascending = true);
   void setGroupState(unsigned short group, bool expanded);
   void setShowExtendedIcons(bool showExtendedIcons);
+  void setShowPhoneIcons(bool showPhoneIcons);
   void setShowUserIcons(bool showUserIcons);
   void setFlash(FlashMode flash);
   void setAllowScrollBar(bool allowScrollBar);
@@ -232,6 +234,7 @@ private:
   bool myShowHeader;
   bool myShowDividers;
   bool myShowExtendedIcons;
+  bool myShowPhoneIcons;
   bool myShowUserIcons;
   FlashMode myFlash;
   bool myAllowScrollBar;

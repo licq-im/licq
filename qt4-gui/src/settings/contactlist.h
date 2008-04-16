@@ -97,6 +97,7 @@ private:
   QCheckBox* myAlwaysShowONUCheck;
   QCheckBox* myScrollBarCheck;
   QCheckBox* myShowExtIconsCheck;
+  QCheckBox* myShowPhoneIconsCheck;
   QCheckBox* mySysBackCheck;
   QCheckBox* myShowUserIconsCheck;
   QCheckBox* myManualNewUserCheck;

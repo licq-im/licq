@@ -91,11 +91,17 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   myShowExtIconsCheck->setToolTip(tr("Show birthday, invisible, and custom auto response icons to the right of users in the list"));
   myAppearanceLayout->addWidget(myShowExtIconsCheck, 4, 0);
 
+  myShowPhoneIconsCheck = new QCheckBox(tr("Show phone icons"));
+  myShowPhoneIconsCheck->setToolTip(tr("Show extended icons for phone statuses"));
+  connect(myShowExtIconsCheck, SIGNAL(toggled(bool)),
+      myShowPhoneIconsCheck, SLOT(setEnabled(bool)));
+  myAppearanceLayout->addWidget(myShowPhoneIconsCheck, 5, 0);
+
   myShowUserIconsCheck = new QCheckBox(tr("Show user display picture"));
   myShowUserIconsCheck->setToolTip(tr("Show the user's display picture"
       " instead of a status icon, if the user"
       " is online and has a display picture"));
-  myAppearanceLayout->addWidget(myShowUserIconsCheck, 5, 0);
+  myAppearanceLayout->addWidget(myShowUserIconsCheck, 6, 0);
 
   myAlwaysShowONUCheck = new QCheckBox(tr("Always show online notify users"));
   myAlwaysShowONUCheck->setToolTip(tr("Show online notify users who are offline even when offline users are hidden."));
@@ -331,6 +337,8 @@ void Settings::ContactList::load()
   myGridLinesCheck->setChecked(contactListConfig->showGridLines());
   myFontStylesCheck->setChecked(contactListConfig->useFontStyles());
   myShowExtIconsCheck->setChecked(contactListConfig->showExtendedIcons());
+  myShowPhoneIconsCheck->setChecked(contactListConfig->showPhoneIcons());
+  myShowPhoneIconsCheck->setEnabled(contactListConfig->showExtendedIcons());
   myHeaderCheck->setChecked(contactListConfig->showHeader());
   myShowDividersCheck->setChecked(contactListConfig->showDividers());
   mySortByCombo->setCurrentIndex(contactListConfig->sortByStatus());
@@ -402,6 +410,7 @@ void Settings::ContactList::apply()
   contactListConfig->setShowGridLines(myGridLinesCheck->isChecked());
   contactListConfig->setUseFontStyles(myFontStylesCheck->isChecked());
   contactListConfig->setShowExtendedIcons(myShowExtIconsCheck->isChecked());
+  contactListConfig->setShowPhoneIcons(myShowPhoneIconsCheck->isChecked());
   contactListConfig->setShowHeader(myHeaderCheck->isChecked());
   contactListConfig->setShowDividers(myShowDividersCheck->isChecked());
   contactListConfig->setSortByStatus(mySortByCombo->currentIndex());

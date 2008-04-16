@@ -58,6 +58,7 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("ShowEmptyGroups", myShowEmptyGroups, true);
   iniFile.ReadNum("TVGroupStates", myGroupStates, 0xFFFFFFFE);
   iniFile.ReadBool("ShowExtIcons", myShowExtendedIcons, true);
+  iniFile.ReadBool("ShowPhoneIcons", myShowPhoneIcons, true);
   iniFile.ReadBool("ShowUserIcons", myShowUserIcons, true);
   iniFile.ReadBool("ScrollBar", myAllowScrollBar, true);
   iniFile.ReadBool("SystemBackground", myUseSystemBackground, false);
@@ -121,6 +122,7 @@ void Config::ContactList::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("ShowEmptyGroups", myShowEmptyGroups);
   iniFile.WriteNum("TVGroupStates", myGroupStates);
   iniFile.WriteBool("ShowExtIcons", myShowExtendedIcons);
+  iniFile.WriteBool("ShowPhoneIcons", myShowPhoneIcons);
   iniFile.WriteBool("ShowUserIcons", myShowUserIcons);
   iniFile.WriteNum("Flash", static_cast<unsigned short>(myFlash));
   iniFile.WriteBool("ScrollBar", myAllowScrollBar);
@@ -254,6 +256,16 @@ void Config::ContactList::setShowExtendedIcons(bool showExtendedIcons)
     return;
 
   myShowExtendedIcons = showExtendedIcons;
+
+  changeListLook();
+}
+
+void Config::ContactList::setShowPhoneIcons(bool showPhoneIcons)
+{
+  if (showPhoneIcons == myShowPhoneIcons)
+    return;
+
+  myShowPhoneIcons = showPhoneIcons;
 
   changeListLook();
 }
