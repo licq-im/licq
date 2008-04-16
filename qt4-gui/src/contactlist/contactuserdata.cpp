@@ -505,6 +505,18 @@ void ContactUserData::refresh()
   bool hasChanged = updateText(u);
   gUserManager.DropUser(u);
 
+  // Check if birthday icon should be updated
+  bool birthday = (u->Birthday() == 0);
+  if (birthday != myBirthday)
+  {
+    myBirthday = birthday;
+    hasChanged = true;
+    if (myBirthday)
+      myExtendedStatus |= ContactListModel::BirthdayStatus;
+    else
+      myExtendedStatus &= ~ContactListModel::BirthdayStatus;
+  }
+
   // To reduce performance impact on refreshs, keep track whether anything changed so we don't force unnecessary updates
   if (hasChanged)
   {
