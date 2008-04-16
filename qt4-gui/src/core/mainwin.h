@@ -100,7 +100,6 @@ signals:
   void signal_sentevent(ICQEvent* e);
 
 public slots:
-  void updateUserWin();
   void slot_shutdown();
   void slot_updatedList(CICQSignal*);
   void slot_updatedUser(CICQSignal*);

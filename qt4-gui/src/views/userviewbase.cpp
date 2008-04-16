@@ -277,7 +277,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
         if (!dropId.isEmpty())
         {
           gUserManager.AddUserToGroup(dropId.toLatin1(), dropPpid, gid);
-          gMainWindow->updateUserWin();
+          myContactList->updateUser(dropId.toLatin1(), dropPpid);
         }
       }
       else

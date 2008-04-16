@@ -658,13 +658,6 @@ void MainWindow::slot_updatedList(CICQSignal* sig)
   }
 }
 
-void MainWindow::updateUserWin()
-{
-  // Reload contact list from the daemon
-  LicqGui::instance()->contactList()->reloadAll();
-  myUserView->updateRootIndex();
-}
-
 void MainWindow::updateEvents()
 {
   QString szCaption;

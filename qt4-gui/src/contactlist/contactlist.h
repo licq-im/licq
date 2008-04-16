@@ -196,11 +196,6 @@ public:
   virtual ~ContactListModel();
 
   /**
-   * Reload the entire contact list from the daemon
-   */
-  void reloadAll();
-
-  /**
    * Refresh data and group membership for a user
    * As the daemon does not signal some things the main window must use this function to notify us.
    *
@@ -333,6 +328,11 @@ public slots:
    * @param sig Signal data from the daemon with information on what has changed
    */
   void slot_updatedUser(CICQSignal* sig);
+
+  /**
+   * Reload the entire contact list from the daemon
+   */
+  void reloadAll();
 
 private slots:
   /**

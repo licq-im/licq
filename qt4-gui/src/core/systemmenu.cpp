@@ -110,7 +110,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myUserAdmMenu->addSeparator();
   myUserAdmMenu->addAction(tr("Update All Users"), this, SLOT(updateAllUsers()));
   myUserAdmMenu->addAction(tr("Update Current Group"), this, SLOT(updateAllUsersInGroup()));
-  a = myUserAdmMenu->addAction(tr("&Redraw User Window"), gMainWindow, SLOT(updateUserWin()));
+  a = myUserAdmMenu->addAction(tr("&Redraw User Window"), LicqGui::instance()->contactList(), SLOT(reloadAll()));
   a->setShortcut(Qt::CTRL + Qt::Key_L);
   myUserAdmMenu->addAction(tr("&Save All Users"), this, SLOT(saveAllUsers()));
 

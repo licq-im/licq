@@ -59,11 +59,6 @@ public:
   bool MainWindowSelectedItemUser(QString& id, unsigned long& ppid) const;
 
   /**
-   * Update expanded status of all groups (only relevant for threaded view mode)
-   */
-  void expandGroups();
-
-  /**
    * Set skin colors
    *
    * @param back Background color
@@ -75,6 +70,11 @@ public slots:
    * Set current view to display
    */
   void updateRootIndex();
+
+  /**
+   * Update expanded status of all groups (only relevant for threaded view mode)
+   */
+  void expandGroups();
 
 protected slots:
   /**
