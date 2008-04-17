@@ -92,6 +92,11 @@ void AddNewLines(char *_szDest, const char *_szSource)
       _szDest[j++] = '\n';
       i += 2;
     }
+    if (_szSource[i] == '\\' && _szSource[i + 1] == '\\')
+    {
+      _szDest[j++] = '\\';
+      i += 2;
+    }
     else
     {
       _szDest[j++] = _szSource[i];
@@ -122,6 +127,12 @@ void RemoveNewLines(char *_szDest, int _nDestSize, const char *_szSource)
       _szDest[j++] = '\\';
       if (j >= _nDestSize) break;
       _szDest[j++] = 'n';
+    }
+    else if (_szSource[i] == '\\')
+    {
+      _szDest[j++] = '\\';
+      if (j >= _nDestSize) break;
+      _szDest[j++] = '\\';
     }
     else
       _szDest[j++] = _szSource[i];
