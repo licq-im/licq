@@ -92,7 +92,7 @@ void AddNewLines(char *_szDest, const char *_szSource)
       _szDest[j++] = '\n';
       i += 2;
     }
-    if (_szSource[i] == '\\' && _szSource[i + 1] == '\\')
+    else if (_szSource[i] == '\\' && _szSource[i + 1] == '\\')
     {
       _szDest[j++] = '\\';
       i += 2;
