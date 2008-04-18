@@ -97,12 +97,9 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myShowSendCloseCheck->setToolTip(tr("Show Send and Close buttons in the chat dialog."));
   myChatLayout->addWidget(myShowSendCloseCheck, 2, 0);
 
-  myCheckSpelling = new QCheckBox(tr("Check spelling"));
-  myCheckSpelling->setToolTip(tr("Mark misspelled word as you type."));
-#ifndef USE_KDE
-  myCheckSpelling->setVisible(false);
-#endif
-  myChatLayout->addWidget(myCheckSpelling, 2, 1);
+  myPopupAutoResponseCheck = new QCheckBox(tr("Popup auto response"));
+  myPopupAutoResponseCheck->setToolTip(tr("Popup auto responses received when sending to contacts that are away."));
+  myChatLayout->addWidget(myPopupAutoResponseCheck, 2, 1);
 
   myMsgWinStickyCheck = new QCheckBox(tr("Sticky message window(s)"));
   myMsgWinStickyCheck->setToolTip(tr("Makes the message window(s) visible on all desktops"));
@@ -136,9 +133,12 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myShowUserPicHiddenCheck->setToolTip(tr("Hide user picture upon opening"));
   myChatLayout->addWidget(myShowUserPicHiddenCheck, 6, 1);
 
-  myPopupAutoResponseCheck = new QCheckBox(tr("Popup auto response"));
-  myPopupAutoResponseCheck->setToolTip(tr("Popup auto responses received when sending to contacts that are away."));
-  myChatLayout->addWidget(myPopupAutoResponseCheck, 7, 0);
+  myCheckSpelling = new QCheckBox(tr("Check spelling"));
+  myCheckSpelling->setToolTip(tr("Mark misspelled words as you type."));
+#ifndef USE_KDE
+  myCheckSpelling->setVisible(false);
+#endif
+  myChatLayout->addWidget(myCheckSpelling, 7, 0);
 
 
   myLocaleBox = new QGroupBox(tr("Localization"));
@@ -176,15 +176,22 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myExtensionsLayout = new QGridLayout(myExtensionsBox);
   myExtensionsLayout->setColumnStretch(1, 1);
 
+  myTerminalLabel = new QLabel(tr("Terminal:"));
+  myTerminalLabel->setToolTip(tr("The command to run to start your terminal program."));
+  myExtensionsLayout->addWidget(myTerminalLabel, 0, 0);
+
+  myTerminalEdit = new QLineEdit(tr("Terminal:"));
+  myTerminalEdit->setToolTip(myTerminalLabel->toolTip());
+  myTerminalLabel->setBuddy(myTerminalEdit);
+  myExtensionsLayout->addWidget(myTerminalEdit, 0, 1);
+
   myUrlViewerLabel = new QLabel(tr("URI viewer:"));
-  myUrlViewerLabel->setToolTip(tr("The command to run to view a URL.  Will be passed the URL as a parameter."));
-  myExtensionsLayout->addWidget(myUrlViewerLabel, 0, 0);
+  myUrlViewerLabel->setToolTip(tr("The command to run in case Qt is unable to open an URL.\n"
+        "It is passed an URL as the last parameter."));
+  myExtensionsLayout->addWidget(myUrlViewerLabel, 1, 0);
 
   myUrlViewerCombo = new QComboBox();
   myUrlViewerCombo->setEditable(true);
-#ifdef USE_KDE
-  myUrlViewerCombo->addItem(tr("KDE default"));
-#endif
   myUrlViewerCombo->addItem("viewurl-firefox.sh");
   myUrlViewerCombo->addItem("viewurl-lynx.sh");
   myUrlViewerCombo->addItem("viewurl-mozilla.sh");
@@ -195,16 +202,11 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myUrlViewerCombo->addItem("viewurl-w3m.sh");
   myUrlViewerCombo->setToolTip(myUrlViewerLabel->toolTip());
   myUrlViewerLabel->setBuddy(myUrlViewerCombo);
-  myExtensionsLayout->addWidget(myUrlViewerCombo, 0, 1);
-
-  myTerminalLabel = new QLabel(tr("Terminal:"));
-  myTerminalLabel->setToolTip(tr("The command to run to start your terminal program."));
-  myExtensionsLayout->addWidget(myTerminalLabel, 1, 0);
-
-  myTerminalEdit = new QLineEdit(tr("Terminal:"));
-  myTerminalEdit->setToolTip(myTerminalLabel->toolTip());
-  myTerminalLabel->setBuddy(myTerminalEdit);
-  myExtensionsLayout->addWidget(myTerminalEdit, 1, 1);
+  myExtensionsLayout->addWidget(myUrlViewerCombo, 1, 1);
+#ifdef USE_KDE
+  myUrlViewerLabel->setVisible(false);
+  myUrlViewerCombo->setVisible(false);
+#endif
 
 
   myPageChatLayout->addWidget(myChatBox);

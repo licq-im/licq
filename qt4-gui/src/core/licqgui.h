@@ -193,6 +193,13 @@ public:
    */
   void changeStatus(unsigned long status, unsigned long ppid, bool invisible = false);
 
+  /**
+   * Invoke the desktop-aware URL viewer
+   *
+   * @param url The URL to open
+   */
+  void viewUrl(QString url);
+
 public slots:
   /**
    * Write current configuration to file
@@ -221,8 +228,6 @@ public slots:
   void sendMsg(QString id, unsigned long ppid, const QString& message);
   void sendFileTransfer(QString id, unsigned long ppid, const QString& filename, const QString& description);
   void sendChatRequest(QString id, unsigned long ppid);
-
-  void viewUrl(QWidget* parent, QString url);
 
 private slots:
 #ifdef Q_WS_X11

@@ -123,7 +123,6 @@ protected slots:
 signals:
   void finished(QString id, unsigned long ppid);
   void encodingChanged();
-  void viewUrl(QWidget*, QString);
 };
 
 } // namespace LicqQtGui

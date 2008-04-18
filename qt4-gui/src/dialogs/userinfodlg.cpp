@@ -1179,7 +1179,6 @@ void UserInfoDlg::CreateAbout()
 
   mlvAbout = new MLView();//EditWrap(true, p);
   mlvAbout->setReadOnly(!m_bOwner);
-  connect(mlvAbout, SIGNAL(viewurl(QWidget*, QString)), LicqGui::instance(), SLOT(viewUrl(QWidget*, QString)));
   lay->addWidget(mlvAbout);
 }
 

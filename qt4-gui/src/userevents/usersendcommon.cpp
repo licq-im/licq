@@ -403,8 +403,6 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 
     gUserManager.DropUser(u);
 
-    connect(myHistoryView, SIGNAL(viewurl(QWidget*, QString)),
-        LicqGui::instance(), SLOT(viewUrl(QWidget*, QString)));
     connect(gMainWindow, SIGNAL(signal_sentevent(ICQEvent*)),
         myHistoryView, SLOT(addMsg(ICQEvent*)));
     //myViewSplitter->setResizeMode(myHistoryView, QSplitter::FollowSizeHint);

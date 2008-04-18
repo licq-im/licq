@@ -39,8 +39,10 @@
 #include <KDE/KToolInvocation>
 #include <KDE/KUrl>
 #else
+# include <QDesktopServices>
 # include <QStyle>
 # include <QStyleFactory>
+# include <QUrl>
 #endif
 
 #if defined(Q_WS_X11)
@@ -857,7 +859,6 @@ UserViewEvent* LicqGui::showViewEventDialog(QString id, unsigned long ppid)
   }
 
   UserViewEvent* e = new UserViewEvent(id, ppid);
-  connect(e, SIGNAL(viewUrl(QWidget*, QString)), SLOT(viewUrl(QWidget*, QString)));
 
   e->show();
   userEventFinished(id, ppid);
@@ -968,8 +969,6 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
   }
   if (e == NULL) return NULL;
 
-  connect(e, SIGNAL(viewUrl(QWidget*, QString)), SLOT(viewUrl(QWidget*, QString)));
-
   QWidget* msgWindow = e;
   if (Config::Chat::instance()->tabbedChatting())
   {
@@ -1041,27 +1040,23 @@ void LicqGui::sendChatRequest(QString id, unsigned long ppid)
     return;
 }
 
-void LicqGui::viewUrl(QWidget* parent, QString url)
+void LicqGui::viewUrl(QString url)
 {
 #ifdef USE_KDE
   if (url.startsWith("mailto:"))
     KToolInvocation::invokeMailer(KUrl(url));
   else
-  // If no URL viewer is set, use KDE default
-  if (!myLicqDaemon->getUrlViewer())
     KToolInvocation::invokeBrowser(url);
-  else
 #else
-  // If no URL viewer is set, try DEFAULT_URL_VIEWER (mozilla)
-  if (!myLicqDaemon->getUrlViewer())
-    myLicqDaemon->setUrlViewer(DEFAULT_URL_VIEWER);
-#endif
+  if (!QDesktopServices::openUrl(QUrl(url)))
   {
+    if (!myLicqDaemon->getUrlViewer())
+      myLicqDaemon->setUrlViewer(DEFAULT_URL_VIEWER);
     if (!myLicqDaemon->ViewUrl(url.toLocal8Bit().data()))
-      WarnUser(parent,
-          tr("Licq is unable to start your browser and open the URL.\n"
+      WarnUser(NULL, tr("Licq is unable to start your browser and open the URL.\n"
             "You will need to start the browser and open the URL manually."));
   }
+#endif
 }
 
 void LicqGui::userInfoDlgFinished(UserInfoDlg* dialog)

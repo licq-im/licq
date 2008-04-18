@@ -61,7 +61,6 @@ private:
   QString m_url;
 
 signals:
-  void viewurl(QWidget*, QString);
   void quote(const QString& text);
 };
 

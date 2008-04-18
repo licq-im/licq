@@ -33,6 +33,7 @@
 #include <QRegExp>
 
 #include "config/emoticons.h"
+#include "core/licqgui.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MLView */
@@ -343,9 +344,8 @@ void MLView::setHandleLinks(bool enable)
 
 void MLView::setSource(const QUrl& url)
 {
-  QString name = url.toString();
-  if (m_handleLinks && ((name.indexOf(QRegExp("^\\w+://")) > -1) || name.startsWith("mailto:")))
-    emit viewurl(this, name);
+  if (m_handleLinks && !url.scheme().isEmpty())
+    LicqGui::instance()->viewUrl(url.toString());
 }
 
 bool MLView::hasMarkedText() const

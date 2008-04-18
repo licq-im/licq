@@ -138,7 +138,6 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
 
   // Widget to show history entries
   myHistoryView = new HistoryView(true, myId, myPpid);
-  connect(myHistoryView, SIGNAL(viewurl(QWidget*, QString)), LicqGui::instance(), SLOT(viewUrl(QWidget*, QString)));
   mainLayout->addWidget(myHistoryView, 1);
 
   // Dialog buttons

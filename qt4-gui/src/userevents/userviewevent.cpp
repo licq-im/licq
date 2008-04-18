@@ -90,8 +90,6 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
       SLOT(printMessage(QTreeWidgetItem*)));
   connect(gMainWindow, SIGNAL(signal_sentevent(ICQEvent*)),
       SLOT(sentEvent(ICQEvent*)));
-  connect(myMessageView, SIGNAL(viewurl(QWidget*, QString)),
-      LicqGui::instance(), SLOT(viewUrl(QWidget*, QString)));
 
   QGroupBox* h_action = new QGroupBox();
   myMainWidget->addSpacing(10);
@@ -403,17 +401,8 @@ void UserViewEvent::read1()
       // but before it is executed.
       url.prepend("file://");
 
-#ifdef USE_KDE
-      // If no URL viewer is set, use KDE default
-      if (!gLicqDaemon->getUrlViewer())
-        KToolInvocation::invokeBrowser(url);
-      else
-#endif
-      {
-        if (!gLicqDaemon->ViewUrl(url.toLocal8Bit().data()))
-          WarnUser(this, tr("Licq is unable to start your browser and open the URL.\n"
-                "You will need to start the browser and open the URL manually."));
-      }
+      LicqGui::instance()->viewUrl(url);
+
       break;
     }
   } // switch
@@ -589,7 +578,7 @@ void UserViewEvent::read4()
     }
 
     case ICQ_CMDxSUB_URL:   // view a url
-      emit viewUrl(this, dynamic_cast<CEventUrl*>(myCurrentEvent)->Url());
+      LicqGui::instance()->viewUrl(dynamic_cast<CEventUrl*>(myCurrentEvent)->Url());
       break;
   } // switch
 }
