@@ -187,7 +187,8 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
 
   myUrlViewerLabel = new QLabel(tr("URI viewer:"));
   myUrlViewerLabel->setToolTip(tr("The command to run in case Qt is unable to open an URL.\n"
-        "It is passed an URL as the last parameter."));
+        "It is passed an URL as the last parameter.\n"
+        "Refer to the hints dialog for Qt URL handling rules."));
   myExtensionsLayout->addWidget(myUrlViewerLabel, 1, 0);
 
   myUrlViewerCombo = new QComboBox();

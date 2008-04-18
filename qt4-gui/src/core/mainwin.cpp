@@ -1035,8 +1035,26 @@ void MainWindow::showHints()
     "   For example in the send tab of the user function window.</li>"
     "<li>Here is the complete list of user % options, which can be used in <b>OnEvent</b>"
     "   parameters, <b>auto responses</b>, and <b>utilities</b>:") + gMainWindow->usprintfHelp +
-                   "</li></ul>" + tr(
-    "<hr><p> For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>");
+    "</li></ul><hr>" +
+#ifndef USE_KDE
+    "<h2>" + tr("Qt URL handling") + "</h2>"
+    "<center><table border=1 cellpadding=5>"
+    "<tr><th colspan=2>Web</th><th colspan=2>E-mail (mailto:)</th></tr>"
+    "<tr><th>KDE</th><th>GNOME</th><th>GNOME</th><th>KDE</th></tr>"
+    "<tr><td align=center colspan=4>xdg-open</td></tr>"
+    "<tr><td align=center colspan=2>$DEFAULT_BROWSER</td>"
+        "<td colspan=2 rowspan=2>&nbsp;</td></tr>"
+    "<tr><td align=center colspan=2>$BROWSER</td></tr>"
+    "<tr><td align=center>kfmclient openURL</td>"
+        "<td align=center colspan=2>gnome-open</td>"
+        "<td align=center>kfmclient exec</td></tr>"
+    "<tr><td align=center colspan=4>firefox</td></tr>"
+    "<tr><td align=center colspan=4>mozilla</td></tr>"
+    "<tr><td align=center colspan=4>netscape</td></tr>"
+    "<tr><td align=center colspan=4>opera</td></tr>"
+    "</table></center><hr>" +
+#endif
+    tr("<p>For more information, see the Licq webpage (<tt>http://www.licq.org</tt>).</p>");
 
   new HintsDlg(hints);
 }
