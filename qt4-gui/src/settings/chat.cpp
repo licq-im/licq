@@ -565,9 +565,9 @@ void Settings::Chat::load()
   }
   myShowAllEncodingsCheck->setChecked(chatConfig->showAllEncodings());
 
+  QString urlViewer = gLicqDaemon->getUrlViewer();
   myUrlViewerCombo->setItemText(myUrlViewerCombo->currentIndex(),
-      gLicqDaemon->getUrlViewer() == NULL ?
-      DEFAULT_URL_VIEWER : QString(gLicqDaemon->getUrlViewer()));
+      urlViewer.isNull() ? DEFAULT_URL_VIEWER : urlViewer);
   myTerminalEdit->setText(gLicqDaemon->Terminal() == NULL ?
       tr("none") : QString(gLicqDaemon->Terminal()));
 
@@ -616,14 +616,8 @@ void Settings::Chat::apply()
 
   gLicqDaemon->SetSendTypingNotification(mySendTNCheck->isChecked());
 
-#ifdef USE_KDE
-  if (myUrlViewerCombo->currentText() == DEFAULT_URL_VIEWER)
-    gLicqDaemon->setUrlViewer("none");
-  else
-#endif
-    gLicqDaemon->setUrlViewer(myUrlViewerCombo->currentText().toLocal8Bit());
-
   gLicqDaemon->SetTerminal(myTerminalEdit->text().toLocal8Bit());
+  gLicqDaemon->setUrlViewer(myUrlViewerCombo->currentText().toLocal8Bit());
 
   if (myDefaultEncodingCombo->currentIndex() > 0)
     chatConfig->setDefaultEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()));

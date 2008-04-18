@@ -31,13 +31,12 @@
 #define QTGUI_CONFIGFILE QTGUI_DIR "config.ini"
 
 #define MAX_COLUMNCOUNT 4
+#define DEFAULT_URL_VIEWER "viewurl-mozilla.sh"
 
 #ifdef USE_KDE
 # define PLUGIN_NAME "kde4-gui"
-# define DEFAULT_URL_VIEWER tr("KDE default")
 #else
 # define PLUGIN_NAME "qt4-gui"
-# define DEFAULT_URL_VIEWER "viewurl-mozilla.sh"
 #endif
 
 // Defined here until there is a way to get constant from daemon
