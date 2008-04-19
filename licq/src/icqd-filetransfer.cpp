@@ -1188,12 +1188,18 @@ void *FileTransferManager_tep(void *arg)
           }
           else
           {
-            ftman->ftServer.RecvConnection(ftman->ftSock);
-            ftman->sockman.AddSocket(&ftman->ftSock);
-            ftman->sockman.DropSocket(&ftman->ftSock);
+            if (ftman->ftServer.RecvConnection(ftman->ftSock))
+            {
+              ftman->sockman.AddSocket(&ftman->ftSock);
+              ftman->sockman.DropSocket(&ftman->ftSock);
 
-            ftman->m_nState = FT_STATE_HANDSHAKE;
-            gLog.Info(tr("%sFile Transfer: Received connection.\n"), L_TCPxSTR);
+              ftman->m_nState = FT_STATE_HANDSHAKE;
+              gLog.Info(tr("%sFile Transfer: Received connection.\n"), L_TCPxSTR);
+            }
+            else
+            {
+              gLog.Error(tr("%sFile Transfer: Unable to receive new connection.\n"), L_ERRORxSTR);
+            }
           }
         }
 

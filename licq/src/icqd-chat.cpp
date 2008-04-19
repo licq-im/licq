@@ -2394,13 +2394,19 @@ void *ChatManager_tep(void *arg)
             CChatUser *u = new CChatUser;
             u->m_pClient = new CChatClient;
 
-            chatman->chatServer.RecvConnection(u->sock);
-            chatman->sockman.AddSocket(&u->sock);
-            chatman->sockman.DropSocket(&u->sock);
+            if (chatman->chatServer.RecvConnection(u->sock))
+            {
+              chatman->sockman.AddSocket(&u->sock);
+              chatman->sockman.DropSocket(&u->sock);
 
-            u->state = CHAT_STATE_HANDSHAKE;
-            chatman->chatUsers.push_back(u);
-            gLog.Info(tr("%sChat: Received connection.\n"), L_TCPxSTR);
+              u->state = CHAT_STATE_HANDSHAKE;
+              chatman->chatUsers.push_back(u);
+              gLog.Info(tr("%sChat: Received connection.\n"), L_TCPxSTR);
+            }
+            else
+            {
+              gLog.Error(tr("%sChat: Unable to receive new connection.\n"), L_ERRORxSTR);
+            }
           }
         }
 

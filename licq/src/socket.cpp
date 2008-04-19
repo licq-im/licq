@@ -813,9 +813,10 @@ TCPSocket::~TCPSocket()
  * Called to set up a given TCPSocket from an incoming connection on the
  * current TCPSocket
  *---------------------------------------------------------------------------*/
-void TCPSocket::RecvConnection(TCPSocket &newSocket)
+bool TCPSocket::RecvConnection(TCPSocket &newSocket)
 {
   socklen_t sizeofSockaddr = sizeof(struct sockaddr_in);
+  bool success = false;
 
   // Make sure we stay under FD_SETSIZE
   // See:
@@ -829,14 +830,15 @@ void TCPSocket::RecvConnection(TCPSocket &newSocket)
   {
     newSocket.m_nDescriptor = newDesc;
     newSocket.SetLocalAddress();
+    success = true;
   }
   else
   {
     gLog.Error(tr("%sCannot accept new connection, too many descriptors in use.\n"), L_ERRORxSTR);
     close(newDesc);
-
-    // TODO throw an exception, or do something to tell the caller it failed
   }
+
+  return success;
 }
 
 #define m_pSSL ((SSL *) m_p_SSL)

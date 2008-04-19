@@ -130,7 +130,7 @@ public:
   // Functions specific to TCP
   bool SendPacket(CBuffer *b);
   bool RecvPacket();
-  void RecvConnection(TCPSocket &newSocket);
+  bool RecvConnection(TCPSocket &newSocket);
   void TransferConnectionFrom(TCPSocket &from);
 
   bool SSLSend(CBuffer *b);

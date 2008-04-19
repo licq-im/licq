@@ -779,11 +779,11 @@ void *MonitorSockets_tep(void *p)
             else
             {
               TCPSocket *newSocket = new TCPSocket(0);
-              tcp->RecvConnection(*newSocket);
+              bool ok = tcp->RecvConnection(*newSocket);
               gSocketManager.DropSocket(tcp);
 
               // Make sure we can handle another socket before accepting it
-              if (gSocketManager.Num() > MAX_CONNECTS)
+              if (!ok || gSocketManager.Num() > MAX_CONNECTS)
               {
                 // Too many sockets, drop this one
                 char remoteIp[32];
