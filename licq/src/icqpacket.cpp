@@ -866,6 +866,17 @@ CPU_SendCookie::~CPU_SendCookie()
   // Empty
 }
 
+//-----ListRequestRights-----------------------------------------------------
+CPU_ListRequestRights::CPU_ListRequestRights()
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS)
+{
+  m_nSize += 6;
+  InitBuffer();
+
+  buffer->PackUnsignedLongBE(0x000b0002);
+  buffer->PackUnsignedShortBE(0x000f);
+}
+
 //-----ImICQ-----------------------------------------------------------------
 CPU_ImICQ::CPU_ImICQ()
   : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_IMxICQ)
@@ -2769,6 +2780,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   ICQUser *u = 0;
   char *szUnicodeName = 0,
        *szUnicodeAlias = 0;
+  TLVList tlvs;
+  CBuffer tlvBuffer;
 
   m_nSID = gUserManager.GenerateSID();
 
@@ -2806,6 +2819,23 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
         }
       }
 
+      // Get all the TLV's attached to this user, otherwise the server will delete
+      // all of the ones that we don't send
+      tlvs = u->GetTLVList();
+
+      // We need to iterate two times since we don't have a dynamic CBuffer
+      unsigned short extraTlvSize = 0;
+      TLVListIter tlv_iter;
+      for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
+        extraTlvSize += tlv_iter->second->getLength() + 4;
+
+      // Make the proper sized buffer for all the TLVs the user has
+      tlvBuffer.Create(extraTlvSize);
+
+      // Now copy them to the new buffer
+      for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
+        tlvBuffer.PackTLV(tlv_iter->second);
+
       if (m_nGSID == 0)
       {
         unsigned short nNewGroup = gUserManager.NewUserGroup();
@@ -2819,8 +2849,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
           m_nGSID = 1; // General (unless user renamed group)
       }
 
-      szUnicodeAlias = strdup(u->GetAlias());
-      nExportSize = 4 + strlen(szUnicodeAlias);
+      szUnicodeAlias = 0;//strdup(u->GetAlias());
+      nExportSize = 0;//4 + strlen(szUnicodeAlias);
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
@@ -2871,7 +2901,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     }
   }
 
-  m_nSize += 10+nStrLen+nExportSize+(_bAuthReq ? 4 : 0);
+  // Do we need extras since we handle the tlvs as a complete block?
+  m_nSize += 10+nStrLen+nExportSize+(_bAuthReq ? 4 : 0)+tlvBuffer.getDataSize();
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nStrLen);
@@ -2882,7 +2913,8 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   buffer->PackUnsignedShortBE(m_nGSID);
   buffer->PackUnsignedShortBE(m_nSID);
   buffer->PackUnsignedShortBE(_nType);
-  buffer->PackUnsignedShortBE(nExportSize+(_bAuthReq ? 4 : 0));
+  // TODO should only be tlvBuffer.getDataSize()
+  buffer->PackUnsignedShortBE(nExportSize+(_bAuthReq ? 4 : 0)+tlvBuffer.getDataSize());
   if (nExportSize)
   {
     if (_bTopLevel)
@@ -2901,6 +2933,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
     else
     {
       // Addming a normal user, so save their alias
+      // TODO Have this be a part of tlvBuffer
       buffer->PackUnsignedShortBE(0x0131);
       buffer->PackUnsignedShortBE(nExportSize-4);
       if (szUnicodeAlias)
@@ -2909,8 +2942,13 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
         buffer->Pack(szUnicodeName, nExportSize-4);
     }
   }
-  if (_bAuthReq)
+
+  // TODO Have this be a part of tlvBuffer so we don't need this check against tlvBuffer
+  if (_bAuthReq && !tlvBuffer.hasTLV(0x0066))
     buffer->PackUnsignedLongBE(0x00660000);
+
+  if (!tlvBuffer.Empty())
+    buffer->Pack(&tlvBuffer);
 
   if (szUnicodeName)
     delete [] szUnicodeName;
@@ -2925,14 +2963,37 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
 {
   int nNameLen = strlen(_szName);
   char *szUnicodeName = 0;
+  CBuffer tlvBuffer;
 
-  if (_nType == ICQ_ROSTxGROUP)
+  if (_nType == ICQ_ROSTxNORMAL)
+  {
+    ICQUser *u = gUserManager.FetchUser(_szName, LICQ_PPID, LOCK_R);
+    if (u)
+    {
+      TLVList tlvs = u->GetTLVList();
+
+      unsigned short extraTlvSize = 0;
+      TLVListIter tlv_iter;
+      for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
+        extraTlvSize += tlv_iter->second->getLength() + 4;
+
+      // Make the proper sized buffer for all the TLVs the user has
+      tlvBuffer.Create(extraTlvSize);
+
+      // Now copy them to the new buffer
+      for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
+        tlvBuffer.PackTLV(tlv_iter->second);
+
+      gUserManager.DropUser(u);
+    }
+  }
+  else if (_nType == ICQ_ROSTxGROUP)
   {
     szUnicodeName = gTranslator.ToUnicode((char *)_szName);
     nNameLen = strlen(szUnicodeName);
   }  
 
-  m_nSize += 10+nNameLen;
+  m_nSize += 10+nNameLen+tlvBuffer.getDataSize();
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nNameLen);
@@ -2943,7 +3004,9 @@ CPU_RemoveFromServerList::CPU_RemoveFromServerList(const char *_szName,
   buffer->PackUnsignedShortBE(_nGSID);
   buffer->PackUnsignedShortBE(_nSID);
   buffer->PackUnsignedShortBE(_nType);
-  buffer->PackUnsignedShortBE(0);
+  buffer->PackUnsignedShortBE(static_cast<unsigned short>(tlvBuffer.getDataSize()));
+  if (!tlvBuffer.Empty())
+    buffer->Pack(&tlvBuffer);
 
   if (_nType == ICQ_ROSTxGROUP)
     SetExtraInfo(0);
@@ -3042,6 +3105,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   char *szUnicodeName = 0,
        *szUnicodeAlias = 0;
   GroupIDList *gID = 0;
+  CBuffer tlvBuffer;
 
   switch (_nType)
   {
@@ -3053,10 +3117,26 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
         if (u->GetAwaitingAuth())
           _bAuthReq = true;
 
+        // Get all the TLV's attached to this user, otherwise the server will delete
+        // all of the ones that we don't send
+        TLVList tlvs = u->GetTLVList();
+
+        // We need to iterate two times since we don't have a dynamic CBuffer
+        unsigned short extraTlvSize = 0;
+        TLVListIter tlv_iter;
+        for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
+          extraTlvSize += tlv_iter->second->getLength() + 4;
+
+        // Make the proper sized buffer for all the TLVs the user has
+        tlvBuffer.Create(extraTlvSize);
+
+        // Now copy them to the new buffer
+        for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
+          tlvBuffer.PackTLV(tlv_iter->second);
+
         nGSID = u->GetGSID();
         nSID = u->GetSID();
-        szUnicodeAlias = strdup(u->GetAlias());
-        nExtraLen = 4 + strlen(szUnicodeAlias);
+        nExtraLen = tlvBuffer.getDataSize();
         gUserManager.DropUser(u);
       }
 
@@ -3109,9 +3189,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   {
     if (_nType == ICQ_ROSTxNORMAL)
     {
-      buffer->PackUnsignedShortBE(0x0131);
-      buffer->PackUnsignedShortBE(nExtraLen-4);
-      buffer->Pack(szUnicodeAlias, nExtraLen-4);
+      buffer->Pack(&tlvBuffer);
     }
     else if (_nType == ICQ_ROSTxGROUP)
     {

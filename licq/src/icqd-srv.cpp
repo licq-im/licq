@@ -2215,8 +2215,24 @@ bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
 
 void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 {
-  packet.UnpackUnsignedShortBE(); // flags
+  unsigned short snacFlags = packet.UnpackUnsignedShortBE(); // flags
   packet.UnpackUnsignedLongBE(); // sequence
+
+  // TODO The TLVs should be processed first, in a common area, instead of requiring
+  // each case to do the same thing. However, the individual case's may depend on the tlv
+  // coming to them, so leave this commented out for now and do some testing
+  /*
+  if (snacFlags & 0x8000)
+  {
+    unsigned short bytes = packet.UnpackUnsignedShortBE();
+    unsigned short tlvCount = packet.UnpackUnsignedShortBE();
+    if (!packet.readTLV(tlvCount, bytes))
+    {
+      gLog.Error(tr("%sError parsing SNAC header\n"), L_SRVxSTR);
+      return;
+    }
+  }
+  */
 
   switch (nSubtype)
   {
@@ -2255,12 +2271,12 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       SendEvent_Server(p);
 
       gLog.Info(tr("%sRequesting list rights.\n"), L_SRVxSTR);
-      p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS);
-      SendEvent_Server(p);
-
-      gLog.Info(tr("%sRequesting list.\n"), L_SRVxSTR);
-      p = new CPU_RequestList();
+      p = new CPU_ListRequestRights();
       SendExpectEvent_Server(0, p, NULL);
+
+      gLog.Info(tr("%sRequesting roster rights.\n"), L_SRVxSTR);
+      p = new CPU_RequestList();
+      SendEvent_Server(p);
 
       gLog.Info(tr("%sRequesting location rights.\n"), L_SRVxSTR);
       p = new CPU_GenericFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_REQUESTxRIGHTS);
@@ -2303,20 +2319,29 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
   case ICQ_SNACxRCV_NAMExINFO:
   {
-    unsigned short nUserClass, nLevel;
+    if (snacFlags & 0x8000)
+    {
+      unsigned short bytes = packet.UnpackUnsignedShortBE();
+      if (!packet.readTLV(-1, bytes))
+      {
+        gLog.Error(tr("%sError parsing SNAC header\n"), L_SRVxSTR);
+        return;
+      }
+    }
+
+    unsigned short evil, tlvBlocks;
     unsigned long nUin, realIP;
     time_t nOnlineSince = 0;
 
     gLog.Info(tr("%sGot Name Info from Server\n"), L_SRVxSTR);
 
     nUin = packet.UnpackUinString();
-    nLevel = packet.UnpackUnsignedShortBE();
-    nUserClass = packet.UnpackUnsignedShortBE();
+    evil = packet.UnpackUnsignedShortBE();
+    tlvBlocks = packet.UnpackUnsignedShortBE();
 
-    gLog.Info("%sUIN: %lu level: %04hx Class: %04hx\n", L_SRVxSTR,
-              nUin, nLevel, nUserClass );
+    gLog.Info("%sUIN: %lu Evil: %04hx\n", L_SRVxSTR, nUin, evil);
 
-    if (!packet.readTLV()) {
+    if (!packet.readTLV(tlvBlocks)) {
       char *buf;
       gLog.Unknown(tr("%sUnknown server response:\n%s\n"), L_UNKNOWNxSTR,
          packet.print(buf));
@@ -3958,12 +3983,15 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
   unsigned short nFlags = packet.UnpackUnsignedShortBE();
   unsigned long nSubSequence = packet.UnpackUnsignedLongBE();
 
-  // First 8 bytes - unknown
-  if (nSubtype != ICQ_SNACxLIST_ROSTxREPLY)
+  if (nFlags & 0x8000)
   {
-    packet.UnpackUnsignedLong();
-    packet.UnpackUnsignedLong();
-  } 
+    unsigned short bytes = packet.UnpackUnsignedShortBE();
+    if (!packet.readTLV(-1, bytes))
+    {
+      gLog.Error(tr("%sError parsing SNAC header\n"), L_SRVxSTR);
+      return;
+    }
+  }
 
   switch (nSubtype)
   {
@@ -3996,7 +4024,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
         if (e == NULL)
         {
-          gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
+          // Try acking it, even if we didn't expect it
+          //gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
+          gLog.Info(tr("%sActivate server contact list.\n"), L_SRVxSTR);
+          CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxACK);
+          SendEvent_Server(p);
           break;
         }
 
@@ -4068,6 +4100,16 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
             if (u)
             {
+              // For now, just save all the TLVs. We should change this to have awaiting auth check
+              // for the 0x0066 TLV, SMS number if it has the 0x013A TLV, etc
+              TLVList tlvList = packet.getTLVList();
+              TLVListIter iter;
+              for (iter = tlvList.begin(); iter != tlvList.end(); ++iter)
+              {
+                TLVPtr tlv = iter->second;
+                u->AddTLV(tlv);
+              }
+
               u->SetGSID(nTag);
 
               if (szNewName)
@@ -4192,7 +4234,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         if (szUnicodeName)
           delete [] szUnicodeName;
 
-        packet.cleanupTLV();
         if (szId)
           delete[] szId;
       } // for count
@@ -4218,6 +4259,53 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       
       break;
     } // case rost reply
+
+    case ICQ_SNACxLIST_ROSTxUPD_GROUP:
+    {
+      gLog.Info(tr("%sReceived updated contact information from server.\n"), L_SRVxSTR);
+
+      char *szId = packet.UnpackStringBE();
+      if (szId == 0)
+      {
+        gLog.Error(tr("%sDid not receive user ID.\n"), L_SRVxSTR);
+        break;
+      }
+
+      unsigned short gsid    = packet.UnpackUnsignedShortBE();
+      unsigned short sid     = packet.UnpackUnsignedShortBE();
+      /*unsigned short classid =*/ packet.UnpackUnsignedShortBE();
+
+      unsigned short tlvBytes = packet.UnpackUnsignedShortBE();
+
+      if (!packet.readTLV(-1, tlvBytes))
+      {
+        gLog.Error(tr("%sError during parsing packet!\n"), L_ERRORxSTR);
+        break;
+      }
+
+      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+      if (u)
+      {
+        // First update their gsid/sid
+        u->SetSID(sid);
+        u->SetGSID(gsid);
+
+        // Now the the tlv of attributes to attach to the user
+        TLVList tlvList = packet.getTLVList();
+        TLVListIter iter;
+        for (iter = tlvList.begin(); iter != tlvList.end(); ++iter)
+        {
+          TLVPtr tlv = iter->second;
+          u->AddTLV(tlv);
+        }
+
+        gUserManager.DropUser(u);
+      }
+
+      delete [] szId;
+
+      break;
+    }
 
     case ICQ_SNACxLIST_ROSTxSYNCED:
     {
@@ -4465,6 +4553,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
          if (u)
          {
            u->SetAwaitingAuth(false);
+           u->RemoveTLV(0x0066);
            gUserManager.DropUser(u);
          }
       }
@@ -6259,7 +6348,6 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
 
   if (nError)
   {
-    packet.cleanupTLV();
     m_eStatus = STATUS_OFFLINE_FORCED;
     m_bLoggingOn = false;
     return false;
@@ -6292,7 +6380,6 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
 
   if (nError)
   {
-    packet.cleanupTLV();
     m_bLoggingOn = false;
     return false;
   }
@@ -6311,8 +6398,6 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
     m_bLoggingOn = false;
     return false;
   }
-
-  packet.cleanupTLV();
 
   char* ptr;
   if ( (ptr = strchr(szNewServer, ':')))

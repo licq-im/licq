@@ -308,6 +308,13 @@ public:
   virtual ~CPU_SendVerification();
 };
 
+//-----ListRequestRights-----------------------------------------------------
+class CPU_ListRequestRights : public CPU_CommonFamily
+{
+public:
+  CPU_ListRequestRights();
+};
+
 //-----ImICQ------------------------------------------------------------------
 class CPU_ImICQ : public CPU_CommonFamily
 {

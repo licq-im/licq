@@ -1,6 +1,12 @@
 #ifndef LICQ_BUFFER_H
 #define LICQ_BUFFER_H
 
+#include <map>
+#include <vector>
+
+#include <boost/shared_array.hpp>
+#include <boost/shared_ptr.hpp>
+
 /*------------------------------------------------------------------------------
  * PacketIpToNetworkIp
  *
@@ -26,19 +32,53 @@ extern unsigned long NetworkIpToPacketIp(unsigned long l);
 extern void rev_e_short(unsigned short &);
 extern void rev_e_long(unsigned long &);
 
-//=====TLV Structs =============================================================
-struct SOscarTLV
+//=====COscarTLV================================================================
+class COscarTLV
 {
-  unsigned short nType;
-  unsigned short nLen;
-  unsigned char *pData;
+public:
+  COscarTLV(unsigned short type = 0, unsigned short length = 0, unsigned char *data = 0) : myType(type), myLen(length)
+  {
+    if (myLen > 0)
+    {
+      myData = boost::shared_array<unsigned char>(new  unsigned char[myLen]);
+      memcpy(myData.get(), data, myLen);
+    }
+  }
+
+  COscarTLV(const COscarTLV &c)
+  {
+    myType = c.myType;
+    myLen = c.myLen;
+    myData = boost::shared_array<unsigned char>(new unsigned char[c.myLen]);
+    memcpy(myData.get(), c.myData.get(), c.myLen);
+  }
+
+  unsigned short getType() const                     { return myType; }
+  unsigned short getLength() const                   { return myLen; }
+  boost::shared_array<unsigned char> getData() const { return myData; }
+
+  void setType(unsigned short type) { myType = type; }
+  void setData(unsigned char *data, unsigned short length)
+  {
+    if (length > 0)
+    {
+      myLen = length;
+      myData = boost::shared_array<unsigned char>(new unsigned char[length]);
+      memcpy(myData.get(), data, length);
+    }
+  }
+
+private:
+  unsigned short myType;
+  unsigned short myLen;
+  boost::shared_array<unsigned char> myData;
+
+friend class CBuffer;
 };
 
-struct SOscarTLV_Chain
-{
-        SOscarTLV *pTLV;
-        SOscarTLV_Chain *pNext;
-};
+typedef boost::shared_ptr<COscarTLV> TLVPtr;
+typedef std::map<unsigned short, TLVPtr> TLVList;
+typedef TLVList::iterator TLVListIter;
 
 //=====CBuffer==================================================================
 class CBuffer
@@ -110,10 +150,10 @@ public:
    //--- OSCAR Related Functions ------
 
    bool readTLV(int count = -1, int bytes = -1); // This should be called automatically if m_pTLV == 0
-   void cleanupTLV();
 
    void PackTLV(unsigned short, unsigned short, const char *);
    void PackTLV(unsigned short, unsigned short, CBuffer *);
+   void PackTLV(const TLVPtr&);
 
    unsigned short getTLVLen(unsigned short);
    bool hasTLV(unsigned short);
@@ -122,7 +162,11 @@ public:
    unsigned short UnpackUnsignedShortTLV(unsigned short);
    unsigned char UnpackCharTLV(unsigned short);
    char *UnpackStringTLV(unsigned short); // Need to delete[] returned string
+   //std::string UnpackStringTLV(unsigned short);
    CBuffer UnpackTLV(unsigned short);
+
+   TLVList getTLVList();
+   TLVPtr getTLV(unsigned short _nType);
 
 private:
    CBuffer& operator=(const CBuffer&);
@@ -133,9 +177,8 @@ protected:
         *m_pDataPosWrite,
         *m_pDataPosRead;
    unsigned long m_nDataSize;
-   SOscarTLV_Chain *m_pTLV;
+   TLVList myTLVs;
 
-   SOscarTLV *getTLV(unsigned short _nType);
    void antiwarning() { NetworkIpToPacketIp(PacketIpToNetworkIp(127)); }
 };
 

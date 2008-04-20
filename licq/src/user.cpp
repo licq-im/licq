@@ -3833,6 +3833,21 @@ string ICQUser::GetPPField(const string &_sName)
   return string("");
 }
 
+void ICQUser::AddTLV(TLVPtr tlv)
+{
+  myTLVs[tlv->getType()] = tlv;
+}
+
+void ICQUser::RemoveTLV(unsigned long type)
+{
+  myTLVs.erase(type);
+}
+
+TLVList ICQUser::GetTLVList()
+{
+  return myTLVs;
+}
+
 //=====ICQOwner=================================================================
 
 //-----ICQOwner::constructor----------------------------------------------------

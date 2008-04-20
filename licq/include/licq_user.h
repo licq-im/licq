@@ -779,6 +779,11 @@ public:
   char *IntIpStr(char *rbuf);
   char *PortStr(char *rbuf);
 
+  // User TLV List handling
+  void AddTLV(TLVPtr);
+  void RemoveTLV(unsigned long);
+  TLVList GetTLVList();
+
   // Don't call these:
   int SocketDesc(unsigned char);
   void ClearSocketDesc();
@@ -951,6 +956,12 @@ protected:
   bool m_bAwaitingAuth;
   unsigned short m_nSID[3];
   unsigned short m_nGSID;
+
+  // Extra TLVs attached to this user's SSI info
+  // We use a map to allow fast access to the TLV by type, even though the
+  // actual type is in SOscarTLV as well. Which should make it obvious
+  // that the TLV handling should be fixed in licq_buffer.h/buffer.cpp
+  TLVList myTLVs;
 
   UserEventList m_vcMessages;
 
