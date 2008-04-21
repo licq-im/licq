@@ -81,6 +81,7 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
   myReadSplitter->addWidget(myMessageList);
 
   myMessageView = new MLView();
+  myMessageView->setSizeHintLines(5);
   myReadSplitter->addWidget(myMessageView);
 
   myReadSplitter->setStretchFactor(0, 0);
@@ -91,11 +92,11 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
   connect(gMainWindow, SIGNAL(signal_sentevent(ICQEvent*)),
       SLOT(sentEvent(ICQEvent*)));
 
-  QGroupBox* h_action = new QGroupBox();
+  myActionsBox = new QGroupBox();
   myMainWidget->addSpacing(10);
-  myMainWidget->addWidget(h_action);
+  myMainWidget->addWidget(myActionsBox);
 
-  QHBoxLayout* h_action_lay = new QHBoxLayout(h_action);
+  QHBoxLayout* h_action_lay = new QHBoxLayout(myActionsBox);
 
   myRead1Button = new QPushButton();
   myRead2Button = new QPushButton();
@@ -636,10 +637,6 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
   myRead2Button->setText("");
   myRead3Button->setText("");
   myRead4Button->setText("");
-  myRead1Button->setEnabled(false);
-  myRead2Button->setEnabled(false);
-  myRead3Button->setEnabled(false);
-  myRead4Button->setEnabled(false);
   myEncoding->setEnabled(true);
 
   CUserEvent* m = e->msg();
@@ -762,14 +759,14 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
     } // switch
   }  // if
 
-  if (!myRead1Button->text().isEmpty())
-    myRead1Button->setEnabled(true);
-  if (!myRead2Button->text().isEmpty())
-    myRead2Button->setEnabled(true);
-  if (!myRead3Button->text().isEmpty())
-    myRead3Button->setEnabled(true);
-  if (!myRead4Button->text().isEmpty())
-    myRead4Button->setEnabled(true);
+  myRead1Button->setEnabled(!myRead1Button->text().isEmpty());
+  myRead2Button->setEnabled(!myRead2Button->text().isEmpty());
+  myRead3Button->setEnabled(!myRead3Button->text().isEmpty());
+  myRead4Button->setEnabled(!myRead4Button->text().isEmpty());
+
+  myActionsBox->setVisible(
+      myRead1Button->isEnabled() || myRead2Button->isEnabled() ||
+      myRead3Button->isEnabled() || myRead4Button->isEnabled());
 
   myRead1Button->setFocus();
 

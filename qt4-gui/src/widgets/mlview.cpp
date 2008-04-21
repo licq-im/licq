@@ -33,6 +33,7 @@
 #include <QRegExp>
 
 #include "config/emoticons.h"
+#include "config/general.h"
 #include "core/licqgui.h"
 
 using namespace LicqQtGui;
@@ -45,6 +46,9 @@ MLView::MLView(QWidget* parent)
   setLineWrapMode(QTextEdit::WidgetWidth);
   setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
   connect(this, SIGNAL(selectionChanged()), SLOT(slotCopy()));
+
+  updateFont();
+  connect(Config::General::instance(), SIGNAL(fontChanged()), SLOT(updateFont()));
 }
 
 void MLView::appendNoNewLine(const QString& s)
@@ -356,4 +360,35 @@ bool MLView::hasMarkedText() const
 QString MLView::markedText() const
 {
   return textCursor().selectedText();
+}
+
+void MLView::updateFont()
+{
+  setFont(Config::General::instance()->editFont());
+
+  // Get height of current font
+  myFontHeight = fontMetrics().height();
+
+  // Set minimum height of text area to one line of text.
+  setMinimumHeight(heightForLines(1));
+}
+
+int MLView::heightForLines(int lines) const
+{
+  // We need to add frame width and the added height of the scroll area as
+  // we're calculating height for the widget, not the viewport.
+  return lines*myFontHeight + height() - viewport()->height() + 2 * frameWidth();
+}
+
+void MLView::setSizeHintLines(int lines)
+{
+  myLinesHint = lines;
+}
+
+QSize MLView::sizeHint() const
+{
+  QSize s = QTextBrowser::sizeHint();
+  if (myLinesHint > 0)
+    s.setHeight(heightForLines(myLinesHint));
+  return s;
 }

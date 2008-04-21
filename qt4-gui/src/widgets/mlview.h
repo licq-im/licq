@@ -45,6 +45,29 @@ public:
 
   static QString toRichText(const QString& s, bool highlightURLs = false, bool useHTML = false, QRegExp highlight = QRegExp());
 
+  /**
+   * Caclulate height for widget to fit a specified number of lines with
+   * current font
+   *
+   * @param lines Number of text lines to calculate for
+   * @return Widget height in pixels
+   */
+  int heightForLines(int lines) const;
+
+  /**
+   * Set size hint as number of lines of text
+   *
+   * @param lines Lines of text that should be visible
+   */
+  void setSizeHintLines(int lines);
+
+  /**
+   * Get recommended widget size
+   *
+   * @return Recommended size
+   */
+  QSize sizeHint() const;
+
 protected:
   virtual void contextMenuEvent(QContextMenuEvent* event);
 
@@ -55,10 +78,13 @@ private slots:
   void slotCopy();
   void slotCopyUrl();
   void makeQuote();
+  void updateFont();
 
 private:
   bool m_handleLinks;
   QString m_url;
+  int myFontHeight;
+  int myLinesHint;
 
 signals:
   void quote(const QString& text);

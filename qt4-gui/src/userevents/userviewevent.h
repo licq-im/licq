@@ -24,6 +24,7 @@
 #include "usereventcommon.h"
 
 class QCheckBox;
+class QGroupBox;
 class QPushButton;
 class QSplitter;
 class QTreeWidgetItem;
@@ -53,6 +54,7 @@ private:
   MessageList* myMessageList;
   CUserEvent* myCurrentEvent;
   QCheckBox* myAutoCloseCheck;
+  QGroupBox* myActionsBox;
   QPushButton* myRead1Button;
   QPushButton* myRead2Button;
   QPushButton* myRead3Button;
