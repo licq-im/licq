@@ -22,14 +22,16 @@
 #include "config.h"
 #endif
 
-#include <string.h>
+#include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
+#include <cctype>
 #include <sys/types.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <ctype.h>
+
 #include "time-fix.h"
 
 #ifdef HAVE_ERRNO_H

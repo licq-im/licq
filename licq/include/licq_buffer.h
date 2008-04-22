@@ -1,6 +1,7 @@
 #ifndef LICQ_BUFFER_H
 #define LICQ_BUFFER_H
 
+#include <cstring>
 #include <map>
 #include <vector>
 

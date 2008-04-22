@@ -10,15 +10,16 @@
 #include "config.h"
 #endif
 
-#include <string.h>
+#include <cassert>
+#include <cctype>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <sys/types.h>
 #include <unistd.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <ctype.h>
-#include <assert.h>
+
 #include "time-fix.h"
 
 // Localization

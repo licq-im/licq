@@ -2,18 +2,19 @@
 #include "config.h"
 #endif
 
+#include <cctype>
+#include <climits>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #include <sys/select.h>
 #include <sys/time.h>
 #include <sys/types.h>
 #include <unistd.h>
-#include <string.h>
-#include <ctype.h>
-#include <stdio.h>
-#include <stdlib.h>
 #include <sys/wait.h>
 #include <signal.h>
 #ifdef HAVE_ERRNO_H
-#include <errno.h>
+#include <cerrno>
 #else
 extern int errno;
 #endif

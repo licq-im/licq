@@ -10,13 +10,13 @@
 #include "config.h"
 #endif
 
-#include <stdio.h>
-#include <string.h>
+#include <cassert>
+#include <cctype>
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
 #include <sys/types.h>
 #include <unistd.h>
-#include <errno.h>
-#include <assert.h>
-#include <ctype.h>
 
 #include <algorithm>
 
