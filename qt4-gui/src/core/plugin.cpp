@@ -72,7 +72,7 @@ const char* LP_Usage()
     " -i : set the icons to use (must be in %2%3%5)\n"
     " -e : set the extended icons to use (must be in %2%3%6)"
 #ifndef USE_KDE
-    "\n -g : set the gui style (%7, or 'default' to follow global Qt settings), ignored by KDE support"
+    "\n -g : set the gui style (%7, or 'default' to follow global Qt settings)"
 #endif
     )
     .arg(PLUGIN_NAME)
