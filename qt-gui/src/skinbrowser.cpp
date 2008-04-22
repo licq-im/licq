@@ -32,6 +32,7 @@
 
 #include "editfile.h"
 #include "ewidgets.h"
+#include "gui-defines.h"
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "mainwin.h"
@@ -176,7 +177,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	QDir dSkinsUser(szDirUser, "skin.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
 	if (!dSkins.count() && !dSkinsUser.count())
 	{
-		gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
+		gLog.Error("%sError reading " PLUGIN_NAME " directory %s.\n", L_ERRORxSTR, szDir.latin1());
 		cmbSkin->insertItem(tr("Error"));
 		cmbSkin->setEnabled(false);
 	}
@@ -213,7 +214,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	QDir dIconsUser(szDirUser, "icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
 	if (!dIcons.count() && !dIconsUser.count())
 	{
-		gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
+		gLog.Error("%sError reading " PLUGIN_NAME " directory %s.\n", L_ERRORxSTR, szDir.latin1());
 		cmbIcon->insertItem(tr("Error"));
 		cmbIcon->setEnabled(false);
 	}
@@ -278,7 +279,7 @@ SkinBrowserDlg::SkinBrowserDlg(CMainWindow *_mainwin, QWidget *parent)
 	QDir dExtendedIconsUser(szDirUser, "extended.icons.*", QDir::Name | QDir::IgnoreCase, QDir::Dirs);
 	if (!dExtendedIcons.count() && !dExtendedIconsUser.count())
 	{
-		gLog.Error("%sError reading qt-gui directory %s.\n", L_ERRORxSTR, szDir.latin1());
+		gLog.Error("%sError reading " PLUGIN_NAME " directory %s.\n", L_ERRORxSTR, szDir.latin1());
 		cmbExtIcon->insertItem(tr("Error"));
 		cmbExtIcon->setEnabled(false);
 	}
@@ -418,14 +419,13 @@ void SkinBrowserDlg::slot_apply()
 void SkinBrowserDlg::slot_edtSkin()
 {
   if (!cmbSkin->currentText()) return;
-  QString f;
-  f.sprintf("%s/qt-gui/skin.%s/%s.skin", BASE_DIR,
-            QFile::encodeName(cmbSkin->currentText()).data(),
-            QFile::encodeName(cmbSkin->currentText()).data());
-  if (!QFile(f).exists())
-    f.sprintf("%sqt-gui/skin.%s/%s.skin", SHARE_DIR,
-              QFile::encodeName(cmbSkin->currentText()).data(),
-              QFile::encodeName(cmbSkin->currentText()).data());
+  QString skinName = QFile::encodeName(cmbSkin->currentText());
+  QString f = QTGUI_DIR "skin." + skinName + "/" + skinName + ".skin";
+  QString baseF = QString(BASE_DIR) + "/" + f;
+  if (QFile(baseF).exists())
+    f = baseF;
+  else
+    f = SHARE_DIR + f;
   (void) new EditFileDlg(f);
 }
 

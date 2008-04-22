@@ -20,8 +20,15 @@
 #ifndef GUIDEFINES_H
 #define GUIDEFINES_H
 
+#ifdef USE_KDE
+# define PLUGIN_NAME "kde-gui"
+#else
+# define PLUGIN_NAME "qt-gui"
+#endif
+
 #define QTGUI_DIR "qt-gui/"
 #define EMOTICONS_DIR "emoticons/"
+#define QTGUI_CONFIGFILE "licq_qt-gui.conf"
 
 #define NUM_MSG_PER_HISTORY 40
 #define COLOR_SENT "blue"

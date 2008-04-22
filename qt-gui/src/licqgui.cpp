@@ -35,6 +35,7 @@
 #endif
 #include <unistd.h> // for getopt
 
+#include "gui-defines.h"
 #include "mainwin.h"
 #include "sigman.h"
 #include "outputwin.h"
@@ -47,29 +48,35 @@
 
 const char *LP_Usage(void)
 {
-#ifdef USE_KDE
-  static const char usage[] =
-    "Usage:  Licq [options] -p kde-gui -- [-h] [-s skinname] [-i iconpack] [-e extendediconpack] [-g gui style]\n"
-    " -h : this help screen\n"
-    " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
-    " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
-    " -e : set the extended icons to use (must be in [base dir]/qt-gui/extended.icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / GTK / SGI / LCD), ignored by KDE support\n"
-    " -d : start hidden (dock icon only)\n"
-    " -D : disable dock icon for this session (does not affect dock icon settings)";
-#else
-  static const char usage[] =
-    "Usage:  Licq [options] -p qt-gui -- [-h] [-s skinname] [-i iconpack] [-e extendediconpack] [-g gui style]\n"
-    " -h : this help screen\n"
-    " -s : set the skin to use (must be in {base dir}/qt-gui/skin.skinname)\n"
-    " -i : set the icons to use (must be in {base dir}/qt-gui/icons.iconpack)\n"
-    " -e : set the extended icons to use (must be in [base dir]/qt-gui/extended.icons.iconpack)\n"
-    " -g : set the gui style (MOTIF / WINDOWS / MAC / CDE / GTK / SGI / LCD), ignored by KDE support\n"
-    " -d : start hidden (dock icon only)\n"
-    " -D : disable dock icon for this session (does not affect dock icon settings)";
+  static const QString usage = QString(
+      "Usage:  Licq [options] -p %1 -- [-h] [-s skinname] [-i iconpack] [-e extendediconpack]"
+#ifndef USE_KDE
+      " [-g gui style]"
 #endif
+      "\n"
+      " -h : this help screen\n"
+      " -s : set the skin to use (must be in %2%3skin.skinname)\n"
+      " -i : set the icons to use (must be in %4%5icons.iconpack)\n"
+      " -e : set the extended icons to use (must be in %6%7extended.icons.iconpack)\n"
+#ifndef USE_KDE
+      " -g : set the gui style (%8 or 'default' to follow global Qt settings)\n"
+#endif
+      " -d : start hidden (dock icon only)\n"
+      " -D : disable dock icon for this session (does not affect dock icon settings)"
+      )
+      .arg(PLUGIN_NAME)
+      .arg(BASE_DIR)
+      .arg(QTGUI_DIR)
+      .arg(BASE_DIR)
+      .arg(QTGUI_DIR)
+      .arg(BASE_DIR)
+      .arg(QTGUI_DIR)
+#ifndef USE_KDE
+      .arg(QStyleFactory::keys().join(", "))
+#endif
+      ;
 
-  return usage;
+  return usage.latin1();
 }
 
 const char *LP_Name(void)
@@ -85,7 +92,7 @@ const char *LP_Name(void)
 
 const char *LP_ConfigFile(void)
 {
-  return "licq_qt-gui.conf";
+  return QTGUI_CONFIGFILE;
 }
 
 
@@ -215,7 +222,9 @@ CLicqGui::CLicqGui(int argc, char **argv)
   char skinName[32] = "";
   char iconsName[32] = "";
   char extendedIconsName[32] = "";
+#ifndef USE_KDE
   char styleName[32] = "";
+#endif
   bool bStartHidden = false;
 
   // initialize Members
@@ -225,11 +234,7 @@ CLicqGui::CLicqGui(int argc, char **argv)
   // store command line arguments for session management
   cmdLineParams += QString(argv[0]);
   cmdLineParams += QString("-p");
-#ifdef USE_KDE
-  cmdLineParams += QString("kde-gui");
-#else
-  cmdLineParams += QString("qt-gui");
-#endif
+  cmdLineParams += QString(PLUGIN_NAME);
   cmdLineParams += QString("--");
   for(int i=1;i<argc;i++)
     cmdLineParams += QString(argv[i]);
@@ -255,10 +260,12 @@ CLicqGui::CLicqGui(int argc, char **argv)
       snprintf(extendedIconsName, sizeof(extendedIconsName), "%s", optarg);
       extendedIconsName[sizeof(extendedIconsName) - 1] = '\0';
       break;
+#ifndef USE_KDE
     case 'g': // gui style
       strncpy(styleName, optarg, sizeof(styleName));
       styleName[sizeof(styleName) - 1] = '\0';
       break;
+#endif
     case 'd': // dock icon
       if (!m_bDisableDockIcon)
         bStartHidden = true;
@@ -309,10 +316,8 @@ CLicqGui::CLicqGui(int argc, char **argv)
   // Try and load a translation
   gLog.Info("%sAttempting to load %s Qt-GUI translation.\n", L_INITxSTR,
             GetLocale());
-  QString str;
-  str.sprintf("%sqt-gui/locale/%s", SHARE_DIR, GetLocale());
   QTranslator *trans = new QTranslator(this);
-  trans->load(str);
+  trans->load(QString("%1" QTGUI_DIR "locale/%2").arg(SHARE_DIR).arg(GetLocale()));
   installTranslator(trans);
 }
 
