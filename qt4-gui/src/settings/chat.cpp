@@ -533,7 +533,7 @@ void Settings::Chat::load()
   myColorChatBkgButton->setColor(chatConfig->chatBackColor());
   myAutoPosReplyWinCheck->setChecked(chatConfig->autoPosReplyWin());
   myAutoSendThroughServerCheck->setChecked(chatConfig->autoSendThroughServer());
-  myShowSendCloseCheck->setChecked(chatConfig->showSendClose());
+  myShowSendCloseCheck->setChecked(chatConfig->showDlgButtons());
   myCheckSpelling->setChecked(chatConfig->checkSpelling());
   myMsgWinStickyCheck->setChecked(chatConfig->msgWinSticky());
   mySingleLineChatModeCheck->setChecked(chatConfig->singleLineChatMode());
@@ -606,7 +606,7 @@ void Settings::Chat::apply()
   chatConfig->setShowNotices(myShowNoticesCheck->isChecked());
   chatConfig->setAutoPosReplyWin(myAutoPosReplyWinCheck->isChecked());
   chatConfig->setAutoSendThroughServer(myAutoSendThroughServerCheck->isChecked());
-  chatConfig->setShowSendClose(myShowSendCloseCheck->isChecked());
+  chatConfig->setShowDlgButtons(myShowSendCloseCheck->isChecked());
   chatConfig->setCheckSpelling(myCheckSpelling->isChecked());
   chatConfig->setMsgWinSticky(myMsgWinStickyCheck->isChecked());
   chatConfig->setSingleLineChatMode(mySingleLineChatModeCheck->isChecked());

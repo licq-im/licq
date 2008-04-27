@@ -73,7 +73,7 @@ public:
   bool msgChatView() const { return myMsgChatView; }
   bool autoPosReplyWin() const { return myAutoPosReplyWin; }
   bool autoSendThroughServer() const { return myAutoSendThroughServer; }
-  bool showSendClose() const { return myShowSendClose; }
+  bool showDlgButtons() const { return myShowDlgButtons; }
   bool showAllEncodings() const { return myShowAllEncodings; }
   QByteArray defaultEncoding() const { return myDefaultEncoding; }
   bool tabbedChatting() const { return myTabbedChatting; }
@@ -123,7 +123,7 @@ public slots:
   void setMsgChatView(bool msgChatView);
   void setAutoPosReplyWin(bool autoPosReplyWin);
   void setAutoSendThroughServer(bool autoSendThroughServer);
-  void setShowSendClose(bool showSendClose);
+  void setShowDlgButtons(bool showDlgButtons);
   void setShowAllEncodings(bool showAllEncodings);
   void setDefaultEncoding(QByteArray defaultEncoding);
   void setTabbedChatting(bool tabbedChatting);
@@ -171,7 +171,7 @@ private:
   bool myMsgChatView;
   bool myAutoPosReplyWin;
   bool myAutoSendThroughServer;
-  bool myShowSendClose;
+  bool myShowDlgButtons;
   bool myShowAllEncodings;
   bool myTabbedChatting;
   bool myShowHistory;

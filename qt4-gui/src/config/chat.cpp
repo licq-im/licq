@@ -58,8 +58,7 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("ShowNotices", myShowNotices, true);
   iniFile.ReadBool("AutoPosReplyWin", myAutoPosReplyWin, true);
   iniFile.ReadBool("AutoSendThroughServer", myAutoSendThroughServer, false);
-  iniFile.ReadBool("NoSendClose", myShowSendClose, true);
-  myShowSendClose = !myShowSendClose;
+  iniFile.ReadBool("ShowChatDlgButtons", myShowDlgButtons, true);
   iniFile.ReadNum("ChatMessageStyle", myChatMsgStyle, 0);
   iniFile.ReadBool("ChatVerticalSpacing", myChatVertSpacing, true);
   iniFile.ReadBool("ChatAppendLinebreak", myChatAppendLineBreak, false);
@@ -127,7 +126,7 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("ShowNotices", myShowNotices);
   iniFile.WriteBool("AutoPosReplyWin", myAutoPosReplyWin);
   iniFile.WriteBool("AutoSendThroughServer", myAutoSendThroughServer);
-  iniFile.WriteBool("NoSendClose", !myShowSendClose);
+  iniFile.WriteBool("ShowChatDlgButtons", myShowDlgButtons);
   iniFile.WriteBool("FlashTaskbar", myFlashTaskbar);
   iniFile.WriteBool("MsgWinSticky", myMsgWinSticky);
   iniFile.WriteBool("SingleLineChatMode", mySingleLineChatMode);
@@ -310,12 +309,12 @@ void Config::Chat::setAutoSendThroughServer(bool autoSendThroughServer)
   myAutoSendThroughServer = autoSendThroughServer;
 }
 
-void Config::Chat::setShowSendClose(bool showSendClose)
+void Config::Chat::setShowDlgButtons(bool showDlgButtons)
 {
-  if (showSendClose == myShowSendClose)
+  if (showDlgButtons == myShowDlgButtons)
     return;
 
-  myShowSendClose = showSendClose;
+  myShowDlgButtons = showDlgButtons;
 }
 
 void Config::Chat::setChatVertSpacing(bool chatVertSpacing)

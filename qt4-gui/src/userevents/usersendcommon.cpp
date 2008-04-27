@@ -223,7 +223,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   myCloseButton->setAutoDefault(true);
   connect(myCloseButton, SIGNAL(clicked()), SLOT(closeDialog()));
 
-  buttons->setVisible(Config::Chat::instance()->showSendClose());
+  buttons->setVisible(Config::Chat::instance()->showDlgButtons());
 
   myViewSplitter = new QSplitter(Qt::Vertical);
   myTopLayout->addWidget(myViewSplitter);
@@ -430,7 +430,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   }
 
   setFocusProxy(myMessageEdit);
-  if (Config::Chat::instance()->showSendClose())
+  if (Config::Chat::instance()->showDlgButtons())
   {
     setTabOrder(myMessageEdit, mySendButton);
     setTabOrder(mySendButton, myCloseButton);
