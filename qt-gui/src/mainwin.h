@@ -260,7 +260,7 @@ public:
           pmPhoneFollowMeBusy, pmSharedFiles, pmMSNOnline, pmMSNOffline,
           pmMSNOccupied, pmMSNPrivate, pmMSNAway, pmAIMOnline, pmAIMAway,
           pmAIMOffline, pmGPGKey, pmGPGKeyEnabled, pmGPGKeyDisabled;
-  unsigned int positionChanges;
+  bool positionChanges;
   int m_nProtoNum;
   char *m_szUserMenuId;
   unsigned long m_nUserMenuPPID;

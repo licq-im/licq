@@ -343,7 +343,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqDaemon = theDaemon;
   licqSigMan = theSigMan;
   licqLogWindow = theLogWindow;
-  positionChanges = 0;
+  positionChanges = false;
   m_szUserMenuId = 0;
   m_nProtoNum = 0;
 
@@ -1120,7 +1120,7 @@ void CMainWindow::resizeEvent (QResizeEvent *)
     btnSystem->setGeometry(skin->borderToRect(&skin->btnSys, this));
 
   // Do this to save the new geometry
-  positionChanges++;
+  positionChanges = true;
 
   // Resize the background pixmap and mask
   QPixmap *p;
@@ -1176,63 +1176,14 @@ void CMainWindow::resizeEvent (QResizeEvent *)
 
 void CMainWindow::moveEvent(QMoveEvent* e)
 {
-  if(isVisible())  positionChanges++;
+  if (isVisible())
+    positionChanges = true;
 
   QWidget::moveEvent(e);
 }
 
 void CMainWindow::closeEvent( QCloseEvent *e )
 {
-#if 0
-    qDebug("closeEvent() visible %d", isVisible());
-    qDebug("geometry: x: %d y: %d, w: %d, h: %d", geometry().x(), geometry().y(), geometry().width(), geometry().height());
-    qDebug("x: %d, y: %d, w: %d, h: %d", x(), y(), size().width(), size().height());
-    qDebug(" toGlobal: x %d, y %d", mapToGlobal(QPoint(0,0)).x(), mapToGlobal(QPoint(0,0)).y());
-#endif
-
-  if(isVisible() && positionChanges > 1)
-  {
-    // save window position and size
-    char buf[MAX_FILENAME_LEN];
-    snprintf(buf, MAX_FILENAME_LEN, "%s/" QTGUI_CONFIGFILE, BASE_DIR);
-    buf[MAX_FILENAME_LEN - 1] = '\0';
-    CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
-    // need some more error checking here...
-    licqConf.LoadFile(buf);
-
-    licqConf.SetSection("geometry");
-    // I'm not sure if we should really test for negative values...
-    licqConf.WriteNum("x", static_cast<short>(x()));
-    licqConf.WriteNum("y", static_cast<short>(y()));
-    licqConf.WriteNum("h", (unsigned short)(size().height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : size().height())));
-    licqConf.WriteNum("w", (unsigned short)(size().width() < 0 ? 0 : size().width()));
-
-#if 0
-    licqConf.SetSection("floaties");
-    licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
-    unsigned short i = 0;
-    char key[32];
-    for (; i < CUserView::floaties->size(); )
-    {
-      CUserView* iter = CUserView::floaties->at(i);
-      sprintf(key, "Floaty%d.Ppid", i);
-      licqConf.WriteNum(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemPPID());
-      sprintf(key, "Floaty%d.Uin", i);
-      licqConf.WriteStr(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemId());
-      sprintf(key, "Floaty%d.X", i);
-      licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
-      sprintf(key, "Floaty%d.Y", i);
-      licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
-      sprintf(key, "Floaty%d.W", i);
-      licqConf.WriteNum(key, (unsigned short)iter->width());
-      i++;
-    }
-#endif
-
-    licqConf.FlushFile();
-    licqConf.CloseFile();
-  }
-
   if (licqIcon != NULL)
   {
     e->ignore();
@@ -2923,6 +2874,49 @@ void CMainWindow::slot_sendfinished(const char *szId, unsigned long nPPID)
 
 void CMainWindow::slot_shutdown()
 {
+  if (isVisible() && positionChanges)
+  {
+    // save window position and size
+    char buf[MAX_FILENAME_LEN];
+    snprintf(buf, MAX_FILENAME_LEN, "%s/" QTGUI_CONFIGFILE, BASE_DIR);
+    buf[MAX_FILENAME_LEN - 1] = '\0';
+    CIniFile licqConf(INI_FxALLOWxCREATE | INI_FxWARN);
+    // need some more error checking here...
+    licqConf.LoadFile(buf);
+
+    licqConf.SetSection("geometry");
+    // I'm not sure if we should really test for negative values...
+    licqConf.WriteNum("x", static_cast<short>(x()));
+    licqConf.WriteNum("y", static_cast<short>(y()));
+    licqConf.WriteNum("h", (unsigned short)(size().height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : size().height())));
+    licqConf.WriteNum("w", (unsigned short)(size().width() < 0 ? 0 : size().width()));
+
+#if 0
+    licqConf.SetSection("floaties");
+    licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
+    unsigned short i = 0;
+    char key[32];
+    for (; i < CUserView::floaties->size(); )
+    {
+      CUserView* iter = CUserView::floaties->at(i);
+      sprintf(key, "Floaty%d.Ppid", i);
+      licqConf.WriteNum(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemPPID());
+      sprintf(key, "Floaty%d.Uin", i);
+      licqConf.WriteStr(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemId());
+      sprintf(key, "Floaty%d.X", i);
+      licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
+      sprintf(key, "Floaty%d.Y", i);
+      licqConf.WriteNum(key, (unsigned short)(iter->y() > 0 ? iter->y() : 0));
+      sprintf(key, "Floaty%d.W", i);
+      licqConf.WriteNum(key, (unsigned short)iter->width());
+      i++;
+    }
+#endif
+
+    licqConf.FlushFile();
+    licqConf.CloseFile();
+  }
+
   licqDaemon->Shutdown();
 }
 
@@ -3552,6 +3546,12 @@ void CMainWindow::saveOptions()
      sprintf(key, "Column%d.Align", i);
      licqConf.WriteNum(key, colInfo[i - 1]->m_nAlign);
   }
+
+  licqConf.SetSection("geometry");
+  licqConf.WriteNum("x", static_cast<short>(x()));
+  licqConf.WriteNum("y", static_cast<short>(y()));
+  licqConf.WriteNum("h", (unsigned short)(size().height() < 0 ? 0 : (m_bInMiniMode ? m_nRealHeight : size().height())));
+  licqConf.WriteNum("w", (unsigned short)(size().width() < 0 ? 0 : size().width()));
 
   licqConf.SetSection("floaties");
   licqConf.WriteNum("Num", (unsigned short)CUserView::floaties->size());
