@@ -1388,12 +1388,12 @@ void UserSendCommon::setBackgroundICQColor()
   if (myMessageEdit == NULL)
     return;
 
+  QColor c = myMessageEdit->palette().color(QPalette::Base);
 #ifdef USE_KDE
-  QColor c = myMessageEdit->palette().color(myMessageEdit->backgroundRole());
   if (KColorDialog::getColor(c, this) != KColorDialog::Accepted)
     return;
 #else
-  QColor c = QColorDialog::getColor(myMessageEdit->palette().color(myMessageEdit->backgroundRole()), this);
+  c = QColorDialog::getColor(c, this);
   if (!c.isValid())
     return;
 #endif
@@ -1407,12 +1407,12 @@ void UserSendCommon::setForegroundICQColor()
   if (myMessageEdit == NULL)
     return;
 
+  QColor c = myMessageEdit->palette().color(QPalette::Text);
 #ifdef USE_KDE
-  QColor c = myMessageEdit->palette().color(myMessageEdit->foregroundRole());
   if (KColorDialog::getColor(c, this) != KColorDialog::Accepted)
     return;
 #else
-  QColor c = QColorDialog::getColor(myMessageEdit->palette().color(myMessageEdit->foregroundRole()), this);
+  c = QColorDialog::getColor(c, this);
   if (!c.isValid())
     return;
 #endif
