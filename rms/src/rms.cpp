@@ -97,9 +97,9 @@ const unsigned short STATE_ENTERxSMSxNUMBER = 9;
 
 struct Command
 {
-  char *name;
+  const char *name;
   int (CRMSClient::*fcn)();
-  char *help;
+  const char *help;
 };
 
 static struct Command commands[] =
@@ -585,7 +585,7 @@ bool CRMSClient::ProcessEvent(ICQEvent *e)
   tags.erase(iter);
 
   unsigned short nCode = 0;
-  char *szr = NULL;
+  const char *szr = NULL;
   switch(e->Result())
   {
     case EVENT_ACKED:
