@@ -127,7 +127,7 @@ const char MLE_HELP[] =
 /*---------------------------------------------------------------------------
  * CLicqConsole::Constructor
  *-------------------------------------------------------------------------*/
-CLicqConsole::CLicqConsole(int argc, char **argv)
+CLicqConsole::CLicqConsole(int /* argc */, char** /* argv */)
 {
   CWindow::StartScreen();
 
@@ -989,7 +989,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
     {
       win->wprintf("%A%CSearch complete.\n", m_cColorInfo->nAttr, m_cColorInfo->nColor);
     }
-    else if (e->SearchAck()->More() == -1)
+    else if (static_cast<long>(e->SearchAck()->More()) == -1)
     {
       win->wprintf("%A%CSearch complete.  More users found, narrow search.\n",
                    m_cColorInfo->nAttr, m_cColorInfo->nColor);
@@ -2111,7 +2111,7 @@ void CLicqConsole::InputSendFile(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_SetAutoResponse
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_SetAutoResponse(const char *szId, unsigned long nPPID, char *)
+void CLicqConsole::UserCommand_SetAutoResponse(const char* /* szId */, unsigned long /* nPPID */, char *)
 {
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputAutoResponse;

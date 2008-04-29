@@ -372,8 +372,8 @@ void CLicqConsole::CreateUserList()
  *-------------------------------------------------------------------------*/
 void CLicqConsole::PrintUsers()
 {
-  char *title = "<C></B/40>Contacts";
-  char *ulist[1024];
+  const char* title = "<C></B/40>Contacts";
+  const char* ulist[1024];
   int i = 0;
   struct SScrollUser *s = NULL;
   
@@ -402,12 +402,12 @@ void CLicqConsole::PrintUsers()
   if (!cdkUserList)
   {
     cdkUserList = newCDKScroll(winUsers->CDKScreen(), 0, 0, 
-                               RIGHT, LINES - 5, USER_WIN_WIDTH, title,
-                               ulist, i, FALSE, A_NORMAL, TRUE, TRUE);
+                               RIGHT, LINES - 5, USER_WIN_WIDTH, const_cast<char*>(title),
+                               const_cast<char**>(ulist), i, FALSE, A_NORMAL, TRUE, TRUE);
   }
   else
   {
-    setCDKScrollItems (cdkUserList, ulist, i, FALSE);
+    setCDKScrollItems (cdkUserList, const_cast<char**>(ulist), i, FALSE);
   }
   
   bindCDKObject(vSCROLL, cdkUserList, SPACE, CLicqConsole::MenuPopupWrapper, this);
@@ -451,7 +451,7 @@ void CLicqConsole::UserListHighlight(chtype type, chtype input)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserListCallback
  *-------------------------------------------------------------------------*/
-int CLicqConsole::UserListCallback(EObjectType cdktype, void *object, void *clientData, chtype input)
+int CLicqConsole::UserListCallback(EObjectType /* cdktype */, void* /* object */, void *clientData, chtype input)
 {
   CLicqConsole *me = (CLicqConsole *)clientData; 
   me->UserListHighlight(A_REVERSE, input);
@@ -465,7 +465,7 @@ void CLicqConsole::PrintContactPopup(char *_szAlias)
 {
   char title[256];
   snprintf(title, 256, "<C></B/40>%s", _szAlias);
-  char *list[10000];
+  const char* list[10000];
   int i = 0;
 
   list[i++] = "Message";
@@ -473,9 +473,9 @@ void CLicqConsole::PrintContactPopup(char *_szAlias)
 
   cdkContactPopup = newCDKScroll(winMain->CDKScreen(), 0, 0,
                                  RIGHT, 10, 20, title,
-                                 list, i, FALSE, A_REVERSE, TRUE, TRUE);
+                                 const_cast<char**>(list), i, FALSE, A_REVERSE, TRUE, TRUE);
 
-  setCDKScrollBackgroundColor(cdkContactPopup, "</40>");
+  setCDKScrollBackgroundColor(cdkContactPopup, const_cast<char*>("</40>"));
   drawCDKScroll(cdkContactPopup, true);
   winMain->RefreshWin();
 }

@@ -168,7 +168,7 @@ CWindow& CWindow::operator<<(unsigned short d)
   return(*this << s);
 }
 
-void CWindow::wprintf(char *formatIn, ...)
+void CWindow::wprintf(const char *formatIn, ...)
 {
    va_list argp;
    char formatOut[1024], out[1024];

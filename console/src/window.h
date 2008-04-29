@@ -56,7 +56,7 @@ public:
   CWindow& operator<<(const char *d);
   CWindow& operator<<(unsigned long d);
   CWindow& operator<<(unsigned short d);
-  void wprintf(char *formatIn, ...);
+  void wprintf(const char *formatIn, ...);
   WINDOW *Win()  { return win; }
   CDKSCREEN *CDKScreen() { return cdkscreen; } 
   static void StartScreen();

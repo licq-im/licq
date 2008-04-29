@@ -110,7 +110,7 @@ const struct SCommand aCommands[NUM_COMMANDS] =
  *
  * Callback function for when SPACE is pressed on the cdkUserList
  *-------------------------------------------------------------------------*/
-int CLicqConsole::MenuPopupWrapper(EObjectType cdktype, void *object, void *clientData, chtype key)
+int CLicqConsole::MenuPopupWrapper(EObjectType /* cdktype */, void* /* object */, void* clientData, chtype /* key */)
 {
   CLicqConsole *me = (CLicqConsole *)clientData;
   me->MenuPopup(me->cdkUserList->currentItem);
@@ -177,7 +177,7 @@ void CLicqConsole::MenuSwitchConsole(char *_szArg)
 /*---------------------------------------------------------------------------
  * CLicqConsole::MenuList
  *-------------------------------------------------------------------------*/
-void CLicqConsole::MenuList(char *_szArg)
+void CLicqConsole::MenuList(char* /* _szArg */)
 {
   int userSelected;
   UserListHighlight(A_REVERSE);
@@ -254,7 +254,7 @@ void CLicqConsole::MenuQuit(char *)
 /*---------------------------------------------------------------------------
  * CLicqConsole::MenuPlugins
  *-------------------------------------------------------------------------*/
-void CLicqConsole::MenuPlugins(char *_szArg)
+void CLicqConsole::MenuPlugins(char* /* _szArg */)
 {
   PluginsList l;
   PluginsListIter it;

@@ -221,11 +221,11 @@ struct STabCompletion
 
 struct SCommand
 {
-  char *szName;
+  const char* szName;
   void (CLicqConsole::*fProcessCommand)(char *);
   void (CLicqConsole::*fProcessTab)(char *, struct STabCompletion &);
-  char *szHelp;
-  char *szDescription;
+  const char* szHelp;
+  const char* szDescription;
 };
 extern const unsigned short NUM_COMMANDS;
 extern const struct SCommand aCommands[];
