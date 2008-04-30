@@ -15,12 +15,21 @@ public:
   ~CUserHistory();
   void SetFile(const char *, unsigned long);
   void SetFile(const char *, const char *, unsigned long);
-  void Append(const char *);
+  void Append(const char* buf) { Write(buf, true); }
   bool Load(HistoryList &);
   static void Clear(HistoryList &);
-  void Save(const char *);
+  void Save(const char* buf) { Write(buf, false); }
   const char *Description()  { return m_szDescription; }
   const char *FileName()     { return m_szFileName; }
+
+  /**
+   * Write to the history file, creating it if necessary
+   *
+   * @param buf String with data to write
+   * @param append True to append data or false to overwrite file
+   */
+  void Write(const char* buf, bool append);
+
 protected:
   char *m_szFileName;
   char *m_szDescription;

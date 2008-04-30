@@ -10,6 +10,7 @@
 #include "config.h"
 #endif
 
+#include <cstdio>
 #include <string.h>
 #include <unistd.h>
 #include <sys/stat.h>
@@ -396,15 +397,20 @@ bool CUserHistory::Load(HistoryList &lHistory)
   return true;
 }
 
-//---Save----------------------------------------------------------------------
-/*! \brief Writes history to disk
- *
- * Writes history to disk. If file does not exists it is created.
- */
-void CUserHistory::Save(const char *buf)
+void CUserHistory::Write(const char* buf, bool append)
 {
   if (m_szFileName == NULL || buf == NULL) return;
-  int fd = open(m_szFileName, O_WRONLY | O_CREAT | O_TRUNC, 00600);
+
+  // Make sure history dir exists before trying to write a file in it
+  char historydir[MAX_FILENAME_LEN];
+  snprintf(historydir, sizeof(historydir) - 1, "%s/%s", BASE_DIR, HISTORY_DIR);
+  if (mkdir(historydir, 0700) == -1 && errno != EEXIST)
+  {
+    fprintf(stderr, "Couldn't mkdir %s: %s\n", historydir, strerror(errno));
+    return;
+  }
+
+  int fd = open(m_szFileName, O_WRONLY | O_CREAT | (append ? O_APPEND : O_TRUNC), 00600);
   if (fd == -1)
   {
     gLog.Error("%sUnable to open history file (%s):\n%s%s.\n", L_ERRORxSTR,
@@ -412,6 +418,8 @@ void CUserHistory::Save(const char *buf)
     return;
   }
   write(fd, buf, strlen(buf));
+  if (append)
+    write(fd, "\n", 1);
   close(fd);
 }
 
@@ -428,27 +436,3 @@ void CUserHistory::Clear(HistoryList &hist)
   }
   hist.erase(hist.begin(), hist.end());
 }
-
-
-//---Append--------------------------------------------------------------------
-/*! \brief Appends a message to the history
- *
- * Appends message _sz to the history. If the history file does not exist it 
- * will be created.
- */
-void CUserHistory::Append(const char *_sz)
-{
-  if (m_szFileName == NULL || _sz == NULL) return;
-  int fd = open(m_szFileName, O_WRONLY | O_CREAT | O_APPEND, 00600);
-  if (fd == -1)
-  {
-    gLog.Error("%sUnable to open history file (%s):\n%s%s.\n", L_ERRORxSTR,
-               m_szFileName, L_BLANKxSTR, strerror(errno));
-    return;
-  }
-  write(fd, _sz, strlen(_sz));
-  write(fd, "\n", 1);
-  close(fd);
-}
-
-
