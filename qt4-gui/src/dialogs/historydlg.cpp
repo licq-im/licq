@@ -71,7 +71,7 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
 
   // Calendar for navigating
   myCalendar = new Calendar();
-  connect(myCalendar, SIGNAL(selectionChanged()), SLOT(calenderClicked()));
+  connect(myCalendar, SIGNAL(clicked(const QDate&)), SLOT(calenderClicked()));
   sidebarLayout->addWidget(myCalendar);
 
   // Buttons to go to previos/next day with activity
