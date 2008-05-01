@@ -53,6 +53,7 @@ UserViewBase::UserViewBase(ContactListModel* contactList, QWidget* parent)
 
   // Look'n'Feel
   setIndentation(0);
+  setVerticalScrollMode(ScrollPerPixel);
   setAcceptDrops(true);
   setRootIsDecorated(false);
   setAllColumnsShowFocus(true);
