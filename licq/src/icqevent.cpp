@@ -48,7 +48,7 @@ CSearchAck::~CSearchAck()
 
 
 //-----CExtendedAck----------------------------------------------------------
-CExtendedAck::CExtendedAck(bool bAccepted, unsigned short nPort, char *szResponse)
+CExtendedAck::CExtendedAck(bool bAccepted, unsigned short nPort, const char* szResponse)
 {
   m_bAccepted = bAccepted;
   m_nPort = nPort;
@@ -141,7 +141,7 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
 }
 
 //-----ICQEvent::constructor----------------------------------------------------
-ICQEvent::ICQEvent(ICQEvent *e)
+ICQEvent::ICQEvent(const ICQEvent* e)
 //   : m_xBuffer(e->m_xBuffer)
 {
   m_nEventId = e->m_nEventId;
@@ -275,7 +275,7 @@ CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
   m_nPPID = LICQ_PPID;
 }
 
-CICQSignal::CICQSignal(CICQSignal *s)
+CICQSignal::CICQSignal(const CICQSignal* s)
 {
   m_nSignal = s->Signal();
   m_nSubSignal = s->SubSignal();

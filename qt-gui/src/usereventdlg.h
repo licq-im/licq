@@ -169,7 +169,8 @@ protected:
   // which events we already processed in the ctor.
   int m_highestEventId;
 
-  virtual void UserUpdated(CICQSignal *, char * = 0, unsigned long = 0) = 0;
+  virtual void UserUpdated(CICQSignal* signal, const char* id = NULL,
+      unsigned long ppid = 0) = 0;
   void SetGeneralInfo(ICQUser *);
   void FlashTaskbar(bool _bFlash);
 
@@ -220,7 +221,7 @@ protected:
   void generateReply();
   void sendMsg(QString txt);
   void updateNextButton();
-  virtual void UserUpdated(CICQSignal *, char * = 0, unsigned long = 0);
+  virtual void UserUpdated(CICQSignal* sig, const char* szId = NULL, unsigned long nPPID = 0);
 
 protected slots:
   void slot_close();
@@ -278,7 +279,7 @@ protected:
   QTimer *tmrSendTyping;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
-  virtual void UserUpdated(CICQSignal *, char * = 0, unsigned long = 0);
+  virtual void UserUpdated(CICQSignal* sig, const char* szId = NULL, unsigned long nPPID = 0);
   virtual bool sendDone(ICQEvent *) = 0;
   bool checkSecure();
 

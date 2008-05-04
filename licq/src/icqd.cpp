@@ -2415,8 +2415,7 @@ bool CICQDaemon::RemoveConversation(unsigned long _nCID)
 
 //-----ProcessMessage-----------------------------------------------------------
 void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
-                                unsigned short nMsgType, unsigned long nMask,
-                                unsigned long nMsgID[2],
+    unsigned short nMsgType, unsigned long nMask, const unsigned long nMsgID[2],
                                 unsigned short nSequence, bool bIsAck,
                                 bool &bNewUser)
 {

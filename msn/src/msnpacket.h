@@ -296,7 +296,8 @@ public:
 class CPS_MSNInvitation : public CMSNP2PPacket
 {
 public:
-  CPS_MSNInvitation(char *szToEmail, char *szFromEmail, char *szMSNObject);
+  CPS_MSNInvitation(const char* szToEmail, const char* szFromEmail,
+      const char* szMSNObject);
 };
 
 class CPS_MSNP2PBye : public CMSNP2PPacket

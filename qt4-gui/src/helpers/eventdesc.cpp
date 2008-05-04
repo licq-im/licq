@@ -60,7 +60,7 @@ static const char* szEventTypes[27] =
   QT_TRANSLATE_NOOP("LicqQtGui::EventDescription", "SMS")
 };
 
-QString LicqQtGui::EventDescription(CUserEvent* e)
+QString LicqQtGui::EventDescription(const CUserEvent* e)
 {
   QString desc;
 

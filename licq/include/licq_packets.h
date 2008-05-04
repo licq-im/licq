@@ -811,7 +811,7 @@ public:
 class CPU_AckFileAccept : public CPU_AdvancedMessage
 {
 public:
-  CPU_AckFileAccept(ICQUser *u, unsigned long nMsgID[],
+  CPU_AckFileAccept(ICQUser* u, const unsigned long nMsgID[],
                     unsigned short nSequence, unsigned short nPort,
                     const char *szDesc, const char *szFile,
                     unsigned long nFileSize);
@@ -821,7 +821,7 @@ public:
 class CPU_AckFileRefuse : public CPU_AckThroughServer
 {
 public:
-  CPU_AckFileRefuse(ICQUser *u, unsigned long nMsgID[],
+  CPU_AckFileRefuse(ICQUser* u, const unsigned long nMsgID[],
                     unsigned short nSequence, const char *msg);
 };
 
@@ -829,7 +829,7 @@ public:
 class CPU_AckChatAccept : public CPU_AdvancedMessage
 {
 public:
-  CPU_AckChatAccept(ICQUser *u, const char *szClients, unsigned long nMsgID[],
+  CPU_AckChatAccept(ICQUser* u, const char *szClients, const unsigned long nMsgID[],
                     unsigned short nSequence, unsigned short nPort);
 };
 
@@ -837,7 +837,7 @@ public:
 class CPU_AckChatRefuse : public CPU_AckThroughServer
 {
 public:
-  CPU_AckChatRefuse(ICQUser *u, unsigned long nMsgID[],
+  CPU_AckChatRefuse(ICQUser* u, const unsigned long nMsgID[],
                     unsigned short nSequence, const char *msg);
 };
 

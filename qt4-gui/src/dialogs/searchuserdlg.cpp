@@ -337,7 +337,7 @@ void SearchUserDlg::searchResult(ICQEvent* e)
     searchFailed();
 }
 
-void SearchUserDlg::searchFound(CSearchAck* s)
+void SearchUserDlg::searchFound(const CSearchAck* s)
 {
   QString text;
   QTreeWidgetItem* item = new QTreeWidgetItem(foundView);
@@ -400,7 +400,7 @@ void SearchUserDlg::searchFound(CSearchAck* s)
   }
 }
 
-void SearchUserDlg::searchDone(CSearchAck* sa)
+void SearchUserDlg::searchDone(const CSearchAck* sa)
 {
   if (sa == NULL || sa->More() == 0)
     lblSearch->setText(tr("Search complete."));

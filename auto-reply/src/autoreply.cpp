@@ -211,7 +211,7 @@ void CLicqAutoReply::ProcessSignal(CICQSignal *s)
  *-------------------------------------------------------------------------*/
 void CLicqAutoReply::ProcessEvent(ICQEvent *e)
 {
-  CUserEvent *user_event;
+  const CUserEvent* user_event;
 
   if (e->Result() != EVENT_ACKED)
   {

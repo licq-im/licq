@@ -138,7 +138,7 @@ bool UserSendFileEvent::sendDone(ICQEvent* e)
   }
   else
   {
-    CEventFile* f = dynamic_cast<CEventFile*>(e->UserEvent());
+    const CEventFile* f = dynamic_cast<const CEventFile*>(e->UserEvent());
     FileDlg* fileDlg = new FileDlg(myUsers.front().c_str(), myPpid);
     fileDlg->SendFiles(f->FileList(), e->ExtendedAck()->Port());
   }

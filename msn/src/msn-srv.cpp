@@ -611,7 +611,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
   //m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));   
 }
 
-void CMSN::MSNAddUser(char *szUser)
+void CMSN::MSNAddUser(const char* szUser)
 {
   ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_W);
   u->SetEnableSave(false);
@@ -624,13 +624,13 @@ void CMSN::MSNAddUser(char *szUser)
   SendPacket(pSend);
 }
 
-void CMSN::MSNRemoveUser(char *szUser)
+void CMSN::MSNRemoveUser(const char* szUser)
 {
   CMSNPacket *pSend = new CPS_MSNRemoveUser(szUser, CONTACT_LIST);
   SendPacket(pSend);
 }
 
-void CMSN::MSNRenameUser(char *szUser)
+void CMSN::MSNRenameUser(const char* szUser)
 {
   ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_R);
   if (!u) return;
@@ -643,13 +643,13 @@ void CMSN::MSNRenameUser(char *szUser)
   SendPacket(pSend);
 }
 
-void CMSN::MSNGrantAuth(char *szUser)
+void CMSN::MSNGrantAuth(const char* szUser)
 {
   CMSNPacket *pSend = new CPS_MSNAddUser(szUser, ALLOW_LIST);
   SendPacket(pSend);
 }
 
-void CMSN::MSNUpdateUser(char *szAlias)
+void CMSN::MSNUpdateUser(const char* szAlias)
 {
   string strNick(szAlias);
   string strEncodedNick = Encode(strNick);
@@ -657,7 +657,7 @@ void CMSN::MSNUpdateUser(char *szAlias)
   SendPacket(pSend);
 }
 
-void CMSN::MSNBlockUser(char *szUser)
+void CMSN::MSNBlockUser(const char* szUser)
 {
   ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_W);
   if (u)
@@ -676,7 +676,7 @@ void CMSN::MSNBlockUser(char *szUser)
   SendPacket(pAdd);
 }
 
-void CMSN::MSNUnblockUser(char *szUser)
+void CMSN::MSNUnblockUser(const char* szUser)
 {
   ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_W);
   if (u)
@@ -701,7 +701,7 @@ void CMSN::MSNGetDisplayPicture(const string &strUser, const string &strMSNObjec
   if (m_nStatus & ICQ_STATUS_FxPRIVATE)
     return;
 
-  char *szUser = const_cast<char *>(strUser.c_str());
+  const char *szUser = const_cast<const char *>(strUser.c_str());
   CMSNPacket *pGetMSNDP = new CPS_MSNInvitation(szUser,
 						m_szUserName,
 						const_cast<char *>(strMSNObject.c_str()));

@@ -26,7 +26,7 @@ class CUserEvent;
 
 namespace LicqQtGui
 {
-QString EventDescription(CUserEvent* e);
+QString EventDescription(const CUserEvent* e);
 } // namespace LicqQtGui
 
 #endif

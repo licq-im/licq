@@ -28,16 +28,16 @@ public:
   // Accessors
 
   //!Returns true if the remote end accepted the request, otherwise false.
-  bool Accepted()         { return m_bAccepted; }
+  bool Accepted() const { return m_bAccepted; }
   //!The port to connect to if the request was accpeted.
-  unsigned short Port()   { return m_nPort; }
+  unsigned short Port() const { return m_nPort; }
   //!The reason for declining the request.
-  const char *Response()  { return m_szResponse; }
+  const char* Response() const { return m_szResponse; }
 
   ~CExtendedAck();
 
 protected:
-  CExtendedAck(bool, unsigned short, char *);
+  CExtendedAck(bool bAccepted, unsigned short nPort, const char* szResponse);
 
   bool m_bAccepted;
   unsigned short m_nPort;
@@ -68,31 +68,31 @@ class CSearchAck
 public:
   // Accessors
   //! Returns the UIN of the search result.
-  unsigned long Uin()      { return m_nUin; }
+  unsigned long Uin() const { return m_nUin; }
   //! Returns the alias (nickname) of the search result.
-  const char *Alias()      { return m_szAlias; }
+  const char* Alias() const { return m_szAlias; }
   //! Returns the first name of the search result.
-  const char *FirstName()  { return m_szFirstName; }
+  const char* FirstName() const { return m_szFirstName; }
   //! Returns the last name of the search result.
-  const char *LastName()   { return m_szLastName; }
+  const char* LastName() const { return m_szLastName; }
   //! Returns the e-mail address of the search result.
-  const char *Email()      { return m_szEmail; }
+  const char* Email() const { return m_szEmail; }
   //! Retunrs the Id string
-  const char *Id()         { return m_szId; }
+  const char* Id() const { return m_szId; }
   //! Returns the protocol plugin id
-  unsigned long PPID()     { return m_nPPID; }
+  unsigned long PPID() const { return m_nPPID; }
   //! If non-zero, the number of search results that were found that could not
   //! be displayed.  The server has a 40 user limit on search results.  This
   //! is valid when Result() is EVENT_SUCCESS.
-  unsigned long More() 	   { return m_nMore; }
+  unsigned long More() const { return m_nMore; }
   //! The online status of the search result.
-  char Status()            { return m_nStatus; }
+  char Status() const { return m_nStatus; }
   //! The gender of the search result.  Female = 1, Male = 2, Unknown = 3.
-  char Gender()		   { return m_nGender; }
+  char Gender() const { return m_nGender; }
   //! The age of the serach result.
-  char Age()		   { return m_nAge; }
+  char Age() const { return m_nAge; }
   //! Non-zero if authorization is required to add this user.
-  char Auth()		   { return m_nAuth; }
+  char Auth() const { return m_nAuth; }
 
   ~CSearchAck();
 
@@ -159,7 +159,7 @@ public:
   // Accessors
 
   //!This is the result of the event.
-  EventResult Result()         { return m_eResult; }
+  EventResult Result() const { return m_eResult; }
 
   //!This will be either ICQ_TCPxACK_ACCEPT if the event was accepted by
   //!the other side, ICQ_TCPxACK_REJECT if the event was rejected by the
@@ -168,65 +168,65 @@ public:
   //!the message would need to be sent urgent or to contact list).  This
   //!field is only relevant if the command was ICQ_CMDxTCP_START (ie the
   //!message was sent direct).
-  int SubResult()              { return m_nSubResult; }
+  int SubResult() const { return m_nSubResult; }
 
   //!This is used to identify what channel the event was sent on.  This is
   //!only non-zero for server events.
-  unsigned char Channel()      { return m_nChannel; }
+  unsigned char Channel() const { return m_nChannel; }
 
   //!The SNAC returned as an unsigned long.  The upper 2 bytes is the family
   //!and the lower 2 bytes is the subtype.  To compare SNAC's use the SNAC
   //!macro to convert it to an unsigned long: MAKESNAC(family, subtype).
-  unsigned long SNAC()         { return m_nSNAC; }
+  unsigned long SNAC() const { return m_nSNAC; }
 
   //!The command, for example ICQ_CMDxTCP_START.  This is only non-zero
   //!for direct connection events.
-  unsigned short Command()     { return m_nCommand; }
+  unsigned short Command() const { return m_nCommand; }
 
   //!The subcommand, relevant only if this was a message/url/chat/file,
   //!in which case Command() will be ICQ_CMDxTCP_START or SNAC() will be
   //!MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_CMDxSND_THRU_SERVER) and this
   //!field will be ICQ_CMDxSUB_MSG...
-  unsigned short SubCommand()  { return m_nSubCommand; }
+  unsigned short SubCommand() const { return m_nSubCommand; }
 
   //!This is used to identify events internally, but is necessary for
   //!accepting/rejecting chat or file requests.
-  unsigned short Sequence()     { return m_nSequence; }
+  unsigned short Sequence() const { return m_nSequence; }
 
   //!This is used to identify events internally, is are necessary for
   //!accepting/rejecting chat or file requests.
-  unsigned short SubSequence() { return m_nSubSequence; }
+  unsigned short SubSequence() const { return m_nSubSequence; }
 
   //!The uin of the user the event was destined for.  Only relevant if
   //!this was a message/url...
-  unsigned long Uin()          { return m_nDestinationUin; }
+  unsigned long Uin() const { return m_nDestinationUin; }
 
   //!The user id that the event was destined for.  Only relevant if
   //!this was a message/url...
-  char *Id()                   { return m_szId; }
-  
+  const char* Id() const { return m_szId; }
+
   //!The protocol id of the user that the event was destined for.
   //!Only relevant if this was a message/url...
-  unsigned long PPID()         { return m_nPPID; }
+  unsigned long PPID() const { return m_nPPID; }
 
   //!Special structure containing information relevant if this is a
   //!search event.
-  CSearchAck *SearchAck()      { return m_pSearchAck; }
+  const CSearchAck* SearchAck() const { return m_pSearchAck; }
 
   //!Special structure containing information relevant if this is a
   //!chat or file transfer accept or reject.
-  CExtendedAck *ExtendedAck()  { return m_pExtendedAck; }
-  
+  const CExtendedAck* ExtendedAck() const { return m_pExtendedAck; }
+
   //!Contains the actual CUserEvent containing the message/url...that was
   //!sent to Uin().  Can be used to resend the event.
-  CUserEvent *UserEvent()      { return m_pUserEvent; }
+  const CUserEvent* UserEvent() const { return m_pUserEvent; }
 
   //!If the event was a user information update (basic/extended/meta) and
   //!the user does not exist on the contact list, this will return the user
   //!with the relevant fields set.  This is helpful in searches for example
   //!to avoid having to add the user to the list before checking their
   //!other information.
-  ICQUser *UnknownUser()       { return m_pUnknownUser; }
+  const ICQUser* UnknownUser() const { return m_pUnknownUser; }
 
   // Returns the event and transfers ownership to the calling function
   CUserEvent *GrabUserEvent();
@@ -244,11 +244,11 @@ protected:
            unsigned long _nUin, CUserEvent *e);
   ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
            const char *_szId, unsigned long _nPPID, CUserEvent *e);
-  ICQEvent(ICQEvent *);
+  ICQEvent(const ICQEvent* e);
 
   // Daemon only
-  unsigned short SubType()     { return m_nSubType; }
-  unsigned short ExtraInfo()   { return m_nExtraInfo; }
+  unsigned short SubType() const { return m_nSubType; }
+  unsigned short ExtraInfo() const { return m_nExtraInfo; }
 
   // Compare this event to another one
   bool CompareEvent(int, unsigned short) const;
@@ -422,20 +422,20 @@ public:
              int nArg = 0, unsigned long nCID = 0);
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, const char *_szId,
              unsigned long _nPPID, int nArg = 0, unsigned long nCID = 0);
-  CICQSignal(CICQSignal *s);
+  CICQSignal(const CICQSignal* s);
   ~CICQSignal();
 
   //!Returns the signal being posted to the plugin.
-  unsigned long Signal() { return m_nSignal; }
+  unsigned long Signal() const { return m_nSignal; }
   //!Returns the sub-signal being posted to the plugin.
-  unsigned long SubSignal() { return m_nSubSignal; }
+  unsigned long SubSignal() const { return m_nSubSignal; }
   //!UIN that the signal is related.  See signals to understand how this
   //!value is set.
-  unsigned long Uin()   { return m_nUin; }
-  char *Id()            { return m_szId; }
-  unsigned long PPID()  { return m_nPPID; }
-  int Argument()        { return m_nArgument; }
-  unsigned long CID()   { return m_nCID; }
+  unsigned long Uin() const { return m_nUin; }
+  const char* Id() const { return m_szId; }
+  unsigned long PPID() const { return m_nPPID; }
+  int Argument() const { return m_nArgument; }
+  unsigned long CID() const { return m_nCID; }
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
@@ -519,13 +519,13 @@ public:
   virtual ~CSignal();
 
   //! The signal is being sent to the plugin.
-  SIGNAL_TYPE Type()  { return m_eType; }
+  SIGNAL_TYPE Type() const { return m_eType; }
   //! The user id that this signal is being used for.
-  char *Id()          { return m_szId; }
+  const char* Id() const { return m_szId; }
   //! The conversation id to use (gets the socket).
-  unsigned long CID() { return m_nCID; }
+  unsigned long CID() const { return m_nCID; }
   //! The calling thread.
-  pthread_t Thread() { return thread_plugin; }
+  pthread_t Thread() const { return thread_plugin; }
 
 private:
   char  *m_szId;
@@ -540,7 +540,7 @@ public:
   CLogonSignal(unsigned long);
   virtual ~CLogonSignal();
   //! The requested initial status.
-  unsigned long LogonStatus() { return m_nLogonStatus; }
+  unsigned long LogonStatus() const { return m_nLogonStatus; }
 
 private:
   unsigned long m_nLogonStatus;
@@ -559,7 +559,7 @@ public:
   CChangeStatusSignal(unsigned long);
   virtual ~CChangeStatusSignal();
   //! The requested status.
-  unsigned long Status()  { return m_nStatus; }
+  unsigned long Status() const { return m_nStatus; }
 
 private:
   unsigned long m_nStatus;
@@ -571,7 +571,7 @@ public:
   CAddUserSignal(const char *, bool);
   virtual ~CAddUserSignal();
   //! True if authorization is required to add this user.
-  bool AuthRequired() { return m_bAuthRequired; }
+  bool AuthRequired() const { return m_bAuthRequired; }
 
 private:
   bool m_bAuthRequired;
@@ -603,8 +603,8 @@ public:
   CSendMessageSignal(const char *szId, const char *szMsg, unsigned long nCID = 0);
   virtual ~CSendMessageSignal();
   //! The message to be sent
-  char *Message() { return m_szMsg; }
-  
+  const char* Message() const { return m_szMsg; }
+
 private:
   char *m_szMsg;
 };
@@ -614,7 +614,7 @@ class CTypingNotificationSignal : public CSignal
 public:
   CTypingNotificationSignal(const char *szId, bool bActive, unsigned long nCID = 0);
   virtual ~CTypingNotificationSignal();
-  bool Active() { return m_bActive; }
+  bool Active() const { return m_bActive; }
 private:
   bool m_bActive;
 };
@@ -624,7 +624,7 @@ class CGrantAuthSignal : public CSignal
 public:
   CGrantAuthSignal(const char *, const char *);
   virtual ~CGrantAuthSignal();
-  char *Message() { return m_szMsg; }
+  const char* Message() const { return m_szMsg; }
 
 private:
   char *m_szMsg;
@@ -658,18 +658,18 @@ public:
     const char *szCellularNumber, const char *szZipCode);
   virtual ~CUpdateInfoSignal();
 
-    char *Alias()        { return m_szAlias; }
-    char *FirstName()    { return m_szFirstName; }
-    char *LastName()     { return m_szLastName; }
-    char *Email()        { return m_szEmail; }
-    char *City()         { return m_szCity; }
-    char *State()        { return m_szState; }
-    char *PhoneNumber()  { return m_szPhoneNumber; }
-    char *FaxNumber()    { return m_szFaxNumber; }
-    char *Address()      { return m_szAddress; }
-    char *CellNumber()   { return m_szCellNumber; }
-    char *ZipCode()      { return m_szZipCode; }
-    
+  const char* Alias() const { return m_szAlias; }
+  const char* FirstName() const { return m_szFirstName; }
+  const char* LastName() const { return m_szLastName; }
+  const char* Email() const { return m_szEmail; }
+  const char* City() const { return m_szCity; }
+  const char* State() const { return m_szState; }
+  const char* PhoneNumber() const { return m_szPhoneNumber; }
+  const char* FaxNumber() const { return m_szFaxNumber; }
+  const char* Address() const { return m_szAddress; }
+  const char* CellNumber() const { return m_szCellNumber; }
+  const char* ZipCode() const { return m_szZipCode; }
+
 private:
   char *m_szAlias,
        *m_szFirstName,
@@ -733,10 +733,10 @@ public:
                   const char *_szMessage, ConstFileList &_lFileList);
   virtual ~CSendFileSignal();
 
-  char *GetFileName() { return m_szFile; }
-  char *GetMessage()  { return m_szMessage; }
-  ConstFileList GetFileList() { return m_lFileList; }
-  
+  const char* GetFileName() const { return m_szFile; }
+  const char* GetMessage() const { return m_szMessage; }
+  ConstFileList GetFileList() const { return m_lFileList; }
+
 private:
   char *m_szFile,
        *m_szMessage;
@@ -749,7 +749,7 @@ public:
   CSendChatSignal(const char *_szUser, const char *_szMessage);
   virtual ~CSendChatSignal();
 
-  char *GetMessage() { return m_szMessage; }
+  const char* GetMessage() const { return m_szMessage; }
 
 private:
   char *m_szMessage;
@@ -761,7 +761,7 @@ public:
   CCancelEventSignal(const char *_szUser, unsigned long _nFlag);
   virtual ~CCancelEventSignal();
 
-  unsigned long GetFlag() { return m_nFlag; }
+  unsigned long GetFlag() const { return m_nFlag; }
 
 private:
   unsigned long m_nFlag;
@@ -777,14 +777,14 @@ public:
                         bool bDirect = false);
   virtual ~CSendEventReplySignal();
 
-  char *GetMessage() { return m_szMessage; }
-  bool GetAccept()   { return m_bAccept; }
-  bool GetDirect()   { return m_bDirect; }
-  unsigned short GetPort()    { return m_nPort; }
-  unsigned long GetSequence() { return m_nSequence; }
-  unsigned long GetFlag()     { return m_nFlag; }
-  unsigned long GetFlag2()    { return m_nFlag2; } 
-  
+  const char* GetMessage() const { return m_szMessage; }
+  bool GetAccept() const { return m_bAccept; }
+  bool GetDirect() const { return m_bDirect; }
+  unsigned short GetPort() const { return m_nPort; }
+  unsigned long GetSequence() const { return m_nSequence; }
+  unsigned long GetFlag() const { return m_nFlag; }
+  unsigned long GetFlag2() const { return m_nFlag2; }
+
 private:
   char *m_szMessage;
   bool m_bAccept,

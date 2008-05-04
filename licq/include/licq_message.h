@@ -37,46 +37,50 @@ public:
    CUserEvent(const CUserEvent *);
    virtual ~CUserEvent();
 
-   virtual CUserEvent *Copy() = 0;
-   const char *Text();
-   const char *Description();
-   time_t Time()  {  return m_tTime; }
-   const char *LicqVersionStr();
+  virtual CUserEvent* Copy() const = 0;
+  const char* Text() const;
+  const char* Description() const;
+  time_t Time() const { return m_tTime; }
+  const char* LicqVersionStr() const;
    static const char *LicqVersionToString(unsigned long);
-   unsigned short Sequence()  { return m_nSequence; }
-   unsigned short Command()  { return m_nCommand; }
-   unsigned short SubCommand()  { return m_nSubCommand; }
-   int Id()  { return m_nId; }
-   bool IsDirect()  { return m_nFlags & E_DIRECT; }
-   bool IsMultiRec()  { return m_nFlags & E_MULTIxREC; }
-   bool IsUrgent()    { return m_nFlags & E_URGENT; }
-   bool IsCancelled() { return m_nFlags & E_CANCELLED; }
-   bool IsLicq()  { return LicqVersion() != 0; };
-   bool IsEncrypted()  { return m_nFlags & E_ENCRYPTED; };
-   unsigned short LicqVersion()  { return m_nFlags & E_LICQxVER; }
-   direction Direction()  {  return m_eDir; }
-   CICQColor *Color() { return &m_sColor; }
-   unsigned long ConvoId() { return m_nConvoId; }
+  unsigned short Sequence() const { return m_nSequence; }
+  unsigned short Command() const { return m_nCommand; }
+  unsigned short SubCommand() const { return m_nSubCommand; }
+  int Id() const { return m_nId; }
+  bool IsDirect() const { return m_nFlags & E_DIRECT; }
+  bool IsMultiRec() const { return m_nFlags & E_MULTIxREC; }
+  bool IsUrgent() const { return m_nFlags & E_URGENT; }
+  bool IsCancelled() const { return m_nFlags & E_CANCELLED; }
+  bool IsLicq() const { return LicqVersion() != 0; };
+  bool IsEncrypted() const { return m_nFlags & E_ENCRYPTED; };
+  unsigned short LicqVersion() const { return m_nFlags & E_LICQxVER; }
+  direction Direction() const { return m_eDir; }
+  const CICQColor* Color() const { return &m_sColor; }
+  unsigned long ConvoId() const { return m_nConvoId; }
 
-   bool Pending() { return m_bPending; }
+  bool Pending() const { return m_bPending; }
    void SetPending(bool b)  { m_bPending = b; }
 
 protected:
-   virtual void AddToHistory(ICQUser *, unsigned long, direction) = 0;
-   int AddToHistory_Header(direction, char *);
-   void AddToHistory_Flush(ICQUser *, unsigned long, char *);
+  virtual void AddToHistory(ICQUser* user, unsigned long ppid, direction dir) const = 0;
+  int AddToHistory_Header(direction _nDir, char* szOut) const;
+  void AddToHistory_Flush(ICQUser* u, unsigned long nPPID, const char* szOut) const;
 
    void SetDirection(direction d)  { m_eDir = d; }
    void Cancel() { m_nFlags |= E_CANCELLED; }
    void SetColor(unsigned long fore, unsigned long back)  { m_sColor.Set(fore, back); }
-   void SetColor(CICQColor *p)  { m_sColor.Set(p); }
+  void SetColor(CICQColor const* p) { m_sColor.Set(p); }
 
-   void CopyBase(CUserEvent *);
+  void CopyBase(const CUserEvent* e);
 
-   virtual void CreateDescription() = 0;
+  // CreateDescription() is const even though it changes m_szText since
+  // it may be called to perform delayed initialization in const context.
+  virtual void CreateDescription() const = 0;
    static int s_nId;
 
-   char          *m_szText;
+  // m_szText is not initialized until it is accessed. Allow this delayed
+  // initialization even if called in const context.
+  mutable char* m_szText;
    unsigned short m_nCommand;
    unsigned short m_nSubCommand;
    unsigned short m_nSequence;
@@ -104,14 +108,14 @@ public:
              time_t _tTime, unsigned long _nFlags, unsigned long _nConvoId = 0);
    virtual ~CEventMsg();
 
-   virtual CEventMsg *Copy();
-   const char *Message()  { return m_szMessage; }
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventMsg* Copy() const;
+  const char* Message() const { return m_szMessage; }
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 
    static CEventMsg *Parse(char *sz, unsigned short nCmd, time_t nTime,
                            unsigned long nFlags, unsigned long nConvoId = 0);
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    char *m_szMessage;
 };
 
@@ -121,21 +125,21 @@ class CEventFile : public CUserEvent
 {
 public:
    CEventFile(const char *_szFilename, const char *_szFileDescription,
-              unsigned long _nFileSize, ConstFileList &lFileList,
+      unsigned long _nFileSize, const ConstFileList& lFileList,
               unsigned short _nSequence, time_t _tTime,
               unsigned long _nFlags, unsigned long _nConovId = 0,
               unsigned long _nMsgID1 = 0, unsigned long _nMsgID2 = 0);
    virtual ~CEventFile();
-   virtual CEventFile *Copy();
-   virtual void AddToHistory(ICQUser *, unsigned long,  direction);
+  virtual CEventFile* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 
-   const char *Filename()  { return m_szFilename; }
-   unsigned long FileSize()  {  return m_nFileSize; }
-   const char *FileDescription() { return m_szFileDescription; }
-   ConstFileList FileList() { return m_lFileList; }
-   unsigned long *MessageID() { return m_nMsgID; }
+  const char* Filename() const { return m_szFilename; }
+  unsigned long FileSize() const {  return m_nFileSize; }
+  const char* FileDescription() const { return m_szFileDescription; }
+  ConstFileList FileList() const { return m_lFileList; }
+  const unsigned long* MessageID() const { return m_nMsgID; }
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    char *m_szFilename;
    char *m_szFileDescription;
    unsigned long m_nFileSize;
@@ -152,15 +156,15 @@ public:
              unsigned short _nCommand, time_t _tTime,
              unsigned long _nFlags, unsigned long _nConvoId = 0);
    virtual ~CEventUrl();
-   virtual CEventUrl *Copy();
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
-   const char *Url()  { return m_szUrl; }
-   const char *Description()  { return m_szUrlDescription; }
+  virtual CEventUrl* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
+  const char* Url() const { return m_szUrl; }
+  const char* Description() const { return m_szUrlDescription; }
 
    static CEventUrl *Parse(char *sz, unsigned short nCmd, time_t nTime,
      unsigned long nFlags, unsigned long nConvoId = 0);
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    char *m_szUrl;
    char *m_szUrlDescription;
 };
@@ -177,14 +181,14 @@ public:
       unsigned short nSequence, time_t tTime, unsigned long nFlags,
       unsigned long _nConvoId = 0, unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
   virtual ~CEventChat();
-  virtual CEventChat *Copy();
-  virtual void AddToHistory(ICQUser *, unsigned long, direction);
-  const char *Reason()  { return m_szReason; }
-  const char *Clients()  { return m_szClients; }
-  unsigned short Port()   { return m_nPort; }
-  unsigned long *MessageID() { return m_nMsgID; }
+  virtual CEventChat* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
+  const char* Reason() const { return m_szReason; }
+  const char* Clients() const { return m_szClients; }
+  unsigned short Port() const { return m_nPort; }
+  const unsigned long* MessageID() const { return m_nMsgID; }
 protected:
-  void CreateDescription();
+  void CreateDescription() const;
   char *m_szReason;
   char *m_szClients;
   unsigned short m_nPort;
@@ -203,13 +207,13 @@ public:
                const char *_szLastName, const char *_szEmail,
                unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAdded();
-   virtual CEventAdded *Copy();
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
-   unsigned long Uin()  { return m_nUin; };
-   char *IdString()     { return m_szId; }
-   unsigned long PPID() { return m_nPPID; }
+  virtual CEventAdded* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
+  unsigned long Uin() const { return m_nUin; };
+  const char* IdString() const { return m_szId; }
+  unsigned long PPID() const { return m_nPPID; }
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
@@ -233,13 +237,13 @@ public:
                  const char *_szLastName, const char *_szEmail, const char *_szReason,
                  unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRequest();
-   virtual CEventAuthRequest *Copy();
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
-   unsigned long Uin()  { return m_nUin; };
-   char *IdString()     { return m_szId; }
-   unsigned long PPID() { return m_nPPID; }
+  virtual CEventAuthRequest* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
+  unsigned long Uin() const { return m_nUin; };
+  const char* IdString() const { return m_szId; }
+  unsigned long PPID() const { return m_nPPID; }
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
@@ -260,13 +264,13 @@ public:
    CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthGranted();
-   virtual CEventAuthGranted *Copy();
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
-   unsigned long Uin()  { return m_nUin; };
-   char *IdString()     { return m_szId; }
-   unsigned long PPID() { return m_nPPID; }
+  virtual CEventAuthGranted* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
+  unsigned long Uin() const { return m_nUin; };
+  const char* IdString() const { return m_szId; }
+  unsigned long PPID() const { return m_nPPID; }
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
@@ -283,13 +287,13 @@ public:
    CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRefused();
-   virtual CEventAuthRefused *Copy();
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
-   unsigned long Uin()  { return m_nUin; };
-   char *IdString()     { return m_szId; }
-   unsigned long PPID() { return m_nPPID; }
+  virtual CEventAuthRefused* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
+  unsigned long Uin() const { return m_nUin; };
+  const char* IdString() const { return m_szId; }
+  unsigned long PPID() const { return m_nPPID; }
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
@@ -304,10 +308,10 @@ public:
    CEventWebPanel(const char *_szName, char *_szEmail, const char *_szMessage,
                    unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventWebPanel();
-   virtual CEventWebPanel *Copy();
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventWebPanel* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    char *m_szName;
    char *m_szEmail;
    char *m_szMessage;
@@ -321,10 +325,10 @@ public:
    CEventEmailPager(const char *_szName, char *_szEmail, const char *_szMessage,
                     unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventEmailPager();
-   virtual CEventEmailPager *Copy();
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventEmailPager* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    char *m_szName;
    char *m_szEmail;
    char *m_szMessage;
@@ -339,10 +343,10 @@ public:
   CContact(unsigned long n, const char *a);
   ~CContact();
 
-  unsigned long Uin() { return m_nUin; }
-  const char *Alias() { return m_szAlias; }
-  char *IdString()    { return m_szId; }
-  unsigned long PPID(){ return m_nPPID; }
+  unsigned long Uin() const { return m_nUin; }
+  const char* Alias() const { return m_szAlias; }
+  const char* IdString() const { return m_szId; }
+  unsigned long PPID() const { return m_nPPID; }
 protected:
   unsigned long m_nUin;
   char *m_szAlias;
@@ -355,17 +359,17 @@ typedef std::list<CContact *> ContactList;
 class CEventContactList : public CUserEvent
 {
 public:
-  CEventContactList(ContactList &cl, bool bDeep, unsigned short nCommand,
+  CEventContactList(const ContactList& cl, bool bDeep, unsigned short nCommand,
      time_t tTime, unsigned long nFlags);
   virtual ~CEventContactList();
-  virtual CEventContactList *Copy();
-  virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventContactList* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 
-  const ContactList &Contacts() { return m_vszFields; }
+  const ContactList &Contacts() const { return m_vszFields; }
 
   static CEventContactList *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
-  void CreateDescription();
+  void CreateDescription() const;
   ContactList m_vszFields;
 };
 
@@ -377,14 +381,14 @@ public:
    CEventSms(const char *_szNumber, const char *_szMessage,
              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventSms();
-   virtual CEventSms *Copy();
-   const char *Number()  { return m_szNumber; }
-   const char *Message()  { return m_szMessage; }
-   virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventSms* Copy() const;
+  const char* Number() const { return m_szNumber; }
+  const char* Message() const { return m_szMessage; }
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 
    static CEventSms *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    char *m_szNumber;
    char *m_szMessage;
 };
@@ -396,13 +400,13 @@ public:
   CEventServerMessage(const char *_szName, const char *_szEmail,
                       const char *_szMessage, time_t _tTime);
   virtual ~CEventServerMessage();
-  virtual CEventServerMessage *Copy();
-  virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventServerMessage* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 
   static CEventServerMessage *Parse(char *, unsigned short, time_t, unsigned long);
 
 protected:
-  void CreateDescription();
+ void CreateDescription() const;
 
   char *m_szName,
        *m_szEmail,
@@ -420,25 +424,25 @@ public:
                    const char *_szPostURL = 0, const char *_szMsgURL = 0,
                    const char *_szCreds = 0, unsigned long _nSessionLength = 0);
   virtual ~CEventEmailAlert();
-  virtual CEventEmailAlert *Copy();
-  virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventEmailAlert* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 
-  char *From()    { return m_szName; }
-  char *To()      { return m_szTo; }
-  char *Email()   { return m_szEmail; }
-  char *Subject() { return m_szSubject; }
+  const char* From() const { return m_szName; }
+  const char* To() const { return m_szTo; }
+  const char* Email() const { return m_szEmail; }
+  const char* Subject() const { return m_szSubject; }
 
-  char *MSPAuth() { return m_szMSPAuth; }
-  char *SID()     { return m_szSID; }
-  char *KV()      { return m_szKV; }
-  char *Id()      { return m_szId; }
-  char *PostURL() { return m_szPostURL; }
-  char *MsgURL()  { return m_szMsgURL; }
-  char *Creds()   { return m_szCreds; }
-  unsigned long SessionLength() { return m_nSessionLength; }
+  const char* MSPAuth() const { return m_szMSPAuth; }
+  const char* SID() const { return m_szSID; }
+  const char* KV() const { return m_szKV; }
+  const char* Id() const { return m_szId; }
+  const char* PostURL() const { return m_szPostURL; }
+  const char* MsgURL() const { return m_szMsgURL; }
+  const char* Creds() const { return m_szCreds; }
+  unsigned long SessionLength() const { return m_nSessionLength; }
 
 protected:
-  void CreateDescription();
+  void CreateDescription() const;
 
   // Info
   char *m_szName,
@@ -463,10 +467,10 @@ public:
   CEventPlugin(const char *sz, unsigned short nSubCommand,
      time_t tTime, unsigned long nFlags);
   ~CEventPlugin();
-  virtual CEventPlugin *Copy();
-  virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventPlugin* Copy() const;
+  virtual void AddToHistory(ICQUser* user, unsigned long ppid, direction dir) const;
 protected:
-  void CreateDescription();
+  void CreateDescription() const;
   char *m_sz;
 };
 
@@ -486,10 +490,10 @@ public:
                 const char *_szMsg,
                 time_t _tTime, unsigned long _nFlags);
   ~CEventUnknownSysMsg();
-  virtual CEventUnknownSysMsg *Copy();
-  virtual void AddToHistory(ICQUser *, unsigned long, direction);
+  virtual CEventUnknownSysMsg* Copy() const;
+  virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 protected:
-   void CreateDescription();
+  void CreateDescription() const;
    unsigned long m_nUin;
    char *m_szMsg;
 #if 0

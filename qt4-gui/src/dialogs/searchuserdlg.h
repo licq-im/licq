@@ -89,8 +89,8 @@ private:
 
   QTreeWidget* foundView;
 
-  void searchFound(CSearchAck* sa);
-  void searchDone(CSearchAck* sa);
+  void searchFound(const CSearchAck* sa);
+  void searchDone(const CSearchAck* sa);
   void searchFailed();
 
 private slots:

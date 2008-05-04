@@ -768,7 +768,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
         userOffline = u->StatusOffline();
         gUserManager.DropUser(u);
       }
-      CEventMsg* ue = dynamic_cast<CEventMsg*>(e->UserEvent());
+      const CEventMsg* ue = dynamic_cast<const CEventMsg*>(e->UserEvent());
       // create initial strings (implicit copying, no allocation impact :)
       char* tmp = gTranslator.NToRN(ue->Message());
       QByteArray wholeMessageRaw(tmp);
@@ -838,7 +838,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
 
     case ICQ_CMDxSUB_URL:
     {
-      CEventUrl* ue = dynamic_cast<CEventUrl*>(e->UserEvent());
+      const CEventUrl* ue = dynamic_cast<const CEventUrl*>(e->UserEvent());
 
       icqEventTag = gLicqDaemon->ProtoSendUrl(myUsers.front().c_str(), myPpid, ue->Url(),
           ue->Description(), online, level, false, &myIcqColor);
@@ -848,7 +848,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
 
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      CEventContactList* ue = dynamic_cast<CEventContactList*>(e->UserEvent());
+      const CEventContactList* ue = dynamic_cast<const CEventContactList*>(e->UserEvent());
       const ContactList& clist = ue->Contacts();
       UinList uins;
 
@@ -866,7 +866,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
 
     case ICQ_CMDxSUB_CHAT:
     {
-      CEventChat* ue = dynamic_cast<CEventChat*>(e->UserEvent());
+      const CEventChat* ue = dynamic_cast<const CEventChat*>(e->UserEvent());
 
       if (ue->Clients() == NULL)
         //TODO in the daemon
@@ -882,7 +882,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
 
     case ICQ_CMDxSUB_FILE:
     {
-      CEventFile* ue = dynamic_cast<CEventFile*>(e->UserEvent());
+      const CEventFile* ue = dynamic_cast<const CEventFile*>(e->UserEvent());
       ConstFileList filelist(ue->FileList());
 
       //TODO in the daemon
@@ -894,7 +894,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
 
     case ICQ_CMDxSUB_SMS:
     {
-      CEventSms* ue = dynamic_cast<CEventSms*>(e->UserEvent());
+      const CEventSms* ue = dynamic_cast<const CEventSms*>(e->UserEvent());
 
       //TODO in the daemon
       icqEventTag = gLicqDaemon->icqSendSms(ue->Number(), ue->Message(),

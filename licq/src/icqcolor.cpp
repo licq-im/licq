@@ -24,15 +24,15 @@ CICQColor::CICQColor()
 }
 
 
-unsigned long CICQColor::ForeRed()   { return foreground & 0xFF; }
-unsigned long CICQColor::ForeGreen() { return ( foreground & 0xFF00) >> 8; }
-unsigned long CICQColor::ForeBlue()  { return ( foreground & 0xFF0000) >> 16; }
-unsigned long CICQColor::BackRed()   { return background & 0xFF; }
-unsigned long CICQColor::BackGreen() { return ( background & 0xFF00) >> 8; }
-unsigned long CICQColor::BackBlue()  { return ( background & 0xFF0000) >> 16; }
+unsigned long CICQColor::ForeRed() const   { return foreground & 0xFF; }
+unsigned long CICQColor::ForeGreen() const { return ( foreground & 0xFF00) >> 8; }
+unsigned long CICQColor::ForeBlue() const  { return ( foreground & 0xFF0000) >> 16; }
+unsigned long CICQColor::BackRed() const   { return background & 0xFF; }
+unsigned long CICQColor::BackGreen() const { return ( background & 0xFF00) >> 8; }
+unsigned long CICQColor::BackBlue() const  { return ( background & 0xFF0000) >> 16; }
 
-unsigned long CICQColor::Foreground() { return foreground; }
-unsigned long CICQColor::Background() { return background; }
+unsigned long CICQColor::Foreground() const { return foreground; }
+unsigned long CICQColor::Background() const { return background; }
 
 
 void CICQColor::SetToDefault()
@@ -49,7 +49,7 @@ void CICQColor::Set(unsigned long fore, unsigned long back)
 }
 
 
-void CICQColor::Set(CICQColor *c)
+void CICQColor::Set(CICQColor const* c)
 {
   foreground = c->Foreground();
   background = c->Background();
@@ -107,7 +107,7 @@ unsigned long CICQColor::DefaultBackBlue()
 unsigned long CICQColor::DefaultForeground()  { return default_foreground; }
 unsigned long CICQColor::DefaultBackground()  { return default_background; }
 
-void CICQColor::SetDefaultColors(CICQColor *c)
+void CICQColor::SetDefaultColors(CICQColor const* c)
 {
   default_foreground = c->Foreground();
   default_background = c->Background();

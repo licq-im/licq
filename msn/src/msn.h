@@ -121,17 +121,18 @@ private:
   bool MSNSBConnectStart(string &, string &);
   bool MSNSBConnectAnswer(string &, string &, string &, string &);
 
-  void MSNSendInvitation(char *, CMSNPacket *);
-  void MSNSendMessage(char *, char *, pthread_t, unsigned long);
-  void MSNSendTypingNotification(char *, unsigned long);
+  void MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket);
+  void MSNSendMessage(const char* _szUser, const char* _szMsg,
+      pthread_t _tPlugin, unsigned long _nCID);
+  void MSNSendTypingNotification(const char* _szUser, unsigned long _nCID);
   void MSNChangeStatus(unsigned long);
-  void MSNAddUser(char *);
-  void MSNRemoveUser(char *);
-  void MSNRenameUser(char *);
-  void MSNGrantAuth(char *);
-  void MSNUpdateUser(char *);
-  void MSNBlockUser(char *);
-  void MSNUnblockUser(char *);
+  void MSNAddUser(const char* szUser);
+  void MSNRemoveUser(const char* szUser);
+  void MSNRenameUser(const char* szUser);
+  void MSNGrantAuth(const char* szUser);
+  void MSNUpdateUser(const char* szUser);
+  void MSNBlockUser(const char* szUser);
+  void MSNUnblockUser(const char* szUser);
   void MSNGetDisplayPicture(const string &, const string &);
 
   // Internal functions

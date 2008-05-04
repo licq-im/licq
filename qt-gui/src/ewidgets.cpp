@@ -1102,7 +1102,7 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
   internalAddMsg(s);
 }
 
-void CMessageViewWidget::addMsg(CUserEvent* e, const char *_szId, unsigned long _nPPID)
+void CMessageViewWidget::addMsg(const CUserEvent* e, const char* _szId, unsigned long _nPPID)
 {
   QDateTime date;
   date.setTime_t(e->Time());

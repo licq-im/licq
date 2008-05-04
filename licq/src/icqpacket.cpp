@@ -2373,7 +2373,7 @@ CPU_AckGeneral::CPU_AckGeneral(ICQUser *u, unsigned long nMsgID1,
 
 //-----AckFileAccept-----------------------------------------------------------
 CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
-   unsigned long nMsgID[2], unsigned short nSequence, unsigned short nPort,
+    const unsigned long nMsgID[2], unsigned short nSequence, unsigned short nPort,
    const char *szDesc, const char *szFile, unsigned long nFileSize)
    : CPU_AdvancedMessage(u, ICQ_CMDxSUB_ICBM, 0, true, nSequence, nMsgID[0],
        nMsgID[1])
@@ -2406,8 +2406,8 @@ CPU_AckFileAccept::CPU_AckFileAccept(ICQUser *u,//unsigned long nUin,
 
 
 //-----AckFileRefuse-----------------------------------------------------------
-CPU_AckFileRefuse::CPU_AckFileRefuse(ICQUser *u, unsigned long nMsgID[2],
-																		 unsigned short nSequence, const char *msg)
+CPU_AckFileRefuse::CPU_AckFileRefuse(ICQUser* u, const unsigned long nMsgID[2],
+    unsigned short nSequence, const char *msg)
   : CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
       ICQ_CMDxSUB_FILE, false, 0, PLUGIN_NORMAL)
 {
@@ -2424,8 +2424,7 @@ CPU_AckFileRefuse::CPU_AckFileRefuse(ICQUser *u, unsigned long nMsgID[2],
 
 //-----AckChatAccept-----------------------------------------------------------
 CPU_AckChatAccept::CPU_AckChatAccept(ICQUser *u, const char *szClients,
-                                          unsigned long nMsgID[2],
-                                          unsigned short nSequence,
+    const unsigned long nMsgID[2], unsigned short nSequence,
                                           unsigned short nPort)
 	: CPU_AdvancedMessage(u, ICQ_CMDxSUB_CHAT, 0, true, nSequence,
                              nMsgID[0], nMsgID[1])
@@ -2440,8 +2439,8 @@ CPU_AckChatAccept::CPU_AckChatAccept(ICQUser *u, const char *szClients,
 }
 
 //-----AckChatRefuse-----------------------------------------------------------
-CPU_AckChatRefuse::CPU_AckChatRefuse(ICQUser *u, unsigned long nMsgID[2],
-																		 unsigned short nSequence, const char *msg)
+CPU_AckChatRefuse::CPU_AckChatRefuse(ICQUser* u, const unsigned long nMsgID[2],
+    unsigned short nSequence, const char *msg)
   : CPU_AckThroughServer(u, nMsgID[0], nMsgID[1], nSequence,
       ICQ_CMDxSUB_CHAT, false, 0, PLUGIN_NORMAL)
 {

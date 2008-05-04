@@ -58,7 +58,7 @@ static const char *szEventTypes[27] =
   QT_TRANSLATE_NOOP("Event","SMS")
 };
 
-QString EventDescription(CUserEvent *e)
+QString EventDescription(const CUserEvent* e)
 {
   QString desc;
   if (e->SubCommand() == ICQ_CMDxSUB_EMAILxALERT)

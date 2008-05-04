@@ -28,6 +28,6 @@
 
 class CUserEvent;
 
-QString EventDescription(CUserEvent *e);
+QString EventDescription(const CUserEvent* e);
 
 #endif

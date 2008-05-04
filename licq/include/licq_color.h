@@ -8,18 +8,18 @@ class CICQColor
 public:
   CICQColor();
 
-  unsigned long ForeRed();
-  unsigned long ForeGreen();
-  unsigned long ForeBlue();
-  unsigned long BackRed();
-  unsigned long BackGreen();
-  unsigned long BackBlue();
+  unsigned long ForeRed() const;
+  unsigned long ForeGreen() const;
+  unsigned long ForeBlue() const;
+  unsigned long BackRed() const;
+  unsigned long BackGreen() const;
+  unsigned long BackBlue() const;
 
-  unsigned long Foreground();
-  unsigned long Background();
+  unsigned long Foreground() const;
+  unsigned long Background() const;
 
   void Set(unsigned long fore, unsigned long back);
-  void Set(CICQColor *c);
+  void Set(CICQColor const* c);
   void SetBackground(unsigned long r, unsigned long g, unsigned long b);
   void SetForeground(unsigned long r, unsigned long g, unsigned long b);
   void SetToDefault();
@@ -35,7 +35,7 @@ public:
   static unsigned long DefaultForeground();
   static unsigned long DefaultBackground();
 
-  static void SetDefaultColors(CICQColor *c);
+  static void SetDefaultColors(CICQColor const* c);
   static void SetDefaultForeground(unsigned long);
   static void SetDefaultBackground(unsigned long);
 

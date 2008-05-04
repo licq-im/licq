@@ -922,9 +922,9 @@ void CICQDaemon::ProtoFileTransferAccept(const char *szId, unsigned long nPPID,
     PushProtoSignal(new CSendEventReplySignal(szId, 0, true, nPort, nSequence,
       nFlag1, nFlag2, bDirect), nPPID);
 }
- 
+
 void CICQDaemon::icqFileTransferAccept(const char *szId, unsigned short nPort,
-   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect,
+    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect,
    const char *szDesc, const char *szFile, unsigned long nFileSize)
 {
    // basically a fancy tcp ack packet which is sent late
@@ -948,7 +948,7 @@ void CICQDaemon::icqFileTransferAccept(const char *szId, unsigned short nPort,
 }
   
 void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect,
+    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect,
    const char *szDesc, const char *szFile, unsigned long nFileSize)
 {
   char szUin[13];
@@ -978,7 +978,7 @@ void CICQDaemon::ProtoFileTransferRefuse(const char *szId, unsigned long nPPID,
 }
 
 void CICQDaemon::icqFileTransferRefuse(const char *szId, const char *szReason,
-   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
+    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
 {
    // add to history ??
   char *szReasonDos = gTranslator.NToRN(szReason);
@@ -1007,7 +1007,7 @@ void CICQDaemon::icqFileTransferRefuse(const char *szId, const char *szReason,
 }
 
 void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
-   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
+    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
 {
   char szUin[13];
   snprintf(szUin, 12, "%lu", nUin);
@@ -1106,7 +1106,7 @@ void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned short nSequen
 
 //-----CICQDaemon::chatRefuse-----------------------------------------------------------------------------
 void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
-   unsigned short nSequence, unsigned long nMsgID[2], bool bDirect)
+    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
 {
   // add to history ??
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
@@ -1137,8 +1137,8 @@ void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
 
 //-----CICQDaemon::chatAccept-----------------------------------------------------------------------------
 void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-   const char *szClients, unsigned short nSequence, unsigned long nMsgID[2],
-   bool bDirect)
+    const char* szClients, unsigned short nSequence,
+    const unsigned long nMsgID[2], bool bDirect)
 {
   // basically a fancy tcp ack packet which is sent late
   // add to history ??

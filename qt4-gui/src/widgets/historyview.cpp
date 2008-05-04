@@ -380,7 +380,7 @@ void HistoryView::addMsg(direction dir, bool fromHistory, QString eventDescripti
   internalAddMsg(s);
 }
 
-void HistoryView::addMsg(CUserEvent* event, QString id, unsigned long ppid)
+void HistoryView::addMsg(const CUserEvent* event, QString id, unsigned long ppid)
 {
   QDateTime date;
   date.setTime_t(event->Time());

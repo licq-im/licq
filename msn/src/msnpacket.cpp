@@ -28,7 +28,7 @@ static inline bool is_base64(unsigned char c)
   return (isalnum(c) || (c == '+') || (c == '/'));
 }
 
-string MSN_Base64Encode(unsigned char const* szIn, unsigned int nLen)
+string MSN_Base64Encode(const char* szIn, unsigned int nLen)
 {
   string ret;
   int i = 0;
@@ -38,7 +38,7 @@ string MSN_Base64Encode(unsigned char const* szIn, unsigned int nLen)
 
   while (nLen--)
   {
-    char_array_3[i++] = *(szIn++);
+    char_array_3[i++] = static_cast<unsigned char>(*(szIn++));
     if (i == 3)
     {
       char_array_4[0] = (char_array_3[0] & 0xfc) >> 2;
@@ -620,14 +620,13 @@ CPS_MSNTypingNotification::CPS_MSNTypingNotification(const char *szEmail)
   m_pBuffer->Pack(szParams2, strlen(szParams2));
 }
 
-CPS_MSNInvitation::CPS_MSNInvitation(char *szToEmail, char *szFromEmail,
-				     char *szMSNObject)
+CPS_MSNInvitation::CPS_MSNInvitation(const char* szToEmail,
+    const char* szFromEmail, const char* szMSNObject)
   : CMSNP2PPacket(szToEmail)
 {
   char *szBranchGUID = CreateGUID();
   m_szCallGUID = CreateGUID();
-  string strMSNObject64 = MSN_Base64Encode((unsigned char *)szMSNObject,
-    strlen(szMSNObject));
+  string strMSNObject64 = MSN_Base64Encode(szMSNObject, strlen(szMSNObject));
 
   char szBodyBuf[512];
   char szHeaderBuf[512];

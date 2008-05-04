@@ -60,7 +60,7 @@ public:
   virtual QSize sizeHint() const;
 
 public slots:
-  void addMsg(CUserEvent* event, QString id = QString(), unsigned long ppid = 0);
+  void addMsg(const CUserEvent* event, QString id = QString(), unsigned long ppid = 0);
   void addMsg(ICQEvent* event);
   void setColors();
 

@@ -1436,7 +1436,7 @@ void UserViewEvent::slot_btnReadNext()
 }
 
 
-void UserViewEvent::UserUpdated(CICQSignal *sig, char *szId, unsigned long nPPID)
+void UserViewEvent::UserUpdated(CICQSignal* sig, const char* szId, unsigned long nPPID)
 {
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (!u) return;
@@ -2649,7 +2649,7 @@ void UserSendCommon::slot_cancelSend()
 
 
 //-----UserSendCommon::UserUpdated-------------------------------------------
-void UserSendCommon::UserUpdated(CICQSignal *sig, char *szId, unsigned long nPPID)
+void UserSendCommon::UserUpdated(CICQSignal* sig, const char* szId, unsigned long nPPID)
 {
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (!u) return;

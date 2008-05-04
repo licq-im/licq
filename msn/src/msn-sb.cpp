@@ -540,7 +540,7 @@ bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &s
   return true;
 }
 
-void CMSN::MSNSendInvitation(char *_szUser, CMSNPacket *_pPacket)
+void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
 {
   //ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   //if (!u) return;
@@ -564,7 +564,8 @@ void CMSN::MSNSendInvitation(char *_szUser, CMSNPacket *_pPacket)
   SendPacket(pSB);
 }
 
-void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsigned long _nCID)
+void CMSN::MSNSendMessage(const char* _szUser, const char* _szMsg,
+    pthread_t _tPlugin, unsigned long _nCID)
 {
   string strUser(_szUser);
   int nSocket = -1;
@@ -618,7 +619,7 @@ void CMSN::MSNSendMessage(char *_szUser, char *_szMsg, pthread_t _tPlugin, unsig
   }  
 }
 
-void CMSN::MSNSendTypingNotification(char *_szUser, unsigned long _nCID)
+void CMSN::MSNSendTypingNotification(const char* _szUser, unsigned long _nCID)
 {
   string strUser(_szUser);
   CMSNPacket *pSend = new CPS_MSNTypingNotification(m_szUserName);

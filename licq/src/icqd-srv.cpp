@@ -5609,7 +5609,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         ICQEvent *e = NULL;
         ICQUser *u = NULL;
-        char *szId = 0;
+        const char* szId = NULL;
         bool multipart = false;
 
         if ((nResult == 0x32) || (nResult == 0x14) || (nResult == 0x1e))

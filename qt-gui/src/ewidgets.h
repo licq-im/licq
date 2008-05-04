@@ -253,7 +253,7 @@ public:
   QColor m_colorNotice;
   
 public slots:
-  virtual void addMsg(CUserEvent *, const char * = 0, unsigned long = 0);
+  virtual void addMsg(const CUserEvent* e, const char* _szId = NULL, unsigned long _nPPID = 0);
   void addMsg(ICQEvent *);
 
 private:

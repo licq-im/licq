@@ -1345,7 +1345,7 @@ inline bool CMainWindow::show_user(ICQUser *u)
 
 void CMainWindow::slot_updatedUser(CICQSignal *sig)
 {
-  char *szId = sig->Id();
+  const char* szId = sig->Id();
   unsigned long nPPID = sig->PPID();
 
   switch(sig->SubSignal())

@@ -104,7 +104,7 @@ bool UserSendChatEvent::sendDone(ICQEvent* e)
   }
   else
   {
-    CEventChat* c = dynamic_cast<CEventChat*>(e->UserEvent());
+    const CEventChat* c = dynamic_cast<const CEventChat*>(e->UserEvent());
     if (c->Port() == 0)  // If we requested a join, no need to do anything
     {
       ChatDlg* chatDlg = new ChatDlg(myUsers.front().c_str(), myPpid);

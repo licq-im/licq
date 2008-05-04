@@ -567,7 +567,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
 /*---------------------------------------------------------------------------
  * CLicqConsole::AddEventTag
  *-------------------------------------------------------------------------*/
-void CLicqConsole::AddEventTag(char *_szId, unsigned long _nPPID, unsigned long _nEventTag)
+void CLicqConsole::AddEventTag(const char* _szId, unsigned long _nPPID, unsigned long _nEventTag)
 {
   if (!_szId || !_nPPID || !_nEventTag)
     return;
@@ -810,7 +810,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
     case ICQ_CMDxTCP_START:
       {
         ICQUser *u = NULL;
-        CUserEvent *ue = e->UserEvent();
+        const CUserEvent* ue = e->UserEvent();
         if (e->SubResult() == ICQ_TCPxACK_RETURN)
         {
           u = gUserManager.FetchUser(e->Uin(), LOCK_R);
@@ -827,7 +827,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
         }
         else if(e->SubCommand() == ICQ_CMDxSUB_FILE)
         {
-          CExtendedAck *ea = e->ExtendedAck();
+          const CExtendedAck* ea = e->ExtendedAck();
 
           if( ea == NULL || ue == NULL)
           {
@@ -847,7 +847,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
           {
             // For now don't check for a chat subcommand..
             // Invoke a file transfer manager here
-            CEventFile *f = (CEventFile *)ue;
+            const CEventFile* f = dynamic_cast<const CEventFile *>(ue);
             CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
                                           e->Uin());
             m_lFileStat.push_back(ftman);

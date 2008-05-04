@@ -56,7 +56,7 @@ public:
 class SearchItem : public QListViewItem
 {
 public:
-   SearchItem(CSearchAck *, const QString &, QListView *parent);
+  SearchItem(const CSearchAck* s, const QString& encoding, QListView* parent);
    unsigned long uin();
 protected:
    unsigned long uinVal;
@@ -96,8 +96,8 @@ protected:
    SearchUserView *foundView;
    QString m_Encoding;
 
-   void searchFound(CSearchAck *);
-   void searchDone(CSearchAck *);
+  void searchFound(const CSearchAck* s);
+  void searchDone(const CSearchAck* sa);
    void searchFailed();
 
 public slots:

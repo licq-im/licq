@@ -76,7 +76,7 @@ void ProcessSignal(CICQSignal *s);
 void ProcessEvent(ICQEvent *e);
 #ifdef CP_TRANSLATE
     const char *get_iconv_encoding_name(const char *licq_encoding_name);
-    char *my_translate(unsigned long uin, const char *msg, char *userenc);
+char* my_translate(unsigned long uin, const char* msg, const char* userenc);
 #endif
 
 // some variables representing the internal state
@@ -500,7 +500,7 @@ void ProcessSignal(CICQSignal *s)
 	    if (want_osd)
 	    {
 //#ifdef CVSLICQ
-		char *szId = s->Id();
+		const char* szId = s->Id();
 		unsigned long nPPID = s->PPID();
 		u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
 //#else
@@ -784,7 +784,7 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 // the other user. (change it for example via the licq-qt-gui message window)
 // CICQSignal is needed to get the User for this message -
 // some day i will do this more elegant
-char *my_translate(unsigned long uin, const char *msg, char *userenc)
+char* my_translate(unsigned long uin, const char* msg, const char* userenc)
 {
     // will be deleted outside of this function
     char *result = (char*)malloc(strlen(msg) + 1);

@@ -71,7 +71,7 @@ SearchUserView::SearchUserView(QWidget *parent)
 }
 
 
-SearchItem::SearchItem(CSearchAck *s, const QString &encoding, QListView *parent)
+SearchItem::SearchItem(const CSearchAck* s, const QString& encoding, QListView* parent)
   : QListViewItem(parent)
 {
   QString qsStatus;
@@ -452,13 +452,12 @@ void SearchUserDlg::searchResult(ICQEvent *e)
     searchFailed();
 }
 
-void SearchUserDlg::searchFound(CSearchAck *s)
+void SearchUserDlg::searchFound(const CSearchAck* s)
 {
   (void) new SearchItem(s, m_Encoding, foundView);
 }
 
-
-void SearchUserDlg::searchDone(CSearchAck *sa)
+void SearchUserDlg::searchDone(const CSearchAck* sa)
 {
   if (sa == NULL || sa->More() == 0)
     lblSearch->setText(tr("Search complete."));
