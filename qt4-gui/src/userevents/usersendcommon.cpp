@@ -747,7 +747,7 @@ void UserSendCommon::changeEventType(int type)
       QTimer::singleShot(100, this, SLOT(close()));
     }
     else
-      LicqGui::instance()->userEventTabDlg()->replaceTab(this, e);
+      tabDlg->replaceTab(this, e);
   }
 }
 

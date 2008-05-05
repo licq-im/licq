@@ -47,6 +47,7 @@ public:
   bool tabExists(QWidget* tab);
   void updateConvoLabel(UserEventCommon* tab);
   void updateTabLabel(ICQUser* u);
+  void updateTabLabel(UserEventCommon* tab, ICQUser* u = NULL);
   void setTyping(ICQUser* u, int convoId);
 
 #ifdef USE_KDE

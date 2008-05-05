@@ -72,14 +72,12 @@ UserEventTabDlg::~UserEventTabDlg()
 
 void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
 {
-  QString label;
   ICQUser* u = gUserManager.FetchUser(tab->id().toLatin1(), tab->ppid(), LOCK_R);
   if (u == NULL)
     return;
 
-  label = QString::fromUtf8(u->GetAlias());
-  index = myTabs->insertTab(index, tab, label);
-  updateTabLabel(u);
+  index = myTabs->insertTab(index, tab, QString::fromUtf8(u->GetAlias()));
+  updateTabLabel(tab, u);
   gUserManager.DropUser(u);
 }
 
@@ -91,7 +89,7 @@ void UserEventTabDlg::selectTab(QWidget* tab)
 
 void UserEventTabDlg::replaceTab(QWidget* oldTab, UserEventCommon* newTab)
 {
-  addTab(newTab, myTabs->indexOf(oldTab));
+  addTab(newTab, myTabs->indexOf(oldTab) + 1);
   removeTab(oldTab);
 }
 
@@ -133,66 +131,84 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
 
 void UserEventTabDlg::updateTabLabel(ICQUser* u)
 {
-  if (u == 0)
+  if (u == NULL)
     return;
 
   for (int index = 0; index < myTabs->count(); index++)
   {
     UserEventCommon* tab = dynamic_cast<UserEventCommon*>(myTabs->widget(index));
 
-    if (tab->ppid() == u->PPID() && tab->isUserInConvo(u->IdString()))
-    {
-      QIcon icon;
-
-      if (u->NewMessages() > 0) // use an event icon
-      {
-        unsigned short SubCommand = ICQ_CMDxSUB_MSG;
-        for (unsigned short i = 0; i < u->NewMessages(); i++)
-          switch (u->EventPeek(i)->SubCommand())
-          {
-            case ICQ_CMDxSUB_FILE:
-              SubCommand = ICQ_CMDxSUB_FILE;
-              break;
-            case ICQ_CMDxSUB_CHAT:
-              if (SubCommand != ICQ_CMDxSUB_FILE)
-                SubCommand = ICQ_CMDxSUB_CHAT;
-              break;
-            case ICQ_CMDxSUB_URL:
-              if (SubCommand != ICQ_CMDxSUB_FILE &&
-                  SubCommand != ICQ_CMDxSUB_CHAT)
-                SubCommand = ICQ_CMDxSUB_URL;
-              break;
-            case ICQ_CMDxSUB_CONTACTxLIST:
-              if (SubCommand != ICQ_CMDxSUB_FILE &&
-                  SubCommand != ICQ_CMDxSUB_CHAT &&
-                  SubCommand != ICQ_CMDxSUB_URL)
-                SubCommand = ICQ_CMDxSUB_CONTACTxLIST;
-              break;
-          }
-
-        icon = IconManager::instance()->iconForEvent(SubCommand);
-        myTabs->setTabColor(tab, QColor("blue"));
-
-        // to clear it..
-        tab->setTyping(u->GetTyping());
-      }
-      else // use status icon
-      {
-        icon = IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID());
-
-        if (u->GetTyping() == ICQ_TYPING_ACTIVE)
-          myTabs->setTabColor(tab, Config::Chat::instance()->tabTypingColor());
-        else
-          myTabs->setTabColor(tab, QColor("black"));
-      }
-
-      myTabs->setTabIcon(index, icon);
-      if (myTabs->currentIndex() == index)
-        setWindowIcon(icon);
-
-      break;
-    }
+    if (tab->ppid() == u->PPID() &&
+        tab->isUserInConvo(u->IdString()))
+      updateTabLabel(tab, u);
   }
+}
+
+void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, ICQUser* u)
+{
+  if (tab == NULL)
+    return;
+
+  bool fetched = false;
+  if (u == NULL)
+  {
+    u = gUserManager.FetchUser(tab->id().toLatin1(), tab->ppid(), LOCK_R);
+    if (u == NULL)
+      return;
+    fetched = true;
+  }
+
+  QIcon icon;
+
+  if (u->NewMessages() > 0) // use an event icon
+  {
+    unsigned short SubCommand = ICQ_CMDxSUB_MSG;
+    for (unsigned short i = 0; i < u->NewMessages(); i++)
+      switch (u->EventPeek(i)->SubCommand())
+      {
+	case ICQ_CMDxSUB_FILE:
+	  SubCommand = ICQ_CMDxSUB_FILE;
+	  break;
+	case ICQ_CMDxSUB_CHAT:
+	  if (SubCommand != ICQ_CMDxSUB_FILE)
+	    SubCommand = ICQ_CMDxSUB_CHAT;
+	  break;
+	case ICQ_CMDxSUB_URL:
+	  if (SubCommand != ICQ_CMDxSUB_FILE &&
+	      SubCommand != ICQ_CMDxSUB_CHAT)
+	    SubCommand = ICQ_CMDxSUB_URL;
+	  break;
+	case ICQ_CMDxSUB_CONTACTxLIST:
+	  if (SubCommand != ICQ_CMDxSUB_FILE &&
+	      SubCommand != ICQ_CMDxSUB_CHAT &&
+	      SubCommand != ICQ_CMDxSUB_URL)
+	    SubCommand = ICQ_CMDxSUB_CONTACTxLIST;
+	  break;
+      }
+
+    icon = IconManager::instance()->iconForEvent(SubCommand);
+    myTabs->setTabColor(tab, QColor("blue"));
+
+    // to clear it..
+    tab->setTyping(u->GetTyping());
+  }
+  else // use status icon
+  {
+    icon = IconManager::instance()->iconForStatus(u->StatusFull(), u->IdString(), u->PPID());
+
+    if (u->GetTyping() == ICQ_TYPING_ACTIVE)
+      myTabs->setTabColor(tab, Config::Chat::instance()->tabTypingColor());
+    else
+      myTabs->setTabColor(tab, QColor("black"));
+  }
+
+  if (fetched)
+    gUserManager.DropUser(u);
+
+  int index = myTabs->indexOf(tab);
+  myTabs->setTabIcon(index, icon);
+  if (myTabs->currentIndex() == index)
+    setWindowIcon(icon);
 }
 
 void UserEventTabDlg::setTyping(ICQUser* u, int convoId)
