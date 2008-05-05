@@ -150,7 +150,8 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, ICQUser* u)
     return;
 
   bool fetched = false;
-  if (u == NULL)
+  if (u == NULL ||
+      !tab->isUserInConvo(u->IdString()))
   {
     u = gUserManager.FetchUser(tab->id().toLatin1(), tab->ppid(), LOCK_R);
     if (u == NULL)
