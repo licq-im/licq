@@ -114,8 +114,8 @@ int UinString(char *_szBuf, size_t _nSize, unsigned long _nUin)
 
 char *PrintHex(char *szPrint, const char *szHex, size_t nSize)
 {
-  int i, j = 0;
-  
+  size_t i, j = 0;
+
   for(i = 0; i < nSize ; i++)
   {
     unsigned char byte = (unsigned char)szHex[i];
@@ -140,7 +140,7 @@ char *PrintHex(char *szPrint, const char *szHex, size_t nSize)
 
 char *ReadHex(char *szHex, const char *szRead, size_t nSize)
 {
-  int i, j = 0;
+  size_t i, j = 0;
   for(i = 0; i < nSize ; i++)
   {
     unsigned char digit, high, low;
