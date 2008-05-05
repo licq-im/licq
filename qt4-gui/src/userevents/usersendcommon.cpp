@@ -403,8 +403,8 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 
     gUserManager.DropUser(u);
 
-    connect(gMainWindow, SIGNAL(signal_sentevent(ICQEvent*)),
-        myHistoryView, SLOT(addMsg(ICQEvent*)));
+    connect(LicqGui::instance(), SIGNAL(eventSent(const ICQEvent*)),
+        myHistoryView, SLOT(addMsg(const ICQEvent*)));
     //myViewSplitter->setResizeMode(myHistoryView, QSplitter::FollowSizeHint);
   }
 
@@ -1199,7 +1199,7 @@ void UserSendCommon::eventDoneReceived(ICQEvent* e)
     emit autoCloseNotify();
     if (sendDone(e))
     {
-      emit gMainWindow->signal_sentevent(e);
+      emit eventSent(e);
       if (Config::Chat::instance()->msgChatView() && myHistoryView != NULL)
       {
         myHistoryView->GotoEnd();

@@ -238,7 +238,7 @@ void HistoryView::internalAddMsg(QString s)
   }
 }
 
-void HistoryView::addMsg(ICQEvent* event)
+void HistoryView::addMsg(const ICQEvent* event)
 {
   if (event->Id() == myId && event->PPID() == myPpid && event->UserEvent() != NULL)
     addMsg(event->UserEvent());

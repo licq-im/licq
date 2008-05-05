@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#include <QAction>
 #include <QApplication>
 #include <QCheckBox>
 #include <QDesktopWidget>
@@ -47,7 +48,6 @@
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
-#include "core/mainwin.h"
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
@@ -89,8 +89,8 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
 
   connect(myMessageList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
       SLOT(printMessage(QTreeWidgetItem*)));
-  connect(gMainWindow, SIGNAL(signal_sentevent(ICQEvent*)),
-      SLOT(sentEvent(ICQEvent*)));
+  connect(LicqGui::instance(), SIGNAL(eventSent(const ICQEvent*)),
+      SLOT(sentEvent(const ICQEvent*)));
 
   myActionsBox = new QGroupBox();
   myMainWidget->addSpacing(10);
@@ -778,13 +778,13 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
   }
 }
 
-void UserViewEvent::sentEvent(ICQEvent* e)
+void UserViewEvent::sentEvent(const ICQEvent* e)
 {
   if (e->PPID() != myPpid || strcmp(myUsers.front().c_str(), e->Id()) != 0)
     return;
 
   if (!Config::Chat::instance()->msgChatView())
-    new MessageListItem(e->GrabUserEvent(), myCodec, myMessageList);
+    new MessageListItem(e->UserEvent(), myCodec, myMessageList);
 }
 
 void UserViewEvent::setEncoding()

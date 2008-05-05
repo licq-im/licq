@@ -61,7 +61,7 @@ public:
 
 public slots:
   void addMsg(const CUserEvent* event, QString id = QString(), unsigned long ppid = 0);
-  void addMsg(ICQEvent* event);
+  void addMsg(const ICQEvent* event);
   void setColors();
 
 signals:

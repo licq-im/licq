@@ -38,13 +38,11 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MessageList */
 /* TRANSLATOR LicqQtGui::MessageListItem */
 
-MessageListItem::MessageListItem(CUserEvent* theMsg, QTextCodec* codec, QTreeWidget* parent)
+MessageListItem::MessageListItem(const CUserEvent* theMsg, QTextCodec* codec, QTreeWidget* parent)
   : QTreeWidgetItem(parent)
 {
-  if (theMsg->Direction() == D_SENDER)
-    myMsg = theMsg;
-  else
-    myMsg = theMsg->Copy();
+  // Keep a copy of the event
+  myMsg = theMsg->Copy();
 
   myCodec = codec;
 

@@ -81,7 +81,7 @@ private slots:
   void closeDialog();
   void msgTypeChanged(UserSendCommon* from, UserSendCommon* to);
   void printMessage(QTreeWidgetItem* item);
-  void sentEvent(ICQEvent* e);
+  void sentEvent(const ICQEvent* e);
   void setEncoding();
 };
 

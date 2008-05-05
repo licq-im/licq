@@ -36,6 +36,7 @@
 
 class CICQDaemon;
 class CICQSignal;
+class ICQEvent;
 
 namespace LicqQtGui
 {
@@ -228,6 +229,16 @@ public slots:
   void sendMsg(QString id, unsigned long ppid, const QString& message);
   void sendFileTransfer(QString id, unsigned long ppid, const QString& filename, const QString& description);
   void sendChatRequest(QString id, unsigned long ppid);
+
+signals:
+  /**
+   * Since daemon doesn't notify us when an event is sent we'll have to handle
+   * it ourselfs. This is used by event dialog to notify other dialogs when a
+   * message has been sent.
+   *
+   * @param event Event object that was sent
+   */
+  void eventSent(const ICQEvent* event);
 
 private slots:
 #ifdef Q_WS_X11

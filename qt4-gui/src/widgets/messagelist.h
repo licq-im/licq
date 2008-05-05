@@ -31,7 +31,7 @@ namespace LicqQtGui
 class MessageListItem : public QTreeWidgetItem
 {
 public:
-  MessageListItem(CUserEvent* theMsg, QTextCodec* codec, QTreeWidget* parent);
+  MessageListItem(const CUserEvent* theMsg, QTextCodec* codec, QTreeWidget* parent);
   ~MessageListItem(void);
   void MarkRead();
   void SetEventLine();

@@ -96,9 +96,6 @@ public:
   virtual void mousePressEvent(QMouseEvent*);
   virtual void closeEvent(QCloseEvent*);
 
-signals:
-  void signal_sentevent(ICQEvent* e);
-
 public slots:
   void slot_shutdown();
   void slot_updatedList(CICQSignal*);
@@ -158,8 +155,6 @@ private slots:
   void removeUserFromGroup();
   void callUserFunction(QAction* action);
   void checkUserAutoResponse();
-
-  friend class UserSendCommon;
 };
 
 // -----------------------------------------------------------------------------
