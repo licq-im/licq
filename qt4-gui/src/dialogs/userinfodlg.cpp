@@ -2004,14 +2004,8 @@ void UserInfoDlg::slotRetrieve()
       break;
     }
     case PictureInfo:
-    {
-      ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
-      if (u == NULL) return;
-      bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
-      gUserManager.DropUser(u);
-      icqEventTag = gLicqDaemon->icqRequestPicture(myId.toLatin1(), bSendServer);
+      icqEventTag = gLicqDaemon->ProtoRequestPicture(myId.toLatin1(), m_nPPID);
       break;
-    }
   }
 
   if (icqEventTag != 0)

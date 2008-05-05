@@ -326,6 +326,12 @@ char *CBuffer::UnpackRaw(char *sz, unsigned short _nSize)
   return sz;
 }
 
+char *CBuffer::UnpackBinBlock(char *sz, unsigned short _nSize)
+{
+  for (unsigned short i = 0; i < _nSize; i++) *this >> sz[i];
+  return sz;
+}
+
 char *CBuffer::UnpackStringBE(char* sz, unsigned short _usiSize)
 {
   unsigned short nLen;

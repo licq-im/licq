@@ -781,6 +781,50 @@ bool SrvSocket::RecvPacket()
   return (true);
 }
 
+/*-----SrvSocket::ConnectTo--------------------------------------------------
+* Establish connection to server (through proxy or not)
+*---------------------------------------------------------------------------*/
+bool SrvSocket::ConnectTo(const char* server, unsigned short port,
+                          ProxyServer *xProxy)
+{
+  char ipbuf[32];
+
+  if (xProxy == NULL)
+  {
+    gLog.Info(tr("%sResolving %s port %d...\n"), L_SRVxSTR, server, port);
+    if (!SetRemoteAddr(server, port)) {
+      char buf[128];
+      gLog.Warn(tr("%sUnable to resolve %s:\n%s%s.\n"), L_ERRORxSTR,
+                server, L_BLANKxSTR, ErrorStr(buf, 128));
+      return false;
+    }
+    gLog.Info(tr("%sICQ server found at %s:%d.\n"), L_SRVxSTR,
+              RemoteIpStr(ipbuf), RemotePort());
+  }
+  else
+  {
+    // It doesn't matter if it resolves or not, the proxy should do it then
+    SetProxy(xProxy);
+    SetRemoteAddr(server, port);
+  }
+
+  if (xProxy == NULL)
+    gLog.Info(tr("%sOpening socket to server.\n"), L_SRVxSTR);
+  else
+    gLog.Info(tr("%sOpening socket to server %s:%d via proxy.\n"),
+              L_SRVxSTR, server, port);
+  if (!OpenConnection())
+  {
+    char buf[128];
+    gLog.Warn(tr("%sUnable to connect to %s:%d:\n%s%s.\n"), L_ERRORxSTR,
+              RemoteIpStr(ipbuf), RemotePort(), L_BLANKxSTR,
+              ErrorStr(buf, 128));
+    return false;
+  }
+
+  return true;
+}
+    
 //=====TCPSocket===============================================================
 TCPSocket::TCPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
 {

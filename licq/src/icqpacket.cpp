@@ -23,6 +23,8 @@
 extern int errno;
 #endif
 
+#include <boost/scoped_array.hpp>
+
 // Localization
 #include "gettext.h"
 
@@ -268,7 +270,8 @@ struct PluginList status_plugins[] =
 
 //======Server TCP============================================================
 bool CSrvPacketTcp::s_bRegistered = false;
-unsigned short CSrvPacketTcp::s_nSequence = 0;
+unsigned short CSrvPacketTcp::s_nSequence[32] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 unsigned short CSrvPacketTcp::s_nSubSequence = 0;
 pthread_mutex_t CSrvPacketTcp::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -276,13 +279,14 @@ CSrvPacketTcp::CSrvPacketTcp(unsigned char nChannel)
 {
   m_nChannel = nChannel;
   pthread_mutex_lock(&s_xMutex);
-  m_nSequence = s_nSequence++;
+  // will set m_nSequence later, in InitBuffer;
   m_nSubSequence = s_nSubSequence++;
   pthread_mutex_unlock(&s_xMutex);
   m_nFamily = m_nSubType = m_nSubCommand = m_nExtraInfo = 0;
 
   buffer = NULL;
   m_nSize = 0;
+  m_nService = 0;
   m_szSequenceOffset = NULL;
 }
 
@@ -300,6 +304,13 @@ CBuffer *CSrvPacketTcp::Finalize(INetSocket *)
 
 void CSrvPacketTcp::InitBuffer()
 {
+  pthread_mutex_lock(&s_xMutex);
+  if (s_nSequence[m_nService] == 0xffff)
+    s_nSequence[m_nService] = rand() & 0x7fff;
+  m_nSequence = s_nSequence[m_nService]++;
+  s_nSequence[m_nService] &= 0x7fff;
+  pthread_mutex_unlock(&s_xMutex);
+
   buffer = new CBuffer(m_nSize+6);
   buffer->PackChar(0x2a);
   buffer->PackChar(m_nChannel);
@@ -686,9 +697,8 @@ CPU_RegisterFirst::CPU_RegisterFirst()
   m_nSize = 4;
 
   pthread_mutex_lock(&s_xMutex);
-  s_nSequence = rand() & 0x7fff;
+  s_nSequence[m_nService] = 0xffff;
   s_bRegistered = true;
-  m_nSequence = s_nSequence++;
   pthread_mutex_unlock(&s_xMutex);
 
   InitBuffer();
@@ -792,9 +802,8 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
 
   pthread_mutex_lock(&s_xMutex);
   if (!s_bRegistered) {
-    s_nSequence = rand() & 0x7fff;
+    s_nSequence[m_nService] = 0xffff;
     s_bRegistered = true;
-    m_nSequence = s_nSequence++;
   }
   pthread_mutex_unlock(&s_xMutex);
 
@@ -847,13 +856,14 @@ CPU_Logon::~CPU_Logon()
 }
 
 //-----SendCookie------------------------------------------------------------
-CPU_SendCookie::CPU_SendCookie(const char *szCookie, int nLen)
+CPU_SendCookie::CPU_SendCookie(const char *szCookie, int nLen,
+                               unsigned short nService)
   : CSrvPacketTcp(ICQ_CHNxNEW)
 {
+  m_nService = nService;
   m_nSize = nLen + 8;
   pthread_mutex_lock(&s_xMutex);
-  s_nSequence = (rand() & 0x7fff);
-  m_nSequence = s_nSequence++;
+  s_nSequence[m_nService] = 0xffff;
   pthread_mutex_unlock(&s_xMutex);
   InitBuffer();
 
@@ -898,7 +908,22 @@ CPU_ImICQ::CPU_ImICQ()
   buffer->PackUnsignedLongBE(0x000b0001);
 }
 
-//-----ImICQ-----------------------------------------------------------------
+CPU_ImICQ::CPU_ImICQ(unsigned short VerArray[][2], unsigned short NumVer,
+                     unsigned short nService)
+  : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSRV_IMxICQ)
+{
+  m_nService = nService;
+  m_nSize += NumVer * 4;
+  InitBuffer();
+  
+  for (int i = 0; i < NumVer; i++)
+  {
+    buffer->PackUnsignedShortBE(VerArray[i][0]);
+    buffer->PackUnsignedShortBE(VerArray[i][1]);
+  }
+}
+
+//-----ImICQMode-------------------------------------------------------------
 CPU_ICQMode::CPU_ICQMode(unsigned short channel, unsigned long flags)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SETxICQxMODE)
 {
@@ -918,9 +943,10 @@ CPU_ICQMode::CPU_ICQMode(unsigned short channel, unsigned long flags)
 }
 
 //-----RateAck-----------------------------------------------------------------
-CPU_RateAck::CPU_RateAck()
+CPU_RateAck::CPU_RateAck(unsigned short nService)
   : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSND_RATE_ACK)
 {
+  m_nService = nService;
   m_nSize += 10;
 
   InitBuffer();
@@ -934,7 +960,7 @@ CPU_RateAck::CPU_RateAck()
 CPU_CapabilitySettings::CPU_CapabilitySettings()
   : CPU_CommonFamily(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_SETxUSERxINFO)
 {
-  char data[7][CAP_LENGTH];
+  char data[8][CAP_LENGTH];
   m_nSize += 4 + sizeof(data);
   InitBuffer();
 
@@ -945,6 +971,7 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   memcpy(data[4], ICQ_CAPABILITY_AIMxINTER, CAP_LENGTH);
   memcpy(data[5], ICQ_CAPABILITY_RTFxMSGS, CAP_LENGTH);
   memcpy(data[6], ICQ_CAPABILITY_ICHAT, CAP_LENGTH);
+  memcpy(data[7], ICQ_CAPABILITY_BART, CAP_LENGTH);
 
   // Send our licq version
   data[3][12] = INT_VERSION / 1000;
@@ -955,6 +982,40 @@ CPU_CapabilitySettings::CPU_CapabilitySettings()
   data[3][15] = 1;
 #endif
   buffer->PackTLV(0x05, sizeof(data), (char *)data);  
+}
+
+//-----RequestBuddyIcon---------------------------------------------------------
+CPU_RequestBuddyIcon::CPU_RequestBuddyIcon(const char *_szId,
+                      unsigned short _nBuddyIconType, char _nBuddyIconHashType,
+                      const char *_szBuddyIconHash, unsigned short nService)
+  : CPU_CommonFamily(ICQ_SNACxFAM_BART, ICQ_SNACxBART_DOWNLOADxREQUEST)
+{
+  int nSize = strlen(_szId);
+  int nHashLength = strlen(_szBuddyIconHash)/2;
+  boost::scoped_array<char> Hash(new char[nHashLength]);
+  m_nService = nService;
+  m_nSize += 6 + nSize + nHashLength;
+
+  InitBuffer();
+  
+  buffer->PackChar(nSize);
+  buffer->Pack(_szId, nSize);
+  buffer->PackChar(0x01);	// number of hashes being requested in this packet
+  buffer->PackUnsignedShortBE(_nBuddyIconType);
+  buffer->PackChar(_nBuddyIconHashType);
+  buffer->PackChar(nHashLength);
+  buffer->Pack(ReadHex(Hash.get(), _szBuddyIconHash, nHashLength), nHashLength);
+}
+
+//-----RequestService-----------------------------------------------------------
+CPU_RequestService::CPU_RequestService(unsigned short nFam)
+  : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSUB_NEW_SERVICE)
+{
+  m_nSize += 2;
+
+  InitBuffer();
+
+  buffer->PackUnsignedShortBE(nFam);
 }
 
 //-----SetPrivacy---------------------------------------------------------------
@@ -1201,9 +1262,11 @@ CPU_GenericUinList::CPU_GenericUinList(unsigned long _nUin, unsigned short famil
   buffer->Pack(uin, n);
 }
 
-CPU_GenericFamily::CPU_GenericFamily(unsigned short Family, unsigned short SubType)
+CPU_GenericFamily::CPU_GenericFamily(unsigned short Family, unsigned short SubType,
+                                     unsigned short nService)
   : CPU_CommonFamily(Family, SubType)
 {
+  m_nService = nService;
   m_nSize += 0;
   InitBuffer();
 }
@@ -1293,6 +1356,23 @@ CPU_ClientReady::CPU_ClientReady()
   buffer->PackUnsignedLongBE(0x000b0004);
   buffer->PackUnsignedLongBE(0x011008e4);
 #endif
+}
+
+CPU_ClientReady::CPU_ClientReady(unsigned short VerArray[][4], unsigned short NumVer,
+                                 unsigned short nService)
+  : CPU_CommonFamily(ICQ_SNACxFAM_SERVICE, ICQ_SNACxSUB_READYxCLIENT)
+{
+  m_nService = nService;
+  m_nSize += NumVer * 8;
+  InitBuffer();
+  
+  for (int i = 0; i < NumVer; i++)
+  {
+    buffer->PackUnsignedShortBE(VerArray[i][0]);
+    buffer->PackUnsignedShortBE(VerArray[i][1]);
+    buffer->PackUnsignedShortBE(VerArray[i][2]);
+    buffer->PackUnsignedShortBE(VerArray[i][3]);
+  }
 }
 
 CPU_AckNameInfo::CPU_AckNameInfo()

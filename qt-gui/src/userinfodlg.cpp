@@ -2358,11 +2358,7 @@ void UserInfoDlg::slotRetrieve()
     }
     case PictureInfo:
     {
-      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
-      if (u == NULL) return;
-      bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
-      gUserManager.DropUser(u);
-      icqEventTag = server->icqRequestPicture(m_szId, bSendServer);
+      icqEventTag = server->ProtoRequestPicture(m_szId, m_nPPID);
       break;
     }
   }

@@ -34,6 +34,7 @@ const unsigned short ICQ_SNACxFAM_LOCATION         = 0x0002;
 const unsigned short ICQ_SNACxFAM_BUDDY            = 0x0003;
 const unsigned short ICQ_SNACxFAM_MESSAGE          = 0x0004;
 const unsigned short ICQ_SNACxFAM_BOS              = 0x0009;
+const unsigned short ICQ_SNACxFAM_BART             = 0x0010;
 const unsigned short ICQ_SNACxFAM_LIST             = 0x0013;
 const unsigned short ICQ_SNACxFAM_VARIOUS          = 0x0015;
 const unsigned short ICQ_SNACxFAM_NEWUIN	   = 0x0017;
@@ -103,6 +104,13 @@ const unsigned short ICQ_SNACxREGISTER_USER        = 0x0004; // client
 const unsigned short ICQ_SNACxNEW_UIN              = 0x0005; // server
 const unsigned short ICQ_SNACxREQUEST_IMAGE        = 0x000C; // client
 const unsigned short ICQ_SNACxSEND_IMAGE           = 0x000D; // server
+
+// Subtypes for BART family
+const unsigned short ICQ_SNACxBART_ERROR           = 0x0001; // server
+const unsigned short ICQ_SNACxBART_UPLOAD          = 0x0002; // client
+const unsigned short ICQ_SNACxBART_UPLOADxACK      = 0x0003; // server
+const unsigned short ICQ_SNACxBART_DOWNLOADxREQUEST= 0x0006; // client
+const unsigned short ICQ_SNACxBART_DOWNLOADxREPLY  = 0x0007; // server
 
 // Subtypes for list family
 const unsigned short ICQ_SNACxLIST_REQUESTxRIGHTS  = 0x0002; // client
@@ -468,6 +476,11 @@ const unsigned short CHARSET_ASCII   = 0x0000;
 const unsigned short CHARSET_UNICODE = 0x0002;
 const unsigned short CHARSET_CUSTOM  = 0x0003;
 
+// BART Types
+const unsigned short BART_TYPExBUDDY_ICON_SMALL = 0x0000;
+const unsigned short BART_TYPExBUDDY_ICON       = 0x0001;
+const unsigned short BART_TYPExSTATUS_STR       = 0x0002;
+
 //actual plugins
 const char PLUGIN_PHONExBOOK[]        = { 0x90, 0x7C, 0x21, 0x2C, 0x91, 0x4D,
                                           0xD3, 0x11, 0xAD, 0xEB, 0x00, 0x04,
@@ -543,6 +556,10 @@ const char ICQ_CAPABILITY_ICHAT[]     = { 0x09, 0x46, 0x00, 0x00, 0x4C, 0x7F,
 const char ICQ_CAPABILITY_XTRAZ[]     = { 0x1A, 0x09, 0x3C, 0x6C, 0xD7, 0xFD,
                                           0x4E, 0xC5, 0x9D, 0x51, 0xA6, 0x47,
                                           0x4E, 0x34, 0xF5, 0xA0 };
+
+const char ICQ_CAPABILITY_BART[]      = { 0x09, 0x46, 0x13, 0x46, 0x4C, 0x7F,
+                                          0x11, 0xD1, 0x82, 0x22, 0x44, 0x45,
+                                          0x53, 0x54, 0x00, 0x00 };
 
 const char ICQ_CAPABILITY_LICQxVER[]  = { 'L',  'i',  'c',  'q',  ' ',  'c',
                                           'l',  'i',  'e',  'n',  't',  ' ',

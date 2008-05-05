@@ -134,7 +134,7 @@ protected:
   void InitBuffer();
 
   static bool s_bRegistered;
-  static unsigned short s_nSequence;
+  static unsigned short s_nSequence[32];
   static unsigned short s_nSubSequence;
   static pthread_mutex_t s_xMutex;
 
@@ -145,6 +145,7 @@ protected:
   unsigned short m_nSubType;
   unsigned short m_nSubCommand;
   unsigned short m_nExtraInfo;
+  unsigned short m_nService;
 
   char *m_szSequenceOffset;
 };
@@ -219,7 +220,7 @@ public:
 class CPU_SendCookie : public CSrvPacketTcp
 {
 public:
-  CPU_SendCookie(const char *, int len);
+  CPU_SendCookie(const char *, int len, unsigned short nService = 0);
   virtual ~CPU_SendCookie();
 };
 
@@ -237,7 +238,8 @@ protected:
 class CPU_GenericFamily : public CPU_CommonFamily
 {
 public:
-  CPU_GenericFamily(unsigned short Family, unsigned short SubType);
+  CPU_GenericFamily(unsigned short Family, unsigned short SubType,
+                    unsigned short nService = 0);
   virtual ~CPU_GenericFamily();
 };
 
@@ -319,7 +321,9 @@ public:
 class CPU_ImICQ : public CPU_CommonFamily
 {
 public:
-    CPU_ImICQ();
+  CPU_ImICQ();
+  CPU_ImICQ(unsigned short VerArray[][2], unsigned short NumVer,
+            unsigned short nService);
 };
 
 //-----ICQMode------------------------------------------------------------------
@@ -340,7 +344,7 @@ public:
 class CPU_RateAck : public CPU_CommonFamily
 {
 public:
-  CPU_RateAck();
+  CPU_RateAck(unsigned short nService = 0);
 };
 
 //-----GenericUinList------------------------------------------------------------
@@ -494,6 +498,8 @@ class CPU_ClientReady : public CPU_CommonFamily
 {
 public:
    CPU_ClientReady();
+   CPU_ClientReady(unsigned short VerArray[][4], unsigned short NumVer,
+                   unsigned short nService);
 };
 
 //-----ClientAckNameInfo--------------------------------------------------------
@@ -1131,6 +1137,21 @@ class CPU_RequestInfo : public CPU_CommonFamily
 {
 public:
   CPU_RequestInfo(const char *szId);
+};
+
+//-----RequestBuddyIcon------------------------------------------------------
+class CPU_RequestBuddyIcon : public CPU_CommonFamily
+{
+public:
+  CPU_RequestBuddyIcon(const char *szId, unsigned short _nBuddyIconType,
+                       char _nBuddyIconHashType, const char *_szBuddyIconHash,
+                       unsigned short nService);
+};
+
+class CPU_RequestService : public CPU_CommonFamily
+{
+public:
+  CPU_RequestService(unsigned short nFam);
 };
 
 //-----AIMFetchAwayMessage--------------------------------------------------

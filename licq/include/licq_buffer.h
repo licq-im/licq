@@ -126,6 +126,7 @@ public:
    CBuffer& operator >> (unsigned short &in);
    CBuffer& operator >> (unsigned long &in);
    char *UnpackRaw(char *, unsigned short);
+   char *UnpackBinBlock(char *, unsigned short);
    char *UnpackString(char *, unsigned short);
    char *UnpackString();                // Need to delete[] returned string
    char *UnpackStringBE(char *, unsigned short);

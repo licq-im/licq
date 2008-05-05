@@ -3286,8 +3286,8 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
 
             char szFilename[MAX_FILENAME_LEN];
             szFilename[MAX_FILENAME_LEN - 1] = '\0';
-            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/%s/%lu.pic",
-                                             BASE_DIR, USER_DIR, u->Uin());
+            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/%s/%s.pic",
+                                             BASE_DIR, USER_DIR, u->IdString());
 
             if (remove(szFilename) != 0 && errno != ENOENT)
             {
@@ -3439,11 +3439,14 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
           {
             gLog.Info("%sPicture reply from %s.\n", szInfo, u->GetAlias());
             packet.incDataPosRead(nEntries); // filename, don't care
+            unsigned long nLen = packet.UnpackUnsignedLong();
+            if (nLen == 0)	// do not create empty .pic files
+              break;
 
             char szFilename[MAX_FILENAME_LEN];
             szFilename[MAX_FILENAME_LEN - 1] = '\0';
-            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/%s/%lu.pic",
-                                             BASE_DIR, USER_DIR, u->Uin());
+            snprintf(szFilename, MAX_FILENAME_LEN - 1, "%s/%s/%s.pic",
+                                             BASE_DIR, USER_DIR, u->IdString());
 
             int nFD = open(szFilename, O_WRONLY | O_CREAT | O_TRUNC, 00664);
             if (nFD == -1)
@@ -3453,7 +3456,6 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
               break;
             }
 
-            unsigned long nLen = packet.UnpackUnsignedLong();
             char data[nLen];
             for (unsigned long i = 0; i < nLen; i++)
             {
@@ -3461,6 +3463,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             }
 
             write(nFD, data, nLen);
+            close(nFD);
 
             u->SetEnableSave(false);
             u->SetPicturePresent(true);

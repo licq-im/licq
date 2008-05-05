@@ -34,6 +34,9 @@ char *GetXmlTag(const char *szXmlSource, const char *szTagName);
 
 int UinString(char *_szBuf, size_t _nSize, unsigned long _nUin);
 
+char *PrintHex(char *szPrint, const char *szHex, size_t nSize);
+char *ReadHex(char *szHex, const char *szRead, size_t nSize);
+
 int Redirect(const char *);
 
 int strlen_safe(const char *);

@@ -166,6 +166,7 @@ public:
   // Functions specific to Server TCP communication
   bool SendPacket(CBuffer *b);
   bool RecvPacket();
+  bool ConnectTo(const char* server, unsigned short port, ProxyServer *xProxy);
 };
 
 

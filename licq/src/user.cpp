@@ -2011,8 +2011,15 @@ void ICQUser::LoadPhoneBookInfo()
 //-----ICQUser::LoadPictureInfo----------------------------------------------
 void ICQUser::LoadPictureInfo()
 {
+  char szTemp[MAX_LINE_LEN];
   m_fConf.SetSection("user");
   m_fConf.ReadBool("PicturePresent", m_bPicturePresent, false);
+  m_fConf.ReadNum("BuddyIconType", m_nBuddyIconType, 0);
+  m_fConf.ReadNum("BuddyIconHashType", m_nBuddyIconHashType, 0);
+  m_fConf.ReadStr("BuddyIconHash", szTemp, "");
+  SetString(&m_szBuddyIconHash, szTemp );
+  m_fConf.ReadStr("OurBuddyIconHash", szTemp, "");
+  SetString(&m_szOurBuddyIconHash, szTemp );
 }
 
 //-----ICQUser::LoadLicqInfo-------------------------------------------------
@@ -2208,6 +2215,10 @@ ICQUser::~ICQUser()
       free( m_szId );
   if ( m_szGPGKey )
       free( m_szGPGKey );
+  if (m_szBuddyIconHash)
+    free(m_szBuddyIconHash);
+  if (m_szOurBuddyIconHash)
+    free(m_szOurBuddyIconHash);
   
   delete m_Interests;
   delete m_Organizations;
@@ -2335,6 +2346,10 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
 
   // Picture
   m_bPicturePresent = false;
+  m_nBuddyIconType = 0;
+  m_nBuddyIconHashType = 0;
+  m_szBuddyIconHash = strdup("");
+  m_szOurBuddyIconHash = strdup("");
 
   // GPG key
   m_szGPGKey = strdup("");
@@ -3515,6 +3530,10 @@ void ICQUser::SavePictureInfo()
   }
   m_fConf.SetSection("user");
   m_fConf.WriteBool("PicturePresent", m_bPicturePresent);
+  m_fConf.WriteNum("BuddyIconType", m_nBuddyIconType);
+  m_fConf.WriteNum("BuddyIconHashType", m_nBuddyIconHashType);
+  m_fConf.WriteStr("BuddyIconHash", m_szBuddyIconHash);
+  m_fConf.WriteStr("OurBuddyIconHash", m_szOurBuddyIconHash);
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",

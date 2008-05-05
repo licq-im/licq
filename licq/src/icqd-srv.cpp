@@ -20,6 +20,8 @@
 
 #include <algorithm>
 
+#include <boost/scoped_array.hpp>
+
 // Localization
 #include "gettext.h"
 
@@ -27,6 +29,7 @@
 
 #include "licq_icqd.h"
 #include "licq_translate.h"
+#include "licq_oscarservice.h"
 #include "licq_packets.h"
 #include "licq_socket.h"
 #include "licq_user.h"
@@ -714,6 +717,43 @@ unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
   szUin[12] = 0;
 
   return icqRequestMetaInfo(szUin);
+}
+
+//-----ProtoRequestPicture------------------------------------------------------
+unsigned long CICQDaemon::ProtoRequestPicture(const char *_szId, unsigned long _nPPID)
+{
+  unsigned long nRet = 0;
+
+  if (_nPPID == LICQ_PPID)
+  {
+    ICQUser *u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_R);
+    if (u == NULL) return 0;
+
+    if (UseServerSideBuddyIcons() && strlen(u->BuddyIconHash()) > 0)
+    {
+      gUserManager.DropUser(u);
+      nRet = m_xBARTService->SendEvent(_szId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
+    }
+    else
+    {
+      bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
+      gUserManager.DropUser(u);
+      nRet = icqRequestPicture(_szId, bSendServer);
+    }
+  }
+  else
+    PushProtoSignal(new CRequestPicture(_szId), _nPPID);
+  
+  return nRet;
+}
+
+//-----icqRequestService--------------------------------------------------------
+void CICQDaemon::icqRequestService(unsigned short nFam)
+{
+  CPU_CommonFamily *p = new CPU_RequestService(nFam);
+  gLog.Info(tr("%sRequesting service socket for FAM 0x%02X (#%hu/#%d)...\n"),
+            L_SRVxSTR, nFam, p->Sequence(), p->SubSequence());
+  SendEvent_Server(p);
 }
 
 //-----icqSetStatus-------------------------------------------------------------
@@ -1736,6 +1776,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       case MAKESNAC(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER):
       case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxREQUESTxUSERxINFO):
       case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ):
+      case MAKESNAC(ICQ_SNACxFAM_BART, ICQ_SNACxBART_DOWNLOADxREQUEST):
         PushPluginEvent(e);
         break;
 
@@ -1876,6 +1917,16 @@ void CICQDaemon::icqLogoff()
 
 void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
 {
+  if (m_xBARTService)
+  {
+    if (m_xBARTService->GetSocketDesc() != -1)
+    {
+      gSocketManager.CloseSocket(m_xBARTService->GetSocketDesc());
+      m_xBARTService->ResetSocket();
+      m_xBARTService->ChangeStatus(STATUS_UNINITIALIZED);
+      m_xBARTService->ClearQueue();
+    }
+  }
   pthread_mutex_lock(&mutex_runningevents);
   pthread_mutex_lock(&mutex_sendqueue_server);
   pthread_mutex_lock(&mutex_extendedevents);
@@ -2025,7 +2076,6 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
       delete s;
       return (-1);
     }
-    s->SetProxy(m_xProxy);
   }
   else if (m_xProxy != NULL)
   {
@@ -2033,37 +2083,8 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
     m_xProxy = NULL;
   }
   
-  char ipbuf[32];
-
-  if (m_xProxy == NULL)
+  if (!s->ConnectTo(server, port, m_xProxy))
   {
-    gLog.Info(tr("%sResolving %s port %d...\n"), L_SRVxSTR, server, port);
-    if (!s->SetRemoteAddr(server, port)) {
-      char buf[128];
-      gLog.Warn(tr("%sUnable to resolve %s:\n%s%s.\n"), L_ERRORxSTR,
-                server, L_BLANKxSTR, s->ErrorStr(buf, 128));
-      delete s;
-      return (-1); // no route to host (not connected)
-    }
-    gLog.Info(tr("%sICQ server found at %s:%d.\n"), L_SRVxSTR,
-	      s->RemoteIpStr(ipbuf), s->RemotePort());
-  }
-  else
-  {
-    // It doesn't matter if it resolves or not, the proxy should do it then
-    s->SetRemoteAddr(server, port);
-  }
-
-  if (m_xProxy == NULL)
-    gLog.Info(tr("%sOpening socket to server.\n"), L_SRVxSTR);
-  else
-    gLog.Info("%sOpening socket to server via proxy.\n", L_SRVxSTR);
-  if (!s->OpenConnection())
-  {
-    char buf[128];
-    gLog.Warn(tr("%sUnable to connect to %s:%d:\n%s%s.\n"), L_ERRORxSTR,
-              s->RemoteIpStr(ipbuf), s->RemotePort(), L_BLANKxSTR,
-              s->ErrorStr(buf, 128));
     delete s;
     return -1;
   }
@@ -2221,22 +2242,19 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
   // TODO The TLVs should be processed first, in a common area, instead of requiring
   // each case to do the same thing. However, the individual case's may depend on the tlv
   // coming to them, so leave this commented out for now and do some testing
-  /*
   if (snacFlags & 0x8000)
   {
     unsigned short bytes = packet.UnpackUnsignedShortBE();
-    unsigned short tlvCount = packet.UnpackUnsignedShortBE();
-    if (!packet.readTLV(tlvCount, bytes))
+    if (!packet.readTLV(-1, bytes))
     {
       gLog.Error(tr("%sError parsing SNAC header\n"), L_SRVxSTR);
       return;
     }
   }
-  */
 
   switch (nSubtype)
   {
-  case ICQ_SNACxSUB_READYxSERVER:
+    case ICQ_SNACxSUB_READYxSERVER:
     {
       CSrvPacketTcp* p;
 
@@ -2257,7 +2275,71 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
 
-  case ICQ_SNACxSRV_ACKxIMxICQ:
+    case ICQ_SNACxSUB_REDIRECT:
+    {
+      unsigned short nFam = 0;
+
+      if (!packet.readTLV())
+      {
+        gLog.Warn(tr("%sError during parsing service redirect packet!\n"), L_WARNxSTR);
+        break;
+      }
+      if (packet.getTLVLen(0x000D) == 2)
+        nFam = packet.UnpackUnsignedShortTLV(0x000D);
+
+      gLog.Info(tr("%sRedirect for service 0x%02X received.\n"), L_SRVxSTR, nFam);
+
+      char *szServer = packet.UnpackStringTLV(0x0005);
+      char *szCookie = packet.UnpackStringTLV(0x0006);
+      unsigned short nCookieLen = packet.getTLVLen(0x0006);
+      if (!szServer || !szCookie)
+      {
+        gLog.Warn(tr("%sInvalid servername (%s) or cookie (%s) in service redirect packet!\n"),
+                  L_WARNxSTR, szServer ? szServer : "(null)", szCookie ? szCookie : "(null)");
+        if (szServer) delete [] szServer;
+        if (szCookie) delete [] szCookie;
+        break;
+      }
+
+      char *szPort = strchr(szServer, ':');
+      unsigned short nPort;
+      if (szPort)
+      {
+        *szPort++ = '\0';
+        nPort = atoi(szPort);
+      }
+      else
+      {
+        nPort = m_nICQServerPort;
+      }
+
+      switch (nFam)
+      {
+        case ICQ_SNACxFAM_BART:
+          if (m_xBARTService)
+          {
+            m_xBARTService->SetConnectCredential(szServer, nPort, szCookie, nCookieLen);
+            m_xBARTService->ChangeStatus(STATUS_SERVICE_REQ_ACKED);
+            break;
+          }
+          else
+          {
+            gLog.Warn(tr("%sService redirect packet for unallocated BART service.\n"),
+                      L_WARNxSTR);
+            break;
+          }
+
+        default:
+          gLog.Warn(tr("%sService redirect packet for unhandled service 0x%02X.\n"),
+                    L_WARNxSTR, nFam);
+      }
+
+      delete [] szServer;
+      delete [] szCookie;
+      break;
+    }
+
+    case ICQ_SNACxSRV_ACKxIMxICQ:
     {
       // ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
       // unsigned long nListTime = o->GetSSTime();
@@ -2296,8 +2378,9 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
       break;
     }
-  case ICQ_SNACxSUB_RATE_INFO:
-  {
+
+    case ICQ_SNACxSUB_RATE_INFO:
+    {
       gLog.Info(tr("%sServer sent us rate information.\n"), L_SRVxSTR);
       CSrvPacketTcp *p = new CPU_RateAck();
       SendEvent_Server(p);
@@ -2319,16 +2402,6 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
   case ICQ_SNACxRCV_NAMExINFO:
   {
-    if (snacFlags & 0x8000)
-    {
-      unsigned short bytes = packet.UnpackUnsignedShortBE();
-      if (!packet.readTLV(-1, bytes))
-      {
-        gLog.Error(tr("%sError parsing SNAC header\n"), L_SRVxSTR);
-        return;
-      }
-    }
-
     unsigned short evil, tlvBlocks;
     unsigned long nUin, realIP;
     time_t nOnlineSince = 0;
@@ -2868,6 +2941,39 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       }
     }
 
+    if (packet.hasTLV(0x001d))	// Server-stored buddy icon information
+    {
+      CBuffer BART_info = packet.UnpackTLV(0x001d);
+      unsigned short IconType = BART_info.UnpackUnsignedShortBE();
+      char HashType = BART_info.UnpackChar();
+      char HashLength = BART_info.UnpackChar();
+      
+      switch (IconType)
+      {
+        case BART_TYPExBUDDY_ICON_SMALL:
+        case BART_TYPExBUDDY_ICON:
+        {
+          if (HashType == 1 && HashLength > 0 && HashLength <= 16)
+          {
+            boost::scoped_array<char> Hash(new char[HashLength]);
+            boost::scoped_array<char> HashHex(new char[HashLength*2 + 1]);
+            
+            BART_info.UnpackBinBlock(Hash.get(), HashLength);
+            u->SetBuddyIconHash(PrintHex(HashHex.get(), Hash.get(), HashLength));
+            u->SetBuddyIconType(IconType);
+            u->SetBuddyIconHashType(HashType);
+            u->SavePictureInfo();
+          }
+          break;
+        }
+
+        default:	// Unsupported types of BART
+          gLog.Warn(tr("%sUnsupported type 0x%02X of buddy icon for %s.\n"),
+                    L_WARNxSTR, IconType, u->GetAlias());
+          break;
+      }
+    }
+    
     // maybe use this for auto update info later
     u->SetClientTimestamp(nInfoTimestamp);
     u->SetClientInfoTimestamp(nInfoPluginTimestamp);

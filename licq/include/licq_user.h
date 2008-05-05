@@ -515,6 +515,10 @@ public:
 
   // Picture Info
   bool GetPicturePresent()              { return m_bPicturePresent; }
+  unsigned short BuddyIconType()	{ return m_nBuddyIconType; }
+  char BuddyIconHashType()		{ return m_nBuddyIconHashType; }
+  char *BuddyIconHash()			{ return m_szBuddyIconHash; }
+  char *OurBuddyIconHash()		{ return m_szOurBuddyIconHash; }
 
   // Dynamic info fields for protocol plugins
   string GetPPField(const string &);
@@ -634,6 +638,10 @@ public:
 
   // Picture info
   void SetPicturePresent(bool b)      { m_bPicturePresent = b; SavePictureInfo(); }
+  void SetBuddyIconType(unsigned short s) { m_nBuddyIconType = s; }
+  void SetBuddyIconHashType(char s)   { m_nBuddyIconHashType = s; }
+  void SetBuddyIconHash(char *s)      { SetString(&m_szBuddyIconHash, s); }
+  void SetOurBuddyIconHash(char *s)   { SetString(&m_szOurBuddyIconHash, s); }
 
   // Licq Info
   void SetAwaitingAuth(bool b)        { m_bAwaitingAuth = b; }
@@ -945,6 +953,9 @@ protected:
 
   // Picture Info
   bool m_bPicturePresent;
+  unsigned short m_nBuddyIconType;
+  char m_nBuddyIconHashType;
+  char *m_szBuddyIconHash, *m_szOurBuddyIconHash;
 
   // Dynamic info fields for protocol plugins
   map<string, string> m_mPPFields;

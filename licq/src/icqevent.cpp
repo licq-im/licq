@@ -109,18 +109,32 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
 //   : m_xBuffer(p.getBuffer())
 {
   // set up internal variables
-  m_pPacket = p;
   m_bCancelled = false;
   m_Deleted = false;
   m_NoAck = false;
-  m_nChannel = p->Channel();
-  m_nCommand = p->Command();
-  m_nSNAC = p->SNAC();
-  m_nSubCommand = p->SubCommand();
-  m_nSequence = p->Sequence();
-  m_nSubSequence = p->SubSequence();
-  m_nSubType = (p->SNAC() & 0xFFFF);
-  m_nExtraInfo = p->ExtraInfo();
+  if (p)
+  {
+    m_pPacket = p;
+    m_nChannel = p->Channel();
+    m_nCommand = p->Command();
+    m_nSNAC = p->SNAC();
+    m_nSubCommand = p->SubCommand();
+    m_nSequence = p->Sequence();
+    m_nSubSequence = p->SubSequence();
+    m_nSubType = (p->SNAC() & 0xFFFF);
+    m_nExtraInfo = p->ExtraInfo();
+  } else
+  {
+    m_pPacket = NULL;
+    m_nChannel = 0;
+    m_nCommand = 0;
+    m_nSNAC = 0;
+    m_nSubCommand = 0;
+    m_nSequence = 0;
+    m_nSubSequence = 0;
+    m_nSubType = 0;
+    m_nExtraInfo = 0;
+  }
   m_nDestinationUin = 0;
   m_szId = _szId ? strdup(_szId) : 0;
   m_nPPID = _nPPID;
@@ -200,6 +214,20 @@ ICQEvent::~ICQEvent()
 }
 
 
+//-----ICQEvent::AttachPacket---------------------------------------------------
+void ICQEvent::AttachPacket(CPacket *p)
+{
+  m_pPacket = p;
+  m_nChannel = p->Channel();
+  m_nCommand = p->Command();
+  m_nSNAC = p->SNAC();
+  m_nSubCommand = p->SubCommand();
+  m_nSequence = p->Sequence();
+  m_nSubSequence = p->SubSequence();
+  m_nSubType = (p->SNAC() & 0xFFFF);
+  m_nExtraInfo = p->ExtraInfo();
+}
+  
 //-----ICQEvent::CompareEvent---------------------------------------------------
 bool ICQEvent::CompareEvent(int sockfd, unsigned short _nSequence) const
 {
@@ -468,6 +496,15 @@ CUpdateInfoSignal::~CUpdateInfoSignal()
   free(m_szAddress);
   free(m_szCellNumber);
   free(m_szZipCode);
+}
+
+CRequestPicture::CRequestPicture(const char *szId)
+  : CSignal(PROTOxREQUESTxPICTURE, szId)
+{
+}
+
+CRequestPicture::~CRequestPicture()
+{
 }
 
 CBlockUserSignal::CBlockUserSignal(const char *szId)

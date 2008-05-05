@@ -42,6 +42,7 @@ class TCPSocket;
 class SrvSocket;
 class INetSocket;
 class ProxyServer;
+class COscarService;
 class CReverseConnectToUserData;
 class CMSN;
 
@@ -300,6 +301,8 @@ public:
     const char *szFaxNumber, const char *szAddress, const char *szCellularNumber,
     const char *szZipCode, unsigned short nCountryCode, bool bHideEmail);
 
+  unsigned long ProtoRequestPicture(const char *szId, unsigned long nPPID);
+
   unsigned long ProtoOpenSecureChannel(const char *szId, unsigned long nPPID);
   unsigned long ProtoCloseSecureChannel(const char *szId, unsigned long nPPID);
   void ProtoOpenSecureChannelCancel(const char *szId, unsigned long nPPID,
@@ -475,6 +478,7 @@ public:
   void icqUpdateContactList();
   void icqTypingNotification(const char *_szId, bool _bActive);
   void icqCheckInvisible(const char *_szId);
+  void icqRequestService(unsigned short nFam);
 
   // Visible/Invisible/Ignore list functions
   void ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID);
@@ -514,6 +518,8 @@ public:
   int RegisterProtoPlugin();
   void UnregisterProtoPlugin();
   char *ProtoPluginName(unsigned long);
+
+  EDaemonStatus Status() { return m_eStatus; }
 
   void PluginUIViewEvent(const char *szId, unsigned long nPPID ) {
     PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, szId, nPPID, 0));
@@ -568,7 +574,9 @@ public:
 
   // Proxy options
   void InitProxy();
+  ProxyServer *CreateProxy();
   bool ProxyEnabled() {  return m_bProxyEnabled;  }
+  ProxyServer *GetProxy() {  return m_xProxy;  }
   void SetProxyEnabled(bool b) {  m_bProxyEnabled = b;  }
   unsigned short ProxyType() {  return m_nProxyType;  }
   void SetProxyType(unsigned short t) {  m_nProxyType = t;  }
@@ -610,10 +618,12 @@ public:
 
   // ICQ options
   bool UseServerContactList()         { return m_bUseSS; }
+  bool UseServerSideBuddyIcons()      { return m_bUseBART; }
   bool SendTypingNotification()       { return m_bSendTN; }
 
-  void SetUseServerContactList(bool b)   { m_bUseSS = b; }
-  void SetSendTypingNotification(bool b) { m_bSendTN = b; }
+  void SetUseServerContactList(bool b)    { m_bUseSS = b; }
+  void SetUseServerSideBuddyIcons(bool b);
+  void SetSendTypingNotification(bool b)  { m_bSendTN = b; }
 
   // Misc functions
   bool ReconnectAfterUinClash()              { return m_bReconnectAfterUinClash; }
@@ -701,8 +711,12 @@ protected:
   char *m_szProxyPasswd;
   ProxyServer *m_xProxy;
 
+  // Services
+  COscarService *m_xBARTService;
+
   // Misc
   bool m_bUseSS; // server side list
+  bool m_bUseBART; // server side buddy icons
   bool m_bSendTN; // Send typing notifications
   bool m_bReconnectAfterUinClash; // reconnect after uin has been used from another location?
 
@@ -730,6 +744,7 @@ protected:
   pthread_t thread_monitorsockets,
             thread_ping,
             thread_updateusers,
+            thread_ssbiservice,
             thread_shutdown;
 
   pthread_cond_t cond_serverack;
@@ -763,6 +778,7 @@ protected:
   ICQEvent *DoneExtendedEvent(unsigned long tag, EventResult _eResult);
   bool hasServerEvent(unsigned long);
   void ProcessDoneEvent(ICQEvent *);
+  void PushEvent(ICQEvent *);
   void PushExtendedEvent(ICQEvent *);
   void PushPluginSignal(CICQSignal *);
   void PushPluginEvent(ICQEvent *);
@@ -831,10 +847,12 @@ protected:
   friend void *ReverseConnectToUser_tep(void *p);
   friend void *ProcessRunningEvent_Client_tep(void *p);
   friend void *ProcessRunningEvent_Server_tep(void *p);
+  friend void *OscarServiceSendQueue_tep(void *p);
   friend void *Shutdown_tep(void *p);
   friend void *ConnectToServer_tep(void *s);
   friend class ICQUser;
   friend class CSocketManager;
+  friend class COscarService;
   friend class CChatManager;
   friend class CFileTransferManager;
   friend class COnEventManager;

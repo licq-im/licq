@@ -33,6 +33,7 @@ extern int errno;
 
 #include "licq_icq.h"
 #include "licq_user.h"
+#include "licq_oscarservice.h"
 #include "licq_constants.h"
 #include "licq_file.h"
 #include "licq_log.h"
@@ -271,8 +272,12 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   m_szProxyPasswd = (char *)malloc(strlen(t_str) + 1);
   strcpy(m_szProxyPasswd, t_str);
 
+  // Services
+  m_xBARTService = NULL;
+
   // Misc
   licqConf.ReadBool("UseSS", m_bUseSS, true); // server side list
+  licqConf.ReadBool("UseBART", m_bUseBART, true); // server side buddy icons
   licqConf.ReadBool("SendTypingNotification", m_bSendTN, true);
   licqConf.ReadBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
 
@@ -448,8 +453,21 @@ bool CICQDaemon::Start()
   nResult = pthread_create(&thread_updateusers, NULL, &UpdateUsers_tep, this);
   if (nResult != 0)
   {
-    gLog.Error("%sUnable to start ping thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    gLog.Error("%sUnable to start users update thread:\n%s%s.\n", L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
     return false;
+  }
+
+  if (UseServerSideBuddyIcons())
+  {
+    m_xBARTService = new COscarService(this, ICQ_SNACxFAM_BART);
+    nResult = pthread_create(&thread_ssbiservice, NULL,
+                             &OscarServiceSendQueue_tep, m_xBARTService);
+    if (nResult != 0)
+    {
+      gLog.Error(tr("%sUnable to start BART service thread:\n%s%s.\n"),
+                 L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+      return false;
+    }
   }
 
   return true;
@@ -809,6 +827,7 @@ void CICQDaemon::SaveConf()
 
   // Misc
   licqConf.WriteBool("UseSS", m_bUseSS); // server side list
+  licqConf.WriteBool("UseBART", m_bUseBART); // server side buddy icons
   licqConf.WriteBool("SendTypingNotification", m_bSendTN); 
   licqConf.WriteBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash);
 
@@ -980,38 +999,46 @@ void CICQDaemon::InitProxy()
     delete m_xProxy;
     m_xProxy = NULL;
   }
+  m_xProxy = CreateProxy();
+}
+
+ProxyServer *CICQDaemon::CreateProxy()
+{
+  ProxyServer *Proxy = NULL;
 
   switch (m_nProxyType)
   {
     case PROXY_TYPE_HTTP :
-      m_xProxy = new HTTPProxyServer();
+      Proxy = new HTTPProxyServer();
       break;
     default:
       break;
   }
 
-  if (m_xProxy != NULL)
+  if (Proxy != NULL)
   {
     gLog.Info(tr("%sResolving proxy: %s:%d...\n"), L_INITxSTR, m_szProxyHost, m_nProxyPort);
-    if (!m_xProxy->SetProxyAddr(m_szProxyHost, m_nProxyPort)) {
+    if (!Proxy->SetProxyAddr(m_szProxyHost, m_nProxyPort))
+    {
       char buf[128];
 
       gLog.Warn(tr("%sUnable to resolve proxy server %s:\n%s%s.\n"), L_ERRORxSTR,
-                 m_szProxyHost, L_BLANKxSTR, m_xProxy->ErrorStr(buf, 128));
-      delete m_xProxy;
-      m_xProxy = NULL;
+                m_szProxyHost, L_BLANKxSTR, Proxy->ErrorStr(buf, 128));
+      delete Proxy;
+      Proxy = NULL;
     }
 
-    if (m_xProxy)
+    if (Proxy)
     {
       if (m_bProxyAuthEnabled)
-        m_xProxy->SetProxyAuth(m_szProxyLogin, m_szProxyPasswd);
+        Proxy->SetProxyAuth(m_szProxyLogin, m_szProxyPasswd);
 
-      m_xProxy->InitProxy();
+      Proxy->InitProxy();
     }
   }
-}
 
+  return Proxy;
+}
 
 unsigned short VersionToUse(unsigned short v_in)
 {
@@ -1116,6 +1143,25 @@ void CICQDaemon::SetIgnore(unsigned short n, bool b)
     m_nIgnoreTypes &= ~n;
 }
 
+void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
+{
+  if (b && m_xBARTService == NULL)
+  {
+    m_xBARTService = new COscarService(this, ICQ_SNACxFAM_BART);
+    int nResult = pthread_create(&thread_ssbiservice, NULL,
+                                 &OscarServiceSendQueue_tep, m_xBARTService);
+    if (nResult != 0)
+    {
+      gLog.Error(tr("%sUnable to start BART service thread:\n%s%s.\n"),
+                 L_ERRORxSTR, L_BLANKxSTR, strerror(nResult));
+    }
+    else
+      m_bUseBART = true;
+  }
+  else
+    m_bUseBART = b;
+}
+                                    
 bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
                                bool bNotify, bool bTempUser)
 {
@@ -2034,6 +2080,13 @@ ICQEvent *CICQDaemon::DoneExtendedEvent(unsigned long tag, EventResult _eResult)
   return(e);
 }
 
+void CICQDaemon::PushEvent(ICQEvent *e)
+{
+  assert(e != NULL);
+  pthread_mutex_lock(&mutex_runningevents);
+  m_lxRunningEvents.push_back(e);
+  pthread_mutex_unlock(&mutex_runningevents);
+}
 
 /*------------------------------------------------------------------------------
  * PushExtendedEvent

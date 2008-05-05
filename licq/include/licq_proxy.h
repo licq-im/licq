@@ -1,3 +1,6 @@
+#ifndef PROXY_H
+#define PROXY_H
+
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -68,3 +71,5 @@ public:
   bool HTTPInitProxy();
   bool HTTPOpenProxyConnection(const char *_szRemoteName, unsigned short _nRemotePort);
 };
+
+#endif

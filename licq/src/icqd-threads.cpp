@@ -17,6 +17,7 @@
 #include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_packets.h"
+#include "licq_oscarservice.h"
 #include "licq_plugind.h"
 #include "licq.h"
 
@@ -666,7 +667,7 @@ void *MonitorSockets_tep(void *p)
   CICQDaemon *d = (CICQDaemon *)p;
 
   fd_set f;
-  int nSocketsAvailable, nCurrentSocket, l;
+  int nSocketsAvailable, nCurrentSocket, nServiceSocket, l;
   char buf[1024];
 
   while (true)
@@ -692,6 +693,14 @@ void *MonitorSockets_tep(void *p)
 
     /*pthread_testcancel();
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);*/
+    if (d->m_xBARTService)
+    {
+      COscarService *svc = d->m_xBARTService;
+      nServiceSocket = svc->GetSocketDesc();
+    }
+    else
+      nServiceSocket = -1;
+                                                  
     nCurrentSocket = 0;
     while (nSocketsAvailable > 0 && nCurrentSocket < l)
     {
@@ -762,6 +771,37 @@ void *MonitorSockets_tep(void *p)
               d->m_eStatus = STATUS_OFFLINE_FORCED;
               d->m_bLoggingOn = false;
               d->postLogoff(nSD, NULL);
+            }
+          }
+
+          // Message from the service sockets -----------------------------------
+          else if (nCurrentSocket == nServiceSocket)
+          {
+            DEBUG_THREADS("[MonitorSockets_tep] Data on BART service socket.\n");
+            COscarService *svc = d->m_xBARTService;
+            SrvSocket *sock_svc = static_cast<SrvSocket*>(s);
+            if (sock_svc->Recv())
+            {
+              CBuffer packet(sock_svc->RecvBuffer());
+              sock_svc->ClearRecvBuffer();
+              gSocketManager.DropSocket(sock_svc);
+              if (!svc->ProcessPacket(packet))
+              {
+                gLog.Warn(tr("%sCan't process packet for service 0x%02X.\n"),
+                          L_WARNxSTR, svc->GetFam());
+                svc->ResetSocket();
+                svc->ChangeStatus(STATUS_UNINITIALIZED);
+                gSocketManager.CloseSocket(nCurrentSocket);
+              }
+            }
+            else
+            {
+              gLog.Warn(tr("%sCan't receive packet for service 0x%02X.\n"),
+                        L_WARNxSTR, svc->GetFam());
+              svc->ResetSocket();
+              svc->ChangeStatus(STATUS_UNINITIALIZED);
+              gSocketManager.DropSocket(sock_svc);
+              gSocketManager.CloseSocket(nCurrentSocket);
             }
           }
 
@@ -915,7 +955,11 @@ void *Shutdown_tep(void *p)
 
   // Cancel the update users thread
   pthread_cancel(d->thread_updateusers);
-  
+
+  // Cancel the BART service thread
+  if (d->m_xBARTService)
+    pthread_cancel(d->thread_ssbiservice);
+
   // Join our threads
   pthread_join(d->thread_monitorsockets, NULL);
 
@@ -951,6 +995,7 @@ void *UpdateUsers_tep(void *p)
       FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
       {
         bool bSent = false;
+        bool bBART = false;
 
         if (d->AutoUpdateInfo() && !pUser->UserUpdated() &&
             pUser->ClientTimestamp() != pUser->OurClientTimestamp()
@@ -960,6 +1005,15 @@ void *UpdateUsers_tep(void *p)
           bSent = true;
         }
 
+        if (d->UseServerSideBuddyIcons() && d->AutoUpdateInfo() &&
+            strlen(pUser->BuddyIconHash()) > 0 &&
+            strcmp(pUser->BuddyIconHash(), pUser->OurBuddyIconHash()) != 0)
+        {
+          d->m_xBARTService->SendEvent(pUser->IdString(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
+          bSent = true;
+          bBART = true;
+        }
+        
         if (!pUser->StatusOffline() && !pUser->UserUpdated() &&
             //Don't bother clients that we know don't support plugins
             pUser->Version() >= 7 &&
@@ -988,7 +1042,8 @@ void *UpdateUsers_tep(void *p)
             gLog.Info("Updating %s's info plugins.\n", pUser->GetAlias());
             d->icqRequestInfoPlugin(pUser, true, PLUGIN_QUERYxINFO);
             d->icqRequestInfoPlugin(pUser, true, PLUGIN_PHONExBOOK);
-            d->icqRequestInfoPlugin(pUser, true, PLUGIN_PICTURE);
+            if (!bBART) // Send only if we didn't request BART already
+              d->icqRequestInfoPlugin(pUser, true, PLUGIN_PICTURE);
             bSent = true;
           }
 

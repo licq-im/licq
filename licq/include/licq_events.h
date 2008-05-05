@@ -247,8 +247,14 @@ protected:
   ICQEvent(const ICQEvent* e);
 
   // Daemon only
-  unsigned short SubType() const { return m_nSubType; }
-  unsigned short ExtraInfo() const { return m_nExtraInfo; }
+  unsigned short SubType() const     { return m_nSubType; }
+  unsigned short ExtraInfo() const   { return m_nExtraInfo; }
+  void SetSubType(unsigned short nSubType) { m_nSubType = nSubType; }
+  bool NoAck() const           { return m_NoAck; }
+  void SetNoAck(bool NoAck)    { m_NoAck = NoAck; }
+  bool IsCancelled() const     { return m_bCancelled; }
+
+  void AttachPacket(CPacket *p);
 
   // Compare this event to another one
   bool CompareEvent(int, unsigned short) const;
@@ -290,9 +296,11 @@ protected:
   static unsigned long s_nNextEventId;
 
 friend class CICQDaemon;
+friend class COscarService;
 friend class CMSN;
 friend void *ProcessRunningEvent_Client_tep(void *p);
 friend void *ProcessRunningEvent_Server_tep(void *p);
+friend void *OscarServiceSendQueue_tep(void *p);
 friend void *MonitorSockets_tep(void *p);
 };
 
@@ -476,6 +484,8 @@ enum SIGNAL_TYPE
   PROTOxREQUESTxINFO,
   //! The user has requested to update the owner's profile/information.
   PROTOxUPDATExINFO,
+  //! The user has requested the user's picture/icon/avatar/etc..
+  PROTOxREQUESTxPICTURE,
   //! The user has requested this user be added to the Invisible/Block list.
   PROTOxBLOCKxUSER,
   //! The user has requested this user be removed from the Invisible/Block
@@ -682,6 +692,13 @@ private:
        *m_szAddress,
        *m_szCellNumber,
        *m_szZipCode;
+};
+
+class CRequestPicture : public CSignal
+{
+public:
+  CRequestPicture(const char *);
+  virtual ~CRequestPicture();
 };
 
 class CBlockUserSignal : public CSignal
