@@ -35,6 +35,9 @@ class QPushButton;
 class QRegExp;
 class QTextCodec;
 
+class CICQSignal;
+class ICQEvent;
+
 namespace LicqQtGui
 {
 class Calendar;
@@ -107,7 +110,29 @@ private slots:
    */
   void previousDate();
 
+private slots:
+  /**
+   * A user was updated. Add to history if it was a message recieved for this user
+   *
+   * @param signal Signal from daemon
+   */
+  void updatedUser(CICQSignal* signal);
+
+  /**
+   * A message was sent. Add to history if it was for the current user
+   *
+   * @param event Event object for message
+   */
+  void eventSent(const ICQEvent* event);
+
 private:
+  /**
+   * Add an event to the current history
+   *
+   * @param event Event to add
+   */
+  void addMsg(const CUserEvent* event);
+
   /**
    * Build a regular expression from the input fields
    *

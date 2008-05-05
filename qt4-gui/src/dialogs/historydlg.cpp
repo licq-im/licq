@@ -34,10 +34,13 @@
 #include <QTextCodec>
 #include <QVBoxLayout>
 
+#include <licq_events.h>
+#include <licq_message.h>
 #include <licq_user.h>
 
 #include "config/chat.h"
 #include "core/licqgui.h"
+#include "core/signalmanager.h"
 #include "core/usermenu.h"
 #include "helpers/eventdesc.h"
 #include "helpers/support.h"
@@ -251,11 +254,52 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
   myCalendar->setMaximumDate(lastDate);
   myCalendar->setSelectedDate(lastDate);
   calenderClicked();
+
+  // Catch sent messages and add them to history
+  connect(LicqGui::instance(), SIGNAL(eventSent(const ICQEvent*)),
+      SLOT(eventSent(const ICQEvent*)));
+
+  // Catch received messages so we can add them to history
+  connect(LicqGui::instance()->signalManager(), SIGNAL(updatedUser(CICQSignal*)), SLOT(updatedUser(CICQSignal*)));
 }
 
 HistoryDlg::~HistoryDlg()
 {
   ICQUser::ClearHistory(myHistoryList);
+}
+
+void HistoryDlg::updatedUser(CICQSignal* signal)
+{
+  if (signal->Id() != myId || signal->PPID() != myPpid)
+    return;
+
+  if (signal->SubSignal() == USER_EVENTS)
+  {
+    ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    if (u == NULL)
+      return;
+
+    const CUserEvent* event = u->EventPeekId(signal->Argument());
+    gUserManager.DropUser(u);
+
+    if (event != NULL && signal->Argument() > 0 && signal->Argument() > (*(--myHistoryList.end()))->Id())
+      addMsg(event);
+  }
+}
+
+void HistoryDlg::eventSent(const ICQEvent* event)
+{
+  if (event->Id() == myId && event->PPID() == myPpid && event->UserEvent() != NULL)
+    addMsg(event->UserEvent());
+}
+
+void HistoryDlg::addMsg(const CUserEvent* event)
+{
+  CUserEvent* eventCopy = event->Copy();
+  myHistoryList.push_back(eventCopy);
+  QDate date = QDateTime::fromTime_t(event->Time()).date();
+  myCalendar->markDate(date);
+  myCalendar->setMaximumDate(date);
 }
 
 QRegExp HistoryDlg::getRegExp() const
