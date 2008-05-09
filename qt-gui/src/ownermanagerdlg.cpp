@@ -85,7 +85,8 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
       ICQOwner *o = gUserManager.FetchOwner((*it)->PPID(), LOCK_R);
       if (o == NULL)
         cmbProtocol->insertItem((*it)->Name(), n++);
-      gUserManager.DropOwner((*it)->PPID());
+      else
+        gUserManager.DropOwner((*it)->PPID());
     }
   }
   
