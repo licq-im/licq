@@ -60,6 +60,14 @@ public:
    */
   virtual void setColors(QColor back);
 
+  /**
+   * Reloaded from base class
+   *
+   * @param index Index of the item to scroll to
+   * @param hint Relative viewport position
+   */
+  virtual void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible);
+
 signals:
   /**
    * Signal emitted when user has double clicked on a contact

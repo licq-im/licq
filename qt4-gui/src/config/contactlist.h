@@ -109,6 +109,7 @@ public:
   FlashMode flash() const { return myFlash; }
   bool allowScrollBar() const { return myAllowScrollBar; }
   bool useSystemBackground() const { return myUseSystemBackground; }
+  bool autoScroll() const { return myAutoScroll; }
 
   bool popupPicture() const { return myPopupPicture; }
   bool popupAlias() const { return myPopupAlias; }
@@ -159,6 +160,7 @@ public slots:
   void setFlash(FlashMode flash);
   void setAllowScrollBar(bool allowScrollBar);
   void setUseSystemBackground(bool useSystemBackground);
+  void setAutoScroll(bool autoScroll);
 
   void setPopupPicture(bool popupPicture);
   void setPopupAlias(bool popupAlias);
@@ -239,6 +241,7 @@ private:
   FlashMode myFlash;
   bool myAllowScrollBar;
   bool myUseSystemBackground;
+  bool myAutoScroll;
 
   // Contact list sorting
   unsigned short mySortByStatus;

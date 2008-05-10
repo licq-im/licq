@@ -89,6 +89,7 @@ private:
   QLabel* mySortByLabel;
   QLineEdit* myFrameStyleEdit;
   QComboBox* mySortByCombo;
+  QCheckBox* myAutoScrollCheck;
   QCheckBox* mySSListCheck;
   QCheckBox* myGridLinesCheck;
   QCheckBox* myHeaderCheck;

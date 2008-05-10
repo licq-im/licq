@@ -160,6 +160,10 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   myMainWinStickyCheck->setToolTip(tr("Makes the Main window visible on all desktops"));
   myBehaviourLayout->addWidget(myMainWinStickyCheck, 0, 1);
 
+  myAutoScrollCheck = new QCheckBox(tr("Automatic scrolling"));
+  myAutoScrollCheck->setToolTip(tr("Automatically scroll to the selected item if it was moved out of the view."));
+  myBehaviourLayout->addWidget(myAutoScrollCheck, 1, 1);
+
   QHBoxLayout* mySortByLayout = new QHBoxLayout();
   mySortByLabel = new QLabel(tr("Additional sorting:"));
   mySortByLabel->setToolTip(tr("<b>none:</b> - Don't sort online users by Status<br>\n"
@@ -175,7 +179,7 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   mySortByCombo->setToolTip(mySortByLabel->toolTip());
   mySortByLabel->setBuddy(mySortByCombo);
   mySortByLayout->addWidget(mySortByCombo);
-  myBehaviourLayout->addLayout(mySortByLayout, 1, 1);
+  myBehaviourLayout->addLayout(mySortByLayout, 2, 1);
 
 
   myPageContactListLayout->addWidget(myAppearanceBox);
@@ -346,6 +350,7 @@ void Settings::ContactList::load()
   myShowUserIconsCheck->setChecked(contactListConfig->showUserIcons());
   myScrollBarCheck->setChecked(contactListConfig->allowScrollBar());
   mySysBackCheck->setChecked(contactListConfig->useSystemBackground());
+  myAutoScrollCheck->setChecked(contactListConfig->autoScroll());
 
   int numColumns = contactListConfig->columnCount();
   if(numColumns < 1)
@@ -418,6 +423,7 @@ void Settings::ContactList::apply()
   contactListConfig->setShowUserIcons(myShowUserIconsCheck->isChecked());
   contactListConfig->setAllowScrollBar(myScrollBarCheck->isChecked());
   contactListConfig->setUseSystemBackground(mySysBackCheck->isChecked());
+  contactListConfig->setAutoScroll(myAutoScrollCheck->isChecked());
 
   for (unsigned short i = 0; i < MAX_COLUMNCOUNT; ++i)
   {

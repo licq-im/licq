@@ -62,6 +62,7 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("ShowUserIcons", myShowUserIcons, true);
   iniFile.ReadBool("ScrollBar", myAllowScrollBar, true);
   iniFile.ReadBool("SystemBackground", myUseSystemBackground, false);
+  iniFile.ReadBool("AutoScrolling", myAutoScroll, true);
 
   unsigned short flash;
   iniFile.ReadNum("Flash", flash, FlashUrgent);
@@ -127,6 +128,7 @@ void Config::ContactList::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteNum("Flash", static_cast<unsigned short>(myFlash));
   iniFile.WriteBool("ScrollBar", myAllowScrollBar);
   iniFile.WriteBool("SystemBackground", myUseSystemBackground);
+  iniFile.WriteBool("AutoScrolling", myAutoScroll);
 
   iniFile.WriteNum("NumColumns", myColumnCount);
   for (unsigned short i = 0; i < myColumnCount; i++)
@@ -308,6 +310,11 @@ void Config::ContactList::setUseSystemBackground(bool useSystemBackground)
   myUseSystemBackground = useSystemBackground;
 
   changeListLook();
+}
+
+void Config::ContactList::setAutoScroll(bool autoScroll)
+{
+  myAutoScroll = autoScroll;
 }
 
 void Config::ContactList::setShowDividers(bool showDividers)

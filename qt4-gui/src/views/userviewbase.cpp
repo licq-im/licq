@@ -85,6 +85,12 @@ void UserViewBase::setColors(QColor back)
   }
 }
 
+void UserViewBase::scrollTo(const QModelIndex& index, QAbstractItemView::ScrollHint hint)
+{
+  if (Config::ContactList::instance()->autoScroll())
+    QTreeView::scrollTo(index, hint);
+}
+
 void UserViewBase::applySkin()
 {
   setPalette(Config::Skin::active()->palette(gMainWindow));
