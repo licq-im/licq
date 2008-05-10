@@ -407,6 +407,7 @@ private:
   ContactGroup* mySystemGroups[NUM_GROUPS_SYSTEM_ALL];
   QList<ContactUserData*> myUsers;
   int myColumnCount;
+  bool myBlockUpdates;
 };
 
 } // namespace LicqQtGui

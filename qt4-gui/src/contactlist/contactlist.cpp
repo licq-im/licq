@@ -38,7 +38,8 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ContactListModel */
 
 ContactListModel::ContactListModel(QObject* parent)
-  : QAbstractItemModel(parent)
+  : QAbstractItemModel(parent),
+    myBlockUpdates(false)
 {
   // Create the system groups
   for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
@@ -156,6 +157,9 @@ void ContactListModel::configUpdated()
 
 void ContactListModel::slot_userDataChanged(const ContactUserData* user)
 {
+  if (myBlockUpdates)
+    return;
+
   // Emit signal that the user has changed in all groups
   foreach (ContactUser* u, user->groupList())
   {
@@ -166,6 +170,9 @@ void ContactListModel::slot_userDataChanged(const ContactUserData* user)
 
 void ContactListModel::groupDataChanged(ContactGroup* group)
 {
+  if (myBlockUpdates)
+    return;
+
   int groupRow = (group->groupId() < SystemGroupOffset
       ? myUserGroups.indexOf(group)
       : myUserGroups.size() + group->groupId() - SystemGroupOffset);
@@ -175,11 +182,17 @@ void ContactListModel::groupDataChanged(ContactGroup* group)
 
 void ContactListModel::slot_barDataChanged(ContactBar* bar, int row)
 {
+  if (myBlockUpdates)
+    return;
+
   emit dataChanged(createIndex(row, 0, bar), createIndex(row, myColumnCount - 1, bar));
 }
 
 void ContactListModel::reloadAll()
 {
+  // Don't send out signals while reloading, the reset at the end will be enough
+  myBlockUpdates = true;
+
   // Clear the list of all old groups and users
   clear();
   myColumnCount = Config::ContactList::instance()->columnCount();
@@ -216,6 +229,7 @@ void ContactListModel::reloadAll()
   FOR_EACH_USER_END
 
   // Tell views that we have done major changes
+  myBlockUpdates = false;
   reset();
 }
 
