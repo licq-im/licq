@@ -61,10 +61,10 @@ public:
   virtual void setColors(QColor back);
 
   /**
-   * Reloaded from base class
+   * Overloaded from base class to make scrolling conditional
    *
    * @param index Index of the item to scroll to
-   * @param hint Relative viewport position
+   * @param hint Relative viewport position to maintain
    */
   virtual void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible);
 
