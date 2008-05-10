@@ -49,7 +49,7 @@ ContactListModel::ContactListModel(QObject* parent)
     connect(mySystemGroups[i], SIGNAL(dataChanged(ContactGroup*)),
         SLOT(groupDataChanged(ContactGroup*)));
     connect(mySystemGroups[i], SIGNAL(barDataChanged(ContactBar*, int)),
-        SLOT(slot_barDataChanged(ContactBar*, int)));
+        SLOT(barDataChanged(ContactBar*, int)));
   }
 
   // Get the entire contact list from the daemon
@@ -69,7 +69,7 @@ ContactListModel::~ContactListModel()
     delete mySystemGroups[i];
 }
 
-void ContactListModel::slot_updatedList(CICQSignal* sig)
+void ContactListModel::listUpdated(CICQSignal* sig)
 {
   switch(sig->SubSignal())
   {
@@ -82,7 +82,7 @@ void ContactListModel::slot_updatedList(CICQSignal* sig)
       ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
       if (u == NULL)
       {
-        gLog.Warn("%sContactList::slot_updatedList(): Invalid user received: %lu, %s\n", L_ERRORxSTR, sig->PPID(), sig->Id());
+        gLog.Warn("%sContactList::listUpdated(): Invalid user received: %lu, %s\n", L_ERRORxSTR, sig->PPID(), sig->Id());
         break;
       }
       addUser(u);
@@ -95,7 +95,7 @@ void ContactListModel::slot_updatedList(CICQSignal* sig)
   }
 }
 
-void ContactListModel::slot_updatedUser(CICQSignal* sig)
+void ContactListModel::userUpdated(CICQSignal* sig)
 {
   // Skip events for owners
   if (gUserManager.FindOwner(sig->Id(), sig->PPID()) != NULL)
@@ -104,7 +104,7 @@ void ContactListModel::slot_updatedUser(CICQSignal* sig)
   ContactUserData* user = findUser(sig->Id(), sig->PPID());
   if (user == NULL)
   {
-    gLog.Warn("%sContactList::slot_updatedUser(): Invalid user received: %lu, %s\n", L_ERRORxSTR, sig->PPID(), sig->Id());
+    gLog.Warn("%sContactList::userUpdated(): Invalid user received: %lu, %s\n", L_ERRORxSTR, sig->PPID(), sig->Id());
     return;
   }
 
@@ -155,7 +155,7 @@ void ContactListModel::configUpdated()
   }
 }
 
-void ContactListModel::slot_userDataChanged(const ContactUserData* user)
+void ContactListModel::userDataChanged(const ContactUserData* user)
 {
   if (myBlockUpdates)
     return;
@@ -180,7 +180,7 @@ void ContactListModel::groupDataChanged(ContactGroup* group)
   emit dataChanged(createIndex(groupRow, 0, group), createIndex(groupRow, myColumnCount - 1, group));
 }
 
-void ContactListModel::slot_barDataChanged(ContactBar* bar, int row)
+void ContactListModel::barDataChanged(ContactBar* bar, int row)
 {
   if (myBlockUpdates)
     return;
@@ -205,7 +205,7 @@ void ContactListModel::reloadAll()
   connect(newGroup, SIGNAL(dataChanged(ContactGroup*)),
       SLOT(groupDataChanged(ContactGroup*)));
   connect(newGroup, SIGNAL(barDataChanged(ContactBar*, int)),
-      SLOT(slot_barDataChanged(ContactBar*, int)));
+      SLOT(barDataChanged(ContactBar*, int)));
   myUserGroups.append(newGroup);
 
   for (unsigned short i = 0; i < g->size(); ++i)
@@ -214,7 +214,7 @@ void ContactListModel::reloadAll()
     connect(newGroup, SIGNAL(dataChanged(ContactGroup*)),
         SLOT(groupDataChanged(ContactGroup*)));
     connect(newGroup, SIGNAL(barDataChanged(ContactBar*, int)),
-        SLOT(slot_barDataChanged(ContactBar*, int)));
+        SLOT(barDataChanged(ContactBar*, int)));
     myUserGroups.append(newGroup);
   }
 
@@ -247,7 +247,7 @@ void ContactListModel::addUser(ICQUser* licqUser)
 {
   ContactUserData* newUser = new ContactUserData(licqUser, this);
   connect(newUser, SIGNAL(dataChanged(const ContactUserData*)),
-      SLOT(slot_userDataChanged(const ContactUserData*)));
+      SLOT(userDataChanged(const ContactUserData*)));
   connect(newUser, SIGNAL(updateUserGroups(ContactUserData*, ICQUser*)),
       SLOT(updateUserGroups(ContactUserData*, ICQUser*)));
 

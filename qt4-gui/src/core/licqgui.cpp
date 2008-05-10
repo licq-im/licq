@@ -499,9 +499,9 @@ int LicqGui::Run(CICQDaemon* daemon)
   // Contact list model
   myContactList = new ContactListModel(this);
   connect(mySignalManager, SIGNAL(updatedList(CICQSignal*)),
-      myContactList, SLOT(slot_updatedList(CICQSignal*)));
+      myContactList, SLOT(listUpdated(CICQSignal*)));
   connect(mySignalManager, SIGNAL(updatedUser(CICQSignal*)),
-      myContactList, SLOT(slot_updatedUser(CICQSignal*)));
+      myContactList, SLOT(userUpdated(CICQSignal*)));
 
   connect(mySignalManager, SIGNAL(updatedList(CICQSignal*)),
       SLOT(listUpdated(CICQSignal*)));

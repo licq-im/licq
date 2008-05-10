@@ -329,14 +329,14 @@ public slots:
    *
    * @param sig Signal data from the daemon with information on what has changed
    */
-  void slot_updatedList(CICQSignal* sig);
+  void listUpdated(CICQSignal* sig);
 
   /**
    * The data for a user has changed in the daemon
    *
    * @param sig Signal data from the daemon with information on what has changed
    */
-  void slot_updatedUser(CICQSignal* sig);
+  void userUpdated(CICQSignal* sig);
 
   /**
    * Reload the entire contact list from the daemon
@@ -355,7 +355,7 @@ private slots:
    *
    * @param user The user data object that has changed
    */
-  void slot_userDataChanged(const ContactUserData* user);
+  void userDataChanged(const ContactUserData* user);
 
   /**
    * The model data for a group has changed
@@ -372,7 +372,7 @@ private slots:
    * @param bar The bar object that has changed
    * @param row The row of the bar in it's group
    */
-  void slot_barDataChanged(ContactBar* bar, int row);
+  void barDataChanged(ContactBar* bar, int row);
 
   /**
    * Update the user membership in all groups
