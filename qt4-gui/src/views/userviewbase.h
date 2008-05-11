@@ -61,10 +61,11 @@ public:
   virtual void setColors(QColor back);
 
   /**
-   * Overloaded from base class to make scrolling conditional
+   * Make sure a specified index is visible
+   * Overloaded to stop annoying auto scrolling triggered by layoutChanged
    *
-   * @param index Index of the item to scroll to
-   * @param hint Relative viewport position to maintain
+   * @param index Index to scroll to
+   * @param hint Where to place the index
    */
   virtual void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible);
 
@@ -82,6 +83,15 @@ protected slots:
    * Apply new skin
    */
   virtual void applySkin();
+
+  /**
+   * Current index has changed
+   * Overloaded as workaround for scrollTo()
+   *
+   * @param current New current index
+   * @param previous Previously current index
+   */
+  virtual void currentChanged(const QModelIndex& current, const QModelIndex& previous);
 
 protected:
   /**
@@ -144,6 +154,14 @@ protected:
    */
   virtual void drawBranches(QPainter*, const QRect&, const QModelIndex&) const {}
 
+  /**
+   * A timer event happened
+   * Overloaded as workaround for scrollTo()
+   *
+   * @param event Timer event
+   */
+  virtual void timerEvent(QTimerEvent* event);
+
 private slots:
   /**
    * User double clicked in list
@@ -154,6 +172,7 @@ private slots:
 
 private:
   bool midEvent;
+  bool myAllowScrollTo;
 };
 
 } // namespace LicqQtGui

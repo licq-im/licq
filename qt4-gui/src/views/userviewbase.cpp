@@ -46,7 +46,8 @@ using namespace LicqQtGui;
 
 UserViewBase::UserViewBase(ContactListModel* contactList, QWidget* parent)
   : QTreeView(parent),
-    myContactList(contactList)
+    myContactList(contactList),
+    myAllowScrollTo(false)
 {
   setItemDelegate(new ContactDelegate(this, this));
   setEditTriggers(EditKeyPressed);
@@ -83,12 +84,6 @@ void UserViewBase::setColors(QColor back)
 
     setPalette(pal);
   }
-}
-
-void UserViewBase::scrollTo(const QModelIndex& index, QAbstractItemView::ScrollHint hint)
-{
-  if (Config::ContactList::instance()->autoScroll())
-    QTreeView::scrollTo(index, hint);
 }
 
 void UserViewBase::applySkin()
@@ -329,3 +324,38 @@ void UserViewBase::slotDoubleClicked(const QModelIndex& index)
     setExpanded(index, !isExpanded(index));
   }
 }
+
+void UserViewBase::currentChanged(const QModelIndex &current, const QModelIndex &previous)
+{
+  // Workaround for annoying auto scrolling, see comment in scrollTo()
+  myAllowScrollTo = true;
+  QTreeView::currentChanged(current, previous);
+  myAllowScrollTo = false;
+}
+
+void UserViewBase::timerEvent(QTimerEvent* event)
+{
+  // Workaround for annoying auto scrolling, see comment in scrollTo()
+  myAllowScrollTo = true;
+  QTreeView::timerEvent(event);
+  myAllowScrollTo = false;
+}
+
+void UserViewBase::scrollTo(const QModelIndex& index, ScrollHint hint)
+{
+  // scrollTo is called from the following functions:
+  //   QAbstractItemView::setVerticalScrollMode
+  //   QAbstractItemView::timerEvent
+  //   QAbstractItemView::currentChanged
+  //   QAbstractItemViewPrivate::_q_layoutChanged
+  //
+  // Since layoutChanged is emitted by the sort proxy whenever anything item
+  // in the list is changed this causes the list to scroll back to current item
+  // which can be annoying when trying to scroll the list manually.
+  // Since we cannot override a private function this is a ugly workaround to
+  // block scrollTo as default but allow it for timerEvent and currentChanged
+  // instead. (setVerticalScrollMode isn't used so we don't care for that one.)
+  if (myAllowScrollTo)
+    QTreeView::scrollTo(index, hint);
+}
+
