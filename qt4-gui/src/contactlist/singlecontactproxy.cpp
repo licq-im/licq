@@ -82,9 +82,9 @@ int SingleContactProxy::rowCount(const QModelIndex& parent) const
   return 0;
 }
 
-int SingleContactProxy::columnCount(const QModelIndex& parent) const
+int SingleContactProxy::columnCount(const QModelIndex& /* parent */) const
 {
-  return myContactList->columnCount(parent);
+  return myContactList->columnCount(QModelIndex());
 }
 
 QVariant SingleContactProxy::data(const QModelIndex& index, int role) const
@@ -97,7 +97,14 @@ QVariant SingleContactProxy::data(const QModelIndex& index, int role) const
 
 Qt::ItemFlags SingleContactProxy::flags(const QModelIndex& index) const
 {
-  return myContactList->flags(index);
+  if (!index.isValid() || index.row() != 0)
+    return Qt::ItemIsEnabled;
+
+  int column = index.column();
+  if (column < 0 || column >= MAX_COLUMNCOUNT)
+    return Qt::ItemIsEnabled;
+
+  return myContactList->flags(mySourceIndex[column]);
 }
 
 QVariant SingleContactProxy::headerData(int section, Qt::Orientation orientation, int role) const
