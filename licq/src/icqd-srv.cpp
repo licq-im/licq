@@ -4135,7 +4135,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           gLog.Info(tr("%sActivate server contact list.\n"), L_SRVxSTR);
           CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxACK);
           SendEvent_Server(p);
-          break;
+          //This packet had the user list in it, but we didn't ask for it.
+          //Nonetheless, it appears we won't get a second chance for this packet, so process it
+          //break;
         }
 
         /* This isn't used anymore. At least with SSI Version 0.
@@ -4201,8 +4203,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               AddUserToList(szId, LICQ_PPID, false); // Don't notify server
             }
 
-            char *szUnicodeAlias = szNewName ? strdup(szNewName) : 0;
-
             ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
             if (u)
             {
@@ -4219,12 +4219,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               u->SetGSID(nTag);
 
               if (szNewName)
-              {
-                if (szUnicodeAlias)
-                {
-                  u->SetAlias(szUnicodeAlias);
-                }
-              }
+                u->SetAlias(szNewName);
 
               if (szSMSNumber)
               {
@@ -4275,11 +4270,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             if (!isOnList)
             {
               gLog.Info(tr("%sAdded %s (%s) to list from server.\n"), L_SRVxSTR,
-                (szUnicodeAlias ? szUnicodeAlias : ""), szId);
+                (szNewName ? szNewName : szId), szId);
             }
 
-            if (szUnicodeAlias)
-              free(szUnicodeAlias);
             if (szNewName)
               delete [] szNewName;
             if (szSMSNumber)
