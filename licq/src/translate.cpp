@@ -461,7 +461,7 @@ char* CTranslator::iconvConvert(char* array, const char* to, const char* from,
   if (tr == (iconv_t)(-1))
   {
     ok = false;
-    gLog.Error("Unsupported encoding conversion from %s to %s.\n",
+    gLog.Warn("Unsupported encoding conversion from %s to %s.\n",
         from[0] == '\0' ? "[LOCALE]" : from,
         to[0] == '\0' ? "[LOCALE]" : to);
   }
@@ -476,9 +476,9 @@ char* CTranslator::iconvConvert(char* array, const char* to, const char* from,
     if (ret == (size_t)(-1))
     {
       ok = false;
-      gLog.Error("Error encoding from %s to %s.\n",
-          from[0] == '\0' ? "LOCALE" : from,
-          to[0] == '\0' ? "LOCALE" : to);
+      gLog.Warn("Unable to encode from %s to %s.\n",
+          from[0] == '\0' ? "[LOCALE]" : from,
+          to[0] == '\0' ? "[LOCALE]" : to);
     }
   }
 
