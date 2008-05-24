@@ -385,6 +385,15 @@ private slots:
 
 private:
   /**
+   * Create a group object and connect signals for it
+   *
+   * @param id Id for the new group
+   * @param name Name for the new group
+   * @return The created group
+   */
+  ContactGroup* createGroup(unsigned short id, QString name);
+
+  /**
    * Get the user object that represents an licq contact
    *
    * @param id Licq user id

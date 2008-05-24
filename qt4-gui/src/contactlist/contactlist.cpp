@@ -44,12 +44,8 @@ ContactListModel::ContactListModel(QObject* parent)
   // Create the system groups
   for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
-    mySystemGroups[i] = new ContactGroup(SystemGroupOffset + i,
+    mySystemGroups[i] = createGroup(SystemGroupOffset + i,
         LicqStrings::getSystemGroupName(i));
-    connect(mySystemGroups[i], SIGNAL(dataChanged(ContactGroup*)),
-        SLOT(groupDataChanged(ContactGroup*)));
-    connect(mySystemGroups[i], SIGNAL(barDataChanged(ContactBar*, int)),
-        SLOT(barDataChanged(ContactBar*, int)));
   }
 
   // Get the entire contact list from the daemon
@@ -67,6 +63,16 @@ ContactListModel::~ContactListModel()
   // Delete the system groups
   for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
     delete mySystemGroups[i];
+}
+
+ContactGroup* ContactListModel::createGroup(unsigned short id, QString name)
+{
+  ContactGroup* group = new ContactGroup(id, name);
+  connect(group, SIGNAL(dataChanged(ContactGroup*)),
+      SLOT(groupDataChanged(ContactGroup*)));
+  connect(group, SIGNAL(barDataChanged(ContactBar*, int)),
+      SLOT(barDataChanged(ContactBar*, int)));
+  return group;
 }
 
 void ContactListModel::listUpdated(CICQSignal* sig)
@@ -201,20 +207,11 @@ void ContactListModel::reloadAll()
   GroupList* g = gUserManager.LockGroupList(LOCK_R);
   beginInsertRows(QModelIndex(), 0, g->size());
 
-  ContactGroup* newGroup = new ContactGroup(0, tr("Other Users"));
-  connect(newGroup, SIGNAL(dataChanged(ContactGroup*)),
-      SLOT(groupDataChanged(ContactGroup*)));
-  connect(newGroup, SIGNAL(barDataChanged(ContactBar*, int)),
-      SLOT(barDataChanged(ContactBar*, int)));
-  myUserGroups.append(newGroup);
+  ContactGroup* newGroup = createGroup(0, tr("Other Users"));
 
   for (unsigned short i = 0; i < g->size(); ++i)
   {
-    newGroup = new ContactGroup(i+1, QString::fromLocal8Bit((*g)[i]));
-    connect(newGroup, SIGNAL(dataChanged(ContactGroup*)),
-        SLOT(groupDataChanged(ContactGroup*)));
-    connect(newGroup, SIGNAL(barDataChanged(ContactBar*, int)),
-        SLOT(barDataChanged(ContactBar*, int)));
+    newGroup = createGroup(i+1, QString::fromLocal8Bit((*g)[i]));
     myUserGroups.append(newGroup);
   }
 
@@ -326,8 +323,10 @@ void ContactListModel::clear()
   while (!myUsers.isEmpty())
     delete myUsers.takeFirst();
 
+  beginRemoveRows(QModelIndex(), 0, myUserGroups.size()-1);
   while (!myUserGroups.isEmpty())
     delete myUserGroups.takeFirst();
+  endRemoveRows();
 }
 
 QModelIndex ContactListModel::index(int row, int column, const QModelIndex& parent) const
