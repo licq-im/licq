@@ -55,16 +55,6 @@ ContactListModel::ContactListModel(QObject* parent)
       SLOT(configUpdated()));
 }
 
-ContactListModel::~ContactListModel()
-{
-  // Delete all users and groups
-  clear();
-
-  // Delete the system groups
-  for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
-    delete mySystemGroups[i];
-}
-
 ContactGroup* ContactListModel::createGroup(unsigned short id, QString name)
 {
   ContactGroup* group = new ContactGroup(id, name);
@@ -75,15 +65,25 @@ ContactGroup* ContactListModel::createGroup(unsigned short id, QString name)
   return group;
 }
 
+ContactListModel::~ContactListModel()
+{
+  // Delete all users and groups
+  clear();
+
+  // Delete the system groups
+  for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+    delete mySystemGroups[i];
+}
+
 void ContactListModel::listUpdated(CICQSignal* sig)
 {
   switch(sig->SubSignal())
   {
-    case LIST_ALL:
+    case LIST_INVALIDATE:
       reloadAll();
       break;
 
-    case LIST_ADD:
+    case LIST_CONTACT_ADDED:
     {
       ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
       if (u == NULL)
@@ -95,9 +95,54 @@ void ContactListModel::listUpdated(CICQSignal* sig)
       gUserManager.DropUser(u);
       break;
     }
-    case LIST_REMOVE:
+    case LIST_CONTACT_REMOVED:
       removeUser(sig->Id(), sig->PPID());
       break;
+
+    case LIST_GROUP_ADDED:
+    {
+      unsigned short gid = sig->Argument();
+
+      GroupList* g = gUserManager.LockGroupList(LOCK_R);
+      ContactGroup* newGroup = createGroup(gid, QString::fromLocal8Bit((*g)[gid-1]));
+      gUserManager.UnlockGroupList();
+
+      beginInsertRows(QModelIndex(), myUserGroups.size(), myUserGroups.size());
+      myUserGroups.append(newGroup);
+      endInsertRows();
+      break;
+    }
+
+    case LIST_GROUP_REMOVED:
+    {
+      unsigned short gid = sig->Argument();
+
+      for (int i = 0; i < myUserGroups.size(); ++i)
+      {
+        ContactGroup* group = myUserGroups.at(i);
+        if (group->groupId() == gid)
+        {
+          beginRemoveRows(QModelIndex(), i, i);
+          myUserGroups.removeAll(group);
+          endRemoveRows();
+          delete group;
+        }
+      }
+      break;
+    }
+
+    case LIST_GROUP_CHANGED:
+    {
+      unsigned short gid = sig->Argument();
+
+      for (int i = 0; i < myUserGroups.size(); ++i)
+      {
+        ContactGroup* group = myUserGroups.at(i);
+        if (group->groupId() == gid)
+          group->update();
+      }
+      break;
+    }
   }
 }
 

@@ -764,12 +764,7 @@ void MainWindow::updateGroups(bool initial)
 {
   if (!initial)
   {
-    // Daemon does not send an update when groups change so tell contactList it
-    // needs to update
-    LicqGui::instance()->contactList()->reloadAll();
-
     // update group list in user and system menus
-    LicqGui::instance()->userMenu()->updateGroups();
     mySystemMenu->updateGroups();
   }
 

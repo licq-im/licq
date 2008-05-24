@@ -69,7 +69,6 @@ private slots:
   void slot_editcancel();
   void slot_default();
   void slot_newuser();
-  void slot_done();
 };
 
 } // namespace LicqQtGui

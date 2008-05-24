@@ -114,7 +114,7 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
   connect(btnDefault, SIGNAL(clicked()), SLOT(slot_default()));
   connect(btnNewUser, SIGNAL(clicked()), SLOT(slot_newuser()));
   connect(btnEdit, SIGNAL(clicked()), SLOT(slot_edit()));
-  connect(btnDone, SIGNAL(clicked()), SLOT(slot_done()));
+  connect(btnDone, SIGNAL(clicked()), SLOT(close()));
   connect(edtName, SIGNAL(returnPressed()), SLOT(slot_editok()));
   connect(btnSave, SIGNAL(clicked()), SLOT(slot_editok()));
 
@@ -267,13 +267,4 @@ void EditGrpDlg::slot_editcancel()
   btnDone->setEnabled(true);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editcancel()));
   connect(btnEdit, SIGNAL(clicked()), SLOT(slot_edit()));
-}
-
-
-void EditGrpDlg::slot_done()
-{
-  // Daemon doesn't notify when groups change so tell mainwin to update
-  gMainWindow->updateGroups();
-
-  close();
 }

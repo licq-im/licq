@@ -88,21 +88,17 @@ void GroupMenu::updateGroups()
   foreach (a, myUserGroupActions->actions())
     delete a;
 
-  ContactListModel* list = LicqGui::instance()->contactList();
-  int groupCount = list->rowCount(QModelIndex());
-
-  for (int i = 0; i < groupCount; ++i)
+  GroupList* g = gUserManager.LockGroupList(LOCK_R);
+  for (unsigned int i = 0; i < g->size(); ++i)
   {
-    QModelIndex groupIndex = list->index(i, 0, QModelIndex());
-    unsigned int groupId = groupIndex.data(ContactListModel::GroupIdRole).toUInt();
+    QString name = QString::fromLocal8Bit((*g)[i]);
 
-    // Don't add system groups or other users group
-    if (groupId == 0 || groupId >= ContactListModel::SystemGroupOffset)
-      continue;
+    a = myUserGroupActions->addAction(name);
+    a->setData(i + 1);
 
-    a = myUserGroupActions->addAction(groupIndex.data(ContactListModel::NameRole).toString());
-    a->setData(groupId);
+    myGroupsMenu->insertAction(myGroupSeparator, a);
   }
+  gUserManager.UnlockGroupList();
 
   // Add groups to menu
   myGroupsMenu->insertActions(myGroupSeparator, myUserGroupActions->actions());
@@ -138,20 +134,12 @@ void GroupMenu::moveGroupUp()
 {
   // Model uses group+1 so substract one before sending to daemon
   gUserManager.SwapGroups(myGroupId, myGroupId - 1);
-
-  // Daemon doesn't notify us when groups change so notify model from here
-  LicqGui::instance()->contactList()->reloadAll();
-  LicqGui::instance()->mainWindow()->updateGroups();
 }
 
 void GroupMenu::moveGroupDown()
 {
   // Model uses group+1 so substract one before sending to daemon
   gUserManager.SwapGroups(myGroupId, myGroupId + 1);
-
-  // Daemon doesn't notify us when groups change so notify model from here
-  LicqGui::instance()->contactList()->reloadAll();
-  LicqGui::instance()->mainWindow()->updateGroups();
 }
 
 void GroupMenu::removeGroup()
@@ -164,10 +152,6 @@ void GroupMenu::removeGroup()
     return;
 
   gUserManager.RemoveGroup(myGroupId);
-
-  // Daemon doesn't notify us when groups change so notify model from here
-  LicqGui::instance()->contactList()->reloadAll();
-  LicqGui::instance()->mainWindow()->updateGroups();
 }
 
 void GroupMenu::addUsersToGroup(QAction* action)

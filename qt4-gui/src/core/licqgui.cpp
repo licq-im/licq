@@ -1388,10 +1388,6 @@ void LicqGui::listUpdated(CICQSignal* sig)
 {
   switch (sig->SubSignal())
   {
-    case LIST_ALL:
-      // Handled by ContactListModel
-      break;
-
     case LIST_ADD:
     {
       ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_W);
@@ -1458,6 +1454,14 @@ void LicqGui::listUpdated(CICQSignal* sig)
       break;
     }
 
+    case LIST_ALL:
+    case LIST_GROUP_ADDED:
+    case LIST_GROUP_REMOVED:
+    case LIST_GROUP_CHANGED:
+      myMainWindow->updateGroups();
+      myUserMenu->updateGroups();
+      myGroupMenu->updateGroups();
+      break;
   }
 }
 

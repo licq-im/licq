@@ -57,6 +57,11 @@ public:
   virtual ~ContactGroup();
 
   /**
+   * Group data in daemon has changed and needs to be refetched
+   */
+  void update();
+
+  /**
    * Get the Licq id for this group
    */
   unsigned short groupId() const

@@ -20,6 +20,8 @@
 
 #include "contactgroup.h"
 
+#include <licq_user.h>
+
 #include "contactbar.h"
 #include "contactuser.h"
 
@@ -54,6 +56,15 @@ ContactGroup::~ContactGroup()
 
   for (int i = 0; i < 3; ++i)
     delete myBars[i];
+}
+
+void ContactGroup::update()
+{
+  GroupList* g = gUserManager.LockGroupList(LOCK_R);
+  myName = QString::fromLocal8Bit((*g)[myGroupId-1]);
+  gUserManager.UnlockGroupList();
+
+  emit dataChanged(this);
 }
 
 ContactItem* ContactGroup::item(int row) const
@@ -197,14 +208,12 @@ bool ContactGroup::setData(const QVariant& value, int role)
   if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
     return false;
 
-  if (value.toString() == myName)
+  QString newName = value.toString();
+  if (newName == myName)
     return true;
 
-  myName = value.toString();
-  gUserManager.RenameGroup(myGroupId, myName.toLocal8Bit());
-
-  // Daemon doesn't signal when groups change so trigger update from here
-  emit dataChanged(this);
+  // Don't save new name here, daemon will signal us when name has changed
+  gUserManager.RenameGroup(myGroupId, newName.toLocal8Bit());
 
   return true;
 }
