@@ -1604,12 +1604,12 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 {
   switch(sig->SubSignal())
   {
-    case LIST_ALL:
+    case LIST_INVALIDATE:
     {
       updateUserWin();
       break;
     }
-    case LIST_ADD:
+    case LIST_CONTACT_ADDED:
     {
       ICQUser *u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_W);
       if (u == NULL)
@@ -1646,7 +1646,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       break;
     }
 
-    case LIST_REMOVE:
+    case LIST_CONTACT_REMOVED:
     {
       // delete their entries in the user list
       QListViewItemIterator it(userView);
@@ -1715,6 +1715,13 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 
       break;
     }
+
+    case LIST_GROUP_ADDED:
+    case LIST_GROUP_REMOVED:
+    case LIST_GROUP_CHANGED:
+      updateGroups();
+      updateUserWin();
+      break;
 
   }  // Switch
 }
