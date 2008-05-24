@@ -307,15 +307,6 @@ friend void *MonitorSockets_tep(void *p);
 //=====CICQSignal============================================================
 
 /*
- * SIGNAL_UPDATExLIST -
- *   Indicates that the user list has changed in some way.  The sub-type
- *   will be one of the following.  In all cases the argument is 0.
- *     LIST_ADD - A user was added to the list.  The UIN will be that of
- *     the new user.
- *     LIST_REMOVE - A user was removed from the list.  The UIN will be
- *     that of the removed user.
- *     LIST_ALL - The entire list has been changed.  The UIN will be 0.
- *
  *  SIGNAL_UPDATExUSER - The user has been modified in some way.  The UIN
  *  is that of the relevant user, and the sub-type indicates what type of
  *  information was changed.  In all cases except the following the argument
@@ -338,6 +329,7 @@ friend void *MonitorSockets_tep(void *p);
  *
  *  SIGNAL_ONEVENT - FIXME: MISSING DESCRIPTION
  *-------------------------------------------------------------------------*/
+/** Indicates that the user list has changed in some way */
 const unsigned long SIGNAL_UPDATExLIST           = 0x00000001;
 const unsigned long SIGNAL_UPDATExUSER           = 0x00000002;
 //! Indicates that we have successfully logged on to the specified
@@ -411,9 +403,27 @@ const unsigned long USER_PICTURE                = 13;
 const unsigned long USER_TYPING                 = 14;
 const unsigned long USER_PLUGIN_STATUS          = 15; // Which Plugin?
 
-const unsigned long LIST_ADD                     = 1;
-const unsigned long LIST_REMOVE                  = 2;
-const unsigned long LIST_ALL                     = 3;
+/**
+ * Sub signals for SIGNAL_UPDATExLIST
+ *
+ * For contact updates, ppid and id are valid. For group updates, argument
+ * holds the group id.
+ */
+enum SubSignals_UPDATExLIST
+{
+  LIST_CONTACT_ADDED = 1,       /**< A contact was added to the list */
+  LIST_CONTACT_REMOVED = 2,     /**< A contact was removed from the list */
+  LIST_INVALIDATE = 3,          /**< List must be reloaded */
+  LIST_GROUP_ADDED = 4,         /**< A group was added to the list */
+  LIST_GROUP_REMOVED = 5,       /**< A group was removed from the list */
+  LIST_GROUP_CHANGED = 6        /**< Data for a group has changed */
+};
+
+// Deprecated SIGNAL_UPDATExLIST sub signal names, do not use
+const unsigned long LIST_ADD                     = LIST_CONTACT_ADDED;
+const unsigned long LIST_REMOVE                  = LIST_CONTACT_REMOVED;
+const unsigned long LIST_ALL                     = LIST_INVALIDATE;
+
 
 /*! \brief Plugin notification messages
 

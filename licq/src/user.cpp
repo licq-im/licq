@@ -869,8 +869,17 @@ bool CUserManager::AddGroup(char *_szName, unsigned short nID)
     UnlockGroupList();
   }
 
-  if (bNewGroup && !nID && gLicqDaemon)
-    gLicqDaemon->icqAddGroup(_szName);
+  if (bNewGroup && gLicqDaemon)
+  {
+    if (nID != 0)
+      gLicqDaemon->icqAddGroup(_szName);
+
+    // New group is last so it has highest group id
+    unsigned short gid = NumGroups();
+
+    // Send signal to let plugins know of the new group
+    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_GROUP_ADDED, NULL, 0, gid, 0));
+  }
 
   return bNewGroup;
 }
@@ -920,6 +929,11 @@ void CUserManager::RemoveGroup(unsigned short n)
 
   SaveGroups();
   UnlockGroupList();
+
+  // Send signal to let plugins know of the removed group
+  // FIXME: Since removing a group causes other groups to chande id, we can't
+  // just send the LIST_GROUP_REMOVED signal.
+  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_INVALIDATE, NULL, 0, 0, 0));
 }
 
 
@@ -965,6 +979,11 @@ void CUserManager::SwapGroups(unsigned short g1, unsigned short g2)
   m_vnGroupsID[g2 - 1] = nTmp;
   SaveGroupIDs();
   UnlockGroupIDList();
+
+  // Send signals to let plugins know that the groups sorting has changed
+  // FIXME: Until sorting is separated from group id, we'll have plugins reload
+  // the entire list to avoid problems.
+  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_INVALIDATE, NULL, 0, 0, 0));
 }
 
 
@@ -987,6 +1006,9 @@ void CUserManager::RenameGroup(unsigned short n, const char *_sz, bool _bUpdate)
   // If we rename a group on logon, don't send the rename packet
   if (gLicqDaemon && _bUpdate)
     gLicqDaemon->icqRenameGroup(_sz, nGSID);
+
+  // Send signal to let plugins know the group has changed
+  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_GROUP_CHANGED, NULL, 0, n, 0));
 }
 
 
