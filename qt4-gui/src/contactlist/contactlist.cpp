@@ -208,6 +208,7 @@ void ContactListModel::reloadAll()
   beginInsertRows(QModelIndex(), 0, g->size());
 
   ContactGroup* newGroup = createGroup(0, tr("Other Users"));
+  myUserGroups.append(newGroup);
 
   for (unsigned short i = 0; i < g->size(); ++i)
   {
