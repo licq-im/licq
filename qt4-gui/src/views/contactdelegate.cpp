@@ -363,8 +363,7 @@ void ContactDelegate::drawStatusIcon(Parameters& arg) const
   }
   else if (arg.itemType == ContactListModel::GroupItem)
   {
-    if (Config::ContactList::instance()->groupState(
-          arg.index.data(ContactListModel::GroupIdRole).toInt()))
+    if (myUserView->isExpanded(arg.index))
       icon = &iconman->getIcon(IconManager::ExpandedIcon);
     else
       icon = &iconman->getIcon(IconManager::CollapsedIcon);
