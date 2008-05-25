@@ -31,10 +31,13 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq_events.h>
 #include <licq_user.h>
 
+#include "core/licqgui.h"
 #include "core/mainwin.h"
 #include "core/messagebox.h"
+#include "core/signalmanager.h"
 
 #include "helpers/licqstrings.h"
 
@@ -106,6 +109,8 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
   btnDone->setText(tr("&Done"));
 
   RefreshList();
+  connect(LicqGui::instance()->signalManager(),
+      SIGNAL(updatedList(CICQSignal*)), SLOT(listUpdated(CICQSignal*)));
 
   connect(btnAdd, SIGNAL(clicked()), SLOT(slot_add()));
   connect(btnRemove, SIGNAL(clicked()), SLOT(slot_remove()));
@@ -147,6 +152,20 @@ void EditGrpDlg::RefreshList()
       nfoNewUser->setText(QString::fromLocal8Bit((*g)[i]));
   }
   gUserManager.UnlockGroupList();
+}
+
+void EditGrpDlg::listUpdated(CICQSignal* sig)
+{
+  switch (sig->SubSignal())
+  {
+    case LIST_GROUP_ADDED:
+    case LIST_GROUP_REMOVED:
+    case LIST_GROUP_CHANGED:
+
+    case LIST_INVALIDATE:
+      RefreshList();
+      break;
+  }
 }
 
 void EditGrpDlg::slot_add()

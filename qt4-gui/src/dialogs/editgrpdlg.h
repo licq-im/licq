@@ -27,6 +27,8 @@ class QLineEdit;
 class QListWidget;
 class QPushButton;
 
+class CICQSignal;
+
 namespace LicqQtGui
 {
 class InfoField;
@@ -60,6 +62,7 @@ private:
   void RefreshList();
 
 private slots:
+  void listUpdated(CICQSignal* sig);
   void slot_add();
   void slot_remove();
   void slot_up();
