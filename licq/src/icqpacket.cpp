@@ -3181,8 +3181,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   unsigned short nSID = 0;
   unsigned short nExtraLen = 0;
   unsigned short nNameLen = strlen(_szName);
-  char *szUnicodeName = 0,
-       *szUnicodeAlias = 0;
+  char *szUnicodeName = 0;
   GroupIDList *gID = 0;
   CBuffer tlvBuffer;
 
@@ -3300,8 +3299,6 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
   if (szUnicodeName)
     delete [] szUnicodeName;
-  if (szUnicodeAlias)
-    free(szUnicodeAlias);
 }
 
 //-----SearchWhitePages---------------------------------------------------------
