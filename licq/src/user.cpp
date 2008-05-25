@@ -3927,6 +3927,9 @@ ICQOwner::ICQOwner()
 
   m_fConf.SetFileName(filename);
   LoadInfo();
+  // Owner encoding fixup to be UTF-8 by default
+  if (strcmp(m_szEncoding, "") == 0)
+    SetString(&m_szEncoding, "UTF-8");
   m_fConf.ReadNum("Uin", m_nUin, 0);
   snprintf(m_szUinString, 12, "%lu", m_nUin);
   m_szUinString[12] = '\0';
@@ -4004,6 +4007,9 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
 
   // And finally our favorite function
   LoadInfo();
+  // Owner encoding fixup to be UTF-8 by default
+  if (strcmp(m_szEncoding, "") == 0)
+    SetString(&m_szEncoding, "UTF-8");
   m_fConf.ReadStr("Password", szTemp, "", false);
   SetPassword(&szTemp[1]); // skip leading space since we didn't trim
   m_fConf.ReadBool("WebPresence", m_bWebAware, false);
