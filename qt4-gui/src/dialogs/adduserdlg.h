@@ -23,6 +23,7 @@
 
 #include <QDialog>
 
+class QCheckBox;
 class QLineEdit;
 
 namespace LicqQtGui
@@ -37,6 +38,7 @@ public:
    AddUserDlg(QString id = QString::null, unsigned long ppid = 0, QWidget* parent = 0);
 
 private:
+   QCheckBox* myNotify;
    QLineEdit* myUin;
    ProtoComboBox* myProtocol;
 

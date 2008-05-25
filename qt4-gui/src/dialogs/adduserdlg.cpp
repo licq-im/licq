@@ -20,6 +20,7 @@
 
 #include "adduserdlg.h"
 
+#include <QCheckBox>
 #include <QDialogButtonBox>
 #include <QGridLayout>
 #include <QLabel>
@@ -61,13 +62,16 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
   layDialog->addWidget(lblUin, 1, 0);
   layDialog->addWidget(myUin, 1, 1);
 
+  myNotify = new QCheckBox(tr("Notify User"));
+  myNotify->setChecked(true);
+  layDialog->addWidget(myNotify, 2, 0, 1, 2);
+
   QDialogButtonBox* buttons = new QDialogButtonBox(
       QDialogButtonBox::Ok |
       QDialogButtonBox::Cancel);
   connect(buttons, SIGNAL(accepted()), SLOT(ok()));
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
 
-  layDialog->setRowStretch(2, 1);
   layDialog->addWidget(buttons, 3, 0, 1, 2);
 
   myUin->setFocus();
@@ -79,7 +83,8 @@ void AddUserDlg::ok()
   QString uin = myUin->text();
 
   if (!uin.isEmpty())
-    gLicqDaemon->AddUserToList(uin.toLatin1(), myProtocol->currentPpid());
+    gLicqDaemon->AddUserToList(uin.toLatin1(), myProtocol->currentPpid(),
+        myNotify->isChecked());
 
   close();
 }
