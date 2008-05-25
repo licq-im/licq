@@ -100,8 +100,7 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-using std::pair;
-using std::make_pair;
+using namespace std;
 
 const size_t SHOW_RECENT_NUM = 5;
 

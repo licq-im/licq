@@ -84,8 +84,7 @@
 #include "usersendsmsevent.h"
 #include "usersendurlevent.h"
 
-using std::pair;
-using std::make_pair;
+using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendCommon */
 

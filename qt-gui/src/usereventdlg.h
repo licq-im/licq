@@ -29,8 +29,6 @@
 #include <string>
 #include <utility>
 
-using std::list;
-
 #include "licq_color.h"
 #include "licq_filetransfer.h"
 #include "licq_message.h"
@@ -126,7 +124,7 @@ public:
   const char *Id()  { return m_lUsers.front().c_str(); }
   unsigned long PPID()  { return m_nPPID; }
   unsigned long ConvoId() { return m_nConvoId; }
-  list<string>& ConvoUsers() { return m_lUsers; }
+  std::list<std::string>& ConvoUsers() { return m_lUsers; }
   void SetConvoId(unsigned long n)  { m_nConvoId = n; }
   
   bool FindUserInConvo(const char* id);
@@ -146,7 +144,7 @@ protected:
   QTextCodec *codec;
   bool m_bOwner;
   char *m_szId;
-  list<string> m_lUsers;
+  std::list<std::string> m_lUsers;
   unsigned long m_nPPID;
   QBoxLayout* top_lay, *top_hlay;
   CICQDaemon *server;
