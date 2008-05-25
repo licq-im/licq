@@ -237,6 +237,7 @@ KeyList::KeyList(QWidget* parent)
   : QTreeWidget(parent)
 {
   setAcceptDrops(true);
+  setRootIsDecorated(false);
 }
 
 KeyList::~KeyList()
