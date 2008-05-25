@@ -97,7 +97,7 @@ GPGKeyManager::GPGKeyManager(QWidget* parent)
   lbl_dragndrop->setWordWrap(true);
 
   // create the keylist
-  lst_keyList = new KeyList();
+  lst_keyList = new KeyList(this);
   lst_keyList->setAllColumnsShowFocus(true);
   QStringList headers;
   headers << tr("User") << tr("Active") << tr("Key ID");
@@ -181,28 +181,35 @@ void GPGKeyManager::slot_add()
   if (tmp == NULL)
     return;
 
-  ICQUser* u = gUserManager.FetchUser(tmp->szId.toLatin1(), tmp->nPPID, LOCK_R);
-  if ( u )
-  {
-    editUser( u );
-    gUserManager.DropUser(u);
-  }
+  editUser(tmp->szId, tmp->nPPID);
 }
 
-void GPGKeyManager::editUser(ICQUser* u)
+void GPGKeyManager::editUser(QString id, unsigned long ppid)
 {
+  KeyListItem* item = NULL;
+  bool found = false;
+
   for (int i = 0; i < lst_keyList->topLevelItemCount(); ++i)
   {
-    KeyListItem* item = dynamic_cast<KeyListItem*>(lst_keyList->topLevelItem(i));
+    item = dynamic_cast<KeyListItem*>(lst_keyList->topLevelItem(i));
 
-    if (item->getszId() == u->IdString() && item->getnPPID() == u->PPID())
+    if (item->getszId() == id && item->getnPPID() == ppid)
     {
-      item->edit();
-      return;
+      found = true;
+      break;
     }
   }
 
-  (new KeyListItem(lst_keyList, u))->edit();
+  if (!found)
+  {
+    ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+    if (u == NULL)
+      return;
+    item = new KeyListItem(lst_keyList, u);
+    gUserManager.DropUser(u);
+  }
+
+  item->edit();
 };
 
 void GPGKeyManager::slot_remove()
@@ -277,25 +284,9 @@ void KeyList::dropEvent(QDropEvent* event)
 
   QString szId = text.mid(4);
 
-  ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
-
-  if (u != NULL)
-  {
-    bool found = false;
-    for (int i = 0; i < topLevelItemCount(); ++i)
-    {
-      KeyListItem* item = dynamic_cast<KeyListItem*>(topLevelItem(i));
-      if (item->getszId() == szId && item->getnPPID() == nPPID)
-      {
-        item->edit();
-        found = true;
-        break;
-      }
-    }
-    if (!found)
-      (new KeyListItem(this, u))->edit();
-    gUserManager.DropUser(u);
-  }
+  GPGKeyManager* km = dynamic_cast<GPGKeyManager*>(nativeParentWidget());
+  if (km != NULL)
+    km->editUser(szId, nPPID);
 }
 
 void KeyList::resizeEvent(QResizeEvent* e)

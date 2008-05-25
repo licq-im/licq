@@ -44,7 +44,7 @@ private:
   KeyList* lst_keyList;
   QLabel* lbl_passphrase;
   QLabel* lbl_dragndrop;
-  void editUser(ICQUser* u);
+  void editUser(QString id, unsigned long ppid);
   void initKeyList();
 
 private slots:
@@ -54,6 +54,8 @@ private slots:
   void slot_edit();
   void slot_remove();
   void slot_doubleClicked(QTreeWidgetItem* item);
+
+  friend class KeyList;
 };
 
 class KeyList : public QTreeWidget
