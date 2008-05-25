@@ -22,11 +22,7 @@
 #include "config.h"
 
 #include <QDialogButtonBox>
-#include <QGroupBox>
-#include <QHBoxLayout>
-#include <QLabel>
 #include <QMenu>
-#include <QMessageBox>
 #include <QPushButton>
 #include <QVBoxLayout>
 
@@ -36,6 +32,7 @@
 extern char *PPIDSTRING(unsigned long);
 
 #include "core/mainwin.h"
+#include "core/messagebox.h"
 
 #include "helpers/support.h"
 
@@ -54,7 +51,7 @@ struct luser
 
 bool compare_luser(const struct luser& left, const struct luser& right)
 {
-  return left.alias < right.alias;
+  return QString::compare(left.alias, right.alias, Qt::CaseInsensitive) <= 0;
 }
 
 GPGKeyManager::GPGKeyManager(QWidget* parent)
@@ -66,89 +63,45 @@ GPGKeyManager::GPGKeyManager(QWidget* parent)
 
   QVBoxLayout* lay_main = new QVBoxLayout(this);
 
-  // GPG Passphrase box
-  QGroupBox* box_passphrase = new QGroupBox(tr("GPG Passphrase"));
-  lay_main->addWidget( box_passphrase );
-
-  QHBoxLayout* lay_passphrase = new QHBoxLayout(box_passphrase);
-
-  lbl_passphrase = new QLabel(tr("No passphrase set"));
-  lay_passphrase->addWidget(lbl_passphrase);
-  QPushButton* btn_setPass = new QPushButton(tr("&Set GPG Passphrase"));
-  connect(btn_setPass, SIGNAL(clicked()), SLOT(slot_setPassphrase()));
-  lay_passphrase->addWidget(btn_setPass);
-
-  // GPG User/Key list
-  QHBoxLayout* lay_hbox = new QHBoxLayout();
-  lay_main->addLayout(lay_hbox);
-  QGroupBox* box_keys = new QGroupBox(tr("User Keys"));
-  lay_hbox->addWidget(box_keys, 1);
-  QVBoxLayout* lay_keys = new QVBoxLayout(box_keys);
-
-  QVBoxLayout* lay_buttonBox = new QVBoxLayout();
-  lay_hbox->addLayout(lay_buttonBox, 0);
-  QPushButton* btn_add = new QPushButton(tr("&Add"));
-  QPushButton* btn_edit = new QPushButton(tr("&Edit"));
-  QPushButton* btn_remove = new QPushButton(tr("&Remove"));
-  connect(btn_add, SIGNAL(clicked()), SLOT(slot_add()));
-  connect(btn_edit, SIGNAL(clicked()), SLOT(slot_edit()));
-  connect(btn_remove, SIGNAL(clicked()), SLOT(slot_remove()));
-  lbl_dragndrop = new QLabel(tr("Drag&Drop user to add to list."));
-  lbl_dragndrop->setWordWrap(true);
-
-  // create the keylist
-  lst_keyList = new KeyList(this);
+  lst_keyList = new KeyList();
   lst_keyList->setAllColumnsShowFocus(true);
   QStringList headers;
   headers << tr("User") << tr("Active") << tr("Key ID");
   lst_keyList->setHeaderLabels(headers);
   connect(lst_keyList, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
       SLOT(slot_doubleClicked(QTreeWidgetItem*)));
-  lay_keys->addWidget(lst_keyList);
+  lay_main->addWidget(lst_keyList);
 
-  lay_buttonBox->addWidget(btn_add);
-  lay_buttonBox->addWidget(btn_edit);
-  lay_buttonBox->addWidget(btn_remove);
-  lay_buttonBox->addWidget(lbl_dragndrop);
-  lay_buttonBox->addStretch();
-
-  // Close
   QDialogButtonBox* buttons = new QDialogButtonBox();
   lay_main->addWidget(buttons);
 
-  QPushButton* btn_close = buttons->addButton(QDialogButtonBox::Close);
-  btn_close->setText(tr("&Close"));
-  connect(btn_close, SIGNAL(clicked()), SLOT(slot_close()));
+  QPushButton* btn;
+#define BUTTON(role, name, slot) \
+  btn = buttons->addButton(name, QDialogButtonBox::role); \
+  connect(btn, SIGNAL(clicked()), SLOT(slot()))
+
+  BUTTON(ActionRole, tr("&Add"), slot_add);
+  BUTTON(ActionRole, tr("&Edit"), slot_edit);
+  BUTTON(ActionRole, tr("&Remove"), slot_remove);
+
+#undef BUTTON
+  buttons->addButton(QDialogButtonBox::Close);
+  connect(buttons, SIGNAL(rejected()), SLOT(close()));
 
   initKeyList();
 
   show();
 }
 
-GPGKeyManager::~GPGKeyManager()
-{}
-
-void GPGKeyManager::slot_setPassphrase()
-{
-  QMessageBox::information( this, tr("Set Passphrase"), tr("Not yet implemented. Use licq_gpg.conf.") );
-}
-
-void GPGKeyManager::slot_close()
-{
-  close();
-}
-
 void GPGKeyManager::slot_edit()
 {
-  QTreeWidgetItem* item = lst_keyList->currentItem();
-  if (item )
-    ( (KeyListItem*)item )->edit();
+  slot_doubleClicked(lst_keyList->currentItem());
 }
 
 void GPGKeyManager::slot_doubleClicked(QTreeWidgetItem* item)
 {
-  if (item )
-    ( (KeyListItem*)item )->edit();
+  if (item != NULL)
+    dynamic_cast<KeyListItem*>(item)->edit();
 }
 
 void GPGKeyManager::slot_add()
@@ -158,7 +111,7 @@ void GPGKeyManager::slot_add()
 
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (strcmp( pUser->GPGKey(), "") == 0)
+    if (strcmp(pUser->GPGKey(), "") == 0)
     {
       luser tmp;
       tmp.szId = pUser->IdString();
@@ -181,17 +134,55 @@ void GPGKeyManager::slot_add()
   if (tmp == NULL)
     return;
 
-  editUser(tmp->szId, tmp->nPPID);
+  lst_keyList->editUser(tmp->szId, tmp->nPPID);
 }
 
-void GPGKeyManager::editUser(QString id, unsigned long ppid)
+void GPGKeyManager::slot_remove()
+{
+  KeyListItem* item = (KeyListItem*)lst_keyList->currentItem();
+  if (item != NULL)
+  {
+    if (QueryYesNo(this, tr("Do you want to remove the GPG key binding for the user %1?\n"
+            "The key isn't deleted from your keyring.")
+          .arg(item->text(0))))
+    {
+      item->unsetKey();
+      delete item;
+      lst_keyList->resizeColumnsToContents();
+    }
+  }
+}
+
+void GPGKeyManager::initKeyList()
+{
+  FOR_EACH_USER_START(LOCK_R)
+  {
+    if (strcmp(pUser->GPGKey(), "") != 0)
+    {
+      new KeyListItem(lst_keyList, pUser);
+    }
+  }
+  FOR_EACH_USER_END
+
+  lst_keyList->resizeColumnsToContents();
+}
+
+// THE KEYLIST
+KeyList::KeyList(QWidget* parent)
+  : QTreeWidget(parent)
+{
+  setAcceptDrops(true);
+  setRootIsDecorated(false);
+}
+
+void KeyList::editUser(QString id, unsigned long ppid)
 {
   KeyListItem* item = NULL;
   bool found = false;
 
-  for (int i = 0; i < lst_keyList->topLevelItemCount(); ++i)
+  for (int i = 0; i < topLevelItemCount(); ++i)
   {
-    item = dynamic_cast<KeyListItem*>(lst_keyList->topLevelItem(i));
+    item = dynamic_cast<KeyListItem*>(topLevelItem(i));
 
     if (item->getszId() == id && item->getnPPID() == ppid)
     {
@@ -205,51 +196,13 @@ void GPGKeyManager::editUser(QString id, unsigned long ppid)
     ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
     if (u == NULL)
       return;
-    item = new KeyListItem(lst_keyList, u);
+    item = new KeyListItem(this, u);
     gUserManager.DropUser(u);
+    resizeColumnsToContents();
   }
 
   item->edit();
 };
-
-void GPGKeyManager::slot_remove()
-{
-  KeyListItem* item = (KeyListItem*)lst_keyList->currentItem();
-  if ( item )
-  {
-    if ( QMessageBox::question( this, tr("Remove GPG key"), tr("Do you want to remove the GPG key? The key isn't deleted from your keyring."), QMessageBox::Yes, QMessageBox::No )==QMessageBox::Yes )
-    {
-      item->unsetKey();
-      delete item;
-    };
-  }
-}
-
-void GPGKeyManager::initKeyList()
-{
-  FOR_EACH_USER_START(LOCK_R)
-  {
-    if ( strcmp( pUser->GPGKey(), "" )!= 0 )
-    {
-      new KeyListItem( lst_keyList, pUser );
-    }
-  }
-  FOR_EACH_USER_END
-}
-
-
-
-// THE KEYLIST
-KeyList::KeyList(QWidget* parent)
-  : QTreeWidget(parent)
-{
-  setAcceptDrops(true);
-  setRootIsDecorated(false);
-}
-
-KeyList::~KeyList()
-{
-}
 
 void KeyList::dragEnterEvent(QDragEnterEvent* event)
 {
@@ -257,16 +210,15 @@ void KeyList::dragEnterEvent(QDragEnterEvent* event)
     event->acceptProposedAction();
 }
 
-void KeyList::dragMoveEvent(QDragMoveEvent* /* event */)
-{
-  // Do nothing, just overload function so base class won't interfere
-}
-
 void KeyList::dropEvent(QDropEvent* event)
 {
   if (!event->mimeData()->hasText())
     return;
+
   QString text = event->mimeData()->text();
+
+  if (text.length() <= 4)
+    return;
 
   unsigned long nPPID = 0;
   FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
@@ -279,14 +231,10 @@ void KeyList::dropEvent(QDropEvent* event)
   }
   FOR_EACH_PROTO_PLUGIN_END;
 
-  if (nPPID == 0 || text.length() <= 4)
+  if (nPPID == 0)
     return;
 
-  QString szId = text.mid(4);
-
-  GPGKeyManager* km = dynamic_cast<GPGKeyManager*>(nativeParentWidget());
-  if (km != NULL)
-    km->editUser(szId, nPPID);
+  editUser(text.mid(4), nPPID);
 }
 
 void KeyList::resizeEvent(QResizeEvent* e)
@@ -311,6 +259,12 @@ void KeyList::resizeEvent(QResizeEvent* e)
   }
 }
 
+void KeyList::resizeColumnsToContents()
+{
+  for (int i = 0; i < columnCount(); i++)
+    resizeColumnToContents(i);
+}
+
 // KEYLISTITEM
 KeyListItem::KeyListItem(QTreeWidget* parent, ICQUser* u)
   : QTreeWidgetItem(parent),
@@ -318,23 +272,19 @@ KeyListItem::KeyListItem(QTreeWidget* parent, ICQUser* u)
     nPPID(u->PPID()),
     keySelect(NULL)
 {
-  updateText( u );
-}
-
-KeyListItem::~KeyListItem()
-{
+  updateText(u);
 }
 
 void KeyListItem::updateText(ICQUser* u)
 {
-  setText( 0, QString::fromUtf8(u->GetAlias()) );
-  setText( 1, u->UseGPG() ? tr("Yes") : tr("No") );
-  setText( 2, u->GPGKey() );
+  setText(0, QString::fromUtf8(u->GetAlias()));
+  setText(1, u->UseGPG() ? tr("Yes") : tr("No"));
+  setText(2, u->GPGKey());
 }
 
 void KeyListItem::edit()
 {
-  if ( !keySelect )
+  if (keySelect == NULL)
   {
     keySelect = new GPGKeySelect(szId, nPPID);
     connect(keySelect, SIGNAL(signal_done()), SLOT(slot_done()));
@@ -346,13 +296,14 @@ void KeyListItem::slot_done()
   ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
   keySelect = NULL;
 
-  if ( u )
+  if (u != NULL)
   {
-    if ( strcmp(u->GPGKey(),"")==0 )
+    if (strcmp(u->GPGKey(), "") == 0)
       delete this;
     else
-      updateText( u );
+      updateText(u);
     gUserManager.DropUser(u);
+    dynamic_cast<KeyList*>(treeWidget())->resizeColumnsToContents();
   }
 }
 

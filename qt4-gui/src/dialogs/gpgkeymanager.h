@@ -23,8 +23,6 @@
 #include <QDialog>
 #include <QTreeWidget>
 
-class QLabel;
-
 class ICQUser;
 
 namespace LicqQtGui
@@ -38,24 +36,16 @@ class GPGKeyManager : public QDialog
 
 public:
   GPGKeyManager(QWidget* parent = 0);
-  ~GPGKeyManager();
 
 private:
   KeyList* lst_keyList;
-  QLabel* lbl_passphrase;
-  QLabel* lbl_dragndrop;
-  void editUser(QString id, unsigned long ppid);
   void initKeyList();
 
 private slots:
-  void slot_setPassphrase();
-  void slot_close();
   void slot_add();
   void slot_edit();
   void slot_remove();
   void slot_doubleClicked(QTreeWidgetItem* item);
-
-  friend class KeyList;
 };
 
 class KeyList : public QTreeWidget
@@ -64,13 +54,15 @@ class KeyList : public QTreeWidget
 
 public:
   KeyList(QWidget* parent = 0);
-  ~KeyList();
+
+  void editUser(QString id, unsigned long ppid);
+  void resizeColumnsToContents();
 
 private:
   void dragEnterEvent(QDragEnterEvent* event);
-  void dragMoveEvent(QDragMoveEvent* event);
+  void dragMoveEvent(QDragMoveEvent* /* event */) {};
   void dropEvent(QDropEvent* event);
-  virtual void resizeEvent(QResizeEvent* e);
+  virtual void resizeEvent(QResizeEvent* event);
 };
 
 class KeyListItem : public QObject, public QTreeWidgetItem
@@ -79,7 +71,6 @@ class KeyListItem : public QObject, public QTreeWidgetItem
 
 public:
   KeyListItem(QTreeWidget* parent, ICQUser* u);
-  ~KeyListItem();
 
   void edit();
   void unsetKey();
