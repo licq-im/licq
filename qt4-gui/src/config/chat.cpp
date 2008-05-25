@@ -72,7 +72,7 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   myChatDateFormat = QString::fromLatin1(szTemp);
   iniFile.ReadNum("HistoryMessageStyle", myHistMsgStyle, 0);
   iniFile.ReadBool("HistoryVerticalSpacing", myHistVertSpacing, true);
-  iniFile.ReadBool("HistoryReverse", myReverseHistory, true);
+  iniFile.ReadBool("HistoryReverse", myReverseHistory, false);
   iniFile.ReadStr("HistoryDateFormat", szTemp, "hh:mm:ss");
   myHistDateFormat = QString::fromLatin1(szTemp);
 
