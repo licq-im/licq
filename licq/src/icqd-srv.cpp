@@ -42,6 +42,8 @@
 #include "licq_countrycodes.h"
 #include "licq_protoplugind.h"
 
+using namespace std;
+
 void CICQDaemon::ProtoAddUser(const char *_szId, unsigned long _nPPID,
                               bool _bAuthRequired)
 {

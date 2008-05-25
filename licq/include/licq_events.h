@@ -6,9 +6,7 @@
 #include "licq_message.h"
 
 #include <stdlib.h>
-#include <vector>
 
-using std::vector;
 
 class CPacket;
 class CICQDaemon;

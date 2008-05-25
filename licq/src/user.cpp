@@ -42,7 +42,7 @@
 #include "support.h"
 #include "pthread_rdwr.h"
 
-using std::vector;
+using namespace std;
 
 ICQUserCategory::ICQUserCategory(UserCat uc)
 {

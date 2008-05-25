@@ -10,7 +10,6 @@
 
 #include <string>
 
-using namespace std;
 
 class CTranslator
 {
@@ -43,7 +42,7 @@ public:
   char* NToRN(const char* array);
   char* RNToN(const char* array);
 
-  bool utf16to8(unsigned long c, string &s);
+  bool utf16to8(unsigned long c, std::string &s);
 
 protected:
   bool myMapDefault;

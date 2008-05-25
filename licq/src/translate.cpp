@@ -29,6 +29,8 @@ extern int errno;
 #include "licq_log.h"
 #include "licq_icq.h"
 
+using namespace std;
+
 CTranslator gTranslator;
 
 CTranslator::CTranslator() :

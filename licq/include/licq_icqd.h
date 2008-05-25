@@ -14,11 +14,10 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <vector>
 #include <list>
 #include <map>
-#include <deque>
 #include <string>
 #include <algorithm>
-#include <stdarg.h>
-#include <stdio.h>
+#include <cstdarg>
+#include <cstdio>
 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
@@ -28,7 +27,6 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_color.h"
 #include "licq_protoplugind.h"
 
-using std::string;
 
 class CProtoPlugin;
 class CPlugin;
@@ -130,7 +128,7 @@ public:
   int Socket()          { return m_nSocket; }
   unsigned long CID()   { return m_nCID; }
 
-  string GetUser(int n) { return m_vUsers[n]; }
+  std::string GetUser(int n) { return m_vUsers[n]; }
 
 private:
   CConversation(int nSocket, unsigned long nPPID);
@@ -142,7 +140,7 @@ private:
   int m_nSocket;
   unsigned long m_nPPID;
   unsigned long m_nCID;
-  vector<string> m_vUsers;
+  std::vector<std::string> m_vUsers;
 
   static unsigned long s_nCID;
   static pthread_mutex_t s_xMutex;

@@ -2,13 +2,13 @@
 #define USER_H
 
 #include <cstdlib>
-#include <vector>
+#include <cstring>
+#include <ctime>
 #include <list>
 #include <map>
 #include <string>
-#include <cstring>
+#include <vector>
 
-#include <time.h>
 
 #include "pthread_rdwr.h"
 
@@ -16,9 +16,6 @@
 #include "licq_history.h"
 #include "licq_file.h"
 #include "licq_icq.h"
-
-using std::map;
-using std::string;
 
 class TCPSocket;
 
@@ -521,7 +518,7 @@ public:
   char *OurBuddyIconHash()		{ return m_szOurBuddyIconHash; }
 
   // Dynamic info fields for protocol plugins
-  string GetPPField(const string &);
+  std::string GetPPField(const std::string &);
 
   // Licq Info
   bool GetAwaitingAuth()                { return m_bAwaitingAuth; }
@@ -692,7 +689,7 @@ public:
   void SetPermanent();
 
   // Dynamic info fields for protocol plugins
-  bool SetPPField(const string &, const string &);
+  bool SetPPField(const std::string &, const std::string &);
 
   // Status
   unsigned short Status();
@@ -958,7 +955,7 @@ protected:
   char *m_szBuddyIconHash, *m_szOurBuddyIconHash;
 
   // Dynamic info fields for protocol plugins
-  map<string, string> m_mPPFields;
+  std::map<std::string, std::string> m_mPPFields;
 
   // Protocol ID
   unsigned long m_nPPID;
