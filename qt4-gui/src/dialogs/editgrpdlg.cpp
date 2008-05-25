@@ -163,6 +163,8 @@ void EditGrpDlg::listUpdated(CICQSignal* sig)
     case LIST_GROUP_CHANGED:
 
     case LIST_INVALIDATE:
+      if (btnSave->isEnabled()) // we are editing the group name
+        slot_editcancel();
       RefreshList();
       break;
   }
