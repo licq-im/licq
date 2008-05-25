@@ -116,7 +116,7 @@ void ContactUserData::update(CICQSignal* sig)
     case USER_EVENTS:
       if (sig->Argument() == 0)
       {
-        // User fetched our auto respons message
+        // User fetched our auto response message
         myCarCounter = ((5*1000/FLASH_TIME)+1)&(-2);
         startAnimation();
         return;
@@ -484,7 +484,7 @@ bool ContactUserData::setData(const QVariant& value, int role)
   u->SetAlias(myAlias.toUtf8());
   u->SetKeepAliasOnUpdate(true);
 
-  // Daemon dosen't send signal when alias is changed so trigger update from here
+  // Daemon doesn't send signal when alias is changed so trigger update from here
   updateText(u);
   updateSorting();
 
@@ -502,11 +502,12 @@ void ContactUserData::refresh()
   if (u == NULL)
     return;
 
-  bool hasChanged = updateText(u);
-  gUserManager.DropUser(u);
-
   // Check if birthday icon should be updated
   bool birthday = (u->Birthday() == 0);
+  bool hasChanged = updateText(u);
+
+  gUserManager.DropUser(u);
+
   if (birthday != myBirthday)
   {
     myBirthday = birthday;
@@ -517,7 +518,8 @@ void ContactUserData::refresh()
       myExtendedStatus &= ~ContactListModel::BirthdayStatus;
   }
 
-  // To reduce performance impact on refreshs, keep track whether anything changed so we don't force unnecessary updates
+  // To reduce performance impact on refreshes, keep track on
+  // whether anything has changed so we don't force unnecessary updates
   if (hasChanged)
   {
     updateSorting();
