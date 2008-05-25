@@ -2621,6 +2621,23 @@ void ICQUser::SetAlias(const char *s)
   else
     SetString(&m_szAlias, s);
 
+  // If there is a valid alias, set the server side list alias as well.
+  // If one is not present, add the TLV
+  if (m_szAlias)
+  {
+    size_t aliasLen = strlen(m_szAlias);
+    TLVListIter aliasIter = myTLVs.find(0x131);
+    if (aliasIter == myTLVs.end())
+    {
+      TLVPtr aliasTLV(new COscarTLV(0x131, aliasLen, reinterpret_cast<unsigned char*>(m_szAlias)));
+      AddTLV(aliasTLV);
+    }
+    else
+    {
+      aliasIter->second->setData(reinterpret_cast<unsigned char*>(m_szAlias), aliasLen);
+    }
+  }
+
   SaveGeneralInfo();
 }
 
