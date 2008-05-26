@@ -23,8 +23,6 @@
 
 #include "config.h"
 
-#include <vector>
-
 #ifdef USE_KDE
 # include <KDE/KMenuBar>
 #else
@@ -41,8 +39,6 @@
 #include <QMoveEvent>
 #include <QResizeEvent>
 #include <QWidget>
-
-using std::vector;
 
 class QAction;
 class QMenu;
