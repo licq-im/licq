@@ -30,11 +30,43 @@ using namespace LicqQtGui;
 ProtoComboBox::ProtoComboBox(QWidget* parent)
   : QComboBox(parent)
 {
+  fillComboBox();
+}
+
+ProtoComboBox::ProtoComboBox(bool skipExisting, QWidget* parent)
+  : QComboBox(parent)
+{
+  fillComboBox(skipExisting);
+}
+
+void ProtoComboBox::fillComboBox(bool skipExisting)
+{
+  QString id;
+  unsigned long ppid;
+  ICQOwner* o;
+
   FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
   {
-    unsigned long ppid = (*_ppit)->PPID();
+    ppid = (*_ppit)->PPID();
+    o = gUserManager.FetchOwner(ppid, LOCK_R);
+    if (o == NULL)
+      id = "0";
+    else
+    {
+      if (skipExisting)
+      {
+        gUserManager.DropOwner(ppid);
+        continue;
+      }
+      else
+      {
+        id = o->IdString();
+        gUserManager.DropOwner(ppid);
+      }
+    }
+
     addItem(
-        IconManager::instance()->iconForStatus(ICQ_STATUS_ONLINE, "0", ppid), // icon
+        IconManager::instance()->iconForStatus(ICQ_STATUS_ONLINE, id, ppid), // icon
         (*_ppit)->Name(), // protocol name
         QString::number(ppid) // user data
         );

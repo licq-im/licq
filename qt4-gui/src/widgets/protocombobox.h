@@ -32,9 +32,13 @@ class ProtoComboBox : public QComboBox
 
 public:
   ProtoComboBox(QWidget* parent = 0);
+  ProtoComboBox(bool skipExisting, QWidget* parent = 0);
 
   unsigned long currentPpid() const;
   bool setCurrentPpid(unsigned long ppid);
+
+private:
+  void fillComboBox(bool skipExisting = false);
 };
 
 } // namespace LicqQtGui
