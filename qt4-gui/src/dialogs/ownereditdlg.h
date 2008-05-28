@@ -22,16 +22,17 @@
 
 #include <QDialog>
 
-class QComboBox;
 class QCheckBox;
 class QLineEdit;
-class QPushButton;
 
 namespace LicqQtGui
 {
+class ProtoComboBox;
+
 class OwnerEditDlg : public QDialog
 {
   Q_OBJECT
+
 public:
   OwnerEditDlg(unsigned long ppid = 0, QWidget* parent = NULL);
 
@@ -39,12 +40,11 @@ private slots:
   void slot_ok();
 
 private:
-  QPushButton* btnOk;
-  QPushButton* btnCancel;
   QLineEdit* edtId;
   QLineEdit* edtPassword;
-  QComboBox* cmbProtocol;
+  ProtoComboBox* cmbProtocol;
   QCheckBox* chkSave;
+  unsigned long myPpid;
 };
 
 } // namespace LicqQtGui

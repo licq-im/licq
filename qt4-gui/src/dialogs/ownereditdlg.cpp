@@ -32,96 +32,75 @@
 #include <licq_icqd.h>
 #include <licq_user.h>
 
-#include "config/iconmanager.h"
-
 #include "core/messagebox.h"
 
 #include "helpers/support.h"
+
+#include "widgets/protocombobox.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::OwnerEditDlg */
 
 OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
-  : QDialog(parent)
+  : QDialog(parent),
+    myPpid(ppid)
 {
   Support::setWidgetProps(this, "OwnerEdit");
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(tr("Edit Account"));
 
-  IconManager* iconman = IconManager::instance();
-
   QGridLayout* lay = new QGridLayout(this);
   lay->setColumnStretch(2, 2);
   lay->setColumnMinimumWidth(1, 8);
 
-  // Protocol
-  lay->addWidget(new QLabel(tr("Protocol:")), 0, 0);
-  cmbProtocol = new QComboBox();
-  lay->addWidget(cmbProtocol, 0, 2);
+  cmbProtocol = new ProtoComboBox(ppid == 0, this);
 
-  // User ID
-  lay->addWidget(new QLabel(tr("User ID:")), 1, 0);
   edtId = new QLineEdit();
-  edtId->setMinimumWidth(edtId->sizeHint().width()*2);
-  lay->addWidget(edtId, 1, 2);
+  connect(edtId, SIGNAL(returnPressed()), SLOT(slot_ok()));
 
-  // Password
-  lay->addWidget(new QLabel(tr("Password:")), 2, 0);
   edtPassword = new QLineEdit();
   edtPassword->setEchoMode(QLineEdit::Password);
-  lay->addWidget(edtPassword, 2, 2);
+  connect(edtPassword, SIGNAL(returnPressed()), SLOT(slot_ok()));
 
-  // Save Password
-  chkSave = new QCheckBox(tr("Save Password"));
-  lay->addWidget(chkSave, 3, 0, 1, 3);
+  unsigned short i = 0;
+  QLabel* lbl;
 
-  QString id;
-  // Fill the combo list now
-  FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
-    unsigned long curPpid = (*_ppit)->PPID();
-    if (ppid != 0) // Modifying a user
-    {
-      ICQOwner* o = gUserManager.FetchOwner(curPpid, LOCK_R);
-      if (o == NULL)
-        id = QString::null;
-      else
-      {
-        id = o->IdString();
-        gUserManager.DropOwner(curPpid);
-      }
+#define ADDWIDGET(name, widget) \
+  lbl = new QLabel(name); \
+  lbl->setBuddy(widget); \
+  lay->addWidget(lbl, i, 0); \
+  lay->addWidget(widget, i++, 2)
 
-      cmbProtocol->addItem(
-          iconman->iconForStatus(ICQ_STATUS_ONLINE, id.toLatin1(), curPpid),
-          (*_ppit)->Name(), QString::number(curPpid));
+  ADDWIDGET(tr("Pro&tocol:"), cmbProtocol);
+  ADDWIDGET(tr("&User ID:"), edtId);
+  ADDWIDGET(tr("&Password:"), edtPassword);
 
-      // Check if this is the current protocol
-      if (ppid == curPpid)
-        cmbProtocol->setCurrentIndex(cmbProtocol->count() - 1);
-    }
-    else // Adding a user
-    {
-      ICQOwner* o = gUserManager.FetchOwner(curPpid, LOCK_R);
-      if (o == NULL)
-        cmbProtocol->addItem(
-            iconman->iconForStatus(ICQ_STATUS_ONLINE, "0", curPpid),
-            (*_ppit)->Name(), QString::number(curPpid));
-      else
-        gUserManager.DropOwner(curPpid);
-    }
-  FOR_EACH_PROTO_PLUGIN_END
+#undef ADDWIDGET
+
+  chkSave = new QCheckBox(tr("&Save Password"));
+  lay->addWidget(chkSave, i++, 0, 1, 3);
+
+  QDialogButtonBox* buttons = new QDialogButtonBox();
+  buttons->addButton(QDialogButtonBox::Ok);
+  buttons->addButton(QDialogButtonBox::Cancel);
+  connect(buttons, SIGNAL(accepted()), SLOT(slot_ok()));
+  connect(buttons, SIGNAL(rejected()), SLOT(close()));
+  lay->addWidget(buttons, i++, 0, 1, 3);
 
   // Set the fields
   if (ppid != 0)
   {
     ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
-    if (o)
+    if (o != NULL)
     {
       edtId->setText(o->IdString());
+      edtId->setEnabled(false);
       edtPassword->setText(o->Password());
       chkSave->setChecked(o->SavePassword());
       gUserManager.DropOwner(ppid);
     }
 
+    cmbProtocol->setCurrentPpid(ppid);
     cmbProtocol->setEnabled(false);
   }
   else
@@ -134,57 +113,33 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
     }
   }
 
-  lay->setRowStretch(4, 1);
-
-  QDialogButtonBox* buttons = new QDialogButtonBox();
-  lay->addWidget(buttons, 5, 0, 1, 3);
-
-  btnOk = new QPushButton(tr("&Ok"));
-  buttons->addButton(btnOk, QDialogButtonBox::AcceptRole);
-
-  btnCancel = new QPushButton(tr("&Cancel"));
-  buttons->addButton(btnCancel, QDialogButtonBox::RejectRole);
-
-  connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
-  connect(edtId, SIGNAL(returnPressed()), SLOT(slot_ok()));
-  connect(edtPassword, SIGNAL(returnPressed()), SLOT(slot_ok()));
-  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
-
-  // Set Tab Order
-  setTabOrder(edtId, edtPassword);
-  setTabOrder(edtPassword, cmbProtocol);
-  setTabOrder(cmbProtocol, btnOk);
-  setTabOrder(btnOk, btnCancel);
-
   show();
 }
 
 void OwnerEditDlg::slot_ok()
 {
-  QString szUser = edtId->text();
-  QString szPassword;
-  if (!edtPassword->text().isEmpty())
-    szPassword = edtPassword->text();
-  unsigned long nPPID = cmbProtocol->itemData(cmbProtocol->currentIndex()).toString().toULong();
+  QString id = edtId->text();
+  QString pwd = edtPassword->text();
+  unsigned long ppid = myPpid == 0 ? cmbProtocol->currentPpid() : myPpid;
 
-  ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_W);
-  if (o != NULL)
+  if (id.isEmpty())
   {
-    o->SetId(szUser.toLatin1());
+    InformUser(this, tr("User ID field cannot be empty."));
+    return;
   }
-  else
-  {
-    gUserManager.AddOwner(szUser.toLatin1(), nPPID);
-    o = gUserManager.FetchOwner(nPPID, LOCK_W);
-  }
-  if (!szPassword.isNull())
-    o->SetPassword(szPassword.toLatin1());
 
+  if (myPpid == 0)
+    gUserManager.AddOwner(id.toLocal8Bit(), ppid);
+
+  ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_W);
+  if (o == NULL)
+    return;
+
+  o->SetPassword(pwd.toLocal8Bit());
   o->SetSavePassword(chkSave->isChecked());
 
-  gUserManager.DropOwner(nPPID);
+  gUserManager.DropOwner(ppid);
   gLicqDaemon->SaveConf();
 
   close();
 }
-
