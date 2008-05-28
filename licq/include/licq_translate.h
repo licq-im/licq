@@ -33,11 +33,11 @@ public:
   // Must use delete[] on the returned value if it is not NULL
   char* nameForIconv(const char* licqName);
 
-  char* ToUnicode(char* array, const char* fromEncoding = "");
-  char* FromUnicode(char* array, const char* toEncoding = "");
+  char* ToUnicode(const char* array, const char* fromEncoding = "");
+  char* FromUnicode(const char* array, const char* toEncoding = "");
 
-  char* FromUTF16(char* array, const char* toEncoding, int length = -1);
-  char* ToUTF16(char* array, const char* fromEncoding, size_t& outDone);
+  char* FromUTF16(const char* array, const char* toEncoding, int length = -1);
+  char* ToUTF16(const char* array, const char* fromEncoding, size_t& outDone);
 
   char* NToRN(const char* array);
   char* RNToN(const char* array);
@@ -51,8 +51,8 @@ protected:
   unsigned char serverToClientTab[256];
   unsigned char clientToServerTab[256];
 
-  char* iconvConvert(char* array, const char* to, const char* from, bool& ok,
-      int length = -1, size_t* outDone = NULL);
+  char* iconvConvert(const char* array, const char* to, const char* from,
+      bool& ok, int length = -1, size_t* outDone = NULL);
 };
 
 extern CTranslator gTranslator;

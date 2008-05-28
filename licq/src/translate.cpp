@@ -231,7 +231,7 @@ char* CTranslator::nameForIconv(const char* licqName)
   return iconvName;
 }
 
-char* CTranslator::ToUnicode(char* array, const char* fromEncoding)
+char* CTranslator::ToUnicode(const char* array, const char* fromEncoding)
 {
   if (array == NULL)
     return NULL;
@@ -256,7 +256,7 @@ char* CTranslator::ToUnicode(char* array, const char* fromEncoding)
   return result;
 }
 
-char* CTranslator::FromUnicode(char* array, const char* toEncoding)
+char* CTranslator::FromUnicode(const char* array, const char* toEncoding)
 {
   if (array == NULL)
     return NULL;
@@ -276,7 +276,7 @@ char* CTranslator::FromUnicode(char* array, const char* toEncoding)
   return result;
 }
 
-char* CTranslator::FromUTF16(char* array, const char* toEncoding, int length)
+char* CTranslator::FromUTF16(const char* array, const char* toEncoding, int length)
 {
   if (array == NULL)
     return NULL;
@@ -296,7 +296,7 @@ char* CTranslator::FromUTF16(char* array, const char* toEncoding, int length)
   return result;
 }
 
-char* CTranslator::ToUTF16(char* array, const char* fromEncoding, size_t& outDone)
+char* CTranslator::ToUTF16(const char* array, const char* fromEncoding, size_t& outDone)
 {
   if (array == NULL)
     return NULL;
@@ -438,7 +438,7 @@ char* CTranslator::RNToN(const char* array)
   return result;
 }
 
-char* CTranslator::iconvConvert(char* array, const char* to, const char* from,
+char* CTranslator::iconvConvert(const char* array, const char* to, const char* from,
     bool& ok, int length, size_t* outDone)
 {
   ok = true;
@@ -455,7 +455,9 @@ char* CTranslator::iconvConvert(char* array, const char* to, const char* from,
 
   char* result = new char[outLen + 1];
 
-  char* inPtr = array;
+  // iconv() has inbuf parameter declared as char** even though the data is
+  // never modified so it's safe to cast away the const here.
+  char* inPtr = const_cast<char*>(array);
   char* outPtr = result;
   iconv_t tr;
 
