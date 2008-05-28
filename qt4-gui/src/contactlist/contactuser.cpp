@@ -36,7 +36,7 @@ ContactUser::ContactUser(ContactUserData* userData, ContactGroup* group)
 
 ContactUser::~ContactUser()
 {
-  // Remove references to ourself
+  // Remove references to ourselves
   myGroup->removeUser(this, myUserData->subGroup());
   myUserData->removeGroup(this);
 }
