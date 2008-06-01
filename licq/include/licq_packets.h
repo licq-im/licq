@@ -197,6 +197,12 @@ protected:
    static unsigned long  s_nSessionId;
 };
 
+class CPU_ConnectStart : public CSrvPacketTcp
+{
+public:
+  CPU_ConnectStart();
+};
+
 //-----Logon--------------------------------------------------------------------
 class CPU_Logon : public CSrvPacketTcp
 {
@@ -241,6 +247,18 @@ public:
   CPU_GenericFamily(unsigned short Family, unsigned short SubType,
                     unsigned short nService = 0);
   virtual ~CPU_GenericFamily();
+};
+
+class CPU_RequestLogonSalt : public CPU_CommonFamily
+{
+public:
+  CPU_RequestLogonSalt(const std::string &);
+};
+
+class CPU_NewLogon : public CPU_CommonFamily
+{
+public:
+  CPU_NewLogon(const char *_szPassword, const char *_szUin, const char *_szMD5Salt);
 };
 
 #if ICQ_VERSION == 2 || ICQ_VERSION == 6

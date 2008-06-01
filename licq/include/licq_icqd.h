@@ -387,6 +387,7 @@ public:
   unsigned long icqFetchAutoResponseServer(const char *);
   unsigned long icqFetchAutoResponseServer(unsigned long);
   unsigned long icqLogon(unsigned short logonStatus);
+  unsigned long icqRequestLogonSalt();
   unsigned long icqUserBasicInfo(const char *);
   unsigned long icqUserBasicInfo(unsigned long);
   unsigned long icqUserExtendedInfo(const char *);
@@ -690,7 +691,11 @@ protected:
        m_bAlwaysOnlineNotify,
        m_bTCPEnabled,
        m_bFirewall,
-       m_bVerify;
+       m_bVerify,
+       // NeedSalt is to let the daemon know when to make a salt request, which
+       // should only happen when we first log on. After we get the credentials, we
+       // do another logon, but it doesn't need to get a salt.
+       m_bNeedSalt;
   time_t m_tLogonTime;
   char *m_szRegisterPasswd;
   pthread_t m_nRegisterThreadId;
@@ -806,7 +811,7 @@ protected:
   void ProcessVariousFam(CBuffer&, unsigned short);
   void ProcessBOSFam(CBuffer&, unsigned short);
   void ProcessListFam(CBuffer &, unsigned short);
-  void ProcessNewUINFam(CBuffer &, unsigned short);
+  void ProcessAuthFam(CBuffer &, unsigned short);
 
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);

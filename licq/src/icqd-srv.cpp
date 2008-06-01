@@ -1775,7 +1775,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       case MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER):
       case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST):
       case MAKESNAC(ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST):
-      case MAKESNAC(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER):
+      case MAKESNAC(ICQ_SNACxFAM_AUTH, ICQ_SNACxREGISTER_USER):
       case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxREQUESTxUSERxINFO):
       case MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ):
       case MAKESNAC(ICQ_SNACxFAM_BART, ICQ_SNACxBART_DOWNLOADxREQUEST):
@@ -1857,21 +1857,31 @@ unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
     return 0;
   }
 
-  char *passwd = strdup(o->Password());
-  char *user = strdup(o->IdString());
-  unsigned long status = o->AddStatusFlags(logonStatus);
+  m_nDesiredStatus = o->AddStatusFlags(logonStatus);
   gUserManager.DropOwner();
-  CPU_Logon *p = new CPU_Logon(passwd, user, status);
-  free(passwd);
-  free(user);
+
+  CPU_ConnectStart *startPacket = new CPU_ConnectStart();
+  SendEvent_Server(startPacket);
+
   m_bOnlineNotifies = false;
-  gLog.Info(tr("%sRequesting logon (#%hu)...\n"), L_SRVxSTR, p->Sequence());
   m_nServerSequence = 0;
-  m_nDesiredStatus = status;
   m_bLoggingOn = true;
   m_tLogonTime = time(NULL);
+  m_bNeedSalt = true;
 
-  SendEvent_Server(p);
+  return 0;
+}
+
+unsigned long CICQDaemon::icqRequestLogonSalt()
+{
+  if (m_bNeedSalt)
+  {
+    ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+    CPU_RequestLogonSalt *p =  new CPU_RequestLogonSalt(o->IdString());
+    gUserManager.DropOwner();
+    gLog.Info(tr("%sRequesting logon salt (#%hu)...\n"), L_SRVxSTR, p->Sequence());
+    SendEvent_Server(p);
+  }
 
   return 0;
 }
@@ -2211,6 +2221,10 @@ bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
         icqRegisterFinish();
         m_bRegistering = false;
       }
+    }
+    else if (m_bLoggingOn)
+    {
+      icqRequestLogonSalt();
     }
     break;
 
@@ -6194,8 +6208,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
   }
 }
 
-//--------ProcessNewUINFam-----------------------------------------------------
-void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
+//--------ProcessAuthFam----------------------------------------------------
+void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
 {
   /*unsigned long Flags =*/ packet.UnpackUnsignedLongBE();
   unsigned short nSubSequence = packet.UnpackUnsignedShortBE();
@@ -6288,6 +6302,25 @@ void CICQDaemon::ProcessNewUINFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
 
+    case ICQ_SNACxAUTHxSALT_REPLY:
+    {
+      char *md5Salt = packet.UnpackStringBE();
+      ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+      CPU_NewLogon *p = new CPU_NewLogon(o->Password(), o->IdString(), md5Salt);
+      gUserManager.DropOwner(LICQ_PPID);
+      gLog.Info(tr("%sSending md5 hashed password.\n"), L_SRVxSTR);
+      SendEvent_Server(p);
+      delete [] md5Salt;
+      m_bNeedSalt = false;
+      break;
+    }
+
+    case ICQ_SNACxAUTHxLOGON_REPLY:
+    {
+      ProcessCloseChannel(packet);
+      break;
+    }
+
     case ICQ_SNACxSEND_IMAGE:
     {
       packet.UnpackUnsignedShort(); // flags
@@ -6376,8 +6409,8 @@ void CICQDaemon::ProcessDataChannel(CBuffer &packet)
     ProcessVariousFam(packet, nSubtype);
     break;
 
-  case ICQ_SNACxFAM_NEWUIN:
-    ProcessNewUINFam(packet, nSubtype);
+  case ICQ_SNACxFAM_AUTH:
+    ProcessAuthFam(packet, nSubtype);
     break;
     
   default:

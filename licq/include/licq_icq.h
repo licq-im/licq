@@ -37,7 +37,7 @@ const unsigned short ICQ_SNACxFAM_BOS              = 0x0009;
 const unsigned short ICQ_SNACxFAM_BART             = 0x0010;
 const unsigned short ICQ_SNACxFAM_LIST             = 0x0013;
 const unsigned short ICQ_SNACxFAM_VARIOUS          = 0x0015;
-const unsigned short ICQ_SNACxFAM_NEWUIN	   = 0x0017;
+const unsigned short ICQ_SNACxFAM_AUTH             = 0x0017;
 
 // Subtypes for service family
 const unsigned short ICQ_SNACxSUB_ERROR            = 0x0001; // server
@@ -100,8 +100,12 @@ const unsigned short ICQ_SNACxMETA                 = 0x0002; // client
 
 // Subtypes for new uin family
 const unsigned short ICQ_SNACxNEW_UIN_ERROR        = 0x0001; // server
+const unsigned short ICQ_SNACxAUTHxLOGON           = 0x0002; // client
+const unsigned short ICQ_SNACxAUTHxLOGON_REPLY     = 0x0003; // server
 const unsigned short ICQ_SNACxREGISTER_USER        = 0x0004; // client
 const unsigned short ICQ_SNACxNEW_UIN              = 0x0005; // server
+const unsigned short ICQ_SNACxAUTHxREQUEST_SALT    = 0x0006; // client
+const unsigned short ICQ_SNACxAUTHxSALT_REPLY      = 0x0007; // server
 const unsigned short ICQ_SNACxREQUEST_IMAGE        = 0x000C; // client
 const unsigned short ICQ_SNACxSEND_IMAGE           = 0x000D; // server
 

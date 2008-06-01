@@ -23,6 +23,8 @@
 extern int errno;
 #endif
 
+#include <openssl/md5.h>
+
 #include <boost/scoped_array.hpp>
 
 // Localization
@@ -712,7 +714,7 @@ CPU_RegisterFirst::~CPU_RegisterFirst()
 }
 
 CPU_Register::CPU_Register(const char *szPasswd)
-	: CPU_CommonFamily(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER)
+	: CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxREGISTER_USER)
 {
   int nPassLen = strlen(szPasswd);
   m_nSize += 55 + nPassLen;
@@ -741,7 +743,7 @@ CPU_Register::~CPU_Register()
 #endif
 
 CPU_VerifyRegistration::CPU_VerifyRegistration()
-  : CPU_CommonFamily(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREQUEST_IMAGE)
+  : CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxREQUEST_IMAGE)
 {
   // Yes, it's empty
   
@@ -754,7 +756,7 @@ CPU_VerifyRegistration::~CPU_VerifyRegistration()
 }
 
 CPU_SendVerification::CPU_SendVerification(const char *szPasswd, const char *szVerify)
-  : CPU_CommonFamily(ICQ_SNACxFAM_NEWUIN, ICQ_SNACxREGISTER_USER)
+  : CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxREGISTER_USER)
 {
   int nPassLen = strlen(szPasswd);
   int nVerifyLen = strlen(szVerify);
@@ -785,18 +787,105 @@ CPU_SendVerification::~CPU_SendVerification()
   // Empty
 }
 
+CPU_ConnectStart::CPU_ConnectStart()
+  : CSrvPacketTcp(ICQ_CHNxNEW)
+{
+  pthread_mutex_lock(&s_xMutex);
+  if (!s_bRegistered) {
+    s_nSequence[m_nService] = 0xffff;
+    s_bRegistered = true;
+  }
+  pthread_mutex_unlock(&s_xMutex);
+
+  m_nSize = 12;
+  InitBuffer();
+
+  buffer->PackUnsignedLongBE(0x00000001);
+  buffer->PackUnsignedLongBE(0x80030004);
+  buffer->PackUnsignedLongBE(0x00100000);
+}
+
+CPU_RequestLogonSalt::CPU_RequestLogonSalt(const std::string &id)
+  : CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxAUTHxREQUEST_SALT)
+{
+  m_nSize += id.size() + 4;
+  InitBuffer();
+
+  buffer->PackTLV(0x0001, id.size(), id.c_str());
+}
+
+//-----NewLogon-----------------------------------------------------------------
+CPU_NewLogon::CPU_NewLogon(const char *szPassword, const char *szUin, const char *szMD5Salt)
+  : CPU_CommonFamily(ICQ_SNACxFAM_AUTH, ICQ_SNACxAUTHxLOGON)
+{
+  // truncate password to MAX 8 characters
+  char szPass[MAX_LINE_LEN];
+  if (strlen(szPassword) > 8)
+  {
+    gLog.Warn(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
+    strncpy(szPass, szPassword, 8);
+    szPass[8] = '\0';
+  }
+  else
+  {
+    strcpy(szPass, szPassword);
+  }
+
+  std::string toHash = szMD5Salt;
+  toHash += szPass;
+  toHash += "AOL Instant Messenger (SM)";
+  unsigned char szDigest[16];
+  MD5((const unsigned char *)toHash.c_str(), toHash.size(), szDigest);
+
+  unsigned int uinlen = strlen(szUin);
+  unsigned int digestlen = strlen(reinterpret_cast<char *>(szDigest));
+
+  m_nSize += uinlen + digestlen + 70;
+  InitBuffer();
+
+  buffer->PackTLV(0x0001, uinlen, szUin);
+  buffer->PackTLV(0x0025, digestlen, reinterpret_cast<char *>(szDigest));
+
+  buffer->PackTLV(0x0003,  0x0008, "ICQBasic");
+
+  // Static versioning
+  buffer->PackUnsignedLongBE(0x00160002);
+  buffer->PackUnsignedShortBE(0x010A);
+  // Client version major (4 == ICQ2000, 5 == ICQ2001)
+  buffer->PackUnsignedLongBE(0x00170002);
+  buffer->PackUnsignedShortBE(0x0014);
+  // Client version minor
+  buffer->PackUnsignedLongBE(0x00180002);
+  buffer->PackUnsignedShortBE(0x0022);
+  buffer->PackUnsignedLongBE(0x00190002);
+  buffer->PackUnsignedShortBE(0x0000);
+  // Client version build
+  buffer->PackUnsignedLongBE(0x001a0002);
+  buffer->PackUnsignedShortBE(0x0BB8);
+  buffer->PackUnsignedLongBE(0x00140004);
+  buffer->PackUnsignedLongBE(0x0000043D);
+
+  // locale info, just use english, usa for now, i don't know what else they use
+  buffer->PackTLV(0x000f, 0x0002, "en");
+  buffer->PackTLV(0x000e, 0x0002, "us");
+}
+
 //-----Logon--------------------------------------------------------------------
 CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _nLogonStatus)
   : CSrvPacketTcp(ICQ_CHNxNEW)
 {
   // truncate password to MAX 8 characters
   char szPass[MAX_LINE_LEN];
-  strcpy(szPass, szPassword);
-  if (strlen(szPass) > 8)
+  if (strlen(szPassword) > 8)
   {
     gLog.Warn(tr("%sPassword too long, truncated to 8 Characters!\n"), L_WARNxSTR);
-              szPass[8] = 0;
+    strncpy(szPass, szPassword, 8);
   }
+  else
+  {
+    strcpy(szPass, szPassword);
+  }
+
   char szEncPass[16];
   unsigned int j;
 
@@ -818,7 +907,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
 
   // Encrypt our password here
   unsigned char xor_table[] = { 0xf3, 0x26, 0x81, 0xc4, 0x39, 0x86, 0xdb, 0x92,
-			    0x71, 0xa3, 0xb9, 0xe6, 0x53, 0x7a, 0x95, 0x7c};
+                           0x71, 0xa3, 0xb9, 0xe6, 0x53, 0x7a, 0x95, 0x7c};
   for (j = 0; j < pwlen; j++)
     szEncPass[j] = (szPass[j] ^ xor_table[j]);
   szEncPass[j] = 0;
