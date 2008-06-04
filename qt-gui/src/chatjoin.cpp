@@ -122,7 +122,8 @@ ChatDlg *CJoinChatDlg::JoinedChat()
   ChatDlgList::iterator iter;
   for (iter = originalChats.begin();
        iter != originalChats.end() && n < lstChats->currentItem();
-       iter++, n++);
+       iter++, n++)
+    ;
 
   ChatDlg *cd = *iter;
 

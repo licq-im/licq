@@ -236,50 +236,62 @@ QPixmap& CMainWindow::iconForStatus(unsigned long Status, const char *szId,
 
   if((unsigned short) Status != ICQ_STATUS_OFFLINE && (Status & ICQ_STATUS_FxPRIVATE)
      && !gMainWindow->m_bShowExtendedIcons)
+  {
      if (nPPID == MSN_PPID)
        return gMainWindow->pmMSNPrivate;
      else
        return gMainWindow->pmPrivate;
-       
+  }
+
   if ((unsigned short) Status == ICQ_STATUS_OFFLINE)
+  {
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNOffline;
     else if (bAIM)
       return gMainWindow->pmAIMOffline;
     else
       return gMainWindow->pmOffline;
+  }
 
   if (Status & ICQ_STATUS_DND)
+  {
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNOccupied;
     else if (bAIM)
       return gMainWindow->pmAIMAway;
     else
       return gMainWindow->pmDnd;
+  }
 
   if (Status & ICQ_STATUS_OCCUPIED)
+  {
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNOccupied;
     else if (bAIM)
       return gMainWindow->pmAIMAway;
     else
       return gMainWindow->pmOccupied;
+  }
 
   if (Status & ICQ_STATUS_NA)
+  {
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNAway;
     else if (bAIM)
       return gMainWindow->pmAIMAway;
     else
       return gMainWindow->pmNa;
+  }
 
   if (Status & ICQ_STATUS_AWAY)
+  {
     if (nPPID == MSN_PPID)
       return gMainWindow->pmMSNAway;
     else if (bAIM)
       return gMainWindow->pmAIMAway;
     else
       return gMainWindow->pmAway;
+  }
 
   if (Status & ICQ_STATUS_FREEFORCHAT) return gMainWindow->pmFFC;
 
@@ -1018,28 +1030,36 @@ void CMainWindow::ApplySkin(const char *_szSkin, bool _bInitial)
 
     // btnSystem
     if (btnSystem != NULL)
+    {
       if ((skin->btnSys.rect.x1 == skin->btnSys.rect.x2) && (skin->btnSys.rect.y1 == skin->btnSys.rect.y2))
         btnSystem->hide();
       else
         btnSystem->show();
+    }
     // lblStatus
     if (lblStatus != NULL)
+    {
       if ((skin->lblStatus.rect.x1 == skin->lblStatus.rect.x2) && (skin->lblStatus.rect.y1 == skin->lblStatus.rect.y2))
         lblStatus->hide();
       else
         lblStatus->show();
+    }
     // lblMsg
     if (lblMsg != NULL)
+    {
       if ((skin->lblMsg.rect.x1 == skin->lblMsg.rect.x2) && (skin->lblMsg.rect.y1 == skin->lblMsg.rect.y2))
         lblMsg->hide();
       else
         lblMsg->show();
+    }
     // cmbGroups
     if (cmbUserGroups != NULL)
+    {
       if ((skin->cmbGroups.rect.x1 == skin->cmbGroups.rect.x2) && (skin->cmbGroups.rect.y1 == skin->cmbGroups.rect.y2))
         cmbUserGroups->hide();
       else
         cmbUserGroups->show();
+    }
     if (menu != NULL) menu->show();
     updateUserWin();
     updateEvents();
@@ -1150,28 +1170,36 @@ void CMainWindow::resizeEvent (QResizeEvent *)
   in a unusable 1-pixel widget*/
   // cmbUserGroups
   if (cmbUserGroups != NULL)
+  {
     if ((skin->cmbGroups.rect.x1 == skin->cmbGroups.rect.x2) && (skin->cmbGroups.rect.y1 == skin->cmbGroups.rect.y2))
       cmbUserGroups->hide();
     else
       cmbUserGroups->setGeometry(skin->borderToRect(&skin->cmbGroups, this));
+  }
   // lblMsg
   if (lblMsg != NULL)
+  {
     if ((skin->lblMsg.rect.x1 == skin->lblMsg.rect.x2) && (skin->lblMsg.rect.y1 == skin->lblMsg.rect.y2))
       lblMsg->hide();
     else
       lblMsg->setGeometry(skin->borderToRect(&skin->lblMsg, this));
+  }
   // lblStatus
   if (lblStatus != NULL)
+  {
     if ((skin->lblStatus.rect.x1 == skin->lblStatus.rect.x2) && (skin->lblStatus.rect.y1 == skin->lblStatus.rect.y2))
       lblStatus->hide();
     else
       lblStatus->setGeometry(skin->borderToRect(&skin->lblStatus, this));
+  }
   // btnSystem
   if (btnSystem != NULL)
+  {
     if ((skin->btnSys.rect.x1 == skin->btnSys.rect.x2) && (skin->btnSys.rect.y1 == skin->btnSys.rect.y2))
       btnSystem->hide();
     else
       btnSystem->setGeometry(skin->borderToRect(&skin->btnSys, this));
+  }
 }
 
 void CMainWindow::moveEvent(QMoveEvent* e)
