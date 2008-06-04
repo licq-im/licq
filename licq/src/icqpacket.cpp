@@ -834,19 +834,18 @@ CPU_NewLogon::CPU_NewLogon(const char *szPassword, const char *szUin, const char
   std::string toHash = szMD5Salt;
   toHash += szPass;
   toHash += "AOL Instant Messenger (SM)";
-  unsigned char szDigest[16];
+  unsigned char szDigest[MD5_DIGEST_LENGTH];
   MD5((const unsigned char *)toHash.c_str(), toHash.size(), szDigest);
 
   unsigned int uinlen = strlen(szUin);
-  unsigned int digestlen = strlen(reinterpret_cast<char *>(szDigest));
 
-  m_nSize += uinlen + digestlen + 70;
+  m_nSize += uinlen + MD5_DIGEST_LENGTH + 70;
   InitBuffer();
 
   buffer->PackTLV(0x0001, uinlen, szUin);
-  buffer->PackTLV(0x0025, digestlen, reinterpret_cast<char *>(szDigest));
+  buffer->PackTLV(0x0025, MD5_DIGEST_LENGTH, reinterpret_cast<char *>(szDigest));
 
-  buffer->PackTLV(0x0003,  0x0008, "ICQBasic");
+  buffer->PackTLV(0x0003, 0x0008, "ICQBasic");
 
   // Static versioning
   buffer->PackUnsignedLongBE(0x00160002);
