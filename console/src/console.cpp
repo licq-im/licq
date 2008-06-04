@@ -527,7 +527,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     break;
   case SIGNAL_UPDATExUSER:
     {
-      if (gUserManager.FindOwner(s->Id(), s->PPID()) != NULL && s->SubSignal() == USER_STATUS
+      if ((gUserManager.FindOwner(s->Id(), s->PPID()) != NULL && s->SubSignal() == USER_STATUS)
           || s->SubSignal() == USER_EVENTS)
         PrintStatus();
       ICQUser *u = gUserManager.FetchUser(s->Id(), s->PPID(), LOCK_R);
