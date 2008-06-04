@@ -651,7 +651,7 @@ CPS_MSNInvitation::CPS_MSNInvitation(const char* szToEmail,
 	   "Call-ID: {%s}\r\n"
 	   "Max-Forwards: 0\r\n"
 	   "Content-Type: application/x-msnmsgr-sessionreqbody\r\n"
-	   "Content-Length: %d\r\n"
+	   "Content-Length: %lu\r\n"
 	   "\r\n", szToEmail, szToEmail, szFromEmail, szBranchGUID,
 	   m_szCallGUID, strlen(szBodyBuf)+1);
 

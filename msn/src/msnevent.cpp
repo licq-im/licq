@@ -191,7 +191,7 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
       ssize_t nWrote = write(m_nFileDesc, p->getDataPosRead(), nLen);
       if (nWrote != (ssize_t)nLen)
       {
-	gLog.Error("%sDisplay Picture: Tried to write %ld, but wrote %d (Id: %ld.\n",
+	gLog.Error("%sDisplay Picture: Tried to write %ld, but wrote %lu (Id: %ld.\n",
 		   L_MSNxSTR, nLen, nWrote, m_nSessionId);
       }
 
