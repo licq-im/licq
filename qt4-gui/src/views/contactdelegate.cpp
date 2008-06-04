@@ -208,11 +208,13 @@ void ContactDelegate::fillBackground(Parameters& arg) const
   }
   else
   {
-    if (arg.option.state & QStyle::State_Selected)
+    if ((arg.option.state & QStyle::State_Selected) != 0)
+    {
       if (arg.skin->highBackColor.isValid())
         FILL(arg.skin->highBackColor);
       else
         FILL(arg.option.palette.brush(arg.cg, QPalette::Highlight));
+    }
   }
 #undef FILL
 }
