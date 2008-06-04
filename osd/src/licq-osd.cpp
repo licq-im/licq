@@ -836,7 +836,7 @@ char* my_translate(unsigned long uin, const char* msg, const char* userenc)
 		tosize += fromsize + 4;
 		continue;
 	    }
-	    gLog.Warn("%sError in my_translate - stopping translation, error on %i. char\n", L_OSD_STR, msgptr-msg+1);
+	    gLog.Warn("%sError in my_translate - stopping translation, error on %li. char\n", L_OSD_STR, msgptr-msg+1);
 	    strcpy(result, msg); // return original string
 	    return result;
 	}
