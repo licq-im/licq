@@ -47,6 +47,7 @@ Config::General::General(QObject* parent)
     myDockHasChanged(false),
     myDockModeHasChanged(false),
     myFontHasChanged(false),
+    myFixedFontHasChanged(false),
     myBlockUpdates(false)
 {
 #ifdef USE_KDE
@@ -54,6 +55,9 @@ Config::General::General(QObject* parent)
 #else
   myDefaultFont = qApp->font();
 #endif
+
+  myDefaultFixedFont = QFont(myDefaultFont);
+  myDefaultFixedFont.setFamily("Monospace");
 }
 
 void Config::General::loadConfiguration(CIniFile& iniFile)
@@ -69,17 +73,17 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("UseDoubleReturn", myUseDoubleReturn, false);
 
   iniFile.ReadStr("Font", szTemp, "default");
-  if (strcmp(szTemp, "default") != 0)
-  {
-    QFont f;
-    f.fromString(szTemp);
-    qApp->setFont(f);
-  }
+  if (strcmp(szTemp, "default") == 0)
+    szTemp[0] = '\0';
+  setNormalFont(szTemp);
   iniFile.ReadStr("EditFont", szTemp, "default");
-  if(!strcmp(szTemp, "default"))
-    myEditFont = myDefaultFont;
-  else
-    myEditFont.fromString(szTemp);
+  if (strcmp(szTemp, "default") == 0)
+    szTemp[0] = '\0';
+  setEditFont(szTemp);
+  iniFile.ReadStr("FixedFont", szTemp, "default");
+  if (strcmp(szTemp, "default") == 0)
+    szTemp[0] = '\0';
+  setFixedFont(szTemp);
 
   iniFile.ReadBool("InMiniMode", myMiniMode, false);
   iniFile.ReadBool("ShowGroupIfNoMsg", myShowGroupIfNoMsg, true);
@@ -127,6 +131,7 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   emit mainwinChanged();
   emit dockModeChanged();
   emit fontChanged();
+  emit fixedFontChanged();
 }
 
 void Config::General::saveConfiguration(CIniFile& iniFile) const
@@ -142,6 +147,8 @@ void Config::General::saveConfiguration(CIniFile& iniFile) const
       "default" : qApp->font().toString().toLatin1());
   iniFile.WriteStr("EditFont", myEditFont == myDefaultFont ?
       "default" : myEditFont.toString().toLatin1());
+  iniFile.WriteStr("FixedFont", myFixedFont == myDefaultFixedFont ?
+      "default" : myFixedFont.toString().toLatin1());
 
   iniFile.WriteBool("InMiniMode", myMiniMode);
   iniFile.WriteBool("ShowGroupIfNoMsg", myShowGroupIfNoMsg);
@@ -176,28 +183,34 @@ void Config::General::saveConfiguration(CIniFile& iniFile) const
 
 void Config::General::blockUpdates(bool block)
 {
-  myBlockUpdates = block;
+  if ((myBlockUpdates = block))
+    return;
 
-  if (!block && myMainwinHasChanged)
+  if (myMainwinHasChanged)
   {
     myMainwinHasChanged = false;
     emit mainwinChanged();
   }
-  if (!block && myDockModeHasChanged)
+  if (myDockModeHasChanged)
   {
     myDockModeHasChanged = false;
     myDockHasChanged = false;
     emit dockModeChanged();
   }
-  if (!block && myDockHasChanged)
+  if (myDockHasChanged)
   {
     myDockHasChanged = false;
     emit dockChanged();
   }
-  if (!block && myFontHasChanged)
+  if (myFontHasChanged)
   {
     myFontHasChanged = false;
     emit fontChanged();
+  }
+  if (myFixedFontHasChanged)
+  {
+    myFixedFontHasChanged = false;
+    emit fixedFontChanged();
   }
 }
 
@@ -234,7 +247,7 @@ QFont Config::General::normalFont() const
 void Config::General::setNormalFont(QString normalFont)
 {
   QFont f;
-  if (normalFont.isNull())
+  if (normalFont.isEmpty())
     f = myDefaultFont;
   else
     f.fromString(normalFont);
@@ -249,7 +262,7 @@ void Config::General::setNormalFont(QString normalFont)
 void Config::General::setEditFont(QString editFont)
 {
   QFont f;
-  if (editFont.isNull())
+  if (editFont.isEmpty())
     f = myDefaultFont;
   else
     f.fromString(editFont);
@@ -262,6 +275,24 @@ void Config::General::setEditFont(QString editFont)
     myFontHasChanged = true;
   else
     emit fontChanged();
+}
+
+void Config::General::setFixedFont(QString fixedFont)
+{
+  QFont f;
+  if (fixedFont.isEmpty())
+    f = myDefaultFixedFont;
+  else
+    f.fromString(fixedFont);
+
+  if (f == myFixedFont)
+    return;
+
+  myFixedFont = f;
+  if (myBlockUpdates)
+    myFixedFontHasChanged = true;
+  else
+    emit fixedFontChanged();
 }
 
 void Config::General::setMiniMode(bool miniMode)

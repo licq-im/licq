@@ -40,7 +40,7 @@ class MLEdit : public MLEDIT_BASE
   Q_OBJECT
 
 public:
-  MLEdit(bool wordWrap, QWidget* parent = 0, bool handlequotes = false, const char* name = 0);
+  MLEdit(bool wordWrap, QWidget* parent = 0, bool useFixedFont = false, const char* name = 0);
   virtual ~MLEdit();
 
   void appendNoNewLine(const QString& s);
@@ -82,6 +82,7 @@ signals:
   void clicked();
 
 private:
+  bool myUseFixedFont;
   bool myFixSetTextNewlines;
   bool myLastKeyWasReturn;
   int myFontHeight;

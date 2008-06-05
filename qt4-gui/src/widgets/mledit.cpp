@@ -31,8 +31,9 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MLEdit */
 
-MLEdit::MLEdit(bool wordWrap, QWidget* parent, bool /* doQuotes */, const char* name)
+MLEdit::MLEdit(bool wordWrap, QWidget* parent, bool useFixedFont, const char* name)
   : MLEDIT_BASE(parent),
+    myUseFixedFont(useFixedFont),
     myFixSetTextNewlines(true),
     myLastKeyWasReturn(false),
     myLinesHint(0)
@@ -45,7 +46,9 @@ MLEdit::MLEdit(bool wordWrap, QWidget* parent, bool /* doQuotes */, const char* 
     setLineWrapMode(NoWrap);
 
   updateFont();
-  connect(Config::General::instance(), SIGNAL(fontChanged()), SLOT(updateFont()));
+  connect(Config::General::instance(),
+      myUseFixedFont ? SIGNAL(fixedFontChanged()) : SIGNAL(fontChanged()),
+      SLOT(updateFont()));
 }
 
 MLEdit::~MLEdit()
@@ -209,7 +212,8 @@ void MLEdit::contextMenuEvent(QContextMenuEvent* event)
 
 void MLEdit::updateFont()
 {
-  setFont(Config::General::instance()->editFont());
+  setFont(myUseFixedFont ? Config::General::instance()->fixedFont() :
+      Config::General::instance()->editFont());
 
   // Get height of current font
   myFontHeight = fontMetrics().height();

@@ -414,7 +414,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 
   myPictureSplitter = new QSplitter(myViewSplitter);
 
-  myMessageEdit = new MLEdit(true, myPictureSplitter, true);
+  myMessageEdit = new MLEdit(true, myPictureSplitter);
   myMessageEdit->setSizeHintLines(3);
   myMessageEdit->setCheckSpellingEnabled(Config::Chat::instance()->checkSpelling());
   myMessageEdit->installEventFilter(this); // Enables send with enter

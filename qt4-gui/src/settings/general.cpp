@@ -139,9 +139,18 @@ QWidget* Settings::General::createPageFonts(QWidget* parent)
   myEditFontLabel->setToolTip(tr("Used in message editor etc."));
   myFontLayout->addWidget(myEditFontLabel, 1, 0);
   myEditFontEdit = new FontEdit();
-  myEditFontEdit->setToolTip(myFontLabel->toolTip());
-  myFontLabel->setBuddy(myEditFontEdit);
+  myEditFontEdit->setToolTip(myEditFontLabel->toolTip());
+  myEditFontLabel->setBuddy(myEditFontEdit);
   myFontLayout->addWidget(myEditFontEdit, 1, 1);
+
+  // Fixed font
+  myFixedFontLabel = new QLabel(tr("Fixed:"));
+  myFixedFontLabel->setToolTip(tr("Used in file editor and network log."));
+  myFontLayout->addWidget(myFixedFontLabel, 2, 0);
+  myFixedFontEdit = new FontEdit();
+  myFixedFontEdit->setToolTip(myFixedFontLabel->toolTip());
+  myFixedFontLabel->setBuddy(myFixedFontEdit);
+  myFontLayout->addWidget(myFixedFontEdit, 2, 1);
 
   myPageFontsLayout->addWidget(myFontBox);
   myPageFontsLayout->addStretch(1);
@@ -233,6 +242,7 @@ void Settings::General::load()
 
   myNormalFontEdit->setFont(QFont(generalConfig->normalFont()));
   myEditFontEdit->setFont(QFont(generalConfig->editFont()));
+  myFixedFontEdit->setFont(QFont(generalConfig->fixedFont()));
 }
 
 void Settings::General::apply()
@@ -264,14 +274,19 @@ void Settings::General::apply()
   generalConfig->setTrayMsgOnlineNotify(myTrayMsgOnlineNotify->isChecked());
 
   if (myNormalFontEdit->font() == Config::General::instance()->defaultFont())
-    generalConfig->setNormalFont(QString());
+    generalConfig->setNormalFont(QString::null);
   else
     generalConfig->setNormalFont(myNormalFontEdit->font().toString());
 
   if (myEditFontEdit->font() == Config::General::instance()->defaultFont())
-    generalConfig->setEditFont(QString());
+    generalConfig->setEditFont(QString::null);
   else
     generalConfig->setEditFont(myEditFontEdit->font().toString());
+
+  if (myFixedFontEdit->font() == Config::General::instance()->defaultFixedFont())
+    generalConfig->setFixedFont(QString::null);
+  else
+    generalConfig->setFixedFont(myFixedFontEdit->font().toString());
 
   generalConfig->blockUpdates(false);
 }

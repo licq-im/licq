@@ -79,8 +79,10 @@ public:
   QString msgPopupKey() const { return myMsgPopupKey; }
   bool delayStatusChange() const { return myDelayStatusChange; }
   QFont defaultFont() const { return myDefaultFont; }
+  QFont defaultFixedFont() const { return myDefaultFixedFont; }
   QFont normalFont() const;
   QFont editFont() const { return myEditFont; }
+  QFont fixedFont() const { return myFixedFont; }
 
   bool miniMode() const { return myMiniMode; }
   bool showGroupIfNoMsg() const { return myShowGroupIfNoMsg; }
@@ -123,6 +125,7 @@ public slots:
   void setDelayStatusChange(bool delayStatusChange);
   void setNormalFont(QString normalFont);
   void setEditFont(QString editFont);
+  void setFixedFont(QString fixedFont);
 
   void setMiniMode(bool miniMode);
   void setShowGroupIfNoMsg(bool showGroupIfNoMsg);
@@ -173,6 +176,11 @@ signals:
   void fontChanged();
 
   /**
+   * Fixed Font configuration has changed (not emitted for normal font)
+   */
+  void fixedFontChanged();
+
+  /**
    * Popup key has changed
    */
   void msgPopupKeyChanged(QString newKey);
@@ -185,6 +193,7 @@ private:
   bool myDockHasChanged;
   bool myDockModeHasChanged;
   bool myFontHasChanged;
+  bool myFixedFontHasChanged;
   bool myBlockUpdates;
 
   // General configuration
@@ -192,7 +201,9 @@ private:
   QString myMsgPopupKey;
   bool myDelayStatusChange;
   QFont myDefaultFont;
+  QFont myDefaultFixedFont;
   QFont myEditFont;
+  QFont myFixedFont;
 
   // Mainwin configuration
   bool myMiniMode;

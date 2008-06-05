@@ -47,7 +47,7 @@ EditFileDlg::EditFileDlg(QString fname, QWidget* parent)
 
   QVBoxLayout* top_lay = new QVBoxLayout(this);
 
-  myFileEdit = new MLEdit(false, this, false);
+  myFileEdit = new MLEdit(false, this, true);
   myFileEdit->setMinimumHeight(myFileEdit->frameWidth() * 2 + 20 * myFileEdit->fontMetrics().lineSpacing());
   myFileEdit->setMinimumWidth(myFileEdit->fontMetrics().width("_") * 80);
   connect(myFileEdit, SIGNAL(undoAvailable(bool)), SLOT(saveEnable(bool)));
