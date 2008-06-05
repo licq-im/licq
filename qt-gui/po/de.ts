@@ -389,7 +389,7 @@ Siehe Netzwerkfenster für Details.</translation>
     <name>CInfoField</name>
     <message>
         <source>Unknown</source>
-        <translation type="unfinished">Unbekannt</translation>
+        <translation>Unbekannt</translation>
     </message>
 </context>
 <context>
@@ -5066,7 +5066,7 @@ Beschreibung: %2</translation>
     </message>
     <message>
         <source>Registration Date:</source>
-        <translation type="unfinished"></translation>
+        <translation>Registrierungsdatum:</translation>
     </message>
 </context>
 <context>
@@ -5267,11 +5267,11 @@ through the server!</source>
     </message>
     <message>
         <source>%1 has joined the conversation.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 ist der Konversation beigetreten.</translation>
     </message>
     <message>
         <source>%1 has left the conversation.</source>
-        <translation type="unfinished"></translation>
+        <translation>%1 hat die Konversation verlassen.</translation>
     </message>
 </context>
 <context>
