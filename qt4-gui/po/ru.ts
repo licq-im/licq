@@ -84,19 +84,24 @@
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="41"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="42"/>
         <source>Licq - Add user</source>
         <translation>Licq - добавление пользователя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="54"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="55"/>
         <source>&amp;New User ID:</source>
         <translation>&amp;Идентификатор нового пользователя:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="46"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="47"/>
         <source>&amp;Protocol:</source>
         <translation>&amp;Протокол:</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="65"/>
+        <source>Notify User</source>
+        <translation>Известить пользователя</translation>
     </message>
 </context>
 <context>
@@ -412,7 +417,7 @@ See Network Window for details.</source>
 <context>
     <name>LicqQtGui::ContactListModel</name>
     <message>
-        <location filename="../src/contactlist/contactlist.cpp" line="191"/>
+        <location filename="../src/contactlist/contactlist.cpp" line="255"/>
         <source>Other Users</source>
         <translation>Другие пользователи</translation>
     </message>
@@ -420,152 +425,152 @@ See Network Window for details.</source>
 <context>
     <name>LicqQtGui::ContactUserData</name>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="796"/>
         <source> day</source>
         <translation> день</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="794"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="796"/>
         <source> days</source>
         <translation> дней</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="800"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="802"/>
         <source> hour</source>
         <translation> час</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="800"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="802"/>
         <source> hours</source>
         <translation> часов</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="806"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="808"/>
         <source> minute</source>
         <translation> минута</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="806"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="808"/>
         <source> minutes</source>
         <translation> минут</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="787"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="789"/>
         <source> week</source>
         <translation> неделя</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="787"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="789"/>
         <source> weeks</source>
         <translation> недель</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="809"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="811"/>
         <source>0 minutes</source>
         <translation>0 минут</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="738"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="740"/>
         <source>Auto Response:</source>
         <translation>Авто-ответ:</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="703"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="705"/>
         <source>Birthday Today!</source>
         <translation>Сегодня День рождения!</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="749"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="751"/>
         <source>C: </source>
         <translation>С: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="727"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="729"/>
         <source>Custom Auto Response</source>
         <translation>Персональный авто-ответ</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="743"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="745"/>
         <source>E: </source>
         <translation>Е: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="752"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="754"/>
         <source>F: </source>
         <translation>Ф: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="720"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="722"/>
         <source>File Server: Enabled</source>
         <translation>Файловый сервер: Включен</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="715"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="717"/>
         <source>ICQphone: Available</source>
         <translation>ICQphone: Доступен</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="717"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="719"/>
         <source>ICQphone: Busy</source>
         <translation>ICQphone: Занят</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="838"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="840"/>
         <source>ID: </source>
         <translation>Идентификатор: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="820"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="822"/>
         <source>Idle: </source>
         <translation>Отсутствует: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="758"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="760"/>
         <source>Ip: </source>
         <translation>Ip: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="829"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="831"/>
         <source>Local time: </source>
         <translation>Текущее время: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="811"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="813"/>
         <source>Logged In: </source>
         <translation>В сети: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="770"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="772"/>
         <source>O: </source>
         <translation>Был: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="746"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="748"/>
         <source>P: </source>
         <translation>Т: </translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="710"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="712"/>
         <source>Phone &amp;quot;Follow Me&amp;quot;: Available</source>
         <translation>&amp;quot;Следуй за мной&amp;quot;: Доступен</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="712"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="714"/>
         <source>Phone &amp;quot;Follow Me&amp;quot;: Busy</source>
         <translation>&amp;quot;Следуй за мной&amp;quot;: Занят</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="724"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="726"/>
         <source>Secure connection</source>
         <translation>Защищенное соединение</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="708"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="710"/>
         <source>Typing a message</source>
         <translation>Набирает сообщение</translation>
     </message>
     <message>
-        <location filename="../src/contactlist/contactuserdata.cpp" line="730"/>
+        <location filename="../src/contactlist/contactuserdata.cpp" line="732"/>
         <source>Awaiting authorization</source>
         <translation>Ожидаем авторизации</translation>
     </message>
@@ -697,103 +702,103 @@ You can leave me a message.</source>
 <context>
     <name>LicqQtGui::EditGrpDlg</name>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="84"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="87"/>
         <source>Default:</source>
         <translation>По умолчанию:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="49"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="52"/>
         <source>Licq - Edit Groups</source>
         <translation>Licq - Редактирование групп</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="88"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="91"/>
         <source>New User:</source>
         <translation>Новые пользователи:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="97"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="100"/>
         <source>&amp;Save</source>
         <translation>&amp;Сохранить</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="68"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="71"/>
         <source>The default group to start up in.</source>
         <translation>Группа по умолчанию при запуске.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="53"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="56"/>
         <source>Groups</source>
         <translation>Группы</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="61"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="64"/>
         <source>Add</source>
         <translation>Добавить</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="62"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="65"/>
         <source>Remove</source>
         <translation>Удалить</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="63"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
         <source>Shift Up</source>
         <translation>Вверх</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="64"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="67"/>
         <source>Shift Down</source>
         <translation>Вниз</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="263"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="284"/>
         <source>Edit Name</source>
         <translation>Изменить имя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="69"/>
         <source>Edit group name (hit enter to save).</source>
         <translation>Редактировать название группы (нажмите Enter, чтобы сохранить).</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="70"/>
         <source>Set Default</source>
         <translation>По умолчанию</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="69"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="72"/>
         <source>Set New Users</source>
         <translation>Для новых</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="74"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="77"/>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
         <translation>Группа, в которую будут добавляться новые пользователи.Все новые пользователи будут в локальной группе &apos;Новые пользователи&apos;,а в серверном списке контактов они будут сохраняться в указанной группе.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="99"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="102"/>
         <source>Save the name of a group being modified.</source>
         <translation>Сохранить название редактируемой группы.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="106"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="109"/>
         <source>&amp;Done</source>
         <translation>&amp;Завершить</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="154"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="175"/>
         <source>noname</source>
         <translation>noname</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="170"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="191"/>
         <source>Are you sure you want to remove
 the group &apos;%1&apos;?</source>
         <translation>Вы уверены, что хотитеудалить группу&apos;%1&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="235"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="256"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
@@ -1360,90 +1365,46 @@ See Network Window for details.</source>
 <context>
     <name>LicqQtGui::GPGKeyManager</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="103"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="69"/>
         <source>Active</source>
         <translation>Активно</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="90"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="83"/>
         <source>&amp;Add</source>
         <translation>&amp;Добавить</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="120"/>
-        <source>&amp;Close</source>
-        <translation>&amp;Закрыть</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="213"/>
-        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
-        <translation>Вы уверены, что хотите удалить этот GPG ключ? Из системы он удален не будет.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="96"/>
-        <source>Drag&amp;Drop user to add to list.</source>
-        <translation>Перетяните мышкой пользователя, чтобы добавить в список.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="91"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="84"/>
         <source>&amp;Edit</source>
         <translation>&amp;Редактировать</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="70"/>
-        <source>GPG Passphrase</source>
-        <translation>Пароль GPG</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="103"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="69"/>
         <source>Key ID</source>
         <translation>Идентификатор ключа</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="65"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="62"/>
         <source>Licq GPG Key Manager</source>
         <translation>Licq - менеджер ключей GPG</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="75"/>
-        <source>No passphrase set</source>
-        <translation>Пароль не установлен</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="133"/>
-        <source>Not yet implemented. Use licq_gpg.conf.</source>
-        <translation>Функция в разработке.
-Используйте файл настройки licq_gpg.conf.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="92"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="85"/>
         <source>&amp;Remove</source>
         <translation>&amp;Удалить</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="213"/>
-        <source>Remove GPG key</source>
-        <translation>Удалить GPG ключ</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="77"/>
-        <source>&amp;Set GPG Passphrase</source>
-        <translation>&amp;Установить пароль GPG</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="133"/>
-        <source>Set Passphrase</source>
-        <translation>Установить пароль</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="103"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="69"/>
         <source>User</source>
         <translation>Пользователь</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="84"/>
-        <source>User Keys</source>
-        <translation>Ключи пользователей</translation>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="147"/>
+        <source>Do you want to remove the GPG key binding for the user %1?
+The key isn&apos;t deleted from your keyring.</source>
+        <translation>Вы хотите удалить привязку GPG ключа к пользователю %1?
+Ключ не будет удален из Вашего набора ключей.</translation>
     </message>
 </context>
 <context>
@@ -1507,7 +1468,7 @@ See Network Window for details.</source>
         <translation>Удалить группу</translation>
     </message>
     <message>
-        <location filename="../src/core/groupmenu.cpp" line="161"/>
+        <location filename="../src/core/groupmenu.cpp" line="149"/>
         <source>Are you sure you want to remove the group &apos;%1&apos;?</source>
         <translation>Вы уверены, что хотите удалить группу &apos;%1&apos;?</translation>
     </message>
@@ -1523,94 +1484,94 @@ See Network Window for details.</source>
 <context>
     <name>LicqQtGui::HistoryDlg</name>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="80"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="83"/>
         <source>&amp;Previous day</source>
         <translation>&amp;Пред. день</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="84"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="87"/>
         <source>&amp;Next day</source>
         <translation>&amp;След. день</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="95"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="98"/>
         <source>Search</source>
         <translation>Поиск</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="102"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="105"/>
         <source>Find:</source>
         <translation>Искать:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="113"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="116"/>
         <source>Match &amp;case</source>
         <translation>С учетом &amp;регистра</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="115"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="118"/>
         <source>&amp;Regular expression</source>
         <translation>Регулярные &amp;выражения</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="120"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="123"/>
         <source>F&amp;ind previous</source>
         <translation>&amp;Назад</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="125"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="128"/>
         <source>&amp;Find next</source>
         <translation>&amp;Вперед</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="148"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="151"/>
         <source>&amp;Menu</source>
         <translation>&amp;Меню</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="161"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="164"/>
         <source>INVALID USER</source>
         <translation>НЕПРАВИЛЬНЫЙ ПОЛЬЗОВАТЕЛЬ</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="178"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="181"/>
         <source>Licq - History </source>
         <translation>Licq - История </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="184"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="187"/>
         <source>Invalid user requested</source>
         <translation>Запрос по неправильному пользователю</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="191"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="194"/>
         <source>Error loading history file: %1
 Description: %2</source>
         <translation>Ошибка загрузки файла истории: %1
 Причина: %2</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="193"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="196"/>
         <source>Sorry, history is disabled for this person</source>
         <translation>Извините, история данного пользователя не ведется</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="198"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="201"/>
         <source>History is empty</source>
         <translation>История пуста</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="219"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="222"/>
         <source>server</source>
         <translation>сервер</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="399"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="443"/>
         <source>Search returned no matches</source>
         <translation>Нет совпадений</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/historydlg.cpp" line="406"/>
+        <location filename="../src/dialogs/historydlg.cpp" line="450"/>
         <source>Search wrapped around</source>
         <translation>Поиск по кругу</translation>
     </message>
@@ -1707,12 +1668,12 @@ Description: %2</source>
 <context>
     <name>LicqQtGui::KeyListItem</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="339"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="281"/>
         <source>No</source>
         <translation>Нет</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="339"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="281"/>
         <source>Yes</source>
         <translation>Да</translation>
     </message>
@@ -1868,7 +1829,7 @@ from the &apos;%3&apos; group?</source>
 из группы &apos;%3&apos;?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="1057"/>
+        <location filename="../src/core/licqgui.cpp" line="1062"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq не удалось запустить браузер и открыть ссылку.
@@ -1905,7 +1866,7 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MLEdit</name>
     <message>
-        <location filename="../src/widgets/mledit.cpp" line="198"/>
+        <location filename="../src/widgets/mledit.cpp" line="201"/>
         <source>Allow Tabulations</source>
         <translation>Разрешить табуляцию</translation>
     </message>
@@ -1913,12 +1874,12 @@ Would you like to try loading the old one?</source>
 <context>
     <name>LicqQtGui::MLView</name>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="271"/>
+        <location filename="../src/widgets/mlview.cpp" line="275"/>
         <source>Copy URL</source>
         <translation>Скопировать ссылку</translation>
     </message>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="273"/>
+        <location filename="../src/widgets/mlview.cpp" line="277"/>
         <source>Quote</source>
         <translation>Цитировать</translation>
     </message>
@@ -2022,7 +1983,7 @@ Would you like to try loading the old one?</source>
         <translation>Ошибка! Владелец не задан</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="946"/>
+        <location filename="../src/core/mainwin.cpp" line="940"/>
         <source>Logon failed.
 See network window for details.</source>
         <translation>Вход в сеть не удался.
@@ -2083,17 +2044,17 @@ Double click - Show next message</source>
         <translation>в сети</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1037"/>
+        <location filename="../src/core/mainwin.cpp" line="1031"/>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-T : &lt;/tt&gt;Toggle group show&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
         <translation>&lt;h2&gt;Подсказки по использованию&lt;br&gt;Qt-GUI модуля Licq&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Статус можно изменить нажатием правой кнопки мыши на поле статуса.&lt;/li&gt;&lt;li&gt;Авто-ответ можно изменить двойным щелчком на поле статуса.&lt;/li&gt;&lt;li&gt;Для просмотра системных сообщений можно использовать двойной щелчок на поле сообщений.&lt;/li&gt;&lt;li&gt;Сменить отображаемую группу можно нажатием правой кнопки мыши на поле сообщений.&lt;/li&gt;&lt;li&gt;Также в списке контактов можно воспользоваться следующими комбинациями:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Включение/выключение режима &quot;мини&quot;&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Показывать/не показывать пользователей не в сети&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Выход&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Скрыть&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;Просмотр следующего сообщения&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;Просмотр сообщения&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Отправить сообщение&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Отправить ссылку&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Отправить запрос чата&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Отправить файл(ы)&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Проверить авто-ответ&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Открыть все сообщения&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Обновить окно пользователей&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Удалить пользователя из текущей группы&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Удалить пользователя из списка контактов&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Если нажать кнопку &quot;закрыть&quot; удерживая клавишу Ctrl, то можно сразу же удалить пользователя из списка контактов.&lt;/li&gt;&lt;li&gt;Можно использовать Ctrl-Enter во многих полях ввода чтобы вызвать нажатие &quot;Да&quot; или &quot;Подтвердить&quot;. Например, в диалоге отправки сообщения.&lt;/li&gt;&lt;li&gt;Здесь полный список всех %-переменных, которые могут быть использованы в качестве параметров к &lt;b&gt;команде при событии&lt;/b&gt;, &lt;b&gt;авто-ответах&lt;/b&gt; и строчке запуска &lt;b&gt;утилит&lt;/b&gt;:</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1040"/>
+        <location filename="../src/core/mainwin.cpp" line="1034"/>
         <source>Qt URL handling</source>
         <translation>Обработка URL в Qt</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1057"/>
+        <location filename="../src/core/mainwin.cpp" line="1051"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation>&lt;p&gt;Более подробную информацию можно получить на web-сайте (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
@@ -2149,47 +2110,47 @@ Double click - Show next message</source>
 <context>
     <name>LicqQtGui::MessageList</name>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="161"/>
+        <location filename="../src/widgets/messagelist.cpp" line="159"/>
         <source>D</source>
         <translation>П</translation>
     </message>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="161"/>
+        <location filename="../src/widgets/messagelist.cpp" line="159"/>
         <source>Event Type</source>
         <translation>Тип события</translation>
     </message>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="161"/>
+        <location filename="../src/widgets/messagelist.cpp" line="159"/>
         <source>Options</source>
         <translation>Параметры</translation>
     </message>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="161"/>
+        <location filename="../src/widgets/messagelist.cpp" line="159"/>
         <source>Time</source>
         <translation>Время</translation>
     </message>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="253"/>
+        <location filename="../src/widgets/messagelist.cpp" line="251"/>
         <source>Direct</source>
         <translation>Напрямую</translation>
     </message>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="253"/>
+        <location filename="../src/widgets/messagelist.cpp" line="251"/>
         <source>Server</source>
         <translation>Сервер</translation>
     </message>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="255"/>
+        <location filename="../src/widgets/messagelist.cpp" line="253"/>
         <source>Urgent</source>
         <translation>Срочно</translation>
     </message>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="257"/>
+        <location filename="../src/widgets/messagelist.cpp" line="255"/>
         <source>Multiple Recipients</source>
         <translation>Нескольким адресатам</translation>
     </message>
     <message>
-        <location filename="../src/widgets/messagelist.cpp" line="259"/>
+        <location filename="../src/widgets/messagelist.cpp" line="257"/>
         <source>Cancelled Event</source>
         <translation>Прерванное событие</translation>
     </message>
@@ -2205,44 +2166,39 @@ Double click - Show next message</source>
 <context>
     <name>LicqQtGui::OwnerEditDlg</name>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="145"/>
-        <source>&amp;Cancel</source>
-        <translation>О&amp;тменить</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="131"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="110"/>
         <source>Currently only one account per protocol is supported.</source>
         <translation>Поддерживается только одна учётная запись для протокола.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="49"/>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="50"/>
         <source>Edit Account</source>
         <translation>Редактирование учётной записи</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="142"/>
-        <source>&amp;Ok</source>
-        <translation>&amp;Ок</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="69"/>
-        <source>Password:</source>
-        <translation>Пароль:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="58"/>
-        <source>Protocol:</source>
-        <translation>Протокол:</translation>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="74"/>
+        <source>Pro&amp;tocol:</source>
+        <translation>Про&amp;токол:</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="75"/>
-        <source>Save Password</source>
-        <translation>Сохранить пароль</translation>
+        <source>&amp;User ID:</source>
+        <translation>&amp;Идентификатор:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="63"/>
-        <source>User ID:</source>
-        <translation>Идентификатор:</translation>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="76"/>
+        <source>&amp;Password:</source>
+        <translation>&amp;Пароль:</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="80"/>
+        <source>&amp;Save Password</source>
+        <translation>&amp;Сохранить пароль</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/ownereditdlg.cpp" line="127"/>
+        <source>User ID field cannot be empty.</source>
+        <translation>Идентификатор не может быть пустым.</translation>
     </message>
 </context>
 <context>
@@ -4323,6 +4279,16 @@ Works with many different window managers.</source>
         <source>Show balloon popup message when contacts marked for online notify comes online.</source>
         <translation>Показывать всплывающую подсказку при появлении с сети пользователя, для которого включено оповещение.</translation>
     </message>
+    <message>
+        <location filename="../src/settings/general.cpp" line="147"/>
+        <source>Fixed:</source>
+        <translation>Моноширинный:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/general.cpp" line="148"/>
+        <source>Used in file editor and network log.</source>
+        <translation>Используется в файловом редакторе и в окне отладки.</translation>
+    </message>
 </context>
 <context>
     <name>LicqQtGui::Settings::Network</name>
@@ -5303,7 +5269,7 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::UserEventTabDlg</name>
     <message>
-        <location filename="../src/userevents/usereventtabdlg.cpp" line="123"/>
+        <location filename="../src/userevents/usereventtabdlg.cpp" line="121"/>
         <source>[UNKNOWN_USER]</source>
         <translation>[НЕИЗВЕСТНЫЙ ПОЛЬЗОВАТЕЛЬ]</translation>
     </message>
@@ -5326,7 +5292,7 @@ reset your statistics?</source>
         <translation>Год:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2150"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2144"/>
         <source> is over %1 bytes.
 Select another picture?</source>
         <translation> более %1 байт.
@@ -5468,7 +5434,7 @@ Select another picture?</source>
         <translation>Email:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2168"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2162"/>
         <source>Failed to Load</source>
         <translation>Не удалось загрузить</translation>
     </message>
@@ -5600,7 +5566,7 @@ Check this if you want to keep your changes to the Alias.</source>
 Эта опция не позволяет изменить псевдоним при обновлении.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2163"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2157"/>
         <source>Not Available</source>
         <translation>Отсутствует</translation>
     </message>
@@ -5670,7 +5636,7 @@ Check this if you want to keep your changes to the Alias.</source>
         <translation>Со&amp;хранить</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2138"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2132"/>
         <source>Select your picture</source>
         <translation>Выберите Вашу картинку</translation>
     </message>
@@ -5720,12 +5686,12 @@ Check this if you want to keep your changes to the Alias.</source>
         <translation>Об&amp;новить</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2182"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2176"/>
         <source>Updating server...</source>
         <translation>Обновляется на сервере...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2020"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2014"/>
         <source>Updating...</source>
         <translation>Обновляется...</translation>
     </message>
@@ -5745,7 +5711,7 @@ Check this if you want to keep your changes to the Alias.</source>
         <translation>Р&amp;абота</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2045"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2039"/>
         <source>You need to be connected to the
 ICQ Network to change your settings.</source>
         <translation>Вы должны быть в ICQ сети для
@@ -5764,22 +5730,22 @@ ICQ Network to retrieve your settings.</source>
         <translation>Индекс:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2204"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2198"/>
         <source>done</source>
         <translation>готово</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2213"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2207"/>
         <source>error</source>
         <translation>ошибка</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2207"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2201"/>
         <source>failed</source>
         <translation>неудачно</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/userinfodlg.cpp" line="2210"/>
+        <location filename="../src/dialogs/userinfodlg.cpp" line="2204"/>
         <source>timed out</source>
         <translation>время ожидания вышло</translation>
     </message>
@@ -6087,12 +6053,12 @@ to your ignore list?</source>
 <context>
     <name>LicqQtGui::UserSendCommon</name>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1184"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1183"/>
         <source> to Contact List</source>
         <translation> в список контактов</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1167"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1166"/>
         <source>%1 is in %2 mode:
 %3
 Send...</source>
@@ -6101,181 +6067,181 @@ Send...</source>
 Отправляется...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1184"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1183"/>
         <source>Cancel</source>
         <translation>Отмена</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1052"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1051"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Отмена</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="211"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="210"/>
         <source>Change background color</source>
         <translation>Изменить цвет фона</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="207"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="206"/>
         <source>Change text color</source>
         <translation>Изменить цвет текста</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="145"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="144"/>
         <source>Chat Request</source>
         <translation>Запрос чата</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="147"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="146"/>
         <source>Contact List</source>
         <translation>Список контактов</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1154"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1153"/>
         <source>Direct send failed,
 send through server?</source>
         <translation>Отправить напрямую не удалось.
 Отправить через сервер?</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1343"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1342"/>
         <source>Drag Users Here
 Right Click for Options</source>
         <translation>Перенесите пользователей сюда
 Используйте правую кнопку для выбора опций</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="262"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="261"/>
         <source>Error! no owner set</source>
         <translation>Ошибка! Не задан владелец</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="146"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="145"/>
         <source>File Transfer</source>
         <translation>Передача файла</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="203"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="202"/>
         <source>Insert smileys</source>
         <translation>Вставить смайл</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="143"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="142"/>
         <source>Message</source>
         <translation>Сообщение</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="155"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="154"/>
         <source>Message type</source>
         <translation>Тип сообщения</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="193"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="192"/>
         <source>Multiple Recipients</source>
         <translation>Нескольким адресатам</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="195"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="194"/>
         <source>Multiple recipients</source>
         <translation>Нескольким адресатам</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="148"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="147"/>
         <source>SMS</source>
         <translation>SMS</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="157"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="156"/>
         <source>Select type of message to send</source>
         <translation>Выбeрите тип сообщения для отправки</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1129"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1128"/>
         <source>&amp;Send</source>
         <translation>&amp;Отправить</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="164"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="163"/>
         <source>Send through server</source>
         <translation>Отправить через сервер</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1041"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1040"/>
         <source>Sending </source>
         <translation>Отправляется </translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="201"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="200"/>
         <source>Smileys</source>
         <translation>Смайлы</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="144"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="143"/>
         <source>URL</source>
         <translation>Ссылка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1184"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1183"/>
         <source>Urgent</source>
         <translation>Срочно</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1106"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1105"/>
         <source>cancelled</source>
         <translation>прервано</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1042"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1041"/>
         <source>direct</source>
         <translation>напрямую</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1102"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1101"/>
         <source>done</source>
         <translation>выполнено</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1115"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1114"/>
         <source>error</source>
         <translation>ошибка</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1109"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1108"/>
         <source>failed</source>
         <translation>неудачно</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1112"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1111"/>
         <source>timed out</source>
         <translation>время ожидания вышло</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1042"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1041"/>
         <source>via server</source>
         <translation>через сервер</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="205"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="204"/>
         <source>Text Color...</source>
         <translation>Цвет текста...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="209"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="208"/>
         <source>Background Color...</source>
         <translation>Цвет фона...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="596"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="595"/>
         <source>%1 has joined the conversation.</source>
         <translation>%1 присоединился.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="630"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="629"/>
         <source>%1 has left the conversation.</source>
         <translation>%1 отсоединился.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="998"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="997"/>
         <source>Message can&apos;t be sent securely through the server!
 Send anyway?</source>
         <translation>Cообщение не может быть безопасно отправлено через сервер!
@@ -6406,7 +6372,7 @@ Do you really want to send it?</source>
 <context>
     <name>LicqQtGui::UserViewEvent</name>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="675"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="672"/>
         <source>
 --------------------
 Request was cancelled.</source>
@@ -6415,67 +6381,67 @@ Request was cancelled.</source>
 Запрос был прерван.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="680"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="677"/>
         <source>A&amp;ccept</source>
         <translation>&amp;Принять</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="752"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="749"/>
         <source>A&amp;dd %1 Users</source>
         <translation>&amp;Добавить %1 пользователей</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="755"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="752"/>
         <source>A&amp;dd User</source>
         <translation>&amp;Добавить</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="715"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="712"/>
         <source>A&amp;uthorize</source>
         <translation>&amp;Авторизировать</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="125"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="126"/>
         <source>Aut&amp;o Close</source>
         <translation>&amp;Закрывать автоматически</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="494"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="495"/>
         <source>Chat</source>
         <translation>Чат</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="138"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="139"/>
         <source>&amp;Close</source>
         <translation>&amp;Закрыть</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="515"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="516"/>
         <source>File Transfer</source>
         <translation>Передача файла</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="706"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="703"/>
         <source>&amp;Forward</source>
         <translation>&amp;Переслать</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="688"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="685"/>
         <source>&amp;Join</source>
         <translation>&amp;Присоединиться</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="253"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="254"/>
         <source>Nex&amp;t</source>
         <translation>&amp;Следующее</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="251"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="252"/>
         <source>Nex&amp;t (%1)</source>
         <translation>&amp;Следующее (%1)</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="139"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="140"/>
         <source>Normal Click - Close Window
 &lt;CTRL&gt;+Click - also delete User</source>
         <translation>Обычное нажатие закрывает окно.
@@ -6483,32 +6449,32 @@ Request was cancelled.</source>
 закрывает окно и удаляет пользователя</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="705"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="702"/>
         <source>&amp;Quote</source>
         <translation>&amp;Цитировать</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="716"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="713"/>
         <source>&amp;Refuse</source>
         <translation>&amp;Отказать</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="704"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="701"/>
         <source>&amp;Reply</source>
         <translation>&amp;Ответить</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="696"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="693"/>
         <source>Start Chat</source>
         <translation>Начать чат</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="710"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="707"/>
         <source>&amp;View</source>
         <translation>&amp;Просмотр</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="760"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="757"/>
         <source>&amp;View Email</source>
         <translation>&amp;Показать Email</translation>
     </message>
