@@ -577,7 +577,7 @@ void ChatDlg::updateRemoteStyle()
       QColor bg(iter->u->ColorBg()[0], iter->u->ColorBg()[1],
                          iter->u->ColorBg()[2]);
       QFont f(iter->w->font());
-      f.setFixedPitch(iter->u->FontStyle() && 0x0F == STYLE_FIXEDxPITCH);
+      f.setFixedPitch((iter->u->FontStyle() & 0x0F) == STYLE_FIXEDxPITCH);
 
       switch (iter->u->FontStyle() & 0xF0)
       {
@@ -846,7 +846,7 @@ void ChatDlg::slot_chat()
         if (tbtIgnore->state() == QButton::Off)
         {
           QFont f(GetWindow(u)->font());
-          f.setFixedPitch(u->FontStyle() && 0x0F == STYLE_FIXEDxPITCH);
+          f.setFixedPitch((u->FontStyle() & 0x0F) == STYLE_FIXEDxPITCH);
 
           switch (u->FontStyle() & 0xF0)
           {
