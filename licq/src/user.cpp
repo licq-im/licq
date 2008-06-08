@@ -871,7 +871,7 @@ bool CUserManager::AddGroup(char *_szName, unsigned short nID)
 
   if (bNewGroup && gLicqDaemon)
   {
-    if (nID != 0)
+    if (nID == 0)
       gLicqDaemon->icqAddGroup(_szName);
 
     // New group is last so it has highest group id
