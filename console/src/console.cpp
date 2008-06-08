@@ -533,12 +533,14 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
       ICQUser *u = gUserManager.FetchUser(s->Id(), s->PPID(), LOCK_R);
       if (u != NULL)
       {
-        if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
+        bool isInGroup = u->GetInGroup(m_nGroupType, m_nCurrentGroup);
+        gUserManager.DropUser(u);
+
+        if (isInGroup)
         {
           CreateUserList();
           PrintUsers();
         }
-        gUserManager.DropUser(u);
       }
 
       break;

@@ -775,14 +775,14 @@ void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
 {
   // Get the user's name
   ICQUser *u = gUserManager.FetchUser(ftman->Uin(), LOCK_R);
-  const char *szAlias = u->GetAlias();
-  gUserManager.DropUser(u);
 
   // Make the title
   char szTitle[30];
   ftman->Direction() == D_RECEIVER ? strcpy(szTitle, "File from ") :
     strcpy(szTitle, "File to ");
-  strcat(szTitle, szAlias);
+  strcat(szTitle, u->GetAlias());
+
+  gUserManager.DropUser(u);
 
   // Current file name and Current File # slash Total Batch Files
   PrintBoxTop(szTitle, COLOR_WHITE, 48);
