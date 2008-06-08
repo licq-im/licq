@@ -633,7 +633,8 @@ void CICQDaemon::icqRegisterFinish()
   CPU_Register *p = new CPU_Register(m_szRegisterPasswd);
   gLog.Info(tr("%sRegistering a new user...\n"), L_SRVxSTR);
   ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
-  e->thread_plugin = m_nRegisterThreadId;
+  if (e != NULL)
+    e->thread_plugin = m_nRegisterThreadId;
 }
 
 //-----ICQ::icqVerifyRegistration
