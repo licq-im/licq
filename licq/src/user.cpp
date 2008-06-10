@@ -486,7 +486,9 @@ void ICQUser::Unlock()
 
 
 //=====CUserManager=============================================================
-CUserManager::CUserManager() : m_hUsers(USER_HASH_SIZE)
+CUserManager::CUserManager()
+  : m_hUsers(USER_HASH_SIZE),
+    m_szDefaultEncoding(NULL)
 {
   // Set up the basic all users and new users group
   pthread_rdwr_init_np(&mutex_grouplist, NULL);
@@ -529,6 +531,9 @@ CUserManager::~CUserManager()
   pthread_rdwr_destroy_np(&mutex_groupidlist);
   pthread_rdwr_destroy_np(&mutex_userlist);
   pthread_rdwr_destroy_np(&mutex_grouplist);
+
+  if (m_szDefaultEncoding != NULL)
+    free(m_szDefaultEncoding);
 }
 
 void CUserManager::SetOwnerUin(unsigned long _nUin)
@@ -613,6 +618,13 @@ bool CUserManager::Load()
       m_nDefaultGroup = 0;
   licqConf.ClearFlag(INI_FxFATAL);
   licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
+  licqConf.SetFlag(INI_FxFATAL);
+
+  char szTemp[MAX_LINE_LEN];
+  licqConf.SetSection("network");
+  licqConf.ClearFlag(INI_FxFATAL);
+  licqConf.ReadStr("DefaultUserEncoding", szTemp, "");
+  SetString(&m_szDefaultEncoding, szTemp);
   licqConf.SetFlag(INI_FxFATAL);
   licqConf.CloseFile();
 
@@ -1640,6 +1652,12 @@ void CUserManager::RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGro
 }
 
 
+void CUserManager::SetDefaultUserEncoding(const char* defaultEncoding)
+{
+  SetString(&m_szDefaultEncoding, defaultEncoding);
+}
+
+
 //=====CUserHashTable===========================================================
 CUserHashTable::CUserHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 {
@@ -2512,6 +2530,13 @@ void ICQUser::SetDefaults()
   SetCustomAutoResponse(szTemp);
 }
 
+char* ICQUser::UserEncoding()
+{
+  if (m_szEncoding == NULL || m_szEncoding[0] == '\0')
+    return gUserManager.DefaultUserEncoding();
+  else
+    return m_szEncoding;
+}
 
 
 unsigned short ICQUser::Status()

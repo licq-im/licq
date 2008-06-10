@@ -530,7 +530,7 @@ public:
   //!Retrieves the user's auto response message that was last seen.
   char *AutoResponse()                  { return m_szAutoResponse; }
   //!Retrieves the encoding Licq uses for this user
-  char *UserEncoding()                  { return m_szEncoding; }
+  char* UserEncoding();
   //!True if they have sent the UTF8 Cap
   bool SupportsUTF8()                   { return m_bSupportsUTF8; }
   bool SendServer()                     { return m_bSendServer; }
@@ -1133,6 +1133,9 @@ public:
   void RemoveUserFromGroup(const char *, unsigned long, unsigned short);
   void SaveAllUsers();
 
+  char* DefaultUserEncoding() { return m_szDefaultEncoding; }
+  void SetDefaultUserEncoding(const char* defaultEncoding);
+
   bool UpdateUsersInGroups();
 
   unsigned short NumUsers();
@@ -1156,6 +1159,7 @@ protected:
                  m_nUserListLockType, m_nGroupListLockType,
                  m_nGroupIDListLockType, m_nOwnerListLockType;
   bool m_bAllowSave;
+  char* m_szDefaultEncoding;
 
   friend class CICQDaemon;
 };
