@@ -49,22 +49,24 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
   myProtocol->setCurrentPpid(ppid);
   lblProtocol->setBuddy(myProtocol);
 
-  layDialog->addWidget(lblProtocol, 0, 0);
-  layDialog->addWidget(myProtocol, 0, 1);
+  unsigned line = 0;
 
-  QLabel* lblUin = new QLabel(tr("&New User ID:"));
+  layDialog->addWidget(lblProtocol, line, 0);
+  layDialog->addWidget(myProtocol, line++, 1);
+
+  QLabel* lblUin = new QLabel(tr("New &User ID:"));
   myUin = new QLineEdit();
   if (!id.isEmpty())
     myUin->setText(id);
   connect(myUin, SIGNAL(returnPressed()), SLOT(ok()));
   lblUin->setBuddy(myUin);
 
-  layDialog->addWidget(lblUin, 1, 0);
-  layDialog->addWidget(myUin, 1, 1);
+  layDialog->addWidget(lblUin, line, 0);
+  layDialog->addWidget(myUin, line++, 1);
 
-  myNotify = new QCheckBox(tr("Notify User"));
+  myNotify = new QCheckBox(tr("&Notify User"));
   myNotify->setChecked(true);
-  layDialog->addWidget(myNotify, 2, 0, 1, 2);
+  layDialog->addWidget(myNotify, line++, 0, 1, 2);
 
   QDialogButtonBox* buttons = new QDialogButtonBox(
       QDialogButtonBox::Ok |
@@ -72,7 +74,7 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
   connect(buttons, SIGNAL(accepted()), SLOT(ok()));
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
 
-  layDialog->addWidget(buttons, 3, 0, 1, 2);
+  layDialog->addWidget(buttons, line++, 0, 1, 2);
 
   myUin->setFocus();
   show();
