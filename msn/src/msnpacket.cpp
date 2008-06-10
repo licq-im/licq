@@ -653,7 +653,7 @@ CPS_MSNInvitation::CPS_MSNInvitation(const char* szToEmail,
 	   "Content-Type: application/x-msnmsgr-sessionreqbody\r\n"
 	   "Content-Length: %lu\r\n"
 	   "\r\n", szToEmail, szToEmail, szFromEmail, szBranchGUID,
-	   m_szCallGUID, strlen(szBodyBuf)+1);
+	   m_szCallGUID, static_cast<unsigned long>(strlen(szBodyBuf)+1));
 
   string strMsg = szHeaderBuf;
   strMsg += szBodyBuf;
