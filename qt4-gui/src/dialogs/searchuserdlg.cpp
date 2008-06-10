@@ -40,8 +40,6 @@
 #include <licq_languagecodes.h>
 #include <licq_countrycodes.h>
 
-#include "config/chat.h"
-
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
 #include "core/messagebox.h"
@@ -245,7 +243,7 @@ void SearchUserDlg::startSearch()
 
   if (edtUin->text().trimmed().isEmpty())
   {
-    QTextCodec* codec = QTextCodec::codecForName(Config::Chat::instance()->defaultEncoding());
+    QTextCodec* codec = QTextCodec::codecForName(gUserManager.DefaultUserEncoding());
     if (codec == 0)
       codec = QTextCodec::codecForLocale();
     searchTag = gLicqDaemon->icqSearchWhitePages(
@@ -341,8 +339,7 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
 {
   QString text;
   QTreeWidgetItem* item = new QTreeWidgetItem(foundView);
-  QTextCodec* codec = QTextCodec::codecForName(
-      Config::Chat::instance()->defaultEncoding());
+  QTextCodec* codec = QTextCodec::codecForName(gUserManager.DefaultUserEncoding());
   if (codec == NULL)
     codec = QTextCodec::codecForLocale();
 

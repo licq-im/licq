@@ -1388,25 +1388,6 @@ void LicqGui::listUpdated(CICQSignal* sig)
 {
   switch (sig->SubSignal())
   {
-    case LIST_ADD:
-    {
-      ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_W);
-      if (u == NULL)
-      {
-        gLog.Warn("%sLicqGui::listUpdated(): Invalid user received: %s\n",
-          L_ERRORxSTR, sig->Id());
-        break;
-      }
-
-      // as we intercept the user's addition, we set it our default codec
-      QByteArray defaultEncoding = Config::Chat::instance()->defaultEncoding();
-      if (!defaultEncoding.isEmpty())
-        u->SetUserEncoding(defaultEncoding);
-
-      gUserManager.DropUser(u);
-      break;
-    }
-
     case LIST_REMOVE:
     {
       // If their floaty is enabled, remove it

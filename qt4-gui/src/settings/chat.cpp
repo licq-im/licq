@@ -553,14 +553,18 @@ void Settings::Chat::load()
 
   mySendTNCheck->setChecked(gLicqDaemon->SendTypingNotification());
 
-  myDefaultEncodingCombo->setCurrentIndex(0);
-  // first combo myBox item is the locale encoding, so we skip it
-  for (int i = 1; i < myDefaultEncodingCombo->count(); i++)
+  QByteArray defaultEncoding = gUserManager.DefaultUserEncoding();
+  if (defaultEncoding.isEmpty())
+    myDefaultEncodingCombo->setCurrentIndex(0);
+  else
   {
-    if (UserCodec::encodingForName(myDefaultEncodingCombo->itemText(i)) == chatConfig->defaultEncoding())
+    for (int i = 1; i < myDefaultEncodingCombo->count(); i++)
     {
-       myDefaultEncodingCombo->setCurrentIndex(i);
-       break;
+      if (UserCodec::encodingForName(myDefaultEncodingCombo->itemText(i)) == defaultEncoding)
+      {
+        myDefaultEncodingCombo->setCurrentIndex(i);
+        break;
+      }
     }
   }
   myShowAllEncodingsCheck->setChecked(chatConfig->showAllEncodings());
@@ -620,9 +624,9 @@ void Settings::Chat::apply()
   gLicqDaemon->setUrlViewer(myUrlViewerCombo->currentText().toLocal8Bit());
 
   if (myDefaultEncodingCombo->currentIndex() > 0)
-    chatConfig->setDefaultEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()));
+    gUserManager.SetDefaultUserEncoding(UserCodec::encodingForName(myDefaultEncodingCombo->currentText()));
   else
-    chatConfig->setDefaultEncoding(QByteArray());
+    gUserManager.SetDefaultUserEncoding("");
   chatConfig->setShowAllEncodings(myShowAllEncodingsCheck->isChecked());
 
   chatConfig->blockUpdates(false);

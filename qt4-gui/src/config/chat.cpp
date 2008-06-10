@@ -98,8 +98,6 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("PopupAutoResponse", myPopupAutoResponse, true);
 
   iniFile.SetSection("locale");
-  iniFile.ReadStr("DefaultEncoding", szTemp, "");
-  myDefaultEncoding = szTemp;
   iniFile.ReadBool("ShowAllEncodings", myShowAllEncodings, false);
 
   iniFile.SetSection("geometry");
@@ -157,7 +155,6 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("PopupAutoResponse", myPopupAutoResponse);
 
   iniFile.SetSection("locale");
-  iniFile.WriteStr("DefaultEncoding", myDefaultEncoding);
   iniFile.WriteBool("ShowAllEncodings", myShowAllEncodings);
 
   iniFile.SetSection("geometry");
@@ -235,14 +232,6 @@ void Config::Chat::setShowAllEncodings(bool showAllEncodings)
     return;
 
   myShowAllEncodings = showAllEncodings;
-}
-
-void Config::Chat::setDefaultEncoding(QByteArray defaultEncoding)
-{
-  if (defaultEncoding == myDefaultEncoding)
-    return;
-
-  myDefaultEncoding = defaultEncoding;
 }
 
 void Config::Chat::setTabbedChatting(bool tabbedChatting)

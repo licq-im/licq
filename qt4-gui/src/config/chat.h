@@ -75,7 +75,6 @@ public:
   bool autoSendThroughServer() const { return myAutoSendThroughServer; }
   bool showDlgButtons() const { return myShowDlgButtons; }
   bool showAllEncodings() const { return myShowAllEncodings; }
-  QByteArray defaultEncoding() const { return myDefaultEncoding; }
   bool tabbedChatting() const { return myTabbedChatting; }
   bool showHistory() const { return myShowHistory; }
   bool showNotices() const { return myShowNotices; }
@@ -125,7 +124,6 @@ public slots:
   void setAutoSendThroughServer(bool autoSendThroughServer);
   void setShowDlgButtons(bool showDlgButtons);
   void setShowAllEncodings(bool showAllEncodings);
-  void setDefaultEncoding(QByteArray defaultEncoding);
   void setTabbedChatting(bool tabbedChatting);
   void setShowHistory(bool showHistory);
   void setShowNotices(bool showNotices);
@@ -201,8 +199,6 @@ private:
   QString myNoticeColor;
   QString myTabTypingColor;
   QString myChatBackColor;
-
-  QByteArray myDefaultEncoding;
 
   QRect myDialogRect;
 

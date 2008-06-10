@@ -26,8 +26,6 @@
 #include <licq_user.h>
 #include <licq_chat.h>
 
-#include "config/chat.h"
-
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserCodec */
 
@@ -84,7 +82,7 @@ UserCodec::encoding_t UserCodec::m_encodings[] = {
 
 QTextCodec* UserCodec::defaultEncoding()
 {
-  QTextCodec* codec = QTextCodec::codecForName(Config::Chat::instance()->defaultEncoding());
+  QTextCodec* codec = QTextCodec::codecForName(gUserManager.DefaultUserEncoding());
 
   if (codec != NULL)
     return codec;
