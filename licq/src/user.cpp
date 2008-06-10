@@ -614,7 +614,7 @@ bool CUserManager::Load()
   m_bAllowSave = true;
 
   licqConf.ReadNum("DefaultGroup", m_nDefaultGroup, 0);
-  if(m_nDefaultGroup >=  1024)
+  if (m_nDefaultGroup >= 1024)
       m_nDefaultGroup = 0;
   licqConf.ClearFlag(INI_FxFATAL);
   licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
@@ -622,10 +622,10 @@ bool CUserManager::Load()
 
   char szTemp[MAX_LINE_LEN];
   licqConf.SetSection("network");
-  licqConf.ClearFlag(INI_FxFATAL);
+  licqConf.SetFlags(0);
   licqConf.ReadStr("DefaultUserEncoding", szTemp, "");
   SetString(&m_szDefaultEncoding, szTemp);
-  licqConf.SetFlag(INI_FxFATAL);
+  licqConf.SetFlags(INI_FxERROR | INI_FxFATAL);
   licqConf.CloseFile();
 
   // Load users from users.conf
