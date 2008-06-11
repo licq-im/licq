@@ -58,7 +58,10 @@ bool MainContactListProxy::filterAcceptsRow(int source_row, const QModelIndex& s
         return false;
 
       // Filter empty groups in threaded view
-      if (myThreadedView && !Config::ContactList::instance()->showEmptyGroups())
+      // Filter "Other users" (id 0) when empty regardless of configuration
+      if (myThreadedView &&
+          (!Config::ContactList::instance()->showEmptyGroups() ||
+          item.data(ContactListModel::GroupIdRole).toUInt() == 0))
       {
         // Check for empty groups
         if (item.data(ContactListModel::UserCountRole).toInt() == 0)
