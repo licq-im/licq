@@ -313,7 +313,7 @@ void ContactListModel::updateUserGroups(ContactUserData* user, ICQUser* licqUser
   // Check which system groups the user should be member of
   for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
-    updateUserGroup(user, mySystemGroups[i], i, licqUser->GetInGroup(GROUPS_SYSTEM, i));
+    updateUserGroup(user, mySystemGroups[i], myUserGroups.size()+i, licqUser->GetInGroup(GROUPS_SYSTEM, i));
   }
 }
 
