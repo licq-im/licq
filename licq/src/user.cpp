@@ -240,7 +240,8 @@ void ICQUserPhoneBook::ClearEntry(unsigned long nEntry)
     return;
 
   vector<struct PhoneBookEntry>::iterator i = PhoneBookVector.begin();
-  for (;nEntry > 0; nEntry--, ++i);
+  for (;nEntry > 0; nEntry--, ++i)
+    ;
 
   free((*i).szDescription);
   free((*i).szAreaCode);

@@ -880,7 +880,8 @@ static bool line2argv( char *p, char **argv, int *argc, int size )
   /* trim */
   for( ; isspace(*p) ; p ++ )
     ;
-  for( q=p+strlen(p)-1; isspace(*q) ; q-- );
+  for( q=p+strlen(p)-1; isspace(*q) ; q-- )
+    ;
   q[1] = '\0'; 
 
   /* split: the ugly thing  */

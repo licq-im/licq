@@ -70,6 +70,7 @@ char *CGPGHelper::Decrypt(const char *szCipher)
   buf[nRead] = 0;
   return buf;
 #else
+  (void)szCipher;
   return 0;
 #endif
 }
@@ -140,6 +141,9 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
   gpgme_key_unref(rcps[0]);
   return szCipher;
 #else
+  (void)szPlain;
+  (void)szId;
+  (void)nPPID;
   return 0;
 #endif
 }

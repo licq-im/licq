@@ -886,7 +886,8 @@ CPlugin *CLicq::LoadPlugin(const char *_szName, int argc, char **argv)
   // Step up to the first delimiter if we have done nothing yet
   if (argcndx == 0)
   {
-    while (++argcndx < argc && strcmp(argv[argcndx], "--") != 0);
+    while (++argcndx < argc && strcmp(argv[argcndx], "--") != 0)
+      ;
   }
   if (argcndx < argc)
   {

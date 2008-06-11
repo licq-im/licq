@@ -592,7 +592,8 @@ bool CFileTransferManager::ProcessPacket()
       char *pTmp, *pNoPath;
       for (pTmp = m_szFileName + strlen(m_szFileName);
            pTmp >= m_szFileName && *pTmp != '/';
-           pTmp--);
+           pTmp--)
+        ;
       if (pTmp >= m_szFileName && *pTmp == '/')
       {
         pNoPath = strdup(pTmp + 1);
