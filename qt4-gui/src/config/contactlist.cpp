@@ -54,7 +54,7 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadNum("SortByStatus", mySortByStatus, 1);
   iniFile.ReadNum("SortColumn", mySortColumn, 0);
   iniFile.ReadBool("SortColumnAscending", mySortColumnAscending, true);
-  iniFile.ReadBool("UseThreadView", myThreadView, false);
+  iniFile.ReadBool("UseThreadView", myThreadView, true);
   iniFile.ReadBool("ShowEmptyGroups", myShowEmptyGroups, true);
   iniFile.ReadNum("TVGroupStates", myGroupStates, 0xFFFFFFFE);
   iniFile.ReadBool("ShowExtIcons", myShowExtendedIcons, true);
