@@ -116,7 +116,7 @@ void ContactDelegate::paint(QPainter* p, const QStyleOptionViewItem& option,
   if (arg.cg == QPalette::Normal && !(option.state & QStyle::State_Active))
     arg.cg = QPalette::Inactive;
   if ((var = index.data(Qt::DisplayRole)).isValid())
-    arg.text = var.toString().trimmed();
+    arg.text = var.toString();
 
   fillBackground(arg);
   drawGrid(arg, !(index.model()->columnCount() - index.column() - 1));
