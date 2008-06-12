@@ -1127,10 +1127,43 @@ public:
 
   unsigned short GenerateSID();
 
+  /**
+   * Set user group membership and (optionally) update server
+   *
+   * @param id User id
+   * @param ppid User protocol id
+   * @param groupType Group type
+   * @param groupId Group id
+   * @param inGroup True to add user to group or false to remove
+   * @param updateServer True if server list should be updated
+   */
+  void SetUserInGroup(const char* id, unsigned long ppid, GroupType groupType,
+      unsigned short groupId, bool inGroup, bool updateServer = true);
+
+  // Deprecated group manipulation functions
   void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
   void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
-  void AddUserToGroup(const char *, unsigned long, unsigned short);
-  void RemoveUserFromGroup(const char *, unsigned long, unsigned short);
+
+  /**
+   * Add user to a group and update server group
+   *
+   * @param id User id
+   * @param ppid User protocol id
+   * @param groupId Group id
+   */
+  void AddUserToGroup(const char* id, unsigned long ppid, unsigned short groupId)
+  { SetUserInGroup(id, ppid, GROUPS_USER, groupId, true, true); }
+
+  /**
+   * Remove user from a group
+   *
+   * @param id User id
+   * @param ppid User protocol id
+   * @param groupId Group id
+   */
+  void RemoveUserFromGroup(const char* id, unsigned long ppid, unsigned short groupId)
+  { SetUserInGroup(id, ppid, GROUPS_USER, groupId, false); }
+
   void SaveAllUsers();
 
   char* DefaultUserEncoding() { return m_szDefaultEncoding; }

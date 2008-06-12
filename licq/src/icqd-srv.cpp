@@ -1319,8 +1319,12 @@ void CICQDaemon::ProtoToggleVisibleList(const char* _szId, unsigned long _nPPID)
   if (u == NULL) return;
   bool b = u->VisibleList();
   gUserManager.DropUser(u);
+  ProtoSetInVisibleList(_szId, _nPPID, !b);
+}
 
-  if (b)
+void CICQDaemon::ProtoSetInVisibleList(const char* _szId, unsigned long _nPPID, bool visible)
+{
+  if (!visible)
     if (_nPPID == LICQ_PPID)
       icqRemoveFromVisibleList(_szId, _nPPID);
     else
@@ -1348,8 +1352,12 @@ void CICQDaemon::ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPI
   if (u == NULL) return;
   bool b = u->InvisibleList();
   gUserManager.DropUser(u);
+  ProtoSetInInvisibleList(_szId, _nPPID, !b);
+}
 
-  if (b)
+void CICQDaemon::ProtoSetInInvisibleList(const char* _szId, unsigned long _nPPID, bool invisible)
+{
+  if (!invisible)
     if (_nPPID == LICQ_PPID)
       icqRemoveFromInvisibleList(_szId, _nPPID);
     else
@@ -1377,7 +1385,11 @@ void CICQDaemon::icqToggleIgnoreList(const char *_szId, unsigned long _nPPID)
   if (u == NULL) return;
   bool b = u->IgnoreList();
   gUserManager.DropUser(u);
+  ProtoSetInIgnoreList(_szId, _nPPID, b);
+}
 
+void CICQDaemon::ProtoSetInIgnoreList(const char* _szId, unsigned long _nPPID, bool b)
+{
   if (_nPPID == LICQ_PPID)
   {
     if (b)

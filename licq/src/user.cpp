@@ -1601,57 +1601,66 @@ void CUserManager::UnlockOwnerList()
   }
 }
 
-/*---------------------------------------------------------------------------
- * CUserManager::AddUserToGroup
- *-------------------------------------------------------------------------*/
-void CUserManager::AddUserToGroup(const char *szId, unsigned long nPPID,
-  unsigned short _nGroup)
+void CUserManager::SetUserInGroup(const char* id, unsigned long ppid,
+    GroupType groupType, unsigned short groupId, bool inGroup, bool updateServer)
 {
-  //TODO: For other protocols
-  ICQUser *u = FetchUser(szId, nPPID, LOCK_W);
-  if (u == NULL) return;
-  u->AddToGroup(GROUPS_USER, _nGroup);
-  int nGSID = u->GetGSID();
-  DropUser(u);
-  if (gLicqDaemon && nPPID == LICQ_PPID)
-    gLicqDaemon->icqChangeGroup(szId, nPPID, _nGroup,
-      nGSID, ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
+  ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_W);
+  if (u == NULL)
+    return;
+
+  int gsid = u->GetGSID();
+
+  if (!inGroup && u->GetSID() != 0 && GetGroupFromID(gsid) == groupId)
+  {
+    // Don't remove user from local group if member of the same server group
+    gUserManager.DropUser(u);
+    return;
+  }
+
+  // Update user object
+  u->SetInGroup(groupType, groupId, inGroup);
+  gUserManager.DropUser(u);
+
+  // Notify server
+  if (updateServer && gLicqDaemon != NULL)
+  {
+    if (groupType == GROUPS_SYSTEM)
+    {
+      if (groupId == GROUP_VISIBLE_LIST)
+        gLicqDaemon->ProtoSetInVisibleList(id, ppid, inGroup);
+
+      else if (groupId == GROUP_INVISIBLE_LIST)
+        gLicqDaemon->ProtoSetInInvisibleList(id, ppid, inGroup);
+
+      else if (groupId == GROUP_IGNORE_LIST)
+        gLicqDaemon->ProtoSetInIgnoreList(id, ppid, inGroup);
+    }
+    else
+    {
+      // Server group currently only supported for ICQ protocol
+      // Group can only be changed, not removed
+      if (ppid == LICQ_PPID && inGroup)
+        gLicqDaemon->icqChangeGroup(id, ppid, groupId, gsid,
+            ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
+    }
+  }
 }
 
 void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)
 {
-  ICQUser *u = FetchUser(_nUin, LOCK_W);
-  if (u == NULL) return;
-  u->AddToGroup(GROUPS_USER, _nGroup);
-  int nGSID = u->GetGSID();
-  DropUser(u);
-  if (gLicqDaemon)
-    gLicqDaemon->icqChangeGroup(_nUin, _nGroup, nGSID, ICQ_ROSTxNORMAL,
-      ICQ_ROSTxNORMAL);
+  char id[13];
+  snprintf(id, 12, "%lu", _nUin);
+  id[12] = '\0';
+  AddUserToGroup(id, LICQ_PPID, _nGroup);
 }
-
-
-/*---------------------------------------------------------------------------
- * CUserManager::RemoveUserFromGroup
- *-------------------------------------------------------------------------*/
-void CUserManager::RemoveUserFromGroup(const char *szId, unsigned long nPPID,
-  unsigned short _nGroup)
-{
-  ICQUser *u = FetchUser(szId, nPPID, LOCK_W);
-  if (u == NULL) return;
-  u->RemoveFromGroup(GROUPS_USER, _nGroup);
-  DropUser(u);
-}
-
 
 void CUserManager::RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup)
 {
-  ICQUser *u = FetchUser(_nUin, LOCK_W);
-  if (u == NULL) return;
-  u->RemoveFromGroup(GROUPS_USER, _nGroup);
-  DropUser(u);
+  char id[13];
+  snprintf(id, 12, "%lu", _nUin);
+  id[12] = '\0';
+  RemoveUserFromGroup(id, LICQ_PPID, _nGroup);
 }
-
 
 void CUserManager::SetDefaultUserEncoding(const char* defaultEncoding)
 {

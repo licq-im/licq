@@ -480,6 +480,33 @@ public:
   void icqRequestService(unsigned short nFam);
 
   // Visible/Invisible/Ignore list functions
+  /**
+   * Set visible list status for a contact
+   *
+   * @param id User id
+   * @param ppid User protocol id
+   * @param visible True to add user to visible list or false to remove
+   */
+  void ProtoSetInVisibleList(const char* id, unsigned long ppid, bool visible);
+
+  /**
+   * Set invisible list status for a contact
+   *
+   * @param id User id
+   * @param ppid User protocol id
+   * @param invisible True to add user to invisible list or false to remove
+   */
+  void ProtoSetInInvisibleList(const char* id, unsigned long ppid, bool invisible);
+
+  /**
+   * Set invisible list status for a contact
+   *
+   * @param id User id
+   * @param ppid User protocol id
+   * @param ignore True to add user to ignore list or false to remove
+   */
+  void ProtoSetInIgnoreList(const char* id, unsigned long ppid, bool ignore);
+
   void ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID);
   void ProtoToggleVisibleList(const char *_szId, unsigned long _nPPID);
 
