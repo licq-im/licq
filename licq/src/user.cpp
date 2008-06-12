@@ -1638,7 +1638,7 @@ void CUserManager::SetUserInGroup(const char* id, unsigned long ppid,
     else
     {
       // Server group currently only supported for ICQ protocol
-      // Group can only be changed, not removed
+      // Server group can only be changed, not removed
       if (ppid == LICQ_PPID && inGroup)
         gLicqDaemon->icqChangeGroup(id, ppid, groupId, gsid,
             ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);

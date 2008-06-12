@@ -499,7 +499,7 @@ public:
   void ProtoSetInInvisibleList(const char* id, unsigned long ppid, bool invisible);
 
   /**
-   * Set invisible list status for a contact
+   * Set ignore list status for a contact
    *
    * @param id User id
    * @param ppid User protocol id
