@@ -3279,109 +3279,68 @@ void CMainWindow::FillUserGroup()
 
 void CMainWindow::UserGroupToggled(int id)
 {
-  if(id >= 0 && id < 1000)
+  bool add = mnuGroup->isItemChecked(id);
+  GroupType gtype = (id < 1000 ? GROUPS_USER : GROUPS_SYSTEM);
+  unsigned short groupId = (id < 1000 ? id : id - 1000);
+
+  if (gtype == GROUPS_SYSTEM && groupId == GROUP_IGNORE_LIST && add)
   {
-    // User groups
-    if(mnuGroup->isItemChecked(id))
-      RemoveUserFromGroup(GROUPS_USER, id, m_szUserMenuId, m_nUserMenuPPID, this);
-    else {
-      gUserManager.AddUserToGroup(m_szUserMenuId, m_nUserMenuPPID, id);
-      updateUserWin();
-    }
+    ICQUser* u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
+    if (u == NULL)
+      return;
+    QString alias = QString::fromUtf8(u->GetAlias());
+    bool inIgnoreList = u->IgnoreList();
+    gUserManager.DropUser(u);
+
+    if(!inIgnoreList && !QueryUser(this,
+        tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
+        .arg(alias).arg(m_szUserMenuId), tr("&Yes"), tr("&No")))
+      return;
   }
-  else if(id >= 1000)
+
+  if (add)
+    RemoveUserFromGroup(gtype, groupId, m_szUserMenuId, m_nUserMenuPPID, this);
+  else
   {
-    switch(id-1000) {
-    case GROUP_NEW_USERS:
-    {
-      ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
-      if (!u) return;
-      u->SetNewUser(!u->NewUser());
-      gUserManager.DropUser(u);
-      updateUserWin();
-      break;
-    }
-    case GROUP_ONLINE_NOTIFY:
-    {
-      ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
-      if (!u) return;
-      u->SetOnlineNotify(!u->OnlineNotify());
-      gUserManager.DropUser(u);
-      if (m_bFontStyles) updateUserWin();
-      break;
-    }
-    case GROUP_VISIBLE_LIST:
-    {
-      licqDaemon->ProtoToggleVisibleList(m_szUserMenuId, m_nUserMenuPPID);
-      if (m_bFontStyles)
-        updateUserWin();
-      break;
-    }
-    case GROUP_INVISIBLE_LIST:
-    {
-      licqDaemon->ProtoToggleInvisibleList(m_szUserMenuId, m_nUserMenuPPID);
-      if (m_bFontStyles)
-        updateUserWin();
-      break;
-    }
-    case GROUP_IGNORE_LIST:
-    {
-      ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
-      if (!u) return;
-      if(!u->IgnoreList() && !QueryUser(this,
-          tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
-          .arg(QString::fromUtf8(u->GetAlias())).arg(m_szUserMenuId), tr("&Yes"), tr("&No")))
-      {
-        gUserManager.DropUser(u);
-        break;
-      }
-      u->SetIgnoreList(!u->IgnoreList());
-      gUserManager.DropUser(u);
-      licqDaemon->icqToggleIgnoreList(m_szUserMenuId, m_nUserMenuPPID); // network only
-      updateUserWin();
-      break;
-    }
-    }
+    gUserManager.SetUserInGroup(m_szUserMenuId, m_nUserMenuPPID,
+        gtype, groupId, true, false);
+    updateUserWin();
   }
 }
 
 bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
-  const char *szId, unsigned long nPPID, QWidget *p)
+  const char* id, unsigned long ppid, QWidget* parent)
 {
+  if (gtype == GROUPS_USER && group == 0)
+    return RemoveUserFromList(id, ppid, parent);
+
+  if (gtype == GROUPS_SYSTEM && group == 0)
+    return true;
+
   if (gtype == GROUPS_USER)
   {
-    if (group == 0)
-      return RemoveUserFromList(szId, nPPID, p);
-    else
-    {
-      ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-      if (u == NULL) return true;
-      GroupList *g = gUserManager.LockGroupList(LOCK_R);
-      QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
-                         .arg(QString::fromUtf8(u->GetAlias()))
-                         .arg(u->IdString()).arg(QString::fromLocal8Bit( (*g)[group - 1] )) );
-      gUserManager.UnlockGroupList();
-      gUserManager.DropUser(u);
-      if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
-      {
-         gUserManager.RemoveUserFromGroup(szId, nPPID, group);
-         updateUserWin();
-         return true;
-      }
-    }
-  }
-  else if (gtype == GROUPS_SYSTEM)
-  {
-    if (group == 0) return true;
-    ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_W);
-    if (u == NULL) return true;
-    u->RemoveFromGroup(GROUPS_SYSTEM, group);
+    ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
+    if (u == NULL)
+      return true;
+    QString alias = QString::fromUtf8(u->GetAlias());
     gUserManager.DropUser(u);
-    updateUserWin();
-    return true;
+
+    GroupList* g = gUserManager.LockGroupList(LOCK_R);
+    if (g == NULL)
+      return true;
+    QString groupName = QString::fromLocal8Bit((*g)[group - 1]);
+    gUserManager.UnlockGroupList();
+
+    QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
+        .arg(alias).arg(id).arg(groupName));
+
+    if (!QueryUser(parent, warning, tr("Ok"), tr("Cancel")))
+      return false;
   }
 
-  return false;
+  gUserManager.SetUserInGroup(id, ppid, gtype, group, false);
+  updateUserWin();
+  return true;
 }
 
 void CMainWindow::FillServerGroup()
@@ -3419,7 +3378,8 @@ void CMainWindow::ServerGroupChanged(int n)
   gUserManager.UnlockGroupList();
   gUserManager.DropUser(u);
 
-  gUserManager.AddUserToGroup(m_szUserMenuId, m_nUserMenuPPID, n);
+  gUserManager.SetUserInGroup(m_szUserMenuId, m_nUserMenuPPID, GROUPS_USER,
+      n, true, true);
   updateUserWin();
 }
 

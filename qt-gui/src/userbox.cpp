@@ -1367,7 +1367,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
 
       if (szId)
       {
-        gUserManager.AddUserToGroup(szId, nPPID, it->GroupId());
+        gUserManager.SetUserInGroup(szId, nPPID, GROUPS_USER, it->GroupId(), true, true);
         gMainWindow->updateUserWin();
       }
 
