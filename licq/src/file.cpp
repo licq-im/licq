@@ -641,8 +641,10 @@ bool CIniFile::SetSection(const char *_szSection)
 
   // Backtrack until we find a non-space character, then move forward to the
   // next time, thus putting the end of section where it belongs
-  while (isspace(m_szBuffer[--nTempPos]));
-  while (m_szBuffer[++nTempPos] != '\n');
+  while (isspace(m_szBuffer[--nTempPos]))
+    ;
+  while (m_szBuffer[++nTempPos] != '\n')
+    ;
 
   m_nSectionEnd = nTempPos + 1;
   m_szSectionName = strdup(_szSection);
