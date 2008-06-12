@@ -536,25 +536,8 @@ void UserMenu::utility(QAction* action)
 void UserMenu::toggleUserGroup(QAction* action)
 {
   unsigned int gid = action->data().toUInt();
-
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
-
-  if (u == NULL)
-    return;
-
-  // Don't let the user to be deleted from local group
-  // if he is a member of the same server group
-  if (!action->isChecked() &&                             // delete
-      u->GetSID() &&                                      // server-side
-      gUserManager.GetGroupFromID(u->GetGSID()) == gid)   // same group
-  {
-    gUserManager.DropUser(u);
-    return;
-  }
-
-  u->SetInGroup(GROUPS_USER, gid, action->isChecked());
-
-  gUserManager.DropUser(u);
+  gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_USER, gid,
+      action->isChecked(), false);
 
   // The daemon does not send an update when group membership changes
   // so tell the contactList it needs to update
@@ -565,47 +548,22 @@ void UserMenu::toggleSystemGroup(QAction* action)
 {
   unsigned int gid = action->data().toUInt();
 
-  ICQUser* u = NULL;
-  if (gid == GROUP_NEW_USERS || gid == GROUP_ONLINE_NOTIFY || gid == GROUP_IGNORE_LIST)
+  if (gid == GROUP_IGNORE_LIST && !action->isChecked())
   {
-    u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
+    ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
     if (u == NULL)
+      return;
+
+    QString alias = QString::fromUtf8(u->GetAlias());
+    gUserManager.DropUser(u);
+
+    if(!QueryYesNo(this, tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
+        .arg(alias).arg(myId)))
       return;
   }
 
-  switch (gid)
-  {
-    case GROUP_NEW_USERS:
-      u->SetNewUser(action->isChecked());
-      break;
-
-    case GROUP_ONLINE_NOTIFY:
-      u->SetOnlineNotify(action->isChecked());
-      break;
-
-    case GROUP_VISIBLE_LIST:
-      gLicqDaemon->ProtoToggleVisibleList(myId.toLatin1(), myPpid);
-      break;
-
-    case GROUP_INVISIBLE_LIST:
-      gLicqDaemon->ProtoToggleInvisibleList(myId.toLatin1(), myPpid);
-      break;
-
-    case GROUP_IGNORE_LIST:
-      if (!action->isChecked() ||
-          QueryYesNo(this, tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
-            .arg(QString::fromUtf8(u->GetAlias())).arg(myId)))
-      {
-        u->SetIgnoreList(action->isChecked());
-        gUserManager.DropUser(u);
-        u = NULL;
-        gLicqDaemon->icqToggleIgnoreList(myId.toLatin1(), myPpid); // network only
-      }
-      break;
-  }
-
-  if (u != NULL)
-    gUserManager.DropUser(u);
+  gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_SYSTEM, gid,
+      action->isChecked(), true);
 
   // The daemon does not send an update when group membership changes
   // so tell the contactList it needs to update
@@ -614,7 +572,8 @@ void UserMenu::toggleSystemGroup(QAction* action)
 
 void UserMenu::setServerGroup(QAction* action)
 {
-  gUserManager.AddUserToGroup(myId.toLatin1(), myPpid, action->data().toUInt());
+  unsigned int gid = action->data().toUInt();
+  gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_USER, gid, true, true);
 
   // The daemon does not send an update when group membership changes
   // so tell the contactList it needs to update

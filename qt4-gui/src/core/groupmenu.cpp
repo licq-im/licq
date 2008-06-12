@@ -174,20 +174,8 @@ void GroupMenu::addUsersToGroup(QAction* action)
     QString id = userIndex.data(ContactListModel::UserIdRole).toString();
     unsigned long ppid = userIndex.data(ContactListModel::PpidRole).toUInt();
 
-    // Update user object
-    ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_W);
-    if (u == NULL)
-      continue;
-    u->SetInGroup(gtype, gid, true);
-    gUserManager.DropUser(u);
-
-    // Some special groups need special handling
-    if (groupId == ContactListModel::SystemGroupOffset + GROUP_VISIBLE_LIST)
-      gLicqDaemon->icqAddToVisibleList(id.toLatin1(), ppid);
-    if (groupId == ContactListModel::SystemGroupOffset + GROUP_INVISIBLE_LIST)
-      gLicqDaemon->icqAddToInvisibleList(id.toLatin1(), ppid);
-    if (groupId == ContactListModel::SystemGroupOffset + GROUP_IGNORE_LIST)
-      gLicqDaemon->icqAddToIgnoreList(id.toLatin1(), ppid);
+    gUserManager.SetUserInGroup(id.toLatin1(), ppid, gtype, gid, true,
+        gtype == GROUPS_SYSTEM);
 
     // Daemon doesn't notify us when group memberships change so notify model from here
     LicqGui::instance()->contactList()->updateUser(id, ppid);
