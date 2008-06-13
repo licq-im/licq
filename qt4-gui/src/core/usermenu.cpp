@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include <QActionGroup>
+#include <QClipboard>
 
 #include <licq_events.h>
 #include <licq_icqd.h>
@@ -160,6 +161,7 @@ UserMenu::UserMenu(QWidget* parent)
 #ifdef HAVE_LIBGPGME
   mySetKeyAction = addAction(tr("Set GPG key"), this, SLOT(selectKey()));
 #endif
+  myCopyIdAction = addAction(tr("&Copy User ID"), this, SLOT(copyIdToClipboard()));
   myViewHistoryAction = addAction(tr("View &History"), this, SLOT(viewHistory()));
   myViewGeneralAction = addAction(tr("&Info"), this, SLOT(viewInfoGeneral()));
 
@@ -378,6 +380,17 @@ void UserMenu::selectKey()
 #ifdef HAVE_LIBGPGME
   new GPGKeySelect(myId, myPpid);
 #endif
+}
+
+void UserMenu::copyIdToClipboard()
+{
+  QClipboard* clip = qApp->clipboard();
+  QClipboard::Mode mode = QClipboard::Clipboard;
+
+  if (clip->supportsSelection())
+    mode = QClipboard::Selection;
+
+  clip->setText(myId, mode);
 }
 
 void UserMenu::viewHistory()

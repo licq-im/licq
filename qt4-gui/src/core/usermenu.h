@@ -87,6 +87,7 @@ private slots:
   void toggleFloaty();
   void removeContact();
   void selectKey();
+  void copyIdToClipboard();
   void viewHistory();
   void viewInfoGeneral();
 
@@ -153,6 +154,7 @@ private:
 #ifdef HAVE_LIBGPGME
   QAction* mySetKeyAction;
 #endif
+  QAction* myCopyIdAction;
   QAction* myViewHistoryAction;
   QAction* myViewGeneralAction;
 
