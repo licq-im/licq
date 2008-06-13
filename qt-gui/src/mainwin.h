@@ -35,6 +35,7 @@
 #include <qtimer.h>
 #include <qbitmap.h>
 #include <qdialog.h>
+#include <qvaluelist.h>
 #include <vector>
 
 #include "userbox.h"
@@ -438,6 +439,7 @@ private:
         MNU_SYS_GPG = 12
   };
 
+  QValueList<unsigned short> myGroupIds;
 
 };
 

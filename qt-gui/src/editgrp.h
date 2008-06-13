@@ -20,8 +20,8 @@
 #ifndef EDITGRP_H
 #define EDITGRP_H
 
+#include <qvaluelist.h>
 #include <qwidget.h>
-#include "licqdialog.h"
 
 class QListBox;
 class QLineEdit;
@@ -29,12 +29,13 @@ class QGroupBox;
 class QPushButton;
 
 class CInfoField;
+class CSignalManager;
 
 class EditGrpDlg : public QWidget
 {
   Q_OBJECT
 public:
-  EditGrpDlg (QWidget *parent = 0);
+  EditGrpDlg(CSignalManager* signalManager, QWidget *parent = 0);
 protected:
   QListBox *lstGroups;
   QGroupBox *grpGroups;
@@ -43,8 +44,6 @@ protected:
 
   QLineEdit *edtName;
   CInfoField *nfoDefault, *nfoNewUser;
-
-  unsigned short m_nEditGrp;
 
   void RefreshList();
 
@@ -58,10 +57,19 @@ protected slots:
   void slot_editcancel();
   void slot_default();
   void slot_newuser();
-  void slot_done();
 signals:
   void signal_updateGroups();
-};
 
+private slots:
+  void listUpdated(CICQSignal* sig);
+
+private:
+  unsigned short currentGroupId() const;
+  void setCurrentGroupId(unsigned short groupId);
+  void moveGroup(int delta);
+
+  QValueList<unsigned short> myGroupIds;
+  unsigned short myEditGroupId;
+};
 
 #endif

@@ -70,7 +70,7 @@ public:
   CUserViewItem (ICQUser *, QListView *);
   CUserViewItem (ICQUser *, CUserViewItem* item);
   CUserViewItem (BarType, QListView *);
-  CUserViewItem (unsigned short Id, const char* name, QListView *);
+  CUserViewItem(unsigned short Id, const char* name, unsigned short sortKey, QListView* parent);
 
   virtual ~CUserViewItem();
   virtual QString key(int column, bool ascending) const;

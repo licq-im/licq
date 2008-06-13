@@ -1483,38 +1483,33 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       }
       if (m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
       {
-        CUserViewItem* i = userView->firstChild();
-
-        while (i)
+        for (CUserViewItem* i = userView->firstChild(); i != NULL; i = i->nextSibling())
         {
-          if (u->GetInGroup(GROUPS_USER, i->GroupId()))
-          {
-            CUserViewItem* it = i->firstChild();
+          unsigned short groupId = i->GroupId();
 
-            while (it)
+          // Should user be shown in this group
+          bool showInGroup = show_user(u) &
+              ((groupId != 0 && u->GetInGroup(GROUPS_USER, groupId)) ||
+              (groupId == 0 && u->GetGroups().empty() && !u->IgnoreList()));
+
+
+          // Remove old user item if present
+          for (CUserViewItem* it = i->firstChild(); it != NULL; it = it->nextSibling())
+          {
+            char* szRealId = 0;
+            ICQUser::MakeRealId(it->ItemId(), it->ItemPPID(), szRealId);
+            bool equal = strcasecmp(szRealId, szId) == 0 && it->ItemPPID() == nPPID;
+            delete [] szRealId;
+            if (equal)
             {
-              char *szRealId = 0;
-              ICQUser::MakeRealId(it->ItemId(), it->ItemPPID(), szRealId);
-              if(strcasecmp(szRealId, szId) == 0 && it->ItemPPID() == nPPID)
-              {
-                delete it;
-                delete [] szRealId;
-                if (show_user(u))
-                  (void) new CUserViewItem(u, i);
-                break;
-              }
-              delete [] szRealId;
-              it = it->nextSibling();
-            }
-            if (it == NULL)
-            {
-              if ( show_user(u) &
-                   ((i->GroupId() != 0 && u->GetInGroup(GROUPS_USER, i->GroupId())) ||
-                    (i->GroupId() == 0 && u->GetGroups(GROUPS_USER) == 0 && !u->IgnoreList())))
-                (void) new CUserViewItem(u, i);
+              delete it;
+              break;
             }
           }
-          i = i->nextSibling();
+
+          // If user should be shown in group, create a new item
+          if (showInGroup)
+            (void) new CUserViewItem(u, i);
         }
       }
       else if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
@@ -1747,6 +1742,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
     case LIST_GROUP_ADDED:
     case LIST_GROUP_REMOVED:
     case LIST_GROUP_CHANGED:
+    case LIST_GROUP_REORDERED:
       updateGroups();
       updateUserWin();
       break;
@@ -1808,15 +1804,16 @@ void CMainWindow::updateUserWin()
 
   if (doGroupView)
   {
-    CUserViewItem* gi = new CUserViewItem(0, tr("Other Users").local8Bit(), userView);
+    CUserViewItem* gi = new CUserViewItem(0, tr("Other Users").local8Bit(), 65535, userView);
     gi->setOpen(m_nGroupStates & 1);
-    GroupList *g = gUserManager.LockGroupList(LOCK_R);
-    for (unsigned short i = 0; i < g->size(); i++)
+    int i = 1;
+    FOR_EACH_GROUP_START_SORTED(LOCK_R)
     {
-      gi = new CUserViewItem(i+1, (*g)[i], userView);
-      gi->setOpen(m_nGroupStates & (1<<QMIN(i+1, 31)));
+      gi = new CUserViewItem(pGroup->id(), pGroup->name().c_str(), pGroup->sortIndex(), userView);
+      gi->setOpen(m_nGroupStates & (1<<QMIN(pGroup->id(), 31)));
+      ++i;
     }
-    gUserManager.UnlockGroupList();
+    FOR_EACH_GROUP_END
   }
   FOR_EACH_USER_START(LOCK_R)
   {
@@ -1834,7 +1831,7 @@ void CMainWindow::updateUserWin()
       for(CUserViewItem* gi = userView->firstChild(); gi; gi = gi->nextSibling())
       {
         if((gi->GroupId() != 0 && pUser->GetInGroup(GROUPS_USER, gi->GroupId())) ||
-           (gi->GroupId() == 0 && pUser->GetGroups(GROUPS_USER) == 0 && !pUser->IgnoreList()))
+           (gi->GroupId() == 0 && pUser->GetGroups().empty() && !pUser->IgnoreList()))
           (void) new CUserViewItem(pUser, gi);
       }
     }
@@ -1923,13 +1920,16 @@ void CMainWindow::setCurrentGroupMenu(int id)
 
 void CMainWindow::setCurrentGroup(int index)
 {
-  m_nCurrentGroup = index;
-  m_nGroupType = GROUPS_USER;
   unsigned short nNumGroups = gUserManager.NumGroups();
-  if (m_nCurrentGroup > nNumGroups)
+  if (index > nNumGroups)
   {
-    m_nCurrentGroup -= nNumGroups;
+    m_nCurrentGroup = index - nNumGroups;
     m_nGroupType = GROUPS_SYSTEM;
+  }
+  else
+  {
+    m_nCurrentGroup = myGroupIds[index];
+    m_nGroupType = GROUPS_USER;
   }
   // Update the combo box
   cmbUserGroups->setCurrentItem(index);
@@ -1958,25 +1958,30 @@ void CMainWindow::updateGroups()
   mnuUserGroups->clear();
   mnuGroup->clear();
   mnuServerGroup->clear();
+  myGroupIds.clear();
 
   QString group = Strings::getSystemGroupName(GROUP_ALL_USERS);
   cmbUserGroups->insertItem(group);
   mnuUserGroups->insertItem(group);
   mnuUserGroups->insertSeparator();
+  myGroupIds.push_back(0);
 
   // take care of this first
   mnuGroup->insertItem(tr("Server Group"), mnuServerGroup);
   mnuGroup->insertSeparator();
 
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned short i = 0; i < g->size(); i++)
+  unsigned short i = 0;
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    cmbUserGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
-    mnuUserGroups->insertItem(QString::fromLocal8Bit((*g)[i]));
-    mnuGroup->insertItem(QString::fromLocal8Bit((*g)[i]), i+1);
-    mnuServerGroup->insertItem(QString::fromLocal8Bit((*g)[i]), i+1);
+    myGroupIds.push_back(pGroup->id());
+    QString name = QString::fromLocal8Bit(pGroup->name().c_str());
+    cmbUserGroups->insertItem(name);
+    mnuUserGroups->insertItem(name);
+    mnuGroup->insertItem(name, i+1);
+    mnuServerGroup->insertItem(name, i+1);
+    ++i;
   }
-  gUserManager.UnlockGroupList();
+  FOR_EACH_GROUP_END
   mnuUserGroups->insertSeparator();
   mnuGroup->insertSeparator();
 
@@ -1996,9 +2001,13 @@ void CMainWindow::updateGroups()
     mnuGroup->insertItem(group, 1000+groups[i]);
   }
 
-  int index = m_nCurrentGroup;
+  unsigned short index = 0;
   if (m_nGroupType == GROUPS_SYSTEM)
-    index += gUserManager.NumGroups();
+    index = m_nCurrentGroup + gUserManager.NumGroups();
+  else
+    for (unsigned short i = 0; i < myGroupIds.size(); ++i)
+      if (myGroupIds[i] == m_nCurrentGroup)
+        index = i;
   setCurrentGroup(index);
 }
 
@@ -3269,10 +3278,8 @@ void CMainWindow::FillUserGroup()
   mnuGroup->setItemChecked(1000+GROUP_IGNORE_LIST, u->IgnoreList());
   mnuGroup->setItemChecked(1000+GROUP_NEW_USERS, u->NewUser());
 
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned short i = 0; i < g->size(); i++)
-    mnuGroup->setItemChecked(i+1, u->GetInGroup(GROUPS_USER, i+1));
-  gUserManager.UnlockGroupList();
+  for (unsigned short i = 0; i < myGroupIds.size()-1; i++)
+    mnuGroup->setItemChecked(i+1, u->GetInGroup(GROUPS_USER, myGroupIds[i+1]));
   gUserManager.DropUser(u);
 }
 
@@ -3281,7 +3288,7 @@ void CMainWindow::UserGroupToggled(int id)
 {
   bool add = mnuGroup->isItemChecked(id);
   GroupType gtype = (id < 1000 ? GROUPS_USER : GROUPS_SYSTEM);
-  unsigned short groupId = (id < 1000 ? id : id - 1000);
+  unsigned short groupId = (id < 1000 ? myGroupIds[id] : id - 1000);
 
   if (gtype == GROUPS_SYSTEM && groupId == GROUP_IGNORE_LIST && add)
   {
@@ -3301,11 +3308,8 @@ void CMainWindow::UserGroupToggled(int id)
   if (add)
     RemoveUserFromGroup(gtype, groupId, m_szUserMenuId, m_nUserMenuPPID, this);
   else
-  {
     gUserManager.SetUserInGroup(m_szUserMenuId, m_nUserMenuPPID,
         gtype, groupId, true, false);
-    updateUserWin();
-  }
 }
 
 bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
@@ -3325,11 +3329,11 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
     QString alias = QString::fromUtf8(u->GetAlias());
     gUserManager.DropUser(u);
 
-    GroupList* g = gUserManager.LockGroupList(LOCK_R);
+    LicqGroup* g = gUserManager.FetchGroup(group, LOCK_R);
     if (g == NULL)
       return true;
-    QString groupName = QString::fromLocal8Bit((*g)[group - 1]);
-    gUserManager.UnlockGroupList();
+    QString groupName = QString::fromLocal8Bit(g->name().c_str());
+    gUserManager.DropGroup(g);
 
     QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
         .arg(alias).arg(id).arg(groupName));
@@ -3339,7 +3343,6 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
   }
 
   gUserManager.SetUserInGroup(id, ppid, gtype, group, false);
-  updateUserWin();
   return true;
 }
 
@@ -3351,11 +3354,10 @@ void CMainWindow::FillServerGroup()
 
   for (uint index = 0; index < mnuServerGroup->count(); index++)
   {
-    const int id = mnuServerGroup->idAt(index);
-    const QCString text = mnuServerGroup->text(id).local8Bit();
+    int id = mnuServerGroup->idAt(index);
 
     bool checked = false;
-    if (u->GetSID() && (u->GetGSID() == gUserManager.GetIDFromGroup(text.data())))
+    if (u->GetSID() && (u->GetGSID() == gUserManager.GetIDFromGroup(myGroupIds[id])))
       checked = true;
 
     mnuServerGroup->setItemChecked(id, checked);
@@ -3371,16 +3373,13 @@ void CMainWindow::ServerGroupChanged(int n)
   ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
   if (u == NULL) return;
 
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned int i = 0; i < g->size(); i++)
+  for (unsigned int i = 0; i < myGroupIds.size()-1; i++)
     mnuServerGroup->setItemChecked(i+1, (int)(i+1) == n);
 
-  gUserManager.UnlockGroupList();
   gUserManager.DropUser(u);
 
   gUserManager.SetUserInGroup(m_szUserMenuId, m_nUserMenuPPID, GROUPS_USER,
       n, true, true);
-  updateUserWin();
 }
 
 //-----CMainWindow::saveAllUsers-----------------------------------------------
@@ -4696,7 +4695,7 @@ void CMainWindow::showReqAuthDlg(const char *szId, unsigned long nPPID)
 
 void CMainWindow::showEditGrpDlg()
 {
-  EditGrpDlg *d = new EditGrpDlg;
+  EditGrpDlg *d = new EditGrpDlg(licqSigMan);
   connect (d, SIGNAL(signal_updateGroups()), this, SLOT(updateGroups()));
   d->show();
 }

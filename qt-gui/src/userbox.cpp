@@ -133,7 +133,7 @@ CUserViewItem::CUserViewItem (ICQUser *_cUser, CUserViewItem* item)
   setGraphics(_cUser);
 }
 
-CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
+CUserViewItem::CUserViewItem(unsigned short Id, const char* name, unsigned short sortKey, QListView* lv)
   : QListViewItem(lv),
     m_nGroupId(Id),
     m_sGroupName(name)
@@ -157,20 +157,15 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, QListView* lv)
   m_bGPGKey = false;
   m_bNotInList = true;
   m_pUserIcon = 0;
-  // Other users group is sorted at the end
-  if (m_nGroupId)
-  {
-    QString strTemp = QString("%1").arg((int)m_nGroupId);
-    while (strTemp.length() < 10)
-      strTemp = "0" + strTemp;
-    m_sSortKey = strTemp;
-  }
-  else
-    m_sSortKey = QString("9999999999");
+
+  QString strTemp = QString("%1").arg((int)sortKey);
+  while (strTemp.length() < 10)
+    strTemp = "0" + strTemp;
+  m_sSortKey = strTemp;
+
   m_sPrefix = "1";
   setPixmap(0, gMainWindow->pmCollapsed);
   setText(1, QString::fromLocal8Bit(name));
-
 }
 
 CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
