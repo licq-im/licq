@@ -3,6 +3,7 @@ set(widgets_SRCS
   colorbutton.cpp
   filenameedit.cpp
   fontedit.cpp
+  groupcombobox.cpp
   historyview.cpp
   infofield.cpp
   messagelist.cpp
