@@ -73,8 +73,8 @@ public:
   {
     ItemTypeRole = Qt::UserRole,        // Type of item (one of enum ItemType)
     NameRole,                           // Item name (alias for UserItems)
-    SortPrefixRole,                     // Primary sort index
-    SortRole,                           // Secondary sort index
+    SortPrefixRole,                     // Primary sort index (UserItems only)
+    SortRole,                           // Sort index (secondary index for UserItems, only index for GroupItems)
     UnreadEventsRole,                   // Number of unread events
     EventSubCommandRole,                // Type of event (UserItems only)
     GroupIdRole,                        // Id for groups, parent groups for other items
@@ -388,10 +388,10 @@ private:
    * Create a group object and connect signals for it
    *
    * @param id Id for the new group
-   * @param name Name for the new group
+   * @param name Name for the new group (only for non standard groups)
    * @return The created group
    */
-  ContactGroup* createGroup(unsigned short id, QString name);
+  ContactGroup* createGroup(unsigned short id, QString name = QString());
 
   /**
    * Get the user object that represents an licq contact

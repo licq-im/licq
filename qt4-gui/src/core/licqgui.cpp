@@ -753,19 +753,20 @@ bool LicqGui::removeUserFromGroup(GroupType gtype, unsigned long group,
       ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
       if (u == NULL)
         return true;
-      GroupList* g = gUserManager.LockGroupList(LOCK_R);
+      LicqGroup* g = gUserManager.FetchGroup(group, LOCK_R);
+      if (g == NULL)
+      {
+        gUserManager.DropUser(u);
+        return true;
+      }
       QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
           .arg(QString::fromUtf8(u->GetAlias()))
-          .arg(u->IdString()).arg(QString::fromLocal8Bit((*g)[group - 1])));
-      gUserManager.UnlockGroupList();
+          .arg(u->IdString()).arg(QString::fromLocal8Bit(g->name().c_str())));
+      gUserManager.DropGroup(g);
       gUserManager.DropUser(u);
       if (QueryYesNo(parent, warning))
       {
         gUserManager.RemoveUserFromGroup(id.toLatin1(), ppid, group);
-
-        // The daemon does not send an update when group membership changes
-        // so tell the contactList it needs to update
-        myContactList->updateUser(id, ppid);
         return true;
       }
     }

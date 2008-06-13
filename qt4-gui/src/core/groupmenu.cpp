@@ -88,17 +88,16 @@ void GroupMenu::updateGroups()
   foreach (a, myUserGroupActions->actions())
     delete a;
 
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned int i = 0; i < g->size(); ++i)
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    QString name = QString::fromLocal8Bit((*g)[i]);
+    QString name = QString::fromLocal8Bit(pGroup->name().c_str());
 
     a = myUserGroupActions->addAction(name);
-    a->setData(i + 1);
+    a->setData(pGroup->id());
 
     myGroupsMenu->insertAction(myGroupSeparator, a);
   }
-  gUserManager.UnlockGroupList();
+  FOR_EACH_GROUP_END
 
   // Add groups to menu
   myGroupsMenu->insertActions(myGroupSeparator, myUserGroupActions->actions());
@@ -117,6 +116,18 @@ void GroupMenu::aboutToShowMenu()
   myMoveUpAction->setEnabled(!special && myGroupId > 1);
   myMoveDownAction->setEnabled(!special && myGroupId < gUserManager.NumGroups());
   myRemoveGroupAction->setEnabled(!special);
+
+  mySortIndex = 0;
+  if (!special)
+  {
+    LicqGroup* group = gUserManager.FetchGroup(myGroupId, LOCK_R);
+    if (group != NULL)
+    {
+      mySortIndex = group->sortIndex();
+      myGroupName = QString::fromLocal8Bit(group->name().c_str());
+      gUserManager.DropGroup(group);
+    }
+  }
 }
 
 void GroupMenu::setGroup(unsigned int groupId)
@@ -132,22 +143,21 @@ void GroupMenu::popup(QPoint pos, unsigned int groupId)
 
 void GroupMenu::moveGroupUp()
 {
-  // Model uses group+1 so substract one before sending to daemon
-  gUserManager.SwapGroups(myGroupId, myGroupId - 1);
+  if (mySortIndex == 0)
+    return;
+
+  gUserManager.ModifyGroupSorting(myGroupId, mySortIndex - 1);
 }
 
 void GroupMenu::moveGroupDown()
 {
-  // Model uses group+1 so substract one before sending to daemon
-  gUserManager.SwapGroups(myGroupId, myGroupId + 1);
+  gUserManager.ModifyGroupSorting(myGroupId, mySortIndex + 1);
 }
 
 void GroupMenu::removeGroup()
 {
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
   QString warning(tr("Are you sure you want to remove the group '%1'?")
-      .arg(QString::fromLocal8Bit((*g)[myGroupId-1])));
-  gUserManager.UnlockGroupList();
+      .arg(myGroupName));
   if (!QueryYesNo(this, warning))
     return;
 
@@ -176,8 +186,5 @@ void GroupMenu::addUsersToGroup(QAction* action)
 
     gUserManager.SetUserInGroup(id.toLatin1(), ppid, gtype, gid, true,
         gtype == GROUPS_SYSTEM);
-
-    // Daemon doesn't notify us when group memberships change so notify model from here
-    LicqGui::instance()->contactList()->updateUser(id, ppid);
   }
 }

@@ -41,6 +41,27 @@ public:
   EditGrpDlg(QWidget* parent = 0);
 
 private:
+  /**
+   * Get group id for group currently marked
+   *
+   * @return Group id for current group or zero if no group is marked
+   */
+  unsigned short currentGroupId() const;
+
+  /**
+   * Set current group id in list
+   *
+   * @param groupId Id of group to make current
+   */
+  void setCurrentGroupId(unsigned short groupId);
+
+  /**
+   * Move a group in the list
+   *
+   * @param delta Direction to move, positive for down
+   */
+  void moveGroup(int delta);
+
   QListWidget* lstGroups;
   QGroupBox* grpGroups;
   QPushButton* btnAdd;
@@ -57,7 +78,7 @@ private:
   InfoField* nfoDefault;
   InfoField* nfoNewUser;
 
-  unsigned short m_nEditGrp;
+  unsigned short myEditGroupId;
 
   void RefreshList();
 

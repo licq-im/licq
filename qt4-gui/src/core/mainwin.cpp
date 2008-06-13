@@ -772,12 +772,11 @@ void MainWindow::updateGroups(bool initial)
   myUserGroupsBox->clear();
   myUserGroupsBox->addItem(LicqStrings::getSystemGroupName(GROUP_ALL_USERS));
 
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned short i = 0; i < g->size(); i++)
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    myUserGroupsBox->addItem(QString::fromLocal8Bit((*g)[i]));
+    myUserGroupsBox->addItem(QString::fromLocal8Bit(pGroup->name().c_str()));
   }
-  gUserManager.UnlockGroupList();
+  FOR_EACH_GROUP_END
 
   for (unsigned short i = 1; i < NUM_GROUPS_SYSTEM_ALL; i++)
     myUserGroupsBox->addItem(LicqStrings::getSystemGroupName(i));

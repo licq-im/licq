@@ -102,10 +102,7 @@ void ContactListModel::listUpdated(CICQSignal* sig)
     case LIST_GROUP_ADDED:
     {
       unsigned short gid = sig->Argument();
-
-      GroupList* g = gUserManager.LockGroupList(LOCK_R);
-      ContactGroup* newGroup = createGroup(gid, QString::fromLocal8Bit((*g)[gid-1]));
-      gUserManager.UnlockGroupList();
+      ContactGroup* newGroup = createGroup(gid);
 
       beginInsertRows(QModelIndex(), myUserGroups.size(), myUserGroups.size());
       myUserGroups.append(newGroup);
@@ -141,6 +138,20 @@ void ContactListModel::listUpdated(CICQSignal* sig)
         if (group->groupId() == gid)
           group->update();
       }
+      break;
+    }
+
+    case LIST_GROUP_REORDERED:
+    {
+      // Get new sort keys for all groups
+      for (int i = 0; i < myUserGroups.size(); ++i)
+        myUserGroups.at(i)->updateSortKey();
+
+      // Send one changed signal for all groups
+      emit dataChanged(createIndex(0, 0, myUserGroups.at(0)),
+          createIndex(myUserGroups.size() + NUM_GROUPS_SYSTEM_ALL - 1, myColumnCount - 1,
+          mySystemGroups[NUM_GROUPS_SYSTEM_ALL-1]));
+
       break;
     }
   }
@@ -249,20 +260,23 @@ void ContactListModel::reloadAll()
   myColumnCount = Config::ContactList::instance()->columnCount();
 
   // Add all groups
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  beginInsertRows(QModelIndex(), 0, g->size());
+  beginInsertRows(QModelIndex(), 0, gUserManager.NumGroups() + 1);
 
   ContactGroup* newGroup = createGroup(0, tr("Other Users"));
   myUserGroups.append(newGroup);
 
-  for (unsigned short i = 0; i < g->size(); ++i)
+  FOR_EACH_GROUP_START(LOCK_R)
   {
-    newGroup = createGroup(i+1, QString::fromLocal8Bit((*g)[i]));
-    myUserGroups.append(newGroup);
+    ContactGroup* group = new ContactGroup(pGroup);
+    connect(group, SIGNAL(dataChanged(ContactGroup*)),
+        SLOT(groupDataChanged(ContactGroup*)));
+    connect(group, SIGNAL(barDataChanged(ContactBar*, int)),
+        SLOT(barDataChanged(ContactBar*, int)));
+    myUserGroups.append(group);
   }
+  FOR_EACH_GROUP_END
 
   endInsertRows();
-  gUserManager.UnlockGroupList();
 
   // Add all users
   FOR_EACH_USER_START(LOCK_R)
@@ -306,7 +320,7 @@ void ContactListModel::updateUserGroups(ContactUserData* user, ICQUser* licqUser
     ContactGroup* group = myUserGroups.at(i);
     unsigned short gid = group->groupId();
     bool shouldBeMember = (gid != 0 && licqUser->GetInGroup(GROUPS_USER, gid)) ||
-        (gid == 0 && licqUser->GetGroups(GROUPS_USER) == 0 && !licqUser->IgnoreList());
+        (gid == 0 && licqUser->GetGroups().empty() && !licqUser->IgnoreList());
     updateUserGroup(user, group, i, shouldBeMember);
   }
 

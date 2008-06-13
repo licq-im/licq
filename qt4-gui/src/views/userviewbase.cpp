@@ -284,10 +284,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
         QString dropId = text.mid(4);
 
         if (!dropId.isEmpty())
-        {
           gUserManager.SetUserInGroup(dropId.toLatin1(), dropPpid, GROUPS_USER, gid, true);
-          myContactList->updateUser(dropId.toLatin1(), dropPpid);
-        }
       }
       else
         return; // Not accepted

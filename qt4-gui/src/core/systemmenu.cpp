@@ -301,18 +301,17 @@ void SystemMenu::updateGroups()
     if (a->data().toInt() < ContactListModel::SystemGroupOffset)
       delete a;
 
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned int i = 0; i < g->size(); ++i)
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    QString name = QString::fromLocal8Bit((*g)[i]);
+    QString name = QString::fromLocal8Bit(pGroup->name().c_str());
 
     a = myUserGroupActions->addAction(name);
-    a->setData(i + 1);
+    a->setData(pGroup->id());
     a->setCheckable(true);
 
     myGroupMenu->insertAction(myGroupSeparator, a);
   }
-  gUserManager.UnlockGroupList();
+  FOR_EACH_GROUP_END
 }
 
 void SystemMenu::addOwner(unsigned long ppid)

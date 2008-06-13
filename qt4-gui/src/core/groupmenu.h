@@ -101,6 +101,8 @@ private slots:
 private:
   // Current group
   unsigned int myGroupId;
+  unsigned short mySortIndex;
+  QString myGroupName;
 
   // Actions not in any sub menu
   QAction* myMoveUpAction;

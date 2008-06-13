@@ -28,6 +28,8 @@
 #include "contactitem.h"
 #include "contactlist.h"
 
+class LicqGroup;
+
 namespace LicqQtGui
 {
 class ContactUser;
@@ -49,7 +51,14 @@ public:
    * @param id Group id
    * @param name Group name
    */
-  ContactGroup(unsigned short id, QString name);
+  ContactGroup(unsigned short id, QString name = QString());
+
+  /**
+   * Constructor, creates an empty group
+   *
+   * @param group Group object from daemon
+   */
+  ContactGroup(const LicqGroup* group);
 
   /**
    * Destructor, will delete all user instances in the group
@@ -156,6 +165,11 @@ public:
    */
   virtual bool setData(const QVariant& value, int role = ContactListModel::NameRole);
 
+  /**
+   * Update sort key for this group from daemon
+   */
+  void updateSortKey();
+
 signals:
   /**
    * Signal emitted when data for the group has changed
@@ -170,7 +184,7 @@ signals:
 private:
   unsigned short myGroupId;
   QString myName;
-  QString mySortKey;
+  unsigned short mySortKey;
   int myEvents;
   QList<ContactUser*> myUsers;
   ContactBar* myBars[3];

@@ -126,13 +126,34 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
   show();
 }
 
+unsigned short EditGrpDlg::currentGroupId() const
+{
+  if (lstGroups->currentItem() == NULL)
+    return 0;
+
+  unsigned short groupId = lstGroups->currentItem()->data(Qt::UserRole).toUInt();
+  return groupId;
+}
+
+void EditGrpDlg::setCurrentGroupId(unsigned short groupId)
+{
+  for (int i = 0; i < lstGroups->count(); ++i)
+    if (lstGroups->item(i)->data(Qt::UserRole).toUInt() == groupId)
+    {
+      lstGroups->setCurrentRow(i);
+      break;
+    }
+}
+
 void EditGrpDlg::RefreshList()
 {
+  unsigned short groupId = currentGroupId();
   lstGroups->clear();
 
   const QString allUsers = LicqStrings::getSystemGroupName(GROUP_ALL_USERS);
-
-  lstGroups->addItem(allUsers);
+  QListWidgetItem* item = new QListWidgetItem(allUsers);
+  item->setData(Qt::UserRole, 0);
+  lstGroups->addItem(item);
 
   if (gUserManager.DefaultGroup() == GROUP_ALL_USERS)
     nfoDefault->setText(allUsers);
@@ -140,18 +161,22 @@ void EditGrpDlg::RefreshList()
   if (gUserManager.NewUserGroup() == GROUP_ALL_USERS)
     nfoNewUser->setText(allUsers);
 
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned short i = 0; i < g->size(); i++)
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    lstGroups->addItem(QString::fromLocal8Bit((*g)[i]));
+    QString name = QString::fromLocal8Bit(pGroup->name().c_str());
+    item = new QListWidgetItem(name);
+    item->setData(Qt::UserRole, pGroup->id());
+    lstGroups->addItem(item);
 
-    if (gUserManager.DefaultGroup() == i + 1)
-      nfoDefault->setText(QString::fromLocal8Bit((*g)[i]));
+    if (gUserManager.DefaultGroup() == pGroup->id())
+      nfoDefault->setText(name);
 
-    if (gUserManager.NewUserGroup() == i + 1)
-      nfoNewUser->setText(QString::fromLocal8Bit((*g)[i]));
+    if (gUserManager.NewUserGroup() == pGroup->id())
+      nfoNewUser->setText(name);
   }
-  gUserManager.UnlockGroupList();
+  FOR_EACH_GROUP_END
+
+  setCurrentGroupId(groupId);
 }
 
 void EditGrpDlg::listUpdated(CICQSignal* sig)
@@ -161,6 +186,7 @@ void EditGrpDlg::listUpdated(CICQSignal* sig)
     case LIST_GROUP_ADDED:
     case LIST_GROUP_REMOVED:
     case LIST_GROUP_CHANGED:
+    case LIST_GROUP_REORDERED:
 
     case LIST_INVALIDATE:
       if (btnSave->isEnabled()) // we are editing the group name
@@ -172,100 +198,109 @@ void EditGrpDlg::listUpdated(CICQSignal* sig)
 
 void EditGrpDlg::slot_add()
 {
-  gUserManager.AddGroup(strdup(tr("noname").toLocal8Bit()));
-  RefreshList();
-  lstGroups->setCurrentRow(lstGroups->count()-1);
-  slot_edit();
-}
+  // Don't add group until user has had a chance to set a name for it
+  myEditGroupId = 0;
+  lstGroups->setCurrentRow(-1);
 
-
-void EditGrpDlg::slot_remove()
-{
-  int n = lstGroups->currentRow();
-  // don't allow the default group #0 "All Users" to be deleted
-  // don't try to delete if there is no current Item (currentItem() == -1)
-  if (n < 1) return;
-
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  QString warning(tr("Are you sure you want to remove\n"
-                     "the group '%1'?").arg(QString::fromLocal8Bit((*g)[n-1])));
-  gUserManager.UnlockGroupList();
-
-  if (QueryYesNo(this, warning))
-  {
-    gUserManager.RemoveGroup(n);
-    RefreshList();
-    lstGroups->setCurrentRow(n - 1);
-  }
-}
-
-
-void EditGrpDlg::slot_up()
-{
-  int n = lstGroups->currentRow() - 1;
-  if (n <= 0) return;
-  gUserManager.SwapGroups(n + 1, n);
-  RefreshList();
-  lstGroups->setCurrentRow(n);
-}
-
-
-void EditGrpDlg::slot_down()
-{
-  int n = lstGroups->currentRow() - 1;
-  if (n < 0 /* || n == max */) return;
-  gUserManager.SwapGroups(n + 1, n + 2);
-  RefreshList();
-  if (n + 2 >= int(lstGroups->count()))
-    lstGroups->setCurrentRow(lstGroups->count() - 1);
-  else
-    lstGroups->setCurrentRow(n + 2);
-}
-
-
-void EditGrpDlg::slot_default()
-{
-  int n = lstGroups->currentRow();
-  if (n == -1) return;
-  gUserManager.SetDefaultGroup(n);
-  RefreshList();
-  lstGroups->setCurrentRow(n);
-}
-
-void EditGrpDlg::slot_newuser()
-{
-  int n = lstGroups->currentRow();
-  if (n == -1 ) return;
-  gUserManager.SetNewUserGroup(n);
-  RefreshList();
-  lstGroups->setCurrentRow(n);
-}
-
-void EditGrpDlg::slot_edit()
-{
-  int n = lstGroups->currentRow() - 1;
-  if (n < 0) return;
   btnSave->setEnabled(true);
   btnDone->setEnabled(false);
   edtName->setEnabled(true);
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  edtName->setText(QString::fromLocal8Bit((*g)[n]));
+
+  edtName->setText(tr("noname"));
   edtName->setFocus();
-  gUserManager.UnlockGroupList();
-  m_nEditGrp = n + 1;
   btnEdit->setText(tr("Cancel"));
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
   connect(btnEdit, SIGNAL(clicked()), SLOT(slot_editcancel()));
   lstGroups->setEnabled(false);
+  btnSave->setDefault(true);
 }
 
+void EditGrpDlg::slot_remove()
+{
+  unsigned short groupId = currentGroupId();
+  if (groupId == 0)
+    return;
+
+  QString warning(tr("Are you sure you want to remove\n"
+                     "the group '%1'?").arg(lstGroups->currentItem()->text()));
+
+  if (QueryYesNo(this, warning))
+  {
+    gUserManager.RemoveGroup(groupId);
+    RefreshList();
+  }
+}
+
+void EditGrpDlg::moveGroup(int delta)
+{
+  unsigned short groupId = currentGroupId();
+  if (groupId == 0)
+    return;
+
+  LicqGroup* group = gUserManager.FetchGroup(groupId, LOCK_R);
+  if (group == NULL)
+    return;
+  unsigned short oldSortIndex = group->sortIndex();
+  gUserManager.DropGroup(group);
+
+  if (delta + oldSortIndex < 0)
+    return;
+
+  gUserManager.ModifyGroupSorting(groupId, oldSortIndex + delta);
+  RefreshList();
+}
+
+void EditGrpDlg::slot_up()
+{
+  moveGroup(-1);
+}
+
+void EditGrpDlg::slot_down()
+{
+  moveGroup(1);
+}
+
+void EditGrpDlg::slot_default()
+{
+  gUserManager.SetDefaultGroup(currentGroupId());
+  RefreshList();
+}
+
+void EditGrpDlg::slot_newuser()
+{
+  gUserManager.SetNewUserGroup(currentGroupId());
+  RefreshList();
+}
+
+void EditGrpDlg::slot_edit()
+{
+  myEditGroupId = currentGroupId();
+  if (myEditGroupId == 0)
+    return;
+
+  btnSave->setEnabled(true);
+  btnDone->setEnabled(false);
+  edtName->setEnabled(true);
+
+  edtName->setText(lstGroups->currentItem()->text());
+  edtName->setFocus();
+  btnEdit->setText(tr("Cancel"));
+  disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
+  connect(btnEdit, SIGNAL(clicked()), SLOT(slot_editcancel()));
+  lstGroups->setEnabled(false);
+  btnSave->setDefault(true);
+}
 
 void EditGrpDlg::slot_editok()
 {
-  int n = lstGroups->currentRow();
-  gUserManager.RenameGroup(m_nEditGrp, edtName->text().toLocal8Bit());
+  if (myEditGroupId == 0)
+    myEditGroupId = gUserManager.AddGroup(edtName->text().toLocal8Bit().data());
+  else
+    gUserManager.RenameGroup(myEditGroupId, edtName->text().toLocal8Bit().data());
   RefreshList();
+  setCurrentGroupId(myEditGroupId);
 
+  btnSave->setDefault(false);
   lstGroups->setEnabled(true);
   btnEdit->setText(tr("Edit Name"));
   edtName->clear();
@@ -274,12 +309,11 @@ void EditGrpDlg::slot_editok()
   btnDone->setEnabled(true);
   disconnect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_editok()));
   connect(btnEdit, SIGNAL(clicked()), SLOT(slot_edit()));
-  lstGroups->setCurrentRow(n);
 }
-
 
 void EditGrpDlg::slot_editcancel()
 {
+  btnSave->setDefault(false);
   lstGroups->setEnabled(true);
   btnEdit->setText(tr("Edit Name"));
   edtName->clear();

@@ -205,20 +205,19 @@ void UserMenu::updateGroups()
   foreach (a, myServerGroupActions->actions())
     delete a;
 
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned int i = 0; i < g->size(); ++i)
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    QString name = QString::fromLocal8Bit((*g)[i]);
+    QString name = QString::fromLocal8Bit(pGroup->name().c_str());
 
     a = myUserGroupActions->addAction(name);
-    a->setData(i + 1);
+    a->setData(pGroup->id());
     a->setCheckable(true);
 
     a = myServerGroupActions->addAction(name);
-    a->setData(i + 1);
+    a->setData(pGroup->id());
     a->setCheckable(true);
   }
-  gUserManager.UnlockGroupList();
+  FOR_EACH_GROUP_END
 
   // Add groups to menu
   myGroupsMenu->insertActions(myGroupSeparator, myUserGroupActions->actions());
@@ -551,10 +550,6 @@ void UserMenu::toggleUserGroup(QAction* action)
   unsigned int gid = action->data().toUInt();
   gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_USER, gid,
       action->isChecked(), false);
-
-  // The daemon does not send an update when group membership changes
-  // so tell the contactList it needs to update
-  LicqGui::instance()->contactList()->updateUser(myId, myPpid);
 }
 
 void UserMenu::toggleSystemGroup(QAction* action)
@@ -577,18 +572,10 @@ void UserMenu::toggleSystemGroup(QAction* action)
 
   gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_SYSTEM, gid,
       action->isChecked(), true);
-
-  // The daemon does not send an update when group membership changes
-  // so tell the contactList it needs to update
-  LicqGui::instance()->contactList()->updateUser(myId, myPpid);
 }
 
 void UserMenu::setServerGroup(QAction* action)
 {
   unsigned int gid = action->data().toUInt();
   gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_USER, gid, true, true);
-
-  // The daemon does not send an update when group membership changes
-  // so tell the contactList it needs to update
-  LicqGui::instance()->contactList()->updateUser(myId, myPpid);
 }

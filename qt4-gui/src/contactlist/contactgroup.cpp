@@ -35,15 +35,25 @@ ContactGroup::ContactGroup(unsigned short id, QString name)
     myVisibleContacts(0)
 {
   if (myGroupId != 0)
-  {
-    mySortKey.sprintf("%10i", myGroupId);
-  }
+    mySortKey = myGroupId;
   else
-  {
     // Put "Other Users" last when sorting
-    mySortKey = QString("9999999999");
-  }
+    mySortKey = 65535;
 
+  update();
+
+  for (int i = 0; i < 3; ++i)
+    myBars[i] = new ContactBar(static_cast<ContactListModel::SubGroupType>(i), this);
+}
+
+ContactGroup::ContactGroup(const LicqGroup* group)
+  : ContactItem(ContactListModel::GroupItem),
+    myGroupId(group->id()),
+    myName(group->name().c_str()),
+    mySortKey(group->sortIndex()),
+    myEvents(0),
+    myVisibleContacts(0)
+{
   for (int i = 0; i < 3; ++i)
     myBars[i] = new ContactBar(static_cast<ContactListModel::SubGroupType>(i), this);
 }
@@ -60,11 +70,33 @@ ContactGroup::~ContactGroup()
 
 void ContactGroup::update()
 {
-  GroupList* g = gUserManager.LockGroupList(LOCK_R);
-  myName = QString::fromLocal8Bit((*g)[myGroupId-1]);
-  gUserManager.UnlockGroupList();
+  // System groups and "Other users" aren't present in daemon group list
+  if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
+    return;
+
+  LicqGroup* g = gUserManager.FetchGroup(myGroupId, LOCK_R);
+  if (g == NULL)
+    return;
+
+  myName = QString::fromLocal8Bit(g->name().c_str());
+  mySortKey = g->sortIndex();
+  gUserManager.DropGroup(g);
 
   emit dataChanged(this);
+}
+
+void ContactGroup::updateSortKey()
+{
+  // System groups and "Other users" aren't present in daemon group list
+  if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
+    return;
+
+  LicqGroup* g = gUserManager.FetchGroup(myGroupId, LOCK_R);
+  if (g == NULL)
+    return;
+
+  mySortKey = g->sortIndex();
+  gUserManager.DropGroup(g);
 }
 
 ContactItem* ContactGroup::item(int row) const
@@ -213,7 +245,7 @@ bool ContactGroup::setData(const QVariant& value, int role)
     return true;
 
   // Don't save new name here, daemon will signal us when name has changed
-  gUserManager.RenameGroup(myGroupId, newName.toLocal8Bit());
+  gUserManager.RenameGroup(myGroupId, newName.toLocal8Bit().data());
 
   return true;
 }
