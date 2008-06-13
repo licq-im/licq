@@ -95,6 +95,7 @@ void AddUserDlg::ok()
   unsigned long ppid = myProtocol->currentPpid();
   unsigned short group = myGroup->currentGroupId();
   bool notify = myNotify->isChecked();
+  bool added = false;
 
   if (!id.isEmpty())
   {
@@ -104,7 +105,7 @@ void AddUserDlg::ok()
     {
       unsigned short currentNewGroup = gUserManager.NewUserGroup();
       gUserManager.SetNewUserGroup(group);
-      gLicqDaemon->AddUserToList(id, ppid, notify);
+      added = gLicqDaemon->AddUserToList(id, ppid);
       gUserManager.SetNewUserGroup(currentNewGroup);
     }
     else
@@ -113,14 +114,16 @@ void AddUserDlg::ok()
       {
         u->SetPermanent();
         gUserManager.DropUser(u);
-        gUserManager.AddUserToGroup(id.toLatin1());
-        if (notify && ppid == LICQ_PPID)
-          gLicqDaemon->icqAlertUser(id.toULong());
+        gUserManager.AddUserToGroup(id, ppid, group);
+        added = true;
       }
       else
         gUserManager.DropUser(u);
     }
   }
+
+  if (added && notify && ppid == LICQ_PPID)
+    gLicqDaemon->icqAlertUser(id.toULong());
 
   close();
 }
