@@ -971,12 +971,13 @@ int CRMSClient::Process_HELP()
 int CRMSClient::Process_GROUPS()
 {
   fprintf(fs, "%d 000 All Users\n", CODE_LISTxGROUP);
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  for (unsigned short i = 0; i < g->size(); i++)
+  int i = 1;
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    fprintf(fs, "%d %03d %s\n", CODE_LISTxGROUP, i + 1, (*g)[i]);
+    fprintf(fs, "%d %03d %s\n", CODE_LISTxGROUP, i, pGroup->name().c_str());
+    ++i;
   }
-  gUserManager.UnlockGroupList();
+  FOR_EACH_GROUP_END
   fprintf(fs, "%d\n", CODE_LISTxDONE);
 
   return fflush(fs);
