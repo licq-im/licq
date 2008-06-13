@@ -405,7 +405,7 @@ const unsigned long USER_PLUGIN_STATUS          = 15; // Which Plugin?
  * Sub signals for SIGNAL_UPDATExLIST
  *
  * For contact updates, ppid and id are valid. For group updates, argument
- * holds the group id.
+ * holds the group id except for reordered which applies to entire list.
  */
 enum SubSignals_UPDATExLIST
 {
@@ -414,7 +414,8 @@ enum SubSignals_UPDATExLIST
   LIST_INVALIDATE = 3,          /**< List must be reloaded */
   LIST_GROUP_ADDED = 4,         /**< A group was added to the list */
   LIST_GROUP_REMOVED = 5,       /**< A group was removed from the list */
-  LIST_GROUP_CHANGED = 6        /**< Data for a group has changed */
+  LIST_GROUP_CHANGED = 6,       /**< Data for a group has changed */
+  LIST_GROUP_REORDERED = 7,     /**< Group sorting has changed */
 };
 
 // Deprecated SIGNAL_UPDATExLIST sub signal names, do not use

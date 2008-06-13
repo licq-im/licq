@@ -403,7 +403,7 @@ public:
 class CPU_ExportGroupsToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_ExportGroupsToServerList(GroupList &);
+  CPU_ExportGroupsToServerList(const GroupNameMap& groups);
 };
 
 //-----AddPrivacyInfo-----------------------------------------------------------

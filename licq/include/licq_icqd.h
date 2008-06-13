@@ -469,7 +469,7 @@ public:
   void icqRenameUser(unsigned long _nUin);
   void icqRenameUser(const char *_szId);
   void icqExportUsers(UserStringList &, unsigned short);
-  void icqExportGroups(GroupList &);
+  void icqExportGroups(const GroupNameMap& groups);
   void icqUpdateServerGroups();
   void icqUpdatePhoneBookTimestamp();
   void icqUpdatePictureTimestamp();

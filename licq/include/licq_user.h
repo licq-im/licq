@@ -6,6 +6,7 @@
 #include <ctime>
 #include <list>
 #include <map>
+#include <set>
 #include <string>
 #include <vector>
 
@@ -114,6 +115,55 @@ class TCPSocket;
           continue;                      \
         }
 
+#define FOR_EACH_GROUP_START(x)                          \
+  {                                                      \
+    LicqGroup* pGroup;                                   \
+    GroupMap* _gl_ = gUserManager.LockGroupList(LOCK_R); \
+    for (GroupMap::iterator _i_ = _gl_->begin();         \
+         _i_ != _gl_->end(); ++_i_)                      \
+    {                                                    \
+      pGroup = _i_->second;                              \
+      pGroup->Lock(x);                                   \
+      {
+
+#define FOR_EACH_GROUP_START_SORTED(x)                                  \
+  {                                                                     \
+    LicqGroup* pGroup;                                                  \
+    std::list<LicqGroup*> _sortedGroups_;                               \
+    FOR_EACH_GROUP_START(LOCK_R)                                        \
+      _sortedGroups_.push_back(pGroup);                                 \
+      }                                                                 \
+      pGroup->Unlock();                                                 \
+     }                                                                  \
+    }                                                                   \
+    _sortedGroups_.sort(compare_groups);                                \
+    for (std::list<LicqGroup*>::iterator _i_ = _sortedGroups_.begin();  \
+        _i_ != _sortedGroups_.end(); ++_i_)                             \
+    {                                                                   \
+      pGroup = *_i_;                                                    \
+      pGroup->Lock(x);                                                  \
+      {
+
+#define FOR_EACH_GROUP_CONTINUE          \
+        {                                \
+          pGroup->Unlock();              \
+          continue;                      \
+        }
+
+#define FOR_EACH_GROUP_BREAK             \
+        {                                \
+          pGroup->Unlock();              \
+          break;                         \
+        }
+
+#define FOR_EACH_GROUP_END               \
+      }                                  \
+      pGroup->Unlock();                  \
+    }                                    \
+    gUserManager.UnlockGroupList();      \
+  }
+
+
 
 /*---------------------------------------------------------------------------
  * FOR_EACH_UIN
@@ -178,10 +228,15 @@ class TCPSocket;
           continue;                      \
         }
 
+class ICQuser;
+class ICQOwner;
+class LicqGroup;
+
 typedef std::list<ICQUser *> UserList;
 typedef std::list<class ICQOwner *> OwnerList;
-typedef std::vector<char *> GroupList;
-typedef std::vector<unsigned short> GroupIDList;
+typedef std::set<unsigned short> UserGroupList;
+typedef std::map<unsigned short, LicqGroup*> GroupMap;
+typedef std::map<unsigned short, std::string> GroupNameMap;
 typedef std::list<unsigned long> UinList;
 typedef std::list<char *> UserStringList;
 typedef std::vector <class CUserEvent *> UserEventList;
@@ -733,13 +788,69 @@ public:
   const char *HistoryName()      { return m_fHistory.Description(); }
   const char *HistoryFile()      { return m_fHistory.FileName(); }
 
-  // Group functions
-  unsigned long GetGroups(GroupType g)         { return(m_nGroups[g]); }
-  void SetGroups(GroupType g, unsigned long s) { m_nGroups[g] = s; SaveLicqInfo(); }
-  bool GetInGroup(GroupType, unsigned short);
-  void SetInGroup(GroupType, unsigned short, bool);
-  void AddToGroup(GroupType, unsigned short);
-  void RemoveFromGroup(GroupType, unsigned short);
+  /**
+   * Get user groups this user is member of
+   *
+   * @return List of groups
+   */
+  const UserGroupList& GetGroups() const { return myGroups; }
+
+  /**
+   * Get system groups this user is member of
+   *
+   * @return Bitmask of server groups
+   */
+  unsigned long GetSystemGroups() const { return mySystemGroups; }
+
+  /**
+   * Set user groups this user is member of
+   *
+   * @param groups List of groups
+   */
+  void SetGroups(const UserGroupList& groups) { myGroups = groups; }
+
+  /**
+   * Set system groups this user is member of
+   *
+   * @param groups Bitmask of server groups
+   */
+  void SetSystemGroups(unsigned long groups)    { mySystemGroups = groups; }
+
+  /**
+   * Check if user is member of a group
+   *
+   * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
+   * @param groupId Id of group to check
+   * @return True if group exists and user is member
+   */
+  bool GetInGroup(GroupType gtype, unsigned short groupId) const;
+
+  /**
+   * Convenience function to set membership of user for a group
+   *
+   * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
+   * @param groupId Id of group
+   * @param member True to add user to group, false to remove user from group
+   */
+  void SetInGroup(GroupType gtype, unsigned short groupId, bool member);
+
+  /**
+   * Add user to a group
+   *
+   * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
+   * @param groupId Id of group to add
+   */
+  void AddToGroup(GroupType gtype, unsigned short groupId);
+
+  /**
+   * Remove user from a group
+   *
+   * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
+   * @pram groupId Id of group to leave
+   * @return True if group was valid and user was a member
+   */
+  bool RemoveFromGroup(GroupType gtype, unsigned short groupId);
+
   // Short cuts to above functions
   bool InvisibleList() { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }
   bool VisibleList()   { return GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST); }
@@ -861,8 +972,9 @@ protected:
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
   unsigned short m_nTyping;
   unsigned long m_nUin,
-                m_nStatus,
-                m_nGroups[2];
+                m_nStatus;
+  UserGroupList myGroups;               /**< List of user groups */
+  unsigned long mySystemGroups;         /**< Bitmask for system groups */
   unsigned short m_nSequence;
   unsigned long m_nPhoneFollowMeStatus, m_nICQphoneStatus, m_nSharedFilesStatus;
   char m_nMode;
@@ -979,7 +1091,6 @@ protected:
   unsigned short m_nLockType;
   static pthread_mutex_t mutex_nNumUserEvents;
 
-  friend class CUserGroup;
   friend class CUserManager;
   friend class CICQDaemon;
   friend class CMSN;
@@ -1073,6 +1184,113 @@ protected:
   unsigned short m_nLockType;
 };
 
+/**
+ * Class holding data for a user group in the contact list.
+ * System groups only exists as a bitmask in ICQUser.
+ *
+ * Note: LicqGroup objects should only be created, deleted or modified from the
+ * user manager. If set functions are called directly, plugins will not receive
+ * any signal notifying them of the change.
+ */
+class LicqGroup
+{
+public:
+  /**
+   * Constructor, creates a new user group
+   *
+   * @param id Group id, must be unique
+   * @param name Group name
+   */
+  LicqGroup(unsigned short id, const std::string& name);
+
+  /**
+   * Destructor
+   */
+  virtual ~LicqGroup();
+
+  /**
+   * Get id for group. This is an id used locally by Licq and is persistant for
+   * each group.
+   *
+   * @return Group id
+   */
+  unsigned short id() const { return myId; }
+
+  /**
+   * Get name of group as should be displayed in the user interface
+   *
+   * @return Group name
+   */
+  const std::string& name() const { return myName; }
+
+  /**
+   * Get sorting index for the group. This is used by user interface plugins to
+   * determine sorting order for the groups. Lower numbers should be displayed
+   * higher in the list.
+   *
+   * @return Sorting index for this group
+   */
+  unsigned short sortIndex() const { return mySortIndex; }
+
+  /**
+   * Group id for this group in the ICQ server side list
+   *
+   * @return ICQ server group id or 0 if not set or not known
+   */
+  unsigned short icqGroupId() const { return myIcqGroupId; }
+
+  /**
+   * Set group name
+   *
+   * @param name New group name
+   */
+  void setName(const std::string& name) { myName = name; }
+
+  /**
+   * Set sorting index for group
+   *
+   * @param sortIndex Group sorting index
+   */
+  void setSortIndex(unsigned short sortIndex) { mySortIndex = sortIndex; }
+
+  /**
+   * Set group id in ICQ server side list
+   *
+   * @param icqGroupId ICQ server group id
+   */
+  void setIcqGroupId(unsigned short icqGroupId) { myIcqGroupId = icqGroupId; }
+
+  /**
+   * Lock group for access
+   *
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   */
+  void Lock(unsigned short lockType);
+
+  /**
+   * Release current lock for group
+   */
+  void Unlock();
+
+private:
+  unsigned short myId;
+  std::string myName;
+  unsigned short mySortIndex;
+  unsigned short myIcqGroupId;
+
+  pthread_rdwr_t myMutex;
+  unsigned short myLockType;
+};
+
+/**
+ * Helper function for sorting group list
+ *
+ * @param first Left hand group to compare
+ * @param second Right hand group to compare
+ * @return True if first has a lower sorting index than second
+ */
+bool compare_groups(const LicqGroup* first, const LicqGroup* second);
+
 class CUserManager
 {
 public:
@@ -1104,26 +1322,137 @@ public:
 
   UserList *LockUserList(unsigned short);
   void UnlockUserList();
-  GroupList *LockGroupList(unsigned short);
+
+  /**
+   * Lock group list for access
+   * Call UnlockGroupList when lock is no longer needed
+   *
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @return Map of all user groups indexed by group ids
+   */
+  GroupMap* LockGroupList(unsigned short lockType);
+
+  /**
+   * Release group list lock
+   */
   void UnlockGroupList();
-  GroupIDList *LockGroupIDList(unsigned short);
-  void UnlockGroupIDList();
+
   OwnerList *LockOwnerList(unsigned short);
   void UnlockOwnerList();
 
-  bool AddGroup(char *, unsigned short = 0);
-  void RemoveGroup(unsigned short);
-  void RenameGroup(unsigned short, const char *, bool = true);
-  unsigned short NumGroups();
-  void SaveGroups();
-  void SwapGroups(unsigned short g1, unsigned short g2);
+  /**
+   * Find and lock a group
+   * After use, the lock must be released by calling DropGroup()
+   *
+   * @param groupId Id of group to fetch
+   * @param lockType Type of lock to get
+   * @return The group if found no NULL if groupId was invalid
+   */
+  LicqGroup* FetchGroup(unsigned short groupId, unsigned short lockType);
 
-  void AddGroupID(unsigned short);
-  void RemoveGroupID(unsigned short);
-  void ModifyGroupID(char *, unsigned short);
-  void SaveGroupIDs();
-  unsigned short GetIDFromGroup(const char *);
-  unsigned short GetGroupFromID(unsigned short);
+  /**
+   * Release the lock for a group preivously returned by FetchGroup()
+   *
+   * @param group The group to unlock
+   */
+  void DropGroup(LicqGroup* group);
+
+  /**
+   * Add a user group
+   *
+   * @param name Group name, must be unique
+   * @param icqGroupId ICQ server group id
+   * @return Id of new group or zero if group could not be created
+   */
+  unsigned short AddGroup(const std::string& name, unsigned short icqGroupId = 0);
+
+  /**
+   * Remove a user group
+   *
+   * @param groupId Id of group to remove
+   */
+  void RemoveGroup(unsigned short groupId);
+
+  /**
+   * Rename a user group
+   *
+   * @param groupId Id of group to rename
+   * @param name New group name, must be unique
+   * @param sendUpdate True if server group should be updated
+   * @return True if group was successfully renamed
+   */
+  bool RenameGroup(unsigned short groupId, const std::string& name, bool sendUpdate = true);
+
+  /**
+   * Get number of user groups
+   *
+   * @return Number of user groups
+   */
+  unsigned short NumGroups();
+
+  /**
+   * Save user group list to configuration file
+   * Note: This function assumes that user group list is already locked.
+   */
+  void SaveGroups();
+
+  /**
+   * Move sorting position for a group
+   * Sorting position for other groups may also be changed to make sure all
+   * groups have unique sorting indexes.
+   *
+   * @param groupId Id of group to move
+   * @param newIndex New sorting index where 0 is the top position
+   */
+  void ModifyGroupSorting(unsigned short groupId, unsigned short newIndex);
+
+  /**
+   * Change ICQ server group id for a user group
+   *
+   * @param name Name of group to change
+   * @param icqGroupId ICQ server group id to set
+   */
+  void ModifyGroupID(const std::string& name, unsigned short icqGroupId);
+
+  /**
+   * Change ICQ server group id for a user group
+   *
+   * @param groupId Id of group to change
+   * @param icqGroupId ICQ server group id to set
+   */
+  void ModifyGroupID(unsigned short groupId, unsigned short icqGroupId);
+
+  /**
+   * Get ICQ group id from group name
+   *
+   * @param name Group name
+   * @return Id for ICQ server group or 0 if not found
+   */
+  unsigned short GetIDFromGroup(const std::string& name);
+
+  /**
+   * Get ICQ group id from group
+   *
+   * @param groupId Group
+   * @return Id for iCQ server group or 0 if groupId was invalid
+   */
+  unsigned short GetIDFromGroup(unsigned short groupId);
+
+  /**
+   * Get group id from ICQ server group id
+   *
+   * @param icqGroupId ICQ server group id
+   * @return Id for group or 0 if not found
+   */
+  unsigned short GetGroupFromID(unsigned short icqGroupId);
+
+  /**
+   * Find id for group with a given name
+   *
+   * @param name Name of the group
+   * @return Id for the group or 0 if there is no group with that name
+   */
+  unsigned short GetGroupFromName(const std::string& name);
 
   unsigned short GenerateSID();
 
@@ -1179,18 +1508,19 @@ public:
   void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
-  pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_groupidlist, mutex_ownerlist;
+  pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_ownerlist;
 
-  GroupList m_vszGroups;
+  GroupMap myGroups;
   UserList m_vpcUsers;
   OwnerList m_vpcOwners;
-  GroupIDList m_vnGroupsID;
   CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
-  unsigned short m_nDefaultGroup, m_nNewUserGroup,
-                 m_nUserListLockType, m_nGroupListLockType,
-                 m_nGroupIDListLockType, m_nOwnerListLockType;
+  unsigned short m_nDefaultGroup;
+  unsigned short m_nNewUserGroup;
+  unsigned short m_nUserListLockType;
+  unsigned short myGroupListLockType;
+  unsigned short m_nOwnerListLockType;
   bool m_bAllowSave;
   char* m_szDefaultEncoding;
 

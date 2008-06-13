@@ -40,6 +40,7 @@ extern int errno;
 #include "licq_color.h"
 #include "support.h"
 
+using namespace std;
 
 unsigned short ReversePort(unsigned short p)
 {
@@ -2812,31 +2813,38 @@ CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
     if (_nType == ICQ_ROSTxNORMAL)
     {
       // Use the first group that the user is in as the server stored group
-      GroupIDList *pID = gUserManager.LockGroupIDList(LOCK_R);
-      for (unsigned short j = 1; j < pID->size() + 1; j++)
+      const UserGroupList& userGroups = u->GetGroups();
+
+      for (UserGroupList::const_iterator j = userGroups.begin(); j != userGroups.end(); ++j)
       {
-        if (u->GetInGroup(GROUPS_USER, j))
-        {
-          m_nGSID = (*pID)[j-1];
-          if (m_nGSID)
-            break;
-        }
+        m_nGSID = gUserManager.GetIDFromGroup(*j);
+        if (m_nGSID != 0)
+          break;
       }
 
       // No group yet?  Use default.  No default? Use ID of 1 (general)
       if (m_nGSID == 0)
       {
         unsigned short nNewGroup = gUserManager.NewUserGroup();
-        if (nNewGroup && nNewGroup <= pID->size())
-          m_nGSID = (*pID)[nNewGroup-1];
+        m_nGSID = gUserManager.GetIDFromGroup(nNewGroup);
 
-        if (m_nGSID == 0 && pID->size())
-          m_nGSID = (*pID)[0]; // first group if none was specified
+        if (m_nGSID == 0)
+        {
+          // First group if none was specified
+          GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
+          if (groups->size() > 0)
+          {
+            LicqGroup* g = groups->begin()->second;
+            g->Lock(LOCK_R);
+            m_nGSID = g->icqGroupId();
+            g->Unlock();
+          }
+          gUserManager.UnlockGroupList();
+        }
 
         if (m_nGSID == 0)
           m_nGSID = 1; // General (unless user renamed group or wasnt created yet)
       }
-      gUserManager.UnlockGroupIDList();
 
       u->SetGSID(m_nGSID);
       szUnicodeName = strdup(u->GetAlias());
@@ -2866,27 +2874,27 @@ CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
 
     if (szUnicodeName)
       free(szUnicodeName);
-      
+
     free(*i);
   }
 }
 
 //-----ExportGroupsToServerList-------------------------------------------------
-CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
+CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(const GroupNameMap& groups)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD)
 {
   int nSize = 0;
   int nGSID = 0;
 
-  GroupList::iterator g;
+  GroupNameMap::const_iterator g;
   for (g = groups.begin(); g != groups.end(); ++g)
   {
-    char *szUnicode = gTranslator.ToUnicode(*g);
+    const char* szUnicode = gTranslator.ToUnicode(g->second.c_str());
     nSize += strlen(szUnicode);
     nSize += 10;
     delete [] szUnicode;
   }
-  
+
   m_nSize += nSize;
   InitBuffer();
 
@@ -2897,9 +2905,9 @@ CPU_ExportGroupsToServerList::CPU_ExportGroupsToServerList(GroupList &groups)
   {
     nGSID = gUserManager.GenerateSID();
 
-    gUserManager.ModifyGroupID(*g, nGSID);
+    gUserManager.ModifyGroupID(g->first, nGSID);
 
-    char *szUnicodeName = gTranslator.ToUnicode(*g);
+    const char* szUnicodeName = gTranslator.ToUnicode(g->second.c_str());
 
     buffer->PackUnsignedShortBE(strlen(szUnicodeName));
     buffer->Pack(szUnicodeName, strlen(szUnicodeName));
@@ -2962,11 +2970,11 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       u->SetAwaitingAuth(_bAuthReq);
 
       // Check for a group id
-      GroupIDList *pID = gUserManager.LockGroupIDList(LOCK_R);
+      const UserGroupList& userGroups = u->GetGroups();
       if (_nGroup)
       {
         // Use the passed in group
-        m_nGSID = (*pID)[_nGroup-1];
+        m_nGSID = gUserManager.GetIDFromGroup(_nGroup);
       }
       else if (u->GetGSID() && _bAuthReq)
       {
@@ -2975,14 +2983,11 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       else
       {
         // Use the first group that the user is in as the server stored group
-        for (unsigned short i = 1; i < pID->size() + 1; i++)
+        for (UserGroupList::iterator i = userGroups.begin(); i != userGroups.end(); ++i)
         {
-          if (u->GetInGroup(GROUPS_USER, i))
-          {
-            m_nGSID = (*pID)[i-1];
-            if (m_nGSID)
-              break;
-          }
+          m_nGSID = gUserManager.GetIDFromGroup(*i);
+          if (m_nGSID != 0)
+            break;
         }
       }
 
@@ -3006,14 +3011,23 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       if (m_nGSID == 0)
       {
         unsigned short nNewGroup = gUserManager.NewUserGroup();
-        if (nNewGroup && nNewGroup <= pID->size())
-          m_nGSID = (*pID)[nNewGroup-1];
+        m_nGSID = gUserManager.GetIDFromGroup(nNewGroup);
 
-        if (m_nGSID == 0 && pID->size())
-          m_nGSID = (*pID)[0];
-        
         if (m_nGSID == 0)
-          m_nGSID = 1; // General (unless user renamed group)
+        {
+          GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
+          if (groups->size() > 0)
+          {
+            LicqGroup* g = groups->begin()->second;
+            g->Lock(LOCK_R);
+            m_nGSID = g->icqGroupId();
+            g->Unlock();
+          }
+          gUserManager.UnlockGroupList();
+        }
+
+        if (m_nGSID == 0)
+          m_nGSID = 1; // General (unless user renamed group or wasnt created yet)
       }
 
       szUnicodeAlias = 0;//strdup(u->GetAlias());
@@ -3021,7 +3035,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
-      gUserManager.UnlockGroupIDList();
       gUserManager.DropUser(u);
 
       break;
@@ -3086,16 +3099,15 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   {
     if (_bTopLevel)
     {
-      GroupIDList *pID = gUserManager.LockGroupIDList(LOCK_R);
-
       // We are creating our top level group, so attach all the group ids now
       buffer->PackUnsignedShortBE(0x00C8);
       buffer->PackUnsignedShortBE(gUserManager.NumGroups() * 2);
-      
-      for (unsigned short i = 0; i < pID->size(); i++)
-        buffer->PackUnsignedShortBE((*pID)[i]);
-     
-      gUserManager.UnlockGroupIDList();
+
+      FOR_EACH_GROUP_START(LOCK_R)
+      {
+        buffer->PackUnsignedShortBE(pGroup->icqGroupId());
+      }
+      FOR_EACH_GROUP_END
     }
     else
     {
@@ -3270,7 +3282,7 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
   unsigned short nExtraLen = 0;
   unsigned short nNameLen = strlen(_szName);
   char *szUnicodeName = 0;
-  GroupIDList *gID = 0;
+  const GroupMap* groups = 0;
   CBuffer tlvBuffer;
 
   switch (_nType)
@@ -3316,10 +3328,10 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
 
       if (nGSID == 0)
       {
-        gID = gUserManager.LockGroupIDList(LOCK_R);
-        nExtraLen += (gID->size() * 2);
+        groups = gUserManager.LockGroupList(LOCK_R);
+        nExtraLen += (groups->size() * 2);
         if (nExtraLen == 0)
-          gUserManager.UnlockGroupIDList();
+          gUserManager.UnlockGroupList();
       }
       else
       {
@@ -3361,14 +3373,17 @@ CPU_UpdateToServerList::CPU_UpdateToServerList(const char *_szName,
     {
       buffer->PackUnsignedShortBE(0x00C8);
       buffer->PackUnsignedShortBE(nExtraLen-4);
-      
+
       if (nGSID == 0)
       {
-        for (unsigned int i = 0; i != gID->size(); i++)
+        GroupMap::const_iterator i;
+        for (i = groups->begin(); i != groups->end(); ++i)
         {
-          buffer->PackUnsignedShortBE((*gID)[i]);
+          i->second->Lock(LOCK_R);
+          buffer->PackUnsignedShortBE(i->second->icqGroupId());
+          i->second->Unlock();
         }
-        gUserManager.UnlockGroupIDList();
+        gUserManager.UnlockGroupList();
       }
       else
       {

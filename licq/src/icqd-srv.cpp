@@ -117,22 +117,15 @@ void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired)
 void CICQDaemon::CheckExport()
 {
   // Export groups
-  GroupList groups;
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  GroupIDList *gID = gUserManager.LockGroupIDList(LOCK_R);
-
-  for (unsigned int i = 0; i < gID->size(); i++)
+  GroupNameMap groups;
+  FOR_EACH_GROUP_START(LOCK_R)
   {
-    if ((*gID)[i] == 0)
-    {
-      groups.push_back((*g)[i]);
-    }
+    if (pGroup->icqGroupId() == 0)
+      groups[pGroup->id()] = pGroup->name();
   }
+  FOR_EACH_GROUP_END
 
-  gUserManager.UnlockGroupList();
-  gUserManager.UnlockGroupIDList();
-
-  if (groups.size())
+  if (groups.size() > 0)
     icqExportGroups(groups);
 
   // Just upload all of the users now
@@ -223,29 +216,25 @@ void CICQDaemon::icqUpdateServerGroups()
 {
   if (!UseServerContactList())  return;
   CSrvPacketTcp *pReply;
-  
+
   pReply = new CPU_UpdateToServerList("", ICQ_ROSTxGROUP, 0);
   addToModifyUsers(pReply->SubSequence(), "");
   gLog.Info(tr("%sUpdating top level group.\n"), L_SRVxSTR);
   SendExpectEvent_Server(0, pReply, NULL);
- 
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  GroupIDList *gID = gUserManager.LockGroupIDList(LOCK_R);
 
-  for (unsigned int i = 0; i < gID->size(); i++)
+  FOR_EACH_GROUP_START(LOCK_R)
   {
-    if ((*gID)[i])
+    unsigned int gid = pGroup->icqGroupId();
+    if (gid != 0)
     {
-      pReply = new CPU_UpdateToServerList((*g)[i], ICQ_ROSTxGROUP,
-        (*gID)[i]);
-      gLog.Info(tr("%sUpdating group %s.\n"), L_SRVxSTR, (*g)[i]);   
+      const char* gname = pGroup->name().c_str();
+      pReply = new CPU_UpdateToServerList(gname, ICQ_ROSTxGROUP, gid);
+      gLog.Info(tr("%sUpdating group %s.\n"), L_SRVxSTR, gname);
       addToModifyUsers(pReply->SubSequence(), "");
       SendExpectEvent_Server(0, pReply, NULL);
     }
   }
-
-  gUserManager.UnlockGroupList();
-  gUserManager.UnlockGroupIDList();       
+  FOR_EACH_GROUP_END
 }
 
 //-----icqAddGroup--------------------------------------------------------------
@@ -309,7 +298,7 @@ void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
 }
 
 //-----icqExportGroups----------------------------------------------------------
-void CICQDaemon::icqExportGroups(GroupList &groups)
+void CICQDaemon::icqExportGroups(const GroupNameMap& groups)
 {
   if (!UseServerContactList()) return;
 
@@ -4282,14 +4271,17 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                   u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
                 }
               }
-              
+
               u->SetIgnoreList(nType == ICQ_ROSTxIGNORE);
-              
+
               if (!isOnList)
               {
                 // They aren't a new user if we added them to a server list
                 u->SetNewUser(false);
               }
+
+              // Save GSID, SID and group memberships
+              u->SaveLicqInfo();
 
               PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
                 u->IdString(), u->PPID()));
@@ -4313,12 +4305,12 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           case ICQ_ROSTxGROUP:
           {
             if (!UseServerContactList()) break; 
-                      
+
             if (szId[0] != '\0' && nTag != 0)
             {
               // Rename the group if we have it already or else add it
               unsigned short nGroup = gUserManager.GetGroupFromID(nTag);
-              if (nGroup == gUserManager.NumGroups())
+              if (nGroup == 0)
               {
                 if (!gUserManager.AddGroup(szUnicodeName, nTag))
                   gUserManager.ModifyGroupID(szUnicodeName, nTag);
@@ -4531,13 +4523,14 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 break;
 
 
-              GroupList *g = gUserManager.LockGroupList(LOCK_R);
+              LicqGroup* group = gUserManager.FetchGroup(n, LOCK_R);
               std::string groupName;
-              if (e->ExtraInfo() == 0)
+              if (e->ExtraInfo() == 0 || group == NULL)
                 groupName = ""; // top level
               else
-                groupName = (*g)[n-1];
-              gUserManager.UnlockGroupList();
+                groupName = group->name();
+              if (group != NULL)
+                gUserManager.DropGroup(group);
 
               // Start editing server list
               CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
