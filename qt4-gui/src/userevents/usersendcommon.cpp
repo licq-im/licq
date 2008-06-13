@@ -444,7 +444,6 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 
   connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  connect(this, SIGNAL(updateUser(CICQSignal*)), gMainWindow, SLOT(slot_updatedUser(CICQSignal*)));
   connect(mySendServerCheck, SIGNAL(triggered(bool)), SLOT(sendServerToggled(bool)));
 }
 
@@ -1013,20 +1012,16 @@ void UserSendCommon::send()
 {
   if (!Config::Chat::instance()->manualNewUser())
   {
+    bool newUser = false;
     ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_W);
-
     if (u != NULL)
     {
       if (u->NewUser())
-      {
-        u->SetNewUser(false);
-        gUserManager.DropUser(u);
-        CICQSignal s(SIGNAL_UPDATExUSER, USER_BASIC, myUsers.front().c_str(), myPpid);
-        emit updateUser(&s);
-      }
-      else
-        gUserManager.DropUser(u);
+        newUser = true;
+      gUserManager.DropUser(u);
     }
+    if (newUser)
+      gUserManager.SetUserInGroup(myUsers.front().c_str(), myPpid, GROUPS_SYSTEM, GROUP_NEW_USERS, false);
   }
 
   unsigned long icqEventTag = 0;

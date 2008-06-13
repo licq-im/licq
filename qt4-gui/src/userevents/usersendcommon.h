@@ -58,7 +58,6 @@ public:
 
 signals:
   void autoCloseNotify();
-  void updateUser(CICQSignal* sig);
   void msgTypeChanged(UserSendCommon* from, UserSendCommon* to);
 
   /**
