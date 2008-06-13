@@ -39,8 +39,6 @@ class ICQEvent;
 
 namespace LicqQtGui
 {
-class TabWidget;
-
 //TODO for protocol plugin support
 
 class SearchUserDlg : public QDialog
@@ -54,6 +52,7 @@ public slots:
   void reject();
 
 private:
+  unsigned long ppid;
   unsigned long searchTag;
 
   QLabel* lblSearch;
@@ -79,7 +78,6 @@ private:
   QComboBox* cmbLanguage;
 
   QCheckBox* chkOnlineOnly;
-  QCheckBox* chkAlertUser;
 
   QPushButton* btnSearch;
   QPushButton* btnReset;

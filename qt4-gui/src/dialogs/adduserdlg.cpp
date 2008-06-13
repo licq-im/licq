@@ -30,6 +30,7 @@
 
 #include "helpers/support.h"
 
+#include "widgets/groupcombobox.h"
 #include "widgets/protocombobox.h"
 
 using namespace LicqQtGui;
@@ -54,15 +55,23 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
   layDialog->addWidget(lblProtocol, line, 0);
   layDialog->addWidget(myProtocol, line++, 1);
 
-  QLabel* lblUin = new QLabel(tr("New &User ID:"));
-  myUin = new QLineEdit();
-  if (!id.isEmpty())
-    myUin->setText(id);
-  connect(myUin, SIGNAL(returnPressed()), SLOT(ok()));
-  lblUin->setBuddy(myUin);
+  QLabel* lblGroup = new QLabel(tr("&Group:"));
+  myGroup = new GroupComboBox();
+  myGroup->setCurrentGroupId(gUserManager.NewUserGroup());
+  lblGroup->setBuddy(myGroup);
 
-  layDialog->addWidget(lblUin, line, 0);
-  layDialog->addWidget(myUin, line++, 1);
+  layDialog->addWidget(lblGroup, line, 0);
+  layDialog->addWidget(myGroup, line++, 1);
+
+  QLabel* lblId = new QLabel(tr("New &User ID:"));
+  myId = new QLineEdit();
+  if (!id.isEmpty())
+    myId->setText(id);
+  connect(myId, SIGNAL(returnPressed()), SLOT(ok()));
+  lblId->setBuddy(myId);
+
+  layDialog->addWidget(lblId, line, 0);
+  layDialog->addWidget(myId, line++, 1);
 
   myNotify = new QCheckBox(tr("&Notify User"));
   myNotify->setChecked(true);
@@ -76,17 +85,42 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
 
   layDialog->addWidget(buttons, line++, 0, 1, 2);
 
-  myUin->setFocus();
+  myId->setFocus();
   show();
 }
 
 void AddUserDlg::ok()
 {
-  QString uin = myUin->text();
+  QByteArray id = myId->text().trimmed().toLatin1();
+  unsigned long ppid = myProtocol->currentPpid();
+  unsigned short group = myGroup->currentGroupId();
+  bool notify = myNotify->isChecked();
 
-  if (!uin.isEmpty())
-    gLicqDaemon->AddUserToList(uin.toLatin1(), myProtocol->currentPpid(),
-        myNotify->isChecked());
+  if (!id.isEmpty())
+  {
+    ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_W);
+
+    if (u == NULL)
+    {
+      unsigned short currentNewGroup = gUserManager.NewUserGroup();
+      gUserManager.SetNewUserGroup(group);
+      gLicqDaemon->AddUserToList(id, ppid, notify);
+      gUserManager.SetNewUserGroup(currentNewGroup);
+    }
+    else
+    {
+      if (u->NotInList())
+      {
+        u->SetPermanent();
+        gUserManager.DropUser(u);
+        gUserManager.AddUserToGroup(id.toLatin1());
+        if (notify && ppid == LICQ_PPID)
+          gLicqDaemon->icqAlertUser(id.toULong());
+      }
+      else
+        gUserManager.DropUser(u);
+    }
+  }
 
   close();
 }

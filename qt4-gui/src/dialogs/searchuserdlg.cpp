@@ -45,13 +45,16 @@
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
+#include "dialogs/adduserdlg.h"
+
 #include "helpers/support.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::SearchUserDlg */
 
 SearchUserDlg::SearchUserDlg()
-  : searchTag(0)
+  : ppid(LICQ_PPID),
+    searchTag(0)
 {
   Support::setWidgetProps(this, "SearchUserDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
@@ -177,22 +180,18 @@ SearchUserDlg::SearchUserDlg()
   connect(foundView, SIGNAL(itemSelectionChanged()), SLOT(selectionChanged()));
   grp_lay->addWidget(foundView, 0, 0, 1, 4);
 
-  chkAlertUser = new QCheckBox(tr("A&lert User"));
-  chkAlertUser->setChecked(true);
-  grp_lay->addWidget(chkAlertUser, 1, 0);
-
   btnInfo = new QPushButton(tr("View &Info"));
   btnInfo->setEnabled(false);
   connect(btnInfo, SIGNAL(clicked()), SLOT(viewInfo()));
-  grp_lay->addWidget(btnInfo, 1, 2);
+  grp_lay->addWidget(btnInfo, 1, 1);
 
   btnAdd = new QPushButton(tr("&Add User"));
   btnAdd->setEnabled(false);
   connect(btnAdd, SIGNAL(clicked()), SLOT(addUser()));
-  grp_lay->addWidget(btnAdd, 1, 3);
+  grp_lay->addWidget(btnAdd, 1, 2);
 
   grp_lay->setRowStretch(0, 1);
-  grp_lay->setColumnStretch(1, 1);
+  grp_lay->setColumnStretch(0, 1);
   lay->addWidget(grpResult, 1);
 
   // search-control widgets
@@ -444,13 +443,12 @@ void SearchUserDlg::viewInfo()
 {
   foreach (QTreeWidgetItem* current, foundView->selectedItems())
   {
-    QString szId = current->data(0, Qt::UserRole).toString();
+    QByteArray id = current->data(0, Qt::UserRole).toString().toLatin1();
 
-    if (!gUserManager.IsOnList(szId.toLatin1(), LICQ_PPID))
-      gLicqDaemon->AddUserToList(
-          szId.toLatin1(), LICQ_PPID, false, true);
+    if (!gUserManager.IsOnList(id, ppid))
+      gLicqDaemon->AddUserToList(id, ppid, false, true);
 
-    LicqGui::instance()->showInfoDialog(mnuUserGeneral, szId, LICQ_PPID, false, true);
+    LicqGui::instance()->showInfoDialog(mnuUserGeneral, id, ppid, false, true);
   }
 }
 
@@ -458,11 +456,9 @@ void SearchUserDlg::addUser()
 {
   foreach (QTreeWidgetItem* current, foundView->selectedItems())
   {
-    unsigned long uin = current->data(0, Qt::UserRole).toString().toULong();
+    QString id = current->data(0, Qt::UserRole).toString();
 
-    if (gLicqDaemon->AddUserToList(uin) &&
-        chkAlertUser->isChecked())
-      gLicqDaemon->icqAlertUser(uin);
+    new AddUserDlg(id, ppid, this);
   }
 
   foundView->clearSelection();

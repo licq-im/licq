@@ -28,6 +28,7 @@ class QLineEdit;
 
 namespace LicqQtGui
 {
+class GroupComboBox;
 class ProtoComboBox;
 
 class AddUserDlg : public QDialog
@@ -39,7 +40,8 @@ public:
 
 private:
    QCheckBox* myNotify;
-   QLineEdit* myUin;
+   QLineEdit* myId;
+   GroupComboBox* myGroup;
    ProtoComboBox* myProtocol;
 
 private slots:
