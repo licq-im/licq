@@ -460,7 +460,7 @@ void UserViewEvent::read2()
       if (fileDlg->ReceiveFiles())
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->icqFileTransferAccept(
-            strtoul(myUsers.front().c_str(), NULL, 10),
+            myUsers.front().c_str(),
             fileDlg->LocalPort(), f->Sequence(), f->MessageID(), f->IsDirect(),
             f->FileDescription(), f->Filename(), f->FileSize());
       break;
@@ -524,7 +524,7 @@ void UserViewEvent::read3()
 
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->icqFileTransferRefuse(
-            strtoul(myUsers.front().c_str(), NULL, 10),
+            myUsers.front().c_str(),
             myCodec->fromUnicode(r->RefuseMessage()), myCurrentEvent->Sequence(),
             f->MessageID(), f->IsDirect());
       }

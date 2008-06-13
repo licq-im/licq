@@ -884,7 +884,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
       ConstFileList filelist(ue->FileList());
 
       //TODO in the daemon
-      icqEventTag = gLicqDaemon->icqFileTransfer(strtoul(myUsers.front().c_str(), NULL, 10),
+      icqEventTag = gLicqDaemon->icqFileTransfer(myUsers.front().c_str(),
           ue->Filename(), ue->FileDescription(), filelist, level, !online);
 
       break;
