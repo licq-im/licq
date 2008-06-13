@@ -2541,7 +2541,6 @@ void ICQUser::SetDefaults()
     myGroups.insert(gUserManager.NewUserGroup());
   SetNewUser(true);
   SetAuthorization(false);
-  SetNewUser(true);
 
   szTemp[0] = '\0';
   SetFirstName(szTemp);
