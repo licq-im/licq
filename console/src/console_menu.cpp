@@ -388,21 +388,20 @@ void CLicqConsole::MenuGroup(char *_szArg)
   {
     nGroupType = GROUPS_USER;
     nCurrentGroup = atol(_szArg);
+    LicqGroup* group = gUserManager.FetchGroup(nCurrentGroup, LOCK_R);
 
-    if (nCurrentGroup > gUserManager.NumGroups())
+    if (nCurrentGroup != 0 && group == NULL)
     {
-      winMain->wprintf("%CInvalid group number (0 - %d)\n", COLOR_RED,
-                       gUserManager.NumGroups());
+      winMain->wprintf("%CInvalid group number\n", COLOR_RED);
       return;
     }
     m_nCurrentGroup = nCurrentGroup;
     m_nGroupType = nGroupType;
-    GroupList *g = gUserManager.LockGroupList(LOCK_R);
     winMain->wprintf("%C%ASwitching to group %d (%s).\n",
                      m_cColorInfo->nColor, m_cColorInfo->nAttr,
                      m_nCurrentGroup,
-                     m_nCurrentGroup == 0 ? "All Users" : (*g)[m_nCurrentGroup - 1]);
-    gUserManager.UnlockGroupList();
+                     m_nCurrentGroup == 0 ? "All Users" : group->name().c_str());
+    gUserManager.DropGroup(group);
   }
 
   PrintStatus();

@@ -1495,12 +1495,12 @@ char *CLicqConsole::CurrentGroupName()
       strcpy(szGroupName, "All Users");
     else
     {
-      GroupList *g = gUserManager.LockGroupList(LOCK_R);
-      if (m_nCurrentGroup > g->size())
+      LicqGroup* group = gUserManager.FetchGroup(m_nCurrentGroup, LOCK_R);
+      if (group == NULL)
         strcpy(szGroupName, "Invalid Group");
       else
-        strcpy(szGroupName, (*g)[m_nCurrentGroup - 1]);
-      gUserManager.UnlockGroupList();
+        strcpy(szGroupName, group->name().c_str());
+      gUserManager.DropGroup(group);
     }
   }
   else

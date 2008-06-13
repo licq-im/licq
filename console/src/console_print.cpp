@@ -203,16 +203,16 @@ void CLicqConsole::PrintGroups()
   waddch(winMain->Win(), ACS_RTEE);
   waddch(winMain->Win(), '\n');
 
-  GroupList *g = gUserManager.LockGroupList(LOCK_R);
-  for (GroupList::iterator i = g->begin(); i != g->end(); i++, j++)
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
     PrintBoxLeft();
     winMain->wprintf("%A%C%3d. %-19s",
         m_cColorGroupList->nAttr,
-        m_cColorGroupList->nColor, j, *i);
+        m_cColorGroupList->nColor, j, pGroup->name().c_str());
     PrintBoxRight(26);
+    ++j;
   }
-  gUserManager.UnlockGroupList();
+  FOR_EACH_GROUP_END
 
   waddch(winMain->Win(), ACS_LTEE);
   for (k = 0; k < 24; k++) waddch(winMain->Win(), ACS_HLINE);
