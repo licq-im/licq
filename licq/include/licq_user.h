@@ -1502,8 +1502,6 @@ public:
 
   unsigned short NumUsers();
   unsigned short NumOwners();
-  unsigned short DefaultGroup()  { return m_nDefaultGroup; }
-  void SetDefaultGroup(unsigned short n)  { m_nDefaultGroup = n; SaveGroups(); }
   unsigned short NewUserGroup()  { return m_nNewUserGroup; }
   void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
@@ -1516,7 +1514,6 @@ protected:
   CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
-  unsigned short m_nDefaultGroup;
   unsigned short m_nNewUserGroup;
   unsigned short m_nUserListLockType;
   unsigned short myGroupListLockType;

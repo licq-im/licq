@@ -630,9 +630,6 @@ bool CUserManager::Load()
   m_bAllowSave = true;
   UnlockGroupList();
 
-  licqConf.ReadNum("DefaultGroup", m_nDefaultGroup, 0);
-  if (m_nDefaultGroup >= 1024)
-      m_nDefaultGroup = 0;
   licqConf.ClearFlag(INI_FxFATAL);
   licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
   licqConf.SetFlag(INI_FxFATAL);
@@ -949,8 +946,6 @@ void CUserManager::RemoveGroup(unsigned short groupId)
   group->Unlock();
   delete group;
 
-  if (m_nDefaultGroup == groupId)
-    m_nDefaultGroup = 0;
   if (m_nNewUserGroup == groupId)
     m_nNewUserGroup = 0;
 
@@ -1110,7 +1105,6 @@ void CUserManager::SaveGroups()
     ++i;
   }
 
-  licqConf.WriteNum("DefaultGroup", m_nDefaultGroup);
   licqConf.WriteNum("NewUserGroup", m_nNewUserGroup);
   licqConf.FlushFile();
   licqConf.CloseFile();
