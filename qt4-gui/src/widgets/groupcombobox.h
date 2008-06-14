@@ -31,7 +31,7 @@ class GroupComboBox : public QComboBox
   Q_OBJECT
 
 public:
-  GroupComboBox(QWidget* parent = 0);
+  GroupComboBox(bool withAllUsers = false, QWidget* parent = NULL);
 
   unsigned short currentGroupId() const;
   bool setCurrentGroupId(unsigned short groupId);
