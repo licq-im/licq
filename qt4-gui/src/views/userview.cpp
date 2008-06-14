@@ -196,7 +196,22 @@ void UserView::mousePressEvent(QMouseEvent* event)
       if (itemType == ContactListModel::GroupItem)
       {
         if (event->pos().x() <= 18) // we clicked an icon area
-          setExpanded(clickedItem, !isExpanded(clickedItem));
+        {
+          bool wasExpanded = isExpanded(clickedItem);
+          setExpanded(clickedItem, !wasExpanded);
+
+          // setExpand may fail, for example after changing sorting an
+          // expanded group can be collapsed but sometimes cannot be expanded
+          // again. This was seen with Qt 4.4.0.
+          if (isExpanded(clickedItem) == wasExpanded)
+          {
+            // Setting expanded state to same state as view currently (falsely)
+            // reports seems to fix it, then set it again to the state we
+            // actually wanted, this times it works.
+            setExpanded(clickedItem, wasExpanded);
+            setExpanded(clickedItem, !wasExpanded);
+          }
+        }
       }
     }
     else
@@ -300,6 +315,9 @@ void UserView::resort()
     header()->setSortIndicatorShown(true);
     header()->setSortIndicator(column, order);
   }
+
+  // Group expansion gets confused when sorting is changed so refresh it
+  expandGroups();
 }
 
 void UserView::slotExpanded(const QModelIndex& index)
