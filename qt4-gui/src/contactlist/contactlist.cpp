@@ -108,8 +108,11 @@ void ContactListModel::listUpdated(CICQSignal* sig)
     case LIST_GROUP_ADDED:
     {
       unsigned short gid = sig->Argument();
-      ContactGroup* newGroup = createGroup(gid);
 
+      // Set inital expanded state for new group
+      Config::ContactList::instance()->setGroupState(gid, true);
+
+      ContactGroup* newGroup = createGroup(gid);
       beginInsertRows(QModelIndex(), myUserGroups.size(), myUserGroups.size());
       myUserGroups.append(newGroup);
       endInsertRows();
