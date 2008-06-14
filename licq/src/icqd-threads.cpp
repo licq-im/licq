@@ -857,13 +857,13 @@ void *MonitorSockets_tep(void *p)
             {
               int err = tcp->Error();
               if (err == 0)
-                gLog.Info(tr("%sConnection to %lu was closed.\n"), L_TCPxSTR
-                                                             , tcp->Owner());
+                gLog.Info(tr("%sConnection to %s was closed.\n"), L_TCPxSTR,
+                    tcp->OwnerId());
               else
               {
                 char buf[128];
-                gLog.Info(tr("%sConnection to %lu lost:\n%s%s.\n"), L_TCPxSTR,
-                          tcp->Owner(), L_BLANKxSTR, tcp->ErrorStr(buf, 128));
+                gLog.Info(tr("%sConnection to %s lost:\n%s%s.\n"), L_TCPxSTR,
+                    tcp->OwnerId(), L_BLANKxSTR, tcp->ErrorStr(buf, 128));
               }
               ICQUser *u = gUserManager.FetchUser(tcp->OwnerId(),
                 tcp->OwnerPPID(), LOCK_W);
@@ -899,8 +899,8 @@ void *MonitorSockets_tep(void *p)
             // Kill the socket if there was a problem
             if (!r)
             {
-              gLog.Info(tr("%sClosing connection to %lu.\n"), L_TCPxSTR,
-                                                          tcp->Owner());
+              gLog.Info(tr("%sClosing connection to %s.\n"), L_TCPxSTR,
+                  tcp->OwnerId());
               gSocketManager.DropSocket(tcp);
               gSocketManager.CloseSocket(nCurrentSocket);
               d->FailEvents(nCurrentSocket, 0);

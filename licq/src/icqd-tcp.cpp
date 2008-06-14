@@ -193,65 +193,10 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
    bool online, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
 {
-  if (_nUin == gUserManager.OwnerUin() || m == NULL) return 0;
-
-  ICQEvent *result = NULL;
-  char *mDos = NULL;
-  if (m != NULL)
-  {
-    mDos = gTranslator.NToRN(m);
-    gTranslator.ClientToServer(mDos);
-  }
-  CEventMsg *e = NULL;
-
-  unsigned long f = INT_VERSION;
-  if (online) f |= E_DIRECT;
-  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-  if (bMultipleRecipients) f |= E_MULTIxREC;
-
-  ICQUser *u;
-  if (!online) // send offline
-  {
-     e = new CEventMsg(m, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-     if (strlen(mDos) > MAX_MESSAGE_SIZE)
-     {
-       gLog.Warn(tr("%sTruncating message to %d characters to send through server.\n"),
-                 L_WARNxSTR, MAX_MESSAGE_SIZE);
-       mDos[MAX_MESSAGE_SIZE] = '\0';
-     }
-     result = icqSendThroughServer(_nUin, ICQ_CMDxSUB_MSG | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0),
-                                   mDos, e);
-     u = gUserManager.FetchUser(_nUin, LOCK_W);
-  }
-  else        // send direct
-  {
-    u = gUserManager.FetchUser(_nUin, LOCK_W);
-    if (u == NULL) return 0;
-    if (u->Secure()) f |= E_ENCRYPTED;
-    e = new CEventMsg(m, ICQ_CMDxTCP_START, TIME_NOW, f);
-    if (pColor != NULL) e->SetColor(pColor);
-    CPT_Message *p = new CPT_Message(mDos, nLevel, bMultipleRecipients, pColor, u);
-    gLog.Info(tr("%sSending %smessage to %s (#%hu).\n"), L_TCPxSTR,
-       nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
-       u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(u, p, e);
-  }
-
-  if (u != NULL)
-  {
-    u->SetSendServer(!online);
-    u->SetSendLevel(nLevel);
-    gUserManager.DropUser(u);
-  }
-
-  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
-
-  if (mDos)
-    delete [] mDos;
-
-  if (result != NULL)
-    return result->EventId();
-  return 0;
+  char szId[13];
+  snprintf(szId, 12, "%lu", _nUin);
+  szId[12] = 0;
+  return icqSendMessage(szId, m, online, nLevel, bMultipleRecipients, pColor);
 }
 
 
@@ -4211,20 +4156,22 @@ bool CICQDaemon::Handshake_RecvConfirm_v7(TCPSocket *s)
 bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
 {
   if (!Handshake_Recv(s, 0)) return false;
-  unsigned long nUin = s->Owner();
-  if (nUin == 0) return false;
+  const char* id = s->OwnerId();
+  unsigned long ppid = s->OwnerPPID();
+  if (id == NULL)
+    return false;
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser *u = gUserManager.FetchUser(id, ppid, LOCK_W);
   if (u != NULL)
   {
-    gLog.Info(tr("%sConnection from %s (%ld) [v%ld].\n"), L_TCPxSTR,
-       u->GetAlias(), nUin, s->Version());
+    gLog.Info(tr("%sConnection from %s (%s) [v%ld].\n"), L_TCPxSTR,
+       u->GetAlias(), id, s->Version());
     if (u->SocketDesc(s->Channel()) != s->Descriptor())
     {
       if (u->SocketDesc(s->Channel()) != -1)
       {
-        gLog.Warn(tr("%sUser %s (%ld) already has an associated socket.\n"),
-                  L_WARNxSTR, u->GetAlias(), nUin);
+        gLog.Warn(tr("%sUser %s (%s) already has an associated socket.\n"),
+                  L_WARNxSTR, u->GetAlias(), id);
         gUserManager.DropUser(u);
         return true;
 /*        gSocketManager.CloseSocket(u->SocketDesc(s->Channel()), false);
@@ -4236,8 +4183,8 @@ bool CICQDaemon::ProcessTcpHandshake(TCPSocket *s)
   }
   else
   {
-    gLog.Info(tr("%sConnection from new user (%ld) [v%ld].\n"), L_TCPxSTR,
-       nUin, s->Version());
+    gLog.Info(tr("%sConnection from new user (%s) [v%ld].\n"), L_TCPxSTR,
+       id, s->Version());
   }
 
   //awaken waiting threads, maybe unnecessarily, but doesn't hurt
