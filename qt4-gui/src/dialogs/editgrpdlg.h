@@ -31,8 +31,6 @@ class CICQSignal;
 
 namespace LicqQtGui
 {
-class InfoField;
-
 class EditGrpDlg : public QDialog
 {
   Q_OBJECT
@@ -70,11 +68,9 @@ private:
   QPushButton* btnDown;
   QPushButton* btnDone;
   QPushButton* btnEdit;
-  QPushButton* btnNewUser;
   QPushButton* btnSave;
 
   QLineEdit* edtName;
-  InfoField* nfoNewUser;
 
   unsigned short myEditGroupId;
 
@@ -89,7 +85,6 @@ private slots:
   void slot_edit();
   void slot_editok();
   void slot_editcancel();
-  void slot_newuser();
 };
 
 } // namespace LicqQtGui
