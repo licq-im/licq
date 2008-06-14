@@ -401,15 +401,13 @@ void ContactListModel::removeUser(QString id, unsigned long ppid)
 
 void ContactListModel::clear()
 {
-  // Clear all users and user groups. System groups and their bars are never removed.
-
+  // Clear all users and user groups.
+  // System groups and their bars are never removed.
   while (!myUsers.isEmpty())
     delete myUsers.takeFirst();
 
-  beginRemoveRows(QModelIndex(), 0, myUserGroups.size()-1);
   while (!myUserGroups.isEmpty())
     delete myUserGroups.takeFirst();
-  endRemoveRows();
 }
 
 QModelIndex ContactListModel::index(int row, int column, const QModelIndex& parent) const
