@@ -70,12 +70,10 @@ private:
   QPushButton* btnDown;
   QPushButton* btnDone;
   QPushButton* btnEdit;
-  QPushButton* btnDefault;
   QPushButton* btnNewUser;
   QPushButton* btnSave;
 
   QLineEdit* edtName;
-  InfoField* nfoDefault;
   InfoField* nfoNewUser;
 
   unsigned short myEditGroupId;
@@ -91,7 +89,6 @@ private slots:
   void slot_edit();
   void slot_editok();
   void slot_editcancel();
-  void slot_default();
   void slot_newuser();
 };
 

@@ -40,6 +40,7 @@
 #include "core/signalmanager.h"
 
 #include "helpers/licqstrings.h"
+#include "helpers/support.h"
 
 #include "widgets/infofield.h"
 
@@ -49,8 +50,8 @@ using namespace LicqQtGui;
 EditGrpDlg::EditGrpDlg(QWidget* parent)
   : QDialog(parent)
 {
+  Support::setWidgetProps(this, "EditGroupDialog");
   setWindowTitle(tr("Licq - Edit Groups"));
-  setObjectName("EditGroupDialog");
 
   QVBoxLayout* lay = new QVBoxLayout(this);
   grpGroups = new QGroupBox(tr("Groups"));
@@ -61,67 +62,52 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
   glay->addWidget(lstGroups, 0, 0, 1, 2);
 
   QVBoxLayout* vlay = new QVBoxLayout();
-  btnAdd = new QPushButton(tr("Add"), grpGroups);
-  btnRemove = new QPushButton(tr("Remove"), grpGroups);
-  btnUp = new QPushButton(tr("Shift Up"), grpGroups);
-  btnDown = new QPushButton(tr("Shift Down"), grpGroups);
-  btnEdit = new QPushButton(tr("Edit Name"), grpGroups);
+#define BUTTON(var, name, slot) \
+  var = new QPushButton(name, grpGroups); \
+  connect(var, SIGNAL(clicked()), SLOT(slot())); \
+  vlay->addWidget(var)
+
+  BUTTON(btnAdd, tr("Add"), slot_add);
+  BUTTON(btnRemove, tr("Remove"), slot_remove);
+  BUTTON(btnUp, tr("Shift Up"), slot_up);
+  BUTTON(btnDown, tr("Shift Down"), slot_down);
+  BUTTON(btnEdit, tr("Edit Name"), slot_edit);
+  BUTTON(btnNewUser, tr("Set New Users"), slot_newuser);
+#undef BUTTON
+
   btnEdit->setToolTip(tr("Edit group name (hit enter to save)."));
-  btnDefault = new QPushButton(tr("Set Default"), grpGroups);
-  btnDefault->setToolTip(tr("The default group to start up in."));
-  btnNewUser = new QPushButton(tr("Set New Users"), grpGroups);
   btnNewUser->setToolTip(
-        tr("The group to which new users will be automatically added.  "
-           "All new users will be in the local system group New Users "
-           "but for server side storage will also be stored in the "
-           "specified group."));
-  vlay->addWidget(btnAdd);
-  vlay->addWidget(btnRemove);
-  vlay->addWidget(btnUp);
-  vlay->addWidget(btnDown);
-  vlay->addWidget(btnEdit);
-  vlay->addWidget(btnDefault);
-  vlay->addWidget(btnNewUser);
+      tr("The group to which new users will be automatically added.\n"
+        "All new users will be in the local system group New Users,\n"
+        "but for server side storage will also be stored in the specified group."));
+
   glay->addLayout(vlay, 0, 2);
 
-  glay->addWidget(new QLabel(tr("Default:"), grpGroups), 1, 0);
-  nfoDefault = new InfoField(true);
-  nfoDefault->setToolTip(btnDefault->toolTip());
-  glay->addWidget(nfoDefault, 1, 1, 1, 2);
-  glay->addWidget(new QLabel(tr("New User:"), grpGroups), 2, 0);
+  glay->addWidget(new QLabel(tr("New User:"), grpGroups), 1, 0);
   nfoNewUser = new InfoField(true);
   nfoNewUser->setToolTip(btnNewUser->toolTip());
-  glay->addWidget(nfoNewUser, 2, 1, 1, 2);
+  glay->addWidget(nfoNewUser, 1, 1, 1, 2);
 
   edtName = new QLineEdit(grpGroups);
   edtName->setEnabled(false);
-  glay->addWidget(edtName, 3, 0, 1, 2);
+  connect(edtName, SIGNAL(returnPressed()), SLOT(slot_editok()));
+  glay->addWidget(edtName, 2, 0, 1, 2);
 
   btnSave = new QPushButton(tr("&Save"));
   btnSave->setEnabled(false);
   btnSave->setToolTip(tr("Save the name of a group being modified."));
-  glay->addWidget(btnSave, 3, 2);
+  connect(btnSave, SIGNAL(clicked()), SLOT(slot_editok()));
+  glay->addWidget(btnSave, 2, 2);
 
   QDialogButtonBox* buttons = new QDialogButtonBox();
-  lay->addWidget(buttons);
-
+  connect(buttons, SIGNAL(rejected()), SLOT(close()));
   btnDone = buttons->addButton(QDialogButtonBox::Close);
   btnDone->setText(tr("&Done"));
+  lay->addWidget(buttons);
 
   RefreshList();
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(updatedList(CICQSignal*)), SLOT(listUpdated(CICQSignal*)));
-
-  connect(btnAdd, SIGNAL(clicked()), SLOT(slot_add()));
-  connect(btnRemove, SIGNAL(clicked()), SLOT(slot_remove()));
-  connect(btnUp, SIGNAL(clicked()), SLOT(slot_up()));
-  connect(btnDown, SIGNAL(clicked()), SLOT(slot_down()));
-  connect(btnDefault, SIGNAL(clicked()), SLOT(slot_default()));
-  connect(btnNewUser, SIGNAL(clicked()), SLOT(slot_newuser()));
-  connect(btnEdit, SIGNAL(clicked()), SLOT(slot_edit()));
-  connect(btnDone, SIGNAL(clicked()), SLOT(close()));
-  connect(edtName, SIGNAL(returnPressed()), SLOT(slot_editok()));
-  connect(btnSave, SIGNAL(clicked()), SLOT(slot_editok()));
 
   show();
 }
@@ -151,12 +137,8 @@ void EditGrpDlg::RefreshList()
   lstGroups->clear();
 
   const QString allUsers = LicqStrings::getSystemGroupName(GROUP_ALL_USERS);
-  QListWidgetItem* item = new QListWidgetItem(allUsers);
+  QListWidgetItem* item = new QListWidgetItem(allUsers, lstGroups);
   item->setData(Qt::UserRole, 0);
-  lstGroups->addItem(item);
-
-  if (gUserManager.DefaultGroup() == GROUP_ALL_USERS)
-    nfoDefault->setText(allUsers);
 
   if (gUserManager.NewUserGroup() == GROUP_ALL_USERS)
     nfoNewUser->setText(allUsers);
@@ -164,12 +146,8 @@ void EditGrpDlg::RefreshList()
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
     QString name = QString::fromLocal8Bit(pGroup->name().c_str());
-    item = new QListWidgetItem(name);
+    item = new QListWidgetItem(name, lstGroups);
     item->setData(Qt::UserRole, pGroup->id());
-    lstGroups->addItem(item);
-
-    if (gUserManager.DefaultGroup() == pGroup->id())
-      nfoDefault->setText(name);
 
     if (gUserManager.NewUserGroup() == pGroup->id())
       nfoNewUser->setText(name);
@@ -258,12 +236,6 @@ void EditGrpDlg::slot_up()
 void EditGrpDlg::slot_down()
 {
   moveGroup(1);
-}
-
-void EditGrpDlg::slot_default()
-{
-  gUserManager.SetDefaultGroup(currentGroupId());
-  RefreshList();
 }
 
 void EditGrpDlg::slot_newuser()
