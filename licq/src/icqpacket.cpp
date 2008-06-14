@@ -2822,28 +2822,22 @@ CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
           break;
       }
 
-      // No group yet?  Use default.  No default? Use ID of 1 (general)
+      // No group yet? Use ID of the first one in the list
       if (m_nGSID == 0)
       {
-        unsigned short nNewGroup = gUserManager.NewUserGroup();
-        m_nGSID = gUserManager.GetIDFromGroup(nNewGroup);
-
-        if (m_nGSID == 0)
+        // First group if none was specified
+        GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
+        if (groups->size() > 0)
         {
-          // First group if none was specified
-          GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
-          if (groups->size() > 0)
-          {
-            LicqGroup* g = groups->begin()->second;
-            g->Lock(LOCK_R);
-            m_nGSID = g->icqGroupId();
-            g->Unlock();
-          }
-          gUserManager.UnlockGroupList();
+          LicqGroup* g = groups->begin()->second;
+          g->Lock(LOCK_R);
+          m_nGSID = g->icqGroupId();
+          g->Unlock();
         }
+        gUserManager.UnlockGroupList();
 
         if (m_nGSID == 0)
-          m_nGSID = 1; // General (unless user renamed group or wasnt created yet)
+          m_nGSID = 1; // Must never actually reach this point
       }
 
       u->SetGSID(m_nGSID);
@@ -2970,25 +2964,54 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       u->SetAwaitingAuth(_bAuthReq);
 
       // Check for a group id
-      const UserGroupList& userGroups = u->GetGroups();
-      if (_nGroup)
+      unsigned short i = 0;
+      while (m_nGSID == 0)
       {
-        // Use the passed in group
-        m_nGSID = gUserManager.GetIDFromGroup(_nGroup);
-      }
-      else if (u->GetGSID() && _bAuthReq)
-      {
-        m_nGSID = u->GetGSID(); // changing groups but require auth
-      }
-      else
-      {
-        // Use the first group that the user is in as the server stored group
-        for (UserGroupList::iterator i = userGroups.begin(); i != userGroups.end(); ++i)
+        switch (i)
         {
-          m_nGSID = gUserManager.GetIDFromGroup(*i);
-          if (m_nGSID != 0)
+          case 0:
+            // Passed in id
+            m_nGSID = gUserManager.GetIDFromGroup(_nGroup);
+            break;
+
+          case 1:
+            // Preset id
+            m_nGSID = u->GetGSID();
+            break;
+
+          case 2:
+            // Use the first group the user is in as the server stored group
+            {
+              const UserGroupList& userGroups = u->GetGroups();
+              for (UserGroupList::iterator i = userGroups.begin(); i != userGroups.end(); ++i)
+              {
+                m_nGSID = gUserManager.GetIDFromGroup(*i);
+                if (m_nGSID != 0)
+                  break;
+              }
+            }
+            break;
+
+          case 3:
+            // Use the first group from the list
+            {
+              GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
+              if (groups->size() > 0)
+              {
+                LicqGroup* g = groups->begin()->second;
+                g->Lock(LOCK_R);
+                m_nGSID = g->icqGroupId();
+                g->Unlock();
+              }
+              gUserManager.UnlockGroupList();
+            }
+            break;
+
+          default:
+            m_nGSID = 1;
             break;
         }
+        i++;
       }
 
       // Get all the TLV's attached to this user, otherwise the server will delete
@@ -3007,31 +3030,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       // Now copy them to the new buffer
       for (tlv_iter = tlvs.begin(); tlv_iter != tlvs.end(); ++tlv_iter)
         tlvBuffer.PackTLV(tlv_iter->second);
-
-      if (m_nGSID == 0)
-      {
-        unsigned short nNewGroup = gUserManager.NewUserGroup();
-        m_nGSID = gUserManager.GetIDFromGroup(nNewGroup);
-
-        if (m_nGSID == 0)
-        {
-          GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
-          if (groups->size() > 0)
-          {
-            LicqGroup* g = groups->begin()->second;
-            g->Lock(LOCK_R);
-            m_nGSID = g->icqGroupId();
-            g->Unlock();
-          }
-          gUserManager.UnlockGroupList();
-        }
-
-        if (m_nGSID == 0)
-          m_nGSID = 1; // General (unless user renamed group or wasnt created yet)
-      }
-
-      szUnicodeAlias = 0;//strdup(u->GetAlias());
-      nExportSize = 0;//4 + strlen(szUnicodeAlias);
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
@@ -3086,10 +3084,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
   InitBuffer();
 
   buffer->PackUnsignedShortBE(nStrLen);
-  if (szUnicodeName && _nType == ICQ_ROSTxGROUP)
-    buffer->Pack(szUnicodeName, nStrLen);
-  else
-    buffer->Pack(_szName, nStrLen);
+  buffer->Pack(szUnicodeName != NULL ? szUnicodeName : _szName, nStrLen);
   buffer->PackUnsignedShortBE(m_nGSID);
   buffer->PackUnsignedShortBE(m_nSID);
   buffer->PackUnsignedShortBE(_nType);
