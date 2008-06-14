@@ -1502,8 +1502,6 @@ public:
 
   unsigned short NumUsers();
   unsigned short NumOwners();
-  unsigned short NewUserGroup()  { return m_nNewUserGroup; }
-  void SetNewUserGroup(unsigned short n)  { m_nNewUserGroup = n; SaveGroups(); }
 
 protected:
   pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_ownerlist;
@@ -1514,7 +1512,6 @@ protected:
   CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
-  unsigned short m_nNewUserGroup;
   unsigned short m_nUserListLockType;
   unsigned short myGroupListLockType;
   unsigned short m_nOwnerListLockType;

@@ -630,9 +630,6 @@ bool CUserManager::Load()
   m_bAllowSave = true;
   UnlockGroupList();
 
-  licqConf.ClearFlag(INI_FxFATAL);
-  licqConf.ReadNum("NewUserGroup", m_nNewUserGroup, 0);
-  licqConf.SetFlag(INI_FxFATAL);
 
   char szTemp[MAX_LINE_LEN];
   licqConf.SetSection("network");
@@ -946,8 +943,6 @@ void CUserManager::RemoveGroup(unsigned short groupId)
   group->Unlock();
   delete group;
 
-  if (m_nNewUserGroup == groupId)
-    m_nNewUserGroup = 0;
 
   // Decrease sorting index for higher groups so we don't leave a gap
   GroupMap::const_iterator iter;
@@ -1105,7 +1100,6 @@ void CUserManager::SaveGroups()
     ++i;
   }
 
-  licqConf.WriteNum("NewUserGroup", m_nNewUserGroup);
   licqConf.FlushFile();
   licqConf.CloseFile();
 }
@@ -2531,8 +2525,6 @@ void ICQUser::SetDefaults()
   SetHistoryFile("default");
   SetSystemGroups(0);
   myGroups.clear();
-  if (gUserManager.NewUserGroup())
-    myGroups.insert(gUserManager.NewUserGroup());
   SetNewUser(true);
   SetAuthorization(false);
 
