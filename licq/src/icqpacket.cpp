@@ -2947,14 +2947,14 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
                                          unsigned short _nType,
                                          unsigned short _nGroup, bool _bAuthReq,
                                          bool _bTopLevel)
-  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD), m_nSID(0),
+  : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD),
+    m_nSID(0),
     m_nGSID(0)
 {
   unsigned short nStrLen = strlen(_szName);
   unsigned short nExportSize = 0;
   ICQUser *u = 0;
-  char *szUnicodeName = 0,
-       *szUnicodeAlias = 0;
+  char *szUnicodeName = 0;
   TLVList tlvs;
   CBuffer tlvBuffer;
 
@@ -3047,13 +3047,13 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       m_nSID = 0;
       SetExtraInfo(0);
 
-      szUnicodeName = gTranslator.ToUnicode((char *)_szName);
+      szUnicodeName = gTranslator.ToUnicode(const_cast<char *>(_szName));
       nStrLen = strlen(szUnicodeName);
 
-      if (!_bTopLevel)
-        gUserManager.ModifyGroupID(const_cast<char *>(_szName), m_nGSID);
-      else
+      if (_bTopLevel)
         nExportSize += 4 + (2 * gUserManager.NumGroups());
+      else
+        gUserManager.ModifyGroupID(const_cast<char *>(_szName), m_nGSID);
       break;
     }
 
@@ -3115,9 +3115,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
       // TODO Have this be a part of tlvBuffer
       buffer->PackUnsignedShortBE(0x0131);
       buffer->PackUnsignedShortBE(nExportSize-4);
-      if (szUnicodeAlias)
-        buffer->Pack(szUnicodeAlias, nExportSize-4);
-      else if (szUnicodeName)
+      if (szUnicodeName)
         buffer->Pack(szUnicodeName, nExportSize-4);
     }
   }
@@ -3131,8 +3129,6 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
   if (szUnicodeName)
     delete [] szUnicodeName;
-  if (szUnicodeAlias)
-    free(szUnicodeAlias);
 }
 
 //-----RemoveFromServerList-----------------------------------------------------
