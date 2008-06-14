@@ -155,20 +155,14 @@ void KeyRequestDlg::startSend()
 
 void KeyRequestDlg::openConnection()
 {
-  //TODO fix this in daemon
-  char *p;
-  unsigned long uin = strtoul(m_szId, &p,10);
-  if( (p == 0 || (p && !*p)) && m_nPPID == LICQ_PPID )
-    icqEventTag = gLicqDaemon->icqOpenSecureChannel(uin);
+  if (m_nPPID == LICQ_PPID )
+    icqEventTag = gLicqDaemon->icqOpenSecureChannel(m_szId);
 }
 
 void KeyRequestDlg::closeConnection()
 {
-  //TODO fix this in daemon
-  char *p;
-  unsigned long uin = strtoul(m_szId, &p,10);
-  if( (p == 0 || (p && !*p)) && m_nPPID == LICQ_PPID )
-    icqEventTag = gLicqDaemon->icqCloseSecureChannel(uin);
+  if (m_nPPID == LICQ_PPID )
+    icqEventTag = gLicqDaemon->icqCloseSecureChannel(m_szId);
 }
 
 // -----------------------------------------------------------------------------

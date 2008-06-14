@@ -78,13 +78,14 @@ SearchItem::SearchItem(const CSearchAck* s, const QString& encoding, QListView* 
   QString qsGender;
   QString qsAge;
   QString qsAuth;
-  
-  uinVal = s->Uin();
+
+  myId = s->Id();
+  myPpid = s->PPID();
   QTextCodec *codec = QTextCodec::codecForName(encoding);
   if (codec == 0)
     codec = QTextCodec::codecForLocale();
   setText(0, codec->toUnicode(s->Alias()));
-  setText(1, QString::number(s->Uin()));
+  setText(1, s->Id());
   setText(2, codec->toUnicode(s->FirstName()) + QString(" ") + codec->toUnicode(s->LastName()));
   setText(3, s->Email());
 
@@ -119,13 +120,6 @@ SearchItem::SearchItem(const CSearchAck* s, const QString& encoding, QListView* 
   qsAuth =(s->Auth() ? SearchUserView::tr("No") : SearchUserView::tr("Yes"));
   setText(6, qsAuth);
 }
-
-
-unsigned long SearchItem::uin()
-{
-  return (uinVal);
-}
-
 
 // -----------------------------------------------------------------------------
 
@@ -512,16 +506,13 @@ void SearchUserDlg::viewInfo()
   {
     if (current->isSelected())
     {
-      //XXX Convert this to a string
-      char szId[64];
-      snprintf(szId, 64, "%lu", current->uin());
-      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+      ICQUser* u = gUserManager.FetchUser(current->id().latin1(), current->ppid(), LOCK_R);
       if (!u)
-        server->AddUserToList(szId, LICQ_PPID, false, true);
+        server->AddUserToList(current->id().latin1(), current->ppid(), false, true);
       else
         gUserManager.DropUser(u);
-      
-      mainwin->callInfoTab(mnuUserGeneral, szId, LICQ_PPID, false, true);
+
+      mainwin->callInfoTab(mnuUserGeneral, current->id().latin1(), current->ppid(), false, true);
       break;
     }
     current = static_cast<SearchItem*>(current->nextSibling());
@@ -536,19 +527,19 @@ void SearchUserDlg::addUser()
   {
     if (current->isSelected())
     {
-      ICQUser* user = gUserManager.FetchUser(current->uin(), LOCK_R);
+      ICQUser* user = gUserManager.FetchUser(current->id().latin1(), current->ppid(), LOCK_R);
 
       if (user)
       {
         bool tempUser = user->NotInList();
         gUserManager.DropUser(user);
         if (tempUser)
-          gUserManager.RemoveUser(current->uin());
+          gUserManager.RemoveUser(current->id().latin1(), current->ppid());
       }
 
-      if (server->AddUserToList(current->uin()) &&
+      if (server->AddUserToList(current->id().latin1(), current->ppid()) &&
           qcbAlertUser->isChecked()) // alert the user they were added
-        server->icqAlertUser(current->uin());
+        server->icqAlertUser(current->id().latin1(), current->ppid());
     }
     current = static_cast<SearchItem*>(current->nextSibling());
   }

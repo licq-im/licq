@@ -57,9 +57,13 @@ class SearchItem : public QListViewItem
 {
 public:
   SearchItem(const CSearchAck* s, const QString& encoding, QListView* parent);
-   unsigned long uin();
+
+  QString id() const { return myId; }
+  unsigned long ppid() const { return myPpid; }
+
 protected:
-   unsigned long uinVal;
+   QString myId;
+   unsigned long myPpid;
 };
 
 

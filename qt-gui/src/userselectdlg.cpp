@@ -87,7 +87,7 @@ UserSelectDlg::UserSelectDlg(CICQDaemon *s, QWidget *parent)
     close();
     return;
   }
-	cmbUser->insertItem(QString("%1 (%2)").arg(o->GetAlias()).arg(o->Uin()));
+	cmbUser->insertItem(QString("%1 (%2)").arg(o->GetAlias()).arg(o->IdString()));
 	edtPassword->setText(o->Password());
 	gUserManager.DropOwner();
 

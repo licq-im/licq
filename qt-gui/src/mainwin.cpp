@@ -3580,7 +3580,7 @@ void CMainWindow::aboutBox()
   
   // We might have no owner
   QString m_Alias = (o == 0) ? QString(tr("(Error! No owner set)")) : QString::fromUtf8(o->GetAlias());
-  unsigned long m_Uin = (o == 0) ? 0 : o->Uin();
+  QString id = (o == 0) ? "" : o->IdString();
   
   QString about(tr("Licq version %1%8.\n"
                    "Qt GUI plugin version %2.\n"
@@ -3594,7 +3594,7 @@ void CMainWindow::aboutBox()
                    "%3 (%4)\n"
                    "%5 contacts.").arg(licqDaemon->Version())
                    .arg(VERSION).arg(m_Alias)
-                   .arg(m_Uin).arg(gUserManager.NumUsers())
+                   .arg(id).arg(gUserManager.NumUsers())
 #ifdef USE_KDE
                    .arg(tr("(with KDE support)\n"))
 #else

@@ -1291,7 +1291,7 @@ void UserViewEvent::slot_btnRead2()
       if (fileDlg->ReceiveFiles())
       {
         //TODO in CICQDaemon
-        server->icqFileTransferAccept(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+        server->icqFileTransferAccept(m_lUsers.front().c_str(),
           fileDlg->LocalPort(), f->Sequence(), f->MessageID(), f->IsDirect(),
           f->FileDescription(), f->Filename(), f->FileSize());
       }
@@ -1355,7 +1355,7 @@ void UserViewEvent::slot_btnRead3()
         btnRead3->setEnabled(false);
 
         //TODO
-        server->icqFileTransferRefuse(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+        server->icqFileTransferRefuse(m_lUsers.front().c_str(),
           codec->fromUnicode(r->RefuseMessage()),
           m_xCurrentReadEvent->Sequence(), f->MessageID(), f->IsDirect());
       }
@@ -2578,7 +2578,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       CEventFile *ue = (CEventFile *)e->UserEvent();
       ConstFileList filelist(ue->FileList());
       //TODO in the daemon
-      icqEventTag = server->icqFileTransfer(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+      icqEventTag = server->icqFileTransfer(m_lUsers.front().c_str(),
         ue->Filename(), ue->FileDescription(), filelist, nLevel, !bOnline);
 
       break;
@@ -3151,7 +3151,7 @@ void UserSendFileEvent::sendButton()
 
   unsigned long icqEventTag;
   //TODO in daemon
-  icqEventTag = server->icqFileTransfer(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+  icqEventTag = server->icqFileTransfer(m_lUsers.front().c_str(),
      codec->fromUnicode(edtItem->text()),
      codec->fromUnicode(mleSend->text()), m_lFileList,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,

@@ -743,7 +743,7 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
   if (u->GetICQHomepagePresent())
   {
     QString url;
-    url.sprintf("(http://%lu.homepage.icq.com/)", u->Uin());
+    url.sprintf("(http://%s.homepage.icq.com/)", u->IdString());
     lblICQHomepage->setText(tr("User has an ICQ Homepage ") + url);
   }
   else
