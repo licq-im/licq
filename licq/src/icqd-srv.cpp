@@ -97,7 +97,7 @@ void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired)
     0, _bAuthRequired);
   gLog.Info(tr("%sAdding %s to server list...\n"), L_SRVxSTR, _szId);
   addToModifyUsers(pAdd->SubSequence(), _szId);
-  SendExpectEvent_Server(0, pAdd, NULL);
+  SendExpectEvent_Server(pAdd, NULL);
 
   CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
                                               ICQ_SNACxLIST_ROSTxEDITxEND);
@@ -220,7 +220,7 @@ void CICQDaemon::icqUpdateServerGroups()
   pReply = new CPU_UpdateToServerList("", ICQ_ROSTxGROUP, 0);
   addToModifyUsers(pReply->SubSequence(), "");
   gLog.Info(tr("%sUpdating top level group.\n"), L_SRVxSTR);
-  SendExpectEvent_Server(0, pReply, NULL);
+  SendExpectEvent_Server(pReply, NULL);
 
   FOR_EACH_GROUP_START(LOCK_R)
   {
@@ -231,7 +231,7 @@ void CICQDaemon::icqUpdateServerGroups()
       pReply = new CPU_UpdateToServerList(gname, ICQ_ROSTxGROUP, gid);
       gLog.Info(tr("%sUpdating group %s.\n"), L_SRVxSTR, gname);
       addToModifyUsers(pReply->SubSequence(), "");
-      SendExpectEvent_Server(0, pReply, NULL);
+      SendExpectEvent_Server(pReply, NULL);
     }
   }
   FOR_EACH_GROUP_END
@@ -250,7 +250,7 @@ void CICQDaemon::icqAddGroup(const char *_szName)
   int nGSID = pAdd->GetGSID();
   gLog.Info(tr("%sAdding group %s (%d) to server list ...\n"), L_SRVxSTR, _szName, nGSID);
   addToModifyUsers(pAdd->SubSequence(), _szName);
-  SendExpectEvent_Server(0L, pAdd, NULL);
+  SendExpectEvent_Server(pAdd, NULL);
 }
 
 //-----icqChangeGroup-----------------------------------------------------------
@@ -287,13 +287,13 @@ void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
   CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, _nOldGSID,
                                                         nSID, _nOldType);
   addToModifyUsers(pRemove->SubSequence(), _szId);
-  SendExpectEvent_Server(0, pRemove, NULL);
+  SendExpectEvent_Server(pRemove, NULL);
 
   // Add the user, with the new group
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, _nNewType,
                                                       _nNewGroup);
   addToModifyUsers(pAdd->SubSequence(), _szId);
-  SendExpectEvent_Server(0, pAdd, NULL);
+  SendExpectEvent_Server(pAdd, NULL);
 
 }
 
@@ -311,7 +311,7 @@ void CICQDaemon::icqExportGroups(const GroupNameMap& groups)
   // be based on all of them. So a generic name should be fine, but then we need
   // to add a flag to signify if it is a real user/group or a generic one.
   addToModifyUsers(pExport->SubSequence(), "");
-  SendExpectEvent_Server(0, pExport, NULL);
+  SendExpectEvent_Server(pExport, NULL);
   
   CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
     ICQ_SNACxLIST_ROSTxEDITxEND);
@@ -367,7 +367,7 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
     else
       pRemove = new CPU_RemoveFromServerList(_szId, nGSID, nSID, ICQ_ROSTxNORMAL);
     addToModifyUsers(pRemove->SubSequence(), _szId);
-    SendExpectEvent_Server(0, pRemove, NULL);
+    SendExpectEvent_Server(pRemove, NULL);
 
     if (nVisibleSID)
     {
@@ -403,32 +403,10 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
 
 void CICQDaemon::icqRemoveUser(unsigned long _nUin)
 {
-  // Remove from the SSList and update groups
-  if (UseServerContactList())
-  {
-    CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-      ICQ_SNACxLIST_ROSTxEDITxSTART);
-    SendEvent_Server(pStart);
-
-    ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
-    unsigned short nGSID = u->GetGSID();
-    unsigned short nSID = u->GetSID();
-    char szUin[13];
-    snprintf(szUin, 12, "%lu", _nUin);
-    szUin[12] = '\0';
-    u->SetGSID(0);
-    gUserManager.DropUser(u);
-
-    CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(szUin, nGSID, nSID, ICQ_ROSTxNORMAL);
-    addToModifyUsers(pRemove->SubSequence(), szUin);
-    SendExpectEvent_Server(0, pRemove, NULL);
-  }
-
-  // Tell server they are no longer with us.
-  CSrvPacketTcp *p = new CPU_GenericUinList(_nUin, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST);
-  gLog.Info(tr("%sAlerting server to remove user (#%hu)...\n"), L_SRVxSTR,
-            p->Sequence());
-  SendExpectEvent_Server(_nUin, p, NULL);
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", _nUin);
+  szUin[12] = 0;
+  icqRemoveUser(szUin);
 }
 
 //-----icqRemoveGroup----------------------------------------------------------
@@ -444,7 +422,7 @@ void CICQDaemon::icqRemoveGroup(const char *_szName)
     gUserManager.GetIDFromGroup(_szName), 0, ICQ_ROSTxGROUP);
   gLog.Info(tr("%sRemoving group from server side list (%s)...\n"), L_SRVxSTR, _szName);
   addToModifyUsers(pRemove->SubSequence(), _szName);
-  SendExpectEvent_Server(0, pRemove, NULL);
+  SendExpectEvent_Server(pRemove, NULL);
 }
 
 //-----icqRenameGroup----------------------------------------------------------
@@ -457,7 +435,7 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
   gLog.Info(tr("%sRenaming group with id %d to %s...\n"), L_SRVxSTR, _nGSID,
     _szNewName);
   addToModifyUsers(pUpdate->SubSequence(), _szNewName);
-  SendExpectEvent_Server(0, pUpdate, NULL);
+  SendExpectEvent_Server(pUpdate, NULL);
 }
 
 //-----icqRenameUser------------------------------------------------------------
@@ -490,11 +468,19 @@ void CICQDaemon::icqRenameUser(const char *_szId)
   CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(_szId, ICQ_ROSTxNORMAL);
   gLog.Info(tr("%sRenaming %s to %s...\n"), L_SRVxSTR, _szId, szNewAlias);
   addToModifyUsers(pUpdate->SubSequence(), _szId);
-  SendExpectEvent_Server(0, pUpdate, NULL);
+  SendExpectEvent_Server(pUpdate, NULL);
 }
 
 //-----icqAlertUser-------------------------------------------------------------
 void CICQDaemon::icqAlertUser(unsigned long _nUin)
+{
+  char szUin[13];
+  snprintf(szUin, 12, "%lu", _nUin);
+  szUin[12] = '\0';
+  icqAlertUser(szUin, LICQ_PPID);
+}
+
+void CICQDaemon::icqAlertUser(const char* id, unsigned long ppid)
 {
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
   char sz[MAX_MESSAGE_SIZE];
@@ -502,11 +488,10 @@ void CICQDaemon::icqAlertUser(unsigned long _nUin)
           0xFE, o->GetLastName(), 0xFE, o->GetEmailPrimary(), 0xFE,
           o->GetAuthorization() ? '0' : '1', 0xFE);
   gUserManager.DropOwner();
-  CPU_ThroughServer *p = new CPU_ThroughServer(_nUin, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
+  CPU_ThroughServer *p = new CPU_ThroughServer(id, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
   gLog.Info(tr("%sAlerting user they were added (#%hu)...\n"), L_SRVxSTR, p->Sequence());
-  SendExpectEvent_Server(_nUin, p, NULL);
+  SendExpectEvent_Server(id, ppid, p, NULL);
 }
-
 //-----icqFetchAutoResponseServer-----------------------------------------------
 unsigned long CICQDaemon::ProtoFetchAutoResponseServer(const char *_szId, unsigned long _nPPID)
 {
@@ -577,7 +562,7 @@ unsigned long CICQDaemon::icqSetRandomChatGroup(unsigned long _nGroup)
   gLog.Info(tr("%sSetting random chat group (#%hu)...\n"), L_SRVxSTR,
             p->Sequence());
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -590,7 +575,7 @@ unsigned long CICQDaemon::icqRandomChatSearch(unsigned long _nGroup)
   gLog.Info(tr("%sSearching for random chat user (#%hu)...\n"), L_SRVxSTR,
             p->Sequence());
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -621,7 +606,7 @@ void CICQDaemon::icqRegisterFinish()
 
   CPU_Register *p = new CPU_Register(m_szRegisterPasswd);
   gLog.Info(tr("%sRegistering a new user...\n"), L_SRVxSTR);
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     e->thread_plugin = m_nRegisterThreadId;
 }
@@ -645,8 +630,8 @@ void CICQDaemon::icqVerify(const char *szVerification)
   CPU_SendVerification *p = new CPU_SendVerification(m_szRegisterPasswd,
     szVerification);
    gLog.Info(tr("%sSending verification for registration.\n"), L_SRVxSTR);
-   
-   SendExpectEvent_Server(0, p, NULL);
+
+   SendExpectEvent_Server(p, NULL);
 }
 
 //-----ICQ::icqRelogon-------------------------------------------------------
@@ -831,7 +816,7 @@ unsigned long CICQDaemon::icqSetPassword(const char *szPassword)
   CPU_SetPassword *p = new CPU_SetPassword(szPassword);
   gLog.Info(tr("%sUpdating password (#%hu/#%d)...\n"), L_SRVxSTR,
             p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -880,7 +865,7 @@ unsigned long CICQDaemon::icqSetGeneralInfo(
 
   gLog.Info(tr("%sUpdating general info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -896,7 +881,7 @@ return 0;
 
   gLog.Info(tr("%sUpdating additional E-Mail info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -917,7 +902,7 @@ unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
 
   gLog.Info(tr("%sUpdating more info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent *e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -930,7 +915,7 @@ unsigned long CICQDaemon::icqSetInterestsInfo(const ICQUserCategory* interests)
   gLog.Info("%sUpdating Interests info (#%hu/#%d)..\n", L_SRVxSTR,
     p->Sequence(), p->SubSequence());
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -945,7 +930,7 @@ unsigned long CICQDaemon::icqSetOrgBackInfo(const ICQUserCategory* orgs,
   gLog.Info("%sUpdating Organizations/Backgrounds info (#%hu/#%d)..\n",
     L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -967,7 +952,7 @@ unsigned long CICQDaemon::icqSetWorkInfo(const char *_szCity, const char *_szSta
 
   gLog.Info(tr("%sUpdating work info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -984,7 +969,7 @@ unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
 
   delete [] szAbout;
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -1056,7 +1041,7 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(const char *szId,
      szId, p->Sequence());
   delete [] sz;
 
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+  ICQEvent* e = SendExpectEvent_Server(p, NULL);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -1089,7 +1074,7 @@ unsigned long CICQDaemon::icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool
   // Now send the set security info packet
     CPU_Meta_SetSecurityInfo *p = new CPU_Meta_SetSecurityInfo(bAuthorize, bHideIp, bWebAware);
     gLog.Info(tr("%sUpdating security info (#%hu/#%d)...\n"), L_SRVxSTR, p->Sequence(), p->SubSequence());
-    ICQEvent *e = SendExpectEvent_Server(0, p, NULL);
+    ICQEvent* e = SendExpectEvent_Server(p, NULL);
     if (e != NULL)
       return e->EventId();
     return 0;
@@ -1111,7 +1096,7 @@ unsigned long CICQDaemon::icqSearchWhitePages(const char *szFirstName,
     nCountryCode, szCoName, szCoDept, szCoPos, szKeyword, bOnlineOnly);
   gLog.Info(tr("%sStarting white pages search (#%hu/#%d)...\n"), L_SRVxSTR,
             p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(0, p, NULL, true);
+  ICQEvent *e = SendExpectEvent_Server(p, NULL, true);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -1123,7 +1108,7 @@ unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
    CPU_SearchByUin *p = new CPU_SearchByUin(nUin);
    gLog.Info(tr("%sStarting search by UIN for user (#%hu/#%d)...\n"), L_SRVxSTR, 
              p->Sequence(), p->SubSequence());
-   ICQEvent *e = SendExpectEvent_Server(0, p, NULL, true);
+   ICQEvent* e = SendExpectEvent_Server(p, NULL, true);
    if (e != NULL)
      return e->EventId();
    return 0;
@@ -1422,7 +1407,7 @@ void CICQDaemon::icqAddToVisibleList(const char* _szId, unsigned long _nPPID)
   {
     CSrvPacketTcp *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxVISIBLE);
     addToModifyUsers(pAdd->SubSequence(), _szId);
-    SendExpectEvent_Server(0, pAdd, NULL);
+    SendExpectEvent_Server(pAdd, NULL);
   }
 }
 
@@ -2372,7 +2357,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
 
       gLog.Info(tr("%sRequesting list rights.\n"), L_SRVxSTR);
       p = new CPU_ListRequestRights();
-      SendExpectEvent_Server(0, p, NULL);
+      SendExpectEvent_Server(p, NULL);
 
       gLog.Info(tr("%sRequesting roster rights.\n"), L_SRVxSTR);
       p = new CPU_RequestList();
@@ -3229,7 +3214,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       if (ignore)
       {
-        RejectEvent(strtoul(szId, (char **)NULL, 10), e);
+        RejectEvent(szId, e);
         break;
       }
 
@@ -3795,7 +3780,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           if (szType) free(szType);
 
           //TODO
-          RejectEvent(strtoul(szId, (char **)NULL, 10), eEvent);
+          RejectEvent(szId, eEvent);
           break;
         }
 
@@ -4553,7 +4538,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 gLog.Info(tr("%sUpdating group %s.\n"), L_SRVxSTR, groupName.c_str());
               }
               addToModifyUsers(pReply->SubSequence(), groupName);
-              SendExpectEvent_Server(0, pReply, NULL);
+              SendExpectEvent_Server(pReply, NULL);
 
               // Finish editing server list
               CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
@@ -4593,7 +4578,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 pReply = new CPU_UpdateToServerList(pending.c_str(),
                   ICQ_ROSTxNORMAL, 0, true);
                 addToModifyUsers(pReply->SubSequence(), pending);
-                SendExpectEvent_Server(0, pReply, NULL);
+                SendExpectEvent_Server(pReply, NULL);
               }
             }
 
@@ -5612,9 +5597,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gUserManager.DropUser(u);
 
           if (bNewUser)
-          {
-            icqRequestMetaInfo(nUin);
-          }
+            icqRequestMetaInfo(szUin);
 
           e->m_pSearchAck = new CSearchAck(nUin);
         }

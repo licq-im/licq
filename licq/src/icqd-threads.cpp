@@ -1001,7 +1001,7 @@ void *UpdateUsers_tep(void *p)
             pUser->ClientTimestamp() != pUser->OurClientTimestamp()
             && pUser->ClientTimestamp() != 0)
         {
-          d->icqRequestMetaInfo(pUser->Uin());
+          d->icqRequestMetaInfo(pUser->IdString());
           bSent = true;
         }
 

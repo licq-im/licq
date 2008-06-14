@@ -3992,7 +3992,7 @@ ICQOwner::ICQOwner()
   m_szPassword = NULL;
   m_nPDINFO = 0;
 
-  Init(0);
+  Init("0", LICQ_PPID);
   //SetOnContactList(true);
   m_bOnContactList = true;
 

@@ -815,7 +815,7 @@ public:
 protected:
   void InitBuffer();
 
-  unsigned long m_nUin, m_nMsgID[2];
+  unsigned long m_nMsgID[2];
   unsigned short m_nSequence, m_nMsgType, m_nStatus, m_nUinLen, m_nLevel;
   char m_szUin[13];
   char *m_szMessage;

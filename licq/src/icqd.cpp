@@ -1207,24 +1207,9 @@ bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
   // Don't add invalid uins
   if (nUin == 0) return false;
 
-  // Don't add a user we already have
-  if (gUserManager.IsOnList(nUin))
-  {
-    gLog.Warn(tr("%sUser %lu already on contact list.\n"), L_WARNxSTR, nUin);
-    return false;
-  }
-
-  ICQUser *u = new ICQUser(nUin);
-  gUserManager.AddUser(u);
-  gUserManager.DropUser(u);
-  SaveUserList();
-
-  // this notify is for local only adds
-  if (m_nTCPSrvSocketDesc != -1 && bNotify)  icqAddUser(nUin);
-
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nUin));
-
-  return true;
+  char szUin[24];
+  sprintf(szUin, "%lu", nUin);
+  return AddUserToList(szUin, LICQ_PPID, bNotify);
 }
 
 
@@ -1267,12 +1252,9 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
 //-----RemoveUserFromList-------------------------------------------------------
 void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
 {
-  if (m_nTCPSrvSocketDesc != -1) icqRemoveUser(_nUin);
-
-  gUserManager.RemoveUser(_nUin);
-  SaveUserList();
-
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, _nUin));
+  char szUin[24];
+  sprintf(szUin, "%lu", _nUin);
+  RemoveUserFromList(szUin, LICQ_PPID);
 }
 
 void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
@@ -1369,6 +1351,13 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
  *--------------------------------------------------------------------------*/
 void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
 {
+  char szUin[24];
+  sprintf(szUin, "%lu", nUin);
+  RejectEvent(szUin, e);
+}
+
+void CICQDaemon::RejectEvent(const char* id, CUserEvent* e)
+{
   if (m_szRejectFile == NULL) return;
 
   FILE *f = fopen(m_szRejectFile, "a");
@@ -1378,8 +1367,8 @@ void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
   }
   else
   {
-    fprintf(f, "Event from new user (%lu) rejected: \n%s\n--------------------\n\n",
-            nUin, e->Text());
+    fprintf(f, "Event from new user (%s) rejected: \n%s\n--------------------\n\n",
+        id, e->Text());
     chmod(m_szRejectFile, 00600);
     fclose(f);
   }
@@ -1477,42 +1466,10 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long /* 
 ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet,
    CUserEvent *ue, bool bExtendedEvent)
 {
-  // If we are already shutting down, don't start any events
-  if (m_bShuttingDown)
-  {
-    if (packet != NULL) delete packet;
-    if (ue != NULL) delete ue;
-    return NULL;
-  }
-
-  if (ue != NULL) ue->m_eDir = D_SENDER;
-  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, nUin, ue);
-
-  if (e == NULL)  return NULL;
-
-  if (bExtendedEvent) PushExtendedEvent(e);
-
-  ICQEvent *result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
-
-  // if an error occured, remove the event from the extended queue as well
-  if (result == NULL && bExtendedEvent)
-  {
-    pthread_mutex_lock(&mutex_extendedevents);
-    std::list<ICQEvent *>::iterator i;
-    for (i = m_lxExtendedEvents.begin(); i != m_lxExtendedEvents.end(); ++i)
-    {
-      if (*i == e)
-      {
-        m_lxExtendedEvents.erase(i);
-        break;
-      }
-    }
-    pthread_mutex_unlock(&mutex_extendedevents);
-  }
-
-  return result;
+  char szUin[24];
+  sprintf(szUin, "%lu", nUin);
+  return SendExpectEvent_Server(szUin, LICQ_PPID, packet, ue, bExtendedEvent);
 }
-
 
 ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
    CUserEvent *ue)
@@ -1527,7 +1484,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
   ICQEvent *e = new ICQEvent(this, pUser->SocketDesc(packet->Channel()), packet,
-     CONNECT_USER, pUser->Uin(), ue);
+     CONNECT_USER, pUser->IdString(), pUser->PPID(), ue);
 
   if (e == NULL) return NULL;
 
@@ -2280,9 +2237,9 @@ void CICQDaemon::CancelEvent(ICQEvent *e)
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
     icqChatRequestCancel(e->m_nDestinationUin, e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
-    icqFileTransferCancel(e->m_nDestinationUin, e->m_nSequence);
+    icqFileTransferCancel(e->Id(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_SECURExOPEN)
-    icqOpenSecureChannelCancel(e->m_nDestinationUin, e->m_nSequence);
+    icqOpenSecureChannelCancel(e->Id(), e->m_nSequence);
 
   ProcessDoneEvent(e);
 }
@@ -2291,11 +2248,11 @@ void CICQDaemon::CancelEvent(ICQEvent *e)
 //-----updateAllUsers-------------------------------------------------------------------------
 void CICQDaemon::UpdateAllUsers()
 {
-  FOR_EACH_UIN_START
+  FOR_EACH_USER_START(LOCK_R)
   {
-    icqRequestMetaInfo(nUin);
+    icqRequestMetaInfo(pUser->IdString());
   }
-  FOR_EACH_UIN_END
+  FOR_EACH_USER_END
 }
 
 
@@ -2305,7 +2262,7 @@ void CICQDaemon::UpdateAllUsersInGroup(GroupType g, unsigned short nGroup)
   {
     if (pUser->GetInGroup(g, nGroup))
     {
-      icqRequestMetaInfo(pUser->Uin());
+      icqRequestMetaInfo(pUser->IdString());
     }
   }
   FOR_EACH_USER_END
@@ -2641,8 +2598,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     }
     else
     {
-      gLog.Info(tr("%s%s (%lu) requested auto response.\n"), L_SRVxSTR,
-                u->GetAlias(), u->Uin());
+      gLog.Info(tr("%s%s (%s) requested auto response.\n"), L_SRVxSTR,
+          u->GetAlias(), u->IdString());
 
     CPU_AckGeneral *p = new CPU_AckGeneral(u, nMsgID[0], nMsgID[1],
                                            nSequence, nMsgType, true, nLevel);
@@ -2652,7 +2609,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     u->SetLastCheckedAutoResponse();
 
       PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
-                       u->Uin()));
+          u->IdString(), u->PPID()));
     }
     u->Unlock();
     return;
@@ -2726,8 +2683,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     {
       pAckEvent->m_pExtendedAck = pExtendedAck;
       pAckEvent->m_nSubResult = ICQ_TCPxACK_ACCEPT;
-      gLog.Info(tr("%s%s accepted from %s (%lu).\n"), L_SRVxSTR, szType,
-                u->GetAlias(), u->Uin());
+      gLog.Info(tr("%s%s accepted from %s (%s).\n"), L_SRVxSTR, szType,
+          u->GetAlias(), u->IdString());
       u->Unlock();
       ProcessDoneEvent(pAckEvent);
       u->Lock(LOCK_W);
@@ -2747,21 +2704,21 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
       {
         if (Ignore(IGNORE_NEWUSERS))
         {
-          gLog.Info(tr("%s%s from new user (%lu), ignoring.\n"), L_SRVxSTR,
-                    szType, u->Uin());
+          gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SRVxSTR,
+                    szType, u->IdString());
           if (szType)  free(szType);
-          RejectEvent(u->Uin(), pEvent);
+          RejectEvent(u->IdString(), pEvent);
           u->Unlock();
           return;
         }
-        gLog.Info(tr("%s%s from new user (%lu).\n"), L_SRVxSTR, szType, u->Uin());
+        gLog.Info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->IdString());
         u->Unlock();
         AddUserToList(u);
         bNewUser = false;
       }
       else
-        gLog.Info(tr("%s%s from %s (%lu).\n"), L_SRVxSTR, szType, u->GetAlias(),
-                  u->Uin());
+        gLog.Info(tr("%s%s from %s (%s).\n"), L_SRVxSTR, szType, u->GetAlias(),
+            u->IdString());
 
       if (AddUserEvent(u, pEvent))
         m_xOnEventManager.Do(nEventType, u);

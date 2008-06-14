@@ -681,7 +681,7 @@ unsigned long CICQDaemon::icqRequestInfoPlugin(ICQUser *u, bool bServer,
   if (bServer)
   {
     CPU_InfoPluginReq *p = new CPU_InfoPluginReq(u, GUID, 0);
-    result = SendExpectEvent_Server(u->Uin(), p, NULL);
+    result = SendExpectEvent_Server(u->IdString(), u->PPID(), p, NULL);
   }
   else
   {
@@ -1062,7 +1062,7 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 		gLog.Info(tr("%sSending chat request to %s (#%hu).\n"), L_SRVxSTR,
 			  u->GetAlias(), -p->Sequence());
 
-		result = SendExpectEvent_Server(u->Uin(), p, e);
+		result = SendExpectEvent_Server(u->IdString(), u->PPID(), p, e);
 	}
 	else
 	{
@@ -1577,7 +1577,7 @@ bool CICQDaemon::OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
   if (u == NULL) return false;
 
   char szAlias[64];
-  snprintf(szAlias, sizeof(szAlias), "%s (%lu)", u->GetAlias(), u->Uin());
+  snprintf(szAlias, sizeof(szAlias), "%s (%s)", u->GetAlias(), u->IdString());
   szAlias[sizeof(szAlias) - 1] = '\0';
   unsigned long ip = u->Ip();
   unsigned long intip = u->IntIp();
@@ -1915,8 +1915,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   // Check for spoofing
   if (u->SocketDesc(pSock->Channel()) != sockfd)
   {
-    gLog.Warn("%sUser %s (%lu) socket (%d) does not match incoming message (%d).\n",
-              L_TCPxSTR, u->GetAlias(), u->Uin(),
+    gLog.Warn("%sUser %s (%s) socket (%d) does not match incoming message (%d).\n",
+              L_TCPxSTR, u->GetAlias(), u->IdString(),
               u->SocketDesc(pSock->Channel()), sockfd);
   }
 
@@ -2016,8 +2016,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     {
       bool r = u->OfflineOnDisconnect() || u->StatusOffline();
       ChangeUserStatus(u, (u->StatusFull() & ICQ_STATUS_FxFLAGS) | ns);
-      gLog.Info(tr("%s%s (%ld) is %s to us.\n"), L_TCPxSTR, u->GetAlias(),
-         u->Uin(), u->StatusStr());
+      gLog.Info(tr("%s%s (%s) is %s to us.\n"), L_TCPxSTR, u->GetAlias(),
+         u->IdString(), u->StatusStr());
       if (r) u->SetOfflineOnDisconnect(true);
     }
 
@@ -3302,9 +3302,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             u->SavePictureInfo();
 
             PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_PICTURE,
-                                 u->Uin()));
-
-            
+                u->IdString(), u->PPID()));
           }
           else if (memcmp(GUID, PLUGIN_QUERYxINFO, GUID_LENGTH) == 0)
           {
@@ -3430,7 +3428,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             u->SavePhoneBookInfo();
 
             PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_PHONExBOOK,
-                                 u->Uin()));
+                u->IdString(), u->PPID()));
 
             break;
           }
@@ -3471,7 +3469,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             u->SavePictureInfo();
 
             PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_PICTURE,
-                                 u->Uin()));
+                u->IdString(), u->PPID()));
 
             break;
           }
@@ -3753,8 +3751,8 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
         }
 
         // Which plugin?
-        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                        USER_PLUGIN_STATUS, u->Uin(), 0));
+        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_PLUGIN_STATUS,
+            u->IdString(), u->PPID(), 0));
 
         ProcessDoneEvent(e);
         return false;

@@ -1680,8 +1680,7 @@ CPU_Type2Message::CPU_Type2Message(ICQUser *u, bool _bAck, bool _bDirectInfo,
                                    unsigned long nMsgID2)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
 {
-	char szUin[13];
-	int nUinLen = snprintf(szUin, 12, "%lu", u->Uin());
+	int nUinLen = strlen(u->IdString());
         unsigned short nDirectInfo = _bDirectInfo ? 14 : 0; //size of di
 
 	m_nSize += 55 + nUinLen + nDirectInfo;
@@ -1702,8 +1701,7 @@ void CPU_Type2Message::InitBuffer()
 
 	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
 
-	char szUin[13];
-	int nUinLen = snprintf(szUin, 12, "%lu", m_pUser->Uin());
+	int nUinLen = strlen(m_pUser->IdString());
 
 	unsigned long nID1, nID2;
   unsigned short nDirectInfo = m_bDirectInfo ? 14 : 0; // size of direct info
@@ -1723,7 +1721,7 @@ void CPU_Type2Message::InitBuffer()
 	buffer->PackUnsignedLongBE(nID2); // lower 4 bytes of message id
 	buffer->PackUnsignedShortBE(0x02); // message format
 	buffer->PackChar(nUinLen);
-	buffer->Pack(szUin, nUinLen);
+	buffer->Pack(m_pUser->IdString(), nUinLen);
 
 	buffer->PackUnsignedShortBE(0x0005);	// tlv - message info
 	buffer->PackUnsignedShortBE(m_nSize - 25 - nUinLen - m_nExtraLen);
@@ -2370,9 +2368,7 @@ CPU_NoManager::CPU_NoManager(ICQUser *u, unsigned long nMsgID1,
                              unsigned long nMsgID2)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-  char szUin[13];
-  snprintf(szUin, 13, "%lu", u->Uin());
-  unsigned long nUinLen = strlen(szUin);
+  unsigned long nUinLen = strlen(u->IdString());
 
   m_nSize += 17 + nUinLen;
 
@@ -2382,7 +2378,7 @@ CPU_NoManager::CPU_NoManager(ICQUser *u, unsigned long nMsgID1,
   buffer->PackUnsignedLongBE(nMsgID2);
   buffer->PackUnsignedShortBE(2);
   buffer->PackChar(nUinLen);
-  buffer->Pack(szUin, nUinLen);
+  buffer->Pack(u->IdString(), nUinLen);
   buffer->PackUnsignedShortBE(0x03);  /* tlv3?? who knows, doesn't fit with the
                                          ack below */
   buffer->PackUnsignedShortBE(0x02);
@@ -2399,12 +2395,12 @@ CPU_AckThroughServer::CPU_AckThroughServer(ICQUser *u,
                                            const char *GUID)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-  snprintf(m_szUin, 13, "%lu", u->Uin());
+  strncpy(m_szUin, u->IdString(), sizeof(m_szUin));
+  m_szUin[sizeof(m_szUin) - 1] = '\0';
   m_nUinLen = strlen(m_szUin);
 
   m_nSize += 66 + m_nUinLen;
 
-  m_nUin = u->Uin();
   m_nMsgID[0] = nMsgID1;
   m_nMsgID[1] = nMsgID2;
   m_nSequence = nSequence;
@@ -2637,20 +2633,17 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
   time(&tTime);
   tmTime = gmtime(&tTime);
   strftime(szTime, 30, "%a, %d %b %Y %T %Z", tmTime);
-  
+
   char szParsedNumber[17] = "+";
   ParseDigits(&szParsedNumber[1], szNumber, 15);
-  
+
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  char szUin[13];
-  szUin[12] = '\0';
-  snprintf(szUin, 12, "%lu", o->Uin());
 
   snprintf(szXmlStr, 460, "<icq_sms_message><destination>%s</destination><text>%.160s</text><codepage>1252</codepage><encoding>utf8</encoding><senders_UIN>%s</senders_UIN><senders_name>%s</senders_name><delivery_receipt>Yes</delivery_receipt><time>%s</time></icq_sms_message>",
-	   szParsedNumber, szMessage, szUin, o->GetAlias(), szTime);
+	   szParsedNumber, szMessage, o->IdString(), o->GetAlias(), szTime);
   szXmlStr[459] = '\0';
   gUserManager.DropOwner();
-  
+
   int nLenXmlStr = strlen_safe(szXmlStr) + 1;
   int packetSize = 2+2+2+4+2+2+2 + 22 + 2 + nLenXmlStr;
   m_nSize += packetSize;

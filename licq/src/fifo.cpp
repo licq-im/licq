@@ -304,12 +304,8 @@ static bool atoid( const char *buff, bool bOnList,
     {
         if( strcasecmp(s, pUser->GetAlias()) == 0)
         {
-          _szId = (char *) malloc(26);
-          if( _szId )
-          { 
-            sprintf(_szId, "%ld", pUser->Uin() );
-            ret = true;
-          }
+        _szId = strdup(pUser->IdString());
+        ret = true;
           FOR_EACH_PROTO_USER_BREAK
         }
     }
@@ -592,9 +588,8 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
                 "info.\n"), L_WARNxSTR, argv[0], szId);
     else
     {
-      unsigned long nUin = u->Uin();
       gUserManager.DropUser(u);
-      d->icqRequestMetaInfo(nUin);
+      d->icqRequestMetaInfo(szId);
       ret = 0;
     }
   }

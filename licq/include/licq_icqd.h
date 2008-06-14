@@ -451,6 +451,7 @@ public:
   unsigned long icqAuthorizeRefuse(const char *szId, const char *szMessage);
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
+  void icqAlertUser(const char* id, unsigned long ppid);
   void icqAddUser(unsigned long _nUin, bool _bAuthReq = false);
   void icqAddUser(const char *_szId, bool _bAuthReq = false);
   void icqAddUserServer(const char *_szId, bool _bAuthReq);
@@ -784,6 +785,7 @@ protected:
   void ChangeUserStatus(ICQUser *u, unsigned long s);
   bool AddUserEvent(ICQUser *, CUserEvent *);
   void RejectEvent(unsigned long, CUserEvent *);
+  void RejectEvent(const char* id, CUserEvent* e);
   ICQUser *FindUserForInfoUpdate(const char *szId, ICQEvent *e, const char *);
   unsigned long FindUinByCellular(const char *_szCellular);
 
@@ -819,6 +821,10 @@ protected:
   void SendEvent_Server(CPacket *packet);
   ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *, bool = false);
   ICQEvent *SendExpectEvent_Server(const char *, unsigned long, CPacket *, CUserEvent *, bool = false);
+
+  ICQEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
+  { return SendExpectEvent_Server("0", LICQ_PPID, packet, ue, extendedEvent); }
+
   ICQEvent *SendExpectEvent_Client(ICQUser *, CPacket *, CUserEvent *);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckTCP(CPacketTcp &, int);
