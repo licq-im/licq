@@ -181,6 +181,32 @@ signals:
    */
   void barDataChanged(ContactBar* bar, int row);
 
+  /**
+   * Signal emitted before a user is added
+   *
+   * @param group The affected group (always sent as this)
+   * @param row Row number for the new user
+   */
+  void beginInsert(ContactGroup* group, int row);
+
+  /**
+   * Signal emitted after a user has been added
+   */
+  void endInsert();
+
+  /**
+   * Signal emitted before a user is removed
+   *
+   * @param group The affected group (always sent as this)
+   * @param row Row number for the user to be removed
+   */
+  void beginRemove(ContactGroup* gorup, int row);
+
+  /**
+   * Segnal emitted after a user has been removed
+   */
+  void endRemove();
+
 private:
   unsigned short myGroupId;
   QString myName;

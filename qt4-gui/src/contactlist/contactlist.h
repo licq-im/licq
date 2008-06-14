@@ -375,6 +375,36 @@ private slots:
   void barDataChanged(ContactBar* bar, int row);
 
   /**
+   * A group is about to add a user
+   * Will send beginInsertRow signal for the user
+   *
+   * @param group The group that's adding the user
+   * @param row The row the new user will have in the group
+   */
+  void groupBeginInsert(ContactGroup* group, int row);
+
+  /**
+   * A group has finished adding a user
+   * Will send endInsertRow signal
+   */
+  void groupEndInsert();
+
+  /**
+   * A group is about to remove a user
+   * Will send beginRemoveRow signal for the user
+   *
+   * @param group The group that's removing the user
+   * @param row The row of the user about to be removed
+   */
+  void groupBeginRemove(ContactGroup* group, int row);
+
+  /**
+   * A group has finished removing a user
+   * Will send endRemoveRow signal
+   */
+  void groupEndRemove();
+
+  /**
    * Update the user membership in all groups
    * This is triggered by the user data object when its group membership (may) have changed
    *
@@ -407,10 +437,17 @@ private:
    *
    * @param user The user to update
    * @param group The group to check
-   * @param groupRow The row index of the group
    * @param shouldBeMember True to add the user if missing or false to remove if member
    */
-  void updateUserGroup(ContactUserData* user, ContactGroup* group, int groupRow, bool shouldBeMember);
+  void updateUserGroup(ContactUserData* user, ContactGroup* group, bool shouldBeMember);
+
+  /**
+   * Get model row for a group
+   *
+   * @param group A group object
+   * @return Row in model or -1 if not found
+   */
+  int groupRow(ContactGroup* group) const;
 
   QList<ContactGroup*> myUserGroups;
   ContactGroup* mySystemGroups[NUM_GROUPS_SYSTEM_ALL];

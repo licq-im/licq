@@ -62,6 +62,12 @@ ContactGroup* ContactListModel::createGroup(unsigned short id, QString name)
       SLOT(groupDataChanged(ContactGroup*)));
   connect(group, SIGNAL(barDataChanged(ContactBar*, int)),
       SLOT(barDataChanged(ContactBar*, int)));
+  connect(group, SIGNAL(beginInsert(ContactGroup*, int)),
+      SLOT(groupBeginInsert(ContactGroup*, int)));
+  connect(group, SIGNAL(endInsert()), SLOT(groupEndInsert()));
+  connect(group, SIGNAL(beginRemove(ContactGroup*, int)),
+      SLOT(groupBeginRemove(ContactGroup*, int)));
+  connect(group, SIGNAL(endRemove()), SLOT(groupEndRemove()));
   return group;
 }
 
@@ -235,11 +241,8 @@ void ContactListModel::groupDataChanged(ContactGroup* group)
   if (myBlockUpdates)
     return;
 
-  int groupRow = (group->groupId() < SystemGroupOffset
-      ? myUserGroups.indexOf(group)
-      : myUserGroups.size() + group->groupId() - SystemGroupOffset);
-
-  emit dataChanged(createIndex(groupRow, 0, group), createIndex(groupRow, myColumnCount - 1, group));
+  int row = groupRow(group);
+  emit dataChanged(createIndex(row, 0, group), createIndex(row, myColumnCount - 1, group));
 }
 
 void ContactListModel::barDataChanged(ContactBar* bar, int row)
@@ -248,6 +251,26 @@ void ContactListModel::barDataChanged(ContactBar* bar, int row)
     return;
 
   emit dataChanged(createIndex(row, 0, bar), createIndex(row, myColumnCount - 1, bar));
+}
+
+void ContactListModel::groupBeginInsert(ContactGroup* group, int row)
+{
+  beginInsertRows(createIndex(groupRow(group), 0, group), row, row);
+}
+
+void ContactListModel::groupEndInsert()
+{
+  endInsertRows();
+}
+
+void ContactListModel::groupBeginRemove(ContactGroup* group, int row)
+{
+  beginRemoveRows(createIndex(groupRow(group), 0, group), row, row);
+}
+
+void ContactListModel::groupEndRemove()
+{
+  endRemoveRows();
 }
 
 void ContactListModel::reloadAll()
@@ -260,8 +283,6 @@ void ContactListModel::reloadAll()
   myColumnCount = Config::ContactList::instance()->columnCount();
 
   // Add all groups
-  beginInsertRows(QModelIndex(), 0, gUserManager.NumGroups() + 1);
-
   ContactGroup* newGroup = createGroup(0, tr("Other Users"));
   myUserGroups.append(newGroup);
 
@@ -275,8 +296,6 @@ void ContactListModel::reloadAll()
     myUserGroups.append(group);
   }
   FOR_EACH_GROUP_END
-
-  endInsertRows();
 
   // Add all users
   FOR_EACH_USER_START(LOCK_R)
@@ -300,6 +319,18 @@ ContactUserData* ContactListModel::findUser(QString id, unsigned long ppid) cons
   return 0;
 }
 
+int ContactListModel::groupRow(ContactGroup* group) const
+{
+  unsigned short groupId = group->groupId();
+
+  if (groupId < SystemGroupOffset)
+    return myUserGroups.indexOf(group);
+  else if (groupId <= SystemGroupOffset + NUM_GROUPS_SYSTEM_ALL)
+    return myUserGroups.size() + groupId - SystemGroupOffset;
+  else
+    return -1;
+}
+
 void ContactListModel::addUser(ICQUser* licqUser)
 {
   ContactUserData* newUser = new ContactUserData(licqUser, this);
@@ -321,17 +352,17 @@ void ContactListModel::updateUserGroups(ContactUserData* user, ICQUser* licqUser
     unsigned short gid = group->groupId();
     bool shouldBeMember = (gid != 0 && licqUser->GetInGroup(GROUPS_USER, gid)) ||
         (gid == 0 && licqUser->GetGroups().empty() && !licqUser->IgnoreList());
-    updateUserGroup(user, group, i, shouldBeMember);
+    updateUserGroup(user, group, shouldBeMember);
   }
 
   // Check which system groups the user should be member of
   for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
-    updateUserGroup(user, mySystemGroups[i], myUserGroups.size()+i, licqUser->GetInGroup(GROUPS_SYSTEM, i));
+    updateUserGroup(user, mySystemGroups[i], licqUser->GetInGroup(GROUPS_SYSTEM, i));
   }
 }
 
-void ContactListModel::updateUserGroup(ContactUserData* user, ContactGroup* group, int groupRow, bool shouldBeMember)
+void ContactListModel::updateUserGroup(ContactUserData* user, ContactGroup* group, bool shouldBeMember)
 {
   ContactUser* member = group->user(user);
 
@@ -339,21 +370,11 @@ void ContactListModel::updateUserGroup(ContactUserData* user, ContactGroup* grou
   if ((member != 0) == shouldBeMember)
     return;
 
+  // Adding or removing the user is enough here, signals will be sent from group
   if (shouldBeMember)
-  {
-    // Add user to group
-    beginInsertRows(createIndex(groupRow, 0, group), group->rowCount(), group->rowCount());
     new ContactUser(user, group);
-    endInsertRows();
-  }
   else
-  {
-    // Remove user from the group
-    int index = group->indexOf(member);
-    beginRemoveRows(createIndex(groupRow, 0, group), index, index);
     delete member;
-    endRemoveRows();
-  }
 }
 
 void ContactListModel::removeUser(QString id, unsigned long ppid)
@@ -366,8 +387,7 @@ void ContactListModel::removeUser(QString id, unsigned long ppid)
   {
     ContactGroup* group = u->group();
     int pos = group->indexOf(u);
-    int groupRow = (group->groupId() < SystemGroupOffset ? myUserGroups.indexOf(group) : myUserGroups.size() + group->groupId() - SystemGroupOffset);
-    beginRemoveRows(createIndex(groupRow, 0, group), pos, pos);
+    beginRemoveRows(createIndex(groupRow(group), 0, group), pos, pos);
     delete u;
     endRemoveRows();
   }
@@ -435,8 +455,7 @@ QModelIndex ContactListModel::parent(const QModelIndex& index) const
     default:
       return QModelIndex();
   }
-  int groupRow = (group->groupId() < SystemGroupOffset ? myUserGroups.indexOf(group) : myUserGroups.size() + group->groupId() - SystemGroupOffset);
-  return createIndex(groupRow, 0, group);
+  return createIndex(groupRow(group), 0, group);
 }
 
 int ContactListModel::rowCount(const QModelIndex& parent) const

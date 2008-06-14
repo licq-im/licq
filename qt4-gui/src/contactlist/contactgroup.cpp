@@ -132,27 +132,41 @@ int ContactGroup::indexOf(ContactUser* user) const
 
 void ContactGroup::addUser(ContactUser* user, ContactListModel::SubGroupType subGroup)
 {
+  // Signal that we are about to add a row
+  emit beginInsert(this, rowCount());
+
   myUsers.append(user);
   if (user->visibility())
     myVisibleContacts++;
   myBars[subGroup]->countIncrease();
   myEvents += user->numEvents();
   myBars[subGroup]->updateNumEvents(user->numEvents());
-  emit barDataChanged(myBars[subGroup], subGroup);
 
+  // Signal that we're done adding
+  emit endInsert();
+
+  // Update group and bar as counters may have changed
+  emit barDataChanged(myBars[subGroup], subGroup);
   emit dataChanged(this);
 }
 
 void ContactGroup::removeUser(ContactUser* user, ContactListModel::SubGroupType subGroup)
 {
+  // Signal that we are about to remove a row
+  emit beginRemove(this, indexOf(user));
+
   myUsers.removeAll(user);
   if (user->visibility())
     myVisibleContacts--;
   myBars[subGroup]->countDecrease();
   myEvents -= user->numEvents();
   myBars[subGroup]->updateNumEvents(-user->numEvents());
-  emit barDataChanged(myBars[subGroup], subGroup);
 
+  // Signal that we're done removing
+  emit endRemove();
+
+  // Update group and bar as counters may have changed
+  emit barDataChanged(myBars[subGroup], subGroup);
   emit dataChanged(this);
 }
 
