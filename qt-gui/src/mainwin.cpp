@@ -528,6 +528,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqConf.ReadNum("AutoAwayMess", autoAwayMess, 0);
   licqConf.ReadNum("AutoNAMess", autoNAMess, 0);
 
+  unsigned short groupType;
+  licqConf.ReadNum("GroupId", m_nCurrentGroup, 0);
+  licqConf.ReadNum("GroupType", groupType, GROUPS_USER);
+  m_nGroupType = static_cast<GroupType>(groupType);
+
   licqConf.SetSection("functions");
   licqConf.ReadBool("AutoClose", m_bAutoClose, true);
   licqConf.ReadBool("AutoPopup", m_bAutoPopup, false);
@@ -539,9 +544,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     if(!static_cast<CLicqGui*>(qApp)->grabKey(m_MsgAutopopupKey))
        gLog.Error("%sUnknown popup key: %s\n", L_INITxSTR, szTemp);
   }
-
-  m_nCurrentGroup = gUserManager.DefaultGroup();
-  m_nGroupType = GROUPS_USER;
 
   // load up position and size from file
   licqConf.SetSection("geometry");
@@ -3426,6 +3428,8 @@ void CMainWindow::saveOptions()
   licqConf.WriteNum("AutoOffline", autoOfflineTime);
   licqConf.WriteNum("AutoAwayMess", autoAwayMess);
   licqConf.WriteNum("AutoNAMess", autoNAMess);
+  licqConf.WriteNum("GroupId", m_nCurrentGroup);
+  licqConf.WriteNum("GroupType", static_cast<unsigned short>(m_nGroupType));
 
   licqConf.SetSection("functions");
   licqConf.WriteBool("AutoClose", m_bAutoClose);

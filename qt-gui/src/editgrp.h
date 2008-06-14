@@ -28,7 +28,6 @@ class QLineEdit;
 class QGroupBox;
 class QPushButton;
 
-class CInfoField;
 class CSignalManager;
 
 class EditGrpDlg : public QWidget
@@ -40,10 +39,9 @@ protected:
   QListBox *lstGroups;
   QGroupBox *grpGroups;
   QPushButton *btnAdd, *btnRemove, *btnUp, *btnDown, *btnDone, *btnEdit,
-              *btnDefault, *btnNewUser, *btnSave;
+              *btnSave;
 
   QLineEdit *edtName;
-  CInfoField *nfoDefault, *nfoNewUser;
 
   void RefreshList();
 
@@ -55,8 +53,6 @@ protected slots:
   void slot_edit();
   void slot_editok();
   void slot_editcancel();
-  void slot_default();
-  void slot_newuser();
 signals:
   void signal_updateGroups();
 

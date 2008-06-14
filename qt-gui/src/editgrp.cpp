@@ -57,32 +57,11 @@ EditGrpDlg::EditGrpDlg(CSignalManager* signalManager, QWidget *parent)
   btnDown = new QPushButton(tr("Shift Down"), grpGroups);
   btnEdit = new QPushButton(tr("Edit Name"), grpGroups);
   QWhatsThis::add(btnEdit, tr("Edit group name (hit enter to save)."));
-  btnDefault = new QPushButton(tr("Set Default"), grpGroups);
-  QString defaultWhatsThis = tr("The default group to start up in.");
-  QWhatsThis::add(btnDefault, defaultWhatsThis);
-  btnNewUser = new QPushButton(tr("Set New Users"), grpGroups);
-  QString newUserWhatsThis
-      = tr("The group to which new users will be automatically added.  "
-           "All new users will be in the local system group New Users "
-           "but for server side storage will also be stored in the "
-           "specified group.");
-  QWhatsThis::add(btnNewUser, newUserWhatsThis);
   vlay->addWidget(btnAdd);
   vlay->addWidget(btnRemove);
   vlay->addWidget(btnUp);
   vlay->addWidget(btnDown);
   vlay->addWidget(btnEdit);
-  vlay->addWidget(btnDefault);
-  vlay->addWidget(btnNewUser);
-
-  glay->addWidget(new QLabel(tr("Default:"), grpGroups), 1, 0);
-  nfoDefault = new CInfoField(grpGroups, true);
-  QWhatsThis::add(nfoDefault, defaultWhatsThis);
-  glay->addMultiCellWidget(nfoDefault, 1, 1, 1, 2);
-  glay->addWidget(new QLabel(tr("New User:"), grpGroups), 2, 0);
-  nfoNewUser = new CInfoField(grpGroups, true);
-  QWhatsThis::add(nfoNewUser, newUserWhatsThis);
-  glay->addMultiCellWidget(nfoNewUser, 2, 2, 1, 2);
 
   edtName = new QLineEdit(grpGroups);
   edtName->setEnabled(false);
@@ -109,8 +88,6 @@ EditGrpDlg::EditGrpDlg(CSignalManager* signalManager, QWidget *parent)
   connect(btnRemove, SIGNAL(clicked()), this, SLOT(slot_remove()));
   connect(btnUp, SIGNAL(clicked()), this, SLOT(slot_up()));
   connect(btnDown, SIGNAL(clicked()), this, SLOT(slot_down()));
-  connect(btnDefault, SIGNAL(clicked()), this, SLOT(slot_default()));
-  connect(btnNewUser, SIGNAL(clicked()), this, SLOT(slot_newuser()));
   connect(btnEdit, SIGNAL(clicked()), this, SLOT(slot_edit()));
   connect(btnDone, SIGNAL(clicked()), this, SLOT(close()));
   connect(edtName, SIGNAL(returnPressed()), this, SLOT(slot_editok()));
@@ -141,27 +118,11 @@ void EditGrpDlg::RefreshList()
   lstGroups->clear();
   myGroupIds.clear();
 
-  const QString allUsers = Strings::getSystemGroupName(GROUP_ALL_USERS);
-
-  lstGroups->insertItem(allUsers);
-  myGroupIds.push_back(0);
-
-  if (gUserManager.DefaultGroup() == GROUP_ALL_USERS)
-    nfoDefault->setText(allUsers);
-  if (gUserManager.NewUserGroup() == GROUP_ALL_USERS)
-    nfoNewUser->setText(allUsers);
-
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
     QString name = QString::fromLocal8Bit(pGroup->name().c_str());
     lstGroups->insertItem(name);
     myGroupIds.push_back(pGroup->id());
-
-    if (gUserManager.DefaultGroup() == pGroup->id())
-      nfoDefault->setText(name);
-
-    if (gUserManager.NewUserGroup() == pGroup->id())
-      nfoNewUser->setText(name);
   }
   FOR_EACH_GROUP_END
 
@@ -245,18 +206,6 @@ void EditGrpDlg::slot_up()
 void EditGrpDlg::slot_down()
 {
   moveGroup(1);
-}
-
-void EditGrpDlg::slot_default()
-{
-  gUserManager.SetDefaultGroup(currentGroupId());
-  RefreshList();
-}
-
-void EditGrpDlg::slot_newuser()
-{
-  gUserManager.SetNewUserGroup(currentGroupId());
-  RefreshList();
 }
 
 void EditGrpDlg::slot_edit()
