@@ -57,7 +57,6 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
 
   QLabel* lblGroup = new QLabel(tr("&Group:"));
   myGroup = new GroupComboBox();
-  myGroup->setCurrentGroupId(gUserManager.NewUserGroup());
   lblGroup->setBuddy(myGroup);
 
   layDialog->addWidget(lblGroup, line, 0);
@@ -102,28 +101,24 @@ void AddUserDlg::ok()
     ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_W);
 
     if (u == NULL)
-    {
-      unsigned short currentNewGroup = gUserManager.NewUserGroup();
-      gUserManager.SetNewUserGroup(group);
       added = gLicqDaemon->AddUserToList(id, ppid);
-      gUserManager.SetNewUserGroup(currentNewGroup);
-    }
     else
     {
       if (u->NotInList())
       {
         u->SetPermanent();
-        gUserManager.DropUser(u);
-        gUserManager.AddUserToGroup(id, ppid, group);
         added = true;
       }
-      else
-        gUserManager.DropUser(u);
+      gUserManager.DropUser(u);
     }
   }
 
-  if (added && notify && ppid == LICQ_PPID)
-    gLicqDaemon->icqAlertUser(id.toULong());
+  if (added)
+  {
+    gUserManager.SetUserInGroup(id, ppid, GROUPS_USER, group, true, true);
+    if (notify && ppid == LICQ_PPID)
+      gLicqDaemon->icqAlertUser(id.toULong());
+  }
 
   close();
 }
