@@ -67,8 +67,10 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadNum("Flash", flash, FlashUrgent);
   myFlash = static_cast<FlashMode>(flash);
 
-  myGroupId = gUserManager.DefaultGroup();
-  myGroupType = GROUPS_USER;
+  unsigned short groupType;
+  iniFile.ReadNum("StartUpGroupId", myGroupId, 0);
+  iniFile.ReadNum("StartUpGroupType", groupType, GROUPS_USER);
+  myGroupType = static_cast<GroupType>(groupType);
 
   iniFile.ReadNum("NumColumns", myColumnCount, 1);
   for (unsigned short i = 0; i < myColumnCount; i++)
@@ -127,6 +129,8 @@ void Config::ContactList::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteNum("Flash", static_cast<unsigned short>(myFlash));
   iniFile.WriteBool("ScrollBar", myAllowScrollBar);
   iniFile.WriteBool("SystemBackground", myUseSystemBackground);
+  iniFile.WriteNum("StartUpGroupId", myGroupId);
+  iniFile.WriteNum("StartUpGroupType", static_cast<unsigned short>(myGroupType));
 
   iniFile.WriteNum("NumColumns", myColumnCount);
   for (unsigned short i = 0; i < myColumnCount; i++)
