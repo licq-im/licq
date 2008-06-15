@@ -170,9 +170,10 @@ public:
   /*!
       \param szId The user ID to add.
       \param nPPID The user's protocol plugin ID.
+      \param groupId The group id to add the user into.
       \param _bAuthRequired True if we need to get authorization first.
   */
-  void ProtoAddUser(const char *szId, unsigned long nPPID, bool _bAuthRequired = false);
+  void ProtoAddUser(const char *szId, unsigned long nPPID, bool _bAuthRequired = false, unsigned short groupId = 0);
 
   //! Remove a user from the local contact list.
   /*!
@@ -453,8 +454,8 @@ public:
   void icqAlertUser(unsigned long _nUin);
   void icqAlertUser(const char* id, unsigned long ppid);
   void icqAddUser(unsigned long _nUin, bool _bAuthReq = false);
-  void icqAddUser(const char *_szId, bool _bAuthReq = false);
-  void icqAddUserServer(const char *_szId, bool _bAuthReq);
+  void icqAddUser(const char *_szId, bool _bAuthReq = false, unsigned short groupId = 0);
+  void icqAddUserServer(const char *_szId, bool _bAuthReq, unsigned short groupId = 0);
   void icqAddUserServer(unsigned long _nUin, bool _bAuthReq);
   void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
@@ -570,7 +571,7 @@ public:
   void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
 
   bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true,
-                     bool bTempUser = false);
+                     bool bTempUser = false, unsigned short groupId = 0);
   bool AddUserToList(unsigned long _nUin, bool bNotify = true);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);

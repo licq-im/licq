@@ -1165,7 +1165,7 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
 }
                                     
 bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
-                               bool bNotify, bool bTempUser)
+                               bool bNotify, bool bTempUser, unsigned short groupId)
 {
   // Don't add invalid uins
   if (szId == 0 || nPPID == 0) return false;
@@ -1185,11 +1185,11 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
 
   // this notify is for local only adds
   if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify && !bTempUser)
-    icqAddUser(szId);
+    icqAddUser(szId, false, groupId);
   else if (nPPID != LICQ_PPID && bNotify)
     PushProtoSignal(new CAddUserSignal(szId, false), nPPID);
   
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID));
+  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID, groupId));
 
   return true;
 }

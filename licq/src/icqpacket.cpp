@@ -2976,9 +2976,9 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
             // Use the first group the user is in as the server stored group
             {
               const UserGroupList& userGroups = u->GetGroups();
-              for (UserGroupList::iterator i = userGroups.begin(); i != userGroups.end(); ++i)
+              for (UserGroupList::iterator iter = userGroups.begin(); iter != userGroups.end(); ++iter)
               {
-                m_nGSID = gUserManager.GetIDFromGroup(*i);
+                m_nGSID = gUserManager.GetIDFromGroup(*iter);
                 if (m_nGSID != 0)
                   break;
               }

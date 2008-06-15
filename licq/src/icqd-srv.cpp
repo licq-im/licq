@@ -45,16 +45,16 @@
 using namespace std;
 
 void CICQDaemon::ProtoAddUser(const char *_szId, unsigned long _nPPID,
-                              bool _bAuthRequired)
+                              bool _bAuthRequired, unsigned short groupId)
 {
   if (_nPPID == LICQ_PPID)
-    icqAddUser(_szId, _bAuthRequired);
+    icqAddUser(_szId, _bAuthRequired, groupId);
   else
     PushProtoSignal(new CAddUserSignal(_szId, _bAuthRequired), _nPPID);
 }
 
 //-----icqAddUser----------------------------------------------------------
-void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired)
+void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned short groupId)
 {
   CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
   gLog.Info(tr("%sAlerting server to new user (#%hu)...\n"), L_SRVxSTR,
@@ -80,7 +80,8 @@ void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bAuthRequired)
 
 
 //-----icqAddUserServer--------------------------------------------------------
-void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired)
+void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired,
+    unsigned short groupId)
 {
   CSrvPacketTcp *pStart = 0;
 
@@ -94,7 +95,7 @@ void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired)
   SendEvent_Server(pStart);
 
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxNORMAL,
-    0, _bAuthRequired);
+    groupId, _bAuthRequired);
   gLog.Info(tr("%sAdding %s to server list...\n"), L_SRVxSTR, _szId);
   addToModifyUsers(pAdd->SubSequence(), _szId);
   SendExpectEvent_Server(pAdd, NULL);
