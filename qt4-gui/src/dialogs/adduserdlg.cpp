@@ -117,7 +117,7 @@ void AddUserDlg::ok()
   {
     gUserManager.SetUserInGroup(id, ppid, GROUPS_USER, group, true, true);
     if (notify && ppid == LICQ_PPID)
-      gLicqDaemon->icqAlertUser(id.toULong());
+      gLicqDaemon->icqAlertUser(id, ppid);
   }
 
   close();
