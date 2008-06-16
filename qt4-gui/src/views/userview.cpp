@@ -87,10 +87,6 @@ void UserView::updateRootIndex()
 
   QModelIndex newRoot = QModelIndex();
 
-  // All Users group is considered to be a System Group
-  if (groupId == GROUP_ALL_USERS && groupType != GROUPS_SYSTEM)
-    groupType = GROUPS_SYSTEM;
-
   if (threadView && groupId == GROUP_ALL_USERS)
   {
     // Hide the system groups that exist in the model but should not be displayed in threaded view

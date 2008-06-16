@@ -389,7 +389,7 @@ void SystemMenu::aboutToShowFollowMeMenu()
 void SystemMenu::aboutToShowGroupMenu()
 {
   int gid = Config::ContactList::instance()->groupId();
-  if (Config::ContactList::instance()->groupType() == GROUPS_SYSTEM || gid == 0)
+  if (Config::ContactList::instance()->groupType() == GROUPS_SYSTEM)
     gid += ContactListModel::SystemGroupOffset;
 
   foreach (QAction* a, myUserGroupActions->actions())
@@ -426,9 +426,7 @@ void SystemMenu::setCurrentGroup(QAction* action)
 {
   int id = action->data().toInt();
 
-  if (id == ContactListModel::SystemGroupOffset)
-    Config::ContactList::instance()->setGroup(GROUPS_USER, 0);
-  else if (id < ContactListModel::SystemGroupOffset)
+  if (id < ContactListModel::SystemGroupOffset)
     Config::ContactList::instance()->setGroup(GROUPS_USER, id);
   else
     Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, id - ContactListModel::SystemGroupOffset);

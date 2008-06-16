@@ -118,10 +118,6 @@ void MMUserView::addCurrentGroup()
   GroupType groupType = Config::ContactList::instance()->groupType();
   unsigned long groupId = Config::ContactList::instance()->groupId();
 
-  // User group 0 in mainwin means all users but that is system group 0 in model
-  if (groupType == GROUPS_USER && groupId == GROUP_ALL_USERS)
-    groupType = GROUPS_SYSTEM;
-
   dynamic_cast<MultiContactProxy*>(myListProxy)->addGroup(groupType, groupId);
 
   // Make sure current user isn't added

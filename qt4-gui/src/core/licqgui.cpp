@@ -747,7 +747,7 @@ bool LicqGui::removeUserFromGroup(GroupType gtype, unsigned long group,
   if (gtype == GROUPS_USER)
   {
     if (group == 0)
-      return removeUserFromList(id, ppid, parent);
+      return true;
     else
     {
       ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
@@ -774,7 +774,7 @@ bool LicqGui::removeUserFromGroup(GroupType gtype, unsigned long group,
   else if (gtype == GROUPS_SYSTEM)
   {
     if (group == 0)
-      return true;
+      return removeUserFromList(id, ppid, parent);
     ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_W);
     if (u == NULL)
       return true;
