@@ -737,19 +737,17 @@ void MainWindow::updateEvents()
     LicqGui::instance()->dockIcon()->updateIconMessages(nNumUserEvents, nNumOwnerEvents);
 }
 
-void MainWindow::setCurrentGroup(int groupId)
+void MainWindow::setCurrentGroup(int index)
 {
+  unsigned short groupId = myUserGroupsBox->itemData(index).toUInt();
   GroupType groupType = GROUPS_USER;
-  unsigned short nNumGroups = gUserManager.NumGroups();
-
-  if (groupId > nNumGroups)
+  if (groupId >= ContactListModel::SystemGroupOffset)
   {
-    groupId -= nNumGroups;
     groupType = GROUPS_SYSTEM;
+    groupId -= ContactListModel::SystemGroupOffset;
   }
 
   Config::ContactList::instance()->setGroup(groupType, groupId);
-  updateCurrentGroup();
 }
 
 void MainWindow::updateCurrentGroup()
@@ -757,13 +755,14 @@ void MainWindow::updateCurrentGroup()
   GroupType groupType = Config::ContactList::instance()->groupType();
   int group = Config::ContactList::instance()->groupId();
 
-  unsigned short nNumGroups = gUserManager.NumGroups();
-
   if (groupType == GROUPS_SYSTEM)
-    group += nNumGroups;
+    group += ContactListModel::SystemGroupOffset;
 
   // Update the combo box
-  myUserGroupsBox->setCurrentIndex(group);
+  int index = myUserGroupsBox->findData(group);
+  if (index == -1)
+    return;
+  myUserGroupsBox->setCurrentIndex(index);
 
   // Update the msg label if necessary
   if (myMessageField != NULL &&
@@ -782,16 +781,18 @@ void MainWindow::updateGroups(bool initial)
 
   // update the combo box
   myUserGroupsBox->clear();
-  myUserGroupsBox->addItem(LicqStrings::getSystemGroupName(GROUP_ALL_USERS));
+  myUserGroupsBox->addItem(LicqStrings::getSystemGroupName(GROUP_ALL_USERS),
+      ContactListModel::SystemGroupOffset);
 
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
-    myUserGroupsBox->addItem(QString::fromLocal8Bit(pGroup->name().c_str()));
+    myUserGroupsBox->addItem(QString::fromLocal8Bit(pGroup->name().c_str()), pGroup->id());
   }
   FOR_EACH_GROUP_END
 
   for (unsigned short i = 1; i < NUM_GROUPS_SYSTEM_ALL; i++)
-    myUserGroupsBox->addItem(LicqStrings::getSystemGroupName(i));
+    myUserGroupsBox->addItem(LicqStrings::getSystemGroupName(i),
+        ContactListModel::SystemGroupOffset + i);
 
   updateCurrentGroup();
 }

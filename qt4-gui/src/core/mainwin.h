@@ -135,7 +135,14 @@ private slots:
   void updateSkin();
   void updateEvents();
   void updateStatus(CICQSignal* = NULL);
-  void setCurrentGroup(int);
+
+  /**
+   * Groups combo box was changed to show a new group
+   *
+   * @param index Combo box index of selected item
+   */
+  void setCurrentGroup(int index);
+
   //TODO
   //void callUserFunction(QString id, unsigned long ppid);
   void slot_logon();
