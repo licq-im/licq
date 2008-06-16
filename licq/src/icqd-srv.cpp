@@ -270,32 +270,46 @@ void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
                                 unsigned short _nNewGroup, unsigned short _nOldGSID,
                                 unsigned short _nNewType, unsigned short _nOldType)
 {
-  if (!UseServerContactList())  return;
+  if (!UseServerContactList())
+    return;
+
+  if (_nNewGroup == 0)
+  {
+    gLog.Warn(tr("%sProtocol prohibits for users to be in the root group.\n"
+                 "%sAborting group change attempt for %s.\n"),
+        L_SRVxSTR, L_BLANKxSTR, _szId);
+    return;
+  }
 
   // Get their old SID
-  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
+  ICQUser* u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
+  char* alias = u->GetAlias();
   int nSID = u->GetSID();
   gUserManager.DropUser(u);
 
-  gLog.Info(tr("%sChanging group on server list for %s ...\n"), L_SRVxSTR, _szId);
+  gLog.Info(tr("%sChanging group on server list for %s (%s)...\n"),
+      L_SRVxSTR, alias, _szId);
 
   // Start transaction
-  CSrvPacketTcp *pStart = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
-                                                ICQ_SNACxLIST_ROSTxEDITxSTART);
+  CSrvPacketTcp* pStart =
+    new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxEDITxSTART);
   SendEvent_Server(pStart);
 
   // Delete the user
-  CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, _nOldGSID,
-                                                        nSID, _nOldType);
-  addToModifyUsers(pRemove->SubSequence(), _szId);
-  SendExpectEvent_Server(pRemove, NULL);
+  if (_nOldGSID != 0)
+  {
+    // Don't attempt removing users from the root group, they can't be there
+    CSrvPacketTcp* pRemove =
+      new CPU_RemoveFromServerList(_szId, _nOldGSID, nSID, _nOldType);
+    addToModifyUsers(pRemove->SubSequence(), _szId);
+    SendExpectEvent_Server(pRemove, NULL);
+  }
 
   // Add the user, with the new group
-  CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, _nNewType,
-                                                      _nNewGroup);
+  CPU_AddToServerList* pAdd =
+    new CPU_AddToServerList(_szId, _nNewType, _nNewGroup);
   addToModifyUsers(pAdd->SubSequence(), _szId);
   SendExpectEvent_Server(pAdd, NULL);
-
 }
 
 //-----icqExportGroups----------------------------------------------------------
