@@ -168,7 +168,7 @@ void ContactUserData::updateAll(ICQUser* u)
   myCustomAR = u->CustomAutoResponse()[0] != '\0';
   mySecure = u->Secure();
   myUrgent = false;
-  myBirthday =  (u->Birthday() == 0);
+  myBirthday = (u->Birthday() == 0);
   myPhone = u->GetPhoneNumber()[0] != '\0';
   myCellular = u->GetCellularNumber()[0] != '\0';
   myGPGKey = (u->GPGKey() != 0) && (strcmp(u->GPGKey(), "") != 0);
@@ -185,6 +185,23 @@ void ContactUserData::updateAll(ICQUser* u)
   myNewMessages = u->NewMessages();
 
   updateExtendedStatus();
+
+  // Set sub group to put user in
+  ContactListModel::SubGroupType newSubGroup = ContactListModel::OnlineSubGroup;
+
+  if (myNotInList)
+    newSubGroup = ContactListModel::NotInListSubGroup;
+
+  else if (myStatus == ICQ_STATUS_OFFLINE)
+    newSubGroup = ContactListModel::OfflineSubGroup;
+
+  // If status has changed update the sub groups of all groups
+  if (newSubGroup != mySubGroup)
+  {
+    foreach (ContactUser* user, myUserInstances)
+      user->group()->updateSubGroup(mySubGroup, newSubGroup, myEvents);
+    mySubGroup = newSubGroup;
+  }
 
   if (myEvents != u->NewMessages())
   {
@@ -258,23 +275,6 @@ void ContactUserData::updateAll(ICQUser* u)
       myFlashCounter = false;
       startAnimation();
     }
-  }
-
-  // Set sub group to put user in
-  ContactListModel::SubGroupType newSubGroup = ContactListModel::OnlineSubGroup;
-
-  if (u->NotInList())
-    newSubGroup = ContactListModel::NotInListSubGroup;
-
-  else if (myStatus == ICQ_STATUS_OFFLINE)
-    newSubGroup = ContactListModel::OfflineSubGroup;
-
-  // If status has changed update the sub groups of all groups
-  if (newSubGroup != mySubGroup)
-  {
-    foreach (ContactUser* user, myUserInstances)
-      user->group()->updateSubGroup(mySubGroup, newSubGroup, myEvents);
-    mySubGroup = newSubGroup;
   }
 
   updateSorting();
