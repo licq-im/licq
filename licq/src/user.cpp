@@ -1557,13 +1557,17 @@ void CUserManager::UnlockOwnerList()
 void CUserManager::SetUserInGroup(const char* id, unsigned long ppid,
     GroupType groupType, unsigned short groupId, bool inGroup, bool updateServer)
 {
+  // User group 0 is invalid and system group 0 is All Users
+  if (groupId == 0)
+    return;
+
   ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_W);
   if (u == NULL)
     return;
 
   int gsid = u->GetGSID();
 
-  if (!inGroup && u->GetSID() != 0 && GetGroupFromID(gsid) == groupId)
+  if (groupType == GROUPS_USER && !inGroup && u->GetSID() != 0 && GetGroupFromID(gsid) == groupId)
   {
     // Don't remove user from local group if member of the same server group
     gUserManager.DropUser(u);
