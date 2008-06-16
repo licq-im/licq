@@ -541,7 +541,7 @@ QModelIndex ContactListModel::groupIndex(GroupType type, unsigned long id) const
   {
     return createIndex(myUserGroups.size() + id, 0, mySystemGroups[id]);
   }
-  else if (type == GROUPS_USER && static_cast<int>(id) < myUserGroups.size())
+  else if (type == GROUPS_USER)
   {
     for (int i = 0; i < myUserGroups.size(); ++i)
     {
