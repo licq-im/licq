@@ -44,8 +44,9 @@ ContactListModel::ContactListModel(QObject* parent)
   // Create the system groups
   for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
-    mySystemGroups[i] = createGroup(SystemGroupOffset + i,
+    mySystemGroups[i] = new ContactGroup(SystemGroupOffset + i,
         LicqStrings::getSystemGroupName(i));
+    connectGroup(mySystemGroups[i]);
   }
 
   // Get the entire contact list from the daemon
@@ -55,9 +56,8 @@ ContactListModel::ContactListModel(QObject* parent)
       SLOT(configUpdated()));
 }
 
-ContactGroup* ContactListModel::createGroup(unsigned short id, QString name)
+void ContactListModel::connectGroup(ContactGroup* group)
 {
-  ContactGroup* group = new ContactGroup(id, name);
   connect(group, SIGNAL(dataChanged(ContactGroup*)),
       SLOT(groupDataChanged(ContactGroup*)));
   connect(group, SIGNAL(barDataChanged(ContactBar*, int)),
@@ -68,7 +68,6 @@ ContactGroup* ContactListModel::createGroup(unsigned short id, QString name)
   connect(group, SIGNAL(beginRemove(ContactGroup*, int)),
       SLOT(groupBeginRemove(ContactGroup*, int)));
   connect(group, SIGNAL(endRemove()), SLOT(groupEndRemove()));
-  return group;
 }
 
 ContactListModel::~ContactListModel()
@@ -112,7 +111,8 @@ void ContactListModel::listUpdated(CICQSignal* sig)
       // Set inital expanded state for new group
       Config::ContactList::instance()->setGroupState(gid, true);
 
-      ContactGroup* newGroup = createGroup(gid);
+      ContactGroup* newGroup = new ContactGroup(gid);
+      connectGroup(newGroup);
       beginInsertRows(QModelIndex(), myUserGroups.size(), myUserGroups.size());
       myUserGroups.append(newGroup);
       endInsertRows();
@@ -286,16 +286,14 @@ void ContactListModel::reloadAll()
   myColumnCount = Config::ContactList::instance()->columnCount();
 
   // Add all groups
-  ContactGroup* newGroup = createGroup(0, tr("Other Users"));
+  ContactGroup* newGroup = new ContactGroup(0, tr("Other Users"));
+  connectGroup(newGroup);
   myUserGroups.append(newGroup);
 
   FOR_EACH_GROUP_START(LOCK_R)
   {
     ContactGroup* group = new ContactGroup(pGroup);
-    connect(group, SIGNAL(dataChanged(ContactGroup*)),
-        SLOT(groupDataChanged(ContactGroup*)));
-    connect(group, SIGNAL(barDataChanged(ContactBar*, int)),
-        SLOT(barDataChanged(ContactBar*, int)));
+    connectGroup(group);
     myUserGroups.append(group);
   }
   FOR_EACH_GROUP_END
