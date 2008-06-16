@@ -98,14 +98,17 @@ void AddUserDlg::ok()
 
   if (!id.isEmpty())
   {
-    ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_W);
+    ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
 
     if (u == NULL)
-      added = gLicqDaemon->AddUserToList(id, ppid);
+      added = gLicqDaemon->AddUserToList(id, ppid, true, false, group);
     else
     {
       if (u->NotInList())
       {
+        u->Unlock();
+        gUserManager.SetUserInGroup(id, ppid, GROUPS_USER, group, true, true);
+        u->Lock(LOCK_W);
         u->SetPermanent();
         added = true;
       }
@@ -113,12 +116,8 @@ void AddUserDlg::ok()
     }
   }
 
-  if (added)
-  {
-    gUserManager.SetUserInGroup(id, ppid, GROUPS_USER, group, true, true);
-    if (notify && ppid == LICQ_PPID)
-      gLicqDaemon->icqAlertUser(id, ppid);
-  }
+  if (added && notify)
+    gLicqDaemon->icqAlertUser(id, ppid);
 
   close();
 }
