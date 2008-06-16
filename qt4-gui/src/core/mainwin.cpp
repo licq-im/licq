@@ -739,7 +739,6 @@ void MainWindow::updateEvents()
 
 void MainWindow::setCurrentGroup(int groupId)
 {
-//TODO: This is bugged
   GroupType groupType = GROUPS_USER;
   unsigned short nNumGroups = gUserManager.NumGroups();
 
