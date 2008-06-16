@@ -738,58 +738,6 @@ bool LicqGui::removeUserFromList(QString id, unsigned long ppid, QWidget* parent
   return false;
 }
 
-bool LicqGui::removeUserFromGroup(GroupType gtype, unsigned long group,
-    QString id, unsigned long ppid, QWidget* parent)
-{
-  if (parent == NULL)
-    parent = myMainWindow;
-
-  if (gtype == GROUPS_USER)
-  {
-    if (group == 0)
-      return true;
-    else
-    {
-      ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
-      if (u == NULL)
-        return true;
-      LicqGroup* g = gUserManager.FetchGroup(group, LOCK_R);
-      if (g == NULL)
-      {
-        gUserManager.DropUser(u);
-        return true;
-      }
-      QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom the '%3' group?")
-          .arg(QString::fromUtf8(u->GetAlias()))
-          .arg(u->IdString()).arg(QString::fromLocal8Bit(g->name().c_str())));
-      gUserManager.DropGroup(g);
-      gUserManager.DropUser(u);
-      if (QueryYesNo(parent, warning))
-      {
-        gUserManager.RemoveUserFromGroup(id.toLatin1(), ppid, group);
-        return true;
-      }
-    }
-  }
-  else if (gtype == GROUPS_SYSTEM)
-  {
-    if (group == 0)
-      return removeUserFromList(id, ppid, parent);
-    ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_W);
-    if (u == NULL)
-      return true;
-    u->RemoveFromGroup(GROUPS_SYSTEM, group);
-    gUserManager.DropUser(u);
-
-    // The daemon does not send an update when group membership changes
-    // so tell the contactList it needs to update
-    myContactList->updateUser(id, ppid);
-    return true;
-  }
-
-  return false;
-}
-
 void LicqGui::showInfoDialog(int /* fcn */, QString id, unsigned long ppid,
   bool toggle, bool updateNow)
 {

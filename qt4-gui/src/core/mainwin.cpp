@@ -501,14 +501,26 @@ void MainWindow::removeUserFromList()
 
 void MainWindow::removeUserFromGroup()
 {
+  GroupType gtype = Config::ContactList::instance()->groupType();
+  unsigned short gid = Config::ContactList::instance()->groupId();
+
+  // Removing "All users" is the same as removing user from the list
+  if (gtype == GROUPS_SYSTEM && gid == 0)
+  {
+    removeUserFromList();
+    return;
+  }
+
+  // Removing user from "Other users" is not allowed
+  if (gtype == GROUPS_USER && gid == 0)
+    return;
+
+  // Get currently selected user
   QString id;
   unsigned long ppid = 0;
   myUserView->MainWindowSelectedItemUser(id, ppid);
 
-  LicqGui::instance()->removeUserFromGroup(
-      Config::ContactList::instance()->groupType(),
-      Config::ContactList::instance()->groupId(),
-      id, ppid, this);
+  gUserManager.SetUserInGroup(id.toLatin1(), ppid, GROUPS_USER, gid, false);
 }
 
 void MainWindow::callUserFunction(QAction* action)
@@ -727,6 +739,7 @@ void MainWindow::updateEvents()
 
 void MainWindow::setCurrentGroup(int groupId)
 {
+//TODO: This is bugged
   GroupType groupType = GROUPS_USER;
   unsigned short nNumGroups = gUserManager.NumGroups();
 

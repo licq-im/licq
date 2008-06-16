@@ -108,19 +108,6 @@ public:
   bool removeUserFromList(QString id, unsigned long ppid, QWidget* parent = NULL);
 
   /**
-   * Remove a contact from a group
-   *
-   * @param gtype Group type
-   * @param group Group id
-   * @param id Contact id
-   * @param ppid Contact protocol id
-   * @param parent Parent window to use for confirmation box or NULL to use mainwin
-   * @return true if contact was removed from group
-   */
-  bool removeUserFromGroup(GroupType gtype, unsigned long group,
-      QString id, unsigned long ppid, QWidget* parent = NULL);
-
-  /**
    * Show contact info dialog
    *
    * @param fcn Tab to show
