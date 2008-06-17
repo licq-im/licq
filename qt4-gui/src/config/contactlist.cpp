@@ -23,6 +23,7 @@
 #include "config.h"
 
 #include <licq_file.h>
+#include <licq_user.h>
 
 using namespace LicqQtGui;
 
@@ -68,9 +69,17 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   myFlash = static_cast<FlashMode>(flash);
 
   unsigned short groupType;
-  iniFile.ReadNum("StartUpGroupId", myGroupId, 0);
-  iniFile.ReadNum("StartUpGroupType", groupType, GROUPS_USER);
+  iniFile.ReadNum("StartUpGroupId", myGroupId, GROUP_ALL_USERS);
+  iniFile.ReadNum("StartUpGroupType", groupType, GROUPS_SYSTEM);
   myGroupType = static_cast<GroupType>(groupType);
+
+  if ((myGroupType == GROUPS_USER && myGroupId > gUserManager.NumGroups()) ||
+      (myGroupType == GROUPS_SYSTEM && myGroupId >= NUM_GROUPS_SYSTEM_ALL) ||
+      (myGroupType != GROUPS_USER && myGroupType != GROUPS_SYSTEM))
+  {
+    myGroupId = GROUP_ALL_USERS;
+    myGroupType = GROUPS_SYSTEM;
+  }
 
   iniFile.ReadNum("NumColumns", myColumnCount, 1);
   for (unsigned short i = 0; i < myColumnCount; i++)
