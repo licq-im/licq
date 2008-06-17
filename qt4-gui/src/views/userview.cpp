@@ -116,6 +116,9 @@ void UserView::configUpdated()
   for (unsigned short i = 0; i < Config::ContactList::instance()->columnCount(); i++)
     setColumnWidth(i, Config::ContactList::instance()->columnWidth(i));
 
+  setVerticalScrollBarPolicy(Config::ContactList::instance()->allowScrollBar() ?
+      Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff);
+
   if (Config::ContactList::instance()->showHeader())
     header()->show();
   else
