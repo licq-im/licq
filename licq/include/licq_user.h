@@ -902,8 +902,7 @@ public:
 
   // Don't call these:
   int SocketDesc(unsigned char);
-  void ClearSocketDesc();
-  void ClearSocketDesc(unsigned char);
+  void ClearSocketDesc(unsigned char nChannel = 0x00);
   void SetSocketDesc(TCPSocket *);
 
   // Events functions

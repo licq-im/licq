@@ -2763,19 +2763,6 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
   SetSendServer(false);
 }
 
-
-void ICQUser::ClearSocketDesc()
-{
-  m_nNormalSocketDesc = m_nInfoSocketDesc = m_nStatusSocketDesc = -1;
-  m_nLocalPort = 0;
-  m_nConnectionVersion = 0;
-  m_bSecure = false;
-
-  if (gLicqDaemon != NULL && m_bOnContactList)
-    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-      USER_SECURITY, m_szId, m_nPPID, 0));
-}
-
 void ICQUser::ClearSocketDesc(unsigned char nChannel)
 {
   switch (nChannel)
@@ -2789,13 +2776,22 @@ void ICQUser::ClearSocketDesc(unsigned char nChannel)
   case ICQ_CHNxSTATUS:
     m_nStatusSocketDesc = -1;
     break;
+  case 0x00: // Used as default value to clear all socket descriptors
+    m_nNormalSocketDesc = m_nInfoSocketDesc = m_nStatusSocketDesc = -1;
+    break;
   default:
     gLog.Info("%sUnknown channel %u\n", L_WARNxSTR, nChannel);
     return;
   }
-  if ((m_nStatusSocketDesc == -1) && (m_nInfoSocketDesc == -1) && (m_nNormalSocketDesc == -1))
-    ClearSocketDesc();
-  else if (gLicqDaemon != NULL && m_bOnContactList)
+
+  if (m_nStatusSocketDesc == m_nInfoSocketDesc == m_nNormalSocketDesc == -1)
+  {
+    m_nLocalPort = 0;
+    m_nConnectionVersion = 0;
+    m_bSecure = false;
+  }
+
+  if (gLicqDaemon != NULL && m_bOnContactList)
     gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_szId, m_nPPID, 0));
 }
 
