@@ -93,7 +93,10 @@ void ContactListModel::listUpdated(CICQSignal* sig)
       ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
       if (u == NULL)
       {
-        gLog.Warn("%sContactList::listUpdated(): Invalid user received: %lu, %s\n", L_ERRORxSTR, sig->PPID(), sig->Id());
+        char* ppidString = PPIDSTRING(sig->PPID());
+        gLog.Warn("%sContactList::listUpdated(): Invalid user received: %s (%s)\n",
+            L_ERRORxSTR, sig->Id(), ppidString);
+        delete[] ppidString;
         break;
       }
       addUser(u);
@@ -175,8 +178,10 @@ void ContactListModel::userUpdated(CICQSignal* sig)
   ContactUserData* user = findUser(sig->Id(), sig->PPID());
   if (user == NULL)
   {
+    char* ppidString = PPIDSTRING(sig->PPID());
     gLog.Warn("%sContactList::userUpdated(): Invalid user received: %s (%s)\n",
-        L_ERRORxSTR, sig->Id(), PPIDSTRING(sig->PPID()));
+        L_ERRORxSTR, sig->Id(), ppidString);
+    delete[] ppidString;
     return;
   }
 
