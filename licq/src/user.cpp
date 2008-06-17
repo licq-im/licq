@@ -2784,7 +2784,9 @@ void ICQUser::ClearSocketDesc(unsigned char nChannel)
     return;
   }
 
-  if (m_nStatusSocketDesc == m_nInfoSocketDesc == m_nNormalSocketDesc == -1)
+  if (m_nStatusSocketDesc == -1 &&
+      m_nInfoSocketDesc == -1 &&
+      m_nNormalSocketDesc == -1)
   {
     m_nLocalPort = 0;
     m_nConnectionVersion = 0;
