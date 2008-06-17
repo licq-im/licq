@@ -175,7 +175,8 @@ void ContactListModel::userUpdated(CICQSignal* sig)
   ContactUserData* user = findUser(sig->Id(), sig->PPID());
   if (user == NULL)
   {
-    gLog.Warn("%sContactList::userUpdated(): Invalid user received: %lu, %s\n", L_ERRORxSTR, sig->PPID(), sig->Id());
+    gLog.Warn("%sContactList::userUpdated(): Invalid user received: %s (%s)\n",
+        L_ERRORxSTR, sig->Id(), PPIDSTRING(sig->PPID()));
     return;
   }
 
