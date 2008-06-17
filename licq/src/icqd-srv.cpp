@@ -64,18 +64,18 @@ void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned sho
   // Server side list add, and update of group
   if (UseServerContactList())
   {
-    icqAddUserServer(_szId, _bAuthRequired);
+    icqAddUserServer(_szId, _bAuthRequired, groupId);
   }
 
   icqUserBasicInfo(_szId);
 }
 
-void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bAuthRequired)
+void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bAuthRequired, unsigned short groupId)
 {
   char szUin[24];
   sprintf(szUin, "%lu", _nUin);
 
-  icqAddUser(szUin, _bAuthRequired);
+  icqAddUser(szUin, _bAuthRequired, groupId);
 }
 
 
@@ -105,13 +105,14 @@ void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired,
   SendEvent_Server(pEnd);
 }
 
-void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired)
+void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired,
+    unsigned short groupId)
 {
   char szUin[13];
   snprintf(szUin, 12, "%lu", _nUin);
   szUin[12] = 0;
 
-  icqAddUserServer(szUin, _bAuthRequired);
+  icqAddUserServer(szUin, _bAuthRequired, groupId);
 }
 
 //-----CheckExport-------------------------------------------------------------

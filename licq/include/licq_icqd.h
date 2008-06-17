@@ -453,10 +453,10 @@ public:
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAlertUser(const char* id, unsigned long ppid);
-  void icqAddUser(unsigned long _nUin, bool _bAuthReq = false);
+  void icqAddUser(unsigned long _nUin, bool _bAuthReq = false, unsigned short groupId = 0);
   void icqAddUser(const char *_szId, bool _bAuthReq = false, unsigned short groupId = 0);
   void icqAddUserServer(const char *_szId, bool _bAuthReq, unsigned short groupId = 0);
-  void icqAddUserServer(unsigned long _nUin, bool _bAuthReq);
+  void icqAddUserServer(unsigned long _nUin, bool _bAuthReq, unsigned short groupId = 0);
   void icqAddGroup(const char *);
   void icqRemoveUser(unsigned long _nUin);
   void icqRemoveUser(const char *);
