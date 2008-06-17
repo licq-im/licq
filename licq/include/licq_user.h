@@ -21,6 +21,8 @@
 class TCPSocket;
 
 #define LICQ_PPID 0x4C696371  // "Licq"
+// Returned value must be cleared with delete[]
+extern char* PPIDSTRING(unsigned long ppid);
 
 /*---------------------------------------------------------------------------
  * FOR_EACH_USER
