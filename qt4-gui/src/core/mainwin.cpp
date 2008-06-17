@@ -635,8 +635,10 @@ void MainWindow::slot_updatedUser(CICQSignal* sig)
       ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
       if (u == NULL)
       {
-        gLog.Warn("%sMainWindow::slot_updatedUser(): Invalid user received: %s\n",
-          L_ERRORxSTR, id.toLatin1().data());
+        char* ppidString = PPIDSTRING(ppid);
+        gLog.Warn("%sMainWindow::slot_updatedUser(): Invalid user received: %s (%s)\n",
+          L_ERRORxSTR, id.toLatin1().data(), ppidString);
+        delete[] ppidString;
         break;
       }
 
