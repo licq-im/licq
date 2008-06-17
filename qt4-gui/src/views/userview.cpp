@@ -50,7 +50,6 @@ UserView::UserView(ContactListModel* contactList, QWidget* parent)
   // Appearance
   // Base class constructor doesn't know we overridden applySkin() so it we must call it here again
   applySkin();
-  setVerticalScrollBarPolicy(Config::ContactList::instance()->allowScrollBar() ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff);
 
   updateRootIndex();
 
