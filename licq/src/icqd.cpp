@@ -1202,14 +1202,15 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
  * \return Returns true on success, else returns false. Please note that when 
  * this call returns the user is not locked.
  */
-bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify)
+bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify, bool bTempUser,
+                               unsigned short groupId)
 {
   // Don't add invalid uins
   if (nUin == 0) return false;
 
   char szUin[24];
   sprintf(szUin, "%lu", nUin);
-  return AddUserToList(szUin, LICQ_PPID, bNotify);
+  return AddUserToList(szUin, LICQ_PPID, bNotify, bTempUser, groupId);
 }
 
 

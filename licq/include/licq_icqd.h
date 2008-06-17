@@ -572,7 +572,8 @@ public:
 
   bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true,
                      bool bTempUser = false, unsigned short groupId = 0);
-  bool AddUserToList(unsigned long _nUin, bool bNotify = true);
+  bool AddUserToList(unsigned long _nUin, bool bNotify = true,
+                     bool bTempUser = false, unsigned short groupId = 0);
   void AddUserToList(ICQUser *);
   void RemoveUserFromList(unsigned long _nUin);
   void RemoveUserFromList(const char *szId, unsigned long nPPID);
