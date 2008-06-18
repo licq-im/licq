@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <licq_message.h>
+
 #include <QTimer>
 #include <QVBoxLayout>
 
