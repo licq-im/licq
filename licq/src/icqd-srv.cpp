@@ -4587,7 +4587,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             {
               bHandled = true;
               gLog.Info(tr("%sUpdated %s successfully.\n"), L_SRVxSTR,
-                        pending.c_str());
+                  pending.empty() ? tr("top level") : pending.c_str());
                 
               if (nError == 0x0E)
               {
