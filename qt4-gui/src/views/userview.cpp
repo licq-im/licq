@@ -24,8 +24,6 @@
 #include <QHeaderView>
 #include <QMouseEvent>
 
-extern char* PPIDSTRING(unsigned long);
-
 #include "config/contactlist.h"
 #include "config/iconmanager.h"
 #include "config/skin.h"

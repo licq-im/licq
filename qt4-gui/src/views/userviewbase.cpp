@@ -23,7 +23,6 @@
 #include <QUrl>
 
 #include <licq_icqd.h>
-extern char* PPIDSTRING(unsigned long);
 
 #include "contactlist/contactlist.h"
 

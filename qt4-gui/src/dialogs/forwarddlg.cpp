@@ -33,7 +33,6 @@
 
 #include <licq_icqd.h>
 #include <licq_user.h>
-extern char* PPIDSTRING(unsigned long);
 
 #include "core/gui-defines.h"
 #include "core/messagebox.h"
