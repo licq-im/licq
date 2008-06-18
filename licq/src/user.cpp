@@ -877,7 +877,7 @@ bool CUserManager::groupExists(GroupType gtype, unsigned short groupId)
 {
   // Is it a valid system group?
   if (gtype == GROUPS_SYSTEM)
-    return (groupId <= NUM_GROUPS_SYSTEM_ALL);
+    return (groupId < NUM_GROUPS_SYSTEM_ALL);
 
   // Is it an invalid group type?
   if (gtype != GROUPS_USER)
