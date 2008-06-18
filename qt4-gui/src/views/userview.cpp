@@ -86,7 +86,7 @@ void UserView::updateRootIndex()
 
   QModelIndex newRoot = QModelIndex();
 
-  if (threadView && groupId == GROUP_ALL_USERS)
+  if (threadView && groupType == GROUPS_SYSTEM && groupId == GROUP_ALL_USERS)
   {
     // Hide the system groups that exist in the model but should not be displayed in threaded view
     dynamic_cast<MainContactListProxy*>(myListProxy)->setThreadedView(true);
