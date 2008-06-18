@@ -5,13 +5,7 @@
 #include "config.h"
 #endif
 
-#include <sys/types.h>
-#include <sys/socket.h>
 #include <netinet/in.h>
-#include <unistd.h>
-#include <strings.h>
-
-#include "licq_constants.h"
 
 // proxy types
 #define	PROXY_TYPE_HTTP	1

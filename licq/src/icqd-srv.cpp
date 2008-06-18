@@ -41,6 +41,7 @@
 #include "licq_message.h"
 #include "licq_countrycodes.h"
 #include "licq_protoplugind.h"
+#include "licq_proxy.h"
 
 using namespace std;
 

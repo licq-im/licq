@@ -1,7 +1,6 @@
 #ifndef SAR_H
 #define SAR_H
 
-#include <stdio.h>
 #include <vector>
 #include <pthread.h>
 

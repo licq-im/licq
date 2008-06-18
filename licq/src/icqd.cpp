@@ -40,6 +40,7 @@ extern int errno;
 #include "licq_translate.h"
 #include "licq_packets.h"
 #include "licq_plugind.h"
+#include "licq_proxy.h"
 #include "licq_gpg.h"    // ##
 #include "licq.h"
 #include "support.h"

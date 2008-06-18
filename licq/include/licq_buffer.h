@@ -3,7 +3,6 @@
 
 #include <cstring>
 #include <map>
-#include <vector>
 
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>

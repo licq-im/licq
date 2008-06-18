@@ -41,6 +41,7 @@ extern int h_errno;
 #include "licq_user.h"
 #include "support.h"
 #include "licq_icqd.h"
+#include "licq_proxy.h"
 
 #ifdef USE_OPENSSL
 #include <openssl/ssl.h>

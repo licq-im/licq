@@ -2,11 +2,12 @@
 #define ICQPACKET_H
 
 #include "licq_user.h"
-#include "licq_buffer.h"
-#include "licq_socket.h"
 #include "licq_icq.h"
 
+class ICQUser;
 class CICQColor;
+class CBuffer;
+class INetSocket;
 
 // values of extra info to identify plugin request
 const unsigned short DirectInfoPluginRequest     = 1;
@@ -31,37 +32,6 @@ extern struct PluginList status_plugins[];
 unsigned short ReversePort(unsigned short p);
 unsigned short LengthField(const char *szField);
 char *PipeInput(char *m_szMessage);
-
-//
-// These classes, CPX_*, are general classes for different packets that do the
-// same function that may be sent through the server or directly to the client.
-// This gives the direct and server packets a multiple inheritence.
-//
-
-//-----FileTransfer------------------------------------------------------------
-class CPX_FileTransfer
-{
-public:
-  CPX_FileTransfer(ConstFileList &lFileList, const char *szFileName);
-  virtual ~CPX_FileTransfer();
-
-  bool IsValid()	{ return m_bValid; }
-  ConstFileList GetFileList()	{ return m_lFileList; }
-  const char *GetFilename()	{ return m_szFilename; }
-  const char *GetDescription() { return m_szDesc; }
-  unsigned long GetFileSize()	{ return m_nFileSize; }
-
-protected:
-  CPX_FileTransfer();
-
-  bool          m_bValid;
-  char          *m_szDesc;
-  char          *m_szFilename;
-  ConstFileList m_lFileList;
-  unsigned long m_nFileSize;
-};
-
-
 
 //=====Packet===================================================================
 
@@ -104,6 +74,40 @@ protected:
    static unsigned short s_nLocalPort;
    static char s_nMode;
 };
+
+// Order of inclusion is significant here!
+#include "licq_filetransfer.h"
+
+//
+// These classes, CPX_*, are general classes for different packets that do the
+// same function that may be sent through the server or directly to the client.
+// This gives the direct and server packets a multiple inheritence.
+//
+
+//-----FileTransfer------------------------------------------------------------
+class CPX_FileTransfer
+{
+public:
+  CPX_FileTransfer(ConstFileList &lFileList, const char *szFileName);
+  virtual ~CPX_FileTransfer();
+
+  bool IsValid()	{ return m_bValid; }
+  ConstFileList GetFileList()	{ return m_lFileList; }
+  const char *GetFilename()	{ return m_szFilename; }
+  const char *GetDescription() { return m_szDesc; }
+  unsigned long GetFileSize()	{ return m_nFileSize; }
+
+protected:
+  CPX_FileTransfer();
+
+  bool          m_bValid;
+  char          *m_szDesc;
+  char          *m_szFilename;
+  ConstFileList m_lFileList;
+  unsigned long m_nFileSize;
+};
+
+
 
 //=====ServerTCP===============================================================
 

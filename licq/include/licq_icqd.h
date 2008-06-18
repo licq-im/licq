@@ -6,27 +6,16 @@ header file containing all the main procedures to interface with the ICQ server 
 #ifndef ICQD_H
 #define ICQD_H
 
-#include <sys/select.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
-
 #include <vector>
 #include <list>
 #include <map>
 #include <string>
-#include <algorithm>
-#include <cstdarg>
-#include <cstdio>
 
 #include "licq_events.h"
 #include "licq_filetransfer.h"
 #include "licq_onevent.h"
-#include "licq_user.h"
 #include "licq_plugind.h"
-#include "licq_color.h"
 #include "licq_protoplugind.h"
-
 
 class CProtoPlugin;
 class CPlugin;
@@ -36,6 +25,7 @@ class CLicq;
 class CUserManager;
 class ICQUser;
 class CICQEventTag;
+class CICQColor;
 class TCPSocket;
 class SrvSocket;
 class INetSocket;

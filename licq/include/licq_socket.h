@@ -5,20 +5,16 @@
 #include "config.h"
 #endif
 
-#include <sys/types.h>
-#include <sys/socket.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
-#include <unistd.h>
-#include <strings.h>
 #include <vector>
 #include <list>
 
 #include "pthread_rdwr.h"
 
-#include "licq_proxy.h"
 #include "licq_buffer.h"
 #include "licq_constants.h"
+
+class ProxyServer;
 
 char *inet_ntoa_r(struct in_addr in, char *buf);
 char *ip_ntoa(unsigned long in, char *buf);

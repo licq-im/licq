@@ -1,12 +1,9 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
-#include <cstdlib>
-#include <cstdio>
 #include <ctime>
 #include <list>
 
-#include "licq_buffer.h"
 #include "licq_constants.h"
 #include "licq_color.h"
 

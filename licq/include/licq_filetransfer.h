@@ -54,10 +54,14 @@
  * which case the file will be saved as <filename>.<timestamp>
  *-------------------------------------------------------------------------*/
 
-#include <sys/time.h>
-#include <cstring>
+#include <list>
+
+// Order of declaration is significant here!
+typedef std::list<char *> FileList;
+typedef std::list<const char *> ConstFileList;
 
 #include "licq_packets.h"
+#include "licq_socket.h"
 class CICQDaemon;
 
 
@@ -190,10 +194,7 @@ friend class CFileTransferManager;
 };
 
 typedef std::list<CFileTransferEvent *> FileTransferEventList;
-typedef std::list<const char *> ConstFileList;
-typedef std::list<char *> FileList;
 typedef std::list<class CFileTransferManager *> FileTransferManagerList;
-
 
 class CFileTransferManager
 {

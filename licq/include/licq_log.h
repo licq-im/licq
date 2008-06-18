@@ -1,9 +1,9 @@
 #ifndef LOG_H
 #define LOG_H
 
-#include <stdarg.h>
+#include <cstdarg>
+#include <cstdio>
 #include <vector>
-#include <stdio.h>
 #include <list>
 #include <pthread.h>
 

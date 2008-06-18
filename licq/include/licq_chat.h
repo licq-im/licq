@@ -2,8 +2,10 @@
 #define CHAT_H
 
 #include <deque>
+#include <list>
 
 #include "licq_packets.h"
+#include "licq_socket.h"
 class CICQDaemon;
 
 

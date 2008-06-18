@@ -2,7 +2,6 @@
 #define PLUGIND_H
 
 #include <pthread.h>
-#include <cstdlib>
 #include <list>
 
 #include "licq_constants.h"

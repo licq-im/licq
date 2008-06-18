@@ -4,7 +4,6 @@
 #include "licq_constants.h"
 
 #include <pthread.h>
-#include <cstdlib>
 #include <list>
 
 class CICQDaemon;

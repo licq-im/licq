@@ -1,12 +1,9 @@
 #ifndef ICQEVENT_H
 #define ICQEVENT_H
 
-#include "pthread_rdwr.h"
-#include "licq_constants.h"
+#include <pthread.h>
+
 #include "licq_message.h"
-
-#include <stdlib.h>
-
 
 class CPacket;
 class CICQDaemon;

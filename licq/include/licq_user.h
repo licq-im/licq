@@ -1,19 +1,15 @@
 #ifndef USER_H
 #define USER_H
 
-#include <cstdlib>
-#include <cstring>
-#include <ctime>
 #include <list>
 #include <map>
 #include <set>
 #include <string>
 #include <vector>
 
-
 #include "pthread_rdwr.h"
 
-#include "licq_message.h"
+#include "licq_buffer.h"
 #include "licq_history.h"
 #include "licq_file.h"
 #include "licq_icq.h"
@@ -230,7 +226,7 @@ extern char* PPIDSTRING(unsigned long ppid);
           continue;                      \
         }
 
-class ICQuser;
+class ICQUser;
 class ICQOwner;
 class LicqGroup;
 
