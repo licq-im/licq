@@ -873,6 +873,24 @@ void CUserManager::DropGroup(LicqGroup* group)
     group->Unlock();
 }
 
+bool CUserManager::groupExists(GroupType gtype, unsigned short groupId)
+{
+  // Is it a valid system group?
+  if (gtype == GROUPS_SYSTEM)
+    return (groupId <= NUM_GROUPS_SYSTEM_ALL);
+
+  // Is it an invalid group type?
+  if (gtype != GROUPS_USER)
+    return false;
+
+  // Does the user group exist in the list?
+  GroupMap* groups = LockGroupList(LOCK_R);
+  GroupMap::const_iterator iter = groups->find(groupId);
+  bool found = (iter != groups->end());
+  UnlockGroupList();
+  return found;
+}
+
 /*---------------------------------------------------------------------------
  * CUserManager::AddGroup
  *-------------------------------------------------------------------------*/

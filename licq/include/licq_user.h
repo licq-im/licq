@@ -1359,6 +1359,15 @@ public:
   void DropGroup(LicqGroup* group);
 
   /**
+   * Check if a group id is valid
+   *
+   * @param gtype Group type
+   * @param groupId Id of group to check for
+   * @return True if the group exists
+   */
+  bool groupExists(GroupType gtype, unsigned short groupId);
+
+  /**
    * Add a user group
    *
    * @param name Group name, must be unique
