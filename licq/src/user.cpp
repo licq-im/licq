@@ -3900,7 +3900,7 @@ void ICQUser::EventClearId(int id)
 bool ICQUser::GetInGroup(GroupType gtype, unsigned short groupId) const
 {
   if (groupId == 0)
-      return true;
+      return false;
 
   if (gtype == GROUPS_SYSTEM)
     return (mySystemGroups & (1L << (groupId -1))) != 0;
