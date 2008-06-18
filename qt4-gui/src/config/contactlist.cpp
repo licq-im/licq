@@ -73,9 +73,10 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadNum("StartUpGroupType", groupType, GROUPS_SYSTEM);
   myGroupType = static_cast<GroupType>(groupType);
 
-  if ((myGroupType == GROUPS_USER && myGroupId > gUserManager.NumGroups()) ||
-      (myGroupType == GROUPS_SYSTEM && myGroupId >= NUM_GROUPS_SYSTEM_ALL) ||
-      (myGroupType != GROUPS_USER && myGroupType != GROUPS_SYSTEM))
+  // Check that the group actually exists
+  // Group "Other users" is not a real group in the daemon
+  if ((myGroupType != GROUPS_USER || myGroupId != 0) &&
+      !gUserManager.groupExists(myGroupType, myGroupId))
   {
     myGroupId = GROUP_ALL_USERS;
     myGroupType = GROUPS_SYSTEM;
