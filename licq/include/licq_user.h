@@ -14,6 +14,9 @@
 #include "licq_file.h"
 #include "licq_icq.h"
 
+// Added for plugin convenience
+#include "licq_constants.h"
+
 class TCPSocket;
 
 #define LICQ_PPID 0x4C696371  // "Licq"
