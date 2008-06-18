@@ -3899,11 +3899,12 @@ void ICQUser::EventClearId(int id)
 
 bool ICQUser::GetInGroup(GroupType gtype, unsigned short groupId) const
 {
-  if (groupId == 0)
-      return false;
-
   if (gtype == GROUPS_SYSTEM)
+  {
+    if (groupId == 0)
+      return true;
     return (mySystemGroups & (1L << (groupId -1))) != 0;
+  }
   else
     return myGroups.count(groupId) > 0;
 }
