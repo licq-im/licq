@@ -74,7 +74,7 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   myGroupType = static_cast<GroupType>(groupType);
 
   // Check that the group actually exists
-  if (gUserManager.groupExists(myGroupType, myGroupId))
+  if (!gUserManager.groupExists(myGroupType, myGroupId))
   {
     myGroupId = GROUP_ALL_USERS;
     myGroupType = GROUPS_SYSTEM;
