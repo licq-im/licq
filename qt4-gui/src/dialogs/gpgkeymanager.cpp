@@ -28,6 +28,7 @@
 
 #include <licq_events.h>
 #include <licq_icqd.h>
+#include <licq_user.h>
 
 #include "core/mainwin.h"
 #include "core/messagebox.h"

@@ -69,6 +69,7 @@
 #include <licq_icqd.h>
 #include <licq_socket.h>
 #include <licq_log.h>
+#include <licq_user.h>
 
 #include "widgets/infofield.h"
 #include "widgets/mledit.h"

@@ -27,6 +27,7 @@
 
 #include <licq_events.h>
 #include <licq_icqd.h>
+#include <licq_user.h>
 #include <licq_utility.h>
 
 #include "config/iconmanager.h"

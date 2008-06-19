@@ -72,6 +72,7 @@ extern "C"
 #include <licq_icq.h>
 #include <licq_icqd.h>
 #include <licq_sar.h>
+#include <licq_user.h>
 
 #include "config/chat.h"
 #include "config/contactlist.h"
