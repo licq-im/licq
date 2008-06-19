@@ -32,7 +32,6 @@
 #include <QPushButton>
 
 #include <licq_icqd.h>
-#include <licq_user.h>
 
 #include "core/gui-defines.h"
 #include "core/messagebox.h"

@@ -32,7 +32,6 @@
 #include <QSplitter>
 
 #include <licq_icqd.h>
-#include <licq_user.h>
 #include <licq_utility.h>
 
 #include "core/messagebox.h"

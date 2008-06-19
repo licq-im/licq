@@ -35,7 +35,6 @@
 #include <QVBoxLayout>
 
 #include <licq_icqd.h>
-#include <licq_user.h>
 
 #include "core/licqgui.h"
 #include "core/signalmanager.h"

@@ -37,7 +37,6 @@
 #include <licq_icqd.h>
 #include <licq_log.h>
 #include <licq_sar.h>
-#include <licq_user.h>
 
 #include "core/licqgui.h"
 

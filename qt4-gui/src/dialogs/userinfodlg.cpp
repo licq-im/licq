@@ -66,7 +66,6 @@
 #include <licq_organizationcodes.h>
 #include <licq_backgroundcodes.h>
 #include <licq_providers.h>
-#include <licq_user.h>
 #include <licq_icqd.h>
 #include <licq_socket.h>
 #include <licq_log.h>
