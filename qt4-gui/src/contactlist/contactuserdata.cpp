@@ -146,11 +146,11 @@ void ContactUserData::update(CICQSignal* sig)
   ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
   if (u != NULL)
   {
-    // No specific handling for this signal so reread everything from the daemon
-    updateAll(u);
-
     // Group membership is handled by ContactList so send it a signal to update
     emit updateUserGroups(this, u);
+
+    // No specific handling for this signal so reread everything from the daemon
+    updateAll(u);
 
     gUserManager.DropUser(u);
   }
