@@ -4722,7 +4722,15 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       delete [] szId;
       break;
     }
-    
+
+    case ICQ_SNACxLIST_ROSTxEDITxSTART:
+    case ICQ_SNACxLIST_ROSTxEDITxEND:
+    {
+      // Nothing to be done here.
+      // Server just encloses contact list changes with these.
+      break;
+    }
+
     default:
       gLog.Warn(tr("%sUnknown List Family Subtype: %04hx\n"), L_SRVxSTR, nSubtype);
       break;
