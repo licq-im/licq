@@ -2832,6 +2832,8 @@ CPU_ExportToServerList::CPU_ExportToServerList(UserStringList &users,
 
         if (m_nGSID == 0)
           m_nGSID = 1; // Must never actually reach this point
+
+        u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(m_nGSID));
       }
 
       u->SetGSID(m_nGSID);
@@ -3027,6 +3029,7 @@ CPU_AddToServerList::CPU_AddToServerList(const char *_szName,
 
       SetExtraInfo(m_nGSID);
       u->SetGSID(m_nGSID);
+      u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(m_nGSID));
       gUserManager.DropUser(u);
 
       break;

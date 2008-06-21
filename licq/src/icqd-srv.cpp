@@ -4236,7 +4236,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 u->AddTLV(tlv);
               }
 
+              u->RemoveFromGroup(GROUPS_USER, gUserManager.GetGroupFromID(u->GetGSID()));
               u->SetGSID(nTag);
+              u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
 
               if (szNewName)
                 u->SetAlias(szNewName);
@@ -4410,7 +4412,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       {
         // First update their gsid/sid
         u->SetSID(sid);
+        u->RemoveFromGroup(GROUPS_USER, gUserManager.GetGroupFromID(u->GetGSID()));
         u->SetGSID(gsid);
+        u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(gsid));
 
         // Now the the tlv of attributes to attach to the user
         TLVList tlvList = packet.getTLVList();
@@ -4421,6 +4425,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           u->AddTLV(tlv);
         }
 
+        u->SaveLicqInfo();
+        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
+              u->IdString(), u->PPID()));
         gUserManager.DropUser(u);
       }
 
