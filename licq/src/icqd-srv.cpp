@@ -4236,9 +4236,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 u->AddTLV(tlv);
               }
 
-              u->RemoveFromGroup(GROUPS_USER, gUserManager.GetGroupFromID(u->GetGSID()));
               u->SetGSID(nTag);
-              u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
 
               if (szNewName)
                 u->SetAlias(szNewName);
