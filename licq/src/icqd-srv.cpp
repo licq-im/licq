@@ -2027,15 +2027,6 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   pthread_mutex_unlock(&mutex_extendedevents);
 #endif
 
-  // Mark all users as offline, this also updates the last seen
-  // online field
-  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
-  {
-    if (!pUser->StatusOffline())
-      ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
-  }
-  FOR_EACH_PROTO_USER_END
-
   ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
   if (o)
     ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
@@ -2048,6 +2039,15 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   }
 
   PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0, LICQ_PPID, 0, 0));
+
+  // Mark all users as offline, this also updates the last seen
+  // online field
+  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
+  {
+    if (!pUser->StatusOffline())
+      ChangeUserStatus(pUser, ICQ_STATUS_OFFLINE);
+  }
+  FOR_EACH_PROTO_USER_END
 }
 
 //-----ProtoTypingNotification-------------------------------------------------
