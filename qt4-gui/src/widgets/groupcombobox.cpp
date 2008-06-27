@@ -20,7 +20,7 @@
 
 #include "groupcombobox.h"
 
-#include <licq/licq_user.h>
+#include <licq_user.h>
 
 #include "helpers/licqstrings.h"
 
