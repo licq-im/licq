@@ -3261,8 +3261,8 @@ void CLicqConsole::UserSelect()
   winMain->data = new DataUserSelect(sz, LICQ_PPID); 
   
   ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  winMain->wprintf("%A%CEnter your password for %s (%lu):%C%Z\n", A_BOLD,
-                   COLOR_GREEN, o->GetAlias(), o->Uin(), COLOR_WHITE, A_BOLD);
+  winMain->wprintf("%A%CEnter your password for %s (%s):%C%Z\n", A_BOLD,
+                   COLOR_GREEN, o->GetAlias(), o->IdString(), COLOR_WHITE, A_BOLD);
   gUserManager.DropOwner();
 }
 

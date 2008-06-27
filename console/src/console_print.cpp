@@ -168,9 +168,9 @@ void CLicqConsole::PrintStatus()
   wbkgdset(winStatus->Win(), COLOR_PAIR(32));
   if (o)
   {
-    winStatus->wprintf("%C%A[ %C%s %C(%C%ld%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", 29,
+    winStatus->wprintf("%C%A[ %C%s %C(%C%s%C) - S: %C%s %C- G: %C%s %C- M: %C%s %C- L: %C%s %C]", 29,
                        A_BOLD, 5,  o->GetAlias(), 29,
-                       5, o->Uin(), 29,
+                       5, o->IdString(), 29,
                        53, o->StatusStr(), 29,
                        53, CurrentGroupName(), 29,
                        53, szMsgStr, 29, 53,
@@ -590,8 +590,8 @@ void CLicqConsole::PrintInfo_General(const char *szId, unsigned long nPPID)
   waddch(winMain->Win(), '\n');
   wattroff(winMain->Win(), A_BOLD);
 
-  winMain->wprintf("%s %A(%Z%ld%A) General Info - %Z%s\n", u->GetAlias(), A_BOLD,
-                   A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
+  winMain->wprintf("%s %A(%Z%s%A) General Info - %Z%s\n", u->GetAlias(), A_BOLD,
+                   A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
 
   winMain->wprintf("%C%AName: %Z%s %s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    u->GetFirstName(), u->GetLastName());
@@ -657,8 +657,8 @@ void CLicqConsole::PrintInfo_More(const char *szId, unsigned long nPPID)
   waddch(winMain->Win(), '\n');
   wattroff(winMain->Win(), A_BOLD);
 
-  winMain->wprintf("%s %A(%Z%ld%A) More Info - %Z%s\n", u->GetAlias(), A_BOLD,
-                   A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
+  winMain->wprintf("%s %A(%Z%s%A) More Info - %Z%s\n", u->GetAlias(), A_BOLD,
+                   A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
 
   if (u->GetAge() == AGE_UNSPECIFIED)
     winMain->wprintf("%C%AAge: %ZUnspecified\n", COLOR_WHITE, A_BOLD, A_BOLD);
@@ -703,8 +703,8 @@ void CLicqConsole::PrintInfo_Work(const char *szId, unsigned long nPPID)
   waddch(winMain->Win(), '\n');
   wattroff(winMain->Win(), A_BOLD);
 
-  winMain->wprintf("%s %A(%Z%ld%A) Work Info - %Z%s\n", u->GetAlias(), A_BOLD,
-                   A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
+  winMain->wprintf("%s %A(%Z%s%A) Work Info - %Z%s\n", u->GetAlias(), A_BOLD,
+                   A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
 
   winMain->wprintf("%C%ACompany Name: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyName());
   winMain->wprintf("%C%ACompany Department: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->GetCompanyDepartment());
@@ -753,8 +753,8 @@ void CLicqConsole::PrintInfo_About(const char *szId, unsigned long nPPID)
   waddch(winMain->Win(), '\n');
   wattroff(winMain->Win(), A_BOLD);
 
-  winMain->wprintf("%s %A(%Z%ld%A) About Info - %Z%s\n", u->GetAlias(), A_BOLD,
-                    A_BOLD, u->Uin(), A_BOLD, A_BOLD, u->StatusStr());
+  winMain->wprintf("%s %A(%Z%s%A) About Info - %Z%s\n", u->GetAlias(), A_BOLD,
+                    A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
 
   winMain->wprintf("%s\n", u->GetAbout());
 
