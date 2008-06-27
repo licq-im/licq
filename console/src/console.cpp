@@ -549,7 +549,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     PrintStatus();
     break;
   case SIGNAL_ADDxSERVERxLIST:
-    licqDaemon->icqRenameUser(s->Uin());
+    licqDaemon->icqRenameUser(s->Id());
     break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     //ignore for now
@@ -3221,20 +3221,16 @@ void CLicqConsole::UserCommand_Secure(const char *szId, unsigned long nPPID, cha
     winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    char *p;
-    unsigned long uin = strtoul(szId, &p,10);
-    if( (p == 0 || (p && !*p)) && nPPID == LICQ_PPID )
-      winMain->event = licqDaemon->icqOpenSecureChannel(uin);
+    if (nPPID == LICQ_PPID )
+      winMain->event = licqDaemon->icqOpenSecureChannel(szId);
   }
   else if(strcasecmp(szStatus, "close") == 0)
   {
     winMain->wprintf("%AClose secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    char *p;
-    unsigned long uin = strtoul(szId, &p,10);
-    if( (p == 0 || (p && !*p)) && nPPID == LICQ_PPID )
-      winMain->event = licqDaemon->icqCloseSecureChannel(uin);
+    if (nPPID == LICQ_PPID )
+      winMain->event = licqDaemon->icqCloseSecureChannel(szId);
   }
   else
   {

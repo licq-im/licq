@@ -446,11 +446,9 @@ void CLicqConsole::MenuAdd(char *szArg)
 
   if (bAlert)
   {
-    int nUin = atol(szArg);
-    licqDaemon->icqAlertUser(nUin);
-    winMain->wprintf("%C%AAlerted user %ld they were added.\n",
-                     m_cColorInfo->nColor, m_cColorInfo->nAttr,
-                     nUin);
+    licqDaemon->icqAlertUser(szArg, LICQ_PPID);
+    winMain->wprintf("%C%AAlerted user %s they were added.\n",
+        m_cColorInfo->nColor, m_cColorInfo->nAttr, szArg);
   }
 
 }
