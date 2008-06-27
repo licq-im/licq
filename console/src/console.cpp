@@ -249,9 +249,8 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
 {
   // Register with the daemon, we want to receive all signals
   m_nPipe = _licqDaemon->RegisterPlugin(SIGNAL_ALL);
-  m_bExit = false; 
+  m_bExit = false;
   licqDaemon = _licqDaemon;
-  m_nCurrentGroup = gUserManager.DefaultGroup();
 
   // Create the windows
   for (unsigned short i = 0; i <= MAX_CON; i++)
