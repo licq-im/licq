@@ -1165,16 +1165,10 @@ public:
   void Store(ICQUser *, const char *, unsigned long);
   void Remove(const char *, unsigned long);
 
-  // For ICQ (Licq way)
-  ICQUser *Retrieve(unsigned long _nUin);
-  void Store(ICQUser *u, unsigned long _nUin);
-  void Remove(unsigned long _nUin);
 protected:
   // For protocol plugin
   unsigned short HashValue(const char *);
 
-  // For ICQ (Licq way)
-  unsigned short HashValue(unsigned long _nUin);
   void Lock(unsigned short _nLockType);
   void Unlock();
 

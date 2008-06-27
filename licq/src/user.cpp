@@ -1739,34 +1739,6 @@ unsigned short CUserHashTable::HashValue(const char *_szId)
   return (nRet % (USER_HASH_SIZE - 1));
 }
 
-ICQUser *CUserHashTable::Retrieve(unsigned long _nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  return Retrieve(szUin, LICQ_PPID);
-}
-
-void CUserHashTable::Store(ICQUser *u, unsigned long _nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  Store(u, szUin, LICQ_PPID);
-}
-
-void CUserHashTable::Remove(unsigned long _nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  Remove(szUin, LICQ_PPID);
-}
-
-unsigned short CUserHashTable::HashValue(unsigned long _nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  return HashValue(szUin);
-}
-
 void CUserHashTable::Lock(unsigned short _nLockType)
 {
   switch (_nLockType)
