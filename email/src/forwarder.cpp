@@ -119,9 +119,9 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
   if (m_szStatus != NULL)
   {
     unsigned long s = StringToStatus(m_szStatus);
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     bool b = o->StatusOffline();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
     if (s == INT_MAX)
       gLog.Warn("%sInvalid startup status.\n", L_FORWARDxSTR);
     else
@@ -374,7 +374,7 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     unsigned long nPPID = u->PPID();
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     sprintf(szTo, "To: %s <%s>", o->GetAlias(), m_szSMTPTo);
-    gUserManager.DropOwner(nPPID);
+    gUserManager.DropOwner(o);
     if (nPPID == LICQ_PPID)
       sprintf (szFrom, "From: \"%s\" <%s@pager.icq.com>", u->GetAlias(), u->IdString());
     else
