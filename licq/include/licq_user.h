@@ -32,26 +32,26 @@ extern char* PPIDSTRING(unsigned long ppid);
 #define FOR_EACH_USER_START(x)                           \
   {                                                      \
     ICQUser *pUser;                                      \
-    UserList *_ul_ = gUserManager.LockUserList(LOCK_R);  \
-    for (UserList::iterator _i_ = _ul_->begin();         \
+    const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
+    for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
-      pUser = *_i_;                                      \
+      pUser = _i_->second;                               \
       pUser->Lock(x);                                    \
       {
 
 #define FOR_EACH_PROTO_USER_START(x, y)                  \
   {                                                      \
     ICQUser *pUser;                                      \
-    UserList *_ul_ = gUserManager.LockUserList(LOCK_R);  \
-    for (UserList::iterator _i_ = _ul_->begin();         \
+    const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
+    for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
-      pUser = *_i_;                                      \
-      if (pUser->PPID() == x)                            \
-      {                                                  \
-        pUser->Lock(y);                                  \
-        {
+      if (_i_->first.second != x)                        \
+        continue;                                        \
+      pUser = _i_->second;                               \
+      pUser->Lock(y);                                    \
+      {
 
 #define FOR_EACH_OWNER_START(x)                           \
   {                                                       \
@@ -84,13 +84,7 @@ extern char* PPIDSTRING(unsigned long ppid);
     gUserManager.UnlockUserList();       \
   }
 
-#define FOR_EACH_PROTO_USER_END        \
-        }                                \
-        pUser->Unlock();                 \
-      }                                  \
-    }                                    \
-    gUserManager.UnlockUserList();       \
-  }
+#define FOR_EACH_PROTO_USER_END FOR_EACH_USER_END
 
 #define FOR_EACH_USER_BREAK              \
         {                                \
@@ -177,24 +171,24 @@ extern char* PPIDSTRING(unsigned long ppid);
 #define FOR_EACH_UIN_START                               \
   {                                                      \
     unsigned long nUin;                                  \
-    UserList *_ul_ = gUserManager.LockUserList(LOCK_R);  \
-    for (UserList::iterator _i_ = _ul_->begin();         \
+    const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
+    for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
-      nUin = (*_i_)->Uin();                              \
+      nUin = _i_->second->Uin();                         \
       {
 
 #define FOR_EACH_PROTO_ID_START(x)                       \
   {                                                      \
     char *szId;                                          \
-    UserList *_ul_ = gUserManager.LockUserList(LOCK_R);  \
-    for (UserList::iterator _i_ = _ul_->begin();         \
+    UserMap* _ul_ = gUserManager.LockUserList(LOCK_R);   \
+    for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
-      if ((*_i_)->PPID() == x)                           \
-      {                                                  \
-        szId = (*_i_)->IdString();                       \
-        {
+      if (_i_->first.second != x)                        \
+        continue;                                        \
+      szId = (*_i_)->IdString();                         \
+      {
 
 #define FOR_EACH_UIN_END                 \
       }                                  \
@@ -202,12 +196,7 @@ extern char* PPIDSTRING(unsigned long ppid);
     gUserManager.UnlockUserList();       \
   }
 
-#define FOR_EACH_PROTO_ID_END            \
-        }                                \
-      }                                  \
-    }                                    \
-    gUserManager.UnlockUserList();       \
-  }
+#define FOR_EACH_PROTO_ID_END FOR_EACH_UIN_END
 
 #define FOR_EACH_UIN_BREAK               \
         {                                \
@@ -235,7 +224,6 @@ class LicqGroup;
 
 typedef std::pair<std::string, unsigned long> UserMapKey;
 typedef std::map<UserMapKey, class ICQUser*> UserMap;
-typedef std::list<ICQUser *> UserList;
 typedef std::list<class ICQOwner *> OwnerList;
 typedef std::set<unsigned short> UserGroupList;
 typedef std::map<unsigned short, LicqGroup*> GroupMap;
@@ -1289,7 +1277,18 @@ public:
   unsigned long OwnerUin()  {return m_nOwnerUin; }
   bool IsOnList(unsigned long nUin);
 
-  UserList *LockUserList(unsigned short);
+  /**
+   * Lock user list for access
+   * call UnlockUserList when lock is no longer needed
+   *
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @return Map of all users indexed by UserMapKey
+   */
+  UserMap* LockUserList(unsigned short lockType);
+
+  /**
+   * Release user list lock
+   */
   void UnlockUserList();
 
   /**
@@ -1485,7 +1484,6 @@ protected:
   pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_ownerlist;
 
   GroupMap myGroups;
-  UserList m_vpcUsers;
   UserMap myUsers;
   OwnerList m_vpcOwners;
   ICQOwner *m_xOwner;

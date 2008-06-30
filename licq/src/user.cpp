@@ -509,11 +509,9 @@ CUserManager::CUserManager()
 
 CUserManager::~CUserManager()
 {
-  UserList::iterator iter;
-  for (iter = m_vpcUsers.begin(); iter != m_vpcUsers.end(); ++iter)
-  {
-    delete *iter;
-  }
+  UserMap::iterator iter;
+  for (iter = myUsers.begin(); iter != myUsers.end(); ++iter)
+    delete iter->second;
 
   GroupMap::iterator g_iter;
   for (g_iter = myGroups.begin(); g_iter != myGroups.end(); ++g_iter)
@@ -680,7 +678,6 @@ bool CUserManager::Load()
     u = new ICQUser(szId, nPPID, filename);
     u->AddToContactList();
     myUsers[UserMapKey(szId, nPPID)] = u;
-    m_vpcUsers.push_back(u);
   }
   UnlockUserList();
 
@@ -714,8 +711,6 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
 
   // Store the user in the lookup map
   myUsers[UserMapKey(_szId, _nPPID)] = pUser;
-  // Reorder the user to the correct place
-  m_vpcUsers.push_back(pUser);
 
   UnlockUserList();
 }
@@ -727,17 +722,9 @@ void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
   if (!u->NotInList())
     u->RemoveFiles();
   LockUserList(LOCK_W);
-  UserList::iterator iter = m_vpcUsers.begin();
-  while (iter != m_vpcUsers.end() && u != (*iter)) ++iter;
-  if (iter == m_vpcUsers.end())
-    gLog.Warn("%sInteral Error: CUserManager::RemoveUser():\n"
-              "%sUser \"%s\" (%s) not found in vector.\n",
-              L_WARNxSTR, L_BLANKxSTR, u->GetAlias(), u->IdString());
-  else
-    m_vpcUsers.erase(iter);
-  DropUser(u);
   myUsers.erase(UserMapKey(_szId, _nPPID));
   UnlockUserList();
+  DropUser(u);
   delete u;
 }
 
@@ -1439,7 +1426,7 @@ bool CUserManager::UpdateUsersInGroups()
 unsigned short CUserManager::NumUsers()
 {
   //LockUserList(LOCK_R);
-  unsigned short n = m_vpcUsers.size();
+  unsigned short n = myUsers.size();
   //UnlockUserList();
   return n;
 }
@@ -1471,7 +1458,7 @@ unsigned short CUserManager::NumGroups()
  *
  * Locks the entire user list for iterating through...
  *-------------------------------------------------------------------------*/
-UserList *CUserManager::LockUserList(unsigned short _nLockType)
+UserMap* CUserManager::LockUserList(unsigned short _nLockType)
 {
   switch (_nLockType)
   {
@@ -1486,7 +1473,7 @@ UserList *CUserManager::LockUserList(unsigned short _nLockType)
     return NULL;
   }
   m_nUserListLockType = _nLockType;
-  return &m_vpcUsers;
+  return &myUsers;
 }
 
 /*---------------------------------------------------------------------------
