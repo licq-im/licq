@@ -27,6 +27,7 @@
 #include "licq_constants.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
+#include "licq_user.h"
 #include "support.h"
 
 #define DEBUG_THREADS(x)
@@ -199,13 +200,14 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
   pipe(pipe_events);
 
   m_nUin = nUin;
+  sprintf(myId, "%lu", m_nUin);
   m_nSession = rand();
   licqDaemon = d;
 
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   strncpy(m_szLocalName, o->GetAlias(), sizeof(m_szLocalName) - 1);
   m_szLocalName[sizeof(m_szLocalName) - 1] = '\0';
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   m_nCurrentFile = m_nBatchFiles = 0;
   m_nFileSize = m_nBatchSize = m_nFilePos = m_nBatchPos = 0;
@@ -337,7 +339,7 @@ void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
 //-----CFileTransferManager::ConnectToFileServer-----------------------------
 bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 {
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
   if (u == NULL)
     return false;
 
@@ -351,13 +353,13 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
     gLog.Info("%sFile Transfer: Connecting to server.\n", L_TCPxSTR);
     bSuccess = licqDaemon->OpenConnectionToUser(m_nUin, &ftSock, nPort);
    }
- 
+
   bool bResult = false;
   if (!bSuccess)
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     unsigned long nIp = bSendIntIp ? o->IntIp() : o->Ip();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
 
     // try reverse connect
     int nId = licqDaemon->RequestReverseConnection(m_nUin, 0, nIp, LocalPort(),
@@ -387,7 +389,7 @@ bool CFileTransferManager::SendFileHandshake()
   gLog.Info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
 
   // Send handshake packet:
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
+  ICQUser *u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
   unsigned short nVersion = u->ConnectionVersion();
   gUserManager.DropUser(u);
   if (!CICQDaemon::Handshake_Send(&ftSock, m_nUin, LocalPort(), nVersion, false))

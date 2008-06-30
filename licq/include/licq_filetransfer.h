@@ -212,6 +212,7 @@ public:
   const char *LocalName()  { return m_szLocalName; }
   direction Direction() { return m_nDirection; }
   unsigned long Uin() { return m_nUin; }
+  const char* Id() const { return myId; }
 
   // Available after FT_STARTxBATCH
   const char *RemoteName()  { return m_szRemoteName; }
@@ -268,6 +269,7 @@ protected:
   unsigned char m_nResult;
   unsigned long m_nUin;
   unsigned short m_nSession, m_nSpeed, m_nState;
+  char myId[16];
 
   char m_szLocalName[64], m_szRemoteName[64];
   unsigned short m_nPort;
