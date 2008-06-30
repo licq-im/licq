@@ -451,9 +451,9 @@ void ProcessSignal(CICQSignal *s)
 
             if (want_osd)
 	    {
-		o=gUserManager.FetchOwner(LOCK_R);
-		if (o)
-		{
+        o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+        if (o != NULL)
+        {
 		    status=o->Status();
 		    //want_osd=true;
 
@@ -493,8 +493,8 @@ void ProcessSignal(CICQSignal *s)
 			}
 		    }
 
-		    gUserManager.DropOwner();
-		}
+          gUserManager.DropOwner(o);
+        }
 	    }
 
 	    if (want_osd)
@@ -552,7 +552,7 @@ void ProcessSignal(CICQSignal *s)
 		want_osd=false;
 	    if (ignore)
 		want_osd=false;
-	    if (s->Uin() == gUserManager.OwnerUin()) // no messages for our own actions
+	    if (gUserManager.FindOwner(s->Id(), s->PPID()) != NULL) // no messages for our own actions
                 want_osd=false;
 
 	    // user checked our auto-response
