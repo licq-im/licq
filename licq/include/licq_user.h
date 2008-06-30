@@ -1264,8 +1264,22 @@ public:
   ICQUser *FetchUser(const char *, unsigned long, unsigned short);
   ICQOwner *FetchOwner(unsigned long, unsigned short);
   void DropOwner(unsigned long);
+
+  /**
+   * Release owner lock
+   */
+  void DropOwner(ICQOwner* owner);
+
   bool IsOnList(const char *, unsigned long);
   ICQOwner *FindOwner(const char *, unsigned long);
+
+  /**
+   * Get user id for an owner
+   *
+   * @param ppid Protocol id
+   * @return User id of owner or empty string if no such owner exists
+   */
+  std::string OwnerId(unsigned long ppid);
 
   // ICQ Protocol only (from original Licq)
   unsigned long AddUser(ICQUser *);

@@ -834,6 +834,17 @@ ICQOwner *CUserManager::FindOwner(const char *_szId, unsigned long _nPPID)
   return o;
 }
 
+string CUserManager::OwnerId(unsigned long ppid)
+{
+  ICQOwner* owner = FetchOwner(ppid, LOCK_R);
+  if (owner == NULL)
+    return "";
+
+  string ret = owner->IdString();
+  DropOwner(ppid);
+  return ret;
+}
+
 /*---------------------------------------------------------------------------
  * CUserManager::AddUser
  *
@@ -1367,6 +1378,13 @@ void CUserManager::DropOwner(unsigned long _nPPID)
     }
   }
   UnlockOwnerList();
+}
+
+void CUserManager::DropOwner(ICQOwner* owner)
+{
+  if (owner == NULL)
+    return;
+  owner->Unlock();
 }
 
 /*---------------------------------------------------------------------------
