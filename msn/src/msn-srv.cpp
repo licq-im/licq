@@ -104,7 +104,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         // Set our alias here
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
         o->SetAlias(strDecodedNick.c_str());
-        gUserManager.DropOwner(MSN_PPID);
+        gUserManager.DropOwner(o);
          
         // This cookie doesn't work anymore now that we are online
         if (m_szCookie)
@@ -219,12 +219,12 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
         if (m_pDaemon->AddUserEvent(o, e))
         {
-          gUserManager.DropOwner(MSN_PPID);
+          gUserManager.DropOwner(o);
           e->AddToHistory(NULL, MSN_PPID, D_RECEIVER);
           m_pDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
         }
         else
-          gUserManager.DropOwner(MSN_PPID);
+          gUserManager.DropOwner(o);
       }
       else
       {
@@ -267,7 +267,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
         string strDecodedNick = Decode(strNick);
         o->SetAlias(strDecodedNick.c_str());
-        gUserManager.DropOwner(MSN_PPID);
+        gUserManager.DropOwner(o);
       }
       
       gLog.Info("%s%s renamed successfully.\n", L_MSNxSTR, strUser.c_str());
@@ -276,7 +276,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
     {
       packet->SkipParameter(); // seq
       string strStatus = packet->GetParameter();
-      ICQUser *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
+      ICQOwner* o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
       unsigned long nStatus;
       bool bHidden = false;
       
@@ -295,7 +295,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       m_pDaemon->ChangeUserStatus(o, nStatus);
       m_nStatus = nStatus;
       gLog.Info("%sServer says we are now: %s\n", L_MSNxSTR, ICQUser::StatusToStatusStr(o->Status(), bHidden));
-      gUserManager.DropOwner(MSN_PPID);
+      gUserManager.DropOwner(o);
     }
     else if (strCmd == "ILN" || strCmd == "NLN")
     {
@@ -441,12 +441,12 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
         if (m_pDaemon->AddUserEvent(o, pEmailAlert))
         {
-          gUserManager.DropOwner(MSN_PPID);
+          gUserManager.DropOwner(o);
           pEmailAlert->AddToHistory(NULL, MSN_PPID, D_RECEIVER);
           m_pDaemon->m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
         }
         else
-          gUserManager.DropOwner(MSN_PPID);
+          gUserManager.DropOwner(o);
       }
     }
     else if (strCmd == "QNG")
@@ -538,8 +538,8 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
   }
   m_szUserName = strdup(o->IdString());
   m_szPassword = strdup(o->Password());
-  gUserManager.DropOwner(MSN_PPID);
-  
+  gUserManager.DropOwner(o);
+
   SrvSocket *sock = new SrvSocket(m_szUserName, MSN_PPID);
   sock->SetRemoteAddr(_szServer, _nPort);
   char ipbuf[32];
@@ -607,7 +607,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
     
   ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);      
   m_pDaemon->ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
-  gUserManager.DropOwner(MSN_PPID);  
+  gUserManager.DropOwner(o);
   //m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));   
 }
 
