@@ -693,7 +693,7 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
   {
     if (o->StatusOffline())
     {
-      gUserManager.DropOwner(ppid);
+      gUserManager.DropOwner(o);
       return;
     }
 
@@ -711,7 +711,7 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
   }
 
   bool b = o->StatusOffline();
-  gUserManager.DropOwner(ppid);
+  gUserManager.DropOwner(o);
   if (b)
     myLicqDaemon->ProtoLogon(ppid, status);
   else
@@ -1161,7 +1161,7 @@ void LicqGui::showAllOwnerEvents()
       continue;
     QString id = o->IdString();
     unsigned short nNumMsg = o->NewMessages();
-    gUserManager.DropOwner((*_ppit)->PPID());
+    gUserManager.DropOwner(o);
 
     if (nNumMsg > 0)
       showViewEventDialog(id, (*_ppit)->PPID());
@@ -1186,7 +1186,7 @@ void LicqGui::showNextEvent(QString id)
       if (o == NULL)
         continue;
       unsigned short nNumMsg = o->NewMessages();
-      gUserManager.DropOwner((*_ppit)->PPID());
+      gUserManager.DropOwner(o);
       if (nNumMsg > 0)
       {
         showAllOwnerEvents();
@@ -1264,12 +1264,12 @@ void LicqGui::showAllEvents()
     return;
 
   // Do system messages first
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned short numMsg = 0;
   if (o != NULL)
   {
     numMsg = o->NewMessages();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
 
   if (numMsg > 0)
@@ -1446,7 +1446,7 @@ void LicqGui::userUpdated(CICQSignal* sig)
               popCheck = 5;
               break;
           }
-          gUserManager.DropOwner(ppid);
+          gUserManager.DropOwner(o);
         }
 
         if (Config::Chat::instance()->autoPopup() >= popCheck)

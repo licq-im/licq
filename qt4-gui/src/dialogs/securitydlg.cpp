@@ -79,7 +79,7 @@ SecurityDlg::SecurityDlg(QWidget* parent)
       o->HideIp());
 #undef ADD_CHECK
 
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   top_lay->addWidget(boxOptions);
 
@@ -110,7 +110,7 @@ void SecurityDlg::ok()
 
   if (o->Status() == ICQ_STATUS_OFFLINE)
   {
-    gUserManager.DropOwner(LICQ_PPID);
+    gUserManager.DropOwner(o);
     InformUser(this, tr("You need to be connected to the\n"
           "ICQ Network to change the settings."));
     return;
@@ -124,7 +124,7 @@ void SecurityDlg::ok()
       web != o->WebAware() ||
       ip != o->HideIp())
   {
-    gUserManager.DropOwner(LICQ_PPID);
+    gUserManager.DropOwner(o);
     btnUpdate->setEnabled(false);
 
     connect(LicqGui::instance()->signalManager(),
@@ -137,7 +137,7 @@ void SecurityDlg::ok()
     return; // prevents the dialog from closing
   }
 
-  gUserManager.DropOwner(LICQ_PPID);
+  gUserManager.DropOwner(o);
 
   close();
 }

@@ -71,7 +71,7 @@ DockIcon::~DockIcon()
 void DockIcon::updateIconStatus()
 {
   // First check for ICQ/AIM owner presence
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 
   // Take any existent one otherwise
   if (o == NULL && gUserManager.NumOwners() != 0)
@@ -89,7 +89,7 @@ void DockIcon::updateIconStatus()
     myFullStatus = o->StatusFull();
     myStatus = o->Status();
     myInvisible = o->StatusInvisible();
-    gUserManager.DropOwner(myPpid);
+    gUserManager.DropOwner(o);
   }
   else
   {

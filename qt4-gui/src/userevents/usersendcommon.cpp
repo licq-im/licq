@@ -255,7 +255,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
         if (o)
         {
           ownerName = QString::fromUtf8(o->GetAlias());
-          gUserManager.DropOwner(myPpid);
+          gUserManager.DropOwner(o);
         }
         else
           ownerName = QString(tr("Error! no owner set"));

@@ -128,11 +128,11 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(currentListChanged()), SLOT(updateCurrentGroup()));
 
   myCaption = "Licq";
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
   {
     myCaption += QString(" (%1)").arg(QString::fromUtf8(o->GetAlias()));
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
   setWindowTitle(myCaption);
 
@@ -241,16 +241,16 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   else
   {
     // Do we need to get a password
-    o = gUserManager.FetchOwner(LOCK_R);
+    o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     if (o != NULL)
     {
      if (o->Password()[0] == '\0')
      {
-       gUserManager.DropOwner();
+       gUserManager.DropOwner(o);
        new UserSelectDlg();
      }
      else
-       gUserManager.DropOwner();
+       gUserManager.DropOwner(o);
     }
   }
 
@@ -618,7 +618,7 @@ void MainWindow::slot_updatedUser(CICQSignal* sig)
         if (o != NULL)
         {
           myCaption.replace("|", QString::fromUtf8(o->GetAlias()));
-          gUserManager.DropOwner(ppid);
+          gUserManager.DropOwner(o);
         }
         else
         {
@@ -850,10 +850,11 @@ void MainWindow::updateStatus(CICQSignal* s)
       myStatusField->setPrependPixmap(iconman->iconForStatus(o->StatusFull(),
             o->IdString(), o->PPID()));
       myStatusField->update();
+      gUserManager.DropOwner(o);
     }
     else
     {
-      gUserManager.DropOwner(nPPID);
+      gUserManager.DropOwner(o);
 
       // Show icons for each protocol, w/o text
       myStatusField->clearPrependPixmap();
@@ -867,16 +868,12 @@ void MainWindow::updateStatus(CICQSignal* s)
         if (o == NULL)
           continue;
         myStatusField->addPixmap(iconman->iconForStatus(o->StatusFull(), o->IdString(), ppid));
-        gUserManager.DropOwner(ppid);
+        gUserManager.DropOwner(o);
       }
       FOR_EACH_PROTO_PLUGIN_END
 
       myStatusField->update();
-
-      o = gUserManager.FetchOwner(nPPID, LOCK_R);
     }
-
-    gUserManager.DropOwner(nPPID);
   }
   else
   {
@@ -891,7 +888,7 @@ void MainWindow::updateStatus(CICQSignal* s)
       if (o == NULL)
         continue;
       myStatusField->addPixmap(iconman->iconForStatus(o->StatusFull(), o->IdString(), ppid));
-      gUserManager.DropOwner(ppid);
+      gUserManager.DropOwner(o);
     }
     FOR_EACH_PROTO_PLUGIN_END
 
@@ -910,13 +907,13 @@ void MainWindow::updateStatus(CICQSignal* s)
 void MainWindow::showAwayMsgDlg()
 {
   //TODO iterate all owners that support fetching away message
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 
   if (o == NULL)
     return;
 
   int status = o->Status();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   AwayMsgDlg::showAwayMsgDlg(status);
 }

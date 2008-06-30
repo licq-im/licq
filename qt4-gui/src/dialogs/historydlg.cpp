@@ -238,7 +238,7 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
   if (o != NULL)
   {
     myOwnerName = QString::fromUtf8(o->GetAlias());
-    gUserManager.DropOwner(myPpid);
+    gUserManager.DropOwner(o);
   }
 
   // Mark all dates with activity so they are easier to find

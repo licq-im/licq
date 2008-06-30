@@ -1510,7 +1510,7 @@ void UserInfoDlg::SavePicture()
   o->SetPicture(m_sFilename.toLatin1());
   o->SetEnableSave(true);
   o->SavePictureInfo();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   gLicqDaemon->icqUpdatePictureTimestamp();
 }
@@ -1938,7 +1938,7 @@ void UserInfoDlg::slotRetrieve()
   if(o == NULL)  return;
   unsigned short status = o->Status();
   QTextCodec* codec = UserCodec::codecForICQUser(o);
-  gUserManager.DropOwner(m_nPPID);
+  gUserManager.DropOwner(o);
 
   if (m_bOwner && currentTab == PhoneInfo)
   {
@@ -2032,7 +2032,7 @@ void UserInfoDlg::slotUpdate()
     if(o == NULL)  return;
     unsigned short status = o->Status();
     codec = UserCodec::codecForICQUser(o);
-    gUserManager.DropOwner(m_nPPID);
+    gUserManager.DropOwner(o);
 
     if(status == ICQ_STATUS_OFFLINE) {
       InformUser(this, tr("You need to be connected to the\n"

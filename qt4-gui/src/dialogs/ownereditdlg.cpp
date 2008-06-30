@@ -97,7 +97,7 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
       edtId->setEnabled(false);
       edtPassword->setText(o->Password());
       chkSave->setChecked(o->SavePassword());
-      gUserManager.DropOwner(ppid);
+      gUserManager.DropOwner(o);
     }
 
     cmbProtocol->setCurrentPpid(ppid);
@@ -138,7 +138,7 @@ void OwnerEditDlg::slot_ok()
   o->SetPassword(pwd.toLocal8Bit());
   o->SetSavePassword(chkSave->isChecked());
 
-  gUserManager.DropOwner(ppid);
+  gUserManager.DropOwner(o);
   gLicqDaemon->SaveConf();
 
   close();

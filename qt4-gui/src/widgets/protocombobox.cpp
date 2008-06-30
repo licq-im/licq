@@ -55,13 +55,13 @@ void ProtoComboBox::fillComboBox(bool skipExisting)
     {
       if (skipExisting)
       {
-        gUserManager.DropOwner(ppid);
+        gUserManager.DropOwner(o);
         continue;
       }
       else
       {
         id = o->IdString();
-        gUserManager.DropOwner(ppid);
+        gUserManager.DropOwner(o);
       }
     }
 

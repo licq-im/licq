@@ -420,7 +420,7 @@ void HistoryView::addMsg(const CUserEvent* event, QString id, unsigned long ppid
     if (o != NULL)
     {
       contactName = QString::fromUtf8(o->GetAlias());
-      gUserManager.DropOwner(myPpid);
+      gUserManager.DropOwner(o);
     }
   }
 

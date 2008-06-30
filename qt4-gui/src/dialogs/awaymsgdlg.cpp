@@ -165,7 +165,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
   QAction* a = myMenu->addAction(tr("&Edit Items"), this, SLOT(selectMessage()));
   a->setData(999);
 
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
     return;
 
@@ -181,7 +181,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
           "You can leave me a message.\n"
           "(%m messages pending from you).")
         .arg(LicqStrings::getStatus(myStatus, false)));
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   myAwayMsg->setFocus();
   QTimer::singleShot(0, myAwayMsg, SLOT(selectAll()));
@@ -251,12 +251,12 @@ void AwayMsgDlg::ok()
 
   QString s = myAwayMsg->toPlainText().trimmed();
 
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_W);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   if (o != NULL)
   {
     QTextCodec* codec = UserCodec::defaultEncoding();
     o->SetAutoResponse(codec->fromUnicode(s));
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
 
   close();

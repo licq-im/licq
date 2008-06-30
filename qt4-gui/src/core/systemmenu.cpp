@@ -383,7 +383,7 @@ void SystemMenu::aboutToShowFollowMeMenu()
     if (a->data().toInt() == status)
       a->setChecked(true);
 
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 }
 
 void SystemMenu::aboutToShowGroupMenu()
@@ -669,7 +669,7 @@ void OwnerData::aboutToShowStatusMenu()
   if (myStatusInvisibleAction != NULL && status != ICQ_STATUS_OFFLINE)
     myStatusInvisibleAction->setChecked(o->StatusInvisible());
 
-  gUserManager.DropOwner(myPpid);
+  gUserManager.DropOwner(o);
 }
 
 void OwnerData::viewInfo()
@@ -679,7 +679,7 @@ void OwnerData::viewInfo()
     return;
 
   QString userid = o->IdString();
-  gUserManager.DropOwner(myPpid);
+  gUserManager.DropOwner(o);
   LicqGui::instance()->showInfoDialog(mnuUserGeneral, userid, myPpid);
 }
 
@@ -690,7 +690,7 @@ void OwnerData::viewHistory()
     return;
 
   QString userid = o->IdString();
-  gUserManager.DropOwner(myPpid);
+  gUserManager.DropOwner(o);
   new HistoryDlg(userid, myPpid);
 }
 

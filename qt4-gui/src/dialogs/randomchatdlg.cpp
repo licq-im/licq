@@ -202,7 +202,7 @@ SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
     default:
       myGroupsList->setCurrentRow(0); break;
   }
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   show();
 }

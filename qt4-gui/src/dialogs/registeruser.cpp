@@ -233,7 +233,7 @@ void RegisterUserDlg::gotNewOwner(QString id, unsigned long ppid)
   if (o != NULL)
   {
     o->SetSavePassword(mySavePassword->isChecked());
-    gUserManager.DropOwner(ppid);
+    gUserManager.DropOwner(o);
     gLicqDaemon->SaveConf();
   }
 

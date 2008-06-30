@@ -168,14 +168,14 @@ void OwnerManagerDlg::addOwner()
 
 void OwnerManagerDlg::registerOwner()
 {
-  if (gUserManager.OwnerUin() != 0)
+  if (!gUserManager.OwnerId(LICQ_PPID).empty())
   {
     QString buf = tr("You are currently registered as\n"
         "UIN (User ID): %1\n"
         "Base Directory: %2\n"
         "Rerun licq with the -b option to select a new\n"
         "base directory and then register a new user.")
-            .arg(gUserManager.OwnerUin()).arg(BASE_DIR);
+        .arg(gUserManager.OwnerId(LICQ_PPID).c_str()).arg(BASE_DIR);
     InformUser(this, buf);
     return;
   }

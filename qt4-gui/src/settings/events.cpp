@@ -326,14 +326,14 @@ void Settings::Events::load()
   mySndMsgSentEdit->setFileName(oem->Parameter(ON_EVENT_MSGSENT));
   oem->Unlock();
   //TODO make general for all plugins
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
   {
     myOnEventAwayCheck->setChecked(o->AcceptInAway());
     myOnEventNaCheck->setChecked(o->AcceptInNA());
     myOnEventOccupiedCheck->setChecked(o->AcceptInOccupied());
     myOnEventDndCheck->setChecked(o->AcceptInDND());
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
   myAlwaysOnlineNotifyCheck->setChecked(gLicqDaemon->AlwaysOnlineNotify());
 }
@@ -392,7 +392,7 @@ void Settings::Events::apply()
 
   oem->SetParameters(txtSndPlayer.toLatin1(), oemparams);
   //TODO Make general for all plugins
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_W);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   if (o)
   {
     o->SetEnableSave(false);
@@ -402,7 +402,7 @@ void Settings::Events::apply()
     o->SetAcceptInDND(myOnEventDndCheck->isChecked());
     o->SetEnableSave(true);
     o->SaveLicqInfo();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
   gLicqDaemon->SetAlwaysOnlineNotify(myAlwaysOnlineNotifyCheck->isChecked());
 
