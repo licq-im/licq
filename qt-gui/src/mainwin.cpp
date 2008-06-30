@@ -1514,7 +1514,8 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             (void) new CUserViewItem(u, i);
         }
       }
-      else if (u->GetInGroup(m_nGroupType, m_nCurrentGroup))
+      else if ((m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0) ||
+          u->GetInGroup(m_nGroupType, m_nCurrentGroup))
       {
         // Update this user if they are in the current group
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
@@ -1659,8 +1660,10 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       else
       {
 
-        if (u->GetInGroup(m_nGroupType, m_nCurrentGroup) && show_user(u) )
-          (void) new CUserViewItem(u, userView);
+        if ((m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0) ||
+            u->GetInGroup(m_nGroupType, m_nCurrentGroup))
+          if (show_user(u))
+            (void) new CUserViewItem(u, userView);
       }
       // as we intercept the user's addition, we set it our default codec
       if (!m_DefaultEncoding.isEmpty())
@@ -1819,9 +1822,7 @@ void CMainWindow::updateUserWin()
   }
   FOR_EACH_USER_START(LOCK_R)
   {
-    // Only show users on the current group and not on the ignore list
-    if (!doGroupView && (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
-      (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) ))
+    if (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST)
       FOR_EACH_USER_CONTINUE
 
     // Ignore offline users if necessary
@@ -1838,8 +1839,12 @@ void CMainWindow::updateUserWin()
       }
     }
     else
-      // Add the user to the list
-      (void) new CUserViewItem(pUser, userView);
+    {
+      if ((m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0) ||
+          pUser->GetInGroup(m_nGroupType, m_nCurrentGroup))
+        // Add the user to the list
+        (void) new CUserViewItem(pUser, userView);
+    }
   }
   FOR_EACH_USER_END
   userView->setUpdatesEnabled(true);
