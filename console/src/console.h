@@ -10,6 +10,7 @@
 #include "window.h"
 #include "licq_user.h"
 
+#include <string>
 using namespace std;
 
 #define MAX_CON 8
@@ -208,7 +209,7 @@ public:
   void UserSelect();
   void InputUserSelect(int cIn);
   bool ParseMacro(char *);
-  unsigned long GetUinFromArg(char **);
+  std::string GetUserFromArg(char** p_szArg);
   void SaveLastUser(const char *, unsigned long);
   struct SContact GetContactFromArg(char **);
 };

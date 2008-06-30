@@ -2,6 +2,9 @@
 #include "event_data.h"
 
 #include <ctype.h>
+#include <string>
+
+using std::string;
 
 const unsigned short NUM_COMMANDS = 24;
 const struct SCommand aCommands[NUM_COMMANDS] =
@@ -538,7 +541,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (nStatus == ICQ_STATUS_OFFLINE)
     {
-      gUserManager.DropOwner(nPPID);
+      gUserManager.DropOwner(o);
       licqDaemon->ProtoLogoff(nPPID);
       continue;
     }
@@ -547,7 +550,7 @@ void CLicqConsole::MenuStatus(char *_szArg)
 
     // call the right function
     bool b = o->StatusOffline();
-    gUserManager.DropOwner(nPPID);
+    gUserManager.DropOwner(o);
     if (b)
     {
        licqDaemon->ProtoLogon(nPPID, nStatus);
@@ -590,10 +593,10 @@ void CLicqConsole::MenuUins(char *)
 /*---------------------------------------------------------------------------
  * CLicqConsole::GetUinFromArg
  *-------------------------------------------------------------------------*/
-unsigned long CLicqConsole::GetUinFromArg(char **p_szArg)
+string CLicqConsole::GetUserFromArg(char** p_szArg)
 {
   char *szAlias, *szCmd;
-  unsigned long nUin = 0;
+  string id;
   bool bCheckUin = true;
   char *szArg = *p_szArg;
 
@@ -610,7 +613,7 @@ unsigned long CLicqConsole::GetUinFromArg(char **p_szArg)
     if (szCmd == NULL)
     {
       winMain->wprintf("%CUnbalanced quotes.\n", COLOR_RED);
-      return (unsigned long)-1;
+      return "-";
     }
     *szCmd++ = '\0';
     szCmd = strchr(szCmd, ' ');
@@ -618,12 +621,12 @@ unsigned long CLicqConsole::GetUinFromArg(char **p_szArg)
   else if (szArg[0] == '#')
   {
     *p_szArg = NULL;
-    return gUserManager.OwnerUin();
+    return gUserManager.OwnerId(LICQ_PPID);
   }
   else if (szArg[0] == '$')
   {
     *p_szArg = NULL;
-    return winMain->nLastUin;
+    return winMain->myLastId;
   }
   else
   {
@@ -638,49 +641,31 @@ unsigned long CLicqConsole::GetUinFromArg(char **p_szArg)
   }
   *p_szArg = szCmd;
 
-  // Find the user
-  // See if all the chars are digits
-  if (bCheckUin)
+  FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
-    char *sz = szAlias;
-    while (isdigit(*sz)) sz++;
-    if (*sz == '\0') nUin = atol(szAlias);
+    if (strcasecmp(szAlias, pUser->GetAlias()) == 0 ||
+        (bCheckUin && strcasecmp(szAlias, pUser->IdString()) == 0))
+    {
+      id = pUser->IdString();
+      FOR_EACH_USER_BREAK;
+    }
   }
+  FOR_EACH_PROTO_USER_END
 
-  if (nUin == 0)
+  if (id.empty())
   {
-    FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
-    {
-      if (strcasecmp(szAlias, pUser->GetAlias()) == 0)
-      {
-        nUin = pUser->Uin();
-        FOR_EACH_USER_BREAK;
-      }
-    }
-    FOR_EACH_PROTO_USER_END
-    if (nUin == 0)
-    {
-      winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
-      return (unsigned long)-1;
-    }
-  }
-  else
-  {
-    if (!gUserManager.IsOnList(nUin))
-    {
-      winMain->wprintf("%CInvalid uin: %A%lu\n", COLOR_RED, A_BOLD, nUin);
-      return (unsigned long)-1;
-    }
+    winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
+    return "-";
   }
 
   // Save this as the last user
-  if (winMain->nLastUin != nUin)
+  if (winMain->myLastId != id)
   {
-    winMain->nLastUin = nUin;
+    winMain->myLastId = id;
     PrintStatus();
   }
 
-  return nUin;
+  return id;
 }
 
 /*---------------------------------------------------------------------------
@@ -737,10 +722,10 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
   else if (szArg[0] == '#')
   {
     *p_szArg = NULL;
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     scon.szId = o->IdString();
-    scon.nPPID = o->PPID(); 
-    gUserManager.DropOwner();
+    scon.nPPID = o->PPID();
+    gUserManager.DropOwner(o);
     return scon;
   }
   else if (szArg[0] == '$')
@@ -814,17 +799,14 @@ void CLicqConsole::MenuMessage(char *szArg)
 void CLicqConsole::MenuInfo(char *szArg)
 {
   char *sz = szArg;
-  unsigned long nUin = GetUinFromArg(&sz);
+  string id = GetUserFromArg(&sz);
 
-  if (nUin == gUserManager.OwnerUin())
+  if (gUserManager.FindOwner(id.c_str(), LICQ_PPID) != NULL)
     winMain->wprintf("%CSetting personal info not implemented yet.\n", COLOR_RED);
-  else if (nUin == 0) {
-    char szUin[24];
-    sprintf(szArg, "%lu", gUserManager.OwnerUin());
-    UserCommand_Info(szUin, LICQ_PPID, sz);
-  } else if (nUin != (unsigned long)-1)
-    sprintf(szArg, "%lu", nUin);
-    UserCommand_Info(szArg, LICQ_PPID, sz);
+  else if (id.empty())
+    UserCommand_Info(gUserManager.OwnerId(LICQ_PPID).c_str(), LICQ_PPID, sz);
+  else if (id != "-")
+    UserCommand_Info(id.c_str(), LICQ_PPID, sz);
 }
 
 
@@ -835,16 +817,14 @@ void CLicqConsole::MenuInfo(char *szArg)
 void CLicqConsole::MenuUrl(char *szArg)
 {
   char *sz = szArg;
-  unsigned long nUin = GetUinFromArg(&sz);
+  string id = GetUserFromArg(&sz);
 
-  if (nUin == gUserManager.OwnerUin())
+  if (gUserManager.FindOwner(id.c_str(), LICQ_PPID) != NULL)
     winMain->wprintf("%CYou can't send URLs to yourself!\n", COLOR_RED);
-  else if (nUin == 0)
+  else if (id.empty())
     winMain->wprintf("%CYou must specify a user to send a URL to.\n", COLOR_RED);
-  else if (nUin != (unsigned long)-1)
-    sprintf(szArg, "%lu", nUin);
-    UserCommand_Url(szArg, LICQ_PPID, sz);
-
+  else if (id != "-")
+    UserCommand_Url(id.c_str(), LICQ_PPID, sz);
 }
 
 
@@ -855,15 +835,12 @@ void CLicqConsole::MenuUrl(char *szArg)
 void CLicqConsole::MenuSms(char *szArg)
 {
   char *sz = szArg;
-  unsigned long nUin = GetUinFromArg(&sz);
+  string id = GetUserFromArg(&sz);
 
-  if (nUin == 0)
+  if (id.empty())
     winMain->wprintf("%CInvalid user\n", COLOR_RED);
-  else if (nUin != (unsigned long)-1)
-  {
-    sprintf(szArg, "%lu", nUin);
-    UserCommand_Sms(szArg, LICQ_PPID, sz);
-  }
+  else if (id != "-")
+    UserCommand_Sms(id.c_str(), LICQ_PPID, sz);
 }
 
 
@@ -886,13 +863,11 @@ void CLicqConsole::MenuView(char *szArg)
     // Do icq system messages first
     ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     unsigned short nNumMsg = o->NewMessages();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
     if (nNumMsg > 0)
     {
       //TODO which owner?
-      char szUin[24];
-      sprintf(szUin, "%lu", gUserManager.OwnerUin());
-      UserCommand_View(szUin, LICQ_PPID, NULL);
+      UserCommand_View(gUserManager.OwnerId(LICQ_PPID).c_str(), LICQ_PPID, NULL);
       return;
     }
 
@@ -926,17 +901,14 @@ void CLicqConsole::MenuView(char *szArg)
 void CLicqConsole::MenuSecure(char *szArg)
 {
   char *sz = szArg;
-  unsigned long nUin = GetUinFromArg(&sz);
+  string id = GetUserFromArg(&sz);
 
-  if (nUin == gUserManager.OwnerUin())
+  if (gUserManager.FindOwner(id.c_str(), LICQ_PPID) != NULL)
     winMain->wprintf("%CYou can't establish a secure connection to yourself!\n", COLOR_RED);
-  else if (nUin == 0)
+  else if (id.empty())
     winMain->wprintf("%CYou must specify a user to talk to.\n", COLOR_RED);
-  else if (nUin != (unsigned long)-1)
-  {
-    sprintf(szArg, "%lu", nUin);
-    UserCommand_Secure(szArg, LICQ_PPID, sz);
-  }
+  else if (id != "-")
+    UserCommand_Secure(id.c_str(), LICQ_PPID, sz);
 }
 
 
@@ -946,11 +918,11 @@ void CLicqConsole::MenuSecure(char *szArg)
 void CLicqConsole::MenuFile(char *szArg)
 {
   char *sz = szArg;
-  unsigned long nUin = GetUinFromArg(&sz);
+  string id = GetUserFromArg(&sz);
 
-  if (nUin == gUserManager.OwnerUin())
+  if (gUserManager.FindOwner(id.c_str(), LICQ_PPID) != NULL)
     winMain->wprintf("%CYou can't send files to yourself!\n", COLOR_RED);
-  else if (nUin == 0)
+  else if (id.empty())
   {
     bool bNum = false;
 
@@ -969,11 +941,8 @@ void CLicqConsole::MenuFile(char *szArg)
        m_cColorInfo->nColor);
     }
   }
-  else if (nUin != (unsigned long)-1)
-  {
-    sprintf(szArg, "%lu", nUin);
-    UserCommand_SendFile(szArg, LICQ_PPID, sz);
-  }
+  else if (id != "-")
+    UserCommand_SendFile(id.c_str(), LICQ_PPID, sz);
 }
 
 
@@ -983,9 +952,9 @@ void CLicqConsole::MenuFile(char *szArg)
 void CLicqConsole::MenuAutoResponse(char *szArg)
 {
   char *sz = szArg;
-  unsigned long nUin = GetUinFromArg(&sz);
+  string id = GetUserFromArg(&sz);
 
-  if (nUin == gUserManager.OwnerUin())
+  if (gUserManager.FindOwner(id.c_str(), LICQ_PPID) != NULL)
   {
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
@@ -994,7 +963,7 @@ void CLicqConsole::MenuAutoResponse(char *szArg)
     ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     winMain->wprintf("%B%CAuto response:\n%b%s\n",
                      COLOR_WHITE, o->AutoResponse());
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
     wattron(winMain->Win(), A_BOLD);
     for (unsigned short i = 0; i < winMain->Cols() - 10; i++)
       waddch(winMain->Win(), ACS_HLINE);
@@ -1002,9 +971,9 @@ void CLicqConsole::MenuAutoResponse(char *szArg)
     winMain->RefreshWin();
     wattroff(winMain->Win(), A_BOLD);
   }
-  else if (nUin == 0)
+  else if (id.empty())
     UserCommand_SetAutoResponse(NULL, LICQ_PPID, sz);
-  else if (nUin != (unsigned long)-1)
+  else if (id != "-")
     UserCommand_FetchAutoResponse(NULL, LICQ_PPID, sz);
 }
 

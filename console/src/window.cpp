@@ -81,7 +81,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _use
     }
   }
 
-  nLastUin = 0;
+  myLastId.clear();
   sLastContact.szId = 0;
   sLastContact.nPPID = 0;
   nLastHistory = 1;

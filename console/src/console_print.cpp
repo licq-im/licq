@@ -130,11 +130,11 @@ void CLicqConsole::PrintStatus()
   werase(winStatus->Win());
 
   unsigned short nNumOwnerEvents = 0;
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o)
   {
     nNumOwnerEvents = o->NewMessages();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
 
   unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
@@ -160,7 +160,7 @@ void CLicqConsole::PrintStatus()
   else
     szLastUser = strdup("<None>");
 
-  o = gUserManager.FetchOwner(LOCK_R);
+  o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   wbkgdset(winStatus->Win(), COLOR_PAIR(COLOR_WHITE));
   mvwhline(winStatus->Win(), 0, 0, ACS_HLINE, COLS);
   //mvwaddch(winStatus->Win(), 0, COLS - USER_WIN_WIDTH - 1, ACS_BTEE);
@@ -175,9 +175,9 @@ void CLicqConsole::PrintStatus()
                        53, CurrentGroupName(), 29,
                        53, szMsgStr, 29, 53,
                        szLastUser, 29);
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
-  
+
   wclrtoeol(winStatus->Win());
   winStatus->RefreshWin();
   free(szLastUser);
@@ -774,7 +774,7 @@ void CLicqConsole::PrintInfo_About(const char *szId, unsigned long nPPID)
 void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
 {
   // Get the user's name
-  ICQUser *u = gUserManager.FetchUser(ftman->Uin(), LOCK_R);
+  ICQUser* u = gUserManager.FetchUser(ftman->Id(), LICQ_PPID, LOCK_R);
 
   // Make the title
   char szTitle[30];

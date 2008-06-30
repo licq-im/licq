@@ -298,11 +298,11 @@ int CLicqConsole::Run(CICQDaemon *_licqDaemon)
     ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     if (o->Password()[0] == '\0')
     {
-      gUserManager.DropOwner();
+      gUserManager.DropOwner(o);
       UserSelect();
     }
     else
-      gUserManager.DropOwner();
+      gUserManager.DropOwner(o);
   }
 
   //fd_set fdSet;
@@ -516,8 +516,8 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     {
       for (unsigned short i = 0; i < MAX_CON; i++)
       {
-        if (s->Uin() == winCon[i]->nLastUin)
-          winCon[i]->nLastUin = 0;
+        if (s->Id() == winCon[i]->myLastId)
+          winCon[i]->myLastId.clear();
       }
     }
     PrintStatus();
@@ -638,8 +638,8 @@ void CLicqConsole::ProcessEvent(ICQEvent *e)
   case ICQ_CMDxSND_REGISTERxUSER:
     // Needs to be better dealt with...
     // How's this then?
-    winMain->wprintf("Registration complete!\nYour UIN is %ld\n",
-                     gUserManager.OwnerUin());
+      winMain->wprintf("Registration complete!\nYour UIN is %s\n",
+          gUserManager.OwnerId(LICQ_PPID).c_str());
     winMain->fProcessInput = &CLicqConsole::InputCommand;
     PrintStatus();
     break;
@@ -814,14 +814,14 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
         const CUserEvent* ue = e->UserEvent();
         if (e->SubResult() == ICQ_TCPxACK_RETURN)
         {
-          u = gUserManager.FetchUser(e->Uin(), LOCK_R);
+          u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
           win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
                        u->GetAlias(), u->StatusStr(), u->AutoResponse());
           gUserManager.DropUser(u);
         }
         else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
         {
-          u = gUserManager.FetchUser(e->Uin(), LOCK_R);
+          u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
           win->wprintf("%s refused %s.\n",
                        u->GetAlias(), ue->Description());
           gUserManager.DropUser(u);
@@ -838,7 +838,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
 
           if(!ea->Accepted())
           {
-            u = gUserManager.FetchUser(e->Uin(), LOCK_R);
+            u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
             win->wprintf("%s refused file: %s\n",
                          u->GetAlias(), ea->Response());
             gUserManager.DropUser(u);
@@ -905,7 +905,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
             } // if file or chat*/
         else
         {
-          u = gUserManager.FetchUser(e->Uin(), LOCK_R);
+          u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
           if (u != NULL && u->Away() && u->ShowAwayMsg())
           {
             win->wprintf("%s\n", u->AutoResponse());
@@ -2148,9 +2148,9 @@ void CLicqConsole::InputAutoResponse(int cIn)
     else
     {
       *sz = '\0';
-      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       o->SetAutoResponse(data->szRsp);
-      gUserManager.DropOwner();
+      gUserManager.DropOwner(o);
       winMain->wprintf("%C%AAuto-response set.\n",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
     }
@@ -3036,9 +3036,9 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             // Passwords match if we are this far, now set up the new user
             winMain->wprintf("Registration complete for user %s\n",data->szUin);
             gUserManager.SetOwnerUin(atol(data->szUin));
-            ICQOwner *owner = gUserManager.FetchOwner(LOCK_W);
+            ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
             owner->SetPassword(data->szPassword1);
-            gUserManager.DropOwner();
+            gUserManager.DropOwner(owner);
 
             winMain->wprintf("Save password? (y/N) ");
             winMain->state = STATE_QUERY;
@@ -3051,13 +3051,13 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
       }
       break;
     }
-  
+
   case STATE_QUERY:
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
     o->SetSavePassword(tolower(cIn) == 'y');
-    gUserManager.DropOwner();
-    
+    gUserManager.DropOwner(o);
+
     if (data->szOption[0] == '1')
     {
       winMain->wprintf("\nRegistering you as a new user...\n");
@@ -3250,16 +3250,13 @@ void CLicqConsole::UserSelect()
   winMain->fProcessInput = &CLicqConsole::InputUserSelect;
   winMain->state = STATE_LE;
 
-  char sz[20];
   //TODO which owner
-  sprintf(sz, "%lu", gUserManager.OwnerUin());
-  
-  winMain->data = new DataUserSelect(sz, LICQ_PPID); 
-  
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  winMain->data = new DataUserSelect(gUserManager.OwnerId(LICQ_PPID).c_str(), LICQ_PPID);
+
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   winMain->wprintf("%A%CEnter your password for %s (%s):%C%Z\n", A_BOLD,
                    COLOR_GREEN, o->GetAlias(), o->IdString(), COLOR_WHITE, A_BOLD);
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 }
 
 /*------------------------------------------------------------------------
@@ -3287,10 +3284,10 @@ void CLicqConsole::InputUserSelect(int cIn)
     
     case STATE_QUERY:
     {
-      ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+      ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       o->SetSavePassword(tolower(cIn) == 'y');
       o->SetPassword(data->szPassword);
-      gUserManager.DropOwner();
+      gUserManager.DropOwner(o);
 
       if (winMain->data)
       {

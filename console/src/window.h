@@ -2,6 +2,7 @@
 #define WINDOW_H
 
 #include <iostream>
+#include <string>
 extern "C" {
 #include <cdk.h>
 }
@@ -68,7 +69,7 @@ public:
   unsigned long event;
   InputState state;
   CData *data;
-  unsigned long nLastUin;
+  std::string myLastId;
   struct SContact sLastContact;
   unsigned short nLastHistory;
 protected:
