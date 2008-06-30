@@ -295,7 +295,7 @@ QString LicqKIMIface::locate(const QString& contactId, const QString& protocol)
     QString kabcID;
 
     FOR_EACH_PROTO_USER_START(PPID, LOCK_R)
-    QString uin = pUser->UinString();
+    QString uin = pUser->IdString();
     if (!uin.isEmpty() && uin == contactId)
     {
         QString id = pUser->IdString();

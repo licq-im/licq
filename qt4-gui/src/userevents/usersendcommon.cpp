@@ -848,16 +848,21 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
     {
       const CEventContactList* ue = dynamic_cast<const CEventContactList*>(e->UserEvent());
       const ContactList& clist = ue->Contacts();
-      UinList uins;
+      UserStringList users;
 
+      // ContactList is const but string list holds "char*" so we have to copy each string
       for (ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
-        uins.push_back((*i)->Uin());
+        users.push_back(strdup((*i)->IdString()));
 
-      if (uins.size() == 0)
+      if (users.size() == 0)
         break;
 
-      icqEventTag = gLicqDaemon->icqSendContactList(strtoul(myUsers.front().c_str(), NULL, 10),
-          uins, online, level, false, &myIcqColor);
+      icqEventTag = gLicqDaemon->icqSendContactList(myUsers.front().c_str(),
+          users, online, level, false, &myIcqColor);
+
+      // Free the strings in the list
+      for (UserStringList::iterator i = users.begin(); i != users.end(); ++i)
+        free(*i);
 
       break;
     }
