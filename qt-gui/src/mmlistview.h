@@ -38,12 +38,10 @@ class CMMUserViewItem : public QListViewItem
 public:
   CMMUserViewItem (ICQUser *, QListView *);
   virtual ~CMMUserViewItem();
-  unsigned long Uin()  { return m_nUin; }
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
 
 protected:
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
 
@@ -56,9 +54,7 @@ class CMMUserView : public QListView
 {
   Q_OBJECT
 public:
-  CMMUserView (ColumnInfos &_colInfo, bool, unsigned long, CMainWindow *,
-     QWidget *parent = 0);
-  CMMUserView(ColumnInfos &_colInfo, bool, char *, unsigned long,
+  CMMUserView(ColumnInfos &_colInfo, bool, const char*, unsigned long,
      CMainWindow *, QWidget *parent = 0);
   virtual ~CMMUserView();
 
@@ -68,7 +64,6 @@ public:
 protected:
   QPopupMenu *mnuMM;
   ColumnInfos colInfo;
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   CMainWindow *mainwin;

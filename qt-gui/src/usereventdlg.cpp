@@ -2190,7 +2190,7 @@ void UserSendCommon::massMessageToggled(bool b)
       (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
       //TODO in CMMUserView
       lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-                                  strtoul(m_lUsers.front().c_str(), (char **)NULL, 10), mainwin, grpMR);
+          m_lUsers.front().c_str(), LICQ_PPID, mainwin, grpMR);
       lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
     }
     grpMR->show();
@@ -2544,16 +2544,21 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventContactList* ue = (CEventContactList *) e->UserEvent();
       const ContactList& clist = ue->Contacts();
-      UinList uins;
+      UserStringList users;
 
+      // ContactList is const but string list holds "char*" so we have to copy each string
       for(ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
-        uins.push_back((*i)->Uin());
+        users.push_back(strdup((*i)->IdString()));
 
-      if(uins.size() == 0)
+      if(users.size() == 0)
         break;
 
-      icqEventTag = server->icqSendContactList(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
-        uins, bOnline, nLevel, false, &icqColor);
+      icqEventTag = server->icqSendContactList(m_lUsers.front().c_str(),
+          users, bOnline, nLevel, false, &icqColor);
+
+      // Free the strings in the list
+      for (UserStringList::iterator i = users.begin(); i != users.end(); ++i)
+        free(*i);
 
       break;
     }

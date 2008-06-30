@@ -46,7 +46,6 @@ CMMUserViewItem::CMMUserViewItem(ICQUser *u, QListView *parent)
 {
   char *sTemp;
 
-  m_nUin = u->Uin();
   m_szId = u->IdString() ? strdup(u->IdString()) : 0;
   m_nPPID = u->PPID();
 
@@ -92,7 +91,7 @@ enum mnuMM_ids
 
 //-----UserList::constructor-----------------------------------------------------------------------
 CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
-   char *szId, unsigned long nPPID, CMainWindow *pMainwin,
+    const char* szId, unsigned long nPPID, CMainWindow *pMainwin,
    QWidget *parent)
    : QListView(parent, "MMUserView")
 {
@@ -123,41 +122,6 @@ CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
 
   setAcceptDrops(true);
 }
-
-
-CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
-   unsigned long nUin, CMainWindow *pMainwin,
-   QWidget *parent)
-   : QListView(parent, "MMUserView")
-{
-  mnuMM = new QPopupMenu(NULL);
-  mnuMM->insertItem(tr("Remove"), mnuMM_remove);
-  mnuMM->insertItem(tr("Crop"), mnuMM_crop);
-  mnuMM->insertItem(tr("Clear"), mnuMM_clear);
-  mnuMM->insertSeparator();
-  mnuMM->insertItem(tr("Add Group"), mnuMM_addgroup);
-  mnuMM->insertItem(tr("Add All"), mnuMM_addall);
-  connect(mnuMM, SIGNAL(activated(int)), SLOT(slot_menu(int)));
-
-  colInfo = _colInfo;
-  m_szId = 0;
-  m_nUin = nUin;
-  mainwin = pMainwin;
-
-  for (unsigned short i = 0; i < colInfo.size(); i++)
-  {
-    addColumn(colInfo[i]->m_sTitle, colInfo[i]->m_nWidth);
-    setColumnAlignment(i, 1<<colInfo[i]->m_nAlign);
-  }
-
-  setAllColumnsShowFocus (true);
-  setSelectionMode(Extended);
-  setSorting(0);
-  bHeader ? header()->show() : header()->hide();
-
-  setAcceptDrops(true);
-}
-
 
 CMMUserView::~CMMUserView()
 {
@@ -267,24 +231,6 @@ void CMMUserView::AddUser(const char *szId, unsigned long nPPID)
   gUserManager.DropUser(u);
 }
 
-void CMMUserView::AddUser(unsigned long nUin)
-{
-  if (nUin == 0 || nUin == m_nUin) return;
-
-  CMMUserViewItem *i = (CMMUserViewItem *)firstChild();
-  while (i != NULL && i->Uin() != nUin)
-    i = (CMMUserViewItem *)i->nextSibling();
-  if (i != NULL) return;
-
-
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
-  if (u == NULL) return;
-  (void) new CMMUserViewItem(u, this);
-  gUserManager.DropUser(u);
-}
-
-
-
 //-----CUserList::mousePressEvent---------------------------------------------
 void CMMUserView::viewportMousePressEvent(QMouseEvent *e)
 {
@@ -349,7 +295,7 @@ void CMMUserView::keyPressEvent(QKeyEvent *e)
     case Key_Home:
       item = firstChild();
       if (item == NULL) return;
-      if (((CMMUserViewItem *)item)->Uin() == 0)
+      if (((CMMUserViewItem *)item)->Id() == NULL)
         item = item->nextSibling();
       setCurrentItem(item);
       setSelected(item, true);
