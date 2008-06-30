@@ -486,8 +486,7 @@ void ICQUser::Unlock()
 
 //=====CUserManager=============================================================
 CUserManager::CUserManager()
-  : m_hUsers(USER_HASH_SIZE),
-    m_szDefaultEncoding(NULL)
+  : m_szDefaultEncoding(NULL)
 {
   // Set up the basic all users and new users group
   pthread_rdwr_init_np(&mutex_grouplist, NULL);
@@ -656,6 +655,7 @@ bool CUserManager::Load()
   char *sz;
   ICQUser *u;
   usersConf.SetFlags(INI_FxWARN);
+  LockUserList(LOCK_W);
   for (unsigned short i = 1; i<= nUsers; i++)
   {
     sprintf(sUserKey, "User%d", i);
@@ -679,15 +679,18 @@ bool CUserManager::Load()
     nPPID = (*(sz+1)) << 24 | (*(sz+2)) << 16 | (*(sz+3)) << 8 | (*(sz+4));
     u = new ICQUser(szId, nPPID, filename);
     u->AddToContactList();
-    m_hUsers.Store(u, szId, nPPID);
+    myUsers[UserMapKey(szId, nPPID)] = u;
     m_vpcUsers.push_back(u);
   }
+  UnlockUserList();
 
   return true;
 }
 
 void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPPID)
 {
+  LockUserList(LOCK_W);
+
   pUser->Lock(LOCK_W);
 
   if (!pUser->NotInList())
@@ -709,10 +712,12 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
     pUser->SaveExtInfo();
   }
 
-  // Store the user in the hash table
-  m_hUsers.Store(pUser, _szId, _nPPID);
+  // Store the user in the lookup map
+  myUsers[UserMapKey(_szId, _nPPID)] = pUser;
   // Reorder the user to the correct place
   m_vpcUsers.push_back(pUser);
+
+  UnlockUserList();
 }
 
 void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
@@ -731,7 +736,7 @@ void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
   else
     m_vpcUsers.erase(iter);
   DropUser(u);
-  m_hUsers.Remove(_szId, _nPPID);
+  myUsers.erase(UserMapKey(_szId, _nPPID));
   UnlockUserList();
   delete u;
 }
@@ -767,7 +772,13 @@ ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
   u = FindOwner(_szId, _nPPID);
 
   if (u == NULL)
-    u = m_hUsers.Retrieve(_szId, _nPPID);
+  {
+    LockUserList(LOCK_R);
+    UserMap::iterator iter = myUsers.find(UserMapKey(_szId, _nPPID));
+    if (iter != myUsers.end())
+      u = iter->second;
+    UnlockUserList();
+  }
 
   if (u != NULL)
   {
@@ -787,8 +798,15 @@ ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
 
 bool CUserManager::IsOnList(const char *_szId, unsigned long _nPPID)
 {
-  if (FindOwner(_szId, _nPPID)) return true;
-  return m_hUsers.Retrieve(_szId, _nPPID) != NULL;
+  if (FindOwner(_szId, _nPPID))
+    return true;
+
+  LockUserList(LOCK_R);
+  UserMap::iterator iter = myUsers.find(UserMapKey(_szId, _nPPID));
+  bool found = (iter != myUsers.end());
+  UnlockUserList();
+
+  return found;
 }
 
 // This differs by FetchOwner by requiring an Id.  This isn't used to
@@ -1645,135 +1663,6 @@ void CUserManager::SetDefaultUserEncoding(const char* defaultEncoding)
 {
   SetString(&m_szDefaultEncoding, defaultEncoding);
 }
-
-
-//=====CUserHashTable===========================================================
-CUserHashTable::CUserHashTable(unsigned short _nSize) : m_vlTable(_nSize)
-{
-  pthread_rdwr_init_np(&mutex_rw, NULL);
-  pthread_rdwr_set_name(&mutex_rw, __func__);
-  m_nLockType = LOCK_R;
-}
-
-CUserHashTable::~CUserHashTable()
-{
-  pthread_rdwr_destroy_np(&mutex_rw);
-}
-
-ICQUser *CUserHashTable::Retrieve(const char *_szId, unsigned long _nPPID)
-{
-  Lock(LOCK_R);
-
-  ICQUser *u = NULL;
-  char *szRealId;
-  ICQUser::MakeRealId(_szId, _nPPID, szRealId);
-  UserList &l = m_vlTable[HashValue(szRealId)];
-  char *szTempId = 0;
-  unsigned long nPPID;
-  UserList::iterator iter;
-  for (iter = l.begin(); iter != l.end(); ++iter)
-  {
-    nPPID = (*iter)->PPID();
-    ICQUser::MakeRealId((*iter)->IdString(), nPPID, szTempId);
-    if (_nPPID == nPPID && strcasecmp(szTempId, szRealId) == 0)
-    {
-      u = (*iter);
-      break;
-    }
-    delete [] szTempId; szTempId = 0;
-  }
-  if (iter == l.end()) u = NULL;
-
-  delete [] szRealId;
-  if (szTempId) delete [] szTempId;
-
-  Unlock();
-  return u;
-}
-
-void CUserHashTable::Store(ICQUser *u, const char *_szId, unsigned long _nPPID)
-{
-  Lock(LOCK_W);
-  char *szRealId;
-  ICQUser::MakeRealId(_szId, _nPPID, szRealId);
-  UserList &l = m_vlTable[HashValue(szRealId)];
-  delete [] szRealId;
-  l.push_front(u);
-  Unlock();
-}
-
-void CUserHashTable::Remove(const char *_szId, unsigned long _nPPID)
-{
-  Lock(LOCK_W);
-
-  char *szRealId;
-  ICQUser::MakeRealId(_szId, _nPPID, szRealId);
-  UserList &l = m_vlTable[HashValue(szRealId)];
-  delete [] szRealId;
-  char *szId;
-  unsigned long nPPID;
-  UserList::iterator iter;
-  for (iter = l.begin(); iter != l.end(); ++iter)
-  {
-    (*iter)->Lock(LOCK_R);
-    szId = (*iter)->IdString();
-    nPPID = (*iter)->PPID();
-    (*iter)->Unlock();
-    if (_nPPID == nPPID && strcmp(szId, _szId) == 0)
-    {
-      l.erase(iter);
-      break;
-    }
-  }
-
-  Unlock();
-}
-
-unsigned short CUserHashTable::HashValue(const char *_szId)
-{
-  int j = strlen(_szId);
-  unsigned short nRet = 0;
-  for (int i = 0; i < j; i++)
-    nRet += (unsigned short)_szId[i];
-
-  return (nRet % (USER_HASH_SIZE - 1));
-}
-
-void CUserHashTable::Lock(unsigned short _nLockType)
-{
-  switch (_nLockType)
-  {
-  case LOCK_R:
-    pthread_rdwr_rlock_np (&mutex_rw);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wlock_np(&mutex_rw);
-    break;
-  default:
-    assert(false);
-    return;
-  }
-  m_nLockType = _nLockType;
-}
-
-void CUserHashTable::Unlock()
-{
-  unsigned short nLockType = m_nLockType;
-  m_nLockType = LOCK_R;
-  switch (nLockType)
-  {
-  case LOCK_R:
-    pthread_rdwr_runlock_np(&mutex_rw);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wunlock_np(&mutex_rw);
-    break;
-  default:
-    assert(false);
-    break;
-  }
-}
-
 
 
 LicqGroup::LicqGroup(unsigned short id, const string& name)

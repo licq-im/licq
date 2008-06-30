@@ -233,6 +233,8 @@ class ICQUser;
 class ICQOwner;
 class LicqGroup;
 
+typedef std::pair<std::string, unsigned long> UserMapKey;
+typedef std::map<UserMapKey, class ICQUser*> UserMap;
 typedef std::list<ICQUser *> UserList;
 typedef std::list<class ICQOwner *> OwnerList;
 typedef std::set<unsigned short> UserGroupList;
@@ -1151,33 +1153,6 @@ protected:
   unsigned short m_nPDINFO;
 };
 
-
-//=====CUsers===================================================================
-
-class CUserHashTable
-{
-public:
-  CUserHashTable(unsigned short _nSize);
-  ~CUserHashTable();
-
-  // For protocol plugins
-  ICQUser *Retrieve(const char *, unsigned long);
-  void Store(ICQUser *, const char *, unsigned long);
-  void Remove(const char *, unsigned long);
-
-protected:
-  // For protocol plugin
-  unsigned short HashValue(const char *);
-
-  void Lock(unsigned short _nLockType);
-  void Unlock();
-
-  std::vector < UserList > m_vlTable;
-
-  pthread_rdwr_t mutex_rw;
-  unsigned short m_nLockType;
-};
-
 /**
  * Class holding data for a user group in the contact list.
  * System groups only exists as a bitmask in ICQUser.
@@ -1511,8 +1486,8 @@ protected:
 
   GroupMap myGroups;
   UserList m_vpcUsers;
+  UserMap myUsers;
   OwnerList m_vpcOwners;
-  CUserHashTable m_hUsers;
   ICQOwner *m_xOwner;
   unsigned long m_nOwnerUin;
   unsigned short m_nUserListLockType;
