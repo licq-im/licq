@@ -676,7 +676,7 @@ int CRMSClient::StateMachine()
     }
     case STATE_PASSWORD:
     {
-      ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+      ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
       if (o == NULL)
         return -1;
 
@@ -686,7 +686,7 @@ int CRMSClient::StateMachine()
       m_szCheckId = 0;
       if (!ok)
       {
-        gUserManager.DropOwner();
+        gUserManager.DropOwner(o);
         gLog.Info("%sClient failed validation from %s.\n", L_RMSxSTR,
            sock.RemoteIpStr(buf));
         fprintf(fs, "%d Invalid ID/Password.\n", CODE_INVALID);
@@ -698,7 +698,7 @@ int CRMSClient::StateMachine()
       fprintf(fs, "%d Hello %s.  Type HELP for assistance.\n", CODE_HELLO,
          o->GetAlias());
       fflush(fs);
-      gUserManager.DropOwner();
+      gUserManager.DropOwner(o);
       m_nState = STATE_COMMAND;
       break;
     }
@@ -848,7 +848,7 @@ int CRMSClient::Process_STATUS()
       if (o)
       {
         fprintf(fs, "%d %s %s %s\n", CODE_STATUS, o->IdString(), (*it)->Name(), o->StatusStr());
-        gUserManager.DropOwner((*it)->PPID());
+        gUserManager.DropOwner(o);
       }
     }
     fprintf(fs, "%d\n", CODE_STATUSxDONE);
@@ -902,7 +902,7 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
   {
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     bool b = o->StatusOffline();
-    gUserManager.DropOwner(nPPID);
+    gUserManager.DropOwner(o);
     unsigned long tag = 0;
     if (b)
     {
@@ -1287,7 +1287,7 @@ int CRMSClient::Process_AR_text()
   {
     ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_W);
     o->SetAutoResponse(m_szText);
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
   else
   {
