@@ -97,9 +97,9 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
   if (m_szStatus != NULL)
   {
     unsigned long s = StringToStatus(m_szStatus);
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     bool b = o->StatusOffline();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
     if (s == INT_MAX)
       gLog.Warn("%sInvalid startup status.\n", L_AUTOREPxSTR);
     else
