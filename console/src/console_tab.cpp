@@ -72,7 +72,8 @@ void CLicqConsole::TabUser(char *_szPartialMatch,
     FOR_EACH_USER_START(LOCK_R)
     {
       // Ignored users and users not in the current group are unwanted
-      if (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
+      if ((!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
+          (m_nGroupType != GROUPS_USER || m_nCurrentGroup != 0)) ||
           (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
         FOR_EACH_USER_CONTINUE
 

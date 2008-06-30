@@ -535,7 +535,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
         bool isInGroup = u->GetInGroup(m_nGroupType, m_nCurrentGroup);
         gUserManager.DropUser(u);
 
-        if (isInGroup)
+        if (isInGroup || (m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0))
         {
           CreateUserList();
           PrintUsers();

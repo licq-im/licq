@@ -286,7 +286,8 @@ void CLicqConsole::CreateUserList()
   FOR_EACH_USER_START(LOCK_R)
   {
     // Only show users on the current group and not on the ignore list
-    if (!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) ||
+    if ((!pUser->GetInGroup(m_nGroupType, m_nCurrentGroup) &&
+        (m_nGroupType != GROUPS_USER || m_nCurrentGroup != 0)) ||
         (pUser->IgnoreList() && m_nGroupType != GROUPS_SYSTEM && m_nCurrentGroup != GROUP_IGNORE_LIST) )
       FOR_EACH_USER_CONTINUE
 
