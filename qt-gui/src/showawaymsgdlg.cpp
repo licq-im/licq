@@ -101,18 +101,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
   show();
 }
 
-ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman, unsigned long _nUin, QWidget *parent)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = 0;
-  
-  ShowAwayMsgDlg(_server, _sigman, szUin, LICQ_PPID, parent);
-}
-
-
-// -----------------------------------------------------------------------------
-
 ShowAwayMsgDlg::~ShowAwayMsgDlg()
 {
   if (m_szId) free(m_szId);

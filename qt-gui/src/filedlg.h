@@ -38,7 +38,6 @@ class CFileDlg : public QWidget
 {
    Q_OBJECT
 public:
-  CFileDlg(unsigned long _nUin, CICQDaemon *daemon, QWidget* parent = 0);
   CFileDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
     QWidget *parent = 0);
   virtual ~CFileDlg();
@@ -49,7 +48,6 @@ public:
   unsigned short LocalPort();
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }
-  unsigned long Uin()  { return m_nUin; };
 
 protected:
    QLabel *lblTransferFileName, *lblLocalFileName, *lblFileSize,
@@ -68,7 +66,6 @@ protected:
 
    CFileTransferManager *ftman;
 
-   unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
    CICQDaemon *licqDaemon;

@@ -337,65 +337,6 @@ CustomAwayMsgDlg::CustomAwayMsgDlg(const char *szId,
   show();
 }
 
-CustomAwayMsgDlg::CustomAwayMsgDlg(unsigned long nUin, QWidget *parent)
-    : LicqDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
-{
-  m_nUin = nUin;
-
-  QBoxLayout* top_lay = new QVBoxLayout(this, 10);
-
-  mleAwayMsg = new MLEditWrap(true, this);
-  connect(mleAwayMsg, SIGNAL(signal_CtrlEnterPressed()), this, SLOT(slot_ok()));
-  top_lay->addWidget(mleAwayMsg);
-
-  QBoxLayout* l = new QHBoxLayout(top_lay, 10);
-
-  int bw = 75;
-  QPushButton *btnHints = new QPushButton(tr("&Hints"), this);
-  connect(btnHints, SIGNAL(clicked()), SLOT(slot_hints()));
-  QPushButton *btnOk = new QPushButton(tr("&Ok"), this );
-  btnOk->setDefault(true);
-  connect( btnOk, SIGNAL(clicked()), SLOT(slot_ok()) );
-  QPushButton *btnClear = new QPushButton(tr("&Clear"), this );
-  connect( btnClear, SIGNAL(clicked()), SLOT(slot_clear()) );
-  QPushButton *btnCancel = new QPushButton(tr("&Cancel"), this );
-  connect( btnCancel, SIGNAL(clicked()), SLOT(close()) );
-  bw = QMAX(bw, btnOk->sizeHint().width());
-  bw = QMAX(bw, btnClear->sizeHint().width());
-  bw = QMAX(bw, btnCancel->sizeHint().width());
-  bw = QMAX(bw, btnHints->sizeHint().width());
-  btnOk->setFixedWidth(bw);
-  btnClear->setFixedWidth(bw);
-  btnCancel->setFixedWidth(bw);
-  btnHints->setFixedWidth(bw);
-
-  l->addStretch(1);
-  l->addSpacing(30);
-  l->addWidget(btnHints);
-  l->addSpacing(20);
-  l->addWidget(btnOk);
-  l->addWidget(btnClear);
-  l->addWidget(btnCancel);
-
-  ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_R);
-  setCaption(QString(tr("Set Custom Auto Response for %1"))
-             .arg(QString::fromUtf8(u->GetAlias())));
-  if (*u->CustomAutoResponse())
-    mleAwayMsg->setText(QString::fromLocal8Bit(u->CustomAutoResponse()));
-  else if (u->StatusToUser() != ICQ_STATUS_OFFLINE)
-    mleAwayMsg->setText(tr("I am currently %1.\nYou can leave me a message.")
-                        .arg(Strings::getStatus(u->StatusToUser(), false)));
-
-  gUserManager.DropUser(u);
-
-  mleAwayMsg->setFocus();
-  QTimer::singleShot(0, mleAwayMsg, SLOT(selectAll()));
-
-  show();
-}
-
-
-// -----------------------------------------------------------------------------
 void CustomAwayMsgDlg::slot_hints()
 {
   QString h = tr(hints);

@@ -221,15 +221,12 @@ class CMessageViewWidget : public MLView
 private:
   char *m_szId;
   unsigned long m_nPPID;
-  unsigned long m_nUin;
   CMainWindow *mainwin;
 public:
   static QStringList getStyleNames(bool includeHistoryStyles = false);
 
   CMessageViewWidget(const char *szId, unsigned long nPPID,
     CMainWindow *m, QWidget *parent = 0, const char *name = 0, bool historyMode = false);
-  CMessageViewWidget(unsigned long _nUin, CMainWindow *m,
-    QWidget* parent = 0, const char *name = 0, bool historyMode = false);
   virtual ~CMessageViewWidget();
 
   void setOwner(const char *szId);

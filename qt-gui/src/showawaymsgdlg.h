@@ -37,15 +37,12 @@ class ShowAwayMsgDlg : public LicqDialog
 {
   Q_OBJECT
 public:
-  ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
-                 unsigned long _nUin, QWidget *parent = 0);
   ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager *_sigman,
                  const char *szId, unsigned long nPPID,
                  QWidget *parent = 0);
   virtual ~ShowAwayMsgDlg();
 
 protected:
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   MLEditWrap *mleAwayMsg;

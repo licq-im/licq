@@ -837,57 +837,6 @@ CMessageViewWidget::CMessageViewWidget(const char *szId, unsigned long nPPID,
 */
 }
 
-CMessageViewWidget::CMessageViewWidget(unsigned long _nUin, CMainWindow *m, QWidget *parent, const char *name, bool historyMode)
-  : MLView(parent,name)
-{
-  setTextFormat(RichText);
-  m_nUin= _nUin;
-  m_szId = NULL; // avoid desalocation error at destructor
-  if (historyMode)
-  {
-    m_useBuffer = true;
-    m_nMsgStyle = m->m_histMsgStyle;
-    m_nDateFormat = m->m_histDateFormat;
-    m_extraSpacing = m->m_histVertSpacing;
-    m_appendLineBreak = false;
-  }
-  else
-  {
-    m_useBuffer = false;
-    m_nMsgStyle = m->m_chatMsgStyle;
-    m_nDateFormat = m->m_chatDateFormat;
-    m_extraSpacing = m->m_chatVertSpacing;
-    m_appendLineBreak = m->m_chatAppendLineBreak;
-  }
-  m_showNotices = m->m_showNotices;
-  m_colorRcv = m->m_colorRcv;
-  m_colorSnt = m->m_colorSnt;
-  m_colorRcvHistory = m->m_colorRcvHistory;
-  m_colorSntHistory = m->m_colorSntHistory;
-  m_colorNotice = m->m_colorNotice;
-  setPaletteBackgroundColor(m->m_colorChatBkg);
-  mainwin = m;
-
-  clear();
-
-/*
-  // add all unread messages.
-  vector<CUserEvent*> newEventList;
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_W);
-  if (u != NULL && u->NewMessages() > 0)
-  {
-    for (unsigned short i = 0; i < u->NewMessages(); i++)
-    {
-      CUserEvent *e = u->EventPeek(i);
-      if (e->Direction() == D_RECEIVER && e->SubCommand() == ICQ_CMDxSUB_MSG)
-	newEventList.push_back(e);
-    }
-  }
-  gUserManager.DropUser(u);
-  for (unsigned short i = 0; i < newEventList.size(); i++)
-    addMsg(newEventList[i]); */
-}
-
 CMessageViewWidget::~CMessageViewWidget()
 {
   if (m_szId)

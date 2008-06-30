@@ -4682,7 +4682,7 @@ void CMainWindow::showAddUserDlg()
 
 void CMainWindow::showAuthUserDlg()
 {
-  (void) new AuthUserDlg(licqDaemon, 0, true);
+  (void) new AuthUserDlg(licqDaemon, NULL, 0, true);
 }
 
 // Wrapper for the true function, necessary to kill a Qt2 warning
