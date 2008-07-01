@@ -851,7 +851,7 @@ CPU_NewLogon::CPU_NewLogon(const char *szPassword, const char *szUin, const char
 
   // Static versioning
   buffer->PackUnsignedLongBE(0x00160002);
-  buffer->PackUnsignedShortBE(0x010A);
+  buffer->PackUnsignedShortBE(0x010B);
   // Client version major (4 == ICQ2000, 5 == ICQ2001)
   buffer->PackUnsignedLongBE(0x00170002);
   buffer->PackUnsignedShortBE(0x0014);
@@ -920,7 +920,7 @@ CPU_Logon::CPU_Logon(const char *szPassword, const char *szUin, unsigned short _
 
   // Static versioning
   buffer->PackUnsignedLongBE(0x00160002);
-  buffer->PackUnsignedShortBE(0x010A);
+  buffer->PackUnsignedShortBE(0x010B);
   // Client version major (4 == ICQ2000, 5 == ICQ2001)
   buffer->PackUnsignedLongBE(0x00170002);
   buffer->PackUnsignedShortBE(0x0014);
