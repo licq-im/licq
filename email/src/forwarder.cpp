@@ -101,10 +101,10 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
       break;
     case FORWARD_ICQ:
       conf.SetSection("ICQ");
-      conf.ReadNum("Uin", m_nUINTo, 0);
-      if (m_nUINTo == 0)
+      conf.ReadStr("Uin", myUserId, "");
+      if (myUserId[0] == '\0')
       {
-        gLog.Error("%sInvalid ICQ forward UIN: %ld\n", L_FORWARDxSTR, m_nUINTo);
+        gLog.Error("%sInvalid ICQ forward UIN: %s\n", L_FORWARDxSTR, myUserId);
         return 1;
       }
       break;
@@ -341,14 +341,14 @@ bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
           u->GetAlias(), u->IdString(), szTime, e->Text());
-  unsigned long tag = licqDaemon->icqSendMessage(m_nUINTo, szText, false, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = licqDaemon->icqSendMessage(myUserId, szText, false, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == 0)
   {
-    gLog.Warn("%sSending message to %ld failed.\n", L_FORWARDxSTR, m_nUINTo);
+    gLog.Warn("%sSending message to %s failed.\n", L_FORWARDxSTR, myUserId);
     return false;
   }
-  gLog.Info("%sForwarded message from %s (%s) to %ld.\n", L_FORWARDxSTR, u->GetAlias(), u->IdString(), m_nUINTo);
+  gLog.Info("%sForwarded message from %s (%s) to %s.\n", L_FORWARDxSTR, u->GetAlias(), u->IdString(), myUserId);
   return true;
 }
 

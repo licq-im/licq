@@ -32,7 +32,7 @@ protected:
   unsigned short m_nSMTPPort;
   char m_szSMTPHost[256], m_szSMTPTo[256], m_szSMTPFrom[256],
        m_szSMTPDomain[256];
-  unsigned long m_nUINTo;
+  char myUserId[16];
   unsigned short m_nForwardType;
 
   CICQDaemon *licqDaemon;
