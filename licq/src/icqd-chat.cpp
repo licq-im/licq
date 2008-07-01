@@ -48,10 +48,8 @@ CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
 {
   m_szName = NULL;
   m_nPort = _nLocalPort;
-  m_nUin = gUserManager.OwnerUin();
-  char szUin[24];
-  sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
+  m_szId = strdup(gUserManager.OwnerId(LICQ_PPID).c_str());
+  m_nUin = atol(m_szId);
   m_nPPID = LICQ_PPID;
   m_nColorForeRed = nColorForeRed;
   m_nColorForeGreen = nColorForeGreen;
@@ -65,7 +63,7 @@ CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
 
   buffer->PackUnsignedLong(0x65);
   buffer->PackUnsignedLong(-ICQ_VERSION_TCP);
-  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedLong(m_nUin);
   buffer->PackString(_sLocalName);
   buffer->PackUnsignedShort(ReversePort(_nLocalPort));
   buffer->PackChar(nColorForeRed);
@@ -304,10 +302,8 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
 {
   m_szName = NULL;
   m_nPort = nLocalPort;
-  m_nUin = gUserManager.OwnerUin();
-  char szUin[24];
-  sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
+  m_szId = strdup(gUserManager.OwnerId(LICQ_PPID).c_str());
+  m_nUin = atol(m_szId);
   m_nPPID = LICQ_PPID;
   m_nColorForeRed = nColorForeRed;
   m_nColorForeGreen = nColorForeGreen;
@@ -331,7 +327,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   InitBuffer();
 
   buffer->PackUnsignedLong(0x65);
-  buffer->PackUnsignedLong(gUserManager.OwnerUin());
+  buffer->PackUnsignedLong(m_nUin);
   buffer->PackString(szLocalName);
   buffer->PackChar(nColorForeRed);
   buffer->PackChar(nColorForeGreen);
@@ -687,11 +683,11 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
 //  m_nSession = rand();
   licqDaemon = d;
 
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   strncpy(m_szName, o->GetAlias(), 32);
   m_szName[31] = '\0';
   m_nSession = o->Port();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   m_nFontFace = FONT_PLAIN;
   if (fontBold) m_nFontFace |= FONT_BOLD;
@@ -812,10 +808,10 @@ bool CChatManager::ConnectToChat(CChatClient *c)
 
   if (!bSuccess)
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     unsigned long nIp = bSendIntIp ? o->IntIp() : o->Ip();
-    gUserManager.DropOwner();
-  
+    gUserManager.DropOwner(o);
+
     // try reverse connect
     int nId = licqDaemon->RequestReverseConnection(c->m_nUin, c->m_nSession,
                                                  nIp, LocalPort(), c->m_nPort);

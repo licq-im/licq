@@ -91,7 +91,7 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
            (s == ICQ_STATUS_OCCUPIED && !u->AcceptInOccupied() && !o->AcceptInOccupied()) ||
            (s == ICQ_STATUS_DND && !u->AcceptInDND() && !o->AcceptInDND() ));
   }
-  gUserManager.DropOwner(nPPID);
+  gUserManager.DropOwner(o);
   if (no) return;
 
   pthread_mutex_lock(&mutex);

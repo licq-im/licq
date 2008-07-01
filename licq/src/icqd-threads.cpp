@@ -405,10 +405,10 @@ void *ProcessRunningEvent_Client_tep(void *p)
     bool bSendIntIp = u->SendIntIp();
     gUserManager.DropUser(u);
 
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     unsigned long nIP = bSendIntIp ? o->IntIp() : o->Ip();
     unsigned short nLocalPort = o->Port();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
 
     int socket = -1;
     if (!bSendIntIp && nVersion > 6 && nMode != MODE_DIRECT)
@@ -732,7 +732,7 @@ void *MonitorSockets_tep(void *p)
         else
         {
           INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
-          if (s != NULL && s->Owner() == gUserManager.OwnerUin() &&
+          if (s != NULL && s->Owner() == gUserManager.icqOwnerUin() &&
               d->m_nTCPSrvSocketDesc == -1)
           {
             /* This is the server socket and it is about to be destoryed

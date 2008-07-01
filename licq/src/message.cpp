@@ -143,7 +143,7 @@ void CUserEvent::AddToHistory_Flush(ICQUser* u, unsigned long nPPID, const char*
   {
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_W);
     o->WriteToHistory(szOut);
-    gUserManager.DropOwner(nPPID);
+    gUserManager.DropOwner(o);
   }
 }
 

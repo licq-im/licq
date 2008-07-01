@@ -203,21 +203,15 @@ unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
 //-----CICQDaemon::icqFetchAutoResponse (deprecated!)---------------------------
 unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long /* nUin */, bool /* bServer */)
 {
-  char szId[13];
-  snprintf(szId, 12, "%lu", gUserManager.OwnerUin());
-  szId[12] = 0;
-  
-  return icqFetchAutoResponse(szId, LICQ_PPID);
+  return icqFetchAutoResponse(gUserManager.OwnerId(LICQ_PPID).c_str(), LICQ_PPID);
 }
 
 //-----CICQDaemon::icqFetchAutoResponse-----------------------------------------
 unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
 {
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", gUserManager.OwnerUin());
-  szUin[12] = 0;
-  if (_szId == szUin) return 0;
-  
+  if (_szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
+
   if (isalpha(_szId[0]))
     return icqFetchAutoResponseServer(_szId);
 
@@ -276,7 +270,7 @@ unsigned long CICQDaemon::icqSendUrl(const char *_szId, const char *url,
     bool isOwner = false;
     if (strcmp(o->IdString(), _szId) == 0)
       isOwner = true;
-    gUserManager.DropOwner(LICQ_PPID);
+    gUserManager.DropOwner(o);
     if (isOwner)
       return 0;
   }
@@ -550,72 +544,6 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
   sprintf(szUin, "%lu", nUin);
   return icqSendContactList(szUin, users,online, nLevel, bMultipleRecipients,
     pColor);
-#if 0
-  if (nUin == gUserManager.OwnerUin()) return 0;
-
-  char *m = new char[3 + uins.size() * 80];
-  int p = sprintf(m, "%d%c", uins.size(), char(0xFE));
-  ContactList vc;
-
-  ICQUser *u = NULL;
-  UinList::iterator iter;
-  for (iter = uins.begin(); iter != uins.end(); ++iter)
-  {
-    u = gUserManager.FetchUser(*iter, LOCK_R);
-    p += sprintf(&m[p], "%lu%c%s%c", *iter, char(0xFE),
-       u == NULL ? "" : u->GetAlias(), char(0xFE));
-    vc.push_back(new CContact(*iter, u == NULL ? "" : u->GetAlias()));
-    gUserManager.DropUser(u);
-  }
-
-  if (!online && p > MAX_MESSAGE_SIZE)
-  {
-    gLog.Warn("%sContact list too large to send through server.\n", L_WARNxSTR);
-    delete []m;
-    return 0;
-  }
-
-  CEventContactList *e = NULL;
-  ICQEvent *result = NULL;
-
-  unsigned long f = INT_VERSION;
-  if (online) f |= E_DIRECT;
-  if (nLevel == ICQ_TCPxMSG_URGENT) f |= E_URGENT;
-  if (bMultipleRecipients) f |= E_MULTIxREC;
-
-  if (!online) // send offline
-  {
-    e = new CEventContactList(vc, false, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    result = icqSendThroughServer(nUin, ICQ_CMDxSUB_CONTACTxLIST | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e);
-    u = gUserManager.FetchUser(nUin, LOCK_W);
-  }
-  else
-  {
-    u = gUserManager.FetchUser(nUin, LOCK_W);
-    if (u == NULL) return 0;
-    if (u->Secure()) f |= E_ENCRYPTED;
-    e = new CEventContactList(vc, false, ICQ_CMDxTCP_START, TIME_NOW, f);
-    if (pColor != NULL) e->SetColor(pColor);
-    CPT_ContactList *p = new CPT_ContactList(m, nLevel, bMultipleRecipients, pColor, u);
-    gLog.Info("%sSending %scontact list to %s (#%hu).\n", L_TCPxSTR,
-       nLevel == ICQ_TCPxMSG_URGENT ? "urgent " : "",
-       u->GetAlias(), -p->Sequence());
-    result = SendExpectEvent_Client(u, p, e);
-  }
-  if (u != NULL)
-  {
-    u->SetSendServer(!online);
-    u->SetSendLevel(nLevel);
-    gUserManager.DropUser(u);
-  }
-
-  if (pColor != NULL) CICQColor::SetDefaultColors(pColor);
-
-  delete []m;
-  if (result != NULL)
-    return result->EventId();
-  return 0;
-#endif
 }
 
 //-----CICQDaemon::sendInfoPluginReq--------------------------------------------
@@ -974,7 +902,8 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
    const char *reason, const char *szChatUsers, unsigned short nPort,
    unsigned short nLevel, bool bServer)
 {
-  if (nUin == gUserManager.OwnerUin()) return 0;
+  if (nUin == gUserManager.icqOwnerUin())
+    return 0;
 
   ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
   if (u == NULL) return 0;
@@ -1830,10 +1759,10 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     return false;
   }
 
-  if (nUin == gUserManager.OwnerUin() || nUin != pSock->Owner())
+  if (nUin == gUserManager.icqOwnerUin() || nUin != pSock->Owner())
   {
     char *buf;
-    if(nUin == gUserManager.OwnerUin())
+    if (nUin == gUserManager.icqOwnerUin())
       gLog.Warn(tr("%sTCP message from self (probable spoof):\n%s\n"), L_WARNxSTR, packet.print(buf));
     else
       gLog.Warn(tr("%sTCP message from invalid UIN (%ld, expect %ld):\n%s\n"),
@@ -1843,9 +1772,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   }
 
   // Store our status for later use
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned short nOwnerStatus = o->Status();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   // find which user was sent
   bool bNewUser = false;
@@ -3506,9 +3435,9 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
       {
         gLog.Info("%sFile server status request from %s.\n", szInfo,
                                                               u->GetAlias());
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
         unsigned long nStatus = o->SharedFilesStatus();
-        gUserManager.DropOwner();
+        gUserManager.DropOwner(o);
         if (pSock)
         {
           CPT_StatusPluginResp p(u, nSequence, nStatus);
@@ -3525,9 +3454,9 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
       {
         gLog.Info("%sICQphone status request from %s.\n", szInfo,
                                                               u->GetAlias());
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
         unsigned long nStatus = o->ICQphoneStatus();
-        gUserManager.DropOwner();
+        gUserManager.DropOwner(o);
         if (pSock)
         {
           CPT_StatusPluginResp p(u, nSequence, nStatus);
@@ -3544,9 +3473,9 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
       {
         gLog.Info("%sPhone \"Follow Me\" status request from %s.\n", szInfo,
                                                               u->GetAlias());
-        ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+        ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
         unsigned long nStatus = o->PhoneFollowMeStatus();
-        gUserManager.DropOwner();
+        gUserManager.DropOwner(o);
         if (pSock)
         {
           CPT_StatusPluginResp p(u, nSequence, nStatus);

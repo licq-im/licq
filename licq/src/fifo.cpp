@@ -153,7 +153,7 @@ static int process_tok(const command_t *table,const char *tok);
 unsigned long
 StringToStatus(char *_szStatus)
 {
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned long nStatus = o->AddStatusFlags(0);
   int i =0;
   static struct 
@@ -171,7 +171,7 @@ StringToStatus(char *_szStatus)
     { "offline",  ICQ_STATUS_OFFLINE     },
     { NULL,       0                      }
   };
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
   if (_szStatus[0] == '*')
   {
     _szStatus++;
@@ -334,7 +334,6 @@ static bool atoid( const char *buff, bool bOnList,
 // status 
 static int fifo_status( int argc, const char *const *argv, void *data)
 {
-  ICQOwner *o;
   CICQDaemon *d= (CICQDaemon *) data;
   const char *szStatus = argv[1];
   bool bOffline;
@@ -347,9 +346,9 @@ static int fifo_status( int argc, const char *const *argv, void *data)
   }
 
   // Determine the status to go to
-  o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   bOffline = o->StatusOffline();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
   nStatus = StringToStatus(const_cast<char *>(szStatus));
 
   if (nStatus == INT_MAX)
@@ -373,9 +372,9 @@ static int fifo_status( int argc, const char *const *argv, void *data)
   // Now set the auto response
   if( argc > 2 )
   {
-    ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
     o->SetAutoResponse(argv[2]);
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
 
   return 0;
@@ -385,17 +384,15 @@ static int fifo_status( int argc, const char *const *argv, void *data)
 // auto_response <auto response>
 static int fifo_auto_response( int argc, const char *const *argv, void* /* data */)
 {
-  ICQOwner *o; 
-
   if( argc == 1 )
   {
     ReportMissingParams(argv[0]);
     return -1;
   }
 
-  o = gUserManager.FetchOwner(LOCK_W);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   o->SetAutoResponse(argv[1]);
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   return 0;
 }
@@ -503,9 +500,9 @@ static int fifo_sms_number(int argc, const char *const *argv, void *data)
     return -1;
   }
 
-  ICQUser *owner = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   d->icqSendSms(argv[1], argv[2], owner->Uin());
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(owner);
   return 0;
 }
 

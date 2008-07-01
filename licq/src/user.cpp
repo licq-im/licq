@@ -15,6 +15,7 @@
 #include <fcntl.h>
 #include <netinet/in.h>
 #include <cassert>
+#include <cstdlib>
 #include <ctime>
 #include <ctype.h>
 #include <sys/socket.h>
@@ -503,7 +504,6 @@ CUserManager::CUserManager()
   myGroupListLockType = LOCK_N;
 
   m_xOwner = NULL;
-  m_nOwnerUin = 0;
 }
 
 
@@ -539,9 +539,6 @@ void CUserManager::SetOwnerUin(unsigned long _nUin)
 void CUserManager::AddOwner(const char *_szId, unsigned long _nPPID)
 {
   ICQOwner *o = new ICQOwner(_szId, _nPPID);
-
-  if (_nPPID == LICQ_PPID)
-    m_nOwnerUin = o->Uin();
 
   LockOwnerList(LOCK_W);
   m_vpcOwners.push_back(o);
@@ -841,8 +838,13 @@ string CUserManager::OwnerId(unsigned long ppid)
     return "";
 
   string ret = owner->IdString();
-  DropOwner(ppid);
+  DropOwner(owner);
   return ret;
+}
+
+unsigned long CUserManager::icqOwnerUin()
+{
+  return strtoul(OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
 }
 
 /*---------------------------------------------------------------------------
@@ -1240,7 +1242,7 @@ unsigned short CUserManager::GenerateSID()
 
   ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   nOwnerPDINFO = o->GetPDINFO();
-  gUserManager.DropOwner(LICQ_PPID);
+  gUserManager.DropOwner(o);
 
   // Generate a SID
   srand(time(NULL));

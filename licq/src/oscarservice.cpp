@@ -446,7 +446,7 @@ bool COscarService::Initialize()
   }
 
   ChangeStatus(STATUS_CONNECTED);
-  SrvSocket *s = new SrvSocket(gUserManager.OwnerUin());
+  SrvSocket *s = new SrvSocket(gUserManager.icqOwnerUin());
   gLog.Info(tr("%sConnecting to separate server for service 0x%02X.\n"),
             L_SRVxSTR, myFam);
   if (myDaemon->GetProxy() == NULL)

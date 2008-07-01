@@ -1254,7 +1254,6 @@ public:
   CUserManager();
   ~CUserManager();
   bool Load();
-  void SetOwnerUin(unsigned long _nUin);
 
   // For protocol plugins
   void AddOwner(const char *, unsigned long);
@@ -1263,7 +1262,6 @@ public:
   void RemoveOwner(unsigned long);
   ICQUser *FetchUser(const char *, unsigned long, unsigned short);
   ICQOwner *FetchOwner(unsigned long, unsigned short);
-  void DropOwner(unsigned long);
 
   /**
    * Release owner lock
@@ -1286,10 +1284,22 @@ public:
   void RemoveUser(unsigned long);
   ICQUser *FetchUser(unsigned long, unsigned short);
   void DropUser(ICQUser *);
-  ICQOwner *FetchOwner(unsigned short);
-  void DropOwner();
-  unsigned long OwnerUin()  {return m_nOwnerUin; }
   bool IsOnList(unsigned long nUin);
+
+  // Deprecated owner functions, to be removed
+  void SetOwnerUin(unsigned long _nUin) __attribute__ ((deprecated));
+  unsigned long OwnerUin() __attribute__ ((deprecated)) { return icqOwnerUin(); }
+  ICQOwner *FetchOwner(unsigned short) __attribute__ ((deprecated));
+  void DropOwner() __attribute__ ((deprecated));
+  void DropOwner(unsigned long) __attribute__ ((deprecated));
+
+  /**
+   * Convenience function to get icq owner as an unsigned long
+   * Only meant to be used internally for icq protocol functions
+   *
+   * @return Icq owner
+   */
+  unsigned long icqOwnerUin();
 
   /**
    * Lock user list for access
@@ -1501,7 +1511,6 @@ protected:
   UserMap myUsers;
   OwnerList m_vpcOwners;
   ICQOwner *m_xOwner;
-  unsigned long m_nOwnerUin;
   unsigned short m_nUserListLockType;
   unsigned short myGroupListLockType;
   unsigned short m_nOwnerListLockType;
