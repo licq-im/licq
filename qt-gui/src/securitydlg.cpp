@@ -242,8 +242,8 @@ void SecurityDlg::ok()
 
     if (chkOnlyLocal->isChecked())
     {
+      gUserManager.AddOwner(edtUin->text(), LICQ_PPID);
       o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-      gUserManager.SetOwnerUin(edtUin->text().toULong());
       o->SetPassword(edtFirst->text().latin1());
       gUserManager.DropOwner(o);
       close();
