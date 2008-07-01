@@ -2097,7 +2097,7 @@ void CLicqConsole::InputSendFile(int cIn)
       ConstFileList lFileList;
       lFileList.push_back(strdup(data->szFileName));
 
-      winMain->event = licqDaemon->icqFileTransfer(strtoul(data->szId, (char **)NULL, 10),
+      winMain->event = licqDaemon->icqFileTransfer(data->szId,
               data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
                        !bDirect);
       break;
@@ -3035,7 +3035,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 
             // Passwords match if we are this far, now set up the new user
             winMain->wprintf("Registration complete for user %s\n",data->szUin);
-            gUserManager.SetOwnerUin(atol(data->szUin));
+            gUserManager.AddOwner(data->szUin, LICQ_PPID);
             ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
             owner->SetPassword(data->szPassword1);
             gUserManager.DropOwner(owner);
@@ -3127,7 +3127,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           // Accept the file
           const char *home = getenv("HOME");
           ftman->ReceiveFiles(home);
-          licqDaemon->icqFileTransferAccept(strtoul(data->szId, (char **)NULL, 10), ftman->LocalPort(),
+          licqDaemon->icqFileTransferAccept(data->szId, ftman->LocalPort(),
                                             f->Sequence(), f->MessageID(), f->IsDirect(),
                                             f->FileDescription(), f->Filename(), f->FileSize());
           winMain->fProcessInput = &CLicqConsole::InputCommand;
@@ -3160,7 +3160,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 
       // XXX hack
       unsigned long dummy[2] = { 0, 0 };
-      licqDaemon->icqFileTransferRefuse(strtoul(data->szId, (char **)NULL, 10), data->szReason,
+      licqDaemon->icqFileTransferRefuse(data->szId, data->szReason,
                                         f->Sequence(), dummy, true);
 
       // We are done now
