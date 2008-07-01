@@ -793,7 +793,7 @@ int CRMSClient::Process_INFO()
 
   //XXX Handle the case when we have the owner
   if (szId == 0)
-    m_nUin = gUserManager.OwnerUin();
+    m_nUin = strtoul(gUserManager.OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
 
   // Print the user info
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
@@ -1484,7 +1484,8 @@ int CRMSClient::Process_ADDUSER()
   {
     fprintf(fs, "%d User not added\n", CODE_ADDUSERxERROR);
   }
-  
+
+  free(szId);
   return fflush(fs);
 }
 
@@ -1503,7 +1504,7 @@ int CRMSClient::Process_REMUSER()
 
   if (nUin >= 10000)
   {
-    licqDaemon->RemoveUserFromList(nUin);
+    licqDaemon->RemoveUserFromList(data_arg, LICQ_PPID);
     fprintf(fs, "%d User removed\n", CODE_REMUSERxDONE);
   }
   else
@@ -1532,19 +1533,16 @@ int CRMSClient::Process_SECURE()
     fprintf(fs, "%d Licq secure channel not compiled. Please recompile with OpenSSL.\n", CODE_SECURExNOTCOMPILED);
     return fflush(fs);
   }
-  
 
-  if (isdigit(*data_arg))
-  {
-    nUin = strtoul(data_arg, (char**)NULL, 10);
-    while (*data_arg != '\0' && *data_arg != ' ') data_arg++;
-    NEXT_WORD(data_arg);
-  }
-   else
+  if (!isdigit(*data_arg))
   {
     fprintf(fs, "%d Invalid UIN.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
+  char* id = strdup(data_arg);
+  nUin = strtoul(data_arg, (char**)NULL, 10);
+  while (*data_arg != '\0' && *data_arg != ' ') data_arg++;
+  NEXT_WORD(data_arg);
 
   if (nUin < 10000)
   {
@@ -1555,17 +1553,17 @@ int CRMSClient::Process_SECURE()
   if (strncasecmp(data_arg, "open", 4) == 0)
   {
     fprintf(fs, "%d Opening secure connection.\n", CODE_SECURExOPEN);
-    licqDaemon->icqOpenSecureChannel(nUin);
+    licqDaemon->icqOpenSecureChannel(id);
   }
   else
   if (strncasecmp(data_arg, "close", 5) == 0)
   {
     fprintf(fs, "%d Closing secure connection.\n", CODE_SECURExCLOSE);
-    licqDaemon->icqCloseSecureChannel(nUin);
+    licqDaemon->icqCloseSecureChannel(id);
   }
   else
   {
-   ICQUser *u = gUserManager.FetchUser(nUin,LOCK_R);
+    ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
    if (u->Secure() == 0)
    {
     fprintf(fs, "%d Status: secure connection is closed.\n", CODE_SECURExSTAT);
@@ -1576,6 +1574,7 @@ int CRMSClient::Process_SECURE()
    }
    gUserManager.DropUser(u);
   }
-  
+
+  free(id);
   return fflush(fs);
 }
