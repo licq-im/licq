@@ -215,7 +215,7 @@ CSetRandomChatGroupDlg::CSetRandomChatGroupDlg(CICQDaemon *s,
     default:
       lstGroups->setCurrentItem(0); break;
   }
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   show();
 }

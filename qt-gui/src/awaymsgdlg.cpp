@@ -151,7 +151,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status, bool autoclose)
   mnuSelect->insertSeparator();
   mnuSelect->insertItem(tr("&Edit Items"), 999);
 
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == 0) return;
   setCaption(QString(tr("Set %1 Response for %2"))
              .arg(Strings::getStatus(m_nStatus, false))
@@ -164,7 +164,7 @@ void AwayMsgDlg::SelectAutoResponse(unsigned short _status, bool autoclose)
                            "You can leave me a message.\n"
                            "(%m messages pending from you).")
                         .arg(Strings::getStatus(m_nStatus, false)));
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   mleAwayMsg->setFocus();
   QTimer::singleShot(0, mleAwayMsg, SLOT(selectAll()));
@@ -202,7 +202,7 @@ void AwayMsgDlg::ok()
   while (s[s.length()-1].isSpace())
     s.truncate(s.length()-1);
 
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   if (o == 0)
   {
     close();
@@ -210,7 +210,7 @@ void AwayMsgDlg::ok()
   }
   QTextCodec *codec = UserCodec::defaultEncoding();
   o->SetAutoResponse(codec->fromUnicode(s));
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
   close();
 }
 

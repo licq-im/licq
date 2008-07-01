@@ -86,10 +86,10 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
       if (o == NULL)
         cmbProtocol->insertItem((*it)->Name(), n++);
       else
-        gUserManager.DropOwner((*it)->PPID());
+        gUserManager.DropOwner(o);
     }
   }
-  
+
   // Set the fields
   if (szId && nPPID)
   {
@@ -98,9 +98,9 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
     if (o)
     {
       edtPassword->setText(o->Password());
-      gUserManager.DropOwner(nPPID);
+      gUserManager.DropOwner(o);
     }
-    
+
     n = 0;
     for (it = pl.begin(); it != pl.end(); it++, n++)
     {
@@ -187,10 +187,10 @@ void OwnerEditDlg::slot_ok()
     if (szPassword)
       o->SetPassword(szPassword);
   }
-  
-  gUserManager.DropOwner(nPPID);
+
+  gUserManager.DropOwner(o);
   server->SaveConf();
-  
+
   close();
 }
 
@@ -332,14 +332,14 @@ void OwnerManagerDlg::slot_addClicked()
 
 void OwnerManagerDlg::slot_registerClicked()
 {
-  if (gUserManager.OwnerUin() != 0)
+  if (!gUserManager.OwnerId(LICQ_PPID).empty())
   {
     QString buf = tr("You are currently registered as\n"
                     "UIN (User ID): %1\n"
                     "Base Directory: %2\n"
                     "Rerun licq with the -b option to select a new\n"
                     "base directory and then register a new user.")
-                    .arg(gUserManager.OwnerUin()).arg(BASE_DIR);
+                    .arg(gUserManager.OwnerId(LICQ_PPID).c_str()).arg(BASE_DIR);
     InformUser(this, buf);
     return;
   }
@@ -375,13 +375,12 @@ void OwnerManagerDlg::slot_doneRegisterUser(ICQEvent *e)
   {
     updateOwners();
 
-    char sz[20];
     //TODO which owner
-    sprintf(sz, "%lu", gUserManager.OwnerUin());
+    QString id = gUserManager.OwnerId(LICQ_PPID);
     InformUser(this, tr("Successfully registered, your user identification\n"
                         "number (UIN) is %1.\n"
-                        "Now set your personal information.").arg(gUserManager.OwnerUin()));
-    mainwin->callInfoTab(mnuUserGeneral, sz, LICQ_PPID);
+                        "Now set your personal information.").arg(id));
+    mainwin->callInfoTab(mnuUserGeneral, id, LICQ_PPID);
   }
   else
   {

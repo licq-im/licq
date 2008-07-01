@@ -112,14 +112,14 @@ EditCategoryDlg::EditCategoryDlg(QWidget *parent, ICQUserCategory *uCat)
 
 void EditCategoryDlg::ok()
 {
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
   {
     close();
     return;
   }
   QTextCodec *codec = UserCodec::codecForICQUser(o);
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   ICQUserCategory *cat = new ICQUserCategory(m_uc);
   for (unsigned short i = 0; i < m_nCats; i++)

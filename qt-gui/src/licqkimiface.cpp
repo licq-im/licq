@@ -95,9 +95,9 @@ QStringList LicqKIMIface::allContacts()
 
 QStringList LicqKIMIface::reachableContacts()
 {
-    ICQOwner* owner = gUserManager.FetchOwner(LOCK_R);
+    ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     bool offline = owner->StatusOffline();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(owner);
 
     if (offline)
         return QStringList();

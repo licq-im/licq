@@ -218,7 +218,7 @@ IconManager_Default::~IconManager_Default()
 void IconManager_Default::SetDockIconStatus()
 {
   QPixmap m;
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == 0) return;
   switch (o->Status())
   {
@@ -231,7 +231,7 @@ void IconManager_Default::SetDockIconStatus()
     case ICQ_STATUS_OFFLINE: m = QPixmap((const char **)iconOffline_xpm); break;
   }
   if (o->StatusInvisible()) m = QPixmap((const char **)iconInvisible_xpm);
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
   QPainter painter(wharfIcon->vis);
   if (!m_bFortyEight)
   {
@@ -263,11 +263,11 @@ void IconManager_Default::SetDockIconStatus()
 //-----IconManager_Default::GetDockIconStatusIcon----------------------------
 QPixmap *IconManager_Default::GetDockIconStatusIcon()
 {
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == 0) return NULL;
-  
+
   unsigned long s = o->Status();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
   switch (s)
   {
     case ICQ_STATUS_ONLINE: return &mainwin->pmOnline;
@@ -547,7 +547,7 @@ IconManager_Themed::~IconManager_Themed()
 void IconManager_Themed::SetDockIconStatus()
 {
   QPixmap *p = NULL;
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == 0) return;
   switch (o->Status())
   {
@@ -560,7 +560,7 @@ void IconManager_Themed::SetDockIconStatus()
     case ICQ_STATUS_OFFLINE: p = pixOffline; break;
   }
   if (o->StatusInvisible()) p = pixInvisible;
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
   if (p != NULL)
   {
     QPainter painter(wharfIcon->vis);
@@ -666,12 +666,12 @@ IconManager_KDEStyle::~IconManager_KDEStyle()
 void IconManager_KDEStyle::SetDockIconStatus()
 {
   //TODO make general for all plugins
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == 0) return;
   m_statusIcon = CMainWindow::iconForStatus(o->StatusFull());
   m_ownerStatus = o->Status();
   m_bStatusInvisible = o->StatusInvisible();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   updateTooltip();
 

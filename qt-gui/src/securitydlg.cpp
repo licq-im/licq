@@ -48,10 +48,7 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
   eSecurityInfo   = 0;
   ePasswordChange = 0;
 
-  unsigned long nUin = gUserManager.OwnerUin();
-  QString strUin;
-  if (nUin)
-    strUin.setNum(nUin);
+  QString strUin = gUserManager.OwnerId(LICQ_PPID);;
 
   QVBoxLayout *lay = new QVBoxLayout(this, 8);
   QGroupBox *box = new QGroupBox(1, QGroupBox::Horizontal, tr("Options"), this);
@@ -91,11 +88,10 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
 
   // UIN
   edtUin->setValidator(new QIntValidator(10000, 2147483647, edtUin));
-  if (nUin) 
-    edtUin->setText(strUin);
+  edtUin->setText(strUin);
 
   // Owner password
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
   {
     edtFirst->setText(o->Password());
@@ -148,7 +144,7 @@ SecurityDlg::SecurityDlg(CICQDaemon *s, CSignalManager *_sigman,
     chkAuthorization->setChecked(o->GetAuthorization());
     chkWebAware->setChecked(o->WebAware());
     chkHideIp->setChecked(o->HideIp());
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
   else
   {
@@ -192,10 +188,10 @@ SecurityDlg::~SecurityDlg()
 
 void SecurityDlg::ok()
 {
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if(o == 0) return;
   unsigned short status = o->Status();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   // validate password
   if ((edtFirst->text().isEmpty() && !chkOnlyLocal->isChecked()) ||
@@ -246,10 +242,10 @@ void SecurityDlg::ok()
 
     if (chkOnlyLocal->isChecked())
     {
-      o = gUserManager.FetchOwner(LOCK_W);
+      o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       gUserManager.SetOwnerUin(edtUin->text().toULong());
       o->SetPassword(edtFirst->text().latin1());
-      gUserManager.DropOwner();
+      gUserManager.DropOwner(o);
       close();
     }
     else

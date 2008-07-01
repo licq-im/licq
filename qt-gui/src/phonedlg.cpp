@@ -44,14 +44,14 @@ EditPhoneDlg::EditPhoneDlg(QWidget *parent, const struct PhoneBookEntry *pbe,
                            int nEntry)
   : QDialog(parent, "EditPhoneDlg", true, WDestructiveClose)
 {
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
   {
     close();
     return;
   }
   QTextCodec *codec = UserCodec::codecForICQUser(o);
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   m_nEntry = nEntry;
 
@@ -229,14 +229,14 @@ void EditPhoneDlg::ok()
     return;
   }
 
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
   {
     close();
     return;
   }
   QTextCodec *codec = UserCodec::codecForICQUser(o);
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   struct PhoneBookEntry pbe;
   memset(&pbe, 0, sizeof(pbe));

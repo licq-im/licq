@@ -1091,7 +1091,7 @@ void CMessageViewWidget::addMsg(const CUserEvent* e, const char* _szId, unsigned
       // since we're using the contact's encoding, not ours.
       QTextCodec *ownerCodec = UserCodec::codecForICQUser(o);
       contactName = ownerCodec->toUnicode(o->GetAlias());
-      gUserManager.DropOwner(m_nPPID);
+      gUserManager.DropOwner(o);
     }
   }
 

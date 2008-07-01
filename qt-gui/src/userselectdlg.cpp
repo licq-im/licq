@@ -81,7 +81,7 @@ UserSelectDlg::UserSelectDlg(CICQDaemon *s, QWidget *parent)
 	// Populate the combo box
 
 	// For now, just have one owner
-	ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == 0)
   {
     close();
@@ -89,7 +89,7 @@ UserSelectDlg::UserSelectDlg(CICQDaemon *s, QWidget *parent)
   }
 	cmbUser->insertItem(QString("%1 (%2)").arg(o->GetAlias()).arg(o->IdString()));
 	edtPassword->setText(o->Password());
-	gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
         exec(); // this is different from show(), exec() does not return 
                 //control to caller until we have finished
@@ -101,7 +101,7 @@ UserSelectDlg::~UserSelectDlg()
 
 void UserSelectDlg::slot_ok()
 {
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_W);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   if (o == 0)
   {
     close();
@@ -109,7 +109,7 @@ void UserSelectDlg::slot_ok()
   }
   o->SetSavePassword(chkSavePassword->isChecked());
   o->SetPassword(edtPassword->text().latin1());
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
 
   close();
 }

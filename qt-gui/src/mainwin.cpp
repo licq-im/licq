@@ -619,11 +619,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   userEventTabDlg = NULL;
   m_nRealHeight = hVal;
 
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
   {
     m_szCaption = tr("Licq (%1)").arg(QString::fromUtf8(o->GetAlias()));
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
   else
     m_szCaption = QString("Licq");
@@ -790,16 +790,16 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    else
    {
      // Do we need to get a password
-     o = gUserManager.FetchOwner(LOCK_R);
+     o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
      if (o != NULL)
      {
       if(o->Password()[0] == '\0')
       {
-        gUserManager.DropOwner();
+        gUserManager.DropOwner(o);
         (void) new UserSelectDlg(licqDaemon);
       }
       else
-        gUserManager.DropOwner();
+        gUserManager.DropOwner(o);
      }
    }
 
@@ -807,7 +807,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    if (o != NULL)
    {
     mnuPFM->setItemChecked(o->PhoneFollowMeStatus(), true);
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
    }
 
   XClassHint ClassHint;
@@ -1404,9 +1404,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             s = ICQ_STATUS_OFFLINE; // if we have no owner we're very likely offline ;)
           }
           else
-          {  
+          {
             s = o->Status();
-            gUserManager.DropOwner(nPPID);
+            gUserManager.DropOwner(o);
           }
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
           {
@@ -1463,7 +1463,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         if (o != 0)
         {
           m_szCaption = tr("Licq (%1)").arg(QString::fromUtf8(o->GetAlias()));
-          gUserManager.DropOwner(nPPID);
+          gUserManager.DropOwner(o);
         }
         else
         {
@@ -2092,13 +2092,13 @@ void CMainWindow::updateStatus(CICQSignal *s)
     }
     else
     {
-      gUserManager.DropOwner(nPPID);
-      
+      gUserManager.DropOwner(o);
+
       // Show multiple icons for each protocol
       lblStatus->clearPrependPixmap();
       lblStatus->setText("");
       lblStatus->clearPixmaps();
-      
+
       vector<unsigned long>::iterator it;
       for (it = m_lnProtMenu.begin(); it != m_lnProtMenu.end(); it++)
       {
@@ -2107,7 +2107,7 @@ void CMainWindow::updateStatus(CICQSignal *s)
         {
           lblStatus->addPixmap(CMainWindow::iconForStatus(o->StatusFull(),
             o->IdString(), *it));
-          gUserManager.DropOwner(*it);
+          gUserManager.DropOwner(o);
         }
       }
       
@@ -2132,8 +2132,8 @@ void CMainWindow::updateStatus(CICQSignal *s)
 #else   // USE_KDE
       setIcon(CMainWindow::iconForStatus(o->StatusFull()));
 #endif   // USE_KDE
-  
-      gUserManager.DropOwner(nPPID);
+
+      gUserManager.DropOwner(o);
     }
    }
    else
@@ -2150,10 +2150,10 @@ void CMainWindow::updateStatus(CICQSignal *s)
        {
          lblStatus->addPixmap(CMainWindow::iconForStatus(o->StatusFull(),
            o->IdString(), *it));
-         gUserManager.DropOwner(*it);
+         gUserManager.DropOwner(o);
        }
      }
-     
+
      lblStatus->update();
    }
        
@@ -2167,12 +2167,12 @@ void CMainWindow::updateStatus(CICQSignal *s)
 void CMainWindow::slot_AwayMsgDlg()
 {
   //TODO iterate all owners that support fetching away message
-  ICQOwner* o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
     return;
 
   unsigned short status = o->Status();
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
   showAwayMsgDlg(status);
 }
 
@@ -2295,10 +2295,10 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
         
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (o == NULL) continue;
-              
+
     if (id == ICQ_STATUS_OFFLINE)
     {
-      gUserManager.DropOwner(nPPID);
+      gUserManager.DropOwner(o);
       licqDaemon->ProtoLogoff(nPPID);
       continue;
     }
@@ -2312,7 +2312,7 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
           
       if (o->StatusOffline())
       {
-        gUserManager.DropOwner(nPPID);
+        gUserManager.DropOwner(o);
         continue;
       }
 
@@ -2341,7 +2341,7 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
 
     // call the right function
     bool b = o->StatusOffline();
-    gUserManager.DropOwner(nPPID);
+    gUserManager.DropOwner(o);
     if (b)
       licqDaemon->ProtoLogon(nPPID, newStatus);
     else
@@ -2448,8 +2448,8 @@ void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
       if (o == 0) continue;
       szId = strdup(o->IdString());
       unsigned short nNumMsg = o->NewMessages();
-      gUserManager.DropOwner((*_ppit)->PPID());
-      
+      gUserManager.DropOwner(o);
+
       if (nNumMsg > 0)
         callFunction(index, szId, (*_ppit)->PPID());
 
@@ -2468,7 +2468,7 @@ void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
         ICQOwner *o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
         if (o == 0) continue;
         szId = strdup(o->IdString());
-        gUserManager.DropOwner((*_ppit)->PPID());
+        gUserManager.DropOwner(o);
         callInfoTab(index, szId, (*_ppit)->PPID());
         free(szId);
       }
@@ -3001,7 +3001,7 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
       ICQOwner *o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
       if (o == 0) continue; // just in case
       unsigned short nNumMsg = o->NewMessages();
-      gUserManager.DropOwner((*_ppit)->PPID());
+      gUserManager.DropOwner(o);
       if (nNumMsg > 0)
       {
         callOwnerFunction(OwnerMenuView, (*_ppit)->PPID());
@@ -3585,12 +3585,12 @@ void CMainWindow::saveOptions()
 //-----CMainWindow::aboutBox--------------------------------------------------
 void CMainWindow::aboutBox()
 {
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
-  
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+
   // We might have no owner
   QString m_Alias = (o == 0) ? QString(tr("(Error! No owner set)")) : QString::fromUtf8(o->GetAlias());
   QString id = (o == 0) ? "" : o->IdString();
-  
+
   QString about(tr("Licq version %1%8.\n"
                    "Qt GUI plugin version %2.\n"
                    "Compiled on: %7\n"
@@ -3610,7 +3610,7 @@ void CMainWindow::aboutBox()
                    .arg("\n")
 #endif
                    .arg(__DATE__).arg(CICQDaemon::CryptoEnabled() ? "/SSL" : ""));
-  gUserManager.DropOwner();
+  gUserManager.DropOwner(o);
   InformUser(this, about);
 }
 
@@ -4796,14 +4796,14 @@ void CMainWindow::slot_popupall()
   if (ICQUser::getNumUserEvents() == 0) return;
 
   // Do system messages first
-  ICQOwner *o = gUserManager.FetchOwner(LOCK_R);
+  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned short nNumMsg = 0;
   if (o)
   {
     nNumMsg = o->NewMessages();
-    gUserManager.DropOwner();
+    gUserManager.DropOwner(o);
   }
-  
+
   if (nNumMsg > 0)
   {
     callOwnerFunction(OwnerMenuView);

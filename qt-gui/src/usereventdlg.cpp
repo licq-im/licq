@@ -1604,12 +1604,12 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         if (o)
         {
           ownerName = QString::fromUtf8(o->GetAlias());
-          gUserManager.DropOwner(m_nPPID);
+          gUserManager.DropOwner(o);
         }
         else
           ownerName = QString(tr("Error! no owner set"));
         QDateTime date;
-        
+
         // Iterate through each message to add
         // Only show old messages as recent ones. Don't show duplicates.
         int nMaxNumToShow;
