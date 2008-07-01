@@ -556,9 +556,6 @@ public:
      unsigned long nIntIp, TCPSocket *sock, unsigned short nPort,
      bool bSendIntIp);
   int StartTCPServer(TCPSocket *);
-  void CheckBirthdays(UinList &);
-  unsigned short BirthdayRange() { return m_nBirthdayRange; }
-  void BirthdayRange(unsigned short r) { m_nBirthdayRange = r; }
 
   bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true,
                      bool bTempUser = false, unsigned short groupId = 0);
@@ -699,8 +696,7 @@ protected:
                  m_nTCPPortsHigh,
                  m_nMaxUsersPerPacket,
                  m_nServerSequence,
-                 m_nErrorTypes,
-                 m_nBirthdayRange;
+                 m_nErrorTypes;
   char m_szErrorFile[64];
   int m_nTCPSrvSocketDesc,
       m_nTCPSocketDesc;

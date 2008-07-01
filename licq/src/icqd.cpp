@@ -1378,23 +1378,6 @@ void CICQDaemon::RejectEvent(const char* id, CUserEvent* e)
   m_sStats[STATS_EventsRejected].Inc();
 }
 
-
-//---CheckBirthdays------------------------------------------------------------
-/*! \brief Sends a signal for each user whose birthday occurs in the next few days.
- *
- * This function is NOT IMPLEMENTED yet. Don't expect it to do anything usefull ;-P
- */
-void CICQDaemon::CheckBirthdays(UinList &uins)
-{
-  FOR_EACH_USER_START(LOCK_R)
-  {
-    if (pUser->Birthday(m_nBirthdayRange) != -1)
-      uins.push_back(pUser->Uin());
-  }
-  FOR_EACH_USER_END
-}
-
-
 /*----------------------------------------------------------------------------
  * CICQDaemon::SendEvent
  *
