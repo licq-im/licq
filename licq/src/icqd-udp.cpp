@@ -1586,7 +1586,9 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
         break;
       }
       gLog.Info("%sReceived new uin: %ld\n", L_UDPxSTR, nOwnerUin);
-      gUserManager.SetOwnerUin(nOwnerUin);
+      char ownerId[24];
+      sprintf(ownerId, "%lu", nOwnerUin);
+      gUserManager.AddOwner(ownerId, LICQ_PPID);
       ICQEvent *e = DoneExtendedEvent(ICQ_CMDxSND_REGISTERxUSER, 1, EVENT_SUCCESS);
       if (e != NULL) ProcessDoneEvent(e);
       // Logon as an ack
