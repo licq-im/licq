@@ -4131,7 +4131,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
     case ICQ_SNACxLIST_ROSTxREPLY:
     {
-      static unsigned short nCount;
+      static unsigned short nCount = 0;
       static bool sCheckExport = false;
       unsigned short nPacketCount;
       unsigned long nTime;
