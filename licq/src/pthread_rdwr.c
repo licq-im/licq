@@ -69,15 +69,12 @@ static void print_users(FILE* file, pthread_rdwr_t *rdwrp, int reading)
 {
   int i;
 
-  fprintf(file,
-          "Possible deadlock for thread %d (0x%x) trying to get a %s lock on '%s'\n",
-          (int)pthread_self(), (unsigned int)pthread_self(),
-          (reading ? "read" : "write"), rdwrp->name);
+  fprintf(file, "Possible deadlock for thread %p trying to get a %s lock on '%s'\n",
+      (void*)pthread_self(), (reading ? "read" : "write"), rdwrp->name);
 
   if (rdwrp->writer_writing > 0)
   {
-    fprintf(file, "Thread %d (0x%x) holds the write lock\n",
-            (int)rdwrp->writer, (unsigned int)rdwrp->writer);
+    fprintf(file, "Thread %p holds the write lock\n", (void*)rdwrp->writer);
   }
   else
     fprintf(file, "No thread holds the write lock\n");
@@ -87,9 +84,7 @@ static void print_users(FILE* file, pthread_rdwr_t *rdwrp, int reading)
     fprintf(file, "These threads hold the read lock:");
     for (i = 0; i < rdwrp->readers_reading; ++i)
     {
-      fprintf(file,
-              " %d (0x%x)",
-              (int)rdwrp->readers[i], (unsigned int)rdwrp->readers[i]);
+      fprintf(file, " %p", (void*)rdwrp->readers[i]);
     }
     fprintf(file, "\n");
   }
@@ -118,7 +113,7 @@ static void debug_cond_wait(pthread_rdwr_t *rdwrp, int reading)
     FILE* file = fopen(filename, "w");
     if (file != NULL)
     {
-      fprintf(file, "time: %lu\n", time(NULL));
+      fprintf(file, "time: %lu\n", (long)time(NULL));
       print_users(file, rdwrp, reading);
       fclose(file);
     }
