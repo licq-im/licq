@@ -4138,64 +4138,22 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     {
       static unsigned short nCount = 0;
       static bool sCheckExport = false;
-      unsigned short nPacketCount;
-      unsigned long nTime;
-
-      if (nFlags & 0x0001)
-      {
-        if (!hasServerEvent(nSubSequence))
-          gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
-        else
-          gLog.Info(tr("%sReceived contact list.\n"), L_SRVxSTR);
-      }
-      else
-      {
-        // This is the last packet so mark it as done
-        ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
-
-        if (e == NULL)
-        {
-          // Try acking it, even if we didn't expect it
-          //gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
-          gLog.Info(tr("%sActivate server contact list.\n"), L_SRVxSTR);
-          CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxACK);
-          SendEvent_Server(p);
-          //This packet had the user list in it, but we didn't ask for it.
-          //Nonetheless, it appears we won't get a second chance for this packet, so process it
-          //break;
-        }
-
-        /* This isn't used anymore. At least with SSI Version 0.
-        if (e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxRIGHTS) ||
-            e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_REQUESTxROST))
-        {
-          packet.UnpackUnsignedLong();
-          packet.UnpackUnsignedLong();
-        }
-        */
-
-        gLog.Info(tr("%sReceived end of contact list.\n"), L_SRVxSTR);
-      }
 
       m_bOnlineNotifies = true;
 
       packet.UnpackChar();  // SSI Version
-      nPacketCount = packet.UnpackUnsignedShortBE();
+      unsigned short nPacketCount = packet.UnpackUnsignedShortBE();
       nCount += nPacketCount;
 
-      for (unsigned short i = 0; i < nPacketCount; i++)
+      while (nPacketCount-- != 0)
       {
-        char *szId;
-        unsigned short nTag, nID, nType, nByteLen;
-
         // Can't use UnpackUserString because this may be a group name
-        szId = packet.UnpackStringBE();
-        nTag = packet.UnpackUnsignedShortBE();
-        nID = packet.UnpackUnsignedShortBE();
-        nType = packet.UnpackUnsignedShortBE();
-        nByteLen = packet.UnpackUnsignedShortBE();
+        char* szId = packet.UnpackStringBE();
+        unsigned short nTag = packet.UnpackUnsignedShortBE();
+        unsigned short nID = packet.UnpackUnsignedShortBE();
+        unsigned short nType = packet.UnpackUnsignedShortBE();
 
-        char *szUnicodeName = gTranslator.FromUnicode(szId);
+        unsigned short nByteLen = packet.UnpackUnsignedShortBE();
 
         if (nByteLen)
         {
@@ -4215,97 +4173,49 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           case ICQ_ROSTxINVISIBLE:
           case ICQ_ROSTxIGNORE:
           {
-            if (!UseServerContactList()) break; 
-            
-            char *szNewName = packet.UnpackStringTLV(0x0131);
-            char *szSMSNumber = packet.UnpackStringTLV(0x013A);
-            bool bAwaitingAuth = packet.hasTLV(0x0066);
+            if (!UseServerContactList())
+              break;
 
-            bool isOnList = true;
-            if (szId && !gUserManager.IsOnList(szId, LICQ_PPID))
+            std::pair<ContactUserListIter, bool> ret =
+              receivedUserList.insert(make_pair(szId, (CUserProperties*)NULL));
+
+            ContactUserListIter iter = ret.first;
+            if (ret.second) // we inserted a new NULL pair
+              iter->second = new CUserProperties();
+
+            CUserProperties* data = iter->second;
+
+#define COPYTLV(type, var) \
+            if (packet.hasTLV(type)) \
+              data->var.reset(packet.UnpackStringTLV(type))
+
+            COPYTLV(0x0131, newAlias);
+            COPYTLV(0x013A, newCellular);
+#undef COPYTLV
+            if (packet.hasTLV(0x0066))
+              data->awaitingAuth = true;
+
+            if (nTag != 0)
+              data->groupId = nTag;
+
+            if (nType == ICQ_ROSTxIGNORE)
+              data->inIgnoreList = true;
+
+            if (nID != 0)
             {
-              isOnList = false;
-              AddUserToList(szId, LICQ_PPID, false); // Don't notify server
-            }
-
-            ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
-            if (u)
-            {
-              // For now, just save all the TLVs. We should change this to have awaiting auth check
-              // for the 0x0066 TLV, SMS number if it has the 0x013A TLV, etc
-              TLVList tlvList = packet.getTLVList();
-              TLVListIter iter;
-              for (iter = tlvList.begin(); iter != tlvList.end(); ++iter)
+              if (nType == ICQ_ROSTxVISIBLE)
               {
-                TLVPtr tlv = iter->second;
-                u->AddTLV(tlv);
+                data->visibleSid = nID;
               }
-
-              u->SetGSID(nTag);
-
-              if (szNewName)
-                u->SetAlias(szNewName);
-
-              if (szSMSNumber)
+              else if (nType == ICQ_ROSTxINVISIBLE)
               {
-                char *szUnicodeSMS = gTranslator.FromUnicode(szSMSNumber);
-                if (szUnicodeSMS)
-                {
-                  u->SetCellularNumber(szUnicodeSMS);
-                  delete [] szUnicodeSMS;
-                }
-              }
-
-              u->SetAwaitingAuth(bAwaitingAuth);
-
-              if (nType == ICQ_ROSTxINVISIBLE)
-              {
-                u->SetInvisibleList(true);
-                u->SetInvisibleSID(nID);
-              }
-              else if (nType == ICQ_ROSTxVISIBLE)
-              {
-                u->SetVisibleList(true);
-                u->SetVisibleSID(nID);
+                data->invisibleSid = nID;
               }
               else
               {
-                u->SetSID(nID);
-
-                if (nType == ICQ_ROSTxNORMAL)
-                {
-                  // Save the group that they are in
-                  u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(nTag));
-                }
+                data->normalSid = nID;
               }
-
-              u->SetIgnoreList(nType == ICQ_ROSTxIGNORE);
-
-              if (!isOnList)
-              {
-                // They aren't a new user if we added them to a server list
-                u->SetNewUser(false);
-              }
-
-              // Save GSID, SID and group memberships
-              u->SaveLicqInfo();
-
-              PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
-                u->IdString(), u->PPID()));
-              gUserManager.DropUser(u);
             }
-
-            if (!isOnList)
-            {
-              gLog.Info(tr("%sAdded %s (%s) to list from server.\n"), L_SRVxSTR,
-                (szNewName ? szNewName : szId), szId);
-            }
-
-            if (szNewName)
-              delete [] szNewName;
-            if (szSMSNumber)
-              delete [] szSMSNumber;
-
             break;
           }
 
@@ -4317,6 +4227,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
             {
               // Rename the group if we have it already or else add it
               unsigned short nGroup = gUserManager.GetGroupFromID(nTag);
+              char* szUnicodeName = gTranslator.FromUnicode(szId);
+
               if (nGroup == 0)
               {
                 if (!gUserManager.AddGroup(szUnicodeName, nTag))
@@ -4327,6 +4239,9 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
                 gUserManager.RenameGroup(nGroup, szUnicodeName, false);
               }
               
+              if (szUnicodeName)
+                delete[] szUnicodeName;
+
               // This is bad, i don't think we want to call this at all..
               // it will add users to different groups that they werent even
               // assigned to
@@ -4358,9 +4273,6 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
           }
         }  // switch (nType)
 
-        if (szUnicodeName)
-          delete [] szUnicodeName;
-
         if (szId)
           delete[] szId;
       } // for count
@@ -4373,17 +4285,33 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
 
       // Update local info about contact list
-      nTime = packet.UnpackUnsignedLongBE();
+      unsigned long nTime = packet.UnpackUnsignedLongBE();
       ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       o->SetSSTime(nTime);
       o->SetSSCount(nCount);
       gUserManager.DropOwner(o);
 
-      gLog.Info(tr("%sActivate server contact list.\n"), L_SRVxSTR);
-      CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxACK);
-      SendEvent_Server(p);
+      if (nFlags & 0x0001)
+      {
+        if (!hasServerEvent(nSubSequence))
+          gLog.Warn(tr("%sContact list without request.\n"), L_SRVxSTR);
+        else
+          gLog.Info(tr("%sReceived contact list.\n"), L_SRVxSTR);
+      }
+      else
+      {
+        // This is the last packet so mark it as done
+        DoneServerEvent(nSubSequence, EVENT_SUCCESS);
 
-      
+        gLog.Info(tr("%sReceived end of contact list.\n"), L_SRVxSTR);
+
+        ProcessUserList();
+
+        gLog.Info(tr("%sActivating server contact list.\n"), L_SRVxSTR);
+        CSrvPacketTcp *p = new CPU_GenericFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxACK);
+        SendEvent_Server(p);
+      }
+
       break;
     } // case rost reply
 
@@ -6391,6 +6319,88 @@ void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
   }
+}
+
+void CICQDaemon::ProcessUserList()
+{
+  if (receivedUserList.empty())
+    return;
+
+  ContactUserListIter iter;
+
+  for (iter = receivedUserList.begin(); iter != receivedUserList.end(); iter++)
+  {
+    const char* id = iter->first.c_str();
+    CUserProperties* data = iter->second;
+
+    if (id == NULL || id[0] == '\0')
+    {
+      gLog.Warn(tr("%sEmpty User ID was received in the contact list.\n"),
+          L_SRVxSTR);
+      continue;
+    }
+
+    bool isOnList = gUserManager.IsOnList(id, LICQ_PPID);
+
+    if (!isOnList)
+    {
+      AddUserToList(id, LICQ_PPID, false, false); // Don't notify server
+      gLog.Info(tr("%sAdded %s (%s) to list from server.\n"),
+          L_SRVxSTR, (data->newAlias ? data->newAlias.get() : id), id);
+    }
+
+    ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
+    if (u == NULL)
+      continue;
+
+    if (data->newAlias != NULL)
+      u->SetAlias(data->newAlias.get());
+
+    u->SetSID(data->normalSid);
+    u->SetGSID(data->groupId);
+    u->SetVisibleSID(data->visibleSid);
+    u->SetVisibleList(data->visibleSid != 0);
+    u->SetInvisibleSID(data->invisibleSid);
+    u->SetInvisibleList(data->invisibleSid != 0);
+    u->SetIgnoreList(data->inIgnoreList);
+
+    u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(data->groupId));
+
+    u->SetAwaitingAuth(data->awaitingAuth);
+
+    if (!isOnList)
+    {
+      // They aren't a new user if we added them to a server list
+      u->SetNewUser(false);
+    }
+
+    if (data->newCellular != NULL)
+    {
+      char* tmp = gTranslator.FromUnicode(data->newCellular.get());
+      if (tmp != NULL)
+      {
+        u->SetCellularNumber(tmp);
+        delete[] tmp;
+      }
+    }
+
+    // For now, just save all the TLVs. We should change this to have awaiting auth check
+    // for the 0x0066 TLV, SMS number if it has the 0x013A TLV, etc
+    TLVListIter tlvIter;
+    for (tlvIter = data->tlvs.begin(); tlvIter != data->tlvs.end(); tlvIter++)
+    {
+      TLVPtr tlv = tlvIter->second;
+      u->AddTLV(tlv);
+    }
+
+    // Save GSID, SID and group memberships
+    u->SaveLicqInfo();
+    gUserManager.DropUser(u);
+
+    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, id, LICQ_PPID));
+  }
+
+  receivedUserList.clear();
 }
 
 //--------ProcessDataChannel---------------------------------------------------

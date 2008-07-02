@@ -11,6 +11,8 @@ header file containing all the main procedures to interface with the ICQ server 
 #include <map>
 #include <string>
 
+#include <boost/shared_array.hpp>
+
 #include "licq_events.h"
 #include "licq_filetransfer.h"
 #include "licq_onevent.h"
@@ -139,6 +141,35 @@ friend class CICQDaemon;
 };
 
 typedef std::list<CConversation *> ConversationList;
+
+/**
+ * Internal template class for storing and processing received contact list.
+ */
+class CUserProperties
+{
+public:
+  CUserProperties();
+
+private:
+  boost::shared_array<char> newAlias;
+  boost::shared_array<char> newCellular;
+
+  unsigned short normalSid;
+  unsigned short groupId;
+
+  unsigned short visibleSid;
+  unsigned short invisibleSid;
+  bool inIgnoreList;
+
+  bool awaitingAuth;
+
+  TLVList tlvs;
+
+friend class CICQDaemon;
+};
+
+typedef std::map<std::string, CUserProperties*> ContactUserList;
+typedef ContactUserList::iterator ContactUserListIter;
 
 //=====CICQDaemon===============================================================
 enum EDaemonStatus {STATUS_ONLINE, STATUS_OFFLINE_MANUAL, STATUS_OFFLINE_FORCED };
@@ -744,6 +775,8 @@ protected:
   static pthread_mutex_t mutex_reverseconnect;
   static pthread_cond_t  cond_reverseconnect_done;
 
+  ContactUserList receivedUserList;
+
   ConversationList m_lConversations;
   pthread_mutex_t mutex_conversations;
 
@@ -829,6 +862,8 @@ protected:
   void ProcessBOSFam(CBuffer&, unsigned short);
   void ProcessListFam(CBuffer &, unsigned short);
   void ProcessAuthFam(CBuffer &, unsigned short);
+
+  void ProcessUserList();
 
   void ProcessSystemMessage(CBuffer &packet, unsigned long checkUin, unsigned short newCommand, time_t timeSent);
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);

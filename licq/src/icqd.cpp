@@ -167,6 +167,8 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
 
   fifo_fs = NULL;
 
+  receivedUserList.clear();
+
   // Begin parsing the config file
   snprintf(m_szConfigFile, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, "licq.conf");
   m_szConfigFile[MAX_FILENAME_LEN - 1] = '\0';
@@ -2825,4 +2827,17 @@ bool ParseFE(char *szBuffer, char ***szSubStr, int nNumSubStr)
   while(i < nNumSubStr)  (*szSubStr)[i++] = pcEnd;
 
   return (!*pcEnd);
+}
+
+CUserProperties::CUserProperties()
+  : newAlias(NULL),
+    newCellular(NULL),
+    normalSid(0),
+    groupId(0),
+    visibleSid(0),
+    invisibleSid(0),
+    inIgnoreList(false),
+    awaitingAuth(false)
+{
+  tlvs.clear();
 }
