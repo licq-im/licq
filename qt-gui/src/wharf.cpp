@@ -93,8 +93,8 @@ void IconManager::X11Init()
   XWMHints *hints;  // hints
   XClassHint classhint;  // class hints
   XSizeHints sizeHints;
-  classhint.res_name = "licq";  // res_name
-  classhint.res_class = "Wharf";  // res_class
+  classhint.res_name = const_cast<char*>("licq");  // res_name
+  classhint.res_class = const_cast<char*>("Wharf");  // res_class
   XSetClassHint(dsp, win, &classhint); // set the class hints
   sizeHints.flags= USPosition;
   sizeHints.x = 0;
