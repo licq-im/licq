@@ -3839,7 +3839,7 @@ void CMainWindow::autoAway()
     if (o != NULL)
     {
       status = o->Status();
-      gUserManager.DropOwner(nPPID);
+      gUserManager.DropOwner(o);
     }
 
     SAutoAwayInfo& info = autoAwayInfo[nPPID];
@@ -3903,7 +3903,7 @@ void CMainWindow::autoAway()
       if (o != NULL)
       {
         o->SetAutoResponse(QString(sar[autoNAMess-1]->AutoResponse()).local8Bit());
-        gUserManager.DropOwner(nPPID);
+        gUserManager.DropOwner(o);
       }
       gSARManager.Drop();
     }
@@ -3914,7 +3914,7 @@ void CMainWindow::autoAway()
       if (o != NULL)
       {
         o->SetAutoResponse(QString(sar[autoAwayMess-1]->AutoResponse()).local8Bit());
-        gUserManager.DropOwner(nPPID);
+        gUserManager.DropOwner(o);
       }
       gSARManager.Drop();
     }
