@@ -455,9 +455,6 @@ char* CTranslator::iconvConvert(const char* array, const char* to, const char* f
 
   char* result = new char[outLen + 1];
 
-  // iconv() has inbuf parameter declared as char** even though the data is
-  // never modified so it's safe to cast away the const here.
-  char* inPtr = const_cast<char*>(array);
   char* outPtr = result;
   iconv_t tr;
 
@@ -471,7 +468,7 @@ char* CTranslator::iconvConvert(const char* array, const char* to, const char* f
   }
   else
   {
-    size_t ret = iconv(tr, &inPtr, &inLen, &outPtr, &outLen);
+    size_t ret = iconv(tr, (ICONV_CONST char**)&array, &inLen, &outPtr, &outLen);
     iconv_close(tr);
 
     if (outDone != NULL)
