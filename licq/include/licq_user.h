@@ -17,6 +17,17 @@
 // Added for plugin convenience
 #include "licq_constants.h"
 
+// Define for marking functions as deprecated
+#ifndef LICQ_DEPRECATED
+# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
+#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
+# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#  define LICQ_DEPRECATED __declspec(deprecated)
+# else
+#  define LICQ_DEPRECATED
+# endif
+#endif
+
 class TCPSocket;
 
 #define LICQ_PPID 0x4C696371  // "Licq"
@@ -1287,11 +1298,11 @@ public:
   bool IsOnList(unsigned long nUin);
 
   // Deprecated owner functions, to be removed
-  void SetOwnerUin(unsigned long _nUin) __attribute__ ((deprecated));
-  unsigned long OwnerUin() __attribute__ ((deprecated)) { return icqOwnerUin(); }
-  ICQOwner *FetchOwner(unsigned short) __attribute__ ((deprecated));
-  void DropOwner() __attribute__ ((deprecated));
-  void DropOwner(unsigned long) __attribute__ ((deprecated));
+  void SetOwnerUin(unsigned long _nUin) LICQ_DEPRECATED;
+  unsigned long OwnerUin() LICQ_DEPRECATED { return icqOwnerUin(); }
+  ICQOwner *FetchOwner(unsigned short) LICQ_DEPRECATED;
+  void DropOwner() LICQ_DEPRECATED;
+  void DropOwner(unsigned long) LICQ_DEPRECATED;
 
   /**
    * Convenience function to get icq owner as an unsigned long
