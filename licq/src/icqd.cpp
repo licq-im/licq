@@ -2721,7 +2721,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   if (szType)  free(szType);
 }
 
-bool CICQDaemon::WaitForReverseConnection(unsigned short id, unsigned long uin)
+bool CICQDaemon::WaitForReverseConnection(unsigned short id, const char* userId)
 {
   bool bSuccess = false;
   pthread_mutex_lock(&mutex_reverseconnect);
@@ -2730,7 +2730,7 @@ bool CICQDaemon::WaitForReverseConnection(unsigned short id, unsigned long uin)
   for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
     ++iter)
   {
-    if ((*iter)->nId == id && (*iter)->nUin == uin)
+    if ((*iter)->nId == id && (*iter)->myIdString == userId)
       break;
   }
 
@@ -2756,7 +2756,7 @@ bool CICQDaemon::WaitForReverseConnection(unsigned short id, unsigned long uin)
           L_WARNxSTR);
         goto done;
       }
-      if ((*iter)->nId == id && (*iter)->nUin == uin)
+      if ((*iter)->nId == id && (*iter)->myIdString == userId)
       {
         if ((*iter)->bFinished)
         {
@@ -2774,7 +2774,7 @@ bool CICQDaemon::WaitForReverseConnection(unsigned short id, unsigned long uin)
   for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
     ++iter)
   {
-    if ((*iter)->nId == id && (*iter)->nUin == uin)
+    if ((*iter)->nId == id && (*iter)->myIdString == userId)
     {
       delete *iter;
       m_lReverseConnect.erase(iter);
@@ -2787,11 +2787,11 @@ done:
   return bSuccess;
 }
 
-CReverseConnectToUserData::CReverseConnectToUserData(unsigned long uin, unsigned long id,
+CReverseConnectToUserData::CReverseConnectToUserData(const char* idString, unsigned long id,
       unsigned long data, unsigned long ip, unsigned short port,
       unsigned short version, unsigned short failedport, unsigned long msgid1,
       unsigned long msgid2) :
-  nUin(uin), nId(id), nData(data), nIp(ip), nPort(port),
+  myIdString(idString), nId(id), nData(data), nIp(ip), nPort(port),
   nFailedPort(failedport), nVersion(version), nMsgID1(msgid1),
   nMsgID2(msgid2), bSuccess(false), bFinished(false)
 {

@@ -1760,9 +1760,7 @@ CPU_ReverseConnect::CPU_ReverseConnect(ICQUser *u, unsigned long nLocalIP,
 
   CPU_Type2Message::InitBuffer();
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-
-  buffer->PackUnsignedLong(o->Uin());
+  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
   buffer->PackUnsignedLong(nLocalIP);
   buffer->PackUnsignedLong(nLocalPort);
   buffer->PackChar(MODE_DIRECT); /* why would you set it to anything else?
@@ -1773,10 +1771,9 @@ CPU_ReverseConnect::CPU_ReverseConnect(ICQUser *u, unsigned long nLocalIP,
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(m_nSubSequence);
 //  buffer->PackUnsignedLongBE(0x00030000);
-  gUserManager.DropOwner(o);
 }
 
-CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(unsigned long nUin,
+CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(const char* szUin,
                                                    unsigned long nMsgID1,
                                                    unsigned long nMsgID2,
                                                    unsigned short nFailedPort,
@@ -1784,14 +1781,11 @@ CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(unsigned long nUin,
                                                    unsigned long nConnectID)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SERVERxREPLYxMSG)
 {
-  char szUin[13];
-  int nUinLen = snprintf(szUin, 12, "%lu", nUin);
+  int nUinLen = strlen(szUin);
 
   m_nSize += 8 + 2 + 1 + nUinLen + 2 + 4 + 4 + 4 + 2 + 4;
 
   InitBuffer();
-
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 
   buffer->PackUnsignedLongBE(nMsgID1);
   buffer->PackUnsignedLongBE(nMsgID2);
@@ -1799,13 +1793,11 @@ CPU_ReverseConnectFailed::CPU_ReverseConnectFailed(unsigned long nUin,
   buffer->PackChar(nUinLen);
   buffer->Pack(szUin, nUinLen);
   buffer->PackUnsignedShortBE(0x0003);
-  buffer->PackUnsignedLong(o->Uin());
+  buffer->PackUnsignedLong(gUserManager.icqOwnerUin());
   buffer->PackUnsignedLong(nFailedPort);
   buffer->PackUnsignedLong(nOurPort);
   buffer->PackUnsignedShort(ICQ_VERSION_TCP);
   buffer->PackUnsignedLong(nConnectID);
-
-  gUserManager.DropOwner(o);
 }
 
 //-----PluginMessage-----------------------------------------------------------
@@ -4431,7 +4423,9 @@ CPacketTcp_Handshake_v6::CPacketTcp_Handshake_v6(unsigned long nDestinationUin,
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
 
-  ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+  char id[16];
+  snprintf(id, 16, "%lu", nDestinationUin);
+  ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
   if (u)
   {
     buffer->PackUnsignedLong(u->Cookie());
@@ -4488,7 +4482,9 @@ CPacketTcp_Handshake_v7::CPacketTcp_Handshake_v7(unsigned long nDestinationUin,
   buffer->PackChar(s_nMode);
   buffer->PackUnsignedLong(nLocalPort == 0 ? s_nLocalPort : nLocalPort);
 
-  ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+  char id[16];
+  snprintf(id, 16, "%lu", nDestinationUin);
+  ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
   if (u)
   {
     buffer->PackUnsignedLong(u->Cookie());

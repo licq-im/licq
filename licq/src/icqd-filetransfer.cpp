@@ -16,6 +16,7 @@
 #include <errno.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <string>
 #include <string.h>
 #include <sys/time.h>
 
@@ -42,6 +43,7 @@ const unsigned short FT_STATE_RECEIVINGxFILE = 6;
 const unsigned short FT_STATE_SENDINGxFILE = 7;
 const unsigned short FT_STATE_CONFIRMINGxFILE = 8;
 
+using std::string;
 
 
 //=====FILE==================================================================
@@ -351,7 +353,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   if (bTryDirect)
   {
     gLog.Info("%sFile Transfer: Connecting to server.\n", L_TCPxSTR);
-    bSuccess = licqDaemon->OpenConnectionToUser(m_nUin, &ftSock, nPort);
+    bSuccess = licqDaemon->OpenConnectionToUser(myId, &ftSock, nPort);
    }
 
   bool bResult = false;
@@ -362,7 +364,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
     gUserManager.DropOwner(o);
 
     // try reverse connect
-    int nId = licqDaemon->RequestReverseConnection(m_nUin, 0, nIp, LocalPort(),
+    int nId = licqDaemon->RequestReverseConnection(myId, 0, nIp, LocalPort(),
                                                                         nPort);
 
     if (nId != -1)
@@ -392,7 +394,7 @@ bool CFileTransferManager::SendFileHandshake()
   ICQUser *u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
   unsigned short nVersion = u->ConnectionVersion();
   gUserManager.DropUser(u);
-  if (!CICQDaemon::Handshake_Send(&ftSock, m_nUin, LocalPort(), nVersion, false))
+  if (!CICQDaemon::Handshake_Send(&ftSock, myId, LocalPort(), nVersion, false))
     return false;
 
   // Send init packet:
@@ -480,7 +482,7 @@ bool CFileTransferManager::ProcessPacket()
         for (iter = licqDaemon->m_lReverseConnect.begin();
                           iter != licqDaemon->m_lReverseConnect.end();  ++iter)
         {
-          if ((*iter)->nId == nId && (*iter)->nUin == m_nUin)
+          if ((*iter)->nId == nId && (*iter)->myIdString == myId)
           {
             bFound = true;
             (*iter)->bSuccess = true;
@@ -1254,7 +1256,6 @@ void *FileWaitForSignal_tep(void *arg)
   pthread_detach(pthread_self());
 
   CICQDaemon *d;
-  unsigned long nUin;
   unsigned short nPort;
   struct SFileReverseConnectInfo *rc = (struct SFileReverseConnectInfo *)arg;
   pthread_mutex_t *cancel_mutex = &CFileTransferManager::thread_cancel_mutex;
@@ -1264,13 +1265,13 @@ void *FileWaitForSignal_tep(void *arg)
     pthread_testcancel();
   pthread_cleanup_pop(0);
   d = rc->m->licqDaemon;
-  nUin = rc->m->Uin();
+  string id = rc->m->Id();
   nPort = rc->m->m_nPort;
   pthread_mutex_unlock(cancel_mutex);
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   gLog.Info("%sFile Transfer: Waiting for reverse connection.\n", L_TCPxSTR);
-  bool bConnected = d->WaitForReverseConnection(rc->nId, nUin);
+  bool bConnected = d->WaitForReverseConnection(rc->nId, id.c_str());
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);
@@ -1296,7 +1297,7 @@ void *FileWaitForSignal_tep(void *arg)
   gLog.Info("%sFile Transfer: Reverse connection failed, trying direct.\n",
                                                                     L_TCPxSTR);
   TCPSocket s;
-  bConnected = d->OpenConnectionToUser(nUin, &s, nPort);
+  bConnected = d->OpenConnectionToUser(id.c_str(), &s, nPort);
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);

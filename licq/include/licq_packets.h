@@ -726,7 +726,7 @@ public:
 class CPU_ReverseConnectFailed : public CPU_CommonFamily
 {
 public:
-  CPU_ReverseConnectFailed(unsigned long nUin, unsigned long nMsgID1,
+  CPU_ReverseConnectFailed(const char* id, unsigned long nMsgID1,
                            unsigned long nMsgID2, unsigned short nFailedPort,
                            unsigned short nOurPort, unsigned long nConnectID);
 };

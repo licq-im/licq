@@ -815,7 +815,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
     gUserManager.DropOwner(o);
 
     // try reverse connect
-    int nId = licqDaemon->RequestReverseConnection(c->m_nUin, c->m_nSession,
+    int nId = licqDaemon->RequestReverseConnection(c->m_szId, c->m_nSession,
                                                  nIp, LocalPort(), c->m_nPort);
     if (nId != -1)
     {
@@ -853,7 +853,7 @@ bool CChatManager::SendChatHandshake(CChatUser *u)
   gLog.Info(tr("%sChat: Shaking hands [v%d].\n"), L_TCPxSTR, VersionToUse(c->m_nVersion));
 
   // Send handshake packet:
-  if (!CICQDaemon::Handshake_Send(&u->sock, c->m_nUin, LocalPort(),
+  if (!CICQDaemon::Handshake_Send(&u->sock, c->m_szId, LocalPort(),
      VersionToUse(c->m_nVersion), false))
     return false;
 
@@ -984,7 +984,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
         for (iter = licqDaemon->m_lReverseConnect.begin();
                          iter != licqDaemon->m_lReverseConnect.end();  ++iter)
         {
-          if ((*iter)->nUin == u->uin)
+          if ((*iter)->myIdString == u->Id())
           {
             bFound = true;
             (*iter)->bSuccess = true;
@@ -2463,7 +2463,7 @@ void *ChatWaitForSignal_tep(void *arg)
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   gLog.Info("%sChat: Waiting for reverse connection.\n", L_TCPxSTR);
-  bool bConnected = d->WaitForReverseConnection(rc->nId, rc->u->Uin());
+  bool bConnected = d->WaitForReverseConnection(rc->nId, rc->u->Id());
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);

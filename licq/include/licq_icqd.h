@@ -243,10 +243,6 @@ public:
      unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
 
-  unsigned long ProtoSendContactList(const char *szId, unsigned long nPPID,
-     UinList &uins, bool bOnline, unsigned short nLevel,
-     bool bMultipleRecipients = false, CICQColor *pColor = NULL);
-
   unsigned long ProtoFetchAutoResponseServer(const char *szId, unsigned long nPPID);
 
   unsigned long ProtoChatRequest(const char *szId, unsigned long nPPID,
@@ -550,7 +546,7 @@ public:
   void UpdateAllUsersInGroup(GroupType, unsigned short);
   void CancelEvent(unsigned long );
   void CancelEvent(ICQEvent *);
-  bool OpenConnectionToUser(unsigned long nUin, TCPSocket *sock,
+  bool OpenConnectionToUser(const char* id, TCPSocket *sock,
      unsigned short nPort);
   bool OpenConnectionToUser(const char *szAlias, unsigned long nIp,
      unsigned long nIntIp, TCPSocket *sock, unsigned short nPort,
@@ -676,7 +672,7 @@ public:
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned short nSequence,
      TCPSocket *pSock);
-  bool WaitForReverseConnection(unsigned short id, unsigned long uin);
+  bool WaitForReverseConnection(unsigned short id, const char* userId);
 
 protected:
   CLicq *licq;
@@ -840,18 +836,18 @@ protected:
   bool ProcessTcpHandshake(TCPSocket *);
   void ProcessFifo(char *);
 
-  static bool Handshake_Send(TCPSocket *, unsigned long, unsigned short,
+  static bool Handshake_Send(TCPSocket *, const char* id, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);
   static bool Handshake_SendConfirm_v7(TCPSocket *);
   static bool Handshake_Recv(TCPSocket *, unsigned short, bool = true, bool = false);
   static bool Handshake_RecvConfirm_v7(TCPSocket *);
   int ConnectToServer(const char* server, unsigned short port);
   int ConnectToLoginServer();
-  int ConnectToUser(unsigned long, unsigned char);
-  int ReverseConnectToUser(unsigned long nUin, unsigned long nIp,
+  int ConnectToUser(const char* id, unsigned char channel);
+  int ReverseConnectToUser(const char* id, unsigned long nIp,
      unsigned short nPort, unsigned short nVersion, unsigned short nFailedPort,
      unsigned long nId, unsigned long nMsgID1, unsigned long nMsgID2);
-  int RequestReverseConnection(unsigned long, unsigned long, unsigned long,
+  int RequestReverseConnection(const char* id, unsigned long, unsigned long,
                                unsigned short, unsigned short);
 
   // Protected plugin related stuff
@@ -897,13 +893,13 @@ unsigned short VersionToUse(unsigned short);
 class CReverseConnectToUserData
 {
 public:
-  CReverseConnectToUserData(unsigned long uin, unsigned long id,
+  CReverseConnectToUserData(const char* idString, unsigned long id,
       unsigned long data, unsigned long ip, unsigned short port,
       unsigned short version, unsigned short failedport, unsigned long msgid1,
       unsigned long msgid2);
   ~CReverseConnectToUserData();
 
-  unsigned long nUin;
+  std::string myIdString;
   unsigned long nId;
   unsigned long nData;
   unsigned long nIp;

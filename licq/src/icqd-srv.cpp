@@ -2082,7 +2082,7 @@ int CICQDaemon::ConnectToLoginServer()
 
 int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
 {
-  SrvSocket *s = new SrvSocket(gUserManager.icqOwnerUin());
+  SrvSocket* s = new SrvSocket(gUserManager.OwnerId(LICQ_PPID).c_str(), LICQ_PPID);
 
   if (m_bProxyEnabled)
   {
@@ -2178,7 +2178,7 @@ unsigned long CICQDaemon::FindUinByCellular(const char *szCellular)
     ParseDigits(szParsedNumber1, pUser->GetCellularNumber(), 15);
     ParseDigits(szParsedNumber2, szCellular, 15);
     if (!strcmp(szParsedNumber1, szParsedNumber2))
-      nUin = pUser->Uin();
+      nUin = strtoul(pUser->IdString(), NULL, 10);
   }
   FOR_EACH_USER_END
 
@@ -3114,10 +3114,10 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       {
         if ((*iter)->nId == nSubSequence)
         {
-          ICQUser *u = gUserManager.FetchUser((*iter)->nUin, LOCK_R);
+          ICQUser* u = gUserManager.FetchUser((*iter)->myIdString.c_str(), LICQ_PPID, LOCK_R);
           if (u == NULL)
-            gLog.Warn("%sReverse connection from %lu failed.\n", L_WARNxSTR,
-                      (*iter)->nUin);
+            gLog.Warn("%sReverse connection from %s failed.\n", L_WARNxSTR,
+                (*iter)->myIdString.c_str());
           else
           {
             gLog.Warn("%sReverse connection from %s failed.\n", L_WARNxSTR,
@@ -3297,9 +3297,12 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         if (nPort == 0)
           nPort = nPort2;
 
+        char id[16];
+        snprintf(id, 15, "%lu", nUin);
+
         pthread_t t;
         CReverseConnectToUserData *data = new CReverseConnectToUserData(
-                               nUin, nId, ICQ_CHNxUNKNOWN, nIp, nPort,
+            id, nId, ICQ_CHNxUNKNOWN, nIp, nPort,
                                nVersion, nFailedPort, nMsgID[0], nMsgID[1]);
         pthread_create(&t, NULL, &ReverseConnectToUser_tep, data);
         break;
@@ -3907,8 +3910,10 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 		nMsgID = packet.UnpackUnsignedLongBE(); // lower bits, what licq uses
 		nFormat = packet.UnpackUnsignedShortBE();
 		nUin = packet.UnpackUinString();
+      char id[16];
+      snprintf(id, 15, "%lu", nUin);
 
-		u = gUserManager.FetchUser(nUin, LOCK_W);
+      u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
 		if (u == NULL)
 		{
 			gLog.Warn(tr("%sUnexpected new user in subtype 0x%04x.\n"), L_SRVxSTR,
@@ -3922,8 +3927,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     for (iter = m_lReverseConnect.begin(); iter != m_lReverseConnect.end();
                                            ++iter)
     {
-      if ((*iter)->nId == nMsgID && (*iter)->nUin == nUin)
-      {
+        if ((*iter)->nId == nMsgID && (*iter)->myIdString == id)
+        {
         gLog.Warn("%sReverse connection from %s failed.\n", L_WARNxSTR,
                   u->GetAlias());
         (*iter)->bSuccess = false;
@@ -6578,16 +6583,16 @@ void  CICQDaemon::addToModifyUsers(unsigned long unique_id, const std::string da
   pthread_mutex_unlock(&mutex_modifyserverusers);
 }
 
-int CICQDaemon::RequestReverseConnection(unsigned long nUin,
+int CICQDaemon::RequestReverseConnection(const char* id,
                                          unsigned long nData,
                                          unsigned long nLocalIP,
                                          unsigned short nLocalPort,
                                          unsigned short nRemotePort)
 {
-  if (nUin == gUserManager.icqOwnerUin())
+  if (gUserManager.FindOwner(id, LICQ_PPID) != NULL)
     return -1;
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
   if (u == NULL) return -1;
 
 
@@ -6597,10 +6602,8 @@ int CICQDaemon::RequestReverseConnection(unsigned long nUin,
 
   pthread_mutex_lock(&mutex_reverseconnect);
 
-  m_lReverseConnect.push_back(
-            new CReverseConnectToUserData(nUin, nId, nData, nLocalIP,
-                                          nLocalPort, ICQ_VERSION_TCP,
-                                          nRemotePort, 0, nId));
+  m_lReverseConnect.push_back(new CReverseConnectToUserData(id, nId, nData,
+      nLocalIP, nLocalPort, ICQ_VERSION_TCP, nRemotePort, 0, nId));
   pthread_mutex_unlock(&mutex_reverseconnect);
 
   gLog.Info("%sRequesting reverse connection from %s.\n", L_TCPxSTR,

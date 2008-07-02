@@ -383,11 +383,12 @@ void *ProcessRunningEvent_Client_tep(void *p)
   // Check if the socket is connected
   if (e->m_nSocketDesc == -1)
   {
-    unsigned long nDestinationUin = e->m_nDestinationUin;
+    string id = e->Id();
+    unsigned long ppid = e->PPID();
     unsigned char nChannel = e->Channel();
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
-   
-    ICQUser *u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+
+    ICQUser* u = gUserManager.FetchUser(id.c_str(), ppid, LOCK_R);
     if (u == NULL)
     {
       if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -415,12 +416,11 @@ void *ProcessRunningEvent_Client_tep(void *p)
     int socket = -1;
     if (!bSendIntIp && nVersion > 6 && nMode != MODE_DIRECT)
     {
-      int nId = d->RequestReverseConnection(nDestinationUin, nChannel, nIP,
-                                            nLocalPort, nRemotePort);
+      int nId = d->RequestReverseConnection(id.c_str(), nChannel, nIP, nLocalPort, nRemotePort);
       if (nId != -1)
       {
-        d->WaitForReverseConnection(nId, nDestinationUin);
-        u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+        d->WaitForReverseConnection(nId, id.c_str());
+        u = gUserManager.FetchUser(id.c_str(), LICQ_PPID, LOCK_R);
         if (u == NULL)
         {
           if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -444,12 +444,12 @@ void *ProcessRunningEvent_Client_tep(void *p)
         pthread_testcancel();
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-        socket = d->ConnectToUser(nDestinationUin, nChannel);
+        socket = d->ConnectToUser(id.c_str(), nChannel);
       }
     }
     else
     {
-      socket = d->ConnectToUser(nDestinationUin, nChannel);
+      socket = d->ConnectToUser(id.c_str(), nChannel);
 
       // if we failed, try through server
       if (socket == -1)
@@ -458,12 +458,12 @@ void *ProcessRunningEvent_Client_tep(void *p)
         pthread_testcancel();
         pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-        int nId = d->RequestReverseConnection(nDestinationUin, nChannel, nIP,
+        int nId = d->RequestReverseConnection(id.c_str(), nChannel, nIP,
                                               nLocalPort, nRemotePort);
         if (nId != -1)
         {
-          d->WaitForReverseConnection(nId, nDestinationUin);
-          u = gUserManager.FetchUser(nDestinationUin, LOCK_R);
+          d->WaitForReverseConnection(nId, id.c_str());
+          u = gUserManager.FetchUser(id.c_str(), LICQ_PPID, LOCK_R);
           if (u == NULL)
           {
             if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -603,8 +603,8 @@ void *ReverseConnectToUser_tep(void *v)
 
   CReverseConnectToUserData *p = (CReverseConnectToUserData *)v;
 
-  gLicqDaemon->ReverseConnectToUser(p->nUin, p->nIp, p->nPort, p->nVersion,
-    p->nFailedPort, p->nId, p->nMsgID1, p->nMsgID2);
+  gLicqDaemon->ReverseConnectToUser(p->myIdString.c_str(), p->nIp, p->nPort,
+      p->nVersion, p->nFailedPort, p->nId, p->nMsgID1, p->nMsgID2);
 
   delete p;
 
