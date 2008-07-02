@@ -1652,7 +1652,7 @@ void LicqGui::autoAway()
     if (o != NULL)
     {
       status = o->Status();
-      gUserManager.DropOwner(nPPID);
+      gUserManager.DropOwner(o);
     }
 
     SAutoAwayInfo& info = autoAwayInfo[nPPID];
@@ -1719,7 +1719,7 @@ void LicqGui::autoAway()
       if (o != NULL)
       {
         o->SetAutoResponse(QString(sar[generalConfig->autoNaMess() - 1]->AutoResponse()).toLocal8Bit());
-        gUserManager.DropOwner(nPPID);
+        gUserManager.DropOwner(o);
       }
       gSARManager.Drop();
     }
@@ -1730,7 +1730,7 @@ void LicqGui::autoAway()
       if (o != NULL)
       {
         o->SetAutoResponse(QString(sar[generalConfig->autoAwayMess() - 1]->AutoResponse()).toLocal8Bit());
-        gUserManager.DropOwner(nPPID);
+        gUserManager.DropOwner(o);
       }
       gSARManager.Drop();
     }
