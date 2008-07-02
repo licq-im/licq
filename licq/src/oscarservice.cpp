@@ -6,20 +6,20 @@
  * This program is licensed under the terms found in the LICENSE file.
  */
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
-                     
-#include <cstdlib>
-#include <cstdio>
+#include "licq_oscarservice.h"
 
 #include <boost/scoped_array.hpp>
+#include <cerrno>
+#include <cstdio>
+#include <cstdlib>
+#include <fcntl.h>
+#include <sys/stat.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 // Localization
 #include "gettext.h"
 
-#include "licq_oscarservice.h"
 #include "licq_icqd.h"
 #include "licq_events.h"
 #include "licq_socket.h"

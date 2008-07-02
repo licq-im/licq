@@ -10,19 +10,21 @@
 #include "config.h"
 #endif
 
-#include <sys/types.h>
-#include <sys/stat.h>
+#include "licq_user.h"
+
+#include <cassert>
+#include <cctype>
+#include <cerrno>
+#include <cstdlib>
+#include <cstring>
+#include <ctime>
 #include <fcntl.h>
 #include <netinet/in.h>
-#include <cassert>
-#include <cstdlib>
-#include <ctime>
-#include <ctype.h>
 #include <sys/socket.h>
-#include <netinet/in.h>
-#include <string.h>
-#include <errno.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 #include <vector>
+#include <unistd.h>
 
 #ifdef HAVE_INET_ATON
 #include <arpa/inet.h>
@@ -32,7 +34,6 @@
 #include "gettext.h"
 
 #include "licq_constants.h"
-#include "licq_user.h"
 #include "licq_countrycodes.h"
 #include "licq_occupationcodes.h"
 #include "licq_languagecodes.h"

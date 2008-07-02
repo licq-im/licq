@@ -9,12 +9,14 @@
 #ifndef LICQTHREADS_H
 #define LICQTHREADS_H
 
-#include <errno.h>
+#include "licq_icqd.h"
+
+#include <cerrno>
+#include <unistd.h>
 
 #include "pthread_rdwr.h"
 #include "time-fix.h"
 
-#include "licq_icqd.h"
 #include "licq_log.h"
 #include "licq_packets.h"
 #include "licq_oscarservice.h"

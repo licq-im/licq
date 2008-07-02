@@ -7,8 +7,11 @@
  */
 
 #include "licq_plugind.h"
-#include "licq_socket.h"
+
 #include <cstring>
+#include <unistd.h>
+
+#include "licq_socket.h"
 
 
 CPlugin::CPlugin(const char *szLibName)

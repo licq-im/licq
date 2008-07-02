@@ -10,9 +10,11 @@
 #include "config.h"
 #endif
 
-#include <ctype.h>
-
 #include "licq_chat.h"
+
+#include <cctype>
+#include <unistd.h>
+
 #include "licq_log.h"
 #include "licq_constants.h"
 #include "licq_icqd.h"
