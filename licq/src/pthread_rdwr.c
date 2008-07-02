@@ -113,7 +113,7 @@ static void debug_cond_wait(pthread_rdwr_t *rdwrp, int reading)
     FILE* file = fopen(filename, "w");
     if (file != NULL)
     {
-      fprintf(file, "time: %lu\n", (long)time(NULL));
+      fprintf(file, "time: %lu\n", (unsigned long)time(NULL));
       print_users(file, rdwrp, reading);
       fclose(file);
     }
