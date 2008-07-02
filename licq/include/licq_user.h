@@ -1298,11 +1298,11 @@ public:
   bool IsOnList(unsigned long nUin);
 
   // Deprecated owner functions, to be removed
-  void SetOwnerUin(unsigned long _nUin) LICQ_DEPRECATED;
-  unsigned long OwnerUin() LICQ_DEPRECATED { return icqOwnerUin(); }
-  ICQOwner *FetchOwner(unsigned short) LICQ_DEPRECATED;
-  void DropOwner() LICQ_DEPRECATED;
-  void DropOwner(unsigned long) LICQ_DEPRECATED;
+  LICQ_DEPRECATED void SetOwnerUin(unsigned long _nUin);
+  LICQ_DEPRECATED unsigned long OwnerUin() { return icqOwnerUin(); }
+  LICQ_DEPRECATED ICQOwner *FetchOwner(unsigned short);
+  LICQ_DEPRECATED void DropOwner();
+  LICQ_DEPRECATED void DropOwner(unsigned long);
 
   /**
    * Convenience function to get icq owner as an unsigned long
