@@ -134,10 +134,9 @@ void UserSendSmsEvent::send()
     return;
 
   //TODO in daemon
-  icqEventTag = gLicqDaemon->icqSendSms(
+  icqEventTag = gLicqDaemon->icqSendSms(myUsers.front().c_str(), LICQ_PPID,
       myNumberField->text().toLatin1(),
-      myMessageEdit->toPlainText().toUtf8().data(),
-      strtoul(myUsers.front().c_str(), NULL, 10));
+      myMessageEdit->toPlainText().toUtf8().data());
   myEventTag.push_back(icqEventTag);
 
   UserSendCommon::send();

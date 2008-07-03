@@ -1264,7 +1264,7 @@ void UserViewEvent::slot_btnRead2()
         if (chatDlg->StartAsClient(c->Port()))
         {
           //TODO in CICQDaemon
-          server->icqChatRequestAccept(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10), 0,
+          server->icqChatRequestAccept(m_lUsers.front().c_str(), 0,
             c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         }
       }
@@ -1273,7 +1273,7 @@ void UserViewEvent::slot_btnRead2()
         if (chatDlg->StartAsServer())
         {
           //TODO in CICQDaemon
-          server->icqChatRequestAccept(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+          server->icqChatRequestAccept(m_lUsers.front().c_str(),
             chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         }
       }
@@ -1335,7 +1335,7 @@ void UserViewEvent::slot_btnRead3()
         btnRead3->setEnabled(false);
 
         //TODO in CICQDaemon
-        server->icqChatRequestRefuse(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+        server->icqChatRequestRefuse(m_lUsers.front().c_str(),
           codec->fromUnicode(r->RefuseMessage()),
           m_xCurrentReadEvent->Sequence(), c->MessageID(), c->IsDirect());
       }
@@ -1390,7 +1390,7 @@ void UserViewEvent::slot_btnRead4()
         ChatDlg *chatDlg = new ChatDlg(m_lUsers.front().c_str(), m_nPPID, server, mainwin);
         //TODO
         if (chatDlg->StartAsClient(c->Port()))
-          server->icqChatRequestAccept(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10), 0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(m_lUsers.front().c_str(), 0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
@@ -1398,7 +1398,7 @@ void UserViewEvent::slot_btnRead4()
         CJoinChatDlg *j = new CJoinChatDlg(this);
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
           //TODO
-          server->icqChatRequestAccept(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10), chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(m_lUsers.front().c_str(), chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         delete j;
       }
       break;
@@ -2568,12 +2568,12 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 
       if (ue->Clients() == NULL)
         //TODO in the daemon
-        icqEventTag = server->icqChatRequest(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+        icqEventTag = server->icqChatRequest(m_lUsers.front().c_str(),
           ue->Reason(), nLevel, !bOnline);
       else
         //TODO in the daemon
         icqEventTag = server->icqMultiPartyChatRequest(
-              strtoul(m_lUsers.front().c_str(), (char **)NULL, 10), ue->Reason(), ue->Clients(),
+            m_lUsers.front().c_str(), ue->Reason(), ue->Clients(),
               ue->Port(), nLevel, !bOnline);
 
       break;
@@ -2592,8 +2592,8 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventSms *ue = (CEventSms *)e->UserEvent();
       //TODO in the daemon
-      icqEventTag = server->icqSendSms(ue->Number(), ue->Message(),
-        strtoul(m_lUsers.front().c_str(), (char **)NULL, 0));
+      icqEventTag = server->icqSendSms(m_lUsers.front().c_str(), LICQ_PPID,
+        ue->Number(), ue->Message());
 
       break;
     }
@@ -3303,12 +3303,12 @@ void UserSendChatEvent::sendButton()
 
   if (m_nMPChatPort == 0)
     //TODO in daemon
-    icqEventTag = server->icqChatRequest(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+    icqEventTag = server->icqChatRequest(m_lUsers.front().c_str(),
                                          codec->fromUnicode(mleSend->text()),
                                          chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
                                          chkSendServer->isChecked());
   else
-    icqEventTag = server->icqMultiPartyChatRequest(strtoul(m_lUsers.front().c_str(), (char **)NULL, 10),
+    icqEventTag = server->icqMultiPartyChatRequest(m_lUsers.front().c_str(),
                                                    codec->fromUnicode(mleSend->text()),
                                                    codec->fromUnicode(m_szMPChatClients),
                                                    m_nMPChatPort,
@@ -3547,8 +3547,8 @@ void UserSendSmsEvent::sendButton()
     return;
 
   //TODO in daemon
-  icqEventTag = server->icqSendSms(nfoNumber->text().latin1(), mleSend->text().utf8().data(),
-    strtoul(m_lUsers.front().c_str(), (char **)NULL, 10));
+  icqEventTag = server->icqSendSms(m_lUsers.front().c_str(), LICQ_PPID,
+      nfoNumber->text().latin1(), mleSend->text().utf8().data());
   m_lnEventTag.push_back(icqEventTag);
 
   UserSendCommon::sendButton();

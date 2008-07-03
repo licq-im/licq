@@ -732,7 +732,8 @@ void ChatDlg::slot_chat()
       {
         QString n = UserCodec::codecForCChatUser(u)->toUnicode(u->Name());
 
-        if (n.isEmpty()) n.setNum(u->Uin());
+        if (n.isEmpty())
+          n = u->Id();
         chatClose(u);
         InformUser(this, tr("%1 closed connection.").arg(n));
         break;

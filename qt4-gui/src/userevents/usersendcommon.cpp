@@ -873,11 +873,11 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
 
       if (ue->Clients() == NULL)
         //TODO in the daemon
-        icqEventTag = gLicqDaemon->icqChatRequest(strtoul(myUsers.front().c_str(), NULL, 10),
+        icqEventTag = gLicqDaemon->icqChatRequest(myUsers.front().c_str(),
             ue->Reason(), level, !online);
       else
         //TODO in the daemon
-        icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(strtoul(myUsers.front().c_str(), NULL, 10),
+        icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(myUsers.front().c_str(),
             ue->Reason(), ue->Clients(), ue->Port(), level, !online);
 
       break;
@@ -900,9 +900,8 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
       const CEventSms* ue = dynamic_cast<const CEventSms*>(e->UserEvent());
 
       //TODO in the daemon
-      icqEventTag = gLicqDaemon->icqSendSms(ue->Number(), ue->Message(),
-          strtoul(myUsers.front().c_str(), NULL, 0));
-
+      icqEventTag = gLicqDaemon->icqSendSms(myUsers.front().c_str(), LICQ_PPID,
+          ue->Number(), ue->Message());
       break;
     }
 

@@ -433,7 +433,7 @@ void UserViewEvent::read2()
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsClient(c->Port()))
           gLicqDaemon->icqChatRequestAccept(
-              strtoul(myUsers.front().c_str(), NULL, 10),
+              myUsers.front().c_str(),
               0, c->Clients(), c->Sequence(),
               c->MessageID(), c->IsDirect());
       }
@@ -442,7 +442,7 @@ void UserViewEvent::read2()
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsServer())
           gLicqDaemon->icqChatRequestAccept(
-              strtoul(myUsers.front().c_str(), NULL, 10),
+              myUsers.front().c_str(),
               chatDlg->LocalPort(), c->Clients(), c->Sequence(),
               c->MessageID(), c->IsDirect());
       }
@@ -503,7 +503,7 @@ void UserViewEvent::read3()
 
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->icqChatRequestRefuse(
-            strtoul(myUsers.front().c_str(), NULL, 10),
+            myUsers.front().c_str(),
             myCodec->fromUnicode(r->RefuseMessage()), myCurrentEvent->Sequence(),
             c->MessageID(), c->IsDirect());
       }
@@ -561,7 +561,7 @@ void UserViewEvent::read4()
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsClient(c->Port()))
           gLicqDaemon->icqChatRequestAccept(
-              strtoul(myUsers.front().c_str(), NULL, 10),
+              myUsers.front().c_str(),
               0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
@@ -571,7 +571,7 @@ void UserViewEvent::read4()
         // FIXME: must have been done in CICQDaemon
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
           gLicqDaemon->icqChatRequestAccept(
-              strtoul(myUsers.front().c_str(), NULL, 10),
+              myUsers.front().c_str(),
               chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         delete j;
       }

@@ -101,7 +101,7 @@ void ReqAuthDlg::ok()
   {
     //TODO add a drop down list for protocol
     QTextCodec* codec = UserCodec::codecForProtoUser(id, LICQ_PPID);
-    gLicqDaemon->icqRequestAuth(id.toULong(),
+    gLicqDaemon->icqRequestAuth(id.toLatin1().data(),
       codec->fromUnicode(mleRequest->toPlainText()));
     close();
   }

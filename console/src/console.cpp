@@ -2333,8 +2333,8 @@ void CLicqConsole::InputSms(int cIn)
       ICQUser *u = gUserManager.FetchUser(data->szId, data->nPPID, LOCK_R);
       winMain->wprintf("%C%ASending SMS to %s ...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr, u->GetCellularNumber());
-      winMain->event = licqDaemon->icqSendSms(u->GetCellularNumber(),
-                       data->szMsg, strtoul(data->szId, (char **)NULL, 0));
+        winMain->event = licqDaemon->icqSendSms(data->szId, LICQ_PPID,
+            u->GetCellularNumber(), data->szMsg);
       gUserManager.DropUser(u);
       winMain->state = STATE_PENDING;
       break;
