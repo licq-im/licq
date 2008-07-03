@@ -812,7 +812,7 @@ void *MonitorSockets_tep(void *p)
           {
             DEBUG_THREADS("[MonitorSockets_tep] Data on listening TCP socket."
                           "\n");
-            TCPSocket *tcp = static_cast<TCPSocket *>(s);
+            TCPSocket* tcp = static_cast<TCPSocket *>(s);
             if (tcp == NULL)
             {
               gLog.Warn(tr("%sInvalid server TCP socket in set.\n"), L_WARNxSTR);
@@ -820,7 +820,7 @@ void *MonitorSockets_tep(void *p)
             }
             else
             {
-              TCPSocket *newSocket = new TCPSocket(0);
+              TCPSocket *newSocket = new TCPSocket();
               bool ok = tcp->RecvConnection(*newSocket);
               gSocketManager.DropSocket(tcp);
 

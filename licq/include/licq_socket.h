@@ -35,7 +35,6 @@ typedef enum SocketError_et_
 class INetSocket
 {
 public:
-  INetSocket(unsigned long _nOwner);
   INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID);
   virtual ~INetSocket();
 
@@ -45,8 +44,6 @@ public:
   char *OwnerId()           { return m_szOwnerId; }
   unsigned long OwnerPPID() { return m_nOwnerPPID; }
   void SetOwner(const char *s, unsigned long n);
-  unsigned long Owner()     { return (m_nOwner); }
-  void SetOwner(unsigned long _nOwner);
   unsigned long Version()     { return (m_nVersion); }
   void SetVersion(unsigned long _nVersion)  { m_nVersion = _nVersion; }
 
@@ -99,7 +96,6 @@ protected:
   CBuffer m_xRecvBuffer;
   char m_szID[4];
   int m_nSockType;
-  unsigned long m_nOwner;
   unsigned short m_nVersion;
   SocketError_et m_nErrorType;
   ProxyServer *m_xProxy;
@@ -113,7 +109,6 @@ protected:
 class TCPSocket : public INetSocket
 {
 public:
-  TCPSocket(unsigned long _nOwner);
   TCPSocket(const char *s, unsigned long n);
   TCPSocket();
   virtual ~TCPSocket();
@@ -150,7 +145,6 @@ protected:
 class SrvSocket : public INetSocket
 {
 public:
-  SrvSocket(unsigned long _nOwner);
   SrvSocket(const char *s, unsigned long n);
   virtual ~SrvSocket();
 
@@ -171,7 +165,7 @@ public:
 class UDPSocket : public INetSocket
 {
 public:
-  UDPSocket(unsigned long _nOwner);
+  UDPSocket(const char* ownerId, unsigned long ownerPpid);
   virtual ~UDPSocket();
 
   // Abstract base class overloads

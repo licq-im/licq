@@ -384,7 +384,7 @@ bool CICQDaemon::Start()
   char sz[MAX_FILENAME_LEN];
   int nResult = 0;
 
-  TCPSocket *s = new TCPSocket(0);
+  TCPSocket* s = new TCPSocket();
   m_nTCPSocketDesc = StartTCPServer(s);
   if (m_nTCPSocketDesc == -1)
   {

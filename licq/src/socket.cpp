@@ -178,32 +178,10 @@ char *INetSocket::RemoteIpStr(char *buf)
   return (inet_ntoa_r(*(struct in_addr *)&m_sRemoteAddr.sin_addr.s_addr, buf));
 }
 
-//-----INetSocket::SetOwner---------------------------------------------------
-void INetSocket::SetOwner(unsigned long _nOwner)
-{
-  m_nOwner = _nOwner;
-  if (_nOwner)
-  {
-    char szUin[24];
-    sprintf(szUin, "%lu", _nOwner);
-    m_szOwnerId = strdup(szUin);
-    m_nOwnerPPID = LICQ_PPID;
-  }
-  else
-  {
-    m_szOwnerId = 0;
-    m_nOwnerPPID = 0;
-  }
-}
-
 void INetSocket::SetOwner(const char *_szOwnerId, unsigned long _nOwnerPPID)
 {
   m_szOwnerId = strdup(_szOwnerId);
   m_nOwnerPPID = _nOwnerPPID;
-  if (m_nOwnerPPID == LICQ_PPID)
-    m_nOwner = strtoul(_szOwnerId, (char **)NULL, 10);
-  else
-    m_nOwner = 0;
 }
 
 //-----INetSocket::Error------------------------------------------------------
@@ -265,24 +243,6 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
 }
 
 
-//-----INetSocket::constructor--------------------------------------------------
-INetSocket::INetSocket(unsigned long _nOwner)
-{
-  m_nDescriptor = -1;
-  SetOwner(_nOwner);
-
-  m_nVersion = 0;
-  m_nErrorType = SOCK_ERROR_none;
-  memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
-  memset(&m_sLocalAddr, 0, sizeof(struct sockaddr_in));
-  m_szRemoteName = NULL;
-  m_xProxy = NULL;
-  m_nChannel = ICQ_CHNxNONE;
-  
-  // Initialise the mutex
-  pthread_mutex_init(&mutex, NULL);
-}
-
 INetSocket::INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID)
 {
   m_nDescriptor = -1;
@@ -291,10 +251,6 @@ INetSocket::INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID)
   else
     m_szOwnerId = 0;
   m_nOwnerPPID = _nOwnerPPID;
-  if (m_nOwnerPPID == LICQ_PPID)
-    m_nOwner = strtoul(_szOwnerId, (char **)NULL, 10);
-  else
-    m_nOwner = 0;
   m_nVersion = 0;
   m_nErrorType = SOCK_ERROR_none;
   memset(&m_sRemoteAddr, 0, sizeof(struct sockaddr_in));
@@ -637,12 +593,6 @@ bool INetSocket::RecvRaw()
 
 //=====SrvSocket===============================================================
 
-SrvSocket::SrvSocket(unsigned long _nOwner) : INetSocket(_nOwner)
-{
-  strcpy(m_szID, "SRV");
-  m_nSockType = SOCK_STREAM;
-}
-
 SrvSocket::SrvSocket(const char *s, unsigned long n) : INetSocket(s, n)
 {
   strcpy(m_szID, "SRV");
@@ -825,15 +775,8 @@ bool SrvSocket::ConnectTo(const char* server, unsigned short port,
 
   return true;
 }
-    
-//=====TCPSocket===============================================================
-TCPSocket::TCPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
-{
-  strcpy(m_szID, "TCP");
-  m_nSockType = SOCK_STREAM;
-  m_p_SSL = NULL;
-}
 
+//=====TCPSocket===============================================================
 TCPSocket::TCPSocket(const char *s, unsigned long n) : INetSocket(s, n)
 {
   strcpy(m_szID, "TCP");
@@ -905,9 +848,6 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   else
     m_szOwnerId = 0;
   m_nOwnerPPID = from.m_nOwnerPPID;
-
-  if (m_nOwnerPPID == LICQ_PPID)
-    m_nOwner = from.m_nOwner;
 
   m_nVersion = from.m_nVersion;
   if (from.m_p_SSL)
@@ -1375,7 +1315,8 @@ void TCPSocket::SecureStop()
 
 #endif /*-----End of OpenSSL code------------------------------------------*/
 
-UDPSocket::UDPSocket(unsigned long _nOwner) : INetSocket(_nOwner)
+UDPSocket::UDPSocket(const char* ownerId, unsigned long ownerPpid)
+    : INetSocket(ownerId, ownerPpid)
 {
   strcpy(m_szID, "UDP");
   m_nSockType = SOCK_DGRAM;
