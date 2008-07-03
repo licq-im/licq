@@ -1,11 +1,24 @@
 #ifndef MESSAGE_H
 #define MESSAGE_H
 
+#include <cstdlib>
 #include <ctime>
 #include <list>
 
 #include "licq_constants.h"
 #include "licq_color.h"
+
+// Define for marking functions as deprecated
+#ifndef LICQ_DEPRECATED
+# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
+#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
+# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#  define LICQ_DEPRECATED __declspec(deprecated)
+# else
+#  define LICQ_DEPRECATED
+# endif
+#endif
+
 
 typedef std::list<const char *> ConstFileList;
 
@@ -200,18 +213,20 @@ public:
    CEventAdded(const char *_szId, unsigned long _nPPID, const char *_szAlias,
                const char *_szFirstName, const char *_szLastName, const char *_szEmail,
                unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-   CEventAdded(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
-               const char *_szLastName, const char *_szEmail,
-               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAdded();
   virtual CEventAdded* Copy() const;
   virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
-  unsigned long Uin() const { return m_nUin; };
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
+
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED CEventAdded(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
+               const char *_szLastName, const char *_szEmail,
+               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
+
 protected:
   void CreateDescription() const;
-   unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
    char *m_szAlias;
@@ -230,18 +245,20 @@ public:
                      const char *_szFirstName, const char *_szLastName, const char *_szEmail,
                      const char *_szReason, unsigned short _nCommand, time_t _tTime,
                      unsigned long _nFlags);
-   CEventAuthRequest(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
-                 const char *_szLastName, const char *_szEmail, const char *_szReason,
-                 unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRequest();
   virtual CEventAuthRequest* Copy() const;
   virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
-  unsigned long Uin() const { return m_nUin; };
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
+
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED CEventAuthRequest(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
+                 const char *_szLastName, const char *_szEmail, const char *_szReason,
+                 unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
+
 protected:
   void CreateDescription() const;
-   unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
    char *m_szAlias;
@@ -258,17 +275,19 @@ class CEventAuthGranted : public CUserEvent
 public:
    CEventAuthGranted(const char *_szId, unsigned long _nPPID, const char *_szMsg,
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-   CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
-              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthGranted();
   virtual CEventAuthGranted* Copy() const;
   virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
-  unsigned long Uin() const { return m_nUin; };
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
+
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
+              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
+
 protected:
   void CreateDescription() const;
-   unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
    char *m_szMessage;
@@ -281,17 +300,19 @@ class CEventAuthRefused : public CUserEvent
 public:
    CEventAuthRefused(const char *_szId, unsigned long _nPPID, const char *_szMsg,
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
-   CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
-              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRefused();
   virtual CEventAuthRefused* Copy() const;
   virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
-  unsigned long Uin() const { return m_nUin; };
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
+
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
+              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
+
 protected:
   void CreateDescription() const;
-   unsigned long m_nUin;
    char *m_szId;
    unsigned long m_nPPID;
    char *m_szMessage;
@@ -337,15 +358,17 @@ class CContact
 {
 public:
   CContact(const char *s, unsigned long n, const char *a);
-  CContact(unsigned long n, const char *a);
   ~CContact();
 
-  unsigned long Uin() const { return m_nUin; }
   const char* Alias() const { return m_szAlias; }
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
+
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED CContact(unsigned long n, const char *a);
+  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); }
+
 protected:
-  unsigned long m_nUin;
   char *m_szAlias;
   char *m_szId;
   unsigned long m_nPPID;

@@ -6,6 +6,17 @@
 
 class ICQUser;
 
+// Define for marking functions as deprecated
+#ifndef LICQ_DEPRECATED
+# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
+#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
+# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#  define LICQ_DEPRECATED __declspec(deprecated)
+# else
+#  define LICQ_DEPRECATED
+# endif
+#endif
+
 
 //=====CUtilityInternalWindow================================================
 class CUtilityInternalWindow
@@ -60,7 +71,6 @@ public:
   const char *Description()  { return m_szDescription; }
   EWinType WinType()  { return m_eWinType; }
 
-  bool SetFields(unsigned long _nUin);
   bool SetFields(const char *szId, unsigned long nPPID);
   void SetUserFields(const std::vector<const char *> &_vszUserFields);
   void SetBackgroundTask()  { strcat(m_szFullCommand, " &"); }
@@ -70,6 +80,9 @@ public:
   CUtilityUserField *UserField(unsigned short i)  { return m_vxUserField[i]; }
 
   bool Exception()  { return bException; }
+
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED bool SetFields(unsigned long _nUin);
 
 protected:
   char *m_szName;

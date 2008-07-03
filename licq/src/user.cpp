@@ -2375,7 +2375,7 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
 
 unsigned long ICQUser::Uin() const
 {
-  return strtoul(m_szId, NULL, 0);
+  return strtoul(m_szId, NULL, 10);
 }
 
 void ICQUser::SetPermanent()

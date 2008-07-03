@@ -199,20 +199,9 @@ CUtility::~CUtility()
 
 bool CUtility::SetFields(unsigned long _nUin)
 {
-  ICQUser *u = gUserManager.FetchUser(_nUin, LOCK_R);
-  if (u == NULL) return false;
-  if (m_szFullCommand != NULL) delete [] m_szFullCommand;
-  char *szTmp;
-  szTmp = u->usprintf(m_szCommand, USPRINTF_NOFW|USPRINTF_LINEISCMD);
-  m_szFullCommand = new char[MAX_CMD_LEN];
-  strncpy(m_szFullCommand, szTmp, MAX_CMD_LEN);
-  m_szFullCommand[MAX_CMD_LEN - 1] = '\0';
-  free(szTmp);
-  vector<CUtilityUserField *>::iterator iter;
-  for (iter = m_vxUserField.begin(); iter != m_vxUserField.end(); ++iter)
-    (*iter)->SetFields(u);
-  gUserManager.DropUser(u);
-  return true;
+  char id[16];
+  snprintf(id, 16, "%lu", _nUin);
+  return SetFields(id, LICQ_PPID);
 }
 
 bool CUtility::SetFields(const char *szId, unsigned long nPPID)

@@ -413,10 +413,6 @@ CEventAdded::CEventAdded(const char *_szId, unsigned long _nPPID, const char *_s
   m_szLastName = strdup(_szLastName);
   m_szEmail = strdup(_szEmail);
   m_nPPID =_nPPID;
-  if (_nPPID == LICQ_PPID)
-    m_nUin = strtoul(_szId, (char **)NULL, 10);
-  else
-    m_nUin = 0;
 }
 
 CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
@@ -429,7 +425,6 @@ CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
   m_szFirstName = strdup(_szFirstName);
   m_szLastName = strdup(_szLastName);
   m_szEmail = strdup(_szEmail);
-  m_nUin = _nUin;
 
   char szUin[24];
   sprintf(szUin, "%lu", _nUin);
@@ -498,10 +493,6 @@ CEventAuthRequest::CEventAuthRequest(const char *_szId, unsigned long _nPPID,
    m_szEmail = strdup(_szEmail);
    m_szReason = strdup(_szReason);
    m_nPPID = _nPPID;
-   if (_nPPID == LICQ_PPID)
-    m_nUin = strtoul(_szId, (char **)NULL, 10);
-   else
-    m_nUin = 0;
 }
 
 CEventAuthRequest::CEventAuthRequest(unsigned long _nUin, const char *_szAlias,
@@ -521,7 +512,6 @@ CEventAuthRequest::CEventAuthRequest(unsigned long _nUin, const char *_szAlias,
    sprintf(szUin, "%lu", _nUin);
    m_szId = strdup(szUin);
    m_nPPID = LICQ_PPID;
-   m_nUin = _nUin;
 }
 
 void CEventAuthRequest::CreateDescription() const
@@ -531,8 +521,8 @@ void CEventAuthRequest::CreateDescription() const
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
                       + strlen(m_szLastName) + strlen(m_szEmail)
                       + strlen(m_szReason) + strlen(m_szId) + strlen(p) + 256];
-  //sprintf(m_szText, "%s (%s %s, %s), uin %lu, requests authorization to add you to their contact list:\n%s\n",
-  //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_nUin, m_szReason);
+  //sprintf(m_szText, "%s (%s %s, %s), uin %s, requests authorization to add you to their contact list:\n%s\n",
+  //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_szId, m_szReason);
   int pos = sprintf(m_szText, tr("Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n"),
      m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
   delete [] p;
@@ -589,10 +579,6 @@ CEventAuthGranted::CEventAuthGranted(const char *_szId, unsigned long _nPPID,
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
   m_szId = strdup(_szId);
   m_nPPID = _nPPID;
-  if (_nPPID == LICQ_PPID)
-    m_nUin = strtoul(_szId, (char **)NULL, 10);
-  else
-    m_nUin = 0;
 }
 
 CEventAuthGranted::CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
@@ -606,7 +592,6 @@ CEventAuthGranted::CEventAuthGranted(unsigned long _nUin, const char *_szMessage
   sprintf(szUin, "%lu", _nUin);
   m_szId = strdup(szUin);
   m_nPPID = LICQ_PPID;
-  m_nUin = _nUin;
 }
 
 void CEventAuthGranted::CreateDescription() const
@@ -663,10 +648,6 @@ CEventAuthRefused::CEventAuthRefused(const char *_szId, unsigned long _nPPID,
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
   m_szId = strdup(_szId);
   m_nPPID = _nPPID;
-  if (_nPPID == LICQ_PPID)
-    m_nUin = strtoul(_szId, (char **)NULL, 10);
-  else
-    m_nUin = 0;
 }
 
 CEventAuthRefused::CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
@@ -675,7 +656,6 @@ CEventAuthRefused::CEventAuthRefused(unsigned long _nUin, const char *_szMessage
    : CUserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags)
 {
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
-  m_nUin = _nUin;
 
   char szUin[24];
   sprintf(szUin, "%lu", _nUin);
@@ -827,10 +807,9 @@ CContact::CContact(const char *s, unsigned long n, const char *a) : m_nPPID(n)
 {
   m_szId = strdup(s);
   m_szAlias = strdup(a);
-  m_nUin = strtoul(s, (char**)NULL, 10);
 }
 
-CContact::CContact(unsigned long n, const char *a) : m_nUin(n), m_nPPID(0)
+CContact::CContact(unsigned long n, const char *a) : m_nPPID(0)
 {
   std::ostringstream ss;
   ss << n;
@@ -1159,7 +1138,7 @@ CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
    : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags | E_UNKNOWN)
 {
   m_szMsg = _szMsg == NULL ? strdup("") : strdup(_szMsg);
-  m_szId = m_szId == NULL ? NULL : strdup(m_szId);
+  m_szId = idString == NULL ? NULL : strdup(idString);
   m_nPPID = ppid;
 }
 
