@@ -36,6 +36,18 @@ class COscarService;
 class CReverseConnectToUserData;
 class CMSN;
 
+// Define for marking functions as deprecated
+#ifndef LICQ_DEPRECATED
+# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
+#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
+# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#  define LICQ_DEPRECATED __declspec(deprecated)
+# else
+#  define LICQ_DEPRECATED
+# endif
+#endif
+
+
 #define FOR_EACH_PROTO_PLUGIN_START(d)                             \
     {                                                              \
       ProtoPluginsList _pl_;                                       \
@@ -330,9 +342,6 @@ public:
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
 
-  unsigned long icqSendMessage(unsigned long nUin, const char *szMessage,
-     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
-     CICQColor *pColor = NULL);
   // Url
   unsigned long icqSendUrl(const char *szId, const char *szUrl,
      const char *szDescription, bool bOnline, unsigned short nLevel,
@@ -342,60 +351,33 @@ public:
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
 
-  unsigned long icqSendContactList(unsigned long nUin, UinList &uins,
-     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
-     CICQColor *pColor = NULL);
   // Auto Response
-  unsigned long icqFetchAutoResponse(unsigned long nUin, bool bServer = false) __attribute__ ((deprecated));
   unsigned long icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer = false);
   // Chat Request
   unsigned long icqChatRequest(const char* id, const char *szReason,
      unsigned short nLevel, bool bServer);
-  unsigned long icqChatRequest(unsigned long nUin, const char *szReason,
-     unsigned short nLevel, bool bServer);
   unsigned long icqMultiPartyChatRequest(const char* id,
-     const char *szReason, const char *szChatUsers, unsigned short nPort,
-     unsigned short nLevel, bool bServer);
-  unsigned long icqMultiPartyChatRequest(unsigned long nUin,
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer);
   void icqChatRequestRefuse(const char* id, const char* szReason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
-  void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
-      unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestAccept(const char* id, unsigned short nPort,
       const char* szClients, unsigned short nSequence,
       const unsigned long nMsgID[], bool bDirect);
-  void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-      const char* szClients, unsigned short nSequence,
-      const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestCancel(const char* id, unsigned short nSequence);
-  void icqChatRequestCancel(unsigned long nUin, unsigned short nSequence);
   // File Transfer
   unsigned long icqFileTransfer(const char *szId, const char *szFilename,
      const char *szDescription, ConstFileList &lFileList,
      unsigned short nLevel, bool bServer);
-  unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
-     const char *szDescription, ConstFileList &lFileList,
-     unsigned short nLevel, bool bServer);
   void icqFileTransferRefuse(const char *szId, const char *szReason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
-  void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
-      unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
   void icqFileTransferCancel(const char *szId, unsigned short nSequence);
-  void icqFileTransferCancel(unsigned long nUin, unsigned short nSequence);
   void icqFileTransferAccept(const char *szId, unsigned short nPort,
      unsigned short nSequence, const unsigned long nMsgID[], bool bDirect,
      const char *szDesc, const char *szFile, unsigned long nFileSize);  
-  void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-     unsigned short nSequence, const unsigned long nMsgID[], bool bDirect,
-     const char *szDesc, const char *szFile, unsigned long nFileSize);
   unsigned long icqOpenSecureChannel(const char *szId);
-  unsigned long icqOpenSecureChannel(unsigned long nUin);
   unsigned long icqCloseSecureChannel(const char *szId);
-  unsigned long icqCloseSecureChannel(unsigned long nUin);
   void icqOpenSecureChannelCancel(const char *szId, unsigned short nSequence);
-  void icqOpenSecureChannelCancel(unsigned long nUin, unsigned short nSequence);
 
   // Plugins
   unsigned long icqRequestInfoPluginList(const char *szId,
@@ -414,15 +396,11 @@ public:
   void icqVerifyRegistration();
   void icqVerify(const char *);
   unsigned long icqFetchAutoResponseServer(const char *);
-  unsigned long icqFetchAutoResponseServer(unsigned long);
   unsigned long icqLogon(unsigned short logonStatus);
   unsigned long icqRequestLogonSalt();
   unsigned long icqUserBasicInfo(const char *);
-  unsigned long icqUserBasicInfo(unsigned long);
   unsigned long icqUserExtendedInfo(const char *);
-  unsigned long icqUserExtendedInfo(unsigned long);
   unsigned long icqRequestMetaInfo(const char *);
-  unsigned long icqRequestMetaInfo(unsigned long);
 
   unsigned long icqUpdateBasicInfo(const char *, const char *, const char *,
                                        const char *, bool);
@@ -474,30 +452,19 @@ public:
   void icqLogoff();
   void postLogoff(int nSD, ICQEvent *cancelledEvent);
   void icqRelogon();
-  unsigned long icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
   unsigned long icqAuthorizeGrant(const char *szId, const char *szMessage);
-  unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   unsigned long icqAuthorizeRefuse(const char *szId, const char *szMessage);
   void icqRequestAuth(const char* id, const char *_szMessage);
-  void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
-  void icqAlertUser(unsigned long _nUin);
   void icqAlertUser(const char* id, unsigned long ppid);
-  void icqAddUser(unsigned long _nUin, bool _bAuthReq = false, unsigned short groupId = 0);
   void icqAddUser(const char *_szId, bool _bAuthReq = false, unsigned short groupId = 0);
   void icqAddUserServer(const char *_szId, bool _bAuthReq, unsigned short groupId = 0);
-  void icqAddUserServer(unsigned long _nUin, bool _bAuthReq, unsigned short groupId = 0);
   void icqAddGroup(const char *);
-  void icqRemoveUser(unsigned long _nUin);
   void icqRemoveUser(const char *);
   void icqRemoveGroup(const char *);
-  void icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
-                      unsigned short _nOldGSID, unsigned short _nNewType,
-                      unsigned short _nOldType);
   void icqChangeGroup(const char *_szId, unsigned long _nPPID,
                       unsigned short _nNewGroup, unsigned short _nOldGSID,
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
-  void icqRenameUser(unsigned long _nUin);
   void icqRenameUser(const char *_szId);
   void icqExportUsers(UserStringList &, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
@@ -598,17 +565,12 @@ public:
 
   bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true,
                      bool bTempUser = false, unsigned short groupId = 0);
-  bool AddUserToList(unsigned long _nUin, bool bNotify = true,
-                     bool bTempUser = false, unsigned short groupId = 0);
   void AddUserToList(ICQUser *);
-  void RemoveUserFromList(unsigned long _nUin);
   void RemoveUserFromList(const char *szId, unsigned long nPPID);
 
   // SMS
   unsigned long icqSendSms(const char* id, unsigned long ppid,
       const char* number, const char* message);
-  unsigned long icqSendSms(const char *szNumber, const char *szMessage,
-                           unsigned long nUin);
 
   // NOT MT SAFE
   const char *getUrlViewer();
@@ -719,6 +681,58 @@ public:
      TCPSocket *pSock);
   bool WaitForReverseConnection(unsigned short id, const char* userId);
 
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED unsigned long icqSendMessage(unsigned long nUin, const char *szMessage,
+     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
+     CICQColor *pColor = NULL);
+  LICQ_DEPRECATED unsigned long icqSendContactList(unsigned long nUin, UinList &uins,
+     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
+     CICQColor *pColor = NULL);
+  LICQ_DEPRECATED unsigned long icqFetchAutoResponse(unsigned long nUin, bool bServer = false);
+  LICQ_DEPRECATED unsigned long icqChatRequest(unsigned long nUin, const char *szReason,
+     unsigned short nLevel, bool bServer);
+  LICQ_DEPRECATED unsigned long icqMultiPartyChatRequest(unsigned long nUin,
+     const char *szReason, const char *szChatUsers, unsigned short nPort,
+     unsigned short nLevel, bool bServer);
+  LICQ_DEPRECATED void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
+      unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
+  LICQ_DEPRECATED void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
+      const char* szClients, unsigned short nSequence,
+      const unsigned long nMsgID[], bool bDirect);
+  LICQ_DEPRECATED void icqChatRequestCancel(unsigned long nUin, unsigned short nSequence);
+  LICQ_DEPRECATED unsigned long icqFileTransfer(unsigned long nUin, const char *szFilename,
+     const char *szDescription, ConstFileList &lFileList,
+     unsigned short nLevel, bool bServer);
+  LICQ_DEPRECATED void icqFileTransferRefuse(unsigned long nUin, const char *szReason,
+      unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
+  LICQ_DEPRECATED void icqFileTransferCancel(unsigned long nUin, unsigned short nSequence);
+  LICQ_DEPRECATED void icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
+     unsigned short nSequence, const unsigned long nMsgID[], bool bDirect,
+     const char *szDesc, const char *szFile, unsigned long nFileSize);
+  LICQ_DEPRECATED unsigned long icqOpenSecureChannel(unsigned long nUin);
+  LICQ_DEPRECATED unsigned long icqCloseSecureChannel(unsigned long nUin);
+  LICQ_DEPRECATED void icqOpenSecureChannelCancel(unsigned long nUin, unsigned short nSequence);
+  LICQ_DEPRECATED unsigned long icqFetchAutoResponseServer(unsigned long);
+  LICQ_DEPRECATED unsigned long icqUserBasicInfo(unsigned long);
+  LICQ_DEPRECATED unsigned long icqUserExtendedInfo(unsigned long);
+  LICQ_DEPRECATED unsigned long icqRequestMetaInfo(unsigned long);
+  LICQ_DEPRECATED unsigned long icqAuthorizeGrant(unsigned long nUin, const char *szMessage);
+  LICQ_DEPRECATED unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
+  LICQ_DEPRECATED void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
+  LICQ_DEPRECATED void icqAlertUser(unsigned long _nUin);
+  LICQ_DEPRECATED void icqAddUser(unsigned long _nUin, bool _bAuthReq = false, unsigned short groupId = 0);
+  LICQ_DEPRECATED void icqAddUserServer(unsigned long _nUin, bool _bAuthReq, unsigned short groupId = 0);
+  LICQ_DEPRECATED void icqRemoveUser(unsigned long _nUin);
+  LICQ_DEPRECATED void icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
+                      unsigned short _nOldGSID, unsigned short _nNewType,
+                      unsigned short _nOldType);
+  LICQ_DEPRECATED void icqRenameUser(unsigned long _nUin);
+  LICQ_DEPRECATED bool AddUserToList(unsigned long _nUin, bool bNotify = true,
+                     bool bTempUser = false, unsigned short groupId = 0);
+  LICQ_DEPRECATED void RemoveUserFromList(unsigned long _nUin);
+  LICQ_DEPRECATED unsigned long icqSendSms(const char *szNumber, const char *szMessage,
+                           unsigned long nUin);
+
 protected:
   CLicq *licq;
   COnEventManager m_xOnEventManager;
@@ -815,11 +829,9 @@ protected:
 
   void ChangeUserStatus(ICQUser *u, unsigned long s);
   bool AddUserEvent(ICQUser *, CUserEvent *);
-  void RejectEvent(unsigned long, CUserEvent *);
   void RejectEvent(const char* id, CUserEvent* e);
   ICQUser *FindUserForInfoUpdate(const char *szId, ICQEvent *e, const char *);
   std::string FindUserByCellular(const char* cellular);
-  unsigned long FindUinByCellular(const char *_szCellular);
 
   void icqRegisterFinish();
   void icqPing();
@@ -829,7 +841,6 @@ protected:
   void icqRequestSystemMsg();
   ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, char *_sMessage,
     CUserEvent *, unsigned short = 0, size_t = 0);
-  ICQEvent* icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent *, unsigned short = 0);
   void SaveUserList();
 
   void FailEvents(int sd, int err);
@@ -851,7 +862,6 @@ protected:
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);
   void SendEvent_Server(CPacket *packet);
-  ICQEvent *SendExpectEvent_Server(unsigned long nUin, CPacket *, CUserEvent *, bool = false);
   ICQEvent *SendExpectEvent_Server(const char *, unsigned long, CPacket *, CUserEvent *, bool = false);
 
   ICQEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
@@ -909,6 +919,14 @@ protected:
 
   // Helpers
   void addToModifyUsers(unsigned long unique_id, const std::string data);
+
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED void RejectEvent(unsigned long nUin, CUserEvent* e);
+  LICQ_DEPRECATED unsigned long FindUinByCellular(const char *_szCellular);
+  LICQ_DEPRECATED ICQEvent* icqSendThroughServer(unsigned long nUin,
+      unsigned char format, char *_sMessage, CUserEvent *, unsigned short = 0);
+  LICQ_DEPRECATED ICQEvent *SendExpectEvent_Server(unsigned long nUin,
+      CPacket *, CUserEvent *, bool = false);
 
   // Declare all our thread functions as friends
   friend void *Ping_tep(void *p);

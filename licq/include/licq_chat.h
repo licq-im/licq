@@ -1,12 +1,24 @@
 #ifndef CHAT_H
 #define CHAT_H
 
+#include <cstdlib>
 #include <deque>
 #include <list>
 
 #include "licq_packets.h"
 #include "licq_socket.h"
 class CICQDaemon;
+
+// Define for marking functions as deprecated
+#ifndef LICQ_DEPRECATED
+# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
+#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
+# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#  define LICQ_DEPRECATED __declspec(deprecated)
+# else
+#  define LICQ_DEPRECATED
+# endif
+#endif
 
 
 /*----------------------
@@ -200,7 +212,6 @@ public:
 
   // Accessors
   const char *Name() { return m_szName; }
-  unsigned long Uin() { return m_nUin; }
   char *Id() { return m_szId; }
   unsigned long PPID() { return m_nPPID; }
   unsigned short Port() { return m_nPort; }
@@ -213,8 +224,10 @@ public:
 
   virtual ~CPChat_Color();
 
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED unsigned long Uin() { return strtoul(m_szId, NULL, 10); }
+
 protected:
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   char *m_szName;
@@ -249,7 +262,6 @@ public:
 
   unsigned long m_nVersion;
   unsigned short m_nPort;
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   unsigned long m_nIp;
@@ -291,7 +303,6 @@ public:
 
   // Accessors
   const char *Name() { return m_szName; }
-  unsigned long Uin() { return m_nUin; }
   char *Id() { return m_szId; }
   unsigned long PPID() { return m_nPPID; }
   unsigned short Session() { return m_nSession; }
@@ -313,8 +324,10 @@ public:
   unsigned char FontStyle() { return m_nFontStyle; }
   ChatClientList &ChatClients()  { return chatClients; }
 
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED unsigned long Uin() { return strtoul(m_szId, NULL, 10); }
+
 protected:
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   unsigned short m_nSession;
@@ -474,7 +487,6 @@ extern "C"
 class CChatUser
 {
 public:
-  unsigned long Uin()          { return uin; }
   char *Id()                   { return szId; }
   unsigned long PPID()         { return nPPID; }
   unsigned long ToKick()       { return nToKick; }
@@ -494,10 +506,12 @@ public:
 
   ~CChatUser();
 
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED unsigned long Uin()          { return strtoul(szId, NULL, 10); }
+
 protected:
   CChatUser();
 
-  unsigned long uin;
   char *szId;
   unsigned long nPPID;
   unsigned long nToKick;
@@ -620,7 +634,6 @@ protected:
 
   CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   unsigned short m_nSession;

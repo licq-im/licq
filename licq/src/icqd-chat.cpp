@@ -51,7 +51,7 @@ CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
   m_szName = NULL;
   m_nPort = _nLocalPort;
   m_szId = strdup(gUserManager.OwnerId(LICQ_PPID).c_str());
-  m_nUin = atol(m_szId);
+  unsigned long m_nUin = atol(m_szId);
   m_nPPID = LICQ_PPID;
   m_nColorForeRed = nColorForeRed;
   m_nColorForeGreen = nColorForeGreen;
@@ -86,7 +86,7 @@ CPChat_Color::CPChat_Color(CBuffer &b)
 
   b.UnpackUnsignedLong();
   b.UnpackUnsignedLong();
-  m_nUin = b.UnpackUnsignedLong();
+  unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   m_szId = strdup(szUin);
@@ -114,7 +114,7 @@ CPChat_Color::~CPChat_Color()
 //-----ChatColorFont----------------------------------------------------------------
 CChatClient::CChatClient()
 {
-  m_nVersion = m_nUin = m_nPPID = m_nIp = m_nIntIp = m_nPort = m_nMode
+  m_nVersion = m_nPPID = m_nIp = m_nIntIp = m_nPort = m_nMode
      = m_nSession = m_nHandshake = 0;
   m_szId = NULL;
 }
@@ -124,7 +124,6 @@ CChatClient::CChatClient(ICQUser *u)
 {
   m_nVersion = u->Version();
   m_szId = strdup(u->IdString());
-  m_nUin = strtoul(m_szId, NULL, 10);
   m_nPPID = u->PPID();
   m_nIp = u->Ip();
   m_nIntIp = u->IntIp();
@@ -160,7 +159,6 @@ CChatClient& CChatClient::operator=(const CChatClient &p)
   {
     m_nVersion = p.m_nVersion;
     m_nPort = p.m_nPort;
-    m_nUin = p.m_nUin;
     m_nPPID = p.m_nPPID;
     m_nIp = p.m_nIp;
     m_nIntIp = p.m_nIntIp;
@@ -179,7 +177,7 @@ bool CChatClient::LoadFromBuffer(CBuffer &b)
   m_nVersion = b.UnpackUnsignedLong();
   m_nPort = b.UnpackUnsignedShort();
   b.UnpackUnsignedShort();
-  m_nUin = b.UnpackUnsignedLong();
+  unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   m_szId = strdup(szUin);
@@ -203,7 +201,7 @@ bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
 
   m_nVersion = b.UnpackUnsignedLong();
   b.UnpackUnsignedLong();
-  m_nUin = b.UnpackUnsignedLong();
+  unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   m_szId = strdup(szUin);
@@ -229,7 +227,7 @@ bool CChatClient::LoadFromHandshake_v4(CBuffer &b)
 
   m_nVersion = b.UnpackUnsignedLong();
   b.UnpackUnsignedLong();
-  m_nUin = b.UnpackUnsignedLong();
+  unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   m_szId = strdup(szUin);
@@ -252,7 +250,7 @@ bool CChatClient::LoadFromHandshake_v6(CBuffer &b)
   CPacketTcp_Handshake_v6 hand(&b);
 
   m_nVersion = hand.VersionMajor();
-  m_nUin = hand.SourceUin();
+  unsigned long m_nUin = hand.SourceUin();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   m_szId = strdup(szUin);
@@ -275,7 +273,7 @@ bool CChatClient::LoadFromHandshake_v7(CBuffer &b)
   CPacketTcp_Handshake_v7 hand(&b);
 
   m_nVersion = hand.VersionMajor();
-  m_nUin = hand.SourceUin();
+  unsigned long m_nUin = hand.SourceUin();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   m_szId = strdup(szUin);
@@ -305,7 +303,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   m_szName = NULL;
   m_nPort = nLocalPort;
   m_szId = strdup(gUserManager.OwnerId(LICQ_PPID).c_str());
-  m_nUin = atol(m_szId);
+  unsigned long m_nUin = atol(m_szId);
   m_nPPID = LICQ_PPID;
   m_nColorForeRed = nColorForeRed;
   m_nColorForeGreen = nColorForeGreen;
@@ -357,7 +355,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   {
     buffer->PackUnsignedLong((*iter)->m_nVersion);
     buffer->PackUnsignedLong((*iter)->m_nPort);
-    buffer->PackUnsignedLong((*iter)->m_nUin);
+    buffer->PackUnsignedLong(strtoul((*iter)->m_szId, NULL, 10));
     buffer->PackUnsignedLong((*iter)->m_nIp);
     buffer->PackUnsignedLong((*iter)->m_nIntIp);
     buffer->PackChar((*iter)->m_nMode);
@@ -373,7 +371,7 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
   char buf[128];
 
   b.UnpackUnsignedLong();
-  m_nUin = b.UnpackUnsignedLong();
+  unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
   m_szId = strdup(szUin);
@@ -617,7 +615,6 @@ CPChat_Beep::CPChat_Beep()
 //=====ChatUser==============================================================
 CChatUser::CChatUser()
 {
-  uin = 0;
   szId = 0;
   nPPID = 0;
   nToKick = 0;
@@ -676,9 +673,8 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
   pipe(pipe_thread);
   pipe(pipe_events);
 
-  m_nUin = nUin;
   char szUin[24];
-  sprintf(szUin, "%lu", m_nUin);
+  sprintf(szUin, "%lu", nUin);
   m_szId = strdup(szUin);
   m_nPPID = LICQ_PPID;
 
@@ -785,7 +781,6 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   CChatUser *u = new CChatUser;
   u->m_pClient = c;
   u->m_pClient->m_nSession = m_nSession;
-  u->uin = c->m_nUin;
   u->szId = strdup(c->m_szId);
   u->nPPID = c->m_nPPID;
 
@@ -883,7 +878,6 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   u->m_pClient = new CChatClient();
   u->m_pClient->m_nVersion = s->Version();
   u->m_pClient->m_szId = strdup(s->OwnerId());
-  u->m_pClient->m_nUin = strtoul(u->m_pClient->m_szId, NULL, 10);
   u->m_pClient->m_nPPID = s->OwnerPPID();
   u->m_pClient->m_nIp = s->RemoteIp();
   u->m_pClient->m_nIntIp = s->RemoteIp();
@@ -894,7 +888,6 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   u->m_pClient->m_nPort = 0;
   u->m_pClient->m_nSession = 0;
 
-  u->uin = u->m_pClient->m_nUin;
   u->szId = strdup(u->m_pClient->m_szId);
   u->nPPID = u->m_pClient->m_nPPID;
   u->state = CHAT_STATE_WAITxFORxCOLOR;
@@ -972,7 +965,6 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       }
       gLog.Info(tr("%sChat: Received handshake from %s [v%ld].\n"), L_TCPxSTR,
          u->m_pClient->m_szId, u->sock.Version());
-      u->uin = u->m_pClient->m_nUin;
       if (u->szId)  free(u->szId);
       u->szId = strdup(u->m_pClient->m_szId);
       u->nPPID = u->m_pClient->m_nPPID;
@@ -1090,7 +1082,6 @@ bool CChatManager::ProcessPacket(CChatUser *u)
 
       CPChat_ColorFont pin(u->sock.RecvBuffer());
       u->szId = strdup(pin.Id());
-      u->uin = strtoul(u->szId, NULL, 10);
       u->nPPID = pin.PPID();
 //      m_nSession = pin.Session();
 
