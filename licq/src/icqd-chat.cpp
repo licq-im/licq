@@ -123,8 +123,8 @@ CChatClient::CChatClient()
 CChatClient::CChatClient(ICQUser *u)
 {
   m_nVersion = u->Version();
-  m_nUin = u->Uin();
   m_szId = strdup(u->IdString());
+  m_nUin = strtoul(m_szId, NULL, 10);
   m_nPPID = u->PPID();
   m_nIp = u->Ip();
   m_nIntIp = u->IntIp();
@@ -792,7 +792,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   bool bSendIntIp = false;
   bool bTryDirect = true;
   bool bResult = false;
-  ICQUser *temp_user = gUserManager.FetchUser(u->uin, LOCK_R);
+  ICQUser* temp_user = gUserManager.FetchUser(u->szId, u->nPPID, LOCK_R);
   if (temp_user != NULL)
   {
     bSendIntIp = temp_user->SendIntIp();
@@ -882,8 +882,8 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
 
   u->m_pClient = new CChatClient();
   u->m_pClient->m_nVersion = s->Version();
-  u->m_pClient->m_nUin = s->Owner();
   u->m_pClient->m_szId = strdup(s->OwnerId());
+  u->m_pClient->m_nUin = strtoul(u->m_pClient->m_szId, NULL, 10);
   u->m_pClient->m_nPPID = s->OwnerPPID();
   u->m_pClient->m_nIp = s->RemoteIp();
   u->m_pClient->m_nIntIp = s->RemoteIp();
@@ -1089,8 +1089,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       gLog.Info(tr("%sChat: Received color/font packet.\n"), L_TCPxSTR);
 
       CPChat_ColorFont pin(u->sock.RecvBuffer());
-      u->uin = pin.Uin();
       u->szId = strdup(pin.Id());
+      u->uin = strtoul(u->szId, NULL, 10);
       u->nPPID = pin.PPID();
 //      m_nSession = pin.Session();
 
@@ -1461,6 +1461,8 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
         if (u->chatQueue.size() < 6)  return true;
         unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
           (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+        char id[16];
+        snprintf(id, 16, "%lu", nUin);
 
         // Deque all the characters
         for (unsigned short i = 0; i < 6; i++)
@@ -1470,14 +1472,14 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
         ChatUserList::iterator iter;
         for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
         {
-          if((*iter)->Uin() == nUin)
+          if (strcmp((*iter)->Id(), id) == 0)
             break;
         }
 
         if (iter == chatUsers.end())   return true;
 
         CBuffer bye(4);
-        SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, nUin, true);
+        SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, id, true);
 
         CloseClient(*iter);
         break;
@@ -1748,19 +1750,21 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
           if (u->chatQueue.size() < 6)  return true;
           unsigned long nUin = u->chatQueue[0] | (u->chatQueue[1] << 8) |
             (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
+          char id[16];
+          snprintf(id, 16, "%lu", nUin);
 
           // Find the user and say bye-bye to him
           ChatUserList::iterator iter;
           for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
           {
-            if((*iter)->Uin() == nUin)
+            if (strcmp((*iter)->Id(), id) == 0)
              break;
           }
 
           if (iter == chatUsers.end())   return true;
 
           CBuffer bye(4);
-          SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, nUin, true);
+          SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, id, true);
 
           CloseClient(*iter);
           break;
@@ -1863,18 +1867,17 @@ void CChatManager::SendPacket(CPacket *p)
 
 //-----CChatManager::SendBuffer----------------------------------------------
 void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
-                              unsigned long _nUin,
-                              bool bNotIter)
+    const char* id, bool bNotIter)
 {
   ChatUserList::iterator iter;
   ChatUserList::iterator u_iter;
   bool ok = false;
 
-  if (_nUin != 0)
+  if (id != NULL)
   {
     for (u_iter = chatUsers.begin(); u_iter != chatUsers.end(); ++u_iter)
     {
-      if ((*u_iter)->Uin() == _nUin)
+      if (strcmp((*u_iter)->Id(), id) == 0)
         break;
     }
 
@@ -1887,7 +1890,7 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
     ok = true;
 
     // Send it to every user
-    if (_nUin == 0)
+    if (id == NULL)
     {
       for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
         ok = SendBufferToClient(b, cmd, *iter);
@@ -2021,8 +2024,10 @@ void CChatManager::SendCharacter(char c)
 }
 
 
-void CChatManager::SendKick(unsigned long _nUin)
+void CChatManager::SendKick(const char* id)
 {
+  unsigned long _nUin = strtoul(id, NULL, 10);
+
   // Take care of the vote stuff now
   // The user we are kicking automatically is a no vote
   // And we are an automatic yes vote
@@ -2037,37 +2042,39 @@ void CChatManager::SendKick(unsigned long _nUin)
   // requesting to kick
   CBuffer buf(4);
   buf.PackUnsignedLong(_nUin);
-  SendBuffer(&buf, CHAT_KICK, _nUin, true);
+  SendBuffer(&buf, CHAT_KICK, id, true);
 }
 
 
-void CChatManager::SendKickNoVote(unsigned long _nUin)
+void CChatManager::SendKickNoVote(const char *id)
 {
+  unsigned long _nUin = strtoul(id, NULL, 10);
+
   // Tell everyone that this user has been kicked
   CBuffer buf_TellAll(6);
   buf_TellAll.PackUnsignedLong(_nUin);
   buf_TellAll.PackChar(0x02);
   buf_TellAll.PackChar(0x01);
-  SendBuffer(&buf_TellAll, CHAT_KICKxPASS, _nUin, true);
+  SendBuffer(&buf_TellAll, CHAT_KICKxPASS, id, true);
 
   // They don't know if there was a vote or not, they just see they've been kicked
   CBuffer buf(2);
   buf.PackChar(0x02);
   buf.PackChar(0x01);
-  SendBuffer(&buf, CHAT_KICKxYOU, _nUin, false);
+  SendBuffer(&buf, CHAT_KICKxYOU, id, false);
 
   // And close the connection to the kicked user
   ChatUserList::iterator iter;
   for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
   {
-    if((*iter)->Uin() == _nUin)
+    if(strcmp((*iter)->Id(), id) == 0)
       break;
   }
 
   if (iter == chatUsers.end())   return;
 
   CBuffer bye(4);
-  SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, _nUin, false);
+  SendBuffer(&bye, CHAT_DISCONNECTIONxKICKED, id, false);
 
   CloseClient(*iter);
 }
@@ -2246,11 +2253,14 @@ void CChatManager::CloseChat()
 //----CChatManager::FinishKickVote-------------------------------------------
 void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
 {
+  char voteId[16];
+  snprintf(voteId, 16, "%lu", (*iter)->nUin);
+
   // Find the person we are kicking in the ChatUserList
   ChatUserList::iterator userIter;
   for (userIter = chatUsers.begin(); userIter != chatUsers.end(); ++userIter)
   {
-    if ((*userIter)->Uin() == (*iter)->nUin)
+    if (strcmp((*userIter)->Id(), voteId) == 0)
       break;
   }
 
@@ -2270,14 +2280,14 @@ void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
   buf.PackChar((*iter)->nNo);
 
   if (bPassed)
-    SendBuffer(&buf, CHAT_KICKxPASS, (*iter)->nUin, true);
+    SendBuffer(&buf, CHAT_KICKxPASS, voteId, true);
   else
-    SendBuffer(&buf, CHAT_KICKxFAIL, (*iter)->nUin, true);
+    SendBuffer(&buf, CHAT_KICKxFAIL, voteId, true);
 
   // Send the person a notice if they were kicked
   if (bPassed)
   {
-    SendBuffer(&buf, CHAT_KICKxYOU, (*iter)->nUin, false);
+    SendBuffer(&buf, CHAT_KICKxYOU, voteId, false);
     CloseClient(*userIter);
   }
 
@@ -2320,7 +2330,7 @@ char *CChatManager::ClientsStr()
   {
     if (sz[0] != '\0') nPos += sprintf(&sz[nPos], ", ");
     if ((*iter)->Name()[0] == '\0')
-      nPos += sprintf(&sz[nPos], "%lu", (*iter)->Uin());
+      nPos += sprintf(&sz[nPos], "%s", (*iter)->Id());
     else
       nPos += sprintf(&sz[nPos], "%s", (*iter)->Name());
   }
@@ -2500,7 +2510,7 @@ void *ChatWaitForSignal_tep(void *arg)
   pthread_mutex_unlock(cancel_mutex);
 
   bool bSendIntIp = false;
-  ICQUser *temp_user = gUserManager.FetchUser(rc->u->Uin(), LOCK_R);
+  ICQUser* temp_user = gUserManager.FetchUser(rc->u->Id(), rc->u->PPID(), LOCK_R);
   if (temp_user != NULL)
   {
     bSendIntIp = temp_user->SendIntIp();

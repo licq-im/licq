@@ -598,8 +598,8 @@ public:
   void SendNewline();
   void SendBackspace();
   void SendCharacter(char);
-  void SendKick(unsigned long);
-  void SendKickNoVote(unsigned long);
+  void SendKick(const char* id);
+  void SendKickNoVote(const char* id);
   void SendVoteYes(unsigned long);
   void SendVoteNo(unsigned long);
 
@@ -658,8 +658,7 @@ protected:
   void FinishKickVote(VoteInfoList::iterator, bool);
 
   void SendBuffer(CBuffer *, unsigned char,
-                  unsigned long _nUin = 0,
-                  bool bNotIter = true);
+      const char* id = NULL, bool bNotIter = true);
   bool SendBufferToClient(CBuffer *, unsigned char, CChatUser *);
   void SendBuffer_Raw(CBuffer *);
   //void SendPacket(CPacket *);

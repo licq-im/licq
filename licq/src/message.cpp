@@ -1153,38 +1153,35 @@ void CEventPlugin::AddToHistory(ICQUser* /* user */, unsigned long /* ppid */, d
 
 //=====CEventUnknownSysMsg=====================================================
 CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
-                             unsigned short _nCommand, unsigned long _nUin,
+    unsigned short _nCommand, const char* idString, unsigned long ppid,
                              const char *_szMsg,
                              time_t _tTime, unsigned long _nFlags)
    : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags | E_UNKNOWN)
 {
   m_szMsg = _szMsg == NULL ? strdup("") : strdup(_szMsg);
-  m_nUin = _nUin;
+  m_szId = m_szId == NULL ? NULL : strdup(m_szId);
+  m_nPPID = ppid;
 }
 
 void CEventUnknownSysMsg::CreateDescription() const
 {
   delete [] m_szText;
   m_szText = new char [strlen(m_szMsg) + 128];
-  sprintf(m_szText, "Unknown system message (0x%04X) from %lu:\n%s\n",
-          m_nSubCommand, m_nUin, m_szMsg);
+  sprintf(m_szText, "Unknown system message (0x%04X) from %s:\n%s\n",
+      m_nSubCommand, m_szId, m_szMsg);
 }
 
 
 CEventUnknownSysMsg::~CEventUnknownSysMsg()
 {
   free(m_szMsg);
+  free(m_szId);
 }
 
 CEventUnknownSysMsg* CEventUnknownSysMsg::Copy() const
 {
-#if 0
   CEventUnknownSysMsg *e = new CEventUnknownSysMsg(m_nSubCommand,
       m_nCommand, m_szId, m_nPPID, m_szMsg, m_tTime, m_nFlags);
-#else
-  CEventUnknownSysMsg *e = new CEventUnknownSysMsg(m_nSubCommand,
-       m_nCommand, m_nUin, m_szMsg, m_tTime, m_nFlags);
-#endif
   e->CopyBase(this);
   return e;
 }
@@ -1195,7 +1192,7 @@ void CEventUnknownSysMsg::AddToHistory(ICQUser* /* u */, unsigned long /* _nPPID
   int nPos = sprintf(szOut, "[ %c | 0000 | %04d | %04d | %lu ]\n",
           _nDir == D_RECEIVER ? 'R' : 'S',
           m_nCommand, (unsigned short)(m_nFlags >> 16), m_tTime);
-  nPos += sprintf(&szOut[nPos], ":%lu\n", m_nUin);
+  nPos += sprintf(&szOut[nPos], ":%s\n", m_szId);
   AddStrWithColons(&szOut[nPos], m_szMsg);
   AddToHistory_Flush(u, _nPPID, szOut);
   delete [] szOut;*/

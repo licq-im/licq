@@ -894,7 +894,15 @@ void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
 unsigned long CICQDaemon::icqChatRequest(unsigned long nUin, const char *szReason,
                                          unsigned short nLevel, bool bServer)
 {
-  return icqMultiPartyChatRequest(nUin, szReason, NULL, 0, nLevel, bServer);
+  char id[16];
+  snprintf(id, 16, "%lu", nUin);
+  return icqMultiPartyChatRequest(id, szReason, NULL, 0, nLevel, bServer);
+}
+
+unsigned long CICQDaemon::icqChatRequest(const char* id, const char *szReason,
+                                         unsigned short nLevel, bool bServer)
+{
+  return icqMultiPartyChatRequest(id, szReason, NULL, 0, nLevel, bServer);
 }
 
 
@@ -902,10 +910,19 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
    const char *reason, const char *szChatUsers, unsigned short nPort,
    unsigned short nLevel, bool bServer)
 {
-  if (nUin == gUserManager.icqOwnerUin())
+  char id[16];
+  snprintf(id, 16, "%lu", nUin);
+  return icqMultiPartyChatRequest(id, reason, szChatUsers, nPort, nLevel, bServer);
+}
+
+unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
+   const char *reason, const char *szChatUsers, unsigned short nPort,
+   unsigned short nLevel, bool bServer)
+{
+  if (gUserManager.FindOwner(id, LICQ_PPID) != NULL)
     return 0;
 
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+  ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
   char *szReasonDos = gTranslator.NToRN(reason);
   gTranslator.ClientToServer(szReasonDos);
@@ -968,7 +985,14 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
 //-----CICQDaemon::chatCancel----------------------------------------------------------
 void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned short nSequence)
 {
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  char id[16];
+  snprintf(id, 16, "%lu", nUin);
+  icqChatRequestCancel(id, nSequence);
+}
+
+void CICQDaemon::icqChatRequestCancel(const char* id, unsigned short nSequence)
+{
+  ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
   if (u == NULL) return;
   gLog.Info(tr("%sCancelling chat request with %s (#%hu).\n"), L_TCPxSTR, 
             u->GetAlias(), -nSequence);
@@ -982,8 +1006,16 @@ void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned short nSequen
 void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
     unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
 {
+  char id[16];
+  snprintf(id, 16, "%lu", nUin);
+  icqChatRequestRefuse(id, szReason, nSequence, nMsgID, bDirect);
+}
+
+void CICQDaemon::icqChatRequestRefuse(const char* id, const char *szReason,
+    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
+{
   // add to history ??
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
   if (u == NULL) return;
   gLog.Info(tr("%sRefusing chat request with %s (#%hu).\n"), 
             bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);
@@ -1014,9 +1046,18 @@ void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
     const char* szClients, unsigned short nSequence,
     const unsigned long nMsgID[2], bool bDirect)
 {
+  char id[16];
+  snprintf(id, 16, "%lu", nUin);
+  icqChatRequestAccept(id, nPort, szClients, nSequence, nMsgID, bDirect);
+}
+
+void CICQDaemon::icqChatRequestAccept(const char* id, unsigned short nPort,
+    const char* szClients, unsigned short nSequence,
+    const unsigned long nMsgID[2], bool bDirect)
+{
   // basically a fancy tcp ack packet which is sent late
   // add to history ??
-  ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+  ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
   if (u == NULL) return;
   gLog.Info(tr("%sAccepting chat request with %s (#%hu).\n"), 
             bDirect ? L_TCPxSTR : L_SRVxSTR, u->GetAlias(), -nSequence);

@@ -734,7 +734,7 @@ void *MonitorSockets_tep(void *p)
         else
         {
           INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
-          if (s != NULL && s->Owner() == gUserManager.icqOwnerUin() &&
+          if (s != NULL && s->OwnerId() == gUserManager.OwnerId(LICQ_PPID) &&
               d->m_nTCPSrvSocketDesc == -1)
           {
             /* This is the server socket and it is about to be destoryed
@@ -891,7 +891,7 @@ void *MonitorSockets_tep(void *p)
             // Process the packet if the buffer is full
             if (tcp->RecvBufferFull())
             {
-              if (tcp->Owner() == 0)
+              if (tcp->OwnerPPID() != LICQ_PPID)
                 r = d->ProcessTcpHandshake(tcp);
               else
                 r = d->ProcessTcpPacket(tcp);

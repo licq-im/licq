@@ -476,14 +476,8 @@ protected:
 class CEventUnknownSysMsg : public CUserEvent
 {
 public:
-#if 0
   CEventUnknownSysMsg(unsigned short _nSubCommand,
                 unsigned short _nCommand, const char *_szId, unsigned long _nPPID,
-                const char *_szMsg,
-                time_t _tTime, unsigned long _nFlags);
-#endif
-  CEventUnknownSysMsg(unsigned short _nSubCommand,
-                unsigned short _nCommand, unsigned long _nUin,
                 const char *_szMsg,
                 time_t _tTime, unsigned long _nFlags);
   ~CEventUnknownSysMsg();
@@ -491,12 +485,9 @@ public:
   virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
 protected:
   void CreateDescription() const;
-   unsigned long m_nUin;
    char *m_szMsg;
-#if 0
    char *m_szId;
    unsigned long m_nPPID;
-#endif
 };
 
 #endif

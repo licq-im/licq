@@ -349,16 +349,27 @@ public:
   unsigned long icqFetchAutoResponse(unsigned long nUin, bool bServer = false) __attribute__ ((deprecated));
   unsigned long icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer = false);
   // Chat Request
+  unsigned long icqChatRequest(const char* id, const char *szReason,
+     unsigned short nLevel, bool bServer);
   unsigned long icqChatRequest(unsigned long nUin, const char *szReason,
+     unsigned short nLevel, bool bServer);
+  unsigned long icqMultiPartyChatRequest(const char* id,
+     const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer);
   unsigned long icqMultiPartyChatRequest(unsigned long nUin,
      const char *szReason, const char *szChatUsers, unsigned short nPort,
      unsigned short nLevel, bool bServer);
+  void icqChatRequestRefuse(const char* id, const char* szReason,
+      unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestRefuse(unsigned long nUin, const char *szReason,
       unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
+  void icqChatRequestAccept(const char* id, unsigned short nPort,
+      const char* szClients, unsigned short nSequence,
+      const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
       const char* szClients, unsigned short nSequence,
       const unsigned long nMsgID[], bool bDirect);
+  void icqChatRequestCancel(const char* id, unsigned short nSequence);
   void icqChatRequestCancel(unsigned long nUin, unsigned short nSequence);
   // File Transfer
   unsigned long icqFileTransfer(const char *szId, const char *szFilename,
@@ -467,6 +478,7 @@ public:
   unsigned long icqAuthorizeGrant(const char *szId, const char *szMessage);
   unsigned long icqAuthorizeRefuse(unsigned long nUin, const char *szMessage);
   unsigned long icqAuthorizeRefuse(const char *szId, const char *szMessage);
+  void icqRequestAuth(const char* id, const char *_szMessage);
   void icqRequestAuth(unsigned long _nUin, const char *_szMessage);
   void icqAlertUser(unsigned long _nUin);
   void icqAlertUser(const char* id, unsigned long ppid);
@@ -593,6 +605,8 @@ public:
   void RemoveUserFromList(const char *szId, unsigned long nPPID);
 
   // SMS
+  unsigned long icqSendSms(const char* id, unsigned long ppid,
+      const char* number, const char* message);
   unsigned long icqSendSms(const char *szNumber, const char *szMessage,
                            unsigned long nUin);
 
@@ -804,6 +818,7 @@ protected:
   void RejectEvent(unsigned long, CUserEvent *);
   void RejectEvent(const char* id, CUserEvent* e);
   ICQUser *FindUserForInfoUpdate(const char *szId, ICQEvent *e, const char *);
+  std::string FindUserByCellular(const char* cellular);
   unsigned long FindUinByCellular(const char *_szCellular);
 
   void icqRegisterFinish();

@@ -2222,7 +2222,7 @@ void CICQDaemon::CancelEvent(ICQEvent *e)
   e->m_eResult = EVENT_CANCELLED;
 
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
-    icqChatRequestCancel(e->m_nDestinationUin, e->m_nSequence);
+    icqChatRequestCancel(e->Id(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
     icqFileTransferCancel(e->Id(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_SECURExOPEN)

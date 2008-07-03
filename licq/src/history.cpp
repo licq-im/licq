@@ -16,6 +16,7 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
+#include <string>
 
 // Localization
 #include "gettext.h"
@@ -38,6 +39,8 @@ extern int errno;
 extern char *PPIDSTRING(unsigned long);
 
 #define MAX_HISTORY_MSG_SIZE 8192
+
+using std::string;
 
 CUserHistory::CUserHistory()
 {
@@ -249,7 +252,7 @@ bool CUserHistory::Load(HistoryList &lHistory)
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       GET_VALID_LINE_OR_BREAK;
-      unsigned long nUin = atol(&szResult[1]);
+        char* id = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
       char *szAlias = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
@@ -259,8 +262,9 @@ bool CUserHistory::Load(HistoryList &lHistory)
       GET_VALID_LINE_OR_BREAK;
       char *szEmail = strdup(&szResult[1]);
       GET_VALID_LINES;
-      e = new CEventAuthRequest(nUin, szAlias, szFName, szLName, szEmail, szMsg,
-                            nCommand, tTime, nFlags);
+        e = new CEventAuthRequest(id, LICQ_PPID, szAlias, szFName, szLName,
+            szEmail, szMsg, nCommand, tTime, nFlags);
+        free(id);
       free(szAlias);
       free(szFName);
       free(szLName);
@@ -270,23 +274,25 @@ bool CUserHistory::Load(HistoryList &lHistory)
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       GET_VALID_LINE_OR_BREAK;
-      unsigned long nUin = atol(&szResult[1]);
+        char* id = strdup(&szResult[1]);
       GET_VALID_LINES;
-      e = new CEventAuthGranted(nUin, szMsg, nCommand, tTime, nFlags);
+        e = new CEventAuthGranted(id, LICQ_PPID, szMsg, nCommand, tTime, nFlags);
+        free(id);
       break;
     }
     case ICQ_CMDxSUB_AUTHxREFUSED:
     {
       GET_VALID_LINE_OR_BREAK;
-      unsigned long nUin = atol(&szResult[1]);
+        char* id = strdup(&szResult[1]);
       GET_VALID_LINES;
-      e = new CEventAuthRefused(nUin, szMsg, nCommand, tTime, nFlags);
+        e = new CEventAuthRefused(id, LICQ_PPID, szMsg, nCommand, tTime, nFlags);
+        free(id);
       break;
     }
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       GET_VALID_LINE_OR_BREAK;
-      unsigned long nUin = atol(&szResult[1]);
+        char* id = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
       char *szAlias = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
@@ -295,8 +301,9 @@ bool CUserHistory::Load(HistoryList &lHistory)
       char *szLName = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
       char *szEmail = strdup(&szResult[1]);
-      e = new CEventAdded(nUin, szAlias, szFName, szLName, szEmail,
+        e = new CEventAdded(id, LICQ_PPID, szAlias, szFName, szLName, szEmail,
                             nCommand, tTime, nFlags);
+        free(id);
       free(szAlias);
       free(szFName);
       free(szLName);
@@ -333,14 +340,14 @@ bool CUserHistory::Load(HistoryList &lHistory)
     {
       ContactList vc;
       bool b = true;
-      unsigned long nUin = 0;
+      string id;
       while (true)
       {
         GET_VALID_LINE_OR_BREAK;
         if (b)
-          nUin = atol(&szResult[1]);
-        else if (nUin != 0)
-          vc.push_back(new CContact(nUin, &szResult[1]));
+          id = &szResult[1];
+        else if (!id.empty())
+          vc.push_back(new CContact(id.c_str(), LICQ_PPID, &szResult[1]));
         b = !b;
       }
       e = new CEventContactList(vc, false, nCommand, tTime, nFlags);

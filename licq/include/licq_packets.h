@@ -943,7 +943,7 @@ protected:
 class CPU_RequestAuth : public CPU_CommonFamily
 {
 public:
-  CPU_RequestAuth(unsigned long, const char *);
+  CPU_RequestAuth(const char* id, const char *);
 };
 
 //-----Authorize----------------------------------------------------------------

@@ -1067,7 +1067,14 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(const char *szId,
 //-----icqRequestAuth--------------------------------------------------------
 void CICQDaemon::icqRequestAuth(unsigned long _nUin, const char *_szMessage)
 {
-  CSrvPacketTcp *p = new CPU_RequestAuth(_nUin, _szMessage);
+  char id[16];
+  snprintf(id, 16, "%lu", _nUin);
+  icqRequestAuth(id, _szMessage);
+}
+
+void CICQDaemon::icqRequestAuth(const char* id, const char *_szMessage)
+{
+  CSrvPacketTcp* p = new CPU_RequestAuth(id, _szMessage);
   SendEvent_Server(p);
 }
 
@@ -1725,11 +1732,19 @@ ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char for
 unsigned long CICQDaemon::icqSendSms(const char *szNumber, const char *szMessage,
 				     unsigned long nUin)
 {
-  CEventSms *ue = new CEventSms(szNumber, szMessage, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
-  CPU_SendSms *p = new CPU_SendSms(szNumber, szMessage);
+  char id[16];
+  snprintf(id, 16, "%lu", nUin);
+  return icqSendSms(id, LICQ_PPID, szNumber, szMessage);
+}
+
+unsigned long CICQDaemon::icqSendSms(const char* id, unsigned long ppid,
+    const char* number, const char* message)
+{
+  CEventSms* ue = new CEventSms(number, message, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
+  CPU_SendSms* p = new CPU_SendSms(number, message);
   gLog.Info(tr("%sSending SMS through server (#%hu/#%d)...\n"), L_SRVxSTR,
-            p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(nUin, p, ue);
+      p->Sequence(), p->SubSequence());
+  ICQEvent* e = SendExpectEvent_Server(id, ppid, p, ue);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -2170,19 +2185,24 @@ ICQUser *CICQDaemon::FindUserForInfoUpdate(const char *szId, ICQEvent *e,
 //-----FindUinByCellular-------------------------------------------------------
 unsigned long CICQDaemon::FindUinByCellular(const char *szCellular)
 {
+  return strtoul(FindUserByCellular(szCellular).c_str(), NULL, 10);
+}
+
+string CICQDaemon::FindUserByCellular(const char *szCellular)
+{
   char szParsedNumber1[16], szParsedNumber2[16];
-  unsigned long nUin = 0;
-  
+  string id;
+
   FOR_EACH_USER_START(LOCK_R)
   {
     ParseDigits(szParsedNumber1, pUser->GetCellularNumber(), 15);
     ParseDigits(szParsedNumber2, szCellular, 15);
     if (!strcmp(szParsedNumber1, szParsedNumber2))
-      nUin = strtoul(pUser->IdString(), NULL, 10);
+      id = pUser->IdString();
   }
   FOR_EACH_USER_END
 
-  return nUin;
+  return id;
 }
 
 //-----ProcessSrvPacket---------------------------------------------------------
@@ -3772,9 +3792,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                        nTypeMsg, packet.print(buf));
           delete [] buf;
           //TODO
-          CEventUnknownSysMsg *e = new CEventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                                                           strtoul(szId, (char **)NULL, 10), 
-                                                           szMessage, nTimeSent, 0);
+              CEventUnknownSysMsg* e = new CEventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
+                  szId, LICQ_PPID, szMessage, nTimeSent, 0);
 
           ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           AddUserEvent(o, e);
@@ -3855,14 +3874,14 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  {
 	    CEventSms *eSms = (CEventSms *)eEvent;
       //TODO
-	    unsigned long nUinSms = FindUinByCellular(eSms->Number());
+      string idSms = FindUserByCellular(eSms->Number());
 
-	    if (nUinSms != 0)
-	    {
+      if (!idSms.empty())
+      {
         //TODO
-	      ICQUser* u = gUserManager.FetchUser(nUinSms, LOCK_W);
-	      gLog.Info(tr("%sSMS from %s - %s (%lu).\n"), L_SBLANKxSTR, eSms->Number(), 
-                  u->GetAlias(), nUinSms);
+        ICQUser* u = gUserManager.FetchUser(idSms.c_str(), LICQ_PPID, LOCK_W);
+        gLog.Info(tr("%sSMS from %s - %s (%s).\n"), L_SBLANKxSTR, eSms->Number(),
+            u->GetAlias(), idSms.c_str());
 	      if (AddUserEvent(u, eEvent))
 	        m_xOnEventManager.Do(ON_EVENT_SMS, u);
 	      gUserManager.DropUser(u);
@@ -4752,8 +4771,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       struct tm sendTM;
       unsigned long nUin;
       unsigned long nTimeSent;
-      
+
       nUin = msg.UnpackUnsignedLong();
+          char id[16];
+          snprintf(id, 16, "%lu", nUin);
 
       sendTM.tm_year = msg.UnpackUnsignedShort() - 1900;
       sendTM.tm_mon = msg.UnpackChar() - 1;
@@ -4807,8 +4828,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_AUTHxREQUEST:
 	{
-	  gLog.Info(tr("%sOffline authorization request from %lu.\n"), L_SBLANKxSTR, nUin);
-	  
+              gLog.Info(tr("%sOffline authorization request from %s.\n"), L_SBLANKxSTR, id);
+
 	  char **szFields = new char *[6];  // alias, first name, last name, email, auth, comment
           
 	  if (!ParseFE(szMessage, &szFields, 6))
@@ -4828,41 +4849,41 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[2]);  // last name
           gTranslator.ServerToClient (szFields[5]);  // comment
 
-          CEventAuthRequest *e = new CEventAuthRequest(nUin, szFields[0], szFields[1],
-                                                       szFields[2], szFields[3], szFields[5],
-                                            	       ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
-	  delete [] szFields;	
+              CEventAuthRequest *e = new CEventAuthRequest(id, LICQ_PPID,
+                  szFields[0], szFields[1], szFields[2], szFields[3],
+                  szFields[5], ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
+              delete [] szFields;
 	  eEvent = e;
 	  break;
 	}
 	case ICQ_CMDxSUB_AUTHxREFUSED:  // system message: authorization refused
         {
-          gLog.Info(tr("%sOffline authorization refused by %lu.\n"), L_SBLANKxSTR, nUin);
+              gLog.Info(tr("%sOffline authorization refused by %s.\n"), L_SBLANKxSTR, id);
 
           // Translating string with Translation Table
           gTranslator.ServerToClient(szMessage);
 
-          CEventAuthRefused *e = new CEventAuthRefused(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE,
-						       nTimeSent, 0);
+              CEventAuthRefused* e = new CEventAuthRefused(id, LICQ_PPID,
+                  szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  eEvent = e;
 	  break;
 	}
 	case ICQ_CMDxSUB_AUTHxGRANTED:  // system message: authorized
         {
-          gLog.Info(tr("%sOffline authorization granted by %lu.\n"), L_SBLANKxSTR, nUin);
+              gLog.Info(tr("%sOffline authorization granted by %s.\n"), L_SBLANKxSTR, id);
 
           // translating string with Translation Table
           gTranslator.ServerToClient (szMessage);
 
-          ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
+              ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
           if (u)
           {
             u->SetAwaitingAuth(false);
             gUserManager.DropUser(u);
           }
 
-          CEventAuthGranted *e = new CEventAuthGranted(nUin, szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE,
-                                                       nTimeSent, 0);
+              CEventAuthGranted* e = new CEventAuthGranted(id, LICQ_PPID,
+                  szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  eEvent = e;
 	  break;
 	}
@@ -4884,7 +4905,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	}
 	case ICQ_CMDxSUB_ADDEDxTOxLIST:  // system message: added to a contact list
         {
-          gLog.Info(tr("%sUser %lu added you to their contact list (offline).\n"), L_SBLANKxSTR, nUin);
+              gLog.Info(tr("%sUser %s added you to their contact list (offline).\n"), L_SBLANKxSTR, id);
 
           char **szFields = new char *[6]; // alias, first name, last name, email, auth, comment
           
@@ -4904,10 +4925,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[1]);  // first name
           gTranslator.ServerToClient (szFields[2]);  // last name
 
-          CEventAdded *e = new CEventAdded(nUin, szFields[0], szFields[1],
-                                           szFields[2], szFields[3],
-                                           ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
-	  delete [] szFields;	
+              CEventAdded* e = new CEventAdded(id, LICQ_PPID, szFields[0],
+                  szFields[1], szFields[2], szFields[3],
+                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
+              delete [] szFields;
 	  eEvent = e;
 	  break;
 	}
@@ -5009,8 +5030,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gLog.Unknown("%sUnknown offline system message (0x%04x):\n%s\n", L_UNKNOWNxSTR,
                        nTypeMsg, packet.print(buf));
           delete [] buf;
-          CEventUnknownSysMsg *e = new CEventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxOFFLINE,
-                                                           nUin, szMessage, nTimeSent, 0);
+              CEventUnknownSysMsg* e = new CEventUnknownSysMsg(nTypeMsg,
+                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, id, LICQ_PPID, szMessage, nTimeSent, 0);
 
               ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           AddUserEvent(o, e);
@@ -5025,24 +5046,25 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_URL:
 	  case ICQ_CMDxSUB_CONTACTxLIST:
 	  {
-    	    // Lock the user to add the message to their queue
-    	    ICQUser* u = gUserManager.FetchUser(nUin, LOCK_W);
-    	    if (u == NULL)
-    	    {
-    	      if (Ignore(IGNORE_NEWUSERS))
-    	      {
-        	gLog.Info(tr("%sOffline %s from new user (%lu), ignoring.\n"), L_SBLANKxSTR, szType, nUin);
-		if (szType) free(szType);
-        	RejectEvent(nUin, eEvent);
-        	break;
-    	      }
-    	      gLog.Info(tr("%sOffline %s from new user (%lu).\n"), L_SBLANKxSTR, szType, nUin);
-    	      AddUserToList(nUin);
-    	      u = gUserManager.FetchUser(nUin, LOCK_W);
-    	    }
-    	    else
-    	      gLog.Info(tr("%sOffline %s through server from %s (%lu).\n"), L_SBLANKxSTR,
-                        szType, u->GetAlias(), nUin);
+                // Lock the user to add the message to their queue
+                ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
+                if (u == NULL)
+                {
+                  if (Ignore(IGNORE_NEWUSERS))
+                  {
+                    gLog.Info(tr("%sOffline %s from new user (%s), ignoring.\n"),
+                        L_SBLANKxSTR, szType, id);
+                    if (szType) free(szType);
+                      RejectEvent(id, eEvent);
+                    break;
+                  }
+                  gLog.Info(tr("%sOffline %s from new user (%s).\n"), L_SBLANKxSTR, szType, id);
+                  AddUserToList(id, LICQ_PPID);
+                  u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
+                }
+                else
+                  gLog.Info(tr("%sOffline %s through server from %s (%s).\n"),
+                      L_SBLANKxSTR, szType, u->GetAlias(), id);
 
             if (szType) free(szType);
     	    if (AddUserEvent(u, eEvent))
@@ -5058,7 +5080,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_WEBxPANEL:
 	  case ICQ_CMDxSUB_EMAILxPAGER:
 	  {
-            ICQUser *u = gUserManager.FetchUser(nUin, LOCK_R);
+                ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
             bool bIgnore = false;
             if (u)
             {
@@ -5086,13 +5108,14 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  }
 	  case ICQ_CMDxSUB_SMS:
 	  {
-	    CEventSms *eSms = (CEventSms *)eEvent; 
-	    unsigned long nUinSms = FindUinByCellular(eSms->Number());
-	    
-	    if (nUinSms != 0)
-	    {
-	      ICQUser* u = gUserManager.FetchUser(nUinSms, LOCK_W);
-	      gLog.Info(tr("%sOffline SMS from %s - %s (%lu).\n"), L_SBLANKxSTR, eSms->Number(), u->GetAlias(), nUin);
+                CEventSms* eSms = (CEventSms *)eEvent;
+                string idSms = FindUserByCellular(eSms->Number());
+
+                if (!idSms.empty())
+                {
+                  ICQUser* u = gUserManager.FetchUser(idSms.c_str(), LICQ_PPID, LOCK_W);
+                  gLog.Info(tr("%sOffline SMS from %s - %s (%s).\n"), L_SBLANKxSTR,
+                      eSms->Number(), u->GetAlias(), id);
 	      if (AddUserEvent(u, eEvent))
 	        m_xOnEventManager.Do(ON_EVENT_SMS, u);
 	      gUserManager.DropUser(u);
@@ -5562,7 +5585,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (bNewUser)
             icqRequestMetaInfo(szUin);
 
-          e->m_pSearchAck = new CSearchAck(nUin);
+          e->m_pSearchAck = new CSearchAck(szUin, LICQ_PPID);
         }
         else
           gLog.Info(tr("%sNo random chat user found.\n"), L_SRVxSTR);

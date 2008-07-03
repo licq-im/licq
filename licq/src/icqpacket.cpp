@@ -2664,12 +2664,10 @@ CPU_SendSms::CPU_SendSms(const char *szNumber, const char *szMessage)
 }
 
 //----RequestAuth------------------------------------------------------------
-CPU_RequestAuth::CPU_RequestAuth(unsigned long _nUin, const char *_szMsg)
+CPU_RequestAuth::CPU_RequestAuth(const char* szUin, const char *_szMsg)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_AUTHxREQ)
 {
-  char szUin[13];
-  int nUinLen = snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = '\0';
+  int nUinLen = strlen(szUin);
   int nMsgLen = strlen(_szMsg);
 
   m_nSize += nUinLen + nMsgLen + 5;
