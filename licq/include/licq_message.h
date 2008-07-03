@@ -220,9 +220,10 @@ public:
   unsigned long PPID() const { return m_nPPID; }
 
   // Deprecated functions, to be removed
-  LICQ_DEPRECATED CEventAdded(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
-               const char *_szLastName, const char *_szEmail,
-               unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+  CEventAdded(unsigned long _nUin, const char* _szAlias,
+      const char* _szFirstName, const char *_szLastName, const char *_szEmail,
+      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
+      LICQ_DEPRECATED;
   LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
 
 protected:
@@ -252,9 +253,10 @@ public:
   unsigned long PPID() const { return m_nPPID; }
 
   // Deprecated functions, to be removed
-  LICQ_DEPRECATED CEventAuthRequest(unsigned long _nUin, const char *_szAlias, const char *_szFirstName,
-                 const char *_szLastName, const char *_szEmail, const char *_szReason,
-                 unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+  CEventAuthRequest(unsigned long _nUin, const char* _szAlias,
+      const char* _szFirstName, const char* _szLastName, const char* _szEmail,
+      const char* _szReason, unsigned short _nCommand, time_t _tTime,
+      unsigned long _nFlags) LICQ_DEPRECATED;
   LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
 
 protected:
@@ -282,8 +284,9 @@ public:
   unsigned long PPID() const { return m_nPPID; }
 
   // Deprecated functions, to be removed
-  LICQ_DEPRECATED CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
-              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+  CEventAuthGranted(unsigned long _nUin, const char* _szMessage,
+      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
+      LICQ_DEPRECATED;
   LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
 
 protected:
@@ -307,8 +310,9 @@ public:
   unsigned long PPID() const { return m_nPPID; }
 
   // Deprecated functions, to be removed
-  LICQ_DEPRECATED CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
-              unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
+  CEventAuthRefused(unsigned long _nUin, const char* _szMessage,
+      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
+      LICQ_DEPRECATED;
   LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
 
 protected:
@@ -365,7 +369,7 @@ public:
   unsigned long PPID() const { return m_nPPID; }
 
   // Deprecated functions, to be removed
-  LICQ_DEPRECATED CContact(unsigned long n, const char *a);
+  CContact(unsigned long n, const char* a) LICQ_DEPRECATED;
   LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); }
 
 protected:

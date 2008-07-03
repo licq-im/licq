@@ -920,8 +920,8 @@ public:
   void Unlock();
 
   // Deprecated functions, to be removed
-  LICQ_DEPRECATED ICQUser(unsigned long id, char *filename);
-  LICQ_DEPRECATED ICQUser(unsigned long id);
+  ICQUser(unsigned long id, char *filename) LICQ_DEPRECATED;
+  ICQUser(unsigned long id) LICQ_DEPRECATED;
   LICQ_DEPRECATED unsigned long Uin() const;
   LICQ_DEPRECATED const char* UinString() const { return m_szId; }
 
