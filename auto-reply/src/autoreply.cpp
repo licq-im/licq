@@ -30,7 +30,6 @@ extern int errno;
 #include "licq_icqd.h"
 #include "licq_file.h"
 #include "licq_user.h"
-#include "licq_socket.h"
 #include "licq_constants.h"
 
 extern "C" { const char *LP_Version(); }
@@ -43,7 +42,6 @@ const unsigned short SUBJ_CHARS = 20;
  *-------------------------------------------------------------------------*/
 CLicqAutoReply::CLicqAutoReply(bool _bEnable, bool _bDelete, char *_szStatus)
 {
-  tcp = new TCPSocket;
   m_bExit = false;
   m_bEnabled = _bEnable;
   m_bDelete = _bDelete;
@@ -56,7 +54,6 @@ CLicqAutoReply::CLicqAutoReply(bool _bEnable, bool _bDelete, char *_szStatus)
  *-------------------------------------------------------------------------*/
 CLicqAutoReply::~CLicqAutoReply()
 {
-  delete tcp;
 }
 
 /*---------------------------------------------------------------------------

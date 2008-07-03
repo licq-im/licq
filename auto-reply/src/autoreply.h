@@ -6,7 +6,6 @@
 #endif
 
 class CICQDaemon;
-class TCPSocket;
 class ICQUser;
 class CUserEvent;
 class CICQSignal;
@@ -30,7 +29,6 @@ protected:
        m_bSendThroughServer;
 
   CICQDaemon *licqDaemon;
-  TCPSocket *tcp;
 
 public:
   void ProcessPipe();

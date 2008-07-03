@@ -69,7 +69,6 @@
 #include "licq_providers.h"
 #include "licq_user.h"
 #include "licq_icqd.h"
-#include "licq_socket.h"
 #include "licq_log.h"
 #include "usercodec.h"
 

@@ -26,7 +26,6 @@
 #include "licq_events.h"
 #include "licq_icqd.h"
 #include "licq_user.h"
-#include "licq_socket.h"
 #include "licq_icq.h"
 #include "securitydlg.h"
 

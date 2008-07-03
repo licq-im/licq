@@ -49,7 +49,6 @@
 
 #include "licq_icqd.h"
 #include "licq_user.h"
-#include "licq_socket.h"
 
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
