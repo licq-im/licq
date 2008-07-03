@@ -853,10 +853,9 @@ unsigned long CUserManager::icqOwnerUin()
  *
  * The user is write locked upon return of this function
  *-------------------------------------------------------------------------*/
-unsigned long CUserManager::AddUser(ICQUser *pUser)
+void CUserManager::AddUser(ICQUser *pUser)
 {
-  AddUser(pUser, pUser->IdString(), LICQ_PPID);
-  return pUser->Uin();
+  AddUser(pUser, pUser->IdString(), pUser->PPID());
 }
 
 
@@ -865,11 +864,9 @@ unsigned long CUserManager::AddUser(ICQUser *pUser)
  *-------------------------------------------------------------------------*/
 void CUserManager::RemoveUser(unsigned long _nUin)
 {
-  ICQUser *u = FetchUser(_nUin, LOCK_R);
-  char *szId = u->IdString();
-  unsigned long nPPID = u->PPID();
-  DropUser(u);
-  RemoveUser(szId, nPPID);
+  char szId[16];
+  snprintf(szId, 16, "%lu", _nUin);
+  RemoveUser(szId, LICQ_PPID);
 }
 
 LicqGroup* CUserManager::FetchGroup(unsigned short group, unsigned short lockType)
@@ -1365,7 +1362,17 @@ ICQOwner *CUserManager::FetchOwner(unsigned long _nPPID,
  *-------------------------------------------------------------------------*/
 void CUserManager::DropOwner()
 {
-  DropOwner(LICQ_PPID);
+  LockOwnerList(LOCK_R);
+  OwnerList::iterator iter;
+  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
+  {
+    if ((*iter)->PPID() == LICQ_PPID)
+    {
+      (*iter)->Unlock();
+      break;
+    }
+  }
+  UnlockOwnerList();
 }
 
 void CUserManager::DropOwner(unsigned long _nPPID)
@@ -2321,12 +2328,8 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   else
     m_szId = 0;
   m_nPPID = _nPPID;
-  
+
   // gui plugin compat
-  if (m_nPPID == LICQ_PPID && m_szId)
-    m_nUin = strtoul(m_szId, (char **)NULL, 10);
-  else
-   m_nUin = 0;
   SetStatus(ICQ_STATUS_OFFLINE);
   SetAutoResponse("");
   SetSendServer(false);
@@ -2366,11 +2369,13 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_nGSID = 0;
   m_szClientInfo = NULL;
 
-  snprintf(m_szUinString, 12, "%lu", m_nUin);
-  m_szUinString[12] = '\0';
-
   pthread_rdwr_init_np (&mutex_rw, NULL);
-  pthread_rdwr_set_name(&mutex_rw, m_szUinString);
+  pthread_rdwr_set_name(&mutex_rw, m_szId);
+}
+
+unsigned long ICQUser::Uin() const
+{
+  return strtoul(m_szId, NULL, 0);
 }
 
 void ICQUser::SetPermanent()
@@ -3872,78 +3877,6 @@ TLVList ICQUser::GetTLVList()
 //=====ICQOwner=================================================================
 
 //-----ICQOwner::constructor----------------------------------------------------
-ICQOwner::ICQOwner()
-{
-  gLog.Info(tr("%sOwner configuration.\n"), L_INITxSTR);
-  char szTemp[MAX_LINE_LEN];
-  char filename[MAX_FILENAME_LEN];
-  m_bException = false;
-  m_bSavePassword = true;
-  m_szPassword = NULL;
-  m_nPDINFO = 0;
-
-  Init("0", LICQ_PPID);
-  //SetOnContactList(true);
-  m_bOnContactList = true;
-
-  // Get data from the config file
-  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/owner.Licq", BASE_DIR);
-  filename[MAX_FILENAME_LEN - 1] = '\0';
-
-  // Make sure owner.Licq is mode 0600
-  if (chmod(filename, S_IRUSR | S_IWUSR) == -1)
-  {
-    gLog.Warn(tr("%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"),
-                 L_WARNxSTR, filename);
-  }
-
-  m_fConf.SetFileName(filename);
-  LoadInfo();
-  // Owner encoding fixup to be UTF-8 by default
-  if (strcmp(m_szEncoding, "") == 0)
-    SetString(&m_szEncoding, "UTF-8");
-  m_fConf.ReadNum("Uin", m_nUin, 0);
-  snprintf(m_szUinString, 12, "%lu", m_nUin);
-  m_szUinString[12] = '\0';
-  if (m_szId)  free (m_szId);
-  m_szId = strdup(m_szUinString);
-  m_fConf.ReadStr("Password", szTemp, "", false);
-  SetPassword(&szTemp[1]); // skip leading space since we didn't trim
-  m_fConf.ReadBool("WebPresence", m_bWebAware, false);
-  m_fConf.ReadBool("HideIP", m_bHideIp, false);
-  m_fConf.ReadNum("RCG", m_nRandomChatGroup, ICQ_RANDOMxCHATxGROUP_NONE);
-  m_fConf.ReadStr("AutoResponse", szTemp, "");
-  m_fConf.ReadNum("SSTime", (unsigned long&)m_nSSTime, 0L);
-  m_fConf.ReadNum("SSCount", m_nSSCount, 0);
-  m_fConf.ReadNum("PDINFO", m_nPDINFO, 0);
-
-  SetAutoResponse(szTemp);
-
-  m_fConf.CloseFile();
-
-  snprintf(filename, MAX_FILENAME_LEN - 1, "%s/%s/owner.history", BASE_DIR, HISTORY_DIR);
-  SetHistoryFile(filename);
-
-  if (m_nTimezone != SystemTimezone() && m_nTimezone != TIMEZONE_UNKNOWN)
-  {
-    gLog.Warn(tr("%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
-              "%sUpdate general info on server to fix.\n"),
-       L_WARNxSTR, m_nTimezone, SystemTimezone(), L_BLANKxSTR);
-  }
-
-  //if owner timestamps do not exist, set them to current time
-  unsigned long nTime = time(NULL);
-
-/*  if (m_nClientTimestamp == 0)
-    m_nClientTimestamp = nTime;*/
-  if (m_nClientInfoTimestamp == 0)
-    m_nClientInfoTimestamp = nTime;
-  if (m_nClientStatusTimestamp == 0)
-    m_nClientStatusTimestamp = nTime;
-
-  SetEnableSave(true);
-}
-
 ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
 {
   char szTemp[MAX_LINE_LEN];
@@ -4039,7 +3972,15 @@ ICQOwner::~ICQOwner()
     free( m_szPassword );
 }
 
-
+void ICQOwner::SetUin(unsigned long uin)
+{
+  char id[16];
+  snprintf(id, 16, "%lu", uin);
+  free(m_szId);
+  m_szId = strdup(id);
+  m_nPPID = LICQ_PPID;
+  SaveLicqInfo();
+}
 
 unsigned long ICQOwner::AddStatusFlags(unsigned long s)
 {

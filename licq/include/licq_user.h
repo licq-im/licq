@@ -430,8 +430,6 @@ private:
 class ICQUser
 {
 public:
-  ICQUser(unsigned long id, char *filename);
-  ICQUser(unsigned long id);
   ICQUser(const char *id, unsigned long ppid, char *filename);
   ICQUser(const char *id, unsigned long ppid, bool bTempUser = false);
   virtual ~ICQUser();
@@ -594,8 +592,6 @@ public:
   unsigned short SendLevel()            { return m_nSendLevel; }
   bool EnableSave()                     { return m_bEnableSave; }
   bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
-  unsigned long Uin()                   { return m_nUin; }
-  char *UinString()                     { return m_szUinString; }
   unsigned short Sequence(bool = false);
   char Mode()                           { return m_nMode; }
   unsigned long Version()               { return m_nVersion; }
@@ -923,6 +919,12 @@ public:
   void Lock(unsigned short);
   void Unlock();
 
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED ICQUser(unsigned long id, char *filename);
+  LICQ_DEPRECATED ICQUser(unsigned long id);
+  LICQ_DEPRECATED unsigned long Uin() const;
+  LICQ_DEPRECATED const char* UinString() const { return m_szId; }
+
 protected:
   ICQUser() { /* ICQOwner inherited constructor - does nothing */ }
   void LoadGeneralInfo();
@@ -936,7 +938,6 @@ protected:
   void LoadPhoneBookInfo();
   void LoadPictureInfo();
   void LoadLicqInfo();
-  void Init(unsigned long nUin);
   void Init(const char *, unsigned long);
   bool LoadInfo();
   void SetDefaults();
@@ -956,6 +957,9 @@ protected:
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
 
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED void Init(unsigned long nUin);
+
   CIniFile m_fConf;
   CUserHistory m_fHistory;
   int m_nNormalSocketDesc, m_nInfoSocketDesc, m_nStatusSocketDesc;
@@ -972,8 +976,7 @@ protected:
   bool m_bUserUpdated;
   unsigned short m_nPort, m_nLocalPort, m_nConnectionVersion;
   unsigned short m_nTyping;
-  unsigned long m_nUin,
-                m_nStatus;
+  unsigned long m_nStatus;
   UserGroupList myGroups;               /**< List of user groups */
   unsigned long mySystemGroups;         /**< Bitmask for system groups */
   unsigned short m_nSequence;
@@ -985,7 +988,6 @@ protected:
   bool m_bSupportsUTF8;
   char *m_szCustomAutoResponse;
   char *m_szId;
-  char m_szUinString[13];
   bool m_bOnlineNotify,
        m_bSendIntIp,
        m_bSendServer,
@@ -1104,7 +1106,6 @@ protected:
 class ICQOwner : public ICQUser
 {
 public:
-  ICQOwner();
   ICQOwner(const char *, unsigned long);
   virtual ~ICQOwner();
   bool Exception()  { return m_bException; }
@@ -1116,7 +1117,6 @@ public:
   virtual void SetWebAwareStatus(char c) { SetWebAware(c); }
   void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
   void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
-  void SetUin(unsigned long n) { m_nUin = n; SaveLicqInfo(); }
   void SetId(const char *s)    { SetString(&m_szId, s); SaveLicqInfo(); }
   void SetRandomChatGroup(unsigned long n)  { m_nRandomChatGroup = n; SaveLicqInfo(); }
   bool WebAware()             { return m_bWebAware; }
@@ -1124,6 +1124,9 @@ public:
   bool SavePassword()         { return m_bSavePassword; }
   unsigned long RandomChatGroup() { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus);
+
+  // Deprecated functions, to be removed
+  LICQ_DEPRECATED void SetUin(unsigned long n);
 
   // Server Side List functions
   time_t GetSSTime()                  { return m_nSSTime; }
@@ -1291,11 +1294,13 @@ public:
   std::string OwnerId(unsigned long ppid);
 
   // ICQ Protocol only (from original Licq)
-  unsigned long AddUser(ICQUser *);
-  void RemoveUser(unsigned long);
-  ICQUser *FetchUser(unsigned long, unsigned short);
+  void AddUser(ICQUser *);
   void DropUser(ICQUser *);
-  bool IsOnList(unsigned long nUin);
+
+  // Deprecated user functions, to be removed
+  LICQ_DEPRECATED ICQUser *FetchUser(unsigned long, unsigned short);
+  LICQ_DEPRECATED void RemoveUser(unsigned long);
+  LICQ_DEPRECATED bool IsOnList(unsigned long nUin);
 
   // Deprecated owner functions, to be removed
   LICQ_DEPRECATED void SetOwnerUin(unsigned long _nUin);
@@ -1482,8 +1487,8 @@ public:
       unsigned short groupId, bool inGroup, bool updateServer = true);
 
   // Deprecated group manipulation functions
-  void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
-  void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
+  LICQ_DEPRECATED void AddUserToGroup(unsigned long _nUin, unsigned short _nGroup);
+  LICQ_DEPRECATED void RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup);
 
   /**
    * Add user to a group and update server group
