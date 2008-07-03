@@ -130,8 +130,8 @@ int AddStrWithColons(char *_szNewStr, const char *_szOldStr)
 int CUserEvent::AddToHistory_Header(direction _nDir, char* szOut) const
 {
   return sprintf(szOut, "[ %c | %04d | %04d | %04d | %lu ]\n",
-          _nDir == D_RECEIVER ? 'R' : 'S',
-          m_nSubCommand, m_nCommand, (unsigned short)(m_nFlags >> 16), m_tTime);
+      _nDir == D_RECEIVER ? 'R' : 'S', m_nSubCommand, m_nCommand,
+      (unsigned short)(m_nFlags >> 16), (unsigned long)m_tTime);
 }
 
 
