@@ -20,6 +20,7 @@ extern int errno;
 #include "licq_log.h"
 #include "licq_icqd.h"
 #include "licq_file.h"
+#include "licq_socket.h"
 #include "licq_user.h"
 #include "licq_constants.h"
 
@@ -197,7 +198,7 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
     conf.CloseFile();
   }
 
-  server = new TCPSocket(0);
+  server = new TCPSocket();
 
   if (licqDaemon->TCPPortsLow() != 0 && nPort == 0)
   {
@@ -460,7 +461,7 @@ char CRMSClient::buf[128];
 /*---------------------------------------------------------------------------
  * CRMSClient::constructor
  *-------------------------------------------------------------------------*/
-CRMSClient::CRMSClient(TCPSocket *sin) : sock(0)
+CRMSClient::CRMSClient(TCPSocket* sin)
 {
   sin->RecvConnection(sock);
   sockman.AddSocket(&sock);
