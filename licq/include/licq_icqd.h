@@ -515,16 +515,6 @@ public:
   void icqAddToIgnoreList(const char *_szId, unsigned long _nPPID);
   void icqRemoveFromIgnoreList(const char *_szId, unsigned long _nPPID);
   void icqToggleIgnoreList(const char *_szId, unsigned long _nPPID);
-  // Visible/Invisible/Ignore list functions (deprecated versions, for compatibility)
-  void icqAddToVisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  void icqRemoveFromVisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  void icqToggleVisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  void icqAddToInvisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  void icqRemoveFromInvisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  void icqToggleInvisibleList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  void icqAddToIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  void icqRemoveFromIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
-  void icqToggleIgnoreList(unsigned long nUin) __attribute__ ((deprecated)); // deprecated!
 
   void icqClearServerList();
   void CheckExport();
@@ -732,6 +722,15 @@ public:
   LICQ_DEPRECATED void RemoveUserFromList(unsigned long _nUin);
   LICQ_DEPRECATED unsigned long icqSendSms(const char *szNumber, const char *szMessage,
                            unsigned long nUin);
+  LICQ_DEPRECATED void icqAddToVisibleList(unsigned long nUin);
+  LICQ_DEPRECATED void icqRemoveFromVisibleList(unsigned long nUin);
+  LICQ_DEPRECATED void icqToggleVisibleList(unsigned long nUin);
+  LICQ_DEPRECATED void icqAddToInvisibleList(unsigned long nUin);
+  LICQ_DEPRECATED void icqRemoveFromInvisibleList(unsigned long nUin);
+  LICQ_DEPRECATED void icqToggleInvisibleList(unsigned long nUin);
+  LICQ_DEPRECATED void icqAddToIgnoreList(unsigned long nUin);
+  LICQ_DEPRECATED void icqRemoveFromIgnoreList(unsigned long nUin);
+  LICQ_DEPRECATED void icqToggleIgnoreList(unsigned long nUin);
 
 protected:
   CLicq *licq;
