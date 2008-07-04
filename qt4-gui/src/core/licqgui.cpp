@@ -817,19 +817,26 @@ UserViewEvent* LicqGui::showViewEventDialog(QString id, unsigned long ppid)
   return e;
 }
 
-UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppid, int convoId)
+UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppid, int convoId, bool autoPopup)
 {
   if (id.isEmpty() || ppid == 0)
     return NULL;
 
-  // Check if a message window should be made active
-  bool activateMsgwin = Config::Chat::instance()->autoFocus();
+  // Focus the new window/tab after showing it
+  bool activateMsgwin = true;
 
-  // Don't change focus if another message window is already active
-  const QWidget* activeWin = QApplication::activeWindow();
-  if (activeWin != NULL && ((qobject_cast<const UserEventCommon*>(activeWin)) != NULL ||
-      (qobject_cast<const UserEventTabDlg*>(activeWin)) != NULL))
-    activateMsgwin = false;
+  if (autoPopup)
+  {
+    // Message is triggered by auto-popup (and not by user) so check if it
+    // really should be activated
+    activateMsgwin = Config::Chat::instance()->autoFocus();
+
+    // Don't change focus if another message window is already active
+    const QWidget* activeWin = QApplication::activeWindow();
+    if (activeWin != NULL && ((qobject_cast<const UserEventCommon*>(activeWin)) != NULL ||
+        (qobject_cast<const UserEventTabDlg*>(activeWin)) != NULL))
+      activateMsgwin = false;
+  }
 
   if (Config::Chat::instance()->msgChatView())
   {
@@ -1482,7 +1489,7 @@ void LicqGui::userUpdated(CICQSignal* sig)
             gUserManager.DropUser(u);
 
             if (bCallSendMsg)
-              showEventDialog(MessageEvent, id, ppid, sig->CID());
+              showEventDialog(MessageEvent, id, ppid, sig->CID(), true);
             if (bCallUserView)
               showViewEventDialog(id, ppid);
           }

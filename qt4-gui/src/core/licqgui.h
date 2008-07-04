@@ -133,8 +133,9 @@ public:
    * @param id Contact id
    * @param ppid Contact protocol id
    * @param convoId Conversation id
+   * @param autoPopup True if the dialog was triggered automatically, false if triggered by the user
    */
-  UserEventCommon* showEventDialog(int fcn, QString id, unsigned long ppid, int convoId = -1);
+  UserEventCommon* showEventDialog(int fcn, QString id, unsigned long ppid, int convoId = -1, bool autoPopup = false);
 
   /**
    * Replace event dialog
