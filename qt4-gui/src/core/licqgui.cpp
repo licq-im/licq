@@ -936,7 +936,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
 
     // Check if we want the window sticky
     if (Config::Chat::instance()->msgWinSticky())
-      QTimer::singleShot(100, myUserEventTabDlg, SLOT(slotSetMsgWinSticky()));
+      QTimer::singleShot(100, myUserEventTabDlg, SLOT(setMsgWinSticky()));
   }
 
   // FIXME: New windows always become active stealing focus from other event windows (at least on KDE)
