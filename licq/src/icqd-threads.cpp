@@ -734,7 +734,8 @@ void *MonitorSockets_tep(void *p)
         else
         {
           INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
-          if (s != NULL && s->OwnerId() == gUserManager.OwnerId(LICQ_PPID) &&
+          if (s != NULL && s->OwnerId() != NULL &&
+              s->OwnerId() == gUserManager.OwnerId(LICQ_PPID) &&
               d->m_nTCPSrvSocketDesc == -1)
           {
             /* This is the server socket and it is about to be destoryed
