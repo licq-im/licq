@@ -51,6 +51,7 @@
 #include "core/messagebox.h"
 #include "core/signalmanager.h"
 
+#include "dialogs/adduserdlg.h"
 #include "dialogs/authuserdlg.h"
 #include "dialogs/chatdlg.h"
 #include "dialogs/filedlg.h"
@@ -332,14 +333,14 @@ void UserViewEvent::read1()
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       CEventAuthGranted* p = dynamic_cast<CEventAuthGranted*>(myCurrentEvent);
-      gLicqDaemon->AddUserToList(p->IdString(), p->PPID());
+      new AddUserDlg(p->IdString(), p->PPID(), this);
       break;
     }
 
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       CEventAdded* p = dynamic_cast<CEventAdded*>(myCurrentEvent);
-      gLicqDaemon->AddUserToList(p->IdString(), p->PPID());
+      new AddUserDlg(p->IdString(), p->PPID(), this);
       break;
     }
 
@@ -350,13 +351,7 @@ void UserViewEvent::read1()
 
       for (it = cl.begin(); it != cl.end(); ++it)
       {
-        ICQUser* u = gUserManager.FetchUser((*it)->IdString(), (*it)->PPID(), LOCK_R);
-        if (u == NULL)
-        {
-          gLicqDaemon->AddUserToList((*it)->IdString(), (*it)->PPID());
-          continue;
-        }
-        gUserManager.DropUser(u);
+        new AddUserDlg((*it)->IdString(), (*it)->PPID(), this);
       }
 
       myRead1Button->setEnabled(false);
@@ -535,7 +530,7 @@ void UserViewEvent::read3()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
-      gLicqDaemon->AddUserToList(p->IdString(), p->PPID());
+      new AddUserDlg(p->IdString(), p->PPID(), this);
       break;
     }
   } // switch
