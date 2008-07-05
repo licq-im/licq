@@ -70,12 +70,12 @@ public:
 
 protected:
   virtual void contextMenuEvent(QContextMenuEvent* event);
+  virtual QMimeData* createMimeDataFromSelection() const;
 
 public slots:
   virtual void setSource(const QUrl& url);
 
 private slots:
-  void slotCopy();
   void slotCopyUrl();
   void makeQuote();
   void updateFont();

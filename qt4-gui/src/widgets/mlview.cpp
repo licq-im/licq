@@ -45,7 +45,6 @@ MLView::MLView(QWidget* parent)
 {
   setLineWrapMode(QTextEdit::WidgetWidth);
   setWordWrapMode(QTextOption::WrapAtWordBoundaryOrAnywhere);
-  connect(this, SIGNAL(selectionChanged()), SLOT(slotCopy()));
 
   updateFont();
   connect(Config::General::instance(), SIGNAL(fontChanged()), SLOT(updateFont()));
@@ -294,26 +293,20 @@ void MLView::slotCopyUrl()
   }
 }
 
-/**
- * After we have copied the text, we update the copy so that all emoticons are
- * replaced with their respective smiley.
- */
-void MLView::slotCopy()
+QMimeData* MLView::createMimeDataFromSelection() const
 {
-  QTextCursor cr=textCursor();
-  if (!cr.hasSelection())
-    return;
+  QMimeData* result = QTextEdit::createMimeDataFromSelection();
 
-  QString html = cr.selection().toHtml();
+  if (result->hasHtml())
+  {
+    QString html = result->html();
+    Emoticons::unparseMessage(html);
+    QTextDocumentFragment fragment =
+      QTextDocumentFragment::fromHtml(html, document());
+    result->setText(fragment.toPlainText());
+  }
 
-  Emoticons::unparseMessage(html);
-
-  QString text = QTextDocumentFragment::fromHtml(html).toPlainText();
-
-  QClipboard* cb = QApplication::clipboard();
-  cb->setText(text);
-  if (cb->supportsSelection())
-    cb->setText(text, QClipboard::Selection);
+  return result;
 }
 
 void MLView::makeQuote()
