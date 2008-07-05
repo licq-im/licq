@@ -489,8 +489,12 @@ void Emoticons::parseMessage(QString& message, ParseMode mode) const
             }
           }
 
-          QString img = QString::fromLatin1("<a href=\"#%1\"><img src=\"%2\"></a>").arg(emo.escapedSmiley).arg(emo.file);
-          TRACE(" Replacing '%s' with '%s'", message.mid(pos, emo.escapedSmiley.length()).toLatin1().data(), img.toLatin1().data());
+          QString img = QString::fromLocal8Bit("<img src=\"file://%1#LICQ%2\">")
+            .arg(emo.file)
+            .arg(emo.escapedSmiley);
+          TRACE("Replacing '%s' with '%s'",
+              message.mid(pos, emo.escapedSmiley.length()).toLatin1().data(),
+              img.toLatin1().data());
           message.replace(pos, emo.escapedSmiley.length(), img);
           pos += img.length() - 1; // Point pos at '>'
           c = '>';
@@ -509,7 +513,7 @@ void Emoticons::parseMessage(QString& message, ParseMode mode) const
  */
 void Emoticons::unparseMessage(QString& message)
 {
-  QRegExp deicon("<a href=\"#([^\"]*).*</a>");
+  QRegExp deicon("<img src=\"file://.*#LICQ(.*)\".*>");
   deicon.setMinimal(true);
   message.replace(deicon, "\\1");
 }
