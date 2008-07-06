@@ -9,6 +9,8 @@ class CICQColor;
 class CBuffer;
 class INetSocket;
 
+typedef std::list<std::string> StringList;
+
 // values of extra info to identify plugin request
 const unsigned short DirectInfoPluginRequest     = 1;
 const unsigned short DirectStatusPluginRequest   = 2;
@@ -374,7 +376,7 @@ class CPU_GenericUinList : public CPU_CommonFamily
 {
 public:
    CPU_GenericUinList(const char *szId, unsigned short Family, unsigned short Subtype);
-   CPU_GenericUinList(UserStringList &, unsigned short, unsigned short);
+   CPU_GenericUinList(const StringList& users, unsigned short, unsigned short);
    CPU_GenericUinList(unsigned long _nUin, unsigned short Family, unsigned short Subtype);
 };
 
@@ -400,7 +402,7 @@ public:
 class CPU_ExportToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_ExportToServerList(UserStringList &, unsigned short);
+  CPU_ExportToServerList(const StringList& users, unsigned short);
 };
 
 //-----ExportGroupsToServerList-------------------------------------------------
@@ -452,7 +454,7 @@ public:
 class CPU_ClearServerList : public CPU_CommonFamily
 {
 public:
-  CPU_ClearServerList(UserStringList &, unsigned short);
+  CPU_ClearServerList(const StringList& users, unsigned short);
 };
 
 //-----UpdateToServerList-------------------------------------------------------

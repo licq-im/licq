@@ -28,7 +28,7 @@
 #include <qstring.h>
 
 #include "licqdialog.h"
-#include "licq_user.h"
+#include "licq_icqd.h"
 
 class QPushButton;
 class QVGroupBox;
@@ -50,11 +50,11 @@ public:
 
   int go_message(QString);
   int go_url(QString, QString);
-  int go_contact(UserStringList &_users);
+  int go_contact(StringList& users);
 
 protected:
   QString s1, s2;
-  UserStringList *users;
+  StringList* myUsers;
 
   unsigned long m_nEventType;
   QVGroupBox *grpSending;

@@ -132,22 +132,22 @@ void CICQDaemon::CheckExport()
     icqExportGroups(groups);
 
   // Just upload all of the users now
-  UserStringList doneUsers;
-  UserStringList users;
+  StringList doneUsers;
+  StringList users;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
     // If they aren't a current server user and not in the ingore list,
     // let's import them!
     if (pUser->GetSID() == 0 && !pUser->IgnoreList())
     {
-      UserStringList::const_iterator p = std::find(doneUsers.begin(), doneUsers.end(),
+      StringList::const_iterator p = std::find(doneUsers.begin(), doneUsers.end(),
         pUser->IdString());
 
       if (p == doneUsers.end())
       {
         // Keep track of who has been done
-        users.push_back(strdup(pUser->IdString()));
-        doneUsers.push_back(strdup(pUser->IdString()));
+        users.push_back(pUser->IdString());
+        doneUsers.push_back(pUser->IdString());
       }
     }
   }
@@ -158,29 +158,25 @@ void CICQDaemon::CheckExport()
     icqExportUsers(users, ICQ_ROSTxNORMAL);
     icqUpdateServerGroups();
   }
-  
-  UserStringList::iterator it;
-  for (it = doneUsers.begin(); it != doneUsers.end(); ++it)
-    free(*it);
 
   // Export visible/invisible/ignore list
-  UserStringList visibleUsers, invisibleUsers, ignoredUsers;
+  StringList visibleUsers, invisibleUsers, ignoredUsers;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
     if (pUser->IgnoreList() && pUser->GetSID() == 0)
     {
-      ignoredUsers.push_back(strdup(pUser->IdString()));
+      ignoredUsers.push_back(pUser->IdString());
     }
     else
     {
       if (pUser->InvisibleList() && pUser->GetInvisibleSID() == 0)
       {
-        invisibleUsers.push_back(strdup(pUser->IdString()));
+        invisibleUsers.push_back(pUser->IdString());
       }
 
       if (pUser->VisibleList() && pUser->GetVisibleSID() == 0)
       {
-        visibleUsers.push_back(strdup(pUser->IdString()));
+        visibleUsers.push_back(pUser->IdString());
       }
     }
   }
@@ -197,7 +193,7 @@ void CICQDaemon::CheckExport()
 }
 
 //-----icqExportUsers----------------------------------------------------------
-void CICQDaemon::icqExportUsers(UserStringList &users, unsigned short _nType)
+void CICQDaemon::icqExportUsers(const StringList& users, unsigned short _nType)
 {
   if (!UseServerContactList())  return;
 
@@ -1225,17 +1221,17 @@ void CICQDaemon::icqSetPhoneFollowMeStatus(unsigned long nNewStatus)
 void CICQDaemon::icqUpdateContactList()
 {
   unsigned short n = 0;
-  UserStringList users;
+  StringList users;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
   {
     n++;
-    users.push_back(strdup(pUser->IdString()));
+    users.push_back(pUser->IdString());
     if (n == m_nMaxUsersPerPacket)
     {
       CSrvPacketTcp *p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
       gLog.Info(tr("%sUpdating contact list (#%hu)...\n"), L_SRVxSTR, p->Sequence());
       SendEvent_Server(p);
-      users.erase(users.begin(), users.end());
+      users.clear();
       n = 0;
     }
     // Reset all users to offline
@@ -1272,11 +1268,11 @@ void CICQDaemon::icqSendVisibleList()
   // send user info packet
   // Go through the entire list of users, checking if each one is on
   // the visible list
-  UserStringList users;
+  StringList users;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
     if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST) )
-      users.push_back(strdup(pUser->IdString()));
+      users.push_back(pUser->IdString());
   }
   FOR_EACH_PROTO_USER_END
   CSrvPacketTcp* p = new CPU_GenericUinList(users, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_ADDxVISIBLExLIST);
@@ -1288,11 +1284,11 @@ void CICQDaemon::icqSendVisibleList()
 //-----icqSendInvisibleList-----------------------------------------------------
 void CICQDaemon::icqSendInvisibleList()
 {
-  UserStringList users;
+  StringList users;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
     if (pUser->GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST) )
-      users.push_back(strdup(pUser->IdString()));
+      users.push_back(pUser->IdString());
   }
   FOR_EACH_PROTO_USER_END
 
@@ -1582,49 +1578,49 @@ void CICQDaemon::icqRemoveFromIgnoreList(const char *_szId, unsigned long /* _nP
 void CICQDaemon::icqClearServerList()
 {
   if (!UseServerContactList()) return;
-  
+
   unsigned short n = 0;
-  UserStringList users;
-  
+  StringList users;
+
   // Delete all the users in groups
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
   {
     n++;
-    users.push_back(strdup(pUser->IdString()));
+    users.push_back(pUser->IdString());
     if (n == m_nMaxUsersPerPacket)
     {
       gUserManager.DropUser(pUser);
       CSrvPacketTcp *p = new CPU_ClearServerList(users, ICQ_ROSTxNORMAL);
       gLog.Info(tr("%sDeleting server list users (#%hu)...\n"), L_SRVxSTR, p->Sequence());
       SendEvent_Server(p);
-      users.erase(users.begin(), users.end());
+      users.clear();
       n = 0;
     }
   }
   FOR_EACH_PROTO_USER_END
-  
+
   if (n != 0)
   {
     CSrvPacketTcp *p = new CPU_ClearServerList(users, ICQ_ROSTxNORMAL);
     gLog.Info(tr("%sDeleting server list users (#%hu)...\n"), L_SRVxSTR, p->Sequence());
     SendEvent_Server(p);
   }
-  
+
   // Delete all the groups
 
-  
+
   // Delete invisible users
   n = 0;
-  users.erase(users.begin(), users.end());
-    
+  users.clear();
+
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
   {
     if (pUser->GetInvisibleSID())
     {
       n++;
-      users.push_back(strdup(pUser->IdString()));
+      users.push_back(pUser->IdString());
     }
-    
+
     if (n == m_nMaxUsersPerPacket)
     {
       gUserManager.DropUser(pUser);
@@ -1632,12 +1628,13 @@ void CICQDaemon::icqClearServerList()
       gLog.Info(tr("%sDeleting server list invisible list users (#%hu)...\n"),
         L_SRVxSTR, p->Sequence());
       SendEvent_Server(p);
-      users.erase(users.begin(), users.end());
+      users.clear();
       n = 0;
+      continue;
     }
   }
   FOR_EACH_PROTO_USER_END
-  
+
   if (n != 0)
   {
     CSrvPacketTcp *p = new CPU_ClearServerList(users, ICQ_ROSTxINVISIBLE);
@@ -1645,19 +1642,19 @@ void CICQDaemon::icqClearServerList()
       L_SRVxSTR, p->Sequence());
     SendEvent_Server(p);
   }
-  
+
   // Delete visible users
   n = 0;
-  users.erase(users.begin(), users.end());
-  
+  users.clear();
+
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_W)
   {
     if (pUser->GetVisibleSID())
     {
       n++;
-      users.push_back(strdup(pUser->IdString()));
+      users.push_back(pUser->IdString());
     }
-    
+
     if (n == m_nMaxUsersPerPacket)
     {
       gUserManager.DropUser(pUser);
@@ -1665,20 +1662,20 @@ void CICQDaemon::icqClearServerList()
       gLog.Info(tr("%sDeleting server list visible list users (#%hu)...\n"),
         L_SRVxSTR, p->Sequence());
       SendEvent_Server(p);
-      users.erase(users.begin(), users.end());
+      users.clear();
       n = 0;
+      continue;
     }
   }
   FOR_EACH_PROTO_USER_END
-  
+
   if (n != 0)
   {
     CSrvPacketTcp *p = new CPU_ClearServerList(users, ICQ_ROSTxVISIBLE);
     gLog.Info(tr("%sDeleting server list visible list users (#%hu)...\n"),
       L_SRVxSTR, p->Sequence());
     SendEvent_Server(p);
-  }  
-  
+  }
 }
 
 //-----icqSendThroughServer-----------------------------------------------------

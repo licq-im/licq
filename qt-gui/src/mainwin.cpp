@@ -22,6 +22,12 @@
 #include "config.h"
 #endif
 
+#include <cctype>
+#include <cstdio>
+#include <cstring>
+#include <list>
+#include <map>
+
 #ifdef USE_KDE
 #include <kapp.h>
 #include <kglobal.h>
@@ -135,10 +141,7 @@ extern "C" {
 
 }
 
-#include <map>
-#include <cctype>
-
-using std::isdigit;
+using namespace std;
 
 #undef Bool
 #undef None
@@ -4809,23 +4812,17 @@ void CMainWindow::slot_popupall()
     callOwnerFunction(OwnerMenuView);
   }
 
-  UserStringList users;
-  std::list<unsigned long> ppids;
+  list<pair<QString, unsigned long> > users;
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->NewMessages() > 0)
-    {
-      users.push_back(pUser->IdString());
-      ppids.push_back(pUser->PPID());
-    }
+      users.push_back(pair<QString, unsigned long>(pUser->IdString(), pUser->PPID()));
   }
   FOR_EACH_USER_END
 
-  for (UserStringList::iterator iter = users.begin(); iter != users.end(); iter++)
-  {
-    callDefaultFunction(*iter, ppids.front());
-    ppids.pop_front();
-  }
+  list<pair<QString, unsigned long> >::iterator iter;
+  for (iter = users.begin(); iter != users.end(); iter++)
+    callDefaultFunction(iter->first, iter->second);
 }
 
 

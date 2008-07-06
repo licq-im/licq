@@ -456,7 +456,7 @@ unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFile
 
 //-----CICQDaemon::sendContactList-------------------------------------------
 unsigned long CICQDaemon::icqSendContactList(const char *szId,
-   UserStringList &users, bool online, unsigned short nLevel,
+   const StringList& users, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
   if (gUserManager.FindOwner(szId, LICQ_PPID) != NULL) return 0;
@@ -466,13 +466,13 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
   ContactList vc;
 
   ICQUser *u = NULL;
-  UserStringList::iterator iter;
+  StringList::const_iterator iter;
   for (iter = users.begin(); iter != users.end(); ++iter)
   {
-    u = gUserManager.FetchUser(*iter, LICQ_PPID, LOCK_R);
-    p += sprintf(&m[p], "%s%c%s%c", *iter, char(0xFE),
+    u = gUserManager.FetchUser(iter->c_str(), LICQ_PPID, LOCK_R);
+    p += sprintf(&m[p], "%s%c%s%c", iter->c_str(), char(0xFE),
        u == NULL ? "" : u->GetAlias(), char(0xFE));
-    vc.push_back(new CContact(*iter, LICQ_PPID, u == NULL ? "" : u->GetAlias()));
+    vc.push_back(new CContact(iter->c_str(), LICQ_PPID, u == NULL ? "" : u->GetAlias()));
     gUserManager.DropUser(u);
   }
 
@@ -531,7 +531,7 @@ unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
    UinList &uins, bool online, unsigned short nLevel, bool bMultipleRecipients,
    CICQColor *pColor)
 {
-  UserStringList users;
+  StringList users;
   char szUin[24];
 
   UinList::iterator it;

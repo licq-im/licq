@@ -22,6 +22,7 @@
 
 #include "config.h"
 
+#include <list>
 #include <stdio.h> // for snprintf
 #include <unistd.h> // for getopt
 
@@ -117,9 +118,9 @@ extern "C"
 #include "systemmenu.h"
 #include "usermenu.h"
 
+using namespace std;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::LicqGui */
-
 
 #if defined(USE_SCRNSAVER)
 static XErrorHandler old_handler = 0;
@@ -1282,23 +1283,17 @@ void LicqGui::showAllEvents()
   if (numMsg > 0)
     showAllOwnerEvents();
 
-  UserStringList users;
-  std::list<unsigned long> ppids;
+  list<pair<QString, unsigned long> > users;
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->NewMessages() > 0)
-    {
-      users.push_back(pUser->IdString());
-      ppids.push_back(pUser->PPID());
-    }
+      users.push_back(pair<QString, unsigned long>(pUser->IdString(), pUser->PPID()));
   }
   FOR_EACH_USER_END
 
-  for (UserStringList::iterator iter = users.begin(); iter != users.end(); iter++)
-  {
-    showDefaultEventDialog(*iter, ppids.front());
-    ppids.pop_front();
-  }
+  list<pair<QString, unsigned long> >::iterator iter;
+  for (iter = users.begin(); iter != users.end(); iter++)
+    showDefaultEventDialog(iter->first, iter->second);
 }
 
 void LicqGui::toggleFloaty(QString id, unsigned long ppid)

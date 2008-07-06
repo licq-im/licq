@@ -2544,21 +2544,17 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventContactList* ue = (CEventContactList *) e->UserEvent();
       const ContactList& clist = ue->Contacts();
-      UserStringList users;
+      StringList users;
 
       // ContactList is const but string list holds "char*" so we have to copy each string
       for(ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
-        users.push_back(strdup((*i)->IdString()));
+        users.push_back((*i)->IdString());
 
       if(users.size() == 0)
         break;
 
       icqEventTag = server->icqSendContactList(m_lUsers.front().c_str(),
           users, bOnline, nLevel, false, &icqColor);
-
-      // Free the strings in the list
-      for (UserStringList::iterator i = users.begin(); i != users.end(); ++i)
-        free(*i);
 
       break;
     }
@@ -3393,9 +3389,9 @@ void UserSendContactEvent::sendButton()
   // Take care of typing notification now
   tmrSendTyping->stop();
   server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
-  
+
   CMMUserViewItem *i = static_cast<CMMUserViewItem*>(lstContacts->firstChild());
-  UserStringList users;
+  StringList users;
 
   while (i)
   {

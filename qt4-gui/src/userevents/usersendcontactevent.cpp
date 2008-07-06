@@ -131,7 +131,7 @@ void UserSendContactEvent::send()
   mySendTypingTimer->stop();
   gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
 
-  UserStringList users;
+  StringList users;
 
   QPair<QString, unsigned long> i;
   foreach (i, myContactsList->contacts())

@@ -112,10 +112,10 @@ int MMSendDlg::go_url(QString url, QString desc)
   return result();
 }
 
-int MMSendDlg::go_contact(UserStringList& _users)
+int MMSendDlg::go_contact(StringList& users)
 {
   m_nEventType = ICQ_CMDxSUB_CONTACTxLIST;
-  users = &_users;
+  myUsers = &users;
 
   setWindowTitle(tr("Multiple Recipient Contact List"));
 
@@ -257,7 +257,7 @@ void MMSendDlg::SendNext()
       gUserManager.DropUser(u);
 
       icqEventTag = gLicqDaemon->icqSendContactList(
-          myId.toLatin1(), *users, false, ICQ_TCPxMSG_NORMAL);
+          myId.toLatin1(), *myUsers, false, ICQ_TCPxMSG_NORMAL);
       break;
     }
   }

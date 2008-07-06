@@ -240,7 +240,6 @@ typedef std::set<unsigned short> UserGroupList;
 typedef std::map<unsigned short, LicqGroup*> GroupMap;
 typedef std::map<unsigned short, std::string> GroupNameMap;
 typedef std::list<unsigned long> UinList;
-typedef std::list<char *> UserStringList;
 typedef std::vector <class CUserEvent *> UserEventList;
 
 // Cheap hack as I'm too lazy to move the relevant functions to user.cpp

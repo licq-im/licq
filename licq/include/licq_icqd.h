@@ -60,6 +60,8 @@ class CMSN;
       }                                                            \
     }
 
+typedef std::list<std::string> StringList;
+
 /* Forward declarations for friend functions */
 void *Ping_tep(void *p);
 void *UpdateUsers_tep(void *p);
@@ -347,7 +349,7 @@ public:
      const char *szDescription, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
   // Contact List
-  unsigned long icqSendContactList(const char *szId, UserStringList &users,
+  unsigned long icqSendContactList(const char *szId, const StringList& users,
      bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
 
@@ -466,7 +468,7 @@ public:
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
   void icqRenameUser(const char *_szId);
-  void icqExportUsers(UserStringList &, unsigned short);
+  void icqExportUsers(const StringList& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
   void icqUpdateServerGroups();
   void icqUpdatePhoneBookTimestamp();

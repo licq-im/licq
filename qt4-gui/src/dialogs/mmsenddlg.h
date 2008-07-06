@@ -25,7 +25,7 @@
 #include <QDialog>
 #include <QString>
 
-#include <licq_user.h>
+#include <licq_icqd.h>
 
 class QGroupBox;
 class QProgressBar;
@@ -46,11 +46,11 @@ public:
 
   int go_message(QString);
   int go_url(QString, QString);
-  int go_contact(UserStringList& _users);
+  int go_contact(StringList& users);
 
 private:
   QString s1, s2;
-  UserStringList* users;
+  StringList* myUsers;
 
   unsigned long m_nEventType;
   QGroupBox* grpSending;

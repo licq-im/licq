@@ -103,10 +103,10 @@ int CMMSendDlg::go_url(QString url, QString desc)
 }
 
 
-int CMMSendDlg::go_contact(UserStringList &_users)
+int CMMSendDlg::go_contact(StringList& users)
 {
   m_nEventType = ICQ_CMDxSUB_CONTACTxLIST;
-  users = &_users;
+  myUsers = &users;
 
   setCaption(tr("Multiple Recipient Contact List"));
 
@@ -256,7 +256,7 @@ void CMMSendDlg::SendNext()
       grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
       gUserManager.DropUser(u);
 
-      icqEventTag = server->icqSendContactList(m_szId, *users, false,
+      icqEventTag = server->icqSendContactList(m_szId, *myUsers, false,
         ICQ_TCPxMSG_NORMAL);
       break;
     }
