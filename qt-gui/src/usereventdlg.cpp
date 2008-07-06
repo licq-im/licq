@@ -2430,20 +2430,22 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     gUserManager.DropUser(u);
     return;
   }*/
-  else
+
+  emit autoCloseNotify();
+  if (sendDone(e))
   {
-    emit autoCloseNotify();
-    if (sendDone(e))
+    emit mainwin->signal_sentevent(e);
+    if (mainwin->m_bMsgChatView && mleHistory != NULL)
     {
-      emit mainwin->signal_sentevent(e);
-      if (mainwin->m_bMsgChatView && mleHistory != NULL)
-      {
-        mleHistory->GotoEnd();
-        resetSettings();
-      }
-      else
-        close();
+      mleHistory->GotoEnd();
+      resetSettings();
+
+      // After sending URI/File/Contact/ChatRequest switch back to text message
+      if (!isType(UC_MESSAGE))
+        changeEventType(UC_MESSAGE);
     }
+    else
+      close();
   }
 }
 

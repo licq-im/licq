@@ -1188,20 +1188,22 @@ void UserSendCommon::eventDoneReceived(ICQEvent* e)
     }
     return;
   }
-  else
+
+  emit autoCloseNotify();
+  if (sendDone(e))
   {
-    emit autoCloseNotify();
-    if (sendDone(e))
+    emit eventSent(e);
+    if (Config::Chat::instance()->msgChatView() && myHistoryView != NULL)
     {
-      emit eventSent(e);
-      if (Config::Chat::instance()->msgChatView() && myHistoryView != NULL)
-      {
-        myHistoryView->GotoEnd();
-        resetSettings();
-      }
-      else
-        close();
+      myHistoryView->GotoEnd();
+      resetSettings();
+
+      // After sending URI/File/Contact/ChatRequest switch back to text message
+      if (myType != MessageEvent)
+        changeEventType(MessageEvent);
     }
+    else
+      close();
   }
 }
 
