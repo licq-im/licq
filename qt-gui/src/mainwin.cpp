@@ -621,6 +621,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   pluginDlg = NULL;
   userEventTabDlg = NULL;
   m_nRealHeight = hVal;
+  m_bInMiniMode = false;
 
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
@@ -777,7 +778,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    connect (licqSigMan, SIGNAL(signal_convoLeave(const char *, unsigned long, unsigned long)),
             this, SLOT(slot_convoLeave(const char *, unsigned long, unsigned long)));
                         
-   m_bInMiniMode = false;
    updateStatus();
    updateEvents();
    updateGroups();
