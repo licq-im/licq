@@ -69,6 +69,7 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
   BUTTON(btnDown, tr("Shift Down"), slot_down);
   BUTTON(btnEdit, tr("Edit Name"), slot_edit);
 #undef BUTTON
+  vlay->addStretch(1);
 
   btnEdit->setToolTip(tr("Edit group name (hit enter to save)."));
 
