@@ -3223,7 +3223,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         {
           gLog.Info(tr("%sMessage from new user (%s).\n"),
                     L_SBLANKxSTR, szId);
-          AddUserToList(szId, LICQ_PPID);
+          AddUserToList(szId, LICQ_PPID, false, true);
           u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
         }
       }
@@ -3821,7 +3821,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         }
 
 	      gLog.Info(tr("%s%s from new user (%s).\n"), L_SBLANKxSTR, szType, szId);
-	      AddUserToList(szId, LICQ_PPID);
+	      AddUserToList(szId, LICQ_PPID, false, true);
 	      u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
 	    }
 	    else
@@ -5056,7 +5056,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                     break;
                   }
                   gLog.Info(tr("%sOffline %s from new user (%s).\n"), L_SBLANKxSTR, szType, id);
-                  AddUserToList(id, LICQ_PPID);
+                  AddUserToList(id, LICQ_PPID, false, true);
                   u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
                 }
                 else

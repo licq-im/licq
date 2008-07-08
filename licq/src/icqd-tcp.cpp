@@ -2000,7 +2000,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
             break;
           }
-          AddUserToList(u);
+          AddUserToList(u->IdString(), u->PPID(), false, true);
           bNewUser = false;
         }
 
@@ -2103,7 +2103,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
             break;
           }
-          AddUserToList(u);
+          AddUserToList(u->IdString(), u->PPID(), false, true);
           bNewUser = false;
         }
 
@@ -2173,7 +2173,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
             break;
           }
-          AddUserToList(u);
+          AddUserToList(u->IdString(), u->PPID(), false, true);
           bNewUser = false;
         }
 
@@ -2222,7 +2222,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
             break;
           }
-          AddUserToList(u);
+          AddUserToList(u->IdString(), u->PPID(), false, true);
           bNewUser = false;
         }
 
@@ -2279,7 +2279,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
             break;
           }
-          AddUserToList(u);
+          AddUserToList(u->IdString(), u->PPID(), false, true);
           bNewUser = false;
         }
 
@@ -2360,7 +2360,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   RejectEvent(id, e);
 							break;
 						}
-						AddUserToList(u);
+						AddUserToList(u->IdString(), u->PPID(), false, true);
 						bNewUser = false;
 					}
 
@@ -2392,7 +2392,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   RejectEvent(id, e);
 							break;
 						}
-						AddUserToList(u);
+						AddUserToList(u->IdString(), u->PPID(), false, true);
 						bNewUser = false;
 					}
 
@@ -2422,7 +2422,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   RejectEvent(id, e);
 							break;
 						}
-						AddUserToList(u);
+						AddUserToList(u->IdString(), u->PPID(), false, true);
 						bNewUser = false;
 					}
 
@@ -2454,7 +2454,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   RejectEvent(id, e);
 							break;
 						}
-						AddUserToList(u);
+						AddUserToList(u->IdString(), u->PPID(), false, true);
 						bNewUser = false;
 					}
 
@@ -2516,7 +2516,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
             break;
-          AddUserToList(u);
+          AddUserToList(u->IdString(), u->PPID(), false, true);
           bNewUser = false;
         }
 
