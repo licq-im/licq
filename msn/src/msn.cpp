@@ -20,28 +20,30 @@
 #include "config.h"
 #endif
 
-#include "msn.h"
-#include "msnpacket.h"
+#include <cctype>
+#include <cstdio>
+#include <list>
+#include <openssl/md5.h>
+#include <pthread.h>
+#include <sys/select.h>
+#include <sys/time.h>
+#include <sys/types.h>
+#include <string>
+#include <unistd.h>
+#include <vector>
+
 #include "licq_log.h"
 #include "licq_message.h"
 
-#include <openssl/md5.h>
-
-#include <string>
-#include <list>
-#include <vector>
+#include "msn.h"
+#include "msnpacket.h"
 
 using namespace std;
 
 #ifndef HAVE_STRNDUP
 
-#include <stdlib.h>
-#include <pthread.h>
-
-#include <sys/select.h>
-#include <sys/time.h>
-#include <sys/types.h>
-#include <unistd.h>
+#include <cstdlib>
+#include <cstring>
 
 char *strndup(const char *s, size_t n)
 {
@@ -141,7 +143,7 @@ void CMSN::StorePacket(SBuffer *_pBuf, int _nSock)
   }
 }
 
-void CMSN::RemovePacket(string _strUser, int _nSock, int nSize)
+void CMSN::RemovePacket(const string& _strUser, int _nSock, int nSize)
 {
   pthread_mutex_lock(&mutex_Bucket);
   BufferList &b = m_vlPacketBucket[HashValue(_nSock)];

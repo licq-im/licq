@@ -23,6 +23,11 @@
 #include "config.h"
 #endif
 
+#include <list>
+#include <pthread.h>
+#include <string>
+#include <vector>
+
 #include "licq_events.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
@@ -46,16 +51,6 @@ const unsigned short FLAG_REVERSE_LIST = 8;
 char *strndup(const char *s, size_t n);
 #endif
 
-#include <string>
-#include <list>
-#include <vector>
-#include <cctype>
-#include <pthread.h>
-
-using std::string;
-using std::list;
-using std::vector;
-using std::isalnum;
 
   const unsigned long MSN_DP_EVENT = 1;
 
@@ -65,11 +60,11 @@ class CMSNDataEvent;
 struct SBuffer
 {
   CMSNBuffer *m_pBuf;
-  string m_strUser;
+  std::string m_strUser;
   bool m_bStored;
 };
 
-typedef list<SBuffer *> BufferList;
+typedef std::list<SBuffer *> BufferList;
 
 struct SStartMessage
 {
@@ -82,7 +77,7 @@ struct SStartMessage
        m_bDataConnection;
 };
 
-typedef list<SStartMessage *> StartList;
+typedef std::list<SStartMessage*> StartList;
 
 class CMSN
 {
@@ -91,13 +86,13 @@ public:
   ~CMSN();
 
   void Run();
-  
+
   void MSNPing();
   bool Connected() { return m_nServerSocket != -1; }
   bool CanSendPing() { return m_bCanPing; }
   void MSNLogoff(bool = false);
   void MSNLogon(const char *, int);
- 
+
   bool WaitingPingReply()          { return m_bWaitingPingReply; }
   void SetWaitingPingReply(bool b) { m_bWaitingPingReply = b; }
 
@@ -110,16 +105,18 @@ private:
   void ProcessNexusPacket(CMSNBuffer &);
   void ProcessSSLServerPacket(CMSNBuffer &);
   void ProcessSBPacket(char *, CMSNBuffer *, int);
-  
+
   // Network functions
   void SendPacket(CMSNPacket *);
-  void Send_SB_Packet(string &, CMSNPacket *, int = -1, bool = true);
+  void Send_SB_Packet(const std::string& user, CMSNPacket* p, int nSocket = -1,
+      bool bDelete = true);
   void MSNLogon(const char *, int, unsigned long);
   void MSNGetServer();
-  void MSNAuthenticateRedirect(string &, string &);
+  void MSNAuthenticateRedirect(const std::string& host, const std::string& param);
   void MSNAuthenticate(char *);
-  bool MSNSBConnectStart(string &, string &);
-  bool MSNSBConnectAnswer(string &, string &, string &, string &);
+  bool MSNSBConnectStart(const std::string& server, const std::string& cookie);
+  bool MSNSBConnectAnswer(const std::string& server, const std::string& sessionId,
+      const std::string& cookie, const std::string& user);
 
   void MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket);
   void MSNSendMessage(const char* _szUser, const char* _szMsg,
@@ -133,22 +130,22 @@ private:
   void MSNUpdateUser(const char* szUser);
   void MSNBlockUser(const char* szUser);
   void MSNUnblockUser(const char* szUser);
-  void MSNGetDisplayPicture(const string &, const string &);
+  void MSNGetDisplayPicture(const std::string& user, const std::string& msnObject);
 
   // Internal functions
   int HashValue(int n) { return n % 211; }
   void StorePacket(SBuffer *, int);
-  void RemovePacket(string, int, int = 0);
-  SBuffer *RetrievePacket(const string &, int);
+  void RemovePacket(const std::string& user, int socketId, int size = 0);
+  SBuffer *RetrievePacket(const std::string& user, int socketId);
   ICQEvent *RetrieveEvent(unsigned long);
   void HandlePacket(int, CMSNBuffer &, const char *);
   unsigned long SocketToCID(int);
-  static string Decode(const string &);
-  static string Encode(const string &);
+  static std::string Decode(const std::string& strIn);
+  static std::string Encode(const std::string& strIn);
   void WaitDataEvent(CMSNDataEvent *);
   bool RemoveDataEvent(CMSNDataEvent *);
-  CMSNDataEvent *FetchDataEvent(const string &, int);
-  CMSNDataEvent *FetchStartDataEvent(const string &);
+  CMSNDataEvent* FetchDataEvent(const std::string& user, int socketId);
+  CMSNDataEvent* FetchStartDataEvent(const std::string& user);
 
   // Interface to CICQDaemon
   void PushPluginSignal(CICQSignal *);
@@ -166,9 +163,9 @@ private:
   CMSNBuffer *m_pPacketBuf,
              *m_pNexusBuff,
              *m_pSSLPacket;
-  vector<BufferList> m_vlPacketBucket;
-  list<ICQEvent *> m_pEvents;
-  list<CMSNDataEvent *> m_lMSNEvents;
+  std::vector<BufferList> m_vlPacketBucket;
+  std::list<ICQEvent*> m_pEvents;
+  std::list<CMSNDataEvent*> m_lMSNEvents;
   StartList m_lStart;
   bool m_bWaitingPingReply,
        m_bCanPing;
@@ -177,7 +174,7 @@ private:
   unsigned long m_nStatus,
                 m_nOldStatus,
                 m_nSessionStart;
-  string m_strMSPAuth,
+  std::string m_strMSPAuth,
          m_strSID,
          m_strKV;
          

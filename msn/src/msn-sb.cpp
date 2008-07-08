@@ -375,9 +375,9 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
   //delete packet;
 }
 
-void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, int nSocket, bool bDelete)
+void CMSN::Send_SB_Packet(const string &strUser, CMSNPacket *p, int nSocket, bool bDelete)
 {
-  ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_R);
+  ICQUser* u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
   if (!u) return;
 
   int nSock = nSocket != -1 ? nSocket : u->SocketDesc(ICQ_CHNxNONE);
@@ -397,7 +397,7 @@ void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, int nSocket, bool bDel
     m_pDaemon->RemoveUserConversation(nSock, strUser.c_str());
     CConversation *pConv = m_pDaemon->FindConversation(nSock);
 
-    ICQUser *u = gUserManager.FetchUser(const_cast<char *>(strUser.c_str()), MSN_PPID, LOCK_W);
+    ICQUser* u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
     if (u)
     {
       u->ClearSocketDesc(ICQ_CHNxNONE);
@@ -423,7 +423,7 @@ void CMSN::Send_SB_Packet(string &strUser, CMSNPacket *p, int nSocket, bool bDel
     delete p;
 }
 
-bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
+bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
 {
   const char *szParam = strServer.c_str();
   char szServer[16];
@@ -485,8 +485,8 @@ bool CMSN::MSNSBConnectStart(string &strServer, string &strCookie)
   return true;
 }
 
-bool CMSN::MSNSBConnectAnswer(string &strServer, string &strSessionId, string &strCookie,
-                              string &strUser)
+bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionId,
+    const string& strCookie, const string& strUser)
 {
   const char *szParam = strServer.c_str();
   char szServer[16];

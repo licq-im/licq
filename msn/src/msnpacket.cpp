@@ -17,11 +17,16 @@
 // written by Jon Keating <jon@licq.org>
 
 #include "msnpacket.h"
+
+#include <cctype>
+#include <cstdio>
+#include <cstring>
+#include <string>
+#include <openssl/md5.h>
+
 #include "msn_constants.h"
 
-#include <string>
-#include <stdio.h>
-#include <openssl/md5.h>
+using namespace std;
 
 static inline bool is_base64(unsigned char c)
 {

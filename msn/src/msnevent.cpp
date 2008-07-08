@@ -9,6 +9,8 @@
 #include <fcntl.h>
 #include <unistd.h>
 
+using namespace std;
+
 CMSNDataEvent::CMSNDataEvent(CMSN *p)
 {
   m_pMSN = p;

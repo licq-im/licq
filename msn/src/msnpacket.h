@@ -19,18 +19,15 @@
 #ifndef __MSNPACKET_H
 #define __MSNPACKET_H
 
+#include <cstdlib>
+#include <pthread.h>
+#include <string>
+
 #include "licq_packets.h"
 
 #include "msnbuffer.h"
 
-#include <pthread.h>
-#include <stdlib.h>
-
-#include <string>
-
-using std::string;
-
-static const string base64_chars = 
+static const std::string base64_chars =
              "ABCDEFGHIJKLMNOPQRSTUVWXYZ"
              "abcdefghijklmnopqrstuvwxyz"
              "0123456789+/";

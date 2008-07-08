@@ -1,6 +1,8 @@
 #ifndef __MSNDATAEVENT_H
 #define __MSNDATAEVENT_H
 
+#include <string>
+
 #include "msnpacket.h"
 
 enum ESTATE
@@ -16,14 +18,15 @@ class CMSNDataEvent
 {
 public:
   CMSNDataEvent(CMSN *);
-  CMSNDataEvent(unsigned long, unsigned long, unsigned long, const string &,
-		const string &, const string &, CMSN *);
+  CMSNDataEvent(unsigned long event, unsigned long sessionId,
+      unsigned long baseId, const std::string& id, const std::string& fromId,
+      const std::string& callId, CMSN* p);
   ~CMSNDataEvent();
 
   int ProcessPacket(CMSNBuffer *);
 
   int getSocket() { return m_nSocketDesc; }
-  string getUser() { return m_strId; }
+  std::string getUser() const { return m_strId; }
   unsigned long getSessionId() { return m_nSessionId; }
   unsigned long getBaseId() { return m_nBaseId; }
 
@@ -35,12 +38,12 @@ protected:
 
   int m_nSocketDesc;
   unsigned long m_nEvent;
-  string m_strId,
+  std::string m_strId,
          m_strFromId,
          m_strCallId;
   ESTATE m_eState;
   int m_nFileDesc;
-  string m_strFileName;
+  std::string m_strFileName;
   unsigned long m_nFilePos,
     m_nBytesTransferred;
   time_t m_nStartTime;

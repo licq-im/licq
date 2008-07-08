@@ -20,6 +20,8 @@
 #include <cstring>
 #include "msnbuffer.h"
 
+using namespace std;
+
 CMSNBuffer::CMSNBuffer(CMSNBuffer &b)
 {
   m_nDataSize = b.getDataMaxSize();
@@ -123,7 +125,7 @@ bool CMSNBuffer::ParseHeaders()
   return true;
 }
 
-string CMSNBuffer::GetValue(string strKey)
+string CMSNBuffer::GetValue(const string& strKey)
 {
   string strReturn = "";
   list<SHeader *>::iterator it;
@@ -138,7 +140,7 @@ string CMSNBuffer::GetValue(string strKey)
   return strReturn;
 }
 
-bool CMSNBuffer::HasHeader(string strKey)
+bool CMSNBuffer::HasHeader(const string& strKey)
 {
   list<SHeader *>::iterator it;
   for (it = m_lHeader.begin(); it != m_lHeader.end(); it++)
