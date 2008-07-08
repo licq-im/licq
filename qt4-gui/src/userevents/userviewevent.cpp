@@ -576,6 +576,35 @@ void UserViewEvent::read4()
     case ICQ_CMDxSUB_URL:   // view a url
       LicqGui::instance()->viewUrl(dynamic_cast<CEventUrl*>(myCurrentEvent)->Url());
       break;
+
+    case ICQ_CMDxSUB_AUTHxREQUEST: // Fall through
+    case ICQ_CMDxSUB_AUTHxGRANTED:
+    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+    {
+      const char* id;
+      unsigned long ppid;
+#define GETINFO(sub, type) \
+      if (myCurrentEvent->SubCommand() == sub) \
+      { \
+        type* p = dynamic_cast<type*>(myCurrentEvent); \
+        id = p->IdString(); \
+        ppid = p->PPID(); \
+      }
+
+      GETINFO(ICQ_CMDxSUB_AUTHxREQUEST, CEventAuthRequest);
+      GETINFO(ICQ_CMDxSUB_AUTHxGRANTED, CEventAuthGranted);
+      GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, CEventAdded);
+#undef GETINFO
+
+      ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
+      if (u == NULL)
+        gLicqDaemon->AddUserToList(id, ppid, false, true);
+      else
+        gUserManager.DropUser(u);
+
+      LicqGui::instance()->showInfoDialog(mnuUserGeneral, id, ppid, false, true);
+      break;
+    }
   } // switch
 }
 
@@ -712,6 +741,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
           myRead3Button->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
+        myRead4Button->setText(tr("&View Info"));
         break;
       }
 
@@ -723,6 +753,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
           myRead1Button->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
+        myRead4Button->setText(tr("&View Info"));
         break;
       }
 
@@ -734,6 +765,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
           myRead1Button->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
+        myRead4Button->setText(tr("&View Info"));
         break;
       }
 
