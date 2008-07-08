@@ -1022,6 +1022,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
           btnRead3->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
+        btnRead4->setText(tr("&View Info"));
         break;
       }
       case ICQ_CMDxSUB_AUTHxGRANTED:
@@ -1032,6 +1033,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
           btnRead1->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
+        btnRead4->setText(tr("&View Info"));
         break;
       }
       case ICQ_CMDxSUB_ADDEDxTOxLIST:
@@ -1042,6 +1044,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
           btnRead1->setText(tr("A&dd User"));
         else
           gUserManager.DropUser(u);
+        btnRead4->setText(tr("&View Info"));
         break;
       }
       case ICQ_CMDxSUB_CONTACTxLIST:
@@ -1406,6 +1409,38 @@ void UserViewEvent::slot_btnRead4()
     case ICQ_CMDxSUB_URL:   // view a url
       emit viewurl(this, ((CEventUrl *)m_xCurrentReadEvent)->Url());
       break;
+
+    case ICQ_CMDxSUB_AUTHxREQUEST: // Fall through
+    case ICQ_CMDxSUB_AUTHxGRANTED:
+    case ICQ_CMDxSUB_ADDEDxTOxLIST:
+    {
+      const char* id = NULL;
+      unsigned long ppid = 0;
+#define GETINFO(sub, type) \
+      if (m_xCurrentReadEvent->SubCommand() == sub) \
+      { \
+        type* p = dynamic_cast<type*>(m_xCurrentReadEvent); \
+        id = p->IdString(); \
+        ppid = p->PPID(); \
+      }
+
+      GETINFO(ICQ_CMDxSUB_AUTHxREQUEST, CEventAuthRequest);
+      GETINFO(ICQ_CMDxSUB_AUTHxGRANTED, CEventAuthGranted);
+      GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, CEventAdded);
+#undef GETINFO
+
+      if (id == NULL || ppid == 0)
+        break;
+
+      ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
+      if (u == NULL)
+        gLicqDaemon->AddUserToList(id, ppid, false, true);
+      else
+        gUserManager.DropUser(u);
+
+      mainwin->callInfoTab(mnuUserGeneral, id, ppid, false, true);
+      break;
+    }
   }
 }
 
