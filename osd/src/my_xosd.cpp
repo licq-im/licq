@@ -3,12 +3,15 @@
 // 4 March 2003
 
 #include "my_xosd.h"
-#include <string>
-#include <unistd.h>
+
 #include <iostream>
 #include <libintl.h>
 #include <sstream>
+#include <string>
+#include <unistd.h>
 #define _(String) gettext (String)
+
+using namespace std;
 
 extern void log(int mode, const char *message);
 

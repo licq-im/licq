@@ -2,6 +2,8 @@
 #include "config.h"
 #endif
 
+#include "rms.h"
+
 #include <cctype>
 #include <climits>
 #include <cstdio>
@@ -16,13 +18,14 @@
 extern int errno;
 #endif
 
-#include "rms.h"
-#include "licq_log.h"
-#include "licq_icqd.h"
-#include "licq_file.h"
-#include "licq_socket.h"
-#include "licq_user.h"
-#include "licq_constants.h"
+#include <licq_constants.h>
+#include <licq_icqd.h>
+#include <licq_file.h>
+#include <licq_log.h>
+#include <licq_socket.h>
+#include <licq_user.h>
+
+using namespace std;
 
 extern "C" { const char *LP_Version(); }
 

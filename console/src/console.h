@@ -5,13 +5,17 @@
 #include "config.h"
 #endif
 
-#include "licq_icqd.h"
-#include "licq_log.h"
-#include "window.h"
-#include "licq_user.h"
-
+#include <list>
 #include <string>
-using namespace std;
+#include <vector>
+
+#include <licq_icqd.h>
+#include <licq_log.h>
+#include <licq_user.h>
+
+#include "window.h"
+
+class CFileTransferManager;
 
 #define MAX_CON 8
 #define MAX_CMD_HISTORY 100
@@ -53,7 +57,7 @@ struct SMacro
   char szMacro[32];
   char szCommand[128];
 };
-typedef list<SMacro *> MacroList;
+typedef std::list<SMacro*> MacroList;
 
 
 class CLicqConsole
@@ -68,9 +72,9 @@ protected:
   int m_nPipe;
   bool m_bExit;
   fd_set fdSet;
-  list <SUser *> m_lUsers;
-  list <SScrollUser *> m_lScrollUsers;
-		  
+  std::list<SUser*> m_lUsers;
+  std::list<SScrollUser*> m_lScrollUsers;
+
   // Set'able variables
   bool m_bShowOffline, m_bShowDividers;
   unsigned short m_nColorOnline, m_nColorOffline, m_nColorAway, m_nColorNew,
@@ -87,9 +91,9 @@ protected:
 
   unsigned short m_nCurrentGroup, m_nCon;
   GroupType m_nGroupType;
-  list<char *> m_lCmdHistory;
-  list<char *>::iterator m_lCmdHistoryIter;
-  list<CFileTransferManager *> m_lFileStat;
+  std::list<char*> m_lCmdHistory;
+  std::list<char*>::iterator m_lCmdHistoryIter;
+  std::list<CFileTransferManager*> m_lFileStat;
   MacroList listMacros;
 
   CICQDaemon *licqDaemon;
@@ -217,7 +221,7 @@ public:
 
 struct STabCompletion
 {
-  vector <char *> vszPartialMatch;
+  std::vector<char*> vszPartialMatch;
   char *szPartialMatch;
 };
 

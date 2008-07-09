@@ -5,17 +5,16 @@
 #ifndef my_xosd_h
 #define my_xosd_h
 
-#include <xosd.h>
 #include <string>
 
-using namespace std;
+#include <xosd.h>
 
-int my_xosd_init(string font, // font which should be used (in xfontsel form)
-		 string colour, // colour of OSD (as in Xfree86's rgb.txt)
+int my_xosd_init(std::string font, // font which should be used (in xfontsel form)
+    std::string colour, // colour of OSD (as in Xfree86's rgb.txt)
 		 unsigned long hoffset, // offset from left/right of screen
 		 unsigned long voffset, // offset from top/bottom of screen
-		 string vpos, // vertical position = top, bottom
-                 string hpos, // horizontal position = left, right
+    std::string vpos, // vertical position = top, bottom
+    std::string hpos, // horizontal position = left, right
 		 unsigned long timeout, // how long to display a message
                  unsigned long delaypercharacter,
 		 unsigned long lines, // how many lines to display
@@ -23,8 +22,8 @@ int my_xosd_init(string font, // font which should be used (in xfontsel form)
 		 bool wait, // when a message arrives before timeout has passed - should we wait ?
          unsigned long shadowoffset,
          unsigned long outlineoffset,
-	 string shadowcolour,
-	 string outlinecolour
+    std::string shadowcolour,
+    std::string outlinecolour
 		);
 int my_xosd_exit();
 
@@ -34,7 +33,7 @@ int my_xosd_settimeout(unsigned long timeout);
 // otherwise username is prepended on first line, and further lines are
 // intended - that only works correctly if the chosen font is
 // fixed width
-int my_xosd_display(string username, string message, string colour = "");
+int my_xosd_display(std::string username, std::string message, std::string colour = "");
 
 // Maximum length of each line in OSD
 #define LINELEN 60

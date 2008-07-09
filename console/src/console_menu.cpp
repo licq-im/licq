@@ -1,10 +1,11 @@
 #include "console.h"
-#include "event_data.h"
 
-#include <ctype.h>
+#include <cctype>
 #include <string>
 
-using std::string;
+#include "event_data.h"
+
+using namespace std;
 
 const unsigned short NUM_COMMANDS = 24;
 const struct SCommand aCommands[NUM_COMMANDS] =

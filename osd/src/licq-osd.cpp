@@ -2,25 +2,28 @@
 // author: Martin Maurer (martinmaurer@gmx.at)
 // first version 7 Apr 2003
 
+#include <cerrno>
+#include <cstdio>
+#include <cstring>
+#include <ctime>
+#include <iconv.h>
+#include <iostream>
+#include <langinfo.h>
+#include <libintl.h>
+#include <locale.h>
+#include <unistd.h>
+
 #include <licq_plugin.h>
 #include <licq_icqd.h>
 #include <licq_events.h>
 #include <licq_file.h>
 #include <licq_log.h>
-#include <time.h>
-#include <unistd.h>
-#include <iostream>
-#include <iconv.h>
-#include <errno.h>
-#include <locale.h>
-#include <langinfo.h>
-#include <cstdio>
-#include <cstring>
-#include <libintl.h>
 
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
-                                 
+
+using namespace std;
+
 //#if CVSLICQ==1
 //#warning compiling for licq>=1.2.8
 //#else

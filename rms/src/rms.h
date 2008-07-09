@@ -5,9 +5,9 @@
 #include "config.h"
 #endif
 
-#include "licq_socket.h"
-
 #include <list>
+
+#include <licq_socket.h>
 
 class CICQDaemon;
 class TCPSocket;
@@ -17,13 +17,11 @@ class CICQSignal;
 class ICQEvent;
 class CLogService_Plugin;
 
-using namespace std;
-
 const unsigned short MAX_LINE_LENGTH = 1024 * 1;
 const unsigned short MAX_TEXT_LENGTH = 1024 * 8;
 
-typedef list<class CRMSClient *> ClientList;
-typedef list<unsigned long> TagList;
+typedef std::list<class CRMSClient*> ClientList;
+typedef std::list<unsigned long> TagList;
 
 class CLicqRMS
 {

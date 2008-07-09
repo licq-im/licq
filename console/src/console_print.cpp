@@ -1,10 +1,13 @@
 #include "console.h"
-#include "licq_countrycodes.h"
-#include "licq_languagecodes.h"
-#include "licq_filetransfer.h"
 
-#include <string.h>
-#include <time.h>
+#include <cstring>
+#include <ctime>
+
+#include <licq_countrycodes.h>
+#include <licq_languagecodes.h>
+#include <licq_filetransfer.h>
+
+using namespace std;
 
 //======Utilities============================================================
 char *EncodeFileSize(unsigned long nSize)

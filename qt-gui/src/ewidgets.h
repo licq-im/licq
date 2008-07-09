@@ -20,6 +20,8 @@
 #ifndef EWIDGETS_H
 #define EWIDGETS_H
 
+#include <list>
+
 #include <qlabel.h>
 #include <qpushbutton.h>
 #include <qpopupmenu.h>
@@ -35,12 +37,9 @@
 #include <qstringlist.h>
 #include <qspinbox.h>
 
+#include <licq_message.h>
+
 #include "mlview.h"
-#include "licq_message.h"
-
-#include <list>
-
-using std::list;
 
 class CUserEvent;
 class ICQEvent;
@@ -77,7 +76,7 @@ protected:
   bool m_bTransparent;
   QPopupMenu *mnuPopUp;
   QPixmap addPix;
-  list<QPixmap> m_lPixmaps;
+  std::list<QPixmap> m_lPixmaps;
   int addIndent,
       startingIndent;
 signals:

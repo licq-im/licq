@@ -24,6 +24,8 @@
 #include "config.h"
 #endif
 
+#include <vector>
+
 #ifdef USE_KDE
 #include <kmenubar.h>
 #else
@@ -36,13 +38,13 @@
 #include <qbitmap.h>
 #include <qdialog.h>
 #include <qvaluelist.h>
-#include <vector>
 
-#include "userbox.h"
-#include "licq_user.h"
-#include "licqdialog.h"
+#include <licq_user.h>
+
 #include "gui-defines.h"
+#include "licqdialog.h"
 #include "support.h"
+#include "userbox.h"
 
 class QStyle;
 
@@ -78,8 +80,6 @@ class LicqKIMIface;
 typedef QPtrList<UserViewEvent> UserViewEventList;
 typedef QPtrList<UserInfoDlg> UserInfoList;
 typedef QPtrList<UserSendCommon> UserSendEventList;
-
-using std::vector;
 
 //=====CMainWindow==============================================================
 class CMainWindow : public QWidget
@@ -265,8 +265,8 @@ public:
   int m_nProtoNum;
   char *m_szUserMenuId;
   unsigned long m_nUserMenuPPID;
-  vector<unsigned long> m_lnProtMenu;
-  
+  std::vector<unsigned long> m_lnProtMenu;
+
   // AutoAway
   QTimer autoAwayTimer;
   unsigned short autoAwayTime,
