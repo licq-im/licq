@@ -4201,6 +4201,10 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
 
             CUserProperties* data = iter->second;
 
+            TLVList list = packet.getTLVList();
+            for (TLVListIter it = list.begin(); it != list.end(); it++)
+              data->tlvs[it->first] = it->second;
+
 #define COPYTLV(type, var) \
             if (packet.hasTLV(type)) \
               data->var.reset(packet.UnpackStringTLV(type))
@@ -6373,6 +6377,10 @@ void CICQDaemon::ProcessUserList()
     if (u == NULL)
       continue;
 
+    // For now, just save all the TLVs. We should change this to have awaiting auth check
+    // for the 0x0066 TLV, SMS number if it has the 0x013A TLV, etc
+    u->SetTLVList(data->tlvs);
+
     if (data->newAlias != NULL)
       u->SetAlias(data->newAlias.get());
 
@@ -6402,15 +6410,6 @@ void CICQDaemon::ProcessUserList()
         u->SetCellularNumber(tmp);
         delete[] tmp;
       }
-    }
-
-    // For now, just save all the TLVs. We should change this to have awaiting auth check
-    // for the 0x0066 TLV, SMS number if it has the 0x013A TLV, etc
-    TLVListIter tlvIter;
-    for (tlvIter = data->tlvs.begin(); tlvIter != data->tlvs.end(); tlvIter++)
-    {
-      TLVPtr tlv = tlvIter->second;
-      u->AddTLV(tlv);
     }
 
     // Save GSID, SID and group memberships

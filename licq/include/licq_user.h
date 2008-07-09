@@ -895,6 +895,7 @@ public:
   // User TLV List handling
   void AddTLV(TLVPtr);
   void RemoveTLV(unsigned long);
+  void SetTLVList(TLVList& tlvs);
   TLVList GetTLVList();
 
   // Don't call these:

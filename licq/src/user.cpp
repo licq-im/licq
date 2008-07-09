@@ -3874,6 +3874,14 @@ TLVList ICQUser::GetTLVList()
   return myTLVs;
 }
 
+void ICQUser::SetTLVList(TLVList& tlvs)
+{
+  myTLVs.clear();
+
+  for (TLVListIter it = tlvs.begin(); it != tlvs.end(); it++)
+    myTLVs[it->first] = it->second;
+}
+
 //=====ICQOwner=================================================================
 
 //-----ICQOwner::constructor----------------------------------------------------
