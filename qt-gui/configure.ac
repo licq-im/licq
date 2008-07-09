@@ -83,6 +83,7 @@ AC_CHECK_HEADERS(errno.h locale.h)
 AC_HEADER_TIME
 LICQ_SYS_ERRLIST
 LICQ_CHECK_LICQ
+AX_BOOST_BASE([1.31.1])
 
 dnl Check for X and extra X libs needed
 AC_PATH_XTRA

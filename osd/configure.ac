@@ -83,6 +83,7 @@ AC_HEADER_STDC
 AC_CHECK_HEADERS(errno.h dirent.h getopt.h malloc.h pwd.h sys/time.h)
 AC_CHECK_HEADERS([unistd.h])
 LICQ_CHECK_LICQ
+AX_BOOST_BASE([1.31.1])
 
 AC_OUTPUT( po/Makefile.in
   src/Makefile

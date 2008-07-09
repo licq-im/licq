@@ -39,6 +39,7 @@ AC_CHECK_HEADERS(errno.h pwd.h sys/time.h paths.h)
 AC_HEADER_TIME
 LICQ_SYS_ERRLIST
 LICQ_CHECK_LICQ
+AX_BOOST_BASE([1.31.1])
 
 dnl Checks for library functions.
 AC_CHECK_FUNCS(inet_addr inet_aton strerror)
