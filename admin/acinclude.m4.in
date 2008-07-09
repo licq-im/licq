@@ -342,11 +342,7 @@ dnl searchs under /usr, /usr/local, and /opt, and evaluates the
 dnl $BOOST_ROOT environment variable. Further documentation is
 dnl available at <http://randspringer.de/boost/index.html>.
 dnl
-dnl This macro calls:
-dnl
-dnl   AC_SUBST(BOOST_CPPFLAGS) / AC_SUBST(BOOST_LDFLAGS)
-dnl
-dnl And sets:
+dnl This macro sets:
 dnl
 dnl   HAVE_BOOST
 dnl
@@ -493,6 +489,9 @@ AC_ARG_WITH([boost],
     AC_LANG_POP([C++])
   fi
 
+  CPPFLAGS="$CPPFLAGS_SAVED"
+  LDFLAGS="$LDFLAGS_SAVED"
+
   if test "$succeeded" != "yes" ; then
     if test "$_version" = "0" ; then
       AC_MSG_ERROR([[We could not detect the boost libraries (version $boost_lib_version_req_shorten or higher). If you have a staged boost library (still not installed) please specify \$BOOST_ROOT in your environment and do not give a PATH to --with-boost option.  If you are sure you have boost installed, then check your version number looking in <boost/version.hpp>. See http://randspringer.de/boost for more documentation.]])
@@ -500,12 +499,9 @@ AC_ARG_WITH([boost],
       AC_MSG_NOTICE([Your boost libraries seems to old (version $_version).])
     fi
   else
-    AC_SUBST(BOOST_CPPFLAGS)
-    AC_SUBST(BOOST_LDFLAGS)
+    CPPFLAGS="$CPPFLAGS $BOOST_CPPFLAGS"
+    LDFLAGS="$LDFLAGS $BOOST_LDFLAGS"
     AC_DEFINE(HAVE_BOOST,,[define if the Boost library is available])
   fi
-
-  CPPFLAGS="$CPPFLAGS_SAVED"
-  LDFLAGS="$LDFLAGS_SAVED"
 ])
 
