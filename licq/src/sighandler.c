@@ -131,7 +131,7 @@ void licq_handle_sigabrt(int s)
       FILE* file = fopen(filename, "a");
       if (file != NULL)
       {
-        fprintf(file, "\ntime: %lu\n", time(NULL));
+        fprintf(file, "\ntime: %lu\n", (unsigned long)time(NULL));
         fclose(file);
       }
 
