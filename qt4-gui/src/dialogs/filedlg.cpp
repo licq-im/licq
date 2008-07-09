@@ -213,7 +213,7 @@ void FileDlg::slot_update()
   // Time
   time_t nTime = time(NULL) - ftman->StartTime();
   unsigned long nBytesTransfered = ftman->BytesTransfered();
-  sprintf(sz, "%02ld:%02ld:%02ld", nTime / 3600, (nTime % 3600) / 60, (nTime % 60));
+  sprintf(sz, "%02lu:%02lu:%02lu", (unsigned long)(nTime / 3600), (unsigned long)((nTime % 3600) / 60), (unsigned long)((nTime % 60)));
   nfoTime->setText(sz);
   if (nTime == 0 || nBytesTransfered == 0)
   {
@@ -228,7 +228,7 @@ void FileDlg::slot_update()
   // ETA
   int nBytesLeft = ftman->FileSize() - ftman->FilePos();
   time_t nETA = (time_t)(nBytesLeft / (nBytesTransfered / nTime));
-  sprintf(sz, "%02ld:%02ld:%02ld", nETA / 3600, (nETA % 3600) / 60, (nETA % 60));
+  sprintf(sz, "%02lu:%02lu:%02lu", (unsigned long)(nETA / 3600), (unsigned long)((nETA % 3600) / 60), (unsigned long)((nETA % 60)));
   nfoETA->setText(sz);
 
   // Batch

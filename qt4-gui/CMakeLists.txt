@@ -2,6 +2,7 @@ project(Qt4-GUI)
 cmake_minimum_required(VERSION 2.4.2)
 include(CheckIncludeFile)
 include(TestCXXAcceptsFlag)
+include(CheckLibraryExists)
 
 set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 
@@ -117,6 +118,11 @@ if (GPGME_FOUND)
   set(LIBRARIES ${LIBRARIES} ${GPGME_LIBRARIES})
 endif (GPGME_FOUND)
 
+# Check for boost, used in Licq includes so we must have it
+find_package(Boost 1.31.1 COMPONENTS smart_ptr)
+link_directories ( ${Boost_LIBRARY_DIRS} )
+include_directories ( ${Boost_INCLUDE_DIRS} )
+set(LIBRARIES ${LIBRARIES} ${Boost_LIBRARIES})
 
 # Licq headers (see cmake --help-command find_path
 # for the reason we call find_path twice)

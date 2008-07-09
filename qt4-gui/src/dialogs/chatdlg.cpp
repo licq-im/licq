@@ -26,8 +26,9 @@
 
 #include "config.h"
 
-#include <ctype.h>
-#include <stdlib.h>
+#include <cctype>
+#include <cstdlib>
+#include <unistd.h>
 
 #include <QActionGroup>
 #include <QApplication>

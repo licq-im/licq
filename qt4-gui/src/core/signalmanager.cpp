@@ -20,6 +20,8 @@
 
 #include "signalmanager.h"
 
+#include <unistd.h>
+
 #include <QApplication>
 #include <QSocketNotifier>
 
