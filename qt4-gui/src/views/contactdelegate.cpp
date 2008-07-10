@@ -478,18 +478,21 @@ void ContactDelegate::drawExtIcons(Parameters& arg) const
       }
 #endif
 
-      if (arg.status != ContactListModel::OfflineStatus && Config::ContactList::instance()->showPhoneIcons())
+      if (arg.status != ContactListModel::OfflineStatus)
       {
-        EXTICON(ContactListModel::PhoneFollowMeActiveStatus,
-            IconManager::PfmActiveIcon);
-        else
-        EXTICON(ContactListModel::PhoneFollowMeBusyStatus,
-            IconManager::PfmBusyIcon);
+        if (Config::ContactList::instance()->showPhoneIcons())
+        {
+          EXTICON(ContactListModel::PhoneFollowMeActiveStatus,
+              IconManager::PfmActiveIcon);
+          else
+          EXTICON(ContactListModel::PhoneFollowMeBusyStatus,
+              IconManager::PfmBusyIcon);
 
-        EXTICON(ContactListModel::IcqPhoneActiveStatus,
-            IconManager::IcqPhoneActiveIcon);
-        EXTICON(ContactListModel::IcqPhoneBusyStatus,
-            IconManager::IcqPhoneBusyIcon);
+          EXTICON(ContactListModel::IcqPhoneActiveStatus,
+              IconManager::IcqPhoneActiveIcon);
+          EXTICON(ContactListModel::IcqPhoneBusyStatus,
+              IconManager::IcqPhoneBusyIcon);
+        }
 
         EXTICON(ContactListModel::SharedFilesStatus, IconManager::SharedFilesIcon);
         EXTICON(ContactListModel::TypingStatus, IconManager::TypingIcon);
