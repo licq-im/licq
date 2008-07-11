@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de_DE">
-<defaultcodec></defaultcodec>
-<context>
-    <name>@default</name>
-    <message>
-        <location filename="../src/core/gui-defines.h" line="39"/>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE-Voreinstellung</translation>
-    </message>
-</context>
 <context>
     <name>Groups</name>
     <message>
@@ -93,24 +84,29 @@
 <context>
     <name>LicqQtGui::AddUserDlg</name>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="47"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="48"/>
         <source>&amp;Protocol:</source>
         <translation>&amp;Protokoll:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="55"/>
-        <source>&amp;New User ID:</source>
-        <translation>&amp;Neue Benutzer ID:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="42"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="43"/>
         <source>Licq - Add user</source>
         <translation>Licq - Benutzer hinzufügen</translation>
     </message>
     <message>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="58"/>
+        <source>&amp;Group:</source>
+        <translation>&amp;Gruppe:</translation>
+    </message>
+    <message>
         <location filename="../src/dialogs/adduserdlg.cpp" line="65"/>
-        <source>Notify User</source>
-        <translation>Benutzer benachrichtigen</translation>
+        <source>New &amp;User ID:</source>
+        <translation>Neue &amp;Benutzer-ID:</translation>
+    </message>
+    <message>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="75"/>
+        <source>&amp;Notify User</source>
+        <translation>Benutzer be&amp;nachrichtigen</translation>
     </message>
 </context>
 <context>
@@ -251,7 +247,7 @@ Sie können mir eine Nachricht hinterlassen.
         <translation>Sendet einen Piepton an alle Teilnehmer</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1067"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1068"/>
         <source>Failed to open file:
 %1</source>
         <translation>Fehler beim öffnen der Datei:
@@ -275,12 +271,12 @@ Siehe Netzwerkfenster für Details.</translation>
         <translation>Kursiv</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="987"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="988"/>
         <source>Do you want to save the chat session?</source>
         <translation>Soll das Protokoll dieser Sitzung gespeichert werden?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1015"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1016"/>
         <source>Licq - Chat %1</source>
         <translation>Licq - Chat %1</translation>
     </message>
@@ -295,7 +291,7 @@ Siehe Netzwerkfenster für Details.</translation>
         <translation>Ändert die Vordergrundfarbe</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1107"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1108"/>
         <source>Unable to load encoding &lt;b&gt;%1&lt;/b&gt;. Message contents may appear garbled.</source>
         <translation>Zeichensatz &lt;b&gt;%1&lt;/b&gt; ließ sich nicht laden. Nachrichteninhalte könnten verstümmelt erscheinen.</translation>
     </message>
@@ -310,12 +306,12 @@ Siehe Netzwerkfenster für Details.</translation>
         <translation>Lokal - %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="1053"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="1054"/>
         <source>/%1.chat</source>
         <translation>/%1.chat</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="978"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="979"/>
         <source>Remote - Not connected</source>
         <translation>Gegenstelle - Nicht verbunden</translation>
     </message>
@@ -330,7 +326,7 @@ Siehe Netzwerkfenster für Details.</translation>
         <translation>Chat S&amp;chließen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="793"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="794"/>
         <source>
 &lt;--BEEP--&gt;
 </source>
@@ -339,7 +335,7 @@ Siehe Netzwerkfenster für Details.</translation>
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="794"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="795"/>
         <source>&gt; &lt;--BEEP--&gt;
 </source>
         <translation>&gt; &lt;--BEEP--&gt;
@@ -356,7 +352,7 @@ Siehe Netzwerkfenster für Details.</translation>
         <translation>Unterstrichen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/chatdlg.cpp" line="738"/>
+        <location filename="../src/dialogs/chatdlg.cpp" line="739"/>
         <source>%1 closed connection.</source>
         <translation>%1 hat die Verbindung beendet.</translation>
     </message>
@@ -426,7 +422,7 @@ Siehe Netzwerkfenster für Details.</translation>
 <context>
     <name>LicqQtGui::ContactListModel</name>
     <message>
-        <location filename="../src/contactlist/contactlist.cpp" line="255"/>
+        <location filename="../src/contactlist/contactlist.cpp" line="295"/>
         <source>Other Users</source>
         <translation>Sonstige</translation>
     </message>
@@ -711,103 +707,73 @@ Sie können mir eine Nachricht hinterlassen.</translation>
 <context>
     <name>LicqQtGui::EditGrpDlg</name>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="64"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
         <source>Add</source>
         <translation>Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="109"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="92"/>
         <source>&amp;Done</source>
         <translation>&amp;Fertig</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="100"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="83"/>
         <source>&amp;Save</source>
         <translation>&amp;Speichern</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="284"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="262"/>
         <source>Edit Name</source>
         <translation>Umbenennen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="72"/>
-        <source>Set New Users</source>
-        <translation>Neue Benutzer</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="256"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="231"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="56"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="53"/>
         <source>Groups</source>
         <translation>Gruppen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="191"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="181"/>
         <source>Are you sure you want to remove
 the group &apos;%1&apos;?</source>
         <translation>Soll die Gruppe &apos;%1&apos; wirklich entfernt werden?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="65"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="67"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="175"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="164"/>
         <source>noname</source>
         <translation>unbenannt</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="77"/>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Die Gruppe, zu der alle neuen Benutzer auf der Serverseitigen Kontaktliste hinzugefügt werden.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="102"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="85"/>
         <source>Save the name of a group being modified.</source>
         <translation>Speichert den Namen der gerade bearbeiteten Gruppe.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="91"/>
-        <source>New User:</source>
-        <translation>Neue Benutzer:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="70"/>
-        <source>Set Default</source>
-        <translation>Als Standard einstellen</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="87"/>
-        <source>Default:</source>
-        <translation>Standard:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="71"/>
-        <source>The default group to start up in.</source>
-        <translation>Die Gruppe, mit der standardmäßig gestartet wird.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="69"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="74"/>
         <source>Edit group name (hit enter to save).</source>
         <translation>Markierte Gruppe umbenennen (Eingabetaste zum speichern).</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="67"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="69"/>
         <source>Shift Down</source>
         <translation>Nach unten</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="52"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="50"/>
         <source>Licq - Edit Groups</source>
         <translation>Licq - Gruppen bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="66"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="68"/>
         <source>Shift Up</source>
         <translation>Nach oben</translation>
     </message>
@@ -1323,49 +1289,49 @@ Siehe Netzwerkfenster für Details.</translation>
 <context>
     <name>LicqQtGui::ForwardDlg</name>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="64"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="63"/>
         <source>Message</source>
         <translation>Nachricht</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="68"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="67"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="74"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="73"/>
         <source>Unable to forward this message type (%d).</source>
         <translation>Dieser Nachrichtentyp lässt sich nicht weiterleiten (%d).</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="78"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="77"/>
         <source>Forward %1 To User</source>
         <translation>%1 an Benutzer weiterleiten</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="82"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="81"/>
         <source>Drag the user to forward to here:</source>
         <translation>Den Empfänger hier hereinziehen:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="89"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="88"/>
         <source>&amp;Forward</source>
         <translation>&amp;Weiterleiten</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="93"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="92"/>
         <source>&amp;Cancel</source>
         <translation>Abbre&amp;chen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="116"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="115"/>
         <source>Forwarded message:
 </source>
         <translation>Weitergeleitete Nachricht:
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/forwarddlg.cpp" line="124"/>
+        <location filename="../src/dialogs/forwarddlg.cpp" line="123"/>
         <source>Forwarded URL:
 </source>
         <translation>Weitergeleitete URL:
@@ -1375,92 +1341,42 @@ Siehe Netzwerkfenster für Details.</translation>
 <context>
     <name>LicqQtGui::GPGKeyManager</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="83"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="82"/>
         <source>&amp;Add</source>
         <translation>&amp;Hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="69"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="68"/>
         <source>User</source>
         <translation>Benutzer</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="213"/>
-        <source>Remove GPG key</source>
-        <translation type="obsolete">GPG-Schlüssel entfernen</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="84"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="83"/>
         <source>&amp;Edit</source>
         <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="75"/>
-        <source>No passphrase set</source>
-        <translation type="obsolete">Kein Passwort festgelegt</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="133"/>
-        <source>Not yet implemented. Use licq_gpg.conf.</source>
-        <translation type="obsolete">Diese Funktion ist noch nicht fertig. Bitte licq_gpg.conf bearbeiten.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="120"/>
-        <source>&amp;Close</source>
-        <translation type="obsolete">&amp;Schließen</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="69"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="68"/>
         <source>Active</source>
         <translation>Aktiv</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="69"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="68"/>
         <source>Key ID</source>
         <translation>Schlüssel-ID</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="77"/>
-        <source>&amp;Set GPG Passphrase</source>
-        <translation type="obsolete">GPG-Passwort &amp;festlegen</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="62"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="61"/>
         <source>Licq GPG Key Manager</source>
         <translation>Licq GPG Schlüsselverwaltung</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="133"/>
-        <source>Set Passphrase</source>
-        <translation type="obsolete">Passwort festlegen</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="213"/>
-        <source>Do you want to remove the GPG key? The key isn&apos;t deleted from your keyring.</source>
-        <translation type="obsolete">Soll der GPG-Schlüssel entfernt werden? Der Schlüssel wird dadurch nicht aus dem Schlüsselbund gelöscht.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="85"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="84"/>
         <source>&amp;Remove</source>
         <translation>&amp;Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="84"/>
-        <source>User Keys</source>
-        <translation type="obsolete">Benutzer-Schlüssel</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="70"/>
-        <source>GPG Passphrase</source>
-        <translation type="obsolete">GPG-Passwort</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="96"/>
-        <source>Drag&amp;Drop user to add to list.</source>
-        <translation type="obsolete">Klicke und ziehe den Benutzer um ihn zur Liste hinzuzufügen.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="147"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="146"/>
         <source>Do you want to remove the GPG key binding for the user %1?
 The key isn&apos;t deleted from your keyring.</source>
         <translation>Möchten sie die GPG-Schlüsselbindung für den Benutzer %1 entfernen?
@@ -1528,7 +1444,7 @@ Der Schlüssel wird nicht von ihrem Schlüsselring entfernt.</translation>
         <translation>Gruppe entfernen</translation>
     </message>
     <message>
-        <location filename="../src/core/groupmenu.cpp" line="149"/>
+        <location filename="../src/core/groupmenu.cpp" line="160"/>
         <source>Are you sure you want to remove the group &apos;%1&apos;?</source>
         <translation>Soll die Gruppe &apos;%1&apos; wirklich entfernt werden?</translation>
     </message>
@@ -1728,12 +1644,12 @@ Beschreibung: %2</translation>
 <context>
     <name>LicqQtGui::KeyListItem</name>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="281"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="280"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeymanager.cpp" line="281"/>
+        <location filename="../src/dialogs/gpgkeymanager.cpp" line="280"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
@@ -1814,37 +1730,37 @@ oder höher. Der entfernte Benutzer scheint keinen solchen Client zu
 verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/keyrequestdlg.cpp" line="177"/>
+        <location filename="../src/dialogs/keyrequestdlg.cpp" line="171"/>
         <source>Secure channel already established.</source>
         <translation>Sicherer Kanal schon aufgebaut.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/keyrequestdlg.cpp" line="179"/>
+        <location filename="../src/dialogs/keyrequestdlg.cpp" line="173"/>
         <source>Secure channel not established.</source>
         <translation>Sicherer Kanal nicht aufgebaut.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/keyrequestdlg.cpp" line="189"/>
+        <location filename="../src/dialogs/keyrequestdlg.cpp" line="183"/>
         <source>Remote client does not support OpenSSL.</source>
         <translation>Der entfernte Client unterstützt kein OpenSSL.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/keyrequestdlg.cpp" line="192"/>
+        <location filename="../src/dialogs/keyrequestdlg.cpp" line="186"/>
         <source>Could not connect to remote client.</source>
         <translation>Konnte nicht mit entferntem Client verbinden.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/keyrequestdlg.cpp" line="198"/>
+        <location filename="../src/dialogs/keyrequestdlg.cpp" line="192"/>
         <source>Secure channel established.</source>
         <translation>Sichere Verbindung aufgebaut.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/keyrequestdlg.cpp" line="203"/>
+        <location filename="../src/dialogs/keyrequestdlg.cpp" line="197"/>
         <source>Secure channel closed.</source>
         <translation></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/keyrequestdlg.cpp" line="207"/>
+        <location filename="../src/dialogs/keyrequestdlg.cpp" line="201"/>
         <source>Unknown state.</source>
         <translation>Unbekannter Zustand.</translation>
     </message>
@@ -1870,7 +1786,7 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="730"/>
+        <location filename="../src/core/licqgui.cpp" line="731"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -1879,23 +1795,14 @@ from your contact list?</source>
 wirklich aus der Kontaktliste entfernt werden?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="758"/>
-        <source>Are you sure you want to remove
-%1 (%2)
-from the &apos;%3&apos; group?</source>
-        <translation>Soll
-%1 (%2)
-wirklich aus der Gruppe &apos;%3&apos; entfernt werden?</translation>
-    </message>
-    <message>
-        <location filename="../src/core/licqgui.cpp" line="1062"/>
+        <location filename="../src/core/licqgui.cpp" line="1019"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq kann den Browser nicht starten um die URL zu öffnen
 Sie müssen den Browser selbst starten und die URL in die Adressleiste kopieren.</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="331"/>
+        <location filename="../src/core/licqgui.cpp" line="332"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation>Es gab einen Fehler beim Laden der Standardkonfigurationsdatei.
@@ -1925,7 +1832,7 @@ Wollen sie die die alte Version laden?</translation>
 <context>
     <name>LicqQtGui::MLEdit</name>
     <message>
-        <location filename="../src/widgets/mledit.cpp" line="198"/>
+        <location filename="../src/widgets/mledit.cpp" line="201"/>
         <source>Allow Tabulations</source>
         <translation>Tabulatoren erlauben</translation>
     </message>
@@ -1933,12 +1840,12 @@ Wollen sie die die alte Version laden?</translation>
 <context>
     <name>LicqQtGui::MLView</name>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="275"/>
+        <location filename="../src/widgets/mlview.cpp" line="274"/>
         <source>Copy URL</source>
         <translation>URL kopieren</translation>
     </message>
     <message>
-        <location filename="../src/widgets/mlview.cpp" line="277"/>
+        <location filename="../src/widgets/mlview.cpp" line="276"/>
         <source>Quote</source>
         <translation>Zitieren</translation>
     </message>
@@ -1989,27 +1896,27 @@ Wollen sie die die alte Version laden?</translation>
 <context>
     <name>LicqQtGui::MMUserView</name>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="63"/>
+        <location filename="../src/views/mmuserview.cpp" line="62"/>
         <source>Remove</source>
         <translation>Entfernen</translation>
     </message>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="64"/>
+        <location filename="../src/views/mmuserview.cpp" line="63"/>
         <source>Crop</source>
         <translation>Benutzer ausschneiden</translation>
     </message>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="65"/>
+        <location filename="../src/views/mmuserview.cpp" line="64"/>
         <source>Clear</source>
         <translation>Alle entfernen</translation>
     </message>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="67"/>
+        <location filename="../src/views/mmuserview.cpp" line="66"/>
         <source>Add Group</source>
         <translation>Gruppe hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/views/mmuserview.cpp" line="68"/>
+        <location filename="../src/views/mmuserview.cpp" line="67"/>
         <source>Add All</source>
         <translation>Alle hinzufügen</translation>
     </message>
@@ -2046,89 +1953,74 @@ Double click - Set auto response</source>
 Doppelklick - Auto Antwort setzen</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="613"/>
+        <location filename="../src/core/mainwin.cpp" line="625"/>
         <source>Error! No owner set</source>
         <translation>Fehler! Kein Eigentümer eingerichtet</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="680"/>
+        <location filename="../src/core/mainwin.cpp" line="694"/>
         <source>SysMsg</source>
         <translation>Systemnachricht</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="681"/>
+        <location filename="../src/core/mainwin.cpp" line="695"/>
         <source>System Message</source>
         <translation>Systemnachricht</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="689"/>
+        <location filename="../src/core/mainwin.cpp" line="703"/>
         <source>%1 msg%2</source>
         <translation>%1 Nachricht%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="690"/>
+        <location filename="../src/core/mainwin.cpp" line="704"/>
         <source> </source>
         <translation> </translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="690"/>
+        <location filename="../src/core/mainwin.cpp" line="704"/>
         <source>s</source>
         <translation>en</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="690"/>
+        <location filename="../src/core/mainwin.cpp" line="704"/>
         <source>%1 message%2</source>
         <translation>%1 Nachricht%2</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="706"/>
+        <location filename="../src/core/mainwin.cpp" line="720"/>
         <source>No msgs</source>
         <translation>Keine Nachrichten</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="707"/>
+        <location filename="../src/core/mainwin.cpp" line="721"/>
         <source>No messages</source>
         <translation>Keine Nachrichten</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="940"/>
+        <location filename="../src/core/mainwin.cpp" line="951"/>
         <source>Logon failed.
 See network window for details.</source>
         <translation>Die Anmeldung ist fehlgeschlagen.
 Siehe Netzwerkfenster für Details.</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1049"/>
-        <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
-        <translation type="obsolete">&lt;h2&gt;Hinweise für die Benutzung&lt;br&gt;des Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Änderung des Status durch Rechtsklick auf das Status-Label.&lt;/li&gt;&lt;li&gt;Änderung der Autoantwort durch Doppelklick auf das Status-Label.&lt;/li&gt;&lt;li&gt;Anzeigen von Nachrichten durch Doppelklick auf das Nachrichten-Label.&lt;/li&gt;&lt;li&gt;Gruppe wechseln durch Rechtsklick auf Nachrichten-Label.&lt;/li&gt;&lt;li&gt;Folgende Tastenkürzel sind in der Kontaktliste aktiv:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Strg-M : &lt;/tt&gt;Mini-Modus&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-O : &lt;/tt&gt;Offline-Benutzer anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-X : &lt;/tt&gt;Beenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-H : &lt;/tt&gt;Hauptfenster verstecken&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-I : &lt;/tt&gt;Zeige nächste Nachricht an&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-V : &lt;/tt&gt;Zeige Nachricht an&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-S : &lt;/tt&gt;Sende Nachricht&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-U : &lt;/tt&gt;Sende URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-C : &lt;/tt&gt;Sende Chat-Anfrage&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-F : &lt;/tt&gt;Sende Datei&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-A : &lt;/tt&gt;Überprüfe Auto-Antwort&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-P : &lt;/tt&gt;Alle Nachrichten anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-L : &lt;/tt&gt;Benutzerfenster neu zeichnen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Entf : &lt;/tt&gt;Benutzer aus aktueller Gruppe löschen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-Entf : &lt;/tt&gt;Lösche Benutzer aus Kontaktliste&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Strg halten während des Klickens festhalten um   den Benutzer von der Kontaktliste zu entfernen.&lt;/li&gt;&lt;li&gt;Strg-Enter selektiert in den meisten Textfeldern &quot;Ok&quot; oder &quot;Anwenden&quot;.   Zum Beispiel im Chatfenster.&lt;/li&gt;&lt;li&gt;Hier ist die komplette Liste von Benutzeroptionen für &lt;b&gt;OnEvent&lt;/b&gt;,    &lt;b&gt;Auto-Antworten&lt;/b&gt; und &lt;b&gt;Werkzeuge&lt;/b&gt; in den Benutzerfunktionen:</translation>
-    </message>
-    <message>
-        <location filename="../src/core/mainwin.cpp" line="1051"/>
-        <source>&lt;hr&gt;&lt;p&gt; For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;hr&gt;&lt;p&gt;Für weitere Informationen besuchen Sie bitte die Licq Homepage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
-    </message>
-    <message>
-        <location filename="../src/core/mainwin.cpp" line="642"/>
-        <source>%1 is online</source>
-        <translation type="obsolete">%1 ist online</translation>
-    </message>
-    <message>
-        <location filename="../src/core/mainwin.cpp" line="640"/>
+        <location filename="../src/core/mainwin.cpp" line="654"/>
         <source>is online</source>
         <translation>ist Online</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1031"/>
+        <location filename="../src/core/mainwin.cpp" line="1042"/>
         <source>&lt;h2&gt;Hints for Using&lt;br&gt;the Licq Qt-GUI Plugin&lt;/h2&gt;&lt;hr&gt;&lt;ul&gt;&lt;li&gt;Change your status by right clicking on the status label.&lt;/li&gt;&lt;li&gt;Change your auto response by double-clicking on the status label.&lt;/li&gt;&lt;li&gt;View system messages by double clicking on the message label.&lt;/li&gt;&lt;li&gt;Change groups by right clicking on the message label.&lt;/li&gt;&lt;li&gt;Use the following shortcuts from the contact list:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Ctrl-M : &lt;/tt&gt;Toggle mini-mode&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-O : &lt;/tt&gt;Toggle show offline users&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-T : &lt;/tt&gt;Toggle group show&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-X : &lt;/tt&gt;Exit&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-H : &lt;/tt&gt;Hide&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-I : &lt;/tt&gt;View the next message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-V : &lt;/tt&gt;View message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-S : &lt;/tt&gt;Send message&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-U : &lt;/tt&gt;Send Url&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-C : &lt;/tt&gt;Send chat request&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-F : &lt;/tt&gt;Send File&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-A : &lt;/tt&gt;Check Auto response&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-P : &lt;/tt&gt;Popup all messages&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-L : &lt;/tt&gt;Redraw user window&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Delete : &lt;/tt&gt;Delete user from current group&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Ctrl-Delete : &lt;/tt&gt;Delete user from contact list&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Hold control while clicking on close in the function window to remove   the user from your contact list.&lt;/li&gt;&lt;li&gt;Hit Ctrl-Enter from most text entry fields to select &quot;Ok&quot; or &quot;Accept&quot;.   For example in the send tab of the user function window.&lt;/li&gt;&lt;li&gt;Here is the complete list of user % options, which can be used in &lt;b&gt;OnEvent&lt;/b&gt;   parameters, &lt;b&gt;auto responses&lt;/b&gt;, and &lt;b&gt;utilities&lt;/b&gt;:</source>
         <translation>&lt;h2&gt;Hinweise für die Benutzung&lt;br&gt;des Licq Qt-GUI Plugin&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;Änderung des Status durch Rechtsklick auf das Status-Label.&lt;/li&gt;&lt;li&gt;Änderung der Autoantwort durch Doppelklick auf das Status-Label.&lt;/li&gt;&lt;li&gt;Anzeigen von Nachrichten durch Doppelklick auf das Nachrichten-Label.&lt;/li&gt;&lt;li&gt;Gruppe wechseln durch Rechtsklick auf Nachrichten-Label.&lt;/li&gt;&lt;li&gt;Folgende Tastenkürzel sind in der Kontaktliste aktiv:&lt;ul&gt;&lt;li&gt;&lt;tt&gt;Strg-M : &lt;/tt&gt;Mini-Modus&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-O : &lt;/tt&gt;Offline-Benutzer anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-X : &lt;/tt&gt;Beenden&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-H : &lt;/tt&gt;Hauptfenster verstecken&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-I : &lt;/tt&gt;Zeige nächste Nachricht an&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-V : &lt;/tt&gt;Zeige Nachricht an&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-S : &lt;/tt&gt;Sende Nachricht&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-U : &lt;/tt&gt;Sende URL&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-C : &lt;/tt&gt;Sende Chat-Anfrage&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-F : &lt;/tt&gt;Sende Datei&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-A : &lt;/tt&gt;Überprüfe Auto-Antwort&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-P : &lt;/tt&gt;Alle Nachrichten anzeigen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-L : &lt;/tt&gt;Benutzerfenster neu zeichnen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Entf : &lt;/tt&gt;Benutzer aus aktueller Gruppe löschen&lt;/li&gt;&lt;li&gt;&lt;tt&gt;Strg-Entf : &lt;/tt&gt;Lösche Benutzer aus Kontaktliste&lt;/li&gt;&lt;/ul&gt;&lt;li&gt;Strg halten während des Klickens festhalten um   den Benutzer von der Kontaktliste zu entfernen.&lt;/li&gt;&lt;li&gt;Strg-Enter selektiert in den meisten Textfeldern &quot;Ok&quot; oder &quot;Anwenden&quot;.   Zum Beispiel im Chatfenster.&lt;/li&gt;&lt;li&gt;Hier ist die komplette Liste von Benutzeroptionen für &lt;b&gt;OnEvent&lt;/b&gt;,    &lt;b&gt;Auto-Antworten&lt;/b&gt; und &lt;b&gt;Werkzeuge&lt;/b&gt; in den Benutzerfunktionen:</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1034"/>
+        <location filename="../src/core/mainwin.cpp" line="1045"/>
         <source>Qt URL handling</source>
         <translation>URL-Behandlung</translation>
     </message>
     <message>
-        <location filename="../src/core/mainwin.cpp" line="1051"/>
+        <location filename="../src/core/mainwin.cpp" line="1062"/>
         <source>&lt;p&gt;For more information, see the Licq webpage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</source>
         <translation>&lt;p&gt;Für weitere Informationen besuchen Sie bitte die Licq Homepage (&lt;tt&gt;http://www.licq.org&lt;/tt&gt;).&lt;/p&gt;</translation>
     </message>
@@ -2240,44 +2132,14 @@ Siehe Netzwerkfenster für Details.</translation>
 <context>
     <name>LicqQtGui::OwnerEditDlg</name>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="142"/>
-        <source>&amp;Ok</source>
-        <translation type="obsolete">&amp;Ok</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="50"/>
         <source>Edit Account</source>
         <translation>Zugang bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="58"/>
-        <source>Protocol:</source>
-        <translation type="obsolete">Protokoll:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="63"/>
-        <source>User ID:</source>
-        <translation type="obsolete">Benutzer-ID:</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="110"/>
         <source>Currently only one account per protocol is supported.</source>
         <translation>Zur Zeit wird nur ein Zugang pro Protokoll unterstützt.</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="145"/>
-        <source>&amp;Cancel</source>
-        <translation type="obsolete">Ab&amp;brechen</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="69"/>
-        <source>Password:</source>
-        <translation type="obsolete">Passwort:</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/ownereditdlg.cpp" line="75"/>
-        <source>Save Password</source>
-        <translation type="obsolete">Passwort &amp;speichern</translation>
     </message>
     <message>
         <location filename="../src/dialogs/ownereditdlg.cpp" line="74"/>
@@ -2666,267 +2528,262 @@ Nachdem sie Online sind, können sie ihre persönlichen Informationen an den Ser
 <context>
     <name>LicqQtGui::SearchUserDlg</name>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="88"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="89"/>
         <source>Male</source>
         <translation>Männlich</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="314"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="311"/>
         <source>Reset Search</source>
         <translation>Neue Suche</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="142"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="143"/>
         <source>City:</source>
         <translation>Stadt:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="145"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="146"/>
         <source>Company Name:</source>
         <translation>Firma:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="315"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="312"/>
         <source>Enter search parameters and select &apos;Search&apos;</source>
         <translation>Bitte Suchparameter eingeben und dann auch &apos;Suchen&apos; klicken.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="147"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="148"/>
         <source>Company Position:</source>
         <translation>Position:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="272"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="269"/>
         <source>Searching (this can take awhile)...</source>
         <translation>Suche läuft (das kann eine Weile dauern)...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="410"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="406"/>
         <source>%1 more users found. Narrow search.</source>
         <translation>%1 weitere Benutzer gefunden. Suche bitte eingrenzen.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="408"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="404"/>
         <source>More users found. Narrow search.</source>
         <translation>Mehr Benutzer gefunden. Suche weiter eingrenzen.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="132"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="133"/>
         <source>Alias:</source>
         <translation>Alias:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="243"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="240"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="88"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="89"/>
         <source>Female</source>
         <translation>Weiblich</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="137"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="138"/>
         <source>Language:</source>
         <translation>Sprache:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="135"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="136"/>
         <source>Age Range:</source>
         <translation>Altersbereich:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="143"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="144"/>
         <source>State:</source>
         <translation>Bundesland:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="133"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="134"/>
         <source>First Name:</source>
         <translation>Vorname:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="134"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="135"/>
         <source>Last Name:</source>
         <translation>Nachname:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="144"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="145"/>
         <source>Country:</source>
         <translation>Land:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="422"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="418"/>
         <source>Search failed.</source>
         <translation>Suche fehlgeschlagen.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="146"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="147"/>
         <source>Company Department:</source>
         <translation>Abteilung:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="156"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="157"/>
         <source>Return Online Users Only</source>
         <translation>Nur &amp;Online-Benutzer zeigen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="182"/>
-        <source>A&amp;lert User</source>
-        <translation>Benutzer &amp;informieren</translation>
-    </message>
-    <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="442"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="438"/>
         <source>&amp;Add %1 Users</source>
         <translation>%1 Benutzer &amp;hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="186"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="183"/>
         <source>View &amp;Info</source>
         <translation>&amp;Informationen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="149"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="150"/>
         <source>Email Address:</source>
         <translation>E-Mail-Adresse:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="439"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="435"/>
         <source>&amp;Add User</source>
         <translation>Benutzer &amp;hinzufügen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="203"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="200"/>
         <source>&amp;Search</source>
         <translation>&amp;Suchen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="87"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="88"/>
         <source>Unspecified</source>
         <translation>nicht angegeben</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="406"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="402"/>
         <source>Search complete.</source>
         <translation>Suche abgeschlossen.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="150"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="151"/>
         <source>Keyword:</source>
         <translation>Stichwort:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="136"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="137"/>
         <source>Gender:</source>
         <translation>Geschlecht:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="60"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="61"/>
         <source>Licq - User Search</source>
         <translation>Licq - Benutzer Suchen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="169"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="170"/>
         <source>Alias</source>
         <translation>Alias</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="169"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="170"/>
         <source>UIN</source>
         <translation>UIN</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="169"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="170"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="170"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="171"/>
         <source>Email</source>
         <translation>E-Mail</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="170"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="171"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="371"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="367"/>
         <source>Offline</source>
         <translation>Offline</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="374"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="370"/>
         <source>Online</source>
         <translation>Online</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="378"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="374"/>
         <source>Unknown</source>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="386"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="382"/>
         <source>F</source>
         <translation>W</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="389"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="385"/>
         <source>M</source>
         <translation>M</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="392"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="388"/>
         <source>?</source>
         <translation>?</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="396"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="392"/>
         <source>No</source>
         <translation>Nein</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="396"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="392"/>
         <source>Yes</source>
         <translation>Ja</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="68"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="69"/>
         <source>Search Criteria</source>
         <translation>Suchkriterien</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="125"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="126"/>
         <source>UIN:</source>
         <translation>UIN:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="164"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="165"/>
         <source>Result</source>
         <translation>Ergebnis</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="170"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="171"/>
         <source>A/G</source>
         <translation>A/G</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="170"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="171"/>
         <source>Auth</source>
         <translation>Autorisierung</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="214"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="211"/>
         <source>Close</source>
         <translation>S&amp;chließen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="415"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="411"/>
         <source>New Search</source>
         <translation>Neue Suchen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/searchuserdlg.cpp" line="281"/>
+        <location filename="../src/dialogs/searchuserdlg.cpp" line="278"/>
         <source>Search interrupted</source>
         <translation>Suche unterbrochen</translation>
     </message>
@@ -3185,11 +3042,6 @@ Bitte erstellen sie zuerst einen.</translation>
         <translation>Nachricht mit einfachem Enter senden</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="87"/>
-        <source>Send messages with Enter and insert new lines with Ctrl+Enter, opposite of the normal mode</source>
-        <translation type="obsolete">Sendet Nachrichten mit Enter und fügt neue Zeilen mit Strg-Enter ein, im Gegensatz zum normalen Modus.</translation>
-    </message>
-    <message>
         <location filename="../src/settings/chat.cpp" line="90"/>
         <source>Use double return</source>
         <translation>Doppeltes Enter benutzen</translation>
@@ -3314,16 +3166,6 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
         <location filename="../src/settings/chat.cpp" line="188"/>
         <source>URI viewer:</source>
         <translation>URI Betrachter:</translation>
-    </message>
-    <message>
-        <location filename="../src/settings/chat.cpp" line="169"/>
-        <source>The command to run to view a URL.  Will be passed the URL as a parameter.</source>
-        <translation type="obsolete">Das Kommando zum Anzeigen einer URL. Die URL wird als Parameter übergeben.</translation>
-    </message>
-    <message>
-        <location filename="../src/settings/chat.cpp" line="175"/>
-        <source>KDE default</source>
-        <translation type="obsolete">KDE-Voreinstellung</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="183"/>
@@ -3481,7 +3323,7 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
         <translation>Marge hat die Unterhaltung verlassen.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="572"/>
+        <location filename="../src/settings/chat.cpp" line="576"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
@@ -3561,11 +3403,6 @@ Siehe im Hinweis-Dialog für eine Beschreibung der Qt URL-Regeln.</translation>
         <location filename="../src/settings/contactlist.cpp" line="73"/>
         <source>Show grid lines</source>
         <translation>Zeige Raster an</translation>
-    </message>
-    <message>
-        <location filename="../src/settings/contactlist.cpp" line="74"/>
-        <source>Draw boxes around each square in the user list</source>
-        <translation type="obsolete">Rahmen um jedes Feld der Kontaktliste zeichnen.</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="77"/>
@@ -3761,11 +3598,6 @@ Benutzer immer anzeigen</translation>
         <location filename="../src/settings/contactlist.cpp" line="198"/>
         <source>Title</source>
         <translation>Überschrift</translation>
-    </message>
-    <message>
-        <location filename="../src/settings/contactlist.cpp" line="193"/>
-        <source>The string which will appear in the list box column header</source>
-        <translation type="obsolete">Die Spaltenüberschrift, die im Kopf der Kontaktliste erscheint</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="201"/>
@@ -3984,16 +3816,6 @@ Benutzer immer anzeigen</translation>
         <location filename="../src/settings/events.cpp" line="69"/>
         <source>Show the message info label in bold font if there are incoming messages</source>
         <translation>Stellt die Schrift im Info-Bereich fett ein, wenn neue Nachrichten empfangen wurden.</translation>
-    </message>
-    <message>
-        <location filename="../src/settings/events.cpp" line="71"/>
-        <source>Auto-popup message</source>
-        <translation type="obsolete">Nachricht automatisch öffnen</translation>
-    </message>
-    <message>
-        <location filename="../src/settings/events.cpp" line="72"/>
-        <source>Open all incoming messages automatically when received if we are online (or free for chat)</source>
-        <translation type="obsolete">Öffnet neue Nachrichten automatisch (bei Status Online bzw. Frei für Chat)</translation>
     </message>
     <message>
         <location filename="../src/settings/events.cpp" line="72"/>
@@ -4382,16 +4204,6 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
         <translation>Wird für normalen Text benutzt.</translation>
     </message>
     <message>
-        <location filename="../src/settings/general.cpp" line="149"/>
-        <source>Select Font</source>
-        <translation type="obsolete">Schriftart auswählen</translation>
-    </message>
-    <message>
-        <location filename="../src/settings/general.cpp" line="150"/>
-        <source>Select a font from the system list.</source>
-        <translation type="obsolete">Wähle eine Schriftart aus der Liste.</translation>
-    </message>
-    <message>
         <location filename="../src/settings/general.cpp" line="138"/>
         <source>Editing:</source>
         <translation>Bearbeiten:</translation>
@@ -4402,16 +4214,6 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
         <translation>Wird im Nachrichteneditor etc. verwendet.</translation>
     </message>
     <message>
-        <location filename="../src/settings/general.cpp" line="213"/>
-        <source>default (%1)</source>
-        <translation type="obsolete">standard (%1)</translation>
-    </message>
-    <message>
-        <location filename="../src/settings/general.cpp" line="312"/>
-        <source>default</source>
-        <translation type="obsolete">standard</translation>
-    </message>
-    <message>
         <location filename="../src/settings/general.cpp" line="94"/>
         <source>Show popup for Online notify</source>
         <translation>Zeige Popup für Online-Benachrichtigung</translation>
@@ -4420,6 +4222,16 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
         <location filename="../src/settings/general.cpp" line="95"/>
         <source>Show balloon popup message when contacts marked for online notify comes online.</source>
         <translation>Zeige eine Popup-Nachricht wenn Benutzer die mit &quot;Online-Benachrichtigung&quot; markiert sind online gehen.</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/general.cpp" line="147"/>
+        <source>Fixed:</source>
+        <translation>Feste Breite:</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/general.cpp" line="148"/>
+        <source>Used in file editor and network log.</source>
+        <translation>Wird im Datei-Editor und Netzwerkprotokoll verwendet.</translation>
     </message>
 </context>
 <context>
@@ -5184,12 +4996,12 @@ zurückgesetzt werden?</translation>
 <context>
     <name>LicqQtGui::SystemMenuPrivate::OwnerData</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="560"/>
+        <location filename="../src/core/systemmenu.cpp" line="557"/>
         <source>&amp;Info...</source>
         <translation>&amp;Info....</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="561"/>
+        <location filename="../src/core/systemmenu.cpp" line="558"/>
         <source>View &amp;History...</source>
         <translation>&amp;Verlauf...</translation>
     </message>
@@ -5235,92 +5047,92 @@ zurückgesetzt werden?</translation>
 <context>
     <name>LicqQtGui::UserCodec</name>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="35"/>
+        <location filename="../src/helpers/usercodec.cpp" line="33"/>
         <source>Unicode</source>
         <translation>Unicode</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="36"/>
+        <location filename="../src/helpers/usercodec.cpp" line="34"/>
         <source>Unicode-16</source>
         <translation>Unicode-16</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="39"/>
+        <location filename="../src/helpers/usercodec.cpp" line="37"/>
         <source>Arabic</source>
         <translation>Arabisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="42"/>
+        <location filename="../src/helpers/usercodec.cpp" line="40"/>
         <source>Baltic</source>
         <translation>Baltisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="45"/>
+        <location filename="../src/helpers/usercodec.cpp" line="43"/>
         <source>Central European</source>
         <translation>Zentraleuropäisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="47"/>
+        <location filename="../src/helpers/usercodec.cpp" line="45"/>
         <source>Chinese</source>
         <translation>Chinesisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="48"/>
+        <location filename="../src/helpers/usercodec.cpp" line="46"/>
         <source>Chinese Traditional</source>
         <translation>Chinesisch traditionell</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="52"/>
+        <location filename="../src/helpers/usercodec.cpp" line="50"/>
         <source>Cyrillic</source>
         <translation>Kyrillisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="54"/>
+        <location filename="../src/helpers/usercodec.cpp" line="52"/>
         <source>Esperanto</source>
         <translation>Spanisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="57"/>
+        <location filename="../src/helpers/usercodec.cpp" line="55"/>
         <source>Greek</source>
         <translation>Grieschisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="61"/>
+        <location filename="../src/helpers/usercodec.cpp" line="59"/>
         <source>Hebrew</source>
         <translation>Hebräisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="65"/>
+        <location filename="../src/helpers/usercodec.cpp" line="63"/>
         <source>Japanese</source>
         <translation>Japanisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="67"/>
+        <location filename="../src/helpers/usercodec.cpp" line="65"/>
         <source>Korean</source>
         <translation>Koreanisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="71"/>
+        <location filename="../src/helpers/usercodec.cpp" line="69"/>
         <source>Western European</source>
         <translation>Westeuropäisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="73"/>
+        <location filename="../src/helpers/usercodec.cpp" line="71"/>
         <source>Tamil</source>
         <translation>Tamil</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="75"/>
+        <location filename="../src/helpers/usercodec.cpp" line="73"/>
         <source>Thai</source>
         <translation>Thailändisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="78"/>
+        <location filename="../src/helpers/usercodec.cpp" line="76"/>
         <source>Turkish</source>
         <translation>Türkisch</translation>
     </message>
     <message>
-        <location filename="../src/helpers/usercodec.cpp" line="80"/>
+        <location filename="../src/helpers/usercodec.cpp" line="78"/>
         <source>Ukrainian</source>
         <translation>Ukrainisch</translation>
     </message>
@@ -5396,7 +5208,7 @@ zurückgesetzt werden?</translation>
 <context>
     <name>LicqQtGui::UserEventTabDlg</name>
     <message>
-        <location filename="../src/userevents/usereventtabdlg.cpp" line="121"/>
+        <location filename="../src/userevents/usereventtabdlg.cpp" line="123"/>
         <source>[UNKNOWN_USER]</source>
         <translation>[UNBEKANNTER_BENUTZER]</translation>
     </message>
@@ -5883,228 +5695,233 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
 <context>
     <name>LicqQtGui::UserMenu</name>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="62"/>
+        <location filename="../src/core/usermenu.cpp" line="63"/>
         <source>Send</source>
         <translation>&amp;Senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="68"/>
+        <location filename="../src/core/usermenu.cpp" line="69"/>
         <source>Send &amp;Message</source>
         <translation>&amp;Nachricht senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="69"/>
+        <location filename="../src/core/usermenu.cpp" line="70"/>
         <source>Send &amp;URL</source>
         <translation>&amp;Url senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="70"/>
+        <location filename="../src/core/usermenu.cpp" line="71"/>
         <source>Send &amp;Chat Request</source>
         <translation>&amp;Chatanfrage senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="71"/>
+        <location filename="../src/core/usermenu.cpp" line="72"/>
         <source>Send &amp;File Transfer</source>
         <translation>&amp;Datei senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="72"/>
+        <location filename="../src/core/usermenu.cpp" line="73"/>
         <source>Send Contact &amp;List</source>
         <translation>&amp;Kontaktliste senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="73"/>
+        <location filename="../src/core/usermenu.cpp" line="74"/>
         <source>Send &amp;Authorization</source>
         <translation>&amp;Autorisierung senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="74"/>
+        <location filename="../src/core/usermenu.cpp" line="75"/>
         <source>Send Authorization Re&amp;quest</source>
         <translation>Autorisierungsan&amp;frage senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="75"/>
+        <location filename="../src/core/usermenu.cpp" line="76"/>
         <source>Send &amp;SMS</source>
         <translation>&amp;SMS senden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="77"/>
+        <location filename="../src/core/usermenu.cpp" line="78"/>
         <source>Update Info Plugin List</source>
         <translation>Info-Plugin-Liste aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="78"/>
+        <location filename="../src/core/usermenu.cpp" line="79"/>
         <source>Update Status Plugin List</source>
         <translation>Status-Plugin-Liste aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="79"/>
+        <location filename="../src/core/usermenu.cpp" line="80"/>
         <source>Update Phone &quot;Follow Me&quot; Status</source>
         <translation>&quot;Telefon folgen&quot;-Status aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="80"/>
+        <location filename="../src/core/usermenu.cpp" line="81"/>
         <source>Update ICQphone Status</source>
         <translation>ICQphone-Status aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="81"/>
+        <location filename="../src/core/usermenu.cpp" line="82"/>
         <source>Update File Server Status</source>
         <translation>Dateiserver-Status aktualisieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="87"/>
+        <location filename="../src/core/usermenu.cpp" line="88"/>
         <source>Misc Modes</source>
         <translation>Ve&amp;rschiedenes</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="94"/>
+        <location filename="../src/core/usermenu.cpp" line="95"/>
         <source>Accept in Away</source>
         <translation>Bei &apos;Abwesenheit&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="95"/>
+        <location filename="../src/core/usermenu.cpp" line="96"/>
         <source>Accept in Not Available</source>
         <translation>Bei &apos;Nicht verfügbar&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="96"/>
+        <location filename="../src/core/usermenu.cpp" line="97"/>
         <source>Accept in Occupied</source>
         <translation>Bei &apos;Beschäftigt&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="97"/>
+        <location filename="../src/core/usermenu.cpp" line="98"/>
         <source>Accept in Do Not Disturb</source>
         <translation>Bei &apos;Nicht stören&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="98"/>
+        <location filename="../src/core/usermenu.cpp" line="99"/>
         <source>Auto Accept Files</source>
         <translation>Dateien automatisch akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="99"/>
+        <location filename="../src/core/usermenu.cpp" line="100"/>
         <source>Auto Accept Chats</source>
         <translation>Chats automatisch akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="100"/>
+        <location filename="../src/core/usermenu.cpp" line="101"/>
         <source>Auto Request Secure</source>
         <translation>Automatisch Verschlüsseln</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="102"/>
+        <location filename="../src/core/usermenu.cpp" line="103"/>
         <source>Use GPG Encryption</source>
         <translation>GPG-Verschlüsselung aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="104"/>
+        <location filename="../src/core/usermenu.cpp" line="105"/>
         <source>Use Real Ip (LAN)</source>
         <translation>Echte IP (LAN) verwenden</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="106"/>
+        <location filename="../src/core/usermenu.cpp" line="107"/>
         <source>Online to User</source>
         <translation>Immer &apos;Online&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="107"/>
+        <location filename="../src/core/usermenu.cpp" line="108"/>
         <source>Away to User</source>
         <translation>Immer &apos;Abwesend&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="108"/>
+        <location filename="../src/core/usermenu.cpp" line="109"/>
         <source>Not Available to User</source>
         <translation>Immer &apos;Nicht verfügbar&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="109"/>
+        <location filename="../src/core/usermenu.cpp" line="110"/>
         <source>Occupied to User</source>
         <translation>Immer &apos;Beschäftigt&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="110"/>
+        <location filename="../src/core/usermenu.cpp" line="111"/>
         <source>Do Not Disturb to User</source>
         <translation>Immer &apos;Nicht stören&apos;</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="114"/>
+        <location filename="../src/core/usermenu.cpp" line="115"/>
         <source>U&amp;tilities</source>
         <translation>&amp;Werkzeuge</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="122"/>
+        <location filename="../src/core/usermenu.cpp" line="123"/>
         <source>Edit User Group</source>
         <translation>&amp;Gruppenmitgliedschaft</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="140"/>
+        <location filename="../src/core/usermenu.cpp" line="141"/>
         <source>Server Group</source>
         <translation>Servergruppe</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="147"/>
+        <location filename="../src/core/usermenu.cpp" line="148"/>
         <source>&amp;View Event</source>
         <translation>&amp;Ereignis öffnen</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="153"/>
+        <location filename="../src/core/usermenu.cpp" line="154"/>
         <source>Custom Auto Response...</source>
         <translation>Spezielle &amp;Auto-Antwort...</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="156"/>
+        <location filename="../src/core/usermenu.cpp" line="157"/>
         <source>Toggle &amp;Floaty</source>
         <translation>Schwebendes &amp;Fenster</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="158"/>
+        <location filename="../src/core/usermenu.cpp" line="159"/>
         <source>Remove From List</source>
         <translation>Von &amp;Kontaktliste entfernen</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="161"/>
+        <location filename="../src/core/usermenu.cpp" line="162"/>
         <source>Set GPG key</source>
         <translation>GPG-Schlüssel setzen</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="163"/>
+        <location filename="../src/core/usermenu.cpp" line="165"/>
         <source>View &amp;History</source>
         <translation>&amp;Verlauf</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="164"/>
+        <location filename="../src/core/usermenu.cpp" line="166"/>
         <source>&amp;Info</source>
         <translation>&amp;Informationen</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="235"/>
+        <location filename="../src/core/usermenu.cpp" line="236"/>
         <source>Check Auto Response</source>
         <translation>Auto-Antwort &amp;lesen</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="238"/>
+        <location filename="../src/core/usermenu.cpp" line="239"/>
         <source>Check %1 Response</source>
         <translation>%1-Antwort &amp;lesen</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="268"/>
+        <location filename="../src/core/usermenu.cpp" line="269"/>
         <source>Close &amp;Secure Channel</source>
         <translation>Schließe &amp;sichere Verbindung</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="273"/>
+        <location filename="../src/core/usermenu.cpp" line="274"/>
         <source>Request &amp;Secure Channel</source>
         <translation>&amp;Verschlüsselung aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="597"/>
+        <location filename="../src/core/usermenu.cpp" line="569"/>
         <source>Do you really want to add
 %1 (%2)
 to your ignore list?</source>
         <translation>Soll
 %1 (%2)
 wirklich zur Ignorieren-Gruppe hinzugefügt werden?</translation>
+    </message>
+    <message>
+        <location filename="../src/core/usermenu.cpp" line="164"/>
+        <source>&amp;Copy User ID</source>
+        <translation>&amp;Kopiere Benutzer-ID</translation>
     </message>
 </context>
 <context>
@@ -6188,22 +6005,22 @@ wirklich zur Ignorieren-Gruppe hinzugefügt werden?</translation>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1101"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1096"/>
         <source>done</source>
         <translation>fertig</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1128"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1123"/>
         <source>&amp;Send</source>
         <translation>&amp;Senden</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1114"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1109"/>
         <source>error</source>
         <translation>fehler</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1111"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1106"/>
         <source>timed out</source>
         <translation>Zeitüberschreitung</translation>
     </message>
@@ -6213,12 +6030,12 @@ wirklich zur Ignorieren-Gruppe hinzugefügt werden?</translation>
         <translation>Nachricht</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1183"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1178"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1105"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1100"/>
         <source>cancelled</source>
         <translation>abgebrochen</translation>
     </message>
@@ -6228,34 +6045,34 @@ wirklich zur Ignorieren-Gruppe hinzugefügt werden?</translation>
         <translation>Dateiübertragung</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1183"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1178"/>
         <source>Urgent</source>
         <translation>Dringend</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1342"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1339"/>
         <source>Drag Users Here
 Right Click for Options</source>
         <translation>Benutzer hierher ziehen.
 Klick mit rechter Maustaste für Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1041"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1036"/>
         <source>direct</source>
         <translation>direkt</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1108"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1103"/>
         <source>failed</source>
         <translation>fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1041"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1036"/>
         <source>via server</source>
         <translation>über Server</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1166"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1161"/>
         <source>%1 is in %2 mode:
 %3
 Send...</source>
@@ -6264,19 +6081,19 @@ Send...</source>
 Senden...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1153"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1148"/>
         <source>Direct send failed,
 send through server?</source>
         <translation>Direkter Versand fehlgeschlagen,
 über Server senden?</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1051"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1046"/>
         <source>&amp;Cancel</source>
         <translation>Ab&amp;brechen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1040"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1035"/>
         <source>Sending </source>
         <translation>Sende </translation>
     </message>
@@ -6291,7 +6108,7 @@ send through server?</source>
         <translation>Kontaktliste</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1183"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1178"/>
         <source> to Contact List</source>
         <translation>zur Kontaktliste.</translation>
     </message>
@@ -6356,17 +6173,17 @@ send through server?</source>
         <translation>Hintergrundfarbe...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="595"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="594"/>
         <source>%1 has joined the conversation.</source>
         <translation>%1 hat die Unterhaltung betreten.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="629"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="628"/>
         <source>%1 has left the conversation.</source>
         <translation>%1 hat die Unterhaltung verlassen.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="997"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="996"/>
         <source>Message can&apos;t be sent securely through the server!
 Send anyway?</source>
         <translation>Nachricht kann nicht verschlüsselt über den Server gesendet werden!
@@ -6497,86 +6314,79 @@ Möchten Sie sie wirklich senden?</translation>
 <context>
     <name>LicqQtGui::UserViewEvent</name>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="495"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="490"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="685"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="709"/>
         <source>&amp;Join</source>
         <translation>&amp;Betreten</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="707"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="731"/>
         <source>&amp;View</source>
         <translation>&amp;Anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="254"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="255"/>
         <source>Nex&amp;t</source>
         <translation>&amp;Nächste</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="749"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="776"/>
         <source>A&amp;dd %1 Users</source>
         <translation>%1 Benutzer hinzu&amp;fügen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="126"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="127"/>
         <source>Aut&amp;o Close</source>
         <translation>Automatisch s&amp;chließen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="415"/>
-        <source>Licq is unable to start your browser and open the URL.
-You will need to start the browser and open the URL manually.</source>
-        <translation type="obsolete">Licq kann den Browser nicht starten um die URL zu öffnen
-Sie müssen den Browser selbst starten und die URL in die Adressleiste kopieren.</translation>
-    </message>
-    <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="139"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="140"/>
         <source>&amp;Close</source>
         <translation>S&amp;chließen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="702"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="726"/>
         <source>&amp;Quote</source>
         <translation>&amp;Zitieren</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="701"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="725"/>
         <source>&amp;Reply</source>
         <translation>&amp;Antworten</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="677"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="701"/>
         <source>A&amp;ccept</source>
         <translation>A&amp;kzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="140"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="141"/>
         <source>Normal Click - Close Window
 &lt;CTRL&gt;+Click - also delete User</source>
         <translation>Normaler Klick - Fenster schließen
 Strg + Klick - Benutzer löschen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="516"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="511"/>
         <source>File Transfer</source>
         <translation>Dateiübertragung</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="693"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="717"/>
         <source>Start Chat</source>
         <translation>Chat starten</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="757"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="784"/>
         <source>&amp;View Email</source>
         <translation>&amp;E-Mail Anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="672"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="696"/>
         <source>
 --------------------
 Request was cancelled.</source>
@@ -6585,120 +6395,125 @@ Request was cancelled.</source>
 Anfrage wurde abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="752"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="779"/>
         <source>A&amp;dd User</source>
         <translation>Benutzer hinzu&amp;fügen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="712"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="736"/>
         <source>A&amp;uthorize</source>
         <translation>&amp;Autorisieren</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="713"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="737"/>
         <source>&amp;Refuse</source>
         <translation>&amp;Ablehnen</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="252"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="253"/>
         <source>Nex&amp;t (%1)</source>
         <translation>&amp;Nächste (%1)</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="703"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="727"/>
         <source>&amp;Forward</source>
         <translation>&amp;Weiterleiten</translation>
+    </message>
+    <message>
+        <location filename="../src/userevents/userviewevent.cpp" line="768"/>
+        <source>&amp;View Info</source>
+        <translation>&amp;Informationen</translation>
     </message>
 </context>
 <context>
     <name>LicqQtGui::UtilityDlg</name>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="63"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="62"/>
         <source>Licq Utility: %1</source>
         <translation>Licq-Werkzeug: %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="64"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="63"/>
         <source>Command:</source>
         <translation>Befehl:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="71"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="70"/>
         <source>Window:</source>
         <translation>Fenster:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="76"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="75"/>
         <source>GUI</source>
         <translation>GUI</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="77"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="76"/>
         <source>Terminal</source>
         <translation>Terminal</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="78"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="77"/>
         <source>Internal</source>
         <translation>Intern</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="81"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="80"/>
         <source>Description:</source>
         <translation>Beschreibung:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="86"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="85"/>
         <source>Edit final command</source>
         <translation>Endgültigen Befehl bearbeiten</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="89"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="88"/>
         <source>User Fields</source>
         <translation>Benutzer-Felder</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="119"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="118"/>
         <source>&amp;Run</source>
         <translation>&amp;Ausführen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="122"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="121"/>
         <source>&amp;Cancel</source>
         <translation>Ab&amp;brechen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="184"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="183"/>
         <source>Edit:</source>
         <translation>Bearbeiten:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="192"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="191"/>
         <source>Running:</source>
         <translation>Wird ausgeführt:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="219"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="218"/>
         <source>Command Window</source>
         <translation>Befehlsfenster</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="242"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="241"/>
         <source>Failed:</source>
         <translation>Fehlgeschlagen:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="248"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="247"/>
         <source>Done</source>
         <translation>Fertig</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="256"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="255"/>
         <source>Done:</source>
         <translation>Fertig:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/utilitydlg.cpp" line="257"/>
+        <location filename="../src/dialogs/utilitydlg.cpp" line="256"/>
         <source>C&amp;lose</source>
         <translation>S&amp;chließen</translation>
     </message>
