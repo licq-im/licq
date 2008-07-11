@@ -636,7 +636,7 @@ bool CBuffer::readTLV(int nCount, int nBytes)
   int nCurBytes = 0;
 
   // Keep reading until it is impossible for any TLV headers to be found
-  while(getDataPosRead() + 4 < (getDataStart() + getDataSize())) {
+  while(getDataPosRead() + 4 <= (getDataStart() + getDataSize())) {
     TLVPtr tlv(new COscarTLV);
 
     *this >> tlv->myType;
