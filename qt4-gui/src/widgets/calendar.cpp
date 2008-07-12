@@ -53,7 +53,7 @@ Calendar::Calendar(QWidget* parent)
     setFirstDayOfWeek(Qt::Monday);
 }
 
-void Calendar::markDate(QDate date)
+void Calendar::markDate(const QDate& date)
 {
   QTextCharFormat textFormat = dateTextFormat(date);
   // Mark dates with bold
@@ -61,6 +61,21 @@ void Calendar::markDate(QDate date)
   // Background must be transparent to not overwrite the elipse
   textFormat.setBackground(Qt::transparent);
   setDateTextFormat(date, textFormat);
+}
+
+void Calendar::addMatch(const QDate& date)
+{
+  if (myMatches.contains(date))
+    return;
+
+  myMatches.append(date);
+  updateCell(date);
+}
+
+void Calendar::clearMatches()
+{
+  myMatches.clear();
+  updateCells();
 }
 
 void Calendar::paintCell(QPainter* painter, const QRect& rect, const QDate& date) const
@@ -73,7 +88,7 @@ void Calendar::paintCell(QPainter* painter, const QRect& rect, const QDate& date
     QRect center = rect.adjusted(adjust, adjust, -adjust, -adjust);
     painter->setPen(Qt::NoPen);
     painter->setRenderHints(painter->renderHints() | QPainter::Antialiasing);
-    painter->setBrush(Qt::yellow);
+    painter->setBrush(myMatches.contains(date) ? Qt::green : Qt::yellow);
     painter->drawEllipse(center);
     painter->restore();
   }

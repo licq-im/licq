@@ -132,6 +132,7 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
   findLayout->addWidget(myFindNextButton);
   searchLayout->addLayout(findLayout);
   connect(myPatternEdit, SIGNAL(textChanged(const QString&)), SLOT(searchTextChanged(const QString&)));
+  myPatternChanged = true;
 
   // Shortcuts for searching
   QShortcut* findPrevShortcut = new QShortcut(Qt::SHIFT + Qt::Key_F3, this);
@@ -391,6 +392,30 @@ void HistoryDlg::find(bool backwards)
 
   QRegExp regExp(getRegExp());
 
+  // If search pattern has changed, find all matching dates and mark them in the calendar
+  if (myPatternChanged)
+  {
+    myCalendar->clearMatches();
+
+    for (HistoryListIter i = myHistoryList.begin(); i != myHistoryList.end(); ++i)
+    {
+      QString messageText;
+      if ((*i)->SubCommand() == ICQ_CMDxSUB_SMS) // SMSs are always in UTF-8
+        messageText = QString::fromUtf8((*i)->Text());
+      else
+        messageText = myContactCodec->toUnicode((*i)->Text());
+
+      if (messageText.contains(regExp))
+      {
+        QDate date = QDateTime::fromTime_t((*i)->Time()).date();
+        myCalendar->addMatch(date);
+      }
+    }
+
+    // No need to do this again next time
+    myPatternChanged = false;
+  }
+
   myStatusLabel->setText(QString());
 
   // If this is first search we need to find an entry to start searching from
@@ -468,6 +493,16 @@ void HistoryDlg::searchTextChanged(const QString& text)
 
   // Clear failed status from previous search
   myPatternEdit->setStyleSheet("");
+
+  // Mark that pattern has changed since previous search
+  myPatternChanged = true;
+
+  // Search field is cleared so clear status message and matching dates
+  if (text.isEmpty())
+  {
+    myStatusLabel->setText(QString());
+    myCalendar->clearMatches();
+  }
 }
 
 void HistoryDlg::showUserMenu()

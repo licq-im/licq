@@ -24,6 +24,8 @@
 #include "config.h"
 
 #include <QCalendarWidget>
+#include <QDate>
+#include <QList>
 
 namespace LicqQtGui
 {
@@ -53,7 +55,20 @@ public:
    *
    * @param date Date to mark
    */
-  void markDate(QDate date);
+  void markDate(const QDate& date);
+
+  /**
+   * Mark a search match in the calendar
+   * Note: Date must already be marked with markDate()
+   *
+   * @param date Date of the match
+   */
+  void addMatch(const QDate& date);
+
+  /**
+   * Clear all search matches
+   */
+  void clearMatches();
 
 protected:
   /**
@@ -64,6 +79,9 @@ protected:
    * @param date Date to draw
    */
   virtual void paintCell(QPainter* painter, const QRect& rect, const QDate& date) const;
+
+private:
+  QList<QDate> myMatches;
 };
 
 } // namespace LicqQtGui

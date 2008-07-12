@@ -152,6 +152,7 @@ private:
   QString myOwnerName;
   QTextCodec* myContactCodec;
   bool myUseHtml;
+  bool myPatternChanged;
 
   HistoryList myHistoryList;
   HistoryListIter mySearchPos;
