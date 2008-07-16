@@ -357,7 +357,7 @@ QString MLView::markedText() const
 
 void MLView::updateFont()
 {
-  setFont(Config::General::instance()->editFont());
+  setFont(Config::General::instance()->historyFont());
 
   // Get height of current font
   myFontHeight = fontMetrics().height();

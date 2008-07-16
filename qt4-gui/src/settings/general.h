@@ -94,9 +94,11 @@ private:
   QVBoxLayout* myLocaleLayout;
   QLabel* myFontLabel;
   QLabel* myEditFontLabel;
+  QLabel* myHistoryFontLabel;
   QLabel* myFixedFontLabel;
   FontEdit* myNormalFontEdit;
   FontEdit* myEditFontEdit;
+  FontEdit* myHistoryFontEdit;
   FontEdit* myFixedFontEdit;
   QLabel* myDefaultEncodingLabel;
   QCheckBox* myShowAllEncodingsCheck;

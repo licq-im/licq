@@ -143,14 +143,23 @@ QWidget* Settings::General::createPageFonts(QWidget* parent)
   myEditFontLabel->setBuddy(myEditFontEdit);
   myFontLayout->addWidget(myEditFontEdit, 1, 1);
 
+  // History font
+  myHistoryFontLabel = new QLabel(tr("History:"));
+  myHistoryFontLabel->setToolTip(tr("Used in message history."));
+  myFontLayout->addWidget(myHistoryFontLabel, 2, 0);
+  myHistoryFontEdit = new FontEdit();
+  myHistoryFontEdit->setToolTip(myHistoryFontLabel->toolTip());
+  myHistoryFontLabel->setBuddy(myHistoryFontEdit);
+  myFontLayout->addWidget(myHistoryFontEdit, 2, 1);
+
   // Fixed font
   myFixedFontLabel = new QLabel(tr("Fixed:"));
   myFixedFontLabel->setToolTip(tr("Used in file editor and network log."));
-  myFontLayout->addWidget(myFixedFontLabel, 2, 0);
+  myFontLayout->addWidget(myFixedFontLabel, 3, 0);
   myFixedFontEdit = new FontEdit();
   myFixedFontEdit->setToolTip(myFixedFontLabel->toolTip());
   myFixedFontLabel->setBuddy(myFixedFontEdit);
-  myFontLayout->addWidget(myFixedFontEdit, 2, 1);
+  myFontLayout->addWidget(myFixedFontEdit, 3, 1);
 
   myPageFontsLayout->addWidget(myFontBox);
   myPageFontsLayout->addStretch(1);
@@ -214,6 +223,7 @@ void Settings::General::useDockToggled(bool useDock)
 void Settings::General::normalFontChanged(const QFont& font)
 {
   myEditFontEdit->setFont(font);
+  myHistoryFontEdit->setFont(font);
 }
 
 void Settings::General::load()
@@ -242,6 +252,7 @@ void Settings::General::load()
 
   myNormalFontEdit->setFont(QFont(generalConfig->normalFont()));
   myEditFontEdit->setFont(QFont(generalConfig->editFont()));
+  myHistoryFontEdit->setFont(QFont(generalConfig->historyFont()));
   myFixedFontEdit->setFont(QFont(generalConfig->fixedFont()));
 }
 
@@ -282,6 +293,11 @@ void Settings::General::apply()
     generalConfig->setEditFont(QString::null);
   else
     generalConfig->setEditFont(myEditFontEdit->font().toString());
+
+  if (myHistoryFontEdit->font() == Config::General::instance()->defaultFont())
+    generalConfig->setHistoryFont(QString::null);
+  else
+    generalConfig->setHistoryFont(myHistoryFontEdit->font().toString());
 
   if (myFixedFontEdit->font() == Config::General::instance()->defaultFixedFont())
     generalConfig->setFixedFont(QString::null);

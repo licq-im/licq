@@ -82,6 +82,7 @@ public:
   QFont defaultFixedFont() const { return myDefaultFixedFont; }
   QFont normalFont() const;
   QFont editFont() const { return myEditFont; }
+  QFont historyFont() const { return myHistoryFont; }
   QFont fixedFont() const { return myFixedFont; }
 
   bool miniMode() const { return myMiniMode; }
@@ -125,6 +126,7 @@ public slots:
   void setDelayStatusChange(bool delayStatusChange);
   void setNormalFont(QString normalFont);
   void setEditFont(QString editFont);
+  void setHistoryFont(QString historyFont);
   void setFixedFont(QString fixedFont);
 
   void setMiniMode(bool miniMode);
@@ -203,6 +205,7 @@ private:
   QFont myDefaultFont;
   QFont myDefaultFixedFont;
   QFont myEditFont;
+  QFont myHistoryFont;
   QFont myFixedFont;
 
   // Mainwin configuration

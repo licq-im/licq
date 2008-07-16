@@ -80,6 +80,10 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   if (strcmp(szTemp, "default") == 0)
     szTemp[0] = '\0';
   setEditFont(szTemp);
+  iniFile.ReadStr("HistoryFont", szTemp, "default");
+  if (strcmp(szTemp, "default") == 0)
+    szTemp[0] = '\0';
+  setHistoryFont(szTemp);
   iniFile.ReadStr("FixedFont", szTemp, "default");
   if (strcmp(szTemp, "default") == 0)
     szTemp[0] = '\0';
@@ -147,6 +151,8 @@ void Config::General::saveConfiguration(CIniFile& iniFile) const
       "default" : qApp->font().toString().toLatin1());
   iniFile.WriteStr("EditFont", myEditFont == myDefaultFont ?
       "default" : myEditFont.toString().toLatin1());
+  iniFile.WriteStr("HistoryFont", myHistoryFont == myDefaultFont ?
+      "default" : myHistoryFont.toString().toLatin1());
   iniFile.WriteStr("FixedFont", myFixedFont == myDefaultFixedFont ?
       "default" : myFixedFont.toString().toLatin1());
 
@@ -271,6 +277,24 @@ void Config::General::setEditFont(QString editFont)
     return;
 
   myEditFont = f;
+  if (myBlockUpdates)
+    myFontHasChanged = true;
+  else
+    emit fontChanged();
+}
+
+void Config::General::setHistoryFont(QString historyFont)
+{
+  QFont f;
+  if (historyFont.isEmpty())
+    f = myDefaultFont;
+  else
+    f.fromString(historyFont);
+
+  if (f == myHistoryFont)
+    return;
+
+  myHistoryFont = f;
   if (myBlockUpdates)
     myFontHasChanged = true;
   else
