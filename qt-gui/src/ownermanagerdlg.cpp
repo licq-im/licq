@@ -183,7 +183,7 @@ void OwnerEditDlg::slot_ok()
   else
   {
     gUserManager.AddOwner(szUser, nPPID);
-    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_W);
+    o = gUserManager.FetchOwner(nPPID, LOCK_W);
     if (szPassword)
       o->SetPassword(szPassword);
   }
