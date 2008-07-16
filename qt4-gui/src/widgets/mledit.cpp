@@ -46,9 +46,7 @@ MLEdit::MLEdit(bool wordWrap, QWidget* parent, bool useFixedFont, const char* na
     setLineWrapMode(NoWrap);
 
   updateFont();
-  connect(Config::General::instance(),
-      myUseFixedFont ? SIGNAL(fixedFontChanged()) : SIGNAL(fontChanged()),
-      SLOT(updateFont()));
+  connect(Config::General::instance(), SIGNAL(fontChanged()), SLOT(updateFont()));
 }
 
 MLEdit::~MLEdit()

@@ -178,11 +178,6 @@ signals:
   void fontChanged();
 
   /**
-   * Fixed Font configuration has changed (not emitted for normal font)
-   */
-  void fixedFontChanged();
-
-  /**
    * Popup key has changed
    */
   void msgPopupKeyChanged(QString newKey);
@@ -195,7 +190,6 @@ private:
   bool myDockHasChanged;
   bool myDockModeHasChanged;
   bool myFontHasChanged;
-  bool myFixedFontHasChanged;
   bool myBlockUpdates;
 
   // General configuration

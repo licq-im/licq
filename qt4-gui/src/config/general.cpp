@@ -47,7 +47,6 @@ Config::General::General(QObject* parent)
     myDockHasChanged(false),
     myDockModeHasChanged(false),
     myFontHasChanged(false),
-    myFixedFontHasChanged(false),
     myBlockUpdates(false)
 {
 #ifdef USE_KDE
@@ -135,7 +134,6 @@ void Config::General::loadConfiguration(CIniFile& iniFile)
   emit mainwinChanged();
   emit dockModeChanged();
   emit fontChanged();
-  emit fixedFontChanged();
 }
 
 void Config::General::saveConfiguration(CIniFile& iniFile) const
@@ -212,11 +210,6 @@ void Config::General::blockUpdates(bool block)
   {
     myFontHasChanged = false;
     emit fontChanged();
-  }
-  if (myFixedFontHasChanged)
-  {
-    myFixedFontHasChanged = false;
-    emit fixedFontChanged();
   }
 }
 
@@ -314,9 +307,9 @@ void Config::General::setFixedFont(QString fixedFont)
 
   myFixedFont = f;
   if (myBlockUpdates)
-    myFixedFontHasChanged = true;
+    myFontHasChanged = true;
   else
-    emit fixedFontChanged();
+    emit fontChanged();
 }
 
 void Config::General::setMiniMode(bool miniMode)
