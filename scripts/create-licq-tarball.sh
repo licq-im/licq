@@ -3,7 +3,7 @@
 # Script to create a source tarball from Licq's svn repository.
 # Latest version: http://svn.licq.org/svn/trunk/scripts/
 #
-# Copyright (c) 2007 Erik Johansson <erijo@licq.org>
+# Copyright (c) 2007-2008 Erik Johansson <erijo@licq.org>
 # Distributed under the terms of the GNU GPL version 2.
 #
 
@@ -87,27 +87,49 @@ if [ $CREATE_GZ -eq 0 -a $CREATE_BZ2 -eq 0 ]; then
     exit 1
 fi
 
-# Workdir
-TMPDIR=$(mktemp -d) || failed "mktemp -d"
-
 # Remove workdir
 function cleanup()
 {
-   echo "Removing ${TMPDIR}"
-   rm -rf "${TMPDIR}"
+   if [ -n "${TMPDIR}" ]; then
+     echo "Removing ${TMPDIR}"
+     rm -rf "${TMPDIR}"
+     TMPDIR=""
+   fi
 }
 
 # Echos "$1 failed" or "failed" and then exits.
 function failed()
 {
-   if [ -z $1 ]; then
+   if [ -z "$1" ]; then
       echo "failed"
    else
       echo "$1 failed"
    fi
+   if [ -r "${TMPFILE}" ]; then
+      cat "${TMPFILE}"
+   fi
    cleanup
    exit 1
 }
+
+function abort()
+{
+   echo "Aborted by user"
+   cleanup
+   exit 1
+}
+
+function run()
+{
+   "$@" &> "${TMPFILE}" || failed
+   rm -f "${TMPFILE}"
+}
+
+trap abort SIGHUP SIGINT SIGQUIT
+
+# Workdir/file
+TMPDIR=$(mktemp -d) || failed "mktemp -d"
+TMPFILE="${TMPDIR}/.cmd.out"
 
 SVNREV=$(svn info -r"${LICQREV}" "${REPO}" | grep "^Revision:" | awk '{print $2}') || failed
 
@@ -119,6 +141,7 @@ function exit_if_exists()
 {
    if [ -e "$1" ]; then
       echo "$1 already exists"
+      cleanup
       exit 1
    fi
 }
@@ -126,14 +149,14 @@ function exit_if_exists()
 function svnexport()
 {
    echo -n "Exporting $1 (r${SVNREV})... "
-   svn export --ignore-externals -r"${SVNREV}" -q "${REPO}/$1" "${LICQDIR}/$2" || failed
+   run svn export --ignore-externals -r"${SVNREV}" "${REPO}/$1" "${LICQDIR}/$2"
    echo "done"
 }
 
 function makecvs()
 {
    echo -n "Running make -f $1/Makefile.cvs... "
-   make -C "${LICQDIR}/$1" -f "${LICQDIR}/$1/Makefile.cvs" > /dev/null 2>&1 || failed
+   run make -C "${LICQDIR}/$1" -f "${LICQDIR}/$1/Makefile.cvs"
    rm -rf "${LICQDIR}/$1/autom4te.cache"
    rm -f "${LICQDIR}/$1/Makefile.cvs"
    echo "done"
