@@ -320,13 +320,19 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeStatusOccupied]->setVisible(isIcq);
   myMiscModesActions[ModeStatusDnd]->setVisible(isIcq);
 
+  unsigned short serverGroup = (u->GetSID() ? gUserManager.GetGroupFromID(u->GetGSID()) : 0);
+
   // Update group memberships
   foreach (QAction* a, myUserGroupActions->actions())
-    a->setChecked(u->GetInGroup(GROUPS_USER, a->data().toUInt()));
+  {
+    unsigned short gid = a->data().toUInt();
+    a->setChecked(u->GetInGroup(GROUPS_USER, gid));
+    a->setEnabled(gid != serverGroup);
+  }
   foreach (QAction* a, mySystemGroupActions->actions())
     a->setChecked(u->GetInGroup(GROUPS_SYSTEM, a->data().toUInt()));
   foreach (QAction* a, myServerGroupActions->actions())
-    a->setChecked(u->GetSID() && gUserManager.GetGroupFromID(u->GetGSID()) == a->data().toUInt());
+    a->setChecked(a->data().toUInt() == serverGroup);
 
   gUserManager.DropUser(u);
 }
