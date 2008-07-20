@@ -422,12 +422,20 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
   connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
   connect(btnApply, SIGNAL(clicked()), SLOT(slot_apply()));
   connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
+  connect(cmbSkin, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(slot_loadSkin(const QString&)));
   connect(cmbSkin, SIGNAL(highlighted(const QString&)),
       SLOT(slot_loadSkin(const QString&)));
+  connect(cmbIcon, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(slot_loadIcons(const QString&)));
   connect(cmbIcon, SIGNAL(highlighted(const QString&)),
       SLOT(slot_loadIcons(const QString&)));
+  connect(cmbExtIcon, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(slot_loadExtIcons(const QString&)));
   connect(cmbExtIcon, SIGNAL(highlighted(const QString&)),
       SLOT(slot_loadExtIcons(const QString&)));
+  connect(cmbEmoticon, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(slot_loadEmoticons(const QString&)));
   connect(cmbEmoticon, SIGNAL(highlighted(const QString&)),
       SLOT(slot_loadEmoticons(const QString&)));
 
