@@ -326,8 +326,11 @@ void UserMenu::aboutToShowMenu()
   foreach (QAction* a, myUserGroupActions->actions())
   {
     unsigned short gid = a->data().toUInt();
-    a->setChecked(u->GetInGroup(GROUPS_USER, gid));
-    a->setEnabled(gid != serverGroup);
+    bool inGroup = u->GetInGroup(GROUPS_USER, gid);
+    a->setChecked(inGroup);
+
+    // Don't allow leaving group if contact is member of the same group at the server side
+    a->setEnabled(!inGroup || gid != serverGroup);
   }
   foreach (QAction* a, mySystemGroupActions->actions())
     a->setChecked(u->GetInGroup(GROUPS_SYSTEM, a->data().toUInt()));
