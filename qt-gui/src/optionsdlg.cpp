@@ -930,6 +930,8 @@ QWidget* OptionsDlg::new_appearance_options()
   connect(btnEditFont, SIGNAL(clicked()), this, SLOT(slot_selecteditfont()));
   l->addWidget(boxFont);
 
+  l->addStretch(1);
+
   return w;
 }
 
@@ -1027,7 +1029,7 @@ QWidget* OptionsDlg::new_sounds_options()
   edtSndMsgSent = new KURLRequester(boxSndEvents);
 
   QGroupBox *boxAcceptEvents = new QGroupBox(4, Vertical, tr("Accept Modes"), w);
-  lay->addWidget(boxAcceptEvents, 1);
+  lay->addWidget(boxAcceptEvents);
 
   chkOEAway = new QCheckBox(tr("OnEvent in Away"), boxAcceptEvents);
   QWhatsThis::add(chkOEAway, tr("Perform OnEvent command in away mode"));
@@ -1042,6 +1044,8 @@ QWidget* OptionsDlg::new_sounds_options()
      "when logging on (this is different from how the Mirabilis client works)"));
 
   slot_chkOnEventsToggled(chkOnEvents->isChecked());
+
+  lay->addStretch(1);
 
   return w;
 }
@@ -1570,7 +1574,8 @@ QWidget* OptionsDlg::new_misc_options()
 QWidget* OptionsDlg::new_chat_options()
 {
   QWidget* w = new QWidget(this);
-  QBoxLayout* lay = new QHBoxLayout(w, 8, 4);
+  QVBoxLayout* l = new QVBoxLayout(w, 8, 4);
+  QBoxLayout* lay = new QHBoxLayout();
 
   QVBox* boxRight = new QVBox(w);
   lay->addWidget(boxRight);
@@ -1703,6 +1708,9 @@ QWidget* OptionsDlg::new_chat_options()
   tabViewer->insertTab(msgHistViewer, tr("History"));
 
   lay->activate();
+
+  l->addLayout(lay);
+  l->addStretch(1);
 
   return w;
 }
