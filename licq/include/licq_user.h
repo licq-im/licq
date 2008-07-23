@@ -916,8 +916,8 @@ public:
   bool Secure() { return m_bSecure; }
 
   virtual bool User()  { return true; }
-  void Lock(unsigned short);
-  void Unlock();
+  void Lock(unsigned short lockType) const;
+  void Unlock() const;
 
   // Deprecated functions, to be removed
   ICQUser(unsigned long id, char *filename) LICQ_DEPRECATED;
@@ -1090,8 +1090,8 @@ protected:
 
   static unsigned short s_nNumUserEvents;
 
-  pthread_rdwr_t mutex_rw;
-  unsigned short m_nLockType;
+  mutable pthread_rdwr_t myMutex;
+  mutable unsigned short myLockType;
   static pthread_mutex_t mutex_nNumUserEvents;
 
   friend class CUserManager;
@@ -1236,12 +1236,12 @@ public:
    *
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    */
-  void Lock(unsigned short lockType);
+  void Lock(unsigned short lockType) const;
 
   /**
    * Release current lock for group
    */
-  void Unlock();
+  void Unlock() const;
 
 private:
   unsigned short myId;
@@ -1249,8 +1249,8 @@ private:
   unsigned short mySortIndex;
   unsigned short myIcqGroupId;
 
-  pthread_rdwr_t myMutex;
-  unsigned short myLockType;
+  mutable pthread_rdwr_t myMutex;
+  mutable unsigned short myLockType;
 };
 
 /**
@@ -1280,7 +1280,7 @@ public:
   /**
    * Release owner lock
    */
-  void DropOwner(ICQOwner* owner);
+  void DropOwner(const ICQOwner* owner);
 
   bool IsOnList(const char *, unsigned long);
   ICQOwner *FindOwner(const char *, unsigned long);
@@ -1295,7 +1295,7 @@ public:
 
   // ICQ Protocol only (from original Licq)
   void AddUser(ICQUser *);
-  void DropUser(ICQUser *);
+  void DropUser(const ICQUser* user);
 
   // Deprecated user functions, to be removed
   LICQ_DEPRECATED ICQUser *FetchUser(unsigned long, unsigned short);
@@ -1363,7 +1363,7 @@ public:
    *
    * @param group The group to unlock
    */
-  void DropGroup(LicqGroup* group);
+  void DropGroup(const LicqGroup* group);
 
   /**
    * Check if a group id is valid

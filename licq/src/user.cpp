@@ -447,42 +447,42 @@ char *PPIDSTRING(unsigned long id)
 /*---------------------------------------------------------------------------
  * ICQUser::Lock
  *-------------------------------------------------------------------------*/
-void ICQUser::Lock(unsigned short _nLockType)
+void ICQUser::Lock(unsigned short lockType) const
 {
-  switch (_nLockType)
+  switch (lockType)
   {
-  case LOCK_R:
-    pthread_rdwr_rlock_np (&mutex_rw);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wlock_np(&mutex_rw);
-    break;
-  default:
-    assert(false);
-    return;
+    case LOCK_R:
+      pthread_rdwr_rlock_np(&myMutex);
+      break;
+    case LOCK_W:
+      pthread_rdwr_wlock_np(&myMutex);
+      break;
+    default:
+      assert(false);
+      return;
   }
-  m_nLockType = _nLockType;
+  myLockType = lockType;
 }
 
 
 /*---------------------------------------------------------------------------
  * ICQUser::Unlock
  *-------------------------------------------------------------------------*/
-void ICQUser::Unlock()
+void ICQUser::Unlock() const
 {
-  unsigned short nLockType = m_nLockType;
-  m_nLockType = LOCK_R;
-  switch (nLockType)
+  unsigned short lockType = myLockType;
+  myLockType = LOCK_R;
+  switch (lockType)
   {
-  case LOCK_R:
-    pthread_rdwr_runlock_np(&mutex_rw);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wunlock_np(&mutex_rw);
-    break;
-  default:
-    assert(false);
-    break;
+    case LOCK_R:
+      pthread_rdwr_runlock_np(&myMutex);
+      break;
+    case LOCK_W:
+      pthread_rdwr_wunlock_np(&myMutex);
+      break;
+    default:
+      assert(false);
+      break;
   }
 }
 
@@ -883,7 +883,7 @@ LicqGroup* CUserManager::FetchGroup(unsigned short group, unsigned short lockTyp
   return g;
 }
 
-void CUserManager::DropGroup(LicqGroup* group)
+void CUserManager::DropGroup(const LicqGroup* group)
 {
   if (group != NULL)
     group->Unlock();
@@ -1322,7 +1322,7 @@ bool CUserManager::IsOnList(unsigned long nUin)
 /*---------------------------------------------------------------------------
  * CUserManager::DropUser
  *-------------------------------------------------------------------------*/
-void CUserManager::DropUser(ICQUser *u)
+void CUserManager::DropUser(const ICQUser* u)
 {
   if (u == NULL) return;
   u->Unlock();
@@ -1390,7 +1390,7 @@ void CUserManager::DropOwner(unsigned long _nPPID)
   UnlockOwnerList();
 }
 
-void CUserManager::DropOwner(ICQOwner* owner)
+void CUserManager::DropOwner(const ICQOwner* owner)
 {
   if (owner == NULL)
     return;
@@ -1700,7 +1700,7 @@ LicqGroup::~LicqGroup()
   pthread_rdwr_destroy_np(&myMutex);
 }
 
-void LicqGroup::Lock(unsigned short lockType)
+void LicqGroup::Lock(unsigned short lockType) const
 {
   switch (lockType)
   {
@@ -1717,7 +1717,7 @@ void LicqGroup::Lock(unsigned short lockType)
   myLockType = lockType;
 }
 
-void LicqGroup::Unlock()
+void LicqGroup::Unlock() const
 {
   unsigned short lockType = myLockType;
   myLockType = LOCK_R;
@@ -2204,7 +2204,7 @@ ICQUser::~ICQUser()
   } while (nResult != 0);
 */
 
-  pthread_rdwr_destroy_np(&mutex_rw);
+  pthread_rdwr_destroy_np(&myMutex);
 }
 
 
@@ -2369,8 +2369,8 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_nGSID = 0;
   m_szClientInfo = NULL;
 
-  pthread_rdwr_init_np (&mutex_rw, NULL);
-  pthread_rdwr_set_name(&mutex_rw, m_szId);
+  pthread_rdwr_init_np(&myMutex, NULL);
+  pthread_rdwr_set_name(&myMutex, m_szId);
 }
 
 unsigned long ICQUser::Uin() const
