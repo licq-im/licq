@@ -148,9 +148,9 @@ void CLicqConsole::PrintStatus()
   else
     strcpy(szMsgStr, "No Messages");
 
-  if (winMain->sLastContact.szId != 0)
+  if (!winMain->sLastContact.szId.empty())
   {
-    ICQUser *u = gUserManager.FetchUser(winMain->sLastContact.szId,
+    ICQUser* u = gUserManager.FetchUser(winMain->sLastContact.szId.c_str(),
       winMain->sLastContact.nPPID, LOCK_R);
     if (u == NULL)
       szLastUser = strdup("<Removed>");
@@ -465,7 +465,7 @@ int CLicqConsole::UserListCallback(EObjectType /* cdktype */, void* /* object */
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintContactPopup
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintContactPopup(char *_szAlias)
+void CLicqConsole::PrintContactPopup(const char* _szAlias)
 {
   char title[256];
   snprintf(title, 256, "<C></B/40>%s", _szAlias);

@@ -634,10 +634,9 @@ void CMSN::MSNRenameUser(const char* szUser)
 {
   ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_R);
   if (!u) return;
-  char *szNewNick = u->GetAlias();
+  string strNick = u->GetAlias();
   gUserManager.DropUser(u);
 
-  string strNick(szNewNick);
   string strEncodedNick = Encode(strNick);
   CMSNPacket *pSend = new CPS_MSNRenameUser(szUser, strEncodedNick.c_str());
   SendPacket(pSend);

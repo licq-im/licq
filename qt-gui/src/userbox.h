@@ -96,7 +96,7 @@ protected:
   QPixmap *m_pIcon, *m_pIconStatus, *m_pUserIcon;
 
   char *m_szId;
-  char *m_szAlias;
+  QString m_szAlias;
   unsigned long m_nPPID;
   unsigned short m_nStatus;
   unsigned long m_nStatusFull;

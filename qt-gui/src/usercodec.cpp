@@ -93,7 +93,7 @@ QTextCodec* UserCodec::defaultEncoding()
 
 QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
 {
-  char *preferred_encoding = u->UserEncoding();
+  const char* preferred_encoding = u->UserEncoding();
 
   if ( preferred_encoding && *preferred_encoding ) {
       if (QTextCodec * codec = QTextCodec::codecForName(preferred_encoding))

@@ -1466,17 +1466,15 @@ bool CLicqConsole::ParseMacro(char *szMacro)
 /*---------------------------------------------------------------------------
  * CLicqConsole::SaveLastUser
  *-------------------------------------------------------------------------*/
-void CLicqConsole::SaveLastUser(const char *szId, unsigned long nPPID)
+void CLicqConsole::SaveLastUser(const string& id, unsigned long nPPID)
 {
   // Save this as the last user
-  if (winMain->sLastContact.szId == 0 ||
-      !(strcmp(szId, winMain->sLastContact.szId) == 0 &&
+  if (winMain->sLastContact.szId.empty() ||
+      !(id == winMain->sLastContact.szId &&
       nPPID == winMain->sLastContact.nPPID))
   {
-    if (winMain->sLastContact.szId)
-      free(winMain->sLastContact.szId);
     winMain->sLastContact.nPPID = nPPID;
-    winMain->sLastContact.szId = strdup(szId);
+    winMain->sLastContact.szId = id;
     PrintStatus();
   }
 }

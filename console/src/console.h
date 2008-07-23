@@ -153,7 +153,7 @@ public:
   void PrintInfo_About(const char *, unsigned long);
   void PrintFileStat(CFileTransferManager *);
   void PrintMacros();
-  void PrintContactPopup(char *);
+  void PrintContactPopup(const char* alias);
 
   static int UserListCallback(EObjectType, void *, void *, chtype);
   static int MenuPopupWrapper(EObjectType, void *, void *, chtype);
@@ -214,7 +214,7 @@ public:
   void InputUserSelect(int cIn);
   bool ParseMacro(char *);
   std::string GetUserFromArg(char** p_szArg);
-  void SaveLastUser(const char *, unsigned long);
+  void SaveLastUser(const std::string& id, unsigned long ppid);
   struct SContact GetContactFromArg(char **);
 };
 

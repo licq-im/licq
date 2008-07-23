@@ -426,7 +426,7 @@ void ProcessSignal(CICQSignal *s)
     bool want_osd_msgs_only=false; // though we don't want OSD we want msgs
     bool secure=false;
     unsigned long status=0;
-    char *userencoding=0;
+  const char* userencoding = NULL;
     CUserEvent *e=0;
 
     switch (s->Signal()) // signaltype

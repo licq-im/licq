@@ -138,7 +138,6 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, unsigned short
     m_sGroupName(name)
 {
   m_szId = 0;
-  m_szAlias = 0;
   m_nPPID =0;
   m_pIcon = NULL;
   m_cBack = s_cGroupBack;
@@ -587,9 +586,9 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
         qDrawShadeLine( p, 0, height() >> 1, width - 5, (height() >> 1) + 2, cg, true, 1, 0);
       }
     } // isGroupItem
-    else if (m_szAlias                                        // this row contains a user 
+    else if (!m_szAlias.isNull()                          // this row contains a user
              && text(column).ascii()                          // ...+ it is not empty 
-             && strcmp(m_szAlias, text(column).ascii()) == 0  // ...+ this col contains the users alias 
+             && m_szAlias == text(column).ascii()       // ...+ this col contains the users alias
              && gMainWindow->m_bShowExtendedIcons)            // ...+ extended icons are enabled
     {
       // pmPhone

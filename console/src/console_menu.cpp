@@ -678,7 +678,6 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
   char *szArg = *p_szArg;
   unsigned long nPPID = 0;
   struct SContact scon;
-  scon.szId = NULL;
   scon.nPPID = 0;
 
   if (szArg == NULL) {
@@ -765,10 +764,10 @@ struct SContact CLicqConsole::GetContactFromArg(char **p_szArg)
     }
   }
   FOR_EACH_USER_END
-  if (scon.szId == NULL)
+  if (scon.szId.empty())
   {
     winMain->wprintf("%CInvalid user: %A%s\n", COLOR_RED, A_BOLD, szAlias);
-    scon.szId = NULL;
+    scon.szId.clear();
     scon.nPPID = (unsigned long)-1;
     return scon;
   }
@@ -786,10 +785,10 @@ void CLicqConsole::MenuMessage(char *szArg)
   char *sz = szArg;
   struct SContact scon = GetContactFromArg(&sz);
 
-  if (!scon.szId && scon.nPPID != (unsigned long)-1)
+  if (scon.szId.empty() && scon.nPPID != (unsigned long)-1)
     winMain->wprintf("%CYou must specify a user to send a message to.\n", COLOR_RED);
   else if (scon.nPPID != (unsigned long)-1)
-    UserCommand_Msg(scon.szId, scon.nPPID, sz);
+    UserCommand_Msg(scon.szId.c_str(), scon.nPPID, sz);
 }
 
 
@@ -852,11 +851,11 @@ void CLicqConsole::MenuView(char *szArg)
 {
 
   char *sz = szArg;
-  char *szId = NULL;
+  string szId;
   unsigned long nPPID = (unsigned long)-1;
   struct SContact scon = GetContactFromArg(&sz);
-  
-  if (scon.szId == 0)
+
+  if (scon.szId.empty())
   {
     // Do nothing if there are no events pending
     if (ICQUser::getNumUserEvents() == 0) return;
@@ -883,14 +882,14 @@ void CLicqConsole::MenuView(char *szArg)
       }
     }
     FOR_EACH_USER_END
-    if (szId != NULL)
+    if (!szId.empty())
     {
-      UserCommand_View(szId, nPPID, NULL);
+      UserCommand_View(szId.c_str(), nPPID, NULL);
     }
   }
-  else if (scon.szId != NULL)
+  else if (!scon.szId.empty())
   {
-    UserCommand_View(scon.szId, scon.nPPID, sz);
+    UserCommand_View(scon.szId.c_str(), scon.nPPID, sz);
   }
 
 }
@@ -987,12 +986,12 @@ void CLicqConsole::MenuRemove(char *szArg)
   char *sz = szArg;
   struct SContact scon = GetContactFromArg(&sz);
 
-  if (gUserManager.FindOwner(scon.szId, scon.nPPID))
+  if (gUserManager.FindOwner(scon.szId.c_str(), scon.nPPID))
     winMain->wprintf("%CYou can't remove yourself!\n", COLOR_RED);
-  else if (!scon.szId && scon.nPPID != (unsigned long)-1)
+  else if (scon.szId.empty() && scon.nPPID != (unsigned long)-1)
     winMain->wprintf("%CYou must specify a user to remove.\n", COLOR_RED);
   else
-    UserCommand_Remove(scon.szId, scon.nPPID, sz);
+    UserCommand_Remove(scon.szId.c_str(), scon.nPPID, sz);
 }
 
 
@@ -1004,10 +1003,10 @@ void CLicqConsole::MenuHistory(char *szArg)
   char *sz = szArg;
   struct SContact scon = GetContactFromArg(&sz);
 
-  if (!scon.szId && scon.nPPID != (unsigned long)-1)
+  if (scon.szId.empty() && scon.nPPID != (unsigned long)-1)
     winMain->wprintf("%CYou must specify a user to view history.\n", COLOR_RED);
   else if (scon.nPPID != (unsigned long)-1)
-    UserCommand_History(scon.szId, scon.nPPID, sz);
+    UserCommand_History(scon.szId.c_str(), scon.nPPID, sz);
 }
 
 

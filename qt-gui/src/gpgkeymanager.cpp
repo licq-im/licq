@@ -34,7 +34,7 @@
 
 struct luser
 {
-  char *szId;
+  QString szId;
   unsigned long nPPID;
   const char *alias;
 };
@@ -168,7 +168,7 @@ void GPGKeyManager::slot_add()
   luser *tmp = list.at( res );
   if ( !tmp ) return;
 
-  ICQUser *u = gUserManager.FetchUser(tmp->szId, tmp->nPPID, LOCK_R);
+  ICQUser* u = gUserManager.FetchUser(tmp->szId.latin1(), tmp->nPPID, LOCK_R);
   if ( u )
   {
     editUser( u );

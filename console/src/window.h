@@ -37,7 +37,7 @@ class CData;
 
 struct SContact
 {
-  char *szId;
+  std::string szId;
   unsigned long nPPID;
 };
 
