@@ -518,7 +518,7 @@ public:
   unsigned short GetHomepageCatCode() const     {  return m_nHomepageCatCode; }
   //!Retrivies the users homepage description
   const char* GetHomepageDesc() const           {  return m_szHomepageDesc; }
-  //!Returns true if the user has an ICQ homepage (http://<uin>.home.icq.com/) const
+  //!Returns true if the user has an ICQ homepage (http://<uin>.home.icq.com/)
   bool GetICQHomepagePresent() const            {  return m_bICQHomepagePresent; }
 
   // Work Info
