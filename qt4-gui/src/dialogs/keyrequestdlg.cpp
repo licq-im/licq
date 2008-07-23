@@ -48,7 +48,7 @@ KeyRequestDlg::KeyRequestDlg(QString id, unsigned long ppid, QWidget* parent)
   Support::setWidgetProps(this, "KeyRequestDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   setWindowTitle(tr("Licq - Secure Channel with %1")
       .arg(QString::fromUtf8(u->GetAlias())));
 

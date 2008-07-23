@@ -724,7 +724,7 @@ bool LicqGui::removeUserFromList(QString id, unsigned long ppid, QWidget* parent
   if (parent == NULL)
     parent = myMainWindow;
 
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
   if (u == NULL)
     return true;
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
@@ -1064,7 +1064,7 @@ void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
   if (id.isEmpty() || ppid == 0)
     return;
 
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
 
   if (u == NULL)
     return;
@@ -1220,7 +1220,7 @@ void LicqGui::showNextEvent(QString id)
   {
     if (Config::Chat::instance()->msgChatView())
     {
-      ICQUser* u = NULL;
+      const ICQUser* u = NULL;
       if (ppid == 0)
       {
         FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
@@ -1310,7 +1310,7 @@ void LicqGui::createFloaty(QString id, unsigned long ppid,
 {
   if (id.isEmpty() || ppid == 0)
     return;
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
   if (u == NULL)
     return;
 
@@ -1402,7 +1402,7 @@ void LicqGui::userUpdated(CICQSignal* sig)
   QString id = sig->Id();
   unsigned long ppid = sig->PPID();
 
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
   if (u == NULL)
   {
     char* ppidString = PPIDSTRING(ppid);
@@ -1453,7 +1453,7 @@ void LicqGui::userUpdated(CICQSignal* sig)
 
         if (Config::Chat::instance()->autoPopup() >= popCheck)
         {
-          ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+          const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
           if (u != NULL)
           {
             bool bCallUserView = false, bCallSendMsg = false;
@@ -1499,7 +1499,7 @@ void LicqGui::userUpdated(CICQSignal* sig)
     case USER_SECURITY:
     case USER_TYPING:
     {
-      ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
       if (u == NULL)
         break;
 

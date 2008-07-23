@@ -46,9 +46,9 @@ public:
   bool tabIsSelected(QWidget* tab);
   bool tabExists(QWidget* tab);
   void updateConvoLabel(UserEventCommon* tab);
-  void updateTabLabel(ICQUser* u);
-  void updateTabLabel(UserEventCommon* tab, ICQUser* u = NULL);
-  void setTyping(ICQUser* u, int convoId);
+  void updateTabLabel(const ICQUser* u);
+  void updateTabLabel(UserEventCommon* tab, const ICQUser* u = NULL);
+  void setTyping(const ICQUser* u, int convoId);
 
 #ifdef USE_KDE
   virtual void setIcon(const QPixmap& icon);

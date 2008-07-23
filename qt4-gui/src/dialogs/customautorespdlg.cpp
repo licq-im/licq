@@ -72,7 +72,7 @@ CustomAutoRespDlg::CustomAutoRespDlg(QString id, unsigned long ppid, QWidget* pa
 
   lay->addWidget(buttons);
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
 
   if (u == NULL)
     return;

@@ -90,7 +90,7 @@ using namespace LicqQtGui;
 
 const size_t SHOW_RECENT_NUM = 5;
 
-typedef pair<CUserEvent*, char*> messagePair;
+typedef pair<const CUserEvent*, char*> messagePair;
 
 bool orderMessagePairs(const messagePair& mp1, const messagePair& mp2)
 {
@@ -165,7 +165,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 
   bool canSendDirect = (mySendFuncs & PP_SEND_DIRECT);
 
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
 
   if (u != NULL)
   {
@@ -312,7 +312,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
     {
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
-        CUserEvent* e = u->EventPeek(i);
+        const CUserEvent* e = u->EventPeek(i);
         // Get the convo id now
         unsigned long convoId = e->ConvoId();
         if (myConvoId == 0)
@@ -497,7 +497,7 @@ void UserSendCommon::updateIcons()
     a->setIcon(iconForType(a->data().toInt()));
 }
 
-void UserSendCommon::updatePicture(ICQUser* u)
+void UserSendCommon::updatePicture(const ICQUser* u)
 {
   bool fetched = false;
 
@@ -580,7 +580,7 @@ void UserSendCommon::convoJoin(QString id, unsigned long convoId)
 
   if (Config::Chat::instance()->msgChatView())
   {
-    ICQUser* u = gUserManager.FetchUser(id.toLatin1(), myPpid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), myPpid, LOCK_R);
     QString userName;
     if (u != 0)
     {
@@ -617,7 +617,7 @@ void UserSendCommon::convoLeave(QString id, unsigned long /* convoId */)
 
   if (Config::Chat::instance()->msgChatView())
   {
-    ICQUser* u = gUserManager.FetchUser(id.toLatin1(), myPpid, LOCK_R);
+    ICQUser* u = gUserManager.FetchUser(id.toLatin1(), myPpid, LOCK_W);
     QString userName;
     if (u != 0)
       userName = QString::fromUtf8(u->GetAlias());
@@ -759,7 +759,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
   {
     case ICQ_CMDxSUB_MSG:
     {
-      ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
       bool userOffline = true;
       if (u != 0)
       {
@@ -917,7 +917,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
 
 void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
 {
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_W);
 
   if (u == NULL)
     return;
@@ -942,7 +942,7 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
 
     case USER_EVENTS:
     {
-      CUserEvent* e = u->EventPeekId(sig->Argument());
+      const CUserEvent* e = u->EventPeekId(sig->Argument());
 
       if (e != NULL && myHighestEventId < sig->Argument() &&
           myHistoryView && sig->Argument() > 0)
@@ -980,7 +980,7 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
 
 bool UserSendCommon::checkSecure()
 {
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
 
   if (u == NULL)
     return false;
@@ -997,7 +997,7 @@ bool UserSendCommon::checkSecure()
       send_ok = false;
     else
     {
-      ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+      ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_W);
       if (u != NULL)
       {
         u->SetAutoSecure(false);
@@ -1462,7 +1462,7 @@ void UserSendCommon::textChangedTimeout()
 
 void UserSendCommon::sendTrySecure()
 {
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
 
   bool autoSecure = false;
   if (u != NULL)

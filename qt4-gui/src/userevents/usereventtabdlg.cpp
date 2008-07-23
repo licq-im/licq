@@ -74,7 +74,7 @@ UserEventTabDlg::~UserEventTabDlg()
 
 void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
 {
-  ICQUser* u = gUserManager.FetchUser(tab->id().toLatin1(), tab->ppid(), LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(tab->id().toLatin1(), tab->ppid(), LOCK_R);
   if (u == NULL)
     return;
 
@@ -114,7 +114,7 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
 
   for (it = users.begin(); it != users.end(); ++it)
   {
-    ICQUser* u = gUserManager.FetchUser((*it).c_str(), tab->ppid(), LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser((*it).c_str(), tab->ppid(), LOCK_R);
 
     if (!newLabel.isEmpty())
       newLabel += ", ";
@@ -131,7 +131,7 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
   myTabs->setTabText(myTabs->indexOf(tab), newLabel);
 }
 
-void UserEventTabDlg::updateTabLabel(ICQUser* u)
+void UserEventTabDlg::updateTabLabel(const ICQUser* u)
 {
   if (u == NULL)
     return;
@@ -146,7 +146,7 @@ void UserEventTabDlg::updateTabLabel(ICQUser* u)
   }
 }
 
-void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, ICQUser* u)
+void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const ICQUser* u)
 {
   if (tab == NULL)
     return;
@@ -214,7 +214,7 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, ICQUser* u)
     setWindowIcon(icon);
 }
 
-void UserEventTabDlg::setTyping(ICQUser* u, int convoId)
+void UserEventTabDlg::setTyping(const ICQUser* u, int convoId)
 {
   for (int index = 0; index < myTabs->count(); index++)
   {

@@ -632,7 +632,7 @@ void MainWindow::slot_updatedUser(CICQSignal* sig)
         break;
       }
 
-      ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
       if (u == NULL)
       {
         char* ppidString = PPIDSTRING(ppid);

@@ -57,7 +57,7 @@ QTimer* ContactUserData::myAnimateTimer = NULL;
 int ContactUserData::myAnimatorCount = 0;
 
 
-ContactUserData::ContactUserData(ICQUser* licqUser, QObject* parent)
+ContactUserData::ContactUserData(const ICQUser* licqUser, QObject* parent)
   : myStatus(ICQ_STATUS_OFFLINE),
     myEvents(0),
     myFlash(false),
@@ -143,7 +143,7 @@ void ContactUserData::update(CICQSignal* sig)
   // TODO: Add better handling of subsignals so we don't have to update everything so often
 
 
-  ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
   if (u != NULL)
   {
     // Group membership is handled by ContactList so send it a signal to update
@@ -156,7 +156,7 @@ void ContactUserData::update(CICQSignal* sig)
   }
 }
 
-void ContactUserData::updateAll(ICQUser* u)
+void ContactUserData::updateAll(const ICQUser* u)
 {
   myStatus = u->Status();
   myStatusFull = u->StatusFull();
@@ -395,7 +395,7 @@ void ContactUserData::updateSorting()
   mySortKey += myText[0];
 }
 
-bool ContactUserData::updateText(ICQUser* licqUser)
+bool ContactUserData::updateText(const ICQUser* licqUser)
 {
   bool hasChanged = false;
 
@@ -424,7 +424,7 @@ bool ContactUserData::updateText(ICQUser* licqUser)
 
 void ContactUserData::configUpdated()
 {
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   if (u == NULL)
     return;
 
@@ -498,7 +498,7 @@ void ContactUserData::refresh()
 {
   // Here we update any content that may be dynamic, for example timestamps
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   if (u == NULL)
     return;
 
@@ -668,7 +668,7 @@ QVariant ContactUserData::data(int column, int role) const
 
 QString ContactUserData::tooltip() const
 {
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   if (u == NULL)
     return "";
 

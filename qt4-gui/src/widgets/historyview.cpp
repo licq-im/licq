@@ -396,7 +396,7 @@ void HistoryView::addMsg(const CUserEvent* event, QString id, unsigned long ppid
     ppid = myPpid;
   }
 
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
   if (u != NULL)
   {
     codec = UserCodec::codecForICQUser(u);

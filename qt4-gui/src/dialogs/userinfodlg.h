@@ -191,17 +191,17 @@ private:
   InfoField* nfoKABCEmail;
   QString m_kabcID;
 
-  void SetGeneralInfo(ICQUser*);
-  void SetMoreInfo(ICQUser*);
-  void SetMore2Info(ICQUser*);
-  void UpdateMore2Info(QTextCodec*, ICQUserCategory*);
-  void SetWorkInfo(ICQUser*);
-  void SetAbout(ICQUser*);
-  void SetPhoneBook(ICQUser*);
-  void UpdatePhoneBook(QTextCodec*);
-  void SetPicture(ICQUser*);
-  void SetLastCountersInfo(ICQUser*);
-  void SetKABCInfo(ICQUser*);
+  void SetGeneralInfo(const ICQUser* u);
+  void SetMoreInfo(const ICQUser* u);
+  void SetMore2Info(const ICQUser* u);
+  void UpdateMore2Info(QTextCodec* codec, const ICQUserCategory* cat);
+  void SetWorkInfo(const ICQUser* u);
+  void SetAbout(const ICQUser* u);
+  void SetPhoneBook(const ICQUser* u);
+  void UpdatePhoneBook(QTextCodec* u);
+  void SetPicture(const ICQUser* u);
+  void SetLastCountersInfo(const ICQUser* u);
+  void SetKABCInfo(const ICQUser* u);
   void UpdateKABCInfo();
   void SaveGeneralInfo();
   void SaveMoreInfo();

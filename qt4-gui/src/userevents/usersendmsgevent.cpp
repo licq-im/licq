@@ -75,7 +75,7 @@ bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
   myMessageEdit->setText(QString::null);
 
   bool showAwayDlg = false;
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
   if (u != NULL)
   {
     showAwayDlg = u->Away() && u->ShowAwayMsg();
@@ -126,7 +126,7 @@ void UserSendMsgEvent::send()
   if (!checkSecure())
     return;
 
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
   bool userOffline = true;
   if (u != NULL)
   {

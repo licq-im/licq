@@ -90,9 +90,9 @@ QTextCodec* UserCodec::defaultEncoding()
   return QTextCodec::codecForLocale();
 }
 
-QTextCodec* UserCodec::codecForICQUser(ICQUser* u)
+QTextCodec* UserCodec::codecForICQUser(const ICQUser* u)
 {
-  char* preferred_encoding = u->UserEncoding();
+  const char* preferred_encoding = u->UserEncoding();
 
   if (preferred_encoding && *preferred_encoding)
   {
@@ -109,7 +109,7 @@ QTextCodec* UserCodec::codecForProtoUser(const QString& id, unsigned long ppid)
 {
   QTextCodec* codec = defaultEncoding();
 
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
   if (u != NULL)
   {
     codec = UserCodec::codecForICQUser(u);

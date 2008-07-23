@@ -31,10 +31,10 @@ class LicqStrings
 {
 public:
   static QString getStatus(unsigned short status, bool invisible);
-  static QString getStatus(ICQUser* user, bool useInvisible = true);
+  static QString getStatus(const ICQUser* user, bool useInvisible = true);
 
   static QString getShortStatus(unsigned short status, bool invisible);
-  static QString getShortStatus(ICQUser* user, bool useInvisible = true);
+  static QString getShortStatus(const ICQUser* user, bool useInvisible = true);
 
   static QString getSystemGroupName(unsigned long group);
 };

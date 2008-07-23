@@ -154,7 +154,7 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   myTimeTimer = NULL;
   myTypingTimer = NULL;
 
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
   if (u != NULL)
   {
     if (u->NewMessages() == 0)
@@ -282,7 +282,7 @@ void UserEventCommon::flashTaskbar()
     QApplication::alert(this);
 }
 
-void UserEventCommon::updateWidgetInfo(ICQUser* u)
+void UserEventCommon::updateWidgetInfo(const ICQUser* u)
 {
   QTextCodec* codec = UserCodec::codecForICQUser(u);
 
@@ -466,7 +466,7 @@ void UserEventCommon::updatedUser(CICQSignal* sig)
       return;
   }
 
-  ICQUser* u = gUserManager.FetchUser(sig->Id(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(sig->Id(), myPpid, LOCK_R);
   if (u == NULL)
     return;
 

@@ -90,7 +90,7 @@ UserSendContactEvent::~UserSendContactEvent()
 
 void UserSendContactEvent::setContact(QString id, unsigned long ppid)
 {
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
 
   if (u != NULL)
   {
@@ -105,7 +105,7 @@ bool UserSendContactEvent::sendDone(ICQEvent* e)
     return true;
 
   bool showAwayDlg = false;
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
   if (u != NULL)
   {
     showAwayDlg = u->Away() && u->ShowAwayMsg();

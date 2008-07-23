@@ -38,7 +38,7 @@ using namespace LicqQtGui;
 
 UserFloatyList FloatyView::floaties;
 
-FloatyView::FloatyView(ContactListModel* contactList, ICQUser* licqUser,  QWidget* parent)
+FloatyView::FloatyView(ContactListModel* contactList, const ICQUser* licqUser,  QWidget* parent)
   : UserViewBase(contactList, parent),
   myPpid(licqUser->PPID())
 {

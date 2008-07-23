@@ -143,7 +143,7 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
   h_lay->addWidget(myCloseButton);
   setTabOrder(myReadNextButton, myCloseButton);
 
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
   if (u != NULL && u->NewMessages() > 0)
   {
     unsigned short i = 0;
@@ -168,7 +168,7 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
      */
     for (i++; i < u->NewMessages(); i++)
     {
-      CUserEvent* event = u->EventPeek(i);
+      const CUserEvent* event = u->EventPeek(i);
       if (!Config::Chat::instance()->msgChatView() ||
           (event->SubCommand() != ICQ_CMDxSUB_MSG &&
            event->SubCommand() != ICQ_CMDxSUB_URL))
@@ -260,7 +260,7 @@ void UserViewEvent::updateNextButton()
 
 void UserViewEvent::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
 {
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
 
   if (u == 0)
     return;
@@ -270,7 +270,7 @@ void UserViewEvent::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
     if (sig->Argument() > 0)
     {
       int eventId = sig->Argument();
-      CUserEvent* e = u->EventPeekId(eventId);
+      const CUserEvent* e = u->EventPeekId(eventId);
       // Making sure we didn't handle this message already.
       if (e != NULL && myHighestEventId < eventId &&
           (!Config::Chat::instance()->msgChatView() ||
@@ -295,7 +295,7 @@ void UserViewEvent::autoClose()
   if (!myAutoCloseCheck->isChecked())
     return;
 
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
 
   bool doclose = false;
 
@@ -596,7 +596,7 @@ void UserViewEvent::read4()
       GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, CEventAdded);
 #undef GETINFO
 
-      ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
       if (u == NULL)
         gLicqDaemon->AddUserToList(id, ppid, false, true);
       else
@@ -736,7 +736,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
         myRead1Button->setText(tr("A&uthorize"));
         myRead2Button->setText(tr("&Refuse"));
         CEventAuthRequest* pAuthReq = dynamic_cast<CEventAuthRequest*>(m);
-        ICQUser* u = gUserManager.FetchUser(pAuthReq->IdString(), pAuthReq->PPID(), LOCK_R);
+        const ICQUser* u = gUserManager.FetchUser(pAuthReq->IdString(), pAuthReq->PPID(), LOCK_R);
         if (u == NULL)
           myRead3Button->setText(tr("A&dd User"));
         else
@@ -748,7 +748,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
       case ICQ_CMDxSUB_AUTHxGRANTED:
       {
         CEventAuthGranted* pAuth = dynamic_cast<CEventAuthGranted*>(m);
-        ICQUser* u = gUserManager.FetchUser(pAuth->IdString(), pAuth->PPID(), LOCK_R);
+        const ICQUser* u = gUserManager.FetchUser(pAuth->IdString(), pAuth->PPID(), LOCK_R);
         if (u == NULL)
           myRead1Button->setText(tr("A&dd User"));
         else
@@ -760,7 +760,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
       case ICQ_CMDxSUB_ADDEDxTOxLIST:
       {
         CEventAdded* pAdd = dynamic_cast<CEventAdded*>(m);
-        ICQUser* u = gUserManager.FetchUser(pAdd->IdString(), pAdd->PPID(), LOCK_R);
+        const ICQUser* u = gUserManager.FetchUser(pAdd->IdString(), pAdd->PPID(), LOCK_R);
         if (u == NULL)
           myRead1Button->setText(tr("A&dd User"));
         else

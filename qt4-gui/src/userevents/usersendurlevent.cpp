@@ -111,7 +111,7 @@ bool UserSendUrlEvent::sendDone(ICQEvent* e)
     return true;
 
   bool showAwayDlg = false;
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
   if (u != NULL)
   {
     showAwayDlg = u->Away() && u->ShowAwayMsg();

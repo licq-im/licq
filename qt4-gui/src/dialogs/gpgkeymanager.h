@@ -70,7 +70,7 @@ class KeyListItem : public QObject, public QTreeWidgetItem
   Q_OBJECT
 
 public:
-  KeyListItem(QTreeWidget* parent, ICQUser* u);
+  KeyListItem(QTreeWidget* parent, const ICQUser* u);
 
   void edit();
   void unsetKey();
@@ -82,7 +82,7 @@ private:
   QString szId;
   unsigned long nPPID;
   GPGKeySelect* keySelect;
-  void updateText(ICQUser* u);
+  void updateText(const ICQUser* u);
 
 private slots:
   void slot_done();

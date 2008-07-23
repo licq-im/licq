@@ -178,7 +178,7 @@ UserInfoDlg::UserInfoDlg(QString id, unsigned long ppid, QWidget* parent)
 
   lay->addLayout(l);
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
   if (u == NULL)
   {
     m_sBasic = tr("Licq - Info ") + tr("INVALID USER");
@@ -347,7 +347,7 @@ void UserInfoDlg::CreateGeneralInfo()
   lay->setRowStretch(++CR, 5);
 }
 
-void UserInfoDlg::SetGeneralInfo(ICQUser* u)
+void UserInfoDlg::SetGeneralInfo(const ICQUser* u)
 {
   tabList[GeneralInfo].loaded = true;
   char buf[32];
@@ -586,7 +586,7 @@ void UserInfoDlg::CreateMoreInfo()
   lay->addWidget(lblICQHomepage, CR, 0, 1, 5);
 }
 
-void UserInfoDlg::SetMoreInfo(ICQUser* u)
+void UserInfoDlg::SetMoreInfo(const ICQUser* u)
 {
   tabList[MoreInfo].loaded = true;
   bool bDropUser = false;
@@ -847,9 +847,9 @@ int UserInfoDlg::SplitCategory(QTreeWidgetItem* parent, QTextCodec* codec,
   return 0;
 }
 
-void UserInfoDlg::SetMore2Info(ICQUser* u)
+void UserInfoDlg::SetMore2Info(const ICQUser* u)
 {
-  ICQUserCategory* cat;
+  const ICQUserCategory* cat;
   bool drop = false;
   int i;
   unsigned short id;
@@ -895,7 +895,7 @@ void UserInfoDlg::SetMore2Info(ICQUser* u)
     gUserManager.DropUser(u);
 }
 
-void UserInfoDlg::UpdateMore2Info(QTextCodec* codec, ICQUserCategory* cat)
+void UserInfoDlg::UpdateMore2Info(QTextCodec* codec, const ICQUserCategory* cat)
 {
   QTreeWidgetItem* lvi = NULL;
   unsigned short i, id;
@@ -1072,7 +1072,7 @@ void UserInfoDlg::CreateWorkInfo()
   lay->addWidget(nfoCompanyHomepage, CR, 1, 1, 4);
 }
 
-void UserInfoDlg::SetWorkInfo(ICQUser* u)
+void UserInfoDlg::SetWorkInfo(const ICQUser* u)
 {
   tabList[WorkInfo].loaded = true;
   bool bDropUser = false;
@@ -1182,7 +1182,7 @@ void UserInfoDlg::CreateAbout()
   lay->addWidget(mlvAbout);
 }
 
-void UserInfoDlg::SetAbout(ICQUser* u)
+void UserInfoDlg::SetAbout(const ICQUser* u)
 {
   tabList[AboutInfo].loaded = true;
   bool bDropUser = false;
@@ -1263,7 +1263,7 @@ void UserInfoDlg::CreatePhoneBook()
   }
 }
 
-void UserInfoDlg::SetPhoneBook(ICQUser* u)
+void UserInfoDlg::SetPhoneBook(const ICQUser* u)
 {
   tabList[PhoneInfo].loaded = true;
   bool bDropUser = false;
@@ -1443,7 +1443,7 @@ void UserInfoDlg::CreatePicture()
   lay->addWidget(lblPicture);
 }
 
-void UserInfoDlg::SetPicture(ICQUser* u)
+void UserInfoDlg::SetPicture(const ICQUser* u)
 {
   if (!m_bOwner || !tabList[PictureInfo].loaded)
   {
@@ -1555,7 +1555,7 @@ void UserInfoDlg::CreateLastCountersInfo()
   lay->setRowStretch(++CR, 5);
 }
 
-void UserInfoDlg::SetLastCountersInfo(ICQUser* u)
+void UserInfoDlg::SetLastCountersInfo(const ICQUser* u)
 {
   tabList[LastCountersInfo].loaded = true;
   bool bDropUser = false;
@@ -1611,7 +1611,7 @@ void UserInfoDlg::CreateKABCInfo()
 #endif
 }
 
-void UserInfoDlg::SetKABCInfo(ICQUser* u)
+void UserInfoDlg::SetKABCInfo(const ICQUser* u)
 {
 #ifdef USE_KABC
   tabList[LastCountersInfo].loaded = true;
@@ -1720,7 +1720,7 @@ void UserInfoDlg::setCategory(ICQUserCategory* cat)
     return;
   }
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
   if (u == NULL)
     return;
 
@@ -1731,7 +1731,7 @@ void UserInfoDlg::setCategory(ICQUserCategory* cat)
 
 void UserInfoDlg::PhoneBookUpdated(struct PhoneBookEntry pbe, int entryNum)
 {
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
   if (u == NULL)
     return;
 
@@ -1775,7 +1775,7 @@ void UserInfoDlg::ChangeActivePhone(int index)
 {
   m_PhoneBook->SetActive(index - 1);
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
   if (u == NULL)
     return;
 
@@ -1970,7 +1970,7 @@ void UserInfoDlg::slotRetrieve()
       // Before retrieving the meta data we have to
       // save current status of "chkKeepAliasOnUpdate"
       // and the alias
-      ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+      ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_W);
       if (u == NULL) return;
       u->SetEnableSave(false);
       u->SetAlias(nfoAlias->text().toUtf8());
@@ -1996,7 +1996,7 @@ void UserInfoDlg::slotRetrieve()
       break;
     case PhoneInfo:
     {
-      ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
       if (u == NULL) return;
       bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
       gUserManager.DropUser(u);
@@ -2224,7 +2224,7 @@ void UserInfoDlg::updatedUser(CICQSignal* sig)
 {
   if (m_nPPID != sig->PPID() || myId != sig->Id()) return;
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
   if (u == NULL) return;
 
   switch (sig->SubSignal())

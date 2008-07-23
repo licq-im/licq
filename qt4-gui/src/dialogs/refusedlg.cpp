@@ -44,7 +44,7 @@ RefuseDlg::RefuseDlg(QString id, unsigned long ppid, QString t, QWidget* parent)
 
   QVBoxLayout* lay = new QVBoxLayout(this);
 
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
   QLabel* lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromUtf8(u->GetAlias()) + ":");
   lay->addWidget(lbl);
   gUserManager.DropUser(u);

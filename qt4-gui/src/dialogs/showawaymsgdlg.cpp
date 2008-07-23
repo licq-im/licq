@@ -80,7 +80,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(QString id, unsigned long ppid,
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
   lay->addWidget(buttons);
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   QTextCodec* codec = UserCodec::codecForICQUser(u);
   chkShowAgain->setChecked(u->ShowAwayMsg());
 
@@ -164,7 +164,7 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent* e)
        e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) ||
        e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ)))
   {
-    ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
     QTextCodec* codec = UserCodec::codecForICQUser(u);
     const char* szAutoResp =
       (e->ExtendedAck() && !e->ExtendedAck()->Accepted()) ?

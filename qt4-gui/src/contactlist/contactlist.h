@@ -209,7 +209,7 @@ public:
    *
    * @param licqUser The user to add
    */
-  void addUser(ICQUser* licqUser);
+  void addUser(const ICQUser* licqUser);
 
   /**
    * Remove a user from the contact list
@@ -411,7 +411,7 @@ private slots:
    * @param user The model user to update groups for
    * @param licqUser The daemon user to get group membership from
    */
-  void updateUserGroups(ContactUserData* user, ICQUser* licqUser);
+  void updateUserGroups(ContactUserData* user, const ICQUser* licqUser);
 
 private:
   /**

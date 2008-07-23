@@ -98,21 +98,23 @@ void AddUserDlg::ok()
 
   if (!id.isEmpty())
   {
-    ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
 
     if (u == NULL)
       added = gLicqDaemon->AddUserToList(id, ppid, true, false, group);
     else
     {
-      if (u->NotInList())
+      bool notInList = u->NotInList();
+      gUserManager.DropUser(u);
+
+      if (notInList)
       {
-        u->Unlock();
         gUserManager.SetUserInGroup(id, ppid, GROUPS_USER, group, true, true);
-        u->Lock(LOCK_W);
-        u->SetPermanent();
+        ICQUser* user = gUserManager.FetchUser(id, ppid, LOCK_W);
+        user->SetPermanent();
+        gUserManager.DropUser(user);
         added = true;
       }
-      gUserManager.DropUser(u);
     }
   }
 

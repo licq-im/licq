@@ -167,7 +167,7 @@ void MMSendDlg::SendNext()
   {
     case ICQ_CMDxSUB_MSG:
     {
-      ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
       if (u == NULL) return;
       QTextCodec* codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
@@ -238,7 +238,7 @@ void MMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_URL:
     {
-      ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
       if (u == NULL) return;
       grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
       QTextCodec* codec = UserCodec::codecForICQUser(u);
@@ -251,7 +251,7 @@ void MMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
       if (u == NULL) return;
       grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
       gUserManager.DropUser(u);

@@ -90,7 +90,7 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_CONTACT_ADDED:
     {
-      ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
       if (u == NULL)
       {
         char* ppidString = PPIDSTRING(sig->PPID());
@@ -195,7 +195,7 @@ void ContactListModel::updateUser(QString id, unsigned long ppid)
   if (userData == NULL)
     return;
 
-  ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
   if (u == NULL)
     return;
 
@@ -338,19 +338,19 @@ int ContactListModel::groupRow(ContactGroup* group) const
     return -1;
 }
 
-void ContactListModel::addUser(ICQUser* licqUser)
+void ContactListModel::addUser(const ICQUser* licqUser)
 {
   ContactUserData* newUser = new ContactUserData(licqUser, this);
   connect(newUser, SIGNAL(dataChanged(const ContactUserData*)),
       SLOT(userDataChanged(const ContactUserData*)));
-  connect(newUser, SIGNAL(updateUserGroups(ContactUserData*, ICQUser*)),
-      SLOT(updateUserGroups(ContactUserData*, ICQUser*)));
+  connect(newUser, SIGNAL(updateUserGroups(ContactUserData*, const ICQUser*)),
+      SLOT(updateUserGroups(ContactUserData*, const ICQUser*)));
 
   myUsers.append(newUser);
   updateUserGroups(newUser, licqUser);
 }
 
-void ContactListModel::updateUserGroups(ContactUserData* user, ICQUser* licqUser)
+void ContactListModel::updateUserGroups(ContactUserData* user, const ICQUser* licqUser)
 {
   // Check which user groups the user should be member of
   for (int i = 0; i < myUserGroups.size(); ++i)

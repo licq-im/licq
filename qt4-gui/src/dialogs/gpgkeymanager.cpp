@@ -192,7 +192,7 @@ void KeyList::editUser(QString id, unsigned long ppid)
 
   if (!found)
   {
-    ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
     if (u == NULL)
       return;
     item = new KeyListItem(this, u);
@@ -265,7 +265,7 @@ void KeyList::resizeColumnsToContents()
 }
 
 // KEYLISTITEM
-KeyListItem::KeyListItem(QTreeWidget* parent, ICQUser* u)
+KeyListItem::KeyListItem(QTreeWidget* parent, const ICQUser* u)
   : QTreeWidgetItem(parent),
     szId(u->IdString()),
     nPPID(u->PPID()),
@@ -274,7 +274,7 @@ KeyListItem::KeyListItem(QTreeWidget* parent, ICQUser* u)
   updateText(u);
 }
 
-void KeyListItem::updateText(ICQUser* u)
+void KeyListItem::updateText(const ICQUser* u)
 {
   setText(0, QString::fromUtf8(u->GetAlias()));
   setText(1, u->UseGPG() ? tr("Yes") : tr("No"));
@@ -292,7 +292,7 @@ void KeyListItem::edit()
 
 void KeyListItem::slot_done()
 {
-  ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
   keySelect = NULL;
 
   if (u != NULL)

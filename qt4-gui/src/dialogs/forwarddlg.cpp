@@ -163,7 +163,7 @@ void ForwardDlg::dropEvent(QDropEvent* de)
   myId = text.mid(4);
   m_nPPID = nPPID;
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
   if (u == NULL)
     return;
 

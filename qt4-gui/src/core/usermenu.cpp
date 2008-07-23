@@ -226,7 +226,7 @@ void UserMenu::updateGroups()
 
 void UserMenu::aboutToShowMenu()
 {
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
 
   int status = (u == NULL ? ICQ_STATUS_OFFLINE : u->Status());
 
@@ -567,7 +567,7 @@ void UserMenu::toggleSystemGroup(QAction* action)
 
   if (gid == GROUP_IGNORE_LIST && !action->isChecked())
   {
-    ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
     if (u == NULL)
       return;
 

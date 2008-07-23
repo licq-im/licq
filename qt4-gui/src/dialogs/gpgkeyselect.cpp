@@ -55,7 +55,7 @@ GPGKeySelect::GPGKeySelect(QString id, unsigned long ppid, QWidget* parent)
   setAttribute(Qt::WA_DeleteOnClose, true);
   Support::setWidgetProps(this, "GPGKeySelectDialog");
 
-  ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
   if (u == NULL)
     return;
 
@@ -223,7 +223,7 @@ void KeyView::resizeEvent(QResizeEvent* event)
   }
 }
 
-void KeyView::testViewItem(QTreeWidgetItem* item, ICQUser* u)
+void KeyView::testViewItem(QTreeWidgetItem* item, const ICQUser* u)
 {
   int val = 0;
   for (int i = 0; i < 2; ++i)
@@ -252,7 +252,7 @@ void KeyView::initKeyList()
 {
   gpgme_new(&mCtx);
 
-  ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
   maxItemVal = -1;
   maxItem = NULL;
 

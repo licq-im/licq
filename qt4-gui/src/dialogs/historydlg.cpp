@@ -160,7 +160,7 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
 
   show();
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
 
   QString name = tr("INVALID USER");
   myContactCodec = QTextCodec::codecForLocale();
@@ -276,7 +276,7 @@ void HistoryDlg::updatedUser(CICQSignal* signal)
 
   if (signal->SubSignal() == USER_EVENTS)
   {
-    ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
     if (u == NULL)
       return;
 

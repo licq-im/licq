@@ -46,7 +46,7 @@ public:
   // Retrieves the default codec
   static QTextCodec* defaultEncoding();
   // Retrieves the codec for an ICQUser object
-  static QTextCodec* codecForICQUser(ICQUser* u);
+  static QTextCodec* codecForICQUser(const ICQUser* u);
   // Retrieves the codec for an CChatUser object
   static QTextCodec* codecForCChatUser(CChatUser* u);
   // Retrieves the codec for a proto user

@@ -405,7 +405,7 @@ void LicqKIMIface::messageNewContact(const QString& contactId, const QString& pr
     if (PPID == 0) return;
 
     // check if user exists
-    ICQUser* pUser = gUserManager.FetchUser(contactId.latin1(), PPID, LOCK_R);
+    const ICQUser* pUser = gUserManager.FetchUser(contactId.latin1(), PPID, LOCK_R);
     if (pUser != 0)
     {
         gUserManager.DropUser(pUser);
@@ -488,7 +488,7 @@ bool LicqKIMIface::addContact(const QString& contactId,
     if (PPID == 0) return false;
 
     // check if user already exists
-    ICQUser* pUser = gUserManager.FetchUser(contactId.latin1(), PPID, LOCK_R);
+    const ICQUser* pUser = gUserManager.FetchUser(contactId.latin1(), PPID, LOCK_R);
     if (pUser != 0)
     {
         gUserManager.DropUser(pUser);

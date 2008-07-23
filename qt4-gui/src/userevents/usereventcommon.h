@@ -97,7 +97,7 @@ protected:
   QTimer* myTypingTimer;
 
   void flashTaskbar();
-  void updateWidgetInfo(ICQUser* u);
+  void updateWidgetInfo(const ICQUser* u);
   void pushToolTip(QAction* action, QString tooltip);
 
   virtual void userUpdated(CICQSignal* sig, QString id = QString::null, unsigned long ppid = 0) = 0;

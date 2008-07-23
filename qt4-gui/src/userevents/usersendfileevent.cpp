@@ -123,7 +123,7 @@ bool UserSendFileEvent::sendDone(ICQEvent* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
-    ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
     QString s = !e->ExtendedAck() ?
       tr("No reason provided") :
       myCodec->toUnicode(e->ExtendedAck()->Response());

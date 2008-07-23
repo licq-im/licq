@@ -41,7 +41,7 @@ public:
 private:
   QString szId;
   unsigned long nPPID;
-  void testViewItem(QTreeWidgetItem* item, ICQUser* u);
+  void testViewItem(QTreeWidgetItem* item, const ICQUser* u);
   int maxItemVal;
   QTreeWidgetItem* maxItem;
   void initKeyList();

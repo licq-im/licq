@@ -69,7 +69,7 @@ AuthUserDlg::AuthUserDlg(QString id, unsigned long ppid, bool grant, QWidget* pa
     myUin = NULL;
     toplay->addWidget(lblUin);
     QString userName = myId;
-    ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
     if (u != NULL)
     {
        userName = QString("%1 (%2)").arg(QString::fromUtf8(u->GetAlias())).arg(myId);
