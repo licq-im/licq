@@ -16,11 +16,11 @@ public:
   void SetFile(const char *, unsigned long);
   void SetFile(const char *, const char *, unsigned long);
   void Append(const char* buf) { Write(buf, true); }
-  bool Load(HistoryList &);
+  bool Load(HistoryList& history) const;
   static void Clear(HistoryList &);
   void Save(const char* buf) { Write(buf, false); }
-  const char *Description()  { return m_szDescription; }
-  const char *FileName()     { return m_szFileName; }
+  const char* Description() const       { return m_szDescription; }
+  const char* FileName() const          { return m_szFileName; }
 
   /**
    * Write to the history file, creating it if necessary

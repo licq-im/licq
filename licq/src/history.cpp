@@ -147,7 +147,7 @@ void CUserHistory::SetFile(const char *_sz, const char *_szId,
 	  szResult = fgets(sz, MAX_LINE_LEN, f); \
   }
 
-bool CUserHistory::Load(HistoryList &lHistory)
+bool CUserHistory::Load(HistoryList &lHistory) const
 {
   if (m_szFileName == NULL)
   {

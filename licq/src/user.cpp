@@ -271,7 +271,7 @@ void ICQUserPhoneBook::SetActive(long nEntry)
 }
 
 bool ICQUserPhoneBook::Get(unsigned long nEntry,
-                           const struct PhoneBookEntry **entry)
+    const struct PhoneBookEntry **entry) const
 {
   if (nEntry >= PhoneBookVector.size())
     return false;
@@ -2453,7 +2453,7 @@ void ICQUser::SetDefaults()
   SetCustomAutoResponse(szTemp);
 }
 
-char* ICQUser::UserEncoding()
+const char* ICQUser::UserEncoding() const
 {
   if (m_szEncoding == NULL || m_szEncoding[0] == '\0')
     return gUserManager.DefaultUserEncoding();
@@ -2462,7 +2462,7 @@ char* ICQUser::UserEncoding()
 }
 
 
-unsigned short ICQUser::Status()
+unsigned short ICQUser::Status() const
 // guarantees to return a unique status that switch can be run on
 {
    if (StatusOffline()) return ICQ_STATUS_OFFLINE;
@@ -2492,7 +2492,7 @@ void ICQUser::SetStatusOffline()
 
 /* Birthday: checks to see if the users birthday is within the next nRange
    days.  Returns -1 if not, or the number of days until their bday */
-int ICQUser::Birthday(unsigned short nRange)
+int ICQUser::Birthday(unsigned short nRange) const
 {
   static const unsigned char nMonthDays[12] = { 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31 };
 
@@ -2581,7 +2581,7 @@ void ICQUser::SetAlias(const char *s)
 }
 
 
-bool ICQUser::Away()
+bool ICQUser::Away() const
 {
    unsigned short n = Status();
    return (n == ICQ_STATUS_AWAY || n == ICQ_STATUS_NA ||
@@ -2616,7 +2616,7 @@ void ICQUser::SetIpPort(unsigned long _nIp, unsigned short _nPort)
   SaveLicqInfo();
 }
 
-int ICQUser::SocketDesc(unsigned char nChannel)
+int ICQUser::SocketDesc(unsigned char nChannel) const
 {
   switch (nChannel)
   {
@@ -2689,7 +2689,7 @@ void ICQUser::ClearSocketDesc(unsigned char nChannel)
     gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, m_szId, m_nPPID, 0));
 }
 
-unsigned short ICQUser::ConnectionVersion()
+unsigned short ICQUser::ConnectionVersion() const
 {
   // If we are already connected, use that version
   if (m_nConnectionVersion != 0) return m_nConnectionVersion;
@@ -2698,7 +2698,7 @@ unsigned short ICQUser::ConnectionVersion()
 }
 
 
-int ICQUser::LocalTimeGMTOffset()
+int ICQUser::LocalTimeGMTOffset() const
 {
   return GetTimezone() * 1800;
 }
@@ -2727,19 +2727,19 @@ char ICQUser::SystemTimezone()
 }
 
 
-int ICQUser::LocalTimeOffset()
+int ICQUser::LocalTimeOffset() const
 {
   return SystemTimeGMTOffset() - LocalTimeGMTOffset();
 }
 
 
-time_t ICQUser::LocalTime()
+time_t ICQUser::LocalTime() const
 {
   return time(NULL) + LocalTimeOffset();
 }
 
 
-SecureChannelSupport_et ICQUser::SecureChannelSupport()
+SecureChannelSupport_et ICQUser::SecureChannelSupport() const
 {
   if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHSSL)
     return SECURE_CHANNEL_SUPPORTED;
@@ -2751,7 +2751,7 @@ SecureChannelSupport_et ICQUser::SecureChannelSupport()
 
 
 
-unsigned short ICQUser::LicqVersion()
+unsigned short ICQUser::LicqVersion() const
 {
   if ((m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHSSL ||
        (m_nClientTimestamp & 0xFFFF0000) == LICQ_WITHOUTSSL)
@@ -2761,18 +2761,18 @@ unsigned short ICQUser::LicqVersion()
 }
 
 
-const char *ICQUser::StatusStr()
+const char* ICQUser::StatusStr() const
 {
   return StatusToStatusStr(m_nStatus, StatusInvisible());
 }
 
-const char *ICQUser::StatusStrShort()
+const char* ICQUser::StatusStrShort() const
 {
   return StatusToStatusStrShort(m_nStatus, StatusInvisible());
 }
 
 
-const char *ICQUser::StatusToStatusStr(unsigned short n, bool b)
+const char* ICQUser::StatusToStatusStr(unsigned short n, bool b)
 {
   if (n == ICQ_STATUS_OFFLINE) return b ? tr("(Offline)") : tr("Offline");
   else if (n & ICQ_STATUS_DND) return b ? tr("(Do Not Disturb)") : tr("Do Not Disturb");
@@ -2785,7 +2785,7 @@ const char *ICQUser::StatusToStatusStr(unsigned short n, bool b)
 }
 
 
-const char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
+const char* ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
 {
   if (n == ICQ_STATUS_OFFLINE) return b ? tr("(Off)") : tr("Off");
   else if (n & ICQ_STATUS_DND) return b ? tr("(DND)") : tr("DND");
@@ -2798,7 +2798,7 @@ const char *ICQUser::StatusToStatusStrShort(unsigned short n, bool b)
 }
 
 
-char *ICQUser::IpStr(char *rbuf)
+char* ICQUser::IpStr(char* rbuf) const
 {
   char ip[32], buf[32];
 
@@ -2816,7 +2816,7 @@ char *ICQUser::IpStr(char *rbuf)
 }
 
 
-char *ICQUser::PortStr(char *rbuf)
+char* ICQUser::PortStr(char* rbuf) const
 {
   if (Port() > 0)     		// Default to the given port
     sprintf(rbuf, "%d", Port());
@@ -2827,7 +2827,7 @@ char *ICQUser::PortStr(char *rbuf)
 }
 
 
-char *ICQUser::IntIpStr(char *rbuf)
+char* ICQUser::IntIpStr(char* rbuf) const
 {
   char buf[32];
   int socket = SocketDesc(ICQ_CHNxNONE);
@@ -2859,7 +2859,7 @@ char *ICQUser::IntIpStr(char *rbuf)
 }
 
 
-char *ICQUser::usprintf(const char *_szFormat, unsigned long nFlags)
+char* ICQUser::usprintf(const char* _szFormat, unsigned long nFlags) const
 {
   bool bLeft = false;
   unsigned long i = 0, j, nField = 0, nPos = 0;
@@ -3685,11 +3685,33 @@ CUserEvent *ICQUser::EventPeek(unsigned short index)
   return (m_vcMessages[index]);
 }
 
+const CUserEvent* ICQUser::EventPeek(unsigned short index) const
+{
+  if (index >= NewMessages()) return (NULL);
+  return (m_vcMessages[index]);
+}
+
 CUserEvent *ICQUser::EventPeekId(int id)
 {
   if (m_vcMessages.size() == 0) return NULL;
   CUserEvent *e = NULL;
-  UserEventList::iterator iter;
+  UserEventList::const_iterator iter;
+  for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); ++iter)
+  {
+    if ((*iter)->Id() == id)
+    {
+      e = *iter;
+      break;
+    }
+  }
+  return e;
+}
+
+const CUserEvent* ICQUser::EventPeekId(int id) const
+{
+  if (m_vcMessages.size() == 0) return NULL;
+  CUserEvent *e = NULL;
+  UserEventList::const_iterator iter;
   for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); ++iter)
   {
     if ((*iter)->Id() == id)
@@ -3702,14 +3724,14 @@ CUserEvent *ICQUser::EventPeekId(int id)
 }
 
 //-----ICQUser::EventPeekLast----------------------------------------------------
-CUserEvent *ICQUser::EventPeekLast()
+const CUserEvent* ICQUser::EventPeekLast() const
 {
   if (m_vcMessages.size() == 0) return (NULL);
   return (m_vcMessages[m_vcMessages.size() - 1]);
 }
 
 //-----ICQUser::EventPeekFirst----------------------------------------------------
-CUserEvent *ICQUser::EventPeekFirst()
+const CUserEvent* ICQUser::EventPeekFirst() const
 {
   if (m_vcMessages.size() == 0) return (NULL);
   return (m_vcMessages[0]);

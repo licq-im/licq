@@ -330,7 +330,7 @@ public:
   void Clean();
 
   bool Get(unsigned d,unsigned short *id, char const ** descr) const;
-  UserCat GetCategory() { return m_uc; }
+  UserCat GetCategory() const                   { return m_uc; }
 
   static const unsigned MAX_CATEGORIES = 4;
 
@@ -408,7 +408,7 @@ public:
   void Clean();
   void SetActive(long nEntry);
 
-  bool Get(unsigned long nEntry, const struct PhoneBookEntry  **entry);
+  bool Get(unsigned long nEntry, const struct PhoneBookEntry** entry) const;
 
 private:
   bool SaveToDisk  (CIniFile &m_fConf);
@@ -450,122 +450,126 @@ public:
 
   // General Info
   //!Retrieves the user's alias.
-  char *GetAlias()                      {  return m_szAlias;  }
+  const char* GetAlias() const                  { return m_szAlias; }
   //!Retrieves the user's first name.
-  char *GetFirstName()                  {  return m_szFirstName;  }
+  const char* GetFirstName() const              { return m_szFirstName; }
   //!Retrieves the user's last name.
-  char *GetLastName()                   {  return m_szLastName;  }
+  const char* GetLastName() const               { return m_szLastName; }
   //!Retrieves the user's primary e-mail address.
-  char *GetEmailPrimary()               {  return m_szEmailPrimary;  }
+  const char* GetEmailPrimary() const           { return m_szEmailPrimary; }
   //!Retrieves the user's secondary e-mail address.
-  char *GetEmailSecondary()             {  return m_szEmailSecondary;  }
+  const char* GetEmailSecondary() const         { return m_szEmailSecondary; }
   //!Retrieves the user's old e-mail address.
-  char *GetEmailOld()                   {  return m_szEmailOld;  }
+  const char* GetEmailOld() const               { return m_szEmailOld; }
   //!Retrieves the user's city.
-  char *GetCity()                       {  return m_szCity;  }
+  const char* GetCity() const                   { return m_szCity; }
   //!Retrieves the user's state.
-  char *GetState()                      {  return m_szState;  }
+  const char* GetState() const                  { return m_szState; }
   //!Retrieves the user's phone number.
-  char *GetPhoneNumber()                {  return m_szPhoneNumber;  }
+  const char* GetPhoneNumber() const            { return m_szPhoneNumber; }
   //!Retrieves the user's fax number.
-  char *GetFaxNumber()                  {  return m_szFaxNumber;  }
+  const char* GetFaxNumber() const              { return m_szFaxNumber; }
   //!Retrieves the user's street address.
-  char *GetAddress()                    {  return m_szAddress;  }
+  const char* GetAddress() const                { return m_szAddress; }
   //!Retrieves the user's cellular phone number.
-  char *GetCellularNumber()             {  return m_szCellularNumber;  }
+  const char* GetCellularNumber() const         { return m_szCellularNumber; }
   //!Retrieves the user's zip code.
-  char *GetZipCode()                    {  return m_szZipCode;  }
+  const char* GetZipCode() const                { return m_szZipCode; }
   //!Retrieves the user's country code.  Used to lookup the country name.
-  unsigned short GetCountryCode()       {  return m_nCountryCode;  }
+  unsigned short GetCountryCode() const         { return m_nCountryCode; }
   //!Retrieves the user's time code.
-  char GetTimezone()                    {  return m_nTimezone;  }
+  char GetTimezone() const                      { return m_nTimezone; }
   //!Returns true if the user requires you to be authorized to add
   //!them to anyone's ICQ list.
-  bool GetAuthorization()               {  return m_bAuthorization;  }
+  bool GetAuthorization() const                 { return m_bAuthorization; }
   //!Retrieves the users's web status
-  unsigned char GetWebAwareStatus()     {  return m_nWebAwareStatus; }
+  unsigned char GetWebAwareStatus() const       { return m_nWebAwareStatus; }
   //!Returns true if the user has attempted to hide the e-mail addresses
   //!provided in their information.
-  bool GetHideEmail()                   {  return m_bHideEmail;  }
+  bool GetHideEmail() const                     { return m_bHideEmail; }
 
   // More Info
   //!Retrieves the user's age.
-  unsigned short GetAge()               {  return m_nAge;  }
+  unsigned short GetAge() const                 { return m_nAge; }
   //!Retrieves the user's gender.
-  char GetGender()                      {  return m_nGender;  }
+  char GetGender() const                        {  return m_nGender; }
   //!Retrieves the user's homepage URL.
-  char *GetHomepage()                   {  return m_szHomepage;  }
+  const char* GetHomepage() const               {  return m_szHomepage; }
   //!Retrieves the user's year they were born ih.
-  unsigned short GetBirthYear()         {  return m_nBirthYear;  }
+  unsigned short GetBirthYear() const           {  return m_nBirthYear; }
   //!Retrieves the user's month they were born in.
-  char GetBirthMonth()                  {  return m_nBirthMonth;  }
+  char GetBirthMonth() const                    {  return m_nBirthMonth; }
   //!Retrieves the user's day they were born in.
-  char GetBirthDay()                    {  return m_nBirthDay;  }
+  char GetBirthDay() const                      {  return m_nBirthDay; }
   //!Retrieves the user's first language.
-  char GetLanguage1()                   {  return m_nLanguage[0];  }
+  char GetLanguage1() const                     {  return m_nLanguage[0]; }
   //!Retrieves the user's second language.
-  char GetLanguage2()                   {  return m_nLanguage[1];  }
+  char GetLanguage2() const                     {  return m_nLanguage[1]; }
   //!Retrieves the user's third language.
-  char GetLanguage3()                   {  return m_nLanguage[2];  }
+  char GetLanguage3() const                     {  return m_nLanguage[2]; }
   //!Retrieves the user's language as specified by the parameter.
   //!Useful when retrieving their languages in a loop.
-  char GetLanguage(unsigned char l)        {  return m_nLanguage[l];  }
+  char GetLanguage(unsigned char l) const       {  return m_nLanguage[l]; }
 
   // Homepage Info
   //!Returns true if the user has entered a homepage category
-  bool GetHomepageCatPresent()             {  return m_bHomepageCatPresent; }
+  bool GetHomepageCatPresent() const            {  return m_bHomepageCatPresent; }
   //!Retrieves the user's homepage category code
-  unsigned short GetHomepageCatCode()      {  return m_nHomepageCatCode; }
+  unsigned short GetHomepageCatCode() const     {  return m_nHomepageCatCode; }
   //!Retrivies the users homepage description
-  char *GetHomepageDesc()               {  return m_szHomepageDesc; }
-  //!Returns true if the user has an ICQ homepage (http://<uin>.home.icq.com/)
-  bool GetICQHomepagePresent()          {  return m_bICQHomepagePresent; }
+  const char* GetHomepageDesc() const           {  return m_szHomepageDesc; }
+  //!Returns true if the user has an ICQ homepage (http://<uin>.home.icq.com/) const
+  bool GetICQHomepagePresent() const            {  return m_bICQHomepagePresent; }
 
   // Work Info
   //!Retrieves the city of the company the user is employed by.
-  char *GetCompanyCity()                {  return m_szCompanyCity;  }
+  const char* GetCompanyCity() const            {  return m_szCompanyCity; }
   //!Retrieves the state of the company the user is employed by.
-  char *GetCompanyState()               {  return m_szCompanyState;  }
+  const char* GetCompanyState() const           {  return m_szCompanyState; }
   //!Retrieves the phone number of the company's phone number the user is employed by.
-  char *GetCompanyPhoneNumber()         {  return m_szCompanyPhoneNumber; }
+  const char* GetCompanyPhoneNumber() const     {  return m_szCompanyPhoneNumber; }
   //!Retrieves the fax bynber of the company the user is employed by.
-  char *GetCompanyFaxNumber()           {  return m_szCompanyFaxNumber;  }
+  const char* GetCompanyFaxNumber() const       {  return m_szCompanyFaxNumber; }
   //!Retrieves the street address of the company the user is employed by.
-  char *GetCompanyAddress()             {  return m_szCompanyAddress;  }
+  const char* GetCompanyAddress() const         {  return m_szCompanyAddress; }
   //!Retrieves the zip code of the company the user is employed by.
-  char *GetCompanyZip()			{  return m_szCompanyZip;  }
+  const char* GetCompanyZip() const             { return m_szCompanyZip; }
   //!Retrieves the country code of the company the user is employed by.
   //!Used to look up the country name.
-  unsigned short GetCompanyCountry()	{  return m_nCompanyCountry;  }
+  unsigned short GetCompanyCountry() const      {  return m_nCompanyCountry; }
   //!Retrieves the name of the company the user is employed by.
-  char *GetCompanyName()                {  return m_szCompanyName;  }
+  const char* GetCompanyName() const            {  return m_szCompanyName; }
   //!Retrieves the department the user is in.
-  char *GetCompanyDepartment()          {  return m_szCompanyDepartment;  }
+  const char* GetCompanyDepartment() const      {  return m_szCompanyDepartment; }
   //!Retrieves the user's job title.
-  char *GetCompanyPosition()            {  return m_szCompanyPosition;  }
+  const char* GetCompanyPosition() const        {  return m_szCompanyPosition; }
   //!Retrieves the users's occupation code
-  unsigned short GetCompanyOccupation() {  return m_nCompanyOccupation; }
+  unsigned short GetCompanyOccupation() const   {  return m_nCompanyOccupation; }
   //!Retrieves the URL of the company the user is employed by.
-  char *GetCompanyHomepage()            {  return m_szCompanyHomepage;  }
+  const char* GetCompanyHomepage() const        {  return m_szCompanyHomepage; }
 
   // About Info
   //!Retrieves the self description of the user.
-  char *GetAbout()                      { return m_szAbout; }
+  const char* GetAbout() const                  { return m_szAbout; }
 
   // More2 Info
   //!Retrieves the user's interests
   ICQUserCategory *GetInterests()       { return m_Interests; }
+  const ICQUserCategory* GetInterests() const   { return m_Interests; }
   //!Retrieves the user's backgrounds
   ICQUserCategory *GetBackgrounds()     { return m_Backgrounds; }
+  const ICQUserCategory* GetBackgrounds() const { return m_Backgrounds; }
   //!Retrieves the user's organizations
   ICQUserCategory *GetOrganizations()   { return m_Organizations; }
+  const ICQUserCategory* GetOrganizations() const { return m_Organizations; }
 
   // Phone Book Info
   //!Retrives the user's phone book
   ICQUserPhoneBook *GetPhoneBook()      { return m_PhoneBook; }
+  const ICQUserPhoneBook* GetPhoneBook() const  { return m_PhoneBook; }
 
   // Picture Info
-  bool GetPicturePresent()              { return m_bPicturePresent; }
+  bool GetPicturePresent() const              { return m_bPicturePresent; }
   unsigned short BuddyIconType()	{ return m_nBuddyIconType; }
   char BuddyIconHashType()		{ return m_nBuddyIconHashType; }
   char *BuddyIconHash()			{ return m_szBuddyIconHash; }
@@ -575,60 +579,60 @@ public:
   std::string GetPPField(const std::string &);
 
   // Licq Info
-  bool GetAwaitingAuth()                { return m_bAwaitingAuth; }
-  unsigned short GetSID()               { return m_nSID[NORMAL_SID]; }
-  unsigned short GetInvisibleSID()      { return m_nSID[INV_SID]; }
-  unsigned short GetVisibleSID()        { return m_nSID[VIS_SID]; }
-  unsigned short GetGSID()              { return m_nGSID; }
-  unsigned short GetTyping()            { return m_nTyping; }
+  bool GetAwaitingAuth() const                  { return m_bAwaitingAuth; }
+  unsigned short GetSID() const                 { return m_nSID[NORMAL_SID]; }
+  unsigned short GetInvisibleSID() const        { return m_nSID[INV_SID]; }
+  unsigned short GetVisibleSID() const          { return m_nSID[VIS_SID]; }
+  unsigned short GetGSID() const                { return m_nGSID; }
+  unsigned short GetTyping() const              { return m_nTyping; }
   //!Retrieves the user's auto response message that was last seen.
-  char *AutoResponse()                  { return m_szAutoResponse; }
+  const char* AutoResponse() const              { return m_szAutoResponse; }
   //!Retrieves the encoding Licq uses for this user
-  char* UserEncoding();
+  const char* UserEncoding() const;
   //!True if they have sent the UTF8 Cap
-  bool SupportsUTF8()                   { return m_bSupportsUTF8; }
-  bool SendServer()                     { return m_bSendServer; }
-  unsigned short SendLevel()            { return m_nSendLevel; }
-  bool EnableSave()                     { return m_bEnableSave; }
-  bool ShowAwayMsg()                    { return m_bShowAwayMsg; }
+  bool SupportsUTF8() const                     { return m_bSupportsUTF8; }
+  bool SendServer() const                       { return m_bSendServer; }
+  unsigned short SendLevel() const              { return m_nSendLevel; }
+  bool EnableSave() const                       { return m_bEnableSave; }
+  bool ShowAwayMsg() const                      { return m_bShowAwayMsg; }
   unsigned short Sequence(bool = false);
-  char Mode()                           { return m_nMode; }
-  unsigned long Version()               { return m_nVersion; }
-  char *ClientInfo()                    { return m_szClientInfo; }
-  unsigned long ClientTimestamp()       { return m_nClientTimestamp; }
-  unsigned long OurClientTimestamp()    { return m_nOurClientTimestamp; }
-  unsigned long ClientInfoTimestamp()   { return m_nClientInfoTimestamp; }
-  unsigned long OurClientInfoTimestamp() { return m_nOurClientInfoTimestamp; }
-  unsigned long ClientStatusTimestamp() { return m_nClientStatusTimestamp; }
-  unsigned long OurClientStatusTimestamp() { return m_nOurClientStatusTimestamp; }
-  bool UserUpdated()                    { return m_bUserUpdated; }
-  SecureChannelSupport_et SecureChannelSupport();
-  unsigned short LicqVersion();
-  unsigned short ConnectionVersion();
-  time_t LastOnline()                   { return m_nLastCounters[LAST_ONLINE]; }
-  time_t LastSentEvent()                { return m_nLastCounters[LAST_SENT_EVENT]; }
-  time_t LastReceivedEvent()            { return m_nLastCounters[LAST_RECV_EVENT]; }
-  time_t LastCheckedAutoResponse()      { return m_nLastCounters[LAST_CHECKED_AR]; }
-  time_t OnlineSince()      		{ return m_nOnlineSince; }
-  time_t IdleSince()                    { return m_nIdleSince; }
-  time_t RegisteredTime()               { return m_nRegisteredTime; }
-  bool UseGPG()				{ return m_bUseGPG; }
-  char* GPGKey()			{ return m_szGPGKey; }
-  bool AutoChatAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
-  bool AutoFileAccept()                 { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
-  bool AutoSecure()                     { return m_nAutoAccept & AUTO_SECURE; }
-  bool AcceptInAway()                   { return m_nAutoAccept & ACCEPT_IN_AWAY; }
-  bool AcceptInNA()                     { return m_nAutoAccept & ACCEPT_IN_NA; }
-  bool AcceptInOccupied()               { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
-  bool AcceptInDND()                    { return m_nAutoAccept & ACCEPT_IN_DND; }
-  unsigned short StatusToUser()         { return m_nStatusToUser; }
-  bool KeepAliasOnUpdate()              { return m_bKeepAliasOnUpdate; }
-  char *CustomAutoResponse()            { return m_szCustomAutoResponse; }
-  unsigned long PPID()                  { return m_nPPID; }
-  char *IdString()                      { return m_szId; }
-  bool NotInList()                      { return m_bNotInList; }
+  char Mode() const                             { return m_nMode; }
+  unsigned long Version() const                 { return m_nVersion; }
+  const char* ClientInfo() const                { return m_szClientInfo; }
+  unsigned long ClientTimestamp() const         { return m_nClientTimestamp; }
+  unsigned long OurClientTimestamp() const      { return m_nOurClientTimestamp; }
+  unsigned long ClientInfoTimestamp() const     { return m_nClientInfoTimestamp; }
+  unsigned long OurClientInfoTimestamp() const  { return m_nOurClientInfoTimestamp; }
+  unsigned long ClientStatusTimestamp() const   { return m_nClientStatusTimestamp; }
+  unsigned long OurClientStatusTimestamp() const { return m_nOurClientStatusTimestamp; }
+  bool UserUpdated() const                      { return m_bUserUpdated; }
+  SecureChannelSupport_et SecureChannelSupport() const;
+  unsigned short LicqVersion() const;
+  unsigned short ConnectionVersion() const;
+  time_t LastOnline() const                     { return m_nLastCounters[LAST_ONLINE]; }
+  time_t LastSentEvent() const                  { return m_nLastCounters[LAST_SENT_EVENT]; }
+  time_t LastReceivedEvent() const              { return m_nLastCounters[LAST_RECV_EVENT]; }
+  time_t LastCheckedAutoResponse() const        { return m_nLastCounters[LAST_CHECKED_AR]; }
+  time_t OnlineSince() const                    { return m_nOnlineSince; }
+  time_t IdleSince() const                      { return m_nIdleSince; }
+  time_t RegisteredTime() const                 { return m_nRegisteredTime; }
+  bool UseGPG() const                           { return m_bUseGPG; }
+  const char* GPGKey() const                    { return m_szGPGKey; }
+  bool AutoChatAccept() const                   { return m_nAutoAccept & AUTO_ACCEPT_CHAT; }
+  bool AutoFileAccept() const                   { return m_nAutoAccept & AUTO_ACCEPT_FILE; }
+  bool AutoSecure() const                       { return m_nAutoAccept & AUTO_SECURE; }
+  bool AcceptInAway() const                     { return m_nAutoAccept & ACCEPT_IN_AWAY; }
+  bool AcceptInNA() const                       { return m_nAutoAccept & ACCEPT_IN_NA; }
+  bool AcceptInOccupied() const                 { return m_nAutoAccept & ACCEPT_IN_OCCUPIED; }
+  bool AcceptInDND() const                      { return m_nAutoAccept & ACCEPT_IN_DND; }
+  unsigned short StatusToUser() const           { return m_nStatusToUser; }
+  bool KeepAliasOnUpdate() const                { return m_bKeepAliasOnUpdate; }
+  char *CustomAutoResponse() const              { return m_szCustomAutoResponse; }
+  unsigned long PPID() const                    { return m_nPPID; }
+  const char* IdString() const                  { return m_szId; }
+  bool NotInList() const                        { return m_bNotInList; }
 
-  char *usprintf(const char *szFormat, unsigned long nFlags = 0);
+  char* usprintf(const char* szFormat, unsigned long nFlags = 0) const;
 
   // General Info
   void SetAlias (const char *n);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
@@ -744,46 +748,48 @@ public:
   bool SetPPField(const std::string &, const std::string &);
 
   // Status
-  unsigned short Status();
-  unsigned long StatusFull()   {  return m_nStatus; }
-  bool StatusInvisible()       {  return StatusOffline() ? false : m_nStatus & ICQ_STATUS_FxPRIVATE; }
-  bool StatusWebPresence()     {  return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE;  }
-  bool StatusHideIp()          {  return m_nStatus & ICQ_STATUS_FxHIDExIP; }
-  bool StatusBirthday()        {  return m_nStatus & ICQ_STATUS_FxBIRTHDAY;  }
-  bool StatusOffline()         {  return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE;  }
-  unsigned long PhoneFollowMeStatus() { return m_nPhoneFollowMeStatus; }
-  unsigned long ICQphoneStatus()      { return m_nICQphoneStatus; }
-  unsigned long SharedFilesStatus()   { return m_nSharedFilesStatus; }
+  unsigned short Status() const;
+  unsigned long StatusFull() const              { return m_nStatus; }
+  bool StatusInvisible() const                  { return StatusOffline() ? false : m_nStatus & ICQ_STATUS_FxPRIVATE; }
+  bool StatusWebPresence() const                { return m_nStatus & ICQ_STATUS_FxWEBxPRESENCE; }
+  bool StatusHideIp() const                     { return m_nStatus & ICQ_STATUS_FxHIDExIP; }
+  bool StatusBirthday() const                   { return m_nStatus & ICQ_STATUS_FxBIRTHDAY; }
+  bool StatusOffline() const                    { return (unsigned short)m_nStatus == ICQ_STATUS_OFFLINE; }
+  unsigned long PhoneFollowMeStatus() const     { return m_nPhoneFollowMeStatus; }
+  unsigned long ICQphoneStatus() const          { return m_nICQphoneStatus; }
+  unsigned long SharedFilesStatus() const       { return m_nSharedFilesStatus; }
   void SetStatus(unsigned long n)  {  m_nStatus = n;  }
   void SetPhoneFollowMeStatus(unsigned long n)  { m_nPhoneFollowMeStatus = n; SaveLicqInfo(); }
   void SetICQphoneStatus(unsigned long n)       { m_nICQphoneStatus = n; }
   void SetSharedFilesStatus(unsigned long n)    { m_nSharedFilesStatus = n; }  
   virtual void SetStatusOffline();
-  const char *StatusStr();
-  const char *StatusStrShort();
-  bool Away();
-  static const char *StatusToStatusStr(unsigned short, bool);
-  static const char *StatusToStatusStrShort(unsigned short, bool);
+  const char* StatusStr() const;
+  const char* StatusStrShort() const;
+  bool Away() const;
+  static const char* StatusToStatusStr(unsigned short n, bool b);
+  static const char* StatusToStatusStrShort(unsigned short n, bool b);
   static char *MakeRealId(const char *, unsigned long, char *&);
-  int Birthday(unsigned short nDayRange = 0);
+  int Birthday(unsigned short nDayRange = 0) const;
 
   // Message/History functions
-  unsigned short NewMessages()   { return(m_vcMessages.size()); }
+  unsigned short NewMessages() const            { return(m_vcMessages.size()); }
   CUserEvent *EventPeek(unsigned short);
+  const CUserEvent* EventPeek(unsigned short index) const;
   CUserEvent *EventPeekId(int);
-  CUserEvent *EventPeekFirst();
-  CUserEvent *EventPeekLast();
+  const CUserEvent* EventPeekId(int id) const;
+  const CUserEvent* EventPeekFirst() const;
+  const CUserEvent* EventPeekLast() const;
   CUserEvent *EventPop();
   void EventClear(unsigned short);
   void EventClearId(int);
   void EventPush(CUserEvent *);
   void WriteToHistory(const char *);
   void SetHistoryFile(const char *);
-  int GetHistory(HistoryList &h)  { return m_fHistory.Load(h); }
+  int GetHistory(HistoryList& history) const    { return m_fHistory.Load(history); }
   static void ClearHistory(HistoryList &h)  { CUserHistory::Clear(h); }
   void SaveHistory(const char *buf)  { m_fHistory.Save(buf); }
-  const char *HistoryName()      { return m_fHistory.Description(); }
-  const char *HistoryFile()      { return m_fHistory.FileName(); }
+  const char* HistoryName() const               { return m_fHistory.Description(); }
+  const char* HistoryFile() const               { return m_fHistory.FileName(); }
 
   /**
    * Get user groups this user is member of
@@ -849,11 +855,11 @@ public:
   bool RemoveFromGroup(GroupType gtype, unsigned short groupId);
 
   // Short cuts to above functions
-  bool InvisibleList() { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }
-  bool VisibleList()   { return GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST); }
-  bool OnlineNotify()  { return GetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY); }
-  bool IgnoreList()    { return GetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST); }
-  bool NewUser()       { return GetInGroup(GROUPS_SYSTEM, GROUP_NEW_USERS); }
+  bool InvisibleList() const    { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }
+  bool VisibleList() const      { return GetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST); }
+  bool OnlineNotify() const     { return GetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY); }
+  bool IgnoreList() const       { return GetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST); }
+  bool NewUser() const          { return GetInGroup(GROUPS_SYSTEM, GROUP_NEW_USERS); }
   void SetInvisibleList(bool s)  { SetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST, s); }
   void SetVisibleList(bool s)    { SetInGroup(GROUPS_SYSTEM, GROUP_VISIBLE_LIST, s); }
   void SetOnlineNotify(bool s)   { SetInGroup(GROUPS_SYSTEM, GROUP_ONLINE_NOTIFY, s); }
@@ -861,36 +867,36 @@ public:
   void SetNewUser(bool s)        { SetInGroup(GROUPS_SYSTEM, GROUP_NEW_USERS, s); }
 
   // Time
-  time_t LocalTime();
-  int LocalTimeGMTOffset();
-  int LocalTimeOffset();
+  time_t LocalTime() const;
+  int LocalTimeGMTOffset() const;
+  int LocalTimeOffset() const;
   static int SystemTimeGMTOffset();
   static char SystemTimezone();
 
   // Ip/Port functions
-  unsigned long Ip()		{ return m_nIp; }
-  unsigned long IntIp()		{ return m_nIntIp; }
-  unsigned short Port()		{ return m_nPort; }
-  unsigned short LocalPort()	{ return m_nLocalPort; }
-  unsigned long Cookie()	{ return m_nCookie; }
+  unsigned long Ip() const                      { return m_nIp; }
+  unsigned long IntIp() const                   { return m_nIntIp; }
+  unsigned short Port() const                   { return m_nPort; }
+  unsigned short LocalPort() const              { return m_nLocalPort; }
+  unsigned long Cookie() const                  { return m_nCookie; }
   void SetIpPort(unsigned long nIp, unsigned short nPort);
   void SetIp(unsigned long nIp)		{ SetIpPort(nIp, Port()); }
   void SetPort(unsigned short nPort)	{ SetIpPort(Ip(), nPort); }
   void SetIntIp(unsigned long s)	{ m_nIntIp = s; }
   void SetCookie(unsigned long nCookie) { m_nCookie = nCookie; }
 
-  bool SendIntIp()		{ return m_bSendIntIp; }
+  bool SendIntIp() const                        { return m_bSendIntIp; }
   void SetSendIntIp(bool s)	{ m_bSendIntIp = s; }
 
   // for backward compatibility
-  unsigned long RealIp()          { return IntIp(); }
+  unsigned long RealIp() const                  { return IntIp(); }
   void SetRealIp(unsigned long s) { SetIntIp(s); }
-  bool SendRealIp()               { return SendIntIp(); }
+  bool SendRealIp() const                       { return SendIntIp(); }
   void SetSendRealIp(bool s)      { SetSendIntIp(s); }
 
-  char *IpStr(char *rbuf);
-  char *IntIpStr(char *rbuf);
-  char *PortStr(char *rbuf);
+  char* IpStr(char* rbuf) const;
+  char* IntIpStr(char* rbuf) const;
+  char* PortStr(char* rbuf) const;
 
   // User TLV List handling
   void AddTLV(TLVPtr);
@@ -899,7 +905,7 @@ public:
   TLVList GetTLVList();
 
   // Don't call these:
-  int SocketDesc(unsigned char);
+  int SocketDesc(unsigned char channel) const;
   void ClearSocketDesc(unsigned char nChannel = 0x00);
   void SetSocketDesc(TCPSocket *);
 
@@ -909,13 +915,13 @@ public:
   static void decNumUserEvents();
 
   // Last event functions
-  time_t Touched()       {  return m_nTouched; }
+  time_t Touched() const                        { return m_nTouched; }
   void Touch()           {  m_nTouched = time(NULL); }
 
   // Crypto
-  bool Secure() { return m_bSecure; }
+  bool Secure() const                           { return m_bSecure; }
 
-  virtual bool User()  { return true; }
+  virtual bool User() const                     { return true; }
   void Lock(unsigned short lockType) const;
   void Unlock() const;
 
@@ -1142,7 +1148,7 @@ public:
   virtual void SaveLicqInfo();
   virtual void SetStatusOffline();
 
-  virtual bool User()  { return false; }
+  virtual bool User() const                     { return false; }
 protected:
   char *m_szPassword;
   bool m_bException,
