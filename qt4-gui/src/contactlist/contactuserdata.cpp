@@ -476,7 +476,7 @@ bool ContactUserData::setData(const QVariant& value, int role)
   if (value.toString() == myAlias)
     return true;
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
   if (u == NULL)
     return false;
 
