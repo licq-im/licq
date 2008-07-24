@@ -1934,7 +1934,7 @@ void UserInfoDlg::slotRetrieve()
   }
 #endif
 
-  ICQOwner* o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
   if(o == NULL)  return;
   unsigned short status = o->Status();
   QTextCodec* codec = UserCodec::codecForICQUser(o);
@@ -2028,7 +2028,7 @@ void UserInfoDlg::slotUpdate()
   if (currentTab != PhoneInfo &&
       currentTab != PictureInfo)
   {
-    ICQOwner* o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
     if(o == NULL)  return;
     unsigned short status = o->Status();
     codec = UserCodec::codecForICQUser(o);

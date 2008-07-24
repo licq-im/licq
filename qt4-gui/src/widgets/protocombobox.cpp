@@ -43,12 +43,11 @@ void ProtoComboBox::fillComboBox(bool skipExisting)
 {
   QString id;
   unsigned long ppid;
-  ICQOwner* o;
 
   FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
   {
     ppid = (*_ppit)->PPID();
-    o = gUserManager.FetchOwner(ppid, LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
     if (o == NULL)
       id = "0";
     else

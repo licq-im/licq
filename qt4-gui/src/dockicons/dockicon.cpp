@@ -71,12 +71,12 @@ DockIcon::~DockIcon()
 void DockIcon::updateIconStatus()
 {
   // First check for ICQ/AIM owner presence
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 
   // Take any existent one otherwise
   if (o == NULL && gUserManager.NumOwners() != 0)
   {
-    OwnerList* ol = gUserManager.LockOwnerList(LOCK_R);
+    const OwnerList* ol = gUserManager.LockOwnerList(LOCK_R);
     o = ol->front();
     o->Lock(LOCK_R);
     gUserManager.UnlockOwnerList();

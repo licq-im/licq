@@ -373,7 +373,7 @@ void SystemMenu::aboutToShowMenu()
 
 void SystemMenu::aboutToShowFollowMeMenu()
 {
-   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
    if (o == NULL)
      return;
 
@@ -653,7 +653,7 @@ void OwnerData::updateIcons()
 
 void OwnerData::aboutToShowStatusMenu()
 {
-  ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
   if (o == NULL)
     return;
 
@@ -674,7 +674,7 @@ void OwnerData::aboutToShowStatusMenu()
 
 void OwnerData::viewInfo()
 {
-  ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
   if (o == NULL)
     return;
 
@@ -685,7 +685,7 @@ void OwnerData::viewInfo()
 
 void OwnerData::viewHistory()
 {
-  ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
   if (o == NULL)
     return;
 

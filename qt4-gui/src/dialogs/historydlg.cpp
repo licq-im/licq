@@ -235,7 +235,7 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
   }
   gUserManager.DropUser(u);
 
-  ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
   if (o != NULL)
   {
     myOwnerName = QString::fromUtf8(o->GetAlias());

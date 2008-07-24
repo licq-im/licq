@@ -686,7 +686,7 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
     return;
   }
 
-  ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
   if (o == NULL)
     return;
 
@@ -1164,7 +1164,7 @@ void LicqGui::showAllOwnerEvents()
 {
   FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
   {
-    ICQOwner* o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
     if (o == NULL)
       continue;
     QString id = o->IdString();
@@ -1190,7 +1190,7 @@ void LicqGui::showNextEvent(QString id)
     // Do system messages first
     FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
     {
-      ICQOwner* o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
+      const ICQOwner* o = gUserManager.FetchOwner((*_ppit)->PPID(), LOCK_R);
       if (o == NULL)
         continue;
       unsigned short nNumMsg = o->NewMessages();
@@ -1272,7 +1272,7 @@ void LicqGui::showAllEvents()
     return;
 
   // Do system messages first
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned short numMsg = 0;
   if (o != NULL)
   {
@@ -1426,7 +1426,7 @@ void LicqGui::userUpdated(CICQSignal* sig)
       {
         unsigned short popCheck = 99;
 
-        ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
+        const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
         if (o != NULL)
         {
           switch (o->Status())
@@ -1650,7 +1650,7 @@ void LicqGui::autoAway()
 
     // Fetch current status
     unsigned short status = ICQ_STATUS_OFFLINE;
-    ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (o != NULL)
     {
       status = o->Status();

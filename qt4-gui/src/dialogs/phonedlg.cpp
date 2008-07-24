@@ -52,7 +52,7 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
   setAttribute(Qt::WA_DeleteOnClose, true);
   setModal(true);
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
   {
     close();
@@ -235,7 +235,7 @@ void EditPhoneDlg::ok()
     return;
   }
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
   {
     close();

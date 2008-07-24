@@ -128,7 +128,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(currentListChanged()), SLOT(updateCurrentGroup()));
 
   myCaption = "Licq";
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
   {
     myCaption += QString(" (%1)").arg(QString::fromUtf8(o->GetAlias()));
@@ -614,7 +614,7 @@ void MainWindow::slot_updatedUser(CICQSignal* sig)
           break;
 
         myCaption = "Licq (|)";
-        ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
+        const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
         if (o != NULL)
         {
           myCaption.replace("|", QString::fromUtf8(o->GetAlias()));
@@ -816,7 +816,7 @@ void MainWindow::updateStatus(CICQSignal* s)
 
   IconManager* iconman = IconManager::instance();
 
-  ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
   if (o != NULL)
   {
     unsigned long status = o->Status();
@@ -907,7 +907,7 @@ void MainWindow::updateStatus(CICQSignal* s)
 void MainWindow::showAwayMsgDlg()
 {
   //TODO iterate all owners that support fetching away message
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 
   if (o == NULL)
     return;

@@ -165,7 +165,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
   QAction* a = myMenu->addAction(tr("&Edit Items"), this, SLOT(selectMessage()));
   a->setData(999);
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
     return;
 

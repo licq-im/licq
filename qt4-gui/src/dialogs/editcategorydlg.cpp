@@ -124,7 +124,7 @@ EditCategoryDlg::EditCategoryDlg(ICQUserCategory* cat, QWidget* parent)
 
 void EditCategoryDlg::ok()
 {
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
   {
     QTextCodec* codec = UserCodec::codecForICQUser(o);

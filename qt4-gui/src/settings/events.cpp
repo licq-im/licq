@@ -326,7 +326,7 @@ void Settings::Events::load()
   mySndMsgSentEdit->setFileName(oem->Parameter(ON_EVENT_MSGSENT));
   oem->Unlock();
   //TODO make general for all plugins
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
   {
     myOnEventAwayCheck->setChecked(o->AcceptInAway());

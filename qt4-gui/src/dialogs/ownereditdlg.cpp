@@ -90,7 +90,7 @@ OwnerEditDlg::OwnerEditDlg(unsigned long ppid, QWidget* parent)
   // Set the fields
   if (ppid != 0)
   {
-    ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
     if (o != NULL)
     {
       edtId->setText(o->IdString());

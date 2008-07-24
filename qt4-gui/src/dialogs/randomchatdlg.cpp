@@ -180,8 +180,8 @@ SetRandomChatGroupDlg::SetRandomChatGroupDlg(QWidget* parent)
   myGroupsList->addItem(tr("Seeking Women"));
   myGroupsList->addItem(tr("Seeking Men"));
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  if (o == 0)
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  if (o == NULL)
   {
     close();
     return;

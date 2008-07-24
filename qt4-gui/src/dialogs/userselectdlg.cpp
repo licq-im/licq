@@ -88,7 +88,7 @@ UserSelectDlg::UserSelectDlg(QWidget* parent)
   // Populate the combo box
 
   // For now, just have one owner
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == 0)
   {
     close();

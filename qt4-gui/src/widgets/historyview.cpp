@@ -416,7 +416,7 @@ void HistoryView::addMsg(const CUserEvent* event, QString id, unsigned long ppid
 
   if (event->Direction() != D_RECEIVER)
   {
-    ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
     if (o != NULL)
     {
       contactName = QString::fromUtf8(o->GetAlias());

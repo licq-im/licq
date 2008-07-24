@@ -50,7 +50,7 @@ SecurityDlg::SecurityDlg(QWidget* parent)
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(title);
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o == NULL)
   {
     InformUser(this, tr("No ICQ owner found.\nPlease create one first."));
@@ -98,7 +98,7 @@ SecurityDlg::SecurityDlg(QWidget* parent)
 
 void SecurityDlg::ok()
 {
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
 
   if (o == NULL)
   {
