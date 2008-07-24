@@ -1114,10 +1114,10 @@ class ICQOwner : public ICQUser
 public:
   ICQOwner(const char *, unsigned long);
   virtual ~ICQOwner();
-  bool Exception()  { return m_bException; }
+  bool Exception() const                        { return m_bException; }
 
   // Owner specific functions
-  char *Password() { return(m_szPassword); }
+  const char* Password() const                  { return(m_szPassword); }
   void SetPassword(const char *s) { SetString(&m_szPassword, s); SaveLicqInfo(); }
   void SetWebAware(bool b)     {  m_bWebAware = b; SaveLicqInfo(); }
   virtual void SetWebAwareStatus(char c) { SetWebAware(c); }
@@ -1125,21 +1125,21 @@ public:
   void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
   void SetId(const char *s)    { SetString(&m_szId, s); SaveLicqInfo(); }
   void SetRandomChatGroup(unsigned long n)  { m_nRandomChatGroup = n; SaveLicqInfo(); }
-  bool WebAware()             { return m_bWebAware; }
-  bool HideIp()               { return m_bHideIp; }
-  bool SavePassword()         { return m_bSavePassword; }
-  unsigned long RandomChatGroup() { return m_nRandomChatGroup; }
+  bool WebAware() const                         { return m_bWebAware; }
+  bool HideIp() const                           { return m_bHideIp; }
+  bool SavePassword() const                     { return m_bSavePassword; }
+  unsigned long RandomChatGroup() const         { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus);
 
   // Deprecated functions, to be removed
   LICQ_DEPRECATED void SetUin(unsigned long n);
 
   // Server Side List functions
-  time_t GetSSTime()                  { return m_nSSTime; }
+  time_t GetSSTime() const                      { return m_nSSTime; }
   void SetSSTime(time_t t)            { m_nSSTime = t; }
-  unsigned short GetSSCount()         { return m_nSSCount; }
+  unsigned short GetSSCount() const             { return m_nSSCount; }
   void SetSSCount(unsigned short n)   { m_nSSCount = n; }
-  unsigned short GetPDINFO()          { return m_nPDINFO; }
+  unsigned short GetPDINFO() const              { return m_nPDINFO; }
   void SetPDINFO(unsigned short n)    { m_nPDINFO = n; SaveLicqInfo(); }
 
   void SetPicture(const char *f);
