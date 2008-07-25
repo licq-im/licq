@@ -155,7 +155,7 @@ bool COscarService::SendBARTFam(ICQEvent *e)
   {
     case ICQ_SNACxBART_DOWNLOADxREQUEST:
     {
-      ICQUser *u = gUserManager.FetchUser(e->Id(), LICQ_PPID, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(e->Id(), LICQ_PPID, LOCK_R);
       CPU_RequestBuddyIcon *p = new CPU_RequestBuddyIcon(e->Id(), u->BuddyIconType(),
                                     u->BuddyIconHashType(), u->BuddyIconHash(), myFam);
       gLog.Info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),

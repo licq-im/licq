@@ -702,13 +702,13 @@ protected:
 class CPU_Type2Message : public CPU_CommonFamily
 {
 public:
-  CPU_Type2Message(ICQUser *u, bool _bAck, bool _bDirectInfo, const char *cap,
+  CPU_Type2Message(const ICQUser* u, bool _bAck, bool _bDirectInfo, const char *cap,
                    unsigned long nMsgID1 = 0,
                    unsigned long nMsgID2 = 0);
 protected:
   void InitBuffer();
 
-  ICQUser *m_pUser;
+  const ICQUser* m_pUser;
   bool m_bAck;
   bool m_bDirectInfo;
   unsigned long m_nMsgID[2];
@@ -720,7 +720,7 @@ protected:
 class CPU_ReverseConnect : public CPU_Type2Message
 {
 public:
-  CPU_ReverseConnect(ICQUser *u, unsigned long nLocalIP,
+  CPU_ReverseConnect(const ICQUser* u, unsigned long nLocalIP,
                      unsigned short nLocalPort, unsigned short nRemotePort);
 };
 
@@ -737,7 +737,7 @@ public:
 class CPU_PluginMessage : public CPU_Type2Message
 {
 public:
-  CPU_PluginMessage(ICQUser *u, bool bAck, const char *PluginGUID,
+  CPU_PluginMessage(const ICQUser* u, bool bAck, const char *PluginGUID,
                     unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
 
 protected:
@@ -750,7 +750,7 @@ protected:
 class CPU_InfoPluginReq : public CPU_PluginMessage
 {
 public:
-  CPU_InfoPluginReq(ICQUser *u, const char *GUID, unsigned long nTime);
+  CPU_InfoPluginReq(const ICQUser* u, const char *GUID, unsigned long nTime);
   virtual const char *RequestGUID() { return m_ReqGUID; }
   virtual unsigned short ExtraInfo() { return ServerInfoPluginRequest; }
 
@@ -762,7 +762,7 @@ protected:
 class CPU_StatusPluginReq : public CPU_PluginMessage
 {
 public:
-  CPU_StatusPluginReq(ICQUser *u, const char *GUID, unsigned long nTime);
+  CPU_StatusPluginReq(const ICQUser* u, const char *GUID, unsigned long nTime);
   virtual unsigned short ExtraInfo() { return ServerStatusPluginRequest; }
   virtual const char *RequestGUID() { return m_ReqGUID; }
 
@@ -774,7 +774,7 @@ protected:
 class CPU_AdvancedMessage : public CPU_Type2Message
 {
 public:
-  CPU_AdvancedMessage(ICQUser *u, unsigned short _nMsgType,
+  CPU_AdvancedMessage(const ICQUser* u, unsigned short _nMsgType,
                       unsigned short _nMsgFlags, bool _bAck,
                       unsigned short _nSequence,
                       unsigned long nID1 = 0,
@@ -792,14 +792,14 @@ class CPU_ChatRequest : public CPU_AdvancedMessage
 {
 public:
   CPU_ChatRequest(char *szReason, const char *szChatUsers, unsigned short nPort,
-                  unsigned short nLevel, ICQUser *pUser, bool bICBM);
+      unsigned short nLevel, const ICQUser* pUser, bool bICBM);
 };
 
 //-----FileTransfer------------------------------------------------------------
 class CPU_FileTransfer : public CPU_AdvancedMessage, public CPX_FileTransfer
 {
 public:
-  CPU_FileTransfer(ICQUser *, ConstFileList &lFileList, const char *_szFile,
+  CPU_FileTransfer(const ICQUser* u, ConstFileList &lFileList, const char *_szFile,
                    const char *_szDesc, unsigned short nLevel, bool bICBM);
 };
 
@@ -807,14 +807,14 @@ public:
 class CPU_NoManager : public CPU_CommonFamily
 {
 public:
-    CPU_NoManager(ICQUser *u, unsigned long nMsgID1, unsigned long nMsgID2);
+    CPU_NoManager(const ICQUser* u, unsigned long nMsgID1, unsigned long nMsgID2);
 };
 
 //-----AckThroughServer--------------------------------------------------------
 class CPU_AckThroughServer : public CPU_CommonFamily
 {
 public:
-    CPU_AckThroughServer(ICQUser *u, unsigned long msgid1,
+    CPU_AckThroughServer(const ICQUser* u, unsigned long msgid1,
                          unsigned long msgid2, unsigned short sequence,
                          unsigned short msgType, bool bAccept,
                          unsigned short nLevel, const char *GUID);
@@ -832,7 +832,7 @@ protected:
 class CPU_AckGeneral : public CPU_AckThroughServer
 {
 public:
-  CPU_AckGeneral(ICQUser *u, unsigned long nMsgID1,
+  CPU_AckGeneral(const ICQUser* u, unsigned long nMsgID1,
                  unsigned long nMsgID2, unsigned short nSequence,
                  unsigned short nMsgType, bool bAccept, unsigned short nLevel);
 };
@@ -841,7 +841,7 @@ public:
 class CPU_AckFileAccept : public CPU_AdvancedMessage
 {
 public:
-  CPU_AckFileAccept(ICQUser* u, const unsigned long nMsgID[],
+  CPU_AckFileAccept(const ICQUser* u, const unsigned long nMsgID[],
                     unsigned short nSequence, unsigned short nPort,
                     const char *szDesc, const char *szFile,
                     unsigned long nFileSize);
@@ -851,7 +851,7 @@ public:
 class CPU_AckFileRefuse : public CPU_AckThroughServer
 {
 public:
-  CPU_AckFileRefuse(ICQUser* u, const unsigned long nMsgID[],
+  CPU_AckFileRefuse(const ICQUser* u, const unsigned long nMsgID[],
                     unsigned short nSequence, const char *msg);
 };
 
@@ -859,7 +859,7 @@ public:
 class CPU_AckChatAccept : public CPU_AdvancedMessage
 {
 public:
-  CPU_AckChatAccept(ICQUser* u, const char *szClients, const unsigned long nMsgID[],
+  CPU_AckChatAccept(const ICQUser* u, const char *szClients, const unsigned long nMsgID[],
                     unsigned short nSequence, unsigned short nPort);
 };
 
@@ -867,7 +867,7 @@ public:
 class CPU_AckChatRefuse : public CPU_AckThroughServer
 {
 public:
-  CPU_AckChatRefuse(ICQUser* u, const unsigned long nMsgID[],
+  CPU_AckChatRefuse(const ICQUser* u, const unsigned long nMsgID[],
                     unsigned short nSequence, const char *msg);
 };
 
@@ -875,7 +875,7 @@ public:
 class CPU_PluginError : public CPU_AckThroughServer
 {
 public:
-  CPU_PluginError(ICQUser *u, unsigned long nMsgID1, unsigned long nMsgID2,
+  CPU_PluginError(const ICQUser* u, unsigned long nMsgID1, unsigned long nMsgID2,
                   unsigned short nSequence, const char *GUID);
 };
 
@@ -883,7 +883,7 @@ public:
 class CPU_InfoPluginListResp : public CPU_AckThroughServer
 {
 public:
-  CPU_InfoPluginListResp(ICQUser *u, unsigned long nMsgID1,
+  CPU_InfoPluginListResp(const ICQUser* u, unsigned long nMsgID1,
                          unsigned long nMsgID2, unsigned short nSequence);
 };
 
@@ -891,7 +891,7 @@ public:
 class CPU_InfoPhoneBookResp : public CPU_AckThroughServer
 {
 public:
-  CPU_InfoPhoneBookResp(ICQUser *u, unsigned long nMsgID1,
+  CPU_InfoPhoneBookResp(const ICQUser* u, unsigned long nMsgID1,
                         unsigned long nMsgID2, unsigned short nSequence);
 };
 
@@ -899,7 +899,7 @@ public:
 class CPU_InfoPictureResp : public CPU_AckThroughServer
 {
 public:
-  CPU_InfoPictureResp(ICQUser *u, unsigned long nMsgID1,
+  CPU_InfoPictureResp(const ICQUser* u, unsigned long nMsgID1,
                       unsigned long nMsgID2, unsigned short nSequence);
 };
 
@@ -907,7 +907,7 @@ public:
 class CPU_StatusPluginListResp : public CPU_AckThroughServer
 {
 public:
-  CPU_StatusPluginListResp(ICQUser *u, unsigned long nMsgID1,
+  CPU_StatusPluginListResp(const ICQUser* u, unsigned long nMsgID1,
                            unsigned long nMsgID2, unsigned short nSequence);
 };
 
@@ -915,7 +915,7 @@ public:
 class CPU_StatusPluginResp : public CPU_AckThroughServer
 {
 public:
-  CPU_StatusPluginResp(ICQUser *u, unsigned long nMsgID1,
+  CPU_StatusPluginResp(const ICQUser* u, unsigned long nMsgID1,
                        unsigned long nMsgID2, unsigned short nSequence,
                        unsigned long nStatus);
 };

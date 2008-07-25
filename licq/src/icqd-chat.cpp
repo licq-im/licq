@@ -120,7 +120,7 @@ CChatClient::CChatClient()
 }
 
 
-CChatClient::CChatClient(ICQUser *u)
+CChatClient::CChatClient(const ICQUser* u)
 {
   m_nVersion = u->Version();
   m_szId = strdup(u->IdString());
@@ -681,7 +681,7 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
 //  m_nSession = rand();
   licqDaemon = d;
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   strncpy(m_szName, o->GetAlias(), 32);
   m_szName[31] = '\0';
   m_nSession = o->Port();
@@ -760,7 +760,7 @@ void CChatManager::StartAsClient(unsigned short nPort)
 {
   if (!StartChatServer()) return;
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, LICQ_PPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(m_szId, LICQ_PPID, LOCK_R);
   if (u == NULL) return;
   m_pChatClient = new CChatClient(u);
   m_pChatClient->m_nPort = nPort;
@@ -787,7 +787,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   bool bSendIntIp = false;
   bool bTryDirect = true;
   bool bResult = false;
-  ICQUser* temp_user = gUserManager.FetchUser(u->szId, u->nPPID, LOCK_R);
+  const ICQUser* temp_user = gUserManager.FetchUser(u->szId, u->nPPID, LOCK_R);
   if (temp_user != NULL)
   {
     bSendIntIp = temp_user->SendIntIp();
@@ -805,7 +805,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
 
   if (!bSuccess)
   {
-    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     unsigned long nIp = bSendIntIp ? o->IntIp() : o->Ip();
     gUserManager.DropOwner(o);
 
@@ -2501,7 +2501,7 @@ void *ChatWaitForSignal_tep(void *arg)
   pthread_mutex_unlock(cancel_mutex);
 
   bool bSendIntIp = false;
-  ICQUser* temp_user = gUserManager.FetchUser(rc->u->Id(), rc->u->PPID(), LOCK_R);
+  const ICQUser* temp_user = gUserManager.FetchUser(rc->u->Id(), rc->u->PPID(), LOCK_R);
   if (temp_user != NULL)
   {
     bSendIntIp = temp_user->SendIntIp();

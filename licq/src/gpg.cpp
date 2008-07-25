@@ -88,8 +88,8 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
   sprintf(szUser, "%s.%lu", szId, nPPID);
   mKeysIni.SetSection("keys");
 
-  ICQUser *u = gUserManager.FetchUser( szId, nPPID, LOCK_R );
-  if ( u )
+  const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (u != NULL)
   {
     const char *tmp = u->GPGKey();
     if ( tmp && tmp[0]!='\0' )

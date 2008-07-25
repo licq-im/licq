@@ -569,11 +569,11 @@ public:
   const ICQUserPhoneBook* GetPhoneBook() const  { return m_PhoneBook; }
 
   // Picture Info
-  bool GetPicturePresent() const              { return m_bPicturePresent; }
-  unsigned short BuddyIconType()	{ return m_nBuddyIconType; }
-  char BuddyIconHashType()		{ return m_nBuddyIconHashType; }
-  char *BuddyIconHash()			{ return m_szBuddyIconHash; }
-  char *OurBuddyIconHash()		{ return m_szOurBuddyIconHash; }
+  bool GetPicturePresent() const                { return m_bPicturePresent; }
+  unsigned short BuddyIconType() const          { return m_nBuddyIconType; }
+  char BuddyIconHashType() const                { return m_nBuddyIconHashType; }
+  const char* BuddyIconHash() const             { return m_szBuddyIconHash; }
+  const char* OurBuddyIconHash() const          { return m_szOurBuddyIconHash; }
 
   // Dynamic info fields for protocol plugins
   std::string GetPPField(const std::string &);
@@ -902,7 +902,9 @@ public:
   void AddTLV(TLVPtr);
   void RemoveTLV(unsigned long);
   void SetTLVList(TLVList& tlvs);
-  TLVList GetTLVList();
+  TLVList GetTLVList()                          { return myTLVs; }
+  const TLVList GetTLVList() const              { return myTLVs; }
+
 
   // Don't call these:
   int SocketDesc(unsigned char channel) const;
@@ -1129,7 +1131,7 @@ public:
   bool HideIp() const                           { return m_bHideIp; }
   bool SavePassword() const                     { return m_bSavePassword; }
   unsigned long RandomChatGroup() const         { return m_nRandomChatGroup; }
-  unsigned long AddStatusFlags(unsigned long nStatus);
+  unsigned long AddStatusFlags(unsigned long nStatus) const;
 
   // Deprecated functions, to be removed
   LICQ_DEPRECATED void SetUin(unsigned long n);

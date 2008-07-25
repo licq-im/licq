@@ -49,7 +49,7 @@ public:
   const char *Title()  { return m_szTitle; }
   const char *Default()  { return m_szDefault; }
   const char *FullDefault()  { return m_szFullDefault; }
-  bool SetFields(ICQUser *);
+  bool SetFields(const ICQUser* u);
 protected:
   char *m_szTitle;
   char *m_szDefault;

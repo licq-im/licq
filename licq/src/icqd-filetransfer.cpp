@@ -206,7 +206,7 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
   m_nSession = rand();
   licqDaemon = d;
 
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   strncpy(m_szLocalName, o->GetAlias(), sizeof(m_szLocalName) - 1);
   m_szLocalName[sizeof(m_szLocalName) - 1] = '\0';
   gUserManager.DropOwner(o);
@@ -341,7 +341,7 @@ void CFileTransferManager::SendFiles(ConstFileList lPathNames, unsigned short nP
 //-----CFileTransferManager::ConnectToFileServer-----------------------------
 bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
 {
-  ICQUser *u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
   if (u == NULL)
     return false;
 
@@ -359,7 +359,7 @@ bool CFileTransferManager::ConnectToFileServer(unsigned short nPort)
   bool bResult = false;
   if (!bSuccess)
   {
-    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     unsigned long nIp = bSendIntIp ? o->IntIp() : o->Ip();
     gUserManager.DropOwner(o);
 
@@ -391,7 +391,7 @@ bool CFileTransferManager::SendFileHandshake()
   gLog.Info(tr("%sFile Transfer: Shaking hands.\n"), L_TCPxSTR);
 
   // Send handshake packet:
-  ICQUser *u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(myId, LICQ_PPID, LOCK_R);
   unsigned short nVersion = u->ConnectionVersion();
   gUserManager.DropUser(u);
   if (!CICQDaemon::Handshake_Send(&ftSock, myId, LocalPort(), nVersion, false))

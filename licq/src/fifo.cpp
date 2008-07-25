@@ -155,7 +155,7 @@ static int process_tok(const command_t *table,const char *tok);
 unsigned long
 StringToStatus(char *_szStatus)
 {
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned long nStatus = o->AddStatusFlags(0);
   int i =0;
   static struct 
@@ -348,7 +348,7 @@ static int fifo_status( int argc, const char *const *argv, void *data)
   }
 
   // Determine the status to go to
-  ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   bOffline = o->StatusOffline();
   gUserManager.DropOwner(o);
   nStatus = StringToStatus(const_cast<char *>(szStatus));
@@ -467,7 +467,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
   { 
     if( nPPID == LICQ_PPID )
     {
-      ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+      const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
       if (u != NULL)
       {
         string number = u->GetCellularNumber();
@@ -568,7 +568,6 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
   CICQDaemon *d = (CICQDaemon *) data;
   unsigned long nPPID;
   char *szId = 0; 
-  ICQUser *u;
   int ret = -1; 
 
   if ( argc == 1 )
@@ -579,7 +578,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
      gLog.Info(tr("%s `%s': bad protol. ICQ only alowed\n"), L_FIFOxSTR, argv[0]);
   else
   {
-    u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
     if (u == NULL)
       gLog.Warn(tr("%s %s: user %s not on contact list, not retrieving "
                 "info.\n"), L_WARNxSTR, argv[0], szId);

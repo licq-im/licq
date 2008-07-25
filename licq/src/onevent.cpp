@@ -71,7 +71,7 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
     nPPID = u->PPID();
 
   // Check if globally command should be run
-  ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
   if (!o) return;
   unsigned long s = o->Status();
 

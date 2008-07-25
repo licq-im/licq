@@ -206,7 +206,7 @@ bool CUtility::SetFields(unsigned long _nUin)
 
 bool CUtility::SetFields(const char *szId, unsigned long nPPID)
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (u == NULL) return false;
   if (m_szFullCommand != NULL) delete [] m_szFullCommand;
   char *szTmp;
@@ -268,7 +268,7 @@ CUtilityUserField::~CUtilityUserField()
   free (m_szDefault);
 }
 
-bool CUtilityUserField::SetFields(ICQUser *u)
+bool CUtilityUserField::SetFields(const ICQUser *u)
 {
   char *szTmp;
   szTmp = u->usprintf(m_szDefault, USPRINTF_NOFW|USPRINTF_LINEISCMD);

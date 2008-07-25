@@ -248,7 +248,7 @@ class CChatClient
 {
 public:
   CChatClient();
-  CChatClient(ICQUser *);
+  CChatClient(const ICQUser* u);
   CChatClient(const CChatClient &);
   CChatClient& operator=(const CChatClient &);
   ~CChatClient();

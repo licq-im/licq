@@ -834,7 +834,7 @@ ICQOwner *CUserManager::FindOwner(const char *_szId, unsigned long _nPPID)
 
 string CUserManager::OwnerId(unsigned long ppid)
 {
-  ICQOwner* owner = FetchOwner(ppid, LOCK_R);
+  const ICQOwner* owner = FetchOwner(ppid, LOCK_R);
   if (owner == NULL)
     return "";
 
@@ -1238,7 +1238,7 @@ unsigned short CUserManager::GenerateSID()
   int nSID;
   unsigned short nOwnerPDINFO;
 
-  ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   nOwnerPDINFO = o->GetPDINFO();
   gUserManager.DropOwner(o);
 
@@ -3891,11 +3891,6 @@ void ICQUser::RemoveTLV(unsigned long type)
   myTLVs.erase(type);
 }
 
-TLVList ICQUser::GetTLVList()
-{
-  return myTLVs;
-}
-
 void ICQUser::SetTLVList(TLVList& tlvs)
 {
   myTLVs.clear();
@@ -4012,7 +4007,7 @@ void ICQOwner::SetUin(unsigned long uin)
   SaveLicqInfo();
 }
 
-unsigned long ICQOwner::AddStatusFlags(unsigned long s)
+unsigned long ICQOwner::AddStatusFlags(unsigned long s) const
 {
   s &= 0x0000FFFF;
 

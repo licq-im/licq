@@ -868,7 +868,7 @@ protected:
   ICQEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
   { return SendExpectEvent_Server("0", LICQ_PPID, packet, ue, extendedEvent); }
 
-  ICQEvent *SendExpectEvent_Client(ICQUser *, CPacket *, CUserEvent *);
+  ICQEvent* SendExpectEvent_Client(const ICQUser* u, CPacket* packet, CUserEvent* ue);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, TCPSocket *);

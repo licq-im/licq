@@ -388,7 +388,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     unsigned char nChannel = e->Channel();
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    ICQUser* u = gUserManager.FetchUser(id.c_str(), ppid, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(id.c_str(), ppid, LOCK_R);
     if (u == NULL)
     {
       if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -408,7 +408,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
     bool bSendIntIp = u->SendIntIp();
     gUserManager.DropUser(u);
 
-    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+    const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
     unsigned long nIP = bSendIntIp ? o->IntIp() : o->Ip();
     unsigned short nLocalPort = o->Port();
     gUserManager.DropOwner(o);

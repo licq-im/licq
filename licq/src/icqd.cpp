@@ -1263,7 +1263,7 @@ void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
 
 void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (!u) return;
   bool bTempUser = u->NotInList();
   gUserManager.DropUser(u);
@@ -1458,7 +1458,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet
   return SendExpectEvent_Server(szUin, LICQ_PPID, packet, ue, bExtendedEvent);
 }
 
-ICQEvent *CICQDaemon::SendExpectEvent_Client(ICQUser *pUser, CPacket *packet,
+ICQEvent* CICQDaemon::SendExpectEvent_Client(const ICQUser* pUser, CPacket* packet,
    CUserEvent *ue)
 {
   // If we are already shutting down, don't start any events
@@ -1827,7 +1827,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       e->m_eResult == EVENT_ACKED &&
       e->m_nSubResult != ICQ_TCPxACK_RETURN)
   {
-    ICQUser *u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
+    const ICQUser* u = gUserManager.FetchUser(e->m_nDestinationUin, LOCK_R);
     if (u != NULL)
     {
       e->m_pUserEvent->AddToHistory(u, LICQ_PPID, D_SENDER);
@@ -2426,7 +2426,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
   unsigned short nPort;
 
   // Do we accept it if we are in Occ or DND?
-  // ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  // const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   // unsigned short nOwnerStatus = o->Status();
   // gUserManager.DropOwner(o);
 
