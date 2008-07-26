@@ -197,7 +197,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
             for (int i = 0; i < pConv->NumUsers(); i++)
             {
               string strUser = pConv->GetUser(i);
-              ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
+              ICQUser* u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
               if (u)
               {
                 e->m_pUserEvent->AddToHistory(u, MSN_PPID, D_SENDER);
@@ -210,7 +210,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           }
           else
           {
-            ICQUser *u = gUserManager.FetchUser(e->m_szId, e->m_nPPID, LOCK_R);
+            ICQUser* u = gUserManager.FetchUser(e->m_szId, e->m_nPPID, LOCK_W);
             if (u != NULL)
             {
               e->m_pUserEvent->AddToHistory(u, MSN_PPID, D_SENDER);
@@ -377,7 +377,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
 
 void CMSN::Send_SB_Packet(const string &strUser, CMSNPacket *p, int nSocket, bool bDelete)
 {
-  ICQUser* u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
   if (!u) return;
 
   int nSock = nSocket != -1 ? nSocket : u->SocketDesc(ICQ_CHNxNONE);
@@ -542,7 +542,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
 
 void CMSN::MSNSendInvitation(const char* _szUser, CMSNPacket* _pPacket)
 {
-  //ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
+  //const ICQUser* u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   //if (!u) return;
   //gUserManager.DropUser(u);
 
@@ -576,8 +576,8 @@ void CMSN::MSNSendMessage(const char* _szUser, const char* _szMsg,
     if (pConv)
       nSocket = pConv->Socket();
   } 
-  
-  ICQUser *u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
+
+  const ICQUser* u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   if (!u) return;
   gUserManager.DropUser(u);
   

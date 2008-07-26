@@ -530,7 +530,7 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
   if (_nStatus == ICQ_STATUS_OFFLINE)
     return;
 
-  ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_R);
+  const ICQOwner* o = gUserManager.FetchOwner(MSN_PPID, LOCK_R);
   if (!o)
   {
     gLog.Error("%sNo owner set.\n", L_MSNxSTR);
@@ -632,7 +632,7 @@ void CMSN::MSNRemoveUser(const char* szUser)
 
 void CMSN::MSNRenameUser(const char* szUser)
 {
-  ICQUser *u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_R);
+  const ICQUser* u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_R);
   if (!u) return;
   string strNick = u->GetAlias();
   gUserManager.DropUser(u);
