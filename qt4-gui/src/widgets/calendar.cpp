@@ -69,13 +69,21 @@ void Calendar::addMatch(const QDate& date)
     return;
 
   myMatches.append(date);
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 4, 0))
   updateCell(date);
+#else
+  update();
+#endif
 }
 
 void Calendar::clearMatches()
 {
   myMatches.clear();
+#if (QT_VERSION >= QT_VERSION_CHECK(4, 4, 0))
   updateCells();
+#else
+  update();
+#endif
 }
 
 void Calendar::paintCell(QPainter* painter, const QRect& rect, const QDate& date) const
