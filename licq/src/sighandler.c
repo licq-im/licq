@@ -91,6 +91,14 @@ void licq_handle_sigabrt(int s)
     return;
   }
 
+  // When shutting down, calls to pthread_rdwr_destroy_np() may trigger another
+  // assert causing thish andler to be called again and backtrace files
+  // overwritten.
+  // Restore default signal handlers now, that way we won't get called again if
+  // this happens.
+  signal(SIGSEGV, SIG_DFL);
+  signal(SIGABRT, SIG_DFL);
+
   /*
    * Use gdb to try to generate a backtrace for all threads and save
    * it in BASE_DIR/licq.backtrace.gdb.
