@@ -82,7 +82,7 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
   myReadSplitter->addWidget(myMessageList);
 
   myMessageView = new MLView();
-  myMessageView->setSizeHintLines(5);
+  myMessageView->setSizeHintLines(8);
   myReadSplitter->addWidget(myMessageView);
 
   myReadSplitter->setStretchFactor(0, 0);
