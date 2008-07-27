@@ -1397,20 +1397,17 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
 
       if (m_bAutoPopup && sig->Argument() > 0)
       {
+        const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
+        unsigned short s = ICQ_STATUS_OFFLINE; // if we have no owner we're very likely offline
+        if (o != NULL)
+        {
+          s = o->Status();
+          gUserManager.DropOwner(o);
+        }
+
         ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
         if (u != NULL && u->NewMessages() > 0)
         {
-          ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
-          unsigned short s;
-          if (o == 0)
-          {
-            s = ICQ_STATUS_OFFLINE; // if we have no owner we're very likely offline ;)
-          }
-          else
-          {
-            s = o->Status();
-            gUserManager.DropOwner(o);
-          }
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
           {
             bool bCallUserView = false, bCallSendMsg = false;
