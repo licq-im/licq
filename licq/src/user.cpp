@@ -693,18 +693,7 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
     // Set this user to be on the contact list
     pUser->AddToContactList();
     //pUser->SetEnableSave(true);
-    pUser->SaveLicqInfo();
-    pUser->SaveGeneralInfo();
-    pUser->SaveMoreInfo();
-    pUser->SaveHomepageInfo();
-    pUser->SaveWorkInfo();
-    pUser->SaveAboutInfo();
-    pUser->SaveInterestsInfo();
-    pUser->SaveBackgroundsInfo();
-    pUser->SaveOrganizationsInfo();
-    pUser->SavePhoneBookInfo();
-    pUser->SavePictureInfo();
-    pUser->SaveExtInfo();
+    pUser->saveAll();
   }
 
   // Store the user in the lookup map
@@ -1405,20 +1394,7 @@ void CUserManager::SaveAllUsers()
   FOR_EACH_USER_START(LOCK_R)
   {
     if (!pUser->NotInList())
-    {
-      pUser->SaveLicqInfo();
-      pUser->SaveGeneralInfo();
-      pUser->SaveMoreInfo();
-      pUser->SaveHomepageInfo();
-      pUser->SaveWorkInfo();
-      pUser->SaveAboutInfo();
-      pUser->SaveInterestsInfo();
-      pUser->SaveBackgroundsInfo();
-      pUser->SaveOrganizationsInfo();
-      pUser->SavePhoneBookInfo();
-      pUser->SavePictureInfo();
-      pUser->SaveExtInfo();
-    }
+      pUser->saveAll();
   }
   FOR_EACH_USER_END
 }
@@ -2394,18 +2370,7 @@ void ICQUser::SetPermanent()
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 
   // Save all the info now
-  SaveLicqInfo();
-  SaveGeneralInfo();
-  SaveMoreInfo();
-  SaveHomepageInfo();
-  SaveWorkInfo();
-  SaveAboutInfo();
-  SaveInterestsInfo();
-  SaveBackgroundsInfo();
-  SaveOrganizationsInfo();
-  SavePhoneBookInfo();
-  SavePictureInfo();
-  SaveExtInfo();
+  saveAll();
 
   // Notify the plugins of the change
   // Send a USER_BASIC, don't want a new signal just for this.
@@ -3656,6 +3621,21 @@ void ICQUser::SaveExtInfo()
 
 }
 
+void ICQUser::saveAll()
+{
+  SaveLicqInfo();
+  SaveGeneralInfo();
+  SaveMoreInfo();
+  SaveHomepageInfo();
+  SaveWorkInfo();
+  SaveAboutInfo();
+  SaveInterestsInfo();
+  SaveBackgroundsInfo();
+  SaveOrganizationsInfo();
+  SavePhoneBookInfo();
+  SavePictureInfo();
+  SaveExtInfo();
+}
 
 //-----ICQUser::EventPush--------------------------------------------------------
 void ICQUser::EventPush(CUserEvent *e)

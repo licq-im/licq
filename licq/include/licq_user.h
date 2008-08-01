@@ -434,6 +434,7 @@ public:
   virtual ~ICQUser();
   void RemoveFiles();
 
+  void saveAll();
   virtual void SaveLicqInfo();
   void SaveGeneralInfo();
   void SaveMoreInfo();
