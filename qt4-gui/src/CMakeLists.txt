@@ -6,6 +6,7 @@ set(SOURCE_DIRS
   dockicons
   helpers
   settings
+  userdlg
   userevents
   views
   widgets

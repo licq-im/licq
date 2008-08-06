@@ -31,7 +31,6 @@ set(dialogs_SRCS
   showawaymsgdlg.cpp
   skinbrowser.cpp
   statsdlg.cpp
-  userinfodlg.cpp
   userselectdlg.cpp
   utilitydlg.cpp
 )

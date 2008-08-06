@@ -85,7 +85,6 @@ extern "C"
 #include "contactlist/contactlist.h"
 
 #include "dialogs/logwindow.h"
-#include "dialogs/userinfodlg.h"
 
 #include "dockicons/dockicon.h"
 #include "dockicons/systemtrayicon.h"
@@ -95,6 +94,8 @@ extern "C"
 #endif
 
 #include "helpers/support.h"
+
+#include "userdlg/userdlg.h"
 
 #include "userevents/usereventcommon.h"
 #include "userevents/usereventtabdlg.h"
@@ -744,23 +745,23 @@ void LicqGui::showInfoDialog(int /* fcn */, QString id, unsigned long ppid,
 {
   if (id.isEmpty() || ppid == 0) return;
 
-  UserInfoDlg* f = NULL;
+  UserDlg* f = NULL;
 
-  for (int i = 0; i < myUserInfoList.size(); ++i)
+  for (int i = 0; i < myUserDlgList.size(); ++i)
   {
-    UserInfoDlg* item = myUserInfoList.at(i);
-    if (item->Id() == id && item->PPID() == ppid)
+    UserDlg* item = myUserDlgList.at(i);
+    if (item->id() == id && item->ppid() == ppid)
     {
       f = item;
       break;
     }
   }
 
-  int tab = UserInfoDlg::GeneralInfo;
+  UserDlg::UserPage tab = UserDlg::GeneralPage;
 
   if (f != NULL)
   {
-    if (toggle && f->isTabShown(tab))
+    if (toggle && f->currentPage() == tab)
     {
       delete f; // will notify us about deletion
       return;
@@ -773,14 +774,13 @@ void LicqGui::showInfoDialog(int /* fcn */, QString id, unsigned long ppid,
   }
   else
   {
-    f = new UserInfoDlg(id, ppid);
-    connect(f, SIGNAL(finished(UserInfoDlg*)),
-        SLOT(userInfoDlgFinished(UserInfoDlg*)));
+    f = new UserDlg(id, ppid);
+    connect(f, SIGNAL(finished(UserDlg*)), SLOT(userDlgFinished(UserDlg*)));
     f->show();
-    myUserInfoList.append(f);
+    myUserDlgList.append(f);
   }
 
-  f->showTab(tab);
+  f->showPage(tab);
   f->show();
   f->raise();
   if (updateNow)
@@ -1021,13 +1021,13 @@ void LicqGui::viewUrl(QString url)
 #endif
 }
 
-void LicqGui::userInfoDlgFinished(UserInfoDlg* dialog)
+void LicqGui::userDlgFinished(UserDlg* dialog)
 {
-  if (myUserInfoList.removeAll(dialog) > 0)
+  if (myUserDlgList.removeAll(dialog) > 0)
     return;
 
   gLog.Warn("%sUser Info finished signal for user with no window (%s)!\n",
-      L_WARNxSTR, dialog->Id().toLatin1().data());
+      L_WARNxSTR, dialog->id().toLatin1().data());
 }
 
 void LicqGui::userEventTabDlgDone()
@@ -1358,13 +1358,13 @@ void LicqGui::listUpdated(CICQSignal* sig)
         }
       }
       // if their info box is open, kill it
-      for (int i = 0; i < myUserInfoList.size(); ++i)
+      for (int i = 0; i < myUserDlgList.size(); ++i)
       {
-        UserInfoDlg* item = myUserInfoList.at(i);
-        if (item->Id() == sig->Id() && item->PPID() == sig->PPID())
+        UserDlg* item = myUserDlgList.at(i);
+        if (item->id() == sig->Id() && item->ppid() == sig->PPID())
         {
           item->close();
-          myUserInfoList.removeAll(item);
+          myUserDlgList.removeAll(item);
           break;
         }
       }

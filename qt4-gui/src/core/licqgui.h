@@ -48,13 +48,13 @@ class MainWindow;
 class SignalManager;
 class UserEventCommon;
 class UserEventTabDlg;
-class UserInfoDlg;
+class UserDlg;
 class UserMenu;
 class UserSendCommon;
 class UserViewEvent;
 
 typedef QList<UserViewEvent*> UserViewEventList;
-typedef QList<UserInfoDlg*> UserInfoList;
+typedef QList<UserDlg*> UserDlgList;
 typedef QList<UserSendCommon*> UserSendEventList;
 
 #ifdef USE_KDE
@@ -233,7 +233,7 @@ private slots:
   void grabKey(QString key);
 #endif
 
-  void userInfoDlgFinished(UserInfoDlg* dialog);
+  void userDlgFinished(UserDlg* dialog);
   void userEventTabDlgDone();
   void userEventFinished(QString id, unsigned long ppid);
   void sendEventFinished(QString id, unsigned long ppid);
@@ -290,7 +290,7 @@ private:
   // User dialogs
   UserEventTabDlg* myUserEventTabDlg;
   UserViewEventList myUserViewList;
-  UserInfoList myUserInfoList;
+  UserDlgList myUserDlgList;
   UserSendEventList myUserSendList;
 
   QStringList myCmdLineParams;
