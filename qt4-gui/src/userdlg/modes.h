@@ -25,6 +25,8 @@
 
 #include <QObject>
 
+#include <licq_user.h>
+
 class QCheckBox;
 class QGridLayout;
 class QGroupBox;
@@ -111,11 +113,7 @@ private:
   QRadioButton* myStatusDndRadio;
   QGroupBox* mySysGroupBox;
   QVBoxLayout* mySysGroupLayout;
-  QCheckBox* myOnlineNotifyCheck;
-  QCheckBox* myVisibleListCheck;
-  QCheckBox* myInvisibleListCheck;
-  QCheckBox* myIgnoreListCheck;
-  QCheckBox* myNewUsersCheck;
+  QCheckBox* mySystemGroupCheck[NUM_GROUPS_SYSTEM_ALL];
 
   // Widgets for groups page
   QVBoxLayout* myPageGroupsLayout;

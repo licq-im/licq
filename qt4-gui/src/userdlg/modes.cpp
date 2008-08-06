@@ -135,25 +135,25 @@ QWidget* UserPages::Modes::createPageModes(QWidget* parent)
   mySysGroupBox = new QGroupBox(tr("System Groups"));
   mySysGroupLayout = new QVBoxLayout(mySysGroupBox);
 
-  myOnlineNotifyCheck = new QCheckBox(tr("Online notify"));
-  myOnlineNotifyCheck->setToolTip(tr("Notify when this contact comes online."));
-  mySysGroupLayout->addWidget(myOnlineNotifyCheck);
+  mySystemGroupCheck[GROUP_ONLINE_NOTIFY] = new QCheckBox(tr("Online notify"));
+  mySystemGroupCheck[GROUP_ONLINE_NOTIFY]->setToolTip(tr("Notify when this contact comes online."));
+  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_ONLINE_NOTIFY]);
 
-  myVisibleListCheck = new QCheckBox(tr("Visible List"));
-  myVisibleListCheck->setToolTip(tr("Contact will see you online even if you're invisible."));
-  mySysGroupLayout->addWidget(myVisibleListCheck);
+  mySystemGroupCheck[GROUP_VISIBLE_LIST] = new QCheckBox(tr("Visible List"));
+  mySystemGroupCheck[GROUP_VISIBLE_LIST]->setToolTip(tr("Contact will see you online even if you're invisible."));
+  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_VISIBLE_LIST]);
 
-  myInvisibleListCheck = new QCheckBox(tr("Invisible List"));
-  myInvisibleListCheck->setToolTip(tr("Contact will always see you as offline."));
-  mySysGroupLayout->addWidget(myInvisibleListCheck);
+  mySystemGroupCheck[GROUP_INVISIBLE_LIST] = new QCheckBox(tr("Invisible List"));
+  mySystemGroupCheck[GROUP_INVISIBLE_LIST]->setToolTip(tr("Contact will always see you as offline."));
+  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_INVISIBLE_LIST]);
 
-  myIgnoreListCheck = new QCheckBox(tr("Ignore List"));
-  myIgnoreListCheck->setToolTip(tr("Ignore any events from this contact."));
-  mySysGroupLayout->addWidget(myIgnoreListCheck);
+  mySystemGroupCheck[GROUP_IGNORE_LIST] = new QCheckBox(tr("Ignore List"));
+  mySystemGroupCheck[GROUP_IGNORE_LIST]->setToolTip(tr("Ignore any events from this contact."));
+  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_IGNORE_LIST]);
 
-  myNewUsersCheck = new QCheckBox(tr("New Users"));
-  myNewUsersCheck->setToolTip(tr("Contact was recently added to the list."));
-  mySysGroupLayout->addWidget(myNewUsersCheck);
+  mySystemGroupCheck[GROUP_NEW_USERS] = new QCheckBox(tr("New Users"));
+  mySystemGroupCheck[GROUP_NEW_USERS]->setToolTip(tr("Contact was recently added to the list."));
+  mySysGroupLayout->addWidget(mySystemGroupCheck[GROUP_NEW_USERS]);
 
   mySysGroupLayout->addStretch(1);
 
@@ -187,7 +187,6 @@ QWidget* UserPages::Modes::createPageGroups(QWidget* parent)
   myGroupsTable->verticalHeader()->hide();
 
   myPageGroupsLayout->addWidget(myGroupsBox);
-  myPageGroupsLayout->addStretch(1);
 
   return w;
 }
@@ -217,11 +216,8 @@ void UserPages::Modes::load(const ICQUser* user)
   myStatusOccupiedRadio->setChecked(statusToUser == ICQ_STATUS_OCCUPIED);
   myStatusDndRadio->setChecked(statusToUser == ICQ_STATUS_DND);
 
-  myOnlineNotifyCheck->setChecked(user->OnlineNotify());
-  myVisibleListCheck->setChecked(user->VisibleList());
-  myInvisibleListCheck->setChecked(user->InvisibleList());
-  myIgnoreListCheck->setChecked(user->IgnoreList());
-  myNewUsersCheck->setChecked(user->NewUser());
+  for (unsigned short i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+    mySystemGroupCheck[i]->setChecked(user->GetInGroup(GROUPS_SYSTEM, i));
 
   unsigned int ppid = user->PPID();
   bool isIcq = (ppid == LICQ_PPID);
@@ -328,27 +324,48 @@ void UserPages::Modes::apply2(const QString& id, unsigned long ppid)
   if (myIsOwner)
     return;
 
-  // Set user groups (SetUserInGroup will take lock so must be called here)
+  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  if (u == NULL)
+    return;
+
+  // Get current group memberships so we only set those that have actually changed
+  int serverGroup = 0;
+  if (u->GetSID() != 0)
+    serverGroup = gUserManager.GetGroupFromID(u->GetGSID());
+  const UserGroupList& userGroups = u->GetGroups();
+  unsigned long systemGroups = u->GetSystemGroups();
+
+  gUserManager.DropUser(u);
+
+  // First set server group
+  for (int i = 0; i < myGroupsTable->rowCount(); ++i)
+  {
+    unsigned short gid = myGroupsTable->item(i, 0)->data(Qt::UserRole).toUInt();
+
+    if (dynamic_cast<QRadioButton*>(myGroupsTable->cellWidget(i, 2))->isChecked())
+    {
+      if (gid != serverGroup)
+        gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_USER, gid, true, true);
+    }
+  }
+
+  // Set local user groups
   for (int i = 0; i < myGroupsTable->rowCount(); ++i)
   {
     unsigned short gid = myGroupsTable->item(i, 0)->data(Qt::UserRole).toUInt();
 
     bool inLocal = dynamic_cast<QCheckBox*>(myGroupsTable->cellWidget(i, 1))->isChecked();
-    bool inServer = dynamic_cast<QRadioButton*>(myGroupsTable->cellWidget(i, 2))->isChecked();
-    gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_USER, gid, inLocal | inServer, inServer);
+    if ((userGroups.count(gid) > 0) != inLocal)
+      gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_USER, gid, inLocal, false);
   }
 
   // Set system groups
-  gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_SYSTEM,
-      GROUP_ONLINE_NOTIFY, myOnlineNotifyCheck->isChecked(), true);
-  gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_SYSTEM,
-      GROUP_VISIBLE_LIST, myVisibleListCheck->isChecked(), true);
-  gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_SYSTEM,
-      GROUP_INVISIBLE_LIST, myInvisibleListCheck->isChecked(), true);
-  gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_SYSTEM,
-      GROUP_IGNORE_LIST, myIgnoreListCheck->isChecked(), true);
-  gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_SYSTEM,
-      GROUP_NEW_USERS, myNewUsersCheck->isChecked(), true);
+  for (unsigned short i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  {
+    bool inGroup = mySystemGroupCheck[i]->isChecked();
+    if ((systemGroups & (1L << (i - 1))) != inGroup)
+      gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_SYSTEM, i, inGroup, true);
+  }
 }
 
 void UserPages::Modes::userUpdated(const CICQSignal* sig, const ICQUser* user)
