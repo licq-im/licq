@@ -88,7 +88,8 @@ using namespace LicqQtGui;
 
 UserPages::Info::Info(bool isOwner, UserDlg* parent)
   : QObject(parent),
-    m_bOwner(isOwner)
+    m_bOwner(isOwner),
+    myAliasHasChanged(false)
 {
   m_Interests = m_Organizations = m_Backgrounds = NULL;
   m_PhoneBook = NULL;
@@ -147,10 +148,9 @@ void UserPages::Info::apply(ICQUser* user)
 
 void UserPages::Info::apply2(const QString& id, unsigned long ppid)
 {
-  if (!m_bOwner)
-  {
+  if (myAliasHasChanged)
     gLicqDaemon->ProtoRenameUser(id.toLatin1(), ppid);
-  }
+  myAliasHasChanged = false;
 
 #ifdef USE_KABC
   savePageKabc();
@@ -324,6 +324,7 @@ void UserPages::Info::loadPageGeneral(const ICQUser* u)
 
 void UserPages::Info::savePageGeneral(ICQUser* u)
 {
+  myAliasHasChanged = (u->GetAlias() != nfoAlias->text().toUtf8());
   u->SetAlias(nfoAlias->text().toUtf8());
   if (!m_bOwner)
     u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());

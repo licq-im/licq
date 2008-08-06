@@ -434,6 +434,7 @@ private:
   QLabel* lblAuth;
   QLabel* lblICQHomepage;
   TimeZoneEdit* tznZone;
+  bool myAliasHasChanged;
 
   // More info
   QVBoxLayout* myPageMoreLayout;
