@@ -37,7 +37,7 @@ class TreePager;
 namespace UserPages
 {
   class Info;
-  class Modes;
+  class Settings;
 }
 
 /**
@@ -193,7 +193,7 @@ private:
   QPushButton* mySendButton;
 
   UserPages::Info* myUserInfo;
-  UserPages::Modes* myUserModes;
+  UserPages::Settings* myUserSettings;
 };
 
 } // namespace LicqQtGui

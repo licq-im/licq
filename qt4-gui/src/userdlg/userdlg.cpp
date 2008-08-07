@@ -41,7 +41,7 @@
 #include "widgets/treepager.h"
 
 #include "info.h"
-#include "modes.h"
+#include "settings.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserDlg */
@@ -100,7 +100,7 @@ UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
   top_lay->addLayout(buttonsLayout);
 
   myUserInfo = new UserPages::Info(myIsOwner, this);
-  myUserModes = new UserPages::Modes(myIsOwner, this);
+  myUserSettings = new UserPages::Settings(myIsOwner, this);
 
   const ICQUser* user = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   if (user != NULL)
@@ -116,7 +116,7 @@ UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
     myBasicTitle = tr("Licq - Info ") + QString::fromUtf8(user->GetAlias()) + name;
 
     myUserInfo->load(user);
-    myUserModes->load(user);
+    myUserSettings->load(user);
 
     gUserManager.DropUser(user);
   }
@@ -213,7 +213,7 @@ void UserDlg::apply()
   user->SetEnableSave(false);
 
   myUserInfo->apply(user);
-  myUserModes->apply(user);
+  myUserSettings->apply(user);
 
   user->SetEnableSave(true);
   user->saveAll();
@@ -222,7 +222,7 @@ void UserDlg::apply()
 
   // Special stuff that must be called without holding lock
   myUserInfo->apply2(myId, myPpid);
-  myUserModes->apply2(myId, myPpid);
+  myUserSettings->apply2(myId, myPpid);
 
   // Make sure GUI is updated
   LicqGui::instance()->updateUserData(myId, myPpid);
@@ -238,7 +238,7 @@ void UserDlg::userUpdated(CICQSignal* sig)
     return;
 
   myUserInfo->userUpdated(sig, user);
-  myUserModes->userUpdated(sig, user);
+  myUserSettings->userUpdated(sig, user);
 
   gUserManager.DropUser(user);
 }

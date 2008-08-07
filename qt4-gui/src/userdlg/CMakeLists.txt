@@ -1,7 +1,7 @@
 # User dialog
 set(userdlg_SRCS
   info.cpp
-  modes.cpp
+  settings.cpp
   userdlg.cpp
 )
 

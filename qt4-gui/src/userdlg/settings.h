@@ -48,13 +48,13 @@ class UserDlg;
 
 namespace UserPages
 {
-class Modes : public QObject
+class Settings : public QObject
 {
   Q_OBJECT
 
 public:
-  Modes(bool isOwner, UserDlg* parent);
-  virtual ~Modes() {}
+  Settings(bool isOwner, UserDlg* parent);
+  virtual ~Settings() {}
 
   void load(const ICQUser* user);
   void apply(ICQUser* user);
@@ -88,7 +88,7 @@ private:
    *
    * @return a widget with the modes settings
    */
-  QWidget* createPageModes(QWidget* parent);
+  QWidget* createPageSettings(QWidget* parent);
 
   /**
    * Setup the status page.
@@ -108,8 +108,8 @@ private:
 
   // Widgets for on modes page
   QGridLayout* myPageModesLayout;
-  QGroupBox* myMiscModesBox;
-  QGridLayout* myMiscModesLayout;
+  QGroupBox* mySettingsBox;
+  QGridLayout* mySettingsLayout;
   QCheckBox* myAcceptInAwayCheck;
   QCheckBox* myAcceptInNaCheck;
   QCheckBox* myAcceptInOccupiedCheck;
