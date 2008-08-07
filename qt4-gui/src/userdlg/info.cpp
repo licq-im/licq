@@ -95,19 +95,19 @@ UserPages::Info::Info(bool isOwner, UserDlg* parent)
   m_PhoneBook = NULL;
 
   parent->addPage(UserDlg::GeneralPage, createPageGeneral(parent),
-      tr("General"));
+      tr("Info"));
   parent->addPage(UserDlg::MorePage, createPageMore(parent),
-      tr("More"));
+      tr("More"), UserDlg::GeneralPage);
   parent->addPage(UserDlg::More2Page, createPageMore2(parent),
-      tr("More II"));
+      tr("More II"), UserDlg::GeneralPage);
   parent->addPage(UserDlg::WorkPage, createPageWork(parent),
-      tr("Work"));
+      tr("Work"), UserDlg::GeneralPage);
   parent->addPage(UserDlg::AboutPage, createPageAbout(parent),
-      tr("About"));
+      tr("About"), UserDlg::GeneralPage);
   parent->addPage(UserDlg::PhonePage, createPagePhoneBook(parent),
-      tr("Phone Book"));
+      tr("Phone Book"), UserDlg::GeneralPage);
   parent->addPage(UserDlg::PicturePage, createPagePicture(parent),
-      tr("Picture"));
+      tr("Picture"), UserDlg::GeneralPage);
   parent->addPage(UserDlg::CountersPage, createPageCounters(parent),
       tr("Last"));
 #ifdef USE_KABC
