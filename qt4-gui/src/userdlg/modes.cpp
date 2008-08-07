@@ -363,7 +363,7 @@ void UserPages::Modes::apply2(const QString& id, unsigned long ppid)
   for (unsigned short i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
     bool inGroup = mySystemGroupCheck[i]->isChecked();
-    if ((systemGroups & (1L << (i - 1))) != inGroup)
+    if (((systemGroups & (1L << (i - 1))) != 0) != inGroup)
       gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_SYSTEM, i, inGroup, true);
   }
 }
