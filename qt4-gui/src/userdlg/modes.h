@@ -30,6 +30,8 @@
 class QCheckBox;
 class QGridLayout;
 class QGroupBox;
+class QHBoxLayout;
+class QPushButton;
 class QRadioButton;
 class QTableWidget;
 class QVBoxLayout;
@@ -41,6 +43,7 @@ class ICQUser;
 
 namespace LicqQtGui
 {
+class MLEdit;
 class UserDlg;
 
 namespace UserPages
@@ -73,6 +76,12 @@ public:
    */
   void userUpdated(const CICQSignal* sig, const ICQUser* user);
 
+private slots:
+  /**
+   * Show hints for auto response editing
+   */
+  void showAutoRespHints();
+
 private:
   /**
    * Setup the modes page.
@@ -80,6 +89,13 @@ private:
    * @return a widget with the modes settings
    */
   QWidget* createPageModes(QWidget* parent);
+
+  /**
+   * Setup the status page.
+   *
+   * @return a widget with the status settings
+   */
+  QWidget* createPageStatus(QWidget* parent);
 
   /**
    * Setup the groups page
@@ -103,6 +119,9 @@ private:
   QCheckBox* myAutoSecureCheck;
   QCheckBox* myUseGpgCheck;
   QCheckBox* myUseRealIpCheck;
+
+  // Status page
+  QGridLayout* myPageStatusLayout;
   QGroupBox* myStatusBox;
   QVBoxLayout* myStatusLayout;
   QRadioButton* myStatusNoneRadio;
@@ -114,6 +133,11 @@ private:
   QGroupBox* mySysGroupBox;
   QVBoxLayout* mySysGroupLayout;
   QCheckBox* mySystemGroupCheck[NUM_GROUPS_SYSTEM_ALL];
+  QGroupBox* myAutoRespBox;
+  QHBoxLayout* myAutoRespLayout;
+  MLEdit* myAutoRespEdit;
+  QPushButton* myAutoRespClearButton;
+  QPushButton* myAutoRespHintsButton;
 
   // Widgets for groups page
   QVBoxLayout* myPageGroupsLayout;

@@ -25,6 +25,7 @@
 #include <QCheckBox>
 #include <QGridLayout>
 #include <QGroupBox>
+#include <QHBoxLayout>
 #include <QHeaderView>
 #include <QRadioButton>
 #include <QStringList>
@@ -33,6 +34,9 @@
 
 #include <licq_icqd.h>
 #include <licq_user.h>
+
+#include "dialogs/awaymsgdlg.h"
+#include "widgets/mledit.h"
 
 #include "userdlg.h"
 
@@ -48,8 +52,10 @@ UserPages::Modes::Modes(bool isOwner, UserDlg* parent)
   if (myIsOwner)
     return;
 
-  parent->addPage(UserDlg::ModesPage, createPageModes(parent),
-      tr("Misc Modes"));
+  parent->addPage(UserDlg::SettingsPage, createPageModes(parent),
+      tr("Settings"));
+  parent->addPage(UserDlg::StatusPage, createPageStatus(parent),
+      tr("Status"), UserDlg::SettingsPage);
   parent->addPage(UserDlg::GroupsPage, createPageGroups(parent),
       tr("Groups"));
 }
@@ -101,6 +107,17 @@ QWidget* UserPages::Modes::createPageModes(QWidget* parent)
   myUseRealIpCheck->setToolTip(tr("Use real IP for when sending to this contact."));
   myMiscModesLayout->addWidget(myUseRealIpCheck, 4, 0);
 
+  myPageModesLayout->addWidget(myMiscModesBox, 0, 0, 1, 2);
+  myPageModesLayout->setRowStretch(1, 1);
+
+  return w;
+}
+
+QWidget* UserPages::Modes::createPageStatus(QWidget* parent)
+{
+  QWidget* w = new QWidget(parent);
+  myPageStatusLayout = new QGridLayout(w);
+  myPageStatusLayout->setContentsMargins(0, 0, 0, 0);
 
   myStatusBox = new QGroupBox(tr("Status to User"));
   myStatusLayout = new QVBoxLayout(myStatusBox);
@@ -157,11 +174,31 @@ QWidget* UserPages::Modes::createPageModes(QWidget* parent)
 
   mySysGroupLayout->addStretch(1);
 
+  myAutoRespBox = new QGroupBox(tr("Custom Auto Response"));
+  myAutoRespLayout = new QHBoxLayout(myAutoRespBox);
 
-  myPageModesLayout->addWidget(myMiscModesBox, 0, 0, 1, 2);
-  myPageModesLayout->addWidget(myStatusBox, 1, 0);
-  myPageModesLayout->addWidget(mySysGroupBox, 1, 1);
-  myPageModesLayout->setRowStretch(2, 1);
+  myAutoRespEdit = new MLEdit(true);
+  myAutoRespEdit->setSizeHintLines(5);
+  myAutoRespLayout->addWidget(myAutoRespEdit);
+
+  QVBoxLayout* autoRespButtons = new QVBoxLayout();
+
+  myAutoRespHintsButton = new QPushButton(tr("Hints"));
+  connect(myAutoRespHintsButton, SIGNAL(clicked()), SLOT(showAutoRespHints()));
+  autoRespButtons->addWidget(myAutoRespHintsButton);
+
+  myAutoRespClearButton = new QPushButton(tr("Clear"));
+  connect(myAutoRespClearButton, SIGNAL(clicked()), myAutoRespEdit, SLOT(clear()));
+  autoRespButtons->addWidget(myAutoRespClearButton);
+
+  autoRespButtons->addStretch(1);
+  myAutoRespLayout->addLayout(autoRespButtons);
+
+
+  myPageStatusLayout->addWidget(myStatusBox, 0, 0);
+  myPageStatusLayout->addWidget(mySysGroupBox, 0, 1);
+  myPageStatusLayout->addWidget(myAutoRespBox, 1, 0, 1, 2);
+  myPageStatusLayout->setRowStretch(2, 1);
 
   return w;
 }
@@ -317,6 +354,9 @@ void UserPages::Modes::apply(ICQUser* user)
   if (myStatusDndRadio->isChecked())
     statusToUser = ICQ_STATUS_DND;
   user->SetStatusToUser(statusToUser);
+
+  // Set auto response (empty string will disable custom auto response)
+  user->SetCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit());
 }
 
 void UserPages::Modes::apply2(const QString& id, unsigned long ppid)
@@ -378,3 +418,7 @@ void UserPages::Modes::userUpdated(const CICQSignal* sig, const ICQUser* user)
   }
 }
 
+void UserPages::Modes::showAutoRespHints()
+{
+  AwayMsgDlg::showAutoResponseHints(dynamic_cast<UserDlg*>(parent()));
+}

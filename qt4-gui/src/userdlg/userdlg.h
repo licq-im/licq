@@ -60,7 +60,8 @@ public:
     PicturePage,
     CountersPage,
     KabcPage,
-    ModesPage,
+    SettingsPage,
+    StatusPage,
     GroupsPage,
   };
 
