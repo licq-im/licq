@@ -63,7 +63,7 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("ShowUserIcons", myShowUserIcons, true);
   iniFile.ReadBool("ScrollBar", myAllowScrollBar, true);
   iniFile.ReadBool("SystemBackground", myUseSystemBackground, false);
-  iniFile.ReadBool("DragMovesUser", myDragMovesUser, false);
+  iniFile.ReadBool("DragMovesUser", myDragMovesUser, true);
 
   unsigned short flash;
   iniFile.ReadNum("Flash", flash, FlashUrgent);
