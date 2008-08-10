@@ -63,6 +63,7 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("ShowUserIcons", myShowUserIcons, true);
   iniFile.ReadBool("ScrollBar", myAllowScrollBar, true);
   iniFile.ReadBool("SystemBackground", myUseSystemBackground, false);
+  iniFile.ReadBool("DragMovesUser", myDragMovesUser, false);
 
   unsigned short flash;
   iniFile.ReadNum("Flash", flash, FlashUrgent);
@@ -137,6 +138,7 @@ void Config::ContactList::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteNum("Flash", static_cast<unsigned short>(myFlash));
   iniFile.WriteBool("ScrollBar", myAllowScrollBar);
   iniFile.WriteBool("SystemBackground", myUseSystemBackground);
+  iniFile.WriteBool("DragMovesUser", myDragMovesUser);
   iniFile.WriteNum("StartUpGroupId", myGroupId);
   iniFile.WriteNum("StartUpGroupType", static_cast<unsigned short>(myGroupType));
 
@@ -320,6 +322,14 @@ void Config::ContactList::setUseSystemBackground(bool useSystemBackground)
   myUseSystemBackground = useSystemBackground;
 
   changeListLook();
+}
+
+void Config::ContactList::setDragMovesUser(bool dragMovesUser)
+{
+  if (dragMovesUser == myDragMovesUser)
+    return;
+
+  myDragMovesUser = dragMovesUser;
 }
 
 void Config::ContactList::setShowDividers(bool showDividers)

@@ -283,7 +283,29 @@ void UserViewBase::dropEvent(QDropEvent* event)
         QString dropId = text.mid(4);
 
         if (!dropId.isEmpty())
-          gUserManager.SetUserInGroup(dropId.toLatin1(), dropPpid, GROUPS_USER, gid, true);
+        {
+          bool moveUser = Config::ContactList::instance()->dragMovesUser();
+          gUserManager.SetUserInGroup(dropId.toLatin1(), dropPpid, GROUPS_USER, gid, true, moveUser);
+
+          // If we are moving user we now need to remove it from the old group.
+          // However, since the drop event doesn't contain the originating
+          // group, we don't know which group that is so we'll just have to
+          // remove the user from all other groups.
+          if (moveUser)
+          {
+            const ICQUser* u = gUserManager.FetchUser(dropId.toLatin1(), dropPpid, LOCK_R);
+            if (u != NULL)
+            {
+              UserGroupList userGroups = u->GetGroups();
+              gUserManager.DropUser(u);
+
+              UserGroupList::const_iterator i;
+              for (i = userGroups.begin(); i != userGroups.end(); ++i)
+                if (*i != gid)
+                  gUserManager.SetUserInGroup(dropId.toLatin1(), dropPpid, GROUPS_USER, *i, false, false);
+            }
+          }
+        }
       }
       else
         return; // Not accepted

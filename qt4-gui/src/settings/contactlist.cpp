@@ -160,6 +160,11 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   myMainWinStickyCheck->setToolTip(tr("Makes the Main window visible on all desktops"));
   myBehaviourLayout->addWidget(myMainWinStickyCheck, 0, 1);
 
+  myDragMovesUserCheck = new QCheckBox(tr("Move users when dragging to groups"));
+  myDragMovesUserCheck->setToolTip(tr("If checked a user will be moved when dragged to another group.\n"
+      "If not checked user will only be added to the new group."));
+  myBehaviourLayout->addWidget(myDragMovesUserCheck, 1, 1);
+
   QHBoxLayout* mySortByLayout = new QHBoxLayout();
   mySortByLabel = new QLabel(tr("Additional sorting:"));
   mySortByLabel->setToolTip(tr("<b>none:</b> - Don't sort online users by Status<br>\n"
@@ -175,7 +180,7 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   mySortByCombo->setToolTip(mySortByLabel->toolTip());
   mySortByLabel->setBuddy(mySortByCombo);
   mySortByLayout->addWidget(mySortByCombo);
-  myBehaviourLayout->addLayout(mySortByLayout, 1, 1);
+  myBehaviourLayout->addLayout(mySortByLayout, 2, 1);
 
 
   myPageContactListLayout->addWidget(myAppearanceBox);
@@ -346,6 +351,7 @@ void Settings::ContactList::load()
   myShowUserIconsCheck->setChecked(contactListConfig->showUserIcons());
   myScrollBarCheck->setChecked(contactListConfig->allowScrollBar());
   mySysBackCheck->setChecked(contactListConfig->useSystemBackground());
+  myDragMovesUserCheck->setChecked(contactListConfig->dragMovesUser());
 
   int numColumns = contactListConfig->columnCount();
   if(numColumns < 1)
@@ -418,6 +424,7 @@ void Settings::ContactList::apply()
   contactListConfig->setShowUserIcons(myShowUserIconsCheck->isChecked());
   contactListConfig->setAllowScrollBar(myScrollBarCheck->isChecked());
   contactListConfig->setUseSystemBackground(mySysBackCheck->isChecked());
+  contactListConfig->setDragMovesUser(myDragMovesUserCheck->isChecked());
 
   for (unsigned short i = 0; i < MAX_COLUMNCOUNT; ++i)
   {
