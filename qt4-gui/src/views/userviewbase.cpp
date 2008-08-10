@@ -284,7 +284,15 @@ void UserViewBase::dropEvent(QDropEvent* event)
 
         if (!dropId.isEmpty())
         {
-          bool moveUser = Config::ContactList::instance()->dragMovesUser();
+          // Should user be moved or just added to the new group?
+          bool moveUser;
+          if ((event->keyboardModifiers() & Qt::ShiftModifier) != 0)
+            moveUser = true;
+          else if ((event->keyboardModifiers() & Qt::ControlModifier) != 0)
+            moveUser = false;
+          else
+            moveUser = Config::ContactList::instance()->dragMovesUser();
+
           gUserManager.SetUserInGroup(dropId.toLatin1(), dropPpid, GROUPS_USER, gid, true, moveUser);
 
           // If we are moving user we now need to remove it from the old group.
