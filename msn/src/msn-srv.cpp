@@ -738,7 +738,7 @@ void *MSNPing_tep(void *p)
       gLog.Info("%sPing timeout. Reconnecting...\n", L_MSNxSTR);
       pMSN->SetWaitingPingReply(false);
       pMSN->MSNLogoff();
-      pMSN->MSNLogon("messenger.hotmail.com", 1863);
+      pMSN->MSNLogon(pMSN->serverAddress().c_str(), pMSN->serverPort());
       pthread_mutex_unlock(&(pMSN->mutex_ServerSocket));
     }
     else if (pMSN->CanSendPing())

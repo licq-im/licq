@@ -95,11 +95,15 @@ CMSN::CMSN(CICQDaemon *_pDaemon, int _nPipe) : m_vlPacketBucket(211)
     fclose(f);
     msnConf.LoadFile(szFileName);
   }  
-  
+
+  char tmpStr[MAX_LINE_LEN];
+
   msnConf.SetSection("network");
-  
   msnConf.ReadNum("ListVersion", m_nListVersion, 0);
-  
+  msnConf.ReadStr("MsnServerAddress", tmpStr, MSN_DEFAULT_SERVER_ADDRESS);
+  myServerAddress = tmpStr;
+  msnConf.ReadNum("MsnServerPort", myServerPort, MSN_DEFAULT_SERVER_PORT);
+
   msnConf.CloseFile();
 
   // pthread stuff now
@@ -460,7 +464,7 @@ void CMSN::Run()
             m_nServerSocket = -1;
             gSocketMan.DropSocket(sock);
             gSocketMan.CloseSocket(nSD);
-            MSNLogon("messenger.hotmail.com", 1863, m_nStatus);
+            MSNLogon(myServerAddress.c_str(), myServerPort, m_nStatus);
           }
         }
         
@@ -561,7 +565,7 @@ void CMSN::ProcessSignal(CSignal *s)
       if (m_nServerSocket < 0)
       {
         CLogonSignal *sig = static_cast<CLogonSignal *>(s);
-        MSNLogon("messenger.hotmail.com", 1863, sig->LogonStatus());
+        MSNLogon(myServerAddress.c_str(), myServerPort, sig->LogonStatus());
       }
       break;
     }

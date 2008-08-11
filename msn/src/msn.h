@@ -47,6 +47,9 @@ const unsigned short FLAG_ALLOW_LIST   = 2;
 const unsigned short FLAG_BLOCK_LIST   = 4;
 const unsigned short FLAG_REVERSE_LIST = 8;
 
+const char MSN_DEFAULT_SERVER_ADDRESS[]         = "messenger.hotmail.com";
+const unsigned short MSN_DEFAULT_SERVER_PORT    = 1863;
+
 #ifndef HAVE_STRNDUP
 char *strndup(const char *s, size_t n);
 #endif
@@ -95,6 +98,9 @@ public:
 
   bool WaitingPingReply()          { return m_bWaitingPingReply; }
   void SetWaitingPingReply(bool b) { m_bWaitingPingReply = b; }
+
+  const std::string& serverAddress() const   { return myServerAddress; }
+  unsigned short serverPort() const     { return myServerPort; }
 
   pthread_mutex_t mutex_ServerSocket; // Ugly, but whatever.
 
@@ -152,7 +158,9 @@ private:
 
   // Config
   unsigned long m_nListVersion;
-    
+  std::string myServerAddress;
+  unsigned short myServerPort;
+
   // Variables
   CICQDaemon *m_pDaemon;
   bool m_bExit;
