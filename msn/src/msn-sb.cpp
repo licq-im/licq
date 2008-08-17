@@ -144,8 +144,17 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       {
         packet->SkipRN();
         packet->ParseHeaders();
-        
-        string strType = packet->GetValue("Application-Name");
+
+        string application = packet->GetValue("Application-Name");
+        string cookie = packet->GetValue("Invitation-Cookie");
+        string command = packet->GetValue("Invitation-Command");
+
+        if (command == "INVITE")
+        {
+          // Invitation for unknown application, tell inviter that we don't have it
+          gLog.Info("%sInvitation from %s for unknown application (%s).\n", L_MSNxSTR, strUser.c_str(), application.c_str());
+          pReply = new CPS_MSNCancelInvite(cookie, "REJECT_NOT_INSTALLED");
+        }
       }
       else if (strncmp(strType.c_str(), "application/x-msnmsgrp2p", 24) == 0)
       {

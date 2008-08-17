@@ -625,6 +625,27 @@ CPS_MSNTypingNotification::CPS_MSNTypingNotification(const char *szEmail)
   m_pBuffer->Pack(szParams2, strlen(szParams2));
 }
 
+CPS_MSNCancelInvite::CPS_MSNCancelInvite(const string& cookie, const string& code)
+  : CMSNPayloadPacket(false)
+{
+  m_szCommand = strdup("MSG");
+
+  char payload[512];
+  snprintf(payload, sizeof(payload),
+      "MIME-Version: 1.0\r\n"
+      "Content-Type: text/x-msmsgsinvite; charset=UTF-8\r\n"
+      "\r\n"
+      "Invitation-Command: CANCEL\r\n"
+      "Cancel-Code: %s\r\n"
+      "Invitation-Cookie: %s\r\n"
+      "\r\n",
+      code.c_str(), cookie.c_str());
+
+  m_nPayloadSize = strlen(payload);
+  CMSNPayloadPacket::InitBuffer();
+  m_pBuffer->Pack(payload, m_nPayloadSize);
+}
+
 CPS_MSNInvitation::CPS_MSNInvitation(const char* szToEmail,
     const char* szFromEmail, const char* szMSNObject)
   : CMSNP2PPacket(szToEmail)

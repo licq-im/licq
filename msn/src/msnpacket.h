@@ -290,6 +290,12 @@ public:
   CPS_MSNTypingNotification(const char *);
 };
 
+class CPS_MSNCancelInvite : public CMSNPayloadPacket
+{
+public:
+  CPS_MSNCancelInvite(const std::string& cookie, const std::string& code);
+};
+
 class CPS_MSNInvitation : public CMSNP2PPacket
 {
 public:
