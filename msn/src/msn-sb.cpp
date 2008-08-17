@@ -189,6 +189,10 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
 	  }
 	}
       }
+      else
+      {
+        gLog.Info("%sMessage from %s with unknown content type (%s).\n", L_MSNxSTR, strUser.c_str(), strType.c_str());
+      }
     }
     else if (strCmd == "ACK")
     {
