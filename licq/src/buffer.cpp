@@ -878,7 +878,6 @@ TLVList CBuffer::getTLVList()
 //-----print--------------------------------------------------------------------
 char *CBuffer::print(char *&p)
 {
-   static const unsigned long MAX_DATA_SIZE = 8 * 1024;
    static const char BUFFER_BLANKS[] = "     ";
    static const unsigned long SPACE_PER_LINE =
     strlen(BUFFER_BLANKS) + strlen("0000: ") + 16 * 3 + 18 + 4;
@@ -886,11 +885,6 @@ char *CBuffer::print(char *&p)
    unsigned long nBytesToPrint = getDataSize();
    char szAscii[16 + 1];
    szAscii[16] = '\0';
-
-   if (nBytesToPrint > MAX_DATA_SIZE)
-   {
-     nBytesToPrint = MAX_DATA_SIZE;
-   }
 
    unsigned short nLenBuf = ((int)(nBytesToPrint / 16) + 1) *
     SPACE_PER_LINE;
