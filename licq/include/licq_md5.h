@@ -12,7 +12,7 @@
 #define MD5_DIGEST_LENGTH 16
 
 #define UINT8 unsigned char
-#define UINT32 unsigned long
+#define UINT32 unsigned int
 
 void md5(const UINT8* buf, unsigned int len, UINT8* digest);
 
