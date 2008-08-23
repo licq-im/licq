@@ -23,7 +23,7 @@
 extern int errno;
 #endif
 
-#include <openssl/md5.h>
+#include "licq_md5.h"
 
 #include <boost/scoped_array.hpp>
 
@@ -837,7 +837,7 @@ CPU_NewLogon::CPU_NewLogon(const char *szPassword, const char *szUin, const char
   toHash += szPass;
   toHash += "AOL Instant Messenger (SM)";
   unsigned char szDigest[MD5_DIGEST_LENGTH];
-  MD5((const unsigned char *)toHash.c_str(), toHash.size(), szDigest);
+  md5((const unsigned char *)toHash.c_str(), toHash.size(), szDigest);
 
   unsigned int uinlen = strlen(szUin);
 
