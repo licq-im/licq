@@ -19,21 +19,16 @@
  */
 
 #include <cstring>		/* for memcpy() */
-#include <string>
 
 #include "licq_md5.h"
 
-std::string md5(const std::string& toHash)
+void md5(const UINT8* buf, unsigned int len, UINT8* digest)
 {
   MD5Context context;
-  UINT8 digest[16];
 
   MD5Init(&context);
-  MD5Update(&context, reinterpret_cast<const unsigned char *>(toHash.c_str()), toHash.size());
+  MD5Update(&context, buf, len);
   MD5Final(digest, &context);
-
-  std::string result(reinterpret_cast<const char *>(digest));
-  return result;
 }
 
 /*

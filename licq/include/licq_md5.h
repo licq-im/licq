@@ -9,12 +9,12 @@
 #ifndef MD5_H
 #define MD5_H
 
-#include <string>
-
-std::string md5(const std::string&);
+#define MD5_DIGEST_LENGTH 16
 
 #define UINT8 unsigned char
 #define UINT32 unsigned long
+
+void md5(const UINT8* buf, unsigned int len, UINT8* digest);
 
 struct MD5Context {
 	UINT32 buf[4];
