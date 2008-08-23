@@ -327,7 +327,6 @@ void OptionsDlg::SetupOptions()
     boxDocking->setEnabled(false);
 
   edtICQServer->setText(QString(mainwin->licqDaemon->ICQServer()));
-  spnICQServerPort->setValue(mainwin->licqDaemon->ICQServerPort());
   chkFirewall->setChecked(mainwin->licqDaemon->Firewall());
   chkTCPEnabled->setChecked(mainwin->licqDaemon->TCPEnabled());
   spnPortLow->setValue(mainwin->licqDaemon->TCPPortsLow());
@@ -355,7 +354,11 @@ void OptionsDlg::SetupOptions()
   chkProxyAuthEnabled->setChecked(mainwin->licqDaemon->ProxyAuthEnabled());
   edtProxyLogin->setText(QString(mainwin->licqDaemon->ProxyLogin()));
   edtProxyPasswd->setText(QString(mainwin->licqDaemon->ProxyPasswd()));
-  
+
+  // Set server port after chkProxyEnabled as it will trigger slot_useProxy
+  // which overwrites server port field.
+  spnICQServerPort->setValue(mainwin->licqDaemon->ICQServerPort());
+
   chkReconnectAfterUinClash->setChecked(mainwin->licqDaemon->ReconnectAfterUinClash());
 
   if (!mainwin->licqDaemon->ProxyEnabled())

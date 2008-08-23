@@ -236,7 +236,6 @@ void Settings::Network::useProxyToggled(bool useProxy)
 void Settings::Network::load()
 {
   myIcqServerEdit->setText(QString(gLicqDaemon->ICQServer()));
-  myIcqServerPortSpin->setValue(gLicqDaemon->ICQServerPort());
   myFirewallCheck->setChecked(gLicqDaemon->Firewall());
   myTcpEnabledCheck->setChecked(gLicqDaemon->TCPEnabled());
   myPortLowSpin->setValue(gLicqDaemon->TCPPortsLow());
@@ -264,6 +263,10 @@ void Settings::Network::load()
   myProxyAuthEnabledCheck->setChecked(gLicqDaemon->ProxyAuthEnabled());
   myProxyLoginEdit->setText(QString(gLicqDaemon->ProxyLogin()));
   myProxyPasswdEdit->setText(QString(gLicqDaemon->ProxyPasswd()));
+
+  // Set server port after myProxyEnabledCheck as it will trigger useProxyToggled
+  // which overwrites server port field.
+  myIcqServerPortSpin->setValue(gLicqDaemon->ICQServerPort());
 
   myReconnectAfterUinClashCheck->setChecked(gLicqDaemon->ReconnectAfterUinClash());
 
