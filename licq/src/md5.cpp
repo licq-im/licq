@@ -22,7 +22,7 @@
 
 #include "licq_md5.h"
 
-void md5(const UINT8* buf, unsigned int len, UINT8* digest)
+void md5(const uint8_t* buf, size_t len, uint8_t* digest)
 {
   MD5Context context;
 
@@ -34,15 +34,13 @@ void md5(const UINT8* buf, unsigned int len, UINT8* digest)
 /*
  * Note: this code is harmless but does nothing on little-endian machines.
  */
-void byteSwap(UINT32 * buf, unsigned words)
+void byteSwap(uint32_t* buf, unsigned words)
 {
-	UINT8 *p = (UINT8 *) buf;
-
-	do {
-		*buf++ = (UINT32) ((unsigned) p[3] << 8 | p[2]) << 16 |
-		    ((unsigned) p[1] << 8 | p[0]);
-		p += 4;
-	} while (--words);
+  for ( ; words > 0; --words)
+  {
+    uint8_t* p = (uint8_t*)buf;
+    *buf++ = (uint32_t)p[3] << 24 | (uint32_t)p[2] << 16 | (uint32_t)p[1] << 8 | p[0];
+  }
 }
 
 /*
@@ -63,23 +61,20 @@ void MD5Init(struct MD5Context *ctx)
  * Update context to reflect the concatenation of another buffer full
  * of bytes.
  */
-void MD5Update(struct MD5Context *ctx, UINT8 const *buf, unsigned len)
+void MD5Update(struct MD5Context* ctx, uint8_t const* buf, size_t len)
 {
-	UINT32 t;
-
-	/* Update byte count */
-
-	t = ctx->bytes[0];
+  /* Update byte count */
+  uint32_t t = ctx->bytes[0];
 	if ((ctx->bytes[0] = t + len) < t)
 		ctx->bytes[1]++;	/* Carry from low to high */
 
 	t = 64 - (t & 0x3f);	/* Space available in ctx->in (at least 1) */
 	if (t > len) {
-		memcpy((UINT8 *) ctx->in + 64 - t, buf, len);
+    memcpy((uint8_t*)ctx->in + 64 - t, buf, len);
 		return;
 	}
 	/* First chunk is an odd size */
-	memcpy((UINT8 *) ctx->in + 64 - t, buf, t);
+  memcpy((uint8_t*)ctx->in + 64 - t, buf, t);
 	byteSwap(ctx->in, 16);
 	MD5Transform(ctx->buf, ctx->in);
 	buf += t;
@@ -102,10 +97,10 @@ void MD5Update(struct MD5Context *ctx, UINT8 const *buf, unsigned len)
  * Final wrapup - pad to 64-byte boundary with the bit pattern 
  * 1 0* (64-bit count of bits processed, MSB-first)
  */
-void MD5Final(UINT8 digest[16], struct MD5Context *ctx)
+void MD5Final(uint8_t digest[16], struct MD5Context *ctx)
 {
 	int 	count = ctx->bytes[0] & 0x3f;	/* Number of bytes in ctx->in */
-	UINT8 	*p = (UINT8 *) ctx->in + count;
+  uint8_t* p = (uint8_t*)ctx->in + count;
 
 	/* Set the first char of padding to 0x80.  There is always room. */
 	*p++ = 0x80;
@@ -117,7 +112,7 @@ void MD5Final(UINT8 digest[16], struct MD5Context *ctx)
 		memset(p, 0, count + 8);
 		byteSwap(ctx->in, 16);
 		MD5Transform(ctx->buf, ctx->in);
-		p = (UINT8 *) ctx->in;
+    p = (uint8_t*)ctx->in;
 		count = 56;
 	}
 	memset(p, 0, count);
@@ -152,9 +147,9 @@ void MD5Final(UINT8 digest[16], struct MD5Context *ctx)
  * reflect the addition of 16 longwords of new data.  MD5Update blocks
  * the data and converts bytes into longwords for this routine.
  */
-void MD5Transform(UINT32 buf[4], UINT32 const in[16])
+void MD5Transform(uint32_t buf[4], const uint32_t in[16])
 {
-	register UINT32 a, b, c, d;
+  register uint32_t a, b, c, d;
 
 	a = buf[0];
 	b = buf[1];
