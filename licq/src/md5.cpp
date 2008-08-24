@@ -53,8 +53,7 @@ void MD5Init(struct MD5Context *ctx)
 	ctx->buf[1] 	= 0xefcdab89;
 	ctx->buf[2] 	= 0x98badcfe;
 	ctx->buf[3] 	= 0x10325476;
-	ctx->bytes[0] 	= 0;
-	ctx->bytes[1] 	= 0;
+  ctx->bytes = 0;
 }
 
 /*
@@ -63,12 +62,12 @@ void MD5Init(struct MD5Context *ctx)
  */
 void MD5Update(struct MD5Context* ctx, uint8_t const* buf, size_t len)
 {
-  /* Update byte count */
-  uint32_t t = ctx->bytes[0];
-	if ((ctx->bytes[0] = t + len) < t)
-		ctx->bytes[1]++;	/* Carry from low to high */
+  /* Space available in ctx->in (at least 1) */
+  uint32_t t = 64 - (ctx->bytes & 0x3f);
 
-	t = 64 - (t & 0x3f);	/* Space available in ctx->in (at least 1) */
+  /* Update byte count */
+  ctx->bytes += len;
+
 	if (t > len) {
     memcpy((uint8_t*)ctx->in + 64 - t, buf, len);
 		return;
@@ -99,7 +98,7 @@ void MD5Update(struct MD5Context* ctx, uint8_t const* buf, size_t len)
  */
 void MD5Final(uint8_t digest[16], struct MD5Context *ctx)
 {
-	int 	count = ctx->bytes[0] & 0x3f;	/* Number of bytes in ctx->in */
+  int count = ctx->bytes & 0x3f; /* Number of bytes in ctx->in */
   uint8_t* p = (uint8_t*)ctx->in + count;
 
 	/* Set the first char of padding to 0x80.  There is always room. */
@@ -119,8 +118,8 @@ void MD5Final(uint8_t digest[16], struct MD5Context *ctx)
 	byteSwap(ctx->in, 14);
 
 	/* Append length in bits and transform */
-	ctx->in[14] = ctx->bytes[0] << 3;
-	ctx->in[15] = ctx->bytes[1] << 3 | ctx->bytes[0] >> 29;
+  ctx->in[14] = ctx->bytes << 3;
+  ctx->in[15] = ctx->bytes >> 29;
 	MD5Transform(ctx->buf, ctx->in);
 
 	byteSwap(ctx->buf, 4);
