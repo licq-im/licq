@@ -279,42 +279,42 @@ const unsigned short ICQ_CMDxWPxWEB_PRESENCE    = 0x0C03;
 const unsigned short ICQ_CMDxWPxHOMEPAGE        = 0x1302;
 const unsigned short ICQ_CMDxWPxTIMEZONE        = 0x1603;
 const unsigned short ICQ_CMDxWPxBIRTHDAY        = 0x3A02;
-const unsigned short ICQ_CMDxWPxFNAME		= 0x4001;
-const unsigned short ICQ_CMDxWPxLNAME		= 0x4A01;
+const unsigned short ICQ_CMDxWPxFNAME           = 0x4001;
+const unsigned short ICQ_CMDxWPxLNAME           = 0x4A01;
 const unsigned short ICQ_CMDxWPxRECV_ICQ_SPAM   = 0x4803;
-const unsigned short ICQ_CMDxWPxALIAS		= 0x5401;
+const unsigned short ICQ_CMDxWPxALIAS           = 0x5401;
 const unsigned short ICQ_CMDxWPxABOUT           = 0x5802;
-const unsigned short ICQ_CMDxWPxEMAIL		= 0x5E01;
+const unsigned short ICQ_CMDxWPxEMAIL           = 0x5E01;
 const unsigned short ICQ_CMDxWPxHOME_ADDR       = 0x6201;
-const unsigned short ICQ_CMDxWPxAGE		= 0x6801;
+const unsigned short ICQ_CMDxWPxAGE             = 0x6801;
 const unsigned short ICQ_CMDxWPxHOME_ZIP        = 0x6D02;
 const unsigned short ICQ_CMDxWPxAGE2            = 0x7201;
 const unsigned short ICQ_CMDxWPxPHONExHOME      = 0x7602;
-const unsigned short ICQ_CMDxWPxGENDER		= 0x7C01;
+const unsigned short ICQ_CMDxWPxGENDER          = 0x7C01;
 const unsigned short ICQ_CMDxWPxHOME_FAX        = 0x8002;
-const unsigned short ICQ_CMDxWPxLANGUAGE	= 0x8601;
+const unsigned short ICQ_CMDxWPxLANGUAGE        = 0x8601;
 const unsigned short ICQ_CMDxWPxPHONExCELL      = 0x8A02;
-const unsigned short ICQ_CMDxWPxCITY		= 0x9001;
+const unsigned short ICQ_CMDxWPxCITY            = 0x9001;
 const unsigned short ICQ_CMDxWPxWORK_ADDR       = 0x9402;
-const unsigned short ICQ_CMDxWPxSTATE		= 0x9A01;
+const unsigned short ICQ_CMDxWPxSTATE           = 0x9A01;
 const unsigned short ICQ_CMDxWPxWORK_CITY       = 0x9E02;
-const unsigned short ICQ_CMDxWPxCOUNTRY		= 0xA401;
+const unsigned short ICQ_CMDxWPxCOUNTRY         = 0xA401;
 const unsigned short ICQ_CMDxWPxWORK_STATE      = 0xA802;
-const unsigned short ICQ_CMDxWPxCOMPANY		= 0xAE01;
+const unsigned short ICQ_CMDxWPxCOMPANY         = 0xAE01;
 const unsigned short ICQ_CMDxWPxWORK_COUNTRY    = 0xB202;
-const unsigned short ICQ_CMDxWPxCODEPT		= 0xB801;
+const unsigned short ICQ_CMDxWPxCODEPT          = 0xB801;
 const unsigned short ICQ_CMDxWPxWORK_ZIP        = 0xBD02;
-const unsigned short ICQ_CMDxWPxCOPOS		= 0xC201;
+const unsigned short ICQ_CMDxWPxCOPOS           = 0xC201;
 const unsigned short ICQ_CMDxWPxWORK_PHONE      = 0xC602;
-const unsigned short ICQ_CMDxWPxOCCUP		= 0xCC01;
+const unsigned short ICQ_CMDxWPxOCCUP           = 0xCC01;
 const unsigned short ICQ_CMDxWPxWORK_FAX        = 0xD002;
 const unsigned short ICQ_CMDxWPxWORK_URL        = 0xDA02;
-const unsigned short ICQ_CMDxWPxPASTAFF		= 0xD601;
-const unsigned short ICQ_CMDxWPxORGANIZ		= 0xFE01;
-const unsigned short ICQ_CMDxWPxINTEREST	= 0xEA01;
+const unsigned short ICQ_CMDxWPxPASTAFF         = 0xD601;
+const unsigned short ICQ_CMDxWPxORGANIZ         = 0xFE01;
+const unsigned short ICQ_CMDxWPxINTEREST        = 0xEA01;
 const unsigned short ICQ_CMDxWPxAUTH            = 0xF802;
-const unsigned short ICQ_CMDxWPxKEYWORD		= 0x2602;
-const unsigned short ICQ_CMDxWPxONLINE		= 0x3002;
+const unsigned short ICQ_CMDxWPxKEYWORD         = 0x2602;
+const unsigned short ICQ_CMDxWPxONLINE          = 0x3002;
 
 
 const unsigned short META_SUCCESS = 0x0A;
@@ -375,7 +375,7 @@ const unsigned short ICQ_CMDxSUB_SECURExOPEN       = 0x00EF;  // Licq extension
 
 
 // Special UINs
-const unsigned short ICQ_UINxPAGER		   = 0x000A;
+const unsigned short ICQ_UINxPAGER              = 0x000A;
 const unsigned short ICQ_UINxSMS                   = 0x03EA;
 
 // Status constants

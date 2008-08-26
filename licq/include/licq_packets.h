@@ -93,11 +93,11 @@ public:
   CPX_FileTransfer(ConstFileList &lFileList, const char *szFileName);
   virtual ~CPX_FileTransfer();
 
-  bool IsValid()	{ return m_bValid; }
-  ConstFileList GetFileList()	{ return m_lFileList; }
-  const char *GetFilename()	{ return m_szFilename; }
+  bool IsValid()                { return m_bValid; }
+  ConstFileList GetFileList()   { return m_lFileList; }
+  const char *GetFilename()     { return m_szFilename; }
   const char *GetDescription() { return m_szDesc; }
-  unsigned long GetFileSize()	{ return m_nFileSize; }
+  unsigned long GetFileSize()   { return m_nFileSize; }
 
 protected:
   CPX_FileTransfer();
@@ -282,7 +282,7 @@ public:
   virtual unsigned short Command()  { return m_nCommand; }
   virtual unsigned short SubCommand() { return 0; }
 protected:
-  virtual unsigned long getSize()	{ return 1; }
+  virtual unsigned long getSize()       { return 1; }
 
   /* 02 00 FC 03 01 00 02 00 04 00 65 66 67 00 72 00 00 00 00 00 00 00 */
   unsigned short m_nVersion;
@@ -1191,7 +1191,7 @@ class CPU_SetPassword : public CPU_CommonFamily
 public:
   CPU_SetPassword(const char *szPassword);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
-  unsigned long Uin()	{ return 0; }
+  unsigned long Uin()           { return 0; }
 protected:
   unsigned short m_nMetaCommand;
   char *m_szPassword;

@@ -8,7 +8,7 @@
 #include <netinet/in.h>
 
 // proxy types
-#define	PROXY_TYPE_HTTP	1
+#define PROXY_TYPE_HTTP 1
 
 typedef enum ProxyError_et_
 {

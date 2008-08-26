@@ -42,7 +42,7 @@ const char L_SSLxSTR[]     = "[SSL] ";
 const unsigned short S_STDERR   = 1;
 const unsigned short S_FILE     = 2;
 const unsigned short S_PLUGIN   = 4;
-const unsigned short S_ALL	= S_STDERR | S_FILE | S_PLUGIN;
+const unsigned short S_ALL      = S_STDERR | S_FILE | S_PLUGIN;
 
 const unsigned short LOG_PREFIX_OFFSET = 10;
 
@@ -129,7 +129,7 @@ public:
   bool SetLogWindow(CPluginLog *_xWindow);
   CPluginLog *LogWindow() { return m_xLogWindow; }
   virtual void LogMessage(const char *_szPrefix, const char *_szMessage, 
-			  const unsigned short _nLogType);
+      const unsigned short _nLogType);
 protected:
   CPluginLog *m_xLogWindow;
 };

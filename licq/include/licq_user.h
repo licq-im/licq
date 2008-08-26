@@ -679,7 +679,7 @@ public:
   void SetCompanyPhoneNumber (const char *n) {  SetString(&m_szCompanyPhoneNumber, n);  SaveWorkInfo();  }
   void SetCompanyFaxNumber (const char *n)   {  SetString(&m_szCompanyFaxNumber, n);  SaveWorkInfo();  }
   void SetCompanyAddress (const char *n)     {  SetString(&m_szCompanyAddress, n);  SaveWorkInfo();  }
-  void SetCompanyZip (const char *n)	     {  SetString(&m_szCompanyZip, n);  SaveWorkInfo();  }
+  void SetCompanyZip (const char *n)            { SetString(&m_szCompanyZip, n); SaveWorkInfo(); }
   void SetCompanyCountry (unsigned short n)  {  m_nCompanyCountry = n;  SaveWorkInfo();  }
   void SetCompanyName (const char *n)        {  SetString(&m_szCompanyName, n);  SaveWorkInfo();  }
   void SetCompanyDepartment (const char *n)  {  SetString(&m_szCompanyDepartment, n);  SaveWorkInfo();  }
@@ -729,8 +729,8 @@ public:
   void SetAcceptInNA(bool s)          { s ? m_nAutoAccept |= ACCEPT_IN_NA : m_nAutoAccept &= ~ACCEPT_IN_NA; SaveLicqInfo(); }
   void SetAcceptInOccupied(bool s)    { s ? m_nAutoAccept |= ACCEPT_IN_OCCUPIED : m_nAutoAccept &= ~ACCEPT_IN_OCCUPIED; SaveLicqInfo(); }
   void SetAcceptInDND(bool s)         { s ? m_nAutoAccept |= ACCEPT_IN_DND : m_nAutoAccept &= ~ACCEPT_IN_DND; SaveLicqInfo(); }
-  void SetUseGPG(bool b)		{ m_bUseGPG = b; SaveLicqInfo(); }
-  void SetGPGKey(const char *c)		{ SetString(&m_szGPGKey, c); SaveLicqInfo(); }
+  void SetUseGPG(bool b)                        { m_bUseGPG = b; SaveLicqInfo(); }
+  void SetGPGKey(const char *c)                 { SetString(&m_szGPGKey, c); SaveLicqInfo(); }
   void SetStatusToUser(unsigned short s)    { m_nStatusToUser = s; SaveLicqInfo(); }
   void SetKeepAliasOnUpdate(bool b)   { m_bKeepAliasOnUpdate = b; }
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
@@ -881,13 +881,13 @@ public:
   unsigned short LocalPort() const              { return m_nLocalPort; }
   unsigned long Cookie() const                  { return m_nCookie; }
   void SetIpPort(unsigned long nIp, unsigned short nPort);
-  void SetIp(unsigned long nIp)		{ SetIpPort(nIp, Port()); }
-  void SetPort(unsigned short nPort)	{ SetIpPort(Ip(), nPort); }
-  void SetIntIp(unsigned long s)	{ m_nIntIp = s; }
+  void SetIp(unsigned long nIp)                 { SetIpPort(nIp, Port()); }
+  void SetPort(unsigned short nPort)            { SetIpPort(Ip(), nPort); }
+  void SetIntIp(unsigned long s)                { m_nIntIp = s; }
   void SetCookie(unsigned long nCookie) { m_nCookie = nCookie; }
 
   bool SendIntIp() const                        { return m_bSendIntIp; }
-  void SetSendIntIp(bool s)	{ m_bSendIntIp = s; }
+  void SetSendIntIp(bool s)                     { m_bSendIntIp = s; }
 
   // for backward compatibility
   unsigned long RealIp() const                  { return IntIp(); }

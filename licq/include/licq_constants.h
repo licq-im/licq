@@ -14,7 +14,7 @@ extern char BASE_DIR[];
 extern char SHARE_DIR[];
 extern char LIB_DIR[];
 enum direction { D_SENDER, D_RECEIVER };
-const char DEFAULT_SERVER_HOST[]		   = "login.icq.com";
+const char DEFAULT_SERVER_HOST[]                = "login.icq.com";
 
 // Plugin constants
 const char PLUGIN_SIGNAL                           = 'S';
