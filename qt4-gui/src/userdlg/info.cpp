@@ -180,7 +180,7 @@ QWidget* UserPages::Info::createPageGeneral(QWidget* parent)
         "Normally Licq overwrites the Alias when updating user details.\n"
         "Check this if you want to keep your changes to the Alias."));
     lay->addWidget(chkKeepAliasOnUpdate, CR, 3, 1, 2);
-    connect(nfoAlias, SIGNAL(textChanged(const QString&)), SLOT(aliasChanged()));
+    connect(nfoAlias, SIGNAL(textEdited(const QString&)), SLOT(aliasChanged()));
   }
 
   lay->addWidget(new QLabel(tr("ID:")), ++CR, 0);
