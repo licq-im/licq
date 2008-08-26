@@ -49,7 +49,7 @@ ContactGroup::ContactGroup(unsigned short id, QString name)
 ContactGroup::ContactGroup(const LicqGroup* group)
   : ContactItem(ContactListModel::GroupItem),
     myGroupId(group->id()),
-    myName(group->name().c_str()),
+    myName(QString::fromLocal8Bit(group->name().c_str())),
     mySortKey(group->sortIndex()),
     myEvents(0),
     myVisibleContacts(0)
