@@ -152,8 +152,7 @@ struct command_t
 
 static int process_tok(const command_t *table,const char *tok);
 
-unsigned long
-StringToStatus(char *_szStatus)
+unsigned long StringToStatus(const char* _szStatus)
 {
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   unsigned long nStatus = o->AddStatusFlags(0);
@@ -918,7 +917,7 @@ static int process_tok(const command_t *table,const char *tok)
   return  bFound ? i -1 : CL_UNKNOWN;
 }
 
-void CICQDaemon::ProcessFifo(char *_szBuf)
+void CICQDaemon::ProcessFifo(const char* _szBuf)
 {
 #ifdef USE_FIFO
   int argc, index;

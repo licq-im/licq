@@ -86,17 +86,17 @@ public:
 
   // Accessors
   //! Total number of events.
-  unsigned long Total() { return m_nTotal; }
+  unsigned long Total() const   { return m_nTotal; }
   //! Total number of events for the current day only.
-  unsigned long Today() { return m_nTotal - m_nOriginal; }
+  unsigned long Today() const   { return m_nTotal - m_nOriginal; }
   //! Name of the kind of statistic.
-  const char *Name()    { return m_szName; }
+  const char* Name() const      { return m_szName; }
 
 protected:
   CDaemonStats();
   CDaemonStats(const char *, const char *);
 
-  bool Dirty() { return m_nLastSaved != m_nTotal; }
+  bool Dirty() const            { return m_nLastSaved != m_nTotal; }
   void ClearDirty() { m_nLastSaved = m_nTotal; }
 
   void Init();
@@ -128,13 +128,13 @@ class CConversation
 {
 public:
   bool HasUser(const char *sz);
-  bool IsEmpty()        { return m_vUsers.size() == 0; }
-  int NumUsers()        { return m_vUsers.size(); }
+  bool IsEmpty() const                  { return m_vUsers.size() == 0; }
+  int NumUsers() const                  { return m_vUsers.size(); }
 
-  int Socket()          { return m_nSocket; }
-  unsigned long CID()   { return m_nCID; }
+  int Socket() const                    { return m_nSocket; }
+  unsigned long CID() const             { return m_nCID; }
 
-  std::string GetUser(int n) { return m_vUsers[n]; }
+  std::string GetUser(int n) const      { return m_vUsers[n]; }
 
 private:
   CConversation(int nSocket, unsigned long nPPID);
@@ -196,7 +196,7 @@ public:
   int RegisterPlugin(unsigned long _nSignalMask);
   void UnregisterPlugin();
   bool Start();
-  const char *Version();
+  const char* Version() const;
   pthread_t *Shutdown();
   void SaveConf();
 
@@ -533,9 +533,9 @@ public:
   bool ProtoPluginLoad(const char *);
   int RegisterProtoPlugin();
   void UnregisterProtoPlugin();
-  char *ProtoPluginName(unsigned long);
+  const char* ProtoPluginName(unsigned long ppid) const;
 
-  EDaemonStatus Status() { return m_eStatus; }
+  EDaemonStatus Status() const                  { return m_eStatus; }
 
   void PluginUIViewEvent(const char *szId, unsigned long nPPID ) {
     PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, szId, nPPID, 0));
@@ -565,79 +565,81 @@ public:
       const char* number, const char* message);
 
   // NOT MT SAFE
-  const char *getUrlViewer();
+  const char* getUrlViewer() const;
   void setUrlViewer(const char *s);
 
   bool ViewUrl(const char *url);
 
   // ICQ Server options
-  const char *ICQServer() {  return m_szICQServer;  }
+  const char* ICQServer() const                 { return m_szICQServer; }
   void SetICQServer(const char *s) {  SetString(&m_szICQServer, s);  }
-  unsigned short ICQServerPort() {  return m_nICQServerPort;  }
+  unsigned short ICQServerPort() const          { return m_nICQServerPort; }
   void SetICQServerPort(unsigned short p) {  m_nICQServerPort = p; }
 
   // Firewall options
-  bool TCPEnabled() { return m_bTCPEnabled; }
+  bool TCPEnabled() const                       { return m_bTCPEnabled; }
   void SetTCPEnabled(bool b) { m_bTCPEnabled = b; SetDirectMode(); }
-  bool Firewall() { return m_bFirewall; }
+  bool Firewall() const                         { return m_bFirewall; }
   void SetFirewall(bool b) { m_bFirewall = b; SetDirectMode(); }
   void SetDirectMode();
 
   // Proxy options
   void InitProxy();
   ProxyServer *CreateProxy();
-  bool ProxyEnabled() {  return m_bProxyEnabled;  }
+  bool ProxyEnabled() const                     { return m_bProxyEnabled; }
   ProxyServer *GetProxy() {  return m_xProxy;  }
   void SetProxyEnabled(bool b) {  m_bProxyEnabled = b;  }
-  unsigned short ProxyType() {  return m_nProxyType;  }
+  unsigned short ProxyType() const              { return m_nProxyType; }
   void SetProxyType(unsigned short t) {  m_nProxyType = t;  }
-  const char *ProxyHost() {  return m_szProxyHost;  }
+  const char* ProxyHost() const                 { return m_szProxyHost; }
   void SetProxyHost(const char *s) {  SetString(&m_szProxyHost, s);  }
-  unsigned short ProxyPort() {  return m_nProxyPort;  }
+  unsigned short ProxyPort() const              { return m_nProxyPort; }
   void SetProxyPort(unsigned short p) {  m_nProxyPort = p;  }
-  bool ProxyAuthEnabled() {  return m_bProxyAuthEnabled;  }
+  bool ProxyAuthEnabled() const                 { return m_bProxyAuthEnabled; }
   void SetProxyAuthEnabled(bool b) {  m_bProxyAuthEnabled = b;  }
-  const char *ProxyLogin() {  return m_szProxyLogin;  }
+  const char* ProxyLogin() const                { return m_szProxyLogin; }
   void SetProxyLogin(const char *s) {  SetString(&m_szProxyLogin, s);  }
-  const char *ProxyPasswd() {  return m_szProxyPasswd;  }
+  const char* ProxyPasswd() const               { return m_szProxyPasswd; }
   void SetProxyPasswd(const char *s) {  SetString(&m_szProxyPasswd, s);  }
 
-  unsigned short TCPPortsLow() { return m_nTCPPortsLow; }
-  unsigned short TCPPortsHigh() { return m_nTCPPortsHigh; }
+  unsigned short TCPPortsLow() const            { return m_nTCPPortsLow; }
+  unsigned short TCPPortsHigh() const           { return m_nTCPPortsHigh; }
   void SetTCPPorts(unsigned short p, unsigned short r);
   static bool CryptoEnabled();
 
-  bool AutoUpdateInfo()          { return m_bAutoUpdateInfo; }
-  bool AutoUpdateInfoPlugins()   { return m_bAutoUpdateInfoPlugins; }
-  bool AutoUpdateStatusPlugins() { return m_bAutoUpdateStatusPlugins; }
+  bool AutoUpdateInfo() const                   { return m_bAutoUpdateInfo; }
+  bool AutoUpdateInfoPlugins() const            { return m_bAutoUpdateInfoPlugins; }
+  bool AutoUpdateStatusPlugins() const          { return m_bAutoUpdateStatusPlugins; }
 
   void SetAutoUpdateInfo(bool b)          { m_bAutoUpdateInfo = b; }
   void SetAutoUpdateInfoPlugins(bool b)   { m_bAutoUpdateInfoPlugins = b; }
   void SetAutoUpdateStatusPlugins(bool b) { m_bAutoUpdateStatusPlugins = b; }
 
-  const char *Terminal();
+  // NOT MT SAFE
+  const char* Terminal() const                  { return m_szTerminal; }
   void SetTerminal(const char *s);
-  bool Ignore(unsigned short n)      { return m_nIgnoreTypes & n; }
+  bool Ignore(unsigned short n) const           { return m_nIgnoreTypes & n; }
   void SetIgnore(unsigned short, bool);
 
   COnEventManager *OnEventManager()  { return &m_xOnEventManager; }
-  bool AlwaysOnlineNotify();
+  // NOT MT SAFE
+  bool AlwaysOnlineNotify() const               { return m_bAlwaysOnlineNotify; }
   void SetAlwaysOnlineNotify(bool);
   CICQSignal *PopPluginSignal();
   ICQEvent *PopPluginEvent();
   CSignal *PopProtoSignal();
 
   // ICQ options
-  bool UseServerContactList()         { return m_bUseSS; }
-  bool UseServerSideBuddyIcons()      { return m_bUseBART; }
-  bool SendTypingNotification()       { return m_bSendTN; }
+  bool UseServerContactList() const             { return m_bUseSS; }
+  bool UseServerSideBuddyIcons() const          { return m_bUseBART; }
+  bool SendTypingNotification() const           { return m_bSendTN; }
 
   void SetUseServerContactList(bool b)    { m_bUseSS = b; }
   void SetUseServerSideBuddyIcons(bool b);
   void SetSendTypingNotification(bool b)  { m_bSendTN = b; }
 
   // Misc functions
-  bool ReconnectAfterUinClash()              { return m_bReconnectAfterUinClash; }
+  bool ReconnectAfterUinClash() const           { return m_bReconnectAfterUinClash; }
   void setReconnectAfterUinClash(bool b)     { m_bReconnectAfterUinClash = b; }
   bool AddProtocolPlugins();
   char *parseRTF(const char *);
@@ -646,9 +648,9 @@ public:
   // Statistics
   CDaemonStats *Stats(unsigned short n) { return n < 3 ? &m_sStats[n] : NULL; }
   DaemonStatsList &AllStats() { return m_sStats; }
-  time_t ResetTime() { return m_nResetTime; }
-  time_t StartTime() { return m_nStartTime; }
-  time_t Uptime() { return time(NULL) - m_nStartTime; }
+  time_t ResetTime() const                      { return m_nResetTime; }
+  time_t StartTime() const                      { return m_nStartTime; }
+  time_t Uptime() const                         { return time(NULL) - m_nStartTime; }
   void ResetStats();
 
   // Conversation functions
@@ -810,7 +812,7 @@ protected:
   pthread_mutex_t mutex_conversations;
 
   std::list <ICQEvent *> m_lxRunningEvents;
-  pthread_mutex_t mutex_runningevents;
+  mutable pthread_mutex_t mutex_runningevents;
   std::list <ICQEvent *> m_lxExtendedEvents;
   pthread_mutex_t mutex_extendedevents;
   std::list <ICQEvent *> m_lxSendQueue_Server;
@@ -852,7 +854,7 @@ protected:
   ICQEvent *DoneExtendedServerEvent(const unsigned short, EventResult);
   ICQEvent *DoneExtendedEvent(ICQEvent *, EventResult);
   ICQEvent *DoneExtendedEvent(unsigned long tag, EventResult _eResult);
-  bool hasServerEvent(unsigned long);
+  bool hasServerEvent(unsigned long subSequence) const;
   void ProcessDoneEvent(ICQEvent *);
   void PushEvent(ICQEvent *);
   void PushExtendedEvent(ICQEvent *);
@@ -895,7 +897,7 @@ protected:
   void ProcessMetaCommand(CBuffer &packet, unsigned short nMetaCommand, ICQEvent *e);
   bool ProcessTcpPacket(TCPSocket *);
   bool ProcessTcpHandshake(TCPSocket *);
-  void ProcessFifo(char *);
+  void ProcessFifo(const char* buf);
 
   static bool Handshake_Send(TCPSocket *, const char* id, unsigned short,
                              unsigned short, bool = true, unsigned long = 0);
@@ -955,7 +957,7 @@ extern CICQDaemon *gLicqDaemon;
 
 // Helper functions for the daemon
 bool ParseFE(char *szBuffer, char ***szSubStr, int nMaxSubStr);
-unsigned long StringToStatus(char *_szStatus);
+unsigned long StringToStatus(const char* status);
 unsigned short VersionToUse(unsigned short);
 
 // Data structure for passing information to the reverse connection thread

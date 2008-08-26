@@ -669,10 +669,10 @@ void CICQDaemon::UnregisterProtoPlugin()
   pthread_mutex_unlock(&licq->mutex_protoplugins);
 }
 
-char *CICQDaemon::ProtoPluginName(unsigned long _nPPID)
+const char* CICQDaemon::ProtoPluginName(unsigned long _nPPID) const
 {
   ProtoPluginsListIter it;
-  char *p = 0;
+  const char* p = 0;
 
   pthread_mutex_lock(&licq->mutex_protoplugins);
   for (it = licq->list_protoplugins.begin();
@@ -681,7 +681,7 @@ char *CICQDaemon::ProtoPluginName(unsigned long _nPPID)
   {
     if ((*it)->PPID() == _nPPID)
     {
-      p = (char *)(*it)->Name();
+      p = (*it)->Name();
       break;
     }
   }
@@ -704,7 +704,7 @@ void CICQDaemon::ProtoPluginShutdown(unsigned short _nId)
 
 //---Version-------------------------------------------------------------------
 /*! \brief Returns the version of Licq */
-const char *CICQDaemon::Version()
+const char* CICQDaemon::Version() const
 {
   return licq->Version();
 }
@@ -887,12 +887,10 @@ void CICQDaemon::SaveConf()
 
 //++++++NOT MT SAFE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-const char *CICQDaemon::Terminal()       { return m_szTerminal; }
 void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
-bool CICQDaemon::AlwaysOnlineNotify()  { return m_bAlwaysOnlineNotify; }
 void CICQDaemon::SetAlwaysOnlineNotify(bool b)  { m_bAlwaysOnlineNotify = b; }
 
-const char *CICQDaemon::getUrlViewer()
+const char* CICQDaemon::getUrlViewer() const
 {
   if ((strcmp(m_szUrlViewer, "none") == 0) || (strlen(m_szUrlViewer) == 0))
     return (NULL);
@@ -1604,11 +1602,11 @@ void CICQDaemon::FailEvents(int sd, int err)
 /**
  * Search the running event queue for a specific event by subsequence.
  */
-bool CICQDaemon::hasServerEvent(unsigned long _nSubSequence)
+bool CICQDaemon::hasServerEvent(unsigned long _nSubSequence) const
 {
   bool hasEvent = false;
   pthread_mutex_lock(&mutex_runningevents);
-  list<ICQEvent *>::iterator iter;
+  list<ICQEvent*>::const_iterator iter;
   for (iter = m_lxRunningEvents.begin(); iter != m_lxRunningEvents.end(); ++iter)
   {
     if ((*iter)->CompareSubSequence(_nSubSequence))

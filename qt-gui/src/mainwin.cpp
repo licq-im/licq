@@ -3148,9 +3148,9 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
     pOffline = &pmMSNOffline;
     pPrivate = &pmMSNOffline;
   }
-  
-  char *pName = licqDaemon->ProtoPluginName(nPPID);
-  
+
+  const char *pName = licqDaemon->ProtoPluginName(nPPID);
+
   // Create the menu items now
   mnuProtocolStatus[m_nProtoNum] = new QPopupMenu(NULL);
   if (pOnline)
