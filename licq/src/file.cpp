@@ -708,6 +708,7 @@ bool CIniFile::ReadStr(const string& key, char *szData,
     }
 
 MAKE_READNUM(unsigned long, strtoul(strData, (char**)NULL, 10))
+MAKE_READNUM(signed long, strtoul(strData, (char**)NULL, 10))
 MAKE_READNUM(unsigned int, strtoul(strData, (char**)NULL, 10))
 MAKE_READNUM(signed int, atoi(strData))
 MAKE_READNUM(unsigned short, (unsigned short)atoi(strData))
@@ -848,6 +849,7 @@ bool CIniFile::WriteStr(const string& key, const char *_szData)
     }
 
 MAKE_WRITENUM(unsigned long, "%lu")
+MAKE_WRITENUM(signed long, "%lu")
 MAKE_WRITENUM(unsigned int, "%u")
 MAKE_WRITENUM(signed int, "%i")
 MAKE_WRITENUM(unsigned short, "%i")

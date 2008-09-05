@@ -59,6 +59,8 @@ public:
   bool SetSection(const char *_szSectionName);
   bool CreateSection(const char *_szSectionName);
   bool ReadStr(const std::string& Key, char* data, const char* defValue = NULL, bool trim = true, int maxLength = 0);
+  bool ReadNum(const std::string& key, unsigned long &data, unsigned long defValue = 0);
+  bool ReadNum(const std::string& key, signed long &data, signed long defValue = 0);
   bool ReadNum(const std::string& key, unsigned int &data, unsigned int defValue = 0);
   bool ReadNum(const std::string& key, signed int &data, signed int defValue = 0);
   bool ReadNum(const std::string& key, unsigned short &data, unsigned short defValue = 0);
@@ -67,6 +69,8 @@ public:
   bool ReadBool(const std::string& key, bool &data, const bool defValue = false);
 
   bool WriteStr(const std::string& key, const char* data);
+  bool WriteNum(const std::string& key, unsigned long data);
+  bool WriteNum(const std::string& key, signed long data);
   bool WriteNum(const std::string& key, unsigned int data);
   bool WriteNum(const std::string& key, signed int data);
   bool WriteNum(const std::string& key, unsigned short data);
@@ -76,13 +80,6 @@ public:
 
   int Error()  { return (m_nError); }
   const char *FileName()  { return m_szFilename; }
-
-  // Long differs in size between 32 bit systems and 64 bit systems so int
-  // should be used instead. This function is kept to keep old code working but
-  // since it is unlikely that we need to save any 64 bit integers these
-  // function is declared as deprecated.
-  LICQ_DEPRECATED bool ReadNum(const std::string& key, unsigned long &data, unsigned long defValue = 0);
-  LICQ_DEPRECATED bool WriteNum(const std::string& key, unsigned long data);
 
 protected:
   // Data members
