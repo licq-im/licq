@@ -31,6 +31,7 @@ extern int errno;
 #include "licq_file.h"
 #include "licq_log.h"
 
+using namespace std;
 
 //=====Pre class helper functions==============================================
 
@@ -656,7 +657,7 @@ bool CIniFile::SetSection(const char *_szSection)
 //-----ReadStr-----------------------------------------------------------------
 /*! \brief Finds a key and sets the data.  Returns false if the key does not exist.
  */
-bool CIniFile::ReadStr(const char *szKey, char *szData,
+bool CIniFile::ReadStr(const string& key, char *szData,
                        const char *szDefault, bool bTrim, int _nMax)
 {
   char *sz, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
@@ -669,12 +670,13 @@ bool CIniFile::ReadStr(const char *szKey, char *szData,
     sz = GetKeyFromLine(szKeyBuffer, szLine);
     if (sz == NULL)
     {
-       if (szLine == NULL) Warn(INI_ExNOKEY, szKey);
+      if (szLine == NULL)
+        Warn(INI_ExNOKEY, key.c_str());
        if (szDefault != NULL) strcpy(szData, szDefault);
        return (false);
     }
   }
-  while (strcmp(sz, szKey) != 0);
+  while (sz != key);
 
   if ((sz = GetDataFromLine(szData, szLine, bTrim, _nMax)) == NULL)
   {
@@ -691,63 +693,26 @@ bool CIniFile::ReadStr(const char *szKey, char *szData,
  * Finds a key and sets the numeric data.  Returns false if the key does not
  * exist.
  */
-bool CIniFile::ReadNum(const char *_szKey, unsigned long &data,
-                       const unsigned long _nDefault)
-{
-  char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL))
-  {
-    data = _nDefault;
-    return (false);
-  }
 
-  //can't use atol because it truncates numbers over 0x7FFFFFFF
-  data = strtoul(szData, (char **)NULL, 10);
-  return(true);
-}
+#define MAKE_READNUM(valueType, convertion) \
+    bool CIniFile::ReadNum(const string& key, valueType &data, valueType defValue) \
+    { \
+      char strData[MAX_LINE_LEN]; \
+      if (!ReadStr(key, strData, NULL)) \
+      { \
+        data = defValue; \
+        return false; \
+      } \
+      data = convertion; \
+      return true; \
+    }
 
-bool CIniFile::ReadNum(const char *_szKey, unsigned short &data,
-                       const unsigned short _nDefault)
-{
-  char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL))
-  {
-    data = _nDefault;
-    return (false);
-  }
-
-  data = (unsigned short)atoi(szData);
-  return(true);
-}
-
-
-bool CIniFile::ReadNum(const char *_szKey, char &data, const char _nDefault)
-{
-  char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL))
-  {
-    data = _nDefault;
-    return (false);
-  }
-
-  data = (char)atoi(szData);
-  return(true);
-}
-
-bool CIniFile::ReadNum(const char *_szKey, signed short &data,
-                       const signed short _nDefault)
-{
-  char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL))
-  {
-    data = _nDefault;
-    return (false);
-  }
-
-  data = (signed short)atoi(szData);
-  return(true);
-}
-
+MAKE_READNUM(unsigned long, strtoul(strData, (char**)NULL, 10))
+MAKE_READNUM(unsigned int, strtoul(strData, (char**)NULL, 10))
+MAKE_READNUM(signed int, atoi(strData))
+MAKE_READNUM(unsigned short, (unsigned short)atoi(strData))
+MAKE_READNUM(signed short, (signed short)atoi(strData))
+MAKE_READNUM(char, (char)atoi(strData))
 
 //-----ReadBool----------------------------------------------------------------
 /*! \brief Reads bool info from a key.
@@ -755,10 +720,10 @@ bool CIniFile::ReadNum(const char *_szKey, signed short &data,
  * Finds a key and sets true or false. "0" means false, all other values 
  * mean true.  Returns false if the key does not exist.
  */
-bool CIniFile::ReadBool(const char *_szKey, bool &data, const bool _bDefault)
+bool CIniFile::ReadBool(const string& key, bool &data, const bool _bDefault)
 {
   char szData[MAX_LINE_LEN];
-  if (!ReadStr(_szKey, szData, NULL))
+  if (!ReadStr(key, szData, NULL))
   {
     data = _bDefault;
     return (false);
@@ -834,7 +799,7 @@ bool CIniFile::CreateSection(const char *_szSectionName)
  * Writes a string to the buffer replacing the given key or creating a new 
  * key at the end of the current section.  Always returns true.
  */
-bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
+bool CIniFile::WriteStr(const string& key, const char *_szData)
 {
   char *sz, *szLine, szLineBuffer[MAX_LINE_LEN], szKeyBuffer[MAX_KEYxNAME_LEN];
   int nCutStart;
@@ -848,7 +813,7 @@ bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
     szLine = ReadLine(szLineBuffer, MAX_LINE_LEN);
     sz = GetKeyFromLine(szKeyBuffer, szLine);
   }
-  while (sz != NULL && strcmp(sz, _szKey) != 0);
+  while (sz != NULL && sz != key);
   int nCutEnd = m_nBufPos;
 
   char szNewLine[MAX_LINE_LEN], szDataNoNL[MAX_LINE_LEN];
@@ -857,10 +822,10 @@ bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
   else
   {
     gLog.Warn("%sInternal Error: CIniFile::WriteStr(%s, NULL).\n",
-              L_WARNxSTR, _szKey);
+        L_WARNxSTR, key.c_str());
     strcpy(szDataNoNL, "");
   }
-  snprintf(szNewLine, MAX_LINE_LEN, "%s = %s\n", _szKey, szDataNoNL);
+  snprintf(szNewLine, MAX_LINE_LEN, "%s = %s\n", key.c_str(), szDataNoNL);
   szNewLine[MAX_LINE_LEN - 1] = '\0';
   // Don't lose the following key if szNewLine was truncated by snprintf
   szNewLine[MAX_LINE_LEN - 2] = '\n'; 
@@ -874,41 +839,23 @@ bool CIniFile::WriteStr(const char *_szKey, const char *_szData)
   return (true);
 }
 
+#define MAKE_WRITENUM(valueType, convertion) \
+    bool CIniFile::WriteNum(const string& key, valueType data) \
+    { \
+      char strData[32]; \
+      snprintf(strData, sizeof(strData), convertion, data); \
+      return WriteStr(key, strData); \
+    }
 
-bool CIniFile::WriteNum(const char *_szKey, const unsigned short _nData)
-{
-   char szN[32];
-   snprintf(szN, 32, "%u", _nData);
-   szN[31] = '\0';
-   return(WriteStr(_szKey, szN));
-}
+MAKE_WRITENUM(unsigned long, "%lu")
+MAKE_WRITENUM(unsigned int, "%u")
+MAKE_WRITENUM(signed int, "%i")
+MAKE_WRITENUM(unsigned short, "%i")
+MAKE_WRITENUM(signed short, "%i")
+MAKE_WRITENUM(char, "%i")
 
-bool CIniFile::WriteNum(const char *_szKey, const unsigned long _nData)
+bool CIniFile::WriteBool(const string& key, bool data)
 {
-   char szN[32];
-   snprintf(szN, 32, "%lu", _nData);
-   szN[31] = '\0';
-   return(WriteStr(_szKey, szN));
-}
-
-bool CIniFile::WriteNum(const char *_szKey, const signed short _nData)
-{
-  char szN[32];
-  snprintf(szN, 32, "%d", _nData);
-  szN[31] = '\0';
-  return(WriteStr(_szKey, szN));
-}
-
-bool CIniFile::WriteNum(const char *_szKey, const char _nData)
-{
-  char szN[32];
-  snprintf(szN, 32, "%d", _nData);
-  szN[31] = '\0';
-  return(WriteStr(_szKey, szN));
-}
-
-bool CIniFile::WriteBool(const char *_szKey, const bool _nData)
-{
-   return(WriteStr(_szKey, _nData ? "1" : "0"));
+   return(WriteStr(key, data ? "1" : "0"));
 }
 

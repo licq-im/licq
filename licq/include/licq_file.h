@@ -1,6 +1,19 @@
 #ifndef INIFILE_H
 #define INIFILE_H
 
+#include <string>
+
+// Define for marking functions as deprecated
+#ifndef LICQ_DEPRECATED
+# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
+#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
+# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#  define LICQ_DEPRECATED __declspec(deprecated)
+# else
+#  define LICQ_DEPRECATED
+# endif
+#endif
+
 #define MAX_SECTIONxNAME_LEN 160
 #define MAX_KEYxNAME_LEN 160
 #define MAX_LINE_LEN 4096
@@ -45,22 +58,31 @@ public:
 
   bool SetSection(const char *_szSectionName);
   bool CreateSection(const char *_szSectionName);
-  bool ReadStr(const char *_szKey, char *_szData, const char *_szDefault = NULL, bool bTrim = true, int _nMax = 0);
-  bool ReadNum(const char *_szKey, unsigned long &data, const unsigned long _nDefault = 0);
-  bool ReadNum(const char *_szKey, unsigned short &data, const unsigned short _nDefault = 0);
-  bool ReadNum(const char *_szKey, signed short &data, const signed short _nDefault = 0);
-  bool ReadNum(const char *_szKey, char &data, const char _nDefault = 0);
-  bool ReadBool(const char *_szKey, bool &data, const bool _bDefault = false);
+  bool ReadStr(const std::string& Key, char* data, const char* defValue = NULL, bool trim = true, int maxLength = 0);
+  bool ReadNum(const std::string& key, unsigned int &data, unsigned int defValue = 0);
+  bool ReadNum(const std::string& key, signed int &data, signed int defValue = 0);
+  bool ReadNum(const std::string& key, unsigned short &data, unsigned short defValue = 0);
+  bool ReadNum(const std::string& key, signed short &data, signed short defValue = 0);
+  bool ReadNum(const std::string& key, char &data, char defValue = 0);
+  bool ReadBool(const std::string& key, bool &data, const bool defValue = false);
 
-  bool WriteStr(const char *_szKey, const char *_szData);
-  bool WriteNum(const char *_szKey, const unsigned long _szData);
-  bool WriteNum(const char *_szKey, const unsigned short _szData);
-  bool WriteNum(const char *_szKey, const signed short _szData);
-  bool WriteNum(const char *_szKey, const char _szData);
-  bool WriteBool(const char *_szKey, const bool _szData);
+  bool WriteStr(const std::string& key, const char* data);
+  bool WriteNum(const std::string& key, unsigned int data);
+  bool WriteNum(const std::string& key, signed int data);
+  bool WriteNum(const std::string& key, unsigned short data);
+  bool WriteNum(const std::string& key, signed short data);
+  bool WriteNum(const std::string& key, char data);
+  bool WriteBool(const std::string& key, bool data);
 
   int Error()  { return (m_nError); }
   const char *FileName()  { return m_szFilename; }
+
+  // Long differs in size between 32 bit systems and 64 bit systems so int
+  // should be used instead. This function is kept to keep old code working but
+  // since it is unlikely that we need to save any 64 bit integers these
+  // function is declared as deprecated.
+  LICQ_DEPRECATED bool ReadNum(const std::string& key, unsigned long &data, unsigned long defValue = 0);
+  LICQ_DEPRECATED bool WriteNum(const std::string& key, unsigned long data);
 
 protected:
   // Data members

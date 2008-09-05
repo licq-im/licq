@@ -548,7 +548,7 @@ void SkinBrowserDlg::slot_loadIcons(const QString& icon)
   fIconsConf.SetSection("icons");
   for (QStringList::Iterator it = lstAIcons->begin(); it != lstAIcons->end(); ++it)
   {
-    fIconsConf.ReadStr((*it).toAscii(), sFileName, "");
+    fIconsConf.ReadStr((*it).toAscii().data(), sFileName, "");
     QString pmFile = iconsFile.left(iconsFile.length()-icon.length()-6) + QString::fromAscii(sFileName);
     QPixmap pm(pmFile);
     if (! pm.isNull())
@@ -584,7 +584,7 @@ void SkinBrowserDlg::slot_loadExtIcons(const QString& extIcon)
   fIconsConf.SetSection("icons");
   for (QStringList::Iterator it = lstAExtIcons->begin(); it != lstAExtIcons->end(); ++it)
   {
-    fIconsConf.ReadStr((*it).toAscii(), sFileName, "");
+    fIconsConf.ReadStr((*it).toAscii().data(), sFileName, "");
     QString pmFile = iconsFile.left(iconsFile.length()-extIcon.length()-6) + QString::fromAscii(sFileName);
     QPixmap pm(pmFile);
     if (! pm.isNull())
