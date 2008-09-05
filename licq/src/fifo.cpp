@@ -47,7 +47,6 @@ extern int errno;
 #include "licq_icq.h"
 #include "licq_user.h"
 #include "licq_constants.h"
-#include "licq_file.h"
 #include "licq_log.h"
 #include "licq_translate.h"
 #include "licq_packets.h"

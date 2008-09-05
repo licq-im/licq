@@ -7,6 +7,8 @@
 #endif
 #include <pthread.h>
 
+#include "licq_file.h"
+
 class CGPGHelper
 {
 public:
