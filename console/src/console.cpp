@@ -3037,6 +3037,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
             ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
             owner->SetPassword(data->szPassword1);
             gUserManager.DropOwner(owner);
+            licqDaemon->SaveConf();
 
             winMain->wprintf("Save password? (y/N) ");
             winMain->state = STATE_QUERY;
