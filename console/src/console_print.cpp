@@ -542,7 +542,7 @@ void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
 {
   HistoryListIter it = lHistory.begin();
   unsigned short n = 0;
-  for (n = 0; n < nStart && it != lHistory.end(); n++, it++);
+  for (n = 0; n < nStart && it != lHistory.end(); n++, it++) ;
   while (n <= nEnd && it != lHistory.end())
   {
     wattron(winMain->Win(), A_BOLD);
