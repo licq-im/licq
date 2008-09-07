@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -Wall @WEXTRA@
+
 libdir=@libdir@/licq/
 plugindir = $(libdir)
 licq_incdir = @LICQ_INCLUDES@

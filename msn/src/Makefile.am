@@ -1,9 +1,11 @@
+AM_CPPFLAGS = -Wall @WEXTRA@
+
 libdir=@libdir@/licq/
 plugindir = $(libdir)
 licq_incdir = @LICQ_INCLUDES@
 
 
-INCLUDES = -Wall -I$(srcdir) -I$(licq_incdir)
+INCLUDES = -I$(srcdir) -I$(licq_incdir)
 
 noinst_HEADERS = msn.h msnpacket.h msnbuffer.h msnevent.h
 

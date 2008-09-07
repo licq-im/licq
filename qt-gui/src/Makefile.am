@@ -3,7 +3,7 @@ EXTRA_DIST = xpm
 libdir=@libdir@/licq/
 licq_incdir = $(LICQ_INCLUDES)
 
-AM_CPPFLAGS = -D_REENTRANT \
+AM_CPPFLAGS = -Wall @WEXTRA@ -D_REENTRANT \
 	-I$(licq_incdir) $(X_CFLAGS) $(QT_INCLUDES) $(KDE_INCLUDES)
 
 EXTRA_LTLIBRARIES = licq_qt-gui.la licq_kde-gui.la

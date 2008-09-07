@@ -1,9 +1,11 @@
+AM_CPPFLAGS = -Wall @WEXTRA@
+
 libdir=@libdir@/licq/
 plugindir = $(libdir)
 licq_incdir = @LICQ_INCLUDES@
 
 
-INCLUDES = -Wall -I$(srcdir) -I$(licq_incdir) -I/usr/include/ncurses -I/usr/include/cdk -I/usr/local/include/cdk
+INCLUDES = -I$(srcdir) -I$(licq_incdir) -I/usr/include/ncurses -I/usr/include/cdk -I/usr/local/include/cdk
 
 noinst_HEADERS = console.h event_data.h window.h
 

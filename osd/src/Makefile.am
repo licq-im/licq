@@ -1,3 +1,5 @@
+AM_CPPFLAGS = -Wall @WEXTRA@
+
 libdir=@libdir@/licq/
 localedir=$(datadir)/locale
 
