@@ -125,6 +125,18 @@ else
 fi
 ])
 
+dnl Check if we should use -Wextra or -W to get extra warnings
+AC_DEFUN([LICQ_CXX_WEXTRA],
+[
+  AC_CACHE_CHECK([for -Wextra option to $CC], ac_cv_cc_wextra, [dnl
+    old_CFLAGS="$CFLAGS"
+    CFLAGS="$CFLAGS -Wextra"
+    AC_COMPILE_IFELSE([void foo (void) { }], ac_cv_cc_wextra=yes, ac_cv_cc_wextra=no)
+    CFLAGS="$old_CFLAGS"])
+  AC_SUBST(WEXTRA)
+  AS_IF([test "x$ac_cv_cc_wextra" = xyes], [WEXTRA=-Wextra], [WEXTRA=-W])
+])
+
 dnl Check if the type socklen_t is defined anywhere
 AC_DEFUN([AC_C_SOCKLEN_T],
 [AC_CACHE_CHECK(for socklen_t, ac_cv_c_socklen_t,

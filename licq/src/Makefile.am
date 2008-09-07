@@ -1,4 +1,4 @@
-AM_CPPFLAGS = -Wall -I$(top_srcdir)/include @SOCKS_INCDIR@
+AM_CPPFLAGS = -Wall @WEXTRA@ -I$(top_srcdir)/include @SOCKS_INCDIR@
 
 datadir = @datadir@
 localedir = $(datadir)/locale

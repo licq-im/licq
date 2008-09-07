@@ -603,8 +603,6 @@ the configure script found broken X11 headers. But your compiler doesn't
 seem to support -fpermissive. Compilation might fail.
         ])
       ])
-else
-   CXXFLAGS="$CXXFLAGS -Wall -Wextra"
 fi
 ])
 
