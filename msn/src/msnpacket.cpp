@@ -700,10 +700,9 @@ CPS_MSNInvitation::CPS_MSNInvitation(const char* szToEmail,
   m_pBuffer->PackUnsignedLong(0);
 }
 
-CPS_MSNP2PBye::CPS_MSNP2PBye(const char *_szToEmail, const char *_szFromEmail,
-			     const char *_szCallId, unsigned long _nBaseId,
-			     unsigned long _nAckId, unsigned long _nDataSizeHI,
-			     unsigned long _nDataSizeLO)
+CPS_MSNP2PBye::CPS_MSNP2PBye(const char *_szToEmail, const char* _szFromEmail,
+    const char* _szCallId, unsigned long _nBaseId, unsigned long _nAckId,
+    unsigned long /* _nDataSizeHI */, unsigned long /* _nDataSizeLO */)
   : CMSNP2PPacket(_szToEmail, 0, _nBaseId, 0, 0, 0, 4, 0, 0, _nAckId, 0, 0, 0)
 		     //SizeHI, _nDataSizeLO)
 {

@@ -23,6 +23,7 @@
 using namespace std;
 
 CMSNBuffer::CMSNBuffer(CMSNBuffer &b)
+  : CBuffer(b)
 {
   m_nDataSize = b.getDataMaxSize();
   if (m_nDataSize)

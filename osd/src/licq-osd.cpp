@@ -145,12 +145,13 @@ void log(int mode, const char *message)
 }
 
 // issue a few warnings for wrong config values.
-void verifyconfig(string pluginfont, unsigned long timeout, unsigned long hoffset,
-		  unsigned long voffset, string vpos, string hpos, unsigned long lines,
-		  unsigned long linelen, unsigned long quiettimeout, string colour,
-		  bool wait, unsigned long showmessages, unsigned long showlogon,
-		  unsigned long shadowoffset, unsigned long outlineoffset, string shadowcolour,
-		  string outlinecolour, string localencoding)
+void verifyconfig(string pluginfont, unsigned long /* timeout */,
+    unsigned long hoffset, unsigned long voffset, string vpos, string hpos,
+    unsigned long lines, unsigned long linelen, unsigned long quiettimeout,
+    string colour, bool /* wait */, unsigned long showmessages,
+    unsigned long showlogon, unsigned long shadowoffset,
+    unsigned long outlineoffset, string shadowcolour, string outlinecolour,
+    string localencoding)
 {
     try {
 	if ((pluginfont=="") || (pluginfont.at(0)=='"') || (pluginfont.at(0)=='\''))
@@ -214,7 +215,7 @@ unsigned long parseShowInModesStr(char *ShowInModesStr)
 }
 
 // called once on Load of the plugin
-bool LP_Init(int argc, char **argv)
+bool LP_Init(int /* argc */, char** /* argv */)
 {
     char ShowInModesStr[MAX_LINE_LEN+1];
     char ShowMsgsInModesStr[MAX_LINE_LEN+1];
@@ -787,7 +788,7 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 // the other user. (change it for example via the licq-qt-gui message window)
 // CICQSignal is needed to get the User for this message -
 // some day i will do this more elegant
-char* my_translate(unsigned long uin, const char* msg, const char* userenc)
+char* my_translate(unsigned long /* uin */, const char* msg, const char* userenc)
 {
     // will be deleted outside of this function
     char *result = (char*)malloc(strlen(msg) + 1);

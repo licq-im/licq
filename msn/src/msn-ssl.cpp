@@ -180,7 +180,7 @@ void CMSN::MSNGetServer()
   gSocketMan.DropSocket(sock);
 }
 
-void CMSN::MSNAuthenticateRedirect(const string &strHost, const string &strParam)
+void CMSN::MSNAuthenticateRedirect(const string &strHost, const string& /* strParam */)
 {
   TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
   sock->SetRemoteAddr(strHost.c_str(), 443);
