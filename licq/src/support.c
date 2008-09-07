@@ -305,6 +305,8 @@ int gethostbyname_r_portable(const char *szHostName, struct hostent *h, char *bu
 #else
 #warning "I don't know how to do reentrant gethostbyname on this machine."
 #warning "Using thread-unsafe version."
+  (void)buf;
+  (void)buflen;
   struct hostent *h_buf;
   h_buf = gethostbyname(szHostName);
   if (h_buf != NULL) memcpy(h, h_buf, sizeof(struct hostent));
