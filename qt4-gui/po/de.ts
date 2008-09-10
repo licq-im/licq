@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de_DE">
+<defaultcodec></defaultcodec>
 <context>
     <name>Groups</name>
     <message>
@@ -3772,7 +3773,7 @@ Benutzer immer anzeigen</translation>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="74"/>
         <source>Draw the box around each square in the user list</source>
-        <translation>Zeichnet eine Box um jedes Rechteck in der Kontaktliste.</translation>
+        <translation>Zeichnet eine Box um jedes Rechteck in der Kontaktliste</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="94"/>
@@ -3799,7 +3800,7 @@ Benutzer immer anzeigen</translation>
         <source>If checked a user will be moved when dragged to another group.
 If not checked user will only be added to the new group.</source>
         <translation>Wenn diese Option aktiv ist, werden Benutzer verschoben, wenn sie auf eine Gruppe der Kontaktliste gezogen werden.
-Wenn dieses Option aus ist, werden die Benutzer nur zu der Gruppe hinzugefügt.</translation>
+Wenn diese Option aus ist, werden die Benutzer nur zu der Gruppe hinzugefügt.</translation>
     </message>
 </context>
 <context>
