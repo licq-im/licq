@@ -16,18 +16,27 @@ Qt can be downloaded from ftp://ftp.trolltech.com/pub/qt/source
 (search for qt-x11-opensource-src-X.X.X.tar.gz).
 
 
-These are the installation instructions:
+Building instructions:
+  1. Unpack, build and install Licq and any other plugins you need.
 
-  1. Go to the directory where you unpacked Qt4-GUI sources and create
-     the new directory named build. Go into that directory and type
-     'cmake ..' (without quotes).
-     This will check for required components and create the build tree
-     along with needed Makefiles. While running, it prints some messages
-     telling which features it is checking for. If you want KDE support,
-     please read README.KDE.
+  2. Go to the Qt4-Gui directory and make a build directory.
+     > cd plugins/qt4-gui
+     > mkdir build
+     > cd build
 
-  2. Type 'make' to compile the package.
+  3. Run cmake to generate build files.
+     > cmake ..
+     By default Qt4-Gui is set to be installed in /usr/local. To specify a
+     different base directory specify an install prefix to cmake.
+     > cmake -DCMAKE_INSTALL_PREFIX=/opt/licq ..
+     To build with KDE 4 support, add -DWITH_KDE=ON to the command line as
+     well.
 
-  3. Type 'make install' to install the plugin, data files and
-     documentation. You have to be 'root' for this to work.
-     Per default files are installed with /usr/local prefix.
+  4. Build Qt4-Gui.
+     > make
+     Depending on your system, you may have to use gmake instead of make.
+
+  5. Install Qt4-Gui. Unless you specified a base directory where you have
+     write privileges you must run this command as root.
+     > make install
+
