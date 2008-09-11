@@ -9,7 +9,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake ${CMAKE_MODULE_PATH})
 # Qt-GUI version
 set(VERSION_MAJOR 1)
 set(VERSION_MINOR 3)
-set(VERSION_RELEASE 5)
+set(VERSION_RELEASE 6)
 
 # Use KDE support
 option(WITH_KDE "Compile with KDE support" OFF)

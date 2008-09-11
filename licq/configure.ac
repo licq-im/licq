@@ -6,7 +6,7 @@ AC_ARG_PROGRAM
 
 dnl All versioning is done via these defines
 INT_VERSION=1035
-AM_INIT_AUTOMAKE(licq, 1.3.5)
+AM_INIT_AUTOMAKE(licq, 1.3.6)
 
 AM_CONFIG_HEADER(config.h)
 
@@ -100,6 +100,9 @@ dnl Checks for header files.
 AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(errno.h fcntl.h getopt.h limits.h malloc.h pwd.h unistd.h paths.h)
+
+dnl Check for headers we can use to get endian for system and maybe some bswap functions
+AC_CHECK_HEADERS(byteswap.h endian.h machine/endian.h sys/byteorder.h)
 
 dnl Checks for library functions.
 AC_CHECK_LIB(xnet,inet_addr)
