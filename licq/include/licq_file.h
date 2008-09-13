@@ -47,6 +47,19 @@ public:
 
   bool SetSection(const char *_szSectionName);
   bool CreateSection(const char *_szSectionName);
+
+  /**
+   * Read a string value from the configuration file
+   *
+   * @param key Key of value to read
+   * @param data String to put value in
+   * @param defValue Default value to set if key doesn't exist
+   * @param trim True if leading and trailing white spaces should be trimmed
+   * @return True if value was found or false if default value was used
+   */
+  bool readString(const std::string& key, std::string& data,
+      const std::string& defValue = "", bool trim = true);
+
   bool ReadStr(const std::string& Key, char* data, const char* defValue = NULL, bool trim = true, int maxLength = 0);
   bool ReadNum(const std::string& key, unsigned long &data, unsigned long defValue = 0);
   bool ReadNum(const std::string& key, signed long &data, signed long defValue = 0);
@@ -56,6 +69,14 @@ public:
   bool ReadNum(const std::string& key, signed short &data, signed short defValue = 0);
   bool ReadNum(const std::string& key, char &data, char defValue = 0);
   bool ReadBool(const std::string& key, bool &data, const bool defValue = false);
+
+  /**
+   * Write a string value to the configuration file
+   *
+   * @param key Key of value to write
+   * @param data Value to write
+   */
+  void writeString(const std::string& key, const std::string& data);
 
   bool WriteStr(const std::string& key, const char* data);
   bool WriteNum(const std::string& key, unsigned long data);

@@ -653,6 +653,14 @@ bool CIniFile::SetSection(const char *_szSection)
   return (true);
 }
 
+bool CIniFile::readString(const string& key, string& data,
+    const string& defValue, bool trim)
+{
+  char buffer[MAX_LINE_LEN];
+  bool ret = ReadStr(key, buffer, defValue.c_str(), trim, MAX_LINE_LEN);
+  data = buffer;
+  return ret;
+}
 
 //-----ReadStr-----------------------------------------------------------------
 /*! \brief Finds a key and sets the data.  Returns false if the key does not exist.
@@ -685,7 +693,6 @@ bool CIniFile::ReadStr(const string& key, char *szData,
   }
   return (true);
 }
-
 
 //-----ReadNum-----------------------------------------------------------------
 /*! \brief Reads numeric data from a key.
@@ -793,6 +800,10 @@ bool CIniFile::CreateSection(const char *_szSectionName)
   return(true);
 }
 
+void CIniFile::writeString(const std::string& key, const std::string& data)
+{
+  WriteStr(key, data.c_str());
+}
 
 //-----WriteStr----------------------------------------------------------------
 /*! \brief Writes a string to the buffer.
