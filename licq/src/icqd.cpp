@@ -286,17 +286,13 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   licqConf.ReadBool("ReconnectAfterUinClash", m_bReconnectAfterUinClash, false);
 
   // -----OnEvent configuration-----
-  char szOnEventCommand[MAX_FILENAME_LEN], *szOnParams[MAX_ON_EVENT];
+  string onEventCommand, onEventParams[MAX_ON_EVENT];
   unsigned short nOnEventCmdType;
 
   licqConf.SetSection("onevent");
   licqConf.ReadNum("Enable", nOnEventCmdType, 0);
   licqConf.ReadBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify, false);
   m_xOnEventManager.SetCommandType(nOnEventCmdType);
-  for (int i = 0; i < MAX_ON_EVENT; i++) {
-    szOnParams[i] = new char[MAX_FILENAME_LEN];
-    szOnParams[i][0] = '\0';
-  }
 
   // Prepare default values for onEvent
   char DEF_MESSAGE[MAX_FILENAME_LEN];
@@ -323,17 +319,15 @@ CICQDaemon::CICQDaemon(CLicq *_licq)
   strncat(DEF_SYSMSG,  "sounds/icq/System.wav", MAX_APPEND);
   strncat(DEF_MSGSENT, "sounds/icq/Message.wav", MAX_APPEND);
 
-  licqConf.ReadStr("Command", szOnEventCommand, "play");
-  licqConf.ReadStr("Message", szOnParams[ON_EVENT_MSG], DEF_MESSAGE);
-  licqConf.ReadStr("Url", szOnParams[ON_EVENT_URL], DEF_URL);
-  licqConf.ReadStr("Chat", szOnParams[ON_EVENT_CHAT], DEF_CHAT);
-  licqConf.ReadStr("File", szOnParams[ON_EVENT_FILE], DEF_FILE);
-  licqConf.ReadStr("OnlineNotify", szOnParams[ON_EVENT_NOTIFY], DEF_NOTIFY);
-  licqConf.ReadStr("SysMsg", szOnParams[ON_EVENT_SYSMSG], DEF_SYSMSG);
-  licqConf.ReadStr("MsgSent", szOnParams[ON_EVENT_MSGSENT], DEF_MSGSENT);
-  m_xOnEventManager.SetParameters(szOnEventCommand, (const char **)szOnParams);
-  for (int i = 0; i < MAX_ON_EVENT; i++)
-    delete [] szOnParams[i];
+  licqConf.readString("Command", onEventCommand, "play");
+  licqConf.readString("Message", onEventParams[ON_EVENT_MSG], DEF_MESSAGE);
+  licqConf.readString("Url", onEventParams[ON_EVENT_URL], DEF_URL);
+  licqConf.readString("Chat", onEventParams[ON_EVENT_CHAT], DEF_CHAT);
+  licqConf.readString("File", onEventParams[ON_EVENT_FILE], DEF_FILE);
+  licqConf.readString("OnlineNotify", onEventParams[ON_EVENT_NOTIFY], DEF_NOTIFY);
+  licqConf.readString("SysMsg", onEventParams[ON_EVENT_SYSMSG], DEF_SYSMSG);
+  licqConf.readString("MsgSent", onEventParams[ON_EVENT_MSGSENT], DEF_MSGSENT);
+  m_xOnEventManager.setParameters(onEventCommand, onEventParams);
 
   // Statistics
   m_nResetTime = 0;
@@ -842,14 +836,14 @@ void CICQDaemon::SaveConf()
   licqConf.WriteNum("Enable", oem->CommandType());
   licqConf.WriteBool("AlwaysOnlineNotify", m_bAlwaysOnlineNotify);
   oem->Lock();
-  licqConf.WriteStr("Command", oem->Command());
-  licqConf.WriteStr("Message", oem->Parameter(ON_EVENT_MSG));
-  licqConf.WriteStr("Url", oem->Parameter(ON_EVENT_URL));
-  licqConf.WriteStr("Chat",oem->Parameter(ON_EVENT_CHAT));
-  licqConf.WriteStr("File",oem->Parameter(ON_EVENT_FILE));
-  licqConf.WriteStr("OnlineNotify", oem->Parameter(ON_EVENT_NOTIFY));
-  licqConf.WriteStr("SysMsg", oem->Parameter(ON_EVENT_SYSMSG));
-  licqConf.WriteStr("MsgSent", oem->Parameter(ON_EVENT_MSGSENT));
+  licqConf.writeString("Command", oem->command());
+  licqConf.writeString("Message", oem->parameter(ON_EVENT_MSG));
+  licqConf.writeString("Url", oem->parameter(ON_EVENT_URL));
+  licqConf.writeString("Chat",oem->parameter(ON_EVENT_CHAT));
+  licqConf.writeString("File",oem->parameter(ON_EVENT_FILE));
+  licqConf.writeString("OnlineNotify", oem->parameter(ON_EVENT_NOTIFY));
+  licqConf.writeString("SysMsg", oem->parameter(ON_EVENT_SYSMSG));
+  licqConf.writeString("MsgSent", oem->parameter(ON_EVENT_MSGSENT));
   oem->Unlock();
 
   licqConf.FlushFile();

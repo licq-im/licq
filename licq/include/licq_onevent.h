@@ -2,6 +2,7 @@
 #define ONEVENT_H
 
 #include <pthread.h>
+#include <string>
 
 class ICQUser;
 
@@ -25,19 +26,21 @@ public:
   COnEventManager();
   ~COnEventManager();
 
+  const std::string command() const { return myCommand; }
+  const std::string parameter(unsigned short event) const { return myParameters[event]; }
   void Do(unsigned short m_nEvent, ICQUser *u);
-  void SetParameters(const char *, const char **);
   void SetCommandType(unsigned short _nCommandType);
+  void setCommand(const std::string& command);
+  void setParameter(unsigned short event, const std::string& parameter);
+  void setParameters(const std::string& command, const std::string parameters[]);
   unsigned short CommandType();
-  const char *Parameter(unsigned short n)  { return m_aszParameters[n]; }
-  const char *Command()  { return m_szCommand; }
   void Lock()     { pthread_mutex_lock(&mutex); }
   void Unlock()   { pthread_mutex_unlock(&mutex); }
 protected:
   unsigned short m_nCommandType;
-  char *m_szCommand;
-  char *m_aszParameters[MAX_ON_EVENT];
-  pthread_mutex_t mutex;
+  std::string myCommand;
+  std::string myParameters[MAX_ON_EVENT];
+  mutable pthread_mutex_t mutex;
 };
 
 

@@ -450,15 +450,16 @@ void OptionsDlg::SetupOptions()
    COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
    chkOnEvents->setChecked(oem->CommandType() != ON_EVENT_IGNORE);
    oem->Lock();
-   edtSndPlayer->setURL(oem->Command());
-   edtSndMsg->setURL(oem->Parameter(ON_EVENT_MSG));
-   edtSndUrl->setURL(oem->Parameter(ON_EVENT_URL));
-   edtSndChat->setURL(oem->Parameter(ON_EVENT_CHAT));
-   edtSndFile->setURL(oem->Parameter(ON_EVENT_FILE));
-   edtSndNotify->setURL(oem->Parameter(ON_EVENT_NOTIFY));
-   edtSndSysMsg->setURL(oem->Parameter(ON_EVENT_SYSMSG));
-   edtSndMsgSent->setURL(oem->Parameter(ON_EVENT_MSGSENT));
+   edtSndPlayer->setURL(oem->command());
+   edtSndMsg->setURL(oem->parameter(ON_EVENT_MSG));
+   edtSndUrl->setURL(oem->parameter(ON_EVENT_URL));
+   edtSndChat->setURL(oem->parameter(ON_EVENT_CHAT));
+   edtSndFile->setURL(oem->parameter(ON_EVENT_FILE));
+   edtSndNotify->setURL(oem->parameter(ON_EVENT_NOTIFY));
+   edtSndSysMsg->setURL(oem->parameter(ON_EVENT_SYSMSG));
+   edtSndMsgSent->setURL(oem->parameter(ON_EVENT_MSGSENT));
    oem->Unlock();
+
    //TODO make general for all plugins
    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
    if (o)
@@ -708,21 +709,15 @@ void OptionsDlg::ApplyOptions()
   COnEventManager *oem = mainwin->licqDaemon->OnEventManager();
   oem->SetCommandType(chkOnEvents->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
 
-  QString txtSndPlayer = edtSndPlayer->url();
-  QString txtSndMsg = edtSndMsg->url();
-  QString txtSndUrl = edtSndUrl->url();
-  QString txtSndChat = edtSndChat->url();
-  QString txtSndFile = edtSndFile->url();
-  QString txtSndNotify = edtSndNotify->url();
-  QString txtSndSysMsg = edtSndSysMsg->url();
-  QString txtSndMsgSent = edtSndMsgSent->url();
+  oem->setCommand(edtSndPlayer->url());
+  oem->setParameter(ON_EVENT_MSG, edtSndMsg->url());
+  oem->setParameter(ON_EVENT_URL, edtSndUrl->url());
+  oem->setParameter(ON_EVENT_CHAT, edtSndChat->url());
+  oem->setParameter(ON_EVENT_FILE, edtSndFile->url());
+  oem->setParameter(ON_EVENT_NOTIFY, edtSndNotify->url());
+  oem->setParameter(ON_EVENT_SYSMSG, edtSndSysMsg->url());
+  oem->setParameter(ON_EVENT_MSGSENT, edtSndMsgSent->url());
 
-  const char *oemparams[8] = { txtSndMsg.latin1(), txtSndUrl.latin1(),
-   txtSndChat.latin1(), txtSndFile.latin1(),
-   txtSndNotify.latin1(), txtSndSysMsg.latin1(),
-   txtSndMsgSent.latin1(), 0 };
-
-  oem->SetParameters(txtSndPlayer.latin1(), oemparams);
   //TODO Make general for all plugins
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   if (o)

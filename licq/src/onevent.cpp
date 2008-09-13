@@ -17,24 +17,17 @@
 #include "licq_icqd.h"
 #include "support.h"
 
+using namespace std;
+
 //=====COnEventManager==========================================================
 
 COnEventManager::COnEventManager()
 {
-  m_szCommand = NULL;
-  for (unsigned short i = 0; i < MAX_ON_EVENT; i++)
-    m_aszParameters[i] = NULL;
   pthread_mutex_init(&mutex, NULL);
 }
 
 COnEventManager::~COnEventManager()
 {
-  if (m_szCommand)
-    free(m_szCommand);
-
-  for (unsigned short i = 0; i < MAX_ON_EVENT; i++)
-    if (m_aszParameters[i])
-      free(m_aszParameters[i]);
 }
 
 void COnEventManager::SetCommandType(unsigned short _nCommandType)
@@ -52,13 +45,27 @@ unsigned short COnEventManager::CommandType()
   return n;
 }
 
-//-----COnEventManager::SetParameters-------------------------------------------
-void COnEventManager::SetParameters(const char *_szCommand, const char **_aszParams)
+void COnEventManager::setCommand(const string& command)
 {
   pthread_mutex_lock(&mutex);
-  SetString(&m_szCommand, _szCommand);
+  myCommand = command;
+  pthread_mutex_unlock(&mutex);
+}
+
+void COnEventManager::setParameter(unsigned short event, const string& parameter)
+{
+  pthread_mutex_lock(&mutex);
+  myParameters[event] = parameter;
+  pthread_mutex_unlock(&mutex);
+}
+
+//-----COnEventManager::SetParameters-------------------------------------------
+void COnEventManager::setParameters(const string& command, const string parameters[])
+{
+  pthread_mutex_lock(&mutex);
+  myCommand = command;
   for (unsigned short i = 0; i < MAX_ON_EVENT; i++)
-    SetString(&m_aszParameters[i], _aszParams[i]);
+    myParameters[i] = parameters[i];
   pthread_mutex_unlock(&mutex);
 }
 
@@ -97,22 +104,15 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
   pthread_mutex_lock(&mutex);
   if (m_nCommandType == ON_EVENT_RUN)
   {
-    char *szParam = m_aszParameters[_nEvent];
-    char *szFullParam;
+    string param = myParameters[_nEvent];
     if (u != NULL)
-      szFullParam = u->usprintf(szParam, USPRINTF_LINEISCMD);
-    else
-      szFullParam = strdup(szParam);
-
-    if (strlen(szFullParam))
     {
-      char szCmd[strlen(m_szCommand) + strlen(szFullParam) + 8];
-      sprintf(szCmd, "%s %s &", m_szCommand, szFullParam);
-      system(szCmd);
-    }
-
-    if (szFullParam)
+      char* szFullParam = u->usprintf(param.c_str(), USPRINTF_LINEISCMD);
+      param = szFullParam;
       free(szFullParam);
+    }
+    string fullCmd = myCommand + " " + param + " &";
+    system(fullCmd.c_str());
   }
   pthread_mutex_unlock(&mutex);
 }
