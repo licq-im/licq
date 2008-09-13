@@ -1257,7 +1257,7 @@ QWidget* UserPages::Info::createPagePicture(QWidget* parent)
 void UserPages::Info::loadPagePicture(const ICQUser* u)
 {
   //FIXME: other protocols
-  if (u->GetPicturePresent())
+  if (u != NULL && u->GetPicturePresent())
     m_sFilename = QString::fromLocal8Bit(BASE_DIR) +
       (m_bOwner ? "owner" : USER_DIR + myId) + ".pic";
   else
@@ -1290,7 +1290,6 @@ void UserPages::Info::loadPagePicture(const ICQUser* u)
 
 void UserPages::Info::clearPicture()
 {
-  m_sFilename = QString::null;
   loadPagePicture(NULL);
 }
 
