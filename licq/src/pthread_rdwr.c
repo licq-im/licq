@@ -58,6 +58,8 @@ int pthread_rdwr_destroy_np(pthread_rdwr_t *rdwrp)
 
   free(rdwrp->name);
   rdwrp->name = NULL;
+#else
+  (void)rdwrp;
 #endif
 
   return 0;

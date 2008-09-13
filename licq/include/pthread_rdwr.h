@@ -33,7 +33,7 @@ extern "C" {
  * daemon will print a message to stderr (and to the file
  * <basedir>/licq.debug_rw_mutex) and then abort.
  */
-#define DEBUG_RW_MUTEX
+// #define DEBUG_RW_MUTEX
 
 typedef struct rdwr_var {
   int readers_reading;
