@@ -1256,22 +1256,12 @@ QWidget* UserPages::Info::createPagePicture(QWidget* parent)
 
 void UserPages::Info::loadPagePicture(const ICQUser* u)
 {
-  if (!m_bOwner)
-  {
-    if (u->GetPicturePresent())
-    {
-      m_sFilename = QString::fromLocal8Bit(BASE_DIR);
-      if (m_bOwner)
-        m_sFilename += "owner.pic";
-      else
-        //FIXME: other protocols
-        m_sFilename.append(QString("%1/%2.pic")
-            .arg(USER_DIR)
-            .arg(myId));
-    }
-    else
-      m_sFilename = QString::null;
-  }
+  //FIXME: other protocols
+  if (u->GetPicturePresent())
+    m_sFilename = QString::fromLocal8Bit(BASE_DIR) +
+      (m_bOwner ? "owner" : USER_DIR + myId) + ".pic";
+  else
+    m_sFilename = QString::null;
 
   QMovie* m = NULL;
   QString s = tr("Not Available");
