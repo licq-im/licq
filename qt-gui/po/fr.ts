@@ -52,7 +52,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Autoriser quel utilisateur (UIN):</translation>
+        <translation type="obsolete">Autoriser quel utilisateur (UIN):</translation>
     </message>
     <message>
         <source>Licq - Authorisation</source>
@@ -2244,7 +2244,7 @@ Veuillez me laisser un message</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Choisir nouveaux utilisateurs</translation>
+        <translation type="obsolete">Choisir nouveaux utilisateurs</translation>
     </message>
     <message>
         <source>Message</source>
@@ -2294,7 +2294,7 @@ le groupe &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Nouvel utilisateur:</translation>
+        <translation type="obsolete">Nouvel utilisateur:</translation>
     </message>
     <message>
         <source>Authorization Request</source>
@@ -2302,7 +2302,7 @@ le groupe &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Choisir le défaut</translation>
+        <translation type="obsolete">Choisir le défaut</translation>
     </message>
     <message>
         <source>Authorization Refused</source>
@@ -2310,11 +2310,11 @@ le groupe &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Défaut:</translation>
+        <translation type="obsolete">Défaut:</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>Le groupe par défaut dans lequel démarrer.</translation>
+        <translation type="obsolete">Le groupe par défaut dans lequel démarrer.</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -2355,10 +2355,6 @@ le groupe &apos;%1&apos;?</translation>
     <message>
         <source>Shift Up</source>
         <translation>Déplacement vers le haut</translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -6690,6 +6686,10 @@ Request was cancelled.</source>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

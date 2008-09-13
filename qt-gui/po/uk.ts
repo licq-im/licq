@@ -65,7 +65,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>UIN користовача для авторизації:</translation>
+        <translation type="obsolete">UIN користовача для авторизації:</translation>
     </message>
 </context>
 <context>
@@ -1915,27 +1915,27 @@ You can leave me a message.</source>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Встановити типовим</translation>
+        <translation type="obsolete">Встановити типовим</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>При старті типова група.</translation>
+        <translation type="obsolete">При старті типова група.</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Встановити нових користувачів</translation>
+        <translation type="obsolete">Встановити нових користувачів</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Нові користувачі будуть автоматично додані до групи.  Усі нові користувачі будуть знаходитись у групі &quot;Нові користувачі&quot;, але на сервері вони будуть збережені у встановленій групі.</translation>
+        <translation type="obsolete">Нові користувачі будуть автоматично додані до групи.  Усі нові користувачі будуть знаходитись у групі &quot;Нові користувачі&quot;, але на сервері вони будуть збережені у встановленій групі.</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Без обумовлення:</translation>
+        <translation type="obsolete">Без обумовлення:</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Новий користувач:</translation>
+        <translation type="obsolete">Новий користувач:</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -5481,6 +5481,10 @@ You will need to start the browser and open the URL manually.</source>
     <message>
         <source>File Transfer</source>
         <translation>Надсилання файла</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

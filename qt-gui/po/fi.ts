@@ -150,7 +150,7 @@ Haluatko varmasti lähettää sen?</translation>
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Valtuuta käyttäjä (UIN):</translation>
+        <translation type="obsolete">Valtuuta käyttäjä (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -2182,27 +2182,27 @@ Voit jättää minulle viestin.</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Aseta oletus</translation>
+        <translation type="obsolete">Aseta oletus</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>Oletusryhmä käynnistyessä.</translation>
+        <translation type="obsolete">Oletusryhmä käynnistyessä.</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Aseta uudet käyttäjät</translation>
+        <translation type="obsolete">Aseta uudet käyttäjät</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Ryhmä johon lisätään automaattisesti uudet käyttäjät. Kaikki uudet käyttäjät ovat paikallisessa ryhmässä Uudet, ja ne kuuluvat omaan ryhmään myös palvelimen tietokannassa.</translation>
+        <translation type="obsolete">Ryhmä johon lisätään automaattisesti uudet käyttäjät. Kaikki uudet käyttäjät ovat paikallisessa ryhmässä Uudet, ja ne kuuluvat omaan ryhmään myös palvelimen tietokannassa.</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Oletus:</translation>
+        <translation type="obsolete">Oletus:</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Uusi käyttäjä:</translation>
+        <translation type="obsolete">Uusi käyttäjä:</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -5866,6 +5866,10 @@ Pyyntö peruttu.</translation>
 You will need to start the browser and open the URL manually.</source>
         <translation type="unfinished">Licq ei voi käynnistää selaintasi ja avata URLia.
 Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

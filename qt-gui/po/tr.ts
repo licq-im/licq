@@ -56,7 +56,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Yetkilendireceğin kullanıcı (UIN):</translation>
+        <translation type="obsolete">Yetkilendireceğin kullanıcı (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -2266,7 +2266,7 @@ istiyor musun?</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Öntanımlılara geri dön</translation>
+        <translation type="obsolete">Öntanımlılara geri dön</translation>
     </message>
     <message>
         <source>Authorization Refused</source>
@@ -2274,11 +2274,11 @@ istiyor musun?</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Öntanımlı:</translation>
+        <translation type="obsolete">Öntanımlı:</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>başlangıç grubu.</translation>
+        <translation type="obsolete">başlangıç grubu.</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -2319,18 +2319,6 @@ istiyor musun?</translation>
     <message>
         <source>Shift Up</source>
         <translation>Yukarı kay</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -6196,6 +6184,10 @@ Request was cancelled.</source>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

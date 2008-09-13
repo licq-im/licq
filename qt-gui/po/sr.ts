@@ -677,7 +677,7 @@ Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Autorizuj korisnika (UIN):</translation>
+        <translation type="obsolete">Autorizuj korisnika (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -2973,11 +2973,11 @@ grupu &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Postavi predefinisano</translation>
+        <translation type="obsolete">Postavi predefinisano</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Predefinisano:</translation>
+        <translation type="obsolete">Predefinisano:</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -3001,19 +3001,19 @@ grupu &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>Predefinisana grupa u kojoj se počinje.</translation>
+        <translation type="obsolete">Predefinisana grupa u kojoj se počinje.</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Postavi Nove Korisnike</translation>
+        <translation type="obsolete">Postavi Nove Korisnike</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Grupa u koju će novi korisnici biti automatski dodati. Svi novi korisnici će biti u lokalnoj sistemskoj grupi Novi Korisnici ali i na serverskoj stranu će takođe biti smešteni u specifičnu grupu.</translation>
+        <translation type="obsolete">Grupa u koju će novi korisnici biti automatski dodati. Svi novi korisnici će biti u lokalnoj sistemskoj grupi Novi Korisnici ali i na serverskoj stranu će takođe biti smešteni u specifičnu grupu.</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Novi Korisnik:</translation>
+        <translation type="obsolete">Novi Korisnik:</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -7073,6 +7073,10 @@ Zahtev je poništen.</translation>
 You will need to start the browser and open the URL manually.</source>
         <translation type="unfinished">Licq ne može da pokrene vaš pretraživač i otvori URL
 Moraćete sami da pokrenete pretraživač i otvorite URL ručno.</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

@@ -45,7 +45,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Benutzer autorisieren (UIN):</translation>
+        <translation type="obsolete">Benutzer autorisieren (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -1905,7 +1905,7 @@ Sie können mir eine Nachricht hinterlassen.</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Neue Benutzer</translation>
+        <translation type="obsolete">Neue Benutzer</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -1930,7 +1930,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Die Gruppe, zu der alle neuen Benutzer auf der Serverseitigen Kontaktliste hinzugefügt werden.</translation>
+        <translation type="obsolete">Die Gruppe, zu der alle neuen Benutzer auf der Serverseitigen Kontaktliste hinzugefügt werden.</translation>
     </message>
     <message>
         <source>Save the name of a group being modified.</source>
@@ -1938,19 +1938,19 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Neue Benutzer:</translation>
+        <translation type="obsolete">Neue Benutzer:</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Als Standard einstellen</translation>
+        <translation type="obsolete">Als Standard einstellen</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Standard:</translation>
+        <translation type="obsolete">Standard:</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>Die Gruppe, mit der standardmäßig gestartet wird.</translation>
+        <translation type="obsolete">Die Gruppe, mit der standardmäßig gestartet wird.</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -5488,6 +5488,10 @@ Anfrage wurde abgebrochen.</translation>
     <message>
         <source>Licq is unable to find a browser application due to an internal error.</source>
         <translation>Licq kann aufgrund eines internen Fehlers keine Browseranwendung finden.</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

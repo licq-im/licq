@@ -56,7 +56,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>どのユーザを承認(UIN):</translation>
+        <translation type="obsolete">どのユーザを承認(UIN):</translation>
     </message>
     <message>
         <source>&lt;h2&gt;Hints for Setting&lt;br&gt;your Auto-Response&lt;/h2&gt;&lt;br&gt;&lt;hr&gt;&lt;br&gt;&lt;ul&gt;&lt;li&gt;You can include any of the % expansions (described in the main hints page).&lt;/li&gt;&lt;li&gt;Any line beginning with a pipe (|) will be treated as a command to be run.  The line will be replaced by the output of the command. The command is parsed by /bin/sh so any shell commands or meta-characters are allowed.  For security reasons, any % expansions are automatically passed to the command surrounded by single quotes to prevent shell parsing of any meta-characters included in an alias (such as &quot;&gt;&quot; or &quot;&amp;&quot;</source>
@@ -2238,15 +2238,15 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>デフォルトをセット</translation>
+        <translation type="obsolete">デフォルトをセット</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>デフォルト:</translation>
+        <translation type="obsolete">デフォルト:</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>スタートアップのデフォルトグループ</translation>
+        <translation type="obsolete">スタートアップのデフォルトグループ</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -2267,18 +2267,6 @@ the group &apos;%1&apos;?</source>
     <message>
         <source>Shift Up</source>
         <translation>上へ</translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New User:</source>
-        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -6427,6 +6415,10 @@ Request was cancelled.</source>
     <message>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

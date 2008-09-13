@@ -68,7 +68,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Ezen felhasználó engedélyezése (iCQ szám):</translation>
+        <translation type="obsolete">Ezen felhasználó engedélyezése (iCQ szám):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -2112,7 +2112,7 @@ Hagyhatsz üzenetet.</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Új Felhasználók beállítása</translation>
+        <translation type="obsolete">Új Felhasználók beállítása</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -2138,7 +2138,7 @@ ezt a csoportot: &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Az a csoport, amihez az új Felhasználókat hozzáadom. Az összes új Felhasználót az Új Felhasználók csoportba rakom, de a szerveren ehhez a csoporthoz fog tartozni.</translation>
+        <translation type="obsolete">Az a csoport, amihez az új Felhasználókat hozzáadom. Az összes új Felhasználót az Új Felhasználók csoportba rakom, de a szerveren ehhez a csoporthoz fog tartozni.</translation>
     </message>
     <message>
         <source>Save the name of a group being modified.</source>
@@ -2146,19 +2146,19 @@ ezt a csoportot: &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Új Felhasználó</translation>
+        <translation type="obsolete">Új Felhasználó</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Alapértelmezetté tesz</translation>
+        <translation type="obsolete">Alapértelmezetté tesz</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Alap:</translation>
+        <translation type="obsolete">Alap:</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>A alapértelmezett csoport</translation>
+        <translation type="obsolete">A alapértelmezett csoport</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -6109,6 +6109,10 @@ Kérés megszakítva.</translation>
 You will need to start the browser and open the URL manually.</source>
         <translation type="unfinished">A Licq nem tudta elindítani a bongésződet és megnyitni a címet.
 Indítsd újra a böngésződet, és nyisd meg a címet kézzel.</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

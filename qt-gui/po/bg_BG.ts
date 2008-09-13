@@ -49,7 +49,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Ауторизиране на потребител (UIN):</translation>
+        <translation type="obsolete">Ауторизиране на потребител (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -2066,30 +2066,6 @@ You can leave me a message.</source>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set Default</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The default group to start up in.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Set New Users</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Default:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>New User:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -5714,6 +5690,10 @@ Request was cancelled.</source>
 You will need to start the browser and open the URL manually.</source>
         <translation type="unfinished">Licq не може да стартира Вашия браузър и да отвори този уеб адрес.
 Ще се наложи да стартирате браузъра и да отворите желания адрес ръчно.</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

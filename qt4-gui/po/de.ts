@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="de_DE">
-<defaultcodec></defaultcodec>
 <context>
     <name>Groups</name>
     <message>
@@ -5948,262 +5947,262 @@ Ein anderes Bild auswählen?</translation>
 <context>
     <name>LicqQtGui::UserPages::Settings</name>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="56"/>
+        <location filename="../src/userdlg/modes.cpp" line="56"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="58"/>
+        <location filename="../src/userdlg/modes.cpp" line="58"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="212"/>
+        <location filename="../src/userdlg/modes.cpp" line="212"/>
         <source>Groups</source>
         <translation>Gruppen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="69"/>
+        <location filename="../src/userdlg/modes.cpp" line="69"/>
         <source>Misc Modes</source>
         <translation>Verschiedenes</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="72"/>
+        <location filename="../src/userdlg/modes.cpp" line="72"/>
         <source>Accept in away</source>
         <translation>Bei &apos;Abwesenheit&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="73"/>
+        <location filename="../src/userdlg/modes.cpp" line="73"/>
         <source>Play sounds for this contact when my status is away.</source>
         <translation>Spiele Klänge für diesen Benutzer ab, wenn ich Abwesend bin.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="76"/>
+        <location filename="../src/userdlg/modes.cpp" line="76"/>
         <source>Accept in not available</source>
         <translation>Bei &apos;Nicht verfügbar&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="77"/>
+        <location filename="../src/userdlg/modes.cpp" line="77"/>
         <source>Play sounds for this contact when my status is not available.</source>
         <translation>Spiele Klänge für diesen Benutzer ab, wenn ich nicht vefügbar bin.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="80"/>
+        <location filename="../src/userdlg/modes.cpp" line="80"/>
         <source>Accept in occupied</source>
         <translation>Bei &apos;Beschäftigt&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="81"/>
+        <location filename="../src/userdlg/modes.cpp" line="81"/>
         <source>Play sounds for this contact when my status is occupied.</source>
         <translation>Spiele Klänge für diesen Benutzer ab, wenn ich beschäftigt bin.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="84"/>
+        <location filename="../src/userdlg/modes.cpp" line="84"/>
         <source>Accept in do not disturb</source>
         <translation>Bei &apos;Nicht stören&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="85"/>
+        <location filename="../src/userdlg/modes.cpp" line="85"/>
         <source>Play sounds for this contact when my status is do not disturb.</source>
         <translation>Spiele Klänge für diesen Benutzer ab, wenn mein Status &apos;Nicht stören&apos; ist.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="88"/>
+        <location filename="../src/userdlg/modes.cpp" line="88"/>
         <source>Auto accept files</source>
         <translation>Dateien automatisch akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="89"/>
+        <location filename="../src/userdlg/modes.cpp" line="89"/>
         <source>Automatically accept file transfers from this contact.</source>
         <translation>Nimmt automatisch Dateiübertragungen von diesem Benutzer an.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="92"/>
+        <location filename="../src/userdlg/modes.cpp" line="92"/>
         <source>Auto accept chats</source>
         <translation>Chats automatisch akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="93"/>
+        <location filename="../src/userdlg/modes.cpp" line="93"/>
         <source>Automatically accept chat requests from this contact.</source>
         <translation>Nimmt automatisch Einladungen zum Chat von diesem Benutzer an.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="96"/>
+        <location filename="../src/userdlg/modes.cpp" line="96"/>
         <source>Auto request secure</source>
         <translation>Automatisch Verschlüsseln</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="97"/>
+        <location filename="../src/userdlg/modes.cpp" line="97"/>
         <source>Automatically request secure channel to this contact.</source>
         <translation>Fragt automatisch nach einer sicheren Verbindung mit diesem Benutzer an.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="101"/>
+        <location filename="../src/userdlg/modes.cpp" line="101"/>
         <source>Use GPG encryption</source>
         <translation>GPG-Verschlüsselung aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="102"/>
+        <location filename="../src/userdlg/modes.cpp" line="102"/>
         <source>Use GPG encryption for messages with this contact.</source>
         <translation>Benutzt GPG Verschlüsselung für Nachrichten die mit diesem Benutzer ausgetauscht werden.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="106"/>
+        <location filename="../src/userdlg/modes.cpp" line="106"/>
         <source>Use real ip (LAN)</source>
         <translation>Echte IP (LAN) verwenden</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="107"/>
+        <location filename="../src/userdlg/modes.cpp" line="107"/>
         <source>Use real IP for when sending to this contact.</source>
         <translation>Benutze die wahre IP-Adresse des Benutzers.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="122"/>
+        <location filename="../src/userdlg/modes.cpp" line="122"/>
         <source>Status to User</source>
         <translation>Status für Benutzer</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="125"/>
+        <location filename="../src/userdlg/modes.cpp" line="125"/>
         <source>Not overridden</source>
         <translation>Nicht verändert</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="126"/>
+        <location filename="../src/userdlg/modes.cpp" line="126"/>
         <source>Contact will see your normal status.</source>
         <translation>Der Benutzer sieht den wahren Status.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="129"/>
+        <location filename="../src/userdlg/modes.cpp" line="129"/>
         <source>Online</source>
         <translation>Online</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="130"/>
+        <location filename="../src/userdlg/modes.cpp" line="130"/>
         <source>Contact will always see you as online.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Online&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="133"/>
+        <location filename="../src/userdlg/modes.cpp" line="133"/>
         <source>Away</source>
         <translation>Abwesend</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="134"/>
+        <location filename="../src/userdlg/modes.cpp" line="134"/>
         <source>Contact will always see your status as away.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Abwesend&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="137"/>
+        <location filename="../src/userdlg/modes.cpp" line="137"/>
         <source>Not available</source>
         <translation>Nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="138"/>
+        <location filename="../src/userdlg/modes.cpp" line="138"/>
         <source>Contact will always see your status as not available.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Nicht verfügbar&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="141"/>
+        <location filename="../src/userdlg/modes.cpp" line="141"/>
         <source>Occupied</source>
         <translation>Beschäftigt</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="142"/>
+        <location filename="../src/userdlg/modes.cpp" line="142"/>
         <source>Contact will always see your status as occupied.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Beschäftigt&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="145"/>
+        <location filename="../src/userdlg/modes.cpp" line="145"/>
         <source>Do not disturb</source>
         <translation>Nicht stören</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="146"/>
+        <location filename="../src/userdlg/modes.cpp" line="146"/>
         <source>Contact will always see your status as do not disturb.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Nicht stören&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="152"/>
+        <location filename="../src/userdlg/modes.cpp" line="152"/>
         <source>System Groups</source>
         <translation>Systemgruppen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="155"/>
+        <location filename="../src/userdlg/modes.cpp" line="155"/>
         <source>Online notify</source>
         <translation>Online-Benachrichtigung</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="156"/>
+        <location filename="../src/userdlg/modes.cpp" line="156"/>
         <source>Notify when this contact comes online.</source>
         <translation>Zeige eine Benachrichtigung, wenn dieser Benutzer online geht.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="159"/>
+        <location filename="../src/userdlg/modes.cpp" line="159"/>
         <source>Visible List</source>
         <translation>Sichtbar-Liste</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="160"/>
+        <location filename="../src/userdlg/modes.cpp" line="160"/>
         <source>Contact will see you online even if you&apos;re invisible.</source>
         <translation>Der Benutzer sieht uns immer, auch wenn wir unsichtbar sind.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="163"/>
+        <location filename="../src/userdlg/modes.cpp" line="163"/>
         <source>Invisible List</source>
         <translation>Unsichtbar-Liste</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="164"/>
+        <location filename="../src/userdlg/modes.cpp" line="164"/>
         <source>Contact will always see you as offline.</source>
         <translation>Der Benutzer sieht uns immer als &apos;Offline&apos;, auch wenn wir online sind.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="167"/>
+        <location filename="../src/userdlg/modes.cpp" line="167"/>
         <source>Ignore List</source>
         <translation>Ignorieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="168"/>
+        <location filename="../src/userdlg/modes.cpp" line="168"/>
         <source>Ignore any events from this contact.</source>
         <translation>Ignoriere alle Ereignisse und Nachrichten von diesem Benutzer.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="171"/>
+        <location filename="../src/userdlg/modes.cpp" line="171"/>
         <source>New Users</source>
         <translation>Neue Benutzer</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="172"/>
+        <location filename="../src/userdlg/modes.cpp" line="172"/>
         <source>Contact was recently added to the list.</source>
         <translation>Benutzer wurde kürzlich zur Liste hinzugefügt.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="177"/>
+        <location filename="../src/userdlg/modes.cpp" line="177"/>
         <source>Custom Auto Response</source>
         <translation>Spezielle Auto-Antwort</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="186"/>
+        <location filename="../src/userdlg/modes.cpp" line="186"/>
         <source>Hints</source>
         <translation>Hinweise</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="190"/>
+        <location filename="../src/userdlg/modes.cpp" line="190"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="222"/>
+        <location filename="../src/userdlg/modes.cpp" line="222"/>
         <source>Group</source>
         <translation>Gruppe</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="222"/>
+        <location filename="../src/userdlg/modes.cpp" line="222"/>
         <source>Local</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="222"/>
+        <location filename="../src/userdlg/modes.cpp" line="222"/>
         <source>Server</source>
         <translation>Server</translation>
     </message>

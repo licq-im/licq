@@ -41,7 +41,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Autorizar usuario (UIN):</translation>
+        <translation type="obsolete">Autorizar usuario (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -1915,15 +1915,15 @@ el grupo &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Valores Por Defecto</translation>
+        <translation type="obsolete">Valores Por Defecto</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Por Defecto:</translation>
+        <translation type="obsolete">Por Defecto:</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>El grupo en el que se empieza por defecto.</translation>
+        <translation type="obsolete">El grupo en el que se empieza por defecto.</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -1943,15 +1943,15 @@ el grupo &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Configurar Nuevos Usuarios</translation>
+        <translation type="obsolete">Configurar Nuevos Usuarios</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>El grupo al cual serán añadidos automáticamente los nuevos usuarios.  Todos los nuevos usuarios pertenecen al grupo del sistema Nuevos Usuarios, pero en el servidor también serán almacenados en el grupo especificado.</translation>
+        <translation type="obsolete">El grupo al cual serán añadidos automáticamente los nuevos usuarios.  Todos los nuevos usuarios pertenecen al grupo del sistema Nuevos Usuarios, pero en el servidor también serán almacenados en el grupo especificado.</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Nuevo Usuario:</translation>
+        <translation type="obsolete">Nuevo Usuario:</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -5466,6 +5466,10 @@ Petición cancelada.</translation>
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq no ha podido iniciar su navegador y abrir la URL. 
 Deberá iniciar el navegador y abrir la URL de forma manual.</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

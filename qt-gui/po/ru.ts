@@ -41,7 +41,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>UIN пользователя для авторизации:</translation>
+        <translation type="obsolete">UIN пользователя для авторизации:</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -1916,27 +1916,27 @@ You can leave me a message.</source>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>По умолчанию</translation>
+        <translation type="obsolete">По умолчанию</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>Группа по умолчанию при запуске.</translation>
+        <translation type="obsolete">Группа по умолчанию при запуске.</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Новые пользователи</translation>
+        <translation type="obsolete">Новые пользователи</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Группа, в которую будут добавляться новые пользователи. Все новые пользователи будут в локальной группе &apos;Новые пользователи&apos;, а в серверном списке контактов они будут сохраняться в указанной группе.</translation>
+        <translation type="obsolete">Группа, в которую будут добавляться новые пользователи. Все новые пользователи будут в локальной группе &apos;Новые пользователи&apos;, а в серверном списке контактов они будут сохраняться в указанной группе.</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>По умолчанию:</translation>
+        <translation type="obsolete">По умолчанию:</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Новые пользователи:</translation>
+        <translation type="obsolete">Новые пользователи:</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -5494,6 +5494,10 @@ Request was cancelled.</source>
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq не удалось запустить браузер и открыть ссылку.
 Вам небходимо запустить браузер вручную.</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

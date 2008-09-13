@@ -41,7 +41,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Godkänn vilken användare (UIN):</translation>
+        <translation type="obsolete">Godkänn vilken användare (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -1922,15 +1922,15 @@ gruppen &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Ange förvalt värde</translation>
+        <translation type="obsolete">Ange förvalt värde</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Förvalt värde:</translation>
+        <translation type="obsolete">Förvalt värde:</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>Förvald grupp att starta i.</translation>
+        <translation type="obsolete">Förvald grupp att starta i.</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -1950,15 +1950,15 @@ gruppen &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Ange för nya användare</translation>
+        <translation type="obsolete">Ange för nya användare</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Den grupp till vilken nya användare automatiskt kommer att läggas till. Alla nya användare kommer att hamna i den lokala gruppen &quot;Nya användare&quot; men när de sparas på servern kommer de också att sparas i den specificerade gruppen.</translation>
+        <translation type="obsolete">Den grupp till vilken nya användare automatiskt kommer att läggas till. Alla nya användare kommer att hamna i den lokala gruppen &quot;Nya användare&quot; men när de sparas på servern kommer de också att sparas i den specificerade gruppen.</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Nya användare:</translation>
+        <translation type="obsolete">Nya användare:</translation>
     </message>
     <message>
         <source>&amp;Save</source>
@@ -5451,6 +5451,10 @@ Begäran avbröts.</translation>
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq kan inte starta din webbläsare och öppna länken.
 Du måste starta din webbläsare och öppna länken manuellt.</translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>

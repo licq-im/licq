@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>Authorize which user (UIN):</source>
-        <translation>Autorizza utente (UIN):</translation>
+        <translation type="obsolete">Autorizza utente (UIN):</translation>
     </message>
     <message>
         <source>Grant authorization to %1</source>
@@ -2062,7 +2062,7 @@ Mi puoi lasciare un messaggio.</translation>
     </message>
     <message>
         <source>Set New Users</source>
-        <translation>Imposta Nuovi Utenti</translation>
+        <translation type="obsolete">Imposta Nuovi Utenti</translation>
     </message>
     <message>
         <source>Cancel</source>
@@ -2088,7 +2088,7 @@ il gruppo &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>The group to which new users will be automatically added.  All new users will be in the local system group New Users but for server side storage will also be stored in the specified group.</source>
-        <translation>Il gruppo a cui i nuovi utenti saranno automaticamente aggiunti. Tutti i nuovi utenti saranno nel locale gruppo di sistema New Users ma per l&apos;archivio sulla listadel server saranno inseriti nel gruppo specifico.</translation>
+        <translation type="obsolete">Il gruppo a cui i nuovi utenti saranno automaticamente aggiunti. Tutti i nuovi utenti saranno nel locale gruppo di sistema New Users ma per l&apos;archivio sulla listadel server saranno inseriti nel gruppo specifico.</translation>
     </message>
     <message>
         <source>Save the name of a group being modified.</source>
@@ -2096,19 +2096,19 @@ il gruppo &apos;%1&apos;?</translation>
     </message>
     <message>
         <source>New User:</source>
-        <translation>Nuovo Utente:</translation>
+        <translation type="obsolete">Nuovo Utente:</translation>
     </message>
     <message>
         <source>Set Default</source>
-        <translation>Seleziona Default</translation>
+        <translation type="obsolete">Seleziona Default</translation>
     </message>
     <message>
         <source>Default:</source>
-        <translation>Predefinito:</translation>
+        <translation type="obsolete">Predefinito:</translation>
     </message>
     <message>
         <source>The default group to start up in.</source>
-        <translation>Gruppo con cui avvii inizialmente</translation>
+        <translation type="obsolete">Gruppo con cui avvii inizialmente</translation>
     </message>
     <message>
         <source>Edit group name (hit enter to save).</source>
@@ -5988,6 +5988,10 @@ Dovrai far partire il tuo browser e aprire l&apos;URL manualmente.</translation>
     </message>
     <message>
         <source>Chat</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;View Info</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

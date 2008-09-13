@@ -5971,262 +5971,262 @@ Select another picture?</source>
 <context>
     <name>LicqQtGui::UserPages::Settings</name>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="56"/>
+        <location filename="../src/userdlg/modes.cpp" line="56"/>
         <source>Settings</source>
         <translation>Установки</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="58"/>
+        <location filename="../src/userdlg/modes.cpp" line="58"/>
         <source>Status</source>
         <translation>Статус</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="212"/>
+        <location filename="../src/userdlg/modes.cpp" line="212"/>
         <source>Groups</source>
         <translation>Группы</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="69"/>
+        <location filename="../src/userdlg/modes.cpp" line="69"/>
         <source>Misc Modes</source>
         <translation>Различные режимы</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="72"/>
+        <location filename="../src/userdlg/modes.cpp" line="72"/>
         <source>Accept in away</source>
         <translation>Принимать, если в режиме &apos;Отошел&apos;</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="73"/>
+        <location filename="../src/userdlg/modes.cpp" line="73"/>
         <source>Play sounds for this contact when my status is away.</source>
         <translation>Воспроизводить звуки, если в режиме &apos;Отошел&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="76"/>
+        <location filename="../src/userdlg/modes.cpp" line="76"/>
         <source>Accept in not available</source>
         <translation>Принимать, если в режиме &apos;Недоступен&apos;</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="77"/>
+        <location filename="../src/userdlg/modes.cpp" line="77"/>
         <source>Play sounds for this contact when my status is not available.</source>
         <translation>Воспроизводить звуки, если в режиме &apos;Недоступен&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="80"/>
+        <location filename="../src/userdlg/modes.cpp" line="80"/>
         <source>Accept in occupied</source>
         <translation>Принимать, если в режиме &apos;Занят&apos;</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="81"/>
+        <location filename="../src/userdlg/modes.cpp" line="81"/>
         <source>Play sounds for this contact when my status is occupied.</source>
         <translation>Воспроизводить звуки, если в режиме &apos;Занят&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="84"/>
+        <location filename="../src/userdlg/modes.cpp" line="84"/>
         <source>Accept in do not disturb</source>
         <translation>Принимать, если в режиме &apos;Не беспокоить&apos;</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="85"/>
+        <location filename="../src/userdlg/modes.cpp" line="85"/>
         <source>Play sounds for this contact when my status is do not disturb.</source>
         <translation>Воспроизводить звуки, если в режиме &apos;Не беспокоить&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="88"/>
+        <location filename="../src/userdlg/modes.cpp" line="88"/>
         <source>Auto accept files</source>
         <translation>Автоматически принимать файлы</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="89"/>
+        <location filename="../src/userdlg/modes.cpp" line="89"/>
         <source>Automatically accept file transfers from this contact.</source>
         <translation>Автоматически принимать файлы от этого контакта.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="92"/>
+        <location filename="../src/userdlg/modes.cpp" line="92"/>
         <source>Auto accept chats</source>
         <translation>Автоматически принимать запросы чата</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="93"/>
+        <location filename="../src/userdlg/modes.cpp" line="93"/>
         <source>Automatically accept chat requests from this contact.</source>
         <translation>Автоматически принимать запросы чата от этого контакта.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="96"/>
+        <location filename="../src/userdlg/modes.cpp" line="96"/>
         <source>Auto request secure</source>
         <translation>Автоматически запрашивать защищенное соединение</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="97"/>
+        <location filename="../src/userdlg/modes.cpp" line="97"/>
         <source>Automatically request secure channel to this contact.</source>
         <translation>Автоматически устанавливать защищенное соединение с этим контактом.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="101"/>
+        <location filename="../src/userdlg/modes.cpp" line="101"/>
         <source>Use GPG encryption</source>
         <translation>Использовать GPG шифрование</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="102"/>
+        <location filename="../src/userdlg/modes.cpp" line="102"/>
         <source>Use GPG encryption for messages with this contact.</source>
         <translation>Использовать GPG шифрование с этим контактом.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="106"/>
+        <location filename="../src/userdlg/modes.cpp" line="106"/>
         <source>Use real ip (LAN)</source>
         <translation>Использовать реальный IP адрес в ЛВС</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="107"/>
+        <location filename="../src/userdlg/modes.cpp" line="107"/>
         <source>Use real IP for when sending to this contact.</source>
         <translation>Использовать реальный IP адрес при общении с этим контактом.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="122"/>
+        <location filename="../src/userdlg/modes.cpp" line="122"/>
         <source>Status to User</source>
         <translation>Статус для пользователя</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="125"/>
+        <location filename="../src/userdlg/modes.cpp" line="125"/>
         <source>Not overridden</source>
         <translation>Основной</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="126"/>
+        <location filename="../src/userdlg/modes.cpp" line="126"/>
         <source>Contact will see your normal status.</source>
         <translation>Контакт будет видеть Ваш текущий статус.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="129"/>
+        <location filename="../src/userdlg/modes.cpp" line="129"/>
         <source>Online</source>
         <translation>В сети</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="130"/>
+        <location filename="../src/userdlg/modes.cpp" line="130"/>
         <source>Contact will always see you as online.</source>
         <translation>Контакт будет видеть, что Вы всегда в сети.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="133"/>
+        <location filename="../src/userdlg/modes.cpp" line="133"/>
         <source>Away</source>
         <translation>Отошел</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="134"/>
+        <location filename="../src/userdlg/modes.cpp" line="134"/>
         <source>Contact will always see your status as away.</source>
         <translation>Контакт будет видеть, что Вы всегда в состоянии &apos;Отошел&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="137"/>
+        <location filename="../src/userdlg/modes.cpp" line="137"/>
         <source>Not available</source>
         <translation>Недоступен</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="138"/>
+        <location filename="../src/userdlg/modes.cpp" line="138"/>
         <source>Contact will always see your status as not available.</source>
         <translation>Контакт будет видеть, что Вы всегда в состоянии &apos;Недоступен&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="141"/>
+        <location filename="../src/userdlg/modes.cpp" line="141"/>
         <source>Occupied</source>
         <translation>Занят</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="142"/>
+        <location filename="../src/userdlg/modes.cpp" line="142"/>
         <source>Contact will always see your status as occupied.</source>
         <translation>Контакт будет видеть, что Вы всегда в состоянии &apos;Занят&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="145"/>
+        <location filename="../src/userdlg/modes.cpp" line="145"/>
         <source>Do not disturb</source>
         <translation>Не беспокоить</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="146"/>
+        <location filename="../src/userdlg/modes.cpp" line="146"/>
         <source>Contact will always see your status as do not disturb.</source>
         <translation>Контакт будет видеть, что Вы всегда в состоянии &apos;Не беспокоить&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="152"/>
+        <location filename="../src/userdlg/modes.cpp" line="152"/>
         <source>System Groups</source>
         <translation>Системные группы</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="155"/>
+        <location filename="../src/userdlg/modes.cpp" line="155"/>
         <source>Online notify</source>
         <translation>Оповещать о появлении</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="156"/>
+        <location filename="../src/userdlg/modes.cpp" line="156"/>
         <source>Notify when this contact comes online.</source>
         <translation>Оповещать о появлении при заходе в сеть.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="159"/>
+        <location filename="../src/userdlg/modes.cpp" line="159"/>
         <source>Visible List</source>
         <translation>В списке видимости</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="160"/>
+        <location filename="../src/userdlg/modes.cpp" line="160"/>
         <source>Contact will see you online even if you&apos;re invisible.</source>
         <translation>Контакт будет видеть Ваш статус если Вы невидимы.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="163"/>
+        <location filename="../src/userdlg/modes.cpp" line="163"/>
         <source>Invisible List</source>
         <translation>В списке невидимости</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="164"/>
+        <location filename="../src/userdlg/modes.cpp" line="164"/>
         <source>Contact will always see you as offline.</source>
         <translation>Ваш статус будет скрываться от контакта.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="167"/>
+        <location filename="../src/userdlg/modes.cpp" line="167"/>
         <source>Ignore List</source>
         <translation>В списке игнорируемых</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="168"/>
+        <location filename="../src/userdlg/modes.cpp" line="168"/>
         <source>Ignore any events from this contact.</source>
         <translation>Все сообщения от контакта будут игнорироваться.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="171"/>
+        <location filename="../src/userdlg/modes.cpp" line="171"/>
         <source>New Users</source>
         <translation>Новые пользователи</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="172"/>
+        <location filename="../src/userdlg/modes.cpp" line="172"/>
         <source>Contact was recently added to the list.</source>
         <translation>Контакт был недавно добавлен в список.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="177"/>
+        <location filename="../src/userdlg/modes.cpp" line="177"/>
         <source>Custom Auto Response</source>
         <translation>Персональный авто-ответ</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="186"/>
+        <location filename="../src/userdlg/modes.cpp" line="186"/>
         <source>Hints</source>
         <translation>Подсказки</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="190"/>
+        <location filename="../src/userdlg/modes.cpp" line="190"/>
         <source>Clear</source>
         <translation>Очистить</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="222"/>
+        <location filename="../src/userdlg/modes.cpp" line="222"/>
         <source>Group</source>
         <translation>Группа</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="222"/>
+        <location filename="../src/userdlg/modes.cpp" line="222"/>
         <source>Local</source>
         <translation>Локальная</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="222"/>
+        <location filename="../src/userdlg/modes.cpp" line="222"/>
         <source>Server</source>
         <translation>Сервер</translation>
     </message>
