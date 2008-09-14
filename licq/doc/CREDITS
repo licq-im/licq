@@ -27,14 +27,14 @@ to the development of Licq:
    * Began work on blinking icon support.
  * Dmitry Karasik
    * Patches for chats, file transfers and some threading issues.
+ * Sergey Kononenko
+   * Patch for downloading ICQ contact pictures
  * Bucky LaDieu
    * Sound patch to allow different sounds for different events.
  * libicq2000 Project
    * Served as reference for ICQ's SMS protocol.
  * Kenny Lim
    * Contributed a logo for Licq.
- * Loki <loki@cpan.org.ua>
-   * Contributed patch to allow customized date format.
  * Emilio Lopez-Gabeiras
    * Original ICQ event sounds.
  * Jeff Meininger
@@ -49,6 +49,8 @@ to the development of Licq:
    * Debian package
  * Graham Roff
    * Primary developer and maintainer for Licq < 1.0.4
+ * Kirill Solomko
+   * Contributed patch to allow customized date format.
  * Taral
    * Various patches for miscellaneous things.
  * Mark Veinot
