@@ -1,10 +1,10 @@
-LICQ v1.3.4
+LICQ v1.3.6
 
 An ICQ clone written in C and C++ using a plugin system to allow for
 many possible interfaces.
 See the webpage (http://www.licq.org) for more information.
 Licq implements messages (online and offline), urls, chat, full file
-transfer, gui configuration (with the qt-gui plugin), history as
+transfer, gui configuration (with the qt-gui or qt4-gui plugin), history as
 well as a number of other features.
 
 
@@ -28,7 +28,8 @@ INSTALLATION:
 3. Type
    su -c 'make install'
    and licq will be installed (defaults to /usr/local).
-4. Go to plugins/qt-gui and follow the directions there (doc/README) to install
+4. Depending on which GUI you want to use, go to plugins/qt-gui or
+   plugins/qt4-gui and follow the directions there (doc/README) to install
    the Qt interface plugin (necessary).
 
 As each user:
@@ -49,12 +50,14 @@ variables are set and it should work.  Also read the SOCKS.HOWTO file.
 
 Licq has been compiled and run successfully on the following systems at one
 point (note current versions may no longer compile without a bit of tweaking):
+Linux/amd64
 Linux/x86
 Linux/Alpha
 Linux/PPC
 FreeBSD/i386
 AIX/RS6000
 NetBSD/mk68000
+OpenBSD/sparc
 Sun3/mk68000
 Solaris/x86
 Unixware
