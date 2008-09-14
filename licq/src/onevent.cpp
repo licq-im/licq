@@ -111,8 +111,11 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
       param = szFullParam;
       free(szFullParam);
     }
-    string fullCmd = myCommand + " " + param + " &";
-    system(fullCmd.c_str());
+    if (!param.empty())
+    {
+      string fullCmd = myCommand + " " + param + " &";
+      system(fullCmd.c_str());
+    }
   }
   pthread_mutex_unlock(&mutex);
 }
