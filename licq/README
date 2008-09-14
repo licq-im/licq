@@ -1,0 +1,36 @@
+      LICQ v1.3.6 README
+      http://www.licq.org/
+      #Licq on irc.freenode.net
+
+Again it's been almost a year since the last version of Licq was released so to
+prove that we're still alive, here is Licq 1.3.6.
+This is mostly a bugfix release but with one big exception. The Qt-Gui has been
+fully ported to Qt4, gone through a make over and is now available as a separate
+plugin.
+
+For more information on what has changed since Licq 1.3.5, see doc/CHANGELOG.
+
+The Qt4-Gui is available as a separate plugin (named qt4-gui) so the old qt-gui
+can still be used by those who perfer it or for some reason cannot build against
+the Qt4 library.
+
+We consider Qt4-Gui to be the new default GUI for Licq and due to this many new
+features will not be implemented in the old Qt-Gui. We will however still
+maintain Qt-Gui and keep it working but at this time we cannot guarantee for
+how long it will be around.
+
+Just like the Qt-Gui, the Qt4-Gui can also be built with KDE support, however
+at this time the KDE 4 support in Qt4-Gui is still experimental and has a few
+problems.
+
+For general information on how to build and run Licq, see doc/README.
+For information about building and using the different plugins, see README or
+doc/README for the respective plugins.
+
+Enjoy this long awaited release and feel free to come by #Licq to get help,
+tell us what you think or just to keep us company. Contributions are also
+welcome so if you want to make your favourite IM client even better, don't
+hesitate to send us your patches. And that doesn't just mean coding, we also
+need help to keep the translations up to date.
+
+The Licq Team
