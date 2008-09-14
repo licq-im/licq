@@ -1,5 +1,73 @@
 Change log for Licq.
 
+New in 1.3.6
+o Various bugs in both Licq and plugins that caused crashes have been fixed. 
+o Prevent DoS attack by adding limit to number of incoming connections accepted. 
+o Properly handle backslashes in auto responses. 
+o ICQ: Updated client id sent to server to enable login after 2008-07-01. 
+o ICQ: Use MD5 based authentication for login instead of sending plain text password. 
+o ICQ: Support for downloading contact pictures from server. 
+o MSN: Fixed a problem with contact pictures sometimes failing to download. 
+o Plugin API: Functions using Uin parameter have been deprecated. 
+o Plugin API: Improved group handling. 
+o Qt/KDE: Qt-Gui ported to Qt4, more info below. 
+o Qt/KDE: Show contact registration date in user info dialog. 
+o Qt/KDE: GUI will now update if group data changes. 
+o Qt/KDE: Startup group setting moved from daemon to GUI. 
+o Qt/KDE: Automatically switch message dialog to text message after sending file, contact, url, etc. 
+o Qt/KDE: Birthday icon was not removed at the end of the day. 
+o Qt/KDE: Main window position/size is no saved on exit. 
+o Qt/KDE: User info can be opened from authorization request window. 
+o Qt/KDE: ICQ server port would be reset to default when opening options dialog. 
+o Qt/KDE: Establishing a secure connection now unchecks "Send through server". 
+o Qt/KDE: User info dialog now includes year in all dates.
+
+Note: As of 1.3.6, Licq requires Boost libraries to build. Boost is also
+   required when building any plugin as it is used in the header files.
+
+Licq 1.3.6 includes the Qt4-Gui with is a new version of the Qt-Gui plugin.
+The following major changes can be seen in Qt4-Gui compared to Qt-Gui:
+o New tray icon handling that will work on any desktop with a standard tray area.
+o Buttons for most dialogs are ordered to match the local environment.
+o Message dialog has new layout which uses less space for the controls. 
+o Settings dialog pages has been reorganized with fewer options per page for easier navigation. 
+o User info dialog has been extended to also include pages with user settings. 
+o Settings dialog and user info dialog now uses a navigation-tree pane instead of tabs. 
+o A completely new history dialog with easier navigation and search functionality. 
+o Message dialog remember its position and size (tabbed mode only). 
+o Option to display user image in message dialog. 
+o Contact list shows contacts awaiting authorization in different colour. 
+
+Note: The Qt4-Gui requires cmake to build it, see plugin/qt4-gui/doc/INSTALL
+   for further information. 
+
+
+New in 1.3.5
+o Save the "Send through server" option to disk. 
+o Fixed bugs that caused Licq to leak memory. 
+o Fixed a bug where Licq would crash on authorization requests from new users. 
+o Added code (disabled by default) to help find locking issues that could cause Licq to hang and fixed the bugs that were discovered. 
+o Made Licq buildable with GCC 4.3. 
+o Updated autotools and friends. 
+o Use gdb if it's installed to generate a better backtrace if Licq crashes. 
+o Display a dialog informing the user how to report the bug in case Licq crashes. 
+o ICQ: Fixed sending capabilities. 
+o ICQ: Fixed setting security settings (Require authorization, Show web presence). 
+o Qt/KDE: New emoticons theme FeltTip4. 
+o Qt/KDE: New "Date format" option for customizing date and time in message and history windows. 
+o Qt/KDE: The local time of contacts can be displayed in contact list and popup information. 
+o Qt/KDE: Made the history layout configurable. 
+o Qt/KDE: New option to use double return instead of Ctrl+Return for sending and in input dialogs. 
+o Qt/KDE: Skins can now set a separate background color for group headings in the contact list (parameter colors.groupBack). 
+o Qt/KDE: Tabs in chatdialog can be closed by middle clicking on them. 
+o Qt/KDE: Removed all Qt2 support. 
+o Qt/KDE: Open links in a new tab when using Opera. 
+o Qt/KDE: Made the standard group names translatable. 
+o Qt/KDE: Added %M modifier to print number of pending messages (if any). 
+o Qt/KDE: Popup information shows if contact is not authorized yet. 
+o Qt/KDE: Floaties are now saved properly for non-ICQ contacts.
+
+
 New in 1.3.4
 o Fix a few bugs where users would falsely go offline 
 o Make sending typing notifications optional 
