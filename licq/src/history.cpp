@@ -139,7 +139,7 @@ void CUserHistory::SetFile(const char *_sz, const char *_szId,
 
 #define SKIP_VALID_LINES \
   { \
-    while ((szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':'); \
+    while ((szResult = fgets(sz, MAX_LINE_LEN, f)) != NULL && sz[0] == ':') ; \
   }
 
 #define SKIP_LINE \
