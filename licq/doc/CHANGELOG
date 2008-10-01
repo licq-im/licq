@@ -16,7 +16,7 @@ o Qt/KDE: GUI will now update if group data changes.
 o Qt/KDE: Startup group setting moved from daemon to GUI. 
 o Qt/KDE: Automatically switch message dialog to text message after sending file, contact, url, etc. 
 o Qt/KDE: Birthday icon was not removed at the end of the day. 
-o Qt/KDE: Main window position/size is no saved on exit. 
+o Qt/KDE: Main window position/size is now saved on exit. 
 o Qt/KDE: User info can be opened from authorization request window. 
 o Qt/KDE: ICQ server port would be reset to default when opening options dialog. 
 o Qt/KDE: Establishing a secure connection now unchecks "Send through server". 
