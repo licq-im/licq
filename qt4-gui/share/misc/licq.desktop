@@ -4,10 +4,7 @@ Exec=licq
 Icon=licq
 Terminal=false
 Type=Application
-Categories=Qt;KDE;Network;InstantMessaging;
-
-X-DCOP-ServiceName=licq
-ServiceTypes=DCOP/InstantMessenger
+Categories=Qt;Network;InstantMessaging;
 
 Name=Licq
 Name[fa]=لیسک
