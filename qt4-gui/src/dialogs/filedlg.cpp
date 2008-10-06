@@ -22,6 +22,8 @@
 
 #include "config.h"
 
+#include <unistd.h>
+
 #ifdef USE_KDE
 #include <kfiledialog.h>
 #include <krun.h>
