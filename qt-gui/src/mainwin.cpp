@@ -2682,6 +2682,31 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
 {
   if (szId == 0 || nPPID == 0) return NULL;
 
+  // Find out what's supported for this protocol
+  unsigned long sendFuncs = 0xFFFFFFFF;
+  if (nPPID != LICQ_PPID)
+  {
+    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+    {
+      if ((*_ppit)->PPID() == nPPID)
+      {
+        sendFuncs = (*_ppit)->SendFunctions();
+        break;
+      }
+    }
+    FOR_EACH_PROTO_PLUGIN_END
+  }
+
+  // Check if the protocol for this contact support the function we want to open
+  if ((fcn == mnuUserSendMsg && !(sendFuncs & PP_SEND_MSG)) ||
+      (fcn == mnuUserSendUrl && !(sendFuncs & PP_SEND_URL)) ||
+      (fcn == mnuUserSendChat && !(sendFuncs & PP_SEND_CHAT)) ||
+      (fcn == mnuUserSendFile && !(sendFuncs & PP_SEND_FILE )) ||
+      (fcn == mnuUserSendContact && !(sendFuncs & PP_SEND_CONTACT)) ||
+      (fcn == mnuUserSendSms && !(sendFuncs & PP_SEND_SMS)))
+    return NULL;
+
+
   UserEventCommon *e = NULL;
 
   switch (fcn)
