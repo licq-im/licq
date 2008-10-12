@@ -16,7 +16,7 @@ option(WITH_KDE "Compile with KDE support" OFF)
 
 
 # Install dirs
-set(INSTALL_LIB_DIR lib CACHE PATH
+set(INSTALL_LIB_DIR lib${LIB_SUFFIX} CACHE PATH
   "Directory to install the plugin to. A relative path is relative to CMAKE_INSTALL_PREFIX.")
 mark_as_advanced(INSTALL_LIB_DIR)
 
