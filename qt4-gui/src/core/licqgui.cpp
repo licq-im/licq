@@ -823,6 +823,31 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, QString id, unsigned long ppi
   if (id.isEmpty() || ppid == 0)
     return NULL;
 
+  // Find out what's supported for this protocol
+  unsigned long sendFuncs = 0xFFFFFFFF;
+  if (ppid != LICQ_PPID)
+  {
+    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+    {
+      if ((*_ppit)->PPID() == ppid)
+      {
+        sendFuncs = (*_ppit)->SendFunctions();
+        break;
+      }
+    }
+    FOR_EACH_PROTO_PLUGIN_END
+  }
+
+  // Check if the protocol for this contact support the function we want to open
+  if ((fcn == MessageEvent && !(sendFuncs & PP_SEND_MSG)) ||
+      (fcn == UrlEvent && !(sendFuncs & PP_SEND_URL)) ||
+      (fcn == ChatEvent && !(sendFuncs & PP_SEND_CHAT)) ||
+      (fcn == FileEvent && !(sendFuncs & PP_SEND_FILE )) ||
+      (fcn == ContactEvent && !(sendFuncs & PP_SEND_CONTACT)) ||
+      (fcn == SmsEvent && !(sendFuncs & PP_SEND_SMS)))
+    return NULL;
+
+
   // Focus the new window/tab after showing it
   bool activateMsgwin = true;
 
