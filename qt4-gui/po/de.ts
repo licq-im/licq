@@ -1015,117 +1015,117 @@ the group &apos;%1&apos;?</source>
 <context>
     <name>LicqQtGui::FileDlg</name>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="287"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="289"/>
         <source>Licq - File Transfer (%1)</source>
         <translation>Licq - Dateiübertragung (%1)</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="71"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="73"/>
         <source>Current:</source>
         <translation>Aktuell:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="80"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="82"/>
         <source>File name:</source>
         <translation>Dateiname:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="88"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="90"/>
         <source>File:</source>
         <translation>Datei:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="96"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="98"/>
         <source>Batch:</source>
         <translation>Gesamt:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="103"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="105"/>
         <source>Time:</source>
         <translation>Zeit:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="113"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="115"/>
         <source>ETA:</source>
         <translation>Verbleibend:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="132"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="134"/>
         <source>&amp;Cancel Transfer</source>
         <translation>Übertragung ab&amp;brechen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="144"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="146"/>
         <source>&amp;Open</source>
         <translation>Ö&amp;ffnen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="145"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="147"/>
         <source>O&amp;pen Dir</source>
         <translation>Ordn&amp;er öffnen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="178"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="180"/>
         <source>File transfer cancelled.</source>
         <translation>Dateiübertragung abgebrochen.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="396"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="398"/>
         <source>Close</source>
         <translation>&amp;Schließen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="237"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="239"/>
         <source>%1/%2</source>
         <translation>%1/%2</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="265"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="267"/>
         <source>Waiting for connection...</source>
         <translation>Auf Verbindung warten...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="310"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="312"/>
         <source>Receiving file...</source>
         <translation>Datei empfangen...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="312"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="314"/>
         <source>Sending file...</source>
         <translation>Datei senden...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="326"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="328"/>
         <source>Received %1 from %2 successfully.</source>
         <translation>%1 von %2 erfolgreich empfangen.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="328"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="330"/>
         <source>Sent %1 to %2 successfully.</source>
         <translation>%1 von %2 erfolgreich gesendet.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="334"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="336"/>
         <source>File transfer complete.</source>
         <translation>Dateiübertragung fertig.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="335"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="337"/>
         <source>OK</source>
         <translation>Ok</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="351"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="353"/>
         <source>Remote side disconnected.</source>
         <translation>Verbindung durch Gegenstelle unterbrochen.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="358"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="360"/>
         <source>File I/O error: %1.</source>
         <translation>Datei E/A Fehler: %1.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="361"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="363"/>
         <source>File I/O Error:
 %1
 
@@ -1136,118 +1136,118 @@ See Network Window for details.</source>
 Siehe Netzwerkfenster für Details.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="368"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="370"/>
         <source>Handshaking error.
 </source>
         <translation>Fehler bei der Protokollaushandlung.
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="370"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="372"/>
         <source>Handshake Error.
 See Network Window for details.</source>
         <translation>Fehler bei der Protokollaushandlung.
 Siehe Netzwerkfenster für Details.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="377"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="379"/>
         <source>Connection error.
 </source>
         <translation>Verbindungsfehler.
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="380"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="382"/>
         <source>Unable to reach remote host.
 See Network Window for details.</source>
         <translation>Gegenstelle ist unerreichbar.
 Siehe Netzwerkfenster für Details.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="387"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="389"/>
         <source>Bind error.
 </source>
         <translation>Fehler beim binden eines Ports.
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="390"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="392"/>
         <source>Unable to bind to a port.
 See Network Window for details.</source>
         <translation>Kann Port nicht binden.
 Siehe Netzwerkfenster für Details.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="397"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="399"/>
         <source>Not enough resources.
 </source>
         <translation>Nicht genügend Ressourcen.
 </translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="400"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="402"/>
         <source>Unable to create a thread.
 See Network Window for details.</source>
         <translation>Es lässt sich kein neuer Thread erzeugen.
 Siehe Netzwerkfenster für Details.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="416"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="418"/>
         <source>Connecting to remote...</source>
         <translation>Verbinden mit Gegenstelle...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="429"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="431"/>
         <source>MB</source>
         <translation>MB</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="433"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="435"/>
         <source>KB</source>
         <translation>KB</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="437"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="439"/>
         <source>Bytes</source>
         <translation>Bytes</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="441"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="443"/>
         <source>Byte</source>
         <translation>Byte</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="479"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="481"/>
         <source>File already exists and is at least as big as the incoming file.</source>
         <translation>Datei existiert bereits und ist mindestens so groß, wie die zu empfangende Datei.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="486"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="488"/>
         <source>Overwrite</source>
         <translation>Überschreiben</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="503"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="505"/>
         <source>Cancel</source>
         <translation>Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="486"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="488"/>
         <source>File already exists and appears incomplete.</source>
         <translation>Datei existiert bereits und scheint unvollständig zu sein.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="486"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="488"/>
         <source>Resume</source>
         <translation>Wiederaufnehmen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="503"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="505"/>
         <source>Open error - unable to open file for writing.</source>
         <translation>Schreibfehler - Datei ließ sich nicht zum Schreiben öffnen.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/filedlg.cpp" line="503"/>
+        <location filename="../src/dialogs/filedlg.cpp" line="505"/>
         <source>Retry</source>
         <translation>Wiederholen</translation>
     </message>
@@ -1795,7 +1795,7 @@ from your contact list?</source>
 wirklich aus der Kontaktliste entfernt werden?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="1019"/>
+        <location filename="../src/core/licqgui.cpp" line="1044"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq kann den Browser nicht starten um die URL zu öffnen
@@ -2550,7 +2550,7 @@ Nachdem sie Online sind, können sie ihre persönlichen Informationen an den Ser
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="312"/>
         <source>Enter search parameters and select &apos;Search&apos;</source>
-        <translation>Bitte Suchparameter eingeben und dann auch &apos;Suchen&apos; klicken.</translation>
+        <translation>Bitte Suchparameter eingeben und dann auf &apos;Suchen&apos; klicken.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="148"/>
@@ -2775,12 +2775,12 @@ Nachdem sie Online sind, können sie ihre persönlichen Informationen an den Ser
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="211"/>
         <source>Close</source>
-        <translation>S&amp;chließen</translation>
+        <translation>Schließen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="411"/>
         <source>New Search</source>
-        <translation>Neue Suchen</translation>
+        <translation>Neue Suche</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="278"/>
@@ -5568,7 +5568,7 @@ wirklich zur Ignorieren-Gruppe hinzugefügt werden?</translation>
         <translation>Bild</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1327"/>
+        <location filename="../src/userdlg/info.cpp" line="1316"/>
         <source>Last</source>
         <translation>Zuletzt</translation>
     </message>
@@ -5620,7 +5620,7 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
         <translation>Zeitzone:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1390"/>
+        <location filename="../src/userdlg/info.cpp" line="1379"/>
         <source>Name:</source>
         <translation>Name:</translation>
     </message>
@@ -5855,89 +5855,89 @@ Aktivieren Sie dieses Kontrollfeld damit der Alias bei einem Update nicht verän
         <translation>-</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1398"/>
+        <location filename="../src/userdlg/info.cpp" line="1387"/>
         <source>Browse...</source>
         <translation>Durchsuchen...</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1757"/>
+        <location filename="../src/userdlg/info.cpp" line="1746"/>
         <source>Not Available</source>
         <translation>Nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1762"/>
+        <location filename="../src/userdlg/info.cpp" line="1751"/>
         <source>Failed to Load</source>
         <translation>Fehler beim Laden</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1330"/>
+        <location filename="../src/userdlg/info.cpp" line="1319"/>
         <source>Last Online:</source>
         <translation>Letztes mal Online:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1334"/>
+        <location filename="../src/userdlg/info.cpp" line="1323"/>
         <source>Last Sent Event:</source>
         <translation>Letztes Ereignis gesendet:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1338"/>
+        <location filename="../src/userdlg/info.cpp" line="1327"/>
         <source>Last Received Event:</source>
         <translation>Letztes Ereignis empfangen:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1342"/>
+        <location filename="../src/userdlg/info.cpp" line="1331"/>
         <source>Last Checked Auto Response:</source>
         <translation>Letzte gelesene Auto-Antwort:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1346"/>
+        <location filename="../src/userdlg/info.cpp" line="1335"/>
         <source>Online Since:</source>
         <translation>Online seit:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1350"/>
+        <location filename="../src/userdlg/info.cpp" line="1339"/>
         <source>Registration Date:</source>
         <translation>Datum der Registrierung:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1365"/>
+        <location filename="../src/userdlg/info.cpp" line="1354"/>
         <source>Now</source>
         <translation>Jetzt</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1375"/>
+        <location filename="../src/userdlg/info.cpp" line="1364"/>
         <source>Offline</source>
         <translation>Offline</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1387"/>
+        <location filename="../src/userdlg/info.cpp" line="1376"/>
         <source>KDE Adress Book</source>
         <translation>KDE Adressbuch</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1394"/>
+        <location filename="../src/userdlg/info.cpp" line="1383"/>
         <source>Email:</source>
         <translation>E-Mail:</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1553"/>
+        <location filename="../src/userdlg/info.cpp" line="1542"/>
         <source>You need to be connected to the
 ICQ Network to retrieve your settings.</source>
         <translation>Sie müssen mit dem ICQ-Netzwerk verbunden sein, um Einstellungen empfangen zu können.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1607"/>
+        <location filename="../src/userdlg/info.cpp" line="1596"/>
         <source>You need to be connected to the
 ICQ Network to change your settings.</source>
         <translation>Sie müssen mit dem ICQ-Netzwerk verbunden sein, um Einstellungen ändern zu können.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1731"/>
+        <location filename="../src/userdlg/info.cpp" line="1720"/>
         <source>Select your picture</source>
         <translation>Bitte Ihr Bild auswählen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/info.cpp" line="1743"/>
+        <location filename="../src/userdlg/info.cpp" line="1732"/>
         <source> is over %1 bytes.
 Select another picture?</source>
         <translation>ist größer als %1 Byte.
@@ -5947,262 +5947,262 @@ Ein anderes Bild auswählen?</translation>
 <context>
     <name>LicqQtGui::UserPages::Settings</name>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="56"/>
+        <location filename="../src/userdlg/settings.cpp" line="56"/>
         <source>Settings</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="58"/>
+        <location filename="../src/userdlg/settings.cpp" line="58"/>
         <source>Status</source>
         <translation>Status</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="212"/>
+        <location filename="../src/userdlg/settings.cpp" line="212"/>
         <source>Groups</source>
         <translation>Gruppen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="69"/>
+        <location filename="../src/userdlg/settings.cpp" line="69"/>
         <source>Misc Modes</source>
         <translation>Verschiedenes</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="72"/>
+        <location filename="../src/userdlg/settings.cpp" line="72"/>
         <source>Accept in away</source>
         <translation>Bei &apos;Abwesenheit&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="73"/>
+        <location filename="../src/userdlg/settings.cpp" line="73"/>
         <source>Play sounds for this contact when my status is away.</source>
         <translation>Spiele Klänge für diesen Benutzer ab, wenn ich Abwesend bin.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="76"/>
+        <location filename="../src/userdlg/settings.cpp" line="76"/>
         <source>Accept in not available</source>
         <translation>Bei &apos;Nicht verfügbar&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="77"/>
+        <location filename="../src/userdlg/settings.cpp" line="77"/>
         <source>Play sounds for this contact when my status is not available.</source>
         <translation>Spiele Klänge für diesen Benutzer ab, wenn ich nicht vefügbar bin.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="80"/>
+        <location filename="../src/userdlg/settings.cpp" line="80"/>
         <source>Accept in occupied</source>
         <translation>Bei &apos;Beschäftigt&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="81"/>
+        <location filename="../src/userdlg/settings.cpp" line="81"/>
         <source>Play sounds for this contact when my status is occupied.</source>
         <translation>Spiele Klänge für diesen Benutzer ab, wenn ich beschäftigt bin.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="84"/>
+        <location filename="../src/userdlg/settings.cpp" line="84"/>
         <source>Accept in do not disturb</source>
         <translation>Bei &apos;Nicht stören&apos; akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="85"/>
+        <location filename="../src/userdlg/settings.cpp" line="85"/>
         <source>Play sounds for this contact when my status is do not disturb.</source>
         <translation>Spiele Klänge für diesen Benutzer ab, wenn mein Status &apos;Nicht stören&apos; ist.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="88"/>
+        <location filename="../src/userdlg/settings.cpp" line="88"/>
         <source>Auto accept files</source>
         <translation>Dateien automatisch akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="89"/>
+        <location filename="../src/userdlg/settings.cpp" line="89"/>
         <source>Automatically accept file transfers from this contact.</source>
         <translation>Nimmt automatisch Dateiübertragungen von diesem Benutzer an.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="92"/>
+        <location filename="../src/userdlg/settings.cpp" line="92"/>
         <source>Auto accept chats</source>
         <translation>Chats automatisch akzeptieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="93"/>
+        <location filename="../src/userdlg/settings.cpp" line="93"/>
         <source>Automatically accept chat requests from this contact.</source>
         <translation>Nimmt automatisch Einladungen zum Chat von diesem Benutzer an.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="96"/>
+        <location filename="../src/userdlg/settings.cpp" line="96"/>
         <source>Auto request secure</source>
         <translation>Automatisch Verschlüsseln</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="97"/>
+        <location filename="../src/userdlg/settings.cpp" line="97"/>
         <source>Automatically request secure channel to this contact.</source>
         <translation>Fragt automatisch nach einer sicheren Verbindung mit diesem Benutzer an.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="101"/>
+        <location filename="../src/userdlg/settings.cpp" line="101"/>
         <source>Use GPG encryption</source>
         <translation>GPG-Verschlüsselung aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="102"/>
+        <location filename="../src/userdlg/settings.cpp" line="102"/>
         <source>Use GPG encryption for messages with this contact.</source>
         <translation>Benutzt GPG Verschlüsselung für Nachrichten die mit diesem Benutzer ausgetauscht werden.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="106"/>
+        <location filename="../src/userdlg/settings.cpp" line="106"/>
         <source>Use real ip (LAN)</source>
         <translation>Echte IP (LAN) verwenden</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="107"/>
+        <location filename="../src/userdlg/settings.cpp" line="107"/>
         <source>Use real IP for when sending to this contact.</source>
         <translation>Benutze die wahre IP-Adresse des Benutzers.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="122"/>
+        <location filename="../src/userdlg/settings.cpp" line="122"/>
         <source>Status to User</source>
         <translation>Status für Benutzer</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="125"/>
+        <location filename="../src/userdlg/settings.cpp" line="125"/>
         <source>Not overridden</source>
         <translation>Nicht verändert</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="126"/>
+        <location filename="../src/userdlg/settings.cpp" line="126"/>
         <source>Contact will see your normal status.</source>
         <translation>Der Benutzer sieht den wahren Status.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="129"/>
+        <location filename="../src/userdlg/settings.cpp" line="129"/>
         <source>Online</source>
         <translation>Online</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="130"/>
+        <location filename="../src/userdlg/settings.cpp" line="130"/>
         <source>Contact will always see you as online.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Online&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="133"/>
+        <location filename="../src/userdlg/settings.cpp" line="133"/>
         <source>Away</source>
         <translation>Abwesend</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="134"/>
+        <location filename="../src/userdlg/settings.cpp" line="134"/>
         <source>Contact will always see your status as away.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Abwesend&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="137"/>
+        <location filename="../src/userdlg/settings.cpp" line="137"/>
         <source>Not available</source>
         <translation>Nicht verfügbar</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="138"/>
+        <location filename="../src/userdlg/settings.cpp" line="138"/>
         <source>Contact will always see your status as not available.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Nicht verfügbar&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="141"/>
+        <location filename="../src/userdlg/settings.cpp" line="141"/>
         <source>Occupied</source>
         <translation>Beschäftigt</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="142"/>
+        <location filename="../src/userdlg/settings.cpp" line="142"/>
         <source>Contact will always see your status as occupied.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Beschäftigt&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="145"/>
+        <location filename="../src/userdlg/settings.cpp" line="145"/>
         <source>Do not disturb</source>
         <translation>Nicht stören</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="146"/>
+        <location filename="../src/userdlg/settings.cpp" line="146"/>
         <source>Contact will always see your status as do not disturb.</source>
         <translation>Der Benutzer sieht immer den Status &apos;Nicht stören&apos;.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="152"/>
+        <location filename="../src/userdlg/settings.cpp" line="152"/>
         <source>System Groups</source>
         <translation>Systemgruppen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="155"/>
+        <location filename="../src/userdlg/settings.cpp" line="155"/>
         <source>Online notify</source>
         <translation>Online-Benachrichtigung</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="156"/>
+        <location filename="../src/userdlg/settings.cpp" line="156"/>
         <source>Notify when this contact comes online.</source>
         <translation>Zeige eine Benachrichtigung, wenn dieser Benutzer online geht.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="159"/>
+        <location filename="../src/userdlg/settings.cpp" line="159"/>
         <source>Visible List</source>
         <translation>Sichtbar-Liste</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="160"/>
+        <location filename="../src/userdlg/settings.cpp" line="160"/>
         <source>Contact will see you online even if you&apos;re invisible.</source>
         <translation>Der Benutzer sieht uns immer, auch wenn wir unsichtbar sind.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="163"/>
+        <location filename="../src/userdlg/settings.cpp" line="163"/>
         <source>Invisible List</source>
         <translation>Unsichtbar-Liste</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="164"/>
+        <location filename="../src/userdlg/settings.cpp" line="164"/>
         <source>Contact will always see you as offline.</source>
         <translation>Der Benutzer sieht uns immer als &apos;Offline&apos;, auch wenn wir online sind.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="167"/>
+        <location filename="../src/userdlg/settings.cpp" line="167"/>
         <source>Ignore List</source>
         <translation>Ignorieren</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="168"/>
+        <location filename="../src/userdlg/settings.cpp" line="168"/>
         <source>Ignore any events from this contact.</source>
         <translation>Ignoriere alle Ereignisse und Nachrichten von diesem Benutzer.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="171"/>
+        <location filename="../src/userdlg/settings.cpp" line="171"/>
         <source>New Users</source>
         <translation>Neue Benutzer</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="172"/>
+        <location filename="../src/userdlg/settings.cpp" line="172"/>
         <source>Contact was recently added to the list.</source>
         <translation>Benutzer wurde kürzlich zur Liste hinzugefügt.</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="177"/>
+        <location filename="../src/userdlg/settings.cpp" line="177"/>
         <source>Custom Auto Response</source>
         <translation>Spezielle Auto-Antwort</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="186"/>
+        <location filename="../src/userdlg/settings.cpp" line="186"/>
         <source>Hints</source>
         <translation>Hinweise</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="190"/>
+        <location filename="../src/userdlg/settings.cpp" line="190"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="222"/>
+        <location filename="../src/userdlg/settings.cpp" line="222"/>
         <source>Group</source>
         <translation>Gruppe</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="222"/>
+        <location filename="../src/userdlg/settings.cpp" line="222"/>
         <source>Local</source>
         <translation>Lokal</translation>
     </message>
     <message>
-        <location filename="../src/userdlg/modes.cpp" line="222"/>
+        <location filename="../src/userdlg/settings.cpp" line="222"/>
         <source>Server</source>
         <translation>Server</translation>
     </message>
