@@ -100,6 +100,9 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   iniFile.SetSection("locale");
   iniFile.ReadBool("ShowAllEncodings", myShowAllEncodings, false);
 
+  iniFile.SetSection("extensions");
+  iniFile.ReadBool("UseCustomUrlBrowser", myUseCustomUrlBrowser, false);
+
   iniFile.SetSection("geometry");
   short xPos, yPos, wVal, hVal;
   iniFile.ReadNum("EventDialog.X", xPos, 0);
@@ -153,6 +156,9 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteNum("AutoPopup", myAutoPopup);
   iniFile.WriteBool("AutoFocus", myAutoFocus);
   iniFile.WriteBool("PopupAutoResponse", myPopupAutoResponse);
+
+  iniFile.SetSection("extensions");
+  iniFile.WriteBool("UseCustomUrlBrowser", myUseCustomUrlBrowser);
 
   iniFile.SetSection("locale");
   iniFile.WriteBool("ShowAllEncodings", myShowAllEncodings);
@@ -368,6 +374,14 @@ void Config::Chat::setReverseHistory(bool reverseHistory)
     return;
 
   myReverseHistory = reverseHistory;
+}
+
+void Config::Chat::setUseCustomUrlBrowser(bool customUrlBrowser)
+{
+  if (customUrlBrowser == myUseCustomUrlBrowser)
+    return;
+
+  myUseCustomUrlBrowser = customUrlBrowser;
 }
 
 void Config::Chat::setChatMsgStyle(unsigned short chatMsgStyle)

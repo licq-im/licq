@@ -108,6 +108,7 @@ private:
   QLabel* myDefaultEncodingLabel;
   QComboBox* myDefaultEncodingCombo;
 
+  QCheckBox* myUseCustomUrlViewer;
   QLabel* myUrlViewerLabel;
   QLabel* myTerminalLabel;
   QComboBox* myUrlViewerCombo;

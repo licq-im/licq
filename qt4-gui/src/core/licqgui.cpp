@@ -1035,7 +1035,9 @@ void LicqGui::viewUrl(QString url)
   else
     KToolInvocation::invokeBrowser(url);
 #else
-  if (!QDesktopServices::openUrl(QUrl(url)))
+  bool useCustomUrlBrowser(Config::Chat::instance()->useCustomUrlBrowser());
+
+  if (useCustomUrlBrowser || (!useCustomUrlBrowser && !QDesktopServices::openUrl(QUrl(url))))
   {
     if (!myLicqDaemon->getUrlViewer())
       myLicqDaemon->setUrlViewer(DEFAULT_URL_VIEWER);

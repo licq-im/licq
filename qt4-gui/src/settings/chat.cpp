@@ -185,14 +185,19 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myTerminalLabel->setBuddy(myTerminalEdit);
   myExtensionsLayout->addWidget(myTerminalEdit, 0, 1);
 
+  myUseCustomUrlViewer = new QCheckBox(tr("Use custom URI viewer"));
+  myUseCustomUrlViewer->setToolTip(tr("Use a custom browser for URIs, instead of the system wide setting."));
+  myExtensionsLayout->addWidget(myUseCustomUrlViewer, 1, 0, 1, 2);
+
   myUrlViewerLabel = new QLabel(tr("URI viewer:"));
   myUrlViewerLabel->setToolTip(tr("The command to run in case Qt is unable to open an URL.\n"
         "It is passed an URL as the last parameter.\n"
         "Refer to the hints dialog for Qt URL handling rules."));
-  myExtensionsLayout->addWidget(myUrlViewerLabel, 1, 0);
+  myExtensionsLayout->addWidget(myUrlViewerLabel, 2, 0);
 
   myUrlViewerCombo = new QComboBox();
   myUrlViewerCombo->setEditable(true);
+  myUrlViewerCombo->addItem("viewurl-firefox.sh");
   myUrlViewerCombo->addItem("viewurl-firefox.sh");
   myUrlViewerCombo->addItem("viewurl-lynx.sh");
   myUrlViewerCombo->addItem("viewurl-mozilla.sh");
@@ -203,12 +208,15 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myUrlViewerCombo->addItem("viewurl-w3m.sh");
   myUrlViewerCombo->setToolTip(myUrlViewerLabel->toolTip());
   myUrlViewerLabel->setBuddy(myUrlViewerCombo);
-  myExtensionsLayout->addWidget(myUrlViewerCombo, 1, 1);
+  myExtensionsLayout->addWidget(myUrlViewerCombo, 2, 1);
 #ifdef USE_KDE
+  myUseCustomUrlViewer->setVisible(false);
   myUrlViewerLabel->setVisible(false);
   myUrlViewerCombo->setVisible(false);
+#else
+  connect(myUseCustomUrlViewer, SIGNAL(toggled(bool)), myUrlViewerCombo, SLOT(setEnabled(bool)));
+  connect(myUseCustomUrlViewer, SIGNAL(toggled(bool)), myUrlViewerLabel, SLOT(setEnabled(bool)));
 #endif
-
 
   myPageChatLayout->addWidget(myChatBox);
   myPageChatLayout->addWidget(myLocaleBox);
@@ -544,6 +552,13 @@ void Settings::Chat::load()
   myShowUserPicHiddenCheck->setChecked(chatConfig->showUserPicHidden());
   myPopupAutoResponseCheck->setChecked(chatConfig->popupAutoResponse());
 
+  myUseCustomUrlViewer->setChecked(chatConfig->useCustomUrlBrowser());
+  if (!chatConfig->useCustomUrlBrowser())
+  {
+    myUrlViewerLabel->setEnabled(false);
+    myUrlViewerCombo->setEnabled(false);
+  }
+
   if (!chatConfig->msgChatView())
   {
     myTabbedChattingCheck->setEnabled(false);
@@ -617,6 +632,7 @@ void Settings::Chat::apply()
   chatConfig->setShowUserPic(myShowUserPicCheck->isChecked());
   chatConfig->setShowUserPicHidden(myShowUserPicHiddenCheck->isChecked());
   chatConfig->setPopupAutoResponse(myPopupAutoResponseCheck->isChecked());
+  chatConfig->setUseCustomUrlBrowser(myUseCustomUrlViewer->isChecked());
 
   gLicqDaemon->SetSendTypingNotification(mySendTNCheck->isChecked());
 

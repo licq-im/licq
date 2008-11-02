@@ -89,6 +89,7 @@ public:
   bool checkSpelling() const { return myCheckSpelling; }
   bool histVertSpacing() const { return myHistVertSpacing; }
   bool reverseHistory() const { return myReverseHistory; }
+  bool useCustomUrlBrowser() const { return myUseCustomUrlBrowser; }
   unsigned short chatMsgStyle() const { return myChatMsgStyle; }
   unsigned short histMsgStyle() const { return myHistMsgStyle; }
   QString chatDateFormat() const { return myChatDateFormat; }
@@ -138,6 +139,7 @@ public slots:
   void setCheckSpelling(bool checkSpelling);
   void setHistVertSpacing(bool histVertSpacing);
   void setReverseHistory(bool reverseHistory);
+  void setUseCustomUrlBrowser(bool customUrlBrowser);
   void setChatMsgStyle(unsigned short chatMsgStyle);
   void setHistMsgStyle(unsigned short histMsgStyle);
   void setChatDateFormat(QString chatDateFormat);
@@ -185,6 +187,7 @@ private:
   bool myShowUserPic;
   bool myShowUserPicHidden;
   bool myPopupAutoResponse;
+  bool myUseCustomUrlBrowser;
 
   unsigned short myChatMsgStyle;
   unsigned short myHistMsgStyle;
