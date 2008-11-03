@@ -1795,7 +1795,7 @@ from your contact list?</source>
 wirklich aus der Kontaktliste entfernt werden?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="1044"/>
+        <location filename="../src/core/licqgui.cpp" line="1046"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
         <translation>Licq kann den Browser nicht starten um die URL zu öffnen
@@ -2124,7 +2124,7 @@ Siehe Netzwerkfenster für Details.</translation>
 <context>
     <name>LicqQtGui::OptionsDlg</name>
     <message>
-        <location filename="../src/settings/chat.cpp" line="259"/>
+        <location filename="../src/settings/chat.cpp" line="267"/>
         <source>&lt;p&gt;Available custom date format variables.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Expression&lt;/th&gt;&lt;th&gt;Output&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;the day as number without a leading zero (1-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;the day as number with a leading zero (01-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;the abbreviated localized day name (e.g. &apos;Mon&apos;..&apos;Sun&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;the long localized day name (e.g. &apos;Monday&apos;..&apos;Sunday&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;the month as number without a leading zero (1-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;the month as number with a leading zero (01-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;the abbreviated localized month name (e.g. &apos;Jan&apos;..&apos;Dec&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;the long localized month name (e.g. &apos;January&apos;..&apos;December&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;the year as two digit number (00-99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;the year as four digit number (1752-8000)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;the hour without a leading zero (0..23 or 1..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;the hour with a leading zero (00..23 or 01..12 if AM/PM display)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;the minute without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;the minute with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;the second without a leading zero (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;the second with a leading zero (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;the millisecond without leading zero (0..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;the millisecond with leading zero (000..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;use AM/PM display. AP will be replaced by either &apos;AM&apos; or &apos;PM&apos;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;use am/pm display. ap will be replaced by either &apos;am&apos; or &apos;pm&apos;&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</source>
         <translation>&lt;p&gt;Verfügbare Variablen für die benutzerdefinierte Datumsformatierung.&lt;/p&gt;&lt;table&gt;&lt;tr&gt;&lt;th&gt;Ausdruck&lt;/th&gt;&lt;th&gt;Ergebnis&lt;/th&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;d&lt;/td&gt;&lt;td&gt;der Tag als Zahl ohne führende Null (1-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dd&lt;/td&gt;&lt;td&gt;der Tag als Zahl mit führender Null (01-31)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ddd&lt;/td&gt;&lt;td&gt;die lokalisierte Abkürzung des Tages (z.B. &apos;Mon&apos;..&apos;Son&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;dddd&lt;/td&gt;&lt;td&gt;der lokalisierte Tagesname (z.B. &apos;Montag&apos;..&apos;Sonntag&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;M&lt;/td&gt;&lt;td&gt;der Monat als Zahl ohne führende Null (1-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MM&lt;/td&gt;&lt;td&gt;der Monat als Zahl mit führender Null (01-12)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMM&lt;/td&gt;&lt;td&gt;die lokalisierte Abkürzung des Monats (z.B. &apos;Jan&apos;..&apos;Dez&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;MMMM&lt;/td&gt;&lt;td&gt;der lokalisierte Monatsname (z.B. &apos;Januar&apos;..&apos;Dezember&apos;)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yy&lt;/td&gt;&lt;td&gt;das Jahr als zweistellige Zahl (00-99)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;yyyy&lt;/td&gt;&lt;td&gt;das Jahr als vierstellige Zahl (1752-8000)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td colspan=2&gt;&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;h&lt;/td&gt;&lt;td&gt;die Stunde ohne führende Null (0..23 oder 1..12 falls AM/PM-Anzeige)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;hh&lt;/td&gt;&lt;td&gt;die Stunde mit führender Null (00..23 oder 01..12 falls AM/PM-Anzeige)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;m&lt;/td&gt;&lt;td&gt;die Minute ohne führende Null (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;mm&lt;/td&gt;&lt;td&gt;die Minute mit führender Null (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;s&lt;/td&gt;&lt;td&gt;die Sekunde ohne führende Null (0..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ss&lt;/td&gt;&lt;td&gt;die Sekunde mit führender Null (00..59)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;z&lt;/td&gt;&lt;td&gt;die Millisekunde ohne führende Nullen (0..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;zzz&lt;/td&gt;&lt;td&gt;die Milliesekunden mit führenden Nullen (000..999)&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;AP&lt;/td&gt;&lt;td&gt;benutze AM/PM-Anzeige. AP wird entweder durch &apos;AM&apos; oder &apos;PM&apos; ersetzt&lt;/td&gt;&lt;/tr&gt;&lt;tr&gt;&lt;td&gt;ap&lt;/td&gt;&lt;td&gt;benutze am/pm-Anzeige. ap wird entweder durch &apos;am&apos; oder &apos;pm&apos; ersetzt&lt;/td&gt;&lt;/tr&gt;&lt;/table&gt;</translation>
     </message>
@@ -3002,12 +3002,12 @@ Bitte erstellen sie zuerst einen.</translation>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="268"/>
+        <location filename="../src/settings/chat.cpp" line="276"/>
         <source>Chat Display</source>
         <translation>Chat-Anzeige</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="383"/>
+        <location filename="../src/settings/chat.cpp" line="391"/>
         <source>History Display</source>
         <translation>Verlaufs-Anzeige</translation>
     </message>
@@ -3163,7 +3163,7 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
         <translation>Erweiterungen</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="188"/>
+        <location filename="../src/settings/chat.cpp" line="192"/>
         <source>URI viewer:</source>
         <translation>URI Betrachter:</translation>
     </message>
@@ -3178,152 +3178,152 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
         <translation>Das Kommando zum Starten des Terminal-Programms.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="387"/>
+        <location filename="../src/settings/chat.cpp" line="395"/>
         <source>Style:</source>
         <translation>Stil:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="397"/>
+        <location filename="../src/settings/chat.cpp" line="405"/>
         <source>Date format:</source>
         <translation>Datumsformat:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="412"/>
+        <location filename="../src/settings/chat.cpp" line="420"/>
         <source>Insert vertical spacing</source>
         <translation>Füge vertikalen Platzhalter ein</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="414"/>
+        <location filename="../src/settings/chat.cpp" line="422"/>
         <source>Insert extra space between messages.</source>
         <translation>Eine Leerzeile nach jeder Nachricht einfügen.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="301"/>
+        <location filename="../src/settings/chat.cpp" line="309"/>
         <source>Insert horizontal line</source>
         <translation>Füge horizontale Linie ein</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="303"/>
+        <location filename="../src/settings/chat.cpp" line="311"/>
         <source>Insert a line between each message.</source>
         <translation>Eine horizontale Linie nach jeder Nachricht einfügen.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="306"/>
+        <location filename="../src/settings/chat.cpp" line="314"/>
         <source>Show recent messages</source>
         <translation>Letzten Verlauf anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="307"/>
+        <location filename="../src/settings/chat.cpp" line="315"/>
         <source>Show the last 5 messages when a Send Window is opened</source>
         <translation>Zeigt in neuen Nachrichtenfenstern die jeweils 5 letzten Nachrichten des Benutzers an.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="311"/>
+        <location filename="../src/settings/chat.cpp" line="319"/>
         <source>Show join/left notices</source>
         <translation>Zeige Mitteilungen für betreten/verlassen</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="312"/>
+        <location filename="../src/settings/chat.cpp" line="320"/>
         <source>Show a notice in the chat window when a user joins or leaves the conversation.</source>
         <translation>Benachrichtigung im Chatfenster zeigen, wenn ein Benutzer die Konversation betritt oder verlässt.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="319"/>
+        <location filename="../src/settings/chat.cpp" line="327"/>
         <source>Colors</source>
         <translation>Farben</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="322"/>
+        <location filename="../src/settings/chat.cpp" line="330"/>
         <source>Message received:</source>
         <translation>Nachricht empfangen:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="328"/>
+        <location filename="../src/settings/chat.cpp" line="336"/>
         <source>Message sent:</source>
         <translation>Gesendete Nachricht:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="334"/>
+        <location filename="../src/settings/chat.cpp" line="342"/>
         <source>History received:</source>
         <translation>Verlauf empfangen:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="340"/>
+        <location filename="../src/settings/chat.cpp" line="348"/>
         <source>History sent:</source>
         <translation>Verlauf gesendet:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="346"/>
+        <location filename="../src/settings/chat.cpp" line="354"/>
         <source>Notice:</source>
         <translation>Benachrichtigung:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="352"/>
+        <location filename="../src/settings/chat.cpp" line="360"/>
         <source>Typing notification color:</source>
         <translation>Farbe für Tipp-Benachrichtigung:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="358"/>
+        <location filename="../src/settings/chat.cpp" line="366"/>
         <source>Background color:</source>
         <translation>Hintergrundfarbe:</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="417"/>
+        <location filename="../src/settings/chat.cpp" line="425"/>
         <source>Reverse history</source>
         <translation>Verlauf umgekehrt</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="419"/>
+        <location filename="../src/settings/chat.cpp" line="427"/>
         <source>Put recent messages on top.</source>
         <translation>Zeigt neue Nachrichten zuerst an.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="423"/>
+        <location filename="../src/settings/chat.cpp" line="431"/>
         <source>Preview</source>
         <translation>Vorschau</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="456"/>
+        <location filename="../src/settings/chat.cpp" line="464"/>
         <source>This is a received message</source>
         <translation>Dies ist eine empfangene Nachricht</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="457"/>
+        <location filename="../src/settings/chat.cpp" line="465"/>
         <source>This is a sent message</source>
         <translation>Dies ist eine gesendete Nachricht</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="458"/>
+        <location filename="../src/settings/chat.cpp" line="466"/>
         <source>Have you gone to the Licq IRC Channel?</source>
         <translation>Warst du schon im Licq IRC Kanal?</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="459"/>
+        <location filename="../src/settings/chat.cpp" line="467"/>
         <source>No, where is it?</source>
         <translation>Nein, wo finde ich den?</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="460"/>
+        <location filename="../src/settings/chat.cpp" line="468"/>
         <source>#Licq on irc.freenode.net</source>
         <translation>#Licq auf irc.freenode.net</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="461"/>
+        <location filename="../src/settings/chat.cpp" line="469"/>
         <source>Cool, I&apos;ll see you there :)</source>
         <translation>Cool, wir sehen uns dort! :)</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="462"/>
+        <location filename="../src/settings/chat.cpp" line="470"/>
         <source>We&apos;ll be waiting!</source>
         <translation>Wir warten auf dich!</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="464"/>
+        <location filename="../src/settings/chat.cpp" line="472"/>
         <source>Marge has left the conversation.</source>
         <translation>Marge hat die Unterhaltung verlassen.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="576"/>
+        <location filename="../src/settings/chat.cpp" line="591"/>
         <source>none</source>
         <translation>keine</translation>
     </message>
@@ -3373,13 +3373,23 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
         <translation>Markiert falsch geschriebene Wörter während des Tippens.</translation>
     </message>
     <message>
-        <location filename="../src/settings/chat.cpp" line="191"/>
+        <location filename="../src/settings/chat.cpp" line="195"/>
         <source>The command to run in case Qt is unable to open an URL.
 It is passed an URL as the last parameter.
 Refer to the hints dialog for Qt URL handling rules.</source>
         <translation>Das Kommando, das ausgeführt werden soll, falls Qt eine URL nicht öffnen kann.
 Die URL wird als letzter Parameter angehängt.
 Siehe im Hinweis-Dialog für eine Beschreibung der Qt URL-Regeln.</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/chat.cpp" line="188"/>
+        <source>Use custom URI viewer</source>
+        <translation>Benutze eigenen Browser</translation>
+    </message>
+    <message>
+        <location filename="../src/settings/chat.cpp" line="189"/>
+        <source>Use a custom browser for URIs, instead of the system wide setting.</source>
+        <translation>Benutze einen eigenen Browser für URIs, anstelle des systemweit verwendeten Browsers.</translation>
     </message>
 </context>
 <context>
