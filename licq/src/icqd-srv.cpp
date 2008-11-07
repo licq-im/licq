@@ -5741,11 +5741,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // main home info
           u->SetEnableSave(false);
-          if (u->m_bKeepAliasOnUpdate && !gUserManager.FindOwner(szId, LICQ_PPID))
-            tmp = msg.UnpackString(); // Skip the alias, user wants to keep his own.
-          else
+          tmp = msg.UnpackString();
+          // Skip the alias if user wants to keep his own.
+          if (!u->m_bKeepAliasOnUpdate || gUserManager.FindOwner(szId, LICQ_PPID))
           {
-            tmp = msg.UnpackString();
             char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->UserEncoding()) : 0;
             gTranslator.ServerToClient(szUTFAlias);
             u->SetAlias(szUTFAlias);
@@ -6364,7 +6363,7 @@ void CICQDaemon::ProcessUserList()
     // for the 0x0066 TLV, SMS number if it has the 0x013A TLV, etc
     u->SetTLVList(data->tlvs);
 
-    if (data->newAlias != NULL)
+    if (data->newAlias != NULL && !u->m_bKeepAliasOnUpdate)
       u->SetAlias(data->newAlias.get());
 
     u->SetSID(data->normalSid);
