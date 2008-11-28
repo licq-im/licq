@@ -1173,6 +1173,8 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
   }
 
   ICQUser *u = new ICQUser(szId, nPPID, bTempUser);
+  if (groupId != 0)
+    u->AddToGroup(GROUPS_USER, groupId);
   gUserManager.AddUser(u);
   gUserManager.DropUser(u);
   if (!bTempUser)
