@@ -2200,6 +2200,7 @@ const unsigned F			= 13;
 const unsigned FCHARSET		= 14;
 const unsigned FNAME		= 15;
 const unsigned ULNONE		= 16;
+const unsigned LINE             = 17;
 
 static char cmds[] =
     "fonttbl\x00"
@@ -2219,6 +2220,7 @@ static char cmds[] =
     "fcharset\x00"
     "fname\x00"
     "ulnone\x00"
+    "line\x00"
     "\x00";
 
 int yywrap() { return 1; }
@@ -2408,6 +2410,7 @@ std::string RTF2HTML::Parse(const char *rtf)
                 case PARD:
                     break;
                 case PAR:
+                case LINE:
                     PrintUnquoted("\n");
                     break;
                 case I:
