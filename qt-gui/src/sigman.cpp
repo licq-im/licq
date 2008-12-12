@@ -118,7 +118,7 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
     break;
   case SIGNAL_ADDxSERVERxLIST:
   //TODO
-    licqDaemon->icqRenameUser(s->Id());
+    licqDaemon->ProtoRenameUser(s->Id(), s->PPID());
     break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     emit signal_protocolPlugin(s->SubSignal());

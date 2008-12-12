@@ -549,7 +549,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     PrintStatus();
     break;
   case SIGNAL_ADDxSERVERxLIST:
-    licqDaemon->icqRenameUser(s->Id());
+    licqDaemon->ProtoRenameUser(s->Id(), s->PPID());
     break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     //ignore for now
@@ -1566,7 +1566,7 @@ void CLicqConsole::InputInfo(int cIn)
     case 'u':
       winMain->wprintf("%C%AUpdate info...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
-      winMain->event = licqDaemon->icqRequestMetaInfo(data->szId);
+      winMain->event = licqDaemon->ProtoRequestInfo(data->szId, data->nPPID);
       winMain->state = STATE_PENDING;
       return;
     case '\r':
@@ -2095,7 +2095,7 @@ void CLicqConsole::InputSendFile(int cIn)
       ConstFileList lFileList;
       lFileList.push_back(strdup(data->szFileName));
 
-      winMain->event = licqDaemon->icqFileTransfer(data->szId,
+      winMain->event = licqDaemon->ProtoFileTransfer(data->szId, data->nPPID,
               data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
                        !bDirect);
       break;
@@ -3126,9 +3126,10 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           // Accept the file
           const char *home = getenv("HOME");
           ftman->ReceiveFiles(home);
-          licqDaemon->icqFileTransferAccept(data->szId, ftman->LocalPort(),
-                                            f->Sequence(), f->MessageID(), f->IsDirect(),
-                                            f->FileDescription(), f->Filename(), f->FileSize());
+          licqDaemon->ProtoFileTransferAccept(data->szId, data->nPPID,
+              ftman->LocalPort(), f->Sequence(), f->MessageID()[0],
+              f->MessageID()[1], f->FileDescription(), f->Filename(),
+              f->FileSize(), f->IsDirect());
           winMain->fProcessInput = &CLicqConsole::InputCommand;
 
           if(winMain->data)
@@ -3158,9 +3159,8 @@ void CLicqConsole::InputFileChatOffer(int cIn)
       data->szReason[data->nPos - 1] = '\0';
 
       // XXX hack
-      unsigned long dummy[2] = { 0, 0 };
-      licqDaemon->icqFileTransferRefuse(data->szId, data->szReason,
-                                        f->Sequence(), dummy, true);
+      licqDaemon->ProtoFileTransferRefuse(data->szId, data->nPPID,
+          data->szReason, f->Sequence(), 0, 0, true);
 
       // We are done now
       winMain->wprintf("%ARefusing file from %s with reason: %Z%s\n",
@@ -3220,16 +3220,14 @@ void CLicqConsole::UserCommand_Secure(const char *szId, unsigned long nPPID, cha
     winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    if (nPPID == LICQ_PPID )
-      winMain->event = licqDaemon->icqOpenSecureChannel(szId);
+    winMain->event = licqDaemon->ProtoOpenSecureChannel(szId, nPPID);
   }
   else if(strcasecmp(szStatus, "close") == 0)
   {
     winMain->wprintf("%AClose secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    if (nPPID == LICQ_PPID )
-      winMain->event = licqDaemon->icqCloseSecureChannel(szId);
+    winMain->event = licqDaemon->ProtoCloseSecureChannel(szId, nPPID);
   }
   else
   {

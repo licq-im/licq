@@ -102,9 +102,9 @@ int CLicqAutoReply::Run(CICQDaemon *_licqDaemon)
     else
     {
       if (b)
-        licqDaemon->icqLogon(s);
+        licqDaemon->ProtoLogon(LICQ_PPID, s);
       else
-        licqDaemon->icqSetStatus(s);
+        licqDaemon->ProtoSetStatus(LICQ_PPID, s);
     }
     free(m_szStatus);
     m_szStatus = NULL;
@@ -217,7 +217,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
 	    user_event = e->UserEvent();
-      licqDaemon->icqSendMessage(e->Id(), user_event->Text(), !m_bSendThroughServer,
+      licqDaemon->ProtoSendMessage(e->Id(), e->PPID(), user_event->Text(), !m_bSendThroughServer,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }
   }

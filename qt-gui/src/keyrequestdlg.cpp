@@ -155,14 +155,12 @@ void KeyRequestDlg::startSend()
 
 void KeyRequestDlg::openConnection()
 {
-  if (m_nPPID == LICQ_PPID )
-    icqEventTag = gLicqDaemon->icqOpenSecureChannel(m_szId);
+  icqEventTag = gLicqDaemon->ProtoOpenSecureChannel(m_szId, m_nPPID);
 }
 
 void KeyRequestDlg::closeConnection()
 {
-  if (m_nPPID == LICQ_PPID )
-    icqEventTag = gLicqDaemon->icqCloseSecureChannel(m_szId);
+  icqEventTag = gLicqDaemon->ProtoCloseSecureChannel(m_szId, m_nPPID);
 }
 
 // -----------------------------------------------------------------------------

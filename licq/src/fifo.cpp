@@ -360,14 +360,14 @@ static int fifo_status( int argc, const char *const *argv, void *data)
   else if (nStatus == ICQ_STATUS_OFFLINE)
   {
     if (!bOffline) 
-      d->icqLogoff();
+      d->ProtoLogoff(LICQ_PPID);
   }
   else
   {
     if (bOffline)
-      d->icqLogon(nStatus);
+      d->ProtoLogon(LICQ_PPID, nStatus);
     else
-      d->icqSetStatus(nStatus);
+      d->ProtoSetStatus(LICQ_PPID, nStatus);
   }
   // Now set the auto response
   if( argc > 2 )
@@ -583,7 +583,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
     else
     {
       gUserManager.DropUser(u);
-      d->icqRequestMetaInfo(szId);
+      d->ProtoRequestInfo(szId, LICQ_PPID);
       ret = 0;
     }
   }

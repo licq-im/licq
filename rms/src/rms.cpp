@@ -1559,13 +1559,13 @@ int CRMSClient::Process_SECURE()
   if (strncasecmp(data_arg, "open", 4) == 0)
   {
     fprintf(fs, "%d Opening secure connection.\n", CODE_SECURExOPEN);
-    licqDaemon->icqOpenSecureChannel(id);
+    licqDaemon->ProtoOpenSecureChannel(id, LICQ_PPID);
   }
   else
   if (strncasecmp(data_arg, "close", 5) == 0)
   {
     fprintf(fs, "%d Closing secure connection.\n", CODE_SECURExCLOSE);
-    licqDaemon->icqCloseSecureChannel(id);
+    licqDaemon->ProtoCloseSecureChannel(id, LICQ_PPID);
   }
   else
   {

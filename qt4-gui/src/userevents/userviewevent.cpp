@@ -454,10 +454,10 @@ void UserViewEvent::read2()
 
       if (fileDlg->ReceiveFiles())
         // FIXME: must have been done in CICQDaemon
-        gLicqDaemon->icqFileTransferAccept(
-            myUsers.front().c_str(),
-            fileDlg->LocalPort(), f->Sequence(), f->MessageID(), f->IsDirect(),
-            f->FileDescription(), f->Filename(), f->FileSize());
+        gLicqDaemon->ProtoFileTransferAccept(
+            myUsers.front().c_str(), myPpid,
+            fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0], f->MessageID()[1],
+            f->FileDescription(), f->Filename(), f->FileSize(), f->IsDirect());
       break;
     }
 
@@ -518,10 +518,10 @@ void UserViewEvent::read3()
         myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
-        gLicqDaemon->icqFileTransferRefuse(
-            myUsers.front().c_str(),
+        gLicqDaemon->ProtoFileTransferRefuse(
+            myUsers.front().c_str(), myPpid,
             myCodec->fromUnicode(r->RefuseMessage()), myCurrentEvent->Sequence(),
-            f->MessageID(), f->IsDirect());
+            f->MessageID()[0], f->MessageID()[1], f->IsDirect());
       }
       delete r;
       break;

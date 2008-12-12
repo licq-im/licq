@@ -222,8 +222,9 @@ void UserSendFileEvent::send()
 
   unsigned long icqEventTag;
   //TODO in daemon
-  icqEventTag = gLicqDaemon->icqFileTransfer(
+  icqEventTag = gLicqDaemon->ProtoFileTransfer(
       myUsers.front().c_str(),
+      myPpid,
       myCodec->fromUnicode(myFileEdit->text()),
       myCodec->fromUnicode(myMessageEdit->toPlainText()),
       myFileList,

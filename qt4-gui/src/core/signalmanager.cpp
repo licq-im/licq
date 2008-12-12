@@ -83,7 +83,7 @@ void SignalManager::ProcessSignal(CICQSignal* sig)
 
     case SIGNAL_ADDxSERVERxLIST:
       //TODO
-      gLicqDaemon->icqRenameUser(sig->Id());
+      gLicqDaemon->ProtoRenameUser(sig->Id(), sig->PPID());
       break;
 
     case SIGNAL_NEWxPROTO_PLUGIN:

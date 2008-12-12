@@ -127,9 +127,9 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
     else
     {
       if (b)
-        licqDaemon->icqLogon(s);
+        licqDaemon->ProtoLogon(LICQ_PPID, s);
       else
-        licqDaemon->icqSetStatus(s);
+        licqDaemon->ProtoSetStatus(LICQ_PPID, s);
     }
     free(m_szStatus);
     m_szStatus = NULL;
@@ -341,7 +341,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
           u->GetAlias(), u->IdString(), szTime, e->Text());
-  unsigned long tag = licqDaemon->icqSendMessage(myUserId, szText, false, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = licqDaemon->ProtoSendMessage(myUserId, LICQ_PPID, szText, false, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == 0)
   {

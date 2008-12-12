@@ -1294,9 +1294,10 @@ void UserViewEvent::slot_btnRead2()
       if (fileDlg->ReceiveFiles())
       {
         //TODO in CICQDaemon
-        server->icqFileTransferAccept(m_lUsers.front().c_str(),
-          fileDlg->LocalPort(), f->Sequence(), f->MessageID(), f->IsDirect(),
-          f->FileDescription(), f->Filename(), f->FileSize());
+        server->ProtoFileTransferAccept(m_lUsers.front().c_str(), m_nPPID,
+            fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0],
+            f->MessageID()[1], f->FileDescription(), f->Filename(),
+            f->FileSize(), f->IsDirect());
       }
       break;
     }
@@ -1358,9 +1359,10 @@ void UserViewEvent::slot_btnRead3()
         btnRead3->setEnabled(false);
 
         //TODO
-        server->icqFileTransferRefuse(m_lUsers.front().c_str(),
-          codec->fromUnicode(r->RefuseMessage()),
-          m_xCurrentReadEvent->Sequence(), f->MessageID(), f->IsDirect());
+        server->ProtoFileTransferRefuse(m_lUsers.front().c_str(), m_nPPID,
+            codec->fromUnicode(r->RefuseMessage()),
+            m_xCurrentReadEvent->Sequence(), f->MessageID()[0],
+            f->MessageID()[1], f->IsDirect());
       }
       delete r;
       break;
@@ -2554,7 +2556,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
           messageRaw = ue->Message();
         }
 
-        icqEventTag = server->icqSendMessage(m_lUsers.front().c_str(), messageRaw.data(),
+        icqEventTag = server->ProtoSendMessage(m_lUsers.front().c_str(), m_nPPID, messageRaw.data(),
           bOnline, nLevel, false, &icqColor);
 
         m_lnEventTag.push_back(icqEventTag);
@@ -2616,7 +2618,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       CEventFile *ue = (CEventFile *)e->UserEvent();
       ConstFileList filelist(ue->FileList());
       //TODO in the daemon
-      icqEventTag = server->icqFileTransfer(m_lUsers.front().c_str(),
+      icqEventTag = server->ProtoFileTransfer(m_lUsers.front().c_str(), m_nPPID,
         ue->Filename(), ue->FileDescription(), filelist, nLevel, !bOnline);
 
       break;
@@ -3189,7 +3191,7 @@ void UserSendFileEvent::sendButton()
 
   unsigned long icqEventTag;
   //TODO in daemon
-  icqEventTag = server->icqFileTransfer(m_lUsers.front().c_str(),
+  icqEventTag = server->ProtoFileTransfer(m_lUsers.front().c_str(), m_nPPID,
      codec->fromUnicode(edtItem->text()),
      codec->fromUnicode(mleSend->text()), m_lFileList,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,

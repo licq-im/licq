@@ -819,7 +819,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
           messageRaw = ue->Message();
         }
 
-        icqEventTag = gLicqDaemon->icqSendMessage(myUsers.front().c_str(), messageRaw.data(),
+        icqEventTag = gLicqDaemon->ProtoSendMessage(myUsers.front().c_str(), myPpid, messageRaw.data(),
             online, level, false, &myIcqColor);
 
         myEventTag.push_back(icqEventTag);
@@ -885,7 +885,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
       ConstFileList filelist(ue->FileList());
 
       //TODO in the daemon
-      icqEventTag = gLicqDaemon->icqFileTransfer(myUsers.front().c_str(),
+      icqEventTag = gLicqDaemon->ProtoFileTransfer(myUsers.front().c_str(), myPpid,
           ue->Filename(), ue->FileDescription(), filelist, level, !online);
 
       break;
