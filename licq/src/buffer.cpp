@@ -22,6 +22,7 @@
 #include "gettext.h"
 
 #include "licq_buffer.h"
+#include "licq_byteorder.h"
 #include "licq_log.h"
 #include "support.h"
 
@@ -44,129 +45,6 @@ unsigned long NetworkIpToPacketIp(unsigned long l)
 // heap of dung uses little-endian byte sex.  With the new v7 and above
 // this heap of SHIT uses little-endian and big-endian byte sex.
 
-unsigned short get_be_short(char *p)
-{
-  unsigned char *q = (unsigned char *)p;
-  return (q[0] << 8) + q[1];
-}
-
-unsigned int get_be_int(char *p)
-{
-  unsigned char *q = (unsigned char *)p;
-  return (q[0] << 24) + (q[1] << 16) + (q[2] << 8) + q[3];
-}
-
-unsigned long get_be_long(char *p)
-{
-  unsigned char *q = (unsigned char *)p;
-  return (((unsigned long)(q[0]) << 24) +
-    ((unsigned long)(q[1]) << 16) +
-    ((unsigned long)(q[2]) << 8) +
-    ((unsigned long)q[3]));
-}
-
-void put_be_short(char *p, unsigned short x)
-{
-  unsigned char *q = (unsigned char *)p;
-  q[0] = ((x & 0xff00) >> 8);
-  q[1] = (x & 0x00ff);
-}
-
-void put_be_int(char *p, unsigned int x)
-{
-  unsigned char *q = (unsigned char *)p;
-  q[0] = ((x & 0xff000000) >> 24);
-  q[1] = ((x & 0x00ff0000) >> 16);
-  q[2] = ((x & 0x0000ff00) >> 8);
-  q[3] = ((x & 0x000000ff));
-}
-
-void put_be_long(char *p, unsigned long x)
-{
-  unsigned char *q = (unsigned char *)p;
-  q[0] = ((x & 0xff000000) >> 24);
-  q[1] = ((x & 0x00ff0000) >> 16);
-  q[2] = ((x & 0x0000ff00) >> 8);
-  q[3] = ((x & 0x000000ff));
-}
-
-/*! \brief return short (16-bit) stored in little-endian format, possibly unaligned */
-unsigned short get_le_short(char *p)
-{
-   unsigned char *q = (unsigned char *)p;
-   return q[0] + (q[1] << 8);
-}
-
-/*! \brief return int (32-bit) stored in little-endian format, possibly unaligned */
-unsigned int get_le_int(char *p)
-{
-   unsigned char *q = (unsigned char *)p;
-   return q[0] + (q[1] << 8) + (q[2] << 16) + (q[3] << 24);
-}
-
-/*! \brief return long (32-bit) stored in little-endian format, possibly unaligned */
-unsigned long get_le_long(char *p)
-{
-   unsigned char *q = (unsigned char *)p;
-   // $C6.1 Promotions: unsigned char gets converted to int by default
-   return ((unsigned long)q[0]) +
-       (((unsigned long)q[1]) << 8) +
-       (((unsigned long)q[2]) << 16) +
-       (((unsigned long)q[3]) << 24);
-
-}
-
-/*! \brief store 16-bit short in little-endian format, possibly unaligned */
-void put_le_short(char *p, unsigned short x)
-{
-   unsigned char *q = (unsigned char*)p;
-   q[0] = x & 0xff;
-   q[1] = (x >> 8) & 0xff;
-}
-
-/*! \brief store 32-bit int in little-endian format, possibly unaligned */
-void put_le_int( char *p, unsigned int x)
-{
-   unsigned char *q = (unsigned char*)p;
-   q[0] = x & 0xff;
-   q[1] = (x >> 8) & 0xff;
-   q[2] = (x >> 16) & 0xff;
-   q[3] = (x >> 24) & 0xff;
-}
-
-/*! \brief store 32-bit int in little-endian format, possibly unaligned */
-void put_le_long(char *p, unsigned long x)
-{
-   unsigned char *q = (unsigned char*)p;
-   q[0] = x & 0xff;
-   q[1] = (x >> 8) & 0xff;
-   q[2] = (x >> 16) & 0xff;
-   q[3] = (x >> 24) & 0xff;
-}
-
-//---- Reverse Endianism Functions -------------
-
-void rev_e_short(unsigned short &x)
-{
-  unsigned short tmp = 0;
-
-  tmp = ((x & 0x00ff) << 8);
-  tmp |= ((x & 0xff00) >> 8);
-
-  x = tmp;
-}
-
-void rev_e_long(unsigned long &x)
-{
-  unsigned long tmp = 0;
-
-  tmp = ((x & 0x000000ff) << 24);
-  tmp |= ((x & 0x0000ff00) << 8);
-  tmp |= ((x & 0x00ff0000) >> 8);
-  tmp |= ((x & 0xff000000) >> 24);
-
-  x = tmp;
-}
 
 //=====Buffer================================================================
 
@@ -301,7 +179,7 @@ CBuffer& CBuffer::operator>>(unsigned short &in)
       in = 0;
    else
    {
-      in = get_le_short(getDataPosRead());
+      in = LE_16(*(uint16_t*)getDataPosRead());
       incDataPosRead(2);
    }
    return(*this);
@@ -313,7 +191,7 @@ CBuffer& CBuffer::operator>>(unsigned long &in)
     in = 0;
   else
   {
-    in = get_le_long(getDataPosRead());
+    in = LE_32(*(uint32_t*)getDataPosRead());
     incDataPosRead(4);
   }
   return(*this);
@@ -337,7 +215,7 @@ char *CBuffer::UnpackStringBE(char* sz, unsigned short _usiSize)
   unsigned short nLen;
   sz[0] = '\0';
   *this >> nLen;
-  rev_e_short(nLen);
+  nLen = BSWAP_16(nLen);
   nLen = nLen < _usiSize ? nLen : _usiSize - 1;
   for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
   sz[nLen] = '\0';
@@ -349,7 +227,7 @@ char *CBuffer::UnpackStringBE()
 {
   unsigned short nLen;
   *this >> nLen;
-  rev_e_short(nLen);
+  nLen = BSWAP_16(nLen);
   char *sz = new char[nLen+1];
   sz[0] = '\0';
   for (unsigned short i = 0; i < nLen; i++) *this >> sz[i];
@@ -421,7 +299,7 @@ unsigned long CBuffer::UnpackUnsignedLongBE()
     n = 0;
   else
   {
-    n = get_be_long(getDataPosRead());
+    n = BE_32(*(uint32_t*)getDataPosRead());
     incDataPosRead(4);
   }
   return n;
@@ -441,7 +319,7 @@ unsigned short CBuffer::UnpackUnsignedShortBE()
     n = 0;
   else
   {
-    n = get_be_short(getDataPosRead());
+    n = BE_16(*(uint16_t*)getDataPosRead());
     incDataPosRead(2);
   }
   return n;
@@ -507,7 +385,7 @@ char *CBuffer::PackUnsignedLong(unsigned long data)
                  "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
-  put_le_long(getDataPosWrite(), data);
+  *(uint32_t*)getDataPosWrite() = LE_32(data);
   incDataPosWrite(4);
   return getDataPosWrite() - 4;
 }
@@ -520,7 +398,7 @@ char *CBuffer::PackUnsignedLongBE(unsigned long data)
                  "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
-  put_be_long(getDataPosWrite(), data);
+  *(uint32_t*)getDataPosWrite() = BE_32(data);
   incDataPosWrite(4);
   return getDataPosWrite() - 4;
 }
@@ -584,7 +462,7 @@ char *CBuffer::PackString(const char *data, unsigned short max)
                  "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
-  put_le_short(getDataPosWrite(), n + 1);
+  *(uint16_t*)getDataPosWrite() = LE_16(n + 1);
   incDataPosWrite(2);
   if (n)
   {
@@ -604,7 +482,7 @@ char *CBuffer::PackUnsignedShort(unsigned short data)
                  "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
-  put_le_short(getDataPosWrite(), data);
+  *(uint16_t*)getDataPosWrite() = LE_16(data);
   incDataPosWrite(2);
   return getDataPosWrite() - 2;
 }
@@ -617,7 +495,7 @@ char *CBuffer::PackUnsignedShortBE(unsigned short data)
                  "CBuffer can hold!\n"), L_WARNxSTR);
     return getDataPosWrite();
   }
-  put_be_short(getDataPosWrite(), data);
+  *(uint16_t*)getDataPosWrite() = BE_16(data);
   incDataPosWrite(2);
   return getDataPosWrite() - 2;
 }
@@ -642,8 +520,8 @@ bool CBuffer::readTLV(int nCount, int nBytes)
     *this >> tlv->myType;
     *this >> tlv->myLen;
 
-    rev_e_short(tlv->myType);
-    rev_e_short(tlv->myLen);
+    tlv->myType = BSWAP_16(tlv->myType);
+    tlv->myLen = BSWAP_16(tlv->myLen);
 
     nCurBytes += 4 + tlv->myLen;
 

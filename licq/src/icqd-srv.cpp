@@ -27,6 +27,7 @@
 
 #include "time-fix.h"
 
+#include "licq_byteorder.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_oscarservice.h"
@@ -2227,8 +2228,8 @@ bool CICQDaemon::ProcessSrvPacket(CBuffer& packet)
          >> nLen;
 
   // Eww
-  rev_e_short(nSequence);
-  rev_e_short(nLen);
+  nSequence = BSWAP_16(nSequence);
+  nLen = BSWAP_16(nLen);
 
   switch (nChannel)
   {
@@ -2470,7 +2471,7 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
       m_nDesiredStatus = packet.UnpackUnsignedLongTLV(0x0006);
     if (packet.getTLVLen(0x000a) == 4) {
       realIP = packet.UnpackUnsignedLongTLV(0x000a);
-      rev_e_long(realIP);
+      realIP = BSWAP_32(realIP);
       realIP = PacketIpToNetworkIp(realIP);
       CPacket::SetRealIp(NetworkIpToPacketIp(realIP));
       ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
@@ -2629,7 +2630,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     }
 
 //     userIP = packet.UnpackUnsignedLongTLV(0x0a, 1);
-//     rev_e_long(userIP);
+//      userIP = BSWAP_32(userIP);
     ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
     if (u == NULL)
     {
@@ -2662,7 +2663,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     if (packet.getTLVLen(0x000a) == 4) {
       nUserIP = packet.UnpackUnsignedLongTLV(0x000a);
       if (nUserIP) {
-        rev_e_long(nUserIP);
+          nUserIP = BSWAP_32(nUserIP);
         nUserIP = PacketIpToNetworkIp(nUserIP);
       }
     }
@@ -3418,7 +3419,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       if (msgTxt.getTLVLen(0x0004) == 4)
       {
         unsigned long Ip = msgTxt.UnpackUnsignedLongTLV(0x0004);
-        rev_e_long(Ip);
+            Ip = BSWAP_32(Ip);
         u->SetIp(PacketIpToNetworkIp(Ip));
       }
 
@@ -6411,8 +6412,8 @@ void CICQDaemon::ProcessDataChannel(CBuffer &packet)
   unsigned short nFamily, nSubtype;
 
   packet >> nFamily >> nSubtype;
-  rev_e_short(nFamily);
-  rev_e_short(nSubtype);
+  nFamily = BSWAP_16(nFamily);
+  nSubtype = BSWAP_16(nSubtype);
 
   switch (nFamily)
   {

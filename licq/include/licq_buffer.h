@@ -29,9 +29,6 @@ extern unsigned long PacketIpToNetworkIp(unsigned long l);
  *----------------------------------------------------------------------------*/
 extern unsigned long NetworkIpToPacketIp(unsigned long l);
 
-extern void rev_e_short(unsigned short &);
-extern void rev_e_long(unsigned long &);
-
 //=====COscarTLV================================================================
 class COscarTLV
 {

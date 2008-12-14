@@ -20,6 +20,7 @@
 // Localization
 #include "gettext.h"
 
+#include "licq_byteorder.h"
 #include "licq_icqd.h"
 #include "licq_events.h"
 #include "licq_socket.h"
@@ -194,8 +195,8 @@ bool COscarService::ProcessPacket(CBuffer &packet)
          >> Sequence
          >> Len;
 
-  rev_e_short(Sequence);
-  rev_e_short(Len);
+  Sequence = BSWAP_16(Sequence);
+  Len = BSWAP_16(Len);
 
   switch (Channel)
   {
@@ -239,10 +240,10 @@ void COscarService::ProcessDataChannel(CBuffer &packet)
   unsigned long RequestId;
 
   packet >> Family >> SubType >> Flags >> RequestId;
-  rev_e_short(Family);
-  rev_e_short(SubType);
-  rev_e_short(Flags);
-  rev_e_long(RequestId);
+  Family = BSWAP_16(Family);
+  SubType = BSWAP_16(SubType);
+  Flags = BSWAP_16(Flags);
+  RequestId = BSWAP_32(RequestId);
 
   if (Flags & 0x8000) // version of the family that this SNAC, just ignore it
   {
