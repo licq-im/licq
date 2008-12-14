@@ -7,27 +7,6 @@
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
 
-/*------------------------------------------------------------------------------
- * PacketIpToNetworkIp
- *
- * Takes an ip from the buffer class and converts it to network byte order:
- * Little endian machine:
- *  Packet returns ip in big-endian -> reverse digits -> call htonl
- * Big endian machine:
- *  Packet returns ip in little-endian -> reverse digits -> call htonl (does nothing)
- *----------------------------------------------------------------------------*/
-extern unsigned long PacketIpToNetworkIp(unsigned long l);
-
-/*------------------------------------------------------------------------------
- * NetworkIpToPacketIp
- *
- * Takes an ip in network order and converts it to the packet class format
- * Little endian machine:
- *  Packet returns ip in big-endian -> reverse digits -> call htonl
- * Big endian machine:
- *  Packet returns ip in little-endian -> reverse digits -> call htonl (does nothing)
- *----------------------------------------------------------------------------*/
-extern unsigned long NetworkIpToPacketIp(unsigned long l);
 
 //=====COscarTLV================================================================
 class COscarTLV
@@ -176,8 +155,6 @@ protected:
         *m_pDataPosRead;
    unsigned long m_nDataSize;
    TLVList myTLVs;
-
-   void antiwarning() { NetworkIpToPacketIp(PacketIpToNetworkIp(127)); }
 };
 
 

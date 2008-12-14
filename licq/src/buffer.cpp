@@ -26,20 +26,6 @@
 #include "licq_log.h"
 #include "support.h"
 
-//=====Utilities=================================================================
-
-/*! \brief Takes an ip from the buffer class and converts it to network byte order */
-unsigned long PacketIpToNetworkIp(unsigned long l)
-{
-  return htonl((l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24));
-}
-
-/*! \brief Takes an ip in network order and converts it to the packet class format */
-unsigned long NetworkIpToPacketIp(unsigned long l)
-{
-  l = ntohl(l);
-  return (l << 24) | ((l & 0xff00) << 8) | ((l & 0xff0000) >> 8) | (l >> 24);
-}
 
 // Endianness utility routines: Unlike Real Internet Protocols, this
 // heap of dung uses little-endian byte sex.  With the new v7 and above

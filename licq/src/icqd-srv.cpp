@@ -2130,7 +2130,7 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
   else
   {
     // Now get the internal ip from this socket
-    CPacket::SetLocalIp(  NetworkIpToPacketIp(s->LocalIp() ));
+    CPacket::SetLocalIp(LE_32(s->LocalIp()));
     ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
     if (o)
       o->SetIntIp(s->LocalIp());
@@ -2470,10 +2470,8 @@ void CICQDaemon::ProcessServiceFam(CBuffer &packet, unsigned short nSubtype)
     if (packet.getTLVLen(0x0006) == 4)
       m_nDesiredStatus = packet.UnpackUnsignedLongTLV(0x0006);
     if (packet.getTLVLen(0x000a) == 4) {
-      realIP = packet.UnpackUnsignedLongTLV(0x000a);
-      realIP = BSWAP_32(realIP);
-      realIP = PacketIpToNetworkIp(realIP);
-      CPacket::SetRealIp(NetworkIpToPacketIp(realIP));
+      realIP = BE_32(packet.UnpackUnsignedLongTLV(0x000a));
+      CPacket::SetRealIp(LE_32(realIP));
       ICQOwner* owner = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       owner->SetIp(realIP);
       gUserManager.DropOwner(owner);
@@ -2664,7 +2662,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
       nUserIP = packet.UnpackUnsignedLongTLV(0x000a);
       if (nUserIP) {
           nUserIP = BSWAP_32(nUserIP);
-        nUserIP = PacketIpToNetworkIp(nUserIP);
+        nUserIP = LE_32(nUserIP);
       }
     }
     if( u->StatusOffline() || nUserIP )
@@ -2769,7 +2767,7 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
       if (intIP)
       {
-        intIP = PacketIpToNetworkIp(intIP);
+        intIP = LE_32(intIP);
         u->SetIntIp(intIP);
       }
 
@@ -3418,9 +3416,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       
       if (msgTxt.getTLVLen(0x0004) == 4)
       {
-        unsigned long Ip = msgTxt.UnpackUnsignedLongTLV(0x0004);
-            Ip = BSWAP_32(Ip);
-        u->SetIp(PacketIpToNetworkIp(Ip));
+        unsigned long Ip = BE_32(msgTxt.UnpackUnsignedLongTLV(0x0004));
+        u->SetIp(Ip);
       }
 
       // Special status to us?
@@ -5565,12 +5562,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           msg.UnpackUnsignedShort(); // chat group
 
-          nIp = msg.UnpackUnsignedLongBE();
-          nIp = PacketIpToNetworkIp(nIp);
+          nIp = LE_32(msg.UnpackUnsignedLongBE());
           u->SetIpPort(nIp, msg.UnpackUnsignedLong());
 
-          nIp = msg.UnpackUnsignedLongBE();
-          nIp = PacketIpToNetworkIp(nIp);
+          nIp = LE_32(msg.UnpackUnsignedLongBE());
           u->SetIntIp(nIp);
 
           msg >> nMode;

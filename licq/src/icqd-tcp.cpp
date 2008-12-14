@@ -25,6 +25,7 @@
 
 #include "time-fix.h"
 
+#include "licq_byteorder.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_packets.h"
@@ -1872,8 +1873,8 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
            >> ackFlags
            >> msgFlags
     ;
-    senderIp = PacketIpToNetworkIp(senderIp);
-    localIp = PacketIpToNetworkIp(localIp);
+    senderIp = LE_32(senderIp);
+    localIp = LE_32(localIp);
   }
 
   unsigned long nMask = E_DIRECT

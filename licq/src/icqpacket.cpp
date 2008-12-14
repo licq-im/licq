@@ -32,6 +32,7 @@ extern int errno;
 
 #include "time-fix.h"
 
+#include "licq_byteorder.h"
 #include "licq_packets.h"
 #include "licq_socket.h"
 #include "licq_icq.h"
@@ -533,8 +534,8 @@ CPacket::~CPacket()
 void CPacket::SetIps(INetSocket *s)
 {
   if (s_nLocalIp == 0 || s_nLocalIp == s_nRealIp)
-    s_nLocalIp = NetworkIpToPacketIp(s->LocalIp());
-  s_nRealIp = NetworkIpToPacketIp(s->LocalIp());
+    s_nLocalIp = LE_32(s->LocalIp());
+  s_nRealIp = LE_32(s->LocalIp());
 }
 
 
@@ -3637,7 +3638,7 @@ CPU_ReverseTCPRequest::CPU_ReverseTCPRequest(unsigned long nDestinationUin,
              >> nPort2 >> nJunk // port which they tried to connect to
              >> nJunk >> nJunk // nPort again
              >> nVersion;
-      nIp = PacketIpToNetworkIp(nIp);
+      nIp = LE_32(nIp);
 #endif
 
 

@@ -18,6 +18,7 @@
 
 #include "time-fix.h"
 
+#include "licq_byteorder.h"
 #include "licq_icqd.h"
 #include "licq_translate.h"
 #include "licq_log.h"
@@ -865,8 +866,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
 
       // The packet class will spit out an ip in network order on a little
       // endian machine and in little-endian on a big endian machine
-      userIP = PacketIpToNetworkIp(userIP);
-      realIP = PacketIpToNetworkIp(realIP);
+      userIP = LE_32(userIP);
+      realIP = LE_32(realIP);
       u->SetIpPort(userIP, userPort);
       u->SetRealIp(realIP);
       // What is mode 1?  We can't connect direct...
@@ -1288,8 +1289,8 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
       gLog.Info("%sRandom chat user found (%ld).\n", L_UDPxSTR, nUin);
       packet >> nIp >> nPort >> nJunk >> nRealIp >> nMode
              >> nStatus >> nTcpVersion;
-      nIp = PacketIpToNetworkIp(nIp);
-      nRealIp = PacketIpToNetworkIp(nRealIp);
+      nIp = LE_32(nIp);
+      nRealIp = LE_32(nRealIp);
 
       ICQUser *u = gUserManager.FetchUser(nUin, LOCK_W);
       bool bNewUser = false;
@@ -1457,7 +1458,7 @@ unsigned short CICQDaemon::ProcessUdpPacket(UDPSocket *udp, unsigned short bMult
              >> nPort2 >> nJunk // port which they tried to connect to
              >> nJunk >> nJunk // nPort again
              >> nVersion;
-      nIp = PacketIpToNetworkIp(nIp);
+      nIp = LE_32(nIp);
       gLog.Info("%sReverse tcp request from %ld (port %d).\n", L_UDPxSTR, nUin, nPort2);
 #ifdef BLOCKING_REVERSE_CONNECT
       ReverseConnectToUser(nUin, nIp, nPort, VersionToUse(nVersion), nPort2);
