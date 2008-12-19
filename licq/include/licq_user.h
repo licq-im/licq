@@ -6,6 +6,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <boost/any.hpp>
 
 #include "pthread_rdwr.h"
 
@@ -241,6 +242,7 @@ typedef std::map<unsigned short, LicqGroup*> GroupMap;
 typedef std::map<unsigned short, std::string> GroupNameMap;
 typedef std::list<unsigned long> UinList;
 typedef std::vector <class CUserEvent *> UserEventList;
+typedef std::map<std::string, boost::any> PropertyMap;
 
 // Cheap hack as I'm too lazy to move the relevant functions to user.cpp
 extern "C" void SetString(char **, const char *);
@@ -436,26 +438,21 @@ public:
 
   void saveAll();
   virtual void SaveLicqInfo();
-  void SaveGeneralInfo();
-  void SaveMoreInfo();
-  void SaveHomepageInfo();
-  void SaveWorkInfo();
-  void SaveAboutInfo();
+  void saveUserInfo();
   void SaveInterestsInfo();
   void SaveBackgroundsInfo();
   void SaveOrganizationsInfo();
   void SavePhoneBookInfo();
   void SavePictureInfo();
-  void SaveExtInfo();
   void SaveNewMessagesInfo();
 
   // General Info
   //!Retrieves the user's alias.
   const char* GetAlias() const                  { return m_szAlias; }
   //!Retrieves the user's first name.
-  const char* GetFirstName() const              { return m_szFirstName; }
+  std::string getFirstName() const              { return getUserInfoString("FirstName"); }
   //!Retrieves the user's last name.
-  const char* GetLastName() const               { return m_szLastName; }
+  std::string getLastName() const               { return getUserInfoString("LastName"); }
 
   /**
    * Convenience function for getting full name of user
@@ -471,102 +468,13 @@ public:
    */
   std::string getEmail() const;
 
-  //!Retrieves the user's primary e-mail address.
-  const char* GetEmailPrimary() const           { return m_szEmailPrimary; }
-  //!Retrieves the user's secondary e-mail address.
-  const char* GetEmailSecondary() const         { return m_szEmailSecondary; }
-  //!Retrieves the user's old e-mail address.
-  const char* GetEmailOld() const               { return m_szEmailOld; }
-  //!Retrieves the user's city.
-  const char* GetCity() const                   { return m_szCity; }
-  //!Retrieves the user's state.
-  const char* GetState() const                  { return m_szState; }
-  //!Retrieves the user's phone number.
-  const char* GetPhoneNumber() const            { return m_szPhoneNumber; }
-  //!Retrieves the user's fax number.
-  const char* GetFaxNumber() const              { return m_szFaxNumber; }
-  //!Retrieves the user's street address.
-  const char* GetAddress() const                { return m_szAddress; }
-  //!Retrieves the user's cellular phone number.
-  const char* GetCellularNumber() const         { return m_szCellularNumber; }
-  //!Retrieves the user's zip code.
-  const char* GetZipCode() const                { return m_szZipCode; }
-  //!Retrieves the user's country code.  Used to lookup the country name.
-  unsigned short GetCountryCode() const         { return m_nCountryCode; }
   //!Retrieves the user's time code.
   char GetTimezone() const                      { return m_nTimezone; }
   //!Returns true if the user requires you to be authorized to add
   //!them to anyone's ICQ list.
   bool GetAuthorization() const                 { return m_bAuthorization; }
-  //!Retrieves the users's web status
-  unsigned char GetWebAwareStatus() const       { return m_nWebAwareStatus; }
-  //!Returns true if the user has attempted to hide the e-mail addresses
-  //!provided in their information.
-  bool GetHideEmail() const                     { return m_bHideEmail; }
-
-  // More Info
-  //!Retrieves the user's age.
-  unsigned short GetAge() const                 { return m_nAge; }
-  //!Retrieves the user's gender.
-  char GetGender() const                        {  return m_nGender; }
-  //!Retrieves the user's homepage URL.
-  const char* GetHomepage() const               {  return m_szHomepage; }
-  //!Retrieves the user's year they were born ih.
-  unsigned short GetBirthYear() const           {  return m_nBirthYear; }
-  //!Retrieves the user's month they were born in.
-  char GetBirthMonth() const                    {  return m_nBirthMonth; }
-  //!Retrieves the user's day they were born in.
-  char GetBirthDay() const                      {  return m_nBirthDay; }
-  //!Retrieves the user's first language.
-  char GetLanguage1() const                     {  return m_nLanguage[0]; }
-  //!Retrieves the user's second language.
-  char GetLanguage2() const                     {  return m_nLanguage[1]; }
-  //!Retrieves the user's third language.
-  char GetLanguage3() const                     {  return m_nLanguage[2]; }
-  //!Retrieves the user's language as specified by the parameter.
-  //!Useful when retrieving their languages in a loop.
-  char GetLanguage(unsigned char l) const       {  return m_nLanguage[l]; }
-
-  // Homepage Info
-  //!Returns true if the user has entered a homepage category
-  bool GetHomepageCatPresent() const            {  return m_bHomepageCatPresent; }
-  //!Retrieves the user's homepage category code
-  unsigned short GetHomepageCatCode() const     {  return m_nHomepageCatCode; }
-  //!Retrivies the users homepage description
-  const char* GetHomepageDesc() const           {  return m_szHomepageDesc; }
-  //!Returns true if the user has an ICQ homepage (http://<uin>.home.icq.com/)
-  bool GetICQHomepagePresent() const            {  return m_bICQHomepagePresent; }
-
-  // Work Info
-  //!Retrieves the city of the company the user is employed by.
-  const char* GetCompanyCity() const            {  return m_szCompanyCity; }
-  //!Retrieves the state of the company the user is employed by.
-  const char* GetCompanyState() const           {  return m_szCompanyState; }
-  //!Retrieves the phone number of the company's phone number the user is employed by.
-  const char* GetCompanyPhoneNumber() const     {  return m_szCompanyPhoneNumber; }
-  //!Retrieves the fax bynber of the company the user is employed by.
-  const char* GetCompanyFaxNumber() const       {  return m_szCompanyFaxNumber; }
-  //!Retrieves the street address of the company the user is employed by.
-  const char* GetCompanyAddress() const         {  return m_szCompanyAddress; }
-  //!Retrieves the zip code of the company the user is employed by.
-  const char* GetCompanyZip() const             { return m_szCompanyZip; }
-  //!Retrieves the country code of the company the user is employed by.
-  //!Used to look up the country name.
-  unsigned short GetCompanyCountry() const      {  return m_nCompanyCountry; }
-  //!Retrieves the name of the company the user is employed by.
-  const char* GetCompanyName() const            {  return m_szCompanyName; }
-  //!Retrieves the department the user is in.
-  const char* GetCompanyDepartment() const      {  return m_szCompanyDepartment; }
-  //!Retrieves the user's job title.
-  const char* GetCompanyPosition() const        {  return m_szCompanyPosition; }
-  //!Retrieves the users's occupation code
-  unsigned short GetCompanyOccupation() const   {  return m_nCompanyOccupation; }
-  //!Retrieves the URL of the company the user is employed by.
-  const char* GetCompanyHomepage() const        {  return m_szCompanyHomepage; }
-
-  // About Info
-  //!Retrieves the self description of the user.
-  const char* GetAbout() const                  { return m_szAbout; }
+  //!Retrieves the user's cellular phone number.
+  std::string getCellularNumber() const         { return getUserInfoString("CellularNumber"); }
 
   // More2 Info
   //!Retrieves the user's interests
@@ -652,58 +560,56 @@ public:
 
   // General Info
   void SetAlias (const char *n);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
-  void SetFirstName (const char *n)          {  SetString(&m_szFirstName, n);  SaveGeneralInfo();  }
-  void SetLastName (const char *n)           {  SetString(&m_szLastName, n);  SaveGeneralInfo();  }
-  void SetEmailPrimary (const char *n)       {  SetString(&m_szEmailPrimary, n);  SaveGeneralInfo();  }
-  void SetEmailSecondary (const char *n)     {  SetString(&m_szEmailSecondary, n);  SaveGeneralInfo();  }
-  void SetEmailOld(const char *n)            {  SetString(&m_szEmailOld, n);  SaveGeneralInfo();  }
-  void SetCity (const char *n)               {  SetString(&m_szCity, n);  SaveGeneralInfo();  }
-  void SetState (const char *n)              {  SetString(&m_szState, n);  SaveGeneralInfo();  }
-  void SetPhoneNumber (const char *n)        {  SetString(&m_szPhoneNumber, n);  SaveGeneralInfo();  }
-  void SetFaxNumber (const char *n)          {  SetString(&m_szFaxNumber, n);  SaveGeneralInfo();  }
-  void SetAddress (const char *n)            {  SetString(&m_szAddress, n);  SaveGeneralInfo();  }
-  void SetCellularNumber (const char *n)     {  SetString(&m_szCellularNumber, n);  SaveGeneralInfo();  }
-  void SetZipCode (const char *n)            {  SetString(&m_szZipCode, n);  SaveGeneralInfo();  }
-  void SetCountryCode (unsigned short n)     {  m_nCountryCode = n;  SaveGeneralInfo();  }
-  void SetTimezone (const char n)            {  m_nTimezone = n;  SaveGeneralInfo();  }
-  void SetAuthorization (bool n)             {  m_bAuthorization = n;  SaveGeneralInfo();  }
-  virtual void SetWebAwareStatus (char n)    {  m_nWebAwareStatus = n;  }
-  void SetHideEmail (bool n)                 {  m_bHideEmail = n;  SaveGeneralInfo();  }
+  void SetTimezone (const char n)            {  m_nTimezone = n; saveUserInfo();  }
+  void SetAuthorization (bool n)             {  m_bAuthorization = n; saveUserInfo();  }
 
-  // More Info
-  void SetAge (unsigned short n)             {  m_nAge = n;  SaveMoreInfo();  }
-  void SetGender (const char n)              {  m_nGender = n;  SaveMoreInfo();  }
-  void SetHomepage (const char *n)           {  SetString(&m_szHomepage, n);  SaveMoreInfo();  }
-  void SetBirthYear (unsigned short n)       {  m_nBirthYear = n;  SaveMoreInfo();  }
-  void SetBirthMonth (const char n)          {  m_nBirthMonth = n;  SaveMoreInfo();  }
-  void SetBirthDay (const char n)            {  m_nBirthDay = n;  SaveMoreInfo();  }
-  void SetLanguage1 (const char n)           {  m_nLanguage[0] = n;  SaveMoreInfo();  }
-  void SetLanguage2 (const char n)           {  m_nLanguage[1] = n;  SaveMoreInfo();  }
-  void SetLanguage3 (const char n)           {  m_nLanguage[2] = n;  SaveMoreInfo();  }
-  void SetLanguage (unsigned char l, char n) {  m_nLanguage[l] = n;  SaveMoreInfo();  }
+  /**
+   * Get string user info
+   *
+   * @param key Name of property to get
+   * @return Property value if string, otherwise empty
+   */
+  std::string getUserInfoString(const std::string& key) const;
 
-  // Homepage Info
-  void SetHomepageCatPresent(bool n)         {  m_bHomepageCatPresent = n; SaveHomepageInfo(); }
-  void SetHomepageCatCode(unsigned short n)  {  m_nHomepageCatCode = n; SaveHomepageInfo(); }
-  void SetHomepageDesc(const char *n)        {  SetString(&m_szHomepageDesc, n); SaveHomepageInfo(); }
-  void SetICQHomepagePresent(bool n)         {  m_bICQHomepagePresent = n; SaveHomepageInfo(); }
+  /**
+   * Get numeric user info
+   *
+   * @param key Name of property to get
+   * @return Property value if unsigned int, otherwise 0
+   */
+  unsigned int getUserInfoUint(const std::string& key) const;
 
-  // Work Info
-  void SetCompanyCity (const char *n)        {  SetString(&m_szCompanyCity, n);  SaveWorkInfo();  }
-  void SetCompanyState (const char *n)       {  SetString(&m_szCompanyState, n);  SaveWorkInfo();  }
-  void SetCompanyPhoneNumber (const char *n) {  SetString(&m_szCompanyPhoneNumber, n);  SaveWorkInfo();  }
-  void SetCompanyFaxNumber (const char *n)   {  SetString(&m_szCompanyFaxNumber, n);  SaveWorkInfo();  }
-  void SetCompanyAddress (const char *n)     {  SetString(&m_szCompanyAddress, n);  SaveWorkInfo();  }
-  void SetCompanyZip (const char *n)            { SetString(&m_szCompanyZip, n); SaveWorkInfo(); }
-  void SetCompanyCountry (unsigned short n)  {  m_nCompanyCountry = n;  SaveWorkInfo();  }
-  void SetCompanyName (const char *n)        {  SetString(&m_szCompanyName, n);  SaveWorkInfo();  }
-  void SetCompanyDepartment (const char *n)  {  SetString(&m_szCompanyDepartment, n);  SaveWorkInfo();  }
-  void SetCompanyPosition (const char *n)    {  SetString(&m_szCompanyPosition, n);  SaveWorkInfo();  }
-  void SetCompanyOccupation (unsigned short n) {  m_nCompanyOccupation = n;  SaveWorkInfo();  }
-  void SetCompanyHomepage (const char *n)    {  SetString(&m_szCompanyHomepage, n);  SaveWorkInfo();  }
+  /**
+   * Get boolean user info
+   *
+   * @param key Name of property to get
+   * @return Property value if bool, otherwise false
+   */
+  bool getUserInfoBool(const std::string& key) const;
 
-  // About Info
-  void SetAbout(const char *n)        {  SetString(&m_szAbout, n);  SaveAboutInfo();  }
+  /**
+   * Set string user info
+   *
+   * @param key Name of property to set, must already exist
+   * @param value New value for property
+   */
+  void setUserInfoString(const std::string& key, const std::string& value);
+
+  /**
+   * Set numeric user info
+   *
+   * @param key Name of property to set, must already exist
+   * @param value New value for property
+   */
+  void setUserInfoUint(const std::string& key, unsigned int value);
+
+  /**
+   * Set bool user info
+   *
+   * @param key Name of property to set, must already exist
+   * @param value New value for property
+   */
+  void setUserInfoBool(const std::string& key, bool value);
 
   // Picture info
   void SetPicturePresent(bool b)      { m_bPicturePresent = b; SavePictureInfo(); }
@@ -951,11 +857,7 @@ public:
 
 protected:
   ICQUser() { /* ICQOwner inherited constructor - does nothing */ }
-  void LoadGeneralInfo();
-  void LoadMoreInfo();
-  void LoadHomepageInfo();
-  void LoadWorkInfo();
-  void LoadAboutInfo();
+  void loadUserInfo();
   void LoadInterestsInfo();
   void LoadBackgroundsInfo();
   void LoadOrganizationsInfo();
@@ -1031,53 +933,11 @@ protected:
 
   // General Info
   char *m_szAlias;
-  char *m_szFirstName;
-  char *m_szLastName;
-  char *m_szEmailPrimary;
-  char *m_szEmailSecondary;
-  char *m_szEmailOld;
-  char *m_szCity;
-  char *m_szState;
-  char *m_szPhoneNumber;
-  char *m_szFaxNumber;
-  char *m_szAddress;
-  char *m_szCellularNumber;
-  char *m_szZipCode;
-  unsigned short m_nCountryCode;
   char m_nTimezone;
   bool m_bAuthorization;
-  bool m_bHideEmail;
-  unsigned char m_nWebAwareStatus;
 
-  // More Info
-  unsigned short m_nAge;
-  char m_nGender;
-  char *m_szHomepage;
-  bool m_bHomepageCatPresent;
-  unsigned short m_nHomepageCatCode;
-  char *m_szHomepageDesc;
-  bool m_bICQHomepagePresent;
-  unsigned short m_nBirthYear;
-  char m_nBirthMonth;
-  char m_nBirthDay;
-  char m_nLanguage[3];
-
-  // Work Info
-  char *m_szCompanyCity;
-  char *m_szCompanyState;
-  char *m_szCompanyPhoneNumber;
-  char *m_szCompanyFaxNumber;
-  char *m_szCompanyAddress;
-  char *m_szCompanyZip;
-  unsigned short m_nCompanyCountry;
-  char *m_szCompanyName;
-  char *m_szCompanyDepartment;
-  char *m_szCompanyPosition;
-  unsigned short m_nCompanyOccupation;
-  char *m_szCompanyHomepage;
-
-  // About Info
-  char *m_szAbout;
+  // myUserInfo holds user information like email, address, homepage etc...
+  PropertyMap myUserInfo;
 
   // More2 Info
   ICQUserCategory *m_Interests;

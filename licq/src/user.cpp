@@ -45,6 +45,10 @@
 #include "pthread_rdwr.h"
 
 using namespace std;
+using boost::any;
+using boost::any_cast;
+using boost::bad_any_cast;
+
 
 ICQUserCategory::ICQUserCategory(UserCat uc)
 {
@@ -1827,11 +1831,7 @@ bool ICQUser::LoadInfo()
   m_fConf.SetFlags(0);
   m_fConf.SetSection("user");
 
-  LoadGeneralInfo();
-  LoadMoreInfo();
-  LoadHomepageInfo();
-  LoadWorkInfo();
-  LoadAboutInfo();
+  loadUserInfo();
   LoadInterestsInfo();
   LoadBackgroundsInfo();
   LoadOrganizationsInfo();
@@ -1842,88 +1842,18 @@ bool ICQUser::LoadInfo()
   return true;
 }
 
-
-//-----ICQUser::LoadGeneralInfo----------------------------------------------
-void ICQUser::LoadGeneralInfo()
-{
-  // read in the fields, checking for errors each time
-  char szTemp[MAX_LINE_LEN];
-  m_fConf.ReadStr("Alias", szTemp, tr("Unknown"));  SetAlias(szTemp);
-  m_fConf.ReadStr("FirstName", szTemp, "");  SetFirstName(szTemp);
-  m_fConf.ReadStr("LastName", szTemp, "");  SetLastName(szTemp);
-  m_fConf.ReadStr("Email1", szTemp, "");  SetEmailPrimary(szTemp);
-  m_fConf.ReadStr("Email2", szTemp, "");  SetEmailSecondary(szTemp);
-  m_fConf.ReadStr("EmailO", szTemp, "");  SetEmailOld(szTemp);
-  m_fConf.ReadStr("City", szTemp, "");  SetCity(szTemp);
-  m_fConf.ReadStr("State", szTemp, "");  SetState(szTemp);
-  m_fConf.ReadStr("PhoneNumber", szTemp, "");  SetPhoneNumber(szTemp);
-  m_fConf.ReadStr("FaxNumber", szTemp, "");  SetFaxNumber(szTemp);
-  m_fConf.ReadStr("Address", szTemp, "");  SetAddress(szTemp);
-  m_fConf.ReadStr("CellularNumber", szTemp, "");  SetCellularNumber(szTemp);
-  m_fConf.ReadStr("Zipcode", szTemp, "");  SetZipCode(szTemp);
-  m_fConf.ReadNum("Country", m_nCountryCode, 0);
-  m_fConf.ReadNum("Timezone", m_nTimezone, TIMEZONE_UNKNOWN);
-  m_fConf.ReadBool("Authorization", m_bAuthorization, false);
-  m_fConf.ReadBool("HideEmail", m_bHideEmail, false);
-}
-
-
-//-----ICQUser::LoadMoreInfo-------------------------------------------------
-void ICQUser::LoadMoreInfo()
-{
-  // read in the fields, checking for errors each time
-  char szTemp[MAX_LINE_LEN];
-  m_fConf.ReadNum("Age", m_nAge, 0);
-  m_fConf.ReadNum("Gender", m_nGender, GENDER_UNSPECIFIED);
-  m_fConf.ReadStr("Homepage", szTemp, tr("<none>"));  SetHomepage(szTemp);
-  m_fConf.ReadNum("BirthYear", m_nBirthYear, 0);
-  m_fConf.ReadNum("BirthMonth", m_nBirthMonth, 0);
-  m_fConf.ReadNum("BirthDay", m_nBirthDay, 0);
-  m_fConf.ReadNum("Language1", m_nLanguage[0], 0);
-  m_fConf.ReadNum("Language2", m_nLanguage[1], 0);
-  m_fConf.ReadNum("Language3", m_nLanguage[2], 0);
-}
-
-
-//-----ICQUser::LoadHomepageInfo---------------------------------------------
-void ICQUser::LoadHomepageInfo()
-{
-  // read in the fields, checking for errors each time
-  char szTemp[MAX_LINE_LEN];
-  m_fConf.ReadBool("HomepageCatPresent", m_bHomepageCatPresent, false);
-  m_fConf.ReadNum("HomepageCatCode", m_nHomepageCatCode, 0);
-  m_fConf.ReadStr("HomepageDesc", szTemp, "");  SetHomepageDesc(szTemp);
-  m_fConf.ReadBool("ICQHomepagePresent", m_bICQHomepagePresent, false);
-}
-
-
-//-----ICQUser::LoadWorkInfo-------------------------------------------------
-void ICQUser::LoadWorkInfo()
-{
-  // read in the fields, checking for errors each time
-  char szTemp[MAX_LINE_LEN];
-  m_fConf.ReadStr("CompanyCity", szTemp, "");  SetCompanyCity(szTemp);
-  m_fConf.ReadStr("CompanyState", szTemp, "");  SetCompanyState(szTemp);
-  m_fConf.ReadStr("CompanyPhoneNumber", szTemp, "");  SetCompanyPhoneNumber(szTemp);
-  m_fConf.ReadStr("CompanyFaxNumber", szTemp, "");  SetCompanyFaxNumber(szTemp);
-  m_fConf.ReadStr("CompanyAddress", szTemp, "");  SetCompanyAddress(szTemp);
-  m_fConf.ReadStr("CompanyZip", szTemp, "");  SetCompanyZip(szTemp);
-  m_fConf.ReadNum("CompanyCountry", m_nCompanyCountry, 0);
-  m_fConf.ReadStr("CompanyName", szTemp, "");  SetCompanyName(szTemp);
-  m_fConf.ReadStr("CompanyDepartment", szTemp, "");  SetCompanyDepartment(szTemp);
-  m_fConf.ReadStr("CompanyPosition", szTemp, "");  SetCompanyPosition(szTemp);
-  m_fConf.ReadNum("CompanyOccupation", m_nCompanyOccupation, 0);
-  m_fConf.ReadStr("CompanyHomepage", szTemp, "");  SetCompanyHomepage(szTemp);
-}
-
-
-//-----ICQUser::LoadAboutInfo-------------------------------------------------
-void ICQUser::LoadAboutInfo()
+void ICQUser::loadUserInfo()
 {
   // read in the fields, checking for errors each time
   char szTemp[MAX_LINE_LEN];
   m_fConf.SetSection("user");
-  m_fConf.ReadStr("About", szTemp, ""); SetAbout(szTemp);
+  m_fConf.ReadStr("Alias", szTemp, tr("Unknown"));  SetAlias(szTemp);
+  m_fConf.ReadNum("Timezone", m_nTimezone, TIMEZONE_UNKNOWN);
+  m_fConf.ReadBool("Authorization", m_bAuthorization, false);
+
+  PropertyMap::iterator i;
+  for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
+    m_fConf.readVar(i->first, i->second);
 }
 
 //-----ICQUser::LoadPhoneBookInfo--------------------------------------------
@@ -2102,56 +2032,6 @@ ICQUser::~ICQUser()
       free( m_szEncoding );
   if ( m_szAlias )
       free( m_szAlias );
-  if ( m_szFirstName )
-      free( m_szFirstName );
-  if ( m_szLastName )
-      free( m_szLastName );
-  if ( m_szEmailPrimary )
-      free( m_szEmailPrimary );
-  if ( m_szEmailSecondary )
-      free( m_szEmailSecondary );
-  if ( m_szEmailOld )
-      free( m_szEmailOld );
-  if ( m_szCity )
-      free( m_szCity );
-  if ( m_szState )
-      free( m_szState );
-  if ( m_szPhoneNumber )
-      free( m_szPhoneNumber );
-  if ( m_szFaxNumber )
-      free( m_szFaxNumber );
-  if ( m_szAddress )
-      free( m_szAddress );
-  if ( m_szCellularNumber )
-      free( m_szCellularNumber );
-  if ( m_szZipCode )
-      free( m_szZipCode );
-  if ( m_szHomepage )
-      free( m_szHomepage );
-  if ( m_szHomepageDesc )
-      free( m_szHomepageDesc );
-  if ( m_szCompanyCity )
-      free( m_szCompanyCity );
-  if ( m_szCompanyState )
-      free( m_szCompanyState );
-  if ( m_szCompanyPhoneNumber )
-      free( m_szCompanyPhoneNumber );
-  if ( m_szCompanyFaxNumber )
-      free( m_szCompanyFaxNumber );
-  if ( m_szCompanyAddress )
-      free( m_szCompanyAddress );
-  if ( m_szCompanyZip )
-      free( m_szCompanyZip );
-  if ( m_szCompanyName )
-      free( m_szCompanyName );
-  if ( m_szCompanyDepartment )
-      free( m_szCompanyDepartment );
-  if ( m_szCompanyPosition )
-      free( m_szCompanyPosition );
-  if ( m_szCompanyHomepage )
-      free( m_szCompanyHomepage );
-  if ( m_szAbout )
-      free( m_szAbout );
   if ( m_szCustomAutoResponse )
       free( m_szCustomAutoResponse );
   if ( m_szClientInfo )
@@ -2225,44 +2105,45 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_szEncoding = strdup("");
   m_bSecure = false;
 
+  // TODO: Only user data fields valid for protocol should be populated
+
   // General Info
   m_szAlias = NULL;
-  m_szFirstName = NULL;
-  m_szLastName = NULL;
-  m_szEmailPrimary = NULL;
-  m_szEmailSecondary = NULL;
-  m_szEmailOld = NULL;
-  m_szCity = NULL;
-  m_szState = NULL;
-  m_szPhoneNumber = NULL;
-  m_szFaxNumber = NULL;
-  m_szAddress = NULL;
-  m_szCellularNumber = NULL;
-  m_szZipCode = NULL;
-  m_nCountryCode = COUNTRY_UNSPECIFIED;
+  myUserInfo["FirstName"] = string();
+  myUserInfo["LastName"] = string();
+  myUserInfo["Email1"] = string(); // Primary email
+  myUserInfo["Email2"] = string(); // Secondary email
+  myUserInfo["Email0"] = string(); // Old email
+  myUserInfo["City"] = string();
+  myUserInfo["State"] = string();
+  myUserInfo["PhoneNumber"] = string();
+  myUserInfo["FaxNumber"] = string();
+  myUserInfo["Address"] = string();
+  myUserInfo["CellularNumber"] = string();
+  myUserInfo["Zipcode"] = string();
+  myUserInfo["Country"] = (unsigned int)COUNTRY_UNSPECIFIED;
+  myUserInfo["HideEmail"] = false;
   m_nTimezone = TIMEZONE_UNKNOWN;
   m_bAuthorization = false;
-  m_nWebAwareStatus = 2; //Status unknown
-  m_bHideEmail = false;
   m_nTyping = ICQ_TYPING_INACTIVEx0;
   m_bNotInList = false;
-  
+
   // More Info
-  m_nAge = 0xffff;
-  m_nGender = 0;
-  m_szHomepage = NULL;
-  m_nBirthYear = 0;
-  m_nBirthMonth = 0;
-  m_nBirthDay = 0;
-  m_nLanguage[0] = 0;
-  m_nLanguage[1] = 0;
-  m_nLanguage[2] = 0;
+  myUserInfo["Age"] = (unsigned int)0xffff;
+  myUserInfo["Gender"] = (unsigned int)0;
+  myUserInfo["Homepage"] = string();
+  myUserInfo["BirthYear"] = (unsigned int)0;
+  myUserInfo["BirthMonth"] = (unsigned int)0;
+  myUserInfo["BirthDay"] = (unsigned int)0;
+  myUserInfo["Language0"] = (unsigned int)0;
+  myUserInfo["Language1"] = (unsigned int)0;
+  myUserInfo["Language2"] = (unsigned int)0;
 
   // Homepage Info
-  m_bHomepageCatPresent = false;
-  m_nHomepageCatCode = 0;
-  m_szHomepageDesc = NULL;
-  m_bICQHomepagePresent = false;
+  myUserInfo["HomepageCatPresent"] = false;
+  myUserInfo["HomepageCatCode"] = (unsigned int)0;
+  myUserInfo["HomepageDesc"] = string();
+  myUserInfo["ICQHomepagePresent"] = false;
 
   // More2
   m_Interests    = new ICQUserCategory(CAT_INTERESTS);
@@ -2270,21 +2151,21 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   m_Backgrounds  = new ICQUserCategory(CAT_BACKGROUND);
 
   // Work Info
-  m_szCompanyCity = NULL;
-  m_szCompanyState = NULL;
-  m_szCompanyPhoneNumber = NULL;
-  m_szCompanyFaxNumber = NULL;
-  m_szCompanyAddress = NULL;
-  m_szCompanyZip = NULL;
-  m_nCompanyCountry = COUNTRY_UNSPECIFIED;
-  m_szCompanyName = NULL;
-  m_szCompanyDepartment = NULL;
-  m_szCompanyPosition = NULL;
-  m_nCompanyOccupation = OCCUPATION_UNSPECIFIED;
-  m_szCompanyHomepage = NULL;
+  myUserInfo["CompanyCity"] = string();
+  myUserInfo["CompanyState"] = string();
+  myUserInfo["CompanyPhoneNumber"] = string();
+  myUserInfo["CompanyFaxNumber"] = string();
+  myUserInfo["CompanyAddress"] = string();
+  myUserInfo["CompanyZip"] = string();
+  myUserInfo["CompanyCountry"] = (unsigned int)COUNTRY_UNSPECIFIED;
+  myUserInfo["CompanyName"] = string();
+  myUserInfo["CompanyDepartment"] = string();
+  myUserInfo["CompanyPosition"] = string();
+  myUserInfo["CompanyOccupation"] = (unsigned int)OCCUPATION_UNSPECIFIED;
+  myUserInfo["CompanyHomepage"] = string();
 
   // About
-  m_szAbout = NULL;
+  myUserInfo["About"] = string();
 
   // Phone Book
   m_PhoneBook = new ICQUserPhoneBook();
@@ -2390,38 +2271,97 @@ void ICQUser::SetDefaults()
   SetAuthorization(false);
 
   szTemp[0] = '\0';
-  SetFirstName(szTemp);
-  SetLastName(szTemp);
-  SetEmailPrimary(szTemp);
-  SetEmailSecondary(szTemp);
-  SetEmailOld(szTemp);
-  SetCity(szTemp);
-  SetState(szTemp);
-  SetPhoneNumber(szTemp);
-  SetFaxNumber(szTemp);
-  SetAddress(szTemp);
-  SetCellularNumber(szTemp);
-  SetHomepage(szTemp);
-  SetHomepageDesc(szTemp);
-  SetZipCode(szTemp);
-  SetCompanyCity(szTemp);
-  SetCompanyState(szTemp);
-  SetCompanyPhoneNumber(szTemp);
-  SetCompanyFaxNumber(szTemp);
-  SetCompanyAddress(szTemp);
-  SetCompanyZip(szTemp);
-  SetCompanyName(szTemp);
-  SetCompanyDepartment(szTemp);
-  SetCompanyPosition(szTemp);
-  SetCompanyHomepage(szTemp);
-  SetAbout(szTemp);
   SetCustomAutoResponse(szTemp);
+}
+
+string ICQUser::getUserInfoString(const string& key) const
+{
+  try
+  {
+    PropertyMap::const_iterator i = myUserInfo.find(key);
+    if (i != myUserInfo.end())
+      // Try to cast value to a string
+      return any_cast<string>(i->second);
+  }
+  catch(const bad_any_cast &)
+  {
+  }
+  // Unknown property or not a string so just return an empty string object
+  return string();
+}
+
+unsigned int ICQUser::getUserInfoUint(const string& key) const
+{
+  try
+  {
+    PropertyMap::const_iterator i = myUserInfo.find(key);
+    if (i != myUserInfo.end())
+      // Try to cast value to an unsigned int
+      return any_cast<unsigned int>(i->second);
+  }
+  catch(const bad_any_cast &)
+  {
+  }
+  // Unknown property or not an int so just return 0
+  return 0;
+}
+
+bool ICQUser::getUserInfoBool(const string& key) const
+{
+  try
+  {
+    PropertyMap::const_iterator i = myUserInfo.find(key);
+    if (i != myUserInfo.end())
+      // Try to cast value to a bool
+      return any_cast<bool>(i->second);
+  }
+  catch(const bad_any_cast &)
+  {
+  }
+  // Unknown property or not an int so just return false
+  return false;
+}
+
+void ICQUser::setUserInfoString(const string& key, const string& value)
+{
+  PropertyMap::iterator i = myUserInfo.find(key);
+  if (i == myUserInfo.end() || i->second.type() != typeid(string))
+{
+    return;
+}
+
+  i->second = value;
+  saveUserInfo();
+}
+
+void ICQUser::setUserInfoUint(const string& key, unsigned int value)
+{
+  PropertyMap::iterator i = myUserInfo.find(key);
+  if (i == myUserInfo.end() || i->second.type() != typeid(unsigned int))
+{
+    return;
+}
+
+  i->second = value;
+  saveUserInfo();
+}
+
+void ICQUser::setUserInfoBool(const string& key, bool value)
+{
+  PropertyMap::iterator i = myUserInfo.find(key);
+  if (i == myUserInfo.end() || i->second.type() != typeid(bool))
+{
+    return;
+}
+
+  i->second = value;
+  saveUserInfo();
 }
 
 std::string ICQUser::getFullName() const
 {
-  string name = GetFirstName();
-  string lastName = GetLastName();
+  string name = getFirstName();
+  string lastName = getLastName();
   if (!name.empty() && !lastName.empty())
     name += ' ';
   return name + lastName;
@@ -2429,11 +2369,11 @@ std::string ICQUser::getFullName() const
 
 std::string ICQUser::getEmail() const
 {
-  string email = GetEmailPrimary();
+  string email = getUserInfoString("Email1");
   if (email.empty())
-    email = GetEmailSecondary();
+    email = getUserInfoString("Email2");
   if (email.empty())
-    email = GetEmailOld();
+    email = getUserInfoString("Email0");
   return email;
 }
 
@@ -2484,7 +2424,10 @@ int ICQUser::Birthday(unsigned short nRange) const
   struct tm *ts = localtime(&t);
   int nDays = -1;
 
-  if (GetBirthMonth() == 0 || GetBirthDay() == 0)
+  int birthDay = getUserInfoUint("BirthDay");
+  int birthMonth = getUserInfoUint("BirthMonth");
+
+  if (birthMonth == 0 || birthDay == 0)
   {
     if (StatusBirthday() && User()) return 0;
     return -1;
@@ -2492,7 +2435,7 @@ int ICQUser::Birthday(unsigned short nRange) const
 
   if (nRange == 0)
   {
-    if (ts->tm_mon + 1 == GetBirthMonth() && ts->tm_mday == GetBirthDay())
+    if (ts->tm_mon + 1 == birthMonth && ts->tm_mday == birthDay)
       nDays = 0;
   }
   else
@@ -2511,20 +2454,18 @@ int ICQUser::Birthday(unsigned short nRange) const
       nDayMax = nMonthDays[nMonth];
     }
 
-    if (GetBirthMonth() == nMonth && GetBirthDay() >= nDayMin &&
-         GetBirthDay() <= nDayMax)
+    if (birthMonth == nMonth && birthDay >= nDayMin && birthDay <= nDayMax)
     {
-      nDays = GetBirthDay() - nDayMin;
+      nDays = birthDay - nDayMin;
     }
-    else if (nMonthNext != 0 && GetBirthMonth() == nMonthNext &&
-        GetBirthDay() <= nDayMaxNext)
+    else if (nMonthNext != 0 && birthMonth == nMonthNext && birthDay <= nDayMaxNext)
     {
-      nDays = GetBirthDay() + (nMonthDays[nMonth] - nDayMin);
+      nDays = birthDay + (nMonthDays[nMonth] - nDayMin);
     }
 
     /*struct tm tb = *ts;
-    tm_mday = GetBirthDay() - 1;
-    tm_mon = GetBirthMonth() - 1;
+    tm_mday = birthDay - 1;
+    tm_mon = birthMonth - 1;
     mktime(&tb);
     nDays = tb.tm_yday - ts->tm_yday;*/
   }
@@ -2545,8 +2486,9 @@ void ICQUser::SetAlias(const char *s)
 {
   if (s[0] == '\0')
   {
-    if (m_szFirstName != NULL && m_szFirstName[0] != '\0')
-      SetString(&m_szAlias, m_szFirstName);
+    string firstName = getFirstName();
+    if (!firstName.empty())
+      SetString(&m_szAlias, firstName.c_str());
     else
       SetString(&m_szAlias, m_szId);
   }
@@ -2561,7 +2503,7 @@ void ICQUser::SetAlias(const char *s)
     AddTLV(aliasTLV);
   }
 
-  SaveGeneralInfo();
+  saveUserInfo();
 }
 
 
@@ -2944,10 +2886,10 @@ char* ICQUser::usprintf(const char* _szFormat, unsigned long nFlags) const
           sz = getFullName().c_str();
           break;
         case 'f':
-          sz = GetFirstName();
+          sz = getFirstName().c_str();
           break;
         case 'l':
-          sz = GetLastName();
+          sz = getLastName().c_str();
           break;
         case 'a':
           sz = GetAlias();
@@ -2956,13 +2898,13 @@ char* ICQUser::usprintf(const char* _szFormat, unsigned long nFlags) const
           sz = IdString();
           break;
         case 'w':
-          sz = GetHomepage();
+          sz = getUserInfoString("Homepage").c_str();
           break;
         case 'h':
-          sz = GetPhoneNumber();
+          sz = getUserInfoString("PhoneNumber").c_str();
           break;
         case 'c':
-          sz = GetCellularNumber();
+          sz = getUserInfoString("CellularNumber").c_str();
           break;
         case 'S':
           sz = StatusStrShort();
@@ -3248,8 +3190,7 @@ char *ICQUser::MakeRealId(const char *_szId, unsigned long _nPPID,
   return szRealId;
 }
 
-//-----ICQUser::SaveGeneralInfo----------------------------------------------
-void ICQUser::SaveGeneralInfo()
+void ICQUser::saveUserInfo()
 {
   if (!EnableSave()) return;
 
@@ -3262,22 +3203,12 @@ void ICQUser::SaveGeneralInfo()
   m_fConf.SetSection("user");
   m_fConf.WriteStr("Alias", m_szAlias);
   m_fConf.WriteBool("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
-  m_fConf.WriteStr("FirstName", m_szFirstName);
-  m_fConf.WriteStr("LastName", m_szLastName);
-  m_fConf.WriteStr("Email1", m_szEmailPrimary);
-  m_fConf.WriteStr("Email2", m_szEmailSecondary);
-  m_fConf.WriteStr("EmailO", m_szEmailOld);
-  m_fConf.WriteStr("City", m_szCity);
-  m_fConf.WriteStr("State", m_szState);
-  m_fConf.WriteStr("PhoneNumber", m_szPhoneNumber);
-  m_fConf.WriteStr("FaxNumber", m_szFaxNumber);
-  m_fConf.WriteStr("Address", m_szAddress);
-  m_fConf.WriteStr("CellularNumber", m_szCellularNumber);
-  m_fConf.WriteStr("Zipcode", m_szZipCode);
-  m_fConf.WriteNum("Country", m_nCountryCode);
   m_fConf.WriteNum("Timezone", m_nTimezone);
   m_fConf.WriteBool("Authorization", m_bAuthorization);
-  m_fConf.WriteBool("HideEmail", m_bHideEmail);
+
+  PropertyMap::const_iterator i;
+  for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
+    m_fConf.writeVar(i->first, i->second);
 
   if (!m_fConf.FlushFile())
   {
@@ -3287,125 +3218,6 @@ void ICQUser::SaveGeneralInfo()
   }
 
   m_fConf.CloseFile();
-}
-
-
-//-----ICQUser::SaveMoreInfo----------------------------------------------
-void ICQUser::SaveMoreInfo()
-{
-  if (!EnableSave()) return;
-
-  if (!m_fConf.ReloadFile())
-  {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
-     return;
-  }
-  m_fConf.SetSection("user");
-  m_fConf.WriteNum("Age", m_nAge);
-  m_fConf.WriteNum("Gender", m_nGender);
-  m_fConf.WriteStr("Homepage", m_szHomepage);
-  m_fConf.WriteNum("BirthYear", m_nBirthYear);
-  m_fConf.WriteNum("BirthMonth", m_nBirthMonth);
-  m_fConf.WriteNum("BirthDay", m_nBirthDay);
-  m_fConf.WriteNum("Language1", m_nLanguage[0]);
-  m_fConf.WriteNum("Language2", m_nLanguage[1]);
-  m_fConf.WriteNum("Language3", m_nLanguage[2]);
-
-  if (!m_fConf.FlushFile())
-  {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-    return;
-  }
-
-  m_fConf.CloseFile();
-}
-
-//-----ICQUser::SaveHomepageInfo----------------------------------------------
-void ICQUser::SaveHomepageInfo()
-{
-  if (!EnableSave()) return;
-
-  if (!m_fConf.ReloadFile())
-  {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
-     return;
-  }
-  m_fConf.SetSection("user");
-  m_fConf.WriteBool("HomepageCatPresent", m_bHomepageCatPresent);
-  m_fConf.WriteNum("HomepageCatCode", m_nHomepageCatCode);
-  m_fConf.WriteStr("HomepageDesc", m_szHomepageDesc);
-  m_fConf.WriteBool("ICQHomepagePresent", m_bICQHomepagePresent);
-
-  if (!m_fConf.FlushFile())
-  {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-    return;
-  }
-
-  m_fConf.CloseFile();
-}
-
-//-----ICQUser::SaveWorkInfo----------------------------------------------
-void ICQUser::SaveWorkInfo()
-{
-  if (!EnableSave()) return;
-
-  if (!m_fConf.ReloadFile())
-  {
-     gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(),  L_BLANKxSTR);
-     return;
-  }
-  m_fConf.SetSection("user");
-  m_fConf.WriteStr("CompanyCity", m_szCompanyCity);
-  m_fConf.WriteStr("CompanyState", m_szCompanyState);
-  m_fConf.WriteStr("CompanyPhoneNumber", m_szCompanyPhoneNumber);
-  m_fConf.WriteStr("CompanyFaxNumber", m_szCompanyFaxNumber);
-  m_fConf.WriteStr("CompanyAddress", m_szCompanyAddress);
-  m_fConf.WriteStr("CompanyZip", m_szCompanyZip);
-  m_fConf.WriteNum("CompanyCountry", m_nCompanyCountry);
-  m_fConf.WriteStr("CompanyName", m_szCompanyName);
-  m_fConf.WriteStr("CompanyDepartment", m_szCompanyDepartment);
-  m_fConf.WriteStr("CompanyPosition", m_szCompanyPosition);
-  m_fConf.WriteNum("CompanyOccupation", m_nCompanyOccupation);
-  m_fConf.WriteStr("CompanyHomepage", m_szCompanyHomepage);
-
-  if (!m_fConf.FlushFile())
-  {
-    gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-               L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-    return;
-  }
-
-  m_fConf.CloseFile();
-}
-
-
-//-----ICQUser::SaveAboutInfo-------------------------------------------------
-void ICQUser::SaveAboutInfo()
-{
-   if (!EnableSave()) return;
-
-   if (!m_fConf.ReloadFile())
-   {
-      gLog.Error("%sError opening '%s' for reading.\n%sSee log for details.\n",
-                 L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-      return;
-   }
-   m_fConf.SetSection("user");
-   m_fConf.WriteStr("About", m_szAbout);
-   if (!m_fConf.FlushFile())
-   {
-     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-     return;
-   }
-
-   m_fConf.CloseFile();
 }
 
 //-----ICQUser::Save<categories>Info()-----------------------------------------
@@ -3598,54 +3410,15 @@ void ICQUser::SaveNewMessagesInfo()
    m_fConf.CloseFile();
 }
 
-
-//-----ICQUser::SaveExtInfo--------------------------------------------------
-void ICQUser::SaveExtInfo()
-{
-   if (!EnableSave()) return;
-
-   if (!m_fConf.ReloadFile())
-   {
-      gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-                 L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-      return;
-   }
-   m_fConf.SetSection("user");
-   m_fConf.WriteStr("Homepage", GetHomepage());
-   m_fConf.WriteStr("City", GetCity());
-   m_fConf.WriteStr("State", GetState());
-   m_fConf.WriteNum("Country", GetCountryCode());
-   m_fConf.WriteNum("Timezone", (signed short)GetTimezone());
-   m_fConf.WriteStr("Zipcode", GetZipCode());
-   m_fConf.WriteStr("PhoneNumber", GetPhoneNumber());
-   m_fConf.WriteNum("Age", GetAge());
-   m_fConf.WriteNum("Sex", (unsigned short)GetGender());
-   m_fConf.WriteStr("About", GetAbout());
-   if (!m_fConf.FlushFile())
-   {
-     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
-                L_ERRORxSTR, m_fConf.FileName(), L_BLANKxSTR);
-     return;
-   }
-
-   m_fConf.CloseFile();
-
-}
-
 void ICQUser::saveAll()
 {
   SaveLicqInfo();
-  SaveGeneralInfo();
-  SaveMoreInfo();
-  SaveHomepageInfo();
-  SaveWorkInfo();
-  SaveAboutInfo();
+  saveUserInfo();
   SaveInterestsInfo();
   SaveBackgroundsInfo();
   SaveOrganizationsInfo();
   SavePhoneBookInfo();
   SavePictureInfo();
-  SaveExtInfo();
 }
 
 //-----ICQUser::EventPush--------------------------------------------------------

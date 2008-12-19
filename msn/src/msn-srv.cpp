@@ -187,9 +187,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
                             u->IdString(), u->PPID()));
 
         }
-        u->SetEmailPrimary(strUser.c_str());
+        u->setUserInfoString("Email1", strUser);
         string strURL = "http://members.msn.com/"+strUser;
-        u->SetHomepage(strURL.c_str());
+        u->setUserInfoString("Homepage", strURL);
         u->SetNewUser(false);
         u->SetEnableSave(true);
         u->SaveLicqInfo();             

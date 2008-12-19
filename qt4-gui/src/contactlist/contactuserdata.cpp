@@ -45,6 +45,8 @@
 #include "contactgroup.h"
 #include "contactuser.h"
 
+using std::string;
+
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ContactUserData */
 
@@ -171,8 +173,8 @@ void ContactUserData::updateAll(const ICQUser* u)
   mySecure = u->Secure();
   myUrgent = false;
   myBirthday = (u->Birthday() == 0);
-  myPhone = u->GetPhoneNumber()[0] != '\0';
-  myCellular = u->GetCellularNumber()[0] != '\0';
+  myPhone = !u->getUserInfoString("PhoneNumber").empty();
+  myCellular = !u->getCellularNumber().empty();
   myGPGKey = (u->GPGKey() != 0) && (strcmp(u->GPGKey(), "") != 0);
   myGPGKeyEnabled = u->UseGPG();
 
@@ -747,13 +749,17 @@ QString ContactUserData::tooltip() const
   }
 
   if (config->popupPhone() && myPhone)
-    s += "<br>" + tr("P: ") + codec->toUnicode(u->GetPhoneNumber());
+    s += "<br>" + tr("P: ") + codec->toUnicode(u->getUserInfoString("PhoneNumber").c_str());
 
   if (config->popupCellular() && myCellular)
-    s += "<br>" + tr("C: ") + codec->toUnicode(u->GetCellularNumber());
+    s += "<br>" + tr("C: ") + codec->toUnicode(u->getCellularNumber().c_str());
 
-  if (config->popupEmail() && *u->GetFaxNumber())
-    s += "<br>" + tr("F: ") + codec->toUnicode(u->GetFaxNumber());
+  if (config->popupFax())
+  {
+    string faxNumber = u->getUserInfoString("FaxNumber");
+    if (!faxNumber.empty())
+      s += "<br>" + tr("F: ") + codec->toUnicode(faxNumber.c_str());
+  }
 
   if (config->popupIP() && (u->Ip() || u->IntIp()))
   {

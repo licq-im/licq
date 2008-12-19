@@ -228,9 +228,9 @@ void KeyView::testViewItem(QTreeWidgetItem* item, const ICQUser* u)
   int val = 0;
   for (int i = 0; i < 2; ++i)
   {
-    if (item->text(i).contains(u->GetFirstName(), Qt::CaseInsensitive))
+    if (item->text(i).contains(u->getFirstName().c_str(), Qt::CaseInsensitive))
       val++;
-    if (item->text(i).contains(u->GetLastName(), Qt::CaseInsensitive))
+    if (item->text(i).contains(u->getLastName().c_str(), Qt::CaseInsensitive))
       val++;
     if (item->text(i).contains(u->GetAlias(), Qt::CaseInsensitive))
       val++;

@@ -468,7 +468,7 @@ static int fifo_sms(int argc, const char *const *argv, void *data)
       const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
       if (u != NULL)
       {
-        string number = u->GetCellularNumber();
+        string number = u->getCellularNumber();
         gUserManager.DropUser(u);
         if (!number.empty())
           d->icqSendSms(szId, nPPID, number.c_str(), argv[2]);

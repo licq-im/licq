@@ -812,13 +812,13 @@ int CRMSClient::Process_INFO()
   fprintf(fs, "%d %s Status: %s\n", CODE_USERxINFO, u->IdString(),
     u->StatusStr());
   fprintf(fs, "%d %s First Name: %s\n", CODE_USERxINFO, u->IdString(),
-    u->GetFirstName());
+    u->getFirstName().c_str());
   fprintf(fs, "%d %s Last Name: %s\n", CODE_USERxINFO, u->IdString(),
-    u->GetLastName());
+    u->getLastName().c_str());
   fprintf(fs, "%d %s Email 1: %s\n", CODE_USERxINFO, u->IdString(),
-    u->GetEmailPrimary());
+    u->getUserInfoString("Email1").c_str());
   fprintf(fs, "%d %s Email 2: %s\n", CODE_USERxINFO, u->IdString(),
-    u->GetEmailSecondary());
+    u->getUserInfoString("Email2").c_str());
 
   gUserManager.DropUser(u);
 

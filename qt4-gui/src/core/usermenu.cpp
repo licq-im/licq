@@ -263,7 +263,7 @@ void UserMenu::aboutToShowMenu()
 
   mySendActions[SendChat]->setEnabled(!u->StatusOffline());
   mySendActions[SendFile]->setEnabled(!u->StatusOffline());
-  mySendActions[SendSms]->setEnabled(u->GetCellularNumber()[0] != '\0');
+  mySendActions[SendSms]->setEnabled(!u->getCellularNumber().empty());
   if (u->Secure())
   {
     mySendActions[SendKey]->setText(tr("Close &Secure Channel"));

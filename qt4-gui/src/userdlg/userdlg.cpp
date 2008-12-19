@@ -106,11 +106,7 @@ UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
   if (user != NULL)
   {
     QTextCodec* codec = UserCodec::codecForICQUser(user);
-    QString name = codec->toUnicode(user->GetFirstName());
-    QString lastname = codec->toUnicode(user->GetLastName());
-    if ((!name.isEmpty()) && (!lastname.isEmpty()))
-      name += " ";
-    name += lastname;
+    QString name = codec->toUnicode(user->getFullName().c_str());
     if (!name.isEmpty())
       name = " (" + name + ")";
     myBasicTitle = tr("Licq - Info ") + QString::fromUtf8(user->GetAlias()) + name;

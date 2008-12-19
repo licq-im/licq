@@ -228,8 +228,8 @@ void KeyView::testViewItem( QListViewItem *item, ICQUser *u )
   int val = 0;
   for ( int i = 0; i<2; i++ )
   {
-    if ( item->text(i).contains( u->GetFirstName(), false ) ) val++;
-    if ( item->text(i).contains( u->GetLastName(), false ) ) val++;
+    if (item->text(i).contains(u->getFirstName().c_str(), false)) val++;
+    if (item->text(i).contains(u->getLastName().c_str(), false)) val++;
     if ( item->text(i).contains( u->GetAlias(), false ) ) val++;
     if (item->text(i).contains(u->getEmail().c_str(), false )) val++;
   }

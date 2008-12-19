@@ -498,8 +498,8 @@ void CICQDaemon::icqAlertUser(const char* id, unsigned long ppid)
 {
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   char sz[MAX_MESSAGE_SIZE];
-  sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->GetFirstName(),
-          0xFE, o->GetLastName(), 0xFE, o->GetEmailPrimary(), 0xFE,
+  sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->getFirstName().c_str(),
+      0xFE, o->getLastName().c_str(), 0xFE, o->getEmail().c_str(), 0xFE,
           o->GetAuthorization() ? '0' : '1', 0xFE);
   gUserManager.DropOwner(o);
   CPU_ThroughServer *p = new CPU_ThroughServer(id, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
@@ -2193,7 +2193,7 @@ string CICQDaemon::FindUserByCellular(const char *szCellular)
 
   FOR_EACH_USER_START(LOCK_R)
   {
-    ParseDigits(szParsedNumber1, pUser->GetCellularNumber(), 15);
+    ParseDigits(szParsedNumber1, pUser->getCellularNumber().c_str(), 15);
     ParseDigits(szParsedNumber2, szCellular, 15);
     if (!strcmp(szParsedNumber1, szParsedNumber2))
       id = pUser->IdString();
@@ -2570,7 +2570,7 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       gTranslator.ServerToClient(szInfo);
       ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
       u->SetEnableSave(false);
-      u->SetAbout(szInfo);
+        u->setUserInfoString("About", szInfo);
       delete [] szInfo;
 
       // translating string with Translation Table
@@ -2580,7 +2580,7 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       
       // save the user infomation
       u->SetEnableSave(true);
-      u->SaveAboutInfo();
+        u->saveUserInfo();
       gUserManager.DropUser(u);
 
       ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
@@ -5187,39 +5187,40 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
           CPU_Meta_SetGeneralInfo *p = (CPU_Meta_SetGeneralInfo *)pEvent->m_pPacket;
+
+              // translating string with Translation Table
+              gTranslator.ServerToClient(p->m_szAlias);
+              gTranslator.ServerToClient(p->m_szFirstName);
+              gTranslator.ServerToClient(p->m_szLastName);
+              gTranslator.ServerToClient(p->m_szEmailPrimary);
+              gTranslator.ServerToClient(p->m_szCity);
+              gTranslator.ServerToClient(p->m_szState);
+              gTranslator.ServerToClient(p->m_szPhoneNumber);
+              gTranslator.ServerToClient(p->m_szFaxNumber);
+              gTranslator.ServerToClient(p->m_szAddress);
+              gTranslator.ServerToClient(p->m_szCellularNumber);
+              gTranslator.ServerToClient(p->m_szZipCode);
+
               ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           o->SetEnableSave(false);
           o->SetAlias(p->m_szAlias);
-          o->SetFirstName(p->m_szFirstName);
-          o->SetLastName(p->m_szLastName);
-          o->SetEmailPrimary(p->m_szEmailPrimary);
-          o->SetCity(p->m_szCity);
-          o->SetState(p->m_szState);
-          o->SetPhoneNumber(p->m_szPhoneNumber);
-          o->SetFaxNumber(p->m_szFaxNumber);
-          o->SetAddress(p->m_szAddress);
-          o->SetCellularNumber(p->m_szCellularNumber);
-          o->SetZipCode(p->m_szZipCode);
-          o->SetCountryCode(p->m_nCountryCode);
+              o->setUserInfoString("FirstName", p->m_szFirstName);
+              o->setUserInfoString("LastName", p->m_szLastName);
+              o->setUserInfoString("Email1", p->m_szEmailPrimary);
+              o->setUserInfoString("City", p->m_szCity);
+              o->setUserInfoString("State", p->m_szState);
+              o->setUserInfoString("PhoneNumber", p->m_szPhoneNumber);
+              o->setUserInfoString("FaxNumber", p->m_szFaxNumber);
+              o->setUserInfoString("Address", p->m_szAddress);
+              o->setUserInfoString("CellularNumber", p->m_szCellularNumber);
+              o->setUserInfoString("Zipcode", p->m_szZipCode);
+              o->setUserInfoUint("Country", p->m_nCountryCode);
           o->SetTimezone(p->m_nTimezone);
-          o->SetHideEmail(p->m_nHideEmail); // 0 = no, 1 = yes
-
-          // translating string with Translation Table
-          gTranslator.ServerToClient(o->m_szAlias);
-          gTranslator.ServerToClient(o->m_szFirstName);
-          gTranslator.ServerToClient(o->m_szLastName);
-          gTranslator.ServerToClient(o->m_szEmailPrimary);
-          gTranslator.ServerToClient(o->m_szCity);
-          gTranslator.ServerToClient(o->m_szState);
-          gTranslator.ServerToClient(o->m_szPhoneNumber);
-          gTranslator.ServerToClient(o->m_szFaxNumber);
-          gTranslator.ServerToClient(o->m_szAddress);
-          gTranslator.ServerToClient(o->m_szCellularNumber);
-          gTranslator.ServerToClient(o->m_szZipCode);
+              o->setUserInfoBool("HideEmail", p->m_nHideEmail); // 0 = no, 1 = yes
 
           // save the user infomation
           o->SetEnableSave(true);
-          o->SaveGeneralInfo();
+              o->saveUserInfo();
               gUserManager.DropOwner(o);
         }
       }
@@ -5232,18 +5233,20 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
           CPU_Meta_SetEmailInfo *p = (CPU_Meta_SetEmailInfo *)pEvent->m_pPacket;
-              ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-          o->SetEnableSave(false);
-          o->SetEmailSecondary(p->m_szEmailSecondary);
-          o->SetEmailOld(p->m_szEmailOld);
 
-          // translating string with Translation Table
-          gTranslator.ServerToClient(o->m_szEmailSecondary);
-          gTranslator.ServerToClient(o->m_szEmailOld);
+              // translating string with Translation Table
+              gTranslator.ServerToClient(p->m_szEmailSecondary);
+              gTranslator.ServerToClient(p->m_szEmailOld);
+
+              ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
+
+          o->SetEnableSave(false);
+              o->setUserInfoString("Email2", p->m_szEmailSecondary);
+              o->setUserInfoString("Email0", p->m_szEmailOld);
 
           // save the user infomation
           o->SetEnableSave(true);
-          o->SaveGeneralInfo();
+              o->saveUserInfo();
               gUserManager.DropOwner(o);
         }
       }
@@ -5256,24 +5259,25 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
           CPU_Meta_SetMoreInfo *p = (CPU_Meta_SetMoreInfo *)pEvent->m_pPacket;
+
+              // translating string with Translation Table
+              gTranslator.ServerToClient(p->m_szHomepage);
+
               ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           o->SetEnableSave(false);
-          o->SetAge(p->m_nAge);
-          o->SetGender(p->m_nGender);
-          o->SetHomepage(p->m_szHomepage);
-          o->SetBirthYear(p->m_nBirthYear);
-          o->SetBirthMonth(p->m_nBirthMonth);
-          o->SetBirthDay (p->m_nBirthDay);
-          o->SetLanguage1(p->m_nLanguage1);
-          o->SetLanguage2(p->m_nLanguage2);
-          o->SetLanguage3(p->m_nLanguage3);
-
-          // translating string with Translation Table
-          gTranslator.ServerToClient(o->m_szHomepage);
+              o->setUserInfoUint("Age", p->m_nAge);
+              o->setUserInfoUint("Gender", p->m_nGender);
+              o->setUserInfoString("Homepage", p->m_szHomepage);
+              o->setUserInfoUint("BirthYear", p->m_nBirthYear);
+              o->setUserInfoUint("BirthMonth", p->m_nBirthMonth);
+              o->setUserInfoUint("BirthDay", p->m_nBirthDay);
+              o->setUserInfoUint("Language1", p->m_nLanguage1);
+              o->setUserInfoUint("Language2", p->m_nLanguage2);
+              o->setUserInfoUint("Language3", p->m_nLanguage3);
 
           // save the user infomation
           o->SetEnableSave(true);
-          o->SaveMoreInfo();
+              o->saveUserInfo();
               gUserManager.DropOwner(o);
         }
       }
@@ -5313,36 +5317,37 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         if (pEvent != NULL && nResult == META_SUCCESS)
         {
           CPU_Meta_SetWorkInfo *p = (CPU_Meta_SetWorkInfo *)pEvent->m_pPacket;
+
+              // translating string with Translation Table
+              gTranslator.ServerToClient(p->m_szCity);
+              gTranslator.ServerToClient(p->m_szState);
+              gTranslator.ServerToClient(p->m_szPhoneNumber);
+              gTranslator.ServerToClient(p->m_szFaxNumber);
+              gTranslator.ServerToClient(p->m_szAddress);
+              gTranslator.ServerToClient(p->m_szZip);
+              gTranslator.ServerToClient(p->m_szName);
+              gTranslator.ServerToClient(p->m_szDepartment);
+              gTranslator.ServerToClient(p->m_szPosition);
+              gTranslator.ServerToClient(p->m_szHomepage);
+
               ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           o->SetEnableSave(false);
-          o->SetCompanyCity(p->m_szCity);
-          o->SetCompanyState(p->m_szState);
-          o->SetCompanyPhoneNumber(p->m_szPhoneNumber);
-          o->SetCompanyFaxNumber(p->m_szFaxNumber);
-          o->SetCompanyAddress(p->m_szAddress);
-          o->SetCompanyZip(p->m_szZip);
-          o->SetCompanyCountry(p->m_nCompanyCountry);
-          o->SetCompanyName(p->m_szName);
-          o->SetCompanyDepartment(p->m_szDepartment);
-          o->SetCompanyPosition(p->m_szPosition);
-          o->SetCompanyOccupation(p->m_nCompanyOccupation);
-          o->SetCompanyHomepage(p->m_szHomepage);
-
-          // translating string with Translation Table
-          gTranslator.ServerToClient(o->m_szCompanyCity);
-          gTranslator.ServerToClient(o->m_szCompanyState);
-          gTranslator.ServerToClient(o->m_szCompanyPhoneNumber);
-          gTranslator.ServerToClient(o->m_szCompanyFaxNumber);
-          gTranslator.ServerToClient(o->m_szCompanyAddress);
-          gTranslator.ServerToClient(o->m_szCompanyZip);
-          gTranslator.ServerToClient(o->m_szCompanyName);
-          gTranslator.ServerToClient(o->m_szCompanyDepartment);
-          gTranslator.ServerToClient(o->m_szCompanyPosition);
-          gTranslator.ServerToClient(o->m_szCompanyHomepage);
+              o->setUserInfoString("CompanyCity", p->m_szCity);
+              o->setUserInfoString("CompanyState", p->m_szState);
+              o->setUserInfoString("CompanyPhoneNumber", p->m_szPhoneNumber);
+              o->setUserInfoString("CompanyFaxNumber", p->m_szFaxNumber);
+              o->setUserInfoString("CompanyAddress", p->m_szAddress);
+              o->setUserInfoString("CompanyZip", p->m_szZip);
+              o->setUserInfoUint("CompanyCountry", p->m_nCompanyCountry);
+              o->setUserInfoString("CompanyName", p->m_szName);
+              o->setUserInfoString("CompanyDepartment", p->m_szDepartment);
+              o->setUserInfoString("CompanyPosition", p->m_szPosition);
+              o->setUserInfoUint("CompanyOccupation", p->m_nCompanyOccupation);
+              o->setUserInfoString("CompanyHomepage", p->m_szHomepage);
 
           // save the user infomation
           o->SetEnableSave(true);
-          o->SaveWorkInfo();
+              o->saveUserInfo();
               gUserManager.DropOwner(o);
         }
       }
@@ -5359,12 +5364,12 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           char* msg = gTranslator.RNToN(p->m_szAbout);
           gTranslator.ServerToClient(msg);
           o->SetEnableSave(false);
-          o->SetAbout(msg);
+              o->setUserInfoString("About", msg);
           delete [] msg;
 
           // save the user infomation
           o->SetEnableSave(true);
-          o->SaveAboutInfo();
+              o->saveUserInfo();
               gUserManager.DropOwner(o);
         }
       }
@@ -5749,36 +5754,36 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (tmp)
             delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetFirstName(tmp);
+                u->setUserInfoString("FirstName", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetLastName(tmp);
+                u->setUserInfoString("LastName", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetEmailPrimary(tmp);
+                u->setUserInfoString("Email1", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCity(tmp);
+                u->setUserInfoString("City", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetState(tmp);
+                u->setUserInfoString("State", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetPhoneNumber(tmp);
+                u->setUserInfoString("PhoneNumber", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetFaxNumber(tmp);
+                u->setUserInfoString("FaxNumber", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetAddress(tmp);
+                u->setUserInfoString("Address", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCellularNumber(tmp);
+                u->setUserInfoString("CellularNumber", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetZipCode(tmp);
+                u->setUserInfoString("Zipcode", tmp);
           delete[] tmp;
-          u->SetCountryCode( msg.UnpackUnsignedShort() );
+                u->setUserInfoUint("Country", msg.UnpackUnsignedShort() );
           u->SetTimezone( msg.UnpackChar() );
           u->SetAuthorization( !msg.UnpackChar() );
           unsigned char nStatus = msg.UnpackChar(); // Web aware status
@@ -5788,7 +5793,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             static_cast<ICQOwner *>(u)->SetWebAware(nStatus);
             /* this unpack is inside the if statement since it appears only
                for the owner request */
-            u->SetHideEmail( msg.UnpackChar() );
+                  u->setUserInfoBool("HideEmail", msg.UnpackChar());
           }
           else
           {
@@ -5803,7 +5808,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->SaveGeneralInfo();
+                u->saveUserInfo();
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5816,17 +5821,17 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gLog.Info(tr("%sMore info on %s (%s).\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
 
           u->SetEnableSave(false);
-          u->SetAge( msg.UnpackUnsignedShort() );
-          u->SetGender( msg.UnpackChar() );
+                u->setUserInfoUint("Age", msg.UnpackUnsignedShort());
+                u->setUserInfoUint("Gender", msg.UnpackChar());
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetHomepage(tmp);
+                u->setUserInfoString("Homepage", tmp);
           delete[] tmp;
-          u->SetBirthYear( msg.UnpackUnsignedShort() );
-          u->SetBirthMonth( msg.UnpackChar() );
-          u->SetBirthDay (msg.UnpackChar() );
-          u->SetLanguage1( msg.UnpackChar() );
-          u->SetLanguage2( msg.UnpackChar() );
-          u->SetLanguage3( msg.UnpackChar() );
+                u->setUserInfoUint("BirthYear", msg.UnpackUnsignedShort());
+                u->setUserInfoUint("BirthMonth", msg.UnpackChar());
+                u->setUserInfoUint("BirthDay", msg.UnpackChar());
+                u->setUserInfoUint("Language1", msg.UnpackChar());
+                u->setUserInfoUint("Language2", msg.UnpackChar());
+                u->setUserInfoUint("Language3", msg.UnpackChar());
 
           //TODO
 /*
@@ -5856,7 +5861,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->SaveMoreInfo();
+                u->saveUserInfo();
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5886,16 +5891,16 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             }
 
             if(i == 0)
-              u->SetEmailSecondary(tmp);
+                    u->setUserInfoString("Email2", tmp);
             else if(i == 1)
-              u->SetEmailOld(tmp);
+                    u->setUserInfoString("Email0", tmp);
 
             delete[] tmp;
           }
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->SaveGeneralInfo();
+                u->saveUserInfo();
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5912,26 +5917,26 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetEnableSave(false);
           
           unsigned char categoryPresent = msg.UnpackChar();
-          u->SetHomepageCatPresent(categoryPresent);
-          
+                u->setUserInfoBool("HomepageCatPresent", categoryPresent);
+
           if (categoryPresent)
           {
-            u->SetHomepageCatCode(msg.UnpackUnsignedShort());
+                  u->setUserInfoUint("HomepageCatCode", msg.UnpackUnsignedShort());
 
             char *rawmsg = msg.UnpackString();
             char *msg = gTranslator.RNToN(rawmsg);
             delete [] rawmsg;
 
             gTranslator.ServerToClient(msg);
-            u->SetHomepageDesc(msg);
+                  u->setUserInfoString("HomepageDesc", msg);
             delete [] msg;
           }
 
-          u->SetICQHomepagePresent(msg.UnpackChar());
+                u->setUserInfoBool("ICQHomepagePresent", msg.UnpackChar());
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->SaveHomepageInfo();
+                u->saveUserInfo();
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5945,41 +5950,41 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           u->SetEnableSave(false);
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyCity(tmp);
+                u->setUserInfoString("CompanyCity", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyState(tmp);
+                u->setUserInfoString("CompanyState", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyPhoneNumber(tmp);
+                u->setUserInfoString("CompanyPhoneNumber", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyFaxNumber(tmp);
+                u->setUserInfoString("CompanyFaxNumber", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyAddress(tmp);
+                u->setUserInfoString("CompanyAddress", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyZip(tmp);
+                u->setUserInfoString("CompanyZip", tmp);
           delete[] tmp;
-          u->SetCompanyCountry( msg.UnpackUnsignedShort() );
+                u->setUserInfoUint("CompanyCountry", msg.UnpackUnsignedShort());
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyName(tmp);
-          delete[] tmp;
-          gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyDepartment(tmp);
+                u->setUserInfoString("CompanyName", tmp);
           delete[] tmp;
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyPosition(tmp);
+                u->setUserInfoString("CompanyDepartment", tmp);
           delete[] tmp;
-          u->SetCompanyOccupation(msg.UnpackUnsignedShort());
           gTranslator.ServerToClient( tmp = msg.UnpackString() );
-          u->SetCompanyHomepage(tmp);
+                u->setUserInfoString("CompanyPosition", tmp);
+          delete[] tmp;
+                u->setUserInfoUint("CompanyOccupation", msg.UnpackUnsignedShort());
+          gTranslator.ServerToClient( tmp = msg.UnpackString() );
+                u->setUserInfoString("CompanyHomepage", tmp);
           delete[] tmp;
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->SaveWorkInfo();
+                u->saveUserInfo();
 
           PushExtendedEvent(e);
           multipart = true;
@@ -5997,12 +6002,12 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           delete [] rawmsg;
           gTranslator.ServerToClient(msg);
           u->SetEnableSave(false);
-          u->SetAbout( msg );
+                u->setUserInfoString("About", msg);
           delete [] msg;
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->SaveAboutInfo();
+                u->saveUserInfo();
 
           PushExtendedEvent(e);
           multipart = true;
@@ -6385,7 +6390,7 @@ void CICQDaemon::ProcessUserList()
       char* tmp = gTranslator.FromUnicode(data->newCellular.get());
       if (tmp != NULL)
       {
-        u->SetCellularNumber(tmp);
+        u->setUserInfoString("CellularNumber", tmp);
         delete[] tmp;
       }
     }

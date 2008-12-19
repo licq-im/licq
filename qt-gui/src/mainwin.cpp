@@ -4581,7 +4581,7 @@ void CMainWindow::slot_usermenu()
   mnuSend->setItemEnabled(mnuUserSendChat, !u->StatusOffline());
   mnuSend->setItemEnabled(mnuUserSendFile, !u->StatusOffline());
 
-  if (strlen(u->GetCellularNumber()))
+  if (!u->getCellularNumber().empty())
     mnuSend->setItemEnabled(mnuUserSendSms, true);
   else
     mnuSend->setItemEnabled(mnuUserSendSms, false);

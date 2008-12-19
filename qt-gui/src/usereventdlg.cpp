@@ -3532,7 +3532,7 @@ UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
   ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
   if (u != NULL)
   {
-    nfoNumber->setData(codec->toUnicode(u->GetCellularNumber()));
+    nfoNumber->setData(codec->toUnicode(u->getCellularNumber().c_str()));
     gUserManager.DropUser(u);
   }
 

@@ -2,6 +2,7 @@
 #define INIFILE_H
 
 #include <string>
+#include <boost/any.hpp>
 
 #define MAX_SECTIONxNAME_LEN 160
 #define MAX_KEYxNAME_LEN 160
@@ -49,6 +50,15 @@ public:
   bool CreateSection(const char *_szSectionName);
 
   /**
+   * Read a value from the configuration file
+   *
+   * @param key Key of value to read
+   * @param data variable to put value in
+   * @return True if value was found or false if default value was used
+   */
+  bool readVar(const std::string& key, boost::any& data);
+
+  /**
    * Read a string value from the configuration file
    *
    * @param key Key of value to read
@@ -69,6 +79,14 @@ public:
   bool ReadNum(const std::string& key, signed short &data, signed short defValue = 0);
   bool ReadNum(const std::string& key, char &data, char defValue = 0);
   bool ReadBool(const std::string& key, bool &data, const bool defValue = false);
+
+  /**
+   * Write a value to the configuration file
+   *
+   * @param key Key of value to write
+   * @param data Value to write
+   */
+  void writeVar(const std::string& key, const boost::any& data);
 
   /**
    * Write a string value to the configuration file

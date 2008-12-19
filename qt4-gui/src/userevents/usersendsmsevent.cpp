@@ -79,7 +79,7 @@ UserSendSmsEvent::UserSendSmsEvent(QString id, unsigned long ppid, QWidget* pare
   ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_W);
   if (u != NULL)
   {
-    myNumberField->setText(myCodec->toUnicode(u->GetCellularNumber()));
+    myNumberField->setText(myCodec->toUnicode(u->getCellularNumber().c_str()));
     gUserManager.DropUser(u);
   }
 

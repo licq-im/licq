@@ -276,11 +276,11 @@ void UserPages::Info::loadPageGeneral(const ICQUser* u)
   if (!m_bOwner)
     chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
   nfoAlias->setText(QString::fromUtf8(u->GetAlias()));
-  nfoFirstName->setText(codec->toUnicode(u->GetFirstName()));
-  nfoLastName->setText(codec->toUnicode(u->GetLastName()));
-  nfoEmailPrimary->setText(codec->toUnicode(u->GetEmailPrimary()));
-  nfoEmailSecondary->setText(codec->toUnicode(u->GetEmailSecondary()));
-  nfoEmailOld->setText(codec->toUnicode(u->GetEmailOld()));
+  nfoFirstName->setText(codec->toUnicode(u->getFirstName().c_str()));
+  nfoLastName->setText(codec->toUnicode(u->getLastName().c_str()));
+  nfoEmailPrimary->setText(codec->toUnicode(u->getUserInfoString("Email1").c_str()));
+  nfoEmailSecondary->setText(codec->toUnicode(u->getUserInfoString("Email2").c_str()));
+  nfoEmailOld->setText(codec->toUnicode(u->getUserInfoString("Email0").c_str()));
   nfoUin->setText(myId);
   QString ip = QString(u->IpStr(buf));
   if (u->Ip() != u->IntIp() && u->IntIp() != 0)
@@ -294,12 +294,13 @@ void UserPages::Info::loadPageGeneral(const ICQUser* u)
   nfoIp->setText(ip);
   tznZone->setData(u->GetTimezone());
   nfoStatus->setText(LicqStrings::getStatus(u));
+  unsigned int countryCode = u->getUserInfoUint("Country");
   if (m_bOwner)
   {
     // Owner timezone is not editable, it is taken from system timezone instead
     tznZone->setEnabled(false);
 
-    const SCountry* c = GetCountryByCode(u->GetCountryCode());
+    const SCountry* c = GetCountryByCode(countryCode);
     if (c == NULL)
       cmbCountry->setCurrentIndex(0);
     else
@@ -307,19 +308,19 @@ void UserPages::Info::loadPageGeneral(const ICQUser* u)
   }
   else
   {
-    const SCountry* c = GetCountryByCode(u->GetCountryCode());
+    const SCountry* c = GetCountryByCode(countryCode);
     if (c == NULL)
-      nfoCountry->setText(tr("Unknown (%1)").arg(u->GetCountryCode()));
+      nfoCountry->setText(tr("Unknown (%1)").arg(countryCode));
     else  // known
       nfoCountry->setText(c->szName);
   }
-  nfoAddress->setText(codec->toUnicode(u->GetAddress()));
-  nfoCity->setText(codec->toUnicode(u->GetCity()));
-  nfoState->setText(codec->toUnicode(u->GetState()));
-  nfoPhone->setText(codec->toUnicode(u->GetPhoneNumber()));
-  nfoFax->setText(codec->toUnicode(u->GetFaxNumber()));
-  nfoCellular->setText(codec->toUnicode(u->GetCellularNumber()));
-  nfoZipCode->setText(codec->toUnicode(u->GetZipCode()));
+  nfoAddress->setText(codec->toUnicode(u->getUserInfoString("Address").c_str()));
+  nfoCity->setText(codec->toUnicode(u->getUserInfoString("City").c_str()));
+  nfoState->setText(codec->toUnicode(u->getUserInfoString("State").c_str()));
+  nfoPhone->setText(codec->toUnicode(u->getUserInfoString("PhoneNumber").c_str()));
+  nfoFax->setText(codec->toUnicode(u->getUserInfoString("FaxNumber").c_str()));
+  nfoCellular->setText(codec->toUnicode(u->getCellularNumber().c_str()));
+  nfoZipCode->setText(codec->toUnicode(u->getUserInfoString("Zipcode").c_str()));
 }
 
 void UserPages::Info::savePageGeneral(ICQUser* u)
@@ -328,22 +329,22 @@ void UserPages::Info::savePageGeneral(ICQUser* u)
   u->SetAlias(nfoAlias->text().toUtf8());
   if (!m_bOwner)
     u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
-  u->SetFirstName(codec->fromUnicode(nfoFirstName->text()));
-  u->SetLastName(codec->fromUnicode(nfoLastName->text()));
-  u->SetEmailPrimary(codec->fromUnicode(nfoEmailPrimary->text()));
-  u->SetEmailSecondary(codec->fromUnicode(nfoEmailSecondary->text()));
-  u->SetEmailOld(codec->fromUnicode(nfoEmailOld->text()));
-  u->SetCity(codec->fromUnicode(nfoCity->text()));
-  u->SetState(codec->fromUnicode(nfoState->text()));
-  u->SetAddress(codec->fromUnicode(nfoAddress->text()));
-  u->SetPhoneNumber(codec->fromUnicode(nfoPhone->text()));
-  u->SetFaxNumber(codec->fromUnicode(nfoFax->text()));
-  u->SetCellularNumber(codec->fromUnicode(nfoCellular->text()));
-  u->SetZipCode(codec->fromUnicode(nfoZipCode->text()));
+  u->setUserInfoString("FirstName", codec->fromUnicode(nfoFirstName->text()).data());
+  u->setUserInfoString("LastName", codec->fromUnicode(nfoLastName->text()).data());
+  u->setUserInfoString("Email1", codec->fromUnicode(nfoEmailPrimary->text()).data());
+  u->setUserInfoString("Email2", codec->fromUnicode(nfoEmailSecondary->text()).data());
+  u->setUserInfoString("Email0", codec->fromUnicode(nfoEmailOld->text()).data());
+  u->setUserInfoString("City", codec->fromUnicode(nfoCity->text()).data());
+  u->setUserInfoString("State", codec->fromUnicode(nfoState->text()).data());
+  u->setUserInfoString("Address", codec->fromUnicode(nfoAddress->text()).data());
+  u->setUserInfoString("PhoneNumber", codec->fromUnicode(nfoPhone->text()).data());
+  u->setUserInfoString("FaxNumber", codec->fromUnicode(nfoFax->text()).data());
+  u->setUserInfoString("CellularNumber", codec->fromUnicode(nfoCellular->text()).data());
+  u->setUserInfoString("Zipcode", codec->fromUnicode(nfoZipCode->text()).data());
   if (m_bOwner)
   {
     unsigned short i = cmbCountry->currentIndex();
-    u->SetCountryCode(GetCountryByIndex(i)->nCode);
+    u->setUserInfoUint("Country", GetCountryByIndex(i)->nCode);
   }
   u->SetTimezone(tznZone->data());
 }
@@ -470,56 +471,61 @@ QWidget* UserPages::Info::createPageMore(QWidget* parent)
 void UserPages::Info::loadPageMore(const ICQUser* u)
 {
   // Gender
+  unsigned int gender = u->getUserInfoUint("Gender");
   if (m_bOwner)
   {
-    cmbGender->setCurrentIndex(u->GetGender());
+    cmbGender->setCurrentIndex(gender);
   }
   else
   {
-    if (u->GetGender() == GENDER_FEMALE)
+    if (gender == GENDER_FEMALE)
       nfoGender->setText(tr("Female"));
-    else if (u->GetGender() == GENDER_MALE)
+    else if (gender == GENDER_MALE)
       nfoGender->setText(tr("Male"));
     else
       nfoGender->setText(tr("Unspecified"));
   }
 
   // Age
-  if (u->GetAge() == AGE_UNSPECIFIED)
+  unsigned int age = u->getUserInfoUint("Age");
+  if (age == AGE_UNSPECIFIED)
     nfoAge->setText(tr("Unspecified"));
   else
-    nfoAge->setText(u->GetAge());
+    nfoAge->setText(age);
 
   // Birthday
+  unsigned int birthDay = u->getUserInfoUint("BirthDay");
+  unsigned int birthMonth = u->getUserInfoUint("BirthMonth");
+  unsigned int birthYear = u->getUserInfoUint("BirthYear");
   if (m_bOwner)
   {
-    spnBirthDay->setValue((unsigned short)u->GetBirthDay());
-    spnBirthMonth->setValue((unsigned short)u->GetBirthMonth());
-    spnBirthYear->setValue(u->GetBirthYear());
+    spnBirthDay->setValue(birthDay);
+    spnBirthMonth->setValue(birthMonth);
+    spnBirthYear->setValue(birthYear);
   }
   else
   {
-    if (u->GetBirthMonth() == 0 || u->GetBirthDay() == 0)
+    if (birthMonth == 0 || birthDay == 0)
     {
       nfoBirthday->setText(tr("Unspecified"));
     }
     else
     {
-      QDate d(u->GetBirthYear(), u->GetBirthMonth(), u->GetBirthDay());
+      QDate d(birthYear, birthMonth, birthDay);
       nfoBirthday->setText(d.toString());
     }
   }
 
-  nfoHomepage->setText(codec->toUnicode(u->GetHomepage()));
+  nfoHomepage->setText(codec->toUnicode(u->getUserInfoString("Homepage").c_str()));
 
   lvHomepageCategory->clear();
   mleHomepageDesc->clear();
-  if (u->GetHomepageCatPresent())
+  if (u->getUserInfoBool("HomepageCatPresent"))
   {
     if (m_bOwner)
       mleHomepageDesc->setReadOnly(false);
 
-    const SHomepageCat* c = GetHomepageCatByCode(u->GetHomepageCatCode());
+    const SHomepageCat* c = GetHomepageCatByCode(u->getUserInfoUint("HomepageCatCode"));
     if (c != NULL)
     {
       QTreeWidgetItem* lvi = new QTreeWidgetItem(lvHomepageCategory);
@@ -553,14 +559,15 @@ void UserPages::Info::loadPageMore(const ICQUser* u)
       lvHomepageCategory->setMaximumHeight(lvHomepageCategory->sizeHintForRow(0) * rowCount + 5);
       free(sTmp);
     }
-    QString descstr = codec->toUnicode(u->GetHomepageDesc());
+    QString descstr = codec->toUnicode(u->getUserInfoString("HomepageDesc").c_str());
     descstr.replace(QRegExp("\r"), "");
     mleHomepageDesc->setText(descstr);
   }
 
   for (unsigned short i = 0; i < 3; i++)
   {
-    const SLanguage* l = GetLanguageByCode(u->GetLanguage(i));
+    unsigned int language = u->getUserInfoUint(QString("Language%1").arg(i).toLatin1().data());
+    const SLanguage* l = GetLanguageByCode(language);
     if (m_bOwner)
     {
       if (l == NULL)
@@ -571,7 +578,7 @@ void UserPages::Info::loadPageMore(const ICQUser* u)
     else
     {
       if (l == NULL)
-        nfoLanguage[i]->setText(tr("Unknown (%1)").arg((unsigned short)u->GetLanguage(i)));
+        nfoLanguage[i]->setText(tr("Unknown (%1)").arg(language));
       else  // known
         nfoLanguage[i]->setText(l->szName);
     }
@@ -582,7 +589,7 @@ void UserPages::Info::loadPageMore(const ICQUser* u)
   else
     lblAuth->setText(tr("Authorization Not Required"));
 
-  if (u->GetICQHomepagePresent())
+  if (u->getUserInfoBool("ICQHomepagePresent"))
   {
     QString url;
     url.sprintf("(http://%s.homepage.icq.com/)", myId.toLatin1().data());
@@ -594,18 +601,17 @@ void UserPages::Info::loadPageMore(const ICQUser* u)
 
 void UserPages::Info::savePageMore(ICQUser* u)
 {
-  u->SetAge(nfoAge->text().toULong());
-  u->SetHomepage(nfoHomepage->text().toLocal8Bit().data());
+  u->setUserInfoUint("Age", nfoAge->text().toULong());
+  u->setUserInfoString("Homepage", nfoHomepage->text().toLocal8Bit().data());
   if (m_bOwner)
   {
-    u->SetGender(cmbGender->currentIndex());
-    u->SetBirthYear(spnBirthYear->value());
-    u->SetBirthMonth(spnBirthMonth->value());
-    u->SetBirthDay(spnBirthDay->value());
-    for (unsigned short i = 0; i < 3; i++)
-    {
-      u->SetLanguage(i, GetLanguageByIndex(cmbLanguage[i]->currentIndex())->nCode);
-    }
+    u->setUserInfoUint("Gender", cmbGender->currentIndex());
+    u->setUserInfoUint("BirthYear", spnBirthYear->value());
+    u->setUserInfoUint("BirthMonth", spnBirthMonth->value());
+    u->setUserInfoUint("BirthDay", spnBirthDay->value());
+    u->setUserInfoUint("Language0", GetLanguageByIndex(cmbLanguage[0]->currentIndex())->nCode);
+    u->setUserInfoUint("Language1", GetLanguageByIndex(cmbLanguage[1]->currentIndex())->nCode);
+    u->setUserInfoUint("Language2", GetLanguageByIndex(cmbLanguage[2]->currentIndex())->nCode);
   }
 }
 
@@ -910,22 +916,24 @@ QWidget* UserPages::Info::createPageWork(QWidget* parent)
 
 void UserPages::Info::loadPageWork(const ICQUser* u)
 {
-  nfoCompanyName->setText(codec->toUnicode(u->GetCompanyName()));
-  nfoCompanyDepartment->setText(codec->toUnicode(u->GetCompanyDepartment()));
-  nfoCompanyPosition->setText(codec->toUnicode(u->GetCompanyPosition()));
-  nfoCompanyCity->setText(codec->toUnicode(u->GetCompanyCity()));
-  nfoCompanyState->setText(codec->toUnicode(u->GetCompanyState()));
-  nfoCompanyAddress->setText(codec->toUnicode(u->GetCompanyAddress()));
-  nfoCompanyZip->setText(codec->toUnicode(u->GetCompanyZip()));
+  nfoCompanyName->setText(codec->toUnicode(u->getUserInfoString("CompanyName").c_str()));
+  nfoCompanyDepartment->setText(codec->toUnicode(u->getUserInfoString("CompanyDepartment").c_str()));
+  nfoCompanyPosition->setText(codec->toUnicode(u->getUserInfoString("CompanyPosition").c_str()));
+  nfoCompanyCity->setText(codec->toUnicode(u->getUserInfoString("CompanyCity").c_str()));
+  nfoCompanyState->setText(codec->toUnicode(u->getUserInfoString("CompanyState").c_str()));
+  nfoCompanyAddress->setText(codec->toUnicode(u->getUserInfoString("CompanyAddress").c_str()));
+  nfoCompanyZip->setText(codec->toUnicode(u->getUserInfoString("CompanyZip").c_str()));
+  unsigned int companyCountry = u->getUserInfoUint("CompanyCountry");
+  unsigned int companyOccupation = u->getUserInfoUint("CompanyOccupation");
   if (m_bOwner)
   {
-    const SCountry* c = GetCountryByCode(u->GetCompanyCountry());
+    const SCountry* c = GetCountryByCode(companyCountry);
     if (c == NULL)
       cmbCompanyCountry->setCurrentIndex(0);
     else
       cmbCompanyCountry->setCurrentIndex(c->nIndex);
 
-    const SOccupation* o = GetOccupationByCode(u->GetCompanyOccupation());
+    const SOccupation* o = GetOccupationByCode(companyOccupation);
     if (o == NULL)
       cmbCompanyOccupation->setCurrentIndex(0);
     else
@@ -933,43 +941,43 @@ void UserPages::Info::loadPageWork(const ICQUser* u)
   }
   else
   {
-    const SCountry* c = GetCountryByCode(u->GetCompanyCountry());
+    const SCountry* c = GetCountryByCode(companyCountry);
     if (c == NULL)
-      nfoCompanyCountry->setText(tr("Unknown (%1)").arg(u->GetCompanyCountry()));
+      nfoCompanyCountry->setText(tr("Unknown (%1)").arg(companyCountry));
     else  // known
       nfoCompanyCountry->setText(c->szName);
 
-    const SOccupation* o = GetOccupationByCode(u->GetCompanyOccupation());
+    const SOccupation* o = GetOccupationByCode(companyOccupation);
     if (o == NULL)
-      nfoCompanyOccupation->setText(tr("Unknown (%1)").arg(u->GetCompanyOccupation()));
+      nfoCompanyOccupation->setText(tr("Unknown (%1)").arg(companyOccupation));
     else
       nfoCompanyOccupation->setText(o->szName);
   }
-  nfoCompanyPhone->setText(codec->toUnicode(u->GetCompanyPhoneNumber()));
-  nfoCompanyFax->setText(codec->toUnicode(u->GetCompanyFaxNumber()));
-  nfoCompanyHomepage->setText(codec->toUnicode(u->GetCompanyHomepage()));
+  nfoCompanyPhone->setText(codec->toUnicode(u->getUserInfoString("CompanyPhoneNumber").c_str()));
+  nfoCompanyFax->setText(codec->toUnicode(u->getUserInfoString("CompanyFaxNumber").c_str()));
+  nfoCompanyHomepage->setText(codec->toUnicode(u->getUserInfoString("CompanyHomepage").c_str()));
 }
 
 void UserPages::Info::savePageWork(ICQUser* u)
 {
-  u->SetCompanyCity(codec->fromUnicode(nfoCompanyCity->text()));
-  u->SetCompanyState(codec->fromUnicode(nfoCompanyState->text()));
-  u->SetCompanyPhoneNumber(codec->fromUnicode(nfoCompanyPhone->text()));
-  u->SetCompanyFaxNumber(codec->fromUnicode(nfoCompanyFax->text()));
-  u->SetCompanyAddress(codec->fromUnicode(nfoCompanyAddress->text()));
-  u->SetCompanyZip(codec->fromUnicode(nfoCompanyZip->text()));
+  u->setUserInfoString("CompanyCity", codec->fromUnicode(nfoCompanyCity->text()).data());
+  u->setUserInfoString("CompanyState", codec->fromUnicode(nfoCompanyState->text()).data());
+  u->setUserInfoString("CompanyPhoneNumber", codec->fromUnicode(nfoCompanyPhone->text()).data());
+  u->setUserInfoString("CompanyFaxNumber", codec->fromUnicode(nfoCompanyFax->text()).data());
+  u->setUserInfoString("CompanyAddress", codec->fromUnicode(nfoCompanyAddress->text()).data());
+  u->setUserInfoString("CompanyZip", codec->fromUnicode(nfoCompanyZip->text()).data());
   if (m_bOwner)
   {
     unsigned short i = cmbCompanyCountry->currentIndex();
-    u->SetCompanyCountry(GetCountryByIndex(i)->nCode);
+    u->setUserInfoUint("CompanyCountry", GetCountryByIndex(i)->nCode);
 
     i = cmbCompanyOccupation->currentIndex();
-    u->SetCompanyOccupation(GetOccupationByIndex(i)->nCode);
+    u->setUserInfoUint("CompanyOccupation", GetOccupationByIndex(i)->nCode);
   }
-  u->SetCompanyName(codec->fromUnicode(nfoCompanyName->text()));
-  u->SetCompanyDepartment(codec->fromUnicode(nfoCompanyDepartment->text()));
-  u->SetCompanyPosition(codec->fromUnicode(nfoCompanyPosition->text()));
-  u->SetCompanyHomepage(codec->fromUnicode(nfoCompanyHomepage->text()));
+  u->setUserInfoString("CompanyName", codec->fromUnicode(nfoCompanyName->text()).data());
+  u->setUserInfoString("CompanyDepartment", codec->fromUnicode(nfoCompanyDepartment->text()).data());
+  u->setUserInfoString("CompanyPosition", codec->fromUnicode(nfoCompanyPosition->text()).data());
+  u->setUserInfoString("CompanyHomepage", codec->fromUnicode(nfoCompanyHomepage->text()).data());
 }
 
 QWidget* UserPages::Info::createPageAbout(QWidget* parent)
@@ -995,17 +1003,17 @@ void UserPages::Info::loadPageAbout(const ICQUser* u)
 {
   bool bUseHTML = myId[0].isLetter();
 
-  QString aboutstr = codec->toUnicode(u->GetAbout());
+  QString aboutstr = codec->toUnicode(u->getUserInfoString("About").c_str());
   aboutstr.replace(QRegExp("\r"), "");
   mlvAbout->clear();
-  mlvAbout->append(MLView::toRichText(codec->toUnicode(u->GetAbout()), true, bUseHTML));
+  mlvAbout->append(MLView::toRichText(aboutstr, true, bUseHTML));
 }
 
 void UserPages::Info::savePageAbout(ICQUser* u)
 {
   QString str = mlvAbout->toPlainText();
 
-  u->SetAbout(codec->fromUnicode(str.left(450)));
+  u->setUserInfoString("About", codec->fromUnicode(str.left(450)).data());
 }
 
 QWidget* UserPages::Info::createPagePhoneBook(QWidget* parent)
@@ -1557,7 +1565,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
       if (!m_bOwner)
         u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
       u->SetEnableSave(true);
-      u->SaveGeneralInfo();
+      u->saveUserInfo();
       gUserManager.DropUser(u);
   }
 

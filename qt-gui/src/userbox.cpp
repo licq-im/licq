@@ -57,6 +57,8 @@
 
 #define FLASH_TIME 500
 
+using std::string;
+
 extern char *PPIDSTRING(unsigned long);
 
 using std::string;
@@ -293,8 +295,8 @@ void CUserViewItem::setGraphics(ICQUser *u)
    m_bSecure = u->Secure();
    m_bUrgent = false;
    m_bBirthday =  (u->Birthday() == 0);
-   m_bPhone  = u->GetPhoneNumber()[0] != '\0';
-   m_bCellular = u->GetCellularNumber()[0] !='\0';
+   m_bPhone  = !u->getUserInfoString("PhoneNumber").empty();
+   m_bCellular = !u->getCellularNumber().empty();
    m_bGPGKey = ( u->GPGKey()!=NULL ) && ( strcmp( u->GPGKey(), "" )!=0 );
    m_bGPGKeyEnabled = ( u->UseGPG() );
 
@@ -1734,13 +1736,17 @@ void CUserView::maybeTip(const QPoint& c)
     }
 
     if (item->m_bPhone && gMainWindow->m_bPopPhone)
-      s += "<br>" + tr("P: ") + codec->toUnicode(u->GetPhoneNumber());
+      s += "<br>" + tr("P: ") + codec->toUnicode(u->getUserInfoString("PhoneNumber").c_str());
 
     if (item->m_bCellular && gMainWindow->m_bPopCellular)
-      s += "<br>" + tr("C: ") + codec->toUnicode(u->GetCellularNumber());
+      s += "<br>" + tr("C: ") + codec->toUnicode(u->getCellularNumber().c_str());
 
-    if ((u->GetFaxNumber()[0] != '\0') && gMainWindow->m_bPopEmail)
-      s += "<br>" + tr("F: ") + codec->toUnicode(u->GetFaxNumber());
+    if (gMainWindow->m_bPopFax)
+    {
+      string faxNumber = u->getUserInfoString("FaxNumber");
+      if (!faxNumber.empty())
+        s += "<br>" + tr("F: ") + codec->toUnicode(faxNumber.c_str());
+    }
 
     if ((u->Ip() || u->IntIp()) && gMainWindow->m_bPopIP)
     {
