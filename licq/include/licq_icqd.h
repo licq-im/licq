@@ -430,9 +430,9 @@ public:
                            char nBirthDay, char nLanguage1,
                            char nLanguage2, char nLanguage3);
   unsigned long icqSetSecurityInfo(bool bAuthorize, bool bHideIp, bool bWebAware);
-  unsigned long icqSetInterestsInfo(const ICQUserCategory *interests);
-  unsigned long icqSetOrgBackInfo(const ICQUserCategory *orgs,
-                                  const ICQUserCategory *background);
+  unsigned long icqSetInterestsInfo(const UserCategoryMap& interests);
+  unsigned long icqSetOrgBackInfo(const UserCategoryMap& orgs,
+      const UserCategoryMap& background);
   unsigned long icqSetHomepageInfo(bool bCatetory, unsigned short nCategory,
                                 const char *szHomepageDesc, bool bICQHomepage);
   unsigned long icqSetAbout(const char *szAbout);

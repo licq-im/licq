@@ -1075,13 +1075,12 @@ friend class CICQDaemon;
 class CPU_Meta_SetInterestsInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_SetInterestsInfo(const ICQUserCategory* interests);
-  ~CPU_Meta_SetInterestsInfo();
+  CPU_Meta_SetInterestsInfo(const UserCategoryMap& interests);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
-  ICQUserCategory *m_Interests;
+  UserCategoryMap myInterests;
 
 friend class CICQDaemon;
 };
@@ -1091,15 +1090,14 @@ friend class CICQDaemon;
 class CPU_Meta_SetOrgBackInfo : public CPU_CommonFamily
 {
 public:
-  CPU_Meta_SetOrgBackInfo(const ICQUserCategory* orgs,
-                          const ICQUserCategory* background);
-  ~CPU_Meta_SetOrgBackInfo();
+  CPU_Meta_SetOrgBackInfo(const UserCategoryMap& orgs,
+      const UserCategoryMap& background);
   virtual unsigned short SubCommand()  { return m_nMetaCommand; }
 protected:
   unsigned short m_nMetaCommand;
 
-  ICQUserCategory *m_Orgs;
-  ICQUserCategory *m_Background;
+  UserCategoryMap myOrganizations;
+  UserCategoryMap myBackgrounds;
 
 friend class CICQDaemon;
 };

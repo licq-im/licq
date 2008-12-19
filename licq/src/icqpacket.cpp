@@ -3983,25 +3983,18 @@ CPU_Meta_SetMoreInfo::CPU_Meta_SetMoreInfo( unsigned short nAge,
 }
 
 //-----Meta_SetInterestsInfo----------------------------------------------------
-CPU_Meta_SetInterestsInfo::CPU_Meta_SetInterestsInfo(
-                                             const ICQUserCategory* interests)
+CPU_Meta_SetInterestsInfo::CPU_Meta_SetInterestsInfo(const UserCategoryMap& interests)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_INTERESTSxINFOxSET;
 
-  m_Interests = new ICQUserCategory(CAT_INTERESTS);
-
   int packetSize = 2 + 2 + 2 + 4 + 2 + 2 + 2 + 1;
-  unsigned char num_Interests = 0;
-  unsigned short cat;
-  const char *descr;
-  int i;
-  for (i = 0; interests->Get(i, &cat, &descr); i++)
+  UserCategoryMap::const_iterator i;
+  for (i = interests.begin(); i != interests.end(); ++i)
   {
-    char *tmp = strdup(descr);
+    char* tmp = strdup(i->second.c_str());
     gTranslator.ClientToServer(tmp);
-    m_Interests->AddCategory(cat, tmp);
-    num_Interests++;
+    myInterests[i->first] = tmp;
     packetSize += 2 + 2 + strlen_safe(tmp) + 1;
     free(tmp);
   }
@@ -4018,51 +4011,36 @@ CPU_Meta_SetInterestsInfo::CPU_Meta_SetInterestsInfo(
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
-  buffer->PackChar(num_Interests);
-  for (i = 0; m_Interests->Get(i, &cat, &descr); i++)
+  buffer->PackChar(myInterests.size());
+  for (i = myInterests.begin(); i != myInterests.end(); ++i)
   {
-    buffer->PackUnsignedShort(cat);
-    buffer->PackString(descr);
+    buffer->PackUnsignedShort(i->first);
+    buffer->PackString(i->second.c_str());
   }
 }
 
-CPU_Meta_SetInterestsInfo::~CPU_Meta_SetInterestsInfo()
-{
-  delete m_Interests;
-}
-
 //-----Meta_SetOrgBackInfo------------------------------------------------------
-CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(
-                                             const ICQUserCategory* orgs,
-                                             const ICQUserCategory* background)
+CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(const UserCategoryMap& orgs,
+    const UserCategoryMap& background)
   : CPU_CommonFamily(ICQ_SNACxFAM_VARIOUS, ICQ_SNACxMETA)
 {
   m_nMetaCommand = ICQ_CMDxMETA_ORGBACKxINFOxSET;
 
-  m_Orgs = new ICQUserCategory(CAT_ORGANIZATION);
-  m_Background = new ICQUserCategory(CAT_BACKGROUND);
-
   int packetSize = 2 + 2 + 2 + 4 + 2 + 2 + 2 + 2;
-  unsigned char num_Orgs = 0;
-  unsigned char num_Background = 0;
-  unsigned short cat;
-  const char *descr;
-  int i;
-  for (i = 0; orgs->Get(i, &cat, &descr); i++)
+  UserCategoryMap::const_iterator i;
+  for (i = orgs.begin(); i != orgs.end(); ++i)
   {
-    char *tmp = strdup(descr);
+    char* tmp = strdup(i->second.c_str());
     gTranslator.ClientToServer(tmp);
-    m_Orgs->AddCategory(cat, tmp);
-    num_Orgs++;
+    myOrganizations[i->first] = tmp;
     packetSize += 2 + 2 + strlen_safe(tmp) + 1;
     free(tmp);
   }
-  for (i = 0; background->Get(i, &cat, &descr); i++)
+  for (i = background.begin(); i != background.end(); ++i)
   {
-    char *tmp = strdup(descr);
+    char* tmp = strdup(i->second.c_str());
     gTranslator.ClientToServer(tmp);
-    m_Background->AddCategory(cat, tmp);
-    num_Background++;
+    myBackgrounds[i->first] = tmp;
     packetSize += 2 + 2 + strlen_safe(tmp) + 1;
     free(tmp);
   }
@@ -4079,24 +4057,18 @@ CPU_Meta_SetOrgBackInfo::CPU_Meta_SetOrgBackInfo(
   buffer->PackUnsignedShortBE(m_nSubSequence);
   buffer->PackUnsignedShort(m_nMetaCommand); 			// subtype
 
-  buffer->PackChar(num_Background);
-  for (i = 0; m_Background->Get(i, &cat, &descr); i++)
+  buffer->PackChar(myBackgrounds.size());
+  for (i = myBackgrounds.begin(); i != myBackgrounds.end(); ++i)
   {
-    buffer->PackUnsignedShort(cat);
-    buffer->PackString(descr);
+    buffer->PackUnsignedShort(i->first);
+    buffer->PackString(i->second.c_str());
   }
-  buffer->PackChar(num_Orgs);
-  for (i = 0; m_Orgs->Get(i, &cat, &descr); i++)
+  buffer->PackChar(myOrganizations.size());
+  for (i = myOrganizations.begin(); i != myOrganizations.end(); ++i)
   {
-    buffer->PackUnsignedShort(cat);
-    buffer->PackString(descr);
+    buffer->PackUnsignedShort(i->first);
+    buffer->PackString(i->second.c_str());
   }
-}
-
-CPU_Meta_SetOrgBackInfo::~CPU_Meta_SetOrgBackInfo()
-{
-  delete m_Orgs;
-  delete m_Background;
 }
 
 //-----Meta_SetWorkInfo------------------------------------------------------

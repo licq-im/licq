@@ -100,9 +100,8 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   m_szId = szId ? strdup(szId) : 0;
   m_nPPID = nPPID;
   m_bOwner = (gUserManager.FindOwner(szId, nPPID) != NULL);
-  m_Interests = m_Organizations = m_Backgrounds = NULL;
   m_PhoneBook = NULL;
- 
+
   CreateGeneralInfo();
   CreateMoreInfo();
   CreateMore2Info();
@@ -217,15 +216,6 @@ UserInfoDlg::~UserInfoDlg()
     server->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
-
-  if (m_Interests != NULL)
-    delete m_Interests;
-  if (m_Organizations != NULL)
-    delete m_Organizations;
-  if (m_Backgrounds != NULL)
-    delete m_Backgrounds;
-  if (m_PhoneBook != NULL)
-    delete m_PhoneBook;
 
   emit finished(m_szId, m_nPPID);
   free(m_szId);
@@ -862,11 +852,7 @@ int UserInfoDlg::SplitCategory(QListViewItem *parent, QTextCodec *codec,
 
 void UserInfoDlg::SetMore2Info(ICQUser *u)
 {
-  ICQUserCategory *cat;
   bool drop = false;
-  int i;
-  unsigned short id;
-  const char *descr;
 
   tabList[More2Info].loaded = true;
 
@@ -880,48 +866,28 @@ void UserInfoDlg::SetMore2Info(ICQUser *u)
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
 
-  if (m_Interests != NULL)
-    delete m_Interests;
-  m_Interests = new ICQUserCategory(CAT_INTERESTS);
-  cat = u->GetInterests();
-  for (i = 0; cat->Get(i, &id, &descr); i++)
-    m_Interests->AddCategory(id, descr);
-  UpdateMore2Info(codec, cat);
+  myInterests = u->getInterests();
+  UpdateMore2Info(codec, CAT_INTERESTS, myInterests);
 
-  if (m_Organizations != NULL)
-    delete m_Organizations;
-  m_Organizations = new ICQUserCategory(CAT_ORGANIZATION);
-  cat = u->GetOrganizations();
-  for (i = 0; cat->Get(i, &id, &descr); i++)
-    m_Organizations->AddCategory(id, descr);
-  UpdateMore2Info(codec, cat);
+  myOrganizations = u->getOrganizations();
+  UpdateMore2Info(codec, CAT_ORGANIZATION, myOrganizations);
 
-  if (m_Backgrounds != NULL)
-    delete m_Backgrounds;
-  m_Backgrounds = new ICQUserCategory(CAT_BACKGROUND);
-  cat = u->GetBackgrounds();
-  for (i = 0; cat->Get(i, &id, &descr); i++)
-    m_Backgrounds->AddCategory(id, descr);
-  UpdateMore2Info(codec, cat);
+  myBackgrounds = u->getBackgrounds();
+  UpdateMore2Info(codec, CAT_BACKGROUND, myBackgrounds);
 
   if (drop)
     gUserManager.DropUser(u);
 }
 
-void UserInfoDlg::UpdateMore2Info(QTextCodec *codec, ICQUserCategory *cat)
+void UserInfoDlg::UpdateMore2Info(QTextCodec *codec, UserCat cat, const UserCategoryMap& category)
 {
   QListViewItem *lvi = NULL, *lvChild;
-  unsigned short i, id;
-  const char *descr;
 
-  while ((lvChild = lviMore2Top[cat->GetCategory()]->firstChild()))
+  while ((lvChild = lviMore2Top[cat]->firstChild()))
     delete lvChild;
 
-  if (cat == NULL)
-    return;
-
   const struct SCategory *(*cat2str)(unsigned short);
-  switch (cat->GetCategory())
+  switch (cat)
   {
   case CAT_INTERESTS:
     cat2str = GetInterestByCode;
@@ -936,9 +902,10 @@ void UserInfoDlg::UpdateMore2Info(QTextCodec *codec, ICQUserCategory *cat)
     return;
   }
 
-  for (i = 0; cat->Get(i, &id, &descr); i++)
+  UserCategoryMap::const_iterator i;
+  for (i = category.begin(); i != category.end(); ++i)
   {
-    const struct SCategory *sCat = cat2str(id);
+    const struct SCategory* sCat = cat2str(i->first);
     QString name;
     if (sCat == NULL)
       name = tr("Unknown");
@@ -946,14 +913,14 @@ void UserInfoDlg::UpdateMore2Info(QTextCodec *codec, ICQUserCategory *cat)
       name = sCat->szName;
 
     if (lvi == NULL)
-      lvi = new QListViewItem(lviMore2Top[cat->GetCategory()], name);
+      lvi = new QListViewItem(lviMore2Top[cat], name);
     else
-      lvi = new QListViewItem(lviMore2Top[cat->GetCategory()], lvi, name);
-    SplitCategory(lvi, codec, descr);
+      lvi = new QListViewItem(lviMore2Top[cat], lvi, name);
+    SplitCategory(lvi, codec, i->second.c_str());
   }
 
-  if (i == 0)
-    lvi = new QListViewItem(lviMore2Top[cat->GetCategory()], tr("(none)"));
+  if (category.empty())
+    lvi = new QListViewItem(lviMore2Top[cat], tr("(none)"));
 }
 
 void UserInfoDlg::SaveMore2Info()
@@ -962,29 +929,10 @@ void UserInfoDlg::SaveMore2Info()
   if (u == NULL)
     return;
 
-  int i;
-  unsigned short cat;
-  const char *descr;
-
-  u->SetEnableSave(false);
-  u->GetInterests()->Clean();
-  for (i = 0; m_Interests->Get(i, &cat, &descr); i++)
-    u->GetInterests()->AddCategory(cat, descr);
-  u->SetEnableSave(true);
-  u->SaveInterestsInfo();
-  u->SetEnableSave(false);
-  u->GetOrganizations()->Clean();
-  for (i = 0; m_Organizations->Get(i, &cat, &descr); i++)
-    u->GetOrganizations()->AddCategory(cat, descr);
-  u->SetEnableSave(true);
-  u->SaveOrganizationsInfo();
-
-  u->SetEnableSave(false);
-  u->GetBackgrounds()->Clean();
-  for (i = 0; m_Backgrounds->Get(i, &cat, &descr); i++)
-    u->GetBackgrounds()->AddCategory(cat, descr);
-  u->SetEnableSave(true);
-  u->SaveBackgroundsInfo();
+  u->getInterests() = myInterests;
+  u->getOrganizations() = myOrganizations;
+  u->getBackgrounds() = myBackgrounds;
+  u->saveUserInfo();
 
   gUserManager.DropUser(u);
 
@@ -1738,37 +1686,31 @@ void UserInfoDlg::EditCategory(QListViewItem *selected)
 
   EditCategoryDlg *ecd;
   if (selected == lviMore2Top[CAT_INTERESTS])
-    ecd = new EditCategoryDlg(this, m_Interests);
+    ecd = new EditCategoryDlg(this, CAT_INTERESTS, myInterests);
   else if (selected == lviMore2Top[CAT_ORGANIZATION])
-    ecd = new EditCategoryDlg(this, m_Organizations);
+    ecd = new EditCategoryDlg(this, CAT_ORGANIZATION, myOrganizations);
   else if (selected == lviMore2Top[CAT_BACKGROUND])
-    ecd = new EditCategoryDlg(this, m_Backgrounds);
+    ecd = new EditCategoryDlg(this, CAT_BACKGROUND, myBackgrounds);
   else
     return;
 
-  connect(ecd,  SIGNAL(updated(ICQUserCategory *)),
-          this, SLOT(setCategory(ICQUserCategory *)));
+  connect(ecd, SIGNAL(updated(UserCat, const UserCategoryMap&)),
+      this, SLOT(setCategory(UserCat, const UserCategoryMap&)));
   ecd->show();
 }
 
-void UserInfoDlg::setCategory(ICQUserCategory *cat)
+void UserInfoDlg::setCategory(UserCat cat, const UserCategoryMap& category)
 {
-  switch (cat->GetCategory())
+  switch (cat)
   {
   case CAT_INTERESTS:
-    if (m_Interests != NULL)
-      delete m_Interests;
-    m_Interests = cat;
+      myInterests = category;
     break;
   case CAT_ORGANIZATION:
-    if (m_Organizations != NULL)
-      delete m_Organizations;
-    m_Organizations = cat;
+      myOrganizations = category;
     break;
   case CAT_BACKGROUND:
-    if (m_Backgrounds != NULL)
-      delete m_Backgrounds;
-    m_Backgrounds = cat;
+      myBackgrounds = category;
     break;
   default:
     return;
@@ -1779,7 +1721,7 @@ void UserInfoDlg::setCategory(ICQUserCategory *cat)
     return;
 
   QTextCodec *codec = UserCodec::codecForICQUser(u);
-  UpdateMore2Info(codec, cat);
+  UpdateMore2Info(codec, cat, category);
   gUserManager.DropUser(u);
 }
 
@@ -2433,8 +2375,8 @@ void UserInfoDlg::slotUpdate()
                                          GetLanguageByIndex(cmbLanguage[2]->currentItem())->nCode);
   break;
   case More2Info:
-    server->icqSetInterestsInfo(m_Interests);
-    icqEventTag = server->icqSetOrgBackInfo(m_Organizations, m_Backgrounds);
+      server->icqSetInterestsInfo(myInterests);
+      icqEventTag = server->icqSetOrgBackInfo(myOrganizations, myBackgrounds);
   break;
   case WorkInfo:
     i = cmbCompanyCountry->currentItem();

@@ -923,7 +923,7 @@ unsigned long CICQDaemon::icqSetMoreInfo(unsigned short nAge,
 }
 
 //-----icqSetInterestsInfo------------------------------------------------------
-unsigned long CICQDaemon::icqSetInterestsInfo(const ICQUserCategory* interests)
+unsigned long CICQDaemon::icqSetInterestsInfo(const UserCategoryMap& interests)
 {
   CPU_Meta_SetInterestsInfo *p = new CPU_Meta_SetInterestsInfo(interests);
   gLog.Info("%sUpdating Interests info (#%hu/#%d)..\n", L_SRVxSTR,
@@ -936,8 +936,8 @@ unsigned long CICQDaemon::icqSetInterestsInfo(const ICQUserCategory* interests)
 }
 
 //-----icqSetOrgBackInfo--------------------------------------------------------
-unsigned long CICQDaemon::icqSetOrgBackInfo(const ICQUserCategory* orgs,
-                                            const ICQUserCategory* background)
+unsigned long CICQDaemon::icqSetOrgBackInfo(const UserCategoryMap& orgs,
+    const UserCategoryMap& background)
 {
   CPU_Meta_SetOrgBackInfo *p =
     new CPU_Meta_SetOrgBackInfo(orgs, background);
@@ -5293,18 +5293,17 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                            (CPU_Meta_SetInterestsInfo *)pEvent->m_pPacket;
               ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           o->SetEnableSave(false);
-          unsigned short cat;
-          const char *descr;
-          o->m_Interests->Clean();
-          for (int i = 0; p->m_Interests->Get(i, &cat, &descr); i++)
-          {
-            char *tmp = strdup(descr);
-            gTranslator.ServerToClient(tmp);
-            o->m_Interests->AddCategory(cat, tmp);
+              o->getInterests().clear();
+              UserCategoryMap::iterator i;
+              for (i = p->myInterests.begin(); i != p->myInterests.end(); ++i)
+              {
+                char* tmp = strdup(i->second.c_str());
+                gTranslator.ServerToClient(tmp);
+                o->getInterests()[i->first] = tmp;
             free(tmp);
           }
           o->SetEnableSave(true);
-          o->SaveInterestsInfo();
+              o->saveUserInfo();
               gUserManager.DropOwner(o);
         }
       }
@@ -5390,29 +5389,26 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                              (CPU_Meta_SetOrgBackInfo *)pEvent->m_pPacket;
             ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
             o->SetEnableSave(false);
-            unsigned short cat;
-            const char *descr;
-            o->m_Organizations->Clean();
-            for (int i = 0; p->m_Orgs->Get(i, &cat, &descr); i++)
-            {
-              char *tmp = strdup(descr);
+                o->getOrganizations().clear();
+                UserCategoryMap::iterator i;
+                for (i = p->myOrganizations.begin(); i != p->myOrganizations.end(); ++i)
+                {
+                  char *tmp = strdup(i->second.c_str());
               gTranslator.ServerToClient(tmp);
-              o->m_Organizations->AddCategory(cat, tmp);
+                  o->getOrganizations()[i->first] = tmp;
               free(tmp);
             }
-            o->SetEnableSave(true);
-            o->SaveOrganizationsInfo();
 
-            o->m_Backgrounds->Clean();
-            for (int i = 0; p->m_Background->Get(i, &cat, &descr); i++)
-            {
-              char *tmp = strdup(descr);
+                o->getBackgrounds().clear();
+                for (i = p->myBackgrounds.begin(); i != p->myBackgrounds.end(); ++i)
+                {
+                  char *tmp = strdup(i->second.c_str());
               gTranslator.ServerToClient(tmp);
-              o->m_Backgrounds->AddCategory(cat, tmp);
+                  o->getBackgrounds()[i->first] = tmp;
               free(tmp);
             }
             o->SetEnableSave(true);
-            o->SaveBackgroundsInfo();
+                o->saveUserInfo();
                 gUserManager.DropOwner(o);
           }
         }
@@ -6020,28 +6016,27 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         case ICQ_CMDxMETA_INTERESTSxINFO:
         {
           unsigned i, n;
-          bool nRet = true;
 
           gLog.Info("%sPersonal Interests info on %s (%s).\n", L_SRVxSTR,
                     u->GetAlias(), u->IdString());
 
           u->SetEnableSave(false);
-          u->m_Interests->Clean();
+                u->getInterests().clear();
           n = msg.UnpackChar();
 
-          for (i = 0; nRet && i < n; i++)
-          { 
+                for (i = 0; i < n; ++i)
+                {
             unsigned short cat = msg.UnpackUnsignedShort();
             tmp = msg.UnpackString();
             gTranslator.ServerToClient(tmp);
-            nRet = u->m_Interests->AddCategory(cat, tmp);
+                  u->getInterests()[cat] = tmp;
             delete [] tmp;
           }
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->SaveInterestsInfo();
-          
+                u->saveUserInfo();
+
           PushExtendedEvent(e);
           multipart = true;
           
@@ -6054,42 +6049,35 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         {
           // past background info - last one received
           unsigned i, n;
-          bool nRet = true;
 
           gLog.Info("%sOrganizations/Past Background info on %s (%s).\n",
                     L_SRVxSTR, u->GetAlias(), u->IdString());
 
           u->SetEnableSave(false);
 
-          u->m_Backgrounds->Clean();
- 
+                u->getBackgrounds().clear();
+
           n = msg.UnpackChar();
 
-          for (i = 0; nRet && i < n; i++)
-          {
+                for (i = 0; i < n; ++i)
+                {
             unsigned short cat = msg.UnpackUnsignedShort();
             tmp = msg.UnpackString();
             gTranslator.ServerToClient(tmp);
-            nRet = u->m_Backgrounds->AddCategory(cat, tmp);
+                  u->getBackgrounds()[cat] = tmp;
             delete [] tmp;
           }
 
-          // save the user infomation
-          u->SetEnableSave(true);
-          u->SaveBackgroundsInfo();
-
           //---- Organizations
-          u->SetEnableSave(false);
-          u->m_Organizations->Clean();
-          nRet = true;
+                u->getOrganizations().clear();
           n = msg.UnpackChar();
 
-          for(i = 0; nRet && i < n; i++)
+                for (i = 0; i < n; ++i)
           {
             unsigned short cat = msg.UnpackUnsignedShort();
             tmp = msg.UnpackString();
             gTranslator.ServerToClient(tmp);
-            nRet = u->m_Organizations->AddCategory(cat, tmp);
+                  u->getOrganizations()[cat] = tmp;
             delete [] tmp;
           }
 
@@ -6098,7 +6086,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           // save the user infomation
           u->SetEnableSave(true);
-          u->SaveOrganizationsInfo();
+                u->saveUserInfo();
           u->SaveLicqInfo();
 
           PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE2,

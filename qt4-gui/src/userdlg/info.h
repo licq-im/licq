@@ -139,8 +139,9 @@ private slots:
    * Set interest, organization or background after editing dialog has finished
    *
    * @param cat Category to update
+   * @param category New category map
    */
-  void setCategory(ICQUserCategory* cat);
+  void setCategory(UserCat cat, const UserCategoryMap& category);
 
   /**
    * Add/update phone book entry after editing dialog has finished
@@ -271,8 +272,9 @@ private:
    * Present interest, organization or background data
    *
    * @param cat Category to update
+   * @param category New category map
    */
-  void updateMore2Info(const ICQUserCategory* cat);
+  void updateMore2Info(UserCat cat, const UserCategoryMap& category);
 
   /**
    * Setup the work page.
@@ -457,9 +459,9 @@ private:
   QGroupBox* myMore2Box;
   QTreeWidget* lsvMore2;
   QTreeWidgetItem* lviMore2Top[3];
-  ICQUserCategory* m_Interests;
-  ICQUserCategory* m_Backgrounds;
-  ICQUserCategory* m_Organizations;
+  UserCategoryMap myInterests;
+  UserCategoryMap myBackgrounds;
+  UserCategoryMap myOrganizations;
 
   // Work info
   QVBoxLayout* myPageWorkLayout;

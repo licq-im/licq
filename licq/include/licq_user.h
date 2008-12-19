@@ -243,6 +243,7 @@ typedef std::map<unsigned short, std::string> GroupNameMap;
 typedef std::list<unsigned long> UinList;
 typedef std::vector <class CUserEvent *> UserEventList;
 typedef std::map<std::string, boost::any> PropertyMap;
+typedef std::map<unsigned int, std::string> UserCategoryMap;
 
 // Cheap hack as I'm too lazy to move the relevant functions to user.cpp
 extern "C" void SetString(char **, const char *);
@@ -311,6 +312,7 @@ const unsigned short LAST_SENT_EVENT    = 2;
 const unsigned short LAST_CHECKED_AR    = 3;
 
 const unsigned short MAX_CATEGORY_SIZE  = 60;
+const unsigned int MAX_CATEGORIES = 4;
 
 typedef enum
 {
@@ -321,37 +323,6 @@ typedef enum
 } UserCat;
 
 //+++++OBJECTS++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-
-//====ICQUserCategory===========================================================
-class ICQUserCategory
-{
-public:
-  ICQUserCategory(UserCat uc);
-  ~ICQUserCategory();
-  bool AddCategory (unsigned short cat, const char *descr);
-  void Clean();
-
-  bool Get(unsigned d,unsigned short *id, char const ** descr) const;
-  UserCat GetCategory() const                   { return m_uc; }
-
-  static const unsigned MAX_CATEGORIES = 4;
-
-private:
-  bool SaveToDisk(CIniFile &m_fConf,const char *const szN,
-                  const char *const szCat,const char *const szDescr);
-  bool LoadFromDisk(CIniFile &m_fConf, const char *const szN,
-                    const char *const szCat,const char *const szDescr);
-
-  unsigned short used;
-
-  struct cat
-  {       unsigned short id;
-          char *descr;
-  };
-  struct cat data[MAX_CATEGORIES];
-  UserCat m_uc;
-  friend class ICQUser;
-};
 
 struct PhoneBookEntry
 {
@@ -439,9 +410,6 @@ public:
   void saveAll();
   virtual void SaveLicqInfo();
   void saveUserInfo();
-  void SaveInterestsInfo();
-  void SaveBackgroundsInfo();
-  void SaveOrganizationsInfo();
   void SavePhoneBookInfo();
   void SavePictureInfo();
   void SaveNewMessagesInfo();
@@ -478,14 +446,14 @@ public:
 
   // More2 Info
   //!Retrieves the user's interests
-  ICQUserCategory *GetInterests()       { return m_Interests; }
-  const ICQUserCategory* GetInterests() const   { return m_Interests; }
+  UserCategoryMap& getInterests()               { return myInterests; }
+  const UserCategoryMap& getInterests() const   { return myInterests; }
   //!Retrieves the user's backgrounds
-  ICQUserCategory *GetBackgrounds()     { return m_Backgrounds; }
-  const ICQUserCategory* GetBackgrounds() const { return m_Backgrounds; }
+  UserCategoryMap& getBackgrounds()             { return myBackgrounds; }
+  const UserCategoryMap& getBackgrounds() const { return myBackgrounds; }
   //!Retrieves the user's organizations
-  ICQUserCategory *GetOrganizations()   { return m_Organizations; }
-  const ICQUserCategory* GetOrganizations() const { return m_Organizations; }
+  UserCategoryMap& getOrganizations()           { return myOrganizations; }
+  const UserCategoryMap& getOrganizations() const { return myOrganizations; }
 
   // Phone Book Info
   //!Retrives the user's phone book
@@ -858,9 +826,27 @@ public:
 protected:
   ICQUser() { /* ICQOwner inherited constructor - does nothing */ }
   void loadUserInfo();
-  void LoadInterestsInfo();
-  void LoadBackgroundsInfo();
-  void LoadOrganizationsInfo();
+
+  /**
+   * Save a category list
+   *
+   * @param category The category map to save
+   * @param file User file, must already be open
+   * @param key Base name of key in file for entries
+   */
+  void saveCategory(const UserCategoryMap& category, CIniFile& file,
+      const std::string& key);
+
+  /**
+   * Load a category list
+   *
+   * @param category The category map to save
+   * @param file User file, must already be open
+   * @param key Base name of key in file for entries
+   */
+  void loadCategory(UserCategoryMap& category, CIniFile& file,
+      const std::string& key);
+
   void LoadPhoneBookInfo();
   void LoadPictureInfo();
   void LoadLicqInfo();
@@ -940,9 +926,9 @@ protected:
   PropertyMap myUserInfo;
 
   // More2 Info
-  ICQUserCategory *m_Interests;
-  ICQUserCategory *m_Backgrounds;
-  ICQUserCategory *m_Organizations;
+  UserCategoryMap myInterests;
+  UserCategoryMap myBackgrounds;
+  UserCategoryMap myOrganizations;
 
   // Phone Book Info
   ICQUserPhoneBook *m_PhoneBook;

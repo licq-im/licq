@@ -32,29 +32,29 @@
 #include "licq_backgroundcodes.h"
 
 
-EditCategoryDlg::EditCategoryDlg(QWidget *parent, ICQUserCategory *uCat)
+EditCategoryDlg::EditCategoryDlg(QWidget *parent, UserCat cat, const UserCategoryMap& category)
   : QDialog(parent, "EditCategoryDlg", false, WDestructiveClose)
 {
   QBoxLayout *top_lay, *ll, *l;
 
-  m_uc = uCat->GetCategory();
+  myUserCat = cat;
 
   unsigned short nTableSize;
 
-  switch (m_uc)
+  switch (myUserCat)
   {
   case CAT_INTERESTS:
-    m_nCats = MAX_CAT;
+      m_nCats = MAX_CATEGORIES;
     m_fGetEntry = GetInterestByIndex;
     nTableSize = NUM_INTERESTS;
     break;
   case CAT_ORGANIZATION:
-    m_nCats = MAX_CAT - 1;
+      m_nCats = MAX_CATEGORIES - 1;
     m_fGetEntry = GetOrganizationByIndex;
     nTableSize = NUM_ORGANIZATIONS;
     break;
   case CAT_BACKGROUND:
-    m_nCats = MAX_CAT - 1;
+      m_nCats = MAX_CATEGORIES - 1;
     m_fGetEntry = GetBackgroundByIndex;
     nTableSize = NUM_BACKGROUNDS;
     break;
@@ -65,15 +65,22 @@ EditCategoryDlg::EditCategoryDlg(QWidget *parent, ICQUserCategory *uCat)
 
   top_lay = new QVBoxLayout(this, 10);
 
+  UserCategoryMap::const_iterator it = category.begin();
   for(unsigned short i = 0 ; i < m_nCats ; i++ )
   {
     ll = new QHBoxLayout(top_lay, 10);
     cbCat[i] = new QComboBox(this);
     cbCat[i]->insertItem(tr("Unspecified"), 0);
     int selected = 0;
-    const char *descr;
     unsigned short selection_id;
-    if (!uCat->Get(i, &selection_id, &descr))
+    QString descr;
+    if (it != category.end())
+    {
+      selection_id = it->first;
+      descr = it->second;
+      ++it;
+    }
+    else
     {
       selection_id = 0;
       descr = "";
@@ -121,17 +128,14 @@ void EditCategoryDlg::ok()
   QTextCodec *codec = UserCodec::codecForICQUser(o);
   gUserManager.DropOwner(o);
 
-  ICQUserCategory *cat = new ICQUserCategory(m_uc);
+  UserCategoryMap cat;
   for (unsigned short i = 0; i < m_nCats; i++)
   {
     if (cbCat[i]->currentItem() != 0)
-    {
-      cat->AddCategory(m_fGetEntry(cbCat[i]->currentItem() - 1)->nCode,
-                       codec->fromUnicode(leDescr[i]->text()));
-    }
+      cat[m_fGetEntry(cbCat[i]->currentItem() - 1)->nCode] = codec->fromUnicode(leDescr[i]->text()).data();
   }
 
-  emit updated(cat);
+  emit updated(myUserCat, cat);
   close();
 }
 

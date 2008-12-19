@@ -38,15 +38,14 @@ class EditCategoryDlg : public QDialog
   Q_OBJECT
 
 public:
-  EditCategoryDlg(ICQUserCategory* cat, QWidget* parent = 0);
+  EditCategoryDlg(UserCat cat, const UserCategoryMap& category, QWidget* parent = 0);
 
 signals:
-  void updated(ICQUserCategory* cat);
+  void updated(UserCat cat, const UserCategoryMap& category);
 
 private:
-  static const unsigned MAX_CAT = ICQUserCategory::MAX_CATEGORIES;
-  QComboBox* myCats[MAX_CAT];
-  QLineEdit* myDescr[MAX_CAT];
+  QComboBox* myCats[MAX_CATEGORIES];
+  QLineEdit* myDescr[MAX_CATEGORIES];
   unsigned short myNumCats;
   UserCat myUserCat;
 

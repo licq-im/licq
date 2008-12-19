@@ -176,7 +176,7 @@ protected:
   void SetGeneralInfo(ICQUser *);
   void SetMoreInfo(ICQUser *);
   void SetMore2Info(ICQUser *);
-  void UpdateMore2Info(QTextCodec *, ICQUserCategory *);
+  void UpdateMore2Info(QTextCodec* codec, UserCat cat, const UserCategoryMap& category);
   void SetWorkInfo(ICQUser *);
   void SetAbout(ICQUser *);
   void SetPhoneBook(ICQUser *);
@@ -213,7 +213,7 @@ protected slots:
   void ShowUsermenu() { gMainWindow->SetUserMenuUser(m_szId, m_nPPID); }
   void slot_showHistoryTimer();
   void EditCategory(QListViewItem *selected);
-  void setCategory(ICQUserCategory *cat);
+  void setCategory(UserCat cat, const UserCategoryMap& category);
   void PhoneBookUpdated(struct PhoneBookEntry pbe, int nEntry);
   void EditPhoneEntry(QListViewItem *selected);
   void ChangeActivePhone(int index);
@@ -226,9 +226,9 @@ signals:
 private:
   static bool chkContains(const char* text, const char* filter, int filterlen);
   QTimer *timer;
-  ICQUserCategory *m_Interests;
-  ICQUserCategory *m_Backgrounds;
-  ICQUserCategory *m_Organizations;
+  UserCategoryMap myInterests;
+  UserCategoryMap myBackgrounds;
+  UserCategoryMap myOrganizations;
   ICQUserPhoneBook *m_PhoneBook;
 };
 

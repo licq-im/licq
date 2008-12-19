@@ -91,7 +91,6 @@ UserPages::Info::Info(bool isOwner, UserDlg* parent)
     m_bOwner(isOwner),
     myAliasHasChanged(false)
 {
-  m_Interests = m_Organizations = m_Backgrounds = NULL;
   m_PhoneBook = NULL;
 
   parent->addPage(UserDlg::GeneralPage, createPageGeneral(parent),
@@ -715,50 +714,25 @@ int UserPages::Info::splitCategory(QTreeWidgetItem* parent, const char* descr)
 
 void UserPages::Info::loadPageMore2(const ICQUser* u)
 {
-  const ICQUserCategory* cat;
-  int i;
-  unsigned short id;
-  const char* descr;
+  myInterests = u->getInterests();
+  updateMore2Info(CAT_INTERESTS, myInterests);
 
-  if (m_Interests != NULL)
-    delete m_Interests;
-  m_Interests = new ICQUserCategory(CAT_INTERESTS);
-  cat = u->GetInterests();
-  for (i = 0; cat->Get(i, &id, &descr); i++)
-    m_Interests->AddCategory(id, descr);
-  updateMore2Info(cat);
+  myOrganizations = u->getOrganizations();
+  updateMore2Info(CAT_ORGANIZATION, myOrganizations);
 
-  if (m_Organizations != NULL)
-    delete m_Organizations;
-  m_Organizations = new ICQUserCategory(CAT_ORGANIZATION);
-  cat = u->GetOrganizations();
-  for (i = 0; cat->Get(i, &id, &descr); i++)
-    m_Organizations->AddCategory(id, descr);
-  updateMore2Info(cat);
-
-  if (m_Backgrounds != NULL)
-    delete m_Backgrounds;
-  m_Backgrounds = new ICQUserCategory(CAT_BACKGROUND);
-  cat = u->GetBackgrounds();
-  for (i = 0; cat->Get(i, &id, &descr); i++)
-    m_Backgrounds->AddCategory(id, descr);
-  updateMore2Info(cat);
+  myBackgrounds = u->getBackgrounds();
+  updateMore2Info(CAT_BACKGROUND, myBackgrounds);
 }
 
-void UserPages::Info::updateMore2Info(const ICQUserCategory* cat)
+void UserPages::Info::updateMore2Info(UserCat cat, const UserCategoryMap& category)
 {
   QTreeWidgetItem* lvi = NULL;
-  unsigned short i, id;
-  const char* descr;
 
-  while (QTreeWidgetItem* lvChild = lviMore2Top[cat->GetCategory()]->takeChild(0))
+  while (QTreeWidgetItem* lvChild = lviMore2Top[cat]->takeChild(0))
     delete lvChild;
 
-  if (cat == NULL)
-    return;
-
   const struct SCategory* (*cat2str)(unsigned short);
-  switch (cat->GetCategory())
+  switch (cat)
   {
   case CAT_INTERESTS:
     cat2str = GetInterestByCode;
@@ -773,9 +747,10 @@ void UserPages::Info::updateMore2Info(const ICQUserCategory* cat)
     return;
   }
 
-  for (i = 0; cat->Get(i, &id, &descr); i++)
+  UserCategoryMap::const_iterator i;
+  for (i = category.begin(); i != category.end(); ++i)
   {
-    const struct SCategory* sCat = cat2str(id);
+    const struct SCategory* sCat = cat2str(i->first);
     QString name;
     if (sCat == NULL)
       name = tr("Unknown");
@@ -784,46 +759,29 @@ void UserPages::Info::updateMore2Info(const ICQUserCategory* cat)
 
     if (lvi == NULL)
     {
-      lvi = new QTreeWidgetItem(lviMore2Top[cat->GetCategory()]);
+      lvi = new QTreeWidgetItem(lviMore2Top[cat]);
       lvi->setText(0, name);
     }
     else
     {
-      lvi = new QTreeWidgetItem(lviMore2Top[cat->GetCategory()], lvi);
+      lvi = new QTreeWidgetItem(lviMore2Top[cat], lvi);
       lvi->setText(0, name);
     }
-    splitCategory(lvi, descr);
+    splitCategory(lvi, i->second.c_str());
   }
 
-  if (i == 0)
+  if (category.empty())
   {
-    lvi = new QTreeWidgetItem(lviMore2Top[cat->GetCategory()]);
+    lvi = new QTreeWidgetItem(lviMore2Top[cat]);
     lvi->setText(0, tr("(none)"));
   }
 }
 
 void UserPages::Info::savePageMore2(ICQUser* u)
 {
-  int i;
-  unsigned short cat;
-  const char* descr;
-
-  u->GetInterests()->Clean();
-  for (i = 0; m_Interests->Get(i, &cat, &descr); i++)
-    u->GetInterests()->AddCategory(cat, descr);
-  u->SetEnableSave(true);
-  u->SaveInterestsInfo();
-  u->SetEnableSave(false);
-  u->GetOrganizations()->Clean();
-  for (i = 0; m_Organizations->Get(i, &cat, &descr); i++)
-    u->GetOrganizations()->AddCategory(cat, descr);
-  u->SetEnableSave(true);
-  u->SaveOrganizationsInfo();
-
-  u->SetEnableSave(false);
-  u->GetBackgrounds()->Clean();
-  for (i = 0; m_Backgrounds->Get(i, &cat, &descr); i++)
-    u->GetBackgrounds()->AddCategory(cat, descr);
+  u->getInterests() = myInterests;
+  u->getOrganizations() = myOrganizations;
+  u->getBackgrounds() = myBackgrounds;
 }
 
 QWidget* UserPages::Info::createPageWork(QWidget* parent)
@@ -1455,41 +1413,35 @@ void UserPages::Info::editCategory(QTreeWidgetItem* selected)
   EditCategoryDlg* ecd;
 
   if (selected == lviMore2Top[CAT_INTERESTS])
-    ecd = new EditCategoryDlg(m_Interests, dynamic_cast<UserDlg*>(parent()));
+    ecd = new EditCategoryDlg(CAT_INTERESTS, myInterests, dynamic_cast<UserDlg*>(parent()));
   else if (selected == lviMore2Top[CAT_ORGANIZATION])
-    ecd = new EditCategoryDlg(m_Organizations, dynamic_cast<UserDlg*>(parent()));
+    ecd = new EditCategoryDlg(CAT_ORGANIZATION, myOrganizations, dynamic_cast<UserDlg*>(parent()));
   else if (selected == lviMore2Top[CAT_BACKGROUND])
-    ecd = new EditCategoryDlg(m_Backgrounds, dynamic_cast<UserDlg*>(parent()));
+    ecd = new EditCategoryDlg(CAT_BACKGROUND, myBackgrounds, dynamic_cast<UserDlg*>(parent()));
   else
     return;
 
-  connect(ecd, SIGNAL(updated(ICQUserCategory*)), SLOT(setCategory(ICQUserCategory*)));
+  connect(ecd, SIGNAL(updated(UserCat, const UserCategoryMap&)), SLOT(setCategory(UserCat, const UserCategoryMap&)));
 }
 
-void UserPages::Info::setCategory(ICQUserCategory* cat)
+void UserPages::Info::setCategory(UserCat cat, const UserCategoryMap& category)
 {
-  switch (cat->GetCategory())
+  switch (cat)
   {
   case CAT_INTERESTS:
-    if (m_Interests != NULL)
-      delete m_Interests;
-    m_Interests = cat;
+      myInterests = category;
     break;
   case CAT_ORGANIZATION:
-    if (m_Organizations != NULL)
-      delete m_Organizations;
-    m_Organizations = cat;
+      myOrganizations = category;
     break;
   case CAT_BACKGROUND:
-    if (m_Backgrounds != NULL)
-      delete m_Backgrounds;
-    m_Backgrounds = cat;
+      myBackgrounds = category;
     break;
   default:
     return;
   }
 
-  updateMore2Info(cat);
+  updateMore2Info(cat, category);
 }
 
 void UserPages::Info::phoneBookUpdated(struct PhoneBookEntry pbe, int entryNum)
@@ -1647,11 +1599,9 @@ unsigned long UserPages::Info::send(UserDlg::UserPage page)
   break;
 
     case UserDlg::More2Page:
-  gLicqDaemon->icqSetInterestsInfo(m_Interests);
-    icqEventTag = gLicqDaemon->icqSetOrgBackInfo(
-        m_Organizations,
-        m_Backgrounds);
-  break;
+      gLicqDaemon->icqSetInterestsInfo(myInterests);
+      icqEventTag = gLicqDaemon->icqSetOrgBackInfo(myOrganizations, myBackgrounds);
+      break;
 
     case UserDlg::WorkPage:
     i = cmbCompanyCountry->currentIndex();

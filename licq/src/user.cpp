@@ -50,149 +50,6 @@ using boost::any_cast;
 using boost::bad_any_cast;
 
 
-ICQUserCategory::ICQUserCategory(UserCat uc)
-{
-  used = 0;
-  m_uc = uc;
-}
-
-ICQUserCategory::~ICQUserCategory()
-{
-  Clean();
-}
-
-void ICQUserCategory::Clean()
-{      
-  unsigned short i;
-
-  for(i = 0; i < used; i++)
-    free((void *)data[i].descr);
-    
-  used = 0;
-}
-
-bool ICQUserCategory::SaveToDisk(CIniFile &m_fConf,const char *const szN,
-                             const char *const szCat,const char *const szDescr)
-{      
-  char buff[255];
-  unsigned short i;
-
-  if (!m_fConf.ReloadFile())
-  {
-    gLog.Error("%sError opening '%s' for reading.\n"
-               "%sSee log for details.\n", L_ERRORxSTR, m_fConf.FileName(),
-               L_BLANKxSTR);
-      return false;
-  }
-
-  m_fConf.SetSection("user");
-  m_fConf.WriteNum(szN, used);
-
-  for(i = 0; i < used; i ++)
-  {
-    snprintf(buff, sizeof(buff), szCat, i);
-    m_fConf.WriteNum(buff, data[i].id);
-    snprintf(buff, sizeof(buff), szDescr, i);
-    m_fConf.WriteStr(buff, data[i].descr);
-  }
-
-  if (!m_fConf.FlushFile())
-  {
-    gLog.Error("%sError opening '%s' for writing.\n"
-               "%sSee log for details.\n", L_ERRORxSTR,
-               m_fConf.FileName(), L_BLANKxSTR);
-    return false;
-  }
-
-  m_fConf.CloseFile();
-  return true;
-}
-
-bool ICQUserCategory::LoadFromDisk(CIniFile &m_fConf, const char *const szN,
-       const char *const szCat, const char *const szDescr)
-{
-  unsigned short i, j, ret, n;
-  char buff[255];
-  char szTemp[MAX_LINE_LEN];
-
-  Clean();
-  m_fConf.SetSection("user");
-  ret = m_fConf.ReadNum(szN, used, 0);
-
-  if (used > MAX_CATEGORIES)
-  {
-    gLog.Warn("%sTrying to load more categories than the max limit."
-              "Truncating.\n",L_WARNxSTR);
-    used = MAX_CATEGORIES;
-  }
-
-  for(i = j = 0, n = used; i < n; i++)
-  {
-    snprintf(buff, sizeof(buff), szCat, i);
-    ret = m_fConf.ReadNum(buff, data[j].id, 0);
-
-    snprintf(buff, sizeof(buff), szDescr, i);
-    if (ret)
-    {
-      ret = m_fConf.ReadStr(buff, szTemp);
-      if (ret)
-      {
-        data[j].descr = strdup(szTemp);
-        if (data[j].descr == NULL)
-          ret = 0;
-      }
-      
-    }
-
-    /* this one failed loading. we ignore and keep trying */
-    if (!ret)
-      used--;
-    else
-      j++;
-  }
-   
-  return true;
-}
-
-bool ICQUserCategory::AddCategory(unsigned short cat_, const char *descr_)
-{
-  bool nRet = true;
-
-  if (used == MAX_CATEGORIES || descr_ == NULL)
-    nRet =  false;
-  else if (cat_ != 0)
-  {
-    data[used].id = cat_;
-    data[used].descr = strdup(descr_);
-
-    if (data[used].descr == NULL)
-      nRet = false;
-    else
-      used++;
-  }
-   
-  return nRet;
-}
-
-bool ICQUserCategory::Get(unsigned d,short unsigned *id, char const*  * descr) 
-                                                                         const
-{
-  bool nRet = false;
-
-  //assert(id && descr);
-
-  if (d < used)
-  {
-    nRet = true;
-    *id = data[d].id;
-    *descr = (const char *)data[d].descr;
-  }
-  
-  return nRet;
-}
-
-//===========================================================================
-
 ICQUserPhoneBook::ICQUserPhoneBook()
 {
 }
@@ -1832,9 +1689,6 @@ bool ICQUser::LoadInfo()
   m_fConf.SetSection("user");
 
   loadUserInfo();
-  LoadInterestsInfo();
-  LoadBackgroundsInfo();
-  LoadOrganizationsInfo();
   LoadPhoneBookInfo();
   LoadPictureInfo();
   LoadLicqInfo();
@@ -1854,6 +1708,10 @@ void ICQUser::loadUserInfo()
   PropertyMap::iterator i;
   for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
     m_fConf.readVar(i->first, i->second);
+
+  loadCategory(myInterests, m_fConf, "Interests");
+  loadCategory(myBackgrounds, m_fConf, "Backgrounds");
+  loadCategory(myOrganizations, m_fConf, "Organizations");
 }
 
 //-----ICQUser::LoadPhoneBookInfo--------------------------------------------
@@ -2044,10 +1902,7 @@ ICQUser::~ICQUser()
     free(m_szBuddyIconHash);
   if (m_szOurBuddyIconHash)
     free(m_szOurBuddyIconHash);
-  
-  delete m_Interests;
-  delete m_Organizations;
-  delete m_Backgrounds;
+
   delete m_PhoneBook;
 /*
   // Destroy the mutex
@@ -2146,9 +2001,9 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
   myUserInfo["ICQHomepagePresent"] = false;
 
   // More2
-  m_Interests    = new ICQUserCategory(CAT_INTERESTS);
-  m_Organizations = new ICQUserCategory(CAT_ORGANIZATION);
-  m_Backgrounds  = new ICQUserCategory(CAT_BACKGROUND);
+  myInterests.clear();
+  myBackgrounds.clear();
+  myOrganizations.clear();
 
   // Work Info
   myUserInfo["CompanyCity"] = string();
@@ -3210,6 +3065,10 @@ void ICQUser::saveUserInfo()
   for (i = myUserInfo.begin(); i != myUserInfo.end(); ++i)
     m_fConf.writeVar(i->first, i->second);
 
+  saveCategory(myInterests, m_fConf, "Interests");
+  saveCategory(myBackgrounds, m_fConf, "Backgrounds");
+  saveCategory(myOrganizations, m_fConf, "Organizations");
+
   if (!m_fConf.FlushFile())
   {
     gLog.Error("%sError opening '%s' for writing.\n%sSee log for details.\n",
@@ -3220,57 +3079,49 @@ void ICQUser::saveUserInfo()
   m_fConf.CloseFile();
 }
 
-//-----ICQUser::Save<categories>Info()-----------------------------------------
-static const char *const szN_int    = "InterestsN";
-static const char *const szCat_int  = "InterestsCat%04X";
-static const char *const szDesc_int = "InterestsDesc%04X";
-
-static const char *const szN_bac    = "BackgroundsN";
-static const char *const szCat_bac  = "BackgroundsCat%04X";
-static const char *const szDesc_bac = "BackgroundsDesc%04X";
-
-static const char *const szN_aff    = "OrganizationsN";
-static const char *const szCat_aff  = "OrganizationsCat%04X";
-static const char *const szDesc_aff = "OrganizationsDesc%04X";
-
-
-void ICQUser::SaveInterestsInfo()
+void ICQUser::saveCategory(const UserCategoryMap& category, CIniFile& file, const string& key)
 {
-  if (!EnableSave())
-    return;
+  file.WriteNum(key + 'N', category.size());
 
-  m_Interests->SaveToDisk(m_fConf, szN_int, szCat_int, szDesc_int);
+  UserCategoryMap::const_iterator i;
+  unsigned int count = 0;
+  for (i = category.begin(); i != category.end(); ++i)
+  {
+    char n[10];
+    snprintf(n, sizeof(n), "%04X", count);
+    file.WriteNum(key + "Cat" + n, i->first);
+    file.writeString(key + "Desc" + n, i->second);
+    ++count;
+  }
 }
 
-void ICQUser::LoadInterestsInfo()
+void ICQUser::loadCategory(UserCategoryMap& category, CIniFile& file, const string& key)
 {
-  m_Interests->LoadFromDisk(m_fConf, szN_int, szCat_int, szDesc_int);
-}
+  category.clear();
+  unsigned int count;
+  file.ReadNum(key + 'N', count, 0);
 
-void ICQUser::SaveBackgroundsInfo()
-{
-  if (!EnableSave())
-    return;
+  if (count > MAX_CATEGORIES)
+  {
+    gLog.Warn("%sTrying to load more categories than the max limit. Truncating.\n", L_WARNxSTR);
+    count = MAX_CATEGORIES;
+  }
 
-  m_Backgrounds->SaveToDisk(m_fConf, szN_bac, szCat_bac, szDesc_bac);
-}
+  for (unsigned int i = 0; i < count; ++i)
+  {
+    char n[10];
+    snprintf(n, sizeof(n), "%04X", i);
 
-void ICQUser::LoadBackgroundsInfo()
-{
-  m_Backgrounds->LoadFromDisk(m_fConf, szN_bac, szCat_bac, szDesc_bac);
-}
+    unsigned int cat;
+    if (!file.ReadNum(key + "Cat" + n, cat))
+      continue;
 
-void ICQUser::SaveOrganizationsInfo()
-{
-  if (!EnableSave())
-    return;
+    string descr;
+    if (!file.readString(key + "Desc" + n, descr))
+      continue;
 
-  m_Organizations->SaveToDisk(m_fConf,szN_aff,szCat_aff, szDesc_aff);
-}
-
-void ICQUser::LoadOrganizationsInfo()
-{
-  m_Organizations->LoadFromDisk(m_fConf, szN_aff,szCat_aff, szDesc_aff);
+    category[cat] = descr;
+  }
 }
 
 //-----ICQUser::SavePhoneBookInfo--------------------------------------------
@@ -3414,9 +3265,6 @@ void ICQUser::saveAll()
 {
   SaveLicqInfo();
   saveUserInfo();
-  SaveInterestsInfo();
-  SaveBackgroundsInfo();
-  SaveOrganizationsInfo();
   SavePhoneBookInfo();
   SavePictureInfo();
 }
