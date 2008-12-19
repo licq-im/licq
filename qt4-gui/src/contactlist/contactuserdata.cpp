@@ -48,6 +48,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ContactUserData */
 
+using std::string;
+
 #define FLASH_TIME 500
 
 // Can't initialize timers here in static context so set to zero and let first object take care of initialization
@@ -690,15 +692,11 @@ QString ContactUserData::tooltip() const
   if (config->popupAlias() && *u->GetAlias())
     s += "<br>" + QString::fromUtf8(u->GetAlias());
 
-  if (config->popupName() && (*u->GetFirstName() || *u->GetLastName()))
+  if (config->popupName())
   {
-    s += "<br>";
-    if (*u->GetFirstName())
-      s += codec->toUnicode(u->GetFirstName());
-    if (*u->GetFirstName() && *u->GetLastName())
-      s += " ";
-    if (*u->GetLastName())
-      s += codec->toUnicode(u->GetLastName());
+    string fullName = u->getFullName();
+    if (!fullName.empty())
+      s += "<br>" + codec->toUnicode(fullName.c_str());
   }
 
   if (myBirthday)
@@ -741,8 +739,12 @@ QString ContactUserData::tooltip() const
       codec->toUnicode(u->AutoResponse()).trimmed()
       .replace("\n", "<br>&nbsp;&nbsp;&nbsp;");
 
-  if (config->popupEmail() && *u->GetEmailPrimary())
-    s += "<br>" + tr("E: ") + codec->toUnicode(u->GetEmailPrimary());
+  if (config->popupEmail())
+  {
+    string email = u->getEmail();
+    if (!email.empty())
+      s += "<br>" + tr("E: ") + codec->toUnicode(email.c_str());
+  }
 
   if (config->popupPhone() && myPhone)
     s += "<br>" + tr("P: ") + codec->toUnicode(u->GetPhoneNumber());

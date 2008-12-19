@@ -169,12 +169,7 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
   {
     myContactCodec = UserCodec::codecForICQUser(u);
 
-    name = myContactCodec->toUnicode(u->GetFirstName());
-    QString lastname = myContactCodec->toUnicode(u->GetLastName());
-    if ((!name.isEmpty()) && (!lastname.isEmpty()))
-      name = name + " " + lastname;
-    else
-      name = name + lastname;
+    name = myContactCodec->toUnicode(u->getFullName().c_str());
     if (!name.isEmpty())
       name = " (" + name + ")";
     name.prepend(QString::fromUtf8(u->GetAlias()));

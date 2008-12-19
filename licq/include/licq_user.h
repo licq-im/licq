@@ -456,6 +456,21 @@ public:
   const char* GetFirstName() const              { return m_szFirstName; }
   //!Retrieves the user's last name.
   const char* GetLastName() const               { return m_szLastName; }
+
+  /**
+   * Convenience function for getting full name of user
+   *
+   * @return First name plus last name separated by a space if both are set
+   */
+  std::string getFullName() const;
+
+  /**
+   * Convenience function for getting email address for user
+   *
+   * @return Email address for user if available, empty string otherwise
+   */
+  std::string getEmail() const;
+
   //!Retrieves the user's primary e-mail address.
   const char* GetEmailPrimary() const           { return m_szEmailPrimary; }
   //!Retrieves the user's secondary e-mail address.

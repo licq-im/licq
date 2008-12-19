@@ -2418,6 +2418,25 @@ void ICQUser::SetDefaults()
   SetCustomAutoResponse(szTemp);
 }
 
+std::string ICQUser::getFullName() const
+{
+  string name = GetFirstName();
+  string lastName = GetLastName();
+  if (!name.empty() && !lastName.empty())
+    name += ' ';
+  return name + lastName;
+}
+
+std::string ICQUser::getEmail() const
+{
+  string email = GetEmailPrimary();
+  if (email.empty())
+    email = GetEmailSecondary();
+  if (email.empty())
+    email = GetEmailOld();
+  return email;
+}
+
 const char* ICQUser::UserEncoding() const
 {
   if (m_szEncoding == NULL || m_szEncoding[0] == '\0')
@@ -2919,18 +2938,10 @@ char* ICQUser::usprintf(const char* _szFormat, unsigned long nFlags) const
           break;
         }
         case 'e':
-          sz = GetEmailPrimary();
-          if (sz[0] == '\0')
-          {
-            sz = GetEmailSecondary();
-            if (sz[0] == '\0')
-              sz = GetEmailOld();
-          }
+          sz = getEmail().c_str();
           break;
         case 'n':
-          snprintf(szTemp, sizeof(szTemp), "%s %s", GetFirstName(), GetLastName());
-          szTemp[sizeof(szTemp) - 1] = '\0';
-          sz = szTemp;
+          sz = getFullName().c_str();
           break;
         case 'f':
           sz = GetFirstName();

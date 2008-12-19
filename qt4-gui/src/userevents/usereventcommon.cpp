@@ -312,11 +312,7 @@ void UserEventCommon::updateWidgetInfo(const ICQUser* u)
   else
     mySecure->setIcon(IconManager::instance()->getIcon(IconManager::SecureOffIcon));
 
-  QString tmp = codec->toUnicode(u->GetFirstName());
-  QString lastname = codec->toUnicode(u->GetLastName());
-  if (!tmp.isEmpty() && !lastname.isEmpty())
-    tmp += " ";
-  tmp += lastname;
+  QString tmp = codec->toUnicode(u->getFullName().c_str());
   if (!tmp.isEmpty())
     tmp = " (" + tmp + ")";
   myBaseTitle = QString::fromUtf8(u->GetAlias()) + tmp;

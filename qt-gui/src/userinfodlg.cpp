@@ -194,12 +194,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   else
   {
     QTextCodec * codec = UserCodec::codecForICQUser(u);
-    QString tmp = codec->toUnicode(u->GetFirstName());
-    QString lastname = codec->toUnicode(u->GetLastName());
-    if ((!tmp.isEmpty()) && (!lastname.isEmpty()))
-      tmp = tmp + " " + lastname;
-    else
-      tmp = tmp + lastname;
+    QString tmp = codec->toUnicode(u->getFullName().c_str());
     if (!tmp.isEmpty()) tmp = " (" + tmp + ")";
     m_sBasic = tr("Licq - Info ") + QString::fromUtf8(u->GetAlias()) + tmp;
     resetCaption();

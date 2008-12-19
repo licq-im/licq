@@ -234,7 +234,7 @@ void KeyView::testViewItem(QTreeWidgetItem* item, const ICQUser* u)
       val++;
     if (item->text(i).contains(u->GetAlias(), Qt::CaseInsensitive))
       val++;
-    if (item->text(i).contains(u->GetEmailPrimary(), Qt::CaseInsensitive))
+    if (item->text(i).contains(u->getEmail().c_str(), Qt::CaseInsensitive))
       val++;
   }
 

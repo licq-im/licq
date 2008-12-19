@@ -565,12 +565,7 @@ void UserEventCommon::SetGeneralInfo(ICQUser *u)
   else
     btnSecure->setPixmap(mainwin->pmSecureOff);
 
-  QString tmp = codec->toUnicode(u->GetFirstName());
-  QString lastname = codec->toUnicode(u->GetLastName());
-  if ((!tmp.isEmpty()) && (!lastname.isEmpty()))
-    tmp = tmp + " " + lastname;
-  else
-    tmp = tmp + lastname;
+  QString tmp = codec->toUnicode(u->getFullName().c_str());
   if (!tmp.isEmpty()) tmp = " (" + tmp + ")";
   m_sBaseTitle = QString::fromUtf8(u->GetAlias()) + tmp;
 

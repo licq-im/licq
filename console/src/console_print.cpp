@@ -597,8 +597,7 @@ void CLicqConsole::PrintInfo_General(const char *szId, unsigned long nPPID)
   winMain->wprintf("%s %A(%Z%s%A) General Info - %Z%s\n", u->GetAlias(), A_BOLD,
                    A_BOLD, u->IdString(), A_BOLD, A_BOLD, u->StatusStr());
 
-  winMain->wprintf("%C%AName: %Z%s %s\n", COLOR_WHITE, A_BOLD, A_BOLD,
-                   u->GetFirstName(), u->GetLastName());
+  winMain->wprintf("%C%AName: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD, u->getFullName().c_str());
   winMain->wprintf("%C%AIp: %Z%s:%s\n", COLOR_WHITE, A_BOLD, A_BOLD,
                    u->IpStr(buf), u->PortStr(szPort));
   winMain->wprintf("%C%AReal Ip: %Z%s\n", COLOR_WHITE, A_BOLD, A_BOLD,

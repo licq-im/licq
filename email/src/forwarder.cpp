@@ -378,8 +378,8 @@ bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
     if (nPPID == LICQ_PPID)
       sprintf (szFrom, "From: \"%s\" <%s@pager.icq.com>", u->GetAlias(), u->IdString());
     else
-      sprintf (szFrom, "From: \"%s\" <%s>", u->GetAlias(), u->GetEmailPrimary());
-    sprintf (szReplyTo, "Reply-To: \"%s %s\" <%s>", u->GetFirstName(), u->GetLastName(), u->GetEmailPrimary());
+      sprintf (szFrom, "From: \"%s\" <%s>", u->GetAlias(), u->getEmail().c_str());
+    sprintf (szReplyTo, "Reply-To: \"%s\" <%s>", u->getFullName().c_str(), u->getEmail().c_str());
   }
   sprintf (szDate, "Date: %s", ctime(&t));
   int l = strlen(szDate);

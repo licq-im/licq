@@ -231,7 +231,7 @@ void KeyView::testViewItem( QListViewItem *item, ICQUser *u )
     if ( item->text(i).contains( u->GetFirstName(), false ) ) val++;
     if ( item->text(i).contains( u->GetLastName(), false ) ) val++;
     if ( item->text(i).contains( u->GetAlias(), false ) ) val++;
-    if ( item->text(i).contains( u->GetEmailPrimary(), false ) ) val++;
+    if (item->text(i).contains(u->getEmail().c_str(), false )) val++;
   }
   
   if ( item->text(2).contains( u->GPGKey(), false ) ) val += 10;

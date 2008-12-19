@@ -59,6 +59,8 @@
 
 extern char *PPIDSTRING(unsigned long);
 
+using std::string;
+
 QColor  *CUserViewItem::s_cOnline = NULL,
         *CUserViewItem::s_cAway = NULL,
         *CUserViewItem::s_cOffline = NULL,
@@ -1679,15 +1681,11 @@ void CUserView::maybeTip(const QPoint& c)
     if (*u->GetAlias() && gMainWindow->m_bPopAlias)
       s += "<br>" + QString::fromUtf8(u->GetAlias());
 
-    if ((*u->GetFirstName() || *u->GetLastName()) && gMainWindow->m_bPopName)
+    if (gMainWindow->m_bPopName)
     {
-      s += "<br>";
-      if (*u->GetFirstName())
-        s += codec->toUnicode(u->GetFirstName());
-      if (*u->GetFirstName() && *u->GetLastName())
-        s += " ";
-      if (*u->GetLastName())
-        s += codec->toUnicode(u->GetLastName());
+      string fullName = u->getFullName();
+      if (!fullName.empty())
+        s += "<br>" + codec->toUnicode(fullName.c_str());
     }
 
     if (item->m_nStatusFull & ICQ_STATUS_FxBIRTHDAY)
@@ -1728,8 +1726,12 @@ void CUserView::maybeTip(const QPoint& c)
         item->m_nStatus != ICQ_STATUS_ONLINE)
       s += "<br><u>" + tr("Auto Response:") + "</u>" + codec->toUnicode(u->AutoResponse());
 
-    if (*u->GetEmailPrimary() && gMainWindow->m_bPopEmail)
-      s += "<br>" + tr("E: ") + codec->toUnicode(u->GetEmailPrimary());
+    if (gMainWindow->m_bPopEmail)
+    {
+      string email = u->getEmail();
+      if (!email.empty())
+        s += "<br>" + tr("E: ") + codec->toUnicode(email.c_str());
+    }
 
     if (item->m_bPhone && gMainWindow->m_bPopPhone)
       s += "<br>" + tr("P: ") + codec->toUnicode(u->GetPhoneNumber());
