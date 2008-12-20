@@ -260,7 +260,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
     }
     case ContactListModel::GroupItem:
     {
-      unsigned short gid = dropIndex.data(ContactListModel::GroupIdRole).toUInt();
+      unsigned int gid = dropIndex.data(ContactListModel::GroupIdRole).toUInt();
 
       if (event->mimeData()->hasText() && event->mimeData()->text().length() > 4)
       {

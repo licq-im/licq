@@ -180,7 +180,7 @@ public:
   /**
    * Offset on group id for system groups
    */
-  static const unsigned short SystemGroupOffset = 1000;
+  static const unsigned int SystemGroupOffset = 1000;
 
   /**
    * Constructor

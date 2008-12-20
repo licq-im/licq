@@ -54,7 +54,7 @@ bool MainContactListProxy::filterAcceptsRow(int source_row, const QModelIndex& s
     case ContactListModel::GroupItem:
     {
       // Filter system groups
-      if (myThreadedView && item.data(ContactListModel::GroupIdRole).toInt() >= ContactListModel::SystemGroupOffset)
+      if (myThreadedView && item.data(ContactListModel::GroupIdRole).toUInt() >= ContactListModel::SystemGroupOffset)
         return false;
 
       // Filter empty groups in threaded view

@@ -1917,7 +1917,7 @@ void CMainWindow::updateEvents()
 void CMainWindow::setCurrentGroupMenu(int id)
 {
   int index = mnuUserGroups->indexOf(id);
-  if (index > gUserManager.NumGroups() + 2)
+  if (index > static_cast<int>(gUserManager.NumGroups()) + 2)
     index -= 2;
   else if (index > 1)
     index -= 1;
@@ -1927,8 +1927,8 @@ void CMainWindow::setCurrentGroupMenu(int id)
 
 void CMainWindow::setCurrentGroup(int index)
 {
-  unsigned short nNumGroups = gUserManager.NumGroups();
-  if (index > nNumGroups)
+  unsigned int nNumGroups = gUserManager.NumGroups();
+  if (index > static_cast<int>(nNumGroups))
   {
     m_nCurrentGroup = index - nNumGroups;
     m_nGroupType = GROUPS_SYSTEM;
@@ -1945,9 +1945,9 @@ void CMainWindow::setCurrentGroup(int index)
     lblMsg->setText(cmbUserGroups->currentText());
 
   // Update the group menu
-  for (unsigned short i = 0; i < mnuUserGroups->count(); i++)
+  for (unsigned int i = 0; i < mnuUserGroups->count(); i++)
     mnuUserGroups->setItemChecked(mnuUserGroups->idAt(i), false);
-  if (index > gUserManager.NumGroups())
+  if (index > static_cast<int>(gUserManager.NumGroups()))
     index += 2;
   else if (index >= 1)
     index += 1;
@@ -1977,7 +1977,7 @@ void CMainWindow::updateGroups()
   mnuGroup->insertItem(tr("Server Group"), mnuServerGroup);
   mnuGroup->insertSeparator();
 
-  unsigned short i = 0;
+  unsigned int i = 0;
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
     myGroupIds.push_back(pGroup->id());
@@ -2000,7 +2000,7 @@ void CMainWindow::updateGroups()
     GROUP_NEW_USERS
   };
 
-  for (unsigned short i = 0; i < (sizeof(groups)/sizeof(groups[0])); i++)
+  for (unsigned int i = 0; i < (sizeof(groups)/sizeof(groups[0])); i++)
   {
     group = Strings::getSystemGroupName(groups[i]);
     cmbUserGroups->insertItem(group);
@@ -2008,11 +2008,11 @@ void CMainWindow::updateGroups()
     mnuGroup->insertItem(group, 1000+groups[i]);
   }
 
-  unsigned short index = 0;
+  unsigned int index = 0;
   if (m_nGroupType == GROUPS_SYSTEM)
     index = m_nCurrentGroup + gUserManager.NumGroups();
   else
-    for (unsigned short i = 0; i < myGroupIds.size(); ++i)
+    for (unsigned int i = 0; i < myGroupIds.size(); ++i)
       if (myGroupIds[i] == m_nCurrentGroup)
         index = i;
   setCurrentGroup(index);
@@ -3310,7 +3310,7 @@ void CMainWindow::FillUserGroup()
   mnuGroup->setItemChecked(1000+GROUP_IGNORE_LIST, u->IgnoreList());
   mnuGroup->setItemChecked(1000+GROUP_NEW_USERS, u->NewUser());
 
-  for (unsigned short i = 0; i < myGroupIds.size()-1; i++)
+  for (unsigned int i = 0; i < myGroupIds.size()-1; i++)
     mnuGroup->setItemChecked(i+1, u->GetInGroup(GROUPS_USER, myGroupIds[i+1]));
   gUserManager.DropUser(u);
 }
@@ -3320,7 +3320,7 @@ void CMainWindow::UserGroupToggled(int id)
 {
   bool add = mnuGroup->isItemChecked(id);
   GroupType gtype = (id < 1000 ? GROUPS_USER : GROUPS_SYSTEM);
-  unsigned short groupId = (id < 1000 ? myGroupIds[id] : id - 1000);
+  unsigned int groupId = (id < 1000 ? myGroupIds[id] : id - 1000);
 
   if (gtype == GROUPS_SYSTEM && groupId == GROUP_IGNORE_LIST && add)
   {
@@ -3459,7 +3459,7 @@ void CMainWindow::saveOptions()
   licqConf.WriteNum("AutoAwayMess", autoAwayMess);
   licqConf.WriteNum("AutoNAMess", autoNAMess);
   licqConf.WriteNum("GroupId", m_nCurrentGroup);
-  licqConf.WriteNum("GroupType", static_cast<unsigned short>(m_nGroupType));
+  licqConf.WriteNum("GroupType", static_cast<unsigned int>(m_nGroupType));
 
   licqConf.SetSection("functions");
   licqConf.WriteBool("AutoClose", m_bAutoClose);

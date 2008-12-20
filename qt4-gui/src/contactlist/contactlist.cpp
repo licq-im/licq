@@ -109,7 +109,7 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_GROUP_ADDED:
     {
-      unsigned short gid = sig->Argument();
+      unsigned int gid = sig->Argument();
 
       // Set inital expanded state for new group
       Config::ContactList::instance()->setGroupState(gid, true);
@@ -124,7 +124,7 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_GROUP_REMOVED:
     {
-      unsigned short gid = sig->Argument();
+      unsigned int gid = sig->Argument();
 
       for (int i = 0; i < myUserGroups.size(); ++i)
       {
@@ -142,7 +142,7 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_GROUP_CHANGED:
     {
-      unsigned short gid = sig->Argument();
+      unsigned int gid = sig->Argument();
 
       for (int i = 0; i < myUserGroups.size(); ++i)
       {
@@ -328,7 +328,7 @@ ContactUserData* ContactListModel::findUser(QString id, unsigned long ppid) cons
 
 int ContactListModel::groupRow(ContactGroup* group) const
 {
-  unsigned short groupId = group->groupId();
+  unsigned int groupId = group->groupId();
 
   if (groupId < SystemGroupOffset)
     return myUserGroups.indexOf(group);
@@ -356,7 +356,7 @@ void ContactListModel::updateUserGroups(ContactUserData* user, const ICQUser* li
   for (int i = 0; i < myUserGroups.size(); ++i)
   {
     ContactGroup* group = myUserGroups.at(i);
-    unsigned short gid = group->groupId();
+    unsigned int gid = group->groupId();
     bool shouldBeMember = (gid != 0 && licqUser->GetInGroup(GROUPS_USER, gid)) ||
         (gid == 0 && licqUser->GetGroups().empty() && !licqUser->IgnoreList());
     updateUserGroup(user, group, shouldBeMember);

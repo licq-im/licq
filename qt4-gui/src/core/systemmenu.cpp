@@ -298,7 +298,7 @@ void SystemMenu::updateGroups()
 
   // Clear old groups but leave system groups as they never change
   foreach (a, myUserGroupActions->actions())
-    if (a->data().toInt() < ContactListModel::SystemGroupOffset)
+    if (a->data().toUInt() < ContactListModel::SystemGroupOffset)
       delete a;
 
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
@@ -424,7 +424,7 @@ void SystemMenu::changeDebug(QAction* action)
 
 void SystemMenu::setCurrentGroup(QAction* action)
 {
-  int id = action->data().toInt();
+  unsigned int id = action->data().toUInt();
 
   if (id < ContactListModel::SystemGroupOffset)
     Config::ContactList::instance()->setGroup(GROUPS_USER, id);

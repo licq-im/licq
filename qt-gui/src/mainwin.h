@@ -439,7 +439,7 @@ private:
         MNU_SYS_GPG = 12
   };
 
-  QValueList<unsigned short> myGroupIds;
+  QValueList<unsigned int> myGroupIds;
 
 };
 

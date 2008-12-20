@@ -133,7 +133,7 @@ void UserView::expandGroups()
   for (int i = 0; i < myListProxy->rowCount(QModelIndex()); ++i)
   {
     QModelIndex index = myListProxy->index(i, 0, QModelIndex());
-    unsigned short gid = index.data(ContactListModel::GroupIdRole).toUInt();
+    unsigned int gid = index.data(ContactListModel::GroupIdRole).toUInt();
 
     setExpanded(index, Config::ContactList::instance()->groupState(gid));
   }
@@ -322,13 +322,13 @@ void UserView::resort()
 
 void UserView::slotExpanded(const QModelIndex& index)
 {
-  unsigned short gid = index.data(ContactListModel::GroupIdRole).toUInt();
+  unsigned int gid = index.data(ContactListModel::GroupIdRole).toUInt();
   Config::ContactList::instance()->setGroupState(gid, true);
 }
 
 void UserView::slotCollapsed(const QModelIndex& index)
 {
-  unsigned short gid = index.data(ContactListModel::GroupIdRole).toUInt();
+  unsigned int gid = index.data(ContactListModel::GroupIdRole).toUInt();
   Config::ContactList::instance()->setGroupState(gid, false);
 }
 

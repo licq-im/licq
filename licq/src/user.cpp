@@ -443,15 +443,16 @@ bool CUserManager::Load()
     AddOwner(sOwnerID, nPPID);
   }
 
-  unsigned short nGroups;
+  unsigned int nGroups;
   licqConf.SetSection("groups");
   licqConf.ReadNum("NumOfGroups", nGroups);
 
   GroupMap* groups = LockGroupList(LOCK_W);
   m_bAllowSave = false;
   char key[MAX_KEYxNAME_LEN], groupName[MAX_LINE_LEN];
-  unsigned short icqGroupId, groupId, sortIndex;
-  for (unsigned short i = 1; i <= nGroups; i++)
+  unsigned int groupId, sortIndex;
+  unsigned short icqGroupId;
+  for (unsigned int i = 1; i <= nGroups; i++)
   {
     sprintf(key, "Group%d.name", i);
     licqConf.ReadStr(key, groupName);
@@ -719,7 +720,7 @@ void CUserManager::RemoveUser(unsigned long _nUin)
   RemoveUser(szId, LICQ_PPID);
 }
 
-LicqGroup* CUserManager::FetchGroup(unsigned short group, unsigned short lockType)
+LicqGroup* CUserManager::FetchGroup(unsigned int group, unsigned short lockType)
 {
   GroupMap* groups = LockGroupList(LOCK_R);
   GroupMap::const_iterator iter = groups->find(group);
@@ -739,7 +740,7 @@ void CUserManager::DropGroup(const LicqGroup* group)
     group->Unlock();
 }
 
-bool CUserManager::groupExists(GroupType gtype, unsigned short groupId)
+bool CUserManager::groupExists(GroupType gtype, unsigned int groupId)
 {
   // Is it a valid system group?
   if (gtype == GROUPS_SYSTEM)
@@ -760,7 +761,7 @@ bool CUserManager::groupExists(GroupType gtype, unsigned short groupId)
 /*---------------------------------------------------------------------------
  * CUserManager::AddGroup
  *-------------------------------------------------------------------------*/
-unsigned short CUserManager::AddGroup(const string& name, unsigned short icqGroupId)
+unsigned int CUserManager::AddGroup(const string& name, unsigned short icqGroupId)
 {
   if (name.empty())
     return 0;
@@ -775,7 +776,7 @@ unsigned short CUserManager::AddGroup(const string& name, unsigned short icqGrou
   GroupMap* groups = LockGroupList(LOCK_W);
 
   // Find first free group id
-  unsigned short gid;
+  unsigned int gid;
   for (gid = 1; groups->count(gid) != 0 ; ++gid)
     ;
 
@@ -805,14 +806,14 @@ unsigned short CUserManager::AddGroup(const string& name, unsigned short icqGrou
 /*---------------------------------------------------------------------------
  * CUserManager::RemoveGroup
  *-------------------------------------------------------------------------*/
-void CUserManager::RemoveGroup(unsigned short groupId)
+void CUserManager::RemoveGroup(unsigned int groupId)
 {
   LicqGroup* group = FetchGroup(groupId, LOCK_R);
   if (group == NULL)
     return;
 
   string name = group->name();
-  unsigned short sortIndex = group->sortIndex();
+  unsigned int sortIndex = group->sortIndex();
   DropGroup(group);
 
   // Must be called when there are no locks on GroupID and Group lists
@@ -833,7 +834,7 @@ void CUserManager::RemoveGroup(unsigned short groupId)
   for (iter = g->begin(); iter != g->end(); ++iter)
   {
     iter->second->Lock(LOCK_W);
-    unsigned short si = iter->second->sortIndex();
+    unsigned int si = iter->second->sortIndex();
     if (si > sortIndex)
       iter->second->setSortIndex(si - 1);
     iter->second->Unlock();
@@ -858,7 +859,7 @@ void CUserManager::RemoveGroup(unsigned short groupId)
   gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED, NULL, 0, 0, 0));
 }
 
-void CUserManager::ModifyGroupSorting(unsigned short groupId, unsigned short newIndex)
+void CUserManager::ModifyGroupSorting(unsigned int groupId, unsigned int newIndex)
 {
   LicqGroup* group = FetchGroup(groupId, LOCK_R);
   if (group == NULL)
@@ -867,7 +868,7 @@ void CUserManager::ModifyGroupSorting(unsigned short groupId, unsigned short new
   if (newIndex >= NumGroups())
     newIndex = NumGroups() - 1;
 
-  unsigned short oldIndex = group->sortIndex();
+  unsigned int oldIndex = group->sortIndex();
   DropGroup(group);
 
   GroupMap* g = LockGroupList(LOCK_R);
@@ -876,7 +877,7 @@ void CUserManager::ModifyGroupSorting(unsigned short groupId, unsigned short new
   for (GroupMap::iterator i = g->begin(); i != g->end(); ++i)
   {
     i->second->Lock(LOCK_W);
-    unsigned short si = i->second->sortIndex();
+    unsigned int si = i->second->sortIndex();
     if (newIndex < oldIndex && si >= newIndex && si < oldIndex)
       i->second->setSortIndex(si + 1);
     else if (newIndex > oldIndex && si > oldIndex && si <= newIndex)
@@ -899,9 +900,9 @@ void CUserManager::ModifyGroupSorting(unsigned short groupId, unsigned short new
 /*---------------------------------------------------------------------------
  * CUserManager::RenameGroup
  *-------------------------------------------------------------------------*/
-bool CUserManager::RenameGroup(unsigned short groupId, const string& name, bool sendUpdate)
+bool CUserManager::RenameGroup(unsigned int groupId, const string& name, bool sendUpdate)
 {
-  unsigned short foundGroupId = GetGroupFromName(name);
+  unsigned int foundGroupId = GetGroupFromName(name);
 
   if (foundGroupId == groupId)
     // Name isn't changed so nothing to do here
@@ -960,7 +961,7 @@ void CUserManager::SaveGroups()
 
   licqConf.SetSection("groups");
   GroupMap::size_type count = myGroups.size();
-  licqConf.WriteNum("NumOfGroups", static_cast<unsigned short>(count));
+  licqConf.WriteNum("NumOfGroups", static_cast<unsigned int>(count));
 
   char key[MAX_KEYxNAME_LEN];
   int i = 1;
@@ -993,14 +994,14 @@ void CUserManager::SaveGroups()
  *-------------------------------------------------------------------------*/
 unsigned short CUserManager::GetIDFromGroup(const string& name)
 {
-  unsigned short groupId = GetGroupFromName(name);
+  unsigned int groupId = GetGroupFromName(name);
   if (groupId == 0)
     return 0;
 
   return GetIDFromGroup(groupId);
 }
 
-unsigned short CUserManager::GetIDFromGroup(unsigned short groupId)
+unsigned short CUserManager::GetIDFromGroup(unsigned int groupId)
 {
   LicqGroup* group = gUserManager.FetchGroup(groupId, LOCK_R);
   if (group == NULL)
@@ -1015,11 +1016,11 @@ unsigned short CUserManager::GetIDFromGroup(unsigned short groupId)
 /*---------------------------------------------------------------------------
  * CUserManager::GetGroupFromID
  *-------------------------------------------------------------------------*/
-unsigned short CUserManager::GetGroupFromID(unsigned short icqGroupId)
+unsigned int CUserManager::GetGroupFromID(unsigned short icqGroupId)
 {
   const GroupMap* groups = LockGroupList(LOCK_R);
   GroupMap::const_iterator iter;
-  unsigned short groupId = 0;
+  unsigned int groupId = 0;
   for (iter = groups->begin(); iter != groups->end(); ++iter)
   {
     iter->second->Lock(LOCK_R);
@@ -1032,11 +1033,11 @@ unsigned short CUserManager::GetGroupFromID(unsigned short icqGroupId)
   return groupId;
 }
 
-unsigned short CUserManager::GetGroupFromName(const string& name)
+unsigned int CUserManager::GetGroupFromName(const string& name)
 {
   const GroupMap* groups = LockGroupList(LOCK_R);
   GroupMap::const_iterator iter;
-  unsigned short id = 0;
+  unsigned int id = 0;
   for (iter = groups->begin(); iter != groups->end(); ++iter)
   {
     iter->second->Lock(LOCK_R);
@@ -1054,12 +1055,12 @@ unsigned short CUserManager::GetGroupFromName(const string& name)
  *-------------------------------------------------------------------------*/
 void CUserManager::ModifyGroupID(const string& name, unsigned short icqGroupId)
 {
-  unsigned short id = GetGroupFromName(name);
+  unsigned int id = GetGroupFromName(name);
   if (id != 0)
     ModifyGroupID(id, icqGroupId);
 }
 
-void CUserManager::ModifyGroupID(unsigned short groupId, unsigned short icqGroupId)
+void CUserManager::ModifyGroupID(unsigned int groupId, unsigned short icqGroupId)
 {
   LicqGroup* group = FetchGroup(groupId, LOCK_W);
   if (group == NULL)
@@ -1272,7 +1273,7 @@ bool CUserManager::UpdateUsersInGroups()
     unsigned short nGSID = pUser->GetGSID();
     if (nGSID)
     {
-      unsigned short nInGroup = gUserManager.GetGroupFromID(nGSID);
+      unsigned int nInGroup = gUserManager.GetGroupFromID(nGSID);
       if (nInGroup != gUserManager.NumGroups())
       {
         pUser->AddToGroup(GROUPS_USER, nInGroup);
@@ -1309,10 +1310,10 @@ unsigned short CUserManager::NumOwners()
 /*---------------------------------------------------------------------------
  * CUserManager::NumGroups
  *-------------------------------------------------------------------------*/
-unsigned short CUserManager::NumGroups()
+unsigned int CUserManager::NumGroups()
 {
   //LockGroupList(LOCK_R);
-  unsigned short n = myGroups.size();
+  unsigned int n = myGroups.size();
   //UnlockGroupList();
   return n;
 }
@@ -1443,7 +1444,7 @@ void CUserManager::UnlockOwnerList()
 }
 
 void CUserManager::SetUserInGroup(const char* id, unsigned long ppid,
-    GroupType groupType, unsigned short groupId, bool inGroup, bool updateServer)
+    GroupType groupType, unsigned int groupId, bool inGroup, bool updateServer)
 {
   // User group 0 is invalid and system group 0 is All Users
   if (groupId == 0)
@@ -1495,29 +1496,13 @@ void CUserManager::SetUserInGroup(const char* id, unsigned long ppid,
     gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, id, ppid));
 }
 
-void CUserManager::AddUserToGroup(unsigned long _nUin, unsigned short _nGroup)
-{
-  char id[13];
-  snprintf(id, 12, "%lu", _nUin);
-  id[12] = '\0';
-  AddUserToGroup(id, LICQ_PPID, _nGroup);
-}
-
-void CUserManager::RemoveUserFromGroup(unsigned long _nUin, unsigned short _nGroup)
-{
-  char id[13];
-  snprintf(id, 12, "%lu", _nUin);
-  id[12] = '\0';
-  RemoveUserFromGroup(id, LICQ_PPID, _nGroup);
-}
-
 void CUserManager::SetDefaultUserEncoding(const char* defaultEncoding)
 {
   SetString(&m_szDefaultEncoding, defaultEncoding);
 }
 
 
-LicqGroup::LicqGroup(unsigned short id, const string& name)
+LicqGroup::LicqGroup(unsigned int id, const string& name)
   : myId(id),
     myName(name),
     mySortIndex(0),
@@ -1815,13 +1800,13 @@ void ICQUser::LoadLicqInfo()
     }
   }
 
-  unsigned short userGroupCount;
+  unsigned int userGroupCount;
   if (m_fConf.ReadNum("GroupCount", userGroupCount, 0))
   {
-    for (unsigned short i = 1; i <= userGroupCount; ++i)
+    for (unsigned int i = 1; i <= userGroupCount; ++i)
     {
       sprintf(szTemp, "Group%u", i);
-      unsigned short groupId;
+      unsigned int groupId;
       m_fConf.ReadNum(szTemp, groupId, 0);
       if (groupId > 0)
         AddToGroup(GROUPS_USER, groupId);
@@ -1830,9 +1815,9 @@ void ICQUser::LoadLicqInfo()
   else
   {
     // Groupcount is missing in user config, try and read old group configuration
-    unsigned long oldGroups;
+    unsigned int oldGroups;
     m_fConf.ReadNum("Groups.User", oldGroups, 0);
-    for (unsigned short i = 0; i <= 31; ++i)
+    for (unsigned int i = 0; i <= 31; ++i)
       if (oldGroups & (1L << i))
         AddToGroup(GROUPS_USER, i+1);
   }
@@ -3218,7 +3203,7 @@ void ICQUser::SaveLicqInfo()
      m_fConf.WriteStr(szBuf, iter->second.c_str());
    }
 
-  m_fConf.WriteNum("GroupCount", static_cast<unsigned short>(myGroups.size()));
+  m_fConf.WriteNum("GroupCount", static_cast<unsigned int>(myGroups.size()));
   i = 1;
   for (UserGroupList::iterator g = myGroups.begin(); g != myGroups.end(); ++g)
   {
@@ -3405,7 +3390,7 @@ void ICQUser::EventClearId(int id)
 }
 
 
-bool ICQUser::GetInGroup(GroupType gtype, unsigned short groupId) const
+bool ICQUser::GetInGroup(GroupType gtype, unsigned int groupId) const
 {
   if (gtype == GROUPS_SYSTEM)
   {
@@ -3417,7 +3402,7 @@ bool ICQUser::GetInGroup(GroupType gtype, unsigned short groupId) const
     return myGroups.count(groupId) > 0;
 }
 
-void ICQUser::SetInGroup(GroupType g, unsigned short _nGroup, bool _bIn)
+void ICQUser::SetInGroup(GroupType g, unsigned int _nGroup, bool _bIn)
 {
   if (_bIn)
     AddToGroup(g, _nGroup);
@@ -3425,7 +3410,7 @@ void ICQUser::SetInGroup(GroupType g, unsigned short _nGroup, bool _bIn)
     RemoveFromGroup(g, _nGroup);
 }
 
-void ICQUser::AddToGroup(GroupType gtype, unsigned short groupId)
+void ICQUser::AddToGroup(GroupType gtype, unsigned int groupId)
 {
   if (groupId == 0) return;
 
@@ -3436,7 +3421,7 @@ void ICQUser::AddToGroup(GroupType gtype, unsigned short groupId)
   SaveLicqInfo();
 }
 
-bool ICQUser::RemoveFromGroup(GroupType gtype, unsigned short groupId)
+bool ICQUser::RemoveFromGroup(GroupType gtype, unsigned int groupId)
 {
   if (groupId == 0)
     return false;

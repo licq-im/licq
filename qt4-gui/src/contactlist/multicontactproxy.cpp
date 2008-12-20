@@ -106,7 +106,7 @@ bool MultiContactProxy::filterAcceptsRow(int source_row, const QModelIndex& sour
     case ContactListModel::GroupItem:
     {
       // We only want the "All users" group
-      if (item.data(ContactListModel::GroupIdRole).toInt() != ContactListModel::SystemGroupOffset)
+      if (item.data(ContactListModel::GroupIdRole).toUInt() != ContactListModel::SystemGroupOffset)
         return false;
 
       break;
