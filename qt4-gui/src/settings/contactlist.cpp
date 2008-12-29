@@ -34,6 +34,10 @@
 #include <QSpinBox>
 #include <QVBoxLayout>
 
+#ifndef USE_KDE
+# include <QStyleFactory>
+#endif
+
 #include <licq_icqd.h>
 
 #include "config/chat.h"
@@ -134,6 +138,20 @@ QWidget* Settings::ContactList::createPageContactList(QWidget* parent)
   myFrameStyleLabel->setBuddy(myFrameStyleEdit);
   myFrameStyleLayout->addWidget(myFrameStyleEdit);
   myAppearanceLayout->addLayout(myFrameStyleLayout, 5, 1);
+
+#ifndef USE_KDE
+  QHBoxLayout* guiStyleLayout = new QHBoxLayout();
+
+  myGuiStyleLabel = new QLabel(tr("GUI Style:"));
+  myGuiStyleLabel->setToolTip(tr("Select look and feel for the GUI. Available styles may vary between systems."));
+  guiStyleLayout->addWidget(myGuiStyleLabel);
+  myGuiStyleCombo = new QComboBox();
+  myGuiStyleCombo->setToolTip(myGuiStyleLabel->toolTip());
+  foreach (QString style, QStyleFactory::keys())
+    myGuiStyleCombo->addItem(style);
+  guiStyleLayout->addWidget(myGuiStyleCombo);
+  myAppearanceLayout->addLayout(guiStyleLayout, 6, 1);
+#endif
 
   // Make the columns evenly wide, otherwise the QLineEdit steals the space
   myAppearanceLayout->setColumnStretch(0, 1);
@@ -393,6 +411,13 @@ void Settings::ContactList::load()
   myTransparentCheck->setChecked(Config::Skin::active()->frame.transparent);
   myFrameStyleEdit->setText(QString::number(static_cast<int>(Config::Skin::active()->frame.frameStyle)));
 
+#ifndef USE_KDE
+  QString currentStyle = generalConfig->guiStyle();
+  for (int i = 0; i < myGuiStyleCombo->count(); ++i)
+    if (myGuiStyleCombo->itemText(i).compare(currentStyle, Qt::CaseInsensitive) == 0)
+      myGuiStyleCombo->setCurrentIndex(i);
+#endif
+
   myAutoUpdateInfoCheck->setChecked(gLicqDaemon->AutoUpdateInfo());
   myAutoUpdateInfoPluginsCheck->setChecked(gLicqDaemon->AutoUpdateInfoPlugins());
   myAutoUpdateStatusPluginsCheck->setChecked(gLicqDaemon->AutoUpdateStatusPlugins());
@@ -456,6 +481,10 @@ void Settings::ContactList::apply()
   gLicqDaemon->SetUseServerContactList(mySSListCheck->isChecked());
   Config::Skin::active()->setFrameTransparent(myTransparentCheck->isChecked());
   Config::Skin::active()->setFrameStyle(myFrameStyleEdit->text().toUShort());
+
+#ifndef USE_KDE
+  generalConfig->setGuiStyle(myGuiStyleCombo->currentText());
+#endif
 
   gLicqDaemon->SetAutoUpdateInfo(myAutoUpdateInfoCheck->isChecked());
   gLicqDaemon->SetAutoUpdateInfoPlugins(myAutoUpdateInfoPluginsCheck->isChecked());

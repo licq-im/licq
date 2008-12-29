@@ -61,9 +61,6 @@ const char* LP_Usage()
 {
   static QString usage = QString(
     "Usage:  Licq [options] -p %1 -- [-hdD] [-s skinname] [-i iconpack] [-e extendediconpack]"
-#ifndef USE_KDE
-    " [-g guistyle]"
-#endif
     "\n"
     " -h : this help screen\n"
     " -d : start hidden (dock icon only)\n"
@@ -71,9 +68,6 @@ const char* LP_Usage()
     " -s : set the skin to use (must be in %2%3%4)\n"
     " -i : set the icons to use (must be in %2%3%5)\n"
     " -e : set the extended icons to use (must be in %2%3%6)"
-#ifndef USE_KDE
-    "\n -g : set the gui style (%7, or 'default' to follow global Qt settings)"
-#endif
     )
     .arg(PLUGIN_NAME)
     .arg(BASE_DIR)
@@ -81,9 +75,6 @@ const char* LP_Usage()
     .arg(SKINS_DIR)
     .arg(ICONS_DIR)
     .arg(EXTICONS_DIR)
-#ifndef USE_KDE
-    .arg(QStyleFactory::keys().join(" | "))
-#endif
     ;
 
   return usage.toLatin1().constData();

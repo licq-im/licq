@@ -229,6 +229,7 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   }
   updateSkin();
   connect(Config::Skin::active(), SIGNAL(changed()), SLOT(updateSkin()));
+  connect(Config::General::instance(), SIGNAL(styleChanged()), SLOT(updateSkin()));
 
   updateGroups(true);
 

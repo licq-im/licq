@@ -33,6 +33,7 @@
 #include <QLibraryInfo>
 #include <QLocale>
 #include <QSessionManager>
+#include <QStyle>
 #include <QTranslator>
 
 #ifdef USE_KDE
@@ -41,8 +42,6 @@
 #include <KDE/KUrl>
 #else
 # include <QDesktopServices>
-# include <QStyle>
-# include <QStyleFactory>
 # include <QUrl>
 #endif
 
@@ -155,9 +154,6 @@ LicqGui::LicqGui(int& argc, char** argv) :
 {
   myInstance = this;
 
-#ifndef USE_KDE
-  char styleName[32] = "";
-#endif
   int i = 1;
 
   setQuitOnLastWindowClosed(false);
@@ -189,13 +185,6 @@ LicqGui::LicqGui(int& argc, char** argv) :
         myExtendedIcons = optarg;
         break;
 
-#ifndef USE_KDE
-      case 'g':   // gui style
-        strncpy(styleName, optarg, sizeof(styleName));
-        styleName[sizeof(styleName) - 1] = '\0';
-        break;
-#endif
-
       case 'd':   // dock icon
         if (!myDisableDockIcon)
           myStartHidden = true;
@@ -206,51 +195,6 @@ LicqGui::LicqGui(int& argc, char** argv) :
         myDisableDockIcon = true;
     }
   }
-
-#ifndef USE_KDE
-  char* ptr;
-  char buf[MAX_FILENAME_LEN];
-  snprintf(buf, MAX_FILENAME_LEN, "%s%sstyle.ini", BASE_DIR, QTGUI_DIR);
-  buf[MAX_FILENAME_LEN - 1] = '\0';
-
-  if (strcmp(styleName, "default") == 0)
-  {
-    unlink(buf);
-    styleName[0]='\0';
-  }
-
-  QStyle* newStyle = createStyle(styleName);
-
-  // Write out the style if not NULL
-  if (newStyle != NULL)
-  {
-    FILE* f = fopen(buf, "w");
-    if (f != NULL)
-    {
-      fprintf(f, "%s\n", styleName);
-      fclose(f);
-    }
-  }
-  // Otherwise try and load it from the file
-  else
-  {
-    FILE* f = fopen(buf, "r");
-    if (f != NULL)
-    {
-      if (fgets(styleName, 32, f) != NULL)
-      {
-        ptr = strrchr(styleName, '\n');
-        if (ptr != NULL)
-          *ptr = '\0';
-        newStyle = createStyle(styleName);
-      }
-      fclose(f);
-    }
-  }
-
-  if (newStyle != NULL)
-    setStyle(newStyle);
-#endif
 
   // Since Licq daemon blocks SIGCHLD and Qt never receives it,
   // QProcess hangs. By this we avoid Qt's attempts to be
@@ -649,19 +593,6 @@ void LicqGui::grabKey(QString key)
       GrabModeAsync, GrabModeSync);
 }
 #endif /* defined(Q_WS_X11) */
-
-#ifndef USE_KDE
-QStyle* LicqGui::createStyle(const char* name) const
-{
-  QStyle* s = NULL;
-
-  if (name != NULL && name[0] != '\0' &&
-      QStyleFactory::keys().contains(name, Qt::CaseInsensitive))
-    s = QStyleFactory::create(name);
-
-  return s;
-}
-#endif
 
 void LicqGui::changeStatus(unsigned long status, bool invisible)
 {

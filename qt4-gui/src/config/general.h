@@ -85,6 +85,10 @@ public:
   QFont historyFont() const { return myHistoryFont; }
   QFont fixedFont() const { return myFixedFont; }
 
+#ifndef USE_KDE
+  QString guiStyle() const;
+#endif
+
   bool miniMode() const { return myMiniMode; }
   bool showGroupIfNoMsg() const { return myShowGroupIfNoMsg; }
   bool boldOnMsg() const { return myBoldOnMsg; }
@@ -138,6 +142,10 @@ public slots:
   void setMainwinStartHidden(bool mainwinStartHidden);
   void setMainwinRect(const QRect& geometry);
 
+#ifndef USE_KDE
+  void setGuiStyle(const QString& guiStyle);
+#endif
+
   void setDockMode(DockMode dockMode);
 #ifndef USE_KDE
   void setDefaultIconFortyEight(bool defaultIconFortyEight);
@@ -178,6 +186,11 @@ signals:
   void fontChanged();
 
   /**
+   * GUI Style has changed
+   */
+  void styleChanged();
+
+  /**
    * Popup key has changed
    */
   void msgPopupKeyChanged(QString newKey);
@@ -190,6 +203,7 @@ private:
   bool myDockHasChanged;
   bool myDockModeHasChanged;
   bool myFontHasChanged;
+  bool myStyleHasChanged;
   bool myBlockUpdates;
 
   // General configuration
@@ -201,6 +215,7 @@ private:
   QFont myEditFont;
   QFont myHistoryFont;
   QFont myFixedFont;
+  QString myDefaultStyle;
 
   // Mainwin configuration
   bool myMiniMode;

@@ -296,10 +296,6 @@ private:
   QStringList myCmdLineParams;
   int grabKeysym;
   QTimer myAutoAwayTimer;
-
-#ifndef USE_KDE
-  QStyle* createStyle(const char* name) const;
-#endif
 };
 
 } // namespace LicqQtGui

@@ -106,6 +106,8 @@ private:
   QCheckBox* myMainWinStickyCheck;
   QCheckBox* myTransparentCheck;
   QCheckBox* myDragMovesUserCheck;
+  QLabel* myGuiStyleLabel;
+  QComboBox* myGuiStyleCombo;
 
   // Widgets for contact list column settings
   QVBoxLayout* myPageColumnsLayout;
