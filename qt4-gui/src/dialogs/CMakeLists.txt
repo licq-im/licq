@@ -29,7 +29,6 @@ set(dialogs_SRCS
   searchuserdlg.cpp
   securitydlg.cpp
   showawaymsgdlg.cpp
-  skinbrowser.cpp
   statsdlg.cpp
   userselectdlg.cpp
   utilitydlg.cpp

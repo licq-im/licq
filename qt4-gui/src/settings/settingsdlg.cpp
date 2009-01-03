@@ -38,6 +38,7 @@
 #include "events.h"
 #include "general.h"
 #include "network.h"
+#include "skin.h"
 #include "status.h"
 
 using namespace LicqQtGui;
@@ -83,6 +84,7 @@ SettingsDlg::SettingsDlg(QWidget* parent)
   myChatSettings = new Settings::Chat(this);
   myEventsSettings = new Settings::Events(this);
   myNetworkSettings = new Settings::Network(this);
+  mySkinSettings = new Settings::Skin(this);
   myStatusSettings = new Settings::Status(this);
 
   QDialog::show();
@@ -119,5 +121,6 @@ void SettingsDlg::apply()
   myChatSettings->apply();
   myEventsSettings->apply();
   myNetworkSettings->apply();
+  mySkinSettings->apply();
   myStatusSettings->apply();
 }

@@ -18,7 +18,7 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#include "skinbrowser.h"
+#include "skin.h"
 
 #include <QDir>
 #include <QFrame>
@@ -44,6 +44,8 @@
 #include "core/licqgui.h"
 #include "core/messagebox.h"
 
+#include "dialogs/editfiledlg.h"
+
 #include "helpers/licqstrings.h"
 #include "helpers/support.h"
 
@@ -53,10 +55,10 @@
 
 #include "views/userview.h"
 
-#include "editfiledlg.h"
+#include "settingsdlg.h"
 
 using namespace LicqQtGui;
-/* TRANSLATOR LicqQtGui::SkinBrowserDlg */
+/* TRANSLATOR LicqQtGui::Settings::Skin */
 
 enum {
   MAX_HEIGHT = 190, /* Height of icon preview widget, this is
@@ -66,22 +68,20 @@ enum {
   MAX_HEIGHT_SKIN = 130
 };
 
-SkinBrowserDlg* SkinBrowserDlg::myInstance = NULL;
-
-void SkinBrowserDlg::showSkinBrowserDlg()
+Settings::Skin::Skin(SettingsDlg* parent)
+  : QObject(parent)
 {
-  if (myInstance == NULL)
-    myInstance = new SkinBrowserDlg();
+  parent->addPage(SettingsDlg::SkinPage, createPageSkin(parent),
+      tr("Skin"), SettingsDlg::ContactListPage);
 
-  myInstance->show();
-  myInstance->raise();
+  load();
 }
 
-SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
-  : QDialog(parent)
+QWidget* Settings::Skin::createPageSkin(QWidget* parent)
 {
-  Support::setWidgetProps(this, "SkinBrowserDialog");
-  setWindowTitle(tr("Licq Skin Browser"));
+  QWidget* w = new QWidget(parent);
+  myPageSkinLayout = new QVBoxLayout(w);
+  myPageSkinLayout->setContentsMargins(0, 0, 0, 0);
 
   pmSkin = new QPixmap();
   lstIcons = new QLinkedList<QPixmap>;
@@ -107,8 +107,6 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
                       << "PhoneFollowMeActive" << "PhoneFollowMeBusy"
                       << "ICQphoneActive" << "ICQphoneBusy" << "SharedFiles";
 
-  // Main Box
-  QVBoxLayout* toplay = new QVBoxLayout(this);
 
   QHBoxLayout* layMain = new QHBoxLayout();
   boxSkin = new QGroupBox(tr("Skin selection"));
@@ -122,6 +120,10 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
   QLabel* lblSkin = new QLabel(tr("S&kins:"));
   cmbSkin = new QComboBox();
   cmbSkin->setToolTip(tr("Use this combo box to select one of the available skins"));
+  connect(cmbSkin, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(loadSkin(const QString&)));
+  connect(cmbSkin, SIGNAL(highlighted(const QString&)),
+      SLOT(loadSkin(const QString&)));
   lblSkin->setBuddy(cmbSkin);
   laySkin->addWidget(lblSkin);
   laySkin->addWidget(cmbSkin);
@@ -129,6 +131,10 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
   QLabel* lblIcon = new QLabel(tr("&Icons:"));
   cmbIcon = new QComboBox();
   cmbIcon->setToolTip(tr("Use this combo box to select one of the available icon sets"));
+  connect(cmbIcon, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(loadIcons(const QString&)));
+  connect(cmbIcon, SIGNAL(highlighted(const QString&)),
+      SLOT(loadIcons(const QString&)));
   lblIcon->setBuddy(cmbIcon);
   laySkin->addWidget(lblIcon);
   laySkin->addWidget(cmbIcon);
@@ -136,6 +142,10 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
   QLabel* lblExtIcon = new QLabel(tr("E&xtended Icons:"));
   cmbExtIcon = new QComboBox();
   cmbExtIcon->setToolTip(tr("Use this combo box to select one of the available extended icon sets"));
+  connect(cmbExtIcon, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(loadExtIcons(const QString&)));
+  connect(cmbExtIcon, SIGNAL(highlighted(const QString&)),
+      SLOT(loadExtIcons(const QString&)));
   lblExtIcon->setBuddy(cmbExtIcon);
   laySkin->addWidget(lblExtIcon);
   laySkin->addWidget(cmbExtIcon);
@@ -143,6 +153,10 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
   QLabel* lblEmoticons = new QLabel(tr("E&moticons:"));
   cmbEmoticon = new QComboBox();
   cmbEmoticon->setToolTip(tr("Use this combo box to select one of the available emoticon icon sets"));
+  connect(cmbEmoticon, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(loadEmoticons(const QString&)));
+  connect(cmbEmoticon, SIGNAL(highlighted(const QString&)),
+      SLOT(loadEmoticons(const QString&)));
     lblEmoticons->setBuddy(cmbEmoticon);
   laySkin->addWidget(lblEmoticons);
   laySkin->addWidget(cmbEmoticon);
@@ -189,23 +203,18 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
   layPreview->addLayout(layPrevEmoticon);
 
   // Buttons
-  QHBoxLayout* layButtons = new QHBoxLayout();
   QPushButton* btnEdit = new QPushButton(tr("&Edit Skin"));
-  QPushButton* btnOk = new QPushButton(tr("&Ok"));
-  btnOk->setDefault(true);
-  QPushButton* btnApply = new QPushButton(tr("&Apply"));
-  QPushButton* btnCancel = new QPushButton(tr("&Cancel"));
-  layButtons->addWidget(btnEdit);
-  layButtons->addStretch();
-  layButtons->addSpacing(15);
-  layButtons->addWidget(btnOk);
-  layButtons->addWidget(btnApply);
-  layButtons->addWidget(btnCancel);
+  connect(btnEdit, SIGNAL(clicked()), SLOT(editSkin()));
+  laySkin->addWidget(btnEdit);
 
-  toplay->addLayout(layMain);
-  toplay->addStretch();
-  toplay->addLayout(layButtons);
+  myPageSkinLayout->addLayout(layMain);
+  myPageSkinLayout->addStretch(1);
 
+  return w;
+}
+
+void Settings::Skin::load()
+{
   // Load up the available packs
   QString szDir = QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR;
   QString szDirUser = QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR;
@@ -272,7 +281,7 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
       CIniFile fIconsConf;
       if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
       {
-        WarnUser(this,
+        WarnUser(dynamic_cast<SettingsDlg*>(parent()),
             tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.")
             .arg(iconsFile)
             .arg(*it));
@@ -297,7 +306,8 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
       CIniFile fIconsConf;
       if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
       {
-        WarnUser(this, tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.").arg(iconsFile).arg(*it));
+        WarnUser(dynamic_cast<SettingsDlg*>(parent()),
+            tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.").arg(iconsFile).arg(*it));
         dIconsUser.cdUp();
         continue;
       }
@@ -349,7 +359,7 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
       CIniFile fIconsConf;
       if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
       {
-        WarnUser(this,
+        WarnUser(dynamic_cast<SettingsDlg*>(parent()),
             tr("Unable to open extended icons file\n%1\n"
               "Extended Iconset '%2' has been disabled.")
             .arg(iconsFile)
@@ -375,7 +385,7 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
       CIniFile fIconsConf;
       if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
       {
-        WarnUser(this,
+        WarnUser(dynamic_cast<SettingsDlg*>(parent()),
             tr("Unable to open extended icons file\n%1\n"
               "Extended Iconset '%2' has been disabled.")
             .arg(iconsFile)
@@ -417,86 +427,40 @@ SkinBrowserDlg::SkinBrowserDlg(QWidget* parent)
   if (index != -1)
     cmbEmoticon->setCurrentIndex(index);
 
-  // setup connections
-  connect(btnEdit, SIGNAL(clicked()), SLOT(slot_edtSkin()));
-  connect(btnOk, SIGNAL(clicked()), SLOT(slot_ok()));
-  connect(btnApply, SIGNAL(clicked()), SLOT(slot_apply()));
-  connect(btnCancel, SIGNAL(clicked()), SLOT(close()));
-  connect(cmbSkin, SIGNAL(currentIndexChanged(const QString&)),
-      SLOT(slot_loadSkin(const QString&)));
-  connect(cmbSkin, SIGNAL(highlighted(const QString&)),
-      SLOT(slot_loadSkin(const QString&)));
-  connect(cmbIcon, SIGNAL(currentIndexChanged(const QString&)),
-      SLOT(slot_loadIcons(const QString&)));
-  connect(cmbIcon, SIGNAL(highlighted(const QString&)),
-      SLOT(slot_loadIcons(const QString&)));
-  connect(cmbExtIcon, SIGNAL(currentIndexChanged(const QString&)),
-      SLOT(slot_loadExtIcons(const QString&)));
-  connect(cmbExtIcon, SIGNAL(highlighted(const QString&)),
-      SLOT(slot_loadExtIcons(const QString&)));
-  connect(cmbEmoticon, SIGNAL(currentIndexChanged(const QString&)),
-      SLOT(slot_loadEmoticons(const QString&)));
-  connect(cmbEmoticon, SIGNAL(highlighted(const QString&)),
-      SLOT(slot_loadEmoticons(const QString&)));
-
   // Create initial preview
-  slot_loadSkin(cmbSkin->currentText());
-  slot_loadIcons(cmbIcon->currentText());
-  slot_loadExtIcons(cmbExtIcon->currentText());
-  slot_loadEmoticons(cmbEmoticon->currentText());
+  loadSkin(cmbSkin->currentText());
+  loadIcons(cmbIcon->currentText());
+  loadExtIcons(cmbExtIcon->currentText());
+  loadEmoticons(cmbEmoticon->currentText());
 }
 
-SkinBrowserDlg::~SkinBrowserDlg()
+Settings::Skin::~Skin()
 {
   delete pmSkin;
   delete lstIcons;
   delete lstExtIcons;
   delete lstAIcons;
   delete lstAExtIcons;
-
-  myInstance = NULL;
 }
 
-/*! \brief Applies skin/iconsets and closes the dialog
- *
- *  slot_ok() applies all selected options that differ from the currently
- *  activated settings. Afterwards it saves the new skin and iconset
- *  settings to the config file and closes the window.
- */
-void SkinBrowserDlg::slot_ok()
-{
-  slot_apply();
-  LicqGui::instance()->saveConfig();
-  close();
-}
-
-/*! \brief Applies settings
- *
- *  Applies selected skin/icons/emoticons.
- */
-void SkinBrowserDlg::slot_apply()
+void Settings::Skin::apply()
 {
   IconManager* iconManager = IconManager::instance();
 
   Config::Skin::active()->loadSkin(cmbSkin->currentText().toLocal8Bit());
 
   if (!iconManager->loadIcons(cmbIcon->currentText()))
-    WarnUser(this, tr("Unable to load icons\n%1.")
+    WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to load icons\n%1.")
         .arg(cmbIcon->currentText().toLocal8Bit().data()));
 
   if (!iconManager->loadExtendedIcons(cmbExtIcon->currentText()))
-    WarnUser(this, tr("Unable to load extended icons\n%1.")
+    WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to load extended icons\n%1.")
         .arg(cmbExtIcon->currentText().toLocal8Bit().data()));
 
   Emoticons::self()->setTheme(cmbEmoticon->currentText());
 }
 
-/*! \brief Creates a new skin editor dialog
- *
- *  Creates a new Dialog which enables the user to edit the currently selected
- *  skin.
- */
-void SkinBrowserDlg::slot_edtSkin()
+void Settings::Skin::editSkin()
 {
   if (cmbSkin->currentText().isEmpty()) return;
   QString f;
@@ -510,24 +474,12 @@ void SkinBrowserDlg::slot_edtSkin()
   new EditFileDlg(f);
 }
 
-/*! \brief Refreshes the skin preview
- *
- *  This slot reloads the skin preview pixmap dynamically. It
- *  loads the currently highlighted skin in the combobox. If
- *  it was successful it sets the new skin-pixmap as preview pixmap.
- */
-void SkinBrowserDlg::slot_loadSkin(const QString& skin)
+void Settings::Skin::loadSkin(const QString& skin)
 {
   lblPaintSkin->setPixmap(renderSkin(skin));
 }
 
-/*! \brief Reloads the current preview icons
- *
- *  This slot reloads all preview icons. It loads the complete
- *  set of icons that is currently highlighted in the relevant combo box.
- *  If it was successful it makes these icons to be rendered in the preview.
- */
-void SkinBrowserDlg::slot_loadIcons(const QString& icon)
+void Settings::Skin::loadIcons(const QString& icon)
 {
   // force a sane state and then load all icons into the valuelist
   lstIcons->clear();
@@ -541,7 +493,7 @@ void SkinBrowserDlg::slot_loadIcons(const QString& icon)
       icon + "/" + icon + ".icons";
     if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
     {
-      WarnUser(this, tr("Unable to open icons file\n%1").arg(iconsFile));
+      WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to open icons file\n%1").arg(iconsFile));
       return;
     }
   }
@@ -557,13 +509,7 @@ void SkinBrowserDlg::slot_loadIcons(const QString& icon)
   lblPaintIcon->setPixmapList(lstIcons);
 }
 
-/*! \brief Reloads the current preview extended icons
- *
- *  This slot reloads all preview icons. It loads the complete
- *  set of extended icons that is currently highlighted in the relevant combo box.
- *  If it was successful it makes these icons to be rendered in the preview.
- */
-void SkinBrowserDlg::slot_loadExtIcons(const QString& extIcon)
+void Settings::Skin::loadExtIcons(const QString& extIcon)
 {
   // force a sane state and then load all icons into the valuelist
   lstExtIcons->clear();
@@ -577,7 +523,7 @@ void SkinBrowserDlg::slot_loadExtIcons(const QString& extIcon)
       EXTICONS_DIR + extIcon + "/" + extIcon + ".icons";
     if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
     {
-      WarnUser(this, tr("Unable to open extended icons file\n%1").arg(iconsFile));
+      WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to open extended icons file\n%1").arg(iconsFile));
       return;
     }
   }
@@ -592,14 +538,8 @@ void SkinBrowserDlg::slot_loadExtIcons(const QString& extIcon)
   }
   lblPaintExtIcon->setPixmapList(lstExtIcons);
 }
-/*! \brief Reloads the current preview emoticons
- *
- *  This slot reloads all preview emoicons. It loads the complete
- *  set of emoticons that is currently highlighted in the relevant combo
- *  box.
- *  If it was successful it makes these icons to be rendered in the preview.
- */
-void SkinBrowserDlg::slot_loadEmoticons(const QString& emoticon)
+
+void Settings::Skin::loadEmoticons(const QString& emoticon)
 {
   lstEmoticons->clear();
   const QStringList files = Emoticons::self()->fileList(emoticon);
@@ -624,13 +564,7 @@ void SkinBrowserDlg::slot_loadEmoticons(const QString& emoticon)
   lblPaintEmoticon->setPixmapList(lstEmoticons);
 }
 
-/*! \brief provide correct repainting when resizing the main widget
- *
- *  This slot is called everytime the mainwidget gets resized. It forces the
- *  preview areas to be updated so that it looks nice with structured
- *  backgrounds.
- */
-void SkinBrowserDlg::resizeEvent(QResizeEvent* /* e */)
+void Settings::Skin::resizeEvent(QResizeEvent* /* e */)
 {
   lblPaintSkin->update();
   lblPaintIcon->update();
@@ -658,7 +592,7 @@ void SkinBrowserPreviewArea::setPixmapList(QLinkedList<QPixmap>* _lstPm)
   this->update();
 }
 
-void SkinBrowserPreviewArea::paintEvent(QPaintEvent* /* e */)
+void SkinBrowserPreviewArea::paintEvent(QPaintEvent* /* event */)
 {
   QPainter p(this);
   unsigned short int X = 0;
@@ -673,15 +607,13 @@ void SkinBrowserPreviewArea::paintEvent(QPaintEvent* /* e */)
   p.end();
 }
 
-/*  \brief Renders the dynamic skin preview
- *
- *  This method renders a skin preview in realtime. This is accomplished
- *  by creating a new Widget and applying the Skin &skinName to it. The
- *  widget is never shown, but instead using grabWidget() it is copied
- *  into a pixmap, which afterwards is returned to the caller.
- */
-QPixmap SkinBrowserDlg::renderSkin(const QString& skinName)
+QPixmap Settings::Skin::renderSkin(const QString& skinName)
 {
+  // This method renders a skin preview in realtime. This is accomplished
+  // by creating a new Widget and applying the Skin &skinName to it. The
+  // widget is never shown, but instead using grabWidget() it is copied
+  // into a pixmap, which afterwards is returned to the caller.
+
   SkinnableButton* btnSystem = NULL;
   SkinnableLabel* lblMsg = NULL;
   SkinnableLabel* lblStatus = NULL;
@@ -703,10 +635,6 @@ QPixmap SkinBrowserDlg::renderSkin(const QString& skinName)
     QPalette palette(w.palette());
     palette.setBrush(w.backgroundRole(), QBrush(p));
     w.setPalette(palette);
-  }
-  else
-  {
-    setPalette(QPalette());
   }
 
   // Group Combo Box
@@ -746,7 +674,7 @@ QPixmap SkinBrowserDlg::renderSkin(const QString& skinName)
   userView.setGeometry(skin->frame.border.left, skin->frame.border.top,
                         w.width() - skin->frameWidth(), w.height() - skin->frameHeight());
 
-  userView.setPalette(skin->palette(this));
+  userView.setPalette(skin->palette(dynamic_cast<SettingsDlg*>(parent())));
   userView.setColors(skin->backgroundColor);
 
   if (skin->frame.transparent)

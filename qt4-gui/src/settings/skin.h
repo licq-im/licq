@@ -17,21 +17,23 @@
  * Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
  */
 
-#ifndef SKINBROWSER_H
-#define SKINBROWSER_H
+#ifndef SETTINGS_SKIN_H
+#define SETTINGS_SKIN_H
 
-#include <QDialog>
 #include <QFrame>
 #include <QLinkedList>
+#include <QObject>
 #include <QPixmap>
 
 class QComboBox;
 class QGroupBox;
 class QLabel;
 class QStringList;
+class QVBoxLayout;
 
 namespace LicqQtGui
 {
+class SettingsDlg;
 class SkinBrowserPreviewArea;
 
 namespace Config
@@ -39,22 +41,37 @@ namespace Config
 class Skin;
 }
 
+namespace Settings
+{
 /**
- * Provides a user dialog for selecting Skins and IconSets
- *
- * A SkinBrowserDlg enables the user to select a skin, iconset and extended
- * iconset for Licq. Every gui item is automatically previewed before the
- * user makes his final decision.
+ * Provides settings for skin and icon sets with previews
  */
-class SkinBrowserDlg : public QDialog
+class Skin : public QObject
 {
   Q_OBJECT
 
 public:
   /**
-   * Create and show skin browser dialog or raise it if already exists
+   * Constructor
+   *
+   * @param parent Settings dialog
    */
-  static void showSkinBrowserDlg();
+  Skin(SettingsDlg* parent);
+
+  /**
+   * Destructor
+   */
+  virtual ~Skin();
+
+  /**
+   * Prepare page for viewing by loading configuration
+   */
+  void load();
+
+  /**
+   * Save configuration
+   */
+  void apply();
 
 private slots:
   /**
@@ -64,29 +81,47 @@ private slots:
    */
   void resizeEvent(QResizeEvent* event);
 
-  void slot_edtSkin();
-  void slot_ok();
-  void slot_apply();
+  /**
+   * Opens an editor to allow editing of the currently selected skin
+   */
+  void editSkin();
 
-  void slot_loadSkin(const QString& skin);
-  void slot_loadIcons(const QString& icon);
-  void slot_loadExtIcons(const QString& extIcon);
-  void slot_loadEmoticons(const QString& emoticon);
+  /**
+   * Load a skin and render it in the preview panel
+   *
+   * @param skin Name of skin
+   */
+  void loadSkin(const QString& skin);
+
+  /**
+   * Load an icon set into the preview panel
+   *
+   * @param icon Name of icon set
+   */
+  void loadIcons(const QString& icon);
+
+  /**
+   * Load an extended icon set into the preview panel
+   *
+   * @param extIcon Name of icon set
+   */
+  void loadExtIcons(const QString& extIcon);
+
+  /**
+   * Load an emoticon set into the preview panel
+   *
+   * @param emoticon Name of icon set
+   */
+  void loadEmoticons(const QString& emoticon);
 
 private:
-  static SkinBrowserDlg* myInstance;
-
   /**
-   * Constructor
+   * Setup the skin page
    *
-   * @param parent Parent window
+   * @param parent Parent widget for settings page
+   * @return a widget with the skin settings
    */
-  SkinBrowserDlg(QWidget* parent = 0);
-
-  /**
-   * Destructor
-   */
-  ~SkinBrowserDlg ();
+  QWidget* createPageSkin(QWidget* parent);
 
   /**
    * Renders a dynamic skin preview
@@ -95,6 +130,9 @@ private:
    * @return Miniature image of mainwin with skin
    */
   QPixmap renderSkin(const QString& skinName);
+
+
+  QVBoxLayout* myPageSkinLayout;
 
   /*! This Box holds the Dropdown menus for Skin selection */
   QGroupBox* boxSkin;
@@ -130,6 +168,8 @@ private:
   QLinkedList<QPixmap>* lstEmoticons;
   Config::Skin* skin;
 };
+
+} // namespace Settings
 
 /**
  * Helper class to provide a preview area for our icons using a modified QFrame

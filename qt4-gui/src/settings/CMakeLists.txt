@@ -6,6 +6,7 @@ set(settings_SRCS
   general.cpp
   network.cpp
   settingsdlg.cpp
+  skin.cpp
   status.cpp
 )
 

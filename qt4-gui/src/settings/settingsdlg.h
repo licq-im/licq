@@ -36,6 +36,7 @@ namespace Settings
   class Events;
   class General;
   class Network;
+  class Skin;
   class Status;
 }
 
@@ -51,6 +52,7 @@ public:
   {
     UnknownPage = -1,
     ContactListPage,
+    SkinPage,
     ColumnsPage,
     DockingPage,
     FontsPage,
@@ -128,6 +130,7 @@ private:
   Settings::Events* myEventsSettings;
   Settings::General* myGeneralSettings;
   Settings::Network* myNetworkSettings;
+  Settings::Skin* mySkinSettings;
   Settings::Status* myStatusSettings;
 };
 

@@ -134,7 +134,6 @@ private slots:
   void showEditGrpDlg();
   void showRandomChatSearchDlg();
   void showSettingsDlg();
-  void showSkinBrowser();
   void showPluginDlg();
   void showGPGKeyManager();
 
@@ -147,7 +146,6 @@ private:
   QAction* myThreadViewAction;
   QAction* myShowEmptyGroupsAction;
   QAction* myOptionsAction;
-  QAction* mySkinBrowserAction;
   QAction* myPluginManagerAction;
   QAction* myKeyManagerAction;
   QAction* mySaveOptionsAction;

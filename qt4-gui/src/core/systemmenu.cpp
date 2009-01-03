@@ -46,7 +46,6 @@
 #include "dialogs/reqauthdlg.h"
 #include "dialogs/searchuserdlg.h"
 #include "dialogs/securitydlg.h"
-#include "dialogs/skinbrowser.h"
 #ifdef HAVE_LIBGPGME
 #include "dialogs/gpgkeymanager.h"
 #endif
@@ -221,7 +220,6 @@ SystemMenu::SystemMenu(QWidget* parent)
   myShowEmptyGroupsAction = addAction(tr("Sh&ow Empty Groups"), Config::ContactList::instance(), SLOT(setShowEmptyGroups(bool)));
   myShowEmptyGroupsAction->setCheckable(true);
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
-  mySkinBrowserAction = addAction(tr("Sk&in Browser..."), this, SLOT(showSkinBrowser()));
   myPluginManagerAction = addAction(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
 #ifdef HAVE_LIBGPGME
   myKeyManagerAction = addAction(tr("GPG &Key Manager..."), this, SLOT(showGPGKeyManager()));
@@ -524,11 +522,6 @@ void SystemMenu::showRandomChatSearchDlg()
 void SystemMenu::showSettingsDlg()
 {
   SettingsDlg::show();
-}
-
-void SystemMenu::showSkinBrowser()
-{
-  SkinBrowserDlg::showSkinBrowserDlg();
 }
 
 void SystemMenu::showPluginDlg()
