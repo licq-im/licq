@@ -392,11 +392,8 @@ void ContactListModel::removeUser(QString id, unsigned long ppid)
 
   foreach (ContactUser* u, user->groupList())
   {
-    ContactGroup* group = u->group();
-    int pos = group->indexOf(u);
-    beginRemoveRows(createIndex(groupRow(group), 0, group), pos, pos);
+    // Only delete the contact here, the group will trigger signals to be emitted
     delete u;
-    endRemoveRows();
   }
 
   myUsers.removeAll(user);
