@@ -20,10 +20,10 @@
 #ifndef SETTINGS_SKIN_H
 #define SETTINGS_SKIN_H
 
-#include <QFrame>
-#include <QLinkedList>
+#include <QList>
 #include <QObject>
 #include <QPixmap>
+#include <QWidget>
 
 class QComboBox;
 class QGroupBox;
@@ -35,6 +35,8 @@ namespace LicqQtGui
 {
 class SettingsDlg;
 class SkinBrowserPreviewArea;
+
+typedef QList<QPixmap> IconList;
 
 namespace Config
 {
@@ -61,7 +63,7 @@ public:
   /**
    * Destructor
    */
-  virtual ~Skin();
+  virtual ~Skin() {};
 
   /**
    * Prepare page for viewing by loading configuration
@@ -91,28 +93,28 @@ private slots:
    *
    * @param skin Name of skin
    */
-  void loadSkin(const QString& skin);
+  void previewSkin(const QString& skin);
 
   /**
    * Load an icon set into the preview panel
    *
    * @param icon Name of icon set
    */
-  void loadIcons(const QString& icon);
+  void previewIcons(const QString& icon);
 
   /**
    * Load an extended icon set into the preview panel
    *
    * @param extIcon Name of icon set
    */
-  void loadExtIcons(const QString& extIcon);
+  void previewExtIcons(const QString& extIcon);
 
   /**
    * Load an emoticon set into the preview panel
    *
    * @param emoticon Name of icon set
    */
-  void loadEmoticons(const QString& emoticon);
+  void previewEmoticons(const QString& emoticon);
 
 private:
   /**
@@ -122,6 +124,28 @@ private:
    * @return a widget with the skin settings
    */
   QWidget* createPageSkin(QWidget* parent);
+
+  /**
+   * Load list of icon sets
+   *
+   * @param subdir Sub directory to find icon sets in
+   * @param iconCombo Combo box to populate with icon set names
+   * @param current Currently active icon set
+   * @param exampleIcon Name of icon to show with name in combo box
+   */
+  void loadIconsetList(const QString& subdir, QComboBox* iconCombo,
+      const QString& current, const QString& exampleIcon);
+
+  /**
+   * Load an icon set
+   *
+   * @param iconSet Name of icon set to load
+   * @param subdir Sub directory to find icon set in
+   * @param iconNames List of icon names to show in preview
+   * @return A list of pixmaps to show in preview area
+   */
+  IconList loadIcons(const QString& iconSet, const QString& subdir,
+      const QStringList& iconNames);
 
   /**
    * Renders a dynamic skin preview
@@ -134,39 +158,16 @@ private:
 
   QVBoxLayout* myPageSkinLayout;
 
-  /*! This Box holds the Dropdown menus for Skin selection */
-  QGroupBox* boxSkin;
-  /*! This Box holds the preview area */
-  QGroupBox* boxPreview;
-  /*! This Combo contains all available skin packs */
-  QComboBox* cmbSkin;
-  /*! This Combo contains all available icon packs */
-  QComboBox* cmbIcon;
-  /*! This Combo contains all available extended icon packs */
-  QComboBox* cmbExtIcon;
-  /*! This Combo contains all available emoticons themes */
-  QComboBox* cmbEmoticon;
-  /*! This QLabel contains the skin preview pixmap (75 x 130 Pixel)*/
-  QLabel* lblPaintSkin;
-  /*! This SkinBrowserPreviewArea contains the icon pixmaps (54 x 130 Pixel)*/
-  SkinBrowserPreviewArea* lblPaintIcon;
-  /*! This SkinBrowserPreviewArea contains the extended icons pixmaps (54 x 130 Pixel)*/
-  SkinBrowserPreviewArea* lblPaintExtIcon;
-  /*! This SkinBrowserPreviewArea contains the emoticons pixmaps (54x130 Px) */
-  SkinBrowserPreviewArea* lblPaintEmoticon;
-  /*! Holds the list of possible themeable icons in normal icon sets */
-  QStringList* lstAIcons;
-  /*! Holds the list of possible themeable icons in extended icon sets */
-  QStringList* lstAExtIcons;
-  /*! Stores the current QPixmap for the Skin preview */
-  QPixmap* pmSkin;
-  /*! Stores the list of the current QPixmaps for the Icons preview */
-  QLinkedList<QPixmap>* lstIcons;
-  /*! Stores the list of the current QPixmaps for the Extended Icons preview */
-  QLinkedList<QPixmap>* lstExtIcons;
-  /*! Stores the list of the current QPixmaps for the emoticons preview */
-  QLinkedList<QPixmap>* lstEmoticons;
-  Config::Skin* skin;
+  QComboBox* mySkinCombo;
+  QComboBox* myIconCombo;
+  QComboBox* myExtIconCombo;
+  QComboBox* myEmoticonCombo;
+  QLabel* mySkinPreview;
+  SkinBrowserPreviewArea* myIconPreview;
+  SkinBrowserPreviewArea* myExtIconPreview;
+  SkinBrowserPreviewArea* myEmoticonPreview;
+  QStringList myIconNames;
+  QStringList myExtIconNames;
 };
 
 } // namespace Settings
@@ -179,17 +180,24 @@ private:
  * The main improvement is, to make it redraw the icons when the widget
  * gets modified by movement, hiding or resizing.
  */
-class SkinBrowserPreviewArea : public QFrame
+class SkinBrowserPreviewArea : public QWidget
 {
-Q_OBJECT
+  Q_OBJECT
+
 public:
   SkinBrowserPreviewArea(QWidget* parent = 0);
-  void setPixmapList(QLinkedList<QPixmap>* _lstPm);
+
+  /**
+   * Sets list of icons to display in preview area
+   *
+   * @param iconList List of icons to display
+   */
+  void setPixmapList(const IconList& iconList);
 
 private:
   void paintEvent(QPaintEvent* e);
-  /*! Holds a copy of the pixmaps that are drawn on the widget */
-  QLinkedList<QPixmap> lstPm;
+
+  IconList myIconList;
 };
 
 } // namespace LicqQtGui

@@ -21,12 +21,10 @@
 #include "skin.h"
 
 #include <QDir>
-#include <QFrame>
 #include <QGroupBox>
 #include <QHBoxLayout>
 #include <QImage>
 #include <QLabel>
-#include <QLinkedList>
 #include <QMenuBar>
 #include <QPainter>
 #include <QPixmap>
@@ -83,18 +81,11 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
   myPageSkinLayout = new QVBoxLayout(w);
   myPageSkinLayout->setContentsMargins(0, 0, 0, 0);
 
-  pmSkin = new QPixmap();
-  lstIcons = new QLinkedList<QPixmap>;
-  lstExtIcons = new QLinkedList<QPixmap>;
-  lstEmoticons = new QLinkedList<QPixmap>;
-  lstAIcons = new QStringList();
-  lstAExtIcons = new QStringList();
-
   // Setup a list of previewable icons
   // The strings reflect what we expect to find in the icon files.
   // The result of these two lists is used to load the icons, the order of
   // this list will be the order that the icons get rendered in the preview.
-  *lstAIcons << "Online" << "Offline" << "FFC" << "Away" << "NA"
+  myIconNames << "Online" << "Offline" << "FFC" << "Away" << "NA"
                    << "Occupied" << "DND" << "Private" << "Message" << "Url"
                    << "Chat" << "File" << "SMS" << "Contact" << "Authorize" << "ReqAuthorize"
                    << "SecureOff" << "SecureOn" << "Search" << "Remove" << "History"
@@ -102,103 +93,100 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
                    << "MSNOnline" << "MSNOffline" << "MSNAway"
                    << "MSNOccupied" << "MSNPrivate";
 
-  *lstAExtIcons << "Collapsed" << "Expanded" << "Birthday" << "Cellular"
+  myExtIconNames << "Collapsed" << "Expanded" << "Birthday" << "Cellular"
                       << "CustomAR" << "Invisible" << "Typing" << "Phone"
                       << "PhoneFollowMeActive" << "PhoneFollowMeBusy"
                       << "ICQphoneActive" << "ICQphoneBusy" << "SharedFiles";
 
 
   QHBoxLayout* layMain = new QHBoxLayout();
-  boxSkin = new QGroupBox(tr("Skin selection"));
+  QGroupBox* boxSkin = new QGroupBox(tr("Skin selection"));
   QVBoxLayout* laySkin = new QVBoxLayout(boxSkin);
-  boxPreview = new QGroupBox(tr("Preview"));
+  QGroupBox* boxPreview = new QGroupBox(tr("Preview"));
   QHBoxLayout* layPreview = new QHBoxLayout(boxPreview);
   layMain->addWidget(boxSkin);
   layMain->addWidget(boxPreview);
 
   // Skin and Icons Box
   QLabel* lblSkin = new QLabel(tr("S&kins:"));
-  cmbSkin = new QComboBox();
-  cmbSkin->setToolTip(tr("Use this combo box to select one of the available skins"));
-  connect(cmbSkin, SIGNAL(currentIndexChanged(const QString&)),
-      SLOT(loadSkin(const QString&)));
-  connect(cmbSkin, SIGNAL(highlighted(const QString&)),
-      SLOT(loadSkin(const QString&)));
-  lblSkin->setBuddy(cmbSkin);
+  mySkinCombo = new QComboBox();
+  mySkinCombo->setToolTip(tr("Use this combo box to select one of the available skins"));
+  connect(mySkinCombo, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(previewSkin(const QString&)));
+  connect(mySkinCombo, SIGNAL(highlighted(const QString&)),
+      SLOT(previewSkin(const QString&)));
+  lblSkin->setBuddy(mySkinCombo);
   laySkin->addWidget(lblSkin);
-  laySkin->addWidget(cmbSkin);
+  laySkin->addWidget(mySkinCombo);
 
   QLabel* lblIcon = new QLabel(tr("&Icons:"));
-  cmbIcon = new QComboBox();
-  cmbIcon->setToolTip(tr("Use this combo box to select one of the available icon sets"));
-  connect(cmbIcon, SIGNAL(currentIndexChanged(const QString&)),
-      SLOT(loadIcons(const QString&)));
-  connect(cmbIcon, SIGNAL(highlighted(const QString&)),
-      SLOT(loadIcons(const QString&)));
-  lblIcon->setBuddy(cmbIcon);
+  myIconCombo = new QComboBox();
+  myIconCombo->setToolTip(tr("Use this combo box to select one of the available icon sets"));
+  connect(myIconCombo, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(previewIcons(const QString&)));
+  connect(myIconCombo, SIGNAL(highlighted(const QString&)),
+      SLOT(previewIcons(const QString&)));
+  lblIcon->setBuddy(myIconCombo);
   laySkin->addWidget(lblIcon);
-  laySkin->addWidget(cmbIcon);
+  laySkin->addWidget(myIconCombo);
 
   QLabel* lblExtIcon = new QLabel(tr("E&xtended Icons:"));
-  cmbExtIcon = new QComboBox();
-  cmbExtIcon->setToolTip(tr("Use this combo box to select one of the available extended icon sets"));
-  connect(cmbExtIcon, SIGNAL(currentIndexChanged(const QString&)),
-      SLOT(loadExtIcons(const QString&)));
-  connect(cmbExtIcon, SIGNAL(highlighted(const QString&)),
-      SLOT(loadExtIcons(const QString&)));
-  lblExtIcon->setBuddy(cmbExtIcon);
+  myExtIconCombo = new QComboBox();
+  myExtIconCombo->setToolTip(tr("Use this combo box to select one of the available extended icon sets"));
+  connect(myExtIconCombo, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(previewExtIcons(const QString&)));
+  connect(myExtIconCombo, SIGNAL(highlighted(const QString&)),
+      SLOT(previewExtIcons(const QString&)));
+  lblExtIcon->setBuddy(myExtIconCombo);
   laySkin->addWidget(lblExtIcon);
-  laySkin->addWidget(cmbExtIcon);
+  laySkin->addWidget(myExtIconCombo);
 
   QLabel* lblEmoticons = new QLabel(tr("E&moticons:"));
-  cmbEmoticon = new QComboBox();
-  cmbEmoticon->setToolTip(tr("Use this combo box to select one of the available emoticon icon sets"));
-  connect(cmbEmoticon, SIGNAL(currentIndexChanged(const QString&)),
-      SLOT(loadEmoticons(const QString&)));
-  connect(cmbEmoticon, SIGNAL(highlighted(const QString&)),
-      SLOT(loadEmoticons(const QString&)));
-    lblEmoticons->setBuddy(cmbEmoticon);
+  myEmoticonCombo = new QComboBox();
+  myEmoticonCombo->setToolTip(tr("Use this combo box to select one of the available emoticon icon sets"));
+  connect(myEmoticonCombo, SIGNAL(currentIndexChanged(const QString&)),
+      SLOT(previewEmoticons(const QString&)));
+  connect(myEmoticonCombo, SIGNAL(highlighted(const QString&)),
+      SLOT(previewEmoticons(const QString&)));
+    lblEmoticons->setBuddy(myEmoticonCombo);
   laySkin->addWidget(lblEmoticons);
-  laySkin->addWidget(cmbEmoticon);
+  laySkin->addWidget(myEmoticonCombo);
 
   // Preview Box
   QVBoxLayout* layPrevSkin = new QVBoxLayout();
   QLabel* lblPrevSkin = new QLabel(tr("Skin:"));
   lblPrevSkin->setAlignment(Qt::AlignHCenter);
-  lblPaintSkin = new QLabel();
-  lblPaintSkin->setFixedSize(75, MAX_HEIGHT_SKIN);
+  mySkinPreview = new QLabel();
+  mySkinPreview->setFixedSize(75, MAX_HEIGHT_SKIN);
   layPrevSkin->addWidget(lblPrevSkin, 0, Qt::AlignHCenter);
-  layPrevSkin->addWidget(lblPaintSkin, 0, Qt::AlignHCenter);
+  layPrevSkin->addWidget(mySkinPreview, 0, Qt::AlignHCenter);
   layPrevSkin->addStretch();
   layPreview->addLayout(layPrevSkin);
 
   QVBoxLayout* layPrevIcon = new QVBoxLayout();
   QLabel* lblPrevIcon = new QLabel(tr("Icons:"));
   lblPrevIcon->setAlignment(Qt::AlignHCenter);
-  lblPaintIcon = new SkinBrowserPreviewArea();
-  lblPaintIcon->setFixedSize(54, MAX_HEIGHT);
+  myIconPreview = new SkinBrowserPreviewArea();
   layPrevIcon->addWidget(lblPrevIcon, 0, Qt::AlignHCenter);
-  layPrevIcon->addWidget(lblPaintIcon, 0, Qt::AlignHCenter);
+  layPrevIcon->addWidget(myIconPreview, 0, Qt::AlignHCenter);
   layPrevIcon->addStretch();
   layPreview->addLayout(layPrevIcon);
 
   QVBoxLayout* layPrevExtIcon = new QVBoxLayout();
   QLabel* lblPrevExtIcon = new QLabel(tr("Extended Icons:"));
   lblPrevExtIcon->setAlignment(Qt::AlignHCenter);
-  lblPaintExtIcon = new SkinBrowserPreviewArea();
-  lblPaintExtIcon->setFixedSize(54, MAX_HEIGHT);
+  myExtIconPreview = new SkinBrowserPreviewArea();
   layPrevExtIcon->addWidget(lblPrevExtIcon, 0, Qt::AlignHCenter);
-  layPrevExtIcon->addWidget(lblPaintExtIcon, 0, Qt::AlignHCenter);
+  layPrevExtIcon->addWidget(myExtIconPreview, 0, Qt::AlignHCenter);
   layPrevExtIcon->addStretch();
   layPreview->addLayout(layPrevExtIcon);
 
   QVBoxLayout* layPrevEmoticon = new QVBoxLayout();
   QLabel* lblPrevEmoticon = new QLabel(tr("Emoticons:"));
   lblPrevEmoticon->setAlignment(Qt::AlignHCenter);
-  lblPaintEmoticon= new SkinBrowserPreviewArea();
-  lblPaintEmoticon->setFixedSize(54, MAX_HEIGHT);
+  myEmoticonPreview= new SkinBrowserPreviewArea();
   layPrevEmoticon->addWidget(lblPrevEmoticon, 0, Qt::AlignHCenter);
-  layPrevEmoticon->addWidget(lblPaintEmoticon, 0, Qt::AlignHCenter);
+  layPrevEmoticon->addWidget(myEmoticonPreview, 0, Qt::AlignHCenter);
   layPrevEmoticon->addStretch();
   layPreview->addLayout(layPrevEmoticon);
 
@@ -216,67 +204,84 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
 void Settings::Skin::load()
 {
   // Load up the available packs
-  QString szDir = QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR;
-  QString szDirUser = QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR;
-  QDir dSkins(szDir + SKINS_DIR);
-  QDir dSkinsUser(szDirUser + SKINS_DIR);
-  dSkins.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-  dSkinsUser.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-  if (!dSkins.count() && !dSkinsUser.count())
+  QDir skinsPath(QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + SKINS_DIR);
+  QDir skinsUserPath(QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR + SKINS_DIR);
+  skinsPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+  skinsUserPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+  if (skinsPath.count() == 0 && skinsUserPath.count() == 0)
   {
-    gLog.Error("%sError reading %s directory.\n", L_ERRORxSTR, szDir.toLatin1().data());
-    cmbSkin->addItem(tr("Error"));
-    cmbSkin->setEnabled(false);
+    gLog.Error("%sError reading %s directory.\n", L_ERRORxSTR, skinsPath.path().toLatin1().data());
+    mySkinCombo->addItem(tr("Error"));
+    mySkinCombo->setEnabled(false);
   }
   else
   {
-    QStringList::Iterator it;
-    QStringList lst = dSkins.entryList();
+    QStringList lst = skinsPath.entryList();
     QString current(Config::Skin::active()->skinName());
-    for (it = lst.begin(); it != lst.end(); ++it)
+    foreach (const QString& skin, lst)
     {
-      cmbSkin->addItem(*it);
-      if (current == *it)
-        cmbSkin->setCurrentIndex(cmbSkin->count() - 1);
+      mySkinCombo->addItem(skin);
+      if (skin == current)
+        mySkinCombo->setCurrentIndex(mySkinCombo->count() - 1);
     }
     // check for skins in current base dir, too
-    lst = dSkinsUser.entryList();
-    for (it = lst.begin(); it != lst.end(); ++it)
+    lst = skinsUserPath.entryList();
+    foreach (const QString& skin, lst)
     {
       // Check for duplicates
-      int num = cmbSkin->count();
+      int num = mySkinCombo->count();
       bool dup = false;
       for (int i = 0; i < num; i++)
-        if (*it == cmbSkin->itemText(i))
+        if (mySkinCombo->itemText(i) == skin)
           dup = true;
       if (!dup)
       {
-        cmbSkin->addItem(*it);
-        if (current == *it)
-          cmbSkin->setCurrentIndex(cmbSkin->count() - 1);
+        mySkinCombo->addItem(skin);
+        if (skin == current)
+          mySkinCombo->setCurrentIndex(mySkinCombo->count() - 1);
       }
     }
   }
 
-  QDir dIcons(szDir + ICONS_DIR);
-  QDir dIconsUser(szDirUser + ICONS_DIR);
-  dIcons.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-  dIconsUser.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-  if (!dIcons.count() && !dIconsUser.count())
+  loadIconsetList(ICONS_DIR, myIconCombo, IconManager::instance()->iconSet(), "Online");
+  loadIconsetList(EXTICONS_DIR, myExtIconCombo, IconManager::instance()->extendedIconSet(), "Phone");
+
+  const Emoticons* emoticons = Emoticons::self();
+  const QStringList themes = emoticons->themes();
+  myEmoticonCombo->insertItems(0, themes);
+
+  const QString selected = emoticons->theme();
+  const int index = themes.indexOf(selected);
+  if (index != -1)
+    myEmoticonCombo->setCurrentIndex(index);
+
+  // Create initial preview
+  previewSkin(mySkinCombo->currentText());
+  previewIcons(myIconCombo->currentText());
+  previewExtIcons(myExtIconCombo->currentText());
+  previewEmoticons(myEmoticonCombo->currentText());
+}
+
+void Settings::Skin::loadIconsetList(const QString& subdir, QComboBox* iconCombo,
+    const QString& current, const QString& exampleIcon)
+{
+  QDir iconsPath(QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + subdir);
+  QDir iconsUserPath(QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR + subdir);
+  iconsPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+  iconsUserPath.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
+  if (iconsPath.count() == 0 && iconsUserPath.count() == 0)
   {
-    gLog.Error("%sError reading %s directory.\n", L_ERRORxSTR, szDir.toLatin1().data());
-    cmbIcon->addItem(tr("Error"));
-    cmbIcon->setEnabled(false);
+    gLog.Error("%sError reading %s directory.\n", L_ERRORxSTR, iconsPath.path().toLatin1().data());
+    iconCombo->addItem(tr("Error"));
+    iconCombo->setEnabled(false);
   }
   else
   {
-    QStringList::Iterator it;
-    QStringList lst = dIcons.entryList();
-    QString current(IconManager::instance()->iconSet());
-    for (it = lst.begin(); it != lst.end(); ++it)
+    QStringList lst = iconsPath.entryList();
+    foreach (const QString& iconset, lst)
     {
-      dIcons.cd(*it);
-      QString iconsFile = QString("%1/%2.icons").arg(dIcons.path()).arg(*it);
+      iconsPath.cd(iconset);
+      QString iconsFile = QString("%1/%2.icons").arg(iconsPath.path()).arg(iconset);
       char sFileName[MAX_FILENAME_LEN] = "";
       CIniFile fIconsConf;
       if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
@@ -284,268 +289,141 @@ void Settings::Skin::load()
         WarnUser(dynamic_cast<SettingsDlg*>(parent()),
             tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.")
             .arg(iconsFile)
-            .arg(*it));
-        dIcons.cdUp();
+            .arg(iconset));
+        iconsPath.cdUp();
         continue;
       }
       fIconsConf.SetSection("icons");
-      fIconsConf.ReadStr("Online", sFileName, "");
-      QString pmFile = QString("%1/%2").arg(dIcons.path()).arg(sFileName);
-      cmbIcon->addItem(QPixmap(pmFile), *it);
-      if (current == *it)
-        cmbIcon->setCurrentIndex(cmbIcon->count() - 1);
-      dIcons.cdUp();
+      fIconsConf.ReadStr(exampleIcon.toAscii().data(), sFileName, "");
+      QString pmFile = QString("%1/%2").arg(iconsPath.path()).arg(sFileName);
+      iconCombo->addItem(QPixmap(pmFile), iconset);
+      if (iconset == current)
+        iconCombo->setCurrentIndex(iconCombo->count() - 1);
+      iconsPath.cdUp();
     }
     // check for icons in current base dir, too
-    lst = dIconsUser.entryList();
-    for (it = lst.begin(); it != lst.end(); ++it)
+    lst = iconsUserPath.entryList();
+    foreach (const QString& iconset, lst)
     {
-      dIconsUser.cd(*it);
-      QString iconsFile = QString("%1/%2.icons").arg(dIconsUser.path()).arg(*it);
+      iconsUserPath.cd(iconset);
+      QString iconsFile = QString("%1/%2.icons").arg(iconsUserPath.path()).arg(iconset);
       char sFileName[MAX_FILENAME_LEN] = "";
       CIniFile fIconsConf;
       if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
       {
         WarnUser(dynamic_cast<SettingsDlg*>(parent()),
-            tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.").arg(iconsFile).arg(*it));
-        dIconsUser.cdUp();
+            tr("Unable to open icons file\n%1\nIconset '%2' has been disabled.").arg(iconsFile).arg(iconset));
+        iconsUserPath.cdUp();
         continue;
       }
       fIconsConf.SetSection("icons");
-      fIconsConf.ReadStr("Online", sFileName, "");
-      QString pmFile = QString("%1/%2").arg(dIconsUser.path()).arg(sFileName);
+      fIconsConf.ReadStr(exampleIcon.toAscii().data(), sFileName, "");
+      QString pmFile = QString("%1/%2").arg(iconsUserPath.path()).arg(sFileName);
       // Check for duplicates
-      int num = cmbIcon->count();
+      int num = iconCombo->count();
       bool dup = false;
       for (int i = 0; i < num; i++)
       {
-        if (*it == cmbIcon->itemText(i))
+        if (iconCombo->itemText(i) == iconset)
         {
           dup = true;
-          cmbIcon->setItemIcon(i, QPixmap(pmFile));
-          cmbIcon->setItemText(i, *it);
+          iconCombo->setItemIcon(i, QPixmap(pmFile));
+          iconCombo->setItemText(i, iconset);
         }
       }
       if (!dup)
       {
-        cmbIcon->addItem(QPixmap(pmFile), *it);
-        if (current == *it)
-          cmbIcon->setCurrentIndex(cmbIcon->count() - 1);
+        iconCombo->addItem(QPixmap(pmFile), iconset);
+        if (iconset == current)
+          iconCombo->setCurrentIndex(iconCombo->count() - 1);
       }
-      dIconsUser.cdUp();
+      iconsUserPath.cdUp();
     }
   }
-
-  QDir dExtendedIcons(szDir + EXTICONS_DIR);
-  QDir dExtendedIconsUser(szDirUser + EXTICONS_DIR);
-  dExtendedIcons.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-  dExtendedIconsUser.setFilter(QDir::Dirs | QDir::NoDotAndDotDot);
-  if (!dExtendedIcons.count() && !dExtendedIconsUser.count())
-  {
-    gLog.Error("%sError reading %s directory.\n", L_ERRORxSTR, szDir.toLatin1().data());
-    cmbExtIcon->addItem(tr("Error"));
-    cmbExtIcon->setEnabled(false);
-  }
-  else
-  {
-    QStringList::Iterator it;
-    QStringList lst = dExtendedIcons.entryList();
-    QString current(IconManager::instance()->extendedIconSet());
-    for (it = lst.begin(); it != lst.end(); ++it)
-    {
-      dExtendedIcons.cd(*it);
-      QString iconsFile = QString("%1/%2.icons").arg(dExtendedIcons.path()).arg(*it);
-      char sFileName[MAX_FILENAME_LEN] = "";
-      CIniFile fIconsConf;
-      if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
-      {
-        WarnUser(dynamic_cast<SettingsDlg*>(parent()),
-            tr("Unable to open extended icons file\n%1\n"
-              "Extended Iconset '%2' has been disabled.")
-            .arg(iconsFile)
-            .arg(*it));
-        dExtendedIcons.cdUp();
-        continue;
-      }
-      fIconsConf.SetSection("icons");
-      fIconsConf.ReadStr("Phone", sFileName, "");
-      QString pmFile = QString("%1/%2").arg(dExtendedIcons.path()).arg(sFileName);
-      cmbExtIcon->addItem(QPixmap(pmFile), *it);
-      if (current == *it)
-        cmbExtIcon->setCurrentIndex(cmbExtIcon->count() - 1);
-      dExtendedIcons.cdUp();
-    }
-    // check for ext. icons in current base dir, too
-    lst = dExtendedIconsUser.entryList();
-    for (it = lst.begin(); it != lst.end(); ++it)
-    {
-      dExtendedIconsUser.cd(*it);
-      QString iconsFile = QString("%1/%2.icons").arg(dExtendedIconsUser.path()).arg(*it);
-      char sFileName[MAX_FILENAME_LEN] = "";
-      CIniFile fIconsConf;
-      if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
-      {
-        WarnUser(dynamic_cast<SettingsDlg*>(parent()),
-            tr("Unable to open extended icons file\n%1\n"
-              "Extended Iconset '%2' has been disabled.")
-            .arg(iconsFile)
-            .arg(*it));
-        dExtendedIconsUser.cdUp();
-        continue;
-      }
-      fIconsConf.SetSection("icons");
-      fIconsConf.ReadStr("Phone", sFileName, "");
-      QString pmFile = QString("%1/%2").arg(dExtendedIconsUser.path()).arg(sFileName);
-      // Check for duplicates
-      int num = cmbExtIcon->count();
-      bool dup = false;
-      for (int i=0; i < num; i++)
-      {
-        if (*it == cmbExtIcon->itemText(i))
-        {
-          dup = true;
-          cmbExtIcon->setItemIcon(i, QPixmap(pmFile));
-          cmbExtIcon->setItemText(i, *it);
-        }
-      }
-      if (!dup)
-      {
-        cmbExtIcon->addItem(QPixmap(pmFile), *it);
-        if (current == *it)
-          cmbExtIcon->setCurrentIndex(cmbExtIcon->count() - 1);
-      }
-      dExtendedIconsUser.cdUp();
-    }
-  }
-
-  const Emoticons* emoticons = Emoticons::self();
-  const QStringList themes = emoticons->themes();
-  cmbEmoticon->insertItems(0, themes);
-
-  const QString selected = emoticons->theme();
-  const int index = themes.indexOf(selected);
-  if (index != -1)
-    cmbEmoticon->setCurrentIndex(index);
-
-  // Create initial preview
-  loadSkin(cmbSkin->currentText());
-  loadIcons(cmbIcon->currentText());
-  loadExtIcons(cmbExtIcon->currentText());
-  loadEmoticons(cmbEmoticon->currentText());
-}
-
-Settings::Skin::~Skin()
-{
-  delete pmSkin;
-  delete lstIcons;
-  delete lstExtIcons;
-  delete lstAIcons;
-  delete lstAExtIcons;
 }
 
 void Settings::Skin::apply()
 {
   IconManager* iconManager = IconManager::instance();
 
-  Config::Skin::active()->loadSkin(cmbSkin->currentText().toLocal8Bit());
+  Config::Skin::active()->loadSkin(mySkinCombo->currentText().toLocal8Bit());
 
-  if (!iconManager->loadIcons(cmbIcon->currentText()))
+  if (!iconManager->loadIcons(myIconCombo->currentText()))
     WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to load icons\n%1.")
-        .arg(cmbIcon->currentText().toLocal8Bit().data()));
+        .arg(myIconCombo->currentText().toLocal8Bit().data()));
 
-  if (!iconManager->loadExtendedIcons(cmbExtIcon->currentText()))
+  if (!iconManager->loadExtendedIcons(myExtIconCombo->currentText()))
     WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to load extended icons\n%1.")
-        .arg(cmbExtIcon->currentText().toLocal8Bit().data()));
+        .arg(myExtIconCombo->currentText().toLocal8Bit().data()));
 
-  Emoticons::self()->setTheme(cmbEmoticon->currentText());
+  Emoticons::self()->setTheme(myEmoticonCombo->currentText());
 }
 
 void Settings::Skin::editSkin()
 {
-  if (cmbSkin->currentText().isEmpty()) return;
+  if (mySkinCombo->currentText().isEmpty()) return;
   QString f;
   f.sprintf("%s%s%s%s/%s.skin", BASE_DIR, QTGUI_DIR, SKINS_DIR,
-            QFile::encodeName(cmbSkin->currentText()).data(),
-            QFile::encodeName(cmbSkin->currentText()).data());
+            QFile::encodeName(mySkinCombo->currentText()).data(),
+            QFile::encodeName(mySkinCombo->currentText()).data());
   if (!QFile(f).exists())
     f.sprintf("%s%s%s%s/%s.skin", SHARE_DIR, QTGUI_DIR, SKINS_DIR,
-              QFile::encodeName(cmbSkin->currentText()).data(),
-              QFile::encodeName(cmbSkin->currentText()).data());
+              QFile::encodeName(mySkinCombo->currentText()).data(),
+              QFile::encodeName(mySkinCombo->currentText()).data());
   new EditFileDlg(f);
 }
 
-void Settings::Skin::loadSkin(const QString& skin)
+void Settings::Skin::previewSkin(const QString& skin)
 {
-  lblPaintSkin->setPixmap(renderSkin(skin));
+  mySkinPreview->setPixmap(renderSkin(skin));
 }
 
-void Settings::Skin::loadIcons(const QString& icon)
+void Settings::Skin::previewIcons(const QString& icon)
 {
-  // force a sane state and then load all icons into the valuelist
-  lstIcons->clear();
-  QString iconsFile = QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR + ICONS_DIR +
-    icon + "/" + icon + ".icons";
+  myIconPreview->setPixmapList(loadIcons(icon, ICONS_DIR, myIconNames));
+}
+
+void Settings::Skin::previewExtIcons(const QString& extIcon)
+{
+  myExtIconPreview->setPixmapList(loadIcons(extIcon, EXTICONS_DIR, myExtIconNames));
+}
+
+IconList Settings::Skin::loadIcons(const QString& iconSet, const QString& subdir,
+    const QStringList& iconNames)
+{
+  IconList icons;
+  QString subpath = QTGUI_DIR + subdir + iconSet + "/" + iconSet + ".icons";
+  QString iconsFile = QString::fromLocal8Bit(BASE_DIR) + subpath;
   char sFileName[MAX_FILENAME_LEN] = "";
   CIniFile fIconsConf;
   if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
   {
-    iconsFile = QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR + ICONS_DIR +
-      icon + "/" + icon + ".icons";
+    iconsFile = QString::fromLocal8Bit(SHARE_DIR) + subpath;
     if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
     {
       WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to open icons file\n%1").arg(iconsFile));
-      return;
+      return icons;
     }
   }
   fIconsConf.SetSection("icons");
-  for (QStringList::Iterator it = lstAIcons->begin(); it != lstAIcons->end(); ++it)
+  foreach (const QString& iconName, iconNames)
   {
-    fIconsConf.ReadStr((*it).toAscii().data(), sFileName, "");
-    QString pmFile = iconsFile.left(iconsFile.length()-icon.length()-6) + QString::fromAscii(sFileName);
+    fIconsConf.ReadStr(iconName.toAscii().data(), sFileName, "");
+    QString pmFile = iconsFile.left(iconsFile.length()-iconSet.length()-6) + QString::fromAscii(sFileName);
     QPixmap pm(pmFile);
     if (! pm.isNull())
-      lstIcons->append(pm);
+      icons.append(pm);
   }
-  lblPaintIcon->setPixmapList(lstIcons);
+  return icons;
 }
 
-void Settings::Skin::loadExtIcons(const QString& extIcon)
+void Settings::Skin::previewEmoticons(const QString& emoticon)
 {
-  // force a sane state and then load all icons into the valuelist
-  lstExtIcons->clear();
-  QString iconsFile = QString::fromLocal8Bit(BASE_DIR) + QTGUI_DIR +
-    EXTICONS_DIR + extIcon + "/" + extIcon + ".icons";
-  char sFileName[MAX_FILENAME_LEN] = "";
-  CIniFile fIconsConf;
-  if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
-  {
-    iconsFile = QString::fromLocal8Bit(SHARE_DIR) + QTGUI_DIR +
-      EXTICONS_DIR + extIcon + "/" + extIcon + ".icons";
-    if (!fIconsConf.LoadFile(iconsFile.toLatin1()))
-    {
-      WarnUser(dynamic_cast<SettingsDlg*>(parent()), tr("Unable to open extended icons file\n%1").arg(iconsFile));
-      return;
-    }
-  }
-  fIconsConf.SetSection("icons");
-  for (QStringList::Iterator it = lstAExtIcons->begin(); it != lstAExtIcons->end(); ++it)
-  {
-    fIconsConf.ReadStr((*it).toAscii().data(), sFileName, "");
-    QString pmFile = iconsFile.left(iconsFile.length()-extIcon.length()-6) + QString::fromAscii(sFileName);
-    QPixmap pm(pmFile);
-    if (! pm.isNull())
-      lstExtIcons->append(pm);
-  }
-  lblPaintExtIcon->setPixmapList(lstExtIcons);
-}
-
-void Settings::Skin::loadEmoticons(const QString& emoticon)
-{
-  lstEmoticons->clear();
+  IconList icons;
   const QStringList files = Emoticons::self()->fileList(emoticon);
-  for (QStringList::ConstIterator it = files.begin(); it != files.end(); ++it)
+  foreach (const QString& i, files)
   {
-    QImage img = QImage(*it);
+    QImage img = QImage(i);
     // hack: SkinBrowserPreviewArea only draws the first 16 pixels
     const int max_area = 16;
     QSize size = img.size();
@@ -559,36 +437,28 @@ void Settings::Skin::loadEmoticons(const QString& emoticon)
 
     QPixmap pm(QPixmap::fromImage(img));
     if (!pm.isNull())
-      lstEmoticons->append(pm);
+      icons.append(pm);
   }
-  lblPaintEmoticon->setPixmapList(lstEmoticons);
+  myEmoticonPreview->setPixmapList(icons);
 }
 
 void Settings::Skin::resizeEvent(QResizeEvent* /* e */)
 {
-  lblPaintSkin->update();
-  lblPaintIcon->update();
-  lblPaintExtIcon->update();
+  mySkinPreview->update();
+  myIconPreview->update();
+  myExtIconPreview->update();
 }
 
-// Helper Class to provide correct repainting
-// of the preview widget
 SkinBrowserPreviewArea::SkinBrowserPreviewArea(QWidget* parent)
-  : QFrame(parent)
+  : QWidget(parent)
 {
   setObjectName("SkinBrowserPreviewArea");
-  lstPm.clear();
+  setFixedSize(54, MAX_HEIGHT);
 }
 
-/*! \brief Sets the pixmap set for preview
- *
- *  You have to call this slot if you want to set or update the iconset
- *  that is drawn on the widget. It updates the widget itself, no manual update
- *  is necessary.
- */
-void SkinBrowserPreviewArea::setPixmapList(QLinkedList<QPixmap>* _lstPm)
+void SkinBrowserPreviewArea::setPixmapList(const IconList& iconList)
 {
-  lstPm = *_lstPm;
+  myIconList = iconList;
   this->update();
 }
 
@@ -597,9 +467,9 @@ void SkinBrowserPreviewArea::paintEvent(QPaintEvent* /* event */)
   QPainter p(this);
   unsigned short int X = 0;
   unsigned short int Y = 0;
-  for (QLinkedList<QPixmap>::Iterator it = lstPm.begin(); it != lstPm.end(); ++it)
+  foreach (const QPixmap& icon, myIconList)
   {
-    p.drawPixmap(X, Y, (*it), 0, 0, 16, 16);
+    p.drawPixmap(X, Y, icon, 0, 0, 16, 16);
     // determine next drawing position (16px + 3px space, so we need 19pixels space)
     X = ((X+19) <= (this->width()-16)) ? (X+19) : 0;
     Y = (X==0) ? (Y+19) : Y;
