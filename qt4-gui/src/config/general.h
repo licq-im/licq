@@ -215,7 +215,9 @@ private:
   QFont myEditFont;
   QFont myHistoryFont;
   QFont myFixedFont;
+#ifndef USE_KDE
   QString myDefaultStyle;
+#endif
 
   // Mainwin configuration
   bool myMiniMode;

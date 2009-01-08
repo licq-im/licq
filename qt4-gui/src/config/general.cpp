@@ -56,8 +56,8 @@ Config::General::General(QObject* parent)
   myDefaultFont = KGlobalSettings::generalFont();
 #else
   myDefaultFont = qApp->font();
-#endif
   myDefaultStyle = qApp->style()->objectName();
+#endif
 
   myDefaultFixedFont = QFont(myDefaultFont);
   myDefaultFixedFont.setFamily("Monospace");
