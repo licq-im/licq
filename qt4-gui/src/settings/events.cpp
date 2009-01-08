@@ -316,14 +316,14 @@ void Settings::Events::load()
   COnEventManager* oem = gLicqDaemon->OnEventManager();
   myOnEventsCheck->setChecked(oem->CommandType() != ON_EVENT_IGNORE);
   oem->Lock();
-  mySndPlayerEdit->setFileName(QString::fromStdString(oem->command()));
-  mySndMsgEdit->setFileName(QString::fromStdString(oem->parameter(ON_EVENT_MSG)));
-  mySndUrlEdit->setFileName(QString::fromStdString(oem->parameter(ON_EVENT_URL)));
-  mySndChatEdit->setFileName(QString::fromStdString(oem->parameter(ON_EVENT_CHAT)));
-  mySndFileEdit->setFileName(QString::fromStdString(oem->parameter(ON_EVENT_FILE)));
-  mySndNotifyEdit->setFileName(QString::fromStdString(oem->parameter(ON_EVENT_NOTIFY)));
-  mySndSysMsgEdit->setFileName(QString::fromStdString(oem->parameter(ON_EVENT_SYSMSG)));
-  mySndMsgSentEdit->setFileName(QString::fromStdString(oem->parameter(ON_EVENT_MSGSENT)));
+  mySndPlayerEdit->setFileName(oem->command().c_str());
+  mySndMsgEdit->setFileName(oem->parameter(ON_EVENT_MSG).c_str());
+  mySndUrlEdit->setFileName(oem->parameter(ON_EVENT_URL).c_str());
+  mySndChatEdit->setFileName(oem->parameter(ON_EVENT_CHAT).c_str());
+  mySndFileEdit->setFileName(oem->parameter(ON_EVENT_FILE).c_str());
+  mySndNotifyEdit->setFileName(oem->parameter(ON_EVENT_NOTIFY).c_str());
+  mySndSysMsgEdit->setFileName(oem->parameter(ON_EVENT_SYSMSG).c_str());
+  mySndMsgSentEdit->setFileName(oem->parameter(ON_EVENT_MSGSENT).c_str());
   oem->Unlock();
 
   //TODO make general for all plugins
@@ -371,14 +371,14 @@ void Settings::Events::apply()
   COnEventManager* oem = gLicqDaemon->OnEventManager();
   oem->SetCommandType(myOnEventsCheck->isChecked() ? ON_EVENT_RUN : ON_EVENT_IGNORE);
 
-  oem->setCommand(mySndPlayerEdit->fileName().toStdString());
-  oem->setParameter(ON_EVENT_MSG, mySndMsgEdit->fileName().toStdString());
-  oem->setParameter(ON_EVENT_URL, mySndUrlEdit->fileName().toStdString());
-  oem->setParameter(ON_EVENT_CHAT, mySndChatEdit->fileName().toStdString());
-  oem->setParameter(ON_EVENT_FILE, mySndFileEdit->fileName().toStdString());
-  oem->setParameter(ON_EVENT_NOTIFY, mySndNotifyEdit->fileName().toStdString());
-  oem->setParameter(ON_EVENT_SYSMSG, mySndSysMsgEdit->fileName().toStdString());
-  oem->setParameter(ON_EVENT_MSGSENT, mySndMsgSentEdit->fileName().toStdString());
+  oem->setCommand(mySndPlayerEdit->fileName().toLatin1().data());
+  oem->setParameter(ON_EVENT_MSG, mySndMsgEdit->fileName().toLatin1().data());
+  oem->setParameter(ON_EVENT_URL, mySndUrlEdit->fileName().toLatin1().data());
+  oem->setParameter(ON_EVENT_CHAT, mySndChatEdit->fileName().toLatin1().data());
+  oem->setParameter(ON_EVENT_FILE, mySndFileEdit->fileName().toLatin1().data());
+  oem->setParameter(ON_EVENT_NOTIFY, mySndNotifyEdit->fileName().toLatin1().data());
+  oem->setParameter(ON_EVENT_SYSMSG, mySndSysMsgEdit->fileName().toLatin1().data());
+  oem->setParameter(ON_EVENT_MSGSENT, mySndMsgSentEdit->fileName().toLatin1().data());
 
   //TODO Make general for all plugins
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
