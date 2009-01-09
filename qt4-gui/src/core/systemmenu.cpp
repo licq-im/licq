@@ -159,7 +159,7 @@ SystemMenu::SystemMenu(QWidget* parent)
       LicqStrings::getStatus(ICQ_STATUS_DND, false),
       ICQ_STATUS_DND,
       Qt::ALT + Qt::Key_D);
-  ADD_MAINSTATUS(myStatusFreeForChaActiont,
+  ADD_MAINSTATUS(myStatusFreeForChatAction,
       LicqStrings::getStatus(ICQ_STATUS_FREEFORCHAT, false),
       ICQ_STATUS_FREEFORCHAT,
       Qt::ALT + Qt::Key_H);
@@ -282,7 +282,7 @@ void SystemMenu::updateIcons()
   myStatusNotAvailableAction->setIcon(iconman->iconForStatus(ICQ_STATUS_NA));
   myStatusOccupiedAction->setIcon(iconman->iconForStatus(ICQ_STATUS_OCCUPIED));
   myStatusDoNotDisturbAction->setIcon(iconman->iconForStatus(ICQ_STATUS_DND));
-  myStatusFreeForChaActiont->setIcon(iconman->iconForStatus(ICQ_STATUS_FREEFORCHAT));
+  myStatusFreeForChatAction->setIcon(iconman->iconForStatus(ICQ_STATUS_FREEFORCHAT));
   myStatusOfflineAction->setIcon(iconman->iconForStatus(ICQ_STATUS_OFFLINE));
   myStatusInvisibleAction->setIcon(iconman->iconForStatus(ICQ_STATUS_FxPRIVATE));
 

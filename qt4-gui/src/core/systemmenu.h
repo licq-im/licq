@@ -162,7 +162,7 @@ private:
   QAction* myStatusNotAvailableAction;
   QAction* myStatusOccupiedAction;
   QAction* myStatusDoNotDisturbAction;
-  QAction* myStatusFreeForChaActiont;
+  QAction* myStatusFreeForChatAction;
   QAction* myStatusOfflineAction;
   QAction* myStatusInvisibleAction;
 
