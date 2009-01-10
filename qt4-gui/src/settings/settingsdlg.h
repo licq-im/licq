@@ -36,6 +36,7 @@ namespace Settings
   class Events;
   class General;
   class Network;
+  class Shortcuts;
   class Skin;
   class Status;
 }
@@ -56,10 +57,12 @@ public:
     ColumnsPage,
     DockingPage,
     FontsPage,
+    MainwinShortcutsPage,
     ContactInfoPage,
     ChatPage,
     ChatDispPage,
     HistDispPage,
+    ChatShortcutsPage,
     OnEventPage,
     SoundsPage,
     NetworkPage,
@@ -130,6 +133,7 @@ private:
   Settings::Events* myEventsSettings;
   Settings::General* myGeneralSettings;
   Settings::Network* myNetworkSettings;
+  Settings::Shortcuts* myShortcutsSettings;
   Settings::Skin* mySkinSettings;
   Settings::Status* myStatusSettings;
 };

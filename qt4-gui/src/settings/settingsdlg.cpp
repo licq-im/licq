@@ -38,6 +38,7 @@
 #include "events.h"
 #include "general.h"
 #include "network.h"
+#include "shortcuts.h"
 #include "skin.h"
 #include "status.h"
 
@@ -86,6 +87,7 @@ SettingsDlg::SettingsDlg(QWidget* parent)
   myNetworkSettings = new Settings::Network(this);
   mySkinSettings = new Settings::Skin(this);
   myStatusSettings = new Settings::Status(this);
+  myShortcutsSettings = new Settings::Shortcuts(this);
 
   QDialog::show();
 }
@@ -121,6 +123,7 @@ void SettingsDlg::apply()
   myChatSettings->apply();
   myEventsSettings->apply();
   myNetworkSettings->apply();
+  myShortcutsSettings->apply();
   mySkinSettings->apply();
   myStatusSettings->apply();
 }
