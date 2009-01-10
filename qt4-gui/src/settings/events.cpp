@@ -27,7 +27,6 @@
 #include <QGridLayout>
 #include <QGroupBox>
 #include <QLabel>
-#include <QLineEdit>
 #include <QVBoxLayout>
 
 #include <licq_icqd.h>
@@ -38,6 +37,7 @@
 #include "config/general.h"
 #include "core/mainwin.h"
 #include "widgets/filenameedit.h"
+#include "widgets/shortcutedit.h"
 
 #include "settingsdlg.h"
 
@@ -110,15 +110,11 @@ QWidget* Settings::Events::createPageOnEvent(QWidget* parent)
   hotKeyLayout->addWidget(myHotKeyLabel);
   myHotKeyLabel->setToolTip(tr("Hotkey to pop up the next pending message.\n"
       "Enter the hotkey literally, like \"shift+f10\", or \"none\" for disabling."));
-  myHotKeyField = new QLineEdit();
-  myHotKeyField->setToolTip(myHotKeyLabel->toolTip());
-  myHotKeyLabel->setBuddy(myHotKeyField);
-  hotKeyLayout->addWidget(myHotKeyField);
+  myHotKeyEdit = new ShortcutEdit();
+  myHotKeyEdit->setToolTip(myHotKeyLabel->toolTip());
+  myHotKeyLabel->setBuddy(myHotKeyEdit);
+  hotKeyLayout->addWidget(myHotKeyEdit);
   myMsgActionsLayout->addLayout(hotKeyLayout, 3, 1);
-
-  // Make the columns evenly wide, otherwise the QLineEdit gets too wide
-  myMsgActionsLayout->setColumnStretch(0, 1);
-  myMsgActionsLayout->setColumnStretch(1, 1);
 
   myParanoiaBox = new QGroupBox(tr("Paranoia"));
   myParanoiaLayout = new QVBoxLayout(myParanoiaBox);
@@ -298,7 +294,7 @@ void Settings::Events::load()
 
   myAutoRaiseCheck->setChecked(generalConfig->autoRaiseMainwin());
   myBoldOnMsgCheck->setChecked(generalConfig->boldOnMsg());
-  myHotKeyField->setText(generalConfig->msgPopupKey().isEmpty() ? "none" : generalConfig->msgPopupKey());
+  myHotKeyEdit->setKeySequence(QKeySequence(generalConfig->msgPopupKey()));
 
   Config::ContactList::FlashMode flash = contactListConfig->flash();
   myFlashUrgentCheck->setChecked(flash == Config::ContactList::FlashUrgent || flash == Config::ContactList::FlashAll);
@@ -350,7 +346,7 @@ void Settings::Events::apply()
 
   generalConfig->setAutoRaiseMainwin(myAutoRaiseCheck->isChecked());
   generalConfig->setBoldOnMsg(myBoldOnMsgCheck->isChecked());
-  generalConfig->setMsgPopupKey(myHotKeyField->text() != "none" ? myHotKeyField->text() : QString());
+  generalConfig->setMsgPopupKey(myHotKeyEdit->keySequence().toString(QKeySequence::PortableText));
 
   if (myFlashAllCheck->isChecked())
     contactListConfig->setFlash(Config::ContactList::FlashAll);

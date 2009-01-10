@@ -29,7 +29,6 @@ class QComboBox;
 class QGridLayout;
 class QGroupBox;
 class QLabel;
-class QLineEdit;
 class QVBoxLayout;
 class QWidget;
 
@@ -38,6 +37,7 @@ namespace LicqQtGui
 {
 class FileNameEdit;
 class SettingsDlg;
+class ShortcutEdit;
 
 namespace Settings
 {
@@ -93,7 +93,7 @@ private:
   QCheckBox* myIgnoreMassMsgCheck;
   QCheckBox* myIgnoreEmailPagerCheck;
   QLabel* myHotKeyLabel;
-  QLineEdit* myHotKeyField;
+  ShortcutEdit* myHotKeyEdit;
 
   // Widget for sounds settings
   QVBoxLayout* myPageSoundsLayout;

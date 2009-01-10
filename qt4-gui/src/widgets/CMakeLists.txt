@@ -10,6 +10,7 @@ set(widgets_SRCS
   mledit.cpp
   mlview.cpp
   protocombobox.cpp
+  shortcutedit.cpp
   skinnablebutton.cpp
   skinnablecombobox.cpp
   skinnablelabel.cpp
