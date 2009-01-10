@@ -53,11 +53,16 @@ public:
     ChatToggleUrgent,
     ChatUserInfo,
     ChatUserMenu,
+    MainwinAccountManager,
+    MainwinEditGroups,
     MainwinExit,
     MainwinHide,
+    MainwinNetworkLog,
     MainwinPopupAllMessages,
     MainwinPopupMessage,
     MainwinRedrawContactList,
+    MainwinSetAutoResponse,
+    MainwinSettings,
     MainwinStatusAway,
     MainwinStatusDoNotDisturb,
     MainwinStatusFreeForChat,
@@ -76,12 +81,6 @@ public:
     MainwinUserSendFile,
     MainwinUserSendUrl,
     MainwinUserViewMessage,
-
-    MainwinAccountManager,
-    MainwinEditGroups,
-    MainwinNetworkLog,
-    MainwinSettings,
-    MainwinSetAutoResponse,
   };
 
   /**
