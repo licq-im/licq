@@ -168,12 +168,16 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   addActions(userFuncGroup->actions());
 
   myCheckUserArAction = new QAction(this);
+  addAction(myCheckUserArAction);
   connect(myCheckUserArAction, SIGNAL(activated()), SLOT(checkUserAutoResponse()));
   QShortcut* shortcut;
   shortcut = new QShortcut(Qt::CTRL + Qt::Key_Delete, this);
   connect(shortcut, SIGNAL(activated()), SLOT(removeUserFromList()));
   shortcut = new QShortcut(Qt::Key_Delete, this);
   connect(shortcut, SIGNAL(activated()), SLOT(removeUserFromGroup()));
+
+  updateShortcuts();
+  connect(Config::Shortcuts::instance(), SIGNAL(shortcutsChanged()), SLOT(updateShortcuts()));
 
   CreateUserView();
 
