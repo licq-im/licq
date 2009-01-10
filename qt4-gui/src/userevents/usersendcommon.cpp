@@ -55,6 +55,7 @@
 #include "config/chat.h"
 #include "config/emoticons.h"
 #include "config/iconmanager.h"
+#include "config/shortcuts.h"
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -152,15 +153,11 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   mnuSendType->addActions(myEventTypeGroup->actions());
 
   myEventTypeMenu = myToolBar->addAction(tr("Message type"), this, SLOT(showSendTypeMenu()));
-  myEventTypeMenu->setShortcut(Qt::ALT + Qt::Key_P);
-  pushToolTip(myEventTypeMenu, tr("Select type of message to send"));
   myEventTypeMenu->setMenu(mnuSendType);
   if (eventTypesCount <= 1)
     myEventTypeMenu->setEnabled(false);
 
   mySendServerCheck = myToolBar->addAction(tr("Send through server"));
-  mySendServerCheck->setShortcut(Qt::ALT + Qt::Key_N);
-  pushToolTip(mySendServerCheck, tr("Send through server"));
   mySendServerCheck->setCheckable(true);
 
   bool canSendDirect = (mySendFuncs & PP_SEND_DIRECT);
@@ -185,29 +182,17 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
   }
 
   myUrgentCheck = myToolBar->addAction(tr("Urgent"));
-  myUrgentCheck->setShortcut(Qt::ALT + Qt::Key_R);
-  pushToolTip(myUrgentCheck, tr("Urgent"));
   myUrgentCheck->setCheckable(true);
 
   myMassMessageCheck = myToolBar->addAction(tr("Multiple Recipients"));
-  myMassMessageCheck->setShortcut(Qt::ALT + Qt::Key_U);
-  pushToolTip(myMassMessageCheck, tr("Multiple recipients"));
   myMassMessageCheck->setCheckable(true);
   connect(myMassMessageCheck, SIGNAL(toggled(bool)), SLOT(massMessageToggled(bool)));
 
   myToolBar->addSeparator();
 
   myEmoticon = myToolBar->addAction(tr("Smileys"), this, SLOT(showEmoticonsMenu()));
-  myEmoticon->setShortcut(Qt::ALT + Qt::Key_L);
-  pushToolTip(myEmoticon, tr("Insert smileys"));
-
   myForeColor = myToolBar->addAction(tr("Text Color..."), this, SLOT(setForegroundICQColor()));
-  myForeColor->setShortcut(Qt::ALT + Qt::Key_T);
-  pushToolTip(myForeColor, tr("Change text color"));
-
   myBackColor = myToolBar->addAction(tr("Background Color..."), this, SLOT(setBackgroundICQColor()));
-  myBackColor->setShortcut(Qt::ALT + Qt::Key_B);
-  pushToolTip(myBackColor, tr("Change background color"));
 
   QDialogButtonBox* buttons = new QDialogButtonBox();
   myTopLayout->addWidget(buttons);
@@ -441,6 +426,7 @@ UserSendCommon::UserSendCommon(int type, QString id, unsigned long ppid, QWidget
 
   updateIcons();
   updatePicture();
+  updateShortcuts();
 
   connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
@@ -495,6 +481,30 @@ void UserSendCommon::updateIcons()
   // Update message type icons in menu
   foreach (QAction* a, myEventTypeGroup->actions())
     a->setIcon(iconForType(a->data().toInt()));
+}
+
+void UserSendCommon::updateShortcuts()
+{
+  UserEventCommon::updateShortcuts();
+
+  Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+
+  myEventTypeMenu->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatEventMenu));
+  mySendServerCheck->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatToggleSendServer));
+  myUrgentCheck->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatToggleUrgent));
+  myMassMessageCheck->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatToggleMassMessage));
+  myEmoticon->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatEmoticonMenu));
+  myForeColor->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatColorFore));
+  myBackColor->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatColorBack));
+
+  // Tooltips include shortcut so update them here as well
+  pushToolTip(myEventTypeMenu, tr("Select type of message to send"));
+  pushToolTip(mySendServerCheck, tr("Send through server"));
+  pushToolTip(myUrgentCheck, tr("Urgent"));
+  pushToolTip(myMassMessageCheck, tr("Multiple recipients"));
+  pushToolTip(myEmoticon, tr("Insert smileys"));
+  pushToolTip(myForeColor, tr("Change text color"));
+  pushToolTip(myBackColor, tr("Change background color"));
 }
 
 void UserSendCommon::updatePicture(const ICQUser* u)

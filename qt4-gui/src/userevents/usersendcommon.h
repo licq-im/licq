@@ -114,6 +114,11 @@ protected slots:
    */
   virtual void updateIcons();
 
+  /**
+   * Update keyboard shortcuts
+   */
+  virtual void updateShortcuts();
+
   virtual void send();
   virtual void eventDoneReceived(ICQEvent* e);
 

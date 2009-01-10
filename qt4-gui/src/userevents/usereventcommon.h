@@ -108,6 +108,11 @@ protected slots:
    */
   virtual void updateIcons();
 
+  /**
+   * Update keyboard shortcuts
+   */
+  virtual void updateShortcuts();
+
   void connectSignal();
   void setEncoding(QAction* action);
   void setMsgWinSticky(bool sticky = true);

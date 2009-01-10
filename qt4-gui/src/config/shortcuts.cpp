@@ -43,6 +43,19 @@ Config::Shortcuts::Shortcuts(QObject* parent)
   myDefaultShortcutsMap.insert(function, def); \
   myConfigKeysMap.insert(function, inikey);
 
+  // Shortcuts for message dialog
+  ADD_SHORTCUT(ChatColorBack, "Chat.ColorBack", Qt::ALT + Qt::Key_B)
+  ADD_SHORTCUT(ChatColorFore, "Chat.ColorFore", Qt::ALT + Qt::Key_T)
+  ADD_SHORTCUT(ChatEmoticonMenu, "Chat.EmoticonMenu", Qt::ALT + Qt::Key_L)
+  ADD_SHORTCUT(ChatEncodingMenu, "Chat.EncodingMenu", Qt::ALT + Qt::Key_O)
+  ADD_SHORTCUT(ChatEventMenu, "Chat.EventMenu", Qt::ALT + Qt::Key_P)
+  ADD_SHORTCUT(ChatHistory, "Chat.History", Qt::ALT + Qt::Key_H)
+  ADD_SHORTCUT(ChatToggleMassMessage, "Chat.ToggleMassMessage", Qt::ALT + Qt::Key_U)
+  ADD_SHORTCUT(ChatToggleSecure, "Chat.ToggleSecure", Qt::ALT + Qt::Key_E)
+  ADD_SHORTCUT(ChatToggleSendServer, "Chat.ToggleSendServer", Qt::ALT + Qt::Key_N)
+  ADD_SHORTCUT(ChatToggleUrgent, "Chat.ToggleUrgent", Qt::ALT + Qt::Key_R)
+  ADD_SHORTCUT(ChatUserInfo, "Chat.UserInfo", Qt::ALT + Qt::Key_I)
+  ADD_SHORTCUT(ChatUserMenu, "Chat.UserMenu", Qt::ALT + Qt::Key_M)
 
 #undef ADD_SHORTCUT
 }

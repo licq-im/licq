@@ -37,6 +37,7 @@
 
 #include "config/chat.h"
 #include "config/iconmanager.h"
+#include "config/shortcuts.h"
 
 #include "core/licqgui.h"
 #include "core/messagebox.h"
@@ -122,32 +123,20 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   layt->addWidget(myTimezone);
 
   myMenu = myToolBar->addAction(tr("Menu"), this, SLOT(showUserMenu()));
-  myMenu->setShortcut(Qt::ALT + Qt::Key_M);
-  pushToolTip(myMenu, tr("Open user menu"));
   myMenu->setMenu(LicqGui::instance()->userMenu());
   if (myIsOwner)
     myMenu->setEnabled(false);
 
   myHistory = myToolBar->addAction(tr("History..."), this, SLOT(showHistory()));
-  myHistory->setShortcut(Qt::ALT + Qt::Key_H);
-  pushToolTip(myHistory, tr("Show user history"));
-
   myInfo = myToolBar->addAction(tr("User Info..."), this, SLOT(showUserInfo()));
-  myInfo->setShortcut(Qt::ALT + Qt::Key_I);
-  pushToolTip(myInfo, tr("Show user information"));
 
   myEncodingsMenu = new QMenu(this);
-
   myEncoding = myToolBar->addAction(tr("Encoding"), this, SLOT(showEncodingsMenu()));
-  myEncoding->setShortcut(Qt::ALT + Qt::Key_O);
-  pushToolTip(myEncoding, tr("Select the text encoding used for outgoing messages."));
   myEncoding->setMenu(myEncodingsMenu);
 
   myToolBar->addSeparator();
 
   mySecure = myToolBar->addAction(tr("Secure Channel"), this, SLOT(switchSecurity()));
-  mySecure->setShortcut(Qt::ALT + Qt::Key_E);
-  pushToolTip(mySecure, tr("Open / Close secure channel"));
   if (!(mySendFuncs & PP_SEND_SECURE))
     mySecure->setEnabled(false);
 
@@ -220,7 +209,9 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   myTopLayout->addLayout(myMainWidget);
 
   updateIcons();
+  updateShortcuts();
   connect(IconManager::instance(), SIGNAL(generalIconsChanged()), SLOT(updateIcons()));
+  connect(Config::Shortcuts::instance(), SIGNAL(shortcutsChanged()), SLOT(updateShortcuts()));
 
   // Check if we want the window sticky
   if (!Config::Chat::instance()->tabbedChatting() &&
@@ -246,6 +237,24 @@ void UserEventCommon::updateIcons()
   myHistory->setIcon(iconman->getIcon(IconManager::HistoryIcon));
   myInfo->setIcon(iconman->getIcon(IconManager::InfoIcon));
   myEncoding->setIcon(iconman->getIcon(IconManager::EncodingIcon));
+}
+
+void UserEventCommon::updateShortcuts()
+{
+  Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+
+  myMenu->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatUserMenu));
+  myHistory->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatHistory));
+  myInfo->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatUserInfo));
+  myEncoding->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatEncodingMenu));
+  mySecure->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatToggleSecure));
+
+  // Tooltips include shortcut so update them here as well
+  pushToolTip(myMenu, tr("Open user menu"));
+  pushToolTip(myHistory, tr("Show user history"));
+  pushToolTip(myInfo, tr("Show user information"));
+  pushToolTip(myEncoding, tr("Select the text encoding used for outgoing messages."));
+  pushToolTip(mySecure, tr("Open / Close secure channel"));
 }
 
 bool UserEventCommon::isUserInConvo(QString id)

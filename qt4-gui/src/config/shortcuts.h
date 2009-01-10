@@ -41,6 +41,18 @@ class Shortcuts : public QObject
 public:
   enum ShortcutType
   {
+    ChatColorBack,
+    ChatColorFore,
+    ChatEmoticonMenu,
+    ChatEncodingMenu,
+    ChatEventMenu,
+    ChatHistory,
+    ChatToggleMassMessage,
+    ChatToggleSecure,
+    ChatToggleSendServer,
+    ChatToggleUrgent,
+    ChatUserInfo,
+    ChatUserMenu,
   };
 
   /**
