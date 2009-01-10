@@ -89,7 +89,7 @@ SystemMenu::SystemMenu(QWidget* parent)
   myOwnerAdmMenu->addAction(tr("&View System Messages..."), LicqGui::instance(), SLOT(showAllOwnerEvents()));
   myOwnerAdmMenu->addSeparator();
   myOwnerAdmSeparator = myOwnerAdmMenu->addSeparator();
-  myOwnerAdmMenu->addAction(tr("&Owner Manager..."), this, SLOT(showOwnerManagerDlg()));
+  myOwnerAdmMenu->addAction(tr("&Account Manager..."), this, SLOT(showOwnerManagerDlg()));
   myOwnerAdmMenu->addAction(tr("ICQ &Security Options..."), this, SLOT(showSecurityDlg()));
   myOwnerAdmMenu->addAction(tr("ICQ &Random Chat Group..."), this, SLOT(showRandomChatGroupDlg()));
   myOwnerAdmMenu->addSeparator();
