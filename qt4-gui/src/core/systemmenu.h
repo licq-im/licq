@@ -112,6 +112,11 @@ private slots:
    */
   void updateIcons();
 
+  /**
+   * Update shortcuts in menu
+   */
+  void updateShortcuts();
+
   void aboutToShowMenu();
   void aboutToShowGroupMenu();
   void aboutToShowFollowMeMenu();
@@ -138,7 +143,7 @@ private slots:
   void showGPGKeyManager();
 
 private:
-  // Actions on system menu
+  // Actions on top menu
   QAction* mySetArAction;
   QAction* myLogWinAction;
   QAction* myMiniModeAction;
@@ -151,10 +156,20 @@ private:
   QAction* mySaveOptionsAction;
   QAction* myShutdownAction;
 
+  // Actions on system menu
+  QAction* myAccountManagerAction;
+
   // Actions on user menu
   QAction* myUserSearchAction;
   QAction* myUserAutorizeAction;
   QAction* myUserReqAutorizeAction;
+  QAction* myUserPopupAllAction;
+  QAction* myEditGroupsAction;
+  QAction* myRedrawContactListAction;
+
+  // Actions not on menu
+  QAction* myPopupMessageAction;
+  QAction* myHideMainwinAction;
 
   // Actions on status menu
   QAction* myStatusOnlineAction;

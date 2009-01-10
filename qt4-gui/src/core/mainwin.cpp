@@ -71,6 +71,7 @@
 #include "config/contactlist.h"
 #include "config/general.h"
 #include "config/iconmanager.h"
+#include "config/shortcuts.h"
 #include "config/skin.h"
 
 #include "dockicons/dockicon.h"
@@ -150,27 +151,25 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
 
   mySystemMenu = new SystemMenu(this);
 
-  QAction* a;
   QActionGroup* userFuncGroup = new QActionGroup(this);
   userFuncGroup->setExclusive(false);
   connect(userFuncGroup,
       SIGNAL(triggered(QAction*)), SLOT(callUserFunction(QAction*)));
-#define ADD_USERFUNCACTION(key, data) \
-  a = new QAction(userFuncGroup); \
-  a->setShortcut(key); \
-  a->setData(data);
+#define ADD_USERFUNCACTION(var, data) \
+  var = new QAction(userFuncGroup); \
+  var->setData(data);
 
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_V, -1)
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_S, MessageEvent)
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_U, UrlEvent)
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_C, ChatEvent)
-  ADD_USERFUNCACTION(Qt::CTRL + Qt::Key_F, FileEvent)
+  ADD_USERFUNCACTION(myViewEventAction, -1)
+  ADD_USERFUNCACTION(mySendMessageAction, MessageEvent)
+  ADD_USERFUNCACTION(mySendUrlAction, UrlEvent)
+  ADD_USERFUNCACTION(mySendFileAction, ChatEvent)
+  ADD_USERFUNCACTION(mySendChatRequestAction, FileEvent)
 #undef ADD_USERFUNCACTION
   addActions(userFuncGroup->actions());
 
+  myCheckUserArAction = new QAction(this);
+  connect(myCheckUserArAction, SIGNAL(activated()), SLOT(checkUserAutoResponse()));
   QShortcut* shortcut;
-  shortcut = new QShortcut(Qt::CTRL + Qt::Key_A, this);
-  connect(shortcut, SIGNAL(activated()), SLOT(checkUserAutoResponse()));
   shortcut = new QShortcut(Qt::CTRL + Qt::Key_Delete, this);
   connect(shortcut, SIGNAL(activated()), SLOT(removeUserFromList()));
   shortcut = new QShortcut(Qt::Key_Delete, this);
@@ -307,6 +306,18 @@ void MainWindow::updateConfig()
 
   // Redraw group/event label with new settings
   updateEvents();
+}
+
+void MainWindow::updateShortcuts()
+{
+  Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+
+  myViewEventAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserViewMessage));
+  mySendMessageAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendMessage));
+  mySendUrlAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendUrl));
+  mySendFileAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendFile));
+  mySendChatRequestAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendChatRequest));
+  myCheckUserArAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserCheckAutoresponse));
 }
 
 void MainWindow::trayIconClicked()

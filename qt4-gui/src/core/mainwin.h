@@ -116,6 +116,13 @@ private:
 
   SystemMenu* mySystemMenu;
 
+  QAction* myViewEventAction;
+  QAction* mySendMessageAction;
+  QAction* mySendUrlAction;
+  QAction* mySendFileAction;
+  QAction* mySendChatRequestAction;
+  QAction* myCheckUserArAction;
+
   // Widgets
   UserView* myUserView;
 #ifdef USE_KDE
@@ -135,6 +142,11 @@ private slots:
   void updateSkin();
   void updateEvents();
   void updateStatus(CICQSignal* = NULL);
+
+  /**
+   * Update shortcuts
+   */
+  void updateShortcuts();
 
   /**
    * Groups combo box was changed to show a new group
