@@ -23,10 +23,12 @@
 
 #include "mledit.h"
 
+#include <QAction>
 #include <QKeyEvent>
 #include <QMenu>
 
 #include "config/general.h"
+#include "config/shortcuts.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MLEdit */
@@ -45,13 +47,56 @@ MLEdit::MLEdit(bool wordWrap, QWidget* parent, bool useFixedFont, const char* na
   if (!wordWrap)
     setLineWrapMode(NoWrap);
 
+  QAction* cutAction = new QAction(this);
+  cutAction->setShortcut(Qt::SHIFT + Qt::Key_Delete);
+  connect(cutAction, SIGNAL(activated()), SLOT(cut()));
+  addAction(cutAction);
+
+  QAction* pasteAction = new QAction(this);
+  pasteAction->setShortcut(Qt::SHIFT + Qt::Key_Insert);
+  connect(pasteAction, SIGNAL(activated()), SLOT(paste()));
+  addAction(pasteAction);
+
+  QAction* copyAction = new QAction(this);
+  copyAction->setShortcut(Qt::CTRL + Qt::Key_Insert);
+  connect(copyAction, SIGNAL(activated()), SLOT(copy()));
+  addAction(copyAction);
+
+  myClearAction = new QAction(this);
+  connect(myClearAction, SIGNAL(activated()), SLOT(clearKeepUndo()));
+  addAction(myClearAction);
+
+  myDeleteLineaction = new QAction(this);
+  connect(myDeleteLineaction, SIGNAL(activated()), SLOT(deleteLine()));
+  addAction(myDeleteLineaction);
+
+  myDeleteLineBackAction = new QAction(this);
+  connect(myDeleteLineBackAction, SIGNAL(activated()), SLOT(deleteLineBackwards()));
+  addAction(myDeleteLineBackAction);
+
+  myDeleteWordBackAction = new QAction(this);
+  connect(myDeleteWordBackAction, SIGNAL(activated()), SLOT(deleteWordBackwards()));
+  addAction(myDeleteWordBackAction);
+
   updateFont();
+  updateShortcuts();
   connect(Config::General::instance(), SIGNAL(fontChanged()), SLOT(updateFont()));
+  connect(Config::Shortcuts::instance(), SIGNAL(shortcutsChanged()), SLOT(updateShortcuts()));
 }
 
 MLEdit::~MLEdit()
 {
   // Empty
+}
+
+void MLEdit::updateShortcuts()
+{
+  Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+
+  myClearAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::InputClear));
+  myDeleteLineaction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::InputDeleteLine));
+  myDeleteLineBackAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::InputDeleteLineBack));
+  myDeleteWordBackAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::InputDeleteWordBack));
 }
 
 void MLEdit::appendNoNewLine(const QString& s)
@@ -85,67 +130,58 @@ void MLEdit::setForeground(const QColor& color)
   setPalette(pal);
 }
 
+void MLEdit::clearKeepUndo()
+{
+  QTextCursor cr = textCursor();
+  cr.select(QTextCursor::Document);
+  cr.removeSelectedText();
+}
+
+void MLEdit::deleteLine()
+{
+  QTextCursor cr = textCursor();
+  cr.select(QTextCursor::BlockUnderCursor);
+  if (!cr.hasSelection())
+    cr.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+  if (!cr.hasSelection())
+    cr.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
+  cr.removeSelectedText();
+}
+
+void MLEdit::deleteLineBackwards()
+{
+  QTextCursor cr = textCursor();
+  cr.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
+  if (!cr.hasSelection())
+    cr.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
+  cr.removeSelectedText();
+}
+
+void MLEdit::deleteWordBackwards()
+{
+  QTextCursor cr = textCursor();
+  cr.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
+  cr.removeSelectedText();
+}
+
 void MLEdit::keyPressEvent(QKeyEvent* event)
 {
-  const bool isShift   = event->modifiers() & Qt::ShiftModifier;
-  const bool isControl = event->modifiers() & Qt::ControlModifier;
-
-  QTextCursor cr = textCursor();
-
   // Get flag from last time and reset it before any possible returns
   bool lastKeyWasReturn = myLastKeyWasReturn;
   myLastKeyWasReturn = false;
 
-  if (isShift && event->key() == Qt::Key_Insert)
-    return paste();
-
-  if (isShift && event->key() == Qt::Key_Delete)
-    return cut();
-
-  if (isControl && event->key() == Qt::Key_Insert)
-    return copy();
-
-  if (isControl)
+  // Ctrl+Return will either trigger dialog or (if disabled) insert a normal line break
+  if (event->modifiers() == Qt::ControlModifier &&
+      (event->key() == Qt::Key_Return || event->key() == Qt::Key_Enter))
   {
-    switch (event->key())
-    {
-      case Qt::Key_W:
-        cr.movePosition(QTextCursor::PreviousWord, QTextCursor::KeepAnchor);
-        cr.removeSelectedText();
-        break;
-      case Qt::Key_U:
-        cr.select(QTextCursor::BlockUnderCursor);
-        if (!cr.hasSelection())
-          cr.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-        if (!cr.hasSelection())
-          cr.movePosition(QTextCursor::NextCharacter, QTextCursor::KeepAnchor);
-        cr.removeSelectedText();
-        break;
-      case Qt::Key_L:
-        cr.select(QTextCursor::Document);
-        cr.removeSelectedText();
-        break;
-      case Qt::Key_N: // Just the opposite of Ctrl+K
-        cr.movePosition(QTextCursor::StartOfBlock, QTextCursor::KeepAnchor);
-        if (!cr.hasSelection())
-          cr.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
-        cr.removeSelectedText();
-        break;
-      case Qt::Key_Return:
-      case Qt::Key_Enter:
-        if (Config::General::instance()->useDoubleReturn())
-          insertPlainText(QString("\n"));
-        else
-          emit ctrlEnterPressed();
-        break;
-      default:
-        MLEDIT_BASE::keyPressEvent(event);
-        break;
-    }
+    if (Config::General::instance()->useDoubleReturn())
+      insertPlainText(QString("\n"));
+    else
+      emit ctrlEnterPressed();
     return;
   }
 
-  if ((event->modifiers() & Qt::KeyboardModifierMask) == 0)
+  if (event->modifiers() == Qt::NoModifier)
   {
     switch (event->key())
     {
@@ -154,6 +190,7 @@ void MLEdit::keyPressEvent(QKeyEvent* event)
         if (lastKeyWasReturn && Config::General::instance()->useDoubleReturn())
         {
           // Return pressed twice, remove the previous line break and emit signal
+          QTextCursor cr = textCursor();
           cr.movePosition(QTextCursor::PreviousCharacter, QTextCursor::KeepAnchor);
           cr.removeSelectedText();
           emit ctrlEnterPressed();

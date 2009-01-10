@@ -57,6 +57,12 @@ Config::Shortcuts::Shortcuts(QObject* parent)
   ADD_SHORTCUT(ChatUserInfo, "Chat.UserInfo", Qt::ALT + Qt::Key_I)
   ADD_SHORTCUT(ChatUserMenu, "Chat.UserMenu", Qt::ALT + Qt::Key_M)
 
+  // Shortcuts for MLEdit used for text input in several dialogs including message dialog
+  ADD_SHORTCUT(InputClear, "Input.Clear", Qt::CTRL + Qt::Key_L)
+  ADD_SHORTCUT(InputDeleteLine, "Input.DeleteLine", Qt::CTRL + Qt::Key_U)
+  ADD_SHORTCUT(InputDeleteLineBack, "Input.DeleteLineBack", Qt::CTRL + Qt::Key_N)
+  ADD_SHORTCUT(InputDeleteWordBack, "Input.DeleteWordBack", Qt::CTRL + Qt::Key_W)
+
   // Shortcuts for main window (contact list)
   ADD_SHORTCUT(MainwinAccountManager, "Mainwin.AccountManager", 0)
   ADD_SHORTCUT(MainwinEditGroups, "Mainwin.EditGroups", Qt::CTRL + Qt::Key_G)

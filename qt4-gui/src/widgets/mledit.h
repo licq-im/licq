@@ -31,6 +31,8 @@
 # define MLEDIT_BASE QTextEdit
 #endif
 
+class QAction;
+
 
 namespace LicqQtGui
 {
@@ -77,6 +79,28 @@ public:
    */
   QSize sizeHint() const;
 
+public slots:
+  /**
+   * Clear all text from the editor without clearing undo history
+   */
+  void clearKeepUndo();
+
+  /**
+   * Delete current line
+   */
+  void deleteLine();
+
+  /**
+   * Delete from cursor and to begining of line
+   * This is the opposite of Ctrl+K that's implemented in QTextEdit
+   */
+  void deleteLineBackwards();
+
+  /**
+   * Delete from cursor and to the beginning of the current word
+   */
+  void deleteWordBackwards();
+
 signals:
   void ctrlEnterPressed();
   void clicked();
@@ -87,6 +111,10 @@ private:
   bool myLastKeyWasReturn;
   int myFontHeight;
   int myLinesHint;
+  QAction* myClearAction;
+  QAction* myDeleteLineaction;
+  QAction* myDeleteLineBackAction;
+  QAction* myDeleteWordBackAction;
 
   virtual void keyPressEvent(QKeyEvent* event);
   virtual void mousePressEvent(QMouseEvent* event);
@@ -102,6 +130,11 @@ public slots:
 #endif
 
 private slots:
+  /**
+   * Update keyboard shortcuts
+   */
+  void updateShortcuts();
+
   void updateFont();
   void toggleAllowTab();
 };
