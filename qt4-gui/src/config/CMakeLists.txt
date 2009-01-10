@@ -5,6 +5,7 @@ set(config_SRCS
   emoticons.cpp
   general.cpp
   iconmanager.cpp
+  shortcuts.cpp
   skin.cpp
 )
 

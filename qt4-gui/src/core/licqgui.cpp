@@ -79,6 +79,7 @@ extern "C"
 #include "config/emoticons.h"
 #include "config/general.h"
 #include "config/iconmanager.h"
+#include "config/shortcuts.h"
 #include "config/skin.h"
 
 #include "contactlist/contactlist.h"
@@ -250,11 +251,11 @@ void LicqGui::loadGuiConfig()
   snprintf(szTemp, MAX_FILENAME_LEN, "%s%s", BASE_DIR, QTGUI_CONFIGFILE);
   szTemp[MAX_FILENAME_LEN - 1] = '\0';
   CIniFile licqConf;
+  licqConf.SetFlags(INI_FxALLOWxCREATE);
   if (!licqConf.LoadFile(szTemp))
   {
     // File doesn't exist so define sections and write them now
     // so saving won't generate warnings later
-    licqConf.SetFlags(INI_FxALLOWxCREATE);
     licqConf.ReloadFile();
     licqConf.CreateSection("appearance");
     licqConf.CreateSection("functions");
@@ -263,9 +264,6 @@ void LicqGui::loadGuiConfig()
     licqConf.CreateSection("floaties");
     licqConf.CreateSection("geometry");
     licqConf.FlushFile();
-
-    // Don't allow anymore writes
-    licqConf.SetFlags(0);
 
     // Now try to load the old config file, set the original config file back
     // in case of error or if user doesn't want to load it.
@@ -286,6 +284,7 @@ void LicqGui::loadGuiConfig()
   Config::General::instance()->loadConfiguration(licqConf);
   Config::Chat::instance()->loadConfiguration(licqConf);
   Config::ContactList::instance()->loadConfiguration(licqConf);
+  Config::Shortcuts::instance()->loadConfiguration(licqConf);
 
   // Load icons
   licqConf.SetSection("appearance");
@@ -379,6 +378,7 @@ void LicqGui::saveConfig()
   Config::General::instance()->saveConfiguration(licqConf);
   Config::Chat::instance()->saveConfiguration(licqConf);
   Config::ContactList::instance()->saveConfiguration(licqConf);
+  Config::Shortcuts::instance()->saveConfiguration(licqConf);
 
   licqConf.SetSection("appearance");
   licqConf.WriteStr("Skin", Config::Skin::active()->skinName().toLocal8Bit());
@@ -421,6 +421,7 @@ int LicqGui::Run(CICQDaemon* daemon)
   Config::General::createInstance(this);
   Config::ContactList::createInstance(this);
   Config::Chat::createInstance(this);
+  Config::Shortcuts::createInstance(this);
 
 #ifdef Q_WS_X11
   connect(Config::General::instance(),
