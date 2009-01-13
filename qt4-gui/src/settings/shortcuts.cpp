@@ -153,6 +153,17 @@ QWidget* Settings::Shortcuts::createPageChatShortcuts(QWidget* parent)
   ADD_CHATSHORTCUT(Config::Shortcuts::ChatColorFore, tr("Change text color"))
   ADD_CHATSHORTCUT(Config::Shortcuts::ChatColorBack, tr("Change background color"))
 
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab01, tr("Switch to tab 1"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab02, tr("Switch to tab 2"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab03, tr("Switch to tab 3"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab04, tr("Switch to tab 4"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab05, tr("Switch to tab 5"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab06, tr("Switch to tab 6"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab07, tr("Switch to tab 7"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab08, tr("Switch to tab 8"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab09, tr("Switch to tab 9"))
+  ADD_CHATSHORTCUT(Config::Shortcuts::ChatTab10, tr("Switch to tab 10"))
+
 #undef ADD_CHATSHORTCUT
 
   myChatList->resizeColumnToContents(0);

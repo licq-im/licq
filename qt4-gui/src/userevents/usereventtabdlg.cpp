@@ -24,6 +24,8 @@
 
 #include <licq_message.h>
 
+#include <QAction>
+#include <QActionGroup>
 #include <QTimer>
 #include <QVBoxLayout>
 
@@ -33,6 +35,7 @@
 
 #include "config/chat.h"
 #include "config/iconmanager.h"
+#include "config/shortcuts.h"
 
 #include "helpers/support.h"
 
@@ -64,6 +67,45 @@ UserEventTabDlg::UserEventTabDlg(QWidget* parent, const char* name)
 
   connect(myTabs, SIGNAL(currentChanged(int)), SLOT(currentChanged(int)));
   connect(myTabs, SIGNAL(mouseMiddleClick(QWidget*)), SLOT(removeTab(QWidget*)));
+
+  QActionGroup* tabActionGroup = new QActionGroup(this);
+  connect(tabActionGroup, SIGNAL(triggered(QAction*)), SLOT(switchTab(QAction*)));
+
+#define ADD_TABSHORTCUT(var, shortcut, index) \
+  var = new QAction(tabActionGroup); \
+  var->setData(index);
+
+  ADD_TABSHORTCUT(myTabSwitch01Action, Config::Shortcuts::ChatTab01, 0);
+  ADD_TABSHORTCUT(myTabSwitch02Action, Config::Shortcuts::ChatTab02, 1);
+  ADD_TABSHORTCUT(myTabSwitch03Action, Config::Shortcuts::ChatTab03, 2);
+  ADD_TABSHORTCUT(myTabSwitch04Action, Config::Shortcuts::ChatTab04, 3);
+  ADD_TABSHORTCUT(myTabSwitch05Action, Config::Shortcuts::ChatTab05, 4);
+  ADD_TABSHORTCUT(myTabSwitch06Action, Config::Shortcuts::ChatTab06, 5);
+  ADD_TABSHORTCUT(myTabSwitch07Action, Config::Shortcuts::ChatTab07, 6);
+  ADD_TABSHORTCUT(myTabSwitch08Action, Config::Shortcuts::ChatTab08, 7);
+  ADD_TABSHORTCUT(myTabSwitch09Action, Config::Shortcuts::ChatTab09, 8);
+  ADD_TABSHORTCUT(myTabSwitch10Action, Config::Shortcuts::ChatTab10, 9);
+
+#undef ADD_TABSHORTCUT
+
+  addActions(tabActionGroup->actions());
+  updateShortcuts();
+  connect(Config::Shortcuts::instance(), SIGNAL(shortcutsChanged()), SLOT(updateShortcuts()));
+}
+
+void UserEventTabDlg::updateShortcuts()
+{
+  const Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+  myTabSwitch01Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab01));
+  myTabSwitch02Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab02));
+  myTabSwitch03Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab03));
+  myTabSwitch04Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab04));
+  myTabSwitch05Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab05));
+  myTabSwitch06Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab06));
+  myTabSwitch07Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab07));
+  myTabSwitch08Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab08));
+  myTabSwitch09Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab09));
+  myTabSwitch10Action->setShortcut(shortcuts->getShortcut(Config::Shortcuts::ChatTab10));
 }
 
 UserEventTabDlg::~UserEventTabDlg()
@@ -81,6 +123,13 @@ void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
   index = myTabs->insertTab(index, tab, QString::fromUtf8(u->GetAlias()));
   updateTabLabel(tab, u);
   gUserManager.DropUser(u);
+}
+
+void UserEventTabDlg::switchTab(QAction* action)
+{
+  int index = action->data().toInt();
+
+  myTabs->setCurrentIndex(index);
 }
 
 void UserEventTabDlg::selectTab(QWidget* tab)

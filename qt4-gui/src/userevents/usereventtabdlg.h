@@ -58,14 +58,37 @@ signals:
   void signal_done();
 
 public slots:
+  /**
+   * Switch to tab index in action data
+   *
+   * @param action Action to get tab index from
+   */
+  void switchTab(QAction* action);
+
   void currentChanged(int index);
   void moveLeft();
   void moveRight();
   void removeTab(QWidget* tab);
   void setMsgWinSticky(bool sticky = true);
 
+private slots:
+  /**
+   * Update keyboard shortcuts from configuration
+   */
+  void updateShortcuts();
+
 private:
   TabWidget* myTabs;
+  QAction* myTabSwitch01Action;
+  QAction* myTabSwitch02Action;
+  QAction* myTabSwitch03Action;
+  QAction* myTabSwitch04Action;
+  QAction* myTabSwitch05Action;
+  QAction* myTabSwitch06Action;
+  QAction* myTabSwitch07Action;
+  QAction* myTabSwitch08Action;
+  QAction* myTabSwitch09Action;
+  QAction* myTabSwitch10Action;
 
   void updateTitle(QWidget* tab);
   void clearEvents(QWidget* tab);
