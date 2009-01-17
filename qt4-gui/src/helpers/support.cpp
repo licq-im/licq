@@ -335,6 +335,7 @@ unsigned Support::keyToXSym(int keyCode)
   return keysym;
 }
 
+#if defined(Q_WS_X11)
 unsigned char* Support::getWindowProperty(WId win, const char* prop)
 {
   Display* dsp = QX11Info::display();
@@ -397,3 +398,4 @@ unsigned char* Support::getWindowProperty(WId win, const char* prop)
 
   return retValue;
 }
+#endif /* defined(Q_WS_X11) */

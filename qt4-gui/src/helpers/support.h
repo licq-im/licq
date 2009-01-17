@@ -91,12 +91,14 @@ public:
   static unsigned keyToXSym(int keyCode);
 
 private:
+#if defined(Q_WS_X11)
   /**
    * Convenient wrapper to XGetWindowProperty
    *
    * The returned value must be deleted with XFree().
    */
   static unsigned char* getWindowProperty(WId win, const char* prop);
+#endif
 };
 
 } // namespace LicqQtGui
