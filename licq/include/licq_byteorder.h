@@ -44,7 +44,18 @@
 # endif
 
 
+// Mac OS X has __BIG_ENDIAN__ or __LITTLE_ENDIAN__ automatically set by the compiler (at least with GCC)
+#elif defined(__APPLE__) && defined(__MACH__)
+# ifdef __BIG_ENDIAN__
+#  define IS_BIG_ENDIAN
+# endif
+# ifdef __LITTLE_ENDIAN__
+#  define IS_LITTLE_ENDIAN
+# endif
+
+
 // BSD header for endian and byte swap
+// Note: Mac OS X also has a machine/endian.h but not with the same content so OS X must be handled before we get here
 #elif defined HAVE_MACHINE_ENDIAN_H
 # include <machine/endian.h>
 
@@ -84,16 +95,6 @@
 
 // Solaris 10 defines bswap functions: BSWAP_16, BSWAP_32, BSWAP_64
 // Solaris 10 defines conversion functions: BE_16, BE_32, BE_64, LE_16, LE_32, LE_64
-
-
-// OS X has __BIG_ENDIAN__ or __LITTLE_ENDIAN__ automatically set by the compiler (at least with GCC)
-#elif defined(__BIG_ENDIAN__) || defined(__LITTLE_ENDIAN__)
-# ifdef __BIG_ENDIAN__
-#  define IS_BIG_ENDIAN
-# endif
-# ifdef __LITTLE_ENDIAN__
-#  define IS_LITTLE_ENDIAN
-# endif
 
 #endif
 
