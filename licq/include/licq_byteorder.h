@@ -96,6 +96,18 @@
 // Solaris 10 defines bswap functions: BSWAP_16, BSWAP_32, BSWAP_64
 // Solaris 10 defines conversion functions: BE_16, BE_32, BE_64, LE_16, LE_32, LE_64
 
+
+// No system specific headers to get endian from, let boost guess from platform type
+#else
+# include <boost/detail/endian.hpp>
+
+# ifdef BOOST_BIG_ENDIAN
+#  define IS_BIG_ENDIAN
+# endif
+# ifdef BOOST_LITTLE_ENDIAN
+#  define IS_LITTLE_ENDIAN
+# endif
+
 #endif
 
 
