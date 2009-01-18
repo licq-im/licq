@@ -600,8 +600,6 @@ public:
   void SetCustomAutoResponse(const char *s) { SetString(&m_szCustomAutoResponse, s); SaveLicqInfo(); }
   void ClearCustomAutoResponse()            { SetCustomAutoResponse(""); }
   void SetTyping(unsigned short nTyping)    { m_nTyping = nTyping; }
-  void SetPPID(unsigned long n)       { m_nPPID = n; }
-  void SetId(const char *s)            { SetString(&m_szId, s); SaveLicqInfo(); }
   void SetClientInfo(const char *s)
   {
     free(m_szClientInfo);
@@ -957,7 +955,6 @@ public:
   virtual void SetWebAwareStatus(char c) { SetWebAware(c); }
   void SetHideIp(bool b)       {  m_bHideIp = b; SaveLicqInfo(); }
   void SetSavePassword(bool b) {  m_bSavePassword = b; SaveLicqInfo(); }
-  void SetId(const char *s)    { SetString(&m_szId, s); SaveLicqInfo(); }
   void SetRandomChatGroup(unsigned long n)  { m_nRandomChatGroup = n; SaveLicqInfo(); }
   bool WebAware() const                         { return m_bWebAware; }
   bool HideIp() const                           { return m_bHideIp; }
