@@ -1274,7 +1274,7 @@ bool CUserManager::UpdateUsersInGroups()
     if (nGSID)
     {
       unsigned int nInGroup = gUserManager.GetGroupFromID(nGSID);
-      if (nInGroup != gUserManager.NumGroups())
+      if (nInGroup != 0)
       {
         pUser->AddToGroup(GROUPS_USER, nInGroup);
         bDid = true;
