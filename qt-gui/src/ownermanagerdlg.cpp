@@ -94,6 +94,7 @@ OwnerEditDlg::OwnerEditDlg(CICQDaemon *s, const char *szId,
   if (szId && nPPID)
   {
     edtId->setText(szId);
+    edtId->setEnabled(false);
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (o)
     {
@@ -178,7 +179,6 @@ void OwnerEditDlg::slot_ok()
   {
     if (szPassword)
       o->SetPassword(szPassword);
-    o->SetId(szUser);
   }
   else
   {
