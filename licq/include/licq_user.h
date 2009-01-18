@@ -237,9 +237,9 @@ class LicqGroup;
 typedef std::pair<std::string, unsigned long> UserMapKey;
 typedef std::map<UserMapKey, class ICQUser*> UserMap;
 typedef std::list<class ICQOwner *> OwnerList;
-typedef std::set<unsigned int> UserGroupList;
-typedef std::map<unsigned int, LicqGroup*> GroupMap;
-typedef std::map<unsigned int, std::string> GroupNameMap;
+typedef std::set<int> UserGroupList;
+typedef std::map<int, LicqGroup*> GroupMap;
+typedef std::map<int, std::string> GroupNameMap;
 typedef std::list<unsigned long> UinList;
 typedef std::vector <class CUserEvent *> UserEventList;
 typedef std::map<std::string, boost::any> PropertyMap;
@@ -268,24 +268,24 @@ typedef enum SecureChannelSupport_et_ {
 
 enum GroupType { GROUPS_SYSTEM, GROUPS_USER };
 
-const unsigned long GROUP_ALL_USERS       = 0;
-const unsigned long GROUP_ONLINE_NOTIFY   = 1;
-const unsigned long GROUP_VISIBLE_LIST    = 2;
-const unsigned long GROUP_INVISIBLE_LIST  = 3;
-const unsigned long GROUP_IGNORE_LIST     = 4;
-const unsigned long GROUP_NEW_USERS       = 5;
+const int GROUP_ALL_USERS       = 0;
+const int GROUP_ONLINE_NOTIFY   = 1;
+const int GROUP_VISIBLE_LIST    = 2;
+const int GROUP_INVISIBLE_LIST  = 3;
+const int GROUP_IGNORE_LIST     = 4;
+const int GROUP_NEW_USERS       = 5;
 
 /**
  * The amount of registered system groups
  */
-const unsigned long NUM_GROUPS_SYSTEM_ALL = 6;
+const int NUM_GROUPS_SYSTEM_ALL = 6;
 
 /**
  * The amount of registered system groups, excluding the 'All Users' group.
  *
  * @deprecated Scheduled for removal, use NUM_GROUPS_SYSTEM_ALL instead.
  */
-const unsigned long NUM_GROUPS_SYSTEM     = NUM_GROUPS_SYSTEM_ALL - 1;
+const int NUM_GROUPS_SYSTEM     = NUM_GROUPS_SYSTEM_ALL - 1;
 
 extern const char *GroupsSystemNames[NUM_GROUPS_SYSTEM_ALL];
 
@@ -716,7 +716,7 @@ public:
    * @param groupId Id of group to check
    * @return True if group exists and user is member
    */
-  bool GetInGroup(GroupType gtype, unsigned int groupId) const;
+  bool GetInGroup(GroupType gtype, int groupId) const;
 
   /**
    * Convenience function to set membership of user for a group
@@ -725,7 +725,7 @@ public:
    * @param groupId Id of group
    * @param member True to add user to group, false to remove user from group
    */
-  void SetInGroup(GroupType gtype, unsigned int groupId, bool member);
+  void SetInGroup(GroupType gtype, int groupId, bool member);
 
   /**
    * Add user to a group
@@ -733,7 +733,7 @@ public:
    * @param gtype Group type (GROUPS_SYSTEM or GROUPS_USER)
    * @param groupId Id of group to add
    */
-  void AddToGroup(GroupType gtype, unsigned int groupId);
+  void AddToGroup(GroupType gtype, int groupId);
 
   /**
    * Remove user from a group
@@ -742,7 +742,7 @@ public:
    * @pram groupId Id of group to leave
    * @return True if group was valid and user was a member
    */
-  bool RemoveFromGroup(GroupType gtype, unsigned int groupId);
+  bool RemoveFromGroup(GroupType gtype, int groupId);
 
   // Short cuts to above functions
   bool InvisibleList() const    { return GetInGroup(GROUPS_SYSTEM, GROUP_INVISIBLE_LIST); }
@@ -1042,7 +1042,7 @@ public:
    * @param id Group id, must be unique
    * @param name Group name
    */
-  LicqGroup(unsigned int id, const std::string& name);
+  LicqGroup(int id, const std::string& name);
 
   /**
    * Destructor
@@ -1055,7 +1055,7 @@ public:
    *
    * @return Group id
    */
-  unsigned int id() const { return myId; }
+  int id() const { return myId; }
 
   /**
    * Get name of group as should be displayed in the user interface
@@ -1071,7 +1071,7 @@ public:
    *
    * @return Sorting index for this group
    */
-  unsigned int sortIndex() const { return mySortIndex; }
+  int sortIndex() const { return mySortIndex; }
 
   /**
    * Group id for this group in the ICQ server side list
@@ -1092,7 +1092,7 @@ public:
    *
    * @param sortIndex Group sorting index
    */
-  void setSortIndex(unsigned int sortIndex) { mySortIndex = sortIndex; }
+  void setSortIndex(int sortIndex) { mySortIndex = sortIndex; }
 
   /**
    * Set group id in ICQ server side list
@@ -1114,9 +1114,9 @@ public:
   void Unlock() const;
 
 private:
-  unsigned int myId;
+  int myId;
   std::string myName;
-  unsigned int mySortIndex;
+  int mySortIndex;
   unsigned short myIcqGroupId;
 
   mutable pthread_rdwr_t myMutex;
@@ -1226,7 +1226,7 @@ public:
    * @param lockType Type of lock to get
    * @return The group if found no NULL if groupId was invalid
    */
-  LicqGroup* FetchGroup(unsigned int groupId, unsigned short lockType);
+  LicqGroup* FetchGroup(int groupId, unsigned short lockType);
 
   /**
    * Release the lock for a group preivously returned by FetchGroup()
@@ -1242,7 +1242,7 @@ public:
    * @param groupId Id of group to check for
    * @return True if the group exists
    */
-  bool groupExists(GroupType gtype, unsigned int groupId);
+  bool groupExists(GroupType gtype, int groupId);
 
   /**
    * Add a user group
@@ -1251,14 +1251,14 @@ public:
    * @param icqGroupId ICQ server group id
    * @return Id of new group or zero if group could not be created
    */
-  unsigned int AddGroup(const std::string& name, unsigned short icqGroupId = 0);
+  int AddGroup(const std::string& name, unsigned short icqGroupId = 0);
 
   /**
    * Remove a user group
    *
    * @param groupId Id of group to remove
    */
-  void RemoveGroup(unsigned int groupId);
+  void RemoveGroup(int groupId);
 
   /**
    * Rename a user group
@@ -1268,7 +1268,7 @@ public:
    * @param sendUpdate True if server group should be updated
    * @return True if group was successfully renamed
    */
-  bool RenameGroup(unsigned int groupId, const std::string& name, bool sendUpdate = true);
+  bool RenameGroup(int groupId, const std::string& name, bool sendUpdate = true);
 
   /**
    * Get number of user groups
@@ -1291,7 +1291,7 @@ public:
    * @param groupId Id of group to move
    * @param newIndex New sorting index where 0 is the top position
    */
-  void ModifyGroupSorting(unsigned int groupId, unsigned int newIndex);
+  void ModifyGroupSorting(int groupId, int newIndex);
 
   /**
    * Change ICQ server group id for a user group
@@ -1307,7 +1307,7 @@ public:
    * @param groupId Id of group to change
    * @param icqGroupId ICQ server group id to set
    */
-  void ModifyGroupID(unsigned int groupId, unsigned short icqGroupId);
+  void ModifyGroupID(int groupId, unsigned short icqGroupId);
 
   /**
    * Get ICQ group id from group name
@@ -1323,7 +1323,7 @@ public:
    * @param groupId Group
    * @return Id for iCQ server group or 0 if groupId was invalid
    */
-  unsigned short GetIDFromGroup(unsigned int groupId);
+  unsigned short GetIDFromGroup(int groupId);
 
   /**
    * Get group id from ICQ server group id
@@ -1331,7 +1331,7 @@ public:
    * @param icqGroupId ICQ server group id
    * @return Id for group or 0 if not found
    */
-  unsigned int GetGroupFromID(unsigned short icqGroupId);
+  int GetGroupFromID(unsigned short icqGroupId);
 
   /**
    * Find id for group with a given name
@@ -1339,7 +1339,7 @@ public:
    * @param name Name of the group
    * @return Id for the group or 0 if there is no group with that name
    */
-  unsigned int GetGroupFromName(const std::string& name);
+  int GetGroupFromName(const std::string& name);
 
   unsigned short GenerateSID();
 
@@ -1354,7 +1354,7 @@ public:
    * @param updateServer True if server list should be updated
    */
   void SetUserInGroup(const char* id, unsigned long ppid, GroupType groupType,
-      unsigned int groupId, bool inGroup, bool updateServer = true);
+      int groupId, bool inGroup, bool updateServer = true);
 
   /**
    * Add user to a group and update server group
@@ -1363,7 +1363,7 @@ public:
    * @param ppid User protocol id
    * @param groupId Group id
    */
-  void AddUserToGroup(const char* id, unsigned long ppid, unsigned int groupId)
+  void AddUserToGroup(const char* id, unsigned long ppid, int groupId)
   { SetUserInGroup(id, ppid, GROUPS_USER, groupId, true, true); }
 
   /**
@@ -1373,7 +1373,7 @@ public:
    * @param ppid User protocol id
    * @param groupId Group id
    */
-  void RemoveUserFromGroup(const char* id, unsigned long ppid, unsigned int groupId)
+  void RemoveUserFromGroup(const char* id, unsigned long ppid, int groupId)
   { SetUserInGroup(id, ppid, GROUPS_USER, groupId, false); }
 
   void SaveAllUsers();
