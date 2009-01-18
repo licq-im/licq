@@ -219,13 +219,6 @@ public:
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
 
-  // Deprecated functions, to be removed
-  CEventAdded(unsigned long _nUin, const char* _szAlias,
-      const char* _szFirstName, const char *_szLastName, const char *_szEmail,
-      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
-      LICQ_DEPRECATED;
-  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
-
 protected:
   void CreateDescription() const;
    char *m_szId;
@@ -252,13 +245,6 @@ public:
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
 
-  // Deprecated functions, to be removed
-  CEventAuthRequest(unsigned long _nUin, const char* _szAlias,
-      const char* _szFirstName, const char* _szLastName, const char* _szEmail,
-      const char* _szReason, unsigned short _nCommand, time_t _tTime,
-      unsigned long _nFlags) LICQ_DEPRECATED;
-  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
-
 protected:
   void CreateDescription() const;
    char *m_szId;
@@ -283,12 +269,6 @@ public:
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
 
-  // Deprecated functions, to be removed
-  CEventAuthGranted(unsigned long _nUin, const char* _szMessage,
-      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
-      LICQ_DEPRECATED;
-  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
-
 protected:
   void CreateDescription() const;
    char *m_szId;
@@ -308,12 +288,6 @@ public:
   virtual void AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir) const;
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
-
-  // Deprecated functions, to be removed
-  CEventAuthRefused(unsigned long _nUin, const char* _szMessage,
-      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags)
-      LICQ_DEPRECATED;
-  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); };
 
 protected:
   void CreateDescription() const;
@@ -367,10 +341,6 @@ public:
   const char* Alias() const { return m_szAlias; }
   const char* IdString() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
-
-  // Deprecated functions, to be removed
-  CContact(unsigned long n, const char* a) LICQ_DEPRECATED;
-  LICQ_DEPRECATED unsigned long Uin() const { return strtoul(m_szId, NULL, 10); }
 
 protected:
   char *m_szAlias;

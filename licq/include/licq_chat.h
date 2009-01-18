@@ -224,9 +224,6 @@ public:
 
   virtual ~CPChat_Color();
 
-  // Deprecated functions, to be removed
-  LICQ_DEPRECATED unsigned long Uin() { return strtoul(m_szId, NULL, 10); }
-
 protected:
   char *m_szId;
   unsigned long m_nPPID;
@@ -323,9 +320,6 @@ public:
   unsigned char FontEncoding() { return m_nFontEncoding; }
   unsigned char FontStyle() { return m_nFontStyle; }
   ChatClientList &ChatClients()  { return chatClients; }
-
-  // Deprecated functions, to be removed
-  LICQ_DEPRECATED unsigned long Uin() { return strtoul(m_szId, NULL, 10); }
 
 protected:
   char *m_szId;
@@ -505,9 +499,6 @@ public:
   bool Sleep()                 { return sleep; }
 
   ~CChatUser();
-
-  // Deprecated functions, to be removed
-  LICQ_DEPRECATED unsigned long Uin()          { return strtoul(szId, NULL, 10); }
 
 protected:
   CChatUser();

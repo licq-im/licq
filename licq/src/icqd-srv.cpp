@@ -72,15 +72,6 @@ void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned sho
   icqUserBasicInfo(_szId);
 }
 
-void CICQDaemon::icqAddUser(unsigned long _nUin, bool _bAuthRequired, unsigned short groupId)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-
-  icqAddUser(szUin, _bAuthRequired, groupId);
-}
-
-
 //-----icqAddUserServer--------------------------------------------------------
 void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired,
     unsigned short groupId)
@@ -105,16 +96,6 @@ void CICQDaemon::icqAddUserServer(const char *_szId, bool _bAuthRequired,
   CSrvPacketTcp *pEnd = new CPU_GenericFamily(ICQ_SNACxFAM_LIST,
                                               ICQ_SNACxLIST_ROSTxEDITxEND);
   SendEvent_Server(pEnd);
-}
-
-void CICQDaemon::icqAddUserServer(unsigned long _nUin, bool _bAuthRequired,
-    unsigned short groupId)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = 0;
-
-  icqAddUserServer(szUin, _bAuthRequired, groupId);
 }
 
 //-----CheckExport-------------------------------------------------------------
@@ -251,18 +232,6 @@ void CICQDaemon::icqAddGroup(const char *_szName)
   gLog.Info(tr("%sAdding group %s (%d) to server list ...\n"), L_SRVxSTR, _szName, nGSID);
   addToModifyUsers(pAdd->SubSequence(), _szName);
   SendExpectEvent_Server(pAdd, NULL);
-}
-
-//-----icqChangeGroup-----------------------------------------------------------
-void CICQDaemon::icqChangeGroup(unsigned long _nUin, unsigned short _nNewGroup,
-                                unsigned short _nOldGSID, unsigned short _nNewType,
-                                unsigned short _nOldType)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = '\0';
-
-  icqChangeGroup(szUin, LICQ_PPID, _nNewGroup, _nOldGSID, _nNewType, _nOldType);
 }
 
 void CICQDaemon::icqChangeGroup(const char *_szId, unsigned long _nPPID,
@@ -415,14 +384,6 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
   SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL);
 }
 
-void CICQDaemon::icqRemoveUser(unsigned long _nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = 0;
-  icqRemoveUser(szUin);
-}
-
 //-----icqRemoveGroup----------------------------------------------------------
 void CICQDaemon::icqRemoveGroup(const char *_szName)
 {
@@ -452,16 +413,6 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
-//-----icqRenameUser------------------------------------------------------------
-void CICQDaemon::icqRenameUser(unsigned long _nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = '\0'; 
-
-  icqRenameUser(szUin);
-}
-
 void CICQDaemon::ProtoRenameUser(const char *_szId, unsigned long _nPPID)
 {
   if (_nPPID == LICQ_PPID)
@@ -483,15 +434,6 @@ void CICQDaemon::icqRenameUser(const char *_szId)
   gLog.Info(tr("%sRenaming %s to %s...\n"), L_SRVxSTR, _szId, szNewAlias);
   addToModifyUsers(pUpdate->SubSequence(), _szId);
   SendExpectEvent_Server(pUpdate, NULL);
-}
-
-//-----icqAlertUser-------------------------------------------------------------
-void CICQDaemon::icqAlertUser(unsigned long _nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = '\0';
-  icqAlertUser(szUin, LICQ_PPID);
 }
 
 void CICQDaemon::icqAlertUser(const char* id, unsigned long ppid)
@@ -558,15 +500,6 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
   if (result != NULL)
     return result->EventId();
   return 0;
-}
-
-unsigned long CICQDaemon::icqFetchAutoResponseServer(unsigned long _nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = '\0';
-
-  return icqFetchAutoResponseServer(szUin);
 }
 
 //-----icqSetRandomChatGroup----------------------------------------------------
@@ -699,15 +632,6 @@ unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
   if (e != NULL)
     return e->EventId();
   return 0;
-}
-
-unsigned long CICQDaemon::icqRequestMetaInfo(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = 0;
-
-  return icqRequestMetaInfo(szUin);
 }
 
 //-----ProtoRequestPicture------------------------------------------------------
@@ -1002,14 +926,6 @@ unsigned long CICQDaemon::ProtoAuthorizeGrant(const char *szId,
   return nRet;
 }
 
-unsigned long CICQDaemon::icqAuthorizeGrant(unsigned long nUin, const char *szMessage)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-
-  return icqAuthorizeGrant(szUin, szMessage);
-}
-
 unsigned long CICQDaemon::icqAuthorizeGrant(const char *szId,
   const char* /* szMessage*/)
 {
@@ -1034,13 +950,6 @@ unsigned long CICQDaemon::ProtoAuthorizeRefuse(const char *szId,
   return nRet;
 }
 
-unsigned long CICQDaemon::icqAuthorizeRefuse(unsigned long nUin, const char *szMessage)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  return icqAuthorizeRefuse(szUin, szMessage);
-}
-
 unsigned long CICQDaemon::icqAuthorizeRefuse(const char *szId,
   const char *szMessage)
 {
@@ -1059,14 +968,6 @@ unsigned long CICQDaemon::icqAuthorizeRefuse(const char *szId,
   if (e != NULL)
     return e->EventId();
   return 0;
-}
-
-//-----icqRequestAuth--------------------------------------------------------
-void CICQDaemon::icqRequestAuth(unsigned long _nUin, const char *_szMessage)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", _nUin);
-  icqRequestAuth(id, _szMessage);
 }
 
 void CICQDaemon::icqRequestAuth(const char* id, const char *_szMessage)
@@ -1150,15 +1051,6 @@ unsigned long CICQDaemon::icqUserBasicInfo(const char *_szId)
   if (e != NULL)
     return e->EventId();
   return 0;
-}
-
-unsigned long CICQDaemon::icqUserBasicInfo(unsigned long _nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", _nUin);
-  szUin[12] = 0;
-
-  return icqUserBasicInfo(szUin);
 }
 
 //-----icqPing------------------------------------------------------------------
@@ -1298,15 +1190,6 @@ void CICQDaemon::icqSendInvisibleList()
   SendEvent_Server(p);
 }
 
-//----- icqToggleVisibleList (deprecated!) -------------------------------------
-void CICQDaemon::icqToggleVisibleList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  ProtoToggleVisibleList(szUin, LICQ_PPID);
-}
-
 //-----ProtoToggleVisibleList------------------------------------------------
 void CICQDaemon::ProtoToggleVisibleList(const char* _szId, unsigned long _nPPID)
 {
@@ -1331,15 +1214,6 @@ void CICQDaemon::ProtoSetInVisibleList(const char* _szId, unsigned long _nPPID, 
       PushProtoSignal(new CAcceptUserSignal(_szId), _nPPID);
 }
 
-//-----icqToggleInvisibleList (deprecated!)-------------------------------------
-void CICQDaemon::icqToggleInvisibleList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  ProtoToggleInvisibleList(szUin, LICQ_PPID);
-}
-
 //-----ProtoToggleInvisibleList-------------------------------------------------
 void CICQDaemon::ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID)
 {
@@ -1362,15 +1236,6 @@ void CICQDaemon::ProtoSetInInvisibleList(const char* _szId, unsigned long _nPPID
       icqAddToInvisibleList(_szId, _nPPID);
     else
       PushProtoSignal(new CBlockUserSignal(_szId), _nPPID);
-}
-
-//-----icqToggleIgnoreList (deprecated!)----------------------------------------
-void CICQDaemon::icqToggleIgnoreList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  icqToggleIgnoreList(szUin, LICQ_PPID);
 }
 
 //-----icqToggleIgnoreList------------------------------------------------------
@@ -1401,15 +1266,6 @@ void CICQDaemon::ProtoSetInIgnoreList(const char* _szId, unsigned long _nPPID, b
   }
 }
 
-//-----icqAddToVisibleList (deprecated!)----------------------------------------
-void CICQDaemon::icqAddToVisibleList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  icqAddToVisibleList(szUin, LICQ_PPID);
-}
-
 //-----icqAddToVisibleList------------------------------------------------------
 void CICQDaemon::icqAddToVisibleList(const char* _szId, unsigned long _nPPID)
 {
@@ -1430,15 +1286,6 @@ void CICQDaemon::icqAddToVisibleList(const char* _szId, unsigned long _nPPID)
     addToModifyUsers(pAdd->SubSequence(), _szId);
     SendExpectEvent_Server(pAdd, NULL);
   }
-}
-
-//-----icqRemoveFromVisibleList (deprecated!)-----------------------------------
-void CICQDaemon::icqRemoveFromVisibleList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  icqRemoveFromVisibleList(szUin, LICQ_PPID);
 }
 
 //-----icqRemoveFromVisibleList-------------------------------------------------
@@ -1469,15 +1316,6 @@ void CICQDaemon::icqRemoveFromVisibleList(const char* _szId, unsigned long _nPPI
   }
 }
 
-//-----icqAddToInvisibleList (deprecated!)--------------------------------------
-void CICQDaemon::icqAddToInvisibleList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  icqAddToInvisibleList(szUin, LICQ_PPID);
-}
-
 //-----icqAddToInvisibleList----------------------------------------------------
 void CICQDaemon::icqAddToInvisibleList(const char* _szId, unsigned long _nPPID)
 {
@@ -1498,15 +1336,6 @@ void CICQDaemon::icqAddToInvisibleList(const char* _szId, unsigned long _nPPID)
     addToModifyUsers(pAdd->SubSequence(), _szId);
     SendEvent_Server(pAdd);
   }
-}
-
-//-----icqRemoveFromInvisibleList (deprecated!)---------------------------------
-void CICQDaemon::icqRemoveFromInvisibleList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  icqRemoveFromInvisibleList(szUin, LICQ_PPID);
 }
 
 //-----icqRemoveFromInvisibleList-----------------------------------------------
@@ -1537,15 +1366,6 @@ void CICQDaemon::icqRemoveFromInvisibleList(const char *_szId, unsigned long _nP
   }
 }
 
-//-----icqAddToIgnoreList (deprecated!)-----------------------------------------
-void CICQDaemon::icqAddToIgnoreList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  icqAddToIgnoreList(szUin, LICQ_PPID);
-}
-
 //-----icqAddToIgnoreList-------------------------------------------------------
 void CICQDaemon::icqAddToIgnoreList(const char *_szId, unsigned long /* _nPPID */)
 {
@@ -1555,15 +1375,6 @@ void CICQDaemon::icqAddToIgnoreList(const char *_szId, unsigned long /* _nPPID *
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxIGNORE,
     0, false);
   SendEvent_Server(pAdd);
-}
-
-//-----icqRemoveFromIgnoreList (deprecated!)------------------------------------
-void CICQDaemon::icqRemoveFromIgnoreList(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  icqRemoveFromIgnoreList(szUin, LICQ_PPID);
 }
 
 //-----icqRemoveFromIgnoreList--------------------------------------------------
@@ -1717,22 +1528,6 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
 
   result = SendExpectEvent(e, &ProcessRunningEvent_Server_tep);
   return result;
-}
-
-ICQEvent* CICQDaemon::icqSendThroughServer(unsigned long nUin, unsigned char format, char *_sMessage, CUserEvent* ue, unsigned short _nCharset)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  return icqSendThroughServer(szUin, format, _sMessage, ue, _nCharset);
-}
-
-//-----icqSendSms---------------------------------------------------------------
-unsigned long CICQDaemon::icqSendSms(const char *szNumber, const char *szMessage,
-				     unsigned long nUin)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", nUin);
-  return icqSendSms(id, LICQ_PPID, szNumber, szMessage);
 }
 
 unsigned long CICQDaemon::icqSendSms(const char* id, unsigned long ppid,
@@ -2178,12 +1973,6 @@ ICQUser *CICQDaemon::FindUserForInfoUpdate(const char *szId, ICQEvent *e,
   gLog.Info(tr("%sReceived %s information for %s (%s).\n"), L_SRVxSTR, t,
             u->GetAlias(), szId);
   return u;
-}
-
-//-----FindUinByCellular-------------------------------------------------------
-unsigned long CICQDaemon::FindUinByCellular(const char *szCellular)
-{
-  return strtoul(FindUserByCellular(szCellular).c_str(), NULL, 10);
 }
 
 string CICQDaemon::FindUserByCellular(const char *szCellular)

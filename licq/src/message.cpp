@@ -415,23 +415,6 @@ CEventAdded::CEventAdded(const char *_szId, unsigned long _nPPID, const char *_s
   m_nPPID =_nPPID;
 }
 
-CEventAdded::CEventAdded(unsigned long _nUin, const char *_szAlias,
-                         const char *_szFirstName,const char *_szLastName,
-                         const char *_szEmail, unsigned short _nCommand,
-                         time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_ADDEDxTOxLIST, _nCommand, 0, _tTime, _nFlags)
-{
-  m_szAlias = strdup(_szAlias);
-  m_szFirstName = strdup(_szFirstName);
-  m_szLastName = strdup(_szLastName);
-  m_szEmail = strdup(_szEmail);
-
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
-}
-
 void CEventAdded::CreateDescription() const
 {
   if (m_szText) delete [] m_szText;
@@ -493,25 +476,6 @@ CEventAuthRequest::CEventAuthRequest(const char *_szId, unsigned long _nPPID,
    m_szEmail = strdup(_szEmail);
    m_szReason = strdup(_szReason);
    m_nPPID = _nPPID;
-}
-
-CEventAuthRequest::CEventAuthRequest(unsigned long _nUin, const char *_szAlias,
-                       const char *_szFirstName,const char *_szLastName,
-                       const char *_szEmail, const char *_szReason,
-                       unsigned short _nCommand, time_t _tTime,
-                       unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_AUTHxREQUEST, _nCommand, 0, _tTime, _nFlags)
-{
-   m_szAlias = strdup(_szAlias);
-   m_szFirstName = strdup(_szFirstName);
-   m_szLastName = strdup(_szLastName);
-   m_szEmail = strdup(_szEmail);
-   m_szReason = strdup(_szReason);
-
-   char szUin[24];
-   sprintf(szUin, "%lu", _nUin);
-   m_szId = strdup(szUin);
-   m_nPPID = LICQ_PPID;
 }
 
 void CEventAuthRequest::CreateDescription() const
@@ -581,19 +545,6 @@ CEventAuthGranted::CEventAuthGranted(const char *_szId, unsigned long _nPPID,
   m_nPPID = _nPPID;
 }
 
-CEventAuthGranted::CEventAuthGranted(unsigned long _nUin, const char *_szMessage,
-                       unsigned short _nCommand, time_t _tTime,
-                       unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags)
-{
-  m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
-
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
-}
-
 void CEventAuthGranted::CreateDescription() const
 {
   delete [] m_szText;
@@ -648,19 +599,6 @@ CEventAuthRefused::CEventAuthRefused(const char *_szId, unsigned long _nPPID,
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
   m_szId = strdup(_szId);
   m_nPPID = _nPPID;
-}
-
-CEventAuthRefused::CEventAuthRefused(unsigned long _nUin, const char *_szMessage,
-                       unsigned short _nCommand, time_t _tTime,
-                       unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags)
-{
-  m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
-
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
 }
 
 void CEventAuthRefused::CreateDescription() const
@@ -806,14 +744,6 @@ void CEventEmailPager::AddToHistory(ICQUser* u, unsigned long _nPPID, direction 
 CContact::CContact(const char *s, unsigned long n, const char *a) : m_nPPID(n)
 {
   m_szId = strdup(s);
-  m_szAlias = strdup(a);
-}
-
-CContact::CContact(unsigned long n, const char *a) : m_nPPID(0)
-{
-  std::ostringstream ss;
-  ss << n;
-  m_szId = strdup(ss.str().c_str());
   m_szAlias = strdup(a);
 }
 

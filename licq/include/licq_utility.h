@@ -81,9 +81,6 @@ public:
 
   bool Exception()  { return bException; }
 
-  // Deprecated functions, to be removed
-  LICQ_DEPRECATED bool SetFields(unsigned long _nUin);
-
 protected:
   char *m_szName;
   char *m_szDescription;

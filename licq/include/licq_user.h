@@ -172,23 +172,6 @@ extern char* PPIDSTRING(unsigned long ppid);
 
 
 
-/*---------------------------------------------------------------------------
- * FOR_EACH_UIN
- *
- * Macros to iterate through the entire list of uins.  "nUin" will be the
- * current uin.  Useful for situations when just the uin is necessary and
- * each user does not need to be locked.  Note the corresponding user can be
- * fetched and locked inside the loop.
- *-------------------------------------------------------------------------*/
-#define FOR_EACH_UIN_START                               \
-  {                                                      \
-    unsigned long nUin;                                  \
-    const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
-    for (UserMap::const_iterator _i_ = _ul_->begin();    \
-         _i_ != _ul_->end(); _i_++)                      \
-    {                                                    \
-      nUin = _i_->second->Uin();                         \
-      {
 
 #define FOR_EACH_PROTO_ID_START(x)                       \
   {                                                      \
@@ -202,27 +185,9 @@ extern char* PPIDSTRING(unsigned long ppid);
       szId = (*_i_)->IdString();                         \
       {
 
-#define FOR_EACH_UIN_END                 \
-      }                                  \
-    }                                    \
-    gUserManager.UnlockUserList();       \
-  }
-
-#define FOR_EACH_PROTO_ID_END FOR_EACH_UIN_END
-
-#define FOR_EACH_UIN_BREAK               \
-        {                                \
-          break;                         \
-        }
-
 #define FOR_EACH_PROTO_ID_BREAK          \
         {                                \
           break;                         \
-        }
-
-#define FOR_EACH_UIN_CONTINUE            \
-        {                                \
-          continue;                      \
         }
 
 #define FOR_EACH_PROTO_ID_CONTINUE       \
@@ -240,7 +205,6 @@ typedef std::list<class ICQOwner *> OwnerList;
 typedef std::set<int> UserGroupList;
 typedef std::map<int, LicqGroup*> GroupMap;
 typedef std::map<int, std::string> GroupNameMap;
-typedef std::list<unsigned long> UinList;
 typedef std::vector <class CUserEvent *> UserEventList;
 typedef std::map<std::string, boost::any> PropertyMap;
 typedef std::map<unsigned int, std::string> UserCategoryMap;
@@ -817,12 +781,6 @@ public:
   void Lock(unsigned short lockType) const;
   void Unlock() const;
 
-  // Deprecated functions, to be removed
-  ICQUser(unsigned long id, char *filename) LICQ_DEPRECATED;
-  ICQUser(unsigned long id) LICQ_DEPRECATED;
-  LICQ_DEPRECATED unsigned long Uin() const;
-  LICQ_DEPRECATED const char* UinString() const { return m_szId; }
-
 protected:
   ICQUser() { /* ICQOwner inherited constructor - does nothing */ }
   void loadUserInfo();
@@ -868,9 +826,6 @@ protected:
   void SetOnlineSince(time_t t)     { m_nOnlineSince = t; }
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
-
-  // Deprecated functions, to be removed
-  LICQ_DEPRECATED void Init(unsigned long nUin);
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
@@ -994,9 +949,6 @@ public:
   bool SavePassword() const                     { return m_bSavePassword; }
   unsigned long RandomChatGroup() const         { return m_nRandomChatGroup; }
   unsigned long AddStatusFlags(unsigned long nStatus) const;
-
-  // Deprecated functions, to be removed
-  LICQ_DEPRECATED void SetUin(unsigned long n);
 
   // Server Side List functions
   time_t GetSSTime() const                      { return m_nSSTime; }
@@ -1166,18 +1118,6 @@ public:
   // ICQ Protocol only (from original Licq)
   void AddUser(ICQUser *);
   void DropUser(const ICQUser* user);
-
-  // Deprecated user functions, to be removed
-  LICQ_DEPRECATED ICQUser *FetchUser(unsigned long, unsigned short);
-  LICQ_DEPRECATED void RemoveUser(unsigned long);
-  LICQ_DEPRECATED bool IsOnList(unsigned long nUin);
-
-  // Deprecated owner functions, to be removed
-  LICQ_DEPRECATED void SetOwnerUin(unsigned long _nUin);
-  LICQ_DEPRECATED unsigned long OwnerUin() { return icqOwnerUin(); }
-  LICQ_DEPRECATED ICQOwner *FetchOwner(unsigned short);
-  LICQ_DEPRECATED void DropOwner();
-  LICQ_DEPRECATED void DropOwner(unsigned long);
 
   /**
    * Convenience function to get icq owner as an unsigned long

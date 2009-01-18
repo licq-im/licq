@@ -1192,26 +1192,6 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
 }
 
 //---AddUserToList-------------------------------------------------------------
-/*! \brief Adds Uin to contact list
- *
- * Adds the given uin to the contact list.
- *
- * \return Returns true on success, else returns false. Please note that when 
- * this call returns the user is not locked.
- */
-bool CICQDaemon::AddUserToList(unsigned long nUin, bool bNotify, bool bTempUser,
-                               unsigned short groupId)
-{
-  // Don't add invalid uins
-  if (nUin == 0) return false;
-
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  return AddUserToList(szUin, LICQ_PPID, bNotify, bTempUser, groupId);
-}
-
-
-//---AddUserToList-------------------------------------------------------------
 /*! \brief Adds User to contact list
  *
  * Adds the given user to the contact list. NOTE: When this call returns the 
@@ -1245,14 +1225,6 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
   }
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->IdString(), nu->PPID()));
-}
-
-//-----RemoveUserFromList-------------------------------------------------------
-void CICQDaemon::RemoveUserFromList(unsigned long _nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  RemoveUserFromList(szUin, LICQ_PPID);
 }
 
 void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
@@ -1339,19 +1311,6 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
   //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
   //   u->Uin(), e->Id()));
   return true;
-}
-
-
-
-/*----------------------------------------------------------------------------
- * CICQDaemon::RejectEvent
- *
- *--------------------------------------------------------------------------*/
-void CICQDaemon::RejectEvent(unsigned long nUin, CUserEvent *e)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  RejectEvent(szUin, e);
 }
 
 void CICQDaemon::RejectEvent(const char* id, CUserEvent* e)
@@ -1442,14 +1401,6 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long /* 
   }
 
   return result;
-}
-
-ICQEvent *CICQDaemon::SendExpectEvent_Server(unsigned long nUin, CPacket *packet,
-   CUserEvent *ue, bool bExtendedEvent)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  return SendExpectEvent_Server(szUin, LICQ_PPID, packet, ue, bExtendedEvent);
 }
 
 ICQEvent* CICQDaemon::SendExpectEvent_Client(const ICQUser* pUser, CPacket* packet,

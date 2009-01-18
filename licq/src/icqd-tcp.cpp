@@ -190,23 +190,6 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
     return 0;
 }
 
-unsigned long CICQDaemon::icqSendMessage(unsigned long _nUin, const char *m,
-   bool online, unsigned short nLevel, bool bMultipleRecipients,
-   CICQColor *pColor)
-{
-  char szId[13];
-  snprintf(szId, 12, "%lu", _nUin);
-  szId[12] = 0;
-  return icqSendMessage(szId, m, online, nLevel, bMultipleRecipients, pColor);
-}
-
-
-//-----CICQDaemon::icqFetchAutoResponse (deprecated!)---------------------------
-unsigned long CICQDaemon::icqFetchAutoResponse(unsigned long /* nUin */, bool /* bServer */)
-{
-  return icqFetchAutoResponse(gUserManager.OwnerId(LICQ_PPID).c_str(), LICQ_PPID);
-}
-
 //-----CICQDaemon::icqFetchAutoResponse-----------------------------------------
 unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
 {
@@ -443,18 +426,6 @@ unsigned long CICQDaemon::icqFileTransfer(const char *szId, const char *szFilena
     return 0;
 }
 
-unsigned long CICQDaemon::icqFileTransfer(unsigned long nUin, const char *szFilename,
-                        const char *szDescription, ConstFileList &lFileList,
-                        unsigned short nLevel, bool bServer)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  
-  return icqFileTransfer(szUin, szFilename, szDescription, lFileList,
-    nLevel, bServer);
-}
-
 //-----CICQDaemon::sendContactList-------------------------------------------
 unsigned long CICQDaemon::icqSendContactList(const char *szId,
    const StringList& users, bool online, unsigned short nLevel,
@@ -526,25 +497,6 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
   if (result != NULL)
     return result->EventId();
   return 0;
-}
-
-unsigned long CICQDaemon::icqSendContactList(unsigned long nUin,
-   UinList &uins, bool online, unsigned short nLevel, bool bMultipleRecipients,
-   CICQColor *pColor)
-{
-  StringList users;
-  char szUin[24];
-
-  UinList::iterator it;
-  for (it = uins.begin(); it != uins.end(); ++it)
-  {
-    sprintf(szUin, "%lu", *it);
-    users.push_back(szUin);
-  }
-
-  sprintf(szUin, "%lu", nUin);
-  return icqSendContactList(szUin, users,online, nLevel, bMultipleRecipients,
-    pColor);
 }
 
 //-----CICQDaemon::sendInfoPluginReq--------------------------------------------
@@ -770,16 +722,6 @@ void CICQDaemon::icqFileTransferCancel(const char *szId, unsigned short nSequenc
   gUserManager.DropUser(u);
 }
 
-void CICQDaemon::icqFileTransferCancel(unsigned long nUin, unsigned short nSequence)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0'; 
-
-  icqFileTransferCancel(szUin, nSequence);
-}
-
-
 //-----CICQDaemon::fileAccept-----------------------------------------------------------------------------
 void CICQDaemon::ProtoFileTransferAccept(const char *szId, unsigned long nPPID,
    unsigned short nPort, unsigned long nSequence, unsigned long nFlag1,
@@ -820,20 +762,6 @@ void CICQDaemon::icqFileTransferAccept(const char *szId, unsigned short nPort,
 
   gUserManager.DropUser(u);
 }
-  
-void CICQDaemon::icqFileTransferAccept(unsigned long nUin, unsigned short nPort,
-    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect,
-   const char *szDesc, const char *szFile, unsigned long nFileSize)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0'; 
-  
-  icqFileTransferAccept(szUin, nPort, nSequence, nMsgID, bDirect,
-    szDesc, szFile, nFileSize);
-}
-
-
 
 //-----CICQDaemon::fileRefuse-----------------------------------------------------------------------------
 void CICQDaemon::ProtoFileTransferRefuse(const char *szId, unsigned long nPPID,
@@ -880,40 +808,10 @@ void CICQDaemon::icqFileTransferRefuse(const char *szId, const char *szReason,
     delete [] szReasonDos;
 }
 
-void CICQDaemon::icqFileTransferRefuse(unsigned long nUin, const char *szReason,
-    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0'; 
-
-  icqFileTransferRefuse(szUin, szReason, nSequence, nMsgID, bDirect);
-}
-
-
-//-----CICQDaemon::sendChat------------------------------------------------------------
-unsigned long CICQDaemon::icqChatRequest(unsigned long nUin, const char *szReason,
-                                         unsigned short nLevel, bool bServer)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", nUin);
-  return icqMultiPartyChatRequest(id, szReason, NULL, 0, nLevel, bServer);
-}
-
 unsigned long CICQDaemon::icqChatRequest(const char* id, const char *szReason,
                                          unsigned short nLevel, bool bServer)
 {
   return icqMultiPartyChatRequest(id, szReason, NULL, 0, nLevel, bServer);
-}
-
-
-unsigned long CICQDaemon::icqMultiPartyChatRequest(unsigned long nUin,
-   const char *reason, const char *szChatUsers, unsigned short nPort,
-   unsigned short nLevel, bool bServer)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", nUin);
-  return icqMultiPartyChatRequest(id, reason, szChatUsers, nPort, nLevel, bServer);
 }
 
 unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
@@ -982,15 +880,6 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
   return 0;
 }
 
-
-//-----CICQDaemon::chatCancel----------------------------------------------------------
-void CICQDaemon::icqChatRequestCancel(unsigned long nUin, unsigned short nSequence)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", nUin);
-  icqChatRequestCancel(id, nSequence);
-}
-
 void CICQDaemon::icqChatRequestCancel(const char* id, unsigned short nSequence)
 {
   ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
@@ -1000,16 +889,6 @@ void CICQDaemon::icqChatRequestCancel(const char* id, unsigned short nSequence)
   CPT_CancelChat p(nSequence, u);
   AckTCP(p, u->SocketDesc(ICQ_CHNxNONE));
   gUserManager.DropUser(u);
-}
-
-
-//-----CICQDaemon::chatRefuse-----------------------------------------------------------------------------
-void CICQDaemon::icqChatRequestRefuse(unsigned long nUin, const char *szReason,
-    unsigned short nSequence, const unsigned long nMsgID[2], bool bDirect)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", nUin);
-  icqChatRequestRefuse(id, szReason, nSequence, nMsgID, bDirect);
 }
 
 void CICQDaemon::icqChatRequestRefuse(const char* id, const char *szReason,
@@ -1039,17 +918,6 @@ void CICQDaemon::icqChatRequestRefuse(const char* id, const char *szReason,
 
   if (szReasonDos)
     delete [] szReasonDos;
-}
-
-
-//-----CICQDaemon::chatAccept-----------------------------------------------------------------------------
-void CICQDaemon::icqChatRequestAccept(unsigned long nUin, unsigned short nPort,
-    const char* szClients, unsigned short nSequence,
-    const unsigned long nMsgID[2], bool bDirect)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", nUin);
-  icqChatRequestAccept(id, nPort, szClients, nSequence, nMsgID, bDirect);
 }
 
 void CICQDaemon::icqChatRequestAccept(const char* id, unsigned short nPort,
@@ -1139,15 +1007,6 @@ unsigned long CICQDaemon::icqOpenSecureChannel(const char *szId)
 #endif
 }
 
-unsigned long CICQDaemon::icqOpenSecureChannel(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-
-  return icqOpenSecureChannel(szUin);
-}
-
 unsigned long CICQDaemon::ProtoCloseSecureChannel(const char *szId,
   unsigned long nPPID)
 {
@@ -1204,15 +1063,6 @@ unsigned long CICQDaemon::icqCloseSecureChannel(const char *szId)
 #endif
 }
 
-unsigned long CICQDaemon::icqCloseSecureChannel(unsigned long nUin)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  
-  return icqCloseSecureChannel(szUin);
-}
-
 //-----CICQDaemon::keyCancel-------------------------------------------------------------------------
 void CICQDaemon::ProtoOpenSecureChannelCancel(const char *szId,
   unsigned long nPPID, unsigned long nSequence)
@@ -1234,20 +1084,6 @@ void CICQDaemon::icqOpenSecureChannelCancel(const char *szId,
   // XXX Tear down tcp connection ??
   gUserManager.DropUser(u);
 }
-
-void CICQDaemon::icqOpenSecureChannelCancel(unsigned long nUin,
-  unsigned short nSequence)
-{
-  char szUin[13];
-  snprintf(szUin, 12, "%lu", nUin);
-  szUin[12] = '\0';
-  
-  icqOpenSecureChannelCancel(szUin, nSequence);  
-}
-
-
-
-
 
 /*---------------------------------------------------------------------------
  * Handshake

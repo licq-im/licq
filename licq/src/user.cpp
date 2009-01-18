@@ -391,13 +391,6 @@ CUserManager::~CUserManager()
     free(m_szDefaultEncoding);
 }
 
-void CUserManager::SetOwnerUin(unsigned long _nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  AddOwner(szUin, LICQ_PPID);
-}
-
 void CUserManager::AddOwner(const char *_szId, unsigned long _nPPID)
 {
   ICQOwner *o = new ICQOwner(_szId, _nPPID);
@@ -707,17 +700,6 @@ unsigned long CUserManager::icqOwnerUin()
 void CUserManager::AddUser(ICQUser *pUser)
 {
   AddUser(pUser, pUser->IdString(), pUser->PPID());
-}
-
-
-/*---------------------------------------------------------------------------
- * CUserManager::RemoveUser
- *-------------------------------------------------------------------------*/
-void CUserManager::RemoveUser(unsigned long _nUin)
-{
-  char szId[16];
-  snprintf(szId, 16, "%lu", _nUin);
-  RemoveUser(szId, LICQ_PPID);
 }
 
 LicqGroup* CUserManager::FetchGroup(int group, unsigned short lockType)
@@ -1149,44 +1131,10 @@ unsigned short CUserManager::GenerateSID()
   return nSID;
 }
 
-/*---------------------------------------------------------------------------
- * CUserManager::FetchUser
- *-------------------------------------------------------------------------*/
-ICQUser *CUserManager::FetchUser(unsigned long _nUin, unsigned short _nLockType)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  ICQUser *u = FetchUser(szUin, LICQ_PPID, _nLockType);
-  return u;
-}
-
-/*---------------------------------------------------------------------------
- * CUserManager::IsOnList
- *-------------------------------------------------------------------------*/
-bool CUserManager::IsOnList(unsigned long nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  return IsOnList(szUin, LICQ_PPID);
-}
-
-
-
-/*---------------------------------------------------------------------------
- * CUserManager::DropUser
- *-------------------------------------------------------------------------*/
 void CUserManager::DropUser(const ICQUser* u)
 {
   if (u == NULL) return;
   u->Unlock();
-}
-
-/*---------------------------------------------------------------------------
- * CUserManager::FetchOwner
- *-------------------------------------------------------------------------*/
-ICQOwner *CUserManager::FetchOwner(unsigned short _nLockType)
-{
-  return FetchOwner(LICQ_PPID, _nLockType);
 }
 
 ICQOwner *CUserManager::FetchOwner(unsigned long _nPPID,
@@ -1208,39 +1156,6 @@ ICQOwner *CUserManager::FetchOwner(unsigned long _nPPID,
   UnlockOwnerList();
 
   return o;
-}
-
-/*---------------------------------------------------------------------------
- * CUserManager::DropOwner
- *-------------------------------------------------------------------------*/
-void CUserManager::DropOwner()
-{
-  LockOwnerList(LOCK_R);
-  OwnerList::iterator iter;
-  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
-  {
-    if ((*iter)->PPID() == LICQ_PPID)
-    {
-      (*iter)->Unlock();
-      break;
-    }
-  }
-  UnlockOwnerList();
-}
-
-void CUserManager::DropOwner(unsigned long _nPPID)
-{
-  LockOwnerList(LOCK_R);
-  OwnerList::iterator iter;
-  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
-  {
-    if ((*iter)->PPID() == _nPPID)
-    {
-      (*iter)->Unlock();
-      break;
-    }
-  }
-  UnlockOwnerList();
 }
 
 void CUserManager::DropOwner(const ICQOwner* owner)
@@ -1569,45 +1484,6 @@ bool compare_groups(const LicqGroup* first, const LicqGroup* second)
 unsigned short ICQUser::s_nNumUserEvents = 0;
 pthread_mutex_t ICQUser::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
-
-//-----ICQUser::constructor-----------------------------------------------------
-ICQUser::ICQUser(unsigned long _nUin, char *_szFilename)
-// Called when first constructing our known users
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  Init(szUin, LICQ_PPID);
-  m_fConf.SetFlags(INI_FxWARN);
-  m_fConf.SetFileName(_szFilename);
-  if (!LoadInfo())
-  {
-    gLog.Error("%sUnable to load user info from '%s'.\n%sUsing default values.\n",
-               L_ERRORxSTR, _szFilename, L_BLANKxSTR);
-    SetDefaults();
-  }
-  m_fConf.CloseFile();
-  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
-}
-
-
-ICQUser::ICQUser(unsigned long nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", nUin);
-  Init(szUin, LICQ_PPID);
-
-  SetDefaults();
-  char szFilename[MAX_FILENAME_LEN];
-  char *p = PPIDSTRING(LICQ_PPID);
-  snprintf(szFilename, MAX_FILENAME_LEN, "%s/%s/%s.%s", BASE_DIR, USER_DIR,
-           szUin, p);
-  delete [] p;
-
-  szFilename[MAX_FILENAME_LEN - 1] = '\0';
-  m_fConf.SetFileName(szFilename);
-  m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
-}
-
 ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, char *_szFilename)
 {
   Init(_szId, _nPPID);
@@ -1931,14 +1807,6 @@ void ICQUser::RemoveFiles()
   }
 }
 
-
-void ICQUser::Init(unsigned long _nUin)
-{
-  char szUin[24];
-  sprintf(szUin, "%lu", _nUin);
-  Init(szUin, LICQ_PPID);
-}
-
 void ICQUser::Init(const char *_szId, unsigned long _nPPID)
 {
   //SetOnContactList(false);
@@ -2070,11 +1938,6 @@ void ICQUser::Init(const char *_szId, unsigned long _nPPID)
 
   pthread_rdwr_init_np(&myMutex, NULL);
   pthread_rdwr_set_name(&myMutex, m_szId);
-}
-
-unsigned long ICQUser::Uin() const
-{
-  return strtoul(m_szId, NULL, 10);
 }
 
 void ICQUser::SetPermanent()
@@ -3597,16 +3460,6 @@ ICQOwner::~ICQOwner()
 
   if ( m_szPassword )
     free( m_szPassword );
-}
-
-void ICQOwner::SetUin(unsigned long uin)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", uin);
-  free(m_szId);
-  m_szId = strdup(id);
-  m_nPPID = LICQ_PPID;
-  SaveLicqInfo();
 }
 
 unsigned long ICQOwner::AddStatusFlags(unsigned long s) const

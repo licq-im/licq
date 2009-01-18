@@ -197,13 +197,6 @@ CUtility::~CUtility()
   delete []m_szFullCommand;
 }
 
-bool CUtility::SetFields(unsigned long _nUin)
-{
-  char id[16];
-  snprintf(id, 16, "%lu", _nUin);
-  return SetFields(id, LICQ_PPID);
-}
-
 bool CUtility::SetFields(const char *szId, unsigned long nPPID)
 {
   const ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
