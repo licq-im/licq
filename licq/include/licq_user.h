@@ -43,7 +43,7 @@ extern char* PPIDSTRING(unsigned long ppid);
  *-------------------------------------------------------------------------*/
 #define FOR_EACH_USER_START(x)                           \
   {                                                      \
-    ICQUser *pUser;                                      \
+    LicqUser* pUser;                                     \
     const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
     for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
@@ -54,7 +54,7 @@ extern char* PPIDSTRING(unsigned long ppid);
 
 #define FOR_EACH_PROTO_USER_START(x, y)                  \
   {                                                      \
-    ICQUser *pUser;                                      \
+    LicqUser* pUser;                                     \
     const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
     for (UserMap::const_iterator _i_ = _ul_->begin();    \
          _i_ != _ul_->end(); _i_++)                      \
@@ -67,7 +67,7 @@ extern char* PPIDSTRING(unsigned long ppid);
 
 #define FOR_EACH_OWNER_START(x)                           \
   {                                                       \
-    ICQOwner *pOwner;                                     \
+    LicqOwner* pOwner;                                    \
     OwnerList *_ol_ = gUserManager.LockOwnerList(LOCK_R); \
     for (OwnerList::iterator _i_ = _ol_->begin();         \
          _i_ != _ol_->end(); _i_++)                       \
@@ -195,13 +195,13 @@ extern char* PPIDSTRING(unsigned long ppid);
           continue;                      \
         }
 
-class ICQUser;
-class ICQOwner;
+class LicqUser;
+class LicqOwner;
 class LicqGroup;
 
 typedef std::pair<std::string, unsigned long> UserMapKey;
-typedef std::map<UserMapKey, class ICQUser*> UserMap;
-typedef std::list<class ICQOwner *> OwnerList;
+typedef std::map<UserMapKey, class LicqUser*> UserMap;
+typedef std::list<class LicqOwner*> OwnerList;
 typedef std::set<int> UserGroupList;
 typedef std::map<int, LicqGroup*> GroupMap;
 typedef std::map<int, std::string> GroupNameMap;
@@ -353,22 +353,33 @@ private:
 
   std::vector<struct PhoneBookEntry> PhoneBookVector;
 
-  friend class ICQUser;
+  friend class LicqUser;
 };
 
-//=====ICQUser==================================================================
-/*! \brief Details about an ICQ user and operations to perform on them.
 
-    This class contains all the information about an ICQ user.  It can be
-    retrieved with a read lock (LOCK_R) and may be set with a write lock (LOCK_W).
-    Everything about an ICQ user is in this class.
-*/
-class ICQUser
+// Temporary until all occurenses of deprecated names ICQUser ICQOwner have been removed
+typedef LicqUser ICQUser;
+typedef LicqOwner ICQOwner;
+
+
+/**
+ * A contact in the Licq user list including all information for that user
+ *
+ * Unless otherwise noted, members should only be accessed while holding a lock
+ * to avoid race conditions between threads. User objects are normally
+ * retrieved using the user manager function FetchUser() which will lock the
+ * user before returning it.
+ * Modifying a user object will not trigger any server side changes or generate
+ * events to notify plugins, that is the responsibility of the caller. For some
+ * members (such as group memberships) user manager functions exist that should
+ * be used for this purpose.
+ */
+class LicqUser
 {
 public:
-  ICQUser(const char *id, unsigned long ppid, char *filename);
-  ICQUser(const char *id, unsigned long ppid, bool bTempUser = false);
-  virtual ~ICQUser();
+  LicqUser(const char* id, unsigned long ppid, char* filename);
+  LicqUser(const char* id, unsigned long ppid, bool bTempUser = false);
+  virtual ~LicqUser();
   void RemoveFiles();
 
   void saveAll();
@@ -782,7 +793,7 @@ public:
   void Unlock() const;
 
 protected:
-  ICQUser() { /* ICQOwner inherited constructor - does nothing */ }
+  LicqUser() { /* LicqOwner inherited constructor - does nothing */ }
   void loadUserInfo();
 
   /**
@@ -927,12 +938,16 @@ protected:
 };
 
 
-//=====ICQOwner=================================================================
-class ICQOwner : public ICQUser
+/**
+ * A protocol account including all user information for that account
+ *
+ * Inherits LicqUser to hold all user information associated with the account.
+ */
+class LicqOwner : public LicqUser
 {
 public:
-  ICQOwner(const char *, unsigned long);
-  virtual ~ICQOwner();
+  LicqOwner(const char* idstring, unsigned long ppid);
+  virtual ~LicqOwner();
   bool Exception() const                        { return m_bException; }
 
   // Owner specific functions
@@ -979,7 +994,7 @@ protected:
 
 /**
  * Class holding data for a user group in the contact list.
- * System groups only exists as a bitmask in ICQUser.
+ * System groups only exists as a bitmask in LicqUser.
  *
  * Note: LicqGroup objects should only be created, deleted or modified from the
  * user manager. If set functions are called directly, plugins will not receive
@@ -1093,19 +1108,19 @@ public:
 
   // For protocol plugins
   void AddOwner(const char *, unsigned long);
-  void AddUser(ICQUser *, const char *, unsigned long);
+  void AddUser(LicqUser* user, const char* idstring, unsigned long ppid);
   void RemoveUser(const char *, unsigned long);
   void RemoveOwner(unsigned long);
-  ICQUser *FetchUser(const char *, unsigned long, unsigned short);
-  ICQOwner *FetchOwner(unsigned long, unsigned short);
+  LicqUser* FetchUser(const char* idstring, unsigned long ppid, unsigned short lockType);
+  LicqOwner* FetchOwner(unsigned long ppid, unsigned short lockType);
 
   /**
    * Release owner lock
    */
-  void DropOwner(const ICQOwner* owner);
+  void DropOwner(const LicqOwner* owner);
 
   bool IsOnList(const char *, unsigned long);
-  ICQOwner *FindOwner(const char *, unsigned long);
+  LicqOwner* FindOwner(const char* idstring, unsigned long ppid);
 
   /**
    * Get user id for an owner
@@ -1116,8 +1131,8 @@ public:
   std::string OwnerId(unsigned long ppid);
 
   // ICQ Protocol only (from original Licq)
-  void AddUser(ICQUser *);
-  void DropUser(const ICQUser* user);
+  void AddUser(LicqUser* user);
+  void DropUser(const LicqUser* user);
 
   /**
    * Convenience function to get icq owner as an unsigned long
@@ -1332,7 +1347,6 @@ protected:
   GroupMap myGroups;
   UserMap myUsers;
   OwnerList m_vpcOwners;
-  ICQOwner *m_xOwner;
   unsigned short m_nUserListLockType;
   unsigned short myGroupListLockType;
   unsigned short m_nOwnerListLockType;

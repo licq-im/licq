@@ -7,7 +7,7 @@
 
 class CICQDaemon;
 class TCPSocket;
-class ICQUser;
+class LicqUser;
 class CUserEvent;
 class CICQSignal;
 class ICQEvent;
@@ -44,9 +44,9 @@ public:
   void ProcessEvent(ICQEvent *);
 
   void ProcessUserEvent(const char *, unsigned long, unsigned long);
-  bool ForwardEvent(ICQUser *, CUserEvent *);
-  bool ForwardEvent_ICQ(ICQUser *, CUserEvent *);
-  bool ForwardEvent_Email(ICQUser *, CUserEvent *);
+  bool ForwardEvent(LicqUser *, CUserEvent *);
+  bool ForwardEvent_ICQ(LicqUser *, CUserEvent *);
+  bool ForwardEvent_Email(LicqUser *, CUserEvent *);
 
 private:
   bool CreateDefaultConfig();

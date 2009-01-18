@@ -6,7 +6,6 @@
 #endif
 
 class CICQDaemon;
-class ICQUser;
 class CUserEvent;
 class CICQSignal;
 class ICQEvent;

@@ -8,7 +8,7 @@
 class CPacket;
 class CICQDaemon;
 class CUserEvent;
-class ICQUser;
+class LicqUser;
 
 //-----CExtendedAck----------------------------------------------------------
 
@@ -221,12 +221,12 @@ public:
   //!with the relevant fields set.  This is helpful in searches for example
   //!to avoid having to add the user to the list before checking their
   //!other information.
-  const ICQUser* UnknownUser() const { return m_pUnknownUser; }
+  const LicqUser* UnknownUser() const { return m_pUnknownUser; }
 
   // Returns the event and transfers ownership to the calling function
   CUserEvent *GrabUserEvent();
   CSearchAck *GrabSearchAck();
-  ICQUser *GrabUnknownUser();
+  LicqUser* GrabUnknownUser();
 
   //!Compare this event to the id to see if the plugin matches a waiting
   //!event with the event that the daemon has signaled to the plugin.
@@ -283,7 +283,7 @@ protected:
   CUserEvent    *m_pUserEvent;
   CExtendedAck  *m_pExtendedAck;
   CSearchAck    *m_pSearchAck;
-  ICQUser       *m_pUnknownUser;
+  LicqUser* m_pUnknownUser;
 
   CICQDaemon    *m_pDaemon;
 

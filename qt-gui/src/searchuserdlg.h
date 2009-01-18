@@ -39,7 +39,6 @@ class QCheckBox;
 class CICQDaemon;
 class CSignalManager;
 class ICQEvent;
-class ICQUser;
 class CSearchAck;
 
 //TODO for protocol plugin support

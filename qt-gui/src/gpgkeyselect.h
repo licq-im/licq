@@ -27,7 +27,7 @@
 #include <qdialog.h>
 
 class CICQDaemon;
-class ICQUser;
+class LicqUser;
 class QCheckBox;
 class QLineEdit;
 
@@ -41,7 +41,7 @@ public:
 protected:
   const char *szId;
   unsigned long nPPID;
-  void testViewItem( QListViewItem *item, ICQUser *u );
+  void testViewItem(QListViewItem* item, LicqUser* u);
   int maxItemVal;
   QListViewItem *maxItem;
   void initKeyList();

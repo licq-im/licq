@@ -22,16 +22,16 @@
 
 #include <qstring.h>
 
-class ICQUser;
+class LicqUser;
 
 class Strings
 {
 public:
   static QString getStatus(unsigned short status, bool invisible);
-  static QString getStatus(ICQUser* user, bool useInvisible = true);
+  static QString getStatus(LicqUser* user, bool useInvisible = true);
 
   static QString getShortStatus(unsigned short status, bool invisible);
-  static QString getShortStatus(ICQUser* user, bool useInvisible = true);
+  static QString getShortStatus(LicqUser* user, bool useInvisible = true);
 
   static QString getSystemGroupName(unsigned long group);
 };

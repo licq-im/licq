@@ -29,7 +29,6 @@ class QPushButton;
 
 class CUserEvent;
 class ICQEvent;
-class ICQUser;
 
 namespace LicqQtGui
 {

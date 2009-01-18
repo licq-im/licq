@@ -42,7 +42,7 @@ class QVBoxLayout;
 class CICQSignal;
 class ICQUserPhoneBook;
 class ICQUserCategory;
-class ICQUser;
+class LicqUser;
 
 
 namespace LicqQtGui
@@ -79,14 +79,14 @@ public:
    *
    * @param user User to get data from
    */
-  void load(const ICQUser* user);
+  void load(const LicqUser* user);
 
   /**
    * Save user data for pages
    *
    * @param user User to write data to
    */
-  void apply(ICQUser* user);
+  void apply(LicqUser* user);
 
   /**
    * Save user data for pages
@@ -103,7 +103,7 @@ public:
    * @param sig Signal from daemon
    * @param user User locked for read access
    */
-  void userUpdated(const CICQSignal* sig, const ICQUser* user);
+  void userUpdated(const CICQSignal* sig, const LicqUser* user);
 
   /**
    * Retrieve info from server
@@ -206,14 +206,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageGeneral(const ICQUser* user);
+  void loadPageGeneral(const LicqUser* user);
 
   /**
    * Save user data for general page
    *
    * @param user User to write data to
    */
-  void savePageGeneral(ICQUser* user);
+  void savePageGeneral(LicqUser* user);
 
   /**
    * Setup the more page
@@ -228,14 +228,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageMore(const ICQUser* user);
+  void loadPageMore(const LicqUser* user);
 
   /**
    * Save user data for more page
    *
    * @param user User to write data to
    */
-  void savePageMore(ICQUser* user);
+  void savePageMore(LicqUser* user);
 
   /**
    * Setup the more2 page
@@ -250,14 +250,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageMore2(const ICQUser* user);
+  void loadPageMore2(const LicqUser* user);
 
   /**
    * Save user data for more2 page
    *
    * @param user User to write data to
    */
-  void savePageMore2(ICQUser* user);
+  void savePageMore2(LicqUser* user);
 
   /**
    * Split interest, organization or background string for presentation
@@ -289,14 +289,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageWork(const ICQUser* user);
+  void loadPageWork(const LicqUser* user);
 
   /**
    * Save user data for work page
    *
    * @param user User to write data to
    */
-  void savePageWork(ICQUser* user);
+  void savePageWork(LicqUser* user);
 
   /**
    * Setup the about page.
@@ -311,14 +311,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageAbout(const ICQUser* user);
+  void loadPageAbout(const LicqUser* user);
 
   /**
    * Save user data for about page
    *
    * @param user User to write data to
    */
-  void savePageAbout(ICQUser* user);
+  void savePageAbout(LicqUser* user);
 
   /**
    * Setup the phone book page.
@@ -333,14 +333,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPagePhoneBook(const ICQUser* user);
+  void loadPagePhoneBook(const LicqUser* user);
 
   /**
    * Save user data for phone book
    *
    * @param user User to write data to
    */
-  void savePagePhoneBook(ICQUser* user);
+  void savePagePhoneBook(LicqUser* user);
 
   /**
    * Update data in phone book widget
@@ -360,14 +360,14 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPagePicture(const ICQUser* user);
+  void loadPagePicture(const LicqUser* user);
 
   /**
    * Save user data for picture page
    *
    * @param user User to write data to
    */
-  void savePagePicture(ICQUser* user);
+  void savePagePicture(LicqUser* user);
 
   /**
    * Setup the counters page.
@@ -382,7 +382,7 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageCounters(const ICQUser* user);
+  void loadPageCounters(const LicqUser* user);
 
 #ifdef USE_KABC
   /**
@@ -398,7 +398,7 @@ private:
    *
    * @param user User to get data from
    */
-  void loadPageKabc(const ICQUser* user);
+  void loadPageKabc(const LicqUser* user);
 
   /**
    * Save user data for KDE adressbook page

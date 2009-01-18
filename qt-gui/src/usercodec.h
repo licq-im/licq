@@ -24,7 +24,7 @@
 #include <qobject.h>
 
 class QTextCodec;
-class ICQUser;
+class LicqUser;
 class CChatUser;
 
 class UserCodec {
@@ -39,8 +39,8 @@ public:
 
   // Retrieves the default codec
   static QTextCodec * defaultEncoding();
-  // Retrieves the codec for an ICQUser object
-  static QTextCodec * codecForICQUser(ICQUser *u);
+  // Retrieves the codec for an LicqUser object
+  static QTextCodec* codecForICQUser(LicqUser* u);
   // Retrieves the codec for an CChatUser object
   static QTextCodec * codecForCChatUser(CChatUser *u);
   // Retrieves the codec for a proto user

@@ -23,7 +23,7 @@
 #include <QDialog>
 #include <QTreeWidget>
 
-class ICQUser;
+class LicqUser;
 
 namespace LicqQtGui
 {
@@ -70,7 +70,7 @@ class KeyListItem : public QObject, public QTreeWidgetItem
   Q_OBJECT
 
 public:
-  KeyListItem(QTreeWidget* parent, const ICQUser* u);
+  KeyListItem(QTreeWidget* parent, const LicqUser* u);
 
   void edit();
   void unsetKey();
@@ -82,7 +82,7 @@ private:
   QString szId;
   unsigned long nPPID;
   GPGKeySelect* keySelect;
-  void updateText(const ICQUser* u);
+  void updateText(const LicqUser* u);
 
 private slots:
   void slot_done();

@@ -44,7 +44,7 @@ class CSignalManager;
 class CMainWindow;
 class CEInfoField;
 class CEComboBox;
-class ICQUser;
+class LicqUser;
 
 class UserInfoDlg : public QWidget
 {
@@ -173,17 +173,17 @@ protected:
   bool m_bHistoryReverse;
   unsigned short m_nHistoryIndex, m_nHistoryShowing;
 
-  void SetGeneralInfo(ICQUser *);
-  void SetMoreInfo(ICQUser *);
-  void SetMore2Info(ICQUser *);
+  void SetGeneralInfo(LicqUser *);
+  void SetMoreInfo(LicqUser *);
+  void SetMore2Info(LicqUser *);
   void UpdateMore2Info(QTextCodec* codec, UserCat cat, const UserCategoryMap& category);
-  void SetWorkInfo(ICQUser *);
-  void SetAbout(ICQUser *);
-  void SetPhoneBook(ICQUser *);
+  void SetWorkInfo(LicqUser *);
+  void SetAbout(LicqUser *);
+  void SetPhoneBook(LicqUser *);
   void UpdatePhoneBook(QTextCodec *);
-  void SetPicture(ICQUser *);
-  void SetLastCountersInfo(ICQUser *);
-  void SetKABCInfo(ICQUser *);
+  void SetPicture(LicqUser *);
+  void SetLastCountersInfo(LicqUser *);
+  void SetKABCInfo(LicqUser *);
   void UpdateKABCInfo();
   void SaveGeneralInfo();
   void SaveMoreInfo();

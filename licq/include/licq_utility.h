@@ -4,7 +4,7 @@
 #include <cstdio>
 #include <vector>
 
-class ICQUser;
+class LicqUser;
 
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED
@@ -49,7 +49,7 @@ public:
   const char *Title()  { return m_szTitle; }
   const char *Default()  { return m_szDefault; }
   const char *FullDefault()  { return m_szFullDefault; }
-  bool SetFields(const ICQUser* u);
+  bool SetFields(const LicqUser* u);
 protected:
   char *m_szTitle;
   char *m_szDefault;
@@ -67,7 +67,7 @@ public:
   ~CUtility();
 
   const char *Name()  { return m_szName; }
-  const char *Command(ICQUser *) { return m_szCommand; }
+  const char* Command(LicqUser*) { return m_szCommand; }
   const char *Description()  { return m_szDescription; }
   EWinType WinType()  { return m_eWinType; }
 

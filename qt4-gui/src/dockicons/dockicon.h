@@ -25,7 +25,6 @@
 
 class QPixmap;
 
-class ICQOwner;
 
 namespace LicqQtGui
 {

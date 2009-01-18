@@ -27,7 +27,7 @@
 #include <qptrvector.h>
 
 class QTimer;
-class ICQUser;
+class LicqUser;
 class CUserView;
 
 enum BarType
@@ -67,8 +67,8 @@ typedef std::vector<CColumnInfo *> ColumnInfos;
 class CUserViewItem : public QListViewItem
 {
 public:
-  CUserViewItem (ICQUser *, QListView *);
-  CUserViewItem (ICQUser *, CUserViewItem* item);
+  CUserViewItem(LicqUser*, QListView *);
+  CUserViewItem(LicqUser*, CUserViewItem* item);
   CUserViewItem (BarType, QListView *);
   CUserViewItem(unsigned short Id, const char* name, unsigned short sortKey, QListView* parent);
 
@@ -79,7 +79,7 @@ public:
   unsigned short GroupId() const { return m_nGroupId; }
   bool isGroupItem() const { return (!m_szId && !m_nPPID && m_nGroupId != (unsigned short)(-1)); }
   QCString  GroupName() const { return m_sGroupName; }
-  void setGraphics(ICQUser *);
+  void setGraphics(LicqUser *);
   unsigned short Status() const { return m_nStatus; };
   CUserViewItem* firstChild() const { return static_cast<CUserViewItem*>(QListViewItem::firstChild()); }
   CUserViewItem* nextSibling() const { return static_cast<CUserViewItem*>(QListViewItem::nextSibling()); }

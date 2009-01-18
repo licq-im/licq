@@ -31,7 +31,7 @@
 
 class QImage;
 
-class ICQUser;
+class LicqUser;
 
 namespace LicqQtGui
 {
@@ -53,7 +53,7 @@ public:
    * @param licqUser Licq user that this object will represent
    * @param parent Object to use as parent for those objects that needs it
    */
-  ContactUserData(const ICQUser* licqUser, QObject* parent);
+  ContactUserData(const LicqUser* licqUser, QObject* parent);
 
   /**
    * Destructor, will remove the user from all groups
@@ -72,7 +72,7 @@ public:
    *
    * @param licqUser Licq user to read information from
    */
-  void updateAll(const ICQUser* licqUser);
+  void updateAll(const LicqUser* licqUser);
 
   /**
    * Update all data related to the gui configuration
@@ -167,7 +167,7 @@ signals:
   /**
    * Signal emitted when the user group memberships (may) have changed
    */
-  void updateUserGroups(ContactUserData* user, const ICQUser* licqUser);
+  void updateUserGroups(ContactUserData* user, const LicqUser* licqUser);
 
 private:
   /**
@@ -191,7 +191,7 @@ private:
    * @param licqUser Licq user to read information from
    * @return True if any data was actually changed
    */
-  bool updateText(const ICQUser* licqUser);
+  bool updateText(const LicqUser* licqUser);
 
   /**
    * Update visibility status

@@ -27,7 +27,7 @@
 #include <licq_user.h>
 
 class CICQSignal;
-class ICQUser;
+class LicqUser;
 
 
 namespace LicqQtGui
@@ -209,7 +209,7 @@ public:
    *
    * @param licqUser The user to add
    */
-  void addUser(const ICQUser* licqUser);
+  void addUser(const LicqUser* licqUser);
 
   /**
    * Remove a user from the contact list
@@ -411,7 +411,7 @@ private slots:
    * @param user The model user to update groups for
    * @param licqUser The daemon user to get group membership from
    */
-  void updateUserGroups(ContactUserData* user, const ICQUser* licqUser);
+  void updateUserGroups(ContactUserData* user, const LicqUser* licqUser);
 
 private:
   /**

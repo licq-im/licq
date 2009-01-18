@@ -44,7 +44,6 @@
 class CUserEvent;
 class ICQEvent;
 class CMainWindow;
-class ICQUser;
 
 bool QueryUser(QWidget *, QString, QString, QString, bool bConfirmYes=false, QString szConfirm=NULL, bool bConfirmNo=false, QString szConfirmNo=NULL);
 int QueryUser(QWidget *, QString, QString, QString, QString);

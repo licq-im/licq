@@ -4,7 +4,7 @@
 #include <pthread.h>
 #include <string>
 
-class ICQUser;
+class LicqUser;
 
 //=====COnEventManager==========================================================
 const unsigned short ON_EVENT_MSG = 0;
@@ -28,7 +28,7 @@ public:
 
   const std::string command() const { return myCommand; }
   const std::string parameter(unsigned short event) const { return myParameters[event]; }
-  void Do(unsigned short m_nEvent, ICQUser *u);
+  void Do(unsigned short m_nEvent, LicqUser* u);
   void SetCommandType(unsigned short _nCommandType);
   void setCommand(const std::string& command);
   void setParameter(unsigned short event, const std::string& parameter);

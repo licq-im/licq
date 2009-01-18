@@ -28,7 +28,7 @@
 
 #include "userbox.h"
 
-class ICQUser;
+class LicqUser;
 class CMainWindow;
 
 
@@ -36,7 +36,7 @@ class CMainWindow;
 class CMMUserViewItem : public QListViewItem
 {
 public:
-  CMMUserViewItem (ICQUser *, QListView *);
+  CMMUserViewItem(LicqUser *, QListView *);
   virtual ~CMMUserViewItem();
   char *Id()  { return m_szId; }
   unsigned long PPID()  { return m_nPPID; }

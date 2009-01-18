@@ -24,7 +24,6 @@
 
 class QMenu;
 
-class ICQUser;
 
 namespace LicqQtGui
 {

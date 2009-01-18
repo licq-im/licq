@@ -343,8 +343,8 @@ void ContactListModel::addUser(const ICQUser* licqUser)
   ContactUserData* newUser = new ContactUserData(licqUser, this);
   connect(newUser, SIGNAL(dataChanged(const ContactUserData*)),
       SLOT(userDataChanged(const ContactUserData*)));
-  connect(newUser, SIGNAL(updateUserGroups(ContactUserData*, const ICQUser*)),
-      SLOT(updateUserGroups(ContactUserData*, const ICQUser*)));
+  connect(newUser, SIGNAL(updateUserGroups(ContactUserData*, const LicqUser*)),
+      SLOT(updateUserGroups(ContactUserData*, const LicqUser*)));
 
   myUsers.append(newUser);
   updateUserGroups(newUser, licqUser);

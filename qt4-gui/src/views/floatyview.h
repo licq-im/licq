@@ -23,7 +23,7 @@
 
 #include "userviewbase.h"
 
-class ICQUser;
+class LicqUser;
 
 namespace LicqQtGui
 {
@@ -46,7 +46,7 @@ public:
    * @param licqUser The daemon contact to create floaty for
    * @param parent Parent object
    */
-  FloatyView(ContactListModel* contactList, const ICQUser* licqUser, QWidget* parent = 0);
+  FloatyView(ContactListModel* contactList, const LicqUser* licqUser, QWidget* parent = 0);
 
   /**
    * Destructor

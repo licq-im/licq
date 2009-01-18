@@ -25,7 +25,7 @@ class CPacket;
 class CPacketTcp;
 class CLicq;
 class CUserManager;
-class ICQUser;
+class LicqUser;
 class CICQEventTag;
 class CICQColor;
 class TCPSocket;
@@ -557,7 +557,7 @@ public:
 
   bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true,
                      bool bTempUser = false, unsigned short groupId = 0);
-  void AddUserToList(ICQUser *);
+  void AddUserToList(LicqUser* user);
   void RemoveUserFromList(const char *szId, unsigned long nPPID);
 
   // SMS
@@ -664,12 +664,12 @@ public:
   bool RemoveConversation(unsigned long nCID);
 
   // Common message handler
-  void ProcessMessage(ICQUser *user, CBuffer &packet, char *message,
+  void ProcessMessage(LicqUser* user, CBuffer& packet, char* message,
      unsigned short nMsgType, unsigned long nMask,
       const unsigned long nMsgID[], unsigned short nSequence,
      bool bIsAck, bool &bNewUser);
 
-  bool ProcessPluginMessage(CBuffer &packet, ICQUser *u, unsigned char nChannel,
+  bool ProcessPluginMessage(CBuffer& packet, LicqUser* user, unsigned char nChannel,
      bool bIsAck, unsigned long nMsgID1,
      unsigned long nMsgID2, unsigned short nSequence,
      TCPSocket *pSock);
@@ -769,10 +769,10 @@ protected:
   pthread_mutex_t mutex_serverack;
   unsigned short m_nServerAck;
 
-  void ChangeUserStatus(ICQUser *u, unsigned long s);
-  bool AddUserEvent(ICQUser *, CUserEvent *);
+  void ChangeUserStatus(LicqUser* u, unsigned long s);
+  bool AddUserEvent(LicqUser* user, CUserEvent* e);
   void RejectEvent(const char* id, CUserEvent* e);
-  ICQUser *FindUserForInfoUpdate(const char *szId, ICQEvent *e, const char *);
+  LicqUser* FindUserForInfoUpdate(const char* szId, ICQEvent* e, const char*);
   std::string FindUserByCellular(const char* cellular);
 
   void icqRegisterFinish();
@@ -809,7 +809,7 @@ protected:
   ICQEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
   { return SendExpectEvent_Server("0", LICQ_PPID, packet, ue, extendedEvent); }
 
-  ICQEvent* SendExpectEvent_Client(const ICQUser* u, CPacket* packet, CUserEvent* ue);
+  ICQEvent* SendExpectEvent_Client(const LicqUser* user, CPacket* packet, CUserEvent* ue);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));
   void AckTCP(CPacketTcp &, int);
   void AckTCP(CPacketTcp &, TCPSocket *);
@@ -853,8 +853,8 @@ protected:
                                unsigned short, unsigned short);
 
   // Protected plugin related stuff
-  unsigned long icqRequestInfoPlugin(ICQUser *, bool, const char *);
-  unsigned long icqRequestStatusPlugin(ICQUser *, bool, const char *);
+  unsigned long icqRequestInfoPlugin(LicqUser* user, bool, const char *);
+  unsigned long icqRequestStatusPlugin(LicqUser* user, bool, const char *);
   void icqUpdateInfoTimestamp(const char *);
 
   void StupidChatLinkageFix();
@@ -872,7 +872,7 @@ protected:
   friend void *OscarServiceSendQueue_tep(void *p);
   friend void *Shutdown_tep(void *p);
   friend void *ConnectToServer_tep(void *s);
-  friend class ICQUser;
+  friend class LicqUser;
   friend class CSocketManager;
   friend class COscarService;
   friend class CChatManager;

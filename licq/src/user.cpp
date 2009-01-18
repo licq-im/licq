@@ -364,8 +364,6 @@ CUserManager::CUserManager()
   m_nOwnerListLockType = LOCK_N;
   m_nUserListLockType = LOCK_N;
   myGroupListLockType = LOCK_N;
-
-  m_xOwner = NULL;
 }
 
 
@@ -1484,7 +1482,7 @@ bool compare_groups(const LicqGroup* first, const LicqGroup* second)
 unsigned short ICQUser::s_nNumUserEvents = 0;
 pthread_mutex_t ICQUser::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
-ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, char *_szFilename)
+LicqUser::LicqUser(const char* _szId, unsigned long _nPPID, char* _szFilename)
 {
   Init(_szId, _nPPID);
   m_fConf.SetFlags(INI_FxWARN);
@@ -1499,7 +1497,7 @@ ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, char *_szFilename)
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
-ICQUser::ICQUser(const char *_szId, unsigned long _nPPID, bool _bTempUser)
+LicqUser::LicqUser(const char* _szId, unsigned long _nPPID, bool _bTempUser)
 {
   Init(_szId, _nPPID);
   SetDefaults();
@@ -1732,7 +1730,7 @@ void ICQUser::LoadLicqInfo()
 
 
 //-----ICQUser::destructor------------------------------------------------------
-ICQUser::~ICQUser()
+LicqUser::~LicqUser()
 {
   unsigned long nId;
   while (m_vcMessages.size() > 0)
@@ -3367,7 +3365,7 @@ void ICQUser::SetTLVList(TLVList& tlvs)
 //=====ICQOwner=================================================================
 
 //-----ICQOwner::constructor----------------------------------------------------
-ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
+LicqOwner::LicqOwner(const char* _szId, unsigned long _nPPID)
 {
   char szTemp[MAX_LINE_LEN];
   char filename[MAX_FILENAME_LEN];
@@ -3436,7 +3434,7 @@ ICQOwner::ICQOwner(const char *_szId, unsigned long _nPPID)
   delete [] p;
 }
 
-ICQOwner::~ICQOwner()
+LicqOwner::~LicqOwner()
 {
   // Save the current auto response
   if (!m_fConf.ReloadFile())

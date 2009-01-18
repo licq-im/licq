@@ -26,7 +26,7 @@
 class QCheckBox;
 class QLineEdit;
 
-class ICQUser;
+class LicqUser;
 
 namespace LicqQtGui
 {
@@ -41,7 +41,7 @@ public:
 private:
   QString szId;
   unsigned long nPPID;
-  void testViewItem(QTreeWidgetItem* item, const ICQUser* u);
+  void testViewItem(QTreeWidgetItem* item, const LicqUser* u);
   int maxItemVal;
   QTreeWidgetItem* maxItem;
   void initKeyList();

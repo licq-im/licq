@@ -11,7 +11,6 @@
 
 class CICQDaemon;
 class TCPSocket;
-class ICQUser;
 class CUserEvent;
 class CICQSignal;
 class ICQEvent;

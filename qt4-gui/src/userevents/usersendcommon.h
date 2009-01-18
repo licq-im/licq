@@ -32,7 +32,6 @@ class QSplitter;
 
 class CICQSignal;
 class ICQEvent;
-class ICQUser;
 
 namespace LicqQtGui
 {
@@ -94,7 +93,7 @@ protected:
 
   void retrySend(ICQEvent* e, bool online, unsigned short level);
   virtual void userUpdated(CICQSignal* sig, QString id = QString::null, unsigned long ppid = 0);
-  void updatePicture(const ICQUser* u = NULL);
+  void updatePicture(const LicqUser* u = NULL);
   bool checkSecure();
 
   /**

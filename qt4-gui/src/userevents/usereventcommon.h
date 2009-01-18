@@ -33,7 +33,7 @@ class QToolBar;
 class QVBoxLayout;
 
 class CICQSignal;
-class ICQUser;
+class LicqUser;
 
 
 namespace LicqQtGui
@@ -97,7 +97,7 @@ protected:
   QTimer* myTypingTimer;
 
   void flashTaskbar();
-  void updateWidgetInfo(const ICQUser* u);
+  void updateWidgetInfo(const LicqUser* u);
   void pushToolTip(QAction* action, QString tooltip);
 
   virtual void userUpdated(CICQSignal* sig, QString id = QString::null, unsigned long ppid = 0) = 0;

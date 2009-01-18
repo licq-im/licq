@@ -38,7 +38,7 @@ class QVBoxLayout;
 class QWidget;
 
 class CICQSignal;
-class ICQUser;
+class LicqUser;
 
 
 namespace LicqQtGui
@@ -56,8 +56,8 @@ public:
   Settings(bool isOwner, UserDlg* parent);
   virtual ~Settings() {}
 
-  void load(const ICQUser* user);
-  void apply(ICQUser* user);
+  void load(const LicqUser* user);
+  void apply(LicqUser* user);
 
   /**
    * Save user data for pages
@@ -74,7 +74,7 @@ public:
    * @param sig Signal from daemon
    * @param user User locked for read access
    */
-  void userUpdated(const CICQSignal* sig, const ICQUser* user);
+  void userUpdated(const CICQSignal* sig, const LicqUser* user);
 
 private slots:
   /**
