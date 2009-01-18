@@ -759,7 +759,6 @@ pthread_t *CICQDaemon::Shutdown()
   if (m_bShuttingDown) return(&thread_shutdown);
   m_bShuttingDown = true;
   // Small race condition here if multiple plugins call shutdown at the same time
-  SaveUserList();
   pthread_create (&thread_shutdown, NULL, &Shutdown_tep, this);
   return (&thread_shutdown);
 }
@@ -1059,79 +1058,6 @@ unsigned short VersionToUse(unsigned short v_in)
 
 //++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
-
-//-----SaveUserList-------------------------------------------------------------
-void CICQDaemon::SaveUserList()
-{
-  static const char suffix[] = ".new";
-  static const char file[] = "users.conf";
-
-  size_t nLen = strlen(BASE_DIR) + sizeof(file) + sizeof(suffix) + 2;
-  char szTmpName[nLen], szFilename[nLen], buff[128];
-  int nRet, n, fd;
- 
-  snprintf(szFilename, nLen, "%s/%s", BASE_DIR, file);
-  szFilename[nLen - 1] = '\0';
-  strcpy(szTmpName, szFilename);
-  strcat(szTmpName, suffix);
-
-  fd = open(szTmpName, O_WRONLY | O_CREAT | O_TRUNC, 00600);
-  if (fd == -1)
-  {
-    // Avoid sending the message to the plugins, a race exists if we are
-    // shutting down
-    if (!m_bShuttingDown)
-      gLog.Error("%sFailed updating %s: `%s'\n", L_ERRORxSTR,
-                 szFilename, strerror(errno));
-    return;
-  }
-     
-  // Don't save the temporary "Not In List" users
-  int nNumUsers = 0;
-  FOR_EACH_USER_START(LOCK_R)
-  {
-    if (!pUser->NotInList())
-      nNumUsers++;
-  }
-  FOR_EACH_USER_END
-
-  n = sprintf(buff, "[users]\nNumOfUsers = %d\n", nNumUsers);
-  nRet = write(fd, buff, n);
-
-  unsigned short i = 1;
-  FOR_EACH_USER_START(LOCK_R)
-  {
-    if (pUser->NotInList())
-      FOR_EACH_USER_CONTINUE
-
-    char szPPID[5];
-    unsigned long nPPID = pUser->PPID();
-    szPPID[0] = (nPPID & 0xFF000000) >> 24;
-    szPPID[1] = (nPPID & 0x00FF0000) >> 16;
-    szPPID[2] = (nPPID & 0x0000FF00) >> 8;
-    szPPID[3] = (nPPID & 0x000000FF);
-    szPPID[4] = '\0';
-    n = sprintf(buff, "User%d = %s.%s\n", i, pUser->IdString(), szPPID);
-    nRet = write(fd, buff, n);
-    if (nRet == -1)
-      FOR_EACH_USER_BREAK
-
-    i++;
-  }
-  FOR_EACH_USER_END
-
-  close(fd);
-
-  if (nRet != -1)
-  {
-    if (rename(szTmpName, szFilename))
-      unlink(szTmpName);
-  }
-  else if (!m_bShuttingDown)
-    gLog.Error("%sFailed updating %s: `%s'\n", L_ERRORxSTR,
-               szFilename, strerror(errno));
-}
-
 void CICQDaemon::SetIgnore(unsigned short n, bool b)
 {
   if (b)
@@ -1176,9 +1102,6 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
   if (groupId != 0)
     u->AddToGroup(GROUPS_USER, groupId);
   gUserManager.AddUser(u);
-  gUserManager.DropUser(u);
-  if (!bTempUser)
-    SaveUserList();
 
   // this notify is for local only adds
   if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify && !bTempUser)
@@ -1212,8 +1135,6 @@ void CICQDaemon::AddUserToList(ICQUser *nu)
   const char *szId = nu->IdString();
   unsigned long nPPID = nu->PPID();
   gUserManager.AddUser(nu);
-  gUserManager.DropUser(nu);
-  SaveUserList();
   nu = gUserManager.FetchUser(szId, nPPID, LOCK_W);
 
   if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
@@ -1240,8 +1161,6 @@ void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
     ProtoRemoveUser(szId, nPPID);
 
   gUserManager.RemoveUser(szId, nPPID);
-  if (!bTempUser)
-    SaveUserList();
 
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, szId,
     nPPID));

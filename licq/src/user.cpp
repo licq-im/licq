@@ -535,13 +535,46 @@ bool CUserManager::Load()
   return true;
 }
 
+void CUserManager::saveUserList() const
+{
+  string filename = string(BASE_DIR) + "/users.conf";
+
+  CIniFile usersConf(INI_FxERROR | INI_FxFATAL | INI_FxALLOWxCREATE);
+  usersConf.LoadFile(filename.c_str());
+  usersConf.SetSection("users");
+
+  char key[MAX_KEYxNAME_LEN];
+  int count = 0;
+  for (UserMap::const_iterator i = myUsers.begin(); i != myUsers.end(); ++i)
+  {
+    i->second->Lock(LOCK_R);
+    bool temporary = i->second->NotInList();
+    i->second->Unlock();
+
+    // Only save users that's been permanently added
+    if (temporary)
+      continue;
+    ++count;
+
+    sprintf(key, "User%i", count);
+
+    char* ps = PPIDSTRING(i->first.second);
+    usersConf.writeString(key, i->first.first + "." + ps);
+    delete [] ps;
+  }
+  usersConf.WriteNum("NumOfUsers", count);
+  usersConf.FlushFile();
+  usersConf.CloseFile();
+}
+
 void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPPID)
 {
   LockUserList(LOCK_W);
 
   pUser->Lock(LOCK_W);
+  bool temporary = pUser->NotInList();
 
-  if (!pUser->NotInList())
+  if (!temporary)
   {
     // Set this user to be on the contact list
     pUser->AddToContactList();
@@ -552,6 +585,11 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
   // Store the user in the lookup map
   myUsers[UserMapKey(_szId, _nPPID)] = pUser;
 
+  pUser->Unlock();
+
+  if (!temporary)
+    saveUserList();
+
   UnlockUserList();
 }
 
@@ -559,10 +597,13 @@ void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
 {
   ICQUser *u = FetchUser(_szId, _nPPID, LOCK_W);
   if (u == NULL) return;
-  if (!u->NotInList())
+  bool temporary = u->NotInList();
+  if (!temporary)
     u->RemoveFiles();
   LockUserList(LOCK_W);
   myUsers.erase(UserMapKey(_szId, _nPPID));
+  if (!temporary)
+    saveUserList();
   UnlockUserList();
   DropUser(u);
   delete u;

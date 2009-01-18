@@ -783,7 +783,6 @@ protected:
   void icqRequestSystemMsg();
   ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, char *_sMessage,
     CUserEvent *, unsigned short = 0, size_t = 0);
-  void SaveUserList();
 
   void FailEvents(int sd, int err);
   ICQEvent *DoneServerEvent(unsigned long, EventResult);

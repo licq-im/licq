@@ -1197,6 +1197,12 @@ public:
   void UnlockUserList();
 
   /**
+   * Save user list to configuration file
+   * Note: This function assumes that the user list is already locked.
+   */
+  void saveUserList() const;
+
+  /**
    * Lock group list for access
    * Call UnlockGroupList when lock is no longer needed
    *
