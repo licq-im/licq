@@ -377,8 +377,24 @@ typedef LicqOwner ICQOwner;
 class LicqUser
 {
 public:
-  LicqUser(const char* id, unsigned long ppid, char* filename);
-  LicqUser(const char* id, unsigned long ppid, bool bTempUser = false);
+  /**
+   * Constructor to create a user object for an existing contact
+   *
+   * @param accountId User account id string, protocol specific format
+   * @param ppid Protocol id for user
+   * @param filename Filename to read user data from
+   */
+  LicqUser(const std::string& accountId, unsigned long ppid, const std::string& filename);
+
+  /**
+   * Constructor to create a user object for a new contact
+   *
+   * @param accountId User account id string, protocol specific format
+   * @param ppid Protocol id for user
+   * @param temporary False if user is added permanently to list
+   */
+  LicqUser(const std::string& accountId, unsigned long ppid, bool temporary = false);
+
   virtual ~LicqUser();
   void RemoveFiles();
 
@@ -388,6 +404,25 @@ public:
   void SavePhoneBookInfo();
   void SavePictureInfo();
   void SaveNewMessagesInfo();
+
+  /**
+   * Get account id that server protocol uses to identify user
+   * The format and usage of this string may vary between protocols
+   *
+   * @return account id
+   */
+  const std::string& accountId() const          { return myAccountId; }
+
+  /**
+   * Get protocol instance this user belongs to
+   *
+   * @return protocol instance id
+   */
+  unsigned long ppid() const                    { return myPpid; }
+
+  // Old deprecated functions to get account id and protocol id, do not use in new code
+  const char* IdString() const { return accountId().c_str(); }
+  unsigned long PPID() const { return ppid(); }
 
   // General Info
   //!Retrieves the user's alias.
@@ -495,8 +530,6 @@ public:
   unsigned short StatusToUser() const           { return m_nStatusToUser; }
   bool KeepAliasOnUpdate() const                { return m_bKeepAliasOnUpdate; }
   char *CustomAutoResponse() const              { return m_szCustomAutoResponse; }
-  unsigned long PPID() const                    { return m_nPPID; }
-  const char* IdString() const                  { return m_szId; }
   bool NotInList() const                        { return m_bNotInList; }
 
   char* usprintf(const char* szFormat, unsigned long nFlags = 0) const;
@@ -631,7 +664,7 @@ public:
   bool Away() const;
   static const char* StatusToStatusStr(unsigned short n, bool b);
   static const char* StatusToStatusStrShort(unsigned short n, bool b);
-  static char *MakeRealId(const char *, unsigned long, char *&);
+  static char* MakeRealId(const std::string& accountId, unsigned long ppid, char *&);
   int Birthday(unsigned short nDayRange = 0) const;
 
   // Message/History functions
@@ -817,7 +850,11 @@ protected:
   void LoadPhoneBookInfo();
   void LoadPictureInfo();
   void LoadLicqInfo();
-  void Init(const char *, unsigned long);
+
+  /**
+   * Initialize all user object. Contains common code for all constructors
+   */
+  void Init();
   bool LoadInfo();
   void SetDefaults();
   void AddToContactList();
@@ -835,6 +872,9 @@ protected:
   void SetOnlineSince(time_t t)     { m_nOnlineSince = t; }
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
+
+  std::string myAccountId;
+  unsigned long myPpid;
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
@@ -863,7 +903,6 @@ protected:
   char *m_szEncoding;
   bool m_bSupportsUTF8;
   char *m_szCustomAutoResponse;
-  char *m_szId;
   bool m_bOnlineNotify,
        m_bSendIntIp,
        m_bSendServer,
@@ -906,9 +945,6 @@ protected:
   // Dynamic info fields for protocol plugins
   std::map<std::string, std::string> m_mPPFields;
 
-  // Protocol ID
-  unsigned long m_nPPID;
-
   // Server Side ID, Group SID
   bool m_bAwaitingAuth;
   unsigned short m_nSID[3];
@@ -944,7 +980,14 @@ protected:
 class LicqOwner : public LicqUser
 {
 public:
-  LicqOwner(const char* idstring, unsigned long ppid);
+  /**
+   * Constructor
+   *
+   * @param accountId User account id
+   * @param ppid Protocol instance id
+   */
+  LicqOwner(const std::string& accountId, unsigned long ppid);
+
   virtual ~LicqOwner();
   bool Exception() const                        { return m_bException; }
 
