@@ -113,8 +113,6 @@ void GroupMenu::aboutToShowMenu()
 
   // Actions that are only available for user groups
   bool special = (myGroupId >= ContactListModel::SystemGroupOffset || myGroupId == 0);
-  myMoveUpAction->setEnabled(!special && myGroupId > 1);
-  myMoveDownAction->setEnabled(!special && myGroupId < gUserManager.NumGroups());
   myRemoveGroupAction->setEnabled(!special);
 
   mySortIndex = 0;
@@ -128,6 +126,9 @@ void GroupMenu::aboutToShowMenu()
       gUserManager.DropGroup(group);
     }
   }
+
+  myMoveUpAction->setEnabled(!special && mySortIndex > 0);
+  myMoveDownAction->setEnabled(!special && mySortindex < gUserManager.NumGroups()-1);
 }
 
 void GroupMenu::setGroup(unsigned int groupId)
