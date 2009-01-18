@@ -51,7 +51,7 @@ GroupMenu::GroupMenu(QWidget* parent)
   connect(mySystemGroupActions, SIGNAL(triggered(QAction*)), SLOT(addUsersToGroup(QAction*)));
 
   // System groups
-  for (unsigned int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
     a = mySystemGroupActions->addAction(LicqStrings::getSystemGroupName(i));
     a->setData(i + ContactListModel::SystemGroupOffset);
@@ -107,9 +107,9 @@ void GroupMenu::aboutToShowMenu()
 {
   // Hide current group from move to submenu
   foreach (QAction* a, mySystemGroupActions->actions())
-    a->setVisible(a->data().toUInt() != myGroupId);
+    a->setVisible(a->data().toInt() != myGroupId);
   foreach (QAction* a, myUserGroupActions->actions())
-    a->setVisible(a->data().toUInt() != myGroupId);
+    a->setVisible(a->data().toInt() != myGroupId);
 
   // Actions that are only available for user groups
   bool special = (myGroupId >= ContactListModel::SystemGroupOffset || myGroupId == 0);
@@ -128,15 +128,15 @@ void GroupMenu::aboutToShowMenu()
   }
 
   myMoveUpAction->setEnabled(!special && mySortIndex > 0);
-  myMoveDownAction->setEnabled(!special && mySortindex < gUserManager.NumGroups()-1);
+  myMoveDownAction->setEnabled(!special && static_cast<unsigned int>(mySortIndex) < gUserManager.NumGroups()-1);
 }
 
-void GroupMenu::setGroup(unsigned int groupId)
+void GroupMenu::setGroup(int groupId)
 {
   myGroupId = groupId;
 }
 
-void GroupMenu::popup(QPoint pos, unsigned int groupId)
+void GroupMenu::popup(QPoint pos, int groupId)
 {
   setGroup(groupId);
   QMenu::popup(pos);
@@ -168,11 +168,11 @@ void GroupMenu::removeGroup()
 void GroupMenu::addUsersToGroup(QAction* action)
 {
   // Group id used by model
-  unsigned int groupId = action->data().toUInt();
+  int groupId = action->data().toInt();
 
   // Group id used by daemon
   GroupType gtype = (groupId < ContactListModel::SystemGroupOffset ? GROUPS_USER : GROUPS_SYSTEM);
-  unsigned int gid = (groupId < ContactListModel::SystemGroupOffset ? groupId - 1 : groupId - ContactListModel::SystemGroupOffset);
+  int gid = (groupId < ContactListModel::SystemGroupOffset ? groupId - 1 : groupId - ContactListModel::SystemGroupOffset);
 
   ContactListModel* list = LicqGui::instance()->contactList();
   QModelIndex groupIndex = list->groupIndex(myGroupId);

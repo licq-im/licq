@@ -80,7 +80,7 @@ void UserView::updateRootIndex()
 {
   bool threadView = Config::ContactList::instance()->threadView();
   GroupType groupType = Config::ContactList::instance()->groupType();
-  unsigned long groupId = Config::ContactList::instance()->groupId();
+  int groupId = Config::ContactList::instance()->groupId();
 
   QModelIndex newRoot = QModelIndex();
 
@@ -133,7 +133,7 @@ void UserView::expandGroups()
   for (int i = 0; i < myListProxy->rowCount(QModelIndex()); ++i)
   {
     QModelIndex index = myListProxy->index(i, 0, QModelIndex());
-    unsigned int gid = index.data(ContactListModel::GroupIdRole).toUInt();
+    int gid = index.data(ContactListModel::GroupIdRole).toInt();
 
     setExpanded(index, Config::ContactList::instance()->groupState(gid));
   }
@@ -322,13 +322,13 @@ void UserView::resort()
 
 void UserView::slotExpanded(const QModelIndex& index)
 {
-  unsigned int gid = index.data(ContactListModel::GroupIdRole).toUInt();
+  int gid = index.data(ContactListModel::GroupIdRole).toInt();
   Config::ContactList::instance()->setGroupState(gid, true);
 }
 
 void UserView::slotCollapsed(const QModelIndex& index)
 {
-  unsigned int gid = index.data(ContactListModel::GroupIdRole).toUInt();
+  int gid = index.data(ContactListModel::GroupIdRole).toInt();
   Config::ContactList::instance()->setGroupState(gid, false);
 }
 

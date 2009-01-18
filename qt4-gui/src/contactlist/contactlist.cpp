@@ -42,7 +42,7 @@ ContactListModel::ContactListModel(QObject* parent)
     myBlockUpdates(false)
 {
   // Create the system groups
-  for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
     mySystemGroups[i] = new ContactGroup(SystemGroupOffset + i,
         LicqStrings::getSystemGroupName(i));
@@ -76,7 +76,7 @@ ContactListModel::~ContactListModel()
   clear();
 
   // Delete the system groups
-  for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
     delete mySystemGroups[i];
 }
 
@@ -109,7 +109,7 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_GROUP_ADDED:
     {
-      unsigned int gid = sig->Argument();
+      int gid = sig->Argument();
 
       // Set inital expanded state for new group
       Config::ContactList::instance()->setGroupState(gid, true);
@@ -124,7 +124,7 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_GROUP_REMOVED:
     {
-      unsigned int gid = sig->Argument();
+      int gid = sig->Argument();
 
       for (int i = 0; i < myUserGroups.size(); ++i)
       {
@@ -142,7 +142,7 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_GROUP_CHANGED:
     {
-      unsigned int gid = sig->Argument();
+      int gid = sig->Argument();
 
       for (int i = 0; i < myUserGroups.size(); ++i)
       {
@@ -328,7 +328,7 @@ ContactUserData* ContactListModel::findUser(QString id, unsigned long ppid) cons
 
 int ContactListModel::groupRow(ContactGroup* group) const
 {
-  unsigned int groupId = group->groupId();
+  int groupId = group->groupId();
 
   if (groupId < SystemGroupOffset)
     return myUserGroups.indexOf(group);
@@ -356,14 +356,14 @@ void ContactListModel::updateUserGroups(ContactUserData* user, const ICQUser* li
   for (int i = 0; i < myUserGroups.size(); ++i)
   {
     ContactGroup* group = myUserGroups.at(i);
-    unsigned int gid = group->groupId();
+    int gid = group->groupId();
     bool shouldBeMember = (gid != 0 && licqUser->GetInGroup(GROUPS_USER, gid)) ||
         (gid == 0 && licqUser->GetGroups().empty() && !licqUser->IgnoreList());
     updateUserGroup(user, group, shouldBeMember);
   }
 
   // Check which system groups the user should be member of
-  for (unsigned long i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
     updateUserGroup(user, mySystemGroups[i], licqUser->GetInGroup(GROUPS_SYSTEM, i));
   }
@@ -536,7 +536,7 @@ QModelIndex ContactListModel::userIndex(QString id, unsigned long ppid, int colu
   return QModelIndex();
 }
 
-QModelIndex ContactListModel::groupIndex(GroupType type, unsigned long id) const
+QModelIndex ContactListModel::groupIndex(GroupType type, int id) const
 {
   if (type == GROUPS_SYSTEM && id < NUM_GROUPS_SYSTEM_ALL)
   {
@@ -555,7 +555,7 @@ QModelIndex ContactListModel::groupIndex(GroupType type, unsigned long id) const
   return QModelIndex();
 }
 
-QModelIndex ContactListModel::groupIndex(unsigned long id) const
+QModelIndex ContactListModel::groupIndex(int id) const
 {
   if (id >= SystemGroupOffset)
     return groupIndex(GROUPS_SYSTEM, id - SystemGroupOffset);

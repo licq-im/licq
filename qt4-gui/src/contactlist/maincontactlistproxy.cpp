@@ -54,14 +54,14 @@ bool MainContactListProxy::filterAcceptsRow(int source_row, const QModelIndex& s
     case ContactListModel::GroupItem:
     {
       // Filter system groups
-      if (myThreadedView && item.data(ContactListModel::GroupIdRole).toUInt() >= ContactListModel::SystemGroupOffset)
+      if (myThreadedView && item.data(ContactListModel::GroupIdRole).toInt() >= ContactListModel::SystemGroupOffset)
         return false;
 
       // Filter empty groups in threaded view
       // Filter "Other users" (id 0) when empty regardless of configuration
       if (myThreadedView &&
           (!Config::ContactList::instance()->showEmptyGroups() ||
-          item.data(ContactListModel::GroupIdRole).toUInt() == 0))
+          item.data(ContactListModel::GroupIdRole).toInt() == 0))
       {
         // Check for empty groups
         if (item.data(ContactListModel::UserCountRole).toInt() == 0)
@@ -79,7 +79,7 @@ bool MainContactListProxy::filterAcceptsRow(int source_row, const QModelIndex& s
     {
       // Filter ignored users from all groups except "Ignore List"
       if ((item.data(ContactListModel::ExtendedStatusRole).toUInt() & ContactListModel::IgnoreStatus) &&
-          item.data(ContactListModel::GroupIdRole).toUInt() != ContactListModel::SystemGroupOffset + GROUP_IGNORE_LIST)
+          item.data(ContactListModel::GroupIdRole).toInt() != ContactListModel::SystemGroupOffset + GROUP_IGNORE_LIST)
         return false;
 
       // Filter offline users unless "Show Offline Users" are enabled

@@ -93,8 +93,8 @@ public:
   bool threadView() const { return myThreadView; }
   bool showEmptyGroups() const { return myShowEmptyGroups; }
   GroupType groupType() { return myGroupType; }
-  unsigned long groupId() { return myGroupId; }
-  bool groupState(unsigned short group) const;
+  int groupId() { return myGroupId; }
+  bool groupState(int group) const;
 
   bool showGridLines() const { return myShowGridLines; }
   bool useFontStyles() const { return myUseFontStyles; }
@@ -145,7 +145,7 @@ public slots:
   void setAlwaysShowONU(bool alwaysShowONU);
   void setThreadView(bool threadView);
   void setShowEmptyGroups(bool showEmptyGroups);
-  void setGroup(GroupType groupType, unsigned long groupId);
+  void setGroup(GroupType groupType, int groupId);
 
   void setShowGridLines(bool showGridLines);
   void setUseFontStyles(bool useFontStyles);
@@ -153,7 +153,7 @@ public slots:
   void setShowDividers(bool showDividers);
   void setSortByStatus(unsigned short sortByStatus);
   void setSortColumn(unsigned short column, bool ascending = true);
-  void setGroupState(unsigned short group, bool expanded);
+  void setGroupState(int group, bool expanded);
   void setShowExtendedIcons(bool showExtendedIcons);
   void setShowPhoneIcons(bool showPhoneIcons);
   void setShowUserIcons(bool showUserIcons);
@@ -228,7 +228,7 @@ private:
   bool myThreadView;
   bool myShowEmptyGroups;
   GroupType myGroupType;
-  unsigned long myGroupId;
+  int myGroupId;
 
   // Contact list look
   bool myShowGridLines;
@@ -251,7 +251,7 @@ private:
   // Contact list state
   unsigned short mySortColumn;
   bool mySortColumnAscending;
-  unsigned long myGroupStates;
+  int myGroupStates;
 
   // Contact popup information
   bool myPopupPicture;

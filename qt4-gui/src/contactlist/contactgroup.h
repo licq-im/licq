@@ -51,7 +51,7 @@ public:
    * @param id Group id
    * @param name Group name
    */
-  ContactGroup(unsigned int id, QString name = QString());
+  ContactGroup(int id, QString name = QString());
 
   /**
    * Constructor, creates an empty group
@@ -73,7 +73,7 @@ public:
   /**
    * Get the Licq id for this group
    */
-  unsigned int groupId() const
+  int groupId() const
   { return myGroupId; }
 
   /**
@@ -208,9 +208,9 @@ signals:
   void endRemove();
 
 private:
-  unsigned int myGroupId;
+  int myGroupId;
   QString myName;
-  unsigned int mySortKey;
+  int mySortKey;
   int myEvents;
   QList<ContactUser*> myUsers;
   ContactBar* myBars[3];

@@ -382,7 +382,7 @@ void Config::ContactList::setShowEmptyGroups(bool showEmptyGroups)
   changeCurrentList();
 }
 
-void Config::ContactList::setGroup(GroupType groupType, unsigned long groupId)
+void Config::ContactList::setGroup(GroupType groupType, int groupId)
 {
   if (groupType == myGroupType && groupId == myGroupId)
     return;
@@ -401,12 +401,12 @@ void Config::ContactList::setSortColumn(unsigned short column, bool ascending)
   emit listSortingChanged();
 }
 
-bool Config::ContactList::groupState(unsigned short group) const
+bool Config::ContactList::groupState(int group) const
 {
-  return myGroupStates & (1 << qMin(static_cast<int>(group), 31));
+  return myGroupStates & (1 << qMin(group, 31));
 }
 
-void Config::ContactList::setGroupState(unsigned short group, bool expanded)
+void Config::ContactList::setGroupState(int group, bool expanded)
 {
   if(group > 31)
     group = 31;

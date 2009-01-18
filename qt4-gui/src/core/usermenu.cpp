@@ -131,7 +131,7 @@ UserMenu::UserMenu(QWidget* parent)
   connect(myServerGroupActions, SIGNAL(triggered(QAction*)), SLOT(setServerGroup(QAction*)));
 
   // System groups
-  for (unsigned int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
     a = mySystemGroupActions->addAction(LicqStrings::getSystemGroupName(i));
     a->setData(i);
@@ -325,7 +325,7 @@ void UserMenu::aboutToShowMenu()
   // Update group memberships
   foreach (QAction* a, myUserGroupActions->actions())
   {
-    unsigned short gid = a->data().toUInt();
+    int gid = a->data().toInt();
     bool inGroup = u->GetInGroup(GROUPS_USER, gid);
     a->setChecked(inGroup);
 
@@ -333,9 +333,9 @@ void UserMenu::aboutToShowMenu()
     a->setEnabled(!inGroup || gid != serverGroup);
   }
   foreach (QAction* a, mySystemGroupActions->actions())
-    a->setChecked(u->GetInGroup(GROUPS_SYSTEM, a->data().toUInt()));
+    a->setChecked(u->GetInGroup(GROUPS_SYSTEM, a->data().toInt()));
   foreach (QAction* a, myServerGroupActions->actions())
-    a->setChecked(a->data().toUInt() == serverGroup);
+    a->setChecked(a->data().toInt() == serverGroup);
 
   gUserManager.DropUser(u);
 }
@@ -556,14 +556,14 @@ void UserMenu::utility(QAction* action)
 
 void UserMenu::toggleUserGroup(QAction* action)
 {
-  unsigned int gid = action->data().toUInt();
+  int gid = action->data().toInt();
   gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_USER, gid,
       action->isChecked(), false);
 }
 
 void UserMenu::toggleSystemGroup(QAction* action)
 {
-  unsigned int gid = action->data().toUInt();
+  int gid = action->data().toInt();
 
   if (gid == GROUP_IGNORE_LIST && !action->isChecked())
   {
@@ -585,6 +585,6 @@ void UserMenu::toggleSystemGroup(QAction* action)
 
 void UserMenu::setServerGroup(QAction* action)
 {
-  unsigned int gid = action->data().toUInt();
+  int gid = action->data().toInt();
   gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_USER, gid, true, true);
 }

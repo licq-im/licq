@@ -180,7 +180,7 @@ public:
   /**
    * Offset on group id for system groups
    */
-  static const unsigned int SystemGroupOffset = 1000;
+  static const int SystemGroupOffset = 1000;
 
   /**
    * Constructor
@@ -312,7 +312,7 @@ public:
    * @param id Id of the group or 0 to get special group
    * @return An index for the group or an invalid index if the group does not exist
    */
-  QModelIndex groupIndex(GroupType type, unsigned long id) const;
+  QModelIndex groupIndex(GroupType type, int id) const;
 
   /**
    * Get index for a group. This function uses model id for groups
@@ -321,7 +321,7 @@ public:
    * @param id Id of the group or 0 to get other users group
    * @return An index for the group or an invalid index if the group does not exist
    */
-  QModelIndex groupIndex(unsigned long id) const;
+  QModelIndex groupIndex(int id) const;
 
 public slots:
   /**

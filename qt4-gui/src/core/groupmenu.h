@@ -57,7 +57,7 @@ public:
    *
    * @param groupId Group id
    */
-  void setGroup(unsigned int groupId);
+  void setGroup(int groupId);
 
   /**
    * Convenience function to set group and popup the menu on a given location.
@@ -65,7 +65,7 @@ public:
    * @param pos Posititon to show menu in global coordinates
    * @param groupId Group id
    */
-  void popup(QPoint pos, unsigned int groupId);
+  void popup(QPoint pos, int groupId);
 
 private slots:
   /**
@@ -100,8 +100,8 @@ private slots:
 
 private:
   // Current group
-  unsigned int myGroupId;
-  unsigned short mySortIndex;
+  int myGroupId;
+  int mySortIndex;
   QString myGroupName;
 
   // Actions not in any sub menu

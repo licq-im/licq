@@ -172,13 +172,13 @@ SystemMenu::SystemMenu(QWidget* parent)
   connect(myUserGroupActions, SIGNAL(triggered(QAction*)), SLOT(setCurrentGroup(QAction*)));
 #define ADD_SYSTEMGROUP(group) \
     a = myUserGroupActions->addAction(LicqStrings::getSystemGroupName(group)); \
-    a->setData(static_cast<unsigned int>(ContactListModel::SystemGroupOffset + group)); \
+    a->setData(ContactListModel::SystemGroupOffset + group); \
     a->setCheckable(true); \
     myGroupMenu->addAction(a);
   ADD_SYSTEMGROUP(GROUP_ALL_USERS);
   myGroupMenu->addSeparator();
   myGroupSeparator = myGroupMenu->addSeparator();
-  for (unsigned long i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
     ADD_SYSTEMGROUP(i);
   }
@@ -280,7 +280,7 @@ void SystemMenu::updateGroups()
 
   // Clear old groups but leave system groups as they never change
   foreach (a, myUserGroupActions->actions())
-    if (a->data().toUInt() < ContactListModel::SystemGroupOffset)
+    if (a->data().toInt() < ContactListModel::SystemGroupOffset)
       delete a;
 
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
@@ -436,7 +436,7 @@ void SystemMenu::changeDebug(QAction* action)
 
 void SystemMenu::setCurrentGroup(QAction* action)
 {
-  unsigned int id = action->data().toUInt();
+  int id = action->data().toInt();
 
   if (id < ContactListModel::SystemGroupOffset)
     Config::ContactList::instance()->setGroup(GROUPS_USER, id);

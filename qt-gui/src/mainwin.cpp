@@ -1487,7 +1487,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       {
         for (CUserViewItem* i = userView->firstChild(); i != NULL; i = i->nextSibling())
         {
-          unsigned short groupId = i->GroupId();
+          int groupId = i->GroupId();
 
           // Should user be shown in this group
           bool showInGroup = show_user(u) &
@@ -1977,7 +1977,7 @@ void CMainWindow::updateGroups()
   mnuGroup->insertItem(tr("Server Group"), mnuServerGroup);
   mnuGroup->insertSeparator();
 
-  unsigned int i = 0;
+  int i = 0;
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
     myGroupIds.push_back(pGroup->id());
@@ -1992,7 +1992,7 @@ void CMainWindow::updateGroups()
   mnuUserGroups->insertSeparator();
   mnuGroup->insertSeparator();
 
-  const unsigned long groups[] = {
+  const int groups[] = {
     GROUP_ONLINE_NOTIFY,
     GROUP_VISIBLE_LIST,
     GROUP_INVISIBLE_LIST,
@@ -2008,7 +2008,7 @@ void CMainWindow::updateGroups()
     mnuGroup->insertItem(group, 1000+groups[i]);
   }
 
-  unsigned int index = 0;
+  int index = 0;
   if (m_nGroupType == GROUPS_SYSTEM)
     index = m_nCurrentGroup + gUserManager.NumGroups();
   else
@@ -3320,7 +3320,7 @@ void CMainWindow::UserGroupToggled(int id)
 {
   bool add = mnuGroup->isItemChecked(id);
   GroupType gtype = (id < 1000 ? GROUPS_USER : GROUPS_SYSTEM);
-  unsigned int groupId = (id < 1000 ? myGroupIds[id] : id - 1000);
+  int groupId = (id < 1000 ? myGroupIds[id] : id - 1000);
 
   if (gtype == GROUPS_SYSTEM && groupId == GROUP_IGNORE_LIST && add)
   {
@@ -3344,7 +3344,7 @@ void CMainWindow::UserGroupToggled(int id)
         gtype, groupId, true, false);
 }
 
-bool CMainWindow::RemoveUserFromGroup(GroupType gtype, unsigned long group,
+bool CMainWindow::RemoveUserFromGroup(GroupType gtype, int group,
   const char* id, unsigned long ppid, QWidget* parent)
 {
   if (gtype == GROUPS_USER && group == 0)

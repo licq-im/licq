@@ -96,8 +96,8 @@ public:
   virtual ~CMainWindow();
   UserEventCommon *callFunction(int fcn, const char *, unsigned long, int = -1);
   bool RemoveUserFromList(const char *, unsigned long, QWidget *);
-  bool RemoveUserFromGroup(GroupType, unsigned long, const char *,
-    unsigned long, QWidget *);
+  bool RemoveUserFromGroup(GroupType gtype, int group, const char* id,
+      unsigned long ppid, QWidget* parent);
 
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
@@ -175,7 +175,8 @@ public:
   FlashType m_nFlash;
   CSkin *skin;
 
-  unsigned long m_nCurrentGroup, m_nGroupStates;
+  int m_nCurrentGroup;
+  unsigned long m_nGroupStates;
   unsigned short m_nSortByStatus,
                  m_nSortColumn,
                  m_chatMsgStyle,
@@ -439,8 +440,7 @@ private:
         MNU_SYS_GPG = 12
   };
 
-  QValueList<unsigned int> myGroupIds;
-
+  QValueList<int> myGroupIds;
 };
 
 // -----------------------------------------------------------------------------

@@ -147,7 +147,7 @@ void UserViewBase::popupMenu(QPoint point, QModelIndex item)
   }
   else if (itemType == ContactListModel::GroupItem)
   {
-    unsigned int id = item.data(ContactListModel::GroupIdRole).toUInt();
+    int id = item.data(ContactListModel::GroupIdRole).toInt();
 
     LicqGui::instance()->groupMenu()->popup(point, id);
   }
@@ -260,7 +260,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
     }
     case ContactListModel::GroupItem:
     {
-      unsigned int gid = dropIndex.data(ContactListModel::GroupIdRole).toUInt();
+      int gid = dropIndex.data(ContactListModel::GroupIdRole).toInt();
 
       if (event->mimeData()->hasText() && event->mimeData()->text().length() > 4)
       {

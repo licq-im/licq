@@ -27,7 +27,7 @@
 
 using namespace LicqQtGui;
 
-ContactGroup::ContactGroup(unsigned int id, QString name)
+ContactGroup::ContactGroup(int id, QString name)
   : ContactItem(ContactListModel::GroupItem),
     myGroupId(id),
     myName(name),
