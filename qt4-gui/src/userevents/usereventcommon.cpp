@@ -71,7 +71,7 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   if (!id.isEmpty())
   {
     char* realId = 0;
-    ICQUser::MakeRealId(id.toLatin1(), myPpid, realId);
+    ICQUser::MakeRealId(id.toLatin1().data(), myPpid, realId);
     myId = realId;
     myUsers.push_back(realId);
     delete [] realId;
@@ -260,7 +260,7 @@ void UserEventCommon::updateShortcuts()
 bool UserEventCommon::isUserInConvo(QString id)
 {
   char* realId;
-  ICQUser::MakeRealId(id.toLatin1(), myPpid, realId);
+  ICQUser::MakeRealId(id.toLatin1().data(), myPpid, realId);
   bool found = (std::find(myUsers.begin(), myUsers.end(), realId) != myUsers.end());
   delete [] realId;
   return found;

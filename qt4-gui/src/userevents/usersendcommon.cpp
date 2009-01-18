@@ -607,7 +607,7 @@ void UserSendCommon::convoJoin(QString id, unsigned long convoId)
   if (!isUserInConvo(id))
   {
     char* realId;
-    ICQUser::MakeRealId(id.toLatin1(), myPpid, realId);
+    ICQUser::MakeRealId(id.toLatin1().data(), myPpid, realId);
     myUsers.push_back(realId);
     delete [] realId;
   }
