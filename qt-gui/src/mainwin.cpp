@@ -1498,6 +1498,8 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           // Remove old user item if present
           for (CUserViewItem* it = i->firstChild(); it != NULL; it = it->nextSibling())
           {
+            if (it->ItemId() == NULL)
+              continue;
             char* szRealId = 0;
             ICQUser::MakeRealId(it->ItemId(), it->ItemPPID(), szRealId);
             bool equal = strcasecmp(szRealId, szId) == 0 && it->ItemPPID() == nPPID;
@@ -1520,13 +1522,13 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         // Update this user if they are in the current group
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
         char *szItemId = 0, *szRealId = 0;
-        if (i)
+        if (i != NULL && i->ItemId() != NULL)
           szItemId = ICQUser::MakeRealId(i->ItemId(), i->ItemPPID(), szItemId);
         ICQUser::MakeRealId(szId, nPPID, szRealId);
         while (i && !(i->ItemPPID() == nPPID && strcasecmp(szItemId, szRealId) == 0))
         {
           i = (CUserViewItem *)i->nextSibling();
-          if (i)
+          if (i != NULL && i->ItemId() != NULL)
           {
             delete [] szItemId; szItemId = 0;
             ICQUser::MakeRealId(i->ItemId(), i->ItemPPID(), szItemId);
