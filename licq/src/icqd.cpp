@@ -848,9 +848,7 @@ void CICQDaemon::SaveConf()
   licqConf.FlushFile();
 
   licqConf.SetSection("owners");
-  OwnerList *ol = gUserManager.LockOwnerList(LOCK_R);
-  licqConf.WriteNum("NumOfOwners", (unsigned long)ol->size());
-  gUserManager.UnlockOwnerList();
+  licqConf.WriteNum("NumOfOwners", (unsigned long)gUserManager.NumOwners());
 
   int n = 1;
   FOR_EACH_OWNER_START(LOCK_R)

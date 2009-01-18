@@ -67,12 +67,11 @@ extern char* PPIDSTRING(unsigned long ppid);
 
 #define FOR_EACH_OWNER_START(x)                           \
   {                                                       \
-    LicqOwner* pOwner;                                    \
-    OwnerList *_ol_ = gUserManager.LockOwnerList(LOCK_R); \
-    for (OwnerList::iterator _i_ = _ol_->begin();         \
+    OwnerMap* _ol_ = gUserManager.LockOwnerList(LOCK_R);  \
+    for (OwnerMap::const_iterator _i_ = _ol_->begin();    \
          _i_ != _ol_->end(); _i_++)                       \
     {                                                     \
-      pOwner = *_i_;                                      \
+      LicqOwner* pOwner = _i_->second;                    \
       pOwner->Lock(x);                                    \
       {
 
@@ -201,7 +200,7 @@ class LicqGroup;
 
 typedef std::pair<std::string, unsigned long> UserMapKey;
 typedef std::map<UserMapKey, class LicqUser*> UserMap;
-typedef std::list<class LicqOwner*> OwnerList;
+typedef std::map<unsigned long, class LicqOwner*> OwnerMap;
 typedef std::set<int> UserGroupList;
 typedef std::map<int, LicqGroup*> GroupMap;
 typedef std::map<int, std::string> GroupNameMap;
@@ -1216,7 +1215,18 @@ public:
    */
   void UnlockGroupList();
 
-  OwnerList *LockOwnerList(unsigned short);
+  /**
+   * Lock owner list for access
+   * Call UnlockOwnerList when lock is no longer needed
+   *
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @param Map of all owners indexed by protocol instance id
+   */
+  OwnerMap* LockOwnerList(unsigned short lockType);
+
+  /**
+   * Release owner list lock
+   */
   void UnlockOwnerList();
 
   /**
@@ -1392,7 +1402,7 @@ protected:
 
   GroupMap myGroups;
   UserMap myUsers;
-  OwnerList m_vpcOwners;
+  OwnerMap myOwners;
   unsigned short m_nUserListLockType;
   unsigned short myGroupListLockType;
   unsigned short m_nOwnerListLockType;

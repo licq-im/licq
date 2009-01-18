@@ -76,8 +76,8 @@ void DockIcon::updateIconStatus()
   // Take any existent one otherwise
   if (o == NULL && gUserManager.NumOwners() != 0)
   {
-    const OwnerList* ol = gUserManager.LockOwnerList(LOCK_R);
-    o = ol->front();
+    const OwnerMap* ol = gUserManager.LockOwnerList(LOCK_R);
+    o = ol->begin()->second;
     o->Lock(LOCK_R);
     gUserManager.UnlockOwnerList();
   }

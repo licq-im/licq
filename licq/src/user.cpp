@@ -377,9 +377,9 @@ CUserManager::~CUserManager()
   for (g_iter = myGroups.begin(); g_iter != myGroups.end(); ++g_iter)
     delete g_iter->second;
 
-  OwnerList::iterator o_iter;
-  for (o_iter = m_vpcOwners.begin(); o_iter != m_vpcOwners.end(); ++o_iter)
-    delete *o_iter;
+  OwnerMap::iterator o_iter;
+  for (o_iter = myOwners.begin(); o_iter != myOwners.end(); ++o_iter)
+    delete o_iter->second;
 
   pthread_rdwr_destroy_np(&mutex_ownerlist);
   pthread_rdwr_destroy_np(&mutex_userlist);
@@ -394,7 +394,7 @@ void CUserManager::AddOwner(const char *_szId, unsigned long _nPPID)
   ICQOwner *o = new ICQOwner(_szId, _nPPID);
 
   LockOwnerList(LOCK_W);
-  m_vpcOwners.push_back(o);
+  myOwners[_nPPID] = o;
   UnlockOwnerList();
 }
 
@@ -624,24 +624,16 @@ void CUserManager::RemoveOwner(unsigned long ppid)
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call FetchOwner here.
   LockOwnerList(LOCK_W);
-  OwnerList::iterator iter;
-  LicqOwner* o = NULL;
-  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
-  {
-    if ((*iter)->ppid() == ppid)
-    {
-      o = (*iter);
-      break;
-    }
-  }
-  if (o == NULL)
+  OwnerMap::iterator iter = myOwners.find(ppid);
+  if (iter == myOwners.end())
   {
     UnlockOwnerList();
     return;
   }
 
+  LicqOwner* o = iter->second;
   o->Lock(LOCK_W);
-  m_vpcOwners.erase(iter);
+  myOwners.erase(iter);
   o->RemoveFiles();
   UnlockOwnerList();
   o->Unlock();
@@ -700,38 +692,39 @@ bool CUserManager::IsOnList(const char *_szId, unsigned long _nPPID)
 // fetch an owner, but for interal use only to see if the given id and ppid
 // is an owner.  (It can be used to fetch an owner by calling FetchUser with
 // an owner's id and ppid.
-ICQOwner *CUserManager::FindOwner(const char *_szId, unsigned long _nPPID)
+LicqOwner* CUserManager::FindOwner(const char* accountId, unsigned long ppid)
 {
 /*
   // Strip spaces if ICQ protocol
-  char *szId = new char[strlen(_szId)];
-  if (_nPPID == LICQ_PPID)
+  char *szId = new char[strlen(accountId)];
+  if (ppid == LICQ_PPID)
   {
-    for (int i = 0; i < strlen(_szId); i++)
-      if (_szId[i] != ' ')
-        *szId++ = _szId[i];
+    for (int i = 0; i < strlen(accountId); i++)
+      if (accountId[i] != ' ')
+        *szId++ = accountId[i];
   }
   else
-    strcpy(szId, _szId);
+    strcpy(szId, accountId);
 */
+
   ICQOwner *o = NULL;
+  bool found = false;
 
   LockOwnerList(LOCK_R);
-  OwnerList::iterator iter;
-  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
+  OwnerMap::iterator iter = myOwners.find(ppid);
+  if (iter != myOwners.end())
   {
-    if (_nPPID == (*iter)->ppid() && 
-        _szId == (*iter)->accountId() /* || szId == (*iter)->accountId()*/)
-    {
-      o = *iter;
-      break;
-    }
+    o = iter->second;
+    o->Lock(LOCK_R);
+    if (o->accountId() == accountId /* || o->accountId() == szId */)
+      found = true;
+    o->Unlock();
   }
   UnlockOwnerList();
 
   //delete [] szId;
 
-  return o;
+  return (found ? o : NULL);
 }
 
 string CUserManager::OwnerId(unsigned long ppid)
@@ -1195,21 +1188,16 @@ void CUserManager::DropUser(const ICQUser* u)
   u->Unlock();
 }
 
-ICQOwner *CUserManager::FetchOwner(unsigned long _nPPID,
-                                   unsigned short _nLockType)
+LicqOwner* CUserManager::FetchOwner(unsigned long ppid, unsigned short lockType)
 {
-  ICQOwner *o = NULL;
+  LicqOwner* o = NULL;
 
   LockOwnerList(LOCK_R);
-  OwnerList::iterator iter;
-  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
+  OwnerMap::iterator iter = myOwners.find(ppid);
+  if (iter != myOwners.end())
   {
-    if ((*iter)->ppid() == _nPPID)
-    {
-      o = (*iter);
-      o->Lock(_nLockType);
-      break;
-    }
+    o = iter->second;
+    o->Lock(lockType);
   }
   UnlockOwnerList();
 
@@ -1278,7 +1266,7 @@ unsigned short CUserManager::NumUsers()
  *-------------------------------------------------------------------------*/
 unsigned short CUserManager::NumOwners()
 {
-  unsigned short n = m_vpcOwners.size();
+  unsigned short n = myOwners.size();
   return n;
 }
 
@@ -1382,7 +1370,7 @@ void CUserManager::UnlockGroupList()
   }
 }
 
-OwnerList *CUserManager::LockOwnerList(unsigned short _nLockType)
+OwnerMap* CUserManager::LockOwnerList(unsigned short _nLockType)
 {
   switch (_nLockType)
   {
@@ -1397,7 +1385,7 @@ OwnerList *CUserManager::LockOwnerList(unsigned short _nLockType)
     return NULL;
   }
   m_nOwnerListLockType = _nLockType;
-  return &m_vpcOwners;
+  return &myOwners;
 }
 
 void CUserManager::UnlockOwnerList()
