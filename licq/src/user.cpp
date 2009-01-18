@@ -593,37 +593,56 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
   UnlockUserList();
 }
 
-void CUserManager::RemoveUser(const char *_szId, unsigned long _nPPID)
+void CUserManager::RemoveUser(const char* accountId, unsigned long ppid)
 {
-  ICQUser *u = FetchUser(_szId, _nPPID, LOCK_W);
-  if (u == NULL) return;
-  bool temporary = u->NotInList();
-  if (!temporary)
-    u->RemoveFiles();
+  // List should only be locked when not holding any user lock to avoid
+  // deadlock, so we cannot call FetchUser here.
   LockUserList(LOCK_W);
-  myUsers.erase(UserMapKey(_szId, _nPPID));
-  if (!temporary)
+  UserMap::iterator iter = myUsers.find(UserMapKey(accountId, ppid));
+  if (iter == myUsers.end())
+  {
+    UnlockUserList();
+    return;
+  }
+
+  LicqUser* u = iter->second;
+  u->Lock(LOCK_W);
+  myUsers.erase(iter);
+  if (!u->NotInList())
+  {
+    u->RemoveFiles();
     saveUserList();
+  }
   UnlockUserList();
-  DropUser(u);
+  u->Unlock();
   delete u;
 }
 
 // Need to call CICQDaemon::SaveConf() after this
-void CUserManager::RemoveOwner(unsigned long _nPPID)
+void CUserManager::RemoveOwner(unsigned long ppid)
 {
-  ICQOwner *o = FetchOwner(_nPPID, LOCK_W);
-  if (o == NULL) return;
-  o->RemoveFiles();
+  // List should only be locked when not holding any user lock to avoid
+  // deadlock, so we cannot call FetchOwner here.
   LockOwnerList(LOCK_W);
-  OwnerList::iterator iter = m_vpcOwners.begin();
-  while (iter != m_vpcOwners.end() && o != (*iter)) ++iter;
-  if (iter == m_vpcOwners.end())
-    gLog.Warn("%sInternal Error: CUserManager::RemoveOwner():\n"
-              "%sOwner not found in vector.\n",
-              L_WARNxSTR, L_BLANKxSTR);
-  else
-    m_vpcOwners.erase(iter);
+  OwnerList::iterator iter;
+  LicqOwner* o = NULL;
+  for (iter = m_vpcOwners.begin(); iter != m_vpcOwners.end(); ++iter)
+  {
+    if ((*iter)->ppid() == ppid)
+    {
+      o = (*iter);
+      break;
+    }
+  }
+  if (o == NULL)
+  {
+    UnlockOwnerList();
+    return;
+  }
+
+  o->Lock(LOCK_W);
+  m_vpcOwners.erase(iter);
+  o->RemoveFiles();
   UnlockOwnerList();
   o->Unlock();
   delete o;
