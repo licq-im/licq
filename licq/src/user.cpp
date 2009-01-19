@@ -526,9 +526,18 @@ bool CUserManager::Load()
     strncpy(szId, szFile, sz - szFile);
     szId[sz - szFile] = '\0';
     nPPID = (*(sz+1)) << 24 | (*(sz+2)) << 16 | (*(sz+3)) << 8 | (*(sz+4));
-    u = new LicqUser(szId, nPPID, string(filename));
+
+    // User id did not exist in older versions, if missing assign ids based on order
+    usersConf.SetFlags(0);
+    int id;
+    sprintf(sUserKey, "User%d.Id", i);
+    usersConf.ReadNum(sUserKey, id, i);
+    usersConf.SetFlags(INI_FxFATAL | INI_FxERROR | INI_FxWARN);
+
+    u = new LicqUser(id, szId, nPPID, string(filename));
     u->AddToContactList();
-    myUsers[UserMapKey(szId, nPPID)] = u;
+    myUsers[id] = u;
+    myUserAccounts[UserAccountMapKey(szId, nPPID)] = u;
   }
   UnlockUserList();
 
@@ -549,6 +558,8 @@ void CUserManager::saveUserList() const
   {
     i->second->Lock(LOCK_R);
     bool temporary = i->second->NotInList();
+    string accountId = i->second->accountId();
+    unsigned long ppid = i->second->ppid();
     i->second->Unlock();
 
     // Only save users that's been permanently added
@@ -558,21 +569,37 @@ void CUserManager::saveUserList() const
 
     sprintf(key, "User%i", count);
 
-    char* ps = PPIDSTRING(i->first.second);
-    usersConf.writeString(key, i->first.first + "." + ps);
+    char* ps = PPIDSTRING(ppid);
+    usersConf.writeString(key, accountId + "." + ps);
     delete [] ps;
+
+    sprintf(key, "User%i.Id", count);
+    usersConf.WriteNum(key, i->first);
   }
   usersConf.WriteNum("NumOfUsers", count);
   usersConf.FlushFile();
   usersConf.CloseFile();
 }
 
-void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPPID)
+int CUserManager::addUser(const string& accountId, unsigned int ppid, bool temporary)
 {
   LockUserList(LOCK_W);
 
+  // Make sure user isn't already in the list
+  UserAccountMap::const_iterator iter = myUserAccounts.find(UserAccountMapKey(accountId, ppid));
+  if (iter != myUserAccounts.end())
+  {
+    UnlockUserList();
+    return 0;
+  }
+
+  // Find first free user id
+  int uid;
+  for (uid = 1; myUsers.count(uid) != 0 ; ++uid)
+    ;
+
+  LicqUser* pUser = new LicqUser(uid, accountId, ppid, temporary);
   pUser->Lock(LOCK_W);
-  bool temporary = pUser->NotInList();
 
   if (!temporary)
   {
@@ -583,7 +610,8 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
   }
 
   // Store the user in the lookup map
-  myUsers[UserMapKey(_szId, _nPPID)] = pUser;
+  myUsers[uid] = pUser;
+  myUserAccounts[UserAccountMapKey(accountId, ppid)] = pUser;
 
   pUser->Unlock();
 
@@ -591,14 +619,16 @@ void CUserManager::AddUser(ICQUser *pUser, const char *_szId, unsigned long _nPP
     saveUserList();
 
   UnlockUserList();
+
+  return uid;
 }
 
-void CUserManager::RemoveUser(const char* accountId, unsigned long ppid)
+void CUserManager::removeUser(int userId)
 {
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call FetchUser here.
   LockUserList(LOCK_W);
-  UserMap::iterator iter = myUsers.find(UserMapKey(accountId, ppid));
+  UserMap::iterator iter = myUsers.find(userId);
   if (iter == myUsers.end())
   {
     UnlockUserList();
@@ -608,6 +638,7 @@ void CUserManager::RemoveUser(const char* accountId, unsigned long ppid)
   LicqUser* u = iter->second;
   u->Lock(LOCK_W);
   myUsers.erase(iter);
+  myUserAccounts.erase(UserAccountMapKey(u->accountId(), u->ppid()));
   if (!u->NotInList())
   {
     u->RemoveFiles();
@@ -640,6 +671,20 @@ void CUserManager::RemoveOwner(unsigned long ppid)
   delete o;
 }
 
+LicqUser* CUserManager::fetchUser(int userId, unsigned short lockType)
+{
+  LicqUser* user = NULL;
+  LockUserList(LOCK_R);
+  UserMap::const_iterator iter = myUsers.find(userId);
+  if (iter != myUsers.end())
+  {
+    user = iter->second;
+    user->Lock(lockType);
+  }
+  UnlockUserList();
+  return user;
+}
+
 ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
                                  unsigned short _nLockType)
 {
@@ -653,8 +698,8 @@ ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
   if (u == NULL)
   {
     LockUserList(LOCK_R);
-    UserMap::iterator iter = myUsers.find(UserMapKey(_szId, _nPPID));
-    if (iter != myUsers.end())
+    UserAccountMap::const_iterator iter = myUserAccounts.find(UserAccountMapKey(_szId, _nPPID));
+    if (iter != myUserAccounts.end())
       u = iter->second;
     UnlockUserList();
   }
@@ -675,14 +720,25 @@ ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
   return u;
 }
 
+bool CUserManager::userExists(int id)
+{
+  bool exists = false;
+  LockUserList(LOCK_R);
+  UserMap::const_iterator iter = myUsers.find(id);
+  if (iter != myUsers.end())
+    exists = true;
+  UnlockUserList();
+  return exists;
+}
+
 bool CUserManager::IsOnList(const char *_szId, unsigned long _nPPID)
 {
   if (FindOwner(_szId, _nPPID))
     return true;
 
   LockUserList(LOCK_R);
-  UserMap::iterator iter = myUsers.find(UserMapKey(_szId, _nPPID));
-  bool found = (iter != myUsers.end());
+  UserAccountMap::iterator iter = myUserAccounts.find(UserAccountMapKey(_szId, _nPPID));
+  bool found = (iter != myUserAccounts.end());
   UnlockUserList();
 
   return found;
@@ -743,14 +799,15 @@ unsigned long CUserManager::icqOwnerUin()
   return strtoul(OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
 }
 
-/*---------------------------------------------------------------------------
- * CUserManager::AddUser
- *
- * The user is write locked upon return of this function
- *-------------------------------------------------------------------------*/
-void CUserManager::AddUser(ICQUser *pUser)
+int CUserManager::getUserFromAccount(const string& accountId, unsigned long ppid)
 {
-  AddUser(pUser, pUser->accountId().c_str(), pUser->ppid());
+  int id = 0;
+  LockUserList(LOCK_R);
+  UserAccountMap::const_iterator iter =  myUserAccounts.find(UserAccountMapKey(accountId, ppid));
+  if (iter != myUserAccounts.end())
+    id = iter->second->id();
+  UnlockUserList();
+  return id;
 }
 
 LicqGroup* CUserManager::FetchGroup(int group, unsigned short lockType)
@@ -1406,14 +1463,14 @@ void CUserManager::UnlockOwnerList()
   }
 }
 
-void CUserManager::SetUserInGroup(const char* id, unsigned long ppid,
+void CUserManager::setUserInGroup(int userId,
     GroupType groupType, int groupId, bool inGroup, bool updateServer)
 {
   // User group 0 is invalid and system group 0 is All Users
   if (groupId == 0)
     return;
 
-  ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
     return;
 
@@ -1428,6 +1485,8 @@ void CUserManager::SetUserInGroup(const char* id, unsigned long ppid,
 
   // Update user object
   u->SetInGroup(groupType, groupId, inGroup);
+  string accountId = u->accountId();
+  unsigned long ppid = u->ppid();
   gUserManager.DropUser(u);
 
   // Notify server
@@ -1436,27 +1495,27 @@ void CUserManager::SetUserInGroup(const char* id, unsigned long ppid,
     if (groupType == GROUPS_SYSTEM)
     {
       if (groupId == GROUP_VISIBLE_LIST)
-        gLicqDaemon->ProtoSetInVisibleList(id, ppid, inGroup);
+        gLicqDaemon->ProtoSetInVisibleList(accountId.c_str(), ppid, inGroup);
 
       else if (groupId == GROUP_INVISIBLE_LIST)
-        gLicqDaemon->ProtoSetInInvisibleList(id, ppid, inGroup);
+        gLicqDaemon->ProtoSetInInvisibleList(accountId.c_str(), ppid, inGroup);
 
       else if (groupId == GROUP_IGNORE_LIST)
-        gLicqDaemon->ProtoSetInIgnoreList(id, ppid, inGroup);
+        gLicqDaemon->ProtoSetInIgnoreList(accountId.c_str(), ppid, inGroup);
     }
     else
     {
       // Server group currently only supported for ICQ protocol
       // Server group can only be changed, not removed
       if (ppid == LICQ_PPID && inGroup)
-        gLicqDaemon->icqChangeGroup(id, ppid, groupId, gsid,
+        gLicqDaemon->icqChangeGroup(accountId.c_str(), ppid, groupId, gsid,
             ICQ_ROSTxNORMAL, ICQ_ROSTxNORMAL);
     }
   }
 
   // Notify plugins
   if (gLicqDaemon != NULL)
-    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, id, ppid));
+    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, accountId.c_str(), ppid));
 }
 
 void CUserManager::SetDefaultUserEncoding(const char* defaultEncoding)
@@ -1530,8 +1589,9 @@ bool compare_groups(const LicqGroup* first, const LicqGroup* second)
 unsigned short ICQUser::s_nNumUserEvents = 0;
 pthread_mutex_t ICQUser::mutex_nNumUserEvents = PTHREAD_MUTEX_INITIALIZER;
 
-LicqUser::LicqUser(const string& accountId, unsigned long ppid, const string& filename)
-  : myAccountId(accountId),
+LicqUser::LicqUser(int id, const string& accountId, unsigned long ppid, const string& filename)
+  : myId(id),
+    myAccountId(accountId),
     myPpid(ppid)
 {
   Init();
@@ -1547,8 +1607,9 @@ LicqUser::LicqUser(const string& accountId, unsigned long ppid, const string& fi
   m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
 }
 
-LicqUser::LicqUser(const string& accountId, unsigned long ppid, bool temporary)
-  : myAccountId(accountId),
+LicqUser::LicqUser(int id, const string& accountId, unsigned long ppid, bool temporary)
+  : myId(id),
+    myAccountId(accountId),
     myPpid(ppid)
 {
   Init();
@@ -1565,6 +1626,16 @@ LicqUser::LicqUser(const string& accountId, unsigned long ppid, bool temporary)
     m_fConf.SetFileName(szFilename);
     m_fConf.SetFlags(INI_FxWARN | INI_FxALLOWxCREATE);
   }
+}
+
+LicqUser::LicqUser(const string& accountId, unsigned long ppid)
+  : myId(0),
+    myAccountId(accountId),
+    myPpid(ppid)
+{
+  Init();
+  SetDefaults();
+  m_bNotInList = true;
 }
 
 void ICQUser::AddToContactList()
@@ -3410,7 +3481,9 @@ void ICQUser::SetTLVList(TLVList& tlvs)
 
 //-----ICQOwner::constructor----------------------------------------------------
 LicqOwner::LicqOwner(const string& accountId, unsigned long ppid)
+  : LicqUser(static_cast<int>(ppid))
 {
+  // id isn't really used for owners so we just cast ppid and pass along
   myAccountId = accountId;
   myPpid = ppid;
 

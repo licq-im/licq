@@ -55,8 +55,8 @@ extern char* PPIDSTRING(unsigned long ppid);
 #define FOR_EACH_PROTO_USER_START(x, y)                  \
   {                                                      \
     LicqUser* pUser;                                     \
-    const UserMap* _ul_ = gUserManager.LockUserList(LOCK_R); \
-    for (UserMap::const_iterator _i_ = _ul_->begin();    \
+    const UserAccountMap* _ul_ = gUserManager.lockUserAccounts(LOCK_R); \
+    for (UserAccountMap::const_iterator _i_ = _ul_->begin(); \
          _i_ != _ul_->end(); _i_++)                      \
     {                                                    \
       if (_i_->first.second != x)                        \
@@ -198,8 +198,9 @@ class LicqUser;
 class LicqOwner;
 class LicqGroup;
 
-typedef std::pair<std::string, unsigned long> UserMapKey;
-typedef std::map<UserMapKey, class LicqUser*> UserMap;
+typedef std::pair<std::string, unsigned long> UserAccountMapKey;
+typedef std::map<UserAccountMapKey, class LicqUser*> UserAccountMap;
+typedef std::map<int, class LicqUser*> UserMap;
 typedef std::map<unsigned long, class LicqOwner*> OwnerMap;
 typedef std::set<int> UserGroupList;
 typedef std::map<int, LicqGroup*> GroupMap;
@@ -379,20 +380,31 @@ public:
   /**
    * Constructor to create a user object for an existing contact
    *
+   * @param id User id, must be unique
    * @param accountId User account id string, protocol specific format
    * @param ppid Protocol id for user
    * @param filename Filename to read user data from
    */
-  LicqUser(const std::string& accountId, unsigned long ppid, const std::string& filename);
+  LicqUser(int id, const std::string& accountId, unsigned long ppid, const std::string& filename);
 
   /**
    * Constructor to create a user object for a new contact
    *
+   * @param id User id, must be unique if user is in list. Use 0 for temporary objects
    * @param accountId User account id string, protocol specific format
    * @param ppid Protocol id for user
    * @param temporary False if user is added permanently to list
    */
-  LicqUser(const std::string& accountId, unsigned long ppid, bool temporary = false);
+  LicqUser(int id, const std::string& accountId, unsigned long ppid, bool temporary = false);
+
+  /**
+   * Constructor to create a temporary user object that will not be in user list
+   * User id will be set to zero and user will be marked as not in list
+   *
+   * @param accountId User account id string, protocol specific format
+   * @param ppid Protocol id for user
+   */
+  LicqUser(const std::string& accountId, unsigned long ppid);
 
   virtual ~LicqUser();
   void RemoveFiles();
@@ -403,6 +415,14 @@ public:
   void SavePhoneBookInfo();
   void SavePictureInfo();
   void SaveNewMessagesInfo();
+
+  /**
+   * Get id for user. This is an id used locally by Licq and is persistant for
+   * each user.
+   *
+   * @return User id
+   */
+  int id() const                                { return myId; }
 
   /**
    * Get account id that server protocol uses to identify user
@@ -823,7 +843,7 @@ public:
   void Unlock() const;
 
 protected:
-  LicqUser() { /* LicqOwner inherited constructor - does nothing */ }
+  LicqUser(int id) : myId(id) { /* LicqOwner inherited constructor - does nothing */ }
   void loadUserInfo();
 
   /**
@@ -872,6 +892,7 @@ protected:
   void SetIdleSince(time_t t)       { m_nIdleSince = t; }
   void SetRegisteredTime(time_t t)  { m_nRegisteredTime = t; }
 
+  const int myId;
   std::string myAccountId;
   unsigned long myPpid;
 
@@ -1145,10 +1166,17 @@ public:
   ~CUserManager();
   bool Load();
 
+  /**
+   * Find and lock an user object
+   *
+   * @param userId User id
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @return The locked user object if id was valid, otherwise NULL
+   */
+  LicqUser* fetchUser(int userId, unsigned short lockType);
+
   // For protocol plugins
   void AddOwner(const char *, unsigned long);
-  void AddUser(LicqUser* user, const char* idstring, unsigned long ppid);
-  void RemoveUser(const char *, unsigned long);
   void RemoveOwner(unsigned long);
   LicqUser* FetchUser(const char* idstring, unsigned long ppid, unsigned short lockType);
   LicqOwner* FetchOwner(unsigned long ppid, unsigned short lockType);
@@ -1157,6 +1185,14 @@ public:
    * Release owner lock
    */
   void DropOwner(const LicqOwner* owner);
+
+  /**
+   * Check if a user id is valid
+   *
+   * @param id User id to check
+   * @return True if user id exists, otherwise false
+   */
+  bool userExists(int id);
 
   bool IsOnList(const char *, unsigned long);
   LicqOwner* FindOwner(const char* idstring, unsigned long ppid);
@@ -1169,8 +1205,16 @@ public:
    */
   std::string OwnerId(unsigned long ppid);
 
+  /**
+   * Get user id for an account
+   *
+   * @param accountId Server account id
+   * @param ppid Protocol instance id
+   * @return Local user id
+   */
+  int getUserFromAccount(const std::string& accountId, unsigned long ppid);
+
   // ICQ Protocol only (from original Licq)
-  void AddUser(LicqUser* user);
   void DropUser(const LicqUser* user);
 
   /**
@@ -1182,13 +1226,43 @@ public:
   unsigned long icqOwnerUin();
 
   /**
+   * Add a user to the contact list
+   *
+   * @param accountId Server account id
+   * @param ppid Protocol instance id
+   * @param temporary True if user should not be saved to disk
+   * @return Local user id of added user or 0 if add failed
+   */
+  int addUser(const std::string& accountId, unsigned int ppid, bool temporary);
+
+  /**
+   * Remove a user from the list
+   *
+   * @param userId Id of user to remove
+   */
+  void removeUser(int userId);
+
+  void RemoveUser(const char* accountId, unsigned long ppid)
+  { removeUser(getUserFromAccount(accountId, ppid)); }
+
+  /**
    * Lock user list for access
    * call UnlockUserList when lock is no longer needed
    *
    * @param lockType Type of lock (LOCK_R or LOCK_W)
-   * @return Map of all users indexed by UserMapKey
+   * @return Map of all users indexed by user id
    */
   UserMap* LockUserList(unsigned short lockType);
+
+  /**
+   * Lock and get account map
+   * Same lock as LockUserList() but returns account map instead
+   *
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @return Map of all users indexed by UserAccountMapKey
+   */
+  UserAccountMap* lockUserAccounts(unsigned short lockType)
+  { LockUserList(lockType); return &myUserAccounts; }
 
   /**
    * Release user list lock
@@ -1357,33 +1431,40 @@ public:
   /**
    * Set user group membership and (optionally) update server
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User id
    * @param groupType Group type
    * @param groupId Group id
    * @param inGroup True to add user to group or false to remove
    * @param updateServer True if server list should be updated
    */
+  void setUserInGroup(int userId, GroupType groupType, int groupId, bool inGroup,
+      bool updateServer = true);
+
   void SetUserInGroup(const char* id, unsigned long ppid, GroupType groupType,
-      int groupId, bool inGroup, bool updateServer = true);
+      int groupId, bool inGroup, bool updateServer = true)
+  { setUserInGroup(getUserFromAccount(id, ppid), groupType, groupId, inGroup, updateServer); }
 
   /**
    * Add user to a group and update server group
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User id
    * @param groupId Group id
    */
+  void addUserToGroup(int userId, int groupId)
+  { setUserInGroup(userId, GROUPS_USER, groupId, true, true); }
+
   void AddUserToGroup(const char* id, unsigned long ppid, int groupId)
   { SetUserInGroup(id, ppid, GROUPS_USER, groupId, true, true); }
 
   /**
    * Remove user from a group
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User id
    * @param groupId Group id
    */
+  void removeUserFromGroup(int userId, int groupId)
+  { setUserInGroup(userId, GROUPS_USER, groupId, false); }
+
   void RemoveUserFromGroup(const char* id, unsigned long ppid, int groupId)
   { SetUserInGroup(id, ppid, GROUPS_USER, groupId, false); }
 
@@ -1402,6 +1483,7 @@ protected:
 
   GroupMap myGroups;
   UserMap myUsers;
+  UserAccountMap myUserAccounts;
   OwnerMap myOwners;
   unsigned short m_nUserListLockType;
   unsigned short myGroupListLockType;

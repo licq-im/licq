@@ -1096,10 +1096,9 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
     return false;
   }
 
-  ICQUser *u = new ICQUser(szId, nPPID, bTempUser);
+  int userId = gUserManager.addUser(szId, nPPID, bTempUser);
   if (groupId != 0)
-    u->AddToGroup(GROUPS_USER, groupId);
-  gUserManager.AddUser(u);
+    gUserManager.addUserToGroup(userId, groupId);
 
   // this notify is for local only adds
   if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify && !bTempUser)
@@ -1110,40 +1109,6 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
   PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID, groupId));
 
   return true;
-}
-
-//---AddUserToList-------------------------------------------------------------
-/*! \brief Adds User to contact list
- *
- * Adds the given user to the contact list. NOTE: When this call returns the 
- * user is write locked and will need to be dropped! When calling this 
- * function it is important that the user not be locked in any way.
- *
- * \return Returns true on success, else returns false.
- */
-void CICQDaemon::AddUserToList(ICQUser *nu)
-{
-  // Don't add a user we already have
-  if (gUserManager.IsOnList(nu->IdString(), nu->PPID()))
-  {
-    gLog.Warn(tr("%sUser %s already on contact list.\n"), L_WARNxSTR, nu->IdString());
-    return;
-  }
-
-  const char *szId = nu->IdString();
-  unsigned long nPPID = nu->PPID();
-  gUserManager.AddUser(nu);
-  nu = gUserManager.FetchUser(szId, nPPID, LOCK_W);
-
-  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
-  {
-    // XXX if adding to server list, it will get write lock FIX THAT SHIT!
-    gUserManager.DropUser(nu);
-    icqAddUser(szId);
-    nu = gUserManager.FetchUser(szId, nPPID, LOCK_W);
-  }
-
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, nu->IdString(), nu->PPID()));
 }
 
 void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)

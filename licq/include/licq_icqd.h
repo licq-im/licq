@@ -557,7 +557,6 @@ public:
 
   bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true,
                      bool bTempUser = false, unsigned short groupId = 0);
-  void AddUserToList(LicqUser* user);
   void RemoveUserFromList(const char *szId, unsigned long nPPID);
 
   // SMS
