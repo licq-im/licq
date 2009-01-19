@@ -325,7 +325,7 @@ void SearchUserDlg::searchResult(ICQEvent* e)
   btnSearch->setEnabled(true);
   btnDone->setEnabled(true);
 
-  if (e->SearchAck() != NULL && e->SearchAck()->Uin() != 0)
+  if (e->SearchAck() != NULL && e->SearchAck()->Id() != NULL)
     searchFound(e->SearchAck());
 
   if (e->Result() == EVENT_SUCCESS)
@@ -342,25 +342,16 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
   if (codec == NULL)
     codec = QTextCodec::codecForLocale();
 
-  for (int i = 0; i <= 6; i++)
-  {
-    switch (i)
-    {
-      case 0:
-        item->setData(i, Qt::UserRole, QString::number(s->Uin()));
-        text = codec->toUnicode(s->Alias());
-        break;
-      case 1:
-        item->setTextAlignment(i, Qt::AlignRight);
-        text = QString::number(s->Uin());
-        break;
-      case 2:
-        text = codec->toUnicode(s->FirstName()) + " " + codec->toUnicode(s->LastName());
-        break;
-      case 3:
-        text = s->Email();
-        break;
-      case 4:
+  item->setData(0, Qt::UserRole, s->Id());
+  item->setText(0, codec->toUnicode(s->Alias()));
+
+  item->setTextAlignment(1, Qt::AlignRight);
+  item->setText(1, s->Id());
+
+  item->setText(2, codec->toUnicode(s->FirstName()) + " " + codec->toUnicode(s->LastName()));
+
+  item->setText(3, s->Email());
+
         switch (s->Status())
         {
           case SA_OFFLINE:
@@ -373,8 +364,8 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
           default:
             text = tr("Unknown");
         }
-        break;
-      case 5:
+  item->setText(4, text);
+
         text = (s->Age() ? QString::number(s->Age()) : tr("?")) + "/";
         switch (s->Gender())
         {
@@ -387,13 +378,9 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
           default:
             text += tr("?");
         }
-        break;
-      case 6:
-        text = s->Auth() ? tr("No") : tr("Yes");
-        break;
-    }
-    item->setText(i, text);
-  }
+  item->setText(5, text);
+
+  item->setText(6, s->Auth() ? tr("No") : tr("Yes"));
 }
 
 void SearchUserDlg::searchDone(const CSearchAck* sa)

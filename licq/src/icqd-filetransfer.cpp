@@ -194,15 +194,17 @@ FileTransferManagerList CFileTransferManager::ftmList;
 pthread_mutex_t CFileTransferManager::thread_cancel_mutex
                                                    = PTHREAD_MUTEX_INITIALIZER;
 
-CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
+CFileTransferManager::CFileTransferManager(CICQDaemon* d, const char* accountId)
   : m_bThreadRunning(false)
 {
   // Create the plugin notification pipe
   pipe(pipe_thread);
   pipe(pipe_events);
 
-  m_nUin = nUin;
-  sprintf(myId, "%lu", m_nUin);
+  if (myId != NULL)
+    strcpy(myId, accountId);
+  else
+    myId[0] = '\0';
   m_nSession = rand();
   licqDaemon = d;
 
@@ -220,7 +222,7 @@ CFileTransferManager::CFileTransferManager(CICQDaemon *d, unsigned long nUin)
   m_bThreadCreated = false;
 
   m_szFileName[0] = m_szPathName[0] = '\0';
-  sprintf(m_szRemoteName, "%lu", m_nUin);
+  strcpy(m_szRemoteName, myId);
 
   ftmList.push_back(this);
 }
@@ -250,7 +252,7 @@ bool CFileTransferManager::ReceiveFiles(const char *szDirectory)
 
   if (szDirectory == NULL)
   {
-    snprintf(m_szDirectory, MAX_FILENAME_LEN, "%s/%lu", BASE_DIR, m_nUin);
+    snprintf(m_szDirectory, MAX_FILENAME_LEN, "%s/%s", BASE_DIR, myId);
     m_szDirectory[MAX_FILENAME_LEN - 1] = '\0';
     if (access(BASE_DIR, F_OK) < 0 && mkdir(m_szDirectory, 0700) == -1 &&
         errno != EEXIST)

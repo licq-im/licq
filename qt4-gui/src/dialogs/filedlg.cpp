@@ -137,7 +137,7 @@ FileDlg::FileDlg(const char* szId, unsigned long nPPID, QWidget* parent)
   hbox->addWidget(btnCancel);
 
   //TODO fix this
-  ftman = new CFileTransferManager(gLicqDaemon, myId.toULong());
+  ftman = new CFileTransferManager(gLicqDaemon, myId.toLatin1().data());
   ftman->SetUpdatesEnabled(2);
   sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));

@@ -1729,7 +1729,7 @@ void CICQDaemon::icqLogoff()
   if (nSD != -1)
   {
     CPU_Logoff p;
-    cancelledEvent = new ICQEvent(this, nSD, &p, CONNECT_SERVER, 0, NULL);
+    cancelledEvent = new ICQEvent(this, nSD, &p, CONNECT_SERVER, NULL, 0, NULL);
     cancelledEvent->m_pPacket = NULL;
     cancelledEvent->m_bCancelled = true;
     SendEvent(nSD, p, true);
@@ -4506,7 +4506,7 @@ void CICQDaemon::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
     // ### FIX subsequence !!
     ICQEvent *e = DoneExtendedServerEvent(0, EVENT_SUCCESS);
     if (e != NULL) ProcessDoneEvent(e);
-    PushPluginSignal(new CICQSignal(SIGNAL_LOGON, 0, 0));
+    PushPluginSignal(new CICQSignal(SIGNAL_LOGON, 0, NULL, 0));
 
     //icqSetStatus(m_nDesiredStatus);
     break;
@@ -5427,7 +5427,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
         msg.UnpackUnsignedShort(); // length of the rest of the packet.
         nFoundUin = msg.UnpackUnsignedLong();
-        CSearchAck *s = new CSearchAck(nFoundUin);;
+        char foundAccount[14];
+        snprintf(foundAccount, sizeof(foundAccount), "%lu", nFoundUin);
+        CSearchAck* s = new CSearchAck(foundAccount, LICQ_PPID);
 
         s->m_szAlias = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
         s->m_szFirstName = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));

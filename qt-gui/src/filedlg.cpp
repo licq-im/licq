@@ -125,7 +125,7 @@ CFileDlg::CFileDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(close()));
 
   //TODO fix this
-  ftman = new CFileTransferManager(licqDaemon, strtoul(m_szId, (char **)NULL, 10));
+  ftman = new CFileTransferManager(licqDaemon, m_szId);
   ftman->SetUpdatesEnabled(2);
   sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));

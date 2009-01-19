@@ -1224,7 +1224,7 @@ void CICQDaemon::RejectEvent(const char* id, CUserEvent* e)
 void CICQDaemon::SendEvent_Server(CPacket *packet)
 {
 #if 1
-  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, 0, NULL);
+  ICQEvent* e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, NULL, 0, NULL);
 
   if (e == NULL)  return;
  

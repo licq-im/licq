@@ -62,8 +62,6 @@ class CSearchAck
 {
 public:
   // Accessors
-  //! Returns the UIN of the search result.
-  unsigned long Uin() const { return m_nUin; }
   //! Returns the alias (nickname) of the search result.
   const char* Alias() const { return m_szAlias; }
   //! Returns the first name of the search result.
@@ -92,12 +90,10 @@ public:
   ~CSearchAck();
 
 protected:
-  CSearchAck(unsigned long _nUin);
   CSearchAck(const char *_szId, unsigned long _nPPID);
 
   unsigned long m_nPPID;
   char *m_szId;
-  unsigned long m_nUin;
   char *m_szAlias;
   char *m_szFirstName;
   char *m_szLastName;
@@ -192,10 +188,6 @@ public:
   //!accepting/rejecting chat or file requests.
   unsigned short SubSequence() const { return m_nSubSequence; }
 
-  //!The uin of the user the event was destined for.  Only relevant if
-  //!this was a message/url...
-  unsigned long Uin() const { return m_nDestinationUin; }
-
   //!The user id that the event was destined for.  Only relevant if
   //!this was a message/url...
   const char* Id() const { return m_szId; }
@@ -236,8 +228,6 @@ public:
 
 protected:
   ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
-           unsigned long _nUin, CUserEvent *e);
-  ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
            const char *_szId, unsigned long _nPPID, CUserEvent *e);
   ICQEvent(const ICQEvent* e);
 
@@ -267,7 +257,6 @@ protected:
   unsigned long  m_nSNAC;
   unsigned short m_nCommand;
   unsigned short m_nSubCommand;
-  unsigned long  m_nDestinationUin;
   unsigned short m_nSequence;
   unsigned short m_nSubSequence;
   unsigned short m_nSubType;
@@ -432,8 +421,6 @@ const unsigned long LIST_ALL                     = LIST_INVALIDATE;
 class CICQSignal
 {
 public:
-  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, unsigned long _nUin,
-             int nArg = 0, unsigned long nCID = 0);
   CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, const char *_szId,
              unsigned long _nPPID, int nArg = 0, unsigned long nCID = 0);
   CICQSignal(const CICQSignal* s);
@@ -445,7 +432,6 @@ public:
   unsigned long SubSignal() const { return m_nSubSignal; }
   //!UIN that the signal is related.  See signals to understand how this
   //!value is set.
-  unsigned long Uin() const { return m_nUin; }
   const char* Id() const { return m_szId; }
   unsigned long PPID() const { return m_nPPID; }
   int Argument() const { return m_nArgument; }
@@ -453,7 +439,6 @@ public:
 protected:
   unsigned long m_nSignal;
   unsigned long m_nSubSignal;
-  unsigned long m_nUin;
   char *m_szId;
   unsigned long m_nPPID;
   int m_nArgument;

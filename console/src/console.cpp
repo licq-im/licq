@@ -850,7 +850,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
             // Invoke a file transfer manager here
             const CEventFile* f = dynamic_cast<const CEventFile *>(ue);
             CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
-                                          e->Uin());
+                e->Id());
             m_lFileStat.push_back(ftman);
 
             // Now watch the file pipe
@@ -962,9 +962,9 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
     return;
   }
 
-  if (e->SearchAck() != NULL && e->SearchAck()->Uin() != 0)
+  if (e->SearchAck() != NULL && e->SearchAck()->Id() != NULL)
   {
-    win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %lu %A(%Z%s%A)\n",
+    win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %s %A(%Z%s%A)\n",
                  COLOR_WHITE,
                  e->SearchAck()->Alias(),
                  A_BOLD, A_BOLD,
@@ -973,7 +973,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
                  A_BOLD, A_BOLD,
                  e->SearchAck()->Email(),
                  A_BOLD, A_BOLD,
-                 e->SearchAck()->Uin(),
+                 e->SearchAck()->Id(),
                  A_BOLD, A_BOLD,
                  e->SearchAck()->Status() == SA_ONLINE ? "online" :
                  e->SearchAck()->Status() == SA_OFFLINE ? "offline" :
@@ -3115,7 +3115,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 
           // Make the ftman
           CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
-                                        strtoul(data->szId, (char **)NULL, 10));
+              data->szId);
           ftman->SetUpdatesEnabled(1);
           m_lFileStat.push_back(ftman);
 

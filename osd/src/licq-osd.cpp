@@ -79,7 +79,7 @@ void ProcessSignal(CICQSignal *s);
 void ProcessEvent(ICQEvent *e);
 #ifdef CP_TRANSLATE
     const char *get_iconv_encoding_name(const char *licq_encoding_name);
-char* my_translate(unsigned long uin, const char* msg, const char* userenc);
+char* my_translate(const char* accountId, const char* msg, const char* userenc);
 #endif
 
 // some variables representing the internal state
@@ -522,7 +522,7 @@ void ProcessSignal(CICQSignal *s)
 			userencoding=u->UserEncoding(); // needed in translate function
             secure=u->Secure();
 
-		    char *username_translated_temp = my_translate(s->Uin(), username.c_str(), "UTF-8");
+            char* username_translated_temp = my_translate(s->Id(), username.c_str(), "UTF-8");
 		    username = username_translated_temp;
 		    free(username_translated_temp);
 
@@ -537,7 +537,7 @@ void ProcessSignal(CICQSignal *s)
 			if (e == NULL) // event not found
 			{
 			    //		    cout << "e is null"  << endl;
-			    gLog.Warn("%sEvent %ld not found\n", L_WARNxSTR, s->Uin());
+			    gLog.Warn("%sEvent %s not found\n", L_WARNxSTR, s->Id());
                             want_osd=false;
 			}
 		    }
@@ -547,7 +547,7 @@ void ProcessSignal(CICQSignal *s)
 		}
 		else
 		{
-		    gLog.Warn("%sUser %ld not found\n", L_WARNxSTR, s->Uin());
+		    gLog.Warn("%sUser %s not found\n", L_WARNxSTR, s->Id());
 		    want_osd=false;
 		}
 	    }
@@ -590,7 +590,7 @@ void ProcessSignal(CICQSignal *s)
 		    ((config.Showmessages==2)&&(notify))
 		   )
 		{
-		    char *translated=my_translate(s->Uin(), e->Text(), userencoding);
+            char* translated = my_translate(s->Id(), e->Text(), userencoding);
 		    string msg="";
 		    if (secure && config.marksecuremessages)
 			msg="(S) ";
@@ -788,7 +788,7 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 // the other user. (change it for example via the licq-qt-gui message window)
 // CICQSignal is needed to get the User for this message -
 // some day i will do this more elegant
-char* my_translate(unsigned long /* uin */, const char* msg, const char* userenc)
+char* my_translate(const char* /* accountId */, const char* msg, const char* userenc)
 {
     // will be deleted outside of this function
     char *result = (char*)malloc(strlen(msg) + 1);
@@ -851,7 +851,7 @@ char* my_translate(unsigned long /* uin */, const char* msg, const char* userenc
 }
 #else
 // a dummy function which helps me to remove the #ifdef CP_TRANSLATEs in a lot of my code
-char *my_translate(unsigned long uin, const char *msg, CICQSignal *s)
+char* my_translate(const char* /* accountId */, const char *msg, CICQSignal *s)
 {
     return strdup(msg);
 }

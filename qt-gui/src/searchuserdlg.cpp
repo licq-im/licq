@@ -437,7 +437,7 @@ void SearchUserDlg::searchResult(ICQEvent *e)
   btnSearch->setEnabled(true);
   btnDone->setEnabled(true);
 
-  if (e->SearchAck() != NULL && e->SearchAck()->Uin() != 0)
+  if (e->SearchAck() != NULL && e->SearchAck()->Id() != NULL)
     searchFound(e->SearchAck());
 
   if (e->Result() == EVENT_SUCCESS)
