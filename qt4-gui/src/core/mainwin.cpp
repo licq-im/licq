@@ -202,8 +202,8 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       "<li><tt>%w - </tt>webpage</li></ul>");
 
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedList(CICQSignal*)),
-      SLOT(slot_updatedList(CICQSignal*)));
+      SIGNAL(updatedList(unsigned long, int, const QString&, unsigned long)),
+      SLOT(slot_updatedList(unsigned long)));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
       SLOT(slot_updatedUser(const QString&, unsigned long, unsigned long, int)));
@@ -675,9 +675,9 @@ void MainWindow::slot_updatedUser(const QString& id, unsigned long ppid, unsigne
   }
 }
 
-void MainWindow::slot_updatedList(CICQSignal* sig)
+void MainWindow::slot_updatedList(unsigned long subSignal)
 {
-  switch(sig->SubSignal())
+  switch(subSignal)
   {
     case LIST_REMOVE:
       updateEvents();

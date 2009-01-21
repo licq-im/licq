@@ -94,7 +94,14 @@ public:
 
 public slots:
   void slot_shutdown();
-  void slot_updatedList(CICQSignal*);
+
+  /**
+   * Contact list has changed
+   *
+   * @param subSignal Sub signal telling what the change was
+   */
+  void slot_updatedList(unsigned long subSignal);
+
   void slot_updatedUser(const QString& id, unsigned long ppid, unsigned long subSignal, int argument);
   void slot_pluginUnloaded(unsigned long ppid);
   void updateGroups(bool initial = false);

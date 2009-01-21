@@ -26,7 +26,6 @@
 
 #include <licq_user.h>
 
-class CICQSignal;
 class LicqUser;
 
 
@@ -327,9 +326,12 @@ public slots:
   /**
    * The daemon list has changed
    *
-   * @param sig Signal data from the daemon with information on what has changed
+   * @param subSignal Sub signal telling what the change was
+   * @param argument Additional data, usage depend on sub signal type
+   * @param accountId Account id for affected user, if applicable
+   * @param ppid Protocol instance id for affected user, if applicable
    */
-  void listUpdated(CICQSignal* sig);
+  void listUpdated(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
 
   /**
    * The data for a user has changed in the daemon

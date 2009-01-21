@@ -445,13 +445,13 @@ int LicqGui::Run(CICQDaemon* daemon)
 
   // Contact list model
   myContactList = new ContactListModel(this);
-  connect(mySignalManager, SIGNAL(updatedList(CICQSignal*)),
-      myContactList, SLOT(listUpdated(CICQSignal*)));
+  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, const QString&, unsigned long)),
+      myContactList, SLOT(listUpdated(unsigned long, int, const QString&, unsigned long)));
   connect(mySignalManager, SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
       myContactList, SLOT(userUpdated(const QString&, unsigned long, unsigned long, int)));
 
-  connect(mySignalManager, SIGNAL(updatedList(CICQSignal*)),
-      SLOT(listUpdated(CICQSignal*)));
+  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, const QString&, unsigned long)),
+      SLOT(listUpdated(unsigned long, int, const QString&, unsigned long)));
   connect(mySignalManager, SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
       SLOT(userUpdated(const QString&, unsigned long, unsigned long, int, unsigned long)));
   connect(mySignalManager, SIGNAL(socket(QString, unsigned long, unsigned long)),
@@ -1294,14 +1294,14 @@ void LicqGui::createFloaty(QString id, unsigned long ppid,
   f->show();
 }
 
-void LicqGui::listUpdated(CICQSignal* sig)
+void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const QString& accountId, unsigned long ppid)
 {
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case LIST_REMOVE:
     {
       // If their floaty is enabled, remove it
-      FloatyView* f = FloatyView::findFloaty(sig->Id(), sig->PPID());
+      FloatyView* f = FloatyView::findFloaty(accountId, ppid);
       if (f)
         delete f;
 
@@ -1309,7 +1309,7 @@ void LicqGui::listUpdated(CICQSignal* sig)
       for (int i = 0; i < myUserViewList.size(); ++i)
       {
         UserViewEvent* item = myUserViewList.at(i);
-        if (item->id() == sig->Id() && item->ppid() == sig->PPID())
+        if (item->id() == accountId && item->ppid() == ppid)
         {
           item->close();
           myUserViewList.removeAll(item);
@@ -1320,7 +1320,7 @@ void LicqGui::listUpdated(CICQSignal* sig)
       for (int i = 0; i < myUserDlgList.size(); ++i)
       {
         UserDlg* item = myUserDlgList.at(i);
-        if (item->id() == sig->Id() && item->ppid() == sig->PPID())
+        if (item->id() == accountId && item->ppid() == ppid)
         {
           item->close();
           myUserDlgList.removeAll(item);
@@ -1331,7 +1331,7 @@ void LicqGui::listUpdated(CICQSignal* sig)
       for (int i = 0; i < myUserSendList.size(); ++i)
       {
         UserSendCommon* item = myUserSendList.at(i);
-        if (item->id() == sig->Id() && item->ppid() == sig->PPID())
+        if (item->id() == accountId && item->ppid() == ppid)
         {
           if (myUserEventTabDlg && myUserEventTabDlg->tabExists(item))
             myUserEventTabDlg->removeTab(item);

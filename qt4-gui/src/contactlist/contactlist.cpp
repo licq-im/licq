@@ -80,9 +80,9 @@ ContactListModel::~ContactListModel()
     delete mySystemGroups[i];
 }
 
-void ContactListModel::listUpdated(CICQSignal* sig)
+void ContactListModel::listUpdated(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid)
 {
-  switch(sig->SubSignal())
+  switch(subSignal)
   {
     case LIST_INVALIDATE:
       reloadAll();
@@ -90,12 +90,12 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_CONTACT_ADDED:
     {
-      const ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
+      const LicqUser* u = gUserManager.FetchUser(accountId.toLatin1(), ppid, LOCK_R);
       if (u == NULL)
       {
-        char* ppidString = PPIDSTRING(sig->PPID());
+        char* ppidString = PPIDSTRING(ppid);
         gLog.Warn("%sContactList::listUpdated(): Invalid user received: %s (%s)\n",
-            L_ERRORxSTR, sig->Id(), ppidString);
+            L_ERRORxSTR, accountId.toLatin1().data(), ppidString);
         delete[] ppidString;
         break;
       }
@@ -104,17 +104,17 @@ void ContactListModel::listUpdated(CICQSignal* sig)
       break;
     }
     case LIST_CONTACT_REMOVED:
-      removeUser(sig->Id(), sig->PPID());
+      removeUser(accountId, ppid);
       break;
 
     case LIST_GROUP_ADDED:
     {
-      int gid = sig->Argument();
+      // argument is group id
 
       // Set inital expanded state for new group
-      Config::ContactList::instance()->setGroupState(gid, true);
+      Config::ContactList::instance()->setGroupState(argument, true);
 
-      ContactGroup* newGroup = new ContactGroup(gid);
+      ContactGroup* newGroup = new ContactGroup(argument);
       connectGroup(newGroup);
       beginInsertRows(QModelIndex(), myUserGroups.size(), myUserGroups.size());
       myUserGroups.append(newGroup);
@@ -124,12 +124,12 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_GROUP_REMOVED:
     {
-      int gid = sig->Argument();
+      // argument is group id
 
       for (int i = 0; i < myUserGroups.size(); ++i)
       {
         ContactGroup* group = myUserGroups.at(i);
-        if (group->groupId() == gid)
+        if (group->groupId() == argument)
         {
           beginRemoveRows(QModelIndex(), i, i);
           myUserGroups.removeAll(group);
@@ -142,12 +142,12 @@ void ContactListModel::listUpdated(CICQSignal* sig)
 
     case LIST_GROUP_CHANGED:
     {
-      int gid = sig->Argument();
+      // argument is group id
 
       for (int i = 0; i < myUserGroups.size(); ++i)
       {
         ContactGroup* group = myUserGroups.at(i);
-        if (group->groupId() == gid)
+        if (group->groupId() == argument)
           group->update();
       }
       break;

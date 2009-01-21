@@ -39,7 +39,15 @@ public:
   ~SignalManager();
 
 signals:
-  void updatedList(CICQSignal* sig);
+  /**
+   * Contact list has changed
+   *
+   * @param subSignal Sub signal telling what the change was
+   * @param argument Additional data, usage depend on sub signal type
+   * @param accountId Account id for affected user, if applicable
+   * @param ppid Protocol instance id for affected user, if applicable
+   */
+  void updatedList(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
 
   /**
    * Data for a user has changed

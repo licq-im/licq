@@ -50,7 +50,7 @@ void SignalManager::ProcessSignal(CICQSignal* sig)
   switch (sig->Signal())
   {
     case SIGNAL_UPDATExLIST:
-      emit updatedList(sig);
+      emit updatedList(sig->SubSignal(), sig->Argument(), sig->Id(), sig->PPID());
       break;
 
     case SIGNAL_UPDATExUSER:

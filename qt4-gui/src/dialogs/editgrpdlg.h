@@ -27,8 +27,6 @@ class QLineEdit;
 class QListWidget;
 class QPushButton;
 
-class CICQSignal;
-
 namespace LicqQtGui
 {
 class EditGrpDlg : public QDialog
@@ -77,7 +75,13 @@ private:
   void RefreshList();
 
 private slots:
-  void listUpdated(CICQSignal* sig);
+  /**
+   * The daemon list has changed
+   *
+   * @param subSignal Sub signal telling what the change was
+   */
+  void listUpdated(unsigned long subSignal);
+
   void slot_add();
   void slot_remove();
   void slot_up();

@@ -35,7 +35,6 @@
 #include <licq_user.h>
 
 class CICQDaemon;
-class CICQSignal;
 class ICQEvent;
 
 namespace LicqQtGui
@@ -243,9 +242,12 @@ private slots:
   /**
    * Act on changes to the contact list
    *
-   * @param sig Signal from daemon
+   * @param subSignal Sub signal telling what the change was
+   * @param argument Additional data, usage depend on sub signal type
+   * @param accountId Account id for affected user, if applicable
+   * @param ppid Protocol instance id for affected user, if applicable
    */
-  void listUpdated(CICQSignal* sig);
+  void listUpdated(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
 
   /**
    * Act on changes to a contact
