@@ -57,7 +57,7 @@ signals:
   void signal_updateGroups();
 
 private slots:
-  void listUpdated(CICQSignal* sig);
+  void listUpdated(unsigned long subSignal);
 
 private:
   unsigned short currentGroupId() const;

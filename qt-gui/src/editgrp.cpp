@@ -81,8 +81,8 @@ EditGrpDlg::EditGrpDlg(CSignalManager* signalManager, QWidget *parent)
   lay->addLayout(hlay, 1, 0);
 
   RefreshList();
-  connect(signalManager, SIGNAL(signal_updatedList(CICQSignal*)),
-      this, SLOT(listUpdated(CICQSignal*)));
+  connect(signalManager, SIGNAL(signal_updatedList(unsigned long, int, const QString&, unsigned long)),
+      this, SLOT(listUpdated(unsigned long)));
 
   connect(btnAdd, SIGNAL(clicked()), this, SLOT(slot_add()));
   connect(btnRemove, SIGNAL(clicked()), this, SLOT(slot_remove()));
@@ -129,9 +129,9 @@ void EditGrpDlg::RefreshList()
   setCurrentGroupId(groupId);
 }
 
-void EditGrpDlg::listUpdated(CICQSignal* sig)
+void EditGrpDlg::listUpdated(unsigned long subSignal)
 {
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case LIST_GROUP_ADDED:
     case LIST_GROUP_REMOVED:

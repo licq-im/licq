@@ -203,7 +203,7 @@ protected slots:
   void HistoryReverse(bool);
   void HistoryReload();
   void updateTab(const QString&);
-  void updatedUser(CICQSignal*);
+  void updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal);
   void SaveSettings();
   void slotUpdate();
   void slotRetrieve();
@@ -221,7 +221,6 @@ protected slots:
 signals:
   void finished(const char *, unsigned long);
   void finished(unsigned long);
-  void signal_updatedUser(CICQSignal *);
 
 private:
   static bool chkContains(const char* text, const char* filter, int filterlen);

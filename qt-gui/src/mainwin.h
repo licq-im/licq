@@ -69,7 +69,6 @@ class UserEventCommon;
 class UserSendCommon;
 class IconManager;
 
-class CICQSignal;
 class UserInfoDlg;
 class UserEventTabDlg;
 
@@ -311,8 +310,8 @@ public slots:
   void updateUserWin();
   void slot_shutdown();
   void saveOptions();
-  void slot_updatedList(CICQSignal *);
-  void slot_updatedUser(CICQSignal *);
+  void slot_updatedList(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
+  void slot_updatedUser(const QString& accountId, unsigned long nPPID, unsigned long subSignal, int argument=0, unsigned long cid=0);
   void slot_viewurl(QWidget *, QString);
 
 protected slots:
@@ -323,7 +322,7 @@ protected slots:
   void FillServerGroup();
   void saveAllUsers();
   void updateEvents();
-  void updateStatus(CICQSignal * = NULL);
+  void updateStatus(unsigned long ppid = 0);
   void updateGroups();
   void changeStatus(int index, unsigned long nPPID = 0xFFFFFFFF,
                     bool _bAutoLogon = false); //all

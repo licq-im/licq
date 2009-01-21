@@ -48,9 +48,9 @@ protected slots:
 
 signals:
   // Signal signals
-  void signal_updatedList(CICQSignal *);
-  void signal_updatedUser(CICQSignal *);
-  void signal_updatedStatus(CICQSignal *);
+  void signal_updatedList(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
+  void signal_updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
+  void signal_updatedStatus(unsigned long ppid);
   void signal_logon();
   void signal_logoff();
   void signal_ui_viewevent(unsigned long);

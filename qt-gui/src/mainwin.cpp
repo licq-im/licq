@@ -752,11 +752,11 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 
    connect (&autoAwayTimer, SIGNAL(timeout()), this, SLOT(autoAway()));
-   connect (licqSigMan, SIGNAL(signal_updatedList(CICQSignal *)),
-            this, SLOT(slot_updatedList(CICQSignal *)));
-   connect (licqSigMan, SIGNAL(signal_updatedUser(CICQSignal *)),
-            this, SLOT(slot_updatedUser(CICQSignal *)));
-   connect (licqSigMan, SIGNAL(signal_updatedStatus(CICQSignal *)), this, SLOT(updateStatus(CICQSignal *)));
+  connect(licqSigMan, SIGNAL(signal_updatedList(unsigned long, int, const QString&, unsigned long)),
+      this, SLOT(slot_updatedList(unsigned long, int, const QString&, unsigned long)));
+  connect (licqSigMan, SIGNAL(signal_updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      this, SLOT(slot_updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)));
+  connect (licqSigMan, SIGNAL(signal_updatedStatus(unsigned long)), this, SLOT(updateStatus(unsigned long)));
    connect (licqSigMan, SIGNAL(signal_doneOwnerFcn(ICQEvent *)),
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
@@ -1376,26 +1376,26 @@ inline bool CMainWindow::show_user(ICQUser *u)
 }
 
 
-void CMainWindow::slot_updatedUser(CICQSignal *sig)
+void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long cid)
 {
-  const char* szId = sig->Id();
-  unsigned long nPPID = sig->PPID();
+  const char* szId = accountId.latin1();
 
-  switch(sig->SubSignal())
+  switch (subSignal)
   {
     case USER_EVENTS:
     {
       // Skip all this if it was just an away message check
-      if (sig->Argument() == 0) {
+      if (argument == 0) {
         userView->AnimationAutoResponseCheck(szId, nPPID);
         break;
       }
       // Otherwise an event was added or removed
       updateEvents();
       // autoRaise if needed
-      if(m_bAutoRaise && sig->Argument() > 0)  raise();
+      if (m_bAutoRaise && argument > 0)
+        raise();
 
-      if (m_bAutoPopup && sig->Argument() > 0)
+      if (m_bAutoPopup && argument > 0)
       {
         const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);
         unsigned short s = ICQ_STATUS_OFFLINE; // if we have no owner we're very likely offline
@@ -1432,9 +1432,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
             gUserManager.DropUser(u);
 
             if (bCallUserView)
-              callFunction(mnuUserView, szId, nPPID, sig->CID());
+              callFunction(mnuUserView, szId, nPPID, cid);
             if (bCallSendMsg)
-              callFunction(mnuUserSendMsg, szId, nPPID, sig->CID());
+              callFunction(mnuUserSendMsg, szId, nPPID, cid);
           }
           else
             gUserManager.DropUser(u);
@@ -1458,7 +1458,8 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
     {
       if (gUserManager.FindOwner(szId, nPPID) != NULL)
       {
-        if (sig->SubSignal() == USER_STATUS || sig->SubSignal() == USER_EXT) break;
+        if (subSignal == USER_STATUS || subSignal == USER_EXT)
+          break;
         ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
         if (o != 0)
         {
@@ -1551,7 +1552,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
         }
       }
 
-      if(sig->SubSignal() == USER_STATUS && sig->Argument() == 1)
+      if(subSignal == USER_STATUS && argument == 1)
       {
         userView->AnimationOnline(szId, nPPID);
 #if defined(USE_KDE) && (KDE_IS_VERSION(3, 1, 0))
@@ -1583,13 +1584,13 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
       // update the tab icon of this user
       if (m_bTabbedChatting && userEventTabDlg)
       {
-        if (sig->SubSignal() == USER_TYPING)
-          userEventTabDlg->gotTyping(u, sig->Argument());
+        if (subSignal == USER_TYPING)
+          userEventTabDlg->gotTyping(u, argument);
         userEventTabDlg->updateTabLabel(u);
       }
       else
 
-      if (sig->SubSignal() == USER_TYPING)
+      if (subSignal == USER_TYPING)
       {
         // First, update the window if available
         QPtrListIterator<UserSendCommon> it(licqUserSend);
@@ -1600,7 +1601,7 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
           if ((*it)->PPID() == MSN_PPID)
           {
             // For protocols that use the convo id
-            if ((*it)->ConvoId() == (unsigned long)(sig->Argument()) && (*it)->PPID() == nPPID)
+            if ((*it)->ConvoId() == (unsigned long)(argument) && (*it)->PPID() == nPPID)
             {
               e = static_cast<UserSendCommon *>(*it);
               e->gotTyping(u->GetTyping());
@@ -1628,9 +1629,9 @@ void CMainWindow::slot_updatedUser(CICQSignal *sig)
 
 // ---------------------------------------------------------------------------
 
-void CMainWindow::slot_updatedList(CICQSignal *sig)
+void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, const QString& accountId, unsigned long ppid)
 {
-  switch(sig->SubSignal())
+  switch (subSignal)
   {
     case LIST_INVALIDATE:
     {
@@ -1639,11 +1640,11 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
     }
     case LIST_CONTACT_ADDED:
     {
-      ICQUser *u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_W);
+      LicqUser* u = gUserManager.FetchUser(accountId.latin1(), ppid, LOCK_W);
       if (u == NULL)
       {
         gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid user received: %s\n",
-          L_ERRORxSTR, sig->Id());
+          L_ERRORxSTR, accountId.latin1());
         break;
       }
 
@@ -1684,9 +1685,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
-        if(sig->Id() && item->ItemId() &&
-           strcmp(sig->Id(), item->ItemId()) == 0 &&
-           sig->PPID() == item->ItemPPID())
+        if(item->ItemId() && accountId == item->ItemId() && ppid == item->ItemPPID())
         {
           ++it;
           delete item;
@@ -1703,7 +1702,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 
         for (; it.current() != NULL; ++it)
         {
-          if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
+          if ((*it)->Id() == accountId && (*it)->PPID() == ppid)
           {
             it.current()->close();
             licqUserView.remove(it.current());
@@ -1717,7 +1716,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 
         for(; it.current() != NULL; ++it)
         {
-          if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
+          if ((*it)->Id() == accountId && (*it)->PPID() == ppid)
           {
             it.current()->close();
             licqUserInfo.remove(it.current());
@@ -1731,7 +1730,7 @@ void CMainWindow::slot_updatedList(CICQSignal *sig)
 
         for(; it.current() != NULL; ++it)
         {
-          if (strcmp((*it)->Id(), sig->Id()) == 0 && (*it)->PPID() == sig->PPID())
+          if ((*it)->Id() == accountId && (*it)->PPID() == ppid)
           {
             if (userEventTabDlg && userEventTabDlg->tabExists(it.current()))
               userEventTabDlg->removeTab(it.current());
@@ -2022,12 +2021,11 @@ void CMainWindow::updateGroups()
 
 
 //-----CMainWindow::updateStatus------------------------------------------------
-void CMainWindow::updateStatus(CICQSignal *s)
+void CMainWindow::updateStatus(unsigned long nPPID)
 {
    char *theColor = skin->colors.offline;
-   unsigned long nPPID = LICQ_PPID;
-   if (s)
-     nPPID = s->PPID();
+  if (nPPID == 0)
+    nPPID = LICQ_PPID;
    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
    if (o != NULL)
    {
@@ -3767,10 +3765,7 @@ void CMainWindow::slot_miscmodes(int _nId)
 
   // update icon
   if ( nAwayModes==7 )
-  {
-    CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, m_szUserMenuId, m_nUserMenuPPID);
-    slot_updatedUser(&s);
-  }
+    slot_updatedUser(m_szUserMenuId, m_nUserMenuPPID, USER_GENERAL);
 }
 
 

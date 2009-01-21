@@ -355,8 +355,7 @@ void CustomAwayMsgDlg::slot_ok()
   {
     u->SetCustomAutoResponse(s.local8Bit());
     gUserManager.DropUser(u);
-    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_szId, m_nPPID);
-    gMainWindow->slot_updatedUser(&sig);
+    gMainWindow->slot_updatedUser(m_szId, m_nPPID, USER_BASIC);
   }
   close();
 }
@@ -369,8 +368,7 @@ void CustomAwayMsgDlg::slot_clear()
   {
     u->ClearCustomAutoResponse();
     gUserManager.DropUser(u);
-    CICQSignal sig(SIGNAL_UPDATExUSER, USER_BASIC, m_szId, m_nPPID);
-    gMainWindow->slot_updatedUser(&sig);
+    gMainWindow->slot_updatedUser(m_szId, m_nPPID, USER_BASIC);
   }
   close();
 }

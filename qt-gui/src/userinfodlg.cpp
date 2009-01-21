@@ -134,8 +134,8 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 #endif
 
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
-  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
-           this, SLOT(updatedUser(CICQSignal *)));
+  connect (sigman, SIGNAL(signal_updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      this, SLOT(updatedUser(const QString&, unsigned long, unsigned long)));
 
   btnMain3 = new QPushButton(tr("&Update"), this);
   btnMain4 = new QPushButton(tr("&Close"), this);
@@ -2167,8 +2167,7 @@ void UserInfoDlg::SaveSettings()
   case GeneralInfo:
   {
     SaveGeneralInfo();
-    CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, m_szId, m_nPPID);
-    gMainWindow->slot_updatedUser(&s);
+    gMainWindow->slot_updatedUser(m_szId, m_nPPID, USER_GENERAL);
     break;
   }
   case MoreInfo:
@@ -2506,14 +2505,15 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
 }
 
 
-void UserInfoDlg::updatedUser(CICQSignal *sig)
+void UserInfoDlg::updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal)
 {
-  if (m_nPPID != sig->PPID() || strcmp(m_szId, sig->Id())) return;
+  if (m_nPPID != ppid || m_szId != accountId)
+    return;
 
   ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
   if (u == NULL) return;
 
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
   case USER_GENERAL:
   case USER_BASIC:

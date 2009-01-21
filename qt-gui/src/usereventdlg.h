@@ -167,14 +167,13 @@ protected:
   // which events we already processed in the ctor.
   int m_highestEventId;
 
-  virtual void UserUpdated(CICQSignal* signal, const char* id = NULL,
-      unsigned long ppid = 0) = 0;
+  virtual void UserUpdated(const char* szId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long cid) = 0;
   void SetGeneralInfo(ICQUser *);
   void FlashTaskbar(bool _bFlash);
 
 protected slots:
   void slot_connectsignal();
-  void slot_userupdated(CICQSignal *);
+  void slot_userupdated(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
   void slot_updatetime();
   void slot_updatetyping();
   void showHistory();
@@ -219,7 +218,7 @@ protected:
   void generateReply();
   void sendMsg(QString txt);
   void updateNextButton();
-  virtual void UserUpdated(CICQSignal* sig, const char* szId = NULL, unsigned long nPPID = 0);
+  virtual void UserUpdated(const char* szId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long cid);
 
 protected slots:
   void slot_close();
@@ -259,7 +258,6 @@ public:
   
 signals:
   void autoCloseNotify();
-  void updateUser(CICQSignal*);
   void signal_msgtypechanged(UserSendCommon *, UserSendCommon *);
 
 protected:
@@ -277,7 +275,7 @@ protected:
   QTimer *tmrSendTyping;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
-  virtual void UserUpdated(CICQSignal* sig, const char* szId = NULL, unsigned long nPPID = 0);
+  virtual void UserUpdated(const char* szId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long cid);
   virtual bool sendDone(ICQEvent *) = 0;
   bool checkSecure();
 

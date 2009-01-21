@@ -243,8 +243,8 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
 void UserEventCommon::slot_connectsignal()
 {
-  connect (sigman, SIGNAL(signal_updatedUser(CICQSignal *)),
-           this, SLOT(slot_userupdated(CICQSignal *)));
+  connect (sigman, SIGNAL(signal_updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      this, SLOT(slot_userupdated(const QString&, unsigned long, unsigned long, int, unsigned long)));
 }
 
 UserEventTabDlg::UserEventTabDlg(CMainWindow *mainwin, QWidget *parent, const char *name)
@@ -662,15 +662,15 @@ void UserEventCommon::slot_updatetyping()
 }
 
 //-----UserEventCommon::slot_userupdated-------------------------------------
-void UserEventCommon::slot_userupdated(CICQSignal *sig)
+void UserEventCommon::slot_userupdated(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid)
 {
-  if (m_nPPID != sig->PPID() || !FindUserInConvo(sig->Id()))
+  if (m_nPPID != ppid || !FindUserInConvo(accountId))
        //std::find(m_lUsers.begin(), m_lUsers.end(), sig->Id()) == m_lUsers.end())
   {
-    if (sig->CID() == m_nConvoId && m_nConvoId != 0)
+    if (cid == m_nConvoId && m_nConvoId != 0)
     { 
       char *szRealId;
-      ICQUser::MakeRealId(sig->Id(), sig->PPID(), szRealId);
+      LicqUser::MakeRealId(accountId.latin1(), ppid, szRealId);
       m_lUsers.push_back(szRealId);
       delete [] szRealId;
 
@@ -682,10 +682,10 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
       return;
   }
 
-  ICQUser *u = gUserManager.FetchUser(sig->Id(), m_nPPID, LOCK_R);
+  LicqUser* u = gUserManager.FetchUser(accountId.latin1(), m_nPPID, LOCK_R);
   if (u == NULL) return;
 
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case USER_STATUS:
     {
@@ -720,7 +720,7 @@ void UserEventCommon::slot_userupdated(CICQSignal *sig)
     gUserManager.DropUser(u);
     
   // Call the event specific function now
-  UserUpdated(sig, sig->Id(), m_nPPID);
+  UserUpdated(accountId, m_nPPID, subSignal, argument, cid);
 }
 
 
@@ -1467,15 +1467,15 @@ void UserViewEvent::slot_btnReadNext()
 }
 
 
-void UserViewEvent::UserUpdated(CICQSignal* sig, const char* szId, unsigned long nPPID)
+void UserViewEvent::UserUpdated(const char* szId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long /* cid */)
 {
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (!u) return;
-  if (sig->SubSignal() == USER_EVENTS)
+  if (subSignal == USER_EVENTS)
   {
-    if (sig->Argument() > 0)
+    if (argument > 0)
     {
-      int eventId = sig->Argument();
+      int eventId = argument;
       CUserEvent *e = u->EventPeekId(eventId);
       // Making sure we didn't handle this message already.
       if (e != NULL && m_highestEventId < eventId &&
@@ -1487,7 +1487,7 @@ void UserViewEvent::UserUpdated(CICQSignal* sig, const char* szId, unsigned long
       }
     }
 
-    if (sig->Argument() != 0) updateNextButton();
+    if (argument != 0) updateNextButton();
   }
   gUserManager.DropUser(u);
 }
@@ -1806,7 +1806,6 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleSend->setForeground(QColor(icqColor.ForeRed(), icqColor.ForeGreen(), icqColor.ForeBlue()));
   connect (mleSend, SIGNAL(signal_CtrlEnterPressed()), btnSend, SIGNAL(clicked()));
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  connect(this, SIGNAL(updateUser(CICQSignal*)), mainwin, SLOT(slot_updatedUser(CICQSignal*)));
   // Do not connect this before the check box gets set automatically. If the user is offline
   // the send through server flag gets set, and then that setting gets saved to disk.
   connect(chkSendServer, SIGNAL(clicked()), this, SLOT(slot_sendServerToggled()));
@@ -2282,8 +2281,7 @@ void UserSendCommon::sendButton()
     {
       u->SetNewUser(false);
       gUserManager.DropUser(u);
-      CICQSignal s(SIGNAL_UPDATExUSER, USER_BASIC, m_lUsers.front().c_str(), m_nPPID);
-      emit updateUser(&s);
+      mainwin->slot_updatedUser(m_lUsers.front().c_str(), m_nPPID, USER_BASIC);
     }
     else
       gUserManager.DropUser(u);
@@ -2683,11 +2681,11 @@ void UserSendCommon::slot_cancelSend()
 
 
 //-----UserSendCommon::UserUpdated-------------------------------------------
-void UserSendCommon::UserUpdated(CICQSignal* sig, const char* szId, unsigned long nPPID)
+void UserSendCommon::UserUpdated(const char* szId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long cid)
 {
   ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (!u) return;
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case USER_STATUS:
     {
@@ -2706,15 +2704,15 @@ void UserSendCommon::UserUpdated(CICQSignal* sig, const char* szId, unsigned lon
     }
     case USER_EVENTS:
     {
-      CUserEvent *e = u->EventPeekId(sig->Argument());
-      if (e != NULL && m_highestEventId < sig->Argument() && mleHistory &&
-          sig->Argument() > 0)
+      CUserEvent *e = u->EventPeekId(argument);
+      if (e != NULL && m_highestEventId < argument && mleHistory &&
+          argument > 0)
       {
-        m_highestEventId = sig->Argument();
-        e = u->EventPeekId(sig->Argument());
+        m_highestEventId = argument;
+        e = u->EventPeekId(argument);
         if (e)
         {
-          if (sig->PPID() != MSN_PPID || (sig->PPID() == MSN_PPID && sig->CID() == m_nConvoId))
+          if (nPPID != MSN_PPID || (nPPID == MSN_PPID && cid == m_nConvoId))
           {
             gUserManager.DropUser(u);
             mleHistory->addMsg(e, szId, nPPID);
