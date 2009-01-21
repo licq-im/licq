@@ -334,9 +334,12 @@ public slots:
   /**
    * The data for a user has changed in the daemon
    *
-   * @param sig Signal data from the daemon with information on what has changed
+   * @param accountId Account id for affected user
+   * @param ppid Protocol instance id for affected user
+   * @param subSignal Sub signal telling what the change was
+   * @param argument Additional data, usage depend on sub signal type
    */
-  void userUpdated(CICQSignal* sig);
+  void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument);
 
   /**
    * Reload the entire contact list from the daemon

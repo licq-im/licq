@@ -100,7 +100,7 @@ protected:
   void updateWidgetInfo(const LicqUser* u);
   void pushToolTip(QAction* action, QString tooltip);
 
-  virtual void userUpdated(CICQSignal* sig, QString id = QString::null, unsigned long ppid = 0) = 0;
+  virtual void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid) = 0;
 
 protected slots:
   /**
@@ -123,7 +123,7 @@ protected slots:
   void updateTyping();
   void showUserMenu();
   void showEncodingsMenu();
-  void updatedUser(CICQSignal* sig);
+  void updatedUser(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
 
 signals:
   void finished(QString id, unsigned long ppid);

@@ -157,8 +157,7 @@ void GPGKeySelect::slot_ok()
 
 void GPGKeySelect::updateIcon()
 {
-  CICQSignal s(SIGNAL_UPDATExUSER, USER_GENERAL, szId.toLatin1(), nPPID);
-  gMainWindow->slot_updatedUser(&s);
+  gMainWindow->slot_updatedUser(szId, nPPID, USER_GENERAL, 0);
   return;
 }
 

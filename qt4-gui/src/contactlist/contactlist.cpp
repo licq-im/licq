@@ -169,24 +169,24 @@ void ContactListModel::listUpdated(CICQSignal* sig)
   }
 }
 
-void ContactListModel::userUpdated(CICQSignal* sig)
+void ContactListModel::userUpdated(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument)
 {
   // Skip events for owners
-  if (gUserManager.FindOwner(sig->Id(), sig->PPID()) != NULL)
+  if (gUserManager.FindOwner(accountId.toLatin1(), ppid) != NULL)
     return;
 
-  ContactUserData* user = findUser(sig->Id(), sig->PPID());
+  ContactUserData* user = findUser(accountId.toLatin1(), ppid);
   if (user == NULL)
   {
-    char* ppidString = PPIDSTRING(sig->PPID());
+    char* ppidString = PPIDSTRING(ppid);
     gLog.Warn("%sContactList::userUpdated(): Invalid user received: %s (%s)\n",
-        L_ERRORxSTR, sig->Id(), ppidString);
+        L_ERRORxSTR, accountId.toLatin1().data(), ppidString);
     delete[] ppidString;
     return;
   }
 
   // Forward signal to the ContactUserData object
-  user->update(sig);
+  user->update(subSignal, argument);
 }
 
 void ContactListModel::updateUser(QString id, unsigned long ppid)

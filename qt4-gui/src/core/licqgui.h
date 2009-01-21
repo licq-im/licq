@@ -250,9 +250,13 @@ private slots:
   /**
    * Act on changes to a contact
    *
-   * @param sig Signal from daemon
+   * @param id Account id for affected user
+   * @param ppid Protocol instance id for affected user
+   * @param subSignal Sub signal telling what the change was
+   * @param argument Additional data, usage depend on sub signal type
+   * @param cid Conversation id
    */
-  void userUpdated(CICQSignal* sig);
+  void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
 
   void convoSet(QString id, unsigned long ppid, unsigned long convoId);
   void convoJoin(QString id, unsigned long ppid, unsigned long convoId);

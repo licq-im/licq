@@ -100,10 +100,10 @@ public:
   /**
    * User was updated
    *
-   * @param sig Signal from daemon
    * @param user User locked for read access
+   * @param subSignal Sub signal telling what the change was
    */
-  void userUpdated(const CICQSignal* sig, const LicqUser* user);
+  void userUpdated(const LicqUser* user, unsigned long subSignal);
 
   /**
    * Retrieve info from server

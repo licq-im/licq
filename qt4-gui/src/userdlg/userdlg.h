@@ -157,9 +157,11 @@ private slots:
   /**
    * User has updated
    *
-   * @prama sig Signal from daemon
+   * @param accountId Account id for affected user
+   * @param ppid Protocol instance id for affected user
+   * @param subSignal Sub signal telling what the change was
    */
-  void userUpdated(CICQSignal* sig);
+  void userUpdated(const QString& accountId, unsigned long ppid, unsigned long subSignal);
 
   /**
    * Server request has finished

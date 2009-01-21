@@ -114,9 +114,12 @@ private slots:
   /**
    * A user was updated. Add to history if it was a message recieved for this user
    *
-   * @param signal Signal from daemon
+   * @param accountId Account id for affected user
+   * @param ppid Protocol instance id for affected user
+   * @param subSignal Sub signal telling what the change was
+   * @param argument Additional data, usage depend on sub signal type
    */
-  void updatedUser(CICQSignal* signal);
+  void updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument);
 
   /**
    * A message was sent. Add to history if it was for the current user

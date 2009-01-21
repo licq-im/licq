@@ -54,7 +54,7 @@ void SignalManager::ProcessSignal(CICQSignal* sig)
       break;
 
     case SIGNAL_UPDATExUSER:
-      emit updatedUser(sig);
+      emit updatedUser(sig->Id(), sig->PPID(), sig->SubSignal(), sig->Argument(), sig->CID());
 
       if (gUserManager.FindOwner(sig->Id(), sig->PPID()) != NULL &&
           sig->SubSignal() == USER_STATUS)

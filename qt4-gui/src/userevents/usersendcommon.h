@@ -92,7 +92,7 @@ protected:
   int myType;
 
   void retrySend(ICQEvent* e, bool online, unsigned short level);
-  virtual void userUpdated(CICQSignal* sig, QString id = QString::null, unsigned long ppid = 0);
+  virtual void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
   void updatePicture(const LicqUser* u = NULL);
   bool checkSecure();
 

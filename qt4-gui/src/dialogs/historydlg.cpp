@@ -256,7 +256,9 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
       SLOT(eventSent(const ICQEvent*)));
 
   // Catch received messages so we can add them to history
-  connect(LicqGui::instance()->signalManager(), SIGNAL(updatedUser(CICQSignal*)), SLOT(updatedUser(CICQSignal*)));
+  connect(LicqGui::instance()->signalManager(),
+      SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      SLOT(updatedUser(const QString&, unsigned long, unsigned long, int)));
 }
 
 HistoryDlg::~HistoryDlg()
@@ -264,21 +266,21 @@ HistoryDlg::~HistoryDlg()
   ICQUser::ClearHistory(myHistoryList);
 }
 
-void HistoryDlg::updatedUser(CICQSignal* signal)
+void HistoryDlg::updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument)
 {
-  if (signal->Id() != myId || signal->PPID() != myPpid)
+  if (accountId != myId || ppid != myPpid)
     return;
 
-  if (signal->SubSignal() == USER_EVENTS)
+  if (subSignal == USER_EVENTS)
   {
     const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
     if (u == NULL)
       return;
 
-    const CUserEvent* event = u->EventPeekId(signal->Argument());
+    const CUserEvent* event = u->EventPeekId(argument);
     gUserManager.DropUser(u);
 
-    if (event != NULL && signal->Argument() > 0 && signal->Argument() > (*(--myHistoryList.end()))->Id())
+    if (event != NULL && argument > 0 && argument > (*(--myHistoryList.end()))->Id())
       addMsg(event);
   }
 }

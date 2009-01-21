@@ -68,7 +68,7 @@ private:
   void generateReply();
   void sendMsg(QString text);
   void updateNextButton();
-  virtual void userUpdated(CICQSignal* sig, QString id = QString::null, unsigned long ppid = 0);
+  virtual void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
 
 private slots:
   void autoClose();

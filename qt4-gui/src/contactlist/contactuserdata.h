@@ -63,9 +63,10 @@ public:
   /**
    * Update user information
    *
-   * @param sig Licq signal with information on what to update
+   * @param subSignal Sub signal telling what the change was
+   * @param argument Additional data, usage depend on sub signal type
    */
-  void update(CICQSignal* sig);
+  void update(unsigned long subSignal, int argument);
 
   /**
    * Update all user information from daemon

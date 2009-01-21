@@ -40,7 +40,18 @@ public:
 
 signals:
   void updatedList(CICQSignal* sig);
-  void updatedUser(CICQSignal* sig);
+
+  /**
+   * Data for a user has changed
+   *
+   * @param accountId Account id for affected user
+   * @param ppid Protocol instance id for affected user
+   * @param subSignal Sub signal telling what the change was
+   * @param argument Additional data, usage depend on sub signal type
+   * @param cid Conversation id
+   */
+  void updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
+
   void updatedStatus(CICQSignal* sig);
   void doneOwnerFcn(ICQEvent* ev);
   void doneUserFcn(ICQEvent* ev);

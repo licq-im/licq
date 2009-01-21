@@ -408,9 +408,9 @@ void UserPages::Settings::apply2(const QString& id, unsigned long ppid)
   }
 }
 
-void UserPages::Settings::userUpdated(const CICQSignal* sig, const ICQUser* user)
+void UserPages::Settings::userUpdated(const LicqUser* user, unsigned long subSignal)
 {
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case USER_GENERAL:
       load(user);

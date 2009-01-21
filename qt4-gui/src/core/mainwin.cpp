@@ -205,8 +205,8 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(updatedList(CICQSignal*)),
       SLOT(slot_updatedList(CICQSignal*)));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(CICQSignal*)),
-      SLOT(slot_updatedUser(CICQSignal*)));
+      SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      SLOT(slot_updatedUser(const QString&, unsigned long, unsigned long, int)));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(updatedStatus(CICQSignal*)),
       SLOT(updateStatus(CICQSignal*)));
@@ -590,24 +590,21 @@ void MainWindow::mouseMoveEvent(QMouseEvent* m)
   }
 }
 
-void MainWindow::slot_updatedUser(CICQSignal* sig)
+void MainWindow::slot_updatedUser(const QString& id, unsigned long ppid, unsigned long subSignal, int argument)
 {
-  QString id = sig->Id();
-  unsigned long ppid = sig->PPID();
-
-  switch(sig->SubSignal())
+  switch(subSignal)
   {
     case USER_EVENTS:
     {
       // Skip all this if it was just an away message check
-      if (sig->Argument() == 0)
+      if (argument == 0)
         break;
 
       // Otherwise an event was added or removed
       updateEvents();
       // autoRaise if needed
       if (Config::General::instance()->autoRaiseMainwin() &&
-          sig->Argument() > 0)
+          argument > 0)
         raise();
 
       // Fall through
@@ -625,8 +622,8 @@ void MainWindow::slot_updatedUser(CICQSignal* sig)
     {
       if (gUserManager.FindOwner(id.toLatin1(), ppid) != NULL)
       {
-        if (sig->SubSignal() == USER_STATUS ||
-            sig->SubSignal() == USER_EXT)
+        if (subSignal == USER_STATUS ||
+            subSignal == USER_EXT)
           break;
 
         myCaption = "Licq (|)";
@@ -658,8 +655,8 @@ void MainWindow::slot_updatedUser(CICQSignal* sig)
         break;
       }
 
-      if (sig->SubSignal() == USER_STATUS &&
-          sig->Argument() == 1 &&
+      if (subSignal == USER_STATUS &&
+          argument == 1 &&
           Config::General::instance()->trayMsgOnlineNotify())
       {
         // User on notify list went online -> show popup at systray icon

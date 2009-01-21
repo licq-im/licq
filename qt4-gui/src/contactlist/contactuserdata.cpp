@@ -113,12 +113,12 @@ ContactUserData::~ContactUserData()
     delete myUserIcon;
 }
 
-void ContactUserData::update(CICQSignal* sig)
+void ContactUserData::update(unsigned long subSignal, int argument)
 {
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case USER_EVENTS:
-      if (sig->Argument() == 0)
+      if (argument == 0)
       {
         // User fetched our auto response message
         myCarCounter = ((5*1000/FLASH_TIME)+1)&(-2);
@@ -128,7 +128,7 @@ void ContactUserData::update(CICQSignal* sig)
       break;
 
     case USER_STATUS:
-      if (sig->Argument() == 1)
+      if (argument == 1)
       {
         // User came online
         myOnlCounter = 5*1000/FLASH_TIME; // run about 5 seconds
@@ -147,7 +147,7 @@ void ContactUserData::update(CICQSignal* sig)
   // TODO: Add better handling of subsignals so we don't have to update everything so often
 
 
-  const ICQUser* u = gUserManager.FetchUser(sig->Id(), sig->PPID(), LOCK_R);
+  const LicqUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   if (u != NULL)
   {
     // Group membership is handled by ContactList so send it a signal to update

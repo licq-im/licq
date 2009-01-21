@@ -123,7 +123,8 @@ UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
   resetCaption();
 
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(CICQSignal*)), SLOT(userUpdated(CICQSignal*)));
+      SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      SLOT(userUpdated(const QString&, unsigned long, unsigned long)));
 
   QDialog::show();
 }
@@ -224,17 +225,17 @@ void UserDlg::apply()
   LicqGui::instance()->updateUserData(myId, myPpid);
 }
 
-void UserDlg::userUpdated(CICQSignal* sig)
+void UserDlg::userUpdated(const QString& accountId, unsigned long ppid, unsigned long subSignal)
 {
-  if (sig->PPID() != myPpid || sig->Id() != myId)
+  if (ppid != myPpid || accountId != myId)
     return;
 
   const ICQUser* user = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   if (user == NULL)
     return;
 
-  myUserInfo->userUpdated(sig, user);
-  myUserSettings->userUpdated(sig, user);
+  myUserInfo->userUpdated(user, subSignal);
+  myUserSettings->userUpdated(user, subSignal);
 
   gUserManager.DropUser(user);
 }

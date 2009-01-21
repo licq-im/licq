@@ -258,18 +258,18 @@ void UserViewEvent::updateNextButton()
     myReadNextButton->setIcon(IconManager::instance()->iconForEvent(e->msg()->SubCommand()));
 }
 
-void UserViewEvent::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
+void UserViewEvent::userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long /* cid */)
 {
   const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
 
   if (u == 0)
     return;
 
-  if (sig->SubSignal() == USER_EVENTS)
+  if (subSignal == USER_EVENTS)
   {
-    if (sig->Argument() > 0)
+    if (argument > 0)
     {
-      int eventId = sig->Argument();
+      int eventId = argument;
       const CUserEvent* e = u->EventPeekId(eventId);
       // Making sure we didn't handle this message already.
       if (e != NULL && myHighestEventId < eventId &&
@@ -283,7 +283,7 @@ void UserViewEvent::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
       }
     }
 
-    if (sig->Argument() != 0)
+    if (argument != 0)
       updateNextButton();
   }
 

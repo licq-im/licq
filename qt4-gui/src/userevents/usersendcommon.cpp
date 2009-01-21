@@ -925,14 +925,14 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
   UserSendCommon::send();
 }
 
-void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid)
+void UserSendCommon::userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid)
 {
   ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_W);
 
   if (u == NULL)
     return;
 
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case USER_STATUS:
     {
@@ -952,16 +952,16 @@ void UserSendCommon::userUpdated(CICQSignal* sig, QString id, unsigned long ppid
 
     case USER_EVENTS:
     {
-      const CUserEvent* e = u->EventPeekId(sig->Argument());
+      const CUserEvent* e = u->EventPeekId(argument);
 
-      if (e != NULL && myHighestEventId < sig->Argument() &&
-          myHistoryView && sig->Argument() > 0)
+      if (e != NULL && myHighestEventId < argument &&
+          myHistoryView && argument > 0)
       {
-        myHighestEventId = sig->Argument();
-        e = u->EventPeekId(sig->Argument());
+        myHighestEventId = argument;
+        e = u->EventPeekId(argument);
 
         if (e != NULL)
-          if (sig->PPID() != MSN_PPID || (sig->PPID() == MSN_PPID && sig->CID() == myConvoId))
+          if (ppid != MSN_PPID || (ppid == MSN_PPID && cid == myConvoId))
           {
             gUserManager.DropUser(u);
             myHistoryView->addMsg(e, id, ppid);

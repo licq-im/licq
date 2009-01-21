@@ -1715,9 +1715,9 @@ void UserPages::Info::browsePicture()
       lblPicture->setPixmap(p);
 }
 
-void UserPages::Info::userUpdated(const CICQSignal* sig, const ICQUser* user)
+void UserPages::Info::userUpdated(const LicqUser* user, unsigned long subSignal)
 {
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
   case USER_GENERAL:
   case USER_BASIC:

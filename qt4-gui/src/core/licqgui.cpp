@@ -447,13 +447,13 @@ int LicqGui::Run(CICQDaemon* daemon)
   myContactList = new ContactListModel(this);
   connect(mySignalManager, SIGNAL(updatedList(CICQSignal*)),
       myContactList, SLOT(listUpdated(CICQSignal*)));
-  connect(mySignalManager, SIGNAL(updatedUser(CICQSignal*)),
-      myContactList, SLOT(userUpdated(CICQSignal*)));
+  connect(mySignalManager, SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      myContactList, SLOT(userUpdated(const QString&, unsigned long, unsigned long, int)));
 
   connect(mySignalManager, SIGNAL(updatedList(CICQSignal*)),
       SLOT(listUpdated(CICQSignal*)));
-  connect(mySignalManager, SIGNAL(updatedUser(CICQSignal*)),
-      SLOT(userUpdated(CICQSignal*)));
+  connect(mySignalManager, SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      SLOT(userUpdated(const QString&, unsigned long, unsigned long, int, unsigned long)));
   connect(mySignalManager, SIGNAL(socket(QString, unsigned long, unsigned long)),
       SLOT(convoSet(QString, unsigned long, unsigned long)));
   connect(mySignalManager, SIGNAL(convoJoin(QString, unsigned long, unsigned long)),
@@ -1356,11 +1356,8 @@ void LicqGui::listUpdated(CICQSignal* sig)
   }
 }
 
-void LicqGui::userUpdated(CICQSignal* sig)
+void LicqGui::userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid)
 {
-  QString id = sig->Id();
-  unsigned long ppid = sig->PPID();
-
   const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
   if (u == NULL)
   {
@@ -1373,15 +1370,15 @@ void LicqGui::userUpdated(CICQSignal* sig)
   else
     gUserManager.DropUser(u);
 
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case USER_EVENTS:
     {
       // Skip all this if it was just an away message check
-      if (sig->Argument() == 0)
+      if (argument == 0)
         break;
 
-      if (sig->Argument() > 0)
+      if (argument > 0)
       {
         unsigned short popCheck = 99;
 
@@ -1443,7 +1440,7 @@ void LicqGui::userUpdated(CICQSignal* sig)
             gUserManager.DropUser(u);
 
             if (bCallSendMsg)
-              showEventDialog(MessageEvent, id, ppid, sig->CID(), true);
+              showEventDialog(MessageEvent, id, ppid, cid, true);
             if (bCallUserView)
               showViewEventDialog(id, ppid);
           }
@@ -1465,11 +1462,11 @@ void LicqGui::userUpdated(CICQSignal* sig)
       // update the tab icon of this user
       if (Config::Chat::instance()->tabbedChatting() && myUserEventTabDlg != NULL)
       {
-        if (sig->SubSignal() == USER_TYPING)
-          myUserEventTabDlg->setTyping(u, sig->Argument());
+        if (subSignal == USER_TYPING)
+          myUserEventTabDlg->setTyping(u, argument);
         myUserEventTabDlg->updateTabLabel(u);
       }
-      else if (sig->SubSignal() == USER_TYPING)
+      else if (subSignal == USER_TYPING)
       {
         // First, update the window if available
         for (int i = 0; i < myUserSendList.size(); ++i)
@@ -1479,7 +1476,7 @@ void LicqGui::userUpdated(CICQSignal* sig)
           if (item->ppid() == MSN_PPID)
           {
             // For protocols that use the convo id
-            if (item->convoId() == (unsigned long)(sig->Argument()) && item->ppid() == ppid)
+            if (item->convoId() == (unsigned long)(argument) && item->ppid() == ppid)
               item->setTyping(u->GetTyping());
           }
           else

@@ -355,7 +355,8 @@ void UserEventCommon::pushToolTip(QAction* action, QString tooltip)
 void UserEventCommon::connectSignal()
 {
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(CICQSignal*)), SLOT(updatedUser(CICQSignal*)));
+      SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
+      SLOT(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)));
 }
 
 void UserEventCommon::setEncoding(QAction* action)
@@ -451,14 +452,14 @@ void UserEventCommon::showEncodingsMenu()
   dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myEncoding))->showMenu();
 }
 
-void UserEventCommon::updatedUser(CICQSignal* sig)
+void UserEventCommon::updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid)
 {
-  if (myPpid != sig->PPID() || !isUserInConvo(sig->Id()))
+  if (myPpid != ppid || !isUserInConvo(accountId))
   {
-    if (myConvoId != 0 && sig->CID() == myConvoId)
+    if (myConvoId != 0 && cid == myConvoId)
     {
       char* realId;
-      ICQUser::MakeRealId(sig->Id(), sig->PPID(), realId);
+      LicqUser::MakeRealId(accountId.toLatin1().data(), ppid, realId);
       myUsers.push_back(realId);
       delete [] realId;
 
@@ -471,11 +472,11 @@ void UserEventCommon::updatedUser(CICQSignal* sig)
       return;
   }
 
-  const ICQUser* u = gUserManager.FetchUser(sig->Id(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.FetchUser(accountId.toLatin1(), myPpid, LOCK_R);
   if (u == NULL)
     return;
 
-  switch (sig->SubSignal())
+  switch (subSignal)
   {
     case USER_STATUS:
       if (u->NewMessages() == 0)
@@ -503,5 +504,5 @@ void UserEventCommon::updatedUser(CICQSignal* sig)
   gUserManager.DropUser(u);
 
   // Call the event specific function now
-  userUpdated(sig, sig->Id(), myPpid);
+  userUpdated(accountId, myPpid, subSignal, argument, cid);
 }
