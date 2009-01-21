@@ -32,7 +32,6 @@ class QMenu;
 class QToolBar;
 class QVBoxLayout;
 
-class CICQSignal;
 class LicqUser;
 
 

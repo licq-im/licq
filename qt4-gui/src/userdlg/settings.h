@@ -37,7 +37,6 @@ class QTableWidget;
 class QVBoxLayout;
 class QWidget;
 
-class CICQSignal;
 class LicqUser;
 
 

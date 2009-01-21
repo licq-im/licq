@@ -39,7 +39,6 @@ class QTreeWidget;
 class QTreeWidgetItem;
 class QVBoxLayout;
 
-class CICQSignal;
 class ICQUserPhoneBook;
 class ICQUserCategory;
 class LicqUser;

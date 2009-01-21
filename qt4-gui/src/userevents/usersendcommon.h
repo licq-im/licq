@@ -30,7 +30,6 @@ class QLabel;
 class QPushButton;
 class QSplitter;
 
-class CICQSignal;
 class ICQEvent;
 
 namespace LicqQtGui

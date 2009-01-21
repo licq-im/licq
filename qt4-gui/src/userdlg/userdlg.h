@@ -27,7 +27,6 @@
 #include <QMap>
 #include <QPushButton>
 
-class CICQSignal;
 class ICQEvent;
 
 namespace LicqQtGui

@@ -35,7 +35,6 @@ class QPushButton;
 class QRegExp;
 class QTextCodec;
 
-class CICQSignal;
 class ICQEvent;
 
 namespace LicqQtGui

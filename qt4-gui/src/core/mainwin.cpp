@@ -208,8 +208,8 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
       SLOT(slot_updatedUser(const QString&, unsigned long, unsigned long, int)));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedStatus(CICQSignal*)),
-      SLOT(updateStatus(CICQSignal*)));
+      SIGNAL(updatedStatus(unsigned long)),
+      SLOT(updateStatus(unsigned long)));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(doneOwnerFcn(ICQEvent*)),
       SLOT(slot_doneOwnerFcn(ICQEvent*)));
@@ -812,7 +812,7 @@ void MainWindow::updateGroups(bool initial)
   updateCurrentGroup();
 }
 
-void MainWindow::updateStatus(CICQSignal* s)
+void MainWindow::updateStatus(unsigned long nPPID)
 {
   if (LicqGui::instance()->dockIcon() != NULL)
     LicqGui::instance()->dockIcon()->updateIconStatus();
@@ -822,10 +822,9 @@ void MainWindow::updateStatus(CICQSignal* s)
 
   Config::Skin* skin = Config::Skin::active();
   QColor theColor = skin->offlineColor;
-  unsigned long nPPID = LICQ_PPID;
 
-  if (s != NULL)
-    nPPID = s->PPID();
+  if (nPPID == 0)
+    nPPID = LICQ_PPID;
 
   IconManager* iconman = IconManager::instance();
 

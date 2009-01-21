@@ -47,7 +47,6 @@ class QPushButton;
 class QStyle;
 class QTextEdit;
 
-class CICQSignal;
 class ICQEvent;
 
 namespace LicqQtGui
@@ -148,7 +147,13 @@ private slots:
   void updateConfig();
   void updateSkin();
   void updateEvents();
-  void updateStatus(CICQSignal* = NULL);
+
+  /**
+   * Our status has changed
+   *
+   * @param ppid Protocl intstance id of owner that got status change
+   */
+  void updateStatus(unsigned long ppid = 0);
 
   /**
    * Update shortcuts

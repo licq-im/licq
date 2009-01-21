@@ -60,7 +60,13 @@ signals:
    */
   void updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
 
-  void updatedStatus(CICQSignal* sig);
+  /**
+   * Status has changed
+   *
+   * @param ppid Protocol instance id for owner that changed status
+   */
+  void updatedStatus(unsigned long ppid);
+
   void doneOwnerFcn(ICQEvent* ev);
   void doneUserFcn(ICQEvent* ev);
   void searchResult(ICQEvent* ev);
