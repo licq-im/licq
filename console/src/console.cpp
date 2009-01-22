@@ -475,7 +475,7 @@ void CLicqConsole::ProcessPipe()
   {
   case 'S':  // A signal is pending
     {
-      CICQSignal *s = licqDaemon->PopPluginSignal();
+      LicqSignal* s = licqDaemon->popPluginSignal();
       ProcessSignal(s);
       break;
     }
@@ -507,8 +507,22 @@ void CLicqConsole::ProcessPipe()
 /*---------------------------------------------------------------------------
  * CLicqConsole::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqConsole::ProcessSignal(CICQSignal *s)
+void CLicqConsole::ProcessSignal(LicqSignal* s)
 {
+  // Temporary code to get account id and ppid until the rest of the plugin is updated to use user id directly
+  string accountId;
+  unsigned long ppid = 0;
+  if (s->userId() != 0)
+  {
+    LicqUser* user = gUserManager.fetchUser(s->userId(), LOCK_R);
+    if (user != NULL)
+    {
+      accountId = user->accountId();
+      ppid = user->ppid();
+      gUserManager.DropUser(user);
+    }
+  }
+
   switch (s->Signal())
   {
   case SIGNAL_UPDATExLIST:
@@ -516,7 +530,7 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     {
       for (unsigned short i = 0; i < MAX_CON; i++)
       {
-        if (s->Id() == winCon[i]->myLastId)
+        if (accountId == winCon[i]->myLastId)
           winCon[i]->myLastId.clear();
       }
     }
@@ -526,10 +540,10 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     break;
   case SIGNAL_UPDATExUSER:
     {
-      if ((gUserManager.FindOwner(s->Id(), s->PPID()) != NULL && s->SubSignal() == USER_STATUS)
+      if ((gUserManager.isOwner(s->userId()) && s->SubSignal() == USER_STATUS)
           || s->SubSignal() == USER_EVENTS)
         PrintStatus();
-      ICQUser *u = gUserManager.FetchUser(s->Id(), s->PPID(), LOCK_R);
+      LicqUser* u = gUserManager.fetchUser(s->userId(), LOCK_R);
       if (u != NULL)
       {
         bool isInGroup = u->GetInGroup(m_nGroupType, m_nCurrentGroup);
@@ -549,13 +563,13 @@ void CLicqConsole::ProcessSignal(CICQSignal *s)
     PrintStatus();
     break;
   case SIGNAL_ADDxSERVERxLIST:
-    licqDaemon->ProtoRenameUser(s->Id(), s->PPID());
+    licqDaemon->ProtoRenameUser(accountId.c_str(), ppid);
     break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     //ignore for now
     break;
   case SIGNAL_EVENTxID:
-    AddEventTag(s->Id(), s->PPID(), s->Argument());
+    AddEventTag(accountId.c_str(), ppid, s->Argument());
     break;
   default:
     gLog.Warn("%sInternal error: CLicqConsole::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",
@@ -1633,10 +1647,11 @@ void CLicqConsole::UserCommand_View(const char *szId, unsigned long nPPID, char 
       FileChatOffer(e, szId, nPPID);
 
     delete e;
+    int userId = u->id();
     gUserManager.DropUser(u);
     //PrintUsers();
     //PrintStatus();
-    ProcessSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS, szId, nPPID));
+    ProcessSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, userId));
   }
   else
   {

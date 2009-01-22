@@ -7,7 +7,7 @@
 
 class CICQDaemon;
 class CUserEvent;
-class CICQSignal;
+class LicqSignal;
 class ICQEvent;
 
 class CLicqAutoReply
@@ -31,7 +31,7 @@ protected:
 
 public:
   void ProcessPipe();
-  void ProcessSignal(CICQSignal *);
+  void ProcessSignal(LicqSignal* s);
   void ProcessEvent(ICQEvent *);
 
   void ProcessUserEvent(const char *, unsigned long, unsigned long);

@@ -34,6 +34,8 @@ extern int errno;
 
 extern "C" { const char *LP_Version(); }
 
+using namespace std;
+
 const char L_AUTOREPxSTR[]  = "[RPL] ";
 const unsigned short SUBJ_CHARS = 20;
 
@@ -145,7 +147,7 @@ void CLicqAutoReply::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-    CICQSignal *s = licqDaemon->PopPluginSignal();
+      LicqSignal* s = licqDaemon->popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
@@ -187,13 +189,27 @@ void CLicqAutoReply::ProcessPipe()
 /*---------------------------------------------------------------------------
  * CLicqAutoReply::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqAutoReply::ProcessSignal(CICQSignal *s)
+void CLicqAutoReply::ProcessSignal(LicqSignal* s)
 {
+  // Temporary code to get account id and ppid until the rest of the plugin is updated to use user id directly
+  string accountId;
+  unsigned long ppid = 0;
+  if (s->userId() != 0)
+  {
+    LicqUser* user = gUserManager.fetchUser(s->userId(), LOCK_R);
+    if (user != NULL)
+    {
+      accountId = user->accountId();
+      ppid = user->ppid();
+      gUserManager.DropUser(user);
+    }
+  }
+
   switch (s->Signal())
   {
     case SIGNAL_UPDATExUSER:
-      if (s->SubSignal() == USER_EVENTS && gUserManager.FindOwner(s->Id(), s->PPID()) == NULL && s->Argument() > 0)
-        ProcessUserEvent(s->Id(), s->PPID(), s->Argument());
+      if (s->SubSignal() == USER_EVENTS && gUserManager.isOwner(s->userId()) && s->Argument() > 0)
+          ProcessUserEvent(accountId.c_str(), ppid, s->Argument());
       break;
     // We should never get any other signal
     default:

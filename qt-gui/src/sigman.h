@@ -24,7 +24,7 @@
 
 class QSocketNotifier;
 class CICQDaemon;
-class CICQSignal;
+class LicqSignal;
 class ICQEvent;
 
 //=====CSignalManager===========================================================
@@ -40,7 +40,7 @@ private:
   int m_nPipe;
   QSocketNotifier *sn;
 
-  void ProcessSignal(CICQSignal *s);
+  void ProcessSignal(LicqSignal* s);
   void ProcessEvent(ICQEvent *e);
 
 protected slots:

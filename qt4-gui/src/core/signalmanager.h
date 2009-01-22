@@ -24,7 +24,7 @@
 
 class QSocketNotifier;
 
-class CICQSignal;
+class LicqSignal;
 class ICQEvent;
 
 namespace LicqQtGui
@@ -86,7 +86,7 @@ private:
   int myPipe;
   QSocketNotifier* sn;
 
-  void ProcessSignal(CICQSignal* sig);
+  void ProcessSignal(LicqSignal* sig);
   void ProcessEvent(ICQEvent* ev);
 
 private slots:

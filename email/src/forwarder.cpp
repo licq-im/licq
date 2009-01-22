@@ -188,7 +188,7 @@ void CLicqForwarder::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-    CICQSignal *s = licqDaemon->PopPluginSignal();
+      LicqSignal* s = licqDaemon->popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
@@ -230,13 +230,13 @@ void CLicqForwarder::ProcessPipe()
 /*---------------------------------------------------------------------------
  * CLicqForwarder::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqForwarder::ProcessSignal(CICQSignal *s)
+void CLicqForwarder::ProcessSignal(LicqSignal* s)
 {
   switch (s->Signal())
   {
   case SIGNAL_UPDATExUSER:
     if (s->SubSignal() == USER_EVENTS && s->Argument() > 0)
-      ProcessUserEvent(s->Id(), s->PPID(), s->Argument());
+        ProcessUserEvent(s->userId(), s->Argument());
     break;
   // We should never get any other signal
   case SIGNAL_UPDATExLIST:
@@ -289,12 +289,12 @@ void CLicqForwarder::ProcessEvent(ICQEvent *e)
 }
 
 
-void CLicqForwarder::ProcessUserEvent(const char *szId, unsigned long nPPID, unsigned long nId)
+void CLicqForwarder::ProcessUserEvent(int userId, unsigned long nId)
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn("%sInvalid user received from daemon (%s).\n", L_FORWARDxSTR, szId);
+    gLog.Warn("%sInvalid user received from daemon (%i).\n", L_FORWARDxSTR, userId);
     return;
   }
 

@@ -73,7 +73,7 @@ struct SStartMessage
 {
   CMSNPacket *m_pPacket;
   ICQEvent *m_pEvent;
-  CICQSignal *m_pSignal;
+  LicqSignal *m_pSignal;
   char *m_szUser;
   unsigned long m_nSeq;
   bool m_bConnecting,
@@ -154,7 +154,7 @@ private:
   CMSNDataEvent* FetchStartDataEvent(const std::string& user);
 
   // Interface to CICQDaemon
-  void PushPluginSignal(CICQSignal *);
+  void pushPluginSignal(LicqSignal* p);
 
   // Config
   unsigned long m_nListVersion;

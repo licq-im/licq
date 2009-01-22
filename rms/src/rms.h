@@ -12,7 +12,7 @@
 class CICQDaemon;
 class TCPSocket;
 class CUserEvent;
-class CICQSignal;
+class LicqSignal;
 class ICQEvent;
 class CLogService_Plugin;
 
@@ -43,11 +43,11 @@ protected:
 
 public:
   void ProcessPipe();
-  void ProcessSignal(CICQSignal *);
+  void ProcessSignal(LicqSignal* s);
   void ProcessEvent(ICQEvent *);
   void ProcessServer();
   void ProcessLog();
-  void AddEventTag(const char *, unsigned long, unsigned long);
+  void AddEventTag(int userId, unsigned long eventTag);
 
 friend class CRMSClient;
 

@@ -16,6 +16,7 @@
 #include "window.h"
 
 class CFileTransferManager;
+class LicqSignal;
 
 #define MAX_CON 8
 #define MAX_CMD_HISTORY 100
@@ -107,7 +108,7 @@ protected:
 public:
   void DoneOptions();
   void ProcessPipe();
-  void ProcessSignal(CICQSignal *);
+  void ProcessSignal(LicqSignal* s);
   void ProcessEvent(ICQEvent *);
   void ProcessDoneEvent(ICQEvent *e);
   void ProcessDoneSearch(ICQEvent *e);

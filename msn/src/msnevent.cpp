@@ -222,10 +222,8 @@ int CMSNDataEvent::ProcessPacket(CMSNBuffer *p)
 	{
 	  u->SetPicturePresent(true);
 	  gUserManager.DropUser(u);
-	  m_pMSN->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-						  USER_PICTURE,
-						  m_strId.c_str(), MSN_PPID));
-	}
+          m_pMSN->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
+        }
 
 	// Ack that we got the data
 	CMSNPacket *pAck = new CPS_MSNP2PAck(m_strId.c_str(), m_nSessionId,

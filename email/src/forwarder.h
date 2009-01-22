@@ -9,7 +9,7 @@ class CICQDaemon;
 class TCPSocket;
 class LicqUser;
 class CUserEvent;
-class CICQSignal;
+class LicqSignal;
 class ICQEvent;
 
 #define FORWARD_EMAIL 0
@@ -40,10 +40,10 @@ protected:
 
 public:
   void ProcessPipe();
-  void ProcessSignal(CICQSignal *);
+  void ProcessSignal(LicqSignal* s);
   void ProcessEvent(ICQEvent *);
 
-  void ProcessUserEvent(const char *, unsigned long, unsigned long);
+  void ProcessUserEvent(int userId, unsigned long nId);
   bool ForwardEvent(LicqUser *, CUserEvent *);
   bool ForwardEvent_ICQ(LicqUser *, CUserEvent *);
   bool ForwardEvent_Email(LicqUser *, CUserEvent *);

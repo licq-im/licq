@@ -54,7 +54,7 @@ void CSignalManager::slot_incoming()
   {
   case 'S':  // A signal is pending
   {
-    CICQSignal *s = licqDaemon->PopPluginSignal();
+    LicqSignal* s = licqDaemon->popPluginSignal();
     ProcessSignal(s);
     break;
   }
@@ -83,19 +83,33 @@ void CSignalManager::slot_incoming()
 }
 
 
-void CSignalManager::ProcessSignal(CICQSignal *s)
+void CSignalManager::ProcessSignal(LicqSignal* s)
 {
+  int userId = s->userId();
+
+  // Temporary code to get account id and ppid until the rest of the gui is updated to use user id directly
+  QString accountId;
+  unsigned long ppid = 0;
+  if (userId != 0)
+  {
+    LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
+    if (user != NULL)
+    {
+      accountId = user->accountId().c_str();
+      ppid = user->ppid();
+      gUserManager.DropUser(user);
+    }
+  }
+
   switch (s->Signal())
   {
   case SIGNAL_UPDATExLIST:
-    emit signal_updatedList(s->SubSignal(), s->Argument(), s->Id(), s->PPID());
+      emit signal_updatedList(s->SubSignal(), s->Argument(), accountId, ppid);
     break;
   case SIGNAL_UPDATExUSER:
-    emit signal_updatedUser(s->Id(), s->PPID(), s->SubSignal(), s->Argument(), s->CID());
-    if (gUserManager.FindOwner(s->Id(), s->PPID()) != NULL && s->SubSignal() == USER_STATUS)
-    {
-      emit signal_updatedStatus(s->PPID());
-    }
+      emit signal_updatedUser(accountId, ppid, s->SubSignal(), s->Argument(), s->CID());
+      if (gUserManager.isOwner(userId) && s->SubSignal() == USER_STATUS)
+        emit signal_updatedStatus(ppid);
     break;
   case SIGNAL_LOGON:
     emit signal_logon();
@@ -110,36 +124,36 @@ void CSignalManager::ProcessSignal(CICQSignal *s)
     emit signal_logoff();
     break;
   case SIGNAL_UI_VIEWEVENT:
-    emit signal_ui_viewevent(s->Id());
+      emit signal_ui_viewevent(accountId);
     break;
   case SIGNAL_UI_MESSAGE:
   //TODO
-    emit signal_ui_message(s->Id(), s->PPID());
+      emit signal_ui_message(accountId, ppid);
     break;
   case SIGNAL_ADDxSERVERxLIST:
   //TODO
-    licqDaemon->ProtoRenameUser(s->Id(), s->PPID());
+      licqDaemon->ProtoRenameUser(accountId, ppid);
     break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     emit signal_protocolPlugin(s->SubSignal());
     break;
   case SIGNAL_EVENTxID:
-    emit signal_eventTag(s->Id(), s->PPID(), s->Argument());
+      emit signal_eventTag(accountId, ppid, s->Argument());
     break;
   case SIGNAL_SOCKET:
-    emit signal_socket(s->Id(), s->PPID(), s->CID());
+      emit signal_socket(accountId, ppid, s->CID());
     break;
   case SIGNAL_CONVOxJOIN:
-    emit signal_convoJoin(s->Id(), s->PPID(), s->CID());
+      emit signal_convoJoin(accountId, ppid, s->CID());
     break;
   case SIGNAL_CONVOxLEAVE:
-    emit signal_convoLeave(s->Id(), s->PPID(), s->CID());
+      emit signal_convoLeave(accountId, ppid, s->CID());
     break;
   case SIGNAL_VERIFY_IMAGE:
-    emit signal_verifyImage(s->PPID());
+      emit signal_verifyImage(ppid);
     break;
   case SIGNAL_NEW_OWNER:
-    emit signal_newOwner(s->Id(), s->PPID());
+      emit signal_newOwner(accountId, ppid);
     break;
   default:
     gLog.Warn("%sInternal error: CSignalManager::ProcessSignal(): Unknown signal command received from daemon: %ld.\n",

@@ -183,9 +183,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->SetAlias(strDecodedNick.c_str());
-          m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
-                            u->IdString(), u->PPID()));
-
+          m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
         }
         u->setUserInfoString("Email1", strUser);
         string strURL = "http://members.msn.com/"+strUser;
@@ -238,8 +236,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
             string strDecodedNick = Decode(strNick);
             u->SetAlias(strDecodedNick.c_str());
           }
-          m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
-                            u->IdString(), u->PPID()));
+          m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
           gUserManager.DropUser(u);
         }
       }
@@ -323,9 +320,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           string strDecodedNick = Decode(strNick);
           u->SetAlias(strDecodedNick.c_str());
-          m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
-                             u->IdString(), u->PPID()));
-
+          m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
         }
 
 	// Get the display picture here, so it can be shown with the notify
@@ -468,7 +463,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         {
           gLog.Error("%sCannot send messages while invisible.\n", L_ERRORxSTR);
           pStart = *it;
-          m_pDaemon->PushPluginSignal(pStart->m_pSignal);
+          m_pDaemon->pushPluginSignal(pStart->m_pSignal);
           pStart->m_pEvent->m_eResult = EVENT_FAILED;
           m_pDaemon->PushPluginEvent(pStart->m_pEvent);
           m_lStart.erase(it);
@@ -608,7 +603,7 @@ void CMSN::MSNLogoff(bool bDisconnected)
   ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);      
   m_pDaemon->ChangeUserStatus(o, ICQ_STATUS_OFFLINE);
   gUserManager.DropOwner(o);
-  //m_pDaemon->PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0));   
+  //m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, 0));
 }
 
 void CMSN::MSNAddUser(const char* szUser)

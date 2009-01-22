@@ -292,7 +292,7 @@ void CLicqRMS::ProcessPipe()
   {
   case 'S':  // A signal is pending
   {
-    CICQSignal *s = licqDaemon->PopPluginSignal();
+      LicqSignal* s = licqDaemon->popPluginSignal();
     if (m_bEnabled) ProcessSignal(s);
     break;
   }
@@ -356,14 +356,14 @@ void CLicqRMS::ProcessLog()
 /*---------------------------------------------------------------------------
  * CLicqRMS::ProcessSignal
  *-------------------------------------------------------------------------*/
-void CLicqRMS::ProcessSignal(CICQSignal *s)
+void CLicqRMS::ProcessSignal(LicqSignal* s)
 {
   switch (s->Signal())
   {
   case SIGNAL_UPDATExUSER:
     if (s->SubSignal() == USER_STATUS)
     {
-      ICQUser *u = gUserManager.FetchUser(s->Id(), s->PPID(), LOCK_R);
+        LicqUser* u = gUserManager.fetchUser(s->userId(), LOCK_R);
       if (u)
       {
         ClientList::iterator iter;
@@ -385,7 +385,7 @@ void CLicqRMS::ProcessSignal(CICQSignal *s)
     }
     else if (s->SubSignal() == USER_EVENTS)
     {
-      ICQUser *u = gUserManager.FetchUser(s->Id(), s->PPID(), LOCK_R);
+        LicqUser* u = gUserManager.fetchUser(s->userId(), LOCK_R);
       if (u)
       {
         ClientList::iterator iter;
@@ -409,7 +409,7 @@ void CLicqRMS::ProcessSignal(CICQSignal *s)
   case SIGNAL_LOGON:
     break;
   case SIGNAL_EVENTxID:
-	AddEventTag(s->Id(), s->PPID(), s->Argument());
+      AddEventTag(s->userId(), s->Argument());
     break;
   default:
     break;
@@ -421,12 +421,23 @@ void CLicqRMS::ProcessSignal(CICQSignal *s)
 /*---------------------------------------------------------------------------
  * CLicqRMS::AddEventTag
  *-------------------------------------------------------------------------*/
-void CLicqRMS::AddEventTag(const char *_szId, unsigned long _nPPID, unsigned long _nEventTag)
+void CLicqRMS::AddEventTag(int userId, unsigned long _nEventTag)
 {
+  // Temporary code to get account id and ppid until the rest of the plugin is updated to use user id directly
+  string accountId;
+  unsigned long ppid = 0;
+  LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
+  if (user != NULL)
+  {
+    accountId = user->accountId();
+    ppid = user->ppid();
+    gUserManager.DropUser(user);
+  }
+
   ClientList ::iterator iter;
   for (iter = clients.begin(); iter != clients.end(); iter++)
   {
-    (*iter)->AddEventTag(_szId, _nPPID, _nEventTag);
+    (*iter)->AddEventTag(accountId.c_str(), ppid, _nEventTag);
   }
 }
 
