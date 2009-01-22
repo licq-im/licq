@@ -135,6 +135,10 @@ static unsigned char icq_check_data[256] = {
 };
 #endif
 
+static unsigned short login_fix [] = {
+  5695, 23595, 23620, 23049, 0x2886, 0x2493, 23620, 23049, 2853, 17372, 1255, 1796, 1657, 13606, 1930, 23918, 31234, 30120, 0x1BEA, 0x5342, 0x30CC, 0x2294, 0x5697, 0x25FA, 0x3303, 0x078A, 0x0FC5, 0x25D6, 0x26EE,0x7570, 0x7F33, 0x4E94, 0x07C9, 0x7339, 0x42A8
+};
+
 void Encrypt_Server(CBuffer* /* buffer */)
 {
 #if ICQ_VERSION == 2
@@ -275,8 +279,8 @@ struct PluginList status_plugins[] =
 
 //======Server TCP============================================================
 bool CSrvPacketTcp::s_bRegistered = false;
-unsigned short CSrvPacketTcp::s_nSequence[32] = { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+unsigned short CSrvPacketTcp::s_nSequence[32] = { 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff,
+                                                  0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff, 0xffff };
 unsigned short CSrvPacketTcp::s_nSubSequence = 0;
 pthread_mutex_t CSrvPacketTcp::s_xMutex = PTHREAD_MUTEX_INITIALIZER;
 
@@ -311,7 +315,7 @@ void CSrvPacketTcp::InitBuffer()
 {
   pthread_mutex_lock(&s_xMutex);
   if (s_nSequence[m_nService] == 0xffff)
-    s_nSequence[m_nService] = rand() & 0x7fff;
+    s_nSequence[m_nService] = login_fix[ rand() % (sizeof(login_fix)/sizeof(login_fix[0])-1) ];
   m_nSequence = s_nSequence[m_nService]++;
   s_nSequence[m_nService] &= 0x7fff;
   pthread_mutex_unlock(&s_xMutex);
