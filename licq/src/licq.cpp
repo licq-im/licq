@@ -1068,7 +1068,7 @@ CProtoPlugin *CLicq::LoadProtoPlugin(const char *_szName)
 
   // Let the gui plugins know about the new protocol plugin
   if (licqDaemon)
-    licqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_NEWxPROTO_PLUGIN, p->PPID(), NULL, 0));
+    licqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_NEWxPROTO_PLUGIN, p->PPID()));
   return p;
 }
 

@@ -42,7 +42,7 @@ CPlugin::~CPlugin()
 }
 
 
-void CPlugin::PushSignal(CICQSignal *s)
+void CPlugin::pushSignal(LicqSignal* s)
 {
   pthread_mutex_lock(&mutex_signals);
   list_signals.push_back(s);
@@ -85,10 +85,9 @@ bool CPlugin::CompareMask(unsigned long n)
   return (n & m_nSignalMask);
 }
 
-
-CICQSignal *CPlugin::PopSignal()
+LicqSignal* CPlugin::popSignal()
 {
-  CICQSignal *s = NULL;
+  LicqSignal* s = NULL;
   pthread_mutex_lock(&mutex_signals);
   if (list_signals.size() != 0)
   {

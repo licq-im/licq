@@ -874,8 +874,7 @@ void *MonitorSockets_tep(void *p)
               {
                 u->ClearSocketDesc(ICQ_CHNxNONE);
                 u->SetSecure(false);
-                d->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                  USER_SECURITY, u->IdString(), u->PPID(), 0));
+                d->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
               }
               gUserManager.DropUser(u);
               gSocketManager.DropSocket(tcp);

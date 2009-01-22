@@ -914,7 +914,7 @@ int CUserManager::AddGroup(const string& name, unsigned short icqGroupId)
           L_SRVxSTR, name.c_str(), icqGroupId);
 
     // Send signal to let plugins know of the new group
-    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_GROUP_ADDED, NULL, 0, gid, 0));
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_ADDED, 0, gid));
   }
 
   return gid;
@@ -961,8 +961,8 @@ void CUserManager::RemoveGroup(int groupId)
   FOR_EACH_USER_START(LOCK_W)
   {
     if (pUser->RemoveFromGroup(GROUPS_USER, groupId))
-      gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
-          pUser->accountId().c_str(), pUser->ppid()));
+      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
+          pUser->id()));
   }
   FOR_EACH_USER_END;
 
@@ -970,10 +970,10 @@ void CUserManager::RemoveGroup(int groupId)
   UnlockGroupList();
 
   // Send signal to let plugins know of the removed group
-  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REMOVED, NULL, 0, groupId, 0));
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REMOVED, 0, groupId));
 
   // Send signal to let plugins know that sorting indexes may have changed
-  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED, NULL, 0, 0, 0));
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED));
 }
 
 void CUserManager::ModifyGroupSorting(int groupId, int newIndex)
@@ -1013,7 +1013,7 @@ void CUserManager::ModifyGroupSorting(int groupId, int newIndex)
 
   // Send signal to let plugins know that sorting indexes have changed
   if (gLicqDaemon != NULL)
-    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED, NULL, 0, 0, 0));
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_REORDERED));
 }
 
 /*---------------------------------------------------------------------------
@@ -1056,7 +1056,7 @@ bool CUserManager::RenameGroup(int groupId, const string& name, bool sendUpdate)
       gLicqDaemon->icqRenameGroup(name.c_str(), icqGroupId);
 
     // Send signal to let plugins know the group has changed
-    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_GROUP_CHANGED, NULL, 0, groupId, 0));
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_GROUP_CHANGED, 0, groupId));
   }
 
   return true;
@@ -1542,7 +1542,7 @@ void CUserManager::setUserInGroup(int userId,
 
   // Notify plugins
   if (gLicqDaemon != NULL)
-    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, accountId.c_str(), ppid));
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, userId));
 }
 
 void CUserManager::SetDefaultUserEncoding(const char* defaultEncoding)
@@ -1891,8 +1891,8 @@ LicqUser::~LicqUser()
     decNumUserEvents();
     
     if (gLicqDaemon != NULL)
-      gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-          USER_EVENTS, myAccountId.c_str(), myPpid, nId));
+      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+          USER_EVENTS, myId, nId));
   }
 
   if ( m_szAutoResponse )
@@ -2100,8 +2100,8 @@ void ICQUser::SetPermanent()
 
   // Notify the plugins of the change
   // Send a USER_BASIC, don't want a new signal just for this.
-  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-      USER_BASIC, myAccountId.c_str(), myPpid, 0));
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+      USER_BASIC, myId, 0));
 }
 
 //-----ICQUser::SetDefaults-----------------------------------------------------
@@ -2417,8 +2417,8 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
   {
     m_bSecure = s->Secure();
     if (gLicqDaemon != NULL && m_bOnContactList)
-      gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY,
-          myAccountId.c_str(), myPpid, m_bSecure ? 1 : 0));
+      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY,
+          myId, m_bSecure ? 1 : 0));
   }
 
   if (m_nIntIp == 0) m_nIntIp = s->RemoteIp();
@@ -2457,7 +2457,7 @@ void ICQUser::ClearSocketDesc(unsigned char nChannel)
   }
 
   if (gLicqDaemon != NULL && m_bOnContactList)
-    gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_SECURITY, myAccountId.c_str(), myPpid, 0));
+    gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, myId, 0));
 }
 
 unsigned short ICQUser::ConnectionVersion() const
@@ -3267,9 +3267,9 @@ void ICQUser::EventPush(CUserEvent *e)
   SaveNewMessagesInfo();
   Touch();
   SetLastReceivedEvent();
-  
-  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-      USER_EVENTS, myAccountId.c_str(), myPpid, e->Id(), e->ConvoId()));
+
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+      USER_EVENTS, myId, e->Id(), e->ConvoId()));
 }
 
 
@@ -3349,9 +3349,9 @@ CUserEvent *ICQUser::EventPop()
   m_vcMessages.pop_back();
   decNumUserEvents();
   SaveNewMessagesInfo();
-  
-  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-      USER_EVENTS, myAccountId.c_str(), myPpid, e->Id()));
+
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+      USER_EVENTS, myId, e->Id()));
 
   return e;
 }
@@ -3369,9 +3369,9 @@ void ICQUser::EventClear(unsigned short index)
   m_vcMessages.pop_back();
   decNumUserEvents();
   SaveNewMessagesInfo();
-  
-  gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-      USER_EVENTS, myAccountId.c_str(), myPpid, -id));
+
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+      USER_EVENTS, myId, -id));
 }
 
 
@@ -3386,9 +3386,9 @@ void ICQUser::EventClearId(int id)
       m_vcMessages.erase(iter);
       decNumUserEvents();
       SaveNewMessagesInfo();
-      
-      gLicqDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-          USER_EVENTS, myAccountId.c_str(), myPpid, -id));
+
+      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER,
+          USER_EVENTS, myId, -id));
       break;
     }
   }

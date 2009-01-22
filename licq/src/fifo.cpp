@@ -621,7 +621,7 @@ static int fifo_ui_viewevent ( int argc, const char *const *argv, void *data)
     return 0;
   }
   
-  d->PluginUIViewEvent(szId, nPPID);
+  d->pluginUIViewEvent(gUserManager.getUserFromAccount(szId, nPPID));
 
   if (szId != NULL)
     free(szId);
@@ -643,7 +643,7 @@ static int fifo_ui_message ( int argc, const char *const *argv, void *data)
     nRet = -1;
   }
   else if( atoid(argv[1], true, &szId, &nPPID, d) )
-    d->PluginUIMessage(szId, nPPID);
+    d->pluginUIMessage(gUserManager.getUserFromAccount(szId, nPPID));
   else
   {
     ReportBadBuddy(argv[0],argv[1]);

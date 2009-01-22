@@ -418,31 +418,49 @@ const unsigned long LIST_ALL                     = LIST_INVALIDATE;
     from the following list.  Each signal contains the signal type, an
     optional sub-type, uin and signal specific argument.
 */
-class CICQSignal
+class LicqSignal
 {
 public:
-  CICQSignal(unsigned long _nSignal, unsigned long _nSubSignal, const char *_szId,
-             unsigned long _nPPID, int nArg = 0, unsigned long nCID = 0);
-  CICQSignal(const CICQSignal* s);
-  ~CICQSignal();
+  /**
+   * Constructor
+   *
+   * @param signal Signal type
+   * @param subSignal Signal sub type
+   * @param userId Id of user affected by signal if applicable
+   * @param argument Additional data for signal, usage is signal dependant
+   * @param cid Conversation id, if applicable
+   */
+  LicqSignal(unsigned long signal, unsigned long subSignal, int userId = 0,
+      int argument = 0, unsigned long cid = 0);
+
+  /**
+   * Copy constructor
+   *
+   * @param s LicqSignal object to copy fields from
+   */
+  LicqSignal(const LicqSignal* s);
 
   //!Returns the signal being posted to the plugin.
-  unsigned long Signal() const { return m_nSignal; }
+  unsigned long Signal() const { return mySignal; }
   //!Returns the sub-signal being posted to the plugin.
-  unsigned long SubSignal() const { return m_nSubSignal; }
-  //!UIN that the signal is related.  See signals to understand how this
-  //!value is set.
-  const char* Id() const { return m_szId; }
-  unsigned long PPID() const { return m_nPPID; }
-  int Argument() const { return m_nArgument; }
-  unsigned long CID() const { return m_nCID; }
+  unsigned long SubSignal() const { return mySubSignal; }
+
+  /**
+   * Get id for user related to this signal
+   *
+   * @return user id if relevant, otherwise zero
+   */
+  int userId() const { return myUserId; }
+
+  int Argument() const { return myArgument; }
+  unsigned long CID() const { return myCid; }
+
 protected:
-  unsigned long m_nSignal;
-  unsigned long m_nSubSignal;
-  char *m_szId;
-  unsigned long m_nPPID;
-  int m_nArgument;
-  unsigned long m_nCID;
+  const unsigned long mySignal;
+  const unsigned long mySubSignal;
+  const int myUserId;
+  const int myArgument;
+  const unsigned long myCid;
 };
 
 //! Signals that can be sent to protocol plugins.

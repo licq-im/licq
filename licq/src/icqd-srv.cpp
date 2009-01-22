@@ -1846,7 +1846,7 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
     m_szRegisterPasswd = 0;
   }
 
-  PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, 0, 0, LICQ_PPID, 0, 0));
+  pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, 0, 0, LICQ_PPID));
 
   // Mark all users as offline, this also updates the last seen
   // online field
@@ -2365,8 +2365,8 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       // translating string with Translation Table
 
       delete [] szId;
-      szId = strdup(u->IdString());
-      
+        int userId = u->id();
+
       // save the user infomation
       u->SetEnableSave(true);
         u->saveUserInfo();
@@ -2375,11 +2375,9 @@ void CICQDaemon::ProcessLocationFam(CBuffer &packet, unsigned short nSubtype)
       ICQEvent *e = DoneServerEvent(nSubSequence, EVENT_SUCCESS);
       if (e)
         ProcessDoneEvent(e);
-      
-      
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_ABOUT, szId, LICQ_PPID));
-      free(szId);
-    }
+
+        pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_ABOUT, userId));
+      }
 
     break;
   }
@@ -2754,11 +2752,9 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
 
 
         // Which Plugin?
-        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                        USER_PLUGIN_STATUS, u->IdString(), u->PPID(), 0));
-
-        break;
-      }
+            pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PLUGIN_STATUS, u->id()));
+            break;
+          }
 
       default:
         gLog.Warn(tr("%sUnknown index %d from %s.\n"), L_WARNxSTR, index,
@@ -2856,9 +2852,8 @@ void CICQDaemon::ProcessBuddyFam(CBuffer &packet, unsigned short nSubtype)
     u->SetClientTimestamp(0);
     u->SetTyping(ICQ_TYPING_INACTIVEx0); 
     ChangeUserStatus(u, ICQ_STATUS_OFFLINE); 
+      pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
     gUserManager.DropUser(u); 
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, 
-                                    u->IdString(), LICQ_PPID)); 
     break;
   }
   case ICQ_SNACxBDY_RIGHTSxGRANTED:
@@ -3044,9 +3039,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       
       if (AddUserEvent(u, e))
         m_xOnEventManager.Do(ON_EVENT_MSG, u);
+          pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
       gUserManager.DropUser(u);
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
-                                      LICQ_PPID));
       break;
     }
     case 2: // OSCAR's "Add ICBM parameter" message
@@ -3228,6 +3222,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         gTranslator.ClientToServer(szMsg);
       }
 
+          int userId = u->id();
       if (!bNewUser)
         gUserManager.DropUser(u);
 
@@ -3242,10 +3237,9 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         break;
       }
 
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
-                                      LICQ_PPID));
-      break;
-    }
+          pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, userId));
+          break;
+        }
     case 4:
     //Version 5 (V5) protocol messages incapsulated in v7 packet.
     {
@@ -3620,9 +3614,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	    if (szType) free(szType);
 	    if (AddUserEvent(u, eEvent))
 	      m_xOnEventManager.Do(nTypeEvent, u);
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
 	    gUserManager.DropUser(u);
-	    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
-                                            LICQ_PPID));
             break;
 	  }
 	  case ICQ_CMDxSUB_AUTHxREQUEST:
@@ -3897,9 +3890,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       break;
     }
     u->SetTyping(nTyping);
+      pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_TYPING, u->id()));
     gUserManager.DropUser(u);
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_TYPING, szId,
-                                    LICQ_PPID));
     delete [] szId;
     break;
   }
@@ -4054,7 +4046,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               // assigned to
               //if (gUserManager.UpdateUsersInGroups())
               //{
-              //  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST,
+              //  pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST,
               //    LIST_ALL, 0));
               //}
             }
@@ -4164,8 +4156,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
         }
 
         u->SaveLicqInfo();
-        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL,
-              u->IdString(), u->PPID()));
+        pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
         gUserManager.DropUser(u);
       }
 
@@ -4318,9 +4309,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
               {
                 u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(
                               e->ExtraInfo()));
+                pushPluginSignal(new LicqSignal(SIGNAL_ADDxSERVERxLIST, 0, u->id()));
                 gUserManager.DropUser(u);
-                PushPluginSignal(new CICQSignal(SIGNAL_ADDxSERVERxLIST, 0,
-                                                pending.c_str(), LICQ_PPID));
               }
             }
 
@@ -4506,7 +4496,7 @@ void CICQDaemon::ProcessBOSFam(CBuffer& /* packet */, unsigned short nSubtype)
     // ### FIX subsequence !!
     ICQEvent *e = DoneExtendedServerEvent(0, EVENT_SUCCESS);
     if (e != NULL) ProcessDoneEvent(e);
-    PushPluginSignal(new CICQSignal(SIGNAL_LOGON, 0, NULL, 0));
+      pushPluginSignal(new LicqSignal(SIGNAL_LOGON, 0));
 
     //icqSetStatus(m_nDesiredStatus);
     break;
@@ -5600,9 +5590,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->IdString(), u->PPID()));
-          break;
-        }
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
+                break;
+              }
         case ICQ_CMDxMETA_MORExINFO:
         {
           gLog.Info(tr("%sMore info on %s (%s).\n"), L_SRVxSTR, u->GetAlias(), u->IdString());
@@ -5653,9 +5643,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE, u->IdString(), u->PPID()));
-          break;
-        }
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_MORE, u->id()));
+                break;
+              }
         case ICQ_CMDxMETA_EMAILxINFO:
         {
 
@@ -5691,11 +5681,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           PushExtendedEvent(e);
           multipart = true;
-          
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->IdString(), u->PPID()));
-          break;
-        }
 
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EXT, u->id()));
+                break;
+              }
         case ICQ_CMDxMETA_HOMEPAGExINFO:
         {
           gLog.Info("%sHomepage info on %s (%s).\n", L_SRVxSTR, u->GetAlias(),
@@ -5727,8 +5716,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           PushExtendedEvent(e);
           multipart = true;
-          
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_HP, u->IdString(), u->PPID()));
+
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_HP, u->id()));
           break;
         }
 
@@ -5776,8 +5765,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_WORK, u->IdString(), u->PPID()));
-
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_WORK, u->id()));
           break;
 
         case ICQ_CMDxMETA_ABOUT:
@@ -5799,11 +5787,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           PushExtendedEvent(e);
           multipart = true;
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_ABOUT, u->IdString(), u->PPID()));
-
-          break;
-        }
-
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_ABOUT, u->id()));
+                break;
+              }
         case ICQ_CMDxMETA_INTERESTSxINFO:
         {
           unsigned i, n;
@@ -5830,12 +5816,10 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 
           PushExtendedEvent(e);
           multipart = true;
-          
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE2,
-                           u->IdString(), u->PPID()));
-          break;
-        }
 
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_MORE2, u->id()));
+                break;
+              }
         case ICQ_CMDxMETA_PASTxINFO:
         {
           // past background info - last one received
@@ -5880,12 +5864,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 u->saveUserInfo();
           u->SaveLicqInfo();
 
-          PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_MORE2,
-                           u->IdString(), u->PPID()));
-
-          break;
-        }
-
+                pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_MORE2, u->id()));
+                break;
+              }
         default:
         {
           char* buf;
@@ -5906,7 +5887,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           }
         }
 
-        PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EXT, u->IdString(), u->PPID()));
+            pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EXT, u->id()));
         gUserManager.DropUser(u);
       }
 
@@ -6027,8 +6008,8 @@ void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
         SaveConf();
       }
 
-      PushPluginSignal(new CICQSignal(SIGNAL_NEW_OWNER, 0, szUin, LICQ_PPID));
-      
+      pushPluginSignal(new LicqSignal(SIGNAL_NEW_OWNER, 0, 0, LICQ_PPID));
+
       // Reconnect now
       int nSD = m_nTCPSrvSocketDesc;
       m_nTCPSrvSocketDesc = -1;
@@ -6092,7 +6073,7 @@ void CICQDaemon::ProcessAuthFam(CBuffer &packet, unsigned short nSubtype)
       
       // Push a signal to the plugin to load the file
       gLog.Info("%sReceived verification image.\n", L_SRVxSTR);
-      PushPluginSignal(new CICQSignal(SIGNAL_VERIFY_IMAGE, 0, 0, LICQ_PPID));
+      pushPluginSignal(new LicqSignal(SIGNAL_VERIFY_IMAGE, 0, 0, LICQ_PPID));
       break;
     }
 
@@ -6176,9 +6157,8 @@ void CICQDaemon::ProcessUserList()
 
     // Save GSID, SID and group memberships
     u->SaveLicqInfo();
+    pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
     gUserManager.DropUser(u);
-
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_GENERAL, id, LICQ_PPID));
   }
 
   receivedUserList.clear();
@@ -6265,17 +6245,15 @@ bool CICQDaemon::ProcessCloseChannel(CBuffer &packet)
   case 0x1D:
   case 0x18:
     gLog.Error(tr("%sRate limit exceeded.\n"), L_ERRORxSTR);
-    PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_RATE, 0,
-                                    LICQ_PPID, 0, 0));
-    break;
+      pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_RATE, 0, LICQ_PPID));
+      break;
 
   case 0x04:
   case 0x05:
     gLog.Error(tr("%sInvalid UIN and password combination.\n"), L_ERRORxSTR);
-    PushPluginSignal(new CICQSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, 0,
-                                    LICQ_PPID, 0, 0));
-    break;
-    
+      pushPluginSignal(new LicqSignal(SIGNAL_LOGOFF, LOGOFF_PASSWORD, 0, LICQ_PPID));
+      break;
+
   case 0x0C:
   case 0x0D:
   case 0x12:

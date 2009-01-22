@@ -220,36 +220,25 @@ ICQUser *ICQEvent::GrabUnknownUser()
 }
 
 
-
-//=====CICQSignal===============================================================
-CICQSignal::CICQSignal(unsigned long nSignal, unsigned long nSubSignal,
-                       const char *szId, unsigned long nPPID,
-                       int nArg, unsigned long nCID)
+LicqSignal::LicqSignal(unsigned long signal, unsigned long subSignal, int userId,
+      int argument, unsigned long cid)
+  : mySignal(signal),
+    mySubSignal(subSignal),
+    myUserId(userId),
+    myArgument(argument),
+    myCid(cid)
 {
-  m_nSignal = nSignal;
-  m_nSubSignal = nSubSignal;
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
-  m_nArgument = nArg;
-  m_nCID = nCID;
 }
 
-CICQSignal::CICQSignal(const CICQSignal* s)
+LicqSignal::LicqSignal(const LicqSignal* s)
+  : mySignal(s->mySignal),
+    mySubSignal(s->mySubSignal),
+    myUserId(s->myUserId),
+    myArgument(s->myArgument),
+    myCid(s->myCid)
 {
-  m_nSignal = s->Signal();
-  m_nSubSignal = s->SubSignal();
-  m_szId = s->Id() ? strdup(s->Id()) : 0;
-  m_nPPID = s->PPID();
-  m_nArgument = s->Argument();
-  m_nCID = s->CID();
 }
 
-
-CICQSignal::~CICQSignal()
-{
-  if (m_szId)
-    free(m_szId);
-}
 
 CSignal::CSignal(SIGNAL_TYPE e, const char *szId, unsigned long nCID)
 {

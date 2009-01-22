@@ -537,12 +537,11 @@ public:
 
   EDaemonStatus Status() const                  { return m_eStatus; }
 
-  void PluginUIViewEvent(const char *szId, unsigned long nPPID ) {
-    PushPluginSignal(new CICQSignal(SIGNAL_UI_VIEWEVENT, 0, szId, nPPID, 0));
-  }
-  void PluginUIMessage(const char *szId, unsigned long nPPID) {
-    PushPluginSignal(new CICQSignal(SIGNAL_UI_MESSAGE, 0, szId, nPPID, 0));
-  }
+  void pluginUIViewEvent(int userId)
+  { pushPluginSignal(new LicqSignal(SIGNAL_UI_VIEWEVENT, 0, userId)); }
+
+  void pluginUIMessage(int userId)
+  { pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId)); }
 
   void UpdateAllUsers();
   void UpdateAllUsersInGroup(GroupType, unsigned short);
@@ -624,7 +623,14 @@ public:
   // NOT MT SAFE
   bool AlwaysOnlineNotify() const               { return m_bAlwaysOnlineNotify; }
   void SetAlwaysOnlineNotify(bool);
-  CICQSignal *PopPluginSignal();
+
+  /**
+   * Get the next queued signal for a plugin
+   * Checks calling thread to determine which plugin queue to pop
+   *
+   * @return The next queued signal or NULL if the queue is empty
+   */
+  LicqSignal* popPluginSignal();
   ICQEvent *PopPluginEvent();
   CSignal *PopProtoSignal();
 
@@ -795,7 +801,14 @@ protected:
   void ProcessDoneEvent(ICQEvent *);
   void PushEvent(ICQEvent *);
   void PushExtendedEvent(ICQEvent *);
-  void PushPluginSignal(CICQSignal *);
+
+  /**
+   * Add a signal to the signal queues of all plugins.
+   *
+   * @param signal Signal to send
+   */
+  void pushPluginSignal(LicqSignal* signal);
+
   void PushPluginEvent(ICQEvent *);
   void PushProtoSignal(CSignal *, unsigned long);
 

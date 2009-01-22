@@ -396,8 +396,7 @@ void COscarService::ProcessBARTFam(CBuffer &packet, unsigned short SubType,
               u->SetEnableSave(true);
             }
             u->SavePictureInfo();
-            myDaemon->PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_PICTURE,
-                                                      u->IdString(), u->PPID()));
+            myDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PICTURE, u->id()));
 
             ICQEvent *e = myDaemon->DoneServerEvent(RequestId, EVENT_SUCCESS);
             if (e)

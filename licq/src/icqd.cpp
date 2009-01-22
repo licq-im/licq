@@ -1105,8 +1105,8 @@ bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
     icqAddUser(szId, false, groupId);
   else if (nPPID != LICQ_PPID && bNotify)
     PushProtoSignal(new CAddUserSignal(szId, false), nPPID);
-  
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_ADD, szId, nPPID, groupId));
+
+  pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, userId, groupId));
 
   return true;
 }
@@ -1115,6 +1115,7 @@ void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
 {
   const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
   if (!u) return;
+  int userId = u->id();
   bool bTempUser = u->NotInList();
   gUserManager.DropUser(u);
   
@@ -1123,10 +1124,9 @@ void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
   else if (nPPID != LICQ_PPID)
     ProtoRemoveUser(szId, nPPID);
 
-  gUserManager.RemoveUser(szId, nPPID);
+  gUserManager.removeUser(userId);
 
-  PushPluginSignal(new CICQSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, szId,
-    nPPID));
+  pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, userId));
 }
 
 //-----ChangeUserStatus-------------------------------------------------------
@@ -1166,9 +1166,7 @@ void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
   if(oldstatus != s)
   {
     u->Touch();
-    PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER,
-                                    USER_STATUS, u->IdString(),
-                                    u->PPID(), arg));
+    pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_STATUS, u->id(), arg));
   }
 }
 
@@ -1190,8 +1188,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
   //u->Touch();
   m_sStats[STATS_EventsReceived].Inc();
 
-  //PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
-  //   u->Uin(), e->Id()));
+  //pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
   return true;
 }
 
@@ -1902,42 +1899,29 @@ void CICQDaemon::PushPluginEvent(ICQEvent *e)
   pthread_mutex_unlock(&licq->mutex_plugins);
 }
 
-
-/*------------------------------------------------------------------------------
- * PushPluginSignal
- *
- * Sticks the given event into the gui signal queue.  Then signals that it is
- * there by sending data on the pipe.
- *----------------------------------------------------------------------------*/
-void CICQDaemon::PushPluginSignal(CICQSignal *s)
+void CICQDaemon::pushPluginSignal(LicqSignal* s)
 {
   PluginsListIter iter;
   pthread_mutex_lock(&licq->mutex_plugins);
   for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if ( (*iter)->CompareMask(s->Signal()) )
-      (*iter)->PushSignal(new CICQSignal(s));
+      (*iter)->pushSignal(new LicqSignal(s));
   }
   pthread_mutex_unlock(&licq->mutex_plugins);
   delete s;
 }
 
-
-/*------------------------------------------------------------------------------
- * PopPluginSignal
- *
- * Pops an event from the gui signal queue.
- *----------------------------------------------------------------------------*/
-CICQSignal *CICQDaemon::PopPluginSignal()
+LicqSignal* CICQDaemon::popPluginSignal()
 {
   PluginsListIter iter;
-  CICQSignal *s = NULL;
+  LicqSignal* s = NULL;
   pthread_mutex_lock(&licq->mutex_plugins);
   for (iter = licq->list_plugins.begin(); iter != licq->list_plugins.end(); ++iter)
   {
     if ( (*iter)->CompareThread(pthread_self()) )
     {
-      s = (*iter)->PopSignal();
+      s = (*iter)->popSignal();
       break;
     }
   }
@@ -2422,9 +2406,8 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     m_sStats[STATS_AutoResponseChecked].Inc();
     u->SetLastCheckedAutoResponse();
 
-      PushPluginSignal(new CICQSignal(SIGNAL_UPDATExUSER, USER_EVENTS,
-          u->IdString(), u->PPID()));
-    }
+        pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_EVENTS, u->id()));
+      }
     u->Unlock();
     return;
     
