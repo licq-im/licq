@@ -1206,13 +1206,21 @@ public:
   std::string OwnerId(unsigned long ppid);
 
   /**
+   * Check if user is an owner
+   *
+   * @param userId Id of user to check
+   * @return True if user id is valid and user is an owner
+   */
+  bool isOwner(int userId);
+
+  /**
    * Get user id for an account
    *
    * @param accountId Server account id
    * @param ppid Protocol instance id
    * @return Local user id
    */
-  int getUserFromAccount(const std::string& accountId, unsigned long ppid);
+  int getUserFromAccount(const char* accountId, unsigned long ppid);
 
   // ICQ Protocol only (from original Licq)
   void DropUser(const LicqUser* user);

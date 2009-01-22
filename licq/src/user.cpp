@@ -674,6 +674,20 @@ void CUserManager::RemoveOwner(unsigned long ppid)
 LicqUser* CUserManager::fetchUser(int userId, unsigned short lockType)
 {
   LicqUser* user = NULL;
+
+  // First check if userId matches an owner
+  LockOwnerList(LOCK_R);
+  OwnerMap::iterator iter_o = myOwners.find(static_cast<unsigned long>(userId));
+  if (iter_o != myOwners.end())
+  {
+    user = iter_o->second;
+    user->Lock(lockType);
+  }
+  UnlockOwnerList();
+
+  if (user != NULL)
+    return user;
+
   LockUserList(LOCK_R);
   UserMap::const_iterator iter = myUsers.find(userId);
   if (iter != myUsers.end())
@@ -794,13 +808,26 @@ string CUserManager::OwnerId(unsigned long ppid)
   return ret;
 }
 
+bool CUserManager::isOwner(int userId)
+{
+  const LicqOwner* owner = FetchOwner(static_cast<unsigned long>(userId), LOCK_R);
+  if (owner == NULL)
+    return false;
+
+  DropOwner(owner);
+  return true;
+}
+
 unsigned long CUserManager::icqOwnerUin()
 {
   return strtoul(OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
 }
 
-int CUserManager::getUserFromAccount(const string& accountId, unsigned long ppid)
+int CUserManager::getUserFromAccount(const char* accountId, unsigned long ppid)
 {
+  if (accountId == NULL || ppid == 0)
+    return 0;
+
   int id = 0;
   LockUserList(LOCK_R);
   UserAccountMap::const_iterator iter =  myUserAccounts.find(UserAccountMapKey(accountId, ppid));
@@ -3483,7 +3510,7 @@ void ICQUser::SetTLVList(TLVList& tlvs)
 LicqOwner::LicqOwner(const string& accountId, unsigned long ppid)
   : LicqUser(static_cast<int>(ppid))
 {
-  // id isn't really used for owners so we just cast ppid and pass along
+  // id should be unique and not in range of normal users using ppid should be good enough
   myAccountId = accountId;
   myPpid = ppid;
 
