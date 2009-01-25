@@ -57,8 +57,6 @@
 
 #define FLASH_TIME 500
 
-using std::string;
-
 extern char *PPIDSTRING(unsigned long);
 
 using std::string;
@@ -836,22 +834,19 @@ void CUserView::timerEvent(QTimerEvent* e)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
-        char *szRealId = 0;
-        ICQUser::MakeRealId(item->ItemId(), item->ItemPPID(), szRealId);
-        if (item->ItemId() && (strcmp(szRealId, carId) == 0) &&
-            item->ItemPPID() == carPPID)
+        if (item->ItemId() != NULL)
         {
-          if(carCounter == 1)
-            item->repaint();
-          else
-            item->drawCAROverlay(&p);
-          if(!doGroupView)
+          string realId = LicqUser::makeRealId(item->ItemId(), item->ItemPPID());
+          if (realId == carId && item->ItemPPID() == carPPID)
           {
-            delete [] szRealId;
-            break;
+            if(carCounter == 1)
+              item->repaint();
+            else
+              item->drawCAROverlay(&p);
+            if(!doGroupView)
+              break;
           }
         }
-        delete [] szRealId;
       }
     }
 
@@ -877,23 +872,17 @@ void CUserView::timerEvent(QTimerEvent* e)
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
-        char *szRealId = 0;
-        ICQUser::MakeRealId(item->ItemId(), item->ItemPPID(), szRealId);
-
-        if (szRealId && (strcmp(szRealId, onlId) == 0) &&
-            item->ItemPPID() == onlPPID)
+        if (item->ItemId() != NULL)
         {
-          found = true;
-          item->repaint();
-          if(!doGroupView)
+          string realId = LicqUser::makeRealId(item->ItemId(), item->ItemPPID());
+          if (realId == onlId && item->ItemPPID() == onlPPID)
           {
-            delete [] szRealId;
-            break;
+            found = true;
+            item->repaint();
+            if(!doGroupView)
+              break;
           }
         }
-
-        if (szRealId)
-          delete [] szRealId;
       }
     }
 
