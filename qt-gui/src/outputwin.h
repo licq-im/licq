@@ -28,16 +28,14 @@
 #include "licq_log.h"
 #include "licqdialog.h"
 
-class CLogWidget;
 
-//=====OutputWin============================================================
 class CQtLogWindow : public LicqDialog, public CPluginLog
 {
   Q_OBJECT
 public:
   CQtLogWindow (QWidget *parent = 0);
 protected:
-  CLogWidget *outputBox;
+  MLEditWrap* outputBox;
   QPushButton *btnHide, *btnClear, *btnSave;
   QSocketNotifier *sn;
 protected slots:
@@ -45,15 +43,6 @@ protected slots:
   void slot_save();
 
   virtual void showEvent(QShowEvent*);
-};
-
-/* ----------------------------------------------------------------------------- */
-
-class CLogWidget : public MLEditWrap
-{
-public:
-  CLogWidget(QWidget* parent = 0, const char* name = 0);
-  virtual ~CLogWidget() {};
 };
 
 #endif
