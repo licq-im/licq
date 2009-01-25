@@ -1955,6 +1955,8 @@ void ICQUser::RemoveFiles()
 
 void LicqUser::Init()
 {
+  myRealAccountId = makeRealId(myAccountId, myPpid);
+
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
   m_szAutoResponse = NULL;
@@ -3035,6 +3037,34 @@ char* LicqUser::MakeRealId(const string& accountId, unsigned long ppid,
   return szRealId;
 }
 
+string LicqUser::makeRealId(const string& accountId, unsigned long ppid)
+{
+  if (accountId.empty())
+    return string();
+
+  string realId;
+
+  // For AIM, account id is case insensitive and spaces should be ignored
+  if (ppid == LICQ_PPID && !isdigit(accountId[0]))
+  {
+    char* real = new char[accountId.length() + 1];
+
+    string::size_type j = 0;
+    for (string::size_type i = 0; i < accountId.length(); ++i)
+      if (accountId[i] != ' ')
+        real[j++] = tolower(accountId[i]);
+    real[j] = '\0';
+    realId = real;
+    delete[] real;
+  }
+  else
+  {
+    realId = accountId;
+  }
+
+  return realId;
+}
+
 void ICQUser::saveUserInfo()
 {
   if (!EnableSave()) return;
@@ -3513,6 +3543,7 @@ LicqOwner::LicqOwner(const string& accountId, unsigned long ppid)
   // id should be unique and not in range of normal users using ppid should be good enough
   myAccountId = accountId;
   myPpid = ppid;
+  myRealAccountId = makeRealId(myAccountId, myPpid);
 
   char szTemp[MAX_LINE_LEN];
   char filename[MAX_FILENAME_LEN];

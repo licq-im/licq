@@ -439,6 +439,13 @@ public:
    */
   unsigned long ppid() const                    { return myPpid; }
 
+  /**
+   * Get normalized account id that can be used when comparing ids
+   *
+   * @return normalized account id
+   */
+  const std::string& realAccountId() const      { return myRealAccountId; }
+
   // Old deprecated functions to get account id and protocol id, do not use in new code
   const char* IdString() const { return accountId().c_str(); }
   unsigned long PPID() const { return ppid(); }
@@ -684,6 +691,16 @@ public:
   static const char* StatusToStatusStr(unsigned short n, bool b);
   static const char* StatusToStatusStrShort(unsigned short n, bool b);
   static char* MakeRealId(const std::string& accountId, unsigned long ppid, char *&);
+
+  /**
+   * Normalize an account id
+   *
+   * @param accountId Account id
+   * @param ppid Protocol instance id
+   * @return Normalized account id
+   */
+  static std::string makeRealId(const std::string& accountId, unsigned long ppid);
+
   int Birthday(unsigned short nDayRange = 0) const;
 
   // Message/History functions
@@ -895,6 +912,7 @@ protected:
   const int myId;
   std::string myAccountId;
   unsigned long myPpid;
+  std::string myRealAccountId;
 
   CIniFile m_fConf;
   CUserHistory m_fHistory;
