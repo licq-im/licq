@@ -554,8 +554,19 @@ public:
      bool bSendIntIp);
   int StartTCPServer(TCPSocket *);
 
-  bool AddUserToList(const char *szId, unsigned long PPID, bool bNotify = true,
-                     bool bTempUser = false, unsigned short groupId = 0);
+  /**
+   * Add a user to the contact list
+   *
+   * @param accountId User account id
+   * @param ppid Protocol instance id
+   * @param notify True if user should be notified (ignored for temporary users)
+   * @param temporary True if user should not be added to server and not saved to disk
+   * @param groupId Initial group to place user in or zero for no group
+   * @return zero if account id is invalid or user is already in list, otherwise id of added user
+   */
+  int AddUserToList(std::string accountId, unsigned long ppid,
+      bool notify = true, bool temporary = false, unsigned short groupId = 0);
+
   void RemoveUserFromList(const char *szId, unsigned long nPPID);
 
   // SMS

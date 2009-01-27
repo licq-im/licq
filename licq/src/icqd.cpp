@@ -1082,33 +1082,37 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
   else
     m_bUseBART = b;
 }
-                                    
-bool CICQDaemon::AddUserToList(const char *szId, unsigned long nPPID,
-                               bool bNotify, bool bTempUser, unsigned short groupId)
+
+int CICQDaemon::AddUserToList(string accountId, unsigned long ppid, bool notify,
+    bool temporary, unsigned short groupId)
 {
   // Don't add invalid uins
-  if (szId == 0 || nPPID == 0) return false;
+  if (accountId.empty() || ppid == 0)
+    return 0;
 
   // Don't add a user we already have
-  if (gUserManager.IsOnList(szId, nPPID))
+  if (gUserManager.IsOnList(accountId.c_str(), ppid))
   {
-    gLog.Warn(tr("%sUser %s already on contact list.\n"), L_WARNxSTR, szId);
-    return false;
+    gLog.Warn(tr("%sUser %s already on contact list.\n"), L_WARNxSTR, accountId.c_str());
+    return 0;
   }
 
-  int userId = gUserManager.addUser(szId, nPPID, bTempUser);
+  int userId = gUserManager.addUser(accountId, ppid, temporary);
   if (groupId != 0)
     gUserManager.addUserToGroup(userId, groupId);
 
   // this notify is for local only adds
-  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && bNotify && !bTempUser)
-    icqAddUser(szId, false, groupId);
-  else if (nPPID != LICQ_PPID && bNotify)
-    PushProtoSignal(new CAddUserSignal(szId, false), nPPID);
+  if (notify && !temporary)
+  {
+    if (ppid == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
+      icqAddUser(accountId.c_str(), false, groupId);
+    else if (ppid != LICQ_PPID)
+      PushProtoSignal(new CAddUserSignal(accountId.c_str(), false), ppid);
+  }
 
   pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, userId, groupId));
 
-  return true;
+  return userId;
 }
 
 void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)

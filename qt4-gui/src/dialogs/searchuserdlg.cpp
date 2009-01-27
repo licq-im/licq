@@ -433,7 +433,7 @@ void SearchUserDlg::viewInfo()
     QByteArray id = current->data(0, Qt::UserRole).toString().toLatin1();
 
     if (!gUserManager.IsOnList(id, ppid))
-      gLicqDaemon->AddUserToList(id, ppid, false, true);
+      gLicqDaemon->AddUserToList(id.data(), ppid, false, true);
 
     LicqGui::instance()->showInfoDialog(mnuUserGeneral, id, ppid, false, true);
   }

@@ -101,7 +101,7 @@ void AddUserDlg::ok()
     const ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
 
     if (u == NULL)
-      added = gLicqDaemon->AddUserToList(id, ppid, true, false, group);
+      added = gLicqDaemon->AddUserToList(id.data(), ppid, true, false, group);
     else
     {
       bool notInList = u->NotInList();
