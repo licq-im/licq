@@ -1348,7 +1348,8 @@ void UserSendCommon::massMessageToggled(bool b)
 
     layMR->addWidget(new QLabel(tr("Drag Users Here\nRight Click for Options")));
 
-    myMassMessageList = new MMUserView(myUsers.front().c_str(), myPpid,
+    int userId = gUserManager.getUserFromAccount(myUsers.front().c_str(), myPpid);
+    myMassMessageList = new MMUserView(userId,
         LicqGui::instance()->contactList());
     myMassMessageList->setFixedWidth(gMainWindow->getUserView()->width());
     layMR->addWidget(myMassMessageList);

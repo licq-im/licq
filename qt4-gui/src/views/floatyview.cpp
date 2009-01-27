@@ -40,7 +40,7 @@ UserFloatyList FloatyView::floaties;
 
 FloatyView::FloatyView(ContactListModel* contactList, const ICQUser* licqUser,  QWidget* parent)
   : UserViewBase(contactList, parent),
-  myPpid(licqUser->PPID())
+  myUserId(licqUser->id())
 {
   setWindowFlags(Qt::FramelessWindowHint);
   Support::ghostWindow(winId());
@@ -58,16 +58,8 @@ FloatyView::FloatyView(ContactListModel* contactList, const ICQUser* licqUser,  
   setSelectionMode(NoSelection);
   header()->hide();
 
-  if (licqUser->IdString())
-  {
-    char* realId = 0;
-    ICQUser::MakeRealId(licqUser->IdString(), myPpid, realId);
-    myId = realId;
-    delete [] realId;
-  }
-
   // Use a proxy model to get a single user from the contact list
-  myListProxy = new SingleContactProxy(myContactList, myId, myPpid, this);
+  myListProxy = new SingleContactProxy(myContactList, myUserId, this);
   setModel(myListProxy);
 
   connect(Config::ContactList::instance(), SIGNAL(listLookChanged()), SLOT(configUpdated()));
@@ -83,12 +75,12 @@ FloatyView::~FloatyView()
     floaties.remove(pos);
 }
 
-FloatyView* FloatyView::findFloaty(QString id, unsigned long ppid)
+FloatyView* FloatyView::findFloaty(int userId)
 {
   for (int i = 0; i < floaties.size(); i++)
   {
     FloatyView* p = floaties.at(i);
-    if (p->myId == id && p->myPpid == ppid)
+    if (p->myUserId == userId)
       return p;
   }
 

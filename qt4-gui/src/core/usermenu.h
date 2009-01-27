@@ -58,8 +58,15 @@ public:
   /**
    * Change which contact the menu will be displayed for.
    *
-   * @param id Contact id
+   * @param userId Contact id
+   */
+  void setUser(int userId);
+
+  /**
+   * Change which contact the menu will be displayed for.
+   *
    * @param ppid Contact protocol id
+   * @param userId Contact id
    */
   void setUser(QString id, unsigned long ppid);
 
@@ -70,7 +77,7 @@ public:
    * @param id Contact id
    * @param ppid Contact protocol id
    */
-  void popup(QPoint pos, QString id, unsigned ppid);
+  void popup(QPoint pos, int userId);
 
 private slots:
   /**
@@ -101,6 +108,7 @@ private slots:
 
 private:
   // Current contact
+  int myUserId;
   QString myId;
   unsigned long myPpid;
 

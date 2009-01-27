@@ -65,18 +65,16 @@ public:
   /**
    * Add a contact to the list
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User id
    */
-  void add(QString id, unsigned long ppid);
+  void add(int userId);
 
   /**
    * Remove a contact from the list
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User id
    */
-  void remove(QString id, unsigned long ppid);
+  void remove(int userId);
 
   /**
    * Remove a list of contacts from the list
@@ -105,7 +103,7 @@ public:
    *
    * @return A set containing the contacts
    */
-  const QSet<QPair<QString, unsigned long> >& contacts() const
+  const QSet<int>& contacts() const
   { return myContacts; }
 
   /**
@@ -126,7 +124,7 @@ private:
    */
   bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
-  QSet<QPair<QString, unsigned long> > myContacts;
+  QSet<int> myContacts;
 };
 
 } // namespace LicqQtGui

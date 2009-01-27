@@ -55,7 +55,6 @@ using namespace LicqQtGui;
 MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
   : QDialog(p),
     mmv(_mmv),
-    m_nPPID(0),
     icqEventTag(0)
 {
   Support::setWidgetProps(this, "MMSendDialog");
@@ -156,21 +155,21 @@ void MMSendDlg::SendNext()
     return;
   }
 
-  QPair<QString, unsigned long> contact = *mmv->contacts().begin();
+  int userId = *mmv->contacts().begin();
 
-  myId = contact.first;
-  m_nPPID = contact.second;
-
-  if (myId.isEmpty()) return;
+  if (userId == 0)
+    return;
 
   switch (m_nEventType)
   {
     case ICQ_CMDxSUB_MSG:
     {
-      const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL) return;
       QTextCodec* codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
+      QString myId = u->accountId().c_str();
+      unsigned long m_nPPID = u->ppid();
       gUserManager.DropUser(u);
 
       // create initial strings (implicit copying, no allocation impact :)
@@ -238,10 +237,12 @@ void MMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_URL:
     {
-      const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL) return;
       grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
       QTextCodec* codec = UserCodec::codecForICQUser(u);
+      QString myId = u->accountId().c_str();
+      unsigned long m_nPPID = u->ppid();
       gUserManager.DropUser(u);
 
       icqEventTag = gLicqDaemon->ProtoSendUrl(
@@ -251,9 +252,10 @@ void MMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL) return;
       grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
+      QString myId = u->accountId().c_str();
       gUserManager.DropUser(u);
 
       icqEventTag = gLicqDaemon->icqSendContactList(

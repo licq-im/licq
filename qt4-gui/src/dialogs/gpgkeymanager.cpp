@@ -314,7 +314,8 @@ void KeyListItem::unsetKey()
   {
     u->SetUseGPG(false);
     u->SetGPGKey("");
+    int userId = u->id();
     gUserManager.DropUser(u);
-    gMainWindow->slot_updatedUser(szId, nPPID, USER_GENERAL, 0);
+    gMainWindow->slot_updatedUser(userId, USER_GENERAL, 0);
   }
 }

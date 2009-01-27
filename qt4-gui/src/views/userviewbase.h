@@ -73,10 +73,9 @@ signals:
   /**
    * Signal emitted when user has double clicked on a contact
    *
-   * @param id User id of contact
-   * @param ppid Protocol id of contact
+   * @param userId User id of contact
    */
-  void userDoubleClicked(QString id, unsigned long ppid);
+  void userDoubleClicked(int userId);
 
 protected slots:
   /**

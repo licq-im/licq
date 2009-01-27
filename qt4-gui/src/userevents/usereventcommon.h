@@ -47,8 +47,9 @@ public:
   UserEventCommon(QString id, unsigned long ppid, QWidget* parent = 0, const char* name = 0);
   virtual ~UserEventCommon();
 
-  QString id() { return QString::fromAscii(myUsers.front().c_str()); }
-  unsigned long ppid() { return myPpid; }
+  int userId() const;
+  QString id() const { return QString::fromAscii(myUsers.front().c_str()); }
+  unsigned long ppid() const { return myPpid; }
   unsigned long convoId() { return myConvoId; }
   std::list<std::string>& convoUsers() { return myUsers; }
   void setConvoId(unsigned long n) { myConvoId = n; }
@@ -122,7 +123,7 @@ protected slots:
   void updateTyping();
   void showUserMenu();
   void showEncodingsMenu();
-  void updatedUser(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
+  void updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid);
 
 signals:
   void finished(QString id, unsigned long ppid);

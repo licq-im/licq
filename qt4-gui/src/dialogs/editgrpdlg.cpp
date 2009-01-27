@@ -94,7 +94,7 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
 
   RefreshList();
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedList(unsigned long, int, const QString&, unsigned long)),
+      SIGNAL(updatedList(unsigned long, int, int)),
       SLOT(listUpdated(unsigned long)));
 
   show();

@@ -110,6 +110,13 @@ public:
   /**
    * Get user id for dialog
    *
+   * @ return User id
+   */
+  int userId() const { return myUserId; }
+
+  /**
+   * Get user id for dialog
+   *
    * @return User id
    */
   QString id() const { return myId; }
@@ -156,11 +163,10 @@ private slots:
   /**
    * User has updated
    *
-   * @param accountId Account id for affected user
-   * @param ppid Protocol instance id for affected user
+   * @param userId Id for affected user
    * @param subSignal Sub signal telling what the change was
    */
-  void userUpdated(const QString& accountId, unsigned long ppid, unsigned long subSignal);
+  void userUpdated(int userId, unsigned long subSignal);
 
   /**
    * Server request has finished
@@ -180,6 +186,7 @@ private slots:
   void resetCaption();
 
 private:
+  int myUserId;
   QString myId;
   unsigned long myPpid;
   bool myIsOwner;

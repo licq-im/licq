@@ -340,15 +340,24 @@ void LicqGui::loadFloatiesConfig()
 
   char key[16];
   unsigned short nFloaties = 0, xPosF, yPosF, wValF;
-  unsigned long ppid;
   licqConf.SetSection("floaties");
   licqConf.ReadNum("Num", nFloaties, 0);
   for (unsigned short i = 0; i < nFloaties; i++)
   {
-    sprintf(key, "Floaty%d.Ppid", i);
-    licqConf.ReadNum(key, ppid, LICQ_PPID);
-    sprintf(key, "Floaty%d.Uin", i);
-    licqConf.ReadStr(key, szTemp, "");
+    sprintf(key, "Floaty%d.UserId", i);
+    int userId;
+    if (!licqConf.ReadNum(key, userId))
+    {
+      // No user id probably means we're reading old config, try to read the old parameters instead
+      sprintf(key, "Floaty%d.Ppid", i);
+      unsigned long ppid;
+      licqConf.ReadNum(key, ppid, LICQ_PPID);
+      sprintf(key, "Floaty%d.Uin", i);
+      licqConf.ReadStr(key, szTemp, "");
+      if (szTemp[0] != '\0')
+        userId = gUserManager.getUserFromAccount(szTemp, ppid);
+    }
+
     sprintf(key, "Floaty%d.X", i);
     licqConf.ReadNum(key, xPosF, 0);
     sprintf(key, "Floaty%d.Y", i);
@@ -356,8 +365,8 @@ void LicqGui::loadFloatiesConfig()
     sprintf(key, "Floaty%d.W", i);
     licqConf.ReadNum(key, wValF, 80);
 
-    if (szTemp[0] != 0)
-      createFloaty(szTemp, ppid, xPosF, yPosF, wValF);
+    if (userId != 0)
+      createFloaty(userId, xPosF, yPosF, wValF);
   }
 }
 
@@ -395,10 +404,8 @@ void LicqGui::saveConfig()
   for (unsigned short i = 0; i < FloatyView::floaties.size(); i++)
   {
     FloatyView* iter = FloatyView::floaties.at(i);
-    sprintf(key, "Floaty%d.Ppid", i);
-    licqConf.WriteNum(key, iter->ppid());
-    sprintf(key, "Floaty%d.Uin", i);
-    licqConf.WriteStr(key, iter->id().toLocal8Bit());
+    sprintf(key, "Floaty%d.UserId", i);
+    licqConf.WriteNum(key, iter->userId());
     sprintf(key, "Floaty%d.X", i);
     licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
     sprintf(key, "Floaty%d.Y", i);
@@ -445,15 +452,15 @@ int LicqGui::Run(CICQDaemon* daemon)
 
   // Contact list model
   myContactList = new ContactListModel(this);
-  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, const QString&, unsigned long)),
-      myContactList, SLOT(listUpdated(unsigned long, int, const QString&, unsigned long)));
-  connect(mySignalManager, SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      myContactList, SLOT(userUpdated(const QString&, unsigned long, unsigned long, int)));
+  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, int)),
+      myContactList, SLOT(listUpdated(unsigned long, int, int)));
+  connect(mySignalManager, SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
+      myContactList, SLOT(userUpdated(int, unsigned long, int)));
 
-  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, const QString&, unsigned long)),
-      SLOT(listUpdated(unsigned long, int, const QString&, unsigned long)));
-  connect(mySignalManager, SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      SLOT(userUpdated(const QString&, unsigned long, unsigned long, int, unsigned long)));
+  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, int)),
+      SLOT(listUpdated(unsigned long, int, int)));
+  connect(mySignalManager, SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
+      SLOT(userUpdated(int, unsigned long, int, unsigned long)));
   connect(mySignalManager, SIGNAL(socket(QString, unsigned long, unsigned long)),
       SLOT(convoSet(QString, unsigned long, unsigned long)));
   connect(mySignalManager, SIGNAL(convoJoin(QString, unsigned long, unsigned long)),
@@ -652,17 +659,19 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
     myLicqDaemon->ProtoSetStatus(ppid, status);
 }
 
-bool LicqGui::removeUserFromList(QString id, unsigned long ppid, QWidget* parent)
+bool LicqGui::removeUserFromList(int userId, QWidget* parent)
 {
   if (parent == NULL)
     parent = myMainWindow;
 
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
   if (u == NULL)
     return true;
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
       .arg(QString::fromUtf8(u->GetAlias()))
       .arg(u->IdString()));
+  QString id = u->accountId().c_str();
+  unsigned long ppid = u->ppid();
   gUserManager.DropUser(u);
   if (QueryYesNo(parent, warning))
   {
@@ -1018,15 +1027,18 @@ void LicqGui::sendEventFinished(QString id, unsigned long ppid)
   }
 }
 
-void LicqGui::showDefaultEventDialog(QString id, unsigned long ppid)
+void LicqGui::showDefaultEventDialog(int userId)
 {
-  if (id.isEmpty() || ppid == 0)
+  if (userId == 0)
     return;
 
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
 
   if (u == NULL)
     return;
+
+  QString id = u->accountId().c_str();
+  unsigned long ppid = u->ppid();
 
   // For multi user conversations (i.e. in MSN)
   int convoId = -1;
@@ -1242,41 +1254,41 @@ void LicqGui::showAllEvents()
   if (numMsg > 0)
     showAllOwnerEvents();
 
-  list<pair<QString, unsigned long> > users;
+  list<int> users;
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->NewMessages() > 0)
-      users.push_back(pair<QString, unsigned long>(pUser->IdString(), pUser->PPID()));
+      users.push_back(pUser->id());
   }
   FOR_EACH_USER_END
 
-  list<pair<QString, unsigned long> >::iterator iter;
+  list<int>::iterator iter;
   for (iter = users.begin(); iter != users.end(); iter++)
-    showDefaultEventDialog(iter->first, iter->second);
+    showDefaultEventDialog(*iter);
 }
 
-void LicqGui::toggleFloaty(QString id, unsigned long ppid)
+void LicqGui::toggleFloaty(int userId)
 {
-  FloatyView* v = FloatyView::findFloaty(id, ppid);
+  FloatyView* v = FloatyView::findFloaty(userId);
   if (v == NULL)
-    createFloaty(id, ppid);
+    createFloaty(userId);
   else
     delete v;
 }
 
-void LicqGui::createFloaty(QString id, unsigned long ppid,
+void LicqGui::createFloaty(int userId,
    unsigned short x, unsigned short y, unsigned short w)
 {
-  if (id.isEmpty() || ppid == 0)
+  if (userId == 0)
     return;
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
   if (u == NULL)
     return;
 
   FloatyView* f = new FloatyView(myContactList, u);
 
-  connect(f, SIGNAL(userDoubleClicked(QString, unsigned long)),
-      SLOT(showDefaultEventDialog(QString, unsigned long)));
+  connect(f, SIGNAL(userDoubleClicked(int)),
+      SLOT(showDefaultEventDialog(int)));
 
   gUserManager.DropUser(u);
 
@@ -1294,14 +1306,14 @@ void LicqGui::createFloaty(QString id, unsigned long ppid,
   f->show();
 }
 
-void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const QString& accountId, unsigned long ppid)
+void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, int userId)
 {
   switch (subSignal)
   {
     case LIST_REMOVE:
     {
       // If their floaty is enabled, remove it
-      FloatyView* f = FloatyView::findFloaty(accountId, ppid);
+      FloatyView* f = FloatyView::findFloaty(userId);
       if (f)
         delete f;
 
@@ -1309,7 +1321,7 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const QSt
       for (int i = 0; i < myUserViewList.size(); ++i)
       {
         UserViewEvent* item = myUserViewList.at(i);
-        if (item->id() == accountId && item->ppid() == ppid)
+        if (item->userId() == userId)
         {
           item->close();
           myUserViewList.removeAll(item);
@@ -1320,7 +1332,7 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const QSt
       for (int i = 0; i < myUserDlgList.size(); ++i)
       {
         UserDlg* item = myUserDlgList.at(i);
-        if (item->id() == accountId && item->ppid() == ppid)
+        if (item->userId() == userId)
         {
           item->close();
           myUserDlgList.removeAll(item);
@@ -1331,7 +1343,7 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const QSt
       for (int i = 0; i < myUserSendList.size(); ++i)
       {
         UserSendCommon* item = myUserSendList.at(i);
-        if (item->id() == accountId && item->ppid() == ppid)
+        if (item->userId() == userId)
         {
           if (myUserEventTabDlg && myUserEventTabDlg->tabExists(item))
             myUserEventTabDlg->removeTab(item);
@@ -1356,19 +1368,18 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const QSt
   }
 }
 
-void LicqGui::userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid)
+void LicqGui::userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid)
 {
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
   if (u == NULL)
   {
-    char* ppidString = PPIDSTRING(ppid);
-    gLog.Warn("%sLicqGui::userUpdated(): Invalid user received: %s (%s)\n",
-      L_ERRORxSTR, id.toLatin1().data(), ppidString);
-    delete[] ppidString;
+    gLog.Warn("%sLicqGui::userUpdated(): Invalid user received: %i\n",
+        L_ERRORxSTR, userId);
     return;
   }
-  else
-    gUserManager.DropUser(u);
+  QString id = u->accountId().c_str();
+  unsigned long ppid = u->ppid();
+  gUserManager.DropUser(u);
 
   switch (subSignal)
   {
@@ -1409,7 +1420,7 @@ void LicqGui::userUpdated(const QString& id, unsigned long ppid, unsigned long s
 
         if (Config::Chat::instance()->autoPopup() >= popCheck)
         {
-          const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+          const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
           if (u != NULL)
           {
             bool bCallUserView = false, bCallSendMsg = false;
@@ -1455,7 +1466,7 @@ void LicqGui::userUpdated(const QString& id, unsigned long ppid, unsigned long s
     case USER_SECURITY:
     case USER_TYPING:
     {
-      const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL)
         break;
 
@@ -1482,7 +1493,7 @@ void LicqGui::userUpdated(const QString& id, unsigned long ppid, unsigned long s
           else
           {
             // For protocols that don't use a convo id
-            if (id.compare(item->id(), Qt::CaseInsensitive) == 0 && item->ppid() == ppid)
+            if (item->userId() == userId)
               item->setTyping(u->GetTyping());
           }
         }
@@ -1495,9 +1506,9 @@ void LicqGui::userUpdated(const QString& id, unsigned long ppid, unsigned long s
   }
 }
 
-void LicqGui::updateUserData(QString id, unsigned long ppid)
+void LicqGui::updateUserData(int userId)
 {
-  myContactList->updateUser(id, ppid);
+  myContactList->updateUser(userId);
 }
 
 void LicqGui::convoSet(QString id, unsigned long ppid, unsigned long convoId)

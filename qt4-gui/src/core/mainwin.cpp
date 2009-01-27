@@ -202,11 +202,11 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       "<li><tt>%w - </tt>webpage</li></ul>");
 
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedList(unsigned long, int, const QString&, unsigned long)),
+      SIGNAL(updatedList(unsigned long, int, int)),
       SLOT(slot_updatedList(unsigned long)));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      SLOT(slot_updatedUser(const QString&, unsigned long, unsigned long, int)));
+      SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
+      SLOT(slot_updatedUser(int, unsigned long, int)));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(updatedStatus(unsigned long)),
       SLOT(updateStatus(unsigned long)));
@@ -439,8 +439,8 @@ void MainWindow::updateSkin()
 void MainWindow::CreateUserView()
 {
   myUserView = new UserView(LicqGui::instance()->contactList(), this);
-  connect (myUserView, SIGNAL(userDoubleClicked(QString, unsigned long)),
-      LicqGui::instance(), SLOT(showDefaultEventDialog(QString, unsigned long)));
+  connect (myUserView, SIGNAL(userDoubleClicked(int)),
+      LicqGui::instance(), SLOT(showDefaultEventDialog(int)));
 }
 
 void MainWindow::resizeEvent(QResizeEvent* /* e */)
@@ -508,11 +508,9 @@ void MainWindow::closeEvent(QCloseEvent* e)
 
 void MainWindow::removeUserFromList()
 {
-  QString id;
-  unsigned long ppid = 0;
-  myUserView->MainWindowSelectedItemUser(id, ppid);
+  int userId = myUserView->currentUserId();
 
-  LicqGui::instance()->removeUserFromList(id, ppid, this);
+  LicqGui::instance()->removeUserFromList(userId, this);
 }
 
 void MainWindow::removeUserFromGroup()
@@ -532,11 +530,9 @@ void MainWindow::removeUserFromGroup()
     return;
 
   // Get currently selected user
-  QString id;
-  unsigned long ppid = 0;
-  myUserView->MainWindowSelectedItemUser(id, ppid);
+  int userId = myUserView->currentUserId();
 
-  gUserManager.SetUserInGroup(id.toLatin1(), ppid, GROUPS_USER, gid, false);
+  gUserManager.setUserInGroup(userId, GROUPS_USER, gid, false);
 }
 
 void MainWindow::callUserFunction(QAction* action)
@@ -590,7 +586,7 @@ void MainWindow::mouseMoveEvent(QMouseEvent* m)
   }
 }
 
-void MainWindow::slot_updatedUser(const QString& id, unsigned long ppid, unsigned long subSignal, int argument)
+void MainWindow::slot_updatedUser(int userId, unsigned long subSignal, int argument)
 {
   switch(subSignal)
   {
@@ -620,18 +616,18 @@ void MainWindow::slot_updatedUser(const QString& id, unsigned long ppid, unsigne
     case USER_SECURITY:
     case USER_TYPING:
     {
-      if (gUserManager.FindOwner(id.toLatin1(), ppid) != NULL)
+      if (gUserManager.isOwner(userId))
       {
         if (subSignal == USER_STATUS ||
             subSignal == USER_EXT)
           break;
 
         myCaption = "Licq (|)";
-        const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
+        const LicqUser* o = gUserManager.fetchUser(userId, LOCK_R);
         if (o != NULL)
         {
           myCaption.replace("|", QString::fromUtf8(o->GetAlias()));
-          gUserManager.DropOwner(o);
+          gUserManager.DropUser(o);
         }
         else
         {
@@ -645,13 +641,11 @@ void MainWindow::slot_updatedUser(const QString& id, unsigned long ppid, unsigne
         break;
       }
 
-      const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL)
       {
-        char* ppidString = PPIDSTRING(ppid);
-        gLog.Warn("%sMainWindow::slot_updatedUser(): Invalid user received: %s (%s)\n",
-          L_ERRORxSTR, id.toLatin1().data(), ppidString);
-        delete[] ppidString;
+        gLog.Warn("%sMainWindow::slot_updatedUser(): Invalid user received: %i\n",
+            L_ERRORxSTR, userId);
         break;
       }
 

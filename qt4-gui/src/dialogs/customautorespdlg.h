@@ -32,12 +32,11 @@ class CustomAutoRespDlg : public QDialog
   Q_OBJECT
 
 public:
-  CustomAutoRespDlg(QString id, unsigned long ppid, QWidget* parent = 0);
+  CustomAutoRespDlg(int userId, QWidget* parent = 0);
 
 private:
   MLEdit* myMessage;
-  QString myId;
-  unsigned long myPpid;
+  int myUserId;
 
 private slots:
   void ok();

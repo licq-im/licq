@@ -140,10 +140,9 @@ void UserViewBase::popupMenu(QPoint point, QModelIndex item)
 
   if (itemType == ContactListModel::UserItem)
   {
-    QString id = item.data(ContactListModel::UserIdRole).toString();
-    unsigned long ppid = item.data(ContactListModel::PpidRole).toUInt();
+    int userId = item.data(ContactListModel::UserIdRole).toInt();
 
-    LicqGui::instance()->userMenu()->popup(point, id, ppid);
+    LicqGui::instance()->userMenu()->popup(point, userId);
   }
   else if (itemType == ContactListModel::GroupItem)
   {
@@ -177,7 +176,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
   {
     case ContactListModel::UserItem:
     {
-      QString id = dropIndex.data(ContactListModel::UserIdRole).toString();
+      QString id = dropIndex.data(ContactListModel::AccountIdRole).toString();
       unsigned long ppid = dropIndex.data(ContactListModel::PpidRole).toUInt();
 
       if (event->mimeData()->hasUrls())
@@ -336,10 +335,8 @@ void UserViewBase::slotDoubleClicked(const QModelIndex& index)
   if (static_cast<ContactListModel::ItemType>
       (index.data(ContactListModel::ItemTypeRole).toInt()) == ContactListModel::UserItem)
   {
-    QString id = index.data(ContactListModel::UserIdRole).toString();
-    unsigned long ppid = index.data(ContactListModel::PpidRole).toUInt();
-
-    emit userDoubleClicked(id, ppid);
+    int userId = index.data(ContactListModel::UserIdRole).toInt();
+    emit userDoubleClicked(userId);
   }
   else
   if (static_cast<ContactListModel::ItemType>

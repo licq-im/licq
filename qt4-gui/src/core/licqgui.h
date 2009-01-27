@@ -99,12 +99,11 @@ public:
   /**
    * Remove a contact from the list
    *
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
    * @param parent Parent window to use for confirmation box or NULL to use mainwin
    * @return true if contact was removed
    */
-  bool removeUserFromList(QString id, unsigned long ppid, QWidget* parent = NULL);
+  bool removeUserFromList(int userId, QWidget* parent = NULL);
 
   /**
    * Show contact info dialog
@@ -150,19 +149,17 @@ public:
   /**
    * Toggle floaty for a contact
    *
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
    */
-  void toggleFloaty(QString id, unsigned long ppid);
+  void toggleFloaty(int userId);
 
   /**
    * Trigger contact data to be reread from daemon
    * Needed since daemon won't generate signals for some changes.
    *
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
    */
-  void updateUserData(QString id, unsigned long ppid);
+  void updateUserData(int userId);
 
   /**
    * Set new status for all owners
@@ -212,7 +209,7 @@ public slots:
    */
   void showAllEvents();
 
-  void showDefaultEventDialog(QString id, unsigned long ppid);
+  void showDefaultEventDialog(int userId);
   void sendMsg(QString id, unsigned long ppid, const QString& message);
   void sendFileTransfer(QString id, unsigned long ppid, const QString& filename, const QString& description);
   void sendChatRequest(QString id, unsigned long ppid);
@@ -244,21 +241,19 @@ private slots:
    *
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
-   * @param accountId Account id for affected user, if applicable
-   * @param ppid Protocol instance id for affected user, if applicable
+   * @param userId Id for affected user, if applicable
    */
-  void listUpdated(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
+  void listUpdated(unsigned long subSignal, int argument, int userId);
 
   /**
    * Act on changes to a contact
    *
-   * @param id Account id for affected user
-   * @param ppid Protocol instance id for affected user
+   * @param userId Id for affected user
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
    * @param cid Conversation id
    */
-  void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
+  void userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid);
 
   void convoSet(QString id, unsigned long ppid, unsigned long convoId);
   void convoJoin(QString id, unsigned long ppid, unsigned long convoId);
@@ -272,8 +267,8 @@ private:
   void loadGuiConfig();
   void loadFloatiesConfig();
 
-  void createFloaty(QString id, unsigned long ppid,
-    unsigned short x = 0, unsigned short y = 0, unsigned short w = 0);
+  void createFloaty(int userId, unsigned short x = 0, unsigned short y = 0,
+      unsigned short w = 0);
 
   CICQDaemon* myLicqDaemon;
 

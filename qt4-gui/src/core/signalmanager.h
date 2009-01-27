@@ -44,21 +44,19 @@ signals:
    *
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
-   * @param accountId Account id for affected user, if applicable
-   * @param ppid Protocol instance id for affected user, if applicable
+   * @param userId Id for affected user, if applicable
    */
-  void updatedList(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
+  void updatedList(unsigned long subSignal, int argument, int userId);
 
   /**
    * Data for a user has changed
    *
-   * @param accountId Account id for affected user
-   * @param ppid Protocol instance id for affected user
+   * @param userId Id for affected user
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
    * @param cid Conversation id
    */
-  void updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
+  void updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid);
 
   /**
    * Status has changed

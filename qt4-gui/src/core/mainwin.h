@@ -101,7 +101,7 @@ public slots:
    */
   void slot_updatedList(unsigned long subSignal);
 
-  void slot_updatedUser(const QString& id, unsigned long ppid, unsigned long subSignal, int argument);
+  void slot_updatedUser(int userId, unsigned long subSignal, int argument);
   void slot_pluginUnloaded(unsigned long ppid);
   void updateGroups(bool initial = false);
 

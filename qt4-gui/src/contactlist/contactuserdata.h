@@ -83,8 +83,14 @@ public:
   /**
    * Get licq user id
    */
-  QString id() const
-  { return myId; }
+  int userId() const
+  { return myUserId; }
+
+  /**
+   * Get account id
+   */
+  QString accountId() const
+  { return myAccountId; }
 
   /**
    * Get licq protocol id
@@ -226,7 +232,8 @@ private slots:
   void animate();
 
 private:
-  QString myId;
+  int myUserId;
+  QString myAccountId;
   unsigned long myPpid;
   unsigned short myStatus;
   unsigned long myStatusFull;

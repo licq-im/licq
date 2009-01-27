@@ -24,11 +24,10 @@
 
 using namespace LicqQtGui;
 
-SingleContactProxy::SingleContactProxy(ContactListModel* contactList, QString id, unsigned long ppid, QObject* parent)
+SingleContactProxy::SingleContactProxy(ContactListModel* contactList, int userId, QObject* parent)
   : QAbstractProxyModel(parent),
     myContactList(contactList),
-    myId(id),
-    myPpid(ppid)
+    myUserId(userId)
 {
   connect(myContactList, SIGNAL(columnsInserted(const QModelIndex&, int, int)), SLOT(update()));
   connect(myContactList, SIGNAL(columnsRemoved(const QModelIndex&, int, int)), SLOT(update()));
@@ -48,7 +47,7 @@ SingleContactProxy::~SingleContactProxy()
 void SingleContactProxy::update()
 {
   for (int i = 0; i < MAX_COLUMNCOUNT; ++i)
-    mySourceIndex[i] = myContactList->userIndex(myId, myPpid, i);
+    mySourceIndex[i] = myContactList->userIndex(myUserId, i);
 }
 
 void SingleContactProxy::slot_dataChanged(const QModelIndex& topLeft, const QModelIndex& bottomRight)

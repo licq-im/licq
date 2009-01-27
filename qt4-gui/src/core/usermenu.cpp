@@ -226,7 +226,7 @@ void UserMenu::updateGroups()
 
 void UserMenu::aboutToShowMenu()
 {
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
 
   int status = (u == NULL ? ICQ_STATUS_OFFLINE : u->Status());
 
@@ -340,15 +340,28 @@ void UserMenu::aboutToShowMenu()
   gUserManager.DropUser(u);
 }
 
+void UserMenu::setUser(int userId)
+{
+  LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
+  if (user == NULL)
+    return;
+
+  myUserId = userId;
+  myId = user->accountId().c_str();
+  myPpid = user->ppid();
+  gUserManager.DropUser(user);
+}
+
 void UserMenu::setUser(QString id, unsigned long ppid)
 {
   myId = id;
   myPpid = ppid;
+  myUserId = gUserManager.getUserFromAccount(myId.toLatin1(), myPpid);
 }
 
-void UserMenu::popup(QPoint pos, QString id, unsigned ppid)
+void UserMenu::popup(QPoint pos, int userId)
 {
-  setUser(id, ppid);
+  setUser(userId);
   QMenu::popup(pos);
 }
 
@@ -370,17 +383,17 @@ void UserMenu::checkAutoResponse()
 
 void UserMenu::customAutoResponse()
 {
-  new CustomAutoRespDlg(myId, myPpid);
+  new CustomAutoRespDlg(myUserId);
 }
 
 void UserMenu::toggleFloaty()
 {
-  LicqGui::instance()->toggleFloaty(myId, myPpid);
+  LicqGui::instance()->toggleFloaty(myUserId);
 }
 
 void UserMenu::removeContact()
 {
-  LicqGui::instance()->removeUserFromList(myId, myPpid);
+  LicqGui::instance()->removeUserFromList(myUserId);
 }
 
 void UserMenu::selectKey()
@@ -464,7 +477,7 @@ void UserMenu::toggleMiscMode(QAction* action)
   int mode = action->data().toInt();
   bool newState = action->isChecked();
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL)
     return;
 
@@ -512,7 +525,7 @@ void UserMenu::toggleMiscMode(QAction* action)
         new GPGKeySelect(myId, myPpid);
       }
       // update icon
-      LicqGui::instance()->updateUserData(myId, myPpid);
+      LicqGui::instance()->updateUserData(myUserId);
       return;
     }
 #endif
@@ -557,7 +570,7 @@ void UserMenu::utility(QAction* action)
 void UserMenu::toggleUserGroup(QAction* action)
 {
   int gid = action->data().toInt();
-  gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_USER, gid,
+  gUserManager.setUserInGroup(myUserId, GROUPS_USER, gid,
       action->isChecked(), false);
 }
 
@@ -567,7 +580,7 @@ void UserMenu::toggleSystemGroup(QAction* action)
 
   if (gid == GROUP_IGNORE_LIST && !action->isChecked())
   {
-    const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
     if (u == NULL)
       return;
 
@@ -579,12 +592,12 @@ void UserMenu::toggleSystemGroup(QAction* action)
       return;
   }
 
-  gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_SYSTEM, gid,
+  gUserManager.setUserInGroup(myUserId, GROUPS_SYSTEM, gid,
       action->isChecked(), true);
 }
 
 void UserMenu::setServerGroup(QAction* action)
 {
   int gid = action->data().toInt();
-  gUserManager.SetUserInGroup(myId.toLatin1(), myPpid, GROUPS_USER, gid, true, true);
+  gUserManager.setUserInGroup(myUserId, GROUPS_USER, gid, true, true);
 }

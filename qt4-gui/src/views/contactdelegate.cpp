@@ -360,7 +360,7 @@ void ContactDelegate::drawStatusIcon(Parameters& arg) const
     else
       icon = &iconman->iconForStatus(
           arg.index.data(ContactListModel::StatusRole).toUInt(),
-          arg.index.data(ContactListModel::UserIdRole).toString(),
+          arg.index.data(ContactListModel::AccountIdRole).toString(),
           arg.index.data(ContactListModel::PpidRole).toUInt());
   }
   else if (arg.itemType == ContactListModel::GroupItem)

@@ -221,10 +221,11 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
 
 UserEventCommon::~UserEventCommon()
 {
+  int userId = gUserManager.getUserFromAccount(myUsers.front().c_str(), myPpid);
   emit finished(myUsers.front().c_str(), myPpid);
 
   if (myDeleteUser && !myIsOwner)
-    LicqGui::instance()->removeUserFromList(strdup(myUsers.front().c_str()), myPpid, this);
+    LicqGui::instance()->removeUserFromList(userId, this);
 
   myUsers.clear();
 }
@@ -255,6 +256,11 @@ void UserEventCommon::updateShortcuts()
   pushToolTip(myInfo, tr("Show user information"));
   pushToolTip(myEncoding, tr("Select the text encoding used for outgoing messages."));
   pushToolTip(mySecure, tr("Open / Close secure channel"));
+}
+
+int UserEventCommon::userId() const
+{
+  return gUserManager.getUserFromAccount(id().toLatin1(), ppid());
 }
 
 bool UserEventCommon::isUserInConvo(QString id)
@@ -355,8 +361,8 @@ void UserEventCommon::pushToolTip(QAction* action, QString tooltip)
 void UserEventCommon::connectSignal()
 {
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      SLOT(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)));
+      SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
+      SLOT(updatedUser(int, unsigned long, int, unsigned long)));
 }
 
 void UserEventCommon::setEncoding(QAction* action)
@@ -452,8 +458,15 @@ void UserEventCommon::showEncodingsMenu()
   dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myEncoding))->showMenu();
 }
 
-void UserEventCommon::updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid)
+void UserEventCommon::updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid)
 {
+  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
+  if (u == NULL)
+    return;
+
+  QString accountId = u->accountId().c_str();
+  unsigned long ppid = u->ppid();
+
   if (myPpid != ppid || !isUserInConvo(accountId))
   {
     if (myConvoId != 0 && cid == myConvoId)
@@ -471,10 +484,6 @@ void UserEventCommon::updatedUser(const QString& accountId, unsigned long ppid, 
     else
       return;
   }
-
-  const LicqUser* u = gUserManager.FetchUser(accountId.toLatin1(), myPpid, LOCK_R);
-  if (u == NULL)
-    return;
 
   switch (subSignal)
   {

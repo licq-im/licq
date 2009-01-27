@@ -67,11 +67,11 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
   switch (sig->Signal())
   {
     case SIGNAL_UPDATExLIST:
-      emit updatedList(sig->SubSignal(), sig->Argument(), accountId, ppid);
+      emit updatedList(sig->SubSignal(), sig->Argument(), userId);
       break;
 
     case SIGNAL_UPDATExUSER:
-      emit updatedUser(accountId, ppid, sig->SubSignal(), sig->Argument(), sig->CID());
+      emit updatedUser(userId, sig->SubSignal(), sig->Argument(), sig->CID());
 
       if (gUserManager.isOwner(userId) && sig->SubSignal() == USER_STATUS)
         emit updatedStatus(ppid);

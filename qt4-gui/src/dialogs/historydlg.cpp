@@ -257,8 +257,8 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
 
   // Catch received messages so we can add them to history
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      SLOT(updatedUser(const QString&, unsigned long, unsigned long, int)));
+      SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
+      SLOT(updatedUser(int, unsigned long, int)));
 }
 
 HistoryDlg::~HistoryDlg()
@@ -266,9 +266,9 @@ HistoryDlg::~HistoryDlg()
   ICQUser::ClearHistory(myHistoryList);
 }
 
-void HistoryDlg::updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument)
+void HistoryDlg::updatedUser(int userId, unsigned long subSignal, int argument)
 {
-  if (accountId != myId || ppid != myPpid)
+  if (userId == gUserManager.getUserFromAccount(myId.toLatin1(), myPpid))
     return;
 
   if (subSignal == USER_EVENTS)

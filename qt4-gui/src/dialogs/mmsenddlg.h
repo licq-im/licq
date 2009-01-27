@@ -56,9 +56,7 @@ private:
   QGroupBox* grpSending;
   QPushButton* btnCancel;
   QProgressBar* barSend;
-  QString myId;
   MMUserView* mmv;
-  unsigned long m_nPPID;
   unsigned long icqEventTag;
 
   void SendNext();

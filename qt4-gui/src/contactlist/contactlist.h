@@ -80,6 +80,7 @@ public:
     SubGroupRole,                       // Sub group type (one of enum SubGroupType) (UserItems and BarItems only)
     UserCountRole,                      // Number of users in this group (GroupItems and BarItems only)
     UserIdRole,                         // Id for user (UserItems only)
+    AccountIdRole,                      // Account id for user (UserItems only)
     PpidRole,                           // Protocol id for user (UserItems only)
     StatusRole,                         // Contact status (UserItems only)
     FullStatusRole,                     // Contact full status (UserItems only)
@@ -198,10 +199,9 @@ public:
    * Refresh data and group membership for a user
    * As the daemon does not signal some things the main window must use this function to notify us.
    *
-   * @param id Licq user id
-   * @param ppid Licq protocol id
+   * @param userId Licq user id
    */
-  void updateUser(QString id, unsigned long ppid);
+  void updateUser(int userId);
 
   /**
    * Add a user to the contact list
@@ -213,10 +213,10 @@ public:
   /**
    * Remove a user from the contact list
    *
-   * @param id Licq user id
+   * @param userId Licq user id
    * @param ppid Licq protocol id
    */
-  void removeUser(QString id, unsigned long ppid);
+  void removeUser(int userId);
 
   /**
    * Removes (and delete) all users and groups from the list
@@ -304,6 +304,15 @@ public:
   QModelIndex userIndex(QString id, unsigned long ppid, int column) const;
 
   /**
+   * Get index for a specific user
+   *
+   * @param userId Licq user id
+   * @param column The column to return an index for
+   * @return An index for the given user and column from the "All Users" group
+   */
+  QModelIndex userIndex(int userId, int column) const;
+
+  /**
    * Get index for a group to use as root item for a view
    * Requesting group id 0 will return either the all users group (if type is system) or other users group (if type is user)
    *
@@ -328,20 +337,18 @@ public slots:
    *
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
-   * @param accountId Account id for affected user, if applicable
-   * @param ppid Protocol instance id for affected user, if applicable
+   * @param userId Id for affected user, if applicable
    */
-  void listUpdated(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
+  void listUpdated(unsigned long subSignal, int argument, int userId);
 
   /**
    * The data for a user has changed in the daemon
    *
-   * @param accountId Account id for affected user
-   * @param ppid Protocol instance id for affected user
+   * @param userId Id for affected user
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
    */
-  void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument);
+  void userUpdated(int userId, unsigned long subSignal, int argument);
 
   /**
    * Reload the entire contact list from the daemon
@@ -434,6 +441,14 @@ private:
    * @return The user object or 0 if it was not found
    */
   ContactUserData* findUser(QString id, unsigned long ppid) const;
+
+  /**
+   * Get the user object that represents an licq contact
+   *
+   * @param userId Licq user id
+   * @return The user object or NULL if it was not found
+   */
+  ContactUserData* findUser(int userId) const;
 
   /**
    * Check if a user is member of a group and add/remove the user to/from the group if needed

@@ -105,6 +105,7 @@ UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
   const ICQUser* user = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
   if (user != NULL)
   {
+    myUserId = user->id();
     QTextCodec* codec = UserCodec::codecForICQUser(user);
     QString name = codec->toUnicode(user->getFullName().c_str());
     if (!name.isEmpty())
@@ -118,13 +119,14 @@ UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
   }
   else
   {
+    myUserId = 0;
     myBasicTitle = tr("Licq - Info ") + tr("INVALID USER");
   }
   resetCaption();
 
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      SLOT(userUpdated(const QString&, unsigned long, unsigned long)));
+      SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
+      SLOT(userUpdated(int, unsigned long)));
 
   QDialog::show();
 }
@@ -203,7 +205,7 @@ void UserDlg::ok()
 
 void UserDlg::apply()
 {
-  ICQUser* user = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
+  LicqUser* user = gUserManager.fetchUser(myUserId, LOCK_W);
   if (user == NULL)
     return;
 
@@ -222,15 +224,15 @@ void UserDlg::apply()
   myUserSettings->apply2(myId, myPpid);
 
   // Make sure GUI is updated
-  LicqGui::instance()->updateUserData(myId, myPpid);
+  LicqGui::instance()->updateUserData(myUserId);
 }
 
-void UserDlg::userUpdated(const QString& accountId, unsigned long ppid, unsigned long subSignal)
+void UserDlg::userUpdated(int userId, unsigned long subSignal)
 {
-  if (ppid != myPpid || accountId != myId)
+  if (userId != myUserId)
     return;
 
-  const ICQUser* user = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* user = gUserManager.fetchUser(myUserId, LOCK_R);
   if (user == NULL)
     return;
 
@@ -280,7 +282,7 @@ void UserDlg::doneFunction(ICQEvent* event)
 
 void UserDlg::showUserMenu()
 {
-  LicqGui::instance()->userMenu()->setUser(myId, myPpid);
+  LicqGui::instance()->userMenu()->setUser(myUserId);
 }
 
 void UserDlg::resetCaption()

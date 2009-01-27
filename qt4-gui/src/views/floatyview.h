@@ -54,23 +54,17 @@ public:
   virtual ~FloatyView();
 
   /**
-   * Return the user protocol id
-   */
-  unsigned long ppid() const { return myPpid; }
-
-  /**
    * Return the user id
    */
-  QString id() const { return myId; }
+  int userId() const { return myUserId; }
 
   /**
    * Find the floaty for a user
    *
-   * @param id User id
-   * @param ppid Protocol id
+   * @param userId User id
    * @return The floaty for the user or null if no floaty exists for the user
    */
-  static FloatyView* findFloaty(QString id, unsigned long ppid);
+  static FloatyView* findFloaty(int userId);
 
   // List of existing floaties
   static UserFloatyList floaties;
@@ -83,8 +77,7 @@ private:
    */
   virtual void mouseMoveEvent(QMouseEvent* event);
 
-  QString myId;
-  unsigned long myPpid;
+  int myUserId;
 
 private slots:
   /**

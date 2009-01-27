@@ -52,6 +52,13 @@ public:
   /**
    * Get the currently selected user
    *
+   * @return id of current user
+   */
+  int currentUserId() const;
+
+  /**
+   * Get the currently selected user
+   *
    * @param id Return parameter for user id
    * @param ppid Return parameter for protocol id
    * @return True if a user is currently selected

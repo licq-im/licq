@@ -68,8 +68,14 @@ public:
   /**
    * Get licq user id
    */
-  QString id() const
-  { return myUserData->id(); }
+  int userId() const
+  { return myUserData->userId(); }
+
+  /**
+   * Get user account id
+   */
+  QString accountId() const
+  { return myUserData->accountId(); }
 
   /**
    * Get licq protocol id

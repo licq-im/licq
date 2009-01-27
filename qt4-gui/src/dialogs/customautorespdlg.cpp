@@ -39,10 +39,9 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::CustomAutoRespDlg */
 
-CustomAutoRespDlg::CustomAutoRespDlg(QString id, unsigned long ppid, QWidget* parent)
+CustomAutoRespDlg::CustomAutoRespDlg(int userId, QWidget* parent)
   : QDialog(parent),
-    myId(id),
-    myPpid(ppid)
+    myUserId(userId)
 {
   Support::setWidgetProps(this, "CustomAutoResponseDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
@@ -72,7 +71,7 @@ CustomAutoRespDlg::CustomAutoRespDlg(QString id, unsigned long ppid, QWidget* pa
 
   lay->addWidget(buttons);
 
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
 
   if (u == NULL)
     return;
@@ -97,7 +96,7 @@ void CustomAutoRespDlg::ok()
 {
   QString s = myMessage->toPlainText().trimmed();
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u != NULL)
   {
     u->SetCustomAutoResponse(s.toLocal8Bit());
@@ -105,14 +104,14 @@ void CustomAutoRespDlg::ok()
 
     // Daemon doesn't send signal when autoresponse is changed so we must tell
     // contact list to update since custom autoresponse affects extended icons
-    LicqGui::instance()->updateUserData(myId, myPpid);
+    LicqGui::instance()->updateUserData(myUserId);
   }
   close();
 }
 
 void CustomAutoRespDlg::clear()
 {
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u != NULL)
   {
     u->ClearCustomAutoResponse();
@@ -120,7 +119,7 @@ void CustomAutoRespDlg::clear()
 
     // Daemon doesn't send signal when autoresponse is changed so we must tell
     // contact list to update since custom autoresponse affects extended icons
-    LicqGui::instance()->updateUserData(myId, myPpid);
+    LicqGui::instance()->updateUserData(myUserId);
   }
   close();
 }

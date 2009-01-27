@@ -69,7 +69,7 @@ UserSendContactEvent::UserSendContactEvent(QString id, unsigned long ppid, QWidg
 
   w->setToolTip(tr("Drag Users Here - Right Click for Options"));
 
-  myContactsList = new MMUserView(myUsers.front().c_str(), myPpid,
+  myContactsList = new MMUserView(gUserManager.getUserFromAccount(myUsers.front().c_str(), myPpid),
       LicqGui::instance()->contactList());
   lay->addWidget(myContactsList);
 
@@ -94,7 +94,7 @@ void UserSendContactEvent::setContact(QString id, unsigned long ppid)
 
   if (u != NULL)
   {
-    myContactsList->add(id, ppid);
+    myContactsList->add(u->id());
     gUserManager.DropUser(u);
   }
 }
@@ -133,10 +133,15 @@ void UserSendContactEvent::send()
 
   StringList users;
 
-  QPair<QString, unsigned long> i;
-  foreach (i, myContactsList->contacts())
+  int userId;
+  foreach (userId, myContactsList->contacts())
   {
-    users.push_back(i.first.toLatin1().data());
+    const LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
+    if (user == NULL)
+      continue;
+    QString accountId = user->accountId().c_str();
+    gUserManager.DropUser(user);
+    users.push_back(accountId.toLatin1().data());
   }
 
   if (users.size() == 0)

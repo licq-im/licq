@@ -47,10 +47,9 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMUserView */
 
-MMUserView::MMUserView(QString id, unsigned long ppid, ContactListModel* contactList, QWidget* parent)
+MMUserView::MMUserView(int userId, ContactListModel* contactList, QWidget* parent)
   : UserViewBase(contactList, parent),
-    myId(id),
-    myPpid(ppid)
+    myUserId(userId)
 {
   // Use a proxy model for sorting and filtering
   myListProxy = new MultiContactProxy(myContactList, this);
@@ -79,20 +78,20 @@ MMUserView::~MMUserView()
   // Empty
 }
 
-void MMUserView::add(QString id, unsigned long ppid)
+void MMUserView::add(int userId)
 {
-  if (id == myId && ppid == myPpid)
+  if (userId == myUserId)
     return;
-  dynamic_cast<MultiContactProxy*>(myListProxy)->add(id, ppid);
+  dynamic_cast<MultiContactProxy*>(myListProxy)->add(userId);
 }
 
 void MMUserView::removeFirst()
 {
-  QPair<QString, unsigned long> contact = *contacts().begin();
-  dynamic_cast<MultiContactProxy*>(myListProxy)->remove(contact.first, contact.second);
+  int userId = *contacts().begin();
+  dynamic_cast<MultiContactProxy*>(myListProxy)->remove(userId);
 }
 
-const QSet<QPair<QString, unsigned long> >& MMUserView::contacts() const
+const QSet<int>& MMUserView::contacts() const
 {
   return dynamic_cast<MultiContactProxy*>(myListProxy)->contacts();
 }
@@ -120,7 +119,7 @@ void MMUserView::addCurrentGroup()
   dynamic_cast<MultiContactProxy*>(myListProxy)->addGroup(groupType, groupId);
 
   // Make sure current user isn't added
-  dynamic_cast<MultiContactProxy*>(myListProxy)->remove(myId, myPpid);
+  dynamic_cast<MultiContactProxy*>(myListProxy)->remove(myUserId);
 }
 
 void MMUserView::addAll()
@@ -129,7 +128,7 @@ void MMUserView::addAll()
   dynamic_cast<MultiContactProxy*>(myListProxy)->addGroup(GROUPS_SYSTEM, GROUP_ALL_USERS);
 
   // Make sure current user isn't added
-  dynamic_cast<MultiContactProxy*>(myListProxy)->remove(myId, myPpid);
+  dynamic_cast<MultiContactProxy*>(myListProxy)->remove(myUserId);
 }
 
 void MMUserView::dragEnterEvent(QDragEnterEvent* event)
@@ -167,7 +166,7 @@ void MMUserView::dropEvent(QDropEvent* event)
     if (id.isEmpty())
       return;
 
-    add(id, ppid);
+    add(gUserManager.getUserFromAccount(id.toLatin1(), ppid));
   }
   else
     return; // Not accepted

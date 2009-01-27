@@ -80,7 +80,7 @@ ContactListModel::~ContactListModel()
     delete mySystemGroups[i];
 }
 
-void ContactListModel::listUpdated(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid)
+void ContactListModel::listUpdated(unsigned long subSignal, int argument, int userId)
 {
   switch(subSignal)
   {
@@ -90,13 +90,11 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
 
     case LIST_CONTACT_ADDED:
     {
-      const LicqUser* u = gUserManager.FetchUser(accountId.toLatin1(), ppid, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL)
       {
-        char* ppidString = PPIDSTRING(ppid);
-        gLog.Warn("%sContactList::listUpdated(): Invalid user received: %s (%s)\n",
-            L_ERRORxSTR, accountId.toLatin1().data(), ppidString);
-        delete[] ppidString;
+        gLog.Warn("%sContactList::listUpdated(): Invalid user received: %i\n",
+            L_ERRORxSTR, userId);
         break;
       }
       addUser(u);
@@ -104,7 +102,7 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
       break;
     }
     case LIST_CONTACT_REMOVED:
-      removeUser(accountId, ppid);
+      removeUser(userId);
       break;
 
     case LIST_GROUP_ADDED:
@@ -169,19 +167,17 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
   }
 }
 
-void ContactListModel::userUpdated(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument)
+void ContactListModel::userUpdated(int userId, unsigned long subSignal, int argument)
 {
   // Skip events for owners
-  if (gUserManager.FindOwner(accountId.toLatin1(), ppid) != NULL)
+  if (gUserManager.isOwner(userId))
     return;
 
-  ContactUserData* user = findUser(accountId.toLatin1(), ppid);
+  ContactUserData* user = findUser(userId);
   if (user == NULL)
   {
-    char* ppidString = PPIDSTRING(ppid);
-    gLog.Warn("%sContactList::userUpdated(): Invalid user received: %s (%s)\n",
-        L_ERRORxSTR, accountId.toLatin1().data(), ppidString);
-    delete[] ppidString;
+    gLog.Warn("%sContactList::userUpdated(): Invalid user received: %i\n",
+        L_ERRORxSTR, userId);
     return;
   }
 
@@ -189,13 +185,13 @@ void ContactListModel::userUpdated(const QString& accountId, unsigned long ppid,
   user->update(subSignal, argument);
 }
 
-void ContactListModel::updateUser(QString id, unsigned long ppid)
+void ContactListModel::updateUser(int userId)
 {
-  ContactUserData* userData = findUser(id, ppid);
+  ContactUserData* userData = findUser(userId);
   if (userData == NULL)
     return;
 
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
   if (u == NULL)
     return;
 
@@ -320,7 +316,17 @@ ContactUserData* ContactListModel::findUser(QString id, unsigned long ppid) cons
 {
   foreach (ContactUserData* user, myUsers)
   {
-    if (user->id() == id && user->ppid() == ppid)
+    if (user->accountId() == id && user->ppid() == ppid)
+      return user;
+  }
+  return 0;
+}
+
+ContactUserData* ContactListModel::findUser(int userId) const
+{
+  foreach (ContactUserData* user, myUsers)
+  {
+    if (user->userId() == userId)
       return user;
   }
   return 0;
@@ -384,9 +390,9 @@ void ContactListModel::updateUserGroup(ContactUserData* user, ContactGroup* grou
     delete member;
 }
 
-void ContactListModel::removeUser(QString id, unsigned long ppid)
+void ContactListModel::removeUser(int userId)
 {
-  ContactUserData* user = findUser(id, ppid);
+  ContactUserData* user = findUser(userId);
   if (user == NULL)
     return;
 
@@ -525,6 +531,20 @@ QVariant ContactListModel::headerData(int section, Qt::Orientation orientation, 
 QModelIndex ContactListModel::userIndex(QString id, unsigned long ppid, int column) const
 {
   ContactUserData* userData = findUser(id, ppid);
+  if (userData != NULL)
+  {
+    // Find the user in the "All Users" group, this will not find users on ignore list
+    ContactUser* user = mySystemGroups[GROUP_ALL_USERS]->user(userData);
+    if (user != NULL)
+      return createIndex(mySystemGroups[GROUP_ALL_USERS]->indexOf(user), column, user);
+  }
+
+  return QModelIndex();
+}
+
+QModelIndex ContactListModel::userIndex(int userId, int column) const
+{
+  ContactUserData* userData = findUser(userId);
   if (userData != NULL)
   {
     // Find the user in the "All Users" group, this will not find users on ignore list

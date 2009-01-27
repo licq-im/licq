@@ -33,12 +33,12 @@ class MMUserView : public UserViewBase
 {
   Q_OBJECT
 public:
-  MMUserView(QString id, unsigned long ppid, ContactListModel* contactList, QWidget* parent = 0);
+  MMUserView(int userId, ContactListModel* contactList, QWidget* parent = 0);
   virtual ~MMUserView();
 
-  const QSet<QPair<QString, unsigned long> >& contacts() const;
+  const QSet<int>& contacts() const;
 
-  void add(QString id, unsigned long ppid);
+  void add(int userId);
   void removeFirst();
 
 public slots:
@@ -46,8 +46,7 @@ public slots:
 
 private:
   QMenu* myMenu;
-  QString myId;
-  unsigned long myPpid;
+  int myUserId;
 
   virtual void mousePressEvent(QMouseEvent* event);
   virtual void keyPressEvent(QKeyEvent* event);

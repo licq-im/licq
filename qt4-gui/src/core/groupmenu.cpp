@@ -182,10 +182,8 @@ void GroupMenu::addUsersToGroup(QAction* action)
   {
     QModelIndex userIndex = list->index(i, 0, groupIndex);
 
-    QString id = userIndex.data(ContactListModel::UserIdRole).toString();
-    unsigned long ppid = userIndex.data(ContactListModel::PpidRole).toUInt();
+    int userId = userIndex.data(ContactListModel::UserIdRole).toInt();
 
-    gUserManager.SetUserInGroup(id.toLatin1(), ppid, gtype, gid, true,
-        gtype == GROUPS_SYSTEM);
+    gUserManager.setUserInGroup(userId, gtype, gid, true, gtype == GROUPS_SYSTEM);
   }
 }

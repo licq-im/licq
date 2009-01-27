@@ -42,11 +42,10 @@ public:
    * Constructor
    *
    * @param contactList The contact list to get the user data from
-   * @param id Licq user id
-   * @param ppid Licq protocol id
+   * @param userId Licq user id
    * @param parent Parent object
    */
-  SingleContactProxy(ContactListModel* contactList, QString id, unsigned long ppid, QObject* parent);
+  SingleContactProxy(ContactListModel* contactList, int userId, QObject* parent);
 
   /**
    * Destructor
@@ -146,8 +145,7 @@ private slots:
 
 private:
   ContactListModel* myContactList;
-  QString myId;
-  unsigned long myPpid;
+  int myUserId;
   QModelIndex mySourceIndex[MAX_COLUMNCOUNT];
 };
 

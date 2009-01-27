@@ -65,13 +65,22 @@ UserView::~UserView()
   // Empty
 }
 
+int UserView::currentUserId() const
+{
+  if (static_cast<ContactListModel::ItemType>
+      (currentIndex().data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::UserItem)
+    return 0;
+
+  return currentIndex().data(ContactListModel::UserIdRole).toInt();
+}
+
 bool UserView::MainWindowSelectedItemUser(QString& id, unsigned long& ppid) const
 {
   if (static_cast<ContactListModel::ItemType>
       (currentIndex().data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::UserItem)
     return false;
 
-  id = currentIndex().data(ContactListModel::UserIdRole).toString();
+  id = currentIndex().data(ContactListModel::AccountIdRole).toString();
   ppid = currentIndex().data(ContactListModel::PpidRole).toUInt();
   return true;
 }
@@ -274,7 +283,7 @@ void UserView::mouseMoveEvent(QMouseEvent* event)
       (index.data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::UserItem)
     return;
 
-  QString id = index.data(ContactListModel::UserIdRole).toString();
+  QString id = index.data(ContactListModel::AccountIdRole).toString();
   unsigned long ppid = index.data(ContactListModel::PpidRole).toUInt();
 
   if ((event->buttons() & Qt::LeftButton) && !myMousePressPos.isNull() &&

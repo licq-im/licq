@@ -71,13 +71,14 @@ ContactUserData::ContactUserData(const ICQUser* licqUser, QObject* parent)
     myAnimating(false),
     myUserIcon(NULL)
 {
+  myUserId = licqUser->id();
   myPpid = licqUser->PPID();
 
   if (licqUser->IdString() != NULL)
   {
     char* szRealId = NULL;
     ICQUser::MakeRealId(licqUser->IdString(), licqUser->PPID(), szRealId);
-    myId = szRealId;
+    myAccountId = szRealId;
     delete [] szRealId;
   }
 
@@ -147,7 +148,7 @@ void ContactUserData::update(unsigned long subSignal, int argument)
   // TODO: Add better handling of subsignals so we don't have to update everything so often
 
 
-  const LicqUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
   if (u != NULL)
   {
     // Group membership is handled by ContactList so send it a signal to update
@@ -226,7 +227,7 @@ void ContactUserData::updateAll(const ICQUser* u)
   if (u->GetPicturePresent())
   {
     myUserIcon = new QImage(QString::fromLocal8Bit(BASE_DIR) + USER_DIR + "/" +
-        myId + ".pic");
+        myAccountId + ".pic");
     if (myUserIcon->isNull())
     {
       delete myUserIcon;
@@ -428,7 +429,7 @@ bool ContactUserData::updateText(const ICQUser* licqUser)
 
 void ContactUserData::configUpdated()
 {
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
   if (u == NULL)
     return;
 
@@ -480,7 +481,7 @@ bool ContactUserData::setData(const QVariant& value, int role)
   if (value.toString() == myAlias)
     return true;
 
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL)
     return false;
 
@@ -502,7 +503,7 @@ void ContactUserData::refresh()
 {
   // Here we update any content that may be dynamic, for example timestamps
 
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
   if (u == NULL)
     return;
 
@@ -607,7 +608,10 @@ QVariant ContactUserData::data(int column, int role) const
       return tooltip();
 
     case ContactListModel::UserIdRole:
-      return myId;
+      return myUserId;
+
+    case ContactListModel::AccountIdRole:
+      return myAccountId;
 
     case ContactListModel::PpidRole:
       return static_cast<unsigned int>(myPpid);
@@ -672,7 +676,7 @@ QVariant ContactUserData::data(int column, int role) const
 
 QString ContactUserData::tooltip() const
 {
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
   if (u == NULL)
     return "";
 

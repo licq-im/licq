@@ -157,7 +157,8 @@ void GPGKeySelect::slot_ok()
 
 void GPGKeySelect::updateIcon()
 {
-  gMainWindow->slot_updatedUser(szId, nPPID, USER_GENERAL, 0);
+  int myUserId = gUserManager.getUserFromAccount(szId.toLatin1(), nPPID);
+  gMainWindow->slot_updatedUser(myUserId, USER_GENERAL, 0);
   return;
 }
 
