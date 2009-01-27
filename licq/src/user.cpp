@@ -711,7 +711,18 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
     return NULL;
 
   // Check for an owner first
-  user = FindOwner(accountId.c_str(), ppid);
+  LockOwnerList(LOCK_R);
+  OwnerMap::iterator iter_o = myOwners.find(ppid);
+  if (iter_o != myOwners.end())
+  {
+    LicqOwner* owner = iter_o->second;
+    owner->Lock(lockType);
+    if (owner->accountId() == accountId)
+      user = owner;
+    else
+      owner->Unlock();
+  }
+  UnlockOwnerList();
 
   if (user == NULL)
   {
@@ -723,6 +734,10 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
     // If allowed by caller, add user if it wasn't found in list
     if (user == NULL && addUser)
     {
+      // Relock user list for writing
+      UnlockUserList();
+      LockUserList(LOCK_W);
+
       // Find first free user id
       int userId;
       for (userId = 1; myUsers.count(userId) != 0 ; ++userId)
