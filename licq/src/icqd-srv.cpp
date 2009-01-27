@@ -2992,23 +2992,13 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       szMessage[nMsgLen] = '\0';
       
       bool ignore = false;
-      // Lock the user to add the message to their queue
-      ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+      // Get the user and allow adding unless we ignore new users
+      LicqUser* u = gUserManager.fetchUser(szId, LICQ_PPID, LOCK_W, !Ignore(IGNORE_NEWUSERS));
       if (u == NULL)
       {
-        if (Ignore(IGNORE_NEWUSERS))
-        {
           gLog.Info(tr("%sMessage from new user (%s), ignoring.\n"), L_SBLANKxSTR, szId);
           //TODO
           ignore = true;
-        }
-        else
-        {
-          gLog.Info(tr("%sMessage from new user (%s).\n"),
-                    L_SBLANKxSTR, szId);
-          AddUserToList(szId, LICQ_PPID, false, true);
-          u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
-        }
       }
       else
         gLog.Info(tr("%sMessage through server from %s (%s).\n"), L_SRVxSTR,
@@ -3586,12 +3576,10 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_URL:
 	  case ICQ_CMDxSUB_CONTACTxLIST:
 	  {
-	    // Lock the user to add the message to their queue
-	    ICQUser* u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+                // Get the user and allow adding unless we ignore new users
+                LicqUser* u = gUserManager.fetchUser(szId, LICQ_PPID, LOCK_W, !Ignore(IGNORE_NEWUSERS));
 	    if (u == NULL)
 	    {
-	      if (Ignore(IGNORE_NEWUSERS))
-	      {
           gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SBLANKxSTR, szType, szId);
 
           if (szType) free(szType);
@@ -3599,11 +3587,6 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           //TODO
           RejectEvent(szId, eEvent);
           break;
-        }
-
-	      gLog.Info(tr("%s%s from new user (%s).\n"), L_SBLANKxSTR, szType, szId);
-	      AddUserToList(szId, LICQ_PPID, false, true);
-	      u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
 	    }
 	    else
 	      gLog.Info(tr("%s%s through server from %s (%s).\n"), L_SBLANKxSTR,
@@ -4824,21 +4807,15 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	  case ICQ_CMDxSUB_URL:
 	  case ICQ_CMDxSUB_CONTACTxLIST:
 	  {
-                // Lock the user to add the message to their queue
-                ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
+                // Get the user and allow adding unless we ignore new users
+                LicqUser* u = gUserManager.fetchUser(id, LICQ_PPID, LOCK_W, !Ignore(IGNORE_NEWUSERS));
                 if (u == NULL)
                 {
-                  if (Ignore(IGNORE_NEWUSERS))
-                  {
                     gLog.Info(tr("%sOffline %s from new user (%s), ignoring.\n"),
                         L_SBLANKxSTR, szType, id);
                     if (szType) free(szType);
                       RejectEvent(id, eEvent);
                     break;
-                  }
-                  gLog.Info(tr("%sOffline %s from new user (%s).\n"), L_SBLANKxSTR, szType, id);
-                  AddUserToList(id, LICQ_PPID, false, true);
-                  u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
                 }
                 else
                   gLog.Info(tr("%sOffline %s through server from %s (%s).\n"),
@@ -5331,14 +5308,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           char szUin[14];
           snprintf(szUin, sizeof(szUin), "%lu", nUin);
           gLog.Info(tr("%sRandom chat user found (%s).\n"), L_SRVxSTR, szUin);
-          ICQUser *u = gUserManager.FetchUser(szUin, LICQ_PPID, LOCK_W);
           bool bNewUser = false;
-          if (u == NULL)
-          {
-             AddUserToList(szUin, LICQ_PPID, false, true);
-             u = gUserManager.FetchUser(szUin, LICQ_PPID, LOCK_W);
-             bNewUser = true;
-          }
+              LicqUser* u = gUserManager.fetchUser(szUin, LICQ_PPID, LOCK_W, true, &bNewUser);
 
           msg.UnpackUnsignedShort(); // chat group
 
@@ -6111,7 +6082,7 @@ void CICQDaemon::ProcessUserList()
 
     if (!isOnList)
     {
-      AddUserToList(id, LICQ_PPID, false, false); // Don't notify server
+      addUserToList(id, LICQ_PPID, true, false); // Don't notify server
       gLog.Info(tr("%sAdded %s (%s) to list from server.\n"),
           L_SRVxSTR, (data->newAlias ? data->newAlias.get() : id), id);
     }

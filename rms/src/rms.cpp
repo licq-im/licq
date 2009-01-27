@@ -1493,7 +1493,7 @@ int CRMSClient::Process_ADDUSER()
   NEXT_WORD(data_arg);
   unsigned long nPPID = GetProtocol(data_arg);
 
-  if (licqDaemon->AddUserToList(szId, nPPID))
+  if (licqDaemon->addUserToList(szId, nPPID) != 0)
   {
     fprintf(fs, "%d User added\n", CODE_ADDUSERxDONE);
   }

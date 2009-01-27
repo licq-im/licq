@@ -1200,10 +1200,11 @@ public:
    * @param ppid Protocol instance id
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @param addUser True if user should be added (as temporary) if not found
+   * @param retWasAdded If not null, will be set to true if user was added
    * @return The locked user object if user exist or was created, otherwise NULL
    */
   LicqUser* fetchUser(const std::string& accountId, unsigned long ppid,
-      unsigned short lockType, bool addUser = false);
+      unsigned short lockType, bool addUser = false, bool* retWasAdded = NULL);
 
   // For protocol plugins
   void AddOwner(const char *, unsigned long);

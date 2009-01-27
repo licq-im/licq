@@ -170,7 +170,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         
       if ((nLists & FLAG_CONTACT_LIST) &&
           !gUserManager.IsOnList(strUser.c_str(), MSN_PPID))
-        m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID);
+        m_pDaemon->addUserToList(strUser.c_str(), MSN_PPID);
 
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)

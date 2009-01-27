@@ -55,27 +55,19 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       packet->SkipParameter(); // total users in conversation
       string strUser = packet->GetParameter();
 
-      ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_R);
-      if (!u)
+      bool newUser;
+      LicqUser* u = gUserManager.fetchUser(strUser.c_str(), MSN_PPID, LOCK_R, true, &newUser);
+      if (newUser)
       {
-        m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID, false, true);
-        
         // MSN uses UTF-8 so we need to set this for all new users automatically
-        ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-        if (u) // To be safe
-        {
-          u->SetEnableSave(false);
-          u->SetUserEncoding("UTF-8");
-          u->SetEnableSave(true);
-          u->SaveLicqInfo();
-        }
+        u->SetEnableSave(false);
+        u->SetUserEncoding("UTF-8");
+        u->SetEnableSave(true);
+        u->SaveLicqInfo();
       }
 
-      int userId = 0;
-      if (u) userId = u->id();
-
-      if (u)
-        gUserManager.DropUser(u);
+      int userId = u->id();
+      gUserManager.DropUser(u);
 
       // Add the user to the conversation
       if (!m_pDaemon->FindConversation(nSock))
@@ -529,21 +521,18 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
     strCookie.c_str(), m_szUserName);
   bool bNewUser = false;
   int nSocket = sock->Descriptor();
-  ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
-  if (u)
+  LicqUser* u = gUserManager.fetchUser(strUser.c_str(), MSN_PPID, LOCK_W, true, &bNewUser);
+  if (!bNewUser)
   {
     u->SetSocketDesc(sock);
   }
   else
   {
-    m_pDaemon->AddUserToList(strUser.c_str(), MSN_PPID, false, true);
-    u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
     u->SetEnableSave(false);
     u->SetUserEncoding("UTF-8");
     u->SetSocketDesc(sock);
     u->SetEnableSave(true);
     u->SaveLicqInfo();
-    bNewUser = true;
   }
   gUserManager.DropUser(u);
   gSocketMan.DropSocket(sock);

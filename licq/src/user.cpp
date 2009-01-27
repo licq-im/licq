@@ -700,8 +700,11 @@ LicqUser* CUserManager::fetchUser(int userId, unsigned short lockType)
 }
 
 LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
-    unsigned short lockType, bool addUser)
+    unsigned short lockType, bool addUser, bool* retWasAdded)
 {
+  if (retWasAdded != NULL)
+    *retWasAdded = false;
+
   LicqUser* user = NULL;
 
   if (accountId.empty() || ppid == 0)
@@ -734,6 +737,9 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
 
       // Notify plugins that we added user to list
       gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, userId));
+
+      if (retWasAdded != NULL)
+        *retWasAdded = true;
     }
 
     // Lock the user and release the lock on the list

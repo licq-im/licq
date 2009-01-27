@@ -552,7 +552,7 @@ static int fifo_adduser ( int argc, const char *const *argv, void *data)
   }
 
   if( atoid(argv[1], false, &szId, &nPPID, d) )
-    d->AddUserToList(szId, nPPID);
+    d->addUserToList(szId, nPPID);
   else
     ReportBadBuddy(argv[0],argv[1]);
   free(szId);

@@ -1083,8 +1083,8 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
     m_bUseBART = b;
 }
 
-int CICQDaemon::AddUserToList(string accountId, unsigned long ppid, bool notify,
-    bool temporary, unsigned short groupId)
+int CICQDaemon::addUserToList(const string& accountId, unsigned long ppid,
+    bool permanent, bool addToServer, unsigned short groupId)
 {
   // Don't add invalid uins
   if (accountId.empty() || ppid == 0)
@@ -1097,12 +1097,12 @@ int CICQDaemon::AddUserToList(string accountId, unsigned long ppid, bool notify,
     return 0;
   }
 
-  int userId = gUserManager.addUser(accountId, ppid, temporary);
+  int userId = gUserManager.addUser(accountId, ppid, !permanent);
   if (groupId != 0)
     gUserManager.addUserToGroup(userId, groupId);
 
   // this notify is for local only adds
-  if (notify && !temporary)
+  if (permanent && addToServer)
   {
     if (ppid == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
       icqAddUser(accountId.c_str(), false, groupId);
@@ -2514,7 +2514,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         }
         gLog.Info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->IdString());
         u->Unlock();
-        AddUserToList(u->IdString(), u->PPID(), false, true);
+        addUserToList(u->IdString(), u->PPID(), false);
         bNewUser = false;
       }
       else
