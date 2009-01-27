@@ -699,39 +699,59 @@ LicqUser* CUserManager::fetchUser(int userId, unsigned short lockType)
   return user;
 }
 
-ICQUser *CUserManager::FetchUser(const char *_szId, unsigned long _nPPID,
-                                 unsigned short _nLockType)
+LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
+    unsigned short lockType, bool addUser)
 {
-  ICQUser *u = NULL;
+  LicqUser* user = NULL;
 
-  if (_szId == 0 || _nPPID == 0) return u;
+  if (accountId.empty() || ppid == 0)
+    return NULL;
 
   // Check for an owner first
-  u = FindOwner(_szId, _nPPID);
+  user = FindOwner(accountId.c_str(), ppid);
 
-  if (u == NULL)
+  if (user == NULL)
   {
     LockUserList(LOCK_R);
-    UserAccountMap::const_iterator iter = myUserAccounts.find(UserAccountMapKey(_szId, _nPPID));
+    UserAccountMap::const_iterator iter = myUserAccounts.find(UserAccountMapKey(accountId, ppid));
     if (iter != myUserAccounts.end())
-      u = iter->second;
+      user = iter->second;
+
+    // If allowed by caller, add user if it wasn't found in list
+    if (user == NULL && addUser)
+    {
+      // Find first free user id
+      int userId;
+      for (userId = 1; myUsers.count(userId) != 0 ; ++userId)
+        ;
+
+      // Create a temporary user
+      user = new LicqUser(userId, accountId, ppid, true);
+
+      // Store the user in the lookup map
+      myUsers[userId] = user;
+      myUserAccounts[UserAccountMapKey(accountId, ppid)] = user;
+
+      // Notify plugins that we added user to list
+      gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, userId));
+    }
+
+    // Lock the user and release the lock on the list
+    if (user != NULL)
+      user->Lock(lockType);
     UnlockUserList();
   }
 
-  if (u != NULL)
-  {
-    u->Lock(_nLockType);
-    char *szId, *szIdString;
-    ICQUser::MakeRealId(_szId, _nPPID, szId);
-    LicqUser::MakeRealId(u->accountId(), u->ppid(), szIdString);
-    if (strcmp(szId, szIdString))
-      gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %s, found %s.\n",
-                 L_ERRORxSTR, szId, szIdString);
-    delete [] szId;
-    delete [] szIdString;
-  }
+  if (user == NULL)
+    return NULL;
 
-  return u;
+  string realId = LicqUser::makeRealId(accountId, ppid);
+  string realIdFound = user->realAccountId();
+  if (realId != realIdFound)
+    gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %s, found %s.\n",
+        L_ERRORxSTR, realId.c_str(), realIdFound.c_str());
+
+  return user;
 }
 
 bool CUserManager::userExists(int id)

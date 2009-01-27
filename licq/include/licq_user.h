@@ -1193,10 +1193,25 @@ public:
    */
   LicqUser* fetchUser(int userId, unsigned short lockType);
 
+  /**
+   * Find and lock an user object based on account id
+   *
+   * @param accountId Server side account id of user
+   * @param ppid Protocol instance id
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   * @param addUser True if user should be added (as temporary) if not found
+   * @return The locked user object if user exist or was created, otherwise NULL
+   */
+  LicqUser* fetchUser(const std::string& accountId, unsigned long ppid,
+      unsigned short lockType, bool addUser = false);
+
   // For protocol plugins
   void AddOwner(const char *, unsigned long);
   void RemoveOwner(unsigned long);
-  LicqUser* FetchUser(const char* idstring, unsigned long ppid, unsigned short lockType);
+
+  LicqUser* FetchUser(const char* idstring, unsigned long ppid, unsigned short lockType)
+  { return fetchUser(idstring, ppid, lockType); }
+
   LicqOwner* FetchOwner(unsigned long ppid, unsigned short lockType);
 
   /**
