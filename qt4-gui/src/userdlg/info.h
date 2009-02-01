@@ -91,10 +91,9 @@ public:
    * Save user data for pages
    * Call this function without user locked
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User id
    */
-  void apply2(const QString& id, unsigned long ppid);
+  void apply2(int userId);
 
   /**
    * User was updated

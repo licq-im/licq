@@ -190,14 +190,14 @@ void OwnerManagerDlg::registerOwner()
   }
 }
 
-void OwnerManagerDlg::registerDone(bool success, QString newId, unsigned long newPpid)
+void OwnerManagerDlg::registerDone(bool success, QString /* newId */, unsigned long newPpid)
 {
   registerUserDlg = 0;
 
   if (success)
   {
     updateOwners();
-    LicqGui::instance()->showInfoDialog(mnuUserGeneral, newId, newPpid);
+    LicqGui::instance()->showInfoDialog(mnuUserGeneral, static_cast<int>(newPpid));
   }
 }
 

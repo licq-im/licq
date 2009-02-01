@@ -145,10 +145,10 @@ void UserPages::Info::apply(ICQUser* user)
   savePagePicture(user);
 }
 
-void UserPages::Info::apply2(const QString& id, unsigned long ppid)
+void UserPages::Info::apply2(int /* userId */)
 {
   if (myAliasHasChanged)
-    gLicqDaemon->ProtoRenameUser(id.toLatin1(), ppid);
+    gLicqDaemon->ProtoRenameUser(myId.toLatin1(), myPpid);
   myAliasHasChanged = false;
 
 #ifdef USE_KABC

@@ -359,12 +359,12 @@ void UserPages::Settings::apply(ICQUser* user)
   user->SetCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit());
 }
 
-void UserPages::Settings::apply2(const QString& id, unsigned long ppid)
+void UserPages::Settings::apply2(int userId)
 {
   if (myIsOwner)
     return;
 
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
   if (u == NULL)
     return;
 
@@ -385,7 +385,7 @@ void UserPages::Settings::apply2(const QString& id, unsigned long ppid)
     if (dynamic_cast<QRadioButton*>(myGroupsTable->cellWidget(i, 2))->isChecked())
     {
       if (gid != serverGroup)
-        gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_USER, gid, true, true);
+        gUserManager.setUserInGroup(userId, GROUPS_USER, gid, true, true);
     }
   }
 
@@ -396,7 +396,7 @@ void UserPages::Settings::apply2(const QString& id, unsigned long ppid)
 
     bool inLocal = dynamic_cast<QCheckBox*>(myGroupsTable->cellWidget(i, 1))->isChecked();
     if ((userGroups.count(gid) > 0) != inLocal)
-      gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_USER, gid, inLocal, false);
+      gUserManager.setUserInGroup(userId, GROUPS_USER, gid, inLocal, false);
   }
 
   // Set system groups
@@ -404,7 +404,7 @@ void UserPages::Settings::apply2(const QString& id, unsigned long ppid)
   {
     bool inGroup = mySystemGroupCheck[i]->isChecked();
     if (((systemGroups & (1L << (i - 1))) != 0) != inGroup)
-      gUserManager.SetUserInGroup(id.toLatin1().data(), ppid, GROUPS_SYSTEM, i, inGroup, true);
+      gUserManager.setUserInGroup(userId, GROUPS_SYSTEM, i, inGroup, true);
   }
 }
 

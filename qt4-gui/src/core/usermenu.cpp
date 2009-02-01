@@ -421,7 +421,7 @@ void UserMenu::viewHistory()
 
 void UserMenu::viewInfoGeneral()
 {
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myId, myPpid);
+  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUserId);
 }
 
 void UserMenu::send(QAction* action)

@@ -109,12 +109,11 @@ public:
    * Show contact info dialog
    *
    * @param fcn Tab to show
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
    * @param toggle True to close dialog if already open
    * @param updateNow True to make the dialog contents update
    */
-  void showInfoDialog(int fcn, QString id, unsigned long ppid, bool toggle = false, bool updateNow = false);
+  void showInfoDialog(int fcn, int userId, bool toggle = false, bool updateNow = false);
 
   /**
    * Show contact view event dialog (used when chat mode is disabled)

@@ -681,17 +681,17 @@ bool LicqGui::removeUserFromList(int userId, QWidget* parent)
   return false;
 }
 
-void LicqGui::showInfoDialog(int /* fcn */, QString id, unsigned long ppid,
-  bool toggle, bool updateNow)
+void LicqGui::showInfoDialog(int /* fcn */, int userId, bool toggle, bool updateNow)
 {
-  if (id.isEmpty() || ppid == 0) return;
+  if (userId == 0)
+    return;
 
   UserDlg* f = NULL;
 
   for (int i = 0; i < myUserDlgList.size(); ++i)
   {
     UserDlg* item = myUserDlgList.at(i);
-    if (item->id() == id && item->ppid() == ppid)
+    if (item->userId() == userId)
     {
       f = item;
       break;
@@ -715,7 +715,7 @@ void LicqGui::showInfoDialog(int /* fcn */, QString id, unsigned long ppid,
   }
   else
   {
-    f = new UserDlg(id, ppid);
+    f = new UserDlg(userId);
     connect(f, SIGNAL(finished(UserDlg*)), SLOT(userDlgFinished(UserDlg*)));
     f->show();
     myUserDlgList.append(f);
@@ -994,8 +994,8 @@ void LicqGui::userDlgFinished(UserDlg* dialog)
   if (myUserDlgList.removeAll(dialog) > 0)
     return;
 
-  gLog.Warn("%sUser Info finished signal for user with no window (%s)!\n",
-      L_WARNxSTR, dialog->id().toLatin1().data());
+  gLog.Warn("%sUser Info finished signal for user with no window (%i)!\n",
+      L_WARNxSTR, dialog->userId());
 }
 
 void LicqGui::userEventTabDlgDone()

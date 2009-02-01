@@ -681,13 +681,7 @@ void OwnerData::aboutToShowStatusMenu()
 
 void OwnerData::viewInfo()
 {
-  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
-  if (o == NULL)
-    return;
-
-  QString userid = o->IdString();
-  gUserManager.DropOwner(o);
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, userid, myPpid);
+  LicqGui::instance()->showInfoDialog(mnuUserGeneral, static_cast<int>(myPpid));
 }
 
 void OwnerData::viewHistory()

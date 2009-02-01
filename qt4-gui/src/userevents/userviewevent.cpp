@@ -596,13 +596,11 @@ void UserViewEvent::read4()
       GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, CEventAdded);
 #undef GETINFO
 
-      const ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
-      if (u == NULL)
-        gLicqDaemon->AddUserToList(id, ppid, false, true);
-      else
-        gUserManager.DropUser(u);
+      const LicqUser* user = gUserManager.fetchUser(id, ppid, LOCK_R, true);
+      int userId = user->id();
+      gUserManager.DropUser(user);
 
-      LicqGui::instance()->showInfoDialog(mnuUserGeneral, id, ppid, false, true);
+      LicqGui::instance()->showInfoDialog(mnuUserGeneral, userId, false, true);
       break;
     }
   } // switch

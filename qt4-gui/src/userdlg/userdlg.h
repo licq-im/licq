@@ -67,11 +67,10 @@ public:
   /**
    * Constructor
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User id
    * @param parent Parent widget
    */
-  UserDlg(const QString& id, unsigned long ppid, QWidget* parent = 0);
+  UserDlg(int userId, QWidget* parent = 0);
 
   /**
    * Destructor
@@ -113,20 +112,6 @@ public:
    * @ return User id
    */
   int userId() const { return myUserId; }
-
-  /**
-   * Get user id for dialog
-   *
-   * @return User id
-   */
-  QString id() const { return myId; }
-
-  /**
-   * Get user protocol id for dialog
-   *
-   * @return User protocol id
-   */
-  unsigned long ppid() const { return myPpid; }
 
 signals:
   void finished(UserDlg* userDlg);
@@ -187,8 +172,6 @@ private slots:
 
 private:
   int myUserId;
-  QString myId;
-  unsigned long myPpid;
   bool myIsOwner;
   unsigned long myIcqEventTag;
   QString myBasicTitle;

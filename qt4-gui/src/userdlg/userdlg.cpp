@@ -46,16 +46,15 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserDlg */
 
-UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
+UserDlg::UserDlg(int userId, QWidget* parent)
   : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
-    myId(id),
-    myPpid(ppid),
+    myUserId(userId),
     myIcqEventTag(0)
 {
   Support::setWidgetProps(this, "UserDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  myIsOwner = (gUserManager.FindOwner(myId.toLatin1(), myPpid) != NULL);
+  myIsOwner = gUserManager.isOwner(myUserId);
 
   QVBoxLayout* top_lay = new QVBoxLayout(this);
 
@@ -102,10 +101,9 @@ UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
   myUserInfo = new UserPages::Info(myIsOwner, this);
   myUserSettings = new UserPages::Settings(myIsOwner, this);
 
-  const ICQUser* user = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* user = gUserManager.fetchUser(myUserId, LOCK_R);
   if (user != NULL)
   {
-    myUserId = user->id();
     QTextCodec* codec = UserCodec::codecForICQUser(user);
     QString name = codec->toUnicode(user->getFullName().c_str());
     if (!name.isEmpty())
@@ -119,7 +117,6 @@ UserDlg::UserDlg(const QString& id, unsigned long ppid, QWidget* parent)
   }
   else
   {
-    myUserId = 0;
     myBasicTitle = tr("Licq - Info ") + tr("INVALID USER");
   }
   resetCaption();
@@ -220,8 +217,8 @@ void UserDlg::apply()
   gUserManager.DropUser(user);
 
   // Special stuff that must be called without holding lock
-  myUserInfo->apply2(myId, myPpid);
-  myUserSettings->apply2(myId, myPpid);
+  myUserInfo->apply2(myUserId);
+  myUserSettings->apply2(myUserId);
 
   // Make sure GUI is updated
   LicqGui::instance()->updateUserData(myUserId);

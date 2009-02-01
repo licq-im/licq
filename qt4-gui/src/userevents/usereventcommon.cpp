@@ -410,7 +410,8 @@ void UserEventCommon::showHistory()
 
 void UserEventCommon::showUserInfo()
 {
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUsers.front().c_str(), myPpid, true);
+  int myUserId = gUserManager.getUserFromAccount(myUsers.front().c_str(), myPpid);
+  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUserId, true);
 }
 
 void UserEventCommon::switchSecurity()
