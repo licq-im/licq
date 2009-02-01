@@ -471,10 +471,7 @@ void UserEventCommon::updatedUser(int userId, unsigned long subSignal, int argum
   {
     if (myConvoId != 0 && cid == myConvoId)
     {
-      char* realId;
-      LicqUser::MakeRealId(accountId.toLatin1().data(), ppid, realId);
-      myUsers.push_back(realId);
-      delete [] realId;
+      myUsers.push_back(u->realAccountId());
 
       // Now update the tab label
       UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
@@ -482,7 +479,10 @@ void UserEventCommon::updatedUser(int userId, unsigned long subSignal, int argum
         tabDlg->updateConvoLabel(this);
     }
     else
+    {
+      gUserManager.DropUser(u);
       return;
+    }
   }
 
   switch (subSignal)
