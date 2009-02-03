@@ -1582,6 +1582,8 @@ void CUserView::updateItems()
   {
     CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
+    if (item->ItemId() == NULL)
+      continue;
     ICQUser *u = gUserManager.FetchUser(item->ItemId(), item->ItemPPID(), LOCK_R);
     if (u == 0)
       continue;
