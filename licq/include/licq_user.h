@@ -856,7 +856,7 @@ public:
   bool Secure() const                           { return m_bSecure; }
 
   virtual bool User() const                     { return true; }
-  void Lock(unsigned short lockType) const;
+  void Lock(unsigned short lockType = LOCK_R) const;
   void Unlock() const;
 
 protected:
@@ -1151,7 +1151,7 @@ public:
    *
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    */
-  void Lock(unsigned short lockType) const;
+  void Lock(unsigned short lockType = LOCK_R) const;
 
   /**
    * Release current lock for group
@@ -1191,7 +1191,7 @@ public:
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @return The locked user object if id was valid, otherwise NULL
    */
-  LicqUser* fetchUser(int userId, unsigned short lockType);
+  LicqUser* fetchUser(int userId, unsigned short lockType = LOCK_R);
 
   /**
    * Find and lock an user object based on account id
@@ -1204,7 +1204,7 @@ public:
    * @return The locked user object if user exist or was created, otherwise NULL
    */
   LicqUser* fetchUser(const std::string& accountId, unsigned long ppid,
-      unsigned short lockType, bool addUser = false, bool* retWasAdded = NULL);
+      unsigned short lockType = LOCK_R, bool addUser = false, bool* retWasAdded = NULL);
 
   // For protocol plugins
   void AddOwner(const char *, unsigned long);
@@ -1294,7 +1294,7 @@ public:
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @return Map of all users indexed by user id
    */
-  UserMap* LockUserList(unsigned short lockType);
+  UserMap* LockUserList(unsigned short lockType = LOCK_R);
 
   /**
    * Lock and get account map
@@ -1303,7 +1303,7 @@ public:
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @return Map of all users indexed by UserAccountMapKey
    */
-  UserAccountMap* lockUserAccounts(unsigned short lockType)
+  UserAccountMap* lockUserAccounts(unsigned short lockType = LOCK_R)
   { LockUserList(lockType); return &myUserAccounts; }
 
   /**
@@ -1324,7 +1324,7 @@ public:
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @return Map of all user groups indexed by group ids
    */
-  GroupMap* LockGroupList(unsigned short lockType);
+  GroupMap* LockGroupList(unsigned short lockType = LOCK_R);
 
   /**
    * Release group list lock
@@ -1338,7 +1338,7 @@ public:
    * @param lockType Type of lock (LOCK_R or LOCK_W)
    * @param Map of all owners indexed by protocol instance id
    */
-  OwnerMap* LockOwnerList(unsigned short lockType);
+  OwnerMap* LockOwnerList(unsigned short lockType = LOCK_R);
 
   /**
    * Release owner list lock
@@ -1353,7 +1353,7 @@ public:
    * @param lockType Type of lock to get
    * @return The group if found no NULL if groupId was invalid
    */
-  LicqGroup* FetchGroup(int groupId, unsigned short lockType);
+  LicqGroup* FetchGroup(int groupId, unsigned short lockType = LOCK_R);
 
   /**
    * Release the lock for a group preivously returned by FetchGroup()
