@@ -89,12 +89,12 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
       break;
 
     case SIGNAL_UI_VIEWEVENT:
-      emit ui_viewevent(accountId);
+      emit ui_viewevent(userId);
       break;
 
     case SIGNAL_UI_MESSAGE:
       //TODO
-      emit ui_message(accountId, ppid);
+      emit ui_message(userId);
       break;
 
     case SIGNAL_ADDxSERVERxLIST:
@@ -107,19 +107,19 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
       break;
 
     case SIGNAL_EVENTxID:
-      emit eventTag(accountId, ppid, sig->Argument());
+      emit eventTag(userId, sig->Argument());
       break;
 
     case SIGNAL_SOCKET:
-      emit socket(accountId,ppid, sig->CID());
+      emit socket(userId, sig->CID());
       break;
 
     case SIGNAL_CONVOxJOIN:
-      emit convoJoin(accountId, ppid, sig->CID());
+      emit convoJoin(userId, ppid, sig->CID());
       break;
 
     case SIGNAL_CONVOxLEAVE:
-      emit convoLeave(accountId, ppid, sig->CID());
+      emit convoLeave(userId, ppid, sig->CID());
       break;
 
     case SIGNAL_VERIFY_IMAGE:

@@ -53,11 +53,10 @@ public:
   /**
    * Constructor
    *
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
    * @param parent Parent widget
    */
-  HistoryDlg(QString id, unsigned long ppid, QWidget* parent = 0);
+  HistoryDlg(int userId, QWidget* parent = 0);
 
   /**
    * Desstructor
@@ -146,8 +145,7 @@ private:
    */
   void showHistory();
 
-  QString myId;
-  unsigned long myPpid;
+  int myUserId;
   bool myIsOwner;
   QString myContactName;
   QString myOwnerName;

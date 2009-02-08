@@ -93,7 +93,13 @@ class ChatDlg : public QDialog
 {
    Q_OBJECT
 public:
-  ChatDlg(QString id, unsigned long ppid, QWidget* parent = 0);
+  /**
+   * Constructor, creates and displayes a new chat dialog
+   *
+   * @param userId User to open chat with
+   * @param parent Parent widget
+   */
+  ChatDlg(int userId, QWidget* parent = 0);
   virtual ~ChatDlg();
 
   bool StartAsClient(unsigned short nPort);

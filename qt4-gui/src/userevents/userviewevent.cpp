@@ -68,8 +68,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserViewEvent */
 
-UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserEventCommon(id, ppid, parent, "UserViewEvent")
+UserViewEvent::UserViewEvent(int userId, QWidget* parent)
+  : UserEventCommon(userId, parent, "UserViewEvent")
 {
   myReadSplitter = new QSplitter(Qt::Vertical);
   myReadSplitter->setOpaqueResize();
@@ -143,7 +143,7 @@ UserViewEvent::UserViewEvent(QString id, unsigned long ppid, QWidget* parent)
   h_lay->addWidget(myCloseButton);
   setTabOrder(myReadNextButton, myCloseButton);
 
-  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
   if (u != NULL && u->NewMessages() > 0)
   {
     unsigned short i = 0;
@@ -222,7 +222,7 @@ void UserViewEvent::generateReply()
 
 void UserViewEvent::sendMsg(QString text)
 {
-  UserSendMsgEvent* e = new UserSendMsgEvent(myUsers.front().c_str(), myPpid);
+  UserSendMsgEvent* e = new UserSendMsgEvent(myUsers.front());
 
   e->setText(text);
 
@@ -258,9 +258,9 @@ void UserViewEvent::updateNextButton()
     myReadNextButton->setIcon(IconManager::instance()->iconForEvent(e->msg()->SubCommand()));
 }
 
-void UserViewEvent::userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long /* cid */)
+void UserViewEvent::userUpdated(int userId, unsigned long subSignal, int argument, unsigned long /* cid */)
 {
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
 
   if (u == 0)
     return;
@@ -295,7 +295,7 @@ void UserViewEvent::autoClose()
   if (!myAutoCloseCheck->isChecked())
     return;
 
-  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
 
   bool doclose = false;
 
@@ -409,6 +409,13 @@ void UserViewEvent::read2()
   if (myCurrentEvent == NULL)
     return;
 
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId().c_str();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   switch (myCurrentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:  // quote
@@ -422,13 +429,13 @@ void UserViewEvent::read2()
       myRead2Button->setEnabled(false);
       myRead3Button->setEnabled(false);
       CEventChat* c = dynamic_cast<CEventChat*>(myCurrentEvent);
-      ChatDlg* chatDlg = new ChatDlg(myUsers.front().c_str(), myPpid);
+      ChatDlg* chatDlg = new ChatDlg(myUsers.front());
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsClient(c->Port()))
           gLicqDaemon->icqChatRequestAccept(
-              myUsers.front().c_str(),
+              accountId.toLatin1(),
               0, c->Clients(), c->Sequence(),
               c->MessageID(), c->IsDirect());
       }
@@ -437,7 +444,7 @@ void UserViewEvent::read2()
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsServer())
           gLicqDaemon->icqChatRequestAccept(
-              myUsers.front().c_str(),
+              accountId.toLatin1(),
               chatDlg->LocalPort(), c->Clients(), c->Sequence(),
               c->MessageID(), c->IsDirect());
       }
@@ -450,12 +457,12 @@ void UserViewEvent::read2()
       myRead2Button->setEnabled(false);
       myRead3Button->setEnabled(false);
       CEventFile* f = dynamic_cast<CEventFile*>(myCurrentEvent);
-      FileDlg* fileDlg = new FileDlg(myUsers.front().c_str(), myPpid);
+      FileDlg* fileDlg = new FileDlg(myUsers.front());
 
       if (fileDlg->ReceiveFiles())
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->ProtoFileTransferAccept(
-            myUsers.front().c_str(), myPpid,
+            accountId.toLatin1(), ppid,
             fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0], f->MessageID()[1],
             f->FileDescription(), f->Filename(), f->FileSize(), f->IsDirect());
       break;
@@ -475,6 +482,13 @@ void UserViewEvent::read3()
   if (myCurrentEvent == NULL)
     return;
 
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId().c_str();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   switch (myCurrentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:  // Forward
@@ -487,7 +501,7 @@ void UserViewEvent::read3()
 
     case ICQ_CMDxSUB_CHAT:  // refuse a chat request
     {
-      RefuseDlg* r = new RefuseDlg(myUsers.front().c_str(), myPpid, tr("Chat"), this);
+      RefuseDlg* r = new RefuseDlg(myUsers.front(), tr("Chat"), this);
 
       if (r->exec())
       {
@@ -498,7 +512,7 @@ void UserViewEvent::read3()
 
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->icqChatRequestRefuse(
-            myUsers.front().c_str(),
+            accountId.toLatin1(),
             myCodec->fromUnicode(r->RefuseMessage()), myCurrentEvent->Sequence(),
             c->MessageID(), c->IsDirect());
       }
@@ -508,7 +522,7 @@ void UserViewEvent::read3()
 
     case ICQ_CMDxSUB_FILE:  // refuse a file transfer
     {
-      RefuseDlg* r = new RefuseDlg(myUsers.front().c_str(), myPpid, tr("File Transfer"), this);
+      RefuseDlg* r = new RefuseDlg(myUsers.front(), tr("File Transfer"), this);
 
       if (r->exec())
       {
@@ -519,7 +533,7 @@ void UserViewEvent::read3()
 
         // FIXME: must have been done in CICQDaemon
         gLicqDaemon->ProtoFileTransferRefuse(
-            myUsers.front().c_str(), myPpid,
+            accountId.toLatin1(), ppid,
             myCodec->fromUnicode(r->RefuseMessage()), myCurrentEvent->Sequence(),
             f->MessageID()[0], f->MessageID()[1], f->IsDirect());
       }
@@ -541,10 +555,16 @@ void UserViewEvent::read4()
   if (myCurrentEvent == NULL)
     return;
 
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId().c_str();
+  gUserManager.DropUser(user);
+
   switch (myCurrentEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:
-      LicqGui::instance()->showEventDialog(ChatEvent, myUsers.front().c_str(), myPpid);
+      LicqGui::instance()->showEventDialog(ChatEvent, myUsers.front());
       break;
 
     case ICQ_CMDxSUB_CHAT:  // join to current chat
@@ -552,11 +572,11 @@ void UserViewEvent::read4()
       CEventChat* c = dynamic_cast<CEventChat*>(myCurrentEvent);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
-        ChatDlg* chatDlg = new ChatDlg(myUsers.front().c_str(), myPpid);
+        ChatDlg* chatDlg = new ChatDlg(myUsers.front());
         // FIXME: must have been done in CICQDaemon
         if (chatDlg->StartAsClient(c->Port()))
           gLicqDaemon->icqChatRequestAccept(
-              myUsers.front().c_str(),
+              accountId.toLatin1(),
               0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
@@ -566,7 +586,7 @@ void UserViewEvent::read4()
         // FIXME: must have been done in CICQDaemon
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
           gLicqDaemon->icqChatRequestAccept(
-              myUsers.front().c_str(),
+              accountId.toLatin1(),
               chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         delete j;
       }
@@ -622,7 +642,7 @@ void UserViewEvent::readNext()
 
 void UserViewEvent::clearEvent()
 {
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
 
   if (u == NULL)
     return;
@@ -805,7 +825,8 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
 
 void UserViewEvent::sentEvent(const ICQEvent* e)
 {
-  if (e->PPID() != myPpid || strcmp(myUsers.front().c_str(), e->Id()) != 0)
+  int eventUserId = gUserManager.getUserFromAccount(e->Id(), e->PPID());
+  if (eventUserId != myUsers.front())
     return;
 
   if (!Config::Chat::instance()->msgChatView())

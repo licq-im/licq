@@ -53,8 +53,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendFileEvent */
 
-UserSendFileEvent::UserSendFileEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(FileEvent, id, ppid, parent, "UserSendFileEvent")
+UserSendFileEvent::UserSendFileEvent(int userId, QWidget* parent)
+  : UserSendCommon(FileEvent, userId, parent, "UserSendFileEvent")
 {
   myMassMessageCheck->setChecked(false);
   myMassMessageCheck->setEnabled(false);
@@ -123,14 +123,14 @@ bool UserSendFileEvent::sendDone(ICQEvent* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
-    const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(myUsers.front());
+    if (u == NULL)
+      return true;
     QString s = !e->ExtendedAck() ?
       tr("No reason provided") :
       myCodec->toUnicode(e->ExtendedAck()->Response());
     QString result = tr("File transfer with %1 refused:\n%2")
-      .arg(u == NULL ?
-          QString(myUsers.front().c_str()) :
-          QString::fromUtf8(u->GetAlias()))
+      .arg(QString::fromUtf8(u->GetAlias()))
       .arg(s);
     if (u != NULL)
       gUserManager.DropUser(u);
@@ -139,7 +139,7 @@ bool UserSendFileEvent::sendDone(ICQEvent* e)
   else
   {
     const CEventFile* f = dynamic_cast<const CEventFile*>(e->UserEvent());
-    FileDlg* fileDlg = new FileDlg(myUsers.front().c_str(), myPpid);
+    FileDlg* fileDlg = new FileDlg(myUsers.front());
     fileDlg->SendFiles(f->FileList(), e->ExtendedAck()->Port());
   }
 
@@ -209,10 +209,17 @@ void UserSendFileEvent::updateLabel(unsigned count)
 
 void UserSendFileEvent::send()
 {
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId().c_str();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
+  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
 
   if (myFileEdit->text().trimmed().isEmpty())
   {
@@ -223,8 +230,7 @@ void UserSendFileEvent::send()
   unsigned long icqEventTag;
   //TODO in daemon
   icqEventTag = gLicqDaemon->ProtoFileTransfer(
-      myUsers.front().c_str(),
-      myPpid,
+      accountId.toLatin1(), ppid,
       myCodec->fromUnicode(myFileEdit->text()),
       myCodec->fromUnicode(myMessageEdit->toPlainText()),
       myFileList,

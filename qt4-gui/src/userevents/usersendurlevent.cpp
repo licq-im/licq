@@ -50,8 +50,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendUrlEvent */
 
-UserSendUrlEvent::UserSendUrlEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(UrlEvent, id, ppid, parent, "UserSendUrlEvent")
+UserSendUrlEvent::UserSendUrlEvent(int userId, QWidget* parent)
+  : UserSendCommon(UrlEvent, userId, parent, "UserSendUrlEvent")
 {
   myMainWidget->addWidget(myViewSplitter);
   myMessageEdit->setFocus();
@@ -111,7 +111,7 @@ bool UserSendUrlEvent::sendDone(ICQEvent* e)
     return true;
 
   bool showAwayDlg = false;
-  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
   if (u != NULL)
   {
     showAwayDlg = u->Away() && u->ShowAwayMsg();
@@ -119,7 +119,7 @@ bool UserSendUrlEvent::sendDone(ICQEvent* e)
   }
 
   if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())
-    new ShowAwayMsgDlg(myUsers.front().c_str(), myPpid);
+    new ShowAwayMsgDlg(myUsers.front());
 
   return true;
 }
@@ -134,10 +134,17 @@ void UserSendUrlEvent::resetSettings()
 
 void UserSendUrlEvent::send()
 {
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId().c_str();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
+  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
 
   if (myUrlEdit->text().trimmed().isEmpty())
   {
@@ -159,8 +166,7 @@ void UserSendUrlEvent::send()
 
   unsigned long icqEventTag;
   icqEventTag = gLicqDaemon->ProtoSendUrl(
-      myUsers.front().c_str(),
-      myPpid,
+      accountId.toLatin1(), ppid,
       myUrlEdit->text().toLatin1(),
       myCodec->fromUnicode(myMessageEdit->toPlainText()),
       mySendServerCheck->isChecked() ? false : true,

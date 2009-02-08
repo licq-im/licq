@@ -33,7 +33,13 @@ class UserSendChatEvent : public UserSendCommon
   Q_OBJECT
 
 public:
-  UserSendChatEvent(QString id, unsigned long ppid, QWidget* parent = 0);
+  /**
+   * Constructor, create and open chat invitation dialog
+   *
+   * @param userId User to open dialog for
+   * @param parent Parent widget
+   */
+  UserSendChatEvent(int userId, QWidget* parent = 0);
   virtual ~UserSendChatEvent();
 
 private:

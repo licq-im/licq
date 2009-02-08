@@ -57,11 +57,18 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::FileDlg */
 
-FileDlg::FileDlg(const char* szId, unsigned long nPPID, QWidget* parent)
+FileDlg::FileDlg(int userId, QWidget* parent)
   : QWidget(parent),
-    myId(szId),
-    m_nPPID(nPPID)
+    myUserId(userId)
 {
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user != NULL)
+  {
+    myId = user->accountId().c_str();
+    m_nPPID = user->ppid();
+    gUserManager.DropUser(user);
+  }
+
   setObjectName("FileDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
   setWindowTitle(tr("Licq - File Transfer (%1)").arg(myId));

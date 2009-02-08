@@ -33,7 +33,13 @@ class UserSendUrlEvent : public UserSendCommon
   Q_OBJECT
 
 public:
-  UserSendUrlEvent(QString id, unsigned long ppid, QWidget* parent = 0);
+  /**
+   * Constructor, create and open send URL dialog
+   *
+   * @param userId User to open dialog for
+   * @param parent Parent widget
+   */
+  UserSendUrlEvent(int userId, QWidget* parent = 0);
   virtual ~UserSendUrlEvent();
 
   virtual bool eventFilter(QObject* watched, QEvent* e);

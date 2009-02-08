@@ -538,24 +538,19 @@ void MainWindow::removeUserFromGroup()
 void MainWindow::callUserFunction(QAction* action)
 {
   int index = action->data().toInt();
-
-  QString id;
-  unsigned long ppid = 0;
-  myUserView->MainWindowSelectedItemUser(id, ppid);
+  int userId = myUserView->currentUserId();
 
   if (index == -1)
-    LicqGui::instance()->showViewEventDialog(id, ppid);
+    LicqGui::instance()->showViewEventDialog(userId);
   else
-    LicqGui::instance()->showEventDialog(index, id, ppid);
+    LicqGui::instance()->showEventDialog(index, userId);
 }
 
 void MainWindow::checkUserAutoResponse()
 {
-  QString id;
-  unsigned long ppid = 0;
-  myUserView->MainWindowSelectedItemUser(id, ppid);
-  if (!id.isEmpty() && ppid)
-    new ShowAwayMsgDlg(id, ppid, true);
+  int userId = myUserView->currentUserId();
+  if (userId != 0)
+    new ShowAwayMsgDlg(userId, true);
 }
 
 void MainWindow::hide()

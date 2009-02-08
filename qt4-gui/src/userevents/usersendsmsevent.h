@@ -33,7 +33,13 @@ class UserSendSmsEvent : public UserSendCommon
   Q_OBJECT
 
 public:
-  UserSendSmsEvent(QString id, unsigned long ppid, QWidget* parent = 0);
+  /**
+   * Constructor, create and open send SMS dialog
+   *
+   * @param userId User to open dialog for
+   * @param parent Parent widget
+   */
+  UserSendSmsEvent(int userId, QWidget* parent = 0);
   virtual ~UserSendSmsEvent();
 
 private:

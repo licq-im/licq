@@ -46,8 +46,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendChatEvent */
 
-UserSendChatEvent::UserSendChatEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(ChatEvent, id, ppid, parent, "UserSendChatEvent")
+UserSendChatEvent::UserSendChatEvent(int userId, QWidget* parent)
+  : UserSendCommon(ChatEvent, userId, parent, "UserSendChatEvent")
 {
   myChatPort = 0;
   myMassMessageCheck->setChecked(false);
@@ -91,12 +91,12 @@ bool UserSendChatEvent::sendDone(ICQEvent* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
-    const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(myUsers.front());
     QString s = !e->ExtendedAck() ?
       tr("No reason provided") :
       myCodec->toUnicode(e->ExtendedAck()->Response());
     QString result = tr("Chat with %1 refused:\n%2")
-      .arg(u == NULL ? QString(myUsers.front().c_str()) : QString::fromUtf8(u->GetAlias()))
+      .arg(u == NULL ? u->accountId().c_str() : QString::fromUtf8(u->GetAlias()))
       .arg(s);
     if (u != NULL)
       gUserManager.DropUser(u);
@@ -107,7 +107,7 @@ bool UserSendChatEvent::sendDone(ICQEvent* e)
     const CEventChat* c = dynamic_cast<const CEventChat*>(e->UserEvent());
     if (c->Port() == 0)  // If we requested a join, no need to do anything
     {
-      ChatDlg* chatDlg = new ChatDlg(myUsers.front().c_str(), myPpid);
+      ChatDlg* chatDlg = new ChatDlg(myUsers.front());
       chatDlg->StartAsClient(e->ExtendedAck()->Port());
     }
   }
@@ -152,23 +152,30 @@ void UserSendChatEvent::inviteUser()
 
 void UserSendChatEvent::send()
 {
-  // Take care of typing notification now
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId().c_str();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
+  // Take care of typing notification now`
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
+  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
 
   unsigned long icqEventTag;
 
   if (myChatPort == 0)
     //TODO in daemon
     icqEventTag = gLicqDaemon->icqChatRequest(
-        myUsers.front().c_str(),
+        accountId.toLatin1(),
         myCodec->fromUnicode(myMessageEdit->toPlainText()),
         myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
         mySendServerCheck->isChecked());
   else
     icqEventTag = gLicqDaemon->icqMultiPartyChatRequest(
-        myUsers.front().c_str(),
+        accountId.toLatin1(),
         myCodec->fromUnicode(myMessageEdit->toPlainText()),
         myCodec->fromUnicode(myChatClients),
         myChatPort,

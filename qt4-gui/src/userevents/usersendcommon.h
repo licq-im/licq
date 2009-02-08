@@ -42,14 +42,33 @@ class UserSendCommon : public UserEventCommon
 {
   Q_OBJECT
 public:
-
-  UserSendCommon(int type, QString id, unsigned long ppid, QWidget* parent = 0, const char* name = 0);
+  /**
+   * Constructor, create and open send event dialog
+   *
+   * @param type Type of event
+   * @param userId User to open dialog for
+   * @param parent Parent widget
+   * @param name Object name of widget
+   */
+  UserSendCommon(int type, int userId, QWidget* parent = 0, const char* name = 0);
   virtual ~UserSendCommon();
   virtual bool eventFilter(QObject* watched, QEvent* e);
 
   void setText(const QString& text);
-  void convoJoin(QString id, unsigned long convoId);
-  void convoLeave(QString id, unsigned long convoId);
+
+  /**
+   * Someone joined the conversation
+   *
+   * @param userId User that joined conversation
+   */
+  void convoJoin(int userId);
+
+  /**
+   * Someone left the conversation
+   *
+   * @param userId User that left conversation
+   */
+  void convoLeave(int userId);
 
   virtual void windowActivationChange(bool oldActive);
   int clearDelay;
@@ -91,7 +110,17 @@ protected:
   int myType;
 
   void retrySend(ICQEvent* e, bool online, unsigned short level);
-  virtual void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
+
+  /**
+   * A user has been update, this virtual function allows subclasses to add additional handling
+   * This function will only be called if user is in this conversation
+   *
+   * @param userId Updated user
+   * @param subSignal Type of update
+   * @param argument Signal specific argument
+   * @param cid Conversation id
+   */
+  virtual void userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid);
   void updatePicture(const LicqUser* u = NULL);
   bool checkSecure();
 

@@ -46,8 +46,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendContactEvent */
 
-UserSendContactEvent::UserSendContactEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(ContactEvent, id, ppid, parent, "UserSendContactEvent")
+UserSendContactEvent::UserSendContactEvent(int userId, QWidget* parent)
+  : UserSendCommon(ContactEvent, userId, parent, "UserSendContactEvent")
 {
   myMassMessageCheck->setChecked(false);
   myMassMessageCheck->setEnabled(false);
@@ -69,8 +69,7 @@ UserSendContactEvent::UserSendContactEvent(QString id, unsigned long ppid, QWidg
 
   w->setToolTip(tr("Drag Users Here - Right Click for Options"));
 
-  myContactsList = new MMUserView(gUserManager.getUserFromAccount(myUsers.front().c_str(), myPpid),
-      LicqGui::instance()->contactList());
+  myContactsList = new MMUserView(myUsers.front(), LicqGui::instance()->contactList());
   lay->addWidget(myContactsList);
 
   myBaseTitle += tr(" - Contact List");
@@ -88,9 +87,9 @@ UserSendContactEvent::~UserSendContactEvent()
   // Empty
 }
 
-void UserSendContactEvent::setContact(QString id, unsigned long ppid)
+void UserSendContactEvent::setContact(int userId)
 {
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
 
   if (u != NULL)
   {
@@ -105,7 +104,7 @@ bool UserSendContactEvent::sendDone(ICQEvent* e)
     return true;
 
   bool showAwayDlg = false;
-  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
   if (u != NULL)
   {
     showAwayDlg = u->Away() && u->ShowAwayMsg();
@@ -113,7 +112,7 @@ bool UserSendContactEvent::sendDone(ICQEvent* e)
   }
 
   if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())
-    new ShowAwayMsgDlg(myUsers.front().c_str(), myPpid);
+    new ShowAwayMsgDlg(myUsers.front());
 
   return true;
 }
@@ -129,7 +128,12 @@ void UserSendContactEvent::send()
 {
   // Take care of typing notification now
   mySendTypingTimer->stop();
-  gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
+
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  QString accountId = user->accountId().c_str();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
 
   StringList users;
 
@@ -160,7 +164,7 @@ void UserSendContactEvent::send()
 
   unsigned long icqEventTag;
   icqEventTag = gLicqDaemon->icqSendContactList(
-      myUsers.front().c_str(),
+      accountId.toLatin1(),
       users,
       mySendServerCheck->isChecked() ? false : true,
       myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,

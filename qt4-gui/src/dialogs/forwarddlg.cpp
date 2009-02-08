@@ -54,7 +54,6 @@ ForwardDlg::ForwardDlg(CUserEvent* e, QWidget* p)
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   m_nEventType = e->SubCommand();
-  m_nPPID = 0;
 
   QString t;
   switch (e->SubCommand())
@@ -105,7 +104,7 @@ ForwardDlg::~ForwardDlg()
 
 void ForwardDlg::slot_ok()
 {
-  if (myId.isEmpty())
+  if (myUserId == 0)
     return;
 
   switch(m_nEventType)
@@ -113,7 +112,7 @@ void ForwardDlg::slot_ok()
     case ICQ_CMDxSUB_MSG:
     {
       s1.prepend(tr("Forwarded message:\n"));
-      UserSendMsgEvent* e = new UserSendMsgEvent(myId, m_nPPID);
+      UserSendMsgEvent* e = new UserSendMsgEvent(myUserId);
       e->setText(s1);
       e->show();
       break;
@@ -121,7 +120,7 @@ void ForwardDlg::slot_ok()
     case ICQ_CMDxSUB_URL:
     {
       s1.prepend(tr("Forwarded URL:\n"));
-      UserSendUrlEvent* e = new UserSendUrlEvent(myId, m_nPPID);
+      UserSendUrlEvent* e = new UserSendUrlEvent(myUserId);
       e->setUrl(s2, s1);
       e->show();
       break;
@@ -160,13 +159,13 @@ void ForwardDlg::dropEvent(QDropEvent* de)
   if (nPPID == 0 || text.length() <= 4)
     return;
 
-  myId = text.mid(4);
-  m_nPPID = nPPID;
+  QString myId = text.mid(4);
 
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.FetchUser(myId.toLatin1(), nPPID, LOCK_R);
   if (u == NULL)
     return;
 
+  myUserId = u->id();
   edtUser->setText(QString::fromUtf8(u->GetAlias()) + " (" + myId + ")");
   gUserManager.DropUser(u);
 }

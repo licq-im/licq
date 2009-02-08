@@ -52,15 +52,14 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::HistoryDlg */
 
-HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
+HistoryDlg::HistoryDlg(int userId, QWidget* parent)
   : QDialog(parent),
-    myId(id),
-    myPpid(ppid)
+    myUserId(userId)
 {
   Support::setWidgetProps(this, "UserHistoryDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  myIsOwner = (gUserManager.FindOwner(myId.toLatin1(), myPpid) != NULL);
+  myIsOwner = gUserManager.isOwner(myUserId);
 
   QVBoxLayout* topLayout = new QVBoxLayout(this);
 
@@ -141,7 +140,7 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
   connect(findNextShortcut, SIGNAL(activated()), SLOT(findNext()));
 
   // Widget to show history entries
-  myHistoryView = new HistoryView(true, myId, myPpid);
+  myHistoryView = new HistoryView(true, myUserId);
   mainLayout->addWidget(myHistoryView, 1);
 
   // Dialog buttons
@@ -160,7 +159,8 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
 
   show();
 
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
+  unsigned long myPpid = u->ppid();
 
   QString name = tr("INVALID USER");
   myContactCodec = QTextCodec::codecForLocale();
@@ -220,6 +220,7 @@ HistoryDlg::HistoryDlg(QString id, unsigned long ppid, QWidget* parent)
 
   if (!myIsOwner)
     myContactName = QString::fromUtf8(u->GetAlias());
+  QString myId = u->accountId().c_str();
   for (int x = 0; x < myId.length(); x++)
   {
     if (!myId[x].isDigit())
@@ -268,12 +269,12 @@ HistoryDlg::~HistoryDlg()
 
 void HistoryDlg::updatedUser(int userId, unsigned long subSignal, int argument)
 {
-  if (userId == gUserManager.getUserFromAccount(myId.toLatin1(), myPpid))
+  if (userId != myUserId)
     return;
 
   if (subSignal == USER_EVENTS)
   {
-    const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(myUserId);
     if (u == NULL)
       return;
 
@@ -287,7 +288,8 @@ void HistoryDlg::updatedUser(int userId, unsigned long subSignal, int argument)
 
 void HistoryDlg::eventSent(const ICQEvent* event)
 {
-  if (event->Id() == myId && event->PPID() == myPpid && event->UserEvent() != NULL)
+  int userId = gUserManager.getUserFromAccount(event->Id(), event->PPID());
+  if (userId == myUserId && event->UserEvent() != NULL)
     addMsg(event->UserEvent());
 }
 
@@ -504,7 +506,7 @@ void HistoryDlg::searchTextChanged(const QString& text)
 
 void HistoryDlg::showUserMenu()
 {
-  LicqGui::instance()->userMenu()->setUser(myId, myPpid);
+  LicqGui::instance()->userMenu()->setUser(myUserId);
 }
 
 void HistoryDlg::nextDate()

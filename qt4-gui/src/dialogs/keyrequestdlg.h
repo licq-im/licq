@@ -34,12 +34,17 @@ class KeyRequestDlg : public QDialog
   Q_OBJECT
 
 public:
-  KeyRequestDlg(QString id, unsigned long ppid, QWidget* parent = 0);
+  /**
+   * Constructor, create and show key request dialog
+   *
+   * @param userId User to request key for
+   * @param parent Parent widget
+   */
+  KeyRequestDlg(int userId, QWidget* parent = 0);
   ~KeyRequestDlg();
 
 private:
-  QString myId;
-  unsigned long myPpid;
+  int myUserId;
   unsigned long myIcqEventTag;
   bool myOpen;
 

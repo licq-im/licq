@@ -686,13 +686,7 @@ void OwnerData::viewInfo()
 
 void OwnerData::viewHistory()
 {
-  const ICQOwner* o = gUserManager.FetchOwner(myPpid, LOCK_R);
-  if (o == NULL)
-    return;
-
-  QString userid = o->IdString();
-  gUserManager.DropOwner(o);
-  new HistoryDlg(userid, myPpid);
+  new HistoryDlg(static_cast<int>(myPpid));
 }
 
 void OwnerData::setStatus(QAction* action)

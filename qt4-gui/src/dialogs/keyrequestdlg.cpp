@@ -39,16 +39,15 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::KeyRequestDlg */
 
-KeyRequestDlg::KeyRequestDlg(QString id, unsigned long ppid, QWidget* parent)
+KeyRequestDlg::KeyRequestDlg(int userId, QWidget* parent)
   : QDialog(parent),
-    myId(id),
-    myPpid(ppid),
+    myUserId(userId),
     myIcqEventTag(0)
 {
   Support::setWidgetProps(this, "KeyRequestDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   setWindowTitle(tr("Licq - Secure Channel with %1")
       .arg(QString::fromUtf8(u->GetAlias())));
 
@@ -147,11 +146,23 @@ void KeyRequestDlg::startSend()
 
 void KeyRequestDlg::openConnection()
 {
+  LicqUser* user = gUserManager.fetchUser(myUserId);
+  if (user == NULL)
+    return;
+  QString myId = user->accountId().c_str();
+  unsigned long myPpid = user->ppid();
+  gUserManager.DropUser(user);
   myIcqEventTag = gLicqDaemon->ProtoOpenSecureChannel(myId.toLatin1().data(), myPpid);
 }
 
 void KeyRequestDlg::closeConnection()
 {
+  LicqUser* user = gUserManager.fetchUser(myUserId);
+  if (user == NULL)
+    return;
+  QString myId = user->accountId().c_str();
+  unsigned long myPpid = user->ppid();
+  gUserManager.DropUser(user);
   myIcqEventTag = gLicqDaemon->ProtoCloseSecureChannel(myId.toLatin1().data(), myPpid);
 }
 

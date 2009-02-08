@@ -43,8 +43,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendSmsEvent */
 
-UserSendSmsEvent::UserSendSmsEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(SmsEvent, id, ppid, parent, "UserSendSmsEvent")
+UserSendSmsEvent::UserSendSmsEvent(int userId, QWidget* parent)
+  : UserSendCommon(SmsEvent, userId, parent, "UserSendSmsEvent")
 {
   mySendServerCheck->setChecked(true);
   mySendServerCheck->setEnabled(false);
@@ -76,7 +76,7 @@ UserSendSmsEvent::UserSendSmsEvent(QString id, unsigned long ppid, QWidget* pare
   count();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(count()));
 
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
   if (u != NULL)
   {
     myNumberField->setText(myCodec->toUnicode(u->getCellularNumber().c_str()));
@@ -112,10 +112,17 @@ void UserSendSmsEvent::resetSettings()
 
 void UserSendSmsEvent::send()
 {
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId().c_str();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
+  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
 
   unsigned long icqEventTag = 0;
   if (myEventTag.size())
@@ -134,7 +141,7 @@ void UserSendSmsEvent::send()
     return;
 
   //TODO in daemon
-  icqEventTag = gLicqDaemon->icqSendSms(myUsers.front().c_str(), LICQ_PPID,
+  icqEventTag = gLicqDaemon->icqSendSms(accountId.toLatin1(), LICQ_PPID,
       myNumberField->text().toLatin1(),
       myMessageEdit->toPlainText().toUtf8().data());
   myEventTag.push_back(icqEventTag);

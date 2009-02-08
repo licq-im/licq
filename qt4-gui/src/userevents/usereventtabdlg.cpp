@@ -157,13 +157,13 @@ bool UserEventTabDlg::tabExists(QWidget* tab)
 void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
 {
   // Show the list of users in the conversation
-  list<string> users = tab->convoUsers();
-  list<string>::iterator it;
+  list<int> users = tab->convoUsers();
+  list<int>::iterator it;
   QString newLabel = QString::null;
 
   for (it = users.begin(); it != users.end(); ++it)
   {
-    const ICQUser* u = gUserManager.FetchUser((*it).c_str(), tab->ppid(), LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(*it);
 
     if (!newLabel.isEmpty())
       newLabel += ", ";
@@ -189,8 +189,7 @@ void UserEventTabDlg::updateTabLabel(const ICQUser* u)
   {
     UserEventCommon* tab = dynamic_cast<UserEventCommon*>(myTabs->widget(index));
 
-    if (tab->ppid() == u->PPID() &&
-        tab->isUserInConvo(u->IdString()))
+    if (tab->isUserInConvo(u->id()))
       updateTabLabel(tab, u);
   }
 }
@@ -202,9 +201,9 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const ICQUser* u)
 
   bool fetched = false;
   if (u == NULL ||
-      !tab->isUserInConvo(u->IdString()))
+      !tab->isUserInConvo(u->id()))
   {
-    u = gUserManager.FetchUser(tab->id().toLatin1(), tab->ppid(), LOCK_R);
+    u = gUserManager.fetchUser(tab->userId());
     if (u == NULL)
       return;
     fetched = true;
@@ -270,8 +269,7 @@ void UserEventTabDlg::setTyping(const ICQUser* u, int convoId)
     UserEventCommon* tab = dynamic_cast<UserEventCommon*>(myTabs->widget(index));
 
     if (tab->convoId() == static_cast<unsigned long>(convoId) &&
-        tab->ppid() == u->PPID() &&
-        tab->isUserInConvo(u->IdString()))
+        tab->isUserInConvo(u->id()))
       tab->setTyping(u->GetTyping());
   }
 }

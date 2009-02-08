@@ -60,30 +60,29 @@ using namespace LicqQtGui;
 using std::list;
 using std::string;
 
-UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent, const char* name)
+UserEventCommon::UserEventCommon(int userId, QWidget* parent, const char* name)
   : QWidget(parent),
-    myPpid(ppid),
     myHighestEventId(-1)
 {
   Support::setWidgetProps(this, name);
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  if (!id.isEmpty())
+  myUsers.push_back(userId);
+  LicqUser* user = gUserManager.fetchUser(userId);
+  if (user != NULL)
   {
-    char* realId = 0;
-    ICQUser::MakeRealId(id.toLatin1().data(), myPpid, realId);
-    myId = realId;
-    myUsers.push_back(realId);
-    delete [] realId;
+    myId = user->realAccountId().c_str();
+    myPpid = user->ppid();
+    gUserManager.DropUser(user);
   }
 
   // Find out what's supported for this protocol
   mySendFuncs = 0xFFFFFFFF;
-  if (ppid != LICQ_PPID)
+  if (myPpid != LICQ_PPID)
   {
     FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
     {
-      if ((*_ppit)->PPID() == ppid)
+      if ((*_ppit)->PPID() == myPpid)
       {
         mySendFuncs = (*_ppit)->SendFunctions();
         break;
@@ -93,7 +92,7 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   }
 
   myCodec = QTextCodec::codecForLocale();
-  myIsOwner = (gUserManager.FindOwner(myUsers.front().c_str(), myPpid) != NULL);
+  myIsOwner = gUserManager.isOwner(myUsers.front());
   myDeleteUser = false;
   myConvoId = 0;
 
@@ -143,7 +142,7 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
   myTimeTimer = NULL;
   myTypingTimer = NULL;
 
-  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
   if (u != NULL)
   {
     if (u->NewMessages() == 0)
@@ -221,11 +220,10 @@ UserEventCommon::UserEventCommon(QString id, unsigned long ppid, QWidget* parent
 
 UserEventCommon::~UserEventCommon()
 {
-  int userId = gUserManager.getUserFromAccount(myUsers.front().c_str(), myPpid);
-  emit finished(myUsers.front().c_str(), myPpid);
+  emit finished(myUsers.front());
 
   if (myDeleteUser && !myIsOwner)
-    LicqGui::instance()->removeUserFromList(userId, this);
+    LicqGui::instance()->removeUserFromList(myUsers.front(), this);
 
   myUsers.clear();
 }
@@ -258,17 +256,9 @@ void UserEventCommon::updateShortcuts()
   pushToolTip(mySecure, tr("Open / Close secure channel"));
 }
 
-int UserEventCommon::userId() const
+bool UserEventCommon::isUserInConvo(int userId) const
 {
-  return gUserManager.getUserFromAccount(id().toLatin1(), ppid());
-}
-
-bool UserEventCommon::isUserInConvo(QString id)
-{
-  char* realId;
-  ICQUser::MakeRealId(id.toLatin1().data(), myPpid, realId);
-  bool found = (std::find(myUsers.begin(), myUsers.end(), realId) != myUsers.end());
-  delete [] realId;
+  bool found = (std::find(myUsers.begin(), myUsers.end(), userId) != myUsers.end());
   return found;
 }
 
@@ -384,7 +374,7 @@ void UserEventCommon::setEncoding(QAction* action)
     myCodec = codec;
 
     /* save preferred character set */
-    ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
     if (u != NULL)
     {
       u->SetEnableSave(false);
@@ -405,18 +395,17 @@ void UserEventCommon::setMsgWinSticky(bool sticky)
 
 void UserEventCommon::showHistory()
 {
-  new HistoryDlg(myUsers.front().c_str(), myPpid);
+  new HistoryDlg(myUsers.front());
 }
 
 void UserEventCommon::showUserInfo()
 {
-  int myUserId = gUserManager.getUserFromAccount(myUsers.front().c_str(), myPpid);
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUserId, true);
+  LicqGui::instance()->showInfoDialog(mnuUserGeneral, myUsers.front(), true);
 }
 
 void UserEventCommon::switchSecurity()
 {
-  new KeyRequestDlg(QString::fromAscii(myUsers.front().c_str()), myPpid);
+  new KeyRequestDlg(myUsers.front());
 }
 
 void UserEventCommon::updateTime()
@@ -435,7 +424,7 @@ void UserEventCommon::updateTyping()
     return;
 
   //FIXME Which user?
-  ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUsers.front(), LOCK_W);
   u->SetTyping(ICQ_TYPING_INACTIVEx0);
   myTimezone->setPalette(QPalette());
   UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
@@ -449,7 +438,7 @@ void UserEventCommon::showUserMenu()
   // Tell menu which contact to use and show it immediately.
   // Menu is normally delayed but if we use InstantPopup mode we won't get
   //   this signal so we can't tell menu which contact to use.
-  LicqGui::instance()->userMenu()->setUser(myId, myPpid);
+  LicqGui::instance()->userMenu()->setUser(myUsers.front());
   dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myMenu))->showMenu();
 }
 
@@ -461,18 +450,11 @@ void UserEventCommon::showEncodingsMenu()
 
 void UserEventCommon::updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid)
 {
-  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-  if (u == NULL)
-    return;
-
-  QString accountId = u->accountId().c_str();
-  unsigned long ppid = u->ppid();
-
-  if (myPpid != ppid || !isUserInConvo(accountId))
+  if (!isUserInConvo(userId))
   {
     if (myConvoId != 0 && cid == myConvoId)
     {
-      myUsers.push_back(u->realAccountId());
+      myUsers.push_back(userId);
 
       // Now update the tab label
       UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
@@ -481,10 +463,13 @@ void UserEventCommon::updatedUser(int userId, unsigned long subSignal, int argum
     }
     else
     {
-      gUserManager.DropUser(u);
       return;
     }
   }
+
+  const LicqUser* u = gUserManager.fetchUser(userId);
+  if (u == NULL)
+    return;
 
   switch (subSignal)
   {
@@ -514,5 +499,5 @@ void UserEventCommon::updatedUser(int userId, unsigned long subSignal, int argum
   gUserManager.DropUser(u);
 
   // Call the event specific function now
-  userUpdated(accountId, myPpid, subSignal, argument, cid);
+  userUpdated(userId, subSignal, argument, cid);
 }

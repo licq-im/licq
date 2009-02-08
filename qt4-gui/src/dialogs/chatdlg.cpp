@@ -104,14 +104,20 @@ static const int col_array[] =
 
 
 // ---------------------------------------------------------------------------
-ChatDlg::ChatDlg(QString id, unsigned long ppid, QWidget* parent)
+ChatDlg::ChatDlg(int userId, QWidget* parent)
   : QDialog(parent),
-    myId(id),
-    myPpid(ppid),
     myAudio(true)
 {
   Support::setWidgetProps(this, "ChatDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
+
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user != NULL)
+  {
+    myId = user->accountId().c_str();
+    myPpid = user->ppid();
+    gUserManager.DropUser(user);
+  }
 
   sn = NULL;
 

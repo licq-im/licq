@@ -34,13 +34,18 @@ class ShowAwayMsgDlg : public QDialog
 {
   Q_OBJECT
 public:
-  ShowAwayMsgDlg(QString id, unsigned long ppid,
-      bool fetch = false, QWidget* parent = 0);
+  /**
+   * Constructor, create and show away response dialog
+   *
+   * @param userId User to show away response for
+   * @param fetch True if away response should be fetch, false to use cached message
+   * @param parent Parent widget
+   */
+  ShowAwayMsgDlg(int userId, bool fetch = false, QWidget* parent = 0);
   ~ShowAwayMsgDlg();
 
 private:
-  QString myId;
-  unsigned long myPpid;
+  int myUserId;
   unsigned long icqEventTag;
   MLEdit* mleAwayMsg;
   QCheckBox* chkShowAgain;

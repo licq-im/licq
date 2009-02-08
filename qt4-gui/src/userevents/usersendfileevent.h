@@ -35,7 +35,13 @@ class UserSendFileEvent : public UserSendCommon
   Q_OBJECT
 
 public:
-  UserSendFileEvent(QString id, unsigned long ppid, QWidget* parent = 0);
+  /**
+   * Constructor, create and open file transfer dialog
+   *
+   * @param userId User to open dialog for
+   * @param parent Parent widget
+   */
+  UserSendFileEvent(int userId, QWidget* parent = 0);
   virtual ~UserSendFileEvent();
 
   void setFile(const QString& file, const QString& description);

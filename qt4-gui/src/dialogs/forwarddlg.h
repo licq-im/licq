@@ -46,8 +46,7 @@ private:
   InfoField* edtUser;
   QPushButton* btnOk;
   QPushButton* btnCancel;
-  QString myId;
-  unsigned long m_nPPID;
+  int myUserId;
 
 private slots:
   void slot_ok();

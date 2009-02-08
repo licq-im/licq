@@ -40,15 +40,26 @@ class FileDlg : public QWidget
 {
    Q_OBJECT
 public:
-  FileDlg(const char* szId, unsigned long nPPID, QWidget* parent = 0);
+  /**
+   * Constructor, create and show file transfer dialog
+   *
+   * @param userId User to send files to
+   * @param parent Parent widget
+   */
+  FileDlg(int userId, QWidget* parent = 0);
   virtual ~FileDlg();
 
   bool SendFiles(ConstFileList filelist, unsigned short nPort);
   bool ReceiveFiles();
 
   unsigned short LocalPort();
-  QString Id()  { return myId; }
-  unsigned long PPID()  { return m_nPPID; }
+
+  /**
+   * Get user for this file transfer
+   *
+   * @return Id of user
+   */
+  int userId() const { return myUserId; }
 
 private:
    QLabel* lblTransferFileName;
@@ -76,6 +87,7 @@ private:
 
    CFileTransferManager* ftman;
 
+  int myUserId;
    QString myId;
    unsigned long m_nPPID;
    QSocketNotifier* sn;

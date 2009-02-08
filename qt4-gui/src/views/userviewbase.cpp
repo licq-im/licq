@@ -176,8 +176,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
   {
     case ContactListModel::UserItem:
     {
-      QString id = dropIndex.data(ContactListModel::AccountIdRole).toString();
-      unsigned long ppid = dropIndex.data(ContactListModel::PpidRole).toUInt();
+      int userId = dropIndex.data(ContactListModel::UserIdRole).toInt();
 
       if (event->mimeData()->hasUrls())
       {
@@ -189,7 +188,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
         if (!(text = firstUrl.toLocalFile()).isEmpty())
         {
           UserSendFileEvent* sendFile = dynamic_cast<UserSendFileEvent*>(
-              LicqGui::instance()->showEventDialog(FileEvent, id, ppid));
+              LicqGui::instance()->showEventDialog(FileEvent, userId));
           if (!sendFile)
             return;
 
@@ -207,7 +206,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
         else
         {
           UserSendUrlEvent* sendUrl = dynamic_cast<UserSendUrlEvent*>(
-              LicqGui::instance()->showEventDialog(UrlEvent, id, ppid));
+              LicqGui::instance()->showEventDialog(UrlEvent, userId));
           if (!sendUrl)
             return;
 
@@ -233,21 +232,22 @@ void UserViewBase::dropEvent(QDropEvent* event)
         if (dropPpid != 0 && text.length() > 4)
         {
           QString dropId = text.mid(4);
-          if (id == dropId && ppid == dropPpid)
+          int dropUserId = gUserManager.getUserFromAccount(dropId.toLatin1(), dropPpid);
+          if (dropUserId == 0 || userId == dropUserId)
             return;
 
           UserSendContactEvent* sendContact = dynamic_cast<UserSendContactEvent*>(
-              LicqGui::instance()->showEventDialog(ContactEvent, id, ppid));
+              LicqGui::instance()->showEventDialog(ContactEvent, userId));
           if (!sendContact)
             return;
 
-          sendContact->setContact(dropId, dropPpid);
+          sendContact->setContact(dropUserId);
           sendContact->show();
         }
         else
         {
           UserSendMsgEvent* sendMsg = dynamic_cast<UserSendMsgEvent*>(
-              LicqGui::instance()->showEventDialog(MessageEvent, id, ppid));
+              LicqGui::instance()->showEventDialog(MessageEvent, userId));
           if (!sendMsg)
             return;
 
@@ -280,8 +280,9 @@ void UserViewBase::dropEvent(QDropEvent* event)
           return;
 
         QString dropId = text.mid(4);
+        int dropUserId = gUserManager.getUserFromAccount(dropId.toLatin1(), dropPpid);
 
-        if (!dropId.isEmpty())
+        if (dropUserId != 0)
         {
           // Should user be moved or just added to the new group?
           bool moveUser;
@@ -292,7 +293,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
           else
             moveUser = Config::ContactList::instance()->dragMovesUser();
 
-          gUserManager.SetUserInGroup(dropId.toLatin1(), dropPpid, GROUPS_USER, gid, true, moveUser);
+          gUserManager.setUserInGroup(dropUserId, GROUPS_USER, gid, true, moveUser);
 
           // If we are moving user we now need to remove it from the old group.
           // However, since the drop event doesn't contain the originating
@@ -300,7 +301,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
           // remove the user from all other groups.
           if (moveUser)
           {
-            const ICQUser* u = gUserManager.FetchUser(dropId.toLatin1(), dropPpid, LOCK_R);
+            const LicqUser* u = gUserManager.fetchUser(dropUserId);
             if (u != NULL)
             {
               UserGroupList userGroups = u->GetGroups();
@@ -309,7 +310,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
               UserGroupList::const_iterator i;
               for (i = userGroups.begin(); i != userGroups.end(); ++i)
                 if (*i != gid)
-                  gUserManager.SetUserInGroup(dropId.toLatin1(), dropPpid, GROUPS_USER, *i, false, false);
+                  gUserManager.setUserInGroup(dropUserId, GROUPS_USER, *i, false, false);
             }
           }
         }

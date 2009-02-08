@@ -47,8 +47,8 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendMsgEvent */
 
-UserSendMsgEvent::UserSendMsgEvent(QString id, unsigned long ppid, QWidget* parent)
-  : UserSendCommon(MessageEvent, id, ppid, parent, "UserSendMsgEvent")
+UserSendMsgEvent::UserSendMsgEvent(int userId, QWidget* parent)
+  : UserSendCommon(MessageEvent, userId, parent, "UserSendMsgEvent")
 {
   myMainWidget->addWidget(myViewSplitter);
   myMessageEdit->setFocus();
@@ -75,7 +75,7 @@ bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
   myMessageEdit->setText(QString::null);
 
   bool showAwayDlg = false;
-  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
   if (u != NULL)
   {
     showAwayDlg = u->Away() && u->ShowAwayMsg();
@@ -83,7 +83,7 @@ bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
   }
 
   if (showAwayDlg && Config::Chat::instance()->popupAutoResponse())
-    new ShowAwayMsgDlg(myUsers.front().c_str(), myPpid);
+    new ShowAwayMsgDlg(myUsers.front());
 
   return true;
 }
@@ -101,11 +101,18 @@ void UserSendMsgEvent::resetSettings()
 
 void UserSendMsgEvent::send()
 {
+  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId().c_str();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   if (mySendTypingTimer->isActive())
     mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->ProtoTypingNotification(myUsers.front().c_str(), myPpid, false, myConvoId);
+  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
 
   // do nothing if a command is already being processed
   unsigned long icqEventTag = 0;
@@ -126,7 +133,7 @@ void UserSendMsgEvent::send()
   if (!checkSecure())
     return;
 
-  const ICQUser* u = gUserManager.FetchUser(myUsers.front().c_str(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUsers.front());
   bool userOffline = true;
   if (u != NULL)
   {
@@ -194,15 +201,14 @@ void UserSendMsgEvent::send()
     }
 
     icqEventTag = gLicqDaemon->ProtoSendMessage(
-        myUsers.front().c_str(),
-        myPpid,
+        accountId.toLatin1(), ppid,
         messageRaw.data(),
         mySendServerCheck->isChecked() ? false : true,
         myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
         myMassMessageCheck->isChecked(),
         &myIcqColor,
         myConvoId);
-    if (myPpid == LICQ_PPID)
+    if (ppid == LICQ_PPID)
       myEventTag.push_back(icqEventTag);
 
     tmp = gTranslator.NToRN(messageRaw);

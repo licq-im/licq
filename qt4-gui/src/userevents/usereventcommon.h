@@ -44,18 +44,36 @@ class UserEventCommon : public QWidget
   Q_OBJECT
 
 public:
-  UserEventCommon(QString id, unsigned long ppid, QWidget* parent = 0, const char* name = 0);
+  /**
+   * Constructor
+   *
+   * @param userId User to open event dialog for
+   * @param parent Parent widget
+   * @param name Object name to set for widget
+   */
+  UserEventCommon(int userId, QWidget* parent = 0, const char* name = 0);
   virtual ~UserEventCommon();
 
-  int userId() const;
-  QString id() const { return QString::fromAscii(myUsers.front().c_str()); }
+  /**
+   * Get user for this dialog
+   *
+   * @return (First) user associated with with dialog
+   */
+  int userId() const { return myUsers.front(); }
+  const QString& id() const { return myId; }
   unsigned long ppid() const { return myPpid; }
   unsigned long convoId() { return myConvoId; }
-  std::list<std::string>& convoUsers() { return myUsers; }
+  const std::list<int>& convoUsers() const { return myUsers; }
   void setConvoId(unsigned long n) { myConvoId = n; }
   void addEventTag(unsigned long n) { if (n) myEventTag.push_back(n); }
 
-  bool isUserInConvo(QString id);
+  /**
+   * Check if a user is part of this conversation
+   *
+   * @param userId Id of user to check
+   * @return True if user is in conversation
+   */
+  bool isUserInConvo(int userId) const;
   void setTyping(unsigned short type);
 
 protected:
@@ -66,7 +84,7 @@ protected:
   unsigned long myPpid;
   unsigned long myConvoId;
   time_t myRemoteTimeOffset;
-  std::list<std::string> myUsers;
+  std::list<int> myUsers;
   unsigned long mySendFuncs;
 
   // ID of the higest event we've processed. Helps determine
@@ -100,7 +118,16 @@ protected:
   void updateWidgetInfo(const LicqUser* u);
   void pushToolTip(QAction* action, QString tooltip);
 
-  virtual void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid) = 0;
+  /**
+   * A user has been update, this virtual function allows subclasses to add additional handling
+   * This function will only be called if user is in this conversation
+   *
+   * @param userId Updated user
+   * @param subSignal Type of update
+   * @param argument Signal specific argument
+   * @param cid Conversation id
+   */
+  virtual void userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid) = 0;
 
 protected slots:
   /**
@@ -126,7 +153,12 @@ protected slots:
   void updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid);
 
 signals:
-  void finished(QString id, unsigned long ppid);
+  /**
+   * Dialog has finished
+   *
+   * @param userId User for this dialog
+   */
+  void finished(int userId);
   void encodingChanged();
 };
 

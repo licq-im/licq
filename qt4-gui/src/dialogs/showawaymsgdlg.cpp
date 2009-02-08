@@ -49,11 +49,9 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ShowAwayMsgDlg */
 
-ShowAwayMsgDlg::ShowAwayMsgDlg(QString id, unsigned long ppid,
-    bool fetch, QWidget* parent)
+ShowAwayMsgDlg::ShowAwayMsgDlg(int userId, bool fetch, QWidget* parent)
   : QDialog(parent),
-    myId(id),
-    myPpid(ppid),
+    myUserId(userId),
     icqEventTag(0)
 {
   Support::setWidgetProps(this, "ShowAwayMessageDialog");
@@ -80,7 +78,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(QString id, unsigned long ppid,
   connect(buttons, SIGNAL(rejected()), SLOT(close()));
   lay->addWidget(buttons);
 
-  const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   QTextCodec* codec = UserCodec::codecForICQUser(u);
   chkShowAgain->setChecked(u->ShowAwayMsg());
 
@@ -93,6 +91,8 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(QString id, unsigned long ppid,
     bool bSendServer =
       (u->SocketDesc(ICQ_CHNxNONE) <= 0 &&
        u->Version() > 6);
+    unsigned long myPpid = u->ppid();
+    QString myId = u->accountId().c_str();
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
     connect(LicqGui::instance()->signalManager(),
@@ -111,7 +111,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(QString id, unsigned long ppid,
 
 ShowAwayMsgDlg::~ShowAwayMsgDlg()
 {
-  ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   u->SetShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
 
@@ -164,14 +164,14 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent* e)
        e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) ||
        e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ)))
   {
-    const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(myUserId);
     QTextCodec* codec = UserCodec::codecForICQUser(u);
     const char* szAutoResp =
       (e->ExtendedAck() && !e->ExtendedAck()->Accepted()) ?
        e->ExtendedAck()->Response() :
        u->AutoResponse();
 
-    if (myPpid == LICQ_PPID && myId[0].isLetter())
+    if (u->ppid() == LICQ_PPID && QString(u->accountId().c_str())[0].isLetter())
     {
       // Strip HTML
       QString strResponse(codec->toUnicode(szAutoResp));

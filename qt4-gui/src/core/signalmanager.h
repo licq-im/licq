@@ -70,13 +70,57 @@ signals:
   void searchResult(ICQEvent* ev);
   void logon();
   void logoff();
-  void ui_viewevent(QString);
-  void ui_message(QString, unsigned long);
+
+  /**
+   * Open event dialog to show next event for a user
+   * Triggered from fifo or other plugin
+   *
+   * @param userId User to show event for
+   */
+  void ui_viewevent(int userId);
+
+  /**
+   * Open a message dialog for a user
+   * Triggered from fifo or other plugin
+   *
+   * @param userId User to open dialog for
+   */
+  void ui_message(int userId);
   void protocolPlugin(unsigned long);
-  void eventTag(QString, unsigned long, unsigned long);
-  void socket(QString, unsigned long, unsigned long);
-  void convoJoin(QString, unsigned long, unsigned long);
-  void convoLeave(QString, unsigned long, unsigned long);
+
+  /**
+   * A new event is ongoing for a user
+   *
+   * @param userId User event is sent for
+   * @param eventTag Id of event
+   */
+  void eventTag(int userId, unsigned long eventTag);
+
+  /**
+   * A conversation id has been associated with a user
+   *
+   * @param userId User id to associate conversation with
+   * @param convoId Conversation id
+   */
+  void socket(int userId, unsigned long convoId);
+
+  /**
+   * Someone joined an ongoing conversation
+   *
+   * @param userId User that joined conversation
+   * @param ppid Protocol of conversation
+   * @param convoId Id of conversation
+   */
+  void convoJoin(int userId, unsigned long ppid, unsigned long convoId);
+
+  /**
+   * Someone left an ongoing conversation
+   *
+   * @param userId User that left conversation
+   * @param ppid Protocol of conversation
+   * @param convoId Id of conversation
+   */
+  void convoLeave(int userId, unsigned long ppid, unsigned long convoId);
   void verifyImage(unsigned long);
   void newOwner(QString, unsigned long);
 

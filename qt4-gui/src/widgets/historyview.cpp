@@ -59,10 +59,9 @@ QStringList HistoryView::getStyleNames(bool includeHistoryStyles)
   return styleList;
 }
 
-HistoryView::HistoryView(bool historyMode, QString id, unsigned long ppid, QWidget* parent)
+HistoryView::HistoryView(bool historyMode, int userId, QWidget* parent)
   : MLView(parent),
-    myId(id),
-    myPpid(ppid)
+    myUserId(userId)
 {
   Config::Chat* chatConfig = Config::Chat::instance();
   if (historyMode)
@@ -149,11 +148,9 @@ void HistoryView::setReverse(bool reverse)
   myReverse = reverse;
 }
 
-void HistoryView::setOwner(QString id, unsigned long ppid)
+void HistoryView::setOwner(int userId)
 {
-  myId = id;
-  if (ppid != 0)
-    myPpid = ppid;
+  myUserId = userId;
 }
 
 void HistoryView::clear()
@@ -240,7 +237,8 @@ void HistoryView::internalAddMsg(QString s)
 
 void HistoryView::addMsg(const ICQEvent* event)
 {
-  if (event->Id() == myId && event->PPID() == myPpid && event->UserEvent() != NULL)
+  int userId = gUserManager.getUserFromAccount(event->Id(), event->PPID());
+  if (userId == myUserId && event->UserEvent() != NULL)
     addMsg(event->UserEvent());
 }
 
@@ -380,7 +378,7 @@ void HistoryView::addMsg(direction dir, bool fromHistory, QString eventDescripti
   internalAddMsg(s);
 }
 
-void HistoryView::addMsg(const CUserEvent* event, QString id, unsigned long ppid)
+void HistoryView::addMsg(const CUserEvent* event, int userId)
 {
   QDateTime date;
   date.setTime_t(event->Time());
@@ -390,15 +388,17 @@ void HistoryView::addMsg(const CUserEvent* event, QString id, unsigned long ppid
   QString contactName;
   QTextCodec* codec = NULL;
 
-  if (id.isNull())
-  {
-    id = myId;
-    ppid = myPpid;
-  }
+  if (userId == 0)
+    userId = myUserId;
 
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
+  unsigned long myPpid = 0;
+  QString myId;
   if (u != NULL)
   {
+    myId = u->accountId().c_str();
+    myPpid = u->ppid();
+
     codec = UserCodec::codecForICQUser(u);
     if (event->Direction() == D_RECEIVER)
     {

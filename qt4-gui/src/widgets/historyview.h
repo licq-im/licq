@@ -36,8 +36,14 @@ class HistoryView : public MLView
 public:
   static QStringList getStyleNames(bool includeHistoryStyles = false);
 
-  HistoryView(bool historyMode = false, QString id = QString(),
-      unsigned long ppid = 0, QWidget* parent = 0);
+  /**
+   * Constructor
+   *
+   * @param historyMode True to use history style setting, false to use chat style settings
+   * @param userId User to display chat history for
+   * @param parent Parent widget
+   */
+  HistoryView(bool historyMode = false, int userId = 0, QWidget* parent = 0);
   virtual ~HistoryView();
 
   void setHistoryConfig(unsigned short msgStyle, QString dateFormat,
@@ -48,7 +54,13 @@ public:
       QString rcvHist = QString(), QString sntHist = QString(),
       QString notice = QString());
   void setReverse(bool reverse);
-  void setOwner(QString id, unsigned long ppid = 0);
+
+  /**
+   * Change user this history is associated with
+   *
+   * @param userId New user
+   */
+  void setOwner(int userId);
 
   void updateContent();
   void clear();
@@ -60,7 +72,7 @@ public:
   virtual QSize sizeHint() const;
 
 public slots:
-  void addMsg(const CUserEvent* event, QString id = QString(), unsigned long ppid = 0);
+  void addMsg(const CUserEvent* event, int userId = 0);
   void addMsg(const ICQEvent* event);
   void setColors();
 
@@ -70,8 +82,7 @@ signals:
 private:
   void internalAddMsg(QString s);
 
-  QString myId;
-  unsigned long myPpid;
+  int myUserId;
   unsigned short myMsgStyle;
   QString myDateFormat;
   bool myExtraSpacing;

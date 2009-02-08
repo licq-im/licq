@@ -45,7 +45,13 @@ class UserViewEvent : public UserEventCommon
   Q_OBJECT
 
 public:
-  UserViewEvent(QString id, unsigned long ppid, QWidget* parent = 0);
+  /**
+   * Constructor, create and open dialog to view user events
+   *
+   * @param userId User to open dialog for
+   * @param parent Parent widget
+   */
+  UserViewEvent(int userId, QWidget* parent = 0);
   virtual ~UserViewEvent();
 
 private:
@@ -68,7 +74,17 @@ private:
   void generateReply();
   void sendMsg(QString text);
   void updateNextButton();
-  virtual void userUpdated(const QString& id, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
+
+  /**
+   * A user has been update, this virtual function allows subclasses to add additional handling
+   * This function will only be called if user is in this conversation
+   *
+   * @param userId Updated user
+   * @param subSignal Type of update
+   * @param argument Signal specific argument
+   * @param cid Conversation id
+   */
+  virtual void userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid);
 
 private slots:
   void autoClose();

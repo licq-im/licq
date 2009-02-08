@@ -31,7 +31,14 @@ class RefuseDlg : public QDialog
   Q_OBJECT
 
 public:
-  RefuseDlg(QString id, unsigned long ppid, QString t, QWidget* parent = NULL);
+  /**
+   * Constructor, create and show refusal dialog
+   *
+   * @param userId User to send refusal message to
+   * @param t Type of event to refuse
+   * @param parent Parent widget
+   */
+  RefuseDlg(int userId, const QString& t, QWidget* parent = NULL);
   QString RefuseMessage();
 
 private:

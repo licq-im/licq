@@ -118,21 +118,19 @@ public:
   /**
    * Show contact view event dialog (used when chat mode is disabled)
    *
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
    */
-  UserViewEvent* showViewEventDialog(QString id, unsigned long ppid);
+  UserViewEvent* showViewEventDialog(int userid);
 
   /**
    * Show contact event dialog
    *
    * @param fcn Type of event to open
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
    * @param convoId Conversation id
    * @param autoPopup True if the dialog was triggered automatically, false if triggered by the user
    */
-  UserEventCommon* showEventDialog(int fcn, QString id, unsigned long ppid, int convoId = -1, bool autoPopup = false);
+  UserEventCommon* showEventDialog(int fcn, int userId, int convoId = -1, bool autoPopup = false);
 
   /**
    * Replace event dialog
@@ -140,10 +138,9 @@ public:
    *
    * @param oldDialog Old (current) event dialog
    * @param newDialog New event dialog
-   * @param id Contact id
-   * @param ppid Contact protocol id
+   * @param userId Contact id
    */
-  void replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, QString id, unsigned long ppid);
+  void replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, int userId);
 
   /**
    * Toggle floaty for a contact
@@ -194,9 +191,9 @@ public slots:
   /**
    * Show next available event
    *
-   * @param id Contact id or "0" for any contact
+   * @param userId Contact id or zero for any contact
    */
-  void showNextEvent(QString id = "0");
+  void showNextEvent(int userId = 0);
 
   /**
    * Open dialogs for all owner events
@@ -209,9 +206,30 @@ public slots:
   void showAllEvents();
 
   void showDefaultEventDialog(int userId);
-  void sendMsg(QString id, unsigned long ppid, const QString& message);
-  void sendFileTransfer(QString id, unsigned long ppid, const QString& filename, const QString& description);
-  void sendChatRequest(QString id, unsigned long ppid);
+
+  /**
+   * Open a send message dialog and set message text
+   *
+   * @param userId User to send message to
+   * @param message Text to put in input area
+   */
+  void sendMsg(int userId, const QString& message);
+
+  /**
+   * Open a file transfer dialog for a specified file
+   *
+   * @param userId User to send file to
+   * @param filename Path to file to sendof
+   * @param description Text to put in description area
+   */
+  void sendFileTransfer(int userId, const QString& filename, const QString& description);
+
+  /**
+   * Open a chat request dialog
+   *
+   * @param userId User to open chat request dialog for
+   */
+  void sendChatRequest(int userId);
 
 signals:
   /**
@@ -230,10 +248,35 @@ private slots:
 
   void userDlgFinished(UserDlg* dialog);
   void userEventTabDlgDone();
-  void userEventFinished(QString id, unsigned long ppid);
-  void sendEventFinished(QString id, unsigned long ppid);
-  void showMessageDialog(QString id, unsigned long ppid);
-  void addEventTag(QString id, unsigned long ppid, unsigned long eventTag);
+
+  /**
+   * A view user event dialog has finished
+   *
+   * @param userId User dialog was opened for
+   */
+  void userEventFinished(int userId);
+
+  /**
+   * A send user event dialog has finished
+   *
+   * @param userId User dialog was opened for
+   */
+  void sendEventFinished(int userId);
+
+  /**
+   * Open a message dialog
+   *
+   * @param userId User to open dialog for
+   */
+  void showMessageDialog(int userId);
+
+  /**
+   * Add event tag to a user event dialog
+   *
+   * @param userId User to find dialog for
+   * @param eventTag Event tag to add to dialog
+   */
+  void addEventTag(int userId, unsigned long eventTag);
 
   /**
    * Act on changes to the contact list
@@ -254,9 +297,31 @@ private slots:
    */
   void userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid);
 
-  void convoSet(QString id, unsigned long ppid, unsigned long convoId);
-  void convoJoin(QString id, unsigned long ppid, unsigned long convoId);
-  void convoLeave(QString id, unsigned long ppid, unsigned long convoId);
+  /**
+   * Set conversation id for user event dialog
+   *
+   * @param userId User to find dialog for
+   * @param convoId Conversation id to set
+   */
+  void convoSet(int userId, unsigned long convoId);
+
+  /**
+   * Someone joined an ongoing conversation
+   *
+   * @param userId User that joined conversation
+   * @param ppid Protocol of conversation
+   * @param convoId Id of conversation
+   */
+  void convoJoin(int userId, unsigned long ppid, unsigned long convoId);
+
+  /**
+   * Someone left an ongoing conversation
+   *
+   * @param userId User that left conversation
+   * @param ppid Protocol of conversation
+   * @param convoId Id of conversation
+   */
+  void convoLeave(int userId, unsigned long ppid, unsigned long convoId);
   void autoAway();
   void updateDockIcon();
 

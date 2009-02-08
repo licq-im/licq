@@ -367,7 +367,7 @@ void UserMenu::popup(QPoint pos, int userId)
 
 void UserMenu::viewEvent()
 {
-  LicqGui::instance()->showViewEventDialog(myId, myPpid);
+  LicqGui::instance()->showViewEventDialog(myUserId);
 }
 
 void UserMenu::checkInvisible()
@@ -378,7 +378,7 @@ void UserMenu::checkInvisible()
 
 void UserMenu::checkAutoResponse()
 {
-  new ShowAwayMsgDlg(myId, myPpid, true);
+  new ShowAwayMsgDlg(myUserId, true);
 }
 
 void UserMenu::customAutoResponse()
@@ -416,7 +416,7 @@ void UserMenu::copyIdToClipboard()
 
 void UserMenu::viewHistory()
 {
-  new HistoryDlg(myId, myPpid);
+  new HistoryDlg(myUserId);
 }
 
 void UserMenu::viewInfoGeneral()
@@ -439,7 +439,7 @@ void UserMenu::send(QAction* action)
       break;
 
     case SendKey:
-      new KeyRequestDlg(myId, myPpid);
+      new KeyRequestDlg(myUserId);
       break;
 
     case RequestUpdateInfoPlugin:
@@ -468,7 +468,7 @@ void UserMenu::send(QAction* action)
       break;
 
     default:
-      LicqGui::instance()->showEventDialog(index, myId, myPpid);
+      LicqGui::instance()->showEventDialog(index, myUserId);
   }
 }
 

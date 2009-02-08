@@ -31,10 +31,21 @@ class UserSendContactEvent : public UserSendCommon
   Q_OBJECT
 
 public:
-  UserSendContactEvent(QString id, unsigned long ppid, QWidget* parent = 0);
+  /**
+   * Constructor, create and open send contact dialog
+   *
+   * @param userId User to open dialog for
+   * @param parent Parent widget
+   */
+  UserSendContactEvent(int userId, QWidget* parent = 0);
   virtual ~UserSendContactEvent();
 
-  void setContact(QString id, unsigned long ppid);
+  /**
+   * Add contact to send
+   *
+   * @param userId Id of user to add
+   */
+  void setContact(int userId);
 
 private:
   MMUserView* myContactsList;

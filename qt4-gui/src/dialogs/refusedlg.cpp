@@ -36,7 +36,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::RefuseDlg */
 
-RefuseDlg::RefuseDlg(QString id, unsigned long ppid, QString t, QWidget* parent)
+RefuseDlg::RefuseDlg(int userId, const QString& t, QWidget* parent)
    : QDialog(parent)
 {
   Support::setWidgetProps(this, "RefuseDialog");
@@ -44,7 +44,7 @@ RefuseDlg::RefuseDlg(QString id, unsigned long ppid, QString t, QWidget* parent)
 
   QVBoxLayout* lay = new QVBoxLayout(this);
 
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   QLabel* lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromUtf8(u->GetAlias()) + ":");
   lay->addWidget(lbl);
   gUserManager.DropUser(u);

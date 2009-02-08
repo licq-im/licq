@@ -73,14 +73,7 @@ ContactUserData::ContactUserData(const ICQUser* licqUser, QObject* parent)
 {
   myUserId = licqUser->id();
   myPpid = licqUser->PPID();
-
-  if (licqUser->IdString() != NULL)
-  {
-    char* szRealId = NULL;
-    ICQUser::MakeRealId(licqUser->IdString(), licqUser->PPID(), szRealId);
-    myAccountId = szRealId;
-    delete [] szRealId;
-  }
+  myAccountId = licqUser->realAccountId().c_str();
 
   if (myRefreshTimer == NULL)
   {
