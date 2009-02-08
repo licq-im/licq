@@ -690,7 +690,7 @@ public:
   bool Away() const;
   static const char* StatusToStatusStr(unsigned short n, bool b);
   static const char* StatusToStatusStrShort(unsigned short n, bool b);
-  static char* MakeRealId(const std::string& accountId, unsigned long ppid, char *&);
+  LICQ_DEPRECATED static char* MakeRealId(const std::string& accountId, unsigned long ppid, char *&);
 
   /**
    * Normalize an account id
