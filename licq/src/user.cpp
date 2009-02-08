@@ -788,7 +788,7 @@ bool CUserManager::userExists(int id)
 
 bool CUserManager::IsOnList(const char *_szId, unsigned long _nPPID)
 {
-  if (FindOwner(_szId, _nPPID))
+  if (_szId == OwnerId(_nPPID))
     return true;
 
   LockUserList(LOCK_R);

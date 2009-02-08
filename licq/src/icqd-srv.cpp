@@ -5492,7 +5492,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetEnableSave(false);
           tmp = msg.UnpackString();
           // Skip the alias if user wants to keep his own.
-          if (!u->m_bKeepAliasOnUpdate || gUserManager.FindOwner(szId, LICQ_PPID))
+          if (!u->m_bKeepAliasOnUpdate || szId == gUserManager.OwnerId(LICQ_PPID))
           {
             char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->UserEncoding()) : 0;
             gTranslator.ServerToClient(szUTFAlias);
@@ -5536,7 +5536,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetAuthorization( !msg.UnpackChar() );
           unsigned char nStatus = msg.UnpackChar(); // Web aware status
 
-          if (gUserManager.FindOwner(u->IdString(), u->PPID()) != 0)
+          if (gUserManager.isOwner(u->id()))
           {
             static_cast<ICQOwner *>(u)->SetWebAware(nStatus);
             /* this unpack is inside the if statement since it appears only
@@ -6329,7 +6329,7 @@ int CICQDaemon::RequestReverseConnection(const char* id,
                                          unsigned short nLocalPort,
                                          unsigned short nRemotePort)
 {
-  if (gUserManager.FindOwner(id, LICQ_PPID) != NULL)
+  if (id == gUserManager.OwnerId(LICQ_PPID))
     return -1;
 
   ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);

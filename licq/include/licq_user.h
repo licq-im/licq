@@ -1229,7 +1229,7 @@ public:
   bool userExists(int id);
 
   bool IsOnList(const char *, unsigned long);
-  LicqOwner* FindOwner(const char* idstring, unsigned long ppid);
+  LICQ_DEPRECATED LicqOwner* FindOwner(const char* idstring, unsigned long ppid);
 
   /**
    * Get user id for an owner

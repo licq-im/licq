@@ -341,7 +341,8 @@ unsigned long CICQDaemon::icqFileTransfer(const char *szId, const char *szFilena
                         const char *szDescription, ConstFileList &lFileList,
                         unsigned short nLevel, bool bServer)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   ICQEvent *result = NULL;
   char *szDosDesc = NULL;
@@ -431,7 +432,8 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
    const StringList& users, bool online, unsigned short nLevel,
    bool bMultipleRecipients, CICQColor *pColor)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID) != NULL) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   char *m = new char[3 + users.size() * 80];
   int p = sprintf(m, "%d%c", int(users.size()), char(0xFE));
@@ -524,7 +526,8 @@ unsigned long CICQDaemon::icqRequestInfoPlugin(ICQUser *u, bool bServer,
 unsigned long CICQDaemon::icqRequestInfoPluginList(const char *szId,
                                                    bool bServer)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
@@ -547,7 +550,8 @@ unsigned long CICQDaemon::icqRequestInfoPluginList(const char *szId,
 unsigned long CICQDaemon::icqRequestPhoneBook(const char *szId,
                                               bool bServer)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
@@ -568,7 +572,8 @@ unsigned long CICQDaemon::icqRequestPhoneBook(const char *szId,
 //-----CICQDaemon::sendPictureReq-----------------------------------------------
 unsigned long CICQDaemon::icqRequestPicture(const char *szId, bool bServer)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
@@ -611,7 +616,8 @@ unsigned long CICQDaemon::icqRequestStatusPlugin(ICQUser *u, bool bServer,
 unsigned long CICQDaemon::icqRequestStatusPluginList(const char *szId,
                                                      bool bServer)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
@@ -635,7 +641,8 @@ unsigned long CICQDaemon::icqRequestStatusPluginList(const char *szId,
 unsigned long CICQDaemon::icqRequestSharedFiles(const char *szId,
                                                 bool bServer)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
@@ -658,7 +665,8 @@ unsigned long CICQDaemon::icqRequestSharedFiles(const char *szId,
 unsigned long CICQDaemon::icqRequestPhoneFollowMe(const char *szId,
                                                   bool bServer)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
@@ -681,7 +689,8 @@ unsigned long CICQDaemon::icqRequestPhoneFollowMe(const char *szId,
 unsigned long CICQDaemon::icqRequestICQphone(const char *szId,
                                              bool bServer)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
   ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
   if (u == NULL) return 0;
@@ -818,7 +827,7 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
    const char *reason, const char *szChatUsers, unsigned short nPort,
    unsigned short nLevel, bool bServer)
 {
-  if (gUserManager.FindOwner(id, LICQ_PPID) != NULL)
+  if (id == gUserManager.OwnerId(LICQ_PPID))
     return 0;
 
   ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
@@ -964,7 +973,8 @@ unsigned long CICQDaemon::ProtoOpenSecureChannel(const char *szId,
 
 unsigned long CICQDaemon::icqOpenSecureChannel(const char *szId)
 {
-  if (gUserManager.FindOwner(szId, LICQ_PPID)) return 0;
+  if (szId == gUserManager.OwnerId(LICQ_PPID))
+    return 0;
 
 #ifdef USE_OPENSSL
   ICQEvent *result = NULL;
@@ -1643,10 +1653,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
     return false;
   }
 
-  if (gUserManager.FindOwner(id, LICQ_PPID) != NULL || strcmp(id, pSock->OwnerId()) != 0)
+  bool isOwner = (id == gUserManager.OwnerId(LICQ_PPID));
+  if (isOwner || strcmp(id, pSock->OwnerId()) != 0)
   {
     char *buf;
-    if (gUserManager.FindOwner(id, LICQ_PPID) != NULL)
+    if (isOwner)
       gLog.Warn(tr("%sTCP message from self (probable spoof):\n%s\n"), L_WARNxSTR, packet.print(buf));
     else
       gLog.Warn(tr("%sTCP message from invalid UIN (%s, expect %s):\n%s\n"),
