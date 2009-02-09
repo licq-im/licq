@@ -1720,8 +1720,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
           if (pUser->NewMessages() && m_lUsers.front() == pUser->id())
           {
             for (unsigned short i = 0; i < pUser->NewMessages(); i++)
-            {            
-              CUserEvent *e = pUser->EventPeek(i);
+            {
+              const CUserEvent* e = pUser->EventPeek(i);
               if (e->Id() > m_highestEventId && e->ConvoId() == m_nConvoId)
                 m_highestEventId = e->Id();
                 
@@ -2118,7 +2118,7 @@ void UserSendCommon::slot_ClearNewEvents()
         std::vector<int> idList;
         for (unsigned short i = 0; i < u->NewMessages(); i++)
         {
-          CUserEvent *e = u->EventPeek(i);
+          const CUserEvent* e = u->EventPeek(i);
           if (e->Id() <= m_highestEventId && e->Direction() == D_RECEIVER &&
               e->SubCommand() == ICQ_CMDxSUB_MSG)
             idList.push_back(e->Id());

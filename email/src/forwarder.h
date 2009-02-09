@@ -44,9 +44,9 @@ public:
   void ProcessEvent(ICQEvent *);
 
   void ProcessUserEvent(int userId, unsigned long nId);
-  bool ForwardEvent(LicqUser *, CUserEvent *);
-  bool ForwardEvent_ICQ(LicqUser *, CUserEvent *);
-  bool ForwardEvent_Email(LicqUser *, CUserEvent *);
+  bool ForwardEvent(const LicqUser* u, const CUserEvent* e);
+  bool ForwardEvent_ICQ(const LicqUser* u, const CUserEvent* e);
+  bool ForwardEvent_Email(const LicqUser* u, const CUserEvent* e);
 
 private:
   bool CreateDefaultConfig();

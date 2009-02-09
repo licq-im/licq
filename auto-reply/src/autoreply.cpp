@@ -251,7 +251,7 @@ void CLicqAutoReply::ProcessUserEvent(const char *szId, unsigned long nPPID, uns
     return;
   }
 
-  CUserEvent *e = u->EventPeekId(nId);
+  const CUserEvent* e = u->EventPeekId(nId);
   gUserManager.DropUser(u);
 
   if (e == NULL)
@@ -271,7 +271,7 @@ void CLicqAutoReply::ProcessUserEvent(const char *szId, unsigned long nPPID, uns
 }
 
 
-bool CLicqAutoReply::AutoReplyEvent(const char *szId, unsigned long nPPID, CUserEvent *event)
+bool CLicqAutoReply::AutoReplyEvent(const char *szId, unsigned long nPPID, const CUserEvent* event)
 {
   char *szCommand;
   char buf[4096];

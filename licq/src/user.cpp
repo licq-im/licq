@@ -3352,32 +3352,17 @@ void ICQUser::WriteToHistory(const char *_szText)
 
 
 //-----ICQUser::GetEvent--------------------------------------------------------
-CUserEvent *ICQUser::EventPeek(unsigned short index)
+void LicqUser::CancelEvent(unsigned short index)
 {
-  if (index >= NewMessages()) return (NULL);
-  return (m_vcMessages[index]);
+  if (index < NewMessages())
+    return;
+  m_vcMessages[index]->Cancel();
 }
 
 const CUserEvent* ICQUser::EventPeek(unsigned short index) const
 {
   if (index >= NewMessages()) return (NULL);
   return (m_vcMessages[index]);
-}
-
-CUserEvent *ICQUser::EventPeekId(int id)
-{
-  if (m_vcMessages.size() == 0) return NULL;
-  CUserEvent *e = NULL;
-  UserEventList::const_iterator iter;
-  for (iter = m_vcMessages.begin(); iter != m_vcMessages.end(); ++iter)
-  {
-    if ((*iter)->Id() == id)
-    {
-      e = *iter;
-      break;
-    }
-  }
-  return e;
 }
 
 const CUserEvent* ICQUser::EventPeekId(int id) const

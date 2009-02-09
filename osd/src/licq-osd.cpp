@@ -428,7 +428,7 @@ void ProcessSignal(LicqSignal* s)
     bool secure=false;
     unsigned long status=0;
   const char* userencoding = NULL;
-    CUserEvent *e=0;
+  const CUserEvent* e = NULL;
 
     switch (s->Signal()) // signaltype
     {

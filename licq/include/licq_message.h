@@ -106,6 +106,7 @@ protected:
 friend class CICQDaemon;
 friend class CMSN;
 friend class CUserHistory;
+  friend class LicqUser;
 };
 
 

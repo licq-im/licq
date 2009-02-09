@@ -705,9 +705,8 @@ public:
 
   // Message/History functions
   unsigned short NewMessages() const            { return(m_vcMessages.size()); }
-  CUserEvent *EventPeek(unsigned short);
+  void CancelEvent(unsigned short index);
   const CUserEvent* EventPeek(unsigned short index) const;
-  CUserEvent *EventPeekId(int);
   const CUserEvent* EventPeekId(int id) const;
   const CUserEvent* EventPeekFirst() const;
   const CUserEvent* EventPeekLast() const;

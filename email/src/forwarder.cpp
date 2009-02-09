@@ -298,7 +298,7 @@ void CLicqForwarder::ProcessUserEvent(int userId, unsigned long nId)
     return;
   }
 
-  CUserEvent *e = u->EventPeekId(nId);
+  const CUserEvent* e = u->EventPeekId(nId);
 
   if (e == NULL)
   {
@@ -315,7 +315,7 @@ void CLicqForwarder::ProcessUserEvent(int userId, unsigned long nId)
 }
 
 
-bool CLicqForwarder::ForwardEvent(ICQUser *u, CUserEvent *e)
+bool CLicqForwarder::ForwardEvent(const LicqUser* u, const CUserEvent* e)
 {
   if (e == NULL) return false;
 
@@ -333,7 +333,7 @@ bool CLicqForwarder::ForwardEvent(ICQUser *u, CUserEvent *e)
 }
 
 
-bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
+bool CLicqForwarder::ForwardEvent_ICQ(const LicqUser* u, const CUserEvent* e)
 {
   char *szText = new char[strlen(e->Text()) + 256];
   char szTime[64];
@@ -353,7 +353,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(ICQUser *u, CUserEvent *e)
 }
 
 
-bool CLicqForwarder::ForwardEvent_Email(ICQUser *u, CUserEvent *e)
+bool CLicqForwarder::ForwardEvent_Email(const LicqUser* u, const CUserEvent* e)
 {
   char szTo[256],
        szFrom[256],

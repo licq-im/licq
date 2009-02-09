@@ -322,7 +322,7 @@ UserSendCommon::UserSendCommon(int type, int userId, QWidget* parent, const char
           {
             for (unsigned short i = 0; i < pUser->NewMessages(); i++)
             {
-              CUserEvent* e = pUser->EventPeek(i);
+              const CUserEvent* e = pUser->EventPeek(i);
 
               if (e->ConvoId() == myConvoId)
               {
@@ -1259,7 +1259,7 @@ void UserSendCommon::clearNewEvents()
           std::vector<int> idList;
           for (unsigned short i = 0; i < u->NewMessages(); i++)
           {
-            CUserEvent* e = u->EventPeek(i);
+            const CUserEvent* e = u->EventPeek(i);
             if (e->Id() <= myHighestEventId &&
                 e->Direction() == D_RECEIVER &&
                 (e->SubCommand() == ICQ_CMDxSUB_MSG ||

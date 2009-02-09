@@ -35,7 +35,7 @@ public:
   void ProcessEvent(ICQEvent *);
 
   void ProcessUserEvent(const char *, unsigned long, unsigned long);
-  bool AutoReplyEvent(const char *, unsigned long, CUserEvent *);
+  bool AutoReplyEvent(const char *, unsigned long, const CUserEvent* event);
 
   bool POpen(const char *cmd);
   int PClose();

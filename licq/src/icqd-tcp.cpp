@@ -2844,7 +2844,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (u->EventPeek(i)->Sequence() == theSequence)
           {
-            u->EventPeek(i)->Cancel();
+            u->CancelEvent(i);
             break;
           }
         }
@@ -2870,7 +2870,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (u->EventPeek(i)->Sequence() == theSequence)
           {
-            u->EventPeek(i)->Cancel();
+            u->CancelEvent(i);
             break;
           }
         }
