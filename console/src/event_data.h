@@ -5,10 +5,9 @@
 class CData
 {
 public:
-  CData (const char *i, unsigned long n)
-    { szId = i; nPPID = n, nPos = 0; szQuery[0] = '\0'; }
-  const char *szId;
-  unsigned long nPPID;
+  CData(int id)
+  { userId = id; nPos = 0; szQuery[0] = '\0'; }
+  int userId;
   unsigned short nPos;
   char szQuery[80];
 };
@@ -17,7 +16,7 @@ public:
 class DataMsg : public CData
 {
 public:
-  DataMsg(const char *i, unsigned long n) : CData(i, n)
+  DataMsg(int id) : CData(id)
     { szMsg[0] = '\0'; bUrgent = false; bServer = false; }
   char szMsg[1024];
   bool bUrgent;
@@ -28,7 +27,7 @@ public:
 class DataSendFile : public CData
 {
 public:
-  DataSendFile(const char *i, unsigned long n) : CData(i, n)
+  DataSendFile(int id) : CData(id)
     { szFileName[0] = '\0'; szDescription[0] = '\0'; bUrgent = false; }
   char szFileName[512];
   char szDescription[512];
@@ -39,7 +38,7 @@ public:
 class DataAutoResponse : public CData
 {
 public:
-  DataAutoResponse() : CData(NULL, 0)
+  DataAutoResponse() : CData(0)
     { szRsp[0] = '\0'; }
   char szRsp[1024];
 };
@@ -48,7 +47,7 @@ public:
 class DataUrl : public CData
 {
 public:
-  DataUrl(const char *i, unsigned long n) : CData(i, n)
+  DataUrl(int id) : CData(id)
     { szUrl[0] = '\0'; szDesc[0] = '\0'; bUrgent = false; bServer = false; }
   char szUrl[1024];
   char szDesc[1024];
@@ -59,14 +58,14 @@ public:
 class DataSms : public CData
 {
 public:
-  DataSms(const char *i, unsigned long n) : CData(i, n)
+  DataSms(int id) : CData(id)
     { szMsg[0] = '\0'; }
   char szMsg[1024];
 };
 class DataRegWizard : public CData
 {
 public:
-  DataRegWizard(const char *i = NULL, unsigned long n = 0) : CData(i, n)
+  DataRegWizard(int id = 0) : CData(id)
     {  szOption[0] = '\0'; szPassword1[0] = '\0'; szPassword2[0] = '\0'; szUin[0] = '\0'; nState = 0; }
   char szOption[80];
   char szPassword1[80];
@@ -78,7 +77,7 @@ public:
 class DataUserSelect : public CData
 {
 public:
-  DataUserSelect(const char *i, unsigned long n) : CData(i, n)
+  DataUserSelect(int id) : CData(id)
     {  szPassword[0] = '\0'; }
   char szPassword[80];
 };
@@ -86,11 +85,12 @@ public:
 class DataSearch : public CData
 {
 public:
-  DataSearch() : CData(NULL, 0)
+  DataSearch() : CData(0)
       {  szAlias[0] = szFirstName[0] = szLastName[0] = szEmail[0] =
          szCity[0] = szState[0] = szCoName[0] = szCoDept[0] = szCoPos[0] = '\0';
          nState = nMinAge = nMaxAge = nGender = nLanguage = nCountryCode = 0;
-         bOnlineOnly = false; }
+         bOnlineOnly = false; szId = NULL; }
+  const char* szId;
   char szAlias[80];
   char szFirstName[80];
   char szLastName[80];
@@ -114,7 +114,7 @@ public:
 class DataFileChatOffer : public CData
 {
 public:
-  DataFileChatOffer(CEventFile *_f, const char *i, unsigned long n) : CData(i, n)
+  DataFileChatOffer(CEventFile *_f, int id) : CData(id)
     { szReason[0] = '\0'; f = _f; }
   CEventFile *f;
   char szReason[256];

@@ -148,10 +148,9 @@ void CLicqConsole::PrintStatus()
   else
     strcpy(szMsgStr, "No Messages");
 
-  if (!winMain->sLastContact.szId.empty())
+  if (winMain->sLastContact > 0)
   {
-    ICQUser* u = gUserManager.FetchUser(winMain->sLastContact.szId.c_str(),
-      winMain->sLastContact.nPPID, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(winMain->sLastContact);
     if (u == NULL)
       szLastUser = strdup("<Removed>");
     else
@@ -301,8 +300,7 @@ void CLicqConsole::CreateUserList()
 
     s = new SUser;
     sprintf(s->szKey, "%05u%010lu", pUser->Status(), pUser->Touched() ^ 0xFFFFFFFF);
-    sprintf(s->szId, "%s", pUser->IdString());
-    s->nPPID = pUser->PPID();
+    s->userId = pUser->id();
     s->bOffline = pUser->StatusOffline();
 
     unsigned short nStatus = pUser->Status();
@@ -389,9 +387,8 @@ void CLicqConsole::PrintUsers()
   {
     s = new SScrollUser;
     s->pos = i;
-    s->nPPID = (*it)->nPPID;
+    s->userId = (*it)->userId;
         s->color = (*it)->color;
-    sprintf(s->szId, "%s", (*it)->szId);
 
     m_lScrollUsers.push_back(s);
     ulist[i++] = copyChar((*it)->szLine);
@@ -441,7 +438,7 @@ void CLicqConsole::UserListHighlight(chtype type, chtype input)
   {
     if ((*it)->pos == (cdkUserList->currentItem + down))
     {
-      ICQUser *u = gUserManager.FetchUser((*it)->szId, (*it)->nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser((*it)->userId);
       if (u && u->NewMessages())
         setCDKScrollHighlight(cdkUserList, COLOR_PAIR((*it)->color->nColor - 6) | type);
       else
@@ -574,10 +571,10 @@ void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_General
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_General(const char *szId, unsigned long nPPID)
+void CLicqConsole::PrintInfo_General(int userId)
 {
   // Print the users info to the main window
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return;
 
   // Some IP, Real IP and last seen stuff
@@ -649,10 +646,10 @@ void CLicqConsole::PrintInfo_General(const char *szId, unsigned long nPPID)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_More
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_More(const char *szId, unsigned long nPPID)
+void CLicqConsole::PrintInfo_More(int userId)
 {
   // Print the users info to the main window
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return;
 
   wattron(winMain->Win(), A_BOLD);
@@ -700,10 +697,10 @@ void CLicqConsole::PrintInfo_More(const char *szId, unsigned long nPPID)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_Work
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_Work(const char *szId, unsigned long nPPID)
+void CLicqConsole::PrintInfo_Work(int userId)
 {
   // Print the users info to the main window
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return;
 
   wattron(winMain->Win(), A_BOLD);
@@ -751,10 +748,10 @@ void CLicqConsole::PrintInfo_Work(const char *szId, unsigned long nPPID)
 /*----------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_About
  *--------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_About(const char *szId, unsigned long nPPID)
+void CLicqConsole::PrintInfo_About(int userId)
 {
   // Print the user's about info to the main window
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)  return;
 
   wattron(winMain->Win(), A_BOLD);

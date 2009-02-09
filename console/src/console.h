@@ -35,8 +35,7 @@ struct SColorMap
 struct SUser
 {
   char szKey[256];
-  char szId[256];
-  unsigned long nPPID;
+  int userId;
   char *szLine;
   bool bOffline;
   const struct SColorMap *color;
@@ -48,8 +47,7 @@ struct SUser
 struct SScrollUser
 {
   int pos;
-  unsigned long nPPID;
-  char szId[256];
+  int userId;
   const struct SColorMap *color;
 };
 
@@ -118,8 +116,7 @@ public:
   char *CurrentGroupName();
   void SwitchToCon(unsigned short nCon);
   void CreateUserList();
-  void AddEventTag(const char* _szId, unsigned long _nPPID,
-      unsigned long _nEventTag);
+  void AddEventTag(int userId, unsigned long _nEventTag);
 
   void InputCommand(int cIn);
   void InputLogWindow(int cIn);
@@ -148,10 +145,10 @@ public:
   void PrintUsers();
   void PrintHelp();
   void PrintHistory(HistoryList &, unsigned short, unsigned short, const char *);
-  void PrintInfo_General(const char *, unsigned long);
-  void PrintInfo_More(const char *, unsigned long);
-  void PrintInfo_Work(const char *, unsigned long);
-  void PrintInfo_About(const char *, unsigned long);
+  void PrintInfo_General(int userId);
+  void PrintInfo_More(int userId);
+  void PrintInfo_Work(int userId);
+  void PrintInfo_About(int userId);
   void PrintFileStat(CFileTransferManager *);
   void PrintMacros();
   void PrintContactPopup(const char* alias);
@@ -194,29 +191,28 @@ public:
   void TabStatus(char *, struct STabCompletion &);
   void TabSet(char *, struct STabCompletion &);
 
-  void UserCommand_Info(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_Msg(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_View(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_SendFile(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_Url(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_Sms(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_History(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_Remove(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_FetchAutoResponse(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_SetAutoResponse(const char *szId, unsigned long nPPID, char *);
-  void UserCommand_Secure(const char *szId, unsigned long nPPID, char *);
+  void UserCommand_Info(int userId, char *);
+  void UserCommand_Msg(int userId, char *);
+  void UserCommand_View(int userId, char *);
+  void UserCommand_SendFile(int userId, char *);
+  void UserCommand_Url(int userId, char *);
+  void UserCommand_Sms(int userId, char *);
+  void UserCommand_History(int userId, char *);
+  void UserCommand_Remove(int userId, char *);
+  void UserCommand_FetchAutoResponse(int userId, char *);
+  void UserCommand_SetAutoResponse(int userId, char *);
+  void UserCommand_Secure(int userId, char *);
   void Command_Search();
 
   void Beep() { printf("\a"); fflush(stdout); }
-  void FileChatOffer(CUserEvent *, const char *, unsigned long);
+  void FileChatOffer(CUserEvent *, int userId);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
   void UserSelect();
   void InputUserSelect(int cIn);
   bool ParseMacro(char *);
-  std::string GetUserFromArg(char** p_szArg);
-  void SaveLastUser(const std::string& id, unsigned long ppid);
-  struct SContact GetContactFromArg(char **);
+  void SaveLastUser(int userId);
+  int GetContactFromArg(char **);
 };
 
 
