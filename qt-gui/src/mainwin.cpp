@@ -359,7 +359,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqSigMan = theSigMan;
   licqLogWindow = theLogWindow;
   positionChanges = false;
-  m_szUserMenuId = 0;
+  myMenuUserId = 0;
   m_nProtoNum = 0;
 
   // Overwrite Qt's event handler
@@ -697,6 +697,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     licqConf.ReadNum(key, ppid, LICQ_PPID);
     sprintf(key, "Floaty%d.Uin", i);
     licqConf.ReadStr(key, szTemp, "");
+    int userId = gUserManager.getUserFromAccount(szTemp, ppid);
     sprintf(key, "Floaty%d.X", i);
     licqConf.ReadNum(key, xPosF, 0);
     sprintf(key, "Floaty%d.Y", i);
@@ -704,8 +705,8 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     sprintf(key, "Floaty%d.W", i);
     licqConf.ReadNum(key, wValF, 80);
 
-    if (szTemp[0] != 0)
-      CreateUserFloaty(szTemp, ppid, xPosF, yPosF, wValF);
+    if (userId != 0)
+      CreateUserFloaty(userId, xPosF, yPosF, wValF);
   }
 
   usprintfHelp = tr("<ul>"
@@ -752,32 +753,30 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 
    connect (&autoAwayTimer, SIGNAL(timeout()), this, SLOT(autoAway()));
-  connect(licqSigMan, SIGNAL(signal_updatedList(unsigned long, int, const QString&, unsigned long)),
-      this, SLOT(slot_updatedList(unsigned long, int, const QString&, unsigned long)));
-  connect (licqSigMan, SIGNAL(signal_updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      this, SLOT(slot_updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_updatedList(unsigned long, int, int)),
+      this, SLOT(slot_updatedList(unsigned long, int, int)));
+  connect (licqSigMan, SIGNAL(signal_updatedUser(int, unsigned long, int, unsigned long)),
+      this, SLOT(slot_updatedUser(int, unsigned long, int, unsigned long)));
   connect (licqSigMan, SIGNAL(signal_updatedStatus(unsigned long)), this, SLOT(updateStatus(unsigned long)));
    connect (licqSigMan, SIGNAL(signal_doneOwnerFcn(ICQEvent *)),
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
             this, SLOT(slot_logon()));
-//   connect (licqSigMan, SIGNAL(signal_ui_viewevent(unsigned long)),
-//            this, SLOT(slot_ui_viewevent(unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_ui_message(const char *,unsigned long)),
-            this, SLOT(slot_ui_message(const char *, unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_ui_viewevent(const char *)),
-            this, SLOT(slot_ui_viewevent(const char *)));
+  connect(licqSigMan, SIGNAL(signal_ui_message(int)),
+      this, SLOT(slot_ui_message(int)));
+  connect(licqSigMan, SIGNAL(signal_ui_viewevent(int)),
+      this, SLOT(slot_ui_viewevent(int)));
    connect (licqSigMan, SIGNAL(signal_protocolPlugin(unsigned long)),
             this, SLOT(slot_protocolPlugin(unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_eventTag(const char *, unsigned long, unsigned long)),
-            this, SLOT(slot_eventTag(const char *, unsigned long, unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_socket(const char *, unsigned long, unsigned long)),
-            this, SLOT(slot_socket(const char *, unsigned long, unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_convoJoin(const char *, unsigned long, unsigned long)),
-            this, SLOT(slot_convoJoin(const char *, unsigned long, unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_convoLeave(const char *, unsigned long, unsigned long)),
-            this, SLOT(slot_convoLeave(const char *, unsigned long, unsigned long)));
-                        
+  connect(licqSigMan, SIGNAL(signal_eventTag(int, unsigned long)),
+      this, SLOT(slot_eventTag(int, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_socket(int, unsigned long)),
+      this, SLOT(slot_socket(int, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_convoJoin(int, unsigned long, unsigned long)),
+      this, SLOT(slot_convoJoin(int, unsigned long, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_convoLeave(int, unsigned long, unsigned long)),
+      this, SLOT(slot_convoLeave(int, unsigned long, unsigned long)));
+
    updateStatus();
    updateEvents();
    updateGroups();
@@ -1085,11 +1084,12 @@ void CMainWindow::CreateUserView()
 
 
 //-----CMainWindow::CreateUserFloaty---------------------------------------------
-void CMainWindow::CreateUserFloaty(const char *szId, unsigned long nPPID,
+void CMainWindow::CreateUserFloaty(int userId,
    unsigned short x, unsigned short y, unsigned short w)
 {
-  if (szId == 0 || nPPID == 0) return;
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  if (userId == 0)
+    return;
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return;
 
   CUserView *f = new CUserView(mnuUser);
@@ -1130,8 +1130,6 @@ CMainWindow::~CMainWindow()
   colInfo.clear();
 
   gMainWindow = NULL;
-  if (m_szUserMenuId)
-    free(m_szUserMenuId);
 }
 
 
@@ -1249,24 +1247,17 @@ void CMainWindow::closeEvent( QCloseEvent *e )
 
 void CMainWindow::keyPressEvent(QKeyEvent *e)
 {
-  char *szId = 0;  //must be free()'d
-  unsigned long nPPID = 0;
-  userView->MainWindowSelectedItemUser(szId, nPPID);
+  int userId = userView->currentUserId();
 
   if (e->key() == Qt::Key_Delete)
   {
-    if (szId == 0 || nPPID == 0)
-    {
-      if (szId) free(szId);
+    if (userId == 0)
       return;
-    }
-    if (e->state() & ControlButton)
-      RemoveUserFromList(szId, nPPID, this);
-    else
-      RemoveUserFromGroup(m_nGroupType, m_nCurrentGroup, szId, nPPID, this);
 
-    if (szId)
-      free(szId);
+    if (e->state() & ControlButton)
+      RemoveUserFromList(userId, this);
+    else
+      RemoveUserFromGroup(m_nGroupType, m_nCurrentGroup, userId, this);
 
     //e->accept();
     return;
@@ -1298,28 +1289,28 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       break;
 
     case Qt::Key_V:
-      callFunction(mnuUserView, szId, nPPID);
+      callFunction(mnuUserView, userId);
       break;
 
     case Qt::Key_S:
-      callFunction(mnuUserSendMsg, szId, nPPID);
+      callFunction(mnuUserSendMsg, userId);
       break;
 
     case Qt::Key_U:
-      callFunction(mnuUserSendUrl, szId, nPPID);
+      callFunction(mnuUserSendUrl, userId);
       break;
 
     case Qt::Key_C:
-      callFunction(mnuUserSendChat, szId, nPPID);
+      callFunction(mnuUserSendChat, userId);
       break;
 
     case Qt::Key_F:
-      callFunction(mnuUserSendFile, szId, nPPID);
+      callFunction(mnuUserSendFile, userId);
       break;
 
     case Qt::Key_A:
-      if (szId && nPPID)
-        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, szId, nPPID);
+      if (userId != 0)
+        (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userId);
       break;
 
     case Qt::Key_P:
@@ -1339,8 +1330,6 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       QWidget::keyPressEvent(e);
       break;
   }
-  if (szId)
-    free(szId);
 }
 
 
@@ -1369,16 +1358,21 @@ void CMainWindow::mouseMoveEvent(QMouseEvent *m)
 
 
 // ---------------------------------------------------------------------------
-inline bool CMainWindow::show_user(ICQUser *u)
+inline bool CMainWindow::show_user(const LicqUser* u) const
 {
   return (m_bShowOffline || !u->StatusOffline() || u->NewMessages() > 0 ||
           (m_bAlwaysShowONU && u->OnlineNotify()) || u->NotInList());
 }
 
 
-void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long cid)
+void CMainWindow::slot_updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid)
 {
-  const char* szId = accountId.latin1();
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user == NULL)
+    return;
+  const char* szId = user->accountId().c_str();
+  unsigned long nPPID = user->ppid();
+  gUserManager.DropUser(user);
 
   switch (subSignal)
   {
@@ -1386,7 +1380,7 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
     {
       // Skip all this if it was just an away message check
       if (argument == 0) {
-        userView->AnimationAutoResponseCheck(szId, nPPID);
+        userView->AnimationAutoResponseCheck(userId);
         break;
       }
       // Otherwise an event was added or removed
@@ -1405,7 +1399,7 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
           gUserManager.DropOwner(o);
         }
 
-        ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+        const LicqUser* u = gUserManager.fetchUser(userId);
         if (u != NULL && u->NewMessages() > 0)
         {
           if (s == ICQ_STATUS_ONLINE || s == ICQ_STATUS_FREEFORCHAT)
@@ -1432,9 +1426,9 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
             gUserManager.DropUser(u);
 
             if (bCallUserView)
-              callFunction(mnuUserView, szId, nPPID, cid);
+              callFunction(mnuUserView, userId, cid);
             if (bCallSendMsg)
-              callFunction(mnuUserSendMsg, szId, nPPID, cid);
+              callFunction(mnuUserSendMsg, userId, cid);
           }
           else
             gUserManager.DropUser(u);
@@ -1456,7 +1450,7 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
     case USER_SECURITY:
     case USER_TYPING:
     {
-      if (gUserManager.FindOwner(szId, nPPID) != NULL)
+      if (gUserManager.isOwner(userId))
       {
         if (subSignal == USER_STATUS || subSignal == USER_EXT)
           break;
@@ -1477,11 +1471,11 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
         break;
       }
 
-      ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(userId);
       if (u == NULL)
       {
-        gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid user received: %s\n",
-          L_ERRORxSTR, szId);
+        gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid user received: %i\n",
+            L_ERRORxSTR, userId);
         break;
       }
       if (m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
@@ -1499,17 +1493,8 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
           // Remove old user item if present
           for (CUserViewItem* it = i->firstChild(); it != NULL; it = it->nextSibling())
           {
-            if (it->ItemId() == NULL)
-              continue;
-            char* szRealId = 0;
-            ICQUser::MakeRealId(it->ItemId(), it->ItemPPID(), szRealId);
-            bool equal = strcasecmp(szRealId, szId) == 0 && it->ItemPPID() == nPPID;
-            delete [] szRealId;
-            if (equal)
-            {
+            if (it->isUserItem() && it->userId() == userId)
               delete it;
-              break;
-            }
           }
 
           // If user should be shown in group, create a new item
@@ -1522,21 +1507,8 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
       {
         // Update this user if they are in the current group
         CUserViewItem *i = (CUserViewItem *)userView->firstChild();
-        char *szItemId = 0, *szRealId = 0;
-        if (i != NULL && i->ItemId() != NULL)
-          szItemId = ICQUser::MakeRealId(i->ItemId(), i->ItemPPID(), szItemId);
-        ICQUser::MakeRealId(szId, nPPID, szRealId);
-        while (i && !(i->ItemPPID() == nPPID && strcasecmp(szItemId, szRealId) == 0))
-        {
+        while (i != NULL && i->userId() != userId)
           i = (CUserViewItem *)i->nextSibling();
-          if (i != NULL && i->ItemId() != NULL)
-          {
-            delete [] szItemId; szItemId = 0;
-            ICQUser::MakeRealId(i->ItemId(), i->ItemPPID(), szItemId);
-          }
-        }
-        if (szItemId) delete [] szItemId;
-        delete [] szRealId;
 
         if (i != NULL)
         {
@@ -1554,7 +1526,7 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
 
       if(subSignal == USER_STATUS && argument == 1)
       {
-        userView->AnimationOnline(szId, nPPID);
+        userView->AnimationOnline(userId);
 #if defined(USE_KDE) && (KDE_IS_VERSION(3, 1, 0))
         // User on notify list went online -> show popup at systray icon
         if (licqIcon && u->OnlineNotify())
@@ -1573,7 +1545,7 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
       }
 
       // Update their floaty
-      CUserView *v = CUserView::FindFloaty(szId, nPPID);
+      CUserView* v = CUserView::FindFloaty(userId);
 
       if (v != NULL )
       {
@@ -1610,7 +1582,7 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
           else
           {
             // For protocols that don't use a convo id
-            if (strcasecmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
+            if ((*it)->userId() == userId)
             {
               e = static_cast<UserSendCommon*>(*it);
               e->gotTyping(u->GetTyping());
@@ -1629,7 +1601,7 @@ void CMainWindow::slot_updatedUser(const QString& accountId, unsigned long nPPID
 
 // ---------------------------------------------------------------------------
 
-void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, const QString& accountId, unsigned long ppid)
+void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, int userId)
 {
   switch (subSignal)
   {
@@ -1640,11 +1612,11 @@ void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, 
     }
     case LIST_CONTACT_ADDED:
     {
-      LicqUser* u = gUserManager.FetchUser(accountId.latin1(), ppid, LOCK_W);
+      LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
       if (u == NULL)
       {
-        gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid user received: %s\n",
-          L_ERRORxSTR, accountId.latin1());
+        gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid user received: %i\n",
+          L_ERRORxSTR, userId);
         break;
       }
 
@@ -1685,7 +1657,7 @@ void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, 
       {
         CUserViewItem* item = static_cast<CUserViewItem*>(it.current());
 
-        if(item->ItemId() && accountId == item->ItemId() && ppid == item->ItemPPID())
+        if(item->isUserItem() && userId == item->userId())
         {
           ++it;
           delete item;
@@ -1702,7 +1674,7 @@ void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, 
 
         for (; it.current() != NULL; ++it)
         {
-          if ((*it)->Id() == accountId && (*it)->PPID() == ppid)
+          if ((*it)->userId() == userId)
           {
             it.current()->close();
             licqUserView.remove(it.current());
@@ -1716,7 +1688,7 @@ void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, 
 
         for(; it.current() != NULL; ++it)
         {
-          if ((*it)->Id() == accountId && (*it)->PPID() == ppid)
+          if ((*it)->userId() == userId)
           {
             it.current()->close();
             licqUserInfo.remove(it.current());
@@ -1730,7 +1702,7 @@ void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, 
 
         for(; it.current() != NULL; ++it)
         {
-          if ((*it)->Id() == accountId && (*it)->PPID() == ppid)
+          if ((*it)->userId() == userId)
           {
             if (userEventTabDlg && userEventTabDlg->tabExists(it.current()))
               userEventTabDlg->removeTab(it.current());
@@ -1756,13 +1728,13 @@ void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, 
   }  // Switch
 }
 
-void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, unsigned long convoId)
+void CMainWindow::slot_socket(int userId, unsigned long convoId)
 {
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
   for (; it.current(); ++it)
   {
-    if (strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
+    if ((*it)->userId() == userId)
     {
       (*it)->SetConvoId(convoId);
       break;
@@ -1770,7 +1742,7 @@ void CMainWindow::slot_socket(const char *szId, unsigned long nPPID, unsigned lo
   }
 }
 
-void CMainWindow::slot_convoJoin(const char *szId, unsigned long ppid, unsigned long convoId)
+void CMainWindow::slot_convoJoin(int userId, unsigned long ppid, unsigned long convoId)
 {
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
@@ -1778,21 +1750,21 @@ void CMainWindow::slot_convoJoin(const char *szId, unsigned long ppid, unsigned 
   {
     if ((*it)->PPID() == ppid && (*it)->ConvoId() == convoId)
     {
-      (*it)->convoJoin(szId, convoId);
+      (*it)->convoJoin(userId, convoId);
       break;
     }
   }
 }
 
-void CMainWindow::slot_convoLeave(const char *szId, unsigned long ppid, unsigned long convoId)
+void CMainWindow::slot_convoLeave(int userId, unsigned long ppid, unsigned long convoId)
 {
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
   for (; it.current(); ++it)
   {
-    if ((*it)->PPID() == ppid && (*it)->ConvoId() == convoId && (*it)->FindUserInConvo(szId))
+    if ((*it)->PPID() == ppid && (*it)->ConvoId() == convoId && (*it)->FindUserInConvo(userId))
     {
-      (*it)->convoLeave(szId, convoId);
+      (*it)->convoLeave(userId, convoId);
       break;
     }
   }
@@ -2361,13 +2333,14 @@ void CMainWindow::changePFMStatus(int id)
 
 // -----------------------------------------------------------------------------
 
-void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
+void CMainWindow::callDefaultFunction(int userId)
 {
-  if (_szId == 0 || _nPPID == 0) return;
+  if (userId == 0)
+    return;
 
-  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
-
-  if (u == 0) return;
+  const LicqUser* u = gUserManager.fetchUser(userId);
+  if (u == NULL)
+    return;
 
   // For multi user conversations (i.e. in MSN)
   int nConvoId = -1;
@@ -2395,7 +2368,7 @@ void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
     QString c = QApplication::clipboard()->text();
     if (c.left(5) == "http:" || c.left(4) == "ftp:" || c.left(6) == "https:")
     {
-      UserEventCommon *ec = callFunction(mnuUserSendUrl, _szId, _nPPID);
+      UserEventCommon *ec = callFunction(mnuUserSendUrl, userId);
       if (!ec || !ec->inherits("UserSendUrlEvent")) return;
       UserSendUrlEvent* e = static_cast<UserSendUrlEvent*>(ec);
       // Set the url
@@ -2406,7 +2379,7 @@ void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
     }
     else if (c.left(5) == "file:" || c.left(1) == "/")
     {
-      UserEventCommon *ec = callFunction(mnuUserSendFile, _szId, _nPPID);
+      UserEventCommon *ec = callFunction(mnuUserSendFile, userId);
       if (!ec || !ec->inherits("UserSendFileEvent")) return;
       UserSendFileEvent* e = static_cast<UserSendFileEvent*>(ec);
       // Set the file
@@ -2421,7 +2394,7 @@ void CMainWindow::callDefaultFunction(const char *_szId, unsigned long _nPPID)
     }
   }
 
-  callFunction(fcn, _szId, _nPPID, nConvoId);
+  callFunction(fcn, userId, nConvoId);
 }
 
 void CMainWindow::callDefaultFunction(QListViewItem *i)
@@ -2429,8 +2402,7 @@ void CMainWindow::callDefaultFunction(QListViewItem *i)
   if(i == NULL)
     return;
 
-  callDefaultFunction(((CUserViewItem *)i)->ItemId(),
-    ((CUserViewItem *)i)->ItemPPID());
+  callDefaultFunction(((CUserViewItem *)i)->userId());
 }
 
 void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
@@ -2451,7 +2423,7 @@ void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
       gUserManager.DropOwner(o);
 
       if (nNumMsg > 0)
-        callFunction(index, szId, (*_ppit)->PPID());
+        callFunction(index, static_cast<int>((*_ppit)->PPID()));
 
       free(szId);
     } 
@@ -2469,7 +2441,7 @@ void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
         if (o == 0) continue;
         szId = strdup(o->IdString());
         gUserManager.DropOwner(o);
-        callInfoTab(index, szId, (*_ppit)->PPID());
+        callInfoTab(index, static_cast<int>((*_ppit)->PPID()));
         free(szId);
       }
     }
@@ -2493,16 +2465,21 @@ void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
 void CMainWindow::callMsgFunction()
 {
   // No need for code duplication
-  slot_ui_viewevent("0");
+  slot_ui_viewevent(-1);
 }
 
 //-----CMainWindow::callUserFunction-------------------------------------------
 void CMainWindow::callUserFunction(int index)
 {
-  if (m_szUserMenuId == 0 || m_nUserMenuPPID == 0) return;
+  if (myMenuUserId == 0)
+    return;
 
-  char *szId = strdup(m_szUserMenuId); //must free
-  unsigned long nPPID = m_nUserMenuPPID;
+  const LicqUser* user = gUserManager.fetchUser(myMenuUserId);
+  if (user == NULL)
+    return;
+  char *szId = strdup(user->accountId().c_str()); //must free
+  unsigned long nPPID = user->ppid();
+  gUserManager.DropUser(user);
 
   switch(index)
   {
@@ -2523,21 +2500,21 @@ void CMainWindow::callUserFunction(int index)
     }
     case mnuUserCheckResponse:
     {
-      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, szId, nPPID);
+      (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, myMenuUserId);
       break;
     }
     case mnuUserCustomAutoResponse:
     {
-      (void) new CustomAwayMsgDlg(szId, nPPID);
+      (void) new CustomAwayMsgDlg(myMenuUserId);
       break;
     }
     case mnuUserFloaty:
     {
       // Check that the floaty does not already exist
-      CUserView *v = CUserView::FindFloaty(szId, nPPID);
+      CUserView *v = CUserView::FindFloaty(myMenuUserId);
       if (v == NULL)
       {
-        CreateUserFloaty(szId, nPPID);
+        CreateUserFloaty(myMenuUserId);
       }
       else
       {
@@ -2548,20 +2525,20 @@ void CMainWindow::callUserFunction(int index)
     }
 #ifdef HAVE_LIBGPGME
     case mnuUserSelectGPGKey:
-       new GPGKeySelect( szId, nPPID );
+      new GPGKeySelect(myMenuUserId);
       break;
 #endif
     case mnuUserHistory:
     case mnuUserGeneral:
-      callInfoTab(index, szId, nPPID);
+      callInfoTab(index, myMenuUserId);
       break;
     case mnuUserRemoveFromList:
-      RemoveUserFromList(szId, nPPID, this);
+      RemoveUserFromList(myMenuUserId, this);
       break;
 
     case mnuUserSendKey:
     {
-      (void) new KeyRequestDlg(licqSigMan, szId, nPPID);
+      (void) new KeyRequestDlg(licqSigMan, myMenuUserId);
       break;
     }
 
@@ -2601,24 +2578,24 @@ void CMainWindow::callUserFunction(int index)
     }
 
     default:
-      callFunction(index, szId, nPPID);
+      callFunction(index, myMenuUserId);
   }
 
   if (szId)
     free(szId);
 }
 
-void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
-  bool toggle, bool bUpdateNow)
+void CMainWindow::callInfoTab(int fcn, int userId, bool toggle, bool bUpdateNow)
 {
-  if(szId == 0 || nPPID == 0) return;
+  if (userId == 0)
+    return;
 
   UserInfoDlg *f = NULL;
   QPtrListIterator<UserInfoDlg> it(licqUserInfo);
 
   for(; it.current(); ++it)
   {
-    if(strcmp((*it)->Id(), szId) == 0 && (*it)->PPID() == nPPID)
+    if((*it)->userId() == userId)
     {
       f = *it;
       break;
@@ -2633,9 +2610,6 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
       tab = UserInfoDlg::HistoryInfo;
       break;
     case mnuUserGeneral:
-      if (nPPID == LICQ_PPID && isalpha(szId[0]))
-        tab = UserInfoDlg::AboutInfo;
-      else
         tab = UserInfoDlg::GeneralInfo;
       break;
     }
@@ -2651,8 +2625,8 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
   }
   else
   {
-    f = new UserInfoDlg(licqDaemon, licqSigMan, this, szId, nPPID);
-    connect(f, SIGNAL(finished(const char *, unsigned long)), this, SLOT(UserInfoDlg_finished(const char *, unsigned long)));
+    f = new UserInfoDlg(licqDaemon, licqSigMan, this, userId);
+    connect(f, SIGNAL(finished(int)), this, SLOT(UserInfoDlg_finished(int)));
     f->show();
     licqUserInfo.append(f);
   }
@@ -2663,9 +2637,6 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
       f->showTab(UserInfoDlg::HistoryInfo);
       break;
     case mnuUserGeneral:
-      if (nPPID == LICQ_PPID && isalpha(szId[0]))
-        f->showTab(UserInfoDlg::AboutInfo);
-      else
         f->showTab(UserInfoDlg::GeneralInfo);
       break;
   }
@@ -2677,10 +2648,16 @@ void CMainWindow::callInfoTab(int fcn, const char *szId, unsigned long nPPID,
 
 
 //-----CMainWindow::callICQFunction-------------------------------------------
-UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
-                                           unsigned long nPPID, int nConvoId)
+UserEventCommon *CMainWindow::callFunction(int fcn, const int userId, int nConvoId)
 {
-  if (szId == 0 || nPPID == 0) return NULL;
+  if (userId == 0)
+    return NULL;
+
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user == NULL)
+    return NULL;
+  unsigned long nPPID = user->ppid();
+  gUserManager.DropUser(user);
 
   // Find out what's supported for this protocol
   unsigned long sendFuncs = 0xFFFFFFFF;
@@ -2716,8 +2693,7 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
       QPtrListIterator<UserViewEvent> it(licqUserView);
 
       for (; it.current(); ++it)
-        if ((*it)->Id() && strcasecmp((*it)->Id(), szId) == 0 &&
-            (*it)->PPID() == nPPID)
+        if ((*it)->userId() == userId)
         {
           e = *it;
           e->show();
@@ -2751,9 +2727,9 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
           // Protocols (MSN only atm) that support convo ids are differentiated from
           // the icq protocol because the convo id will be the server socket.. which does
           // not meet the requirement that convo ids must be unique for each conversation.
-          if ( ((nPPID == MSN_PPID && (*it)->PPID() == MSN_PPID) && ((*it)->FindUserInConvo(const_cast<char *>(szId)) ||
-                 ((*it)->ConvoId() == (unsigned long)(nConvoId) && (*it)->ConvoId() != (unsigned long)(-1)))) ||
-               ((*it)->FindUserInConvo(const_cast<char *>(szId)) && (*it)->PPID() == nPPID))
+          if ((*it)->PPID() == nPPID && ((nPPID == MSN_PPID &&
+              ((*it)->ConvoId() == (unsigned long)(nConvoId) && (*it)->ConvoId() != (unsigned long)(-1))) ||
+              (*it)->FindUserInConvo(userId)))
           {
             e = static_cast<UserSendCommon*>(*it);
             //if (!e->FindUserInConvo(const_cast<char *>(szId)))
@@ -2812,37 +2788,37 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
   {
     case mnuUserView:
     {
-      e = new UserViewEvent(licqDaemon, licqSigMan, this, szId, nPPID);
+      e = new UserViewEvent(licqDaemon, licqSigMan, this, userId);
       break;
     }
     case mnuUserSendMsg:
     {
-      e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
+      e = new UserSendMsgEvent(licqDaemon, licqSigMan, this, userId, parent);
       break;
     }
     case mnuUserSendUrl:
     {
-      e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
+      e = new UserSendUrlEvent(licqDaemon, licqSigMan, this, userId, parent);
       break;
     }
     case mnuUserSendChat:
     {
-      e = new UserSendChatEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
+      e = new UserSendChatEvent(licqDaemon, licqSigMan, this, userId, parent);
       break;
     }
     case mnuUserSendFile:
     {
-      e = new UserSendFileEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
+      e = new UserSendFileEvent(licqDaemon, licqSigMan, this, userId, parent);
       break;
     }
     case mnuUserSendContact:
     {
-      e = new UserSendContactEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
+      e = new UserSendContactEvent(licqDaemon, licqSigMan, this, userId, parent);
       break;
     }
     case mnuUserSendSms:
     {
-      e = new UserSendSmsEvent(licqDaemon, licqSigMan, this, szId, nPPID, parent);
+      e = new UserSendSmsEvent(licqDaemon, licqSigMan, this, userId, parent);
       break;
     }
     default:
@@ -2881,37 +2857,35 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const char *szId,
   // make sure we only remember one, or it will get complicated
   if (fcn == mnuUserView)
   {
-    slot_userfinished(szId, nPPID);
-    connect(e, SIGNAL(finished(const char *, unsigned long)),
-      SLOT(slot_userfinished(const char *, unsigned long)));
+    slot_userfinished(userId);
+    connect(e, SIGNAL(finished(int)), SLOT(slot_userfinished(int)));
     licqUserView.append(static_cast<UserViewEvent*>(e));
   }
   else
   {
-    slot_sendfinished(szId, nPPID);
-    connect(e, SIGNAL(finished(const char *, unsigned long)),
-      SLOT(slot_sendfinished(const char *, unsigned long)));
+    slot_sendfinished(userId);
+    connect(e, SIGNAL(finished(int)), SLOT(slot_sendfinished(int)));
     licqUserSend.append(static_cast<UserSendCommon*>(e));
   }
   return e;
 }
 
 // -----------------------------------------------------------------------------
-void CMainWindow::UserInfoDlg_finished(const char *szId, unsigned long nPPID)
+void CMainWindow::UserInfoDlg_finished(int userId)
 {
   QPtrListIterator<UserInfoDlg> it(licqUserInfo);
 
   for ( ; it.current(); ++it)
   {
-    if ((*it)->PPID() == nPPID && strcmp((*it)->Id(), szId) == 0)
+    if ((*it)->userId() == userId)
     {
       licqUserInfo.remove(*it);
       return;
     }
   }
 
-  gLog.Warn("%sUser Info finished signal for user with no window (%s)!\n",
-            L_WARNxSTR, szId);
+  gLog.Warn("%sUser Info finished signal for user with no window (%i)!\n",
+      L_WARNxSTR, userId);
 }
 
 
@@ -2921,14 +2895,13 @@ void CMainWindow::slot_doneUserEventTabDlg()
   userEventTabDlg = NULL;
 }
 
-void CMainWindow::slot_userfinished(const char *szId, unsigned long nPPID)
+void CMainWindow::slot_userfinished(int userId)
 {
   QPtrListIterator<UserViewEvent> it(licqUserView);
 
   for ( ; it.current(); ++it)
   {
-    if ((*it)->PPID() == nPPID && (*it)->Id() &&
-       strcmp((*it)->Id(), szId) == 0)
+    if ((*it)->userId() == userId)
     {
       licqUserView.remove(*it);
       return;
@@ -2936,15 +2909,14 @@ void CMainWindow::slot_userfinished(const char *szId, unsigned long nPPID)
   }
 }
 
-void CMainWindow::slot_sendfinished(const char *szId, unsigned long nPPID)
+void CMainWindow::slot_sendfinished(int userId)
 {
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
   // go through the whole list, there might be more than
   // one hit
   for ( ; it.current(); ++it)
-    if ((*it)->PPID() == nPPID && (*it)->Id() &&
-        strcmp((*it)->Id(), szId) == 0)
+    if ((*it)->userId() == userId)
       licqUserSend.remove(*it);
 }
 
@@ -3011,14 +2983,13 @@ void CMainWindow::slot_logon()
 
 
 //-----CMainWindow::slot_ui_viewevent-------------------------------------------
-void CMainWindow::slot_ui_viewevent(const char *szId)
+void CMainWindow::slot_ui_viewevent(int userId)
 {
   // Do nothing if there are no events pending
-  if (ICQUser::getNumUserEvents() == 0 || szId == 0) return;
+  if (LicqUser::getNumUserEvents() == 0 || userId == 0)
+    return;
 
-  unsigned long nPPID = 0;
-
-  if (strcmp(szId, "0") == 0)
+  if (userId == -1)
   {
     // Do system messages first
     FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
@@ -3040,66 +3011,41 @@ void CMainWindow::slot_ui_viewevent(const char *szId)
     {
       if (pUser->NewMessages() > 0 && pUser->Touched() <= t)
       {
-        szId = pUser->IdString();
-        nPPID = pUser->PPID();
+        userId = pUser->id();
         t = pUser->Touched();
       }
     }
     FOR_EACH_USER_END
   }
 
-  if (szId)
+  if (userId > 0)
   {
     if (m_bMsgChatView)
     {
-      ICQUser *u = 0;
-      if (nPPID == 0)
-      {
-        FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
-        {
-          u = gUserManager.FetchUser(szId, (*_ppit)->PPID(), LOCK_R);
-          if (u)
-          {
-            if (u->NewMessages())
-            {
-              nPPID = (*_ppit)->PPID();
-              break;
-            }
-            else
-            {
-              gUserManager.DropUser(u);
-              u = 0;
-            }
-          }
-        }  
-        FOR_EACH_PROTO_PLUGIN_END
-      }
-      else
-        u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-        
+      const LicqUser* u = gUserManager.fetchUser(userId);
       if (u == 0) return;
-      
+
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
         if (u->EventPeek(i)->SubCommand() == ICQ_CMDxSUB_MSG)
         {
           gUserManager.DropUser(u);
-          callFunction(mnuUserSendMsg, szId, nPPID, u->EventPeek(i)->ConvoId());
+          callFunction(mnuUserSendMsg, userId, u->EventPeek(i)->ConvoId());
           return;
         }
       }
       gUserManager.DropUser(u);
-      callFunction(mnuUserView, szId, nPPID);
+      callFunction(mnuUserView, userId);
     }
     else
-      callFunction(mnuUserView, szId, nPPID);
+      callFunction(mnuUserView, userId);
   }
 }
 
 //-----CMainWindow::slot_ui_message---------------------------------------------
-void CMainWindow::slot_ui_message(const char *szId, unsigned long nPPID)
+void CMainWindow::slot_ui_message(int userId)
 {
-  callFunction(mnuUserSendMsg, szId, nPPID);
+  callFunction(mnuUserSendMsg, userId);
 }
 
 //-----slot_protocolPlugin------------------------------------------------------
@@ -3236,17 +3182,16 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
 }
 
 //-----slot_eventTag------------------------------------------------------------
-void CMainWindow::slot_eventTag(const char *_szId, unsigned long _nPPID,
-                                unsigned long _nEventTag)
+void CMainWindow::slot_eventTag(int userId, unsigned long _nEventTag)
 {
-  if (!_szId || !_nPPID || !_nEventTag)
+  if (userId == 0 || !_nEventTag)
     return;
 
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
   for(; it.current() != NULL; ++it)
   {
-    if (strcmp((*it)->Id(), _szId) == 0 && (*it)->PPID() == _nPPID)
+    if ((*it)->userId() == userId)
     {
       (*it)->AddEventTag(_nEventTag);
       break;
@@ -3283,10 +3228,12 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
   }
 }
 
-bool CMainWindow::RemoveUserFromList(const char *szId, unsigned long nPPID, QWidget *p)
+bool CMainWindow::RemoveUserFromList(int userId, QWidget *p)
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return true;
+  QCString szId = u->accountId().c_str();
+  unsigned long nPPID = u->ppid();
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
                      .arg(QString::fromUtf8(u->GetAlias()))
                      .arg(u->IdString()) );
@@ -3301,7 +3248,7 @@ bool CMainWindow::RemoveUserFromList(const char *szId, unsigned long nPPID, QWid
 
 void CMainWindow::FillUserGroup()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myMenuUserId);
   if(u == NULL) return;
 
   mnuGroup->setItemChecked(1000+GROUP_ONLINE_NOTIFY, u->OnlineNotify());
@@ -3324,41 +3271,42 @@ void CMainWindow::UserGroupToggled(int id)
 
   if (gtype == GROUPS_SYSTEM && groupId == GROUP_IGNORE_LIST && add)
   {
-    ICQUser* u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(myMenuUserId);
     if (u == NULL)
       return;
     QString alias = QString::fromUtf8(u->GetAlias());
+    QString accountId = u->accountId();
     bool inIgnoreList = u->IgnoreList();
     gUserManager.DropUser(u);
 
     if(!inIgnoreList && !QueryUser(this,
         tr("Do you really want to add\n%1 (%2)\nto your ignore list?")
-        .arg(alias).arg(m_szUserMenuId), tr("&Yes"), tr("&No")))
+        .arg(alias).arg(accountId), tr("&Yes"), tr("&No")))
       return;
   }
 
   if (add)
-    RemoveUserFromGroup(gtype, groupId, m_szUserMenuId, m_nUserMenuPPID, this);
+    RemoveUserFromGroup(gtype, groupId, myMenuUserId, this);
   else
-    gUserManager.SetUserInGroup(m_szUserMenuId, m_nUserMenuPPID,
-        gtype, groupId, true, false);
+    gUserManager.setUserInGroup(myMenuUserId, gtype, groupId, true, false);
 }
 
 bool CMainWindow::RemoveUserFromGroup(GroupType gtype, int group,
-  const char* id, unsigned long ppid, QWidget* parent)
+    int userId, QWidget* parent)
 {
   if (gtype == GROUPS_USER && group == 0)
-    return RemoveUserFromList(id, ppid, parent);
+    return RemoveUserFromList(userId, parent);
 
   if (gtype == GROUPS_SYSTEM && group == 0)
     return true;
 
   if (gtype == GROUPS_USER)
   {
-    ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(userId);
     if (u == NULL)
       return true;
     QString alias = QString::fromUtf8(u->GetAlias());
+    QString id = u->accountId();
     gUserManager.DropUser(u);
 
     LicqGroup* g = gUserManager.FetchGroup(group, LOCK_R);
@@ -3374,13 +3322,13 @@ bool CMainWindow::RemoveUserFromGroup(GroupType gtype, int group,
       return false;
   }
 
-  gUserManager.SetUserInGroup(id, ppid, gtype, group, false);
+  gUserManager.setUserInGroup(userId, gtype, group, false);
   return true;
 }
 
 void CMainWindow::FillServerGroup()
 {
-  ICQUser* u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myMenuUserId);
   if (u == NULL)
     return;
 
@@ -3402,7 +3350,7 @@ void CMainWindow::ServerGroupChanged(int n)
 {
   if (mnuServerGroup->isItemChecked(n)) return;
 
-  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myMenuUserId);
   if (u == NULL) return;
 
   for (unsigned int i = 0; i < myGroupIds.size()-1; i++)
@@ -3410,8 +3358,7 @@ void CMainWindow::ServerGroupChanged(int n)
 
   gUserManager.DropUser(u);
 
-  gUserManager.SetUserInGroup(m_szUserMenuId, m_nUserMenuPPID, GROUPS_USER,
-      n, true, true);
+  gUserManager.setUserInGroup(myMenuUserId, GROUPS_USER, n, true, true);
 }
 
 //-----CMainWindow::saveAllUsers-----------------------------------------------
@@ -3586,10 +3533,14 @@ void CMainWindow::saveOptions()
   for (unsigned short i = 0; i < CUserView::floaties->size(); i++)
   {
     CUserView* iter = CUserView::floaties->at(i);
+    const LicqUser* user = gUserManager.fetchUser(dynamic_cast<CUserViewItem*>(iter->firstChild())->userId());
+    if (user == NULL)
+      continue;
     sprintf(key, "Floaty%d.Ppid", i);
-    licqConf.WriteNum(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemPPID());
+    licqConf.WriteNum(key, user->ppid());
     sprintf(key, "Floaty%d.Uin", i);
-    licqConf.WriteStr(key, static_cast<CUserViewItem*>(iter->firstChild())->ItemId());
+    licqConf.writeString(key, user->accountId());
+    gUserManager.DropUser(user);
     sprintf(key, "Floaty%d.X", i);
     licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
     sprintf(key, "Floaty%d.Y", i);
@@ -3677,10 +3628,16 @@ void CMainWindow::changeDebug(int _nId)
 //-----CMainWindow::slot_utility----------------------------------------------
 void CMainWindow::slot_utility(int _nId)
 {
+  const LicqUser* user = gUserManager.fetchUser(myMenuUserId);
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   CUtility *u = gUtilityManager.Utility(mnuUtilities->indexOf(_nId));
-  
-  if ( u && m_szUserMenuId )
-  	(void) new CUtilityDlg(u, m_szUserMenuId, m_nUserMenuPPID, licqDaemon);
+  if (u != NULL)
+      (void) new CUtilityDlg(u, accountId, ppid, licqDaemon);
 }
 
 
@@ -3688,7 +3645,7 @@ void CMainWindow::slot_utility(int _nId)
 void CMainWindow::slot_miscmodes(int _nId)
 {
   int nAwayModes = mnuMiscModes->indexOf(_nId);
-  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myMenuUserId, LOCK_W);
   if (u == NULL) return;
 
   switch(nAwayModes)
@@ -3722,7 +3679,7 @@ void CMainWindow::slot_miscmodes(int _nId)
     {
       gUserManager.DropUser(u);
       u = NULL;
-      new GPGKeySelect( m_szUserMenuId, m_nUserMenuPPID );
+        new GPGKeySelect(myMenuUserId);
     }
     break;
 #endif
@@ -3765,7 +3722,7 @@ void CMainWindow::slot_miscmodes(int _nId)
 
   // update icon
   if ( nAwayModes==7 )
-    slot_updatedUser(m_szUserMenuId, m_nUserMenuPPID, USER_GENERAL);
+    slot_updatedUser(myMenuUserId, USER_GENERAL);
 }
 
 
@@ -4529,7 +4486,7 @@ void CMainWindow::initMenu()
 
 void CMainWindow::slot_usermenu()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szUserMenuId, m_nUserMenuPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myMenuUserId);
 
   if (u == NULL)
   {
@@ -4589,10 +4546,10 @@ void CMainWindow::slot_usermenu()
     mnuSend->changeItem(pmSecureOff, tr("Request &Secure Channel"), mnuUserSendKey);
 
   unsigned long nSendFuncs = 0xFFFFFFFF;
-  bool bIsLicq = m_nUserMenuPPID == LICQ_PPID;
+  bool bIsLicq = (u->ppid() == LICQ_PPID);
   FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
   {
-    if ((*_ppit)->PPID() != LICQ_PPID && (*_ppit)->PPID() == m_nUserMenuPPID)
+    if ((*_ppit)->PPID() != LICQ_PPID && (*_ppit)->PPID() == u->ppid())
     {
       nSendFuncs = (*_ppit)->SendFunctions();
       break;
@@ -4831,17 +4788,17 @@ void CMainWindow::slot_popupall()
     callOwnerFunction(OwnerMenuView);
   }
 
-  list<pair<QString, unsigned long> > users;
+  list<int> users;
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->NewMessages() > 0)
-      users.push_back(pair<QString, unsigned long>(pUser->IdString(), pUser->PPID()));
+      users.push_back(pUser->id());
   }
   FOR_EACH_USER_END
 
-  list<pair<QString, unsigned long> >::iterator iter;
+  list<int>::const_iterator iter;
   for (iter = users.begin(); iter != users.end(); iter++)
-    callDefaultFunction(iter->first, iter->second);
+    callDefaultFunction(*iter);
 }
 
 
@@ -4951,8 +4908,9 @@ void CMainWindow::slot_viewurl(QWidget *q, QString url)
 
 void CMainWindow::sendMsg(const char* szId, unsigned long nPPID, const QString& message)
 {
+  int userId = gUserManager.getUserFromAccount(szId, nPPID);
     UserSendCommon* event =
-            static_cast<UserSendCommon*>(callFunction(mnuUserSendMsg, szId, nPPID));
+      static_cast<UserSendCommon*>(callFunction(mnuUserSendMsg, userId));
     if (event == 0) return;
 
     event->setText(message);
@@ -4963,8 +4921,9 @@ void CMainWindow::sendMsg(const char* szId, unsigned long nPPID, const QString& 
 void CMainWindow::sendFileTransfer(const char* szId, unsigned long nPPID,
                                    const QString& filename, const QString& description)
 {
+  int userId = gUserManager.getUserFromAccount(szId, nPPID);
     UserSendFileEvent* event =
-            static_cast<UserSendFileEvent*>(callFunction(mnuUserSendFile, szId, nPPID));
+      static_cast<UserSendFileEvent*>(callFunction(mnuUserSendFile, userId));
     if (event == 0) return;
 
     event->setFile(filename, description);
@@ -4974,8 +4933,9 @@ void CMainWindow::sendFileTransfer(const char* szId, unsigned long nPPID,
 
 void CMainWindow::sendChatRequest(const char* szId, unsigned long nPPID)
 {
+  int userId = gUserManager.getUserFromAccount(szId, nPPID);
     UserSendCommon* event =
-            static_cast<UserSendCommon*>(callFunction(mnuUserSendChat, szId, nPPID));
+      static_cast<UserSendCommon*>(callFunction(mnuUserSendChat, userId));
     if (event == 0) return;
 }
 

@@ -49,7 +49,7 @@ QString Strings::getStatus(unsigned short status, bool invisible)
   return str;
 }
 
-QString Strings::getStatus(ICQUser* user, bool useInvisible)
+QString Strings::getStatus(const LicqUser* user, bool useInvisible)
 {
   if (user == NULL)
     return QString();
@@ -84,7 +84,7 @@ QString Strings::getShortStatus(unsigned short status, bool invisible)
   return str;
 }
 
-QString Strings::getShortStatus(ICQUser* user, bool useInvisible)
+QString Strings::getShortStatus(const LicqUser* user, bool useInvisible)
 {
   if (user == NULL)
     return QString();

@@ -294,6 +294,7 @@ private:
         return m_protoName2ID[protocol];
     }
 
+public:
     /**
      * Helper method.
      */

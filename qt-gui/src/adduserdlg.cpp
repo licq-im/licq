@@ -114,7 +114,7 @@ void AddUserDlg::ok()
     server->ProtoPluginList(pl);
     for (it = pl.begin(); it != pl.end(); it++)
       if (strcmp((*it)->Name(), cmbProtocol->currentText().latin1()) == 0)
-        server->AddUserToList(strUser, (*it)->PPID());
+        server->addUserToList(strUser, (*it)->PPID());
   }
 
   close(true);

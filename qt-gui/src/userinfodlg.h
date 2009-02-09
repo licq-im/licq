@@ -67,11 +67,10 @@ public:
   };
 
   UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-    const char *szId, unsigned long nPPID, QWidget *parent = 0);
+      int userId, QWidget *parent = 0);
   virtual ~UserInfoDlg();
 
-  char *Id()  { return m_szId; }
-  unsigned long PPID()  { return m_nPPID; }
+  int userId() const { return myUserId; }
   void showTab(int);
   bool isTabShown(int);
   void retrieveSettings() { slotRetrieve(); }
@@ -85,8 +84,7 @@ protected:
   } tabList[InfoTabCount];
   bool m_bOwner;
   int currentTab;
-  char *m_szId;
-  unsigned long m_nPPID;
+  int myUserId;
   QString m_sProgressMsg;
   QString m_sBasic;
   CICQDaemon *server;
@@ -173,17 +171,17 @@ protected:
   bool m_bHistoryReverse;
   unsigned short m_nHistoryIndex, m_nHistoryShowing;
 
-  void SetGeneralInfo(LicqUser *);
-  void SetMoreInfo(LicqUser *);
-  void SetMore2Info(LicqUser *);
+  void SetGeneralInfo(const LicqUser* u);
+  void SetMoreInfo(const LicqUser* u);
+  void SetMore2Info(const LicqUser* u);
   void UpdateMore2Info(QTextCodec* codec, UserCat cat, const UserCategoryMap& category);
-  void SetWorkInfo(LicqUser *);
-  void SetAbout(LicqUser *);
-  void SetPhoneBook(LicqUser *);
+  void SetWorkInfo(const LicqUser*u);
+  void SetAbout(const LicqUser* u);
+  void SetPhoneBook(const LicqUser* u);
   void UpdatePhoneBook(QTextCodec *);
-  void SetPicture(LicqUser *);
-  void SetLastCountersInfo(LicqUser *);
-  void SetKABCInfo(LicqUser *);
+  void SetPicture(const LicqUser* u);
+  void SetLastCountersInfo(const LicqUser* u);
+  void SetKABCInfo(const LicqUser* u);
   void UpdateKABCInfo();
   void SaveGeneralInfo();
   void SaveMoreInfo();
@@ -203,14 +201,14 @@ protected slots:
   void HistoryReverse(bool);
   void HistoryReload();
   void updateTab(const QString&);
-  void updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal);
+  void updatedUser(int userId, unsigned long subSignal);
   void SaveSettings();
   void slotUpdate();
   void slotRetrieve();
   void doneFunction(ICQEvent*);
   void slot_aliasChanged(const QString &);
   void resetCaption();
-  void ShowUsermenu() { gMainWindow->SetUserMenuUser(m_szId, m_nPPID); }
+  void ShowUsermenu() { gMainWindow->SetUserMenuUser(myUserId); }
   void slot_showHistoryTimer();
   void EditCategory(QListViewItem *selected);
   void setCategory(UserCat cat, const UserCategoryMap& category);
@@ -219,8 +217,7 @@ protected slots:
   void ChangeActivePhone(int index);
 
 signals:
-  void finished(const char *, unsigned long);
-  void finished(unsigned long);
+  void finished(int userId);
 
 private:
   static bool chkContains(const char* text, const char* filter, int filterlen);

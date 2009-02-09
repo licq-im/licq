@@ -99,7 +99,7 @@ class ChatDlg : public QMainWindow
 {
    Q_OBJECT
 public:
-  ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
+  ChatDlg(int userId, CICQDaemon *daemon,
           CMainWindow *m, QWidget *parent = 0);
   virtual ~ChatDlg();
 

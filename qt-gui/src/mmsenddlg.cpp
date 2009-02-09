@@ -46,8 +46,6 @@ CMMSendDlg::CMMSendDlg(CICQDaemon *_server, CSignalManager *sigman,
   CMMUserView *_mmv, QWidget *p)
   : LicqDialog(p, "MMSendDialog", true, WDestructiveClose)
 {
-  m_szId = 0;
-  m_nPPID = 0;
   icqEventTag = 0;
   mmv = _mmv;
   server = _server;
@@ -153,25 +151,21 @@ void CMMSendDlg::SendNext()
     return;
   }
 
-  if (m_szId)
-  {
-    free(m_szId);
-    m_szId = 0;
-  }
+  myUserId = mmvi->userId();
 
-  m_szId = mmvi->Id() ? strdup(mmvi->Id()) : 0;
-  m_nPPID = mmvi->PPID();
-
-  if (m_szId == 0) return;
+  if (myUserId == 0)
+    return;
 
   switch (m_nEventType)
   {
     case ICQ_CMDxSUB_MSG:
     {
-      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(myUserId);
       if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
+      QCString m_szId = u->accountId().c_str();
+      unsigned int m_nPPID = u->ppid();
       gUserManager.DropUser(u);
 
       // create initial strings (implicit copying, no allocation impact :)
@@ -239,10 +233,12 @@ void CMMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_URL:
     {
-      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(myUserId);
       if (u == NULL) return;
       grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
       QTextCodec *codec = UserCodec::codecForICQUser(u);
+      QCString m_szId = u->accountId().c_str();
+      unsigned int m_nPPID = u->ppid();
       gUserManager.DropUser(u);
 
       icqEventTag = server->ProtoSendUrl(m_szId, m_nPPID, s2.latin1(), codec->fromUnicode(s1),
@@ -251,9 +247,10 @@ void CMMSendDlg::SendNext()
     }
     case ICQ_CMDxSUB_CONTACTxLIST:
     {
-      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(myUserId);
       if (u == NULL) return;
       grpSending->setTitle(tr("Sending mass list to %1...").arg(QString::fromUtf8(u->GetAlias())));
+      QCString m_szId = u->accountId().c_str();
       gUserManager.DropUser(u);
 
       icqEventTag = server->icqSendContactList(m_szId, *myUsers, false,
@@ -273,8 +270,6 @@ CMMSendDlg::~CMMSendDlg()
     server->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
-
-  if (m_szId) free(m_szId);
 }
 
 

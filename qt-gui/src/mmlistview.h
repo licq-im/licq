@@ -36,14 +36,12 @@ class CMainWindow;
 class CMMUserViewItem : public QListViewItem
 {
 public:
-  CMMUserViewItem(LicqUser *, QListView *);
+  CMMUserViewItem(const LicqUser* u , QListView *);
   virtual ~CMMUserViewItem();
-  char *Id()  { return m_szId; }
-  unsigned long PPID()  { return m_nPPID; }
+  int userId() const { return myUserId; }
 
 protected:
-  char *m_szId;
-  unsigned long m_nPPID;
+  int myUserId;
 
   friend class CMMUserView;
 };
@@ -54,18 +52,16 @@ class CMMUserView : public QListView
 {
   Q_OBJECT
 public:
-  CMMUserView(ColumnInfos &_colInfo, bool, const char*, unsigned long,
+  CMMUserView(ColumnInfos &_colInfo, bool, int userId,
      CMainWindow *, QWidget *parent = 0);
   virtual ~CMMUserView();
 
-  void AddUser(unsigned long);
-  void AddUser(const char *, unsigned long);
+  void AddUser(int userId);
 
 protected:
   QPopupMenu *mnuMM;
   ColumnInfos colInfo;
-  char *m_szId;
-  unsigned long m_nPPID;
+  int myUserId;
   CMainWindow *mainwin;
 
   virtual void viewportMousePressEvent(QMouseEvent *e);

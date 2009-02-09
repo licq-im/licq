@@ -31,11 +31,10 @@
 #include "licq_user.h"
 
 
-CRefuseDlg::CRefuseDlg(const char *szId, unsigned long nPPID, QString t,
-   QWidget* parent)
+CRefuseDlg::CRefuseDlg(int userId, QString t, QWidget* parent)
    : LicqDialog(parent, "RefuseDialog", true)
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   QLabel *lbl = new QLabel(tr("Refusal message for %1 with ").arg(t) + QString::fromUtf8(u->GetAlias()) + ":", this);
   gUserManager.DropUser(u);
 

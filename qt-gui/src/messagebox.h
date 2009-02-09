@@ -32,7 +32,7 @@ class MsgView;
 class MsgViewItem : public QListViewItem
 {
 public:
-  MsgViewItem (CUserEvent *, QTextCodec *codec, QListView *);
+  MsgViewItem(const CUserEvent* theMsg, QTextCodec *codec, QListView *);
   ~MsgViewItem(void);
   void MarkRead();
 

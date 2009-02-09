@@ -361,7 +361,7 @@ void OwnerManagerDlg::slot_doneregister(bool bSuccess, char *szNewId, unsigned l
   if (bSuccess)
   {
     updateOwners();
-    mainwin->callInfoTab(mnuUserGeneral, szNewId, nPPID);
+    mainwin->callInfoTab(mnuUserGeneral, gUserManager.getUserFromAccount(szNewId, nPPID));
   }
 }
 
@@ -380,7 +380,7 @@ void OwnerManagerDlg::slot_doneRegisterUser(ICQEvent *e)
     InformUser(this, tr("Successfully registered, your user identification\n"
                         "number (UIN) is %1.\n"
                         "Now set your personal information.").arg(id));
-    mainwin->callInfoTab(mnuUserGeneral, id, LICQ_PPID);
+    mainwin->callInfoTab(mnuUserGeneral, gUserManager.getUserFromAccount(id, LICQ_PPID));
   }
   else
   {

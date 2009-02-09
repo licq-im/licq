@@ -67,19 +67,19 @@ typedef std::vector<CColumnInfo *> ColumnInfos;
 class CUserViewItem : public QListViewItem
 {
 public:
-  CUserViewItem(LicqUser*, QListView *);
-  CUserViewItem(LicqUser*, CUserViewItem* item);
+  CUserViewItem(const LicqUser* user, QListView *);
+  CUserViewItem(const LicqUser* user, CUserViewItem* item);
   CUserViewItem (BarType, QListView *);
   CUserViewItem(unsigned short Id, const char* name, unsigned short sortKey, QListView* parent);
 
   virtual ~CUserViewItem();
   virtual QString key(int column, bool ascending) const;
-  char *ItemId() { return m_szId; }
-  unsigned long ItemPPID() { return m_nPPID; }
+  int userId() const { return myUserId; }
+  bool isUserItem() const { return (myUserId != 0); }
   unsigned short GroupId() const { return m_nGroupId; }
-  bool isGroupItem() const { return (!m_szId && !m_nPPID && m_nGroupId != (unsigned short)(-1)); }
+  bool isGroupItem() const { return (myUserId == 0 && m_nGroupId != (unsigned short)(-1)); }
   QCString  GroupName() const { return m_sGroupName; }
-  void setGraphics(LicqUser *);
+  void setGraphics(const LicqUser* u);
   unsigned short Status() const { return m_nStatus; };
   CUserViewItem* firstChild() const { return static_cast<CUserViewItem*>(QListViewItem::firstChild()); }
   CUserViewItem* nextSibling() const { return static_cast<CUserViewItem*>(QListViewItem::nextSibling()); }
@@ -95,9 +95,8 @@ protected:
   QColor *m_cFore, *m_cBack;
   QPixmap *m_pIcon, *m_pIconStatus, *m_pUserIcon;
 
-  char *m_szId;
+  int myUserId;
   QString m_szAlias;
-  unsigned long m_nPPID;
   unsigned short m_nStatus;
   unsigned long m_nStatusFull;
   unsigned short m_nGroupId;
@@ -142,12 +141,12 @@ public:
   void setColors(char *_sOnline, char *_sAway, char *_sOffline,
                  char *_sNew, char *_sBack, char *_sGridLines, char *_sGroupBack);
   void setShowHeader(bool);
-  void AnimationAutoResponseCheck(const char *, unsigned long);
-  void AnimationOnline(const char *, unsigned long);
-  bool MainWindowSelectedItemUser(char *&, unsigned long &);
+  void AnimationAutoResponseCheck(int userId);
+  void AnimationOnline(int userId);
+  int currentUserId() const;
 
   static UserFloatyList* floaties;
-  static CUserView *FindFloaty(const char *, unsigned long);
+  static CUserView *FindFloaty(int userId);
   static void UpdateFloaties();
   virtual void setSorting( int column, bool ascending = true);
 
@@ -159,10 +158,8 @@ protected:
   int msgTimerId;
   int onlTimerId, onlCounter;
   int carTimerId, carCounter;
-  char *carId;
-  char *onlId;
-  unsigned long carPPID;
-  unsigned long onlPPID;
+  int myCarUserId;
+  int myOnlUserId;
   QTimer *tmrRefresh;
 
   QString m_typeAhead;	    /*! type-ahead buffer  */

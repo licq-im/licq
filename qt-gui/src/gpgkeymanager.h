@@ -43,7 +43,7 @@ public:
 
 protected:
   KeyList *lst_keyList;
-  void editUser( ICQUser *u );
+  void editUser(const LicqUser* u);
   void initKeyList();
 
 protected slots:
@@ -74,20 +74,18 @@ class KeyListItem : public QObject, public QListViewItem
 {
   Q_OBJECT
 public:
-  KeyListItem( QListView *parent, ICQUser *u );
+  KeyListItem(QListView* parent, const LicqUser* u);
   ~KeyListItem();
 
   void edit();
   void unsetKey();
 
-  const char* getszId() { return szId; };
-  unsigned long getnPPID() { return nPPID; };
+  int userId() const { return myUserId; }
 
 protected:
-  char *szId;
-  unsigned long nPPID;
+  int myUserId;
   GPGKeySelect *keySelect;
-  void updateText( ICQUser *u );
+  void updateText(const LicqUser* u);
 
 protected slots:
   void slot_done();

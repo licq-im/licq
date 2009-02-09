@@ -34,12 +34,9 @@
 #include "eventdesc.h"
 #include "gui-defines.h"
 
-MsgViewItem::MsgViewItem(CUserEvent *theMsg, QTextCodec *codec, QListView *parent) : QListViewItem(parent)
+MsgViewItem::MsgViewItem(const CUserEvent* theMsg, QTextCodec *codec, QListView *parent) : QListViewItem(parent)
 {
-  if (theMsg->Direction() == D_SENDER)
-    msg = theMsg;
-  else
-    msg = theMsg->Copy();
+  msg = theMsg->Copy();
 
   m_codec = codec;
 

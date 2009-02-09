@@ -138,8 +138,8 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     break;
   default:
     //TODO when CSearchAck changes
-    mainwin->callFunction(mnuUserSendChat, e->SearchAck()->Id(),
-                          e->SearchAck()->PPID() );
+      int userId = gLicqDaemon->addUserToList(e->SearchAck()->Id(), e->SearchAck()->PPID(), false);
+      mainwin->callFunction(mnuUserSendChat, userId);
     close();
     return;
   }

@@ -43,8 +43,7 @@ protected:
   CSignalManager *sigman;
   CInfoField *edtUser;
   QPushButton *btnOk, *btnCancel;
-  char *m_szId;
-  unsigned long m_nPPID;
+  int myUserId;
 protected slots:
   void slot_ok();
 };

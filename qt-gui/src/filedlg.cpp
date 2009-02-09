@@ -49,13 +49,18 @@
 
 
 //-----Constructor------------------------------------------------------------
-CFileDlg::CFileDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
+CFileDlg::CFileDlg(int userId, CICQDaemon *daemon,
   QWidget* parent)
   : QWidget(parent, "FileDialog", WDestructiveClose)
 {
   // If we are the server, then we are receiving a file
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user != NULL)
+  {
+    m_szId = strdup(user->accountId().c_str());
+    m_nPPID = user->ppid();
+  }
+  gUserManager.DropUser(user);
   licqDaemon = daemon;
 
   setCaption(tr("Licq - File Transfer (%1)").arg(m_szId));

@@ -64,12 +64,11 @@ class CustomAwayMsgDlg : public LicqDialog
 {
   Q_OBJECT
 public:
-  CustomAwayMsgDlg(const char *, unsigned long, QWidget *parent = 0);
+  CustomAwayMsgDlg(int userId, QWidget *parent = 0);
 
 protected:
   MLEditWrap *mleAwayMsg;
-  char *m_szId;
-  unsigned long m_nPPID;
+  int myUserId;
 
 protected slots:
   void slot_clear();

@@ -104,10 +104,10 @@ void CSignalManager::ProcessSignal(LicqSignal* s)
   switch (s->Signal())
   {
   case SIGNAL_UPDATExLIST:
-      emit signal_updatedList(s->SubSignal(), s->Argument(), accountId, ppid);
+      emit signal_updatedList(s->SubSignal(), s->Argument(), userId);
     break;
   case SIGNAL_UPDATExUSER:
-      emit signal_updatedUser(accountId, ppid, s->SubSignal(), s->Argument(), s->CID());
+      emit signal_updatedUser(userId, s->SubSignal(), s->Argument(), s->CID());
       if (gUserManager.isOwner(userId) && s->SubSignal() == USER_STATUS)
         emit signal_updatedStatus(ppid);
     break;
@@ -124,11 +124,11 @@ void CSignalManager::ProcessSignal(LicqSignal* s)
     emit signal_logoff();
     break;
   case SIGNAL_UI_VIEWEVENT:
-      emit signal_ui_viewevent(accountId);
+      emit signal_ui_viewevent(userId);
     break;
   case SIGNAL_UI_MESSAGE:
   //TODO
-      emit signal_ui_message(accountId, ppid);
+      emit signal_ui_message(userId);
     break;
   case SIGNAL_ADDxSERVERxLIST:
   //TODO
@@ -138,16 +138,16 @@ void CSignalManager::ProcessSignal(LicqSignal* s)
     emit signal_protocolPlugin(s->SubSignal());
     break;
   case SIGNAL_EVENTxID:
-      emit signal_eventTag(accountId, ppid, s->Argument());
+      emit signal_eventTag(userId, s->Argument());
     break;
   case SIGNAL_SOCKET:
-      emit signal_socket(accountId, ppid, s->CID());
+      emit signal_socket(userId, s->CID());
     break;
   case SIGNAL_CONVOxJOIN:
-      emit signal_convoJoin(accountId, ppid, s->CID());
+      emit signal_convoJoin(userId, ppid, s->CID());
     break;
   case SIGNAL_CONVOxLEAVE:
-      emit signal_convoLeave(accountId, ppid, s->CID());
+      emit signal_convoLeave(userId, ppid, s->CID());
     break;
   case SIGNAL_VERIFY_IMAGE:
       emit signal_verifyImage(ppid);

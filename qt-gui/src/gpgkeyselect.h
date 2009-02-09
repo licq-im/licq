@@ -35,13 +35,12 @@ class KeyView : public QListView
 {
     Q_OBJECT
 public:
-  KeyView( QWidget *parent, const char *szId, unsigned long nPPID );
+  KeyView(QWidget *parent, int userId);
   ~KeyView() {};
 
 protected:
-  const char *szId;
-  unsigned long nPPID;
-  void testViewItem(QListViewItem* item, LicqUser* u);
+  int myUserId;
+  void testViewItem(QListViewItem* item, const LicqUser* u);
   int maxItemVal;
   QListViewItem *maxItem;
   void initKeyList();
@@ -52,14 +51,13 @@ class GPGKeySelect : public QDialog
 {
   Q_OBJECT
 public:
-  GPGKeySelect ( const char *szId, unsigned long nPPID, QWidget *parent = 0);
+  GPGKeySelect(int userId, QWidget *parent = 0);
   ~GPGKeySelect();
 
 protected:
   QListView *keySelect;
   QCheckBox *useGPG;
-  char *szId;
-  unsigned long nPPID;
+  int myUserId;
   void updateIcon();
   QLineEdit *filterText;
 

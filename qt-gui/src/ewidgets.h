@@ -217,17 +217,15 @@ class CMessageViewWidget : public MLView
 {
   Q_OBJECT
 private:
-  char *m_szId;
-  unsigned long m_nPPID;
   CMainWindow *mainwin;
 public:
   static QStringList getStyleNames(bool includeHistoryStyles = false);
 
-  CMessageViewWidget(const char *szId, unsigned long nPPID,
+  CMessageViewWidget(int userId,
     CMainWindow *m, QWidget *parent = 0, const char *name = 0, bool historyMode = false);
   virtual ~CMessageViewWidget();
 
-  void setOwner(const char *szId);
+  void setOwner(int userId);
   void updateContent();
   void clear();
   void addMsg(direction dir, bool fromHistory, QString eventDescription, QDateTime date, 
@@ -248,12 +246,13 @@ public:
   QColor m_colorNotice;
   
 public slots:
-  virtual void addMsg(const CUserEvent* e, const char* _szId = NULL, unsigned long _nPPID = 0);
+  virtual void addMsg(const CUserEvent* e, int userId = 0);
   void addMsg(ICQEvent *);
 
 private:
   void internalAddMsg(QString s);
   QString m_buffer;
+  int myUserId;
 };
 
 /* ----------------------------------------------------------------------------- */

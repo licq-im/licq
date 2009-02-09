@@ -93,22 +93,16 @@ public:
               const char *extendedIconsName, bool bDisableDockIcon,
               QWidget *parent = 0);
   virtual ~CMainWindow();
-  UserEventCommon *callFunction(int fcn, const char *, unsigned long, int = -1);
-  bool RemoveUserFromList(const char *, unsigned long, QWidget *);
-  bool RemoveUserFromGroup(GroupType gtype, int group, const char* id,
-      unsigned long ppid, QWidget* parent);
+  UserEventCommon* callFunction(int fcn, int userId, int = -1);
+  bool RemoveUserFromList(int userId, QWidget *);
+  bool RemoveUserFromGroup(GroupType gtype, int group, int userId, QWidget* parent);
 
   void ApplySkin(const char *, bool = false);
   void ApplyIcons(const char *, bool = false);
   void ApplyExtendedIcons(const char *, bool = false);
   CUserView *UserView()  { return userView; }
   QPopupMenu *UserMenu() { return mnuUser; }
-  void SetUserMenuUser(const char *_szId, unsigned long _nPPID)
-  {
-    if (m_szUserMenuId)  free(m_szUserMenuId);
-    m_szUserMenuId = strdup(_szId);
-    m_nUserMenuPPID = _nPPID;
-  }
+  void SetUserMenuUser(int userId) { myMenuUserId = userId; }
   static QPixmap &iconForStatus(unsigned long FullStatus, const char *szId = "0",
     unsigned long nPPID = LICQ_PPID);
   static QPixmap &iconForEvent(unsigned short SubCommand);
@@ -197,7 +191,7 @@ public:
   QString usprintfHelp;
 
 public slots:
-  void callInfoTab(int, const char *, unsigned long, bool = false, bool =false);
+  void callInfoTab(int, int userId, bool = false, bool =false);
 
 public:
   // Command Tools
@@ -263,8 +257,7 @@ public:
           pmAIMOffline, pmGPGKey, pmGPGKeyEnabled, pmGPGKeyDisabled;
   bool positionChanges;
   int m_nProtoNum;
-  char *m_szUserMenuId;
-  unsigned long m_nUserMenuPPID;
+  int myMenuUserId;
   std::vector<unsigned long> m_lnProtMenu;
 
   // AutoAway
@@ -286,10 +279,10 @@ public:
   
   // Functions
   void CreateUserView();
-  void CreateUserFloaty(const char *szId, unsigned long nPPID,
+  void CreateUserFloaty(int userId,
     unsigned short x = 0, unsigned short y = 0, unsigned short w = 0);
   void initMenu();
-  bool show_user(ICQUser *);
+  bool show_user(const LicqUser* u) const;
   void changeMainWinSticky(bool _bStick);
 
   virtual void resizeEvent (QResizeEvent *);
@@ -310,8 +303,8 @@ public slots:
   void updateUserWin();
   void slot_shutdown();
   void saveOptions();
-  void slot_updatedList(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
-  void slot_updatedUser(const QString& accountId, unsigned long nPPID, unsigned long subSignal, int argument=0, unsigned long cid=0);
+  void slot_updatedList(unsigned long subSignal, int argument, int userId);
+  void slot_updatedUser(int userId, unsigned long subSignal, int argument=0, unsigned long cid=0);
   void slot_viewurl(QWidget *, QString);
 
 protected slots:
@@ -331,25 +324,24 @@ protected slots:
   void changePFMStatus(int index);
   void setCurrentGroupMenu(int id);
   void setCurrentGroup(int);
-  void callDefaultFunction(const char *, unsigned long);
+  void callDefaultFunction(int userId);
   void callDefaultFunction(QListViewItem *);
   void callOwnerFunction(int, unsigned long = LICQ_PPID);
   void callMsgFunction();
   void callUserFunction(int);
-  void slot_socket(const char *, unsigned long, unsigned long);
-  void slot_convoJoin(const char *, unsigned long, unsigned long);
-  void slot_convoLeave(const char *, unsigned long, unsigned long);
+  void slot_socket(int userId, unsigned long convoId);
+  void slot_convoJoin(int userId, unsigned long ppid, unsigned long convoId);
+  void slot_convoLeave(int userId, unsigned long ppid, unsigned long convoId);
   //TODO
   //void callUserFunction(const char *, unsigned long);
-  void slot_userfinished(const char *, unsigned long);
-  void slot_sendfinished(const char *, unsigned long);
-  void slot_ui_message(const char *, unsigned long);
+  void slot_userfinished(int userId);
+  void slot_sendfinished(int userId);
+  void slot_ui_message(int userId);
   void slot_usermenu();
   void slot_logon();
-  //void slot_ui_viewevent(unsigned long);
-  void slot_ui_viewevent(const char *);
+  void slot_ui_viewevent(int userId);
   void slot_protocolPlugin(unsigned long);
-  void slot_eventTag(const char *, unsigned long, unsigned long);
+  void slot_eventTag(int userId, unsigned long);
   void slot_doneplugindlg();
   void slot_doneOptions();
   void slot_doneOwnerManager();
@@ -385,7 +377,7 @@ protected slots:
   void slot_updateAllUsersInGroup();
   void slot_popupall();
   void slot_aboutToQuit();
-  void UserInfoDlg_finished(const char *, unsigned long);
+  void UserInfoDlg_finished(int userId);
   void slot_doneUserEventTabDlg();
   void slot_pluginUnloaded(unsigned long);
 

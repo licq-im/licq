@@ -40,11 +40,10 @@
 // -----------------------------------------------------------------------------
 
 ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
-  const char *szId, unsigned long nPPID, QWidget *parent)
+  int userId, QWidget *parent)
   : LicqDialog(parent, "ShowAwayMessageDialog")
 {
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
+  myUserId = userId;
   sigman = _sigman;
   server = _server;
 
@@ -66,7 +65,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
   lay->addStretch(1);
   lay->addSpacing(30);
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   QTextCodec * codec = UserCodec::codecForICQUser(u);
 //  chkShowAgain->setChecked(u->ShowAwayMsg());
 
@@ -91,6 +90,8 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
   else
   {
     bool bSendServer = (u->SocketDesc(ICQ_CHNxNONE) <= 0 && u->Version() > 6);
+    QCString szId = u->accountId().c_str();
+    unsigned long nPPID = u->ppid();
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
     mleAwayMsg->setBackgroundMode(PaletteBackground);
@@ -103,7 +104,6 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
 
 ShowAwayMsgDlg::~ShowAwayMsgDlg()
 {
-  if (m_szId) free(m_szId);
 }
 
 
@@ -111,7 +111,7 @@ ShowAwayMsgDlg::~ShowAwayMsgDlg()
 
 void ShowAwayMsgDlg::accept()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   u->SetShowAwayMsg(chkShowAgain->isChecked());
   gUserManager.DropUser(u);
 
@@ -167,11 +167,11 @@ void ShowAwayMsgDlg::doneEvent(ICQEvent *e)
                e->SNAC() == MAKESNAC(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER) ||
                 e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ)))
   {
-    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    LicqUser* u = gUserManager.fetchUser(myUserId);
     QTextCodec * codec = UserCodec::codecForICQUser(u);
     const char *szAutoResp = (e->ExtendedAck() && !e->ExtendedAck()->Accepted())?
                               e->ExtendedAck()->Response() : u->AutoResponse();
-    if (m_nPPID == LICQ_PPID && isalpha(m_szId[0]))
+    if (u->ppid() == LICQ_PPID && isalpha(u->accountId()[0]))
     {
       // Strip HTML
       QString strResponse(codec->toUnicode(szAutoResp));

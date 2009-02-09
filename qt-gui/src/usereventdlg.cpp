@@ -104,7 +104,7 @@ using namespace std;
 
 const size_t SHOW_RECENT_NUM = 5;
 
-typedef pair<CUserEvent *, char *> MessageIter;
+typedef pair<const CUserEvent *, int> MessageIter;
 
 bool OrderMessages(const MessageIter& m1, const MessageIter& m2)
 {
@@ -113,23 +113,15 @@ bool OrderMessages(const MessageIter& m1, const MessageIter& m2)
 
 // -----------------------------------------------------------------------------
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
-                                 CMainWindow *m, const char *_szId,
-                                 unsigned long _nPPID, QWidget *parent,
-                                 const char *name)
+    CMainWindow *m, int userId, QWidget *parent, const char *name)
   : QWidget(parent, name, WDestructiveClose), m_highestEventId(-1)
 {
   server = s;
   mainwin = m;
   sigman = theSigMan;
-  if (_szId)
-  {
-    ICQUser::MakeRealId(_szId, _nPPID, m_szId);
-    m_lUsers.push_back(m_szId);
-  }
-  else
-    m_szId = 0;
-  m_nPPID = _nPPID;
-  m_bOwner = (gUserManager.FindOwner(m_lUsers.front().c_str(), m_nPPID) != NULL);
+  if (userId != 0)
+    m_lUsers.push_back(userId);
+  m_bOwner = gUserManager.isOwner(m_lUsers.front());
   m_bDeleteUser = false;
   m_nConvoId = 0;
     
@@ -176,9 +168,10 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
   tmrTime = NULL;
   tmrTyping = NULL;
 
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(m_lUsers.front(), LOCK_W);
   if (u != NULL)
   {
+    m_nPPID = u->ppid();
     nfoStatus->setData(Strings::getStatus(u));
     if (u->NewMessages() == 0)
       setIcon(CMainWindow::iconForStatus(u->StatusFull(), u->IdString(), u->PPID()));
@@ -243,8 +236,8 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
 void UserEventCommon::slot_connectsignal()
 {
-  connect (sigman, SIGNAL(signal_updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      this, SLOT(slot_userupdated(const QString&, unsigned long, unsigned long, int, unsigned long)));
+  connect (sigman, SIGNAL(signal_updatedUser(int, unsigned long, int, unsigned long)),
+      this, SLOT(slot_userupdated(int, unsigned long, int, unsigned long)));
 }
 
 UserEventTabDlg::UserEventTabDlg(CMainWindow *mainwin, QWidget *parent, const char *name)
@@ -267,7 +260,7 @@ UserEventTabDlg::~UserEventTabDlg()
 void UserEventTabDlg::addTab(UserEventCommon *tab, int index)
 {
   QString label;
-  ICQUser *u = gUserManager.FetchUser(tab->Id(), tab->PPID(), LOCK_W);
+  const LicqUser* u = gUserManager.fetchUser(tab->userId());
   if (u == NULL) return;
 
   // initalize codec
@@ -322,12 +315,12 @@ bool UserEventTabDlg::tabExists(QWidget *tab)
 void UserEventTabDlg::updateConvoLabel(UserEventCommon *tab)
 {
   // Show the list of users in the conversation
-  list<string> lUsers = tab->ConvoUsers();
-  list<string>::iterator it;
+  list<int> lUsers = tab->ConvoUsers();
+  list<int>::iterator it;
   string newLabel = "";
   for (it = lUsers.begin(); it != lUsers.end(); ++it)
   {
-    ICQUser *u = gUserManager.FetchUser((*it).c_str(), tab->PPID(), LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(*it);
     if (newLabel.size() == 0)
       newLabel = u->GetAlias();
     else
@@ -340,14 +333,14 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon *tab)
   tabw->changeTab(tab, QString::fromUtf8(newLabel.c_str()));
 }
 
-void UserEventTabDlg::updateTabLabel(ICQUser *u)
+void UserEventTabDlg::updateTabLabel(const LicqUser* u)
 {
   for (int index = 0; index < tabw->count(); index++)
   {
     UserEventCommon *tab = static_cast<UserEventCommon*>(tabw->page(index));
-      
-    if (tab->FindUserInConvo(u->IdString()) && tab->PPID() == u->PPID())
-    {        
+
+    if (tab->FindUserInConvo(u->id()) && tab->PPID() == u->PPID())
+    {
       if (u->NewMessages() > 0)
       {        
         if (tabw->currentPageIndex() == index)
@@ -406,14 +399,13 @@ void UserEventTabDlg::updateTabLabel(ICQUser *u)
   }
 }
 
-void UserEventTabDlg::gotTyping(ICQUser *u, int nConvoId)
+void UserEventTabDlg::gotTyping(const LicqUser* u, int nConvoId)
 {
   for (int index = 0; index < tabw->count(); index++)
   {
     UserEventCommon *tab = static_cast<UserEventCommon*>(tabw->page(index));
-    if ( ((u->PPID() == MSN_PPID && tab->PPID() == u->PPID()) &&
-          tab->FindUserInConvo(u->IdString()) && tab->ConvoId() == (unsigned long)(nConvoId)) ||
-         (tab->FindUserInConvo(u->IdString()) && tab->PPID() == u->PPID()))
+    if (tab->PPID() == u->PPID() && ((u->PPID() == MSN_PPID &&
+        tab->ConvoId() == (unsigned long)(nConvoId)) || tab->FindUserInConvo(u->id())))
     {
       tab->gotTyping(u->GetTyping());
     }
@@ -515,7 +507,7 @@ void UserEventCommon::slot_setEncoding(int encodingMib) {
     popupEncoding->setItemChecked(encodingMib, true);
 
     /* save prefered character set */
-    ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(m_lUsers.front(), LOCK_W);
     if (u != NULL) {
       u->SetEnableSave(false);
       u->SetUserEncoding(encoding.latin1());
@@ -529,7 +521,7 @@ void UserEventCommon::slot_setEncoding(int encodingMib) {
 }
 
 //-----UserEventCommon::SetGeneralInfo---------------------------------------
-void UserEventCommon::SetGeneralInfo(ICQUser *u)
+void UserEventCommon::SetGeneralInfo(const LicqUser* u)
 {
   QTextCodec * codec = UserCodec::codecForICQUser(u);
 
@@ -612,23 +604,17 @@ void UserEventCommon::slot_updatetime()
 
 UserEventCommon::~UserEventCommon()
 {
-  emit finished(m_lUsers.front().c_str(), m_nPPID);
+  emit finished(m_lUsers.front());
 
   if (m_bDeleteUser && !m_bOwner)
-    mainwin->RemoveUserFromList(strdup(m_lUsers.front().c_str()), m_nPPID, this);
+    mainwin->RemoveUserFromList(m_lUsers.front(), this);
 
-  if (m_szId)
-    delete [] m_szId;
   m_lUsers.clear();
 }
 
-bool UserEventCommon::FindUserInConvo(const char *szId)
+bool UserEventCommon::FindUserInConvo(int userId) const
 {
-  char *szRealId;
-  ICQUser::MakeRealId(szId, m_nPPID, szRealId);
-  bool bFound = (std::find(m_lUsers.begin(), m_lUsers.end(), szRealId) != m_lUsers.end());
-  delete [] szRealId;
-  return bFound;
+  return std::find(m_lUsers.begin(), m_lUsers.end(), userId) != m_lUsers.end();
 }
 
 void UserEventCommon::gotTyping(unsigned short nTyping)
@@ -653,7 +639,7 @@ void UserEventCommon::slot_updatetyping()
   if (m_nPPID == LICQ_PPID || m_lUsers.empty()) return;
 
   //FIXME Which user?
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(m_lUsers.front(), LOCK_W);
   u->SetTyping(ICQ_TYPING_INACTIVEx0);
   nfoStatus->unsetPalette();
   if (mainwin->m_bTabbedChatting && mainwin->userEventTabDlg)
@@ -662,17 +648,13 @@ void UserEventCommon::slot_updatetyping()
 }
 
 //-----UserEventCommon::slot_userupdated-------------------------------------
-void UserEventCommon::slot_userupdated(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid)
+void UserEventCommon::slot_userupdated(int userId, unsigned long subSignal, int argument, unsigned long cid)
 {
-  if (m_nPPID != ppid || !FindUserInConvo(accountId))
-       //std::find(m_lUsers.begin(), m_lUsers.end(), sig->Id()) == m_lUsers.end())
+  if (!FindUserInConvo(userId))
   {
     if (cid == m_nConvoId && m_nConvoId != 0)
-    { 
-      char *szRealId;
-      LicqUser::MakeRealId(accountId.latin1(), ppid, szRealId);
-      m_lUsers.push_back(szRealId);
-      delete [] szRealId;
+    {
+      m_lUsers.push_back(userId);
 
       // Now update the tab label
       if (mainwin->userEventTabDlg)
@@ -682,7 +664,7 @@ void UserEventCommon::slot_userupdated(const QString& accountId, unsigned long p
       return;
   }
 
-  LicqUser* u = gUserManager.FetchUser(accountId.latin1(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return;
 
   switch (subSignal)
@@ -720,32 +702,31 @@ void UserEventCommon::slot_userupdated(const QString& accountId, unsigned long p
     gUserManager.DropUser(u);
     
   // Call the event specific function now
-  UserUpdated(accountId, m_nPPID, subSignal, argument, cid);
+  UserUpdated(userId, subSignal, argument, cid);
 }
 
 
 void UserEventCommon::showHistory()
 {
-  mainwin->callInfoTab(mnuUserHistory, m_lUsers.front().c_str(), m_nPPID, true);
+  mainwin->callInfoTab(mnuUserHistory, m_lUsers.front(), true);
 }
 
 
 void UserEventCommon::showUserInfo()
 {
-  mainwin->callInfoTab(mnuUserGeneral, m_lUsers.front().c_str(), m_nPPID, true);
+  mainwin->callInfoTab(mnuUserGeneral, m_lUsers.front(), true);
 }
 
 void UserEventCommon::slot_security()
 {
-  (void) new KeyRequestDlg(sigman, m_lUsers.front().c_str(), m_nPPID);
+  (void) new KeyRequestDlg(sigman, m_lUsers.front());
 }
 
 
 //=====UserViewEvent=========================================================
 UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                             CMainWindow *m, const char *_szId,
-                             unsigned long _nPPID, QWidget* parent)
-  : UserEventCommon(s, theSigMan, m, _szId, _nPPID, parent, "UserViewEvent")
+    CMainWindow *m, int userId, QWidget* parent)
+  : UserEventCommon(s, theSigMan, m, userId, parent, "UserViewEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   splRead = new QSplitter(Vertical, mainWidget);
@@ -812,7 +793,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   connect(btnClose, SIGNAL(clicked()), SLOT(slot_close()));
   h_lay->addWidget(btnClose);
 
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   if (u != NULL && u->NewMessages() > 0)
   {
     unsigned short i;
@@ -840,7 +821,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
     */
     for (i++; i < u->NewMessages(); i++)
     {
-      CUserEvent* event = u->EventPeek(i);
+      const CUserEvent* event = u->EventPeek(i);
       if (!mainwin->m_bMsgChatView ||
           event->SubCommand() != ICQ_CMDxSUB_MSG)
       {
@@ -886,7 +867,7 @@ void UserViewEvent::slot_autoClose()
 {
   if(!chkAutoClose->isChecked()) return;
 
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   bool doclose = (u->NewMessages() == 0);
   gUserManager.DropUser(u);
 
@@ -1076,7 +1057,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
 
 void UserViewEvent::slot_clearEvent()
 {
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(m_lUsers.front(), LOCK_W);
   u->EventClearId(m_xCurrentReadEvent->Id());
   gUserManager.DropUser(u);
 }
@@ -1107,7 +1088,7 @@ void UserViewEvent::generateReply()
 
 void UserViewEvent::sendMsg(QString txt)
 {
-  UserSendMsgEvent *e = new UserSendMsgEvent(server, sigman, mainwin, m_lUsers.front().c_str(), m_nPPID);
+  UserSendMsgEvent *e = new UserSendMsgEvent(server, sigman, mainwin, m_lUsers.front());
   e->setText(txt);
 
   // Find a good position for the new window
@@ -1160,14 +1141,14 @@ void UserViewEvent::slot_btnRead1()
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       CEventAuthGranted *p = (CEventAuthGranted *)m_xCurrentReadEvent;
-      server->AddUserToList(p->IdString(), p->PPID());
+      server->addUserToList(p->IdString(), p->PPID());
       break;
     }
 
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       CEventAdded *p = (CEventAdded *)m_xCurrentReadEvent;
-      server->AddUserToList(p->IdString(), p->PPID());
+      server->addUserToList(p->IdString(), p->PPID());
       break;
     }
 
@@ -1179,7 +1160,7 @@ void UserViewEvent::slot_btnRead1()
       for(it = cl.begin(); it != cl.end(); ++it) {
         ICQUser *u = gUserManager.FetchUser((*it)->IdString(), (*it)->PPID(), LOCK_R);
         if(u == NULL)
-          server->AddUserToList((*it)->IdString(), (*it)->PPID());
+          server->addUserToList((*it)->IdString(), (*it)->PPID());
         gUserManager.DropUser(u);
       }
       btnRead1->setEnabled(false);
@@ -1243,6 +1224,13 @@ void UserViewEvent::slot_btnRead2()
 {
   if (m_xCurrentReadEvent == NULL) return;
 
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  unsigned long m_nPPID = user->ppid();
+  gUserManager.DropUser(user);
+
   switch (m_xCurrentReadEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:  // quote
@@ -1256,13 +1244,13 @@ void UserViewEvent::slot_btnRead2()
       btnRead2->setEnabled(false);
       btnRead3->setEnabled(false);
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
-      ChatDlg *chatDlg = new ChatDlg(m_lUsers.front().c_str(), m_nPPID, server, mainwin);
+      ChatDlg *chatDlg = new ChatDlg(m_lUsers.front(), server, mainwin);
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
         if (chatDlg->StartAsClient(c->Port()))
         {
           //TODO in CICQDaemon
-          server->icqChatRequestAccept(m_lUsers.front().c_str(), 0,
+          server->icqChatRequestAccept(accountId, 0,
             c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         }
       }
@@ -1271,7 +1259,7 @@ void UserViewEvent::slot_btnRead2()
         if (chatDlg->StartAsServer())
         {
           //TODO in CICQDaemon
-          server->icqChatRequestAccept(m_lUsers.front().c_str(),
+          server->icqChatRequestAccept(accountId,
             chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         }
       }
@@ -1284,12 +1272,12 @@ void UserViewEvent::slot_btnRead2()
       btnRead2->setEnabled(false);
       btnRead3->setEnabled(false);
       CEventFile *f = (CEventFile *)m_xCurrentReadEvent;
-      CFileDlg *fileDlg = new CFileDlg(m_lUsers.front().c_str(), m_nPPID, server);
+      CFileDlg* fileDlg = new CFileDlg(m_lUsers.front(), server);
 
       if (fileDlg->ReceiveFiles())
       {
         //TODO in CICQDaemon
-        server->ProtoFileTransferAccept(m_lUsers.front().c_str(), m_nPPID,
+        server->ProtoFileTransferAccept(accountId, m_nPPID,
             fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0],
             f->MessageID()[1], f->FileDescription(), f->Filename(),
             f->FileSize(), f->IsDirect());
@@ -1312,6 +1300,13 @@ void UserViewEvent::slot_btnRead3()
 {
   if (m_xCurrentReadEvent == NULL) return;
 
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  unsigned long m_nPPID = user->ppid();
+  gUserManager.DropUser(user);
+
   switch (m_xCurrentReadEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:  // Forward
@@ -1324,7 +1319,7 @@ void UserViewEvent::slot_btnRead3()
 
     case ICQ_CMDxSUB_CHAT:  // refuse a chat request
     {
-      CRefuseDlg *r = new CRefuseDlg(m_lUsers.front().c_str(), m_nPPID, tr("Chat"), this);
+      CRefuseDlg *r = new CRefuseDlg(m_lUsers.front(), tr("Chat"), this);
 
       if (r->exec())
       {
@@ -1334,7 +1329,7 @@ void UserViewEvent::slot_btnRead3()
         btnRead3->setEnabled(false);
 
         //TODO in CICQDaemon
-        server->icqChatRequestRefuse(m_lUsers.front().c_str(),
+        server->icqChatRequestRefuse(accountId,
           codec->fromUnicode(r->RefuseMessage()),
           m_xCurrentReadEvent->Sequence(), c->MessageID(), c->IsDirect());
       }
@@ -1344,7 +1339,7 @@ void UserViewEvent::slot_btnRead3()
 
     case ICQ_CMDxSUB_FILE:  // refuse a file transfer
     {
-      CRefuseDlg *r = new CRefuseDlg(m_lUsers.front().c_str(), m_nPPID, tr("File Transfer"), this);
+      CRefuseDlg *r = new CRefuseDlg(m_lUsers.front(), tr("File Transfer"), this);
 
       if (r->exec())
       {
@@ -1354,7 +1349,7 @@ void UserViewEvent::slot_btnRead3()
         btnRead3->setEnabled(false);
 
         //TODO
-        server->ProtoFileTransferRefuse(m_lUsers.front().c_str(), m_nPPID,
+        server->ProtoFileTransferRefuse(accountId.latin1(), m_nPPID,
             codec->fromUnicode(r->RefuseMessage()),
             m_xCurrentReadEvent->Sequence(), f->MessageID()[0],
             f->MessageID()[1], f->IsDirect());
@@ -1366,7 +1361,7 @@ void UserViewEvent::slot_btnRead3()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest *p = (CEventAuthRequest *)m_xCurrentReadEvent;
-      server->AddUserToList(p->IdString(), p->PPID());
+      server->addUserToList(p->IdString(), p->PPID());
       break;
     }
   }
@@ -1377,20 +1372,26 @@ void UserViewEvent::slot_btnRead4()
 {
   if (m_xCurrentReadEvent == NULL) return;
 
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   switch (m_xCurrentReadEvent->SubCommand())
   {
     case ICQ_CMDxSUB_MSG:
-      mainwin->callFunction(mnuUserSendChat, m_lUsers.front().c_str(), m_nPPID);
+      mainwin->callFunction(mnuUserSendChat, m_lUsers.front());
       break;
     case ICQ_CMDxSUB_CHAT:  // join to current chat
     {
       CEventChat *c = (CEventChat *)m_xCurrentReadEvent;
       if (c->Port() != 0)  // Joining a multiparty chat (we connect to them)
       {
-        ChatDlg *chatDlg = new ChatDlg(m_lUsers.front().c_str(), m_nPPID, server, mainwin);
+        ChatDlg *chatDlg = new ChatDlg(m_lUsers.front(), server, mainwin);
         //TODO
         if (chatDlg->StartAsClient(c->Port()))
-          server->icqChatRequestAccept(m_lUsers.front().c_str(), 0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(accountId.latin1(), 0, c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
       }
       else  // single party (other side connects to us)
       {
@@ -1398,7 +1399,7 @@ void UserViewEvent::slot_btnRead4()
         CJoinChatDlg *j = new CJoinChatDlg(this);
         if (j->exec() && (chatDlg = j->JoinedChat()) != NULL)
           //TODO
-          server->icqChatRequestAccept(m_lUsers.front().c_str(), chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
+          server->icqChatRequestAccept(accountId.latin1(), chatDlg->LocalPort(), c->Clients(), c->Sequence(), c->MessageID(), c->IsDirect());
         delete j;
       }
       break;
@@ -1430,12 +1431,16 @@ void UserViewEvent::slot_btnRead4()
         break;
 
       ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
+      int userId;
       if (u == NULL)
-        gLicqDaemon->AddUserToList(id, ppid, false, true);
+        userId = gLicqDaemon->addUserToList(id, ppid, false);
       else
+      {
+        userId = u->id();
         gUserManager.DropUser(u);
+      }
 
-      mainwin->callInfoTab(mnuUserGeneral, id, ppid, false, true);
+      mainwin->callInfoTab(mnuUserGeneral, userId, false, true);
       break;
     }
   }
@@ -1467,16 +1472,16 @@ void UserViewEvent::slot_btnReadNext()
 }
 
 
-void UserViewEvent::UserUpdated(const char* szId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long /* cid */)
+void UserViewEvent::UserUpdated(int userId, unsigned long subSignal, int argument, unsigned long /* cid */)
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (!u) return;
   if (subSignal == USER_EVENTS)
   {
     if (argument > 0)
     {
       int eventId = argument;
-      CUserEvent *e = u->EventPeekId(eventId);
+      const CUserEvent* e = u->EventPeekId(eventId);
       // Making sure we didn't handle this message already.
       if (e != NULL && m_highestEventId < eventId &&
           (!mainwin->m_bMsgChatView || e->SubCommand() != ICQ_CMDxSUB_MSG))
@@ -1495,7 +1500,9 @@ void UserViewEvent::UserUpdated(const char* szId, unsigned long nPPID, unsigned 
 
 void UserViewEvent::slot_sentevent(ICQEvent *e)
 {
-  if (e->PPID() != m_nPPID || strcmp(m_lUsers.front().c_str(), e->Id()) != 0) return;
+  int eventUserId = gUserManager.getUserFromAccount(e->Id(), e->PPID());
+  if (eventUserId != m_lUsers.front())
+    return;
 
   if (!mainwin->m_bMsgChatView)
     (void) new MsgViewItem(e->GrabUserEvent(), codec, msgView);
@@ -1504,9 +1511,8 @@ void UserViewEvent::slot_sentevent(ICQEvent *e)
 
 //=====UserSendCommon========================================================
 UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
-                               CMainWindow *m, const char *szId,
-                               unsigned long nPPID, QWidget* parent, const char* name)
-  : UserEventCommon(s, theSigMan, m, szId, nPPID, parent, name)
+    CMainWindow *m, int userId, QWidget* parent, const char* name)
+  : UserEventCommon(s, theSigMan, m, userId, parent, name)
 {
   grpMR = NULL;
   tmpWidgetWidth = 0;
@@ -1534,7 +1540,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   QBoxLayout *vlay = new QVBoxLayout(box, 10, 5);
   QBoxLayout *hlay = new QHBoxLayout(vlay);
   chkSendServer = new QCheckBox(tr("Se&nd through server"), box);
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   chkSendServer->setChecked(u->SendServer() ||
     (u->StatusOffline() && u->SocketDesc(ICQ_CHNxNONE) == -1));
 
@@ -1552,6 +1558,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     chkSendServer->setEnabled(false);
   }
 
+  bool bUseHTML = !isdigit(u->accountId()[1]);
   gUserManager.DropUser(u);
   hlay->addWidget(chkSendServer);
   chkUrgent = new QCheckBox(tr("U&rgent"), box);
@@ -1611,9 +1618,9 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
   mleHistory = 0;
   if (mainwin->m_bMsgChatView)
   {
-    mleHistory = new CMessageViewWidget(m_lUsers.front().c_str(), m_nPPID, mainwin, splView);
-    
-    u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+    mleHistory = new CMessageViewWidget(m_lUsers.front(), mainwin, splView);
+
+    u = gUserManager.fetchUser(m_lUsers.front());
     if (u && mainwin->m_bShowHistory)
     {
       // Show the last SHOW_RECENT_NUM messages in the history
@@ -1626,8 +1633,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         HistoryListIter lHistoryIter = lHistoryList.end();
         for (size_t i = 0; i < (SHOW_RECENT_NUM + nNewMessages) && lHistoryIter != lHistoryList.begin(); i++)
           lHistoryIter--;
-          
-        bool bUseHTML = !isdigit((m_lUsers.front().c_str())[1]); 
+
         QTextCodec *codec = UserCodec::codecForICQUser(u);
         QString tmp = "";
         QString contactName = QString::fromUtf8(u->GetAlias());
@@ -1685,14 +1691,14 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     }
     
     // Collect all messages to put them in the correct time order
-    vector< pair<CUserEvent *, char *> > m_vMsgs;
+    vector< pair<const CUserEvent *, int> > m_vMsgs;
     
     // add all unread messages.
     if (u && u->NewMessages() > 0)
     {
       for (unsigned short i = 0; i < u->NewMessages(); i++)
       {
-        CUserEvent *e = u->EventPeek(i);
+        const CUserEvent* e = u->EventPeek(i);
         // Get the convo id now
         unsigned long nConvoId = e->ConvoId();
         if (m_nConvoId == 0)
@@ -1702,7 +1708,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
           m_highestEventId = e->Id();
         
         if (nConvoId == m_nConvoId)
-          m_vMsgs.push_back(make_pair(e, strdup(u->IdString())));
+          m_vMsgs.push_back(make_pair(e, u->id()));
       }
       gUserManager.DropUser(u);
     
@@ -1711,7 +1717,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
       {
         FOR_EACH_PROTO_USER_START(m_nPPID, LOCK_R)
         {
-          if (pUser->NewMessages() && strcmp(m_lUsers.front().c_str(), pUser->IdString()) != 0)
+          if (pUser->NewMessages() && m_lUsers.front() == pUser->id())
           {
             for (unsigned short i = 0; i < pUser->NewMessages(); i++)
             {            
@@ -1722,11 +1728,8 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
               if (e->ConvoId() == m_nConvoId)
               {
                 // add to the convo list (but what if they left by the time we open this?)
-                char *szRealId;
-                ICQUser::MakeRealId(pUser->IdString(), pUser->PPID(), szRealId);
-                m_lUsers.push_back(szRealId);
-                delete [] szRealId;
-                m_vMsgs.push_back(make_pair(e, strdup(pUser->IdString())));
+                m_lUsers.push_back(pUser->id());
+                m_vMsgs.push_back(make_pair(e, pUser->id()));
               }
             }
           }
@@ -1738,12 +1741,9 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
       stable_sort(m_vMsgs.begin(), m_vMsgs.end(), OrderMessages);
     
       // Now, finally add them
-      vector< pair<CUserEvent *, char *> >::iterator MsgIter;
+      vector< pair<const CUserEvent *, int> >::iterator MsgIter;
       for (MsgIter = m_vMsgs.begin(); MsgIter != m_vMsgs.end(); ++MsgIter)
-      {
-        mleHistory->addMsg((*MsgIter).first, (*MsgIter).second, m_nPPID);
-        free((*MsgIter).second);
-      }
+        mleHistory->addMsg((*MsgIter).first, (*MsgIter).second);
       m_vMsgs.clear();
       
       // If the user closed the chat window, we have to make sure we aren't
@@ -1752,7 +1752,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
         m_nConvoId = 0;
 
       // Fetch the user again since we dropped it above
-      u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+      u = gUserManager.fetchUser(m_lUsers.front());
     }
     
     // Do we already have an open socket?
@@ -1841,18 +1841,19 @@ bool UserSendCommon::eventFilter(QObject *watched, QEvent *e)
     return UserEventCommon::eventFilter(watched, e);
 }
 
-void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
+void UserSendCommon::convoJoin(int userId, unsigned long _nConvoId)
 {
-  if (szId == 0) return;
-  
+  if (userId == 0)
+    return;
+
   if (mainwin->m_bMsgChatView)
   {
-    ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(userId);
     QString userName;
     if (u)
       userName = QString::fromUtf8(u->GetAlias());
     else
-      userName = szId;
+      userName = "";
     gUserManager.DropUser(u);
 
     QString strMsg = QString(tr("%1 has joined the conversation."))
@@ -1860,14 +1861,9 @@ void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
     mleHistory->addNotice(QDateTime::currentDateTime(), strMsg);
   }
 
-  if (!FindUserInConvo(const_cast<char *>(szId)))
-  {
-    char *szRealId;
-    ICQUser::MakeRealId(szId, m_nPPID, szRealId);
-    m_lUsers.push_back(szRealId);
-    delete [] szRealId;
-  }
-  
+  if (!FindUserInConvo(userId))
+    m_lUsers.push_back(userId);
+
   m_nConvoId = _nConvoId;
 
   // Now update the tab label
@@ -1875,18 +1871,19 @@ void UserSendCommon::convoJoin(const char *szId, unsigned long _nConvoId)
     mainwin->userEventTabDlg->updateConvoLabel(this);
 }
 
-void UserSendCommon::convoLeave(const char *szId, unsigned long /* _nConvoId */)
+void UserSendCommon::convoLeave(int userId, unsigned long /* _nConvoId */)
 {
-  if (szId == 0) return;
-  
+  if (userId == 0)
+    return;
+
   if (mainwin->m_bMsgChatView)
   {
-    ICQUser *u = gUserManager.FetchUser(szId, m_nPPID, LOCK_R);
+    LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
     QString userName;
     if (u)
       userName = QString::fromUtf8(u->GetAlias());
     else
-      userName = szId;
+      userName = "";
 
     QString strMsg = QString(tr("%1 has left the conversation."))
       .arg(userName);
@@ -1908,16 +1905,16 @@ void UserSendCommon::convoLeave(const char *szId, unsigned long /* _nConvoId */)
   
   if (m_lUsers.size() > 1)
   {
-    list<string>::iterator it;
+    list<int>::iterator it;
     for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
     {
-      if (strcasecmp(szId, it->c_str()) == 0)
+      if (*it == userId)
       {
         m_lUsers.remove(*it);
         break;
       }
     }
-    mleHistory->setOwner(m_lUsers.front().c_str());
+    mleHistory->setOwner(m_lUsers.front());
   }
   else
     m_nConvoId = 0;
@@ -2003,7 +2000,7 @@ void UserSendCommon::slot_SetForegroundICQColor()
 
 void UserSendCommon::trySecure()
 {
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
 
   bool autoSecure = ( u->AutoSecure() && gLicqDaemon->CryptoEnabled() &&
                       (u->SecureChannelSupport() == SECURE_CHANNEL_SUPPORTED ) &&
@@ -2012,7 +2009,7 @@ void UserSendCommon::trySecure()
   disconnect( btnSend, SIGNAL( clicked() ), this, SLOT( trySecure() ) );
   connect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
   if ( autoSecure ) {
-    QWidget *w = new KeyRequestDlg(sigman, m_lUsers.front().c_str(), m_nPPID);
+    QWidget *w = new KeyRequestDlg(sigman, m_lUsers.front());
     connect(w, SIGNAL( destroyed() ), this, SLOT( sendButton() ) );
   }
   else
@@ -2024,8 +2021,14 @@ void UserSendCommon::slot_textChanged()
   if (mleSend == NULL || mleSend->text().isEmpty())
     return;
 
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   strTempMsg = mleSend->text();
-  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, true, m_nConvoId);
+  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, true, m_nConvoId);
   disconnect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   tmrSendTyping->start(5000);
 }
@@ -2038,6 +2041,12 @@ void UserSendCommon::slot_textChanged_timeout()
     return;
   }
 
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   QString str = mleSend->text();
 
   if (str != strTempMsg)
@@ -2045,14 +2054,14 @@ void UserSendCommon::slot_textChanged_timeout()
     strTempMsg = str;
     // Hack to not keep sending the typing notification to ICQ
     if (m_nPPID != LICQ_PPID)
-      server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, true, m_nConvoId);
+      server->ProtoTypingNotification(accountId.latin1(), m_nPPID, true, m_nConvoId);
   }
   else
   {
     if (tmrSendTyping->isActive())
       tmrSendTyping->stop();
     connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-    server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
+    server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
   }
 }
 
@@ -2061,7 +2070,7 @@ void UserSendCommon::slot_sendServerToggled()
   // When the "Send through server" checkbox is toggled, we will save the setting
   // to disk, so it will be persistent.
 
-  ICQUser* u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(m_lUsers.front(), LOCK_W);
   if (u != NULL)
   {
     u->SetSendServer(chkSendServer->isChecked());
@@ -2094,9 +2103,9 @@ void UserSendCommon::slot_ClearNewEvents()
   ICQUser *u = 0;
 
   // Iterate all users in the conversation
-  for (list<string>::iterator it = m_lUsers.begin(); it != m_lUsers.end(); ++it)
+  for (list<int>::iterator it = m_lUsers.begin(); it != m_lUsers.end(); ++it)
   {
-    u = gUserManager.FetchUser((*it).c_str(), m_nPPID, LOCK_W);
+    u = gUserManager.fetchUser(*it, LOCK_W);
     if (mainwin->m_bMsgChatView
         && isActiveWindow() && (!mainwin->userEventTabDlg ||
         (mainwin->userEventTabDlg &&
@@ -2139,22 +2148,22 @@ void UserSendCommon::changeEventType(int id)
   {
 
   case UC_MESSAGE:
-    e = new UserSendMsgEvent(server, sigman, mainwin, m_lUsers.front().c_str(), m_nPPID, parent);
+      e = new UserSendMsgEvent(server, sigman, mainwin, m_lUsers.front(), parent);
     break;
   case UC_URL:
-    e = new UserSendUrlEvent(server, sigman, mainwin, m_lUsers.front().c_str(), m_nPPID, parent);
+      e = new UserSendUrlEvent(server, sigman, mainwin, m_lUsers.front(), parent);
     break;
   case UC_CHAT:
-    e = new UserSendChatEvent(server, sigman, mainwin, m_lUsers.front().c_str(), m_nPPID, parent);
+      e = new UserSendChatEvent(server, sigman, mainwin, m_lUsers.front(), parent);
     break;
   case UC_FILE:
-    e = new UserSendFileEvent(server, sigman, mainwin, m_lUsers.front().c_str(), m_nPPID, parent);
+      e = new UserSendFileEvent(server, sigman, mainwin, m_lUsers.front(), parent);
     break;
   case UC_CONTACT:
-    e = new UserSendContactEvent(server, sigman, mainwin, m_lUsers.front().c_str(), m_nPPID, parent);
+      e = new UserSendContactEvent(server, sigman, mainwin, m_lUsers.front(), parent);
     break;
   case UC_SMS:
-    e = new UserSendSmsEvent(server, sigman, mainwin, m_lUsers.front().c_str(), m_nPPID, parent);
+      e = new UserSendSmsEvent(server, sigman, mainwin, m_lUsers.front(), parent);
     break;
   default:
     assert(0);
@@ -2178,11 +2187,9 @@ void UserSendCommon::changeEventType(int id)
       e->move(p);
     }
 
-    disconnect(this, SIGNAL(finished(const char *, unsigned long)), 
-               mainwin, SLOT(slot_sendfinished(const char *,unsigned long)));
-    mainwin->slot_sendfinished(m_lUsers.front().c_str(), m_nPPID);
-    connect(e, SIGNAL(finished(const char *, unsigned long)), mainwin,
-            SLOT(slot_sendfinished(const char *, unsigned long)));
+    disconnect(this, SIGNAL(finished(int)), mainwin, SLOT(slot_sendfinished(int)));
+    mainwin->slot_sendfinished(m_lUsers.front());
+    connect(e, SIGNAL(finished(int)), mainwin, SLOT(slot_sendfinished(int)));
     mainwin->licqUserSend.append(e);
 
     emit signal_msgtypechanged(this, e);
@@ -2221,7 +2228,7 @@ void UserSendCommon::massMessageToggled(bool b)
       (void) new QLabel(tr("Drag Users Here\nRight Click for Options"), grpMR);
       //TODO in CMMUserView
       lstMultipleRecipients = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-          m_lUsers.front().c_str(), LICQ_PPID, mainwin, grpMR);
+          m_lUsers.front(), mainwin, grpMR);
       lstMultipleRecipients->setFixedWidth(mainwin->UserView()->width());
     }
     grpMR->show();
@@ -2275,13 +2282,13 @@ void UserSendCommon::sendButton()
 {
   if(!mainwin->m_bManualNewUser)
   {
-    ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(m_lUsers.front(), LOCK_W);
 
     if(u->NewUser())
     {
       u->SetNewUser(false);
       gUserManager.DropUser(u);
-      mainwin->slot_updatedUser(m_lUsers.front().c_str(), m_nPPID, USER_BASIC);
+      mainwin->slot_updatedUser(m_lUsers.front(), USER_BASIC);
     }
     else
       gUserManager.DropUser(u);
@@ -2425,7 +2432,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   QString msg;
   if (e->SubResult() == ICQ_TCPxACK_RETURN)
   {
-    u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
+    u = gUserManager.fetchUser(m_lUsers.front(), LOCK_W);
 
     msg = tr("%1 is in %2 mode:\n%3\nSend...")
         .arg(QString::fromUtf8(u->GetAlias()))
@@ -2453,7 +2460,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
   }
 /*  else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
   {
-    u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(m_lUsers.front(), LOCK_R);
     msg = tr("%1 refused %2, send through server")
           .arg(QString::fromUtf8(u->GetAlias())).arg(EventDescription(ue));
     InformUser(this, msg);
@@ -2486,11 +2493,17 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
   chkSendServer->setChecked(!bOnline);
   chkUrgent->setChecked(nLevel == ICQ_TCPxMSG_URGENT);
 
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   switch(e->UserEvent()->SubCommand() & ~ICQ_CMDxSUB_FxMULTIREC)
   {
     case ICQ_CMDxSUB_MSG:
     {
-      ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
       bool bUserOffline = u->StatusOffline();
       gUserManager.DropUser(u);
       CEventMsg *ue = (CEventMsg *)e->UserEvent();
@@ -2549,7 +2562,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
           messageRaw = ue->Message();
         }
 
-        icqEventTag = server->ProtoSendMessage(m_lUsers.front().c_str(), m_nPPID, messageRaw.data(),
+        icqEventTag = server->ProtoSendMessage(accountId.latin1(), m_nPPID, messageRaw.data(),
           bOnline, nLevel, false, &icqColor);
 
         m_lnEventTag.push_back(icqEventTag);
@@ -2567,7 +2580,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventUrl *ue = (CEventUrl *)e->UserEvent();
 
-      icqEventTag = server->ProtoSendUrl(m_lUsers.front().c_str(), m_nPPID, ue->Url(),
+      icqEventTag = server->ProtoSendUrl(accountId.latin1(), m_nPPID, ue->Url(),
         ue->Description(), bOnline, nLevel, false, &icqColor);
 
       break;
@@ -2585,7 +2598,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       if(users.size() == 0)
         break;
 
-      icqEventTag = server->icqSendContactList(m_lUsers.front().c_str(),
+      icqEventTag = server->icqSendContactList(accountId.latin1(),
           users, bOnline, nLevel, false, &icqColor);
 
       break;
@@ -2596,12 +2609,12 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 
       if (ue->Clients() == NULL)
         //TODO in the daemon
-        icqEventTag = server->icqChatRequest(m_lUsers.front().c_str(),
+        icqEventTag = server->icqChatRequest(accountId.latin1(),
           ue->Reason(), nLevel, !bOnline);
       else
         //TODO in the daemon
         icqEventTag = server->icqMultiPartyChatRequest(
-            m_lUsers.front().c_str(), ue->Reason(), ue->Clients(),
+            accountId.latin1(), ue->Reason(), ue->Clients(),
               ue->Port(), nLevel, !bOnline);
 
       break;
@@ -2611,7 +2624,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       CEventFile *ue = (CEventFile *)e->UserEvent();
       ConstFileList filelist(ue->FileList());
       //TODO in the daemon
-      icqEventTag = server->ProtoFileTransfer(m_lUsers.front().c_str(), m_nPPID,
+      icqEventTag = server->ProtoFileTransfer(accountId.latin1(), m_nPPID,
         ue->Filename(), ue->FileDescription(), filelist, nLevel, !bOnline);
 
       break;
@@ -2620,7 +2633,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventSms *ue = (CEventSms *)e->UserEvent();
       //TODO in the daemon
-      icqEventTag = server->icqSendSms(m_lUsers.front().c_str(), LICQ_PPID,
+      icqEventTag = server->icqSendSms(accountId.latin1(), LICQ_PPID,
         ue->Number(), ue->Message());
 
       break;
@@ -2643,7 +2656,13 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 //-----UserSendCommon::slot_close--------------------------------------------
 void UserSendCommon::slot_close()
 {
-  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
+  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
   
   if (mainwin->m_bMsgChatView)
   {
@@ -2681,9 +2700,9 @@ void UserSendCommon::slot_cancelSend()
 
 
 //-----UserSendCommon::UserUpdated-------------------------------------------
-void UserSendCommon::UserUpdated(const char* szId, unsigned long nPPID, unsigned long subSignal, int argument, unsigned long cid)
+void UserSendCommon::UserUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid)
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (!u) return;
   switch (subSignal)
   {
@@ -2704,7 +2723,7 @@ void UserSendCommon::UserUpdated(const char* szId, unsigned long nPPID, unsigned
     }
     case USER_EVENTS:
     {
-      CUserEvent *e = u->EventPeekId(argument);
+      const CUserEvent* e = u->EventPeekId(argument);
       if (e != NULL && m_highestEventId < argument && mleHistory &&
           argument > 0)
       {
@@ -2712,10 +2731,10 @@ void UserSendCommon::UserUpdated(const char* szId, unsigned long nPPID, unsigned
         e = u->EventPeekId(argument);
         if (e)
         {
-          if (nPPID != MSN_PPID || (nPPID == MSN_PPID && cid == m_nConvoId))
+          if (u->ppid() != MSN_PPID || cid == m_nConvoId)
           {
             gUserManager.DropUser(u);
-            mleHistory->addMsg(e, szId, nPPID);
+            mleHistory->addMsg(e, userId);
             return;
           }
         }
@@ -2739,7 +2758,7 @@ void UserSendCommon::UserUpdated(const char* szId, unsigned long nPPID, unsigned
 //-----UserSendCommon::checkSecure-------------------------------------------
 bool UserSendCommon::checkSecure()
 {
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   if (u == 0)
     return false;
  
@@ -2758,7 +2777,7 @@ bool UserSendCommon::checkSecure()
     }
     else
     {
-      ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+      LicqUser* u = gUserManager.fetchUser(m_lUsers.front(), LOCK_W);
       if (u)
         u->SetAutoSecure(false);
       gUserManager.DropUser(u);
@@ -2769,8 +2788,8 @@ bool UserSendCommon::checkSecure()
 
 //=====UserSendMsgEvent======================================================
 UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
-  CMainWindow *m, const char *szId, unsigned long nPPID, QWidget *parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendMsgEvent")
+    CMainWindow *m, int userId, QWidget *parent)
+  : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendMsgEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
   lay->addWidget(splView);
@@ -2795,12 +2814,18 @@ UserSendMsgEvent::~UserSendMsgEvent()
 //-----UserSendMsgEvent::sendButton------------------------------------------
 void UserSendMsgEvent::sendButton()
 {
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   if (tmrSendTyping->isActive())
     tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
-  
+  server->ProtoTypingNotification(accountId.latin1(), false, m_nConvoId);
+
   // do nothing if a command is already being processed
   unsigned long icqEventTag = 0;
   if (m_lnEventTag.size())
@@ -2818,7 +2843,7 @@ void UserSendMsgEvent::sendButton()
 
   if (!UserSendCommon::checkSecure()) return;
 
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   bool bUserOffline = u->StatusOffline();
   gUserManager.DropUser(u);
 
@@ -2881,7 +2906,7 @@ void UserSendMsgEvent::sendButton()
         m->go_message(message);
      }
 
-     icqEventTag = server->ProtoSendMessage(m_lUsers.front().c_str(), m_nPPID, messageRaw.data(),
+     icqEventTag = server->ProtoSendMessage(accountId.latin1(), m_nPPID, messageRaw.data(),
       chkSendServer->isChecked() ? false : true,
       chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
       chkMass->isChecked(), &icqColor, m_nConvoId);
@@ -2902,11 +2927,11 @@ bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
 {
   mleSend->setText(QString::null);
 
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   if (u->Away() && u->ShowAwayMsg())
   {
     gUserManager.DropUser(u);
-    (void) new ShowAwayMsgDlg(NULL, NULL, m_lUsers.front().c_str(), m_nPPID);
+    (void) new ShowAwayMsgDlg(NULL, NULL, m_lUsers.front());
   }
   else
     gUserManager.DropUser(u);
@@ -2927,9 +2952,8 @@ void UserSendMsgEvent::resetSettings()
 }
 
 UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                   CMainWindow *m, const char *szId,
-                                   unsigned long nPPID, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendUrlEvent")
+    CMainWindow *m, int userId, QWidget* parent)
+  : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendUrlEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
   lay->addWidget(splView);
@@ -2994,11 +3018,17 @@ void UserSendUrlEvent::resetSettings()
 //-----UserSendUrlEvent::sendButton------------------------------------------
 void UserSendUrlEvent::sendButton()
 {
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
-  
+  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+
   if (edtItem->text().stripWhiteSpace().isEmpty())
   {
     InformUser(this, tr("No URL specified"));
@@ -3017,7 +3047,7 @@ void UserSendUrlEvent::sendButton()
   }
 
   unsigned long icqEventTag;
-  icqEventTag = server->ProtoSendUrl(m_lUsers.front().c_str(), m_nPPID, edtItem->text().latin1(), codec->fromUnicode(mleSend->text()),
+  icqEventTag = server->ProtoSendUrl(accountId.latin1(), m_nPPID, edtItem->text().latin1(), codec->fromUnicode(mleSend->text()),
      chkSendServer->isChecked() ? false : true,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkMass->isChecked(), &icqColor);
@@ -3033,11 +3063,11 @@ bool UserSendUrlEvent::sendDone(ICQEvent *e)
 {
   if (e->Command() != ICQ_CMDxTCP_START) return true;
 
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   if (u->Away() && u->ShowAwayMsg())
   {
     gUserManager.DropUser(u);
-    (void) new ShowAwayMsgDlg(NULL, NULL, m_lUsers.front().c_str(), m_nPPID);
+    (void) new ShowAwayMsgDlg(NULL, NULL, m_lUsers.front());
   }
   else
     gUserManager.DropUser(u);
@@ -3046,9 +3076,8 @@ bool UserSendUrlEvent::sendDone(ICQEvent *e)
 }
 
 UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                     CMainWindow *m, const char *szId,
-                                     unsigned long nPPID, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendFileEvent")
+    CMainWindow *m, int userId, QWidget* parent)
+  : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendFileEvent")
 {
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
@@ -3171,11 +3200,17 @@ UserSendFileEvent::~UserSendFileEvent()
 
 void UserSendFileEvent::sendButton()
 {
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
-  
+  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+
   if (edtItem->text().stripWhiteSpace().isEmpty())
   {
     WarnUser(this, tr("You must specify a file to transfer!"));
@@ -3184,7 +3219,7 @@ void UserSendFileEvent::sendButton()
 
   unsigned long icqEventTag;
   //TODO in daemon
-  icqEventTag = server->ProtoFileTransfer(m_lUsers.front().c_str(), m_nPPID,
+  icqEventTag = server->ProtoFileTransfer(accountId.latin1(), m_nPPID,
      codec->fromUnicode(edtItem->text()),
      codec->fromUnicode(mleSend->text()), m_lFileList,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
@@ -3222,7 +3257,7 @@ bool UserSendFileEvent::sendDone(ICQEvent *e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
-    ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
     QString s(!e->ExtendedAck() ? tr("No reason provided") :
                                codec->toUnicode(e->ExtendedAck()->Response()));
     QString result = tr("File transfer with %2 refused:\n%3")
@@ -3234,7 +3269,7 @@ bool UserSendFileEvent::sendDone(ICQEvent *e)
   else
   {
     CEventFile *f = (CEventFile *)e->UserEvent();
-    CFileDlg *fileDlg = new CFileDlg(m_lUsers.front().c_str(), m_nPPID, server);
+    CFileDlg *fileDlg = new CFileDlg(m_lUsers.front(), server);
     fileDlg->SendFiles(f->FileList(), e->ExtendedAck()->Port());
   }
 
@@ -3244,9 +3279,8 @@ bool UserSendFileEvent::sendDone(ICQEvent *e)
 
 //=====UserSendChatEvent=====================================================
 UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                     CMainWindow *m, const char *szId,
-                                     unsigned long nPPID, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendChatEvent")
+    CMainWindow *m, int userId, QWidget* parent)
+  : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendChatEvent")
 {
   m_nMPChatPort = 0;
   chkMass->setChecked(false);
@@ -3322,21 +3356,27 @@ void UserSendChatEvent::resetSettings()
 //-----UserSendChatEvent::sendButton-----------------------------------------
 void UserSendChatEvent::sendButton()
 {
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
-  
+  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+
   unsigned long icqEventTag;
 
   if (m_nMPChatPort == 0)
     //TODO in daemon
-    icqEventTag = server->icqChatRequest(m_lUsers.front().c_str(),
+    icqEventTag = server->icqChatRequest(accountId.latin1(),
                                          codec->fromUnicode(mleSend->text()),
                                          chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
                                          chkSendServer->isChecked());
   else
-    icqEventTag = server->icqMultiPartyChatRequest(m_lUsers.front().c_str(),
+    icqEventTag = server->icqMultiPartyChatRequest(accountId.latin1(),
                                                    codec->fromUnicode(mleSend->text()),
                                                    codec->fromUnicode(m_szMPChatClients),
                                                    m_nMPChatPort,
@@ -3354,7 +3394,7 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {
-    ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
     QString s(!e->ExtendedAck() ? tr("No reason provided") :
                                codec->toUnicode(e->ExtendedAck()->Response()));
     QString result = tr("Chat with %2 refused:\n%3")
@@ -3368,7 +3408,7 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
     CEventChat *c = (CEventChat *)e->UserEvent();
     if (c->Port() == 0)  // If we requested a join, no need to do anything
     {
-      ChatDlg *chatDlg = new ChatDlg(m_lUsers.front().c_str(), m_nPPID, server, mainwin);
+      ChatDlg *chatDlg = new ChatDlg(m_lUsers.front(), server, mainwin);
       chatDlg->StartAsClient(e->ExtendedAck()->Port());
     }
   }
@@ -3379,9 +3419,8 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
 
 //=====UserSendContactEvent==================================================
 UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan,
-                                           CMainWindow *m, const char *szId,
-                                           unsigned long nPPID, QWidget* parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendContactEvent")
+    CMainWindow *m, int userId, QWidget* parent)
+  : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendContactEvent")
 {
   chkMass->setChecked(false);
   chkMass->setEnabled(false);
@@ -3397,7 +3436,7 @@ UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSig
   lay->addWidget(lblContact);
 
   lstContacts = new CMMUserView(mainwin->colInfo, mainwin->m_bShowHeader,
-                                const_cast<char *>(m_lUsers.front().c_str()), nPPID, mainwin, mainWidget);
+      m_lUsers.front(), mainwin, mainWidget);
   lay->addWidget(lstContacts);
 
   m_sBaseTitle += tr(" - Contact List");
@@ -3418,16 +3457,27 @@ UserSendContactEvent::~UserSendContactEvent()
 //TODO Fix this for new protocol plugin
 void UserSendContactEvent::sendButton()
 {
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   tmrSendTyping->stop();
-  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
+  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
 
   CMMUserViewItem *i = static_cast<CMMUserViewItem*>(lstContacts->firstChild());
   StringList users;
 
   while (i)
   {
-    users.push_back(i->Id());
+    const LicqUser* u = gUserManager.fetchUser(i->userId());
+    if (u == NULL)
+      return;
+    users.push_back(u->accountId());
+    gUserManager.DropUser(u);
+
     i = static_cast<CMMUserViewItem *>(i->nextSibling());
   }
 
@@ -3445,7 +3495,7 @@ void UserSendContactEvent::sendButton()
   }
 
   unsigned long icqEventTag;
-  icqEventTag = server->icqSendContactList(m_lUsers.front().c_str(), users,
+  icqEventTag = server->icqSendContactList(accountId.latin1(), users,
     chkSendServer->isChecked() ? false : true,
     chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
     chkMass->isChecked(), &icqColor);
@@ -3465,11 +3515,11 @@ bool UserSendContactEvent::sendDone(ICQEvent *e)
 {
   if (e->Command() != ICQ_CMDxTCP_START) return true;
 
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   if (u->Away() && u->ShowAwayMsg())
   {
     gUserManager.DropUser(u);
-    (void) new ShowAwayMsgDlg(NULL, NULL, m_lUsers.front().c_str(), m_nPPID);
+    (void) new ShowAwayMsgDlg(NULL, NULL, m_lUsers.front());
   }
   else
     gUserManager.DropUser(u);
@@ -3479,10 +3529,9 @@ bool UserSendContactEvent::sendDone(ICQEvent *e)
 
 
 //-----UserSendContactEvent::setContact--------------------------------------
-void UserSendContactEvent::setContact(const char *szId, unsigned long nPPID,
-  const QString&)
+void UserSendContactEvent::setContact(int userId)
 {
-  ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
 
   if(u != NULL)
   {
@@ -3494,8 +3543,8 @@ void UserSendContactEvent::setContact(const char *szId, unsigned long nPPID,
 
 //=====UserSendSmsEvent======================================================
 UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
-  CMainWindow *m, const char *szId, unsigned long nPPID, QWidget *parent)
-  : UserSendCommon(s, theSigMan, m, szId, nPPID, parent, "UserSendSmsEvent")
+    CMainWindow *m, int userId, QWidget *parent)
+  : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendSmsEvent")
 {
   chkSendServer->setChecked(true);
   chkSendServer->setEnabled(false);
@@ -3527,7 +3576,7 @@ UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
   slot_count();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_count()));
 
-  ICQUser *u = gUserManager.FetchUser(m_lUsers.front().c_str(), m_nPPID, LOCK_W);
+  const LicqUser* u = gUserManager.fetchUser(m_lUsers.front());
   if (u != NULL)
   {
     nfoNumber->setData(codec->toUnicode(u->getCellularNumber().c_str()));
@@ -3552,11 +3601,17 @@ UserSendSmsEvent::~UserSendSmsEvent()
 //-----UserSendSmsEvent::sendButton--------------------------------------------
 void UserSendSmsEvent::sendButton()
 {
+  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
+  if (user == NULL)
+    return;
+  QString accountId = user->accountId();
+  gUserManager.DropUser(user);
+
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(m_lUsers.front().c_str(), m_nPPID, false, m_nConvoId);
-  
+  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+
   unsigned long icqEventTag = 0;
   if (m_lnEventTag.size())
     icqEventTag = m_lnEventTag.front();
@@ -3575,7 +3630,7 @@ void UserSendSmsEvent::sendButton()
     return;
 
   //TODO in daemon
-  icqEventTag = server->icqSendSms(m_lUsers.front().c_str(), LICQ_PPID,
+  icqEventTag = server->icqSendSms(accountId.latin1(), LICQ_PPID,
       nfoNumber->text().latin1(), mleSend->text().utf8().data());
   m_lnEventTag.push_back(icqEventTag);
 

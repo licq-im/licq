@@ -29,7 +29,7 @@ class CRefuseDlg : public LicqDialog
   Q_OBJECT
 
 public:
-  CRefuseDlg(const char *, unsigned long, QString, QWidget * = 0);
+  CRefuseDlg(int userId, QString, QWidget * = 0);
   QString RefuseMessage();
 
 protected:

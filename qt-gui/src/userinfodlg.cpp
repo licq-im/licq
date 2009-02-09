@@ -90,16 +90,15 @@
 
 // -----------------------------------------------------------------------------
 UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-                         const char *szId, unsigned long nPPID, QWidget *parent)
+    int userId, QWidget *parent)
   : QWidget(parent, "UserInfoDialog", WDestructiveClose)
 {
   server = s;
   mainwin = m;
   sigman = theSigMan;
   icqEventTag = 0;
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
-  m_bOwner = (gUserManager.FindOwner(szId, nPPID) != NULL);
+  myUserId = userId;
+  m_bOwner = gUserManager.isOwner(userId);
   m_PhoneBook = NULL;
 
   CreateGeneralInfo();
@@ -134,8 +133,8 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 #endif
 
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
-  connect (sigman, SIGNAL(signal_updatedUser(const QString&, unsigned long, unsigned long, int, unsigned long)),
-      this, SLOT(updatedUser(const QString&, unsigned long, unsigned long)));
+  connect (sigman, SIGNAL(signal_updatedUser(int, unsigned long, int, unsigned long)),
+      this, SLOT(updatedUser(int, unsigned long)));
 
   btnMain3 = new QPushButton(tr("&Update"), this);
   btnMain4 = new QPushButton(tr("&Close"), this);
@@ -183,7 +182,7 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   timer = new QTimer(this, "history_filterTimer");
   connect(timer, SIGNAL(timeout()), this, SLOT(ShowHistory()));
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL)
   {
     m_sBasic = tr("Licq - Info ") + tr("INVALID USER");
@@ -217,8 +216,7 @@ UserInfoDlg::~UserInfoDlg()
     icqEventTag = 0;
   }
 
-  emit finished(m_szId, m_nPPID);
-  free(m_szId);
+  emit finished(myUserId);
 
   ICQUser::ClearHistory(m_lHistoryList);
 }
@@ -363,7 +361,7 @@ void UserInfoDlg::CreateGeneralInfo()
   lay->setRowStretch(++CR, 5);
 }
 
-void UserInfoDlg::SetGeneralInfo(ICQUser *u)
+void UserInfoDlg::SetGeneralInfo(const LicqUser* u)
 {
   tabList[GeneralInfo].loaded = true;
   char buf[32];
@@ -371,7 +369,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
 
   if (u == NULL)
   {
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(myUserId);
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -447,7 +445,7 @@ void UserInfoDlg::SetGeneralInfo(ICQUser *u)
 
 void UserInfoDlg::SaveGeneralInfo()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
@@ -478,6 +476,8 @@ void UserInfoDlg::SaveGeneralInfo()
   u->SetEnableSave(true);
   u->saveUserInfo();
 
+  QCString m_szId = u->accountId().c_str();
+  unsigned long m_nPPID = u->ppid();
   gUserManager.DropUser(u);
 
   if (!m_bOwner)
@@ -599,14 +599,14 @@ void UserInfoDlg::CreateMoreInfo()
   lay->addMultiCellWidget(lblICQHomepage, CR, CR, 0, 4);
 }
 
-void UserInfoDlg::SetMoreInfo(ICQUser *u)
+void UserInfoDlg::SetMoreInfo(const LicqUser* u)
 {
   tabList[MoreInfo].loaded = true;
   bool bDropUser = false;
 
   if (u == NULL)
   {
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(myUserId);
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -745,7 +745,7 @@ void UserInfoDlg::SetMoreInfo(ICQUser *u)
 
 void UserInfoDlg::SaveMoreInfo()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL) return;
   u->SetEnableSave(false);
 
@@ -850,7 +850,7 @@ int UserInfoDlg::SplitCategory(QListViewItem *parent, QTextCodec *codec,
   return 0;
 }
 
-void UserInfoDlg::SetMore2Info(ICQUser *u)
+void UserInfoDlg::SetMore2Info(const LicqUser* u)
 {
   bool drop = false;
 
@@ -859,7 +859,7 @@ void UserInfoDlg::SetMore2Info(ICQUser *u)
   if (u == NULL)
   {
     drop = true;
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(myUserId);
     if (u == NULL)
       return;
   }
@@ -925,7 +925,7 @@ void UserInfoDlg::UpdateMore2Info(QTextCodec *codec, UserCat cat, const UserCate
 
 void UserInfoDlg::SaveMore2Info()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL)
     return;
 
@@ -1023,14 +1023,14 @@ void UserInfoDlg::CreateWorkInfo()
   lay->addMultiCellWidget(nfoCompanyHomepage, CR, CR, 1, 4);
 }
 
-void UserInfoDlg::SetWorkInfo(ICQUser *u)
+void UserInfoDlg::SetWorkInfo(const LicqUser* u)
 {
   tabList[WorkInfo].loaded = true;
   bool bDropUser = false;
 
   if (u == NULL)
   {
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(myUserId);
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -1083,7 +1083,7 @@ void UserInfoDlg::SetWorkInfo(ICQUser *u)
 
 void UserInfoDlg::SaveWorkInfo()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
@@ -1135,14 +1135,14 @@ void UserInfoDlg::CreateAbout()
   connect(mlvAbout, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 }
 
-void UserInfoDlg::SetAbout(ICQUser *u)
+void UserInfoDlg::SetAbout(const LicqUser* u)
 {
   tabList[AboutInfo].loaded = true;
   bool bDropUser = false;
 
   if (u == NULL)
   {
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(myUserId);
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -1160,7 +1160,7 @@ void UserInfoDlg::SetAbout(ICQUser *u)
 
 void UserInfoDlg::SaveAbout()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
@@ -1214,14 +1214,14 @@ void UserInfoDlg::CreatePhoneBook()
   }
 }
 
-void UserInfoDlg::SetPhoneBook(ICQUser *u)
+void UserInfoDlg::SetPhoneBook(const LicqUser* u)
 {
   tabList[PhoneInfo].loaded = true;
   bool bDropUser = false;
 
   if (u == NULL)
   {
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(myUserId);
     if (u == NULL) return;
     bDropUser = true;
   }
@@ -1356,7 +1356,7 @@ void UserInfoDlg::UpdatePhoneBook(QTextCodec *codec)
 
 void UserInfoDlg::SavePhoneBook()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL)
     return;
 
@@ -1390,7 +1390,7 @@ void UserInfoDlg::CreatePicture()
   lblPicture->setAlignment(lblPicture->alignment() | Qt::AlignHCenter);
 }
 
-void UserInfoDlg::SetPicture(ICQUser *u)
+void UserInfoDlg::SetPicture(const LicqUser* u)
 {
 
   if (!m_bOwner || !tabList[PictureInfo].loaded)
@@ -1398,7 +1398,7 @@ void UserInfoDlg::SetPicture(ICQUser *u)
     bool bDropUser = false;
     if (u == NULL)
     {
-      u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      u = gUserManager.fetchUser(myUserId);
       if (u == NULL) return;
       bDropUser = true;
     }
@@ -1409,7 +1409,7 @@ void UserInfoDlg::SetPicture(ICQUser *u)
         m_sFilename.sprintf("%s/owner.pic", BASE_DIR);
       else
         //FIXME: other protocols
-        m_sFilename.sprintf("%s/%s/%s.pic", BASE_DIR, USER_DIR, m_szId);
+        m_sFilename.sprintf("%s/%s/%s.pic", BASE_DIR, USER_DIR, u->accountId().c_str());
     }
     else
       m_sFilename = QString::null;
@@ -1495,14 +1495,14 @@ void UserInfoDlg::CreateLastCountersInfo()
   lay->setRowStretch(++CR, 5);
 }
 
-void UserInfoDlg::SetLastCountersInfo(ICQUser *u)
+void UserInfoDlg::SetLastCountersInfo(const LicqUser* u)
 {
   tabList[LastCountersInfo].loaded = true;
   bool bDropUser = false;
 
   if (u == NULL)
   {
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(myUserId);
     if (u == NULL)
       return;
     bDropUser = true;
@@ -1551,7 +1551,7 @@ void UserInfoDlg::CreateKABCInfo()
 #endif
 }
 
-void UserInfoDlg::SetKABCInfo(ICQUser *u)
+void UserInfoDlg::SetKABCInfo(const LicqUser* u)
 {
 #ifdef USE_KABC
   tabList[LastCountersInfo].loaded = true;
@@ -1559,14 +1559,14 @@ void UserInfoDlg::SetKABCInfo(ICQUser *u)
 
   if (u == NULL)
   {
-    u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    u = gUserManager.fetchUser(myUserId);
     if (u == NULL) return;
     bDropUser = true;
   }
 
   if (m_kabcID.isEmpty())
   {
-    m_kabcID = mainwin->kdeIMInterface->kabcIDForUser(m_szId, m_nPPID);
+    m_kabcID = mainwin->kdeIMInterface->kabcIDForUser(u->accountId().c_str(), u->ppid());
   }
 
   if (!m_kabcID.isEmpty())
@@ -1611,6 +1611,13 @@ void UserInfoDlg::UpdateKABCInfo()
 void UserInfoDlg::SaveKABCInfo()
 {
 #ifdef USE_KABC
+  const LicqUser* user = gUserManager.fetchUser(myUserId);
+  if (user == NULL)
+    return;
+  QString m_szId = user->accountId().c_str();
+  unsigned long m_nPPID = user->ppid();
+  gUserManager.DropUser(user);
+
     mainwin->kdeIMInterface->setKABCIDForUser(m_szId, m_nPPID, m_kabcID);
 #endif
 }
@@ -1639,7 +1646,7 @@ void UserInfoDlg::CreateHistory()
   chkHistoryReverse->setFixedSize(chkHistoryReverse->sizeHint());
   l->addWidget(chkHistoryReverse);
 
-  mlvHistory = new CMessageViewWidget(m_szId, m_nPPID, mainwin, p, "history", true);
+  mlvHistory = new CMessageViewWidget(myUserId, mainwin, p, "history", true);
 
   connect(mlvHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
 
@@ -1716,7 +1723,7 @@ void UserInfoDlg::setCategory(UserCat cat, const UserCategoryMap& category)
     return;
   }
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL)
     return;
 
@@ -1727,7 +1734,7 @@ void UserInfoDlg::setCategory(UserCat cat, const UserCategoryMap& category)
 
 void UserInfoDlg::PhoneBookUpdated(struct PhoneBookEntry pbe, int entryNum)
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL)
     return;
 
@@ -1777,7 +1784,7 @@ void UserInfoDlg::ChangeActivePhone(int index)
 {
   m_PhoneBook->SetActive(index - 1);
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL)
     return;
 
@@ -1791,7 +1798,7 @@ void UserInfoDlg::SetupHistory()
 {
   tabList[HistoryInfo].loaded = true;
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL) return;
 
   if (!u->GetHistory(m_lHistoryList))
@@ -1915,21 +1922,23 @@ void UserInfoDlg::ShowHistory()
   QDateTime date;
   QString contactName = tr("server");
   QTextCodec * codec = QTextCodec::codecForLocale();
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   bool bUseHTML = false;
+  unsigned long m_nPPID = 0;
   if (u != NULL)
   {
       codec = UserCodec::codecForICQUser(u);
       if (!m_bOwner)
          contactName = QString::fromUtf8(u->GetAlias());
-      for (unsigned int x = 0; x < strlen(m_szId); x++)
+    for (unsigned int x = 0; x < u->accountId().size(); x++)
+    {
+      if (!isdigit(u->accountId()[x]))
       {
-        if (!isdigit(m_szId[x]))
-        {
           bUseHTML = true;
           break;
-        }
       }
+    }
+    m_nPPID = u->ppid();
       gUserManager.DropUser(u);
   }
   barFiltering->setTotalSteps(NUM_MSG_PER_HISTORY);
@@ -2019,7 +2028,7 @@ void UserInfoDlg::ShowHistory()
 
 void UserInfoDlg::SaveHistory()
 {
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL) return;
 
   QTextCodec * codec = UserCodec::codecForICQUser(u);
@@ -2167,7 +2176,7 @@ void UserInfoDlg::SaveSettings()
   case GeneralInfo:
   {
     SaveGeneralInfo();
-    gMainWindow->slot_updatedUser(m_szId, m_nPPID, USER_GENERAL);
+    gMainWindow->slot_updatedUser(myUserId, USER_GENERAL);
     break;
   }
   case MoreInfo:
@@ -2223,7 +2232,14 @@ void UserInfoDlg::slotRetrieve()
     return;
   }
 #endif
-  
+
+  const LicqUser* user = gUserManager.fetchUser(myUserId);
+  if (user == NULL)
+    return;
+  QCString m_szId = user->accountId().c_str();
+  unsigned long m_nPPID = user->ppid();
+  gUserManager.DropUser(user);
+
   ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_R);
   if(o == NULL)  return;
   unsigned short status = o->Status();
@@ -2267,7 +2283,7 @@ void UserInfoDlg::slotRetrieve()
       // Before retrieving the meta data we have to 
       // save current status of "chkKeepAliasOnUpdate"
       // and the alias
-      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
       if (u == NULL) return;
       u->SetEnableSave(false);
       u->SetAlias(nfoAlias->text().utf8());
@@ -2322,6 +2338,9 @@ void UserInfoDlg::slotUpdate()
   if (currentTab == LastCountersInfo) return;
 
   QTextCodec * codec = QTextCodec::codecForLocale();
+
+  // This function is only called for owner so we can use user id
+  unsigned long m_nPPID = static_cast<unsigned long>(myUserId);
 
   if (currentTab != HistoryInfo && currentTab != PhoneInfo &&
       currentTab != PictureInfo)
@@ -2505,12 +2524,12 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
 }
 
 
-void UserInfoDlg::updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal)
+void UserInfoDlg::updatedUser(int userId, unsigned long subSignal)
 {
-  if (m_nPPID != ppid || m_szId != accountId)
+  if (myUserId != userId)
     return;
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL) return;
 
   switch (subSignal)

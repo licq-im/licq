@@ -91,7 +91,7 @@ QTextCodec* UserCodec::defaultEncoding()
   return QTextCodec::codecForLocale();
 }
 
-QTextCodec* UserCodec::codecForICQUser(ICQUser *u)
+QTextCodec* UserCodec::codecForICQUser(const LicqUser* u)
 {
   const char* preferred_encoding = u->UserEncoding();
 

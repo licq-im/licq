@@ -110,12 +110,18 @@ enum ChatMenu_Identifiers {
 
 
 // ---------------------------------------------------------------------------
-ChatDlg::ChatDlg(const char *szId, unsigned long nPPID, CICQDaemon *daemon,
+ChatDlg::ChatDlg(int userId, CICQDaemon *daemon,
                  CMainWindow *m, QWidget *parent)
   : QMainWindow(parent, "ChatDialog", WDestructiveClose)
 {
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user != NULL)
+  {
+    m_szId = strdup(user->accountId().c_str());
+    m_nPPID = user->ppid();
+  }
+  gUserManager.DropUser(user);
+
   m_bAudio = true;
   licqDaemon = daemon;
   sn = NULL;

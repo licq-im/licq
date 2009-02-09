@@ -507,12 +507,16 @@ void SearchUserDlg::viewInfo()
     if (current->isSelected())
     {
       ICQUser* u = gUserManager.FetchUser(current->id().latin1(), current->ppid(), LOCK_R);
+      int userId;
       if (!u)
-        server->AddUserToList(current->id().latin1(), current->ppid(), false, true);
+        userId = server->addUserToList(current->id().latin1(), current->ppid(), false);
       else
+      {
+        userId = u->id();
         gUserManager.DropUser(u);
+      }
 
-      mainwin->callInfoTab(mnuUserGeneral, current->id().latin1(), current->ppid(), false, true);
+      mainwin->callInfoTab(mnuUserGeneral, userId, false, true);
       break;
     }
     current = static_cast<SearchItem*>(current->nextSibling());
@@ -537,7 +541,7 @@ void SearchUserDlg::addUser()
           gUserManager.RemoveUser(current->id().latin1(), current->ppid());
       }
 
-      if (server->AddUserToList(current->id().latin1(), current->ppid()) &&
+      if (server->addUserToList(current->id().latin1(), current->ppid()) &&
           qcbAlertUser->isChecked()) // alert the user they were added
         server->icqAlertUser(current->id().latin1(), current->ppid());
     }

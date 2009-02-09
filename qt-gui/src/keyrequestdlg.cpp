@@ -37,16 +37,14 @@
 
 
 // -----------------------------------------------------------------------------
-KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, const char *szId,
-  unsigned long nPPID, QWidget *parent)
+KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, int userId, QWidget *parent)
   : LicqDialog(parent, "KeyRequestDialog", false, WDestructiveClose)
 {
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
+  myUserId = userId;
   sigman = _sigman;
   icqEventTag = 0;
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   setCaption(tr("Licq - Secure Channel with %1").arg(QString::fromUtf8(u->GetAlias())));
 
   QBoxLayout *top_lay = new QVBoxLayout(this, 10);
@@ -129,10 +127,7 @@ KeyRequestDlg::~KeyRequestDlg()
     gLicqDaemon->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
-  if (m_szId) free(m_szId);
 }
-
-
 
 // -----------------------------------------------------------------------------
 
@@ -155,11 +150,25 @@ void KeyRequestDlg::startSend()
 
 void KeyRequestDlg::openConnection()
 {
+  const LicqUser* user = gUserManager.fetchUser(myUserId);
+  if (user == NULL)
+    return;
+  QCString m_szId = user->accountId().c_str();
+  unsigned long m_nPPID = user->ppid();
+  gUserManager.DropUser(user);
+
   icqEventTag = gLicqDaemon->ProtoOpenSecureChannel(m_szId, m_nPPID);
 }
 
 void KeyRequestDlg::closeConnection()
 {
+  const LicqUser* user = gUserManager.fetchUser(myUserId);
+  if (user == NULL)
+    return;
+  QCString m_szId = user->accountId().c_str();
+  unsigned long m_nPPID = user->ppid();
+  gUserManager.DropUser(user);
+
   icqEventTag = gLicqDaemon->ProtoCloseSecureChannel(m_szId, m_nPPID);
 }
 

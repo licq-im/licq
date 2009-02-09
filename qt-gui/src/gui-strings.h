@@ -28,10 +28,10 @@ class Strings
 {
 public:
   static QString getStatus(unsigned short status, bool invisible);
-  static QString getStatus(LicqUser* user, bool useInvisible = true);
+  static QString getStatus(const LicqUser* user, bool useInvisible = true);
 
   static QString getShortStatus(unsigned short status, bool invisible);
-  static QString getShortStatus(LicqUser* user, bool useInvisible = true);
+  static QString getShortStatus(const LicqUser* user, bool useInvisible = true);
 
   static QString getSystemGroupName(unsigned long group);
 };

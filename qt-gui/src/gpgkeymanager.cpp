@@ -176,13 +176,13 @@ void GPGKeyManager::slot_add()
   }
 }
 
-void GPGKeyManager::editUser( ICQUser *u )
+void GPGKeyManager::editUser(const LicqUser* u)
 {
   QListViewItemIterator it( lst_keyList );
   while ( it.current() )
   {
     KeyListItem* item = (KeyListItem*)it.current();
-    if ( strcmp( item->getszId(), u->IdString() )==0 && item->getnPPID() == u->PPID() )
+    if (item->userId() == u->id())
     {
       item->edit();
       break;
@@ -253,7 +253,7 @@ void KeyList::dropEvent(QDropEvent * de)
     while ( it.current() )
     {
       KeyListItem* item = (KeyListItem*)it.current();
-      if ( strcmp( item->getszId(), szId )==0 && item->getnPPID() == nPPID )
+      if (item->userId() == u->id())
       {
         item->edit();
         break;
@@ -292,21 +292,19 @@ void KeyList::resizeEvent(QResizeEvent *e)
 }
 
 // KEYLISTITEM
-KeyListItem::KeyListItem( QListView *parent, ICQUser *u )
+KeyListItem::KeyListItem(QListView* parent, const LicqUser* u)
   :QListViewItem( parent )
 {
-  szId = strdup( u->IdString() );
-  nPPID = u->PPID();
+  myUserId = u->id();
   keySelect = NULL;
   updateText( u );
 }
 
 KeyListItem::~KeyListItem()
 {
-  free( szId );
 }
 
-void KeyListItem::updateText( ICQUser *u )
+void KeyListItem::updateText(const LicqUser* u)
 {
   setText( 0, QString::fromUtf8(u->GetAlias()) );
   setText( 1, u->UseGPG() ? tr("Yes") : tr("No") );
@@ -317,14 +315,14 @@ void KeyListItem::edit()
 {
   if ( !keySelect )
   {
-    keySelect = new GPGKeySelect( szId, nPPID );
+    keySelect = new GPGKeySelect(myUserId);
     connect( keySelect, SIGNAL(signal_done()), this, SLOT(slot_done() ));
   }
 }
 
 void KeyListItem::slot_done()
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   keySelect = NULL;
 
   if ( u )
@@ -339,14 +337,14 @@ void KeyListItem::slot_done()
 
 void KeyListItem::unsetKey()
 {
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
 
   if ( u )
   {
     u->SetUseGPG( false );
     u->SetGPGKey( "" );
     gUserManager.DropUser(u);
-    gMainWindow->slot_updatedUser(szId, nPPID, USER_GENERAL);
+    gMainWindow->slot_updatedUser(myUserId, USER_GENERAL);
   }
 }
 

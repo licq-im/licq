@@ -60,8 +60,7 @@ protected:
   QVGroupBox *grpSending;
   QPushButton *btnCancel;
   QProgressBar *barSend;
-  char *m_szId;
-  unsigned long m_nPPID;
+  int myUserId;
   CMMUserView *mmv;
   CMMUserViewItem *mmvi;
   CICQDaemon *server;

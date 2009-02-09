@@ -48,19 +48,18 @@ protected slots:
 
 signals:
   // Signal signals
-  void signal_updatedList(unsigned long subSignal, int argument, const QString& accountId, unsigned long ppid);
-  void signal_updatedUser(const QString& accountId, unsigned long ppid, unsigned long subSignal, int argument, unsigned long cid);
+  void signal_updatedList(unsigned long subSignal, int argument, int userId);
+  void signal_updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid);
   void signal_updatedStatus(unsigned long ppid);
   void signal_logon();
   void signal_logoff();
-  void signal_ui_viewevent(unsigned long);
-  void signal_ui_viewevent(const char *);
-  void signal_ui_message(const char *, unsigned long);
+  void signal_ui_viewevent(int userId);
+  void signal_ui_message(int userId);
   void signal_protocolPlugin(unsigned long);
-  void signal_eventTag(const char *, unsigned long, unsigned long);
-  void signal_socket(const char *, unsigned long, unsigned long);
-  void signal_convoJoin(const char *, unsigned long, unsigned long);
-  void signal_convoLeave(const char *, unsigned long, unsigned long);
+  void signal_eventTag(int userId, unsigned long convoId);
+  void signal_socket(int userId, unsigned long convoId);
+  void signal_convoJoin(int userId, unsigned long ppid, unsigned long convoId);
+  void signal_convoLeave(int userId, unsigned long ppid, unsigned long convoId);
   void signal_verifyImage(unsigned long);
   void signal_newOwner(const char *, unsigned long);
   

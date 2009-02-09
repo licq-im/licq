@@ -41,13 +41,12 @@
 
 
 //-----CUserViewItem::constructor-----------------------------------------------
-CMMUserViewItem::CMMUserViewItem(ICQUser *u, QListView *parent)
+CMMUserViewItem::CMMUserViewItem(const LicqUser* u, QListView *parent)
    : QListViewItem(parent)
 {
   char *sTemp;
 
-  m_szId = u->IdString() ? strdup(u->IdString()) : 0;
-  m_nPPID = u->PPID();
+  myUserId = u->id();
 
   CMMUserView *v = (CMMUserView *)listView();
 
@@ -91,8 +90,7 @@ enum mnuMM_ids
 
 //-----UserList::constructor-----------------------------------------------------------------------
 CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
-    const char* szId, unsigned long nPPID, CMainWindow *pMainwin,
-   QWidget *parent)
+    int userId, CMainWindow *pMainwin, QWidget *parent)
    : QListView(parent, "MMUserView")
 {
   mnuMM = new QPopupMenu(NULL);
@@ -105,8 +103,7 @@ CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
   connect(mnuMM, SIGNAL(activated(int)), SLOT(slot_menu(int)));
 
   colInfo = _colInfo;
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
+  myUserId = userId;
   mainwin = pMainwin;
 
   for (unsigned short i = 0; i < colInfo.size(); i++)
@@ -125,7 +122,6 @@ CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
 
 CMMUserView::~CMMUserView()
 {
-  if (m_szId) free(m_szId);
 }
 
 
@@ -170,7 +166,7 @@ void CMMUserView::slot_menu(int id)
       CUserViewItem *i = (CUserViewItem *)mainwin->UserView()->firstChild();
       while (i != NULL)
       {
-        AddUser(i->ItemId(), i->ItemPPID());
+        AddUser(i->userId());
         i = (CUserViewItem *)i->nextSibling();
       }
       break;
@@ -181,7 +177,7 @@ void CMMUserView::slot_menu(int id)
       clear();
       FOR_EACH_USER_START(LOCK_R)
       {
-        if (pUser->PPID() != m_nPPID || strcmp(pUser->IdString(), m_szId))
+        if (pUser->id() != myUserId)
           (void) new CMMUserViewItem(pUser, this);
       }
       FOR_EACH_USER_END
@@ -212,20 +208,20 @@ void CMMUserView::dropEvent(QDropEvent * de)
   }
 
   //TODO get protocol id from text
-  AddUser(text.mid(4, text.length() - 4).latin1(), LICQ_PPID);
+  AddUser(gUserManager.getUserFromAccount(text.mid(4, text.length() - 4).latin1(), LICQ_PPID));
 }
 
-void CMMUserView::AddUser(const char *szId, unsigned long nPPID)
+void CMMUserView::AddUser(int userId)
 {
-  if (szId == 0 || (nPPID == m_nPPID && strcmp(szId, m_szId) == 0))
+  if (userId == 0 || userId == myUserId)
     return;
 
   CMMUserViewItem *i = (CMMUserViewItem *)firstChild();
-  while (i != NULL && (i->PPID() != nPPID || strcmp(i->Id(), szId )))
+  while (i != NULL && i->userId() != userId)
     i = (CMMUserViewItem *)i->nextSibling();
   if (i != NULL) return;
 
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return;
   (void) new CMMUserViewItem(u, this);
   gUserManager.DropUser(u);
@@ -295,7 +291,7 @@ void CMMUserView::keyPressEvent(QKeyEvent *e)
     case Key_Home:
       item = firstChild();
       if (item == NULL) return;
-      if (((CMMUserViewItem *)item)->Id() == NULL)
+      if (((CMMUserViewItem *)item)->userId() == 0)
         item = item->nextSibling();
       setCurrentItem(item);
       setSelected(item, true);
