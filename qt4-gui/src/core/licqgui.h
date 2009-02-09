@@ -191,9 +191,9 @@ public slots:
   /**
    * Show next available event
    *
-   * @param userId Contact id or zero for any contact
+   * @param userId Contact id or negative for any contact
    */
-  void showNextEvent(int userId = 0);
+  void showNextEvent(int userId = -1);
 
   /**
    * Open dialogs for all owner events

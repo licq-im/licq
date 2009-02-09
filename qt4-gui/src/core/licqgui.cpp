@@ -1159,7 +1159,7 @@ void LicqGui::showNextEvent(int userId)
   if (LicqUser::getNumUserEvents() == 0 || userId == 0)
     return;
 
-  if (userId == 0)
+  if (userId < 0)
   {
     // Do system messages first
     FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
@@ -1189,7 +1189,7 @@ void LicqGui::showNextEvent(int userId)
     FOR_EACH_USER_END
   }
 
-  if (userId != 0)
+  if (userId > 0)
   {
     if (Config::Chat::instance()->msgChatView())
     {
