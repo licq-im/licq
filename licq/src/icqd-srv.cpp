@@ -5536,7 +5536,15 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetAuthorization( !msg.UnpackChar() );
           unsigned char nStatus = msg.UnpackChar(); // Web aware status
 
-          if (gUserManager.isOwner(u->id()))
+          // Unlock the user and check if we are an owner since isOwner requires a read lock
+          // and we already have a write lock here.
+          int userId = u->id();
+          string accountId = u->accountId();
+          gUserManager.DropUser(u);
+          const bool isOwner = gUserManager.isOwner(userId);
+          u = gUserManager.fetchUser(accountId, LICQ_PPID, LOCK_W);
+
+          if (isOwner)
           {
             static_cast<ICQOwner *>(u)->SetWebAware(nStatus);
             /* this unpack is inside the if statement since it appears only
