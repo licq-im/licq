@@ -75,7 +75,11 @@ void COnEventManager::Do(unsigned short _nEvent, ICQUser *u)
 {
   unsigned long nPPID = LICQ_PPID;
   if (u)
+  {
     nPPID = u->PPID();
+    if (u->onEventsBlocked())
+      return;
+  }
 
   // Check if globally command should be run
   const ICQOwner* o = gUserManager.FetchOwner(nPPID, LOCK_R);

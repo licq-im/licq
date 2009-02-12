@@ -2026,6 +2026,7 @@ void LicqUser::Init()
   m_bAuthorization = false;
   m_nTyping = ICQ_TYPING_INACTIVEx0;
   m_bNotInList = false;
+  myOnEventsBlocked = false;
 
   // More Info
   myUserInfo["Age"] = (unsigned int)0xffff;

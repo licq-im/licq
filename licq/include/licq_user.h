@@ -797,6 +797,21 @@ public:
   void SetIgnoreList(bool s)     { SetInGroup(GROUPS_SYSTEM, GROUP_IGNORE_LIST, s); }
   void SetNewUser(bool s)        { SetInGroup(GROUPS_SYSTEM, GROUP_NEW_USERS, s); }
 
+  /**
+   * Enable/disable on event blocking for this user
+   * This function can be used by UI plugins to block sounds when a user window has focus
+   *
+   * @param block True to block on events, false to enable
+   */
+  void setOnEventsBlocked(bool block) { myOnEventsBlocked = block; }
+
+  /**
+   * Check if on events should be blocked for this user
+   *
+   * @return True if on event should be blocked
+   */
+  bool onEventsBlocked() const { return myOnEventsBlocked; }
+
   // Time
   time_t LocalTime() const;
   int LocalTimeGMTOffset() const;
@@ -952,6 +967,7 @@ protected:
   unsigned short m_nStatusToUser, m_nSendLevel;
   bool m_bKeepAliasOnUpdate;
   unsigned short m_nAutoAccept;
+  bool myOnEventsBlocked;
 
   // GPG data
   bool m_bUseGPG;
