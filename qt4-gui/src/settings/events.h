@@ -81,6 +81,7 @@ private:
   QCheckBox* myOnEventOccupiedCheck;
   QCheckBox* myOnEventDndCheck;
   QCheckBox* myAlwaysOnlineNotifyCheck;
+  QCheckBox* myNoSoundInActiveChatCheck;
   QCheckBox* myBoldOnMsgCheck;
   QComboBox* myAutoPopupCombo;
   QCheckBox* myAutoRaiseCheck;

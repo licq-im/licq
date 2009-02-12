@@ -116,11 +116,15 @@ UserEventTabDlg::~UserEventTabDlg()
 
 void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
 {
+  // Insert tab before we lock the user as our event() function will be called
+  // when tab is inserted and will also need to fetch user.
+  // Tab label will be set later by updateTabLabel()
+  myTabs->insertTab(index, tab, QString());
+
   const ICQUser* u = gUserManager.FetchUser(tab->id().toLatin1(), tab->ppid(), LOCK_R);
   if (u == NULL)
     return;
 
-  index = myTabs->insertTab(index, tab, QString::fromUtf8(u->GetAlias()));
   updateTabLabel(tab, u);
   gUserManager.DropUser(u);
 }
@@ -209,6 +213,9 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const ICQUser* u)
     fetched = true;
   }
 
+  int index = myTabs->indexOf(tab);
+  myTabs->setTabText(index, QString::fromUtf8(u->GetAlias()));
+
   QIcon icon;
 
   if (u->NewMessages() > 0) // use an event icon
@@ -256,7 +263,6 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const ICQUser* u)
   if (fetched)
     gUserManager.DropUser(u);
 
-  int index = myTabs->indexOf(tab);
   myTabs->setTabIcon(index, icon);
   if (myTabs->currentIndex() == index)
     setWindowIcon(icon);

@@ -68,6 +68,7 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("CheckSpellingEnabled", myCheckSpelling, false);
   iniFile.ReadBool("ShowUserPic", myShowUserPic, false);
   iniFile.ReadBool("ShowUserPicHidden", myShowUserPicHidden, false);
+  iniFile.ReadBool("NoSoundInActiveChat", myNoSoundInActiveChat, false);
   iniFile.ReadStr("DateFormat", szTemp, "hh:mm:ss");
   myChatDateFormat = QString::fromLatin1(szTemp);
   iniFile.ReadNum("HistoryMessageStyle", myHistMsgStyle, 0);
@@ -134,6 +135,7 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("CheckSpellingEnabled", myCheckSpelling);
   iniFile.WriteBool("ShowUserPic", myShowUserPic);
   iniFile.WriteBool("ShowUserPicHidden", myShowUserPicHidden);
+  iniFile.WriteBool("NoSoundInActiveChat", myNoSoundInActiveChat);
 
   iniFile.WriteNum("ChatMessageStyle", myChatMsgStyle);
   iniFile.WriteBool("ChatVerticalSpacing", myChatVertSpacing);
@@ -382,6 +384,14 @@ void Config::Chat::setUseCustomUrlBrowser(bool customUrlBrowser)
     return;
 
   myUseCustomUrlBrowser = customUrlBrowser;
+}
+
+void Config::Chat::setNoSoundInActiveChat(bool noSoundInActiveChat)
+{
+  if (noSoundInActiveChat == myNoSoundInActiveChat)
+    return;
+
+  myNoSoundInActiveChat = noSoundInActiveChat;
 }
 
 void Config::Chat::setChatMsgStyle(unsigned short chatMsgStyle)

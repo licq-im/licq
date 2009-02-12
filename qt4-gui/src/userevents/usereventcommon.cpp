@@ -501,3 +501,28 @@ void UserEventCommon::updatedUser(int userId, unsigned long subSignal, int argum
   // Call the event specific function now
   userUpdated(userId, subSignal, argument, cid);
 }
+
+void UserEventCommon::focusChanged(bool gotFocus)
+{
+  // Check if we should block on events, but always unblock in case we might leave a user blocked
+  if (gotFocus && !Config::Chat::instance()->noSoundInActiveChat())
+    return;
+
+  LicqUser* user = gUserManager.fetchUser(userId(), LOCK_W);
+  if (user != NULL)
+  {
+    user->setOnEventsBlocked(gotFocus);
+    gUserManager.DropUser(user);
+  }
+}
+
+bool UserEventCommon::event(QEvent* event)
+{
+  // Mark/unmark user as active user when we get/loose focus
+  if (event->type() == QEvent::WindowActivate || event->type() == QEvent::ShowToParent)
+    focusChanged(true);
+  if (event->type() == QEvent::WindowDeactivate || event->type() == QEvent::HideToParent)
+    focusChanged(false);
+
+  return QWidget::event(event);
+}

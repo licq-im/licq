@@ -258,6 +258,9 @@ QWidget* Settings::Events::createPageSounds(QWidget* parent)
      "when logging on (this is different from how the Mirabilis client works)"));
   myAcceptEventsLayout->addWidget(myAlwaysOnlineNotifyCheck, 0, 1);
 
+  myNoSoundInActiveChatCheck = new QCheckBox(tr("Disable sound for active window"), myAcceptEventsBox);
+  myNoSoundInActiveChatCheck->setToolTip(tr("Don't perform OnEvent command if chat window for user is currently active."));
+  myAcceptEventsLayout->addWidget(myNoSoundInActiveChatCheck, 1, 1);
 
   myPageSoundsLayout->addLayout(mySndTopRowLayout);
   myPageSoundsLayout->addWidget(myEventParamsBox);
@@ -284,6 +287,7 @@ void Settings::Events::setOnEventsEnabled(bool enable)
   myOnEventOccupiedCheck->setEnabled(enable);
   myOnEventDndCheck->setEnabled(enable);
   myAlwaysOnlineNotifyCheck->setEnabled(enable);
+  myNoSoundInActiveChatCheck->setEnabled(enable);
 }
 
 void Settings::Events::load()
@@ -303,6 +307,7 @@ void Settings::Events::load()
   myAutoPopupCombo->setCurrentIndex(chatConfig->autoPopup());
   myAutoFocusCheck->setChecked(chatConfig->autoFocus());
   myFlashTaskbarCheck->setChecked(chatConfig->flashTaskbar());
+  myNoSoundInActiveChatCheck->setChecked(chatConfig->noSoundInActiveChat());
 
   myIgnoreNewUsersCheck->setChecked(gLicqDaemon->Ignore(IGNORE_NEWUSERS));
   myIgnoreMassMsgCheck->setChecked(gLicqDaemon->Ignore(IGNORE_MASSMSG));
@@ -358,6 +363,7 @@ void Settings::Events::apply()
   chatConfig->setAutoPopup(myAutoPopupCombo->currentIndex());
   chatConfig->setAutoFocus(myAutoFocusCheck->isChecked());
   chatConfig->setFlashTaskbar(myFlashTaskbarCheck->isChecked());
+  chatConfig->setNoSoundInActiveChat(myNoSoundInActiveChatCheck->isChecked());
 
   gLicqDaemon->SetIgnore(IGNORE_NEWUSERS, myIgnoreNewUsersCheck->isChecked());
   gLicqDaemon->SetIgnore(IGNORE_MASSMSG, myIgnoreMassMsgCheck->isChecked());

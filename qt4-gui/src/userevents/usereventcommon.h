@@ -76,6 +76,15 @@ public:
   bool isUserInConvo(int userId) const;
   void setTyping(unsigned short type);
 
+public slots:
+  /**
+   * This window got or lost focus
+   * Called from tab dialog when tab is switched
+   *
+   * @param gotFocus True if this window/tab got focus
+   */
+  void focusChanged(bool gotFocus);
+
 protected:
   std::list<unsigned long> myEventTag;
 
@@ -128,6 +137,11 @@ protected:
    * @param cid Conversation id
    */
   virtual void userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid) = 0;
+
+  /**
+   * Overloaded to get events when this window/tab looses and gains focus
+   */
+  virtual bool event(QEvent* event);
 
 protected slots:
   /**
