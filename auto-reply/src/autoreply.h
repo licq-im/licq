@@ -29,13 +29,26 @@ protected:
 
   CICQDaemon *licqDaemon;
 
-public:
   void ProcessPipe();
   void ProcessSignal(LicqSignal* s);
   void ProcessEvent(ICQEvent *);
 
-  void ProcessUserEvent(const char *, unsigned long, unsigned long);
-  bool AutoReplyEvent(const char *, unsigned long, const CUserEvent* event);
+  /**
+   * A new event arrived for a user
+   *
+   * @param userId Affected user
+   * @param eventId Id of event
+   */
+  void processUserEvent(int userId, unsigned long eventId);
+
+  /**
+   * Make auto reply for an event
+   *
+   * @param userId Affected user
+   * @Param event Event to reply to
+   * @return True if a reply was sent
+   */
+  bool autoReplyEvent(int userId, const CUserEvent* event);
 
   bool POpen(const char *cmd);
   int PClose();
