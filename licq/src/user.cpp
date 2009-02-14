@@ -26,6 +26,8 @@
 #include <vector>
 #include <unistd.h>
 
+#include <boost/algorithm/string.hpp>
+
 #ifdef HAVE_INET_ATON
 #include <arpa/inet.h>
 #endif
@@ -537,7 +539,7 @@ bool CUserManager::Load()
     u = new LicqUser(id, szId, nPPID, string(filename));
     u->AddToContactList();
     myUsers[id] = u;
-    myUserAccounts[UserAccountMapKey(szId, nPPID)] = u;
+    myUserAccounts[UserAccountMapKey(u->realAccountId(), nPPID)] = u;
   }
   UnlockUserList();
 
@@ -586,7 +588,7 @@ int CUserManager::addUser(const string& accountId, unsigned int ppid, bool tempo
   LockUserList(LOCK_W);
 
   // Make sure user isn't already in the list
-  UserAccountMap::const_iterator iter = myUserAccounts.find(UserAccountMapKey(accountId, ppid));
+  UserAccountMap::const_iterator iter = myUserAccounts.find(LicqUser::normalizeIdMapKey(accountId, ppid));
   if (iter != myUserAccounts.end())
   {
     UnlockUserList();
@@ -611,7 +613,7 @@ int CUserManager::addUser(const string& accountId, unsigned int ppid, bool tempo
 
   // Store the user in the lookup map
   myUsers[uid] = pUser;
-  myUserAccounts[UserAccountMapKey(accountId, ppid)] = pUser;
+  myUserAccounts[UserAccountMapKey(pUser->realAccountId(), ppid)] = pUser;
 
   pUser->Unlock();
 
@@ -638,7 +640,7 @@ void CUserManager::removeUser(int userId)
   LicqUser* u = iter->second;
   u->Lock(LOCK_W);
   myUsers.erase(iter);
-  myUserAccounts.erase(UserAccountMapKey(u->accountId(), u->ppid()));
+  myUserAccounts.erase(UserAccountMapKey(u->realAccountId(), u->ppid()));
   if (!u->NotInList())
   {
     u->RemoveFiles();
@@ -710,6 +712,15 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
   if (accountId.empty() || ppid == 0)
     return NULL;
 
+  // TODO Make the protocol plugin perform normalization
+  string normalizedAccountId = accountId;
+  if (ppid == LICQ_PPID)
+  {
+    //transform(accountId.begin(), accountId.end(), normalizedAccountId.begin(), ::tolower);
+    boost::to_lower(normalizedAccountId);
+    boost::erase_all(normalizedAccountId, " ");
+  }
+
   // Check for an owner first
   LockOwnerList(LOCK_R);
   OwnerMap::iterator iter_o = myOwners.find(ppid);
@@ -717,7 +728,7 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
   {
     LicqOwner* owner = iter_o->second;
     owner->Lock(lockType);
-    if (owner->accountId() == accountId)
+    if (owner->accountId() == normalizedAccountId)
       user = owner;
     else
       owner->Unlock();
@@ -727,7 +738,7 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
   if (user == NULL)
   {
     LockUserList(LOCK_R);
-    UserAccountMap::const_iterator iter = myUserAccounts.find(UserAccountMapKey(accountId, ppid));
+    UserAccountMap::const_iterator iter = myUserAccounts.find(UserAccountMapKey(normalizedAccountId, ppid));
     if (iter != myUserAccounts.end())
       user = iter->second;
 
@@ -744,11 +755,11 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
         ;
 
       // Create a temporary user
-      user = new LicqUser(userId, accountId, ppid, true);
+      user = new LicqUser(userId, normalizedAccountId, ppid, true);
 
       // Store the user in the lookup map
       myUsers[userId] = user;
-      myUserAccounts[UserAccountMapKey(accountId, ppid)] = user;
+      myUserAccounts[UserAccountMapKey(normalizedAccountId, ppid)] = user;
 
       // Notify plugins that we added user to list
       gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, userId));
@@ -766,11 +777,10 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
   if (user == NULL)
     return NULL;
 
-  string realId = LicqUser::makeRealId(accountId, ppid);
   string realIdFound = user->realAccountId();
-  if (realId != realIdFound)
+  if (normalizedAccountId != realIdFound)
     gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %s, found %s.\n",
-        L_ERRORxSTR, realId.c_str(), realIdFound.c_str());
+        L_ERRORxSTR, normalizedAccountId.c_str(), realIdFound.c_str());
 
   return user;
 }
@@ -792,7 +802,7 @@ bool CUserManager::IsOnList(const char *_szId, unsigned long _nPPID)
     return true;
 
   LockUserList(LOCK_R);
-  UserAccountMap::iterator iter = myUserAccounts.find(UserAccountMapKey(_szId, _nPPID));
+  UserAccountMap::iterator iter = myUserAccounts.find(LicqUser::normalizeIdMapKey(_szId, _nPPID));
   bool found = (iter != myUserAccounts.end());
   UnlockUserList();
 
@@ -871,7 +881,7 @@ int CUserManager::getUserFromAccount(const char* accountId, unsigned long ppid)
 
   int id = 0;
   LockUserList(LOCK_R);
-  UserAccountMap::const_iterator iter =  myUserAccounts.find(UserAccountMapKey(accountId, ppid));
+  UserAccountMap::const_iterator iter =  myUserAccounts.find(LicqUser::normalizeIdMapKey(accountId, ppid));
   if (iter != myUserAccounts.end())
     id = iter->second->id();
   UnlockUserList();
@@ -1996,7 +2006,7 @@ void ICQUser::RemoveFiles()
 
 void LicqUser::Init()
 {
-  myRealAccountId = makeRealId(myAccountId, myPpid);
+  myRealAccountId = normalizeId(myAccountId, myPpid);
 
   //SetOnContactList(false);
   m_bOnContactList = m_bEnableSave = false;
@@ -3079,32 +3089,29 @@ char* LicqUser::MakeRealId(const string& accountId, unsigned long ppid,
   return szRealId;
 }
 
-string LicqUser::makeRealId(const string& accountId, unsigned long ppid)
+string LicqUser::normalizeId(const string& accountId, unsigned long ppid)
 {
   if (accountId.empty())
     return string();
 
-  string realId;
+  string realId = accountId;
 
+  // TODO Make the protocol plugin normalize the accountId
   // For AIM, account id is case insensitive and spaces should be ignored
   if (ppid == LICQ_PPID && !isdigit(accountId[0]))
   {
-    char* real = new char[accountId.length() + 1];
-
-    string::size_type j = 0;
-    for (string::size_type i = 0; i < accountId.length(); ++i)
-      if (accountId[i] != ' ')
-        real[j++] = tolower(accountId[i]);
-    real[j] = '\0';
-    realId = real;
-    delete[] real;
-  }
-  else
-  {
-    realId = accountId;
+    boost::erase_all(realId, " ");
+    boost::to_lower(realId);
   }
 
   return realId;
+}
+
+UserAccountMapKey LicqUser::normalizeIdMapKey(const string& accountId, unsigned long ppid)
+{
+  string normalizedId = LicqUser::normalizeId(accountId, ppid);
+  UserAccountMapKey result(normalizedId, ppid);
+  return result;
 }
 
 void ICQUser::saveUserInfo()
@@ -3570,7 +3577,7 @@ LicqOwner::LicqOwner(const string& accountId, unsigned long ppid)
   // id should be unique and not in range of normal users using ppid should be good enough
   myAccountId = accountId;
   myPpid = ppid;
-  myRealAccountId = makeRealId(myAccountId, myPpid);
+  myRealAccountId = normalizeId(myAccountId, myPpid);
 
   char szTemp[MAX_LINE_LEN];
   char filename[MAX_FILENAME_LEN];

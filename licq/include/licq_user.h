@@ -699,7 +699,8 @@ public:
    * @param ppid Protocol instance id
    * @return Normalized account id
    */
-  static std::string makeRealId(const std::string& accountId, unsigned long ppid);
+  static std::string normalizeId(const std::string& accountId, unsigned long ppid);
+  static UserAccountMapKey normalizeIdMapKey(const std::string& accountId, unsigned long ppid);
 
   int Birthday(unsigned short nDayRange = 0) const;
 
