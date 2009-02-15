@@ -700,7 +700,16 @@ public:
    * @return Normalized account id
    */
   static std::string normalizeId(const std::string& accountId, unsigned long ppid);
-  static UserAccountMapKey normalizeIdMapKey(const std::string& accountId, unsigned long ppid);
+
+  /**
+   * Convenience function get a normalized key for the account map
+   *
+   * @param accountId Account id
+   * @param ppid Protocol instance id
+   * @return A account map key with the account id normalized
+   */
+  static UserAccountMapKey normalizeIdMapKey(const std::string& accountId, unsigned long ppid)
+  { return UserAccountMapKey(normalizeId(accountId, ppid), ppid); }
 
   int Birthday(unsigned short nDayRange = 0) const;
 

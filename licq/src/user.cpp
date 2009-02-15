@@ -712,14 +712,7 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
   if (accountId.empty() || ppid == 0)
     return NULL;
 
-  // TODO Make the protocol plugin perform normalization
-  string normalizedAccountId = accountId;
-  if (ppid == LICQ_PPID)
-  {
-    //transform(accountId.begin(), accountId.end(), normalizedAccountId.begin(), ::tolower);
-    boost::to_lower(normalizedAccountId);
-    boost::erase_all(normalizedAccountId, " ");
-  }
+  string normalizedAccountId = LicqUser::normalizeId(accountId, ppid);
 
   // Check for an owner first
   LockOwnerList(LOCK_R);
@@ -728,7 +721,7 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
   {
     LicqOwner* owner = iter_o->second;
     owner->Lock(lockType);
-    if (owner->accountId() == normalizedAccountId)
+    if (owner->realAccountId() == normalizedAccountId)
       user = owner;
     else
       owner->Unlock();
@@ -755,7 +748,7 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
         ;
 
       // Create a temporary user
-      user = new LicqUser(userId, normalizedAccountId, ppid, true);
+      user = new LicqUser(userId, accountId, ppid, true);
 
       // Store the user in the lookup map
       myUsers[userId] = user;
@@ -773,14 +766,6 @@ LicqUser* CUserManager::fetchUser(const string& accountId, unsigned long ppid,
       user->Lock(lockType);
     UnlockUserList();
   }
-
-  if (user == NULL)
-    return NULL;
-
-  string realIdFound = user->realAccountId();
-  if (normalizedAccountId != realIdFound)
-    gLog.Error("%sInternal error: CUserManager::FetchUser(): Looked for %s, found %s.\n",
-        L_ERRORxSTR, normalizedAccountId.c_str(), realIdFound.c_str());
 
   return user;
 }
@@ -3105,13 +3090,6 @@ string LicqUser::normalizeId(const string& accountId, unsigned long ppid)
   }
 
   return realId;
-}
-
-UserAccountMapKey LicqUser::normalizeIdMapKey(const string& accountId, unsigned long ppid)
-{
-  string normalizedId = LicqUser::normalizeId(accountId, ppid);
-  UserAccountMapKey result(normalizedId, ppid);
-  return result;
 }
 
 void ICQUser::saveUserInfo()
