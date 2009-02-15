@@ -468,7 +468,7 @@ public:
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
   void icqRenameUser(const char *_szId);
-  void icqExportUsers(const StringList& users, unsigned short);
+  void icqExportUsers(const std::list<int>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
   void icqUpdateServerGroups();
   void icqUpdatePhoneBookTimestamp();

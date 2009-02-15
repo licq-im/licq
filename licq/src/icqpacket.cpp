@@ -2750,7 +2750,7 @@ CPU_ExportContactStart::CPU_ExportContactStart()
 }
 
 //-----ExportToServerList-------------------------------------------------------
-CPU_ExportToServerList::CPU_ExportToServerList(const StringList& users,
+CPU_ExportToServerList::CPU_ExportToServerList(const list<int>& users,
                                                unsigned short _nType)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD)
 {
@@ -2758,13 +2758,13 @@ CPU_ExportToServerList::CPU_ExportToServerList(const StringList& users,
   unsigned short m_nGSID = 0;
   int nSize = 0;
 
-  StringList::const_iterator i;
+  list<int>::const_iterator i;
   for (i = users.begin(); i != users.end(); ++i)
   {
-    const ICQUser* pUser = gUserManager.FetchUser(i->c_str(), LICQ_PPID, LOCK_R);
+    const LicqUser* pUser = gUserManager.fetchUser(*i);
     if (pUser)
     {
-      nSize += i->size();
+      nSize += pUser->accountId().size();
       nSize += 10;
 
       char *szUnicode = strdup(pUser->GetAlias());
@@ -2789,7 +2789,20 @@ CPU_ExportToServerList::CPU_ExportToServerList(const StringList& users,
     m_nSID = gUserManager.GenerateSID();
 
     // Save the SID
-    ICQUser* u = gUserManager.FetchUser(i->c_str(), LICQ_PPID, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(*i, LOCK_W);
+    if (u == NULL)
+    {
+      gLog.Warn("%sTrying to export invalid user %i to server\n", L_ERRORxSTR, *i);
+      continue;
+    }
+
+    if (u->ppid() != LICQ_PPID)
+    {
+      gLog.Warn("%sTrying to export non ICQ user %i to ICQ server\n", L_ERRORxSTR, *i);
+      gUserManager.DropUser(u);
+      continue;
+    }
+
     switch (_nType)
     {
       case ICQ_ROSTxIGNORE: // same as ICQ_ROSTxNORMAL
@@ -2835,13 +2848,14 @@ CPU_ExportToServerList::CPU_ExportToServerList(const StringList& users,
       nAliasSize = strlen(szUnicodeName);
     }
 
+    string accountId = u->accountId();
     gUserManager.DropUser(u);
 
     SetExtraInfo(m_nGSID);
 
-    nLen = i->size();
+    nLen = accountId.size();
     buffer->PackUnsignedShortBE(nLen);
-    buffer->Pack(i->c_str(), nLen);
+    buffer->Pack(accountId.c_str(), nLen);
     buffer->PackUnsignedShortBE(m_nGSID);
     buffer->PackUnsignedShortBE(m_nSID);
     buffer->PackUnsignedShortBE(_nType);

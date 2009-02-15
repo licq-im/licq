@@ -114,24 +114,13 @@ void CICQDaemon::CheckExport()
     icqExportGroups(groups);
 
   // Just upload all of the users now
-  StringList doneUsers;
-  StringList users;
+  list<int> users;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
     // If they aren't a current server user and not in the ingore list,
     // let's import them!
     if (pUser->GetSID() == 0 && !pUser->IgnoreList())
-    {
-      StringList::const_iterator p = std::find(doneUsers.begin(), doneUsers.end(),
-        pUser->IdString());
-
-      if (p == doneUsers.end())
-      {
-        // Keep track of who has been done
-        users.push_back(pUser->IdString());
-        doneUsers.push_back(pUser->IdString());
-      }
-    }
+      users.push_back(pUser->id());
   }
   FOR_EACH_PROTO_USER_END
 
@@ -142,24 +131,20 @@ void CICQDaemon::CheckExport()
   }
 
   // Export visible/invisible/ignore list
-  StringList visibleUsers, invisibleUsers, ignoredUsers;
+  list<int> visibleUsers, invisibleUsers, ignoredUsers;
   FOR_EACH_PROTO_USER_START(LICQ_PPID, LOCK_R)
   {
     if (pUser->IgnoreList() && pUser->GetSID() == 0)
     {
-      ignoredUsers.push_back(pUser->IdString());
+      ignoredUsers.push_back(pUser->id());
     }
     else
     {
       if (pUser->InvisibleList() && pUser->GetInvisibleSID() == 0)
-      {
-        invisibleUsers.push_back(pUser->IdString());
-      }
+        invisibleUsers.push_back(pUser->id());
 
       if (pUser->VisibleList() && pUser->GetVisibleSID() == 0)
-      {
-        visibleUsers.push_back(pUser->IdString());
-      }
+        visibleUsers.push_back(pUser->id());
     }
   }
   FOR_EACH_PROTO_USER_END
@@ -175,7 +160,7 @@ void CICQDaemon::CheckExport()
 }
 
 //-----icqExportUsers----------------------------------------------------------
-void CICQDaemon::icqExportUsers(const StringList& users, unsigned short _nType)
+void CICQDaemon::icqExportUsers(const list<int>& users, unsigned short _nType)
 {
   if (!UseServerContactList())  return;
 

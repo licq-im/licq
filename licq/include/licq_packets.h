@@ -402,7 +402,7 @@ public:
 class CPU_ExportToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_ExportToServerList(const StringList& users, unsigned short);
+  CPU_ExportToServerList(const std::list<int>& users, unsigned short type);
 };
 
 //-----ExportGroupsToServerList-------------------------------------------------
