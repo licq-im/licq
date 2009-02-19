@@ -1297,10 +1297,13 @@ public:
    *
    * @param accountId Server account id
    * @param ppid Protocol instance id
-   * @param temporary True if user should not be saved to disk
-   * @return Local user id of added user or 0 if add failed
+   * @param permanent True if user should be added permanently to list and saved to disk
+   * @param addToServer True if server should be notified (ignored for temporary users)
+   * @param groupId Initial group to place user in or zero for no group
+   * @return zero if account id is invalid or user is already in list, otherwise id of added user
    */
-  int addUser(const std::string& accountId, unsigned int ppid, bool temporary);
+  int addUser(const std::string& accountId, unsigned long ppid,
+      bool permanent = true, bool addToServer = true, unsigned short groupId = 0);
 
   /**
    * Remove a user from the list
@@ -1309,6 +1312,7 @@ public:
    */
   void removeUser(int userId);
 
+  LICQ_DEPRECATED // use removeUser() instead
   void RemoveUser(const char* accountId, unsigned long ppid)
   { removeUser(getUserFromAccount(accountId, ppid)); }
 

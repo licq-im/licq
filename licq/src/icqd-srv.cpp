@@ -46,13 +46,12 @@
 
 using namespace std;
 
-void CICQDaemon::ProtoAddUser(const char *_szId, unsigned long _nPPID,
-                              bool _bAuthRequired, unsigned short groupId)
+void CICQDaemon::protoAddUser(const string& accountId, unsigned long ppid, int groupId)
 {
-  if (_nPPID == LICQ_PPID)
-    icqAddUser(_szId, _bAuthRequired, groupId);
+  if (ppid == LICQ_PPID)
+    icqAddUser(accountId.c_str(), false, groupId);
   else
-    PushProtoSignal(new CAddUserSignal(_szId, _bAuthRequired), _nPPID);
+    PushProtoSignal(new CAddUserSignal(accountId.c_str(), false), ppid);
 }
 
 //-----icqAddUser----------------------------------------------------------
@@ -296,12 +295,20 @@ void CICQDaemon::icqCreatePDINFO()
 }
 
 //-----icqRemoveUser-------------------------------------------------------
-void CICQDaemon::ProtoRemoveUser(const char *_szId, unsigned long _nPPID)
+void CICQDaemon::protoRemoveUser(int userId)
 {
-  if (_nPPID == LICQ_PPID)
-    icqRemoveUser(_szId);
-  else
-    PushProtoSignal(new CRemoveUserSignal(_szId), _nPPID);
+  const LicqUser* u = gUserManager.fetchUser(userId);
+  if (u == NULL)
+    return;
+  unsigned long ppid = u->ppid();
+  string accountId = u->accountId();
+  bool tempUser = u->NotInList();
+  gUserManager.DropUser(u);
+
+  if (ppid == LICQ_PPID && tempUser)
+    icqRemoveUser(accountId.c_str());
+  else if(ppid != LICQ_PPID)
+    PushProtoSignal(new CRemoveUserSignal(accountId.c_str()), ppid);
 }
 
 void CICQDaemon::icqRemoveUser(const char *_szId)

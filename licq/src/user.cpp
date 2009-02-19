@@ -583,8 +583,12 @@ void CUserManager::saveUserList() const
   usersConf.CloseFile();
 }
 
-int CUserManager::addUser(const string& accountId, unsigned int ppid, bool temporary)
+int CUserManager::addUser(const string& accountId, unsigned long ppid,
+    bool permanent, bool addToServer, unsigned short groupId)
 {
+  if (accountId.empty() || ppid == 0)
+    return 0;
+
   LockUserList(LOCK_W);
 
   // Make sure user isn't already in the list
@@ -600,10 +604,10 @@ int CUserManager::addUser(const string& accountId, unsigned int ppid, bool tempo
   for (uid = 1; myUsers.count(uid) != 0 ; ++uid)
     ;
 
-  LicqUser* pUser = new LicqUser(uid, accountId, ppid, temporary);
+  LicqUser* pUser = new LicqUser(uid, accountId, ppid, !permanent);
   pUser->Lock(LOCK_W);
 
-  if (!temporary)
+  if (permanent)
   {
     // Set this user to be on the contact list
     pUser->AddToContactList();
@@ -617,16 +621,31 @@ int CUserManager::addUser(const string& accountId, unsigned int ppid, bool tempo
 
   pUser->Unlock();
 
-  if (!temporary)
+  if (permanent)
     saveUserList();
 
   UnlockUserList();
+
+  // Notify plugins that user was added
+  // Send this before adding user to server side as protocol code may generate updated signals
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, uid, groupId));
+
+  // Add user to server side list
+  if (permanent && addToServer)
+    gLicqDaemon->protoAddUser(accountId.c_str(), ppid, groupId);
+
+  // Set initial group membership, also sets server group for user
+  if (groupId != 0)
+    setUserInGroup(uid, GROUPS_USER, groupId, true, permanent);
 
   return uid;
 }
 
 void CUserManager::removeUser(int userId)
 {
+  // Remove the user from the server side list first
+  gLicqDaemon->protoRemoveUser(userId);
+
   // List should only be locked when not holding any user lock to avoid
   // deadlock, so we cannot call FetchUser here.
   LockUserList(LOCK_W);
@@ -649,6 +668,9 @@ void CUserManager::removeUser(int userId)
   UnlockUserList();
   u->Unlock();
   delete u;
+
+  // Notify plugins about the removed user
+  gLicqDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, userId));
 }
 
 // Need to call CICQDaemon::SaveConf() after this

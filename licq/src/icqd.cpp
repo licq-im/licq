@@ -1083,56 +1083,6 @@ void CICQDaemon::SetUseServerSideBuddyIcons(bool b)
     m_bUseBART = b;
 }
 
-int CICQDaemon::addUserToList(const string& accountId, unsigned long ppid,
-    bool permanent, bool addToServer, unsigned short groupId)
-{
-  // Don't add invalid uins
-  if (accountId.empty() || ppid == 0)
-    return 0;
-
-  // Don't add a user we already have
-  if (gUserManager.IsOnList(accountId.c_str(), ppid))
-  {
-    gLog.Warn(tr("%sUser %s already on contact list.\n"), L_WARNxSTR, accountId.c_str());
-    return 0;
-  }
-
-  int userId = gUserManager.addUser(accountId, ppid, !permanent);
-  if (groupId != 0)
-    gUserManager.addUserToGroup(userId, groupId);
-
-  // this notify is for local only adds
-  if (permanent && addToServer)
-  {
-    if (ppid == LICQ_PPID && m_nTCPSrvSocketDesc != -1)
-      icqAddUser(accountId.c_str(), false, groupId);
-    else if (ppid != LICQ_PPID)
-      PushProtoSignal(new CAddUserSignal(accountId.c_str(), false), ppid);
-  }
-
-  pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_ADD, userId, groupId));
-
-  return userId;
-}
-
-void CICQDaemon::RemoveUserFromList(const char *szId, unsigned long nPPID)
-{
-  const ICQUser* u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-  if (!u) return;
-  int userId = u->id();
-  bool bTempUser = u->NotInList();
-  gUserManager.DropUser(u);
-  
-  if (nPPID == LICQ_PPID && m_nTCPSrvSocketDesc != -1 && !bTempUser)
-    icqRemoveUser(szId);
-  else if (nPPID != LICQ_PPID)
-    ProtoRemoveUser(szId, nPPID);
-
-  gUserManager.removeUser(userId);
-
-  pushPluginSignal(new LicqSignal(SIGNAL_UPDATExLIST, LIST_REMOVE, userId));
-}
-
 //-----ChangeUserStatus-------------------------------------------------------
 void CICQDaemon::ChangeUserStatus(ICQUser *u, unsigned long s)
 {

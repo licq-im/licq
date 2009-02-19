@@ -208,14 +208,38 @@ public:
       \param groupId The group id to add the user into.
       \param _bAuthRequired True if we need to get authorization first.
   */
-  void ProtoAddUser(const char *szId, unsigned long nPPID, bool _bAuthRequired = false, unsigned short groupId = 0);
+  LICQ_DEPRECATED // Use protoAddUser() or gUserManager.addUser() instead
+  void ProtoAddUser(const char *szId, unsigned long nPPID, bool /*_bAuthRequired*/ = false, unsigned short groupId = 0)
+  { protoAddUser(szId, nPPID, groupId); }
+
+  /**
+   * Add a user to server side list
+   * Plugins should call gUserManager.addUser() instead as this function will
+   * not add the user to the local contact list or notify plugins.
+   *
+   * @param accountId Account id of user to add
+   * @param ppid Protocol instance id of user
+   * @param groupId Initial group, only used for ICQ contacts
+   */
+  void protoAddUser(const std::string& accountId, unsigned long ppid, int groupId);
 
   //! Remove a user from the local contact list.
   /*!
       \param szId The user ID to remove.
       \param nPPID The user's protocol plugin ID.
   */
-  void ProtoRemoveUser(const char *szId, unsigned long nPPID);
+  LICQ_DEPRECATED // Use protoRemoveUser or gUserManager.removeUser() instead
+  void ProtoRemoveUser(const char *szId, unsigned long nPPID)
+  { protoRemoveUser(gUserManager.getUserFromAccount(szId, nPPID)); }
+
+  /**
+   * Remove a user from the server side list
+   * Plugins should call gUserManageer.removeUser() instead as this function
+   * will not remove the user from the local contact list or notify plugins.
+   *
+   * @param userId Id of user to remove
+   */
+  void protoRemoveUser(int userId);
 
   //! Rename a user on the server contact list.
   /*!
@@ -564,14 +588,18 @@ public:
    * @param groupId Initial group to place user in or zero for no group
    * @return zero if account id is invalid or user is already in list, otherwise id of added user
    */
+  LICQ_DEPRECATED // Use gUserManager.addUser() instead
   int addUserToList(const std::string& accountId, unsigned long ppid,
-      bool permanent = true, bool addToServer = true, unsigned short groupId = 0);
+      bool permanent = true, bool addToServer = true, unsigned short groupId = 0)
+  { return gUserManager.addUser(accountId, ppid, permanent, addToServer, groupId); }
 
   LICQ_DEPRECATED int AddUserToList(const std::string& accountId, unsigned long ppid,
       bool notify = true, bool temporary = false, unsigned short groupId = 0)
-  { return addUserToList(accountId, ppid, !temporary, notify, groupId); }
+  { return gUserManager.addUser(accountId, ppid, !temporary, notify, groupId); }
 
-  void RemoveUserFromList(const char *szId, unsigned long nPPID);
+  LICQ_DEPRECATED // Use gUserManager.removeUser() instead
+  void RemoveUserFromList(const char *szId, unsigned long nPPID)
+  { gUserManager.removeUser(gUserManager.getUserFromAccount(szId, nPPID)); }
 
   // SMS
   unsigned long icqSendSms(const char* id, unsigned long ppid,
