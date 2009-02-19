@@ -31,6 +31,7 @@
 #include "mainwin.h"
 #include "licq_icqd.h"
 #include "licq_events.h"
+#include <licq_user.h>
 #include "gui-defines.h"
 #include "ewidgets.h"
 
@@ -138,7 +139,7 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     break;
   default:
     //TODO when CSearchAck changes
-      int userId = gLicqDaemon->addUserToList(e->SearchAck()->Id(), e->SearchAck()->PPID(), false);
+      int userId = gUserManager.addUser(e->SearchAck()->Id(), e->SearchAck()->PPID(), false);
       mainwin->callFunction(mnuUserSendChat, userId);
     close();
     return;

@@ -2464,7 +2464,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
         }
         gLog.Info(tr("%s%s from new user (%s).\n"), L_SRVxSTR, szType, u->IdString());
         u->Unlock();
-        addUserToList(u->IdString(), u->PPID(), false);
+        gUserManager.addUser(u->IdString(), u->PPID(), false);
         bNewUser = false;
       }
       else

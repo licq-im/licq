@@ -669,12 +669,10 @@ bool LicqGui::removeUserFromList(int userId, QWidget* parent)
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
       .arg(QString::fromUtf8(u->GetAlias()))
       .arg(u->IdString()));
-  QString id = u->accountId().c_str();
-  unsigned long ppid = u->ppid();
   gUserManager.DropUser(u);
   if (QueryYesNo(parent, warning))
   {
-    myLicqDaemon->RemoveUserFromList(id.toLatin1(), ppid);
+    gUserManager.removeUser(userId);
     return true;
   }
   return false;

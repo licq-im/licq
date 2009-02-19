@@ -30,6 +30,7 @@
 
 #include <licq_events.h>
 #include <licq_icqd.h>
+#include <licq_user.h>
 
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
@@ -130,7 +131,7 @@ void RandomChatDlg::userEventDone(ICQEvent* event)
       break;
     default:
       //TODO when CSearchAck changes
-      int userId = gLicqDaemon->addUserToList(event->SearchAck()->Id(), event->SearchAck()->PPID(), false);
+      int userId = gUserManager.addUser(event->SearchAck()->Id(), event->SearchAck()->PPID(), false);
       LicqGui::instance()->showEventDialog(ChatEvent, userId);
       close();
       return;

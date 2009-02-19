@@ -1702,11 +1702,7 @@ void CLicqConsole::InputRemove(int cIn)
     // The input is done
     if (strncasecmp(data->szQuery, "yes", strlen(data->szQuery)) == 0)
     {
-        const LicqUser* user = gUserManager.fetchUser(data->userId);
-        string szId = user->accountId();
-        unsigned long nPPID = user->ppid();
-        gUserManager.DropUser(user);
-        licqDaemon->RemoveUserFromList(szId.c_str(), nPPID);
+        gUserManager.removeUser(data->userId);
       winMain->wprintf("%C%AUser removed.\n", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
     }

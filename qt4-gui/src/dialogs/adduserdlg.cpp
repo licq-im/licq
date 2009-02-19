@@ -27,6 +27,7 @@
 #include <QLineEdit>
 
 #include <licq_icqd.h>
+#include <licq_user.h>
 
 #include "helpers/support.h"
 
@@ -101,7 +102,7 @@ void AddUserDlg::ok()
     const ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
 
     if (u == NULL)
-      added = (gLicqDaemon->addUserToList(id.data(), ppid, true, true, group) != 0);
+      added = (gUserManager.addUser(id.data(), ppid, true, true, group) != 0);
     else
     {
       bool notInList = u->NotInList();

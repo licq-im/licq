@@ -1493,7 +1493,7 @@ int CRMSClient::Process_ADDUSER()
   NEXT_WORD(data_arg);
   unsigned long nPPID = GetProtocol(data_arg);
 
-  if (licqDaemon->addUserToList(szId, nPPID) != 0)
+  if (gUserManager.addUser(szId, nPPID) != 0)
   {
     fprintf(fs, "%d User added\n", CODE_ADDUSERxDONE);
   }
@@ -1521,7 +1521,7 @@ int CRMSClient::Process_REMUSER()
 
   if (nUin >= 10000)
   {
-    licqDaemon->RemoveUserFromList(data_arg, LICQ_PPID);
+    gUserManager.removeUser(gUserManager.getUserFromAccount(data_arg, LICQ_PPID));
     fprintf(fs, "%d User removed\n", CODE_REMUSERxDONE);
   }
   else

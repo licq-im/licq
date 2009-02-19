@@ -6074,7 +6074,7 @@ void CICQDaemon::ProcessUserList()
 
     if (!isOnList)
     {
-      addUserToList(id, LICQ_PPID, true, false); // Don't notify server
+      gUserManager.addUser(id, LICQ_PPID, true, false); // Don't notify server
       gLog.Info(tr("%sAdded %s (%s) to list from server.\n"),
           L_SRVxSTR, (data->newAlias ? data->newAlias.get() : id), id);
     }

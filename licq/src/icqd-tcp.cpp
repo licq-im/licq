@@ -1848,7 +1848,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
             break;
           }
-            addUserToList(u->IdString(), u->PPID(), false);
+            gUserManager.addUser(u->IdString(), u->PPID(), false);
           bNewUser = false;
         }
 
@@ -1951,7 +1951,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
               break;
             }
-            addUserToList(u->IdString(), u->PPID(), false);
+            gUserManager.addUser(u->IdString(), u->PPID(), false);
           bNewUser = false;
         }
 
@@ -2021,7 +2021,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
               break;
             }
-            addUserToList(u->IdString(), u->PPID(), false);
+            gUserManager.addUser(u->IdString(), u->PPID(), false);
           bNewUser = false;
         }
 
@@ -2070,7 +2070,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
               break;
             }
-            addUserToList(u->IdString(), u->PPID(), false);
+            gUserManager.addUser(u->IdString(), u->PPID(), false);
           bNewUser = false;
         }
 
@@ -2127,7 +2127,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
               RejectEvent(id, e);
               break;
             }
-            addUserToList(u->IdString(), u->PPID(), false);
+            gUserManager.addUser(u->IdString(), u->PPID(), false);
           bNewUser = false;
         }
 
@@ -2208,7 +2208,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   RejectEvent(id, e);
                   break;
                 }
-                addUserToList(u->IdString(), u->PPID(), false);
+                gUserManager.addUser(u->IdString(), u->PPID(), false);
 						bNewUser = false;
 					}
 
@@ -2240,7 +2240,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   RejectEvent(id, e);
                   break;
                 }
-                addUserToList(u->IdString(), u->PPID(), false);
+                gUserManager.addUser(u->IdString(), u->PPID(), false);
 						bNewUser = false;
 					}
 
@@ -2270,7 +2270,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   RejectEvent(id, e);
                   break;
                 }
-                addUserToList(u->IdString(), u->PPID(), false);
+                gUserManager.addUser(u->IdString(), u->PPID(), false);
 						bNewUser = false;
 					}
 
@@ -2302,7 +2302,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   RejectEvent(id, e);
                   break;
                 }
-                addUserToList(u->IdString(), u->PPID(), false);
+                gUserManager.addUser(u->IdString(), u->PPID(), false);
 						bNewUser = false;
 					}
 
@@ -2364,7 +2364,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         {
           if (Ignore(IGNORE_NEWUSERS))
             break;
-            addUserToList(u->IdString(), u->PPID(), false);
+            gUserManager.addUser(u->IdString(), u->PPID(), false);
           bNewUser = false;
         }
 

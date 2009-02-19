@@ -33,6 +33,7 @@
 #include "adduserdlg.h"
 
 #include "licq_icqd.h"
+#include <licq_user.h>
 
 //TODO Add a drop down list of the avaialable protocols
 //     that a user may be added for
@@ -114,7 +115,7 @@ void AddUserDlg::ok()
     server->ProtoPluginList(pl);
     for (it = pl.begin(); it != pl.end(); it++)
       if (strcmp((*it)->Name(), cmbProtocol->currentText().latin1()) == 0)
-        server->addUserToList(strUser, (*it)->PPID());
+        gUserManager.addUser(strUser, (*it)->PPID());
   }
 
   close(true);

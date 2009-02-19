@@ -437,7 +437,7 @@ void CLicqConsole::MenuAdd(char *szArg)
       bAlert = true;
   }
 
-  if (!licqDaemon->addUserToList(szArg, LICQ_PPID))
+  if (gUserManager.addUser(szArg, LICQ_PPID) == 0)
   {
     winMain->wprintf("%CAdding user %s failed (duplicate user or invalid uin).\n",
      COLOR_RED, szArg);

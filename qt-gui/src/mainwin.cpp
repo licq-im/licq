@@ -3232,15 +3232,13 @@ bool CMainWindow::RemoveUserFromList(int userId, QWidget *p)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return true;
-  QCString szId = u->accountId().c_str();
-  unsigned long nPPID = u->ppid();
   QString warning(tr("Are you sure you want to remove\n%1 (%2)\nfrom your contact list?")
                      .arg(QString::fromUtf8(u->GetAlias()))
                      .arg(u->IdString()) );
   gUserManager.DropUser(u);
   if (QueryUser(p, warning, tr("Ok"), tr("Cancel")))
   {
-    licqDaemon->RemoveUserFromList(szId, nPPID);
+    gUserManager.removeUser(userId);
     return true;
   }
   return false;

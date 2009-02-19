@@ -167,12 +167,12 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       int nLists = atoi(strLists.c_str());
       if (nLists & FLAG_CONTACT_LIST)
         strUserLists = packet->GetParameter();
-        
-      if ((nLists & FLAG_CONTACT_LIST) &&
-          !gUserManager.IsOnList(strUser.c_str(), MSN_PPID))
-        m_pDaemon->addUserToList(strUser.c_str(), MSN_PPID);
 
-      ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+      int userId = 0;
+      if (nLists & FLAG_CONTACT_LIST)
+        userId = gUserManager.addUser(strUser, MSN_PPID, true, false);
+
+      LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
       if (u)
       {
         u->SetEnableSave(false);
