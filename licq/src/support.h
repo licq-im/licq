@@ -47,10 +47,6 @@ int scandir_alpha_r(const char *dir, struct dirent ***namelist,
 
 /* Cross-platform support functions */
 
-#ifndef HAVE_INET_ATON
-int inet_aton(const char *cp, struct in_addr *addr);
-#endif  /* HAVE_INET_ATON */
-
 #ifndef HAVE_STRERROR
 char *strerror(int errnum);
 #endif

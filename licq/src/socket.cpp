@@ -12,6 +12,7 @@
 #include "config.h"
 #endif
 
+#include <arpa/inet.h>
 #include <stdio.h>
 #include <sys/types.h>
 #include <sys/socket.h>
@@ -20,10 +21,6 @@
 #include <netdb.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-#ifdef HAVE_INET_ATON
-#include <arpa/inet.h>
-#endif
 
 #ifdef HAVE_ERRNO_H
 #include <errno.h>

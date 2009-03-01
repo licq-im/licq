@@ -12,6 +12,7 @@
 
 #include "licq_user.h"
 
+#include <arpa/inet.h>
 #include <cassert>
 #include <cctype>
 #include <cerrno>
@@ -27,10 +28,6 @@
 #include <unistd.h>
 
 #include <boost/algorithm/string.hpp>
-
-#ifdef HAVE_INET_ATON
-#include <arpa/inet.h>
-#endif
 
 // Localization
 #include "gettext.h"

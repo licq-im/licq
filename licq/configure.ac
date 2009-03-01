@@ -161,7 +161,7 @@ dlopen(NULL, RTLD_NOW)
 ])
 
 
-AC_CHECK_FUNCS(inet_addr inet_aton mktime select strdup strerror hstrerror readdir_r)
+AC_CHECK_FUNCS(inet_ntop mktime select strdup strerror hstrerror readdir_r)
 
 AC_CHECK_FUNC(pthread_kill_other_threads_np,[AC_DEFINE([HAVE_PTHREAD_KILL_OTHER_THREADS_NP],
 [], [we are not using NTPL])])
