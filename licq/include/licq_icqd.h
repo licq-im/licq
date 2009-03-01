@@ -241,12 +241,17 @@ public:
    */
   void protoRemoveUser(int userId);
 
-  //! Rename a user on the server contact list.
-  /*!
-       \param szId The user ID to rename.
-       \param nPPID The user's protocol plugin ID.
-  */
-  void ProtoRenameUser(const char *szId, unsigned long nPPID);
+  /**
+   * Update user alias on server contact list
+   * Alias is taken from local contact list
+   *
+   * @param userId User to update
+   */
+  void updateUserAlias(int userId);
+
+  LICQ_DEPRECATED // Use updateUserAlias() instead
+  void ProtoRenameUser(const char *szId, unsigned long nPPID)
+  { updateUserAlias(gUserManager.getUserFromAccount(szId, nPPID)); }
 
   //! Change status for a protocol.
   /*!
@@ -268,15 +273,19 @@ public:
   */
   void ProtoLogoff(unsigned long nPPID);
 
-  //! Send typing notification.
+  /**
+   * Notify a user that we've started/stopped typing
+   *
+   * @param userId User to notify
+   * @param active True if we've started typing, false if we've stopped
+   * @param nSocket ?
+   */
+  void sendTypingNotification(int userId, bool active, int nSocket = -1);
 
-  /*!
-        \param szId The user ID.
-        \param nPPID The protocol ID.
-        \param bActive The state of the typing notification. TRUE if active.
-  */
+  LICQ_DEPRECATED // Use sendTypingNotification() instead
   void ProtoTypingNotification(const char *szId, unsigned long nPPID,
-                               bool Active, int nSocket = -1);
+                               bool Active, int nSocket = -1)
+  { sendTypingNotification(gUserManager.getUserFromAccount(szId, nPPID), Active, nSocket); }
 
   //! Send a message to a user on this protocol.
   /*!
@@ -312,7 +321,17 @@ public:
      unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
 
-  unsigned long ProtoFetchAutoResponseServer(const char *szId, unsigned long nPPID);
+  /**
+   * Request user auto response from server
+   *
+   * @param userId User to fetch auto response for
+   * @return id of event for ICQ users, zero for other protocols
+   */
+  unsigned long requestUserAutoResponse(int userId);
+
+  LICQ_DEPRECATED // Use requestUserAutoResponse() instead
+  unsigned long ProtoFetchAutoResponseServer(const char *szId, unsigned long nPPID)
+  { return requestUserAutoResponse(gUserManager.getUserFromAccount(szId, nPPID)); }
 
   unsigned long ProtoChatRequest(const char *szId, unsigned long nPPID,
      const char *szReason, unsigned short nLevel, bool bServer);
@@ -347,7 +366,17 @@ public:
   unsigned long ProtoAuthorizeRefuse(const char *szId, unsigned long nPPID,
      const char *szMessage);
 
-  unsigned long ProtoRequestInfo(const char *szId, unsigned long nPPID);
+  /**
+   * Request user information from server
+   *
+   * @param userId User to get information for
+   * @return id of event for ICQ users, zero for other protocols
+   */
+  unsigned long requestUserInfo(int userId);
+
+  LICQ_DEPRECATED // Use requestUserInfo() instead
+  unsigned long ProtoRequestInfo(const char *szId, unsigned long nPPID)
+  { return requestUserInfo(gUserManager.getUserFromAccount(szId, nPPID)); }
 
   unsigned long ProtoSetGeneralInfo(unsigned long nPPID, const char *szAlias,
     const char *szFirstName, const char *szLastName, const char *szEmailPrimary,
@@ -355,7 +384,17 @@ public:
     const char *szFaxNumber, const char *szAddress, const char *szCellularNumber,
     const char *szZipCode, unsigned short nCountryCode, bool bHideEmail);
 
-  unsigned long ProtoRequestPicture(const char *szId, unsigned long nPPID);
+  /**
+   * Request user picture from server
+   *
+   * @param userId User to get picture for
+   * @return id of event for ICQ users, zero for other protocols
+   */
+  unsigned long requestUserPicture(int userId);
+
+  LICQ_DEPRECATED // Use requestUserPicture() instead
+  unsigned long ProtoRequestPicture(const char *szId, unsigned long nPPID)
+  { return requestUserPicture(gUserManager.getUserFromAccount(szId, nPPID)); }
 
   unsigned long ProtoOpenSecureChannel(const char *szId, unsigned long nPPID);
   unsigned long ProtoCloseSecureChannel(const char *szId, unsigned long nPPID);
@@ -491,7 +530,7 @@ public:
                       unsigned short _nNewGroup, unsigned short _nOldGSID,
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
-  void icqRenameUser(const char *_szId);
+  void icqRenameUser(const std::string& accountId, const std::string& newAlias);
   void icqExportUsers(const std::list<int>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
   void icqUpdateServerGroups();
@@ -531,7 +570,9 @@ public:
    */
   void ProtoSetInIgnoreList(const char* id, unsigned long ppid, bool ignore);
 
+  LICQ_DEPRECATED // Use gUserManager.setUserInGroup() instead
   void ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID);
+  LICQ_DEPRECATED // Use gUserManager.setUserInGroup() instead
   void ProtoToggleVisibleList(const char *_szId, unsigned long _nPPID);
 
   void icqAddToVisibleList(const char *_szId, unsigned long _nPPID);

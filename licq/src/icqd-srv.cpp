@@ -405,26 +405,29 @@ void CICQDaemon::icqRenameGroup(const char *_szNewName, unsigned short _nGSID)
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
-void CICQDaemon::ProtoRenameUser(const char *_szId, unsigned long _nPPID)
+void CICQDaemon::updateUserAlias(int userId)
 {
-  if (_nPPID == LICQ_PPID)
-    icqRenameUser(_szId);
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user == NULL)
+    return;
+  string accountId = user->accountId();
+  unsigned long ppid = user->ppid();
+  string newAlias = user->GetAlias();
+  gUserManager.DropUser(user);
+
+  if (ppid == LICQ_PPID)
+    icqRenameUser(accountId, newAlias);
   else
-    PushProtoSignal(new CRenameUserSignal(_szId), _nPPID);
+    PushProtoSignal(new CRenameUserSignal(accountId.c_str()), ppid);
 }
 
-void CICQDaemon::icqRenameUser(const char *_szId)
+void CICQDaemon::icqRenameUser(const string& accountId, const string& newAlias)
 {
   if (!UseServerContactList() || m_nTCPSrvSocketDesc == -1) return;
 
-  const ICQUser* u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_R);
-  if (u == NULL) return;
-  const char* szNewAlias = u->GetAlias();
-  gUserManager.DropUser(u);
-
-  CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(_szId, ICQ_ROSTxNORMAL);
-  gLog.Info(tr("%sRenaming %s to %s...\n"), L_SRVxSTR, _szId, szNewAlias);
-  addToModifyUsers(pUpdate->SubSequence(), _szId);
+  CSrvPacketTcp *pUpdate = new CPU_UpdateToServerList(accountId.c_str(), ICQ_ROSTxNORMAL);
+  gLog.Info(tr("%sRenaming %s to %s...\n"), L_SRVxSTR, accountId.c_str(), newAlias.c_str());
+  addToModifyUsers(pUpdate->SubSequence(), accountId.c_str());
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
@@ -440,13 +443,20 @@ void CICQDaemon::icqAlertUser(const char* id, unsigned long ppid)
   gLog.Info(tr("%sAlerting user they were added (#%hu)...\n"), L_SRVxSTR, p->Sequence());
   SendExpectEvent_Server(id, ppid, p, NULL);
 }
-//-----icqFetchAutoResponseServer-----------------------------------------------
-unsigned long CICQDaemon::ProtoFetchAutoResponseServer(const char *_szId, unsigned long _nPPID)
+
+unsigned long CICQDaemon::requestUserAutoResponse(int userId)
 {
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user == NULL)
+    return 0;
+  string accountId = user->accountId();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   unsigned long nRet = 0;
 
-  if (_nPPID == LICQ_PPID)
-    nRet = icqFetchAutoResponseServer(_szId);
+  if (ppid == LICQ_PPID)
+    nRet = icqFetchAutoResponseServer(accountId.c_str());
 
   return nRet;
 }
@@ -597,15 +607,21 @@ void CICQDaemon::icqRelogon()
 //  m_eStatus = STATUS_OFFLINE_FORCED;
 }
 
-//-----ProtoRequestInfo------------------------------------------------------
-unsigned long CICQDaemon::ProtoRequestInfo(const char *_szId, unsigned long _nPPID)
+unsigned long CICQDaemon::requestUserInfo(int userId)
 {
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user == NULL)
+    return 0;
+  string accountId = user->accountId();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   unsigned long nRet = 0;
-  if (_nPPID == LICQ_PPID)
-    nRet = icqRequestMetaInfo(_szId);
+  if (ppid == LICQ_PPID)
+    nRet = icqRequestMetaInfo(accountId.c_str());
   else
-    PushProtoSignal(new CRequestInfo(_szId), _nPPID);
-  
+    PushProtoSignal(new CRequestInfo(accountId.c_str()), ppid);
+
   return nRet;
 }
 
@@ -626,31 +642,29 @@ unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
   return 0;
 }
 
-//-----ProtoRequestPicture------------------------------------------------------
-unsigned long CICQDaemon::ProtoRequestPicture(const char *_szId, unsigned long _nPPID)
+unsigned long CICQDaemon::requestUserPicture(int userId)
 {
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user == NULL)
+    return 0;
+  string accountId = user->accountId();
+  unsigned long ppid = user->ppid();
+  size_t iconHashSize = strlen(user->BuddyIconHash());
+  bool sendServer = (user->SocketDesc(ICQ_CHNxINFO) < 0);
+  gUserManager.DropUser(user);
+
   unsigned long nRet = 0;
 
-  if (_nPPID == LICQ_PPID)
+  if (ppid == LICQ_PPID)
   {
-    const ICQUser* u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_R);
-    if (u == NULL) return 0;
-
-    if (UseServerSideBuddyIcons() && strlen(u->BuddyIconHash()) > 0)
-    {
-      gUserManager.DropUser(u);
-      nRet = m_xBARTService->SendEvent(_szId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
-    }
+    if (UseServerSideBuddyIcons() && iconHashSize > 0)
+      nRet = m_xBARTService->SendEvent(accountId.c_str(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
     else
-    {
-      bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
-      gUserManager.DropUser(u);
-      nRet = icqRequestPicture(_szId, bSendServer);
-    }
+      nRet = icqRequestPicture(accountId.c_str(), sendServer);
   }
   else
-    PushProtoSignal(new CRequestPicture(_szId), _nPPID);
-  
+    PushProtoSignal(new CRequestPicture(accountId.c_str()), ppid);
+
   return nRet;
 }
 
@@ -1850,18 +1864,23 @@ void CICQDaemon::postLogoff(int nSD, ICQEvent *cancelledEvent)
   FOR_EACH_PROTO_USER_END
 }
 
-//-----ProtoTypingNotification-------------------------------------------------
-void CICQDaemon::ProtoTypingNotification(const char *_szId,
-  unsigned long _nPPID, bool _bActive, int nSocket)
+void CICQDaemon::sendTypingNotification(int userId, bool active, int nSocket)
 {
+  const LicqUser* user = gUserManager.fetchUser(userId);
+  if (user == NULL)
+    return;
+  string accountId = user->accountId();
+  unsigned long ppid = user->ppid();
+  gUserManager.DropUser(user);
+
   //TODO: Make for each plugin
-  if (m_bSendTN)
-  {
-    if (_nPPID == LICQ_PPID)
-      icqTypingNotification(_szId, _bActive);
-    else 
-      PushProtoSignal(new CTypingNotificationSignal(_szId, _bActive, nSocket), _nPPID);
-  }
+  if (!m_bSendTN)
+    return;
+
+  if (ppid == LICQ_PPID)
+    icqTypingNotification(accountId.c_str(), active);
+  else
+    PushProtoSignal(new CTypingNotificationSignal(accountId.c_str(), active, nSocket), ppid);
 }
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
