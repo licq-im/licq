@@ -131,9 +131,8 @@ void UserSendContactEvent::send()
 
   const LicqUser* user = gUserManager.fetchUser(myUsers.front());
   QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
   gUserManager.DropUser(user);
-  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
+  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
 
   StringList users;
 

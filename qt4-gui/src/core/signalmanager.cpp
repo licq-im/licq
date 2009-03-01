@@ -99,7 +99,7 @@ void SignalManager::ProcessSignal(LicqSignal* sig)
 
     case SIGNAL_ADDxSERVERxLIST:
       //TODO
-      gLicqDaemon->ProtoRenameUser(accountId.toLatin1().data(), ppid);
+      gLicqDaemon->updateUserAlias(userId);
       break;
 
     case SIGNAL_NEWxPROTO_PLUGIN:

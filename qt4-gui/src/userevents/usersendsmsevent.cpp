@@ -116,13 +116,12 @@ void UserSendSmsEvent::send()
   if (user == NULL)
     return;
   QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
   gUserManager.DropUser(user);
 
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
+  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
 
   unsigned long icqEventTag = 0;
   if (myEventTag.size())

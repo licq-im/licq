@@ -404,6 +404,7 @@ private:
   void savePageKabc();
 #endif
 
+  int myUserId;
   QString myId;
   unsigned long myPpid;
   bool m_bOwner;

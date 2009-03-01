@@ -132,8 +132,8 @@ void CSignalManager::ProcessSignal(LicqSignal* s)
     break;
   case SIGNAL_ADDxSERVERxLIST:
   //TODO
-      licqDaemon->ProtoRenameUser(accountId, ppid);
-    break;
+      licqDaemon->updateUserAlias(userId);
+      break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     emit signal_protocolPlugin(s->SubSignal());
     break;

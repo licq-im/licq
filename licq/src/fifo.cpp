@@ -582,8 +582,9 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
                 "info.\n"), L_WARNxSTR, argv[0], szId);
     else
     {
+      int userId = u->id();
       gUserManager.DropUser(u);
-      d->ProtoRequestInfo(szId, LICQ_PPID);
+      d->requestUserInfo(userId);
       ret = 0;
     }
   }

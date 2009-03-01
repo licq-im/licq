@@ -1279,14 +1279,7 @@ void UserSendCommon::clearNewEvents()
 
 void UserSendCommon::closeDialog()
 {
-  LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
-  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
+  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
 
   if (Config::Chat::instance()->msgChatView())
   {
@@ -1445,15 +1438,8 @@ void UserSendCommon::messageTextChanged()
   if (myMessageEdit == NULL || myMessageEdit->toPlainText().isEmpty())
     return;
 
-  LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
   myTempMessage = myMessageEdit->toPlainText();
-  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, true, myConvoId);
+  gLicqDaemon->sendTypingNotification(myUsers.front(), true, myConvoId);
   disconnect(myMessageEdit, SIGNAL(textChanged()), this, SLOT(messageTextChanged()));
   mySendTypingTimer->start(5000);
 }
@@ -1468,26 +1454,19 @@ void UserSendCommon::textChangedTimeout()
 
   QString str = myMessageEdit->toPlainText();
 
-  LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
   if (str != myTempMessage)
   {
     myTempMessage = str;
     // Hack to not keep sending the typing notification to ICQ
-    if (ppid != LICQ_PPID)
-      gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, true, myConvoId);
+    if (myPpid != LICQ_PPID)
+      gLicqDaemon->sendTypingNotification(myUsers.front(), true, myConvoId);
   }
   else
   {
     if (mySendTypingTimer->isActive())
       mySendTypingTimer->stop();
     connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-    gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
+    gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
   }
 }
 

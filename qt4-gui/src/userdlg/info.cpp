@@ -117,6 +117,7 @@ UserPages::Info::Info(bool isOwner, UserDlg* parent)
 
 void UserPages::Info::load(const ICQUser* user)
 {
+  myUserId = user->id();
   myId = user->IdString();
   myPpid = user->PPID();
   codec = UserCodec::codecForICQUser(user);
@@ -148,7 +149,7 @@ void UserPages::Info::apply(ICQUser* user)
 void UserPages::Info::apply2(int /* userId */)
 {
   if (myAliasHasChanged)
-    gLicqDaemon->ProtoRenameUser(myId.toLatin1(), myPpid);
+    gLicqDaemon->updateUserAlias(myUserId);
   myAliasHasChanged = false;
 
 #ifdef USE_KABC
@@ -1509,7 +1510,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
       // Before retrieving the meta data we have to
       // save current status of "chkKeepAliasOnUpdate"
       // and the alias
-    ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
     if (u == NULL)
       return 0;
       u->SetEnableSave(false);
@@ -1524,7 +1525,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   unsigned long icqEventTag;
   if (page == UserDlg::PhonePage)
   {
-    const ICQUser* u = gUserManager.FetchUser(myId.toLatin1(), myPpid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(myUserId);
     if (u == NULL)
       return 0;
       bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
@@ -1533,11 +1534,11 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
   }
   else if (page == UserDlg::PicturePage)
   {
-    icqEventTag = gLicqDaemon->ProtoRequestPicture(myId.toLatin1(), myPpid);
+    icqEventTag = gLicqDaemon->requestUserPicture(myUserId);
   }
   else
   {
-    icqEventTag = gLicqDaemon->ProtoRequestInfo(myId.toLatin1(), myPpid);
+    icqEventTag = gLicqDaemon->requestUserInfo(myUserId);
   }
 
   return icqEventTag;

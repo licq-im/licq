@@ -219,7 +219,7 @@ void UserSendFileEvent::send()
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
+  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
 
   if (myFileEdit->text().trimmed().isEmpty())
   {

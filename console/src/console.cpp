@@ -509,20 +509,6 @@ void CLicqConsole::ProcessPipe()
  *-------------------------------------------------------------------------*/
 void CLicqConsole::ProcessSignal(LicqSignal* s)
 {
-  // Temporary code to get account id and ppid until the rest of the plugin is updated to use user id directly
-  string accountId;
-  unsigned long ppid = 0;
-  if (s->userId() != 0)
-  {
-    LicqUser* user = gUserManager.fetchUser(s->userId(), LOCK_R);
-    if (user != NULL)
-    {
-      accountId = user->accountId();
-      ppid = user->ppid();
-      gUserManager.DropUser(user);
-    }
-  }
-
   switch (s->Signal())
   {
   case SIGNAL_UPDATExLIST:
@@ -563,8 +549,8 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
     PrintStatus();
     break;
   case SIGNAL_ADDxSERVERxLIST:
-    licqDaemon->ProtoRenameUser(accountId.c_str(), ppid);
-    break;
+      licqDaemon->updateUserAlias(s->userId());
+      break;
   case SIGNAL_NEWxPROTO_PLUGIN:
     //ignore for now
     break;
@@ -1578,11 +1564,7 @@ void CLicqConsole::InputInfo(int cIn)
         {
       winMain->wprintf("%C%AUpdate info...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr);
-          const LicqUser* user = gUserManager.fetchUser(data->userId);
-          string szId = user->accountId();
-          unsigned long nPPID = user->ppid();
-          gUserManager.DropUser(user);
-          winMain->event = licqDaemon->ProtoRequestInfo(szId.c_str(), nPPID);
+          winMain->event = licqDaemon->requestUserInfo(data->userId);
       winMain->state = STATE_PENDING;
       return;
         }

@@ -475,13 +475,10 @@ void UserInfoDlg::SaveGeneralInfo()
 
   u->SetEnableSave(true);
   u->saveUserInfo();
-
-  QCString m_szId = u->accountId().c_str();
-  unsigned long m_nPPID = u->ppid();
   gUserManager.DropUser(u);
 
   if (!m_bOwner)
-    server->ProtoRenameUser(m_szId, m_nPPID);
+    server->updateUserAlias(myUserId);
 }
 
 // -----------------------------------------------------------------------------
@@ -2291,25 +2288,25 @@ void UserInfoDlg::slotRetrieve()
       u->SetEnableSave(true);
       u->saveUserInfo();
       gUserManager.DropUser(u);
-      
-      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
+
+      icqEventTag = server->requestUserInfo(myUserId);
       break;
     }
     case MoreInfo:
-      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
+      icqEventTag = server->requestUserInfo(myUserId);
       break;
     case More2Info:
-      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
+      icqEventTag = server->requestUserInfo(myUserId);
       break;
     case WorkInfo:
-      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
+      icqEventTag = server->requestUserInfo(myUserId);
       break;
     case AboutInfo:
-      icqEventTag = server->ProtoRequestInfo(m_szId, m_nPPID);
+      icqEventTag = server->requestUserInfo(myUserId);
       break;
     case PhoneInfo:
     {
-      ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+      const LicqUser* u = gUserManager.fetchUser(myUserId);
       if (u == NULL) return;
       bool bSendServer = (u->SocketDesc(ICQ_CHNxINFO) < 0);
       gUserManager.DropUser(u);
@@ -2318,7 +2315,7 @@ void UserInfoDlg::slotRetrieve()
     }
     case PictureInfo:
     {
-      icqEventTag = server->ProtoRequestPicture(m_szId, m_nPPID);
+      icqEventTag = server->requestUserPicture(myUserId);
       break;
     }
   }

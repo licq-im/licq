@@ -112,7 +112,7 @@ void UserSendMsgEvent::send()
   if (mySendTypingTimer->isActive())
     mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
-  gLicqDaemon->ProtoTypingNotification(accountId.toLatin1(), ppid, false, myConvoId);
+  gLicqDaemon->sendTypingNotification(myUsers.front(), false, myConvoId);
 
   // do nothing if a command is already being processed
   unsigned long icqEventTag = 0;

@@ -2028,7 +2028,7 @@ void UserSendCommon::slot_textChanged()
   gUserManager.DropUser(user);
 
   strTempMsg = mleSend->text();
-  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, true, m_nConvoId);
+  server->sendTypingNotification(m_lUsers.front(), true, m_nConvoId);
   disconnect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
   tmrSendTyping->start(5000);
 }
@@ -2054,14 +2054,14 @@ void UserSendCommon::slot_textChanged_timeout()
     strTempMsg = str;
     // Hack to not keep sending the typing notification to ICQ
     if (m_nPPID != LICQ_PPID)
-      server->ProtoTypingNotification(accountId.latin1(), m_nPPID, true, m_nConvoId);
+      server->sendTypingNotification(m_lUsers.front(), true, m_nConvoId);
   }
   else
   {
     if (tmrSendTyping->isActive())
       tmrSendTyping->stop();
     connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-    server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+    server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
   }
 }
 
@@ -2662,8 +2662,8 @@ void UserSendCommon::slot_close()
   QString accountId = user->accountId();
   gUserManager.DropUser(user);
 
-  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
-  
+  server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
+
   if (mainwin->m_bMsgChatView)
   {
     // the window is at the front, if the timer has not expired and we close
@@ -2824,7 +2824,7 @@ void UserSendMsgEvent::sendButton()
   if (tmrSendTyping->isActive())
     tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(accountId.latin1(), false, m_nConvoId);
+  server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
 
   // do nothing if a command is already being processed
   unsigned long icqEventTag = 0;
@@ -3027,7 +3027,7 @@ void UserSendUrlEvent::sendButton()
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+  server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
 
   if (edtItem->text().stripWhiteSpace().isEmpty())
   {
@@ -3209,7 +3209,7 @@ void UserSendFileEvent::sendButton()
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+  server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
 
   if (edtItem->text().stripWhiteSpace().isEmpty())
   {
@@ -3365,7 +3365,7 @@ void UserSendChatEvent::sendButton()
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+  server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
 
   unsigned long icqEventTag;
 
@@ -3465,7 +3465,7 @@ void UserSendContactEvent::sendButton()
 
   // Take care of typing notification now
   tmrSendTyping->stop();
-  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+  server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
 
   CMMUserViewItem *i = static_cast<CMMUserViewItem*>(lstContacts->firstChild());
   StringList users;
@@ -3610,7 +3610,7 @@ void UserSendSmsEvent::sendButton()
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
-  server->ProtoTypingNotification(accountId.latin1(), m_nPPID, false, m_nConvoId);
+  server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
 
   unsigned long icqEventTag = 0;
   if (m_lnEventTag.size())
