@@ -123,7 +123,7 @@ unsigned long ProxyServer::GetIpByName(const char *_szHostName)
 {
   // check if the hostname is in dot and number notation
   struct in_addr ina;
-  if (inet_aton(_szHostName, &ina))
+  if (inet_pton(AF_INET, _szHostName, &ina) > 0)
      return(ina.s_addr);
 
   // try and resolve hostname

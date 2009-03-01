@@ -1815,11 +1815,13 @@ void ICQUser::LoadLicqInfo()
   m_fConf.ReadNum("Groups.System", mySystemGroups, 0);
   m_fConf.ReadStr("Ip", szTemp, "0.0.0.0");
   struct in_addr in;
-  m_nIp = inet_aton(szTemp, &in);
-  if (m_nIp != 0) m_nIp = in.s_addr;
+  m_nIp = inet_pton(AF_INET, szTemp, &in);
+  if (m_nIp > 0)
+    m_nIp = in.s_addr;
   m_fConf.ReadStr("IntIp", szTemp, "0.0.0.0");
-  m_nIntIp = inet_aton(szTemp, &in);
-  if (m_nIntIp != 0) m_nIntIp = in.s_addr;
+  m_nIntIp = inet_pton(AF_INET, szTemp, &in);
+  if (m_nIntIp > 0)
+    m_nIntIp = in.s_addr;
   m_fConf.ReadNum("Port", m_nPort, 0);
   //m_fConf.ReadBool("NewUser", m_bNewUser, false);
   m_fConf.ReadNum("NewMessages", nNewMessages, 0);

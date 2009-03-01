@@ -17,7 +17,13 @@
 
 class ProxyServer;
 
-char *inet_ntoa_r(struct in_addr in, char *buf);
+/**
+ * Convert an IPv4 address to readable text
+ *
+ * @param in IP address
+ * @param buf Buffer for write text to, assumed to be able to hold at least 32 bytes
+ * @return buf
+ */
 char *ip_ntoa(unsigned long in, char *buf);
 
 typedef enum SocketError_et_

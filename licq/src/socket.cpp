@@ -72,16 +72,7 @@ using namespace std;
 
 char *ip_ntoa(unsigned long in, char *buf)
 {
-  in_addr _in = { in };
-  return inet_ntoa_r(_in, buf);
-}
-
-char *inet_ntoa_r(struct in_addr in, char *buf)
-{
-  register char *p;
-  p = (char *)&in;
-#define UC(b)   (((int)b)&0xff)
-  sprintf(buf, "%d.%d.%d.%d", UC(p[0]), UC(p[1]), UC(p[2]), UC(p[3]));
+  inet_ntop(AF_INET, &in, buf, 32);
   return buf;
 }
 
@@ -170,12 +161,12 @@ void CSocketSet::Unlock()
 
 char *INetSocket::LocalIpStr(char *buf)
 {
-  return (inet_ntoa_r(*(struct in_addr *)&m_sLocalAddr.sin_addr.s_addr, buf));
+  return ip_ntoa(m_sLocalAddr.sin_addr.s_addr, buf);
 }
 
 char *INetSocket::RemoteIpStr(char *buf)
 {
-  return (inet_ntoa_r(*(struct in_addr *)&m_sRemoteAddr.sin_addr.s_addr, buf));
+  return ip_ntoa(m_sRemoteAddr.sin_addr.s_addr, buf);
 }
 
 void INetSocket::SetOwner(const char *_szOwnerId, unsigned long _nOwnerPPID)
@@ -383,7 +374,7 @@ unsigned long INetSocket::GetIpByName(const char *_szHostName)
 {
   // check if the hostname is in dot and number notation
   struct in_addr ina;
-  if (inet_aton(_szHostName, &ina))
+  if (inet_pton(AF_INET, _szHostName, &ina) > 0)
      return(ina.s_addr);
 
   // try and resolve hostname
