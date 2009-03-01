@@ -119,6 +119,20 @@ QTextCodec* UserCodec::codecForProtoUser(const QString& id, unsigned long ppid)
   return codec;
 }
 
+const QTextCodec* UserCodec::codecForUserId(int userId)
+{
+  QTextCodec* codec = defaultEncoding();
+
+  const LicqUser* u = gUserManager.fetchUser(userId);
+  if (u != NULL)
+  {
+    codec = UserCodec::codecForICQUser(u);
+    gUserManager.DropUser(u);
+  }
+
+  return codec;
+}
+
 QTextCodec* UserCodec::codecForCChatUser(CChatUser* u)
 {
   if (u == NULL)

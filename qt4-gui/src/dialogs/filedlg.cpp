@@ -284,7 +284,7 @@ void FileDlg::slot_ft()
   char buf[32];
   read(ftman->Pipe(), buf, 32);
 
-  QTextCodec* codec = UserCodec::codecForProtoUser(myId, m_nPPID);
+  const QTextCodec* codec = UserCodec::codecForUserId(myUserId);
 
   CFileTransferEvent* e = NULL;
   while ( (e = ftman->PopFileTransferEvent()) != NULL)
@@ -462,7 +462,7 @@ bool FileDlg::GetLocalFileName()
   QString f;
   bool bValid = false;
 
-  QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, m_nPPID);
+  const QTextCodec* codec = UserCodec::codecForUserId(myUserId);
 
   // Get the local filename and open it, loop until valid or cancel
   while(!bValid)
