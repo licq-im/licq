@@ -21,6 +21,9 @@
 #include "infofield.h"
 
 #include <QDateTime>
+#include <QKeyEvent>
+
+#include "config/shortcuts.h"
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::InfoField */
@@ -59,4 +62,15 @@ void InfoField::setDateTime(uint timestamp)
     setText(tr("Unknown"));
   else
     setText(QDateTime::fromTime_t(timestamp).toString());
+}
+
+void InfoField::keyPressEvent(QKeyEvent* event)
+{
+  Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+  QKeySequence ks = QKeySequence(event->key() | event->modifiers());
+
+  if (ks ==  shortcuts->getShortcut(Config::Shortcuts::InputClear))
+    clear();
+
+  QLineEdit::keyPressEvent(event);
 }

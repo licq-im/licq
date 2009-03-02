@@ -74,6 +74,14 @@ public:
    */
   void setDateTime(uint timestamp);
 
+protected:
+  /**
+   * A key was pressed, overloaded to get keyboard shortcuts
+   *
+   * @param event Key event
+   */
+  virtual void keyPressEvent(QKeyEvent* event);
+
 private:
   QColor myBaseRo;
   QColor myBaseRw;
