@@ -31,7 +31,6 @@
 # define MLEDIT_BASE QTextEdit
 #endif
 
-class QAction;
 
 
 namespace LicqQtGui
@@ -111,10 +110,6 @@ private:
   bool myLastKeyWasReturn;
   int myFontHeight;
   int myLinesHint;
-  QAction* myClearAction;
-  QAction* myDeleteLineaction;
-  QAction* myDeleteLineBackAction;
-  QAction* myDeleteWordBackAction;
 
   virtual void keyPressEvent(QKeyEvent* event);
   virtual void mousePressEvent(QMouseEvent* event);
@@ -130,11 +125,6 @@ public slots:
 #endif
 
 private slots:
-  /**
-   * Update keyboard shortcuts
-   */
-  void updateShortcuts();
-
   void updateFont();
   void toggleAllowTab();
 };

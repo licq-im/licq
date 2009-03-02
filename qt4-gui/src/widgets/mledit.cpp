@@ -23,7 +23,9 @@
 
 #include "mledit.h"
 
+#ifndef USE_KDE
 #include <QAction>
+#endif
 #include <QKeyEvent>
 #include <QMenu>
 
@@ -47,56 +49,13 @@ MLEdit::MLEdit(bool wordWrap, QWidget* parent, bool useFixedFont, const char* na
   if (!wordWrap)
     setLineWrapMode(NoWrap);
 
-  QAction* cutAction = new QAction(this);
-  cutAction->setShortcut(Qt::SHIFT + Qt::Key_Delete);
-  connect(cutAction, SIGNAL(activated()), SLOT(cut()));
-  addAction(cutAction);
-
-  QAction* pasteAction = new QAction(this);
-  pasteAction->setShortcut(Qt::SHIFT + Qt::Key_Insert);
-  connect(pasteAction, SIGNAL(activated()), SLOT(paste()));
-  addAction(pasteAction);
-
-  QAction* copyAction = new QAction(this);
-  copyAction->setShortcut(Qt::CTRL + Qt::Key_Insert);
-  connect(copyAction, SIGNAL(activated()), SLOT(copy()));
-  addAction(copyAction);
-
-  myClearAction = new QAction(this);
-  connect(myClearAction, SIGNAL(activated()), SLOT(clearKeepUndo()));
-  addAction(myClearAction);
-
-  myDeleteLineaction = new QAction(this);
-  connect(myDeleteLineaction, SIGNAL(activated()), SLOT(deleteLine()));
-  addAction(myDeleteLineaction);
-
-  myDeleteLineBackAction = new QAction(this);
-  connect(myDeleteLineBackAction, SIGNAL(activated()), SLOT(deleteLineBackwards()));
-  addAction(myDeleteLineBackAction);
-
-  myDeleteWordBackAction = new QAction(this);
-  connect(myDeleteWordBackAction, SIGNAL(activated()), SLOT(deleteWordBackwards()));
-  addAction(myDeleteWordBackAction);
-
   updateFont();
-  updateShortcuts();
   connect(Config::General::instance(), SIGNAL(fontChanged()), SLOT(updateFont()));
-  connect(Config::Shortcuts::instance(), SIGNAL(shortcutsChanged()), SLOT(updateShortcuts()));
 }
 
 MLEdit::~MLEdit()
 {
   // Empty
-}
-
-void MLEdit::updateShortcuts()
-{
-  Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
-
-  myClearAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::InputClear));
-  myDeleteLineaction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::InputDeleteLine));
-  myDeleteLineBackAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::InputDeleteLineBack));
-  myDeleteWordBackAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::InputDeleteWordBack));
 }
 
 void MLEdit::appendNoNewLine(const QString& s)
@@ -216,6 +175,25 @@ void MLEdit::keyPressEvent(QKeyEvent* event)
         break;
     }
   }
+
+  if (event->key() == Qt::Key_Delete && event->modifiers() == Qt::ShiftModifier)
+    return cut();
+  if (event->key() == Qt::Key_Insert && event->modifiers() == Qt::ShiftModifier)
+    return paste();
+  if (event->key() == Qt::Key_Insert && event->modifiers() == Qt::ControlModifier)
+    return copy();
+
+  Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
+  QKeySequence ks = QKeySequence(event->key() | event->modifiers());
+
+  if (ks == shortcuts->getShortcut(Config::Shortcuts::InputClear))
+    return clearKeepUndo();
+  if (ks == shortcuts->getShortcut(Config::Shortcuts::InputDeleteLine))
+    return deleteLine();
+  if (ks == shortcuts->getShortcut(Config::Shortcuts::InputDeleteLineBack))
+    return deleteLineBackwards();
+  if (ks == shortcuts->getShortcut(Config::Shortcuts::InputDeleteWordBack))
+    return deleteWordBackwards();
 
   MLEDIT_BASE::keyPressEvent(event);
 }
