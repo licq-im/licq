@@ -257,7 +257,7 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const ICQUser* u)
     if (u->GetTyping() == ICQ_TYPING_ACTIVE)
       myTabs->setTabColor(tab, Config::Chat::instance()->tabTypingColor());
     else
-      myTabs->setTabColor(tab, QColor("black"));
+      myTabs->setTabColor(tab, QColor());
   }
 
   if (fetched)
