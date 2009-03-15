@@ -868,15 +868,17 @@ void *MonitorSockets_tep(void *p)
                 gLog.Info(tr("%sConnection to %s lost:\n%s%s.\n"), L_TCPxSTR,
                     tcp->OwnerId(), L_BLANKxSTR, tcp->ErrorStr(buf, 128));
               }
-              ICQUser *u = gUserManager.FetchUser(tcp->OwnerId(),
-                tcp->OwnerPPID(), LOCK_W);
-              if (u && u->Secure())
+              if (tcp->OwnerId() != NULL)
               {
-                u->ClearSocketDesc(ICQ_CHNxNONE);
-                u->SetSecure(false);
-                d->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+                LicqUser* u = gUserManager.fetchUser(tcp->OwnerId(), tcp->OwnerPPID(), LOCK_W);
+                if (u && u->Secure())
+                {
+                  u->ClearSocketDesc(ICQ_CHNxNONE);
+                  u->SetSecure(false);
+                  d->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_SECURITY, u->id(), 0));
+                }
+                gUserManager.DropUser(u);
               }
-              gUserManager.DropUser(u);
               gSocketManager.DropSocket(tcp);
               gSocketManager.CloseSocket(nCurrentSocket);
               d->FailEvents(nCurrentSocket, err);
