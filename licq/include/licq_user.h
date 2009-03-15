@@ -1236,7 +1236,7 @@ public:
   void RemoveOwner(unsigned long);
 
   LicqUser* FetchUser(const char* idstring, unsigned long ppid, unsigned short lockType)
-  { return fetchUser(idstring, ppid, lockType); }
+  { return idstring == NULL ? NULL : fetchUser(idstring, ppid, lockType); }
 
   LicqOwner* FetchOwner(unsigned long ppid, unsigned short lockType);
 
