@@ -3026,6 +3026,10 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
       char* szMsg = gTranslator.RNToN(szMessage);
       delete [] szMessage;
 
+          // Unlock user mutex before parsing message so we don't block other threads
+          //   for a long time since parser may blocks to prompt for GPG passphrase.
+          gUserManager.DropUser(u);
+
       // now send the message to the user
       CEventMsg *e = CEventMsg::Parse(szMsg, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
       delete [] szMsg;
@@ -3036,6 +3040,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
         break;
       }
 
+          u = gUserManager.fetchUser(szId, LICQ_PPID, LOCK_W, !Ignore(IGNORE_NEWUSERS));
       u->SetTyping(ICQ_TYPING_INACTIVEx0);
       
       if (AddUserEvent(u, e))
