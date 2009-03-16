@@ -460,13 +460,12 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   pthread_mutex_unlock(&mutex_StartList);
 
   sock->SetRemoteAddr(szServer, atoi(szPort));
-  char ipbuf[32];
-  gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
-    sock->RemotePort());
-  
+  gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
+      sock->getRemoteIpString().c_str(), sock->getRemotePort());
+
   if (!sock->OpenConnection())
   {
-    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, sock->getRemoteIpString().c_str());
     delete sock;
     return false;
   }
@@ -505,13 +504,12 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
   
   TCPSocket *sock = new TCPSocket(strUser.c_str(), MSN_PPID);
   sock->SetRemoteAddr(szServer, atoi(szPort));
-  char ipbuf[32];
-  gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
-    sock->RemotePort());
-  
+  gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
+      sock->getRemoteIpString().c_str(), sock->getRemotePort());
+
   if (!sock->OpenConnection())
   {
-    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, sock->getRemoteIpString().c_str());
     delete sock;
     return false;
   }

@@ -2471,7 +2471,7 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
     m_nInfoSocketDesc = s->Descriptor();
   else if (s->Channel() == ICQ_CHNxSTATUS)
     m_nStatusSocketDesc = s->Descriptor();
-  m_nLocalPort = s->LocalPort();
+  m_nLocalPort = s->getLocalPort();
   m_nConnectionVersion = s->Version();
   if (m_bSecure != s->Secure())
   {
@@ -2481,8 +2481,10 @@ void ICQUser::SetSocketDesc(TCPSocket *s)
           myId, m_bSecure ? 1 : 0));
   }
 
-  if (m_nIntIp == 0) m_nIntIp = s->RemoteIp();
-  if (m_nPort == 0) m_nPort = s->RemotePort();
+  if (m_nIntIp == 0)
+    m_nIntIp = s->getRemoteIpInt();
+  if (m_nPort == 0)
+    m_nPort = s->getRemotePort();
   SetSendServer(false);
 }
 
@@ -2672,7 +2674,7 @@ char* ICQUser::IntIpStr(char* rbuf) const
     INetSocket *s = gSocketManager.FetchSocket(socket);
     if (s != NULL)
     {
-      strcpy(rbuf, s->RemoteIpStr(buf));
+      strcpy(rbuf, s->getRemoteIpString().c_str());
       gSocketManager.DropSocket(s);
     }
     else

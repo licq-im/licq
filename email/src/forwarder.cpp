@@ -427,7 +427,7 @@ bool CLicqForwarder::ForwardEvent_Email(const LicqUser* u, const CUserEvent* e)
   {
     char buf[128];
     gLog.Warn("%sUnable to connect to %s:%d:\n%s%s.\n", L_ERRORxSTR,
-              tcp->RemoteIpStr(buf), tcp->RemotePort(), L_BLANKxSTR,
+        tcp->getRemoteIpString().c_str(), tcp->getRemotePort(), L_BLANKxSTR,
               tcp->ErrorStr(buf, 128));
     return false;
   }

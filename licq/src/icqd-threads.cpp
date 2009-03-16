@@ -829,9 +829,8 @@ void *MonitorSockets_tep(void *p)
               if (!ok || gSocketManager.Num() > MAX_CONNECTS)
               {
                 // Too many sockets, drop this one
-                char remoteIp[32];
                 gLog.Warn(tr("%sToo many connected sockets, rejecting connection from %s.\n"),
-                    L_WARNxSTR, newSocket->RemoteIpStr(remoteIp));
+                    L_WARNxSTR, newSocket->getRemoteIpString().c_str());
                 delete newSocket;
               }
               else

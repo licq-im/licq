@@ -60,7 +60,6 @@ public:
    static void SetLocalIp(unsigned long n)  {  s_nLocalIp = n; }
    static void SetLocalPort(unsigned short n)  {  s_nLocalPort = n; }
    static void SetRealIp(unsigned long n)  {  s_nRealIp = n; }
-   static void SetIps(INetSocket *s);
    static bool Firewall() { return s_nLocalIp != s_nRealIp; }
    static unsigned long RealIp() { return s_nRealIp; }
    static unsigned long LocalIp() { return s_nLocalIp; }

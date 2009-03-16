@@ -879,8 +879,8 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   u->m_pClient->m_nVersion = s->Version();
   u->m_pClient->m_szId = strdup(s->OwnerId());
   u->m_pClient->m_nPPID = s->OwnerPPID();
-  u->m_pClient->m_nIp = s->RemoteIp();
-  u->m_pClient->m_nIntIp = s->RemoteIp();
+  u->m_pClient->m_nIp = s->getRemoteIpInt();
+  u->m_pClient->m_nIntIp = s->getRemoteIpInt();
   u->m_pClient->m_nMode = MODE_DIRECT;
   u->m_pClient->m_nHandshake = 0x65;
 

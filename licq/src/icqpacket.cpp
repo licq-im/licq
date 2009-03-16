@@ -534,15 +534,6 @@ CPacket::~CPacket()
   delete buffer;
 }
 
-//----SetIps-----------------------------------------------------------------
-void CPacket::SetIps(INetSocket *s)
-{
-  if (s_nLocalIp == 0 || s_nLocalIp == s_nRealIp)
-    s_nLocalIp = LE_32(s->LocalIp());
-  s_nRealIp = LE_32(s->LocalIp());
-}
-
-
 
 //=====UDP======================================================================
 unsigned short CPacketUdp::s_nSequence = 0;
@@ -4585,8 +4576,8 @@ CBuffer *CPacketTcp::Finalize(INetSocket *s)
   // Set the local port in the tcp packet now
   if (s != NULL && LocalPortOffset() != NULL)
   {
-    LocalPortOffset()[0] = s->LocalPort() & 0xFF;
-    LocalPortOffset()[1] = (s->LocalPort() >> 8) & 0xFF;
+    LocalPortOffset()[0] = s->getLocalPort() & 0xFF;
+    LocalPortOffset()[1] = (s->getLocalPort() >> 8) & 0xFF;
   }
 
   Encrypt_Client(buffer, m_nVersion);

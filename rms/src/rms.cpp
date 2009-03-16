@@ -217,7 +217,7 @@ int CLicqRMS::Run(CICQDaemon *_licqDaemon)
     };
   }
 
-  gLog.Info("%sRMS server started on port %d.\n", L_RMSxSTR, server->LocalPort());
+  gLog.Info("%sRMS server started on port %d.\n", L_RMSxSTR, server->getLocalPort());
   CRMSClient::sockman.AddSocket(server);
   CRMSClient::sockman.DropSocket(server);
 
@@ -470,7 +470,6 @@ void CLicqRMS::ProcessServer()
 
 
 CSocketManager CRMSClient::sockman;
-char CRMSClient::buf[128];
 
 /*---------------------------------------------------------------------------
  * CRMSClient::constructor
@@ -481,7 +480,7 @@ CRMSClient::CRMSClient(TCPSocket* sin)
   sockman.AddSocket(&sock);
   sockman.DropSocket(&sock);
 
-  gLog.Info("%sClient connected from %s.\n", L_RMSxSTR, sock.RemoteIpStr(buf));
+  gLog.Info("%sClient connected from %s.\n", L_RMSxSTR, sock.getRemoteIpString().c_str());
   fs = fdopen(sock.Descriptor(), "r+");
   fprintf(fs, "Licq Remote Management Server v%s\n"
      "%d Enter your UIN:\n", LP_Version(), CODE_ENTERxUIN);
@@ -639,7 +638,7 @@ int CRMSClient::Activity()
 {
   if (!sock.RecvRaw())
   {
-    gLog.Info("%sClient %s disconnected.\n", L_RMSxSTR, sock.RemoteIpStr(buf));
+    gLog.Info("%sClient %s disconnected.\n", L_RMSxSTR, sock.getRemoteIpString().c_str());
     return -1;
   }
 
@@ -703,13 +702,13 @@ int CRMSClient::StateMachine()
       {
         gUserManager.DropOwner(o);
         gLog.Info("%sClient failed validation from %s.\n", L_RMSxSTR,
-           sock.RemoteIpStr(buf));
+            sock.getRemoteIpString().c_str());
         fprintf(fs, "%d Invalid ID/Password.\n", CODE_INVALID);
         fflush(fs);
         return -1;
       }
       gLog.Info("%sClient validated from %s.\n", L_RMSxSTR,
-         sock.RemoteIpStr(buf));
+          sock.getRemoteIpString().c_str());
       fprintf(fs, "%d Hello %s.  Type HELP for assistance.\n", CODE_HELLO,
          o->GetAlias());
       fflush(fs);

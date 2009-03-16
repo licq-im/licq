@@ -537,9 +537,9 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
 
   SrvSocket *sock = new SrvSocket(m_szUserName, MSN_PPID);
   sock->SetRemoteAddr(_szServer, _nPort);
-  char ipbuf[32];
-  gLog.Info("%sServer found at %s:%d.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf), sock->RemotePort());
-  
+  gLog.Info("%sServer found at %s:%d.\n", L_MSNxSTR,
+      sock->getRemoteIpString().c_str(), sock->getRemotePort());
+
   if (!sock->OpenConnection())
   {
     gLog.Info("%sConnect failed.\n", L_MSNxSTR);

@@ -184,13 +184,12 @@ void CMSN::MSNAuthenticateRedirect(const string &strHost, const string& /* strPa
 {
   TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
   sock->SetRemoteAddr(strHost.c_str(), 443);
-  char ipbuf[32];
-  gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf),
-sock->RemotePort());
+  gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR,
+      sock->getRemoteIpString().c_str(), sock->getRemotePort());
 
   if (!sock->OpenConnection())
   {
-    gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, sock->getRemoteIpString().c_str());
     delete sock;
     return;
   }
@@ -213,12 +212,12 @@ void CMSN::MSNAuthenticate(char *szCookie)
 {
   TCPSocket *sock = new TCPSocket(m_szUserName, MSN_PPID);
   sock->SetRemoteAddr("loginnet.passport.com", 443);
-  char ipbuf[32];
-  gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf), sock->RemotePort());
-  
+  gLog.Info("%sAuthenticating to %s:%d\n", L_MSNxSTR,
+      sock->getRemoteIpString().c_str(), sock->getRemotePort());
+
   if (!sock->OpenConnection())
   {
-    gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, sock->RemoteIpStr(ipbuf));
+    gLog.Error("%sConnection to %s failed.\n", L_MSNxSTR, sock->getRemoteIpString().c_str());
     delete sock;
     free(szCookie);
     szCookie = 0;

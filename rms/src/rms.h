@@ -121,8 +121,6 @@ protected:
   int Process_AR_text();
 
 
-  static char buf[128];
-
 friend class CLicqRMS;
 };
 

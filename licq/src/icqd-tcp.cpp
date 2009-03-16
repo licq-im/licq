@@ -1114,14 +1114,14 @@ bool CICQDaemon::Handshake_Send(TCPSocket *s, const char* id,
     case 2:
     case 3:
     {
-      CPacketTcp_Handshake_v2 p(s->LocalPort());
+      CPacketTcp_Handshake_v2 p(s->getLocalPort());
       if (!s->SendPacket(p.getBuffer())) goto sock_error;
       break;
     }
     case 4:
     case 5:
     {
-      CPacketTcp_Handshake_v4 p(s->LocalPort());
+      CPacketTcp_Handshake_v4 p(s->getLocalPort());
       if (!s->SendPacket(p.getBuffer())) goto sock_error;
       break;
     }
@@ -1297,7 +1297,7 @@ int CICQDaemon::ConnectToUser(const char* id, unsigned char nChannel)
 
   gLog.Info(tr("%sShaking hands with %s (%s) [v%d].\n"), L_TCPxSTR,
      szAlias, id, nVersion);
-  nPort = s->LocalPort();
+  nPort = s->getLocalPort();
 
   if (!Handshake_Send(s, id, 0, nVersion))
   {
@@ -1427,7 +1427,7 @@ int CICQDaemon::ReverseConnectToUser(const char* id, unsigned long nIp,
 {
   // Find which socket this is for
   TCPSocket *tcp = (TCPSocket *)gSocketManager.FetchSocket(m_nTCPSocketDesc);
-  unsigned short tcpPort = tcp ? tcp->LocalPort() : 0;
+  unsigned short tcpPort = tcp != NULL ? tcp->getLocalPort() : 0;
   gSocketManager.DropSocket(tcp);
 
   CFileTransferManager *ftm = CFileTransferManager::FindByPort(nFailedPort);
@@ -3638,9 +3638,8 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
 
       if (nCookie != p_in.SessionId())
       {
-        char ipbuf[32];
         gLog.Warn("%sSpoofed connection from %s as uin %s.\n", L_WARNxSTR,
-            s->RemoteIpStr(ipbuf), id);
+            s->getRemoteIpString().c_str(), id);
         return false;
       }
 
@@ -3732,9 +3731,8 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
 
       if (nCookie != p_in.SessionId())
       {
-        char ipbuf[32];
         gLog.Warn("%sSpoofed connection from %s as uin %s.\n", L_WARNxSTR,
-            s->RemoteIpStr(ipbuf), id);
+            s->getRemoteIpString().c_str(), id);
         return false;
       }
 
@@ -3799,12 +3797,10 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       /* This might prevent connections from clients behind assymetric
          connections (i.e. direct to ICQ server and through socks to clients)
          but they should be using v6+ anyway */
-      if (nIntIp != s->RemoteIp() && nIp != s->RemoteIp())
+      if (nIntIp != s->getRemoteIpInt() && nIp != s->getRemoteIpInt())
       {
-        char ipbuf[32];
-        return false;
         gLog.Warn("%sConnection from %s as %s possible spoof.\n", L_WARNxSTR,
-            s->RemoteIpStr(ipbuf), id);
+            s->getRemoteIpString().c_str(), id);
         return false;
       }
 
@@ -3847,12 +3843,10 @@ bool CICQDaemon::Handshake_Recv(TCPSocket *s, unsigned short nPort,
       /* This might prevent connections from clients behind assymetric
          connections (i.e. direct to ICQ server and through socks to clients)
          but they should be using v6+ anyway */
-      if (nIntIp != s->RemoteIp() && nIp != s->RemoteIp())
+      if (nIntIp != s->getRemoteIpInt() && nIp != s->getRemoteIpInt())
       {
-        char ipbuf[32];
-        return false;
         gLog.Warn("%sConnection from %s as %s possible spoof.\n", L_WARNxSTR,
-            s->RemoteIpStr(ipbuf), id);
+            s->getRemoteIpString().c_str(), id);
         return false;
       }
 

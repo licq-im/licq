@@ -390,11 +390,11 @@ bool CICQDaemon::Start()
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   if (o != NULL)
   {
-    o->SetIntIp(s->LocalIp());
-    o->SetPort(s->LocalPort());
+    o->SetIntIp(s->getLocalIpInt());
+    o->SetPort(s->getLocalPort());
     gUserManager.DropOwner(o);
   }
-  CPacket::SetLocalPort(s->LocalPort());
+  CPacket::SetLocalPort(s->getLocalPort());
   gSocketManager.DropSocket(s);
 
 
@@ -952,7 +952,7 @@ int CICQDaemon::StartTCPServer(TCPSocket *s)
   char sz[64];
   if (s->Descriptor() != -1)
   {
-    gLog.Info(tr("%sLocal TCP server started on port %d.\n"), L_TCPxSTR, s->LocalPort());
+    gLog.Info(tr("%sLocal TCP server started on port %d.\n"), L_TCPxSTR, s->getLocalPort());
   }
   else if (s->Error() == EADDRINUSE)
   {

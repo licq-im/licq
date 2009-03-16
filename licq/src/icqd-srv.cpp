@@ -1936,10 +1936,10 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
   else
   {
     // Now get the internal ip from this socket
-    CPacket::SetLocalIp(LE_32(s->LocalIp()));
+    CPacket::SetLocalIp(LE_32(s->getLocalIpInt()));
     ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
     if (o)
-      o->SetIntIp(s->LocalIp());
+      o->SetIntIp(s->getLocalIpInt());
     gUserManager.DropOwner(o);
 
     gSocketManager.AddSocket(s);
