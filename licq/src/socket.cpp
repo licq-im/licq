@@ -182,7 +182,7 @@ string INetSocket::addrToString(const struct sockaddr* addr)
 uint32_t INetSocket::addrToInt(const struct sockaddr* addr)
 {
   if (addr->sa_family == AF_INET)
-    return ntohl(((struct sockaddr_in*)addr)->sin_addr.s_addr);
+    return ((struct sockaddr_in*)addr)->sin_addr.s_addr;
   return 0;
 }
 

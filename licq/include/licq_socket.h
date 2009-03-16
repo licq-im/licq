@@ -92,7 +92,7 @@ public:
    * Get IP address of local endpoint as an unsigned int
    * Note: This function is not usable with IPv6 sockets
    *
-   * @return Local IP address in host endian form
+   * @return Local IP address in network endian form
    */
   uint32_t getLocalIpInt() const        { return addrToInt(&myLocalAddr); }
 
@@ -100,7 +100,7 @@ public:
    * Get IP address of remote endpoint as an unsigned int
    * Note: This function is not usable with IPv6 sockets
    *
-   * @return Remote IP address in host endian form
+   * @return Remote IP address in network endian form
    */
   uint32_t getRemoteIpInt() const       { return addrToInt(&myRemoteAddr); }
 
@@ -120,11 +120,11 @@ public:
 
 
   LICQ_DEPRECATED // Use getLocalIpInt() instead
-  unsigned long  LocalIp() const        { return htonl(getLocalIpInt()); }
+  unsigned long  LocalIp() const        { return getLocalIpInt(); }
   LICQ_DEPRECATED // Use getLocalIpString() instead
   char *LocalIpStr(char *buf) const;
   LICQ_DEPRECATED // Use getRemoteIpInt() instead
-  unsigned long  RemoteIp() const       { return htonl(getRemoteIpInt()); }
+  unsigned long  RemoteIp() const       { return getRemoteIpInt(); }
   LICQ_DEPRECATED // Use getRemoteIpString() instead
   char *RemoteIpStr(char *buf) const;
   LICQ_DEPRECATED // Use getLocalPort() instead
@@ -169,7 +169,7 @@ public:
    * Note: This function is not usable with IPv6 addresses
    *
    * @param addr A sockaddr_in with the address to extract
-   * @return The address from the struct
+   * @return The address from the struct in network endian form
    */
   static uint32_t addrToInt(const struct sockaddr* addr);
 
