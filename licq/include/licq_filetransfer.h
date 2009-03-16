@@ -208,7 +208,7 @@ public:
   void CloseFileTransfer();
 
   // Available after construction
-  unsigned short LocalPort() { return ftServer.LocalPort(); }
+  uint16_t LocalPort() const            { return ftServer.getLocalPort(); }
   const char *LocalName()  { return m_szLocalName; }
   direction Direction() { return m_nDirection; }
   const char* Id() const { return myId; }

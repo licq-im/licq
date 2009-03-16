@@ -580,7 +580,7 @@ public:
   char *ClientsStr();
   unsigned short ConnectedUsers()  { return chatUsers.size(); }
 
-  unsigned short LocalPort() { return chatServer.LocalPort(); }
+  uint16_t LocalPort() const            { return chatServer.getLocalPort(); }
   const char *Name()  { return m_szName; }
   const char *FontFamily()  { return m_szFontFamily; }
   unsigned char FontEncoding() { return m_nFontEncoding; }

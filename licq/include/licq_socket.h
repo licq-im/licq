@@ -7,6 +7,7 @@
 
 #include <arpa/inet.h>
 #include <netinet/in.h>
+#include <string>
 #include <vector>
 #include <list>
 
@@ -16,6 +17,23 @@
 #include "licq_constants.h"
 
 class ProxyServer;
+
+// IPv6 is implemented in socket classes but Licq support must be considered experimental for now
+// Uncomment out the following line to disable IPv6 socket usage
+//#define LICQ_DISABLE_IPV6
+
+
+// Define for marking functions as deprecated
+#ifndef LICQ_DEPRECATED
+# if defined(__GNUC__) && !defined(__INTEL_COMPILER) && (__GNUC__ - 0 > 3 || (__GNUC__ - 0 == 3 && __GNUC_MINOR__ - 0 >= 2))
+#  define LICQ_DEPRECATED __attribute__ ((__deprecated__))
+# elif defined(_MSC_VER) && (_MSC_VER >= 1300)
+#  define LICQ_DEPRECATED __declspec(deprecated)
+# else
+#  define LICQ_DEPRECATED
+# endif
+#endif
+
 
 /**
  * Convert an IPv4 address to readable text
@@ -46,7 +64,7 @@ public:
 
   bool Connected()          { return(m_nDescriptor > 0);  }
   int Descriptor()          { return(m_nDescriptor);      }
-  bool DestinationSet()     { return (RemoteIp() != 0); }
+  bool DestinationSet()     { return myRemoteAddr.sa_family != AF_UNSPEC; }
   char *OwnerId()           { return m_szOwnerId; }
   unsigned long OwnerPPID() { return m_nOwnerPPID; }
   void SetOwner(const char *s, unsigned long n);
@@ -56,12 +74,64 @@ public:
   int Error();
   char *ErrorStr(char *, int);
 
-  unsigned long  LocalIp()     { return (m_sLocalAddr.sin_addr.s_addr);  }
-  char *LocalIpStr(char *buf);
-  unsigned long  RemoteIp()    { return (m_sRemoteAddr.sin_addr.s_addr); };
-  char *RemoteIpStr(char *buf);
-  unsigned short LocalPort()   { return (ntohs(m_sLocalAddr.sin_port));  };
-  unsigned short RemotePort()  { return (ntohs(m_sRemoteAddr.sin_port)); };
+  /**
+   * Get IP address of local endpoint as a readable string
+   *
+   * @return Local IP address
+   */
+  std::string getLocalIpString() const  { return addrToString(&myLocalAddr); }
+
+  /**
+   * Get IP address of remote endpoint as a readable string
+   *
+   * @return Remote IP address
+   */
+  std::string getRemoteIpString() const { return addrToString(&myRemoteAddr); }
+
+  /**
+   * Get IP address of local endpoint as an unsigned int
+   * Note: This function is not usable with IPv6 sockets
+   *
+   * @return Local IP address in host endian form
+   */
+  uint32_t getLocalIpInt() const        { return addrToInt(&myLocalAddr); }
+
+  /**
+   * Get IP address of remote endpoint as an unsigned int
+   * Note: This function is not usable with IPv6 sockets
+   *
+   * @return Remote IP address in host endian form
+   */
+  uint32_t getRemoteIpInt() const       { return addrToInt(&myRemoteAddr); }
+
+  /**
+   * Get local port number
+   *
+   * @return Local port number in host endian form
+   */
+  uint16_t getLocalPort() const         { return getAddrPort(&myLocalAddr); }
+
+  /**
+   * Get remote port number
+   *
+   * @return Remote port number in host endian form
+   */
+  uint16_t getRemotePort() const        { return getAddrPort(&myRemoteAddr); };
+
+
+  LICQ_DEPRECATED // Use getLocalIpInt() instead
+  unsigned long  LocalIp() const        { return htonl(getLocalIpInt()); }
+  LICQ_DEPRECATED // Use getLocalIpString() instead
+  char *LocalIpStr(char *buf) const;
+  LICQ_DEPRECATED // Use getRemoteIpInt() instead
+  unsigned long  RemoteIp() const       { return htonl(getRemoteIpInt()); }
+  LICQ_DEPRECATED // Use getRemoteIpString() instead
+  char *RemoteIpStr(char *buf) const;
+  LICQ_DEPRECATED // Use getLocalPort() instead
+  unsigned short LocalPort()            { return getLocalPort(); }
+  LICQ_DEPRECATED // Use getRemotePort() instead
+  unsigned short RemotePort()           { return getRemotePort(); }
+
 
   bool SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort);
   bool SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemotePort);
@@ -86,7 +156,30 @@ public:
   void Unlock();
   pthread_mutex_t mutex;
 
-  static unsigned long GetIpByName(const char *_szHostName);
+  /**
+   * Convert an address to readable string form
+   *
+   * @param addr A sockaddr_in or sockaddr_in6 with the address to convert
+   * @return The address in text form
+   */
+  static std::string addrToString(const struct sockaddr* addr);
+
+  /**
+   * Get the IPv4 address as an unsigned int from an address
+   * Note: This function is not usable with IPv6 addresses
+   *
+   * @param addr A sockaddr_in with the address to extract
+   * @return The address from the struct
+   */
+  static uint32_t addrToInt(const struct sockaddr* addr);
+
+  /**
+   * Get the port from an address
+   *
+   * @param addr A sockaddr_in or sockaddr_in6 with the port to extract
+   * @return The port from the struct
+   */
+  static uint16_t getAddrPort(const struct sockaddr* addr);
 
   void SetChannel(unsigned char nChannel) { m_nChannel = nChannel; }
   unsigned char Channel()                 { return m_nChannel; }
@@ -96,9 +189,20 @@ protected:
   bool SetLocalAddress(bool bIp = true);
   void DumpPacket(CBuffer *b, direction d);
 
+  // sockaddr is too small to hold a sockaddr_in6 so use union to allocate the extra space
+  union
+  {
+    struct sockaddr myLocalAddr;
+    struct sockaddr_storage myLocalAddrStorage;
+  };
+  union
+  {
+    struct sockaddr myRemoteAddr;
+    struct sockaddr_storage myRemoteAddrStorage;
+  };
+
   int m_nDescriptor;
-  struct sockaddr_in m_sRemoteAddr, m_sLocalAddr;
-  char *m_szRemoteName;
+  std::string myRemoteName;
   CBuffer m_xRecvBuffer;
   char m_szID[4];
   int m_nSockType;
