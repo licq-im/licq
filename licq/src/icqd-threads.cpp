@@ -669,7 +669,7 @@ void *MonitorSockets_tep(void *p)
   CICQDaemon *d = (CICQDaemon *)p;
 
   fd_set f;
-  int nSocketsAvailable, nCurrentSocket, nServiceSocket, l;
+  int nSocketsAvailable, nServiceSocket, l;
   char buf[1024];
 
   while (true)
@@ -702,12 +702,15 @@ void *MonitorSockets_tep(void *p)
     }
     else
       nServiceSocket = -1;
-                                                  
-    nCurrentSocket = 0;
-    while (nSocketsAvailable > 0 && nCurrentSocket < l)
+
+    for (int nCurrentSocket = 0; nSocketsAvailable >= 0 && nCurrentSocket < l; ++nCurrentSocket)
     {
-      if (FD_ISSET(nCurrentSocket, &f))
-      {
+      if (!FD_ISSET(nCurrentSocket, &f))
+        continue;
+
+      --nSocketsAvailable;
+
+
         // New socket event ----------------------------------------------------
         if (nCurrentSocket == d->pipe_newsocket[PIPE_READ])
         {
@@ -729,10 +732,9 @@ void *MonitorSockets_tep(void *p)
           DEBUG_THREADS("[MonitorSockets_tep] Data on FIFO.\n");
           fgets(buf, 1024, d->fifo_fs);
           d->ProcessFifo(buf);
-        }
+        continue;
+      }
 
-        else
-        {
           INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
           if (s != NULL && s->OwnerId() != NULL &&
               s->OwnerId() == gUserManager.OwnerId(LICQ_PPID) &&
@@ -741,21 +743,24 @@ void *MonitorSockets_tep(void *p)
             /* This is the server socket and it is about to be destoryed
                so ignore this message (it's probably a disconnection anyway) */
             gSocketManager.DropSocket(s);
+            continue;
           }
 
           // Message from the server -------------------------------------------
-          else if (nCurrentSocket == d->m_nTCPSrvSocketDesc)
-          {
+      if (nCurrentSocket == d->m_nTCPSrvSocketDesc)
+      {
               DEBUG_THREADS("[MonitorSockets_tep] Data on TCP server socket.\n");
-              SrvSocket *srvTCP = static_cast<SrvSocket*>(s);
+        SrvSocket* srvTCP = dynamic_cast<SrvSocket*>(s);
               if (srvTCP == NULL)
               {
               gLog.Warn(tr("%sInvalid server socket in set.\n"), L_WARNxSTR);
               close(nCurrentSocket);
-            }
+          continue;
+        }
+
             // DAW FIXME error handling when socket is closed..
-            else if (srvTCP->Recv())
-            {
+        if (srvTCP->Recv())
+        {
               CBuffer packet(srvTCP->RecvBuffer());
               srvTCP->ClearRecvBuffer();
               gSocketManager.DropSocket(srvTCP);
@@ -782,7 +787,13 @@ void *MonitorSockets_tep(void *p)
           {
             DEBUG_THREADS("[MonitorSockets_tep] Data on BART service socket.\n");
             COscarService *svc = d->m_xBARTService;
-            SrvSocket *sock_svc = static_cast<SrvSocket*>(s);
+        SrvSocket* sock_svc = dynamic_cast<SrvSocket*>(s);
+        if (sock_svc == NULL)
+        {
+          gLog.Warn(tr("%sInvalid BART service socket in set.\n"), L_WARNxSTR);
+          close(nCurrentSocket);
+          continue;
+        }
             if (sock_svc->Recv())
             {
               CBuffer packet(sock_svc->RecvBuffer());
@@ -813,14 +824,14 @@ void *MonitorSockets_tep(void *p)
           {
             DEBUG_THREADS("[MonitorSockets_tep] Data on listening TCP socket."
                           "\n");
-            TCPSocket* tcp = static_cast<TCPSocket *>(s);
+        TCPSocket* tcp = dynamic_cast<TCPSocket *>(s);
             if (tcp == NULL)
             {
               gLog.Warn(tr("%sInvalid server TCP socket in set.\n"), L_WARNxSTR);
               close(nCurrentSocket);
-            }
-            else
-            {
+          continue;
+        }
+
               TCPSocket *newSocket = new TCPSocket();
               bool ok = tcp->RecvConnection(*newSocket);
               gSocketManager.DropSocket(tcp);
@@ -837,7 +848,6 @@ void *MonitorSockets_tep(void *p)
               {
                 gSocketManager.AddSocket(newSocket);
                 gSocketManager.DropSocket(newSocket);
-              }
             }
           }
 
@@ -848,12 +858,12 @@ void *MonitorSockets_tep(void *p)
 
             ssl_recv:
 
-            TCPSocket *tcp = static_cast<TCPSocket *>(s);
+        TCPSocket* tcp = dynamic_cast<TCPSocket *>(s);
 
             // If tcp is NULL then the socket is no longer in the set, hence it
             // must have been closed by us and we can ignore it.
             if (tcp == NULL)
-              goto socket_done;
+          continue;
 
             if (!tcp->RecvPacket())
             {
@@ -916,14 +926,7 @@ void *MonitorSockets_tep(void *p)
 
             // If there is more data pending then go again
             if (bPending) goto ssl_recv;
-          }
-        }
-
-        socket_done:
-
-        nSocketsAvailable--;
       }
-      nCurrentSocket++;
     }
   }
   return NULL;
