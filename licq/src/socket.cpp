@@ -471,7 +471,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
 #ifdef LICQ_DISABLE_IPV6
   myLocalAddr.sa_family = AF_INET;
   ((struct sockaddr_in*)&myLocalAddr)->sin_port = htons(_nPort);
-  ((struct sockaddr_in*)&myLocalAddr)->sin_addr = INADDR_ANY;
+  ((struct sockaddr_in*)&myLocalAddr)->sin_addr.s_addr = INADDR_ANY;
 #else
   myLocalAddr.sa_family = AF_INET6;
   ((struct sockaddr_in6*)&myLocalAddr)->sin6_port = htons(_nPort);
