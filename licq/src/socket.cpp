@@ -468,22 +468,37 @@ bool INetSocket::OpenConnection()
 bool INetSocket::StartServer(unsigned int _nPort)
 {
   memset(&myLocalAddr, 0, sizeof(myLocalAddr));
-#ifdef LICQ_DISABLE_IPV6
-  myLocalAddr.sa_family = AF_INET;
-  ((struct sockaddr_in*)&myLocalAddr)->sin_port = htons(_nPort);
-  ((struct sockaddr_in*)&myLocalAddr)->sin_addr.s_addr = INADDR_ANY;
-#else
-  myLocalAddr.sa_family = AF_INET6;
-  ((struct sockaddr_in6*)&myLocalAddr)->sin6_port = htons(_nPort);
-  ((struct sockaddr_in6*)&myLocalAddr)->sin6_addr = in6addr_any;
-#endif
 
-  m_nDescriptor = socket(myLocalAddr.sa_family, m_nSockType, 0);
-  if (m_nDescriptor == -1)
+#ifndef LICQ_DISABLE_IPV6
+  // Try to create an IPv6 socket
+  m_nDescriptor = socket(AF_INET6, m_nSockType, 0);
+  if (m_nDescriptor != -1)
   {
-    m_nErrorType = SOCK_ERROR_errno;
-    return (false);
+    // IPv6 socket created
+    myLocalAddr.sa_family = AF_INET6;
+    ((struct sockaddr_in6*)&myLocalAddr)->sin6_port = htons(_nPort);
+    ((struct sockaddr_in6*)&myLocalAddr)->sin6_addr = in6addr_any;
   }
+  else
+  {
+    // Unable to create an IPv6 socket, try with IPv4 instead
+    gLog.Warn(tr("%sFailed to start local server using IPv6 socket (falling back to IPv4):\n%s%s\n"),
+        L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+
+#endif
+    m_nDescriptor = socket(AF_INET, m_nSockType, 0);
+    if (m_nDescriptor == -1)
+    {
+      m_nErrorType = SOCK_ERROR_errno;
+      return (false);
+    }
+
+    myLocalAddr.sa_family = AF_INET;
+    ((struct sockaddr_in*)&myLocalAddr)->sin_port = htons(_nPort);
+    ((struct sockaddr_in*)&myLocalAddr)->sin_addr.s_addr = INADDR_ANY;
+#ifndef LICQ_DISABLE_IPV6
+  }
+#endif
 
 #ifdef IP_PORTRANGE
   int i=IP_PORTRANGE_HIGH;
