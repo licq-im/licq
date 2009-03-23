@@ -539,8 +539,10 @@ bool INetSocket::SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemot
 #else
   hints.ai_family = AF_UNSPEC;
 #endif
+#ifdef AI_ADDRCONFIG
   // AI_ADDRCONFIG = Don't return IPvX address if host has no IPvX address configured
   hints.ai_flags = AI_ADDRCONFIG;
+#endif
 
   struct addrinfo* addrs;
   int s = getaddrinfo(_szRemoteName, NULL, &hints, &addrs);
