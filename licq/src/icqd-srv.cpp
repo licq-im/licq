@@ -1917,8 +1917,8 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
     delete m_xProxy;
     m_xProxy = NULL;
   }
-  
-  if (!s->ConnectTo(server, port, m_xProxy))
+
+  if (!s->connectTo(string(server), port, m_xProxy))
   {
     delete s;
     return -1;

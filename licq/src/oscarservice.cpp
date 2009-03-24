@@ -30,6 +30,8 @@
 #include "licq_log.h"
 #include "support.h"
 
+using namespace std;
+
 COscarService::COscarService(CICQDaemon *Daemon, unsigned short Fam)
 {
   myDaemon = Daemon;
@@ -462,7 +464,7 @@ bool COscarService::Initialize()
     if (myProxy == NULL)
       myProxy = myDaemon->CreateProxy();
   }
-  if (!s->ConnectTo(myServer, myPort, myProxy))
+  if (!s->connectTo(string(myServer), myPort, myProxy))
   {
     gLog.Warn(tr("%sCan't establish service 0x%02X socket.\n"),
                L_WARNxSTR, myFam);

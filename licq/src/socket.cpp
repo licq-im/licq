@@ -344,29 +344,6 @@ void INetSocket::DumpPacket(CBuffer *b, direction d)
 }
 
 
-/*-----INetSocket::setDestination----------------------------------------------
- * Takes an ip in network order and a port in host byte order and sets the
- * remote ip and port to those values
- *---------------------------------------------------------------------------*/
-bool INetSocket::SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort)
-{
-  if ((_nRemoteIp != 0 && _nRemotePort != 0) || m_xProxy != NULL)
-  {
-    myRemoteAddr.sa_family = AF_INET;
-    ((struct sockaddr_in*)&myRemoteAddr)->sin_port = htons(_nRemotePort);
-  }
-
-  if (_nRemoteIp == 0 || _nRemotePort == 0)
-  {
-    m_nErrorType = SOCK_ERROR_h_errno;
-    return(false);  // if the rIp is invalid, exit
-  }
-
-  ((struct sockaddr_in*)&myRemoteAddr)->sin_addr.s_addr = _nRemoteIp;
-  return(true);
-}
-
-
 //-----INetSocket::ResetSocket-------------------------------------------------
 void INetSocket::ResetSocket()
 {
@@ -393,9 +370,12 @@ bool INetSocket::SetLocalAddress(bool /* bIp */)
   return (true);
 }
 
-//-----INetSocket::OpenConnection-----------------------------------------------
-bool INetSocket::OpenConnection()
+bool INetSocket::connectTo(const string& remoteName, uint16_t remotePort, ProxyServer* proxy)
 {
+  myRemoteName = remoteName;
+  m_xProxy = proxy;
+
+  // If we're using a proxy, let the proxy class handle this
   if (m_xProxy != NULL)
   {
     if (!m_xProxy->OpenConnection())
@@ -404,65 +384,110 @@ bool INetSocket::OpenConnection()
       return(false);
     }
 
-    bool ret;
-    if (!myRemoteName.empty())
-      ret = m_xProxy->OpenProxyConnection(myRemoteName.c_str(), getRemotePort());
-    else
-    {
-      ret = m_xProxy->OpenProxyConnection(getRemoteIpString().c_str(), getRemotePort());
-    }
+    bool ret = m_xProxy->OpenProxyConnection(remoteName.c_str(), remotePort);
     if (!ret)
     {
       m_nErrorType = SOCK_ERROR_proxy;
       return(false);
     }
-    
-    m_nDescriptor = m_xProxy->Descriptor();
-  }
-  else
-  {
-    // If no destination set then someone screwed up
-    if(myRemoteAddr.sa_family == AF_UNSPEC)
-    {
-      m_nErrorType = SOCK_ERROR_internal;
-      return(false);
-    }
 
+    memcpy(&myRemoteAddr, m_xProxy->ProxyAddr(), sizeof(myRemoteAddrStorage));
+    m_nDescriptor = m_xProxy->Descriptor();
+    return SetLocalAddress();
+  }
+
+  // No proxy, let's do this ourselves
+
+  // If already connected, close the old connection first
+  if (m_nDescriptor != -1)
+    CloseConnection();
+
+  struct addrinfo hints;
+  memset(&hints, 0, sizeof(hints));
+#ifdef LICQ_DISABLE_IPV6
+  hints.ai_family = AF_INET;
+#else
+  hints.ai_family = AF_UNSPEC;
+#endif
+  hints.ai_socktype = m_nSockType;
+#ifdef AI_ADDRCONFIG
+  // AI_ADDRCONFIG = Don't return IPvX address if host has no IPvX address configured
+  hints.ai_flags = AI_ADDRCONFIG;
+#endif
+
+  // If anything happens here, the error will be in errno
+  m_nErrorType = SOCK_ERROR_errno;
+
+  struct addrinfo* addrs;
+  int s = getaddrinfo(remoteName.c_str(), NULL, &hints, &addrs);
+  if(s != 0)
+  {
+    gLog.Warn(tr("%sError when trying to resolve %s. getaddrinfo() returned %d\n."),
+        L_WARNxSTR, remoteName.c_str(), s);
+    return false;
+  }
+
+  // getaddrinfo() returns a list of addresses, we'll try them one by one until
+  //   we manage to make a connection. The list is already be sorted with
+  //   preferred address first.
+  struct addrinfo* ai;
+  for (ai = addrs; ai != NULL; ai = ai->ai_next)
+  {
+    memcpy(&myRemoteAddr, ai->ai_addr, sizeof(myRemoteAddrStorage));
+
+    // We didn't use getaddrinfo to lookup port so set in manually
+    if (myRemoteAddr.sa_family == AF_INET)
+      ((struct sockaddr_in*)&myRemoteAddr)->sin_port = htons(remotePort);
+    else if (myRemoteAddr.sa_family == AF_INET6)
+      ((struct sockaddr_in6*)&myRemoteAddr)->sin6_port = htons(remotePort);
+
+    gLog.Info(tr("%sConnecting to %s:%i...\n"), L_SRVxSTR,
+        addrToString(&myRemoteAddr).c_str(), remotePort);
+
+    // Create socket of the returned type
+    m_nDescriptor = socket(myRemoteAddr.sa_family, m_nSockType, 0);
     if (m_nDescriptor == -1)
-      m_nDescriptor = socket(myRemoteAddr.sa_family, m_nSockType, 0);
-    if (m_nDescriptor == -1)
-    {
-      m_nErrorType = SOCK_ERROR_errno;
-      return(false);
-    }
+      continue;
 
 #ifdef IP_PORTRANGE
     int i=IP_PORTRANGE_HIGH;
     if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
     {
-      m_nErrorType = SOCK_ERROR_errno;
-      return(false);
+      close(m_nDescriptor);
+      m_nDescriptor = -1;
+      gLog.Warn(tr("%sFailed to set port range for socket.\n"), L_WARNxSTR);
+      continue;
     }
 #endif
 
-    // if connect fails then call CloseConnection to clean up before returning
-    socklen_t sizeofSockaddr = sizeof(myRemoteAddrStorage);
-    if (connect(m_nDescriptor, (struct sockaddr*)&myRemoteAddr, sizeofSockaddr) < 0)
-    {
-      // errno has been set
-      m_nErrorType = SOCK_ERROR_errno;
-      CloseConnection();
-      return(false);
-    }
+    // Try to connect, exit loop if successful
+    if (connect(m_nDescriptor, (struct sockaddr*)&myRemoteAddr, sizeof(myRemoteAddrStorage)) != -1)
+      break;
+
+    // Failed to connect, close socket and try next
+    close(m_nDescriptor);
+    m_nDescriptor = -1;
+  }
+
+  // Return the memory allocated by getaddrinfo
+  freeaddrinfo(addrs);
+
+  // If we reached the end of the address list we didn't find anything that could connect
+  if (ai == NULL)
+    return false;
 
 #ifdef USE_SOCKS5
     if (m_nSockType != SOCK_STREAM) return true;
 #endif
-  }
-  
+
   return SetLocalAddress();
 }
 
+bool INetSocket::connectTo(uint32_t remoteAddr, uint16_t remotePort, ProxyServer* proxy)
+{
+  char buf[INET_ADDRSTRLEN];
+  return connectTo(string(inet_ntop(AF_INET, &remoteAddr, buf, sizeof(buf))), remotePort, proxy);
+}
 
 //-----INetSocket::StartServer--------------------------------------------------
 bool INetSocket::StartServer(unsigned int _nPort)
@@ -524,53 +549,6 @@ bool INetSocket::StartServer(unsigned int _nPort)
   if (m_nSockType == SOCK_STREAM)
     listen(m_nDescriptor, 10); // Allow 10 unprocessed connections
   return(true);
-}
-
-
-//-----INetSocket::SetRemoteAddr-----------------------------------------------
-bool INetSocket::SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemotePort)
-{
-  myRemoteName = _szRemoteName;
-
-  struct addrinfo hints;
-  memset(&hints, 0, sizeof(hints));
-#ifdef LICQ_DISABLE_IPV6
-  hints.ai_family = AF_INET;
-#else
-  hints.ai_family = AF_UNSPEC;
-#endif
-#ifdef AI_ADDRCONFIG
-  // AI_ADDRCONFIG = Don't return IPvX address if host has no IPvX address configured
-  hints.ai_flags = AI_ADDRCONFIG;
-#endif
-
-  struct addrinfo* addrs;
-  int s = getaddrinfo(_szRemoteName, NULL, &hints, &addrs);
-  if(s != 0)
-  {
-    gLog.Warn(tr("%sError when trying to resolve %s. getaddrinfo() returned %d\n."),
-        L_WARNxSTR, _szRemoteName, s);
-    return false;
-  }
-
-  // TODO: getaddrinfo() returns a list of addresses so we might get both IPv4 and IPv6 addresses.
-  //       A loop should be used to try and connect to each one until a connection is established.
-  //       This will require a redesign to combind SetRemoteAddr and OpenConnection.
-
-  if (addrs != NULL)
-  {
-    // For now, just copy first result and hope that it's usable
-    memcpy(&myRemoteAddr, addrs->ai_addr, sizeof(myRemoteAddrStorage));
-
-    // We didn't use getaddrinfo to lookup port so set in manually
-    if (myRemoteAddr.sa_family == AF_INET)
-      ((struct sockaddr_in*)&myRemoteAddr)->sin_port = htons(_nRemotePort);
-    else if (myRemoteAddr.sa_family == AF_INET6)
-      ((struct sockaddr_in6*)&myRemoteAddr)->sin6_port = htons(_nRemotePort);
-  }
-  freeaddrinfo(addrs);
-
-  return (addrs != NULL);
 }
 
 
@@ -775,47 +753,6 @@ bool SrvSocket::RecvPacket()
   return (true);
 }
 
-/*-----SrvSocket::ConnectTo--------------------------------------------------
-* Establish connection to server (through proxy or not)
-*---------------------------------------------------------------------------*/
-bool SrvSocket::ConnectTo(const char* server, unsigned short port,
-                          ProxyServer *xProxy)
-{
-  if (xProxy == NULL)
-  {
-    gLog.Info(tr("%sResolving %s port %d...\n"), L_SRVxSTR, server, port);
-    if (!SetRemoteAddr(server, port)) {
-      char buf[128];
-      gLog.Warn(tr("%sUnable to resolve %s:\n%s%s.\n"), L_ERRORxSTR,
-                server, L_BLANKxSTR, ErrorStr(buf, 128));
-      return false;
-    }
-    gLog.Info(tr("%sICQ server found at %s:%d.\n"), L_SRVxSTR,
-        getRemoteIpString().c_str(), getRemotePort());
-  }
-  else
-  {
-    // It doesn't matter if it resolves or not, the proxy should do it then
-    SetProxy(xProxy);
-    SetRemoteAddr(server, port);
-  }
-
-  if (xProxy == NULL)
-    gLog.Info(tr("%sOpening socket to server.\n"), L_SRVxSTR);
-  else
-    gLog.Info(tr("%sOpening socket to server %s:%d via proxy.\n"),
-              L_SRVxSTR, server, port);
-  if (!OpenConnection())
-  {
-    char buf[128];
-    gLog.Warn(tr("%sUnable to connect to %s:%d:\n%s%s.\n"), L_ERRORxSTR,
-        getRemoteIpString().c_str(), getRemotePort(), L_BLANKxSTR,
-              ErrorStr(buf, 128));
-    return false;
-  }
-
-  return true;
-}
 
 //=====TCPSocket===============================================================
 TCPSocket::TCPSocket(const char *s, unsigned long n) : INetSocket(s, n)

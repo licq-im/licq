@@ -1364,9 +1364,7 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
     gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, szAlias,
       ip_ntoa(nIp, buf), nPort);
     // If we fail to set the remote address, the ip must be 0
-    if (!sock->SetRemoteAddr(nIp, nPort)) return false;
-
-    if (!sock->OpenConnection())
+    if (!sock->connectTo(nIp, nPort))
     {
       gLog.Warn(tr("%sConnect to %s failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
                 L_BLANKxSTR, sock->ErrorStr(buf, 128));
@@ -1377,9 +1375,8 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
       {
         gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, szAlias,
                   ip_ntoa(nIntIp, buf), nPort);
-        sock->SetRemoteAddr(nIntIp, nPort);
 
-        if (!sock->OpenConnection())
+        if (!sock->connectTo(nIntIp, nPort))
         {
           char buf[128];
           gLog.Warn(tr("%sConnect to %s real ip failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
@@ -1399,9 +1396,7 @@ bool CICQDaemon::OpenConnectionToUser(const char *szAlias, unsigned long nIp,
   {
     gLog.Info(tr("%sConnecting to %s at %s:%d.\n"), L_TCPxSTR, szAlias,
        ip_ntoa(nIntIp, buf), nPort);
-    if (!sock->SetRemoteAddr(nIntIp, nPort)) return false;
-
-    if (!sock->OpenConnection())
+    if (!sock->connectTo(nIntIp, nPort))
     {
       gLog.Warn(tr("%sConnect to %s real ip failed:\n%s%s.\n"), L_WARNxSTR, szAlias,
          L_BLANKxSTR, sock->ErrorStr(buf, 128));
@@ -1447,9 +1442,7 @@ int CICQDaemon::ReverseConnectToUser(const char* id, unsigned long nIp,
             ip_ntoa(nIp, buf), nPort);
 
   // If we fail to set the remote address, the ip must be 0
-  s->SetRemoteAddr(nIp, nPort);
-
-  if (!s->OpenConnection())
+  if (!s->connectTo(nIp, nPort))
   {
     char buf[128];
     gLog.Warn(tr("%sReverse connect to %s failed:\n%s%s.\n"), L_WARNxSTR,

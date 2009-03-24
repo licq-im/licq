@@ -536,13 +536,12 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
   gUserManager.DropOwner(o);
 
   SrvSocket *sock = new SrvSocket(m_szUserName, MSN_PPID);
-  sock->SetRemoteAddr(_szServer, _nPort);
   gLog.Info("%sServer found at %s:%d.\n", L_MSNxSTR,
-      sock->getRemoteIpString().c_str(), sock->getRemotePort());
+      _szServer, _nPort);
 
-  if (!sock->OpenConnection())
+  if (!sock->connectTo(_szServer, _nPort))
   {
-    gLog.Info("%sConnect failed.\n", L_MSNxSTR);
+    gLog.Info("%sConnect failed to %s.\n", L_MSNxSTR, _szServer);
     delete sock;
     return;
   }

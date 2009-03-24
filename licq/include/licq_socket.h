@@ -133,18 +133,34 @@ public:
   LICQ_DEPRECATED // Use getRemotePort() instead
   unsigned short RemotePort()           { return getRemotePort(); }
 
-
-  bool SetRemoteAddr(unsigned long _nRemoteIp, unsigned short _nRemotePort);
-  bool SetRemoteAddr(const char *_szRemoteName, unsigned short _nRemotePort);
-
-  void SetProxy(ProxyServer *_xProxy) { m_xProxy = _xProxy; };
-
   void ResetSocket();
   void ClearRecvBuffer()  { m_xRecvBuffer.Clear(); };
   bool RecvBufferFull()   { return m_xRecvBuffer.Full(); };
   CBuffer &RecvBuffer()   { return m_xRecvBuffer; };
 
-  bool OpenConnection();
+  /**
+   * Connect to a remote host
+   *
+   * @param remoteAddr Address of remote host
+   * @param remotePort Port to connect to
+   * @param proxy Proxy connection to use or NULL for direct connect
+   * @return True if connection was opened successfully
+   */
+  bool connectTo(const std::string& remoteAddr, uint16_t remotePort,
+      ProxyServer* proxy = NULL);
+
+  /**
+   * Connect to a remote IP as unsigned int
+   * Note: This function is not usable with IPv6
+   *
+   * @param remoteAddr Address of remote host
+   * @param remotePort Port to connect to
+   * @param proxy Proxy connection to use or NULL for direct connect
+   * @return True if connection was opened successfully
+   */
+  bool connectTo(uint32_t remoteAddr, uint16_t remotePort,
+      ProxyServer* proxy = NULL);
+
   void CloseConnection();
   bool StartServer(unsigned int _nPort);
   bool SendRaw(CBuffer *b);
@@ -268,7 +284,6 @@ public:
   // Functions specific to Server TCP communication
   bool SendPacket(CBuffer *b);
   bool RecvPacket();
-  bool ConnectTo(const char* server, unsigned short port, ProxyServer *xProxy);
 };
 
 
