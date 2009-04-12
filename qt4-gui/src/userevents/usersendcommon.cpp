@@ -432,6 +432,19 @@ UserSendCommon::~UserSendCommon()
   // Empty
 }
 
+void UserSendCommon::closeEvent(QCloseEvent* event)
+{
+  UserEventCommon::closeEvent(event);
+
+  if (event->isAccepted())
+  {
+    // This widget is about to be destroyed so remove us from the tab dialog
+    UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
+    if (tabDlg != NULL && tabDlg->tabExists(this))
+      tabDlg->removeTab(this);
+  }
+}
+
 bool UserSendCommon::eventFilter(QObject* watched, QEvent* e)
 {
   if (watched == myMessageEdit)
@@ -1290,12 +1303,7 @@ void UserSendCommon::closeDialog()
 
   if (myMessageEdit)
     Config::Chat::instance()->setCheckSpelling(myMessageEdit->checkSpellingEnabled());
-
-  UserEventTabDlg* tabDlg = LicqGui::instance()->userEventTabDlg();
-  if (tabDlg != NULL && tabDlg->tabExists(this))
-    tabDlg->removeTab(this);
-  else
-    close();
+  close();
 }
 
 void UserSendCommon::showEmoticonsMenu()

@@ -135,6 +135,14 @@ protected:
   virtual void resetSettings() = 0;
   virtual bool sendDone(ICQEvent* e) = 0;
 
+  /**
+   * Widget is about to be closed
+   * Overloaded to make sure widget is always removed from tab dialog before it's destroyed
+   *
+   * @parame event Close event
+   */
+  virtual void closeEvent(QCloseEvent* event);
+
 protected slots:
   /**
    * Update iconset in menus and on buttons
