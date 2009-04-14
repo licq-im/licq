@@ -193,6 +193,10 @@ UserViewEvent::UserViewEvent(int userId, QWidget* parent)
       gUserManager.DropUser(u);
 
   connect(this, SIGNAL(encodingChanged()), SLOT(setEncoding()));
+
+  QSize dialogSize = Config::Chat::instance()->viewDialogSize();
+  if (dialogSize.isValid())
+    resize(dialogSize);
 }
 
 UserViewEvent::~UserViewEvent()
@@ -838,4 +842,10 @@ void UserViewEvent::setEncoding()
   // if we have an open view, just refresh it
   if (myMessageList != NULL)
     printMessage(myMessageList->currentItem());
+}
+
+void UserViewEvent::resizeEvent(QResizeEvent* event)
+{
+  Config::Chat::instance()->setViewDialogSize(size());
+  UserEventCommon::resizeEvent(event);
 }

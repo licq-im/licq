@@ -114,7 +114,7 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
     xPos = 0;
   if (yPos > QApplication::desktop()->height() - 16)
     yPos = 0;
-  myDialogRect.setRect(xPos, yPos, wVal, hVal);
+  myTabDialogRect.setRect(xPos, yPos, wVal, hVal);
 }
 
 void Config::Chat::saveConfiguration(CIniFile& iniFile) const
@@ -166,10 +166,10 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("ShowAllEncodings", myShowAllEncodings);
 
   iniFile.SetSection("geometry");
-  iniFile.WriteNum("EventDialog.X", static_cast<short>(myDialogRect.x()));
-  iniFile.WriteNum("EventDialog.Y", static_cast<short>(myDialogRect.y()));
-  iniFile.WriteNum("EventDialog.W", static_cast<short>(myDialogRect.width()));
-  iniFile.WriteNum("EventDialog.H", static_cast<short>(myDialogRect.height()));
+  iniFile.WriteNum("EventDialog.X", static_cast<short>(myTabDialogRect.x()));
+  iniFile.WriteNum("EventDialog.Y", static_cast<short>(myTabDialogRect.y()));
+  iniFile.WriteNum("EventDialog.W", static_cast<short>(myTabDialogRect.width()));
+  iniFile.WriteNum("EventDialog.H", static_cast<short>(myTabDialogRect.height()));
 }
 
 void Config::Chat::blockUpdates(bool block)
@@ -489,10 +489,22 @@ void Config::Chat::setChatBackColor(QString chatBackColor)
   changeChatColors();
 }
 
-void Config::Chat::setDialogRect(const QRect& geometry)
+void Config::Chat::setTabDialogRect(const QRect& geometry)
 {
   if (geometry.isValid())
-    myDialogRect = geometry;
+    myTabDialogRect = geometry;
+}
+
+void Config::Chat::setSendDialogSize(const QSize& size)
+{
+  if (size.isValid())
+    mySendDialogSize = size;
+}
+
+void Config::Chat::setViewDialogSize(const QSize& size)
+{
+  if (size.isValid())
+    myViewDialogSize = size;
 }
 
 void Config::Chat::changeChatColors()

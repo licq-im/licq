@@ -59,8 +59,8 @@ UserEventTabDlg::UserEventTabDlg(QWidget* parent, const char* name)
   QVBoxLayout* lay = new QVBoxLayout(this);
   lay->setContentsMargins(0, 0, 0, 0);
 
-  if (Config::Chat::instance()->dialogRect().isValid())
-    setGeometry(Config::Chat::instance()->dialogRect());
+  if (Config::Chat::instance()->tabDialogRect().isValid())
+    setGeometry(Config::Chat::instance()->tabDialogRect());
 
   myTabs = new TabWidget();
   lay->addWidget(myTabs);
@@ -352,15 +352,17 @@ void UserEventTabDlg::clearEvents(QWidget* tab)
 
 void UserEventTabDlg::saveGeometry()
 {
-  Config::Chat::instance()->setDialogRect(geometry());
+  Config::Chat::instance()->setTabDialogRect(geometry());
 }
 
-void UserEventTabDlg::moveEvent(QMoveEvent* /* e */)
+void UserEventTabDlg::moveEvent(QMoveEvent* event)
 {
   saveGeometry();
+  QWidget::moveEvent(event);
 }
 
-void UserEventTabDlg::resizeEvent(QResizeEvent* /* e */)
+void UserEventTabDlg::resizeEvent(QResizeEvent* event)
 {
   saveGeometry();
+  QWidget::resizeEvent(event);
 }

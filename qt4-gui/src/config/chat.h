@@ -102,7 +102,9 @@ public:
   QString noticeColor() const { return myNoticeColor; }
   QString tabTypingColor() const { return myTabTypingColor; }
   QString chatBackColor() const { return myChatBackColor; }
-  QRect dialogRect() const { return myDialogRect; }
+  QRect tabDialogRect() const { return myTabDialogRect; }
+  QSize sendDialogSize() const { return mySendDialogSize; }
+  QSize viewDialogSize() const { return myViewDialogSize; }
 
 public slots:
   /**
@@ -153,7 +155,9 @@ public slots:
   void setNoticeColor(QString noticeColor);
   void setTabTypingColor(QString tabTypingColor);
   void setChatBackColor(QString chatBackColor);
-  void setDialogRect(const QRect& geometry);
+  void setTabDialogRect(const QRect& geometry);
+  void setSendDialogSize(const QSize& geometry);
+  void setViewDialogSize(const QSize& geometry);
 
 signals:
   void chatColorsChanged();
@@ -206,7 +210,9 @@ private:
   QString myTabTypingColor;
   QString myChatBackColor;
 
-  QRect myDialogRect;
+  QRect myTabDialogRect;
+  QSize mySendDialogSize;
+  QSize myViewDialogSize;
 
   void changeChatColors();
 };

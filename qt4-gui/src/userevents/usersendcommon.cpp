@@ -425,6 +425,10 @@ UserSendCommon::UserSendCommon(int type, int userId, QWidget* parent, const char
   connect(myMessageEdit, SIGNAL(ctrlEnterPressed()), mySendButton, SIGNAL(clicked()));
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
   connect(mySendServerCheck, SIGNAL(triggered(bool)), SLOT(sendServerToggled(bool)));
+
+  QSize dialogSize = Config::Chat::instance()->sendDialogSize();
+  if (dialogSize.isValid())
+    resize(dialogSize);
 }
 
 UserSendCommon::~UserSendCommon()
@@ -1501,4 +1505,10 @@ void UserSendCommon::sendTrySecure()
   }
   else
     send();
+}
+
+void UserSendCommon::resizeEvent(QResizeEvent* event)
+{
+  Config::Chat::instance()->setSendDialogSize(size());
+  UserEventCommon::resizeEvent(event);
 }

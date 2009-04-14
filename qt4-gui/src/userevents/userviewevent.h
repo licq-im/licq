@@ -54,6 +54,14 @@ public:
   UserViewEvent(int userId, QWidget* parent = 0);
   virtual ~UserViewEvent();
 
+protected:
+  /**
+   * Overloaded resize event to save new dialog size
+   *
+   * @param event Resize event
+   */
+  virtual void resizeEvent(QResizeEvent* event);
+
 private:
   QSplitter* myReadSplitter;
   MLView* myMessageView;

@@ -143,6 +143,13 @@ protected:
    */
   virtual void closeEvent(QCloseEvent* event);
 
+  /**
+   * Overloaded resize event to save new dialog size
+   *
+   * @param event Resize event
+   */
+  virtual void resizeEvent(QResizeEvent* event);
+
 protected slots:
   /**
    * Update iconset in menus and on buttons
