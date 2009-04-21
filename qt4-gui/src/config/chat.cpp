@@ -115,6 +115,12 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   if (yPos > QApplication::desktop()->height() - 16)
     yPos = 0;
   myTabDialogRect.setRect(xPos, yPos, wVal, hVal);
+  iniFile.ReadNum("ViewEventDialog.W", wVal, -1);
+  iniFile.ReadNum("ViewEventDialog.H", hVal, -1);
+  myViewDialogSize = QSize(wVal, hVal);
+  iniFile.ReadNum("SendEventDialog.W", wVal, -1);
+  iniFile.ReadNum("SendEventDialog.H", hVal, -1);
+  mySendDialogSize = QSize(wVal, hVal);
 }
 
 void Config::Chat::saveConfiguration(CIniFile& iniFile) const
@@ -170,6 +176,10 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteNum("EventDialog.Y", static_cast<short>(myTabDialogRect.y()));
   iniFile.WriteNum("EventDialog.W", static_cast<short>(myTabDialogRect.width()));
   iniFile.WriteNum("EventDialog.H", static_cast<short>(myTabDialogRect.height()));
+  iniFile.WriteNum("ViewEventDialog.W", static_cast<short>(myViewDialogSize.width()));
+  iniFile.WriteNum("ViewEventDialog.H", static_cast<short>(myViewDialogSize.height()));
+  iniFile.WriteNum("SendEventDialog.W", static_cast<short>(mySendDialogSize.width()));
+  iniFile.WriteNum("SendEventDialog.H", static_cast<short>(mySendDialogSize.height()));
 }
 
 void Config::Chat::blockUpdates(bool block)
