@@ -220,10 +220,10 @@ SystemMenu::SystemMenu(QWidget* parent)
   // placed here to be groupped with other system actions.
   myPopupMessageAction = new QAction("Popup Next Message", gMainWindow);
   gMainWindow->addAction(myPopupMessageAction);
-  connect(a, SIGNAL(triggered()), LicqGui::instance(), SLOT(showNextEvent()));
+  connect(myPopupMessageAction, SIGNAL(triggered()), LicqGui::instance(), SLOT(showNextEvent()));
   myHideMainwinAction = new QAction("Hide Mainwindow", gMainWindow);
   gMainWindow->addAction(myHideMainwinAction);
-  connect(a, SIGNAL(triggered()), gMainWindow, SLOT(hide()));
+  connect(myHideMainwinAction, SIGNAL(triggered()), gMainWindow, SLOT(hide()));
 
   updateGroups();
   updateIcons();
