@@ -78,6 +78,7 @@ QWidget* Settings::Shortcuts::createPageMainwinShortcuts(QWidget* parent)
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinUserSendFile, tr("Send file to user"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinUserSendChatRequest, tr("Send chat request to user"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinUserCheckAutoresponse, tr("Check user auto response"))
+  ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinUserViewHistory, tr("View user history"))
 
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinAccountManager, tr("Open account manager"))
   ADD_MAINWINSHORTCUT(Config::Shortcuts::MainwinPopupAllMessages, tr("Popup all Messages"))

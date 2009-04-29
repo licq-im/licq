@@ -94,6 +94,7 @@ public:
     MainwinUserSendMessage,
     MainwinUserSendFile,
     MainwinUserSendUrl,
+    MainwinUserViewHistory,
     MainwinUserViewMessage,
   };
 

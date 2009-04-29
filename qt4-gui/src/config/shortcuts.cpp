@@ -101,6 +101,7 @@ Config::Shortcuts::Shortcuts(QObject* parent)
   ADD_SHORTCUT(MainwinUserSendMessage, "Mainwin.UserSendMessage", Qt::CTRL + Qt::Key_S)
   ADD_SHORTCUT(MainwinUserSendFile, "Mainwin.UserSendFile", Qt::CTRL + Qt::Key_F)
   ADD_SHORTCUT(MainwinUserSendUrl, "Mainwin.UserSendUrl", Qt::CTRL + Qt::Key_U)
+  ADD_SHORTCUT(MainwinUserViewHistory, "Mainwin.UserViewHistory", 0);
   ADD_SHORTCUT(MainwinUserViewMessage, "Mainwin.UserViewMessage", Qt::CTRL + Qt::Key_V)
 
 #undef ADD_SHORTCUT

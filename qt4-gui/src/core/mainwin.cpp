@@ -80,6 +80,7 @@
 #include "dialogs/adduserdlg.h"
 #include "dialogs/awaymsgdlg.h"
 #include "dialogs/hintsdlg.h"
+#include "dialogs/historydlg.h"
 #include "dialogs/logwindow.h"
 #include "dialogs/ownermanagerdlg.h"
 #include "dialogs/showawaymsgdlg.h"
@@ -170,6 +171,9 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
   myCheckUserArAction = new QAction(this);
   addAction(myCheckUserArAction);
   connect(myCheckUserArAction, SIGNAL(activated()), SLOT(checkUserAutoResponse()));
+  myViewHistoryAction = new QAction(this);
+  addAction(myViewHistoryAction);
+  connect(myViewHistoryAction, SIGNAL(activated()), SLOT(showUserHistory()));
   QShortcut* shortcut;
   shortcut = new QShortcut(Qt::CTRL + Qt::Key_Delete, this);
   connect(shortcut, SIGNAL(activated()), SLOT(removeUserFromList()));
@@ -322,6 +326,7 @@ void MainWindow::updateShortcuts()
   mySendFileAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendFile));
   mySendChatRequestAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserSendChatRequest));
   myCheckUserArAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserCheckAutoresponse));
+  myViewHistoryAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinUserViewHistory));
 }
 
 void MainWindow::trayIconClicked()
@@ -551,6 +556,13 @@ void MainWindow::checkUserAutoResponse()
   int userId = myUserView->currentUserId();
   if (userId != 0)
     new ShowAwayMsgDlg(userId, true);
+}
+
+void MainWindow::showUserHistory()
+{
+  int userId = myUserView->currentUserId();
+  if (userId != 0)
+    new HistoryDlg(userId);
 }
 
 void MainWindow::hide()

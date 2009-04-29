@@ -128,6 +128,7 @@ private:
   QAction* mySendFileAction;
   QAction* mySendChatRequestAction;
   QAction* myCheckUserArAction;
+  QAction* myViewHistoryAction;
 
   // Widgets
   UserView* myUserView;
@@ -182,6 +183,11 @@ private slots:
   void removeUserFromGroup();
   void callUserFunction(QAction* action);
   void checkUserAutoResponse();
+
+  /**
+   * Show history dialog for selected user
+   */
+  void showUserHistory();
 };
 
 // -----------------------------------------------------------------------------
