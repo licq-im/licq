@@ -106,6 +106,14 @@ protected:
    */
   virtual void keyReleaseEvent(QKeyEvent* event);
 
+  /**
+   * Button lost focus
+   * If a capture was ongoing, abort it
+   *
+   * @param event Focus out event
+   */
+  virtual void focusOutEvent(QFocusEvent* event);
+
 private slots:
   /**
    * Start key capture to listen for new shortcut key
@@ -114,8 +122,10 @@ private slots:
 
   /**
    * Stop key capture
+   *
+   * @param change True to save changes, false to revert
    */
-  void stopCapture();
+  void stopCapture(bool change = true);
 
 private:
   /**
@@ -132,6 +142,7 @@ private:
   bool keyMustHaveModifier(int key);
 
   QKeySequence myShortcut;
+  QKeySequence myNewShortcut;
   bool myCapturing;
   Qt::KeyboardModifiers myModifiers;
 };

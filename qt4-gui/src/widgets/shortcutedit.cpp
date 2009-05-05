@@ -56,6 +56,9 @@ ShortcutButton::ShortcutButton(QWidget* parent)
   : QToolButton(parent),
     myCapturing(false)
 {
+  // Set focus policy, otherwise we won't get focusOutEvent
+  setFocusPolicy(Qt::StrongFocus);
+
   setSizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Fixed);
   clearShortcut();
   connect(this, SIGNAL(clicked()), SLOT(startCapture()));
@@ -95,7 +98,7 @@ void ShortcutButton::updateText()
   else
   {
     // No capture ongoing, show current shortcut
-    text = myShortcut.toString(QKeySequence::NativeText);
+    text = (myCapturing ? myNewShortcut : myShortcut).toString(QKeySequence::NativeText);
     text.replace('&', "&&");
   }
 
@@ -107,20 +110,24 @@ void ShortcutButton::updateText()
 
 void ShortcutButton::startCapture()
 {
-  myShortcut = QKeySequence();
+  myNewShortcut = QKeySequence();
+  myModifiers = Qt::NoModifier;
   myCapturing = true;
   grabKeyboard();
   setDown(true);
   updateText();
 }
 
-void ShortcutButton::stopCapture()
+void ShortcutButton::stopCapture(bool change)
 {
+  if (change)
+    myShortcut = myNewShortcut;
   myCapturing = false;
   releaseKeyboard();
   setDown(false);
   updateText();
-  emit shortcutChanged(myShortcut);
+  if (change)
+    emit shortcutChanged(myShortcut);
 }
 
 bool ShortcutButton::event(QEvent* event)
@@ -169,13 +176,20 @@ void ShortcutButton::keyPressEvent(QKeyEvent* event)
   if (key == 0 || key == -1)
     return;
 
+  // Abort capture if we got Escape without any modifier
+  if (key == Qt::Key_Escape && myModifiers == Qt::NoModifier)
+  {
+    stopCapture(false);
+    return;
+  }
+
   // If key doesn't have any modifier we might not want to have it as a shortcut
   // (Shift is ignored as it may be present for some non-acceptable characters.)
   if ((myModifiers & ~Qt::ShiftModifier) == 0 && keyMustHaveModifier(key))
     return;
 
   // We got a valid key, save it and end capture
-  myShortcut = QKeySequence(key | myModifiers);
+  myNewShortcut = QKeySequence(key | myModifiers);
   stopCapture();
 }
 
@@ -215,6 +229,13 @@ bool ShortcutButton::keyMustHaveModifier(int key)
   }
 
   return false;
+}
+
+void ShortcutButton::focusOutEvent(QFocusEvent* event)
+{
+  if (myCapturing)
+    stopCapture(false);
+  QToolButton::focusOutEvent(event);
 }
 
 #endif
