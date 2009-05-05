@@ -118,6 +118,8 @@ void Config::Shortcuts::loadConfiguration(CIniFile& iniFile)
     iniFile.readString(i.value().toAscii().data(), s);
     if (s.empty())
       myShortcutsMap[i.key()] = QKeySequence(myDefaultShortcutsMap[i.key()]);
+    else if(s == "None")
+      myShortcutsMap[i.key()] = QKeySequence();
     else
       myShortcutsMap[i.key()] = QKeySequence(s.c_str());
   }
@@ -132,6 +134,7 @@ void Config::Shortcuts::saveConfiguration(CIniFile& iniFile) const
   QMap<ShortcutType, QString>::const_iterator i;
   for (i = myConfigKeysMap.begin(); i != myConfigKeysMap.end(); ++i)
     iniFile.writeString(i.value().toAscii().data(),
+        myShortcutsMap[i.key()].isEmpty() ? "None" :
         myShortcutsMap[i.key()].toString(QKeySequence::PortableText).toLatin1().data());
 }
 
