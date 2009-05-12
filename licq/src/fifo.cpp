@@ -582,7 +582,7 @@ static int fifo_userinfo ( int argc, const char *const *argv, void *data)
                 "info.\n"), L_WARNxSTR, argv[0], szId);
     else
     {
-      int userId = u->id();
+      UserId userId = u->id();
       gUserManager.DropUser(u);
       d->requestUserInfo(userId);
       ret = 0;
@@ -622,7 +622,7 @@ static int fifo_ui_viewevent ( int argc, const char *const *argv, void *data)
     return 0;
   }
   
-  d->pluginUIViewEvent(gUserManager.getUserFromAccount(szId, nPPID));
+  d->pluginUIViewEvent(LicqUser::makeUserId(szId, nPPID));
 
   if (szId != NULL)
     free(szId);
@@ -644,7 +644,7 @@ static int fifo_ui_message ( int argc, const char *const *argv, void *data)
     nRet = -1;
   }
   else if( atoid(argv[1], true, &szId, &nPPID, d) )
-    d->pluginUIMessage(gUserManager.getUserFromAccount(szId, nPPID));
+    d->pluginUIMessage(LicqUser::makeUserId(szId, nPPID));
   else
   {
     ReportBadBuddy(argv[0],argv[1]);

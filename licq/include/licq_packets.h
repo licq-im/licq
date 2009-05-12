@@ -1,15 +1,19 @@
 #ifndef ICQPACKET_H
 #define ICQPACKET_H
 
-#include "licq_user.h"
-#include "licq_icq.h"
+#include <list>
+#include <map>
+#include <string>
 
-class LicqUser;
+#include "licq_icq.h"
+#include "licq_types.h"
+
 class CICQColor;
 class CBuffer;
 class INetSocket;
 
 typedef std::list<std::string> StringList;
+typedef std::map<int, std::string> GroupNameMap;
 
 // values of extra info to identify plugin request
 const unsigned short DirectInfoPluginRequest     = 1;
@@ -401,7 +405,7 @@ public:
 class CPU_ExportToServerList : public CPU_CommonFamily
 {
 public:
-  CPU_ExportToServerList(const std::list<int>& users, unsigned short type);
+  CPU_ExportToServerList(const std::list<UserId>& users, unsigned short type);
 };
 
 //-----ExportGroupsToServerList-------------------------------------------------

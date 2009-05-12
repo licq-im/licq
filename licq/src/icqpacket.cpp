@@ -38,6 +38,7 @@ extern int errno;
 #include "licq_icq.h"
 #include "licq_translate.h"
 #include "licq_log.h"
+#include "licq_user.h"
 #include "licq_utility.h"
 #include "licq_color.h"
 #include "support.h"
@@ -2741,7 +2742,7 @@ CPU_ExportContactStart::CPU_ExportContactStart()
 }
 
 //-----ExportToServerList-------------------------------------------------------
-CPU_ExportToServerList::CPU_ExportToServerList(const list<int>& users,
+CPU_ExportToServerList::CPU_ExportToServerList(const list<UserId>& users,
                                                unsigned short _nType)
   : CPU_CommonFamily(ICQ_SNACxFAM_LIST, ICQ_SNACxLIST_ROSTxADD)
 {
@@ -2749,7 +2750,7 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<int>& users,
   unsigned short m_nGSID = 0;
   int nSize = 0;
 
-  list<int>::const_iterator i;
+  list<UserId>::const_iterator i;
   for (i = users.begin(); i != users.end(); ++i)
   {
     const LicqUser* pUser = gUserManager.fetchUser(*i);
@@ -2783,13 +2784,15 @@ CPU_ExportToServerList::CPU_ExportToServerList(const list<int>& users,
     LicqUser* u = gUserManager.fetchUser(*i, LOCK_W);
     if (u == NULL)
     {
-      gLog.Warn("%sTrying to export invalid user %i to server\n", L_ERRORxSTR, *i);
+      gLog.Warn("%sTrying to export invalid user %s to server\n", L_ERRORxSTR,
+          USERID_TOSTR(*i));
       continue;
     }
 
     if (u->ppid() != LICQ_PPID)
     {
-      gLog.Warn("%sTrying to export non ICQ user %i to ICQ server\n", L_ERRORxSTR, *i);
+      gLog.Warn("%sTrying to export non ICQ user %s to ICQ server\n", L_ERRORxSTR,
+          USERID_TOSTR(*i));
       gUserManager.DropUser(u);
       continue;
     }

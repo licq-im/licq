@@ -219,9 +219,8 @@ ICQUser *ICQEvent::GrabUnknownUser()
   ICQUser *u = m_pUnknownUser; m_pUnknownUser = NULL; return u;
 }
 
-
-LicqSignal::LicqSignal(unsigned long signal, unsigned long subSignal, int userId,
-      int argument, unsigned long cid)
+LicqSignal::LicqSignal(unsigned long signal, unsigned long subSignal,
+    const UserId& userId, int argument, unsigned long cid)
   : mySignal(signal),
     mySubSignal(subSignal),
     myUserId(userId),

@@ -18,6 +18,7 @@ header file containing all the main procedures to interface with the ICQ server 
 #include "licq_onevent.h"
 #include "licq_plugind.h"
 #include "licq_protoplugind.h"
+#include "licq_user.h"
 
 class CProtoPlugin;
 class CPlugin;
@@ -25,7 +26,6 @@ class CPacket;
 class CPacketTcp;
 class CLicq;
 class CUserManager;
-class LicqUser;
 class CICQEventTag;
 class CICQColor;
 class TCPSocket;
@@ -230,7 +230,7 @@ public:
   */
   LICQ_DEPRECATED // Use protoRemoveUser or gUserManager.removeUser() instead
   void ProtoRemoveUser(const char *szId, unsigned long nPPID)
-  { protoRemoveUser(gUserManager.getUserFromAccount(szId, nPPID)); }
+  { if (szId != NULL) protoRemoveUser(LicqUser::makeUserId(szId, nPPID)); }
 
   /**
    * Remove a user from the server side list
@@ -239,7 +239,7 @@ public:
    *
    * @param userId Id of user to remove
    */
-  void protoRemoveUser(int userId);
+  void protoRemoveUser(const UserId& userId);
 
   /**
    * Update user alias on server contact list
@@ -247,11 +247,11 @@ public:
    *
    * @param userId User to update
    */
-  void updateUserAlias(int userId);
+  void updateUserAlias(const UserId& userId);
 
   LICQ_DEPRECATED // Use updateUserAlias() instead
   void ProtoRenameUser(const char *szId, unsigned long nPPID)
-  { updateUserAlias(gUserManager.getUserFromAccount(szId, nPPID)); }
+  { if (szId != NULL) updateUserAlias(LicqUser::makeUserId(szId, nPPID)); }
 
   //! Change status for a protocol.
   /*!
@@ -280,12 +280,12 @@ public:
    * @param active True if we've started typing, false if we've stopped
    * @param nSocket ?
    */
-  void sendTypingNotification(int userId, bool active, int nSocket = -1);
+  void sendTypingNotification(const UserId& userId, bool active, int nSocket = -1);
 
   LICQ_DEPRECATED // Use sendTypingNotification() instead
   void ProtoTypingNotification(const char *szId, unsigned long nPPID,
                                bool Active, int nSocket = -1)
-  { sendTypingNotification(gUserManager.getUserFromAccount(szId, nPPID), Active, nSocket); }
+  { if (szId != NULL) sendTypingNotification(LicqUser::makeUserId(szId, nPPID), Active, nSocket); }
 
   //! Send a message to a user on this protocol.
   /*!
@@ -327,11 +327,11 @@ public:
    * @param userId User to fetch auto response for
    * @return id of event for ICQ users, zero for other protocols
    */
-  unsigned long requestUserAutoResponse(int userId);
+  unsigned long requestUserAutoResponse(const UserId& userId);
 
   LICQ_DEPRECATED // Use requestUserAutoResponse() instead
   unsigned long ProtoFetchAutoResponseServer(const char *szId, unsigned long nPPID)
-  { return requestUserAutoResponse(gUserManager.getUserFromAccount(szId, nPPID)); }
+  { return szId == NULL ? 0 : requestUserAutoResponse(LicqUser::makeUserId(szId, nPPID)); }
 
   unsigned long ProtoChatRequest(const char *szId, unsigned long nPPID,
      const char *szReason, unsigned short nLevel, bool bServer);
@@ -372,11 +372,11 @@ public:
    * @param userId User to get information for
    * @return id of event for ICQ users, zero for other protocols
    */
-  unsigned long requestUserInfo(int userId);
+  unsigned long requestUserInfo(const UserId& userId);
 
   LICQ_DEPRECATED // Use requestUserInfo() instead
   unsigned long ProtoRequestInfo(const char *szId, unsigned long nPPID)
-  { return requestUserInfo(gUserManager.getUserFromAccount(szId, nPPID)); }
+  { return szId == NULL ? 0 : requestUserInfo(LicqUser::makeUserId(szId, nPPID)); }
 
   unsigned long ProtoSetGeneralInfo(unsigned long nPPID, const char *szAlias,
     const char *szFirstName, const char *szLastName, const char *szEmailPrimary,
@@ -390,11 +390,11 @@ public:
    * @param userId User to get picture for
    * @return id of event for ICQ users, zero for other protocols
    */
-  unsigned long requestUserPicture(int userId);
+  unsigned long requestUserPicture(const UserId& userId);
 
   LICQ_DEPRECATED // Use requestUserPicture() instead
   unsigned long ProtoRequestPicture(const char *szId, unsigned long nPPID)
-  { return requestUserPicture(gUserManager.getUserFromAccount(szId, nPPID)); }
+  { return szId == NULL ? 0 : requestUserPicture(LicqUser::makeUserId(szId, nPPID)); }
 
   unsigned long ProtoOpenSecureChannel(const char *szId, unsigned long nPPID);
   unsigned long ProtoCloseSecureChannel(const char *szId, unsigned long nPPID);
@@ -531,7 +531,7 @@ public:
                       unsigned short _nNewType, unsigned short _nOldType);
   void icqRenameGroup(const char *_szNewName, unsigned short _nGSID);
   void icqRenameUser(const std::string& accountId, const std::string& newAlias);
-  void icqExportUsers(const std::list<int>& users, unsigned short);
+  void icqExportUsers(const std::list<UserId>& users, unsigned short);
   void icqExportGroups(const GroupNameMap& groups);
   void icqUpdateServerGroups();
   void icqUpdatePhoneBookTimestamp();
@@ -602,10 +602,10 @@ public:
 
   EDaemonStatus Status() const                  { return m_eStatus; }
 
-  void pluginUIViewEvent(int userId)
+  void pluginUIViewEvent(const UserId& userId)
   { pushPluginSignal(new LicqSignal(SIGNAL_UI_VIEWEVENT, 0, userId)); }
 
-  void pluginUIMessage(int userId)
+  void pluginUIMessage(const UserId& userId)
   { pushPluginSignal(new LicqSignal(SIGNAL_UI_MESSAGE, 0, userId)); }
 
   void UpdateAllUsers();
@@ -640,7 +640,7 @@ public:
 
   LICQ_DEPRECATED // Use gUserManager.removeUser() instead
   void RemoveUserFromList(const char *szId, unsigned long nPPID)
-  { gUserManager.removeUser(gUserManager.getUserFromAccount(szId, nPPID)); }
+  { if (szId != NULL) gUserManager.removeUser(LicqUser::makeUserId(szId, nPPID)); }
 
   // SMS
   unsigned long icqSendSms(const char* id, unsigned long ppid,

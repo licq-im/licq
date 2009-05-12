@@ -4,11 +4,11 @@
 #include <pthread.h>
 
 #include "licq_message.h"
+#include "licq_types.h"
 
 class CPacket;
 class CICQDaemon;
 class CUserEvent;
-class LicqUser;
 
 //-----CExtendedAck----------------------------------------------------------
 
@@ -430,8 +430,8 @@ public:
    * @param argument Additional data for signal, usage is signal dependant
    * @param cid Conversation id, if applicable
    */
-  LicqSignal(unsigned long signal, unsigned long subSignal, int userId = 0,
-      int argument = 0, unsigned long cid = 0);
+  LicqSignal(unsigned long signal, unsigned long subSignal,
+      const UserId& userId = USERID_NONE, int argument = 0, unsigned long cid = 0);
 
   /**
    * Copy constructor
@@ -450,7 +450,7 @@ public:
    *
    * @return user id if relevant, otherwise zero
    */
-  int userId() const { return myUserId; }
+  const UserId& userId() const { return myUserId; }
 
   int Argument() const { return myArgument; }
   unsigned long CID() const { return myCid; }
@@ -458,7 +458,7 @@ public:
 protected:
   const unsigned long mySignal;
   const unsigned long mySubSignal;
-  const int myUserId;
+  const UserId myUserId;
   const int myArgument;
   const unsigned long myCid;
 };

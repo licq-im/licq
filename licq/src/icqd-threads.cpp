@@ -879,7 +879,7 @@ void *MonitorSockets_tep(void *p)
               }
               if (tcp->OwnerId() != NULL)
               {
-                LicqUser* u = gUserManager.fetchUser(tcp->OwnerId(), tcp->OwnerPPID(), LOCK_W);
+                LicqUser* u = gUserManager.FetchUser(tcp->OwnerId(), tcp->OwnerPPID(), LOCK_W);
                 if (u && u->Secure())
                 {
                   u->ClearSocketDesc(ICQ_CHNxNONE);
