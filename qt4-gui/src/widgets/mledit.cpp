@@ -182,6 +182,16 @@ void MLEdit::keyPressEvent(QKeyEvent* event)
     return paste();
   if (event->key() == Qt::Key_Insert && event->modifiers() == Qt::ControlModifier)
     return copy();
+  if (event->key() == Qt::Key_PageDown && event->modifiers() == Qt::ShiftModifier)
+  {
+    emit scrollDownPressed();
+    return;
+  }
+  if (event->key() == Qt::Key_PageUp && event->modifiers() == Qt::ShiftModifier)
+  {
+    emit scrollUpPressed();
+    return;
+  }
 
   Config::Shortcuts* shortcuts = Config::Shortcuts::instance();
   QKeySequence ks = QKeySequence(event->key() | event->modifiers());

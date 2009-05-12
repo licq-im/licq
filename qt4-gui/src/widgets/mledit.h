@@ -104,6 +104,16 @@ signals:
   void ctrlEnterPressed();
   void clicked();
 
+  /**
+   * Scroll up shortcut was pressed
+   */
+  void scrollUpPressed();
+
+  /**
+   * Scroll down shortcut was pressed
+   */
+  void scrollDownPressed();
+
 private:
   bool myUseFixedFont;
   bool myFixSetTextNewlines;

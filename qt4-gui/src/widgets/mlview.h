@@ -75,6 +75,16 @@ protected:
 public slots:
   virtual void setSource(const QUrl& url);
 
+  /**
+   * Scroll the view one page down
+   */
+  void scrollPageDown();
+
+  /**
+   * Scroll the view one page up
+   */
+  void scrollPageUp();
+
 private slots:
   void slotCopyUrl();
   void makeQuote();

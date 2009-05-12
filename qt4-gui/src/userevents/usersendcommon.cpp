@@ -405,6 +405,12 @@ UserSendCommon::UserSendCommon(int type, int userId, QWidget* parent, const char
 
     connect(myHistoryView, SIGNAL(quote(const QString&)),
         myMessageEdit, SLOT(insertPlainText(const QString&)));
+
+    // Connect scroll up/down shortcuts from edit to scroll the history
+    connect(myMessageEdit, SIGNAL(scrollDownPressed()),
+        myHistoryView, SLOT(scrollPageDown()));
+    connect(myMessageEdit, SIGNAL(scrollUpPressed()),
+        myHistoryView, SLOT(scrollPageUp()));
   }
 
   setFocusProxy(myMessageEdit);

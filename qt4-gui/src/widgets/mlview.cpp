@@ -31,6 +31,7 @@
 #include <QTextDocumentFragment>
 #include <QMenu>
 #include <QRegExp>
+#include <QScrollBar>
 
 #include "config/emoticons.h"
 #include "config/general.h"
@@ -252,6 +253,16 @@ void MLView::GotoEnd()
   QTextCursor tc = textCursor();
   tc.movePosition(QTextCursor::End);
   setTextCursor(tc);
+}
+
+void MLView::scrollPageDown()
+{
+  verticalScrollBar()->triggerAction(QScrollBar::SliderPageStepAdd);
+}
+
+void MLView::scrollPageUp()
+{
+  verticalScrollBar()->triggerAction(QScrollBar::SliderPageStepSub);
 }
 
 void MLView::setBackground(const QColor& c)
