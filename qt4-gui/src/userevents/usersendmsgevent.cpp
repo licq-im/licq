@@ -47,7 +47,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendMsgEvent */
 
-UserSendMsgEvent::UserSendMsgEvent(int userId, QWidget* parent)
+UserSendMsgEvent::UserSendMsgEvent(const UserId& userId, QWidget* parent)
   : UserSendCommon(MessageEvent, userId, parent, "UserSendMsgEvent")
 {
   myMainWidget->addWidget(myViewSplitter);

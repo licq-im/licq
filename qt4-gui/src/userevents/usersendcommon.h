@@ -50,7 +50,7 @@ public:
    * @param parent Parent widget
    * @param name Object name of widget
    */
-  UserSendCommon(int type, int userId, QWidget* parent = 0, const char* name = 0);
+  UserSendCommon(int type, const UserId& userId, QWidget* parent = 0, const char* name = 0);
   virtual ~UserSendCommon();
   virtual bool eventFilter(QObject* watched, QEvent* e);
 
@@ -61,14 +61,14 @@ public:
    *
    * @param userId User that joined conversation
    */
-  void convoJoin(int userId);
+  void convoJoin(const UserId& userId);
 
   /**
    * Someone left the conversation
    *
    * @param userId User that left conversation
    */
-  void convoLeave(int userId);
+  void convoLeave(const UserId& userId);
 
   virtual void windowActivationChange(bool oldActive);
   int clearDelay;
@@ -120,7 +120,7 @@ protected:
    * @param argument Signal specific argument
    * @param cid Conversation id
    */
-  virtual void userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid);
+  virtual void userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
   void updatePicture(const LicqUser* u = NULL);
   bool checkSecure();
 

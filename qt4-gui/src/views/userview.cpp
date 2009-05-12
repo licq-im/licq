@@ -65,13 +65,13 @@ UserView::~UserView()
   // Empty
 }
 
-int UserView::currentUserId() const
+UserId UserView::currentUserId() const
 {
   if (static_cast<ContactListModel::ItemType>
       (currentIndex().data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::UserItem)
     return 0;
 
-  return currentIndex().data(ContactListModel::UserIdRole).toInt();
+  return currentIndex().data(ContactListModel::UserIdRole).value<UserId>();
 }
 
 bool UserView::MainWindowSelectedItemUser(QString& id, unsigned long& ppid) const

@@ -37,7 +37,7 @@ public:
    * @param userId User to open dialog for
    * @param parent Parent widget
    */
-  UserSendContactEvent(int userId, QWidget* parent = 0);
+  UserSendContactEvent(const UserId& userId, QWidget* parent = 0);
   virtual ~UserSendContactEvent();
 
   /**
@@ -45,7 +45,7 @@ public:
    *
    * @param userId Id of user to add
    */
-  void setContact(int userId);
+  void setContact(const UserId& userId);
 
 private:
   MMUserView* myContactsList;

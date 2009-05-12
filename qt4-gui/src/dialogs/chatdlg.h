@@ -23,6 +23,8 @@
 #include <deque>
 #include <list>
 
+#include <licq_user.h>
+
 #include <QDialog>
 #include <QTextEdit>
 
@@ -99,7 +101,7 @@ public:
    * @param userId User to open chat with
    * @param parent Parent widget
    */
-  ChatDlg(int userId, QWidget* parent = 0);
+  ChatDlg(const UserId& userId, QWidget* parent = 0);
   virtual ~ChatDlg();
 
   bool StartAsClient(unsigned short nPort);

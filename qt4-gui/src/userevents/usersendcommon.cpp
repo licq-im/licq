@@ -91,14 +91,14 @@ using namespace LicqQtGui;
 
 const size_t SHOW_RECENT_NUM = 5;
 
-typedef pair<const CUserEvent*, int> messagePair;
+typedef pair<const CUserEvent*, UserId> messagePair;
 
 bool orderMessagePairs(const messagePair& mp1, const messagePair& mp2)
 {
   return (mp1.first->Time() < mp2.first->Time());
 }
 
-UserSendCommon::UserSendCommon(int type, int userId, QWidget* parent, const char* name)
+UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, const char* name)
   : UserEventCommon(userId, parent, name),
     myType(type)
 {
@@ -600,9 +600,9 @@ void UserSendCommon::setText(const QString& text)
   myMessageEdit->document()->setModified(false);
 }
 
-void UserSendCommon::convoJoin(int userId)
+void UserSendCommon::convoJoin(const UserId& userId)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   if (Config::Chat::instance()->msgChatView())
@@ -630,9 +630,9 @@ void UserSendCommon::convoJoin(int userId)
     tabDlg->updateConvoLabel(this);
 }
 
-void UserSendCommon::convoLeave(int userId)
+void UserSendCommon::convoLeave(const UserId& userId)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   if (Config::Chat::instance()->msgChatView())
@@ -664,7 +664,7 @@ void UserSendCommon::convoLeave(int userId)
 
   if (myUsers.size() > 1)
   {
-    list<int>::iterator it;
+    list<UserId>::iterator it;
     for (it = myUsers.begin(); it != myUsers.end(); it++)
     {
       if (*it == userId)
@@ -706,7 +706,7 @@ void UserSendCommon::changeEventType(int type)
   if (tabDlg != NULL && tabDlg->tabExists(this))
     parent = tabDlg;
 
-  int userId = myUsers.front();
+  UserId userId = myUsers.front();
 
   switch (type)
   {
@@ -944,7 +944,7 @@ void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
   UserSendCommon::send();
 }
 
-void UserSendCommon::userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid)
+void UserSendCommon::userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
 
@@ -1267,7 +1267,7 @@ void UserSendCommon::clearNewEvents()
   ICQUser* u = NULL;
 
   // Iterate all users in the conversation
-  for (list<int>::iterator it = myUsers.begin(); it != myUsers.end(); ++it)
+  for (list<UserId>::iterator it = myUsers.begin(); it != myUsers.end(); ++it)
   {
     u = gUserManager.fetchUser(*it, LOCK_W);
     if (u != NULL)

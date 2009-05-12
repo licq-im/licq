@@ -681,12 +681,12 @@ void OwnerData::aboutToShowStatusMenu()
 
 void OwnerData::viewInfo()
 {
-  LicqGui::instance()->showInfoDialog(mnuUserGeneral, static_cast<int>(myPpid));
+  LicqGui::instance()->showInfoDialog(mnuUserGeneral, gUserManager.ownerUserId(myPpid));
 }
 
 void OwnerData::viewHistory()
 {
-  new HistoryDlg(static_cast<int>(myPpid));
+  new HistoryDlg(gUserManager.ownerUserId(myPpid));
 }
 
 void OwnerData::setStatus(QAction* action)

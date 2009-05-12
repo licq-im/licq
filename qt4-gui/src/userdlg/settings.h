@@ -64,7 +64,7 @@ public:
    *
    * @param userId User id
    */
-  void apply2(int userId);
+  void apply2(const UserId& userId);
 
   /**
    * User was updated

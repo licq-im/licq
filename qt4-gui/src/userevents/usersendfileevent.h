@@ -41,7 +41,7 @@ public:
    * @param userId User to open dialog for
    * @param parent Parent widget
    */
-  UserSendFileEvent(int userId, QWidget* parent = 0);
+  UserSendFileEvent(const UserId& userId, QWidget* parent = 0);
   virtual ~UserSendFileEvent();
 
   void setFile(const QString& file, const QString& description);

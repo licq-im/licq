@@ -39,7 +39,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::KeyRequestDlg */
 
-KeyRequestDlg::KeyRequestDlg(int userId, QWidget* parent)
+KeyRequestDlg::KeyRequestDlg(const UserId& userId, QWidget* parent)
   : QDialog(parent),
     myUserId(userId),
     myIcqEventTag(0)

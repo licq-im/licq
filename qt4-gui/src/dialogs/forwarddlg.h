@@ -22,6 +22,8 @@
 
 #include <QDialog>
 
+#include <licq_types.h>
+
 class QPushButton;
 
 class CUserEvent;
@@ -46,7 +48,7 @@ private:
   InfoField* edtUser;
   QPushButton* btnOk;
   QPushButton* btnCancel;
-  int myUserId;
+  UserId myUserId;
 
 private slots:
   void slot_ok();

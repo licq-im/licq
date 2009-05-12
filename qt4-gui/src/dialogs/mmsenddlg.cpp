@@ -155,9 +155,9 @@ void MMSendDlg::SendNext()
     return;
   }
 
-  int userId = *mmv->contacts().begin();
+  UserId userId = *mmv->contacts().begin();
 
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   switch (m_nEventType)

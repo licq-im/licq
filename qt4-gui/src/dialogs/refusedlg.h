@@ -22,6 +22,8 @@
 
 #include <QDialog>
 
+#include <licq_types.h>
+
 namespace LicqQtGui
 {
 class MLEdit;
@@ -38,7 +40,7 @@ public:
    * @param t Type of event to refuse
    * @param parent Parent widget
    */
-  RefuseDlg(int userId, const QString& t, QWidget* parent = NULL);
+  RefuseDlg(const UserId& userId, const QString& t, QWidget* parent = NULL);
   QString RefuseMessage();
 
 private:

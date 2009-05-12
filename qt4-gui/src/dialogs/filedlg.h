@@ -24,6 +24,7 @@
 #include <QWidget>
 
 #include <licq_filetransfer.h>
+#include <licq_types.h>
 
 class CFileTransferManager;
 class QLabel;
@@ -46,7 +47,7 @@ public:
    * @param userId User to send files to
    * @param parent Parent widget
    */
-  FileDlg(int userId, QWidget* parent = 0);
+  FileDlg(const UserId& userId, QWidget* parent = 0);
   virtual ~FileDlg();
 
   bool SendFiles(ConstFileList filelist, unsigned short nPort);
@@ -59,7 +60,7 @@ public:
    *
    * @return Id of user
    */
-  int userId() const { return myUserId; }
+  const UserId& userId() const { return myUserId; }
 
 private:
    QLabel* lblTransferFileName;
@@ -87,7 +88,7 @@ private:
 
    CFileTransferManager* ftman;
 
-  int myUserId;
+  UserId myUserId;
    QString myId;
    unsigned long m_nPPID;
    QSocketNotifier* sn;

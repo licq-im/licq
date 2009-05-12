@@ -182,7 +182,7 @@ void GroupMenu::addUsersToGroup(QAction* action)
   {
     QModelIndex userIndex = list->index(i, 0, groupIndex);
 
-    int userId = userIndex.data(ContactListModel::UserIdRole).toInt();
+    UserId userId = userIndex.data(ContactListModel::UserIdRole).value<UserId>();
 
     gUserManager.setUserInGroup(userId, gtype, gid, true, gtype == GROUPS_SYSTEM);
   }

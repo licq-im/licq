@@ -68,7 +68,7 @@ public:
   /**
    * Get licq user id
    */
-  int userId() const
+  const UserId& userId() const
   { return myUserData->userId(); }
 
   /**

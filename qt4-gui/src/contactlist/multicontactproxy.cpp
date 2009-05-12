@@ -34,7 +34,7 @@ void MultiContactProxy::clear()
   invalidateFilter();
 }
 
-void MultiContactProxy::add(int userId)
+void MultiContactProxy::add(const UserId& userId)
 {
   myContacts.insert(userId);
   invalidateFilter();
@@ -44,13 +44,13 @@ void MultiContactProxy::remove(const QModelIndexList& indexes)
 {
   foreach (QModelIndex i, indexes)
   {
-    int userId = i.data(ContactListModel::UserIdRole).toInt();
+    UserId userId = i.data(ContactListModel::UserIdRole).value<UserId>();
     myContacts.remove(userId);
   }
   invalidateFilter();
 }
 
-void MultiContactProxy::remove(int userId)
+void MultiContactProxy::remove(const UserId& userId)
 {
   myContacts.remove(userId);
   invalidateFilter();
@@ -59,11 +59,11 @@ void MultiContactProxy::remove(int userId)
 void MultiContactProxy::crop(const QModelIndexList& indexes)
 {
   // Make a new set with the contacts to keep
-  QSet<int> newList;
+  QSet<UserId> newList;
 
   foreach (QModelIndex i, indexes)
   {
-    int userId = i.data(ContactListModel::UserIdRole).toInt();
+    UserId userId = i.data(ContactListModel::UserIdRole).value<UserId>();
     newList.insert(userId);
   }
 
@@ -82,7 +82,7 @@ void MultiContactProxy::addGroup(GroupType groupType, unsigned long groupId)
 
     if (static_cast<ContactListModel::ItemType>(userIndex.data(ContactListModel::ItemTypeRole).toInt()) == ContactListModel::UserItem)
     {
-      int userId = userIndex.data(ContactListModel::UserIdRole).toInt();
+      UserId userId = userIndex.data(ContactListModel::UserIdRole).value<UserId>();
       myContacts.insert(userId);
     }
   }
@@ -111,7 +111,7 @@ bool MultiContactProxy::filterAcceptsRow(int source_row, const QModelIndex& sour
     case ContactListModel::UserItem:
     {
       // Check if the contact is in our list
-      int userId = item.data(ContactListModel::UserIdRole).toInt();
+      UserId userId = item.data(ContactListModel::UserIdRole).value<UserId>();
       if (!myContacts.contains(userId))
         return false;
 

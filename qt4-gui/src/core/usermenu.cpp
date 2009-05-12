@@ -340,7 +340,7 @@ void UserMenu::aboutToShowMenu()
   gUserManager.DropUser(u);
 }
 
-void UserMenu::setUser(int userId)
+void UserMenu::setUser(const UserId& userId)
 {
   LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
   if (user == NULL)
@@ -356,10 +356,10 @@ void UserMenu::setUser(QString id, unsigned long ppid)
 {
   myId = id;
   myPpid = ppid;
-  myUserId = gUserManager.getUserFromAccount(myId.toLatin1(), myPpid);
+  myUserId = LicqUser::makeUserId(myId.toLatin1().data(), myPpid);
 }
 
-void UserMenu::popup(QPoint pos, int userId)
+void UserMenu::popup(QPoint pos, const UserId& userId)
 {
   setUser(userId);
   QMenu::popup(pos);

@@ -22,6 +22,8 @@
 
 #include <QDialog>
 
+#include <licq_types.h>
+
 class QLabel;
 class QPushButton;
 
@@ -40,11 +42,11 @@ public:
    * @param userId User to request key for
    * @param parent Parent widget
    */
-  KeyRequestDlg(int userId, QWidget* parent = 0);
+  KeyRequestDlg(const UserId& userId, QWidget* parent = 0);
   ~KeyRequestDlg();
 
 private:
-  int myUserId;
+  UserId myUserId;
   unsigned long myIcqEventTag;
   bool myOpen;
 

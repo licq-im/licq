@@ -24,10 +24,14 @@
 #include <QAbstractItemModel>
 #include <QList>
 
-#include <licq_user.h>
+#include <licq_icq.h>
+#include <licq_types.h>
 
 class LicqUser;
 
+// Allow UserId to be used in QVariant and QSet
+Q_DECLARE_METATYPE(UserId)
+uint qHash(const UserId& userId);
 
 namespace LicqQtGui
 {
@@ -201,7 +205,7 @@ public:
    *
    * @param userId Licq user id
    */
-  void updateUser(int userId);
+  void updateUser(const UserId& userId);
 
   /**
    * Add a user to the contact list
@@ -216,7 +220,7 @@ public:
    * @param userId Licq user id
    * @param ppid Licq protocol id
    */
-  void removeUser(int userId);
+  void removeUser(const UserId& userId);
 
   /**
    * Removes (and delete) all users and groups from the list
@@ -310,7 +314,7 @@ public:
    * @param column The column to return an index for
    * @return An index for the given user and column from the "All Users" group
    */
-  QModelIndex userIndex(int userId, int column) const;
+  QModelIndex userIndex(const UserId& userId, int column) const;
 
   /**
    * Get index for a group to use as root item for a view
@@ -339,7 +343,7 @@ public slots:
    * @param argument Additional data, usage depend on sub signal type
    * @param userId Id for affected user, if applicable
    */
-  void listUpdated(unsigned long subSignal, int argument, int userId);
+  void listUpdated(unsigned long subSignal, int argument, const UserId& userId);
 
   /**
    * The data for a user has changed in the daemon
@@ -348,7 +352,7 @@ public slots:
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
    */
-  void userUpdated(int userId, unsigned long subSignal, int argument);
+  void userUpdated(const UserId& userId, unsigned long subSignal, int argument);
 
   /**
    * Reload the entire contact list from the daemon
@@ -448,7 +452,7 @@ private:
    * @param userId Licq user id
    * @return The user object or NULL if it was not found
    */
-  ContactUserData* findUser(int userId) const;
+  ContactUserData* findUser(const UserId& userId) const;
 
   /**
    * Check if a user is member of a group and add/remove the user to/from the group if needed

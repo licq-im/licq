@@ -26,6 +26,8 @@
 #include <QTimer>
 #include <QVariant>
 
+#include <licq_types.h>
+
 #include "contactitem.h"
 #include "contactlist.h"
 
@@ -83,7 +85,7 @@ public:
   /**
    * Get licq user id
    */
-  int userId() const
+  const UserId& userId() const
   { return myUserId; }
 
   /**
@@ -232,7 +234,7 @@ private slots:
   void animate();
 
 private:
-  int myUserId;
+  UserId myUserId;
   QString myAccountId;
   unsigned long myPpid;
   unsigned short myStatus;

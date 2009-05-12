@@ -24,7 +24,7 @@
 
 using namespace LicqQtGui;
 
-SingleContactProxy::SingleContactProxy(ContactListModel* contactList, int userId, QObject* parent)
+SingleContactProxy::SingleContactProxy(ContactListModel* contactList, const UserId& userId, QObject* parent)
   : QAbstractProxyModel(parent),
     myContactList(contactList),
     myUserId(userId)

@@ -48,12 +48,12 @@ SignalManager::~SignalManager()
 
 void SignalManager::ProcessSignal(LicqSignal* sig)
 {
-  int userId = sig->userId();
+  UserId userId = sig->userId();
 
   // Temporary code to get account id and ppid until the rest of the gui is updated to use user id directly
   QString accountId;
   unsigned long ppid = 0;
-  if (userId != 0)
+  if (USERID_ISVALID(userId))
   {
     LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
     if (user != NULL)

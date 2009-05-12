@@ -26,6 +26,8 @@
 #include <list>
 #include <string>
 
+#include <licq_types.h>
+
 class QActionGroup;
 class QHBoxLayout;
 class QMenu;
@@ -51,7 +53,7 @@ public:
    * @param parent Parent widget
    * @param name Object name to set for widget
    */
-  UserEventCommon(int userId, QWidget* parent = 0, const char* name = 0);
+  UserEventCommon(const UserId& userId, QWidget* parent = 0, const char* name = 0);
   virtual ~UserEventCommon();
 
   /**
@@ -59,11 +61,11 @@ public:
    *
    * @return (First) user associated with with dialog
    */
-  int userId() const { return myUsers.front(); }
+  const UserId& userId() const { return myUsers.front(); }
   const QString& id() const { return myId; }
   unsigned long ppid() const { return myPpid; }
   unsigned long convoId() { return myConvoId; }
-  const std::list<int>& convoUsers() const { return myUsers; }
+  const std::list<UserId>& convoUsers() const { return myUsers; }
   void setConvoId(unsigned long n) { myConvoId = n; }
   void addEventTag(unsigned long n) { if (n) myEventTag.push_back(n); }
 
@@ -73,7 +75,7 @@ public:
    * @param userId Id of user to check
    * @return True if user is in conversation
    */
-  bool isUserInConvo(int userId) const;
+  bool isUserInConvo(const UserId& userId) const;
   void setTyping(unsigned short type);
 
 public slots:
@@ -93,7 +95,7 @@ protected:
   unsigned long myPpid;
   unsigned long myConvoId;
   time_t myRemoteTimeOffset;
-  std::list<int> myUsers;
+  std::list<UserId> myUsers;
   unsigned long mySendFuncs;
 
   // ID of the higest event we've processed. Helps determine
@@ -136,7 +138,7 @@ protected:
    * @param argument Signal specific argument
    * @param cid Conversation id
    */
-  virtual void userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid) = 0;
+  virtual void userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid) = 0;
 
   /**
    * Overloaded to get events when this window/tab looses and gains focus
@@ -164,7 +166,7 @@ protected slots:
   void updateTyping();
   void showUserMenu();
   void showEncodingsMenu();
-  void updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid);
+  void updatedUser(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
 
 signals:
   /**
@@ -172,7 +174,7 @@ signals:
    *
    * @param userId User for this dialog
    */
-  void finished(int userId);
+  void finished(const UserId& userId);
   void encodingChanged();
 };
 

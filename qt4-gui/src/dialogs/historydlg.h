@@ -26,6 +26,7 @@
 #include <QDialog>
 
 #include <licq_history.h>
+#include <licq_types.h>
 
 class QCalendarWidget;
 class QCheckBox;
@@ -56,7 +57,7 @@ public:
    * @param userId Contact id
    * @param parent Parent widget
    */
-  HistoryDlg(int userId, QWidget* parent = 0);
+  HistoryDlg(const UserId& userId, QWidget* parent = 0);
 
   /**
    * Desstructor
@@ -116,7 +117,7 @@ private slots:
    * @param subSignal Sub signal telling what the change was
    * @param argument Additional data, usage depend on sub signal type
    */
-  void updatedUser(int userId, unsigned long subSignal, int argument);
+  void updatedUser(const UserId& userId, unsigned long subSignal, int argument);
 
   /**
    * A message was sent. Add to history if it was for the current user
@@ -145,7 +146,7 @@ private:
    */
   void showHistory();
 
-  int myUserId;
+  UserId myUserId;
   bool myIsOwner;
   QString myContactName;
   QString myOwnerName;

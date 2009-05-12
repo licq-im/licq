@@ -372,7 +372,7 @@ QWidget* Settings::Chat::createPageChatDisp(QWidget* parent)
   myChatColorsLayout->setRowStretch(7, 1);
 
   myChatTabs = new TabWidget(w);
-  myChatView = new HistoryView(false, 0, myChatTabs);
+  myChatView = new HistoryView(false, USERID_NONE, myChatTabs);
   myChatTabs->addTab(myChatView, "Marge");
 
   myPageChatDispLayout->addWidget(myChatDispBox, 0, 0);

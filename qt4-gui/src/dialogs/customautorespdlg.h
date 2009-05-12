@@ -23,6 +23,8 @@
 
 #include <QDialog>
 
+#include <licq_types.h>
+
 namespace LicqQtGui
 {
 class MLEdit;
@@ -32,11 +34,11 @@ class CustomAutoRespDlg : public QDialog
   Q_OBJECT
 
 public:
-  CustomAutoRespDlg(int userId, QWidget* parent = 0);
+  CustomAutoRespDlg(const UserId& userId, QWidget* parent = 0);
 
 private:
   MLEdit* myMessage;
-  int myUserId;
+  UserId myUserId;
 
 private slots:
   void ok();

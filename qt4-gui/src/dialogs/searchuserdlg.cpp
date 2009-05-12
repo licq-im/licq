@@ -432,10 +432,8 @@ void SearchUserDlg::viewInfo()
   {
     QByteArray id = current->data(0, Qt::UserRole).toString().toLatin1();
 
-    LicqUser* user = gUserManager.fetchUser(id.data(), ppid, LOCK_R, true);
-    int userId = user->id();
-    gUserManager.DropUser(user);
-
+    UserId userId = LicqUser::makeUserId(id.data(), ppid);
+    gUserManager.addUser(id.data(), ppid, false);
     LicqGui::instance()->showInfoDialog(mnuUserGeneral, userId, false, true);
   }
 }

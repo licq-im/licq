@@ -52,7 +52,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::HistoryDlg */
 
-HistoryDlg::HistoryDlg(int userId, QWidget* parent)
+HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
   : QDialog(parent),
     myUserId(userId)
 {
@@ -258,8 +258,8 @@ HistoryDlg::HistoryDlg(int userId, QWidget* parent)
 
   // Catch received messages so we can add them to history
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
-      SLOT(updatedUser(int, unsigned long, int)));
+      SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
+      SLOT(updatedUser(const UserId&, unsigned long, int)));
 }
 
 HistoryDlg::~HistoryDlg()
@@ -267,7 +267,7 @@ HistoryDlg::~HistoryDlg()
   ICQUser::ClearHistory(myHistoryList);
 }
 
-void HistoryDlg::updatedUser(int userId, unsigned long subSignal, int argument)
+void HistoryDlg::updatedUser(const UserId& userId, unsigned long subSignal, int argument)
 {
   if (userId != myUserId)
     return;
@@ -288,7 +288,7 @@ void HistoryDlg::updatedUser(int userId, unsigned long subSignal, int argument)
 
 void HistoryDlg::eventSent(const ICQEvent* event)
 {
-  int userId = gUserManager.getUserFromAccount(event->Id(), event->PPID());
+  UserId userId = LicqUser::makeUserId(event->Id(), event->PPID());
   if (userId == myUserId && event->UserEvent() != NULL)
     addMsg(event->UserEvent());
 }

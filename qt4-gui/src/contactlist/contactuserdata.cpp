@@ -45,8 +45,6 @@
 #include "contactgroup.h"
 #include "contactuser.h"
 
-using std::string;
-
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ContactUserData */
 
@@ -601,7 +599,7 @@ QVariant ContactUserData::data(int column, int role) const
       return tooltip();
 
     case ContactListModel::UserIdRole:
-      return myUserId;
+      return QVariant::fromValue(myUserId);
 
     case ContactListModel::AccountIdRole:
       return myAccountId;

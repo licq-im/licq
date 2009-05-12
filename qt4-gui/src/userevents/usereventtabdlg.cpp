@@ -161,8 +161,8 @@ bool UserEventTabDlg::tabExists(QWidget* tab)
 void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
 {
   // Show the list of users in the conversation
-  list<int> users = tab->convoUsers();
-  list<int>::iterator it;
+  list<UserId> users = tab->convoUsers();
+  list<UserId>::iterator it;
   QString newLabel = QString::null;
 
   for (it = users.begin(); it != users.end(); ++it)

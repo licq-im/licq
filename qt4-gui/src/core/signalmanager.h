@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+#include <licq_types.h>
+
 class QSocketNotifier;
 
 class LicqSignal;
@@ -46,7 +48,7 @@ signals:
    * @param argument Additional data, usage depend on sub signal type
    * @param userId Id for affected user, if applicable
    */
-  void updatedList(unsigned long subSignal, int argument, int userId);
+  void updatedList(unsigned long subSignal, int argument, const UserId& userId);
 
   /**
    * Data for a user has changed
@@ -56,7 +58,7 @@ signals:
    * @param argument Additional data, usage depend on sub signal type
    * @param cid Conversation id
    */
-  void updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid);
+  void updatedUser(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
 
   /**
    * Status has changed
@@ -77,7 +79,7 @@ signals:
    *
    * @param userId User to show event for
    */
-  void ui_viewevent(int userId);
+  void ui_viewevent(const UserId& userId);
 
   /**
    * Open a message dialog for a user
@@ -85,7 +87,7 @@ signals:
    *
    * @param userId User to open dialog for
    */
-  void ui_message(int userId);
+  void ui_message(const UserId& userId);
   void protocolPlugin(unsigned long);
 
   /**
@@ -94,7 +96,7 @@ signals:
    * @param userId User event is sent for
    * @param eventTag Id of event
    */
-  void eventTag(int userId, unsigned long eventTag);
+  void eventTag(const UserId& userId, unsigned long eventTag);
 
   /**
    * A conversation id has been associated with a user
@@ -102,7 +104,7 @@ signals:
    * @param userId User id to associate conversation with
    * @param convoId Conversation id
    */
-  void socket(int userId, unsigned long convoId);
+  void socket(const UserId& userId, unsigned long convoId);
 
   /**
    * Someone joined an ongoing conversation
@@ -111,7 +113,7 @@ signals:
    * @param ppid Protocol of conversation
    * @param convoId Id of conversation
    */
-  void convoJoin(int userId, unsigned long ppid, unsigned long convoId);
+  void convoJoin(const UserId& userId, unsigned long ppid, unsigned long convoId);
 
   /**
    * Someone left an ongoing conversation
@@ -120,7 +122,7 @@ signals:
    * @param ppid Protocol of conversation
    * @param convoId Id of conversation
    */
-  void convoLeave(int userId, unsigned long ppid, unsigned long convoId);
+  void convoLeave(const UserId& userId, unsigned long ppid, unsigned long convoId);
   void verifyImage(unsigned long);
   void newOwner(QString, unsigned long);
 

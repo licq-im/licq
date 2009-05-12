@@ -46,7 +46,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendChatEvent */
 
-UserSendChatEvent::UserSendChatEvent(int userId, QWidget* parent)
+UserSendChatEvent::UserSendChatEvent(const UserId& userId, QWidget* parent)
   : UserSendCommon(ChatEvent, userId, parent, "UserSendChatEvent")
 {
   myChatPort = 0;

@@ -104,7 +104,7 @@ ForwardDlg::~ForwardDlg()
 
 void ForwardDlg::slot_ok()
 {
-  if (myUserId == 0)
+  if (!USERID_ISVALID(myUserId))
     return;
 
   switch(m_nEventType)

@@ -68,7 +68,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserViewEvent */
 
-UserViewEvent::UserViewEvent(int userId, QWidget* parent)
+UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
   : UserEventCommon(userId, parent, "UserViewEvent")
 {
   myReadSplitter = new QSplitter(Qt::Vertical);
@@ -262,7 +262,7 @@ void UserViewEvent::updateNextButton()
     myReadNextButton->setIcon(IconManager::instance()->iconForEvent(e->msg()->SubCommand()));
 }
 
-void UserViewEvent::userUpdated(int userId, unsigned long subSignal, int argument, unsigned long /* cid */)
+void UserViewEvent::userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long /* cid */)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
 
@@ -620,8 +620,8 @@ void UserViewEvent::read4()
       GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, CEventAdded);
 #undef GETINFO
 
-      const LicqUser* user = gUserManager.fetchUser(id, ppid, LOCK_R, true);
-      int userId = user->id();
+      UserId userId = LicqUser::makeUserId(id, ppid);
+      const LicqUser* user = gUserManager.fetchUser(userId, LOCK_R, true);
       gUserManager.DropUser(user);
 
       LicqGui::instance()->showInfoDialog(mnuUserGeneral, userId, false, true);
@@ -829,7 +829,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
 
 void UserViewEvent::sentEvent(const ICQEvent* e)
 {
-  int eventUserId = gUserManager.getUserFromAccount(e->Id(), e->PPID());
+  UserId eventUserId = LicqUser::makeUserId(e->Id(), e->PPID());
   if (eventUserId != myUsers.front())
     return;
 

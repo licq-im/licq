@@ -104,7 +104,7 @@ static const int col_array[] =
 
 
 // ---------------------------------------------------------------------------
-ChatDlg::ChatDlg(int userId, QWidget* parent)
+ChatDlg::ChatDlg(const UserId& userId, QWidget* parent)
   : QDialog(parent),
     myAudio(true)
 {

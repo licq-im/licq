@@ -22,6 +22,7 @@
 #define SINGLECONTACTPROXY_H
 
 #include <QAbstractProxyModel>
+#include <licq_types.h>
 
 #include "core/gui-defines.h"
 
@@ -45,7 +46,7 @@ public:
    * @param userId Licq user id
    * @param parent Parent object
    */
-  SingleContactProxy(ContactListModel* contactList, int userId, QObject* parent);
+  SingleContactProxy(ContactListModel* contactList, const UserId& userId, QObject* parent);
 
   /**
    * Destructor
@@ -145,7 +146,7 @@ private slots:
 
 private:
   ContactListModel* myContactList;
-  int myUserId;
+  UserId myUserId;
   QModelIndex mySourceIndex[MAX_COLUMNCOUNT];
 };
 

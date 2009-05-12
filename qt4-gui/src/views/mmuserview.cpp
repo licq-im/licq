@@ -47,7 +47,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMUserView */
 
-MMUserView::MMUserView(int userId, ContactListModel* contactList, QWidget* parent)
+MMUserView::MMUserView(const UserId& userId, ContactListModel* contactList, QWidget* parent)
   : UserViewBase(contactList, parent),
     myUserId(userId)
 {
@@ -78,7 +78,7 @@ MMUserView::~MMUserView()
   // Empty
 }
 
-void MMUserView::add(int userId)
+void MMUserView::add(const UserId& userId)
 {
   if (userId == myUserId)
     return;
@@ -87,11 +87,11 @@ void MMUserView::add(int userId)
 
 void MMUserView::removeFirst()
 {
-  int userId = *contacts().begin();
+  UserId userId = *contacts().begin();
   dynamic_cast<MultiContactProxy*>(myListProxy)->remove(userId);
 }
 
-const QSet<int>& MMUserView::contacts() const
+const QSet<UserId>& MMUserView::contacts() const
 {
   return dynamic_cast<MultiContactProxy*>(myListProxy)->contacts();
 }
@@ -166,7 +166,7 @@ void MMUserView::dropEvent(QDropEvent* event)
     if (id.isEmpty())
       return;
 
-    add(gUserManager.getUserFromAccount(id.toLatin1(), ppid));
+    add(LicqUser::makeUserId(id.toLatin1().data(), ppid));
   }
   else
     return; // Not accepted

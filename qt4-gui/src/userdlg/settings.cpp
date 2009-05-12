@@ -359,7 +359,7 @@ void UserPages::Settings::apply(ICQUser* user)
   user->SetCustomAutoResponse(myAutoRespEdit->toPlainText().trimmed().toLocal8Bit());
 }
 
-void UserPages::Settings::apply2(int userId)
+void UserPages::Settings::apply2(const UserId& userId)
 {
   if (myIsOwner)
     return;

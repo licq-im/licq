@@ -23,6 +23,8 @@
 
 #include <QObject>
 
+#include <licq_types.h>
+
 class QTextCodec;
 
 class CChatUser;
@@ -51,7 +53,7 @@ public:
   static QTextCodec* codecForCChatUser(CChatUser* u);
   // Retrieves the codec for a proto user
   static QTextCodec* codecForProtoUser(const QString& id, unsigned long ppid);
-  static const QTextCodec* codecForUserId(int userId);
+  static const QTextCodec* codecForUserId(const UserId& userId);
 
   static QByteArray encodingForMib(int mib);
   static QString nameForEncoding(const QByteArray& encoding);

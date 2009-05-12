@@ -43,7 +43,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendSmsEvent */
 
-UserSendSmsEvent::UserSendSmsEvent(int userId, QWidget* parent)
+UserSendSmsEvent::UserSendSmsEvent(const UserId& userId, QWidget* parent)
   : UserSendCommon(SmsEvent, userId, parent, "UserSendSmsEvent")
 {
   mySendServerCheck->setChecked(true);

@@ -23,6 +23,8 @@
 
 #include <QTreeView>
 
+#include <licq_types.h>
+
 class QAbstractProxyModel;
 
 namespace LicqQtGui
@@ -75,7 +77,7 @@ signals:
    *
    * @param userId User id of contact
    */
-  void userDoubleClicked(int userId);
+  void userDoubleClicked(const UserId& userId);
 
 protected slots:
   /**

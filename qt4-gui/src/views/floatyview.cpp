@@ -75,7 +75,7 @@ FloatyView::~FloatyView()
     floaties.remove(pos);
 }
 
-FloatyView* FloatyView::findFloaty(int userId)
+FloatyView* FloatyView::findFloaty(const UserId& userId)
 {
   for (int i = 0; i < floaties.size(); i++)
   {

@@ -140,7 +140,7 @@ void UserViewBase::popupMenu(QPoint point, QModelIndex item)
 
   if (itemType == ContactListModel::UserItem)
   {
-    int userId = item.data(ContactListModel::UserIdRole).toInt();
+    UserId userId = item.data(ContactListModel::UserIdRole).value<UserId>();
 
     LicqGui::instance()->userMenu()->popup(point, userId);
   }
@@ -176,7 +176,7 @@ void UserViewBase::dropEvent(QDropEvent* event)
   {
     case ContactListModel::UserItem:
     {
-      int userId = dropIndex.data(ContactListModel::UserIdRole).toInt();
+      UserId userId = dropIndex.data(ContactListModel::UserIdRole).value<UserId>();
 
       if (event->mimeData()->hasUrls())
       {
@@ -232,8 +232,8 @@ void UserViewBase::dropEvent(QDropEvent* event)
         if (dropPpid != 0 && text.length() > 4)
         {
           QString dropId = text.mid(4);
-          int dropUserId = gUserManager.getUserFromAccount(dropId.toLatin1(), dropPpid);
-          if (dropUserId == 0 || userId == dropUserId)
+          UserId dropUserId = LicqUser::makeUserId(dropId.toLatin1().data(), dropPpid);
+          if (!USERID_ISVALID(dropUserId) || userId == dropUserId)
             return;
 
           UserSendContactEvent* sendContact = dynamic_cast<UserSendContactEvent*>(
@@ -280,9 +280,9 @@ void UserViewBase::dropEvent(QDropEvent* event)
           return;
 
         QString dropId = text.mid(4);
-        int dropUserId = gUserManager.getUserFromAccount(dropId.toLatin1(), dropPpid);
+        UserId dropUserId = LicqUser::makeUserId(dropId.toLatin1().data(), dropPpid);
 
-        if (dropUserId != 0)
+        if (USERID_ISVALID(dropUserId))
         {
           // Should user be moved or just added to the new group?
           bool moveUser;
@@ -336,7 +336,7 @@ void UserViewBase::slotDoubleClicked(const QModelIndex& index)
   if (static_cast<ContactListModel::ItemType>
       (index.data(ContactListModel::ItemTypeRole).toInt()) == ContactListModel::UserItem)
   {
-    int userId = index.data(ContactListModel::UserIdRole).toInt();
+    UserId userId = index.data(ContactListModel::UserIdRole).value<UserId>();
     emit userDoubleClicked(userId);
   }
   else

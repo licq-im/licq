@@ -50,7 +50,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendUrlEvent */
 
-UserSendUrlEvent::UserSendUrlEvent(int userId, QWidget* parent)
+UserSendUrlEvent::UserSendUrlEvent(const UserId& userId, QWidget* parent)
   : UserSendCommon(UrlEvent, userId, parent, "UserSendUrlEvent")
 {
   myMainWidget->addWidget(myViewSplitter);

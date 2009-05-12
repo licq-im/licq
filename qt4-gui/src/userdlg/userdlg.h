@@ -23,6 +23,8 @@
 
 #include <config.h>
 
+#include <licq_types.h>
+
 #include <QDialog>
 #include <QMap>
 #include <QPushButton>
@@ -70,7 +72,7 @@ public:
    * @param userId User id
    * @param parent Parent widget
    */
-  UserDlg(int userId, QWidget* parent = 0);
+  UserDlg(const UserId& userId, QWidget* parent = 0);
 
   /**
    * Destructor
@@ -111,7 +113,7 @@ public:
    *
    * @ return User id
    */
-  int userId() const { return myUserId; }
+  const UserId& userId() const { return myUserId; }
 
 signals:
   void finished(UserDlg* userDlg);
@@ -151,7 +153,7 @@ private slots:
    * @param userId Id for affected user
    * @param subSignal Sub signal telling what the change was
    */
-  void userUpdated(int userId, unsigned long subSignal);
+  void userUpdated(const UserId& userId, unsigned long subSignal);
 
   /**
    * Server request has finished
@@ -171,7 +173,7 @@ private slots:
   void resetCaption();
 
 private:
-  int myUserId;
+  UserId myUserId;
   bool myIsOwner;
   unsigned long myIcqEventTag;
   QString myBasicTitle;

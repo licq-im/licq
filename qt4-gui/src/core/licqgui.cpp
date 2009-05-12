@@ -344,19 +344,14 @@ void LicqGui::loadFloatiesConfig()
   licqConf.ReadNum("Num", nFloaties, 0);
   for (unsigned short i = 0; i < nFloaties; i++)
   {
-    sprintf(key, "Floaty%d.UserId", i);
-    int userId;
-    if (!licqConf.ReadNum(key, userId))
-    {
-      // No user id probably means we're reading old config, try to read the old parameters instead
-      sprintf(key, "Floaty%d.Ppid", i);
-      unsigned long ppid;
-      licqConf.ReadNum(key, ppid, LICQ_PPID);
-      sprintf(key, "Floaty%d.Uin", i);
-      licqConf.ReadStr(key, szTemp, "");
-      if (szTemp[0] != '\0')
-        userId = gUserManager.getUserFromAccount(szTemp, ppid);
-    }
+    sprintf(key, "Floaty%d.Ppid", i);
+    unsigned long ppid;
+    licqConf.ReadNum(key, ppid, LICQ_PPID);
+    sprintf(key, "Floaty%d.Uin", i);
+    licqConf.ReadStr(key, szTemp, "");
+    if (szTemp[0] == '\0')
+      continue;
+    UserId userId = LicqUser::makeUserId(szTemp, ppid);
 
     sprintf(key, "Floaty%d.X", i);
     licqConf.ReadNum(key, xPosF, 0);
@@ -365,7 +360,7 @@ void LicqGui::loadFloatiesConfig()
     sprintf(key, "Floaty%d.W", i);
     licqConf.ReadNum(key, wValF, 80);
 
-    if (userId != 0)
+    if (USERID_ISVALID(userId))
       createFloaty(userId, xPosF, yPosF, wValF);
   }
 }
@@ -404,8 +399,10 @@ void LicqGui::saveConfig()
   for (unsigned short i = 0; i < FloatyView::floaties.size(); i++)
   {
     FloatyView* iter = FloatyView::floaties.at(i);
-    sprintf(key, "Floaty%d.UserId", i);
-    licqConf.WriteNum(key, iter->userId());
+    sprintf(key, "Floaty%d.Ppid", i);
+    licqConf.WriteNum(key, LicqUser::getUserProtocolId(iter->userId()));
+    sprintf(key, "Floaty%d.Uin", i);
+    licqConf.writeString(key, LicqUser::getUserAccountId(iter->userId()));
     sprintf(key, "Floaty%d.X", i);
     licqConf.WriteNum(key, (unsigned short)(iter->x() > 0 ? iter->x() : 0));
     sprintf(key, "Floaty%d.Y", i);
@@ -452,26 +449,27 @@ int LicqGui::Run(CICQDaemon* daemon)
 
   // Contact list model
   myContactList = new ContactListModel(this);
-  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, int)),
-      myContactList, SLOT(listUpdated(unsigned long, int, int)));
-  connect(mySignalManager, SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
-      myContactList, SLOT(userUpdated(int, unsigned long, int)));
+  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, const UserId&)),
+      myContactList, SLOT(listUpdated(unsigned long, int, const UserId&)));
+  connect(mySignalManager, SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
+      myContactList, SLOT(userUpdated(const UserId&, unsigned long, int)));
 
-  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, int)),
-      SLOT(listUpdated(unsigned long, int, int)));
-  connect(mySignalManager, SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
-      SLOT(userUpdated(int, unsigned long, int, unsigned long)));
-  connect(mySignalManager, SIGNAL(socket(int, unsigned long)),
-      SLOT(convoSet(int, unsigned long)));
-  connect(mySignalManager, SIGNAL(convoJoin(int, unsigned long, unsigned long)),
-      SLOT(convoJoin(int, unsigned long, unsigned long)));
-  connect(mySignalManager, SIGNAL(convoLeave(int, unsigned long, unsigned long)),
-      SLOT(convoLeave(int, unsigned long, unsigned long)));
-  connect(mySignalManager, SIGNAL(ui_message(int)),
-      SLOT(showMessageDialog(int)));
-  connect(mySignalManager, SIGNAL(ui_viewevent(int)), SLOT(showNextEvent(int)));
-  connect(mySignalManager, SIGNAL(eventTag(int, unsigned long)),
-      SLOT(addEventTag(int, unsigned long)));
+  connect(mySignalManager, SIGNAL(updatedList(unsigned long, int, const UserId&)),
+      SLOT(listUpdated(unsigned long, int, const UserId&)));
+  connect(mySignalManager, SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
+      SLOT(userUpdated(const UserId&, unsigned long, int, unsigned long)));
+  connect(mySignalManager, SIGNAL(socket(const UserId&, unsigned long)),
+      SLOT(convoSet(const UserId&, unsigned long)));
+  connect(mySignalManager, SIGNAL(convoJoin(const UserId&, unsigned long, unsigned long)),
+      SLOT(convoJoin(const UserId&, unsigned long, unsigned long)));
+  connect(mySignalManager, SIGNAL(convoLeave(const UserId&, unsigned long, unsigned long)),
+      SLOT(convoLeave(const UserId&, unsigned long, unsigned long)));
+  connect(mySignalManager, SIGNAL(ui_message(const UserId&)),
+      SLOT(showMessageDialog(const UserId&)));
+  connect(mySignalManager, SIGNAL(ui_viewevent(const UserId&)),
+      SLOT(showNextEvent(const UserId&)));
+  connect(mySignalManager, SIGNAL(eventTag(const UserId&, unsigned long)),
+      SLOT(addEventTag(const UserId&, unsigned long)));
 
   myUserMenu = new UserMenu();
   myGroupMenu = new GroupMenu();
@@ -658,7 +656,7 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
     myLicqDaemon->ProtoSetStatus(ppid, status);
 }
 
-bool LicqGui::removeUserFromList(int userId, QWidget* parent)
+bool LicqGui::removeUserFromList(const UserId& userId, QWidget* parent)
 {
   if (parent == NULL)
     parent = myMainWindow;
@@ -678,9 +676,9 @@ bool LicqGui::removeUserFromList(int userId, QWidget* parent)
   return false;
 }
 
-void LicqGui::showInfoDialog(int /* fcn */, int userId, bool toggle, bool updateNow)
+void LicqGui::showInfoDialog(int /* fcn */, const UserId& userId, bool toggle, bool updateNow)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   UserDlg* f = NULL;
@@ -725,9 +723,9 @@ void LicqGui::showInfoDialog(int /* fcn */, int userId, bool toggle, bool update
     f->retrieveSettings();
 }
 
-UserViewEvent* LicqGui::showViewEventDialog(int userId)
+UserViewEvent* LicqGui::showViewEventDialog(const UserId& userId)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return NULL;
 
   for (int i = 0; i < myUserViewList.size(); ++i)
@@ -750,15 +748,15 @@ UserViewEvent* LicqGui::showViewEventDialog(int userId)
 
   e->show();
   userEventFinished(userId);
-  connect(e, SIGNAL(finished(int)), SLOT(userEventFinished(int)));
+  connect(e, SIGNAL(finished(const UserId&)), SLOT(userEventFinished(const UserId&)));
   myUserViewList.append(e);
 
   return e;
 }
 
-UserEventCommon* LicqGui::showEventDialog(int fcn, int userId, int convoId, bool autoPopup)
+UserEventCommon* LicqGui::showEventDialog(int fcn, const UserId& userId, int convoId, bool autoPopup)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return NULL;
 
   LicqUser* user = gUserManager.fetchUser(userId);
@@ -927,27 +925,27 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, int userId, int convoId, bool
   // there might be more than one send window open
   // make sure we only remember one, or it will get complicated
   sendEventFinished(userId);
-  connect(e, SIGNAL(finished(int)), SLOT(sendEventFinished(int)));
+  connect(e, SIGNAL(finished(const UserId&)), SLOT(sendEventFinished(const UserId&)));
   myUserSendList.append(static_cast<UserSendCommon*>(e));
 
   return e;
 }
 
-void LicqGui::replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, int userId)
+void LicqGui::replaceEventDialog(UserSendCommon* oldDialog, UserSendCommon* newDialog, const UserId& userId)
 {
-  disconnect(oldDialog, SIGNAL(finished(int)), this, SLOT(sendEventFinished(int)));
+  disconnect(oldDialog, SIGNAL(finished(const UserId&)), this, SLOT(sendEventFinished(const UserId&)));
   sendEventFinished(userId);
   connect(newDialog, SIGNAL(eventSent(const ICQEvent*)), SIGNAL(eventSent(const ICQEvent*)));
-  connect(newDialog, SIGNAL(finished(int)), SLOT(sendEventFinished(int)));
+  connect(newDialog, SIGNAL(finished(const UserId&)), SLOT(sendEventFinished(const UserId&)));
     myUserSendList.append(newDialog);
 }
 
-void LicqGui::showMessageDialog(int userId)
+void LicqGui::showMessageDialog(const UserId& userId)
 {
   showEventDialog(MessageEvent, userId);
 }
 
-void LicqGui::sendMsg(int userId, const QString& message)
+void LicqGui::sendMsg(const UserId& userId, const QString& message)
 {
   UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(MessageEvent, userId));
   if (event == 0)
@@ -956,7 +954,7 @@ void LicqGui::sendMsg(int userId, const QString& message)
   event->setText(message);
 }
 
-void LicqGui::sendFileTransfer(int userId, const QString& filename, const QString& description)
+void LicqGui::sendFileTransfer(const UserId& userId, const QString& filename, const QString& description)
 {
   UserSendFileEvent* event = dynamic_cast<UserSendFileEvent*>(showEventDialog(FileEvent, userId));
   if (event == 0)
@@ -965,7 +963,7 @@ void LicqGui::sendFileTransfer(int userId, const QString& filename, const QStrin
   event->setFile(filename, description);
 }
 
-void LicqGui::sendChatRequest(int userId)
+void LicqGui::sendChatRequest(const UserId& userId)
 {
   UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(ChatEvent, userId));
   if (event == 0)
@@ -998,8 +996,8 @@ void LicqGui::userDlgFinished(UserDlg* dialog)
   if (myUserDlgList.removeAll(dialog) > 0)
     return;
 
-  gLog.Warn("%sUser Info finished signal for user with no window (%i)!\n",
-      L_WARNxSTR, dialog->userId());
+  gLog.Warn("%sUser Info finished signal for user with no window (%s)!\n",
+      L_WARNxSTR, USERID_TOSTR(dialog->userId()));
 }
 
 void LicqGui::userEventTabDlgDone()
@@ -1007,7 +1005,7 @@ void LicqGui::userEventTabDlgDone()
   myUserEventTabDlg = NULL;
 }
 
-void LicqGui::userEventFinished(int userId)
+void LicqGui::userEventFinished(const UserId& userId)
 {
   for (int i = 0; i < myUserViewList.size(); ++i)
   {
@@ -1020,7 +1018,7 @@ void LicqGui::userEventFinished(int userId)
   }
 }
 
-void LicqGui::sendEventFinished(int userId)
+void LicqGui::sendEventFinished(const UserId& userId)
 {
   // go through the whole list, since there might be more than one hit
   for (int i = 0; i < myUserSendList.size(); ++i)
@@ -1031,9 +1029,9 @@ void LicqGui::sendEventFinished(int userId)
   }
 }
 
-void LicqGui::showDefaultEventDialog(int userId)
+void LicqGui::showDefaultEventDialog(const UserId& userId)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
@@ -1143,21 +1141,24 @@ void LicqGui::showAllOwnerEvents()
     if (o == NULL)
       continue;
     unsigned short nNumMsg = o->NewMessages();
+    UserId userId = o->id();
     gUserManager.DropOwner(o);
 
     if (nNumMsg > 0)
-      showViewEventDialog(static_cast<int>((*_ppit)->PPID()));
+      showViewEventDialog(userId);
   }
   FOR_EACH_PROTO_PLUGIN_END
 }
 
-void LicqGui::showNextEvent(int userId)
+void LicqGui::showNextEvent(const UserId& uid)
 {
   // Do nothing if there are no events pending
-  if (LicqUser::getNumUserEvents() == 0 || userId == 0)
+  if (LicqUser::getNumUserEvents() == 0)
     return;
 
-  if (userId < 0)
+  UserId userId = uid;
+
+  if (!USERID_ISVALID(userId))
   {
     // Do system messages first
     FOR_EACH_PROTO_PLUGIN_START(myLicqDaemon)
@@ -1187,7 +1188,7 @@ void LicqGui::showNextEvent(int userId)
     FOR_EACH_USER_END
   }
 
-  if (userId > 0)
+  if (USERID_ISVALID(userId))
   {
     if (Config::Chat::instance()->msgChatView())
     {
@@ -1230,7 +1231,7 @@ void LicqGui::showAllEvents()
   if (numMsg > 0)
     showAllOwnerEvents();
 
-  list<int> users;
+  list<UserId> users;
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->NewMessages() > 0)
@@ -1238,12 +1239,12 @@ void LicqGui::showAllEvents()
   }
   FOR_EACH_USER_END
 
-  list<int>::iterator iter;
+  list<UserId>::iterator iter;
   for (iter = users.begin(); iter != users.end(); iter++)
     showDefaultEventDialog(*iter);
 }
 
-void LicqGui::toggleFloaty(int userId)
+void LicqGui::toggleFloaty(const UserId& userId)
 {
   FloatyView* v = FloatyView::findFloaty(userId);
   if (v == NULL)
@@ -1252,10 +1253,10 @@ void LicqGui::toggleFloaty(int userId)
     delete v;
 }
 
-void LicqGui::createFloaty(int userId,
+void LicqGui::createFloaty(const UserId& userId,
    unsigned short x, unsigned short y, unsigned short w)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
   const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
   if (u == NULL)
@@ -1263,8 +1264,8 @@ void LicqGui::createFloaty(int userId,
 
   FloatyView* f = new FloatyView(myContactList, u);
 
-  connect(f, SIGNAL(userDoubleClicked(int)),
-      SLOT(showDefaultEventDialog(int)));
+  connect(f, SIGNAL(userDoubleClicked(const UserId&)),
+      SLOT(showDefaultEventDialog(const UserId&)));
 
   gUserManager.DropUser(u);
 
@@ -1282,7 +1283,7 @@ void LicqGui::createFloaty(int userId,
   f->show();
 }
 
-void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, int userId)
+void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, const UserId& userId)
 {
   switch (subSignal)
   {
@@ -1344,13 +1345,13 @@ void LicqGui::listUpdated(unsigned long subSignal, int /* argument */, int userI
   }
 }
 
-void LicqGui::userUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid)
+void LicqGui::userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
   const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
   if (u == NULL)
   {
-    gLog.Warn("%sLicqGui::userUpdated(): Invalid user received: %i\n",
-        L_ERRORxSTR, userId);
+    gLog.Warn("%sLicqGui::userUpdated(): Invalid user received: %s\n",
+        L_ERRORxSTR, USERID_TOSTR(userId));
     return;
   }
   QString id = u->accountId().c_str();
@@ -1482,12 +1483,12 @@ void LicqGui::userUpdated(int userId, unsigned long subSignal, int argument, uns
   }
 }
 
-void LicqGui::updateUserData(int userId)
+void LicqGui::updateUserData(const UserId& userId)
 {
   myContactList->updateUser(userId);
 }
 
-void LicqGui::convoSet(int userId, unsigned long convoId)
+void LicqGui::convoSet(const UserId& userId, unsigned long convoId)
 {
   for (int i = 0; i < myUserSendList.size(); ++i)
   {
@@ -1500,7 +1501,7 @@ void LicqGui::convoSet(int userId, unsigned long convoId)
   }
 }
 
-void LicqGui::convoJoin(int userId, unsigned long ppid, unsigned long convoId)
+void LicqGui::convoJoin(const UserId& userId, unsigned long ppid, unsigned long convoId)
 {
   for (int i = 0; i < myUserSendList.size(); ++i)
   {
@@ -1513,7 +1514,7 @@ void LicqGui::convoJoin(int userId, unsigned long ppid, unsigned long convoId)
   }
 }
 
-void LicqGui::convoLeave(int userId, unsigned long ppid, unsigned long convoId)
+void LicqGui::convoLeave(const UserId& userId, unsigned long ppid, unsigned long convoId)
 {
   for (int i = 0; i < myUserSendList.size(); ++i)
   {
@@ -1527,9 +1528,9 @@ void LicqGui::convoLeave(int userId, unsigned long ppid, unsigned long convoId)
   }
 }
 
-void LicqGui::addEventTag(int userId, unsigned long eventTag)
+void LicqGui::addEventTag(const UserId& userId, unsigned long eventTag)
 {
-  if (userId == 0 || eventTag == 0)
+  if (!USERID_ISVALID(userId) || eventTag == 0)
     return;
 
   for (int i = 0; i < myUserSendList.size(); ++i)

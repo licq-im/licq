@@ -80,7 +80,7 @@ ContactListModel::~ContactListModel()
     delete mySystemGroups[i];
 }
 
-void ContactListModel::listUpdated(unsigned long subSignal, int argument, int userId)
+void ContactListModel::listUpdated(unsigned long subSignal, int argument, const UserId& userId)
 {
   switch(subSignal)
   {
@@ -93,8 +93,8 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, int us
       const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL)
       {
-        gLog.Warn("%sContactList::listUpdated(): Invalid user received: %i\n",
-            L_ERRORxSTR, userId);
+        gLog.Warn("%sContactList::listUpdated(): Invalid user received: %s\n",
+            L_ERRORxSTR, USERID_TOSTR(userId));
         break;
       }
       addUser(u);
@@ -167,7 +167,7 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, int us
   }
 }
 
-void ContactListModel::userUpdated(int userId, unsigned long subSignal, int argument)
+void ContactListModel::userUpdated(const UserId& userId, unsigned long subSignal, int argument)
 {
   // Skip events for owners
   if (gUserManager.isOwner(userId))
@@ -176,8 +176,8 @@ void ContactListModel::userUpdated(int userId, unsigned long subSignal, int argu
   ContactUserData* user = findUser(userId);
   if (user == NULL)
   {
-    gLog.Warn("%sContactList::userUpdated(): Invalid user received: %i\n",
-        L_ERRORxSTR, userId);
+    gLog.Warn("%sContactList::userUpdated(): Invalid user received: %s\n",
+        L_ERRORxSTR, USERID_TOSTR(userId));
     return;
   }
 
@@ -185,7 +185,7 @@ void ContactListModel::userUpdated(int userId, unsigned long subSignal, int argu
   user->update(subSignal, argument);
 }
 
-void ContactListModel::updateUser(int userId)
+void ContactListModel::updateUser(const UserId& userId)
 {
   ContactUserData* userData = findUser(userId);
   if (userData == NULL)
@@ -322,7 +322,7 @@ ContactUserData* ContactListModel::findUser(QString id, unsigned long ppid) cons
   return 0;
 }
 
-ContactUserData* ContactListModel::findUser(int userId) const
+ContactUserData* ContactListModel::findUser(const UserId& userId) const
 {
   foreach (ContactUserData* user, myUsers)
   {
@@ -390,7 +390,7 @@ void ContactListModel::updateUserGroup(ContactUserData* user, ContactGroup* grou
     delete member;
 }
 
-void ContactListModel::removeUser(int userId)
+void ContactListModel::removeUser(const UserId& userId)
 {
   ContactUserData* user = findUser(userId);
   if (user == NULL)
@@ -542,7 +542,7 @@ QModelIndex ContactListModel::userIndex(QString id, unsigned long ppid, int colu
   return QModelIndex();
 }
 
-QModelIndex ContactListModel::userIndex(int userId, int column) const
+QModelIndex ContactListModel::userIndex(const UserId& userId, int column) const
 {
   ContactUserData* userData = findUser(userId);
   if (userData != NULL)
@@ -586,4 +586,9 @@ QModelIndex ContactListModel::groupIndex(int id) const
 bool ContactListModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
   return static_cast<ContactItem*>(index.internalPointer())->setData(value, role);
+}
+
+uint qHash(const UserId& userId)
+{
+  return qHash(userId.c_str());
 }

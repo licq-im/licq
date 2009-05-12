@@ -46,7 +46,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendContactEvent */
 
-UserSendContactEvent::UserSendContactEvent(int userId, QWidget* parent)
+UserSendContactEvent::UserSendContactEvent(const UserId& userId, QWidget* parent)
   : UserSendCommon(ContactEvent, userId, parent, "UserSendContactEvent")
 {
   myMassMessageCheck->setChecked(false);
@@ -87,7 +87,7 @@ UserSendContactEvent::~UserSendContactEvent()
   // Empty
 }
 
-void UserSendContactEvent::setContact(int userId)
+void UserSendContactEvent::setContact(const UserId& userId)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
 
@@ -136,7 +136,7 @@ void UserSendContactEvent::send()
 
   StringList users;
 
-  int userId;
+  UserId userId;
   foreach (userId, myContactsList->contacts())
   {
     const LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);

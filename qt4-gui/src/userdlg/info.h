@@ -93,7 +93,7 @@ public:
    *
    * @param userId User id
    */
-  void apply2(int userId);
+  void apply2(const UserId& userId);
 
   /**
    * User was updated
@@ -404,7 +404,7 @@ private:
   void savePageKabc();
 #endif
 
-  int myUserId;
+  UserId myUserId;
   QString myId;
   unsigned long myPpid;
   bool m_bOwner;

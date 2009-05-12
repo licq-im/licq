@@ -197,7 +197,7 @@ void OwnerManagerDlg::registerDone(bool success, QString /* newId */, unsigned l
   if (success)
   {
     updateOwners();
-    LicqGui::instance()->showInfoDialog(mnuUserGeneral, static_cast<int>(newPpid));
+    LicqGui::instance()->showInfoDialog(mnuUserGeneral, gUserManager.ownerUserId(newPpid));
   }
 }
 

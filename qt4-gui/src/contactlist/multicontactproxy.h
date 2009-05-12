@@ -21,6 +21,10 @@
 #ifndef MULTICONTACTPROXY_H
 #define MULTICONTACTPROXY_H
 
+// Extra forward declaration of qHash needed before QSet include or it won't work
+#include <licq_types.h>
+unsigned int qHash(const UserId& userId);
+
 #include <QPair>
 #include <QSet>
 
@@ -67,14 +71,14 @@ public:
    *
    * @param userId User id
    */
-  void add(int userId);
+  void add(const UserId& userId);
 
   /**
    * Remove a contact from the list
    *
    * @param userId User id
    */
-  void remove(int userId);
+  void remove(const UserId& userId);
 
   /**
    * Remove a list of contacts from the list
@@ -103,7 +107,7 @@ public:
    *
    * @return A set containing the contacts
    */
-  const QSet<int>& contacts() const
+  const QSet<UserId>& contacts() const
   { return myContacts; }
 
   /**
@@ -124,7 +128,7 @@ private:
    */
   bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
-  QSet<int> myContacts;
+  QSet<UserId> myContacts;
 };
 
 } // namespace LicqQtGui

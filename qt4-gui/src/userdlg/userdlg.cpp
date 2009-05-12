@@ -46,7 +46,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserDlg */
 
-UserDlg::UserDlg(int userId, QWidget* parent)
+UserDlg::UserDlg(const UserId& userId, QWidget* parent)
   : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint),
     myUserId(userId),
     myIcqEventTag(0)
@@ -122,8 +122,8 @@ UserDlg::UserDlg(int userId, QWidget* parent)
   resetCaption();
 
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
-      SLOT(userUpdated(int, unsigned long)));
+      SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
+      SLOT(userUpdated(const UserId&, unsigned long)));
 
   QDialog::show();
 }
@@ -224,7 +224,7 @@ void UserDlg::apply()
   LicqGui::instance()->updateUserData(myUserId);
 }
 
-void UserDlg::userUpdated(int userId, unsigned long subSignal)
+void UserDlg::userUpdated(const UserId& userId, unsigned long subSignal)
 {
   if (userId != myUserId)
     return;

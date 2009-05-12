@@ -59,7 +59,7 @@ QStringList HistoryView::getStyleNames(bool includeHistoryStyles)
   return styleList;
 }
 
-HistoryView::HistoryView(bool historyMode, int userId, QWidget* parent)
+HistoryView::HistoryView(bool historyMode, const UserId& userId, QWidget* parent)
   : MLView(parent),
     myUserId(userId)
 {
@@ -148,7 +148,7 @@ void HistoryView::setReverse(bool reverse)
   myReverse = reverse;
 }
 
-void HistoryView::setOwner(int userId)
+void HistoryView::setOwner(const UserId& userId)
 {
   myUserId = userId;
 }
@@ -237,7 +237,7 @@ void HistoryView::internalAddMsg(QString s)
 
 void HistoryView::addMsg(const ICQEvent* event)
 {
-  int userId = gUserManager.getUserFromAccount(event->Id(), event->PPID());
+  UserId userId = LicqUser::makeUserId(event->Id(), event->PPID());
   if (userId == myUserId && event->UserEvent() != NULL)
     addMsg(event->UserEvent());
 }
@@ -378,7 +378,7 @@ void HistoryView::addMsg(direction dir, bool fromHistory, QString eventDescripti
   internalAddMsg(s);
 }
 
-void HistoryView::addMsg(const CUserEvent* event, int userId)
+void HistoryView::addMsg(const CUserEvent* event, const UserId& uid)
 {
   QDateTime date;
   date.setTime_t(event->Time());
@@ -388,8 +388,7 @@ void HistoryView::addMsg(const CUserEvent* event, int userId)
   QString contactName;
   QTextCodec* codec = NULL;
 
-  if (userId == 0)
-    userId = myUserId;
+  UserId userId = USERID_ISVALID(uid) ? uid : myUserId;
 
   const LicqUser* u = gUserManager.fetchUser(userId);
   unsigned long myPpid = 0;

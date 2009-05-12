@@ -49,7 +49,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ShowAwayMsgDlg */
 
-ShowAwayMsgDlg::ShowAwayMsgDlg(int userId, bool fetch, QWidget* parent)
+ShowAwayMsgDlg::ShowAwayMsgDlg(const UserId& userId, bool fetch, QWidget* parent)
   : QDialog(parent),
     myUserId(userId),
     icqEventTag(0)

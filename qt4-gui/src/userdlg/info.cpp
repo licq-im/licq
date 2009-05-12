@@ -146,7 +146,7 @@ void UserPages::Info::apply(ICQUser* user)
   savePagePicture(user);
 }
 
-void UserPages::Info::apply2(int /* userId */)
+void UserPages::Info::apply2(const UserId& /* userId */)
 {
   if (myAliasHasChanged)
     gLicqDaemon->updateUserAlias(myUserId);

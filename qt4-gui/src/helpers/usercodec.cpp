@@ -119,7 +119,7 @@ QTextCodec* UserCodec::codecForProtoUser(const QString& id, unsigned long ppid)
   return codec;
 }
 
-const QTextCodec* UserCodec::codecForUserId(int userId)
+const QTextCodec* UserCodec::codecForUserId(const UserId& userId)
 {
   QTextCodec* codec = defaultEncoding();
 

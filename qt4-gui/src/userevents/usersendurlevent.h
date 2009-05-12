@@ -39,7 +39,7 @@ public:
    * @param userId User to open dialog for
    * @param parent Parent widget
    */
-  UserSendUrlEvent(int userId, QWidget* parent = 0);
+  UserSendUrlEvent(const UserId& userId, QWidget* parent = 0);
   virtual ~UserSendUrlEvent();
 
   virtual bool eventFilter(QObject* watched, QEvent* e);

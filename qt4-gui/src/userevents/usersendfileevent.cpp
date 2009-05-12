@@ -53,7 +53,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UserSendFileEvent */
 
-UserSendFileEvent::UserSendFileEvent(int userId, QWidget* parent)
+UserSendFileEvent::UserSendFileEvent(const UserId& userId, QWidget* parent)
   : UserSendCommon(FileEvent, userId, parent, "UserSendFileEvent")
 {
   myMassMessageCheck->setChecked(false);

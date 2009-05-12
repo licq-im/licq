@@ -37,7 +37,7 @@ public:
    * @param userId User to open dialog for
    * @param parent Parent widget
    */
-  UserSendMsgEvent(int userId, QWidget* parent = 0);
+  UserSendMsgEvent(const UserId& userId, QWidget* parent = 0);
   virtual ~UserSendMsgEvent();
 
 private:

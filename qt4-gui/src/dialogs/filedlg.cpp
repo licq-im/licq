@@ -57,7 +57,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::FileDlg */
 
-FileDlg::FileDlg(int userId, QWidget* parent)
+FileDlg::FileDlg(const UserId& userId, QWidget* parent)
   : QWidget(parent),
     myUserId(userId)
 {

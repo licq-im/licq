@@ -60,7 +60,7 @@ using namespace LicqQtGui;
 using std::list;
 using std::string;
 
-UserEventCommon::UserEventCommon(int userId, QWidget* parent, const char* name)
+UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const char* name)
   : QWidget(parent),
     myHighestEventId(-1)
 {
@@ -256,7 +256,7 @@ void UserEventCommon::updateShortcuts()
   pushToolTip(mySecure, tr("Open / Close secure channel"));
 }
 
-bool UserEventCommon::isUserInConvo(int userId) const
+bool UserEventCommon::isUserInConvo(const UserId& userId) const
 {
   bool found = (std::find(myUsers.begin(), myUsers.end(), userId) != myUsers.end());
   return found;
@@ -351,8 +351,8 @@ void UserEventCommon::pushToolTip(QAction* action, QString tooltip)
 void UserEventCommon::connectSignal()
 {
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(updatedUser(int, unsigned long, int, unsigned long)),
-      SLOT(updatedUser(int, unsigned long, int, unsigned long)));
+      SIGNAL(updatedUser(const UserId&, unsigned long, int, unsigned long)),
+      SLOT(updatedUser(const UserId&, unsigned long, int, unsigned long)));
 }
 
 void UserEventCommon::setEncoding(QAction* action)
@@ -448,7 +448,7 @@ void UserEventCommon::showEncodingsMenu()
   dynamic_cast<QToolButton*>(myToolBar->widgetForAction(myEncoding))->showMenu();
 }
 
-void UserEventCommon::updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid)
+void UserEventCommon::updatedUser(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
   if (!isUserInConvo(userId))
   {

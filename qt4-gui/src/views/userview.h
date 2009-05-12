@@ -54,7 +54,7 @@ public:
    *
    * @return id of current user
    */
-  int currentUserId() const;
+  UserId currentUserId() const;
 
   /**
    * Get the currently selected user

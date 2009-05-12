@@ -56,7 +56,7 @@ public:
   /**
    * Return the user id
    */
-  int userId() const { return myUserId; }
+  const UserId& userId() const { return myUserId; }
 
   /**
    * Find the floaty for a user
@@ -64,7 +64,7 @@ public:
    * @param userId User id
    * @return The floaty for the user or null if no floaty exists for the user
    */
-  static FloatyView* findFloaty(int userId);
+  static FloatyView* findFloaty(const UserId& userId);
 
   // List of existing floaties
   static UserFloatyList floaties;
@@ -77,7 +77,7 @@ private:
    */
   virtual void mouseMoveEvent(QMouseEvent* event);
 
-  int myUserId;
+  const UserId& myUserId;
 
 private slots:
   /**

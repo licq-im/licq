@@ -39,7 +39,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::CustomAutoRespDlg */
 
-CustomAutoRespDlg::CustomAutoRespDlg(int userId, QWidget* parent)
+CustomAutoRespDlg::CustomAutoRespDlg(const UserId& userId, QWidget* parent)
   : QDialog(parent),
     myUserId(userId)
 {

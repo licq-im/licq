@@ -36,7 +36,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::RefuseDlg */
 
-RefuseDlg::RefuseDlg(int userId, const QString& t, QWidget* parent)
+RefuseDlg::RefuseDlg(const UserId& userId, const QString& t, QWidget* parent)
    : QDialog(parent)
 {
   Support::setWidgetProps(this, "RefuseDialog");
