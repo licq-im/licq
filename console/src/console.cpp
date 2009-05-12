@@ -517,7 +517,7 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
       for (unsigned short i = 0; i < MAX_CON; i++)
       {
         if (s->userId() == winCon[i]->sLastContact)
-          winCon[i]->sLastContact = 0;
+            winCon[i]->sLastContact = USERID_NONE;
       }
     }
     PrintStatus();
@@ -568,9 +568,9 @@ void CLicqConsole::ProcessSignal(LicqSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqConsole::AddEventTag
  *-------------------------------------------------------------------------*/
-void CLicqConsole::AddEventTag(int userId, unsigned long _nEventTag)
+void CLicqConsole::AddEventTag(const UserId& userId, unsigned long _nEventTag)
 {
-  if (userId == 0 || !_nEventTag)
+  if (!USERID_ISVALID(userId) || !_nEventTag)
     return;
 
   CData *data;
@@ -1466,10 +1466,10 @@ bool CLicqConsole::ParseMacro(char *szMacro)
 /*---------------------------------------------------------------------------
  * CLicqConsole::SaveLastUser
  *-------------------------------------------------------------------------*/
-void CLicqConsole::SaveLastUser(int userId)
+void CLicqConsole::SaveLastUser(const UserId& userId)
 {
   // Save this as the last user
-  if (winMain->sLastContact == 0 || userId != winMain->sLastContact)
+  if (!USERID_ISVALID(winMain->sLastContact) || userId != winMain->sLastContact)
   {
     winMain->sLastContact = userId;
     PrintStatus();
@@ -1508,7 +1508,7 @@ char *CLicqConsole::CurrentGroupName()
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Info
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Info(int userId, char *)
+void CLicqConsole::UserCommand_Info(const UserId& userId, char *)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)
@@ -1597,7 +1597,7 @@ void CLicqConsole::InputInfo(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_View
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_View(int userId, char *)
+void CLicqConsole::UserCommand_View(const UserId& userId, char *)
 {
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
@@ -1649,7 +1649,7 @@ void CLicqConsole::UserCommand_View(int userId, char *)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Remove
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Remove(int userId, char *)
+void CLicqConsole::UserCommand_Remove(const UserId& userId, char *)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)
@@ -1713,7 +1713,7 @@ void CLicqConsole::InputRemove(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_FetchAutoResponse
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_FetchAutoResponse(int userId, char *)
+void CLicqConsole::UserCommand_FetchAutoResponse(const UserId& userId, char *)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   winMain->wprintf("%C%AFetching auto-response for %s (%s)...",
@@ -1783,7 +1783,7 @@ int StrToRange(char *sz, int nLast, int nStart)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_History
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_History(int userId, char *szArg)
+void CLicqConsole::UserCommand_History(const UserId& userId, char *szArg)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)
@@ -1877,7 +1877,7 @@ void CLicqConsole::UserCommand_History(int userId, char *szArg)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Msg
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Msg(int userId, char *)
+void CLicqConsole::UserCommand_Msg(const UserId& userId, char *)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)
@@ -1898,7 +1898,7 @@ void CLicqConsole::UserCommand_Msg(int userId, char *)
 /*---------------------------------------------------------------------------
  * SendDirect
  *-------------------------------------------------------------------------*/
-static bool SendDirect(int userId, char c)
+static bool SendDirect(const UserId& userId, char c)
 {
   bool bDirect = (c != 's');
   const LicqUser* u = gUserManager.fetchUser(userId);
@@ -2007,7 +2007,7 @@ void CLicqConsole::InputMessage(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_SendFile
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_SendFile(int userId, char *)
+void CLicqConsole::UserCommand_SendFile(const UserId& userId, char *)
 {
   // Get the file name
   winMain->fProcessInput = &CLicqConsole::InputSendFile;
@@ -2123,7 +2123,7 @@ void CLicqConsole::InputSendFile(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_SetAutoResponse
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_SetAutoResponse(int /* userId */, char *)
+void CLicqConsole::UserCommand_SetAutoResponse(const UserId& /* userId */, char *)
 {
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputAutoResponse;
@@ -2181,7 +2181,7 @@ void CLicqConsole::InputAutoResponse(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Url
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Url(int userId, char *)
+void CLicqConsole::UserCommand_Url(const UserId& userId, char *)
 {
   // First put this console into edit mode
   winMain->fProcessInput = &CLicqConsole::InputUrl;
@@ -2295,7 +2295,7 @@ void CLicqConsole::InputUrl(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Sms
  *-------------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Sms(int userId, char *)
+void CLicqConsole::UserCommand_Sms(const UserId& userId, char *)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)
@@ -3105,7 +3105,7 @@ void CLicqConsole::InputRegistrationWizard(int cIn)
 /*---------------------------------------------------------------------------
  * CLicqConsole::FileChatOffer
  *-------------------------------------------------------------------------*/
-void CLicqConsole::FileChatOffer(CUserEvent *e, int userId)
+void CLicqConsole::FileChatOffer(CUserEvent *e, const UserId& userId)
 {
   CEventFile *f = (CEventFile *)e;
   // Get y or n
@@ -3211,7 +3211,7 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 /*-------------------------------------------------------------------------
  * CLicqConsole::UserCommand_Secure
  *-----------------------------------------------------------------------*/
-void CLicqConsole::UserCommand_Secure(int userId, char *szStatus)
+void CLicqConsole::UserCommand_Secure(const UserId& userId, char *szStatus)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
 
@@ -3278,7 +3278,7 @@ void CLicqConsole::UserSelect()
   winMain->state = STATE_LE;
 
   //TODO which owner
-  winMain->data = new DataUserSelect(static_cast<int>(LICQ_PPID));
+  winMain->data = new DataUserSelect(gUserManager.ownerUserId(LICQ_PPID));
 
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   winMain->wprintf("%A%CEnter your password for %s (%s):%C%Z\n", A_BOLD,

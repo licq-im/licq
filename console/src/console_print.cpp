@@ -148,7 +148,7 @@ void CLicqConsole::PrintStatus()
   else
     strcpy(szMsgStr, "No Messages");
 
-  if (winMain->sLastContact > 0)
+  if (USERID_ISVALID(winMain->sLastContact))
   {
     const LicqUser* u = gUserManager.fetchUser(winMain->sLastContact);
     if (u == NULL)
@@ -571,7 +571,7 @@ void CLicqConsole::PrintHistory(HistoryList &lHistory, unsigned short nStart,
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_General
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_General(int userId)
+void CLicqConsole::PrintInfo_General(const UserId& userId)
 {
   // Print the users info to the main window
   const LicqUser* u = gUserManager.fetchUser(userId);
@@ -646,7 +646,7 @@ void CLicqConsole::PrintInfo_General(int userId)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_More
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_More(int userId)
+void CLicqConsole::PrintInfo_More(const UserId& userId)
 {
   // Print the users info to the main window
   const LicqUser* u = gUserManager.fetchUser(userId);
@@ -697,7 +697,7 @@ void CLicqConsole::PrintInfo_More(int userId)
 /*---------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_Work
  *-------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_Work(int userId)
+void CLicqConsole::PrintInfo_Work(const UserId& userId)
 {
   // Print the users info to the main window
   const LicqUser* u = gUserManager.fetchUser(userId);
@@ -748,7 +748,7 @@ void CLicqConsole::PrintInfo_Work(int userId)
 /*----------------------------------------------------------------------------
  * CLicqConsole::PrintInfo_About
  *--------------------------------------------------------------------------*/
-void CLicqConsole::PrintInfo_About(int userId)
+void CLicqConsole::PrintInfo_About(const UserId& userId)
 {
   // Print the user's about info to the main window
   const LicqUser* u = gUserManager.fetchUser(userId);

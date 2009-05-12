@@ -8,6 +8,7 @@
 #include <list>
 
 #include <licq_socket.h>
+#include <licq_types.h>
 
 class CICQDaemon;
 class TCPSocket;
@@ -47,7 +48,7 @@ public:
   void ProcessEvent(ICQEvent *);
   void ProcessServer();
   void ProcessLog();
-  void AddEventTag(int userId, unsigned long eventTag);
+  void AddEventTag(const UserId& userId, unsigned long eventTag);
 
 friend class CRMSClient;
 

@@ -35,7 +35,7 @@ struct SColorMap
 struct SUser
 {
   char szKey[256];
-  int userId;
+  UserId userId;
   char *szLine;
   bool bOffline;
   const struct SColorMap *color;
@@ -47,7 +47,7 @@ struct SUser
 struct SScrollUser
 {
   int pos;
-  int userId;
+  UserId userId;
   const struct SColorMap *color;
 };
 
@@ -116,7 +116,7 @@ public:
   char *CurrentGroupName();
   void SwitchToCon(unsigned short nCon);
   void CreateUserList();
-  void AddEventTag(int userId, unsigned long _nEventTag);
+  void AddEventTag(const UserId& userId, unsigned long _nEventTag);
 
   void InputCommand(int cIn);
   void InputLogWindow(int cIn);
@@ -145,10 +145,10 @@ public:
   void PrintUsers();
   void PrintHelp();
   void PrintHistory(HistoryList &, unsigned short, unsigned short, const char *);
-  void PrintInfo_General(int userId);
-  void PrintInfo_More(int userId);
-  void PrintInfo_Work(int userId);
-  void PrintInfo_About(int userId);
+  void PrintInfo_General(const UserId& userId);
+  void PrintInfo_More(const UserId& userId);
+  void PrintInfo_Work(const UserId& userId);
+  void PrintInfo_About(const UserId& userId);
   void PrintFileStat(CFileTransferManager *);
   void PrintMacros();
   void PrintContactPopup(const char* alias);
@@ -191,28 +191,28 @@ public:
   void TabStatus(char *, struct STabCompletion &);
   void TabSet(char *, struct STabCompletion &);
 
-  void UserCommand_Info(int userId, char *);
-  void UserCommand_Msg(int userId, char *);
-  void UserCommand_View(int userId, char *);
-  void UserCommand_SendFile(int userId, char *);
-  void UserCommand_Url(int userId, char *);
-  void UserCommand_Sms(int userId, char *);
-  void UserCommand_History(int userId, char *);
-  void UserCommand_Remove(int userId, char *);
-  void UserCommand_FetchAutoResponse(int userId, char *);
-  void UserCommand_SetAutoResponse(int userId, char *);
-  void UserCommand_Secure(int userId, char *);
+  void UserCommand_Info(const UserId& userId, char *);
+  void UserCommand_Msg(const UserId& userId, char *);
+  void UserCommand_View(const UserId& userId, char *);
+  void UserCommand_SendFile(const UserId&  userId, char *);
+  void UserCommand_Url(const UserId& userId, char *);
+  void UserCommand_Sms(const UserId& userId, char *);
+  void UserCommand_History(const UserId&  userId, char *);
+  void UserCommand_Remove(const UserId& userId, char *);
+  void UserCommand_FetchAutoResponse(const UserId& userId, char *);
+  void UserCommand_SetAutoResponse(const UserId& userId, char *);
+  void UserCommand_Secure(const UserId& userId, char *);
   void Command_Search();
 
   void Beep() { printf("\a"); fflush(stdout); }
-  void FileChatOffer(CUserEvent *, int userId);
+  void FileChatOffer(CUserEvent *, const UserId& userId);
   void RegistrationWizard();
   void InputRegistrationWizard(int cIn);
   void UserSelect();
   void InputUserSelect(int cIn);
   bool ParseMacro(char *);
-  void SaveLastUser(int userId);
-  int GetContactFromArg(char **);
+  void SaveLastUser(const UserId& userId);
+  UserId GetContactFromArg(char **);
 };
 
 

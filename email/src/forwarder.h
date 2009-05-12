@@ -5,6 +5,8 @@
 #include "config.h"
 #endif
 
+#include <licq_types.h>
+
 class CICQDaemon;
 class TCPSocket;
 class LicqUser;
@@ -43,7 +45,7 @@ public:
   void ProcessSignal(LicqSignal* s);
   void ProcessEvent(ICQEvent *);
 
-  void ProcessUserEvent(int userId, unsigned long nId);
+  void ProcessUserEvent(const UserId& userId, unsigned long nId);
   bool ForwardEvent(const LicqUser* u, const CUserEvent* e);
   bool ForwardEvent_ICQ(const LicqUser* u, const CUserEvent* e);
   bool ForwardEvent_Email(const LicqUser* u, const CUserEvent* e);

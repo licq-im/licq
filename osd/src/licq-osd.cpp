@@ -79,7 +79,7 @@ void ProcessSignal(LicqSignal* s);
 void ProcessEvent(ICQEvent *e);
 #ifdef CP_TRANSLATE
     const char *get_iconv_encoding_name(const char *licq_encoding_name);
-char* my_translate(int userId, const char* msg, const char* userenc);
+char* my_translate(const UserId& userId, const char* msg, const char* userenc);
 #endif
 
 // some variables representing the internal state
@@ -530,7 +530,7 @@ void ProcessSignal(LicqSignal* s)
 
 			if (e == NULL) // event not found
 			{
-              gLog.Warn("%sEvent for user %i not found\n", L_WARNxSTR, s->userId());
+              gLog.Warn("%sEvent for user %s not found\n", L_WARNxSTR, USERID_TOSTR(s->userId()));
                             want_osd=false;
 			}
 		    }
@@ -540,7 +540,7 @@ void ProcessSignal(LicqSignal* s)
 		}
 		else
 		{
-          gLog.Warn("%sUser %i not found\n", L_WARNxSTR, s->userId());
+          gLog.Warn("%sUser %s not found\n", L_WARNxSTR, USERID_TOSTR(s->userId()));
 		    want_osd=false;
 		}
 	    }
@@ -781,7 +781,7 @@ const char *get_iconv_encoding_name(const char *licq_encoding_name)
 // the other user. (change it for example via the licq-qt-gui message window)
 // LicqSignal is needed to get the User for this message -
 // some day i will do this more elegant
-char* my_translate(int /* userId */, const char* msg, const char* userenc)
+char* my_translate(const UserId& /* userId */, const char* msg, const char* userenc)
 {
     // will be deleted outside of this function
     char *result = (char*)malloc(strlen(msg) + 1);
@@ -844,7 +844,7 @@ char* my_translate(int /* userId */, const char* msg, const char* userenc)
 }
 #else
 // a dummy function which helps me to remove the #ifdef CP_TRANSLATEs in a lot of my code
-char* my_translate(int /* userId */, const char* msg, LicqSignal* s)
+char* my_translate(const UserId& /* userId */, const char* msg, LicqSignal* s)
 {
     return strdup(msg);
 }

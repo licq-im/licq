@@ -56,7 +56,8 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       string strUser = packet->GetParameter();
 
       bool newUser;
-      LicqUser* u = gUserManager.fetchUser(strUser.c_str(), MSN_PPID, LOCK_R, true, &newUser);
+      UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
+      LicqUser* u = gUserManager.fetchUser(userId, LOCK_R, true, &newUser);
       if (newUser)
       {
         // MSN uses UTF-8 so we need to set this for all new users automatically
@@ -65,8 +66,6 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         u->SetEnableSave(true);
         u->SaveLicqInfo();
       }
-
-      int userId = u->id();
       gUserManager.DropUser(u);
 
       // Add the user to the conversation
@@ -283,7 +282,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
         m_pDaemon->AddUserConversation(nSock, strUser.c_str());
 
         // Notify the plugins of the new CID
-        int userId = gUserManager.getUserFromAccount(strUser.c_str(), MSN_PPID);
+        UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
         m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_SOCKET, 0, userId, 0, SocketToCID(nSock)));
 
         // Notify the plugins
@@ -311,7 +310,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
       string strUser = packet->GetParameter();
       gLog.Info("%sConnection with %s closed.\n", L_MSNxSTR, strUser.c_str());
 
-      int userId = gUserManager.getUserFromAccount(strUser.c_str(), MSN_PPID);
+      UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
       m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, SocketToCID(nSock)));
 
       m_pDaemon->RemoveUserConversation(nSock, strUser.c_str());
@@ -386,7 +385,7 @@ void CMSN::Send_SB_Packet(const string &strUser, CMSNPacket *p, int nSocket, boo
   if (!u) return;
 
   int nSock = nSocket != -1 ? nSocket : u->SocketDesc(ICQ_CHNxNONE);
-  int userId = u->id();
+  UserId userId = u->id();
   gUserManager.DropUser(u);  
   INetSocket *s = gSocketMan.FetchSocket(nSock);
   if (!s)
@@ -515,7 +514,8 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
     strCookie.c_str(), m_szUserName);
   bool bNewUser = false;
   int nSocket = sock->Descriptor();
-  LicqUser* u = gUserManager.fetchUser(strUser.c_str(), MSN_PPID, LOCK_W, true, &bNewUser);
+  UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W, true, &bNewUser);
   if (!bNewUser)
   {
     u->SetSocketDesc(sock);
@@ -575,7 +575,7 @@ void CMSN::MSNSendMessage(const char* _szUser, const char* _szMsg,
 
   const ICQUser* u = gUserManager.FetchUser(_szUser, MSN_PPID, LOCK_R);
   if (!u) return;
-  int userId = u->id();
+  UserId userId = u->id();
   gUserManager.DropUser(u);
   
   char *szRNMsg = gTranslator.NToRN(_szMsg);

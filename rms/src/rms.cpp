@@ -421,7 +421,7 @@ void CLicqRMS::ProcessSignal(LicqSignal* s)
 /*---------------------------------------------------------------------------
  * CLicqRMS::AddEventTag
  *-------------------------------------------------------------------------*/
-void CLicqRMS::AddEventTag(int userId, unsigned long _nEventTag)
+void CLicqRMS::AddEventTag(const UserId& userId, unsigned long _nEventTag)
 {
   // Temporary code to get account id and ppid until the rest of the plugin is updated to use user id directly
   string accountId;
@@ -1520,7 +1520,7 @@ int CRMSClient::Process_REMUSER()
 
   if (nUin >= 10000)
   {
-    gUserManager.removeUser(gUserManager.getUserFromAccount(data_arg, LICQ_PPID));
+    gUserManager.removeUser(LicqUser::makeUserId(data_arg, LICQ_PPID));
     fprintf(fs, "%d User removed\n", CODE_REMUSERxDONE);
   }
   else

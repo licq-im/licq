@@ -289,12 +289,12 @@ void CLicqForwarder::ProcessEvent(ICQEvent *e)
 }
 
 
-void CLicqForwarder::ProcessUserEvent(int userId, unsigned long nId)
+void CLicqForwarder::ProcessUserEvent(const UserId& userId, unsigned long nId)
 {
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
   {
-    gLog.Warn("%sInvalid user received from daemon (%i).\n", L_FORWARDxSTR, userId);
+    gLog.Warn("%sInvalid user received from daemon (%s).\n", L_FORWARDxSTR, USERID_TOSTR(userId));
     return;
   }
 

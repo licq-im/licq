@@ -81,7 +81,7 @@ CWindow::CWindow(int _rows, int _cols, int _y, int _x, int _scrollback, int _use
     }
   }
 
-  sLastContact = 0;
+  sLastContact = USERID_NONE;
   nLastHistory = 1;
 }
 

@@ -228,12 +228,12 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
 }
 
 
-void CLicqAutoReply::processUserEvent(int userId, unsigned long nId)
+void CLicqAutoReply::processUserEvent(const UserId& userId, unsigned long nId)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)
   {
-    gLog.Warn("%sInvalid user id received from daemon (%i).\n", L_AUTOREPxSTR, userId);
+    gLog.Warn("%sInvalid user id received from daemon (%s).\n", L_AUTOREPxSTR, USERID_TOSTR(userId));
     return;
   }
 
@@ -255,7 +255,7 @@ void CLicqAutoReply::processUserEvent(int userId, unsigned long nId)
   }
 }
 
-bool CLicqAutoReply::autoReplyEvent(int userId, const CUserEvent* event)
+bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* event)
 {
   char *szCommand;
   char buf[4096];

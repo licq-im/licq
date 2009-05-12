@@ -168,9 +168,9 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       if (nLists & FLAG_CONTACT_LIST)
         strUserLists = packet->GetParameter();
 
-      int userId = 0;
+      UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
       if (nLists & FLAG_CONTACT_LIST)
-        userId = gUserManager.addUser(strUser, MSN_PPID, true, false);
+        gUserManager.addUser(strUser, MSN_PPID, true, false);
 
       LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
       if (u)
