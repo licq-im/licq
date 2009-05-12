@@ -80,10 +80,10 @@ public:
   void edit();
   void unsetKey();
 
-  int userId() const { return myUserId; }
+  const UserId& userId() const { return myUserId; }
 
 protected:
-  int myUserId;
+  UserId myUserId;
   GPGKeySelect *keySelect;
   void updateText(const LicqUser* u);
 

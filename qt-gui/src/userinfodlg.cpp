@@ -90,7 +90,7 @@
 
 // -----------------------------------------------------------------------------
 UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-    int userId, QWidget *parent)
+    const UserId& userId, QWidget *parent)
   : QWidget(parent, "UserInfoDialog", WDestructiveClose)
 {
   server = s;
@@ -133,8 +133,8 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
 #endif
 
   connect (tabs, SIGNAL(selected(const QString &)), this, SLOT(updateTab(const QString &)));
-  connect (sigman, SIGNAL(signal_updatedUser(int, unsigned long, int, unsigned long)),
-      this, SLOT(updatedUser(int, unsigned long)));
+  connect (sigman, SIGNAL(signal_updatedUser(const UserId&, unsigned long, int, unsigned long)),
+      this, SLOT(updatedUser(const UserId&, unsigned long)));
 
   btnMain3 = new QPushButton(tr("&Update"), this);
   btnMain4 = new QPushButton(tr("&Close"), this);
@@ -2337,7 +2337,7 @@ void UserInfoDlg::slotUpdate()
   QTextCodec * codec = QTextCodec::codecForLocale();
 
   // This function is only called for owner so we can use user id
-  unsigned long m_nPPID = static_cast<unsigned long>(myUserId);
+  unsigned long m_nPPID = LicqUser::getUserProtocolId(myUserId);
 
   if (currentTab != HistoryInfo && currentTab != PhoneInfo &&
       currentTab != PictureInfo)
@@ -2521,7 +2521,7 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
 }
 
 
-void UserInfoDlg::updatedUser(int userId, unsigned long subSignal)
+void UserInfoDlg::updatedUser(const UserId& userId, unsigned long subSignal)
 {
   if (myUserId != userId)
     return;

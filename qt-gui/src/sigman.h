@@ -22,6 +22,8 @@
 
 #include <qobject.h>
 
+#include <licq_types.h>
+
 class QSocketNotifier;
 class CICQDaemon;
 class LicqSignal;
@@ -48,18 +50,18 @@ protected slots:
 
 signals:
   // Signal signals
-  void signal_updatedList(unsigned long subSignal, int argument, int userId);
-  void signal_updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid);
+  void signal_updatedList(unsigned long subSignal, int argument, const UserId& userId);
+  void signal_updatedUser(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
   void signal_updatedStatus(unsigned long ppid);
   void signal_logon();
   void signal_logoff();
-  void signal_ui_viewevent(int userId);
-  void signal_ui_message(int userId);
+  void signal_ui_viewevent(const UserId& userId);
+  void signal_ui_message(const UserId& userId);
   void signal_protocolPlugin(unsigned long);
-  void signal_eventTag(int userId, unsigned long convoId);
-  void signal_socket(int userId, unsigned long convoId);
-  void signal_convoJoin(int userId, unsigned long ppid, unsigned long convoId);
-  void signal_convoLeave(int userId, unsigned long ppid, unsigned long convoId);
+  void signal_eventTag(const UserId& userId, unsigned long convoId);
+  void signal_socket(const UserId& userId, unsigned long convoId);
+  void signal_convoJoin(const UserId& userId, unsigned long ppid, unsigned long convoId);
+  void signal_convoLeave(const UserId& userId, unsigned long ppid, unsigned long convoId);
   void signal_verifyImage(unsigned long);
   void signal_newOwner(const char *, unsigned long);
   

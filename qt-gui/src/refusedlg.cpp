@@ -31,7 +31,7 @@
 #include "licq_user.h"
 
 
-CRefuseDlg::CRefuseDlg(int userId, QString t, QWidget* parent)
+CRefuseDlg::CRefuseDlg(const UserId& userId, QString t, QWidget* parent)
    : LicqDialog(parent, "RefuseDialog", true)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);

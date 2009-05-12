@@ -38,6 +38,7 @@
 #include <qspinbox.h>
 
 #include <licq_message.h>
+#include <licq_types.h>
 
 #include "mlview.h"
 
@@ -221,11 +222,11 @@ private:
 public:
   static QStringList getStyleNames(bool includeHistoryStyles = false);
 
-  CMessageViewWidget(int userId,
+  CMessageViewWidget(const UserId& userId,
     CMainWindow *m, QWidget *parent = 0, const char *name = 0, bool historyMode = false);
   virtual ~CMessageViewWidget();
 
-  void setOwner(int userId);
+  void setOwner(const UserId& userId);
   void updateContent();
   void clear();
   void addMsg(direction dir, bool fromHistory, QString eventDescription, QDateTime date, 
@@ -246,13 +247,13 @@ public:
   QColor m_colorNotice;
   
 public slots:
-  virtual void addMsg(const CUserEvent* e, int userId = 0);
+  virtual void addMsg(const CUserEvent* e, const UserId& userId = USERID_NONE);
   void addMsg(ICQEvent *);
 
 private:
   void internalAddMsg(QString s);
   QString m_buffer;
-  int myUserId;
+  UserId myUserId;
 };
 
 /* ----------------------------------------------------------------------------- */

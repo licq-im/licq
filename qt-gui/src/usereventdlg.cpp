@@ -104,7 +104,7 @@ using namespace std;
 
 const size_t SHOW_RECENT_NUM = 5;
 
-typedef pair<const CUserEvent *, int> MessageIter;
+typedef pair<const CUserEvent *, UserId> MessageIter;
 
 bool OrderMessages(const MessageIter& m1, const MessageIter& m2)
 {
@@ -113,13 +113,13 @@ bool OrderMessages(const MessageIter& m1, const MessageIter& m2)
 
 // -----------------------------------------------------------------------------
 UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget *parent, const char *name)
+    CMainWindow *m, const UserId& userId, QWidget *parent, const char *name)
   : QWidget(parent, name, WDestructiveClose), m_highestEventId(-1)
 {
   server = s;
   mainwin = m;
   sigman = theSigMan;
-  if (userId != 0)
+  if (USERID_ISVALID(userId))
     m_lUsers.push_back(userId);
   m_bOwner = gUserManager.isOwner(m_lUsers.front());
   m_bDeleteUser = false;
@@ -236,8 +236,8 @@ UserEventCommon::UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
 void UserEventCommon::slot_connectsignal()
 {
-  connect (sigman, SIGNAL(signal_updatedUser(int, unsigned long, int, unsigned long)),
-      this, SLOT(slot_userupdated(int, unsigned long, int, unsigned long)));
+  connect (sigman, SIGNAL(signal_updatedUser(const UserId&, unsigned long, int, unsigned long)),
+      this, SLOT(slot_userupdated(const UserId&, unsigned long, int, unsigned long)));
 }
 
 UserEventTabDlg::UserEventTabDlg(CMainWindow *mainwin, QWidget *parent, const char *name)
@@ -315,8 +315,8 @@ bool UserEventTabDlg::tabExists(QWidget *tab)
 void UserEventTabDlg::updateConvoLabel(UserEventCommon *tab)
 {
   // Show the list of users in the conversation
-  list<int> lUsers = tab->ConvoUsers();
-  list<int>::iterator it;
+  list<UserId> lUsers = tab->ConvoUsers();
+  list<UserId>::iterator it;
   string newLabel = "";
   for (it = lUsers.begin(); it != lUsers.end(); ++it)
   {
@@ -612,7 +612,7 @@ UserEventCommon::~UserEventCommon()
   m_lUsers.clear();
 }
 
-bool UserEventCommon::FindUserInConvo(int userId) const
+bool UserEventCommon::FindUserInConvo(const UserId& userId) const
 {
   return std::find(m_lUsers.begin(), m_lUsers.end(), userId) != m_lUsers.end();
 }
@@ -648,7 +648,7 @@ void UserEventCommon::slot_updatetyping()
 }
 
 //-----UserEventCommon::slot_userupdated-------------------------------------
-void UserEventCommon::slot_userupdated(int userId, unsigned long subSignal, int argument, unsigned long cid)
+void UserEventCommon::slot_userupdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
   if (!FindUserInConvo(userId))
   {
@@ -725,7 +725,7 @@ void UserEventCommon::slot_security()
 
 //=====UserViewEvent=========================================================
 UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget* parent)
+    CMainWindow *m, const UserId& userId, QWidget* parent)
   : UserEventCommon(s, theSigMan, m, userId, parent, "UserViewEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
@@ -1430,15 +1430,8 @@ void UserViewEvent::slot_btnRead4()
       if (id == NULL || ppid == 0)
         break;
 
-      ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
-      int userId;
-      if (u == NULL)
-        userId = gUserManager.addUser(id, ppid, false);
-      else
-      {
-        userId = u->id();
-        gUserManager.DropUser(u);
-      }
+      UserId userId = LicqUser::makeUserId(id, ppid);
+      gUserManager.addUser(id, ppid, false);
 
       mainwin->callInfoTab(mnuUserGeneral, userId, false, true);
       break;
@@ -1472,7 +1465,7 @@ void UserViewEvent::slot_btnReadNext()
 }
 
 
-void UserViewEvent::UserUpdated(int userId, unsigned long subSignal, int argument, unsigned long /* cid */)
+void UserViewEvent::UserUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long /* cid */)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (!u) return;
@@ -1500,7 +1493,7 @@ void UserViewEvent::UserUpdated(int userId, unsigned long subSignal, int argumen
 
 void UserViewEvent::slot_sentevent(ICQEvent *e)
 {
-  int eventUserId = gUserManager.getUserFromAccount(e->Id(), e->PPID());
+  UserId eventUserId = LicqUser::makeUserId(e->Id(), e->PPID());
   if (eventUserId != m_lUsers.front())
     return;
 
@@ -1511,7 +1504,7 @@ void UserViewEvent::slot_sentevent(ICQEvent *e)
 
 //=====UserSendCommon========================================================
 UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget* parent, const char* name)
+    CMainWindow *m, const UserId& userId, QWidget* parent, const char* name)
   : UserEventCommon(s, theSigMan, m, userId, parent, name)
 {
   grpMR = NULL;
@@ -1691,7 +1684,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     }
     
     // Collect all messages to put them in the correct time order
-    vector< pair<const CUserEvent *, int> > m_vMsgs;
+    vector< pair<const CUserEvent *, UserId> > m_vMsgs;
     
     // add all unread messages.
     if (u && u->NewMessages() > 0)
@@ -1741,7 +1734,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
       stable_sort(m_vMsgs.begin(), m_vMsgs.end(), OrderMessages);
     
       // Now, finally add them
-      vector< pair<const CUserEvent *, int> >::iterator MsgIter;
+      vector< pair<const CUserEvent *, UserId> >::iterator MsgIter;
       for (MsgIter = m_vMsgs.begin(); MsgIter != m_vMsgs.end(); ++MsgIter)
         mleHistory->addMsg((*MsgIter).first, (*MsgIter).second);
       m_vMsgs.clear();
@@ -1841,9 +1834,9 @@ bool UserSendCommon::eventFilter(QObject *watched, QEvent *e)
     return UserEventCommon::eventFilter(watched, e);
 }
 
-void UserSendCommon::convoJoin(int userId, unsigned long _nConvoId)
+void UserSendCommon::convoJoin(const UserId& userId, unsigned long _nConvoId)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   if (mainwin->m_bMsgChatView)
@@ -1871,9 +1864,9 @@ void UserSendCommon::convoJoin(int userId, unsigned long _nConvoId)
     mainwin->userEventTabDlg->updateConvoLabel(this);
 }
 
-void UserSendCommon::convoLeave(int userId, unsigned long /* _nConvoId */)
+void UserSendCommon::convoLeave(const UserId& userId, unsigned long /* _nConvoId */)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   if (mainwin->m_bMsgChatView)
@@ -1905,7 +1898,7 @@ void UserSendCommon::convoLeave(int userId, unsigned long /* _nConvoId */)
   
   if (m_lUsers.size() > 1)
   {
-    list<int>::iterator it;
+    list<UserId>::iterator it;
     for (it = m_lUsers.begin(); it != m_lUsers.end(); it++)
     {
       if (*it == userId)
@@ -2103,7 +2096,7 @@ void UserSendCommon::slot_ClearNewEvents()
   ICQUser *u = 0;
 
   // Iterate all users in the conversation
-  for (list<int>::iterator it = m_lUsers.begin(); it != m_lUsers.end(); ++it)
+  for (list<UserId>::iterator it = m_lUsers.begin(); it != m_lUsers.end(); ++it)
   {
     u = gUserManager.fetchUser(*it, LOCK_W);
     if (mainwin->m_bMsgChatView
@@ -2189,7 +2182,7 @@ void UserSendCommon::changeEventType(int id)
 
     disconnect(this, SIGNAL(finished(int)), mainwin, SLOT(slot_sendfinished(int)));
     mainwin->slot_sendfinished(m_lUsers.front());
-    connect(e, SIGNAL(finished(int)), mainwin, SLOT(slot_sendfinished(int)));
+    connect(e, SIGNAL(finished(const UserId&)), mainwin, SLOT(slot_sendfinished(const UserId&)));
     mainwin->licqUserSend.append(e);
 
     emit signal_msgtypechanged(this, e);
@@ -2700,7 +2693,7 @@ void UserSendCommon::slot_cancelSend()
 
 
 //-----UserSendCommon::UserUpdated-------------------------------------------
-void UserSendCommon::UserUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid)
+void UserSendCommon::UserUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (!u) return;
@@ -2788,7 +2781,7 @@ bool UserSendCommon::checkSecure()
 
 //=====UserSendMsgEvent======================================================
 UserSendMsgEvent::UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget *parent)
+    CMainWindow *m, const UserId& userId, QWidget *parent)
   : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendMsgEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget);
@@ -2952,7 +2945,7 @@ void UserSendMsgEvent::resetSettings()
 }
 
 UserSendUrlEvent::UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget* parent)
+    CMainWindow *m, const UserId& userId, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendUrlEvent")
 {
   QBoxLayout* lay = new QVBoxLayout(mainWidget, 4);
@@ -3076,7 +3069,7 @@ bool UserSendUrlEvent::sendDone(ICQEvent *e)
 }
 
 UserSendFileEvent::UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget* parent)
+    CMainWindow *m, const UserId& userId, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendFileEvent")
 {
   chkMass->setChecked(false);
@@ -3279,7 +3272,7 @@ bool UserSendFileEvent::sendDone(ICQEvent *e)
 
 //=====UserSendChatEvent=====================================================
 UserSendChatEvent::UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget* parent)
+    CMainWindow *m, const UserId& userId, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendChatEvent")
 {
   m_nMPChatPort = 0;
@@ -3419,7 +3412,7 @@ bool UserSendChatEvent::sendDone(ICQEvent *e)
 
 //=====UserSendContactEvent==================================================
 UserSendContactEvent::UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget* parent)
+    CMainWindow *m, const UserId& userId, QWidget* parent)
   : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendContactEvent")
 {
   chkMass->setChecked(false);
@@ -3529,7 +3522,7 @@ bool UserSendContactEvent::sendDone(ICQEvent *e)
 
 
 //-----UserSendContactEvent::setContact--------------------------------------
-void UserSendContactEvent::setContact(int userId)
+void UserSendContactEvent::setContact(const UserId& userId)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
 
@@ -3543,7 +3536,7 @@ void UserSendContactEvent::setContact(int userId)
 
 //=====UserSendSmsEvent======================================================
 UserSendSmsEvent::UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan,
-    CMainWindow *m, int userId, QWidget *parent)
+    CMainWindow *m, const UserId& userId, QWidget *parent)
   : UserSendCommon(s, theSigMan, m, userId, parent, "UserSendSmsEvent")
 {
   chkSendServer->setChecked(true);

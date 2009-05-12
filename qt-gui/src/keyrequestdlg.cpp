@@ -37,7 +37,7 @@
 
 
 // -----------------------------------------------------------------------------
-KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, int userId, QWidget *parent)
+KeyRequestDlg::KeyRequestDlg(CSignalManager* _sigman, const UserId& userId, QWidget *parent)
   : LicqDialog(parent, "KeyRequestDialog", false, WDestructiveClose)
 {
   myUserId = userId;

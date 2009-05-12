@@ -120,7 +120,7 @@ CUserViewItem::CUserViewItem(unsigned short Id, const char* name, unsigned short
     m_nGroupId(Id),
     m_sGroupName(name)
 {
-  myUserId = 0;
+  myUserId = USERID_NONE;
   m_pIcon = NULL;
   m_cBack = s_cGroupBack;
   m_cFore = s_cGridLines;
@@ -153,7 +153,7 @@ CUserViewItem::CUserViewItem(BarType barType, QListView *parent)
     m_sGroupName()
 {
   m_nGroupId = (unsigned short)(-1);
-  myUserId = 0;
+  myUserId = USERID_NONE;
   m_nOnlCount = 0;
   m_nEvents = 0;
   m_nStatus = 0;
@@ -212,7 +212,7 @@ CUserViewItem::~CUserViewItem()
   if (parent())
   {
     CUserViewItem *i = static_cast<CUserViewItem*>(parent());
-    if (myUserId != 0 && m_nStatus != ICQ_STATUS_OFFLINE) i->m_nOnlCount--;
+    if (USERID_ISVALID(myUserId) && m_nStatus != ICQ_STATUS_OFFLINE) i->m_nOnlCount--;
     i->m_nEvents -= m_nEvents;
     i->SetThreadViewGroupTitle();
   }
@@ -476,7 +476,7 @@ void CUserViewItem::paintCell( QPainter *p, const QColorGroup & cgdefault, int c
   }
   p->setFont(newFont);
 
-  bool onlBlink = (listView()->onlTimerId && myUserId != 0 &&
+  bool onlBlink = (listView()->onlTimerId && USERID_ISVALID(myUserId) &&
       listView()->myOnlUserId == myUserId && listView()->onlCounter & 1);
 
   QColorGroup cg(cgdefault);
@@ -800,7 +800,7 @@ void CUserView::timerEvent(QTimerEvent* e)
   {
     QListViewItemIterator it(this);
 
-    if (carCounter > 0 && myCarUserId != 0)
+    if (carCounter > 0 && USERID_ISVALID(myCarUserId))
     {
       QPainter p(viewport());
       for(; it.current(); ++it)
@@ -820,7 +820,7 @@ void CUserView::timerEvent(QTimerEvent* e)
     }
 
     if(--carCounter == 0) {
-      myCarUserId = 0;
+      myCarUserId = USERID_NONE;
       killTimer(carTimerId);
       carTimerId = 0;
     }
@@ -830,7 +830,7 @@ void CUserView::timerEvent(QTimerEvent* e)
     QListViewItemIterator it(this);
     bool found = false;
 
-    if (myOnlUserId != 0)
+    if (USERID_ISVALID(myOnlUserId))
     {
       for(; it.current(); ++it)
       {
@@ -847,7 +847,7 @@ void CUserView::timerEvent(QTimerEvent* e)
     }
 
     if(!found || (--onlCounter == 0)) {
-      myOnlUserId = 0;
+      myOnlUserId = USERID_NONE;
       killTimer(onlTimerId);
       onlTimerId = 0;
     }
@@ -966,8 +966,8 @@ CUserView::CUserView(QPopupMenu *m, QWidget *parent, const char *name)
     floaties->insert(floaties->size()-1, this);
   }
 
-  myCarUserId = 0;
-  myOnlUserId = 0;
+  myCarUserId = USERID_NONE;
+  myOnlUserId = USERID_NONE;
 
   // Redraw once a minute in case there are cells showing timestamps
   tmrRefresh = new QTimer(this);
@@ -1001,7 +1001,7 @@ CUserView::~CUserView()
   }
 }
 
-CUserView *CUserView::FindFloaty(int userId)
+CUserView *CUserView::FindFloaty(const UserId& userId)
 {
   unsigned int i = 0;
   for (; i < floaties->size(); i++)
@@ -1063,11 +1063,11 @@ void CUserView::setShowHeader(bool isHeader)
 }
 
 
-int CUserView::currentUserId() const
+UserId CUserView::currentUserId() const
 {
   CUserViewItem *i = (CUserViewItem *)currentItem();
   if (i == NULL)
-    return 0;
+    return USERID_NONE;
   return i->userId();
 }
 
@@ -1131,7 +1131,7 @@ void CUserView::viewportDragEnterEvent(QDragEnterEvent* e)
  * @returns a pointer to a send event dialog of type @a T, or NULL on error.
  */
 template<typename T>
-static T* getSendEventDialog(UserEventCommon::type type, int userId)
+static T* getSendEventDialog(UserEventCommon::type type, const UserId& userId)
 {
   int function;
   if (type == UserEventCommon::UC_CONTACT)
@@ -1166,22 +1166,22 @@ static T* getSendEventDialog(UserEventCommon::type type, int userId)
 }
 
 /// Convenient, wrapper functions for getSendEventDialog.
-static inline UserSendContactEvent* getSendContactEventDialog(int userId)
+static inline UserSendContactEvent* getSendContactEventDialog(const UserId& userId)
 {
   return getSendEventDialog<UserSendContactEvent>(UserEventCommon::UC_CONTACT, userId);
 }
 
-static inline UserSendFileEvent* getSendFileEventDialog(int userId)
+static inline UserSendFileEvent* getSendFileEventDialog(const UserId& userId)
 {
   return getSendEventDialog<UserSendFileEvent>(UserEventCommon::UC_FILE, userId);
 }
 
-static inline UserSendMsgEvent* getSendMsgEventDialog(int userId)
+static inline UserSendMsgEvent* getSendMsgEventDialog(const UserId& userId)
 {
   return getSendEventDialog<UserSendMsgEvent>(UserEventCommon::UC_MESSAGE, userId);
 }
 
-static inline UserSendUrlEvent* getSendUrlEventDialog(int userId)
+static inline UserSendUrlEvent* getSendUrlEventDialog(const UserId& userId)
 {
   return getSendEventDialog<UserSendUrlEvent>(UserEventCommon::UC_URL, userId);
 }
@@ -1248,7 +1248,7 @@ void CUserView::viewportDropEvent(QDropEvent* e)
       if (nPPID && text.length() > 4)
       {
         char *szId = strdup(text.mid(4).latin1());
-        int userId = gUserManager.getUserFromAccount(szId, nPPID);
+        UserId userId = LicqUser::makeUserId(szId, nPPID);
         if (userId == it->userId())
           return;
 
@@ -1445,7 +1445,7 @@ void CUserView::resizeEvent(QResizeEvent *e)
   }
 }
 
-void CUserView::AnimationAutoResponseCheck(int userId)
+void CUserView::AnimationAutoResponseCheck(const UserId& userId)
 {
   if(carTimerId == 0) {
     // no animation yet running, so start the timer
@@ -1456,7 +1456,7 @@ void CUserView::AnimationAutoResponseCheck(int userId)
   // well, maybe we should move the animation to the other user
 }
 
-void CUserView::AnimationOnline(int userId)
+void CUserView::AnimationOnline(const UserId& userId)
 {
   if(onlTimerId == 0) {
     onlTimerId = startTimer(FLASH_TIME);
@@ -1472,7 +1472,7 @@ void CUserView::AnimationOnline(int userId)
         // whoops, another user went online
         // we just block here the blinking for the
         // rest of the time
-      myOnlUserId = 0;
+      myOnlUserId = USERID_NONE;
         // no need for a redraw, as the user is already shown
         // correctly.
   }

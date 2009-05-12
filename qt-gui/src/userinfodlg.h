@@ -24,6 +24,8 @@
 #include <qwidget.h>
 
 #include "licq_history.h"
+#include <licq_types.h>
+
 #include "mainwin.h"
 #include "catdlg.h"
 #include "phonedlg.h"
@@ -67,10 +69,10 @@ public:
   };
 
   UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~UserInfoDlg();
 
-  int userId() const { return myUserId; }
+  const UserId& userId() const { return myUserId; }
   void showTab(int);
   bool isTabShown(int);
   void retrieveSettings() { slotRetrieve(); }
@@ -84,7 +86,7 @@ protected:
   } tabList[InfoTabCount];
   bool m_bOwner;
   int currentTab;
-  int myUserId;
+  UserId myUserId;
   QString m_sProgressMsg;
   QString m_sBasic;
   CICQDaemon *server;
@@ -201,7 +203,7 @@ protected slots:
   void HistoryReverse(bool);
   void HistoryReload();
   void updateTab(const QString&);
-  void updatedUser(int userId, unsigned long subSignal);
+  void updatedUser(const UserId& userId, unsigned long subSignal);
   void SaveSettings();
   void slotUpdate();
   void slotRetrieve();
@@ -217,7 +219,7 @@ protected slots:
   void ChangeActivePhone(int index);
 
 signals:
-  void finished(int userId);
+  void finished(const UserId& userId);
 
 private:
   static bool chkContains(const char* text, const char* filter, int filterlen);

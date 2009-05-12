@@ -27,6 +27,8 @@
 
 #include <qstring.h>
 
+#include <licq_types.h>
+
 #include "licqdialog.h"
 #include "licq_icqd.h"
 
@@ -60,7 +62,7 @@ protected:
   QVGroupBox *grpSending;
   QPushButton *btnCancel;
   QProgressBar *barSend;
-  int myUserId;
+  UserId myUserId;
   CMMUserView *mmv;
   CMMUserViewItem *mmvi;
   CICQDaemon *server;

@@ -26,6 +26,8 @@
 #include <qlistview.h>
 #include <qtooltip.h>
 
+#include <licq_types.h>
+
 #include "userbox.h"
 
 class LicqUser;
@@ -38,10 +40,10 @@ class CMMUserViewItem : public QListViewItem
 public:
   CMMUserViewItem(const LicqUser* u , QListView *);
   virtual ~CMMUserViewItem();
-  int userId() const { return myUserId; }
+  const UserId& userId() const { return myUserId; }
 
 protected:
-  int myUserId;
+  UserId myUserId;
 
   friend class CMMUserView;
 };
@@ -52,16 +54,16 @@ class CMMUserView : public QListView
 {
   Q_OBJECT
 public:
-  CMMUserView(ColumnInfos &_colInfo, bool, int userId,
+  CMMUserView(ColumnInfos &_colInfo, bool, const UserId& userId,
      CMainWindow *, QWidget *parent = 0);
   virtual ~CMMUserView();
 
-  void AddUser(int userId);
+  void AddUser(const UserId& userId);
 
 protected:
   QPopupMenu *mnuMM;
   ColumnInfos colInfo;
-  int myUserId;
+  UserId myUserId;
   CMainWindow *mainwin;
 
   virtual void viewportMousePressEvent(QMouseEvent *e);

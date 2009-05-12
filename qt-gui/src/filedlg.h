@@ -38,7 +38,7 @@ class CFileDlg : public QWidget
 {
    Q_OBJECT
 public:
-  CFileDlg(int userId, CICQDaemon *daemon, QWidget *parent = 0);
+  CFileDlg(const UserId& userId, CICQDaemon *daemon, QWidget *parent = 0);
   virtual ~CFileDlg();
 
   bool SendFiles(ConstFileList filelist, unsigned short nPort);

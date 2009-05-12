@@ -45,7 +45,7 @@ CForwardDlg::CForwardDlg(CSignalManager *sigMan, CUserEvent *e, QWidget *p)
   sigman = sigMan;
 
   m_nEventType = e->SubCommand();
-  myUserId = 0;
+  myUserId = USERID_NONE;
 
   QString t;
   switch (e->SubCommand())
@@ -101,7 +101,7 @@ CForwardDlg::~CForwardDlg()
 
 void CForwardDlg::slot_ok()
 {
-  if (myUserId == 0)
+  if (!USERID_ISVALID(myUserId))
     return;
 
   switch(m_nEventType)
@@ -144,7 +144,7 @@ void CForwardDlg::dropEvent(QDropEvent * de)
     return;
 
   if (text.length() == 0) return;
-  myUserId = gUserManager.getUserFromAccount(text.latin1(), LICQ_PPID);
+  myUserId = LicqUser::makeUserId(text.latin1(), LICQ_PPID);
   //TODO dropevent needs the ppid
 
   const LicqUser* u = gUserManager.fetchUser(myUserId);

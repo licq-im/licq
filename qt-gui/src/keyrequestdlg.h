@@ -20,6 +20,8 @@
 #ifndef KEYREQUESTDLG_H
 #define KEYREQUESTDLG_H
 
+#include <licq_types.h>
+
 #include "licqdialog.h"
 
 class CSignalManager;
@@ -32,11 +34,11 @@ class KeyRequestDlg : public LicqDialog
 {
   Q_OBJECT
 public:
-  KeyRequestDlg(CSignalManager *_sigman, int userId, QWidget *parent = 0);
+  KeyRequestDlg(CSignalManager *_sigman, const UserId& userId, QWidget *parent = 0);
   virtual ~KeyRequestDlg();
 
 protected:
-  int myUserId;
+  UserId myUserId;
   QPushButton *btnSend, *btnCancel;
   QLabel *lblStatus;
   bool m_bOpen;

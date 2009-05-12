@@ -22,7 +22,7 @@
 
 #include "licqdialog.h"
 
-//#include "user.h"
+#include <licq_types.h>
 
 class MLEditWrap;
 class CSignalManager;
@@ -38,11 +38,11 @@ class ShowAwayMsgDlg : public LicqDialog
   Q_OBJECT
 public:
   ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager *_sigman,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~ShowAwayMsgDlg();
 
 protected:
-  int myUserId;
+  UserId myUserId;
   MLEditWrap *mleAwayMsg;
   QCheckBox *chkShowAgain;
   QPushButton *btnOk;

@@ -20,6 +20,8 @@
 #ifndef GPGKEYSELECT_H
 #define GPGKEYSELECT_H
 
+#include <licq_types.h>
+
 #include "licqdialog.h"
 
 #include <qobject.h>
@@ -35,11 +37,11 @@ class KeyView : public QListView
 {
     Q_OBJECT
 public:
-  KeyView(QWidget *parent, int userId);
+  KeyView(QWidget *parent, const UserId& userId);
   ~KeyView() {};
 
 protected:
-  int myUserId;
+  UserId myUserId;
   void testViewItem(QListViewItem* item, const LicqUser* u);
   int maxItemVal;
   QListViewItem *maxItem;
@@ -51,13 +53,13 @@ class GPGKeySelect : public QDialog
 {
   Q_OBJECT
 public:
-  GPGKeySelect(int userId, QWidget *parent = 0);
+  GPGKeySelect(const UserId& userId, QWidget *parent = 0);
   ~GPGKeySelect();
 
 protected:
   QListView *keySelect;
   QCheckBox *useGPG;
-  int myUserId;
+  UserId myUserId;
   void updateIcon();
   QLineEdit *filterText;
 

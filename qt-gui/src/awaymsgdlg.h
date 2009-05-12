@@ -20,6 +20,8 @@
 #ifndef AWAYMSG_H
 #define AWAYMSG_H
 
+#include <licq_types.h>
+
 #include "licqdialog.h"
 
 class QPushButton;
@@ -64,11 +66,11 @@ class CustomAwayMsgDlg : public LicqDialog
 {
   Q_OBJECT
 public:
-  CustomAwayMsgDlg(int userId, QWidget *parent = 0);
+  CustomAwayMsgDlg(const UserId& userId, QWidget *parent = 0);
 
 protected:
   MLEditWrap *mleAwayMsg;
-  int myUserId;
+  UserId myUserId;
 
 protected slots:
   void slot_clear();

@@ -32,6 +32,7 @@
 #include "licq_color.h"
 #include "licq_filetransfer.h"
 #include "licq_message.h"
+#include <licq_types.h>
 
 #ifdef USE_KDE
 #include <kdeversion.h>
@@ -117,16 +118,16 @@ class UserEventCommon : public QWidget
   Q_OBJECT
 public:
   UserEventCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0, const char *name = 0);
+      const UserId& userId, QWidget *parent = 0, const char *name = 0);
   virtual ~UserEventCommon();
 
-  int userId() const { return m_lUsers.front(); }
+  const UserId& userId() const { return m_lUsers.front(); }
   unsigned long PPID()  { return m_nPPID; }
   unsigned long ConvoId() { return m_nConvoId; }
-  const std::list<int>& ConvoUsers() const { return m_lUsers; }
+  const std::list<UserId>& ConvoUsers() const { return m_lUsers; }
   void SetConvoId(unsigned long n)  { m_nConvoId = n; }
 
-  bool FindUserInConvo(int userId) const;
+  bool FindUserInConvo(const UserId& userId) const;
   void AddEventTag(unsigned long n)  { if (n) m_lnEventTag.push_back(n); }
   void gotTyping(unsigned short);
   void changeMsgWinSticky(bool _bStick);
@@ -143,7 +144,7 @@ protected:
   QTextCodec *codec;
   bool m_bOwner;
   unsigned long m_nPPID;
-  std::list<int> m_lUsers;
+  std::list<UserId> m_lUsers;
   QBoxLayout* top_lay, *top_hlay;
   CICQDaemon *server;
   CMainWindow *mainwin;
@@ -165,13 +166,13 @@ protected:
   // which events we already processed in the ctor.
   int m_highestEventId;
 
-  virtual void UserUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid) = 0;
+  virtual void UserUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid) = 0;
   void SetGeneralInfo(const LicqUser* u);
   void FlashTaskbar(bool _bFlash);
 
 protected slots:
   void slot_connectsignal();
-  void slot_userupdated(int userId, unsigned long subSignal, int argument, unsigned long cid);
+  void slot_userupdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
   void slot_updatetime();
   void slot_updatetyping();
   void showHistory();
@@ -182,7 +183,7 @@ protected slots:
   void setMsgWinSticky();
 
 signals:
-  void finished(int userId);
+  void finished(const UserId& userId);
   void encodingChanged();
   void viewurl(QWidget*, QString);
 };
@@ -196,7 +197,7 @@ class UserViewEvent : public UserEventCommon
 public:
 
   UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~UserViewEvent();
 
 protected:
@@ -216,7 +217,7 @@ protected:
   void generateReply();
   void sendMsg(QString txt);
   void updateNextButton();
-  virtual void UserUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid);
+  virtual void UserUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
 
 protected slots:
   void slot_close();
@@ -242,13 +243,13 @@ class UserSendCommon : public UserEventCommon
 public:
 
   UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0, const char *name = 0);
+      const UserId& userId, QWidget *parent = 0, const char *name = 0);
   virtual ~UserSendCommon();
   virtual bool eventFilter(QObject *watched, QEvent *e);
 
   void setText(const QString& txt);
-  void convoJoin(int userId, unsigned long _nConvoId);
-  void convoLeave(int userId, unsigned long _nConvoId);
+  void convoJoin(const UserId& userId, unsigned long _nConvoId);
+  void convoLeave(const UserId& userId, unsigned long _nConvoId);
 
   virtual void windowActivationChange(bool oldActive);
   int clearDelay;
@@ -272,7 +273,7 @@ protected:
   QTimer *tmrSendTyping;
 
   void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
-  virtual void UserUpdated(int userId, unsigned long subSignal, int argument, unsigned long cid);
+  virtual void UserUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
   virtual bool sendDone(ICQEvent *) = 0;
   bool checkSecure();
 
@@ -316,7 +317,7 @@ class UserSendMsgEvent : public UserSendCommon
 public:
 
   UserSendMsgEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~UserSendMsgEvent();
 
 protected:
@@ -337,7 +338,7 @@ class UserSendUrlEvent : public UserSendCommon
 public:
 
   UserSendUrlEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~UserSendUrlEvent();
   virtual bool eventFilter(QObject *watched, QEvent *e);
 
@@ -363,7 +364,7 @@ class UserSendFileEvent : public UserSendCommon
 public:
 
   UserSendFileEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~UserSendFileEvent();
 
   void setFile(const QString& file, const QString& description);
@@ -394,7 +395,7 @@ class UserSendChatEvent : public UserSendCommon
 public:
 
   UserSendChatEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~UserSendChatEvent();
 
 protected:
@@ -422,10 +423,10 @@ class UserSendContactEvent : public UserSendCommon
 public:
 
   UserSendContactEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~UserSendContactEvent();
 
-  void setContact(int userId);
+  void setContact(const UserId& userId);
 
 protected:
   CMMUserView *lstContacts;
@@ -447,7 +448,7 @@ class UserSendSmsEvent : public UserSendCommon
 public:
 
   UserSendSmsEvent(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *m,
-      int userId, QWidget *parent = 0);
+      const UserId& userId, QWidget *parent = 0);
   virtual ~UserSendSmsEvent();
 
 protected:

@@ -85,12 +85,12 @@ void CSignalManager::slot_incoming()
 
 void CSignalManager::ProcessSignal(LicqSignal* s)
 {
-  int userId = s->userId();
+  UserId userId = s->userId();
 
   // Temporary code to get account id and ppid until the rest of the gui is updated to use user id directly
   QString accountId;
   unsigned long ppid = 0;
-  if (userId != 0)
+  if (USERID_ISVALID(userId))
   {
     LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
     if (user != NULL)

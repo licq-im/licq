@@ -90,7 +90,7 @@ enum mnuMM_ids
 
 //-----UserList::constructor-----------------------------------------------------------------------
 CMMUserView::CMMUserView (ColumnInfos &_colInfo, bool bHeader,
-    int userId, CMainWindow *pMainwin, QWidget *parent)
+    const UserId& userId, CMainWindow *pMainwin, QWidget *parent)
    : QListView(parent, "MMUserView")
 {
   mnuMM = new QPopupMenu(NULL);
@@ -208,12 +208,12 @@ void CMMUserView::dropEvent(QDropEvent * de)
   }
 
   //TODO get protocol id from text
-  AddUser(gUserManager.getUserFromAccount(text.mid(4, text.length() - 4).latin1(), LICQ_PPID));
+  AddUser(LicqUser::makeUserId(text.mid(4, text.length() - 4).latin1(), LICQ_PPID));
 }
 
-void CMMUserView::AddUser(int userId)
+void CMMUserView::AddUser(const UserId& userId)
 {
-  if (userId == 0 || userId == myUserId)
+  if (!USERID_ISVALID(userId) || userId == myUserId)
     return;
 
   CMMUserViewItem *i = (CMMUserViewItem *)firstChild();

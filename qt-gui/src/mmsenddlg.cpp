@@ -153,7 +153,7 @@ void CMMSendDlg::SendNext()
 
   myUserId = mmvi->userId();
 
-  if (myUserId == 0)
+  if (!USERID_ISVALID(myUserId))
     return;
 
   switch (m_nEventType)

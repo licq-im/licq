@@ -26,6 +26,8 @@
 #include <qtooltip.h>
 #include <qptrvector.h>
 
+#include <licq_types.h>
+
 class QTimer;
 class LicqUser;
 class CUserView;
@@ -74,10 +76,10 @@ public:
 
   virtual ~CUserViewItem();
   virtual QString key(int column, bool ascending) const;
-  int userId() const { return myUserId; }
-  bool isUserItem() const { return (myUserId != 0); }
+  const UserId& userId() const { return myUserId; }
+  bool isUserItem() const { return USERID_ISVALID(myUserId); }
   unsigned short GroupId() const { return m_nGroupId; }
-  bool isGroupItem() const { return (myUserId == 0 && m_nGroupId != (unsigned short)(-1)); }
+  bool isGroupItem() const { return (!USERID_ISVALID(myUserId) && m_nGroupId != (unsigned short)(-1)); }
   QCString  GroupName() const { return m_sGroupName; }
   void setGraphics(const LicqUser* u);
   unsigned short Status() const { return m_nStatus; };
@@ -95,7 +97,7 @@ protected:
   QColor *m_cFore, *m_cBack;
   QPixmap *m_pIcon, *m_pIconStatus, *m_pUserIcon;
 
-  int myUserId;
+  UserId myUserId;
   QString m_szAlias;
   unsigned short m_nStatus;
   unsigned long m_nStatusFull;
@@ -141,12 +143,12 @@ public:
   void setColors(char *_sOnline, char *_sAway, char *_sOffline,
                  char *_sNew, char *_sBack, char *_sGridLines, char *_sGroupBack);
   void setShowHeader(bool);
-  void AnimationAutoResponseCheck(int userId);
-  void AnimationOnline(int userId);
-  int currentUserId() const;
+  void AnimationAutoResponseCheck(const UserId& userId);
+  void AnimationOnline(const UserId& userId);
+  UserId currentUserId() const;
 
   static UserFloatyList* floaties;
-  static CUserView *FindFloaty(int userId);
+  static CUserView *FindFloaty(const UserId& userId);
   static void UpdateFloaties();
   virtual void setSorting( int column, bool ascending = true);
 
@@ -158,8 +160,8 @@ protected:
   int msgTimerId;
   int onlTimerId, onlCounter;
   int carTimerId, carCounter;
-  int myCarUserId;
-  int myOnlUserId;
+  UserId myCarUserId;
+  UserId myOnlUserId;
   QTimer *tmrRefresh;
 
   QString m_typeAhead;	    /*! type-ahead buffer  */

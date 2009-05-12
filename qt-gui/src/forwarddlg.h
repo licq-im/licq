@@ -20,6 +20,8 @@
 #ifndef FORWARDDLG_H
 #define FORWARDDLG_H
 
+#include <licq_types.h>
+
 #include "licqdialog.h"
 
 class CMainWindow;
@@ -43,7 +45,7 @@ protected:
   CSignalManager *sigman;
   CInfoField *edtUser;
   QPushButton *btnOk, *btnCancel;
-  int myUserId;
+  UserId myUserId;
 protected slots:
   void slot_ok();
 };

@@ -278,7 +278,7 @@ void AwayMsgDlg::slot_autocloseStop()
 // -----------------------------------------------------------------------------
 
 // -----------------------------------------------------------------------------
-CustomAwayMsgDlg::CustomAwayMsgDlg(int userId, QWidget *parent)
+CustomAwayMsgDlg::CustomAwayMsgDlg(const UserId& userId, QWidget *parent)
     : LicqDialog(parent, "CustomAwayMessageDialog", false, WDestructiveClose)
 {
   myUserId = userId;

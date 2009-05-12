@@ -20,6 +20,8 @@
 #ifndef REFUSEDLG_H
 #define REFUSEDLG_H
 
+#include <licq_types.h>
+
 #include "licqdialog.h" 
 
 class MLEditWrap;
@@ -29,7 +31,7 @@ class CRefuseDlg : public LicqDialog
   Q_OBJECT
 
 public:
-  CRefuseDlg(int userId, QString, QWidget * = 0);
+  CRefuseDlg(const UserId& userId, QString, QWidget * = 0);
   QString RefuseMessage();
 
 protected:

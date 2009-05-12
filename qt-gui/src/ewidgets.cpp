@@ -784,7 +784,7 @@ QStringList CMessageViewWidget::getStyleNames(bool includeHistoryStyles)
   return styleList;
 }
 
-CMessageViewWidget::CMessageViewWidget(int userId,
+CMessageViewWidget::CMessageViewWidget(const UserId& userId,
   CMainWindow *m, QWidget* parent, const char *name, bool historyMode)
   : MLView(parent, name)
 {
@@ -840,9 +840,9 @@ CMessageViewWidget::~CMessageViewWidget()
 {
 }
 
-void CMessageViewWidget::setOwner(int userId)
+void CMessageViewWidget::setOwner(const UserId& userId)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   myUserId = userId;
@@ -913,7 +913,7 @@ void CMessageViewWidget::internalAddMsg(QString s)
 
 void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
-  int eventUserId = gUserManager.getUserFromAccount(_e->Id(), _e->PPID());
+  UserId eventUserId = LicqUser::makeUserId(_e->Id(), _e->PPID());
   if (eventUserId == myUserId && _e->UserEvent() != NULL)
     addMsg( _e->UserEvent() );
 }
@@ -1047,7 +1047,7 @@ void CMessageViewWidget::addMsg(direction dir, bool fromHistory, QString eventDe
   internalAddMsg(s);
 }
 
-void CMessageViewWidget::addMsg(const CUserEvent* e, int userId)
+void CMessageViewWidget::addMsg(const CUserEvent* e, const UserId& userId)
 {
   QDateTime date;
   date.setTime_t(e->Time());
@@ -1058,7 +1058,7 @@ void CMessageViewWidget::addMsg(const CUserEvent* e, int userId)
   QTextCodec *codec = QTextCodec::codecForLocale();
 
   unsigned long m_nPPID = 0;
-  const LicqUser* u = gUserManager.fetchUser(userId != 0 ? userId : myUserId);
+  const LicqUser* u = gUserManager.fetchUser(USERID_ISVALID(userId) ? userId : myUserId);
     if (u)
     {
     m_nPPID = u->ppid();

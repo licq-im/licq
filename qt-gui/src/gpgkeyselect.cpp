@@ -40,9 +40,9 @@
 #include <qcheckbox.h>
 #include <qlineedit.h>
 
-GPGKeySelect::GPGKeySelect(int userId, QWidget *parent) : QDialog( parent )
+GPGKeySelect::GPGKeySelect(const UserId& userId, QWidget *parent) : QDialog( parent )
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   setWFlags( WDestructiveClose );
@@ -179,7 +179,7 @@ gpgme_ctx_t mCtx;
 gpgme_key_t key;
 
 
-KeyView::KeyView(QWidget *parent, int userId)
+KeyView::KeyView(QWidget *parent, const UserId& userId)
   : QListView( parent )
 {
   header()->setClickEnabled(false);

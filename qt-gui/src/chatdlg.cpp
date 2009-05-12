@@ -110,7 +110,7 @@ enum ChatMenu_Identifiers {
 
 
 // ---------------------------------------------------------------------------
-ChatDlg::ChatDlg(int userId, CICQDaemon *daemon,
+ChatDlg::ChatDlg(const UserId& userId, CICQDaemon *daemon,
                  CMainWindow *m, QWidget *parent)
   : QMainWindow(parent, "ChatDialog", WDestructiveClose)
 {

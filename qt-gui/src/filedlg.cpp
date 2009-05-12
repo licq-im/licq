@@ -49,7 +49,7 @@
 
 
 //-----Constructor------------------------------------------------------------
-CFileDlg::CFileDlg(int userId, CICQDaemon *daemon,
+CFileDlg::CFileDlg(const UserId& userId, CICQDaemon *daemon,
   QWidget* parent)
   : QWidget(parent, "FileDialog", WDestructiveClose)
 {

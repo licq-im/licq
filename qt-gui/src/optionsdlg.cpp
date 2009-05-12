@@ -1699,10 +1699,10 @@ QWidget* OptionsDlg::new_chat_options()
   tabViewer = new CETabWidget(w);
   lay->addWidget(tabViewer);
 
-  msgChatViewer = new CMessageViewWidget(0, gMainWindow, tabViewer);
+  msgChatViewer = new CMessageViewWidget(USERID_NONE, gMainWindow, tabViewer);
   tabViewer->insertTab(msgChatViewer, "Marge");
 
-  msgHistViewer = new CMessageViewWidget(0, gMainWindow, tabViewer, 0, true);
+  msgHistViewer = new CMessageViewWidget(USERID_NONE, gMainWindow, tabViewer, 0, true);
   tabViewer->insertTab(msgHistViewer, tr("History"));
 
   lay->activate();

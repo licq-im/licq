@@ -40,7 +40,7 @@
 // -----------------------------------------------------------------------------
 
 ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
-  int userId, QWidget *parent)
+  const UserId& userId, QWidget *parent)
   : LicqDialog(parent, "ShowAwayMessageDialog")
 {
   myUserId = userId;

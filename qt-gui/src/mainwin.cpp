@@ -359,7 +359,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   licqSigMan = theSigMan;
   licqLogWindow = theLogWindow;
   positionChanges = false;
-  myMenuUserId = 0;
+  myMenuUserId = USERID_NONE;
   m_nProtoNum = 0;
 
   // Overwrite Qt's event handler
@@ -697,7 +697,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     licqConf.ReadNum(key, ppid, LICQ_PPID);
     sprintf(key, "Floaty%d.Uin", i);
     licqConf.ReadStr(key, szTemp, "");
-    int userId = gUserManager.getUserFromAccount(szTemp, ppid);
+    UserId userId = LicqUser::makeUserId(szTemp, ppid);
     sprintf(key, "Floaty%d.X", i);
     licqConf.ReadNum(key, xPosF, 0);
     sprintf(key, "Floaty%d.Y", i);
@@ -705,7 +705,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
     sprintf(key, "Floaty%d.W", i);
     licqConf.ReadNum(key, wValF, 80);
 
-    if (userId != 0)
+    if (USERID_ISVALID(userId))
       CreateUserFloaty(userId, xPosF, yPosF, wValF);
   }
 
@@ -753,29 +753,29 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
    autoAwayTimer.start(10000);  // start the inactivity timer for auto away
 
    connect (&autoAwayTimer, SIGNAL(timeout()), this, SLOT(autoAway()));
-  connect(licqSigMan, SIGNAL(signal_updatedList(unsigned long, int, int)),
-      this, SLOT(slot_updatedList(unsigned long, int, int)));
-  connect (licqSigMan, SIGNAL(signal_updatedUser(int, unsigned long, int, unsigned long)),
-      this, SLOT(slot_updatedUser(int, unsigned long, int, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_updatedList(unsigned long, int, const UserId&)),
+      this, SLOT(slot_updatedList(unsigned long, int, const UserId&)));
+  connect (licqSigMan, SIGNAL(signal_updatedUser(const UserId&, unsigned long, int, unsigned long)),
+      this, SLOT(slot_updatedUser(const UserId&, unsigned long, int, unsigned long)));
   connect (licqSigMan, SIGNAL(signal_updatedStatus(unsigned long)), this, SLOT(updateStatus(unsigned long)));
    connect (licqSigMan, SIGNAL(signal_doneOwnerFcn(ICQEvent *)),
             this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
             this, SLOT(slot_logon()));
-  connect(licqSigMan, SIGNAL(signal_ui_message(int)),
-      this, SLOT(slot_ui_message(int)));
-  connect(licqSigMan, SIGNAL(signal_ui_viewevent(int)),
-      this, SLOT(slot_ui_viewevent(int)));
+  connect(licqSigMan, SIGNAL(signal_ui_message(const UserId&)),
+      this, SLOT(slot_ui_message(const UserId&)));
+  connect(licqSigMan, SIGNAL(signal_ui_viewevent(const UserId&)),
+      this, SLOT(slot_ui_viewevent(const UserId&)));
    connect (licqSigMan, SIGNAL(signal_protocolPlugin(unsigned long)),
             this, SLOT(slot_protocolPlugin(unsigned long)));
-  connect(licqSigMan, SIGNAL(signal_eventTag(int, unsigned long)),
-      this, SLOT(slot_eventTag(int, unsigned long)));
-  connect(licqSigMan, SIGNAL(signal_socket(int, unsigned long)),
-      this, SLOT(slot_socket(int, unsigned long)));
-  connect(licqSigMan, SIGNAL(signal_convoJoin(int, unsigned long, unsigned long)),
-      this, SLOT(slot_convoJoin(int, unsigned long, unsigned long)));
-  connect(licqSigMan, SIGNAL(signal_convoLeave(int, unsigned long, unsigned long)),
-      this, SLOT(slot_convoLeave(int, unsigned long, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_eventTag(const UserId&, unsigned long)),
+      this, SLOT(slot_eventTag(const UserId &, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_socket(const UserId&, unsigned long)),
+      this, SLOT(slot_socket(const UserId&, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_convoJoin(const UserId&, unsigned long, unsigned long)),
+      this, SLOT(slot_convoJoin(const UserId&, unsigned long, unsigned long)));
+  connect(licqSigMan, SIGNAL(signal_convoLeave(const UserId&, unsigned long, unsigned long)),
+      this, SLOT(slot_convoLeave(const UserId&, unsigned long, unsigned long)));
 
    updateStatus();
    updateEvents();
@@ -1084,10 +1084,10 @@ void CMainWindow::CreateUserView()
 
 
 //-----CMainWindow::CreateUserFloaty---------------------------------------------
-void CMainWindow::CreateUserFloaty(int userId,
+void CMainWindow::CreateUserFloaty(const UserId& userId,
    unsigned short x, unsigned short y, unsigned short w)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return;
@@ -1247,11 +1247,11 @@ void CMainWindow::closeEvent( QCloseEvent *e )
 
 void CMainWindow::keyPressEvent(QKeyEvent *e)
 {
-  int userId = userView->currentUserId();
+  UserId userId = userView->currentUserId();
 
   if (e->key() == Qt::Key_Delete)
   {
-    if (userId == 0)
+    if (!USERID_ISVALID(userId))
       return;
 
     if (e->state() & ControlButton)
@@ -1309,7 +1309,7 @@ void CMainWindow::keyPressEvent(QKeyEvent *e)
       break;
 
     case Qt::Key_A:
-      if (userId != 0)
+      if (USERID_ISVALID(userId))
         (void) new ShowAwayMsgDlg(licqDaemon, licqSigMan, userId);
       break;
 
@@ -1365,7 +1365,7 @@ inline bool CMainWindow::show_user(const LicqUser* u) const
 }
 
 
-void CMainWindow::slot_updatedUser(int userId, unsigned long subSignal, int argument, unsigned long cid)
+void CMainWindow::slot_updatedUser(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid)
 {
   const LicqUser* user = gUserManager.fetchUser(userId);
   if (user == NULL)
@@ -1474,8 +1474,8 @@ void CMainWindow::slot_updatedUser(int userId, unsigned long subSignal, int argu
       const LicqUser* u = gUserManager.fetchUser(userId);
       if (u == NULL)
       {
-        gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid user received: %i\n",
-            L_ERRORxSTR, userId);
+        gLog.Warn("%sCMainWindow::slot_updatedUser(): Invalid user received: %s\n",
+            L_ERRORxSTR, USERID_TOSTR(userId));
         break;
       }
       if (m_bThreadView && m_nGroupType == GROUPS_USER && m_nCurrentGroup == 0)
@@ -1601,7 +1601,7 @@ void CMainWindow::slot_updatedUser(int userId, unsigned long subSignal, int argu
 
 // ---------------------------------------------------------------------------
 
-void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, int userId)
+void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, const UserId& userId)
 {
   switch (subSignal)
   {
@@ -1615,8 +1615,8 @@ void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, 
       LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
       if (u == NULL)
       {
-        gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid user received: %i\n",
-          L_ERRORxSTR, userId);
+        gLog.Warn("%sCMainWindow::slot_updatedList(): Invalid user received: %s\n",
+            L_ERRORxSTR, USERID_TOSTR(userId));
         break;
       }
 
@@ -1728,7 +1728,7 @@ void CMainWindow::slot_updatedList(unsigned long subSignal, int /* argument */, 
   }  // Switch
 }
 
-void CMainWindow::slot_socket(int userId, unsigned long convoId)
+void CMainWindow::slot_socket(const UserId& userId, unsigned long convoId)
 {
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
@@ -1742,7 +1742,7 @@ void CMainWindow::slot_socket(int userId, unsigned long convoId)
   }
 }
 
-void CMainWindow::slot_convoJoin(int userId, unsigned long ppid, unsigned long convoId)
+void CMainWindow::slot_convoJoin(const UserId& userId, unsigned long ppid, unsigned long convoId)
 {
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
@@ -1756,7 +1756,7 @@ void CMainWindow::slot_convoJoin(int userId, unsigned long ppid, unsigned long c
   }
 }
 
-void CMainWindow::slot_convoLeave(int userId, unsigned long ppid, unsigned long convoId)
+void CMainWindow::slot_convoLeave(const UserId& userId, unsigned long ppid, unsigned long convoId)
 {
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
@@ -2333,9 +2333,9 @@ void CMainWindow::changePFMStatus(int id)
 
 // -----------------------------------------------------------------------------
 
-void CMainWindow::callDefaultFunction(int userId)
+void CMainWindow::callDefaultFunction(const UserId& userId)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   const LicqUser* u = gUserManager.fetchUser(userId);
@@ -2423,7 +2423,7 @@ void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
       gUserManager.DropOwner(o);
 
       if (nNumMsg > 0)
-        callFunction(index, static_cast<int>((*_ppit)->PPID()));
+        callFunction(index, gUserManager.ownerUserId((*_ppit)->PPID()));
 
       free(szId);
     } 
@@ -2441,7 +2441,7 @@ void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
         if (o == 0) continue;
         szId = strdup(o->IdString());
         gUserManager.DropOwner(o);
-        callInfoTab(index, static_cast<int>((*_ppit)->PPID()));
+        callInfoTab(index, gUserManager.ownerUserId((*_ppit)->PPID()));
         free(szId);
       }
     }
@@ -2465,13 +2465,13 @@ void CMainWindow::callOwnerFunction(int index, unsigned long /* nPPID */)
 void CMainWindow::callMsgFunction()
 {
   // No need for code duplication
-  slot_ui_viewevent(-1);
+  slot_ui_viewevent(USERID_NONE);
 }
 
 //-----CMainWindow::callUserFunction-------------------------------------------
 void CMainWindow::callUserFunction(int index)
 {
-  if (myMenuUserId == 0)
+  if (!USERID_ISVALID(myMenuUserId))
     return;
 
   const LicqUser* user = gUserManager.fetchUser(myMenuUserId);
@@ -2585,9 +2585,9 @@ void CMainWindow::callUserFunction(int index)
     free(szId);
 }
 
-void CMainWindow::callInfoTab(int fcn, int userId, bool toggle, bool bUpdateNow)
+void CMainWindow::callInfoTab(int fcn, const UserId& userId, bool toggle, bool bUpdateNow)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
   UserInfoDlg *f = NULL;
@@ -2626,7 +2626,7 @@ void CMainWindow::callInfoTab(int fcn, int userId, bool toggle, bool bUpdateNow)
   else
   {
     f = new UserInfoDlg(licqDaemon, licqSigMan, this, userId);
-    connect(f, SIGNAL(finished(int)), this, SLOT(UserInfoDlg_finished(int)));
+    connect(f, SIGNAL(finished(const UserId&)), this, SLOT(UserInfoDlg_finished(const UserId&)));
     f->show();
     licqUserInfo.append(f);
   }
@@ -2648,9 +2648,9 @@ void CMainWindow::callInfoTab(int fcn, int userId, bool toggle, bool bUpdateNow)
 
 
 //-----CMainWindow::callICQFunction-------------------------------------------
-UserEventCommon *CMainWindow::callFunction(int fcn, const int userId, int nConvoId)
+UserEventCommon *CMainWindow::callFunction(int fcn, const UserId& userId, int nConvoId)
 {
-  if (userId == 0)
+  if (!USERID_ISVALID(userId))
     return NULL;
 
   const LicqUser* user = gUserManager.fetchUser(userId);
@@ -2858,20 +2858,20 @@ UserEventCommon *CMainWindow::callFunction(int fcn, const int userId, int nConvo
   if (fcn == mnuUserView)
   {
     slot_userfinished(userId);
-    connect(e, SIGNAL(finished(int)), SLOT(slot_userfinished(int)));
+    connect(e, SIGNAL(finished(const UserId&)), SLOT(slot_userfinished(const UserId&)));
     licqUserView.append(static_cast<UserViewEvent*>(e));
   }
   else
   {
     slot_sendfinished(userId);
-    connect(e, SIGNAL(finished(int)), SLOT(slot_sendfinished(int)));
+    connect(e, SIGNAL(finished(const UserId&)), SLOT(slot_sendfinished(const UserId&)));
     licqUserSend.append(static_cast<UserSendCommon*>(e));
   }
   return e;
 }
 
 // -----------------------------------------------------------------------------
-void CMainWindow::UserInfoDlg_finished(int userId)
+void CMainWindow::UserInfoDlg_finished(const UserId& userId)
 {
   QPtrListIterator<UserInfoDlg> it(licqUserInfo);
 
@@ -2884,8 +2884,8 @@ void CMainWindow::UserInfoDlg_finished(int userId)
     }
   }
 
-  gLog.Warn("%sUser Info finished signal for user with no window (%i)!\n",
-      L_WARNxSTR, userId);
+  gLog.Warn("%sUser Info finished signal for user with no window (%s)!\n",
+      L_WARNxSTR, USERID_TOSTR(userId));
 }
 
 
@@ -2895,7 +2895,7 @@ void CMainWindow::slot_doneUserEventTabDlg()
   userEventTabDlg = NULL;
 }
 
-void CMainWindow::slot_userfinished(int userId)
+void CMainWindow::slot_userfinished(const UserId& userId)
 {
   QPtrListIterator<UserViewEvent> it(licqUserView);
 
@@ -2909,7 +2909,7 @@ void CMainWindow::slot_userfinished(int userId)
   }
 }
 
-void CMainWindow::slot_sendfinished(int userId)
+void CMainWindow::slot_sendfinished(const UserId& userId)
 {
   QPtrListIterator<UserSendCommon> it(licqUserSend);
 
@@ -2983,13 +2983,14 @@ void CMainWindow::slot_logon()
 
 
 //-----CMainWindow::slot_ui_viewevent-------------------------------------------
-void CMainWindow::slot_ui_viewevent(int userId)
+void CMainWindow::slot_ui_viewevent(const UserId& uid)
 {
   // Do nothing if there are no events pending
-  if (LicqUser::getNumUserEvents() == 0 || userId == 0)
+  if (LicqUser::getNumUserEvents() == 0)
     return;
 
-  if (userId == -1)
+  UserId userId = uid;
+  if (!USERID_ISVALID(userId))
   {
     // Do system messages first
     FOR_EACH_PROTO_PLUGIN_START(licqDaemon)
@@ -3018,7 +3019,7 @@ void CMainWindow::slot_ui_viewevent(int userId)
     FOR_EACH_USER_END
   }
 
-  if (userId > 0)
+  if (USERID_ISVALID(userId))
   {
     if (m_bMsgChatView)
     {
@@ -3043,7 +3044,7 @@ void CMainWindow::slot_ui_viewevent(int userId)
 }
 
 //-----CMainWindow::slot_ui_message---------------------------------------------
-void CMainWindow::slot_ui_message(int userId)
+void CMainWindow::slot_ui_message(const UserId& userId)
 {
   callFunction(mnuUserSendMsg, userId);
 }
@@ -3182,9 +3183,9 @@ void CMainWindow::slot_protocolPlugin(unsigned long nPPID)
 }
 
 //-----slot_eventTag------------------------------------------------------------
-void CMainWindow::slot_eventTag(int userId, unsigned long _nEventTag)
+void CMainWindow::slot_eventTag(const UserId& userId, unsigned long _nEventTag)
 {
-  if (userId == 0 || !_nEventTag)
+  if (!USERID_ISVALID(userId) || !_nEventTag)
     return;
 
   QPtrListIterator<UserSendCommon> it(licqUserSend);
@@ -3228,7 +3229,7 @@ void CMainWindow::slot_doneOwnerFcn(ICQEvent *e)
   }
 }
 
-bool CMainWindow::RemoveUserFromList(int userId, QWidget *p)
+bool CMainWindow::RemoveUserFromList(const UserId& userId, QWidget *p)
 {
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return true;
@@ -3290,7 +3291,7 @@ void CMainWindow::UserGroupToggled(int id)
 }
 
 bool CMainWindow::RemoveUserFromGroup(GroupType gtype, int group,
-    int userId, QWidget* parent)
+    const UserId& userId, QWidget* parent)
 {
   if (gtype == GROUPS_USER && group == 0)
     return RemoveUserFromList(userId, parent);
@@ -4786,7 +4787,7 @@ void CMainWindow::slot_popupall()
     callOwnerFunction(OwnerMenuView);
   }
 
-  list<int> users;
+  list<UserId> users;
   FOR_EACH_USER_START(LOCK_R)
   {
     if (pUser->NewMessages() > 0)
@@ -4794,7 +4795,7 @@ void CMainWindow::slot_popupall()
   }
   FOR_EACH_USER_END
 
-  list<int>::const_iterator iter;
+  list<UserId>::const_iterator iter;
   for (iter = users.begin(); iter != users.end(); iter++)
     callDefaultFunction(*iter);
 }
@@ -4906,7 +4907,7 @@ void CMainWindow::slot_viewurl(QWidget *q, QString url)
 
 void CMainWindow::sendMsg(const char* szId, unsigned long nPPID, const QString& message)
 {
-  int userId = gUserManager.getUserFromAccount(szId, nPPID);
+  UserId userId = LicqUser::makeUserId(szId, nPPID);
     UserSendCommon* event =
       static_cast<UserSendCommon*>(callFunction(mnuUserSendMsg, userId));
     if (event == 0) return;
@@ -4919,7 +4920,7 @@ void CMainWindow::sendMsg(const char* szId, unsigned long nPPID, const QString& 
 void CMainWindow::sendFileTransfer(const char* szId, unsigned long nPPID,
                                    const QString& filename, const QString& description)
 {
-  int userId = gUserManager.getUserFromAccount(szId, nPPID);
+  UserId userId = LicqUser::makeUserId(szId, nPPID);
     UserSendFileEvent* event =
       static_cast<UserSendFileEvent*>(callFunction(mnuUserSendFile, userId));
     if (event == 0) return;
@@ -4931,7 +4932,7 @@ void CMainWindow::sendFileTransfer(const char* szId, unsigned long nPPID,
 
 void CMainWindow::sendChatRequest(const char* szId, unsigned long nPPID)
 {
-  int userId = gUserManager.getUserFromAccount(szId, nPPID);
+  UserId userId = LicqUser::makeUserId(szId, nPPID);
     UserSendCommon* event =
       static_cast<UserSendCommon*>(callFunction(mnuUserSendChat, userId));
     if (event == 0) return;

@@ -27,6 +27,8 @@
 #include <kmainwindow.h>
 #endif
 
+#include <licq_types.h>
+
 #include <list>
 #include <deque>
 
@@ -99,7 +101,7 @@ class ChatDlg : public QMainWindow
 {
    Q_OBJECT
 public:
-  ChatDlg(int userId, CICQDaemon *daemon,
+  ChatDlg(const UserId& userId, CICQDaemon *daemon,
           CMainWindow *m, QWidget *parent = 0);
   virtual ~ChatDlg();
 
