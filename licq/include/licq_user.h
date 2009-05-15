@@ -1223,7 +1223,7 @@ public:
   bool userExists(const UserId& userId);
 
   bool IsOnList(const char* accountId, unsigned long ppid)
-  { return accountId == NULL ? NULL : userExists(LicqUser::makeUserId(accountId, ppid)); }
+  { return accountId == NULL ? false: userExists(LicqUser::makeUserId(accountId, ppid)); }
 
   LICQ_DEPRECATED LicqOwner* FindOwner(const char* idstring, unsigned long ppid);
 

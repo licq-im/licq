@@ -3,6 +3,7 @@
 
 #include <list>
 #include <map>
+#include <pthread.h>
 #include <string>
 
 #include "licq_icq.h"
