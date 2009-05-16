@@ -286,7 +286,7 @@ friend void *OscarServiceSendQueue_tep(void *p);
 friend void *MonitorSockets_tep(void *p);
 };
 
-// Temporary until all occurenses of deprecated names ICQUser ICQOwner have been removed
+// Temporary until all occurenses of deprecated name ICQEvent have been removed
 typedef LicqEvent ICQEvent;
 
 
