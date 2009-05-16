@@ -35,7 +35,7 @@ class QPushButton;
 class QTreeWidget;
 
 class CSearchAck;
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -94,7 +94,7 @@ private:
 private slots:
   void startSearch();
   void resetSearch();
-  void searchResult(ICQEvent* e);
+  void searchResult(const LicqEvent* e);
   void selectionChanged();
   void viewInfo();
   void addUser();

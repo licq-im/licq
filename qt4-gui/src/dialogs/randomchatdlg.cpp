@@ -91,7 +91,7 @@ void RandomChatDlg::okPressed()
 {
   myOkButton->setEnabled(false);
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(ICQEvent*)), SLOT(userEventDone(ICQEvent*)));
+      SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(userEventDone(const LicqEvent*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
   switch(myGroupsList->currentRow())
   {
@@ -110,7 +110,7 @@ void RandomChatDlg::okPressed()
   setWindowTitle(tr("Searching for Random Chat Partner..."));
 }
 
-void RandomChatDlg::userEventDone(ICQEvent* event)
+void RandomChatDlg::userEventDone(const LicqEvent* event)
 {
   if (!event->Equals(myTag))
     return;
@@ -220,7 +220,7 @@ void SetRandomChatGroupDlg::okPressed()
   myOkButton->setEnabled(false);
   myCancelButton = new QPushButton(tr("&Cancel"), this);
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(ICQEvent*)), SLOT(userEventDone(ICQEvent*)));
+      SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(userEventDone(const LicqEvent*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
   switch(myGroupsList->currentRow())
   {
@@ -240,7 +240,7 @@ void SetRandomChatGroupDlg::okPressed()
   setWindowTitle(tr("Setting Random Chat Group..."));
 }
 
-void SetRandomChatGroupDlg::userEventDone(ICQEvent* event)
+void SetRandomChatGroupDlg::userEventDone(const LicqEvent* event)
 {
   if (!event->Equals(myTag))
     return;

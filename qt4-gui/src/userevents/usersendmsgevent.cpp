@@ -70,7 +70,7 @@ UserSendMsgEvent::~UserSendMsgEvent()
   // Empty
 }
 
-bool UserSendMsgEvent::sendDone(ICQEvent* /* e */)
+bool UserSendMsgEvent::sendDone(const LicqEvent* /* e */)
 {
   myMessageEdit->setText(QString::null);
 

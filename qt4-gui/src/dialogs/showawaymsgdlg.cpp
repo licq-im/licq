@@ -96,7 +96,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const UserId& userId, bool fetch, QWidget* parent
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
     connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(ICQEvent*)), SLOT(doneEvent(ICQEvent*)));
+        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneEvent(const LicqEvent*)));
     icqEventTag = gLicqDaemon->icqFetchAutoResponse(
         myId.toLatin1(), myPpid, bSendServer);
   }
@@ -119,7 +119,7 @@ ShowAwayMsgDlg::~ShowAwayMsgDlg()
     gLicqDaemon->CancelEvent(icqEventTag);
 }
 
-void ShowAwayMsgDlg::doneEvent(ICQEvent* e)
+void ShowAwayMsgDlg::doneEvent(const LicqEvent* e)
 {
   if (!e->Equals(icqEventTag))
     return;

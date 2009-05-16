@@ -237,8 +237,7 @@ void HistoryView::internalAddMsg(QString s)
 
 void HistoryView::addMsg(const ICQEvent* event)
 {
-  UserId userId = LicqUser::makeUserId(event->Id(), event->PPID());
-  if (userId == myUserId && event->UserEvent() != NULL)
+  if (event->userId() == myUserId && event->UserEvent() != NULL)
     addMsg(event->UserEvent());
 }
 

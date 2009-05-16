@@ -36,7 +36,7 @@ class QPushButton;
 class QRegExp;
 class QTextCodec;
 
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -124,7 +124,7 @@ private slots:
    *
    * @param event Event object for message
    */
-  void eventSent(const ICQEvent* event);
+  void eventSent(const LicqEvent* event);
 
 private:
   /**

@@ -28,7 +28,6 @@ class QLabel;
 class QPushButton;
 
 class CUserEvent;
-class ICQEvent;
 
 namespace LicqQtGui
 {

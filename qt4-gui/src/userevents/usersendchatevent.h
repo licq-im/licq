@@ -49,7 +49,7 @@ private:
   QString myChatClients;
   unsigned short myChatPort;
 
-  virtual bool sendDone(ICQEvent* e);
+  virtual bool sendDone(const LicqEvent* e);
   virtual void resetSettings();
 
 private slots:

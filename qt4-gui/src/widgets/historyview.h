@@ -27,7 +27,7 @@
 #include <licq_types.h>
 
 class CUserEvent;
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -75,7 +75,7 @@ public:
 
 public slots:
   void addMsg(const CUserEvent* event, const UserId& userId = USERID_NONE);
-  void addMsg(const ICQEvent* event);
+  void addMsg(const LicqEvent* event);
   void setColors();
 
 signals:

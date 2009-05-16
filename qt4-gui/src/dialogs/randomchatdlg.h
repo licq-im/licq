@@ -27,7 +27,7 @@
 class QListWidget;
 class QPushButton;
 
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -47,7 +47,7 @@ private:
 
 private slots:
   void okPressed();
-  void userEventDone(ICQEvent* event);
+  void userEventDone(const LicqEvent* event);
 };
 
 class SetRandomChatGroupDlg : public QDialog
@@ -66,7 +66,7 @@ private:
 
 private slots:
   void okPressed();
-  void userEventDone(ICQEvent* event);
+  void userEventDone(const LicqEvent* event);
 };
 
 } // namespace LicqQtGui

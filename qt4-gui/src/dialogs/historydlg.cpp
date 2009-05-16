@@ -253,8 +253,8 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
   calenderClicked();
 
   // Catch sent messages and add them to history
-  connect(LicqGui::instance(), SIGNAL(eventSent(const ICQEvent*)),
-      SLOT(eventSent(const ICQEvent*)));
+  connect(LicqGui::instance(), SIGNAL(eventSent(const LicqEvent*)),
+      SLOT(eventSent(const LicqEvent*)));
 
   // Catch received messages so we can add them to history
   connect(LicqGui::instance()->signalManager(),
@@ -288,8 +288,7 @@ void HistoryDlg::updatedUser(const UserId& userId, unsigned long subSignal, int 
 
 void HistoryDlg::eventSent(const ICQEvent* event)
 {
-  UserId userId = LicqUser::makeUserId(event->Id(), event->PPID());
-  if (userId == myUserId && event->UserEvent() != NULL)
+  if (event->userId() == myUserId && event->UserEvent() != NULL)
     addMsg(event->UserEvent());
 }
 

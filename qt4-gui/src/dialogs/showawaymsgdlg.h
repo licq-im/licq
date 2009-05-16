@@ -26,7 +26,7 @@
 
 class QCheckBox;
 
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -53,7 +53,7 @@ private:
   QCheckBox* chkShowAgain;
 
 private slots:
-  void doneEvent(ICQEvent* e);
+  void doneEvent(const LicqEvent* e);
 };
 
 } // namespace LicqQtGui

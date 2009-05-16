@@ -381,8 +381,8 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
 
     gUserManager.DropUser(u);
 
-    connect(LicqGui::instance(), SIGNAL(eventSent(const ICQEvent*)),
-        myHistoryView, SLOT(addMsg(const ICQEvent*)));
+    connect(LicqGui::instance(), SIGNAL(eventSent(const LicqEvent*)),
+        myHistoryView, SLOT(addMsg(const LicqEvent*)));
     //myViewSplitter->setResizeMode(myHistoryView, QSplitter::FollowSizeHint);
   }
 
@@ -771,7 +771,7 @@ void UserSendCommon::changeEventType(int type)
   }
 }
 
-void UserSendCommon::retrySend(ICQEvent* e, bool online, unsigned short level)
+void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short level)
 {
   const LicqUser* user = gUserManager.fetchUser(myUsers.front());
   if (user == NULL)
@@ -1086,11 +1086,11 @@ void UserSendCommon::send()
     connect(mySendButton, SIGNAL(clicked()), SLOT(cancelSend()));
 
     connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(ICQEvent*)), SLOT(eventDoneReceived(ICQEvent*)));
+        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(eventDoneReceived(const LicqEvent*)));
   }
 }
 
-void UserSendCommon::eventDoneReceived(ICQEvent* e)
+void UserSendCommon::eventDoneReceived(const LicqEvent* e)
 {
   if (e == NULL)
   {
@@ -1168,7 +1168,7 @@ void UserSendCommon::eventDoneReceived(ICQEvent* e)
 
   if (myEventTag.size() == 0)
     disconnect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(ICQEvent*)), this, SLOT(eventDoneReceived(ICQEvent*)));
+        SIGNAL(doneUserFcn(const LicqEvent*)), this, SLOT(eventDoneReceived(const LicqEvent*)));
 
   if (myMessageEdit != NULL)
     if(tabDlg == NULL || !tabDlg->tabExists(this) || tabDlg->tabIsSelected(this))

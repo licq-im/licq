@@ -61,7 +61,7 @@ SearchUserDlg::SearchUserDlg()
   setWindowTitle(tr("Licq - User Search"));
 
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(searchResult(ICQEvent*)), SLOT(searchResult(ICQEvent*)));
+      SIGNAL(searchResult(const LicqEvent*)), SLOT(searchResult(const LicqEvent*)));
 
   QVBoxLayout* lay = new QVBoxLayout(this);
 
@@ -317,7 +317,7 @@ void SearchUserDlg::resetSearch()
   btnSearch->setEnabled(true);
 }
 
-void SearchUserDlg::searchResult(ICQEvent* e)
+void SearchUserDlg::searchResult(const LicqEvent* e)
 {
   if (!e->Equals(searchTag))
     return;

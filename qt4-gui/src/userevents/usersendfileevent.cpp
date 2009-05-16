@@ -119,7 +119,7 @@ void UserSendFileEvent::addFile(const QString& file)
   myFileEdit->setText(QString(tr("%1 Files")).arg(myFileList.size()));
 }
 
-bool UserSendFileEvent::sendDone(ICQEvent* e)
+bool UserSendFileEvent::sendDone(const LicqEvent* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {

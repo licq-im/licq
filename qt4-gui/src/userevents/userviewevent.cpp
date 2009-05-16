@@ -90,8 +90,8 @@ UserViewEvent::UserViewEvent(const UserId& userId, QWidget* parent)
 
   connect(myMessageList, SIGNAL(currentItemChanged(QTreeWidgetItem*, QTreeWidgetItem*)),
       SLOT(printMessage(QTreeWidgetItem*)));
-  connect(LicqGui::instance(), SIGNAL(eventSent(const ICQEvent*)),
-      SLOT(sentEvent(const ICQEvent*)));
+  connect(LicqGui::instance(), SIGNAL(eventSent(const LicqEvent*)),
+      SLOT(sentEvent(const LicqEvent*)));
 
   myActionsBox = new QGroupBox();
   myMainWidget->addSpacing(10);
@@ -829,8 +829,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
 
 void UserViewEvent::sentEvent(const ICQEvent* e)
 {
-  UserId eventUserId = LicqUser::makeUserId(e->Id(), e->PPID());
-  if (eventUserId != myUsers.front())
+  if (e->userId() != myUsers.front())
     return;
 
   if (!Config::Chat::instance()->msgChatView())

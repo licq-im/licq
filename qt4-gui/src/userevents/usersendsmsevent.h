@@ -48,7 +48,7 @@ private:
   InfoField* myNumberField;
   InfoField* myCountField;
 
-  virtual bool sendDone(ICQEvent* e);
+  virtual bool sendDone(const LicqEvent* e);
   virtual void resetSettings();
 
 private slots:

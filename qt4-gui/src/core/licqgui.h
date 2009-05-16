@@ -35,7 +35,7 @@
 #include <licq_types.h>
 
 class CICQDaemon;
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -239,7 +239,7 @@ signals:
    *
    * @param event Event object that was sent
    */
-  void eventSent(const ICQEvent* event);
+  void eventSent(const LicqEvent* event);
 
 private slots:
 #ifdef Q_WS_X11

@@ -105,7 +105,7 @@ void UserSendUrlEvent::setUrl(const QString& url, const QString& description)
   setText(description);
 }
 
-bool UserSendUrlEvent::sendDone(ICQEvent* e)
+bool UserSendUrlEvent::sendDone(const LicqEvent* e)
 {
   if (e->Command() != ICQ_CMDxTCP_START)
     return true;

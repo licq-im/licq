@@ -29,6 +29,7 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
+#include <licq_events.h>
 #include <licq_icqd.h>
 
 #include "core/licqgui.h"
@@ -129,7 +130,7 @@ KeyRequestDlg::~KeyRequestDlg()
 void KeyRequestDlg::startSend()
 {
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(ICQEvent*)), SLOT(doneEvent(ICQEvent*)));
+      SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneEvent(const LicqEvent*)));
   btnSend->setEnabled(false);
 
   if (myOpen)
@@ -166,7 +167,7 @@ void KeyRequestDlg::closeConnection()
   myIcqEventTag = gLicqDaemon->ProtoCloseSecureChannel(myId.toLatin1().data(), myPpid);
 }
 
-void KeyRequestDlg::doneEvent(ICQEvent* e)
+void KeyRequestDlg::doneEvent(const LicqEvent* e)
 {
   if (!e->Equals(myIcqEventTag))
     return;

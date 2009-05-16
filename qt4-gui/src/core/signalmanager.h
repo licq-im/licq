@@ -27,7 +27,7 @@
 class QSocketNotifier;
 
 class LicqSignal;
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -67,9 +67,9 @@ signals:
    */
   void updatedStatus(unsigned long ppid);
 
-  void doneOwnerFcn(ICQEvent* ev);
-  void doneUserFcn(ICQEvent* ev);
-  void searchResult(ICQEvent* ev);
+  void doneOwnerFcn(const LicqEvent* ev);
+  void doneUserFcn(const LicqEvent* ev);
+  void searchResult(const LicqEvent* ev);
   void logon();
   void logoff();
 
@@ -131,7 +131,7 @@ private:
   QSocketNotifier* sn;
 
   void ProcessSignal(LicqSignal* sig);
-  void ProcessEvent(ICQEvent* ev);
+  void ProcessEvent(LicqEvent* ev);
 
 private slots:
   void process();

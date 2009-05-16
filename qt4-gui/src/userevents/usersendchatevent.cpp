@@ -87,7 +87,7 @@ UserSendChatEvent::~UserSendChatEvent()
   // Empty
 }
 
-bool UserSendChatEvent::sendDone(ICQEvent* e)
+bool UserSendChatEvent::sendDone(const LicqEvent* e)
 {
   if (!e->ExtendedAck() || !e->ExtendedAck()->Accepted())
   {

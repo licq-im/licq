@@ -98,7 +98,7 @@ void UserSendContactEvent::setContact(const UserId& userId)
   }
 }
 
-bool UserSendContactEvent::sendDone(ICQEvent* e)
+bool UserSendContactEvent::sendDone(const LicqEvent* e)
 {
   if (e->Command() != ICQ_CMDxTCP_START)
     return true;

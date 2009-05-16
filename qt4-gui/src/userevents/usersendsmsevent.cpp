@@ -98,7 +98,7 @@ UserSendSmsEvent::~UserSendSmsEvent()
   // Empty
 }
 
-bool UserSendSmsEvent::sendDone(ICQEvent* /* e */)
+bool UserSendSmsEvent::sendDone(const LicqEvent* /* e */)
 {
   return true;
 }

@@ -25,7 +25,7 @@
 class QCheckBox;
 class QPushButton;
 
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -49,7 +49,7 @@ private:
 
 private slots:
   void ok();
-  void doneUserFcn(ICQEvent* e);
+  void doneUserFcn(const LicqEvent* e);
 };
 
 } // namespace LicqQtGui

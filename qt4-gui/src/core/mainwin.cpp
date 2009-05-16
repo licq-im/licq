@@ -215,8 +215,8 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(updatedStatus(unsigned long)),
       SLOT(updateStatus(unsigned long)));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneOwnerFcn(ICQEvent*)),
-      SLOT(slot_doneOwnerFcn(ICQEvent*)));
+      SIGNAL(doneOwnerFcn(const LicqEvent*)),
+      SLOT(slot_doneOwnerFcn(const LicqEvent*)));
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(logon()),
       SLOT(slot_logon()));
@@ -954,7 +954,7 @@ void MainWindow::slot_protocolPlugin(unsigned long nPPID)
 #endif
 }
 
-void MainWindow::slot_doneOwnerFcn(ICQEvent* e)
+void MainWindow::slot_doneOwnerFcn(const LicqEvent* e)
 {
   updateStatus();
   switch (e->SNAC())

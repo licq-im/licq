@@ -76,7 +76,7 @@ MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
 
   connect(btnCancel, SIGNAL(clicked()), SLOT(slot_cancel()));
   connect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(ICQEvent*)), SLOT(slot_done(ICQEvent*)));
+      SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(slot_done(const LicqEvent*)));
 
   barSend->setMaximum(mmv->contacts().count());
   barSend->setValue(0);
@@ -124,7 +124,7 @@ int MMSendDlg::go_contact(StringList& users)
   return result();
 }
 
-void MMSendDlg::slot_done(ICQEvent* e)
+void MMSendDlg::slot_done(const LicqEvent* e)
 {
   if ( !e->Equals(icqEventTag) )
     return;
@@ -283,7 +283,7 @@ void MMSendDlg::slot_cancel()
     gLicqDaemon->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
-  //disconnect(sigman, SIGNAL(doneUserFcn(ICQEvent*)), SLOT(slot_done(ICQEvent*)));
+  //disconnect(sigman, SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(slot_done(const LicqEvent*)));
 
   reject();
 }

@@ -175,7 +175,7 @@ void UserDlg::retrieve()
     setCursor(Qt::WaitCursor);
     myProgressMsg = tr("Updating...");
     connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(ICQEvent*)), SLOT(doneFunction(ICQEvent*)));
+        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneFunction(const LicqEvent*)));
     setWindowTitle(myBasicTitle + " [" + myProgressMsg + "]");
   }
 }
@@ -189,7 +189,7 @@ void UserDlg::send()
     myProgressMsg = tr("Updating server...");
     setCursor(Qt::WaitCursor);
     connect(LicqGui::instance()->signalManager(),
-        SIGNAL(doneUserFcn(ICQEvent*)), SLOT(doneFunction(ICQEvent*)));
+        SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(doneFunction(const LicqEvent*)));
     setWindowTitle(myBasicTitle + " [" + myProgressMsg +"]");
   }
 }
@@ -239,7 +239,7 @@ void UserDlg::userUpdated(const UserId& userId, unsigned long subSignal)
   gUserManager.DropUser(user);
 }
 
-void UserDlg::doneFunction(ICQEvent* event)
+void UserDlg::doneFunction(const LicqEvent* event)
 {
   if (!event->Equals(myIcqEventTag))
     return;
@@ -274,7 +274,7 @@ void UserDlg::doneFunction(ICQEvent* event)
   setCursor(Qt::ArrowCursor);
   myIcqEventTag = 0;
   disconnect(LicqGui::instance()->signalManager(),
-      SIGNAL(doneUserFcn(ICQEvent*)), this, SLOT(doneFunction(ICQEvent*)));
+      SIGNAL(doneUserFcn(const LicqEvent*)), this, SLOT(doneFunction(const LicqEvent*)));
 }
 
 void UserDlg::showUserMenu()

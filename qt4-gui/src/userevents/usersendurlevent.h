@@ -49,7 +49,7 @@ public:
 private:
   QLabel* myUrlLabel;
   InfoField* myUrlEdit;
-  virtual bool sendDone(ICQEvent* e);
+  virtual bool sendDone(const LicqEvent* e);
   virtual void resetSettings();
 
 private slots:

@@ -49,7 +49,7 @@ class QPushButton;
 class QStyle;
 class QTextEdit;
 
-class ICQEvent;
+class LicqEvent;
 
 namespace LicqQtGui
 {
@@ -174,7 +174,7 @@ private slots:
   //void callUserFunction(QString id, unsigned long ppid);
   void slot_logon();
   void slot_protocolPlugin(unsigned long);
-  void slot_doneOwnerFcn(ICQEvent*);
+  void slot_doneOwnerFcn(const LicqEvent* event);
   void slot_updateContactList();
 
   void addUser(QString id, unsigned long ppid);
