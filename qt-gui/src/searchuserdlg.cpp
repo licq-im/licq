@@ -43,6 +43,7 @@
 #include "searchuserdlg.h"
 #include "sigman.h"
 
+#include <licq_events.h>
 #include "licq_user.h"
 #include "licq_icqd.h"
 #include "licq_languagecodes.h"
@@ -249,8 +250,7 @@ SearchUserDlg::SearchUserDlg(CMainWindow *m, CICQDaemon *s, CSignalManager *theS
 
   connect (btnReset, SIGNAL(clicked()), this, SLOT(resetSearch()));
   connect (btnSearch, SIGNAL(clicked()), this, SLOT(startSearch()));
-  connect (sigman, SIGNAL(signal_searchResult(ICQEvent *)),
-           this, SLOT(searchResult(ICQEvent *)));
+  connect(sigman, SIGNAL(signal_searchResult(LicqEvent*)), SLOT(searchResult(LicqEvent*)));
 
    // pseudo Status Bar
   lblSearch = new QLabel(tr("Enter search parameters and select 'Search'"), this);

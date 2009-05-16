@@ -98,8 +98,7 @@ void CRandomChatDlg::slot_ok()
   if (lstGroups->currentItem() == -1) return;
 
   btnOk->setEnabled(false);
-  QObject::connect(sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)),
-                   this, SLOT(slot_doneUserFcn(ICQEvent *)));
+  connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(slot_doneUserFcn(LicqEvent*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
   switch(lstGroups->currentItem())
   {
@@ -236,8 +235,7 @@ void CSetRandomChatGroupDlg::slot_ok()
 
   btnOk->setEnabled(false);
   btnCancel = new QPushButton(tr("&Cancel"), this);
-  QObject::connect(sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)),
-                   this, SLOT(slot_doneUserFcn(ICQEvent *)));
+  connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(slot_doneUserFcn(LicqEvent*)));
   unsigned long nGroup = ICQ_RANDOMxCHATxGROUP_NONE;
   switch(lstGroups->currentItem())
   {

@@ -40,7 +40,7 @@ class CSignalManager;
 class CMMUserView;
 class CMMUserViewItem;
 class CICQDaemon;
-class ICQEvent;
+class LicqEvent;
 
 class CMMSendDlg : public LicqDialog
 {
@@ -70,7 +70,7 @@ protected:
 
   void SendNext();
 protected slots:
-  void slot_done(ICQEvent *);
+  void slot_done(LicqEvent*);
   void slot_cancel();
 };
 

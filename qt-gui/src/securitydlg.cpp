@@ -237,8 +237,7 @@ void SecurityDlg::ok()
   if (secUpdateNeeded || pasUpdateNeeded)
   {
     btnUpdate->setEnabled(false);
-    QObject::connect(sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)),
-                     this, SLOT(slot_doneUserFcn(ICQEvent *)));
+    connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(slot_doneUserFcn(LicqEvent*)));
 
     if (chkOnlyLocal->isChecked())
     {

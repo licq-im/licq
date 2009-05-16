@@ -219,7 +219,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
 	    user_event = e->UserEvent();
-      licqDaemon->ProtoSendMessage(e->Id(), e->PPID(), user_event->Text(), !m_bSendThroughServer,
+      licqDaemon->ProtoSendMessage(LicqUser::getUserAccountId(e->userId()).c_str(), LicqUser::getUserProtocolId(e->userId()), user_event->Text(), !m_bSendThroughServer,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }
   }

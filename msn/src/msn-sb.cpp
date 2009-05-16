@@ -207,7 +207,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
               {
                 e->m_pUserEvent->AddToHistory(u, MSN_PPID, D_SENDER);
                 u->SetLastSentEvent();
-                if (strcmp(u->IdString(), e->m_szId) == 0)
+                if (u->id() == e->userId())
                   m_pDaemon->m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
                 gUserManager.DropUser(u);
               }
@@ -215,7 +215,7 @@ void CMSN::ProcessSBPacket(char *szUser, CMSNBuffer *packet, int nSock)
           }
           else
           {
-            ICQUser* u = gUserManager.FetchUser(e->m_szId, e->m_nPPID, LOCK_W);
+            LicqUser* u = gUserManager.fetchUser(e->userId(), LOCK_W);
             if (u != NULL)
             {
               e->m_pUserEvent->AddToHistory(u, MSN_PPID, D_SENDER);
@@ -582,7 +582,7 @@ void CMSN::MSNSendMessage(const char* _szUser, const char* _szMsg,
   CMSNPacket *pSend = new CPS_MSNMessage(szRNMsg);
   CEventMsg *m = new CEventMsg(szRNMsg, 0, TIME_NOW, 0);
   m->m_eDir = D_SENDER;
-  ICQEvent *e = new ICQEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, strdup(_szUser), MSN_PPID, m);
+  LicqEvent* e = new LicqEvent(m_pDaemon, 0, pSend, CONNECT_SERVER, userId, m);
   e->thread_plugin = _tPlugin;  
   LicqSignal* s = new LicqSignal(SIGNAL_EVENTxID, 0, userId, e->EventId());
 

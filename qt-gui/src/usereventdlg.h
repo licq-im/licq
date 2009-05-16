@@ -57,6 +57,7 @@ class QListViewItem;
 class QLabel;
 class QTextCodec;
 
+class LicqEvent;
 class MLEditWrap;
 class MsgView;
 class CInfoField;
@@ -230,7 +231,7 @@ protected slots:
   void slot_btnReadNext();
   void slot_printMessage(QListViewItem*);
   void slot_clearEvent();
-  void slot_sentevent(ICQEvent *);
+  void slot_sentevent(LicqEvent*);
   void slot_setEncoding();
 };
 
@@ -272,9 +273,9 @@ protected:
   QString strTempMsg;
   QTimer *tmrSendTyping;
 
-  void RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel);
+  void RetrySend(LicqEvent* e, bool bOnline, unsigned short nLevel);
   virtual void UserUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long cid);
-  virtual bool sendDone(ICQEvent *) = 0;
+  virtual bool sendDone(LicqEvent*) = 0;
   bool checkSecure();
 
   virtual void resetSettings() = 0;
@@ -282,7 +283,7 @@ protected:
 
 protected slots:
   virtual void sendButton();
-  virtual void sendDone_common(ICQEvent *);
+  virtual void sendDone_common(LicqEvent*);
 
   void slot_close();
   void slot_cancelSend();
@@ -321,7 +322,7 @@ public:
   virtual ~UserSendMsgEvent();
 
 protected:
-  virtual bool sendDone(ICQEvent *);
+  virtual bool sendDone(LicqEvent*);
   virtual void resetSettings();
   virtual bool isType(int id) { return (id == UC_MESSAGE); }
 
@@ -347,7 +348,7 @@ public:
 protected:
   QLabel *lblItem;
   CInfoField *edtItem;
-  virtual bool sendDone(ICQEvent *);
+  virtual bool sendDone(LicqEvent*);
   virtual void resetSettings();
   virtual bool isType(int id) { return (id == UC_URL); }
 
@@ -375,7 +376,7 @@ protected:
   CInfoField *edtItem;
   QPushButton *btnBrowse, *btnEdit;
   ConstFileList m_lFileList;
-  virtual bool sendDone(ICQEvent*);
+  virtual bool sendDone(LicqEvent*);
   virtual void resetSettings();
   virtual bool isType(int id) { return (id == UC_FILE); }
 
@@ -404,7 +405,7 @@ protected:
   QPushButton *btnBrowse;
   QString m_szMPChatClients;
   unsigned short m_nMPChatPort;
-  virtual bool sendDone(ICQEvent *);
+  virtual bool sendDone(LicqEvent*);
   virtual void resetSettings();
   virtual bool isType(int id) { return (id == UC_CHAT); }
 
@@ -431,7 +432,7 @@ public:
 protected:
   CMMUserView *lstContacts;
 
-  virtual bool sendDone(ICQEvent *);
+  virtual bool sendDone(LicqEvent*);
   virtual void resetSettings();
   virtual bool isType(int id) { return (id == UC_CONTACT); }
 
@@ -457,7 +458,7 @@ protected:
   QLabel *lblCount;
   CInfoField *nfoCount;
 
-  virtual bool sendDone(ICQEvent *);
+  virtual bool sendDone(LicqEvent*);
   virtual void resetSettings();
   virtual bool isType(int id) { return (id == UC_SMS); }
 

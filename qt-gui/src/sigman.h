@@ -26,8 +26,8 @@
 
 class QSocketNotifier;
 class CICQDaemon;
+class LicqEvent;
 class LicqSignal;
-class ICQEvent;
 
 //=====CSignalManager===========================================================
 class CSignalManager: public QObject
@@ -43,7 +43,7 @@ private:
   QSocketNotifier *sn;
 
   void ProcessSignal(LicqSignal* s);
-  void ProcessEvent(ICQEvent *e);
+  void ProcessEvent(LicqEvent* e);
 
 protected slots:
   void slot_incoming();
@@ -66,9 +66,9 @@ signals:
   void signal_newOwner(const char *, unsigned long);
   
   // Event signals
-  void signal_doneOwnerFcn(ICQEvent *);
-  void signal_doneUserFcn(ICQEvent *);
-  void signal_searchResult(ICQEvent *);
+  void signal_doneOwnerFcn(LicqEvent*);
+  void signal_doneUserFcn(LicqEvent*);
+  void signal_searchResult(LicqEvent*);
 };
 
 

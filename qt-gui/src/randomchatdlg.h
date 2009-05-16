@@ -31,7 +31,7 @@ class CICQDaemon;
 class CSignalManager;
 class QListBox;
 class QPushButton;
-class ICQEvent;
+class LicqEvent;
 
 
 class CRandomChatDlg : public LicqDialog
@@ -50,7 +50,7 @@ protected:
   QPushButton *btnOk, *btnCancel;
 protected slots:
   void slot_ok();
-  void slot_doneUserFcn(ICQEvent *);
+  void slot_doneUserFcn(LicqEvent*);
 };
 
 
@@ -70,7 +70,7 @@ protected:
   QPushButton *btnOk, *btnCancel;
 protected slots:
   void slot_ok();
-  void slot_doneUserFcn(ICQEvent *);
+  void slot_doneUserFcn(LicqEvent*);
 };
 
 

@@ -28,6 +28,7 @@
 #include <qtextcodec.h>
 #include <qtimer.h>
 
+#include <licq_events.h>
 #include "licq_icqd.h"
 #include "licq_icq.h"
 #include "keyrequestdlg.h"
@@ -133,7 +134,7 @@ KeyRequestDlg::~KeyRequestDlg()
 
 void KeyRequestDlg::startSend()
 {
-  connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
+  connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(doneEvent(LicqEvent*)));
   btnSend->setEnabled(false);
 
   if (m_bOpen)

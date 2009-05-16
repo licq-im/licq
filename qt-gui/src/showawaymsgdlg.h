@@ -27,7 +27,7 @@
 class MLEditWrap;
 class CSignalManager;
 class CICQDaemon;
-class ICQEvent;
+class LicqEvent;
 
 class QPushButton;
 class QCheckBox;
@@ -53,7 +53,7 @@ protected:
 
 protected slots:
   virtual void accept();
-  void doneEvent(ICQEvent *);
+  void doneEvent(LicqEvent*);
 };
 
 

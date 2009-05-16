@@ -38,7 +38,7 @@ class QCheckBox;
 
 class CICQDaemon;
 class CSignalManager;
-class ICQEvent;
+class LicqEvent;
 class CSearchAck;
 
 //TODO for protocol plugin support
@@ -108,7 +108,7 @@ public slots:
    void viewInfo();
    void addUser();
    void resetSearch();
-   void searchResult(ICQEvent *);
+   void searchResult(LicqEvent*);
    void selectionChanged();
 };
 

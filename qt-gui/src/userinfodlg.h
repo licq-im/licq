@@ -41,7 +41,7 @@ class QListViewItem;
 
 class CInfoField;
 class CICQDaemon;
-class ICQEvent;
+class LicqEvent;
 class CSignalManager;
 class CMainWindow;
 class CEInfoField;
@@ -207,7 +207,7 @@ protected slots:
   void SaveSettings();
   void slotUpdate();
   void slotRetrieve();
-  void doneFunction(ICQEvent*);
+  void doneFunction(LicqEvent*);
   void slot_aliasChanged(const QString &);
   void resetCaption();
   void ShowUsermenu() { gMainWindow->SetUserMenuUser(myUserId); }

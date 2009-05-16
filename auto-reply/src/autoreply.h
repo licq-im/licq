@@ -10,7 +10,7 @@
 class CICQDaemon;
 class CUserEvent;
 class LicqSignal;
-class ICQEvent;
+class LicqEvent;
 
 class CLicqAutoReply
 {
@@ -33,7 +33,7 @@ protected:
 
   void ProcessPipe();
   void ProcessSignal(LicqSignal* s);
-  void ProcessEvent(ICQEvent *);
+  void ProcessEvent(LicqEvent* e);
 
   /**
    * A new event arrived for a user

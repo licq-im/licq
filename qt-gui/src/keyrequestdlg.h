@@ -25,7 +25,7 @@
 #include "licqdialog.h"
 
 class CSignalManager;
-class ICQEvent;
+class LicqEvent;
 
 class QLabel;
 class QPushButton;
@@ -48,7 +48,7 @@ protected:
 
 protected slots:
   void startSend();
-  void doneEvent(ICQEvent *);
+  void doneEvent(LicqEvent*);
   void openConnection();
   void closeConnection();
 };

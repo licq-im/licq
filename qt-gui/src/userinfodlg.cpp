@@ -2324,7 +2324,7 @@ void UserInfoDlg::slotRetrieve()
   {
     setCursor(waitCursor);
     m_sProgressMsg = tr("Updating...");
-    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
+    connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(doneFunction(LicqEvent*)));
     setCaption(m_sBasic + " [" + m_sProgressMsg +"]");
   }
 }
@@ -2478,7 +2478,7 @@ void UserInfoDlg::slotUpdate()
   {
     m_sProgressMsg = tr("Updating server...");
     setCursor(waitCursor);
-    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
+    connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(doneFunction(LicqEvent*)));
     setCaption(m_sBasic + " [" + m_sProgressMsg +"]");
   }
 }
@@ -2517,7 +2517,7 @@ void UserInfoDlg::doneFunction(ICQEvent* e)
   QTimer::singleShot(5000, this, SLOT(resetCaption()));
   setCursor(arrowCursor);
   icqEventTag = 0;
-  disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneFunction(ICQEvent *)));
+  disconnect(sigman, SIGNAL(signal_doneUserFcn(LicqQEvent*)), this, SLOT(doneFunction(LicqEvent*)));
 }
 
 

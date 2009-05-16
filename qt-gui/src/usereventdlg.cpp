@@ -64,6 +64,7 @@
 #include <qcolordialog.h>
 #endif
 
+#include <licq_events.h>
 #include "licq_message.h"
 #include "licq_translate.h"
 #include "licq_icqd.h"
@@ -745,7 +746,7 @@ UserViewEvent::UserViewEvent(CICQDaemon *s, CSignalManager *theSigMan,
   splRead->setResizeMode(mlvRead, QSplitter::Stretch);
 
   connect (msgView, SIGNAL(currentChanged(QListViewItem *)), this, SLOT(slot_printMessage(QListViewItem *)));
-  connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), this, SLOT(slot_sentevent(ICQEvent *)));
+  connect(mainwin, SIGNAL(signal_sentevent(LicqEvent*)), SLOT(slot_sentevent(LicqEvent*)));
 
   QHGroupBox *h_action = new QHGroupBox(mainWidget);
   lay->addSpacing(10);
@@ -1493,8 +1494,7 @@ void UserViewEvent::UserUpdated(const UserId& userId, unsigned long subSignal, i
 
 void UserViewEvent::slot_sentevent(ICQEvent *e)
 {
-  UserId eventUserId = LicqUser::makeUserId(e->Id(), e->PPID());
-  if (eventUserId != m_lUsers.front())
+  if (e->userId() != m_lUsers.front())
     return;
 
   if (!mainwin->m_bMsgChatView)
@@ -1773,7 +1773,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
     gUserManager.DropUser(u);
 
     connect(mleHistory, SIGNAL(viewurl(QWidget*, QString)), mainwin, SLOT(slot_viewurl(QWidget *, QString)));
-    connect (mainwin, SIGNAL(signal_sentevent(ICQEvent *)), mleHistory, SLOT(addMsg(ICQEvent *)));
+    connect(mainwin, SIGNAL(signal_sentevent(LicqEvent*)), mleHistory, SLOT(addMsg(LicqEvent*)));
     //splView->setResizeMode(mleHistory, QSplitter::FollowSizeHint);
   }
 
@@ -2314,7 +2314,7 @@ void UserSendCommon::sendButton()
     disconnect(btnSend, SIGNAL(clicked()), this, SLOT(sendButton()));
     connect(btnSend, SIGNAL(clicked()), this, SLOT(slot_cancelSend()));
 
-    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
+    connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(sendDone_common(LicqEvent*)));
   }
 }
 
@@ -2406,7 +2406,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     chkSendServer->setChecked(true);
 
   if (m_lnEventTag.size() == 0)
-    disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(sendDone_common(ICQEvent *)));
+    disconnect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), this, SLOT(sendDone_common(LicqEvent*)));
 
   if (mleSend != NULL)
     mleSend->setFocus();

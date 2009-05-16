@@ -28,6 +28,7 @@
 #include <qtextcodec.h>
 #include <qregexp.h>
 
+#include <licq_events.h>
 #include "licq_icqd.h"
 #include "mledit.h"
 #include "showawaymsgdlg.h"
@@ -95,7 +96,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(CICQDaemon *_server, CSignalManager* _sigman,
     gUserManager.DropUser(u);
     mleAwayMsg->setEnabled(false);
     mleAwayMsg->setBackgroundMode(PaletteBackground);
-    connect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(doneEvent(ICQEvent *)));
+    connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(doneEvent(LicqEvent*)));
     icqEventTag = server->icqFetchAutoResponse(szId, nPPID, bSendServer);
   }
 

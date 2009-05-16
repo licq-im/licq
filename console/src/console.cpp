@@ -814,14 +814,14 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
         const CUserEvent* ue = e->UserEvent();
         if (e->SubResult() == ICQ_TCPxACK_RETURN)
         {
-          u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
+          u = gUserManager.fetchUser(e->userId());
           win->wprintf("%s is in %s mode:\n%s\n[Send \"urgent\" ('.u') to ignore]\n",
                        u->GetAlias(), u->StatusStr(), u->AutoResponse());
           gUserManager.DropUser(u);
         }
         else if (e->SubResult() == ICQ_TCPxACK_REFUSE)
         {
-          u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
+          u = gUserManager.fetchUser(e->userId());
           win->wprintf("%s refused %s.\n",
                        u->GetAlias(), ue->Description());
           gUserManager.DropUser(u);
@@ -838,7 +838,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
 
           if(!ea->Accepted())
           {
-            u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
+            u = gUserManager.fetchUser(e->userId());
             win->wprintf("%s refused file: %s\n",
                          u->GetAlias(), ea->Response());
             gUserManager.DropUser(u);
@@ -850,7 +850,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
             // Invoke a file transfer manager here
             const CEventFile* f = dynamic_cast<const CEventFile *>(ue);
             CFileTransferManager *ftman = new CFileTransferManager(licqDaemon,
-                e->Id());
+                LicqUser::getUserAccountId(e->userId()).c_str());
             m_lFileStat.push_back(ftman);
 
             // Now watch the file pipe
@@ -905,7 +905,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
             } // if file or chat*/
         else
         {
-          u = gUserManager.FetchUser(e->Id(), e->PPID(), LOCK_R);
+          u = gUserManager.fetchUser(e->userId());
           if (u != NULL && u->Away() && u->ShowAwayMsg())
           {
             win->wprintf("%s\n", u->AutoResponse());

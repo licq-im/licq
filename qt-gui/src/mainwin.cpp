@@ -61,6 +61,7 @@
 #include "licq_icq.h"
 #include "licq_sar.h"
 #include "gui-defines.h"
+#include <licq_events.h>
 #include "licq_log.h"
 #include "licq_translate.h"
 #include "licq_utility.h"
@@ -758,8 +759,7 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   connect (licqSigMan, SIGNAL(signal_updatedUser(const UserId&, unsigned long, int, unsigned long)),
       this, SLOT(slot_updatedUser(const UserId&, unsigned long, int, unsigned long)));
   connect (licqSigMan, SIGNAL(signal_updatedStatus(unsigned long)), this, SLOT(updateStatus(unsigned long)));
-   connect (licqSigMan, SIGNAL(signal_doneOwnerFcn(ICQEvent *)),
-            this, SLOT(slot_doneOwnerFcn(ICQEvent *)));
+  connect(licqSigMan, SIGNAL(signal_doneOwnerFcn(LicqEvent*)), SLOT(slot_doneOwnerFcn(LicqEvent *)));
    connect (licqSigMan, SIGNAL(signal_logon()),
             this, SLOT(slot_logon()));
   connect(licqSigMan, SIGNAL(signal_ui_message(const UserId&)),

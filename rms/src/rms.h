@@ -14,7 +14,7 @@ class CICQDaemon;
 class TCPSocket;
 class CUserEvent;
 class LicqSignal;
-class ICQEvent;
+class LicqEvent;
 class CLogService_Plugin;
 
 const unsigned short MAX_LINE_LENGTH = 1024 * 1;
@@ -45,7 +45,7 @@ protected:
 public:
   void ProcessPipe();
   void ProcessSignal(LicqSignal* s);
-  void ProcessEvent(ICQEvent *);
+  void ProcessEvent(LicqEvent* e);
   void ProcessServer();
   void ProcessLog();
   void AddEventTag(const UserId& userId, unsigned long eventTag);
@@ -107,7 +107,7 @@ protected:
 
   int StateMachine();
   int ProcessCommand();
-  bool ProcessEvent(ICQEvent *);
+  bool ProcessEvent(LicqEvent* e);
   bool AddLineToText();
   unsigned long GetProtocol(const char *);
   void ParseUser(const char *);

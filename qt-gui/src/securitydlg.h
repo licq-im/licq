@@ -28,7 +28,7 @@
 
 class QPushButton;
 class QCheckBox;
-class ICQEvent;
+class LicqEvent;
 
 class CICQDaemon;
 class CSignalManager;
@@ -58,7 +58,7 @@ protected:
   QString initEdtUin, initEdtFirst, initEdtSecond;
 
 public slots:
-  void slot_doneUserFcn(ICQEvent *);
+  void slot_doneUserFcn(LicqEvent*);
 
 protected slots:
   void ok();

@@ -913,8 +913,7 @@ void CMessageViewWidget::internalAddMsg(QString s)
 
 void CMessageViewWidget::addMsg(ICQEvent * _e)
 {
-  UserId eventUserId = LicqUser::makeUserId(_e->Id(), _e->PPID());
-  if (eventUserId == myUserId && _e->UserEvent() != NULL)
+  if (_e->userId() == myUserId && _e->UserEvent() != NULL)
     addMsg( _e->UserEvent() );
 }
 

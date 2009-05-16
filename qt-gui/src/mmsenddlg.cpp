@@ -62,7 +62,7 @@ CMMSendDlg::CMMSendDlg(CICQDaemon *_server, CSignalManager *sigman,
   v->addWidget(btnCancel);
 
   connect(btnCancel, SIGNAL(clicked()), SLOT(slot_cancel()));
-  connect(sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), SLOT(slot_done(ICQEvent *)));
+  connect(sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), SLOT(slot_done(LicqEvent*)));
 
   mmvi = (CMMUserViewItem *)mmv->firstChild();
   barSend->setTotalSteps(mmv->childCount());
@@ -280,7 +280,7 @@ void CMMSendDlg::slot_cancel()
     server->CancelEvent(icqEventTag);
     icqEventTag = 0;
   }
-  //disconnect (sigman, SIGNAL(signal_doneUserFcn(ICQEvent *)), this, SLOT(slot_done(ICQEvent *)));
+  //disconnect (sigman, SIGNAL(signal_doneUserFcn(LicqEvent*)), this, SLOT(slot_done(LicqEvent*)));
 
   reject();
 }

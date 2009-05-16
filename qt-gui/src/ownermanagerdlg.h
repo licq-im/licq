@@ -32,7 +32,7 @@ class QComboBox;
 
 class CICQDaemon;
 class CSignalManager;
-class ICQEvent;
+class LicqEvent;
 class CMainWindow;
 
 class OwnerEditDlg : public LicqDialog
@@ -80,7 +80,7 @@ class OwnerManagerDlg : public LicqDialog
 public:
   OwnerManagerDlg(CMainWindow *m, CICQDaemon *s, CSignalManager *sm);
   virtual ~OwnerManagerDlg();
-  void slot_doneRegisterUser(ICQEvent *);
+  void slot_doneRegisterUser(LicqEvent*);
 
 protected slots:
   void slot_listClicked(QListViewItem *);

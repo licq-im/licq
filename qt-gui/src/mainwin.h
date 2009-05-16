@@ -53,7 +53,7 @@ class CSignalManager;
 class CQtLogWindow;
 class CSkin;
 class CICQDaemon;
-class ICQEvent;
+class LicqEvent;
 class OptionsDlg;
 class AwayMsgDlg;
 class RegisterUserDlg;
@@ -345,7 +345,7 @@ protected slots:
   void slot_doneplugindlg();
   void slot_doneOptions();
   void slot_doneOwnerManager();
-  void slot_doneOwnerFcn(ICQEvent *);
+  void slot_doneOwnerFcn(LicqEvent*);
   void slot_doneAwayMsgDlg();
   void slot_stats();
   void showAddUserDlg();
@@ -390,8 +390,8 @@ protected slots:
 
 signals:
   void changeDockStatus(unsigned short);
-  void signal_sentevent(ICQEvent *e);
-  void signal_doneRegisterUser(ICQEvent *e);
+  void signal_sentevent(LicqEvent* e);
+  void signal_doneRegisterUser(LicqEvent* e);
 
 private:
   enum { /* ID's for the menu items in mnuUserAdm.

@@ -43,7 +43,7 @@
 #include "mlview.h"
 
 class CUserEvent;
-class ICQEvent;
+class LicqEvent;
 class CMainWindow;
 
 bool QueryUser(QWidget *, QString, QString, QString, bool bConfirmYes=false, QString szConfirm=NULL, bool bConfirmNo=false, QString szConfirmNo=NULL);
@@ -248,7 +248,7 @@ public:
   
 public slots:
   virtual void addMsg(const CUserEvent* e, const UserId& userId = USERID_NONE);
-  void addMsg(ICQEvent *);
+  void addMsg(LicqEvent*);
 
 private:
   void internalAddMsg(QString s);
