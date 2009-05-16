@@ -11,6 +11,7 @@
 #include <cstring>
 #include <unistd.h>
 
+#include "licq_events.h"
 #include "licq_socket.h"
 
 

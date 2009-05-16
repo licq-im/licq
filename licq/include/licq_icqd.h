@@ -861,7 +861,7 @@ protected:
   void ChangeUserStatus(LicqUser* u, unsigned long s);
   bool AddUserEvent(LicqUser* user, CUserEvent* e);
   void RejectEvent(const char* id, CUserEvent* e);
-  LicqUser* FindUserForInfoUpdate(const char* szId, ICQEvent* e, const char*);
+  LicqUser* FindUserForInfoUpdate(const UserId& userId, LicqEvent* e, const char*);
   std::string FindUserByCellular(const char* cellular);
 
   void icqRegisterFinish();
@@ -899,10 +899,10 @@ protected:
   bool SendEvent(int nSD, CPacket &, bool);
   bool SendEvent(INetSocket *, CPacket &, bool);
   void SendEvent_Server(CPacket *packet);
-  ICQEvent *SendExpectEvent_Server(const char *, unsigned long, CPacket *, CUserEvent *, bool = false);
+  LicqEvent* SendExpectEvent_Server(const UserId& userId, CPacket *, CUserEvent *, bool = false);
 
   ICQEvent* SendExpectEvent_Server(CPacket* packet, CUserEvent* ue, bool extendedEvent = false)
-  { return SendExpectEvent_Server("0", LICQ_PPID, packet, ue, extendedEvent); }
+  { return SendExpectEvent_Server(USERID_NONE, packet, ue, extendedEvent); }
 
   ICQEvent* SendExpectEvent_Client(const LicqUser* user, CPacket* packet, CUserEvent* ue);
   ICQEvent *SendExpectEvent(ICQEvent *, void *(*fcn)(void *));

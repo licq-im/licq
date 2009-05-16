@@ -7,9 +7,10 @@
 #include "licq_constants.h"
 
 class CICQDaemon;
+class LicqEvent;
 class LicqSignal;
 
-typedef std::list <class ICQEvent *> EventList;
+typedef std::list<LicqEvent*> EventList;
 typedef std::list<class LicqSignal*> SignalList;
 
 //=====CPlugin==================================================================
@@ -37,9 +38,9 @@ protected:
   ~CPlugin();
 
   void pushSignal(LicqSignal* signal);
-  void PushEvent(ICQEvent *);
+  void PushEvent(LicqEvent* event);
   LicqSignal* popSignal();
-  ICQEvent *PopEvent();
+  LicqEvent* PopEvent();
 
   void Enable();
   void Disable();

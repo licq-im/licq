@@ -134,11 +134,10 @@ void COscarService::ClearQueue()
   pthread_mutex_unlock(&mutex_sendqueue);
 }
 
-unsigned long COscarService::SendEvent(const char *Id,
+unsigned long COscarService::SendEvent(const UserId& userId,
                                        unsigned short SubType, bool Request)
 {
-  ICQEvent *e = new ICQEvent(myDaemon, mySocketDesc, NULL, CONNECT_SERVER,
-                             Id, LICQ_PPID, NULL);
+  LicqEvent* e = new LicqEvent(myDaemon, mySocketDesc, NULL, CONNECT_SERVER, userId);
   e->SetSubType(SubType);
   if (Request)
     myDaemon->PushEvent(e);
@@ -158,9 +157,9 @@ bool COscarService::SendBARTFam(ICQEvent *e)
   {
     case ICQ_SNACxBART_DOWNLOADxREQUEST:
     {
-      const ICQUser* u = gUserManager.FetchUser(e->Id(), LICQ_PPID, LOCK_R);
-      CPU_RequestBuddyIcon *p = new CPU_RequestBuddyIcon(e->Id(), u->BuddyIconType(),
-                                    u->BuddyIconHashType(), u->BuddyIconHash(), myFam);
+      const LicqUser* u = gUserManager.fetchUser(e->userId());
+      CPU_RequestBuddyIcon *p = new CPU_RequestBuddyIcon(u->accountId().c_str(),
+          u->BuddyIconType(), u->BuddyIconHashType(), u->BuddyIconHash(), myFam);
       gLog.Info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
                 L_SRVxSTR, u->GetAlias(), p->Sequence(), p->SubSequence());
       gUserManager.DropUser(u);

@@ -383,12 +383,12 @@ void *ProcessRunningEvent_Client_tep(void *p)
   // Check if the socket is connected
   if (e->m_nSocketDesc == -1)
   {
-    string id = e->Id();
-    unsigned long ppid = e->PPID();
+    UserId userId = e->userId();
+    string id = LicqUser::getUserAccountId(userId);
     unsigned char nChannel = e->Channel();
     pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
 
-    const ICQUser* u = gUserManager.FetchUser(id.c_str(), ppid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(userId);
     if (u == NULL)
     {
       if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -420,7 +420,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
       if (nId != -1)
       {
         d->WaitForReverseConnection(nId, id.c_str());
-        u = gUserManager.FetchUser(id.c_str(), LICQ_PPID, LOCK_R);
+        u = gUserManager.fetchUser(userId);
         if (u == NULL)
         {
           if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -463,7 +463,7 @@ void *ProcessRunningEvent_Client_tep(void *p)
         if (nId != -1)
         {
           d->WaitForReverseConnection(nId, id.c_str());
-          u = gUserManager.FetchUser(id.c_str(), LICQ_PPID, LOCK_R);
+          u = gUserManager.fetchUser(userId);
           if (u == NULL)
           {
             if (d->DoneEvent(e, EVENT_ERROR) != NULL)
@@ -1015,7 +1015,7 @@ void *UpdateUsers_tep(void *p)
             strlen(pUser->BuddyIconHash()) > 0 &&
             strcmp(pUser->BuddyIconHash(), pUser->OurBuddyIconHash()) != 0)
         {
-          d->m_xBARTService->SendEvent(pUser->IdString(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
+          d->m_xBARTService->SendEvent(pUser->id(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
           bSent = true;
           bBART = true;
         }

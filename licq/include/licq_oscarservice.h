@@ -5,10 +5,12 @@
 
 #include <boost/shared_array.hpp>
 
+#include "licq_types.h"
+
 class CICQDaemon;
-class ICQEvent;
 class CBuffer;
 class CPacket;
+class LicqEvent;
 class ProxyServer;
 
 enum EOscarServiceStatus {STATUS_UNINITIALIZED, STATUS_SERVICE_REQ_SENT,
@@ -25,7 +27,7 @@ public:
   ~COscarService();
   bool Initialize();
   bool ProcessPacket(CBuffer &packet);
-  unsigned long SendEvent(const char *Id, unsigned short SubType, bool Request);
+  unsigned long SendEvent(const UserId& userId, unsigned short SubType, bool Request);
   void ClearQueue();
 
   void SetConnectCredential(char *Server, unsigned short Port,
@@ -44,7 +46,7 @@ protected:
   char *myServer;
   boost::shared_array<char> myCookie;
   unsigned short myPort, myCookieLen;
-  std::list <ICQEvent *> mySendQueue;
+  std::list<LicqEvent*> mySendQueue;
   pthread_mutex_t mutex_sendqueue;
   pthread_cond_t cond_sendqueue;
   pthread_mutex_t mutex_status;
@@ -52,7 +54,7 @@ protected:
 
   bool SendPacket(CPacket *packet);
   bool WaitForStatus(EOscarServiceStatus s);
-  bool SendBARTFam(ICQEvent *e);
+  bool SendBARTFam(LicqEvent* event);
   void ProcessNewChannel(CBuffer &packet);
   void ProcessDataChannel(CBuffer &packet);
   void ProcessServiceFam(CBuffer &packet, unsigned short SubType, unsigned long RequestId);

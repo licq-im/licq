@@ -52,9 +52,8 @@ CExtendedAck::~CExtendedAck()
 unsigned long ICQEvent::s_nNextEventId = 1;
 
 //-----ICQEvent::constructor----------------------------------------------------
-ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
-                   ConnectType _eConnect, const char *_szId, unsigned long _nPPID,
-                   CUserEvent *e)
+LicqEvent::LicqEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
+    ConnectType _eConnect, const UserId& userId, CUserEvent *e)
 //   : m_xBuffer(p.getBuffer())
 {
   // set up internal variables
@@ -84,8 +83,7 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
     m_nSubType = 0;
     m_nExtraInfo = 0;
   }
-  m_szId = _szId ? strdup(_szId) : 0;
-  m_nPPID = _nPPID;
+  myUserId = userId;
   m_eConnect = _eConnect;
   m_pUserEvent = e;
   m_nSocketDesc = _nSocketDesc;
@@ -103,7 +101,7 @@ ICQEvent::ICQEvent(CICQDaemon *_pDaemon, int _nSocketDesc, CPacket *p,
 }
 
 //-----ICQEvent::constructor----------------------------------------------------
-ICQEvent::ICQEvent(const ICQEvent* e)
+LicqEvent::LicqEvent(const LicqEvent* e)
 //   : m_xBuffer(e->m_xBuffer)
 {
   m_nEventId = e->m_nEventId;
@@ -121,11 +119,7 @@ ICQEvent::ICQEvent(const ICQEvent* e)
   m_nSubSequence = e->m_nSubSequence;
   m_nSubType = e->m_nSubType;
   m_nExtraInfo = e->m_nExtraInfo;
-  if (e->m_szId)
-    m_szId = strdup(e->m_szId);
-  else
-    m_szId = 0;
-  m_nPPID = e->m_nPPID;
+  myUserId = e->myUserId;
   m_eConnect = e->m_eConnect;
   m_eResult = e->m_eResult;
   m_nSubResult = e->m_nSubResult;
@@ -147,12 +141,11 @@ ICQEvent::ICQEvent(const ICQEvent* e)
 
 
 //-----ICQEvent::destructor-----------------------------------------------------
-ICQEvent::~ICQEvent()
+LicqEvent::~LicqEvent()
 {
   assert(!m_Deleted);
   m_Deleted = true;
 
-  free(m_szId);
   delete m_pPacket;
   delete m_pUserEvent;
   delete m_pExtendedAck;

@@ -144,7 +144,7 @@ enum EventResult
     relevant data fields set.  A plugin will receive an event in response
     to any asynchronous function call (such as icqSendMessage) eventually.
 */
-class ICQEvent
+class LicqEvent
 {
 public:
   // Accessors
@@ -188,13 +188,12 @@ public:
   //!accepting/rejecting chat or file requests.
   unsigned short SubSequence() const { return m_nSubSequence; }
 
-  //!The user id that the event was destined for.  Only relevant if
-  //!this was a message/url...
-  const char* Id() const { return m_szId; }
-
-  //!The protocol id of the user that the event was destined for.
-  //!Only relevant if this was a message/url...
-  unsigned long PPID() const { return m_nPPID; }
+  /**
+   * Get user id the event was destined for.
+   *
+   * @return User id for event if relevant
+   */
+  const UserId& userId() const { return myUserId; }
 
   //!Special structure containing information relevant if this is a
   //!search event.
@@ -224,12 +223,12 @@ public:
   //!event with the event that the daemon has signaled to the plugin.
   bool Equals(unsigned long) const;
 
-  ~ICQEvent();
+  ~LicqEvent();
 
 protected:
-  ICQEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
-           const char *_szId, unsigned long _nPPID, CUserEvent *e);
-  ICQEvent(const ICQEvent* e);
+  LicqEvent(CICQDaemon *_xDaemon, int _nSocketDesc, CPacket *p, ConnectType _eConnect,
+      const UserId& userId = USERID_NONE, CUserEvent* e = NULL);
+  LicqEvent(const LicqEvent* e);
 
   // Daemon only
   unsigned short SubType() const     { return m_nSubType; }
@@ -262,8 +261,7 @@ protected:
   unsigned short m_nSubType;
   unsigned short m_nExtraInfo;
   int            m_nSocketDesc;
-  char           *m_szId;
-  unsigned long  m_nPPID;
+  UserId         myUserId;
   CPacket        *m_pPacket;
   pthread_t      thread_send;
   bool           thread_running;
@@ -287,6 +285,10 @@ friend void *ProcessRunningEvent_Server_tep(void *p);
 friend void *OscarServiceSendQueue_tep(void *p);
 friend void *MonitorSockets_tep(void *p);
 };
+
+// Temporary until all occurenses of deprecated names ICQUser ICQOwner have been removed
+typedef LicqEvent ICQEvent;
+
 
 //=====CICQSignal============================================================
 

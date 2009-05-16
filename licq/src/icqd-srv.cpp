@@ -57,10 +57,11 @@ void CICQDaemon::protoAddUser(const string& accountId, unsigned long ppid, int g
 //-----icqAddUser----------------------------------------------------------
 void CICQDaemon::icqAddUser(const char *_szId, bool _bAuthRequired, unsigned short groupId)
 {
+  UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_ADDxTOxLIST);
   gLog.Info(tr("%sAlerting server to new user (#%hu)...\n"), L_SRVxSTR,
              p->Sequence());
-  SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL);
+  SendExpectEvent_Server(userId, p, NULL);
 
   // Server side list add, and update of group
   if (UseServerContactList())
@@ -313,6 +314,7 @@ void CICQDaemon::protoRemoveUser(const UserId& userId)
 
 void CICQDaemon::icqRemoveUser(const char *_szId)
 {
+  UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   // Remove from the SSList and update groups
   if (UseServerContactList())
   {
@@ -320,7 +322,7 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
       ICQ_SNACxLIST_ROSTxEDITxSTART);
     SendEvent_Server(pStart);
 
-    ICQUser *u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
     // When we remove a user, we remove them from all parts of the list:
     // Visible, Invisible and Ignore lists as well.
     unsigned short nGSID = u->GetGSID();
@@ -373,7 +375,7 @@ void CICQDaemon::icqRemoveUser(const char *_szId)
   CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BUDDY, ICQ_SNACxBDY_REMOVExFROMxLIST);
   gLog.Info(tr("%sAlerting server to remove user (#%hu)...\n"), L_SRVxSTR,
             p->Sequence());
-  SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL);
+  SendExpectEvent_Server(userId, p, NULL);
 }
 
 //-----icqRemoveGroup----------------------------------------------------------
@@ -433,6 +435,7 @@ void CICQDaemon::icqRenameUser(const string& accountId, const string& newAlias)
 
 void CICQDaemon::icqAlertUser(const char* id, unsigned long ppid)
 {
+  UserId userId = LicqUser::makeUserId(id, ppid);
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   char sz[MAX_MESSAGE_SIZE];
   sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->getFirstName().c_str(),
@@ -441,7 +444,7 @@ void CICQDaemon::icqAlertUser(const char* id, unsigned long ppid)
   gUserManager.DropOwner(o);
   CPU_ThroughServer *p = new CPU_ThroughServer(id, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
   gLog.Info(tr("%sAlerting user they were added (#%hu)...\n"), L_SRVxSTR, p->Sequence());
-  SendExpectEvent_Server(id, ppid, p, NULL);
+  SendExpectEvent_Server(userId, p, NULL);
 }
 
 unsigned long CICQDaemon::requestUserAutoResponse(const UserId& userId)
@@ -463,13 +466,14 @@ unsigned long CICQDaemon::requestUserAutoResponse(const UserId& userId)
 
 unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
 {
+  UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CPU_CommonFamily *p = 0;
 
   if (isalpha(_szId[0]))
     p = new CPU_AIMFetchAwayMessage(_szId);
   else
   {
-    const ICQUser* u = gUserManager.FetchUser(_szId, LICQ_PPID, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(userId);
     if (!u) return 0;
 
     int nCmd;
@@ -496,9 +500,9 @@ unsigned long CICQDaemon::icqFetchAutoResponseServer(const char *_szId)
   if (!p) return 0;
 
   gLog.Info(tr("%sRequesting auto response from %s (%hu).\n"), L_SRVxSTR,
-        _szId, p->Sequence());
+      USERID_TOSTR(userId), p->Sequence());
 
-  ICQEvent *result = SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL);
+  LicqEvent* result = SendExpectEvent_Server(userId, p, NULL);
   if (result != NULL)
     return result->EventId();
   return 0;
@@ -628,15 +632,16 @@ unsigned long CICQDaemon::requestUserInfo(const UserId& userId)
 //-----icqRequestMetaInfo----------------------------------------------------
 unsigned long CICQDaemon::icqRequestMetaInfo(const char *_szId)
 {
+  UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CPU_CommonFamily *p = 0;
   bool bIsAIM = isalpha(_szId[0]);
   if (bIsAIM)
     p = new CPU_RequestInfo(_szId);
   else
     p = new CPU_Meta_RequestAllInfo(_szId);
-  gLog.Info(tr("%sRequesting meta info for %s (#%hu/#%d)...\n"), L_SRVxSTR, _szId,
-            p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL, !bIsAIM);
+  gLog.Info(tr("%sRequesting meta info for %s (#%hu/#%d)...\n"), L_SRVxSTR,
+      USERID_TOSTR(userId), p->Sequence(), p->SubSequence());
+  LicqEvent* e = SendExpectEvent_Server(userId, p, NULL, !bIsAIM);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -658,7 +663,7 @@ unsigned long CICQDaemon::requestUserPicture(const UserId& userId)
   if (ppid == LICQ_PPID)
   {
     if (UseServerSideBuddyIcons() && iconHashSize > 0)
-      nRet = m_xBARTService->SendEvent(accountId.c_str(), ICQ_SNACxBART_DOWNLOADxREQUEST, true);
+      nRet = m_xBARTService->SendEvent(userId, ICQ_SNACxBART_DOWNLOADxREQUEST, true);
     else
       nRet = icqRequestPicture(accountId.c_str(), sendServer);
   }
@@ -1045,6 +1050,7 @@ unsigned long CICQDaemon::icqSearchByUin(unsigned long nUin)
 //-----icqGetUserBasicInfo------------------------------------------------------
 unsigned long CICQDaemon::icqUserBasicInfo(const char *_szId)
 {
+  UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CPU_CommonFamily *p = 0;
   bool bIsAIM = isalpha(_szId[0]);
   if (bIsAIM)
@@ -1053,7 +1059,7 @@ unsigned long CICQDaemon::icqUserBasicInfo(const char *_szId)
     p = new CPU_Meta_RequestAllInfo(_szId);
   gLog.Info(tr("%sRequesting user info (#%hu/#%d)...\n"), L_SRVxSTR,
             p->Sequence(), p->SubSequence());
-  ICQEvent *e = SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL, !bIsAIM);
+  LicqEvent* e = SendExpectEvent_Server(userId, p, NULL, !bIsAIM);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -1157,8 +1163,9 @@ void CICQDaemon::icqTypingNotification(const char *_szId, bool _bActive)
 //-----icqCheckInvisible--------------------------------------------------------
 void CICQDaemon::icqCheckInvisible(const char *_szId)
 {
+  UserId userId = LicqUser::makeUserId(_szId, LICQ_PPID);
   CSrvPacketTcp *p = new CPU_CheckInvisible(_szId);
-  SendExpectEvent_Server(_szId, LICQ_PPID, p, NULL);
+  SendExpectEvent_Server(userId, p, NULL);
 }
 
 //-----icqSendVisibleList-------------------------------------------------------
@@ -1297,26 +1304,27 @@ void CICQDaemon::icqAddToVisibleList(const char* _szId, unsigned long _nPPID)
 //-----icqRemoveFromVisibleList-------------------------------------------------
 void CICQDaemon::icqRemoveFromVisibleList(const char* _szId, unsigned long _nPPID)
 {
-  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
+  UserId userId = LicqUser::makeUserId(_szId, _nPPID);
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u != NULL)
   {
     u->SetVisibleList(false);
     gUserManager.DropUser(u);
   }
   CSrvPacketTcp *p = new CPU_GenericUinList(_szId, ICQ_SNACxFAM_BOS, ICQ_SNACxBOS_REMxVISIBLExLIST);
-  gLog.Info(tr("%sRemoving user %s from visible list (#%hu)...\n"), L_SRVxSTR, _szId,
-     p->Sequence());
+  gLog.Info(tr("%sRemoving user %s from visible list (#%hu)...\n"), L_SRVxSTR,
+      USERID_TOSTR(userId), p->Sequence());
   SendEvent_Server(p);
 
   if (UseServerContactList())
   {
-    u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
+    u = gUserManager.fetchUser(userId);
     if (u != NULL)
     {
       CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, 0, u->GetVisibleSID(),
         ICQ_ROSTxVISIBLE);
       addToModifyUsers(pRemove->SubSequence(), _szId);
-      SendExpectEvent_Server(_szId, _nPPID, pRemove, NULL);
+      SendExpectEvent_Server(userId, pRemove, NULL);
       gUserManager.DropUser(u);
     }
   }
@@ -1503,6 +1511,7 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
 {
   ICQEvent* result;
   const ICQUser* u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+  UserId userId = u->id();
   bool bOffline = u->StatusOffline();
   gUserManager.DropUser(u);
 
@@ -1527,8 +1536,7 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
   if (m_bShuttingDown) return NULL;
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, szId,
-    LICQ_PPID, ue);
+  LicqEvent* e = new LicqEvent(this, m_nTCPSrvSocketDesc, p, CONNECT_SERVER, userId, ue);
   if (e == NULL) return 0;
   e->m_NoAck = true;
 
@@ -1539,11 +1547,12 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
 unsigned long CICQDaemon::icqSendSms(const char* id, unsigned long ppid,
     const char* number, const char* message)
 {
+  UserId userId = LicqUser::makeUserId(id, ppid);
   CEventSms* ue = new CEventSms(number, message, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, INT_VERSION);
   CPU_SendSms* p = new CPU_SendSms(number, message);
   gLog.Info(tr("%sSending SMS through server (#%hu/#%d)...\n"), L_SRVxSTR,
       p->Sequence(), p->SubSequence());
-  ICQEvent* e = SendExpectEvent_Server(id, ppid, p, ue);
+  ICQEvent* e = SendExpectEvent_Server(userId, p, ue);
   if (e != NULL)
     return e->EventId();
   return 0;
@@ -1561,7 +1570,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
       (e->m_eResult == EVENT_ACKED || e->m_eResult == EVENT_SUCCESS) &&
       e->m_nSubResult != ICQ_TCPxACK_RETURN)
   {
-    ICQUser* u = gUserManager.FetchUser(e->m_szId, e->m_nPPID, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(e->userId(), LOCK_W);
     if (u != NULL)
     {
       e->m_pUserEvent->AddToHistory(u, LICQ_PPID, D_SENDER);
@@ -1735,7 +1744,7 @@ void CICQDaemon::icqLogoff()
   if (nSD != -1)
   {
     CPU_Logoff p;
-    cancelledEvent = new ICQEvent(this, nSD, &p, CONNECT_SERVER, NULL, 0, NULL);
+    cancelledEvent = new LicqEvent(this, nSD, &p, CONNECT_SERVER);
     cancelledEvent->m_pPacket = NULL;
     cancelledEvent->m_bCancelled = true;
     SendEvent(nSD, p, true);
@@ -1953,26 +1962,26 @@ int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
 }
 
 //-----FindUserForInfoUpdate-------------------------------------------------
-ICQUser *CICQDaemon::FindUserForInfoUpdate(const char *szId, ICQEvent *e,
+LicqUser* CICQDaemon::FindUserForInfoUpdate(const UserId& userId, LicqEvent* e,
    const char *t)
 {
-  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL)
   {
     // If the event is NULL as well then nothing we can do
     if (e == NULL)
     {
       gLog.Warn(tr("%sResponse to unknown %s info request for unknown user (%s).\n"),
-                L_WARNxSTR, t, szId);
+          L_WARNxSTR, t, USERID_TOSTR(userId));
       return NULL;
     }
     // Check if we need to create the user
     if (e->m_pUnknownUser == NULL)
     {
-      e->m_pUnknownUser = new ICQUser(szId, LICQ_PPID);
+      e->m_pUnknownUser = new LicqUser(LicqUser::getUserAccountId(userId), LicqUser::getUserProtocolId(userId));
     }
     // If not, validate the uin
-    else if (strcmp(e->m_pUnknownUser->IdString(), szId) != 0)
+    else if (e->m_pUnknownUser->id() == userId)
     {
       gLog.Error("%sInternal Error: Event contains wrong user.\n", L_ERRORxSTR);
       return NULL;
@@ -1982,7 +1991,7 @@ ICQUser *CICQDaemon::FindUserForInfoUpdate(const char *szId, ICQEvent *e,
     u->Lock(LOCK_W);
   }
   gLog.Info(tr("%sReceived %s information for %s (%s).\n"), L_SRVxSTR, t,
-            u->GetAlias(), szId);
+      u->GetAlias(), USERID_TOSTR(userId));
   return u;
 }
 
@@ -5466,7 +5475,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
       {
         ICQEvent *e = NULL;
         ICQUser *u = NULL;
-        const char* szId = NULL;
+        UserId userId = USERID_NONE;
         bool multipart = false;
 
         if ((nResult == 0x32) || (nResult == 0x14) || (nResult == 0x1e))
@@ -5491,9 +5500,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             gLog.Warn("%sUnmatched extended event (%d)!\n", L_WARNxSTR, nSubSequence);
               break;
           }
-          szId = e->Id();
+          userId = e->userId();
 
-          u = FindUserForInfoUpdate(szId, e, "extended");
+          u = FindUserForInfoUpdate(userId, e, "extended");
           if (u == NULL)
           {
             gLog.Warn(tr("%scan't find user for updating!\n"), L_WARNxSTR);
@@ -5511,7 +5520,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           u->SetEnableSave(false);
           tmp = msg.UnpackString();
           // Skip the alias if user wants to keep his own.
-          if (!u->m_bKeepAliasOnUpdate || szId == gUserManager.OwnerId(LICQ_PPID))
+          if (!u->m_bKeepAliasOnUpdate || userId == gUserManager.ownerUserId(LICQ_PPID))
           {
             char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->UserEncoding()) : 0;
             gTranslator.ServerToClient(szUTFAlias);
@@ -5873,7 +5882,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             ProcessDoneEvent(e);
           } else {
             gLog.Warn(tr("%sResponse to unknown extended info request for %s (%s).\n"),
-                      L_WARNxSTR, u->GetAlias(), szId);
+                      L_WARNxSTR, u->GetAlias(), USERID_TOSTR(userId));
           }
         }
 

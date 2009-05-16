@@ -1175,7 +1175,7 @@ void CICQDaemon::RejectEvent(const char* id, CUserEvent* e)
 void CICQDaemon::SendEvent_Server(CPacket *packet)
 {
 #if 1
-  ICQEvent* e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, NULL, 0, NULL);
+  LicqEvent* e = new LicqEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER);
 
   if (e == NULL)  return;
  
@@ -1196,7 +1196,7 @@ void CICQDaemon::SendEvent_Server(CPacket *packet)
 #endif
 }
 
-ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long /* nPPID */,
+ICQEvent *CICQDaemon::SendExpectEvent_Server(const UserId& userId,
    CPacket *packet, CUserEvent *ue, bool bExtendedEvent)
 {
   // If we are already shutting down, don't start any events
@@ -1208,8 +1208,7 @@ ICQEvent *CICQDaemon::SendExpectEvent_Server(const char *szId, unsigned long /* 
   }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  ICQEvent *e = new ICQEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, szId,
-    LICQ_PPID, ue);
+  LicqEvent* e = new LicqEvent(this, m_nTCPSrvSocketDesc, packet, CONNECT_SERVER, userId, ue);
 
 	if (e == NULL)  return NULL;
 
@@ -1248,8 +1247,8 @@ ICQEvent* CICQDaemon::SendExpectEvent_Client(const ICQUser* pUser, CPacket* pack
   }
 
   if (ue != NULL) ue->m_eDir = D_SENDER;
-  ICQEvent *e = new ICQEvent(this, pUser->SocketDesc(packet->Channel()), packet,
-     CONNECT_USER, pUser->IdString(), pUser->PPID(), ue);
+  LicqEvent* e = new LicqEvent(this, pUser->SocketDesc(packet->Channel()), packet,
+     CONNECT_USER, pUser->id(), ue);
 
   if (e == NULL) return NULL;
 
@@ -1987,11 +1986,11 @@ void CICQDaemon::CancelEvent(ICQEvent *e)
   e->m_eResult = EVENT_CANCELLED;
 
   if (e->m_nSubCommand == ICQ_CMDxSUB_CHAT)
-    icqChatRequestCancel(e->Id(), e->m_nSequence);
+    icqChatRequestCancel(LicqUser::getUserAccountId(e->userId()).c_str(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_FILE)
-    icqFileTransferCancel(e->Id(), e->m_nSequence);
+    icqFileTransferCancel(LicqUser::getUserAccountId(e->userId()).c_str(), e->m_nSequence);
   else if (e->m_nSubCommand == ICQ_CMDxSUB_SECURExOPEN)
-    icqOpenSecureChannelCancel(e->Id(), e->m_nSequence);
+    icqOpenSecureChannelCancel(LicqUser::getUserAccountId(e->userId()).c_str(), e->m_nSequence);
 
   ProcessDoneEvent(e);
 }

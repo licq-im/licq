@@ -193,6 +193,7 @@ unsigned long CICQDaemon::icqSendMessage(const char *szId, const char *m,
 //-----CICQDaemon::icqFetchAutoResponse-----------------------------------------
 unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long _nPPID, bool bServer)
 {
+  UserId userId = LicqUser::makeUserId(_szId, _nPPID);
   if (_szId == gUserManager.OwnerId(LICQ_PPID))
     return 0;
 
@@ -200,7 +201,7 @@ unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long 
     return icqFetchAutoResponseServer(_szId);
 
   ICQEvent *result;
-  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
 
   if (bServer)
   {
@@ -209,7 +210,7 @@ unsigned long CICQDaemon::icqFetchAutoResponse(const char *_szId, unsigned long 
                         ICQ_CMDxTCP_READxAWAYxMSG, 0, false, 0, 0, 0);
     gLog.Info(tr("%sRequesting auto response from %s.\n"), L_SRVxSTR,
               u->GetAlias());
-    result = SendExpectEvent_Server(_szId, _nPPID, s, NULL);
+    result = SendExpectEvent_Server(userId, s, NULL);
   }
   else
   {
@@ -341,6 +342,7 @@ unsigned long CICQDaemon::icqFileTransfer(const char *szId, const char *szFilena
                         const char *szDescription, ConstFileList &lFileList,
                         unsigned short nLevel, bool bServer)
 {
+  UserId userId = LicqUser::makeUserId(szId, LICQ_PPID);
   if (szId == gUserManager.OwnerId(LICQ_PPID))
     return 0;
 
@@ -353,7 +355,7 @@ unsigned long CICQDaemon::icqFileTransfer(const char *szId, const char *szFilena
   }
   CEventFile *e = NULL;
 
-  ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+  LicqUser *u = gUserManager.fetchUser(userId, LOCK_W);
   if (u == NULL) return 0;
 
   if (bServer)
@@ -385,7 +387,7 @@ unsigned long CICQDaemon::icqFileTransfer(const char *szId, const char *szFilena
       gLog.Info(tr("%sSending file transfer to %s (#%hu).\n"), L_SRVxSTR, 
                 u->GetAlias(), -p->Sequence());
 
-      result = SendExpectEvent_Server(szId, LICQ_PPID, p, e);
+      result = SendExpectEvent_Server(userId, p, e);
     }
   }
   else
@@ -509,7 +511,7 @@ unsigned long CICQDaemon::icqRequestInfoPlugin(ICQUser *u, bool bServer,
   if (bServer)
   {
     CPU_InfoPluginReq *p = new CPU_InfoPluginReq(u, GUID, 0);
-    result = SendExpectEvent_Server(u->IdString(), u->PPID(), p, NULL);
+    result = SendExpectEvent_Server(u->id(), p, NULL);
   }
   else
   {
@@ -599,7 +601,7 @@ unsigned long CICQDaemon::icqRequestStatusPlugin(ICQUser *u, bool bServer,
   if (bServer)
   {
     CPU_StatusPluginReq *p = new CPU_StatusPluginReq(u, GUID, 0);
-    result = SendExpectEvent_Server(u->IdString(), u->PPID(), p, NULL);
+    result = SendExpectEvent_Server(u->id(), p, NULL);
   }
   else
   {
@@ -861,8 +863,8 @@ unsigned long CICQDaemon::icqMultiPartyChatRequest(const char* id,
 		gLog.Info(tr("%sSending chat request to %s (#%hu).\n"), L_SRVxSTR,
 			  u->GetAlias(), -p->Sequence());
 
-		result = SendExpectEvent_Server(u->IdString(), u->PPID(), p, e);
-	}
+      result = SendExpectEvent_Server(u->id(), p, e);
+    }
 	else
 	{
 		CPT_ChatRequest *p = new CPT_ChatRequest(szReasonDos, szChatUsers, nPort,
