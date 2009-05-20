@@ -492,7 +492,8 @@ bool INetSocket::connectTo(uint32_t remoteAddr, uint16_t remotePort, ProxyServer
 //-----INetSocket::StartServer--------------------------------------------------
 bool INetSocket::StartServer(unsigned int _nPort)
 {
-  memset(&myLocalAddr, 0, sizeof(myLocalAddr));
+  socklen_t addrlen;
+  memset(&myLocalAddr, 0, sizeof(myLocalAddrStorage));
 
 #ifndef LICQ_DISABLE_IPV6
   // Try to create an IPv6 socket
@@ -500,6 +501,19 @@ bool INetSocket::StartServer(unsigned int _nPort)
   if (m_nDescriptor != -1)
   {
     // IPv6 socket created
+
+#ifdef IPV6_PORTRANGE
+    int i = IPV6_PORTRANGE_HIGH;
+    if (setsockopt(m_nDescriptor, IPPROTO_IPV6, IPV6_PORTRANGE, &i, sizeof(i)) < 0)
+    {
+      m_nErrorType = SOCK_ERROR_errno;
+      ::close(m_nDescriptor);
+      m_nDescriptor = -1;
+      return false;
+    }
+#endif
+
+    addrlen = sizeof(sockaddr_in6);
     myLocalAddr.sa_family = AF_INET6;
     ((struct sockaddr_in6*)&myLocalAddr)->sin6_port = htons(_nPort);
     ((struct sockaddr_in6*)&myLocalAddr)->sin6_addr = in6addr_any;
@@ -518,6 +532,18 @@ bool INetSocket::StartServer(unsigned int _nPort)
       return (false);
     }
 
+#ifdef IP_PORTRANGE
+    int i = IP_PORTRANGE_HIGH;
+    if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i)) < 0)
+    {
+      m_nErrorType = SOCK_ERROR_errno;
+      ::close(m_nDescriptor);
+      m_nDescriptor = -1;
+      return false;
+    }
+#endif
+
+    addrlen = sizeof(sockaddr_in);
     myLocalAddr.sa_family = AF_INET;
     ((struct sockaddr_in*)&myLocalAddr)->sin_port = htons(_nPort);
     ((struct sockaddr_in*)&myLocalAddr)->sin_addr.s_addr = INADDR_ANY;
@@ -525,18 +551,7 @@ bool INetSocket::StartServer(unsigned int _nPort)
   }
 #endif
 
-#ifdef IP_PORTRANGE
-  int i=IP_PORTRANGE_HIGH;
-  if (setsockopt(m_nDescriptor, IPPROTO_IP, IP_PORTRANGE, &i, sizeof(i))<0)
-  {
-    m_nErrorType = SOCK_ERROR_errno;
-    ::close(m_nDescriptor);
-    m_nDescriptor = -1;
-    return(false);
-  }
-#endif
-
-  if (bind(m_nDescriptor, (struct sockaddr*)&myLocalAddr, sizeof(struct sockaddr_storage)) == -1)
+  if (bind(m_nDescriptor, (struct sockaddr*)&myLocalAddr, addrlen) == -1)
   {
     m_nErrorType = SOCK_ERROR_errno;
     ::close(m_nDescriptor);
