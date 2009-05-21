@@ -287,39 +287,53 @@ public:
                                bool Active, int nSocket = -1)
   { if (szId != NULL) sendTypingNotification(LicqUser::makeUserId(szId, nPPID), Active, nSocket); }
 
-  //! Send a message to a user on this protocol.
-  /*!
-        \param szId The user ID.
-        \param nPPID The protocol ID.
-        \param szMessage The message to be sent.
-        \param bOnline True if the user is online.
-        \param nLevel Any special flags (protocol specific).
-        \param bMultipleRecipients True if sending the same message to
-          more than one user.
-        \param pColor The color of the text and background.
-        \param nCID The conversation ID for group messages (MSN & IRC)
-  */
+  /**
+   * Send a normal message to a user
+   *
+   * @param userId User to send message to
+   * @param message The message to be sent
+   * @param viaServer True to send via server or false to use direct connection (ICQ only)
+   * @param flags Any special flags (ICQ only)
+   * @param multipleRecipients True if sending the same message to more than one user (ICQ only)
+   * @param color The color of the text and background (ICQ only)
+   * @param convoId Conversation ID for group messages (Non-ICQ only)
+   * @return Event id
+   */
+  unsigned long sendMessage(const UserId& userId, const std::string& message,
+      bool viaServer, unsigned short flags, bool multipleRecipients = false,
+      CICQColor* color = NULL, unsigned long convoId = 0);
+
+  LICQ_DEPRECATED // Use sendMessage() instead
   unsigned long ProtoSendMessage(const char *szId, unsigned long nPPID,
      const char *szMessage, bool bOnline, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL,
-     unsigned long nCID = 0);
+     unsigned long nCID = 0)
+  { return szId == NULL ? 0 : sendMessage(LicqUser::makeUserId(szId, nPPID),
+      szMessage, !bOnline, nLevel, bMultipleRecipients, pColor, nCID); }
 
-  //! Send a URL to a user on this protocol
-  /*!
-      This may not be available for all protocols.
-        \param szId The user ID.
-        \param szUrl The URL to be sent.
-        \param szDescription A description of the URL that can be sent.
-        \param bOnline True if the user is online.
-        \param nLevel Any special flags (protocol specific).
-        \param bMultipleRecipients True if sending the same URL to
-          more than one user.
-        \param pColor The color of the text and background.
-  */      
+  /**
+   * Send URL message to a user
+   *
+   * @param userId User to sent URL to
+   * @param url The URL to be sent
+   * @param message Message or description of URL
+   * @param viaServer True to send via server or false to use direct connection (ICQ only)
+   * @param flags Any special flags (ICQ only)
+   * @param multipleRecipients True if sending the same message to more than one user (ICQ only)
+   * @param color The color of the text and background (ICQ only)
+   * @return Event id
+   */
+  unsigned long sendUrl(const UserId& userId, const std::string& url,
+      const std::string& message, bool viaServer, unsigned short flags,
+      bool multipleRecipients = false, CICQColor* color = NULL);
+
+  LICQ_DEPRECATED // Use sendUrl() instead
   unsigned long ProtoSendUrl(const char *szId, unsigned long nPPID,
      const char *szUrl, const char *szDescription, bool bOnline,
      unsigned short nLevel, bool bMultipleRecipients = false,
-     CICQColor *pColor = NULL);
+     CICQColor *pColor = NULL)
+  { return szId == NULL ? 0 : sendUrl(LicqUser::makeUserId(szId, nPPID), szUrl,
+      szDescription, !bOnline, nLevel, bMultipleRecipients, pColor); }
 
   /**
    * Request user auto response from server
@@ -333,32 +347,88 @@ public:
   unsigned long ProtoFetchAutoResponseServer(const char *szId, unsigned long nPPID)
   { return szId == NULL ? 0 : requestUserAutoResponse(LicqUser::makeUserId(szId, nPPID)); }
 
-  unsigned long ProtoChatRequest(const char *szId, unsigned long nPPID,
-     const char *szReason, unsigned short nLevel, bool bServer);
-  unsigned long ProtoMultiPartyChatRequest(const char *szId, unsigned long nPPID,
-     const char *szReason, const char *szChatUsers, unsigned short nPort,
-     unsigned short nLevel, bool bServer);
-  void ProtoChatRequestRefuse(const char *szId, unsigned long nPPID,
-      const char* szReason, unsigned short nSequence,
-      const unsigned long nMsgID[], bool bDirect);
-  void ProtoChatRequestAccept(const char *szId, unsigned long nPPID,
-      unsigned short nPort, const char* szClients, unsigned long nSequeunce,
-      const unsigned long nMsgID[], bool bDirect);
-  void ProtoChatRequestCancel(const char *szId, unsigned long nPPID,
-     unsigned short nSequence);
+  /**
+   * Initiate a file transfer to a user
+   *
+   * @param userId User to send file to
+   * @param filename Name of file to send
+   * @param message Message or description of file(s)
+   * @param files List of files to send
+   * @param flags Any special flags (ICQ only)
+   * @param viaServer True to send via server or false to use direct connection (ICQ only)
+   * @return Event id
+   */
+  unsigned long fileTransferPropose(const UserId& userId, const std::string& filename,
+      const std::string& message, ConstFileList& files, unsigned short flags,
+      bool viaServer);
 
+  LICQ_DEPRECATED // Use fileTransferPropose() instead
   unsigned long ProtoFileTransfer(const char *szId, unsigned long nPPID,
      const char *szFilename, const char *szDescription, ConstFileList &lFileList,
-     unsigned short nLevel, bool bServer);
+     unsigned short nLevel, bool bServer)
+  { return szId == NULL ? 0 : fileTransferPropose(LicqUser::makeUserId(szId, nPPID),
+      szFilename, szDescription, lFileList, nLevel, bServer); }
+
+  /**
+   * Refuse a proposed file transfer
+   *
+   * @param userId User to send refusal to
+   * @param message Message with reason for refusal
+   * @param eventId Event id of a pending transfer
+   * @param flag1 ?
+   * @param flag2 ?
+   * @param viaServer True to send via server or false to use direct connection
+   */
+  void fileTransferRefuse(const UserId& userId, const std::string& message,
+      unsigned long eventId, unsigned long flag1, unsigned long flag2,
+      bool viaServer = true);
+
+  LICQ_DEPRECATED // Use fileTransferRefuse() instead
   void ProtoFileTransferRefuse(const char *szId, unsigned long nPPID,
      const char *szReason, unsigned long nSequence, unsigned long nFlag1,
-     unsigned long nFlag2, bool bDirect = false);
+     unsigned long nFlag2, bool bDirect = false)
+  { if (szId != NULL) fileTransferRefuse(LicqUser::makeUserId(szId, nPPID),
+      szReason, nSequence, nFlag1, nFlag2, !bDirect); }
+
+  /**
+   * Cancel a file transfer
+   *
+   * @param userId User to cancel transfer for
+   * @param eventId Event id of transfer to cancel
+   */
+  void fileTransferCancel(const UserId& userId, unsigned long eventId);
+
+  LICQ_DEPRECATED // Use fileTransferCancel() instead
   void ProtoFileTransferCancel(const char *szId, unsigned long nPPID,
-     unsigned long nSequence);
+     unsigned long nSequence)
+  { if (szId != NULL) fileTransferCancel(LicqUser::makeUserId(szId, nPPID), nSequence); }
+
+  /**
+   * Accept a proposed file transfer
+   *
+   * @param userId User to accept file transfer from
+   * @param port Local tcp port to use
+   * @param eventId Event id of transfer to accept
+   * @param flag1 ?
+   * @param flag2 ?
+   * @param message Description text from file transfer event (ICQ only)
+   * @param filename Filename from file transfer event (ICQ only)
+   * @param filesize File size from file transfer event (ICQ only)
+   * @param viaServer True to send via server or false to use direct connection
+   */
+  void fileTransferAccept(const UserId& userId, unsigned short port,
+      unsigned long eventId = 0, unsigned long flag1 = 0, unsigned long flag2 = 0,
+      const std::string& message = "", const std::string filename = "",
+      unsigned long filesize = 0, bool viaServer = true);
+
+  LICQ_DEPRECATED // Use fileTransferAccept() instead
   void ProtoFileTransferAccept(const char *szId, unsigned long nPPID,
      unsigned short nPort, unsigned long nSequence = 0, unsigned long nFlag1 = 0,
      unsigned long nFlag2 = 0, const char *szDesc = 0, const char *szFile = 0,
-     unsigned long nFileSize = 0,bool bDirect = false);
+     unsigned long nFileSize = 0,bool bDirect = false)
+  { if (szId != NULL) fileTransferAccept(LicqUser::makeUserId(szId, nPPID), nPort,
+      nSequence, nFlag1, nFlag2, szDesc ? szDesc : "", szFile ? szFile : "",
+      nFileSize, !bDirect); }
 
   unsigned long ProtoAuthorizeGrant(const char *szId, unsigned long nPPID,
      const char *szMessage);
@@ -396,20 +466,52 @@ public:
   unsigned long ProtoRequestPicture(const char *szId, unsigned long nPPID)
   { return szId == NULL ? 0 : requestUserPicture(LicqUser::makeUserId(szId, nPPID)); }
 
-  unsigned long ProtoOpenSecureChannel(const char *szId, unsigned long nPPID);
-  unsigned long ProtoCloseSecureChannel(const char *szId, unsigned long nPPID);
+  /**
+   * Enable encrypted communication towards a user
+   *
+   * @param userId User to enable encryption for
+   * @return Event id
+   */
+  unsigned long secureChannelOpen(const UserId& userId);
+
+  LICQ_DEPRECATED // Use secureChannelOpen instead
+  unsigned long ProtoOpenSecureChannel(const char *szId, unsigned long nPPID)
+  { return szId == NULL ? 0 : secureChannelOpen(LicqUser::makeUserId(szId, nPPID)); }
+
+  /**
+   * Disable encrypted communication towards a user
+   *
+   * @param userId User to disable encryption for
+   * @return Event id
+   */
+  unsigned long secureChannelClose(const UserId& userId);
+
+  LICQ_DEPRECATED // Use secureChannelClose instead
+  unsigned long ProtoCloseSecureChannel(const char *szId, unsigned long nPPID)
+  { return szId == NULL ? 0 : secureChannelClose(LicqUser::makeUserId(szId, nPPID)); }
+
+  /**
+   * Cancel encrypted communication about to be enabled
+   *
+   * @param userId User to cancel encryption for
+   * @param eventId Event of open request to cancel
+   */
+  void secureChannelCancelOpen(const UserId& userId, unsigned long eventId);
+
+  LICQ_DEPRECATED // Use secureChannelCancelOpen instead
   void ProtoOpenSecureChannelCancel(const char *szId, unsigned long nPPID,
-    unsigned long nSequence);
+    unsigned long nSequence)
+  { if (szId == NULL) return; secureChannelCancelOpen(LicqUser::makeUserId(szId, nPPID), nSequence); }
 
   // TCP (user) functions
   // Message
-  unsigned long icqSendMessage(const char *szId, const char *szMessage,
-     bool bOnline, unsigned short nLevel, bool bMultipleRecipients = false,
+  unsigned long icqSendMessage(const UserId& userId, const std::string& message,
+      bool viaServer, unsigned short nLevel, bool bMultipleRecipients = false,
      CICQColor *pColor = NULL);
 
   // Url
-  unsigned long icqSendUrl(const char *szId, const char *szUrl,
-     const char *szDescription, bool bOnline, unsigned short nLevel,
+  unsigned long icqSendUrl(const UserId& userId, const std::string& url,
+      const std::string& message, bool viaServer, unsigned short nLevel,
      bool bMultipleRecipients = false, CICQColor *pColor = NULL);
   // Contact List
   unsigned long icqSendContactList(const char *szId, const StringList& users,
@@ -431,18 +533,18 @@ public:
       const unsigned long nMsgID[], bool bDirect);
   void icqChatRequestCancel(const char* id, unsigned short nSequence);
   // File Transfer
-  unsigned long icqFileTransfer(const char *szId, const char *szFilename,
-     const char *szDescription, ConstFileList &lFileList,
+  unsigned long icqFileTransfer(const UserId& userId, const std::string& filename,
+      const std::string& message, ConstFileList &lFileList,
      unsigned short nLevel, bool bServer);
-  void icqFileTransferRefuse(const char *szId, const char *szReason,
-      unsigned short nSequence, const unsigned long nMsgID[], bool bDirect);
-  void icqFileTransferCancel(const char *szId, unsigned short nSequence);
-  void icqFileTransferAccept(const char *szId, unsigned short nPort,
-     unsigned short nSequence, const unsigned long nMsgID[], bool bDirect,
-     const char *szDesc, const char *szFile, unsigned long nFileSize);  
-  unsigned long icqOpenSecureChannel(const char *szId);
-  unsigned long icqCloseSecureChannel(const char *szId);
-  void icqOpenSecureChannelCancel(const char *szId, unsigned short nSequence);
+  void icqFileTransferRefuse(const UserId& userId, const std::string& message,
+      unsigned short nSequence, const unsigned long nMsgID[], bool viaServer);
+  void icqFileTransferCancel(const UserId& userId, unsigned short nSequence);
+  void icqFileTransferAccept(const UserId& userId, unsigned short nPort,
+      unsigned short nSequence, const unsigned long nMsgID[], bool viaServer,
+      const std::string& message, const std::string& filename, unsigned long nFileSize);
+  unsigned long icqOpenSecureChannel(const UserId& userId);
+  unsigned long icqCloseSecureChannel(const UserId& userId);
+  void icqOpenSecureChannelCancel(const UserId& userId, unsigned short nSequence);
 
   // Plugins
   unsigned long icqRequestInfoPluginList(const char *szId,
