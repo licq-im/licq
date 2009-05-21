@@ -219,7 +219,7 @@ void CLicqAutoReply::ProcessEvent(ICQEvent *e)
          e->SubCommand() != ICQ_CMDxSUB_FILE))
     {
 	    user_event = e->UserEvent();
-      licqDaemon->ProtoSendMessage(LicqUser::getUserAccountId(e->userId()).c_str(), LicqUser::getUserProtocolId(e->userId()), user_event->Text(), !m_bSendThroughServer,
+      licqDaemon->sendMessage(e->userId(), user_event->Text(), m_bSendThroughServer,
         ICQ_TCPxMSG_URGENT); //urgent, because, hey, he asked us, right?
     }
   }
@@ -263,8 +263,6 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
   sprintf(buf, "%s ", m_szProgram);
   const LicqUser* u = gUserManager.fetchUser(userId);
   tmp = u->usprintf(m_szArguments);
-  string szId = u->accountId();
-  unsigned long nPPID = u->ppid();
   gUserManager.DropUser(u);
   szCommand = new char[strlen(buf) + strlen(tmp) + 1];
   strcpy(szCommand, buf);
@@ -303,7 +301,7 @@ bool CLicqAutoReply::autoReplyEvent(const UserId& userId, const CUserEvent* even
 
   char *szText = new char[4096 + 256];
   sprintf(szText, "%s", m_szMessage);
-  unsigned long tag = licqDaemon->ProtoSendMessage(szId.c_str(), nPPID, szText, !m_bSendThroughServer,
+  unsigned long tag = licqDaemon->sendMessage(userId, szText, m_bSendThroughServer,
      ICQ_TCPxMSG_URGENT);
   delete []szText;
   delete [] szCommand;

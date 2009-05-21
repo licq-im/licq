@@ -209,13 +209,6 @@ void UserSendFileEvent::updateLabel(unsigned count)
 
 void UserSendFileEvent::send()
 {
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
@@ -229,10 +222,10 @@ void UserSendFileEvent::send()
 
   unsigned long icqEventTag;
   //TODO in daemon
-  icqEventTag = gLicqDaemon->ProtoFileTransfer(
-      accountId.toLatin1(), ppid,
-      myCodec->fromUnicode(myFileEdit->text()),
-      myCodec->fromUnicode(myMessageEdit->toPlainText()),
+  icqEventTag = gLicqDaemon->fileTransferPropose(
+      myUsers.front(),
+      myCodec->fromUnicode(myFileEdit->text()).data(),
+      myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
       myFileList,
       myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
       mySendServerCheck->isChecked());

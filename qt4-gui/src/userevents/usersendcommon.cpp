@@ -773,12 +773,7 @@ void UserSendCommon::changeEventType(int type)
 
 void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short level)
 {
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
+  QString accountId = LicqUser::getUserAccountId(myUsers.front()).c_str();
 
   unsigned long icqEventTag = 0;
   mySendServerCheck->setChecked(!online);
@@ -848,8 +843,8 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
           messageRaw = ue->Message();
         }
 
-        icqEventTag = gLicqDaemon->ProtoSendMessage(accountId.toLatin1(), ppid, messageRaw.data(),
-            online, level, false, &myIcqColor);
+        icqEventTag = gLicqDaemon->sendMessage(myUsers.front(), messageRaw.data(),
+            !online, level, false, &myIcqColor);
 
         myEventTag.push_back(icqEventTag);
 
@@ -867,8 +862,8 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
     {
       const CEventUrl* ue = dynamic_cast<const CEventUrl*>(e->UserEvent());
 
-      icqEventTag = gLicqDaemon->ProtoSendUrl(accountId.toLatin1(), ppid, ue->Url(),
-          ue->Description(), online, level, false, &myIcqColor);
+      icqEventTag = gLicqDaemon->sendUrl(myUsers.front(), ue->Url(),
+          ue->Description(), !online, level, false, &myIcqColor);
 
       break;
     }
@@ -914,7 +909,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
       ConstFileList filelist(ue->FileList());
 
       //TODO in the daemon
-      icqEventTag = gLicqDaemon->ProtoFileTransfer(accountId.toLatin1(), ppid,
+      icqEventTag = gLicqDaemon->fileTransferPropose(myUsers.front(),
           ue->Filename(), ue->FileDescription(), filelist, level, !online);
 
       break;

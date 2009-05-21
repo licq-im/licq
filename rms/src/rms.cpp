@@ -1115,8 +1115,9 @@ int CRMSClient::Process_MESSAGE_text()
 {
   //XXX Give a tag...
   m_szText[strlen(m_szText) - 1] = '\0';
-  unsigned long tag = licqDaemon->ProtoSendMessage(m_szId, m_nPPID, m_szText,
-    false, ICQ_TCPxMSG_NORMAL);
+  UserId userId = LicqUser::makeUserId(m_szId, m_nPPID);
+  unsigned long tag = licqDaemon->sendMessage(userId, m_szText,
+      true, ICQ_TCPxMSG_NORMAL);
 
   m_nState = STATE_COMMAND;
 
@@ -1182,8 +1183,9 @@ int CRMSClient::Process_URL_url()
 
 int CRMSClient::Process_URL_text()
 {
-  unsigned long tag = licqDaemon->ProtoSendUrl(m_szId, m_nPPID, m_szLine,
-    m_szText, false, ICQ_TCPxMSG_NORMAL);
+  UserId userId = LicqUser::makeUserId(m_szId, m_nPPID);
+  unsigned long tag = licqDaemon->sendUrl(userId, m_szLine,
+      m_szText, true, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
      tag, m_szId);
@@ -1556,6 +1558,7 @@ int CRMSClient::Process_SECURE()
     return fflush(fs);
   }
   char* id = strdup(data_arg);
+  UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
   nUin = strtoul(data_arg, (char**)NULL, 10);
   while (*data_arg != '\0' && *data_arg != ' ') data_arg++;
   NEXT_WORD(data_arg);
@@ -1569,17 +1572,17 @@ int CRMSClient::Process_SECURE()
   if (strncasecmp(data_arg, "open", 4) == 0)
   {
     fprintf(fs, "%d Opening secure connection.\n", CODE_SECURExOPEN);
-    licqDaemon->ProtoOpenSecureChannel(id, LICQ_PPID);
+    licqDaemon->secureChannelOpen(userId);
   }
   else
   if (strncasecmp(data_arg, "close", 5) == 0)
   {
     fprintf(fs, "%d Closing secure connection.\n", CODE_SECURExCLOSE);
-    licqDaemon->ProtoCloseSecureChannel(id, LICQ_PPID);
+    licqDaemon->secureChannelClose(userId);
   }
   else
   {
-    ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(userId);
    if (u->Secure() == 0)
    {
     fprintf(fs, "%d Status: secure connection is closed.\n", CODE_SECURExSTAT);

@@ -1962,12 +1962,8 @@ void CLicqConsole::InputMessage(int cIn)
       winMain->wprintf("%C%ASending message %s...", m_cColorInfo->nColor,
                        m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      const LicqUser* user = gUserManager.fetchUser(data->userId);
-      string szId = user->accountId();
-      unsigned long nPPID = user->ppid();
-      gUserManager.DropUser(user);
-      winMain->event = licqDaemon->ProtoSendMessage(szId.c_str(), nPPID, data->szMsg,
-                       bDirect, *sz == 'u');
+      winMain->event = licqDaemon->sendMessage(data->userId, data->szMsg,
+          !bDirect, *sz == 'u');
       winMain->state = STATE_PENDING;
       break;
     }
@@ -1981,12 +1977,8 @@ void CLicqConsole::InputMessage(int cIn)
     {
       winMain->wprintf("%C%ASending message through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        const LicqUser* user = gUserManager.fetchUser(data->userId);
-        string szId = user->accountId();
-        unsigned long nPPID = user->ppid();
-        gUserManager.DropUser(user);
-        winMain->event = licqDaemon->ProtoSendMessage(szId.c_str(), nPPID, data->szMsg,
-                       false, false);
+        winMain->event = licqDaemon->sendMessage(data->userId, data->szMsg,
+            true, false);
       winMain->state = STATE_PENDING;
     }
     else
@@ -2104,11 +2096,7 @@ void CLicqConsole::InputSendFile(int cIn)
       ConstFileList lFileList;
       lFileList.push_back(strdup(data->szFileName));
 
-      const LicqUser* user = gUserManager.fetchUser(data->userId);
-      string szId = user->accountId();
-      unsigned long nPPID = user->ppid();
-      gUserManager.DropUser(user);
-      winMain->event = licqDaemon->ProtoFileTransfer(szId.c_str(), nPPID,
+      winMain->event = licqDaemon->fileTransferPropose(data->userId,
               data->szFileName, data->szDescription, lFileList, ICQ_TCPxMSG_NORMAL,
                        !bDirect);
       break;
@@ -2249,13 +2237,8 @@ void CLicqConsole::InputUrl(int cIn)
       winMain->wprintf("%C%ASending URL %s...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr,
                        !bDirect ? "through the server" : "direct");
-      const LicqUser* user = gUserManager.fetchUser(data->userId);
-      string szId = user->accountId();
-      unsigned long nPPID = user->ppid();
-      gUserManager.DropUser(user);
-      winMain->event = licqDaemon->ProtoSendUrl(szId.c_str(), nPPID, data->szUrl,
-                                              data->szDesc,
-                                              bDirect, *sz == 'u');
+      winMain->event = licqDaemon->sendUrl(data->userId, data->szUrl,
+          data->szDesc, !bDirect, *sz == 'u');
       winMain->state = STATE_PENDING;
       break;
     }
@@ -2269,12 +2252,8 @@ void CLicqConsole::InputUrl(int cIn)
     {
       winMain->wprintf("%C%ASending URL through the server...",
                        m_cColorInfo->nColor, m_cColorInfo->nAttr);
-        const LicqUser* user = gUserManager.fetchUser(data->userId);
-        string szId = user->accountId();
-        unsigned long nPPID = user->ppid();
-        gUserManager.DropUser(user);
-        winMain->event = licqDaemon->ProtoSendUrl(szId.c_str(), nPPID, data->szUrl,
-                                              data->szDesc, false, false);
+        winMain->event = licqDaemon->sendUrl(data->userId, data->szUrl,
+            data->szDesc, true, false);
       winMain->state = STATE_PENDING;
     }
     else
@@ -3130,7 +3109,6 @@ void CLicqConsole::InputFileChatOffer(int cIn)
 
   const LicqUser* user = gUserManager.fetchUser(data->userId);
   string szId = user->accountId();
-  unsigned long nPPID = user->ppid();
   gUserManager.DropUser(user);
 
   switch(winMain->state)
@@ -3156,10 +3134,10 @@ void CLicqConsole::InputFileChatOffer(int cIn)
           // Accept the file
           const char *home = getenv("HOME");
           ftman->ReceiveFiles(home);
-          licqDaemon->ProtoFileTransferAccept(szId.c_str(), nPPID,
+          licqDaemon->fileTransferAccept(data->userId,
               ftman->LocalPort(), f->Sequence(), f->MessageID()[0],
               f->MessageID()[1], f->FileDescription(), f->Filename(),
-              f->FileSize(), f->IsDirect());
+              f->FileSize(), !f->IsDirect());
           winMain->fProcessInput = &CLicqConsole::InputCommand;
 
           if(winMain->data)
@@ -3189,12 +3167,12 @@ void CLicqConsole::InputFileChatOffer(int cIn)
       data->szReason[data->nPos - 1] = '\0';
 
       // XXX hack
-      licqDaemon->ProtoFileTransferRefuse(szId.c_str(), nPPID,
-          data->szReason, f->Sequence(), 0, 0, true);
+      licqDaemon->fileTransferRefuse(data->userId,
+          data->szReason, f->Sequence(), 0, 0, false);
 
       // We are done now
       winMain->wprintf("%ARefusing file from %s with reason: %Z%s\n",
-          A_BOLD, szId.c_str(), A_BOLD, data->szReason);
+          A_BOLD, USERID_TOSTR(data->userId), A_BOLD, data->szReason);
       winMain->fProcessInput = &CLicqConsole::InputCommand;
 
       if(winMain->data)
@@ -3250,14 +3228,14 @@ void CLicqConsole::UserCommand_Secure(const UserId& userId, char *szStatus)
     winMain->wprintf("%ARequest secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    winMain->event = licqDaemon->ProtoOpenSecureChannel(u->accountId().c_str(), u->ppid());
+    winMain->event = licqDaemon->secureChannelOpen(userId);
   }
   else if(strcasecmp(szStatus, "close") == 0)
   {
     winMain->wprintf("%AClose secure channel with %s ... ", A_BOLD,
                      u->GetAlias());
     gUserManager.DropUser(u);
-    winMain->event = licqDaemon->ProtoCloseSecureChannel(u->accountId().c_str(), u->ppid());
+    winMain->event = licqDaemon->secureChannelClose(userId);
   }
   else
   {

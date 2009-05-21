@@ -341,7 +341,7 @@ bool CLicqForwarder::ForwardEvent_ICQ(const LicqUser* u, const CUserEvent* e)
   strftime(szTime, 64, "%a %b %d, %R", localtime(&t));
   sprintf(szText, "[ %s from %s (%s) sent %s ]\n\n%s\n", e->Description(),
           u->GetAlias(), u->IdString(), szTime, e->Text());
-  unsigned long tag = licqDaemon->ProtoSendMessage(myUserId, LICQ_PPID, szText, false, ICQ_TCPxMSG_NORMAL);
+  unsigned long tag = licqDaemon->sendMessage(LicqUser::makeUserId(myUserId, LICQ_PPID), szText, true, ICQ_TCPxMSG_NORMAL);
   delete []szText;
   if (tag == 0)
   {

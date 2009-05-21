@@ -411,7 +411,7 @@ static int fifo_message ( int argc, const char *const *argv, void *data)
   }
 
   if( atoid(argv[1], false, &szId, &nPPID, d) )
-    d->ProtoSendMessage(szId, nPPID, argv[2], false, 0);
+    d->sendMessage(LicqUser::makeUserId(szId, nPPID), argv[2], true, 0);
 
   else
     ReportBadBuddy(argv[0], argv[1]);
@@ -438,7 +438,7 @@ static int fifo_url ( int argc, const char *const *argv, void *data)
   if( atoid(argv[1], false, &szId, &nPPID, d) )
   {
     szDescr = (argc > 3) ? argv[3] : "" ;
-    d->ProtoSendUrl(szId, nPPID, argv[2], szDescr, false, false);
+    d->sendUrl(LicqUser::makeUserId(szId, nPPID), argv[2], szDescr, true, false);
   }
   else
     ReportBadBuddy(argv[0],argv[1]);

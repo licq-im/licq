@@ -134,13 +134,6 @@ void UserSendUrlEvent::resetSettings()
 
 void UserSendUrlEvent::send()
 {
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
   // Take care of typing notification now
   mySendTypingTimer->stop();
   connect(myMessageEdit, SIGNAL(textChanged()), SLOT(messageTextChanged()));
@@ -165,11 +158,11 @@ void UserSendUrlEvent::send()
   }
 
   unsigned long icqEventTag;
-  icqEventTag = gLicqDaemon->ProtoSendUrl(
-      accountId.toLatin1(), ppid,
-      myUrlEdit->text().toLatin1(),
-      myCodec->fromUnicode(myMessageEdit->toPlainText()),
-      mySendServerCheck->isChecked() ? false : true,
+  icqEventTag = gLicqDaemon->sendUrl(
+      myUsers.front(),
+      myUrlEdit->text().toLatin1().data(),
+      myCodec->fromUnicode(myMessageEdit->toPlainText()).data(),
+      mySendServerCheck->isChecked(),
       myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
       myMassMessageCheck->isChecked(),
       &myIcqColor);

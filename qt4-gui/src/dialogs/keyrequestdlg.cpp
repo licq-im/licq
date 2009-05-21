@@ -147,24 +147,12 @@ void KeyRequestDlg::startSend()
 
 void KeyRequestDlg::openConnection()
 {
-  LicqUser* user = gUserManager.fetchUser(myUserId);
-  if (user == NULL)
-    return;
-  QString myId = user->accountId().c_str();
-  unsigned long myPpid = user->ppid();
-  gUserManager.DropUser(user);
-  myIcqEventTag = gLicqDaemon->ProtoOpenSecureChannel(myId.toLatin1().data(), myPpid);
+  myIcqEventTag = gLicqDaemon->secureChannelOpen(myUserId);
 }
 
 void KeyRequestDlg::closeConnection()
 {
-  LicqUser* user = gUserManager.fetchUser(myUserId);
-  if (user == NULL)
-    return;
-  QString myId = user->accountId().c_str();
-  unsigned long myPpid = user->ppid();
-  gUserManager.DropUser(user);
-  myIcqEventTag = gLicqDaemon->ProtoCloseSecureChannel(myId.toLatin1().data(), myPpid);
+  myIcqEventTag = gLicqDaemon->secureChannelClose(myUserId);
 }
 
 void KeyRequestDlg::doneEvent(const LicqEvent* e)

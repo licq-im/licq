@@ -164,8 +164,6 @@ void CMMSendDlg::SendNext()
       if (u == NULL) return;
       QTextCodec * codec = UserCodec::codecForICQUser(u);
       grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
-      QCString m_szId = u->accountId().c_str();
-      unsigned int m_nPPID = u->ppid();
       gUserManager.DropUser(u);
 
       // create initial strings (implicit copying, no allocation impact :)
@@ -221,8 +219,8 @@ void CMMSendDlg::SendNext()
           messageRaw = codec->fromUnicode(s1);
         }
 
-        icqEventTag = server->ProtoSendMessage(m_szId, m_nPPID,
-          messageRaw.data(), false, ICQ_TCPxMSG_NORMAL, true);
+        icqEventTag = server->sendMessage(myUserId,
+            messageRaw.data(), true, ICQ_TCPxMSG_NORMAL, true);
 
         tmp = gTranslator.NToRN(messageRaw);
         wholeMessagePos += strlen(tmp);
@@ -237,12 +235,10 @@ void CMMSendDlg::SendNext()
       if (u == NULL) return;
       grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
       QTextCodec *codec = UserCodec::codecForICQUser(u);
-      QCString m_szId = u->accountId().c_str();
-      unsigned int m_nPPID = u->ppid();
       gUserManager.DropUser(u);
 
-      icqEventTag = server->ProtoSendUrl(m_szId, m_nPPID, s2.latin1(), codec->fromUnicode(s1),
-        false, ICQ_TCPxMSG_NORMAL, true);
+      icqEventTag = server->sendUrl(myUserId, s2.latin1(), codec->fromUnicode(s1).data(),
+          true, ICQ_TCPxMSG_NORMAL, true);
       break;
     }
     case ICQ_CMDxSUB_CONTACTxLIST:

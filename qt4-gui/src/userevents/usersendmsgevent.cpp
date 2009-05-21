@@ -101,13 +101,6 @@ void UserSendMsgEvent::resetSettings()
 
 void UserSendMsgEvent::send()
 {
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
   // Take care of typing notification now
   if (mySendTypingTimer->isActive())
     mySendTypingTimer->stop();
@@ -200,15 +193,15 @@ void UserSendMsgEvent::send()
       m->go_message(message);
     }
 
-    icqEventTag = gLicqDaemon->ProtoSendMessage(
-        accountId.toLatin1(), ppid,
+    icqEventTag = gLicqDaemon->sendMessage(
+        myUsers.front(),
         messageRaw.data(),
-        mySendServerCheck->isChecked() ? false : true,
+        mySendServerCheck->isChecked(),
         myUrgentCheck->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
         myMassMessageCheck->isChecked(),
         &myIcqColor,
         myConvoId);
-    if (ppid == LICQ_PPID)
+    if (LicqUser::getUserProtocolId(myUsers.front()) == LICQ_PPID)
       myEventTag.push_back(icqEventTag);
 
     tmp = gTranslator.NToRN(messageRaw);

@@ -1229,7 +1229,6 @@ void UserViewEvent::slot_btnRead2()
   if (user == NULL)
     return;
   QString accountId = user->accountId();
-  unsigned long m_nPPID = user->ppid();
   gUserManager.DropUser(user);
 
   switch (m_xCurrentReadEvent->SubCommand())
@@ -1278,10 +1277,10 @@ void UserViewEvent::slot_btnRead2()
       if (fileDlg->ReceiveFiles())
       {
         //TODO in CICQDaemon
-        server->ProtoFileTransferAccept(accountId, m_nPPID,
+        server->fileTransferAccept(m_lUsers.front(),
             fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0],
             f->MessageID()[1], f->FileDescription(), f->Filename(),
-            f->FileSize(), f->IsDirect());
+            f->FileSize(), !f->IsDirect());
       }
       break;
     }
@@ -1305,7 +1304,6 @@ void UserViewEvent::slot_btnRead3()
   if (user == NULL)
     return;
   QString accountId = user->accountId();
-  unsigned long m_nPPID = user->ppid();
   gUserManager.DropUser(user);
 
   switch (m_xCurrentReadEvent->SubCommand())
@@ -1350,10 +1348,10 @@ void UserViewEvent::slot_btnRead3()
         btnRead3->setEnabled(false);
 
         //TODO
-        server->ProtoFileTransferRefuse(accountId.latin1(), m_nPPID,
-            codec->fromUnicode(r->RefuseMessage()),
+        server->fileTransferRefuse(m_lUsers.front(),
+            codec->fromUnicode(r->RefuseMessage()).data(),
             m_xCurrentReadEvent->Sequence(), f->MessageID()[0],
-            f->MessageID()[1], f->IsDirect());
+            f->MessageID()[1], !f->IsDirect());
       }
       delete r;
       break;
@@ -2555,8 +2553,8 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
           messageRaw = ue->Message();
         }
 
-        icqEventTag = server->ProtoSendMessage(accountId.latin1(), m_nPPID, messageRaw.data(),
-          bOnline, nLevel, false, &icqColor);
+        icqEventTag = server->sendMessage(m_lUsers.front(), messageRaw.data(),
+            !bOnline, nLevel, false, &icqColor);
 
         m_lnEventTag.push_back(icqEventTag);
 
@@ -2573,8 +2571,8 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
     {
       CEventUrl *ue = (CEventUrl *)e->UserEvent();
 
-      icqEventTag = server->ProtoSendUrl(accountId.latin1(), m_nPPID, ue->Url(),
-        ue->Description(), bOnline, nLevel, false, &icqColor);
+      icqEventTag = server->sendUrl(m_lUsers.front(), ue->Url(),
+          ue->Description(), !bOnline, nLevel, false, &icqColor);
 
       break;
     }
@@ -2617,7 +2615,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
       CEventFile *ue = (CEventFile *)e->UserEvent();
       ConstFileList filelist(ue->FileList());
       //TODO in the daemon
-      icqEventTag = server->ProtoFileTransfer(accountId.latin1(), m_nPPID,
+      icqEventTag = server->fileTransferPropose(m_lUsers.front(),
         ue->Filename(), ue->FileDescription(), filelist, nLevel, !bOnline);
 
       break;
@@ -2649,12 +2647,6 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 //-----UserSendCommon::slot_close--------------------------------------------
 void UserSendCommon::slot_close()
 {
-  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId();
-  gUserManager.DropUser(user);
-
   server->sendTypingNotification(m_lUsers.front(), false, m_nConvoId);
 
   if (mainwin->m_bMsgChatView)
@@ -2807,12 +2799,6 @@ UserSendMsgEvent::~UserSendMsgEvent()
 //-----UserSendMsgEvent::sendButton------------------------------------------
 void UserSendMsgEvent::sendButton()
 {
-  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId();
-  gUserManager.DropUser(user);
-
   // Take care of typing notification now
   if (tmrSendTyping->isActive())
     tmrSendTyping->stop();
@@ -2899,8 +2885,8 @@ void UserSendMsgEvent::sendButton()
         m->go_message(message);
      }
 
-     icqEventTag = server->ProtoSendMessage(accountId.latin1(), m_nPPID, messageRaw.data(),
-      chkSendServer->isChecked() ? false : true,
+     icqEventTag = server->sendMessage(m_lUsers.front(), messageRaw.data(),
+        chkSendServer->isChecked(),
       chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
       chkMass->isChecked(), &icqColor, m_nConvoId);
      if (m_nPPID == LICQ_PPID)
@@ -3011,12 +2997,6 @@ void UserSendUrlEvent::resetSettings()
 //-----UserSendUrlEvent::sendButton------------------------------------------
 void UserSendUrlEvent::sendButton()
 {
-  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId();
-  gUserManager.DropUser(user);
-
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
@@ -3040,8 +3020,9 @@ void UserSendUrlEvent::sendButton()
   }
 
   unsigned long icqEventTag;
-  icqEventTag = server->ProtoSendUrl(accountId.latin1(), m_nPPID, edtItem->text().latin1(), codec->fromUnicode(mleSend->text()),
-     chkSendServer->isChecked() ? false : true,
+  icqEventTag = server->sendUrl(m_lUsers.front(), edtItem->text().latin1(),
+      codec->fromUnicode(mleSend->text()).data(),
+      chkSendServer->isChecked(),
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkMass->isChecked(), &icqColor);
 
@@ -3193,12 +3174,6 @@ UserSendFileEvent::~UserSendFileEvent()
 
 void UserSendFileEvent::sendButton()
 {
-  const LicqUser* user = gUserManager.fetchUser(m_lUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId();
-  gUserManager.DropUser(user);
-
   // Take care of typing notification now
   tmrSendTyping->stop();
   connect(mleSend, SIGNAL(textChanged()), this, SLOT(slot_textChanged()));
@@ -3212,9 +3187,9 @@ void UserSendFileEvent::sendButton()
 
   unsigned long icqEventTag;
   //TODO in daemon
-  icqEventTag = server->ProtoFileTransfer(accountId.latin1(), m_nPPID,
-     codec->fromUnicode(edtItem->text()),
-     codec->fromUnicode(mleSend->text()), m_lFileList,
+  icqEventTag = server->fileTransferPropose(m_lUsers.front(),
+      codec->fromUnicode(edtItem->text()).data(),
+      codec->fromUnicode(mleSend->text()).data(), m_lFileList,
      chkUrgent->isChecked() ? ICQ_TCPxMSG_URGENT : ICQ_TCPxMSG_NORMAL,
      chkSendServer->isChecked());
 

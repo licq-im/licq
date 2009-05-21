@@ -413,12 +413,7 @@ void UserViewEvent::read2()
   if (myCurrentEvent == NULL)
     return;
 
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
+  QString accountId = LicqUser::getUserAccountId(myUsers.front()).c_str();
 
   switch (myCurrentEvent->SubCommand())
   {
@@ -465,10 +460,10 @@ void UserViewEvent::read2()
 
       if (fileDlg->ReceiveFiles())
         // FIXME: must have been done in CICQDaemon
-        gLicqDaemon->ProtoFileTransferAccept(
-            accountId.toLatin1(), ppid,
+        gLicqDaemon->fileTransferAccept(
+            myUsers.front(),
             fileDlg->LocalPort(), f->Sequence(), f->MessageID()[0], f->MessageID()[1],
-            f->FileDescription(), f->Filename(), f->FileSize(), f->IsDirect());
+            f->FileDescription(), f->Filename(), f->FileSize(), !f->IsDirect());
       break;
     }
 
@@ -486,12 +481,7 @@ void UserViewEvent::read3()
   if (myCurrentEvent == NULL)
     return;
 
-  const LicqUser* user = gUserManager.fetchUser(myUsers.front());
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId().c_str();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
+  QString accountId = LicqUser::getUserAccountId(myUsers.front()).c_str();
 
   switch (myCurrentEvent->SubCommand())
   {
@@ -536,10 +526,10 @@ void UserViewEvent::read3()
         myRead3Button->setEnabled(false);
 
         // FIXME: must have been done in CICQDaemon
-        gLicqDaemon->ProtoFileTransferRefuse(
-            accountId.toLatin1(), ppid,
-            myCodec->fromUnicode(r->RefuseMessage()), myCurrentEvent->Sequence(),
-            f->MessageID()[0], f->MessageID()[1], f->IsDirect());
+        gLicqDaemon->fileTransferRefuse(
+            myUsers.front(),
+            myCodec->fromUnicode(r->RefuseMessage()).data(), myCurrentEvent->Sequence(),
+            f->MessageID()[0], f->MessageID()[1], !f->IsDirect());
       }
       delete r;
       break;
