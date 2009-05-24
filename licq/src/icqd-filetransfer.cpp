@@ -102,7 +102,7 @@ CPFile_Info::CPFile_Info(const char *_szFileName)
   m_bValid = true;
   m_nError = 0;
 
-  char *pcNoPath = NULL;
+  const char* pcNoPath = NULL;
   struct stat buf;
 
   // Remove any path from the filename

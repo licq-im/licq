@@ -5859,7 +5859,7 @@ CPX_FileTransfer::CPX_FileTransfer(ConstFileList &lFileList, const char *_szFile
   }
 
   // Remove path from filename (if it exists)
-  char *pcEndOfPath = strrchr(_szFilename, '/');
+  const char* pcEndOfPath = strrchr(_szFilename, '/');
   if (pcEndOfPath != NULL)
      m_szFilename = strdup(pcEndOfPath + 1);
   else

@@ -2141,7 +2141,7 @@ void Level::setText(const char *str)
         return;
     }
     if (m_bFontName){
-        char *pp = strchr(str, ';');
+    const char* pp = strchr(str, ';');
         unsigned size = strlen(pp);
         if (pp){
             size = (pp - str);

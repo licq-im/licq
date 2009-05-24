@@ -554,7 +554,7 @@ char *CIniFile::GetDataFromLine(char *_szBuffer, const char *_szLine,
                                 bool bTrim, int _nMax)
 {
   //static char s_szData[MAX_LINE_LEN];
-  char *szPostEquals;
+  const char* szPostEquals;
   char szData[MAX_LINE_LEN];
   int nMax = (_nMax > 0 ? _nMax : MAX_LINE_LEN);
 

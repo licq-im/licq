@@ -46,7 +46,7 @@ using namespace std;
 //=====CUtilityManager==========================================================
 int SelectUtility(const struct dirent *d)
 {
-  char *pcDot = strrchr(d->d_name, '.');
+  const char* pcDot = strrchr(d->d_name, '.');
   if (pcDot == NULL) return (0);
   return (strcmp(pcDot, ".utility") == 0);
 }

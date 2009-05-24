@@ -183,14 +183,14 @@ extern "C" void DisplayFatalError(const char* error, int useLicqLog)
 /*-----Helper functions for CLicq::UpgradeLicq-----------------------------*/
 int SelectUserUtility(const struct dirent *d)
 {
-  char *pcDot = strrchr(d->d_name, '.');
+  const char* pcDot = strrchr(d->d_name, '.');
   if (pcDot == NULL) return (0);
   return (strcmp(pcDot, ".uin") == 0);
 }
 
 int SelectHistoryUtility(const struct dirent *d)
 {
-  char *pcDot = strchr(d->d_name, '.');
+  const char* pcDot = strchr(d->d_name, '.');
   if (pcDot == NULL) return (0);
   return (strcmp(pcDot, ".history") == 0 ||
           strcmp(pcDot, ".history.removed") == 0);

@@ -68,7 +68,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
   if (strFirstLine == "HTTP/1.1 200 OK")
   {
     m_pSSLPacket->ParseHeaders();
-    char *fromPP = strstr(m_pSSLPacket->GetValue("Authentication-Info").c_str(), "from-PP=");
+    const char* fromPP = strstr(m_pSSLPacket->GetValue("Authentication-Info").c_str(), "from-PP=");
     char *tag;
 
     if (fromPP == 0)
@@ -76,7 +76,7 @@ void CMSN::ProcessSSLServerPacket(CMSNBuffer &packet)
     else
     {
       fromPP+= 9; // skip to the tag
-      char *endTag = strchr(fromPP, '\'');
+      const char* endTag = strchr(fromPP, '\'');
       tag = strndup(fromPP, endTag - fromPP); // Thanks, this is all we need
     }
 
@@ -145,8 +145,8 @@ void CMSN::ProcessNexusPacket(CMSNBuffer &packet)
   *m_pNexusBuff >> cTmp; // skip the \n as well
 
   m_pNexusBuff->ParseHeaders();
-  
-  char *szLogin = strstr(m_pNexusBuff->GetValue("PassportURLs").c_str(), "DALogin=");
+
+  const char* szLogin = strstr(m_pNexusBuff->GetValue("PassportURLs").c_str(), "DALogin=");
   szLogin += 8; // skip to the tag
   //char *szEndURL = strchr(szLogin, '/');
   //char *szServer = strndup(szLogin, szEndURL - szLogin); // this is all we need

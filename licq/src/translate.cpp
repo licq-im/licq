@@ -76,7 +76,7 @@ void CTranslator::setDefaultTranslationMap()
 bool CTranslator::setTranslationMap(const char* mapFileName)
 {
   // Map name is the file name with no path
-  char* sep = strrchr(mapFileName, '/');
+  const char* sep = strrchr(mapFileName, '/');
   const char* mapName = (sep == NULL ? mapFileName : sep + 1);
 
   if (strcmp(mapName, "LATIN_1") == 0)
