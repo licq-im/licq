@@ -429,14 +429,19 @@ void CMSN::Send_SB_Packet(const string &strUser, CMSNPacket *p, int nSocket, boo
 
 bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
 {
-  const char *szParam = strServer.c_str();
-  char szServer[16];
-  char *szPort;
-  if ((szPort = strchr(szParam, ':')))
+  size_t sep = strServer.rfind(':');
+  string host;
+  int port;
+  if (sep != string::npos)
   {
-    strncpy(szServer, szParam, szPort - szParam);
-    szServer[szPort - szParam] = '\0';
-    *szPort++ = '\0';
+    host = strServer.substr(0, sep);
+    port = atoi(strServer.substr(sep+1).c_str());
+  }
+  else
+  {
+    gLog.Info("%sConnecting to SB at %s failed, invalid address.\n", L_MSNxSTR,
+        strServer.c_str());
+    return false;
   }
 
   SStartMessage *pStart = 0;  
@@ -459,10 +464,10 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
   pthread_mutex_unlock(&mutex_StartList);
 
   gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
-      szServer, atoi(szPort));
-  if (!sock->connectTo(szServer, atoi(szPort)))
+      host.c_str(), port);
+  if (!sock->connectTo(host, port))
   {
-    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, szServer);
+    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, host.c_str());
     delete sock;
     return false;
   }
@@ -489,22 +494,27 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
 bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionId,
     const string& strCookie, const string& strUser)
 {
-  const char *szParam = strServer.c_str();
-  char szServer[16];
-  char *szPort;
-  if ((szPort = strchr(szParam, ':')))
+  size_t sep = strServer.rfind(':');
+  string host;
+  int port;
+  if (sep != string::npos)
   {
-    strncpy(szServer, szParam, szPort - szParam);
-    szServer[szPort - szParam] = '\0';
-    *szPort++ = '\0';
+    host = strServer.substr(0, sep);
+    port = atoi(strServer.substr(sep+1).c_str());
   }
-  
+  else
+  {
+    gLog.Info("%sConnecting to SB at %s failed, invalid address.\n", L_MSNxSTR,
+        strServer.c_str());
+    return false;
+  }
+
   TCPSocket *sock = new TCPSocket(strUser.c_str(), MSN_PPID);
   gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
-      szServer, atoi(szPort));
-  if (!sock->connectTo(szServer, atoi(szPort)))
+      host.c_str(), port);
+  if (!sock->connectTo(host, port))
   {
-    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, szServer);
+    gLog.Error("%sConnection to SB at %s failed.\n", L_MSNxSTR, host.c_str());
     delete sock;
     return false;
   }

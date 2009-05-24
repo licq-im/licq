@@ -73,20 +73,19 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       }
       else
       {
-        const char *szParam = strServer.c_str();
-        char szNewServer[16];
-        char *szPort;
-        if ((szPort = strchr(szParam, ':')))
+        size_t sep = strServer.rfind(':');
+        string host;
+        int port;
+        if (sep != string::npos)
         {
-          strncpy(szNewServer, szParam, szPort - szParam);
-          szNewServer[szPort - szParam] = '\0';
-          *szPort++ = '\0';
+          host = strServer.substr(0, sep);
+          port = atoi(strServer.substr(sep+1).c_str());
         }
-        
+
         gSocketMan.CloseSocket(m_nServerSocket, false, true);
   
         // Make the new connection
-        MSNLogon(szNewServer, atoi(szPort), m_nStatus);
+        MSNLogon(host.c_str(), port, m_nStatus);
       }
     }
     else if (strCmd == "USR")
