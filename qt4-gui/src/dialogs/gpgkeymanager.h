@@ -23,6 +23,8 @@
 #include <QDialog>
 #include <QTreeWidget>
 
+#include <licq_types.h>
+
 class LicqUser;
 
 namespace LicqQtGui
@@ -55,7 +57,7 @@ class KeyList : public QTreeWidget
 public:
   KeyList(QWidget* parent = 0);
 
-  void editUser(QString id, unsigned long ppid);
+  void editUser(const UserId& userId);
   void resizeColumnsToContents();
 
 private:
@@ -75,12 +77,10 @@ public:
   void edit();
   void unsetKey();
 
-  QString getszId() { return szId; };
-  unsigned long getnPPID() { return nPPID; };
+  const UserId& getUserId() const { return myUserId; }
 
 private:
-  QString szId;
-  unsigned long nPPID;
+  UserId myUserId;
   GPGKeySelect* keySelect;
   void updateText(const LicqUser* u);
 

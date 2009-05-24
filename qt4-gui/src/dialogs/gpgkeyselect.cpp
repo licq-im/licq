@@ -44,18 +44,17 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::GPGKeySelect */
 /* TRANSLATOR LicqQtGui::KeyView */
 
-GPGKeySelect::GPGKeySelect(QString id, unsigned long ppid, QWidget* parent)
+GPGKeySelect::GPGKeySelect(const UserId& userId, QWidget* parent)
   : QDialog(parent),
-    szId(id),
-    nPPID(ppid)
+    myUserId(userId)
 {
-  if (id.isNull() || !nPPID)
+  if (!USERID_ISVALID(userId))
     return;
 
   setAttribute(Qt::WA_DeleteOnClose, true);
   Support::setWidgetProps(this, "GPGKeySelectDialog");
 
-  const ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL)
     return;
 
@@ -89,7 +88,7 @@ GPGKeySelect::GPGKeySelect(QString id, unsigned long ppid, QWidget* parent)
   gUserManager.DropUser(u);
 
   // public keys
-  keySelect = new KeyView(szId, nPPID);
+  keySelect = new KeyView(myUserId);
   top_lay->addWidget(keySelect);
   connect(keySelect, SIGNAL(itemDoubleClicked(QTreeWidgetItem*, int)),
       SLOT(slot_doubleClicked(QTreeWidgetItem*, int)));
@@ -142,7 +141,7 @@ void GPGKeySelect::slot_ok()
     if (curItem->parent() != NULL)
       curItem = curItem->parent();
 
-    ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
     if (u != NULL)
     {
       u->SetGPGKey(curItem->text(2).toAscii());
@@ -157,14 +156,13 @@ void GPGKeySelect::slot_ok()
 
 void GPGKeySelect::updateIcon()
 {
-  UserId myUserId = LicqUser::makeUserId(szId.toLatin1().data(), nPPID);
   gMainWindow->slot_updatedUser(myUserId, USER_GENERAL, 0);
   return;
 }
 
 void GPGKeySelect::slotNoKey()
 {
-  ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if ( u )
   {
     u->SetGPGKey( "" );
@@ -184,10 +182,9 @@ gpgme_ctx_t mCtx;
 gpgme_key_t key;
 
 
-KeyView::KeyView(QString id, unsigned long ppid, QWidget* parent)
+KeyView::KeyView(const UserId& userId, QWidget* parent)
   : QTreeWidget(parent),
-    szId(id),
-    nPPID(ppid)
+    myUserId(userId)
 {
   header()->setClickable(false);
   QStringList headers;
@@ -252,7 +249,7 @@ void KeyView::initKeyList()
 {
   gpgme_new(&mCtx);
 
-  const ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   maxItemVal = -1;
   maxItem = NULL;
 

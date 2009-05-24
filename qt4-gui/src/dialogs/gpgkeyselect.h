@@ -23,6 +23,8 @@
 #include <QDialog>
 #include <QTreeWidget>
 
+#include <licq_types.h>
+
 class QCheckBox;
 class QLineEdit;
 
@@ -35,12 +37,11 @@ class KeyView : public QTreeWidget
   Q_OBJECT
 
 public:
-  KeyView(QString id, unsigned long ppid, QWidget* parent = 0);
+  KeyView(const UserId& userId, QWidget* parent = 0);
   ~KeyView() {};
 
 private:
-  QString szId;
-  unsigned long nPPID;
+  UserId myUserId;
   void testViewItem(QTreeWidgetItem* item, const LicqUser* u);
   int maxItemVal;
   QTreeWidgetItem* maxItem;
@@ -52,7 +53,7 @@ class GPGKeySelect : public QDialog
 {
   Q_OBJECT
 public:
-  GPGKeySelect(QString id, unsigned long ppid, QWidget* parent = 0);
+  GPGKeySelect(const UserId& userId, QWidget* parent = 0);
   ~GPGKeySelect();
 
 signals:
@@ -61,8 +62,7 @@ signals:
 private:
   QTreeWidget* keySelect;
   QCheckBox* useGPG;
-  QString szId;
-  unsigned long nPPID;
+  UserId myUserId;
   void updateIcon();
   QLineEdit* filterText;
 

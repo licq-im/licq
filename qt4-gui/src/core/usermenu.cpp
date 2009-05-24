@@ -399,7 +399,7 @@ void UserMenu::removeContact()
 void UserMenu::selectKey()
 {
 #ifdef HAVE_LIBGPGME
-  new GPGKeySelect(myId, myPpid);
+  new GPGKeySelect(myUserId);
 #endif
 }
 
@@ -522,7 +522,7 @@ void UserMenu::toggleMiscMode(QAction* action)
       else
       {
         gUserManager.DropUser(u);
-        new GPGKeySelect(myId, myPpid);
+        new GPGKeySelect(myUserId);
       }
       // update icon
       LicqGui::instance()->updateUserData(myUserId);

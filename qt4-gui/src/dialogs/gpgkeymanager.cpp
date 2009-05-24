@@ -43,8 +43,7 @@ using namespace LicqQtGui;
 
 struct luser
 {
-  QString szId;
-  unsigned long nPPID;
+  UserId userId;
   QString alias;
 };
 
@@ -113,8 +112,7 @@ void GPGKeyManager::slot_add()
     if (strcmp(pUser->GPGKey(), "") == 0)
     {
       luser tmp;
-      tmp.szId = pUser->IdString();
-      tmp.nPPID = pUser->PPID();
+      tmp.userId = pUser->id();
       tmp.alias = QString::fromUtf8(pUser->GetAlias());
       list.append(tmp);
     }
@@ -133,7 +131,7 @@ void GPGKeyManager::slot_add()
   if (tmp == NULL)
     return;
 
-  lst_keyList->editUser(tmp->szId, tmp->nPPID);
+  lst_keyList->editUser(tmp->userId);
 }
 
 void GPGKeyManager::slot_remove()
@@ -174,7 +172,7 @@ KeyList::KeyList(QWidget* parent)
   setRootIsDecorated(false);
 }
 
-void KeyList::editUser(QString id, unsigned long ppid)
+void KeyList::editUser(const UserId& userId)
 {
   KeyListItem* item = NULL;
   bool found = false;
@@ -183,7 +181,7 @@ void KeyList::editUser(QString id, unsigned long ppid)
   {
     item = dynamic_cast<KeyListItem*>(topLevelItem(i));
 
-    if (item->getszId() == id && item->getnPPID() == ppid)
+    if (item->getUserId() == userId)
     {
       found = true;
       break;
@@ -192,7 +190,7 @@ void KeyList::editUser(QString id, unsigned long ppid)
 
   if (!found)
   {
-    const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(userId);
     if (u == NULL)
       return;
     item = new KeyListItem(this, u);
@@ -233,7 +231,7 @@ void KeyList::dropEvent(QDropEvent* event)
   if (nPPID == 0)
     return;
 
-  editUser(text.mid(4), nPPID);
+  editUser(LicqUser::makeUserId(text.mid(4).toLatin1().data(), nPPID));
 }
 
 void KeyList::resizeEvent(QResizeEvent* e)
@@ -267,8 +265,7 @@ void KeyList::resizeColumnsToContents()
 // KEYLISTITEM
 KeyListItem::KeyListItem(QTreeWidget* parent, const ICQUser* u)
   : QTreeWidgetItem(parent),
-    szId(u->IdString()),
-    nPPID(u->PPID()),
+    myUserId(u->id()),
     keySelect(NULL)
 {
   updateText(u);
@@ -285,14 +282,14 @@ void KeyListItem::edit()
 {
   if (keySelect == NULL)
   {
-    keySelect = new GPGKeySelect(szId, nPPID);
+    keySelect = new GPGKeySelect(myUserId);
     connect(keySelect, SIGNAL(signal_done()), SLOT(slot_done()));
   }
 }
 
 void KeyListItem::slot_done()
 {
-  const ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   keySelect = NULL;
 
   if (u != NULL)
@@ -308,14 +305,13 @@ void KeyListItem::slot_done()
 
 void KeyListItem::unsetKey()
 {
-  ICQUser* u = gUserManager.FetchUser(szId.toLatin1(), nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId);
 
   if (u != NULL)
   {
     u->SetUseGPG(false);
     u->SetGPGKey("");
-    UserId userId = u->id();
     gUserManager.DropUser(u);
-    gMainWindow->slot_updatedUser(userId, USER_GENERAL, 0);
+    gMainWindow->slot_updatedUser(myUserId, USER_GENERAL, 0);
   }
 }
