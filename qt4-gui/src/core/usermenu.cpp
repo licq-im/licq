@@ -431,7 +431,7 @@ void UserMenu::send(QAction* action)
   switch (index)
   {
     case SendAuthorize:
-      new AuthUserDlg(myId, myPpid, true);
+      new AuthUserDlg(myUserId, true);
       break;
 
     case SendReqAuthorize:

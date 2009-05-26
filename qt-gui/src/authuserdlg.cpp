@@ -38,13 +38,12 @@
 #include "usercodec.h"
 
 //TODO Add drop down list of avaiable protocols
-AuthUserDlg::AuthUserDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
+AuthUserDlg::AuthUserDlg(CICQDaemon *s, const UserId& userId,
    bool bGrant, QWidget *parent)
   : LicqDialog(parent, "AuthUserDialog", false, WDestructiveClose)
 {
   server = s;
-  m_szId = szId ? strdup(szId) : 0;
-  m_nPPID = nPPID;
+  myUserId = userId;
   m_bGrant = bGrant;
 
   if(bGrant)
@@ -56,7 +55,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
 
   lblUin = new QLabel(this);
   lblUin->setAlignment(AlignCenter);
-  if (m_szId == 0)
+  if (!USERID_ISVALID(myUserId))
   {
     lblUin->setText(tr("Authorize which user (Id):"));
     edtUin = new QLineEdit(this);
@@ -71,13 +70,13 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
     edtUin = NULL;
     toplay->addWidget(lblUin);
     QString userName;
-    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(myUserId);
     if (u != NULL) {
        //QTextCodec *codec = UserCodec::codecForICQUser(u);
-       userName = QString("%1 (%2)").arg(QString::fromUtf8(u->GetAlias())).arg(m_szId);
+       userName = QString("%1 (%2)").arg(QString::fromUtf8(u->GetAlias())).arg(u->accountId().c_str());
        gUserManager.DropUser(u);
     } else {
-       userName = QString("%1").arg(m_szId);
+       userName = QString("%1").arg(LicqUser::getUserAccountId(myUserId).c_str());
     }
 
     if (bGrant)
@@ -106,7 +105,7 @@ AuthUserDlg::AuthUserDlg(CICQDaemon *s, const char *szId, unsigned long nPPID,
   connect (btnOk, SIGNAL(clicked()), SLOT(ok()) );
   connect (btnCancel, SIGNAL(clicked()), SLOT(close()) );
 
-  if (m_szId)
+  if (USERID_ISVALID(myUserId))
     mleResponse->setFocus();
   else
     edtUin->setFocus();
@@ -119,15 +118,16 @@ void AuthUserDlg::ok()
   if (edtUin != NULL)
     if (edtUin->text().isEmpty()) return;
 
-  if (m_szId == 0) m_szId = strdup(edtUin->text().latin1());
+  if (!USERID_ISVALID(myUserId))
+    myUserId = LicqUser::makeUserId(edtUin->text().latin1(), LICQ_PPID);
 
-  if (m_szId != 0)
+  if (USERID_ISVALID(myUserId))
   {
-    QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, m_nPPID);
+    const QTextCodec* codec = UserCodec::codecForUserId(myUserId);
     if (m_bGrant)
-      server->ProtoAuthorizeGrant(m_szId, m_nPPID, codec->fromUnicode(mleResponse->text()));
+      server->authorizeGrant(myUserId, codec->fromUnicode(mleResponse->text()).data());
     else
-      server->ProtoAuthorizeRefuse(m_szId, m_nPPID, codec->fromUnicode(mleResponse->text()));
+      server->authorizeRefuse(myUserId, codec->fromUnicode(mleResponse->text()).data());
     close(true);
   }
 }

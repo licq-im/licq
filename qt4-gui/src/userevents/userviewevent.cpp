@@ -330,7 +330,7 @@ void UserViewEvent::read1()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
-      new AuthUserDlg(p->IdString(), p->PPID(), true);
+      new AuthUserDlg(LicqUser::makeUserId(p->IdString(), p->PPID()), true);
       break;
     }
 

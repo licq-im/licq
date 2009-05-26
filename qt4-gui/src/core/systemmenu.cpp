@@ -515,7 +515,7 @@ void SystemMenu::showSearchUserDlg()
 
 void SystemMenu::showAuthUserDlg()
 {
-  new AuthUserDlg(0, 0, true);
+  new AuthUserDlg(USERID_NONE, true);
 }
 
 void SystemMenu::showReqAuthDlg()

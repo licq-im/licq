@@ -1135,7 +1135,7 @@ void UserViewEvent::slot_btnRead1()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest *p = (CEventAuthRequest *)m_xCurrentReadEvent;
-      (void) new AuthUserDlg(server, p->IdString(), p->PPID(), true);
+      (void) new AuthUserDlg(server, LicqUser::makeUserId(p->IdString(), p->PPID()), true);
       break;
     }
 

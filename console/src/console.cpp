@@ -2377,21 +2377,17 @@ void CLicqConsole::InputAuthorize(int cIn)
         return;
       }
       *sz = '\0';
-      const LicqUser* user = gUserManager.fetchUser(data->userId);
-      string szId = user->accountId();
-      unsigned long nPPID = user->ppid();
-      gUserManager.DropUser(user);
       if (data->bUrgent)
       {
         winMain->wprintf("%C%AGranting authorizing to %s...", m_cColorInfo->nColor,
-            m_cColorInfo->nAttr, szId.c_str());
-        winMain->event = licqDaemon->ProtoAuthorizeGrant(szId.c_str(), nPPID, data->szMsg);
+            m_cColorInfo->nAttr, USERID_TOSTR(data->userId));
+        winMain->event = licqDaemon->authorizeGrant(data->userId, data->szMsg);
       }
       else
       {
         winMain->wprintf("%C%ARefusing authorizing to %s...", m_cColorInfo->nColor,
-            m_cColorInfo->nAttr, szId.c_str());
-        winMain->event = licqDaemon->ProtoAuthorizeRefuse(szId.c_str(), nPPID, data->szMsg);
+            m_cColorInfo->nAttr, USERID_TOSTR(data->userId));
+        winMain->event = licqDaemon->authorizeRefuse(data->userId, data->szMsg);
       }
 
       winMain->fProcessInput = &CLicqConsole::InputCommand;

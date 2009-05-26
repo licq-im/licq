@@ -23,6 +23,8 @@
 
 #include <QDialog>
 
+#include <licq_types.h>
+
 class QLineEdit;
 
 namespace LicqQtGui
@@ -34,14 +36,13 @@ class AuthUserDlg : public QDialog
    Q_OBJECT
 
 public:
-  AuthUserDlg(QString id, unsigned long ppid, bool grant, QWidget* parent = 0);
+  AuthUserDlg(const UserId& userId, bool grant, QWidget* parent = 0);
 
 private:
   QLineEdit* myUin;
   MLEdit* myResponse;
 
-  QString myId;
-  unsigned long myPpid;
+  UserId myUserId;
   bool myGrant;
 
 private slots:

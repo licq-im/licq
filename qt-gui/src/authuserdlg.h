@@ -20,6 +20,8 @@
 #ifndef AUTHUSERDLG_H
 #define AUTHUSERDLG_H
 
+#include <licq_types.h>
+
 #include "licqdialog.h"
 
 class QPushButton;
@@ -34,7 +36,7 @@ class AuthUserDlg : public LicqDialog
 {
    Q_OBJECT
 public:
-   AuthUserDlg (CICQDaemon *s, const char *szId, unsigned long nPPID,
+  AuthUserDlg(CICQDaemon* s, const UserId& userId,
       bool bGrant, QWidget *parent = 0);
 
 protected:
@@ -45,8 +47,7 @@ protected:
    QLineEdit *edtUin;
    MLEditWrap* mleResponse;
 
-   char *m_szId;
-   unsigned long m_nPPID;
+  UserId myUserId;
    bool m_bGrant;
 protected slots:
    void ok();

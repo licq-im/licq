@@ -2485,7 +2485,7 @@ void CMainWindow::callUserFunction(int index)
   {
     case mnuUserAuthorize:
     {
-      (void) new AuthUserDlg(licqDaemon, szId, nPPID, true);
+      (void) new AuthUserDlg(licqDaemon, myMenuUserId, true);
       break;
     }
     case mnuUserAuthorizeRequest:
@@ -4658,7 +4658,7 @@ void CMainWindow::showAddUserDlg()
 
 void CMainWindow::showAuthUserDlg()
 {
-  (void) new AuthUserDlg(licqDaemon, NULL, 0, true);
+  (void) new AuthUserDlg(licqDaemon, USERID_NONE, true);
 }
 
 // Wrapper for the true function, necessary to kill a Qt2 warning
