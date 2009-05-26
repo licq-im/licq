@@ -925,21 +925,23 @@ unsigned long CICQDaemon::icqSetAbout(const char *_szAbout)
 }
 
 //-----icqAuthorizeGrant-------------------------------------------------------
-unsigned long CICQDaemon::ProtoAuthorizeGrant(const char *szId,
-  unsigned long nPPID, const char *szMessage)
+unsigned long CICQDaemon::authorizeGrant(const UserId& userId, const string& message)
 {
   unsigned long nRet = 0;
+  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
+  string accountId = LicqUser::getUserAccountId(userId);
 
   if (nPPID == LICQ_PPID)
-    nRet = icqAuthorizeGrant(szId, szMessage);
+    nRet = icqAuthorizeGrant(userId, message);
   else
-    PushProtoSignal(new CGrantAuthSignal(szId, szMessage), nPPID);
+    PushProtoSignal(new CGrantAuthSignal(accountId.c_str(), message.c_str()), nPPID);
   return nRet;
 }
 
-unsigned long CICQDaemon::icqAuthorizeGrant(const char *szId,
-  const char* /* szMessage*/)
+unsigned long CICQDaemon::icqAuthorizeGrant(const UserId& userId, const string& /* message */)
 {
+  const string accountId = LicqUser::getUserAccountId(userId);
+  const char* szId = accountId.c_str();
   CPU_Authorize *p = new CPU_Authorize(szId);
   gLog.Info(tr("%sAuthorizing user %s\n"), L_SRVxSTR, szId);
   SendEvent_Server(p);
@@ -948,26 +950,28 @@ unsigned long CICQDaemon::icqAuthorizeGrant(const char *szId,
 }
 
 //-----icqAuthorizeRefuse------------------------------------------------------
-unsigned long CICQDaemon::ProtoAuthorizeRefuse(const char *szId,
-  unsigned long nPPID, const char *szMessage)
+unsigned long CICQDaemon::authorizeRefuse(const UserId& userId, const string& message)
 {
   unsigned long nRet = 0;
+  unsigned long nPPID = LicqUser::getUserProtocolId(userId);
+  string accountId = LicqUser::getUserAccountId(userId);
 
   if (nPPID == LICQ_PPID)
-    nRet = icqAuthorizeRefuse(szId, szMessage);
+    nRet = icqAuthorizeRefuse(userId, message);
   else
-    PushProtoSignal(new CRefuseAuthSignal(szId, szMessage), nPPID);
+    PushProtoSignal(new CRefuseAuthSignal(accountId.c_str(), message.c_str()), nPPID);
 
   return nRet;
 }
 
-unsigned long CICQDaemon::icqAuthorizeRefuse(const char *szId,
-  const char *szMessage)
+unsigned long CICQDaemon::icqAuthorizeRefuse(const UserId& userId, const string& message)
 {
+  const string accountId = LicqUser::getUserAccountId(userId);
+  const char* szId = accountId.c_str();
   char *sz = NULL;
-  if (szMessage != NULL)
+  if (!message.empty())
   {
-    sz = gTranslator.NToRN(szMessage);
+    sz = gTranslator.NToRN(message.c_str());
     gTranslator.ClientToServer(sz);
   }
   CPU_ThroughServer *p = new CPU_ThroughServer(szId, ICQ_CMDxSUB_AUTHxREFUSED, sz);
@@ -1210,21 +1214,24 @@ void CICQDaemon::ProtoToggleVisibleList(const char* _szId, unsigned long _nPPID)
   if (u == NULL) return;
   bool b = u->VisibleList();
   gUserManager.DropUser(u);
-  ProtoSetInVisibleList(_szId, _nPPID, !b);
+  visibleListSet(LicqUser::makeUserId(_szId, _nPPID), !b);
 }
 
-void CICQDaemon::ProtoSetInVisibleList(const char* _szId, unsigned long _nPPID, bool visible)
+void CICQDaemon::visibleListSet(const UserId& userId, bool visible)
 {
+  unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
+  string accountId = LicqUser::getUserAccountId(userId);
+
   if (!visible)
     if (_nPPID == LICQ_PPID)
-      icqRemoveFromVisibleList(_szId, _nPPID);
+      icqRemoveFromVisibleList(userId);
     else
-      PushProtoSignal(new CUnacceptUserSignal(_szId), _nPPID);
+      PushProtoSignal(new CUnacceptUserSignal(accountId.c_str()), _nPPID);
   else
     if (_nPPID == LICQ_PPID)
-      icqAddToVisibleList(_szId, _nPPID);
+      icqAddToVisibleList(userId);
     else
-      PushProtoSignal(new CAcceptUserSignal(_szId), _nPPID);
+      PushProtoSignal(new CAcceptUserSignal(accountId.c_str()), _nPPID);
 }
 
 //-----ProtoToggleInvisibleList-------------------------------------------------
@@ -1234,21 +1241,24 @@ void CICQDaemon::ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPI
   if (u == NULL) return;
   bool b = u->InvisibleList();
   gUserManager.DropUser(u);
-  ProtoSetInInvisibleList(_szId, _nPPID, !b);
+  invisibleListSet(LicqUser::makeUserId(_szId, _nPPID), !b);
 }
 
-void CICQDaemon::ProtoSetInInvisibleList(const char* _szId, unsigned long _nPPID, bool invisible)
+void CICQDaemon::invisibleListSet(const UserId& userId, bool invisible)
 {
+  unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
+  string accountId = LicqUser::getUserAccountId(userId);
+
   if (!invisible)
     if (_nPPID == LICQ_PPID)
-      icqRemoveFromInvisibleList(_szId, _nPPID);
+      icqRemoveFromInvisibleList(userId);
     else
-      PushProtoSignal(new CUnblockUserSignal(_szId), _nPPID);
+      PushProtoSignal(new CUnblockUserSignal(accountId.c_str()), _nPPID);
   else
     if (_nPPID == LICQ_PPID)
-      icqAddToInvisibleList(_szId, _nPPID);
+      icqAddToInvisibleList(userId);
     else
-      PushProtoSignal(new CBlockUserSignal(_szId), _nPPID);
+      PushProtoSignal(new CBlockUserSignal(accountId.c_str()), _nPPID);
 }
 
 //-----icqToggleIgnoreList------------------------------------------------------
@@ -1258,31 +1268,36 @@ void CICQDaemon::icqToggleIgnoreList(const char *_szId, unsigned long _nPPID)
   if (u == NULL) return;
   bool b = u->IgnoreList();
   gUserManager.DropUser(u);
-  ProtoSetInIgnoreList(_szId, _nPPID, b);
+  ignoreListSet(LicqUser::makeUserId(_szId, _nPPID), b);
 }
 
-void CICQDaemon::ProtoSetInIgnoreList(const char* _szId, unsigned long _nPPID, bool b)
+void CICQDaemon::ignoreListSet(const UserId& userId, bool b)
 {
+  unsigned long _nPPID = LicqUser::getUserProtocolId(userId);
+  string accountId = LicqUser::getUserAccountId(userId);
+
   if (_nPPID == LICQ_PPID)
   {
     if (b)
-      icqAddToIgnoreList(_szId, _nPPID);
+      icqAddToIgnoreList(userId);
     else
-      icqRemoveFromIgnoreList(_szId, _nPPID);
+      icqRemoveFromIgnoreList(userId);
   }
   else
   {
     if (b)
-      PushProtoSignal(new CIgnoreUserSignal(_szId), _nPPID);
+      PushProtoSignal(new CIgnoreUserSignal(accountId.c_str()), _nPPID);
     else
-      PushProtoSignal(new CUnignoreUserSignal(_szId), _nPPID);
+      PushProtoSignal(new CUnignoreUserSignal(accountId.c_str()), _nPPID);
   }
 }
 
 //-----icqAddToVisibleList------------------------------------------------------
-void CICQDaemon::icqAddToVisibleList(const char* _szId, unsigned long _nPPID)
+void CICQDaemon::icqAddToVisibleList(const UserId& userId)
 {
-  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
+  string accountId = LicqUser::getUserAccountId(userId);
+  const char* _szId = accountId.c_str();
   if (u != NULL)
   {
     u->SetVisibleList(true);
@@ -1302,10 +1317,11 @@ void CICQDaemon::icqAddToVisibleList(const char* _szId, unsigned long _nPPID)
 }
 
 //-----icqRemoveFromVisibleList-------------------------------------------------
-void CICQDaemon::icqRemoveFromVisibleList(const char* _szId, unsigned long _nPPID)
+void CICQDaemon::icqRemoveFromVisibleList(const UserId& userId)
 {
-  UserId userId = LicqUser::makeUserId(_szId, _nPPID);
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
+  string accountId = LicqUser::getUserAccountId(userId);
+  const char* _szId = accountId.c_str();
   if (u != NULL)
   {
     u->SetVisibleList(false);
@@ -1331,9 +1347,11 @@ void CICQDaemon::icqRemoveFromVisibleList(const char* _szId, unsigned long _nPPI
 }
 
 //-----icqAddToInvisibleList----------------------------------------------------
-void CICQDaemon::icqAddToInvisibleList(const char* _szId, unsigned long _nPPID)
+void CICQDaemon::icqAddToInvisibleList(const UserId& userId)
 {
-  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
+  string accountId = LicqUser::getUserAccountId(userId);
+  const char* _szId = accountId.c_str();
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u != NULL)
   {
     u->SetInvisibleList(true);
@@ -1353,9 +1371,11 @@ void CICQDaemon::icqAddToInvisibleList(const char* _szId, unsigned long _nPPID)
 }
 
 //-----icqRemoveFromInvisibleList-----------------------------------------------
-void CICQDaemon::icqRemoveFromInvisibleList(const char *_szId, unsigned long _nPPID)
+void CICQDaemon::icqRemoveFromInvisibleList(const UserId& userId)
 {
-  ICQUser *u = gUserManager.FetchUser(_szId, _nPPID, LOCK_W);
+  string accountId = LicqUser::getUserAccountId(userId);
+  const char* _szId = accountId.c_str();
+  LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
   if (u != NULL)
   {
     u->SetInvisibleList(false);
@@ -1368,7 +1388,7 @@ void CICQDaemon::icqRemoveFromInvisibleList(const char *_szId, unsigned long _nP
 
   if (UseServerContactList())
   {
-    u = gUserManager.FetchUser(_szId, _nPPID, LOCK_R);
+    u = gUserManager.fetchUser(userId);
     if (u)
     {
       CSrvPacketTcp *pRemove = new CPU_RemoveFromServerList(_szId, 0, u->GetInvisibleSID(),
@@ -1381,10 +1401,12 @@ void CICQDaemon::icqRemoveFromInvisibleList(const char *_szId, unsigned long _nP
 }
 
 //-----icqAddToIgnoreList-------------------------------------------------------
-void CICQDaemon::icqAddToIgnoreList(const char *_szId, unsigned long /* _nPPID */)
+void CICQDaemon::icqAddToIgnoreList(const UserId& userId)
 {
   if (!UseServerContactList()) return;
 
+  string accountId = LicqUser::getUserAccountId(userId);
+  const char* _szId = accountId.c_str();
   icqRemoveUser(_szId);
   CPU_AddToServerList *pAdd = new CPU_AddToServerList(_szId, ICQ_ROSTxIGNORE,
     0, false);
@@ -1392,10 +1414,12 @@ void CICQDaemon::icqAddToIgnoreList(const char *_szId, unsigned long /* _nPPID *
 }
 
 //-----icqRemoveFromIgnoreList--------------------------------------------------
-void CICQDaemon::icqRemoveFromIgnoreList(const char *_szId, unsigned long /* _nPPID */)
+void CICQDaemon::icqRemoveFromIgnoreList(const UserId& userId)
 {
   if (!UseServerContactList()) return;
 
+  string accountId = LicqUser::getUserAccountId(userId);
+  const char* _szId = accountId.c_str();
   icqRemoveUser(_szId);
   icqAddUser(_szId, false);
 }

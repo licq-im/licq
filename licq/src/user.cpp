@@ -1529,13 +1529,13 @@ void CUserManager::setUserInGroup(const UserId& userId,
     if (groupType == GROUPS_SYSTEM)
     {
       if (groupId == GROUP_VISIBLE_LIST)
-        gLicqDaemon->ProtoSetInVisibleList(accountId.c_str(), ppid, inGroup);
+        gLicqDaemon->visibleListSet(userId, inGroup);
 
       else if (groupId == GROUP_INVISIBLE_LIST)
-        gLicqDaemon->ProtoSetInInvisibleList(accountId.c_str(), ppid, inGroup);
+        gLicqDaemon->invisibleListSet(userId, inGroup);
 
       else if (groupId == GROUP_IGNORE_LIST)
-        gLicqDaemon->ProtoSetInIgnoreList(accountId.c_str(), ppid, inGroup);
+        gLicqDaemon->ignoreListSet(userId, inGroup);
     }
     else
     {

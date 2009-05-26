@@ -430,11 +430,33 @@ public:
       nSequence, nFlag1, nFlag2, szDesc ? szDesc : "", szFile ? szFile : "",
       nFileSize, !bDirect); }
 
-  unsigned long ProtoAuthorizeGrant(const char *szId, unsigned long nPPID,
-     const char *szMessage);
+  /**
+   * Grant authorization for a user to add us
+   *
+   * @param userId User to send grant to
+   * @param message Message to send with grant
+   * @return Event id
+   */
+  unsigned long authorizeGrant(const UserId& userId, const std::string& message);
 
+  LICQ_DEPRECATED // Use authorizeGrant() instead
+  unsigned long ProtoAuthorizeGrant(const char *szId, unsigned long nPPID,
+     const char *szMessage)
+  { return szId == NULL ? 0 : authorizeGrant(LicqUser::makeUserId(szId, nPPID), szMessage); }
+
+  /**
+   * Refuse authorization for a user to add us
+   *
+   * @param userId User to send grant to
+   * @param message Message to send with grant
+   * @return Event id
+   */
+  unsigned long authorizeRefuse(const UserId& userId, const std::string& message);
+
+  LICQ_DEPRECATED // Use authorizeRefuse() instead
   unsigned long ProtoAuthorizeRefuse(const char *szId, unsigned long nPPID,
-     const char *szMessage);
+     const char *szMessage)
+  { return szId == NULL ? 0 : authorizeRefuse(LicqUser::makeUserId(szId, nPPID), szMessage); }
 
   /**
    * Request user information from server
@@ -619,8 +641,8 @@ public:
   void icqLogoff();
   void postLogoff(int nSD, ICQEvent *cancelledEvent);
   void icqRelogon();
-  unsigned long icqAuthorizeGrant(const char *szId, const char *szMessage);
-  unsigned long icqAuthorizeRefuse(const char *szId, const char *szMessage);
+  unsigned long icqAuthorizeGrant(const UserId& userId, const std::string& message);
+  unsigned long icqAuthorizeRefuse(const UserId& userId, const std::string& message);
   void icqRequestAuth(const char* id, const char *_szMessage);
   void icqAlertUser(const char* id, unsigned long ppid);
   void icqAddUser(const char *_szId, bool _bAuthReq = false, unsigned short groupId = 0);
@@ -648,41 +670,52 @@ public:
   /**
    * Set visible list status for a contact
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User to change visible status for
    * @param visible True to add user to visible list or false to remove
    */
-  void ProtoSetInVisibleList(const char* id, unsigned long ppid, bool visible);
+  void visibleListSet(const UserId& userId, bool visible);
+
+  LICQ_DEPRECATED // Use visibleListSet instead
+  void ProtoSetInVisibleList(const char* id, unsigned long ppid, bool visible)
+  { if (id != NULL) visibleListSet(LicqUser::makeUserId(id, ppid), visible); }
 
   /**
    * Set invisible list status for a contact
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User to change invisible status for
    * @param invisible True to add user to invisible list or false to remove
    */
-  void ProtoSetInInvisibleList(const char* id, unsigned long ppid, bool invisible);
+  void invisibleListSet(const UserId& userId, bool invisible);
+
+  LICQ_DEPRECATED // Use invisibleListSet instead
+  void ProtoSetInInvisibleList(const char* id, unsigned long ppid, bool invisible)
+  { if (id != NULL) invisibleListSet(LicqUser::makeUserId(id, ppid), invisible); }
 
   /**
    * Set ignore list status for a contact
    *
-   * @param id User id
-   * @param ppid User protocol id
+   * @param userId User to set ignore status for
    * @param ignore True to add user to ignore list or false to remove
    */
-  void ProtoSetInIgnoreList(const char* id, unsigned long ppid, bool ignore);
+  void ignoreListSet(const UserId& userId, bool ignore);
+
+  LICQ_DEPRECATED // Use ignoreListSet instead
+  void ProtoSetInIgnoreList(const char* id, unsigned long ppid, bool ignore)
+  { if (id != NULL) ignoreListSet(LicqUser::makeUserId(id, ppid), ignore); }
 
   LICQ_DEPRECATED // Use gUserManager.setUserInGroup() instead
   void ProtoToggleInvisibleList(const char *_szId, unsigned long _nPPID);
   LICQ_DEPRECATED // Use gUserManager.setUserInGroup() instead
   void ProtoToggleVisibleList(const char *_szId, unsigned long _nPPID);
 
-  void icqAddToVisibleList(const char *_szId, unsigned long _nPPID);
-  void icqRemoveFromVisibleList(const char *_szId, unsigned long _nPPID);
-  void icqAddToInvisibleList(const char *_szId, unsigned long _nPPID);
-  void icqRemoveFromInvisibleList(const char *_szId, unsigned long _nPPID);
-  void icqAddToIgnoreList(const char *_szId, unsigned long _nPPID);
-  void icqRemoveFromIgnoreList(const char *_szId, unsigned long _nPPID);
+  void icqAddToVisibleList(const UserId& userId);
+  void icqRemoveFromVisibleList(const UserId& userId);
+  void icqAddToInvisibleList(const UserId& userId);
+  void icqRemoveFromInvisibleList(const UserId& userId);
+  void icqAddToIgnoreList(const UserId& userId);
+  void icqRemoveFromIgnoreList(const UserId& userId);
+
+  LICQ_DEPRECATED // Use gUserManager.setUserInGroup() instead
   void icqToggleIgnoreList(const char *_szId, unsigned long _nPPID);
 
   void icqClearServerList();
