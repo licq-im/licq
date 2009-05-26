@@ -312,16 +312,6 @@ void ContactListModel::reloadAll()
   reset();
 }
 
-ContactUserData* ContactListModel::findUser(QString id, unsigned long ppid) const
-{
-  foreach (ContactUserData* user, myUsers)
-  {
-    if (user->accountId() == id && user->ppid() == ppid)
-      return user;
-  }
-  return 0;
-}
-
 ContactUserData* ContactListModel::findUser(const UserId& userId) const
 {
   foreach (ContactUserData* user, myUsers)
@@ -526,20 +516,6 @@ QVariant ContactListModel::headerData(int section, Qt::Orientation orientation, 
     return Config::ContactList::instance()->columnHeading(section);
 
   return QVariant();
-}
-
-QModelIndex ContactListModel::userIndex(QString id, unsigned long ppid, int column) const
-{
-  ContactUserData* userData = findUser(id, ppid);
-  if (userData != NULL)
-  {
-    // Find the user in the "All Users" group, this will not find users on ignore list
-    ContactUser* user = mySystemGroups[GROUP_ALL_USERS]->user(userData);
-    if (user != NULL)
-      return createIndex(mySystemGroups[GROUP_ALL_USERS]->indexOf(user), column, user);
-  }
-
-  return QModelIndex();
 }
 
 QModelIndex ContactListModel::userIndex(const UserId& userId, int column) const

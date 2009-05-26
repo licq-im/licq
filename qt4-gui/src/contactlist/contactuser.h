@@ -72,18 +72,6 @@ public:
   { return myUserData->userId(); }
 
   /**
-   * Get user account id
-   */
-  QString accountId() const
-  { return myUserData->accountId(); }
-
-  /**
-   * Get licq protocol id
-   */
-  unsigned long ppid() const
-  { return myUserData->ppid(); }
-
-  /**
    * Get number of unread events for this user
    */
   int numEvents() const

@@ -89,18 +89,6 @@ public:
   { return myUserId; }
 
   /**
-   * Get account id
-   */
-  QString accountId() const
-  { return myAccountId; }
-
-  /**
-   * Get licq protocol id
-   */
-  unsigned long ppid() const
-  { return myPpid; }
-
-  /**
    * Get user status
    */
   unsigned short status() const

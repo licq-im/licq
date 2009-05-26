@@ -218,7 +218,6 @@ public:
    * Remove a user from the contact list
    *
    * @param userId Licq user id
-   * @param ppid Licq protocol id
    */
   void removeUser(const UserId& userId);
 
@@ -296,16 +295,6 @@ public:
    * @param role Role to update
    */
   virtual bool setData(const QModelIndex& index, const QVariant& value, int role = ContactListModel::NameRole);
-
-  /**
-   * Get index for a specific user
-   *
-   * @param id Licq user id
-   * @param ppid Licq protocol id
-   * @param column The column to return an index for
-   * @return An index for the given user and column from the "All Users" group
-   */
-  QModelIndex userIndex(QString id, unsigned long ppid, int column) const;
 
   /**
    * Get index for a specific user
@@ -436,15 +425,6 @@ private:
    * @param group Group object to connect signals from
    */
   void connectGroup(ContactGroup* group);
-
-  /**
-   * Get the user object that represents an licq contact
-   *
-   * @param id Licq user id
-   * @param ppid Licq protocol id
-   * @return The user object or 0 if it was not found
-   */
-  ContactUserData* findUser(QString id, unsigned long ppid) const;
 
   /**
    * Get the user object that represents an licq contact

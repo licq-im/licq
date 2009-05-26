@@ -57,15 +57,6 @@ public:
   UserId currentUserId() const;
 
   /**
-   * Get the currently selected user
-   *
-   * @param id Return parameter for user id
-   * @param ppid Return parameter for protocol id
-   * @return True if a user is currently selected
-   */
-  bool MainWindowSelectedItemUser(QString& id, unsigned long& ppid) const;
-
-  /**
    * Set skin colors
    *
    * @param back Background color

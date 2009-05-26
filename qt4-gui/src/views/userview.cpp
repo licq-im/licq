@@ -74,17 +74,6 @@ UserId UserView::currentUserId() const
   return currentIndex().data(ContactListModel::UserIdRole).value<UserId>();
 }
 
-bool UserView::MainWindowSelectedItemUser(QString& id, unsigned long& ppid) const
-{
-  if (static_cast<ContactListModel::ItemType>
-      (currentIndex().data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::UserItem)
-    return false;
-
-  id = currentIndex().data(ContactListModel::AccountIdRole).toString();
-  ppid = currentIndex().data(ContactListModel::PpidRole).toUInt();
-  return true;
-}
-
 void UserView::updateRootIndex()
 {
   bool threadView = Config::ContactList::instance()->threadView();
