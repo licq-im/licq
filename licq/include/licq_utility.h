@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <vector>
 
+#include "licq_types.h"
+
 class LicqUser;
 
 // Define for marking functions as deprecated
@@ -71,7 +73,14 @@ public:
   const char *Description()  { return m_szDescription; }
   EWinType WinType()  { return m_eWinType; }
 
-  bool SetFields(const char *szId, unsigned long nPPID);
+  /**
+   * Set user specific data for utility
+   *
+   * @param userId Id of user to populate fields from
+   * @return True if user data was sucessfully read
+   */
+  bool setFields(const UserId& userId);
+
   void SetUserFields(const std::vector<const char *> &_vszUserFields);
   void SetBackgroundTask()  { strcat(m_szFullCommand, " &"); }
   const char *FullCommand() { return m_szFullCommand; }

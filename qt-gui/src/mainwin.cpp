@@ -3627,16 +3627,9 @@ void CMainWindow::changeDebug(int _nId)
 //-----CMainWindow::slot_utility----------------------------------------------
 void CMainWindow::slot_utility(int _nId)
 {
-  const LicqUser* user = gUserManager.fetchUser(myMenuUserId);
-  if (user == NULL)
-    return;
-  QString accountId = user->accountId();
-  unsigned long ppid = user->ppid();
-  gUserManager.DropUser(user);
-
   CUtility *u = gUtilityManager.Utility(mnuUtilities->indexOf(_nId));
   if (u != NULL)
-      (void) new CUtilityDlg(u, accountId, ppid, licqDaemon);
+    (void) new CUtilityDlg(u, myMenuUserId, licqDaemon);
 }
 
 

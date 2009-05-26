@@ -564,7 +564,7 @@ void UserMenu::utility(QAction* action)
   CUtility* u = gUtilityManager.Utility(index);
 
   if (u != NULL)
-    new UtilityDlg(u, myId, myPpid);
+    new UtilityDlg(u, myUserId);
 }
 
 void UserMenu::toggleUserGroup(QAction* action)

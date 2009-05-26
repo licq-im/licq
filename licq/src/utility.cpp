@@ -197,9 +197,9 @@ CUtility::~CUtility()
   delete []m_szFullCommand;
 }
 
-bool CUtility::SetFields(const char *szId, unsigned long nPPID)
+bool CUtility::setFields(const UserId& userId)
 {
-  const ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL) return false;
   if (m_szFullCommand != NULL) delete [] m_szFullCommand;
   char *szTmp;

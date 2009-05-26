@@ -26,6 +26,8 @@
 
 #include <vector>
 
+#include <licq_types.h>
+
 class QCheckBox;
 class QLineEdit;
 class QLabel;
@@ -44,14 +46,12 @@ class CUtilityDlg : public QWidget
 {
   Q_OBJECT
 public:
-  CUtilityDlg(CUtility *u, const char *szId, unsigned long nPPID,
-    CICQDaemon *server);
+  CUtilityDlg(CUtility *u, const UserId& userId, CICQDaemon *server);
   ~CUtilityDlg();
 protected:
   CUtility *m_xUtility;
   CICQDaemon *server;
-  char *m_szId;
-  unsigned long m_nPPID;
+  UserId myUserId;
   bool m_bIntWin, m_bStdOutClosed, m_bStdErrClosed;
   CUtilityInternalWindow *intwin;
 

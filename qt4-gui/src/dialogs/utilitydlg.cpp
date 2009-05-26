@@ -42,19 +42,18 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::UtilityDlg */
 
-UtilityDlg::UtilityDlg(CUtility* u, const QString& szId, unsigned long nPPID)
+UtilityDlg::UtilityDlg(CUtility* u, const UserId& userId)
+  : myUserId(userId)
 {
   setObjectName("UtilityDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
 
-  m_szId = szId;
-  m_nPPID = nPPID;
   m_xUtility = u;
   m_bIntWin = false;
   intwin = NULL;
   snOut = snErr = NULL;
 
-  m_xUtility->SetFields(m_szId.toLatin1(), m_nPPID);
+  m_xUtility->setFields(myUserId);
 
   QGridLayout* lay = new QGridLayout(this);
   lay->setColumnStretch(2, 2);
@@ -239,7 +238,7 @@ void UtilityDlg::slot_run()
   if (nSystemResult == -1)
   {
     lblUtility->setText(tr("Failed:"));
-    m_xUtility->SetFields(m_szId.toLatin1(), m_nPPID);
+    m_xUtility->setFields(myUserId);
   }
   else
   {
