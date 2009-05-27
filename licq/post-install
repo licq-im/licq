@@ -8,8 +8,8 @@ Protocol plugins are also found in the plugins/ directory.
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 **********************************************************************
 *** Now enter the plugins directory and build the GUI plugin.        *
-*** If you want the default Qt GUI go to plugins/qt-gui.             *
-*** Unoffical GTK+ interfaces are available from www.licq.org.       *
+*** If you want the default Qt4 GUI go to plugins/qt4-gui.           *
+*** Alternetively, the older Qt3 GUI is available in plugins/qt-gui. *
 *** You must do this in order to have a graphical interface!         *
 **********************************************************************
 !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
