@@ -1142,14 +1142,14 @@ void UserViewEvent::slot_btnRead1()
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       CEventAuthGranted *p = (CEventAuthGranted *)m_xCurrentReadEvent;
-      gUserManager.addUser(p->IdString(), p->PPID());
+      gUserManager.addUser(LicqUser::makeUserId(p->IdString(), p->PPID()));
       break;
     }
 
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       CEventAdded *p = (CEventAdded *)m_xCurrentReadEvent;
-      gUserManager.addUser(p->IdString(), p->PPID());
+      gUserManager.addUser(LicqUser::makeUserId(p->IdString(), p->PPID()));
       break;
     }
 
@@ -1161,7 +1161,7 @@ void UserViewEvent::slot_btnRead1()
       for(it = cl.begin(); it != cl.end(); ++it) {
         ICQUser *u = gUserManager.FetchUser((*it)->IdString(), (*it)->PPID(), LOCK_R);
         if(u == NULL)
-          gUserManager.addUser((*it)->IdString(), (*it)->PPID());
+          gUserManager.addUser(LicqUser::makeUserId((*it)->IdString(), (*it)->PPID()));
         gUserManager.DropUser(u);
       }
       btnRead1->setEnabled(false);
@@ -1360,7 +1360,7 @@ void UserViewEvent::slot_btnRead3()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest *p = (CEventAuthRequest *)m_xCurrentReadEvent;
-      gUserManager.addUser(p->IdString(), p->PPID());
+      gUserManager.addUser(LicqUser::makeUserId(p->IdString(), p->PPID()));
       break;
     }
   }
@@ -1430,7 +1430,7 @@ void UserViewEvent::slot_btnRead4()
         break;
 
       UserId userId = LicqUser::makeUserId(id, ppid);
-      gUserManager.addUser(id, ppid, false);
+      gUserManager.addUser(userId, false);
 
       mainwin->callInfoTab(mnuUserGeneral, userId, false, true);
       break;

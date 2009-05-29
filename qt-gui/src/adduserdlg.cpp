@@ -115,7 +115,10 @@ void AddUserDlg::ok()
     server->ProtoPluginList(pl);
     for (it = pl.begin(); it != pl.end(); it++)
       if (strcmp((*it)->Name(), cmbProtocol->currentText().latin1()) == 0)
-        gUserManager.addUser(strUser, (*it)->PPID());
+      {
+        UserId userId = LicqUser::makeUserId(strUser, (*it)->PPID());
+        gUserManager.addUser(userId);
+      }
   }
 
   close(true);

@@ -433,15 +433,16 @@ void CICQDaemon::icqRenameUser(const string& accountId, const string& newAlias)
   SendExpectEvent_Server(pUpdate, NULL);
 }
 
-void CICQDaemon::icqAlertUser(const char* id, unsigned long ppid)
+void CICQDaemon::icqAlertUser(const UserId& userId)
 {
-  UserId userId = LicqUser::makeUserId(id, ppid);
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   char sz[MAX_MESSAGE_SIZE];
   sprintf(sz, "%s%c%s%c%s%c%s%c%c%c", o->GetAlias(), 0xFE, o->getFirstName().c_str(),
       0xFE, o->getLastName().c_str(), 0xFE, o->getEmail().c_str(), 0xFE,
           o->GetAuthorization() ? '0' : '1', 0xFE);
   gUserManager.DropOwner(o);
+  string accountId = LicqUser::getUserAccountId(userId);
+  const char* id = accountId.c_str();
   CPU_ThroughServer *p = new CPU_ThroughServer(id, ICQ_CMDxSUB_ADDEDxTOxLIST, sz);
   gLog.Info(tr("%sAlerting user they were added (#%hu)...\n"), L_SRVxSTR, p->Sequence());
   SendExpectEvent_Server(userId, p, NULL);

@@ -23,6 +23,8 @@
 
 #include <QDialog>
 
+#include <licq_types.h>
+
 class QCheckBox;
 class QLineEdit;
 
@@ -36,7 +38,7 @@ class AddUserDlg : public QDialog
    Q_OBJECT
 
 public:
-   AddUserDlg(QString id = QString::null, unsigned long ppid = 0, QWidget* parent = 0);
+   AddUserDlg(const UserId& userId = USERID_NONE, QWidget* parent = 0);
 
 private:
    QCheckBox* myNotify;

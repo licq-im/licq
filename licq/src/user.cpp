@@ -569,13 +569,11 @@ void CUserManager::saveUserList() const
   usersConf.CloseFile();
 }
 
-bool CUserManager::addUser(const string& accountId, unsigned long ppid,
+bool CUserManager::addUser(const UserId& uid,
     bool permanent, bool addToServer, unsigned short groupId)
 {
-  if (accountId.empty() || ppid == 0)
+  if (!USERID_ISVALID(uid))
     return false;
-
-  UserId uid = LicqUser::makeUserId(accountId, ppid);
 
   if (isOwner(uid))
     return false;
@@ -589,6 +587,9 @@ bool CUserManager::addUser(const string& accountId, unsigned long ppid,
     UnlockUserList();
     return false;
   }
+
+  string accountId = LicqUser::getUserAccountId(uid);
+  unsigned long ppid = LicqUser::getUserProtocolId(uid);
 
   LicqUser* pUser = new LicqUser(accountId, ppid, !permanent);
   pUser->Lock(LOCK_W);

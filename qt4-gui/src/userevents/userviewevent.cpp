@@ -337,14 +337,14 @@ void UserViewEvent::read1()
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       CEventAuthGranted* p = dynamic_cast<CEventAuthGranted*>(myCurrentEvent);
-      new AddUserDlg(p->IdString(), p->PPID(), this);
+      new AddUserDlg(LicqUser::makeUserId(p->IdString(), p->PPID()), this);
       break;
     }
 
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       CEventAdded* p = dynamic_cast<CEventAdded*>(myCurrentEvent);
-      new AddUserDlg(p->IdString(), p->PPID(), this);
+      new AddUserDlg(LicqUser::makeUserId(p->IdString(), p->PPID()), this);
       break;
     }
 
@@ -355,7 +355,7 @@ void UserViewEvent::read1()
 
       for (it = cl.begin(); it != cl.end(); ++it)
       {
-        new AddUserDlg((*it)->IdString(), (*it)->PPID(), this);
+        new AddUserDlg(LicqUser::makeUserId((*it)->IdString(), (*it)->PPID()), this);
       }
 
       myRead1Button->setEnabled(false);
@@ -538,7 +538,7 @@ void UserViewEvent::read3()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
-      new AddUserDlg(p->IdString(), p->PPID(), this);
+      new AddUserDlg(LicqUser::makeUserId(p->IdString(), p->PPID()), this);
       break;
     }
   } // switch

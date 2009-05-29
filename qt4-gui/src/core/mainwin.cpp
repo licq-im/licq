@@ -277,8 +277,8 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
       SIGNAL(sendChatRequest(const char*, unsigned long)),
       LicqGui::instance(), SLOT(sendChatRequest(const char*, unsigned long)));
   connect(kdeIMInterface,
-      SIGNAL(addUser(const char*, unsigned long)),
-      SLOT(addUser(const char*, unsigned long)));
+      SIGNAL(addUser(const UserId&)),
+      SLOT(addUser(const UserId&)));
   */
 #endif
 
@@ -1082,12 +1082,12 @@ void MainWindow::showAutoResponseHints(QWidget* parent)
   AwayMsgDlg::showAutoResponseHints(parent);
 }
 
-void MainWindow::addUser(QString id, unsigned long ppid)
+void MainWindow::addUser(const UserId& userId)
 {
-  if (id.isEmpty() || ppid == 0)
+  if (!USERID_ISVALID(userId))
     return;
 
-  new AddUserDlg(id, ppid);
+  new AddUserDlg(userId);
 }
 
 void MainWindow::setMainwinSticky(bool sticky)

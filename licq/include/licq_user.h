@@ -1264,15 +1264,14 @@ public:
   /**
    * Add a user to the contact list
    *
-   * @param accountId Server account id
-   * @param ppid Protocol instance id
+   * @param userId User to add
    * @param permanent True if user should be added permanently to list and saved to disk
    * @param addToServer True if server should be notified (ignored for temporary users)
    * @param groupId Initial group to place user in or zero for no group
-   * @return false if account id is invalid or user is already in list, otherwise true
+   * @return false if user id is invalid or user is already in list, otherwise true
    */
-  bool addUser(const std::string& accountId, unsigned long ppid,
-      bool permanent = true, bool addToServer = true, unsigned short groupId = 0);
+  bool addUser(const UserId& userId, bool permanent = true,
+      bool addToServer = true, unsigned short groupId = 0);
 
   /**
    * Remove a user from the list

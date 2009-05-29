@@ -433,7 +433,7 @@ void SearchUserDlg::viewInfo()
     QByteArray id = current->data(0, Qt::UserRole).toString().toLatin1();
 
     UserId userId = LicqUser::makeUserId(id.data(), ppid);
-    gUserManager.addUser(id.data(), ppid, false);
+    gUserManager.addUser(userId, false);
     LicqGui::instance()->showInfoDialog(mnuUserGeneral, userId, false, true);
   }
 }
@@ -443,8 +443,9 @@ void SearchUserDlg::addUser()
   foreach (QTreeWidgetItem* current, foundView->selectedItems())
   {
     QString id = current->data(0, Qt::UserRole).toString();
+    UserId userId = LicqUser::makeUserId(id.toLatin1().data(), ppid);
 
-    new AddUserDlg(id, ppid, this);
+    new AddUserDlg(userId, this);
   }
 
   foundView->clearSelection();

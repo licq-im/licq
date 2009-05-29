@@ -177,7 +177,13 @@ private slots:
   void slot_doneOwnerFcn(const LicqEvent* event);
   void slot_updateContactList();
 
-  void addUser(QString id, unsigned long ppid);
+  /**
+   * Open add user dialog
+   *
+   * @param userId User to add
+   */
+  void addUser(const UserId& userId);
+
   void setMiniMode(bool miniMode);
   void setMainwinSticky(bool sticky = true);
   void trayIconClicked();

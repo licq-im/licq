@@ -37,7 +37,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::AddUserDlg */
 
-AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
+AddUserDlg::AddUserDlg(const UserId& userId, QWidget* parent)
   : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
 {
   Support::setWidgetProps(this, "AddUserDialog");
@@ -48,7 +48,7 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
 
   QLabel* lblProtocol = new QLabel(tr("&Protocol:"));
   myProtocol = new ProtoComboBox();
-  myProtocol->setCurrentPpid(ppid);
+  myProtocol->setCurrentPpid(LicqUser::getUserProtocolId(userId));
   lblProtocol->setBuddy(myProtocol);
 
   unsigned line = 0;
@@ -64,9 +64,10 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
   layDialog->addWidget(myGroup, line++, 1);
 
   QLabel* lblId = new QLabel(tr("New &User ID:"));
+  QString accountId = LicqUser::getUserAccountId(userId).c_str();
   myId = new QLineEdit();
-  if (!id.isEmpty())
-    myId->setText(id);
+  if (!accountId.isEmpty())
+    myId->setText(accountId);
   connect(myId, SIGNAL(returnPressed()), SLOT(ok()));
   lblId->setBuddy(myId);
 
@@ -91,18 +92,18 @@ AddUserDlg::AddUserDlg(QString id, unsigned long ppid, QWidget* parent)
 
 void AddUserDlg::ok()
 {
-  QByteArray id = myId->text().trimmed().toLatin1();
-  unsigned long ppid = myProtocol->currentPpid();
+  QString accountId = myId->text().trimmed();
+  UserId userId = LicqUser::makeUserId(accountId.toLatin1().data(), myProtocol->currentPpid());
   unsigned short group = myGroup->currentGroupId();
   bool notify = myNotify->isChecked();
   bool added = false;
 
-  if (!id.isEmpty())
+  if (!accountId.isEmpty() && USERID_ISVALID(userId))
   {
-    const ICQUser* u = gUserManager.FetchUser(id, ppid, LOCK_R);
+    const LicqUser* u = gUserManager.fetchUser(userId);
 
     if (u == NULL)
-      added = (gUserManager.addUser(id.data(), ppid, true, true, group) != 0);
+      added = (gUserManager.addUser(userId, true, true, group) != 0);
     else
     {
       bool notInList = u->NotInList();
@@ -110,8 +111,8 @@ void AddUserDlg::ok()
 
       if (notInList)
       {
-        gUserManager.SetUserInGroup(id, ppid, GROUPS_USER, group, true, true);
-        ICQUser* user = gUserManager.FetchUser(id, ppid, LOCK_W);
+        gUserManager.setUserInGroup(userId, GROUPS_USER, group, true, true);
+        LicqUser* user = gUserManager.fetchUser(userId, LOCK_W);
         user->SetPermanent();
         gUserManager.DropUser(user);
         added = true;
@@ -120,7 +121,7 @@ void AddUserDlg::ok()
   }
 
   if (added && notify)
-    gLicqDaemon->icqAlertUser(id, ppid);
+    gLicqDaemon->icqAlertUser(userId);
 
   close();
 }

@@ -436,23 +436,23 @@ void CLicqConsole::MenuAdd(char *szArg)
     if (strcasecmp(szArg, "alert") == 0)
       bAlert = true;
   }
+  UserId userId = LicqUser::makeUserId(szArg, LICQ_PPID);
 
-  if (gUserManager.addUser(szArg, LICQ_PPID) == 0)
+  if (gUserManager.addUser(userId) == 0)
   {
     winMain->wprintf("%CAdding user %s failed (duplicate user or invalid uin).\n",
-     COLOR_RED, szArg);
+        COLOR_RED, USERID_TOSTR(userId));
     return;
   }
 
   winMain->wprintf("%C%AAdded user %s.\n",
-                     m_cColorInfo->nColor, m_cColorInfo->nAttr,
-                     szArg);
+      m_cColorInfo->nColor, m_cColorInfo->nAttr, USERID_TOSTR(userId));
 
   if (bAlert)
   {
-    licqDaemon->icqAlertUser(szArg, LICQ_PPID);
+    licqDaemon->icqAlertUser(userId);
     winMain->wprintf("%C%AAlerted user %s they were added.\n",
-        m_cColorInfo->nColor, m_cColorInfo->nAttr, szArg);
+        m_cColorInfo->nColor, m_cColorInfo->nAttr, USERID_TOSTR(userId));
   }
 
 }

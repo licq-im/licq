@@ -644,7 +644,7 @@ public:
   unsigned long icqAuthorizeGrant(const UserId& userId, const std::string& message);
   unsigned long icqAuthorizeRefuse(const UserId& userId, const std::string& message);
   void icqRequestAuth(const char* id, const char *_szMessage);
-  void icqAlertUser(const char* id, unsigned long ppid);
+  void icqAlertUser(const UserId& userId);
   void icqAddUser(const char *_szId, bool _bAuthReq = false, unsigned short groupId = 0);
   void icqAddUserServer(const char *_szId, bool _bAuthReq, unsigned short groupId = 0);
   void icqAddGroup(const char *);
@@ -767,11 +767,11 @@ public:
   LICQ_DEPRECATED // Use gUserManager.addUser() instead
   int addUserToList(const std::string& accountId, unsigned long ppid,
       bool permanent = true, bool addToServer = true, unsigned short groupId = 0)
-  { return gUserManager.addUser(accountId, ppid, permanent, addToServer, groupId); }
+  { return gUserManager.addUser(LicqUser::makeUserId(accountId, ppid), permanent, addToServer, groupId); }
 
   LICQ_DEPRECATED int AddUserToList(const std::string& accountId, unsigned long ppid,
       bool notify = true, bool temporary = false, unsigned short groupId = 0)
-  { return gUserManager.addUser(accountId, ppid, !temporary, notify, groupId); }
+  { return gUserManager.addUser(LicqUser::makeUserId(accountId, ppid), !temporary, notify, groupId); }
 
   LICQ_DEPRECATED // Use gUserManager.removeUser() instead
   void RemoveUserFromList(const char *szId, unsigned long nPPID)

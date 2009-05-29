@@ -1493,8 +1493,9 @@ int CRMSClient::Process_ADDUSER()
   char *szId = strdup(data_arg);
   NEXT_WORD(data_arg);
   unsigned long nPPID = GetProtocol(data_arg);
+  UserId userId = LicqUser::makeUserId(szId, nPPID);
 
-  if (gUserManager.addUser(szId, nPPID) != 0)
+  if (gUserManager.addUser(userId) != 0)
   {
     fprintf(fs, "%d User added\n", CODE_ADDUSERxDONE);
   }

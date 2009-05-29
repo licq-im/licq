@@ -509,7 +509,7 @@ void SearchUserDlg::viewInfo()
       ICQUser* u = gUserManager.FetchUser(current->id().latin1(), current->ppid(), LOCK_R);
       UserId userId = LicqUser::makeUserId(current->id().latin1(), current->ppid());
       if (!u)
-        gUserManager.addUser(current->id().latin1(), current->ppid(), false);
+        gUserManager.addUser(userId, false);
       else
         gUserManager.DropUser(u);
 
@@ -528,20 +528,20 @@ void SearchUserDlg::addUser()
   {
     if (current->isSelected())
     {
-      ICQUser* user = gUserManager.FetchUser(current->id().latin1(), current->ppid(), LOCK_R);
+      UserId userId = LicqUser::makeUserId(current->id().latin1(), current->ppid());
+      const LicqUser* user = gUserManager.fetchUser(userId);
 
       if (user)
       {
         bool tempUser = user->NotInList();
-        UserId userId = user->id();
         gUserManager.DropUser(user);
         if (tempUser)
           gUserManager.removeUser(userId);
       }
 
-      if (gUserManager.addUser(current->id().latin1(), current->ppid()) &&
+      if (gUserManager.addUser(userId) &&
           qcbAlertUser->isChecked()) // alert the user they were added
-        server->icqAlertUser(current->id().latin1(), current->ppid());
+        server->icqAlertUser(userId);
     }
     current = static_cast<SearchItem*>(current->nextSibling());
   }

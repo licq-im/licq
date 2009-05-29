@@ -27,6 +27,8 @@
 #include <QPair>
 #include <QPixmap>
 
+#include <licq_types.h>
+
 // KDE includes
 #include "kimiface.h"
 
@@ -269,10 +271,9 @@ signals:
 
     /**
      * Asks for adding a user to the contact list
-     * @param szId the protocol specific user ID, for example UIN string in ICQ
-     * @param PPID the numerical protocol identifier
-     */
-    void addUser(const char* szId, unsigned long PPID);
+   * @param userId User to add
+   */
+  void addUser(const UserId& userId);
 
 private:
     /**

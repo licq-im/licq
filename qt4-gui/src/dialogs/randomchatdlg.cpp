@@ -132,7 +132,7 @@ void RandomChatDlg::userEventDone(const LicqEvent* event)
     default:
       //TODO when CSearchAck changes
       UserId userId = LicqUser::makeUserId(event->SearchAck()->Id(), event->SearchAck()->PPID());
-      gUserManager.addUser(event->SearchAck()->Id(), event->SearchAck()->PPID(), false);
+      gUserManager.addUser(userId, false);
       LicqGui::instance()->showEventDialog(ChatEvent, userId);
       close();
       return;
