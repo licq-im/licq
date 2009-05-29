@@ -7,6 +7,7 @@
 
 #include "licq_constants.h"
 #include "licq_color.h"
+#include "licq_types.h"
 
 // Define for marking functions as deprecated
 #ifndef LICQ_DEPRECATED
@@ -211,19 +212,17 @@ protected:
 class CEventAdded : public CUserEvent
 {
 public:
-   CEventAdded(const char *_szId, unsigned long _nPPID, const char *_szAlias,
+   CEventAdded(const UserId& userId, const char *_szAlias,
                const char *_szFirstName, const char *_szLastName, const char *_szEmail,
                unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAdded();
   virtual CEventAdded* Copy() const;
   virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
-  const char* IdString() const { return m_szId; }
-  unsigned long PPID() const { return m_nPPID; }
+  const UserId& userId() const { return myUserId; }
 
 protected:
   void CreateDescription() const;
-   char *m_szId;
-   unsigned long m_nPPID;
+  UserId myUserId;
    char *m_szAlias;
    char *m_szFirstName;
    char *m_szLastName;
@@ -236,20 +235,18 @@ protected:
 class CEventAuthRequest : public CUserEvent
 {
 public:
-   CEventAuthRequest(const char *_szId, unsigned long _nPPID, const char *_szAlias,
+   CEventAuthRequest(const UserId& userId, const char *_szAlias,
                      const char *_szFirstName, const char *_szLastName, const char *_szEmail,
                      const char *_szReason, unsigned short _nCommand, time_t _tTime,
                      unsigned long _nFlags);
    virtual ~CEventAuthRequest();
   virtual CEventAuthRequest* Copy() const;
   virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
-  const char* IdString() const { return m_szId; }
-  unsigned long PPID() const { return m_nPPID; }
+  const UserId& userId() const { return myUserId; }
 
 protected:
   void CreateDescription() const;
-   char *m_szId;
-   unsigned long m_nPPID;
+  UserId myUserId;
    char *m_szAlias;
    char *m_szFirstName;
    char *m_szLastName;
@@ -262,18 +259,16 @@ protected:
 class CEventAuthGranted : public CUserEvent
 {
 public:
-   CEventAuthGranted(const char *_szId, unsigned long _nPPID, const char *_szMsg,
+   CEventAuthGranted(const UserId& userId, const char *_szMsg,
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthGranted();
   virtual CEventAuthGranted* Copy() const;
   virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
-  const char* IdString() const { return m_szId; }
-  unsigned long PPID() const { return m_nPPID; }
+  const UserId& userId() const { return myUserId; }
 
 protected:
   void CreateDescription() const;
-   char *m_szId;
-   unsigned long m_nPPID;
+  UserId myUserId;
    char *m_szMessage;
 };
 
@@ -282,18 +277,16 @@ protected:
 class CEventAuthRefused : public CUserEvent
 {
 public:
-   CEventAuthRefused(const char *_szId, unsigned long _nPPID, const char *_szMsg,
+   CEventAuthRefused(const UserId& userId, const char *_szMsg,
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRefused();
   virtual CEventAuthRefused* Copy() const;
   virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
-  const char* IdString() const { return m_szId; }
-  unsigned long PPID() const { return m_nPPID; }
+  const UserId& userId() const { return myUserId; }
 
 protected:
   void CreateDescription() const;
-   char *m_szId;
-   unsigned long m_nPPID;
+  UserId myUserId;
    char *m_szMessage;
 };
 
@@ -336,17 +329,15 @@ protected:
 class CContact
 {
 public:
-  CContact(const char *s, unsigned long n, const char *a);
+  CContact(const UserId& userId, const char *a);
   ~CContact();
 
+  const UserId& userId() const { return myUserId; }
   const char* Alias() const { return m_szAlias; }
-  const char* IdString() const { return m_szId; }
-  unsigned long PPID() const { return m_nPPID; }
 
 protected:
+  UserId myUserId;
   char *m_szAlias;
-  char *m_szId;
-  unsigned long m_nPPID;
 };
 typedef std::list<CContact *> ContactList;
 
@@ -474,18 +465,15 @@ protected:
 class CEventUnknownSysMsg : public CUserEvent
 {
 public:
-  CEventUnknownSysMsg(unsigned short _nSubCommand,
-                unsigned short _nCommand, const char *_szId, unsigned long _nPPID,
-                const char *_szMsg,
-                time_t _tTime, unsigned long _nFlags);
+  CEventUnknownSysMsg(unsigned short _nSubCommand, unsigned short _nCommand,
+      const UserId& userId, const char *_szMsg, time_t _tTime, unsigned long _nFlags);
   ~CEventUnknownSysMsg();
   virtual CEventUnknownSysMsg* Copy() const;
   virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
 protected:
   void CreateDescription() const;
+  UserId myUserId;
    char *m_szMsg;
-   char *m_szId;
-   unsigned long m_nPPID;
 };
 
 #endif

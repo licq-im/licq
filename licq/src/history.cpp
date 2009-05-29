@@ -253,6 +253,7 @@ bool CUserHistory::Load(HistoryList &lHistory) const
     {
       GET_VALID_LINE_OR_BREAK;
         char* id = strdup(&szResult[1]);
+        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
       GET_VALID_LINE_OR_BREAK;
       char *szAlias = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
@@ -262,7 +263,7 @@ bool CUserHistory::Load(HistoryList &lHistory) const
       GET_VALID_LINE_OR_BREAK;
       char *szEmail = strdup(&szResult[1]);
       GET_VALID_LINES;
-        e = new CEventAuthRequest(id, LICQ_PPID, szAlias, szFName, szLName,
+        e = new CEventAuthRequest(userId, szAlias, szFName, szLName,
             szEmail, szMsg, nCommand, tTime, nFlags);
         free(id);
       free(szAlias);
@@ -275,8 +276,9 @@ bool CUserHistory::Load(HistoryList &lHistory) const
     {
       GET_VALID_LINE_OR_BREAK;
         char* id = strdup(&szResult[1]);
+        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
       GET_VALID_LINES;
-        e = new CEventAuthGranted(id, LICQ_PPID, szMsg, nCommand, tTime, nFlags);
+        e = new CEventAuthGranted(userId, szMsg, nCommand, tTime, nFlags);
         free(id);
       break;
     }
@@ -284,8 +286,9 @@ bool CUserHistory::Load(HistoryList &lHistory) const
     {
       GET_VALID_LINE_OR_BREAK;
         char* id = strdup(&szResult[1]);
+        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
       GET_VALID_LINES;
-        e = new CEventAuthRefused(id, LICQ_PPID, szMsg, nCommand, tTime, nFlags);
+        e = new CEventAuthRefused(userId, szMsg, nCommand, tTime, nFlags);
         free(id);
       break;
     }
@@ -293,6 +296,7 @@ bool CUserHistory::Load(HistoryList &lHistory) const
     {
       GET_VALID_LINE_OR_BREAK;
         char* id = strdup(&szResult[1]);
+        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
       GET_VALID_LINE_OR_BREAK;
       char *szAlias = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
@@ -301,7 +305,7 @@ bool CUserHistory::Load(HistoryList &lHistory) const
       char *szLName = strdup(&szResult[1]);
       GET_VALID_LINE_OR_BREAK;
       char *szEmail = strdup(&szResult[1]);
-        e = new CEventAdded(id, LICQ_PPID, szAlias, szFName, szLName, szEmail,
+        e = new CEventAdded(userId, szAlias, szFName, szLName, szEmail,
                             nCommand, tTime, nFlags);
         free(id);
       free(szAlias);
@@ -347,7 +351,10 @@ bool CUserHistory::Load(HistoryList &lHistory) const
         if (b)
           id = &szResult[1];
         else if (!id.empty())
-          vc.push_back(new CContact(id.c_str(), LICQ_PPID, &szResult[1]));
+          {
+            UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
+            vc.push_back(new CContact(userId, &szResult[1]));
+          }
         b = !b;
       }
       e = new CEventContactList(vc, false, nCommand, tTime, nFlags);

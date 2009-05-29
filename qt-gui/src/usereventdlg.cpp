@@ -994,7 +994,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
         btnRead1->setText(tr("A&uthorize"));
         btnRead2->setText(tr("&Refuse"));
         CEventAuthRequest *pAuthReq = (CEventAuthRequest *)m;;
-        ICQUser *u = gUserManager.FetchUser(pAuthReq->IdString(), pAuthReq->PPID(), LOCK_R);
+        const LicqUser* u = gUserManager.fetchUser(pAuthReq->userId());
         if (u == NULL)
           btnRead3->setText(tr("A&dd User"));
         else
@@ -1005,7 +1005,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
       case ICQ_CMDxSUB_AUTHxGRANTED:
       {
         CEventAuthGranted *pAuth = (CEventAuthGranted *)m;
-        ICQUser *u = gUserManager.FetchUser(pAuth->IdString(), pAuth->PPID(), LOCK_R);
+        const LicqUser* u = gUserManager.fetchUser(pAuth->userId());
         if (u == NULL)
           btnRead1->setText(tr("A&dd User"));
         else
@@ -1016,7 +1016,7 @@ void UserViewEvent::slot_printMessage(QListViewItem *eq)
       case ICQ_CMDxSUB_ADDEDxTOxLIST:
       {
         CEventAdded *pAdd = (CEventAdded *)m;
-        ICQUser *u = gUserManager.FetchUser(pAdd->IdString(), pAdd->PPID(), LOCK_R);
+        const LicqUser* u = gUserManager.fetchUser(pAdd->userId());
         if (u == NULL)
           btnRead1->setText(tr("A&dd User"));
         else
@@ -1135,21 +1135,21 @@ void UserViewEvent::slot_btnRead1()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest *p = (CEventAuthRequest *)m_xCurrentReadEvent;
-      (void) new AuthUserDlg(server, LicqUser::makeUserId(p->IdString(), p->PPID()), true);
+      (void) new AuthUserDlg(server, p->userId(), true);
       break;
     }
 
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       CEventAuthGranted *p = (CEventAuthGranted *)m_xCurrentReadEvent;
-      gUserManager.addUser(LicqUser::makeUserId(p->IdString(), p->PPID()));
+      gUserManager.addUser(p->userId());
       break;
     }
 
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       CEventAdded *p = (CEventAdded *)m_xCurrentReadEvent;
-      gUserManager.addUser(LicqUser::makeUserId(p->IdString(), p->PPID()));
+      gUserManager.addUser(p->userId());
       break;
     }
 
@@ -1159,9 +1159,9 @@ void UserViewEvent::slot_btnRead1()
 
       ContactList::const_iterator it;
       for(it = cl.begin(); it != cl.end(); ++it) {
-        ICQUser *u = gUserManager.FetchUser((*it)->IdString(), (*it)->PPID(), LOCK_R);
+        const LicqUser* u = gUserManager.fetchUser((*it)->userId());
         if(u == NULL)
-          gUserManager.addUser(LicqUser::makeUserId((*it)->IdString(), (*it)->PPID()));
+          gUserManager.addUser((*it)->userId());
         gUserManager.DropUser(u);
       }
       btnRead1->setEnabled(false);
@@ -1288,7 +1288,7 @@ void UserViewEvent::slot_btnRead2()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest *p = (CEventAuthRequest *)m_xCurrentReadEvent;
-      (void) new AuthUserDlg(server, p->IdString(), p->PPID(), false);
+      (void) new AuthUserDlg(server, p->userId(), false);
       break;
     }
   } // switch
@@ -1360,7 +1360,7 @@ void UserViewEvent::slot_btnRead3()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest *p = (CEventAuthRequest *)m_xCurrentReadEvent;
-      gUserManager.addUser(LicqUser::makeUserId(p->IdString(), p->PPID()));
+      gUserManager.addUser(p->userId());
       break;
     }
   }
@@ -1411,14 +1411,12 @@ void UserViewEvent::slot_btnRead4()
     case ICQ_CMDxSUB_AUTHxGRANTED:
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
-      const char* id = NULL;
-      unsigned long ppid = 0;
+      UserId userId;
 #define GETINFO(sub, type) \
       if (m_xCurrentReadEvent->SubCommand() == sub) \
       { \
         type* p = dynamic_cast<type*>(m_xCurrentReadEvent); \
-        id = p->IdString(); \
-        ppid = p->PPID(); \
+        userId = p->userId(); \
       }
 
       GETINFO(ICQ_CMDxSUB_AUTHxREQUEST, CEventAuthRequest);
@@ -1426,10 +1424,9 @@ void UserViewEvent::slot_btnRead4()
       GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, CEventAdded);
 #undef GETINFO
 
-      if (id == NULL || ppid == 0)
+      if (!USERID_ISVALID(userId))
         break;
 
-      UserId userId = LicqUser::makeUserId(id, ppid);
       gUserManager.addUser(userId, false);
 
       mainwin->callInfoTab(mnuUserGeneral, userId, false, true);
@@ -2584,7 +2581,7 @@ void UserSendCommon::RetrySend(ICQEvent *e, bool bOnline, unsigned short nLevel)
 
       // ContactList is const but string list holds "char*" so we have to copy each string
       for(ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
-        users.push_back((*i)->IdString());
+        users.push_back(LicqUser::getUserAccountId((*i)->userId()));
 
       if(users.size() == 0)
         break;

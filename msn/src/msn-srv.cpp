@@ -203,14 +203,15 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       string strList = packet->GetParameter();
       string strVersion = packet->GetParameter();
       string strUser = packet->GetParameter();
+      UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
       string strNick = packet->GetParameter();
       m_nListVersion = atol(strVersion.c_str());
       
       if (strList == "RL")
       {
         gLog.Info("%sAuthorization request from %s.\n", L_MSNxSTR, strUser.c_str());
-        
-        CUserEvent *e = new CEventAuthRequest(strUser.c_str(), MSN_PPID,
+
+        CUserEvent* e = new CEventAuthRequest(userId,
           strNick.c_str(), "", "", "", "", ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
       
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
@@ -226,8 +227,8 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       else
       {
         gLog.Info("%sAdded %s to contact list.\n", L_MSNxSTR, strUser.c_str());
-        
-        ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
+
+        LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
         if (u)
         {
           if (!u->KeepAliasOnUpdate())

@@ -330,21 +330,21 @@ void UserViewEvent::read1()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
-      new AuthUserDlg(LicqUser::makeUserId(p->IdString(), p->PPID()), true);
+      new AuthUserDlg(p->userId(), true);
       break;
     }
 
     case ICQ_CMDxSUB_AUTHxGRANTED:
     {
       CEventAuthGranted* p = dynamic_cast<CEventAuthGranted*>(myCurrentEvent);
-      new AddUserDlg(LicqUser::makeUserId(p->IdString(), p->PPID()), this);
+      new AddUserDlg(p->userId(), this);
       break;
     }
 
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
       CEventAdded* p = dynamic_cast<CEventAdded*>(myCurrentEvent);
-      new AddUserDlg(LicqUser::makeUserId(p->IdString(), p->PPID()), this);
+      new AddUserDlg(p->userId(), this);
       break;
     }
 
@@ -355,7 +355,7 @@ void UserViewEvent::read1()
 
       for (it = cl.begin(); it != cl.end(); ++it)
       {
-        new AddUserDlg(LicqUser::makeUserId((*it)->IdString(), (*it)->PPID()), this);
+        new AddUserDlg((*it)->userId(), this);
       }
 
       myRead1Button->setEnabled(false);
@@ -470,7 +470,7 @@ void UserViewEvent::read2()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
-      new AuthUserDlg(p->IdString(), p->PPID(), false);
+      new AuthUserDlg(p->userId(), false);
       break;
     }
   } // switch
@@ -538,7 +538,7 @@ void UserViewEvent::read3()
     case ICQ_CMDxSUB_AUTHxREQUEST:
     {
       CEventAuthRequest* p = dynamic_cast<CEventAuthRequest*>(myCurrentEvent);
-      new AddUserDlg(LicqUser::makeUserId(p->IdString(), p->PPID()), this);
+      new AddUserDlg(p->userId(), this);
       break;
     }
   } // switch
@@ -595,14 +595,12 @@ void UserViewEvent::read4()
     case ICQ_CMDxSUB_AUTHxGRANTED:
     case ICQ_CMDxSUB_ADDEDxTOxLIST:
     {
-      const char* id;
-      unsigned long ppid;
+      UserId userId;
 #define GETINFO(sub, type) \
       if (myCurrentEvent->SubCommand() == sub) \
       { \
         type* p = dynamic_cast<type*>(myCurrentEvent); \
-        id = p->IdString(); \
-        ppid = p->PPID(); \
+        userId = p->userId(); \
       }
 
       GETINFO(ICQ_CMDxSUB_AUTHxREQUEST, CEventAuthRequest);
@@ -610,7 +608,6 @@ void UserViewEvent::read4()
       GETINFO(ICQ_CMDxSUB_ADDEDxTOxLIST, CEventAdded);
 #undef GETINFO
 
-      UserId userId = LicqUser::makeUserId(id, ppid);
       const LicqUser* user = gUserManager.fetchUser(userId, LOCK_R, true);
       gUserManager.DropUser(user);
 
@@ -748,7 +745,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
         myRead1Button->setText(tr("A&uthorize"));
         myRead2Button->setText(tr("&Refuse"));
         CEventAuthRequest* pAuthReq = dynamic_cast<CEventAuthRequest*>(m);
-        const ICQUser* u = gUserManager.FetchUser(pAuthReq->IdString(), pAuthReq->PPID(), LOCK_R);
+        const LicqUser* u = gUserManager.fetchUser(pAuthReq->userId());
         if (u == NULL)
           myRead3Button->setText(tr("A&dd User"));
         else
@@ -760,7 +757,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
       case ICQ_CMDxSUB_AUTHxGRANTED:
       {
         CEventAuthGranted* pAuth = dynamic_cast<CEventAuthGranted*>(m);
-        const ICQUser* u = gUserManager.FetchUser(pAuth->IdString(), pAuth->PPID(), LOCK_R);
+        const LicqUser* u = gUserManager.fetchUser(pAuth->userId());
         if (u == NULL)
           myRead1Button->setText(tr("A&dd User"));
         else
@@ -772,7 +769,7 @@ void UserViewEvent::printMessage(QTreeWidgetItem* item)
       case ICQ_CMDxSUB_ADDEDxTOxLIST:
       {
         CEventAdded* pAdd = dynamic_cast<CEventAdded*>(m);
-        const ICQUser* u = gUserManager.FetchUser(pAdd->IdString(), pAdd->PPID(), LOCK_R);
+        const LicqUser* u = gUserManager.fetchUser(pAdd->userId());
         if (u == NULL)
           myRead1Button->setText(tr("A&dd User"));
         else

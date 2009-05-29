@@ -401,30 +401,26 @@ void CEventChat::AddToHistory(ICQUser* u, unsigned long _nPPID, direction _nDir)
 
 
 //=====CEventAdded==============================================================
-CEventAdded::CEventAdded(const char *_szId, unsigned long _nPPID, const char *_szAlias,
+CEventAdded::CEventAdded(const UserId& userId, const char *_szAlias,
                          const char *_szFirstName,const char *_szLastName,
                          const char *_szEmail, unsigned short _nCommand,
                          time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_ADDEDxTOxLIST, _nCommand, 0, _tTime, _nFlags)
+  : CUserEvent(ICQ_CMDxSUB_ADDEDxTOxLIST, _nCommand, 0, _tTime, _nFlags),
+    myUserId(userId)
 {
-  m_szId = strdup(_szId);
   m_szAlias = strdup(_szAlias);
   m_szFirstName = strdup(_szFirstName);
   m_szLastName = strdup(_szLastName);
   m_szEmail = strdup(_szEmail);
-  m_nPPID =_nPPID;
 }
 
 void CEventAdded::CreateDescription() const
 {
   if (m_szText) delete [] m_szText;
-  char *p = PPIDSTRING(m_nPPID);
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
-                      strlen(m_szLastName) + strlen(m_szEmail) +
-                      strlen(m_szId) + strlen(p) + 512];
-  sprintf(m_szText, tr("Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n"),
-    m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
-  delete [] p;
+      strlen(m_szLastName) + strlen(m_szEmail) + myUserId.size() + 512];
+  sprintf(m_szText, tr("Alias: %s\nUser: %s\nName: %s %s\nEmail: %s\n"),
+      m_szAlias, USERID_TOSTR(myUserId), m_szFirstName, m_szLastName, m_szEmail);
 }
 
 
@@ -434,12 +430,11 @@ CEventAdded::~CEventAdded()
   free (m_szFirstName);
   free (m_szLastName);
   free (m_szEmail);
-  free (m_szId);
 }
 
 CEventAdded* CEventAdded::Copy() const
 {
-  CEventAdded *e = new CEventAdded(m_szId, m_nPPID, m_szAlias, m_szFirstName,
+  CEventAdded *e = new CEventAdded(myUserId, m_szAlias, m_szFirstName,
       m_szLastName, m_szEmail, m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
@@ -447,49 +442,43 @@ CEventAdded* CEventAdded::Copy() const
 
 void CEventAdded::AddToHistory(ICQUser* u, unsigned long /* ppid */, direction _nDir) const
 {
-  char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
-                    strlen(m_szLastName) + strlen(m_szEmail) + strlen(m_szId) +
-                    strlen(p)) * 2 + 20 + EVENT_HEADER_SIZE];
+      strlen(m_szLastName) + strlen(m_szEmail) + myUserId.size()) * 2 + 20 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n:%s\n:%s\n:%s\n", m_szId,
-                  p, m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
-  delete [] p;
-  AddToHistory_Flush(u, m_nPPID, szOut);
+  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n",
+      USERID_TOSTR(myUserId), m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+  AddToHistory_Flush(u, LicqUser::getUserProtocolId(myUserId), szOut);
   delete [] szOut;
 }
 
 
 
 //=====CEventAuthReq===============================================================
-CEventAuthRequest::CEventAuthRequest(const char *_szId, unsigned long _nPPID,
+CEventAuthRequest::CEventAuthRequest(const UserId& userId,
                        const char *_szAlias, const char *_szFirstName,
                        const char *_szLastName, const char *_szEmail,
                        const char *_szReason, unsigned short _nCommand,
                        time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_AUTHxREQUEST, _nCommand, 0, _tTime, _nFlags)
+  : CUserEvent(ICQ_CMDxSUB_AUTHxREQUEST, _nCommand, 0, _tTime, _nFlags),
+    myUserId(userId)
 {
-   m_szId = strdup(_szId);
    m_szAlias = strdup(_szAlias);
    m_szFirstName = strdup(_szFirstName);
    m_szLastName = strdup(_szLastName);
    m_szEmail = strdup(_szEmail);
    m_szReason = strdup(_szReason);
-   m_nPPID = _nPPID;
 }
 
 void CEventAuthRequest::CreateDescription() const
 {
   delete [] m_szText;
-  char *p = PPIDSTRING(m_nPPID);
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName)
                       + strlen(m_szLastName) + strlen(m_szEmail)
-                      + strlen(m_szReason) + strlen(m_szId) + strlen(p) + 256];
+      + strlen(m_szReason) + myUserId.size() + 256];
   //sprintf(m_szText, "%s (%s %s, %s), uin %s, requests authorization to add you to their contact list:\n%s\n",
   //        m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_szId, m_szReason);
-  int pos = sprintf(m_szText, tr("Alias: %s\nUser: %s (%s)\nName: %s %s\nEmail: %s\n"),
-     m_szAlias, m_szId, p, m_szFirstName, m_szLastName, m_szEmail);
-  delete [] p;
+  int pos = sprintf(m_szText, tr("Alias: %s\nUser: %s\nName: %s %s\nEmail: %s\n"),
+      m_szAlias, USERID_TOSTR(myUserId), m_szFirstName, m_szLastName, m_szEmail);
 
   if (m_szReason[0] != '\0')
     sprintf(&m_szText[pos], tr("Authorization Request:\n%s\n"), m_szReason);
@@ -503,12 +492,11 @@ CEventAuthRequest::~CEventAuthRequest()
   free (m_szLastName);
   free (m_szEmail);
   free (m_szReason);
-  free (m_szId);
 }
 
 CEventAuthRequest* CEventAuthRequest::Copy() const
 {
-  CEventAuthRequest *e = new CEventAuthRequest(m_szId, m_nPPID,
+  CEventAuthRequest *e = new CEventAuthRequest(myUserId,
       m_szAlias, m_szFirstName, m_szLastName, m_szEmail, m_szReason,
       m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
@@ -517,41 +505,35 @@ CEventAuthRequest* CEventAuthRequest::Copy() const
 
 void CEventAuthRequest::AddToHistory(ICQUser* u, unsigned long /* ppid */, direction _nDir) const
 {
-  char *p = PPIDSTRING(m_nPPID);
   char *szOut = new char[(strlen(m_szAlias) + strlen(m_szFirstName) +
-                    strlen(m_szLastName) + strlen(m_szEmail) +
-                    strlen(m_szReason) + strlen(m_szId) +
-                    strlen(p)) * 2 + 16 + EVENT_HEADER_SIZE];
+      strlen(m_szLastName) + strlen(m_szEmail) + strlen(m_szReason) +
+      myUserId.size()) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n:%s\n:%s\n:%s\n", m_szId,
-                  p, m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
-  delete [] p;
+  nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n",
+      USERID_TOSTR(myUserId), m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
 
   AddStrWithColons(&szOut[nPos], m_szReason);
-  AddToHistory_Flush(u, m_nPPID, szOut);
+  AddToHistory_Flush(u, LicqUser::getUserProtocolId(myUserId), szOut);
   delete [] szOut;
 }
 
 
 
 //=====CEventAuthGranted========================================================
-CEventAuthGranted::CEventAuthGranted(const char *_szId, unsigned long _nPPID,
+CEventAuthGranted::CEventAuthGranted(const UserId& userId,
                        const char *_szMessage, unsigned short _nCommand,
                        time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags)
+  : CUserEvent(ICQ_CMDxSUB_AUTHxGRANTED, _nCommand, 0, _tTime, _nFlags),
+    myUserId(userId)
 {
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
-  m_szId = strdup(_szId);
-  m_nPPID = _nPPID;
 }
 
 void CEventAuthGranted::CreateDescription() const
 {
   delete [] m_szText;
-  char *p = PPIDSTRING(m_nPPID);
-  m_szText = new char[strlen(m_szId) + strlen(p) + strlen(m_szMessage) + 128];
-  int pos = sprintf(m_szText, tr("User %s (%s) authorized you"), m_szId, p);
-  delete [] p;
+  m_szText = new char[myUserId.size() + strlen(m_szMessage) + 128];
+  int pos = sprintf(m_szText, tr("User %s authorized you"), USERID_TOSTR(myUserId));
 
   if (m_szMessage[0] != '\0')
     sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
@@ -563,12 +545,11 @@ void CEventAuthGranted::CreateDescription() const
 CEventAuthGranted::~CEventAuthGranted()
 {
   free (m_szMessage);
-  free (m_szId);
 }
 
 CEventAuthGranted* CEventAuthGranted::Copy() const
 {
-  CEventAuthGranted *e = new CEventAuthGranted(m_szId, m_nPPID, m_szMessage,
+  CEventAuthGranted *e = new CEventAuthGranted(myUserId, m_szMessage,
       m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
@@ -576,38 +557,33 @@ CEventAuthGranted* CEventAuthGranted::Copy() const
 
 void CEventAuthGranted::AddToHistory(ICQUser* u, unsigned long /* ppid */, direction _nDir) const
 {
-  char *p = PPIDSTRING(m_nPPID);
-  char *szOut = new char[(strlen(m_szId) + strlen(p) + strlen(m_szMessage))
+  char *szOut = new char[(myUserId.size() + strlen(m_szMessage))
                          * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s (%s)\n", m_szId, p);
-  delete [] p;
+  nPos += sprintf(&szOut[nPos], ":%s\n", USERID_TOSTR(myUserId));
 
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, m_nPPID, szOut);
+  AddToHistory_Flush(u, LicqUser::getUserProtocolId(myUserId), szOut);
   delete [] szOut;
 }
 
 
 
 //=====CEventAuthRefused==========================================================
-CEventAuthRefused::CEventAuthRefused(const char *_szId, unsigned long _nPPID,
+CEventAuthRefused::CEventAuthRefused(const UserId& userId,
                        const char *_szMessage, unsigned short _nCommand,
                        time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags)
+  : CUserEvent(ICQ_CMDxSUB_AUTHxREFUSED, _nCommand, 0, _tTime, _nFlags),
+    myUserId(userId)
 {
   m_szMessage = _szMessage == NULL ? strdup("") : strdup(_szMessage);
-  m_szId = strdup(_szId);
-  m_nPPID = _nPPID;
 }
 
 void CEventAuthRefused::CreateDescription() const
 {
   delete [] m_szText;
-  char *p = PPIDSTRING(m_nPPID);
-  m_szText = new char[strlen(m_szId) + strlen(p) + strlen(m_szMessage) + 128];
-  int pos = sprintf(m_szText, tr("User %s (%s) refused to authorize you"), m_szId, p);
-  delete [] p;
+  m_szText = new char[myUserId.size() + strlen(m_szMessage) + 128];
+  int pos = sprintf(m_szText, tr("User %s refused to authorize you"), USERID_TOSTR(myUserId));
 
   if (m_szMessage[0] != '\0')
     sprintf(&m_szText[pos], ":\n%s\n", m_szMessage);
@@ -619,12 +595,11 @@ void CEventAuthRefused::CreateDescription() const
 CEventAuthRefused::~CEventAuthRefused()
 {
   free (m_szMessage);
-  free (m_szId);
 }
 
 CEventAuthRefused* CEventAuthRefused::Copy() const
 {
-  CEventAuthRefused *e = new CEventAuthRefused(m_szId, m_nPPID,
+  CEventAuthRefused *e = new CEventAuthRefused(myUserId,
       m_szMessage, m_nCommand, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
@@ -632,15 +607,13 @@ CEventAuthRefused* CEventAuthRefused::Copy() const
 
 void CEventAuthRefused::AddToHistory(ICQUser* u, unsigned long /* ppid */, direction _nDir) const
 {
-  char *p = PPIDSTRING(m_nPPID);
-  char *szOut = new char[(strlen(m_szId) + strlen(p) + strlen(m_szMessage)) * 2 +
+  char *szOut = new char[(myUserId.size() + strlen(m_szMessage)) * 2 +
                          16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s (%s)\n", m_szId, p);
-  delete [] p;
+  nPos += sprintf(&szOut[nPos], ":%s\n", USERID_TOSTR(myUserId));
 
   AddStrWithColons(&szOut[nPos], m_szMessage);
-  AddToHistory_Flush(u, m_nPPID, szOut);
+  AddToHistory_Flush(u, LicqUser::getUserProtocolId(myUserId), szOut);
   delete [] szOut;
 }
 
@@ -741,16 +714,15 @@ void CEventEmailPager::AddToHistory(ICQUser* u, unsigned long _nPPID, direction 
   delete [] szOut;
 }
 
-CContact::CContact(const char *s, unsigned long n, const char *a) : m_nPPID(n)
+CContact::CContact(const UserId& userId, const char *a)
+  : myUserId(userId)
 {
-  m_szId = strdup(s);
   m_szAlias = strdup(a);
 }
 
 CContact::~CContact()
 {
   free(m_szAlias);
-  free(m_szId);
 }
 
 //====CEventContactList========================================================
@@ -760,7 +732,7 @@ CEventContactList::CEventContactList(const ContactList& cl, bool bDeep,
 {
   if (bDeep)
     for(ContactList::const_iterator it = cl.begin(); it != cl.end(); ++it)
-      m_vszFields.push_back(new CContact((*it)->IdString(), (*it)->PPID(), (*it)->Alias()));
+      m_vszFields.push_back(new CContact((*it)->userId(), (*it)->Alias()));
   else
     m_vszFields = cl;
 }
@@ -775,7 +747,7 @@ void CEventContactList::CreateDescription() const
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
-    szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->Alias(), (*iter)->IdString());
+    szEnd += sprintf(szEnd, "%s (%s)\n", (*iter)->Alias(), USERID_TOSTR((*iter)->userId()));
   }
 }
 
@@ -803,11 +775,8 @@ void CEventContactList::AddToHistory(ICQUser* u, unsigned long /* ppid */, direc
   ContactList::const_iterator iter;
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
-    char *p = PPIDSTRING((*iter)->PPID());
-    nPPID = (*iter)->PPID();
-    nPos += sprintf(&szOut[nPos], ":%s (%s)\n:%s\n", (*iter)->IdString(),
-      p, (*iter)->Alias());
-    delete [] p;
+    nPos += sprintf(&szOut[nPos], ":%s\n:%s\n",
+        USERID_TOSTR((*iter)->userId()), (*iter)->Alias());
   }
   AddToHistory_Flush(u, nPPID, szOut);
   delete [] szOut;
@@ -832,7 +801,8 @@ CEventContactList *CEventContactList::Parse(char *sz, unsigned short nCmd, time_
   for (i = 0; i < nNumContacts * 2; i += 2)
   {
     gTranslator.ServerToClient(szFields[i + 1]);
-    vc.push_back(new CContact(szFields[i], LICQ_PPID, szFields[i + 1]));
+    UserId userId = LicqUser::makeUserId(szFields[i], LICQ_PPID);
+    vc.push_back(new CContact(userId, szFields[i + 1]));
   }
   delete[] szFields;
 
@@ -1062,14 +1032,13 @@ void CEventPlugin::AddToHistory(ICQUser* /* user */, unsigned long /* ppid */, d
 
 //=====CEventUnknownSysMsg=====================================================
 CEventUnknownSysMsg::CEventUnknownSysMsg(unsigned short _nSubCommand,
-    unsigned short _nCommand, const char* idString, unsigned long ppid,
+    unsigned short _nCommand, const UserId& userId,
                              const char *_szMsg,
                              time_t _tTime, unsigned long _nFlags)
-   : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags | E_UNKNOWN)
+  : CUserEvent(_nSubCommand, _nCommand, 0, _tTime, _nFlags | E_UNKNOWN),
+    myUserId(userId)
 {
   m_szMsg = _szMsg == NULL ? strdup("") : strdup(_szMsg);
-  m_szId = idString == NULL ? NULL : strdup(idString);
-  m_nPPID = ppid;
 }
 
 void CEventUnknownSysMsg::CreateDescription() const
@@ -1077,20 +1046,19 @@ void CEventUnknownSysMsg::CreateDescription() const
   delete [] m_szText;
   m_szText = new char [strlen(m_szMsg) + 128];
   sprintf(m_szText, "Unknown system message (0x%04X) from %s:\n%s\n",
-      m_nSubCommand, m_szId, m_szMsg);
+      m_nSubCommand, USERID_TOSTR(myUserId), m_szMsg);
 }
 
 
 CEventUnknownSysMsg::~CEventUnknownSysMsg()
 {
   free(m_szMsg);
-  free(m_szId);
 }
 
 CEventUnknownSysMsg* CEventUnknownSysMsg::Copy() const
 {
   CEventUnknownSysMsg *e = new CEventUnknownSysMsg(m_nSubCommand,
-      m_nCommand, m_szId, m_nPPID, m_szMsg, m_tTime, m_nFlags);
+      m_nCommand, myUserId, m_szMsg, m_tTime, m_nFlags);
   e->CopyBase(this);
   return e;
 }

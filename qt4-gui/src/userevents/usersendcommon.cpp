@@ -876,7 +876,7 @@ void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short l
 
       // ContactList is const but string list holds "char*" so we have to copy each string
       for (ContactList::const_iterator i = clist.begin(); i != clist.end(); i++)
-        users.push_back((*i)->IdString());
+        users.push_back(LicqUser::getUserAccountId((*i)->userId()));
 
       if (users.size() == 0)
         break;

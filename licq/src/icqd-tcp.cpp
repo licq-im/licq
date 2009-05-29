@@ -446,10 +446,11 @@ unsigned long CICQDaemon::icqSendContactList(const char *szId,
   StringList::const_iterator iter;
   for (iter = users.begin(); iter != users.end(); ++iter)
   {
-    const ICQUser* u = gUserManager.FetchUser(iter->c_str(), LICQ_PPID, LOCK_R);
+    UserId userId = LicqUser::makeUserId(*iter, LICQ_PPID);
+    const LicqUser* u = gUserManager.fetchUser(userId);
     p += sprintf(&m[p], "%s%c%s%c", iter->c_str(), char(0xFE),
        u == NULL ? "" : u->GetAlias(), char(0xFE));
-    vc.push_back(new CContact(iter->c_str(), LICQ_PPID, u == NULL ? "" : u->GetAlias()));
+    vc.push_back(new CContact(userId, u == NULL ? "" : u->GetAlias()));
     gUserManager.DropUser(u);
   }
 

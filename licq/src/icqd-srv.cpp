@@ -3421,7 +3421,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[2]);  // last name
           gTranslator.ServerToClient (szFields[5]);  // comment
 
-          CEventAuthRequest *e = new CEventAuthRequest(szId, LICQ_PPID,
+              CEventAuthRequest* e = new CEventAuthRequest(userId,
                                                        szFields[0], szFields[1],
                                                        szFields[2], szFields[3],
                                                        szFields[5],
@@ -3439,7 +3439,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           // Translating string with Translation Table
           gTranslator.ServerToClient(szMessage);
 
-          CEventAuthRefused *e = new CEventAuthRefused(szId, LICQ_PPID, szMessage,
+              CEventAuthRefused* e = new CEventAuthRefused(userId, szMessage,
                                                        ICQ_CMDxRCV_SYSxMSGxONLINE, 
                                                        nTimeSent, 0);
           eEvent = e;
@@ -3459,7 +3459,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
             gUserManager.DropUser(u);
           }
 
-          CEventAuthGranted *e = new CEventAuthGranted(szId, LICQ_PPID,
+              CEventAuthGranted* e = new CEventAuthGranted(userId,
             szMessage, ICQ_CMDxRCV_SYSxMSGxONLINE, nTimeSent, 0);
           eEvent = e;
           break;
@@ -3503,7 +3503,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[1]);  // first name
           gTranslator.ServerToClient (szFields[2]);  // last name
 
-          CEventAdded *e = new CEventAdded(szId, LICQ_PPID, szFields[0],
+              CEventAdded* e = new CEventAdded(userId, szFields[0],
             szFields[1], szFields[2], szFields[3], ICQ_CMDxRCV_SYSxMSGxONLINE,
             nTimeSent, 0);
           delete [] szFields;
@@ -3612,7 +3612,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           delete [] buf;
           //TODO
               CEventUnknownSysMsg* e = new CEventUnknownSysMsg(nTypeMsg, ICQ_CMDxRCV_SYSxMSGxONLINE,
-                  szId, LICQ_PPID, szMessage, nTimeSent, 0);
+                  userId, szMessage, nTimeSent, 0);
 
           ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           AddUserEvent(o, e);
@@ -4382,7 +4382,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_AUTHxREQxSRV:
     {
       char *szId = packet.UnpackUserString();
-      const ICQUser* u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
+      UserId userId = LicqUser::makeUserId(szId, LICQ_PPID);
+      const LicqUser* u = gUserManager.fetchUser(userId);
       bool bIgnore = (u && u->IgnoreList());
       gUserManager.DropUser(u);
 
@@ -4400,8 +4401,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       for (int i = 0; i < nMsgLen; i++)
         packet >> szMsg[i];
       szMsg[nMsgLen] = '\0';
-      
-      CEventAuthRequest *e = new CEventAuthRequest(szId, LICQ_PPID, "", "", "", "", nMsgLen ? szMsg : "",
+
+      CEventAuthRequest* e = new CEventAuthRequest(userId, "", "", "", "", nMsgLen ? szMsg : "",
                                                    ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
 
       ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
@@ -4422,6 +4423,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_AUTHxRESPONS: // The resonse to our authorization request
     {
       char *szId = packet.UnpackUserString();
+      UserId userId = LicqUser::makeUserId(szId, LICQ_PPID);
       unsigned char granted;
 
       packet >> granted;
@@ -4438,10 +4440,10 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       CUserEvent *eEvent;
       if (granted)
       {
-         eEvent = new CEventAuthGranted(szId, LICQ_PPID, szMsg,
+         eEvent = new CEventAuthGranted(userId, szMsg,
            ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
 
-         ICQUser *u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_W);
+         LicqUser* u = gUserManager.fetchUser(userId, LOCK_W);
          if (u)
          {
            u->SetAwaitingAuth(false);
@@ -4451,7 +4453,7 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       }
       else
       {
-        eEvent = new CEventAuthRefused(szId, LICQ_PPID, szMsg,
+        eEvent = new CEventAuthRefused(userId, szMsg,
             ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
       }
 
@@ -4473,10 +4475,11 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
     case ICQ_SNACxLIST_AUTHxADDED: // You were added to a contact list
     {
       char *szId = packet.UnpackUserString();
+      UserId userId = LicqUser::makeUserId(szId, LICQ_PPID);
       gLog.Info(tr("%sUser %s added you to their contact list.\n"), L_SRVxSTR,
                 szId);
 
-      CEventAdded *e = new CEventAdded(szId, LICQ_PPID, "", "", "", "",
+      CEventAdded* e = new CEventAdded(userId, "", "", "", "",
                                        ICQ_CMDxRCV_SYSxMSGxONLINE, time(0), 0);
       ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       if (AddUserEvent(o, e))
@@ -4662,7 +4665,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[2]);  // last name
           gTranslator.ServerToClient (szFields[5]);  // comment
 
-              CEventAuthRequest *e = new CEventAuthRequest(id, LICQ_PPID,
+              CEventAuthRequest* e = new CEventAuthRequest(userId,
                   szFields[0], szFields[1], szFields[2], szFields[3],
                   szFields[5], ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
               delete [] szFields;
@@ -4676,7 +4679,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           // Translating string with Translation Table
           gTranslator.ServerToClient(szMessage);
 
-              CEventAuthRefused* e = new CEventAuthRefused(id, LICQ_PPID,
+              CEventAuthRefused* e = new CEventAuthRefused(userId,
                   szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  eEvent = e;
 	  break;
@@ -4695,7 +4698,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
             gUserManager.DropUser(u);
           }
 
-              CEventAuthGranted* e = new CEventAuthGranted(id, LICQ_PPID,
+              CEventAuthGranted* e = new CEventAuthGranted(userId,
                   szMessage, ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
 	  eEvent = e;
 	  break;
@@ -4738,7 +4741,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           gTranslator.ServerToClient (szFields[1]);  // first name
           gTranslator.ServerToClient (szFields[2]);  // last name
 
-              CEventAdded* e = new CEventAdded(id, LICQ_PPID, szFields[0],
+              CEventAdded* e = new CEventAdded(userId, szFields[0],
                   szFields[1], szFields[2], szFields[3],
                   ICQ_CMDxRCV_SYSxMSGxOFFLINE, nTimeSent, 0);
               delete [] szFields;
@@ -4844,7 +4847,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                        nTypeMsg, packet.print(buf));
           delete [] buf;
               CEventUnknownSysMsg* e = new CEventUnknownSysMsg(nTypeMsg,
-                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, id, LICQ_PPID, szMessage, nTimeSent, 0);
+                  ICQ_CMDxRCV_SYSxMSGxOFFLINE, userId, szMessage, nTimeSent, 0);
 
               ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
           AddUserEvent(o, e);
