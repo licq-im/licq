@@ -50,9 +50,8 @@ public:
   // Retrieves the codec for an LicqUser object
   static QTextCodec* codecForICQUser(const LicqUser* u);
   // Retrieves the codec for an CChatUser object
-  static QTextCodec* codecForCChatUser(CChatUser* u);
+  static const QTextCodec* codecForCChatUser(CChatUser* u);
   // Retrieves the codec for a proto user
-  static QTextCodec* codecForProtoUser(const QString& id, unsigned long ppid);
   static const QTextCodec* codecForUserId(const UserId& userId);
 
   static QByteArray encodingForMib(int mib);

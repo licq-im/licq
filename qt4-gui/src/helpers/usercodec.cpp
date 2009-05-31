@@ -105,20 +105,6 @@ QTextCodec* UserCodec::codecForICQUser(const ICQUser* u)
   return defaultEncoding();
 }
 
-QTextCodec* UserCodec::codecForProtoUser(const QString& id, unsigned long ppid)
-{
-  QTextCodec* codec = defaultEncoding();
-
-  const ICQUser* u = gUserManager.FetchUser(id.toLatin1(), ppid, LOCK_R);
-  if (u != NULL)
-  {
-    codec = UserCodec::codecForICQUser(u);
-    gUserManager.DropUser(u);
-  }
-
-  return codec;
-}
-
 const QTextCodec* UserCodec::codecForUserId(const UserId& userId)
 {
   QTextCodec* codec = defaultEncoding();
@@ -133,7 +119,7 @@ const QTextCodec* UserCodec::codecForUserId(const UserId& userId)
   return codec;
 }
 
-QTextCodec* UserCodec::codecForCChatUser(CChatUser* u)
+const QTextCodec* UserCodec::codecForCChatUser(CChatUser* u)
 {
   if (u == NULL)
     return defaultEncoding();
@@ -144,7 +130,7 @@ QTextCodec* UserCodec::codecForCChatUser(CChatUser* u)
     return QTextCodec::codecForName(name);
 
   // return default encoding
-  return codecForProtoUser(u->Id(), u->PPID());
+  return codecForUserId(u->userId());
 }
 
 QByteArray UserCodec::encodingForMib(int mib)

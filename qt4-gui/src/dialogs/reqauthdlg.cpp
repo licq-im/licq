@@ -96,11 +96,12 @@ ReqAuthDlg::ReqAuthDlg(QString id, unsigned long /* ppid */, QWidget* parent)
 void ReqAuthDlg::ok()
 {
   QString id = edtUin->text();
+  UserId userId = LicqUser::makeUserId(id.toLatin1().data(), LICQ_PPID);
 
   if (!id.isEmpty())
   {
     //TODO add a drop down list for protocol
-    QTextCodec* codec = UserCodec::codecForProtoUser(id, LICQ_PPID);
+    const QTextCodec* codec = UserCodec::codecForUserId(userId);
     gLicqDaemon->icqRequestAuth(id.toLatin1().data(),
       codec->fromUnicode(mleRequest->toPlainText()));
     close();

@@ -50,9 +50,8 @@ CPChat_Color::CPChat_Color(const char *_sLocalName, unsigned short _nLocalPort,
 {
   m_szName = NULL;
   m_nPort = _nLocalPort;
-  m_szId = strdup(gUserManager.OwnerId(LICQ_PPID).c_str());
-  unsigned long m_nUin = atol(m_szId);
-  m_nPPID = LICQ_PPID;
+  myUserId = gUserManager.ownerUserId(LICQ_PPID);
+  unsigned long m_nUin = atol(LicqUser::getUserAccountId(myUserId).c_str());
   m_nColorForeRed = nColorForeRed;
   m_nColorForeGreen = nColorForeGreen;
   m_nColorForeBlue = nColorForeBlue;
@@ -89,8 +88,7 @@ CPChat_Color::CPChat_Color(CBuffer &b)
   unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
+  myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
   m_szName = strdup(b.UnpackString(buf, sizeof(buf)));
   m_nPort = b.UnpackUnsignedShort();
   m_nPort = (m_nPort >> 8) + (m_nPort << 8);
@@ -107,24 +105,22 @@ CPChat_Color::CPChat_Color(CBuffer &b)
 CPChat_Color::~CPChat_Color()
 {
   free(m_szName);
-  free(m_szId);
 }
 
 
 //-----ChatColorFont----------------------------------------------------------------
 CChatClient::CChatClient()
 {
-  m_nVersion = m_nPPID = m_nIp = m_nIntIp = m_nPort = m_nMode
+  m_nVersion = m_nIp = m_nIntIp = m_nPort = m_nMode
      = m_nSession = m_nHandshake = 0;
-  m_szId = NULL;
+  myUserId = USERID_NONE;
 }
 
 
 CChatClient::CChatClient(const ICQUser* u)
 {
   m_nVersion = u->Version();
-  m_szId = strdup(u->IdString());
-  m_nPPID = u->PPID();
+  myUserId = u->id();
   m_nIp = u->Ip();
   m_nIntIp = u->IntIp();
   m_nMode = u->Mode();
@@ -144,13 +140,11 @@ CChatClient::CChatClient(CBuffer &b)
 
 CChatClient::CChatClient(const CChatClient &p)
 {
-  m_szId = NULL;
   *this = p;
 }
 
 CChatClient::~CChatClient()
 {
-  free(m_szId);
 }
 
 CChatClient& CChatClient::operator=(const CChatClient &p)
@@ -159,15 +153,12 @@ CChatClient& CChatClient::operator=(const CChatClient &p)
   {
     m_nVersion = p.m_nVersion;
     m_nPort = p.m_nPort;
-    m_nPPID = p.m_nPPID;
+    myUserId = p.myUserId;
     m_nIp = p.m_nIp;
     m_nIntIp = p.m_nIntIp;
     m_nMode = p.m_nMode;
     m_nSession = p.m_nSession;
     m_nHandshake = p.m_nHandshake;
-    if (m_szId)
-      free(m_szId);
-    m_szId = p.m_szId ? strdup(p.m_szId) : NULL;
   }
   return *this;
 }
@@ -180,8 +171,7 @@ bool CChatClient::LoadFromBuffer(CBuffer &b)
   unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
+  myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
   m_nIp = b.UnpackUnsignedLong();
   m_nIntIp = b.UnpackUnsignedLong();
   m_nMode = b.UnpackChar();
@@ -204,8 +194,7 @@ bool CChatClient::LoadFromHandshake_v2(CBuffer &b)
   unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
+  myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
   m_nIp = b.UnpackUnsignedLong();
   m_nIntIp = b.UnpackUnsignedLong();
   m_nMode = b.UnpackChar();
@@ -230,8 +219,7 @@ bool CChatClient::LoadFromHandshake_v4(CBuffer &b)
   unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
+  myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
   m_nIp = b.UnpackUnsignedLong();  // Will probably be zero...
   m_nIntIp = b.UnpackUnsignedLong();
   m_nMode = b.UnpackChar();
@@ -253,8 +241,7 @@ bool CChatClient::LoadFromHandshake_v6(CBuffer &b)
   unsigned long m_nUin = hand.SourceUin();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
+  myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
   m_nIntIp = hand.LocalIp();
   m_nIp = hand.RealIp();
   m_nMode = hand.Mode();
@@ -276,8 +263,7 @@ bool CChatClient::LoadFromHandshake_v7(CBuffer &b)
   unsigned long m_nUin = hand.SourceUin();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
+  myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
   m_nIntIp = hand.LocalIp();
   m_nIp = hand.RealIp();
   m_nMode = hand.Mode();
@@ -302,9 +288,8 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
 {
   m_szName = NULL;
   m_nPort = nLocalPort;
-  m_szId = strdup(gUserManager.OwnerId(LICQ_PPID).c_str());
-  unsigned long m_nUin = atol(m_szId);
-  m_nPPID = LICQ_PPID;
+  myUserId = gUserManager.ownerUserId(LICQ_PPID);
+  unsigned long m_nUin = atol(LicqUser::getUserAccountId(myUserId).c_str());
   m_nColorForeRed = nColorForeRed;
   m_nColorForeGreen = nColorForeGreen;
   m_nColorForeBlue = nColorForeBlue;
@@ -355,7 +340,7 @@ CPChat_ColorFont::CPChat_ColorFont(const char *szLocalName, unsigned short nLoca
   {
     buffer->PackUnsignedLong((*iter)->m_nVersion);
     buffer->PackUnsignedLong((*iter)->m_nPort);
-    buffer->PackUnsignedLong(strtoul((*iter)->m_szId, NULL, 10));
+    buffer->PackUnsignedLong(strtoul(LicqUser::getUserAccountId((*iter)->myUserId).c_str(), NULL, 10));
     buffer->PackUnsignedLong((*iter)->m_nIp);
     buffer->PackUnsignedLong((*iter)->m_nIntIp);
     buffer->PackChar((*iter)->m_nMode);
@@ -374,8 +359,7 @@ CPChat_ColorFont::CPChat_ColorFont(CBuffer &b)
   unsigned long m_nUin = b.UnpackUnsignedLong();
   char szUin[24];
   sprintf(szUin, "%lu", m_nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
+  myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
   m_szName = strdup(b.UnpackString(buf, sizeof(buf)));
   m_nColorForeRed = (unsigned char)b.UnpackChar();
   m_nColorForeGreen = (unsigned char)b.UnpackChar();
@@ -411,7 +395,6 @@ CPChat_ColorFont::~CPChat_ColorFont()
 {
   free(m_szName);
   free(m_szFontFamily);
-  free(m_szId);
 }
 
 //-----ChatFont---------------------------------------------------------------------
@@ -615,8 +598,7 @@ CPChat_Beep::CPChat_Beep()
 //=====ChatUser==============================================================
 CChatUser::CChatUser()
 {
-  szId = 0;
-  nPPID = 0;
+  myUserId = USERID_NONE;
   nToKick = 0;
   state = CHAT_STATE_DISCONNECTED;
   colorFore[0] = colorFore[1] = colorFore[2] = 0x00;
@@ -637,7 +619,6 @@ CChatUser::CChatUser()
 
 CChatUser::~CChatUser()
 {
-  free(szId);
 }
 
 CChatEvent::CChatEvent(unsigned char nCommand, CChatUser *u, char *szData)
@@ -675,8 +656,7 @@ CChatManager::CChatManager(CICQDaemon *d, unsigned long nUin,
 
   char szUin[24];
   sprintf(szUin, "%lu", nUin);
-  m_szId = strdup(szUin);
-  m_nPPID = LICQ_PPID;
+  myUserId = LicqUser::makeUserId(szUin, LICQ_PPID);
 
 //  m_nSession = rand();
   licqDaemon = d;
@@ -760,7 +740,7 @@ void CChatManager::StartAsClient(unsigned short nPort)
 {
   if (!StartChatServer()) return;
 
-  const ICQUser* u = gUserManager.FetchUser(m_szId, LICQ_PPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL) return;
   m_pChatClient = new CChatClient(u);
   m_pChatClient->m_nPort = nPort;
@@ -781,13 +761,12 @@ bool CChatManager::ConnectToChat(CChatClient *c)
   CChatUser *u = new CChatUser;
   u->m_pClient = c;
   u->m_pClient->m_nSession = m_nSession;
-  u->szId = strdup(c->m_szId);
-  u->nPPID = c->m_nPPID;
+  u->myUserId = c->myUserId;
 
   bool bSendIntIp = false;
   bool bTryDirect = true;
   bool bResult = false;
-  const ICQUser* temp_user = gUserManager.FetchUser(u->szId, u->nPPID, LOCK_R);
+  const LicqUser* temp_user = gUserManager.fetchUser(u->myUserId);
   if (temp_user != NULL)
   {
     bSendIntIp = temp_user->SendIntIp();
@@ -810,7 +789,7 @@ bool CChatManager::ConnectToChat(CChatClient *c)
     gUserManager.DropOwner(o);
 
     // try reverse connect
-    int nId = licqDaemon->RequestReverseConnection(c->m_szId, c->m_nSession,
+    int nId = licqDaemon->RequestReverseConnection(LicqUser::getUserAccountId(c->myUserId).c_str(), c->m_nSession,
                                                  nIp, LocalPort(), c->m_nPort);
     if (nId != -1)
     {
@@ -848,7 +827,7 @@ bool CChatManager::SendChatHandshake(CChatUser *u)
   gLog.Info(tr("%sChat: Shaking hands [v%d].\n"), L_TCPxSTR, VersionToUse(c->m_nVersion));
 
   // Send handshake packet:
-  if (!CICQDaemon::Handshake_Send(&u->sock, c->m_szId, LocalPort(),
+  if (!CICQDaemon::Handshake_Send(&u->sock, LicqUser::getUserAccountId(c->myUserId).c_str(), LocalPort(),
      VersionToUse(c->m_nVersion), false))
     return false;
 
@@ -877,8 +856,7 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
 
   u->m_pClient = new CChatClient();
   u->m_pClient->m_nVersion = s->Version();
-  u->m_pClient->m_szId = strdup(s->OwnerId());
-  u->m_pClient->m_nPPID = s->OwnerPPID();
+  u->m_pClient->myUserId = LicqUser::makeUserId(s->OwnerId(), s->OwnerPPID());
   u->m_pClient->m_nIp = s->getRemoteIpInt();
   u->m_pClient->m_nIntIp = s->getRemoteIpInt();
   u->m_pClient->m_nMode = MODE_DIRECT;
@@ -888,8 +866,7 @@ void CChatManager::AcceptReverseConnection(TCPSocket *s)
   u->m_pClient->m_nPort = 0;
   u->m_pClient->m_nSession = 0;
 
-  u->szId = strdup(u->m_pClient->m_szId);
-  u->nPPID = u->m_pClient->m_nPPID;
+  u->myUserId = u->m_pClient->myUserId;
   u->state = CHAT_STATE_WAITxFORxCOLOR;
   chatUsers.push_back(u);
 
@@ -964,11 +941,9 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           break;
       }
       gLog.Info(tr("%sChat: Received handshake from %s [v%ld].\n"), L_TCPxSTR,
-         u->m_pClient->m_szId, u->sock.Version());
-      if (u->szId)  free(u->szId);
-      u->szId = strdup(u->m_pClient->m_szId);
-      u->nPPID = u->m_pClient->m_nPPID;
-      
+          USERID_TOSTR(u->m_pClient->myUserId), u->sock.Version());
+      u->myUserId = u->m_pClient->myUserId;
+
       bool bFound = false;
       {
         pthread_mutex_lock(&licqDaemon->mutex_reverseconnect);
@@ -976,7 +951,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
         for (iter = licqDaemon->m_lReverseConnect.begin();
                          iter != licqDaemon->m_lReverseConnect.end();  ++iter)
         {
-          if ((*iter)->myIdString == u->Id())
+          if ((*iter)->myIdString == LicqUser::getUserAccountId(u->userId()))
           {
             bFound = true;
             (*iter)->bSuccess = true;
@@ -1035,8 +1010,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
       {
         // Skip this guys client info and anybody we haven't connected to yet
-        if ((strcmp((*iter)->szId, u->szId) == 0 && (*iter)->nPPID == u->nPPID)
-            || (*iter)->m_pClient->m_szId == 0) continue;
+        if ((*iter)->myUserId == u->myUserId || !USERID_ISVALID((*iter)->m_pClient->myUserId))
+          continue;
         l.push_back((*iter)->m_pClient);
       }
 
@@ -1081,8 +1056,7 @@ bool CChatManager::ProcessPacket(CChatUser *u)
       gLog.Info(tr("%sChat: Received color/font packet.\n"), L_TCPxSTR);
 
       CPChat_ColorFont pin(u->sock.RecvBuffer());
-      u->szId = strdup(pin.Id());
-      u->nPPID = pin.PPID();
+      u->myUserId = pin.userId();
 //      m_nSession = pin.Session();
 
       // just received the color/font packet
@@ -1117,8 +1091,8 @@ bool CChatManager::ProcessPacket(CChatUser *u)
           ChatUserList::iterator iter2;
           for (iter2 = chatUsers.begin(); iter2 != chatUsers.end(); iter2++)
           {
-            if (strcmp((*iter2)->szId, iter->m_szId) == 0 &&
-                (*iter2)->nPPID == iter->m_nPPID) break;
+            if ((*iter2)->myUserId == iter->myUserId)
+              break;
           }
           if (iter2 != chatUsers.end()) continue;
           // Connect to this user
@@ -1454,6 +1428,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
           (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
         char id[16];
         snprintf(id, 16, "%lu", nUin);
+        UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
 
         // Deque all the characters
         for (unsigned short i = 0; i < 6; i++)
@@ -1463,7 +1438,7 @@ bool CChatManager::ProcessRaw_v2(CChatUser *u)
         ChatUserList::iterator iter;
         for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
         {
-          if (strcmp((*iter)->Id(), id) == 0)
+          if ((*iter)->userId() == userId)
             break;
         }
 
@@ -1743,13 +1718,14 @@ bool CChatManager::ProcessRaw_v6(CChatUser *u)
             (u->chatQueue[2] << 16) | (u->chatQueue[3] << 24);
           char id[16];
           snprintf(id, 16, "%lu", nUin);
+          UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
 
           // Find the user and say bye-bye to him
           ChatUserList::iterator iter;
           for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
           {
-            if (strcmp((*iter)->Id(), id) == 0)
-             break;
+            if ((*iter)->userId() == userId)
+              break;
           }
 
           if (iter == chatUsers.end())   return true;
@@ -1863,12 +1839,13 @@ void CChatManager::SendBuffer(CBuffer *b, unsigned char cmd,
   ChatUserList::iterator iter;
   ChatUserList::iterator u_iter;
   bool ok = false;
+  UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
 
   if (id != NULL)
   {
     for (u_iter = chatUsers.begin(); u_iter != chatUsers.end(); ++u_iter)
     {
-      if (strcmp((*u_iter)->Id(), id) == 0)
+      if ((*u_iter)->userId() == userId)
         break;
     }
 
@@ -2039,6 +2016,7 @@ void CChatManager::SendKick(const char* id)
 
 void CChatManager::SendKickNoVote(const char *id)
 {
+  UserId userId = LicqUser::makeUserId(id, LICQ_PPID);
   unsigned long _nUin = strtoul(id, NULL, 10);
 
   // Tell everyone that this user has been kicked
@@ -2058,7 +2036,7 @@ void CChatManager::SendKickNoVote(const char *id)
   ChatUserList::iterator iter;
   for (iter = chatUsers.begin(); iter != chatUsers.end(); ++iter)
   {
-    if(strcmp((*iter)->Id(), id) == 0)
+    if((*iter)->userId() == userId)
       break;
   }
 
@@ -2246,12 +2224,13 @@ void CChatManager::FinishKickVote(VoteInfoList::iterator iter, bool bPassed)
 {
   char voteId[16];
   snprintf(voteId, 16, "%lu", (*iter)->nUin);
+  UserId userId = LicqUser::makeUserId(voteId, LICQ_PPID);
 
   // Find the person we are kicking in the ChatUserList
   ChatUserList::iterator userIter;
   for (userIter = chatUsers.begin(); userIter != chatUsers.end(); ++userIter)
   {
-    if (strcmp((*userIter)->Id(), voteId) == 0)
+    if ((*userIter)->userId() == userId)
       break;
   }
 
@@ -2321,7 +2300,7 @@ char *CChatManager::ClientsStr()
   {
     if (sz[0] != '\0') nPos += sprintf(&sz[nPos], ", ");
     if ((*iter)->Name()[0] == '\0')
-      nPos += sprintf(&sz[nPos], "%s", (*iter)->Id());
+      nPos += sprintf(&sz[nPos], "%s", LicqUser::getUserAccountId((*iter)->userId()).c_str());
     else
       nPos += sprintf(&sz[nPos], "%s", (*iter)->Name());
   }
@@ -2464,7 +2443,7 @@ void *ChatWaitForSignal_tep(void *arg)
 
   pthread_setcancelstate(PTHREAD_CANCEL_DISABLE, NULL);
   gLog.Info("%sChat: Waiting for reverse connection.\n", L_TCPxSTR);
-  bool bConnected = d->WaitForReverseConnection(rc->nId, rc->u->Id());
+  bool bConnected = d->WaitForReverseConnection(rc->nId, LicqUser::getUserAccountId(rc->u->userId()).c_str());
   pthread_setcancelstate(PTHREAD_CANCEL_ENABLE, NULL);
 
   pthread_mutex_lock(cancel_mutex);
@@ -2501,7 +2480,7 @@ void *ChatWaitForSignal_tep(void *arg)
   pthread_mutex_unlock(cancel_mutex);
 
   bool bSendIntIp = false;
-  const ICQUser* temp_user = gUserManager.FetchUser(rc->u->Id(), rc->u->PPID(), LOCK_R);
+  const LicqUser* temp_user = gUserManager.fetchUser(rc->u->userId());
   if (temp_user != NULL)
   {
     bSendIntIp = temp_user->SendIntIp();
@@ -2657,7 +2636,5 @@ CChatManager::~CChatManager()
   }
   if (iter != cmList.end()) cmList.erase(iter);
   pthread_mutex_unlock(&cmList_mutex);
-
-  free(m_szId);
 }
 

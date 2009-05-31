@@ -7,6 +7,7 @@
 
 #include "licq_packets.h"
 #include "licq_socket.h"
+#include "licq_types.h"
 class CICQDaemon;
 
 // Define for marking functions as deprecated
@@ -212,8 +213,7 @@ public:
 
   // Accessors
   const char *Name() { return m_szName; }
-  char *Id() { return m_szId; }
-  unsigned long PPID() { return m_nPPID; }
+  const UserId& userId() const { return myUserId; }
   unsigned short Port() { return m_nPort; }
   int ColorForeRed() { return m_nColorForeRed; }
   int ColorForeGreen() { return m_nColorForeGreen; }
@@ -225,8 +225,7 @@ public:
   virtual ~CPChat_Color();
 
 protected:
-  char *m_szId;
-  unsigned long m_nPPID;
+  UserId myUserId;
   char *m_szName;
   unsigned short m_nPort;
   int m_nColorForeRed;
@@ -259,8 +258,7 @@ public:
 
   unsigned long m_nVersion;
   unsigned short m_nPort;
-  char *m_szId;
-  unsigned long m_nPPID;
+  UserId myUserId;
   unsigned long m_nIp;
   unsigned long m_nIntIp;
   char m_nMode;
@@ -300,8 +298,7 @@ public:
 
   // Accessors
   const char *Name() { return m_szName; }
-  char *Id() { return m_szId; }
-  unsigned long PPID() { return m_nPPID; }
+  const UserId& userId() const { return myUserId; }
   unsigned short Session() { return m_nSession; }
   int ColorForeRed() { return m_nColorForeRed; }
   int ColorForeGreen() { return m_nColorForeGreen; }
@@ -322,8 +319,7 @@ public:
   ChatClientList &ChatClients()  { return chatClients; }
 
 protected:
-  char *m_szId;
-  unsigned long m_nPPID;
+  UserId myUserId;
   unsigned short m_nSession;
   char *m_szName;
   int m_nColorForeRed;
@@ -481,8 +477,7 @@ extern "C"
 class CChatUser
 {
 public:
-  char *Id()                   { return szId; }
-  unsigned long PPID()         { return nPPID; }
+  const UserId& userId() const { return myUserId; }
   unsigned long ToKick()       { return nToKick; }
   const char *Name()           { return chatname; }
   int *ColorFg()               { return colorFore; }
@@ -503,8 +498,7 @@ public:
 protected:
   CChatUser();
 
-  char *szId;
-  unsigned long nPPID;
+  UserId myUserId;
   unsigned long nToKick;
   char chatname[32];
   int colorFore[3], colorBack[3];
@@ -625,8 +619,7 @@ protected:
 
   CICQDaemon *licqDaemon;
   int pipe_events[2], pipe_thread[2];
-  char *m_szId;
-  unsigned long m_nPPID;
+  UserId myUserId;
   unsigned short m_nSession;
   ChatUserList chatUsers;
   ChatUserList chatUsersClosed;

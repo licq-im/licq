@@ -131,13 +131,13 @@ QTextCodec *UserCodec::codecForProtoUser(const char *szId, unsigned long nPPID)
   return codec;
 }
 
-QTextCodec *UserCodec::codecForCChatUser(CChatUser *u)
+const QTextCodec* UserCodec::codecForCChatUser(CChatUser* u)
 {
   if (nameForCharset(u->FontEncoding()) != QString::null)
     return QTextCodec::codecForName(nameForCharset(u->FontEncoding()));
 
   // return default encoding
-  return codecForProtoUser(u->Id(), u->PPID());
+  return codecForUserId(u->userId());
 }
 
 QString UserCodec::encodingForMib(int mib)
