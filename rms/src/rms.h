@@ -97,13 +97,11 @@ protected:
   bool m_bNotify;
 
   unsigned long m_nUin;
-  char *m_szId;
-  unsigned long m_nPPID;
+  UserId myUserId;
   char m_szText[MAX_TEXT_LENGTH + 1];
   char m_szLine[MAX_LINE_LENGTH + 1];
   unsigned short m_nTextPos;
-  char *m_szEventId;
-  unsigned long m_nEventPPID;
+  UserId myEventUserId;
 
   int StateMachine();
   int ProcessCommand();
@@ -112,8 +110,8 @@ protected:
   unsigned long GetProtocol(const char *);
   void ParseUser(const char *);
   int ChangeStatus(unsigned long, unsigned long, const char *);
-  void AddEventTag(const char *, unsigned long, unsigned long);
-  
+  void AddEventTag(const UserId& userId, unsigned long);
+
   int Process_MESSAGE_text();
   int Process_URL_url();
   int Process_URL_text();

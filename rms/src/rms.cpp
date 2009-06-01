@@ -423,21 +423,10 @@ void CLicqRMS::ProcessSignal(LicqSignal* s)
  *-------------------------------------------------------------------------*/
 void CLicqRMS::AddEventTag(const UserId& userId, unsigned long _nEventTag)
 {
-  // Temporary code to get account id and ppid until the rest of the plugin is updated to use user id directly
-  string accountId;
-  unsigned long ppid = 0;
-  LicqUser* user = gUserManager.fetchUser(userId, LOCK_R);
-  if (user != NULL)
-  {
-    accountId = user->accountId();
-    ppid = user->ppid();
-    gUserManager.DropUser(user);
-  }
-
   ClientList ::iterator iter;
   for (iter = clients.begin(); iter != clients.end(); iter++)
   {
-    (*iter)->AddEventTag(accountId.c_str(), ppid, _nEventTag);
+    (*iter)->AddEventTag(userId, _nEventTag);
   }
 }
 
@@ -487,13 +476,11 @@ CRMSClient::CRMSClient(TCPSocket* sin)
   fflush(fs);
 
   m_szCheckId = 0;
-  m_szId = 0;
   m_nState = STATE_UIN;
   m_nLogTypes = 0;
   data_line_pos = 0;
   m_bNotify = false;
-  m_szEventId = 0;
-  m_nEventPPID = 0;
+  myEventUserId = USERID_NONE;
 }
 
 
@@ -511,17 +498,14 @@ CRMSClient::~CRMSClient()
 /*---------------------------------------------------------------------------
  * CRMSClient::AddEventTag
  *-------------------------------------------------------------------------*/
-void CRMSClient::AddEventTag(const char *_szId, unsigned long _nPPID, unsigned long _nEventTag)
+void CRMSClient::AddEventTag(const UserId& userId, unsigned long _nEventTag)
 {
-  if (m_szEventId && m_nEventPPID &&
-       !strcmp(m_szEventId, _szId) && m_nEventPPID == _nPPID)
+  if (USERID_ISVALID(myEventUserId) && myEventUserId == userId)
   {
     fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
-       _nEventTag, _szId);
+       _nEventTag, USERID_TOSTR(userId));
     tags.push_back(_nEventTag);
-	free(m_szEventId);
-	m_szEventId = 0;
-	m_nEventPPID = 0;
+    myEventUserId = USERID_NONE;
   }
 }
 
@@ -551,35 +535,25 @@ unsigned long CRMSClient::GetProtocol(const char *szData)
  *-------------------------------------------------------------------------*/
 void CRMSClient::ParseUser(const char *szData)
 {
-  if (m_szId)
-    free(m_szId);
-    
   string strData(szData);
   string::size_type nPos= strData.find_last_of(".");
   if (nPos == string::npos)
   {
-    m_szId = strdup(data_arg);
-    m_nPPID = 0;
     ProtoPluginsList pl;
     ProtoPluginsListIter it;
     licqDaemon->ProtoPluginList(pl);
     for (it = pl.begin(); it != pl.end(); it++)
     {
-      ICQUser *u = gUserManager.FetchUser(m_szId, (*it)->PPID(), LOCK_R);
-      if (u)
-      {
-        gUserManager.DropUser(u);
-        m_nPPID = (*it)->PPID();
+      myUserId = LicqUser::makeUserId(data_arg, (*it)->PPID());
+      if (gUserManager.userExists(myUserId))
         break;
-      }
     }
   }
   else
   {
     string strId(strData, 0, strData.find_last_of("."));
     string strProtocol(strData, strData.find_last_of(".")+1, strData.size());
-    m_szId = strdup(strId.c_str());
-    m_nPPID = GetProtocol(strProtocol.c_str());
+    myUserId = LicqUser::makeUserId(strId, GetProtocol(strProtocol.c_str()));
   }
 }
 
@@ -805,12 +779,14 @@ int CRMSClient::Process_INFO()
   NEXT_WORD(data_arg);
   unsigned long nPPID = GetProtocol(data_arg);
 
+  UserId userId = LicqUser::makeUserId(szId, nPPID);
+
   //XXX Handle the case when we have the owner
   if (szId == 0)
     m_nUin = strtoul(gUserManager.OwnerId(LICQ_PPID).c_str(), (char**)NULL, 10);
 
   // Print the user info
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
   if (u == NULL)
   {
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
@@ -1092,7 +1068,7 @@ int CRMSClient::Process_LIST()
  *-------------------------------------------------------------------------*/
 int CRMSClient::Process_MESSAGE()
 {
-  if (m_nEventPPID || m_szEventId)
+  if (USERID_ISVALID(myEventUserId))
   {
     //client is trying to send another message before we've received
     //the event tag for a previous one
@@ -1115,22 +1091,21 @@ int CRMSClient::Process_MESSAGE_text()
 {
   //XXX Give a tag...
   m_szText[strlen(m_szText) - 1] = '\0';
-  UserId userId = LicqUser::makeUserId(m_szId, m_nPPID);
-  unsigned long tag = licqDaemon->sendMessage(userId, m_szText,
+  unsigned long tag = licqDaemon->sendMessage(myUserId, m_szText,
       true, ICQ_TCPxMSG_NORMAL);
 
   m_nState = STATE_COMMAND;
 
+  unsigned long m_nPPID = LicqUser::getUserProtocolId(myUserId);
   if (m_nPPID == LICQ_PPID)
   {
     fprintf(fs, "%d [%ld] Sending message to %s.\n", CODE_COMMANDxSTART,
-       tag, m_szId);
+        tag, USERID_TOSTR(myUserId));
     tags.push_back(tag);
   }
   else
   {
-    m_nEventPPID = m_nPPID;
-    m_szEventId = strdup(m_szId);
+    myEventUserId = myUserId;
   }
   return fflush(fs);
 }
@@ -1183,14 +1158,13 @@ int CRMSClient::Process_URL_url()
 
 int CRMSClient::Process_URL_text()
 {
-  UserId userId = LicqUser::makeUserId(m_szId, m_nPPID);
-  unsigned long tag = licqDaemon->sendUrl(userId, m_szLine,
+  unsigned long tag = licqDaemon->sendUrl(myUserId, m_szLine,
       m_szText, true, ICQ_TCPxMSG_NORMAL);
 
   fprintf(fs, "%d [%ld] Sending URL to %s.\n", CODE_COMMANDxSTART,
-     tag, m_szId);
+      tag, USERID_TOSTR(myUserId));
 
-  if (m_nPPID == LICQ_PPID)
+  if (LicqUser::getUserProtocolId(myUserId) == LICQ_PPID)
     tags.push_back(tag);
     
   m_nState = STATE_COMMAND;
@@ -1283,14 +1257,14 @@ int CRMSClient::Process_AR()
 {
   ParseUser(data_arg);
 
-  if (m_szId && !gUserManager.IsOnList(m_szId, m_nPPID))
+  if (USERID_ISVALID(myUserId) && !gUserManager.userExists(myUserId))
   {
     fprintf(fs, "%d Invalid User.\n", CODE_INVALIDxUSER);
     return fflush(fs);
   }
 
   fprintf(fs, "%d Enter %sauto response, terminate with a . on a line by itself:\n",
-     CODE_ENTERxTEXT, m_szId == 0 ? "" : "custom " );
+     CODE_ENTERxTEXT, USERID_ISVALID(myUserId) ? "custom " : "");
 
   m_szText[0] = '\0';
   m_nTextPos = 0;
@@ -1301,15 +1275,15 @@ int CRMSClient::Process_AR()
 
 int CRMSClient::Process_AR_text()
 {
-  if (m_szId == 0)
+  if (!USERID_ISVALID(myUserId))
   {
-    ICQOwner *o = gUserManager.FetchOwner(m_nPPID, LOCK_W);
+    ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
     o->SetAutoResponse(m_szText);
     gUserManager.DropOwner(o);
   }
   else
   {
-    ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+    LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
     u->SetCustomAutoResponse(m_szText);
     gUserManager.DropUser(u);
   }
@@ -1396,23 +1370,20 @@ int CRMSClient::Process_VIEW()
     {
       if(pUser->NewMessages() > 0)
       {
-        if (m_szId)
-          free(m_szId);
-        m_szId = strdup(pUser->IdString());
-        m_nPPID = pUser->PPID();
+        myUserId = pUser->id();
         FOR_EACH_USER_BREAK
       }
     }
     FOR_EACH_USER_END
   
-    if (m_szId == 0)
+    if (!USERID_ISVALID(myUserId))
     {
       fprintf(fs, "%d No new messages.\n", CODE_VIEWxNONE);
       return fflush(fs);
     }
   }
 
-  ICQUser *u = gUserManager.FetchUser(m_szId, m_nPPID, LOCK_W);
+  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
   if (u == NULL)
   {
     fprintf(fs, "%d No such user.\n", CODE_INVALIDxUSER);
