@@ -159,13 +159,12 @@ void ForwardDlg::dropEvent(QDropEvent* de)
   if (nPPID == 0 || text.length() <= 4)
     return;
 
-  QString myId = text.mid(4);
+  myUserId = LicqUser::makeUserId(text.toLatin1().data(), nPPID);
 
-  const LicqUser* u = gUserManager.FetchUser(myId.toLatin1(), nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(myUserId);
   if (u == NULL)
     return;
 
-  myUserId = u->id();
-  edtUser->setText(QString::fromUtf8(u->GetAlias()) + " (" + myId + ")");
+  edtUser->setText(QString::fromUtf8(u->GetAlias()) + " (" + u->accountId().c_str() + ")");
   gUserManager.DropUser(u);
 }

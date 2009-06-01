@@ -206,7 +206,7 @@ void KeyRequestDlg::doneEvent(ICQEvent *e)
 /*
  * Disabled
  *   if ( m_bOpen ) {
- *     ICQUser *u = gUserManager.FetchUser(m_nUin, LOCK_W);
+ *     LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
  *     if ( u ) {
  *       u->SetAutoSecure( e->Result() == EVENT_SUCCESS );
  *       gUserManager.DropUser( u );

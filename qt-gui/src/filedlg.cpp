@@ -54,16 +54,10 @@ CFileDlg::CFileDlg(const UserId& userId, CICQDaemon *daemon,
   : QWidget(parent, "FileDialog", WDestructiveClose)
 {
   // If we are the server, then we are receiving a file
-  const LicqUser* user = gUserManager.fetchUser(userId);
-  if (user != NULL)
-  {
-    m_szId = strdup(user->accountId().c_str());
-    m_nPPID = user->ppid();
-  }
-  gUserManager.DropUser(user);
+  myUserId = userId;
   licqDaemon = daemon;
 
-  setCaption(tr("Licq - File Transfer (%1)").arg(m_szId));
+  setCaption(tr("Licq - File Transfer (%1)").arg(USERID_TOSTR(myUserId)));
 
   unsigned short CR = 0;
   QGridLayout* lay = new QGridLayout(this, 8, 3, 8, 8);
@@ -130,7 +124,7 @@ CFileDlg::CFileDlg(const UserId& userId, CICQDaemon *daemon,
   connect(btnCancel, SIGNAL(clicked()), this, SLOT(close()));
 
   //TODO fix this
-  ftman = new CFileTransferManager(licqDaemon, m_szId);
+  ftman = new CFileTransferManager(licqDaemon, LicqUser::getUserAccountId(myUserId).c_str());
   ftman->SetUpdatesEnabled(2);
   sn = new QSocketNotifier(ftman->Pipe(), QSocketNotifier::Read);
   connect(sn, SIGNAL(activated(int)), SLOT(slot_ft()));
@@ -268,7 +262,7 @@ void CFileDlg::slot_ft()
   char buf[32];
   read(ftman->Pipe(), buf, 32);
 
-  QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, m_nPPID);
+  const QTextCodec* codec = UserCodec::codecForUserId(myUserId);
 
   CFileTransferEvent *e = NULL;
   while ( (e = ftman->PopFileTransferEvent()) != NULL)
@@ -449,8 +443,8 @@ bool CFileDlg::GetLocalFileName()
   QString f;
   bool bValid = false;
 
-  QTextCodec *codec = UserCodec::codecForProtoUser(m_szId, m_nPPID);
-  
+  const QTextCodec* codec = UserCodec::codecForUserId(myUserId);
+
   // Get the local filename and open it, loop until valid or cancel
   while(!bValid)
   {

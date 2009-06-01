@@ -46,7 +46,6 @@ public:
   // Retrieves the codec for an CChatUser object
   static const QTextCodec* codecForCChatUser(CChatUser* u);
   // Retrieves the codec for a proto user
-  static QTextCodec * codecForProtoUser(const char *, unsigned long);
   static const QTextCodec* codecForUserId(const UserId& userId);
 
   static QString encodingForMib(int mib);

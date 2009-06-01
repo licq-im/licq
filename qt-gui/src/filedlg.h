@@ -25,6 +25,7 @@
 
 #include "ewidgets.h"
 #include "licq_filetransfer.h"
+#include <licq_types.h>
 
 class QPushButton;
 class QProgressBar;
@@ -45,8 +46,7 @@ public:
   bool ReceiveFiles();
 
   unsigned short LocalPort();
-  char *Id()  { return m_szId; }
-  unsigned long PPID()  { return m_nPPID; }
+  const UserId& userId() const { return myUserId; }
 
 protected:
    QLabel *lblTransferFileName, *lblLocalFileName, *lblFileSize,
@@ -65,8 +65,7 @@ protected:
 
    CFileTransferManager *ftman;
 
-   char *m_szId;
-   unsigned long m_nPPID;
+  UserId myUserId;
    CICQDaemon *licqDaemon;
    QSocketNotifier *sn;
 

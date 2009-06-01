@@ -781,7 +781,8 @@ void CLicqConsole::PrintInfo_About(const UserId& userId)
 void CLicqConsole::PrintFileStat(CFileTransferManager *ftman)
 {
   // Get the user's name
-  ICQUser* u = gUserManager.FetchUser(ftman->Id(), LICQ_PPID, LOCK_R);
+  UserId userId = LicqUser::makeUserId(ftman->Id(), LICQ_PPID);
+  const LicqUser* u = gUserManager.fetchUser(userId);
 
   // Make the title
   char szTitle[30];

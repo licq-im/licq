@@ -117,20 +117,6 @@ const QTextCodec* UserCodec::codecForUserId(const UserId& userId)
   return codec;
 }
 
-QTextCodec *UserCodec::codecForProtoUser(const char *szId, unsigned long nPPID)
-{
-  QTextCodec *codec = defaultEncoding();
-
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
-  if (u)
-  {
-    codec = UserCodec::codecForICQUser(u);
-    gUserManager.DropUser(u);
-  }
-
-  return codec;
-}
-
 const QTextCodec* UserCodec::codecForCChatUser(CChatUser* u)
 {
   if (nameForCharset(u->FontEncoding()) != QString::null)

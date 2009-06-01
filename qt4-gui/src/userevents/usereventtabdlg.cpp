@@ -121,7 +121,7 @@ void UserEventTabDlg::addTab(UserEventCommon* tab, int index)
   // Tab label will be set later by updateTabLabel()
   myTabs->insertTab(index, tab, QString());
 
-  const ICQUser* u = gUserManager.FetchUser(tab->id().toLatin1(), tab->ppid(), LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(tab->userId());
   if (u == NULL)
     return;
 

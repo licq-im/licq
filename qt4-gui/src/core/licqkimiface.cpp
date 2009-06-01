@@ -404,8 +404,10 @@ void LicqKIMIface::messageNewContact(const QString& contactId, const QString& pr
     unsigned long PPID = idForProtocol(protocol);
     if (PPID == 0) return;
 
+  UserId userId = LicqUser::makeUserId(contactId.toLatin1().data(), PPID);
+
     // check if user exists
-    const ICQUser* pUser = gUserManager.FetchUser(contactId.latin1(), PPID, LOCK_R);
+  const LicqUser* pUser = gUserManager.fetchUser(userId);
     if (pUser != 0)
     {
         gUserManager.DropUser(pUser);

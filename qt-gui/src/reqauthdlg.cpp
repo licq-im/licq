@@ -91,11 +91,12 @@ ReqAuthDlg::ReqAuthDlg(CICQDaemon *s, const char *szId, unsigned long /* nPPID *
 void ReqAuthDlg::ok()
 {
   char *szId = (char *)edtUin->text().ascii();
+  UserId userId = LicqUser::makeUserId(szId, LICQ_PPID);
 
   if (szId)
   {
     //TODO add a drop down list for protocol
-    QTextCodec *codec = UserCodec::codecForProtoUser(szId, LICQ_PPID);
+    const QTextCodec* codec = UserCodec::codecForUserId(userId);
     server->icqRequestAuth(szId, codec->fromUnicode(mleRequest->text()));
     close(true);
   }

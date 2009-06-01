@@ -506,12 +506,9 @@ void SearchUserDlg::viewInfo()
   {
     if (current->isSelected())
     {
-      ICQUser* u = gUserManager.FetchUser(current->id().latin1(), current->ppid(), LOCK_R);
       UserId userId = LicqUser::makeUserId(current->id().latin1(), current->ppid());
-      if (!u)
+      if (!gUserManager.userExists(userId))
         gUserManager.addUser(userId, false);
-      else
-        gUserManager.DropUser(u);
 
       mainwin->callInfoTab(mnuUserGeneral, userId, false, true);
       break;

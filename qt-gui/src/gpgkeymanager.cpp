@@ -34,8 +34,7 @@
 
 struct luser
 {
-  QString szId;
-  unsigned long nPPID;
+  UserId userId;
   const char *alias;
 };
 
@@ -150,8 +149,7 @@ void GPGKeyManager::slot_add()
     if (strcmp( pUser->GPGKey(), "") == 0)
     {
       luser *tmp = new luser;
-      tmp->szId = pUser->IdString();
-      tmp->nPPID = pUser->PPID();
+      tmp->userId = pUser->id();
       tmp->alias = pUser->GetAlias();
       list.append( tmp );
     }
@@ -168,8 +166,8 @@ void GPGKeyManager::slot_add()
   luser *tmp = list.at( res );
   if ( !tmp ) return;
 
-  ICQUser* u = gUserManager.FetchUser(tmp->szId.latin1(), tmp->nPPID, LOCK_R);
-  if ( u )
+  const LicqUser* u = gUserManager.fetchUser(tmp->userId);
+  if (u != NULL)
   {
     editUser( u );
     gUserManager.DropUser(u);
@@ -244,8 +242,9 @@ void KeyList::dropEvent(QDropEvent * de)
 
   char *szId = strdup( text.right(text.length()-4).latin1() );
   unsigned long nPPID = LICQ_PPID; //TODO dropevent needs the ppid
+  UserId userId = LicqUser::makeUserId(szId, nPPID);
 
-  ICQUser *u = gUserManager.FetchUser(szId, nPPID, LOCK_R);
+  const LicqUser* u = gUserManager.fetchUser(userId);
 
   if ( u )
   {
