@@ -80,9 +80,9 @@ UserCodec::encoding_t UserCodec::m_encodings[] = {
   { 0, 0, 0, 0, false } // end marker
 };
 
-QTextCodec* UserCodec::defaultEncoding()
+const QTextCodec* UserCodec::defaultEncoding()
 {
-  QTextCodec* codec = QTextCodec::codecForName(gUserManager.DefaultUserEncoding());
+  const QTextCodec* codec = QTextCodec::codecForName(gUserManager.DefaultUserEncoding());
 
   if (codec != NULL)
     return codec;
@@ -90,13 +90,13 @@ QTextCodec* UserCodec::defaultEncoding()
   return QTextCodec::codecForLocale();
 }
 
-QTextCodec* UserCodec::codecForICQUser(const ICQUser* u)
+const QTextCodec* UserCodec::codecForUser(const LicqUser* u)
 {
   const char* preferred_encoding = u->UserEncoding();
 
   if (preferred_encoding && *preferred_encoding)
   {
-    QTextCodec* codec = QTextCodec::codecForName(preferred_encoding);
+    const QTextCodec* codec = QTextCodec::codecForName(preferred_encoding);
 
     if (codec != NULL)
       return codec;
@@ -107,12 +107,12 @@ QTextCodec* UserCodec::codecForICQUser(const ICQUser* u)
 
 const QTextCodec* UserCodec::codecForUserId(const UserId& userId)
 {
-  QTextCodec* codec = defaultEncoding();
+  const QTextCodec* codec = defaultEncoding();
 
   const LicqUser* u = gUserManager.fetchUser(userId);
   if (u != NULL)
   {
-    codec = UserCodec::codecForICQUser(u);
+    codec = UserCodec::codecForUser(u);
     gUserManager.DropUser(u);
   }
 

@@ -402,7 +402,7 @@ bool ContactUserData::updateText(const ICQUser* licqUser)
     QString format = Config::ContactList::instance()->columnFormat(i);
     format.replace("%a", "@_USER_ALIAS_@");
 
-    QTextCodec* codec = UserCodec::codecForICQUser(licqUser);
+    const QTextCodec* codec = UserCodec::codecForUser(licqUser);
     char* temp = licqUser->usprintf(codec->fromUnicode(format));
     QString newStr = codec->toUnicode(temp);
     free(temp);
@@ -673,7 +673,7 @@ QString ContactUserData::tooltip() const
 
   Config::ContactList* config = Config::ContactList::instance();
 
-  QTextCodec* codec = UserCodec::codecForICQUser(u);
+  const QTextCodec* codec = UserCodec::codecForUser(u);
   QString s = "<nobr>";
   if (config->popupPicture() && u->GetPicturePresent())
   {

@@ -173,7 +173,7 @@ void AwayMsgDlg::selectAutoResponse(unsigned short status, bool autoClose,
       .arg(LicqStrings::getStatus(myStatus, false))
       .arg(QString::fromUtf8(o->GetAlias())));
 
-  QTextCodec* codec = UserCodec::defaultEncoding();
+  const QTextCodec* codec = UserCodec::defaultEncoding();
   if (*o->AutoResponse())
     myAwayMsg->setText(codec->toUnicode(o->AutoResponse()));
   else
@@ -254,7 +254,7 @@ void AwayMsgDlg::ok()
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
   if (o != NULL)
   {
-    QTextCodec* codec = UserCodec::defaultEncoding();
+    const QTextCodec* codec = UserCodec::defaultEncoding();
     o->SetAutoResponse(codec->fromUnicode(s));
     gUserManager.DropOwner(o);
   }

@@ -120,7 +120,7 @@ void UserPages::Info::load(const ICQUser* user)
   myUserId = user->id();
   myId = user->IdString();
   myPpid = user->PPID();
-  codec = UserCodec::codecForICQUser(user);
+  codec = UserCodec::codecForUser(user);
 
   loadPageGeneral(user);
   loadPageMore(user);

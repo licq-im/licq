@@ -121,7 +121,7 @@ protected:
   QAction* myForeColor;
   QAction* myBackColor;
   InfoField* myTimezone;
-  QTextCodec* myCodec;
+  const QTextCodec* myCodec;
   QTimer* myTimeTimer;
   QTimer* myTypingTimer;
 

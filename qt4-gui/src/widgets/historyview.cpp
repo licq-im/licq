@@ -385,7 +385,7 @@ void HistoryView::addMsg(const CUserEvent* event, const UserId& uid)
   bool bUseHTML = false;
 
   QString contactName;
-  QTextCodec* codec = NULL;
+  const QTextCodec* codec = NULL;
 
   UserId userId = USERID_ISVALID(uid) ? uid : myUserId;
 
@@ -397,7 +397,7 @@ void HistoryView::addMsg(const CUserEvent* event, const UserId& uid)
     myId = u->accountId().c_str();
     myPpid = u->ppid();
 
-    codec = UserCodec::codecForICQUser(u);
+    codec = UserCodec::codecForUser(u);
     if (event->Direction() == D_RECEIVER)
     {
       contactName = QString::fromUtf8(u->GetAlias());

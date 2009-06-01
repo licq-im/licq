@@ -104,7 +104,7 @@ UserDlg::UserDlg(const UserId& userId, QWidget* parent)
   const LicqUser* user = gUserManager.fetchUser(myUserId, LOCK_R);
   if (user != NULL)
   {
-    QTextCodec* codec = UserCodec::codecForICQUser(user);
+    const QTextCodec* codec = UserCodec::codecForUser(user);
     QString name = codec->toUnicode(user->getFullName().c_str());
     if (!name.isEmpty())
       name = " (" + name + ")";

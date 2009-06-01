@@ -167,7 +167,7 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
 
   if (u != NULL)
   {
-    myContactCodec = UserCodec::codecForICQUser(u);
+    myContactCodec = UserCodec::codecForUser(u);
 
     name = myContactCodec->toUnicode(u->getFullName().c_str());
     if (!name.isEmpty())

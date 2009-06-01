@@ -150,7 +150,7 @@ private:
   bool myIsOwner;
   QString myContactName;
   QString myOwnerName;
-  QTextCodec* myContactCodec;
+  const QTextCodec* myContactCodec;
   bool myUseHtml;
   bool myPatternChanged;
 

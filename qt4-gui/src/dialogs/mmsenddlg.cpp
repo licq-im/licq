@@ -166,7 +166,7 @@ void MMSendDlg::SendNext()
     {
       const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL) return;
-      QTextCodec* codec = UserCodec::codecForICQUser(u);
+      const QTextCodec* codec = UserCodec::codecForUser(u);
       grpSending->setTitle(tr("Sending mass message to %1...").arg(QString::fromUtf8(u->GetAlias())));
       gUserManager.DropUser(u);
 
@@ -238,7 +238,7 @@ void MMSendDlg::SendNext()
       const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
       if (u == NULL) return;
       grpSending->setTitle(tr("Sending mass URL to %1...").arg(QString::fromUtf8(u->GetAlias())));
-      QTextCodec* codec = UserCodec::codecForICQUser(u);
+      const QTextCodec* codec = UserCodec::codecForUser(u);
       gUserManager.DropUser(u);
 
       icqEventTag = gLicqDaemon->sendUrl(userId, s2.toLatin1().data(),

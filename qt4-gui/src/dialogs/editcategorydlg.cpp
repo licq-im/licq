@@ -134,7 +134,7 @@ void EditCategoryDlg::ok()
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
   if (o != NULL)
   {
-    QTextCodec* codec = UserCodec::codecForICQUser(o);
+    const QTextCodec* codec = UserCodec::codecForUser(o);
     gUserManager.DropOwner(o);
 
     UserCategoryMap cat;

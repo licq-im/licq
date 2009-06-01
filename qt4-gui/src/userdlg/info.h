@@ -408,7 +408,7 @@ private:
   QString myId;
   unsigned long myPpid;
   bool m_bOwner;
-  QTextCodec* codec;
+  const QTextCodec* codec;
 
   // General info
   QVBoxLayout* myPageGeneralLayout;

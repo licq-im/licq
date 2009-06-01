@@ -156,7 +156,7 @@ UserEventCommon::UserEventCommon(const UserId& userId, QWidget* parent, const ch
     updateWidgetInfo(u);
 
     // restore prefered encoding
-    myCodec = UserCodec::codecForICQUser(u);
+    myCodec = UserCodec::codecForUser(u);
 
     setTyping(u->GetTyping());
     gUserManager.DropUser(u);
@@ -289,7 +289,7 @@ void UserEventCommon::flashTaskbar()
 
 void UserEventCommon::updateWidgetInfo(const ICQUser* u)
 {
-  QTextCodec* codec = UserCodec::codecForICQUser(u);
+  const QTextCodec* codec = UserCodec::codecForUser(u);
 
   if (u->GetTimezone() == TIMEZONE_UNKNOWN)
     myTimezone->setText(tr("Unknown"));

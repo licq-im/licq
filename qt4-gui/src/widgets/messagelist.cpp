@@ -38,7 +38,7 @@ using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MessageList */
 /* TRANSLATOR LicqQtGui::MessageListItem */
 
-MessageListItem::MessageListItem(const CUserEvent* theMsg, QTextCodec* codec, QTreeWidget* parent)
+MessageListItem::MessageListItem(const CUserEvent* theMsg, const QTextCodec* codec, QTreeWidget* parent)
   : QTreeWidgetItem(parent)
 {
   // Keep a copy of the event

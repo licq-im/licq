@@ -79,7 +79,7 @@ ShowAwayMsgDlg::ShowAwayMsgDlg(const UserId& userId, bool fetch, QWidget* parent
   lay->addWidget(buttons);
 
   const LicqUser* u = gUserManager.fetchUser(myUserId);
-  QTextCodec* codec = UserCodec::codecForICQUser(u);
+  const QTextCodec* codec = UserCodec::codecForUser(u);
   chkShowAgain->setChecked(u->ShowAwayMsg());
 
   setWindowTitle(QString(tr("%1 Response for %2"))
@@ -165,7 +165,7 @@ void ShowAwayMsgDlg::doneEvent(const LicqEvent* e)
        e->SNAC() == MAKESNAC(ICQ_SNACxFAM_LOCATION, ICQ_SNACxLOC_INFOxREQ)))
   {
     const LicqUser* u = gUserManager.fetchUser(myUserId);
-    QTextCodec* codec = UserCodec::codecForICQUser(u);
+    const QTextCodec* codec = UserCodec::codecForUser(u);
     const char* szAutoResp =
       (e->ExtendedAck() && !e->ExtendedAck()->Accepted()) ?
        e->ExtendedAck()->Response() :

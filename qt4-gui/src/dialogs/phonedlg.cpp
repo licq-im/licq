@@ -58,7 +58,7 @@ EditPhoneDlg::EditPhoneDlg(QWidget* parent, const struct PhoneBookEntry* pbe,
     close();
     return;
   }
-  QTextCodec* codec = UserCodec::codecForICQUser(o);
+  const QTextCodec* codec = UserCodec::codecForUser(o);
   gUserManager.DropOwner(o);
 
   m_nEntry = nEntry;
@@ -241,7 +241,7 @@ void EditPhoneDlg::ok()
     close();
     return;
   }
-  QTextCodec* codec = UserCodec::codecForICQUser(o);
+  const QTextCodec* codec = UserCodec::codecForUser(o);
   gUserManager.DropOwner(o);
 
   struct PhoneBookEntry pbe;

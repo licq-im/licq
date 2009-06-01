@@ -233,7 +233,7 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
           lHistoryIter--;
 
         bool bUseHTML = !isdigit(u->accountId()[1]);
-        QTextCodec* myCodec = UserCodec::codecForICQUser(u);
+        const QTextCodec* myCodec = UserCodec::codecForUser(u);
         QString contactName = QString::fromUtf8(u->GetAlias());
         const ICQOwner* o = gUserManager.FetchOwner(u->ppid(), LOCK_R);
         QString ownerName;
