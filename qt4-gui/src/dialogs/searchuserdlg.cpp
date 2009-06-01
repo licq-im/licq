@@ -40,6 +40,8 @@
 #include <licq_languagecodes.h>
 #include <licq_user.h>
 
+#include "contactlist/contactlist.h"
+
 #include "core/gui-defines.h"
 #include "core/licqgui.h"
 #include "core/messagebox.h"
@@ -325,7 +327,7 @@ void SearchUserDlg::searchResult(const LicqEvent* e)
   btnSearch->setEnabled(true);
   btnDone->setEnabled(true);
 
-  if (e->SearchAck() != NULL && e->SearchAck()->Id() != NULL)
+  if (e->SearchAck() != NULL && USERID_ISVALID(e->SearchAck()->userId()))
     searchFound(e->SearchAck());
 
   if (e->Result() == EVENT_SUCCESS)
@@ -342,11 +344,11 @@ void SearchUserDlg::searchFound(const CSearchAck* s)
   if (codec == NULL)
     codec = QTextCodec::codecForLocale();
 
-  item->setData(0, Qt::UserRole, s->Id());
+  item->setData(0, Qt::UserRole, QVariant::fromValue(s->userId()));
   item->setText(0, codec->toUnicode(s->Alias()));
 
   item->setTextAlignment(1, Qt::AlignRight);
-  item->setText(1, s->Id());
+  item->setText(1, LicqUser::getUserAccountId(s->userId()).c_str());
 
   item->setText(2, codec->toUnicode(s->FirstName()) + " " + codec->toUnicode(s->LastName()));
 
@@ -430,9 +432,8 @@ void SearchUserDlg::viewInfo()
 {
   foreach (QTreeWidgetItem* current, foundView->selectedItems())
   {
-    QByteArray id = current->data(0, Qt::UserRole).toString().toLatin1();
+    UserId userId = current->data(0, Qt::UserRole).value<UserId>();
 
-    UserId userId = LicqUser::makeUserId(id.data(), ppid);
     gUserManager.addUser(userId, false);
     LicqGui::instance()->showInfoDialog(mnuUserGeneral, userId, false, true);
   }

@@ -5387,8 +5387,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           if (bNewUser)
             icqRequestMetaInfo(szUin);
 
-          e->m_pSearchAck = new CSearchAck(szUin, LICQ_PPID);
-        }
+              e->m_pSearchAck = new CSearchAck(userId);
+            }
         else
           gLog.Info(tr("%sNo random chat user found.\n"), L_SRVxSTR);
         ProcessDoneEvent(e);
@@ -5446,7 +5446,9 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
         nFoundUin = msg.UnpackUnsignedLong();
         char foundAccount[14];
         snprintf(foundAccount, sizeof(foundAccount), "%lu", nFoundUin);
-        CSearchAck* s = new CSearchAck(foundAccount, LICQ_PPID);
+            UserId foundUserId = LicqUser::makeUserId(foundAccount, LICQ_PPID);
+
+            CSearchAck* s = new CSearchAck(foundUserId);
 
         s->m_szAlias = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));
         s->m_szFirstName = strdup(msg.UnpackString(szTemp, sizeof(szTemp)));

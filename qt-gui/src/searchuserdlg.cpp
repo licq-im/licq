@@ -80,13 +80,12 @@ SearchItem::SearchItem(const CSearchAck* s, const QString& encoding, QListView* 
   QString qsAge;
   QString qsAuth;
 
-  myId = s->Id();
-  myPpid = s->PPID();
+  myUserId = s->userId();
   QTextCodec *codec = QTextCodec::codecForName(encoding);
   if (codec == 0)
     codec = QTextCodec::codecForLocale();
   setText(0, codec->toUnicode(s->Alias()));
-  setText(1, s->Id());
+  setText(1, LicqUser::getUserAccountId(s->userId()).c_str());
   setText(2, codec->toUnicode(s->FirstName()) + QString(" ") + codec->toUnicode(s->LastName()));
   setText(3, s->Email());
 
@@ -437,7 +436,7 @@ void SearchUserDlg::searchResult(ICQEvent *e)
   btnSearch->setEnabled(true);
   btnDone->setEnabled(true);
 
-  if (e->SearchAck() != NULL && e->SearchAck()->Id() != NULL)
+  if (e->SearchAck() != NULL && USERID_ISVALID(e->SearchAck()->userId()))
     searchFound(e->SearchAck());
 
   if (e->Result() == EVENT_SUCCESS)
@@ -506,7 +505,7 @@ void SearchUserDlg::viewInfo()
   {
     if (current->isSelected())
     {
-      UserId userId = LicqUser::makeUserId(current->id().latin1(), current->ppid());
+      UserId userId = current->userId();
       if (!gUserManager.userExists(userId))
         gUserManager.addUser(userId, false);
 
@@ -525,7 +524,7 @@ void SearchUserDlg::addUser()
   {
     if (current->isSelected())
     {
-      UserId userId = LicqUser::makeUserId(current->id().latin1(), current->ppid());
+      UserId userId = current->userId();
       const LicqUser* user = gUserManager.fetchUser(userId);
 
       if (user)

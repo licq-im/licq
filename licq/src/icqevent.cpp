@@ -18,11 +18,10 @@
 #include "licq_user.h"
 
 //-----CSearchAck------------------------------------------------------------
-CSearchAck::CSearchAck(const char *_szId, unsigned long _nPPID)
+CSearchAck::CSearchAck(const UserId& userId)
+  : myUserId(userId)
 {
   m_szAlias = m_szFirstName = m_szLastName = m_szEmail = NULL;
-  m_szId = _szId ? strdup(_szId) : NULL;
-  m_nPPID = _nPPID;
 }
 
 CSearchAck::~CSearchAck()
@@ -31,7 +30,6 @@ CSearchAck::~CSearchAck()
   free(m_szFirstName);
   free(m_szLastName);
   free(m_szEmail);
-  free(m_szId);
 }
 
 

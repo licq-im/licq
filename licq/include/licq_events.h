@@ -70,10 +70,14 @@ public:
   const char* LastName() const { return m_szLastName; }
   //! Returns the e-mail address of the search result.
   const char* Email() const { return m_szEmail; }
-  //! Retunrs the Id string
-  const char* Id() const { return m_szId; }
-  //! Returns the protocol plugin id
-  unsigned long PPID() const { return m_nPPID; }
+
+  /**
+   * Get the user id
+   *
+   * @return User id of search match
+   */
+  const UserId& userId() const { return myUserId; }
+
   //! If non-zero, the number of search results that were found that could not
   //! be displayed.  The server has a 40 user limit on search results.  This
   //! is valid when Result() is EVENT_SUCCESS.
@@ -90,10 +94,9 @@ public:
   ~CSearchAck();
 
 protected:
-  CSearchAck(const char *_szId, unsigned long _nPPID);
+  CSearchAck(const UserId& userId);
 
-  unsigned long m_nPPID;
-  char *m_szId;
+  UserId myUserId;
   char *m_szAlias;
   char *m_szFirstName;
   char *m_szLastName;

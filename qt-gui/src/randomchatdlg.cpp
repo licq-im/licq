@@ -138,7 +138,7 @@ void CRandomChatDlg::slot_doneUserFcn(ICQEvent *e)
     break;
   default:
     //TODO when CSearchAck changes
-      UserId userId = LicqUser::makeUserId(e->SearchAck()->Id(), e->SearchAck()->PPID());
+      UserId userId = e->SearchAck()->userId();
       gUserManager.addUser(userId, false);
       mainwin->callFunction(mnuUserSendChat, userId);
     close();

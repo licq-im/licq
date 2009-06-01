@@ -26,6 +26,8 @@
 #include <qwidget.h>
 #include <qlistview.h>
 
+#include <licq_types.h>
+
 #include "mainwin.h"
 
 class QTabWidget;
@@ -57,12 +59,10 @@ class SearchItem : public QListViewItem
 public:
   SearchItem(const CSearchAck* s, const QString& encoding, QListView* parent);
 
-  QString id() const { return myId; }
-  unsigned long ppid() const { return myPpid; }
+  const UserId& userId() const { return myUserId; }
 
 protected:
-   QString myId;
-   unsigned long myPpid;
+  UserId myUserId;
 };
 
 

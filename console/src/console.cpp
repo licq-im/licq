@@ -962,7 +962,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
     return;
   }
 
-  if (e->SearchAck() != NULL && e->SearchAck()->Id() != NULL)
+  if (e->SearchAck() != NULL && USERID_ISVALID(e->SearchAck()->userId()))
   {
     win->wprintf("%C%s%A,%Z %s %s %A(%Z%s%A) -%Z %s %A(%Z%s%A)\n",
                  COLOR_WHITE,
@@ -973,7 +973,7 @@ void CLicqConsole::ProcessDoneSearch(ICQEvent *e)
                  A_BOLD, A_BOLD,
                  e->SearchAck()->Email(),
                  A_BOLD, A_BOLD,
-                 e->SearchAck()->Id(),
+        LicqUser::getUserAccountId(e->SearchAck()->userId()).c_str(),
                  A_BOLD, A_BOLD,
                  e->SearchAck()->Status() == SA_ONLINE ? "online" :
                  e->SearchAck()->Status() == SA_OFFLINE ? "offline" :
