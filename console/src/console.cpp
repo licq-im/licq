@@ -810,7 +810,7 @@ void CLicqConsole::ProcessDoneEvent(ICQEvent *e)
     {
     case ICQ_CMDxTCP_START:
       {
-        ICQUser *u = NULL;
+        LicqUser* u = NULL;
         const CUserEvent* ue = e->UserEvent();
         if (e->SubResult() == ICQ_TCPxACK_RETURN)
         {

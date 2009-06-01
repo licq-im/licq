@@ -783,7 +783,8 @@ void CLicqConsole::MenuView(char *szArg)
   }
 
     // Do nothing if there are no events pending
-    if (ICQUser::getNumUserEvents() == 0) return;
+  if (LicqUser::getNumUserEvents() == 0)
+    return;
 
     // Do icq system messages first
     ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);

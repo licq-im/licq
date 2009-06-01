@@ -1674,7 +1674,7 @@ UserSendCommon::UserSendCommon(CICQDaemon *s, CSignalManager *theSigMan,
 
         mleHistory->GotoEnd();
 
-        ICQUser::ClearHistory(lHistoryList);
+        LicqUser::ClearHistory(lHistoryList);
       }
     }
     
@@ -2088,7 +2088,7 @@ void UserSendCommon::slot_SetBackgroundICQColor()
 //-----UserSendCommon::slot_ClearNewEvents-----------------------------------
 void UserSendCommon::slot_ClearNewEvents()
 {
-  ICQUser *u = 0;
+  LicqUser* u = NULL;
 
   // Iterate all users in the conversation
   for (list<UserId>::iterator it = m_lUsers.begin(); it != m_lUsers.end(); ++it)
@@ -2415,7 +2415,7 @@ void UserSendCommon::sendDone_common(ICQEvent *e)
     return;
   }
 
-  ICQUser *u = NULL;
+  LicqUser* u = NULL;
   //CUserEvent *ue = e->UserEvent();
   QString msg;
   if (e->SubResult() == ICQ_TCPxACK_RETURN)

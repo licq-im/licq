@@ -218,7 +218,7 @@ UserInfoDlg::~UserInfoDlg()
 
   emit finished(myUserId);
 
-  ICQUser::ClearHistory(m_lHistoryList);
+  LicqUser::ClearHistory(m_lHistoryList);
 }
 
 
@@ -1835,7 +1835,7 @@ void UserInfoDlg::SetupHistory()
 
 void UserInfoDlg::HistoryReload()
 {
-  ICQUser::ClearHistory(m_lHistoryList);
+  LicqUser::ClearHistory(m_lHistoryList);
   SetupHistory();
 }
 

@@ -140,7 +140,7 @@ void CLicqConsole::PrintStatus()
     gUserManager.DropOwner(o);
   }
 
-  unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
+  unsigned short nNumUserEvents = LicqUser::getNumUserEvents() - nNumOwnerEvents;
   if (nNumOwnerEvents > 0)
     sprintf (szMsgStr, "System Message");
   else if (nNumUserEvents > 0)

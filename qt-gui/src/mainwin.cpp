@@ -1836,7 +1836,7 @@ void CMainWindow::updateEvents()
   }
   FOR_EACH_OWNER_END
 
-  unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
+  unsigned short nNumUserEvents = LicqUser::getNumUserEvents() - nNumOwnerEvents;
 
   lblMsg->setBold(false);
   QString s, l;
@@ -1860,7 +1860,7 @@ void CMainWindow::updateEvents()
   else
   {
     // Update the msg label if necessary
-    if (m_bShowGroupIfNoMsg && ICQUser::getNumUserEvents() == 0)
+    if (m_bShowGroupIfNoMsg && LicqUser::getNumUserEvents() == 0)
     {
       //lblMsg->setText(cmbUserGroups->currentText());
       s = cmbUserGroups->currentText();
@@ -1914,7 +1914,7 @@ void CMainWindow::setCurrentGroup(int index)
   // Update the combo box
   cmbUserGroups->setCurrentItem(index);
   // Update the msg label if necessary
-  if (m_bShowGroupIfNoMsg && ICQUser::getNumUserEvents() == 0)
+  if (m_bShowGroupIfNoMsg && LicqUser::getNumUserEvents() == 0)
     lblMsg->setText(cmbUserGroups->currentText());
 
   // Update the group menu
@@ -4764,7 +4764,8 @@ void CMainWindow::slot_randomchatsearch()
 void CMainWindow::slot_popupall()
 {
   // Do nothing if there are no events pending
-  if (ICQUser::getNumUserEvents() == 0) return;
+  if (LicqUser::getNumUserEvents() == 0)
+    return;
 
   // Do system messages first
   ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
