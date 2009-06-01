@@ -285,7 +285,7 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
 
         myHistoryView->GotoEnd();
 
-        ICQUser::ClearHistory(lHistoryList);
+        LicqUser::ClearHistory(lHistoryList);
       }
     }
 
@@ -524,7 +524,7 @@ void UserSendCommon::updateShortcuts()
   pushToolTip(myBackColor, tr("Change background color"));
 }
 
-void UserSendCommon::updatePicture(const ICQUser* u)
+void UserSendCommon::updatePicture(const LicqUser* u)
 {
   bool fetched = false;
 
@@ -1178,7 +1178,7 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
     return;
   }
 
-  ICQUser* u = NULL;
+  LicqUser* u = NULL;
   QString msg;
 
   if (e->SubResult() == ICQ_TCPxACK_RETURN)
@@ -1259,7 +1259,7 @@ void UserSendCommon::changeEventType(QAction* action)
 
 void UserSendCommon::clearNewEvents()
 {
-  ICQUser* u = NULL;
+  LicqUser* u = NULL;
 
   // Iterate all users in the conversation
   for (list<UserId>::iterator it = myUsers.begin(); it != myUsers.end(); ++it)

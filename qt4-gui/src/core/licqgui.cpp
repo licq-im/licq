@@ -1216,7 +1216,7 @@ void LicqGui::showNextEvent(const UserId& uid)
 void LicqGui::showAllEvents()
 {
   // Do nothing if there are no events pending
-  if (ICQUser::getNumUserEvents() == 0)
+  if (LicqUser::getNumUserEvents() == 0)
     return;
 
   // Do system messages first

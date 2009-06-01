@@ -220,7 +220,7 @@ void KeyView::resizeEvent(QResizeEvent* event)
   }
 }
 
-void KeyView::testViewItem(QTreeWidgetItem* item, const ICQUser* u)
+void KeyView::testViewItem(QTreeWidgetItem* item, const LicqUser* u)
 {
   int val = 0;
   for (int i = 0; i < 2; ++i)

@@ -287,7 +287,7 @@ void UserEventCommon::flashTaskbar()
     QApplication::alert(this);
 }
 
-void UserEventCommon::updateWidgetInfo(const ICQUser* u)
+void UserEventCommon::updateWidgetInfo(const LicqUser* u)
 {
   const QTextCodec* codec = UserCodec::codecForUser(u);
 

@@ -59,7 +59,7 @@ QTimer* ContactUserData::myAnimateTimer = NULL;
 int ContactUserData::myAnimatorCount = 0;
 
 
-ContactUserData::ContactUserData(const ICQUser* licqUser, QObject* parent)
+ContactUserData::ContactUserData(const LicqUser* licqUser, QObject* parent)
   : myStatus(ICQ_STATUS_OFFLINE),
     myEvents(0),
     myFlash(false),
@@ -152,7 +152,7 @@ void ContactUserData::update(unsigned long subSignal, int argument)
   }
 }
 
-void ContactUserData::updateAll(const ICQUser* u)
+void ContactUserData::updateAll(const LicqUser* u)
 {
   myStatus = u->Status();
   myStatusFull = u->StatusFull();
@@ -391,7 +391,7 @@ void ContactUserData::updateSorting()
   mySortKey += myText[0];
 }
 
-bool ContactUserData::updateText(const ICQUser* licqUser)
+bool ContactUserData::updateText(const LicqUser* licqUser)
 {
   bool hasChanged = false;
 

@@ -228,7 +228,7 @@ QWidget* UserPages::Settings::createPageGroups(QWidget* parent)
   return w;
 }
 
-void UserPages::Settings::load(const ICQUser* user)
+void UserPages::Settings::load(const LicqUser* user)
 {
   if (myIsOwner)
     return;
@@ -323,7 +323,7 @@ void UserPages::Settings::load(const ICQUser* user)
   myGroupsTable->resizeColumnsToContents();
 }
 
-void UserPages::Settings::apply(ICQUser* user)
+void UserPages::Settings::apply(LicqUser* user)
 {
   if (myIsOwner)
     return;

@@ -264,7 +264,7 @@ HistoryDlg::HistoryDlg(const UserId& userId, QWidget* parent)
 
 HistoryDlg::~HistoryDlg()
 {
-  ICQUser::ClearHistory(myHistoryList);
+  LicqUser::ClearHistory(myHistoryList);
 }
 
 void HistoryDlg::updatedUser(const UserId& userId, unsigned long subSignal, int argument)

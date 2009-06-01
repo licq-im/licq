@@ -263,7 +263,7 @@ void KeyList::resizeColumnsToContents()
 }
 
 // KEYLISTITEM
-KeyListItem::KeyListItem(QTreeWidget* parent, const ICQUser* u)
+KeyListItem::KeyListItem(QTreeWidget* parent, const LicqUser* u)
   : QTreeWidgetItem(parent),
     myUserId(u->id()),
     keySelect(NULL)
@@ -271,7 +271,7 @@ KeyListItem::KeyListItem(QTreeWidget* parent, const ICQUser* u)
   updateText(u);
 }
 
-void KeyListItem::updateText(const ICQUser* u)
+void KeyListItem::updateText(const LicqUser* u)
 {
   setText(0, QString::fromUtf8(u->GetAlias()));
   setText(1, u->UseGPG() ? tr("Yes") : tr("No"));

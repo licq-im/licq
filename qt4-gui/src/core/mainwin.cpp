@@ -697,7 +697,7 @@ void MainWindow::updateEvents()
   }
   FOR_EACH_OWNER_END
 
-  unsigned short nNumUserEvents = ICQUser::getNumUserEvents() - nNumOwnerEvents;
+  unsigned short nNumUserEvents = LicqUser::getNumUserEvents() - nNumOwnerEvents;
 
   if (myMessageField != NULL)
     myMessageField->setBold(false);
@@ -724,7 +724,7 @@ void MainWindow::updateEvents()
   else
   {
     // Update the msg label if necessary
-    if (Config::General::instance()->showGroupIfNoMsg() && ICQUser::getNumUserEvents() == 0)
+    if (Config::General::instance()->showGroupIfNoMsg() && LicqUser::getNumUserEvents() == 0)
     {
       s = myUserGroupsBox->currentText();
       l = myUserGroupsBox->currentText();
@@ -783,7 +783,7 @@ void MainWindow::updateCurrentGroup()
   // Update the msg label if necessary
   if (myMessageField != NULL &&
       Config::General::instance()->showGroupIfNoMsg() &&
-      ICQUser::getNumUserEvents() == 0)
+      LicqUser::getNumUserEvents() == 0)
     myMessageField->setText(myUserGroupsBox->currentText());
 }
 

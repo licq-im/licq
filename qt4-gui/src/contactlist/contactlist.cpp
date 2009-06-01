@@ -334,7 +334,7 @@ int ContactListModel::groupRow(ContactGroup* group) const
     return -1;
 }
 
-void ContactListModel::addUser(const ICQUser* licqUser)
+void ContactListModel::addUser(const LicqUser* licqUser)
 {
   ContactUserData* newUser = new ContactUserData(licqUser, this);
   connect(newUser, SIGNAL(dataChanged(const ContactUserData*)),
@@ -346,7 +346,7 @@ void ContactListModel::addUser(const ICQUser* licqUser)
   updateUserGroups(newUser, licqUser);
 }
 
-void ContactListModel::updateUserGroups(ContactUserData* user, const ICQUser* licqUser)
+void ContactListModel::updateUserGroups(ContactUserData* user, const LicqUser* licqUser)
 {
   // Check which user groups the user should be member of
   for (int i = 0; i < myUserGroups.size(); ++i)

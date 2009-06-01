@@ -57,7 +57,7 @@ DockIcon::DockIcon()
   }
   FOR_EACH_OWNER_END
 
-  unsigned short newMsg = ICQUser::getNumUserEvents() - sysMsg;
+  unsigned short newMsg = LicqUser::getNumUserEvents() - sysMsg;
 
   updateIconMessages(newMsg, sysMsg);
   updateIconStatus();

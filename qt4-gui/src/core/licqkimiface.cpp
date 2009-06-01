@@ -179,7 +179,7 @@ QString LicqKIMIface::displayName(const QString& uid)
 /*        kdDebug() << pUser->GetAlias()
                     << ": Licq ID=(" << pUser->PPID() << ", " << id << ")"
                     << "KABC ID=" << kabcID << endl;*/
-        QTextCodec* codec = UserCodec::codecForICQUser(pUser);
+    const QTextCodec* codec = UserCodec::codecForUser(pUser);
         QByteArray rawName = pUser->GetAlias();
         name = codec->toUnicode(rawName);
         FOR_EACH_PROTO_USER_BREAK

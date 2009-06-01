@@ -184,7 +184,7 @@ void UserEventTabDlg::updateConvoLabel(UserEventCommon* tab)
   myTabs->setTabText(myTabs->indexOf(tab), newLabel);
 }
 
-void UserEventTabDlg::updateTabLabel(const ICQUser* u)
+void UserEventTabDlg::updateTabLabel(const LicqUser* u)
 {
   if (u == NULL)
     return;
@@ -198,7 +198,7 @@ void UserEventTabDlg::updateTabLabel(const ICQUser* u)
   }
 }
 
-void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const ICQUser* u)
+void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const LicqUser* u)
 {
   if (tab == NULL)
     return;
@@ -268,7 +268,7 @@ void UserEventTabDlg::updateTabLabel(UserEventCommon* tab, const ICQUser* u)
     setWindowIcon(icon);
 }
 
-void UserEventTabDlg::setTyping(const ICQUser* u, int convoId)
+void UserEventTabDlg::setTyping(const LicqUser* u, int convoId)
 {
   for (int index = 0; index < myTabs->count(); index++)
   {

@@ -55,7 +55,7 @@ QString LicqStrings::getStatus(unsigned short status, bool invisible)
   return str;
 }
 
-QString LicqStrings::getStatus(const ICQUser* user, bool useInvisible)
+QString LicqStrings::getStatus(const LicqUser* user, bool useInvisible)
 {
   if (user == NULL)
     return QString();
@@ -92,7 +92,7 @@ QString LicqStrings::getShortStatus(unsigned short status, bool invisible)
   return str;
 }
 
-QString LicqStrings::getShortStatus(const ICQUser* user, bool useInvisible)
+QString LicqStrings::getShortStatus(const LicqUser* user, bool useInvisible)
 {
   if (user == NULL)
     return QString();
