@@ -68,12 +68,16 @@ char *GetXmlTag(const char *szXmlSource, const char *szTagName)
 {
   int n = 0, i;
   char *szBegin, *szEnd, *szDest, *szCur, *szOpenTag, *szCloseTag;
-  
+
   szOpenTag = (char *)malloc(strlen(szTagName) + 3);
   if (szOpenTag == NULL) return NULL;
   szCloseTag = (char *)malloc(strlen(szTagName) + 4);
-  if (szCloseTag == NULL) return NULL;
-  
+  if (szCloseTag == NULL)
+  {
+    free(szOpenTag);
+    return NULL;
+  }
+
   strcpy(szOpenTag, "<");
   strcat(szOpenTag, szTagName);
   strcat(szOpenTag, ">");

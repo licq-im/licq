@@ -48,15 +48,10 @@ char *strhebpatch(char *dest, const char *src)
 	short int mode = 0, imode;
 	const char *hmark = NULL, *lmark, *nmark, *nlmark;
 	char ch;
-	char* temp_str = NULL;
 
 	if (src == NULL)
 		return NULL;
-	
-	if ((temp_str = (char*)malloc(strlen(src) + 1)) == NULL)
-		return NULL;
 
-	
 	for (;;)
 	{
 		if (mode == 0)

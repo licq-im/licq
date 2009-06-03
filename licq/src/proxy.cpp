@@ -317,8 +317,8 @@ bool HTTPProxyServer::HTTPOpenProxyConnection(const char *_szRemoteName, unsigne
     char *cmd_b64 = new char[base64_length(strlen(cmd_b)) + 1];
     base64_encode(cmd_b, cmd_b64, strlen(cmd_b));
     snprintf(cmd, sizeof(cmd) - 1, "Proxy-Authorization: Basic %s\r\n", cmd_b64);
-    delete cmd_b;
-    delete cmd_b64;
+    delete [] cmd_b;
+    delete [] cmd_b64;
     if (send(m_nDescriptor, cmd, strlen(cmd), 0) < 0)
     {
       m_nErrorType = PROXY_ERROR_errno;

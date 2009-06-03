@@ -2383,6 +2383,7 @@ void *ChatManager_tep(void *arg)
             }
             else
             {
+              delete u;
               gLog.Error(tr("%sChat: Unable to receive new connection.\n"), L_ERRORxSTR);
             }
           }
