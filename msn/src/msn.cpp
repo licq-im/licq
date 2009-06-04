@@ -503,7 +503,7 @@ void CMSN::Run()
           {
             CMSNBuffer packet(sock->RecvBuffer());
             sock->ClearRecvBuffer();
-            char *szUser = strdup(sock->OwnerId());
+            char *szUser = strdup(LicqUser::getUserAccountId(sock->userId()).c_str());
             gSocketMan.DropSocket(sock);
 
             HandlePacket(nCurrent, packet, szUser);

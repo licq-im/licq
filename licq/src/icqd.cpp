@@ -1146,7 +1146,7 @@ bool CICQDaemon::AddUserEvent(ICQUser *u, CUserEvent *e)
   return true;
 }
 
-void CICQDaemon::RejectEvent(const char* id, CUserEvent* e)
+void CICQDaemon::RejectEvent(const UserId& userId, CUserEvent* e)
 {
   if (m_szRejectFile == NULL) return;
 
@@ -1158,7 +1158,7 @@ void CICQDaemon::RejectEvent(const char* id, CUserEvent* e)
   else
   {
     fprintf(f, "Event from new user (%s) rejected: \n%s\n--------------------\n\n",
-        id, e->Text());
+        LicqUser::getUserAccountId(userId).c_str(), e->Text());
     chmod(m_szRejectFile, 00600);
     fclose(f);
   }
@@ -2457,7 +2457,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
           gLog.Info(tr("%s%s from new user (%s), ignoring.\n"), L_SRVxSTR,
                     szType, u->IdString());
           if (szType)  free(szType);
-          RejectEvent(u->IdString(), pEvent);
+          RejectEvent(u->id(), pEvent);
           u->Unlock();
           return;
         }

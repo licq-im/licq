@@ -1935,7 +1935,7 @@ int CICQDaemon::ConnectToLoginServer()
 
 int CICQDaemon::ConnectToServer(const char* server, unsigned short port)
 {
-  SrvSocket* s = new SrvSocket(gUserManager.OwnerId(LICQ_PPID).c_str(), LICQ_PPID);
+  SrvSocket* s = new SrvSocket(gUserManager.ownerUserId(LICQ_PPID));
 
   if (m_bProxyEnabled)
   {
@@ -3071,7 +3071,7 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 
       if (ignore)
       {
-        RejectEvent(szId, e);
+            RejectEvent(userId, e);
         break;
       }
 
@@ -3636,8 +3636,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
           if (szType) free(szType);
 
           //TODO
-          RejectEvent(szId, eEvent);
-          break;
+              RejectEvent(userId, eEvent);
+              break;
 	    }
 	    else
 	      gLog.Info(tr("%s%s through server from %s (%s).\n"), L_SBLANKxSTR,
@@ -4869,7 +4869,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                     gLog.Info(tr("%sOffline %s from new user (%s), ignoring.\n"),
                         L_SBLANKxSTR, szType, id);
                     if (szType) free(szType);
-                      RejectEvent(id, eEvent);
+                    RejectEvent(userId, eEvent);
                     break;
                 }
                 else

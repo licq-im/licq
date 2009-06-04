@@ -460,7 +460,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
     return false;
   }
   //pStart->m_bConnecting = true;
-  TCPSocket *sock = new TCPSocket(pStart->m_szUser, MSN_PPID);
+  TCPSocket* sock = new TCPSocket(LicqUser::makeUserId(pStart->m_szUser, MSN_PPID));
   pthread_mutex_unlock(&mutex_StartList);
 
   gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
@@ -494,6 +494,7 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
 bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionId,
     const string& strCookie, const string& strUser)
 {
+  UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
   size_t sep = strServer.rfind(':');
   string host;
   int port;
@@ -509,7 +510,7 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
     return false;
   }
 
-  TCPSocket *sock = new TCPSocket(strUser.c_str(), MSN_PPID);
+  TCPSocket* sock = new TCPSocket(userId);
   gLog.Info("%sConnecting to SB at %s:%d.\n", L_MSNxSTR,
       host.c_str(), port);
   if (!sock->connectTo(host, port))
@@ -524,7 +525,6 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
     strCookie.c_str(), m_szUserName);
   bool bNewUser = false;
   int nSocket = sock->Descriptor();
-  UserId userId = LicqUser::makeUserId(strUser, MSN_PPID);
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W, true, &bNewUser);
   if (!bNewUser)
   {

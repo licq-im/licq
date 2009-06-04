@@ -215,12 +215,6 @@ char *INetSocket::RemoteIpStr(char *buf) const
   return buf;
 }
 
-void INetSocket::SetOwner(const char *_szOwnerId, unsigned long _nOwnerPPID)
-{
-  m_szOwnerId = strdup(_szOwnerId);
-  m_nOwnerPPID = _nOwnerPPID;
-}
-
 //-----INetSocket::Error------------------------------------------------------
 int INetSocket::Error()
 {
@@ -280,14 +274,10 @@ char *INetSocket::ErrorStr(char *buf, int buflen)
 }
 
 
-INetSocket::INetSocket(const char *_szOwnerId, unsigned long _nOwnerPPID)
+INetSocket::INetSocket(const UserId& userId)
 {
   m_nDescriptor = -1;
-  if (_szOwnerId)
-    m_szOwnerId = strdup(_szOwnerId);
-  else
-    m_szOwnerId = 0;
-  m_nOwnerPPID = _nOwnerPPID;
+  myUserId = userId;
   m_nVersion = 0;
   m_nErrorType = SOCK_ERROR_none;
   memset(&myRemoteAddr, 0, sizeof(myRemoteAddrStorage));
@@ -310,9 +300,6 @@ INetSocket::~INetSocket()
     pthread_mutex_unlock(&mutex);
     nResult = pthread_mutex_destroy(&mutex);
   } while (nResult != 0);
-
-  if (m_szOwnerId)
-    free(m_szOwnerId);
 }
 
 //-----INetSocket::dumpPacket---------------------------------------------------
@@ -629,7 +616,8 @@ bool INetSocket::RecvRaw()
 
 //=====SrvSocket===============================================================
 
-SrvSocket::SrvSocket(const char *s, unsigned long n) : INetSocket(s, n)
+SrvSocket::SrvSocket(const UserId& userId)
+  : INetSocket(userId)
 {
   strcpy(m_szID, "SRV");
   m_nSockType = SOCK_STREAM;
@@ -770,14 +758,16 @@ bool SrvSocket::RecvPacket()
 
 
 //=====TCPSocket===============================================================
-TCPSocket::TCPSocket(const char *s, unsigned long n) : INetSocket(s, n)
+TCPSocket::TCPSocket(const UserId& userId)
+  : INetSocket(userId)
 {
   strcpy(m_szID, "TCP");
   m_nSockType = SOCK_STREAM;
   m_p_SSL = NULL;
 }
 
-TCPSocket::TCPSocket() : INetSocket(0, 0)
+TCPSocket::TCPSocket()
+  : INetSocket(USERID_NONE)
 {
   strcpy(m_szID, "TCP");
   m_nSockType = SOCK_STREAM;
@@ -833,14 +823,7 @@ void TCPSocket::TransferConnectionFrom(TCPSocket &from)
   m_nDescriptor = from.m_nDescriptor;
   myLocalAddr = from.myLocalAddr;
   myRemoteAddr = from.myRemoteAddr;
-
-  if (m_szOwnerId)
-    free (m_szOwnerId);
-  if (from.m_szOwnerId)
-    m_szOwnerId = strdup(from.m_szOwnerId);
-  else
-    m_szOwnerId = 0;
-  m_nOwnerPPID = from.m_nOwnerPPID;
+  myUserId = from.myUserId;
 
   m_nVersion = from.m_nVersion;
   if (from.m_p_SSL)
@@ -1210,7 +1193,7 @@ bool TCPSocket::SSL_Pending()
 bool TCPSocket::SecureConnect()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
-  if (m_nOwnerPPID == LICQ_PPID)
+  if (LicqUser::getUserProtocolId(myUserId) == LICQ_PPID)
     m_p_SSL = SSL_new(gSSL_CTX);
   else
     m_p_SSL = SSL_new(gSSL_CTX_NONICQ);
@@ -1246,7 +1229,7 @@ bool TCPSocket::SecureListen()
 {
   pthread_mutex_init(&mutex_ssl, NULL);
 
-  if (m_nOwnerPPID == LICQ_PPID)
+  if (LicqUser::getUserProtocolId(myUserId) == LICQ_PPID)
     m_p_SSL = SSL_new(gSSL_CTX);
   else
     m_p_SSL = SSL_new(gSSL_CTX_NONICQ);
@@ -1308,8 +1291,8 @@ void TCPSocket::SecureStop()
 
 #endif /*-----End of OpenSSL code------------------------------------------*/
 
-UDPSocket::UDPSocket(const char* ownerId, unsigned long ownerPpid)
-    : INetSocket(ownerId, ownerPpid)
+UDPSocket::UDPSocket(const UserId& userId)
+  : INetSocket(userId)
 {
   strcpy(m_szID, "UDP");
   m_nSockType = SOCK_DGRAM;
@@ -1497,8 +1480,7 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
     return;
   }
 
-  char *szOwner = s->OwnerId() ? strdup(s->OwnerId()) : 0;
-  unsigned long nPPID = s->OwnerPPID();
+  UserId userId = s->userId();
   unsigned char nChannel = s->Channel();
   
   // First remove the socket from the hash table so it won't be fetched anymore
@@ -1516,12 +1498,9 @@ void CSocketManager::CloseSocket (int nSd, bool bClearUser, bool bDelete)
   if (bClearUser)
   {
     ICQUser *u = NULL;
-    if (szOwner)
-    {
-      u = gUserManager.FetchUser(szOwner, nPPID, LOCK_W);
-      free(szOwner);
-    }
-    
+    if (USERID_ISVALID(userId))
+      u = gUserManager.fetchUser(userId, LOCK_W);
+
     if (u != NULL)
     {
       u->ClearSocketDesc(nChannel);

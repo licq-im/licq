@@ -736,8 +736,8 @@ void *MonitorSockets_tep(void *p)
       }
 
           INetSocket *s = gSocketManager.FetchSocket(nCurrentSocket);
-          if (s != NULL && s->OwnerId() != NULL &&
-              s->OwnerId() == gUserManager.OwnerId(LICQ_PPID) &&
+      if (s != NULL && USERID_ISVALID(s->userId()) &&
+          s->userId() == gUserManager.ownerUserId(LICQ_PPID) &&
               d->m_nTCPSrvSocketDesc == -1)
           {
             /* This is the server socket and it is about to be destoryed
@@ -870,16 +870,16 @@ void *MonitorSockets_tep(void *p)
               int err = tcp->Error();
               if (err == 0)
                 gLog.Info(tr("%sConnection to %s was closed.\n"), L_TCPxSTR,
-                    tcp->OwnerId());
+                USERID_TOSTR(tcp->userId()));
               else
               {
                 char buf[128];
                 gLog.Info(tr("%sConnection to %s lost:\n%s%s.\n"), L_TCPxSTR,
-                    tcp->OwnerId(), L_BLANKxSTR, tcp->ErrorStr(buf, 128));
+                USERID_TOSTR(tcp->userId()), L_BLANKxSTR, tcp->ErrorStr(buf, 128));
               }
-              if (tcp->OwnerId() != NULL)
-              {
-                LicqUser* u = gUserManager.FetchUser(tcp->OwnerId(), tcp->OwnerPPID(), LOCK_W);
+          if (USERID_ISVALID(tcp->userId()))
+          {
+            LicqUser* u = gUserManager.fetchUser(tcp->userId(), LOCK_W);
                 if (u && u->Secure())
                 {
                   u->ClearSocketDesc(ICQ_CHNxNONE);
@@ -902,7 +902,7 @@ void *MonitorSockets_tep(void *p)
             // Process the packet if the buffer is full
             if (tcp->RecvBufferFull())
             {
-              if (tcp->OwnerPPID() != LICQ_PPID)
+          if (LicqUser::getUserProtocolId(tcp->userId()) != LICQ_PPID)
                 r = d->ProcessTcpHandshake(tcp);
               else
                 r = d->ProcessTcpPacket(tcp);
@@ -913,7 +913,7 @@ void *MonitorSockets_tep(void *p)
             if (!r)
             {
               gLog.Info(tr("%sClosing connection to %s.\n"), L_TCPxSTR,
-                  tcp->OwnerId());
+              USERID_TOSTR(tcp->userId()));
               gSocketManager.DropSocket(tcp);
               gSocketManager.CloseSocket(nCurrentSocket);
               d->FailEvents(nCurrentSocket, 0);

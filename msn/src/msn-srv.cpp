@@ -532,10 +532,11 @@ void CMSN::MSNLogon(const char *_szServer, int _nPort, unsigned long _nStatus)
     return;
   }
   m_szUserName = strdup(o->IdString());
+  UserId myOwnerId = o->id();
   m_szPassword = strdup(o->Password());
   gUserManager.DropOwner(o);
 
-  SrvSocket *sock = new SrvSocket(m_szUserName, MSN_PPID);
+  SrvSocket* sock = new SrvSocket(myOwnerId);
   gLog.Info("%sServer found at %s:%d.\n", L_MSNxSTR,
       _szServer, _nPort);
 

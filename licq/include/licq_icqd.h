@@ -995,7 +995,7 @@ protected:
 
   void ChangeUserStatus(LicqUser* u, unsigned long s);
   bool AddUserEvent(LicqUser* user, CUserEvent* e);
-  void RejectEvent(const char* id, CUserEvent* e);
+  void RejectEvent(const UserId& userId, CUserEvent* e);
   LicqUser* FindUserForInfoUpdate(const UserId& userId, LicqEvent* e, const char*);
   std::string FindUserByCellular(const char* cellular);
 
