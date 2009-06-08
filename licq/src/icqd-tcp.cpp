@@ -1672,7 +1672,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   }
 
   bool isOwner = gUserManager.isOwner(userId);
-  if (isOwner || userId == pSock->userId())
+  if (isOwner || userId != pSock->userId())
   {
     char *buf;
     if (isOwner)
