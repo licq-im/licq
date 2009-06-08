@@ -100,15 +100,22 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
 
 
   QHBoxLayout* layMain = new QHBoxLayout();
-  QGroupBox* boxSkin = new QGroupBox(tr("Skin selection"));
+  QGroupBox* boxSkin = new QGroupBox(tr("Skin Selection"));
   QVBoxLayout* laySkin = new QVBoxLayout(boxSkin);
-  QGroupBox* boxPreview = new QGroupBox(tr("Preview"));
-  QHBoxLayout* layPreview = new QHBoxLayout(boxPreview);
+  QGroupBox* boxIcons = new QGroupBox(tr("Icon Selection"));
+  QHBoxLayout* layIconSets = new QHBoxLayout(boxIcons);
   layMain->addWidget(boxSkin);
-  layMain->addWidget(boxPreview);
+  layMain->addWidget(boxIcons);
 
-  // Skin and Icons Box
+  // Skin Box
   QLabel* lblSkin = new QLabel(tr("S&kins:"));
+  laySkin->addWidget(lblSkin);
+
+  mySkinPreview = new QLabel();
+  mySkinPreview->setFixedSize(75, MAX_HEIGHT_SKIN);
+  laySkin->addWidget(mySkinPreview, 0, Qt::AlignHCenter);
+  laySkin->addStretch();
+
   mySkinCombo = new QComboBox();
   mySkinCombo->setToolTip(tr("Use this combo box to select one of the available skins"));
   connect(mySkinCombo, SIGNAL(currentIndexChanged(const QString&)),
@@ -116,10 +123,18 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
   connect(mySkinCombo, SIGNAL(highlighted(const QString&)),
       SLOT(previewSkin(const QString&)));
   lblSkin->setBuddy(mySkinCombo);
-  laySkin->addWidget(lblSkin);
   laySkin->addWidget(mySkinCombo);
 
-  QLabel* lblIcon = new QLabel(tr("&Icons:"));
+  // Icons Box
+
+  QVBoxLayout* layIcon = new QVBoxLayout();
+  QLabel* lblIcon = new QLabel(tr("Icons:"));
+  lblIcon->setAlignment(Qt::AlignHCenter);
+  layIcon->addWidget(lblIcon, 0, Qt::AlignHCenter);
+
+  myIconPreview = new SkinBrowserPreviewArea();
+  layIcon->addWidget(myIconPreview, 0, Qt::AlignHCenter);
+
   myIconCombo = new QComboBox();
   myIconCombo->setToolTip(tr("Use this combo box to select one of the available icon sets"));
   connect(myIconCombo, SIGNAL(currentIndexChanged(const QString&)),
@@ -127,10 +142,20 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
   connect(myIconCombo, SIGNAL(highlighted(const QString&)),
       SLOT(previewIcons(const QString&)));
   lblIcon->setBuddy(myIconCombo);
-  laySkin->addWidget(lblIcon);
-  laySkin->addWidget(myIconCombo);
+  layIcon->addWidget(myIconCombo);
 
-  QLabel* lblExtIcon = new QLabel(tr("E&xtended Icons:"));
+  layIcon->addStretch();
+  layIconSets->addLayout(layIcon);
+
+
+  QVBoxLayout* layExtIcon = new QVBoxLayout();
+  QLabel* lblExtIcon = new QLabel(tr("Extended Icons:"));
+  lblExtIcon->setAlignment(Qt::AlignHCenter);
+  layExtIcon->addWidget(lblExtIcon, 0, Qt::AlignHCenter);
+
+  myExtIconPreview = new SkinBrowserPreviewArea();
+  layExtIcon->addWidget(myExtIconPreview, 0, Qt::AlignHCenter);
+
   myExtIconCombo = new QComboBox();
   myExtIconCombo->setToolTip(tr("Use this combo box to select one of the available extended icon sets"));
   connect(myExtIconCombo, SIGNAL(currentIndexChanged(const QString&)),
@@ -138,57 +163,31 @@ QWidget* Settings::Skin::createPageSkin(QWidget* parent)
   connect(myExtIconCombo, SIGNAL(highlighted(const QString&)),
       SLOT(previewExtIcons(const QString&)));
   lblExtIcon->setBuddy(myExtIconCombo);
-  laySkin->addWidget(lblExtIcon);
-  laySkin->addWidget(myExtIconCombo);
+  layExtIcon->addWidget(myExtIconCombo);
 
-  QLabel* lblEmoticons = new QLabel(tr("E&moticons:"));
+  layExtIcon->addStretch();
+  layIconSets->addLayout(layExtIcon);
+
+
+  QVBoxLayout* layEmoticon = new QVBoxLayout();
+  QLabel* lblEmoticon = new QLabel(tr("Emoticons:"));
+  lblEmoticon->setAlignment(Qt::AlignHCenter);
+  layEmoticon->addWidget(lblEmoticon, 0, Qt::AlignHCenter);
+
+  myEmoticonPreview= new SkinBrowserPreviewArea();
+  layEmoticon->addWidget(myEmoticonPreview, 0, Qt::AlignHCenter);
+
   myEmoticonCombo = new QComboBox();
   myEmoticonCombo->setToolTip(tr("Use this combo box to select one of the available emoticon icon sets"));
   connect(myEmoticonCombo, SIGNAL(currentIndexChanged(const QString&)),
       SLOT(previewEmoticons(const QString&)));
   connect(myEmoticonCombo, SIGNAL(highlighted(const QString&)),
       SLOT(previewEmoticons(const QString&)));
-    lblEmoticons->setBuddy(myEmoticonCombo);
-  laySkin->addWidget(lblEmoticons);
-  laySkin->addWidget(myEmoticonCombo);
+  lblEmoticon->setBuddy(myEmoticonCombo);
+  layEmoticon->addWidget(myEmoticonCombo);
 
-  // Preview Box
-  QVBoxLayout* layPrevSkin = new QVBoxLayout();
-  QLabel* lblPrevSkin = new QLabel(tr("Skin:"));
-  lblPrevSkin->setAlignment(Qt::AlignHCenter);
-  mySkinPreview = new QLabel();
-  mySkinPreview->setFixedSize(75, MAX_HEIGHT_SKIN);
-  layPrevSkin->addWidget(lblPrevSkin, 0, Qt::AlignHCenter);
-  layPrevSkin->addWidget(mySkinPreview, 0, Qt::AlignHCenter);
-  layPrevSkin->addStretch();
-  layPreview->addLayout(layPrevSkin);
-
-  QVBoxLayout* layPrevIcon = new QVBoxLayout();
-  QLabel* lblPrevIcon = new QLabel(tr("Icons:"));
-  lblPrevIcon->setAlignment(Qt::AlignHCenter);
-  myIconPreview = new SkinBrowserPreviewArea();
-  layPrevIcon->addWidget(lblPrevIcon, 0, Qt::AlignHCenter);
-  layPrevIcon->addWidget(myIconPreview, 0, Qt::AlignHCenter);
-  layPrevIcon->addStretch();
-  layPreview->addLayout(layPrevIcon);
-
-  QVBoxLayout* layPrevExtIcon = new QVBoxLayout();
-  QLabel* lblPrevExtIcon = new QLabel(tr("Extended Icons:"));
-  lblPrevExtIcon->setAlignment(Qt::AlignHCenter);
-  myExtIconPreview = new SkinBrowserPreviewArea();
-  layPrevExtIcon->addWidget(lblPrevExtIcon, 0, Qt::AlignHCenter);
-  layPrevExtIcon->addWidget(myExtIconPreview, 0, Qt::AlignHCenter);
-  layPrevExtIcon->addStretch();
-  layPreview->addLayout(layPrevExtIcon);
-
-  QVBoxLayout* layPrevEmoticon = new QVBoxLayout();
-  QLabel* lblPrevEmoticon = new QLabel(tr("Emoticons:"));
-  lblPrevEmoticon->setAlignment(Qt::AlignHCenter);
-  myEmoticonPreview= new SkinBrowserPreviewArea();
-  layPrevEmoticon->addWidget(lblPrevEmoticon, 0, Qt::AlignHCenter);
-  layPrevEmoticon->addWidget(myEmoticonPreview, 0, Qt::AlignHCenter);
-  layPrevEmoticon->addStretch();
-  layPreview->addLayout(layPrevEmoticon);
+  layEmoticon->addStretch();
+  layIconSets->addLayout(layEmoticon);
 
   // Buttons
   QPushButton* btnEdit = new QPushButton(tr("&Edit Skin"));
