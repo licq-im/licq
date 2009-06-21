@@ -226,7 +226,7 @@ void ReadWriteMutex::unlockWrite()
 {
   pthread_mutex_lock(&myMutex);
 #ifdef DEBUG_RW_MUTEX
-  assert(myHasWriter == true);
+  assert(myHasWriter != false);
 #endif
   if (!myHasWriter)
   {
@@ -237,7 +237,7 @@ void ReadWriteMutex::unlockWrite()
 #ifdef DEBUG_RW_MUTEX
     unsetWriter();
 #endif
-    myHasWriter = true;
+    myHasWriter = false;
     pthread_cond_broadcast(&myLockFree);
     pthread_mutex_unlock(&myMutex);
   }
