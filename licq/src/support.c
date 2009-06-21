@@ -38,6 +38,8 @@ extern int h_errno;
 
 void SetString(char **szDest, const char *szSource)
 {
+  if (szDest == NULL)
+    return;
   if (*szDest != NULL) free (*szDest);
   if (szSource == NULL)
     *szDest = strdup("");
@@ -47,6 +49,8 @@ void SetString(char **szDest, const char *szSource)
 
 char *ParseDigits(char *szDest, const char *szSource, unsigned int nLen)
 {
+  if (szDest == NULL || szSource == NULL)
+    return szDest;
   unsigned int n = 0;
   char *szCur = szDest;
 
@@ -106,14 +110,6 @@ char *GetXmlTag(const char *szXmlSource, const char *szTagName)
   *szCur = '\0';
   
   return szDest;
-}
-    
-int UinString(char *_szBuf, size_t _nSize, unsigned long _nUin)
-{
-  int nRet = snprintf(_szBuf, _nSize - 1, "%lu", _nUin);
-  _szBuf[_nSize - 1] = '\0';
-
-  return (nRet == -1) ? (int)_nSize - 1 : nRet; 
 }
 
 char *PrintHex(char *szPrint, const char *szHex, size_t nSize)
@@ -206,6 +202,9 @@ int my_alphasort(const void *a, const void *b)
 int scandir_alpha_r(char *dirname, struct dirent *(*namelist[]),
               int (*select)(const struct dirent *))
 {
+  if (namelist == NULL)
+    return -1;
+
   DIR *dirp;
   struct dirent *result, *entry;
   int tdirsize = sizeof(struct dirent);
