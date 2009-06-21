@@ -275,7 +275,7 @@ void UserPages::Info::loadPageGeneral(const LicqUser* u)
 
   if (!m_bOwner)
     chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
-  nfoAlias->setText(QString::fromUtf8(u->GetAlias()));
+  nfoAlias->setText(QString::fromUtf8(u->getAlias().c_str()));
   nfoFirstName->setText(codec->toUnicode(u->getFirstName().c_str()));
   nfoLastName->setText(codec->toUnicode(u->getLastName().c_str()));
   nfoEmailPrimary->setText(codec->toUnicode(u->getUserInfoString("Email1").c_str()));
@@ -325,8 +325,8 @@ void UserPages::Info::loadPageGeneral(const LicqUser* u)
 
 void UserPages::Info::savePageGeneral(LicqUser* u)
 {
-  myAliasHasChanged = (u->GetAlias() != nfoAlias->text().toUtf8());
-  u->SetAlias(nfoAlias->text().toUtf8());
+  myAliasHasChanged = (u->getAlias() != nfoAlias->text().toUtf8().data());
+  u->setAlias(nfoAlias->text().toUtf8().data());
   if (!m_bOwner)
     u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
   u->setUserInfoString("FirstName", codec->fromUnicode(nfoFirstName->text()).data());
@@ -1514,7 +1514,7 @@ unsigned long UserPages::Info::retrieve(UserDlg::UserPage page)
     if (u == NULL)
       return 0;
       u->SetEnableSave(false);
-      u->SetAlias(nfoAlias->text().toUtf8());
+      u->setAlias(nfoAlias->text().toUtf8().data());
       if (!m_bOwner)
         u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
       u->SetEnableSave(true);

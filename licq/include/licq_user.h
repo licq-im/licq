@@ -442,7 +442,9 @@ public:
 
   // General Info
   //!Retrieves the user's alias.
-  const char* GetAlias() const                  { return m_szAlias; }
+  //LICQ_DEPRECATED // Use getAlias() instead
+  const char* GetAlias() const                  { return myAlias.c_str(); }
+  const std::string& getAlias() const           { return myAlias; }
   //!Retrieves the user's first name.
   std::string getFirstName() const              { return getUserInfoString("FirstName"); }
   //!Retrieves the user's last name.
@@ -551,7 +553,11 @@ public:
   char* usprintf(const char* szFormat, unsigned long nFlags = 0) const;
 
   // General Info
-  void SetAlias (const char *n);// {  SetString(&m_szAlias, n);  SaveGeneralInfo();  }
+  LICQ_DEPRECATED // User setAlias() instead
+  void SetAlias (const char *n)
+  { setAlias(n); }
+
+  void setAlias(const std::string& alias);
   void SetTimezone (const char n)            {  m_nTimezone = n; saveUserInfo();  }
   void SetAuthorization (bool n)             {  m_bAuthorization = n; saveUserInfo();  }
 
@@ -963,7 +969,7 @@ protected:
   char *m_szGPGKey;
 
   // General Info
-  char *m_szAlias;
+  std::string myAlias;
   char m_nTimezone;
   bool m_bAuthorization;
 

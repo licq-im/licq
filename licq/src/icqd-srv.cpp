@@ -5013,8 +5013,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
               gTranslator.ServerToClient(p->m_szZipCode);
 
               ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
-          o->SetEnableSave(false);
-          o->SetAlias(p->m_szAlias);
+              o->SetEnableSave(false);
+              o->setAlias(p->m_szAlias);
               o->setUserInfoString("FirstName", p->m_szFirstName);
               o->setUserInfoString("LastName", p->m_szLastName);
               o->setUserInfoString("Email1", p->m_szEmailPrimary);
@@ -5554,7 +5554,7 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
           {
             char *szUTFAlias = tmp ? gTranslator.ToUnicode(tmp, u->UserEncoding()) : 0;
             gTranslator.ServerToClient(szUTFAlias);
-            u->SetAlias(szUTFAlias);
+                  u->setAlias(szUTFAlias);
             //printf("Alias: %s\n", szUTFAlias);
           }
           if (tmp)
@@ -6154,7 +6154,7 @@ void CICQDaemon::ProcessUserList()
     u->SetTLVList(data->tlvs);
 
     if (data->newAlias != NULL && !u->m_bKeepAliasOnUpdate)
-      u->SetAlias(data->newAlias.get());
+      u->setAlias(data->newAlias.get());
 
     u->SetSID(data->normalSid);
     u->SetGSID(data->groupId);

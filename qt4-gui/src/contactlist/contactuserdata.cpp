@@ -395,7 +395,7 @@ bool ContactUserData::updateText(const LicqUser* licqUser)
 {
   bool hasChanged = false;
 
-  myAlias = QString::fromUtf8(licqUser->GetAlias());
+  myAlias = QString::fromUtf8(licqUser->getAlias().c_str());
 
   for (unsigned short i = 0; i < Config::ContactList::instance()->columnCount(); i++)
   {
@@ -477,7 +477,7 @@ bool ContactUserData::setData(const QVariant& value, int role)
     return false;
 
   myAlias = value.toString();
-  u->SetAlias(myAlias.toUtf8());
+  u->setAlias(myAlias.toUtf8().data());
   u->SetKeepAliasOnUpdate(true);
 
   // Daemon doesn't send signal when alias is changed so trigger update from here
@@ -686,8 +686,8 @@ QString ContactUserData::tooltip() const
 
   s += LicqStrings::getStatus(myStatus, myStatusInvisible);
 
-  if (config->popupAlias() && *u->GetAlias())
-    s += "<br>" + QString::fromUtf8(u->GetAlias());
+  if (config->popupAlias() && !u->getAlias().empty())
+    s += "<br>" + QString::fromUtf8(u->getAlias().c_str());
 
   if (config->popupName())
   {

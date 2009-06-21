@@ -194,9 +194,9 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
     QTextCodec * codec = UserCodec::codecForICQUser(u);
     QString tmp = codec->toUnicode(u->getFullName().c_str());
     if (!tmp.isEmpty()) tmp = " (" + tmp + ")";
-    m_sBasic = tr("Licq - Info ") + QString::fromUtf8(u->GetAlias()) + tmp;
+    m_sBasic = tr("Licq - Info ") + QString::fromUtf8(u->getAlias().c_str()) + tmp;
     resetCaption();
-    setIconText(u->GetAlias());
+    setIconText(u->getAlias().c_str());
     gUserManager.DropUser(u);
   }
 
@@ -379,7 +379,7 @@ void UserInfoDlg::SetGeneralInfo(const LicqUser* u)
   if(m_bOwner)
     chkKeepAliasOnUpdate->hide();
   chkKeepAliasOnUpdate->setChecked(u->KeepAliasOnUpdate());
-  nfoAlias->setData(QString::fromUtf8(u->GetAlias()));
+  nfoAlias->setData(QString::fromUtf8(u->getAlias().c_str()));
   connect(nfoAlias, SIGNAL(textChanged(const QString &)), this, SLOT(slot_aliasChanged(const QString &)));
   nfoFirstName->setData(codec->toUnicode(u->getFirstName().c_str()));
   nfoLastName->setData(codec->toUnicode(u->getLastName().c_str()));
@@ -452,7 +452,7 @@ void UserInfoDlg::SaveGeneralInfo()
 
   u->SetEnableSave(false);
 
-  u->SetAlias(nfoAlias->text().utf8());
+  u->setAlias(nfoAlias->text().utf8().data());
   u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
   u->setUserInfoString("FirstName", codec->fromUnicode(nfoFirstName->text()).data());
   u->setUserInfoString("LastName", codec->fromUnicode(nfoLastName->text()).data());
@@ -1926,7 +1926,7 @@ void UserInfoDlg::ShowHistory()
   {
       codec = UserCodec::codecForICQUser(u);
       if (!m_bOwner)
-         contactName = QString::fromUtf8(u->GetAlias());
+      contactName = QString::fromUtf8(u->getAlias().c_str());
     for (unsigned int x = 0; x < u->accountId().size(); x++)
     {
       if (!isdigit(u->accountId()[x]))
@@ -1949,7 +1949,7 @@ void UserInfoDlg::ShowHistory()
     // Don't use this codec to decode our conversation with the contact
     // since we're using the contact's encoding, not ours.
     QTextCodec *ownerCodec = UserCodec::codecForICQUser(o);
-    ownerName = ownerCodec->toUnicode(o->GetAlias());
+    ownerName = ownerCodec->toUnicode(o->getAlias().c_str());
     gUserManager.DropOwner(o);
   }
 
@@ -2283,7 +2283,7 @@ void UserInfoDlg::slotRetrieve()
       LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
       if (u == NULL) return;
       u->SetEnableSave(false);
-      u->SetAlias(nfoAlias->text().utf8());
+      u->setAlias(nfoAlias->text().utf8().data());
       u->SetKeepAliasOnUpdate(chkKeepAliasOnUpdate->isChecked());
       u->SetEnableSave(true);
       u->saveUserInfo();

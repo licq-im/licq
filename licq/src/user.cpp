@@ -1725,9 +1725,8 @@ bool ICQUser::LoadInfo()
 void ICQUser::loadUserInfo()
 {
   // read in the fields, checking for errors each time
-  char szTemp[MAX_LINE_LEN];
   m_fConf.SetSection("user");
-  m_fConf.ReadStr("Alias", szTemp, tr("Unknown"));  SetAlias(szTemp);
+  m_fConf.readString("Alias", myAlias, tr("Unknown"));
   m_fConf.ReadNum("Timezone", m_nTimezone, TIMEZONE_UNKNOWN);
   m_fConf.ReadBool("Authorization", m_bAuthorization, false);
 
@@ -1916,8 +1915,6 @@ LicqUser::~LicqUser()
       free( m_szAutoResponse );
   if ( m_szEncoding )
       free( m_szEncoding );
-  if ( m_szAlias )
-      free( m_szAlias );
   if ( m_szCustomAutoResponse )
       free( m_szCustomAutoResponse );
   if ( m_szClientInfo )
@@ -1981,7 +1978,7 @@ void LicqUser::Init()
   // TODO: Only user data fields valid for protocol should be populated
 
   // General Info
-  m_szAlias = NULL;
+  myAlias = string();
   myUserInfo["FirstName"] = string();
   myUserInfo["LastName"] = string();
   myUserInfo["Email1"] = string(); // Primary email
@@ -2125,7 +2122,7 @@ void ICQUser::SetPermanent()
 void ICQUser::SetDefaults()
 {
   char szTemp[12];
-  SetAlias(myAccountId.c_str());
+  setAlias(myAccountId);
   SetHistoryFile("default");
   SetSystemGroups(0);
   myGroups.clear();
@@ -2344,24 +2341,24 @@ unsigned short ICQUser::Sequence(bool increment)
       return (m_nSequence);
 }
 
-void ICQUser::SetAlias(const char *s)
+void LicqUser::setAlias(const string& alias)
 {
-  if (s[0] == '\0')
+  if (alias.empty())
   {
     string firstName = getFirstName();
     if (!firstName.empty())
-      SetString(&m_szAlias, firstName.c_str());
+      myAlias = firstName;
     else
-      SetString(&m_szAlias, myAccountId.c_str());
+      myAlias = myAccountId;
   }
   else
-    SetString(&m_szAlias, s);
+    myAlias = alias;
 
   // If there is a valid alias, set the server side list alias as well.
-  if (m_szAlias)
+  if (!myAlias.empty())
   {
-    size_t aliasLen = strlen(m_szAlias);
-    TLVPtr aliasTLV(new COscarTLV(0x131, aliasLen, reinterpret_cast<unsigned char*>(m_szAlias)));
+    size_t aliasLen = myAlias.size();
+    TLVPtr aliasTLV(new COscarTLV(0x131, aliasLen, myAlias.c_str()));
     AddTLV(aliasTLV);
   }
 
@@ -2756,7 +2753,7 @@ char* ICQUser::usprintf(const char* _szFormat, unsigned long nFlags) const
           sz = getLastName().c_str();
           break;
         case 'a':
-          sz = GetAlias();
+          sz = getAlias().c_str();
           break;
         case 'u':
           sz = accountId().c_str();
@@ -3083,7 +3080,7 @@ void ICQUser::saveUserInfo()
      return;
   }
   m_fConf.SetSection("user");
-  m_fConf.WriteStr("Alias", m_szAlias);
+  m_fConf.writeString("Alias", myAlias);
   m_fConf.WriteBool("KeepAliasOnUpdate", m_bKeepAliasOnUpdate);
   m_fConf.WriteNum("Timezone", m_nTimezone);
   m_fConf.WriteBool("Authorization", m_bAuthorization);
@@ -3697,7 +3694,7 @@ void ICQOwner::SetPicture(const char *f)
     if (remove(szFilename) != 0 && errno != ENOENT)
     {
       gLog.Error("%sUnable to delete %s's picture file (%s):\n%s%s.\n",
-                         L_ERRORxSTR, m_szAlias, szFilename, L_BLANKxSTR,
+          L_ERRORxSTR, myAlias.c_str(), szFilename, L_BLANKxSTR,
                          strerror(errno));
     }
   }

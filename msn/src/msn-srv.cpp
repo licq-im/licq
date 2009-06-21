@@ -102,7 +102,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
        
         // Set our alias here
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
-        o->SetAlias(strDecodedNick.c_str());
+        o->setAlias(strDecodedNick);
         gUserManager.DropOwner(o);
          
         // This cookie doesn't work anymore now that we are online
@@ -181,7 +181,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (!u->KeepAliasOnUpdate())
         {
           string strDecodedNick = Decode(strNick);
-          u->SetAlias(strDecodedNick.c_str());
+          u->setAlias(strDecodedNick);
           m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
         }
         u->setUserInfoString("Email1", strUser);
@@ -234,7 +234,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
           if (!u->KeepAliasOnUpdate())
           {
             string strDecodedNick = Decode(strNick);
-            u->SetAlias(strDecodedNick.c_str());
+            u->setAlias(strDecodedNick);
           }
           m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
           gUserManager.DropUser(u);
@@ -263,7 +263,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       {
         ICQOwner *o = gUserManager.FetchOwner(MSN_PPID, LOCK_W);
         string strDecodedNick = Decode(strNick);
-        o->SetAlias(strDecodedNick.c_str());
+        o->setAlias(strDecodedNick);
         gUserManager.DropOwner(o);
       }
       
@@ -319,7 +319,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
         if (!u->KeepAliasOnUpdate())
         {
           string strDecodedNick = Decode(strNick);
-          u->SetAlias(strDecodedNick.c_str());
+          u->setAlias(strDecodedNick);
           m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
         }
 
@@ -333,7 +333,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
 	  }
 	}
 
-        gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->GetAlias(), strStatus.c_str());
+        gLog.Info("%s%s changed status (%s).\n", L_MSNxSTR, u->getAlias().c_str(), strStatus.c_str());
         m_pDaemon->ChangeUserStatus(u, nStatus);
 
         if ((m_pDaemon->m_bAlwaysOnlineNotify || strCmd == "NLN") &&
@@ -349,7 +349,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       ICQUser *u = gUserManager.FetchUser(strUser.c_str(), MSN_PPID, LOCK_W);
       if (u)
       {
-        gLog.Info("%s%s logged off.\n", L_MSNxSTR, u->GetAlias());
+        gLog.Info("%s%s logged off.\n", L_MSNxSTR, u->getAlias().c_str());
         m_pDaemon->ChangeUserStatus(u, ICQ_STATUS_OFFLINE);
       }
       gUserManager.DropUser(u);
@@ -629,7 +629,7 @@ void CMSN::MSNRenameUser(const char* szUser)
 {
   const ICQUser* u = gUserManager.FetchUser(szUser, MSN_PPID, LOCK_R);
   if (!u) return;
-  string strNick = u->GetAlias();
+  string strNick = u->getAlias();
   gUserManager.DropUser(u);
 
   string strEncodedNick = Encode(strNick);

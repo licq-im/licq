@@ -12,7 +12,7 @@
 class COscarTLV
 {
 public:
-  COscarTLV(unsigned short type = 0, unsigned short length = 0, unsigned char *data = 0) : myType(type), myLen(length)
+  COscarTLV(unsigned short type = 0, unsigned short length = 0, const char* data = NULL) : myType(type), myLen(length)
   {
     if (myLen > 0)
     {
