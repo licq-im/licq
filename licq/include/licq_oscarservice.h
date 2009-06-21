@@ -2,6 +2,7 @@
 #define OSCARSERVICE_H
 
 #include <list>
+#include <pthread.h>
 
 #include <boost/shared_array.hpp>
 
