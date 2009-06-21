@@ -312,10 +312,10 @@ void ICQUser::Lock(unsigned short lockType) const
   switch (lockType)
   {
     case LOCK_R:
-      pthread_rdwr_rlock_np(&myMutex);
+      myMutex.lockRead();
       break;
     case LOCK_W:
-      pthread_rdwr_wlock_np(&myMutex);
+      myMutex.lockWrite();
       break;
     default:
       assert(false);
@@ -335,10 +335,10 @@ void ICQUser::Unlock() const
   switch (lockType)
   {
     case LOCK_R:
-      pthread_rdwr_runlock_np(&myMutex);
+      myMutex.unlockRead();
       break;
     case LOCK_W:
-      pthread_rdwr_wunlock_np(&myMutex);
+      myMutex.unlockWrite();
       break;
     default:
       assert(false);
@@ -351,14 +351,9 @@ CUserManager::CUserManager()
   : m_szDefaultEncoding(NULL)
 {
   // Set up the basic all users and new users group
-  pthread_rdwr_init_np(&mutex_grouplist, NULL);
-  pthread_rdwr_set_name(&mutex_grouplist, "grouplist");
-
-  pthread_rdwr_init_np(&mutex_userlist, NULL);
-  pthread_rdwr_set_name(&mutex_userlist, "userlist");
-
-  pthread_rdwr_init_np(&mutex_ownerlist, NULL);
-  pthread_rdwr_set_name(&mutex_ownerlist, "ownerlist");
+  myGroupListMutex.setName("grouplist");
+  myUserListMutex.setName("userlist");
+  myOwnerListMutex.setName("ownerlist");
 
   m_nOwnerListLockType = LOCK_N;
   m_nUserListLockType = LOCK_N;
@@ -379,10 +374,6 @@ CUserManager::~CUserManager()
   OwnerMap::iterator o_iter;
   for (o_iter = myOwners.begin(); o_iter != myOwners.end(); ++o_iter)
     delete o_iter->second;
-
-  pthread_rdwr_destroy_np(&mutex_ownerlist);
-  pthread_rdwr_destroy_np(&mutex_userlist);
-  pthread_rdwr_destroy_np(&mutex_grouplist);
 
   if (m_szDefaultEncoding != NULL)
     free(m_szDefaultEncoding);
@@ -1383,15 +1374,15 @@ UserMap* CUserManager::LockUserList(unsigned short _nLockType)
 {
   switch (_nLockType)
   {
-  case LOCK_R:
-    pthread_rdwr_rlock_np (&mutex_userlist);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wlock_np(&mutex_userlist);
-    break;
-  default:
-    assert(false);
-    return NULL;
+    case LOCK_R:
+      myUserListMutex.lockRead();
+      break;
+    case LOCK_W:
+      myUserListMutex.lockWrite();
+      break;
+    default:
+      assert(false);
+      return NULL;
   }
   m_nUserListLockType = _nLockType;
   return &myUsers;
@@ -1406,15 +1397,15 @@ void CUserManager::UnlockUserList()
   m_nUserListLockType = LOCK_R;
   switch (nLockType)
   {
-  case LOCK_R:
-    pthread_rdwr_runlock_np(&mutex_userlist);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wunlock_np(&mutex_userlist);
-    break;
-  default:
-    assert(false);
-    break;
+    case LOCK_R:
+      myUserListMutex.unlockRead();
+      break;
+    case LOCK_W:
+      myUserListMutex.unlockWrite();
+      break;
+    default:
+      assert(false);
+      break;
   }
 }
 
@@ -1427,15 +1418,15 @@ GroupMap* CUserManager::LockGroupList(unsigned short lockType)
 {
   switch (lockType)
   {
-  case LOCK_R:
-    pthread_rdwr_rlock_np (&mutex_grouplist);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wlock_np(&mutex_grouplist);
-    break;
-  default:
-    assert(false);
-    return NULL;
+    case LOCK_R:
+      myGroupListMutex.lockRead();
+      break;
+    case LOCK_W:
+      myGroupListMutex.lockWrite();
+      break;
+    default:
+      assert(false);
+      return NULL;
   }
   myGroupListLockType = lockType;
   return &myGroups;
@@ -1450,15 +1441,15 @@ void CUserManager::UnlockGroupList()
   myGroupListLockType = LOCK_R;
   switch (lockType)
   {
-  case LOCK_R:
-    pthread_rdwr_runlock_np(&mutex_grouplist);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wunlock_np(&mutex_grouplist);
-    break;
-  default:
-    assert(false);
-    break;
+    case LOCK_R:
+      myGroupListMutex.unlockRead();
+      break;
+    case LOCK_W:
+      myGroupListMutex.unlockWrite();
+      break;
+    default:
+      assert(false);
+      break;
   }
 }
 
@@ -1466,15 +1457,15 @@ OwnerMap* CUserManager::LockOwnerList(unsigned short _nLockType)
 {
   switch (_nLockType)
   {
-  case LOCK_R:
-    pthread_rdwr_rlock_np(&mutex_ownerlist);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wlock_np(&mutex_ownerlist);
-    break;
-  default:
-    assert(false);
-    return NULL;
+    case LOCK_R:
+      myOwnerListMutex.lockRead();
+      break;
+    case LOCK_W:
+      myOwnerListMutex.lockWrite();
+      break;
+    default:
+      assert(false);
+      return NULL;
   }
   m_nOwnerListLockType = _nLockType;
   return &myOwners;
@@ -1486,15 +1477,15 @@ void CUserManager::UnlockOwnerList()
   m_nOwnerListLockType = LOCK_R;
   switch (nLockType)
   {
-  case LOCK_R:
-    pthread_rdwr_runlock_np(&mutex_ownerlist);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wunlock_np(&mutex_ownerlist);
-    break;
-  default:
-    assert(false);
-    break;
+    case LOCK_R:
+      myOwnerListMutex.unlockRead();
+      break;
+    case LOCK_W:
+      myOwnerListMutex.unlockWrite();
+      break;
+    default:
+      assert(false);
+      break;
   }
 }
 
@@ -1570,13 +1561,11 @@ LicqGroup::LicqGroup(int id, const string& name)
   snprintf(strId, 7, "%u", myId);
   strId[7] = '\0';
 
-  pthread_rdwr_init_np(&myMutex, NULL);
-  pthread_rdwr_set_name(&myMutex, strId);
+  myMutex.setName(strId);
 }
 
 LicqGroup::~LicqGroup()
 {
-  pthread_rdwr_destroy_np(&myMutex);
 }
 
 void LicqGroup::Lock(unsigned short lockType) const
@@ -1584,10 +1573,10 @@ void LicqGroup::Lock(unsigned short lockType) const
   switch (lockType)
   {
     case LOCK_R:
-      pthread_rdwr_rlock_np(&myMutex);
+      myMutex.lockRead();
       break;
     case LOCK_W:
-      pthread_rdwr_wlock_np(&myMutex);
+      myMutex.lockWrite();
       break;
     default:
       assert(false);
@@ -1603,10 +1592,10 @@ void LicqGroup::Unlock() const
   switch (lockType)
   {
     case LOCK_R:
-      pthread_rdwr_runlock_np(&myMutex);
+      myMutex.unlockRead();
       break;
     case LOCK_W:
-      pthread_rdwr_wunlock_np(&myMutex);
+      myMutex.unlockWrite();
       break;
     default:
       assert(false);
@@ -1951,8 +1940,6 @@ LicqUser::~LicqUser()
     nResult = pthread_mutex_destroy(&mutex);
   } while (nResult != 0);
 */
-
-  pthread_rdwr_destroy_np(&myMutex);
 }
 
 
@@ -2107,8 +2094,7 @@ void LicqUser::Init()
   m_nGSID = 0;
   m_szClientInfo = NULL;
 
-  pthread_rdwr_init_np(&myMutex, NULL);
-  pthread_rdwr_set_name(&myMutex, myAccountId.c_str());
+  myMutex.setName(myAccountId);
 }
 
 void ICQUser::SetPermanent()

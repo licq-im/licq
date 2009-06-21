@@ -14,7 +14,7 @@ licq_SOURCES = licq.cpp main.cpp \
 	 icqd-tcp.cpp icqd-srv.cpp icqd-threads.cpp oscarservice.cpp \
 	 icqevent.cpp buffer.cpp user.cpp history.cpp \
 	 utility.cpp countrycodes.c log.cpp translate.cpp \
-	 file.cpp message.cpp support.c pthread_rdwr.c \
+	 file.cpp message.cpp support.c pthread_rdwr.cpp \
 	 onevent.cpp plugind.cpp sar.cpp languagecodes.c \
 	 icqd-chat.cpp sighandler.c icqd-filetransfer.cpp \
 	 hebrev.c icqcolor.cpp fifo.cpp  protoplugind.cpp gpg.cpp \

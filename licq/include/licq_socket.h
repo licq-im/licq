@@ -319,7 +319,7 @@ protected:
   void Lock(unsigned short _nLockType);
   void Unlock();
 
-  pthread_rdwr_t mutex_rw;
+  ReadWriteMutex myMutex;
   unsigned short m_nLockType;
 };
 

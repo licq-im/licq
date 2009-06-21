@@ -1002,7 +1002,7 @@ protected:
 
   static unsigned short s_nNumUserEvents;
 
-  mutable pthread_rdwr_t myMutex;
+  mutable ReadWriteMutex myMutex;
   mutable unsigned short myLockType;
   static pthread_mutex_t mutex_nNumUserEvents;
 
@@ -1168,7 +1168,7 @@ private:
   int mySortIndex;
   unsigned short myIcqGroupId;
 
-  mutable pthread_rdwr_t myMutex;
+  mutable ReadWriteMutex myMutex;
   mutable unsigned short myLockType;
 };
 
@@ -1508,7 +1508,9 @@ public:
   unsigned short NumOwners();
 
 protected:
-  pthread_rdwr_t mutex_grouplist, mutex_userlist, mutex_ownerlist;
+  ReadWriteMutex myGroupListMutex;
+  ReadWriteMutex myUserListMutex;
+  ReadWriteMutex myOwnerListMutex;
 
   GroupMap myGroups;
   UserMap myUsers;

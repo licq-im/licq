@@ -12,7 +12,6 @@
 
 #include "licq_sighandler.h"
 #include "licq_constants.h"
-#include "pthread_rdwr.h"
 #include <pthread.h>
 #include <stdio.h>
 #include <stdlib.h>

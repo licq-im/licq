@@ -1318,27 +1318,25 @@ void INetSocket::Unlock()
 //=====CSocketHashTable=========================================================
 CSocketHashTable::CSocketHashTable(unsigned short _nSize) : m_vlTable(_nSize)
 {
-  pthread_rdwr_init_np(&mutex_rw, NULL);
-  pthread_rdwr_set_name(&mutex_rw, __func__);
+  myMutex.setName(__func__);
 }
 
 CSocketHashTable::~CSocketHashTable()
 {
-  pthread_rdwr_destroy_np(&mutex_rw);
 }
 
 void CSocketHashTable::Lock(unsigned short _nLockType)
 {
   switch (_nLockType)
   {
-  case LOCK_R:
-    pthread_rdwr_rlock_np (&mutex_rw);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wlock_np(&mutex_rw);
-    break;
-  default:
-    break;
+    case LOCK_R:
+      myMutex.lockRead();
+      break;
+    case LOCK_W:
+      myMutex.lockWrite();
+      break;
+    default:
+      break;
   }
   m_nLockType = _nLockType;
 }
@@ -1349,14 +1347,14 @@ void CSocketHashTable::Unlock()
   m_nLockType = LOCK_R;
   switch (nLockType)
   {
-  case LOCK_R:
-    pthread_rdwr_runlock_np(&mutex_rw);
-    break;
-  case LOCK_W:
-    pthread_rdwr_wunlock_np(&mutex_rw);
-    break;
-  default:
-    break;
+    case LOCK_R:
+      myMutex.unlockRead();
+      break;
+    case LOCK_W:
+      myMutex.unlockWrite();
+      break;
+    default:
+      break;
   }
 }
 

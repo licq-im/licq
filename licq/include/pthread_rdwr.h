@@ -2,30 +2,7 @@
 #define RDWR_H
 
 #include <pthread.h>
-
-#ifdef connect
-#undef connect
-#endif
-#ifdef accept
-#undef accept
-#endif
-
-/********************************************************
- * An example source module to accompany...
- *
- * "Using POSIX Threads: Programming with Pthreads"
- *     by Brad nichols, Dick Buttlar, Jackie Farrell
- *     O'Reilly & Associates, Inc.
- *
- ********************************************************
- * rdwr.h --
- *
- * Include file for reader/writer locks
- */
-
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include <string>
 
 /*
  * Define DEBUG_RW_MUTEX and recompile the daemon and all plugins to
@@ -35,39 +12,82 @@ extern "C" {
  */
 #define DEBUG_RW_MUTEX
 
-typedef struct rdwr_var {
-  int readers_reading;
-  int writer_writing;
-  pthread_mutex_t mutex;
-  pthread_cond_t lock_free;
+
+#ifdef DEBUG_RW_MUTEX
+#include <stdio.h>
+#include <string.h>
+#endif
+
+
+/**
+ * A read/write mutex
+ */
+class ReadWriteMutex
+{
+public:
+  /**
+   * Constructor
+   */
+  ReadWriteMutex();
+
+  /**
+   * Destructor
+   */
+  ~ReadWriteMutex();
+
+  /**
+   * Get a read lock
+   */
+  void lockRead();
+
+  /**
+   * Release a read lock
+   */
+  void unlockRead();
+
+  /**
+   * Get a write lock
+   */
+  void lockWrite();
+
+  /**
+   * Release a write lock
+   */
+  void unlockWrite();
+
+  /**
+   * Set mutex name, used for debugging
+   *
+   * @param new_name New name for mutex
+   */
+  void setName(const std::string& name)
+#ifdef DEBUG_RW_MUTEX
+  { myName = name; }
+#else
+  { }
+#endif
+
+private:
+#ifdef DEBUG_RW_MUTEX
+  void printUsers(FILE* file, bool writing) const;
+  void debugCondWait(bool writing);
+  void setWriter();
+  void unsetWriter();
+  void setReader();
+  void unsetReader();
+#endif
+
+  int myNumReaders;
+  bool myHasWriter;
+  pthread_mutex_t myMutex;
+  pthread_cond_t myLockFree;
 #ifdef DEBUG_RW_MUTEX
 #define RW_MUTEX_MAX_READERS 20
-  pthread_t writer;
-  pthread_t readers[RW_MUTEX_MAX_READERS];
-  char* name;
+  pthread_t myWriterThread;
+  pthread_t myReaderThreads[RW_MUTEX_MAX_READERS];
+  std::string myName;
 #endif
-} pthread_rdwr_t;
+};
 
-typedef void * pthread_rdwrattr_t;
-
-#define pthread_rdwrattr_default NULL;
-
-#ifdef DEBUG_RW_MUTEX
-#define pthread_rdwr_set_name(rdwrp, new_name) \
-  do { free((rdwrp)->name); (rdwrp)->name = strdup((new_name)); } while (0)
-#else
-#define pthread_rdwr_set_name(rdwrp, new_name) do {} while (0)
-#endif
-
-int pthread_rdwr_init_np(pthread_rdwr_t *rdwrp, pthread_rdwrattr_t *attrp);
-int pthread_rdwr_destroy_np(pthread_rdwr_t *rdwrp);
-int pthread_rdwr_rlock_np(pthread_rdwr_t *rdwrp);
-int pthread_rdwr_runlock_np(pthread_rdwr_t *rdwrp);
-int pthread_rdwr_wlock_np(pthread_rdwr_t *rdwrp);
-int pthread_rdwr_wunlock_np(pthread_rdwr_t *rdwrp);
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif
