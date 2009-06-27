@@ -7,12 +7,11 @@
 #include <vector>
 #include <boost/any.hpp>
 
-#include "pthread_rdwr.h"
-
 #include "licq_buffer.h"
 #include "licq_history.h"
 #include "licq_file.h"
 #include "licq_icq.h"
+#include "licq_mutex.h"
 #include "licq_types.h"
 
 // Added for plugin convenience

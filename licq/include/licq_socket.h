@@ -12,10 +12,9 @@
 #include <vector>
 #include <list>
 
-#include "pthread_rdwr.h"
-
 #include "licq_buffer.h"
 #include "licq_constants.h"
+#include "licq_mutex.h"
 #include "licq_types.h"
 
 class ProxyServer;

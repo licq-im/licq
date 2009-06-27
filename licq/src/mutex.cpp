@@ -18,9 +18,10 @@
  *
  * Library of functions implementing reader/writer locks
  */
+#include "licq_mutex.h"
+
 #include <assert.h>
 #include <pthread.h>
-#include "pthread_rdwr.h"
 
 #ifdef DEBUG_RW_MUTEX
 #include <errno.h>

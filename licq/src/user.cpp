@@ -37,11 +37,11 @@
 #include "licq_occupationcodes.h"
 #include "licq_languagecodes.h"
 #include "licq_log.h"
+#include "licq_mutex.h"
 #include "licq_packets.h"
 #include "licq_icqd.h"
 #include "licq_socket.h"
 #include "support.h"
-#include "pthread_rdwr.h"
 
 using namespace std;
 using boost::any;

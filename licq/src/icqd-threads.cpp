@@ -14,10 +14,10 @@
 #include <cerrno>
 #include <unistd.h>
 
-#include "pthread_rdwr.h"
 #include "time-fix.h"
 
 #include "licq_log.h"
+#include "licq_mutex.h"
 #include "licq_packets.h"
 #include "licq_oscarservice.h"
 #include "licq_plugind.h"
