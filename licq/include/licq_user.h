@@ -347,7 +347,7 @@ typedef LicqOwner ICQOwner;
  * members (such as group memberships) user manager functions exist that should
  * be used for this purpose.
  */
-class LicqUser
+class LicqUser : public Lockable
 {
 public:
   /**
@@ -865,8 +865,6 @@ public:
   bool Secure() const                           { return m_bSecure; }
 
   virtual bool User() const                     { return true; }
-  void Lock(unsigned short lockType = LOCK_R) const;
-  void Unlock() const;
 
 protected:
   void loadUserInfo();
@@ -1007,8 +1005,6 @@ protected:
 
   static unsigned short s_nNumUserEvents;
 
-  mutable ReadWriteMutex myMutex;
-  mutable unsigned short myLockType;
   static pthread_mutex_t mutex_nNumUserEvents;
 
   friend class CUserManager;
@@ -1087,7 +1083,7 @@ protected:
  * user manager. If set functions are called directly, plugins will not receive
  * any signal notifying them of the change.
  */
-class LicqGroup
+class LicqGroup : public Lockable
 {
 public:
   /**
@@ -1155,26 +1151,11 @@ public:
    */
   void setIcqGroupId(unsigned short icqGroupId) { myIcqGroupId = icqGroupId; }
 
-  /**
-   * Lock group for access
-   *
-   * @param lockType Type of lock (LOCK_R or LOCK_W)
-   */
-  void Lock(unsigned short lockType = LOCK_R) const;
-
-  /**
-   * Release current lock for group
-   */
-  void Unlock() const;
-
 private:
   int myId;
   std::string myName;
   int mySortIndex;
   unsigned short myIcqGroupId;
-
-  mutable ReadWriteMutex myMutex;
-  mutable unsigned short myLockType;
 };
 
 /**

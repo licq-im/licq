@@ -304,48 +304,6 @@ char *PPIDSTRING(unsigned long id)
   return p;
 }
 
-/*---------------------------------------------------------------------------
- * ICQUser::Lock
- *-------------------------------------------------------------------------*/
-void ICQUser::Lock(unsigned short lockType) const
-{
-  switch (lockType)
-  {
-    case LOCK_R:
-      myMutex.lockRead();
-      break;
-    case LOCK_W:
-      myMutex.lockWrite();
-      break;
-    default:
-      assert(false);
-      return;
-  }
-  myLockType = lockType;
-}
-
-
-/*---------------------------------------------------------------------------
- * ICQUser::Unlock
- *-------------------------------------------------------------------------*/
-void ICQUser::Unlock() const
-{
-  unsigned short lockType = myLockType;
-  myLockType = LOCK_R;
-  switch (lockType)
-  {
-    case LOCK_R:
-      myMutex.unlockRead();
-      break;
-    case LOCK_W:
-      myMutex.unlockWrite();
-      break;
-    default:
-      assert(false);
-      break;
-  }
-}
-
 //=====CUserManager=============================================================
 CUserManager::CUserManager()
   : m_szDefaultEncoding(NULL)
@@ -1554,8 +1512,7 @@ LicqGroup::LicqGroup(int id, const string& name)
   : myId(id),
     myName(name),
     mySortIndex(0),
-    myIcqGroupId(0),
-    myLockType(LOCK_R)
+    myIcqGroupId(0)
 {
   char strId[8];
   snprintf(strId, 7, "%u", myId);
@@ -1566,41 +1523,6 @@ LicqGroup::LicqGroup(int id, const string& name)
 
 LicqGroup::~LicqGroup()
 {
-}
-
-void LicqGroup::Lock(unsigned short lockType) const
-{
-  switch (lockType)
-  {
-    case LOCK_R:
-      myMutex.lockRead();
-      break;
-    case LOCK_W:
-      myMutex.lockWrite();
-      break;
-    default:
-      assert(false);
-      return;
-  }
-  myLockType = lockType;
-}
-
-void LicqGroup::Unlock() const
-{
-  unsigned short lockType = myLockType;
-  myLockType = LOCK_R;
-  switch (lockType)
-  {
-    case LOCK_R:
-      myMutex.unlockRead();
-      break;
-    case LOCK_W:
-      myMutex.unlockWrite();
-      break;
-    default:
-      assert(false);
-      break;
-  }
 }
 
 bool compare_groups(const LicqGroup* first, const LicqGroup* second)

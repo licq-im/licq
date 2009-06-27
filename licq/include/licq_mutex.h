@@ -90,4 +90,58 @@ private:
 };
 
 
+// Thread lock constants
+const unsigned short LOCK_N = 0;
+const unsigned short LOCK_R = 1;
+const unsigned short LOCK_W = 2;
+
+/**
+ * Interface class for objects that need a public available read write mutex for data access
+ */
+class Lockable
+{
+public:
+  Lockable() : myLockType(LOCK_R) {};
+
+  /**
+   * Lock object for access
+   * Convenience function for easier migration from old mutex handling in LicqUser
+   *
+   * @param lockType Type of lock (LOCK_R or LOCK_W)
+   */
+  void Lock(unsigned short lockType = LOCK_R) const
+  { if (lockType == LOCK_W) lockWrite(); else lockRead(); }
+
+  /**
+   * Release current lock for object
+   * Convenience function for easier migration from old mutex handling in LicqUser
+   */
+  void Unlock() const
+  { if (myLockType == LOCK_W) unlockWrite(); else unlockRead(); }
+
+  /**
+   * Acquire a read lock
+   */
+  void lockRead() const { myMutex.lockRead(); }
+
+  /**
+   * Release a read lock
+   */
+  void unlockRead() const { myMutex.unlockRead(); }
+
+  /**
+   * Acquire the write lock
+   */
+  void lockWrite() const { myMutex.lockWrite(); myLockType=LOCK_W; }
+
+  /**
+   * Release the write lock
+   */
+  void unlockWrite() const { myLockType=LOCK_R; myMutex.unlockWrite(); }
+
+protected:
+  mutable ReadWriteMutex myMutex;
+  mutable unsigned short myLockType;
+};
+
 #endif

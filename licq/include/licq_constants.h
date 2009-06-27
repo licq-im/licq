@@ -43,11 +43,6 @@ const unsigned long  LOCALHOST                     = 0x0100007F;
 const unsigned short LOGON_ATTEMPT_DELAY           = 300;
 const unsigned short MAX_PING_TIMEOUTS             = 3;
 
-// Thread constants
-const unsigned short LOCK_N                        = 0;
-const unsigned short LOCK_R                        = 1;
-const unsigned short LOCK_W                        = 2;
-
 #define PIPE_READ  0
 #define PIPE_WRITE 1
 #define TIME_NOW   0
