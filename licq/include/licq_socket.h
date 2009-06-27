@@ -315,11 +315,7 @@ protected:
   unsigned short HashValue(int _nSd);
   std::vector < std::list<INetSocket *> > m_vlTable;
 
-  void Lock(unsigned short _nLockType);
-  void Unlock();
-
   ReadWriteMutex myMutex;
-  unsigned short m_nLockType;
 };
 
 

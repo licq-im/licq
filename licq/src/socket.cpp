@@ -1325,42 +1325,9 @@ CSocketHashTable::~CSocketHashTable()
 {
 }
 
-void CSocketHashTable::Lock(unsigned short _nLockType)
-{
-  switch (_nLockType)
-  {
-    case LOCK_R:
-      myMutex.lockRead();
-      break;
-    case LOCK_W:
-      myMutex.lockWrite();
-      break;
-    default:
-      break;
-  }
-  m_nLockType = _nLockType;
-}
-
-void CSocketHashTable::Unlock()
-{
-  unsigned short nLockType = m_nLockType;
-  m_nLockType = LOCK_R;
-  switch (nLockType)
-  {
-    case LOCK_R:
-      myMutex.unlockRead();
-      break;
-    case LOCK_W:
-      myMutex.unlockWrite();
-      break;
-    default:
-      break;
-  }
-}
-
 INetSocket *CSocketHashTable::Retrieve(int _nSd)
 {
-  Lock(LOCK_R);
+  myMutex.lockRead();
 
   INetSocket *s = NULL;
   list <INetSocket *> &l = m_vlTable[HashValue(_nSd)];
@@ -1380,21 +1347,21 @@ INetSocket *CSocketHashTable::Retrieve(int _nSd)
   }
   if (iter == l.end()) s = NULL;
 
-  Unlock();
+  myMutex.unlockRead();
   return s;
 }
 
 void CSocketHashTable::Store(INetSocket *s, int _nSd)
 {
-  Lock(LOCK_W);
+  myMutex.lockWrite();
   list<INetSocket *> &l = m_vlTable[HashValue(_nSd)];
   l.push_front(s);
-  Unlock();
+  myMutex.unlockWrite();
 }
 
 void CSocketHashTable::Remove(int _nSd)
 {
-  Lock(LOCK_W);
+  myMutex.lockWrite();
   list<INetSocket *> &l = m_vlTable[HashValue(_nSd)];
   int nSd;
   list<INetSocket *>::iterator iter;
@@ -1409,7 +1376,7 @@ void CSocketHashTable::Remove(int _nSd)
       break;
     }
   }
-  Unlock();
+  myMutex.unlockWrite();
 }
 
 unsigned short CSocketHashTable::HashValue(int _nSd)
