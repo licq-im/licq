@@ -109,6 +109,16 @@ signals:
    */
   void doubleClicked();
 
+  /**
+   * Mouse wheel was scrolled up on this label
+   */
+  void wheelUp();
+
+  /**
+   * Mouse wheel was scrolled down on this label
+   */
+  void wheelDown();
+
 private:
   /**
    * User double clicked on widget
@@ -130,6 +140,13 @@ private:
    * @param e Event object
    */
   virtual void paintEvent(QPaintEvent* e);
+
+  /**
+   * Wheel event, overloaded to emit wheelUp and wheelDown signals
+   *
+   * @param event Event object
+   */
+  void wheelEvent(QWheelEvent* event);
 
   QMenu* myPopupMenu;
   QPixmap myBackgroundImage;

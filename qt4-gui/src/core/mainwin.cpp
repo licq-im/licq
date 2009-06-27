@@ -416,6 +416,8 @@ void MainWindow::updateSkin()
         mySystemMenu->getGroupMenu(), this);
     connect(myMessageField, SIGNAL(doubleClicked()),
         LicqGui::instance(), SLOT(showNextEvent()));
+    connect(myMessageField, SIGNAL(wheelDown()), SLOT(nextGroup()));
+    connect(myMessageField, SIGNAL(wheelUp()), SLOT(prevGroup()));
     myMessageField->setToolTip(tr("Right click - User groups\n"
           "Double click - Show next message"));
     myMessageField->show();
@@ -766,6 +768,116 @@ void MainWindow::setCurrentGroup(int index)
   Config::ContactList::instance()->setGroup(groupType, groupId);
 }
 
+void MainWindow::nextGroup()
+{
+  GroupType curGroupType = Config::ContactList::instance()->groupType();
+  int curGroup = Config::ContactList::instance()->groupId();
+  int groupId = 0;
+
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
+  {
+    // If current selection is all users, select first group in list
+    if (groupId == 0 && curGroupType == GROUPS_SYSTEM && curGroup == GROUP_ALL_USERS)
+    {
+      pGroup->Unlock();
+      gUserManager.UnlockGroupList();
+      Config::ContactList::instance()->setGroup(GROUPS_USER, pGroup->id());
+      return;
+    }
+
+    // If previous group is selected, select current group
+    if (groupId != 0 && curGroupType == GROUPS_USER && curGroup == groupId)
+    {
+      pGroup->Unlock();
+      gUserManager.UnlockGroupList();
+      Config::ContactList::instance()->setGroup(GROUPS_USER, pGroup->id());
+      return;
+    }
+    groupId = pGroup->id();
+  }
+  FOR_EACH_GROUP_END
+
+  // Last user group is currently selected, set first system group
+  if (groupId != 0 && curGroupType == GROUPS_USER && curGroup == groupId)
+  {
+    Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, 1);
+    return;
+  }
+
+  // No users groups exist and current selection is all users, set first system group
+  if (groupId == 0 && curGroupType == GROUPS_SYSTEM && curGroup == GROUP_ALL_USERS)
+  {
+    Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, 1);
+    return;
+  }
+
+  groupId = 0;
+
+  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  {
+    // If previous system group is selected, set current group
+    if (groupId != 0 && curGroupType == GROUPS_SYSTEM && groupId == curGroup)
+    {
+      Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, i);
+      return;
+    }
+    groupId = i;
+  }
+
+  // Last system group is currently selected or selection not found, set all users
+  Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS);
+}
+
+
+void MainWindow::prevGroup()
+{
+  GroupType curGroupType = Config::ContactList::instance()->groupType();
+  int curGroup = Config::ContactList::instance()->groupId();
+  int groupId = 0;
+
+  FOR_EACH_GROUP_START_SORTED(LOCK_R)
+  {
+    // If current group is selected, set previous group
+    if (curGroupType == GROUPS_USER && curGroup == pGroup->id())
+    {
+      pGroup->Unlock();
+      gUserManager.UnlockGroupList();
+      if (groupId == 0)
+        Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS);
+      else
+        Config::ContactList::instance()->setGroup(GROUPS_USER, groupId);
+      return;
+    }
+
+    groupId = pGroup->id();
+  }
+  FOR_EACH_GROUP_END
+
+  // If first system group is selected, set last user group
+  if (groupId != 0 && curGroupType == GROUPS_SYSTEM && curGroup == 1)
+  {
+    if (groupId == 0)
+      Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, GROUP_ALL_USERS);
+    else
+      Config::ContactList::instance()->setGroup(GROUPS_USER, groupId);
+    return;
+  }
+  groupId = 0;
+
+  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  {
+    // If current system group is selected, set previous group
+    if (curGroupType == GROUPS_SYSTEM && curGroup == i)
+    {
+      Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, groupId);
+      return;
+    }
+    groupId = i;
+  }
+
+  // If current selection is all users or selection not faund, set last system group
+  Config::ContactList::instance()->setGroup(GROUPS_SYSTEM, NUM_GROUPS_SYSTEM_ALL - 1);
+}
 void MainWindow::updateCurrentGroup()
 {
   GroupType groupType = Config::ContactList::instance()->groupType();

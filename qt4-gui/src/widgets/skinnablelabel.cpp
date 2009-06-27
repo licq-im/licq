@@ -169,3 +169,16 @@ void SkinnableLabel::mouseDoubleClickEvent(QMouseEvent* /* e */)
 {
   emit doubleClicked();
 }
+
+void SkinnableLabel::wheelEvent(QWheelEvent* event)
+{
+  // Ignore the events for horizontal wheel movements
+  if (event->orientation() != Qt::Vertical)
+    return QLabel::wheelEvent(event);
+
+  if (event->delta() < 0)
+    emit wheelDown();
+  else
+    emit wheelUp();
+  event->accept();
+}

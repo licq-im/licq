@@ -170,6 +170,16 @@ private slots:
    */
   void setCurrentGroup(int index);
 
+  /**
+   * Switch to next group in group list
+   */
+  void nextGroup();
+
+  /**
+   * Switch to previous group in group list
+   */
+  void prevGroup();
+
   //TODO
   //void callUserFunction(QString id, unsigned long ppid);
   void slot_logon();
