@@ -1355,6 +1355,10 @@ void UserSendCommon::massMessageToggled(bool b)
 {
   if (myMassMessageBox == NULL)
   {
+    // If the box doesn't exist and we're not supposed to show it, there is no point in continuing
+    if (!b)
+      return;
+
     myMassMessageBox = new QGroupBox();
     myTophLayout->addWidget(myMassMessageBox);
     QVBoxLayout* layMR = new QVBoxLayout(myMassMessageBox);
