@@ -390,6 +390,10 @@ void HistoryDlg::find(bool backwards)
 
   QRegExp regExp(getRegExp());
 
+  // An expression that can match zero characters is no better than an empty search text
+  if (regExp.indexIn("") != -1)
+    return;
+
   // If search pattern has changed, find all matching dates and mark them in the calendar
   if (myPatternChanged)
   {

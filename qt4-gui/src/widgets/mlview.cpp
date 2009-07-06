@@ -122,16 +122,24 @@ QString MLView::toRichText(const QString& s, bool highlightURLs, bool useHTML, Q
     {
       hlPos = s.indexOf(highlight, qMax(hlEnd, lastpos));
       hlLen = highlight.matchedLength();
+
+      // If we matched zero characters, ignore the match
+      if (hlLen == 0)
+        hlPos = -2;
     }
     if (urlPos == -2 && !reURL.isEmpty())
     {
       urlPos = s.indexOf(reURL, qMax(urlEnd, lastpos));
       urlLen = reURL.matchedLength();
+      if (urlLen == 0)
+        urlPos = -2;
     }
     if (mailPos == -2 && !reMail.isEmpty())
     {
       mailPos = s.indexOf(reMail, qMax(mailEnd, lastpos));
       mailLen = reMail.matchedLength();
+      if (mailLen == 0)
+        mailPos = -2;
     }
 
     // Next value for lastpos. Data between newpos and lastpos can be copied as is
