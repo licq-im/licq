@@ -74,13 +74,14 @@ void ContactGroup::update()
   if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
     return;
 
-  LicqGroup* g = gUserManager.FetchGroup(myGroupId, LOCK_R);
-  if (g == NULL)
-    return;
+  {
+    LicqGroupReadGuard g(myGroupId);
+    if (!g.isLocked())
+      return;
 
-  myName = QString::fromLocal8Bit(g->name().c_str());
-  mySortKey = g->sortIndex();
-  gUserManager.DropGroup(g);
+    myName = QString::fromLocal8Bit(g->name().c_str());
+    mySortKey = g->sortIndex();
+  }
 
   emit dataChanged(this);
 }
@@ -91,12 +92,11 @@ void ContactGroup::updateSortKey()
   if (myGroupId == 0 || myGroupId >= ContactListModel::SystemGroupOffset)
     return;
 
-  LicqGroup* g = gUserManager.FetchGroup(myGroupId, LOCK_R);
-  if (g == NULL)
+  LicqGroupReadGuard g(myGroupId);
+  if (!g.isLocked())
     return;
 
   mySortKey = g->sortIndex();
-  gUserManager.DropGroup(g);
 }
 
 ContactItem* ContactGroup::item(int row) const

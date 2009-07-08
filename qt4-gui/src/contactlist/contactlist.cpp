@@ -90,15 +90,14 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
 
     case LIST_CONTACT_ADDED:
     {
-      const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-      if (u == NULL)
+      LicqUserReadGuard u(userId);
+      if (!u.isLocked())
       {
         gLog.Warn("%sContactList::listUpdated(): Invalid user received: %s\n",
             L_ERRORxSTR, USERID_TOSTR(userId));
         break;
       }
-      addUser(u);
-      gUserManager.DropUser(u);
+      addUser(*u);
       break;
     }
     case LIST_CONTACT_REMOVED:
@@ -191,13 +190,12 @@ void ContactListModel::updateUser(const UserId& userId)
   if (userData == NULL)
     return;
 
-  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-  if (u == NULL)
+  LicqUserReadGuard u(userId);
+  if (!u.isLocked())
     return;
 
-  userData->updateAll(u);
-  updateUserGroups(userData, u);
-  gUserManager.DropUser(u);
+  userData->updateAll(*u);
+  updateUserGroups(userData, *u);
 }
 
 void ContactListModel::configUpdated()

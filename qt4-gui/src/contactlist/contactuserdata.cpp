@@ -139,16 +139,14 @@ void ContactUserData::update(unsigned long subSignal, int argument)
   // TODO: Add better handling of subsignals so we don't have to update everything so often
 
 
-  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
-  if (u != NULL)
+  LicqUserReadGuard u(myUserId);
+  if (u.isLocked())
   {
     // Group membership is handled by ContactList so send it a signal to update
-    emit updateUserGroups(this, u);
+    emit updateUserGroups(this, *u);
 
     // No specific handling for this signal so reread everything from the daemon
-    updateAll(u);
-
-    gUserManager.DropUser(u);
+    updateAll(*u);
   }
 }
 
@@ -420,15 +418,15 @@ bool ContactUserData::updateText(const LicqUser* licqUser)
 
 void ContactUserData::configUpdated()
 {
-  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
-  if (u == NULL)
-    return;
+  {
+    LicqUserReadGuard u(myUserId);
+    if (!u.isLocked())
+      return;
 
-  updateText(u);
-  updateSorting();
-  updateVisibility();
-
-  gUserManager.DropUser(u);
+    updateText(*u);
+    updateSorting();
+    updateVisibility();
+  }
 
   emit dataChanged(this);
 }
@@ -472,19 +470,19 @@ bool ContactUserData::setData(const QVariant& value, int role)
   if (value.toString() == myAlias)
     return true;
 
-  LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_W);
-  if (u == NULL)
-    return false;
+  {
+    LicqUserWriteGuard u(myUserId);
+    if (!u.isLocked())
+      return false;
 
-  myAlias = value.toString();
-  u->setAlias(myAlias.toUtf8().data());
-  u->SetKeepAliasOnUpdate(true);
+    myAlias = value.toString();
+    u->setAlias(myAlias.toUtf8().data());
+    u->SetKeepAliasOnUpdate(true);
 
-  // Daemon doesn't send signal when alias is changed so trigger update from here
-  updateText(u);
-  updateSorting();
-
-  gUserManager.DropUser(u);
+    // Daemon doesn't send signal when alias is changed so trigger update from here
+    updateText(*u);
+    updateSorting();
+  }
 
   emit dataChanged(this);
   return true;
@@ -494,15 +492,17 @@ void ContactUserData::refresh()
 {
   // Here we update any content that may be dynamic, for example timestamps
 
-  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
-  if (u == NULL)
-    return;
+  bool birthday;
+  bool hasChanged;
+  {
+    LicqUserReadGuard u(myUserId);
+    if (!u.isLocked())
+      return;
 
-  // Check if birthday icon should be updated
-  bool birthday = (u->Birthday() == 0);
-  bool hasChanged = updateText(u);
-
-  gUserManager.DropUser(u);
+    // Check if birthday icon should be updated
+    birthday = (u->Birthday() == 0);
+    hasChanged = updateText(*u);
+  }
 
   if (birthday != myBirthday)
   {
@@ -667,13 +667,13 @@ QVariant ContactUserData::data(int column, int role) const
 
 QString ContactUserData::tooltip() const
 {
-  const LicqUser* u = gUserManager.fetchUser(myUserId, LOCK_R);
-  if (u == NULL)
+  LicqUserReadGuard u(myUserId);
+  if (!u.isLocked())
     return "";
 
   Config::ContactList* config = Config::ContactList::instance();
 
-  const QTextCodec* codec = UserCodec::codecForUser(u);
+  const QTextCodec* codec = UserCodec::codecForUser(*u);
   QString s = "<nobr>";
   if (config->popupPicture() && u->GetPicturePresent())
   {
@@ -842,8 +842,6 @@ QString ContactUserData::tooltip() const
     free(szTemp);
     s += "<br>" + tr("ID: ") + temp;
   }
-
-  gUserManager.DropUser(u);
 
   s += "</nobr>";
 
