@@ -1513,4 +1513,109 @@ protected:
 
 extern class CUserManager gUserManager;
 
+
+/**
+ * Read mutex guard for LicqUser
+ */
+class LicqUserReadGuard : public ReadMutexGuard<LicqUser>
+{
+public:
+  /**
+   * Constructor, will fetch and lock a user based on user id
+   * Note: Always check that the user was actually fetched before using
+   *
+   * @param userId Id of user to fetch
+   * @param addUser True if user should be added (as temporary) if not found
+   * @param retWasAdded If not null, will be set to true if user was added
+   */
+  LicqUserReadGuard(const UserId& userId, bool addUser = false, bool* retWasAdded = NULL)
+    : ReadMutexGuard<LicqUser>(gUserManager.fetchUser(userId, LOCK_R, addUser, retWasAdded))
+  { }
+
+  // Derived constructors
+  LicqUserReadGuard(LicqUser* user, bool locked = true)
+    : ReadMutexGuard<LicqUser>(user, locked)
+  { }
+  LicqUserReadGuard(ReadMutexGuard<LicqUser>* guard)
+    : ReadMutexGuard<LicqUser>(guard)
+  { }
+};
+
+/**
+ * Write mutex guard for LicqUser
+ */
+class LicqUserWriteGuard : public WriteMutexGuard<LicqUser>
+{
+public:
+  /**
+   * Constructor, will fetch and lock a user based on user id
+   * Note: Always check that the user was actually fetched before using
+   *
+   * @param userId Id of user to fetch
+   * @param addUser True if user should be added (as temporary) if not found
+   * @param retWasAdded If not null, will be set to true if user was added
+   */
+  LicqUserWriteGuard(const UserId& userId, bool addUser = false, bool* retWasAdded = NULL)
+    : WriteMutexGuard<LicqUser>(gUserManager.fetchUser(userId, LOCK_W, addUser, retWasAdded))
+  { }
+
+  // Derived constructors
+  LicqUserWriteGuard(LicqUser* user, bool locked = true)
+    : WriteMutexGuard<LicqUser>(user, locked)
+  { }
+  LicqUserWriteGuard(WriteMutexGuard<LicqUser>* guard)
+    : WriteMutexGuard<LicqUser>(guard)
+  { }
+};
+
+/**
+ * Read mutex guard for LicqGroup
+ */
+class LicqGroupReadGuard : public ReadMutexGuard<LicqGroup>
+{
+public:
+  /**
+   * Constructor, will fetch and lock a group based on group id
+   * Note: Always check that the group was actually fetched before using
+   *
+   * @param groupId Id of group to fetch
+   */
+  LicqGroupReadGuard(int groupId)
+    : ReadMutexGuard<LicqGroup>(gUserManager.FetchGroup(groupId, LOCK_R))
+  { }
+
+  // Derived constructors
+  LicqGroupReadGuard(LicqGroup* group, bool locked = true)
+    : ReadMutexGuard<LicqGroup>(group, locked)
+  { }
+  LicqGroupReadGuard(ReadMutexGuard<LicqGroup>* guard)
+    : ReadMutexGuard<LicqGroup>(guard)
+  { }
+};
+
+/**
+ * Write mutex guard for LicqGroup
+ */
+class LicqGroupWriteGuard : public WriteMutexGuard<LicqGroup>
+{
+public:
+  /**
+   * Constructor, will fetch and lock a group based on group id
+   * Note: Always check that the group was actually fetched before using
+   *
+   * @param groupId Id of group to fetch
+   */
+  LicqGroupWriteGuard(int groupId)
+    : WriteMutexGuard<LicqGroup>(gUserManager.FetchGroup(groupId, LOCK_W))
+  { }
+
+  // Derived constructors
+  LicqGroupWriteGuard(LicqGroup* group, bool locked = true)
+    : WriteMutexGuard<LicqGroup>(group, locked)
+  { }
+  LicqGroupWriteGuard(WriteMutexGuard<LicqGroup>* guard)
+    : WriteMutexGuard<LicqGroup>(guard)
+  { }
+};
+
 #endif

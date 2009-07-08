@@ -144,4 +144,162 @@ protected:
   mutable unsigned short myLockType;
 };
 
+
+/**
+ * Read guard for mutexes
+ * Class T should inherit from class Lockable
+ */
+template <class T> class ReadMutexGuard
+{
+public:
+  /**
+   * Constructor
+   *
+   * @param object Object to guard mutex for
+   * @param locked True if object is already locked or false if guard should lock
+   */
+  ReadMutexGuard(T* object, bool locked = true)
+    : myObject(object)
+  {
+    if (!locked)
+      myObject->lockRead();
+  }
+
+  /**
+   * Copy constructor
+   * Guarding ownership will be transferred to this guard
+   *
+   * @param guard Read guard to get object from
+   */
+  ReadMutexGuard(ReadMutexGuard<T>* guard)
+    : myObject(guard->myObject)
+  {
+    guard->release();
+  }
+
+  /**
+   * Destructor
+   * Will unlock mutex if still held
+   */
+  virtual ~ReadMutexGuard()
+  {
+    if (myObject != NULL)
+      unlock();
+  }
+
+  /**
+   * Unlock the mutex
+   * Note: This will make the guard forget about the guarded object
+   */
+  void unlock()
+  {
+    myObject->unlockRead();
+    myObject = NULL;
+  }
+
+  /**
+   * Release guard of object without unlocking the mutex
+   */
+  void release()
+  {
+    myObject = NULL;
+  }
+
+  /**
+   * Check if guard is holding a mutex
+   *
+   * @return True if guard is active and holds a valid locked object
+   */
+  bool isLocked() const { return myObject != NULL; }
+
+  // Access operators
+  const T* operator*() const { return myObject; }
+  const T* operator->() const { return myObject; }
+
+private:
+  // Stop assignment operator from being used by misstake
+  ReadMutexGuard<T> operator=(const ReadMutexGuard<T>&) {}
+
+  T* myObject;
+};
+
+
+/**
+ * Write guard for mutexes
+ * Class T should inherit from class Lockable
+ */
+template <class T> class WriteMutexGuard
+{
+public:
+  /**
+   * Constructor
+   *
+   * @param object Object to guard mutex for
+   * @param locked True if object is already locked or false if guard should lock
+   */
+  WriteMutexGuard(T* object, bool locked = true)
+    : myObject(object)
+  {
+    if (!locked)
+      myObject->lockWrite();
+  }
+
+  /**
+   * Copy constructor
+   * Guarding ownership will be transferred to this guard
+   *
+   * @param guard Write guard to get object from
+   */
+  WriteMutexGuard(WriteMutexGuard<T>* guard)
+    : myObject(guard->myObject)
+  {
+    guard->release();
+  }
+
+  /**
+   * Destructor
+   * Will unlock mutex if still held
+   */
+  virtual ~WriteMutexGuard()
+  {
+    if (myObject != NULL)
+      unlock();
+  }
+
+  /**
+   * Unlock the mutex
+   * Note: This will make the guard forget about the guarded object
+   */
+  void unlock()
+  {
+    myObject->unlockWrite();
+    myObject = NULL;
+  }
+
+  /**
+   * Release guard of object without unlocking the mutex
+   */
+  void release()
+  {
+    myObject = NULL;
+  }
+
+  /**
+   * Check if guard is holding a mutex
+   *
+   * @return True if guard is active and holds a valid locked object
+   */
+  bool isLocked() const { return myObject != NULL; }
+
+  // Access operators
+  T* operator*() const { return myObject; }
+  T* operator->() const { return myObject; }
+
+private:
+  // Stop assignment operator from being used by misstake
+  WriteMutexGuard<T> operator=(const WriteMutexGuard<T>&) {}
+
+  T* myObject;
+};
+
 #endif
