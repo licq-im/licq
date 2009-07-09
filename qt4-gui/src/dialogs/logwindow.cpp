@@ -144,8 +144,3 @@ void LogWindow::save()
     f.close();
   }
 }
-
-void LogWindow::showEvent(QShowEvent* /* event */)
-{
-  outputBox->GotoEnd();
-}

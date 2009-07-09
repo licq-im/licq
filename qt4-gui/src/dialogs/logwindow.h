@@ -45,8 +45,6 @@ private:
 private slots:
   void log(int fd);
   void save();
-
-  virtual void showEvent(QShowEvent* event);
 };
 
 } // namespace LicqQtGui
