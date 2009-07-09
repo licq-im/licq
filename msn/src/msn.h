@@ -153,6 +153,14 @@ private:
   CMSNDataEvent* FetchDataEvent(const std::string& user, int socketId);
   CMSNDataEvent* FetchStartDataEvent(const std::string& user);
 
+  /**
+   * Kill a conversation and all users associated with it
+   * Called when a new socket is opened to make sure it isn't associated with any old conversations
+   *
+   * @param sock Socket to clear conversations for
+   */
+  void killConversation(int sock);
+
   // Interface to CICQDaemon
   void pushPluginSignal(LicqSignal* p);
 

@@ -471,9 +471,13 @@ bool CMSN::MSNSBConnectStart(const string &strServer, const string &strCookie)
     delete sock;
     return false;
   }
-  
-  gSocketMan.AddSocket(sock);
+
   int nSocket = sock->Descriptor();
+
+  // This socket was just opened so make sure there isn't any old left over conversation associated with it
+  killConversation(nSocket);
+
+  gSocketMan.AddSocket(sock);
   ICQUser *u = gUserManager.FetchUser(pStart->m_szUser, MSN_PPID, LOCK_W);
   if (u)
   {
@@ -519,12 +523,15 @@ bool CMSN::MSNSBConnectAnswer(const string& strServer, const string& strSessionI
     delete sock;
     return false;
   }
-  
+  int nSocket = sock->Descriptor();
+
+  // This socket was just opened so make sure there isn't any old left over conversation associated with it
+  killConversation(nSocket);
+
   gSocketMan.AddSocket(sock);
   CMSNPacket *pReply = new CPS_MSN_SBAnswer(strSessionId.c_str(),
     strCookie.c_str(), m_szUserName);
   bool bNewUser = false;
-  int nSocket = sock->Descriptor();
   LicqUser* u = gUserManager.fetchUser(userId, LOCK_W, true, &bNewUser);
   if (!bNewUser)
   {
@@ -643,3 +650,32 @@ void CMSN::MSNSendTypingNotification(const char* _szUser, unsigned long _nCID)
     Send_SB_Packet(strUser, pSend, nSockDesc);
 }
 
+void CMSN::killConversation(int sock)
+{
+  CConversation* convo;
+  // There should never be more than one but loop just in case
+  while ((convo = m_pDaemon->FindConversation(sock)) != NULL)
+  {
+    unsigned long convoId = convo->CID();
+
+    // Get all users from the conversation and disassociate them
+    while (!convo->IsEmpty())
+    {
+      // Get first user in conversation
+      string accountId = convo->GetUser(0);
+      UserId userId = LicqUser::makeUserId(accountId, MSN_PPID);
+
+      // Signal that user is removed
+      m_pDaemon->pushPluginSignal(new LicqSignal(SIGNAL_CONVOxLEAVE, 0, userId, 0, convoId));
+
+      // Remove user from the conversation
+      m_pDaemon->RemoveUserConversation(convoId, accountId.c_str());
+
+      // Clear socket from user if it's still is associated with this conversation
+      LicqUserWriteGuard u(userId);
+      if (u.isLocked() && u->SocketDesc(ICQ_CHNxNONE) == sock)
+        u->ClearSocketDesc(ICQ_CHNxNONE);
+    }
+    m_pDaemon->RemoveConversation(convoId);
+  }
+}

@@ -512,11 +512,14 @@ void CMSN::Run()
 	  }
 	  else
 	  {
-	    // Shouldn't get here, as we close the socket with a BYE command.
-	    // But just to be safe..
+            // Sometimes SB just drops connection without sending any BYE for the user(s) first
+            // This seems to happen when other user is offical client
 	    if (sock)
 	      gSocketMan.DropSocket(sock);
 	    gSocketMan.CloseSocket(nCurrent);
+
+            // Clean up any conversations that was associated with the socket
+            killConversation(nCurrent);
 	  }
 	}
       }
