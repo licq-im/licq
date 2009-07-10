@@ -923,7 +923,7 @@ void ChatDlg::slot_chat()
 
       default:
       {
-        gLog.Error("%sInternal Error: invalid command from chat manager (%d).\n",
+        gLog.Warn("%sInternal Error: invalid command from chat manager (%d).\n",
            L_ERRORxSTR, e->Command());
         break;
       }
