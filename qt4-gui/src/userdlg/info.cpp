@@ -1251,7 +1251,10 @@ void UserPages::Info::loadPagePicture(const LicqUser* u)
   else
   {
     lblPicture->setMovie(m);
-    m->start();
+    if (m->frameCount() > 1)
+      m->start();
+    else
+      m->jumpToNextFrame();
   }
 }
 
