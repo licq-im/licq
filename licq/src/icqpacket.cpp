@@ -2467,7 +2467,11 @@ CPU_AckThroughServer::CPU_AckThroughServer(const ICQUser* u,
     m_szMessage = PipeInput(m_szMessage);
   
     gTranslator.ClientToServer(m_szMessage);
-  
+
+    // If message is 8099 characters or longer the server will disconnect us so better to truncate
+    if (strlen(m_szMessage) >= 8099)
+      m_szMessage[8099] = '\0';
+
     m_nSize += strlen(m_szMessage)+1;
   }
 }
