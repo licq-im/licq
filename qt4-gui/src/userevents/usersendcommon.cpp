@@ -546,7 +546,7 @@ void UserSendCommon::updatePicture(const LicqUser* u)
       u->GetPicturePresent())
   {
     QString picPath = QString(BASE_DIR) + USER_DIR + "/" + u->IdString() + ".pic";
-    QMovie* picMovie = new QMovie(picPath);
+    QMovie* picMovie = new QMovie(picPath, QByteArray(), this);
     if (picMovie->isValid())
     {
       myPictureLabel = new QLabel();
