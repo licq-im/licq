@@ -1508,7 +1508,7 @@ CPU_CheckInvisible::CPU_CheckInvisible(const char *szId)
 
 //-----ThroughServer-------------------------------------------------------
 CPU_ThroughServer::CPU_ThroughServer(const char *szId,
-                                     unsigned char msgType, char *szMessage,
+    unsigned char msgType, const char* szMessage,
                                      unsigned short nCharset, bool bOffline,
                                      size_t nLen)
   : CPU_CommonFamily(ICQ_SNACxFAM_MESSAGE, ICQ_SNACxMSG_SENDxSERVER)
@@ -4900,7 +4900,7 @@ CPT_Message::CPT_Message(char *_sMessage, unsigned short nLevel, bool bMR,
 }
 
 //-----Url----------------------------------------------------------------------
-CPT_Url::CPT_Url(char *szMessage, unsigned short nLevel, bool bMR,
+CPT_Url::CPT_Url(const char* szMessage, unsigned short nLevel, bool bMR,
  CICQColor *pColor, ICQUser *pUser)
   : CPacketTcp(ICQ_CMDxTCP_START,
        ICQ_CMDxSUB_URL | (bMR ? ICQ_CMDxSUB_FxMULTIREC : 0),

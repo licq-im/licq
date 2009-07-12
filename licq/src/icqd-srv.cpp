@@ -1531,7 +1531,7 @@ void CICQDaemon::icqClearServerList()
 
 //-----icqSendThroughServer-----------------------------------------------------
 ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
-  unsigned char format, char *_sMessage, CUserEvent* ue, unsigned short nCharset,
+    unsigned char format, const char *_sMessage, CUserEvent* ue, unsigned short nCharset,
   size_t nMsgLen)
 {
   ICQEvent* result;
@@ -3827,8 +3827,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
     }
     
     packet >> nAckFlags >> nMsgFlags >> nLen;
-    
-    char szMessage[nLen + 1];
+
+    char* szMessage = new char[nLen + 1];
     for (unsigned short i = 0; i < nLen; i++)
       packet >> szMessage[i];
     szMessage[nLen] = '\0';
@@ -3872,7 +3872,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
                                       szMessage);
     }
     gUserManager.DropUser(u);
-    
+      delete [] szMessage;
+
     ICQEvent *e = DoneServerEvent(nMsgID, EVENT_ACKED);
     if (e)
     {

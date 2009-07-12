@@ -3,6 +3,7 @@
 
 #include <cstring>
 #include <map>
+#include <string>
 
 #include <boost/shared_array.hpp>
 #include <boost/shared_ptr.hpp>
@@ -100,6 +101,15 @@ public:
    CBuffer& operator >> (unsigned char &in);
    CBuffer& operator >> (unsigned short &in);
    CBuffer& operator >> (unsigned long &in);
+
+  /**
+   * Get several bytes from the buffer
+   *
+   * @param size Number of bytes to read
+   * @return A string containing the requested bytes
+   */
+  std::string unpackRawString(size_t size);
+
    char *UnpackRaw(char *, unsigned short);
    char *UnpackBinBlock(char *, unsigned short);
    char *UnpackString(char *, unsigned short);

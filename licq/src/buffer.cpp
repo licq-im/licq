@@ -26,6 +26,7 @@
 #include "licq_log.h"
 #include "support.h"
 
+using namespace std;
 
 // Endianness utility routines: Unlike Real Internet Protocols, this
 // heap of dung uses little-endian byte sex.  With the new v7 and above
@@ -181,6 +182,16 @@ CBuffer& CBuffer::operator>>(unsigned long &in)
     incDataPosRead(4);
   }
   return(*this);
+}
+
+string CBuffer::unpackRawString(size_t size)
+{
+  char* c = new char[size];
+  for (size_t i = 0; i < size; ++i)
+    *this >> c[i];
+  string ret(c);
+  delete [] c;
+  return ret;
 }
 
 char *CBuffer::UnpackRaw(char *sz, unsigned short _nSize)

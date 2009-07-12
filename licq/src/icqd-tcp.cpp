@@ -266,11 +266,16 @@ unsigned long CICQDaemon::icqSendUrl(const UserId& userId, const string& url,
   CEventUrl *e = NULL;
   szDescDos = gTranslator.NToRN(description);
   gTranslator.ClientToServer(szDescDos);
+  string m;
   int n = url.size() + strlen_safe(szDescDos) + 2;
-  char m[n];
-  if (viaServer && n > MAX_MESSAGE_SIZE && szDescDos != NULL)
-    szDescDos[MAX_MESSAGE_SIZE - url.size() - 2] = '\0';
-  sprintf(m, "%s%c%s", szDescDos == NULL ? "" : szDescDos, char(0xFE), url.c_str());
+  if (szDescDos != NULL)
+  {
+    if (viaServer && n > MAX_MESSAGE_SIZE)
+      szDescDos[MAX_MESSAGE_SIZE - url.size() - 2] = '\0';
+    m = szDescDos;
+  }
+  m += '\xFE';
+  m += url;
 
   ICQEvent *result = NULL;
 
@@ -289,7 +294,7 @@ unsigned long CICQDaemon::icqSendUrl(const UserId& userId, const string& url,
     gUserManager.DropUser(u);
 
     e = new CEventUrl(url.c_str(), description, ICQ_CMDxSND_THRUxSERVER, TIME_NOW, f);
-    result = icqSendThroughServer(_szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m, e, nCharset);
+    result = icqSendThroughServer(_szId, ICQ_CMDxSUB_URL | (bMultipleRecipients ? ICQ_CMDxSUB_FxMULTIREC : 0), m.c_str(), e, nCharset);
     u = gUserManager.fetchUser(userId, LOCK_W);
   }
   else
@@ -299,7 +304,7 @@ unsigned long CICQDaemon::icqSendUrl(const UserId& userId, const string& url,
     if (u->Secure()) f |= E_ENCRYPTED;
     e = new CEventUrl(url.c_str(), description, ICQ_CMDxTCP_START, TIME_NOW, f);
     if (pColor != NULL) e->SetColor(pColor);
-    CPT_Url *p = new CPT_Url(m, nLevel, bMultipleRecipients, pColor, u);
+    CPT_Url* p = new CPT_Url(m.c_str(), nLevel, bMultipleRecipients, pColor, u);
     gLog.Info(tr("%sSending %sURL to %s (#%hu).\n"), L_TCPxSTR,
        nLevel == ICQ_TCPxMSG_URGENT ? tr("urgent ") : "",
        u->GetAlias(), -p->Sequence());
@@ -1717,16 +1722,12 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
   {
   
   // read in the message minus any stupid DOS \r's
-  char messageTmp[messageLen + 1];
-  unsigned short j = 0;
-  for (unsigned short i = 0; i < messageLen; i++)
-  {
-    packet >> junkChar;
-    if (junkChar != 0x0D) messageTmp[j++] = junkChar;
-  }
-  messageTmp[j] = '\0';
+  string messageTmp = packet.unpackRawString(messageLen);
+  size_t pos;
+  while ((pos = messageTmp.find(0x0D)) != string::npos)
+    messageTmp.erase(pos, 1);
 
-  message = parseRTF(messageTmp);
+  message = parseRTF(messageTmp.c_str());
 
   if (nInVersion <= 4)
   {
@@ -2104,10 +2105,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
         unsigned long nFileLength;
         packet >> junkLong
                >> nLenFilename;
-        char szFilename[nLenFilename+1];
-        for (unsigned short i = 0; i < nLenFilename; i++)
-           packet >> szFilename[i];
-        szFilename[nLenFilename] = '\0';
+          string filename = packet.unpackRawString(nLenFilename);
         packet >> nFileLength
                >> junkLong;
         if (nInVersion <= 4)
@@ -2130,11 +2128,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                 u->GetAlias(), USERID_TOSTR(userId));
 
         ConstFileList filelist;
-        filelist.push_back(szFilename);
+        filelist.push_back(filename.c_str());
 
         // translating string with translation table
         gTranslator.ServerToClient (message);
-        CEventFile *e = new CEventFile(szFilename, message, nFileLength,
+          CEventFile* e = new CEventFile(filename.c_str(), message, nFileLength,
                                        filelist, theSequence, TIME_NOW,
                                        nMask | licqVersion);
         // Add the user to our list if they are new
@@ -2165,31 +2163,28 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 				packet.incDataPosRead(18);
 				packet >> nLongLen; // plugin name len
 
-				char szPlugin[nLongLen+1];
-				for (unsigned long i = 0; i < nLongLen; i++)
-					packet >> szPlugin[i];
-				szPlugin[nLongLen] = '\0';
+          string plugin = packet.unpackRawString(nLongLen);
 
 				packet.incDataPosRead(nLen - 22 - nLongLen);
 				packet.incDataPosRead(4); // bytes left in packet
 				packet >> nLongLen; // message len
 
 				int nICBMCommand = 0;
-				if (strstr(szPlugin, "File"))
+          if (plugin.find("File") != string::npos)
 					nICBMCommand = ICQ_CMDxSUB_FILE;
-				else if (strstr(szPlugin, "URL"))
+          else if (plugin.find("URL") != string::npos)
 					nICBMCommand = ICQ_CMDxSUB_URL;
-				else if (strstr(szPlugin, "Chat"))
+          else if (plugin.find("Chat") != string::npos)
 					nICBMCommand = ICQ_CMDxSUB_CHAT;
-				else if (strstr(szPlugin, "Contacts"))
+          else if (plugin.find("Contacts") != string::npos)
 					nICBMCommand = ICQ_CMDxSUB_CONTACTxLIST;
-				else
-				{
-					gLog.Info(tr("%sUnknown ICBM plugin type: %s\n"), L_TCPxSTR, szPlugin);
-					break;
-				}
+          else
+          {
+            gLog.Info(tr("%sUnknown ICBM plugin type: %s\n"), L_TCPxSTR, plugin.c_str());
+            break;
+          }
 
-				char szMessage[nLongLen+1];
+          char* szMessage = new char[nLongLen+1];
 				for (unsigned long i = 0; i < nLongLen; i++)
 					packet >> szMessage[i];
 				szMessage[nLongLen] = '\0';
@@ -2202,10 +2197,7 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					packet.incDataPosRead(2); // port (BE)
 					packet.incDataPosRead(2); // unknown
 					packet >> nLen; // filename len, including NULL
-					char szFilename[nLen+1];
-					for (unsigned short i = 0; i < nLen; i++)
-						packet >> szFilename[i];
-					szFilename[nLen] = '\0';
+              string filename = packet.unpackRawString(nLen);
 					packet >> nFileSize;
 					packet.incDataPosRead(2); // reversed port (BE)
 
@@ -2213,11 +2205,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
                   L_TCPxSTR, u->GetAlias(), USERID_TOSTR(userId));
 
 					ConstFileList filelist;
-					filelist.push_back(szFilename);
+              filelist.push_back(filename.c_str());
 
 					// translating string with translation table
 					gTranslator.ServerToClient(szMessage);
-					CEventFile *e = new CEventFile(szFilename, szMessage, nFileSize,
+              CEventFile* e = new CEventFile(filename.c_str(), szMessage, nFileSize,
 																				 filelist, theSequence, TIME_NOW, nMask);
 					if (bNewUser)
 					{
@@ -2328,10 +2320,11 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 					m_xOnEventManager.Do(ON_EVENT_MSG, u);					
 					break;
 				}
-				} // switch nICBMCommand
+          } // switch nICBMCommand
+          delete [] szMessage;
 
-				break;
-			}
+          break;
+        }
 
       // Old-style encryption request:
       case ICQ_CMDxSUB_SECURExOLD:
@@ -2556,36 +2549,29 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 				packet.incDataPosRead(18); // eh?
 				packet >> nLongLen; // Plugin name len
 
-				char szPlugin[nLongLen+1];
-				for (unsigned long i = 0; i < nLongLen; i++)
-					packet >> szPlugin[i];
-				szPlugin[nLongLen] = '\0';
-				
+          string plugin = packet.unpackRawString(nLongLen);
+
 				packet.incDataPosRead(nLen - 22 - nLongLen);
 				packet.incDataPosRead(4); // left in packet
 
 				int nICBMCommand = 0;
-				if (strstr(szPlugin, "File"))
+          if (plugin.find("File") != string::npos)
 					nICBMCommand = ICQ_CMDxSUB_FILE;
-				else if (strstr(szPlugin, "Chat"))
+          else if (plugin.find("Chat") != string::npos)
 					nICBMCommand = ICQ_CMDxSUB_CHAT;
-				else if (strstr(szPlugin, "URL"))
+          else if (plugin.find("URL") != string::npos)
 					nICBMCommand = ICQ_CMDxSUB_URL;
-				else if (strstr(szPlugin, "Contacts"))
+          else if (plugin.find("Contacts") != string::npos)
 					nICBMCommand = ICQ_CMDxSUB_CONTACTxLIST;
-				else
-				{
-					gLog.Info(tr("%sUnknown direct ack ICBM plugin type: %s\n"), L_TCPxSTR,
-										szPlugin);
+          else
+          {
+            gLog.Info(tr("%sUnknown direct ack ICBM plugin type: %s\n"), L_TCPxSTR, plugin.c_str());
 					gUserManager.DropUser(u);
 					return true;
 				}
 
 				packet >> nLongLen;
-				char szMessage[nLongLen+1];
-				for (unsigned short i = 0; i < nLongLen; i++)
-					packet >> szMessage[i];
-				szMessage[nLongLen] = '\0';
+          string msg = packet.unpackRawString(nLongLen);
 
 				switch (nICBMCommand)
 				{
@@ -2602,9 +2588,9 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
 						nPort = nPortReversed;
 
 					pExtendedAck = new CExtendedAck(nPort != 0, nPort,
-                                message[0] != '\0' ? message : szMessage);
-					break;
-				}
+                  message[0] != '\0' ? message : msg.c_str());
+	      break;
+	    }
 				case ICQ_CMDxSUB_CHAT:
 				{
 					char ul[1024];
@@ -2622,13 +2608,13 @@ bool CICQDaemon::ProcessTcpPacket(TCPSocket *pSock)
           bool bAccepted = (nPort != 0 && ul[0] == '\0') ||
                            (nPort == 0 && ul[0] != '\0');
 					pExtendedAck = new CExtendedAck(bAccepted, nPort,
-                                message[0] != '\0' ? message : szMessage);
-					break;
-				}
-				} // switch nICBMCommand
+                  message[0] != '\0' ? message : msg.c_str());
+	      break;
+	    }
+	  } // switch nICBMCommand
 
-				break;
-			}
+	  break;
+	}
 
 #ifdef USE_OPENSSL
       case ICQ_CMDxSUB_SECURExOPEN:
@@ -3117,29 +3103,22 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
               packet.incDataPosRead(GUID_LENGTH); // GUID of plugin
               packet.incDataPosRead(4); //Unknown
               unsigned long nLen = packet.UnpackUnsignedLong();
-              char szName[nLen+1];
-              for (unsigned long i = 0; i < nLen; i++)
-                packet >> szName[i];
-              szName[nLen] = '\0';
+                    string name = packet.unpackRawString(nLen);
 
               nLen = packet.UnpackUnsignedLong();
-              char szFullName[nLen+1];
-              for (unsigned long i = 0; i < nLen; i++)
-                packet >> szFullName[i];
-              szFullName[nLen] = '\0';
+                    string fullName = packet.unpackRawString(nLen);
 
               packet.incDataPosRead(4); //Unknown (always 0?)
 
-              gLog.Info("%s%s has %s (%s).\n", szInfo, u->GetAlias(), szName,
-                                               szFullName);
-            }
-            break;
-          }
+                    gLog.Info("%s%s has %s (%s).\n", szInfo, u->GetAlias(), name.c_str(), fullName.c_str());
+                  }
+                  break;
+                }
 
           case ICQ_PLUGIN_RESP_PHONExBOOK:
           {
             gLog.Info("%sPhone Book reply from %s.\n", szInfo, u->GetAlias());
-            struct PhoneBookEntry pb[nEntries];
+                  struct PhoneBookEntry* pb = new PhoneBookEntry[nEntries];
             for (unsigned long i = 0; i < nEntries; i ++)
             {
               unsigned long nLen = packet.UnpackUnsignedLong();
@@ -3212,6 +3191,7 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             }
             u->SetEnableSave(true);
             u->SavePhoneBookInfo();
+                  delete [] pb;
 
                 pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_PHONExBOOK, u->id()));
                 break;
@@ -3238,13 +3218,8 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
               break;
             }
 
-            char data[nLen];
-            for (unsigned long i = 0; i < nLen; i++)
-            {
-              packet >> data[i];
-            }
-
-            write(nFD, data, nLen);
+                  string data = packet.unpackRawString(nLen);
+                  write(nFD, data.c_str(), nLen);
             close(nFD);
 
             u->SetEnableSave(false);
@@ -3443,23 +3418,16 @@ bool CICQDaemon::ProcessPluginMessage(CBuffer &packet, ICQUser *u,
             packet.incDataPosRead(GUID_LENGTH); // GUID of plugin
             packet.incDataPosRead(4); //Unknown
             unsigned long nLen = packet.UnpackUnsignedLong();
-            char szName[nLen+1];
-            for (unsigned long i = 0; i < nLen; i++)
-              packet >> szName[i];
-            szName[nLen] = '\0';
+                string name = packet.unpackRawString(nLen);
 
             nLen = packet.UnpackUnsignedLong();
-            char szFullName[nLen+1];
-            for (unsigned long i = 0; i < nLen; i++)
-              packet >> szFullName[i];
-            szFullName[nLen] = '\0';
+                string fullName = packet.unpackRawString(nLen);
 
             packet.incDataPosRead(4); //Unknown (always 0?)
 
-            gLog.Info("%s%s has %s (%s).\n", szInfo, u->GetAlias(), szName,
-                                             szFullName);
-          }
-        }
+                gLog.Info("%s%s has %s (%s).\n", szInfo, u->GetAlias(), name.c_str(), fullName.c_str());
+              }
+            }
 
         result = EVENT_ACKED;
         break;

@@ -2268,15 +2268,12 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     packet >> nFilenameLen;
     if (!bIsAck)
     {
-      char szFilename[nFilenameLen+1];
-      for (unsigned short i = 0; i < nFilenameLen; i++)
-        packet >> szFilename[i];
-      szFilename[nFilenameLen] = '\0'; // be safe
+        string filename = packet.unpackRawString(nFilenameLen);
       packet >> nFileSize;
       ConstFileList filelist;
-      filelist.push_back(strdup(szFilename));
+        filelist.push_back(strdup(filename.c_str()));
 
-      CEventFile *e = new CEventFile(szFilename, message, nFileSize,
+        CEventFile* e = new CEventFile(filename.c_str(), message, nFileSize,
                                      filelist, nSequence, TIME_NOW, nFlags,
                                      0, nMsgID[0], nMsgID[1]);
       nEventType = ON_EVENT_FILE;
@@ -2375,33 +2372,30 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     packet >> nLen;
     packet.incDataPosRead(18);
     packet >> nLongLen; // plugin len
-    char szPlugin[nLongLen+1];
-    for (unsigned long i = 0; i < nLongLen; i++)
-      packet >> szPlugin[i];
-    szPlugin[nLongLen] = '\0';
+      string plugin = packet.unpackRawString(nLongLen);
 
     packet.incDataPosRead(nLen - 22 - nLongLen); // unknown
     packet >> nLongLen; // bytes remaining
 
     int nCommand = 0;
-    if (strstr(szPlugin, "File"))
+      if (plugin.find("File") != string::npos)
       nCommand = ICQ_CMDxSUB_FILE;
-    else if (strstr(szPlugin, "URL"))
+      else if (plugin.find("URL") != string::npos)
       nCommand = ICQ_CMDxSUB_URL;
-    else if (strstr(szPlugin, "Chat"))
+      else if (plugin.find("Chat") != string::npos)
       nCommand = ICQ_CMDxSUB_CHAT;
-    else if (strstr(szPlugin, "Contacts"))
+      else if (plugin.find("Contacts") != string::npos)
       nCommand = ICQ_CMDxSUB_CONTACTxLIST;
 
     if (nCommand == 0)
     {
-      gLog.Warn(tr("%sUnknown ICBM plugin type: %s\n"), L_SRVxSTR, szPlugin);
+        gLog.Warn(tr("%sUnknown ICBM plugin type: %s\n"), L_SRVxSTR, plugin.c_str());
       u->Unlock();
       return;
     }
 
     packet >> nLongLen;
-    char szMessage[nLongLen+1];
+      char* szMessage = new char[nLongLen+1];
     for (unsigned long i = 0; i < nLongLen; i++)
       packet >> szMessage[i];
     szMessage[nLongLen] = '\0';
@@ -2414,6 +2408,7 @@ void CICQDaemon::ProcessMessage(ICQUser *u, CBuffer &packet, char *message,
     u->Unlock();
     ProcessMessage(u, packet, msg, nCommand, nMask, nMsgID,
                    nSequence, bIsAck, bNewUser);
+      delete [] szMessage;
     return;
 
     break; // bah!

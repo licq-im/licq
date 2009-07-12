@@ -693,7 +693,7 @@ public:
 class CPU_ThroughServer : public CPU_CommonFamily
 {
 public:
-  CPU_ThroughServer(const char *szId, unsigned char format, char *_sMessage,
+  CPU_ThroughServer(const char *szId, unsigned char format, const char* _sMessage,
                     unsigned short _nCharset = 0, bool bOffline = true,
                     size_t _nLen = 0);
   CPU_ThroughServer(unsigned long _nDestinationUin, unsigned char format,
@@ -1436,7 +1436,7 @@ public:
 class CPT_Url : public CPacketTcp
 {
 public:
-   CPT_Url(char *_sMessage, unsigned short nLevel, bool bMR,
+  CPT_Url(const char* _sMessage, unsigned short nLevel, bool bMR,
       CICQColor* pColor, LicqUser *pUser);
 };
 

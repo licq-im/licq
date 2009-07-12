@@ -1005,7 +1005,7 @@ protected:
   void icqSendInvisibleList();
   void icqCreatePDINFO();
   void icqRequestSystemMsg();
-  ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, char *_sMessage,
+  ICQEvent *icqSendThroughServer(const char *szId, unsigned char format, const char* _sMessage,
     CUserEvent *, unsigned short = 0, size_t = 0);
 
   void FailEvents(int sd, int err);
