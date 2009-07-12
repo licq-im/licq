@@ -189,11 +189,7 @@ void ReadWriteMutex::unlockRead()
 #ifdef DEBUG_RW_MUTEX
   assert(myNumReaders > 0);
 #endif
-  if (myNumReaders == 0)
-  {
-    pthread_mutex_unlock(&myMutex);
-  }
-  else
+  if (myNumReaders > 0)
   {
 #ifdef DEBUG_RW_MUTEX
     unsetReader();
@@ -201,8 +197,8 @@ void ReadWriteMutex::unlockRead()
     --myNumReaders;
     if (myNumReaders == 0)
       pthread_cond_signal(&myLockFree);
-    pthread_mutex_unlock(&myMutex);
   }
+  pthread_mutex_unlock(&myMutex);
 }
 
 void ReadWriteMutex::lockWrite()
@@ -229,17 +225,13 @@ void ReadWriteMutex::unlockWrite()
 #ifdef DEBUG_RW_MUTEX
   assert(myHasWriter != false);
 #endif
-  if (!myHasWriter)
-  {
-    pthread_mutex_unlock(&myMutex);
-  }
-  else
+  if (myHasWriter)
   {
 #ifdef DEBUG_RW_MUTEX
     unsetWriter();
 #endif
     myHasWriter = false;
     pthread_cond_broadcast(&myLockFree);
-    pthread_mutex_unlock(&myMutex);
   }
+  pthread_mutex_unlock(&myMutex);
 }
