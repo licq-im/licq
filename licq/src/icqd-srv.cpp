@@ -6127,27 +6127,27 @@ void CICQDaemon::ProcessUserList()
 
   for (iter = receivedUserList.begin(); iter != receivedUserList.end(); iter++)
   {
-    const char* id = iter->first.c_str();
+    UserId userId = LicqUser::makeUserId(iter->first, LICQ_PPID);
     CUserProperties* data = iter->second;
 
-    if (id == NULL || id[0] == '\0')
+    if (!USERID_ISVALID(userId))
     {
       gLog.Warn(tr("%sEmpty User ID was received in the contact list.\n"),
           L_SRVxSTR);
       continue;
     }
 
-    bool isOnList = gUserManager.IsOnList(id, LICQ_PPID);
+    bool isOnList = gUserManager.userExists(userId);
 
     if (!isOnList)
     {
-      gUserManager.addUser(id, LICQ_PPID, true, false); // Don't notify server
+      gUserManager.addUser(userId, true, false, gUserManager.GetGroupFromID(data->groupId)); // Don't notify server
       gLog.Info(tr("%sAdded %s (%s) to list from server.\n"),
-          L_SRVxSTR, (data->newAlias ? data->newAlias.get() : id), id);
+          L_SRVxSTR, (data->newAlias ? data->newAlias.get() : USERID_TOSTR(userId)), USERID_TOSTR(userId));
     }
 
-    ICQUser* u = gUserManager.FetchUser(id, LICQ_PPID, LOCK_W);
-    if (u == NULL)
+    LicqUserWriteGuard u(userId);
+    if (!u.isLocked())
       continue;
 
     // For now, just save all the TLVs. We should change this to have awaiting auth check
@@ -6165,7 +6165,8 @@ void CICQDaemon::ProcessUserList()
     u->SetInvisibleList(data->invisibleSid != 0);
     u->SetIgnoreList(data->inIgnoreList);
 
-    u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(data->groupId));
+    if (isOnList)
+      u->AddToGroup(GROUPS_USER, gUserManager.GetGroupFromID(data->groupId));
 
     u->SetAwaitingAuth(data->awaitingAuth);
 
@@ -6188,7 +6189,6 @@ void CICQDaemon::ProcessUserList()
     // Save GSID, SID and group memberships
     u->SaveLicqInfo();
     pushPluginSignal(new LicqSignal(SIGNAL_UPDATExUSER, USER_GENERAL, u->id()));
-    gUserManager.DropUser(u);
   }
 
   receivedUserList.clear();

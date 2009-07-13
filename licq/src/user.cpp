@@ -571,7 +571,7 @@ bool CUserManager::addUser(const UserId& uid,
 
   // Set initial group membership, also sets server group for user
   if (groupId != 0)
-    setUserInGroup(uid, GROUPS_USER, groupId, true, permanent);
+    setUserInGroup(uid, GROUPS_USER, groupId, true, permanent && addToServer);
 
   return true;
 }

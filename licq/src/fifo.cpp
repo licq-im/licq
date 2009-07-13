@@ -552,7 +552,10 @@ static int fifo_adduser ( int argc, const char *const *argv, void *data)
   }
 
   if( atoid(argv[1], false, &szId, &nPPID, d) )
-    gUserManager.addUser(szId, nPPID);
+  {
+    UserId userId = LicqUser::makeUserId(szId, nPPID);
+    gUserManager.addUser(userId);
+  }
   else
     ReportBadBuddy(argv[0],argv[1]);
   free(szId);
