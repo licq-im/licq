@@ -553,9 +553,9 @@ void UserSendCommon::updatePicture(const LicqUser* u)
       myPictureSplitter->insertWidget(1, myPictureLabel);
       myPictureLabel->setMovie(picMovie);
       if (picMovie->frameCount() > 1)
-	  picMovie->start();
+        picMovie->start();
       else
-	  picMovie->jumpToNextFrame();
+        picMovie->jumpToNextFrame();
       myPictureLabel->setFixedWidth(myPictureLabel->sizeHint().width());
       if (Config::Chat::instance()->showUserPicHidden())
         myPictureSplitter->setSizes(QList<int>() << 1 << 0);
