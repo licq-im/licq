@@ -407,6 +407,9 @@ void ContactListModel::clear()
 
 QModelIndex ContactListModel::index(int row, int column, const QModelIndex& parent) const
 {
+  if (row < 0 || column < 0 || column >= myColumnCount)
+    return QModelIndex();
+
   // If root item is requested we return a group
   if (!parent.isValid())
   {
@@ -487,7 +490,7 @@ QVariant ContactListModel::data(const QModelIndex& index, int role) const
 Qt::ItemFlags ContactListModel::flags(const QModelIndex& index) const
 {
   if (!index.isValid())
-    return Qt::ItemIsEnabled;
+    return 0;
 
   Qt::ItemFlags f = Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 
@@ -559,6 +562,9 @@ QModelIndex ContactListModel::groupIndex(int id) const
 
 bool ContactListModel::setData(const QModelIndex& index, const QVariant& value, int role)
 {
+  if (!index.isValid() || static_cast<ContactItem*>(index.internalPointer())->itemType() != UserItem)
+    false;
+
   return static_cast<ContactItem*>(index.internalPointer())->setData(value, role);
 }
 
