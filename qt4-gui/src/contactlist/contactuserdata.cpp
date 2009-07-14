@@ -139,15 +139,19 @@ void ContactUserData::update(unsigned long subSignal, int argument)
   // TODO: Add better handling of subsignals so we don't have to update everything so often
 
 
-  LicqUserReadGuard u(myUserId);
-  if (u.isLocked())
   {
-    // Group membership is handled by ContactList so send it a signal to update
-    emit updateUserGroups(this, *u);
+    LicqUserReadGuard u(myUserId);
+    if (u.isLocked())
+    {
+      // Group membership is handled by ContactList so send it a signal to update
+      emit updateUserGroups(this, *u);
 
-    // No specific handling for this signal so reread everything from the daemon
-    updateAll(*u);
+      // No specific handling for this signal so reread everything from the daemon
+      updateAll(*u);
+    }
   }
+
+  emit dataChanged(this);
 }
 
 void ContactUserData::updateAll(const LicqUser* u)
@@ -273,8 +277,6 @@ void ContactUserData::updateAll(const LicqUser* u)
 
   updateSorting();
   updateVisibility();
-
-  emit dataChanged(this);
 }
 
 void ContactUserData::updateExtendedStatus()

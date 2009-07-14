@@ -195,6 +195,7 @@ void ContactListModel::updateUser(const UserId& userId)
     return;
 
   userData->updateAll(*u);
+  userDataChanged(userData);
   updateUserGroups(userData, *u);
 }
 
