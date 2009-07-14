@@ -38,9 +38,9 @@ using namespace LicqQtGui;
 
 UserFloatyList FloatyView::floaties;
 
-FloatyView::FloatyView(ContactListModel* contactList, const LicqUser* licqUser,  QWidget* parent)
+FloatyView::FloatyView(ContactListModel* contactList, const UserId& userId,  QWidget* parent)
   : UserViewBase(contactList, parent),
-  myUserId(licqUser->id())
+  myUserId(userId)
 {
   setWindowFlags(Qt::FramelessWindowHint);
   Support::ghostWindow(winId());
@@ -50,9 +50,13 @@ FloatyView::FloatyView(ContactListModel* contactList, const LicqUser* licqUser, 
   name.sprintf("Floaty%d", floaties.size() + 1);
   Support::setWidgetProps(this, name);
 
-  setWindowTitle(tr("%1 Floaty (%2)")
-      .arg(QString::fromUtf8(licqUser->GetAlias()))
-      .arg(licqUser->IdString()));
+  {
+    LicqUserReadGuard u(myUserId);
+
+    setWindowTitle(tr("%1 Floaty (%2)")
+        .arg(QString::fromUtf8(u->GetAlias()))
+        .arg(u->accountId().c_str()));
+  }
 
   setFrameStyle(QFrame::Raised | QFrame::Box);
   setSelectionMode(NoSelection);

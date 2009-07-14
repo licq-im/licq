@@ -43,10 +43,10 @@ public:
    * Constructor
    *
    * @param contactList The contact list instance
-   * @param licqUser The daemon contact to create floaty for
+   * @param userId The daemon contact to create floaty for
    * @param parent Parent object
    */
-  FloatyView(ContactListModel* contactList, const LicqUser* licqUser, QWidget* parent = 0);
+  FloatyView(ContactListModel* contactList, const UserId& userId, QWidget* parent = 0);
 
   /**
    * Destructor

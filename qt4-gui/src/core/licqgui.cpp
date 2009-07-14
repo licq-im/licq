@@ -1256,18 +1256,13 @@ void LicqGui::toggleFloaty(const UserId& userId)
 void LicqGui::createFloaty(const UserId& userId,
    unsigned short x, unsigned short y, unsigned short w)
 {
-  if (!USERID_ISVALID(userId))
-    return;
-  const LicqUser* u = gUserManager.fetchUser(userId, LOCK_R);
-  if (u == NULL)
+  if (!USERID_ISVALID(userId) || !gUserManager.userExists(userId))
     return;
 
-  FloatyView* f = new FloatyView(myContactList, u);
+  FloatyView* f = new FloatyView(myContactList, userId);
 
   connect(f, SIGNAL(userDoubleClicked(const UserId&)),
       SLOT(showDefaultEventDialog(const UserId&)));
-
-  gUserManager.DropUser(u);
 
   // not so good, we should allow for multiple guys in one box...
   // perhaps use the viewport sizeHint
