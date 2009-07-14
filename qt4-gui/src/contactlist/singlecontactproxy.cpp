@@ -62,7 +62,7 @@ void SingleContactProxy::slot_dataChanged(const QModelIndex& topLeft, const QMod
 QModelIndex SingleContactProxy::index(int row, int column, const QModelIndex& parent) const
 {
   // Only one top level item so return invalid for anything else
-  if (!parent.isValid() && row == 0)
+  if (!parent.isValid() && row == 0 && column >= 0 && column < MAX_COLUMNCOUNT)
     return createIndex(0, column, 0);
 
   return QModelIndex();
@@ -88,7 +88,7 @@ int SingleContactProxy::columnCount(const QModelIndex& /* parent */) const
 
 QVariant SingleContactProxy::data(const QModelIndex& index, int role) const
 {
-  if (index.isValid() && index.row() == 0 && index.column() < MAX_COLUMNCOUNT)
+  if (index.isValid() && index.row() == 0 && index.column() >= 0 && index.column() < MAX_COLUMNCOUNT)
     return myContactList->data(mySourceIndex[index.column()], role);
 
   return QVariant();
@@ -96,14 +96,10 @@ QVariant SingleContactProxy::data(const QModelIndex& index, int role) const
 
 Qt::ItemFlags SingleContactProxy::flags(const QModelIndex& index) const
 {
-  if (!index.isValid() || index.row() != 0)
-    return Qt::ItemIsEnabled;
+  if (!index.isValid() || index.row() != 0 || index.column() < 0 || index.column() >= MAX_COLUMNCOUNT)
+    return 0;
 
-  int column = index.column();
-  if (column < 0 || column >= MAX_COLUMNCOUNT)
-    return Qt::ItemIsEnabled;
-
-  return myContactList->flags(mySourceIndex[column]);
+  return myContactList->flags(mySourceIndex[index.column()]);
 }
 
 QVariant SingleContactProxy::headerData(int section, Qt::Orientation orientation, int role) const
