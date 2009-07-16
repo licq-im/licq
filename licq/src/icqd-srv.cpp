@@ -1535,10 +1535,13 @@ ICQEvent* CICQDaemon::icqSendThroughServer(const char *szId,
   size_t nMsgLen)
 {
   ICQEvent* result;
-  const ICQUser* u = gUserManager.FetchUser(szId, LICQ_PPID, LOCK_R);
-  UserId userId = u->id();
-  bool bOffline = u->StatusOffline();
-  gUserManager.DropUser(u);
+  UserId userId = LicqUser::makeUserId(szId, LICQ_PPID);
+  bool bOffline = true;
+  {
+    LicqUserReadGuard u(userId);
+    if (u.isLocked())
+      bOffline = u->StatusOffline();
+  }
 
   CPU_ThroughServer *p = new CPU_ThroughServer(szId, format, _sMessage, nCharset, bOffline, nMsgLen);
 
