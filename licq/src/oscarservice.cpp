@@ -158,6 +158,8 @@ bool COscarService::SendBARTFam(ICQEvent *e)
     case ICQ_SNACxBART_DOWNLOADxREQUEST:
     {
       const LicqUser* u = gUserManager.fetchUser(e->userId());
+      if (u == NULL)
+        return false;
       CPU_RequestBuddyIcon *p = new CPU_RequestBuddyIcon(u->accountId().c_str(),
           u->BuddyIconType(), u->BuddyIconHashType(), u->BuddyIconHash(), myFam);
       gLog.Info(tr("%sRequesting buddy icon for %s (#%hu/#%d)...\n"),
