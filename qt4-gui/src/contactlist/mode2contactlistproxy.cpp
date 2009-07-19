@@ -79,6 +79,10 @@ void Mode2ContactListProxy::reset()
   {
     QModelIndex groupIndex = sourceModel()->index(srcGroupRow, 0);
 
+    // Skip the system groups since they'll be filtered by the next proxy anyway
+    if (groupIndex.data(ContactListModel::GroupIdRole).toInt() >= ContactListModel::SystemGroupOffset)
+      continue;
+
     // Create an online group and an offline group for each source model group
     myGroups.append(new ContactProxyGroup(static_cast<ContactGroup*>(groupIndex.internalPointer()), true));
     myGroups.append(new ContactProxyGroup(static_cast<ContactGroup*>(groupIndex.internalPointer()), false));
@@ -126,62 +130,71 @@ void Mode2ContactListProxy::sourceDataChanged(const QModelIndex& topLeft, const 
   switch (static_cast<ContactItem*>(topLeft.internalPointer())->itemType())
   {
     case ContactListModel::GroupItem:
+    {
+      if (topLeft.data(ContactListModel::GroupIdRole).toInt() >= ContactListModel::SystemGroupOffset)
+        // Only system groups have changed, we don't have them so ignore signal
+        return;
+
+      // If signal includes system groups, make sure forwarded signal only contains normal groups
+      int lastRow = bottomRight.row() * 2 + 1;
+      if (lastRow >= myGroups.size())
+        lastRow = myGroups.size() - 1;
+
       // One or more groups have changed, emit signal for both online and offline proxy groups
       emit dataChanged(createIndex(topLeft.row() * 2 + NumBars, topLeft.column(), myGroups.at(topLeft.row() * 2)),
-          createIndex(bottomRight.row() * 2 + NumBars + 1, bottomRight.column(), myGroups.at(bottomRight.row() * 2 + 1)));
+          createIndex(lastRow + NumBars, bottomRight.column(), myGroups.at(lastRow)));
       return;
-
+    }
     case ContactListModel::UserItem:
     {
       // Contact list model currently never emits dataChanged for multiple users at the same time
       Q_ASSERT(topLeft.row() == bottomRight.row());
 
       ContactUser* cu = static_cast<ContactUser*>(topLeft.internalPointer());
-      // There should never be a user that isn't in our map, but check just in case since we can probably handle it
-      if (myUserData.contains(cu))
+
+      // If user isn't in map, it's in a system group, which we don't care about, so just ignore signal
+      if (!myUserData.contains(cu))
+        return;
+
+      int groupRow = myUserData[cu].groupRow;
+      bool wasOnline = ((groupRow & 1) == 0);
+
+      bool isOnline = (topLeft.data(ContactListModel::StatusRole) != ContactListModel::OfflineStatus);
+      if (isOnline == wasOnline)
       {
-        int groupRow = myUserData[cu].groupRow;
-        bool wasOnline = ((groupRow & 1) == 0);
+        // Status hasn't changed, just forward signal with correct row in the proxy model
+        int row = myUserData[cu].proxyRow;
+        emit dataChanged(createIndex(row, topLeft.column(), cu), createIndex(row, bottomRight.column(), cu));
 
-        bool isOnline = (topLeft.data(ContactListModel::StatusRole) != ContactListModel::OfflineStatus);
-        if (isOnline == wasOnline)
+        bool emitGroupChanged = false;
+
+        bool isVisible = topLeft.data(ContactListModel::VisibilityRole).toBool();
+        if (isVisible != myUserData[cu].isVisible)
         {
-          // Status hasn't changed, just forward signal with correct row in the proxy model
-          int row = myUserData[cu].proxyRow;
-          emit dataChanged(createIndex(row, topLeft.column(), cu), createIndex(row, bottomRight.column(), cu));
-
-          bool emitGroupChanged = false;
-
-          bool isVisible = topLeft.data(ContactListModel::VisibilityRole).toBool();
-          if (isVisible != myUserData[cu].isVisible)
-          {
-            // Visibility has changed, update group
-            myGroups.at(groupRow)->updateVisibility(isVisible ? 1 : -1);
-            emitGroupChanged = true;
-            myUserData[cu].isVisible = isVisible;
-          }
-
-          int unreadEvents = topLeft.data(ContactListModel::UnreadEventsRole).toInt();
-          if (unreadEvents != myUserData[cu].unreadEvents)
-          {
-            // Unread events counter has changed, update group
-            myGroups.at(groupRow)->updateEvents(unreadEvents - myUserData[cu].unreadEvents);
-            emitGroupChanged = true;
-            myUserData[cu].unreadEvents = unreadEvents;
-          }
-
-          if (emitGroupChanged)
-            emit dataChanged(createIndex(groupRow + NumBars, 0, myGroups.at(groupRow)),
-                createIndex(groupRow + NumBars, myColumnCount-1, myGroups.at(groupRow)));
-
-          return;
+          // Visibility has changed, update group
+          myGroups.at(groupRow)->updateVisibility(isVisible ? 1 : -1);
+          emitGroupChanged = true;
+          myUserData[cu].isVisible = isVisible;
         }
 
-        // Status has changed, remove from current group
-        removeUser(cu);
+        int unreadEvents = topLeft.data(ContactListModel::UnreadEventsRole).toInt();
+        if (unreadEvents != myUserData[cu].unreadEvents)
+        {
+          // Unread events counter has changed, update group
+          myGroups.at(groupRow)->updateEvents(unreadEvents - myUserData[cu].unreadEvents);
+          emitGroupChanged = true;
+          myUserData[cu].unreadEvents = unreadEvents;
+        }
+
+        if (emitGroupChanged)
+          emit dataChanged(createIndex(groupRow + NumBars, 0, myGroups.at(groupRow)),
+              createIndex(groupRow + NumBars, myColumnCount-1, myGroups.at(groupRow)));
+
+        return;
       }
 
-      // Status has changed (or user is missing), add to new/other group
+      // Status has changed, remove from current group and add to other group
+      removeUser(cu);
       addUser(topLeft);
       return;
     }
@@ -239,6 +252,10 @@ void Mode2ContactListProxy::addUser(const QModelIndex& userIndex)
 
 void Mode2ContactListProxy::removeUser(ContactUser* cu)
 {
+  // Don't try to remove what we don't have, i.e. ignore system groups
+  if (!myUserData.contains(cu))
+    return;
+
   int groupRow = myUserData[cu].groupRow;
   int proxyRow = myUserData[cu].proxyRow;
 
@@ -302,8 +319,9 @@ void Mode2ContactListProxy::sourceRowsInserted(const QModelIndex& parent, int st
     return;
   }
 
-  // New user added, add it to appropriate group
-  addUser(sourceModel()->index(start, 0, parent));
+  // New user added, add it to appropriate group (unless it was in a system group)
+  if (parent.data(ContactListModel::GroupIdRole).toInt() < ContactListModel::SystemGroupOffset)
+    addUser(sourceModel()->index(start, 0, parent));
 }
 
 void Mode2ContactListProxy::sourceRowsAboutToBeRemoved(const QModelIndex& parent, int start, int end)
@@ -367,7 +385,9 @@ QModelIndex Mode2ContactListProxy::mapFromSource(const QModelIndex& sourceIndex)
   {
     case ContactListModel::GroupItem:
       // Groups are listed twice, group from source maps to online group in proxy
-      return createIndex(sourceIndex.row() * 2 + NumBars, sourceIndex.column(), sourceIndex.internalPointer());
+      // but we have no mapping for system groups
+      if (sourceIndex.row() * 2 < myGroups.size())
+        return createIndex(sourceIndex.row() * 2 + NumBars, sourceIndex.column(), sourceIndex.internalPointer());
 
     case ContactListModel::UserItem:
     {
