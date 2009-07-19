@@ -29,6 +29,7 @@
 #include "config/skin.h"
 
 #include "contactlist/maincontactlistproxy.h"
+#include "contactlist/mode2contactlistproxy.h"
 
 using namespace LicqQtGui;
 
@@ -77,6 +78,7 @@ UserId UserView::currentUserId() const
 void UserView::updateRootIndex()
 {
   bool threadView = Config::ContactList::instance()->threadView();
+  bool mode2View = Config::ContactList::instance()->mode2View();
   GroupType groupType = Config::ContactList::instance()->groupType();
   int groupId = Config::ContactList::instance()->groupId();
 
@@ -85,7 +87,7 @@ void UserView::updateRootIndex()
   if (threadView && groupType == GROUPS_SYSTEM && groupId == GROUP_ALL_USERS)
   {
     // Hide the system groups that exist in the model but should not be displayed in threaded view
-    dynamic_cast<MainContactListProxy*>(myListProxy)->setThreadedView(true);
+    dynamic_cast<MainContactListProxy*>(myListProxy)->setThreadedView(true, mode2View);
   }
   else
   {
@@ -93,7 +95,7 @@ void UserView::updateRootIndex()
     if (newRoot.isValid())
     {
       // Turn off group filtering first, otherwise we cannot switch from threaded view to a system group
-      dynamic_cast<MainContactListProxy*>(myListProxy)->setThreadedView(false);
+      dynamic_cast<MainContactListProxy*>(myListProxy)->setThreadedView(false, false);
 
       // Hidden groups may not be sorted, force a resort just in case
       resort();
@@ -131,8 +133,10 @@ void UserView::expandGroups()
   for (int i = 0; i < myListProxy->rowCount(QModelIndex()); ++i)
   {
     QModelIndex index = myListProxy->index(i, 0, QModelIndex());
-    int gid = index.data(ContactListModel::GroupIdRole).toInt();
+    if (static_cast<ContactListModel::ItemType>(index.data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::GroupItem)
+      continue;
 
+    int gid = index.data(ContactListModel::GroupIdRole).toInt();
     setExpanded(index, Config::ContactList::instance()->groupState(gid));
   }
 }
@@ -178,6 +182,13 @@ void UserView::rowsInserted(const QModelIndex& parent, int start, int end)
   // If we just got a new group we may want to expand it
   if (!parent.isValid())
     expandGroups();
+}
+
+void UserView::reset()
+{
+  UserViewBase::reset();
+  // QTreeView::reset will collapse all groups so we have to reexpand them here
+  expandGroups();
 }
 
 void UserView::mousePressEvent(QMouseEvent* event)

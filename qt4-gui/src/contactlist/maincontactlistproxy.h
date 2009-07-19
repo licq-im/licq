@@ -60,8 +60,9 @@ public:
    * Change filter for threaded or flat view
    *
    * @param enable True for threaded view, false for flat group view
+   * @param mode2 Use mode 2 view, ignored if threaded view is disabled
    */
-  void setThreadedView(bool enable);
+  void setThreadedView(bool enable, bool mode2);
 
 private slots:
   /**
@@ -80,7 +81,10 @@ private:
    */
   bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
+  ContactListModel* myContactList;
   bool myThreadedView;
+  bool myMode2View;
+  QAbstractProxyModel* myProxy;
 };
 
 } // namespace LicqQtGui

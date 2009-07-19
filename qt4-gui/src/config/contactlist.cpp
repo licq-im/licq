@@ -56,6 +56,7 @@ void Config::ContactList::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadNum("SortColumn", mySortColumn, 0);
   iniFile.ReadBool("SortColumnAscending", mySortColumnAscending, true);
   iniFile.ReadBool("UseThreadView", myThreadView, true);
+  iniFile.ReadBool("UseMode2View", myMode2View, false);
   iniFile.ReadBool("ShowEmptyGroups", myShowEmptyGroups, true);
   iniFile.ReadNum("TVGroupStates", myGroupStates, 0xFFFFFFFE);
   iniFile.ReadBool("ShowExtIcons", myShowExtendedIcons, true);
@@ -130,6 +131,7 @@ void Config::ContactList::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("ShowOfflineUsers", myShowOffline);
   iniFile.WriteBool("AlwaysShowONU", myAlwaysShowONU);
   iniFile.WriteBool("UseThreadView", myThreadView);
+  iniFile.WriteBool("UseMode2View", myMode2View);
   iniFile.WriteBool("ShowEmptyGroups", myShowEmptyGroups);
   iniFile.WriteNum("TVGroupStates", myGroupStates);
   iniFile.WriteBool("ShowExtIcons", myShowExtendedIcons);
@@ -368,6 +370,16 @@ void Config::ContactList::setThreadView(bool threadView)
     return;
 
   myThreadView = threadView;
+
+  changeCurrentList();
+}
+
+void Config::ContactList::setMode2View(bool mode2View)
+{
+  if (mode2View == myMode2View)
+    return;
+
+  myMode2View = mode2View;
 
   changeCurrentList();
 }

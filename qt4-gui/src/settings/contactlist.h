@@ -93,6 +93,7 @@ private:
   QCheckBox* myGridLinesCheck;
   QCheckBox* myHeaderCheck;
   QCheckBox* myShowDividersCheck;
+  QCheckBox* myMode2ViewCheck;
   QCheckBox* myFontStylesCheck;
   QCheckBox* myAlwaysShowONUCheck;
   QCheckBox* myScrollBarCheck;

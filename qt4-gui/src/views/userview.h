@@ -74,6 +74,12 @@ public slots:
    */
   void expandGroups();
 
+  /**
+   * Reset internal state of view
+   * Overloaded to restore group states after QTreeView has lost them
+   */
+  virtual void reset();
+
 protected slots:
   /**
    * Apply new skin

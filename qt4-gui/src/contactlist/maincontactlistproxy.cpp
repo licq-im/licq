@@ -23,21 +23,44 @@
 #include "config/contactlist.h"
 
 #include "contactlist.h"
+#include "mode2contactlistproxy.h"
 
 using namespace LicqQtGui;
 
 MainContactListProxy::MainContactListProxy(ContactListModel* contactList, QObject* parent)
   : SortedContactListProxy(contactList, parent),
-    myThreadedView(false)
+    myContactList(contactList),
+    myThreadedView(false),
+    myMode2View(false),
+    myProxy(NULL)
 {
   // Update filter when list configuration changes
   connect(Config::ContactList::instance(), SIGNAL(currentListChanged()), SLOT(configUpdated()));
 }
 
-void MainContactListProxy::setThreadedView(bool enable)
+void MainContactListProxy::setThreadedView(bool enable, bool mode2)
 {
   myThreadedView = enable;
-  invalidateFilter();
+  myMode2View = (enable && mode2);
+
+  if (!myMode2View && myProxy != NULL)
+  {
+    setSourceModel(myContactList);
+    delete myProxy;
+    myProxy = NULL;
+    reset();
+  }
+  else if (myMode2View && myProxy == NULL)
+  {
+    myProxy = new Mode2ContactListProxy(myContactList, this);
+    setSourceModel(myProxy);
+    reset();
+  }
+  else
+  {
+    // No proxy added/removed, just force filter to update
+    invalidateFilter();
+  }
 }
 
 void MainContactListProxy::configUpdated()
@@ -91,8 +114,12 @@ bool MainContactListProxy::filterAcceptsRow(int source_row, const QModelIndex& s
     }
     case ContactListModel::BarItem:
     {
+      // In mode 2 view, if groups are always visible, bars are always needed
+      if (myMode2View && Config::ContactList::instance()->showEmptyGroups())
+        return true;
+
       // Filter all sub group headers
-      if (myThreadedView)
+      if (myThreadedView && !myMode2View)
         return false;
 
       ContactListModel::SubGroupType subGroup = static_cast<ContactListModel::SubGroupType>(item.data(ContactListModel::SubGroupRole).toInt());

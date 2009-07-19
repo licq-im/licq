@@ -7,6 +7,7 @@ set(contactlist_SRCS
   contactuser.cpp
   contactuserdata.cpp
   maincontactlistproxy.cpp
+  mode2contactlistproxy.cpp
   multicontactproxy.cpp
   singlecontactproxy.cpp
   sortedcontactlistproxy.cpp

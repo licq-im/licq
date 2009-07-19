@@ -91,6 +91,7 @@ public:
   bool showOffline() const { return myShowOffline; }
   bool alwaysShowONU() const { return myAlwaysShowONU; }
   bool threadView() const { return myThreadView; }
+  bool mode2View() const { return myMode2View; }
   bool showEmptyGroups() const { return myShowEmptyGroups; }
   GroupType groupType() { return myGroupType; }
   int groupId() { return myGroupId; }
@@ -144,6 +145,7 @@ public slots:
   void setShowOffline(bool showOffline);
   void setAlwaysShowONU(bool alwaysShowONU);
   void setThreadView(bool threadView);
+  void setMode2View(bool mode2View);
   void setShowEmptyGroups(bool showEmptyGroups);
   void setGroup(GroupType groupType, int groupId);
 
@@ -226,6 +228,7 @@ private:
   bool myShowOffline;
   bool myAlwaysShowONU;
   bool myThreadView;
+  bool myMode2View;
   bool myShowEmptyGroups;
   GroupType myGroupType;
   int myGroupId;
