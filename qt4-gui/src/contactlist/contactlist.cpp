@@ -109,7 +109,8 @@ void ContactListModel::listUpdated(unsigned long subSignal, int argument, const 
       // argument is group id
 
       // Set inital expanded state for new group
-      Config::ContactList::instance()->setGroupState(argument, true);
+      Config::ContactList::instance()->setGroupState(argument, true, true);
+      Config::ContactList::instance()->setGroupState(argument, false, true);
 
       ContactGroup* newGroup = new ContactGroup(argument);
       connectGroup(newGroup);

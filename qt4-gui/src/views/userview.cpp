@@ -137,7 +137,8 @@ void UserView::expandGroups()
       continue;
 
     int gid = index.data(ContactListModel::GroupIdRole).toInt();
-    setExpanded(index, Config::ContactList::instance()->groupState(gid));
+    bool online = (index.data(ContactListModel::SortPrefixRole).toInt() < 2);
+    setExpanded(index, Config::ContactList::instance()->groupState(gid, online));
   }
 }
 
@@ -332,13 +333,15 @@ void UserView::resort()
 void UserView::slotExpanded(const QModelIndex& index)
 {
   int gid = index.data(ContactListModel::GroupIdRole).toInt();
-  Config::ContactList::instance()->setGroupState(gid, true);
+  bool online = (index.data(ContactListModel::SortPrefixRole).toInt() < 2);
+  Config::ContactList::instance()->setGroupState(gid, online, true);
 }
 
 void UserView::slotCollapsed(const QModelIndex& index)
 {
   int gid = index.data(ContactListModel::GroupIdRole).toInt();
-  Config::ContactList::instance()->setGroupState(gid, false);
+  bool online = (index.data(ContactListModel::SortPrefixRole).toInt() < 2);
+  Config::ContactList::instance()->setGroupState(gid, online, false);
 }
 
 void UserView::slotHeaderClicked(int column)

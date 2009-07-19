@@ -95,7 +95,7 @@ public:
   bool showEmptyGroups() const { return myShowEmptyGroups; }
   GroupType groupType() { return myGroupType; }
   int groupId() { return myGroupId; }
-  bool groupState(int group) const;
+  bool groupState(int group, bool online) const;
 
   bool showGridLines() const { return myShowGridLines; }
   bool useFontStyles() const { return myUseFontStyles; }
@@ -155,7 +155,7 @@ public slots:
   void setShowDividers(bool showDividers);
   void setSortByStatus(unsigned short sortByStatus);
   void setSortColumn(unsigned short column, bool ascending = true);
-  void setGroupState(int group, bool expanded);
+  void setGroupState(int group, bool online, bool expanded);
   void setShowExtendedIcons(bool showExtendedIcons);
   void setShowPhoneIcons(bool showPhoneIcons);
   void setShowUserIcons(bool showUserIcons);
@@ -254,7 +254,7 @@ private:
   // Contact list state
   unsigned short mySortColumn;
   bool mySortColumnAscending;
-  int myGroupStates;
+  int myGroupStates[2];
 
   // Contact popup information
   bool myPopupPicture;
