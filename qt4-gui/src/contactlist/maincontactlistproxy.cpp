@@ -136,7 +136,7 @@ bool MainContactListProxy::filterAcceptsRow(int source_row, const QModelIndex& s
       // Filter the offline header if offline users are filtered, but keep header if any user has unread events
       if (!Config::ContactList::instance()->showOffline() &&
           subGroup == ContactListModel::OfflineSubGroup &&
-          item.data(ContactListModel::UnreadEventsRole).toInt() == 0)
+          !item.data(ContactListModel::VisibilityRole).toBool())
         return false;
 
       break;

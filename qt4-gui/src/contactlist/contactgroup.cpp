@@ -136,11 +136,14 @@ void ContactGroup::addUser(ContactUser* user, ContactListModel::SubGroupType sub
   emit beginInsert(this, rowCount());
 
   myUsers.append(user);
-  if (user->visibility())
-    myVisibleContacts++;
   myBars[subGroup]->countIncrease();
   myEvents += user->numEvents();
   myBars[subGroup]->updateNumEvents(user->numEvents());
+  if (user->visibility())
+  {
+    myVisibleContacts++;
+    myBars[subGroup]->updateVisibility(true);
+  }
 
   // Signal that we're done adding
   emit endInsert();
@@ -156,11 +159,14 @@ void ContactGroup::removeUser(ContactUser* user, ContactListModel::SubGroupType 
   emit beginRemove(this, indexOf(user));
 
   myUsers.removeAll(user);
-  if (user->visibility())
-    myVisibleContacts--;
   myBars[subGroup]->countDecrease();
   myEvents -= user->numEvents();
   myBars[subGroup]->updateNumEvents(-user->numEvents());
+  if (user->visibility())
+  {
+    myVisibleContacts--;
+    myBars[subGroup]->updateVisibility(false);
+  }
 
   // Signal that we're done removing
   emit endRemove();
@@ -192,12 +198,13 @@ void ContactGroup::updateNumEvents(int counter, ContactListModel::SubGroupType s
   emit dataChanged(this);
 }
 
-void ContactGroup::updateVisibility(bool increase)
+void ContactGroup::updateVisibility(bool increase, ContactListModel::SubGroupType subGroup)
 {
   if (increase)
     myVisibleContacts++;
   else
     myVisibleContacts--;
+  myBars[subGroup]->updateVisibility(increase);
 
   emit dataChanged(this);
 }

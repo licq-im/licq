@@ -459,7 +459,7 @@ void ContactUserData::updateVisibility()
 
   // Update groups
   foreach (ContactUser* user, myUserInstances)
-    user->group()->updateVisibility(visibility);
+    user->group()->updateVisibility(visibility, mySubGroup);
 
   myVisibility = visibility;
 }

@@ -93,7 +93,7 @@ public:
     CarAnimationRole,                   // Auto response read animation counter (UserItems only)
     OnlineAnimationRole,                // Online animation counter (UserItems only)
     EventAnimationRole,                 // Unread event animation counter (UserItems only)
-    VisibilityRole,                     // Item should always be visible (UserItems and GroupItems only)
+    VisibilityRole,                     // Item should always be visible
   };
 
   /**

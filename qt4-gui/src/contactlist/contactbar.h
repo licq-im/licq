@@ -88,6 +88,13 @@ public:
   void updateNumEvents(int counter);
 
   /**
+   * Update visibility counter
+   *
+   * @param increase True if counter should be increased
+   */
+  void updateVisibility(bool increase);
+
+  /**
    * Get data for this bar
    *
    * @param column A valid column in the contact list
@@ -102,6 +109,7 @@ private:
   QString myText;
   int myUserCount;
   int myEvents;
+  int myVisibleContacts;
 };
 
 } // namespace LicqQtGui

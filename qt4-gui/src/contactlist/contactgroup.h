@@ -144,8 +144,9 @@ public:
    * Update visibility counter
    *
    * @param increase True if counter should be increased
+   * @param subGroup Current subgroup for user that also should be updated
    */
-  void updateVisibility(bool increase);
+  void updateVisibility(bool increase, ContactListModel::SubGroupType subGroup);
 
   /**
    * Get data for this group
