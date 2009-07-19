@@ -158,6 +158,7 @@ void Mode2ContactListProxy::sourceDataChanged(const QModelIndex& topLeft, const 
             // Visibility has changed, update group
             myGroups.at(groupRow)->updateVisibility(isVisible ? 1 : -1);
             emitGroupChanged = true;
+            myUserData[cu].isVisible = isVisible;
           }
 
           int unreadEvents = topLeft.data(ContactListModel::UnreadEventsRole).toInt();
@@ -166,6 +167,7 @@ void Mode2ContactListProxy::sourceDataChanged(const QModelIndex& topLeft, const 
             // Unread events counter has changed, update group
             myGroups.at(groupRow)->updateEvents(unreadEvents - myUserData[cu].unreadEvents);
             emitGroupChanged = true;
+            myUserData[cu].unreadEvents = unreadEvents;
           }
 
           if (emitGroupChanged)
