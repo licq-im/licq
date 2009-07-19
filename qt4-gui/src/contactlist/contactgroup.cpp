@@ -195,6 +195,7 @@ void ContactGroup::updateNumEvents(int counter, ContactListModel::SubGroupType s
   myEvents += counter;
   myBars[subGroup]->updateNumEvents(counter);
 
+  emit barDataChanged(myBars[subGroup], subGroup);
   emit dataChanged(this);
 }
 
@@ -206,6 +207,7 @@ void ContactGroup::updateVisibility(bool increase, ContactListModel::SubGroupTyp
     myVisibleContacts--;
   myBars[subGroup]->updateVisibility(increase);
 
+  emit barDataChanged(myBars[subGroup], subGroup);
   emit dataChanged(this);
 }
 
