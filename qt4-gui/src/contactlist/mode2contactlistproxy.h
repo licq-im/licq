@@ -61,19 +61,6 @@ struct Mode2ProxyUserData
  * followed by two groups for each source model group (online at even row
  * numbers and offline at odd rows). Groups are in same order as in model but
  * proxy assigns row numbers for users dynamically.
- *
- * TODO: When using this proxy, the following printouts can sometimes be seen:
- *   "QSortFilterProxyModel: inconsistent changes reported by source model"
- *   "QTreeView::rowsInserted internal representation of the model has been corrupted, resetting."
- * Analysis of the signals and data outputed by this proxy has failed to
- *   present any inconsistences. As there are other circumstances where
- *   QSortFilterProxyModel will fail (currently uncorfirmed bug #258012) it is
- *   assumed, for now, that these warnings also originate from
- *   QSortFilterProxyModel and not from this proxy.
- * If this proxy still triggers the above warnings after #258012 has been
- *   fixed, a new analysis of the signals should be performed. If the warnings
- *   no longer appear, remove this comment. Fault exists with current version
- *   of Qt (4.5.2).
  */
 class Mode2ContactListProxy : public QAbstractProxyModel
 {
