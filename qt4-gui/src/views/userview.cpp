@@ -177,8 +177,8 @@ void UserView::applySkin()
 
 void UserView::rowsInserted(const QModelIndex& parent, int start, int end)
 {
-  spanRowRange(parent, start, end);
   UserViewBase::rowsInserted(parent, start, end);
+  spanRowRange(parent, start, end);
 
   // If we just got a new group we may want to expand it
   if (!parent.isValid())
