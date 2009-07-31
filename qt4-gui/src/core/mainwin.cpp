@@ -170,10 +170,10 @@ MainWindow::MainWindow(bool bStartHidden, QWidget* parent)
 
   myCheckUserArAction = new QAction(this);
   addAction(myCheckUserArAction);
-  connect(myCheckUserArAction, SIGNAL(activated()), SLOT(checkUserAutoResponse()));
+  connect(myCheckUserArAction, SIGNAL(triggered()), SLOT(checkUserAutoResponse()));
   myViewHistoryAction = new QAction(this);
   addAction(myViewHistoryAction);
-  connect(myViewHistoryAction, SIGNAL(activated()), SLOT(showUserHistory()));
+  connect(myViewHistoryAction, SIGNAL(triggered()), SLOT(showUserHistory()));
   QShortcut* shortcut;
   shortcut = new QShortcut(Qt::CTRL + Qt::Key_Delete, this);
   connect(shortcut, SIGNAL(activated()), SLOT(removeUserFromList()));
