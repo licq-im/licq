@@ -39,6 +39,11 @@
 # define PLUGIN_NAME "qt4-gui"
 #endif
 
+#ifdef HAVE_HUNSPELL
+// Default path to find Hunspell dictionaries in, not used if KDE support is enabled
+# define HUNSPELL_DICTS_DIR "/usr/share/myspell/dicts/"
+#endif
+
 // Defined here until there is a way to get constant from daemon
 #define MSN_PPID 0x4D534E5F
 

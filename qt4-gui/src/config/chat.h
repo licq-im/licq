@@ -87,6 +87,9 @@ public:
   bool msgWinSticky() const { return myMsgWinSticky; }
   bool singleLineChatMode() const { return mySingleLineChatMode; }
   bool checkSpelling() const { return myCheckSpelling; }
+#ifdef HAVE_HUNSPELL
+  QString spellingDictionary() const { return mySpellingDictionary; }
+#endif
   bool histVertSpacing() const { return myHistVertSpacing; }
   bool reverseHistory() const { return myReverseHistory; }
   bool useCustomUrlBrowser() const { return myUseCustomUrlBrowser; }
@@ -140,6 +143,9 @@ public slots:
   void setMsgWinSticky(bool msgWinSticky);
   void setSingleLineChatMode(bool singleLineChatMode);
   void setCheckSpelling(bool checkSpelling);
+#ifdef HAVE_HUNSPELL
+  void setSpellingDictionary(const QString& spellingDictionary);
+#endif
   void setHistVertSpacing(bool histVertSpacing);
   void setReverseHistory(bool reverseHistory);
   void setUseCustomUrlBrowser(bool customUrlBrowser);
@@ -188,6 +194,9 @@ private:
   bool mySingleLineChatMode;
   bool myFlashTaskbar;
   bool myCheckSpelling;
+#ifdef HAVE_HUNSPELL
+  QString mySpellingDictionary;
+#endif
   bool myHistVertSpacing;
   bool myReverseHistory;
   bool myShowUserPic;

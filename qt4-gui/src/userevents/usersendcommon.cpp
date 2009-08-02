@@ -395,7 +395,13 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
 
   myMessageEdit = new MLEdit(true, myPictureSplitter);
   myMessageEdit->setSizeHintLines(3);
-  myMessageEdit->setCheckSpellingEnabled(Config::Chat::instance()->checkSpelling());
+  if (Config::Chat::instance()->checkSpelling())
+  {
+#ifdef HAVE_HUNSPELL
+    myMessageEdit->setSpellingDictionary(Config::Chat::instance()->spellingDictionary());
+#endif
+    myMessageEdit->setCheckSpellingEnabled(true);
+  }
   myMessageEdit->installEventFilter(this); // Enables send with enter
 
   if (Config::Chat::instance()->msgChatView())

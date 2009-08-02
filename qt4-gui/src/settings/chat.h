@@ -37,6 +37,9 @@ class QWidget;
 namespace LicqQtGui
 {
 class ColorButton;
+#ifdef HAVE_HUNSPELL
+class FileNameEdit;
+#endif
 class HistoryView;
 class SettingsDlg;
 class TabWidget;
@@ -101,6 +104,10 @@ private:
   QCheckBox* myShowUserPicCheck;
   QCheckBox* myShowUserPicHiddenCheck;
   QCheckBox* myPopupAutoResponseCheck;
+#ifdef HAVE_HUNSPELL
+  QLabel* myDictionaryLabel;
+  FileNameEdit* myDictionaryEdit;
+#endif
 
   QGroupBox* myLocaleBox;
   QVBoxLayout* myLocaleLayout;

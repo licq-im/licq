@@ -46,6 +46,9 @@
 #include "widgets/colorbutton.h"
 #include "widgets/historyview.h"
 #include "widgets/tabwidget.h"
+#ifdef HAVE_HUNSPELL
+# include "widgets/filenameedit.h"
+#endif
 
 #include "settingsdlg.h"
 
@@ -133,13 +136,29 @@ QWidget* Settings::Chat::createPageChat(QWidget* parent)
   myShowUserPicHiddenCheck->setToolTip(tr("Hide user picture upon opening"));
   myChatLayout->addWidget(myShowUserPicHiddenCheck, 6, 1);
 
+#if defined USE_KDE or defined HAVE_HUNSPELL
   myCheckSpelling = new QCheckBox(tr("Check spelling"));
   myCheckSpelling->setToolTip(tr("Mark misspelled words as you type."));
-#ifndef USE_KDE
-  myCheckSpelling->setVisible(false);
-#endif
   myChatLayout->addWidget(myCheckSpelling, 7, 0);
+#endif
 
+#ifdef HAVE_HUNSPELL
+  QHBoxLayout* dictionaryLayout = new QHBoxLayout();
+  myDictionaryLabel = new QLabel(tr("Dictionary file:"));
+  myDictionaryLabel->setToolTip(tr("Dictionary file to use when checking spelling."));
+  dictionaryLayout->addWidget(myDictionaryLabel);
+  myDictionaryEdit = new FileNameEdit();
+  myDictionaryEdit->setToolTip(myDictionaryLabel->toolTip());
+  myDictionaryEdit->setFilter(tr("*.dic|Dictionary files for Hunspell\\/Myspell (*.dic)"));
+  myDictionaryEdit->setDefaultPath(HUNSPELL_DICTS_DIR);
+  myDictionaryLabel->setBuddy(myDictionaryEdit);
+  dictionaryLayout->addWidget(myDictionaryEdit);
+  myDictionaryLabel->setEnabled(false);
+  myDictionaryEdit->setEnabled(false);
+  connect(myCheckSpelling, SIGNAL(toggled(bool)), myDictionaryLabel, SLOT(setEnabled(bool)));
+  connect(myCheckSpelling, SIGNAL(toggled(bool)), myDictionaryEdit, SLOT(setEnabled(bool)));
+  myChatLayout->addLayout(dictionaryLayout, 7, 1);
+#endif
 
   myLocaleBox = new QGroupBox(tr("Localization"));
   myLocaleLayout = new QVBoxLayout(myLocaleBox);
@@ -542,7 +561,12 @@ void Settings::Chat::load()
   myAutoPosReplyWinCheck->setChecked(chatConfig->autoPosReplyWin());
   myAutoSendThroughServerCheck->setChecked(chatConfig->autoSendThroughServer());
   myShowSendCloseCheck->setChecked(chatConfig->showDlgButtons());
+#if defined USE_KDE or defined HAVE_HUNSPELL
   myCheckSpelling->setChecked(chatConfig->checkSpelling());
+#endif
+#ifdef HAVE_HUNSPELL
+  myDictionaryEdit->setFileName(chatConfig->spellingDictionary());
+#endif
   myMsgWinStickyCheck->setChecked(chatConfig->msgWinSticky());
   mySingleLineChatModeCheck->setChecked(chatConfig->singleLineChatMode());
   myTabbedChattingCheck->setChecked(chatConfig->tabbedChatting());
@@ -626,7 +650,12 @@ void Settings::Chat::apply()
   chatConfig->setAutoPosReplyWin(myAutoPosReplyWinCheck->isChecked());
   chatConfig->setAutoSendThroughServer(myAutoSendThroughServerCheck->isChecked());
   chatConfig->setShowDlgButtons(myShowSendCloseCheck->isChecked());
+#if defined USE_KDE or defined HAVE_HUNSPELL
   chatConfig->setCheckSpelling(myCheckSpelling->isChecked());
+#endif
+#ifdef HAVE_HUNSPELL
+  chatConfig->setSpellingDictionary(myDictionaryEdit->fileName());
+#endif
   chatConfig->setMsgWinSticky(myMsgWinStickyCheck->isChecked());
   chatConfig->setSingleLineChatMode(mySingleLineChatModeCheck->isChecked());
   chatConfig->setShowUserPic(myShowUserPicCheck->isChecked());

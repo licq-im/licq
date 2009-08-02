@@ -66,6 +66,10 @@ void Config::Chat::loadConfiguration(CIniFile& iniFile)
   iniFile.ReadBool("MsgWinSticky", myMsgWinSticky, false);
   iniFile.ReadBool("SingleLineChatMode", mySingleLineChatMode, false);
   iniFile.ReadBool("CheckSpellingEnabled", myCheckSpelling, false);
+#ifdef HAVE_HUNSPELL
+  iniFile.ReadStr("SpellingDictionary", szTemp, "");
+  mySpellingDictionary = QString::fromLatin1(szTemp);
+#endif
   iniFile.ReadBool("ShowUserPic", myShowUserPic, false);
   iniFile.ReadBool("ShowUserPicHidden", myShowUserPicHidden, false);
   iniFile.ReadBool("NoSoundInActiveChat", myNoSoundInActiveChat, false);
@@ -139,6 +143,9 @@ void Config::Chat::saveConfiguration(CIniFile& iniFile) const
   iniFile.WriteBool("MsgWinSticky", myMsgWinSticky);
   iniFile.WriteBool("SingleLineChatMode", mySingleLineChatMode);
   iniFile.WriteBool("CheckSpellingEnabled", myCheckSpelling);
+#ifdef HAVE_HUNSPELL
+  iniFile.WriteStr("SpellingDictionary", mySpellingDictionary.toLatin1());
+#endif
   iniFile.WriteBool("ShowUserPic", myShowUserPic);
   iniFile.WriteBool("ShowUserPicHidden", myShowUserPicHidden);
   iniFile.WriteBool("NoSoundInActiveChat", myNoSoundInActiveChat);
@@ -371,6 +378,16 @@ void Config::Chat::setCheckSpelling(bool checkSpelling)
 
   myCheckSpelling = checkSpelling;
 }
+
+#ifdef HAVE_HUNSPELL
+void Config::Chat::setSpellingDictionary(const QString& spellingDictionary)
+{
+  if (spellingDictionary == mySpellingDictionary)
+    return;
+
+  mySpellingDictionary = spellingDictionary;
+}
+#endif
 
 void Config::Chat::setHistVertSpacing(bool histVertSpacing)
 {
