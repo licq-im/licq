@@ -22,7 +22,9 @@
 
 #include "filenameedit.h"
 
-#ifndef USE_KDE
+#ifdef USE_KDE
+# include <KDE/KFileDialog>
+#else
 #include <QFileDialog>
 #include <QLineEdit>
 #include <QHBoxLayout>
@@ -35,7 +37,9 @@ using namespace LicqQtGui;
 FileNameEdit::FileNameEdit(QWidget* parent)
   : FILENAMEEDIT_BASE(parent)
 {
-#ifndef USE_KDE
+#ifdef USE_KDE
+  connect(this, SIGNAL(openFileDialog(KUrlRequester*)), SLOT(dialogAboutToOpen()));
+#else
   QHBoxLayout* lay = new QHBoxLayout(this);
   lay->setContentsMargins(0, 0, 0, 0);
 
@@ -70,10 +74,37 @@ QString FileNameEdit::fileName() const
 #endif
 }
 
-#ifndef USE_KDE
+#ifdef USE_KDE
+void FileNameEdit::dialogAboutToOpen()
+{
+  // Set the default path for dialog to start in
+  if (url().pathOrUrl().isEmpty() && !myDefaultPath.isEmpty())
+    fileDialog()->setUrl(KUrl(myDefaultPath));
+}
+#else
+void FileNameEdit::setFilter(const QString& filter)
+{
+  myFilter = filter;
+
+  // Convert from KFileDialog fiter to QFileDialog filter syntax
+
+  // Remove suffixes before pipes (i.e. "*.txt|Text files (*.txt)" => "Text files (*.txt)"
+  myFilter.replace(QRegExp("[^\\n\\|]*\\|"), "");
+
+  // Remove escaping backslash before slash
+  myFilter.replace("\\/", "/");
+
+  // Replace line breaks (\n) with two semicolons (;;).
+  myFilter.replace("\n", ";;");
+}
+
 void FileNameEdit::browse()
 {
-  QString filename = QFileDialog::getOpenFileName(this, QString(), editField->text(), QString());
+  QString filename = editField->text();
+  if (filename.isEmpty())
+    filename = myDefaultPath;
+
+  filename = QFileDialog::getOpenFileName(this, QString(), filename, myFilter);
 
   if (filename.isNull())
     return;

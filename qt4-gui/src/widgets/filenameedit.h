@@ -66,16 +66,43 @@ public:
    */
   QString fileName() const;
 
+  /**
+   * Set a default path to use if opening dialog with no current file selected
+   *
+   * @param path New default path to use
+   */
+  void setDefaultPath(const QString& path) { myDefaultPath = path; }
+
 #ifndef USE_KDE
+  /**
+   * Set filter for the file dialog
+   * Note: This function uses the same filter syntax as KFileDialog::setFilter
+   * which is not the same as for QFileDialog.
+   *
+   * @param filter Filter(s) to use, example "*.txt|Text files (*.txt)"
+   */
+  void setFilter(const QString& filter);
+#endif
+
 private slots:
+#ifdef USE_KDE
+  /**
+   * File dialog is about to open
+   */
+  void dialogAboutToOpen();
+#else
   /**
    * Open a file dialog to browse for file
    */
   void browse();
+#endif
 
 private:
+#ifndef USE_KDE
   QLineEdit* editField;
+  QString myFilter;
 #endif
+  QString myDefaultPath;
 };
 
 } // namespace LicqQtGui
