@@ -19,6 +19,10 @@ set(widgets_SRCS
   treepager.cpp
 )
 
+if (HAVE_HUNSPELL)
+  list(APPEND widgets_SRCS spellchecker.cpp)
+endif (HAVE_HUNSPELL)
+
 string(REGEX REPLACE ".cpp" ".h" widgets_HDRS "${widgets_SRCS}")
 
 qt4_wrap_cpp(widget_MOC_SRCS ${widgets_HDRS})

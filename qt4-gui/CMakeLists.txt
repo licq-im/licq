@@ -73,6 +73,16 @@ set(QT_MIN_VERSION "4.3.0")
 # Check for Qt unless WITH_KDE is requested
 if (NOT WITH_KDE)
   find_package(Qt4 REQUIRED)
+
+  # Check for HunSpell
+  find_package(Hunspell)
+  if (HUNSPELL_FOUND)
+    set(HAVE_HUNSPELL 1)
+    add_definitions(${HUNSPELL_DEFINITIONS})
+    include_directories(${HUNSPELL_INCLUDE_DIRS})
+    set(LIBRARIES ${LIBRARIES} ${HUNSPELL_LIBRARIES})
+  endif (HUNSPELL_FOUND)
+
 else (NOT WITH_KDE)
   find_package(KDE4 REQUIRED)
   set(USE_KDE ${KDE4_FOUND})

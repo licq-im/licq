@@ -32,11 +32,19 @@
 #include "config/general.h"
 #include "config/shortcuts.h"
 
+#ifdef HAVE_HUNSPELL
+# include "spellchecker.h"
+#endif
+
+
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MLEdit */
 
 MLEdit::MLEdit(bool wordWrap, QWidget* parent, bool useFixedFont, const char* name)
   : MLEDIT_BASE(parent),
+#ifdef HAVE_HUNSPELL
+    mySpellChecker(NULL),
+#endif
     myUseFixedFont(useFixedFont),
     myFixSetTextNewlines(true),
     myLastKeyWasReturn(false),
@@ -57,6 +65,40 @@ MLEdit::~MLEdit()
 {
   // Empty
 }
+
+#ifndef USE_KDE
+void MLEdit::setCheckSpellingEnabled(bool check)
+{
+#ifdef HAVE_HUNSPELL
+  if (check && mySpellChecker == NULL && !mySpellingDictionary.isEmpty())
+    mySpellChecker = new SpellChecker(this->document(), mySpellingDictionary);
+  if (!check && mySpellChecker != NULL)
+    delete mySpellChecker;
+#else
+  Q_UNUSED(check);
+#endif
+}
+
+bool MLEdit::checkSpellingEnabled() const
+{
+#ifdef HAVE_HUNSPELL
+  return (mySpellChecker != NULL);
+#else
+  return false;
+#endif
+}
+#endif
+
+#ifdef HAVE_HUNSPELL
+void MLEdit::setSpellingDictionary(const QString& dicFile)
+{
+  mySpellingDictionary = dicFile;
+  if (mySpellChecker != NULL)
+    mySpellChecker->setDictionary(dicFile);
+  else
+    setCheckSpellingEnabled(true);
+}
+#endif
 
 void MLEdit::appendNoNewLine(const QString& s)
 {
@@ -221,6 +263,33 @@ void MLEdit::contextMenuEvent(QContextMenuEvent* event)
 
   if (!isReadOnly())
   {
+#ifdef HAVE_HUNSPELL
+    // Save position so we know which word to replace
+    myMenuPos = event->pos();
+
+    // Get word under cursor
+    QTextCursor cr = cursorForPosition(myMenuPos);
+    cr.select(QTextCursor::WordUnderCursor);
+    QString word = cr.selectedText();
+    if (!word.isEmpty())
+    {
+      // Get spelling suggestions
+      QStringList suggestions = mySpellChecker->getSuggestions(word);
+      if (!suggestions.isEmpty())
+      {
+        // Add spelling suggestions at the top of the menu
+        QAction* firstAction = menu->actions().first();
+        foreach (QString w, suggestions)
+        {
+          QAction* a = new QAction(w, menu);
+          connect(a, SIGNAL(triggered()), SLOT(replaceWord()));
+          menu->insertAction(firstAction, a);
+        }
+        menu->insertSeparator(firstAction);
+      }
+    }
+#endif
+
     QAction* tabul = new QAction(tr("Allow Tabulations"), menu);
     tabul->setCheckable(true);
     tabul->setChecked(!tabChangesFocus());
@@ -230,6 +299,20 @@ void MLEdit::contextMenuEvent(QContextMenuEvent* event)
 
   menu->exec(event->globalPos());
   delete menu;
+}
+#endif
+
+#ifdef HAVE_HUNSPELL
+void MLEdit::replaceWord()
+{
+  QAction* a = qobject_cast<QAction*>(sender());
+  if (a == NULL)
+    return;
+
+  // Mark the word under the cursor and replace it with the text from the menu item selected
+  QTextCursor cr = cursorForPosition(myMenuPos);
+  cr.select(QTextCursor::WordUnderCursor);
+  cr.insertText(a->text());
 }
 #endif
 

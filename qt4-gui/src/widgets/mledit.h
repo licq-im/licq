@@ -35,6 +35,9 @@
 
 namespace LicqQtGui
 {
+#ifdef HAVE_HUNSPELL
+class SpellChecker;
+#endif
 
 class MLEdit : public MLEDIT_BASE
 {
@@ -51,8 +54,29 @@ public:
   void setForeground(const QColor& color);
 
 #ifndef USE_KDE
-  void setCheckSpellingEnabled(bool /* check */) {}
-  bool checkSpellingEnabled() const { return false; }
+  /**
+   * Enable/disable automatic spell checking
+   *
+   * @param check True to enable spell checking
+   */
+  void setCheckSpellingEnabled(bool check);
+
+  /**
+   * Is spell checking enabled?
+   *
+   * @return True if spell checking is enabled
+   */
+  bool checkSpellingEnabled() const;
+#endif
+
+#ifdef HAVE_HUNSPELL
+  /**
+   * Set dictionary file to use for spelling engine
+   * Will enable spell checking if not already enabled
+   *
+   * @param dicFile Dictionary file (ending with .dic) to use
+   */
+  void setSpellingDictionary(const QString& dicFile);
 #endif
 
   /**
@@ -115,6 +139,11 @@ signals:
   void scrollDownPressed();
 
 private:
+#ifdef HAVE_HUNSPELL
+  SpellChecker* mySpellChecker;
+  QString mySpellingDictionary;
+  QPoint myMenuPos;
+#endif
   bool myUseFixedFont;
   bool myFixSetTextNewlines;
   bool myLastKeyWasReturn;
@@ -137,6 +166,9 @@ public slots:
 private slots:
   void updateFont();
   void toggleAllowTab();
+#ifdef HAVE_HUNSPELL
+  void replaceWord();
+#endif
 };
 
 } // namespace LicqQtGui

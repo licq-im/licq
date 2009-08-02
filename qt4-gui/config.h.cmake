@@ -16,4 +16,7 @@
 /* Define if GPGME is available */
 #cmakedefine HAVE_LIBGPGME 1
 
+/* Define if Hunspell is available */
+#cmakedefine HAVE_HUNSPELL 1
+
 #endif
