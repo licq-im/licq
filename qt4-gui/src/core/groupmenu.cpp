@@ -28,6 +28,7 @@
 #include "config/iconmanager.h"
 #include "contactlist/contactlist.h"
 #include "helpers/licqstrings.h"
+#include "views/userview.h"
 
 #include "licqgui.h"
 #include "mainwin.h"
@@ -63,6 +64,7 @@ GroupMenu::GroupMenu(QWidget* parent)
   // Menu
   myMoveUpAction = addAction(tr("Move &Up"), this, SLOT(moveGroupUp()));
   myMoveDownAction = addAction(tr("Move &Down"), this, SLOT(moveGroupDown()));
+  myRenameAction = addAction(tr("Rename"), this, SLOT(renameGroup()));
   addMenu(myGroupsMenu);
   myRemoveGroupAction = addAction(tr("Remove Group"), this, SLOT(removeGroup()));
 
@@ -113,6 +115,7 @@ void GroupMenu::aboutToShowMenu()
 
   // Actions that are only available for user groups
   bool special = (myGroupId >= ContactListModel::SystemGroupOffset || myGroupId == 0);
+  myRenameAction->setEnabled(!special);
   myRemoveGroupAction->setEnabled(!special);
 
   mySortIndex = 0;
@@ -131,14 +134,15 @@ void GroupMenu::aboutToShowMenu()
   myMoveDownAction->setEnabled(!special && static_cast<unsigned int>(mySortIndex) < gUserManager.NumGroups()-1);
 }
 
-void GroupMenu::setGroup(int groupId)
+void GroupMenu::setGroup(int groupId, bool online)
 {
   myGroupId = groupId;
+  myOnline = online;
 }
 
-void GroupMenu::popup(QPoint pos, int groupId)
+void GroupMenu::popup(QPoint pos, int groupId, bool online)
 {
-  setGroup(groupId);
+  setGroup(groupId, online);
   QMenu::popup(pos);
 }
 
@@ -153,6 +157,11 @@ void GroupMenu::moveGroupUp()
 void GroupMenu::moveGroupDown()
 {
   gUserManager.ModifyGroupSorting(myGroupId, mySortIndex + 1);
+}
+
+void GroupMenu::renameGroup()
+{
+  gMainWindow->getUserView()->editGroupName(myGroupId, myOnline);
 }
 
 void GroupMenu::removeGroup()

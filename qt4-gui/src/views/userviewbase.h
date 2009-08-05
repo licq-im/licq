@@ -71,6 +71,14 @@ public:
    */
   virtual void scrollTo(const QModelIndex& index, ScrollHint hint = EnsureVisible);
 
+  /**
+   * Open editor for group name
+   *
+   * @param groupId Id of group to edit
+   * @param online True to put editor at single or online instance of group
+   */
+  void editGroupName(int groupId, bool online);
+
 signals:
   /**
    * Signal emitted when user has double clicked on a contact

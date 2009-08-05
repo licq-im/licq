@@ -147,8 +147,33 @@ void UserViewBase::popupMenu(QPoint point, QModelIndex item)
   else if (itemType == ContactListModel::GroupItem)
   {
     int id = item.data(ContactListModel::GroupIdRole).toInt();
+    bool online = (item.data(ContactListModel::SortPrefixRole).toInt() < 2);
 
-    LicqGui::instance()->groupMenu()->popup(point, id);
+    LicqGui::instance()->groupMenu()->popup(point, id, online);
+  }
+}
+
+void UserViewBase::editGroupName(int groupId, bool online)
+{
+  // We cannot just ask the model which index to use since the proxy/proxies
+  //   use different indexes, so we'll just have to search for it.
+  int rowCount = model()->rowCount();
+  for (int i = 0; i < rowCount; ++i)
+  {
+    QModelIndex item = model()->index(i, 0);
+    if (static_cast<ContactListModel::ItemType>(item.data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::GroupItem)
+      continue;
+
+    // Check if we got the correct group
+    if (item.data(ContactListModel::GroupIdRole).toInt() != groupId)
+      continue;
+    if ((item.data(ContactListModel::SortPrefixRole).toInt() < 2) != online)
+      continue;
+
+    // We found it, make sure it's selected and start editing it
+    setCurrentIndex(item);
+    edit(item);
+    return;
   }
 }
 
