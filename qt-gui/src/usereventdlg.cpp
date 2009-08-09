@@ -567,7 +567,6 @@ void UserEventCommon::SetGeneralInfo(const LicqUser* u)
     mainwin->userEventTabDlg->setCaption(m_sBaseTitle);
 
   setCaption(m_sBaseTitle);
-  setIconText(u->GetAlias());
 }
 
 void UserEventCommon::FlashTaskbar(bool _bFlash)

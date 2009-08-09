@@ -187,7 +187,6 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
   {
     m_sBasic = tr("Licq - Info ") + tr("INVALID USER");
     resetCaption();
-    setIconText(tr("INVALID USER"));
   }
   else
   {
@@ -196,7 +195,6 @@ UserInfoDlg::UserInfoDlg(CICQDaemon *s, CSignalManager *theSigMan, CMainWindow *
     if (!tmp.isEmpty()) tmp = " (" + tmp + ")";
     m_sBasic = tr("Licq - Info ") + QString::fromUtf8(u->getAlias().c_str()) + tmp;
     resetCaption();
-    setIconText(u->getAlias().c_str());
     gUserManager.DropUser(u);
   }
 

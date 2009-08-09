@@ -667,9 +667,6 @@ CMainWindow::CMainWindow(CICQDaemon *theDaemon, CSignalManager *theSigMan,
   skin->frame.frameStyle = nFrameStyle;
   skin->frame.transparent = bFrameTransparent;
 
-  // set the icon
-  setIconText("Licq");
-
   // User List
   char key[16], colTitle[32], colFormat[32];
   unsigned short colWidth, colAlign, numColumns;
