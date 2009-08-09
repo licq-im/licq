@@ -420,7 +420,7 @@ void CEventAdded::CreateDescription() const
   m_szText = new char[strlen(m_szAlias) + strlen(m_szFirstName) +
       strlen(m_szLastName) + strlen(m_szEmail) + myUserId.size() + 512];
   sprintf(m_szText, tr("Alias: %s\nUser: %s\nName: %s %s\nEmail: %s\n"),
-      m_szAlias, USERID_TOSTR(myUserId), m_szFirstName, m_szLastName, m_szEmail);
+      m_szAlias, LicqUser::getUserAccountId(myUserId).c_str(), m_szFirstName, m_szLastName, m_szEmail);
 }
 
 
@@ -446,7 +446,7 @@ void CEventAdded::AddToHistory(ICQUser* u, unsigned long /* ppid */, direction _
       strlen(m_szLastName) + strlen(m_szEmail) + myUserId.size()) * 2 + 20 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n",
-      USERID_TOSTR(myUserId), m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+      LicqUser::getUserAccountId(myUserId).c_str(), m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
   AddToHistory_Flush(u, LicqUser::getUserProtocolId(myUserId), szOut);
   delete [] szOut;
 }
@@ -510,7 +510,7 @@ void CEventAuthRequest::AddToHistory(ICQUser* u, unsigned long /* ppid */, direc
       myUserId.size()) * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
   nPos += sprintf(&szOut[nPos], ":%s\n:%s\n:%s\n:%s\n:%s\n",
-      USERID_TOSTR(myUserId), m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
+      LicqUser::getUserAccountId(myUserId).c_str(), m_szAlias, m_szFirstName, m_szLastName, m_szEmail);
 
   AddStrWithColons(&szOut[nPos], m_szReason);
   AddToHistory_Flush(u, LicqUser::getUserProtocolId(myUserId), szOut);
@@ -560,7 +560,7 @@ void CEventAuthGranted::AddToHistory(ICQUser* u, unsigned long /* ppid */, direc
   char *szOut = new char[(myUserId.size() + strlen(m_szMessage))
                          * 2 + 16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n", USERID_TOSTR(myUserId));
+  nPos += sprintf(&szOut[nPos], ":%s\n", LicqUser::getUserAccountId(myUserId).c_str());
 
   AddStrWithColons(&szOut[nPos], m_szMessage);
   AddToHistory_Flush(u, LicqUser::getUserProtocolId(myUserId), szOut);
@@ -610,7 +610,7 @@ void CEventAuthRefused::AddToHistory(ICQUser* u, unsigned long /* ppid */, direc
   char *szOut = new char[(myUserId.size() + strlen(m_szMessage)) * 2 +
                          16 + EVENT_HEADER_SIZE];
   int nPos = AddToHistory_Header(_nDir, szOut);
-  nPos += sprintf(&szOut[nPos], ":%s\n", USERID_TOSTR(myUserId));
+  nPos += sprintf(&szOut[nPos], ":%s\n", LicqUser::getUserAccountId(myUserId).c_str());
 
   AddStrWithColons(&szOut[nPos], m_szMessage);
   AddToHistory_Flush(u, LicqUser::getUserProtocolId(myUserId), szOut);
@@ -776,7 +776,7 @@ void CEventContactList::AddToHistory(ICQUser* u, unsigned long /* ppid */, direc
   for (iter = m_vszFields.begin(); iter != m_vszFields.end(); ++iter)
   {
     nPos += sprintf(&szOut[nPos], ":%s\n:%s\n",
-        USERID_TOSTR((*iter)->userId()), (*iter)->Alias());
+        LicqUser::getUserAccountId((*iter)->userId()).c_str(), (*iter)->Alias());
   }
   AddToHistory_Flush(u, nPPID, szOut);
   delete [] szOut;
