@@ -1370,7 +1370,9 @@ void CMainWindow::slot_updatedUser(const UserId& userId, unsigned long subSignal
   const LicqUser* user = gUserManager.fetchUser(userId);
   if (user == NULL)
     return;
+#ifdef USE_KDE
   const char* szId = user->accountId().c_str();
+#endif
   unsigned long nPPID = user->ppid();
   gUserManager.DropUser(user);
 
