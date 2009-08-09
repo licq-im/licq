@@ -1101,6 +1101,12 @@ void CFileTransferManager::CloseConnection()
   sockman.CloseSocket(ftServer.Descriptor(), false, false);
   sockman.CloseSocket(ftSock.Descriptor(), false, false);
   m_nState = FT_STATE_DISCONNECTED;
+
+  if (m_nFileDesc != -1)
+  {
+    close(m_nFileDesc);
+    m_nFileDesc = -1;
+  }
 }
 
 
