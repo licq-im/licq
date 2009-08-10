@@ -78,7 +78,7 @@ MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
   connect(LicqGui::instance()->signalManager(),
       SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(slot_done(const LicqEvent*)));
 
-  barSend->setMaximum(mmv->contacts().count());
+  barSend->setMaximum(mmv->contacts().size());
   barSend->setValue(0);
 
   setMinimumWidth(300);

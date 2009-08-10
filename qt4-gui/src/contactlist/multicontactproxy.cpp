@@ -21,6 +21,7 @@
 #include "multicontactproxy.h"
 
 using namespace LicqQtGui;
+using std::set;
 
 
 MultiContactProxy::MultiContactProxy(ContactListModel* contactList, QObject* parent)
@@ -45,21 +46,21 @@ void MultiContactProxy::remove(const QModelIndexList& indexes)
   foreach (QModelIndex i, indexes)
   {
     UserId userId = i.data(ContactListModel::UserIdRole).value<UserId>();
-    myContacts.remove(userId);
+    myContacts.erase(userId);
   }
   invalidateFilter();
 }
 
 void MultiContactProxy::remove(const UserId& userId)
 {
-  myContacts.remove(userId);
+  myContacts.erase(userId);
   invalidateFilter();
 }
 
 void MultiContactProxy::crop(const QModelIndexList& indexes)
 {
   // Make a new set with the contacts to keep
-  QSet<UserId> newList;
+  set<UserId> newList;
 
   foreach (QModelIndex i, indexes)
   {
@@ -112,7 +113,7 @@ bool MultiContactProxy::filterAcceptsRow(int source_row, const QModelIndex& sour
     {
       // Check if the contact is in our list
       UserId userId = item.data(ContactListModel::UserIdRole).value<UserId>();
-      if (!myContacts.contains(userId))
+      if (myContacts.count(userId) == 0)
         return false;
 
       break;

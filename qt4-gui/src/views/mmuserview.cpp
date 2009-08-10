@@ -44,6 +44,7 @@
 
 #include "helpers/usercodec.h"
 
+using std::set;
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::MMUserView */
 
@@ -91,7 +92,7 @@ void MMUserView::removeFirst()
   dynamic_cast<MultiContactProxy*>(myListProxy)->remove(userId);
 }
 
-const QSet<UserId>& MMUserView::contacts() const
+const set<UserId>& MMUserView::contacts() const
 {
   return dynamic_cast<MultiContactProxy*>(myListProxy)->contacts();
 }

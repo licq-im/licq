@@ -36,7 +36,7 @@ public:
   MMUserView(const UserId& userId, ContactListModel* contactList, QWidget* parent = 0);
   virtual ~MMUserView();
 
-  const QSet<UserId>& contacts() const;
+  const std::set<UserId>& contacts() const;
 
   void add(const UserId& userId);
   void removeFirst();

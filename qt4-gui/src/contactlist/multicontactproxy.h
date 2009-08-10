@@ -21,12 +21,9 @@
 #ifndef MULTICONTACTPROXY_H
 #define MULTICONTACTPROXY_H
 
-// Extra forward declaration of qHash needed before QSet include or it won't work
 #include <licq_types.h>
-unsigned int qHash(const UserId& userId);
 
-#include <QPair>
-#include <QSet>
+#include <set>
 
 #include "contactlist.h"
 #include "sortedcontactlistproxy.h"
@@ -107,7 +104,7 @@ public:
    *
    * @return A set containing the contacts
    */
-  const QSet<UserId>& contacts() const
+  const std::set<UserId>& contacts() const
   { return myContacts; }
 
   /**
@@ -128,7 +125,7 @@ private:
    */
   bool filterAcceptsRow(int source_row, const QModelIndex& source_parent) const;
 
-  QSet<UserId> myContacts;
+  std::set<UserId> myContacts;
 };
 
 } // namespace LicqQtGui
