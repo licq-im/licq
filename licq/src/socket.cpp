@@ -549,7 +549,17 @@ bool INetSocket::StartServer(unsigned int _nPort)
   if (!SetLocalAddress(false)) return (false);
 
   if (m_nSockType == SOCK_STREAM)
-    listen(m_nDescriptor, 10); // Allow 10 unprocessed connections
+  {
+    // Allow 10 unprocessed connections
+    if (listen(m_nDescriptor, 10) != 0)
+    {
+      m_nErrorType = SOCK_ERROR_errno;
+      ::close(m_nDescriptor);
+      m_nDescriptor = -1;
+      return false;
+    }
+  }
+
   return(true);
 }
 
@@ -797,6 +807,12 @@ bool TCPSocket::RecvConnection(TCPSocket &newSocket)
   // This probably has no affect, since we are using multiple threads, but keep it here 
   // to be used as a sanity check.
   int newDesc = accept(m_nDescriptor, (struct sockaddr*)&newSocket.myRemoteAddr, &sizeofSockaddr);
+  if (newDesc < 0)
+  {
+    // Something went wrong, probably indicates an error somewhere else
+    gLog.Warn(tr("%sCannot accept new connection:\n%s%s\n"), L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+    return false;
+  }
   if (newDesc < FD_SETSIZE)
   {
     newSocket.m_nDescriptor = newDesc;

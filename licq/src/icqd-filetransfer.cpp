@@ -1166,6 +1166,17 @@ void *FileTransferManager_tep(void *arg)
 
     nSocketsAvailable = select(l, &f_recv, &f_send, NULL, tv);
 
+    if (nSocketsAvailable == -1)
+    {
+      // Something is very wrong, most likely we've lost control of a file
+      //   descriptor and select will continue to fail causing this thread to
+      //   spin so better to just give up and exit.
+
+      gLog.Warn(tr("%sFile Transfer: select failed, aborting thread:\n%s%s\n"),
+          L_WARNxSTR, L_BLANKxSTR, strerror(errno));
+      pthread_exit(NULL);
+    }
+
     // Check if we timed out
     if (tv != NULL && nSocketsAvailable == 0)
     {
@@ -1199,6 +1210,11 @@ void *FileTransferManager_tep(void *arg)
           if (ftman->ftSock.Descriptor() != -1)
           {
             gLog.Warn(tr("%sFile Transfer: Receiving repeat incoming connection.\n"), L_WARNxSTR);
+
+            // Dump the extra connection to clear the listen socket queue
+            TCPSocket ts;
+            if (ftman->ftServer.RecvConnection(ts))
+              ts.CloseConnection();
           }
           else
           {
