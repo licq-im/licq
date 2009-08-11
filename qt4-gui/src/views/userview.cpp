@@ -23,6 +23,7 @@
 #include <QApplication>
 #include <QHeaderView>
 #include <QMouseEvent>
+#include <QTimer>
 
 #include "config/contactlist.h"
 #include "config/iconmanager.h"
@@ -36,6 +37,10 @@ using namespace LicqQtGui;
 UserView::UserView(ContactListModel* contactList, QWidget* parent)
   : UserViewBase(contactList, parent)
 {
+  myRemovedUserTimer = new QTimer(this);
+  myRemovedUserTimer->setSingleShot(true);
+  connect(myRemovedUserTimer, SIGNAL(timeout()), SLOT(forgetRemovedUser()));
+
   // Use a proxy model for sorting and filtering
   myListProxy = new MainContactListProxy(myContactList, this);
   setModel(myListProxy);
@@ -175,6 +180,32 @@ void UserView::applySkin()
   UserViewBase::applySkin();
 }
 
+void UserView::rowsAboutToBeRemoved(const QModelIndex& parent, int start, int end)
+{
+  if (currentIndex().isValid() && !USERID_ISVALID(myRemovedUser))
+  {
+    // Check all the removed rows and see if anyone of them is the currently select user
+    for (int i = start; i <= end; ++i)
+    {
+      if (model()->index(i, 0, parent) != currentIndex())
+        continue;
+
+      ContactListModel::ItemType itemType = static_cast<ContactListModel::ItemType>
+        (currentIndex().data(ContactListModel::ItemTypeRole).toInt());
+      if (itemType == ContactListModel::UserItem)
+      {
+        // Currently select user is being removed, remember it so we can select it again if it reappears
+        myRemovedUser = currentIndex().data(ContactListModel::UserIdRole).value<UserId>();
+
+        // ...but if event loop resumes first, it wasn't just a move between groups so forget it happened
+        myRemovedUserTimer->start();
+      }
+    }
+  }
+
+  UserViewBase::rowsAboutToBeRemoved(parent, start, end);
+}
+
 void UserView::rowsInserted(const QModelIndex& parent, int start, int end)
 {
   UserViewBase::rowsInserted(parent, start, end);
@@ -183,6 +214,44 @@ void UserView::rowsInserted(const QModelIndex& parent, int start, int end)
   // If we just got a new group we may want to expand it
   if (!parent.isValid())
     expandGroups();
+
+  if (USERID_ISVALID(myRemovedUser) && (!parent.isValid() || isExpanded(parent)))
+  {
+    // We have a user remembered that was just removed, check if he returned
+    for (int i = start; i <= end; ++i)
+    {
+      QModelIndex index = model()->index(i, 0, parent);
+      ContactListModel::ItemType itemType = static_cast<ContactListModel::ItemType>
+        (index.data(ContactListModel::ItemTypeRole).toInt());
+
+      if (itemType == ContactListModel::UserItem &&
+          index.data(ContactListModel::UserIdRole).value<UserId>() == myRemovedUser)
+        // User has returned, restore selection
+        setCurrentIndex(index);
+
+      if (itemType == ContactListModel::GroupItem && isExpanded(index))
+      {
+        // Inserted row was a group, then it might have users as sub items, check them too
+        int rows = model()->rowCount(index);
+        for (int j = 0; j < rows; ++j)
+        {
+          QModelIndex subindex = model()->index(j, 0, index);
+          ContactListModel::ItemType subitemType = static_cast<ContactListModel::ItemType>
+            (subindex.data(ContactListModel::ItemTypeRole).toInt());
+
+          if (subitemType == ContactListModel::UserItem &&
+              subindex.data(ContactListModel::UserIdRole).value<UserId>() == myRemovedUser)
+            // The appeared group has the user as a sub item, restore selection
+            setCurrentIndex(subindex);
+        }
+      }
+    }
+  }
+}
+
+void UserView::forgetRemovedUser()
+{
+  myRemovedUser = USERID_NONE;
 }
 
 void UserView::reset()

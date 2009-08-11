@@ -25,6 +25,8 @@
 
 #include "userviewbase.h"
 
+class QTimer;
+
 namespace LicqQtGui
 {
 
@@ -96,6 +98,16 @@ protected slots:
    */
   virtual void rowsInserted(const QModelIndex& parent, int start, int end);
 
+  /**
+   * Overloaded the base class so we can analyze the rows
+   * which are removed and act accordingly
+   *
+   * @param parent The view index which will loose a child
+   * @param start The number of the first row to be removed
+   * @param end The number of the last row to be removed
+   */
+  virtual void rowsAboutToBeRemoved(const QModelIndex& parent, int start, int end);
+
 private:
   /**
    * Mouse button was pressed
@@ -126,6 +138,9 @@ private:
    * @param end The count of the last row
    */
   void spanRowRange(const QModelIndex& parent, int start, int end);
+
+  UserId myRemovedUser;
+  QTimer* myRemovedUserTimer;
 
 private slots:
   /**
@@ -158,6 +173,11 @@ private slots:
    * Reload config settings
    */
   void configUpdated();
+
+  /**
+   * Forget that we have remembered a removed user
+   */
+  void forgetRemovedUser();
 };
 
 } // namespace LicqQtGui
