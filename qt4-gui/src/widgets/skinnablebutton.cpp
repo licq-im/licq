@@ -27,7 +27,7 @@
 
 using namespace LicqQtGui;
 
-SkinnableButton::SkinnableButton(const Config::ButtonSkin& skin, QString defaultText, QWidget* parent)
+SkinnableButton::SkinnableButton(const Config::ButtonSkin& skin, const QString& defaultText, QWidget* parent)
   : QPushButton(parent),
     myDefaultText(defaultText),
     myPressedModifiers(Qt::NoModifier)
@@ -35,7 +35,7 @@ SkinnableButton::SkinnableButton(const Config::ButtonSkin& skin, QString default
   applySkin(skin);
 }
 
-SkinnableButton::SkinnableButton(QString defaultText, QWidget* parent)
+SkinnableButton::SkinnableButton(const QString& defaultText, QWidget* parent)
   : QPushButton(defaultText, parent),
     myDefaultText(defaultText),
     myPressedModifiers(Qt::NoModifier)

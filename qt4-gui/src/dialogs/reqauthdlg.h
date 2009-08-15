@@ -36,7 +36,7 @@ class ReqAuthDlg : public QDialog
    Q_OBJECT
 
 public:
-   ReqAuthDlg(QString id = QString(), unsigned long ppid = 0, QWidget* parent = 0);
+   ReqAuthDlg(const QString& id = QString(), unsigned long ppid = 0, QWidget* parent = 0);
 
 private:
    QPushButton* btnOk;

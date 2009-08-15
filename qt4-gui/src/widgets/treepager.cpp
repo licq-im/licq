@@ -49,7 +49,7 @@ TreePager::TreePager(QWidget* parent)
       SLOT(flipPage(QTreeWidgetItem*)));
 }
 
-void TreePager::addPage(QWidget* page, QString title, /* QIcon icon, */ QWidget* parent)
+void TreePager::addPage(QWidget* page, const QString& title, /* const QIcon& icon, */ QWidget* parent)
 {
   QTreeWidgetItem* parentItem = NULL;
   if (parent != NULL)

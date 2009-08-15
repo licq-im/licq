@@ -36,18 +36,18 @@ using namespace LicqQtGui;
 
 Config::Skin* Config::Skin::myInstance = NULL;
 
-void Config::Skin::createInstance(QString skinName, QObject* parent)
+void Config::Skin::createInstance(const QString& skinName, QObject* parent)
 {
   myInstance = new Skin(skinName, parent);
 }
 
-Config::Skin::Skin(QString skinName, QObject* parent)
+Config::Skin::Skin(const QString& skinName, QObject* parent)
   : QObject(parent)
 {
   loadSkin(skinName);
 }
 
-void Config::Skin::loadSkin(QString skinName)
+void Config::Skin::loadSkin(const QString& skinName)
 {
   gLog.Info("%sApplying %s skin.\n", L_INITxSTR, skinName.toLocal8Bit().data());
 
@@ -264,7 +264,7 @@ void Config::Skin::AdjustForMenuBar(unsigned short h)
   myMenuBarHeight = h;
 }
 
-void Config::FrameSkin::loadSkin(CIniFile& skinFile, QString name, QString baseSkinDir)
+void Config::FrameSkin::loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir)
 {
   char temp[255];
   skinFile.SetFlags(0);
@@ -289,7 +289,7 @@ void Config::FrameSkin::loadSkin(CIniFile& skinFile, QString name, QString baseS
   skinFile.ReadBool((name + ".transparent").toLatin1().data(), transparent, transparent);
 }
 
-void Config::ShapeSkin::loadSkin(CIniFile& skinFile, QString name)
+void Config::ShapeSkin::loadSkin(CIniFile& skinFile, const QString& name)
 {
   signed short x1, y1, x2, y2;
   skinFile.SetFlags(INI_FxFATAL | INI_FxERROR);
@@ -311,7 +311,7 @@ void Config::ShapeSkin::loadSkin(CIniFile& skinFile, QString name)
     background.setAlpha(0);
 }
 
-void Config::ButtonSkin::loadSkin(CIniFile& skinFile, QString name, QString baseSkinDir)
+void Config::ButtonSkin::loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir)
 {
   Config::ShapeSkin::loadSkin(skinFile, name);
 
@@ -332,7 +332,7 @@ void Config::ButtonSkin::loadSkin(CIniFile& skinFile, QString name, QString base
     pixmapDown.load(baseSkinDir + temp);
 }
 
-void Config::LabelSkin::loadSkin(CIniFile& skinFile, QString name, QString baseSkinDir)
+void Config::LabelSkin::loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir)
 {
   Config::ShapeSkin::loadSkin(skinFile, name);
   transparent = (background.alpha() == 0);
@@ -362,12 +362,12 @@ void Config::Border::AdjustForMenuBar(unsigned short h_old, unsigned short h_new
 }
 
 
-int Config::Skin::frameWidth(void)
+int Config::Skin::frameWidth()
 {
    return (frame.border.right + frame.border.left);
 }
 
-int Config::Skin::frameHeight(void)
+int Config::Skin::frameHeight()
 {
    return (frame.border.top + frame.border.bottom);
 }

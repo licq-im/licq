@@ -185,12 +185,12 @@ void OwnerManagerDlg::registerOwner()
   else
   {
     registerUserDlg = new RegisterUserDlg(this);
-    connect(registerUserDlg, SIGNAL(signal_done(bool, QString, unsigned long)),
-        SLOT(registerDone(bool, QString, unsigned long)));
+    connect(registerUserDlg, SIGNAL(signal_done(bool, const QString&, unsigned long)),
+        SLOT(registerDone(bool, const QString&, unsigned long)));
   }
 }
 
-void OwnerManagerDlg::registerDone(bool success, QString /* newId */, unsigned long newPpid)
+void OwnerManagerDlg::registerDone(bool success, const QString& /* newId */, unsigned long newPpid)
 {
   registerUserDlg = 0;
 

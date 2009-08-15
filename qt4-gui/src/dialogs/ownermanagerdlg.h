@@ -68,7 +68,7 @@ private slots:
    * @param newId Contact id of new account
    * @param newPpid Protocal id of new account
    */
-  void registerDone(bool success, QString newId, unsigned long newPpid);
+  void registerDone(bool success, const QString& newId, unsigned long newPpid);
 
   /**
    * Edit currently selected account

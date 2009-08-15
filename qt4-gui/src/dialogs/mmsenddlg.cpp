@@ -84,7 +84,7 @@ MMSendDlg::MMSendDlg(MMUserView* _mmv, QWidget* p)
   setMinimumWidth(300);
 }
 
-int MMSendDlg::go_message(QString msg)
+int MMSendDlg::go_message(const QString& msg)
 {
   m_nEventType = ICQ_CMDxSUB_MSG;
   s1 = msg;
@@ -97,7 +97,7 @@ int MMSendDlg::go_message(QString msg)
   return 0;
 }
 
-int MMSendDlg::go_url(QString url, QString desc)
+int MMSendDlg::go_url(const QString& url, const QString& desc)
 {
   m_nEventType = ICQ_CMDxSUB_URL;
   s1 = desc;

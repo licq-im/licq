@@ -180,8 +180,6 @@ private slots:
    */
   void prevGroup();
 
-  //TODO
-  //void callUserFunction(QString id, unsigned long ppid);
   void slot_logon();
   void slot_protocolPlugin(unsigned long);
   void slot_doneOwnerFcn(const LicqEvent* event);

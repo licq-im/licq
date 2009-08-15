@@ -127,7 +127,7 @@ protected:
 
   void flashTaskbar();
   void updateWidgetInfo(const LicqUser* u);
-  void pushToolTip(QAction* action, QString tooltip);
+  void pushToolTip(QAction* action, const QString& tooltip);
 
   /**
    * A user has been update, this virtual function allows subclasses to add additional handling

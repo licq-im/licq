@@ -179,7 +179,7 @@ public:
    *
    * @param url The URL to open
    */
-  void viewUrl(QString url);
+  void viewUrl(const QString& url);
 
 public slots:
   /**
@@ -243,7 +243,7 @@ signals:
 
 private slots:
 #ifdef Q_WS_X11
-  void grabKey(QString key);
+  void grabKey(const QString& key);
 #endif
 
   void userDlgFinished(UserDlg* dialog);

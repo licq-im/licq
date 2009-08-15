@@ -33,7 +33,7 @@ class EditFileDlg: public QDialog
   Q_OBJECT
 
 public:
-  EditFileDlg(QString fname, QWidget* parent = 0);
+  EditFileDlg(const QString& fname, QWidget* parent = 0);
 
 private:
   QString myFile;

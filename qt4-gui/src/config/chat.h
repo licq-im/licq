@@ -96,18 +96,18 @@ public:
   bool noSoundInActiveChat() const { return myNoSoundInActiveChat; }
   unsigned short chatMsgStyle() const { return myChatMsgStyle; }
   unsigned short histMsgStyle() const { return myHistMsgStyle; }
-  QString chatDateFormat() const { return myChatDateFormat; }
-  QString histDateFormat() const { return myHistDateFormat; }
-  QString recvHistoryColor() const { return myRecvHistoryColor; }
-  QString sentHistoryColor() const { return mySentHistoryColor; }
-  QString recvColor() const { return myRecvColor; }
-  QString sentColor() const { return mySentColor; }
-  QString noticeColor() const { return myNoticeColor; }
-  QString tabTypingColor() const { return myTabTypingColor; }
-  QString chatBackColor() const { return myChatBackColor; }
-  QRect tabDialogRect() const { return myTabDialogRect; }
-  QSize sendDialogSize() const { return mySendDialogSize; }
-  QSize viewDialogSize() const { return myViewDialogSize; }
+  const QString& chatDateFormat() const { return myChatDateFormat; }
+  const QString& histDateFormat() const { return myHistDateFormat; }
+  const QString& recvHistoryColor() const { return myRecvHistoryColor; }
+  const QString& sentHistoryColor() const { return mySentHistoryColor; }
+  const QString& recvColor() const { return myRecvColor; }
+  const QString& sentColor() const { return mySentColor; }
+  const QString& noticeColor() const { return myNoticeColor; }
+  const QString& tabTypingColor() const { return myTabTypingColor; }
+  const QString& chatBackColor() const { return myChatBackColor; }
+  const QRect& tabDialogRect() const { return myTabDialogRect; }
+  const QSize& sendDialogSize() const { return mySendDialogSize; }
+  const QSize& viewDialogSize() const { return myViewDialogSize; }
 
 public slots:
   /**
@@ -152,15 +152,15 @@ public slots:
   void setNoSoundInActiveChat(bool noSoundInActiveChat);
   void setChatMsgStyle(unsigned short chatMsgStyle);
   void setHistMsgStyle(unsigned short histMsgStyle);
-  void setChatDateFormat(QString chatDateFormat);
-  void setHistDateFormat(QString histDateFormat);
-  void setRecvHistoryColor(QString recvHistoryColor);
-  void setSentHistoryColor(QString sentHistoryColor);
-  void setRecvColor(QString recvColor);
-  void setSentColor(QString sentColor);
-  void setNoticeColor(QString noticeColor);
-  void setTabTypingColor(QString tabTypingColor);
-  void setChatBackColor(QString chatBackColor);
+  void setChatDateFormat(const QString& chatDateFormat);
+  void setHistDateFormat(const QString& histDateFormat);
+  void setRecvHistoryColor(const QString& recvHistoryColor);
+  void setSentHistoryColor(const QString& sentHistoryColor);
+  void setRecvColor(const QString& recvColor);
+  void setSentColor(const QString& sentColor);
+  void setNoticeColor(const QString& noticeColor);
+  void setTabTypingColor(const QString& tabTypingColor);
+  void setChatBackColor(const QString& chatBackColor);
   void setTabDialogRect(const QRect& geometry);
   void setSendDialogSize(const QSize& geometry);
   void setViewDialogSize(const QSize& geometry);

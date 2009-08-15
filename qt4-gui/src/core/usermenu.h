@@ -70,7 +70,7 @@ public:
    * @param ppid Contact protocol id
    * @param userId Contact id
    */
-  void setUser(QString id, unsigned long ppid);
+  void setUser(const QString& id, unsigned long ppid);
 
   /**
    * Convenience function t set user and popup the menu on a given location.

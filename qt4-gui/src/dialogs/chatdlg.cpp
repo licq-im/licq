@@ -1137,7 +1137,7 @@ ChatWindow::ChatWindow (QWidget* parent)
 
 // -----------------------------------------------------------------------------
 
-void ChatWindow::appendNoNewLine(QString s)
+void ChatWindow::appendNoNewLine(const QString& s)
 {
   QTextCursor tc = textCursor();
   tc.movePosition(QTextCursor::End);

@@ -51,7 +51,7 @@ public:
    * @param id Group id
    * @param name Group name
    */
-  ContactGroup(int id, QString name = QString());
+  ContactGroup(int id, const QString& name = QString());
 
   /**
    * Constructor, creates an empty group

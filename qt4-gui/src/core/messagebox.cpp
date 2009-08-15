@@ -53,8 +53,9 @@ using namespace LicqQtGui;
  * When bConfirmNo is true, then a second dialog asks the user to confirm his negative
  * decision, the displayed confirmation message is passed using the QString szConfirmNo.
  */
-bool LicqQtGui::QueryUser(QWidget* parent, QString query, QString button1, QString button2,
-    bool confirmYes, QString confirmYesText, bool confirmNo, QString confirmNoText)
+bool LicqQtGui::QueryUser(QWidget* parent, const QString& query, const QString& button1,
+    const QString& button2, bool confirmYes, const QString& confirmYesText,
+    bool confirmNo, const QString& confirmNoText)
 {
   bool result;
 
@@ -83,27 +84,28 @@ bool LicqQtGui::QueryUser(QWidget* parent, QString query, QString button1, QStri
   return result;
 }
 
-int LicqQtGui::QueryUser(QWidget* parent, QString query, QString button1, QString button2, QString button3)
+int LicqQtGui::QueryUser(QWidget* parent, const QString& query,
+    const QString& button1, const QString& button2, const QString& button3)
 {
   return ( QMessageBox::question(parent, QMessageBox::tr("Licq Question"), query, button1, button2, button3));
 }
 
-bool LicqQtGui::QueryYesNo(QWidget* parent, QString query)
+bool LicqQtGui::QueryYesNo(QWidget* parent, const QString& query)
 {
   return (QMessageBox::question(parent, QMessageBox::tr("Licq Question"), query, QMessageBox::Yes | QMessageBox::No) == QMessageBox::Yes);
 }
 
-void LicqQtGui::InformUser(QWidget* parent, QString text)
+void LicqQtGui::InformUser(QWidget* parent, const QString& text)
 {
   MessageBox::addMessage(QMessageBox::Information, text, parent);
 }
 
-void LicqQtGui::WarnUser(QWidget* parent, QString text)
+void LicqQtGui::WarnUser(QWidget* parent, const QString& text)
 {
   MessageBox::addMessage(QMessageBox::Warning, text, parent);
 }
 
-void LicqQtGui::CriticalUser(QWidget* parent, QString text)
+void LicqQtGui::CriticalUser(QWidget* parent, const QString& text)
 {
   MessageBox::addMessage(QMessageBox::Critical, text, parent);
 }

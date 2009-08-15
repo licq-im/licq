@@ -124,7 +124,7 @@ signals:
    */
   void convoLeave(const UserId& userId, unsigned long ppid, unsigned long convoId);
   void verifyImage(unsigned long);
-  void newOwner(QString, unsigned long);
+  void newOwner(const QString& userId, unsigned long ppid);
 
 private:
   int myPipe;

@@ -53,7 +53,7 @@ public:
   virtual ~ChatWindow() {}
 
   QString lastLine() const;
-  void appendNoNewLine(QString);
+  void appendNoNewLine(const QString& s);
   void GotoEnd();
 
   void setBackground(const QColor&);

@@ -97,7 +97,7 @@ SettingsDlg::~SettingsDlg()
   myInstance = NULL;
 }
 
-void SettingsDlg::addPage(SettingsPage page, QWidget* widget, QString title, SettingsPage parent)
+void SettingsDlg::addPage(SettingsPage page, QWidget* widget, const QString& title, SettingsPage parent)
 {
   myPages.insert(page, widget);
   myPager->addPage(widget, title, (parent == UnknownPage ? NULL : myPages.value(parent)));

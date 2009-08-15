@@ -76,14 +76,14 @@ public:
 
   // Get functions
   bool useDoubleReturn() const { return myUseDoubleReturn; }
-  QString msgPopupKey() const { return myMsgPopupKey; }
+  const QString& msgPopupKey() const { return myMsgPopupKey; }
   bool delayStatusChange() const { return myDelayStatusChange; }
-  QFont defaultFont() const { return myDefaultFont; }
-  QFont defaultFixedFont() const { return myDefaultFixedFont; }
+  const QFont& defaultFont() const { return myDefaultFont; }
+  const QFont& defaultFixedFont() const { return myDefaultFixedFont; }
   QFont normalFont() const;
-  QFont editFont() const { return myEditFont; }
-  QFont historyFont() const { return myHistoryFont; }
-  QFont fixedFont() const { return myFixedFont; }
+  const QFont& editFont() const { return myEditFont; }
+  const QFont& historyFont() const { return myHistoryFont; }
+  const QFont& fixedFont() const { return myFixedFont; }
 
 #ifndef USE_KDE
   QString guiStyle() const;
@@ -96,12 +96,12 @@ public:
   bool mainwinSticky() const { return myMainwinSticky; }
   bool autoRaiseMainwin() const { return myAutoRaiseMainwin; }
   bool mainwinStartHidden() const { return myMainwinStartHidden; }
-  QRect mainwinRect() const { return myMainwinRect; }
+  const QRect& mainwinRect() const { return myMainwinRect; }
 
   DockMode dockMode() const { return myDockMode; }
 #ifndef USE_KDE
   bool defaultIconFortyEight() const { return myDefaultIconFortyEight; }
-  QString themedIconTheme() const { return myThemedIconTheme; }
+  const QString& themedIconTheme() const { return myThemedIconTheme; }
 #endif
   bool trayBlink() const { return myTrayBlink; }
   bool trayMsgOnlineNotify() const { return myTrayMsgOnlineNotify; }
@@ -126,12 +126,12 @@ public slots:
 
   // Set functions
   void setUseDoubleReturn(bool useDoubleReturn);
-  void setMsgPopupKey(QString msgPopupKey);
+  void setMsgPopupKey(const QString& msgPopupKey);
   void setDelayStatusChange(bool delayStatusChange);
-  void setNormalFont(QString normalFont);
-  void setEditFont(QString editFont);
-  void setHistoryFont(QString historyFont);
-  void setFixedFont(QString fixedFont);
+  void setNormalFont(const QString& normalFont);
+  void setEditFont(const QString& editFont);
+  void setHistoryFont(const QString& historyFont);
+  void setFixedFont(const QString& fixedFont);
 
   void setMiniMode(bool miniMode);
   void setShowGroupIfNoMsg(bool showGroupIfNoMsg);
@@ -149,7 +149,7 @@ public slots:
   void setDockMode(DockMode dockMode);
 #ifndef USE_KDE
   void setDefaultIconFortyEight(bool defaultIconFortyEight);
-  void setThemedIconTheme(QString themedIconTheme);
+  void setThemedIconTheme(const QString& themedIconTheme);
 #endif
   void setTrayBlink(bool trayBlink);
   void setTrayMsgOnlineNotify(bool trayMsgOnlineNotify);
@@ -193,7 +193,7 @@ signals:
   /**
    * Popup key has changed
    */
-  void msgPopupKeyChanged(QString newKey);
+  void msgPopupKeyChanged(const QString& newKey);
 
 private:
   static General* myInstance;

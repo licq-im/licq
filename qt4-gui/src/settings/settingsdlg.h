@@ -94,7 +94,7 @@ public:
    * @param title Page title
    * @param parent Parent page if not a top level page
    */
-  void addPage(SettingsPage page, QWidget* widget, QString title, SettingsPage parent = UnknownPage);
+  void addPage(SettingsPage page, QWidget* widget, const QString& title, SettingsPage parent = UnknownPage);
 
 private slots:
   /**

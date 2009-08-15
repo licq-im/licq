@@ -335,7 +335,7 @@ void UserEventCommon::updateWidgetInfo(const LicqUser* u)
   }
 }
 
-void UserEventCommon::pushToolTip(QAction* action, QString tooltip)
+void UserEventCommon::pushToolTip(QAction* action, const QString& tooltip)
 {
   if (action == 0 || tooltip.isEmpty())
     return;

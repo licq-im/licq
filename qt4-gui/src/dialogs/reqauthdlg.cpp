@@ -41,7 +41,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::ReqAuthDlg */
 
-ReqAuthDlg::ReqAuthDlg(QString id, unsigned long /* ppid */, QWidget* parent)
+ReqAuthDlg::ReqAuthDlg(const QString& id, unsigned long /* ppid */, QWidget* parent)
   : QDialog(parent)
 {
   Support::setWidgetProps(this, "RequestAuthDialog");

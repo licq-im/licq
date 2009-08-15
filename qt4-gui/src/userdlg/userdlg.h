@@ -106,7 +106,7 @@ public:
    * @param title Page title
    * @param parent Parent page if not a top level page
    */
-  void addPage(UserPage page, QWidget* widget, QString title, UserPage parent = UnknownPage);
+  void addPage(UserPage page, QWidget* widget, const QString& title, UserPage parent = UnknownPage);
 
   /**
    * Get user id for dialog

@@ -78,12 +78,12 @@ using namespace LicqQtGui;
 
 IconManager* IconManager::myInstance = NULL;
 
-void IconManager::createInstance(QString iconSet, QString extendedIconSet, QObject* parent)
+void IconManager::createInstance(const QString& iconSet, const QString& extendedIconSet, QObject* parent)
 {
   myInstance = new IconManager(iconSet, extendedIconSet, parent);
 }
 
-IconManager::IconManager(QString iconSet, QString extendedIconSet, QObject* parent)
+IconManager::IconManager(const QString& iconSet, const QString& extendedIconSet, QObject* parent)
   : QObject(parent)
 {
   if (!loadIcons(iconSet))
@@ -93,7 +93,7 @@ IconManager::IconManager(QString iconSet, QString extendedIconSet, QObject* pare
     gLog.Warn("%sUnable to load extended icons %s.\n", L_WARNxSTR, extendedIconSet.toLocal8Bit().data());
 }
 
-bool IconManager::loadIcons(QString iconSet)
+bool IconManager::loadIcons(const QString& iconSet)
 {
   CIniFile fIconsConf;
 
@@ -209,7 +209,7 @@ bool IconManager::loadIcons(QString iconSet)
   return true;
 }
 
-bool IconManager::loadExtendedIcons(QString iconSet)
+bool IconManager::loadExtendedIcons(const QString& iconSet)
 {
   CIniFile fIconsConf;
 
@@ -271,7 +271,7 @@ const QPixmap& IconManager::getIcon(IconType icon)
   return myEmptyIcon;
 }
 
-const QPixmap& IconManager::iconForStatus(unsigned long fullStatus, QString id, unsigned long ppid)
+const QPixmap& IconManager::iconForStatus(unsigned long fullStatus, const QString& id, unsigned long ppid)
 {
   bool isAim = (ppid == LICQ_PPID) && (!id[0].isDigit());
 

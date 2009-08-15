@@ -568,7 +568,7 @@ bool LicqGui::x11EventFilter(XEvent* event)
 #endif
 }
 
-void LicqGui::grabKey(QString key)
+void LicqGui::grabKey(const QString& key)
 {
   Display* dsp = QX11Info::display();
   Qt::HANDLE rootWin = QX11Info::appRootWindow();
@@ -970,7 +970,7 @@ void LicqGui::sendChatRequest(const UserId& userId)
     return;
 }
 
-void LicqGui::viewUrl(QString url)
+void LicqGui::viewUrl(const QString& url)
 {
 #ifdef USE_KDE
   if (url.startsWith("mailto:"))

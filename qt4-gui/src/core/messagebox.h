@@ -31,15 +31,15 @@ class CUserEvent;
 
 namespace LicqQtGui
 {
-bool QueryUser(QWidget* q, QString query, QString button1, QString button2,
-    bool confirmYes = false, QString confirmYesText = NULL,
-    bool confirmNo = false, QString confirmNoText = NULL);
-int QueryUser(QWidget* parent, QString query, QString button1, QString button2,
-    QString button3);
-bool QueryYesNo(QWidget* parent, QString query);
-void InformUser(QWidget* parent, QString text);
-void WarnUser(QWidget* parent, QString text);
-void CriticalUser(QWidget* parent, QString text);
+bool QueryUser(QWidget* q, const QString& query, const QString& button1, const QString& button2,
+    bool confirmYes = false, const QString& confirmYesText = NULL,
+    bool confirmNo = false, const QString& confirmNoText = NULL);
+int QueryUser(QWidget* parent, const QString& query, const QString& button1,
+    const QString& button2, const QString& button3);
+bool QueryYesNo(QWidget* parent, const QString& query);
+void InformUser(QWidget* parent, const QString& text);
+void WarnUser(QWidget* parent, const QString& text);
+void CriticalUser(QWidget* parent, const QString& text);
 
 
 class MessageBoxItem : public QListWidgetItem
@@ -52,8 +52,8 @@ public:
   void setUnread(bool unread);
   void setType(QMessageBox::Icon t) { myType = t; }
 
-  QString getMessage() const { return myMessage; }
-  QPixmap getFullIcon() const { return myFullIcon; }
+  const QString& getMessage() const { return myMessage; }
+  const QPixmap& getFullIcon() const { return myFullIcon; }
   bool isUnread() const { return myUnread; }
   QMessageBox::Icon getType() const { return myType; }
 

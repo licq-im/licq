@@ -437,7 +437,7 @@ void Config::Chat::setHistMsgStyle(unsigned short histMsgStyle)
   myHistMsgStyle = histMsgStyle;
 }
 
-void Config::Chat::setChatDateFormat(QString chatDateFormat)
+void Config::Chat::setChatDateFormat(const QString& chatDateFormat)
 {
   if (chatDateFormat == myChatDateFormat)
     return;
@@ -445,7 +445,7 @@ void Config::Chat::setChatDateFormat(QString chatDateFormat)
   myChatDateFormat = chatDateFormat;
 }
 
-void Config::Chat::setHistDateFormat(QString histDateFormat)
+void Config::Chat::setHistDateFormat(const QString& histDateFormat)
 {
   if (histDateFormat == myHistDateFormat)
     return;
@@ -453,7 +453,7 @@ void Config::Chat::setHistDateFormat(QString histDateFormat)
   myHistDateFormat = histDateFormat;
 }
 
-void Config::Chat::setRecvHistoryColor(QString recvHistoryColor)
+void Config::Chat::setRecvHistoryColor(const QString& recvHistoryColor)
 {
   if (recvHistoryColor == myRecvHistoryColor)
     return;
@@ -462,7 +462,7 @@ void Config::Chat::setRecvHistoryColor(QString recvHistoryColor)
   changeChatColors();
 }
 
-void Config::Chat::setSentHistoryColor(QString sentHistoryColor)
+void Config::Chat::setSentHistoryColor(const QString& sentHistoryColor)
 {
   if (sentHistoryColor == mySentHistoryColor)
     return;
@@ -471,7 +471,7 @@ void Config::Chat::setSentHistoryColor(QString sentHistoryColor)
   changeChatColors();
 }
 
-void Config::Chat::setRecvColor(QString recvColor)
+void Config::Chat::setRecvColor(const QString& recvColor)
 {
   if (recvColor == myRecvColor)
     return;
@@ -480,7 +480,7 @@ void Config::Chat::setRecvColor(QString recvColor)
   changeChatColors();
 }
 
-void Config::Chat::setSentColor(QString sentColor)
+void Config::Chat::setSentColor(const QString& sentColor)
 {
   if (sentColor == mySentColor)
     return;
@@ -489,7 +489,7 @@ void Config::Chat::setSentColor(QString sentColor)
   changeChatColors();
 }
 
-void Config::Chat::setNoticeColor(QString noticeColor)
+void Config::Chat::setNoticeColor(const QString& noticeColor)
 {
   if (noticeColor == myNoticeColor)
     return;
@@ -498,7 +498,7 @@ void Config::Chat::setNoticeColor(QString noticeColor)
   changeChatColors();
 }
 
-void Config::Chat::setTabTypingColor(QString tabTypingColor)
+void Config::Chat::setTabTypingColor(const QString& tabTypingColor)
 {
   if (tabTypingColor == myTabTypingColor)
     return;
@@ -507,7 +507,7 @@ void Config::Chat::setTabTypingColor(QString tabTypingColor)
   changeChatColors();
 }
 
-void Config::Chat::setChatBackColor(QString chatBackColor)
+void Config::Chat::setChatBackColor(const QString& chatBackColor)
 {
   if (chatBackColor == myChatBackColor)
     return;

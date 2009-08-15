@@ -38,7 +38,7 @@
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::EditFileDlg */
 
-EditFileDlg::EditFileDlg(QString fname, QWidget* parent)
+EditFileDlg::EditFileDlg(const QString& fname, QWidget* parent)
   : QDialog(parent),
     myFile(fname)
 {

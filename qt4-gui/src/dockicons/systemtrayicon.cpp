@@ -37,7 +37,7 @@ SystemTrayIcon::SystemTrayIcon(QMenu* menu)
   myTrayIcon->setContextMenu(menu);
   connect(myTrayIcon, SIGNAL(activated(QSystemTrayIcon::ActivationReason)),
       SLOT(trayActivated(QSystemTrayIcon::ActivationReason)));
-  connect(this, SIGNAL(newToolTip(QString)), SLOT(updateToolTip(QString)));
+  connect(this, SIGNAL(newToolTip(const QString&)), SLOT(updateToolTip(const QString&)));
 
   updateConfig();
 
@@ -66,9 +66,9 @@ void SystemTrayIcon::updateIconMessages(int newMsg, int sysMsg)
 }
 
 #ifdef USE_KDE
-void SystemTrayIcon::popupMessage(QString title, QString message, const QPixmap& icon, int timeout)
+void SystemTrayIcon::popupMessage(const QString& title, const QString& message, const QPixmap& icon, int timeout)
 #else
-void SystemTrayIcon::popupMessage(QString title, QString message, const QPixmap& /* icon */, int timeout)
+void SystemTrayIcon::popupMessage(const QString& title, const QString& message, const QPixmap& /* icon */, int timeout)
 #endif
 {
 #ifdef USE_KDE
@@ -137,7 +137,7 @@ void SystemTrayIcon::trayActivated(QSystemTrayIcon::ActivationReason reason)
   }
 }
 
-void SystemTrayIcon::updateToolTip(QString toolTip)
+void SystemTrayIcon::updateToolTip(const QString& toolTip)
 {
   myTrayIcon->setToolTip(toolTip);
 }

@@ -352,7 +352,7 @@ void UserMenu::setUser(const UserId& userId)
   gUserManager.DropUser(user);
 }
 
-void UserMenu::setUser(QString id, unsigned long ppid)
+void UserMenu::setUser(const QString& id, unsigned long ppid)
 {
   myId = id;
   myPpid = ppid;

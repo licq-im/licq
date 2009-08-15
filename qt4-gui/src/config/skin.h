@@ -57,7 +57,7 @@ public:
   QPixmap mask;
 
   virtual ~FrameSkin() {}
-  virtual void loadSkin(CIniFile& skinFile, QString name, QString baseSkinDir);
+  virtual void loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir);
 };
 
 class ShapeSkin
@@ -68,7 +68,7 @@ public:
   QColor background;
 
   virtual ~ShapeSkin() { }
-  virtual void loadSkin(CIniFile& skinFile, QString name);
+  virtual void loadSkin(CIniFile& skinFile, const QString& name);
   QRect borderToRect(const QWidget* w) const;
   void AdjustForMenuBar(unsigned short h1, unsigned short h2);
 };
@@ -82,7 +82,7 @@ public:
   QString caption;
 
   virtual ~ButtonSkin() { }
-  virtual void loadSkin(CIniFile& skinFile, QString name, QString baseSkinDir);
+  virtual void loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir);
 
 private:
   using ShapeSkin::loadSkin;
@@ -97,7 +97,7 @@ public:
   unsigned short margin;
 
   virtual ~LabelSkin() { }
-  virtual void loadSkin(CIniFile& skinFile, QString name, QString baseSkinDir);
+  virtual void loadSkin(CIniFile& skinFile, const QString& name, const QString& baseSkinDir);
 
 private:
   using ShapeSkin::loadSkin;
@@ -124,7 +124,7 @@ public:
    * @param skinName Initial skin name to load
    * @param parent Parent object
    */
-  static void createInstance(QString skinName = QString(), QObject* parent = NULL);
+  static void createInstance(const QString& skinName = QString(), QObject* parent = NULL);
 
   /**
    * Get the active skin
@@ -135,11 +135,11 @@ public:
   { return myInstance; }
 
 
-  Skin(QString skinName = QString(), QObject* parent = NULL);
+  Skin(const QString& skinName = QString(), QObject* parent = NULL);
   virtual ~Skin() {}
-  void loadSkin(QString skinName);
+  void loadSkin(const QString& skinName);
 
-  QString skinName() const { return mySkinName; }
+  const QString& skinName() const { return mySkinName; }
   QPixmap mainwinPixmap(int width, int height) const;
   QPixmap mainwinMask(int width, int height) const;
 

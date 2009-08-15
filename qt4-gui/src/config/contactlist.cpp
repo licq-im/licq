@@ -206,7 +206,8 @@ void Config::ContactList::setColumnCount(int columnCount)
   changeListLayout();
 }
 
-void Config::ContactList::setColumn(int column, QString heading, QString format, unsigned short width, AlignmentMode alignment)
+void Config::ContactList::setColumn(int column, const QString& heading,
+    const QString& format, unsigned short width, AlignmentMode alignment)
 {
   if (column < 0 || column >= MAX_COLUMNCOUNT)
     return;

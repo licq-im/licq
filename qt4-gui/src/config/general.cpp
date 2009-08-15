@@ -251,7 +251,7 @@ void Config::General::setDelayStatusChange(bool delayStatusChange)
   myDelayStatusChange = delayStatusChange;
 }
 
-void Config::General::setMsgPopupKey(QString msgPopupKey)
+void Config::General::setMsgPopupKey(const QString& msgPopupKey)
 {
   if (msgPopupKey == myMsgPopupKey)
     return;
@@ -265,7 +265,7 @@ QFont Config::General::normalFont() const
   return qApp->font();
 }
 
-void Config::General::setNormalFont(QString normalFont)
+void Config::General::setNormalFont(const QString& normalFont)
 {
   QFont f;
   if (normalFont.isEmpty())
@@ -280,7 +280,7 @@ void Config::General::setNormalFont(QString normalFont)
   // No need to emit fontChanged for normal font, qt will handle this for us
 }
 
-void Config::General::setEditFont(QString editFont)
+void Config::General::setEditFont(const QString& editFont)
 {
   QFont f;
   if (editFont.isEmpty())
@@ -298,7 +298,7 @@ void Config::General::setEditFont(QString editFont)
     emit fontChanged();
 }
 
-void Config::General::setHistoryFont(QString historyFont)
+void Config::General::setHistoryFont(const QString& historyFont)
 {
   QFont f;
   if (historyFont.isEmpty())
@@ -316,7 +316,7 @@ void Config::General::setHistoryFont(QString historyFont)
     emit fontChanged();
 }
 
-void Config::General::setFixedFont(QString fixedFont)
+void Config::General::setFixedFont(const QString& fixedFont)
 {
   QFont f;
   if (fixedFont.isEmpty())
@@ -473,7 +473,7 @@ void Config::General::setDefaultIconFortyEight(bool defaultIconFortyEight)
     emit dockChanged();
 }
 
-void Config::General::setThemedIconTheme(QString themedIconTheme)
+void Config::General::setThemedIconTheme(const QString& themedIconTheme)
 {
   if (themedIconTheme == myThemedIconTheme)
     return;

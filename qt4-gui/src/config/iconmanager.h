@@ -135,7 +135,8 @@ public:
    * @param extendedIconSet Initial extended icon set to load
    * @param parent Parent object
    */
-  static void createInstance(QString iconSet, QString extendedIconSet, QObject* parent = NULL);
+  static void createInstance(const QString& iconSet,
+      const QString& extendedIconSet, QObject* parent = NULL);
 
   /**
    * Get the Icon Manager
@@ -151,7 +152,7 @@ public:
    * @param iconSet Name of icon set
    * @return True if icon set was found and index files could be read
    */
-  bool loadIcons(QString iconSet);
+  bool loadIcons(const QString& iconSet);
 
   /**
    * Load a set of extended icons
@@ -159,7 +160,7 @@ public:
    * @param iconSet Name of extended icon set
    * @return True if icon set was found and index files could be read
    */
-  bool loadExtendedIcons(QString iconSet);
+  bool loadExtendedIcons(const QString& iconSet);
 
   /**
    * Get an icon
@@ -177,7 +178,7 @@ public:
    * @param ppid Id of protocol to use icon set for
    * @return The requested icon if loaded, otherwise a null pixmap
    */
-  const QPixmap& iconForStatus(unsigned long fullStatus, QString id = "0", unsigned long ppid = LICQ_PPID);
+  const QPixmap& iconForStatus(unsigned long fullStatus, const QString& id = "0", unsigned long ppid = LICQ_PPID);
 
   /**
    * Get icon for an event type
@@ -187,8 +188,8 @@ public:
    */
   const QPixmap& iconForEvent(unsigned short subCommand);
 
-  QString iconSet() const { return myIconSet; }
-  QString extendedIconSet() const { return myExtendedIconSet; }
+  const QString& iconSet() const { return myIconSet; }
+  const QString& extendedIconSet() const { return myExtendedIconSet; }
 
 signals:
   /**
@@ -223,7 +224,7 @@ private:
    * @param extendedIconSet Initial extended icon set to load
    * @param parent Parent object
    */
-  IconManager(QString iconSet, QString extendedIconSet, QObject* parent = NULL);
+  IconManager(const QString& iconSet, const QString& extendedIconSet, QObject* parent = NULL);
 
   /**
    * Destructor

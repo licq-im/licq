@@ -92,7 +92,8 @@ QSize HistoryView::sizeHint() const
   return QSize(400, 150);
 }
 
-void HistoryView::setHistoryConfig(unsigned short msgStyle, QString dateFormat, bool extraSpacing, bool reverse)
+void HistoryView::setHistoryConfig(unsigned short msgStyle,
+    const QString& dateFormat, bool extraSpacing, bool reverse)
 {
   myUseBuffer = true;
   myMsgStyle = msgStyle;
@@ -103,7 +104,8 @@ void HistoryView::setHistoryConfig(unsigned short msgStyle, QString dateFormat, 
   myShowNotices = false;
 }
 
-void HistoryView::setChatConfig(unsigned short msgStyle, QString dateFormat, bool extraSpacing, bool appendLineBreak, bool showNotices)
+void HistoryView::setChatConfig(unsigned short msgStyle, const QString& dateFormat,
+    bool extraSpacing, bool appendLineBreak, bool showNotices)
 {
   myUseBuffer = false;
   myMsgStyle = msgStyle;
@@ -114,8 +116,8 @@ void HistoryView::setChatConfig(unsigned short msgStyle, QString dateFormat, boo
   myShowNotices = showNotices;
 }
 
-void HistoryView::setColors(QString back, QString rcv, QString snt,
-    QString rcvHist, QString sntHist, QString notice)
+void HistoryView::setColors(const QString& back, const QString& rcv, const QString& snt,
+    const QString& rcvHist, const QString& sntHist, const QString& notice)
 {
   myColorRcv = rcv;
   myColorSnt = snt;
@@ -241,9 +243,10 @@ void HistoryView::addMsg(const ICQEvent* event)
     addMsg(event->UserEvent());
 }
 
-void HistoryView::addMsg(direction dir, bool fromHistory, QString eventDescription, QDateTime date,
+void HistoryView::addMsg(direction dir, bool fromHistory,
+  const QString& eventDescription, const QDateTime& date,
   bool isDirect, bool isMultiRec, bool isUrgent, bool isEncrypted,
-  QString contactName, QString messageText, QString anchor)
+  const QString& contactName, QString messageText, QString anchor)
 {
   QString s;
   QString color;
@@ -449,7 +452,7 @@ void HistoryView::addMsg(const CUserEvent* event, const UserId& uid)
     emit messageAdded();
 }
 
-void HistoryView::addNotice(QDateTime dt, QString messageText)
+void HistoryView::addNotice(const QDateTime& dt, QString messageText)
 {
   if (!myShowNotices)
     return;

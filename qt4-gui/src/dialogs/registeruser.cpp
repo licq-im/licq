@@ -203,7 +203,7 @@ bool RegisterUserDlg::validateCurrentPage()
     setEnabled(false);
     button(CancelButton)->setEnabled(true);
     connect(LicqGui::instance()->signalManager(),
-        SIGNAL(newOwner(QString, unsigned long)), SLOT(gotNewOwner(QString, unsigned long)));
+        SIGNAL(newOwner(const QString&, unsigned long)), SLOT(gotNewOwner(const QString&, unsigned long)));
     gLicqDaemon->icqVerify(myCaptchaField->text().toLatin1().data());
     return false;
   }
@@ -222,11 +222,11 @@ void RegisterUserDlg::gotCaptcha(unsigned long /* ppid */)
   next();
 }
 
-void RegisterUserDlg::gotNewOwner(QString id, unsigned long ppid)
+void RegisterUserDlg::gotNewOwner(const QString& id, unsigned long ppid)
 {
   // We got the new owner
   disconnect(LicqGui::instance()->signalManager(),
-      SIGNAL(newOwner(QString, unsigned long)), this, SLOT(gotNewOwner(QString, unsigned long)));
+      SIGNAL(newOwner(const QString&, unsigned long)), this, SLOT(gotNewOwner(const QString&, unsigned long)));
 
   // Save "Remember password" setting
   ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_W);

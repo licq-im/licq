@@ -44,8 +44,8 @@ public:
   MMSendDlg(MMUserView* _mmv, QWidget* parent = 0);
   ~MMSendDlg();
 
-  int go_message(QString);
-  int go_url(QString, QString);
+  int go_message(const QString& msg);
+  int go_url(const QString& url, const QString& desc);
   int go_contact(StringList& users);
 
 private:

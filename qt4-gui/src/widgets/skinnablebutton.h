@@ -45,7 +45,7 @@ public:
    * @param defaultText Text to display if skin doesn't contain a caption
    * @param parent Parent widget
    */
-  SkinnableButton(const Config::ButtonSkin& skin, QString defaultText, QWidget* parent = NULL);
+  SkinnableButton(const Config::ButtonSkin& skin, const QString& defaultText, QWidget* parent = NULL);
 
   /**
    * Constructor, create a default skinnable button
@@ -53,7 +53,7 @@ public:
    * @param defaultText Text to display if skin doesn't contain a caption
    * @param parent Parent widget
    */
-  SkinnableButton(QString defaultText, QWidget* parent = 0);
+  SkinnableButton(const QString& defaultText, QWidget* parent = 0);
 
   /**
    * Apply a skin

@@ -42,7 +42,7 @@ public:
   virtual bool validateCurrentPage();
 
 signals:
-  void signal_done(bool success, QString id, unsigned long ppid);
+  void signal_done(bool success, const QString& id, unsigned long ppid);
 
 private:
   void createIntroPage();
@@ -71,7 +71,7 @@ private:
 
 private slots:
   void gotCaptcha(unsigned long ppid);
-  void gotNewOwner(QString id, unsigned long ppid);
+  void gotNewOwner(const QString& id, unsigned long ppid);
 };
 
 } // namespace LicqQtGui

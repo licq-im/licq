@@ -133,7 +133,7 @@ UserDlg::~UserDlg()
   emit finished(this);
 }
 
-void UserDlg::addPage(UserPage page, QWidget* widget, QString title, UserPage parent)
+void UserDlg::addPage(UserPage page, QWidget* widget, const QString& title, UserPage parent)
 {
   myPages.insert(page, widget);
   myPager->addPage(widget, title, (parent == UnknownPage ? NULL : myPages.value(parent)));

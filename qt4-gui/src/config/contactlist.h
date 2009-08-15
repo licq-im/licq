@@ -83,8 +83,8 @@ public:
 
   // Get functions
   int columnCount() const { return myColumnCount; }
-  QString columnHeading(int column) { return myColumnHeading[column]; }
-  QString columnFormat(int column) { return myColumnFormat[column]; }
+  const QString& columnHeading(int column) { return myColumnHeading[column]; }
+  const QString& columnFormat(int column) { return myColumnFormat[column]; }
   unsigned short columnWidth(int column) { return myColumnWidth[column]; }
   AlignmentMode columnAlignment(int column) { return myColumnAlignment[column]; }
 
@@ -140,7 +140,8 @@ public slots:
 
   // Set functions
   void setColumnCount(int columnCount);
-  void setColumn(int column, QString heading, QString format, unsigned short width, AlignmentMode alignment);
+  void setColumn(int column, const QString& heading, const QString& format,
+      unsigned short width, AlignmentMode alignment);
 
   void setShowOffline(bool showOffline);
   void setAlwaysShowONU(bool alwaysShowONU);
