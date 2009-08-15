@@ -25,7 +25,7 @@
 
 #include <QObject>
 
-#include <licq_user.h>
+#include <licq_types.h>
 
 class QCheckBox;
 class QGridLayout;

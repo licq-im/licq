@@ -23,7 +23,7 @@
 #include <deque>
 #include <list>
 
-#include <licq_user.h>
+#include <licq_types.h>
 
 #include <QDialog>
 #include <QTextEdit>
