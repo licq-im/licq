@@ -154,7 +154,7 @@ static int process_tok(const command_t *table,const char *tok);
 unsigned long StringToStatus(const char* _szStatus)
 {
   const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  unsigned long nStatus = o->AddStatusFlags(0);
+  unsigned long nStatus = 0;
   int i =0;
   static struct 
   {
