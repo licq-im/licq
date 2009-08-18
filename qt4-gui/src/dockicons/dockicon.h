@@ -72,7 +72,7 @@ public:
    * @param icon Icon to display in the popup
    * @param timeout Time before hiding popup
    */
-  virtual void popupMessage(const QString& title, const QString& message, const QPixmap& icon, int timeout) = 0;
+  virtual void popupMessage(QString title, QString message, const QPixmap& icon, int timeout) = 0;
 
 signals:
   /**
