@@ -330,9 +330,9 @@ void MLEdit::updateFont()
 
 int MLEdit::heightForLines(int lines) const
 {
-  // We need to add frame width and the added height of the scroll area as
-  // we're calculating height for the widget, not the viewport.
-  return lines*myFontHeight + height() - viewport()->height() + 2 * frameWidth() + 2;
+  // We need to add frame width as we're calculating height for the widget, not just the viewport.
+  // The reason for the last constant is unknown, but seems the same regardless of font size and gui style
+  return lines*myFontHeight + 2*frameWidth() + 8;
 }
 
 void MLEdit::setSizeHintLines(int lines)
