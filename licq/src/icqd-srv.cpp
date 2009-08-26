@@ -1601,7 +1601,7 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
     LicqUser* u = gUserManager.fetchUser(e->userId(), LOCK_W);
     if (u != NULL)
     {
-      e->m_pUserEvent->AddToHistory(u, LICQ_PPID, D_SENDER);
+      e->m_pUserEvent->AddToHistory(u, D_SENDER);
       u->SetLastSentEvent();
       m_xOnEventManager.Do(ON_EVENT_MSGSENT, u);
       gUserManager.DropUser(u);
@@ -3676,8 +3676,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	    ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
 	    if (AddUserEvent(o, eEvent))
 	    {
+                eEvent->AddToHistory(o, D_RECEIVER);
 	      gUserManager.DropOwner(o);
-	      eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
 	      m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
 	    }
 	    else
@@ -3706,8 +3706,8 @@ void CICQDaemon::ProcessMessageFam(CBuffer &packet, unsigned short nSubtype)
 	      gLog.Info(tr("%sSMS from %s.\n"), L_BLANKxSTR, eSms->Number());
 	      if (AddUserEvent(o, eEvent))
 	      {
+                  eEvent->AddToHistory(o, D_RECEIVER);
 	        gUserManager.DropOwner(o);
-	        eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
 	        m_xOnEventManager.Do(ON_EVENT_SMS, NULL);
 	      }
 	      else
@@ -4412,8 +4412,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       if (AddUserEvent(o, e))
       {
+        e->AddToHistory(o, D_RECEIVER);
         gUserManager.DropOwner(o);
-        e->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
         m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
       }
       else
@@ -4464,8 +4464,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       if (AddUserEvent(o, eEvent))
       {
+        eEvent->AddToHistory(o, D_RECEIVER);
         gUserManager.DropOwner(o);
-        eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
         m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
       }
       else
@@ -4488,8 +4488,8 @@ void CICQDaemon::ProcessListFam(CBuffer &packet, unsigned short nSubtype)
       ICQOwner *o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
       if (AddUserEvent(o, e))
       {
+        e->AddToHistory(o, D_RECEIVER);
         gUserManager.DropOwner(o);
-        e->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
         m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
       }
       else
@@ -4912,8 +4912,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
                 ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_W);
             if (AddUserEvent(o, eEvent))
 	    {
+                  eEvent->AddToHistory(o, D_RECEIVER);
                   gUserManager.DropOwner(o);
-              eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
               m_xOnEventManager.Do(ON_EVENT_SYSMSG, NULL);
 	    }
 	    else
@@ -4940,8 +4940,8 @@ void CICQDaemon::ProcessVariousFam(CBuffer &packet, unsigned short nSubtype)
 	      gLog.Info(tr("%sOffline SMS from %s.\n"), L_BLANKxSTR, eSms->Number());
 	      if (AddUserEvent(o, eEvent))
 	      {
+	            eEvent->AddToHistory(o, D_RECEIVER);
                     gUserManager.DropOwner(o);
-	        eEvent->AddToHistory(NULL, LICQ_PPID, D_RECEIVER);
 	        m_xOnEventManager.Do(ON_EVENT_SMS, NULL);
 	      }
 	      else

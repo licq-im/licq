@@ -73,9 +73,9 @@ public:
    void SetPending(bool b)  { m_bPending = b; }
 
 protected:
-  virtual void AddToHistory(LicqUser* user, unsigned long ppid, direction dir) const = 0;
+  virtual void AddToHistory(LicqUser* user, direction dir) const = 0;
   int AddToHistory_Header(direction _nDir, char* szOut) const;
-  void AddToHistory_Flush(LicqUser* u, unsigned long nPPID, const char* szOut) const;
+  void AddToHistory_Flush(LicqUser* u, const char* szOut) const;
 
    void SetDirection(direction d)  { m_eDir = d; }
    void Cancel() { m_nFlags |= E_CANCELLED; }
@@ -122,7 +122,7 @@ public:
 
   virtual CEventMsg* Copy() const;
   const char* Message() const { return m_szMessage; }
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 
    static CEventMsg *Parse(char *sz, unsigned short nCmd, time_t nTime,
                            unsigned long nFlags, unsigned long nConvoId = 0);
@@ -143,7 +143,7 @@ public:
               unsigned long _nMsgID1 = 0, unsigned long _nMsgID2 = 0);
    virtual ~CEventFile();
   virtual CEventFile* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 
   const char* Filename() const { return m_szFilename; }
   unsigned long FileSize() const {  return m_nFileSize; }
@@ -169,7 +169,7 @@ public:
              unsigned long _nFlags, unsigned long _nConvoId = 0);
    virtual ~CEventUrl();
   virtual CEventUrl* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
   const char* Url() const { return m_szUrl; }
   const char* Description() const { return m_szUrlDescription; }
 
@@ -194,7 +194,7 @@ public:
       unsigned long _nConvoId = 0, unsigned long nMsgID1 = 0, unsigned long nMsgID2 = 0);
   virtual ~CEventChat();
   virtual CEventChat* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
   const char* Reason() const { return m_szReason; }
   const char* Clients() const { return m_szClients; }
   unsigned short Port() const { return m_nPort; }
@@ -217,7 +217,7 @@ public:
                unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAdded();
   virtual CEventAdded* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
   const UserId& userId() const { return myUserId; }
 
 protected:
@@ -241,7 +241,7 @@ public:
                      unsigned long _nFlags);
    virtual ~CEventAuthRequest();
   virtual CEventAuthRequest* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
   const UserId& userId() const { return myUserId; }
 
 protected:
@@ -263,7 +263,7 @@ public:
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthGranted();
   virtual CEventAuthGranted* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
   const UserId& userId() const { return myUserId; }
 
 protected:
@@ -281,7 +281,7 @@ public:
                      unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventAuthRefused();
   virtual CEventAuthRefused* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
   const UserId& userId() const { return myUserId; }
 
 protected:
@@ -299,7 +299,7 @@ public:
                    unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventWebPanel();
   virtual CEventWebPanel* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 protected:
   void CreateDescription() const;
    char *m_szName;
@@ -316,7 +316,7 @@ public:
                     unsigned short _nCommand, time_t _tTime, unsigned long _nFlags);
    virtual ~CEventEmailPager();
   virtual CEventEmailPager* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 protected:
   void CreateDescription() const;
    char *m_szName;
@@ -349,7 +349,7 @@ public:
      time_t tTime, unsigned long nFlags);
   virtual ~CEventContactList();
   virtual CEventContactList* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 
   const ContactList &Contacts() const { return m_vszFields; }
 
@@ -370,7 +370,7 @@ public:
   virtual CEventSms* Copy() const;
   const char* Number() const { return m_szNumber; }
   const char* Message() const { return m_szMessage; }
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 
    static CEventSms *Parse(char *sz, unsigned short nCmd, time_t nTime, unsigned long nFlags);
 protected:
@@ -387,7 +387,7 @@ public:
                       const char *_szMessage, time_t _tTime);
   virtual ~CEventServerMessage();
   virtual CEventServerMessage* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 
   static CEventServerMessage *Parse(char *, unsigned short, time_t, unsigned long);
 
@@ -411,7 +411,7 @@ public:
                    const char *_szCreds = 0, unsigned long _nSessionLength = 0);
   virtual ~CEventEmailAlert();
   virtual CEventEmailAlert* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 
   const char* From() const { return m_szName; }
   const char* To() const { return m_szTo; }
@@ -454,7 +454,7 @@ public:
      time_t tTime, unsigned long nFlags);
   ~CEventPlugin();
   virtual CEventPlugin* Copy() const;
-  virtual void AddToHistory(LicqUser* user, unsigned long ppid, direction dir) const;
+  virtual void AddToHistory(LicqUser* user, direction dir) const;
 protected:
   void CreateDescription() const;
   char *m_sz;
@@ -469,7 +469,7 @@ public:
       const UserId& userId, const char *_szMsg, time_t _tTime, unsigned long _nFlags);
   ~CEventUnknownSysMsg();
   virtual CEventUnknownSysMsg* Copy() const;
-  virtual void AddToHistory(LicqUser* u, unsigned long _nPPID, direction _nDir) const;
+  virtual void AddToHistory(LicqUser* u, direction _nDir) const;
 protected:
   void CreateDescription() const;
   UserId myUserId;
