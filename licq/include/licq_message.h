@@ -23,7 +23,6 @@
 
 typedef std::list<const char *> ConstFileList;
 
-#define LICQ_PPID 0x4C696371  // "Licq"
 #define EVENT_HEADER_SIZE  80
 
 // Define some event flags, leave the 2 LSB's for the licq version
