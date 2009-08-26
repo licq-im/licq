@@ -25,9 +25,9 @@ RUNNING
 Loading and running the plugin is simply a matter of adding a "-p rms"
 to your Licq command line arguments.  Remember that if any plugins are
 loaded from the command line then all plugins must be specified.  In other
-words if you are using the qt-gui plugin and also wish to start the forwarder 
+words if you are using the qt4-gui plugin and also wish to start the rms
 plugin, run:
-licq [options] -p qt-gui -p forwarder -- [ qt-gui options ] -- [ rms options ]
+licq [options] -p qt4-gui -p rms -- [ qt4-gui options ] -- [ rms options ]
 
 
 CONFIGURING
