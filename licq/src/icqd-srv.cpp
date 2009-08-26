@@ -684,15 +684,46 @@ void CICQDaemon::icqRequestService(unsigned short nFam)
 }
 
 //-----icqSetStatus-------------------------------------------------------------
-unsigned long CICQDaemon::ProtoSetStatus(unsigned long _nPPID,
-                                         unsigned short _nNewStatus)
+unsigned long CICQDaemon::protoSetStatus(const UserId& ownerId, unsigned short newStatus)
 {
+  bool isOffline;
+  unsigned long ppid;
+
+  {
+    LicqUserReadGuard u(ownerId);
+    if (!u.isLocked() || u->User())
+      return 0;
+
+    isOffline = u->StatusOffline();
+    ppid = u->ppid();
+  }
+
   unsigned long nRet = 0;
 
-  if (_nPPID == LICQ_PPID)
-    nRet = icqSetStatus(_nNewStatus);
+  if (newStatus == ICQ_STATUS_OFFLINE)
+  {
+    if (isOffline)
+      return 0;
+
+    if (ppid == LICQ_PPID)
+      icqLogoff();
+    else
+      PushProtoSignal(new CLogoffSignal(), ppid);
+  }
+  else if(isOffline)
+  {
+    if (ppid == LICQ_PPID)
+      nRet = icqLogon(newStatus);
+    else
+      PushProtoSignal(new CLogonSignal(newStatus), ppid);
+  }
   else
-    PushProtoSignal(new CChangeStatusSignal(_nNewStatus), _nPPID);
+  {
+    if (ppid == LICQ_PPID)
+      nRet = icqSetStatus(newStatus);
+    else
+      PushProtoSignal(new CChangeStatusSignal(newStatus), ppid);
+  }
 
   return nRet;
 }
@@ -1678,19 +1709,6 @@ void CICQDaemon::ProcessDoneEvent(ICQEvent *e)
   }
 }
 
-//-----ICQ::Logon--------------------------------------------------------------
-unsigned long CICQDaemon::ProtoLogon(unsigned long _nPPID, unsigned short _nLogonStatus)
-{
-  unsigned long nRet = 0;
-
-  if (_nPPID == LICQ_PPID)
-    nRet = icqLogon(_nLogonStatus);
-  else
-    PushProtoSignal(new CLogonSignal(_nLogonStatus), _nPPID);
-
-  return nRet;
-}
-
 unsigned long CICQDaemon::icqLogon(unsigned short logonStatus)
 {
   if (m_bLoggingOn)
@@ -1739,15 +1757,6 @@ unsigned long CICQDaemon::icqRequestLogonSalt()
   }
 
   return 0;
-}
-
-//-----ICQ::icqLogoff-----------------------------------------------------------
-void CICQDaemon::ProtoLogoff(unsigned long _nPPID)
-{
-  if (_nPPID == LICQ_PPID)
-    icqLogoff();
-  else
-    PushProtoSignal(new CLogoffSignal(), _nPPID);
 }
 
 void CICQDaemon::icqLogoff()

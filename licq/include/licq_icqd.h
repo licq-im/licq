@@ -253,25 +253,26 @@ public:
   void ProtoRenameUser(const char *szId, unsigned long nPPID)
   { if (szId != NULL) updateUserAlias(LicqUser::makeUserId(szId, nPPID)); }
 
-  //! Change status for a protocol.
-  /*!
-       \param nPPID The protocol ID.
-       \param nNewStatus The status to change to.
-  */
-  unsigned long ProtoSetStatus(unsigned long nPPID, unsigned short nNewStatus);
+  /**
+   * Set status for a protocol
+   *
+   * @param ownerId Owner of protocol to change
+   * @param newStatus The status to change to
+   * @return Event id
+   */
+  unsigned long protoSetStatus(const UserId& ownerId, unsigned short newStatus);
 
-  //! Logon for a protocol.
-  /*!
-        \param nPPID The protocol ID.
-        \param nLogonStatus The initial status to set after logon is complete.
-  */
-  unsigned long ProtoLogon(unsigned long nPPID, unsigned short nLogonStatus);
+  LICQ_DEPRECATED // Use protoSetStatus() instead
+  unsigned long ProtoSetStatus(unsigned long nPPID, unsigned short nNewStatus)
+  { return protoSetStatus(gUserManager.ownerUserId(nPPID), nNewStatus); }
 
-  //! Logoff from a protocol.
-  /*!
-        \param nPPID The protocol ID.
-  */
-  void ProtoLogoff(unsigned long nPPID);
+  LICQ_DEPRECATED // Use protoSetStatus() instead
+  unsigned long ProtoLogon(unsigned long nPPID, unsigned short nLogonStatus)
+  { return protoSetStatus(gUserManager.ownerUserId(nPPID), nLogonStatus); }
+
+  LICQ_DEPRECATED // Use protoSetStatus() instead
+  void ProtoLogoff(unsigned long nPPID)
+  { protoSetStatus(gUserManager.ownerUserId(nPPID), ICQ_STATUS_OFFLINE); }
 
   /**
    * Notify a user that we've started/stopped typing
