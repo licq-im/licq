@@ -617,12 +617,6 @@ void LicqGui::changeStatus(unsigned long status, bool invisible)
 
 void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisible)
 {
-  if (status == ICQ_STATUS_OFFLINE)
-  {
-    myLicqDaemon->ProtoLogoff(ppid);
-    return;
-  }
-
   const ICQOwner* o = gUserManager.FetchOwner(ppid, LOCK_R);
   if (o == NULL)
     return;
@@ -642,18 +636,16 @@ void LicqGui::changeStatus(unsigned long status, unsigned long ppid, bool invisi
     else
       status &= (~ICQ_STATUS_FxPRIVATE);
   }
-  else
+  else if(status != ICQ_STATUS_OFFLINE)
   {
     if (o->StatusInvisible() || invisible)
       status |= ICQ_STATUS_FxPRIVATE;
   }
 
-  bool b = o->StatusOffline();
+  UserId ownerId = o->id();
   gUserManager.DropOwner(o);
-  if (b)
-    myLicqDaemon->ProtoLogon(ppid, status);
-  else
-    myLicqDaemon->ProtoSetStatus(ppid, status);
+
+  myLicqDaemon->protoSetStatus(ownerId, status);
 }
 
 bool LicqGui::removeUserFromList(const UserId& userId, QWidget* parent)

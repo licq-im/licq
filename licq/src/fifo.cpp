@@ -336,7 +336,6 @@ static int fifo_status( int argc, const char *const *argv, void *data)
 {
   CICQDaemon *d= (CICQDaemon *) data;
   const char *szStatus = argv[1];
-  bool bOffline;
   unsigned long nStatus;
 
   if( argc == 1 )
@@ -346,9 +345,6 @@ static int fifo_status( int argc, const char *const *argv, void *data)
   }
 
   // Determine the status to go to
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-  bOffline = o->StatusOffline();
-  gUserManager.DropOwner(o);
   nStatus = StringToStatus(const_cast<char *>(szStatus));
 
   if (nStatus == INT_MAX)
@@ -357,18 +353,9 @@ static int fifo_status( int argc, const char *const *argv, void *data)
               L_WARNxSTR,L_FIFOxSTR,argv[0],szStatus);
     return -1;
   }
-  else if (nStatus == ICQ_STATUS_OFFLINE)
-  {
-    if (!bOffline) 
-      d->ProtoLogoff(LICQ_PPID);
-  }
-  else
-  {
-    if (bOffline)
-      d->ProtoLogon(LICQ_PPID, nStatus);
-    else
-      d->ProtoSetStatus(LICQ_PPID, nStatus);
-  }
+
+  d->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), nStatus);
+
   // Now set the auto response
   if( argc > 2 )
   {

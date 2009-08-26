@@ -880,11 +880,12 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
     fprintf(fs, "%d Invalid status.\n", CODE_INVALIDxSTATUS);
     return -1;
   }
+  UserId ownerId = gUserManager.ownerUserId(nPPID);
   if (nStatus == ICQ_STATUS_OFFLINE)
   {
     fprintf(fs, "%d [0] Logging off %s.\n", CODE_COMMANDxSTART, szStatus);
     fflush(fs);
-    licqDaemon->ProtoLogoff(nPPID);
+    licqDaemon->protoSetStatus(ownerId, ICQ_STATUS_OFFLINE);
     fprintf(fs, "%d [0] Event done.\n", CODE_STATUSxDONE);
     return 0;
   }
@@ -893,17 +894,11 @@ int CRMSClient::ChangeStatus(unsigned long nPPID, unsigned long nStatus, const c
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     bool b = o->StatusOffline();
     gUserManager.DropOwner(o);
-    unsigned long tag = 0;
+    unsigned long tag = licqDaemon->protoSetStatus(ownerId, nStatus);
     if (b)
-    {
-      tag = licqDaemon->ProtoLogon(nPPID, nStatus);
       fprintf(fs, "%d [%ld] Logging on to %s.\n", CODE_COMMANDxSTART, tag, szStatus);
-    }
     else
-    {
-      tag = licqDaemon->ProtoSetStatus(nPPID, nStatus);
       fprintf(fs, "%d [%ld] Setting status for %s.\n", CODE_COMMANDxSTART, tag, szStatus);
-    }
     tags.push_back(tag);
   }
   return 0;

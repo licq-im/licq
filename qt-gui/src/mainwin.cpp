@@ -2266,11 +2266,12 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
         
     ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
     if (o == NULL) continue;
+    UserId ownerId = o->id();
 
     if (id == ICQ_STATUS_OFFLINE)
     {
       gUserManager.DropOwner(o);
-      licqDaemon->ProtoLogoff(nPPID);
+      licqDaemon->protoSetStatus(ownerId, ICQ_STATUS_OFFLINE);
       continue;
     }
     else if (id == (int)ICQ_STATUS_FxPRIVATE) // toggle invisible status
@@ -2310,13 +2311,8 @@ void CMainWindow::changeStatus(int id, unsigned long _nPPID, bool _bAutoLogon)
     // disable combo box, flip pixmap...
     //lblStatus->setEnabled(false);
 
-    // call the right function
-    bool b = o->StatusOffline();
     gUserManager.DropOwner(o);
-    if (b)
-      licqDaemon->ProtoLogon(nPPID, newStatus);
-    else
-      licqDaemon->ProtoSetStatus(nPPID, newStatus);
+    licqDaemon->protoSetStatus(ownerId, newStatus);
   }
   FOR_EACH_PROTO_PLUGIN_END
 }

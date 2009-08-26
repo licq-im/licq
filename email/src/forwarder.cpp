@@ -119,18 +119,10 @@ int CLicqForwarder::Run(CICQDaemon *_licqDaemon)
   if (m_szStatus != NULL)
   {
     unsigned long s = StringToStatus(m_szStatus);
-    ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
-    bool b = o->StatusOffline();
-    gUserManager.DropOwner(o);
     if (s == INT_MAX)
       gLog.Warn("%sInvalid startup status.\n", L_FORWARDxSTR);
     else
-    {
-      if (b)
-        licqDaemon->ProtoLogon(LICQ_PPID, s);
-      else
-        licqDaemon->ProtoSetStatus(LICQ_PPID, s);
-    }
+      licqDaemon->protoSetStatus(gUserManager.ownerUserId(LICQ_PPID), s);
     free(m_szStatus);
     m_szStatus = NULL;
   }

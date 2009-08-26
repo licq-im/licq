@@ -540,27 +540,10 @@ void CLicqConsole::MenuStatus(char *_szArg)
   for (it = p1.begin(); it != p1.end(); it++)
   {
     unsigned long nPPID = (*it)->PPID();
-    ICQOwner *o = gUserManager.FetchOwner(nPPID, LOCK_R);
-    if (nStatus == ICQ_STATUS_OFFLINE)
-    {
-      gUserManager.DropOwner(o);
-      licqDaemon->ProtoLogoff(nPPID);
-      continue;
-    }
-    if (bInvisible)
+    UserId ownerId = gUserManager.ownerUserId(nPPID);
+    if (bInvisible && nStatus != ICQ_STATUS_OFFLINE)
       nStatus |= ICQ_STATUS_FxPRIVATE;
-
-    // call the right function
-    bool b = o->StatusOffline();
-    gUserManager.DropOwner(o);
-    if (b)
-    {
-       licqDaemon->ProtoLogon(nPPID, nStatus);
-    }
-    else
-    {
-       licqDaemon->ProtoSetStatus(nPPID, nStatus);
-    }
+    licqDaemon->protoSetStatus(ownerId, nStatus);
   }
 }
 
