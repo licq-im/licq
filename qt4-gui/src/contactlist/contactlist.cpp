@@ -260,21 +260,33 @@ void ContactListModel::barDataChanged(ContactBar* bar, int row)
 
 void ContactListModel::groupBeginInsert(ContactGroup* group, int row)
 {
+  if (myBlockUpdates)
+    return;
+
   beginInsertRows(createIndex(groupRow(group), 0, group), row, row);
 }
 
 void ContactListModel::groupEndInsert()
 {
+  if (myBlockUpdates)
+    return;
+
   endInsertRows();
 }
 
 void ContactListModel::groupBeginRemove(ContactGroup* group, int row)
 {
+  if (myBlockUpdates)
+    return;
+
   beginRemoveRows(createIndex(groupRow(group), 0, group), row, row);
 }
 
 void ContactListModel::groupEndRemove()
 {
+  if (myBlockUpdates)
+    return;
+
   endRemoveRows();
 }
 
@@ -284,7 +296,13 @@ void ContactListModel::reloadAll()
   myBlockUpdates = true;
 
   // Clear the list of all old groups and users
-  clear();
+  if (myUserGroups.size() > 0)
+  {
+    beginRemoveRows(QModelIndex(), 0, myUserGroups.size()-1);
+
+    clear();
+    endRemoveRows();
+  }
   myColumnCount = Config::ContactList::instance()->columnCount();
 
   // Add all groups
@@ -292,13 +310,17 @@ void ContactListModel::reloadAll()
   connectGroup(newGroup);
   myUserGroups.append(newGroup);
 
-  FOR_EACH_GROUP_START(LOCK_R)
+  const GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
+  if (groups->size() > 0)
+    beginInsertRows(QModelIndex(), 0, groups->size());
+  for (GroupMap::const_iterator i = groups->begin(); i != groups->end(); ++i)
   {
-    ContactGroup* group = new ContactGroup(pGroup);
+    LicqGroupReadGuard pGroup(i->second, false);
+    ContactGroup* group = new ContactGroup(*pGroup);
     connectGroup(group);
     myUserGroups.append(group);
   }
-  FOR_EACH_GROUP_END
+  gUserManager.UnlockGroupList();
 
   // Add all users
   FOR_EACH_USER_START(LOCK_R)
@@ -309,7 +331,9 @@ void ContactListModel::reloadAll()
 
   // Tell views that we have done major changes
   myBlockUpdates = false;
-  reset();
+
+  if (myUserGroups.size() > 0)
+    endInsertRows();
 }
 
 ContactUserData* ContactListModel::findUser(const UserId& userId) const
