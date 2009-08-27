@@ -222,11 +222,6 @@ public:
   void removeUser(const UserId& userId);
 
   /**
-   * Removes (and delete) all users and groups from the list
-   */
-  void clear();
-
-  /**
    * Get a model index for a group or user that other components can use.
    *
    * @param row Group index or user index within a group

@@ -73,7 +73,11 @@ void ContactListModel::connectGroup(ContactGroup* group)
 ContactListModel::~ContactListModel()
 {
   // Delete all users and groups
-  clear();
+  while (!myUsers.isEmpty())
+    delete myUsers.takeFirst();
+
+  while (!myUserGroups.isEmpty())
+    delete myUserGroups.takeFirst();
 
   // Delete the system groups
   for (int i = 0; i < NUM_GROUPS_SYSTEM_ALL; ++i)
@@ -295,15 +299,22 @@ void ContactListModel::reloadAll()
   // Don't send out signals while reloading, the reset at the end will be enough
   myBlockUpdates = true;
 
-  // Clear the list of all old groups and users
+  // Clear all old users
+  while (!myUsers.isEmpty())
+    delete myUsers.takeFirst();
+
+  // Clear all old user groups
+  // System groups and their bars are never removed.
   if (myUserGroups.size() > 0)
   {
     beginRemoveRows(QModelIndex(), 0, myUserGroups.size()-1);
-
-    clear();
+    while (!myUserGroups.isEmpty())
+      delete myUserGroups.takeFirst();
     endRemoveRows();
   }
-  myColumnCount = Config::ContactList::instance()->columnCount();
+
+  // Make sure column count is correct
+  configUpdated();
 
   // Add all groups
   ContactGroup* newGroup = new ContactGroup(0, tr("Other Users"));
@@ -418,17 +429,6 @@ void ContactListModel::removeUser(const UserId& userId)
 
   myUsers.removeAll(user);
   delete user;
-}
-
-void ContactListModel::clear()
-{
-  // Clear all users and user groups.
-  // System groups and their bars are never removed.
-  while (!myUsers.isEmpty())
-    delete myUsers.takeFirst();
-
-  while (!myUserGroups.isEmpty())
-    delete myUserGroups.takeFirst();
 }
 
 QModelIndex ContactListModel::index(int row, int column, const QModelIndex& parent) const
