@@ -194,8 +194,9 @@ private:
    * Add a source model user to the proxy and emit insert signals
    *
    * @param userIndex Index (from source model) for user item
+   * @param emitSignals True to emit signals for changes
    */
-  void addUser(const QModelIndex& userIndex);
+  void addUser(const QModelIndex& userIndex, bool emitSignals = true);
 
   /**
    * Remove a user from the proxy model and emit remove signals
@@ -203,6 +204,14 @@ private:
    * @param userIndex User object from source model
    */
   void removeUser(ContactUser* cu);
+
+  /**
+   * Add a source model group and all its users to the proxy
+   * Will not emit any signals
+   *
+   * @param groupIndex Index (from source model) for group item
+   */
+  void addGroup(const QModelIndex& groupIndex);
 
   // Number of bars, must be an even number.
   // Number should never change, constant is here to make the code more readable

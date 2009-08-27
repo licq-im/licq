@@ -83,44 +83,7 @@ void Mode2ContactListProxy::reset()
     if (groupIndex.data(ContactListModel::GroupIdRole).toInt() >= ContactListModel::SystemGroupOffset)
       continue;
 
-    // Create an online group and an offline group for each source model group
-    myGroups.append(new ContactProxyGroup(static_cast<ContactGroup*>(groupIndex.internalPointer()), true));
-    myGroups.append(new ContactProxyGroup(static_cast<ContactGroup*>(groupIndex.internalPointer()), false));
-
-    // Count online and offline users separately so we can assign new row numbers
-    int onlineCount = 0;
-    int offlineCount = 0;
-
-    // Map all the users
-    int userCount = sourceModel()->rowCount(groupIndex);
-    for (int userRow = 0; userRow < userCount; ++userRow)
-    {
-      QModelIndex userIndex = sourceModel()->index(userRow, 0, groupIndex);
-
-      // Don't map the bars
-      if (static_cast<ContactItem*>(userIndex.internalPointer())->itemType() != ContactListModel::UserItem)
-        continue;
-
-      // Get the user data we need
-      bool isOnline = (userIndex.data(ContactListModel::StatusRole) != ContactListModel::OfflineStatus);
-      int unreadEvents = userIndex.data(ContactListModel::UnreadEventsRole).toInt();
-      bool isVisible = userIndex.data(ContactListModel::VisibilityRole).toBool();
-      int groupRow = srcGroupRow * 2 + (isOnline ? 0 : 1);
-      ContactUser* cu = static_cast<ContactUser*>(userIndex.internalPointer());
-
-      // Store user data in the map
-      myUserData[cu].sourceRow = userRow;
-      myUserData[cu].proxyRow = (isOnline ? onlineCount++ : offlineCount++);
-      myUserData[cu].groupRow = groupRow;
-      myUserData[cu].unreadEvents = unreadEvents;
-      myUserData[cu].isVisible = isVisible;
-
-      // Update group counters
-      myGroups.at(groupRow)->updateUserCount(1);
-      myGroups.at(groupRow)->updateEvents(unreadEvents);
-      if (isVisible)
-        myGroups.at(groupRow)->updateVisibility(1);
-    }
+    addGroup(groupIndex);
   }
   QAbstractProxyModel::reset();
 }
@@ -214,7 +177,7 @@ void Mode2ContactListProxy::sourceDataChanged(const QModelIndex& topLeft, const 
   }
 }
 
-void Mode2ContactListProxy::addUser(const QModelIndex& userIndex)
+void Mode2ContactListProxy::addUser(const QModelIndex& userIndex, bool emitSignals)
 {
   // Get data for the user we want to add
   ContactUser* cu = static_cast<ContactUser*>(userIndex.internalPointer());
@@ -233,7 +196,8 @@ void Mode2ContactListProxy::addUser(const QModelIndex& userIndex)
       proxyRow = i.value().proxyRow + 1;
 
   // Add the user to the correct group and notify view
-  beginInsertRows(createIndex(groupRow+NumBars, 0, myGroups.at(groupRow)), proxyRow, proxyRow);
+  if (emitSignals)
+    beginInsertRows(createIndex(groupRow+NumBars, 0, myGroups.at(groupRow)), proxyRow, proxyRow);
   myUserData[cu].sourceRow = userIndex.row();
   myUserData[cu].proxyRow = proxyRow;
   myUserData[cu].groupRow = groupRow;
@@ -243,11 +207,13 @@ void Mode2ContactListProxy::addUser(const QModelIndex& userIndex)
   myGroups[groupRow]->updateEvents(unreadEvents);
   if (isVisible)
     myGroups[groupRow]->updateVisibility(1);
-  endInsertRows();
+  if (emitSignals)
+    endInsertRows();
 
   // Group counters have changed
-  emit dataChanged(createIndex(groupRow+NumBars, 0, myGroups.at(groupRow)),
-      createIndex(groupRow+NumBars, myColumnCount-1, myGroups.at(groupRow)));
+  if (emitSignals)
+    emit dataChanged(createIndex(groupRow+NumBars, 0, myGroups.at(groupRow)),
+        createIndex(groupRow+NumBars, myColumnCount-1, myGroups.at(groupRow)));
 }
 
 void Mode2ContactListProxy::removeUser(ContactUser* cu)
@@ -281,11 +247,31 @@ void Mode2ContactListProxy::removeUser(ContactUser* cu)
       createIndex(groupRow+NumBars, myColumnCount-1, myGroups.at(groupRow)));
 }
 
+void Mode2ContactListProxy::addGroup(const QModelIndex& groupIndex)
+{
+  int groupRow = groupIndex.row();
+
+  // Add online and offline groups for new group
+  ContactGroup* cg = static_cast<ContactGroup*>(groupIndex.internalPointer());
+  myGroups.insert(groupRow * 2, new ContactProxyGroup(cg, true));
+  myGroups.insert(groupRow * 2 + 1, new ContactProxyGroup(cg, false));
+
+  // Map all the users
+  int userCount = sourceModel()->rowCount(groupIndex);
+  for (int userRow = 0; userRow < userCount; ++userRow)
+  {
+    QModelIndex userIndex = sourceModel()->index(userRow, 0, groupIndex);
+
+    // Don't map the bars
+    if (static_cast<ContactItem*>(userIndex.internalPointer())->itemType() != ContactListModel::UserItem)
+      continue;
+
+    addUser(userIndex, false);
+  }
+}
+
 void Mode2ContactListProxy::sourceRowsAboutToBeInserted(const QModelIndex& parent, int start, int end)
 {
-  // Contact list model currently never inserts multiple rows so assume start is always equal to end
-  Q_ASSERT(start == end);
-
   // For groups, we add two new entries for every source group
   if (!parent.isValid())
   {
@@ -299,55 +285,51 @@ void Mode2ContactListProxy::sourceRowsAboutToBeInserted(const QModelIndex& paren
 
 void Mode2ContactListProxy::sourceRowsInserted(const QModelIndex& parent, int start, int end)
 {
-  // Contact list model currently never inserts multiple rows so assume start is always equal to end
-  Q_ASSERT(start == end);
-
   if (!parent.isValid())
   {
-    // New group added, add online and offline groups at the same position
-    ContactGroup* cg = static_cast<ContactGroup*>( sourceModel()->index(start, 0).internalPointer());
-    myGroups.insert(start * 2, new ContactProxyGroup(cg, true));
-    myGroups.insert(start * 2 + 1, new ContactProxyGroup(cg, false));
-
     // Update users data with new group rows
     QMap<ContactUser*, Mode2ProxyUserData>::iterator i;
     for (i = myUserData.begin(); i != myUserData.end(); ++i)
-      if (i.value().groupRow >= start*2)
-        i.value().groupRow += 2;
+      if (i.value().groupRow >= end*2)
+        i.value().groupRow += 2*(end - start + 1);
+
+    for (int row = start; row <= end; ++row)
+      addGroup(sourceModel()->index(row, 0));
 
     endInsertRows();
     return;
   }
 
-  // New user added, add it to appropriate group (unless it was in a system group)
+  // New user(s) added, add them to appropriate group (unless it was in a system group)
   if (parent.data(ContactListModel::GroupIdRole).toInt() < ContactListModel::SystemGroupOffset)
-    addUser(sourceModel()->index(start, 0, parent));
+    for (int row = start; row <= end; ++row)
+      addUser(sourceModel()->index(row, 0, parent));
 }
 
 void Mode2ContactListProxy::sourceRowsAboutToBeRemoved(const QModelIndex& parent, int start, int end)
 {
-  // Contact list model currently never removes multiple rows so assume start is always equal to end
-  Q_ASSERT(start == end);
-
   // For groups, we'll have to remove both our local proxy groups
   if (!parent.isValid())
   {
     beginRemoveRows(QModelIndex(), start * 2 + NumBars, end * 2 + NumBars + 1);
 
     // Remove the proxy groups
-    delete myGroups.takeAt(start * 2 + 1);
-    delete myGroups.takeAt(start * 2);
+    for (int row = end; row >= start; --row)
+    {
+      delete myGroups.takeAt(row * 2 + 1);
+      delete myGroups.takeAt(row * 2);
+    }
 
-    // Remove users data for the removed group and adjust groupRow for later groups
+    // Remove user data for the removed groups and adjust groupRow for later groups
     QMap<ContactUser*, Mode2ProxyUserData>::iterator i;
     for (i = myUserData.begin(); i != myUserData.end(); ++i)
     {
-      if (i.value().groupRow/2 > start)
-        i.value().groupRow -= 2;
-      else if (i.value().groupRow/2 == start)
+      if (i.value().groupRow/2 > end)
+        i.value().groupRow -= 2*(end - start + 1);
+      else if (i.value().groupRow/2 >= start && i.value().groupRow/2 <= end)
       {
         // User for the removed group, remove it but make sure iterator isn't broken
-        QMap<ContactUser*, Mode2ProxyUserData>::iterator j;
+        QMap<ContactUser*, Mode2ProxyUserData>::iterator j = i;
         --i;
         myUserData.erase(j);
       }
@@ -357,14 +339,15 @@ void Mode2ContactListProxy::sourceRowsAboutToBeRemoved(const QModelIndex& parent
     return;
   }
 
-  // Remove user from proxy groups
-  removeUser(static_cast<ContactUser*>(sourceModel()->index(start, 0, parent).internalPointer()));
+  // Remove users from proxy groups
+  for (int row = start; row <= end; ++row)
+    removeUser(static_cast<ContactUser*>(sourceModel()->index(row, 0, parent).internalPointer()));
 }
 
 void Mode2ContactListProxy::sourceRowsRemoved(const QModelIndex& parent, int start, int end)
 {
-  // Contact list model currently never removes multiple rows so assume start is always equal to end
-  Q_ASSERT(start == end);
+  Q_UNUSED(start);
+  Q_UNUSED(end);
 
   if (!parent.isValid())
   {
