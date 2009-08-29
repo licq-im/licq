@@ -45,16 +45,17 @@ void MainContactListProxy::setThreadedView(bool enable, bool mode2)
 
   if (!myMode2View && myProxy != NULL)
   {
-    setSourceModel(myContactList);
-    delete myProxy;
+    // setSourceModel triggers reset() which will cause view to call us again
+    // make sure we set myProxy to NULl first so we won't trigger this block again
+    QAbstractProxyModel* oldProxy = myProxy;
     myProxy = NULL;
-    reset();
+    setSourceModel(myContactList);
+    delete oldProxy;
   }
   else if (myMode2View && myProxy == NULL)
   {
     myProxy = new Mode2ContactListProxy(myContactList, this);
     setSourceModel(myProxy);
-    reset();
   }
   else
   {

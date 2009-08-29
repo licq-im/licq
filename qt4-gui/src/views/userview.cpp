@@ -63,7 +63,7 @@ UserView::UserView(ContactListModel* contactList, QWidget* parent)
   connect(Config::ContactList::instance(), SIGNAL(listLookChanged()), SLOT(configUpdated()));
   connect(Config::ContactList::instance(), SIGNAL(currentListChanged()), SLOT(updateRootIndex()));
   connect(Config::ContactList::instance(), SIGNAL(listSortingChanged()), SLOT(resort()));
-  connect(myContactList, SIGNAL(modelReset()), SLOT(updateRootIndex()));
+  connect(myListProxy, SIGNAL(modelReset()), SLOT(updateRootIndex()));
 }
 
 UserView::~UserView()
