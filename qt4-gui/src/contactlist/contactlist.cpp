@@ -305,13 +305,8 @@ void ContactListModel::reloadAll()
 
   // Clear all old user groups
   // System groups and their bars are never removed.
-  if (myUserGroups.size() > 0)
-  {
-    beginRemoveRows(QModelIndex(), 0, myUserGroups.size()-1);
-    while (!myUserGroups.isEmpty())
-      delete myUserGroups.takeFirst();
-    endRemoveRows();
-  }
+  while (!myUserGroups.isEmpty())
+    delete myUserGroups.takeFirst();
 
   // Make sure column count is correct
   configUpdated();
@@ -322,8 +317,6 @@ void ContactListModel::reloadAll()
   myUserGroups.append(newGroup);
 
   const GroupMap* groups = gUserManager.LockGroupList(LOCK_R);
-  if (groups->size() > 0)
-    beginInsertRows(QModelIndex(), 0, groups->size());
   for (GroupMap::const_iterator i = groups->begin(); i != groups->end(); ++i)
   {
     LicqGroupReadGuard pGroup(i->second, false);
@@ -343,8 +336,7 @@ void ContactListModel::reloadAll()
   // Tell views that we have done major changes
   myBlockUpdates = false;
 
-  if (myUserGroups.size() > 0)
-    endInsertRows();
+  reset();
 }
 
 ContactUserData* ContactListModel::findUser(const UserId& userId) const
