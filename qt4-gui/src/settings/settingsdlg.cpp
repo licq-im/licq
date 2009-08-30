@@ -60,7 +60,7 @@ SettingsDlg::SettingsDlg(QWidget* parent)
   : QDialog(parent, Qt::WindowTitleHint | Qt::WindowSystemMenuHint)
 {
   Support::setWidgetProps(this, "SettingsDialog");
-  setWindowTitle(tr("Licq Settings"));
+  setWindowTitle(tr("Licq - Settings"));
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   QVBoxLayout* top_lay = new QVBoxLayout(this);

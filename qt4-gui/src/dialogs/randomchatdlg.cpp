@@ -49,7 +49,7 @@ RandomChatDlg::RandomChatDlg(QWidget* parent)
 {
   Support::setWidgetProps(this, "RandomChatDialog");
   setAttribute(Qt::WA_DeleteOnClose, true);
-  setWindowTitle(tr("Random Chat Search"));
+  setWindowTitle(tr("Licq - Random Chat Search"));
 
   QVBoxLayout* topLayout = new QVBoxLayout(this);
   myGroupsList = new QListWidget(this);

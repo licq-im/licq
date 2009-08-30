@@ -66,7 +66,7 @@ void PluginDlg::showPluginDlg()
 PluginDlg::PluginDlg()
 {
   Support::setWidgetProps(this, "PluginDialog");
-  setWindowTitle(tr("Plugin Manager"));
+  setWindowTitle(tr("Licq - Plugin Manager"));
   setAttribute(Qt::WA_DeleteOnClose, true);
 
   QGroupBox* boxStandard = new QGroupBox(tr("Standard Plugins"));

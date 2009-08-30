@@ -57,7 +57,7 @@ GPGKeyManager::GPGKeyManager(QWidget* parent)
 {
   setAttribute(Qt::WA_DeleteOnClose, true);
   Support::setWidgetProps(this, "GPGKeyManager");
-  setWindowTitle(tr("Licq GPG Key Manager"));
+  setWindowTitle(tr("Licq - GPG Key Manager"));
 
   QVBoxLayout* lay_main = new QVBoxLayout(this);
 

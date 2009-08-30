@@ -55,7 +55,7 @@ LogWindow::LogWindow(QWidget* parent)
   : QDialog(parent)
 {
   Support::setWidgetProps(this, "NetworkLog");
-  setWindowTitle(tr("Licq Network Log"));
+  setWindowTitle(tr("Licq - Network Log"));
 
   QVBoxLayout* top_lay = new QVBoxLayout(this);
 

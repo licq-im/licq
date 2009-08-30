@@ -64,7 +64,7 @@ RefuseDlg::RefuseDlg(const UserId& userId, const QString& t, QWidget* parent)
   buttons->addButton(btnCancel, QDialogButtonBox::RejectRole);
   connect( btnCancel, SIGNAL(clicked()), SLOT(reject()) );
 
-  setWindowTitle(tr("Licq %1 Refusal").arg(t));
+  setWindowTitle(tr("Licq - %1 Refusal").arg(t));
 }
 
 QString RefuseDlg::RefuseMessage()
