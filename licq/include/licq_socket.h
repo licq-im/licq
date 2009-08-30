@@ -1,10 +1,6 @@
 #ifndef socket_h
 #define socket_h
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <arpa/inet.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
@@ -20,7 +16,7 @@
 class ProxyServer;
 
 // IPv6 is implemented in socket classes but Licq support must be considered experimental for now
-// Uncomment out the following line to disable IPv6 socket usage
+// Uncomment the following line to disable IPv6 socket usage
 //#define LICQ_DISABLE_IPV6
 
 

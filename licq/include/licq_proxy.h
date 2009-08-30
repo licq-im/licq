@@ -1,10 +1,6 @@
 #ifndef PROXY_H
 #define PROXY_H
 
-#ifdef HAVE_CONFIG_H
-#include "config.h"
-#endif
-
 #include <netinet/in.h>
 
 // proxy types
