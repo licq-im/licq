@@ -16,14 +16,14 @@
 #ifndef LICQ_BYTEORDER_H
 #define LICQ_BYTEORDER_H
 
-#include <config.h>
-
 #include <stdint.h>
 
 
-// GNU header for endian
-#if defined HAVE_ENDIAN_H
+// GNU header for endian and byteswap
+// (stdint.h gives us __GLIBC__ to check for)
+# ifdef __GLIBC__
 # include <endian.h>
+# include <byteswap.h>
 
 // GNU defines endian by setting __BYTE_ORDER to __BIG_ENDIAN or __LITTLE_ENDIAN
 # if __BYTE_ORDER == __LITTLE_ENDIAN
@@ -33,15 +33,10 @@
 #  define IS_BIG_ENDIAN
 # endif
 
-// GNU has byte swap functions in separated header
-# ifdef HAVE_BYTESWAP_H
-#  include <byteswap.h>
-
 // GNU defines bswap functions: bswap_16, bswap_32, bswap_64
-#  define BSWAP_16(x) bswap_16(x)
-#  define BSWAP_32(x) bswap_32(x)
-#  define BSWAP_64(x) bswap_64(x)
-# endif
+# define BSWAP_16(x) bswap_16(x)
+# define BSWAP_32(x) bswap_32(x)
+# define BSWAP_64(x) bswap_64(x)
 
 
 // Mac OS X has __BIG_ENDIAN__ or __LITTLE_ENDIAN__ automatically set by the compiler (at least with GCC)
@@ -55,8 +50,8 @@
 
 
 // BSD header for endian and byte swap
-// Note: Mac OS X also has a machine/endian.h but not with the same content so OS X must be handled before we get here
-#elif defined HAVE_MACHINE_ENDIAN_H
+// Compiler gives us __*BSD__ variables to check for
+#elif defined(__FreeBSD__) || defined(__NetBSD__) || defined(__OpenBSD__)
 # include <machine/endian.h>
 
 // BSD defines endian by setting _BYTE_ORDER to _BIG_ENDIAN or _LITTLE_ENDIAN
@@ -82,7 +77,7 @@
 
 
 // Solaris header for endian and byte swap
-#elif defined HAVE_SYS_BYTEORDER_H
+#elif defined(__sun) || defined(sun)
 # include <sys/byteorder.h>
 
 // Solaris defines endian by setting _LITTLE_ENDIAN or _BIG_ENDIAN

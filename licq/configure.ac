@@ -101,9 +101,6 @@ AC_HEADER_DIRENT
 AC_HEADER_STDC
 AC_CHECK_HEADERS(errno.h fcntl.h getopt.h limits.h malloc.h pwd.h unistd.h paths.h)
 
-dnl Check for headers we can use to get endian for system and maybe some bswap functions
-AC_CHECK_HEADERS(byteswap.h endian.h machine/endian.h sys/byteorder.h)
-
 dnl Checks for library functions.
 AC_CHECK_LIB(xnet,inet_addr)
 AC_CHECK_LIB(socket, socket)
