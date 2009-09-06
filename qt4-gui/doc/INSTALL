@@ -2,7 +2,6 @@ Basic Installation of Qt4-GUI Plugin for Licq
 =============================================
 
 Requirements for Qt4-GUI:
-
   - X11 header files (xfree-devel or xorg-devel)
   - Qt 4.3.2 or greater. Most distributions come with packages like Qt and
     Qt-devel, you need both, please install the missing ones!
@@ -12,8 +11,11 @@ Requirements for Qt4-GUI:
   - cmake 2.4.2 or greater.
   - GNU make
 
-Qt can be downloaded from ftp://ftp.trolltech.com/pub/qt/source
-(search for qt-x11-opensource-src-X.X.X.tar.gz).
+
+Optional:
+  - Hunspell including header files. Provides spell checking in Qt4-Gui.
+          Note: If KDE 4 support is enabled, the built in spell checking in
+          KDE is used instead.
 
 
 Building instructions:
