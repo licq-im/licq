@@ -10,7 +10,7 @@
  * daemon will print a message to stderr (and to the file
  * <basedir>/licq.debug_rw_mutex) and then abort.
  */
-#define DEBUG_RW_MUTEX
+//#define DEBUG_RW_MUTEX
 
 
 #ifdef DEBUG_RW_MUTEX
@@ -64,7 +64,7 @@ public:
 #ifdef DEBUG_RW_MUTEX
   { myName = name; }
 #else
-  { }
+  { (void)name; }
 #endif
 
 private:
