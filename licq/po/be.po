@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Licq 1.3.6\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2008-09-13 11:46+0200\n"
+"POT-Creation-Date: 2009-10-08 20:28+0200\n"
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian language team <team@mova.org>\n"
@@ -15,14 +15,14 @@ msgstr ""
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/buffer.cpp:506
+#: src/buffer.cpp:381
 #, c-format
 msgid "%sPackUnsignedLong(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackUnsignedLong(): Спроба зьмясьціць дадзеных больш чым CBuffer можа "
 "захаваць!\n"
 
-#: src/buffer.cpp:519
+#: src/buffer.cpp:394
 #, c-format
 msgid ""
 "%sPackUnsignedLongBE(): Trying to pack more data than CBuffer can hold!\n"
@@ -30,26 +30,26 @@ msgstr ""
 "%sPackUnsignedLongBE(): Спроба зьмясьціць дадзеных больш чым CBuffer можа "
 "захаваць!\n"
 
-#: src/buffer.cpp:532
+#: src/buffer.cpp:407
 #, c-format
 msgid "%sPackChar(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackChar(): Спроба зьмясьціць дадзеных больш чым CBuffer можа захаваць!\n"
 
-#: src/buffer.cpp:545 src/buffer.cpp:559
+#: src/buffer.cpp:420 src/buffer.cpp:434
 #, c-format
 msgid "%sPack(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPack(): Спроба зьмясьціць дадзеных больш чым CBuffer можа захаваць!\n"
 
-#: src/buffer.cpp:583
+#: src/buffer.cpp:458
 #, c-format
 msgid "%sPackString(): Trying to pack more data than CBuffer can hold!\n"
 msgstr ""
 "%sPackString(): Спроба зьмясьціць дадзеных больш чым CBuffer можа "
 "захаваць!!\n"
 
-#: src/buffer.cpp:603
+#: src/buffer.cpp:478
 #, c-format
 msgid ""
 "%sPackUnsignedShort(): Trying to pack more data than CBuffer can hold!\n"
@@ -57,7 +57,7 @@ msgstr ""
 "%sPackUnsignedShort(): Спроба зьмясьціць дадзеных больш чым CBuffer можа "
 "захаваць!\n"
 
-#: src/buffer.cpp:616
+#: src/buffer.cpp:491
 #, c-format
 msgid ""
 "%sPackUnsignedShortBE(): Trying to pack more data than CBuffer can hold!\n"
@@ -65,12 +65,12 @@ msgstr ""
 "%sPackUnsignedShortBE(): Спроба зьмясьціць дадзеных больш чым CBuffer можа "
 "захаваць!\n"
 
-#: src/buffer.cpp:670
+#: src/buffer.cpp:545
 #, c-format
 msgid "%sRead too much TLV data!\n"
 msgstr "%sПрачытана зашмат дадзеных TLV!\n"
 
-#: src/buffer.cpp:678
+#: src/buffer.cpp:553
 #, c-format
 msgid "%sUnable to read requested amount of TLV data!\n"
 msgstr "%sНемагчыма прачытаць запрошаную колькасць TLV дадзеных!\n"
@@ -1231,43 +1231,43 @@ msgstr ""
 "\thelp <<каманда> | all>\n"
 "\t\tПаказаць дапамогу па камандзе <каманда> альбо па ўсім камандам.\n"
 
-#: src/fifo.cpp:356
+#: src/fifo.cpp:352
 #, c-format
 msgid "%s%s %s: command with invalid status \"%s\".\n"
 msgstr "%s%s %s: каманда з няспраўным станам \"%s\".\n"
 
-#: src/fifo.cpp:481 src/fifo.cpp:576
+#: src/fifo.cpp:468 src/fifo.cpp:566
 #, c-format
 msgid "%s `%s': bad protol. ICQ only alowed\n"
 msgstr "%s `%s': няспраўны пратакол. ICQ дазваляе толькі\n"
 
-#: src/fifo.cpp:518
+#: src/fifo.cpp:505
 #, c-format
 msgid "%s %s: redirection to \"%s\" failed: %s.\n"
 msgstr "%s %s: няўдалае перанакіраваньне да \"%s\": %s.\n"
 
-#: src/fifo.cpp:522
+#: src/fifo.cpp:509
 #, c-format
 msgid "%s %s: output redirected to \"%s\".\n"
 msgstr "%s %s: вывад перанакіраваны да \"%s\".\n"
 
-#: src/fifo.cpp:581
+#: src/fifo.cpp:571
 #, c-format
 msgid "%s %s: user %s not on contact list, not retrieving info.\n"
 msgstr ""
 "%s %s: карыстальнік %s не ў сьпісе кантактаў, немагчыма атрымаць дадзеныя.\n"
 
-#: src/fifo.cpp:779
+#: src/fifo.cpp:770
 #, c-format
 msgid "%sFifo commands:\n"
 msgstr "%sFifo каманды:\n"
 
-#: src/fifo.cpp:782
+#: src/fifo.cpp:773
 #, c-format
 msgid "%s: Type `help command'\n"
 msgstr "%s: Набярыце `help каманда'\n"
 
-#: src/fifo.cpp:794 src/fifo.cpp:804
+#: src/fifo.cpp:785 src/fifo.cpp:795
 #, c-format
 msgid ""
 "%s %s: help for `%s'\n"
@@ -1276,22 +1276,22 @@ msgstr ""
 "%s %s: дапамога дзеля `%s'\n"
 "%s\n"
 
-#: src/fifo.cpp:807
+#: src/fifo.cpp:798
 #, c-format
 msgid "%s %s: unknown command `%s'\n"
 msgstr "%s %s: невядомая каманда `%s'\n"
 
-#: src/fifo.cpp:929
+#: src/fifo.cpp:920
 #, c-format
 msgid "%sReceived string: %s"
 msgstr "%sАтрыманы радок: %s"
 
-#: src/fifo.cpp:936
+#: src/fifo.cpp:927
 #, c-format
 msgid "%s: '%s' Unknown fifo command. Try 'help'\n"
 msgstr "%s: '%s' Невядомая fifo-каманда. Паспрабуйце 'help'\n"
 
-#: src/file.cpp:379 src/file.cpp:384
+#: src/file.cpp:381 src/file.cpp:386
 #, c-format
 msgid ""
 "%sIniFile: Warning, failed to find key.\n"
@@ -1304,7 +1304,7 @@ msgstr ""
 "%sСэкцыя = [%s]\n"
 "%sКлюч     = \"%s\"\n"
 
-#: src/file.cpp:392
+#: src/file.cpp:394
 #, c-format
 msgid ""
 "%sIniFile: Warning, failed to find section.\n"
@@ -1315,7 +1315,7 @@ msgstr ""
 "%sФайл    = %s\n"
 "%sСэкцыя = [%s]\n"
 
-#: src/file.cpp:402
+#: src/file.cpp:404
 #, c-format
 msgid ""
 "%sIniFile: Warning, invalid file format.\n"
@@ -1326,7 +1326,7 @@ msgstr ""
 "%sФайл = %s\n"
 "%sРадок = %s\n"
 
-#: src/file.cpp:411
+#: src/file.cpp:413
 #, c-format
 msgid ""
 "%sIniFile: Warning, I/O read error.\n"
@@ -1337,7 +1337,7 @@ msgstr ""
 "%sФайл  = %s\n"
 "%sПамылка = %s\n"
 
-#: src/file.cpp:422
+#: src/file.cpp:424
 #, c-format
 msgid ""
 "%sIniFile: Warning, I/O write error.\n"
@@ -1357,39 +1357,39 @@ msgstr ""
 "%sНемагчыма адчыніць файл гісторыі (%s):\n"
 "%s%s.\n"
 
-#: src/history.cpp:389
+#: src/history.cpp:396
 #, c-format
 msgid "%sCorrupt history file (%s): Unknown sub-command 0x%04X.\n"
 msgstr "%sФайл гісторыі пашкоджаны (%s): Невядомая падкаманда 0x%04X.\n"
 
-#: src/icqd-chat.cpp:724 src/icqd-filetransfer.cpp:234
+#: src/icqd-chat.cpp:704 src/icqd-filetransfer.cpp:236
 #, c-format
 msgid "%sNo more ports available, add more or close open chat/file sessions.\n"
 msgstr ""
 "%sНяма даступных партоў, дадайце больш альбо зачыніце адчыненыя размовы/файл-"
 "сэсіі.\n"
 
-#: src/icqd-chat.cpp:848
+#: src/icqd-chat.cpp:827
 #, c-format
 msgid "%sChat: Shaking hands [v%d].\n"
 msgstr "%sРазмова:  Рукапаціскваньне [вэр.%d].\n"
 
-#: src/icqd-chat.cpp:861
+#: src/icqd-chat.cpp:840
 #, c-format
 msgid "%sChat: Waiting for color/font response.\n"
 msgstr "%sРазмова: Чаканьне адказу аб колеры/друкаваньні.\n"
 
-#: src/icqd-chat.cpp:901
+#: src/icqd-chat.cpp:878
 #, c-format
 msgid "%sChat: Received reverse connection.\n"
 msgstr "%sРазмова: Атрымана адваротнае злучэньне.\n"
 
-#: src/icqd-chat.cpp:927 src/icqd-chat.cpp:1197
+#: src/icqd-chat.cpp:904 src/icqd-chat.cpp:1171
 #, c-format
 msgid "%sChat: Remote end disconnected.\n"
 msgstr "%sРазмова: Адлеглы бок зачыніў злучэньне.\n"
 
-#: src/icqd-chat.cpp:929 src/icqd-chat.cpp:1199
+#: src/icqd-chat.cpp:906 src/icqd-chat.cpp:1173
 #, c-format
 msgid ""
 "%sChat: Lost remote end:\n"
@@ -1398,32 +1398,32 @@ msgstr ""
 "%sРазмова: Згублены адлеглы бок:\n"
 "%s%s\n"
 
-#: src/icqd-chat.cpp:966
+#: src/icqd-chat.cpp:943
 #, c-format
 msgid "%sChat: Received handshake from %s [v%ld].\n"
 msgstr "%sРазмова: Атрыман запыт на ўсталяваньне сувязі ад %s [вэр.%ld].\n"
 
-#: src/icqd-chat.cpp:1014
+#: src/icqd-chat.cpp:989
 #, c-format
 msgid "%sChat: Received color packet.\n"
 msgstr "%sРазмова: Атрыманы пакет наладак колеру.\n"
 
-#: src/icqd-chat.cpp:1062
+#: src/icqd-chat.cpp:1037
 #, c-format
 msgid "%sChat: Received font packet.\n"
 msgstr "%sРазмова: Атрыманы пакет наладак друкаваньня.\n"
 
-#: src/icqd-chat.cpp:1081
+#: src/icqd-chat.cpp:1056
 #, c-format
 msgid "%sChat: Received color/font packet.\n"
 msgstr "%sРазмова: Атрыманы пакет наладак колеру/друкаваньня.\n"
 
-#: src/icqd-chat.cpp:1112
+#: src/icqd-chat.cpp:1086
 #, c-format
 msgid "%sChat: Joined multiparty (%d people).\n"
 msgstr "%sРазмова: далучаны да шмат-асабовай размовы (%d чалавек).\n"
 
-#: src/icqd-chat.cpp:1937 src/icqd-chat.cpp:1968
+#: src/icqd-chat.cpp:1916 src/icqd-chat.cpp:1947
 #, c-format
 msgid ""
 "%sChat: Send error:\n"
@@ -1432,41 +1432,41 @@ msgstr ""
 "%sРазмова: памылка пры перадачы:\n"
 "%s%s\n"
 
-#: src/icqd-chat.cpp:2389
+#: src/icqd-chat.cpp:2370
 #, c-format
 msgid "%sToo many connected clients, rejecting new connection.\n"
 msgstr ""
 
-#: src/icqd-chat.cpp:2403
+#: src/icqd-chat.cpp:2384
 #, c-format
 msgid "%sChat: Received connection.\n"
 msgstr "%sРазмова: Атрымана злучэньне.\n"
 
-#: src/icqd-chat.cpp:2407
+#: src/icqd-chat.cpp:2389
 #, fuzzy, c-format
 msgid "%sChat: Unable to receive new connection.\n"
 msgstr "%sРазмова: Атрымана злучэньне.\n"
 
-#: src/icqd-chat.cpp:2418
+#: src/icqd-chat.cpp:2400
 #, c-format
 msgid "%sChat: No user owns socket %d.\n"
 msgstr "%sРазмова: адсутнічаюць сокеты дзеля гэтага карыстальніка %d.\n"
 
-#: src/icqd.cpp:391
+#: src/icqd.cpp:385
 #, c-format
 msgid "%sUnable to allocate TCP port for local server (%s)!\n"
 msgstr "%sНемагчыма вылучыць TCP-порт дзеля лякальнага паслужніка (%s)!\n"
 
-#: src/icqd.cpp:392
+#: src/icqd.cpp:386
 msgid "No ports available"
 msgstr "Адсутнічаюць даступныя парты"
 
-#: src/icqd.cpp:411
+#: src/icqd.cpp:405
 #, c-format
 msgid "%sOpening fifo.\n"
 msgstr "%sАдчыненьне fifo.\n"
 
-#: src/icqd.cpp:416
+#: src/icqd.cpp:410
 #, c-format
 msgid ""
 "%sUnable to create fifo:\n"
@@ -1475,7 +1475,7 @@ msgstr ""
 "%sНемагчыма стварыць fifo:\n"
 "%s%s.\n"
 
-#: src/icqd.cpp:421
+#: src/icqd.cpp:415
 #, c-format
 msgid ""
 "%sUnable to open fifo:\n"
@@ -1484,17 +1484,17 @@ msgstr ""
 "%sНемагчыма адчыніць fifo:\n"
 "%s%s.\n"
 
-#: src/icqd.cpp:431
+#: src/icqd.cpp:425
 #, c-format
 msgid "%s%s is not a FIFO, disabling fifo support.\n"
 msgstr "%s%s не FIFO, адключаем fifo-падтрымкі.\n"
 
-#: src/icqd.cpp:443
+#: src/icqd.cpp:437
 #, c-format
 msgid "%sSpawning daemon threads.\n"
 msgstr "%sСтварэньне патокаў дэмана.\n"
 
-#: src/icqd.cpp:471 src/icqd.cpp:1158
+#: src/icqd.cpp:465 src/icqd.cpp:1076
 #, fuzzy, c-format
 msgid ""
 "%sUnable to start BART service thread:\n"
@@ -1503,17 +1503,17 @@ msgstr ""
 "%sНямагчыма стартаваць лякальны TCP-паслужнік:\n"
 "%s%s\n"
 
-#: src/icqd.cpp:964
+#: src/icqd.cpp:955
 #, c-format
 msgid "%sLocal TCP server started on port %d.\n"
 msgstr "%sЛакальны TCP-паслужнік стартаваў на %d парту.\n"
 
-#: src/icqd.cpp:968
+#: src/icqd.cpp:959
 #, c-format
 msgid "%sNo ports available for local TCP server.\n"
 msgstr "%sАдсутнічаюць свабодныя парты дзеля лякальнага TCP-паслужніка.\n"
 
-#: src/icqd.cpp:972
+#: src/icqd.cpp:963
 #, c-format
 msgid ""
 "%sFailed to start local TCP server:\n"
@@ -1522,17 +1522,17 @@ msgstr ""
 "%sНямагчыма стартаваць лякальны TCP-паслужнік:\n"
 "%s%s\n"
 
-#: src/icqd.cpp:986
+#: src/icqd.cpp:977
 #, c-format
 msgid "%sTCP high port (%d) is lower then TCP low port (%d).\n"
 msgstr "%sвышэйшы TCP-порт (%d) меньшы за найменьшы TCP-порт (%d).\n"
 
-#: src/icqd.cpp:1023
+#: src/icqd.cpp:1014
 #, c-format
 msgid "%sResolving proxy: %s:%d...\n"
 msgstr "%sВызначэньне проксі: %s:%d...\n"
 
-#: src/icqd.cpp:1028
+#: src/icqd.cpp:1019
 #, c-format
 msgid ""
 "%sUnable to resolve proxy server %s:\n"
@@ -1541,94 +1541,89 @@ msgstr ""
 "%sНямагчыма вызначыць проксі-паслужнік %s:\n"
 "%s%s.\n"
 
-#: src/icqd.cpp:1060
+#: src/icqd.cpp:1051
 #, c-format
 msgid "%sInvalid TCP version %d.  Attempting v%d.\n"
 msgstr "%sНяспраўная вэрсія TCP  %d.  Спрабуем вэрсію %d.\n"
 
-#: src/icqd.cpp:1177 src/icqd.cpp:1232
-#, c-format
-msgid "%sUser %s already on contact list.\n"
-msgstr "%sКарыстальнік %s ужо ў сьпісе кантактаў.\n"
-
-#: src/icqd.cpp:1368
+#: src/icqd.cpp:1157
 #, c-format
 msgid "%sUnable to open \"%s\" for writing.\n"
 msgstr "%sНямагчыма адчыніць \"%s\" дзеля запісу.\n"
 
-#: src/icqd.cpp:2211
+#: src/icqd.cpp:1978
 #, c-format
 msgid "%sCancelled event not found.\n"
 msgstr "%sСкасаваны выпадак ня знойдзены.\n"
 
-#: src/icqd.cpp:2458 src/icqd-srv.cpp:3561 src/icqd-srv.cpp:4809
-#: src/message.cpp:1187
+#: src/icqd.cpp:2225 src/icqd-srv.cpp:3395 src/icqd-srv.cpp:4637
+#: src/message.cpp:1076
 msgid "Message"
 msgstr "Паведамленьне"
 
-#: src/icqd.cpp:2487
+#: src/icqd.cpp:2254
 msgid "Chat request"
 msgstr "Запыт размовы"
 
-#: src/icqd.cpp:2524
+#: src/icqd.cpp:2288
 msgid "File transfer request through server"
 msgstr "Запыт перадачы файла праз паслужнік"
 
-#: src/icqd.cpp:2537 src/icqd-srv.cpp:3576 src/icqd-srv.cpp:4825
-#: src/message.cpp:1190
+#: src/icqd.cpp:2301 src/icqd-srv.cpp:3410 src/icqd-srv.cpp:4653
+#: src/message.cpp:1079
 msgid "URL"
 msgstr "Спасылка"
 
-#: src/icqd.cpp:2553
+#: src/icqd.cpp:2317
 msgid "Contact list"
 msgstr "Сьпіс кантактаў"
 
-#: src/icqd.cpp:2571 src/icqd-srv.cpp:4037
+#: src/icqd.cpp:2335 src/icqd-srv.cpp:3863
 #, c-format
 msgid "%sAuto response from %s (#%lu).\n"
 msgstr "%sАўтаматычны адказ ад %s (#%lu).\n"
 
-#: src/icqd.cpp:2582 src/icqd.cpp:2679 src/icqd-srv.cpp:3984
-#: src/icqd-srv.cpp:4072 src/icqd-tcp.cpp:2965
+#: src/icqd.cpp:2346 src/icqd.cpp:2440 src/icqd-srv.cpp:3810
+#: src/icqd-srv.cpp:3899 src/icqd-tcp.cpp:2817
 #, c-format
 msgid "%sAck for unknown event.\n"
 msgstr "%sЗапыт Ack дзеля невядомага выпадку.\n"
 
-#: src/icqd.cpp:2586 src/icqd-tcp.cpp:2034
+#: src/icqd.cpp:2350 src/icqd-tcp.cpp:1901
 #, fuzzy, c-format
 msgid "%s%s (%s) requested auto response.\n"
 msgstr "%s%s (%lu) запытаў аўтаматычны адказ.\n"
 
-#: src/icqd.cpp:2633 src/icqd-tcp.cpp:2322
+#: src/icqd.cpp:2393 src/icqd-tcp.cpp:2183
 #, c-format
 msgid "%sUnknown ICBM plugin type: %s\n"
 msgstr "%sНявядомы тып ICBM-пашырэньня: %s\n"
 
-#: src/icqd.cpp:2659
+#: src/icqd.cpp:2420
 msgid "unknown event"
 msgstr "невядомы выпадак"
 
-#: src/icqd.cpp:2671
+#: src/icqd.cpp:2432
 #, fuzzy, c-format
 msgid "%s%s accepted from %s (%s).\n"
 msgstr "%s%s дазволена ад %s (%lu).\n"
 
-#: src/icqd.cpp:2692 src/icqd-srv.cpp:3814
+#: src/icqd.cpp:2453 src/icqd-srv.cpp:3646
 #, c-format
 msgid "%s%s from new user (%s), ignoring.\n"
 msgstr "%s%s ад новага карыстальніка (%s), ігнаруем.\n"
 
-#: src/icqd.cpp:2699 src/icqd-srv.cpp:3823
+#: src/icqd.cpp:2460
 #, c-format
 msgid "%s%s from new user (%s).\n"
 msgstr "%s%s ад новага карыстальніка (%s).\n"
 
-#: src/icqd.cpp:2705
+#: src/icqd.cpp:2466
 #, fuzzy, c-format
 msgid "%s%s from %s (%s).\n"
 msgstr "%s%s ад %s (%lu).\n"
 
-#: src/icqd.cpp:2714
+#: src/icqd.cpp:2475
 #, c-format
 msgid ""
 "%sInvalid %s:\n"
@@ -1637,17 +1632,17 @@ msgstr ""
 "%sняспраўны %s:\n"
 "%s\n"
 
-#: src/icqd-filetransfer.cpp:258
+#: src/icqd-filetransfer.cpp:260
 #, c-format
 msgid "%sUnable to create directory %s for file transfer.\n"
 msgstr "%sНямагчыма стварыць каталёг %s дзеля перадачы файла.\n"
 
-#: src/icqd-filetransfer.cpp:274
+#: src/icqd-filetransfer.cpp:276
 #, c-format
 msgid "%sPath %s is not a directory.\n"
 msgstr "%sШлях %s не з'яўляецца каталёгам.\n"
 
-#: src/icqd-filetransfer.cpp:311
+#: src/icqd-filetransfer.cpp:313
 #, c-format
 msgid ""
 "%sFile Transfer: File access error %s:\n"
@@ -1656,33 +1651,33 @@ msgstr ""
 "%sПерадача файла: Памылка зьвяртаньня да файла %s:\n"
 "%s%s.\n"
 
-#: src/icqd-filetransfer.cpp:391
+#: src/icqd-filetransfer.cpp:393
 #, c-format
 msgid "%sFile Transfer: Shaking hands.\n"
 msgstr "%sПерадача файла: усталяваньне сувязі.\n"
 
-#: src/icqd-filetransfer.cpp:404
+#: src/icqd-filetransfer.cpp:406
 #, c-format
 msgid "%sFile Transfer: Waiting for server to respond.\n"
 msgstr "%sПерадача файла: Чаканьне адказу паслужніка.\n"
 
-#: src/icqd-filetransfer.cpp:420
+#: src/icqd-filetransfer.cpp:422
 #, c-format
 msgid "%sFile Transfer: Attempted reverse connection when already connected.\n"
 msgstr ""
 "%sПерадача файла: Спроба адваротнага злучэньня пры ўсталяванай сувязі.\n"
 
-#: src/icqd-filetransfer.cpp:434
+#: src/icqd-filetransfer.cpp:436
 #, c-format
 msgid "%sFile Transfer: Received reverse connection.\n"
 msgstr "%sПерадача файла: Атрымана адваротнае злучэньне.\n"
 
-#: src/icqd-filetransfer.cpp:445
+#: src/icqd-filetransfer.cpp:447
 #, c-format
 msgid "%sFile Transfer: Remote end disconnected.\n"
 msgstr "%sПерадача файла: Адлеглы бок зачыніў злучэньне.\n"
 
-#: src/icqd-filetransfer.cpp:447
+#: src/icqd-filetransfer.cpp:449
 #, c-format
 msgid ""
 "%sFile Transfer: Lost remote end:\n"
@@ -1691,58 +1686,58 @@ msgstr ""
 "%sПерадача файла: Згублен адлеглы бок:\n"
 "%s%s\n"
 
-#: src/icqd-filetransfer.cpp:468
+#: src/icqd-filetransfer.cpp:470
 #, c-format
 msgid "%sFile Transfer: Received handshake.\n"
 msgstr "%sПерадача файла: Атрыман запыт на усталяваньне сувязі.\n"
 
-#: src/icqd-filetransfer.cpp:524 src/icqd-filetransfer.cpp:574
-#: src/icqd-filetransfer.cpp:651 src/icqd-filetransfer.cpp:722
-#: src/icqd-filetransfer.cpp:771 src/icqd-filetransfer.cpp:816
+#: src/icqd-filetransfer.cpp:526 src/icqd-filetransfer.cpp:576
+#: src/icqd-filetransfer.cpp:653 src/icqd-filetransfer.cpp:724
+#: src/icqd-filetransfer.cpp:773 src/icqd-filetransfer.cpp:818
 #, c-format
 msgid "%sFile Transfer: Speed set to %ld%%.\n"
 msgstr "%sПерадача файла: Хуткасць усталявана ў %ld%%.\n"
 
-#: src/icqd-filetransfer.cpp:563
+#: src/icqd-filetransfer.cpp:565
 #, c-format
 msgid "%sFile Transfer: Waiting for file info.\n"
 msgstr "%sПерадача файла: Чаканьне дадзеных аб файле.\n"
 
-#: src/icqd-filetransfer.cpp:579
+#: src/icqd-filetransfer.cpp:581
 #, c-format
 msgid "%sFile Transfer: Ignoring a possible erroneous packet.\n"
 msgstr "%sПерадача файла: Ігнараваньне магчыма няспраўнага пакета.\n"
 
-#: src/icqd-filetransfer.cpp:618
+#: src/icqd-filetransfer.cpp:620
 msgid "File Transfer: Waiting for plugin to confirm file receive.\n"
 msgstr ""
 "Перадача файла: Чаканьне пацьверджаньня ад пашырэньня аб перадачы файла .\n"
 
-#: src/icqd-filetransfer.cpp:628
+#: src/icqd-filetransfer.cpp:630
 msgid "File Transfer: Still waiting for the plugin to confirm file receive..."
 msgstr "Перадача файла: Чаканьне пацьверджаньня аб перадачы файла..."
 
-#: src/icqd-filetransfer.cpp:639
+#: src/icqd-filetransfer.cpp:641
 #, c-format
 msgid "%sFile Transfer: Receiving %s (%ld bytes).\n"
 msgstr "%sПерадача файла: Атрыманьне %s (%ld байтаў).\n"
 
-#: src/icqd-filetransfer.cpp:657
+#: src/icqd-filetransfer.cpp:659
 #, c-format
 msgid "%sFile Transfer: Invalid data (%c) ignoring packet.\n"
 msgstr "%sПерадача файла: Няспраўныя дадзеныя (%c), ігнараваньне пакета.\n"
 
-#: src/icqd-filetransfer.cpp:697
+#: src/icqd-filetransfer.cpp:699
 #, c-format
 msgid "%sFile Transfer: %s received.\n"
 msgstr "%sПерадача файла: %s атрымана.\n"
 
-#: src/icqd-filetransfer.cpp:702
+#: src/icqd-filetransfer.cpp:704
 #, c-format
 msgid "%sFile Transfer: %s received %d too many bytes.\n"
 msgstr "%sПерадача файла: %s атрымана %d, занадта шмат байтаў.\n"
 
-#: src/icqd-filetransfer.cpp:741 src/icqd-filetransfer.cpp:991
+#: src/icqd-filetransfer.cpp:743 src/icqd-filetransfer.cpp:993
 #, c-format
 msgid ""
 "%sFile Transfer: Read error for %s:\n"
@@ -1751,7 +1746,7 @@ msgstr ""
 "%sПерадача файла: Памылка чытаньня дзеля %s:\n"
 "%s\n"
 
-#: src/icqd-filetransfer.cpp:820
+#: src/icqd-filetransfer.cpp:822
 #, c-format
 msgid ""
 "%sFile Transfer: Unknown packet received during file send:\n"
@@ -1760,27 +1755,27 @@ msgstr ""
 "%sПерадача файла: Атрыманы невядомы пакет падчас адсылкі файла:\n"
 "%s\n"
 
-#: src/icqd-filetransfer.cpp:845
+#: src/icqd-filetransfer.cpp:847
 #, c-format
 msgid "%sFile Transfer: Received plugin confirmation.\n"
 msgstr "%sПерадача файла: Атрымана пацьверджаньне ад пашырэньня.\n"
 
-#: src/icqd-filetransfer.cpp:914
+#: src/icqd-filetransfer.cpp:916
 #, c-format
 msgid "%sFile Transfer: Sending %s (%ld bytes).\n"
 msgstr "%sПерадача файла: Адсылка %s (%ld байтаў).\n"
 
-#: src/icqd-filetransfer.cpp:969
+#: src/icqd-filetransfer.cpp:971
 #, c-format
 msgid "%sFile Transfer: Sent %s.\n"
 msgstr "%sПерадача файла: Адаслана %s.\n"
 
-#: src/icqd-filetransfer.cpp:973
+#: src/icqd-filetransfer.cpp:975
 #, c-format
 msgid "%sFile Transfer: Sent %s, %d too many bytes.\n"
 msgstr "%sПерадача файла: Адаслана %s, %d занадта шмат байтаў.\n"
 
-#: src/icqd-filetransfer.cpp:1052
+#: src/icqd-filetransfer.cpp:1054
 #, c-format
 msgid ""
 "%sFile Transfer: Send error:\n"
@@ -1789,290 +1784,299 @@ msgstr ""
 "%sПерадача файла: Памылка адсылкі:\n"
 "%s%s\n"
 
-#: src/icqd-filetransfer.cpp:1064
+#: src/icqd-filetransfer.cpp:1066
 #, c-format
 msgid "%sInvalid file transfer speed: %d%%.\n"
 msgstr "%sНяспраўная хуткасьць перадачы файла: %d%%.\n"
 
-#: src/icqd-filetransfer.cpp:1193
+#: src/icqd-filetransfer.cpp:1175
+#, fuzzy, c-format
+msgid ""
+"%sFile Transfer: select failed, aborting thread:\n"
+"%s%s\n"
+msgstr ""
+"%sПерадача файла: Згублен адлеглы бок:\n"
+"%s%s\n"
+
+#: src/icqd-filetransfer.cpp:1212
 #, c-format
 msgid "%sFile Transfer: Receiving repeat incoming connection.\n"
 msgstr "%sПерадача файла: Атрыманьне запыту на паўтор злучэньня.\n"
 
-#: src/icqd-filetransfer.cpp:1203
+#: src/icqd-filetransfer.cpp:1227
 #, c-format
 msgid "%sFile Transfer: Received connection.\n"
 msgstr "%sПерадача файла: Атрыманы запыт злучэньня.\n"
 
-#: src/icqd-filetransfer.cpp:1207
+#: src/icqd-filetransfer.cpp:1231
 #, fuzzy, c-format
 msgid "%sFile Transfer: Unable to receive new connection.\n"
 msgstr "%sПерадача файла: Атрыманы запыт злучэньня.\n"
 
-#: src/icqd-filetransfer.cpp:1227
+#: src/icqd-filetransfer.cpp:1251
 #, c-format
 msgid "%sFile Transfer: No such socket.\n"
 msgstr "%sПерадача файла: Сокет ня йснуе.\n"
 
-#: src/icqd-srv.cpp:61
+#: src/icqd-srv.cpp:62
 #, c-format
 msgid "%sAlerting server to new user (#%hu)...\n"
 msgstr "%sПапярэджваньне паслужніка аб новым карыстальніку (#%hu)...\n"
 
-#: src/icqd-srv.cpp:100
+#: src/icqd-srv.cpp:92
 #, c-format
 msgid "%sAdding %s to server list...\n"
 msgstr "%sДалучэньне %s да сьпісу на паслужніку...\n"
 
-#: src/icqd-srv.cpp:204
+#: src/icqd-srv.cpp:171
 #, c-format
 msgid "%sExporting users to server contact list...\n"
 msgstr "%sЭкспартаваньне карыстальнікаў у сьпіс кантактаў на паслужніку...\n"
 
-#: src/icqd-srv.cpp:221 src/icqd-srv.cpp:4507
+#: src/icqd-srv.cpp:188 src/icqd-srv.cpp:4332
 #, c-format
 msgid "%sUpdating top level group.\n"
 msgstr "%sАбнаўленьне гурта вышэйшага ўзроўню.\n"
 
-#: src/icqd-srv.cpp:231 src/icqd-srv.cpp:4513
+#: src/icqd-srv.cpp:198 src/icqd-srv.cpp:4338
 #, c-format
 msgid "%sUpdating group %s.\n"
 msgstr "%sАбнаўленьне гурта %s.\n"
 
-#: src/icqd-srv.cpp:250
+#: src/icqd-srv.cpp:217
 #, c-format
 msgid "%sAdding group %s (%d) to server list ...\n"
 msgstr "%sДалучэньне групы %s (%d) да сьпісу на паслужніку...\n"
 
-#: src/icqd-srv.cpp:276
+#: src/icqd-srv.cpp:231
 #, c-format
 msgid ""
 "%sProtocol prohibits for users to be in the root group.\n"
 "%sAborting group change attempt for %s.\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:288
+#: src/icqd-srv.cpp:243
 #, fuzzy, c-format
 msgid "%sChanging group on server list for %s (%s)...\n"
 msgstr "%sЗьмена гурта дзеля %s на паслужніку...\n"
 
-#: src/icqd-srv.cpp:322
+#: src/icqd-srv.cpp:277
 #, c-format
 msgid "%sExporting groups to server contact list...\n"
 msgstr "%sЭкспартаваньне гуртоў да сьпісу кантактаўна паслужніку...\n"
 
-#: src/icqd-srv.cpp:338
+#: src/icqd-srv.cpp:293
 #, c-format
 msgid "%sAdding privacy information to server side list...\n"
 msgstr "%sДалучэньне дадзенных бясьпекі да сьпісу кантактаў на паслужніку...\n"
 
-#: src/icqd-srv.cpp:412
+#: src/icqd-srv.cpp:376
 #, c-format
 msgid "%sAlerting server to remove user (#%hu)...\n"
 msgstr "%sПапярэджваньне паслужніка аб выдаленьні карыстальніка (#%hu)...\n"
 
-#: src/icqd-srv.cpp:436
+#: src/icqd-srv.cpp:392
 #, c-format
 msgid "%sRemoving group from server side list (%s)...\n"
 msgstr "%sВыдаленьне гурта (%s) з сьпісу кантактаў на паслужніку...\n"
 
-#: src/icqd-srv.cpp:448
+#: src/icqd-srv.cpp:404
 #, c-format
 msgid "%sRenaming group with id %d to %s...\n"
 msgstr "%sПерайменаваньне гурта  id %d у %s...\n"
 
-#: src/icqd-srv.cpp:482
+#: src/icqd-srv.cpp:431
 #, c-format
 msgid "%sRenaming %s to %s...\n"
 msgstr "%sПерайменаваньне %s у %s...\n"
 
-#: src/icqd-srv.cpp:505
+#: src/icqd-srv.cpp:447
 #, c-format
 msgid "%sAlerting user they were added (#%hu)...\n"
 msgstr ""
 "%sПапярэджваньне карыстальніка (#%hu) аб далучэньні да сьпісу кантактаў...\n"
 
-#: src/icqd-srv.cpp:553
+#: src/icqd-srv.cpp:503
 #, c-format
 msgid "%sRequesting auto response from %s (%hu).\n"
 msgstr "%sЗапытваецца аўтаматычны адказ ад %s (%hu).\n"
 
-#: src/icqd-srv.cpp:575
+#: src/icqd-srv.cpp:516
 #, c-format
 msgid "%sSetting random chat group (#%hu)...\n"
 msgstr "%sУсталяваньне выпадковага гурта дзеля размовы (#%hu)...\n"
 
-#: src/icqd-srv.cpp:588
+#: src/icqd-srv.cpp:529
 #, c-format
 msgid "%sSearching for random chat user (#%hu)...\n"
 msgstr "%sПошук выпадковага субяседніка (#%hu)...\n"
 
-#: src/icqd-srv.cpp:621
+#: src/icqd-srv.cpp:562
 #, c-format
 msgid "%sRegistering a new user...\n"
 msgstr "%sРэгістрацыя новага карыстальніка...\n"
 
-#: src/icqd-srv.cpp:634
+#: src/icqd-srv.cpp:575
 #, c-format
 msgid "%sRequesting verification image...\n"
 msgstr "%sЗапыт малюнка дзеля атрыманьня падцьверджаньня...\n"
 
-#: src/icqd-srv.cpp:645
+#: src/icqd-srv.cpp:586
 #, c-format
 msgid "%sSending verification for registration.\n"
 msgstr "%sАдсылка дадзеных дзеля рэгістрацыі.\n"
 
-#: src/icqd-srv.cpp:695
+#: src/icqd-srv.cpp:643
 #, c-format
 msgid "%sRequesting meta info for %s (#%hu/#%d)...\n"
 msgstr "%sЗапыт метададзеных дзеля %s (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:744
+#: src/icqd-srv.cpp:681
 #, fuzzy, c-format
 msgid "%sRequesting service socket for FAM 0x%02X (#%hu/#%d)...\n"
 msgstr "%sЗапыт метададзеных дзеля %s (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:811
+#: src/icqd-srv.cpp:779
 #, c-format
 msgid "%sChanging status to %s (#%hu)...\n"
 msgstr "%sЗьмена стана на %s (#%hu)...\n"
 
-#: src/icqd-srv.cpp:830
+#: src/icqd-srv.cpp:798
 #, c-format
 msgid "%sUpdating password (#%hu/#%d)...\n"
 msgstr "%sАбнаўленьне паролю (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:879
+#: src/icqd-srv.cpp:847
 #, c-format
 msgid "%sUpdating general info (#%hu/#%d)...\n"
 msgstr "%sАбнаўленьне асноўных дадзеных (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:895
+#: src/icqd-srv.cpp:863
 #, c-format
 msgid "%sUpdating additional E-Mail info (#%hu/#%d)...\n"
 msgstr "%sАбнаўленьне дадатковых дадзенных электроннай пошты (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:916
+#: src/icqd-srv.cpp:884
 #, c-format
 msgid "%sUpdating more info (#%hu/#%d)...\n"
 msgstr "%sАбнаўленьне дадатковых дадзеных (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:966
+#: src/icqd-srv.cpp:934
 #, c-format
 msgid "%sUpdating work info (#%hu/#%d)...\n"
 msgstr "%sАбнаўленьне зьвестак аб працы (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:981
+#: src/icqd-srv.cpp:949
 #, c-format
 msgid "%sUpdating about (#%hu/#%d)...\n"
 msgstr "%sАбнаўленьне дадзеных \"зьвесткі\" (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1016
+#: src/icqd-srv.cpp:978
 #, fuzzy, c-format
 msgid "%sAuthorizing user %s\n"
 msgstr "%sАўтарызацыя карыстальніка %s (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1053
+#: src/icqd-srv.cpp:1010
 #, c-format
 msgid "%sRefusing authorization to user %s (#%hu)...\n"
 msgstr "%sАдмова аўтарызацыі дзеля карыстальніка %s (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1096
+#: src/icqd-srv.cpp:1045
 #, c-format
 msgid "%sUpdating security info (#%hu/#%d)...\n"
 msgstr "%sАбнаўленьне зьвестак аб бясьпецы (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1117
+#: src/icqd-srv.cpp:1066
 #, c-format
 msgid "%sStarting white pages search (#%hu/#%d)...\n"
 msgstr "%sПачатак пошуку ў \"Белых старонках\" (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1129
+#: src/icqd-srv.cpp:1078
 #, c-format
 msgid "%sStarting search by UIN for user (#%hu/#%d)...\n"
 msgstr "%sПачатак пошуку карыстальніка па нумары (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1146
+#: src/icqd-srv.cpp:1096
 #, c-format
 msgid "%sRequesting user info (#%hu/#%d)...\n"
 msgstr "%sЗапыт зьвестак пра карыстальніка (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1232 src/icqd-srv.cpp:1244
+#: src/icqd-srv.cpp:1173 src/icqd-srv.cpp:1185
 #, c-format
 msgid "%sUpdating contact list (#%hu)...\n"
 msgstr "%sАбнаўленьне сьпісу кантактаў (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1279
+#: src/icqd-srv.cpp:1221
 #, c-format
 msgid "%sSending visible list (#%hu)...\n"
 msgstr "%sДасылка сьпіса бачных (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1296
+#: src/icqd-srv.cpp:1238
 #, c-format
 msgid "%sSending invisible list (#%hu)...\n"
 msgstr "%sДасылка сьпіса нябачных (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1422
+#: src/icqd-srv.cpp:1339
 #, c-format
 msgid "%sAdding user %s to visible list (#%hu)...\n"
 msgstr "%sДалучэньне карыстальніка %s да сьпісу бачных (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1453
+#: src/icqd-srv.cpp:1363
 #, c-format
 msgid "%sRemoving user %s from visible list (#%hu)...\n"
 msgstr "%sВыдаленьне карыстальніка %s з сьпісу бачных (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1490
+#: src/icqd-srv.cpp:1393
 #, c-format
 msgid "%sAdding user %s to invisible list (#%hu)...\n"
 msgstr "%sДалучэньне карыстальніка %s да сьпісу нябачных (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1521
+#: src/icqd-srv.cpp:1417
 #, c-format
 msgid "%sRemoving user %s from invisible list (#%hu)...\n"
 msgstr "%sВыдаленьне карыстальніка %s з сьпісу нябачных (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1594 src/icqd-srv.cpp:1605
+#: src/icqd-srv.cpp:1476 src/icqd-srv.cpp:1487
 #, c-format
 msgid "%sDeleting server list users (#%hu)...\n"
 msgstr "%sВыдаленьне карыстальніка(ў) на паслужніку (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1628 src/icqd-srv.cpp:1641
+#: src/icqd-srv.cpp:1510 src/icqd-srv.cpp:1523
 #, c-format
 msgid "%sDeleting server list invisible list users (#%hu)...\n"
 msgstr "%sВыдаленьне сьпісу нябачных карыстальнікаў (#%hu) на паслужніку...\n"
 
-#: src/icqd-srv.cpp:1662 src/icqd-srv.cpp:1675
+#: src/icqd-srv.cpp:1544 src/icqd-srv.cpp:1557
 #, c-format
 msgid "%sDeleting server list visible list users (#%hu)...\n"
 msgstr "%sВыдаленьне сьпісу бачных карыстальнікаў (#%hu) на паслужніку...\n"
 
-#: src/icqd-srv.cpp:1696
+#: src/icqd-srv.cpp:1582
 #, c-format
 msgid "%sSending message through server (#%hu).\n"
 msgstr "%sАдсылка паведамленьня праз паслужнік (#%hu).\n"
 
-#: src/icqd-srv.cpp:1699
+#: src/icqd-srv.cpp:1585
 #, c-format
 msgid "%sSending url through server (#%hu).\n"
 msgstr "%sАдсылка спасылкі праз паслужнік (#%hu).\n"
 
-#: src/icqd-srv.cpp:1702
+#: src/icqd-srv.cpp:1588
 #, c-format
 msgid "%sSending contact list through server (#%hu).\n"
 msgstr "%sАдсылка сьпісу кантактаў праз паслужнік (#%hu).\n"
 
-#: src/icqd-srv.cpp:1705
+#: src/icqd-srv.cpp:1591
 #, c-format
 msgid "%sSending misc through server (#%hu).\n"
 msgstr "%sАдсылка іншых дадзеных праз праз паслужнік (#%hu).\n"
 
-#: src/icqd-srv.cpp:1742
+#: src/icqd-srv.cpp:1612
 #, c-format
 msgid "%sSending SMS through server (#%hu/#%d)...\n"
 msgstr "%sАдсылка СМС праз паслужнік (#%hu/#%d)...\n"
 
-#: src/icqd-srv.cpp:1859
+#: src/icqd-srv.cpp:1716
 #, c-format
 msgid ""
 "%sAttempt to logon while already logged or logging on, logoff and try "
@@ -2081,7 +2085,7 @@ msgstr ""
 "%sСпроба злучэньня падчас, калі ўжо ўсталявана сувязь, зьмяніце статус на "
 "\"Выключаны\" ды паспрабуйце зноўку.\n"
 
-#: src/icqd-srv.cpp:1872
+#: src/icqd-srv.cpp:1729
 #, c-format
 msgid ""
 "%sNo password set.  Edit ~/.licq/owner.Licq and fill in the password field.\n"
@@ -2089,48 +2093,48 @@ msgstr ""
 "%sАдсутнічае пароль.  Усталюйце яго ў адпаведным радку (password) файла ~/."
 "licq/owner.Licq.\n"
 
-#: src/icqd-srv.cpp:1898
+#: src/icqd-srv.cpp:1755
 #, fuzzy, c-format
 msgid "%sRequesting logon salt (#%hu)...\n"
 msgstr "%sЗапыт злучэньня (#%hu)...\n"
 
-#: src/icqd-srv.cpp:1924
+#: src/icqd-srv.cpp:1772
 #, c-format
 msgid "%sAttempt to logoff while not logged on.\n"
 msgstr "%sСпроба пакінуць сетку ў час, калі не злучаны.\n"
 
-#: src/icqd-srv.cpp:1930
+#: src/icqd-srv.cpp:1778
 #, c-format
 msgid "%sLogging off.\n"
 msgstr "%sПакідаем сетку.\n"
 
-#: src/icqd-srv.cpp:2009
+#: src/icqd-srv.cpp:1857
 #, c-format
 msgid "Event #%hu is still on queue!\n"
 msgstr "Выпадак #%hu па-ранейшаму ў чарзе!\n"
 
-#: src/icqd-srv.cpp:2103
+#: src/icqd-srv.cpp:1956
 #, c-format
 msgid "%sProxy server not properly configured.\n"
 msgstr "%sПроксі-паслужнік няспраўна ўсталяваны.\n"
 
-#: src/icqd-srv.cpp:2125
+#: src/icqd-srv.cpp:1978
 #, c-format
 msgid "%sConnection to server already exists, aborting.\n"
 msgstr "%sЗлучэньне з паслужнікам ужо ўсталявана, скасаваньне.\n"
 
-#: src/icqd-srv.cpp:2158
+#: src/icqd-srv.cpp:2011
 #, c-format
 msgid "%sResponse to unknown %s info request for unknown user (%s).\n"
 msgstr "%sАдказ на невядомы %s-запыт дзеля невядомага карыстальніка (%s).\n"
 
-#: src/icqd-srv.cpp:2177
+#: src/icqd-srv.cpp:2030
 #, c-format
 msgid "%sReceived %s information for %s (%s).\n"
 msgstr "%sАтрыманы %s дадзеныя дзеля %s (%s).\n"
 
-#: src/icqd-srv.cpp:2219 src/icqd-srv.cpp:2456 src/icqd-srv.cpp:4748
-#: src/icqd-srv.cpp:4758 src/icqd-srv.cpp:6292
+#: src/icqd-srv.cpp:2066 src/icqd-srv.cpp:2303 src/icqd-srv.cpp:4575
+#: src/icqd-srv.cpp:4585 src/icqd-srv.cpp:6094
 #, c-format
 msgid ""
 "%sUnknown server response:\n"
@@ -2139,269 +2143,264 @@ msgstr ""
 "%sНевядомы адказ паслужніка:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:2257
+#: src/icqd-srv.cpp:2104
 #, c-format
 msgid "%sPacket on unhandled Channel 'Error' received!\n"
 msgstr "%sАтрыман пакет у неапрацоўваемым канале!\n"
 
-#: src/icqd-srv.cpp:2265
+#: src/icqd-srv.cpp:2112
 #, c-format
 msgid "%sServer send unknown channel: %02x\n"
 msgstr "%sПаслужнік адаслаў невядомы канал: %02x\n"
 
-#: src/icqd-srv.cpp:2287 src/icqd-srv.cpp:4138
+#: src/icqd-srv.cpp:2134 src/icqd-srv.cpp:3964
 #, c-format
 msgid "%sError parsing SNAC header\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:2298
+#: src/icqd-srv.cpp:2145
 #, c-format
 msgid "%sServer says he's ready.\n"
 msgstr "%sПаслужнік кажа, што ён гатовы.\n"
 
-#: src/icqd-srv.cpp:2300
+#: src/icqd-srv.cpp:2147
 #, c-format
 msgid "%sSending our channel capability list...\n"
 msgstr "%sАдсылка здольнасцьей нашага каналу...\n"
 
-#: src/icqd-srv.cpp:2304
+#: src/icqd-srv.cpp:2151
 #, c-format
 msgid "%sRequesting rate info...\n"
 msgstr "%sЗапыт дадзеных аб хуткасьці...\n"
 
-#: src/icqd-srv.cpp:2321
+#: src/icqd-srv.cpp:2168
 #, fuzzy, c-format
 msgid "%sError during parsing service redirect packet!\n"
 msgstr ""
 "%sпамылка падчас атрыманьня з сокета паслужніка :-((\n"
 "%s%s\n"
 
-#: src/icqd-srv.cpp:2327
+#: src/icqd-srv.cpp:2174
 #, fuzzy, c-format
 msgid "%sRedirect for service 0x%02X received.\n"
 msgstr "%sПерадача файла: %s атрымана.\n"
 
-#: src/icqd-srv.cpp:2334
+#: src/icqd-srv.cpp:2181
 #, c-format
 msgid "%sInvalid servername (%s) or cookie (%s) in service redirect packet!\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:2364
+#: src/icqd-srv.cpp:2211
 #, c-format
 msgid "%sService redirect packet for unallocated BART service.\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:2370
+#: src/icqd-srv.cpp:2217
 #, c-format
 msgid "%sService redirect packet for unhandled service 0x%02X.\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:2386
+#: src/icqd-srv.cpp:2233
 #, c-format
 msgid "%sServer sent us channel capability list (ignoring).\n"
 msgstr "%sПаслужнік даслаў сьпіс здольнасьцей канала (праігнаравана).\n"
 
-#: src/icqd-srv.cpp:2388
+#: src/icqd-srv.cpp:2235
 #, c-format
 msgid "%sRequesting self info.\n"
 msgstr "%sЗапыт дадзеных аб сабе.\n"
 
-#: src/icqd-srv.cpp:2392
+#: src/icqd-srv.cpp:2239
 #, c-format
 msgid "%sRequesting list rights.\n"
 msgstr "%sЗапыт правоў сьпісу кантактаў.\n"
 
-#: src/icqd-srv.cpp:2396
+#: src/icqd-srv.cpp:2243
 #, fuzzy, c-format
 msgid "%sRequesting roster rights.\n"
 msgstr "%sЗапыт правоў сьпісу кантактаў.\n"
 
-#: src/icqd-srv.cpp:2400
+#: src/icqd-srv.cpp:2247
 #, c-format
 msgid "%sRequesting location rights.\n"
 msgstr "%sЗапыт правоў месцазнаходжаньня.\n"
 
-#: src/icqd-srv.cpp:2404
+#: src/icqd-srv.cpp:2251
 #, c-format
 msgid "%sRequesting contact list rights.\n"
 msgstr "%sЗапыт правоў сьпісу кантактаў.\n"
 
-#: src/icqd-srv.cpp:2408
+#: src/icqd-srv.cpp:2255
 #, c-format
 msgid "%sRequesting Instant Messaging rights.\n"
 msgstr "%sЗапыт правоў ICQ IM.\n"
 
-#: src/icqd-srv.cpp:2412
+#: src/icqd-srv.cpp:2259
 #, c-format
 msgid "%sRequesting BOS rights.\n"
 msgstr "%sЗапыт правоў BOS.\n"
 
-#: src/icqd-srv.cpp:2421
+#: src/icqd-srv.cpp:2268
 #, c-format
 msgid "%sServer sent us rate information.\n"
 msgstr "%sПаслужнік даслаў дадзеныя аб хуткасьці.\n"
 
-#: src/icqd-srv.cpp:2425
+#: src/icqd-srv.cpp:2272
 #, c-format
 msgid "%sSetting ICQ Instant Messaging Mode.\n"
 msgstr "%sУсталяваньне рэжыму ICQ IM.\n"
 
-#: src/icqd-srv.cpp:2433
+#: src/icqd-srv.cpp:2280
 #, c-format
 msgid "%sSending capability settings (?)\n"
 msgstr "%sАдсылка ўсталяваньняў здольнасьцей (?)\n"
 
-#: src/icqd-srv.cpp:2446
+#: src/icqd-srv.cpp:2293
 #, c-format
 msgid "%sGot Name Info from Server\n"
 msgstr "%sАтрыманы дадзеныя аб імені з паслужніка\n"
 
-#: src/icqd-srv.cpp:2481
+#: src/icqd-srv.cpp:2326
 #, c-format
 msgid "%sServer says we are at %s.\n"
 msgstr "%sПаслужнік кажа, што мы з %s.\n"
 
-#: src/icqd-srv.cpp:2497
+#: src/icqd-srv.cpp:2342
 #, c-format
 msgid "%sServer says we're now: %s\n"
 msgstr "%sПаслужнік кажа, што мы: %s\n"
 
-#: src/icqd-srv.cpp:2515
+#: src/icqd-srv.cpp:2360
 #, c-format
 msgid "%sServer is going to disconnect/pause. Lets reconnect to another one.\n"
 msgstr "%sПаслужнік разз'яднаецца/спыняецца. Паспрабуйце злучыцца з іншым.\n"
 
-#: src/icqd-srv.cpp:2535
+#: src/icqd-srv.cpp:2380
 #, c-format
 msgid "%sReceived rights for Location Services.\n"
 msgstr "%sАтрыманы правы дзеля сэрвісу месцазнаходжаньня.\n"
 
-#: src/icqd-srv.cpp:2553
+#: src/icqd-srv.cpp:2398
 #, c-format
 msgid "%sReceived away message for %s.\n"
 msgstr "%sАтрымана паведамленьне аб адсутнасьці ад %s.\n"
 
-#: src/icqd-srv.cpp:2570
+#: src/icqd-srv.cpp:2415
 #, c-format
 msgid "%sReceived user information for %s.\n"
 msgstr "%sАтрыманы карыстальніцкія дадзеныя аб %s.\n"
 
-#: src/icqd-srv.cpp:2636
+#: src/icqd-srv.cpp:2479
 #, c-format
 msgid "%sUnknown user (%s) changed status.\n"
 msgstr "%sНевядомы карыстальнік (%s) зьмяніў стан.\n"
 
-#: src/icqd-srv.cpp:2755
+#: src/icqd-srv.cpp:2598
 #, c-format
 msgid "%s%s (%s) changed status: %s (v%d)%s"
 msgstr " %s%s (%s) збмяніў стан: %s (вэр.%d)%s"
 
-#: src/icqd-srv.cpp:2804
+#: src/icqd-srv.cpp:2647
 #, c-format
 msgid "%s%s changed status: %s (AIM).\n"
 msgstr "%s%s зьмяніў стан: %s (AIM).\n"
 
-#: src/icqd-srv.cpp:2945
+#: src/icqd-srv.cpp:2788
 #, c-format
 msgid "%s%s changed Phone \"Follow Me\" status to %s.\n"
 msgstr "%s%s зьмяніў стан тэлефону \"Кроч за мной\" на %s.\n"
 
-#: src/icqd-srv.cpp:2951
+#: src/icqd-srv.cpp:2794
 #, c-format
 msgid "%s%s changed Shared Files Directory status to %s.\n"
 msgstr "%s%s зьмяніў стан каталёгу агульных файлаў на %s.\n"
 
-#: src/icqd-srv.cpp:2957
+#: src/icqd-srv.cpp:2800
 #, c-format
 msgid "%s%s changed ICQphone status to %s.\n"
 msgstr "%s%s зьмяніў стан ICQ-тэлефону на %s.\n"
 
-#: src/icqd-srv.cpp:2976
+#: src/icqd-srv.cpp:2817
 #, c-format
 msgid "%sUnknown index %d from %s.\n"
 msgstr "%sНевядомы зьмест %d ад %s.\n"
 
-#: src/icqd-srv.cpp:3008
+#: src/icqd-srv.cpp:2849
 #, c-format
 msgid "%sUnsupported type 0x%02X of buddy icon for %s.\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:3061
+#: src/icqd-srv.cpp:2902
 #, c-format
 msgid "%sUnknown user (%s) has gone offline.\n"
 msgstr "%sНевядомы карыстальнік  (%s) выйшаў з сеткі.\n"
 
-#: src/icqd-srv.cpp:3067
+#: src/icqd-srv.cpp:2908
 #, c-format
 msgid "%s%s went offline.\n"
 msgstr "%s%s пакінуў сетку.\n"
 
-#: src/icqd-srv.cpp:3078
+#: src/icqd-srv.cpp:2918
 #, c-format
 msgid "%sReceived rights for Contact List..\n"
 msgstr "%sАтрыманы правілы дзеля сьпісу кантактаў..\n"
 
-#: src/icqd-srv.cpp:3107
+#: src/icqd-srv.cpp:2947
 #, c-format
 msgid "%sUser is offline.\n"
 msgstr "%sКарыстальнік па-за сеткай.\n"
 
-#: src/icqd-srv.cpp:3110
+#: src/icqd-srv.cpp:2950
 #, c-format
 msgid "%sClient does not understand type-2 messages.\n"
 msgstr "%sКліент не разумее паведамленьні 2-тыпу.\n"
 
-#: src/icqd-srv.cpp:3113
+#: src/icqd-srv.cpp:2953
 #, c-format
 msgid "%sPacket was malformed.\n"
 msgstr "%sПакет быў пашкоджан.\n"
 
-#: src/icqd-srv.cpp:3116
+#: src/icqd-srv.cpp:2956
 #, c-format
 msgid "%sList overflow.\n"
 msgstr "%sПерапаўненьне сьпісу.\n"
 
-#: src/icqd-srv.cpp:3119
+#: src/icqd-srv.cpp:2959
 #, c-format
 msgid "%sUnknown ICBM error: 0x%04x.\n"
 msgstr "%sНевядомая ICBM-памылка: 0x%04x.\n"
 
-#: src/icqd-srv.cpp:3218
+#: src/icqd-srv.cpp:3057
 #, c-format
 msgid "%sMessage from new user (%s), ignoring.\n"
 msgstr "%sПаведамленьне ад новага карыстальніка (%s), ігнаруем.\n"
 
-#: src/icqd-srv.cpp:3224
-#, c-format
-msgid "%sMessage from new user (%s).\n"
-msgstr "%sПаведамленьне ад новага гарыстальніка (%s).\n"
-
-#: src/icqd-srv.cpp:3231
+#: src/icqd-srv.cpp:3062
 #, c-format
 msgid "%sMessage through server from %s (%s).\n"
 msgstr "%sПаведамленьне праз паслужнік ад %s (%s).\n"
 
-#: src/icqd-srv.cpp:3432 src/icqd-tcp.cpp:1940
+#: src/icqd-srv.cpp:3266 src/icqd-tcp.cpp:1807
 #, c-format
 msgid "%s%s (%s) is %s to us.\n"
 msgstr "%s%s (%s) %s дзеля нас.\n"
 
-#: src/icqd-srv.cpp:3485
+#: src/icqd-srv.cpp:3319
 #, c-format
 msgid "%sReceived SMS receipt indicating success.\n"
 msgstr "%sАтрымана СМС-падцьверджаньне аб пасьпяховай дастаўцы.\n"
 
-#: src/icqd-srv.cpp:3489
+#: src/icqd-srv.cpp:3323
 #, c-format
 msgid "%sReceived SMS receipt indicating failure.\n"
 msgstr "%sАтрымана СМС-падцьверджаньне аб няўдалай дастаўцы.\n"
 
-#: src/icqd-srv.cpp:3505
+#: src/icqd-srv.cpp:3339
 #, c-format
 msgid "%sInvalid tag in SMS message."
 msgstr "%sНяспраўны тэг у СМС-паведамленьне."
 
-#: src/icqd-srv.cpp:3516
+#: src/icqd-srv.cpp:3350
 #, c-format
 msgid ""
 "%sUnknown tag in SMS message:\n"
@@ -2410,13 +2409,13 @@ msgstr ""
 "%sНевядомы тэг у СМС-паведамленьні:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3530
+#: src/icqd-srv.cpp:3364
 #, c-format
 msgid "%sSMS message packet was too large (claimed size: %lu bytes)\n"
 msgstr ""
 "%sПакет СМС-паведамленьня занадта вялікі (заяўлены памер: %lu байтаў)\n"
 
-#: src/icqd-srv.cpp:3572 src/icqd-tcp.cpp:2079 src/icqd-tcp.cpp:2411
+#: src/icqd-srv.cpp:3406 src/icqd-tcp.cpp:1946 src/icqd-tcp.cpp:2269
 #, c-format
 msgid ""
 "%sInvalid URL message:\n"
@@ -2425,12 +2424,12 @@ msgstr ""
 "%sНяспраўнае паведамленьне-спасылка:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3583 src/icqd-srv.cpp:4584
+#: src/icqd-srv.cpp:3417 src/icqd-srv.cpp:4409
 #, c-format
 msgid "%sAuthorization request from %s.\n"
 msgstr "%sЗапыт аўтарызацыі ад %s.\n"
 
-#: src/icqd-srv.cpp:3589
+#: src/icqd-srv.cpp:3423
 #, c-format
 msgid ""
 "%sInvalid authorization request system message:\n"
@@ -2439,22 +2438,22 @@ msgstr ""
 "%sНяспраўны сыстэмны запыт аўтарызацыі:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3615
+#: src/icqd-srv.cpp:3449
 #, c-format
 msgid "%sAuthorization refused by %s.\n"
 msgstr "%sУ аўтарызацыі адмоўлена %s.\n"
 
-#: src/icqd-srv.cpp:3628
+#: src/icqd-srv.cpp:3462
 #, c-format
 msgid "%sAuthorization granted by %s.\n"
 msgstr "%sАўтарызацыя дазволена %s.\n"
 
-#: src/icqd-srv.cpp:3647
+#: src/icqd-srv.cpp:3481
 #, c-format
 msgid "%sServer message.\n"
 msgstr "%sПаведамленьне з паслужніка.\n"
 
-#: src/icqd-srv.cpp:3655 src/icqd-srv.cpp:4900
+#: src/icqd-srv.cpp:3489 src/icqd-srv.cpp:4728
 #, c-format
 msgid ""
 "%sInvalid Server Message:\n"
@@ -2463,12 +2462,12 @@ msgstr ""
 "%sНяспраўнае паведамленьне з паслужніка:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3665 src/icqd-srv.cpp:4665
+#: src/icqd-srv.cpp:3499 src/icqd-srv.cpp:4492
 #, c-format
 msgid "%sUser %s added you to their contact list.\n"
 msgstr "%sКарыстальнік %s дадаў Вас у свой сьпіс кантактаў.\n"
 
-#: src/icqd-srv.cpp:3672
+#: src/icqd-srv.cpp:3506
 #, c-format
 msgid ""
 "%sInvalid added to list system message:\n"
@@ -2477,12 +2476,12 @@ msgstr ""
 "%sСыстэмнае паведамленьне аб няспраўным дадаваньні ў сьпіс кантактаў:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3693
+#: src/icqd-srv.cpp:3527
 #, c-format
 msgid "%sMessage through web panel.\n"
 msgstr "%sПаведамленьне праз Вэб-панэль.\n"
 
-#: src/icqd-srv.cpp:3700
+#: src/icqd-srv.cpp:3534
 #, c-format
 msgid ""
 "%sInvalid web panel system message:\n"
@@ -2491,18 +2490,18 @@ msgstr ""
 "%sНяспраўнае паведамленьне праз Вэб-панэль:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3712 src/icqd-srv.cpp:3741 src/icqd-srv.cpp:4958
-#: src/icqd-srv.cpp:4987
+#: src/icqd-srv.cpp:3546 src/icqd-srv.cpp:3575 src/icqd-srv.cpp:4786
+#: src/icqd-srv.cpp:4815
 #, c-format
 msgid "%sFrom %s (%s).\n"
 msgstr "%sАд %s (%s).\n"
 
-#: src/icqd-srv.cpp:3722
+#: src/icqd-srv.cpp:3556
 #, c-format
 msgid "%sEmail pager message.\n"
 msgstr "%sПаведамленьне праз паштовы пэджар.\n"
 
-#: src/icqd-srv.cpp:3729
+#: src/icqd-srv.cpp:3563
 #, c-format
 msgid ""
 "%sInvalid email pager system message:\n"
@@ -2511,7 +2510,7 @@ msgstr ""
 "%sНяспраўнае паведамленьне праз паштовы пэйджар:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3756
+#: src/icqd-srv.cpp:3590
 #, c-format
 msgid ""
 "%sInvalid Contact List message:\n"
@@ -2520,11 +2519,11 @@ msgstr ""
 "%sНяспраўнае паведамленьне сьпісу кантактаў:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3762 src/icqd-srv.cpp:5006
+#: src/icqd-srv.cpp:3596 src/icqd-srv.cpp:4834
 msgid "Contacts"
 msgstr "Кантакты"
 
-#: src/icqd-srv.cpp:3774 src/icqd-srv.cpp:5018
+#: src/icqd-srv.cpp:3608 src/icqd-srv.cpp:4846
 #, c-format
 msgid ""
 "%sInvalid SMS message:\n"
@@ -2533,7 +2532,7 @@ msgstr ""
 "%sНяспраўнае СМС-паведамленьне:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3788
+#: src/icqd-srv.cpp:3622
 #, c-format
 msgid ""
 "%sUnknown system message (0x%04x):\n"
@@ -2542,22 +2541,22 @@ msgstr ""
 "%sНевядомае сыстэмнае паведамленьне (0x%04x):\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3828
+#: src/icqd-srv.cpp:3655
 #, c-format
 msgid "%s%s through server from %s (%s).\n"
 msgstr "%s%s праз паслужнік %s (%s).\n"
 
-#: src/icqd-srv.cpp:3880
+#: src/icqd-srv.cpp:3706
 #, fuzzy, c-format
 msgid "%sSMS from %s - %s (%s).\n"
 msgstr "%sСМС ад %s - %s (%lu).\n"
 
-#: src/icqd-srv.cpp:3889
+#: src/icqd-srv.cpp:3715
 #, c-format
 msgid "%sSMS from %s.\n"
 msgstr "%sСМС ад %s.\n"
 
-#: src/icqd-srv.cpp:3910
+#: src/icqd-srv.cpp:3736
 #, c-format
 msgid ""
 "%sMessage through server with unknown format: %04hx\n"
@@ -2566,27 +2565,27 @@ msgstr ""
 "%sПаведамленьне праз паслужнік невядомага фармату: %04hx\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:3935
+#: src/icqd-srv.cpp:3761
 #, c-format
 msgid "%sUnexpected new user in subtype 0x%04x.\n"
 msgstr "%sНевызначаны новы карыстальнік у падтыпе 0x%04x.\n"
 
-#: src/icqd-srv.cpp:3972
+#: src/icqd-srv.cpp:3798
 #, c-format
 msgid "%s%s doesn't have a manager for this event.\n"
 msgstr "%s%s не мае апрацоўшчыка дзеля гэтага дзеяньня.\n"
 
-#: src/icqd-srv.cpp:4027
+#: src/icqd-srv.cpp:3853
 #, c-format
 msgid "%sRefusal from %s (#%lu).\n"
 msgstr "%sАдмова ад %s (#%lu).\n"
 
-#: src/icqd-srv.cpp:4080
+#: src/icqd-srv.cpp:3907
 #, c-format
 msgid "%sReceived rights for Instant Messaging..\n"
 msgstr "%sАтрыманы правы дзеля адпраўкі паведамленьняў...\n"
 
-#: src/icqd-srv.cpp:4092
+#: src/icqd-srv.cpp:3919
 #, c-format
 msgid ""
 "%sMessage was sent to an offline user. It will be delivered when the user "
@@ -2595,145 +2594,145 @@ msgstr ""
 "%sПаведамленьне было адпраўлена да неактыўнага карыстальніка. Яно мае быць "
 "дастаўлена, як толькі карыстальнік з'явіцца ў сетцы.\n"
 
-#: src/icqd-srv.cpp:4108
+#: src/icqd-srv.cpp:3935
 #, c-format
 msgid "%sTyping status received for unknown user (%s).\n"
 msgstr "%sПаведамленьне аб наборы атрымана ад невядомага карыстальніка (%s).\n"
 
-#: src/icqd-srv.cpp:4121
+#: src/icqd-srv.cpp:3947
 #, c-format
 msgid "%sUnknown Message Family Subtype: %04hx\n"
 msgstr "%sНевядомы падтып сямейства паведамленьняў: %04hx\n"
 
-#: src/icqd-srv.cpp:4147
+#: src/icqd-srv.cpp:3973
 #, c-format
 msgid "%sServer granted contact list rights.\n"
 msgstr "%sПаслужнік паведаміў пра правы на сьпіс кантактаў.\n"
 
-#: src/icqd-srv.cpp:4276
+#: src/icqd-srv.cpp:4102
 #, c-format
 msgid "%sGot Master Group record.\n"
 msgstr "%sАтрыман запіс Асноўнага гурта.\n"
 
-#: src/icqd-srv.cpp:4287
+#: src/icqd-srv.cpp:4113
 #, c-format
 msgid "%sGot Privacy Setting.\n"
 msgstr "%sАтрыманы наладкі бясьпекі.\n"
 
-#: src/icqd-srv.cpp:4317
+#: src/icqd-srv.cpp:4143
 #, c-format
 msgid "%sContact list without request.\n"
 msgstr "%sАтрыман сьпіс кантактаў без яго запыту.\n"
 
-#: src/icqd-srv.cpp:4319
+#: src/icqd-srv.cpp:4145
 #, c-format
 msgid "%sReceived contact list.\n"
 msgstr "%sАтрыман сьпіс кантактаў.\n"
 
-#: src/icqd-srv.cpp:4326
+#: src/icqd-srv.cpp:4152
 #, c-format
 msgid "%sReceived end of contact list.\n"
 msgstr "%sАтрыманы канец сьпісу кантактаў.\n"
 
-#: src/icqd-srv.cpp:4330
+#: src/icqd-srv.cpp:4156
 #, fuzzy, c-format
 msgid "%sActivating server contact list.\n"
 msgstr "%sАктывацыя сьпісу кантактаў на паслужніку.\n"
 
-#: src/icqd-srv.cpp:4340
+#: src/icqd-srv.cpp:4166
 #, fuzzy, c-format
 msgid "%sReceived updated contact information from server.\n"
 msgstr "%sАтрыманы карыстальніцкія дадзеныя аб %s.\n"
 
-#: src/icqd-srv.cpp:4345
+#: src/icqd-srv.cpp:4171
 #, c-format
 msgid "%sDid not receive user ID.\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:4357
+#: src/icqd-srv.cpp:4183
 #, c-format
 msgid "%sError during parsing packet!\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:4394
+#: src/icqd-srv.cpp:4219
 #, c-format
 msgid "%sContact list is synchronized.\n"
 msgstr "%sСьпіс кантактаў сынхранізаваны.\n"
 
-#: src/icqd-srv.cpp:4398
+#: src/icqd-srv.cpp:4223
 #, c-format
 msgid "%sActivate server contact list.\n"
 msgstr "%sАктывацыя сьпісу кантактаў на паслужніку.\n"
 
-#: src/icqd-srv.cpp:4413
+#: src/icqd-srv.cpp:4238
 #, c-format
 msgid "%sServer list update ack without request.\n"
 msgstr ""
 "%sАтрымана абнаўленьне сьпіску кантактаў на паслужніку без запыту гэтага "
 "дзеяньня.\n"
 
-#: src/icqd-srv.cpp:4434
+#: src/icqd-srv.cpp:4259
 #, c-format
 msgid "%sSkipping invalid server side list ack (%ld).\n"
 msgstr "%sІгнарыруем няспраўны пакет паслужнікавага сьпісу кантактаў (%ld).\n"
 
-#: src/icqd-srv.cpp:4447
+#: src/icqd-srv.cpp:4272
 #, c-format
 msgid "%s%s added to awaiting authorization group on server list.\n"
 msgstr "%s%s дададзены да сьпісу чакаючых аўтарызацыі на паслужніку.\n"
 
-#: src/icqd-srv.cpp:4452
+#: src/icqd-srv.cpp:4277
 #, c-format
 msgid "%sUser/Group %s not found on server list.\n"
 msgstr "%sКарыстальнік/Гурт %s ня знойдзены на паслужніку.\n"
 
-#: src/icqd-srv.cpp:4457
+#: src/icqd-srv.cpp:4282
 #, c-format
 msgid "%sUnknown error modifying server list: 0x%02X (ID: %s)\n"
 msgstr ""
 "%sНевядомая памылка зьмяненьня сьпісу кантактаў на паслужніку: 0x%02X "
 "(карыстальнік: %s)\n"
 
-#: src/icqd-srv.cpp:4548
+#: src/icqd-srv.cpp:4372
 #, c-format
 msgid "%sUpdated %s successfully.\n"
 msgstr "%s %s абноўлены пасьпяхова.\n"
 
-#: src/icqd-srv.cpp:4549
+#: src/icqd-srv.cpp:4373
 msgid "top level"
 msgstr ""
 
-#: src/icqd-srv.cpp:4624
+#: src/icqd-srv.cpp:4450
 #, c-format
 msgid "%sAuthorization %s by %s.\n"
 msgstr "%sАўтарызацыя %s %s.\n"
 
-#: src/icqd-srv.cpp:4693
+#: src/icqd-srv.cpp:4520
 #, c-format
 msgid "%sUnknown List Family Subtype: %04hx\n"
 msgstr "%sНевядомы падтып сямейства сьпісу: %04hx\n"
 
-#: src/icqd-srv.cpp:4705
+#: src/icqd-srv.cpp:4532
 #, c-format
 msgid "%sReceived BOS rights.\n"
 msgstr "%sАтрыманы правы BOS.\n"
 
-#: src/icqd-srv.cpp:4709
+#: src/icqd-srv.cpp:4536
 #, c-format
 msgid "%sSending client ready...\n"
 msgstr "%sАдсылка \"кліент гатовы\"...\n"
 
-#: src/icqd-srv.cpp:4713
+#: src/icqd-srv.cpp:4540
 #, c-format
 msgid "%sSending offline message request...\n"
 msgstr "%sАдсылка запыту на пазасеткавае паведамленьне...\n"
 
-#: src/icqd-srv.cpp:4728
+#: src/icqd-srv.cpp:4555
 #, c-format
 msgid "%sUnknown BOS Family Subtype: %04hx\n"
 msgstr "%sНевядомы падтып сямейства  BOS: %04hx\n"
 
-#: src/icqd-srv.cpp:4821
+#: src/icqd-srv.cpp:4649
 #, c-format
 msgid ""
 "%sInvalid offline URL message:\n"
@@ -2742,12 +2741,12 @@ msgstr ""
 "%sНяспраўнае пазасеткавае паведамленьне спасылцы:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4832
+#: src/icqd-srv.cpp:4660
 #, fuzzy, c-format
 msgid "%sOffline authorization request from %s.\n"
 msgstr "%sЗапыт аўтарызацыі ад адключанага карыстальніка %lu.\n"
 
-#: src/icqd-srv.cpp:4840
+#: src/icqd-srv.cpp:4668
 #, c-format
 msgid ""
 "%sInvalid offline authorization request system message:\n"
@@ -2756,27 +2755,27 @@ msgstr ""
 "%sНяспраўны сыстэмны запыт аўтарызацыі :\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4862
+#: src/icqd-srv.cpp:4690
 #, fuzzy, c-format
 msgid "%sOffline authorization refused by %s.\n"
 msgstr "%sАдмоўлена ў аўтарызацыі дзеля адключанага карыстальніка %lu.\n"
 
-#: src/icqd-srv.cpp:4874
+#: src/icqd-srv.cpp:4702
 #, fuzzy, c-format
 msgid "%sOffline authorization granted by %s.\n"
 msgstr "%sДазволена аўтарызацыя дзеля адключанага карыстальніка %lu.\n"
 
-#: src/icqd-srv.cpp:4893
+#: src/icqd-srv.cpp:4721
 #, c-format
 msgid "%sOffline server message.\n"
 msgstr "%sПазасеткавае паведамленьне з паслужніка.\n"
 
-#: src/icqd-srv.cpp:4909
+#: src/icqd-srv.cpp:4737
 #, fuzzy, c-format
 msgid "%sUser %s added you to their contact list (offline).\n"
 msgstr "%sКарыстальнік %lu дадаў Вас у свой сьпіс кантактаў (адключана).\n"
 
-#: src/icqd-srv.cpp:4917
+#: src/icqd-srv.cpp:4745
 #, c-format
 msgid ""
 "%sInvalid offline added to list system message:\n"
@@ -2786,12 +2785,12 @@ msgstr ""
 "паведамленьняў:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4938
+#: src/icqd-srv.cpp:4766
 #, c-format
 msgid "%sOffline message through web panel.\n"
 msgstr "%sНеактыўнае паведамленьне праз Вэб-панэль.\n"
 
-#: src/icqd-srv.cpp:4946
+#: src/icqd-srv.cpp:4774
 #, c-format
 msgid ""
 "%sInvalid offline web panel system message:\n"
@@ -2800,12 +2799,12 @@ msgstr ""
 "%sНяспраўнае неактыўнае паведамленьне праз Вэб-панэль:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:4967
+#: src/icqd-srv.cpp:4795
 #, c-format
 msgid "%sEmail pager offline message.\n"
 msgstr "%sПазасеткавае паведамленьне праз паштовы пэджар.\n"
 
-#: src/icqd-srv.cpp:4975
+#: src/icqd-srv.cpp:4803
 #, c-format
 msgid ""
 "%sInvalid offline email pager system message:\n"
@@ -2814,7 +2813,7 @@ msgstr ""
 "%sНяспраўнае неактыўнае паведамленьне праз паштовы пэджар:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:5001
+#: src/icqd-srv.cpp:4829
 #, c-format
 msgid ""
 "%sInvalid offline Contact List message:\n"
@@ -2823,95 +2822,90 @@ msgstr ""
 "%sНяспраўнае неактыўнае паведамленьне з сьпісам кантактаў:\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:5056
+#: src/icqd-srv.cpp:4882
 #, fuzzy, c-format
 msgid "%sOffline %s from new user (%s), ignoring.\n"
 msgstr "%sНеактыўнае %s ад новага карыстальніка (%lu), ігнаруем.\n"
 
-#: src/icqd-srv.cpp:5062
-#, fuzzy, c-format
-msgid "%sOffline %s from new user (%s).\n"
-msgstr "%s %s ад новага неактыўнага карыстальніка (%lu).\n"
-
-#: src/icqd-srv.cpp:5067
+#: src/icqd-srv.cpp:4889
 #, fuzzy, c-format
 msgid "%sOffline %s through server from %s (%s).\n"
 msgstr "%sНеактыўнае %s праз паслужнік ад %s (%lu).\n"
 
-#: src/icqd-srv.cpp:5118
+#: src/icqd-srv.cpp:4940
 #, fuzzy, c-format
 msgid "%sOffline SMS from %s - %s (%s).\n"
 msgstr "%sСМС ад неактыўнага карытсальніка %s - %s (%lu).\n"
 
-#: src/icqd-srv.cpp:5127
+#: src/icqd-srv.cpp:4949
 #, c-format
 msgid "%sOffline SMS from %s.\n"
 msgstr "%sСМС ад неактыўнага карыстальніка %s.\n"
 
-#: src/icqd-srv.cpp:5146
+#: src/icqd-srv.cpp:4968
 #, c-format
 msgid "%sEnd of Offline messages (nId: %04hx).\n"
 msgstr "%sКанец пазасеткавага паведамленьня (nId: %04hx).\n"
 
-#: src/icqd-srv.cpp:5164
+#: src/icqd-srv.cpp:4986
 msgid "Password change"
 msgstr "Зьмена паролю"
 
-#: src/icqd-srv.cpp:5179
+#: src/icqd-srv.cpp:5001
 msgid "Security info"
 msgstr "Зьвесткі бясьпекі"
 
-#: src/icqd-srv.cpp:5185
+#: src/icqd-srv.cpp:5007
 msgid "General info"
 msgstr "Асноўныя зьвесткі"
 
-#: src/icqd-srv.cpp:5230
+#: src/icqd-srv.cpp:5053
 msgid "E-mail info"
 msgstr "Зьвесткі аб пошце"
 
-#: src/icqd-srv.cpp:5254
+#: src/icqd-srv.cpp:5079
 msgid "More info"
 msgstr "Дадатковыя зьвесткі"
 
-#: src/icqd-srv.cpp:5311
+#: src/icqd-srv.cpp:5136
 msgid "Work info"
 msgstr "зьвесткі аб працы"
 
-#: src/icqd-srv.cpp:5353
+#: src/icqd-srv.cpp:5179
 msgid "About"
 msgstr "Зьвесткі"
 
-#: src/icqd-srv.cpp:5438
+#: src/icqd-srv.cpp:5261
 #, c-format
 msgid "%sSMS delivered.\n"
 msgstr "%sСМС дастаўлена.\n"
 
-#: src/icqd-srv.cpp:5451
+#: src/icqd-srv.cpp:5274
 #, c-format
 msgid "%sSMS not delivered, error #%s, param: %s\n"
 msgstr "%sСМС не дастаўлена, памылка  #%s, параметры: %s\n"
 
-#: src/icqd-srv.cpp:5469
+#: src/icqd-srv.cpp:5292
 #, c-format
 msgid "%sSending SMS via SMTP not supported yet.\n"
 msgstr "%sАдсылка СМС праз SMTP пакуль не падтрымліваецца.\n"
 
-#: src/icqd-srv.cpp:5474
+#: src/icqd-srv.cpp:5297
 #, c-format
 msgid "%sFrom: %s\n"
 msgstr "%sАд: %s\n"
 
-#: src/icqd-srv.cpp:5480
+#: src/icqd-srv.cpp:5303
 #, c-format
 msgid "%sTo: %s\n"
 msgstr "%sДа: %s\n"
 
-#: src/icqd-srv.cpp:5486
+#: src/icqd-srv.cpp:5309
 #, c-format
 msgid "%sSubject: %s\n"
 msgstr "%sТэма: %s\n"
 
-#: src/icqd-srv.cpp:5499
+#: src/icqd-srv.cpp:5322
 #, c-format
 msgid ""
 "%sUnknown SMS response:\n"
@@ -2920,82 +2914,82 @@ msgstr ""
 "%sНевядомы СМС-адказ:\n"
 "%s"
 
-#: src/icqd-srv.cpp:5515
+#: src/icqd-srv.cpp:5338
 #, c-format
 msgid "%sUndeliverable SMS.\n"
 msgstr "%sНедастаўленае СМС.\n"
 
-#: src/icqd-srv.cpp:5532
+#: src/icqd-srv.cpp:5355
 msgid "Random chat group"
 msgstr "Гурт выпадковай размовы"
 
-#: src/icqd-srv.cpp:5555
+#: src/icqd-srv.cpp:5379
 #, c-format
 msgid "%sRandom chat user found (%s).\n"
 msgstr "%sЗнойдзены выпадковы суразмоўца (%s).\n"
 
-#: src/icqd-srv.cpp:5590
+#: src/icqd-srv.cpp:5406
 #, c-format
 msgid "%sNo random chat user found.\n"
 msgstr "%sВыпадковы суразмоўца ня знойдзены.\n"
 
-#: src/icqd-srv.cpp:5599
+#: src/icqd-srv.cpp:5415
 #, c-format
 msgid "%sReceived info update ack, without updating info.\n"
 msgstr ""
 "%sАтрыманы запыт на абнаўленьне дадзеных, але без выкананьня дзеяньня.\n"
 
-#: src/icqd-srv.cpp:5603
+#: src/icqd-srv.cpp:5419
 #, c-format
 msgid "%sUpdated information successfully.\n"
 msgstr "%sДадзеная пасьпяхова абнаўлены.\n"
 
-#: src/icqd-srv.cpp:5610
+#: src/icqd-srv.cpp:5426
 #, c-format
 msgid "%sSMS failed to send.\n"
 msgstr "%sСМС не адаслана.\n"
 
-#: src/icqd-srv.cpp:5622
+#: src/icqd-srv.cpp:5438
 #, c-format
 msgid "%sWhitePages search found no users.\n"
 msgstr "%sПошук на \"Белых старонках\" не даў выніку.\n"
 
-#: src/icqd-srv.cpp:5707
+#: src/icqd-srv.cpp:5527
 #, c-format
 msgid "%sFailed to update user info: %x.\n"
 msgstr "%sНемагчыма абнавіць дадзеныя аб карыстальніку: %x.\n"
 
-#: src/icqd-srv.cpp:5731
+#: src/icqd-srv.cpp:5551
 #, c-format
 msgid "%scan't find user for updating!\n"
 msgstr "%sнемагчыма знайсьці карыстальніка дзеля абнаўленьня!\n"
 
-#: src/icqd-srv.cpp:5740
+#: src/icqd-srv.cpp:5560
 #, c-format
 msgid "%sGeneral info on %s (%s).\n"
 msgstr "%sАсноўныя зьвесткі пра %s (%s).\n"
 
-#: src/icqd-srv.cpp:5821
+#: src/icqd-srv.cpp:5640
 #, c-format
 msgid "%sMore info on %s (%s).\n"
 msgstr "%sДадатковыя зьвесткі пра %s (%s).\n"
 
-#: src/icqd-srv.cpp:5875
+#: src/icqd-srv.cpp:5694
 #, c-format
 msgid "%sEmail info on %s (%s).\n"
 msgstr "%sЗьвесткі пра пошту %s (%s).\n"
 
-#: src/icqd-srv.cpp:5949
+#: src/icqd-srv.cpp:5767
 #, c-format
 msgid "%sWork info on %s (%s).\n"
 msgstr "%sЗьвесткі аб працы %s (%s).\n"
 
-#: src/icqd-srv.cpp:5998
+#: src/icqd-srv.cpp:5815
 #, c-format
 msgid "%sAbout info on %s (%s).\n"
 msgstr "%sАсабістыя зьвесткі пра %s (%s).\n"
 
-#: src/icqd-srv.cpp:6114
+#: src/icqd-srv.cpp:5916
 #, c-format
 msgid ""
 "%sunknown info: %04hx\n"
@@ -3004,27 +2998,27 @@ msgstr ""
 "%sневядомыя дадзеныя: %04hx\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:6125
+#: src/icqd-srv.cpp:5927
 #, c-format
 msgid "%sResponse to unknown extended info request for %s (%s).\n"
 msgstr "%sАдказ на невядомы запыт пашыраных дадзеных дзеля %s (%s).\n"
 
-#: src/icqd-srv.cpp:6139
+#: src/icqd-srv.cpp:5941
 #, c-format
 msgid "%s%s updated.\n"
 msgstr "%s%s абноўлена.\n"
 
-#: src/icqd-srv.cpp:6141
+#: src/icqd-srv.cpp:5943
 #, c-format
 msgid "%s%s update failed.\n"
 msgstr "%s%s няспраўнае абнаўленьне.\n"
 
-#: src/icqd-srv.cpp:6145
+#: src/icqd-srv.cpp:5947
 #, c-format
 msgid "%sUnexpected result for %s.\n"
 msgstr "%sНечаканы вынік дзеля %s.\n"
 
-#: src/icqd-srv.cpp:6163
+#: src/icqd-srv.cpp:5965
 #, c-format
 msgid ""
 "%sUnknown Various Family Subtype: %04hx\n"
@@ -3033,12 +3027,12 @@ msgstr ""
 "%sНевядомы разнастайны падтып сямейства: %04hx\n"
 "%s\n"
 
-#: src/icqd-srv.cpp:6182
+#: src/icqd-srv.cpp:5984
 #, c-format
 msgid "%sVerification required. Reconnecting...\n"
 msgstr "%sПатрэбна пасьведчаньне. Пераўсталёўваем злучэньне...\n"
 
-#: src/icqd-srv.cpp:6205
+#: src/icqd-srv.cpp:6007
 #, c-format
 msgid ""
 "%sUnknown logon error. There appears to be an issue with the ICQ servers. "
@@ -3047,22 +3041,22 @@ msgstr ""
 "%sНевядомая памылка ўваходу. Гэта выглядае як цяжкасьці з паслужнікамі ICQ. "
 "Паспрабуйце зноўку трошкі пазьней.\n"
 
-#: src/icqd-srv.cpp:6231
+#: src/icqd-srv.cpp:6033
 #, fuzzy, c-format
 msgid "%sReceived new uin (%lu) when already have a uin (%s).\n"
 msgstr "%sАтрыман новы нумар (%lu), але мы ўжо маем свой (%lu).\n"
 
-#: src/icqd-srv.cpp:6236
+#: src/icqd-srv.cpp:6038
 #, c-format
 msgid "%sReceived new uin: %lu\n"
 msgstr "%sАтрыманы новы ўліковы запіс: %lu\n"
 
-#: src/icqd-srv.cpp:6270
+#: src/icqd-srv.cpp:6072
 #, c-format
 msgid "%sSending md5 hashed password.\n"
 msgstr ""
 
-#: src/icqd-srv.cpp:6306
+#: src/icqd-srv.cpp:6108
 #, c-format
 msgid ""
 "%sUnable to open file (%s):\n"
@@ -3071,32 +3065,32 @@ msgstr ""
 "%sНемагчыма адчыніць файл (%s):\n"
 "%s%s.\n"
 
-#: src/icqd-srv.cpp:6345
+#: src/icqd-srv.cpp:6147
 #, fuzzy, c-format
 msgid "%sEmpty User ID was received in the contact list.\n"
 msgstr "%sКарыстальнік %s ужо ў сьпісе кантактаў.\n"
 
-#: src/icqd-srv.cpp:6355
+#: src/icqd-srv.cpp:6157
 #, c-format
 msgid "%sAdded %s (%s) to list from server.\n"
 msgstr "%s %s (%s) Дададзены да сьпісу кантактаў з паслужніка.\n"
 
-#: src/icqd-srv.cpp:6473
+#: src/icqd-srv.cpp:6274
 #, c-format
 msgid "%sWe're logging off..\n"
 msgstr "%sАдключаемся..\n"
 
-#: src/icqd-srv.cpp:6488
+#: src/icqd-srv.cpp:6289
 #, c-format
 msgid "%sRate limit exceeded.\n"
 msgstr "%sВычарпана колькасьць спроб.\n"
 
-#: src/icqd-srv.cpp:6495
+#: src/icqd-srv.cpp:6295
 #, c-format
 msgid "%sInvalid UIN and password combination.\n"
 msgstr "%sНяспраўная камбінацыя нумара і паролю.\n"
 
-#: src/icqd-srv.cpp:6508
+#: src/icqd-srv.cpp:6307
 #, c-format
 msgid ""
 "%sThe requested network service is temporarily unavailable.\n"
@@ -3105,12 +3099,12 @@ msgstr ""
 "%sЗапытаны сеткавая паслуга часова не дасягальна.\n"
 "Паспрабуйце зноўку трошкі пазьней.\n"
 
-#: src/icqd-srv.cpp:6532
+#: src/icqd-srv.cpp:6331
 #, c-format
 msgid "%sYour ICQ number is used from another location.\n"
 msgstr "%sВаш нумар ICQ выкарыстоўваецца ў іншым месцы.\n"
 
-#: src/icqd-srv.cpp:6537
+#: src/icqd-srv.cpp:6336
 #, c-format
 msgid ""
 "%sYour ICQ number is used from another location.\n"
@@ -3119,158 +3113,158 @@ msgstr ""
 "%sВаш нумар ICQ выкарыстоўваецца ў іншым месцы.\n"
 "Аўтаматычнае злучэньне не дазволена.\n"
 
-#: src/icqd-srv.cpp:6576
+#: src/icqd-srv.cpp:6375
 #, c-format
 msgid "%sAuthenticated. Connecting to %s port %s.\n"
 msgstr "%sПасьведчаны. Злучаемся з %s порт %s.\n"
 
-#: src/icqd-tcp.cpp:146
+#: src/icqd-tcp.cpp:151
 #, c-format
 msgid "%sTruncating message to %d characters to send through server.\n"
 msgstr ""
 "%sПадзяляем паведамленьне на часткі па %d сымбаляў каб даслаць праз "
 "паслужнік.\n"
 
-#: src/icqd-tcp.cpp:162
+#: src/icqd-tcp.cpp:167
 #, c-format
 msgid "%sSending %smessage to %s (#%hu).\n"
 msgstr "%sАдсыланьне %sпаведамленьня да %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:163 src/icqd-tcp.cpp:318 src/icqd-tcp.cpp:425
-#: src/icqd-tcp.cpp:511 src/icqd-tcp.cpp:968
+#: src/icqd-tcp.cpp:168 src/icqd-tcp.cpp:309 src/icqd-tcp.cpp:419
+#: src/icqd-tcp.cpp:495 src/icqd-tcp.cpp:893
 msgid "urgent "
 msgstr "хутка"
 
-#: src/icqd-tcp.cpp:226
+#: src/icqd-tcp.cpp:215
 #, c-format
 msgid "%sRequesting auto response from %s.\n"
 msgstr "%sЗапытваецца аўтаадказ ад %s.\n"
 
-#: src/icqd-tcp.cpp:233
+#: src/icqd-tcp.cpp:222
 #, c-format
 msgid "%sRequesting auto response from %s (#%hu).\n"
 msgstr "%sЗапытваецца аўтаадказ ад %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:317
+#: src/icqd-tcp.cpp:308
 #, c-format
 msgid "%sSending %sURL to %s (#%hu).\n"
 msgstr "%sАдсылка %s спасылкі  да %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:400
+#: src/icqd-tcp.cpp:394
 #, c-format
 msgid "%sSending file transfer to %s (#%hu).\n"
 msgstr "%sАдсыланьне запыта на перадачу файла да %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:424
+#: src/icqd-tcp.cpp:418
 #, c-format
 msgid "%sSending %sfile transfer to %s (#%hu).\n"
 msgstr "%sАдсыланьне %s на перадачу файла да %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:480
+#: src/icqd-tcp.cpp:464
 #, c-format
 msgid "%sContact list too large to send through server.\n"
 msgstr "%sСьпіс кантактаў занадта вялікі, каб даслаць яго праз паслужнік.\n"
 
-#: src/icqd-tcp.cpp:510
+#: src/icqd-tcp.cpp:494
 #, c-format
 msgid "%sSending %scontact list to %s (#%hu).\n"
 msgstr "%sАдсыланьне %s на сьпіс кантактаў да %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:765
+#: src/icqd-tcp.cpp:738
 #, c-format
 msgid "%sCancelling file transfer to %s (#%hu).\n"
 msgstr "%sСкасаваньне перадачы файла да %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:806
+#: src/icqd-tcp.cpp:774
 #, c-format
 msgid "%sAccepting file transfer from %s (#%hu).\n"
 msgstr "%sДазваляем перадачу файла %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:861
+#: src/icqd-tcp.cpp:816
 #, c-format
 msgid "%sRefusing file transfer from %s (#%hu).\n"
 msgstr "%sАдмаўляем у перадачы файла %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:953
+#: src/icqd-tcp.cpp:878
 #, c-format
 msgid "%sSending chat request to %s (#%hu).\n"
 msgstr "%sАдсылаем запрашэньне да размовы з %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:967
+#: src/icqd-tcp.cpp:892
 #, c-format
 msgid "%sSending %schat request to %s (#%hu).\n"
 msgstr "%sДасылаем %s запрашэньне да размовы з %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:997
+#: src/icqd-tcp.cpp:913
 #, c-format
 msgid "%sCancelling chat request with %s (#%hu).\n"
 msgstr "%sСкасоўваем запрашэньне да размовы з %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:1020
+#: src/icqd-tcp.cpp:926
 #, c-format
 msgid "%sRefusing chat request with %s (#%hu).\n"
 msgstr "%sАдказваем у размове з %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:1062
+#: src/icqd-tcp.cpp:957
 #, c-format
 msgid "%sAccepting chat request with %s (#%hu).\n"
 msgstr "%sПрымаем запрашэньне да размовы з %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:1106 src/icqd-tcp.cpp:1171
+#: src/icqd-tcp.cpp:1004 src/icqd-tcp.cpp:1062
 #, c-format
 msgid "%sCannot send secure channel request to user not on list (%s).\n"
 msgstr ""
 "%sНемагчыма даслаць запыт бясьпечнага каналу ды карыстальніка, які не ў "
 "сьпісе кантактаў (%s).\n"
 
-#: src/icqd-tcp.cpp:1114
+#: src/icqd-tcp.cpp:1012
 #, c-format
 msgid "%s%s (%s) already has a secure channel.\n"
 msgstr "%s%s (%s) ужо мае бясьпечны канал.\n"
 
-#: src/icqd-tcp.cpp:1121
+#: src/icqd-tcp.cpp:1019
 #, c-format
 msgid "%sSending request for secure channel to %s (#%hu).\n"
 msgstr "%sДасылаем запыт на бясьпечны канал да %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:1179
+#: src/icqd-tcp.cpp:1070
 #, c-format
 msgid "%s%s (%s) does not have a secure channel.\n"
 msgstr "%s%s (%s) не мае бясьпечнага каналу.\n"
 
-#: src/icqd-tcp.cpp:1186
+#: src/icqd-tcp.cpp:1077
 #, c-format
 msgid "%sClosing secure channel with %s (#%hu).\n"
 msgstr "%sЗачыняем бясьпечны канал з %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:1231
+#: src/icqd-tcp.cpp:1115
 #, c-format
 msgid "%sCancelling secure channel request to %s (#%hu).\n"
 msgstr "%sСкасаваньне запыту на бясьпечны канал з %s (#%hu).\n"
 
-#: src/icqd-tcp.cpp:1296 src/icqd-tcp.cpp:1337 src/icqd-tcp.cpp:3829
-#: src/icqd-tcp.cpp:3917
+#: src/icqd-tcp.cpp:1167 src/icqd-tcp.cpp:1208 src/icqd-tcp.cpp:3658
+#: src/icqd-tcp.cpp:3746
 #, c-format
 msgid "%sBad handshake ack: %ld.\n"
 msgstr "%sДрэнны адказ пры ўсталяваньні сувязі: %ld.\n"
 
-#: src/icqd-tcp.cpp:1309
+#: src/icqd-tcp.cpp:1180
 #, c-format
 msgid "%sBad handshake session id: received %ld, expecting %ld.\n"
 msgstr "%sНяспраўны ідэнтыфікатар сэсіі: атрымана %ld, чакалася %ld.\n"
 
-#: src/icqd-tcp.cpp:1350
+#: src/icqd-tcp.cpp:1221
 #, c-format
 msgid "%sBad handshake cookie: received %ld, expecting %ld.\n"
 msgstr ""
 "%sНяспраўныя дадзеныя усталяваньня злучэньня: атрымана %ld, чакалася %ld.\n"
 
-#: src/icqd-tcp.cpp:1391 src/icqd-tcp.cpp:4053 src/icqd-tcp.cpp:4123
+#: src/icqd-tcp.cpp:1262 src/icqd-tcp.cpp:3880 src/icqd-tcp.cpp:3950
 #, c-format
 msgid "%sHandshake error, remote side closed connection.\n"
 msgstr "%sПамылка ўсталяваньян сувязі, адлеглы бок зачыніў злучэньне.\n"
 
-#: src/icqd-tcp.cpp:1393 src/icqd-tcp.cpp:4055 src/icqd-tcp.cpp:4125
+#: src/icqd-tcp.cpp:1264 src/icqd-tcp.cpp:3882 src/icqd-tcp.cpp:3952
 #, c-format
 msgid ""
 "%sHandshake socket error:\n"
@@ -3279,22 +3273,22 @@ msgstr ""
 "%sПамылка ўсталяваньня сувязі:\n"
 "%s%s.\n"
 
-#: src/icqd-tcp.cpp:1415
+#: src/icqd-tcp.cpp:1287
 #, fuzzy, c-format
 msgid "%sConnection attempted to already connected user (%s).\n"
 msgstr "%sЗлучэньне ўсталявана з ужо злучаным карыстальнікам (%ld).\n"
 
-#: src/icqd-tcp.cpp:1451
+#: src/icqd-tcp.cpp:1323
 #, fuzzy, c-format
 msgid "%sShaking hands with %s (%s) [v%d].\n"
 msgstr "%sУсталяваньне сувязі з %s (%ld) [вэр.%d].\n"
 
-#: src/icqd-tcp.cpp:1517 src/icqd-tcp.cpp:1531 src/icqd-tcp.cpp:1553
+#: src/icqd-tcp.cpp:1389 src/icqd-tcp.cpp:1401 src/icqd-tcp.cpp:1422
 #, c-format
 msgid "%sConnecting to %s at %s:%d.\n"
 msgstr "%sЗлучэньне з %s а %s:%d.\n"
 
-#: src/icqd-tcp.cpp:1524
+#: src/icqd-tcp.cpp:1394
 #, c-format
 msgid ""
 "%sConnect to %s failed:\n"
@@ -3303,7 +3297,7 @@ msgstr ""
 "%sНяўдалае злучэньне з %s:\n"
 "%s%s.\n"
 
-#: src/icqd-tcp.cpp:1538 src/icqd-tcp.cpp:1559
+#: src/icqd-tcp.cpp:1407 src/icqd-tcp.cpp:1426
 #, c-format
 msgid ""
 "%sConnect to %s real ip failed:\n"
@@ -3312,12 +3306,12 @@ msgstr ""
 "%sНяўдалае злучэньне з %s выкарыстоўваючы рэальны IP-адрас:\n"
 "%s%s.\n"
 
-#: src/icqd-tcp.cpp:1599
+#: src/icqd-tcp.cpp:1467
 #, fuzzy, c-format
 msgid "%sReverse connecting to %s at %s:%d.\n"
 msgstr "%sАдваротнае злучэньне з %lu а %s:%d.\n"
 
-#: src/icqd-tcp.cpp:1608
+#: src/icqd-tcp.cpp:1474
 #, fuzzy, c-format
 msgid ""
 "%sReverse connect to %s failed:\n"
@@ -3326,17 +3320,17 @@ msgstr ""
 "%sНяўдалае адваротнае злучэньне з %lu:\n"
 "%s%s.\n"
 
-#: src/icqd-tcp.cpp:1617
+#: src/icqd-tcp.cpp:1483
 #, fuzzy, c-format
 msgid "%sReverse shaking hands with %s.\n"
 msgstr "%sУсталяваньне сувязі з адваротнага боку з %lu.\n"
 
-#: src/icqd-tcp.cpp:1794
+#: src/icqd-tcp.cpp:1664
 #, c-format
 msgid "%sUnknown TCP version %d from socket.\n"
 msgstr "%sНевядомая вэрсія TCP %d з сокету.\n"
 
-#: src/icqd-tcp.cpp:1813
+#: src/icqd-tcp.cpp:1684
 #, c-format
 msgid ""
 "%sTCP message from self (probable spoof):\n"
@@ -3345,7 +3339,7 @@ msgstr ""
 "%sTCP-паведамленьне ад сябе (магчымы спуфінг):\n"
 "%s\n"
 
-#: src/icqd-tcp.cpp:1815
+#: src/icqd-tcp.cpp:1686
 #, fuzzy, c-format
 msgid ""
 "%sTCP message from invalid UIN (%s, expect %s):\n"
@@ -3354,47 +3348,47 @@ msgstr ""
 "%sTCP-паведамленьне ад няспраўнага нумара (%ld, чакалася %ld):\n"
 "%s\n"
 
-#: src/icqd-tcp.cpp:1928
+#: src/icqd-tcp.cpp:1795
 #, c-format
 msgid "%sUnknown TCP status: %04X\n"
 msgstr "%sНевядомы стан TCP: %04X\n"
 
-#: src/icqd-tcp.cpp:1972
+#: src/icqd-tcp.cpp:1839
 #, fuzzy, c-format
 msgid "%sMessage from %s (%s) [Licq %s].\n"
 msgstr "%sПаведамленьне ад %s (%ld) [Licq %s].\n"
 
-#: src/icqd-tcp.cpp:1975
+#: src/icqd-tcp.cpp:1842
 #, fuzzy, c-format
 msgid "%sMessage from %s (%s).\n"
 msgstr "%sПаведамленьне ад %s (%ld).\n"
 
-#: src/icqd-tcp.cpp:2031
+#: src/icqd-tcp.cpp:1898
 #, fuzzy, c-format
 msgid "%s%s (%s) requested auto response [Licq %s].\n"
 msgstr "%s%s (%ld) запытаў аўтаматычны адказ [Licq %s].\n"
 
-#: src/icqd-tcp.cpp:2070
+#: src/icqd-tcp.cpp:1937
 #, fuzzy, c-format
 msgid "%sURL from %s (%s) [Licq %s].\n"
 msgstr "%sСпасылка  ад %s (%ld) [Licq %s].\n"
 
-#: src/icqd-tcp.cpp:2073 src/icqd-tcp.cpp:2405
+#: src/icqd-tcp.cpp:1940 src/icqd-tcp.cpp:2263
 #, fuzzy, c-format
 msgid "%sURL from %s (%s).\n"
 msgstr "%sСпасылка ад %s (%ld).\n"
 
-#: src/icqd-tcp.cpp:2139
+#: src/icqd-tcp.cpp:2006
 #, fuzzy, c-format
 msgid "%sContact list from %s (%s) [Licq %s].\n"
 msgstr "%sСьпіс кантактаў ад %s (%ld) [Licq %s].\n"
 
-#: src/icqd-tcp.cpp:2142 src/icqd-tcp.cpp:2435
+#: src/icqd-tcp.cpp:2009 src/icqd-tcp.cpp:2293
 #, fuzzy, c-format
 msgid "%sContact list from %s (%s).\n"
 msgstr "%sСьпіс кантактаў ад %s (%ld).\n"
 
-#: src/icqd-tcp.cpp:2149 src/icqd-tcp.cpp:2443
+#: src/icqd-tcp.cpp:2016 src/icqd-tcp.cpp:2301
 #, c-format
 msgid ""
 "%sInvalid contact list message:\n"
@@ -3403,49 +3397,49 @@ msgstr ""
 "%sНяспраўнае паведамленьне з сьпісам кантактаў:\n"
 "%s\n"
 
-#: src/icqd-tcp.cpp:2206
+#: src/icqd-tcp.cpp:2073
 #, fuzzy, c-format
 msgid "%sChat request from %s (%s) [Licq %s].\n"
 msgstr "%sЗапыт размовы ад %s (%ld) [Licq %s].\n"
 
-#: src/icqd-tcp.cpp:2209 src/icqd-tcp.cpp:2381
+#: src/icqd-tcp.cpp:2076 src/icqd-tcp.cpp:2239
 #, fuzzy, c-format
 msgid "%sChat request from %s (%s).\n"
 msgstr "%sЗапыт размовы ад %s (%ld).\n"
 
-#: src/icqd-tcp.cpp:2260
+#: src/icqd-tcp.cpp:2124
 #, fuzzy, c-format
 msgid "%sFile transfer request from %s (%s) [Licq %s].\n"
 msgstr "%sЗапыт перадачы файла ад %s (%ld) [Licq %s].\n"
 
-#: src/icqd-tcp.cpp:2263 src/icqd-tcp.cpp:2346
+#: src/icqd-tcp.cpp:2127 src/icqd-tcp.cpp:2204
 #, fuzzy, c-format
 msgid "%sFile transfer request from %s (%s).\n"
 msgstr "%sЗапыт перадачы файла ад %s (%ld).\n"
 
-#: src/icqd-tcp.cpp:2473
+#: src/icqd-tcp.cpp:2332
 #, fuzzy, c-format
 msgid ""
 "%sReceived old-style key request from %s (%s) but we do not support it.\n"
 msgstr ""
 "%sАтрыманы запыт ключа старога тыпу, які мы не падтрымліваем, ад %s (%ld).\n"
 
-#: src/icqd-tcp.cpp:2498
+#: src/icqd-tcp.cpp:2357
 #, fuzzy, c-format
 msgid "%sSecure channel request from %s (%s) [Licq %s].\n"
 msgstr "%sЗапыт бясьпечнага каналу ад %s (%ld) [Licq %s].\n"
 
-#: src/icqd-tcp.cpp:2501
+#: src/icqd-tcp.cpp:2360
 #, fuzzy, c-format
 msgid "%sSecure channel request from %s (%s).\n"
 msgstr "%sЗапыт бясьпечнага каналу ад %s (%ld).\n"
 
-#: src/icqd-tcp.cpp:2526 src/icqd-tcp.cpp:2824
+#: src/icqd-tcp.cpp:2385 src/icqd-tcp.cpp:2676
 #, fuzzy, c-format
 msgid "%sSecure channel established with %s (%s).\n"
 msgstr "%sБясьпечны канал з %s (%ld) усталяваны.\n"
 
-#: src/icqd-tcp.cpp:2532
+#: src/icqd-tcp.cpp:2391
 #, fuzzy, c-format
 msgid ""
 "%sReceived secure channel request from %s (%s) but we do not support "
@@ -3454,17 +3448,17 @@ msgstr ""
 "%sАтрыман запыт на ўсталяваньне бясьпечнага каналу ад %s (%ld), але мы не "
 "падтрымліваем OpenSSL.\n"
 
-#: src/icqd-tcp.cpp:2559
+#: src/icqd-tcp.cpp:2418
 #, fuzzy, c-format
 msgid "%sSecure channel closed by %s (%s) [Licq %s].\n"
 msgstr "%sБясьпечны канал зачынены %s (%ld) [Licq %s].\n"
 
-#: src/icqd-tcp.cpp:2562
+#: src/icqd-tcp.cpp:2421
 #, fuzzy, c-format
 msgid "%sSecure channel closed by %s (%s).\n"
 msgstr "%sБясьпечны канал зачынены %s (%ld).\n"
 
-#: src/icqd-tcp.cpp:2575
+#: src/icqd-tcp.cpp:2434
 #, fuzzy, c-format
 msgid ""
 "%sReceived secure channel close from %s (%s) but we do not support OpenSSL.\n"
@@ -3472,85 +3466,85 @@ msgstr ""
 "%sАтрыман запыт на зачыненьне бясьпечнага каналу ад %s (%ld), але мы не "
 "падтрымліваем OpenSSL.\n"
 
-#: src/icqd-tcp.cpp:2712
+#: src/icqd-tcp.cpp:2568
 #, c-format
 msgid "%sUnknown direct ack ICBM plugin type: %s\n"
 msgstr "%sНевядомы прамы запыт тыпа ICBM-пашырэньня: %s\n"
 
-#: src/icqd-tcp.cpp:2785
+#: src/icqd-tcp.cpp:2637
 #, fuzzy, c-format
 msgid "%sSecure channel response from %s (%s)%s.\n"
 msgstr "%sАдказ па бясьпечнаму каналу ад %s (%ld)%s.\n"
 
-#: src/icqd-tcp.cpp:2793
+#: src/icqd-tcp.cpp:2645
 #, fuzzy, c-format
 msgid "%s%s (%s) does not support OpenSSL.\n"
 msgstr "%s%s (%ld) не падтрымлівае OpenSSL.\n"
 
-#: src/icqd-tcp.cpp:2808
+#: src/icqd-tcp.cpp:2660
 #, fuzzy, c-format
 msgid "%sSecure channel response from %s (%s) when no request in progress.\n"
 msgstr "%sАдказ па бясьпечнаму каналу ад %s (%ld) падчас адсутнасьці запыту.\n"
 
-#: src/icqd-tcp.cpp:2857
+#: src/icqd-tcp.cpp:2709
 #, fuzzy, c-format
 msgid "%sSecure channel with %s (%s) closed %s.\n"
 msgstr "%sБясьпечны канал з %s (%ld) зачынены %s.\n"
 
-#: src/icqd-tcp.cpp:2906
+#: src/icqd-tcp.cpp:2758
 #, c-format
 msgid "%sRefusal from %s (#%hu)%s.\n"
 msgstr "%sАдмова ад %s (#%hu)%s.\n"
 
-#: src/icqd-tcp.cpp:2916
+#: src/icqd-tcp.cpp:2768
 #, c-format
 msgid "%sAuto response from %s (#%hu)%s.\n"
 msgstr "%sАўтаматычны адказ ад %s (#%hu)%s.\n"
 
-#: src/icqd-tcp.cpp:2923 src/icqd-tcp.cpp:2932
+#: src/icqd-tcp.cpp:2775 src/icqd-tcp.cpp:2784
 #, c-format
 msgid "%sAck from %s (#%hu)%s.\n"
 msgstr "%sAck ад %s (#%hu)%s.\n"
 
-#: src/icqd-tcp.cpp:2937
+#: src/icqd-tcp.cpp:2789
 #, c-format
 msgid "%sReturned from %s (#%hu)%s.\n"
 msgstr "%sАдказ ад %s (#%hu)%s.\n"
 
-#: src/icqd-tcp.cpp:2942
+#: src/icqd-tcp.cpp:2794
 #, c-format
 msgid "%sCustom %s response from %s (#%hu)%s.\n"
 msgstr "%sкарыстальніцкі %s-адказ ад %s (#%hu)%s.\n"
 
-#: src/icqd-tcp.cpp:2943
+#: src/icqd-tcp.cpp:2795
 msgid "DnD"
 msgstr "НТ"
 
-#: src/icqd-tcp.cpp:2943 src/user.cpp:2744
+#: src/icqd-tcp.cpp:2795 src/user.cpp:2488
 msgid "Occupied"
 msgstr "Заняты"
 
-#: src/icqd-tcp.cpp:2981
+#: src/icqd-tcp.cpp:2833
 #, fuzzy, c-format
 msgid "%sChat request from %s (%s) cancelled.\n"
 msgstr "%sЗапыт размовы ад %s (%ld) скасаваны.\n"
 
-#: src/icqd-tcp.cpp:3007
+#: src/icqd-tcp.cpp:2859
 #, fuzzy, c-format
 msgid "%sFile transfer request from %s (%s) cancelled.\n"
 msgstr "%sЗапыт перадачы файла ад %s (%ld) скасаваны.\n"
 
-#: src/icqd-tcp.cpp:4146
+#: src/icqd-tcp.cpp:3972
 #, fuzzy, c-format
 msgid "%sConnection from %s (%s) [v%ld].\n"
 msgstr "%sЗлучэньне ад %s (%ld) [вэр.%ld].\n"
 
-#: src/icqd-tcp.cpp:4152
+#: src/icqd-tcp.cpp:3978
 #, fuzzy, c-format
 msgid "%sUser %s (%s) already has an associated socket.\n"
 msgstr "%sКарыстальнік %s (%ld) ужо мае адпаведны сокет.\n"
 
-#: src/icqd-tcp.cpp:4165
+#: src/icqd-tcp.cpp:3991
 #, fuzzy, c-format
 msgid "%sConnection from new user (%s) [v%ld].\n"
 msgstr "%sЗлучэньне ад новага карыстальніка (%ld) [вэр.%ld].\n"
@@ -3589,37 +3583,42 @@ msgstr ""
 msgid "%sSocket %d does not exist (#%hu).\n"
 msgstr "%sСокет %d няйснуе (#%hu).\n"
 
-#: src/icqd-threads.cpp:753
+#: src/icqd-threads.cpp:756
 #, c-format
 msgid "%sInvalid server socket in set.\n"
 msgstr "%sНяспраўны сокет паслужніка.\n"
 
 #: src/icqd-threads.cpp:793
+#, fuzzy, c-format
+msgid "%sInvalid BART service socket in set.\n"
+msgstr "%sНяспраўны сокет паслужніка.\n"
+
+#: src/icqd-threads.cpp:804
 #, c-format
 msgid "%sCan't process packet for service 0x%02X.\n"
 msgstr ""
 
-#: src/icqd-threads.cpp:802
+#: src/icqd-threads.cpp:813
 #, c-format
 msgid "%sCan't receive packet for service 0x%02X.\n"
 msgstr ""
 
-#: src/icqd-threads.cpp:819
+#: src/icqd-threads.cpp:830
 #, c-format
 msgid "%sInvalid server TCP socket in set.\n"
 msgstr "%sНяспраўны TCP-сокет паслужніка.\n"
 
-#: src/icqd-threads.cpp:833
+#: src/icqd-threads.cpp:843
 #, c-format
 msgid "%sToo many connected sockets, rejecting connection from %s.\n"
 msgstr ""
 
-#: src/icqd-threads.cpp:863
+#: src/icqd-threads.cpp:872
 #, fuzzy, c-format
 msgid "%sConnection to %s was closed.\n"
 msgstr "%sЗлучэньне з %lu зачынена.\n"
 
-#: src/icqd-threads.cpp:868
+#: src/icqd-threads.cpp:877
 #, fuzzy, c-format
 msgid ""
 "%sConnection to %s lost:\n"
@@ -3628,17 +3627,17 @@ msgstr ""
 "%sЗлучэньне з %lu згублена:\n"
 "%s%s.\n"
 
-#: src/icqd-threads.cpp:905
+#: src/icqd-threads.cpp:915
 #, fuzzy, c-format
 msgid "%sClosing connection to %s.\n"
 msgstr "%sЗачыняецца злучэньне з %lu.\n"
 
-#: src/icqd-threads.cpp:948
+#: src/icqd-threads.cpp:951
 #, c-format
 msgid "%sShutting down daemon.\n"
 msgstr "%sВыключэньне дэмана.\n"
 
-#: src/icqpacket.cpp:146
+#: src/icqpacket.cpp:152
 #, c-format
 msgid ""
 "%sUnencrypted Packet:\n"
@@ -3647,7 +3646,7 @@ msgstr ""
 "%sНязашыфраваны пакет:\n"
 "%s\n"
 
-#: src/icqpacket.cpp:206
+#: src/icqpacket.cpp:212
 #, c-format
 msgid ""
 "%sUnencrypted Packet (%lu bytes):\n"
@@ -3656,7 +3655,7 @@ msgstr ""
 "%sНязашыфраваны пакет (%lu байтаў):\n"
 "%s\n"
 
-#: src/icqpacket.cpp:367
+#: src/icqpacket.cpp:373
 #, c-format
 msgid ""
 "%sUnencrypted (ICQ) TCP Packet (%lu bytes):\n"
@@ -3665,7 +3664,7 @@ msgstr ""
 "%sНезашыфраваны (ICQ) TCP-пакет (%lu байтаў):\n"
 "%s\n"
 
-#: src/icqpacket.cpp:507
+#: src/icqpacket.cpp:513
 #, c-format
 msgid ""
 "%sDecrypted (ICQ) TCP Packet (%lu bytes):\n"
@@ -3674,17 +3673,17 @@ msgstr ""
 "%sРасшыфраваны (ICQ) TCP-пакет (%lu байтаў):\n"
 "%s\n"
 
-#: src/icqpacket.cpp:827 src/icqpacket.cpp:882
+#: src/icqpacket.cpp:824 src/icqpacket.cpp:879
 #, c-format
 msgid "%sPassword too long, truncated to 8 Characters!\n"
 msgstr "%sПароль занадта доўгі, абмяжоўваем 8 сымбалямі!\n"
 
-#: src/icqpacket.cpp:5125
+#: src/icqpacket.cpp:5114
 #, c-format
 msgid "%sCould not execute \"%s\" for auto-response.\n"
 msgstr "%sНе магчыма выканаць  \"%s\" дзеля аўтаматычнага адказу.\n"
 
-#: src/icqpacket.cpp:5140
+#: src/icqpacket.cpp:5129
 #, c-format
 msgid "%s%s returned abnormally: exit code %d\n"
 msgstr "%s%s завяршыўся з памылкай: код выхаду %d\n"
@@ -4033,12 +4032,12 @@ msgstr "%sLicq: Ужо запушчана з pid %d.\n"
 msgid "%sStarting plugin %s (version %s).\n"
 msgstr "%sЗапуск пашырэньня %s (вэрсія %s).\n"
 
-#: src/licq.cpp:1078
+#: src/licq.cpp:1077
 #, c-format
 msgid "%sStarting protocol plugin %s (version %s).\n"
 msgstr "%sЗапуск пашырэньня пратаколу %s (вэрсія %s).\n"
 
-#: src/licq.cpp:1106
+#: src/licq.cpp:1105
 #, c-format
 msgid ""
 "%sNo plugins specified on the command-line (-p option).\n"
@@ -4047,17 +4046,17 @@ msgstr ""
 "%sПашырэньні не вызначаны у камандным радку (опцыя -p).\n"
 "%sГлядзі README дзеля больш падрабязных зьвестак.\n"
 
-#: src/licq.cpp:1204 src/licq.cpp:1218
+#: src/licq.cpp:1203 src/licq.cpp:1217
 #, c-format
 msgid "%sPlugin %s exited with code %d.\n"
 msgstr "%sПашырэньне %s завершана з кодам %d.\n"
 
-#: src/licq.cpp:1231 src/licq.cpp:1245
+#: src/licq.cpp:1230 src/licq.cpp:1244
 #, c-format
 msgid "%sPlugin %s failed to exit.\n"
 msgstr "%sПашырэньне %s ня здолела завяршыцца.\n"
 
-#: src/licq.cpp:1260
+#: src/licq.cpp:1259
 #, c-format
 msgid ""
 "%s version %s.\n"
@@ -4102,7 +4101,7 @@ msgstr ""
 " -o : перанакіраваць вывад памылак у  <файл>, які можа быць прыладай "
 "(напрыклад /dev/ttyp4)\n"
 
-#: src/message.cpp:235
+#: src/message.cpp:227
 #, c-format
 msgid ""
 "File: %s (%lu bytes)\n"
@@ -4113,7 +4112,7 @@ msgstr ""
 "Апісаньне:\n"
 "%s\n"
 
-#: src/message.cpp:284
+#: src/message.cpp:276
 #, c-format
 msgid ""
 "Url: %s\n"
@@ -4124,7 +4123,7 @@ msgstr ""
 "Апісаньне:\n"
 "%s\n"
 
-#: src/message.cpp:374
+#: src/message.cpp:366
 #, c-format
 msgid ""
 "%s\n"
@@ -4137,11 +4136,11 @@ msgstr ""
 "Шмат-карыстальніцкі:\n"
 "%s"
 
-#: src/message.cpp:442 src/message.cpp:526
-#, c-format
+#: src/message.cpp:414 src/message.cpp:472
+#, fuzzy, c-format
 msgid ""
 "Alias: %s\n"
-"User: %s (%s)\n"
+"User: %s\n"
 "Name: %s %s\n"
 "Email: %s\n"
 msgstr ""
@@ -4150,7 +4149,7 @@ msgstr ""
 "імя: %s %s\n"
 "Пошта: %s\n"
 
-#: src/message.cpp:531
+#: src/message.cpp:476
 #, c-format
 msgid ""
 "Authorization Request:\n"
@@ -4159,17 +4158,17 @@ msgstr ""
 "Запыт аўтарызацыі:\n"
 "%s\n"
 
-#: src/message.cpp:602
-#, c-format
-msgid "User %s (%s) authorized you"
+#: src/message.cpp:528
+#, fuzzy, c-format
+msgid "User %s authorized you"
 msgstr "Карыстальнік %s (%s) Вас аўтарызаваў"
 
-#: src/message.cpp:671
-#, c-format
-msgid "User %s (%s) refused to authorize you"
+#: src/message.cpp:578
+#, fuzzy, c-format
+msgid "User %s refused to authorize you"
 msgstr "Карыстальнік  %s (%s) адмовіў Вам у аўтарызацыі"
 
-#: src/message.cpp:726
+#: src/message.cpp:629
 #, c-format
 msgid ""
 "Message from %s (%s) through web panel:\n"
@@ -4178,7 +4177,7 @@ msgstr ""
 "Паведамленьне ад %s (%s) праз вэб-панэль:\n"
 "%s\n"
 
-#: src/message.cpp:774
+#: src/message.cpp:677
 #, c-format
 msgid ""
 "Message from %s (%s) through email pager:\n"
@@ -4187,12 +4186,12 @@ msgstr ""
 "Паведамленьне ад %s (%s) праз паштовы пэйджар:\n"
 "%s\n"
 
-#: src/message.cpp:844
+#: src/message.cpp:738
 #, c-format
 msgid "Contact list (%d contacts):\n"
 msgstr "Сьпіс кантактаў (%d кантактаў):\n"
 
-#: src/message.cpp:925
+#: src/message.cpp:816
 #, c-format
 msgid ""
 "Phone: %s\n"
@@ -4201,7 +4200,7 @@ msgstr ""
 "Тэлефон: %s\n"
 "%s\n"
 
-#: src/message.cpp:996
+#: src/message.cpp:887
 #, c-format
 msgid ""
 "System Server Message from %s (%s):\n"
@@ -4210,7 +4209,7 @@ msgstr ""
 "Сыстэмнае паслужнікавае паведамленьне ад %s (%s):\n"
 "%s\n"
 
-#: src/message.cpp:1077
+#: src/message.cpp:968
 #, c-format
 msgid ""
 "New Email from %s (%s):\n"
@@ -4219,85 +4218,85 @@ msgstr ""
 "Новы ліст ад %s (%s):\n"
 "Тэма: %s\n"
 
-#: src/message.cpp:1186
+#: src/message.cpp:1075
 msgid "Plugin Event"
 msgstr "Здарэньне пашырэньня"
 
-#: src/message.cpp:1188
+#: src/message.cpp:1077
 msgid "Chat Request"
 msgstr "Запрашэньне да размовы"
 
-#: src/message.cpp:1189
+#: src/message.cpp:1078
 msgid "File Transfer"
 msgstr "Перадача файла"
 
-#: src/message.cpp:1192
+#: src/message.cpp:1081
 msgid "Authorization Request"
 msgstr "Запыт аўтарызацыі"
 
-#: src/message.cpp:1193
+#: src/message.cpp:1082
 msgid "AUthorization Refused"
 msgstr "Адмоўлена ў аўтарызацыі"
 
-#: src/message.cpp:1194
+#: src/message.cpp:1083
 msgid "Authorization Granted"
 msgstr "Аўтарызацыя дазволена"
 
-#: src/message.cpp:1195
+#: src/message.cpp:1084
 msgid "Server Message"
 msgstr "Паведамленьне з паслужніка"
 
-#: src/message.cpp:1198
+#: src/message.cpp:1087
 msgid "Added to Contact List"
 msgstr "Дададзены ў сьпіс кантактаў"
 
-#: src/message.cpp:1199
+#: src/message.cpp:1088
 msgid "Web Panel"
 msgstr "Вэб-панэль"
 
-#: src/message.cpp:1200
+#: src/message.cpp:1089
 msgid "Email Pager"
 msgstr "Паштовы пэйджар"
 
-#: src/message.cpp:1205
+#: src/message.cpp:1094
 msgid "Contact List"
 msgstr "Сьпіс кантактаў"
 
-#: src/message.cpp:1212
+#: src/message.cpp:1101
 msgid "SMS"
 msgstr "СМС"
 
-#: src/message.cpp:1223
+#: src/message.cpp:1112
 msgid "Unknown Event"
 msgstr "Невядомы выпадак"
 
-#: src/message.cpp:1228
+#: src/message.cpp:1117
 msgid " (cancelled)"
 msgstr "(спынена)"
 
-#: src/proxy.cpp:97
+#: src/proxy.cpp:94
 #, c-format
 msgid "proxy hostname resolution failure (%d)"
 msgstr "Памылка вызначэньня адраса проксі (%d)"
 
-#: src/proxy.cpp:103
+#: src/proxy.cpp:100
 msgid "No proxy error detected"
 msgstr "Памылкі проксі ня знойдзены"
 
-#: src/proxy.cpp:108
+#: src/proxy.cpp:105
 msgid "Internal proxy error"
 msgstr "Унутраная памылка проксі"
 
-#: src/proxy.cpp:113
+#: src/proxy.cpp:110
 msgid "Unknown proxy error"
 msgstr "Невядомая памылка проксі"
 
-#: src/proxy.cpp:353
+#: src/proxy.cpp:350
 #, c-format
 msgid "%sCould not parse HTTP status line from proxy\n"
 msgstr "%sНемагчыма разабраць радок стану HTTP з проксі\n"
 
-#: src/proxy.cpp:361
+#: src/proxy.cpp:358
 #, c-format
 msgid ""
 "%sHTTPS proxy return error code: %d, error string:\n"
@@ -4311,58 +4310,75 @@ msgstr ""
 msgid "%sLoading saved auto-responses.\n"
 msgstr "%sЗагружаем захаваныя аўтаматычныя адказы.\n"
 
-#: src/sighandler.c:73 src/sighandler.c:90 src/sighandler.c:230
+#: src/sighandler.c:72 src/sighandler.c:89 src/sighandler.c:229
 msgid "Unknown signal.\n"
 msgstr "Невядомы сыгнал.\n"
 
-#: src/sighandler.c:77
+#: src/sighandler.c:76
 msgid "Licq Segmentation Violation Detected.\n"
 msgstr "Выяўлена памылка сэгментацыі Licq.\n"
 
-#: src/sighandler.c:164
+#: src/sighandler.c:163
 #, c-format
 msgid "Backtrace (saved in %s):\n"
 msgstr "Адладачная пасьлядоўнасьць (захавана ў %s):\n"
 
-#: src/sighandler.c:172
+#: src/sighandler.c:171
 msgid "Failed to retrive backtrace symbols"
 msgstr ""
 
-#: src/sighandler.c:185
+#: src/sighandler.c:184
 msgid "Attempting to generate core file.\n"
 msgstr "Спрабуем стварыць файл адладкі.\n"
 
-#: src/socket.cpp:215
+#: src/socket.cpp:246
 #, c-format
 msgid "hostname resolution failure (%d)"
 msgstr "Памылка вызначэньня імя камп'ютара (%d)"
 
-#: src/socket.cpp:223
+#: src/socket.cpp:254
 msgid "DesX encryption/decryption failure"
 msgstr "Памылка (дэ)шыфраваньня DesX "
 
-#: src/socket.cpp:228
+#: src/socket.cpp:259
 msgid "No error detected"
 msgstr "Памылкі ня знойдзены"
 
-#: src/socket.cpp:233
+#: src/socket.cpp:264
 msgid "Internal error"
 msgstr "Унутраная памылка"
 
-#: src/socket.cpp:360
+#: src/socket.cpp:412
 #, c-format
 msgid ""
-"%sYour IP stack or SOCKS client is a piece of crap.\n"
-"%sAttempting to guess local IP.\n"
+"%sError when trying to resolve %s. getaddrinfo() returned %d\n"
+"."
 msgstr ""
-"%sВаш стэк  IP альбо SOCKS-кліент выглядаюць нестандартнымі.\n"
-"%sСпрабуем вызначыць дакальны адрас IP.\n"
 
-#: src/socket.cpp:672
+#: src/socket.cpp:431
+#, fuzzy, c-format
+msgid "%sConnecting to %s:%i...\n"
+msgstr "%sЗлучэньне з %s а %s:%d.\n"
+
+#: src/socket.cpp:445
+#, fuzzy, c-format
+msgid "%sFailed to set port range for socket.\n"
+msgstr "%sПерадача файла: Сокет ня йснуе.\n"
+
+#: src/socket.cpp:511
+#, fuzzy, c-format
+msgid ""
+"%sFailed to start local server using IPv6 socket (falling back to IPv4):\n"
+"%s%s\n"
+msgstr ""
+"%sНямагчыма стартаваць лякальны TCP-паслужнік:\n"
+"%s%s\n"
+
+#: src/socket.cpp:706
 msgid "server socket was closed!!!\n"
 msgstr "сокет на паслужніку зачынены!!!\n"
 
-#: src/socket.cpp:676
+#: src/socket.cpp:710
 #, c-format
 msgid ""
 "%serror during receiving from server socket :-((\n"
@@ -4371,65 +4387,34 @@ msgstr ""
 "%sпамылка падчас атрыманьня з сокета паслужніка :-((\n"
 "%s%s\n"
 
-#: src/socket.cpp:745
-#, c-format
-msgid "%sResolving %s port %d...\n"
-msgstr "%sВызначэньне %s порт %d...\n"
-
-#: src/socket.cpp:748
-#, c-format
-msgid ""
-"%sUnable to resolve %s:\n"
-"%s%s.\n"
-msgstr ""
-"%sНемагчыма вызначыць %s:\n"
-"%s%s.\n"
-
-#: src/socket.cpp:752
-#, c-format
-msgid "%sICQ server found at %s:%d.\n"
-msgstr "%sICQ-паслужнік знойдзены па адрасе %s:%d.\n"
-
-#: src/socket.cpp:763
-#, c-format
-msgid "%sOpening socket to server.\n"
-msgstr "%sАдчыненьне сокета да паслужніка.\n"
-
-#: src/socket.cpp:765
+#: src/socket.cpp:813
 #, fuzzy, c-format
-msgid "%sOpening socket to server %s:%d via proxy.\n"
-msgstr "%sАдчыненьне сокета да паслужніка.\n"
-
-#: src/socket.cpp:770
-#, c-format
 msgid ""
-"%sUnable to connect to %s:%d:\n"
-"%s%s.\n"
-msgstr ""
-"%sНемагчыма злучыцца з %s:%d:\n"
-"%s%s.\n"
+"%sCannot accept new connection:\n"
+"%s%s\n"
+msgstr "%sРазмова: Атрымана злучэньне.\n"
 
-#: src/socket.cpp:825
+#: src/socket.cpp:824
 #, c-format
 msgid "%sCannot accept new connection, too many descriptors in use.\n"
 msgstr ""
 
-#: src/user.cpp:554
+#: src/user.cpp:354
 #, c-format
 msgid "%sUser configuration.\n"
 msgstr "%sНаладкі карыстальнікаў.\n"
 
-#: src/user.cpp:645
+#: src/user.cpp:446
 #, c-format
 msgid "%sLoading %d users.\n"
 msgstr "%sЗагружаем %d карыстальнікаў.\n"
 
-#: src/user.cpp:660
+#: src/user.cpp:461
 #, c-format
 msgid "%sSkipping user %i, empty key.\n"
 msgstr "%sПрапускаем карыстальніка %i з-за пустога ключа.\n"
 
-#: src/user.cpp:668
+#: src/user.cpp:469
 #, c-format
 msgid ""
 "%sFatal error reading protocol information for User%d with ID '%s'.\n"
@@ -4439,27 +4424,27 @@ msgstr ""
 "нумарам '%s'.\n"
 "%sКалі ласка, праверце \"%s/users.conf\".\n"
 
-#: src/user.cpp:910
+#: src/user.cpp:846
 #, fuzzy, c-format
 msgid "%sGroup %s is already in list.\n"
 msgstr "%sГурт %s ужо ў сьпісе кантактаў.\n"
 
-#: src/user.cpp:934
+#: src/user.cpp:870
 #, fuzzy, c-format
 msgid "%sAdded group %s (%u) to list from server.\n"
 msgstr "%s %s (%s) Дададзены да сьпісу кантактаў з паслужніка.\n"
 
-#: src/user.cpp:1052
+#: src/user.cpp:990
 #, fuzzy, c-format
 msgid "%sGroup name %s is already in list.\n"
 msgstr "%sГурт %s ужо ў сьпісе кантактаў.\n"
 
-#: src/user.cpp:1059
+#: src/user.cpp:997
 #, fuzzy, c-format
 msgid "%sRenaming request for invalid group %u.\n"
 msgstr "%sДасылаем запыт на бясьпечны канал да %s (#%hu).\n"
 
-#: src/user.cpp:1815
+#: src/user.cpp:1624
 #, c-format
 msgid ""
 "%sFailed to rename old history file (%s):\n"
@@ -4468,16 +4453,12 @@ msgstr ""
 "%sНемагчыма перайменаваць стары файл гісторыі (%s):\n"
 "%s%s\n"
 
-#: src/user.cpp:1851 src/user.cpp:2773 src/user.cpp:2983 src/user.cpp:2994
-#: src/user.cpp:3009 src/user.cpp:3034
+#: src/user.cpp:1651 src/user.cpp:2517 src/user.cpp:2719 src/user.cpp:2730
+#: src/user.cpp:2745 src/user.cpp:2770
 msgid "Unknown"
 msgstr "Не вядома"
 
-#: src/user.cpp:1878
-msgid "<none>"
-msgstr "<адсутнічае>"
-
-#: src/user.cpp:2205
+#: src/user.cpp:1883
 #, c-format
 msgid ""
 "%sFailed to rename history file (%s):\n"
@@ -4486,165 +4467,165 @@ msgstr ""
 "%sПамылка перайменаваньня файла гісторыі (%s):\n"
 "%s%s.\n"
 
-#: src/user.cpp:2742
+#: src/user.cpp:2486
 msgid "(Offline)"
 msgstr "(Адключаны)"
 
-#: src/user.cpp:2742
+#: src/user.cpp:2486
 msgid "Offline"
 msgstr "Адключаны"
 
-#: src/user.cpp:2743
+#: src/user.cpp:2487
 msgid "(Do Not Disturb)"
 msgstr "(Не турбаваць)"
 
-#: src/user.cpp:2743
+#: src/user.cpp:2487
 msgid "Do Not Disturb"
 msgstr "Не турбаваць"
 
-#: src/user.cpp:2744
+#: src/user.cpp:2488
 msgid "(Occupied)"
 msgstr "(Заняты)"
 
-#: src/user.cpp:2745
+#: src/user.cpp:2489
 msgid "(Not Available)"
 msgstr "(Нядасягальны)"
 
-#: src/user.cpp:2745
+#: src/user.cpp:2489
 msgid "Not Available"
 msgstr "Нядасягальны"
 
-#: src/user.cpp:2746 src/user.cpp:2759
+#: src/user.cpp:2490 src/user.cpp:2503
 msgid "(Away)"
 msgstr "(Адсутнічаю)"
 
-#: src/user.cpp:2746 src/user.cpp:2759
+#: src/user.cpp:2490 src/user.cpp:2503
 msgid "Away"
 msgstr "Адсутнічаю"
 
-#: src/user.cpp:2747
+#: src/user.cpp:2491
 msgid "(Free for Chat)"
 msgstr "(Згодны размаўляць)"
 
-#: src/user.cpp:2747
+#: src/user.cpp:2491
 msgid "Free for Chat"
 msgstr "Згодны размаўляць"
 
-#: src/user.cpp:2748
+#: src/user.cpp:2492
 msgid "(Online)"
 msgstr "(У сетцы)"
 
-#: src/user.cpp:2748
+#: src/user.cpp:2492
 msgid "Online"
 msgstr "У сетцы"
 
-#: src/user.cpp:2755
+#: src/user.cpp:2499
 msgid "(Off)"
 msgstr "(Адкл)"
 
-#: src/user.cpp:2755
+#: src/user.cpp:2499
 msgid "Off"
 msgstr "Адкл"
 
-#: src/user.cpp:2756
+#: src/user.cpp:2500
 msgid "(DND)"
 msgstr "(НТ)"
 
-#: src/user.cpp:2756
+#: src/user.cpp:2500
 msgid "DND"
 msgstr "НТ"
 
-#: src/user.cpp:2757
+#: src/user.cpp:2501
 msgid "(Occ)"
 msgstr "(Зан)"
 
-#: src/user.cpp:2757
+#: src/user.cpp:2501
 msgid "Occ"
 msgstr "Зан"
 
-#: src/user.cpp:2758
+#: src/user.cpp:2502
 msgid "(N/A)"
 msgstr "(НД)"
 
-#: src/user.cpp:2758
+#: src/user.cpp:2502
 msgid "N/A"
 msgstr "НД"
 
-#: src/user.cpp:2760
+#: src/user.cpp:2504
 msgid "(FFC)"
 msgstr "(ЗР)"
 
-#: src/user.cpp:2760
+#: src/user.cpp:2504
 msgid "FFC"
 msgstr "ЗР"
 
-#: src/user.cpp:2761
+#: src/user.cpp:2505
 msgid "(On)"
 msgstr "(Акт)"
 
-#: src/user.cpp:2761
+#: src/user.cpp:2505
 msgid "On"
 msgstr "Акт"
 
-#: src/user.cpp:2813
+#: src/user.cpp:2557
 msgid "Invalid"
 msgstr "няспраўны"
 
-#: src/user.cpp:2985
+#: src/user.cpp:2721
 #, c-format
 msgid "GMT%c%i%c0"
 msgstr "GMT%c%i%c0"
 
-#: src/user.cpp:3024
+#: src/user.cpp:2760
 msgid "Never"
 msgstr "Ніколі"
 
-#: src/user.cpp:3058
+#: src/user.cpp:2794
 #, c-format
 msgid "%d days "
 msgstr "%d дні "
 
-#: src/user.cpp:3060
+#: src/user.cpp:2796
 #, c-format
 msgid "%d day "
 msgstr "%d дзень "
 
-#: src/user.cpp:3067
+#: src/user.cpp:2803
 #, c-format
 msgid "%d hours "
 msgstr "%d гадзіны "
 
-#: src/user.cpp:3069
+#: src/user.cpp:2805
 #, c-format
 msgid "%d hour "
 msgstr "%d гадзіна "
 
-#: src/user.cpp:3076
+#: src/user.cpp:2812
 #, c-format
 msgid "%d minutes"
 msgstr "%d хвілін"
 
-#: src/user.cpp:3078
+#: src/user.cpp:2814
 #, c-format
 msgid "%d minute"
 msgstr "%d хвіліна"
 
-#: src/user.cpp:3083
+#: src/user.cpp:2819
 msgid "Active"
 msgstr "Актыўны"
 
-#: src/user.cpp:3902
+#: src/user.cpp:3474
 #, c-format
 msgid "%sUnable to set %s to mode 0600.  Your ICQ password is vulnerable.\n"
 msgstr ""
 "%sНе магчыма ўсталяваць правы 0600 на %s .  Ваш ICQ-пароль пад пагрозай.\n"
 
-#: src/user.cpp:3937
+#: src/user.cpp:3502
 #, c-format
 msgid "%sOwner configuration for %s.\n"
 msgstr "%sНаладкі ўладальніка дзеля %s.\n"
 
-#: src/user.cpp:3945
+#: src/user.cpp:3510
 #, c-format
 msgid ""
 "%sCurrent Licq GMT offset (%d) does not match system GMT offset (%d).\n"
@@ -4675,6 +4656,53 @@ msgstr ""
 #: src/utility.cpp:138
 msgid "none"
 msgstr "адсутнічае"
+
+#~ msgid "%sUser %s already on contact list.\n"
+#~ msgstr "%sКарыстальнік %s ужо ў сьпісе кантактаў.\n"
+
+#~ msgid "%sMessage from new user (%s).\n"
+#~ msgstr "%sПаведамленьне ад новага гарыстальніка (%s).\n"
+
+#, fuzzy
+#~ msgid "%sOffline %s from new user (%s).\n"
+#~ msgstr "%s %s ад новага неактыўнага карыстальніка (%lu).\n"
+
+#~ msgid ""
+#~ "%sYour IP stack or SOCKS client is a piece of crap.\n"
+#~ "%sAttempting to guess local IP.\n"
+#~ msgstr ""
+#~ "%sВаш стэк  IP альбо SOCKS-кліент выглядаюць нестандартнымі.\n"
+#~ "%sСпрабуем вызначыць дакальны адрас IP.\n"
+
+#~ msgid "%sResolving %s port %d...\n"
+#~ msgstr "%sВызначэньне %s порт %d...\n"
+
+#~ msgid ""
+#~ "%sUnable to resolve %s:\n"
+#~ "%s%s.\n"
+#~ msgstr ""
+#~ "%sНемагчыма вызначыць %s:\n"
+#~ "%s%s.\n"
+
+#~ msgid "%sICQ server found at %s:%d.\n"
+#~ msgstr "%sICQ-паслужнік знойдзены па адрасе %s:%d.\n"
+
+#~ msgid "%sOpening socket to server.\n"
+#~ msgstr "%sАдчыненьне сокета да паслужніка.\n"
+
+#, fuzzy
+#~ msgid "%sOpening socket to server %s:%d via proxy.\n"
+#~ msgstr "%sАдчыненьне сокета да паслужніка.\n"
+
+#~ msgid ""
+#~ "%sUnable to connect to %s:%d:\n"
+#~ "%s%s.\n"
+#~ msgstr ""
+#~ "%sНемагчыма злучыцца з %s:%d:\n"
+#~ "%s%s.\n"
+
+#~ msgid "<none>"
+#~ msgstr "<адсутнічае>"
 
 #~ msgid "%sUser %lu already on contact list.\n"
 #~ msgstr "%sКарыстальнік %lu ужо ў сьпісе кантактаў.\n"
