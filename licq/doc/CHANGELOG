@@ -1,5 +1,33 @@
 Change log for Licq.
 
+New in 1.3.7
+o Various bugs in both Licq and plugins that caused crashes and hangings have been fixed. 
+o Build: Various fixes to make Licq and plugins compile cleaner. 
+o ICQ: Line breaks in received messages from some clients were lost. 
+o ICQ: Manually set aliases were sometimes lost during logon. 
+o ICQ: Files were left open after canceled transfers. 
+o MSN: Sometimes sockets were getting associated with the wrong conversation. 
+o Plugin API: Renamed ICQUser class to LicqUser. 
+o Plugin API: Introduced a user id data type to replace account+ppid. 
+o Plugin API: Introduced mutex guard classes for user and group objects. 
+o Plugin API: Added IPv6 support to socket class (currently not used by ICQ or MSN plugin). 
+o Plugin API: Various other changes and improvements. 
+o Qt4-Gui: Deleting a user caused the contact list to behave strange or even crash. 
+o Qt4-Gui: Moved Qt style setting from command line to settings dialog. 
+o Qt4-Gui: Moved skin and icon set selections to settings dialog. 
+o Qt4-Gui: Alt+1, Alt+2, etc in message dialog can be used to switch between tabs. 
+o Qt4-Gui: Made keyboard shortcuts configurable. 
+o Qt4-Gui: Several additional functions can be configured to have keyboard shortcuts. 
+o Qt4-Gui: Added option to disable sound for active message window. 
+o Qt4-Gui: Size of view event and send event dialogs are remembered. 
+o Qt4-Gui: Current group in contact list can be changed using scroll wheel on message field. 
+o Qt4-Gui: Shift+PgUp/PgDn in message input can be used to scroll history area. 
+o Qt4-Gui: Added spell checking support (using Hunspell) for message dialog. 
+o Qt4-Gui: Thread contact list can be split in online and offline parts (group mode 2). 
+
+Note: Hunspell is required to get spell checking support in Qt4-Gui.
+
+
 New in 1.3.6
 o Various bugs in both Licq and plugins that caused crashes have been fixed. 
 o Prevent DoS attack by adding limit to number of incoming connections accepted. 
