@@ -1373,7 +1373,7 @@ Siehe Netzwerkfenster für Details.</translation>
     <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="60"/>
         <source>Licq - GPG Key Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - GPG Schlüsselverwaltung</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="82"/>
@@ -1389,10 +1389,6 @@ Siehe Netzwerkfenster für Details.</translation>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="67"/>
         <source>Key ID</source>
         <translation>Schlüssel-ID</translation>
-    </message>
-    <message>
-        <source>Licq GPG Key Manager</source>
-        <translation type="obsolete">Licq GPG Schlüsselverwaltung</translation>
     </message>
     <message>
         <location filename="../src/dialogs/gpgkeymanager.cpp" line="83"/>
@@ -1465,7 +1461,7 @@ Der Schlüssel wird nicht von ihrem Schlüsselring entfernt.</translation>
     <message>
         <location filename="../src/core/groupmenu.cpp" line="67"/>
         <source>Rename</source>
-        <translation type="unfinished"></translation>
+        <translation>Umbenennen</translation>
     </message>
     <message>
         <location filename="../src/core/groupmenu.cpp" line="69"/>
@@ -1842,13 +1838,9 @@ Wollen sie die die alte Version laden?</translation>
 <context>
     <name>LicqQtGui::LogWindow</name>
     <message>
-        <source>Licq Network Log</source>
-        <translation type="obsolete">Licq-Netzwerkprotokoll</translation>
-    </message>
-    <message>
         <location filename="../src/dialogs/logwindow.cpp" line="58"/>
         <source>Licq - Network Log</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Netzwerkprotokoll</translation>
     </message>
     <message>
         <location filename="../src/dialogs/logwindow.cpp" line="137"/>
@@ -2303,7 +2295,7 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="69"/>
         <source>Licq - Plugin Manager</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Plugin-Verwaltung</translation>
     </message>
     <message>
         <location filename="../src/dialogs/plugindlg.cpp" line="83"/>
@@ -2354,17 +2346,9 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
         <source>Protocol Plugins</source>
         <translation>Protokoll-Plugins</translation>
     </message>
-    <message>
-        <source>Plugin Manager</source>
-        <translation type="obsolete">Plugin Verwaltung</translation>
-    </message>
 </context>
 <context>
     <name>LicqQtGui::RandomChatDlg</name>
-    <message>
-        <source>Random Chat Search</source>
-        <translation type="obsolete">Zufalls-Chat-Suche</translation>
-    </message>
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="61"/>
         <source>&amp;Search</source>
@@ -2443,7 +2427,7 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
     <message>
         <location filename="../src/dialogs/randomchatdlg.cpp" line="52"/>
         <source>Licq - Random Chat Search</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Zufalls-Chat-Suche</translation>
     </message>
 </context>
 <context>
@@ -2466,11 +2450,7 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
     <message>
         <location filename="../src/dialogs/refusedlg.cpp" line="67"/>
         <source>Licq - %1 Refusal</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Licq %1 Refusal</source>
-        <translation type="obsolete">Licq %1 Ablehnen</translation>
+        <translation>Licq - %1 Ablehnen</translation>
     </message>
 </context>
 <context>
@@ -3197,17 +3177,17 @@ Neue Zeilen werden mit Strg+Enter eingefügt.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="147"/>
         <source>Dictionary file:</source>
-        <translation type="unfinished"></translation>
+        <translation>Wörterbuchdatei:</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="148"/>
         <source>Dictionary file to use when checking spelling.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wörterbuchdatei, die für die Rechtschreibprüfung verwendet werden soll.</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="152"/>
         <source>*.dic|Dictionary files for Hunspell\/Myspell (*.dic)</source>
-        <translation type="unfinished"></translation>
+        <translation>*.dic|Wörterbuchdateien für Hunspell oder Myspell (*.dic)</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="163"/>
@@ -3613,12 +3593,12 @@ Benutzer immer anzeigen</translation>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="89"/>
         <source>Alternate threaded view</source>
-        <translation type="unfinished"></translation>
+        <translation>Alternative Gruppenansicht</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="90"/>
         <source>Separate online and offline users in threaded view</source>
-        <translation type="unfinished"></translation>
+        <translation>Trennt Online- und Offline-Benutzer in der Gruppenansicht</translation>
     </message>
     <message>
         <location filename="../src/settings/contactlist.cpp" line="119"/>
@@ -4570,7 +4550,7 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="81"/>
         <source>View user history</source>
-        <translation type="unfinished"></translation>
+        <translation>Zeige Verlauf für diesen Benutzer</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="83"/>
@@ -4801,14 +4781,6 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
         <translation>Skin</translation>
     </message>
     <message>
-        <source>Skin selection</source>
-        <translation type="obsolete">Skin-Auswahl</translation>
-    </message>
-    <message>
-        <source>Preview</source>
-        <translation type="obsolete">Vorschau</translation>
-    </message>
-    <message>
         <location filename="../src/settings/skin.cpp" line="111"/>
         <source>S&amp;kins:</source>
         <translation>S&amp;kins:</translation>
@@ -4819,17 +4791,9 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
         <translation>Benutzen Sie diese Auswahlbox, um aus den verfügbaren Skins zu wählen</translation>
     </message>
     <message>
-        <source>&amp;Icons:</source>
-        <translation type="obsolete">S&amp;ymbole:</translation>
-    </message>
-    <message>
         <location filename="../src/settings/skin.cpp" line="139"/>
         <source>Use this combo box to select one of the available icon sets</source>
         <translation>Benutzen Sie diese Auswahlbox, um aus den verfügbaren Symbolen zu wählen</translation>
-    </message>
-    <message>
-        <source>E&amp;xtended Icons:</source>
-        <translation type="obsolete">Er&amp;w. Symbole:</translation>
     </message>
     <message>
         <location filename="../src/settings/skin.cpp" line="160"/>
@@ -4837,27 +4801,19 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
         <translation>Benutzen Sie diese Auswahlbox, um aus den verfügbaren erweiterten Symbolen zu wählen</translation>
     </message>
     <message>
-        <source>E&amp;moticons:</source>
-        <translation type="obsolete">E&amp;moticons:</translation>
-    </message>
-    <message>
         <location filename="../src/settings/skin.cpp" line="181"/>
         <source>Use this combo box to select one of the available emoticon icon sets</source>
         <translation>Benutzen Sie diese Auswahlbox, um aus den verfügbaren Emoticons auszuwählen</translation>
     </message>
     <message>
-        <source>Skin:</source>
-        <translation type="obsolete">Skin:</translation>
-    </message>
-    <message>
         <location filename="../src/settings/skin.cpp" line="103"/>
         <source>Skin Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Skin-Auswahl</translation>
     </message>
     <message>
         <location filename="../src/settings/skin.cpp" line="105"/>
         <source>Icon Selection</source>
-        <translation type="unfinished"></translation>
+        <translation>Icon-Auswahl</translation>
     </message>
     <message>
         <location filename="../src/settings/skin.cpp" line="131"/>
@@ -5086,13 +5042,9 @@ Symbol-Paket &apos;%2&apos; wurde daher deaktiviert.</translation>
 <context>
     <name>LicqQtGui::SettingsDlg</name>
     <message>
-        <source>Licq Settings</source>
-        <translation type="obsolete">Licq Einstellungen</translation>
-    </message>
-    <message>
         <location filename="../src/settings/settingsdlg.cpp" line="63"/>
         <source>Licq - Settings</source>
-        <translation type="unfinished"></translation>
+        <translation>Licq - Einstellungen</translation>
     </message>
 </context>
 <context>
