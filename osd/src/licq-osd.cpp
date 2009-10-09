@@ -19,6 +19,7 @@
 #include <licq_file.h>
 #include <licq_log.h>
 
+#include "config.h"
 #include "my_xosd.h"
 #include "licq_osd.conf.h"
 

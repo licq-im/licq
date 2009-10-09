@@ -5,7 +5,7 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Licq 1.3.6\n"
+"Project-Id-Version: Licq\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
 "POT-Creation-Date: 2009-10-08 20:28+0200\n"
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
