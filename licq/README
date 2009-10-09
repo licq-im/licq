@@ -1,0 +1,24 @@
+      LICQ v1.3.7 README
+      http://www.licq.org/
+      #Licq on irc.freenode.net
+
+This is mostly a bugfix release but also contains several new features in the
+Qt4-Gui such as spell checking and configurable keyboard shortcuts.
+
+The old Qt-Gui is still available but should be considered deprecated as the
+Qt4-Gui is now stable and has all the same functionality (with exception of
+some KDE integration). No new features will be added to the Qt-Gui and it is
+likely to disappear entirely some time in the future, so if you haven't
+already switched to Qt4-Gui, we recommend you to try it and we hope that
+you'll like it as much as we do.
+
+For more information on what has changed since Licq 1.3.6, see doc/CHANGELOG.
+
+For general information on how to build and run Licq, see doc/README.
+For information about building and using the different plugins, see README or
+doc/README for the respective plugins.
+
+Enjoy this long awaited release and feel free to come by #Licq to get help,
+let us what you think, help others or just to keep us company.
+
+The Licq Team
