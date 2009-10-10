@@ -1,4 +1,6 @@
-<!DOCTYPE TS><TS>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0" language="de_DE">
 <context>
     <name>@default</name>
     <message>
@@ -295,7 +297,7 @@ See Network Window for details.</source>
         <translation>Datei E/A Fehler:
 %1
 
-Siehe Netzwerkfenster für Details</translation>
+Siehe Netzwerkfenster für Details.</translation>
     </message>
     <message>
         <source>File transfer cancelled.</source>
@@ -560,7 +562,7 @@ Siehe Netzwerkfenster für Details.</translation>
     </message>
     <message>
         <source>Send</source>
-        <translation>&amp;Senden</translation>
+        <translation>Senden</translation>
     </message>
     <message>
         <source>Online to User</source>
@@ -620,7 +622,7 @@ Sie müssen den Browser selbst starten und die URL in die Adressleiste kopieren.
     </message>
     <message>
         <source>Check %1 Response</source>
-        <translation>%1-Antwort &amp;lesen</translation>
+        <translation>%1-Antwort lesen</translation>
     </message>
     <message>
         <source>Server Group</source>
@@ -674,7 +676,7 @@ Sie müssen den Browser selbst starten und die URL in die Adressleiste kopieren.
     </message>
     <message>
         <source>Custom Auto Response...</source>
-        <translation>Spezielle &amp;Auto-Antwort...</translation>
+        <translation>Spezielle Auto-Antwort...</translation>
     </message>
     <message>
         <source>(Error! No owner set)</source>
@@ -686,7 +688,7 @@ Sie müssen den Browser selbst starten und die URL in die Adressleiste kopieren.
     </message>
     <message>
         <source>Remove From List</source>
-        <translation>Von &amp;Kontaktliste entfernen</translation>
+        <translation>Von Kontaktliste entfernen</translation>
     </message>
     <message>
         <source>System Message</source>
@@ -1312,11 +1314,11 @@ Doppelklick - Nächste Nachricht</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Ab&amp;brechen</translation>
+        <translation>Abbrechen</translation>
     </message>
     <message>
         <source>Refuse</source>
-        <translation>Ab&amp;lehnen</translation>
+        <translation>Ablehnen</translation>
     </message>
 </context>
 <context>
@@ -2171,7 +2173,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>&lt;qt&gt;Drag&amp;Drop user to add to list.&lt;/qt&gt;</source>
-        <translation>&lt;qt&gt;Ein Benutzer kann durch Ziehen und Ablegen zur Liste hinzugefügt werden&lt;/qt&gt;</translation>
+        <translation>&lt;qt&gt;Ein Benutzer kann durch Ziehen und Ablegen zur Liste hinzugefügt werden.&lt;/qt&gt;</translation>
     </message>
     <message>
         <source>Not yet implemented. Use licq_gpg.conf.</source>
@@ -2226,7 +2228,7 @@ the group &apos;%1&apos;?</source>
     </message>
     <message>
         <source>Select a GPG key for user %1.</source>
-        <translation>Bitte einen GPG-Schlüssel für den Benutzer %1 auswählen</translation>
+        <translation>Bitte einen GPG-Schlüssel für den Benutzer %1 auswählen.</translation>
     </message>
     <message>
         <source>Select GPG Key for user %1</source>
@@ -2514,8 +2516,8 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
         <translation>IP</translation>
     </message>
     <message>
-        <source><byte value="x9"/>to</source>
-        <translation><byte value="x9"/>bis</translation>
+        <source>	to</source>
+        <translation>	bis</translation>
     </message>
     <message>
         <source>&amp;OK</source>
@@ -5491,7 +5493,7 @@ Anfrage wurde abgebrochen.</translation>
     </message>
     <message>
         <source>&amp;View Info</source>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Informationen</translation>
     </message>
 </context>
 <context>
