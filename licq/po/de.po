@@ -18,6 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms:  nplurals=2; plural=(n != 1);\n"
+"X-Language: de_DE\n"
 
 #: src/buffer.cpp:381
 #, c-format
@@ -1802,12 +1803,12 @@ msgid "%sInvalid file transfer speed: %d%%.\n"
 msgstr "%sUngültige Übertragungsgeschwindigkeit: %d%%.\n"
 
 #: src/icqd-filetransfer.cpp:1175
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%sFile Transfer: select failed, aborting thread:\n"
 "%s%s\n"
 msgstr ""
-"%sDateiübertragung: Verbindung mit der Gegenstelle verloren:\n"
+"%sDateiübertragung: select fehlgeschlagen, breche Thread ab:\n"
 "%s%s\n"
 
 #: src/icqd-filetransfer.cpp:1212
@@ -2231,7 +2232,7 @@ msgid "%sRequesting list rights.\n"
 msgstr "%sRechte für Liste werden angefordert.\n"
 
 #: src/icqd-srv.cpp:2243
-#, fuzzy, c-format
+#, c-format
 msgid "%sRequesting roster rights.\n"
 msgstr "%sRechte für Liste werden angefordert.\n"
 
@@ -2652,7 +2653,7 @@ msgid "%sReceived end of contact list.\n"
 msgstr "%sEnde der Kontaktliste empfangen.\n"
 
 #: src/icqd-srv.cpp:4156
-#, fuzzy, c-format
+#, c-format
 msgid "%sActivating server contact list.\n"
 msgstr "%sAktivieren der serverseitigen Kontaktliste.\n"
 
@@ -3073,7 +3074,7 @@ msgid "%sReceived new uin: %lu\n"
 msgstr "%sNeue UIN erhalten: %lu\n"
 
 #: src/icqd-srv.cpp:6072
-#, fuzzy, c-format
+#, c-format
 msgid "%sSending md5 hashed password.\n"
 msgstr "%sSende MD5-verschlüsseltes Passwort.\n"
 
@@ -3622,9 +3623,9 @@ msgid "%sInvalid server socket in set.\n"
 msgstr "%sUngültiger Server Socket.\n"
 
 #: src/icqd-threads.cpp:793
-#, fuzzy, c-format
+#, c-format
 msgid "%sInvalid BART service socket in set.\n"
-msgstr "%sUngültiger Server Socket.\n"
+msgstr "%sUngültiger BART Service-Socket im Set.\n"
 
 #: src/icqd-threads.cpp:804
 #, c-format
@@ -4172,7 +4173,7 @@ msgstr ""
 "%s"
 
 #: src/message.cpp:414 src/message.cpp:472
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "Alias: %s\n"
 "User: %s\n"
@@ -4180,7 +4181,7 @@ msgid ""
 "Email: %s\n"
 msgstr ""
 "Spitzname: %s\n"
-"Benutzer: %s (%s)\n"
+"Benutzer: %s\n"
 "Name: %s %s\n"
 "Email: %s\n"
 
@@ -4194,14 +4195,14 @@ msgstr ""
 "%s\n"
 
 #: src/message.cpp:528
-#, fuzzy, c-format
+#, c-format
 msgid "User %s authorized you"
-msgstr "Benutzer %s (%s) hat Sie autorisiert."
+msgstr "Benutzer %s hat Sie autorisiert"
 
 #: src/message.cpp:578
-#, fuzzy, c-format
+#, c-format
 msgid "User %s refused to authorize you"
-msgstr "Benutzer %s (%s) hat Ihre Autorisation abgelehnt."
+msgstr "Benutzer %s hat Ihre Autorisation abgelehnt"
 
 #: src/message.cpp:629
 #, c-format
@@ -4391,22 +4392,23 @@ msgid ""
 msgstr ""
 
 #: src/socket.cpp:431
-#, fuzzy, c-format
+#, c-format
 msgid "%sConnecting to %s:%i...\n"
-msgstr "%sVerbindungsaufbau zu %s an %s:%d.\n"
+msgstr "%sVerbindungsaufbau zu %s:%i...\n"
 
 #: src/socket.cpp:445
-#, fuzzy, c-format
+#, c-format
 msgid "%sFailed to set port range for socket.\n"
-msgstr "%sDateiübertragung: Der Socket existiert nicht.\n"
+msgstr "%sKonnte Port für Socket nicht festlegen.\n"
 
 #: src/socket.cpp:511
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%sFailed to start local server using IPv6 socket (falling back to IPv4):\n"
 "%s%s\n"
 msgstr ""
-"%sLokaler TCP-Server lies sich nicht starten:\n"
+"%sKonnte lokalen Server mit IPv6 Socket nicht starten (schalte auf IPv4 "
+"um):\n"
 "%s%s\n"
 
 #: src/socket.cpp:706
@@ -4423,12 +4425,13 @@ msgstr ""
 "%s%s\n"
 
 #: src/socket.cpp:813
-#, fuzzy, c-format
+#, c-format
 msgid ""
 "%sCannot accept new connection:\n"
 "%s%s\n"
 msgstr ""
-"%sKann neue Verbindung nicht annehmen, zu viele Deskriptoren in Benutzung.\n"
+"%sKann neue Verbindung nicht annehmen:\n"
+"%s%s\n"
 
 #: src/socket.cpp:824
 #, c-format
@@ -4462,7 +4465,7 @@ msgstr ""
 "%sBitte überprüfe \"%s/users.conf\".\n"
 
 #: src/user.cpp:846
-#, fuzzy, c-format
+#, c-format
 msgid "%sGroup %s is already in list.\n"
 msgstr "%sGruppe %s ist bereits auf der Liste.\n"
 
@@ -4472,9 +4475,9 @@ msgid "%sAdded group %s (%u) to list from server.\n"
 msgstr "%s%s (%u) zur serverseitigen Kontaktliste hinzugefügt.\n"
 
 #: src/user.cpp:990
-#, fuzzy, c-format
+#, c-format
 msgid "%sGroup name %s is already in list.\n"
-msgstr "%sGruppe %s ist bereits auf der Liste.\n"
+msgstr "%sGruppenname %s ist bereits auf der Liste.\n"
 
 #: src/user.cpp:997
 #, c-format
