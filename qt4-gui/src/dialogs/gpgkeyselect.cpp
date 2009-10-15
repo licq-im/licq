@@ -21,6 +21,11 @@
 
 #include "config.h"
 
+// Needed by gpgme on 32 bit systems
+#ifndef _FILE_OFFSET_BITS
+#define _FILE_OFFSET_BITS 64
+#endif
+
 #include <cstring>
 #include <gpgme.h>
 
