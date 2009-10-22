@@ -703,10 +703,10 @@ void UserSendCommon::windowActivationChange(bool oldActive)
   QWidget::windowActivationChange(oldActive);
 }
 
-void UserSendCommon::changeEventType(int type)
+UserSendCommon* UserSendCommon::changeEventType(int type)
 {
   if (myType == type)
-    return;
+    return this;
 
   UserSendCommon* e = 0;
   QWidget* parent = 0;
@@ -767,7 +767,6 @@ void UserSendCommon::changeEventType(int type)
     }
 
     LicqGui::instance()->replaceEventDialog(this, e, userId);
-
     emit msgTypeChanged(this, e);
 
     if (parent == 0)
@@ -778,6 +777,7 @@ void UserSendCommon::changeEventType(int type)
     else
       tabDlg->replaceTab(this, e);
   }
+  return e;
 }
 
 void UserSendCommon::retrySend(const LicqEvent* e, bool online, unsigned short level)

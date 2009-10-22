@@ -87,7 +87,13 @@ signals:
   void eventSent(const LicqEvent* event);
 
 public slots:
-  void changeEventType(int type);
+  /**
+   * Convert dialog to a specified event type
+   *
+   * @param type Type of event to switch to
+   * @return Pointer to new window (if replaced), otherwise to this window
+   */
+  UserSendCommon* changeEventType(int type);
 
 protected:
   CICQColor myIcqColor;

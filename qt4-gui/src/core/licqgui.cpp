@@ -833,7 +833,7 @@ UserEventCommon* LicqGui::showEventDialog(int fcn, const UserId& userId, int con
         }
 
         // Make the existing event dialog change to the new event type
-        e->changeEventType(fcn);
+        e = e->changeEventType(fcn);
         return e;
       }
     }
