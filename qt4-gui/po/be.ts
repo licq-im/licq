@@ -1485,37 +1485,37 @@ The key isn&apos;t deleted from your keyring.</source>
 <context>
     <name>LicqQtGui::GPGKeySelect</name>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="61"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="66"/>
         <source>Select GPG Key for user %1</source>
         <translation>Вызначце GPG ключ адпаведна карыстальніку %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="66"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="71"/>
         <source>Select a GPG key for user %1.</source>
         <translation>Вызначце GPG ключ адпаведна карыстальніку %1.</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="69"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="74"/>
         <source>Current key: No key selected</source>
         <translation>Цякучы ключ: не абраны</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="71"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="76"/>
         <source>Current key: %1</source>
         <translation>Цякучы ключ: %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="74"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="79"/>
         <source>Use GPG Encryption</source>
         <translation>Выкарыстоўваць GPG шыфраваньне</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="81"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="86"/>
         <source>Filter:</source>
         <translation>Фільтр:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="102"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="107"/>
         <source>&amp;No Key</source>
         <translation>&amp;Без ключа</translation>
     </message>
@@ -1873,17 +1873,17 @@ Rebuild Licq with OpenSSL support.</source>
 <context>
     <name>LicqQtGui::KeyView</name>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
         <source>Name</source>
         <translation>Імя</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
         <source>EMail</source>
         <translation>Адрас</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
         <source>ID</source>
         <translation>ключ</translation>
     </message>

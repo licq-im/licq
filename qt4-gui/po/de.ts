@@ -1406,37 +1406,37 @@ Der Schlüssel wird nicht von ihrem Schlüsselring entfernt.</translation>
 <context>
     <name>LicqQtGui::GPGKeySelect</name>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="66"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="71"/>
         <source>Select a GPG key for user %1.</source>
         <translation>Bitte einen GPG-Schlüssel für den Benutzer %1 auswählen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="61"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="66"/>
         <source>Select GPG Key for user %1</source>
         <translation>Bitte einen GPG-Schlüssel für den Benutzer %1 auswählen</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="71"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="76"/>
         <source>Current key: %1</source>
         <translation>Aktueller Schlüssel: %1</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="69"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="74"/>
         <source>Current key: No key selected</source>
         <translation>Aktueller Schlüssel: Kein Schlüssel ausgewählt</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="74"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="79"/>
         <source>Use GPG Encryption</source>
         <translation>GPG-Verschlüsselung aktivieren</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="102"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="107"/>
         <source>&amp;No Key</source>
         <translation>&amp;Kein Schlüssel</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="81"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="86"/>
         <source>Filter:</source>
         <translation>Filter:</translation>
     </message>
@@ -1794,17 +1794,17 @@ verwenden. Dies wird wahrscheinlich nicht funktionieren.</translation>
 <context>
     <name>LicqQtGui::KeyView</name>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
         <source>EMail</source>
         <translation>E-Mail</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
         <source>ID</source>
         <translation>ID</translation>
     </message>
