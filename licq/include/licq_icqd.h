@@ -200,6 +200,14 @@ public:
   pthread_t *Shutdown();
   void SaveConf();
 
+  /**
+   * Check if GPG support is enabled
+   * This function allows plugins to check at runtime if GPG options are available
+   *
+   * @return True if GPG support is available in daemon
+   */
+  bool haveGpgSupport() const;
+
   // GUI Plugins call these now
   //! Add a user to the local contact list.
   /*!

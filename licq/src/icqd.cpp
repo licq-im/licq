@@ -876,6 +876,15 @@ void CICQDaemon::SaveConf()
   licqConf.FlushFile();
 }
 
+bool CICQDaemon::haveGpgSupport() const
+{
+#ifdef HAVE_LIBGPGME
+  return true;
+#else
+  return false;
+#endif
+}
+
 //++++++NOT MT SAFE+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 void CICQDaemon::SetTerminal(const char *s)  { SetString(&m_szTerminal, s); }
