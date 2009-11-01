@@ -21,13 +21,8 @@
 
 #include "config.h"
 
-// Needed by gpgme on 32 bit systems
-#ifndef _FILE_OFFSET_BITS
-#define _FILE_OFFSET_BITS 64
-#endif
-
 #include <cstring>
-#include <gpgme.h>
+#include <memory>
 
 #include <QCheckBox>
 #include <QDialogButtonBox>
@@ -38,12 +33,15 @@
 #include <QPushButton>
 #include <QVBoxLayout>
 
+#include <licq_gpg.h>
 #include <licq_user.h>
 #include <licq_events.h>
 
 #include "core/mainwin.h"
 
 #include "helpers/support.h"
+
+using namespace std;
 
 using namespace LicqQtGui;
 /* TRANSLATOR LicqQtGui::GPGKeySelect */
@@ -183,9 +181,6 @@ void GPGKeySelect::slotCancel()
   close();
 }
 
-gpgme_ctx_t mCtx;
-gpgme_key_t key;
-
 
 KeyView::KeyView(const UserId& userId, QWidget* parent)
   : QTreeWidget(parent),
@@ -252,48 +247,41 @@ void KeyView::testViewItem(QTreeWidgetItem* item, const LicqUser* u)
 
 void KeyView::initKeyList()
 {
-  gpgme_new(&mCtx);
-
-  const LicqUser* u = gUserManager.fetchUser(myUserId);
+  LicqUserReadGuard u(myUserId);
   maxItemVal = -1;
   maxItem = NULL;
 
-  int err = gpgme_op_keylist_start(mCtx, NULL, 0);
-
-  while (!err)
+  auto_ptr<list<GpgKey> > keyList(gGPGHelper.getKeyList());
+  list<GpgKey>::const_iterator i;
+  for (i = keyList->begin(); i != keyList->end(); ++i)
   {
-    err = gpgme_op_keylist_next(mCtx, &key);
-    if (err)
-      break;
-    gpgme_user_id_t uid = key->uids;
-    if (uid && key->can_encrypt && key->subkeys)
+    // There shouldn't be any key without a user id in list, but make just in case
+    if (i->uids.empty())
+      continue;
+
+    // First user id is primary uid
+    list<GpgUid>::const_iterator uid = i->uids.begin();
+
+    QStringList cols;
+    cols << QString::fromUtf8(uid->name.c_str());
+    cols << QString::fromUtf8(uid->email.c_str());
+    cols << QString(i->keyid.c_str()).right(8);
+    QTreeWidgetItem* keyItem = new QTreeWidgetItem(this, cols);
+    if (u.isLocked())
+      testViewItem(keyItem, *u);
+
+    ++uid;
+    for ( ;uid != i->uids.end(); ++uid)
     {
-      QStringList fColumns;
-      fColumns << QString::fromUtf8(uid->name);
-      fColumns << QString::fromUtf8(uid->email);
-      fColumns << QString(key->subkeys->keyid).right(8);
-      QTreeWidgetItem* f = new QTreeWidgetItem(this, fColumns);
-      if (u)
-        testViewItem(f, u);
-      uid = uid->next;
-      while (uid)
-      {
-        QStringList gColumns;
-        gColumns << QString::fromUtf8(uid->name);
-        gColumns << QString::fromUtf8(uid->email);
-        QTreeWidgetItem* g = new QTreeWidgetItem(f, gColumns);
-        if (u)
-          testViewItem(g, u);
-        uid = uid->next;
-      }
+      cols.clear();
+      cols << QString::fromUtf8(uid->name.c_str());
+      cols << QString::fromUtf8(uid->email.c_str());
+      QTreeWidgetItem* uidItem = new QTreeWidgetItem(keyItem, cols);
+      if (u.isLocked())
+        testViewItem(uidItem, *u);
     }
-    gpgme_key_release(key);
   }
 
-  if (u)
-    gUserManager.DropUser(u);
-
-  gpgme_release(mCtx);
   if (maxItem)
     setCurrentItem(maxItem);
 }

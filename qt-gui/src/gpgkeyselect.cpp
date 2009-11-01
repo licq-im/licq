@@ -25,13 +25,15 @@
 
 #include "gpgkeyselect.moc"
 
+#include <cstring>
+#include <memory>
+
 #include "mainwin.h"
 #include "userbox.h"
 
+#include <licq_gpg.h>
 #include <licq_user.h>
 #include <licq_events.h>
-
-#include <gpgme.h>
 
 #include <qheader.h>
 #include <qlabel.h>
@@ -39,6 +41,9 @@
 #include <qpushbutton.h>
 #include <qcheckbox.h>
 #include <qlineedit.h>
+
+using namespace std;
+
 
 GPGKeySelect::GPGKeySelect(const UserId& userId, QWidget *parent) : QDialog( parent )
 {
@@ -175,9 +180,6 @@ void GPGKeySelect::slotCancel()
   close();
 };
 
-gpgme_ctx_t mCtx;
-gpgme_key_t key;
-
 
 KeyView::KeyView(QWidget *parent, const UserId& userId)
   : QListView( parent )
@@ -241,38 +243,36 @@ void KeyView::testViewItem(QListViewItem *item, const LicqUser* u)
 
 void KeyView::initKeyList()
 {
-  gpgme_new( &mCtx );
-
-  const LicqUser* u = gUserManager.fetchUser(myUserId);
+  LicqUserReadGuard u(myUserId);
   maxItemVal = -1;
   maxItem = NULL;
 
-  int err = gpgme_op_keylist_start( mCtx, NULL, 0);
-
-  while ( !err)
+  auto_ptr<list<GpgKey> > keyList(gGPGHelper.getKeyList());
+  list<GpgKey>::const_iterator i;
+  for (i = keyList->begin(); i != keyList->end(); ++i)
   {
-    err = gpgme_op_keylist_next( mCtx, &key );
-    if ( err ) break;
-    gpgme_user_id_t uid = key->uids;
-    if ( uid && key->can_encrypt && key->subkeys )
+    // There shouldn't be any key without a user id in list, but make just in case
+    if (i->uids.empty())
+      continue;
+
+    // First user id is primary uid
+    list<GpgUid>::const_iterator uid = i->uids.begin();
+
+    QListViewItem* keyItem = new QListViewItem( this, QString::fromUtf8(uid->name.c_str()),
+        QString::fromUtf8(uid->email.c_str()), QString(i->keyid.c_str()).right(8) );
+    if (u.isLocked())
+      testViewItem(keyItem, *u);
+
+    ++uid;
+    for ( ;uid != i->uids.end(); ++uid)
     {
-      QListViewItem *f = new QListViewItem( this, QString::fromUtf8(uid->name), QString::fromUtf8(uid->email), QString( key->subkeys->keyid ).right(8) );
-      if ( u ) testViewItem( f, u );
-      uid = uid->next;
-      while ( uid )
-      {
-        QListViewItem *g = new QListViewItem( f, QString::fromUtf8(uid->name), QString::fromUtf8(uid->email) );
-        if ( u ) testViewItem( g, u );
-        uid = uid->next;
-      }
+      QListViewItem* uidItem = new QListViewItem(keyItem, QString::fromUtf8(uid->name.c_str()),
+          QString::fromUtf8(uid->email.c_str()));
+      if (u.isLocked())
+        testViewItem(uidItem, *u);
     }
-    gpgme_key_release (key);
   }
 
-  if ( u )
-    gUserManager.DropUser( u );
-  
-  gpgme_release( mCtx );
   if ( maxItem )
     setCurrentItem( maxItem );
 }
