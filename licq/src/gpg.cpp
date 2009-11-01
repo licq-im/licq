@@ -26,8 +26,8 @@ const char CGPGHelper::pgpSig[] = "-----BEGIN PGP MESSAGE-----";
 #ifdef HAVE_LIBGPGME
 static gpgme_ctx_t mCtx;
 static gpgme_error_t PassphraseCallback(void *, const char *, const char*, int, int);
-static char* mGPGPassphrase;
 #endif
+static char* mGPGPassphrase;
 
 
 CGPGHelper::CGPGHelper()
