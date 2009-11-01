@@ -73,9 +73,12 @@ UserView::~UserView()
 
 UserId UserView::currentUserId() const
 {
+  if (!currentIndex().isValid())
+    return USERID_NONE;
+
   if (static_cast<ContactListModel::ItemType>
       (currentIndex().data(ContactListModel::ItemTypeRole).toInt()) != ContactListModel::UserItem)
-    return 0;
+    return USERID_NONE;
 
   return currentIndex().data(ContactListModel::UserIdRole).value<UserId>();
 }
