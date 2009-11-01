@@ -30,6 +30,7 @@
 #include <QDateTime>
 #include <QDesktopWidget>
 #include <QDialogButtonBox>
+#include <QDropEvent>
 #include <QGroupBox>
 #include <QKeyEvent>
 #include <QLabel>
@@ -404,6 +405,9 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
   }
   myMessageEdit->installEventFilter(this); // Enables send with enter
 
+  // Disable drops for edit box so our own handler gets them
+  myMessageEdit->setAcceptDrops(false);
+
   if (Config::Chat::instance()->msgChatView())
   {
     myViewSplitter->setStretchFactor(myViewSplitter->indexOf(myHistoryView), 1);
@@ -441,6 +445,8 @@ UserSendCommon::UserSendCommon(int type, const UserId& userId, QWidget* parent, 
   QSize dialogSize = Config::Chat::instance()->sendDialogSize();
   if (dialogSize.isValid())
     resize(dialogSize);
+
+  setAcceptDrops(true);
 }
 
 UserSendCommon::~UserSendCommon()
@@ -1525,4 +1531,19 @@ void UserSendCommon::resizeEvent(QResizeEvent* event)
 {
   Config::Chat::instance()->setSendDialogSize(size());
   UserEventCommon::resizeEvent(event);
+}
+
+void UserSendCommon::dragEnterEvent(QDragEnterEvent* event)
+{
+  if (event->mimeData()->hasText() ||
+      event->mimeData()->hasUrls())
+    event->acceptProposedAction();
+}
+
+void UserSendCommon::dropEvent(QDropEvent* event)
+{
+  event->ignore();
+
+  if (LicqGui::instance()->userDropEvent(myUsers.front(), *event->mimeData()))
+    event->acceptProposedAction();
 }

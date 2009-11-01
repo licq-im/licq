@@ -186,6 +186,22 @@ protected slots:
   void messageTextChanged();
   void textChangedTimeout();
   void sendTrySecure();
+
+  /**
+   * A dragged object has entered this widget
+   * Overloaded to accept files, URLs and users to be sent by dragging them
+   *
+   * @param event The drag event
+   */
+  void dragEnterEvent(QDragEnterEvent* event);
+
+  /**
+   * A dragged object was dropped on this widget
+   * Overloaded to accept files, URLs and users to be sent by dragging them
+   *
+   * @param event The drop event
+   */
+  void dropEvent(QDropEvent* event);
 };
 
 } // namespace LicqQtGui

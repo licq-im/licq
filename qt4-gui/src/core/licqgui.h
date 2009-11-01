@@ -34,6 +34,8 @@
 
 #include <licq_types.h>
 
+class QMimeData;
+
 class CICQDaemon;
 class LicqEvent;
 
@@ -230,6 +232,16 @@ public slots:
    * @param userId User to open chat request dialog for
    */
   void sendChatRequest(const UserId& userId);
+
+  /**
+   * Act on object being dropped on a user
+   * This is a common function to handle drops both in contact list and in dialogs
+   *
+   * @param userId User data was dropped on
+   * @param mimeData Dropped data
+   * @return true if data was accepted
+   */
+  bool userDropEvent(const UserId& userId, const QMimeData& mimeData);
 
 signals:
   /**

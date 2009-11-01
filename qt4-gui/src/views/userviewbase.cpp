@@ -20,8 +20,6 @@
 
 #include "userviewbase.h"
 
-#include <QUrl>
-
 #include <licq_icqd.h>
 
 #include "contactlist/contactlist.h"
@@ -203,83 +201,10 @@ void UserViewBase::dropEvent(QDropEvent* event)
     {
       UserId userId = dropIndex.data(ContactListModel::UserIdRole).value<UserId>();
 
-      if (event->mimeData()->hasUrls())
-      {
-        QList<QUrl> urlList = event->mimeData()->urls();
-        QListIterator<QUrl> urlIter(urlList);
-        QString text;
-        QUrl firstUrl = urlIter.next();
+      // Drops for user is handled by common function
+      if (!LicqGui::instance()->userDropEvent(userId, *event->mimeData()))
+        return;
 
-        if (!(text = firstUrl.toLocalFile()).isEmpty())
-        {
-          UserSendFileEvent* sendFile = dynamic_cast<UserSendFileEvent*>(
-              LicqGui::instance()->showEventDialog(FileEvent, userId));
-          if (!sendFile)
-            return;
-
-          sendFile->setFile(text, QString::null);
-
-          // Add all the files
-          while (urlIter.hasNext())
-          {
-            if (!(text = urlIter.next().toLocalFile()).isEmpty())
-              sendFile->addFile(text);
-          }
-
-          sendFile->show();
-        }
-        else
-        {
-          UserSendUrlEvent* sendUrl = dynamic_cast<UserSendUrlEvent*>(
-              LicqGui::instance()->showEventDialog(UrlEvent, userId));
-          if (!sendUrl)
-            return;
-
-          sendUrl->setUrl(firstUrl.toString(), QString::null);
-          sendUrl->show();
-        }
-      }
-      else if (event->mimeData()->hasText())
-      {
-        QString text = event->mimeData()->text();
-
-        unsigned long dropPpid = 0;
-        FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
-        {
-          if (text.startsWith(PPIDSTRING((*_ppit)->PPID())))
-          {
-            dropPpid = (*_ppit)->PPID();
-            break;
-          }
-        }
-        FOR_EACH_PROTO_PLUGIN_END
-
-        if (dropPpid != 0 && text.length() > 4)
-        {
-          QString dropId = text.mid(4);
-          UserId dropUserId = LicqUser::makeUserId(dropId.toLatin1().data(), dropPpid);
-          if (!USERID_ISVALID(dropUserId) || userId == dropUserId)
-            return;
-
-          UserSendContactEvent* sendContact = dynamic_cast<UserSendContactEvent*>(
-              LicqGui::instance()->showEventDialog(ContactEvent, userId));
-          if (!sendContact)
-            return;
-
-          sendContact->setContact(dropUserId);
-          sendContact->show();
-        }
-        else
-        {
-          UserSendMsgEvent* sendMsg = dynamic_cast<UserSendMsgEvent*>(
-              LicqGui::instance()->showEventDialog(MessageEvent, userId));
-          if (!sendMsg)
-            return;
-
-          sendMsg->setText(text);
-          sendMsg->show();
-        }
-      }
       break;
     }
     case ContactListModel::GroupItem:

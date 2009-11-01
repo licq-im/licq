@@ -32,9 +32,11 @@
 #include <QDir>
 #include <QLibraryInfo>
 #include <QLocale>
+#include <QMimeData>
 #include <QSessionManager>
 #include <QStyle>
 #include <QTranslator>
+#include <QUrl>
 
 #ifdef USE_KDE
 #include <KDE/KStandardDirs>
@@ -42,7 +44,6 @@
 #include <KDE/KUrl>
 #else
 # include <QDesktopServices>
-# include <QUrl>
 #endif
 
 #if defined(Q_WS_X11)
@@ -960,6 +961,90 @@ void LicqGui::sendChatRequest(const UserId& userId)
   UserSendCommon* event = dynamic_cast<UserSendCommon*>(showEventDialog(ChatEvent, userId));
   if (event == 0)
     return;
+}
+
+bool LicqGui::userDropEvent(const UserId& userId, const QMimeData& mimeData)
+{
+  if (mimeData.hasUrls())
+  {
+    QList<QUrl> urlList = mimeData.urls();
+    QListIterator<QUrl> urlIter(urlList);
+    QString text;
+    QUrl firstUrl = urlIter.next();
+
+    if (!(text = firstUrl.toLocalFile()).isEmpty())
+    {
+      // Local file(s), open send file dialog
+      UserEventCommon* x = showEventDialog(FileEvent, userId);
+      UserSendFileEvent* sendFile = dynamic_cast<UserSendFileEvent*>(x);
+      if (!sendFile)
+        return false;
+
+      sendFile->setFile(text, QString::null);
+
+      // Add all the files
+      while (urlIter.hasNext())
+      {
+        if (!(text = urlIter.next().toLocalFile()).isEmpty())
+          sendFile->addFile(text);
+      }
+
+      sendFile->show();
+    }
+    else
+    {
+      // Not local file, open URL dialog
+      UserSendUrlEvent* sendUrl = dynamic_cast<UserSendUrlEvent*>(showEventDialog(UrlEvent, userId));
+      if (!sendUrl)
+        return false;
+
+      sendUrl->setUrl(firstUrl.toString(), QString::null);
+      sendUrl->show();
+    }
+  }
+  else if (mimeData.hasText())
+  {
+    // Text might be a user id
+
+    QString text = mimeData.text();
+
+    unsigned long dropPpid = 0;
+    FOR_EACH_PROTO_PLUGIN_START(gLicqDaemon)
+    {
+      if (text.startsWith(PPIDSTRING((*_ppit)->PPID())))
+      {
+        dropPpid = (*_ppit)->PPID();
+        break;
+      }
+    }
+    FOR_EACH_PROTO_PLUGIN_END
+
+    if (dropPpid != 0 && text.length() > 4)
+    {
+      QString dropId = text.mid(4);
+      UserId dropUserId = LicqUser::makeUserId(dropId.toLatin1().data(), dropPpid);
+      if (!USERID_ISVALID(dropUserId) || userId == dropUserId)
+        return false;
+
+      UserSendContactEvent* sendContact = dynamic_cast<UserSendContactEvent*>(showEventDialog(ContactEvent, userId));
+      if (!sendContact)
+        return false;
+
+      sendContact->setContact(dropUserId);
+      sendContact->show();
+    }
+    else
+    {
+      UserSendMsgEvent* sendMsg = dynamic_cast<UserSendMsgEvent*>(showEventDialog(MessageEvent, userId));
+      if (!sendMsg)
+        return false;
+
+      sendMsg->setText(text);
+      sendMsg->show();
+    }
+  }
+
+  return true;
 }
 
 void LicqGui::viewUrl(const QString& url)
