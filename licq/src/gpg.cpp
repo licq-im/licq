@@ -3,6 +3,9 @@
 #include "config.h"
 #endif
 
+#ifdef HAVE_LIBGPGME
+#include <gpgme.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 #include <unistd.h>
@@ -12,9 +15,19 @@
 #include "licq_log.h"
 #include <licq_user.h>
 
+using namespace std;
+
 CGPGHelper gGPGHelper;
 
 const char CGPGHelper::pgpSig[] = "-----BEGIN PGP MESSAGE-----";
+
+// These variables are local to the GPGHelper but are not in the header file
+// to reduce dependancies for other classes and plugins
+#ifdef HAVE_LIBGPGME
+static gpgme_ctx_t mCtx;
+static gpgme_error_t PassphraseCallback(void *, const char *, const char*, int, int);
+static char* mGPGPassphrase;
+#endif
 
 
 CGPGHelper::CGPGHelper()
@@ -148,6 +161,45 @@ char *CGPGHelper::Encrypt(const char *szPlain, const char *szId,
 #endif
 }
 
+list<GpgKey>* CGPGHelper::getKeyList() const
+{
+  list<GpgKey>* keyList = new list<GpgKey>();
+#ifdef HAVE_LIBGPGME
+  CGPGMEMutex mutex;
+  if (!mutex.Lock()) return keyList;
+
+  int err = gpgme_op_keylist_start(mCtx, NULL, 0);
+
+  while (err == 0)
+  {
+    gpgme_key_t key;
+    err = gpgme_op_keylist_next(mCtx, &key);
+    if (err)
+      break;
+    gpgme_user_id_t uid = key->uids;
+    if (uid && key->can_encrypt && key->subkeys)
+    {
+      GpgKey keyData;
+      keyData.keyid = key->subkeys->keyid;
+
+      while (uid != NULL)
+      {
+        if (uid->name != NULL && uid->email != NULL)
+        {
+          GpgUid uidData;
+          uidData.name = uid->name;
+          uidData.email = uid->email;
+          keyData.uids.push_back(uidData);
+        }
+        uid = uid->next;
+      }
+      keyList->push_back(keyData);
+    }
+    gpgme_key_release(key);
+  }
+#endif
+  return keyList;
+}
 
 void CGPGHelper::Start()
 {
@@ -173,10 +225,10 @@ void CGPGHelper::Start()
 }
 
 #ifdef HAVE_LIBGPGME
-gpgme_error_t CGPGHelper::PassphraseCallback(void *, const char *, const char *, int, int fd)
+gpgme_error_t PassphraseCallback(void *, const char *, const char *, int, int fd)
 {
   const char nl = '\n';
-  const char* const pf = gGPGHelper.mGPGPassphrase;
+  const char* const pf = mGPGPassphrase;
   if (pf == 0)
   {
     write(fd, &nl, 1);
