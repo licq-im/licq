@@ -99,10 +99,8 @@
     #include "dcopclient.h"
 #endif
 
-#ifdef HAVE_LIBGPGME
 #include "gpgkeyselect.h"
 #include "gpgkeymanager.h"
-#endif
 
 #include "xpm/history.xpm"
 #include "xpm/info.xpm"
@@ -118,10 +116,8 @@
 #include "xpm/pixCellular.xpm"
 #include "xpm/pixBirthday.xpm"
 #include "xpm/pixInvisible.xpm"
-#ifdef HAVE_LIBGPGME
-# include "xpm/pixKeyEnabled.xpm"
-# include "xpm/pixKeyDisabled.xpm"
-#endif
+#include "xpm/pixKeyEnabled.xpm"
+#include "xpm/pixKeyDisabled.xpm"
 #include "xpm/pixTyping.xpm"
 #include "xpm/pixICQphoneActive.xpm"
 #include "xpm/pixICQphoneBusy.xpm"
@@ -2518,11 +2514,9 @@ void CMainWindow::callUserFunction(int index)
       }
       break;
     }
-#ifdef HAVE_LIBGPGME
     case mnuUserSelectGPGKey:
       new GPGKeySelect(myMenuUserId);
       break;
-#endif
     case mnuUserHistory:
     case mnuUserGeneral:
       callInfoTab(index, myMenuUserId);
@@ -3659,7 +3653,6 @@ void CMainWindow::slot_miscmodes(int _nId)
     u->SetAutoSecure( !u->AutoSecure() );
     break;
   case 7:
-#ifdef HAVE_LIBGPGME
     if ( strcmp(u->GPGKey(),"")!=0 )
       u->SetUseGPG( !u->UseGPG() );
     else
@@ -3669,7 +3662,6 @@ void CMainWindow::slot_miscmodes(int _nId)
         new GPGKeySelect(myMenuUserId);
     }
     break;
-#endif
   case 8:
     u->SetSendRealIp( !u->SendRealIp() );
     break;
@@ -4022,7 +4014,6 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
    if (pmSharedFiles.isNull())
      pmSharedFiles = QPixmap(pixSharedFiles_xpm);
 
-#ifdef HAVE_LIBGPGME
    fIconsConf.ReadStr("GPGKeyEnabled", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmGPGKeyEnabled.load(sFilepath);
@@ -4034,7 +4025,6 @@ void CMainWindow::ApplyExtendedIcons(const char *_sIconSet, bool _bInitial)
    pmGPGKeyDisabled.load(sFilepath);
    if (pmGPGKeyDisabled.isNull())
      pmGPGKeyDisabled = QPixmap(pixKeyDisabled_xpm);
-#endif
 
    if (!_bInitial)
    {
@@ -4221,12 +4211,10 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmSearch.load(sFilepath);
 
-#ifdef HAVE_LIBGPGME
    fIconsConf.ReadStr("GPGKey", sFilename, "");
    snprintf(sFilepath, MAX_FILENAME_LEN - 1, "%s%s", sIconPath, sFilename);
    pmGPGKey.load(sFilepath);
    if(pmGPGKey.isNull()) pmGPGKey = QPixmap(pixKeyEnabled_xpm);
-#endif
 
    if (!_bInitial)
    {
@@ -4255,9 +4243,7 @@ void CMainWindow::ApplyIcons(const char *_sIconSet, bool _bInitial)
      mnuUserAdm->changeItem(MNU_USER_ADM_SEARCH_USER, pmSearch, tr("S&earch for User"));
      mnuUserAdm->changeItem(MNU_USER_ADM_AUTHORIZE_USER, pmAuthorize, tr("A&uthorize User"));
      mnuUserAdm->changeItem(MNU_USER_ADM_REQUEST_AUTH, pmReqAuthorize, tr("Re&quest Authorization"));
-#ifdef HAVE_LIBGPGME
      mnuSystem->changeItem(pmGPGKey, tr("&GPG Key Manager..."), MNU_SYS_GPG);
-#endif
      CUserView::UpdateFloaties();
      updateUserWin();
      updateEvents();
@@ -4380,9 +4366,9 @@ void CMainWindow::initMenu()
    mnuSystem->insertItem(tr("&Options..."), this, SLOT(popupOptionsDlg()), 0, MNU_SYS_OPTIONS);
    mnuSystem->insertItem(tr("S&kin Browser..."), this, SLOT(showSkinBrowser()), 0, MNU_SYS_SKINBROWSER);
    mnuSystem->insertItem(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()), 0, MNU_SYS_PLUGINS);
-#ifdef HAVE_LIBGPGME
-   mnuSystem->insertItem(pmGPGKey, tr("&GPG Key Manager..."), this, SLOT(showGPGKeyManager()), 0, MNU_SYS_GPG);
-#endif
+   int sysgpgid = mnuSystem->insertItem(pmGPGKey, tr("&GPG Key Manager..."), this, SLOT(showGPGKeyManager()), 0, MNU_SYS_GPG);
+   if (!licqDaemon->haveGpgSupport())
+     mnuSystem->setItemVisible(sysgpgid, false);
    mnuSystem->insertSeparator();
    mnuSystem->insertItem(tr("Sa&ve Settings"), this, SLOT(saveOptions()));
    mnuSystem->insertItem(tr("&Help"), mnuHelp);
@@ -4461,9 +4447,9 @@ void CMainWindow::initMenu()
    mnuUser->insertItem(tr("Edit User Group"), mnuGroup);
    mnuUser->insertItem(pmRemove, tr("Remove From List"), mnuUserRemoveFromList);
    mnuUser->insertSeparator();
-#ifdef HAVE_LIBGPGME
-   mnuUser->insertItem(pmGPGKey, tr("Set GPG key"), mnuUserSelectGPGKey );
-#endif
+   int usergpgid = mnuUser->insertItem(pmGPGKey, tr("Set GPG key"), mnuUserSelectGPGKey );
+   if (!licqDaemon->haveGpgSupport())
+     mnuUser->setItemVisible(usergpgid, false);
    mnuUser->insertItem(pmHistory, tr("View &History"), mnuUserHistory);
    mnuUser->insertItem(pmInfo, tr("&Info"), mnuUserGeneral);
    connect (mnuUser, SIGNAL(activated(int)), this, SLOT(callUserFunction(int)));
@@ -4695,9 +4681,7 @@ void CMainWindow::showSkinBrowser()
 
 void CMainWindow::showGPGKeyManager()
 {
-#ifdef HAVE_LIBGPGME
   ( new GPGKeyManager() )->show();
-#endif
 }
 
 void CMainWindow::showPluginDlg()

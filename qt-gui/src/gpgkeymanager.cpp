@@ -21,8 +21,6 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_LIBGPGME
-
 #include <qheader.h>
 #include <qdragobject.h>
 #include <qgroupbox.h>
@@ -348,5 +346,3 @@ void KeyListItem::unsetKey()
 }
 
 #include "gpgkeymanager.moc"
-
-#endif

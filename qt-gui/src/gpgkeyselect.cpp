@@ -21,8 +21,6 @@
 #include "config.h"
 #endif
 
-#ifdef HAVE_LIBGPGME
-
 #include "gpgkeyselect.moc"
 
 #include <cstring>
@@ -276,5 +274,3 @@ void KeyView::initKeyList()
   if ( maxItem )
     setCurrentItem( maxItem );
 }
-
-#endif
