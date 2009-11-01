@@ -118,16 +118,6 @@ set(LIBRARIES ${LIBRARIES}
   ${QT_QTGUI_LIBRARY}
   ${QT_QTXML_LIBRARY})
 
-
-# Optional check for gpgme
-find_package(gpgme)
-if (GPGME_FOUND)
-  set(HAVE_LIBGPGME 1)
-  add_definitions(${GPGME_DEFINITIONS})
-  include_directories(${GPGME_INCLUDE_DIRS})
-  set(LIBRARIES ${LIBRARIES} ${GPGME_LIBRARIES})
-endif (GPGME_FOUND)
-
 # Check for boost, used in Licq includes so we must have it
 find_package(Boost 1.31.1 COMPONENTS smart_ptr)
 link_directories ( ${Boost_LIBRARY_DIRS} )

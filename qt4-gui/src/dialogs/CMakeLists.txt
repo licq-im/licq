@@ -12,6 +12,8 @@ set(dialogs_SRCS
   editgrpdlg.cpp
   filedlg.cpp
   forwarddlg.cpp
+  gpgkeymanager.cpp
+  gpgkeyselect.cpp
   hintsdlg.cpp
   historydlg.cpp
   joinchatdlg.cpp
@@ -33,11 +35,6 @@ set(dialogs_SRCS
   userselectdlg.cpp
   utilitydlg.cpp
 )
-
-# GPG specific stuff
-if (GPGME_FOUND)
-  list(APPEND dialogs_SRCS gpgkeymanager.cpp gpgkeyselect.cpp)
-endif (GPGME_FOUND)
 
 string(REGEX REPLACE ".cpp" ".h" dialogs_HDRS "${dialogs_SRCS}")
 

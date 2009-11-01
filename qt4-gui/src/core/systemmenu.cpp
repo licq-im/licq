@@ -47,9 +47,7 @@
 #include "dialogs/reqauthdlg.h"
 #include "dialogs/searchuserdlg.h"
 #include "dialogs/securitydlg.h"
-#ifdef HAVE_LIBGPGME
 #include "dialogs/gpgkeymanager.h"
-#endif
 
 #include "helpers/licqstrings.h"
 #include "settings/settingsdlg.h"
@@ -208,9 +206,9 @@ SystemMenu::SystemMenu(QWidget* parent)
   myShowEmptyGroupsAction->setCheckable(true);
   myOptionsAction = addAction(tr("S&ettings..."), this, SLOT(showSettingsDlg()));
   myPluginManagerAction = addAction(tr("&Plugin Manager..."), this, SLOT(showPluginDlg()));
-#ifdef HAVE_LIBGPGME
   myKeyManagerAction = addAction(tr("GPG &Key Manager..."), this, SLOT(showGPGKeyManager()));
-#endif
+  if (!gLicqDaemon->haveGpgSupport())
+    myKeyManagerAction->setVisible(false);
   addSeparator();
   mySaveOptionsAction = addAction(tr("Sa&ve Settings"), LicqGui::instance(), SLOT(saveConfig()));
   addMenu(myHelpMenu);
@@ -253,9 +251,7 @@ void SystemMenu::updateIcons()
 {
   IconManager* iconman = IconManager::instance();
 
-#ifdef HAVE_LIBGPGME
   myKeyManagerAction->setIcon(iconman->getIcon(IconManager::GpgKeyIcon));
-#endif
 
   myUserSearchAction->setIcon(iconman->getIcon(IconManager::SearchIcon));
   myUserAutorizeAction->setIcon(iconman->getIcon(IconManager::AuthorizeMessageIcon));
@@ -545,9 +541,7 @@ void SystemMenu::showPluginDlg()
 
 void SystemMenu::showGPGKeyManager()
 {
-#ifdef HAVE_LIBGPGME
   new GPGKeyManager();
-#endif
 }
 
 

@@ -143,9 +143,7 @@ private:
     ModeAutoFileAccept,
     ModeAutoChatAccept,
     ModeAutoSecure,
-#ifdef HAVE_LIBGPGME
     ModeUseGpg,
-#endif
     ModeUseRealIp,
     ModeStatusOnline,
     ModeStatusAway,
@@ -161,9 +159,7 @@ private:
   QAction* myCustomArAction;
   QAction* myToggleFloatyAction;
   QAction* myRemoveUserAction;
-#ifdef HAVE_LIBGPGME
   QAction* mySetKeyAction;
-#endif
   QAction* myCopyIdAction;
   QAction* myViewHistoryAction;
   QAction* myViewGeneralAction;

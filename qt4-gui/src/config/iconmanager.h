@@ -61,10 +61,8 @@ public:
     CollapsedIcon,
     CustomArIcon,
     ExpandedIcon,
-#ifdef HAVE_LIBGPGME
     GpgKeyDisabledIcon,
     GpgKeyEnabledIcon,
-#endif
     IcqPhoneActiveIcon,
     IcqPhoneBusyIcon,
     InvisibleIcon,
@@ -77,9 +75,7 @@ public:
     // Menu icons
     RemoveIcon,
     SearchIcon,
-#ifdef HAVE_LIBGPGME
     GpgKeyIcon,
-#endif
 
     // Toolbar icons
     BackColorIcon,

@@ -55,10 +55,8 @@
 #include "xpm/exticons/cellular.xpm"
 #include "xpm/exticons/collapsed.xpm"
 #include "xpm/exticons/expanded.xpm"
-#ifdef HAVE_LIBGPGME
 #include "xpm/exticons/gpgoff.xpm"
 #include "xpm/exticons/gpgon.xpm"
-#endif
 #include "xpm/exticons/invisible.xpm"
 #include "xpm/exticons/phone.xpm"
 #include "xpm/exticons/sharedfiles.xpm"
@@ -166,9 +164,7 @@ bool IconManager::loadIcons(const QString& iconSet)
   // Menu icons
   LOAD2_ICON("Remove",          RemoveIcon, remove_xpm);
   LOAD2_ICON("Search",          SearchIcon, search_xpm);
-#ifdef HAVE_LIBGPGME
   LOAD2_ICON("GPGKey",          GpgKeyIcon, gpgon_xpm);
-#endif
 
   // Toolbar icons
   LOAD2_ICON("BackColor",       BackColorIcon, bgcolor_xpm);
@@ -240,10 +236,8 @@ bool IconManager::loadExtendedIcons(const QString& iconSet)
   LOAD_ICON("Collapsed",            CollapsedIcon, collapsed_xpm);
   LOAD_ICON("CustomAR",             CustomArIcon, autoresponse_xpm);
   LOAD_ICON("Expanded",             ExpandedIcon, expanded_xpm);
-#ifdef HAVE_LIBGPGME
   LOAD_ICON("GPGKeyDisabled",       GpgKeyDisabledIcon, gpgoff_xpm);
   LOAD_ICON("GPGKeyEnabled",        GpgKeyEnabledIcon, gpgon_xpm);
-#endif
   LOAD_ICON("ICQphoneActive",       IcqPhoneActiveIcon, ICQphoneActive_xpm);
   LOAD_ICON("ICQphoneBusy",         IcqPhoneBusyIcon, ICQphoneBusy_xpm);
   LOAD_ICON("Invisible",            InvisibleIcon, invisible_xpm);

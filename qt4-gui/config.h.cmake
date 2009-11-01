@@ -13,9 +13,6 @@
 /* Existence of some headers */
 #cmakedefine HAVE_LOCALE_H 1
 
-/* Define if GPGME is available */
-#cmakedefine HAVE_LIBGPGME 1
-
 /* Define if Hunspell is available */
 #cmakedefine HAVE_HUNSPELL 1
 

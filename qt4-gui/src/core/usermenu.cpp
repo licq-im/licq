@@ -99,9 +99,9 @@ UserMenu::UserMenu(QWidget* parent)
   ADD_MISCMODE(tr("Auto Accept Files"), ModeAutoFileAccept)
   ADD_MISCMODE(tr("Auto Accept Chats"), ModeAutoChatAccept)
   ADD_MISCMODE(tr("Auto Request Secure"), ModeAutoSecure)
-#ifdef HAVE_LIBGPGME
   ADD_MISCMODE(tr("Use GPG Encryption"), ModeUseGpg)
-#endif
+  if (!gLicqDaemon->haveGpgSupport())
+    a->setVisible(false);
   ADD_MISCMODE(tr("Use Real Ip (LAN)"), ModeUseRealIp)
   myMiscModesMenu->addSeparator();
   ADD_MISCMODE(tr("Online to User"), ModeStatusOnline)
@@ -158,9 +158,9 @@ UserMenu::UserMenu(QWidget* parent)
   addMenu(myGroupsMenu);
   myRemoveUserAction = addAction(tr("Remove From List"), this, SLOT(removeContact()));
   addSeparator();
-#ifdef HAVE_LIBGPGME
   mySetKeyAction = addAction(tr("Set GPG key"), this, SLOT(selectKey()));
-#endif
+  if (!gLicqDaemon->haveGpgSupport())
+    mySetKeyAction->setVisible(false);
   myCopyIdAction = addAction(tr("&Copy User ID"), this, SLOT(copyIdToClipboard()));
   myViewHistoryAction = addAction(tr("View &History"), this, SLOT(viewHistory()));
   myViewGeneralAction = addAction(tr("&Info"), this, SLOT(viewInfoGeneral()));
@@ -188,9 +188,7 @@ void UserMenu::updateIcons()
 
   myCustomArAction->setIcon(iconman->getIcon(IconManager::CustomArIcon));
   myRemoveUserAction->setIcon(iconman->getIcon(IconManager::RemoveIcon));
-#ifdef HAVE_LIBGPGME
   mySetKeyAction->setIcon(iconman->getIcon(IconManager::GpgKeyIcon));
-#endif
   myViewHistoryAction->setIcon(iconman->getIcon(IconManager::HistoryIcon));
   myViewGeneralAction->setIcon(iconman->getIcon(IconManager::InfoIcon));
 }
@@ -249,9 +247,7 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeAutoChatAccept]->setChecked(u->AutoChatAccept());
   myMiscModesActions[ModeAutoSecure]->setChecked(u->AutoSecure());
   myMiscModesActions[ModeAutoSecure]->setEnabled(gLicqDaemon->CryptoEnabled());
-#ifdef HAVE_LIBGPGME
   myMiscModesActions[ModeUseGpg]->setChecked(u->UseGPG());
-#endif
   myMiscModesActions[ModeUseRealIp]->setChecked(u->SendRealIp());
   myMiscModesActions[ModeStatusOnline]->setChecked(u->StatusToUser() == ICQ_STATUS_ONLINE);
   myMiscModesActions[ModeStatusAway]->setChecked(u->StatusToUser() == ICQ_STATUS_AWAY);
@@ -398,9 +394,7 @@ void UserMenu::removeContact()
 
 void UserMenu::selectKey()
 {
-#ifdef HAVE_LIBGPGME
   new GPGKeySelect(myUserId);
-#endif
 }
 
 void UserMenu::copyIdToClipboard()
@@ -511,7 +505,6 @@ void UserMenu::toggleMiscMode(QAction* action)
       u->SetAutoSecure(newState);
       break;
 
-#ifdef HAVE_LIBGPGME
     case ModeUseGpg:
     {
       if (strcmp(u->GPGKey(), "") != 0)
@@ -528,7 +521,6 @@ void UserMenu::toggleMiscMode(QAction* action)
       LicqGui::instance()->updateUserData(myUserId);
       return;
     }
-#endif
 
     case ModeUseRealIp:
       u->SetSendRealIp(newState);

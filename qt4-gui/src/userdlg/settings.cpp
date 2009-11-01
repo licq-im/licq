@@ -97,11 +97,11 @@ QWidget* UserPages::Settings::createPageSettings(QWidget* parent)
   myAutoSecureCheck->setToolTip(tr("Automatically request secure channel to this contact."));
   mySettingsLayout->addWidget(myAutoSecureCheck, 2, 1);
 
-#ifdef HAVE_LIBGPGME
   myUseGpgCheck = new QCheckBox(tr("Use GPG encryption"));
   myUseGpgCheck->setToolTip(tr("Use GPG encryption for messages with this contact."));
   mySettingsLayout->addWidget(myUseGpgCheck, 3, 1);
-#endif
+  if (!gLicqDaemon->haveGpgSupport())
+    myUseGpgCheck->setVisible(false);
 
   myUseRealIpCheck = new QCheckBox(tr("Use real ip (LAN)"));
   myUseRealIpCheck->setToolTip(tr("Use real IP for when sending to this contact."));
@@ -240,9 +240,7 @@ void UserPages::Settings::load(const LicqUser* user)
   myAutoAcceptFileCheck->setChecked(user->AutoFileAccept());
   myAutoAcceptChatCheck->setChecked(user->AutoChatAccept());
   myAutoSecureCheck->setChecked(user->AutoSecure());
-#ifdef HAVE_LIBGPGME
   myUseGpgCheck->setChecked(user->UseGPG());
-#endif
   myUseRealIpCheck->setChecked(user->SendRealIp());
 
   unsigned short statusToUser = user->StatusToUser();
@@ -336,9 +334,7 @@ void UserPages::Settings::apply(LicqUser* user)
   user->SetAutoFileAccept(myAutoAcceptFileCheck->isChecked());
   user->SetAutoChatAccept(myAutoAcceptChatCheck->isChecked());
   user->SetAutoSecure(myAutoSecureCheck->isChecked());
-#ifdef HAVE_LIBGPGME
   user->SetUseGPG(myUseGpgCheck->isChecked());
-#endif
   user->SetSendRealIp(myUseRealIpCheck->isChecked());
 
   // Set status to user

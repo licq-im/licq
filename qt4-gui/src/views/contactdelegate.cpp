@@ -467,7 +467,6 @@ void ContactDelegate::drawExtIcons(Parameters& arg) const
       EXTICON(ContactListModel::BirthdayStatus, IconManager::BirthdayIcon);
       EXTICON(ContactListModel::InvisibleStatus, IconManager::InvisibleIcon);
 
-#ifdef HAVE_LIBGPGME
       // pmGPGKey
       if (arg.extStatus & ContactListModel::GpgKeyStatus)
       {
@@ -476,7 +475,6 @@ void ContactDelegate::drawExtIcons(Parameters& arg) const
         else
           drawExtIcon(arg, IconManager::GpgKeyDisabledIcon);
       }
-#endif
 
       if (arg.status != ContactListModel::OfflineStatus)
       {
