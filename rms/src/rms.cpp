@@ -1030,7 +1030,7 @@ int CRMSClient::Process_LIST()
 
   FOR_EACH_USER_START(LOCK_R)
   {
-    if (pUser->GetInGroup(GROUPS_USER, nGroup) &&
+    if (pUser->GetInGroup(nGroup == 0 ? GROUPS_SYSTEM : GROUPS_USER, nGroup) &&
         ((pUser->StatusOffline() && n&2) || (!pUser->StatusOffline() && n&1)))
     {
       ubuf = pUser->usprintf(format);
