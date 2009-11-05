@@ -49,6 +49,10 @@ ContactListModel::ContactListModel(QObject* parent)
     connectGroup(mySystemGroups[i]);
   }
 
+  // reloadAll will compare column count to old value so must set an initial
+  // value before calling
+  myColumnCount = Config::ContactList::instance()->columnCount();
+
   // Get the entire contact list from the daemon
   reloadAll();
 
