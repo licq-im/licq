@@ -249,7 +249,7 @@ function getUserStuff($packet) {
 		$i--;
 	}
 	$nick = strrev($nick);
-	$nick = kses(trim($nick));
+	$nick = kses(trim($nick), array());
 
 	// Now we have a user, lets build a list struct then display the list
 	$user = array('id' => $id, 'nick' => $nick, 'newmsgs' => $newmsgs, 'status' => $status, 'pp' => $pp);

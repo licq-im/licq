@@ -400,10 +400,9 @@ function doLogin(uin, password) {
 		login = "&uin=" + uin + "&password=" + password;
 	}
 	xmlhttp.open("GET", baseurl + "/push.php?listtype=" + listtype + login, true);
-	xmlhttp.onload = acceptResponse;
+	xmlhttp.onreadystatechange = acceptResponse;
 	xmlhttp.send(null);
 	document.getElementById('login').style.display = 'none';
-	document.getElementById('newsid').style.display = 'none';
 	document.getElementById('contactList').style.display = 'block';
 }
 
