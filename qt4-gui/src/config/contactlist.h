@@ -183,6 +183,7 @@ public slots:
   // Toggle functions for convenience
   void toggleShowOffline() { setShowOffline(!myShowOffline); }
   void toggleThreadView() { setThreadView(!myThreadView); }
+  void toggleShowHeader() { setShowHeader(!myShowHeader); }
 
 signals:
   /**

@@ -222,6 +222,9 @@ SystemMenu::SystemMenu(QWidget* parent)
   myHideMainwinAction = new QAction("Hide Mainwindow", gMainWindow);
   gMainWindow->addAction(myHideMainwinAction);
   connect(myHideMainwinAction, SIGNAL(triggered()), gMainWindow, SLOT(hide()));
+  myShowHeaderAction = new QAction("Show Column Headers", gMainWindow);
+  gMainWindow->addAction(myShowHeaderAction);
+  connect(myShowHeaderAction, SIGNAL(triggered()), Config::ContactList::instance(), SLOT(toggleShowHeader()));
 
   updateGroups();
   updateIcons();
@@ -320,6 +323,7 @@ void SystemMenu::updateShortcuts()
   myUserPopupAllAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinPopupAllMessages));
   myEditGroupsAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinEditGroups));
   myRedrawContactListAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinRedrawContactList));
+  myShowHeaderAction->setShortcut(shortcuts->getShortcut(Config::Shortcuts::MainwinToggleShowHeader));
 }
 
 void SystemMenu::addOwner(unsigned long ppid)

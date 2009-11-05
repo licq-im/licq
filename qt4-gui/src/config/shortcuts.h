@@ -87,6 +87,7 @@ public:
     MainwinStatusOnline,
     MainwinToggleEmptyGroups,
     MainwinToggleMiniMode,
+    MainwinToggleShowHeader,
     MainwinToggleShowOffline,
     MainwinToggleThreadView,
     MainwinUserCheckAutoresponse,

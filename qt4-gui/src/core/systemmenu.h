@@ -170,6 +170,7 @@ private:
   // Actions not on menu
   QAction* myPopupMessageAction;
   QAction* myHideMainwinAction;
+  QAction* myShowHeaderAction;
 
   // Actions on status menu
   QAction* myStatusOnlineAction;
