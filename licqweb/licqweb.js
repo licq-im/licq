@@ -59,7 +59,8 @@ function Message(id, pp, uid, message) {
 
 //callback for server push reponses
 function acceptResponse() {
-	if (xmlhttp.readyState == 4) {
+  if (xmlhttp.readyState == 4 && xmlhttp.responseXML != null)
+  {
 		if (xmlhttp.status == 200) {
 			response = xmlhttp.responseXML.documentElement;
 			method = response.getElementsByTagName('method')[0].firstChild.data;
@@ -355,9 +356,10 @@ function showSelectStatus(e, id, pp) {
 		statushtml += "<div onclick=\"changeStatus('" + pp + "', '" + statuss[pp][i] + "')\"><img src=\"images/" + pp.toLowerCase() + "." + statuss[pp][i].toLowerCase() + ".png\">" + statuss[pp][i] + "</div>";
 	}
 	statusMenu.innerHTML = statushtml;
-	statusMenu.style.left = e.pageX;
-	statusMenu.style.top = e.pageY;
+  statusMenu.style.left = e.pageX + 'px';
+  statusMenu.style.top = e.pageY + 'px';
 	statusMenu.style.display = 'block';
+  if (dragwin.win != null)
 	statusMenu.style.zIndex = ++dragwin.win.style.zIndex; //fix this
 }
 
