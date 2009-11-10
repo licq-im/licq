@@ -154,6 +154,22 @@ textarea {
 	padding: 1em;
 }
 
+.msgText
+{
+  color: #000000;
+}
+
+.msgDate
+{
+  color: #FF0000;
+}
+
+.msgNick
+{
+  color: #0000FF;
+  font-weight: bold;
+}
+
 .logWindow {
 	background-color: #aaf;
 	position: absolute;

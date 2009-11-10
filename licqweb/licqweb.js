@@ -116,9 +116,11 @@ function viewEvent(response) {
 	var txtdiv = document.getElementById(id + '-' + pp + '-txt');
 	var messages = response.getElementsByTagName('message');
 	var times = response.getElementsByTagName('time');
-	for (var i = 0; i < messages.length; ++i) {
-		txtdiv.innerHTML += '(' + times[i].firstChild.data + ') ' + contacts[pp][id].nick + ': ' + messages[i].firstChild.data + "<br/>";
-	}
+  for (var i = 0; i < messages.length; ++i)
+    txtdiv.innerHTML += '(<span class="msgDate">' + times[i].firstChild.data
+        + '</span>) <span class="msgNick">' + contacts[pp][id].nick
+        + '</span>: <span class="msgText">' + messages[i].firstChild.data
+        + "</span><br/>";
 	txtdiv.scrollTop = txtdiv.scrollHeight;
 }
 
@@ -251,11 +253,10 @@ function ackSendMessage(response) {
 	var ts = response.getElementsByTagName('datetime')[0].firstChild.data;
 	var message = ackMessages[uid];
 	var txt = document.getElementById(message.id + '-' + message.pp + '-txt');
-	if (res == "done.") {
-		txt.innerHTML += "(" + ts + ") " + nick + ": " + message.message.replace(/[\r\n]+/g, "<br/>") + "<br/>";
-	} else {
+  if (res == "done.")
+    txt.innerHTML += "(<span class=\"msgDate\">" + ts + "</span>) <span class=\"msgNick\">" + nick + "</span>: <span class=\"msgText\">" + message.message.replace(/[\r\n]+/g, "<br/>") + "</span><br/>";
+  else
 		txt.innerHTML += "--- Message failed!<br/>";
-	}
 	txt.scrollTop = txt.scrollHeight;
 	document.getElementById(message.id + '-' + message.pp + '-input').disabled = false;
 	delete ackMessages[uid];
