@@ -169,7 +169,7 @@ function sortContacts() {
 			} else {
 				pp = contact.pp.toLowerCase();
 			}
-			var imgsrc = "images/" + pp + "." + contact.status.toLowerCase() + ".png";
+      var imgsrc = "images/" + pp + "." + contact.status.toLowerCase().replace(/ /g,"") + ".png";
 			if (parseInt(contact.nummsgs) > 0) {
 				uclass = "newmessage";
 				imgsrc = "images/msg.png";
@@ -317,10 +317,9 @@ function newMessage(response) {
 			document.getElementById(key + '-i').src = "images/msg.png";
 		} else {
 			document.getElementById(key + '-s').className = contacts[pp][id].status;
-			document.getElementById(key + '-i').src = "images/" + pp.toLowerCase() + "." + contacts[pp][id].status.toLowerCase() + '.png';
-		}
-	} else {
-	}
+      document.getElementById(key + '-i').src = "images/" + pp.toLowerCase() + "." + contacts[pp][id].status.toLowerCase().replace(/ /g,"") + '.png';
+    }
+  }
 	window.parent.document.title = 'licq - ' + totalMessages + " messages";
 	sortContacts();
 }
@@ -341,20 +340,19 @@ function setOwnerInfo(response) {
 
 function _updateOwners() {
 	var statushtml = "";
-	for (var pp in owners) {
-		statushtml += "<img onclick=\"showSelectStatus(event, '" + owners[pp].id + "', '" + pp + "'); return false\" src=\"images/" + pp.toLowerCase() + "." + owners[pp].status.toLowerCase() + ".png\"/> ";
-	}
+  for (var pp in owners)
+    statushtml += "<img onclick=\"showSelectStatus(event, '" + owners[pp].id + "', '" + pp + "'); return false\" src=\"images/" + pp.toLowerCase() + "." + owners[pp].status.toLowerCase().replace(/ /g,"") + ".png\"/> ";
 	document.getElementById('ownerStatus').innerHTML = statushtml;
 }
 
 function showSelectStatus(e, id, pp) {
 	var statusMenu = document.getElementById('statusMenu');
 	var statuss = new Array();
-	statuss["Licq"] = new Array('Online', 'Away', 'Occupied', 'DoNotDisturb', 'NotAvailable', 'Offline');
+  statuss["Licq"] = new Array('Online', 'Away', 'Occupied', 'Do Not Disturb', 'Not Available', 'Offline');
 	statuss["MSN"] = new Array('Online', 'Away', 'Occupied', 'Offline');
 	var statushtml = "";
 	for (var i = 0; i < statuss[pp].length; ++i) {
-		statushtml += "<div onclick=\"changeStatus('" + pp + "', '" + statuss[pp][i] + "')\"><img src=\"images/" + pp.toLowerCase() + "." + statuss[pp][i].toLowerCase() + ".png\">" + statuss[pp][i] + "</div>";
+    statushtml += "<div onclick=\"changeStatus('" + pp + "', '" + statuss[pp][i] + "')\"><img src=\"images/" + pp.toLowerCase() + "." + statuss[pp][i].toLowerCase().replace(/ /g,"") + ".png\">" + statuss[pp][i] + "</div>";
 	}
 	statusMenu.innerHTML = statushtml;
   statusMenu.style.left = e.pageX + 'px';
@@ -369,7 +367,7 @@ function changeStatus(pp, status) {
 	xmlhttp2.onreadystatechange = acceptResponse2;
 	xmlhttp2.open("POST", baseurl + "/changeStatus.php", true);
 	xmlhttp2.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-	xmlhttp2.send('pp=' + pp + '&status=' + escape(status));
+  xmlhttp2.send('pp=' + pp + '&status=' + escape(status.replace(/ /g,"")));
 	document.getElementById('statusMenu').style.display = 'none';
 }
 
