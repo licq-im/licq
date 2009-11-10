@@ -349,8 +349,8 @@ function _updateOwners() {
 function showSelectStatus(e, id, pp) {
 	var statusMenu = document.getElementById('statusMenu');
 	var statuss = new Array();
-	statuss["Licq"] = new Array('Online', 'Away', 'Occupied', 'DoNotDisturb', 'NotAvailable');
-	statuss["MSN"] = new Array('Online', 'Away', 'Occupied');
+	statuss["Licq"] = new Array('Online', 'Away', 'Occupied', 'DoNotDisturb', 'NotAvailable', 'Offline');
+	statuss["MSN"] = new Array('Online', 'Away', 'Occupied', 'Offline');
 	var statushtml = "";
 	for (var i = 0; i < statuss[pp].length; ++i) {
 		statushtml += "<div onclick=\"changeStatus('" + pp + "', '" + statuss[pp][i] + "')\"><img src=\"images/" + pp.toLowerCase() + "." + statuss[pp][i].toLowerCase() + ".png\">" + statuss[pp][i] + "</div>";
