@@ -459,10 +459,8 @@ document.onmousemove = positionToolTip
 var dragwin = new Object();
 dragwin.zIndex = 0;
 
-function init_drag(event, id) {
-	var el;
-	var x, y;
-
+function init_drag(event, id)
+{
 	dragwin.win = document.getElementById(id);
 
 	dragwin.startX = event.clientX + window.scrollX;
