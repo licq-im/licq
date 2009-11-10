@@ -7,6 +7,7 @@ class CUserEvent;
 
 typedef std::list<CUserEvent *> HistoryList;
 typedef std::list<CUserEvent *>::iterator HistoryListIter;
+typedef std::list<CUserEvent *>::reverse_iterator HistoryListRIter;
 
 class CUserHistory
 {

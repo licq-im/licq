@@ -21,6 +21,7 @@ extern int errno;
 #include <licq_constants.h>
 #include <licq_icqd.h>
 #include <licq_file.h>
+#include <licq_history.h>
 #include <licq_log.h>
 #include <licq_socket.h>
 #include <licq_user.h>
@@ -64,6 +65,7 @@ const unsigned short CODE_SECURExCLOSE = 227;
 const unsigned short CODE_SECURExSTAT = 228;
 const unsigned short CODE_NOTIFYxON = 229;
 const unsigned short CODE_NOTIFYxOFF = 230;
+const unsigned short CODE_HISTORYxEND = 231;
 const unsigned short CODE_VIEWxUNKNOWN = 299;
 // 300 - further action required
 const unsigned short CODE_ENTERxUIN = 300;
@@ -116,6 +118,8 @@ static struct Command commands[] =
     "Show list of groups." },
   { "HELP", &CRMSClient::Process_HELP,
     "Print out help on commands." },
+  { "HISTORY", &CRMSClient::Process_HISTORY,
+    "View history of specific user { <id>[.<protocol>] [<length>] [<offset>]}." },
   { "INFO", &CRMSClient::Process_INFO,
     "Print out user information.  Argument is the id and protocol, or none for personal." },
   { "LIST", &CRMSClient::Process_LIST,
@@ -535,6 +539,7 @@ unsigned long CRMSClient::GetProtocol(const char *szData)
  *-------------------------------------------------------------------------*/
 void CRMSClient::ParseUser(const char *szData)
 {
+  myUserId = USERID_NONE;
   string strData(szData);
   string::size_type nPos= strData.find_last_of(".");
   if (nPos == string::npos)
@@ -968,6 +973,74 @@ int CRMSClient::Process_GROUPS()
   return fflush(fs);
 }
 
+int CRMSClient::Process_HISTORY()
+{
+  char* s = strtok(data_arg, " ");
+  if (s == NULL)
+  {
+    fprintf(fs, "%d Invalid User.\n", CODE_INVALIDxUSER);
+    return fflush(fs);
+  }
+  ParseUser(s);
+
+  int length = 10;
+  s = strtok(NULL, " ");
+  if (s != NULL)
+    length = atoi(s);
+
+  int offset = 0;
+  s = strtok(NULL, " ");
+  if (s != NULL)
+    offset = atoi(s);
+
+  HistoryList history;
+  string userAlias;
+  string ownerAlias = "me";
+
+  {
+    LicqUserReadGuard u(myUserId);
+    if (!u.isLocked())
+    {
+      fprintf(fs, "%d Invalid User (%s).\n", CODE_INVALIDxUSER, USERID_TOSTR(myUserId));
+      return fflush(fs);
+    }
+    if (!u->GetHistory(history))
+    {
+      fprintf(fs, "%d Cannot load history file.\n", CODE_EVENTxERROR);
+      return fflush(fs);
+    }
+
+    if (u->User())
+    {
+      userAlias = u->getAlias();
+      const LicqOwner* o = gUserManager.FetchOwner(u->ppid(), LOCK_R);
+      if (o != NULL)
+      {
+        ownerAlias = o->getAlias();
+        gUserManager.DropOwner(o);
+      }
+    }
+    else
+    {
+      userAlias = "system";
+      ownerAlias = u->getAlias();
+    }
+  }
+
+  int counter = 0;
+  HistoryListRIter it;
+  for (it = history.rbegin(); it != history.rend(); ++it)
+  {
+    ++counter;
+    if (counter < offset || counter > offset + length)
+      continue;
+
+    printUserEvent(*it, ((*it)->Direction() == D_RECEIVER ? userAlias : ownerAlias));
+  }
+  fprintf(fs, "%d End.\n", CODE_HISTORYxEND);
+  return fflush(fs);
+}
+
 
 /*---------------------------------------------------------------------------
  * CRMSClient::Process_LIST
@@ -1386,6 +1459,14 @@ int CRMSClient::Process_VIEW()
   }
 
   CUserEvent *e = u->EventPop();
+  printUserEvent(e, u->getAlias());
+  gUserManager.DropUser(u);
+
+  return fflush(fs);
+}
+
+void CRMSClient::printUserEvent(const CUserEvent* e, const string& alias)
+{
   if (e)
   {
     char szEventHeader[75]; // Allows 50 chars for a nick
@@ -1412,7 +1493,7 @@ int CRMSClient::Process_VIEW()
     }
 
     strcat(szEventHeader, "from ");
-    strncat(szEventHeader, u->GetAlias(), 50);
+    strncat(szEventHeader, alias.c_str(), 50);
     strcat(szEventHeader, "\n\0");
 
     // Write out the event header
@@ -1423,7 +1504,7 @@ int CRMSClient::Process_VIEW()
     char szTime[25];
     time_t nMessageTime = e->Time();
     struct tm *pTM = localtime(&nMessageTime);
-    strftime(szTime, 25, "%H:%M:%S", pTM);
+    strftime(szTime, 25, "%Y-%m-%d %H:%M:%S", pTM);
     sprintf(szTimestamp, "%d Sent At ", CODE_VIEWxTIME);
     strncat(szTimestamp, szTime, 25);
     strcat(szTimestamp, "\n\0");
@@ -1439,10 +1520,6 @@ int CRMSClient::Process_VIEW()
   {
     fprintf(fs, "%d Invalid event\n", CODE_EVENTxERROR);
   }
-
-  gUserManager.DropUser(u);
-    
-  return fflush(fs);
 }
 
 /*---------------------------------------------------------------------------

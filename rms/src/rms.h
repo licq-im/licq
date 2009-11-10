@@ -71,6 +71,7 @@ public:
   int Process_STATUS();
   int Process_HELP();
   int Process_GROUPS();
+  int Process_HISTORY();
   int Process_LIST();
   int Process_MESSAGE();
   int Process_URL();
@@ -119,6 +120,13 @@ protected:
   int Process_SMS_message();
   int Process_AR_text();
 
+  /**
+   * Output a user event
+   *
+   * @param e User event
+   * @param alias Alias of sender
+   */
+  void printUserEvent(const CUserEvent* e, const std::string& alias);
 
 friend class CLicqRMS;
 };
