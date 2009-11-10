@@ -41,7 +41,7 @@ echo "
   <method>ackSendMessage</method>
   <uid>" . $_POST['uid'] . "</uid>
   <result>$res</result>
-  <datetime>" . date('H:i:s') . "</datetime>
+  <datetime>" . date('Y-m-d H:i:s') . "</datetime>
 </response>
 ";
 
