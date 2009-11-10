@@ -30,7 +30,7 @@ char *LProto_Name()
 
 char *LProto_Version()
 {
-  static char szVersion[] = "0.11";
+  static char szVersion[] = VERSION;
   return szVersion;
 }
 
