@@ -21,6 +21,7 @@
 //option vars
 var showOffline = false;
 var maxLogLines = 20;
+var loadHistory = 3;
 
 var xmlhttp = new XMLHttpRequest(); //for serverpush connection
 xmlhttp.multipart = true;
@@ -195,7 +196,10 @@ function _updateUser(id, pp, status, messages, nick) {
 		contacts[pp][id].status = status;
 		contacts[pp][id].nummsgs = messages;
 		contacts[pp][id].nick = nick;
-	} else {
+    contacts[pp][id].historyShowed = false;
+  }
+  else
+  {
 		contacts[pp][id] = new Contact(id, pp, nick, status, messages);
 		var newcontact = document.createElement('div');
 		newcontact.innerHTML = getWindowHtml(id, pp, nick);
@@ -267,6 +271,12 @@ function showContactWindow(id, pp) {
 	if (contacts[pp][id].nummsgs > 0) {
 		requestViewEvent(id, pp);
 	}
+  if (loadHistory > 0 && contacts[pp][id].historyShowed != true)
+  { 
+    requestViewHistory(id, pp);
+    contacts[pp][id].historyShowed = true;
+  }
+
 	win = document.getElementById(id + '-' + pp + '-w');
 	if (win.style.display == 'block') {
 		win.style.display = 'none';
@@ -562,4 +572,26 @@ function stop_resize(event)
 {
   document.removeEventListener("mousemove", do_resize, true);
   document.removeEventListener("mouseup", stop_resize, true);
+}
+
+function requestViewHistory(id, pp)
+{
+  xmlhttp2 = new XMLHttpRequest();
+  xmlhttp2.onreadystatechange = acceptResponse2;
+  xmlhttp2.open("GET", baseurl + "/viewHistory.php?id=" + id + "&pp=" + pp + "&lenght=" + loadHistory + "&offset=0", true);
+  xmlhttp2.send(null);
+}
+
+function viewHistory(response)
+{
+  var id = response.getElementsByTagName('id')[0].firstChild.data;
+  var pp = response.getElementsByTagName('pp')[0].firstChild.data;
+  var txtdiv = document.getElementById(id + '-' + pp + '-txt');
+  var messages = response.getElementsByTagName('message');
+  var times = response.getElementsByTagName('time');
+  var froms = response.getElementsByTagName('from');
+  for (var i = messages.length-1; i >=0 ; --i)
+    txtdiv.innerHTML += '(<span class="msgDate">' + times[i].firstChild.data + '</span>) <span class="msgNick">' + froms[i].firstChild.data + '</span>: <span class="msgText">' + messages[i].firstChild.data + "</span><br/>";
+
+  txtdiv.scrollTop = txtdiv.scrollHeight;
 }

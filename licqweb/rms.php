@@ -259,4 +259,52 @@ function getUserStuff($packet) {
 function xmlentities ($string) {
    return str_replace (array('&', '"', "'", '<', '>'), array ('&amp;' , '&quot;', '&apos;' , '&lt;' , '&gt;'), $string);
 }
-?>
+
+function rmsViewHistory($id, $pp, $lenght = 10, $offset = 0)
+{
+  global $sock;
+  $result = array();
+
+  $cmd = "HISTORY " . $id . "." . $pp . " " . $lenght . " " . $offset . "\r\n";
+  sendData($cmd);
+
+  $packet = socket_read($sock, 1024, PHP_NORMAL_READ);
+  if (substr($packet, 0, 3) >= 400) {
+    return false;
+  }
+
+  // kses input filtering
+  $allowed = array('b' => array(),
+      'i' => array(),
+      'a' => array('href' => 1, 'title' => 1),
+      'p' => array('align' => 1),
+      'br' => array(),
+      'font' => array('size' => 1, 'color' => 1, 'face' => 1)
+      );
+
+  while (!preg_match("/^231 /", $packet))
+  {
+    $msg = "";
+    preg_match("/from (.*)/", $packet, $header);
+    $from = $header[1];
+    $packet = socket_read($sock, 1024, PHP_NORMAL_READ);
+    $snttime = substr($packet, 12);
+
+    $packet = socket_read($sock, 1024, PHP_NORMAL_READ);
+    $packet = socket_read($sock, 1024, PHP_NORMAL_READ);
+
+    while (!preg_match("/^223 /", $packet))
+    {
+      $msg .= (($msg!="")?"<br/>":"").$packet;
+      $packet = socket_read($sock, 1024, PHP_NORMAL_READ);
+    }
+
+    if (get_magic_quotes_gpc())
+      $msg = stripslashes($msg);
+
+    $result[] = array('msg' => kses($msg, $allowed), 'time' => trim($snttime), 'from' => trim($from));
+
+    $packet = socket_read($sock, 1024, PHP_NORMAL_READ);
+  }
+  return $result;
+}
