@@ -206,7 +206,7 @@ function _updateUser(id, pp, status, messages, nick) {
 
 function getWindowHtml(id, pp, nick) {
 	var key = id + '-' + pp;
-	return "<div class=\"window\" style=\"left:300px;top:150px\" id=\"" + key + "-w\">" +
+	return "<div onClick=\"set_focus(event, '" + key + "')\" class=\"window\" style=\"left:300px;top:150px\" id=\"" + key + "-w\">" +
 				"<div onmousedown=\"init_drag(event, '" + key + "-w')\" class=\"bar\">" +
 					"<div class=\"wintitle\">" + nick + " (" + pp + ")</div>" +
 					"<div onclick=\"showContactWindow('" + id + "', '" + pp + "')\" class=\"close\">[close]</div>" +
@@ -214,6 +214,7 @@ function getWindowHtml(id, pp, nick) {
 				"<div class=\"convo\" id=\"" + key + "-txt\"></div>" + 
 				"<div class=\"msginput\"><textarea id=\"" + key + "-input\" onKeyPress=\"textarea_keypress(event, '" + id + "', '" + pp + "')\"></textarea><br>" +
 					"<input type=\"submit\" class=\"button\" value=\"Send\" onclick=\"sendMessage('" + id + "', '" + pp + "'); return false\" />" +
+          "<div class=\"resizer\" onmousedown=\"init_resize(event, '" + key + "-txt', 150, 50)\"><img class=\"resizerImage\" src=\"images/resizerMsg.png\" /></div>" +
 				"</div>" +
 			"</div>";
 }
@@ -494,4 +495,74 @@ function start_drag(event) {
 function stop_drag(event) {
 	document.removeEventListener("mousemove", start_drag, true);
 	document.removeEventListener("mouseup", stop_drag, true);
+}
+
+function set_focus(event, key)
+{
+  win = document.getElementById(key + "-w");
+  win.style.zIndex = ++dragwin.zIndex;
+  event.preventDefault();
+
+  input = document.getElementById(key + "-input");
+  input.focus();
+
+  //stop_propagate(event);
+}
+
+function stop_propagate(event)
+{
+  if (!event)
+    var event = window.event;
+  event.cancelBubble = true;
+  if (event.stopPropagation)
+    event.stopPropagation();
+}
+
+/* Window resizing stuff */
+var resizewin = new Object();
+
+function init_resize(event, id, minW, minH)
+{
+  resizewin.win = document.getElementById(id);
+  resizewin.minW = minW;
+  resizewin.minH = minH;
+
+  resizewin.startX = event.clientX + window.scrollX;
+  resizewin.startY = event.clientY + window.scrollY;
+  resizewin.startWidth = parseInt(resizewin.win.style.width, 10);
+  resizewin.startHeight = parseInt(resizewin.win.style.height, 10);
+
+  if (isNaN(resizewin.startWidth))
+    resizewin.startWidth = resizewin.win.offsetWidth;
+  if (isNaN(resizewin.startHeight))
+    resizewin.startHeight = resizewin.win.offsetHeight;
+
+  //resizewin.win.style.zIndex = ++resizewin.zIndex;
+
+  document.addEventListener("mousemove", do_resize, true);
+  document.addEventListener("mouseup", stop_resize, true);
+  event.preventDefault();
+}
+
+function do_resize(event)
+{
+  var x, y;
+  x = event.clientX + window.scrollX;
+  y = event.clientY + window.scrollY;
+
+  if(resizewin.minW < (resizewin.startWidth + x - resizewin.startX))
+  {
+    resizewin.win.style.width = (resizewin.startWidth + x - resizewin.startX) + "px";
+    resizewin.win.parentNode.style.width = (resizewin.startWidth + x - resizewin.startX) + "px";
+  }
+  if(resizewin.minH < (resizewin.startHeight + y - resizewin.startY))
+    resizewin.win.style.height = (resizewin.startHeight + y - resizewin.startY) + "px";
+
+  event.preventDefault();
+}
+
+function stop_resize(event)
+{
+  document.removeEventListener("mousemove", do_resize, true);
+  document.removeEventListener("mouseup", stop_resize, true);
 }

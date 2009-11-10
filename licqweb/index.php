@@ -24,7 +24,12 @@ echo '<?xml version="1.0" encoding="iso-8859-1"?>
     <div id="contactList" class="box" style="left:10px;top:150px;display:none;">
       <div class="bar" onmousedown="init_drag(event, 'contactList')" id="nick">licqweb</div>
       <div id="contacts"></div>
-      <div id="ownerStatus"></div>
+      <div style="height:18px"> 
+        <div id="ownerStatus"></div>
+        <div class="resizer" onmousedown="init_resize(event, 'contacts', 100, 100)">
+          <img class="resizerImage" src="images/resizer.png" />
+        </div>
+      </div>
     </div>
     <div id="statusMenu"></div>
     <div id="windows"></div>

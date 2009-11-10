@@ -108,6 +108,20 @@ textarea {
 	left: 300px;
 }
 
+.resizer {
+  right: 0;
+  bottom: 0;
+  width: 18px;
+  height: 18px;
+  position: absolute;
+}
+
+.resizerImage {
+  bottom: 0;
+  position: absolute;
+  right: 0;
+}
+
 .box {
 	background-color: #eee;
 	border: 1px solid #000000;
