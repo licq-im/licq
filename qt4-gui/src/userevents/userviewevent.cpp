@@ -260,6 +260,8 @@ void UserViewEvent::updateNextButton()
 
   if (e != NULL && e->msg() != NULL)
     myReadNextButton->setIcon(IconManager::instance()->iconForEvent(e->msg()->SubCommand()));
+  else
+    myReadNextButton->setIcon(QIcon());
 }
 
 void UserViewEvent::userUpdated(const UserId& userId, unsigned long subSignal, int argument, unsigned long /* cid */)
