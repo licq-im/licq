@@ -29,6 +29,7 @@
 #include <licq_icqd.h>
 #include <licq_user.h>
 
+#include "config/contactlist.h"
 #include "helpers/support.h"
 
 #include "widgets/groupcombobox.h"
@@ -59,6 +60,10 @@ AddUserDlg::AddUserDlg(const UserId& userId, QWidget* parent)
   QLabel* lblGroup = new QLabel(tr("&Group:"));
   myGroup = new GroupComboBox();
   lblGroup->setBuddy(myGroup);
+
+  // Get current active group and set as default
+  if (Config::ContactList::instance()->groupType() == GROUPS_USER)
+    myGroup->setCurrentGroupId(Config::ContactList::instance()->groupId());
 
   layDialog->addWidget(lblGroup, line, 0);
   layDialog->addWidget(myGroup, line++, 1);
