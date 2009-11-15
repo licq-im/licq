@@ -94,7 +94,7 @@ void AddUserDlg::ok()
 {
   QString accountId = myId->text().trimmed();
   UserId userId = LicqUser::makeUserId(accountId.toLatin1().data(), myProtocol->currentPpid());
-  unsigned short group = myGroup->currentGroupId();
+  int group = myGroup->currentGroupId();
   bool notify = myNotify->isChecked();
   bool added = false;
 

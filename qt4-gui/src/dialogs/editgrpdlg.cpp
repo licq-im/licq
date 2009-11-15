@@ -100,19 +100,18 @@ EditGrpDlg::EditGrpDlg(QWidget* parent)
   show();
 }
 
-unsigned short EditGrpDlg::currentGroupId() const
+int EditGrpDlg::currentGroupId() const
 {
   if (lstGroups->currentItem() == NULL)
     return 0;
 
-  unsigned short groupId = lstGroups->currentItem()->data(Qt::UserRole).toUInt();
-  return groupId;
+  return lstGroups->currentItem()->data(Qt::UserRole).toInt();
 }
 
-void EditGrpDlg::setCurrentGroupId(unsigned short groupId)
+void EditGrpDlg::setCurrentGroupId(int groupId)
 {
   for (int i = 0; i < lstGroups->count(); ++i)
-    if (lstGroups->item(i)->data(Qt::UserRole).toUInt() == groupId)
+    if (lstGroups->item(i)->data(Qt::UserRole).toInt() == groupId)
     {
       lstGroups->setCurrentRow(i);
       break;
@@ -121,7 +120,7 @@ void EditGrpDlg::setCurrentGroupId(unsigned short groupId)
 
 void EditGrpDlg::RefreshList()
 {
-  unsigned short groupId = currentGroupId();
+  int groupId = currentGroupId();
   lstGroups->clear();
 
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
@@ -174,7 +173,7 @@ void EditGrpDlg::slot_add()
 
 void EditGrpDlg::slot_remove()
 {
-  unsigned short groupId = currentGroupId();
+  int groupId = currentGroupId();
   if (groupId == 0)
     return;
 
@@ -190,14 +189,14 @@ void EditGrpDlg::slot_remove()
 
 void EditGrpDlg::moveGroup(int delta)
 {
-  unsigned short groupId = currentGroupId();
+  int groupId = currentGroupId();
   if (groupId == 0)
     return;
 
   LicqGroup* group = gUserManager.FetchGroup(groupId, LOCK_R);
   if (group == NULL)
     return;
-  unsigned short oldSortIndex = group->sortIndex();
+  int oldSortIndex = group->sortIndex();
   gUserManager.DropGroup(group);
 
   if (delta + oldSortIndex < 0)

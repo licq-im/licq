@@ -316,7 +316,7 @@ void UserMenu::aboutToShowMenu()
   myMiscModesActions[ModeStatusOccupied]->setVisible(isIcq);
   myMiscModesActions[ModeStatusDnd]->setVisible(isIcq);
 
-  unsigned short serverGroup = (u->GetSID() ? gUserManager.GetGroupFromID(u->GetGSID()) : 0);
+  int serverGroup = (u->GetSID() ? gUserManager.GetGroupFromID(u->GetGSID()) : 0);
 
   // Update group memberships
   foreach (QAction* a, myUserGroupActions->actions())

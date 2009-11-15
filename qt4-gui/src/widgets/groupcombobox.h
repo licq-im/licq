@@ -33,8 +33,8 @@ class GroupComboBox : public QComboBox
 public:
   GroupComboBox(bool withAllUsers = false, QWidget* parent = NULL);
 
-  unsigned short currentGroupId() const;
-  bool setCurrentGroupId(unsigned short groupId);
+  int currentGroupId() const;
+  bool setCurrentGroupId(int groupId);
   bool setCurrentGroupName(const QString& groupName);
 };
 

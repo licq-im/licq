@@ -251,7 +251,7 @@ void UserPages::Settings::load(const LicqUser* user)
   myStatusOccupiedRadio->setChecked(statusToUser == ICQ_STATUS_OCCUPIED);
   myStatusDndRadio->setChecked(statusToUser == ICQ_STATUS_DND);
 
-  for (unsigned short i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
     mySystemGroupCheck[i]->setChecked(user->GetInGroup(GROUPS_SYSTEM, i));
 
   unsigned int ppid = user->PPID();
@@ -284,12 +284,12 @@ void UserPages::Settings::load(const LicqUser* user)
 
   myGroupsTable->clearContents();
   myGroupsTable->setRowCount(0);
-  unsigned short serverGroup = (user->GetSID() ? gUserManager.GetGroupFromID(user->GetGSID()) : 0);
+  int serverGroup = (user->GetSID() ? gUserManager.GetGroupFromID(user->GetGSID()) : 0);
   int i = 0;
   FOR_EACH_GROUP_START_SORTED(LOCK_R)
   {
     QString name = QString::fromLocal8Bit(pGroup->name().c_str());
-    unsigned short gid = pGroup->id();
+    int gid = pGroup->id();
 
     myGroupsTable->setRowCount(i+1);
 
@@ -376,7 +376,7 @@ void UserPages::Settings::apply2(const UserId& userId)
   // First set server group
   for (int i = 0; i < myGroupsTable->rowCount(); ++i)
   {
-    unsigned short gid = myGroupsTable->item(i, 0)->data(Qt::UserRole).toUInt();
+    int gid = myGroupsTable->item(i, 0)->data(Qt::UserRole).toInt();
 
     if (dynamic_cast<QRadioButton*>(myGroupsTable->cellWidget(i, 2))->isChecked())
     {
@@ -388,7 +388,7 @@ void UserPages::Settings::apply2(const UserId& userId)
   // Set local user groups
   for (int i = 0; i < myGroupsTable->rowCount(); ++i)
   {
-    unsigned short gid = myGroupsTable->item(i, 0)->data(Qt::UserRole).toUInt();
+    int gid = myGroupsTable->item(i, 0)->data(Qt::UserRole).toInt();
 
     bool inLocal = dynamic_cast<QCheckBox*>(myGroupsTable->cellWidget(i, 1))->isChecked();
     if ((userGroups.count(gid) > 0) != inLocal)
@@ -396,7 +396,7 @@ void UserPages::Settings::apply2(const UserId& userId)
   }
 
   // Set system groups
-  for (unsigned short i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
+  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; ++i)
   {
     bool inGroup = mySystemGroupCheck[i]->isChecked();
     if (((systemGroups & (1L << (i - 1))) != 0) != inGroup)

@@ -42,14 +42,14 @@ private:
    *
    * @return Group id for current group or zero if no group is marked
    */
-  unsigned short currentGroupId() const;
+  int currentGroupId() const;
 
   /**
    * Set current group id in list
    *
    * @param groupId Id of group to make current
    */
-  void setCurrentGroupId(unsigned short groupId);
+  void setCurrentGroupId(int groupId);
 
   /**
    * Move a group in the list
@@ -70,7 +70,7 @@ private:
 
   QLineEdit* edtName;
 
-  unsigned short myEditGroupId;
+  int myEditGroupId;
 
   void RefreshList();
 

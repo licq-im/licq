@@ -523,7 +523,7 @@ void MainWindow::removeUserFromList()
 void MainWindow::removeUserFromGroup()
 {
   GroupType gtype = Config::ContactList::instance()->groupType();
-  unsigned short gid = Config::ContactList::instance()->groupId();
+  int gid = Config::ContactList::instance()->groupId();
 
   // Removing "All users" is the same as removing user from the list
   if (gtype == GROUPS_SYSTEM && gid == 0)
@@ -757,7 +757,7 @@ void MainWindow::updateEvents()
 
 void MainWindow::setCurrentGroup(int index)
 {
-  unsigned short groupId = myUserGroupsBox->itemData(index).toUInt();
+  int groupId = myUserGroupsBox->itemData(index).toInt();
   GroupType groupType = GROUPS_USER;
   if (groupId >= ContactListModel::SystemGroupOffset)
   {
@@ -918,7 +918,7 @@ void MainWindow::updateGroups(bool initial)
   }
   FOR_EACH_GROUP_END
 
-  for (unsigned short i = 1; i < NUM_GROUPS_SYSTEM_ALL; i++)
+  for (int i = 1; i < NUM_GROUPS_SYSTEM_ALL; i++)
     myUserGroupsBox->addItem(LicqStrings::getSystemGroupName(i),
         ContactListModel::SystemGroupOffset + i);
 

@@ -42,12 +42,12 @@ GroupComboBox::GroupComboBox(bool withAllUsers, QWidget* parent)
   FOR_EACH_GROUP_END
 }
 
-unsigned short GroupComboBox::currentGroupId() const
+int GroupComboBox::currentGroupId() const
 {
   return itemData(currentIndex()).toString().toUShort();
 }
 
-bool GroupComboBox::setCurrentGroupId(unsigned short groupId)
+bool GroupComboBox::setCurrentGroupId(int groupId)
 {
   int index = findData(QString::number(groupId));
 
