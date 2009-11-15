@@ -53,14 +53,11 @@ StatsDlg::StatsDlg(QWidget* parent)
   lay->addSpacing(20);
 
   QDialogButtonBox* buttons = new QDialogButtonBox(
-      QDialogButtonBox::Ok);
+      QDialogButtonBox::Ok | QDialogButtonBox::Reset);
   connect(buttons, SIGNAL(accepted()), SLOT(close()));
-
-  QPushButton* button = buttons->addButton(QDialogButtonBox::Reset);
-  connect(button, SIGNAL(clicked()), SLOT(reset()));
-  button->setAutoDefault(false);
-
+  connect(buttons->button(QDialogButtonBox::Reset), SIGNAL(clicked()), SLOT(reset()));
   lay->addWidget(buttons);
+  buttons->button(QDialogButtonBox::Ok)->setFocus();
 
   prepare();
 
