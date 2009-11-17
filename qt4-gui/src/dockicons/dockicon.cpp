@@ -70,37 +70,28 @@ DockIcon::~DockIcon()
 
 void DockIcon::updateIconStatus()
 {
-  // First check for ICQ/AIM owner presence
-  const ICQOwner* o = gUserManager.FetchOwner(LICQ_PPID, LOCK_R);
+  // Default if there is no owner, just show status as offline
+  myId = "0";
+  myPpid = LICQ_PPID;
+  myFullStatus = ICQ_STATUS_OFFLINE;
+  myStatus = ICQ_STATUS_OFFLINE;
+  myInvisible = false;
 
-  // Take any existent one otherwise
-  if (o == NULL && gUserManager.NumOwners() != 0)
+  FOR_EACH_OWNER_START(LOCK_R)
   {
-    const OwnerMap* ol = gUserManager.LockOwnerList(LOCK_R);
-    o = ol->begin()->second;
-    o->Lock(LOCK_R);
-    gUserManager.UnlockOwnerList();
+    // Any account is better than no account
+    //   and try and get account with "best" status
+    // TODO: This numerical comparison is not perfect, for example Do Not Disturb will be prefered over Free For Chat
+    if (myId == "0" || pOwner->Status() < myStatus)
+    {
+      myId = pOwner->IdString();
+      myPpid = pOwner->PPID();
+      myFullStatus = pOwner->StatusFull();
+      myStatus = pOwner->Status();
+      myInvisible = pOwner->StatusInvisible();
+    }
   }
-
-  if (o != NULL)
-  {
-    myId = o->IdString();
-    myPpid = o->PPID();
-    myFullStatus = o->StatusFull();
-    myStatus = o->Status();
-    myInvisible = o->StatusInvisible();
-    gUserManager.DropOwner(o);
-  }
-  else
-  {
-    // We got no owner, this could be normal if this is first run,
-    // just show status as offline until user has created the first account
-    myId = "0";
-    myPpid = LICQ_PPID;
-    myFullStatus = ICQ_STATUS_OFFLINE;
-    myStatus = ICQ_STATUS_OFFLINE;
-    myInvisible = false;
-  }
+  FOR_EACH_OWNER_END
 
   updateToolTip();
   updateStatusIcon();
