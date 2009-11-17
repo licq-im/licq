@@ -129,7 +129,7 @@ void MMSendDlg::slot_done(const LicqEvent* e)
   if ( !e->Equals(icqEventTag) )
     return;
 
-  bool isOk = (e != NULL && e->Result() == EVENT_ACKED);
+  bool isOk = (e != NULL ? (e->Result() == EVENT_ACKED) : (icqEventTag == 0));
 
   icqEventTag = 0;
 
