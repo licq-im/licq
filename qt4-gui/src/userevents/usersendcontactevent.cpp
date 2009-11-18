@@ -156,6 +156,7 @@ void UserSendContactEvent::send()
   if (myMassMessageCheck->isChecked())
   {
     MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
+    connect(m, SIGNAL(eventSent(const LicqEvent*)), SIGNAL(eventSent(const LicqEvent*)));
     int r = m->go_contact(users);
     delete m;
     if (r != QDialog::Accepted) return;

@@ -190,6 +190,7 @@ void UserSendMsgEvent::send()
     if (myMassMessageCheck->isChecked())
     {
       MMSendDlg* m = new MMSendDlg(myMassMessageList, this);
+      connect(m, SIGNAL(eventSent(const LicqEvent*)), SIGNAL(eventSent(const LicqEvent*)));
       m->go_message(message);
     }
 

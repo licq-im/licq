@@ -48,6 +48,16 @@ public:
   int go_url(const QString& url, const QString& desc);
   int go_contact(StringList& users);
 
+signals:
+  /**
+   * Since daemon doesn't notify us when an event is sent we'll have to handle
+   * it ourselfs. This signal is sent to notify other windows about the event
+   * that was sent.
+   *
+   * @param event Event object that was sent
+   */
+  void eventSent(const LicqEvent* event);
+
 private:
   QString s1, s2;
   StringList* myUsers;
