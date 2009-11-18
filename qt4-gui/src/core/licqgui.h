@@ -283,14 +283,6 @@ private slots:
   void showMessageDialog(const UserId& userId);
 
   /**
-   * Add event tag to a user event dialog
-   *
-   * @param userId User to find dialog for
-   * @param eventTag Event tag to add to dialog
-   */
-  void addEventTag(const UserId& userId, unsigned long eventTag);
-
-  /**
    * Act on changes to the contact list
    *
    * @param subSignal Sub signal telling what the change was

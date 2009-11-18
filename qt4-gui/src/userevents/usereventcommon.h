@@ -67,7 +67,6 @@ public:
   unsigned long convoId() { return myConvoId; }
   const std::list<UserId>& convoUsers() const { return myUsers; }
   void setConvoId(unsigned long n) { myConvoId = n; }
-  void addEventTag(unsigned long n) { if (n) myEventTag.push_back(n); }
 
   /**
    * Check if a user is part of this conversation
@@ -88,8 +87,6 @@ public slots:
   void focusChanged(bool gotFocus);
 
 protected:
-  std::list<unsigned long> myEventTag;
-
   bool myIsOwner;
   bool myDeleteUser;
   unsigned long myPpid;

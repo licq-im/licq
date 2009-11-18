@@ -1095,9 +1095,19 @@ void UserSendCommon::send()
     disconnect(mySendButton, SIGNAL(clicked()), this, SLOT(send()));
     connect(mySendButton, SIGNAL(clicked()), SLOT(cancelSend()));
 
+    connect(LicqGui::instance()->signalManager(), SIGNAL(eventTag(const UserId&, unsigned long)),
+        SLOT(addEventTag(const UserId&, unsigned long)));
     connect(LicqGui::instance()->signalManager(),
         SIGNAL(doneUserFcn(const LicqEvent*)), SLOT(eventDoneReceived(const LicqEvent*)));
   }
+}
+
+void UserSendCommon::addEventTag(const UserId& userId, unsigned long eventTag)
+{
+  if (eventTag == 0 || !USERID_ISVALID(userId) || userId != myUsers.front())
+    return;
+
+  myEventTag.push_back(eventTag);
 }
 
 void UserSendCommon::eventDoneReceived(const LicqEvent* e)
@@ -1177,8 +1187,12 @@ void UserSendCommon::eventDoneReceived(const LicqEvent* e)
     mySendServerCheck->setChecked(true);
 
   if (myEventTag.size() == 0)
+  {
+    disconnect(LicqGui::instance()->signalManager(), SIGNAL(eventTag(const UserId&, unsigned long)),
+        this, SLOT(addEventTag(const UserId&, unsigned long)));
     disconnect(LicqGui::instance()->signalManager(),
         SIGNAL(doneUserFcn(const LicqEvent*)), this, SLOT(eventDoneReceived(const LicqEvent*)));
+  }
 
   if (myMessageEdit != NULL)
     if(tabDlg == NULL || !tabDlg->tabExists(this) || tabDlg->tabIsSelected(this))

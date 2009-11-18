@@ -469,8 +469,6 @@ int LicqGui::Run(CICQDaemon* daemon)
       SLOT(showMessageDialog(const UserId&)));
   connect(mySignalManager, SIGNAL(ui_viewevent(const UserId&)),
       SLOT(showNextEvent(const UserId&)));
-  connect(mySignalManager, SIGNAL(eventTag(const UserId&, unsigned long)),
-      SLOT(addEventTag(const UserId&, unsigned long)));
 
   myUserMenu = new UserMenu();
   myGroupMenu = new GroupMenu();
@@ -1595,22 +1593,6 @@ void LicqGui::convoLeave(const UserId& userId, unsigned long ppid, unsigned long
         item->isUserInConvo(userId))
     {
       item->convoLeave(userId);
-      break;
-    }
-  }
-}
-
-void LicqGui::addEventTag(const UserId& userId, unsigned long eventTag)
-{
-  if (!USERID_ISVALID(userId) || eventTag == 0)
-    return;
-
-  for (int i = 0; i < myUserSendList.size(); ++i)
-  {
-    UserSendCommon* item = myUserSendList.at(i);
-    if (item->userId() == userId)
-    {
-      item->addEventTag(eventTag);
       break;
     }
   }
