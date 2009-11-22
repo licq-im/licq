@@ -221,27 +221,27 @@ Haluatko varmasti lähettää sen?</translation>
         <translation type="obsolete">Uuden käyttäjän ID:</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="49"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="50"/>
         <source>&amp;Protocol:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="44"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="45"/>
         <source>Licq - Add user</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="59"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="60"/>
         <source>&amp;Group:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="66"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="71"/>
         <source>New &amp;User ID:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/adduserdlg.cpp" line="77"/>
+        <location filename="../src/dialogs/adduserdlg.cpp" line="82"/>
         <source>&amp;Notify User</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2236,7 +2236,7 @@ Katso tarkempia tietoja Verkkolokista.</translation>
 <context>
     <name>LicqQtGui::ContactListModel</name>
     <message>
-        <location filename="../src/contactlist/contactlist.cpp" line="315"/>
+        <location filename="../src/contactlist/contactlist.cpp" line="319"/>
         <source>Other Users</source>
         <translation type="unfinished">Muut käyttäjät</translation>
     </message>
@@ -2559,22 +2559,22 @@ Voit jättää minulle viestin.</translation>
         <translation type="obsolete">&lt;br&gt;1 vst</translation>
     </message>
     <message>
-        <location filename="../src/dockicons/dockicon.cpp" line="149"/>
+        <location filename="../src/dockicons/dockicon.cpp" line="140"/>
         <source>&lt;br&gt;Left click - Show main window&lt;br&gt;Middle click - Show next message&lt;br&gt;Right click - System menu</source>
         <translation type="unfinished">&lt;br&gt;Vasen nappi - Näytä pääikkuna&lt;br&gt;Keskinappi - Näytä seuraava viesti&lt;br&gt;Oikea nappi - Järjestelmävalikko</translation>
     </message>
     <message>
-        <location filename="../src/dockicons/dockicon.cpp" line="142"/>
+        <location filename="../src/dockicons/dockicon.cpp" line="133"/>
         <source>%1 system messages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dockicons/dockicon.cpp" line="145"/>
+        <location filename="../src/dockicons/dockicon.cpp" line="136"/>
         <source>%1 msgs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dockicons/dockicon.cpp" line="147"/>
+        <location filename="../src/dockicons/dockicon.cpp" line="138"/>
         <source>1 msg</source>
         <translation type="unfinished"></translation>
     </message>
@@ -2706,8 +2706,8 @@ Voit jättää minulle viestin.</translation>
     </message>
     <message>
         <location filename="../src/dialogs/editgrpdlg.cpp" line="70"/>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="250"/>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="263"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="249"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="262"/>
         <source>Edit Name</source>
         <translation>Muokkaa nimeä</translation>
     </message>
@@ -2760,12 +2760,12 @@ Voit jättää minulle viestin.</translation>
         <translation type="obsolete">Kaikki käyttäjät</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="165"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="164"/>
         <source>noname</source>
         <translation>nimetön</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="181"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="180"/>
         <source>Are you sure you want to remove
 the group &apos;%1&apos;?</source>
         <translation>Haluatko varmasti poistaa
@@ -2776,8 +2776,8 @@ ryhmän &apos;%1&apos;?</translation>
         <translation type="obsolete">Ok</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="168"/>
-        <location filename="../src/dialogs/editgrpdlg.cpp" line="232"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="167"/>
+        <location filename="../src/dialogs/editgrpdlg.cpp" line="231"/>
         <source>Cancel</source>
         <translation>Peruuta</translation>
     </message>
@@ -3400,32 +3400,32 @@ The key isn&apos;t deleted from your keyring.</source>
 <context>
     <name>LicqQtGui::GPGKeySelect</name>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="66"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="64"/>
         <source>Select GPG Key for user %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="71"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="69"/>
         <source>Select a GPG key for user %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="74"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="72"/>
         <source>Current key: No key selected</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="76"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="74"/>
         <source>Current key: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="79"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="77"/>
         <source>Use GPG Encryption</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="86"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="84"/>
         <source>Filter:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3434,7 +3434,7 @@ The key isn&apos;t deleted from your keyring.</source>
         <translation type="obsolete">&amp;OK</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="107"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="105"/>
         <source>&amp;No Key</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3878,17 +3878,17 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
 <context>
     <name>LicqQtGui::KeyView</name>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
         <source>Name</source>
         <translation type="unfinished">Nimi</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
         <source>EMail</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/gpgkeyselect.cpp" line="196"/>
+        <location filename="../src/dialogs/gpgkeyselect.cpp" line="191"/>
         <source>ID</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3896,7 +3896,7 @@ Käännä Licq uudelleen OpenSSL-tuen kanssa.</translation>
 <context>
     <name>LicqQtGui::LicqGui</name>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="659"/>
+        <location filename="../src/core/licqgui.cpp" line="658"/>
         <source>Are you sure you want to remove
 %1 (%2)
 from your contact list?</source>
@@ -3913,14 +3913,14 @@ from the &apos;%3&apos; group?</source>
 ryhmästä %3?</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="980"/>
+        <location filename="../src/core/licqgui.cpp" line="1063"/>
         <source>Licq is unable to start your browser and open the URL.
 You will need to start the browser and open the URL manually.</source>
         <translation type="unfinished">Licq ei voi käynnistää selaintasi ja avata URLia.
 Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
-        <location filename="../src/core/licqgui.cpp" line="274"/>
+        <location filename="../src/core/licqgui.cpp" line="275"/>
         <source>There was an error loading the default configuration file.
 Would you like to try loading the old one?</source>
         <translation type="unfinished"></translation>
@@ -4025,17 +4025,17 @@ Would you like to try loading the old one?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="170"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="179"/>
         <source>Sending mass message to %1...</source>
         <translation type="unfinished">Massaviestiä lähetetään käyttäjälle %1...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="240"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="249"/>
         <source>Sending mass URL to %1...</source>
         <translation type="unfinished">Massa-URLia lähetetään käyttäjälle %1...</translation>
     </message>
     <message>
-        <location filename="../src/dialogs/mmsenddlg.cpp" line="252"/>
+        <location filename="../src/dialogs/mmsenddlg.cpp" line="261"/>
         <source>Sending mass list to %1...</source>
         <translation type="unfinished">Massalistaa lähetetään käyttäjälle %1...</translation>
     </message>
@@ -8163,19 +8163,19 @@ Works with many different window managers.</source>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="54"/>
-        <location filename="../src/settings/shortcuts.cpp" line="123"/>
+        <location filename="../src/settings/shortcuts.cpp" line="124"/>
         <source>Contact List Shortcuts</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="62"/>
-        <location filename="../src/settings/shortcuts.cpp" line="131"/>
+        <location filename="../src/settings/shortcuts.cpp" line="132"/>
         <source>Action</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="62"/>
-        <location filename="../src/settings/shortcuts.cpp" line="131"/>
+        <location filename="../src/settings/shortcuts.cpp" line="132"/>
         <source>Shortcut</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8271,166 +8271,171 @@ Works with many different window managers.</source>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="94"/>
-        <source>Open settings</source>
+        <source>Toggle column headers visible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="95"/>
-        <source>Hide contact list</source>
+        <source>Open settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="96"/>
+        <source>Hide contact list</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../src/settings/shortcuts.cpp" line="97"/>
         <source>Exit Licq</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="98"/>
+        <location filename="../src/settings/shortcuts.cpp" line="99"/>
         <source>Switch status to online</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="99"/>
+        <location filename="../src/settings/shortcuts.cpp" line="100"/>
         <source>Switch status to away</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="100"/>
+        <location filename="../src/settings/shortcuts.cpp" line="101"/>
         <source>Switch status to N/A</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="101"/>
+        <location filename="../src/settings/shortcuts.cpp" line="102"/>
         <source>Switch status to occupied</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="102"/>
+        <location filename="../src/settings/shortcuts.cpp" line="103"/>
         <source>Switch status to DND</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="103"/>
+        <location filename="../src/settings/shortcuts.cpp" line="104"/>
         <source>Switch status to Free For Chat</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="104"/>
+        <location filename="../src/settings/shortcuts.cpp" line="105"/>
         <source>Switch status to offline</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="105"/>
+        <location filename="../src/settings/shortcuts.cpp" line="106"/>
         <source>Toggle status Invisible</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="144"/>
+        <location filename="../src/settings/shortcuts.cpp" line="145"/>
         <source>Open user menu</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="145"/>
+        <location filename="../src/settings/shortcuts.cpp" line="146"/>
         <source>Open history</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="146"/>
+        <location filename="../src/settings/shortcuts.cpp" line="147"/>
         <source>Open user information</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="147"/>
+        <location filename="../src/settings/shortcuts.cpp" line="148"/>
         <source>Select encoding</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="148"/>
+        <location filename="../src/settings/shortcuts.cpp" line="149"/>
         <source>Open / close secure channel</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="149"/>
+        <location filename="../src/settings/shortcuts.cpp" line="150"/>
         <source>Select message type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="150"/>
+        <location filename="../src/settings/shortcuts.cpp" line="151"/>
         <source>Toggle send through server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="151"/>
+        <location filename="../src/settings/shortcuts.cpp" line="152"/>
         <source>Toggle urgent</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="152"/>
+        <location filename="../src/settings/shortcuts.cpp" line="153"/>
         <source>Toggle multiple recipients</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="153"/>
+        <location filename="../src/settings/shortcuts.cpp" line="154"/>
         <source>Insert smiley</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="154"/>
+        <location filename="../src/settings/shortcuts.cpp" line="155"/>
         <source>Change text color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="155"/>
+        <location filename="../src/settings/shortcuts.cpp" line="156"/>
         <source>Change background color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="157"/>
+        <location filename="../src/settings/shortcuts.cpp" line="158"/>
         <source>Switch to tab 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="158"/>
+        <location filename="../src/settings/shortcuts.cpp" line="159"/>
         <source>Switch to tab 2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="159"/>
+        <location filename="../src/settings/shortcuts.cpp" line="160"/>
         <source>Switch to tab 3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="160"/>
+        <location filename="../src/settings/shortcuts.cpp" line="161"/>
         <source>Switch to tab 4</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="161"/>
+        <location filename="../src/settings/shortcuts.cpp" line="162"/>
         <source>Switch to tab 5</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="162"/>
+        <location filename="../src/settings/shortcuts.cpp" line="163"/>
         <source>Switch to tab 6</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="163"/>
+        <location filename="../src/settings/shortcuts.cpp" line="164"/>
         <source>Switch to tab 7</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="164"/>
+        <location filename="../src/settings/shortcuts.cpp" line="165"/>
         <source>Switch to tab 8</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="165"/>
+        <location filename="../src/settings/shortcuts.cpp" line="166"/>
         <source>Switch to tab 9</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/settings/shortcuts.cpp" line="166"/>
+        <location filename="../src/settings/shortcuts.cpp" line="167"/>
         <source>Switch to tab 10</source>
         <translation type="unfinished"></translation>
     </message>
@@ -8912,42 +8917,42 @@ Lisäkuvakevalikoima &apos;%2&apos; on poissa käytöstä.</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/statsdlg.cpp" line="88"/>
+        <location filename="../src/dialogs/statsdlg.cpp" line="85"/>
         <source>Daemon Statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/statsdlg.cpp" line="89"/>
+        <location filename="../src/dialogs/statsdlg.cpp" line="86"/>
         <source>Up since</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/statsdlg.cpp" line="91"/>
+        <location filename="../src/dialogs/statsdlg.cpp" line="88"/>
         <source>Last reset</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/statsdlg.cpp" line="93"/>
+        <location filename="../src/dialogs/statsdlg.cpp" line="90"/>
         <source>Number of users</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/statsdlg.cpp" line="95"/>
+        <location filename="../src/dialogs/statsdlg.cpp" line="92"/>
         <source>Event Statistics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/statsdlg.cpp" line="96"/>
+        <location filename="../src/dialogs/statsdlg.cpp" line="93"/>
         <source>Today</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/statsdlg.cpp" line="97"/>
+        <location filename="../src/dialogs/statsdlg.cpp" line="94"/>
         <source>Total</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/dialogs/statsdlg.cpp" line="124"/>
+        <location filename="../src/dialogs/statsdlg.cpp" line="121"/>
         <source>Do you really want to
 reset your statistics?</source>
         <translation type="unfinished"></translation>
@@ -8956,42 +8961,42 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::SystemMenu</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="71"/>
+        <location filename="../src/core/systemmenu.cpp" line="69"/>
         <source>Debug Level</source>
         <translation type="unfinished">Debug-taso</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="78"/>
+        <location filename="../src/core/systemmenu.cpp" line="76"/>
         <source>Status Info</source>
         <translation type="unfinished">Tilatiedot</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="79"/>
+        <location filename="../src/core/systemmenu.cpp" line="77"/>
         <source>Unknown Packets</source>
         <translation type="unfinished">Tuntemattomat paketit</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="80"/>
+        <location filename="../src/core/systemmenu.cpp" line="78"/>
         <source>Errors</source>
         <translation type="unfinished">Virheet</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="81"/>
+        <location filename="../src/core/systemmenu.cpp" line="79"/>
         <source>Warnings</source>
         <translation type="unfinished">Varoitukset</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="82"/>
+        <location filename="../src/core/systemmenu.cpp" line="80"/>
         <source>Packets</source>
         <translation type="unfinished">Paketit</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="84"/>
+        <location filename="../src/core/systemmenu.cpp" line="82"/>
         <source>Set All</source>
         <translation type="unfinished">Aseta kaikki</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="85"/>
+        <location filename="../src/core/systemmenu.cpp" line="83"/>
         <source>Clear All</source>
         <translation type="unfinished">Tyhjennä kaikki</translation>
     </message>
@@ -9000,7 +9005,7 @@ reset your statistics?</source>
         <translation type="obsolete">Järjestelmätoiminnot</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="90"/>
+        <location filename="../src/core/systemmenu.cpp" line="88"/>
         <source>&amp;View System Messages...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9009,82 +9014,82 @@ reset your statistics?</source>
         <translation type="obsolete">Käyttäjätoiminnot</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="101"/>
+        <location filename="../src/core/systemmenu.cpp" line="99"/>
         <source>&amp;Add User...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="102"/>
+        <location filename="../src/core/systemmenu.cpp" line="100"/>
         <source>S&amp;earch for User...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="103"/>
+        <location filename="../src/core/systemmenu.cpp" line="101"/>
         <source>A&amp;uthorize User...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="104"/>
+        <location filename="../src/core/systemmenu.cpp" line="102"/>
         <source>Re&amp;quest Authorization...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="105"/>
+        <location filename="../src/core/systemmenu.cpp" line="103"/>
         <source>R&amp;andom Chat...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="107"/>
+        <location filename="../src/core/systemmenu.cpp" line="105"/>
         <source>&amp;Popup All Messages...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="108"/>
+        <location filename="../src/core/systemmenu.cpp" line="106"/>
         <source>Edit &amp;Groups...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="110"/>
+        <location filename="../src/core/systemmenu.cpp" line="108"/>
         <source>Update All Users</source>
         <translation type="unfinished">Päivitä kaikki käyttäjät</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="111"/>
+        <location filename="../src/core/systemmenu.cpp" line="109"/>
         <source>Update Current Group</source>
         <translation type="unfinished">Päivitä nykyinen ryhmä</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="112"/>
+        <location filename="../src/core/systemmenu.cpp" line="110"/>
         <source>&amp;Redraw User Window</source>
         <translation type="unfinished">Pii&amp;rrä käyttäjäikkuna uudelleen</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="113"/>
+        <location filename="../src/core/systemmenu.cpp" line="111"/>
         <source>&amp;Save All Users</source>
         <translation type="unfinished">&amp;Tallenna kaikki käyttäjät</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="116"/>
+        <location filename="../src/core/systemmenu.cpp" line="114"/>
         <source>Phone &quot;Follow Me&quot;</source>
         <translation type="unfinished">Puhelin &quot;seuraa minua&quot;</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="124"/>
+        <location filename="../src/core/systemmenu.cpp" line="122"/>
         <source>Don&apos;t Show</source>
         <translation type="unfinished">Älä näytä</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="125"/>
+        <location filename="../src/core/systemmenu.cpp" line="123"/>
         <source>Available</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="126"/>
+        <location filename="../src/core/systemmenu.cpp" line="124"/>
         <source>Busy</source>
         <translation type="unfinished">Varattu</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="130"/>
+        <location filename="../src/core/systemmenu.cpp" line="128"/>
         <source>&amp;Status</source>
         <translation type="unfinished">&amp;Tila</translation>
     </message>
@@ -9121,52 +9126,52 @@ reset your statistics?</source>
         <translation type="obsolete">&amp;Näkymätön</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="169"/>
+        <location filename="../src/core/systemmenu.cpp" line="167"/>
         <source>&amp;Group</source>
         <translation type="unfinished">&amp;Ryhmä</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="188"/>
+        <location filename="../src/core/systemmenu.cpp" line="186"/>
         <source>&amp;Help</source>
         <translation type="unfinished">A&amp;pua</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="189"/>
+        <location filename="../src/core/systemmenu.cpp" line="187"/>
         <source>&amp;Hints...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="190"/>
+        <location filename="../src/core/systemmenu.cpp" line="188"/>
         <source>&amp;About...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="191"/>
+        <location filename="../src/core/systemmenu.cpp" line="189"/>
         <source>&amp;Statistics...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="198"/>
+        <location filename="../src/core/systemmenu.cpp" line="196"/>
         <source>Set &amp;Auto Response...</source>
         <translation type="unfinished">&amp;Aseta autom. vastaus...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="200"/>
+        <location filename="../src/core/systemmenu.cpp" line="198"/>
         <source>&amp;Network Window...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="201"/>
+        <location filename="../src/core/systemmenu.cpp" line="199"/>
         <source>&amp;Mini Mode</source>
         <translation type="unfinished">&amp;Mini-moodi</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="203"/>
+        <location filename="../src/core/systemmenu.cpp" line="201"/>
         <source>Show Offline &amp;Users</source>
         <translation type="unfinished">Näytä o&amp;ffline-käyttäjät</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="205"/>
+        <location filename="../src/core/systemmenu.cpp" line="203"/>
         <source>&amp;Thread Group View</source>
         <translation type="unfinished">Säikeis&amp;tä ryhmänäkymä</translation>
     </message>
@@ -9179,57 +9184,57 @@ reset your statistics?</source>
         <translation type="obsolete">Ulkoa&amp;suselain...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="210"/>
+        <location filename="../src/core/systemmenu.cpp" line="208"/>
         <source>&amp;Plugin Manager...</source>
         <translation type="unfinished">&amp;Plugin-hallinta...</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="215"/>
+        <location filename="../src/core/systemmenu.cpp" line="213"/>
         <source>Sa&amp;ve Settings</source>
         <translation type="unfinished">&amp;Tallenna asetukset</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="217"/>
+        <location filename="../src/core/systemmenu.cpp" line="215"/>
         <source>E&amp;xit</source>
         <translation type="unfinished">&amp;Ulos</translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="89"/>
+        <location filename="../src/core/systemmenu.cpp" line="87"/>
         <source>S&amp;ystem Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="93"/>
+        <location filename="../src/core/systemmenu.cpp" line="91"/>
         <source>&amp;Account Manager...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="100"/>
+        <location filename="../src/core/systemmenu.cpp" line="98"/>
         <source>User &amp;Functions</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="207"/>
+        <location filename="../src/core/systemmenu.cpp" line="205"/>
         <source>Sh&amp;ow Empty Groups</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="209"/>
+        <location filename="../src/core/systemmenu.cpp" line="207"/>
         <source>S&amp;ettings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="212"/>
+        <location filename="../src/core/systemmenu.cpp" line="209"/>
         <source>GPG &amp;Key Manager...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="94"/>
+        <location filename="../src/core/systemmenu.cpp" line="92"/>
         <source>ICQ &amp;Security Options...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="95"/>
+        <location filename="../src/core/systemmenu.cpp" line="93"/>
         <source>ICQ &amp;Random Chat Group...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -9237,12 +9242,12 @@ reset your statistics?</source>
 <context>
     <name>LicqQtGui::SystemMenuPrivate::OwnerData</name>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="564"/>
+        <location filename="../src/core/systemmenu.cpp" line="562"/>
         <source>&amp;Info...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/core/systemmenu.cpp" line="565"/>
+        <location filename="../src/core/systemmenu.cpp" line="563"/>
         <source>View &amp;History...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10159,7 +10164,7 @@ Valitaanko toinen kuva?</translation>
         <translation type="unfinished">Pyydä suojattua yhteyttä automaattisesti</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="103"/>
+        <location filename="../src/core/usermenu.cpp" line="102"/>
         <source>Use GPG Encryption</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10229,7 +10234,7 @@ Valitaanko toinen kuva?</translation>
         <translation type="unfinished">Poista listalta</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="162"/>
+        <location filename="../src/core/usermenu.cpp" line="161"/>
         <source>Set GPG key</source>
         <translation type="unfinished"></translation>
     </message>
@@ -10244,27 +10249,27 @@ Valitaanko toinen kuva?</translation>
         <translation type="unfinished">T&amp;iedot</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="236"/>
+        <location filename="../src/core/usermenu.cpp" line="234"/>
         <source>Check Auto Response</source>
         <translation type="unfinished">Katso automaattinen vastaus</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="238"/>
+        <location filename="../src/core/usermenu.cpp" line="236"/>
         <source>Check %1 Response</source>
         <translation type="unfinished">Katso %1-vastaus</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="269"/>
+        <location filename="../src/core/usermenu.cpp" line="265"/>
         <source>Close &amp;Secure Channel</source>
         <translation type="unfinished">Katkaise &amp;suojattu yhteys</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="274"/>
+        <location filename="../src/core/usermenu.cpp" line="270"/>
         <source>Request &amp;Secure Channel</source>
         <translation type="unfinished">Pyydä &amp;suojattua yhteyttä</translation>
     </message>
     <message>
-        <location filename="../src/core/usermenu.cpp" line="590"/>
+        <location filename="../src/core/usermenu.cpp" line="582"/>
         <source>Do you really want to add
 %1 (%2)
 to your ignore list?</source>
@@ -10828,12 +10833,12 @@ Valitaanko toinen kuva?</translation>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="101"/>
+        <location filename="../src/userdlg/settings.cpp" line="100"/>
         <source>Use GPG encryption</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userdlg/settings.cpp" line="102"/>
+        <location filename="../src/userdlg/settings.cpp" line="101"/>
         <source>Use GPG encryption for messages with this contact.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11096,38 +11101,38 @@ Valitaanko toinen kuva?</translation>
         <translation type="obsolete">&amp;Valikko</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="143"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="144"/>
         <source>Message</source>
         <translation>Viesti</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="144"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="145"/>
         <source>URL</source>
         <translation>URL</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="145"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="146"/>
         <source>Chat Request</source>
         <translation>Chat-pyyntö</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="146"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="147"/>
         <source>File Transfer</source>
         <translation>Tiedostonsiirto</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="147"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="148"/>
         <source>Contact List</source>
         <translation>Kontaktilista</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="148"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="149"/>
         <source>SMS</source>
         <translation>SMS</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="200"/>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1160"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="201"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1176"/>
         <source>&amp;Send</source>
         <translation>Lähetä (&amp;S)</translation>
     </message>
@@ -11136,60 +11141,60 @@ Valitaanko toinen kuva?</translation>
         <translation type="obsolete">Sulje (&amp;C)</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1375"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1395"/>
         <source>Drag Users Here
 Right Click for Options</source>
         <translation>Raahaa käyttäjät tähän hiirellä
 Valikko oikeasta napista</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1072"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1078"/>
         <source>Sending </source>
         <translation>Lähetetään </translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1073"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1079"/>
         <source>via server</source>
         <translation>palvelimen kautta</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1073"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1079"/>
         <source>direct</source>
         <translation>suoraan</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1083"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1089"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Peruuta</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1101"/>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1146"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1117"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1162"/>
         <source>error</source>
         <translation>virhe</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1133"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1149"/>
         <source>done</source>
         <translation>valmis</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1137"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1153"/>
         <source>cancelled</source>
         <translation>peruutettu</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1140"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1156"/>
         <source>failed</source>
         <translation>epäonnistui</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1143"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1159"/>
         <source>timed out</source>
         <translation>aikakatkaistu</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1185"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1205"/>
         <source>Direct send failed,
 send through server?</source>
         <translation>Suora lähetys epäonnistui,
@@ -11204,7 +11209,7 @@ lähetetäänkö palvelimen kautta?</translation>
         <translation type="obsolete">Ei</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1197"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1217"/>
         <source>%1 is in %2 mode:
 %3
 Send...</source>
@@ -11213,19 +11218,19 @@ Send...</source>
 Lähetä...</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="184"/>
-        <location filename="../src/userevents/usersendcommon.cpp" line="526"/>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1215"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="185"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="532"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1235"/>
         <source>Urgent</source>
         <translation>Tärkeä</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1215"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1235"/>
         <source> to Contact List</source>
         <translation> kontaktilistalle</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1215"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1235"/>
         <source>Cancel</source>
         <translation>Peruuta</translation>
     </message>
@@ -11244,78 +11249,78 @@ palvelimen kautta!</translation>
         <translation type="obsolete">Lähetä kuitenkin</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="246"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="247"/>
         <source>Error! no owner set</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="155"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="156"/>
         <source>Message type</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="524"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="530"/>
         <source>Select type of message to send</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="160"/>
-        <location filename="../src/userevents/usersendcommon.cpp" line="525"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="161"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="531"/>
         <source>Send through server</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="187"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="188"/>
         <source>Multiple Recipients</source>
         <translation type="unfinished">Ryhmälähetys</translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="527"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="533"/>
         <source>Multiple recipients</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="193"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="194"/>
         <source>Smileys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="528"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="534"/>
         <source>Insert smileys</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="529"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="535"/>
         <source>Change text color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="530"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="536"/>
         <source>Change background color</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="194"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="195"/>
         <source>Text Color...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="195"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="196"/>
         <source>Background Color...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="630"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="636"/>
         <source>%1 has joined the conversation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="657"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="663"/>
         <source>%1 has left the conversation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/userevents/usersendcommon.cpp" line="1028"/>
+        <location filename="../src/userevents/usersendcommon.cpp" line="1034"/>
         <source>Message can&apos;t be sent securely through the server!
 Send anyway?</source>
         <translation type="unfinished"></translation>
@@ -11501,14 +11506,14 @@ Haluatko varmasti lähettää sen?</translation>
         <translation>Seu&amp;raava (%1)</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="703"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="723"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="734"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="705"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="725"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="736"/>
         <source>&amp;Reply</source>
         <translation>&amp;Vastaa</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="705"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="707"/>
         <source>
 --------------------
 Request was cancelled.</source>
@@ -11517,73 +11522,73 @@ Request was cancelled.</source>
 Pyyntö peruttu.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="710"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="712"/>
         <source>A&amp;ccept</source>
         <translation>&amp;Hyväksy</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="711"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="746"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="713"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="748"/>
         <source>&amp;Refuse</source>
         <translation>&amp;Kieltäydy</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="718"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="720"/>
         <source>&amp;Join</source>
         <translation>&amp;Liity</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="724"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="735"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="726"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="737"/>
         <source>&amp;Quote</source>
         <translation>&amp;Lainaa</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="725"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="736"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="727"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="738"/>
         <source>&amp;Forward</source>
         <translation>&amp;Jatkolähetä</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="726"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="728"/>
         <source>Start Chat</source>
         <translation>Aloita chat</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="740"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="742"/>
         <source>&amp;View</source>
         <translation>&amp;Näytä</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="745"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="747"/>
         <source>A&amp;uthorize</source>
         <translation>Valt&amp;uuta</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="750"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="762"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="774"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="788"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="752"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="764"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="776"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="790"/>
         <source>A&amp;dd User</source>
         <translation>Lisää &amp;käyttäjä</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="785"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="787"/>
         <source>A&amp;dd %1 Users</source>
         <translation>Lisää %1 &amp;käyttäjää</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="498"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="500"/>
         <source>Chat</source>
         <translation>Chat</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="519"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="521"/>
         <source>File Transfer</source>
         <translation>Tiedostonsiirto</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="793"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="795"/>
         <source>&amp;View Email</source>
         <translation type="unfinished"></translation>
     </message>
@@ -11598,9 +11603,9 @@ You will need to start the browser and open the URL manually.</source>
 Sinun tarvitsee käynnistää selain ja avata URL itse.</translation>
     </message>
     <message>
-        <location filename="../src/userevents/userviewevent.cpp" line="753"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="765"/>
-        <location filename="../src/userevents/userviewevent.cpp" line="777"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="755"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="767"/>
+        <location filename="../src/userevents/userviewevent.cpp" line="779"/>
         <source>&amp;View Info</source>
         <translation type="unfinished"></translation>
     </message>

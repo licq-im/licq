@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: es\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-10-08 20:28+0200\n"
+"POT-Creation-Date: 2009-11-22 21:26+0100\n"
 "PO-Revision-Date: 2007-08-17 20:05-0300\n"
 "Last-Translator: Sebastian Renzi <srenzi@gmail.com>\n"
 "Language-Team: \n"
@@ -1503,7 +1503,7 @@ msgstr "%s%s no es una FIFO, deshabilitando soporte para fifo.\n"
 msgid "%sSpawning daemon threads.\n"
 msgstr "%sLanzando hilos de ejecución de los demonios.\n"
 
-#: src/icqd.cpp:465 src/icqd.cpp:1076
+#: src/icqd.cpp:465 src/icqd.cpp:1085
 #, fuzzy, c-format
 msgid ""
 "%sUnable to start BART service thread:\n"
@@ -1512,17 +1512,17 @@ msgstr ""
 "%sFallo al inicializar servidor TCP local:\n"
 "%s%s\n"
 
-#: src/icqd.cpp:955
+#: src/icqd.cpp:964
 #, c-format
 msgid "%sLocal TCP server started on port %d.\n"
 msgstr "%sServidor local TCP iniciado en el puerto %d.\n"
 
-#: src/icqd.cpp:959
+#: src/icqd.cpp:968
 #, c-format
 msgid "%sNo ports available for local TCP server.\n"
 msgstr "%sNo hay puertos disponibles para el servidor TCP local.\n"
 
-#: src/icqd.cpp:963
+#: src/icqd.cpp:972
 #, c-format
 msgid ""
 "%sFailed to start local TCP server:\n"
@@ -1531,17 +1531,17 @@ msgstr ""
 "%sFallo al inicializar servidor TCP local:\n"
 "%s%s\n"
 
-#: src/icqd.cpp:977
+#: src/icqd.cpp:986
 #, c-format
 msgid "%sTCP high port (%d) is lower then TCP low port (%d).\n"
 msgstr "%sEl puerto TCP alto (%d) es menor que el puerto TCP bajo (%d).\n"
 
-#: src/icqd.cpp:1014
+#: src/icqd.cpp:1023
 #, c-format
 msgid "%sResolving proxy: %s:%d...\n"
 msgstr "%sResolviendo proxy: %s:%d...\n"
 
-#: src/icqd.cpp:1019
+#: src/icqd.cpp:1028
 #, c-format
 msgid ""
 "%sUnable to resolve proxy server %s:\n"
@@ -1550,89 +1550,89 @@ msgstr ""
 "%sNo se puede resolver el servidor proxy %s:\n"
 "%s%s.\n"
 
-#: src/icqd.cpp:1051
+#: src/icqd.cpp:1060
 #, c-format
 msgid "%sInvalid TCP version %d.  Attempting v%d.\n"
 msgstr "%sVersión TCP %d inválida. Intentando con v%d.\n"
 
-#: src/icqd.cpp:1157
+#: src/icqd.cpp:1166
 #, c-format
 msgid "%sUnable to open \"%s\" for writing.\n"
 msgstr "%sNo se puede abrir \"%s\" para escritura.\n"
 
-#: src/icqd.cpp:1978
+#: src/icqd.cpp:1987
 #, c-format
 msgid "%sCancelled event not found.\n"
 msgstr "%sNo se encuentra el evento cancelado.\n"
 
-#: src/icqd.cpp:2225 src/icqd-srv.cpp:3395 src/icqd-srv.cpp:4637
+#: src/icqd.cpp:2234 src/icqd-srv.cpp:3395 src/icqd-srv.cpp:4637
 #: src/message.cpp:1076
 msgid "Message"
 msgstr "Mensaje"
 
-#: src/icqd.cpp:2254
+#: src/icqd.cpp:2263
 msgid "Chat request"
 msgstr "Petición de charla"
 
-#: src/icqd.cpp:2288
+#: src/icqd.cpp:2297
 msgid "File transfer request through server"
 msgstr "Pedido de transferencia de fichero a través del servidor"
 
-#: src/icqd.cpp:2301 src/icqd-srv.cpp:3410 src/icqd-srv.cpp:4653
+#: src/icqd.cpp:2310 src/icqd-srv.cpp:3410 src/icqd-srv.cpp:4653
 #: src/message.cpp:1079
 msgid "URL"
 msgstr "URL"
 
-#: src/icqd.cpp:2317
+#: src/icqd.cpp:2326
 msgid "Contact list"
 msgstr "Lista de contactos"
 
-#: src/icqd.cpp:2335 src/icqd-srv.cpp:3863
+#: src/icqd.cpp:2344 src/icqd-srv.cpp:3863
 #, c-format
 msgid "%sAuto response from %s (#%lu).\n"
 msgstr "%sRespuesta automática de %s (#%lu).\n"
 
-#: src/icqd.cpp:2346 src/icqd.cpp:2440 src/icqd-srv.cpp:3810
+#: src/icqd.cpp:2355 src/icqd.cpp:2449 src/icqd-srv.cpp:3810
 #: src/icqd-srv.cpp:3899 src/icqd-tcp.cpp:2817
 #, c-format
 msgid "%sAck for unknown event.\n"
 msgstr "%sAck para evento desconocido.\n"
 
-#: src/icqd.cpp:2350 src/icqd-tcp.cpp:1901
+#: src/icqd.cpp:2359 src/icqd-tcp.cpp:1901
 #, fuzzy, c-format
 msgid "%s%s (%s) requested auto response.\n"
 msgstr "%s%s (%lu) Solicitó respuesta automática.\n"
 
-#: src/icqd.cpp:2393 src/icqd-tcp.cpp:2183
+#: src/icqd.cpp:2402 src/icqd-tcp.cpp:2183
 #, c-format
 msgid "%sUnknown ICBM plugin type: %s\n"
 msgstr "%sTipo de añadido ICBM desconocido: %s\n"
 
-#: src/icqd.cpp:2420
+#: src/icqd.cpp:2429
 msgid "unknown event"
 msgstr "evento desconocido"
 
-#: src/icqd.cpp:2432
+#: src/icqd.cpp:2441
 #, fuzzy, c-format
 msgid "%s%s accepted from %s (%s).\n"
 msgstr "%s%s aceptado por %s (%lu).\n"
 
-#: src/icqd.cpp:2453 src/icqd-srv.cpp:3646
+#: src/icqd.cpp:2462 src/icqd-srv.cpp:3646
 #, c-format
 msgid "%s%s from new user (%s), ignoring.\n"
 msgstr "%s%s de un usuario nuevo (%s), se ignora.\n"
 
-#: src/icqd.cpp:2460
+#: src/icqd.cpp:2469
 #, c-format
 msgid "%s%s from new user (%s).\n"
 msgstr "%s%s de un usuario nuevo (%s).\n"
 
-#: src/icqd.cpp:2466
+#: src/icqd.cpp:2475
 #, fuzzy, c-format
 msgid "%s%s from %s (%s).\n"
 msgstr "%s%s de %s (%lu).\n"
 
-#: src/icqd.cpp:2475
+#: src/icqd.cpp:2484
 #, c-format
 msgid ""
 "%sInvalid %s:\n"

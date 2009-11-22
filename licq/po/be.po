@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Licq\n"
 "Report-Msgid-Bugs-To: licq-dev@googlegroups.com\n"
-"POT-Creation-Date: 2009-10-08 20:28+0200\n"
+"POT-Creation-Date: 2009-11-22 21:26+0100\n"
 "PO-Revision-Date: 2008-02-25 20:37+0300\n"
 "Last-Translator: Alexey Ivaniuk aka Varjat <varjat@gmail.com>\n"
 "Language-Team: Belarussian language team <team@mova.org>\n"
@@ -1494,7 +1494,7 @@ msgstr "%s%s не FIFO, адключаем fifo-падтрымкі.\n"
 msgid "%sSpawning daemon threads.\n"
 msgstr "%sСтварэньне патокаў дэмана.\n"
 
-#: src/icqd.cpp:465 src/icqd.cpp:1076
+#: src/icqd.cpp:465 src/icqd.cpp:1085
 #, fuzzy, c-format
 msgid ""
 "%sUnable to start BART service thread:\n"
@@ -1503,17 +1503,17 @@ msgstr ""
 "%sНямагчыма стартаваць лякальны TCP-паслужнік:\n"
 "%s%s\n"
 
-#: src/icqd.cpp:955
+#: src/icqd.cpp:964
 #, c-format
 msgid "%sLocal TCP server started on port %d.\n"
 msgstr "%sЛакальны TCP-паслужнік стартаваў на %d парту.\n"
 
-#: src/icqd.cpp:959
+#: src/icqd.cpp:968
 #, c-format
 msgid "%sNo ports available for local TCP server.\n"
 msgstr "%sАдсутнічаюць свабодныя парты дзеля лякальнага TCP-паслужніка.\n"
 
-#: src/icqd.cpp:963
+#: src/icqd.cpp:972
 #, c-format
 msgid ""
 "%sFailed to start local TCP server:\n"
@@ -1522,17 +1522,17 @@ msgstr ""
 "%sНямагчыма стартаваць лякальны TCP-паслужнік:\n"
 "%s%s\n"
 
-#: src/icqd.cpp:977
+#: src/icqd.cpp:986
 #, c-format
 msgid "%sTCP high port (%d) is lower then TCP low port (%d).\n"
 msgstr "%sвышэйшы TCP-порт (%d) меньшы за найменьшы TCP-порт (%d).\n"
 
-#: src/icqd.cpp:1014
+#: src/icqd.cpp:1023
 #, c-format
 msgid "%sResolving proxy: %s:%d...\n"
 msgstr "%sВызначэньне проксі: %s:%d...\n"
 
-#: src/icqd.cpp:1019
+#: src/icqd.cpp:1028
 #, c-format
 msgid ""
 "%sUnable to resolve proxy server %s:\n"
@@ -1541,89 +1541,89 @@ msgstr ""
 "%sНямагчыма вызначыць проксі-паслужнік %s:\n"
 "%s%s.\n"
 
-#: src/icqd.cpp:1051
+#: src/icqd.cpp:1060
 #, c-format
 msgid "%sInvalid TCP version %d.  Attempting v%d.\n"
 msgstr "%sНяспраўная вэрсія TCP  %d.  Спрабуем вэрсію %d.\n"
 
-#: src/icqd.cpp:1157
+#: src/icqd.cpp:1166
 #, c-format
 msgid "%sUnable to open \"%s\" for writing.\n"
 msgstr "%sНямагчыма адчыніць \"%s\" дзеля запісу.\n"
 
-#: src/icqd.cpp:1978
+#: src/icqd.cpp:1987
 #, c-format
 msgid "%sCancelled event not found.\n"
 msgstr "%sСкасаваны выпадак ня знойдзены.\n"
 
-#: src/icqd.cpp:2225 src/icqd-srv.cpp:3395 src/icqd-srv.cpp:4637
+#: src/icqd.cpp:2234 src/icqd-srv.cpp:3395 src/icqd-srv.cpp:4637
 #: src/message.cpp:1076
 msgid "Message"
 msgstr "Паведамленьне"
 
-#: src/icqd.cpp:2254
+#: src/icqd.cpp:2263
 msgid "Chat request"
 msgstr "Запыт размовы"
 
-#: src/icqd.cpp:2288
+#: src/icqd.cpp:2297
 msgid "File transfer request through server"
 msgstr "Запыт перадачы файла праз паслужнік"
 
-#: src/icqd.cpp:2301 src/icqd-srv.cpp:3410 src/icqd-srv.cpp:4653
+#: src/icqd.cpp:2310 src/icqd-srv.cpp:3410 src/icqd-srv.cpp:4653
 #: src/message.cpp:1079
 msgid "URL"
 msgstr "Спасылка"
 
-#: src/icqd.cpp:2317
+#: src/icqd.cpp:2326
 msgid "Contact list"
 msgstr "Сьпіс кантактаў"
 
-#: src/icqd.cpp:2335 src/icqd-srv.cpp:3863
+#: src/icqd.cpp:2344 src/icqd-srv.cpp:3863
 #, c-format
 msgid "%sAuto response from %s (#%lu).\n"
 msgstr "%sАўтаматычны адказ ад %s (#%lu).\n"
 
-#: src/icqd.cpp:2346 src/icqd.cpp:2440 src/icqd-srv.cpp:3810
+#: src/icqd.cpp:2355 src/icqd.cpp:2449 src/icqd-srv.cpp:3810
 #: src/icqd-srv.cpp:3899 src/icqd-tcp.cpp:2817
 #, c-format
 msgid "%sAck for unknown event.\n"
 msgstr "%sЗапыт Ack дзеля невядомага выпадку.\n"
 
-#: src/icqd.cpp:2350 src/icqd-tcp.cpp:1901
+#: src/icqd.cpp:2359 src/icqd-tcp.cpp:1901
 #, fuzzy, c-format
 msgid "%s%s (%s) requested auto response.\n"
 msgstr "%s%s (%lu) запытаў аўтаматычны адказ.\n"
 
-#: src/icqd.cpp:2393 src/icqd-tcp.cpp:2183
+#: src/icqd.cpp:2402 src/icqd-tcp.cpp:2183
 #, c-format
 msgid "%sUnknown ICBM plugin type: %s\n"
 msgstr "%sНявядомы тып ICBM-пашырэньня: %s\n"
 
-#: src/icqd.cpp:2420
+#: src/icqd.cpp:2429
 msgid "unknown event"
 msgstr "невядомы выпадак"
 
-#: src/icqd.cpp:2432
+#: src/icqd.cpp:2441
 #, fuzzy, c-format
 msgid "%s%s accepted from %s (%s).\n"
 msgstr "%s%s дазволена ад %s (%lu).\n"
 
-#: src/icqd.cpp:2453 src/icqd-srv.cpp:3646
+#: src/icqd.cpp:2462 src/icqd-srv.cpp:3646
 #, c-format
 msgid "%s%s from new user (%s), ignoring.\n"
 msgstr "%s%s ад новага карыстальніка (%s), ігнаруем.\n"
 
-#: src/icqd.cpp:2460
+#: src/icqd.cpp:2469
 #, c-format
 msgid "%s%s from new user (%s).\n"
 msgstr "%s%s ад новага карыстальніка (%s).\n"
 
-#: src/icqd.cpp:2466
+#: src/icqd.cpp:2475
 #, fuzzy, c-format
 msgid "%s%s from %s (%s).\n"
 msgstr "%s%s ад %s (%lu).\n"
 
-#: src/icqd.cpp:2475
+#: src/icqd.cpp:2484
 #, c-format
 msgid ""
 "%sInvalid %s:\n"
