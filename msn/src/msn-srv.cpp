@@ -75,7 +75,7 @@ void CMSN::ProcessServerPacket(CMSNBuffer *packet)
       {
         size_t sep = strServer.rfind(':');
         string host;
-        int port;
+        int port = 0;
         if (sep != string::npos)
         {
           host = strServer.substr(0, sep);
