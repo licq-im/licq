@@ -2440,7 +2440,7 @@ Ihrer Zugänge. Zur Zeit wird nur ein Zugang pro Protokoll unterstützt, aber da
     <message>
         <location filename="../src/dialogs/refusedlg.cpp" line="59"/>
         <source>Refuse</source>
-        <translation>Ab&amp;lehnen</translation>
+        <translation>Ablehnen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/refusedlg.cpp" line="63"/>
@@ -2591,7 +2591,7 @@ Nachdem sie Online sind, können sie ihre persönlichen Informationen an den Ser
         <location filename="../src/dialogs/searchuserdlg.cpp" line="220"/>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="314"/>
         <source>Enter search parameters and select &apos;Search&apos;</source>
-        <translation>Bitte Suchparameter eingeben und dann auf &apos;Suchen&apos; klicken.</translation>
+        <translation>Bitte Suchparameter eingeben und dann auf &apos;Suchen&apos; klicken</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="150"/>
@@ -2671,7 +2671,7 @@ Nachdem sie Online sind, können sie ihre persönlichen Informationen an den Ser
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="159"/>
         <source>Return Online Users Only</source>
-        <translation>Nur &amp;Online-Benutzer zeigen</translation>
+        <translation>Nur Online-Benutzer zeigen</translation>
     </message>
     <message>
         <location filename="../src/dialogs/searchuserdlg.cpp" line="427"/>
@@ -3073,7 +3073,7 @@ Bitte erstellen sie zuerst einen.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="81"/>
         <source>Show the current chat history in Send Window</source>
-        <translation>Aktuelle Chat-History im Nachrichtenfenster anzeigen.</translation>
+        <translation>Aktuelle Chat-History im Nachrichtenfenster anzeigen</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="85"/>
@@ -3083,7 +3083,7 @@ Bitte erstellen sie zuerst einen.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="86"/>
         <source>Use tabs in Send Window</source>
-        <translation>Durch das Aktivieren von Unterfenstern können mehrere Nachrichtenfenster in einem kombiniert werden.</translation>
+        <translation>Verwende Unterfenster im Senden-Dialog</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="89"/>
@@ -3122,7 +3122,7 @@ Neue Zeilen werden mit Strg+Enter eingefügt.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="108"/>
         <source>Makes the message window(s) visible on all desktops</source>
-        <translation>Nachrichtenfenster auf allen Desktops anzeigen.</translation>
+        <translation>Nachrichtenfenster auf allen Desktops anzeigen</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="111"/>
@@ -3132,17 +3132,17 @@ Neue Zeilen werden mit Strg+Enter eingefügt.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="112"/>
         <source>Auto close the user function window after a successful event</source>
-        <translation>Schließe automatisch das Benutzerfunktionsfenster nach einem erfolgreichen Ereignis.</translation>
+        <translation>Schließe automatisch das Benutzerfunktionsfenster nach einem erfolgreichen Ereignis</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="115"/>
         <source>Check clipboard For URIs/files</source>
-        <translation>Überprüfe Zwischenablage auf URIs oder Dateien.</translation>
+        <translation>Überprüfe Zwischenablage auf URIs oder Dateien</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="116"/>
         <source>When double-clicking on a user to send a message check for urls/files in the clipboard</source>
-        <translation>Überprüft bei Doppelklick auf einen Benutzer die Zwischenablage auf Urls/Dateien und fügt deren Inhalt automatisch in die Nachricht ein.</translation>
+        <translation>Überprüft bei Doppelklick auf einen Benutzer die Zwischenablage auf Urls/Dateien und fügt deren Inhalt automatisch in die Nachricht ein</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="119"/>
@@ -3152,7 +3152,7 @@ Neue Zeilen werden mit Strg+Enter eingefügt.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="120"/>
         <source>Position a new reply window just underneath the message view window</source>
-        <translation>Zeigt das Antwort-Fenster möglichst in der Nähe des Nachrichten-Fensters an.</translation>
+        <translation>Zeigt das Antwort-Fenster möglichst in der Nähe des Nachrichten-Fensters an</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="123"/>
@@ -3162,7 +3162,7 @@ Neue Zeilen werden mit Strg+Enter eingefügt.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="124"/>
         <source>Automatically send messages through the server if direct connection fails</source>
-        <translation>Falls keine direkte Verbindung möglich ist, werden Nachrichten automatisch über den Server gesendet.</translation>
+        <translation>Falls keine direkte Verbindung möglich ist, werden Nachrichten automatisch über den Server gesendet</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="127"/>
@@ -3172,7 +3172,7 @@ Neue Zeilen werden mit Strg+Enter eingefügt.</translation>
     <message>
         <location filename="../src/settings/chat.cpp" line="128"/>
         <source>Send a notification to the user so they can see when you are typing a message to them</source>
-        <translation>Sendet eine Benachrichtigung an den Benutzer, so dass er sehen kann, dass Du ihm gerade eine Nachricht schreibst.</translation>
+        <translation>Sendet eine Benachrichtigung an den Benutzer, so dass er sehen kann, dass Du ihm gerade eine Nachricht schreibst</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="147"/>
@@ -3284,7 +3284,7 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
     <message>
         <location filename="../src/settings/chat.cpp" line="334"/>
         <source>Show the last 5 messages when a Send Window is opened</source>
-        <translation>Zeigt in neuen Nachrichtenfenstern die jeweils 5 letzten Nachrichten des Benutzers an.</translation>
+        <translation>Zeigt in neuen Nachrichtenfenstern die jeweils 5 letzten Nachrichten des Benutzers an</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="338"/>
@@ -3404,7 +3404,7 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
     <message>
         <location filename="../src/settings/chat.cpp" line="132"/>
         <source>Show user picture next to the input area</source>
-        <translation>Zeigt das Benutzerbild neben dem Eingabefeld an.</translation>
+        <translation>Zeigt das Benutzerbild neben dem Eingabefeld an</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="135"/>
@@ -3419,7 +3419,7 @@ Ansonsten enthält das Menü nur die gebräuchlichsten Zeichensätze.</translati
     <message>
         <location filename="../src/settings/chat.cpp" line="90"/>
         <source>Send messages with Return and insert new lines with Ctrl+Return, opposite of the normal mode</source>
-        <translation>Sendet Nachrichten mit Enter und fügt neue Zeilen mit Strg-Enter ein, im Gegensatz zum normalen Modus.</translation>
+        <translation>Sendet Nachrichten mit Enter und fügt neue Zeilen mit Strg-Enter ein, im Gegensatz zum normalen Modus</translation>
     </message>
     <message>
         <location filename="../src/settings/chat.cpp" line="103"/>
@@ -4610,7 +4610,7 @@ Funktioniert mit vielen verschiedenen Fenstermanagern.</translation>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="94"/>
         <source>Toggle column headers visible</source>
-        <translation type="unfinished"></translation>
+        <translation>Spaltentitel aktivieren</translation>
     </message>
     <message>
         <location filename="../src/settings/shortcuts.cpp" line="95"/>
